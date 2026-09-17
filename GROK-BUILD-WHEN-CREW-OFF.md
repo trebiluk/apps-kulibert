@@ -8,7 +8,7 @@ Trebby (Diego): regular Grok Build must be able to edit and publish classroom ap
 |-----|----------|-----------------|--------------|
 | TechWorks | https://tw.kulibert.net | GitHub `trebiluk/TechWorks` `main` | Cloudflare Pages project **kulibert-desk** (auto from GitHub). **Not** Grok Orbit publish. |
 | Baboo | https://baboo.kulibert.net | Grok Build / Vercel **baboo** | Vercel production → baboo.kulibert.net |
-| KidCAD | https://kidcad.vercel.app | Grok Build project **KidCAD: Friendly TinkerCAD Clone** | Vercel / Build publish → kidcad.vercel.app |
+| BertyCAD | https://kidcad-phi.vercel.app (interim Help) | Grok Build project **BertyCAD: Friendly TinkerCAD Clone** | Help on kidcad-phi for now; **hold** kidcad.vercel.app until transfer |
 | The Tech Room | https://apps.kulibert.net | **Must be** GitHub `trebiluk/apps-kulibert` (wire if missing) | Vercel project **apps-kulibert** |
 | Coderized | https://coderized.vercel.app | Vercel **coderized** | Vercel prod |
 | Sprocket PrintKit | jsDelivr `trebiluk/sprocket-printkit` | GitHub `trebiluk/sprocket-printkit` | push main |
@@ -22,15 +22,16 @@ Trebby (Diego): regular Grok Build must be able to edit and publish classroom ap
 
 ## What Build can do without crew
 - Edit TechWorks in `trebiluk/TechWorks` and push `main` (Pages deploys).
-- Edit Baboo / KidCAD in their Grok Build projects and **Publish** to the live hosts above.
+- Edit Baboo / BertyCAD in their Grok Build projects and **Publish** to the live hosts above (Help interim = kidcad-phi).
 - Edit The Tech Room once GitHub repo is linked — change `index.html`, push, Vercel deploys apps.kulibert.net.
-- Read briefs in `/workspace/kidcad-ell-help/` if still on disk (Help module rails).
+- Read briefs in `/workspace/bertycad-ell-help/` or `/workspace/kidcad-ell-help/` if still on disk (Help module rails).
 
 ## What Build should ask Trebby first
 - Live roster import / FERPA names
 - Remapping any DNS or Cloudflare project
 - Promoting experimental TechWorks FAIL packs during school hours
 - Ginger (parked)
+- Transferring kidcad.vercel.app off the other Vercel team
 
 ## Contact
 When crew returns: Flo merges PASS/FAIL only. Debugzy is primary publisher for TechWorks/Baboo when crew is on; Build covers when crew is disabled.
