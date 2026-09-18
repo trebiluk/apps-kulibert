@@ -1,0 +1,1 @@
+import{n as e}from"./studio-games-CAnSEmQ1.js";var t=e;export{t as component};

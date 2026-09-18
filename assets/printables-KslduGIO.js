@@ -1,0 +1,1 @@
+import{t as e}from"./printables-Kt3US79o.js";var t=e;export{t as component};

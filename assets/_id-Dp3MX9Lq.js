@@ -1,0 +1,1 @@
+import{y as e}from"./store-D8ecx2_c.js";import{t}from"./studio-games-CAnSEmQ1.js";import{t as n}from"./index-BTmrzhBU.js";var r=e();function i(){let{id:e}=n.useParams();return(0,r.jsx)(t,{id:e})}export{i as component};

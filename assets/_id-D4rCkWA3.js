@@ -1,0 +1,1 @@
+import{y as e}from"./store-D8ecx2_c.js";import{n as t}from"./index-BTmrzhBU.js";import{n}from"./printables-Kt3US79o.js";var r=e();function i(){let{id:e}=t.useParams();return(0,r.jsx)(n,{id:e})}export{i as component};
