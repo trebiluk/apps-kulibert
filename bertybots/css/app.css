@@ -127,6 +127,28 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 .pic.drive {
   background: radial-gradient(circle at 50% 50%, #e87722 0 22%, #efe6d4 23% 68%, #2c261e 70% 100%);
 }
+.pic.drive::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  transform: translateY(-50%);
+  opacity: 0.92;
+  pointer-events: none;
+}
+.pic.drive.r::before {
+  right: 1px;
+  border-left: 8px solid var(--yellow);
+  filter: drop-shadow(-1px 0 0 #1a140e);
+}
+.pic.drive.l::before {
+  left: 1px;
+  border-right: 8px solid var(--yellow);
+  filter: drop-shadow(1px 0 0 #1a140e);
+}
 .pic.drive::after {
   font-size: 11px; font-weight: 900; color: #1a1208;
 }

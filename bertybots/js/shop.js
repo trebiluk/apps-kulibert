@@ -863,6 +863,21 @@ export function boot() {
     ctx.textBaseline = "middle";
     ctx.rotate(a);
     ctx.fillText(letter, 0, 1);
+    if (type === "driveR" || type === "driveL") {
+      const dir = type === "driveR" ? 1 : -1;
+      const tip = dir * r * 0.72;
+      const back = dir * r * 0.42;
+      ctx.beginPath();
+      ctx.moveTo(tip, 0);
+      ctx.lineTo(back, -r * 0.22);
+      ctx.lineTo(back, r * 0.22);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(232,119,34,0.9)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(26,26,26,0.35)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 

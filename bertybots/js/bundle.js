@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.7.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.7.1 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.7.0";
+const APP_VERSION = "0.7.1";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.7.0";
+const APP_CHIP = "BB 0.7.1";
 const APP_BUILT = "2026-09-18";
 
 const FORMAT = 1;
@@ -951,6 +951,21 @@ function boot() {
     ctx.textBaseline = "middle";
     ctx.rotate(a);
     ctx.fillText(letter, 0, 1);
+    if (type === "driveR" || type === "driveL") {
+      const dir = type === "driveR" ? 1 : -1;
+      const tip = dir * r * 0.72;
+      const back = dir * r * 0.42;
+      ctx.beginPath();
+      ctx.moveTo(tip, 0);
+      ctx.lineTo(back, -r * 0.22);
+      ctx.lineTo(back, r * 0.22);
+      ctx.closePath();
+      ctx.fillStyle = "rgba(232,119,34,0.9)";
+      ctx.fill();
+      ctx.strokeStyle = "rgba(26,26,26,0.35)";
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
     ctx.restore();
   }
 
