@@ -89,7 +89,8 @@
     a.tile.bertycad .glyph{background:linear-gradient(135deg,#F59E0B,#EA580C);color:#1A0B00}
     a.tile.botz .glyph{background:linear-gradient(135deg,#E87722,#0B1F3A);color:#F4EFE6}
     a.tile.paper .glyph{background:linear-gradient(135deg,#7dccb4,#1f5c4e);color:#F6F3EC}
-    a.tile.logolab .glyph{background:linear-gradient(135deg,#0F766E,#F4E7D0);color:#0B1F1A}
+    a.tile.logolab .glyph{background:transparent;padding:0;overflow:hidden}
+    a.tile.logolab .glyph svg{width:100%;height:100%;display:block}
     a.tile.den .glyph{background:linear-gradient(135deg,#E87722,#163A7A);color:#F4EFE6}
     a.tile.bistro .glyph{background:linear-gradient(135deg,#E05D32,#13243C);color:#FBF7F2}
     a.tile.house .glyph{background:linear-gradient(135deg,#6B9CFF,#243044);color:#fff}
@@ -157,7 +158,31 @@
       <span class="label">PaperLab</span>
     </a>
     <a class="tile logolab" href="/logolab/">
-      <span class="glyph" aria-hidden="true">LL</span>
+      <span class="glyph" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1f4f4a"/>
+  <path fill="#f3efe6" fill-rule="evenodd" d="
+    M12.6 11
+    H34
+    C48.4 11 54.6 17.6 54.6 25.6
+    C54.6 32.2 48.8 35.4 36.2 36.2
+    C50.8 37.2 58 42.4 58 49
+    C58 56.2 49.4 53.6 33.6 53
+    H12.6
+    Z
+    M36.8 16.2
+    C41 16.2 44.4 19.6 44.4 23.8
+    C44.4 28 41 31.4 36.8 31.4
+    C32.6 31.4 29.2 28 29.2 23.8
+    C29.2 19.6 32.6 16.2 36.8 16.2
+    Z
+    M39 38.4
+    C44 38.4 47.8 41.6 47.8 45.6
+    C47.8 49.6 44 52.8 39 52.8
+    C34 52.8 30.2 49.6 30.2 45.6
+    C30.2 41.6 34 38.4 39 38.4
+    Z"/>
+  <path fill="#c9a24a" d="M47.4 33.2 L50.6 36.2 L47.4 39.2 L44.2 36.2 Z"/>
+</svg></span>
       <span class="label">LogoLab</span>
     </a>
     <a class="tile lab" href="/sprocket/index.html">
