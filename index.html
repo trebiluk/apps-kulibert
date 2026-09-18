@@ -13,6 +13,7 @@
       color-scheme:dark;
       --bg:#050814;
       --panel:#0b152c;
+      --cell:#081226;
       --elevated:#10203f;
       --border:#16324f;
       --text:#e8f7ff;
@@ -29,38 +30,44 @@
       font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
       -webkit-font-smoothing:antialiased;
     }
-    body{padding:1.1rem .9rem 2.5rem}
-    .wrap{max-width:56rem;margin:0 auto}
+    body{padding:1rem .8rem 2.5rem}
+    .wrap{max-width:52rem;margin:0 auto}
     .poster{
       position:relative;overflow:hidden;
-      border:1px solid var(--border);border-radius:28px;min-height:18rem;
+      border:1px solid var(--border);border-radius:28px;min-height:22rem;
+      background:var(--bg);
     }
     .field{
       position:absolute;inset:0;display:grid;
-      grid-template-columns:repeat(5,minmax(0,1fr));
-      gap:.7rem;padding:.9rem;pointer-events:none;
+      grid-template-columns:repeat(6,minmax(0,1fr));
+      gap:.5rem;padding:.7rem;pointer-events:none;
     }
     @media (min-width:640px){
-      .poster{min-height:24rem}
-      .field{grid-template-columns:repeat(7,minmax(0,1fr));gap:.85rem;padding:1.15rem 1.25rem}
+      .poster{min-height:28rem}
+      .field{grid-template-columns:repeat(8,minmax(0,1fr));gap:.62rem;padding:.85rem .95rem}
     }
+    @media (min-width:960px){.poster{min-height:32rem}}
     .cell{
-      aspect-ratio:1;display:grid;place-items:center;border-radius:16px;
-      background:var(--panel);
-      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
-      color:color-mix(in srgb,var(--accent) 72%,transparent);
+      aspect-ratio:1;display:grid;place-items:center;border-radius:18px;
+      background:var(--cell);
+      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+      color:color-mix(in srgb,var(--accent) 78%,transparent);
+      box-shadow:inset 0 0 18px color-mix(in srgb,var(--accent) 18%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
     }
-    .cell svg{width:42%;height:42%}
+    .cell svg{width:40%;height:40%;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
     .vignette{
       position:absolute;inset:0;pointer-events:none;
-      background:radial-gradient(ellipse 64% 68% at 50% 46%,transparent 0%,color-mix(in srgb,var(--bg) 28%,transparent) 58%,var(--bg) 86%);
+      background:
+        radial-gradient(ellipse 54% 58% at 50% 44%,transparent 0%,color-mix(in srgb,var(--bg) 18%,transparent) 42%,color-mix(in srgb,var(--bg) 72%,transparent) 72%,var(--bg) 92%),
+        linear-gradient(180deg,color-mix(in srgb,var(--bg) 42%,transparent) 0%,transparent 22%,transparent 68%,var(--bg) 100%);
     }
     .hero{
       position:relative;z-index:1;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      min-height:18rem;padding:2rem .75rem 1.75rem;text-align:center;
+      min-height:22rem;padding:2rem .75rem 5.2rem;text-align:center;
     }
-    @media (min-width:640px){.hero{min-height:24rem;padding:2.75rem 1rem}}
+    @media (min-width:640px){.hero{min-height:28rem;padding:2.75rem 1rem 5.5rem}}
+    @media (min-width:960px){.hero{min-height:32rem}}
     .chip{
       display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.1rem;
       padding:.3rem .75rem;border-radius:999px;
@@ -71,21 +78,46 @@
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live);display:inline-block}
     h1{margin:0}
     .lockup-the{
-      display:block;font-weight:800;letter-spacing:.22em;line-height:1;
-      font-size:clamp(1.85rem,7vw,4.5rem);color:var(--accent);
-      text-shadow:0 0 16px color-mix(in srgb,var(--accent) 75%,transparent),0 0 42px color-mix(in srgb,var(--accent) 40%,transparent);
+      display:block;font-weight:800;letter-spacing:.24em;line-height:1;
+      font-size:clamp(1.7rem,6.4vw,4.1rem);color:var(--accent);
+      text-shadow:0 0 14px color-mix(in srgb,var(--accent) 88%,transparent),0 0 36px color-mix(in srgb,var(--accent) 50%,transparent),0 0 72px color-mix(in srgb,var(--accent) 28%,transparent);
+      animation:the-breathe 5.6s ease-in-out infinite;
     }
     .lockup-room{
-      display:block;margin-top:.2rem;font-weight:800;letter-spacing:-.045em;line-height:.86;
-      font-size:clamp(2.7rem,12vw,7.4rem);
-      background:linear-gradient(180deg,#c9fdff 0%,#22d3ee 46%,#14b8a6 100%);
+      display:block;margin-top:.12em;font-weight:800;letter-spacing:-.05em;line-height:.84;
+      font-size:clamp(2.85rem,12.5vw,7.8rem);
+      background:linear-gradient(180deg,#f0feff 0%,#7af0ff 28%,#22d3ee 58%,#14b8a6 100%);
       -webkit-background-clip:text;background-clip:text;color:transparent;
-      filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 55%,transparent));
+      filter:drop-shadow(0 0 18px color-mix(in srgb,var(--accent) 70%,transparent)) drop-shadow(0 0 42px color-mix(in srgb,var(--accent) 38%,transparent));
+      animation:room-breathe 5.6s ease-in-out infinite;
+    }
+    @keyframes the-breathe{
+      50%{text-shadow:0 0 20px color-mix(in srgb,var(--accent) 95%,transparent),0 0 52px color-mix(in srgb,var(--accent) 58%,transparent),0 0 96px color-mix(in srgb,var(--accent) 34%,transparent)}
+    }
+    @keyframes room-breathe{
+      50%{filter:drop-shadow(0 0 26px color-mix(in srgb,var(--accent) 82%,transparent)) drop-shadow(0 0 58px color-mix(in srgb,var(--accent) 48%,transparent))}
     }
     .sub{margin:.9rem 0 0;max-width:28rem;color:var(--muted);font-size:.95rem;line-height:1.45;font-weight:500}
+    .search{
+      position:absolute;z-index:2;left:50%;bottom:1rem;transform:translateX(-50%);
+      width:min(calc(100% - 1.5rem),28rem);
+    }
+    .search input{
+      width:100%;height:3rem;border:0;border-radius:999px;outline:none;
+      padding:0 1rem 0 2.7rem;color:var(--text);font:inherit;font-size:.95rem;font-weight:500;
+      background:color-mix(in srgb,var(--panel) 78%,transparent);
+      backdrop-filter:blur(14px);
+      border:1px solid color-mix(in srgb,var(--accent) 24%,transparent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent),0 10px 36px color-mix(in srgb,var(--bg) 60%,transparent);
+    }
+    .search input::placeholder{color:var(--subtle)}
+    .search svg{
+      position:absolute;left:.9rem;top:50%;transform:translateY(-50%);
+      width:1rem;height:1rem;stroke:var(--subtle);fill:none;stroke-width:1.75;pointer-events:none;
+    }
     .board{
-      margin:1.35rem 0 0;
-      display:grid;gap:.85rem;
+      margin:1.2rem 0 0;
+      display:grid;gap:.7rem;
       grid-template-columns:repeat(auto-fill,minmax(var(--tile),1fr));
       justify-items:center;
     }
@@ -93,10 +125,10 @@
       width:var(--tile);height:var(--tile);
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
       text-decoration:none;color:var(--muted);
-      background:var(--panel);
-      border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);
+      background:var(--cell);
+      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
       border-radius:var(--radius);
-      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 6%,transparent);
+      box-shadow:inset 0 0 18px color-mix(in srgb,var(--accent) 14%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
       transition:border-color .15s,background .15s,box-shadow .15s,transform .15s,color .15s;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
@@ -105,22 +137,24 @@
     a.tile svg{
       width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.5;
       stroke-linecap:round;stroke-linejoin:round;
-      filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 45%,transparent));
+      filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 50%,transparent));
     }
     a.tile:hover,a.tile:focus-visible{
       color:var(--text);
-      border-color:color-mix(in srgb,var(--accent) 48%,transparent);
+      border-color:color-mix(in srgb,var(--accent) 52%,transparent);
       background:var(--elevated);
-      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent),0 0 24px color-mix(in srgb,var(--accent) 14%,transparent);
+      box-shadow:inset 0 0 22px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent),0 0 28px color-mix(in srgb,var(--accent) 18%,transparent);
       outline:none;
     }
-    a.tile:active{transform:scale(.97)}
+    a.tile:active{transform:scale(.96)}
     a.tile .label{font-size:.74rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
-    section.live{margin:2rem 0 0}
-    section.live h2{
+    a.tile.is-hidden{display:none}
+    .recents{margin:1.4rem 0 0}
+    .recents h2,.live h2{
       font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;
       color:var(--subtle);margin:0 0 .7rem;font-weight:650;
     }
+    .recents[hidden]{display:none}
     ul.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
     ul.chips a{
       display:inline-flex;align-items:center;gap:.35rem;
@@ -132,6 +166,7 @@
       border-color:color-mix(in srgb,var(--accent) 50%,var(--border));outline:none;
     }
     ul.chips strong{color:var(--accent);font-weight:800}
+    .empty{color:var(--muted);font-size:.9rem;padding:.5rem 0 0}
     footer{margin:2rem 0 0;color:var(--subtle);font-size:.7rem}
     @media (min-width:640px){
       :root{--tile:7.6rem}
@@ -143,8 +178,7 @@
       a.tile{min-width:52px;min-height:52px}
     }
     @media (prefers-reduced-motion:reduce){
-      .lockup-the{text-shadow:none}
-      .lockup-room,a.tile svg{filter:none}
+      .lockup-the,.lockup-room{animation:none;text-shadow:none;filter:none}
       a.tile{transition:none}
     }
   </style>
@@ -174,6 +208,17 @@
         <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>
         <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
         <span class="cell"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="3" height="5" rx=".5"/><rect x="12" y="9" width="3" height="9" rx=".5"/><rect x="17" y="5" width="3" height="13" rx=".5"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></span>
       </div>
       <div class="vignette"></div>
       <div class="hero">
@@ -184,58 +229,68 @@
         </h1>
         <p class="sub">Kulibert Tech Ed · Chromebook door · aliases only</p>
       </div>
+      <label class="search">
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Search apps  ·  /" autocomplete="off" spellcheck="false"/>
+      </label>
     </section>
 
     <nav class="board" aria-label="Apps">
-      <a class="tile" href="https://tw.kulibert.net">
+      <a class="tile" data-id="techworks" href="https://tw.kulibert.net">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
         <span class="label">TechWorks</span>
       </a>
-      <a class="tile" href="https://baboo.kulibert.net">
+      <a class="tile" data-id="baboo" href="https://baboo.kulibert.net">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
         <span class="label">Baboo</span>
       </a>
-      <a class="tile" href="/coderized/">
+      <a class="tile" data-id="coderized" href="/coderized/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         <span class="label">Coderized</span>
       </a>
-      <a class="tile" href="/bertycad/">
+      <a class="tile" data-id="bertycad" href="/bertycad/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
         <span class="label">BertyCAD</span>
       </a>
-      <a class="tile" href="/bertybots/">
+      <a class="tile" data-id="bertybots" href="/bertybots/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
         <span class="label">Berty's Botz</span>
       </a>
-      <a class="tile" href="/paperlab/">
+      <a class="tile" data-id="paperlab" href="/paperlab/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
         <span class="label">PaperLab</span>
       </a>
-      <a class="tile" href="/logolab/">
+      <a class="tile" data-id="logolab" href="/logolab/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
         <span class="label">LogoLab</span>
       </a>
-      <a class="tile" href="/sprocket/index.html">
+      <a class="tile" data-id="sprocket" href="/sprocket/index.html">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
         <span class="label">Sprocket</span>
       </a>
-      <a class="tile" href="/den/">
+      <a class="tile" data-id="den" href="/den/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
         <span class="label">Bearcat Den</span>
       </a>
-      <a class="tile" href="/bistro/">
+      <a class="tile" data-id="bistro" href="/bistro/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
         <span class="label">Bearcat Bistro</span>
       </a>
-      <a class="tile" href="/housekit/">
+      <a class="tile" data-id="housekit" href="/housekit/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
         <span class="label">HouseKit</span>
       </a>
-      <a class="tile" href="/drift/">
+      <a class="tile" data-id="drift" href="/drift/">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></svg>
         <span class="label">Drift</span>
       </a>
     </nav>
+
+    <section class="recents" id="opened" hidden>
+      <h2>Opened here</h2>
+      <ul class="chips" id="opened-list"></ul>
+    </section>
 
     <section class="live" aria-label="Live chips">
       <h2>Live now</h2>
@@ -243,18 +298,124 @@
         <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.61</strong></a></li>
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
         <li><a href="/coderized/">Coderized <strong>CZ 1.4.0</strong></a></li>
-        <li><a href="/bertycad/">BertyCAD <strong>1.7.3</strong></a></li>
+        <li><a href="/bertycad/">BertyCAD <strong>Help</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.11.0</strong></a></li>
         <li><a href="/paperlab/">PaperLab <strong>live</strong></a></li>
         <li><a href="/logolab/">LogoLab <strong>live</strong></a></li>
-        <li><a href="/sprocket/index.html">Sprocket <strong>1.4.0</strong></a></li>
+        <li><a href="/sprocket/index.html">Sprocket <strong>1.3.0</strong></a></li>
         <li><a href="/den/">Bearcat Den <strong>live</strong></a></li>
         <li><a href="/bistro/">Bearcat Bistro <strong>live</strong></a></li>
         <li><a href="/housekit/">HouseKit <strong>live</strong></a></li>
         <li><a href="/drift/">Drift <strong>live</strong></a></li>
       </ul>
     </section>
-    <footer>Kulibert Tech Ed · Solvay Middle School · dark default</footer>
+    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · / search · 1–9 launch</footer>
   </div>
+  <script>
+    (function () {
+      var KEY = "tech-room-opened";
+      var tiles = Array.prototype.slice.call(document.querySelectorAll("a.tile"));
+      var input = document.getElementById("q");
+      var opened = document.getElementById("opened");
+      var list = document.getElementById("opened-list");
+
+      function read() {
+        try {
+          var raw = localStorage.getItem(KEY);
+          var parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function write(ids) {
+        try { localStorage.setItem(KEY, JSON.stringify(ids.slice(0, 6))); } catch (e) {}
+      }
+
+      function paint() {
+        var ids = read();
+        list.innerHTML = "";
+        var count = 0;
+        ids.forEach(function (id) {
+          var tile = tiles.filter(function (t) { return t.getAttribute("data-id") === id; })[0];
+          if (!tile) return;
+          var li = document.createElement("li");
+          var a = document.createElement("a");
+          a.href = tile.getAttribute("href");
+          a.textContent = tile.querySelector(".label").textContent;
+          a.addEventListener("click", function () { remember(id); });
+          li.appendChild(a);
+          list.appendChild(li);
+          count += 1;
+        });
+        opened.hidden = count === 0;
+      }
+
+      function remember(id) {
+        var ids = read().filter(function (item) { return item !== id; });
+        ids.unshift(id);
+        write(ids);
+        paint();
+      }
+
+      function filter() {
+        var q = (input.value || "").trim().toLowerCase();
+        var shown = 0;
+        tiles.forEach(function (tile) {
+          var label = tile.querySelector(".label").textContent.toLowerCase();
+          var hit = !q || label.indexOf(q) !== -1;
+          tile.classList.toggle("is-hidden", !hit);
+          if (hit) shown += 1;
+        });
+        var empty = document.getElementById("empty-filter");
+        if (!shown && q) {
+          if (!empty) {
+            empty = document.createElement("p");
+            empty.id = "empty-filter";
+            empty.className = "empty";
+            empty.textContent = "No apps match that search.";
+            document.querySelector(".board").after(empty);
+          }
+        } else if (empty) {
+          empty.remove();
+        }
+      }
+
+      tiles.forEach(function (tile) {
+        tile.addEventListener("click", function () {
+          remember(tile.getAttribute("data-id"));
+        });
+      });
+
+      input.addEventListener("input", filter);
+
+      document.addEventListener("keydown", function (event) {
+        var typing = event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA");
+        if ((event.key === "/" || ((event.key === "k") && (event.metaKey || event.ctrlKey))) && !typing) {
+          event.preventDefault();
+          input.focus();
+          return;
+        }
+        if (event.key === "Escape" && typing) {
+          input.blur();
+          return;
+        }
+        if (typing) return;
+        var n = Number(event.key);
+        if (n >= 1 && n <= 9) {
+          var visible = tiles.filter(function (tile) { return !tile.classList.contains("is-hidden"); });
+          var tile = visible[n - 1];
+          if (tile) {
+            event.preventDefault();
+            remember(tile.getAttribute("data-id"));
+            window.location.href = tile.getAttribute("href");
+          }
+        }
+      });
+
+      paint();
+    })();
+  </script>
 </body>
 </html>
