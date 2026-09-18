@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.4.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.5.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.4.0";
+const APP_VERSION = "0.5.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.4.0";
+const APP_CHIP = "BB 0.5.0";
 const APP_BUILT = "2026-09-17";
 
 const FORMAT = 1;
@@ -104,6 +104,10 @@ const PAPER = "#f4efe6";
 const CRATE = "#c45c26";
 const INK = "#1a1a1a";
 const OK = "#2f6f4e";
+const STEEL = "#3d4f5e";
+const CONCRETE = "#1a2a3a";
+const YARD = "#cbb89a";
+const PLY = "#e6d3b0";
 
 const WORLD_W = 28;
 const WORLD_H = 16;
@@ -139,7 +143,7 @@ const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 const HOWTO = [
   {
     title: "Ask the job",
-    body: "Every course has one output: park the Bot Core crate in the Drop Zone and keep it there for one second. Navy rectangle is the Shop Floor. That is the only place you build.",
+    body: "Every course has one output: park the Bot Core crate in the Staging Bay and keep it there for one second. Plywood rectangle is the Shop Floor. That is the only place you build.",
   },
   {
     title: "Imagine parts as a system",
@@ -745,12 +749,76 @@ function boot() {
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
-        toast("Drop Zone. Machine works. Improve or save.");
+        toast("Load secure. Rig works. Improve or save.");
         slowMo = true;
         pinnedStep = "improve";
         refreshMeta();
       }
     } else winT = 0;
+  }
+
+  function hatchRect(r, color, gapWorld) {
+    const x = wx(r.x), y = wy(r.y + r.h), w = wr(r.w), h = wr(r.h);
+    const step = Math.max(7, wr(gapWorld || 0.38));
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    for (let i = -h; i < w + h; i += step) {
+      ctx.beginPath();
+      ctx.moveTo(x + i, y);
+      ctx.lineTo(x + i - h, y + h);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function plyRect(r, fill) {
+    const x = wx(r.x), y = wy(r.y + r.h), w = wr(r.w), h = wr(r.h);
+    ctx.fillStyle = fill;
+    ctx.fillRect(x, y, w, h);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    ctx.strokeStyle = "rgba(26,26,26,0.14)";
+    ctx.lineWidth = 1;
+    const g = Math.max(5, wr(0.22));
+    for (let i = x + g; i < x + w; i += g) {
+      ctx.beginPath();
+      ctx.moveTo(i, y);
+      ctx.lineTo(i, y + h);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function hazardFrame(r) {
+    const x = wx(r.x), y = wy(r.y + r.h), w = wr(r.w), h = wr(r.h);
+    const t = Math.max(5, wr(0.14));
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.rect(x + t, y + t, Math.max(1, w - 2 * t), Math.max(1, h - 2 * t));
+    ctx.clip("evenodd");
+    const step = Math.max(8, wr(0.28));
+    for (let i = -h; i < w + h; i += step) {
+      ctx.fillStyle = (Math.floor(i / step) % 2 === 0) ? ORANGE : INK;
+      ctx.beginPath();
+      ctx.moveTo(x + i, y);
+      ctx.lineTo(x + i + step * 0.55, y);
+      ctx.lineTo(x + i + step * 0.55 - h, y + h);
+      ctx.lineTo(x + i - h, y + h);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(x, y, w, h);
+    ctx.strokeRect(x + t, y + t, Math.max(1, w - 2 * t), Math.max(1, h - 2 * t));
   }
 
   function drawCapsule(x1, y1, x2, y2, fill, stroke, dash) {
@@ -778,6 +846,48 @@ function boot() {
     ctx.restore();
   }
 
+  function drawIBeam(x1, y1, x2, y2) {
+    drawCapsule(x1, y1, x2, y2, STEEL, INK, false);
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    ctx.save();
+    ctx.translate(wx(mx), wy(my));
+    ctx.rotate(-ang);
+    const hw = wr(len / 2) - 2;
+    const hh = wr(BAR_T / 2);
+    ctx.strokeStyle = "rgba(244,239,230,0.35)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(-hw, -hh + 1);
+    ctx.lineTo(hw, -hh + 1);
+    ctx.moveTo(-hw, hh - 1);
+    ctx.lineTo(hw, hh - 1);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawCautionBar(x1, y1, x2, y2) {
+    drawCapsule(x1, y1, x2, y2, "rgba(244,185,66,0.28)", INK, false);
+    const ang = Math.atan2(y2 - y1, x2 - x1);
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    ctx.save();
+    ctx.translate(wx(mx), wy(my));
+    ctx.rotate(-ang);
+    const hw = wr(len / 2), hh = wr(BAR_T / 2);
+    ctx.beginPath();
+    ctx.rect(-hw, -hh, hw * 2, hh * 2);
+    ctx.clip();
+    const step = 9;
+    for (let i = -hw - hh; i < hw + hh; i += step) {
+      ctx.fillStyle = (Math.floor((i + hw) / step) % 2 === 0) ? ORANGE : INK;
+      ctx.fillRect(i, -hh, step * 0.62, hh * 2);
+    }
+    ctx.restore();
+    drawCapsule(x1, y1, x2, y2, null, INK, false);
+  }
+
   function drawWheel(x, y, a, type) {
     const r = wr(WHEEL_R);
     ctx.save();
@@ -785,15 +895,33 @@ function boot() {
     ctx.rotate(-a);
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.fillStyle = "#2a241c";
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
     ctx.fillStyle = PAPER;
     ctx.fill();
     ctx.lineWidth = 3;
     ctx.strokeStyle = NAVY;
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
     ctx.stroke();
+    ctx.strokeStyle = "rgba(26,26,26,0.35)";
+    ctx.lineWidth = 2;
+    for (let i = 0; i < 8; i++) {
+      const t = i * Math.PI / 4;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(t) * r * 0.82, Math.sin(t) * r * 0.82);
+      ctx.lineTo(Math.cos(t) * r * 0.96, Math.sin(t) * r * 0.96);
+      ctx.stroke();
+    }
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = NAVY;
+    ctx.fillStyle = ORANGE;
     ctx.fill();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
     ctx.strokeStyle = ORANGE;
     ctx.beginPath();
     ctx.moveTo(0, 0);
@@ -802,7 +930,7 @@ function boot() {
     ctx.stroke();
     const letter = type === "driveR" ? "R" : type === "driveL" ? "L" : "O";
     ctx.fillStyle = INK;
-    ctx.font = `700 ${Math.max(10, Math.round(r * 0.55))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `800 ${Math.max(10, Math.round(r * 0.55))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.rotate(a);
@@ -816,17 +944,38 @@ function boot() {
     ctx.translate(wx(x), wy(y));
     ctx.rotate(-a);
     ctx.fillStyle = CRATE;
+    ctx.fillRect(-s / 2, -s / 2, s, s);
+    ctx.strokeStyle = "rgba(26,26,26,0.28)";
+    ctx.lineWidth = 1;
+    for (let i = -2; i <= 2; i++) {
+      const px = (i / 2.4) * (s / 2);
+      ctx.beginPath();
+      ctx.moveTo(px, -s / 2);
+      ctx.lineTo(px, s / 2);
+      ctx.stroke();
+    }
     ctx.strokeStyle = INK;
     ctx.lineWidth = 2;
-    ctx.fillRect(-s / 2, -s / 2, s, s);
     ctx.strokeRect(-s / 2, -s / 2, s, s);
     ctx.beginPath();
     ctx.moveTo(-s / 2, 0);
     ctx.lineTo(s / 2, 0);
-    ctx.moveTo(-s / 6, -s / 2);
-    ctx.lineTo(-s / 6, s / 2);
-    ctx.moveTo(s / 6, -s / 2);
-    ctx.lineTo(s / 6, s / 2);
+    ctx.stroke();
+    const b = Math.max(3, s * 0.16);
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(-s / 2, -s / 2 + b);
+    ctx.lineTo(-s / 2, -s / 2);
+    ctx.lineTo(-s / 2 + b, -s / 2);
+    ctx.moveTo(s / 2, -s / 2 + b);
+    ctx.lineTo(s / 2, -s / 2);
+    ctx.lineTo(s / 2 - b, -s / 2);
+    ctx.moveTo(-s / 2, s / 2 - b);
+    ctx.lineTo(-s / 2, s / 2);
+    ctx.lineTo(-s / 2 + b, s / 2);
+    ctx.moveTo(s / 2, s / 2 - b);
+    ctx.lineTo(s / 2, s / 2);
+    ctx.lineTo(s / 2 - b, s / 2);
     ctx.stroke();
     ctx.restore();
   }
@@ -845,34 +994,48 @@ function boot() {
     ctx.restore();
   }
 
+  function stencil(text, x, y, color) {
+    ctx.fillStyle = color;
+    ctx.font = `800 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.fillText(text, x, y);
+  }
+
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = PAPER;
+    ctx.fillStyle = YARD;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "rgba(11,31,58,0.06)";
+    ctx.fillStyle = "rgba(11,31,58,0.08)";
     for (let x = 0; x <= WORLD_W; x++) {
       ctx.fillRect(wx(x), wy(WORLD_H), 1, wr(WORLD_H));
     }
+    for (let y = 0; y <= WORLD_H; y++) {
+      ctx.fillRect(wx(0), wy(y), wr(WORLD_W), 1);
+    }
 
     for (const s of doc.level.world || []) {
-      drawRectWorld(s, NAVY, "rgba(11,31,58,0.88)");
+      drawRectWorld(s, INK, CONCRETE);
+      hatchRect(s, "rgba(244,239,230,0.08)", 0.42);
     }
-    drawRectWorld(doc.level.shop, NAVY, "rgba(11,31,58,0.06)", true);
-    drawRectWorld(doc.level.drop, ORANGE, won ? "rgba(47,111,78,0.18)" : "rgba(232,119,34,0.08)");
-    ctx.strokeStyle = ORANGE;
-    ctx.lineWidth = 3;
-    ctx.strokeRect(wx(doc.level.drop.x) + 3, wy(doc.level.drop.y + doc.level.drop.h) + 3, wr(doc.level.drop.w) - 6, wr(doc.level.drop.h) - 6);
 
-    ctx.fillStyle = NAVY;
-    ctx.font = `700 ${Math.max(11, Math.round(12 * view.dpr))}px sans-serif`;
-    ctx.fillText("SHOP FLOOR", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 16);
-    ctx.fillStyle = ORANGE;
-    ctx.fillText("DROP ZONE", wx(doc.level.drop.x) + 6, wy(doc.level.drop.y + doc.level.drop.h) + 16);
+    plyRect(doc.level.shop, PLY);
+    ctx.setLineDash([8, 6]);
+    ctx.strokeStyle = NAVY;
+    ctx.lineWidth = 2;
+    ctx.strokeRect(wx(doc.level.shop.x), wy(doc.level.shop.y + doc.level.shop.h), wr(doc.level.shop.w), wr(doc.level.shop.h));
+    ctx.setLineDash([]);
+
+    const dropFill = won ? "rgba(47,111,78,0.22)" : "rgba(232,119,34,0.12)";
+    drawRectWorld(doc.level.drop, ORANGE, dropFill);
+    hazardFrame(doc.level.drop);
+
+    stencil("SHOP FLOOR", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
+    stencil("STAGING BAY", wx(doc.level.drop.x) + 10, wy(doc.level.drop.y + doc.level.drop.h) + 10, ORANGE);
 
     if (playing && trail.length > 1) {
       ctx.beginPath();
-      ctx.strokeStyle = "rgba(232,119,34,0.55)";
+      ctx.strokeStyle = "rgba(232,119,34,0.7)";
       ctx.lineWidth = 2;
       trail.forEach((p, i) => {
         if (i === 0) ctx.moveTo(wx(p.x), wy(p.y));
@@ -884,8 +1047,8 @@ function boot() {
     if (!playing) {
       for (const c of doc.level.cores || []) drawCrate(c.x, c.y, 0);
       for (const p of doc.machine.parts) {
-        if (p.type === "steel") drawCapsule(p.x1, p.y1, p.x2, p.y2, NAVY, INK, false);
-        if (p.type === "ghost") drawCapsule(p.x1, p.y1, p.x2, p.y2, "rgba(232,119,34,0.12)", ORANGE, true);
+        if (p.type === "steel") drawIBeam(p.x1, p.y1, p.x2, p.y2);
+        if (p.type === "ghost") drawCautionBar(p.x1, p.y1, p.x2, p.y2);
       }
       for (const p of doc.machine.parts) {
         if (p.type === "driveR" || p.type === "driveL" || p.type === "roller") drawWheel(p.x, p.y, p.a || 0, p.type);
@@ -901,7 +1064,8 @@ function boot() {
       }
       if (drag && drag.kind === "bar") {
         const ghost = drag.type === "ghost";
-        drawCapsule(drag.x1, drag.y1, drag.x2, drag.y2, ghost ? "rgba(232,119,34,0.12)" : "rgba(11,31,58,0.5)", ghost ? ORANGE : NAVY, ghost);
+        if (ghost) drawCautionBar(drag.x1, drag.y1, drag.x2, drag.y2);
+        else drawIBeam(drag.x1, drag.y1, drag.x2, drag.y2);
         if (drag.snap) {
           ctx.beginPath();
           ctx.strokeStyle = ORANGE;
@@ -944,8 +1108,8 @@ function boot() {
             : 1;
           const x1 = p.x - Math.cos(a) * len / 2, y1 = p.y - Math.sin(a) * len / 2;
           const x2 = p.x + Math.cos(a) * len / 2, y2 = p.y + Math.sin(a) * len / 2;
-          if (t === "steel") drawCapsule(x1, y1, x2, y2, NAVY, INK, false);
-          else drawCapsule(x1, y1, x2, y2, "rgba(232,119,34,0.12)", ORANGE, true);
+          if (t === "steel") drawIBeam(x1, y1, x2, y2);
+          else drawCautionBar(x1, y1, x2, y2);
         } else if (t === "core") drawCrate(p.x, p.y, a);
         else drawWheel(p.x, p.y, a, t);
       }
