@@ -1,1 +1,204 @@
-PLACEHOLDER
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#0B1220"/>
+  <title>The Tech Room · apps.kulibert.net</title>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#0B1220;
+      --panel:#132A5C;
+      --elevated:#1A3A6E;
+      --border:color-mix(in srgb,#3B82F6 35%,#0B1A40);
+      --text:#F7F9FF;
+      --muted:#B7C4EA;
+      --subtle:#7E8CB8;
+      --cerulean:#22D3EE;
+      --teal:#14B8A6;
+      --purple:#6D28D9;
+      --accent:var(--cerulean);
+      --logo-grad:linear-gradient(90deg,#22D3EE 0%,#14B8A6 45%,#6D28D9 100%);
+      --shine:inset 0 1px 0 color-mix(in srgb,#fff 12%,transparent);
+      --tile:6.75rem;
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
+      font-family:Outfit,Archivo,system-ui,-apple-system,"Segoe UI",sans-serif}
+    body{
+      padding:1.35rem 1rem 2.75rem;
+      background:
+        radial-gradient(ellipse 70% 50% at 12% 0%,color-mix(in srgb,var(--cerulean) 14%,transparent),transparent 70%),
+        radial-gradient(ellipse 60% 45% at 92% 8%,color-mix(in srgb,var(--purple) 12%,transparent),transparent 68%),
+        var(--bg);
+    }
+    header{max-width:56rem;margin:0 auto 1.5rem}
+    .brand{
+      display:inline-block;font-size:1.55rem;font-weight:800;margin:0 0 .35rem;
+      letter-spacing:.01em;
+      background:var(--logo-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    @supports not (background-clip:text){ .brand{color:var(--text)} }
+    h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+    .sub{margin:0;color:var(--muted);font-size:.95rem;line-height:1.45;max-width:34rem;font-weight:500}
+    .chip{
+      display:inline-flex;align-items:center;gap:.4rem;margin-top:.85rem;
+      padding:.3rem .75rem;border-radius:999px;
+      background:color-mix(in srgb,var(--panel) 88%,#000);
+      border:1px solid var(--border);color:var(--muted);font-size:.72rem;font-weight:600;
+      box-shadow:var(--shine);
+    }
+    .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--teal);display:inline-block}
+    .board{
+      max-width:56rem;margin:0 auto;
+      display:grid;gap:1rem;
+      grid-template-columns:repeat(auto-fill,minmax(var(--tile),1fr));
+      justify-items:center;
+    }
+    a.tile{
+      width:var(--tile);height:var(--tile);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
+      text-decoration:none;color:inherit;
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shine),0 14px 32px -24px #000;
+      transition:border-color .12s,background .12s,transform .12s;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+      min-width:56px;min-height:56px;
+    }
+    a.tile:hover,a.tile:focus-visible{
+      border-color:color-mix(in srgb,var(--cerulean) 55%,var(--border));
+      background:var(--elevated);
+      outline:none;
+    }
+    a.tile:active{transform:scale(.97)}
+    a.tile .glyph{
+      width:2.65rem;height:2.65rem;border-radius:14px;
+      display:grid;place-items:center;font-weight:800;font-size:1rem;
+      color:#0B1220;
+      box-shadow:var(--shine);
+    }
+    a.tile.tw .glyph{background:linear-gradient(135deg,var(--cerulean),#3B82F6)}
+    a.tile.baboo .glyph{background:linear-gradient(135deg,#60A5FA,#2563EB);color:#fff}
+    a.tile.code .glyph{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff}
+    a.tile.lab .glyph{background:linear-gradient(135deg,#14B8C2,#FFC130);color:#0B1220}
+    a.tile.bertycad .glyph{background:linear-gradient(135deg,#F59E0B,#EA580C);color:#1A0B00}
+    a.tile.botz .glyph{background:linear-gradient(135deg,#E87722,#0B1F3A);color:#F4EFE6}
+    a.tile.paper .glyph{background:linear-gradient(135deg,#7dccb4,#1f5c4e);color:#F6F3EC}
+    a.tile.logolab .glyph{background:linear-gradient(135deg,#0F766E,#F4E7D0);color:#0B1F1A}
+    a.tile.den .glyph{background:linear-gradient(135deg,#E87722,#163A7A);color:#F4EFE6}
+    a.tile.bistro .glyph{background:linear-gradient(135deg,#E05D32,#13243C);color:#FBF7F2}
+    a.tile.house .glyph{background:linear-gradient(135deg,#6B9CFF,#243044);color:#fff}
+    a.tile.drift .glyph{background:linear-gradient(135deg,#6EB5E0,#F4F7FB);color:#1C2838}
+    a.tile .label{font-size:.74rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    section.live{max-width:56rem;margin:2rem auto 0}
+    section.live h2{
+      font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;
+      color:var(--subtle);margin:0 0 .7rem;font-weight:650;
+    }
+    ul.chips{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.5rem}
+    ul.chips a{
+      display:inline-flex;align-items:center;gap:.35rem;
+      padding:.55rem .85rem;min-height:44px;border-radius:999px;
+      background:var(--panel);border:1px solid var(--border);color:inherit;
+      text-decoration:none;font-size:.82rem;font-weight:600;box-shadow:var(--shine);
+    }
+    ul.chips a:hover,ul.chips a:focus-visible{
+      border-color:color-mix(in srgb,var(--cerulean) 50%,var(--border));outline:none;
+    }
+    ul.chips strong{color:var(--cerulean);font-weight:800}
+    footer{max-width:56rem;margin:2rem auto 0;color:var(--subtle);font-size:.7rem}
+    @media (min-width:640px){
+      :root{--tile:7.5rem}
+      .brand{font-size:1.85rem}
+      a.tile .label{font-size:.8rem}
+    }
+    @media (max-width:400px){
+      :root{--tile:5.75rem}
+      a.tile{min-width:52px;min-height:52px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <p class="brand" aria-hidden="true">The Tech Room</p>
+    <h1>The Tech Room</h1>
+    <p class="sub">One door into classroom apps — TechWorks, Baboo, Coderized, BertyCAD, Berty's Botz, PaperLab, LogoLab, Sprocket, Bearcat Den, Bearcat Bistro, HouseKit, Drift. Chromebook-first ClassLink tiles.</p>
+    <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
+  </header>
+
+  <div class="board" role="navigation" aria-label="Apps">
+    <a class="tile tw" href="https://tw.kulibert.net">
+      <span class="glyph" aria-hidden="true">TW</span>
+      <span class="label">TechWorks</span>
+    </a>
+    <a class="tile baboo" href="https://baboo.kulibert.net">
+      <span class="glyph" aria-hidden="true">B</span>
+      <span class="label">Baboo</span>
+    </a>
+    <a class="tile code" href="https://coderized.kulibert.net">
+      <span class="glyph" aria-hidden="true">C</span>
+      <span class="label">Coderized</span>
+    </a>
+    <a class="tile bertycad" href="https://bertycad.kulibert.net">
+      <span class="glyph" aria-hidden="true">B</span>
+      <span class="label">BertyCAD</span>
+    </a>
+    <a class="tile botz" href="/bertybots/">
+      <span class="glyph" aria-hidden="true">BB</span>
+      <span class="label">Berty's Botz</span>
+    </a>
+    <a class="tile paper" href="/paperlab/">
+      <span class="glyph" aria-hidden="true">PL</span>
+      <span class="label">PaperLab</span>
+    </a>
+    <a class="tile logolab" href="/logolab/">
+      <span class="glyph" aria-hidden="true">LL</span>
+      <span class="label">LogoLab</span>
+    </a>
+    <a class="tile lab" href="/sprocket/index.html">
+      <span class="glyph" aria-hidden="true">S</span>
+      <span class="label">Sprocket</span>
+    </a>
+    <a class="tile den" href="https://den.kulibert.net">
+      <span class="glyph" aria-hidden="true">BD</span>
+      <span class="label">Bearcat Den</span>
+    </a>
+    <a class="tile bistro" href="/bistro/">
+      <span class="glyph" aria-hidden="true">BZ</span>
+      <span class="label">Bearcat Bistro</span>
+    </a>
+    <a class="tile house" href="/housekit/">
+      <span class="glyph" aria-hidden="true">HK</span>
+      <span class="label">HouseKit</span>
+    </a>
+    <a class="tile drift" href="/drift/">
+      <span class="glyph" aria-hidden="true">D</span>
+      <span class="label">Drift</span>
+    </a>
+  </div>
+
+  <section class="live" aria-label="Live chips">
+    <h2>Live now</h2>
+    <ul class="chips">
+      <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.61</strong></a></li>
+      <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
+      <li><a href="https://coderized.kulibert.net">Coderized <strong>CZ 1.4.0</strong></a></li>
+      <li><a href="https://bertycad.kulibert.net">BertyCAD <strong>Help</strong></a></li>
+      <li><a href="/bertybots/">Berty's Botz <strong>BB 0.5.1</strong></a></li>
+      <li><a href="/paperlab/">PaperLab <strong>live</strong></a></li>
+      <li><a href="/logolab/">LogoLab <strong>live</strong></a></li>
+      <li><a href="/sprocket/index.html">Sprocket <strong>1.3.0</strong></a></li>
+      <li><a href="https://den.kulibert.net">Bearcat Den <strong>live</strong></a></li>
+      <li><a href="/bistro/">Bearcat Bistro <strong>live</strong></a></li>
+      <li><a href="/housekit/">HouseKit <strong>live</strong></a></li>
+      <li><a href="/drift/">Drift <strong>live</strong></a></li>
+    </ul>
+  </section>
+  <footer>StyleBot family kit · FeatureBot shell · dark default · no fake changelog</footer>
+</body>
+</html>
