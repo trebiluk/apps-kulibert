@@ -821,56 +821,70 @@ export function boot() {
     ctx.save();
     ctx.translate(wx(x), wy(y));
     ctx.rotate(-a);
+
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.fillStyle = "#d9cbb3";
+    ctx.fillStyle = "#241f1a";
     ctx.fill();
+
+    const lugs = 12;
+    const span = (Math.PI * 2) / lugs;
+    const lugHalf = span * 0.32;
+    for (let i = 0; i < lugs; i++) {
+      const mid = i * span;
+      ctx.beginPath();
+      ctx.arc(0, 0, r * 0.99, mid - lugHalf, mid + lugHalf);
+      ctx.arc(0, 0, r * 0.78, mid + lugHalf, mid - lugHalf, true);
+      ctx.closePath();
+      ctx.fillStyle = i % 2 === 0 ? "#3d362e" : "#1a1714";
+      ctx.fill();
+    }
+
     ctx.beginPath();
-    ctx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.strokeStyle = "#12100e";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.72, 0, Math.PI * 2);
     ctx.fillStyle = PAPER;
     ctx.fill();
-    ctx.lineWidth = 3;
-    ctx.strokeStyle = NAVY;
-    ctx.beginPath();
-    ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = "rgba(26,26,26,0.35)";
+    ctx.strokeStyle = INK;
     ctx.lineWidth = 2;
-    for (let i = 0; i < 8; i++) {
-      const t = i * Math.PI / 4;
-      ctx.beginPath();
-      ctx.moveTo(Math.cos(t) * r * 0.82, Math.sin(t) * r * 0.82);
-      ctx.lineTo(Math.cos(t) * r * 0.96, Math.sin(t) * r * 0.96);
-      ctx.stroke();
-    }
+    ctx.stroke();
+
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.22, 0, Math.PI * 2);
-    ctx.fillStyle = ORANGE;
+    ctx.fillStyle = type === "roller" ? "#cfd6dc" : ORANGE;
     ctx.fill();
     ctx.strokeStyle = INK;
     ctx.lineWidth = 1.5;
     ctx.stroke();
-    ctx.strokeStyle = ORANGE;
-    ctx.beginPath();
-    ctx.moveTo(0, 0);
-    ctx.lineTo(r * 0.86, 0);
-    ctx.lineWidth = 3;
-    ctx.stroke();
+    if (type !== "roller") {
+      ctx.strokeStyle = ORANGE;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.lineTo(r * 0.62, 0);
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
+
     const letter = type === "driveR" ? "R" : type === "driveL" ? "L" : "O";
     ctx.fillStyle = INK;
-    ctx.font = `800 ${Math.max(10, Math.round(r * 0.55))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `800 ${Math.max(10, Math.round(r * 0.5))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.rotate(a);
     ctx.fillText(letter, 0, 1);
     if (type === "driveR" || type === "driveL") {
       const dir = type === "driveR" ? 1 : -1;
-      const tip = dir * r * 0.72;
-      const back = dir * r * 0.42;
+      const tip = dir * r * 0.68;
+      const back = dir * r * 0.4;
       ctx.beginPath();
       ctx.moveTo(tip, 0);
-      ctx.lineTo(back, -r * 0.22);
-      ctx.lineTo(back, r * 0.22);
+      ctx.lineTo(back, -r * 0.2);
+      ctx.lineTo(back, r * 0.2);
       ctx.closePath();
       ctx.fillStyle = "rgba(232,119,34,0.9)";
       ctx.fill();

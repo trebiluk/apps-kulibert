@@ -125,7 +125,14 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   box-shadow: inset 0 0 0 2px #1a140e, 0 2px 3px #0005;
 }
 .pic.drive {
-  background: radial-gradient(circle at 50% 50%, #e87722 0 22%, #efe6d4 23% 68%, #2c261e 70% 100%);
+  background:
+    radial-gradient(circle at 50% 50%, #e87722 0 18%, #efe6d4 19% 54%, transparent 55%),
+    repeating-conic-gradient(#3d362e 0 9deg, #1a1714 9deg 15deg);
+}
+.pic.roller {
+  background:
+    radial-gradient(circle at 50% 50%, #cfd6dc 0 16%, #efe6d4 17% 54%, transparent 55%),
+    repeating-conic-gradient(#3d362e 0 9deg, #1a1714 9deg 15deg);
 }
 .pic.drive::before {
   content: "";
@@ -154,9 +161,6 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 .pic.drive.r::after { content: "R"; }
 .pic.drive.l::after { content: "L"; }
-.pic.roller {
-  background: radial-gradient(circle at 50% 50%, #cfd6dc 0 20%, #efe6d4 21% 68%, #3a342c 70% 100%);
-}
 .pic.steel::before {
   content: "";
   width: 34px; height: 14px;
