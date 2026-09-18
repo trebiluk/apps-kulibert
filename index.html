@@ -3,100 +3,120 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="theme-color" content="#0B1220"/>
+  <meta name="theme-color" content="#050814"/>
   <title>The Tech Room · apps.kulibert.net</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
   <style>
     :root{
       color-scheme:dark;
-      --bg:#0B1220;
-      --panel:#132A5C;
-      --elevated:#1A3A6E;
-      --border:color-mix(in srgb,#3B82F6 35%,#0B1A40);
-      --text:#F7F9FF;
-      --muted:#B7C4EA;
-      --subtle:#7E8CB8;
-      --cerulean:#22D3EE;
-      --teal:#14B8A6;
-      --purple:#6D28D9;
-      --accent:var(--cerulean);
-      --logo-grad:linear-gradient(90deg,#22D3EE 0%,#14B8A6 45%,#6D28D9 100%);
-      --shine:inset 0 1px 0 color-mix(in srgb,#fff 12%,transparent);
-      --tile:6.75rem;
+      --bg:#050814;
+      --panel:#0b152c;
+      --elevated:#10203f;
+      --border:#16324f;
+      --text:#e8f7ff;
+      --muted:#8fb4c9;
+      --subtle:#5d7d96;
+      --accent:#22d3ee;
+      --live:#14b8a6;
+      --tile:6.9rem;
       --radius:18px;
     }
     *{box-sizing:border-box}
-    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);
-      font-family:Outfit,Archivo,system-ui,-apple-system,"Segoe UI",sans-serif}
-    body{
-      padding:1.35rem 1rem 2.75rem;
-      background:
-        radial-gradient(ellipse 70% 50% at 12% 0%,color-mix(in srgb,var(--cerulean) 14%,transparent),transparent 70%),
-        radial-gradient(ellipse 60% 45% at 92% 8%,color-mix(in srgb,var(--purple) 12%,transparent),transparent 68%),
-        var(--bg);
+    html,body{
+      margin:0;min-height:100%;background:var(--bg);color:var(--text);
+      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;
     }
-    header{max-width:56rem;margin:0 auto 1.5rem}
-    .brand{
-      display:inline-block;font-size:1.55rem;font-weight:800;margin:0 0 .35rem;
-      letter-spacing:.01em;
-      background:var(--logo-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+    body{padding:1.1rem .9rem 2.5rem}
+    .wrap{max-width:56rem;margin:0 auto}
+    .poster{
+      position:relative;overflow:hidden;
+      border:1px solid var(--border);border-radius:28px;min-height:18rem;
     }
-    @supports not (background-clip:text){ .brand{color:var(--text)} }
-    h1{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
-    .sub{margin:0;color:var(--muted);font-size:.95rem;line-height:1.45;max-width:34rem;font-weight:500}
+    .field{
+      position:absolute;inset:0;display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:.7rem;padding:.9rem;pointer-events:none;
+    }
+    @media (min-width:640px){
+      .poster{min-height:24rem}
+      .field{grid-template-columns:repeat(7,minmax(0,1fr));gap:.85rem;padding:1.15rem 1.25rem}
+    }
+    .cell{
+      aspect-ratio:1;display:grid;place-items:center;border-radius:16px;
+      background:var(--panel);
+      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
+      color:color-mix(in srgb,var(--accent) 72%,transparent);
+    }
+    .cell svg{width:42%;height:42%}
+    .vignette{
+      position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse 64% 68% at 50% 46%,transparent 0%,color-mix(in srgb,var(--bg) 28%,transparent) 58%,var(--bg) 86%);
+    }
+    .hero{
+      position:relative;z-index:1;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      min-height:18rem;padding:2rem .75rem 1.75rem;text-align:center;
+    }
+    @media (min-width:640px){.hero{min-height:24rem;padding:2.75rem 1rem}}
     .chip{
-      display:inline-flex;align-items:center;gap:.4rem;margin-top:.85rem;
+      display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.1rem;
       padding:.3rem .75rem;border-radius:999px;
-      background:color-mix(in srgb,var(--panel) 88%,#000);
-      border:1px solid var(--border);color:var(--muted);font-size:.72rem;font-weight:600;
-      box-shadow:var(--shine);
+      background:color-mix(in srgb,var(--panel) 88%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
+      color:var(--muted);font-size:.72rem;font-weight:600;
     }
-    .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--teal);display:inline-block}
+    .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live);display:inline-block}
+    h1{margin:0}
+    .lockup-the{
+      display:block;font-weight:800;letter-spacing:.22em;line-height:1;
+      font-size:clamp(1.85rem,7vw,4.5rem);color:var(--accent);
+      text-shadow:0 0 16px color-mix(in srgb,var(--accent) 75%,transparent),0 0 42px color-mix(in srgb,var(--accent) 40%,transparent);
+    }
+    .lockup-room{
+      display:block;margin-top:.2rem;font-weight:800;letter-spacing:-.045em;line-height:.86;
+      font-size:clamp(2.7rem,12vw,7.4rem);
+      background:linear-gradient(180deg,#c9fdff 0%,#22d3ee 46%,#14b8a6 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 0 22px color-mix(in srgb,var(--accent) 55%,transparent));
+    }
+    .sub{margin:.9rem 0 0;max-width:28rem;color:var(--muted);font-size:.95rem;line-height:1.45;font-weight:500}
     .board{
-      max-width:56rem;margin:0 auto;
-      display:grid;gap:1rem;
+      margin:1.35rem 0 0;
+      display:grid;gap:.85rem;
       grid-template-columns:repeat(auto-fill,minmax(var(--tile),1fr));
       justify-items:center;
     }
     a.tile{
       width:var(--tile);height:var(--tile);
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
-      text-decoration:none;color:inherit;
+      text-decoration:none;color:var(--muted);
       background:var(--panel);
-      border:1px solid var(--border);
+      border:1px solid color-mix(in srgb,var(--accent) 18%,transparent);
       border-radius:var(--radius);
-      box-shadow:var(--shine),0 14px 32px -24px #000;
-      transition:border-color .12s,background .12s,transform .12s;
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 6%,transparent);
+      transition:border-color .15s,background .15s,box-shadow .15s,transform .15s,color .15s;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
       min-width:56px;min-height:56px;
     }
+    a.tile svg{
+      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.5;
+      stroke-linecap:round;stroke-linejoin:round;
+      filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 45%,transparent));
+    }
     a.tile:hover,a.tile:focus-visible{
-      border-color:color-mix(in srgb,var(--cerulean) 55%,var(--border));
+      color:var(--text);
+      border-color:color-mix(in srgb,var(--accent) 48%,transparent);
       background:var(--elevated);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent),0 0 24px color-mix(in srgb,var(--accent) 14%,transparent);
       outline:none;
     }
     a.tile:active{transform:scale(.97)}
-    a.tile .glyph{
-      width:2.65rem;height:2.65rem;border-radius:14px;
-      display:grid;place-items:center;font-weight:800;font-size:1rem;
-      color:#0B1220;
-      box-shadow:var(--shine);
-    }
-    a.tile.tw .glyph{background:linear-gradient(135deg,var(--cerulean),#3B82F6)}
-    a.tile.baboo .glyph{background:linear-gradient(135deg,#60A5FA,#2563EB);color:#fff}
-    a.tile.code .glyph{background:linear-gradient(135deg,var(--teal),var(--purple));color:#fff}
-    a.tile.lab .glyph{background:linear-gradient(135deg,#14B8C2,#FFC130);color:#0B1220}
-    a.tile.bertycad .glyph{background:linear-gradient(135deg,#F59E0B,#EA580C);color:#1A0B00}
-    a.tile.botz .glyph{background:linear-gradient(135deg,#E87722,#0B1F3A);color:#F4EFE6}
-    a.tile.paper .glyph{background:linear-gradient(135deg,#7dccb4,#1f5c4e);color:#F6F3EC}
-    a.tile.logolab .glyph{background:transparent;padding:0;overflow:hidden}
-    a.tile.logolab .glyph svg{width:100%;height:100%;display:block}
-    a.tile.den .glyph{background:linear-gradient(135deg,#E87722,#163A7A);color:#F4EFE6}
-    a.tile.bistro .glyph{background:linear-gradient(135deg,#E05D32,#13243C);color:#FBF7F2}
-    a.tile.house .glyph{background:linear-gradient(135deg,#6B9CFF,#243044);color:#fff}
-    a.tile.drift .glyph{background:linear-gradient(135deg,#6EB5E0,#F4F7FB);color:#1C2838}
     a.tile .label{font-size:.74rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
-    section.live{max-width:56rem;margin:2rem auto 0}
+    section.live{margin:2rem 0 0}
     section.live h2{
       font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;
       color:var(--subtle);margin:0 0 .7rem;font-weight:650;
@@ -106,124 +126,135 @@
       display:inline-flex;align-items:center;gap:.35rem;
       padding:.55rem .85rem;min-height:44px;border-radius:999px;
       background:var(--panel);border:1px solid var(--border);color:inherit;
-      text-decoration:none;font-size:.82rem;font-weight:600;box-shadow:var(--shine);
+      text-decoration:none;font-size:.82rem;font-weight:600;
     }
     ul.chips a:hover,ul.chips a:focus-visible{
-      border-color:color-mix(in srgb,var(--cerulean) 50%,var(--border));outline:none;
+      border-color:color-mix(in srgb,var(--accent) 50%,var(--border));outline:none;
     }
-    ul.chips strong{color:var(--cerulean);font-weight:800}
-    footer{max-width:56rem;margin:2rem auto 0;color:var(--subtle);font-size:.7rem}
+    ul.chips strong{color:var(--accent);font-weight:800}
+    footer{margin:2rem 0 0;color:var(--subtle);font-size:.7rem}
     @media (min-width:640px){
-      :root{--tile:7.5rem}
-      .brand{font-size:1.85rem}
+      :root{--tile:7.6rem}
       a.tile .label{font-size:.8rem}
+      a.tile svg{width:2.4rem;height:2.4rem}
     }
     @media (max-width:400px){
-      :root{--tile:5.75rem}
+      :root{--tile:5.85rem}
       a.tile{min-width:52px;min-height:52px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      .lockup-the{text-shadow:none}
+      .lockup-room,a.tile svg{filter:none}
+      a.tile{transition:none}
     }
   </style>
 </head>
 <body>
-  <header>
-    <p class="brand" aria-hidden="true">The Tech Room</p>
-    <h1>The Tech Room</h1>
-    <p class="sub">One door into classroom apps — TechWorks, Baboo, Coderized, BertyCAD, Berty's Botz, PaperLab, LogoLab, Sprocket, Bearcat Den, Bearcat Bistro, HouseKit, Drift. Chromebook-first ClassLink tiles.</p>
-    <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
-  </header>
+  <div class="wrap">
+    <section class="poster" aria-label="The Tech Room">
+      <div class="field" aria-hidden="true">
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M10 2v7.31"/><path d="M14 9.3V1.99"/><path d="M8.5 2h7"/><path d="M14 9.3a6.5 6.5 0 1 1-4 0"/><path d="M5.52 16h12.96"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><rect x="7" y="13" width="3" height="5" rx=".5"/><rect x="12" y="9" width="3" height="9" rx=".5"/><rect x="17" y="5" width="3" height="13" rx=".5"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg></span>
+        <span class="cell"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></span>
+      </div>
+      <div class="vignette"></div>
+      <div class="hero">
+        <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
+        <h1>
+          <span class="lockup-the">THE</span>
+          <span class="lockup-room">TECH ROOM</span>
+        </h1>
+        <p class="sub">Kulibert Tech Ed · Chromebook door · aliases only</p>
+      </div>
+    </section>
 
-  <div class="board" role="navigation" aria-label="Apps">
-    <a class="tile tw" href="https://tw.kulibert.net">
-      <span class="glyph" aria-hidden="true">TW</span>
-      <span class="label">TechWorks</span>
-    </a>
-    <a class="tile baboo" href="https://baboo.kulibert.net">
-      <span class="glyph" aria-hidden="true">B</span>
-      <span class="label">Baboo</span>
-    </a>
-    <a class="tile code" href="/coderized/">
-      <span class="glyph" aria-hidden="true">C</span>
-      <span class="label">Coderized</span>
-    </a>
-    <a class="tile bertycad" href="/bertycad/">
-      <span class="glyph" aria-hidden="true">B</span>
-      <span class="label">BertyCAD</span>
-    </a>
-    <a class="tile botz" href="/bertybots/">
-      <span class="glyph" aria-hidden="true">BB</span>
-      <span class="label">Berty's Botz</span>
-    </a>
-    <a class="tile paper" href="/paperlab/">
-      <span class="glyph" aria-hidden="true">PL</span>
-      <span class="label">PaperLab</span>
-    </a>
-    <a class="tile logolab" href="https://logolab-rho.vercel.app/">
-      <span class="glyph" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#1f4f4a"/>
-  <path fill="#f3efe6" fill-rule="evenodd" d="
-    M12.6 11
-    H34
-    C48.4 11 54.6 17.6 54.6 25.6
-    C54.6 32.2 48.8 35.4 36.2 36.2
-    C50.8 37.2 58 42.4 58 49
-    C58 56.2 49.4 53.6 33.6 53
-    H12.6
-    Z
-    M36.8 16.2
-    C41 16.2 44.4 19.6 44.4 23.8
-    C44.4 28 41 31.4 36.8 31.4
-    C32.6 31.4 29.2 28 29.2 23.8
-    C29.2 19.6 32.6 16.2 36.8 16.2
-    Z
-    M39 38.4
-    C44 38.4 47.8 41.6 47.8 45.6
-    C47.8 49.6 44 52.8 39 52.8
-    C34 52.8 30.2 49.6 30.2 45.6
-    C30.2 41.6 34 38.4 39 38.4
-    Z"/>
-  <path fill="#c9a24a" d="M47.4 33.2 L50.6 36.2 L47.4 39.2 L44.2 36.2 Z"/>
-</svg></span>
-      <span class="label">LogoLab</span>
-    </a>
-    <a class="tile lab" href="/sprocket/index.html">
-      <span class="glyph" aria-hidden="true">S</span>
-      <span class="label">Sprocket</span>
-    </a>
-    <a class="tile den" href="/den/">
-      <span class="glyph" aria-hidden="true">BD</span>
-      <span class="label">Bearcat Den</span>
-    </a>
-    <a class="tile bistro" href="/bistro/">
-      <span class="glyph" aria-hidden="true">BZ</span>
-      <span class="label">Bearcat Bistro</span>
-    </a>
-    <a class="tile house" href="/housekit/">
-      <span class="glyph" aria-hidden="true">HK</span>
-      <span class="label">HouseKit</span>
-    </a>
-    <a class="tile drift" href="/drift/">
-      <span class="glyph" aria-hidden="true">D</span>
-      <span class="label">Drift</span>
-    </a>
+    <nav class="board" aria-label="Apps">
+      <a class="tile" href="https://tw.kulibert.net">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <span class="label">TechWorks</span>
+      </a>
+      <a class="tile" href="https://baboo.kulibert.net">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <span class="label">Baboo</span>
+      </a>
+      <a class="tile" href="/coderized/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <span class="label">Coderized</span>
+      </a>
+      <a class="tile" href="/bertycad/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <span class="label">BertyCAD</span>
+      </a>
+      <a class="tile" href="/bertybots/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+        <span class="label">Berty's Botz</span>
+      </a>
+      <a class="tile" href="/paperlab/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span class="label">PaperLab</span>
+      </a>
+      <a class="tile" href="https://logolab-rho.vercel.app/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        <span class="label">LogoLab</span>
+      </a>
+      <a class="tile" href="/sprocket/index.html">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <span class="label">Sprocket</span>
+      </a>
+      <a class="tile" href="/den/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <span class="label">Bearcat Den</span>
+      </a>
+      <a class="tile" href="/bistro/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+        <span class="label">Bearcat Bistro</span>
+      </a>
+      <a class="tile" href="/housekit/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span class="label">HouseKit</span>
+      </a>
+      <a class="tile" href="/drift/">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></svg>
+        <span class="label">Drift</span>
+      </a>
+    </nav>
+
+    <section class="live" aria-label="Live chips">
+      <h2>Live now</h2>
+      <ul class="chips">
+        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.61</strong></a></li>
+        <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
+        <li><a href="/coderized/">Coderized <strong>CZ 1.4.0</strong></a></li>
+        <li><a href="/bertycad/">BertyCAD <strong>Help</strong></a></li>
+        <li><a href="/bertybots/">Berty's Botz <strong>BB 0.9.0</strong></a></li>
+        <li><a href="/paperlab/">PaperLab <strong>live</strong></a></li>
+        <li><a href="https://logolab-rho.vercel.app/">LogoLab <strong>live</strong></a></li>
+        <li><a href="/sprocket/index.html">Sprocket <strong>1.3.0</strong></a></li>
+        <li><a href="/den/">Bearcat Den <strong>live</strong></a></li>
+        <li><a href="/bistro/">Bearcat Bistro <strong>live</strong></a></li>
+        <li><a href="/housekit/">HouseKit <strong>live</strong></a></li>
+        <li><a href="/drift/">Drift <strong>live</strong></a></li>
+      </ul>
+    </section>
+    <footer>Kulibert Tech Ed · Solvay Middle School · dark default</footer>
   </div>
-
-  <section class="live" aria-label="Live chips">
-    <h2>Live now</h2>
-    <ul class="chips">
-      <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.61</strong></a></li>
-      <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
-      <li><a href="/coderized/">Coderized <strong>CZ 1.4.0</strong></a></li>
-      <li><a href="/bertycad/">BertyCAD <strong>Help</strong></a></li>
-      <li><a href="/bertybots/">Berty's Botz <strong>BB 0.9.0</strong></a></li>
-      <li><a href="/paperlab/">PaperLab <strong>live</strong></a></li>
-      <li><a href="https://logolab-rho.vercel.app/">LogoLab <strong>live</strong></a></li>
-      <li><a href="/sprocket/index.html">Sprocket <strong>1.3.0</strong></a></li>
-      <li><a href="/den/">Bearcat Den <strong>live</strong></a></li>
-      <li><a href="/bistro/">Bearcat Bistro <strong>live</strong></a></li>
-      <li><a href="/housekit/">HouseKit <strong>live</strong></a></li>
-      <li><a href="/drift/">Drift <strong>live</strong></a></li>
-    </ul>
-  </section>
-  <footer>StyleBot family kit · FeatureBot shell · dark default · no fake changelog</footer>
 </body>
 </html>
