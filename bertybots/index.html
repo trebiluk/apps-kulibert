@@ -9,7 +9,7 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.10.1 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.11.0 — Solvay Tech Ed</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
@@ -116,13 +116,18 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.10.1</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.11.0</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
             <i id="xp-fill"></i>
           </div>
           <span class="xp-n" id="xp-n">0 XP</span>
+        </div>
+        <div class="heat" id="heat" title="Crates parked this period. Class count, not a kid list. No names.">
+          <span class="heat-k">Heat</span>
+          <strong id="heat-n">0</strong>
+          <span class="heat-u">parked</span>
         </div>
         <select class="btn hud-pick" id="level-pick" aria-label="Starter course">
           <option value="open">Open Shop</option>
@@ -144,6 +149,10 @@
       </header>
       <div class="stage">
         <canvas id="c"></canvas>
+        <div class="role" id="role" role="group" aria-label="Pair role">
+          <button class="role-btn on" id="role-builder" type="button" aria-pressed="true">Builder</button>
+          <button class="role-btn" id="role-observer" type="button" aria-pressed="false">Observer</button>
+        </div>
         <div class="lesson" id="lesson" hidden>
           <p class="lesson-kicker">Lesson · Measure</p>
           <ol>
@@ -198,6 +207,7 @@
               <button class="btn" id="btn-view">Reset view</button>
               <button class="btn" id="btn-undo" title="Z">Undo</button>
               <button class="btn" id="btn-clear">Clear machine</button>
+              <button class="btn" id="btn-period">New period</button>
             </div>
             <div class="row">
               <a class="btn ghost" href="teacher.html">Teacher</a>
