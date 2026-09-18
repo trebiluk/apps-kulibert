@@ -4,26 +4,6 @@
   "outputDirectory": ".",
   "redirects": [
     {
-      "source": "/paperlab",
-      "destination": "https://paperlab-one.vercel.app/",
-      "permanent": false
-    },
-    {
-      "source": "/paperlab/",
-      "destination": "https://paperlab-one.vercel.app/",
-      "permanent": false
-    },
-    {
-      "source": "/drift",
-      "destination": "https://drift-sigma-seven.vercel.app/",
-      "permanent": false
-    },
-    {
-      "source": "/drift/",
-      "destination": "https://drift-sigma-seven.vercel.app/",
-      "permanent": false
-    },
-    {
       "source": "/lunch",
       "destination": "/bistro/",
       "permanent": false
@@ -35,6 +15,42 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/paperlab",
+      "destination": "https://paperlab-one.vercel.app/"
+    },
+    {
+      "source": "/paperlab/",
+      "destination": "https://paperlab-one.vercel.app/"
+    },
+    {
+      "source": "/paperlab/:path*",
+      "destination": "https://paperlab-one.vercel.app/:path*"
+    },
+    {
+      "source": "/drift",
+      "destination": "https://drift-sigma-seven.vercel.app/"
+    },
+    {
+      "source": "/drift/",
+      "destination": "https://drift-sigma-seven.vercel.app/"
+    },
+    {
+      "source": "/drift/:path*",
+      "destination": "https://drift-sigma-seven.vercel.app/:path*"
+    },
+    {
+      "source": "/logolab",
+      "destination": "https://logolab-rho.vercel.app/"
+    },
+    {
+      "source": "/logolab/",
+      "destination": "https://logolab-rho.vercel.app/"
+    },
+    {
+      "source": "/logolab/:path*",
+      "destination": "https://logolab-rho.vercel.app/:path*"
+    },
     {
       "source": "/bistro",
       "destination": "https://bearcat-bistro.vercel.app/bistro/"
