@@ -12,6 +12,21 @@
       "source": "/lunch/",
       "destination": "/bistro/",
       "permanent": false
+    },
+    {
+      "source": "/logolab",
+      "destination": "https://logolab-rho.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/logolab/",
+      "destination": "https://logolab-rho.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/logolab/:path*",
+      "destination": "https://logolab-rho.vercel.app/:path*",
+      "permanent": false
     }
   ],
   "rewrites": [
@@ -38,18 +53,6 @@
     {
       "source": "/drift/:path*",
       "destination": "https://drift-sigma-seven.vercel.app/:path*"
-    },
-    {
-      "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/"
-    },
-    {
-      "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/"
-    },
-    {
-      "source": "/logolab/:path*",
-      "destination": "https://logolab-rho.vercel.app/:path*"
     },
     {
       "source": "/coderized",
