@@ -41,6 +41,7 @@ const CAT = { WORLD: 0x0001, STEEL: 0x0002, GHOST: 0x0004, WHEEL: 0x0008, CORE: 
 
 const BUILTIN = [
   { id: "open", label: "Open Shop", url: null },
+  { id: "measure", label: "Measure", url: "levels/measure.json" },
   { id: "roll", label: "Roll Out", url: "levels/roll-out.json" },
   { id: "curb", label: "Up the Curb", url: "levels/up-the-curb.json" },
   { id: "pit", label: "Mind the Pit", url: "levels/mind-the-pit.json" },
@@ -79,7 +80,13 @@ const RANKS = [
   { name: "Shop tech", at: 180 },
 ];
 
-const PAR = { open: 5, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12 };
+const PAR = { open: 5, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12, measure: 4 };
+
+const MEASURE_JOBS = [
+  { id: "shop", label: "Shop Floor width", get: (d) => d.level.shop.w },
+  { id: "drop", label: "Drop Zone width", get: (d) => d.level.drop.w },
+  { id: "gap", label: "Gap from Shop Floor to Drop Zone", get: (d) => d.level.drop.x - (d.level.shop.x + d.level.shop.w) },
+];
 
 const GUIDE = {
   open: {
@@ -90,6 +97,15 @@ const GUIDE = {
     test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
     improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
     system: "Open Shop is a straight process path. Input energy on the floor, process through the machine, output the crate into the zone.",
+  },
+  measure: {
+    ask: "Ask: how wide is the Shop Floor, the Drop Zone, and the gap between them? Count squares. 1 square = 1 unit.",
+    imagine: "Imagine a tape along a grid line — not a diagonal unless the job is a diagonal.",
+    plan: "Plan: Tape tool. Click two corners. Log all three lengths.",
+    create: "Create is not the job today. Measuring is. You may still build after the three logs.",
+    test: "Test your count: if the tape says 8.0, you counted 8 squares.",
+    improve: "Improve: re-tape if you were off. Corners, not middles.",
+    system: "Measure — Input: grid. Process: tape two points. Output: three lengths. Feedback: the readout. Constraint: 1 square = 1 unit.",
   },
   roll: {
     ask: "Ask: Roll Out. Flat floor. Crate starts on the Shop Floor. Drop Zone is to the right.",
@@ -249,6 +265,9 @@ export function boot() {
   let pinnedStep = null;
   let guideOn = true;
   let howtoIndex = 0;
+  let tapeA = null;
+  let tapeB = null;
+  let measureDone = {};
   let progress = { xp: 0, wins: {} };
   try {
     const raw = localStorage.getItem("bb-progress-v1");
@@ -349,7 +368,12 @@ export function boot() {
     if (id) courseId = id;
     everTested = false;
     pinnedStep = null;
+    tapeA = null;
+    tapeB = null;
+    if (courseId !== "measure") measureDone = {};
+    else measureDone = (progress.wins.measure && progress.wins.measure.jobs) ? { ...progress.wins.measure.jobs } : {};
     refreshGuide();
+    refreshLesson();
   }
 
   function showHowto(i) {
@@ -401,6 +425,70 @@ export function boot() {
       bar.setAttribute("aria-valuemax", String(next ? next.at : rank.at + span));
       bar.setAttribute("aria-label", `${rank.name}, ${progress.xp} XP`);
     }
+  }
+
+  function isMeasure() { return courseId === "measure"; }
+
+  function refreshLesson() {
+    const card = document.getElementById("lesson");
+    const tapeBtn = document.getElementById("tape-tool");
+    if (tapeBtn) tapeBtn.hidden = !isMeasure();
+    if (!card) return;
+    card.hidden = !isMeasure();
+    if (!isMeasure()) return;
+    card.querySelectorAll("[data-job]").forEach((li) => {
+      const id = li.getAttribute("data-job");
+      li.classList.toggle("ok", !!measureDone[id]);
+    });
+    const read = document.getElementById("tape-readout");
+    if (read) {
+      const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
+      read.textContent = n >= 3
+        ? "Three logs in. You can still build."
+        : "Tape: click two corners on a grid line. 1 square = 1 unit.";
+    }
+  }
+
+  function tapeLength(a, b) {
+    const dx = Math.abs(b.x - a.x);
+    const dy = Math.abs(b.y - a.y);
+    if (dy < 0.35) return dx;
+    if (dx < 0.35) return dy;
+    return Math.hypot(dx, dy);
+  }
+
+  function scoreTape() {
+    if (!tapeA || !tapeB || !isMeasure()) return;
+    const len = tapeLength(tapeA, tapeB);
+    const readout = document.getElementById("tape-readout");
+    if (readout) readout.textContent = `${len.toFixed(1)} units`;
+    let hit = null;
+    for (const job of MEASURE_JOBS) {
+      if (measureDone[job.id]) continue;
+      const target = job.get(doc);
+      if (Math.abs(len - target) <= 0.35) hit = job;
+    }
+    if (!hit) {
+      toast(`${len.toFixed(1)} units. Not a job yet — try a width or the gap.`);
+      return;
+    }
+    measureDone[hit.id] = true;
+    const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
+    const rec = progress.wins.measure || { bestParts: 99, n: 0, jobs: {} };
+    rec.jobs = { ...measureDone };
+    progress.wins.measure = rec;
+    if (n >= 3 && !rec.complete) {
+      rec.complete = true;
+      rec.n = (rec.n || 0) + 1;
+      progress.xp += 18;
+      saveProgress();
+      refreshRank();
+      toast("Measure lesson done. +18 XP. Three lengths logged.");
+    } else {
+      saveProgress();
+      toast(`${hit.label}: ${len.toFixed(1)} units. Logged ${n} / 3.`);
+    }
+    refreshLesson();
   }
 
   function awardWin() {
@@ -472,6 +560,7 @@ export function boot() {
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
     refreshGuide();
     refreshRank();
+    refreshLesson();
   }
 
   function pushHist() {
@@ -1193,10 +1282,91 @@ export function boot() {
     }
   }
 
+  function drawGraphPaper() {
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(wx(0), wy(WORLD_H), wr(WORLD_W), wr(WORLD_H));
+    ctx.clip();
+    for (let x = 0; x <= WORLD_W; x++) {
+      ctx.strokeStyle = x % 5 === 0 ? "rgba(18,48,73,0.38)" : "rgba(18,48,73,0.14)";
+      ctx.lineWidth = x % 5 === 0 ? 1.6 : 1;
+      ctx.beginPath();
+      ctx.moveTo(wx(x) + 0.5, wy(0));
+      ctx.lineTo(wx(x) + 0.5, wy(WORLD_H));
+      ctx.stroke();
+    }
+    for (let y = 0; y <= WORLD_H; y++) {
+      ctx.strokeStyle = y % 5 === 0 ? "rgba(18,48,73,0.38)" : "rgba(18,48,73,0.14)";
+      ctx.lineWidth = y % 5 === 0 ? 1.6 : 1;
+      ctx.beginPath();
+      ctx.moveTo(wx(0), wy(y) + 0.5);
+      ctx.lineTo(wx(WORLD_W), wy(y) + 0.5);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(18,48,73,0.78)";
+    ctx.font = `700 ${Math.max(10, Math.round(11 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    for (let x = 0; x <= WORLD_W; x += 2) {
+      ctx.fillText(String(x), wx(x), wy(1.2) + 4);
+    }
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    for (let y = 2; y <= 12; y += 2) {
+      ctx.fillText(String(y), wx(0.45), wy(y));
+    }
+    ctx.restore();
+    ctx.fillStyle = "rgba(42,46,51,0.82)";
+    ctx.fillRect(wx(0.4), wy(WORLD_H - 0.35), wr(6.6), wr(0.7));
+    ctx.fillStyle = "#f5c400";
+    ctx.font = `800 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillText("1 square = 1 unit", wx(0.55), wy(WORLD_H - 0.7));
+  }
+
+  function drawTape() {
+    const a = tapeA;
+    const b = tapeB || (tool === "tape" ? hover : null);
+    if (!a) return;
+    const bx = b ? b.x : a.x;
+    const by = b ? b.y : a.y;
+    ctx.save();
+    ctx.strokeStyle = "#f5c400";
+    ctx.lineWidth = 3;
+    ctx.setLineDash([7, 4]);
+    ctx.beginPath();
+    ctx.moveTo(wx(a.x), wy(a.y));
+    ctx.lineTo(wx(bx), wy(by));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "#f5c400";
+    ctx.beginPath();
+    ctx.arc(wx(a.x), wy(a.y), 5, 0, Math.PI * 2);
+    ctx.fill();
+    if (b) {
+      ctx.beginPath();
+      ctx.arc(wx(bx), wy(by), 5, 0, Math.PI * 2);
+      ctx.fill();
+      const len = tapeLength(a, b);
+      const mx = wx((a.x + bx) / 2);
+      const my = wy((a.y + by) / 2) - 10;
+      ctx.fillStyle = "#2a2e33";
+      ctx.fillRect(mx - 28, my - 10, 56, 18);
+      ctx.fillStyle = "#f5c400";
+      ctx.font = `800 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(`${len.toFixed(1)} u`, mx, my);
+    }
+    ctx.restore();
+  }
+
   function draw() {
     const now = performance.now();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawShopSet(now);
+    if (isMeasure()) drawGraphPaper();
 
     for (const s of doc.level.world || []) {
       drawRectWorld(s, "#1a1f24", "#3d4a56");
@@ -1231,6 +1401,7 @@ export function boot() {
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
     stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
+    if (isMeasure()) drawTape();
 
     if (playing && trail.length > 1) {
       ctx.beginPath();
@@ -1404,6 +1575,12 @@ export function boot() {
     const pt = worldFromEvent(ev);
     hover = pt;
 
+    if (tool === "tape") {
+      if (!tapeA || tapeB) { tapeA = { x: pt.x, y: pt.y }; tapeB = null; }
+      else { tapeB = { x: pt.x, y: pt.y }; scoreTape(); }
+      return;
+    }
+
     if (layer === "level") {
       if (tool === "erase") {
         const hit = hitSlab(pt);
@@ -1568,6 +1745,23 @@ export function boot() {
     fit();
   }
 
+  async function loadBuiltin(id) {
+    const item = BUILTIN.find((x) => x.id === id);
+    if (!item) return;
+    if (playing) stopPlay();
+    if (!item.url) doc = defaultDoc();
+    else {
+      const res = await fetch(item.url);
+      doc = unpackDoc(await res.json());
+    }
+    dirty = false;
+    resetLoop(item.id);
+    const pick = document.getElementById("level-pick");
+    if (pick) pick.value = item.id;
+    setTool(item.id === "measure" ? "tape" : "driveR");
+    refreshMeta();
+  }
+
   function bind() {
     document.querySelectorAll("[data-tool]").forEach((b) => {
       const id = b.getAttribute("data-tool");
@@ -1612,6 +1806,7 @@ export function boot() {
       const pick = document.getElementById("level-pick");
       if (pick) pick.value = "open";
       resetLoop("open");
+      setTool("driveR");
       refreshMeta();
     });
     document.getElementById("btn-save").addEventListener("click", () => {
@@ -1641,18 +1836,7 @@ export function boot() {
       titleEl.value = doc.title;
     });
     document.getElementById("level-pick").addEventListener("change", async (ev) => {
-      const item = BUILTIN.find((x) => x.id === ev.target.value);
-      if (!item) return;
-      if (playing) stopPlay();
-      if (!item.url) {
-        doc = defaultDoc();
-      } else {
-        const res = await fetch(item.url);
-        doc = unpackDoc(await res.json());
-      }
-      dirty = false;
-      resetLoop(item.id);
-      refreshMeta();
+      await loadBuiltin(ev.target.value);
     });
     document.querySelectorAll(".step").forEach((b) => {
       b.addEventListener("click", () => {
@@ -1936,8 +2120,13 @@ export function boot() {
   setTool("driveR");
   setLayer("machine");
   refreshMeta();
-  try {
-    if (!localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
-  } catch (e) { /* ignore */ }
+  const assigned = new URLSearchParams(location.search).get("course");
+  if (assigned && BUILTIN.some((x) => x.id === assigned)) {
+    loadBuiltin(assigned);
+  } else {
+    try {
+      if (!localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
+    } catch (e) { /* ignore */ }
+  }
   requestAnimationFrame(loop);
 }

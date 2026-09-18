@@ -243,6 +243,41 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   background: var(--paper);
   box-shadow: inset 0 0 0 2px #2a2e33, 0 -3px 0 var(--silver);
 }
+.pic.tape::before {
+  content: "";
+  width: 26px; height: 18px;
+  border-radius: 4px;
+  background: var(--yellow);
+  box-shadow: inset 0 0 0 2px #1a1400;
+}
+.pic.tape::after {
+  content: "";
+  position: absolute;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #2a2e33;
+}
+
+.lesson {
+  position: absolute; top: 10px; left: 10px;
+  width: min(16rem, 42vw);
+  background: rgb(243 238 228 / 92%);
+  color: var(--ink);
+  border: 3px solid var(--yellow);
+  border-radius: 12px;
+  padding: 10px 12px 8px;
+  z-index: 3;
+  font-weight: 650;
+}
+.lesson-kicker {
+  margin: 0 0 6px;
+  font-size: 11px; font-weight: 800;
+  letter-spacing: .08em; text-transform: uppercase;
+  color: var(--orange);
+}
+.lesson ol { margin: 0 0 8px; padding-left: 1.2rem; }
+.lesson li { margin: 0 0 4px; }
+.lesson li.ok { color: var(--ok); text-decoration: line-through; }
 
 .rail-guide {
   margin-top: auto;

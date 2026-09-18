@@ -9,7 +9,7 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.9.0 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.10.0 — Solvay Tech Ed</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
@@ -38,6 +38,10 @@
         </button>
       </div>
       <div class="rail-tools" id="machine-tools">
+        <button class="tool" data-tool="tape" title="T" type="button" id="tape-tool" hidden>
+          <span class="pic tape" aria-hidden="true"></span>
+          <span class="lbl">Tape</span>
+        </button>
         <button class="tool" data-tool="driveR" title="1" type="button">
           <span class="pic drive r" aria-hidden="true"></span>
           <span class="lbl">Drive-R</span>
@@ -112,7 +116,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.9.0</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.10.0</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -122,6 +126,7 @@
         </div>
         <select class="btn hud-pick" id="level-pick" aria-label="Starter course">
           <option value="open">Open Shop</option>
+          <option value="measure">Measure</option>
           <option value="roll">Roll Out</option>
           <option value="curb">Up the Curb</option>
           <option value="pit">Mind the Pit</option>
@@ -139,6 +144,15 @@
       </header>
       <div class="stage">
         <canvas id="c"></canvas>
+        <div class="lesson" id="lesson" hidden>
+          <p class="lesson-kicker">Lesson · Measure</p>
+          <ol>
+            <li data-job="shop">Shop Floor width</li>
+            <li data-job="drop">Drop Zone width</li>
+            <li data-job="gap">Shop Floor to Drop Zone</li>
+          </ol>
+          <p class="hint" id="tape-readout">Tape: click two corners. 1 square = 1 unit.</p>
+        </div>
         <div class="toast" id="toast"></div>
         <div class="win" id="win">In the zone</div>
         <div class="howto" id="howto" hidden>

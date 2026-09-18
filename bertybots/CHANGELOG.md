@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.9.0** · 2026-09-18 · channel **live**  
+**Chip: BB 0.10.0** · 2026-09-18 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.9.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.10.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,20 @@ Rules:
 
 ---
 
-## Current train (0.9.x live)
+## Current train (0.10.x live)
+
+### 0.10.0 — Measure lesson — 2026-09-18
+
+- Graph paper is off in regular shop.
+- Assign **Measure** from the course list, or `?course=measure`.
+- Tape two corners. 1 square = 1 unit. Three logs: floor width, drop width, gap.
+- Local XP when the three lengths are in. No names.
+
+Hard refresh if a cart still says 0.9.0.
+
+---
+
+## 0.9.x
 
 ### 0.9.0 — Shop that looks like a shop — 2026-09-18
 
