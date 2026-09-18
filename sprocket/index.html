@@ -6,18 +6,10 @@
   <meta name="theme-color" content="#0E8A92">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Sprocket">
-  <meta name="mobile-web-app-capable" content="yes">
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
   <title>Sprocket</title>
-  <style>
-  .offline-dot { width:8px; height:8px; border-radius:50%; background:#7FE0E6; display:inline-block; margin-right:6px; }
-  body.offline .offline-dot { background:#E05A5A; }
-  .qty-row { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
-  .qty-row .btn { min-height:40px; padding:6px 10px; flex:1; }
-  body.dark .sheet { background:#1C232C; color:var(--ink); }
-  </style>
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body class="dark">
   <header class="topbar">
@@ -33,10 +25,10 @@
         <path d="M26 42c2.2 2.4 9.8 2.4 12 0" fill="none" stroke="#343B45" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
       Sprocket
-      <span class="verchip" id="ver-chip">1.4.0</span>
+      <span class="verchip">1.4.0</span>
     </div>
     <div class="tools">
-      <button type="button" id="dark-btn">Dark</button>
+      <button type="button" id="dark-btn">Light</button>
       <button type="button" id="mode-btn">Big type</button>
     </div>
   </header>
@@ -49,33 +41,105 @@
     <button type="button" data-tab="help"><span>?</span>Help</button>
     <button type="button" data-tab="more"><span>⚙</span>More</button>
   </nav>
-  <script src="./a1.js"></script>
-  <script src="./a2.js"></script>
-  <script src="./b.js"></script>
   <script>
-  function bootFail(){
-    var root=document.getElementById("app");
-    if(root) root.innerHTML="<div class=\"wrap\"><div class=\"card\"><h1>Sprocket 1.4.0</h1><p class=\"muted\">Tools did not load. Hard refresh. Need a1.js, a2.js, and b.js next to this page.</p></div></div>";
+  const KEY="printkit-v2";
+  const views={
+    home:`<div class="wrap"><h1>Shop desk</h1>
+      <div class="pills">
+        <button class="pill-btn" data-tab="stock"><b>4</b> starter spools</button>
+        <button class="pill-btn" data-tab="timers">Timers</button>
+        <button class="pill-btn">P1S</button>
+      </div>
+      <div class="card"><strong>Before you print</strong>
+        <label class="check"><input type="checkbox"> Build plate is clean</label>
+        <label class="check"><input type="checkbox"> Glue on if the plate needs it</label>
+        <label class="check"><input type="checkbox"> Enough filament</label>
+        <label class="check"><input type="checkbox"> AMS colors match the file</label>
+        <label class="check"><input type="checkbox"> Hands out. Door / cover clear</label>
+        <label class="check"><input type="checkbox"> Poop chute is clear</label>
+      </div>
+      <div class="card"><strong>Stay safe</strong><p class="muted">Hot nozzle. Moving parts. Do not reach in while it prints. Teacher starts the job.</p></div>
+      <div class="quick">
+        <button class="btn secondary" data-tab="convert">Convert</button>
+        <button class="btn secondary" data-tab="stock">AMS / stock</button>
+        <button class="btn secondary" data-tab="help">Bambu help</button>
+        <button class="btn secondary" data-tab="timers">Timers</button>
+      </div></div>`,
+    convert:`<div class="wrap"><h1>Convert</h1>
+      <div class="card"><label>mm</label><input id="mm" type="number" value="25.4">
+      <div class="big" id="mmout"></div></div>
+      <div class="card"><label>C</label><input id="c" type="number" value="215">
+      <div class="big" id="cout"></div></div>
+      <p class="formula">1 in = 25.4 mm. F = C × 9/5 + 32. Always check the spool.</p></div>`,
+    stock:`<div class="wrap"><h1>Stock</h1>
+      <div class="card"><strong>AMS map</strong>
+        <div class="ams-grid">
+          <div class="ams-slot"><b>AMS 1</b><span>Jade White PLA</span><small>820 g</small></div>
+          <div class="ams-slot"><b>AMS 2</b><span>Black PLA</span><small>140 g · low</small></div>
+          <div class="ams-slot"><b>AMS 3</b><span>Teal PLA</span><small>610 g</small></div>
+          <div class="ams-slot"><b>AMS 4</b><span>Yellow PETG</span><small>430 g</small></div>
+        </div></div></div>`,
+    timers:`<div class="wrap"><h1>Timers</h1>
+      <div class="card"><strong id="tlab">No timer</strong><div class="timer-time" id="tclk">0:00</div>
+      <div class="chips">
+        <button class="chip" data-min="120">Print 2 h</button>
+        <button class="chip" data-min="20">Cool 20</button>
+        <button class="chip" data-min="2">Glue 2</button>
+        <button class="chip" data-min="240">Dry PLA 4 h</button>
+      </div></div></div>`,
+    help:`<div class="wrap"><h1>Bambu help</h1>
+      <div class="help">
+        <a href="https://wiki.bambulab.com/en/studio-handy" target="_blank" rel="noopener">Studio + Handy hub</a>
+        <a href="https://wiki.bambulab.com/en/ams" target="_blank" rel="noopener">AMS guides</a>
+        <a href="https://wiki.bambulab.com/en/filament-acc" target="_blank" rel="noopener">Filament wiki</a>
+        <a href="https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer" target="_blank" rel="noopener">Cannot connect printer</a>
+      </div>
+      <div class="warnbox">Official Bambu pages only. Handy needs cloud mode.</div></div>`,
+    more:`<div class="wrap"><h1>More</h1>
+      <div class="card"><strong>Sprocket 1.4.0</strong>
+        <p class="muted">Classroom helper. Data key printkit-v2. No live printer control. Open sliced files in Studio on the teacher PC. Full converters, stock edit, queue, and backup are in the local Sprocket.html build.</p>
+      </div></div>`
+  };
+  let ends=0;
+  function show(name){
+    document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on", b.dataset.tab===name));
+    document.getElementById("app").innerHTML=views[name]||views.home;
+    document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>show(b.dataset.tab));
+    if(name==="convert"){
+      const run=()=>{
+        const mm=Number(document.getElementById("mm").value);
+        document.getElementById("mmout").textContent=mm+" mm  ·  "+(mm/25.4).toFixed(2)+" in";
+        const c=Number(document.getElementById("c").value);
+        document.getElementById("cout").textContent=c+" C  =  "+(c*9/5+32).toFixed(1)+" F";
+      };
+      document.getElementById("mm").oninput=run;
+      document.getElementById("c").oninput=run;
+      run();
+    }
+    if(name==="timers"){
+      document.querySelectorAll("[data-min]").forEach(b=>b.onclick=()=>{
+        ends=Date.now()+Number(b.dataset.min)*60000;
+        document.getElementById("tlab").textContent=b.textContent;
+      });
+    }
   }
-  if (typeof render !== "function") { bootFail(); }
-  else {
-    try {
-      document.querySelectorAll(".nav button").forEach(function(b){ b.onclick=function(){ setTab(b.dataset.tab); }; });
-      document.getElementById("mode-btn").onclick=function(){ state.studentMode=!state.studentMode; save(); render(); };
-      var darkBtn=document.getElementById("dark-btn");
-      if (darkBtn) darkBtn.onclick=function(){ state.dark=!state.dark; save(); render(); };
-      window.addEventListener("hashchange", function(){ var name=location.hash.slice(1); if(name && name!==tab) setTab(name); });
-      window.addEventListener("online", function(){ render(); });
-      window.addEventListener("offline", function(){ render(); });
-      var bootTab=location.hash.slice(1);
-      if (["home","convert","stock","timers","help","more"].indexOf(bootTab)>=0) tab=bootTab;
-      if ("serviceWorker" in navigator && location.protocol.indexOf("http")===0) {
-        navigator.serviceWorker.register("./sw.js").catch(function(){});
-      }
-      render();
-      setInterval(tick, 1000);
-    } catch (err) { bootFail(); }
+  function tick(){
+    const el=document.getElementById("tclk");
+    if(!el||!ends) return;
+    const s=Math.max(0,Math.floor((ends-Date.now())/1000));
+    el.textContent=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");
   }
+  document.querySelectorAll(".nav button").forEach(b=>b.onclick=()=>show(b.dataset.tab));
+  document.getElementById("mode-btn").onclick=()=>document.body.classList.toggle("student");
+  document.getElementById("dark-btn").onclick=()=>{
+    document.body.classList.toggle("dark");
+    document.getElementById("dark-btn").textContent=document.body.classList.contains("dark")?"Light":"Dark";
+  };
+  if ("serviceWorker" in navigator && location.protocol.indexOf("http")===0) {
+    navigator.serviceWorker.register("./sw.js").catch(function(){});
+  }
+  show("home");
+  setInterval(tick,500);
   </script>
 </body>
 </html>
