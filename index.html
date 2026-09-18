@@ -13,7 +13,7 @@
       color-scheme:dark;
       --bg:#050814;
       --panel:#0b152c;
-      --cell:#081226;
+      --cell:#0b152c;
       --elevated:#10203f;
       --border:#16324f;
       --text:#e8f7ff;
@@ -39,27 +39,25 @@
     }
     .field{
       position:absolute;inset:0;display:grid;
-      grid-template-columns:repeat(6,minmax(0,1fr));
-      gap:.5rem;padding:.7rem;pointer-events:none;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:.75rem;padding:.9rem;pointer-events:none;
     }
     @media (min-width:640px){
       .poster{min-height:28rem}
-      .field{grid-template-columns:repeat(8,minmax(0,1fr));gap:.62rem;padding:.85rem .95rem}
+      .field{grid-template-columns:repeat(7,minmax(0,1fr));gap:.85rem;padding:1.1rem 1.2rem}
     }
     @media (min-width:960px){.poster{min-height:32rem}}
     .cell{
-      aspect-ratio:1;display:grid;place-items:center;border-radius:18px;
+      aspect-ratio:1;display:grid;place-items:center;border-radius:16px;
       background:var(--cell);
-      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
-      color:color-mix(in srgb,var(--accent) 78%,transparent);
-      box-shadow:inset 0 0 18px color-mix(in srgb,var(--accent) 18%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+      color:var(--accent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
     }
-    .cell svg{width:40%;height:40%;fill:none;stroke:currentColor;stroke-width:1.35;stroke-linecap:round;stroke-linejoin:round}
+    .cell svg{width:44%;height:44%;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
     .vignette{
       position:absolute;inset:0;pointer-events:none;
-      background:
-        radial-gradient(ellipse 54% 58% at 50% 44%,transparent 0%,color-mix(in srgb,var(--bg) 18%,transparent) 42%,color-mix(in srgb,var(--bg) 72%,transparent) 72%,var(--bg) 92%),
-        linear-gradient(180deg,color-mix(in srgb,var(--bg) 42%,transparent) 0%,transparent 22%,transparent 68%,var(--bg) 100%);
+      background:radial-gradient(ellipse 68% 70% at 50% 46%,transparent 0%,transparent 38%,color-mix(in srgb,var(--bg) 35%,transparent) 68%,color-mix(in srgb,var(--bg) 78%,transparent) 100%);
     }
     .hero{
       position:relative;z-index:1;
@@ -76,26 +74,26 @@
       color:var(--muted);font-size:.72rem;font-weight:600;
     }
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live);display:inline-block}
-    h1{margin:0}
+    h1{margin:0;text-rendering:geometricPrecision}
     .lockup-the{
-      display:block;font-weight:800;letter-spacing:.24em;line-height:1;
-      font-size:clamp(1.7rem,6.4vw,4.1rem);color:var(--accent);
-      text-shadow:0 0 14px color-mix(in srgb,var(--accent) 88%,transparent),0 0 36px color-mix(in srgb,var(--accent) 50%,transparent),0 0 72px color-mix(in srgb,var(--accent) 28%,transparent);
-      animation:the-breathe 5.6s ease-in-out infinite;
+      display:block;font-weight:800;letter-spacing:.2em;line-height:1;
+      font-size:clamp(1.85rem,7vw,4.5rem);color:#5eefff;
+      text-shadow:0 0 8px color-mix(in srgb,var(--accent) 90%,transparent),0 0 22px color-mix(in srgb,var(--accent) 42%,transparent);
+    }
+    .lockup-room-wrap{
+      position:relative;display:block;margin-top:.08em;
+      font-weight:800;letter-spacing:-.035em;line-height:.86;
+      font-size:clamp(2.85rem,12.5vw,7.8rem);
+    }
+    .lockup-room-glow{
+      position:absolute;inset:0;color:var(--accent);font:inherit;
+      letter-spacing:inherit;line-height:inherit;
+      pointer-events:none;user-select:none;filter:blur(11px);opacity:.55;
     }
     .lockup-room{
-      display:block;margin-top:.12em;font-weight:800;letter-spacing:-.05em;line-height:.84;
-      font-size:clamp(2.85rem,12.5vw,7.8rem);
-      background:linear-gradient(180deg,#f0feff 0%,#7af0ff 28%,#22d3ee 58%,#14b8a6 100%);
+      position:relative;display:block;font:inherit;letter-spacing:inherit;line-height:inherit;
+      background:linear-gradient(180deg,#f7ffff 0%,#9af6ff 38%,#22d3ee 78%,#2dd4bf 100%);
       -webkit-background-clip:text;background-clip:text;color:transparent;
-      filter:drop-shadow(0 0 18px color-mix(in srgb,var(--accent) 70%,transparent)) drop-shadow(0 0 42px color-mix(in srgb,var(--accent) 38%,transparent));
-      animation:room-breathe 5.6s ease-in-out infinite;
-    }
-    @keyframes the-breathe{
-      50%{text-shadow:0 0 20px color-mix(in srgb,var(--accent) 95%,transparent),0 0 52px color-mix(in srgb,var(--accent) 58%,transparent),0 0 96px color-mix(in srgb,var(--accent) 34%,transparent)}
-    }
-    @keyframes room-breathe{
-      50%{filter:drop-shadow(0 0 26px color-mix(in srgb,var(--accent) 82%,transparent)) drop-shadow(0 0 58px color-mix(in srgb,var(--accent) 48%,transparent))}
     }
     .sub{margin:.9rem 0 0;max-width:28rem;color:var(--muted);font-size:.95rem;line-height:1.45;font-weight:500}
     .search{
@@ -105,10 +103,9 @@
     .search input{
       width:100%;height:3rem;border:0;border-radius:999px;outline:none;
       padding:0 1rem 0 2.7rem;color:var(--text);font:inherit;font-size:.95rem;font-weight:500;
-      background:color-mix(in srgb,var(--panel) 78%,transparent);
-      backdrop-filter:blur(14px);
-      border:1px solid color-mix(in srgb,var(--accent) 24%,transparent);
-      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent),0 10px 36px color-mix(in srgb,var(--bg) 60%,transparent);
+      background:color-mix(in srgb,var(--panel) 92%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
     }
     .search input::placeholder{color:var(--subtle)}
     .search svg{
@@ -126,24 +123,23 @@
       display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
       text-decoration:none;color:var(--muted);
       background:var(--cell);
-      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
       border-radius:var(--radius);
-      box-shadow:inset 0 0 18px color-mix(in srgb,var(--accent) 14%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
       transition:border-color .15s,background .15s,box-shadow .15s,transform .15s,color .15s;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
       min-width:56px;min-height:56px;
     }
     a.tile svg{
-      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.5;
+      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
-      filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 50%,transparent));
     }
     a.tile:hover,a.tile:focus-visible{
       color:var(--text);
-      border-color:color-mix(in srgb,var(--accent) 52%,transparent);
+      border-color:color-mix(in srgb,var(--accent) 62%,transparent);
       background:var(--elevated);
-      box-shadow:inset 0 0 22px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent),0 0 28px color-mix(in srgb,var(--accent) 18%,transparent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent),0 0 16px color-mix(in srgb,var(--accent) 16%,transparent);
       outline:none;
     }
     a.tile:active{transform:scale(.96)}
@@ -178,7 +174,8 @@
       a.tile{min-width:52px;min-height:52px}
     }
     @media (prefers-reduced-motion:reduce){
-      .lockup-the,.lockup-room{animation:none;text-shadow:none;filter:none}
+      .lockup-the{text-shadow:none}
+      .lockup-room-glow{display:none}
       a.tile{transition:none}
     }
   </style>
@@ -225,7 +222,10 @@
         <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
         <h1>
           <span class="lockup-the">THE</span>
-          <span class="lockup-room">TECH ROOM</span>
+          <span class="lockup-room-wrap">
+            <span class="lockup-room-glow" aria-hidden="true">TECH ROOM</span>
+            <span class="lockup-room">TECH ROOM</span>
+          </span>
         </h1>
         <p class="sub">Kulibert Tech Ed · Chromebook door · aliases only</p>
       </div>
