@@ -1,102 +1,14 @@
-/* Berty's Botz BB 0.5.1 — bundled for any http(s) host */
-/* One string. Chip, changelog header, vercel header, About — all read this. */
-const APP_NAME = "Berty's Botz";
-const APP_PREFIX = "BB";
-const APP_VERSION = "0.5.1";
-const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.5.1";
-const APP_BUILT = "2026-09-18";
-
-const FORMAT = 1;
-const PIECE_CAP = 48;
-
-function blankMachine() {
-  return { parts: [] };
-}
-
-function defaultLevel() {
-  return {
-    shop: { x: 1.2, y: 1.2, w: 8.2, h: 4.6 },
-    drop: { x: 20.2, y: 1.2, w: 4.6, h: 3.4 },
-    world: [
-      { type: "slab", x: 0, y: 0, w: 28, h: 1.2 },
-      { type: "slab", x: 0, y: 1.2, w: 0.4, h: 10 },
-      { type: "slab", x: 27.6, y: 1.2, w: 0.4, h: 10 },
-    ],
-    cores: [{ x: 6.4, y: 1.48 }],
-    tools: ["driveR", "driveL", "roller", "steel", "ghost"],
-  };
-}
-
-function defaultDoc() {
-  return {
-    app: "bertybots",
-    format: FORMAT,
-    title: "Open Shop",
-    appVersion: APP_CHIP,
-    level: defaultLevel(),
-    machine: blankMachine(),
-  };
-}
-
-function sanitizeTitle(raw) {
-  const t = String(raw || "").replace(/\s+/g, " ").trim().slice(0, 48);
-  return t || "Open Shop";
-}
-
-function packDoc(doc) {
-  return {
-    app: "bertybots",
-    format: FORMAT,
-    title: sanitizeTitle(doc.title),
-    appVersion: APP_VERSION,
-    level: {
-      shop: { ...doc.level.shop },
-      drop: { ...doc.level.drop },
-      world: (doc.level.world || []).map((w) => ({ ...w })),
-      cores: (doc.level.cores || []).map((c) => ({ x: c.x, y: c.y })),
-      tools: [...(doc.level.tools || defaultLevel().tools)],
-    },
-    machine: {
-      parts: (doc.machine.parts || []).map((p) => ({ ...p })),
-    },
-  };
-}
-
-function unpackDoc(raw) {
-  const base = defaultDoc();
-  if (!raw || raw.app !== "bertybots") throw new Error("Not a Berty's Botz file.");
-  const level = raw.level || {};
-  const shop = { ...base.level.shop, ...(level.shop || {}) };
-  const drop = { ...base.level.drop, ...(level.drop || {}) };
-  const world = Array.isArray(level.world) ? level.world.map((w) => ({ ...w })) : base.level.world;
-  const cores = Array.isArray(level.cores) && level.cores.length
-    ? level.cores.slice(0, 3).map((c) => ({ x: +c.x, y: +c.y }))
-    : base.level.cores;
-  const tools = Array.isArray(level.tools) && level.tools.length ? level.tools : base.level.tools;
-  const parts = raw.machine && Array.isArray(raw.machine.parts) ? raw.machine.parts.map((p) => ({ ...p })) : [];
-  return {
-    app: "bertybots",
-    format: FORMAT,
-    title: sanitizeTitle(raw.title),
-    level: { shop, drop, world, cores, tools },
-    machine: { parts },
-  };
-}
-
-function downloadDoc(doc, filename) {
-  const blob = new Blob([JSON.stringify(packDoc(doc), null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  const safe = (filename || sanitizeTitle(doc.title) || "shop").replace(/[^\w.-]+/g, "-").toLowerCase();
-  a.href = URL.createObjectURL(blob);
-  a.download = safe.endsWith(".bertybots.json") ? safe : `${safe}.bertybots.json`;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
-}
-
-function readFile(file) {
-  return file.text().then((text) => unpackDoc(JSON.parse(text)));
-}
+import { APP_CHIP } from "./version.js";
+import {
+  PIECE_CAP,
+  defaultDoc,
+  defaultLevel,
+  packDoc,
+  unpackDoc,
+  downloadDoc,
+  readFile,
+  sanitizeTitle,
+} from "./io.js";
 
 const NAVY = "#0b1f3a";
 const ORANGE = "#e87722";
@@ -287,7 +199,7 @@ function pieceCount(doc) {
   return (doc.machine.parts || []).length;
 }
 
-function boot() {
+export function boot() {
   if (typeof planck === "undefined") {
     toast("Physics library missing (vendor/planck.min.js).");
     return;
@@ -1613,5 +1525,3 @@ function boot() {
   } catch (e) { /* ignore */ }
   requestAnimationFrame(loop);
 }
-
-boot();

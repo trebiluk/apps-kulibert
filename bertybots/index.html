@@ -2,41 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="screen-orientation" content="landscape">
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.5.0 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.5.1 — Solvay Tech Ed</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+  <div id="rotate-gate">
+    <p class="rotate-kicker">Job site</p>
+    <h1>Turn the device sideways</h1>
+    <p>The shop floor is a workbench. Landscape only — same as Tinkercad or a job trailer screen.</p>
+    <button class="btn gold" id="btn-wide" type="button">Try widescreen</button>
+  </div>
   <div id="app">
-    <header class="topbar">
-      <div class="brand">Berty's Botz <small id="chip">BB 0.5.0</small><span class="site-tag">Job site</span></div>
-      <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
-      <div class="row">
-        <button class="btn" id="btn-new">New</button>
-        <button class="btn" id="btn-open">Open</button>
-        <button class="btn gold" id="btn-save">Save file</button>
-        <select class="btn" id="level-pick" aria-label="Starter course">
-          <option value="open">Open Shop</option>
-          <option value="roll">Roll Out</option>
-          <option value="curb">Up the Curb</option>
-          <option value="pit">Mind the Pit</option>
-          <option value="wall">The Wall</option>
-          <option value="shelf">High Shelf</option>
-          <option value="bend">Around the Bend</option>
-          <option value="pair">Pair of Crates</option>
-        </select>
+    <header class="hud">
+      <div class="brand">Berty's Botz <small id="chip">BB 0.5.1</small></div>
+      <select class="btn hud-pick" id="level-pick" aria-label="Starter course">
+        <option value="open">Open Shop</option>
+        <option value="roll">Roll Out</option>
+        <option value="curb">Up the Curb</option>
+        <option value="pit">Mind the Pit</option>
+        <option value="wall">The Wall</option>
+        <option value="shelf">High Shelf</option>
+        <option value="bend">Around the Bend</option>
+        <option value="pair">Pair of Crates</option>
+      </select>
+      <div class="hud-play">
+        <button class="btn ok" id="btn-play">Play</button>
+        <button class="btn" id="btn-slow" title="S">Slow</button>
+        <button class="btn" id="btn-stop">Stop</button>
       </div>
-      <div class="spacer"></div>
-      <div class="row">
+      <button class="btn gold" id="btn-crew" type="button" aria-expanded="false">Crew</button>
+    </header>
+    <div class="dock">
+      <div class="row layers">
         <button class="btn" data-layer="machine">Machine</button>
         <button class="btn" data-layer="level">Level</button>
       </div>
-      <div class="row" id="machine-tools">
+      <div class="row tools" id="machine-tools">
         <button class="btn" data-tool="driveR" title="1">Drive-R</button>
         <button class="btn" data-tool="driveL" title="2">Drive-L</button>
         <button class="btn" data-tool="roller" title="3">Roller</button>
@@ -45,42 +55,34 @@
         <button class="btn" data-tool="move" title="M">Move</button>
         <button class="btn" data-tool="erase" title="E">Erase</button>
       </div>
-      <div class="row" id="level-tools" hidden>
+      <div class="row tools" id="level-tools" hidden>
         <button class="btn" data-tool="shop">Shop Floor</button>
         <button class="btn" data-tool="drop">Drop Zone</button>
         <button class="btn" data-tool="slab">Slab</button>
         <button class="btn" data-tool="core">Bot Core</button>
         <button class="btn" data-tool="erase">Erase</button>
       </div>
-      <div class="row">
-        <button class="btn ok" id="btn-play">Play</button>
-        <button class="btn" id="btn-slow" title="S">Slow</button>
-        <button class="btn" id="btn-stop">Stop</button>
-        <button class="btn ghost" id="btn-cart">Starter cart</button>
-        <button class="btn ghost" id="btn-view">Reset view</button>
-        <button class="btn ghost" id="btn-undo" title="Z">Undo</button>
-        <button class="btn ghost" id="btn-clear">Clear machine</button>
-        <a class="btn ghost" href="teacher.html">Teacher</a>
-        <a class="btn ghost" href="privacy.html">Privacy</a>
-      </div>
-    </header>
+    </div>
     <section class="guide" id="guide" aria-label="Design process">
-      <div class="guide-head">
-        <strong>Job packet</strong>
-        <span class="guide-std">NYS 5 · ITEEA design / systems</span>
-        <button class="btn ghost" id="btn-guide" aria-pressed="true">Guide on</button>
-        <button class="btn ghost" id="btn-systems">Spec sheet</button>
-        <button class="btn gold" id="btn-howto">Site induction</button>
+      <div class="guide-bar">
+        <button class="packet-chip" id="btn-packet" type="button" aria-expanded="false">Job packet</button>
+        <p class="guide-line" id="guide-line">Ask: park the Bot Core crate in the Drop Zone.</p>
+        <button class="btn ghost tight" id="btn-systems" type="button">Spec</button>
       </div>
-      <div class="guide-steps" id="guide-steps" role="tablist" aria-label="Design process steps">
-        <button class="step on" type="button" data-step="ask" role="tab" aria-selected="true">Ask</button>
-        <button class="step" type="button" data-step="imagine" role="tab" aria-selected="false">Imagine</button>
-        <button class="step" type="button" data-step="plan" role="tab" aria-selected="false">Plan</button>
-        <button class="step" type="button" data-step="create" role="tab" aria-selected="false">Create</button>
-        <button class="step" type="button" data-step="test" role="tab" aria-selected="false">Test</button>
-        <button class="step" type="button" data-step="improve" role="tab" aria-selected="false">Improve</button>
+      <div class="guide-drawer" id="guide-drawer" hidden>
+        <div class="guide-steps" id="guide-steps" role="tablist" aria-label="Design process steps">
+          <button class="step on" type="button" data-step="ask" role="tab" aria-selected="true">Ask</button>
+          <button class="step" type="button" data-step="imagine" role="tab" aria-selected="false">Imagine</button>
+          <button class="step" type="button" data-step="plan" role="tab" aria-selected="false">Plan</button>
+          <button class="step" type="button" data-step="create" role="tab" aria-selected="false">Create</button>
+          <button class="step" type="button" data-step="test" role="tab" aria-selected="false">Test</button>
+          <button class="step" type="button" data-step="improve" role="tab" aria-selected="false">Improve</button>
+        </div>
+        <div class="row">
+          <button class="btn ghost" id="btn-guide" aria-pressed="true">Guide on</button>
+          <button class="btn gold" id="btn-howto">Site induction</button>
+        </div>
       </div>
-      <p class="guide-line" id="guide-line">Ask: park the Bot Core crate in the Drop Zone.</p>
     </section>
     <div class="stage">
       <canvas id="c"></canvas>
@@ -104,11 +106,34 @@
             <li><b>Input</b> — gravity, Drive-R / Drive-L torque, starting pose of the crate</li>
             <li><b>Process</b> — your machine: Drive, Roller, Steel, Ghost</li>
             <li><b>Output</b> — crate motion; win = every Bot Core inside the Drop Zone for one second</li>
-            <li><b>Feedback</b> — orange trail, Slow, DROP ZONE banner, Stop restores the shop</li>
+            <li><b>Feedback</b> — orange trail, Slow, LOAD SECURE banner, Stop restores the shop</li>
           </ol>
           <p class="systems-course" id="systems-course"></p>
           <p class="hint">Constraints: 48 parts, Shop Floor, slabs, period time. Pair: builder + observer.</p>
           <button class="btn gold" id="systems-close">Close</button>
+        </div>
+      </div>
+      <div class="sheet" id="crew" hidden>
+        <div class="sheet-card" role="dialog" aria-labelledby="crew-title">
+          <h2 id="crew-title">Crew menu</h2>
+          <label class="crew-label" for="title">Job title (no names)</label>
+          <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
+          <div class="row">
+            <button class="btn" id="btn-new">New</button>
+            <button class="btn" id="btn-open">Open</button>
+            <button class="btn gold" id="btn-save">Save file</button>
+          </div>
+          <div class="row">
+            <button class="btn" id="btn-cart">Starter cart</button>
+            <button class="btn" id="btn-view">Reset view</button>
+            <button class="btn" id="btn-undo" title="Z">Undo</button>
+            <button class="btn" id="btn-clear">Clear machine</button>
+          </div>
+          <div class="row">
+            <a class="btn ghost" href="teacher.html">Teacher</a>
+            <a class="btn ghost" href="privacy.html">Privacy</a>
+          </div>
+          <button class="btn gold" id="crew-close">Close</button>
         </div>
       </div>
     </div>
