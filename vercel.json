@@ -12,24 +12,21 @@
       "source": "/lunch/",
       "destination": "/bistro/",
       "permanent": false
-    },
-    {
-      "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/",
-      "permanent": false
-    },
-    {
-      "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/",
-      "permanent": false
-    },
-    {
-      "source": "/logolab/:path*",
-      "destination": "https://logolab-rho.vercel.app/:path*",
-      "permanent": false
     }
   ],
   "rewrites": [
+    {
+      "source": "/logolab",
+      "destination": "https://logolab-rho.vercel.app/logolab/"
+    },
+    {
+      "source": "/logolab/",
+      "destination": "https://logolab-rho.vercel.app/logolab/"
+    },
+    {
+      "source": "/logolab/:path*",
+      "destination": "https://logolab-rho.vercel.app/logolab/:path*"
+    },
     {
       "source": "/paperlab",
       "destination": "https://paperlab-one.vercel.app/"
