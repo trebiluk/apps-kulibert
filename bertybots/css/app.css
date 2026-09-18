@@ -289,7 +289,26 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 .brand { font-weight: 800; line-height: 1.1; flex: 0 0 auto; }
 .brand small { display: block; font-weight: 700; color: var(--yellow); font-size: 11px; }
-.hud-pick { min-width: 9rem; flex: 1 1 9rem; max-width: 16rem; }
+.rank {
+  display: flex; align-items: center; gap: 8px;
+  min-width: 10rem; flex: 1 1 11rem; max-width: 18rem;
+}
+.rank-name {
+  font-size: 11px; font-weight: 800; color: var(--yellow);
+  letter-spacing: .06em; text-transform: uppercase; white-space: nowrap;
+}
+.xp {
+  flex: 1; height: 10px; min-width: 4rem;
+  background: #2a2e33; border-radius: 999px; overflow: hidden;
+  box-shadow: inset 0 1px 2px #0006;
+}
+.xp i {
+  display: block; height: 100%; width: 0%;
+  background: linear-gradient(90deg, var(--yellow), #ffe36a);
+  transition: width var(--motion-quick) var(--ease-out);
+}
+.xp-n { font-size: 11px; font-weight: 700; color: var(--paper); white-space: nowrap; }
+.hud-pick { min-width: 8rem; flex: 0 1 10rem; max-width: 14rem; }
 .hud-play { display: flex; gap: 6px; margin-left: auto; }
 
 .btn {
@@ -355,6 +374,12 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   margin: 0 0 6px;
   font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase;
   color: var(--orange);
+}
+#howto-demo {
+  display: block; width: 100%; height: 160px;
+  border-radius: 12px; background: #efe6d4;
+  margin: 0 0 12px;
+  box-shadow: inset 0 0 0 2px #d9cbb3;
 }
 .howto-card h2, .sheet-card h2 { margin: 0 0 10px; font-size: 1.3rem; }
 .howto-card p, .sheet-card p { margin: 0 0 12px; line-height: 1.45; font-weight: 600; }

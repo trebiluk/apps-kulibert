@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.7.2 — bundled for any http(s) host */
+/* Berty's Botz BB 0.8.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.7.2";
+const APP_VERSION = "0.8.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.7.2";
+const APP_CHIP = "BB 0.8.0";
 const APP_BUILT = "2026-09-18";
 
 const FORMAT = 1;
@@ -142,22 +142,32 @@ const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 
 const HOWTO = [
   {
-    title: "Ask the job",
-    body: "Every course has one output: park the Bot Core crate in the Drop Zone and keep it there for one second. The dashed rectangle is the Shop Floor. That is the only place you build.",
+    title: "Park the crate",
+    body: "Job: Bot Core in the Drop Zone for one second. Watch the crate roll in.",
   },
   {
-    title: "Imagine parts as a system",
-    body: "Drive-R and Drive-L add energy. Roller rolls. Steel is structure (it collides). Ghost ignores the machine and still hits the world and the crate. Constraints: 48 parts, gravity, slabs.",
+    title: "Parts do jobs",
+    body: "Drive-R goes right. Drive-L goes left. Steel is a silver bar. Ghost is dashed — it misses the machine.",
   },
   {
-    title: "Create, then test",
-    body: "Drag a wheel onto a hub (orange ring). Steel pulls from a node — a tap does not drop a bar. Play. Stop always restores the shop. Starter cart is a floor pusher, not the answer on curbs, pits, or walls.",
+    title: "Build, then Play",
+    body: "Drag a wheel onto a hub. Then Play. Stop puts the shop back.",
   },
   {
-    title: "Improve with feedback",
-    body: "Change one thing. Slow-mo is for pointing at a fail. Pair: builder + observer. Save a local file with a course title only — no names. Input → process → output → feedback is the system.",
+    title: "Lean machines earn more",
+    body: "Same job, fewer parts = more XP. Rank stays on this Chromebook. No names.",
   },
 ];
+
+const RANKS = [
+  { name: "Helper", at: 0 },
+  { name: "Apprentice", at: 20 },
+  { name: "Builder", at: 55 },
+  { name: "Lead", at: 110 },
+  { name: "Shop tech", at: 180 },
+];
+
+const PAR = { open: 5, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12 };
 
 const GUIDE = {
   open: {
@@ -327,6 +337,14 @@ function boot() {
   let pinnedStep = null;
   let guideOn = true;
   let howtoIndex = 0;
+  let progress = { xp: 0, wins: {} };
+  try {
+    const raw = localStorage.getItem("bb-progress-v1");
+    if (raw) {
+      const p = JSON.parse(raw);
+      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {} };
+    }
+  } catch (e) { /* private mode */ }
 
   titleEl.value = doc.title;
 
@@ -439,7 +457,61 @@ function boot() {
   function hideHowto() {
     const root = document.getElementById("howto");
     if (root) root.hidden = true;
-    try { localStorage.setItem("bb-howto-v1", "1"); } catch (e) { /* private mode */ }
+    try { localStorage.setItem("bb-howto-v2", "1"); } catch (e) { /* private mode */ }
+  }
+
+  function rankAt(xp) {
+    let cur = RANKS[0];
+    for (const r of RANKS) if (xp >= r.at) cur = r;
+    return cur;
+  }
+
+  function saveProgress() {
+    try { localStorage.setItem("bb-progress-v1", JSON.stringify(progress)); } catch (e) { /* private mode */ }
+  }
+
+  function refreshRank() {
+    const nameEl = document.getElementById("rank-name");
+    const fill = document.getElementById("xp-fill");
+    const nEl = document.getElementById("xp-n");
+    const bar = document.getElementById("xp-bar");
+    const rank = rankAt(progress.xp);
+    const idx = RANKS.indexOf(rank);
+    const next = RANKS[idx + 1];
+    const span = next ? next.at - rank.at : 40;
+    const into = next ? progress.xp - rank.at : span;
+    const pct = Math.max(0, Math.min(100, (into / span) * 100));
+    if (nameEl) nameEl.textContent = rank.name;
+    if (fill) fill.style.width = `${pct}%`;
+    if (nEl) nEl.textContent = `${progress.xp} XP`;
+    if (bar) {
+      bar.setAttribute("aria-valuenow", String(progress.xp));
+      bar.setAttribute("aria-valuemax", String(next ? next.at : rank.at + span));
+      bar.setAttribute("aria-label", `${rank.name}, ${progress.xp} XP`);
+    }
+  }
+
+  function awardWin() {
+    const parts = pieceCount(doc);
+    const par = PAR[courseId] || 8;
+    const lean = Math.max(0, par - parts);
+    const rec = progress.wins[courseId];
+    const first = !rec;
+    const better = rec && parts < rec.bestParts;
+    let gain = first ? 12 : 3;
+    if (first || better) gain += 6 + lean * 3;
+    else gain += Math.min(3, lean);
+    const before = rankAt(progress.xp).name;
+    progress.xp += gain;
+    progress.wins[courseId] = {
+      bestParts: Math.min(parts, rec ? rec.bestParts : parts),
+      n: (rec && rec.n ? rec.n : 0) + 1,
+    };
+    saveProgress();
+    refreshRank();
+    const after = rankAt(progress.xp).name;
+    if (after !== before) toast(`${after} rank. Lean machines earn more XP.`);
+    else toast(`+${gain} XP · ${parts} parts${lean > 0 ? " · lean bonus" : ""}. In the zone.`);
   }
 
   function showSystems(on) {
@@ -487,6 +559,7 @@ function boot() {
     const slowBtn = document.getElementById("btn-slow");
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
     refreshGuide();
+    refreshRank();
   }
 
   function pushHist() {
@@ -782,9 +855,9 @@ function boot() {
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
-        toast("In the zone. Improve or save.");
         slowMo = true;
         pinnedStep = "improve";
+        awardWin();
         refreshMeta();
       }
     } else winT = 0;
@@ -1605,6 +1678,157 @@ function boot() {
     });
   }
 
+  function roundBar(g, x, y, bw, bh) {
+    g.fillStyle = "#c5ccd3";
+    g.beginPath();
+    if (g.roundRect) g.roundRect(x, y, bw, bh, bh / 2);
+    else g.rect(x, y, bw, bh);
+    g.fill();
+    g.strokeStyle = "#6a737c";
+    g.stroke();
+  }
+
+  function drawHowtoDemo(now) {
+    const root = document.getElementById("howto");
+    const c = document.getElementById("howto-demo");
+    if (!c || !root || root.hidden) return;
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    const cssW = c.clientWidth || 420;
+    const cssH = c.clientHeight || 160;
+    if (c.width !== Math.round(cssW * dpr) || c.height !== Math.round(cssH * dpr)) {
+      c.width = Math.round(cssW * dpr);
+      c.height = Math.round(cssH * dpr);
+    }
+    const g = c.getContext("2d");
+    const w = c.width, h = c.height;
+    const t = (now / 1000) % 4;
+    g.setTransform(1, 0, 0, 1, 0, 0);
+    g.clearRect(0, 0, w, h);
+    g.fillStyle = "#efe6d4";
+    g.fillRect(0, 0, w, h);
+
+    function crate(x, y, s) {
+      g.fillStyle = CRATE;
+      g.fillRect(x - s / 2, y - s / 2, s, s);
+      g.strokeStyle = INK;
+      g.lineWidth = 2 * dpr;
+      g.strokeRect(x - s / 2, y - s / 2, s, s);
+    }
+    function wheel(x, y, r, letter, dir) {
+      g.beginPath();
+      g.arc(x, y, r, 0, Math.PI * 2);
+      g.fillStyle = "#241f1a";
+      g.fill();
+      for (let i = 0; i < 10; i++) {
+        const a0 = i * 0.63;
+        g.beginPath();
+        g.arc(x, y, r * 0.98, a0, a0 + 0.28);
+        g.arc(x, y, r * 0.78, a0 + 0.28, a0, true);
+        g.closePath();
+        g.fillStyle = i % 2 ? "#3d362e" : "#1a1714";
+        g.fill();
+      }
+      g.beginPath();
+      g.arc(x, y, r * 0.7, 0, Math.PI * 2);
+      g.fillStyle = PAPER;
+      g.fill();
+      g.fillStyle = ORANGE;
+      g.beginPath();
+      g.arc(x, y, r * 0.22, 0, Math.PI * 2);
+      g.fill();
+      g.fillStyle = INK;
+      g.font = `800 ${Math.round(r * 0.7)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.textAlign = "center";
+      g.textBaseline = "middle";
+      g.fillText(letter, x, y + 1);
+      if (dir) {
+        g.fillStyle = ORANGE;
+        g.beginPath();
+        g.moveTo(x + dir * r * 0.95, y);
+        g.lineTo(x + dir * r * 0.55, y - r * 0.28);
+        g.lineTo(x + dir * r * 0.55, y + r * 0.28);
+        g.closePath();
+        g.fill();
+      }
+    }
+    function drop(x, y, bw, bh, ok) {
+      g.setLineDash([7 * dpr, 6 * dpr]);
+      g.strokeStyle = ok ? OK : ORANGE;
+      g.fillStyle = ok ? "rgba(47,111,78,0.22)" : "rgba(232,119,34,0.12)";
+      g.fillRect(x, y, bw, bh);
+      g.lineWidth = 2 * dpr;
+      g.strokeRect(x, y, bw, bh);
+      g.setLineDash([]);
+    }
+
+    const floorY = h * 0.72;
+    g.fillStyle = "#eadcc3";
+    g.fillRect(w * 0.08, floorY, w * 0.84, h * 0.12);
+    g.setLineDash([6 * dpr, 5 * dpr]);
+    g.strokeStyle = NAVY;
+    g.strokeRect(w * 0.08, floorY, w * 0.84, h * 0.12);
+    g.setLineDash([]);
+
+    const beat = howtoIndex;
+    if (beat === 0) {
+      const u = Math.min(1, t / 2.2);
+      const x0 = w * 0.22, x1 = w * 0.68;
+      const x = x0 + (x1 - x0) * u;
+      drop(w * 0.58, floorY - h * 0.22, w * 0.28, h * 0.2, u > 0.85);
+      crate(x, floorY - 18 * dpr, 28 * dpr);
+      g.fillStyle = u > 0.85 ? OK : INK;
+      g.font = `700 ${Math.round(13 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.textAlign = "center";
+      g.fillText(u > 0.85 ? "In the zone · 1 second" : "Crate → Drop Zone", w / 2, h * 0.18);
+    } else if (beat === 1) {
+      wheel(w * 0.2, floorY - 22 * dpr, 20 * dpr, "R", 1);
+      wheel(w * 0.4, floorY - 22 * dpr, 20 * dpr, "L", -1);
+      roundBar(g, w * 0.52, floorY - 26 * dpr, w * 0.18, 12 * dpr);
+      g.setLineDash([5 * dpr, 4 * dpr]);
+      g.strokeStyle = ORANGE;
+      g.lineWidth = 3 * dpr;
+      g.beginPath();
+      if (g.roundRect) g.roundRect(w * 0.74, floorY - 32 * dpr, w * 0.14, 14 * dpr, 7 * dpr);
+      else g.rect(w * 0.74, floorY - 32 * dpr, w * 0.14, 14 * dpr);
+      g.stroke();
+      g.setLineDash([]);
+      g.fillStyle = INK;
+      g.font = `700 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.textAlign = "center";
+      g.fillText("Drive-R     Drive-L      Steel      Ghost", w / 2, h * 0.2);
+    } else if (beat === 2) {
+      const u = (t % 4) / 4;
+      const hx = w * 0.55, hy = floorY - 24 * dpr;
+      g.strokeStyle = ORANGE;
+      g.lineWidth = 3 * dpr;
+      g.beginPath();
+      g.arc(hx, hy, 16 * dpr, 0, Math.PI * 2);
+      g.stroke();
+      const wx0 = w * 0.2 + (hx - w * 0.2) * Math.min(1, u / 0.55);
+      wheel(wx0, hy, 18 * dpr, "R", 1);
+      crate(w * 0.78, floorY - 18 * dpr, 24 * dpr);
+      g.fillStyle = u > 0.6 ? OK : INK;
+      g.font = `800 ${Math.round(14 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.textAlign = "center";
+      g.fillText(u > 0.6 ? "PLAY" : "Drag onto the hub", w / 2, h * 0.18);
+    } else {
+      const u = Math.min(1, t / 2);
+      crate(w * 0.7, floorY - 18 * dpr, 26 * dpr);
+      drop(w * 0.58, floorY - h * 0.22, w * 0.3, h * 0.2, true);
+      wheel(w * 0.28, floorY - 22 * dpr, 18 * dpr, "R", 1);
+      g.globalAlpha = 1 - u;
+      roundBar(g, w * 0.4, floorY - 40 * dpr, w * 0.14, 10 * dpr);
+      g.globalAlpha = 1;
+      g.fillStyle = OK;
+      g.font = `800 ${Math.round(18 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.textAlign = "center";
+      g.fillText(`+${Math.round(8 + u * 10)} XP`, w * 0.32, h * 0.28 - u * 12 * dpr);
+      g.fillStyle = INK;
+      g.font = `700 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      g.fillText("Fewer parts → more XP", w / 2, h * 0.16);
+    }
+  }
+
   function loop(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
@@ -1620,6 +1844,7 @@ function boot() {
       if (acc >= DT) acc = 0;
     }
     draw();
+    drawHowtoDemo(now);
     requestAnimationFrame(loop);
   }
 
@@ -1630,7 +1855,7 @@ function boot() {
   setLayer("machine");
   refreshMeta();
   try {
-    if (!localStorage.getItem("bb-howto-v1") && !tightHud()) showHowto(0);
+    if (!localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
   } catch (e) { /* ignore */ }
   requestAnimationFrame(loop);
 }

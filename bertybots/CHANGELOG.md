@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.7.2** · 2026-09-18 · channel **live**  
+**Chip: BB 0.8.0** · 2026-09-18 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.7.2` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.8.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,19 @@ Rules:
 
 ---
 
-## Current train (0.7.x live)
+## Current train (0.8.x live)
+
+### 0.8.0 — Shop rank + visual how-to — 2026-09-18
+
+- Top bar: Helper → Apprentice → Builder → Lead → Shop tech. XP is local to the Chromebook. No names.
+- First win and lean machines (fewer parts than par) earn more. Courses are not locked.
+- How-to: four looping examples (crate to Drop Zone, parts, drag to hub, XP).
+
+Hard refresh if a cart still says 0.7.2.
+
+---
+
+## 0.7.x
 
 ### 0.7.2 — Tire tread — 2026-09-18
 
