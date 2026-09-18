@@ -12,6 +12,16 @@
       "source": "/paperlab/",
       "destination": "https://paperlab-one.vercel.app/",
       "permanent": false
+    },
+    {
+      "source": "/drift",
+      "destination": "https://drift-cnyguy815-8651.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/drift/",
+      "destination": "https://drift-cnyguy815-8651.vercel.app/",
+      "permanent": false
     }
   ]
 }
