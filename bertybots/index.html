@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <title>Berty's Botz BB 0.3.0 — Solvay Tech Ed</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <div id="app">
+    <header class="topbar">
+      <div class="brand">Berty's Botz <small id="chip">BB 0.3.0</small></div>
+      <input class="title" id="title" maxlength="48" placeholder="Level title (no names)">
+      <div class="row">
+        <button class="btn" id="btn-new">New</button>
+        <button class="btn" id="btn-open">Open</button>
+        <button class="btn gold" id="btn-save">Save file</button>
+        <select class="btn" id="level-pick">
+          <option value="open">Open Shop</option>
+          <option value="roll">Roll Out</option>
+          <option value="curb">Up the Curb</option>
+          <option value="pit">Mind the Pit</option>
+          <option value="wall">The Wall</option>
+          <option value="shelf">High Shelf</option>
+          <option value="bend">Around the Bend</option>
+          <option value="pair">Pair of Crates</option>
+        </select>
+      </div>
+      <div class="spacer"></div>
+      <div class="row">
+        <button class="btn" data-layer="machine">Machine</button>
+        <button class="btn" data-layer="level">Level</button>
+      </div>
+      <div class="row" id="machine-tools">
+        <button class="btn" data-tool="driveR">Drive-R</button>
+        <button class="btn" data-tool="driveL">Drive-L</button>
+        <button class="btn" data-tool="roller">Roller</button>
+        <button class="btn" data-tool="steel">Steel</button>
+        <button class="btn" data-tool="ghost">Ghost</button>
+        <button class="btn" data-tool="move">Move</button>
+        <button class="btn" data-tool="erase">Erase</button>
+      </div>
+      <div class="row" id="level-tools" hidden>
+        <button class="btn" data-tool="shop">Shop Floor</button>
+        <button class="btn" data-tool="drop">Drop Zone</button>
+        <button class="btn" data-tool="slab">Slab</button>
+        <button class="btn" data-tool="core">Bot Core</button>
+        <button class="btn" data-tool="erase">Erase</button>
+      </div>
+      <div class="row">
+        <button class="btn ok" id="btn-play">Play</button>
+        <button class="btn" id="btn-slow">Slow</button>
+        <button class="btn" id="btn-stop">Stop</button>
+        <button class="btn ghost" id="btn-cart">Starter cart</button>
+        <button class="btn ghost" id="btn-view">Reset view</button>
+        <button class="btn ghost" id="btn-undo">Undo</button>
+        <button class="btn ghost" id="btn-clear">Clear machine</button>
+        <a class="btn ghost" href="teacher.html">Teacher</a>
+        <a class="btn ghost" href="privacy.html">Privacy</a>
+        <a class="btn ghost" href="/">Tech Room</a>
+      </div>
+    </header>
+    <div class="stage">
+      <canvas id="c"></canvas>
+      <div class="toast" id="toast"></div>
+      <div class="win" id="win">DROP ZONE</div>
+    </div>
+    <footer class="status">
+      <span id="mode">SHOP</span>
+      <span>Parts <b id="count">0 / 48</b></span>
+      <span class="hint">Drag a wheel onto a hub · Space play · Z undo</span>
+    </footer>
+  </div>
+  <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
+  <script src="https://cdn.jsdelivr.net/npm/planck-js@0.3.14/dist/planck.min.js"></script>
+  <script src="js/bundle.js"></script>
+</body>
+</html>

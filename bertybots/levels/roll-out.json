@@ -1,0 +1,15 @@
+{
+  "app": "bertybots", "format": 1, "title": "Roll Out",
+  "level": {
+    "shop": { "x": 1.2, "y": 1.2, "w": 7.4, "h": 4.4 },
+    "drop": { "x": 16.5, "y": 1.2, "w": 5.5, "h": 3.2 },
+    "world": [
+      { "type": "slab", "x": 0, "y": 0, "w": 28, "h": 1.2 },
+      { "type": "slab", "x": 0, "y": 1.2, "w": 0.4, "h": 10 },
+      { "type": "slab", "x": 27.6, "y": 1.2, "w": 0.4, "h": 10 }
+    ],
+    "cores": [{ "x": 6.0, "y": 1.48 }],
+    "tools": ["driveR", "driveL", "roller", "steel", "ghost"]
+  },
+  "machine": { "parts": [] }
+}
