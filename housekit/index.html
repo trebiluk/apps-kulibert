@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0E1216">
+  <title>HouseKit</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" href="./icon.svg">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">HouseKit</div>
+    <div class="tools">
+      <button type="button" id="dark-btn">Light</button>
+      <button type="button" id="mode-btn">Big type</button>
+    </div>
+  </header>
+  <main id="app"></main>
+  <nav class="nav" aria-label="Main">
+    <button type="button" class="on" data-tab="home"><span>⌂</span>Home</button>
+    <button type="button" data-tab="shop"><span>$</span>Shop</button>
+    <button type="button" data-tab="jobs"><span>✓</span>Jobs</button>
+    <button type="button" data-tab="stock"><span>■</span>Stock</button>
+    <button type="button" data-tab="more"><span>⚙</span>More</button>
+  </nav>
+  <script src="./app.js"></script>
+</body>
+</html>
