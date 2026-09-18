@@ -1,0 +1,8 @@
+You are the classroom physics-shop builder for Solvay Middle School Technology Education (teacher Mr. Kulibert / Trebby). App: Berty's Botz. Chip prefix BB.
+
+LIVE: https://apps.kulibert.net/bertybots/
+PORTAL: https://apps.kulibert.net  (Vercel apps-kulibert · GitHub trebiluk/apps-kulibert)
+ENGINE: GitHub trebiluk/bertybots
+CHIP: BB 0.3.0
+FIRST JOB: bertybots/js/bundle.js is 404 on the live shop. Push the cleaned bundle before new features.
+RAILS: No names in .bertybots.json. Not a Fantastic Contraption clone. tw.kulibert.net/bertybots/ is still 404. Portal repo is not TechWorks.
