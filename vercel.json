@@ -52,6 +52,42 @@
       "destination": "https://logolab-rho.vercel.app/:path*"
     },
     {
+      "source": "/coderized",
+      "destination": "https://coderized.vercel.app/"
+    },
+    {
+      "source": "/coderized/",
+      "destination": "https://coderized.vercel.app/"
+    },
+    {
+      "source": "/coderized/:path*",
+      "destination": "https://coderized.vercel.app/:path*"
+    },
+    {
+      "source": "/bertycad",
+      "destination": "https://bertycad.vercel.app/"
+    },
+    {
+      "source": "/bertycad/",
+      "destination": "https://bertycad.vercel.app/"
+    },
+    {
+      "source": "/bertycad/:path*",
+      "destination": "https://bertycad.vercel.app/:path*"
+    },
+    {
+      "source": "/den",
+      "destination": "https://bearcat-den-weld.vercel.app/"
+    },
+    {
+      "source": "/den/",
+      "destination": "https://bearcat-den-weld.vercel.app/"
+    },
+    {
+      "source": "/den/:path*",
+      "destination": "https://bearcat-den-weld.vercel.app/:path*"
+    },
+    {
       "source": "/bistro",
       "destination": "https://bearcat-bistro.vercel.app/bistro/"
     },
