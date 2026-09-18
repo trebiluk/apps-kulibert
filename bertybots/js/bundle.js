@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.5.1 — bundled for any http(s) host */
+/* Berty's Botz BB 0.6.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.5.1";
+const APP_VERSION = "0.6.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.5.1";
+const APP_CHIP = "BB 0.6.0";
 const APP_BUILT = "2026-09-18";
 
 const FORMAT = 1;
@@ -104,10 +104,10 @@ const PAPER = "#f4efe6";
 const CRATE = "#c45c26";
 const INK = "#1a1a1a";
 const OK = "#2f6f4e";
-const STEEL = "#3d4f5e";
-const CONCRETE = "#1a2a3a";
-const YARD = "#cbb89a";
-const PLY = "#e6d3b0";
+const STEEL = "#5b6d7c";
+const CONCRETE = "#24384c";
+const YARD = "#f4efe6";
+const PLY = "#eadcc3";
 
 const WORLD_W = 28;
 const WORLD_H = 16;
@@ -143,7 +143,7 @@ const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 const HOWTO = [
   {
     title: "Ask the job",
-    body: "Every course has one output: park the Bot Core crate in the Staging Bay and keep it there for one second. Plywood rectangle is the Shop Floor. That is the only place you build.",
+    body: "Every course has one output: park the Bot Core crate in the Drop Zone and keep it there for one second. The dashed rectangle is the Shop Floor. That is the only place you build.",
   },
   {
     title: "Imagine parts as a system",
@@ -481,7 +481,7 @@ function boot() {
   function refreshMeta() {
     titleEl.value = doc.title;
     countEl.textContent = `${pieceCount(doc)} / ${PIECE_CAP}`;
-    modeEl.textContent = playing ? (slowMo ? "SLOW" : "PLAY") : "SHOP";
+    modeEl.textContent = playing ? (slowMo ? "Slow" : "Play") : "Shop";
     const slowBtn = document.getElementById("btn-slow");
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
     refreshGuide();
@@ -780,7 +780,7 @@ function boot() {
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
-        toast("Load secure. Rig works. Improve or save.");
+        toast("In the zone. Improve or save.");
         slowMo = true;
         pinnedStep = "improve";
         refreshMeta();
@@ -899,24 +899,7 @@ function boot() {
   }
 
   function drawCautionBar(x1, y1, x2, y2) {
-    drawCapsule(x1, y1, x2, y2, "rgba(244,185,66,0.28)", INK, false);
-    const ang = Math.atan2(y2 - y1, x2 - x1);
-    const len = Math.hypot(x2 - x1, y2 - y1);
-    const mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
-    ctx.save();
-    ctx.translate(wx(mx), wy(my));
-    ctx.rotate(-ang);
-    const hw = wr(len / 2), hh = wr(BAR_T / 2);
-    ctx.beginPath();
-    ctx.rect(-hw, -hh, hw * 2, hh * 2);
-    ctx.clip();
-    const step = 9;
-    for (let i = -hw - hh; i < hw + hh; i += step) {
-      ctx.fillStyle = (Math.floor((i + hw) / step) % 2 === 0) ? ORANGE : INK;
-      ctx.fillRect(i, -hh, step * 0.62, hh * 2);
-    }
-    ctx.restore();
-    drawCapsule(x1, y1, x2, y2, null, INK, false);
+    drawCapsule(x1, y1, x2, y2, "rgba(232,119,34,0.16)", ORANGE, true);
   }
 
   function drawWheel(x, y, a, type) {
@@ -926,7 +909,7 @@ function boot() {
     ctx.rotate(-a);
     ctx.beginPath();
     ctx.arc(0, 0, r, 0, Math.PI * 2);
-    ctx.fillStyle = "#2a241c";
+    ctx.fillStyle = "#d9cbb3";
     ctx.fill();
     ctx.beginPath();
     ctx.arc(0, 0, r * 0.78, 0, Math.PI * 2);
@@ -1027,7 +1010,7 @@ function boot() {
 
   function stencil(text, x, y, color) {
     ctx.fillStyle = color;
-    ctx.font = `800 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `700 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillText(text, x, y);
@@ -1057,12 +1040,11 @@ function boot() {
     ctx.strokeRect(wx(doc.level.shop.x), wy(doc.level.shop.y + doc.level.shop.h), wr(doc.level.shop.w), wr(doc.level.shop.h));
     ctx.setLineDash([]);
 
-    const dropFill = won ? "rgba(47,111,78,0.22)" : "rgba(232,119,34,0.12)";
-    drawRectWorld(doc.level.drop, ORANGE, dropFill);
-    hazardFrame(doc.level.drop);
+    const dropFill = won ? "rgba(47,111,78,0.18)" : "rgba(232,119,34,0.10)";
+    drawRectWorld(doc.level.drop, ORANGE, dropFill, true);
 
-    stencil("SHOP FLOOR", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
-    stencil("STAGING BAY", wx(doc.level.drop.x) + 10, wy(doc.level.drop.y + doc.level.drop.h) + 10, ORANGE);
+    stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
+    stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
 
     if (playing && trail.length > 1) {
       ctx.beginPath();

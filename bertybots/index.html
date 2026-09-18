@@ -9,21 +9,42 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.5.1 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.6.0 — Solvay Tech Ed</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
+  <svg class="sprites" aria-hidden="true">
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></symbol>
+    <symbol id="i-slow" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-stop" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5" fill="currentColor"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M5 8h14M5 12h14M5 16h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-machine" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 4.5v2.2M12 17.3V19.5M4.5 12h2.2M17.3 12H19.5M6.4 6.4l1.6 1.6M16 16l1.6 1.6M17.6 6.4 16 8M8 16l-1.6 1.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-level" viewBox="0 0 24 24"><rect x="4" y="14" width="16" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><rect x="7" y="8" width="7" height="6" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-drive-r" viewBox="0 0 24 24"><circle cx="11" cy="12" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="11" cy="12" r="1.8" fill="currentColor"/><path d="M18 9.5v5l4-2.5z" fill="currentColor"/></symbol>
+    <symbol id="i-drive-l" viewBox="0 0 24 24"><circle cx="13" cy="12" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="13" cy="12" r="1.8" fill="currentColor"/><path d="M6 9.5v5L2 12z" fill="currentColor"/></symbol>
+    <symbol id="i-roller" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12 5v2.5M12 16.5V19M5 12h2.5M16.5 12H19" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-steel" viewBox="0 0 24 24"><path d="M4 10h16v4H4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 8h16M4 16h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-ghost" viewBox="0 0 24 24"><rect x="4" y="9" width="16" height="6" rx="3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 2.5"/></symbol>
+    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 4v16M4 12h16M12 4l-2.2 2.2M12 4l2.2 2.2M12 20l-2.2-2.2M12 20l2.2-2.2M4 12l2.2-2.2M4 12l2.2 2.2M20 12l-2.2-2.2M20 12l-2.2 2.2" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-erase" viewBox="0 0 24 24"><path d="M15 6 7.5 13.5 10.5 16.5 18 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M6 18h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-shop" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="12" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-dasharray="3 2"/></symbol>
+    <symbol id="i-drop" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 8v6m0 0-2.2-2.2M12 14l2.2-2.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-slab" viewBox="0 0 24 24"><rect x="3" y="14" width="18" height="5" rx="1" fill="currentColor" opacity=".85"/></symbol>
+    <symbol id="i-crate" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 12h14M9 5v14M15 5v14" fill="none" stroke="currentColor" stroke-width="1.6"/></symbol>
+    <symbol id="i-guide" viewBox="0 0 24 24"><rect x="6" y="4" width="12" height="16" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M9 8h6M9 12h6M9 16h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-spec" viewBox="0 0 24 24"><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.7"/><rect x="13" y="6" width="6" height="4" rx="1" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10.5v5.5h8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  </svg>
   <div id="rotate-gate">
-    <p class="rotate-kicker">Job site</p>
-    <h1>Turn the device sideways</h1>
-    <p>The shop floor is a workbench. Landscape only — same as Tinkercad or a job trailer screen.</p>
-    <button class="btn gold" id="btn-wide" type="button">Try widescreen</button>
+    <p class="rotate-kicker">Berty's Botz</p>
+    <h1>Turn sideways</h1>
+    <p>The shop is landscape, like a workbench.</p>
+    <button class="btn gold" id="btn-wide" type="button">Try landscape</button>
   </div>
   <div id="app">
     <header class="hud">
-      <div class="brand">Berty's Botz <small id="chip">BB 0.5.1</small></div>
+      <div class="brand">Berty's Botz <small id="chip">BB 0.6.0</small></div>
       <select class="btn hud-pick" id="level-pick" aria-label="Starter course">
         <option value="open">Open Shop</option>
         <option value="roll">Roll Out</option>
@@ -35,39 +56,41 @@
         <option value="pair">Pair of Crates</option>
       </select>
       <div class="hud-play">
-        <button class="btn ok" id="btn-play">Play</button>
-        <button class="btn" id="btn-slow" title="S">Slow</button>
-        <button class="btn" id="btn-stop">Stop</button>
+        <button class="btn ok ico" id="btn-play"><svg><use href="#i-play"/></svg><span>Play</span></button>
+        <button class="btn ico" id="btn-slow" title="S"><svg><use href="#i-slow"/></svg><span>Slow</span></button>
+        <button class="btn ico" id="btn-stop"><svg><use href="#i-stop"/></svg><span>Stop</span></button>
       </div>
-      <button class="btn gold" id="btn-crew" type="button" aria-expanded="false">Crew</button>
+      <button class="btn gold ico" id="btn-crew" type="button" aria-expanded="false"><svg><use href="#i-menu"/></svg><span>Menu</span></button>
     </header>
     <div class="dock">
       <div class="row layers">
-        <button class="btn" data-layer="machine">Machine</button>
-        <button class="btn" data-layer="level">Level</button>
+        <button class="btn ico" data-layer="machine"><svg><use href="#i-machine"/></svg><span>Machine</span></button>
+        <button class="btn ico" data-layer="level"><svg><use href="#i-level"/></svg><span>Level</span></button>
       </div>
       <div class="row tools" id="machine-tools">
-        <button class="btn" data-tool="driveR" title="1">Drive-R</button>
-        <button class="btn" data-tool="driveL" title="2">Drive-L</button>
-        <button class="btn" data-tool="roller" title="3">Roller</button>
-        <button class="btn" data-tool="steel" title="4">Steel</button>
-        <button class="btn" data-tool="ghost" title="5">Ghost</button>
-        <button class="btn" data-tool="move" title="M">Move</button>
-        <button class="btn" data-tool="erase" title="E">Erase</button>
+        <button class="btn ico" data-tool="driveR" title="1"><svg><use href="#i-drive-r"/></svg><span>Drive-R</span></button>
+        <button class="btn ico" data-tool="driveL" title="2"><svg><use href="#i-drive-l"/></svg><span>Drive-L</span></button>
+        <button class="btn ico" data-tool="roller" title="3"><svg><use href="#i-roller"/></svg><span>Roller</span></button>
+        <button class="btn ico" data-tool="steel" title="4"><svg><use href="#i-steel"/></svg><span>Steel</span></button>
+        <button class="btn ico" data-tool="ghost" title="5"><svg><use href="#i-ghost"/></svg><span>Ghost</span></button>
+        <button class="btn ico" data-tool="move" title="M"><svg><use href="#i-move"/></svg><span>Move</span></button>
+        <button class="btn ico" data-tool="erase" title="E"><svg><use href="#i-erase"/></svg><span>Erase</span></button>
       </div>
       <div class="row tools" id="level-tools" hidden>
-        <button class="btn" data-tool="shop">Shop Floor</button>
-        <button class="btn" data-tool="drop">Drop Zone</button>
-        <button class="btn" data-tool="slab">Slab</button>
-        <button class="btn" data-tool="core">Bot Core</button>
-        <button class="btn" data-tool="erase">Erase</button>
+        <button class="btn ico" data-tool="shop"><svg><use href="#i-shop"/></svg><span>Floor</span></button>
+        <button class="btn ico" data-tool="drop"><svg><use href="#i-drop"/></svg><span>Drop</span></button>
+        <button class="btn ico" data-tool="slab"><svg><use href="#i-slab"/></svg><span>Slab</span></button>
+        <button class="btn ico" data-tool="core"><svg><use href="#i-crate"/></svg><span>Crate</span></button>
+        <button class="btn ico" data-tool="erase"><svg><use href="#i-erase"/></svg><span>Erase</span></button>
       </div>
     </div>
     <section class="guide" id="guide" aria-label="Design process">
       <div class="guide-bar">
-        <button class="packet-chip" id="btn-packet" type="button" aria-expanded="false">Job packet</button>
+        <button class="packet-chip" id="btn-packet" type="button" aria-expanded="false">
+          <svg><use href="#i-guide"/></svg> Guide
+        </button>
         <p class="guide-line" id="guide-line">Ask: park the Bot Core crate in the Drop Zone.</p>
-        <button class="btn ghost tight" id="btn-systems" type="button">Spec</button>
+        <button class="btn ghost tight ico-inline" id="btn-systems" type="button"><svg><use href="#i-spec"/></svg> Systems</button>
       </div>
       <div class="guide-drawer" id="guide-drawer" hidden>
         <div class="guide-steps" id="guide-steps" role="tablist" aria-label="Design process steps">
@@ -80,17 +103,17 @@
         </div>
         <div class="row">
           <button class="btn ghost" id="btn-guide" aria-pressed="true">Guide on</button>
-          <button class="btn gold" id="btn-howto">Site induction</button>
+          <button class="btn gold" id="btn-howto">How to shop</button>
         </div>
       </div>
     </section>
     <div class="stage">
       <canvas id="c"></canvas>
       <div class="toast" id="toast"></div>
-      <div class="win" id="win">LOAD SECURE</div>
+      <div class="win" id="win">In the zone</div>
       <div class="howto" id="howto" hidden>
         <div class="howto-card" role="dialog" aria-labelledby="howto-title">
-          <p class="howto-kicker">Site induction · 4 beats</p>
+          <p class="howto-kicker">How to shop · 4 beats</p>
           <h2 id="howto-title">How this shop works</h2>
           <p id="howto-body"></p>
           <div class="row howto-actions">
@@ -101,12 +124,12 @@
       </div>
       <div class="sheet" id="systems" hidden>
         <div class="sheet-card" role="dialog" aria-labelledby="systems-title">
-          <h2 id="systems-title">This rig is a system</h2>
+          <h2 id="systems-title">This machine is a system</h2>
           <ol class="ipof">
             <li><b>Input</b> — gravity, Drive-R / Drive-L torque, starting pose of the crate</li>
             <li><b>Process</b> — your machine: Drive, Roller, Steel, Ghost</li>
             <li><b>Output</b> — crate motion; win = every Bot Core inside the Drop Zone for one second</li>
-            <li><b>Feedback</b> — orange trail, Slow, LOAD SECURE banner, Stop restores the shop</li>
+            <li><b>Feedback</b> — orange trail, Slow, In the zone, Stop restores the shop</li>
           </ol>
           <p class="systems-course" id="systems-course"></p>
           <p class="hint">Constraints: 48 parts, Shop Floor, slabs, period time. Pair: builder + observer.</p>
@@ -115,8 +138,8 @@
       </div>
       <div class="sheet" id="crew" hidden>
         <div class="sheet-card" role="dialog" aria-labelledby="crew-title">
-          <h2 id="crew-title">Crew menu</h2>
-          <label class="crew-label" for="title">Job title (no names)</label>
+          <h2 id="crew-title">Menu</h2>
+          <label class="crew-label" for="title">Level title (no names)</label>
           <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
           <div class="row">
             <button class="btn" id="btn-new">New</button>
@@ -138,9 +161,9 @@
       </div>
     </div>
     <footer class="status">
-      <span id="mode">SHOP</span>
+      <span id="mode">Shop</span>
       <span>Parts <b id="count">0 / 48</b></span>
-      <span class="hint" id="status-hint">Job packet · drag a wheel onto a hub · Space play · Z undo</span>
+      <span class="hint" id="status-hint">Ask the job · drag a wheel onto a hub · Space play · Z undo</span>
     </footer>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>

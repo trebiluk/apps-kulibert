@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.5.1** · 2026-09-18 · channel **live**  
+**Chip: BB 0.6.0** · 2026-09-18 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.5.1` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.6.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,20 @@ Rules:
 
 ---
 
-## Current train (0.5.x live)
+## Current train (0.6.x live)
+
+### 0.6.0 — Softer shop + pictograms — 2026-09-18
+
+- Hazard tape off the HUD. Paper floor. Drop Zone, not Staging Bay.
+- Tool buttons are pictogram + short word (wheel, beam, crate, play triangle).
+- Menu (was Crew). Guide (was Job packet). How to shop (was Site induction).
+- Ghost is a dashed bar again. Win reads “In the zone.”
+
+Hard refresh if a cart still says 0.5.1.
+
+---
+
+## 0.5.x
 
 ### 0.5.1 — Landscape HUD — 2026-09-18
 
