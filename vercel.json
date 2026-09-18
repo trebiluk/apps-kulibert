@@ -178,15 +178,15 @@
     },
     {
       "source": "/drift",
-      "destination": "https://drift-sigma-seven.vercel.app/"
+      "destination": "https://drift-psi-two.vercel.app/"
     },
     {
       "source": "/drift/",
-      "destination": "https://drift-sigma-seven.vercel.app/"
+      "destination": "https://drift-psi-two.vercel.app/"
     },
     {
       "source": "/drift/:path*",
-      "destination": "https://drift-sigma-seven.vercel.app/:path*"
+      "destination": "https://drift-psi-two.vercel.app/:path*"
     },
     {
       "source": "/coderized",
