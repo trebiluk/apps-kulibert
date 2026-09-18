@@ -17,15 +17,152 @@
   "rewrites": [
     {
       "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/logolab/"
+      "destination": "https://logolab-rho.vercel.app/"
     },
     {
       "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/logolab/"
+      "destination": "https://logolab-rho.vercel.app/"
     },
     {
       "source": "/logolab/:path*",
-      "destination": "https://logolab-rho.vercel.app/logolab/:path*"
+      "destination": "https://logolab-rho.vercel.app/:path*"
+    },
+    {
+      "source": "/assets/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ],
+      "destination": "https://logolab-rho.vercel.app/assets/:path*"
+    },
+    {
+      "source": "/favicon.svg",
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ],
+      "destination": "https://logolab-rho.vercel.app/favicon.svg"
+    },
+    {
+      "source": "/__grok/:path*",
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ],
+      "destination": "https://logolab-rho.vercel.app/__grok/:path*"
+    },
+    {
+      "source": "/assets/badge-DttYFUav.js",
+      "destination": "https://logolab-rho.vercel.app/assets/badge-DttYFUav.js"
+    },
+    {
+      "source": "/assets/button-CnBWV0Vf.js",
+      "destination": "https://logolab-rho.vercel.app/assets/button-CnBWV0Vf.js"
+    },
+    {
+      "source": "/assets/createLucideIcon-BgD1oL8Z.js",
+      "destination": "https://logolab-rho.vercel.app/assets/createLucideIcon-BgD1oL8Z.js"
+    },
+    {
+      "source": "/assets/eye-D_XRxhx5.js",
+      "destination": "https://logolab-rho.vercel.app/assets/eye-D_XRxhx5.js"
+    },
+    {
+      "source": "/assets/glossary-BkwGbwL7.js",
+      "destination": "https://logolab-rho.vercel.app/assets/glossary-BkwGbwL7.js"
+    },
+    {
+      "source": "/assets/glossary-DdBDEmfq.js",
+      "destination": "https://logolab-rho.vercel.app/assets/glossary-DdBDEmfq.js"
+    },
+    {
+      "source": "/assets/index-BTmrzhBU.js",
+      "destination": "https://logolab-rho.vercel.app/assets/index-BTmrzhBU.js"
+    },
+    {
+      "source": "/assets/lessons-B31WmV3k.js",
+      "destination": "https://logolab-rho.vercel.app/assets/lessons-B31WmV3k.js"
+    },
+    {
+      "source": "/assets/mark-board--YdmKTBo.js",
+      "destination": "https://logolab-rho.vercel.app/assets/mark-board--YdmKTBo.js"
+    },
+    {
+      "source": "/assets/marks-B6mVlBd-.js",
+      "destination": "https://logolab-rho.vercel.app/assets/marks-B6mVlBd-.js"
+    },
+    {
+      "source": "/assets/preload-helper-CTDp_z3e.js",
+      "destination": "https://logolab-rho.vercel.app/assets/preload-helper-CTDp_z3e.js"
+    },
+    {
+      "source": "/assets/printables-KslduGIO.js",
+      "destination": "https://logolab-rho.vercel.app/assets/printables-KslduGIO.js"
+    },
+    {
+      "source": "/assets/printables-Kt3US79o.js",
+      "destination": "https://logolab-rho.vercel.app/assets/printables-Kt3US79o.js"
+    },
+    {
+      "source": "/assets/routes-CHnXdHkb.js",
+      "destination": "https://logolab-rho.vercel.app/assets/routes-CHnXdHkb.js"
+    },
+    {
+      "source": "/assets/score-DXjL5NPU.js",
+      "destination": "https://logolab-rho.vercel.app/assets/score-DXjL5NPU.js"
+    },
+    {
+      "source": "/assets/sentence-frames-DHMF_xDC.js",
+      "destination": "https://logolab-rho.vercel.app/assets/sentence-frames-DHMF_xDC.js"
+    },
+    {
+      "source": "/assets/speak-button-XjRWH3ZB.js",
+      "destination": "https://logolab-rho.vercel.app/assets/speak-button-XjRWH3ZB.js"
+    },
+    {
+      "source": "/assets/store-D8ecx2_c.js",
+      "destination": "https://logolab-rho.vercel.app/assets/store-D8ecx2_c.js"
+    },
+    {
+      "source": "/assets/studio-games-CAnSEmQ1.js",
+      "destination": "https://logolab-rho.vercel.app/assets/studio-games-CAnSEmQ1.js"
+    },
+    {
+      "source": "/assets/studio-iSiaYsHl.js",
+      "destination": "https://logolab-rho.vercel.app/assets/studio-iSiaYsHl.js"
+    },
+    {
+      "source": "/assets/styles-985hU-o7.css",
+      "destination": "https://logolab-rho.vercel.app/assets/styles-985hU-o7.css"
+    },
+    {
+      "source": "/assets/teacher-Dm3yCkPf.js",
+      "destination": "https://logolab-rho.vercel.app/assets/teacher-Dm3yCkPf.js"
+    },
+    {
+      "source": "/assets/trophy-cNQYjZ6p.js",
+      "destination": "https://logolab-rho.vercel.app/assets/trophy-cNQYjZ6p.js"
+    },
+    {
+      "source": "/assets/_id-CT7goU4p.js",
+      "destination": "https://logolab-rho.vercel.app/assets/_id-CT7goU4p.js"
+    },
+    {
+      "source": "/assets/_id-D4rCkWA3.js",
+      "destination": "https://logolab-rho.vercel.app/assets/_id-D4rCkWA3.js"
+    },
+    {
+      "source": "/assets/_id-Dp3MX9Lq.js",
+      "destination": "https://logolab-rho.vercel.app/assets/_id-Dp3MX9Lq.js"
     },
     {
       "source": "/paperlab",
