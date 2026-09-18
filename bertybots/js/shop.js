@@ -240,71 +240,7 @@ export function boot() {
   const modeEl = document.getElementById("mode");
   const winEl = document.getElementById("win");
 
-
   chipEl.textContent = APP_CHIP;
-
-  const HEAT_CH = "bb-heat-v1";
-  const HEAT_KEY = "bb-heat-period-v1";
-  const ROLE_KEY = "bb-role-v1";
-  let heat = { parked: 0, ids: {} };
-  try {
-    const raw = localStorage.getItem(HEAT_KEY);
-    if (raw) heat = JSON.parse(raw) || heat;
-    if (typeof heat.parked !== "number") heat = { parked: 0, ids: {} };
-    if (!heat.ids || typeof heat.ids !== "object") heat.ids = {};
-  } catch (e) { heat = { parked: 0, ids: {} }; }
-  let heatCh = null;
-  try { heatCh = new BroadcastChannel(HEAT_CH); } catch (e) { heatCh = null; }
-
-  function persistHeat() {
-    try { localStorage.setItem(HEAT_KEY, JSON.stringify({ parked: heat.parked, ids: heat.ids })); } catch (e) { /* private mode */ }
-  }
-  function renderHeat() {
-    const n = document.getElementById("heat-n");
-    if (n) n.textContent = String(heat.parked);
-  }
-  function notePark(id) {
-    if (!id || heat.ids[id]) return;
-    heat.ids[id] = 1;
-    heat.parked += 1;
-    persistHeat();
-    renderHeat();
-  }
-  function parkHeat() {
-    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
-    notePark(id);
-    try { if (heatCh) heatCh.postMessage({ t: "park", id }); } catch (e) { /* ignore */ }
-  }
-  function resetHeat(fromRemote) {
-    heat = { parked: 0, ids: {} };
-    persistHeat();
-    renderHeat();
-    if (!fromRemote) {
-      try { if (heatCh) heatCh.postMessage({ t: "reset" }); } catch (e) { /* ignore */ }
-      toast("New period. Heat is 0 parked.");
-    }
-  }
-  if (heatCh) {
-    heatCh.onmessage = (ev) => {
-      const m = ev.data || {};
-      if (m.t === "park") notePark(m.id);
-      if (m.t === "reset") resetHeat(true);
-    };
-  }
-  renderHeat();
-
-  function setRole(role, quiet) {
-    const r = role === "observer" ? "observer" : "builder";
-    try { sessionStorage.setItem(ROLE_KEY, r); } catch (e) { /* private mode */ }
-    document.body.dataset.role = r;
-    const b = document.getElementById("role-builder");
-    const o = document.getElementById("role-observer");
-    if (b) { b.classList.toggle("on", r === "builder"); b.setAttribute("aria-pressed", r === "builder" ? "true" : "false"); }
-    if (o) { o.classList.toggle("on", r === "observer"); o.setAttribute("aria-pressed", r === "observer" ? "true" : "false"); }
-    if (!quiet) toast(r === "observer" ? "Observer: watch the crate." : "Builder: place parts.");
-  }
-  try { setRole(sessionStorage.getItem(ROLE_KEY) || "builder", true); } catch (e) { setRole("builder", true); }
-
 
   const view = { scale: 36, ox: 0, oy: 0, dpr: 1, zoom: 1, panx: 0, pany: 0 };
   let doc = defaultDoc();
@@ -484,6 +420,8 @@ export function boot() {
     if (nameEl) nameEl.textContent = rank.name;
     if (fill) fill.style.width = `${pct}%`;
     if (nEl) nEl.textContent = `${progress.xp} XP`;
+    const menuRank = document.getElementById("rank-menu");
+    if (menuRank) menuRank.textContent = `${rank.name} · ${progress.xp} XP`;
     if (bar) {
       bar.setAttribute("aria-valuenow", String(progress.xp));
       bar.setAttribute("aria-valuemax", String(next ? next.at : rank.at + span));
@@ -573,7 +511,6 @@ export function boot() {
     };
     saveProgress();
     refreshRank();
-    parkHeat();
     const after = rankAt(progress.xp).name;
     if (after !== before) toast(`${after} rank. Lean machines earn more XP.`);
     else toast(`+${gain} XP · ${parts} parts${lean > 0 ? " · lean bonus" : ""}. In the zone.`);
@@ -623,6 +560,11 @@ export function boot() {
     modeEl.textContent = playing ? (slowMo ? "Slow" : "Play") : "Shop";
     const slowBtn = document.getElementById("btn-slow");
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
+    const slowMenu = document.getElementById("btn-slow-menu");
+    if (slowMenu) {
+      slowMenu.classList.toggle("on", slowMo);
+      slowMenu.textContent = slowMo ? "Slow on" : "Slow";
+    }
     refreshGuide();
     refreshRank();
     refreshLesson();
@@ -1842,20 +1784,17 @@ export function boot() {
     document.querySelectorAll("[data-layer]").forEach((b) => {
       b.addEventListener("click", () => setLayer(b.getAttribute("data-layer")));
     });
-    const periodBtn = document.getElementById("btn-period");
-    if (periodBtn) periodBtn.addEventListener("click", () => resetHeat(false));
-    const roleB = document.getElementById("role-builder");
-    const roleO = document.getElementById("role-observer");
-    if (roleB) roleB.addEventListener("click", () => setRole("builder"));
-    if (roleO) roleO.addEventListener("click", () => setRole("observer"));
     document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
     document.getElementById("btn-stop").addEventListener("click", stopPlay);
-    const slowBtn = document.getElementById("btn-slow");
-    if (slowBtn) slowBtn.addEventListener("click", () => {
+    const toggleSlow = () => {
       slowMo = !slowMo;
       refreshMeta();
       toast(slowMo ? "Slow-mo on" : "Full speed");
-    });
+    };
+    const slowBtn = document.getElementById("btn-slow");
+    if (slowBtn) slowBtn.addEventListener("click", toggleSlow);
+    const slowMenu = document.getElementById("btn-slow-menu");
+    if (slowMenu) slowMenu.addEventListener("click", toggleSlow);
     const cartBtn = document.getElementById("btn-cart");
     if (cartBtn) cartBtn.addEventListener("click", starterCart);
     const viewBtn = document.getElementById("btn-view");
