@@ -22,26 +22,28 @@
       "source": "/drift/",
       "destination": "https://drift-sigma-seven.vercel.app/",
       "permanent": false
-    },
+    }
+  ],
+  "rewrites": [
     {
       "source": "/bistro",
-      "destination": "https://bearcat-bistro.vercel.app/",
-      "permanent": false
+      "destination": "https://bearcat-bistro.vercel.app/bistro"
     },
     {
       "source": "/bistro/",
-      "destination": "https://bearcat-bistro.vercel.app/",
-      "permanent": false
+      "destination": "https://bearcat-bistro.vercel.app/bistro/"
+    },
+    {
+      "source": "/bistro/:path*",
+      "destination": "https://bearcat-bistro.vercel.app/bistro/:path*"
     },
     {
       "source": "/lunch",
-      "destination": "https://bearcat-bistro.vercel.app/",
-      "permanent": false
+      "destination": "https://bearcat-bistro.vercel.app/bistro"
     },
     {
       "source": "/lunch/",
-      "destination": "https://bearcat-bistro.vercel.app/",
-      "permanent": false
+      "destination": "https://bearcat-bistro.vercel.app/bistro/"
     }
   ]
 }
