@@ -40,7 +40,7 @@
       <button type="button" id="mode-btn">Big type</button>
     </div>
   </header>
-  <main id="app"><div class="wrap"><div class="card"><strong>Sprocket</strong><p class="muted">Loading tools…</p></div></div></main>
+  <main id="app"></main>
   <nav class="nav" aria-label="Main">
     <button type="button" class="on" data-tab="home"><span>⌂</span>Home</button>
     <button type="button" data-tab="convert"><span>↔</span>Convert</button>
@@ -49,16 +49,16 @@
     <button type="button" data-tab="help"><span>?</span>Help</button>
     <button type="button" data-tab="more"><span>⚙</span>More</button>
   </nav>
-  <script src="./a.js"></script>
+  <script src="./a1.js"></script>
+  <script src="./a2.js"></script>
   <script src="./b.js"></script>
   <script>
   function bootFail(){
     var root=document.getElementById("app");
-    if(root) root.innerHTML="<div class=\"wrap\"><div class=\"card\"><h1>Sprocket 1.4.0</h1><p class=\"muted\">Tools did not load. Hard refresh this page (or clear cache). Need a.js and b.js next to index.html.</p></div></div>";
+    if(root) root.innerHTML="<div class=\"wrap\"><div class=\"card\"><h1>Sprocket 1.4.0</h1><p class=\"muted\">Tools did not load. Hard refresh. Need a1.js, a2.js, and b.js next to this page.</p></div></div>";
   }
-  if (typeof render !== "function") {
-    bootFail();
-  } else {
+  if (typeof render !== "function") { bootFail(); }
+  else {
     try {
       document.querySelectorAll(".nav button").forEach(function(b){ b.onclick=function(){ setTab(b.dataset.tab); }; });
       document.getElementById("mode-btn").onclick=function(){ state.studentMode=!state.studentMode; save(); render(); };
@@ -74,9 +74,7 @@
       }
       render();
       setInterval(tick, 1000);
-    } catch (err) {
-      bootFail();
-    }
+    } catch (err) { bootFail(); }
   }
   </script>
 </body>
