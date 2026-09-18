@@ -381,6 +381,8 @@ export function boot() {
     if (!d) return;
     d.hidden = !on;
     if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
+    const rail = document.getElementById("rail");
+    if (on && rail) rail.classList.add("open");
   }
 
   function tryWide() {
@@ -1432,6 +1434,15 @@ export function boot() {
         if (ev.target === howtoRoot) hideHowto();
       });
     }
+    const railBtn = document.getElementById("btn-rail");
+    const rail = document.getElementById("rail");
+    if (railBtn && rail) {
+      railBtn.addEventListener("click", () => {
+        const on = !rail.classList.contains("open");
+        rail.classList.toggle("open", on);
+        railBtn.setAttribute("aria-expanded", on ? "true" : "false");
+      });
+    }
     const crewBtn = document.getElementById("btn-crew");
     if (crewBtn) {
       crewBtn.addEventListener("click", () => {
@@ -1501,7 +1512,6 @@ export function boot() {
   setTool("driveR");
   setLayer("machine");
   refreshMeta();
-  if (window.matchMedia("(min-width: 1100px) and (min-height: 700px)").matches) setPacket(true);
   try {
     if (!localStorage.getItem("bb-howto-v1") && !tightHud()) showHowto(0);
   } catch (e) { /* ignore */ }

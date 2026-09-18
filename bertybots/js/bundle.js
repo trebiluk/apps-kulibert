@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.6.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.7.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.6.0";
+const APP_VERSION = "0.7.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.6.0";
+const APP_CHIP = "BB 0.7.0";
 const APP_BUILT = "2026-09-18";
 
 const FORMAT = 1;
@@ -469,6 +469,8 @@ function boot() {
     if (!d) return;
     d.hidden = !on;
     if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
+    const rail = document.getElementById("rail");
+    if (on && rail) rail.classList.add("open");
   }
 
   function tryWide() {
@@ -1520,6 +1522,15 @@ function boot() {
         if (ev.target === howtoRoot) hideHowto();
       });
     }
+    const railBtn = document.getElementById("btn-rail");
+    const rail = document.getElementById("rail");
+    if (railBtn && rail) {
+      railBtn.addEventListener("click", () => {
+        const on = !rail.classList.contains("open");
+        rail.classList.toggle("open", on);
+        railBtn.setAttribute("aria-expanded", on ? "true" : "false");
+      });
+    }
     const crewBtn = document.getElementById("btn-crew");
     if (crewBtn) {
       crewBtn.addEventListener("click", () => {
@@ -1589,7 +1600,6 @@ function boot() {
   setTool("driveR");
   setLayer("machine");
   refreshMeta();
-  if (window.matchMedia("(min-width: 1100px) and (min-height: 700px)").matches) setPacket(true);
   try {
     if (!localStorage.getItem("bb-howto-v1") && !tightHud()) showHowto(0);
   } catch (e) { /* ignore */ }
