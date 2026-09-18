@@ -12,6 +12,7 @@ Trebby (Diego): regular Grok Build must be able to edit and publish classroom ap
 | The Tech Room | https://apps.kulibert.net | **Must be** GitHub `trebiluk/apps-kulibert` (wire if missing) | Vercel project **apps-kulibert** |
 | Coderized | https://coderized.vercel.app | Vercel **coderized** | Vercel prod |
 | Sprocket PrintKit | jsDelivr `trebiluk/sprocket-printkit` | GitHub `trebiluk/sprocket-printkit` | push main |
+| LogoLab | https://logolab-rho.vercel.app · door `/logolab/` | GitHub `trebiluk/logolab` `main` | Vercel project **logolab**. Custom host logolab.kulibert.net pending Cloudflare CNAME. |
 
 ## Hard rails
 1. **Never remap** Grok Orbit → tw.kulibert.net. Orbit is leftover.
