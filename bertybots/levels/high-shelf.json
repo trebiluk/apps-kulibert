@@ -1,0 +1,18 @@
+{
+  "app": "bertybots",
+  "format": 1,
+  "title": "High Shelf",
+  "level": {
+    "shop": { "x": 1.0, "y": 1.2, "w": 7.4, "h": 4.8 },
+    "drop": { "x": 18.6, "y": 5.4, "w": 5.6, "h": 2.8 },
+    "world": [
+      { "type": "slab", "x": 0, "y": 0, "w": 16.4, "h": 1.2 },
+      { "type": "slab", "x": 16.4, "y": 0, "w": 11.6, "h": 5.4 },
+      { "type": "slab", "x": 0, "y": 1.2, "w": 0.4, "h": 10 },
+      { "type": "slab", "x": 27.6, "y": 1.2, "w": 0.4, "h": 10 }
+    ],
+    "cores": [{ "x": 3.1, "y": 2.15 }],
+    "tools": ["driveR", "driveL", "roller", "steel", "ghost"]
+  },
+  "machine": { "parts": [] }
+}

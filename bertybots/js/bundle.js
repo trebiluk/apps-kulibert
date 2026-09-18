@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.3.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.4.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.3.0";
+const APP_VERSION = "0.4.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.3.0";
+const APP_CHIP = "BB 0.4.0";
 const APP_BUILT = "2026-09-17";
 
 const FORMAT = 1;
@@ -134,6 +134,102 @@ const BUILTIN = [
   { id: "pair", label: "Pair of Crates", url: "levels/pair-of-crates.json" },
 ];
 
+const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
+
+const HOWTO = [
+  {
+    title: "Ask the job",
+    body: "Every course has one output: park the Bot Core crate in the Drop Zone and keep it there for one second. Navy rectangle is the Shop Floor. That is the only place you build.",
+  },
+  {
+    title: "Imagine parts as a system",
+    body: "Drive-R and Drive-L add energy. Roller rolls. Steel is structure (it collides). Ghost ignores the machine and still hits the world and the crate. Constraints: 48 parts, gravity, slabs.",
+  },
+  {
+    title: "Create, then test",
+    body: "Drag a wheel onto a hub (orange ring). Steel pulls from a node — a tap does not drop a bar. Play. Stop always restores the shop. Starter cart is a floor pusher, not the answer on curbs, pits, or walls.",
+  },
+  {
+    title: "Improve with feedback",
+    body: "Change one thing. Slow-mo is for pointing at a fail. Pair: builder + observer. Save a local file with a course title only — no names. Input → process → output → feedback is the system.",
+  },
+];
+
+const GUIDE = {
+  open: {
+    ask: "Ask: park the Bot Core crate in the Drop Zone. That is the job.",
+    imagine: "Imagine: Drive-R / Drive-L (energy), Roller, Steel (structure), Ghost (misses the machine).",
+    plan: "Plan: build only on the Shop Floor. 48-part cap. Pair — builder places, observer watches the crate.",
+    create: "Create: drag a wheel onto a hub. Steel pulls from a node. Starter cart is a pusher, not a finished design.",
+    test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
+    improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
+    system: "Open Shop is a straight process path. Input energy on the floor, process through the machine, output the crate into the zone.",
+  },
+  roll: {
+    ask: "Ask: Roll Out. Flat floor. Crate starts on the Shop Floor. Drop Zone is to the right.",
+    imagine: "Imagine a low pusher: Roller + Steel + Drive-R. Energy in the Drive, structure in the Steel, payload is the crate.",
+    plan: "Plan a machine that stays on the slab. Do not climb. Do not jump. Slide the crate.",
+    create: "Create on the Shop Floor, then put the crate in front of the axle — not under it. Starter cart is legal here.",
+    test: "Test: Play. Watch the trail. If the crate spins in place, the process is fighting itself.",
+    improve: "Improve: one change (longer bar, extra Roller, less overlap). Then Test again.",
+    system: "Roll Out — Input: Drive torque + gravity. Process: floor pusher. Output: crate slides right. Feedback: trail. Constraint: stay on the slab.",
+  },
+  curb: {
+    ask: "Ask: Up the Curb. The Drop Zone sits on a higher slab. The crate has to gain height.",
+    imagine: "Imagine a ramp, a lift, or a machine that climbs. A floor pusher is not a curb solution.",
+    plan: "Plan the height change as part of the process. Measure the curb with your eye before you place parts.",
+    create: "Create on the Shop Floor only. The curb is world, not a part. Ghost can touch world + crate.",
+    test: "Test: if the crate slams the face of the curb, the output never reaches the zone. Slow-mo the fail.",
+    improve: "Improve the process, not the goal. The Drop Zone does not move. Your machine does.",
+    system: "Up the Curb — Input energy must lift the payload. The curb is a constraint in the process path. Output is up, not just right.",
+  },
+  pit: {
+    ask: "Ask: Mind the Pit. There is a gap in the world. The crate cannot fall in.",
+    imagine: "Imagine a bridge, a long reach, or a launch that clears the pit. Falling is a failed output.",
+    plan: "Plan the path across the missing slab. Ghost can span world without snagging the machine.",
+    create: "Create the crossing on the Shop Floor. Do not fill the pit by editing the course unless you are in Level layer.",
+    test: "Test: Slow if it dives. Feedback is the trail disappearing into the gap.",
+    improve: "Improve one subsystem: longer structure, different Drive side, or a Ghost rail.",
+    system: "Mind the Pit — the world is a system with a missing process path. Input still works; output fails if the payload leaves the path.",
+  },
+  wall: {
+    ask: "Ask: The Wall. A slab stands between Shop Floor and Drop Zone.",
+    imagine: "Imagine going over, around, or through with Ghost. A floor pusher hits the wall and stops.",
+    plan: "Plan which subsystem beats the wall: structure over it, or Ghost that ignores the machine.",
+    create: "Create on the Shop Floor. The wall is a constraint, not a part you erase in Machine layer.",
+    test: "Test: Slow the impact. If energy dies at the wall, the process path is blocked.",
+    improve: "Improve the path, not the torque only. More Drive into a wall is still a wall.",
+    system: "The Wall — a constraint in the process. Feedback is a dead stop. Output is on the far side.",
+  },
+  shelf: {
+    ask: "Ask: High Shelf. The Drop Zone is up. Height is the job.",
+    imagine: "Imagine stacking, climbing, or lifting. Starter cart stays on the floor.",
+    plan: "Plan vertical process, not just horizontal push.",
+    create: "Create within the Shop Floor. Reach out, then up.",
+    test: "Test the lift. Slow the moment it falls off the shelf.",
+    improve: "Improve support under the crate, not only speed.",
+    system: "High Shelf — input energy vs gravity as competing inputs. Output is a raised crate that stays put.",
+  },
+  bend: {
+    ask: "Ask: Around the Bend. The path is not a straight line.",
+    imagine: "Imagine a machine that turns, or a sequence of pushes.",
+    plan: "Plan the corner before the Drive. Observer calls the turn.",
+    create: "Create a process that still fits the Shop Floor.",
+    test: "Test: trail should bend with the world, not into a wall.",
+    improve: "Improve timing and contact, not part count first.",
+    system: "Around the Bend — process path has a direction change. Feedback is a trail that corners or a crate that wedges.",
+  },
+  pair: {
+    ask: "Ask: Pair of Crates. Every Bot Core must stay in the Drop Zone — one crate is not enough.",
+    imagine: "Imagine one machine that moves both, or two subsystems that do not fight.",
+    plan: "Plan both payloads. Win = all crates inside for one second.",
+    create: "Create without parking one crate on the other as a cheat you cannot explain.",
+    test: "Test both. If one leaves, the system failed.",
+    improve: "Improve the weaker crate’s path first.",
+    system: "Pair of Crates — two payloads, one output rule. Subsystems can share Drive or split. Feedback is two trails.",
+  },
+};
+
 function toast(msg) {
   const el = document.getElementById("toast");
   el.textContent = msg;
@@ -222,6 +318,11 @@ function boot() {
   let history = [];
   let trail = [];
   let panning = null;
+  let courseId = "open";
+  let everTested = false;
+  let pinnedStep = null;
+  let guideOn = true;
+  let howtoIndex = 0;
 
   titleEl.value = doc.title;
 
@@ -267,6 +368,79 @@ function boot() {
     });
     document.getElementById("level-tools").hidden = id !== "level";
     if (id === "level" && playing) stopPlay();
+    refreshGuide();
+  }
+
+  function autoStep() {
+    if (playing) return "test";
+    if (everTested) return "improve";
+    if (pieceCount(doc) > 0) return "create";
+    if (layer === "level") return "plan";
+    return "ask";
+  }
+
+  function guideFor(step) {
+    const pack = GUIDE[courseId] || GUIDE.open;
+    return pack[step] || GUIDE.open.ask;
+  }
+
+  function refreshGuide() {
+    const guideEl = document.getElementById("guide");
+    const lineEl = document.getElementById("guide-line");
+    const sysCourse = document.getElementById("systems-course");
+    const hintEl = document.getElementById("status-hint");
+    const guideBtn = document.getElementById("btn-guide");
+    if (!guideEl || !lineEl) return;
+    guideEl.classList.toggle("off", !guideOn);
+    if (guideBtn) {
+      guideBtn.textContent = guideOn ? "Guide on" : "Guide off";
+      guideBtn.setAttribute("aria-pressed", guideOn ? "true" : "false");
+    }
+    const step = pinnedStep && STEPS.includes(pinnedStep) ? pinnedStep : autoStep();
+    document.querySelectorAll(".step").forEach((b) => {
+      const on = b.getAttribute("data-step") === step;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    const text = guideFor(step);
+    lineEl.textContent = text;
+    if (hintEl) hintEl.textContent = text;
+    const pack = GUIDE[courseId] || GUIDE.open;
+    if (sysCourse) sysCourse.textContent = pack.system;
+  }
+
+  function resetLoop(id) {
+    if (id) courseId = id;
+    everTested = false;
+    pinnedStep = null;
+    refreshGuide();
+  }
+
+  function showHowto(i) {
+    howtoIndex = Math.max(0, i);
+    const root = document.getElementById("howto");
+    const title = document.getElementById("howto-title");
+    const body = document.getElementById("howto-body");
+    const next = document.getElementById("howto-next");
+    if (!root || !title || !body) return;
+    const card = HOWTO[howtoIndex] || HOWTO[0];
+    title.textContent = card.title;
+    body.textContent = card.body;
+    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? "Try Roll Out" : "Next";
+    root.hidden = false;
+  }
+
+  function hideHowto() {
+    const root = document.getElementById("howto");
+    if (root) root.hidden = true;
+    try { localStorage.setItem("bb-howto-v1", "1"); } catch (e) { /* private mode */ }
+  }
+
+  function showSystems(on) {
+    const root = document.getElementById("systems");
+    if (!root) return;
+    refreshGuide();
+    root.hidden = !on;
   }
 
   function refreshMeta() {
@@ -275,6 +449,7 @@ function boot() {
     modeEl.textContent = playing ? (slowMo ? "SLOW" : "PLAY") : "SHOP";
     const slowBtn = document.getElementById("btn-slow");
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
+    refreshGuide();
   }
 
   function pushHist() {
@@ -400,6 +575,8 @@ function boot() {
     won = false;
     winT = 0;
     trail = [];
+    everTested = true;
+    pinnedStep = null;
     winEl.classList.remove("show");
     refreshMeta();
   }
@@ -568,8 +745,9 @@ function boot() {
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
-        toast("Drop Zone. Machine works.");
+        toast("Drop Zone. Machine works. Improve or save.");
         slowMo = true;
+        pinnedStep = "improve";
         refreshMeta();
       }
     } else winT = 0;
@@ -1060,12 +1238,17 @@ function boot() {
       if (playing) stopPlay();
       doc.machine.parts = [];
       dirty = true;
+      everTested = false;
+      pinnedStep = null;
       refreshMeta();
     });
     document.getElementById("btn-new").addEventListener("click", () => {
       if (playing) stopPlay();
       doc = defaultDoc();
       dirty = false;
+      const pick = document.getElementById("level-pick");
+      if (pick) pick.value = "open";
+      resetLoop("open");
       refreshMeta();
     });
     document.getElementById("btn-save").addEventListener("click", () => {
@@ -1083,6 +1266,7 @@ function boot() {
         if (playing) stopPlay();
         doc = await readFile(f);
         dirty = false;
+        resetLoop("open");
         refreshMeta();
         toast("Opened " + doc.title);
       } catch (err) {
@@ -1104,8 +1288,61 @@ function boot() {
         doc = unpackDoc(await res.json());
       }
       dirty = false;
+      resetLoop(item.id);
       refreshMeta();
     });
+    document.querySelectorAll(".step").forEach((b) => {
+      b.addEventListener("click", () => {
+        guideOn = true;
+        pinnedStep = b.getAttribute("data-step");
+        refreshGuide();
+      });
+    });
+    const guideBtn = document.getElementById("btn-guide");
+    if (guideBtn) {
+      guideBtn.addEventListener("click", () => {
+        guideOn = !guideOn;
+        refreshGuide();
+      });
+    }
+    const sysBtn = document.getElementById("btn-systems");
+    if (sysBtn) sysBtn.addEventListener("click", () => showSystems(true));
+    const sysClose = document.getElementById("systems-close");
+    if (sysClose) sysClose.addEventListener("click", () => showSystems(false));
+    const sysRoot = document.getElementById("systems");
+    if (sysRoot) {
+      sysRoot.addEventListener("click", (ev) => {
+        if (ev.target === sysRoot) showSystems(false);
+      });
+    }
+    const howtoBtn = document.getElementById("btn-howto");
+    if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0));
+    const howtoSkip = document.getElementById("howto-skip");
+    if (howtoSkip) howtoSkip.addEventListener("click", hideHowto);
+    const howtoNext = document.getElementById("howto-next");
+    if (howtoNext) {
+      howtoNext.addEventListener("click", async () => {
+        if (howtoIndex >= HOWTO.length - 1) {
+          hideHowto();
+          const pick = document.getElementById("level-pick");
+          if (pick) pick.value = "roll";
+          const res = await fetch("levels/roll-out.json");
+          doc = unpackDoc(await res.json());
+          dirty = false;
+          resetLoop("roll");
+          refreshMeta();
+          toast("Tutorial course: Roll Out. Ask, then Create, then Play.");
+          return;
+        }
+        showHowto(howtoIndex + 1);
+      });
+    }
+    const howtoRoot = document.getElementById("howto");
+    if (howtoRoot) {
+      howtoRoot.addEventListener("click", (ev) => {
+        if (ev.target === howtoRoot) hideHowto();
+      });
+    }
     window.addEventListener("keydown", (ev) => {
       if (ev.target.matches("input, textarea")) return;
       if (ev.code === "Space") {
@@ -1151,6 +1388,10 @@ function boot() {
   setTool("driveR");
   setLayer("machine");
   refreshMeta();
+  try {
+    if (!localStorage.getItem("bb-howto-v1")) showHowto(0);
+  } catch (e) { /* ignore */ }
   requestAnimationFrame(loop);
 }
+
 boot();

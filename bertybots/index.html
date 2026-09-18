@@ -4,19 +4,23 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="no-referrer">
-  <title>Berty's Botz BB 0.3.0 — Solvay Tech Ed</title>
+  <meta name="robots" content="noindex">
+  <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
+  <title>Berty's Botz BB 0.4.0 — Solvay Tech Ed</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
   <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
   <div id="app">
     <header class="topbar">
-      <div class="brand">Berty's Botz <small id="chip">BB 0.3.0</small></div>
-      <input class="title" id="title" maxlength="48" placeholder="Level title (no names)">
+      <div class="brand">Berty's Botz <small id="chip">BB 0.4.0</small></div>
+      <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
       <div class="row">
         <button class="btn" id="btn-new">New</button>
         <button class="btn" id="btn-open">Open</button>
         <button class="btn gold" id="btn-save">Save file</button>
-        <select class="btn" id="level-pick">
+        <select class="btn" id="level-pick" aria-label="Starter course">
           <option value="open">Open Shop</option>
           <option value="roll">Roll Out</option>
           <option value="curb">Up the Curb</option>
@@ -33,13 +37,13 @@
         <button class="btn" data-layer="level">Level</button>
       </div>
       <div class="row" id="machine-tools">
-        <button class="btn" data-tool="driveR">Drive-R</button>
-        <button class="btn" data-tool="driveL">Drive-L</button>
-        <button class="btn" data-tool="roller">Roller</button>
-        <button class="btn" data-tool="steel">Steel</button>
-        <button class="btn" data-tool="ghost">Ghost</button>
-        <button class="btn" data-tool="move">Move</button>
-        <button class="btn" data-tool="erase">Erase</button>
+        <button class="btn" data-tool="driveR" title="1">Drive-R</button>
+        <button class="btn" data-tool="driveL" title="2">Drive-L</button>
+        <button class="btn" data-tool="roller" title="3">Roller</button>
+        <button class="btn" data-tool="steel" title="4">Steel</button>
+        <button class="btn" data-tool="ghost" title="5">Ghost</button>
+        <button class="btn" data-tool="move" title="M">Move</button>
+        <button class="btn" data-tool="erase" title="E">Erase</button>
       </div>
       <div class="row" id="level-tools" hidden>
         <button class="btn" data-tool="shop">Shop Floor</button>
@@ -50,30 +54,73 @@
       </div>
       <div class="row">
         <button class="btn ok" id="btn-play">Play</button>
-        <button class="btn" id="btn-slow">Slow</button>
+        <button class="btn" id="btn-slow" title="S">Slow</button>
         <button class="btn" id="btn-stop">Stop</button>
         <button class="btn ghost" id="btn-cart">Starter cart</button>
         <button class="btn ghost" id="btn-view">Reset view</button>
-        <button class="btn ghost" id="btn-undo">Undo</button>
+        <button class="btn ghost" id="btn-undo" title="Z">Undo</button>
         <button class="btn ghost" id="btn-clear">Clear machine</button>
         <a class="btn ghost" href="teacher.html">Teacher</a>
         <a class="btn ghost" href="privacy.html">Privacy</a>
-        <a class="btn ghost" href="/">Tech Room</a>
       </div>
     </header>
+    <section class="guide" id="guide" aria-label="Design process">
+      <div class="guide-head">
+        <strong>Design loop</strong>
+        <span class="guide-std">NYS 5 · ITEEA design / systems</span>
+        <button class="btn ghost" id="btn-guide" aria-pressed="true">Guide on</button>
+        <button class="btn ghost" id="btn-systems">Systems</button>
+        <button class="btn gold" id="btn-howto">How to shop</button>
+      </div>
+      <div class="guide-steps" id="guide-steps" role="tablist" aria-label="Design process steps">
+        <button class="step on" type="button" data-step="ask" role="tab" aria-selected="true">Ask</button>
+        <button class="step" type="button" data-step="imagine" role="tab" aria-selected="false">Imagine</button>
+        <button class="step" type="button" data-step="plan" role="tab" aria-selected="false">Plan</button>
+        <button class="step" type="button" data-step="create" role="tab" aria-selected="false">Create</button>
+        <button class="step" type="button" data-step="test" role="tab" aria-selected="false">Test</button>
+        <button class="step" type="button" data-step="improve" role="tab" aria-selected="false">Improve</button>
+      </div>
+      <p class="guide-line" id="guide-line">Ask: park the Bot Core crate in the Drop Zone.</p>
+    </section>
     <div class="stage">
       <canvas id="c"></canvas>
       <div class="toast" id="toast"></div>
       <div class="win" id="win">DROP ZONE</div>
+      <div class="howto" id="howto" hidden>
+        <div class="howto-card" role="dialog" aria-labelledby="howto-title">
+          <p class="howto-kicker">Tutorial · 4 beats</p>
+          <h2 id="howto-title">How this shop works</h2>
+          <p id="howto-body"></p>
+          <div class="row howto-actions">
+            <button class="btn" id="howto-skip">Skip</button>
+            <button class="btn gold" id="howto-next">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="sheet" id="systems" hidden>
+        <div class="sheet-card" role="dialog" aria-labelledby="systems-title">
+          <h2 id="systems-title">This machine is a system</h2>
+          <ol class="ipof">
+            <li><b>Input</b> — gravity, Drive-R / Drive-L torque, starting pose of the crate</li>
+            <li><b>Process</b> — your machine: Drive, Roller, Steel, Ghost</li>
+            <li><b>Output</b> — crate motion; win = every Bot Core inside the Drop Zone for one second</li>
+            <li><b>Feedback</b> — orange trail, Slow, DROP ZONE banner, Stop restores the shop</li>
+          </ol>
+          <p class="systems-course" id="systems-course"></p>
+          <p class="hint">Constraints: 48 parts, Shop Floor, slabs, period time. Pair: builder + observer.</p>
+          <button class="btn gold" id="systems-close">Close</button>
+        </div>
+      </div>
     </div>
     <footer class="status">
       <span id="mode">SHOP</span>
       <span>Parts <b id="count">0 / 48</b></span>
-      <span class="hint">Drag a wheel onto a hub · Space play · Z undo</span>
+      <span class="hint" id="status-hint">Ask the job · drag a wheel onto a hub · Space play · Z undo</span>
     </footer>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="https://cdn.jsdelivr.net/npm/planck-js@0.3.14/dist/planck.min.js"></script>
+  <script src="vendor/planck.min.js"></script>
   <script src="js/bundle.js"></script>
 </body>
 </html>

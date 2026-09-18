@@ -1,0 +1,18 @@
+{
+  "app": "bertybots",
+  "format": 1,
+  "title": "Mind the Pit",
+  "level": {
+    "shop": { "x": 1.0, "y": 1.2, "w": 7.6, "h": 4.8 },
+    "drop": { "x": 19.6, "y": 1.2, "w": 5.4, "h": 3.4 },
+    "world": [
+      { "type": "slab", "x": 0, "y": 0, "w": 11.2, "h": 1.2 },
+      { "type": "slab", "x": 16.6, "y": 0, "w": 11.4, "h": 1.2 },
+      { "type": "slab", "x": 0, "y": 1.2, "w": 0.4, "h": 10 },
+      { "type": "slab", "x": 27.6, "y": 1.2, "w": 0.4, "h": 10 }
+    ],
+    "cores": [{ "x": 3.1, "y": 2.15 }],
+    "tools": ["driveR", "driveL", "roller", "steel", "ghost"]
+  },
+  "machine": { "parts": [] }
+}

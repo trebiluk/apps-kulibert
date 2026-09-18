@@ -1,0 +1,9 @@
+{
+  "name": "Berty's Botz",
+  "short_name": "Botz",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#071526",
+  "theme_color": "#0B1F3A",
+  "icons": [{ "src": "assets/mark.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
