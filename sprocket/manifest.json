@@ -1,0 +1,10 @@
+{
+  "name": "Sprocket",
+  "short_name": "Sprocket",
+  "description": "3D printing helper: convert, stock, timers, Bambu help",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#12161C",
+  "theme_color": "#14B8C2",
+  "lang": "en"
+}
