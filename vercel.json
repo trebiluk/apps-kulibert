@@ -1,1 +1,17 @@
-{"framework":null,"buildCommand":"","outputDirectory":"."}
+{
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "redirects": [
+    {
+      "source": "/paperlab",
+      "destination": "https://paperlab-one.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/paperlab/",
+      "destination": "https://paperlab-one.vercel.app/",
+      "permanent": false
+    }
+  ]
+}
