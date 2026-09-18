@@ -22,6 +22,26 @@
       "source": "/drift/",
       "destination": "https://drift-sigma-seven.vercel.app/",
       "permanent": false
+    },
+    {
+      "source": "/bistro",
+      "destination": "https://bearcat-bistro.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/bistro/",
+      "destination": "https://bearcat-bistro.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/lunch",
+      "destination": "https://bearcat-bistro.vercel.app/",
+      "permanent": false
+    },
+    {
+      "source": "/lunch/",
+      "destination": "https://bearcat-bistro.vercel.app/",
+      "permanent": false
     }
   ]
 }
