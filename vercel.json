@@ -236,5 +236,16 @@
       "source": "/bistro/:path*",
       "destination": "https://bearcat-bistro.vercel.app/bistro/:path*"
     }
+  ],
+  "headers": [
+    {
+      "source": "/bertybots/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
   ]
 }
