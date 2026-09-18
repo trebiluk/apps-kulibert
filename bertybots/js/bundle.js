@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.8.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.9.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.8.0";
+const APP_VERSION = "0.9.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.8.0";
+const APP_CHIP = "BB 0.9.0";
 const APP_BUILT = "2026-09-18";
 
 const FORMAT = 1;
@@ -1061,6 +1061,10 @@ function boot() {
     ctx.save();
     ctx.translate(wx(x), wy(y));
     ctx.rotate(-a);
+    ctx.fillStyle = "rgba(20,16,12,0.28)";
+    ctx.beginPath();
+    ctx.ellipse(2, s / 2 + 3, s * 0.52, s * 0.16, 0, 0, Math.PI * 2);
+    ctx.fill();
     ctx.fillStyle = CRATE;
     ctx.fillRect(-s / 2, -s / 2, s, s);
     ctx.strokeStyle = "rgba(26,26,26,0.28)";
@@ -1120,32 +1124,198 @@ function boot() {
     ctx.fillText(text, x, y);
   }
 
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = YARD;
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "rgba(11,31,58,0.08)";
-    for (let x = 0; x <= WORLD_W; x++) {
-      ctx.fillRect(wx(x), wy(WORLD_H), 1, wr(WORLD_H));
+  function drawCone(x, y) {
+    const b = wr(0.28), h = wr(0.7);
+    const px = wx(x), py = wy(y);
+    ctx.beginPath();
+    ctx.moveTo(px, py - h);
+    ctx.lineTo(px + b, py);
+    ctx.lineTo(px - b, py);
+    ctx.closePath();
+    ctx.fillStyle = ORANGE;
+    ctx.fill();
+    ctx.strokeStyle = INK;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = PAPER;
+    ctx.fillRect(px - b * 0.45, py - h * 0.45, b * 0.9, h * 0.12);
+  }
+
+  function drawPallet(x, y) {
+    const w = wr(1.1), h = wr(0.22);
+    const px = wx(x), py = wy(y) - h;
+    ctx.fillStyle = "#8a5a2b";
+    ctx.fillRect(px, py, w, h);
+    ctx.strokeStyle = "#3a2410";
+    ctx.strokeRect(px, py, w, h);
+    ctx.fillStyle = "#c4893c";
+    for (let i = 0; i < 4; i++) ctx.fillRect(px + 2, py + 2 + i * (h / 4), w - 4, h / 8);
+  }
+
+  function drawLamp(x, y, now) {
+    const px = wx(x), py = wy(y);
+    const swing = Math.sin(now / 1400 + x) * wr(0.08);
+    ctx.strokeStyle = "#2a2e33";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(px, wy(WORLD_H - 0.15));
+    ctx.lineTo(px + swing, py);
+    ctx.stroke();
+    const g = ctx.createRadialGradient(px + swing, py, 2, px + swing, py, wr(3.2));
+    g.addColorStop(0, "rgba(245,196,0,0.28)");
+    g.addColorStop(1, "rgba(245,196,0,0)");
+    ctx.fillStyle = g;
+    ctx.beginPath();
+    ctx.arc(px + swing, py, wr(3.2), 0, Math.PI * 2);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(px + swing - wr(0.22), py);
+    ctx.lineTo(px + swing + wr(0.22), py);
+    ctx.lineTo(px + swing, py + wr(0.28));
+    ctx.closePath();
+    ctx.fillStyle = "#f5c400";
+    ctx.fill();
+    ctx.strokeStyle = "#2a2e33";
+    ctx.stroke();
+  }
+
+  function drawDropBay(r) {
+    const x = wx(r.x), y = wy(r.y + r.h), w = wr(r.w), h = wr(r.h);
+    ctx.fillStyle = won ? "rgba(61,138,90,0.28)" : "rgba(232,119,34,0.16)";
+    ctx.fillRect(x, y, w, h);
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    const step = Math.max(10, wr(0.38));
+    for (let i = -h; i < w + h; i += step) {
+      ctx.fillStyle = (Math.floor(i / step) % 2 === 0) ? "rgba(245,196,0,0.28)" : "rgba(232,119,34,0.12)";
+      ctx.beginPath();
+      ctx.moveTo(x + i, y + h);
+      ctx.lineTo(x + i + step * 0.55, y + h);
+      ctx.lineTo(x + i + step * 0.55 - h, y);
+      ctx.lineTo(x + i - h, y);
+      ctx.closePath();
+      ctx.fill();
     }
-    for (let y = 0; y <= WORLD_H; y++) {
-      ctx.fillRect(wx(0), wy(y), wr(WORLD_W), 1);
+    ctx.restore();
+    ctx.setLineDash([8, 6]);
+    ctx.strokeStyle = won ? OK : ORANGE;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(x, y, w, h);
+    ctx.setLineDash([]);
+  }
+
+  function drawShopSet(now) {
+    const wall = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    wall.addColorStop(0, "#4a5560");
+    wall.addColorStop(0.45, "#6a7380");
+    wall.addColorStop(1, "#b7a78c");
+    ctx.fillStyle = wall;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const brickH = wr(0.42), brickW = wr(0.9);
+    ctx.strokeStyle = "rgba(30,34,40,0.18)";
+    ctx.lineWidth = 1;
+    for (let row = 0; row < 18; row++) {
+      const yy = wy(WORLD_H - 0.2) + row * brickH;
+      if (yy > wy(7)) break;
+      const off = (row % 2) * brickW * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(wx(0), yy);
+      ctx.lineTo(wx(WORLD_W), yy);
+      ctx.stroke();
+      for (let col = -1; col < 40; col++) {
+        const xx = wx(0) + col * brickW + off;
+        ctx.beginPath();
+        ctx.moveTo(xx, yy);
+        ctx.lineTo(xx, yy + brickH);
+        ctx.stroke();
+      }
     }
 
+    for (const wx0 of [4, 14, 24]) {
+      const x = wx(wx0), y = wy(WORLD_H - 1.6), w = wr(3.2), h = wr(2.4);
+      ctx.fillStyle = "rgba(210, 230, 245, 0.22)";
+      ctx.fillRect(x, y, w, h);
+      ctx.strokeStyle = "rgba(255,255,255,0.25)";
+      ctx.strokeRect(x, y, w, h);
+      ctx.fillStyle = "rgba(245,196,0,0.07)";
+      ctx.beginPath();
+      ctx.moveTo(x, y + h);
+      ctx.lineTo(x + w, y + h);
+      ctx.lineTo(x + w + wr(1.4), wy(1.2));
+      ctx.lineTo(x - wr(1.4), wy(1.2));
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    ctx.fillStyle = "#5c6168";
+    ctx.fillRect(wx(0), wy(WORLD_H - 0.12), wr(WORLD_W), wr(0.28));
+    ctx.fillStyle = "#cfd6dc";
+    ctx.fillRect(wx(0), wy(WORLD_H - 0.22), wr(WORLD_W), wr(0.08));
+
+    drawLamp(5.5, WORLD_H - 1.1, now);
+    drawLamp(14, WORLD_H - 1.1, now);
+    drawLamp(22.5, WORLD_H - 1.1, now);
+
+    drawPallet(0.35, 1.05);
+    drawPallet(0.5, 1.28);
+    drawCone(2.1, 1.05);
+    drawCone(26.4, 1.05);
+    drawCone(27.1, 1.05);
+
+    ctx.fillStyle = "#3a4148";
+    ctx.fillRect(wx(26.6), wy(3.1), wr(1.1), wr(2.05));
+    ctx.fillStyle = "#f5c400";
+    ctx.fillRect(wx(26.75), wy(2.7), wr(0.18), wr(0.08));
+    ctx.fillRect(wx(27.15), wy(2.7), wr(0.18), wr(0.08));
+
+    for (let i = 0; i < 22; i++) {
+      const dx = (i * 5.37 + now * 0.00035) % WORLD_W;
+      const dy = 3.2 + (i % 6) * 1.4 + Math.sin(now / 900 + i) * 0.35;
+      ctx.fillStyle = "rgba(255,248,220,0.16)";
+      ctx.beginPath();
+      ctx.arc(wx(dx), wy(dy), Math.max(1.2, wr(0.035)), 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  function draw() {
+    const now = performance.now();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawShopSet(now);
+
     for (const s of doc.level.world || []) {
-      drawRectWorld(s, INK, CONCRETE);
-      hatchRect(s, "rgba(244,239,230,0.08)", 0.42);
+      drawRectWorld(s, "#1a1f24", "#3d4a56");
+      hatchRect(s, "rgba(255,255,255,0.05)", 0.46);
+      if (s.w > 8 && s.h < 2.2) {
+        const stripeH = Math.min(s.h * 0.22, 0.18);
+        const y = s.y + s.h - stripeH;
+        const x = wx(s.x), yy = wy(y + stripeH), w = wr(s.w), h = wr(stripeH);
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(x, yy, w, h);
+        ctx.clip();
+        const step = Math.max(8, wr(0.32));
+        for (let i = -h; i < w + h; i += step) {
+          ctx.fillStyle = (Math.floor(i / step) % 2 === 0) ? "#f5c400" : "#2a2e33";
+          ctx.fillRect(x + i, yy, step * 0.62, h);
+        }
+        ctx.restore();
+      }
     }
 
     plyRect(doc.level.shop, PLY);
+    ctx.fillStyle = "rgba(26,26,26,0.18)";
+    ctx.fillRect(wx(doc.level.shop.x) + 3, wy(doc.level.shop.y) + 2, wr(doc.level.shop.w), 4);
     ctx.setLineDash([8, 6]);
     ctx.strokeStyle = NAVY;
     ctx.lineWidth = 2;
     ctx.strokeRect(wx(doc.level.shop.x), wy(doc.level.shop.y + doc.level.shop.h), wr(doc.level.shop.w), wr(doc.level.shop.h));
     ctx.setLineDash([]);
 
-    const dropFill = won ? "rgba(47,111,78,0.18)" : "rgba(232,119,34,0.10)";
-    drawRectWorld(doc.level.drop, ORANGE, dropFill, true);
+    drawDropBay(doc.level.drop);
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
     stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
