@@ -12,6 +12,36 @@
       "source": "/lunch/",
       "destination": "/bistro/",
       "permanent": false
+    },
+    {
+      "source": "/coderized",
+      "destination": "https://tw.kulibert.net/koderized/",
+      "permanent": true
+    },
+    {
+      "source": "/coderized/",
+      "destination": "https://tw.kulibert.net/koderized/",
+      "permanent": true
+    },
+    {
+      "source": "/coderized/:path*",
+      "destination": "https://tw.kulibert.net/koderized/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/koderized",
+      "destination": "https://tw.kulibert.net/koderized/",
+      "permanent": true
+    },
+    {
+      "source": "/koderized/",
+      "destination": "https://tw.kulibert.net/koderized/",
+      "permanent": true
+    },
+    {
+      "source": "/koderized/:path*",
+      "destination": "https://tw.kulibert.net/koderized/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -232,18 +262,6 @@
     {
       "source": "/assets/routes-ziny0fEp.js",
       "destination": "https://drift-psi-two.vercel.app/assets/routes-ziny0fEp.js"
-    },
-    {
-      "source": "/coderized",
-      "destination": "https://coderized.vercel.app/"
-    },
-    {
-      "source": "/coderized/",
-      "destination": "https://coderized.vercel.app/"
-    },
-    {
-      "source": "/coderized/:path*",
-      "destination": "https://coderized.vercel.app/:path*"
     },
     {
       "source": "/bertycad",

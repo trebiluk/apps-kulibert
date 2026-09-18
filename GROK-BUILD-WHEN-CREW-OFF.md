@@ -10,7 +10,7 @@ Trebby (Diego): regular Grok Build must be able to edit and publish classroom ap
 | Baboo | https://baboo.kulibert.net | Grok Build / Vercel **baboo** | Vercel production → baboo.kulibert.net |
 | BertyCAD | https://kidcad-phi.vercel.app (interim Help) | Grok Build project **BertyCAD: Friendly TinkerCAD Clone** | Help on kidcad-phi for now; **hold** kidcad.vercel.app until transfer |
 | The Tech Room | https://apps.kulibert.net | **Must be** GitHub `trebiluk/apps-kulibert` (wire if missing) | Vercel project **apps-kulibert** |
-| Coderized | https://coderized.vercel.app | Vercel **coderized** | Vercel prod |
+| Koderized | https://tw.kulibert.net/koderized/ | GitHub `trebiluk/TechWorks` `public/koderized` | Cloudflare Pages **kulibert-desk**. Hub 301 `/coderized` here. |
 | Sprocket PrintKit | jsDelivr `trebiluk/sprocket-printkit` | GitHub `trebiluk/sprocket-printkit` | push main |
 | LogoLab | https://logolab-rho.vercel.app · door `/logolab/` | GitHub `trebiluk/logolab` `main` | Vercel project **logolab**. Custom host logolab.kulibert.net pending Cloudflare CNAME. |
 
