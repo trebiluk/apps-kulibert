@@ -5,7 +5,7 @@ LIVE LOCKS
 - Baboo https://baboo.kulibert.net -- publish via Baboo Grok Build / Vercel project baboo.
 - BertyCAD (classroom CAD; formerly KidCAD/KuliCAD) -- interim Help https://kidcad-phi.vercel.app ; also https://river-flame-flame-tundra.grok.me . Target classroom host kidcad.vercel.app is held (wrong Vercel team) until Diego transfers access. Grok project was "KidCAD: Friendly TinkerCAD Clone" -- rename chrome to BertyCAD. ELL Help: visual prompts, quizzes, editable TinkerCAD-style galleries; help/quiz chrome <=40% so model stays visible; fat targets >=44px; light theme.
 - The Tech Room portal https://apps.kulibert.net -- Vercel project apps-kulibert. Source GitHub trebiluk/apps-kulibert (NOT the TechWorks repo). ClassLink tiles. Tile label BertyCAD.
-- Koderized https://tw.kulibert.net/koderized/ (KZ 1.7.0). Old /coderized and coderized.vercel.app 301 here. Sprocket PrintKit via trebiluk/sprocket-printkit (jsDelivr).
+- Koderized https://tw.kulibert.net/koderized/ (KZ 1.7.0). Hub /koderized 301s here. School door /coderized/ is a static CZ 1.4.0 copy in this repo (no Vercel preview hosts in HTML or assets). Sprocket PrintKit via trebiluk/sprocket-printkit (jsDelivr).
 
 WORKFLOW (when crew is ON)
 Director Trebby gives next step to Flo (#1). Flo assigns in Mr. Trebby's Office. Crew works in-lane, no echo ACKs. Debugzy publishes TechWorks/Baboo. Flo merges PASS/FAIL only. PINs stay out of student chrome.
