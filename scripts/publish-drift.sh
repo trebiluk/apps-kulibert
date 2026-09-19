@@ -43,15 +43,35 @@ env -u VERCEL -u VERCEL_URL -u VERCEL_PROJECT_PRODUCTION_URL \
   VITE_AUTH_ENABLED=false \
   node scripts/with-app-env.mjs ./node_modules/.bin/vite build
 
-python3 - "$SRC/.output/public" "$ROOT/drift" <<'PY'
+# The SPA shell is empty; the node-server render of /drift/ is the real door.
+(
+  cd "$SRC/.output"
+  PORT=8791 node ./server/index.mjs
+) &
+NITRO_PID=$!
+cleanup_nitro() { kill "$NITRO_PID" 2>/dev/null || true; }
+trap cleanup_nitro EXIT
+for _ in $(seq 1 40); do
+  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift/; then
+    break
+  fi
+  sleep 0.15
+done
+test -s /tmp/drift-door.html
+cleanup_nitro
+trap - EXIT
+
+python3 - "$SRC/.output/public" "$ROOT/drift" /tmp/drift-door.html <<'PY'
 from pathlib import Path
 import shutil
 import sys
 
 src = Path(sys.argv[1])
 dst = Path(sys.argv[2])
-if not (src / "index.html").exists():
-    raise SystemExit(f"missing {src / 'index.html'}")
+door = Path(sys.argv[3])
+if not door.exists() or door.stat().st_size == 0:
+    raise SystemExit(f"missing rendered door HTML {door}")
+readme = (dst / "README.md").read_text(encoding="utf-8") if (dst / "README.md").exists() else ""
 if dst.exists():
     shutil.rmtree(dst)
 dst.mkdir(parents=True)
@@ -84,14 +104,14 @@ if icon_src.exists():
     encoding="utf-8",
 )
 
-html = (src / "index.html").read_bytes().replace(b"\x00", b"").decode("utf-8")
-html = html.replace('href="/drift/', 'href="./')
-html = html.replace('src="/drift/', 'src="./')
-html = html.replace('="/drift/', '="./')
-html = html.replace('"/drift/assets/', '"./assets/')
+html = door.read_bytes().replace(b"\x00", b"").decode("utf-8")
 if "vercel.app" in html:
     raise SystemExit("index.html still contains vercel.app")
+if "/drift/assets/" not in html:
+    raise SystemExit("door HTML is missing /drift/assets/ URLs")
 (dst / "index.html").write_text(html, encoding="utf-8")
+if readme:
+    (dst / "README.md").write_text(readme, encoding="utf-8")
 
 hits = []
 for path in dst.rglob("*"):

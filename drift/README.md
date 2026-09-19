@@ -4,7 +4,7 @@ Static snapshot of [trebiluk/drift](https://github.com/trebiluk/drift) for The T
 
 **Live:** https://apps.kulibert.net/drift/
 
-School DNS (Solvay) blocks `*.vercel.app`. This folder is served same-origin. `index.html` uses relative `./assets/…` only. The JS/CSS bundles are built with Vite `base: '/drift/'` so they never bake a Vercel host.
+School DNS (Solvay) blocks `*.vercel.app`. This folder is served same-origin. `index.html` and the JS/CSS bundles use `/drift/assets/…` only — never a Vercel host. Vite build flag: `DRIFT_BASE=/drift/`.
 
 Do not proxy this door back to `drift-psi-two.vercel.app`.
 
