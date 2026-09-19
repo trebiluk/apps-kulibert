@@ -42,6 +42,21 @@
       "source": "/koderized/:path*",
       "destination": "https://tw.kulibert.net/koderized/:path*",
       "permanent": true
+    },
+    {
+      "source": "/kidcad",
+      "destination": "/bertycad/",
+      "permanent": true
+    },
+    {
+      "source": "/kidcad/",
+      "destination": "/bertycad/",
+      "permanent": true
+    },
+    {
+      "source": "/kidcad/:path*",
+      "destination": "/bertycad/:path*",
+      "permanent": true
     }
   ],
   "rewrites": [
@@ -413,6 +428,32 @@
     }
   ],
   "headers": [
+    {
+      "source": "/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Tech-Room-Rev",
+          "value": "2026-09-19-koderized-kidcad"
+        }
+      ]
+    },
+    {
+      "source": "/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "X-Tech-Room-Rev",
+          "value": "2026-09-19-koderized-kidcad"
+        }
+      ]
+    },
     {
       "source": "/bertybots/(.*)",
       "headers": [
