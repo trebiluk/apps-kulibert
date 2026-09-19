@@ -14,21 +14,6 @@
       "permanent": false
     },
     {
-      "source": "/coderized",
-      "destination": "https://tw.kulibert.net/koderized/",
-      "permanent": true
-    },
-    {
-      "source": "/coderized/",
-      "destination": "https://tw.kulibert.net/koderized/",
-      "permanent": true
-    },
-    {
-      "source": "/coderized/:path*",
-      "destination": "https://tw.kulibert.net/koderized/:path*",
-      "permanent": true
-    },
-    {
       "source": "/koderized",
       "destination": "https://tw.kulibert.net/koderized/",
       "permanent": true
