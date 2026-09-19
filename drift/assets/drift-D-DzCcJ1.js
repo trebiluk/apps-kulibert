@@ -1,0 +1,1 @@
+import{t as e}from"./DriftExperience-C6La8QoS.js";var t=e;export{t as component};
