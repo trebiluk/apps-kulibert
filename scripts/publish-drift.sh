@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-# Rebuild the classroom Drift snapshot into ./drift/
+# Rebuild the classroom Drift snapshot into ./public/drift/
 # School DNS blocks *.vercel.app — never emit that host in HTML or bundles.
+# Asset URLs in the door HTML must stay relative (./assets/…), never
+# https://drift-psi-two.vercel.app/assets/…
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -22,7 +24,7 @@ old = """const prodHost = process.env.VERCEL_PROJECT_PRODUCTION_URL
 
 export default defineConfig(({ command, isPreview }) => ({
   base: prodHost ? `https://${prodHost}/` : "/","""
-new = """const classroomBase = process.env.DRIFT_BASE || "/drift/";
+new = """const classroomBase = process.env.DRIFT_BASE || "./";
 
 export default defineConfig(({ command, isPreview }) => ({
   base: classroomBase,"""
@@ -38,12 +40,12 @@ if [[ ! -d node_modules ]]; then
 fi
 
 env -u VERCEL -u VERCEL_URL -u VERCEL_PROJECT_PRODUCTION_URL \
-  DRIFT_BASE=/drift/ \
+  DRIFT_BASE=./ \
   DRIFT_NITRO_PRESET=node-server \
   VITE_AUTH_ENABLED=false \
   node scripts/with-app-env.mjs ./node_modules/.bin/vite build
 
-# The SPA shell is empty; the node-server render of /drift/ is the real door.
+# Render /drift (no slash — router trailingSlash is never) for the real door HTML.
 (
   cd "$SRC/.output"
   PORT=8791 node ./server/index.mjs
@@ -52,7 +54,7 @@ NITRO_PID=$!
 cleanup_nitro() { kill "$NITRO_PID" 2>/dev/null || true; }
 trap cleanup_nitro EXIT
 for _ in $(seq 1 40); do
-  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift/; then
+  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift; then
     break
   fi
   sleep 0.15
@@ -61,7 +63,7 @@ test -s /tmp/drift-door.html
 cleanup_nitro
 trap - EXIT
 
-python3 - "$SRC/.output/public" "$ROOT/drift" /tmp/drift-door.html <<'PY'
+python3 - "$SRC/.output/public" "$ROOT/public/drift" /tmp/drift-door.html <<'PY'
 from pathlib import Path
 import shutil
 import sys
@@ -94,7 +96,7 @@ if icon_src.exists():
     """{
   "name": "Drift",
   "short_name": "Drift",
-  "start_url": "/drift/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#6EB5E0",
   "theme_color": "#6EB5E0",
@@ -105,10 +107,16 @@ if icon_src.exists():
 )
 
 html = door.read_bytes().replace(b"\x00", b"").decode("utf-8")
+html = html.replace("/./assets/", "./assets/")
+html = html.replace('"/./', '"./')
+html = html.replace("https://drift-psi-two.vercel.app/", "./")
+html = html.replace("https://drift-psi-two.vercel.app", ".")
 if "vercel.app" in html:
     raise SystemExit("index.html still contains vercel.app")
-if "/drift/assets/" not in html:
-    raise SystemExit("door HTML is missing /drift/assets/ URLs")
+if "/drift/assets/" in html:
+    raise SystemExit("index.html still has absolute /drift/assets/ URLs")
+if "https://drift-psi-two" in html:
+    raise SystemExit("index.html still names the Vercel host")
 (dst / "index.html").write_text(html, encoding="utf-8")
 if readme:
     (dst / "README.md").write_text(readme, encoding="utf-8")
@@ -116,9 +124,10 @@ if readme:
 hits = []
 for path in dst.rglob("*"):
     if path.is_file() and path.suffix.lower() in {".html", ".js", ".css", ".svg", ".webmanifest", ".json"}:
-        if "vercel.app" in path.read_text(encoding="utf-8", errors="ignore"):
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        if "vercel.app" in text or "drift-psi-two" in text:
             hits.append(str(path))
 if hits:
-    raise SystemExit("vercel.app still present:\n" + "\n".join(hits))
+    raise SystemExit("vercel host still present:\n" + "\n".join(hits))
 print(f"published {dst}")
 PY

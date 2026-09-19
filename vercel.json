@@ -227,6 +227,14 @@
       "destination": "https://paperlab-one.vercel.app/:path*"
     },
     {
+      "source": "/drift/",
+      "destination": "/public/drift/index.html"
+    },
+    {
+      "source": "/drift/:path*",
+      "destination": "/public/drift/:path*"
+    },
+    {
       "source": "/bertycad",
       "destination": "https://bertycad.vercel.app/"
     },
@@ -431,6 +439,15 @@
     },
     {
       "source": "/drift/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/public/drift/index.html",
       "headers": [
         {
           "key": "Cache-Control",
