@@ -9,6 +9,8 @@ ClassLink-style classroom portal for Kulibert Tech Ed apps.
 ## Deploy
 Static `index.html` + `vercel.json`. Production domain `apps.kulibert.net` (Cloudflare in front).
 
+**Drift** is a same-origin snapshot at [`/drift/`](https://apps.kulibert.net/drift/) (`public/drift/` in this repo, rewritten to `/drift/`). Do not rewrite it to `https://drift-psi-two.vercel.app` — Solvay blocks that host. `index.html` uses relative `./assets/…` only. Prove: `curl -sS https://apps.kulibert.net/drift/ | grep vercel.app` must be empty. Rebuild: `bash scripts/publish-drift.sh`.
+
 ## Edit
 This repo is the source of truth. Connect Vercel project **apps-kulibert** to `trebiluk/apps-kulibert` (root directory `.`). Do not upload-replace the live file outside Git.
 

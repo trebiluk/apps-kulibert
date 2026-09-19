@@ -29,6 +29,11 @@
       "permanent": true
     },
     {
+      "source": "/drift",
+      "destination": "/drift/",
+      "permanent": false
+    },
+    {
       "source": "/kidcad",
       "destination": "/bertycad/",
       "permanent": true
@@ -207,61 +212,12 @@
       "destination": "https://paperlab-one.vercel.app/:path*"
     },
     {
-      "source": "/drift",
-      "destination": "https://drift-psi-two.vercel.app/"
-    },
-    {
       "source": "/drift/",
-      "destination": "https://drift-psi-two.vercel.app/"
+      "destination": "/public/drift/index.html"
     },
     {
       "source": "/drift/:path*",
-      "destination": "https://drift-psi-two.vercel.app/:path*"
-    },
-    {
-      "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/drift(.*)"
-        }
-      ],
-      "destination": "https://drift-psi-two.vercel.app/assets/:path*"
-    },
-    {
-      "source": "/favicon.svg",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/drift(.*)"
-        }
-      ],
-      "destination": "https://drift-psi-two.vercel.app/favicon.svg"
-    },
-    {
-      "source": "/__grok/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/drift(.*)"
-        }
-      ],
-      "destination": "https://drift-psi-two.vercel.app/__grok/:path*"
-    },
-    {
-      "source": "/assets/styles-D0JXIS3e.css",
-      "destination": "https://drift-psi-two.vercel.app/assets/styles-D0JXIS3e.css"
-    },
-    {
-      "source": "/assets/index-0c90qKRY.js",
-      "destination": "https://drift-psi-two.vercel.app/assets/index-0c90qKRY.js"
-    },
-    {
-      "source": "/assets/routes-ziny0fEp.js",
-      "destination": "https://drift-psi-two.vercel.app/assets/routes-ziny0fEp.js"
+      "destination": "/public/drift/:path*"
     },
     {
       "source": "/bertycad",
@@ -441,6 +397,42 @@
     },
     {
       "source": "/bertybots/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/drift",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/drift/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/drift/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/public/drift/index.html",
       "headers": [
         {
           "key": "Cache-Control",

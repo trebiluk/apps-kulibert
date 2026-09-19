@@ -13,6 +13,7 @@ Trebby (Diego): regular Grok Build must be able to edit and publish classroom ap
 | Koderized | https://tw.kulibert.net/koderized/ | GitHub `trebiluk/TechWorks` `public/koderized` | Cloudflare Pages **kulibert-desk**. Hub `/koderized` 301s here. School door `/coderized/` is a static CZ 1.4.0 copy in this repo (`coderized/`). |
 | Sprocket PrintKit | jsDelivr `trebiluk/sprocket-printkit` | GitHub `trebiluk/sprocket-printkit` | push main |
 | LogoLab | https://logolab-rho.vercel.app · door `/logolab/` | GitHub `trebiluk/logolab` `main` | Vercel project **logolab**. Custom host logolab.kulibert.net pending Cloudflare CNAME. |
+| Drift | https://apps.kulibert.net/drift/ | GitHub `trebiluk/drift` built into `apps-kulibert` `public/drift/` | Static snapshot on The Tech Room. Relative `./assets/…` only. **Never** proxy HTML/JS/CSS from `https://drift-psi-two.vercel.app` (Solvay DNS lock). Prove: `curl -sS https://apps.kulibert.net/drift/ | grep vercel.app` is empty. |
 
 ## Hard rails
 1. **Never remap** Grok Orbit → tw.kulibert.net. Orbit is leftover.
