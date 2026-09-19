@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.11.0** · 2026-09-18 · channel **live**  
+**Chip: BB 0.11.1** · 2026-09-19 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.11.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.11.1` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -29,6 +29,14 @@ Rules:
 ---
 
 ## Current train (0.11.x live)
+
+### 0.11.1 — Camera on the job — 2026-09-19
+
+- Build view sits on the Shop Floor, not the empty hangar.
+- Play follows the crate. Lamps stay in frame.
+- Physics unchanged.
+
+Hard refresh if a cart still says 0.11.0.
 
 ### 0.11.0 — Class heat + pair chip — 2026-09-18
 

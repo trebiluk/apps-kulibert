@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.11.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.11.1 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.11.0";
+const APP_VERSION = "0.11.1";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.11.0";
-const APP_BUILT = "2026-09-18";
+const APP_CHIP = "BB 0.11.1";
+const APP_BUILT = "2026-09-19";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -97,7 +97,6 @@ function downloadDoc(doc, filename) {
 function readFile(file) {
   return file.text().then((text) => unpackDoc(JSON.parse(text)));
 }
-
 const NAVY = "#0b1f3a";
 const ORANGE = "#e87722";
 const PAPER = "#f4efe6";
@@ -394,7 +393,7 @@ function boot() {
   try { setRole(sessionStorage.getItem(ROLE_KEY) || "builder", true); } catch (e) { setRole("builder", true); }
 
 
-  const view = { scale: 36, ox: 0, oy: 0, dpr: 1, zoom: 1, panx: 0, pany: 0 };
+  const view = { scale: 36, ox: 0, oy: 0, dpr: 1, zoom: 1, panx: 0, pany: 0, fx: 8, fy: 3.2 };
   let doc = defaultDoc();
   let tool = "driveR";
   let layer = "machine"; // machine | level
@@ -441,18 +440,47 @@ function boot() {
     };
   }
 
+  function focusTarget() {
+    if (typeof isMeasure === "function" && isMeasure()) return { x: WORLD_W / 2, y: 5.2 };
+    if (playing && sim && sim.cores[0]) {
+      const p = sim.cores[0].getPosition();
+      const drop = doc.level.drop;
+      const look = drop ? p.x * 0.7 + (drop.x + drop.w / 2) * 0.3 : p.x;
+      return { x: look, y: Math.max(2.5, p.y + 1.35) };
+    }
+    const s = doc.level.shop;
+    const d = doc.level.drop;
+    const peek = d ? Math.min(s.x + s.w + 5.2, d.x + 1.2) : s.x + s.w + 3;
+    return { x: (s.x + peek) / 2, y: Math.max(3.0, (s.y + s.h) * 0.42 + 1.6) };
+  }
+
+  function frameSpan() {
+    if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
+    const phone = window.innerHeight < 540 || window.innerWidth < 920;
+    return phone ? { w: 12.2, h: 6.5 } : { w: 15.0, h: 7.6 };
+  }
+
+  function applyCam(snap) {
+    const t = focusTarget();
+    const k = snap ? 1 : (playing ? 0.1 : 0.22);
+    view.fx += (t.x - view.fx) * k;
+    view.fy += (t.y - view.fy) * k;
+    const sp = frameSpan();
+    const pad = 8 * view.dpr;
+    const sx = (canvas.width - pad * 2) / sp.w;
+    const sy = (canvas.height - pad * 2) / sp.h;
+    view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
+    view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
+    view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
+  }
+
   function fit() {
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     view.dpr = dpr;
     const rect = canvas.getBoundingClientRect();
     canvas.width = Math.max(1, Math.round(rect.width * dpr));
     canvas.height = Math.max(1, Math.round(rect.height * dpr));
-    const pad = 16 * dpr;
-    const sx = (canvas.width - pad * 2) / WORLD_W;
-    const sy = (canvas.height - pad * 2) / WORLD_H;
-    view.scale = Math.min(sx, sy) * view.zoom;
-    view.ox = (canvas.width - WORLD_W * view.scale) / 2 + view.panx;
-    view.oy = (canvas.height - WORLD_H * view.scale) / 2 + view.pany;
+    applyCam(true);
   }
 
   function wx(x) { return Math.round(view.ox + x * view.scale); }
@@ -1260,6 +1288,13 @@ function boot() {
     ctx.lineTo(s / 2, s / 2);
     ctx.lineTo(s / 2 - b, s / 2);
     ctx.stroke();
+    if (s > 22) {
+      ctx.fillStyle = "rgba(26,26,26,0.55)";
+      ctx.font = `800 ${Math.max(9, Math.round(s * 0.28))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("BOT", 0, 0);
+    }
     ctx.restore();
   }
 
@@ -1369,25 +1404,26 @@ function boot() {
 
   function drawShopSet(now) {
     const wall = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    wall.addColorStop(0, "#4a5560");
-    wall.addColorStop(0.45, "#6a7380");
-    wall.addColorStop(1, "#b7a78c");
+    wall.addColorStop(0, "#3a434c");
+    wall.addColorStop(0.5, "#6a7380");
+    wall.addColorStop(1, "#c4b496");
     ctx.fillStyle = wall;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const brickH = wr(0.42), brickW = wr(0.9);
-    ctx.strokeStyle = "rgba(30,34,40,0.18)";
+    const dpr = view.dpr;
+    const brickH = 16 * dpr, brickW = 34 * dpr;
+    const wallBottom = canvas.height * 0.58;
+    ctx.strokeStyle = "rgba(30,34,40,0.22)";
     ctx.lineWidth = 1;
-    for (let row = 0; row < 18; row++) {
-      const yy = wy(WORLD_H - 0.2) + row * brickH;
-      if (yy > wy(7)) break;
+    for (let row = 0; row * brickH < wallBottom; row++) {
+      const yy = row * brickH;
       const off = (row % 2) * brickW * 0.5;
       ctx.beginPath();
-      ctx.moveTo(wx(0), yy);
-      ctx.lineTo(wx(WORLD_W), yy);
+      ctx.moveTo(0, yy);
+      ctx.lineTo(canvas.width, yy);
       ctx.stroke();
-      for (let col = -1; col < 40; col++) {
-        const xx = wx(0) + col * brickW + off;
+      for (let col = -1; col * brickW < canvas.width + brickW; col++) {
+        const xx = col * brickW + off;
         ctx.beginPath();
         ctx.moveTo(xx, yy);
         ctx.lineTo(xx, yy + brickH);
@@ -1395,49 +1431,66 @@ function boot() {
       }
     }
 
-    for (const wx0 of [4, 14, 24]) {
-      const x = wx(wx0), y = wy(WORLD_H - 1.6), w = wr(3.2), h = wr(2.4);
-      ctx.fillStyle = "rgba(210, 230, 245, 0.22)";
+    for (const t of [0.2, 0.5, 0.8]) {
+      const x = canvas.width * t - 36 * dpr;
+      const y = 12 * dpr;
+      const w = 70 * dpr, h = 48 * dpr;
+      ctx.fillStyle = "rgba(210,230,245,0.28)";
       ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = "rgba(255,255,255,0.25)";
+      ctx.strokeStyle = "rgba(255,255,255,0.3)";
       ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = "rgba(245,196,0,0.07)";
+      ctx.fillStyle = "rgba(245,196,0,0.09)";
       ctx.beginPath();
       ctx.moveTo(x, y + h);
       ctx.lineTo(x + w, y + h);
-      ctx.lineTo(x + w + wr(1.4), wy(1.2));
-      ctx.lineTo(x - wr(1.4), wy(1.2));
+      ctx.lineTo(x + w + 50 * dpr, canvas.height);
+      ctx.lineTo(x - 50 * dpr, canvas.height);
       ctx.closePath();
       ctx.fill();
     }
 
-    ctx.fillStyle = "#5c6168";
-    ctx.fillRect(wx(0), wy(WORLD_H - 0.12), wr(WORLD_W), wr(0.28));
-    ctx.fillStyle = "#cfd6dc";
-    ctx.fillRect(wx(0), wy(WORLD_H - 0.22), wr(WORLD_W), wr(0.08));
-
-    drawLamp(5.5, WORLD_H - 1.1, now);
-    drawLamp(14, WORLD_H - 1.1, now);
-    drawLamp(22.5, WORLD_H - 1.1, now);
-
-    drawPallet(0.35, 1.05);
-    drawPallet(0.5, 1.28);
-    drawCone(2.1, 1.05);
-    drawCone(26.4, 1.05);
-    drawCone(27.1, 1.05);
-
-    ctx.fillStyle = "#3a4148";
-    ctx.fillRect(wx(26.6), wy(3.1), wr(1.1), wr(2.05));
-    ctx.fillStyle = "#f5c400";
-    ctx.fillRect(wx(26.75), wy(2.7), wr(0.18), wr(0.08));
-    ctx.fillRect(wx(27.15), wy(2.7), wr(0.18), wr(0.08));
-
-    for (let i = 0; i < 22; i++) {
-      const dx = (i * 5.37 + now * 0.00035) % WORLD_W;
-      const dy = 3.2 + (i % 6) * 1.4 + Math.sin(now / 900 + i) * 0.35;
-      ctx.fillStyle = "rgba(255,248,220,0.16)";
+    for (const t of [0.24, 0.5, 0.76]) {
+      const px = canvas.width * t;
+      const py = 10 * dpr;
+      const swing = Math.sin(now / 1400 + t * 8) * 6 * dpr;
+      ctx.strokeStyle = "#2a2e33";
+      ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(wx(dx), wy(dy), Math.max(1.2, wr(0.035)), 0, Math.PI * 2);
+      ctx.moveTo(px, 0);
+      ctx.lineTo(px + swing, py + 18 * dpr);
+      ctx.stroke();
+      const g = ctx.createRadialGradient(px + swing, py + 20 * dpr, 4, px + swing, py + 20 * dpr, 120 * dpr);
+      g.addColorStop(0, "rgba(245,196,0,0.32)");
+      g.addColorStop(1, "rgba(245,196,0,0)");
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(px + swing, py + 20 * dpr, 120 * dpr, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(px + swing - 8 * dpr, py + 16 * dpr);
+      ctx.lineTo(px + swing + 8 * dpr, py + 16 * dpr);
+      ctx.lineTo(px + swing, py + 28 * dpr);
+      ctx.closePath();
+      ctx.fillStyle = "#f5c400";
+      ctx.fill();
+      ctx.strokeStyle = "#2a2e33";
+      ctx.stroke();
+    }
+
+    const shop = doc.level.shop;
+    if (shop) {
+      drawPallet(shop.x - 1.35, 1.05);
+      drawCone(shop.x - 0.5, 1.05);
+    }
+    const drop = doc.level.drop;
+    if (drop) drawCone(drop.x + drop.w + 0.55, 1.05);
+
+    for (let i = 0; i < 18; i++) {
+      const x = ((i * 97 + now * 0.02) % canvas.width);
+      const y = 40 * dpr + (i * 53 % (canvas.height * 0.55));
+      ctx.fillStyle = "rgba(255,248,220,0.14)";
+      ctx.beginPath();
+      ctx.arc(x, y, 1.3 * dpr, 0, Math.PI * 2);
       ctx.fill();
     }
   }
@@ -1902,7 +1955,7 @@ function boot() {
     view.zoom = 1;
     view.panx = 0;
     view.pany = 0;
-    fit();
+    applyCam(true);
   }
 
   async function loadBuiltin(id) {
@@ -1919,6 +1972,7 @@ function boot() {
     const pick = document.getElementById("level-pick");
     if (pick) pick.value = item.id;
     setTool(item.id === "measure" ? "tape" : "driveR");
+    applyCam(true);
     refreshMeta();
   }
 
@@ -2278,6 +2332,7 @@ function boot() {
       }
       if (acc >= DT) acc = 0;
     }
+    applyCam(false);
     draw();
     drawHowtoDemo(now);
     requestAnimationFrame(loop);
@@ -2299,5 +2354,4 @@ function boot() {
   }
   requestAnimationFrame(loop);
 }
-
 boot();
