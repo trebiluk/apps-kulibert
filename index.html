@@ -179,6 +179,79 @@
     @media (prefers-reduced-motion:reduce){
       a.tile,a.tile:active{transition:none;transform:none}
     }
+
+    button.tile{
+      width:var(--tile);height:var(--tile);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
+      text-decoration:none;color:var(--muted);
+      background:var(--cell);
+      border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+      border-radius:var(--radius);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+      font:inherit;cursor:pointer;
+      -webkit-tap-highlight-color:transparent;
+      touch-action:manipulation;
+      min-width:56px;min-height:56px;
+    }
+    button.tile svg{
+      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.7;
+      stroke-linecap:round;stroke-linejoin:round;
+    }
+    button.tile.add{border-style:dashed;background:transparent}
+    button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--elevated)}
+    button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    .tile .label,button.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    .cuts{margin:1.4rem 0 0}
+    .cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
+    .cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
+    .cuts .hint{font-size:.7rem;color:var(--subtle)}
+    .cuts .board{margin:0}
+    .cut-wrap{position:relative;width:var(--tile);height:var(--tile)}
+    .cut-wrap .tile{width:100%;height:100%}
+    .cut-wrap .edit{
+      position:absolute;top:.2rem;right:.2rem;width:2rem;height:2rem;padding:0;
+      display:grid;place-items:center;border:0;border-radius:8px;cursor:pointer;
+      background:color-mix(in srgb,var(--bg) 80%,transparent);color:var(--muted);
+    }
+    .cut-wrap .edit svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
+    .modal{
+      position:fixed;inset:0;z-index:40;display:grid;place-items:center;
+      background:color-mix(in srgb,var(--bg) 80%,transparent);padding:1rem;
+    }
+    .modal[hidden]{display:none}
+    .sheet{
+      width:min(28rem,calc(100vw - 1.5rem));
+      background:var(--elevated);border:1px solid var(--border);border-radius:18px;padding:1.2rem 1.2rem 1.1rem;
+    }
+    .sheet h2{color:var(--text);font-size:1.15rem;text-transform:none;letter-spacing:0;margin:0 0 .35rem;font-weight:750}
+    .sheet .desc{color:var(--muted);font-size:.85rem;line-height:1.45;margin:0 0 1rem;font-weight:500}
+    .sheet label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600;margin:0 0 .8rem;color:var(--text)}
+    .sheet input{
+      height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);
+      color:var(--text);padding:0 .9rem;font:inherit;font-weight:500;
+    }
+    .sheet input:focus{outline:2px solid var(--accent);outline-offset:2px}
+    .icons{display:grid;grid-template-columns:repeat(5,1fr);gap:.4rem;margin:.15rem 0 1rem}
+    .icons button{
+      aspect-ratio:1;border-radius:12px;border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+      background:var(--cell);color:var(--accent);display:grid;place-items:center;cursor:pointer;padding:0;
+    }
+    .icons button[aria-pressed="true"]{border-color:color-mix(in srgb,var(--accent) 70%,transparent);background:var(--elevated)}
+    .icons svg{width:1.25rem;height:1.25rem;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .sheet .err{color:var(--muted);font-size:.85rem;min-height:1.15rem;margin:0 0 .7rem}
+    .sheet .actions{display:flex;flex-wrap:wrap;gap:.5rem}
+    .sheet .actions button{
+      height:2.75rem;min-height:44px;border-radius:10px;border:0;padding:0 1rem;
+      font:inherit;font-weight:650;cursor:pointer;
+    }
+    .sheet .save{background:var(--accent);color:#041018;flex:1}
+    .sheet .ghost{background:var(--panel);color:var(--text);border:1px solid var(--border)}
+    @media (min-width:640px){
+      button.tile svg{width:2.4rem;height:2.4rem}
+    }
+    @media (max-width:400px){
+      button.tile{min-width:52px;min-height:52px}
+    }
   </style>
 </head>
 <body>
@@ -284,6 +357,15 @@
       </a>
     </nav>
 
+    <section class="cuts" aria-label="My shortcuts">
+      <div class="cuts-head">
+        <h2>My shortcuts</h2>
+        <span class="hint">This Chromebook only</span>
+      </div>
+      <nav class="board" id="cut-board"></nav>
+    </section>
+
+
     <section class="recents" id="opened" hidden>
       <h2>Opened here</h2>
       <ul class="chips" id="opened-list"></ul>
@@ -298,15 +380,66 @@
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
       </ul>
     </section>
-    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · / search · 1–9 launch</footer>
+    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · shortcuts stay on this Chromebook</footer>
   </div>
+
+  <div class="modal" id="cut-modal" hidden>
+    <form class="sheet" id="cut-form">
+      <h2 id="cut-title">Add shortcut</h2>
+      <p class="desc">Stays on this Chromebook. Name it, paste a link, pick an icon.</p>
+      <label>Name
+        <input id="cut-name" type="text" maxlength="24" placeholder="Class site" autocomplete="off" spellcheck="false" required/>
+      </label>
+      <label>Address
+        <input id="cut-url" type="text" inputmode="url" placeholder="https://" autocomplete="off" spellcheck="false" required/>
+      </label>
+      <p class="desc" style="margin:0 0 .35rem">Icon</p>
+      <div class="icons" id="cut-icons" role="group" aria-label="Icon"></div>
+      <p class="err" id="cut-error" role="alert"></p>
+      <div class="actions">
+        <button class="save" type="submit">Save on this Chromebook</button>
+        <button class="ghost" type="button" id="cut-remove" hidden>Remove</button>
+        <button class="ghost" type="button" id="cut-cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+
   <script>
     (function () {
       var KEY = "tech-room-opened";
-      var tiles = Array.prototype.slice.call(document.querySelectorAll("a.tile"));
+      var CUT_KEY = "tech-room-shortcuts";
+      var MAX = 18;
+      var tiles = Array.prototype.slice.call(document.querySelectorAll("nav.board:not(#cut-board) a.tile"));
       var input = document.getElementById("q");
       var opened = document.getElementById("opened");
       var list = document.getElementById("opened-list");
+      var board = document.getElementById("cut-board");
+      var modal = document.getElementById("cut-modal");
+      var form = document.getElementById("cut-form");
+      var nameEl = document.getElementById("cut-name");
+      var urlEl = document.getElementById("cut-url");
+      var errEl = document.getElementById("cut-error");
+      var titleEl = document.getElementById("cut-title");
+      var removeEl = document.getElementById("cut-remove");
+      var iconBox = document.getElementById("cut-icons");
+      var editingId = null;
+      var picked = "link";
+      var ICONS = {
+        link: '<path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/>',
+        globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
+        bookmark: '<path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>',
+        video: '<path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/>',
+        file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/>',
+        game: '<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="12" y2="12"/><line x1="18" x2="18.01" y1="10" y2="10"/><path d="M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z"/>',
+        music: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+        calc: '<rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" x2="16" y1="6" y2="6"/><line x1="16" x2="16" y1="14" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/>',
+        news: '<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>',
+        school: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.839l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>'
+      };
+
+      function svg(inner) {
+        return '<svg viewBox="0 0 24 24" aria-hidden="true">' + inner + "</svg>";
+      }
 
       function read() {
         try {
@@ -320,6 +453,34 @@
 
       function write(ids) {
         try { localStorage.setItem(KEY, JSON.stringify(ids.slice(0, 6))); } catch (e) {}
+      }
+
+      function readCuts() {
+        try {
+          var raw = localStorage.getItem(CUT_KEY);
+          var parsed = raw ? JSON.parse(raw) : [];
+          return Array.isArray(parsed) ? parsed.filter(function (row) {
+            return row && typeof row.id === "string" && typeof row.name === "string" && typeof row.href === "string";
+          }) : [];
+        } catch (e) {
+          return [];
+        }
+      }
+
+      function writeCuts(rows) {
+        try { localStorage.setItem(CUT_KEY, JSON.stringify(rows.slice(0, MAX))); } catch (e) {}
+      }
+
+      function cleanUrl(raw) {
+        var value = (raw || "").trim();
+        if (!value) return { error: "Paste a web address." };
+        if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(value)) value = "https://" + value;
+        var url;
+        try { url = new URL(value); } catch (e) { return { error: "That address is not a valid link." }; }
+        if (url.protocol !== "http:" && url.protocol !== "https:") return { error: "Only http and https links." };
+        if (url.username || url.password) return { error: "Links cannot include a username or password." };
+        if (url.href.length > 2048) return { error: "That link is too long." };
+        return { href: url.href };
       }
 
       function paint() {
@@ -348,6 +509,41 @@
         paint();
       }
 
+      function paintCuts() {
+        var q = (input.value || "").trim().toLowerCase();
+        var rows = readCuts();
+        board.innerHTML = "";
+        rows.forEach(function (row) {
+          var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
+          if (!hit) return;
+          var wrap = document.createElement("div");
+          wrap.className = "cut-wrap";
+          var href = String(row.href).replace(/"/g, "");
+          wrap.innerHTML =
+            '<a class="tile" href="' + href + '" rel="noopener noreferrer">' +
+              svg(ICONS[row.icon] || ICONS.link) +
+              '<span class="label"></span>' +
+            "</a>" +
+            '<button type="button" class="edit" aria-label="Edit">' +
+              svg('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .622.624l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>') +
+            "</button>";
+          wrap.querySelector(".label").textContent = row.name;
+          wrap.querySelector(".edit").addEventListener("click", function (event) {
+            event.preventDefault();
+            openModal(row);
+          });
+          board.appendChild(wrap);
+        });
+        if (!q) {
+          var add = document.createElement("button");
+          add.type = "button";
+          add.className = "tile add";
+          add.innerHTML = svg('<path d="M5 12h14"/><path d="M12 5v14"/>') + '<span class="label">Add</span>';
+          add.addEventListener("click", function () { openModal(null); });
+          board.appendChild(add);
+        }
+      }
+
       function filter() {
         var q = (input.value || "").trim().toLowerCase();
         var shown = 0;
@@ -364,12 +560,85 @@
             empty.id = "empty-filter";
             empty.className = "empty";
             empty.textContent = "No apps match that search.";
-            document.querySelector(".board").after(empty);
+            document.querySelector("nav.board:not(#cut-board)").after(empty);
           }
         } else if (empty) {
           empty.remove();
         }
+        paintCuts();
       }
+
+      function openModal(row) {
+        editingId = row ? row.id : null;
+        picked = row && ICONS[row.icon] ? row.icon : "link";
+        nameEl.value = row ? row.name : "";
+        urlEl.value = row ? row.href : "";
+        errEl.textContent = "";
+        titleEl.textContent = row ? "Edit shortcut" : "Add shortcut";
+        removeEl.hidden = !row;
+        paintIcons();
+        modal.hidden = false;
+        nameEl.focus();
+      }
+
+      function closeModal() {
+        modal.hidden = true;
+        editingId = null;
+      }
+
+      function paintIcons() {
+        iconBox.innerHTML = "";
+        Object.keys(ICONS).forEach(function (id) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.setAttribute("aria-pressed", id === picked ? "true" : "false");
+          btn.setAttribute("aria-label", id);
+          btn.innerHTML = svg(ICONS[id]);
+          btn.addEventListener("click", function () {
+            picked = id;
+            paintIcons();
+          });
+          iconBox.appendChild(btn);
+        });
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        var name = (nameEl.value || "").replace(/\s+/g, " ").trim().slice(0, 24);
+        if (!name) { errEl.textContent = "Give the shortcut a name."; return; }
+        var url = cleanUrl(urlEl.value);
+        if (url.error) { errEl.textContent = url.error; return; }
+        var rows = readCuts();
+        if (editingId) {
+          rows = rows.map(function (row) {
+            if (row.id !== editingId) return row;
+            return { id: row.id, name: name, href: url.href, icon: picked };
+          });
+        } else {
+          if (rows.length >= MAX) { errEl.textContent = "This Chromebook can keep " + MAX + " shortcuts."; return; }
+          rows.push({
+            id: "cut-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+            name: name,
+            href: url.href,
+            icon: picked
+          });
+        }
+        writeCuts(rows);
+        closeModal();
+        paintCuts();
+      });
+
+      removeEl.addEventListener("click", function () {
+        if (!editingId) return;
+        writeCuts(readCuts().filter(function (row) { return row.id !== editingId; }));
+        closeModal();
+        paintCuts();
+      });
+
+      document.getElementById("cut-cancel").addEventListener("click", closeModal);
+      modal.addEventListener("click", function (event) {
+        if (event.target === modal) closeModal();
+      });
 
       tiles.forEach(function (tile) {
         tile.addEventListener("click", function () {
@@ -381,13 +650,14 @@
 
       document.addEventListener("keydown", function (event) {
         var typing = event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA");
+        if (event.key === "Escape") {
+          if (!modal.hidden) { event.preventDefault(); closeModal(); return; }
+          if (typing) input.blur();
+          return;
+        }
         if ((event.key === "/" || ((event.key === "k") && (event.metaKey || event.ctrlKey))) && !typing) {
           event.preventDefault();
           input.focus();
-          return;
-        }
-        if (event.key === "Escape" && typing) {
-          input.blur();
           return;
         }
         if (typing) return;
@@ -404,6 +674,7 @@
       });
 
       paint();
+      paintCuts();
     })();
   </script>
 </body>
