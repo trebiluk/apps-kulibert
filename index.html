@@ -201,6 +201,11 @@
     button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--elevated)}
     button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .tile .label,button.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    .school{margin:1.4rem 0 0}
+    .school-head,.cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
+    .school h2,.cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
+    .school .hint,.cuts .hint{font-size:.7rem;color:var(--subtle)}
+    .school .board,.cuts .board{margin:0}
     .cuts{margin:1.4rem 0 0}
     .cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
     .cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
@@ -357,6 +362,15 @@
       </a>
     </nav>
 
+
+    <section class="school" aria-label="School shortcuts">
+      <div class="school-head">
+        <h2>School</h2>
+        <a class="hint" href="/staff/">Staff edit</a>
+      </div>
+      <nav class="board" id="school-board"></nav>
+    </section>
+
     <section class="cuts" aria-label="My shortcuts">
       <div class="cuts-head">
         <h2>My shortcuts</h2>
@@ -380,7 +394,7 @@
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
       </ul>
     </section>
-    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · shortcuts stay on this Chromebook</footer>
+    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · school links from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
   <div class="modal" id="cut-modal" hidden>
@@ -509,6 +523,47 @@
         paint();
       }
 
+
+      var schoolBoard = document.getElementById("school-board");
+      var schoolRows = [];
+
+      function paintSchool() {
+        if (!schoolBoard) return;
+        var q = (input.value || "").trim().toLowerCase();
+        schoolBoard.innerHTML = "";
+        var n = 0;
+        schoolRows.forEach(function (row) {
+          var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
+          if (!hit) return;
+          var a = document.createElement("a");
+          a.className = "tile";
+          a.href = String(row.href).replace(/"/g, "");
+          a.rel = "noopener noreferrer";
+          a.innerHTML = svg(ICONS[row.icon] || ICONS.school || ICONS.link) + '<span class="label"></span>';
+          a.querySelector(".label").textContent = row.name;
+          schoolBoard.appendChild(a);
+          n += 1;
+        });
+        var wrap = schoolBoard.closest(".school");
+        if (wrap) wrap.hidden = n === 0 && schoolRows.length === 0;
+      }
+
+      function loadSchool() {
+        function apply(pack) {
+          schoolRows = Array.isArray(pack && pack.links) ? pack.links : [];
+          paintSchool();
+        }
+        fetch("https://tw.kulibert.net/api/door-links", { cache: "no-store" })
+          .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
+          .then(apply)
+          .catch(function () {
+            fetch("/included.json", { cache: "no-store" })
+              .then(function (res) { return res.ok ? res.json() : { links: [] }; })
+              .then(apply)
+              .catch(function () { apply({ links: [] }); });
+          });
+      }
+
       function paintCuts() {
         var q = (input.value || "").trim().toLowerCase();
         var rows = readCuts();
@@ -566,6 +621,7 @@
           empty.remove();
         }
         paintCuts();
+        paintSchool();
       }
 
       function openModal(row) {
