@@ -18,9 +18,10 @@
       --border:#16324f;
       --text:#e8f7ff;
       --muted:#8fb4c9;
-      --subtle:#5d7d96;
+      --subtle:#8fb4c9;
       --accent:#22d3ee;
       --live:#14b8a6;
+      --tk-logo-grad:linear-gradient(90deg,#22D3EE 0%,#14B8A6 45%,#6D28D9 100%);
       --tile:6.9rem;
       --radius:16px;
     }
@@ -34,25 +35,25 @@
     .wrap{max-width:52rem;margin:0 auto}
     .poster{
       position:relative;overflow:hidden;
-      border:1px solid var(--border);border-radius:28px;min-height:22rem;
+      border:1px solid var(--border);border-radius:22px;min-height:10.25rem;
       background:var(--bg);
     }
     .field{
       position:absolute;inset:0;display:grid;
       grid-template-columns:repeat(5,minmax(0,1fr));
-      gap:.75rem;padding:.9rem;pointer-events:none;
+      gap:.55rem;padding:.55rem;pointer-events:none;opacity:.22;
     }
     @media (min-width:640px){
-      .poster{min-height:28rem}
-      .field{grid-template-columns:repeat(7,minmax(0,1fr));gap:.85rem;padding:1.1rem 1.2rem}
+      .poster{min-height:12.25rem}
+      .field{grid-template-columns:repeat(7,minmax(0,1fr));gap:.6rem;padding:.7rem .85rem}
     }
-    @media (min-width:960px){.poster{min-height:32rem}}
+    @media (min-width:960px){.poster{min-height:13.5rem}}
     .cell{
-      aspect-ratio:1;display:grid;place-items:center;border-radius:16px;
-      background:var(--cell);
-      border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
+      aspect-ratio:1;display:grid;place-items:center;border-radius:12px;
+      background:color-mix(in srgb,var(--cell) 70%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
       color:var(--accent);
-      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 4%,transparent);
     }
     .cell svg{width:44%;height:44%;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
     .vignette{
@@ -62,12 +63,12 @@
     .hero{
       position:relative;z-index:1;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      min-height:22rem;padding:2rem .75rem 5.2rem;text-align:center;
+      min-height:10.25rem;padding:.7rem .75rem 3.85rem;text-align:center;
     }
-    @media (min-width:640px){.hero{min-height:28rem;padding:2.75rem 1rem 5.5rem}}
-    @media (min-width:960px){.hero{min-height:32rem}}
+    @media (min-width:640px){.hero{min-height:12.25rem;padding:.85rem 1rem 4rem}}
+    @media (min-width:960px){.hero{min-height:13.5rem}}
     .chip{
-      display:inline-flex;align-items:center;gap:.4rem;margin-bottom:1.1rem;
+      display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.45rem;
       padding:.3rem .75rem;border-radius:999px;
       background:color-mix(in srgb,var(--panel) 88%,transparent);
       border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
@@ -75,20 +76,14 @@
     }
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live);display:inline-block}
     h1{margin:0;position:relative;isolation:isolate;text-rendering:geometricPrecision;text-wrap:balance}
-    .lockup-bloom{
-      position:absolute;left:50%;top:58%;z-index:-1;width:110%;height:78%;
-      transform:translate(-50%,-50%);pointer-events:none;
-      background:radial-gradient(ellipse at center,color-mix(in srgb,var(--accent) 38%,transparent) 0%,color-mix(in srgb,var(--accent) 14%,transparent) 38%,transparent 72%);
-    }
     .lockup-the{
-      display:block;font-weight:800;letter-spacing:.22em;line-height:1;
-      font-size:clamp(1.7rem,6.2vw,4.2rem);color:#7af8ff;
-      text-shadow:0 0 6px color-mix(in srgb,var(--accent) 80%,transparent),0 0 18px color-mix(in srgb,var(--accent) 35%,transparent);
+      display:block;font-weight:800;letter-spacing:.2em;line-height:1;
+      font-size:clamp(.95rem,3.6vw,1.45rem);color:#c9eef6;
     }
     .lockup-room{
-      display:block;margin-top:.1em;font-weight:800;letter-spacing:-.04em;line-height:.86;
-      font-size:clamp(2.7rem,12vw,7.6rem);
-      background:linear-gradient(180deg,#f7ffff 0%,#9af6ff 36%,#22d3ee 76%,#2dd4bf 100%);
+      display:block;margin-top:.06em;font-weight:800;letter-spacing:-.04em;line-height:.88;
+      font-size:clamp(1.7rem,7vw,3.15rem);
+      background:var(--tk-logo-grad);
       -webkit-background-clip:text;background-clip:text;color:transparent;
     }
     .sub{margin:.9rem 0 0;max-width:28rem;color:var(--muted);font-size:.95rem;line-height:1.45;font-weight:500}
@@ -97,11 +92,14 @@
       width:min(calc(100% - 1.5rem),28rem);
     }
     .search input{
-      width:100%;height:3rem;border:0;border-radius:999px;outline:none;
+      width:100%;height:3rem;min-height:44px;border:0;border-radius:999px;outline:none;
       padding:0 1rem 0 2.7rem;color:var(--text);font:inherit;font-size:.95rem;font-weight:500;
       background:color-mix(in srgb,var(--panel) 92%,transparent);
       border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
       box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
+    }
+    .search input:focus-visible{
+      outline:2px solid var(--accent);outline-offset:3px;
     }
     .search input::placeholder{color:var(--subtle)}
     .search svg{
@@ -131,16 +129,23 @@
       width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
-    a.tile:hover,a.tile:focus-visible{
+    a.tile:hover{
       color:var(--text);
       border-color:color-mix(in srgb,var(--accent) 62%,transparent);
       background:var(--elevated);
-      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent),0 0 16px color-mix(in srgb,var(--accent) 16%,transparent);
-      outline:none;
+      box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent);
+    }
+    a.tile:focus-visible{
+      color:var(--text);
+      outline:2px solid var(--accent);outline-offset:3px;
     }
     a.tile:active{transform:scale(.96)}
-    a.tile .label{font-size:.74rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    a.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
     a.tile.is-hidden{display:none}
+    a.tile[data-id="baboo"]{
+      border-color:color-mix(in srgb,var(--live) 58%,var(--border));
+    }
+    a.tile[data-id="baboo"] svg{stroke:var(--live)}
     .recents{margin:1.4rem 0 0}
     .recents h2,.live h2{
       font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;
@@ -154,15 +159,17 @@
       background:var(--panel);border:1px solid var(--border);color:inherit;
       text-decoration:none;font-size:.82rem;font-weight:600;
     }
-    ul.chips a:hover,ul.chips a:focus-visible{
-      border-color:color-mix(in srgb,var(--accent) 50%,var(--border));outline:none;
+    ul.chips a:hover{
+      border-color:color-mix(in srgb,var(--accent) 50%,var(--border));
+    }
+    ul.chips a:focus-visible{
+      outline:2px solid var(--accent);outline-offset:3px;
     }
     ul.chips strong{color:var(--accent);font-weight:800}
     .empty{color:var(--muted);font-size:.9rem;padding:.5rem 0 0}
-    footer{margin:2rem 0 0;color:var(--subtle);font-size:.7rem}
+    footer{margin:2rem 0 0;color:var(--subtle);font-size:.78rem}
     @media (min-width:640px){
       :root{--tile:7.6rem}
-      a.tile .label{font-size:.8rem}
       a.tile svg{width:2.4rem;height:2.4rem}
     }
     @media (max-width:400px){
@@ -170,9 +177,7 @@
       a.tile{min-width:52px;min-height:52px}
     }
     @media (prefers-reduced-motion:reduce){
-      .lockup-the{text-shadow:none}
-      .lockup-bloom{display:none}
-      a.tile{transition:none}
+      a.tile,a.tile:active{transition:none;transform:none}
     }
   </style>
 </head>
@@ -217,7 +222,6 @@
       <div class="hero">
         <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
         <h1>
-          <span class="lockup-bloom" aria-hidden="true"></span>
           <span class="lockup-the">THE</span>
           <span class="lockup-room">TECH ROOM</span>
         </h1>
@@ -235,7 +239,7 @@
         <span class="label">TechWorks</span>
       </a>
       <a class="tile" data-id="baboo" href="https://baboo.kulibert.net">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="1.2"/><path d="M3 11.6h8.2"/><path d="M12 3v18"/><path d="M12 14.8h9"/><path d="M16.6 14.8V21"/><path d="M7.6 11.6v3.4"/></svg>
         <span class="label">Baboo</span>
       </a>
       <a class="tile" data-id="koderized" href="https://tw.kulibert.net/koderized/">
@@ -290,16 +294,8 @@
       <ul class="chips">
         <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.61</strong></a></li>
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
-        <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.7.3</strong></a></li>
-        <li><a href="/bertybots/">Berty's Botz <strong>BB 0.11.1</strong></a></li>
-        <li><a href="/paperlab/">PaperLab <strong>live</strong></a></li>
-        <li><a href="/logolab/">LogoLab <strong>live</strong></a></li>
-        <li><a href="/sprocket/index.html">Sprocket <strong>1.4.0</strong></a></li>
-        <li><a href="/den/">Bearcat Den <strong>live</strong></a></li>
-        <li><a href="/bistro/">Bearcat Bistro <strong>live</strong></a></li>
-        <li><a href="/housekit/">HouseKit <strong>live</strong></a></li>
-        <li><a href="/drift/">Drift <strong>live</strong></a></li>
+        <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
       </ul>
     </section>
     <footer>Kulibert Tech Ed · Solvay Middle School · dark default · / search · 1–9 launch</footer>
