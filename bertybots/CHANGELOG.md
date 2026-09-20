@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.12.0** · 2026-09-20 · channel **live**  
+**Chip: BB 0.13.0** · 2026-09-20 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.12.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.13.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,19 @@ Rules:
 
 ---
 
-## Current train (0.12.x live)
+## Current train (0.13.x live)
+
+### 0.13.0 — Sleek chrome — 2026-09-20
+
+- HUD, rail, heat, and pair chip sit quieter. Hairline yellow, not racing stripes.
+- Sheets and toasts fade. Play is still the loud button.
+- Type is Barlow. Physics unchanged.
+
+Hard refresh if a cart still says 0.12.0.
+
+---
+
+## 0.12.x
 
 ### 0.12.0 — After-test readout — 2026-09-20
 
