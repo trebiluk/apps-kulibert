@@ -202,10 +202,12 @@
     button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .tile .label,button.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
     .school{margin:1.4rem 0 0}
+    .school[hidden]{display:none}
     .school-head,.cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
     .school h2,.cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
     .school .hint,.cuts .hint{font-size:.7rem;color:var(--subtle)}
     .school .board,.cuts .board{margin:0}
+    .door-line{margin:.1rem 0 .55rem;color:var(--muted);font-size:.82rem;line-height:1.35;font-weight:500}
     .cuts{margin:1.4rem 0 0}
     .cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
     .cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
@@ -305,9 +307,9 @@
         </h1>
       </div>
       <label class="search">
-        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps</span>
+        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps or paste a link</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="q" type="search" placeholder="Search apps" autocomplete="off" spellcheck="false"/>
+        <input id="q" type="search" placeholder="Search or paste a link" autocomplete="off" spellcheck="false"/>
       </label>
     </section>
 
@@ -367,11 +369,12 @@
     </nav>
 
 
-    <section class="school" aria-label="School shortcuts">
+    <section class="school" id="school-wrap" aria-label="School shortcuts">
       <div class="school-head">
         <h2>School</h2>
         <a class="hint" href="/staff/">Staff edit</a>
       </div>
+      <p class="door-line" id="school-note" hidden></p>
       <nav class="board" id="school-board"></nav>
     </section>
 
@@ -392,14 +395,14 @@
     <section class="live" aria-label="Live chips">
       <h2>Live now</h2>
       <ul class="chips">
-        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.79</strong></a></li>
+        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.97</strong></a></li>
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.7.3</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
         <li><a href="/berty-run/">Pipe Draft <strong>list · not built</strong></a></li>
       </ul>
     </section>
-    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · school links from TechWorks · Chromebook shortcuts stay here</footer>
+    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
   <div class="modal" id="cut-modal" hidden>
@@ -428,7 +431,8 @@
       var KEY = "tech-room-opened";
       var CUT_KEY = "tech-room-shortcuts";
       var MAX = 18;
-      var tiles = Array.prototype.slice.call(document.querySelectorAll("nav.board:not(#cut-board) a.tile"));
+      var POLL = 40000;
+      var appBoard = document.querySelector("nav.board[aria-label='Apps']");
       var input = document.getElementById("q");
       var opened = document.getElementById("opened");
       var list = document.getElementById("opened-list");
@@ -441,8 +445,14 @@
       var titleEl = document.getElementById("cut-title");
       var removeEl = document.getElementById("cut-remove");
       var iconBox = document.getElementById("cut-icons");
+      var schoolBoard = document.getElementById("school-board");
+      var schoolWrap = document.getElementById("school-wrap");
+      var schoolNoteEl = document.getElementById("school-note");
       var editingId = null;
       var picked = "link";
+      var schoolRows = [];
+      var schoolNote = "";
+      var schoolSig = "";
       var ICONS = {
         link: '<path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/>',
         globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
@@ -460,24 +470,68 @@
         return '<svg viewBox="0 0 24 24" aria-hidden="true">' + inner + "</svg>";
       }
 
+      function appTiles() {
+        return Array.prototype.slice.call(appBoard.querySelectorAll("a.tile"));
+      }
+
+      function launchTiles() {
+        var apps = appTiles().filter(function (tile) { return !tile.classList.contains("is-hidden"); });
+        var school = Array.prototype.slice.call(schoolBoard.querySelectorAll("a.tile"));
+        var cuts = Array.prototype.slice.call(board.querySelectorAll("a.tile"));
+        return apps.concat(school).concat(cuts);
+      }
+
+      function looksLikeUrl(raw) {
+        var value = (raw || "").trim();
+        if (!value || /\s/.test(value)) return false;
+        if (/^https?:\/\//i.test(value)) return true;
+        return /^[\w.-]+\.[a-z]{2,}([/:?#].*)?$/i.test(value);
+      }
+
+      function nameFromHost(raw) {
+        var url = cleanUrl(raw);
+        if (url.error) return "";
+        try { return new URL(url.href).hostname.replace(/^www\./i, "").slice(0, 24); }
+        catch (e) { return ""; }
+      }
+
+      function hrefKey(href) {
+        try {
+          var url = new URL(href);
+          var path = url.pathname.replace(/\/+$/, "");
+          return (url.protocol + "//" + url.host.toLowerCase() + path + url.search).toLowerCase();
+        } catch (e) {
+          return String(href || "").replace(/\/+$/, "").toLowerCase();
+        }
+      }
+
       function read() {
         try {
-          var raw = localStorage.getItem(KEY);
-          var parsed = raw ? JSON.parse(raw) : [];
-          return Array.isArray(parsed) ? parsed : [];
+          var parsed = JSON.parse(localStorage.getItem(KEY) || "[]");
+          if (!Array.isArray(parsed)) return [];
+          return parsed.map(function (item) {
+            if (typeof item === "string") {
+              var tile = appTiles().filter(function (t) { return t.getAttribute("data-id") === item; })[0];
+              if (!tile) return null;
+              return { id: item, name: tile.querySelector(".label").textContent, href: tile.getAttribute("href") };
+            }
+            if (item && item.href && item.name) {
+              return { id: String(item.id || ""), name: String(item.name).slice(0, 24), href: String(item.href) };
+            }
+            return null;
+          }).filter(Boolean).slice(0, 6);
         } catch (e) {
           return [];
         }
       }
 
-      function write(ids) {
-        try { localStorage.setItem(KEY, JSON.stringify(ids.slice(0, 6))); } catch (e) {}
+      function write(rows) {
+        try { localStorage.setItem(KEY, JSON.stringify(rows.slice(0, 6))); } catch (e) {}
       }
 
       function readCuts() {
         try {
-          var raw = localStorage.getItem(CUT_KEY);
-          var parsed = raw ? JSON.parse(raw) : [];
+          var parsed = JSON.parse(localStorage.getItem(CUT_KEY) || "[]");
           return Array.isArray(parsed) ? parsed.filter(function (row) {
             return row && typeof row.id === "string" && typeof row.name === "string" && typeof row.href === "string";
           }) : [];
@@ -503,69 +557,122 @@
       }
 
       function paint() {
-        var ids = read();
+        var rows = read();
         list.innerHTML = "";
-        var count = 0;
-        ids.forEach(function (id) {
-          var tile = tiles.filter(function (t) { return t.getAttribute("data-id") === id; })[0];
-          if (!tile) return;
+        rows.forEach(function (row) {
           var li = document.createElement("li");
           var a = document.createElement("a");
-          a.href = tile.getAttribute("href");
-          a.textContent = tile.querySelector(".label").textContent;
-          a.addEventListener("click", function () { remember(id); });
+          a.href = row.href;
+          a.rel = "noopener noreferrer";
+          a.textContent = row.name;
+          a.addEventListener("click", function () { remember(row); });
           li.appendChild(a);
           list.appendChild(li);
-          count += 1;
         });
-        opened.hidden = count === 0;
+        opened.hidden = rows.length === 0;
       }
 
-      function remember(id) {
-        var ids = read().filter(function (item) { return item !== id; });
-        ids.unshift(id);
-        write(ids);
+      function remember(entry) {
+        var href = entry.href;
+        var rows = read().filter(function (item) { return item.href !== href; });
+        rows.unshift({ id: entry.id || "", name: entry.name, href: href });
+        write(rows);
         paint();
       }
 
-
-      var schoolBoard = document.getElementById("school-board");
-      var schoolRows = [];
+      function entryFromTile(tile) {
+        return {
+          id: tile.getAttribute("data-id") || "",
+          name: tile.querySelector(".label").textContent,
+          href: tile.getAttribute("href")
+        };
+      }
 
       function paintSchool() {
         if (!schoolBoard) return;
         var q = (input.value || "").trim().toLowerCase();
         schoolBoard.innerHTML = "";
         var n = 0;
+        if (schoolNoteEl) {
+          schoolNoteEl.textContent = schoolNote;
+          schoolNoteEl.hidden = !schoolNote;
+        }
         schoolRows.forEach(function (row) {
           var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
           if (!hit) return;
           var a = document.createElement("a");
           a.className = "tile";
-          a.href = String(row.href).replace(/"/g, "");
+          a.href = row.href;
           a.rel = "noopener noreferrer";
           a.innerHTML = svg(ICONS[row.icon] || ICONS.school || ICONS.link) + '<span class="label"></span>';
           a.querySelector(".label").textContent = row.name;
+          a.addEventListener("click", function () { remember(row); });
           schoolBoard.appendChild(a);
           n += 1;
         });
-        var wrap = schoolBoard.closest(".school");
-        if (wrap) wrap.hidden = n === 0 && schoolRows.length === 0;
+        if (schoolWrap) schoolWrap.hidden = schoolRows.length === 0 && !schoolNote;
+      }
+
+      function applySchool(pack) {
+        var note = String(pack && pack.note ? pack.note : "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().slice(0, 80);
+        var rows = [];
+        var seen = {};
+        var listRows = Array.isArray(pack && pack.links) ? pack.links : [];
+        listRows.forEach(function (row) {
+          if (!row) return;
+          var name = String(row.name || "").replace(/\s+/g, " ").trim().slice(0, 24);
+          var url = cleanUrl(String(row.href || ""));
+          if (!name || url.error) return;
+          var key = hrefKey(url.href);
+          if (seen[key]) return;
+          seen[key] = 1;
+          rows.push({
+            id: typeof row.id === "string" && row.id.indexOf("cut-") === 0 ? row.id.slice(0, 24) : "cut-s" + (rows.length + 1),
+            name: name,
+            href: url.href,
+            icon: ICONS[row.icon] ? row.icon : "school"
+          });
+        });
+        var sig = String(pack && pack.updated || "") + "\0" + note + "\0" + rows.map(function (r) { return r.href; }).join("|");
+        if (sig === schoolSig) return;
+        schoolSig = sig;
+        schoolRows = rows;
+        schoolNote = note;
+        paintSchool();
+      }
+
+      function fetchJson(url, ms) {
+        return new Promise(function (resolve, reject) {
+          var done = false;
+          var t = setTimeout(function () {
+            if (done) return;
+            done = true;
+            reject(new Error("timeout"));
+          }, ms);
+          fetch(url).then(function (res) {
+            if (done) return;
+            done = true;
+            clearTimeout(t);
+            resolve(res);
+          }, function (err) {
+            if (done) return;
+            done = true;
+            clearTimeout(t);
+            reject(err);
+          });
+        });
       }
 
       function loadSchool() {
-        function apply(pack) {
-          schoolRows = Array.isArray(pack && pack.links) ? pack.links : [];
-          paintSchool();
-        }
-        fetch("https://tw.kulibert.net/api/door-links", { cache: "no-store" })
+        if (document.visibilityState === "hidden") return;
+        fetchJson("https://tw.kulibert.net/api/door-links", 4000)
           .then(function (res) { return res.ok ? res.json() : Promise.reject(); })
-          .then(apply)
+          .then(applySchool)
           .catch(function () {
-            fetch("/included.json", { cache: "no-store" })
+            fetchJson("/included.json", 3000)
               .then(function (res) { return res.ok ? res.json() : { links: [] }; })
-              .then(apply)
-              .catch(function () { apply({ links: [] }); });
+              .then(applySchool)
+              .catch(function () { applySchool({ links: [], note: "" }); });
           });
       }
 
@@ -588,6 +695,7 @@
               svg('<path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .622.624l4.353-1.32a2 2 0 0 0 .83-.497z"/><path d="m15 5 4 4"/>') +
             "</button>";
           wrap.querySelector(".label").textContent = row.name;
+          wrap.querySelector("a.tile").addEventListener("click", function () { remember(row); });
           wrap.querySelector(".edit").addEventListener("click", function (event) {
             event.preventDefault();
             openModal(row);
@@ -607,33 +715,39 @@
       function filter() {
         var q = (input.value || "").trim().toLowerCase();
         var shown = 0;
-        tiles.forEach(function (tile) {
+        appTiles().forEach(function (tile) {
           var label = tile.querySelector(".label").textContent.toLowerCase();
           var hit = !q || label.indexOf(q) !== -1;
           tile.classList.toggle("is-hidden", !hit);
           if (hit) shown += 1;
         });
+        paintCuts();
+        paintSchool();
+        var schoolHits = schoolRows.filter(function (row) {
+          return !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
+        }).length;
+        var cutHits = readCuts().filter(function (row) {
+          return !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
+        }).length;
         var empty = document.getElementById("empty-filter");
-        if (!shown && q) {
+        if (!shown && !schoolHits && !cutHits && q) {
           if (!empty) {
             empty = document.createElement("p");
             empty.id = "empty-filter";
             empty.className = "empty";
-            empty.textContent = "No apps match that search.";
-            document.querySelector("nav.board:not(#cut-board)").after(empty);
+            empty.textContent = "Nothing matches. Paste a link and press Enter to pin it here.";
+            appBoard.after(empty);
           }
         } else if (empty) {
           empty.remove();
         }
-        paintCuts();
-        paintSchool();
       }
 
-      function openModal(row) {
+      function openModal(row, seed) {
         editingId = row ? row.id : null;
         picked = row && ICONS[row.icon] ? row.icon : "link";
-        nameEl.value = row ? row.name : "";
-        urlEl.value = row ? row.href : "";
+        nameEl.value = row ? row.name : (seed && seed.name ? seed.name : "");
+        urlEl.value = row ? row.href : (seed && seed.href ? seed.href : "");
         errEl.textContent = "";
         titleEl.textContent = row ? "Edit shortcut" : "Add shortcut";
         removeEl.hidden = !row;
@@ -670,6 +784,11 @@
         var url = cleanUrl(urlEl.value);
         if (url.error) { errEl.textContent = url.error; return; }
         var rows = readCuts();
+        var key = hrefKey(url.href);
+        var dup = rows.some(function (row) {
+          return row.id !== editingId && hrefKey(row.href) === key;
+        });
+        if (dup) { errEl.textContent = "Already on this Chromebook."; return; }
         if (editingId) {
           rows = rows.map(function (row) {
             if (row.id !== editingId) return row;
@@ -689,6 +808,12 @@
         paintCuts();
       });
 
+      urlEl.addEventListener("blur", function () {
+        if ((nameEl.value || "").trim()) return;
+        var guessed = nameFromHost(urlEl.value);
+        if (guessed) nameEl.value = guessed;
+      });
+
       removeEl.addEventListener("click", function () {
         if (!editingId) return;
         writeCuts(readCuts().filter(function (row) { return row.id !== editingId; }));
@@ -701,13 +826,20 @@
         if (event.target === modal) closeModal();
       });
 
-      tiles.forEach(function (tile) {
+      appTiles().forEach(function (tile) {
         tile.addEventListener("click", function () {
-          remember(tile.getAttribute("data-id"));
+          remember(entryFromTile(tile));
         });
       });
 
       input.addEventListener("input", filter);
+      input.addEventListener("keydown", function (event) {
+        if (event.key !== "Enter") return;
+        var pasted = (input.value || "").trim();
+        if (!looksLikeUrl(pasted)) return;
+        event.preventDefault();
+        openModal(null, { name: nameFromHost(pasted), href: pasted });
+      });
 
       document.addEventListener("keydown", function (event) {
         var typing = event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA");
@@ -724,11 +856,10 @@
         if (typing) return;
         var n = Number(event.key);
         if (n >= 1 && n <= 9) {
-          var visible = tiles.filter(function (tile) { return !tile.classList.contains("is-hidden"); });
-          var tile = visible[n - 1];
+          var tile = launchTiles()[n - 1];
           if (tile) {
             event.preventDefault();
-            remember(tile.getAttribute("data-id"));
+            remember(entryFromTile(tile));
             window.location.href = tile.getAttribute("href");
           }
         }
@@ -736,6 +867,11 @@
 
       paint();
       paintCuts();
+      loadSchool();
+      setInterval(loadSchool, POLL);
+      document.addEventListener("visibilitychange", function () {
+        if (document.visibilityState === "visible") loadSchool();
+      });
     })();
   </script>
 </body>

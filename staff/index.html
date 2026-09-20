@@ -27,6 +27,7 @@
     .card{background:var(--elevated);border:1px solid var(--border);border-radius:16px;padding:1rem;margin:1rem 0}
     .row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border)}
     .row:last-child{border-bottom:0}
+    .row-btns{display:flex;gap:.35rem;flex-shrink:0}
     .err{color:var(--muted);min-height:1.2rem}
     .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .7rem;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 24%,transparent);font-size:.72rem;font-weight:600;color:var(--muted)}
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live)}
@@ -47,6 +48,13 @@
       <p class="err" id="key-status">Paste the Cloud desk key from TechWorks → Records → Cloud.</p>
     </form>
 
+    <form class="card" id="note-form" hidden>
+      <label>Door line
+        <input id="note" maxlength="80" placeholder="This week: bring your sketch to period 3"/>
+      </label>
+      <button class="save" type="submit">Save door line</button>
+    </form>
+
     <form class="card" id="add-form" hidden>
       <label>Name <input id="name" maxlength="24" placeholder="NYSED" required/></label>
       <label>Address <input id="href" placeholder="https://" required/></label>
@@ -59,8 +67,8 @@
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
       var links = [];
+      var note = "";
       var token = "";
-      var ALPHA = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 
       function formatKey(raw) {
         return String(raw || "").replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 12);
@@ -75,6 +83,23 @@
         return shaHex("techworks-desk-v1:" + key);
       }
 
+      function hrefKey(href) {
+        try {
+          var url = new URL(href.includes("://") ? href : "https://" + href);
+          var path = url.pathname.replace(/\/+$/, "");
+          return (url.protocol + "//" + url.host.toLowerCase() + path + url.search).toLowerCase();
+        } catch (e) {
+          return String(href || "").replace(/\/+$/, "").toLowerCase();
+        }
+      }
+
+      function when(iso) {
+        if (!iso) return "";
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return "";
+        return d.toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+      }
+
       function paint() {
         var box = document.getElementById("list");
         box.innerHTML = "";
@@ -82,7 +107,7 @@
           box.textContent = "No school links yet.";
           return;
         }
-        links.forEach(function (row) {
+        links.forEach(function (row, index) {
           var div = document.createElement("div");
           div.className = "row";
           var a = document.createElement("a");
@@ -90,31 +115,53 @@
           a.target = "_blank";
           a.rel = "noopener";
           a.textContent = row.name + " · " + row.href.replace(/^https?:\/\//, "");
-          var btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "ghost";
-          btn.textContent = "Remove";
-          btn.addEventListener("click", function () { save(links.filter(function (item) { return item.id !== row.id; })); });
+          var btns = document.createElement("div");
+          btns.className = "row-btns";
+          function ghost(label, onClick, disabled) {
+            var btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "ghost";
+            btn.textContent = label;
+            btn.disabled = !!disabled;
+            btn.addEventListener("click", onClick);
+            return btn;
+          }
+          btns.appendChild(ghost("Up", function () { move(index, -1); }, index === 0));
+          btns.appendChild(ghost("Down", function () { move(index, 1); }, index === links.length - 1));
+          btns.appendChild(ghost("Remove", function () { save(links.filter(function (item) { return item.id !== row.id; }), note); }));
           div.appendChild(a);
-          div.appendChild(btn);
+          div.appendChild(btns);
           box.appendChild(div);
         });
       }
 
-      async function load() {
-        var res = await fetch(API, { cache: "no-store" });
-        var pack = await res.json();
-        links = Array.isArray(pack.links) ? pack.links : [];
-        paint();
-        document.getElementById("status").textContent = links.length + " live on the door.";
+      function move(index, dir) {
+        var next = links.slice();
+        var swap = index + dir;
+        if (swap < 0 || swap >= next.length) return;
+        var tmp = next[index];
+        next[index] = next[swap];
+        next[swap] = tmp;
+        save(next, note);
       }
 
-      async function save(next) {
+      async function load() {
+        var res = await fetch(API);
+        var pack = await res.json();
+        links = Array.isArray(pack.links) ? pack.links : [];
+        note = typeof pack.note === "string" ? pack.note : "";
+        document.getElementById("note").value = note;
+        paint();
+        var stamp = when(pack.updated);
+        document.getElementById("status").textContent = links.length + " live on the door" + (stamp ? " · " + stamp : ".");
+      }
+
+      async function save(next, nextNote) {
         document.getElementById("status").textContent = "Saving…";
         var res = await fetch(API, {
           method: "PUT",
           headers: { "content-type": "application/json", "x-tw-desk": token },
-          body: JSON.stringify({ keyHash: token, links: next })
+          body: JSON.stringify({ keyHash: token, links: next, note: nextNote })
         });
         if (res.status === 401) {
           document.getElementById("status").textContent = "Desk key did not match TechWorks Cloud.";
@@ -126,8 +173,11 @@
         }
         var pack = await res.json();
         links = Array.isArray(pack.links) ? pack.links : next;
+        note = typeof pack.note === "string" ? pack.note : nextNote;
+        document.getElementById("note").value = note;
         paint();
-        document.getElementById("status").textContent = (pack.n || links.length) + " live. Chromebooks refresh in about 30s.";
+        var stamp = when(pack.updated);
+        document.getElementById("status").textContent = (pack.n || links.length) + " live. Chromebooks refresh in about 40s" + (stamp ? " · " + stamp : ".");
       }
 
       document.getElementById("key-form").addEventListener("submit", async function (event) {
@@ -139,10 +189,16 @@
         }
         token = await deskToken(key);
         document.getElementById("add-form").hidden = false;
+        document.getElementById("note-form").hidden = false;
         document.getElementById("key-status").textContent = "Unlocked on this page only. Not stored on student machines.";
         load().catch(function () {
           document.getElementById("status").textContent = "Could not reach TechWorks.";
         });
+      });
+
+      document.getElementById("note-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        save(links, document.getElementById("note").value.replace(/\s+/g, " ").trim().slice(0, 80));
       });
 
       document.getElementById("add-form").addEventListener("submit", function (event) {
@@ -150,9 +206,13 @@
         var name = document.getElementById("name").value.replace(/\s+/g, " ").trim().slice(0, 24);
         var href = document.getElementById("href").value.trim();
         if (!name || !href) return;
+        if (links.some(function (row) { return hrefKey(row.href) === hrefKey(href); })) {
+          document.getElementById("status").textContent = "Already on the door.";
+          return;
+        }
         document.getElementById("name").value = "";
         document.getElementById("href").value = "";
-        save(links.concat([{ id: "cut-" + Date.now().toString(36), name: name, href: href, icon: "school" }]));
+        save(links.concat([{ id: "cut-" + Date.now().toString(36), name: name, href: href, icon: "school" }]), note);
       });
 
       load().catch(function () {});
