@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.11.1** · 2026-09-19 · channel **live**  
+**Chip: BB 0.12.0** · 2026-09-20 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.11.1` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.12.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,21 @@ Rules:
 
 ---
 
-## Current train (0.11.x live)
+## Current train (0.12.x live)
+
+### 0.12.0 — After-test readout — 2026-09-20
+
+- Stop names the fail: stalled, fell, overshot, missed, or parked.
+- Last trail stays as a dashed ghost. Observer ring on the crate in Play.
+- `?debug=1` (or backtick) shows chip + fps. Escape closes sheets.
+- Chromebook idle draw is cheaper. Heat ids cannot grow forever.
+- Pack: `js/io.js` + `js/pack.py`. Bundle cache-bust matches the chip.
+
+Hard refresh if a cart still says 0.11.1.
+
+---
+
+## 0.11.x
 
 ### 0.11.1 — Camera on the job — 2026-09-19
 

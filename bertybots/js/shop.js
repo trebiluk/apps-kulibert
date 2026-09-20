@@ -174,10 +174,15 @@ const GUIDE = {
 
 function toast(msg) {
   const el = document.getElementById("toast");
+  if (!el || !msg) return;
+  const now = performance.now();
+  if (msg === toast._m && now - (toast._at || 0) < 900) return;
+  toast._m = msg;
+  toast._at = now;
   el.textContent = msg;
   el.classList.add("show");
   clearTimeout(toast._t);
-  toast._t = setTimeout(() => el.classList.remove("show"), 2200);
+  toast._t = setTimeout(() => el.classList.remove("show"), 2400);
 }
 
 function inRect(x, y, r) {
@@ -257,6 +262,12 @@ export function boot() {
   try { heatCh = new BroadcastChannel(HEAT_CH); } catch (e) { heatCh = null; }
 
   function persistHeat() {
+    const keys = Object.keys(heat.ids || {});
+    if (keys.length > 240) {
+      const keep = {};
+      for (const k of keys.slice(-120)) keep[k] = 1;
+      heat.ids = keep;
+    }
     try { localStorage.setItem(HEAT_KEY, JSON.stringify({ parked: heat.parked, ids: heat.ids })); } catch (e) { /* private mode */ }
   }
   function renderHeat() {
@@ -323,6 +334,13 @@ export function boot() {
   let dirty = false;
   let history = [];
   let trail = [];
+  let lastTrail = [];
+  let lastReadout = "";
+  let debugOn = false;
+  let frames = 0;
+  let fps = 0;
+  let fpsT = 0;
+  let lastDraw = 0;
   let panning = null;
   let courseId = "open";
   let everTested = false;
@@ -452,7 +470,7 @@ export function boot() {
     });
     const text = guideFor(step);
     lineEl.textContent = text;
-    if (hintEl) hintEl.textContent = text;
+    if (hintEl) hintEl.textContent = lastReadout || text;
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;
   }
@@ -463,6 +481,8 @@ export function boot() {
     pinnedStep = null;
     tapeA = null;
     tapeB = null;
+    lastTrail = [];
+    lastReadout = "";
     if (courseId !== "measure") measureDone = {};
     else measureDone = (progress.wins.measure && progress.wins.measure.jobs) ? { ...progress.wins.measure.jobs } : {};
     refreshGuide();
@@ -787,18 +807,47 @@ export function boot() {
     won = false;
     winT = 0;
     trail = [];
+    lastTrail = [];
+    lastReadout = "";
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
     refreshMeta();
   }
 
+  function crateReadout() {
+    if (won) return "Parked. Output reached the Drop Zone.";
+    if (!trail.length) return "No trail. Test needs a crate in motion.";
+    const last = trail[trail.length - 1];
+    const drop = doc.level.drop;
+    const shop = doc.level.shop;
+    if (last.y < -0.8) return "Crate left the world. Failed output.";
+    if (drop && inRect(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
+    const xs = trail.slice(-24).map((p) => p.x);
+    const span = xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
+    if (shop && last.x >= shop.x - 0.2 && last.x <= shop.x + shop.w + 0.2 && span < 0.55) {
+      return "Crate sat still. Add Drive on a hub, then Play.";
+    }
+    if (trail.length < 18 && span < 0.45) return "Crate barely moved. Check Drive on a hub.";
+    if (shop && drop && last.x > shop.x + shop.w && last.x < drop.x && last.y < 0.85) {
+      return "Crate fell in a gap. Process path broke.";
+    }
+    if (span < 0.4 && last.x < (drop ? drop.x : 20)) return "Crate stalled. A wall or friction ate the process.";
+    if (drop && last.x > drop.x + drop.w + 0.4) return "Crate overshot the Drop Zone.";
+    return "Crate missed the Drop Zone. The trail is feedback — Improve one thing.";
+  }
+
   function stopPlay() {
+    if (playing && !won) lastReadout = crateReadout();
+    else if (won) lastReadout = "Parked. Output reached the Drop Zone.";
+    lastTrail = trail.slice();
     playing = false;
     sim = null;
     won = false;
     winT = 0;
     winEl.classList.remove("show");
+    const hint = document.getElementById("status-hint");
+    if (hint && lastReadout) hint.textContent = lastReadout;
     refreshMeta();
   }
 
@@ -1529,15 +1578,18 @@ export function boot() {
     stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
     if (isMeasure()) drawTape();
 
-    if (playing && trail.length > 1) {
+    if ((playing && trail.length > 1) || (!playing && lastTrail.length > 1)) {
+      const path = playing ? trail : lastTrail;
       ctx.beginPath();
-      ctx.strokeStyle = "rgba(232,119,34,0.7)";
-      ctx.lineWidth = 2;
-      trail.forEach((p, i) => {
+      ctx.strokeStyle = playing ? "rgba(232,119,34,0.7)" : "rgba(232,119,34,0.32)";
+      ctx.lineWidth = playing ? 2 : 2;
+      ctx.setLineDash(playing ? [] : [5, 6]);
+      path.forEach((p, i) => {
         if (i === 0) ctx.moveTo(wx(p.x), wy(p.y));
         else ctx.lineTo(wx(p.x), wy(p.y));
       });
       ctx.stroke();
+      ctx.setLineDash([]);
     }
 
     if (!playing) {
@@ -1606,9 +1658,36 @@ export function boot() {
           const x2 = p.x + Math.cos(a) * len / 2, y2 = p.y + Math.sin(a) * len / 2;
           if (t === "steel") drawIBeam(x1, y1, x2, y2);
           else drawCautionBar(x1, y1, x2, y2);
-        } else if (t === "core") drawCrate(p.x, p.y, a);
+        } else if (t === "core") {
+          drawCrate(p.x, p.y, a);
+          if (document.body.dataset.role === "observer") {
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(245,196,0,0.9)";
+            ctx.lineWidth = 2.5;
+            ctx.arc(wx(p.x), wy(p.y), wr(CORE_S * 0.9), 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
         else drawWheel(p.x, p.y, a, t);
       }
+    }
+
+    if (debugOn) {
+      frames += 1;
+      if (now - fpsT >= 500) {
+        fps = Math.round(frames * 1000 / Math.max(1, now - fpsT));
+        frames = 0;
+        fpsT = now;
+      }
+      ctx.fillStyle = "rgba(26,26,26,0.72)";
+      ctx.fillRect(8, 8, 220, 52);
+      ctx.fillStyle = "#f5c400";
+      ctx.font = `700 ${Math.max(11, Math.round(11 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.fillText(`${APP_CHIP} · ${fps} fps · ${pieceCount(doc)} parts`, 14, 14);
+      ctx.fillStyle = "#f4efe6";
+      ctx.fillText(lastReadout || (playing ? "test" : "shop"), 14, 32);
     }
   }
 
@@ -2074,9 +2153,14 @@ export function boot() {
       if (ev.key === "m" || ev.key === "M") setTool("move");
       if (ev.key === "z" && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); undo(); }
       if (ev.key === "z" && !ev.ctrlKey && !ev.metaKey) undo();
-      if (ev.key === "s" || ev.key === "S") {
-        if (!ev.ctrlKey && !ev.metaKey) { slowMo = !slowMo; refreshMeta(); }
+      if (ev.key === "t" || ev.key === "T") { if (isMeasure()) setTool("tape"); }
+      if (ev.key === "Escape") {
+        showCrew(false);
+        showSystems(false);
+        hideHowto();
+        debugOn = false;
       }
+      if (ev.key === "`") debugOn = !debugOn;
     });
   }
 
@@ -2234,6 +2318,13 @@ export function boot() {
   function loop(now) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
+    const howtoOpen = document.getElementById("howto") && !document.getElementById("howto").hidden;
+    const busy = playing || drag || howtoOpen || debugOn;
+    if (!busy && now - lastDraw < 50) {
+      requestAnimationFrame(loop);
+      return;
+    }
+    lastDraw = now;
     if (playing && sim) {
       acc += dt;
       let steps = 0;
@@ -2258,6 +2349,7 @@ export function boot() {
   setLayer("machine");
   refreshMeta();
   const assigned = new URLSearchParams(location.search).get("course");
+  debugOn = new URLSearchParams(location.search).get("debug") === "1";
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
   } else {
