@@ -8,8 +8,8 @@
   --orange: #e87722;
   --crate: #c45c26;
   --ok: #3a7d54;
-  --text: #f4f1ea;
-  --muted: #b8b3a8;
+  --text: #f7f4ee;
+  --muted: #d4cfc4;
   --navy: #123049;
   --font: "Barlow", "Segoe UI", system-ui, sans-serif;
   --radius-sm: 8px;
@@ -384,6 +384,19 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 .btn.ghost { background: transparent; }
 .btn.tight { min-height: 34px; padding: 5px 10px; border-radius: var(--radius-sm); }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
+.sheet-card .btn, .howto-card .btn {
+  color: var(--text);
+}
+.sheet-card a.btn, .howto-card a.btn,
+.sheet-card .btn.ghost, .howto-card .btn.ghost {
+  background: #ece4d6;
+  color: var(--ink);
+  border: 1px solid #c9bda8;
+}
+.sheet-card a.btn:hover, .howto-card a.btn:hover {
+  background: #e0d4c2;
+}
+body:not([data-site="1"]) [data-layer="level"] { display: none !important; }
 .row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .title {
   width: 100%; background: var(--paper); color: var(--ink);

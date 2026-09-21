@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.13.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.14.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.13.0";
+const APP_VERSION = "0.14.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.13.0";
-const APP_BUILT = "2026-09-20";
+const APP_CHIP = "BB 0.14.0";
+const APP_BUILT = "2026-09-21";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -129,6 +129,7 @@ const CAT = { WORLD: 0x0001, STEEL: 0x0002, GHOST: 0x0004, WHEEL: 0x0008, CORE: 
 
 const BUILTIN = [
   { id: "open", label: "Open Shop", url: null },
+  { id: "editor", label: "Site Editor", url: null },
   { id: "measure", label: "Measure", url: "levels/measure.json" },
   { id: "roll", label: "Roll Out", url: "levels/roll-out.json" },
   { id: "curb", label: "Up the Curb", url: "levels/up-the-curb.json" },
@@ -168,7 +169,7 @@ const RANKS = [
   { name: "Shop tech", at: 180 },
 ];
 
-const PAR = { open: 5, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12, measure: 4 };
+const PAR = { open: 5, editor: 8, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12, measure: 4 };
 
 const MEASURE_JOBS = [
   { id: "shop", label: "Shop Floor width", get: (d) => d.level.shop.w },
@@ -185,6 +186,15 @@ const GUIDE = {
     test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
     improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
     system: "Open Shop is a straight process path. Input energy on the floor, process through the machine, output the crate into the zone.",
+  },
+  editor: {
+    ask: "Ask: design a fair job. Shop Floor, Drop Zone, slabs, and one crate. The class will solve the course you make.",
+    imagine: "Imagine a gap, a curb, or a wall — one constraint, not a maze.",
+    plan: "Plan: Level tab. Draw Shop Floor, then Drop Zone. They cannot overlap. Save a course title only.",
+    create: "Create the site first. Machine tools are for a test cart, not the challenge solution.",
+    test: "Test: Play a cart. If it parks in two seconds with no thought, the job is too easy.",
+    improve: "Improve one constraint. Save. Assign the file — no names.",
+    system: "Site Editor — Input: a job idea. Process: floor, drop, slabs. Output: a course file. Feedback: Play. Constraint: fair for a period.",
   },
   measure: {
     ask: "Ask: how wide is the Shop Floor, the Drop Zone, and the gap between them? Count squares. 1 square = 1 unit.",
@@ -506,6 +516,11 @@ function boot() {
   function wy(y) { return Math.round(canvas.height - (view.oy + y * view.scale)); }
   function wr(n) { return n * view.scale; }
 
+  function canEditSite() {
+    if (courseId === "editor") return true;
+    try { return new URLSearchParams(location.search).get("edit") === "1"; } catch (e) { return false; }
+  }
+
   function setTool(id) {
     tool = id;
     document.querySelectorAll("[data-tool]").forEach((b) => {
@@ -514,7 +529,12 @@ function boot() {
   }
 
   function setLayer(id) {
+    if (id === "level" && !canEditSite()) {
+      toast("Challenges lock the site. Use Site Editor to move floors.");
+      id = "machine";
+    }
     layer = id;
+    document.body.dataset.site = canEditSite() ? "1" : "0";
     document.querySelectorAll("[data-layer]").forEach((b) => {
       b.classList.toggle("on", b.getAttribute("data-layer") === id);
     });
@@ -1797,6 +1817,7 @@ function boot() {
         addPart({ type: d.type, x1: d.x1, y1: d.y1, x2: d.x2, y2: d.y2 });
       }
     } else if (d.kind === "rect") {
+      if (!canEditSite()) return;
       const r = normRect(d.x1, d.y1, d.x2, d.y2);
       if (r.w > 0.4 && r.h > 0.3) {
         if (tool === "shop") {
@@ -1875,6 +1896,7 @@ function boot() {
     }
 
     if (layer === "level") {
+      if (!canEditSite()) { setLayer("machine"); return; }
       if (tool === "erase") {
         const hit = hitSlab(pt);
         if (hit && hit.kind === "slab") {
@@ -2042,8 +2064,10 @@ function boot() {
     const item = BUILTIN.find((x) => x.id === id);
     if (!item) return;
     if (playing) stopPlay();
-    if (!item.url) doc = defaultDoc();
-    else {
+    if (!item.url) {
+      doc = defaultDoc();
+      if (item.id === "editor") doc.title = "Site Editor";
+    } else {
       const res = await fetch(item.url);
       doc = unpackDoc(await res.json());
     }
@@ -2051,6 +2075,7 @@ function boot() {
     resetLoop(item.id);
     const pick = document.getElementById("level-pick");
     if (pick) pick.value = item.id;
+    setLayer("machine");
     setTool(item.id === "measure" ? "tape" : "driveR");
     applyCam(true);
     refreshMeta();
