@@ -1295,11 +1295,15 @@ export function boot() {
   }
 
   function stencil(text, x, y, color) {
+    ctx.save();
+    ctx.shadowColor = "rgba(18,20,24,0.65)";
+    ctx.shadowBlur = 4;
     ctx.fillStyle = color;
     ctx.font = `700 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
     ctx.fillText(text, x, y);
+    ctx.restore();
   }
 
   function drawCone(x, y) {
@@ -1332,7 +1336,8 @@ export function boot() {
 
   function drawLamp(x, y, now) {
     const px = wx(x), py = wy(y);
-    const swing = Math.sin(now / 1400 + x) * wr(0.08);
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const swing = reduce ? 0 : Math.sin(now / 1400 + x) * wr(0.08);
     ctx.strokeStyle = "#2a2e33";
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -1379,7 +1384,7 @@ export function boot() {
     ctx.restore();
     ctx.setLineDash([8, 6]);
     ctx.strokeStyle = won ? OK : ORANGE;
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 2;
     ctx.strokeRect(x, y, w, h);
     ctx.setLineDash([]);
   }

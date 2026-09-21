@@ -31,6 +31,12 @@
 html, body { margin: 0; height: 100%; background: var(--ink); color: var(--text); font-family: var(--font); font-feature-settings: "ss01", "tnum"; }
 button, input, select { font-family: inherit; }
 button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--yellow);
+  outline-offset: 2px;
+}
+.tool.on:focus-visible, .btn.on:focus-visible { outline-offset: 3px; }
 [hidden] { display: none !important; }
 
 #app {
@@ -72,8 +78,8 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   overflow: hidden;
   white-space: nowrap;
   font-size: 12px;
-  font-weight: 750;
-  transition: opacity var(--motion-quick);
+  font-weight: 700;
+  transition: opacity var(--motion-quick) var(--ease-out);
 }
 .rail:hover .lbl,
 .rail:focus-within .lbl,
@@ -95,6 +101,7 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   border-bottom: 2.5px solid var(--yellow);
   transform: rotate(-45deg);
   margin-left: 10px;
+  transition: transform var(--motion-quick) var(--ease-out), margin-left var(--motion-quick) var(--ease-out);
 }
 .rail.open .chev, .rail:hover .chev { transform: rotate(45deg); margin-left: 6px; }
 
@@ -114,7 +121,6 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 .tool.on {
   background: color-mix(in srgb, var(--yellow) 18%, #3a3e44);
   border-color: var(--hair);
-  outline: none;
 }
 .tool:active { transform: scale(0.98); }
 
@@ -296,9 +302,11 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   display: none;
   margin: 0;
   font-size: 11px;
-  font-weight: 650;
-  line-height: 1.3;
+  font-weight: 600;
+  line-height: 1.35;
   color: var(--paper);
+  max-height: 4.2em;
+  overflow: hidden;
 }
 .rail:hover .guide-line,
 .rail:focus-within .guide-line,
@@ -357,7 +365,9 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 .xp-n { font-size: 11px; font-weight: 600; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .hud-pick {
   min-width: 0; flex: 0 1 10rem; max-width: 12rem;
+  color: var(--text);
   appearance: none;
+  background-color: #4a4f56;
   background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%),
     linear-gradient(135deg, var(--muted) 50%, transparent 50%);
   background-position: calc(100% - 14px) calc(50% - 3px), calc(100% - 9px) calc(50% - 3px);
@@ -397,12 +407,14 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   background: #e0d4c2;
 }
 body:not([data-site="1"]) [data-layer="level"] { display: none !important; }
+body:not([data-site="1"]) .rail-tabs { display: none; }
 .row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .title {
   width: 100%; background: var(--paper); color: var(--ink);
   border: 1px solid #d9cbb3; border-radius: var(--radius); padding: 8px 10px; font-weight: 700;
   min-height: 44px; margin-bottom: 10px;
 }
+.title:focus-visible { outline-offset: 0; border-color: #c9a000; box-shadow: 0 0 0 2px var(--yellow); }
 .crew-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
 .hint { font-size: 12px; color: var(--muted); }
 
@@ -481,6 +493,10 @@ body:not([data-site="1"]) [data-layer="level"] { display: none !important; }
 }
 .status .hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .status b { color: var(--yellow); font-variant-numeric: tabular-nums; }
+#mode {
+  font-size: 10px; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--yellow);
+}
 a { color: var(--orange); }
 
 #rotate-gate {
@@ -535,11 +551,12 @@ a { color: var(--orange); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rail, .rail .lbl, .chev, .btn, .toast, .xp i { transition: none; }
+  .rail, .rail .lbl, .chev, .btn, .toast, .xp i, .tool { transition: none; }
+  .btn:active, .tool:active { transform: none; }
 }
 
 .heat {
-  display: flex; align-items: baseline; gap: 6px;
+  display: flex; align-items: center; gap: 6px;
   flex: 0 0 auto; padding: 4px 10px; min-height: 32px;
   background: #2a2e33; border-radius: 999px;
   border: 1px solid #0004;
