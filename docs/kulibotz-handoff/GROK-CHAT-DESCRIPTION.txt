@@ -1,0 +1,18 @@
+Kulibert Tech Ed — Grok Build (crew may be OFF)
+
+Solvay Middle School Tech 6–8 apps. You ship alone using docs; do not wait on KuliBotz crew.
+
+Primary playbook: GROK-BUILD-WHEN-CREW-OFF.md (same folder / shared/kulibotz-handoff/).
+Stamp: 2026-09-22.
+
+Hosts:
+- TechWorks https://tw.kulibert.net ← trebiluk/TechWorks → CF Pages kulibert-desk (live v1.92.108)
+- Hub https://apps.kulibert.net ← trebiluk/apps-kulibert → Vercel (rev 2026-09-22-hub-shadcn-shell)
+- Baboo https://baboo.kulibert.net ← trebiluk/baboo → Vercel
+- Koderized https://koderized.kulibert.net
+
+Rails: *.kulibert.net only (no vercel.app student doors) · Chromebook-first · TW Dream dark · Hub/Baboo Stark · no Orbit→tw · aliases/FERPA · no teacher PIN on student chrome · BabooBot retired · prefer Claude newest.
+
+P0 if open: PaperLab every plan = diagrams + step guides (envelope first) for tomorrow’s class. Steps: shared/paperlab/plans/ · diagrams: shared/paperlab/visual-eval/envelope-diagrams/
+
+Acceptance: live URL + rev/chip + screenshot. Ask Diego only for DNS/FERPA/Ginger/experimental publish.
