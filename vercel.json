@@ -4,6 +4,369 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/teacher",
+      "destination": "/paperlab/teacher",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/teacher/",
+      "destination": "/paperlab/teacher/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/teacher/:path*",
+      "destination": "/paperlab/teacher/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/print",
+      "destination": "/paperlab/print",
+      "permanent": false
+    },
+    {
+      "source": "/print/",
+      "destination": "/paperlab/print/",
+      "permanent": false
+    },
+    {
+      "source": "/print/:path*",
+      "destination": "/paperlab/print/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/draw",
+      "destination": "/paperlab/draw",
+      "permanent": false
+    },
+    {
+      "source": "/draw/",
+      "destination": "/paperlab/draw/",
+      "permanent": false
+    },
+    {
+      "source": "/draw/:path*",
+      "destination": "/paperlab/draw/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/fold",
+      "destination": "/paperlab/fold",
+      "permanent": false
+    },
+    {
+      "source": "/fold/",
+      "destination": "/paperlab/fold/",
+      "permanent": false
+    },
+    {
+      "source": "/fold/:path*",
+      "destination": "/paperlab/fold/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/math",
+      "destination": "/paperlab/math",
+      "permanent": false
+    },
+    {
+      "source": "/math/",
+      "destination": "/paperlab/math/",
+      "permanent": false
+    },
+    {
+      "source": "/math/:path*",
+      "destination": "/paperlab/math/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/nets",
+      "destination": "/paperlab/nets",
+      "permanent": false
+    },
+    {
+      "source": "/nets/",
+      "destination": "/paperlab/nets/",
+      "permanent": false
+    },
+    {
+      "source": "/nets/:path*",
+      "destination": "/paperlab/nets/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/foldables",
+      "destination": "/paperlab/foldables",
+      "permanent": false
+    },
+    {
+      "source": "/foldables/",
+      "destination": "/paperlab/foldables/",
+      "permanent": false
+    },
+    {
+      "source": "/foldables/:path*",
+      "destination": "/paperlab/foldables/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/labs",
+      "destination": "/paperlab/labs",
+      "permanent": false
+    },
+    {
+      "source": "/labs/",
+      "destination": "/paperlab/labs/",
+      "permanent": false
+    },
+    {
+      "source": "/labs/:path*",
+      "destination": "/paperlab/labs/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/plans",
+      "destination": "/paperlab/plans",
+      "permanent": false
+    },
+    {
+      "source": "/plans/",
+      "destination": "/paperlab/plans/",
+      "permanent": false
+    },
+    {
+      "source": "/plans/:path*",
+      "destination": "/paperlab/plans/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/supports",
+      "destination": "/paperlab/supports",
+      "permanent": false
+    },
+    {
+      "source": "/supports/",
+      "destination": "/paperlab/supports/",
+      "permanent": false
+    },
+    {
+      "source": "/supports/:path*",
+      "destination": "/paperlab/supports/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/standards",
+      "destination": "/paperlab/standards",
+      "permanent": false
+    },
+    {
+      "source": "/standards/",
+      "destination": "/paperlab/standards/",
+      "permanent": false
+    },
+    {
+      "source": "/standards/:path*",
+      "destination": "/paperlab/standards/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/updates",
+      "destination": "/paperlab/updates",
+      "permanent": false
+    },
+    {
+      "source": "/updates/",
+      "destination": "/paperlab/updates/",
+      "permanent": false
+    },
+    {
+      "source": "/updates/:path*",
+      "destination": "/paperlab/updates/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/build",
+      "destination": "/paperlab/build",
+      "permanent": false
+    },
+    {
+      "source": "/build/",
+      "destination": "/paperlab/build/",
+      "permanent": false
+    },
+    {
+      "source": "/build/:path*",
+      "destination": "/paperlab/build/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/lessons",
+      "destination": "/logolab/lessons",
+      "permanent": false
+    },
+    {
+      "source": "/lessons/",
+      "destination": "/logolab/lessons/",
+      "permanent": false
+    },
+    {
+      "source": "/lessons/:path*",
+      "destination": "/logolab/lessons/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/glossary",
+      "destination": "/logolab/glossary",
+      "permanent": false
+    },
+    {
+      "source": "/glossary/",
+      "destination": "/logolab/glossary/",
+      "permanent": false
+    },
+    {
+      "source": "/glossary/:path*",
+      "destination": "/logolab/glossary/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/printables",
+      "destination": "/logolab/printables",
+      "permanent": false
+    },
+    {
+      "source": "/printables/",
+      "destination": "/logolab/printables/",
+      "permanent": false
+    },
+    {
+      "source": "/printables/:path*",
+      "destination": "/logolab/printables/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/score",
+      "destination": "/logolab/score",
+      "permanent": false
+    },
+    {
+      "source": "/score/",
+      "destination": "/logolab/score/",
+      "permanent": false
+    },
+    {
+      "source": "/score/:path*",
+      "destination": "/logolab/score/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/teacher",
+      "destination": "/logolab/teacher",
+      "permanent": false
+    },
+    {
+      "source": "/teacher/",
+      "destination": "/logolab/teacher/",
+      "permanent": false
+    },
+    {
+      "source": "/teacher/:path*",
+      "destination": "/logolab/teacher/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/studio",
+      "destination": "/paperlab/studio",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/",
+      "destination": "/paperlab/studio/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/:path*",
+      "destination": "/paperlab/studio/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio",
+      "destination": "/logolab/studio",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/",
+      "destination": "/logolab/studio/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/:path*",
+      "destination": "/logolab/studio/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
       "source": "/lunch",
       "destination": "/bistro/",
       "permanent": false
@@ -468,7 +831,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-den"
+          "value": "2026-09-22-lab-paths"
         }
       ]
     },
@@ -481,7 +844,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-den"
+          "value": "2026-09-22-lab-paths"
         }
       ]
     },
