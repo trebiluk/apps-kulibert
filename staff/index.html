@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#050814"/>
-  <title>School links · The Tech Room</title>
+  <title>Room desk · The Tech Room</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet"/>
@@ -18,8 +18,9 @@
     h1{font-size:1.6rem;margin:.4rem 0 .3rem}
     p{color:var(--muted);line-height:1.45}
     label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600;margin:0 0 .75rem}
+    .check{flex-direction:row;align-items:center;justify-content:space-between;gap:.75rem;min-height:44px}
     input,button{font:inherit}
-    input{height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
+    input[type=text],input[type=url],input[type=number]{height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
     input:focus{outline:2px solid var(--accent);outline-offset:2px}
     button{min-height:44px;border-radius:10px;border:0;padding:0 1rem;font-weight:650;cursor:pointer}
     .save{background:var(--accent);color:#041018}
@@ -27,195 +28,293 @@
     .card{background:var(--elevated);border:1px solid var(--border);border-radius:16px;padding:1rem;margin:1rem 0}
     .row{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.6rem 0;border-bottom:1px solid var(--border)}
     .row:last-child{border-bottom:0}
-    .row-btns{display:flex;gap:.35rem;flex-shrink:0}
     .err{color:var(--muted);min-height:1.2rem}
     .chip{display:inline-flex;align-items:center;gap:.4rem;padding:.25rem .7rem;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 24%,transparent);font-size:.72rem;font-weight:600;color:var(--muted)}
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live)}
+    .row-btns{display:flex;gap:.35rem;flex-shrink:0}
+    .presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .8rem}
+    ol{padding-left:1.1rem;color:var(--muted)}
+    li{margin:.35rem 0}
   </style>
 </head>
 <body>
   <div class="wrap">
-    <p class="chip"><i></i> Staff · school links</p>
-    <h1>Included shortcuts</h1>
-    <p>These tiles show on every Chromebook. Uses the same TechWorks Cloud desk key as tonight’s save. Names and https only — no roster.</p>
-    <p><a href="/">← Tech Room door</a> · <a href="https://tw.kulibert.net/">Open TechWorks Admin → Door</a></p>
+    <p class="chip"><i></i> Locked · Cloud desk key</p>
+    <h1>Room desk</h1>
+    <p>Not a class tile. Unlock with the TechWorks Cloud desk key from Records → Cloud. Hashed in this tab. Close the tab to lock. Names and https only — no roster.</p>
+    <p><a href="/">← Tech Room door</a></p>
 
     <form class="card" id="key-form">
+      <ol>
+        <li><strong>Not a class tile.</strong> Staff on a Chromebook is only a local switch.</li>
+        <li><strong>Cloud desk key.</strong> Same 12-character key. SHA-256 in the browser. First save claims the door.</li>
+        <li><strong>This tab only.</strong> Close the tab, it locks. Nothing stored on student machines.</li>
+      </ol>
       <label>TechWorks desk key
         <input id="desk-key" type="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX"/>
       </label>
-      <button class="save" type="submit">Unlock editor</button>
-      <p class="err" id="key-status">Paste the Cloud desk key from TechWorks → Records → Cloud.</p>
+      <button class="save" type="submit">Unlock this tab</button>
+      <p class="err" id="key-status">Paste the Cloud desk key. First save claims the door if nobody has yet.</p>
     </form>
 
-    <form class="card" id="note-form" hidden>
-      <label>Door line
-        <input id="note" maxlength="80" placeholder="This week: bring your sketch to period 3"/>
-      </label>
-      <button class="save" type="submit">Save door line</button>
-    </form>
-
-    <form class="card" id="add-form" hidden>
-      <label>Name <input id="name" maxlength="24" placeholder="NYSED" required/></label>
-      <label>Address <input id="href" placeholder="https://" required/></label>
-      <button class="save" type="submit">Save to every Chromebook</button>
-    </form>
+    <div id="desk" hidden>
+      <form class="card" id="wall-form">
+        <p class="chip">Wall</p>
+        <div class="presets">
+          <button class="ghost" type="button" id="preset-open">Open room</button>
+          <button class="ghost" type="button" id="preset-paper">Paper day</button>
+          <button class="ghost" type="button" id="preset-sub">Sub coverage</button>
+        </div>
+        <label class="check">Doors closed <input id="closed" type="checkbox"/></label>
+        <label>Closed message <input id="closedMsg" maxlength="80"/></label>
+        <label>Door line <input id="note" maxlength="80" placeholder="This week: bring your sketch"/></label>
+        <label class="check">Show door line <input id="showNote" type="checkbox" checked/></label>
+        <label>Welcome <input id="welcome" maxlength="60"/></label>
+        <label>Period pin <input id="period" maxlength="24" placeholder="Period 3"/></label>
+        <label>Next club <input id="club" maxlength="80"/></label>
+        <label>Doors <input id="doors" maxlength="24" placeholder="7:55a"/></label>
+        <label>Last bell <input id="lastBell" maxlength="24" placeholder="2:37p"/></label>
+      </form>
+      <form class="card" id="add-form">
+        <p class="chip">School tiles</p>
+        <label>Name <input id="name" maxlength="24" placeholder="NYSED"/></label>
+        <label>Address <input id="href" placeholder="https://"/></label>
+        <button class="save" type="submit">Add school tile</button>
+      </form>
+      <div class="card" id="list"></div>
+      <form class="card" id="board-form">
+        <p class="chip">Board</p>
+        <div id="apps"></div>
+        <p class="chip">Policy</p>
+        <label class="check">Personal shortcuts <input id="shortcuts" type="checkbox" checked/></label>
+        <label class="check">Paste a link in search <input id="paste" type="checkbox" checked/></label>
+        <label class="check">Pin tiles <input id="pins" type="checkbox" checked/></label>
+        <label class="check">Opened here <input id="recents" type="checkbox" checked/></label>
+        <label class="check">Keys 1–9 <input id="hotkeys" type="checkbox" checked/></label>
+        <label class="check">Nickname field <input id="aliasOn" type="checkbox" checked/></label>
+        <label class="check">Staff lane <input id="staffLane" type="checkbox" checked/></label>
+        <label class="check">Staff edit link <input id="staffEdit" type="checkbox" checked/></label>
+        <label>Max personal shortcuts <input id="maxCuts" type="number" min="1" max="18" value="18"/></label>
+        <p class="chip">Layout</p>
+        <label class="check">THE TECH ROOM lockup <input id="lockup" type="checkbox" checked/></label>
+        <label class="check">Search <input id="searchOn" type="checkbox" checked/></label>
+        <label class="check">Bell strip <input id="bellsOn" type="checkbox" checked/></label>
+        <label class="check">Live version chips <input id="chips" type="checkbox" checked/></label>
+        <label class="check">Open in a new tab <input id="newTab" type="checkbox" checked/></label>
+        <label class="check">Compact tiles <input id="compact" type="checkbox"/></label>
+        <p class="chip">Voice</p>
+        <label>Search placeholder <input id="search" maxlength="40"/></label>
+        <label>Footer <input id="footer" maxlength="80"/></label>
+      </form>
+      <button class="save" id="save-all" type="button">Save to every Chromebook</button>
+      <button class="ghost" id="lock" type="button">Lock this tab</button>
+    </div>
     <p class="err" id="status"></p>
-    <div class="card" id="list"></div>
   </div>
   <script>
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
-      var links = [];
-      var note = "";
-      var token = "";
+      var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
+      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true };
+      var token = sessionStorage.getItem("tech-room-desk-gate") || "";
 
       function formatKey(raw) {
         return String(raw || "").replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 12);
       }
-
       async function shaHex(s) {
         var buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s));
         return Array.from(new Uint8Array(buf)).map(function (x) { return x.toString(16).padStart(2, "0"); }).join("");
       }
+      async function deskToken(key) { return shaHex("techworks-desk-v1:" + key); }
+      function $(id) { return document.getElementById(id); }
 
-      async function deskToken(key) {
-        return shaHex("techworks-desk-v1:" + key);
-      }
-
-      function hrefKey(href) {
-        try {
-          var url = new URL(href.includes("://") ? href : "https://" + href);
-          var path = url.pathname.replace(/\/+$/, "");
-          return (url.protocol + "//" + url.host.toLowerCase() + path + url.search).toLowerCase();
-        } catch (e) {
-          return String(href || "").replace(/\/+$/, "").toLowerCase();
-        }
-      }
-
-      function when(iso) {
-        if (!iso) return "";
-        var d = new Date(iso);
-        if (isNaN(d.getTime())) return "";
-        return d.toLocaleString("en-US", { timeZone: "America/New_York", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
-      }
-
-      function paint() {
-        var box = document.getElementById("list");
+      function paintApps() {
+        var box = $("apps");
         box.innerHTML = "";
-        if (!links.length) {
-          box.textContent = "No school links yet.";
-          return;
-        }
-        links.forEach(function (row, index) {
-          var div = document.createElement("div");
-          div.className = "row";
-          var a = document.createElement("a");
-          a.href = row.href;
-          a.target = "_blank";
-          a.rel = "noopener";
-          a.textContent = row.name + " · " + row.href.replace(/^https?:\/\//, "");
-          var btns = document.createElement("div");
-          btns.className = "row-btns";
-          function ghost(label, onClick, disabled) {
-            var btn = document.createElement("button");
-            btn.type = "button";
-            btn.className = "ghost";
-            btn.textContent = label;
-            btn.disabled = !!disabled;
-            btn.addEventListener("click", onClick);
-            return btn;
-          }
-          btns.appendChild(ghost("Up", function () { move(index, -1); }, index === 0));
-          btns.appendChild(ghost("Down", function () { move(index, 1); }, index === links.length - 1));
-          btns.appendChild(ghost("Remove", function () { save(links.filter(function (item) { return item.id !== row.id; }), note); }));
-          div.appendChild(a);
-          div.appendChild(btns);
-          box.appendChild(div);
+        APPS.forEach(function (pair) {
+          var wrap = document.createElement("div");
+          wrap.className = "row";
+          var label = document.createElement("label");
+          label.className = "check";
+          label.appendChild(document.createTextNode(pair[1]));
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = room.hidden.indexOf(pair[0]) === -1;
+          cb.addEventListener("change", function () {
+            if (cb.checked) room.hidden = room.hidden.filter(function (id) { return id !== pair[0]; });
+            else if (room.hidden.indexOf(pair[0]) === -1) room.hidden.push(pair[0]);
+          });
+          label.appendChild(cb);
+          var spot = document.createElement("button");
+          spot.type = "button"; spot.className = "ghost";
+          spot.textContent = room.focus === pair[0] ? "Spotlighted" : "Spotlight";
+          spot.addEventListener("click", function () {
+            room.focus = room.focus === pair[0] ? "" : pair[0];
+            if (room.focus) room.hidden = room.hidden.filter(function (id) { return id !== pair[0]; });
+            paintApps();
+          });
+          wrap.appendChild(label);
+          wrap.appendChild(spot);
+          box.appendChild(wrap);
         });
       }
 
-      function move(index, dir) {
-        var next = links.slice();
-        var swap = index + dir;
-        if (swap < 0 || swap >= next.length) return;
-        var tmp = next[index];
-        next[index] = next[swap];
-        next[swap] = tmp;
-        save(next, note);
+      function fill() {
+        $("note").value = room.note || "";
+        $("club").value = room.club || "";
+        $("doors").value = room.doors || "";
+        $("lastBell").value = room.lastBell || "";
+        $("closed").checked = !!room.closed;
+        $("closedMsg").value = room.closedMsg || "";
+        $("showNote").checked = room.showNote !== false;
+        $("welcome").value = room.welcome || "";
+        $("period").value = room.period || "";
+        $("shortcuts").checked = room.shortcuts !== false;
+        $("paste").checked = room.paste !== false;
+        $("pins").checked = room.pins !== false;
+        $("recents").checked = room.recents !== false;
+        $("hotkeys").checked = room.hotkeys !== false;
+        $("aliasOn").checked = room.aliasOn !== false;
+        $("staffLane").checked = room.staffLane !== false;
+        $("staffEdit").checked = room.staffEdit !== false;
+        $("lockup").checked = room.lockup !== false;
+        $("searchOn").checked = room.searchOn !== false;
+        $("bellsOn").checked = room.bellsOn !== false;
+        $("chips").checked = room.chips !== false;
+        $("newTab").checked = room.newTab !== false;
+        $("compact").checked = room.density === "compact";
+        $("maxCuts").value = room.maxCuts || 18;
+        $("search").value = room.search || "";
+        $("footer").value = room.footer || "";
+        paintApps();
+        paintList();
+      }
+
+      function collect() {
+        room.note = $("note").value;
+        room.club = $("club").value;
+        room.doors = $("doors").value;
+        room.lastBell = $("lastBell").value;
+        room.closed = $("closed").checked;
+        room.closedMsg = $("closedMsg").value;
+        room.showNote = $("showNote").checked;
+        room.welcome = $("welcome").value;
+        room.period = $("period").value;
+        room.shortcuts = $("shortcuts").checked;
+        room.paste = $("paste").checked;
+        room.pins = $("pins").checked;
+        room.recents = $("recents").checked;
+        room.hotkeys = $("hotkeys").checked;
+        room.aliasOn = $("aliasOn").checked;
+        room.staffLane = $("staffLane").checked;
+        room.staffEdit = $("staffEdit").checked;
+        room.lockup = $("lockup").checked;
+        room.searchOn = $("searchOn").checked;
+        room.bellsOn = $("bellsOn").checked;
+        room.chips = $("chips").checked;
+        room.newTab = $("newTab").checked;
+        room.density = $("compact").checked ? "compact" : "roomy";
+        room.maxCuts = Math.min(18, Math.max(1, Number($("maxCuts").value) || 18));
+        room.search = $("search").value;
+        room.footer = $("footer").value;
+      }
+
+      function paintList() {
+        var box = $("list");
+        box.innerHTML = "";
+        if (!room.links.length) { box.textContent = "No school links yet."; return; }
+        room.links.forEach(function (row, index) {
+          var div = document.createElement("div");
+          div.className = "row";
+          var a = document.createElement("a");
+          a.href = row.href; a.target = "_blank"; a.rel = "noopener";
+          a.textContent = row.name + " · " + row.href.replace(/^https?:\/\//, "");
+          var btns = document.createElement("div");
+          btns.className = "row-btns";
+          function btn(label, fn) {
+            var b = document.createElement("button");
+            b.type = "button"; b.className = "ghost"; b.textContent = label;
+            b.addEventListener("click", fn); return b;
+          }
+          btns.appendChild(btn("Up", function () {
+            if (index === 0) return;
+            var t = room.links[index - 1]; room.links[index - 1] = row; room.links[index] = t; paintList();
+          }));
+          btns.appendChild(btn("Down", function () {
+            if (index === room.links.length - 1) return;
+            var t = room.links[index + 1]; room.links[index + 1] = row; room.links[index] = t; paintList();
+          }));
+          btns.appendChild(btn("Remove", function () {
+            room.links = room.links.filter(function (item) { return item.id !== row.id; });
+            paintList();
+          }));
+          div.appendChild(a); div.appendChild(btns); box.appendChild(div);
+        });
       }
 
       async function load() {
         var res = await fetch(API);
         var pack = await res.json();
-        links = Array.isArray(pack.links) ? pack.links : [];
-        note = typeof pack.note === "string" ? pack.note : "";
-        document.getElementById("note").value = note;
-        paint();
-        var stamp = when(pack.updated);
-        document.getElementById("status").textContent = links.length + " live on the door" + (stamp ? " · " + stamp : ".");
+        Object.keys(room).forEach(function (k) {
+          if (pack[k] !== undefined) room[k] = pack[k];
+        });
+        room.links = Array.isArray(pack.links) ? pack.links : [];
+        room.hidden = Array.isArray(pack.hidden) ? pack.hidden : [];
+        fill();
+        $("status").textContent = room.links.length + " live on the door.";
       }
 
-      async function save(next, nextNote) {
-        document.getElementById("status").textContent = "Saving…";
+      async function save() {
+        collect();
+        $("status").textContent = "Saving…";
         var res = await fetch(API, {
           method: "PUT",
           headers: { "content-type": "application/json", "x-tw-desk": token },
-          body: JSON.stringify({ keyHash: token, links: next, note: nextNote })
+          body: JSON.stringify({ keyHash: token, ...room })
         });
-        if (res.status === 401) {
-          document.getElementById("status").textContent = "Desk key did not match TechWorks Cloud.";
-          return;
-        }
-        if (!res.ok) {
-          document.getElementById("status").textContent = "Save failed (" + res.status + "). Bind Cloud in TechWorks first.";
-          return;
-        }
+        if (res.status === 401) { $("status").textContent = "Desk key did not match TechWorks Cloud."; return; }
+        if (!res.ok) { $("status").textContent = "Save failed (" + res.status + ")."; return; }
         var pack = await res.json();
-        links = Array.isArray(pack.links) ? pack.links : next;
-        note = typeof pack.note === "string" ? pack.note : nextNote;
-        document.getElementById("note").value = note;
-        paint();
-        var stamp = when(pack.updated);
-        document.getElementById("status").textContent = (pack.n || links.length) + " live. Chromebooks refresh in about 40s" + (stamp ? " · " + stamp : ".");
+        room.links = Array.isArray(pack.links) ? pack.links : room.links;
+        paintList();
+        $("status").textContent = (pack.n || room.links.length) + " live. Chromebooks refresh while the tab is open.";
       }
 
-      document.getElementById("key-form").addEventListener("submit", async function (event) {
+      function showDesk() {
+        $("desk").hidden = false;
+        $("key-status").textContent = "Unlocked on this tab only. Not stored on student machines.";
+      }
+
+      if (token) showDesk();
+      load().catch(function () { $("status").textContent = "Could not reach TechWorks."; });
+
+      $("key-form").addEventListener("submit", async function (event) {
         event.preventDefault();
-        var key = formatKey(document.getElementById("desk-key").value);
-        if (key.length < 8) {
-          document.getElementById("key-status").textContent = "Need the full Cloud desk key.";
-          return;
-        }
+        var key = formatKey($("desk-key").value);
+        if (key.length < 8) { $("key-status").textContent = "Need the full Cloud desk key."; return; }
         token = await deskToken(key);
-        document.getElementById("add-form").hidden = false;
-        document.getElementById("note-form").hidden = false;
-        document.getElementById("key-status").textContent = "Unlocked on this page only. Not stored on student machines.";
-        load().catch(function () {
-          document.getElementById("status").textContent = "Could not reach TechWorks.";
-        });
+        sessionStorage.setItem("tech-room-desk-gate", token);
+        showDesk();
       });
-
-      document.getElementById("note-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        save(links, document.getElementById("note").value.replace(/\s+/g, " ").trim().slice(0, 80));
+      $("lock").addEventListener("click", function () {
+        token = "";
+        sessionStorage.removeItem("tech-room-desk-gate");
+        $("desk").hidden = true;
+        $("key-status").textContent = "Locked.";
       });
-
-      document.getElementById("add-form").addEventListener("submit", function (event) {
+      $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
+      $("preset-paper").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Paper day — no Chromebooks this period"; });
+      $("preset-sub").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Sub coverage — stay on assigned apps"; });
+      $("add-form").addEventListener("submit", function (event) {
         event.preventDefault();
-        var name = document.getElementById("name").value.replace(/\s+/g, " ").trim().slice(0, 24);
-        var href = document.getElementById("href").value.trim();
+        var name = $("name").value.replace(/\s+/g, " ").trim().slice(0, 24);
+        var href = $("href").value.trim();
         if (!name || !href) return;
-        if (links.some(function (row) { return hrefKey(row.href) === hrefKey(href); })) {
-          document.getElementById("status").textContent = "Already on the door.";
-          return;
-        }
-        document.getElementById("name").value = "";
-        document.getElementById("href").value = "";
-        save(links.concat([{ id: "cut-" + Date.now().toString(36), name: name, href: href, icon: "school" }]), note);
+        $("name").value = ""; $("href").value = "";
+        room.links.push({ id: "cut-" + Date.now().toString(36), name: name, href: href, icon: "school" });
+        paintList();
       });
-
-      load().catch(function () {});
+      $("save-all").addEventListener("click", function () { save(); });
     })();
   </script>
 </body>

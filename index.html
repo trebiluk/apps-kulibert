@@ -142,6 +142,24 @@
     a.tile:active{transform:scale(.96)}
     a.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
     a.tile.is-hidden{display:none}
+    a.tile.is-room-hidden,button.tile.is-room-hidden{display:none}
+    .closed-banner{margin:1rem 0 0;padding:.85rem 1rem;border-radius:12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--border));background:var(--panel);color:var(--text);font-size:.9rem;font-weight:600;line-height:1.4}
+    .closed-banner[hidden]{display:none}
+    .welcome-line{margin:.55rem 0 0;max-width:28rem;color:var(--muted);font-size:.9rem;line-height:1.4;font-weight:500}
+    .welcome-line[hidden]{display:none}
+    .room-meta{margin:.8rem 0 0;color:var(--muted);font-size:.82rem;line-height:1.4;font-weight:500}
+    .room-meta[hidden]{display:none}
+    .school .hint[hidden]{display:none}
+    .poster.is-lockup-off .field,.poster.is-lockup-off .vignette,.poster.is-lockup-off h1{display:none}
+    .poster.is-lockup-off,.poster.is-lockup-off .hero{min-height:0}
+    .poster.is-lockup-off .hero{padding:.7rem .75rem .85rem}
+    .poster.is-no-search .search{display:none}
+    .poster.is-no-search .hero{padding-bottom:.85rem}
+    body.room-compact{--tile:5.2rem}
+    body.is-no-recents #opened{display:none !important}
+    body.is-no-chips .live{display:none}
+    body.is-no-cuts .cuts{display:none}
+    body.is-same-tab a.tile{/* target set in JS */}
     a.tile[data-id="baboo"]{
       border-color:color-mix(in srgb,var(--live) 58%,var(--border));
     }
@@ -299,19 +317,21 @@
         <span class="cell"><svg viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></span>
       </div>
       <div class="vignette"></div>
-      <div class="hero">
+      <div class="hero" id="hero">
         <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
         <h1>
           <span class="lockup-the">THE</span>
           <span class="lockup-room">TECH ROOM</span>
         </h1>
+        <p class="welcome-line" id="welcome-line" hidden></p>
       </div>
-      <label class="search">
+      <label class="search" id="search-box">
         <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps or paste a link</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="q" type="search" placeholder="Search or paste a link" autocomplete="off" spellcheck="false"/>
       </label>
     </section>
+    <p class="closed-banner" id="closed-banner" hidden></p>
 
     <nav class="board" aria-label="Apps">
       <a class="tile" data-id="techworks" href="https://tw.kulibert.net">
@@ -372,7 +392,7 @@
     <section class="school" id="school-wrap" aria-label="School shortcuts">
       <div class="school-head">
         <h2>School</h2>
-        <a class="hint" href="/staff/">Staff edit</a>
+        <a class="hint" id="staff-edit" href="/staff/">Staff edit</a>
       </div>
       <p class="door-line" id="school-note" hidden></p>
       <nav class="board" id="school-board"></nav>
@@ -395,14 +415,15 @@
     <section class="live" aria-label="Live chips">
       <h2>Live now</h2>
       <ul class="chips">
-        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.97</strong></a></li>
+        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.105</strong></a></li>
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v1.3.5</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.7.3</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.10.0</strong></a></li>
         <li><a href="/berty-run/">Pipe Draft <strong>list · not built</strong></a></li>
       </ul>
     </section>
-    <footer>Kulibert Tech Ed · Solvay Middle School · dark default · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
+    <p class="room-meta" id="room-meta" hidden></p>
+    <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · dark default · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
   <div class="modal" id="cut-modal" hidden>
@@ -453,6 +474,15 @@
       var schoolRows = [];
       var schoolNote = "";
       var schoolSig = "";
+      var roomHidden = [];
+      var roomAllowCuts = true;
+      var roomAllowPaste = true;
+      var roomMax = 18;
+      var roomStaffEdit = true;
+      var roomHotkeys = true;
+      var roomNewTab = true;
+      var roomShowNote = true;
+      var tileOrder = appTiles().map(function (t) { return t.getAttribute("data-id"); });
       var ICONS = {
         link: '<path d="M9 17H7A5 5 0 0 1 7 7h2"/><path d="M15 7h2a5 5 0 1 1 0 10h-2"/><line x1="8" x2="16" y1="12" y2="12"/>',
         globe: '<circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>',
@@ -475,7 +505,7 @@
       }
 
       function launchTiles() {
-        var apps = appTiles().filter(function (tile) { return !tile.classList.contains("is-hidden"); });
+        var apps = appTiles().filter(function (tile) { return !tile.classList.contains("is-hidden") && !tile.classList.contains("is-room-hidden"); });
         var school = Array.prototype.slice.call(schoolBoard.querySelectorAll("a.tile"));
         var cuts = Array.prototype.slice.call(board.querySelectorAll("a.tile"));
         return apps.concat(school).concat(cuts);
@@ -541,7 +571,7 @@
       }
 
       function writeCuts(rows) {
-        try { localStorage.setItem(CUT_KEY, JSON.stringify(rows.slice(0, MAX))); } catch (e) {}
+        try { localStorage.setItem(CUT_KEY, JSON.stringify(rows.slice(0, roomMax || MAX))); } catch (e) {}
       }
 
       function cleanUrl(raw) {
@@ -595,7 +625,7 @@
         var n = 0;
         if (schoolNoteEl) {
           schoolNoteEl.textContent = schoolNote;
-          schoolNoteEl.hidden = !schoolNote;
+          schoolNoteEl.hidden = !schoolNote || !roomShowNote;
         }
         schoolRows.forEach(function (row) {
           var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
@@ -606,11 +636,12 @@
           a.rel = "noopener noreferrer";
           a.innerHTML = svg(ICONS[row.icon] || ICONS.school || ICONS.link) + '<span class="label"></span>';
           a.querySelector(".label").textContent = row.name;
+          if (roomNewTab) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
           a.addEventListener("click", function () { remember(row); });
           schoolBoard.appendChild(a);
           n += 1;
         });
-        if (schoolWrap) schoolWrap.hidden = schoolRows.length === 0 && !schoolNote;
+        if (schoolWrap) schoolWrap.hidden = schoolRows.length === 0 && !(roomShowNote && schoolNote);
       }
 
       function applySchool(pack) {
@@ -633,12 +664,81 @@
             icon: ICONS[row.icon] ? row.icon : "school"
           });
         });
-        var sig = String(pack && pack.updated || "") + "\0" + note + "\0" + rows.map(function (r) { return r.href; }).join("|");
+        var hidden = Array.isArray(pack && pack.hidden) ? pack.hidden.map(function (id) {
+          id = String(id);
+          if (id === "bearcat-den") return "den";
+          if (id === "bearcat-bistro") return "bistro";
+          return id;
+        }) : [];
+        var focus = String(pack && pack.focus || "");
+        if (focus === "bearcat-den") focus = "den";
+        if (focus === "bearcat-bistro") focus = "bistro";
+        var sig = String(pack && pack.updated || "") + "\0" + note + "\0" + (pack && pack.closed ? "1" : "0") + "\0" + hidden.join(",") + "\0" + focus + "\0" + (pack && pack.density) + "\0" + rows.map(function (r) { return r.href; }).join("|");
         if (sig === schoolSig) return;
         schoolSig = sig;
         schoolRows = rows;
         schoolNote = note;
+        roomHidden = hidden;
+        roomAllowCuts = pack && pack.shortcuts === false ? false : true;
+        roomAllowPaste = pack && pack.paste === false ? false : true;
+        roomMax = Math.min(18, Math.max(1, Number(pack && pack.maxCuts) || 18));
+        roomStaffEdit = pack && pack.staffEdit === false ? false : true;
+        roomHotkeys = pack && pack.hotkeys === false ? false : true;
+        roomNewTab = pack && pack.newTab === false ? false : true;
+        roomShowNote = pack && pack.showNote === false ? false : true;
+        var closedEl = document.getElementById("closed-banner");
+        if (closedEl) {
+          var closed = !!(pack && pack.closed);
+          closedEl.hidden = !closed;
+          closedEl.textContent = closed ? String(pack.closedMsg || "Doors closed this period.").replace(/<[^>]*>/g, "").slice(0, 80) : "";
+        }
+        var staffEl = document.getElementById("staff-edit");
+        if (staffEl) staffEl.hidden = !roomStaffEdit;
+        if (pack && pack.search) input.setAttribute("placeholder", String(pack.search).slice(0, 40));
+        var foot = document.getElementById("room-footer");
+        if (foot && pack && pack.footer) foot.textContent = String(pack.footer).slice(0, 80);
+        var welcome = document.getElementById("welcome-line");
+        if (welcome) {
+          var w = pack && pack.welcome ? String(pack.welcome).replace(/<[^>]*>/g, "").slice(0, 60) : "";
+          welcome.textContent = w;
+          welcome.hidden = !w;
+        }
+        var meta = document.getElementById("room-meta");
+        if (meta) {
+          var bits = [];
+          if (pack && pack.period) bits.push(String(pack.period).replace(/<[^>]*>/g, "").slice(0, 24));
+          if (pack && pack.club) bits.push(String(pack.club).replace(/<[^>]*>/g, "").slice(0, 80));
+          if (pack && pack.doors) bits.push("Doors " + String(pack.doors).slice(0, 24));
+          if (pack && pack.lastBell) bits.push("Last bell " + String(pack.lastBell).slice(0, 24));
+          meta.textContent = bits.join(" · ");
+          meta.hidden = !bits.length || pack && pack.bellsOn === false;
+        }
+        var poster = document.querySelector(".poster");
+        if (poster) {
+          poster.classList.toggle("is-lockup-off", pack && pack.lockup === false);
+          poster.classList.toggle("is-no-search", pack && pack.searchOn === false);
+        }
+        document.body.classList.toggle("room-compact", pack && pack.density === "compact");
+        document.body.classList.toggle("is-no-recents", pack && pack.recents === false);
+        document.body.classList.toggle("is-no-chips", pack && pack.chips === false);
+        document.body.classList.toggle("is-no-cuts", pack && pack.shortcuts === false);
+        tileOrder.forEach(function (id) {
+          var tile = appBoard.querySelector('[data-id="' + id + '"]');
+          if (tile) appBoard.appendChild(tile);
+        });
+        if (focus) {
+          var spotlight = appBoard.querySelector('[data-id="' + focus + '"]');
+          if (spotlight) appBoard.insertBefore(spotlight, appBoard.firstChild);
+        }
+        appTiles().forEach(function (tile) {
+          var id = tile.getAttribute("data-id") || "";
+          tile.classList.toggle("is-room-hidden", roomHidden.indexOf(id) !== -1);
+          if (roomNewTab) { tile.setAttribute("target", "_blank"); tile.setAttribute("rel", "noopener noreferrer"); }
+          else { tile.removeAttribute("target"); tile.removeAttribute("rel"); }
+        });
         paintSchool();
+        paintCuts();
+        paint();
       }
 
       function fetchJson(url, ms) {
@@ -702,7 +802,7 @@
           });
           board.appendChild(wrap);
         });
-        if (!q) {
+        if (!q && roomAllowCuts) {
           var add = document.createElement("button");
           add.type = "button";
           add.className = "tile add";
@@ -710,6 +810,8 @@
           add.addEventListener("click", function () { openModal(null); });
           board.appendChild(add);
         }
+        var cutsSec = document.querySelector("section.cuts");
+        if (cutsSec) cutsSec.hidden = !roomAllowCuts && board.children.length === 0;
       }
 
       function filter() {
@@ -836,7 +938,7 @@
       input.addEventListener("keydown", function (event) {
         if (event.key !== "Enter") return;
         var pasted = (input.value || "").trim();
-        if (!looksLikeUrl(pasted)) return;
+        if (!roomAllowPaste || !roomAllowCuts || !looksLikeUrl(pasted)) return;
         event.preventDefault();
         openModal(null, { name: nameFromHost(pasted), href: pasted });
       });
@@ -849,18 +951,21 @@
           return;
         }
         if ((event.key === "/" || ((event.key === "k") && (event.metaKey || event.ctrlKey))) && !typing) {
+          if (document.querySelector(".poster.is-no-search")) return;
           event.preventDefault();
           input.focus();
           return;
         }
         if (typing) return;
+        if (!roomHotkeys) return;
         var n = Number(event.key);
         if (n >= 1 && n <= 9) {
           var tile = launchTiles()[n - 1];
           if (tile) {
             event.preventDefault();
             remember(entryFromTile(tile));
-            window.location.href = tile.getAttribute("href");
+            if (roomNewTab) window.open(tile.getAttribute("href"), "_blank", "noopener,noreferrer");
+            else window.location.href = tile.getAttribute("href");
           }
         }
       });
