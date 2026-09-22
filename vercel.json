@@ -4,6 +4,369 @@
   "outputDirectory": ".",
   "redirects": [
     {
+      "source": "/teacher",
+      "destination": "/paperlab/teacher",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/teacher/",
+      "destination": "/paperlab/teacher/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/teacher/:path*",
+      "destination": "/paperlab/teacher/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/print",
+      "destination": "/paperlab/print",
+      "permanent": false
+    },
+    {
+      "source": "/print/",
+      "destination": "/paperlab/print/",
+      "permanent": false
+    },
+    {
+      "source": "/print/:path*",
+      "destination": "/paperlab/print/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/draw",
+      "destination": "/paperlab/draw",
+      "permanent": false
+    },
+    {
+      "source": "/draw/",
+      "destination": "/paperlab/draw/",
+      "permanent": false
+    },
+    {
+      "source": "/draw/:path*",
+      "destination": "/paperlab/draw/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/fold",
+      "destination": "/paperlab/fold",
+      "permanent": false
+    },
+    {
+      "source": "/fold/",
+      "destination": "/paperlab/fold/",
+      "permanent": false
+    },
+    {
+      "source": "/fold/:path*",
+      "destination": "/paperlab/fold/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/math",
+      "destination": "/paperlab/math",
+      "permanent": false
+    },
+    {
+      "source": "/math/",
+      "destination": "/paperlab/math/",
+      "permanent": false
+    },
+    {
+      "source": "/math/:path*",
+      "destination": "/paperlab/math/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/nets",
+      "destination": "/paperlab/nets",
+      "permanent": false
+    },
+    {
+      "source": "/nets/",
+      "destination": "/paperlab/nets/",
+      "permanent": false
+    },
+    {
+      "source": "/nets/:path*",
+      "destination": "/paperlab/nets/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/foldables",
+      "destination": "/paperlab/foldables",
+      "permanent": false
+    },
+    {
+      "source": "/foldables/",
+      "destination": "/paperlab/foldables/",
+      "permanent": false
+    },
+    {
+      "source": "/foldables/:path*",
+      "destination": "/paperlab/foldables/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/labs",
+      "destination": "/paperlab/labs",
+      "permanent": false
+    },
+    {
+      "source": "/labs/",
+      "destination": "/paperlab/labs/",
+      "permanent": false
+    },
+    {
+      "source": "/labs/:path*",
+      "destination": "/paperlab/labs/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/plans",
+      "destination": "/paperlab/plans",
+      "permanent": false
+    },
+    {
+      "source": "/plans/",
+      "destination": "/paperlab/plans/",
+      "permanent": false
+    },
+    {
+      "source": "/plans/:path*",
+      "destination": "/paperlab/plans/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/supports",
+      "destination": "/paperlab/supports",
+      "permanent": false
+    },
+    {
+      "source": "/supports/",
+      "destination": "/paperlab/supports/",
+      "permanent": false
+    },
+    {
+      "source": "/supports/:path*",
+      "destination": "/paperlab/supports/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/standards",
+      "destination": "/paperlab/standards",
+      "permanent": false
+    },
+    {
+      "source": "/standards/",
+      "destination": "/paperlab/standards/",
+      "permanent": false
+    },
+    {
+      "source": "/standards/:path*",
+      "destination": "/paperlab/standards/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/updates",
+      "destination": "/paperlab/updates",
+      "permanent": false
+    },
+    {
+      "source": "/updates/",
+      "destination": "/paperlab/updates/",
+      "permanent": false
+    },
+    {
+      "source": "/updates/:path*",
+      "destination": "/paperlab/updates/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/build",
+      "destination": "/paperlab/build",
+      "permanent": false
+    },
+    {
+      "source": "/build/",
+      "destination": "/paperlab/build/",
+      "permanent": false
+    },
+    {
+      "source": "/build/:path*",
+      "destination": "/paperlab/build/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/lessons",
+      "destination": "/logolab/lessons",
+      "permanent": false
+    },
+    {
+      "source": "/lessons/",
+      "destination": "/logolab/lessons/",
+      "permanent": false
+    },
+    {
+      "source": "/lessons/:path*",
+      "destination": "/logolab/lessons/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/glossary",
+      "destination": "/logolab/glossary",
+      "permanent": false
+    },
+    {
+      "source": "/glossary/",
+      "destination": "/logolab/glossary/",
+      "permanent": false
+    },
+    {
+      "source": "/glossary/:path*",
+      "destination": "/logolab/glossary/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/printables",
+      "destination": "/logolab/printables",
+      "permanent": false
+    },
+    {
+      "source": "/printables/",
+      "destination": "/logolab/printables/",
+      "permanent": false
+    },
+    {
+      "source": "/printables/:path*",
+      "destination": "/logolab/printables/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/score",
+      "destination": "/logolab/score",
+      "permanent": false
+    },
+    {
+      "source": "/score/",
+      "destination": "/logolab/score/",
+      "permanent": false
+    },
+    {
+      "source": "/score/:path*",
+      "destination": "/logolab/score/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/teacher",
+      "destination": "/logolab/teacher",
+      "permanent": false
+    },
+    {
+      "source": "/teacher/",
+      "destination": "/logolab/teacher/",
+      "permanent": false
+    },
+    {
+      "source": "/teacher/:path*",
+      "destination": "/logolab/teacher/:path*",
+      "permanent": false
+    },
+    {
+      "source": "/studio",
+      "destination": "/paperlab/studio",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/",
+      "destination": "/paperlab/studio/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/:path*",
+      "destination": "/paperlab/studio/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio",
+      "destination": "/logolab/studio",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/",
+      "destination": "/logolab/studio/",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
+      "source": "/studio/:path*",
+      "destination": "/logolab/studio/:path*",
+      "permanent": false,
+      "has": [
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        }
+      ]
+    },
+    {
       "source": "/lunch",
       "destination": "/bistro/",
       "permanent": false
@@ -52,11 +415,11 @@
   "rewrites": [
     {
       "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/:path*",
@@ -244,28 +607,6 @@
       "destination": "https://bearcat-den.vercel.app/:path*"
     },
     {
-      "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
-        }
-      ],
-      "destination": "https://bearcat-den.vercel.app/assets/:path*"
-    },
-    {
-      "source": "/sms/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
-        }
-      ],
-      "destination": "https://bearcat-den.vercel.app/sms/:path*"
-    },
-    {
       "source": "/favicon.svg",
       "has": [
         {
@@ -288,72 +629,184 @@
       "destination": "https://bearcat-den.vercel.app/__grok/:path*"
     },
     {
-      "source": "/assets/styles-BHVfncu-.css",
-      "destination": "https://bearcat-den.vercel.app/assets/styles-BHVfncu-.css"
+      "source": "/assets/app-chrome-DYueTXz-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/app-chrome-DYueTXz-.js"
     },
     {
-      "source": "/assets/index-Bq7xXU7M.js",
-      "destination": "https://bearcat-den.vercel.app/assets/index-Bq7xXU7M.js"
+      "source": "/assets/board-DxxnA_xx.js",
+      "destination": "https://bearcat-den.vercel.app/assets/board-DxxnA_xx.js"
+    },
+    {
+      "source": "/assets/brand-B-4-_7NA.js",
+      "destination": "https://bearcat-den.vercel.app/assets/brand-B-4-_7NA.js"
+    },
+    {
+      "source": "/assets/building-CjU83sZ3.js",
+      "destination": "https://bearcat-den.vercel.app/assets/building-CjU83sZ3.js"
+    },
+    {
+      "source": "/assets/button-B9Vxg7xO.js",
+      "destination": "https://bearcat-den.vercel.app/assets/button-B9Vxg7xO.js"
+    },
+    {
+      "source": "/assets/check-BVDKTn-y.js",
+      "destination": "https://bearcat-den.vercel.app/assets/check-BVDKTn-y.js"
+    },
+    {
+      "source": "/assets/classroom-screen-g_Q9tXpr.js",
+      "destination": "https://bearcat-den.vercel.app/assets/classroom-screen-g_Q9tXpr.js"
+    },
+    {
+      "source": "/assets/client-C85fcJ4s.js",
+      "destination": "https://bearcat-den.vercel.app/assets/client-C85fcJ4s.js"
+    },
+    {
+      "source": "/assets/clubs-redMUl6u.js",
+      "destination": "https://bearcat-den.vercel.app/assets/clubs-redMUl6u.js"
+    },
+    {
+      "source": "/assets/code-poster-B3VAg7P-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/code-poster-B3VAg7P-.js"
+    },
+    {
+      "source": "/assets/conduct-eVXIuQbA.js",
+      "destination": "https://bearcat-den.vercel.app/assets/conduct-eVXIuQbA.js"
+    },
+    {
+      "source": "/assets/day-run-BnQKsqop.js",
+      "destination": "https://bearcat-den.vercel.app/assets/day-run-BnQKsqop.js"
+    },
+    {
+      "source": "/assets/delay-D5b5kprl.js",
+      "destination": "https://bearcat-den.vercel.app/assets/delay-D5b5kprl.js"
+    },
+    {
+      "source": "/assets/delay-banner-Dp5brGfa.js",
+      "destination": "https://bearcat-den.vercel.app/assets/delay-banner-Dp5brGfa.js"
+    },
+    {
+      "source": "/assets/den-3Zty-CfE.js",
+      "destination": "https://bearcat-den.vercel.app/assets/den-3Zty-CfE.js"
+    },
+    {
+      "source": "/assets/desk-DK60qW49.js",
+      "destination": "https://bearcat-den.vercel.app/assets/desk-DK60qW49.js"
+    },
+    {
+      "source": "/assets/embed-frame-B18qP0PI.js",
+      "destination": "https://bearcat-den.vercel.app/assets/embed-frame-B18qP0PI.js"
+    },
+    {
+      "source": "/assets/footprints-Dh2IQB1x.js",
+      "destination": "https://bearcat-den.vercel.app/assets/footprints-Dh2IQB1x.js"
+    },
+    {
+      "source": "/assets/gates-DudwMRhS.js",
+      "destination": "https://bearcat-den.vercel.app/assets/gates-DudwMRhS.js"
+    },
+    {
+      "source": "/assets/hall-map-DupqPtB_.js",
+      "destination": "https://bearcat-den.vercel.app/assets/hall-map-DupqPtB_.js"
+    },
+    {
+      "source": "/assets/index-CqE2jlgu.js",
+      "destination": "https://bearcat-den.vercel.app/assets/index-CqE2jlgu.js"
+    },
+    {
+      "source": "/assets/jsx-runtime-FXir3jLF.js",
+      "destination": "https://bearcat-den.vercel.app/assets/jsx-runtime-FXir3jLF.js"
+    },
+    {
+      "source": "/assets/lazyRouteComponent-i8nwzbod.js",
+      "destination": "https://bearcat-den.vercel.app/assets/lazyRouteComponent-i8nwzbod.js"
+    },
+    {
+      "source": "/assets/link-wBkbwMKU.js",
+      "destination": "https://bearcat-den.vercel.app/assets/link-wBkbwMKU.js"
+    },
+    {
+      "source": "/assets/login-odggYj1M.js",
+      "destination": "https://bearcat-den.vercel.app/assets/login-odggYj1M.js"
+    },
+    {
+      "source": "/assets/middleware-CqUP2UPP.js",
+      "destination": "https://bearcat-den.vercel.app/assets/middleware-CqUP2UPP.js"
+    },
+    {
+      "source": "/assets/office-session-BbfOl6WH.js",
+      "destination": "https://bearcat-den.vercel.app/assets/office-session-BbfOl6WH.js"
+    },
+    {
+      "source": "/assets/privacy-Cb-3g3gc.js",
+      "destination": "https://bearcat-den.vercel.app/assets/privacy-Cb-3g3gc.js"
     },
     {
       "source": "/assets/react-SIfiwpqq.js",
       "destination": "https://bearcat-den.vercel.app/assets/react-SIfiwpqq.js"
     },
     {
-      "source": "/assets/building-D-NT2UV3.js",
-      "destination": "https://bearcat-den.vercel.app/assets/building-D-NT2UV3.js"
+      "source": "/assets/refresh-cw-DQZglFCR.js",
+      "destination": "https://bearcat-den.vercel.app/assets/refresh-cw-DQZglFCR.js"
     },
     {
-      "source": "/assets/link-D_Rt3DJK.js",
-      "destination": "https://bearcat-den.vercel.app/assets/link-D_Rt3DJK.js"
-    },
-    {
-      "source": "/assets/lazyRouteComponent-CU8K1QD0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/lazyRouteComponent-CU8K1QD0.js"
-    },
-    {
-      "source": "/assets/routes-BdqzXol1.js",
-      "destination": "https://bearcat-den.vercel.app/assets/routes-BdqzXol1.js"
-    },
-    {
-      "source": "/assets/gates-ZtjMj2B0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/gates-ZtjMj2B0.js"
-    },
-    {
-      "source": "/assets/classroom-screen-D2hvVkwt.js",
-      "destination": "https://bearcat-den.vercel.app/assets/classroom-screen-D2hvVkwt.js"
-    },
-    {
-      "source": "/assets/utils-DojpP95n.js",
-      "destination": "https://bearcat-den.vercel.app/assets/utils-DojpP95n.js"
-    },
-    {
-      "source": "/assets/delay-banner-eLvcCU_y.js",
-      "destination": "https://bearcat-den.vercel.app/assets/delay-banner-eLvcCU_y.js"
+      "source": "/assets/routes-CeNp60R6.js",
+      "destination": "https://bearcat-den.vercel.app/assets/routes-CeNp60R6.js"
     },
     {
       "source": "/assets/school-day-p876jYf1.js",
       "destination": "https://bearcat-den.vercel.app/assets/school-day-p876jYf1.js"
     },
     {
-      "source": "/assets/status-ribbon-koaiw4po.js",
-      "destination": "https://bearcat-den.vercel.app/assets/status-ribbon-koaiw4po.js"
+      "source": "/assets/screen-DngBg2-V.js",
+      "destination": "https://bearcat-den.vercel.app/assets/screen-DngBg2-V.js"
     },
     {
-      "source": "/assets/app-chrome-BiLQ4nSI.js",
-      "destination": "https://bearcat-den.vercel.app/assets/app-chrome-BiLQ4nSI.js"
+      "source": "/assets/status-ribbon-DiIo8xM8.js",
+      "destination": "https://bearcat-den.vercel.app/assets/status-ribbon-DiIo8xM8.js"
     },
     {
-      "source": "/assets/button-CJcG3bum.js",
-      "destination": "https://bearcat-den.vercel.app/assets/button-CJcG3bum.js"
+      "source": "/assets/styles-DegkV609.css",
+      "destination": "https://bearcat-den.vercel.app/assets/styles-DegkV609.css"
+    },
+    {
+      "source": "/assets/textarea-DGhcY8tV.js",
+      "destination": "https://bearcat-den.vercel.app/assets/textarea-DGhcY8tV.js"
+    },
+    {
+      "source": "/assets/today-QOdPE-E1.js",
+      "destination": "https://bearcat-den.vercel.app/assets/today-QOdPE-E1.js"
+    },
+    {
+      "source": "/assets/trail-DMPezRP-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/trail-DMPezRP-.js"
     },
     {
       "source": "/assets/use-current-user-C4dygdOb.js",
       "destination": "https://bearcat-den.vercel.app/assets/use-current-user-C4dygdOb.js"
     },
     {
+      "source": "/assets/useNavigate-CvxEMzDL.js",
+      "destination": "https://bearcat-den.vercel.app/assets/useNavigate-CvxEMzDL.js"
+    },
+    {
+      "source": "/assets/utils-DojpP95n.js",
+      "destination": "https://bearcat-den.vercel.app/assets/utils-DojpP95n.js"
+    },
+    {
+      "source": "/sms/bearcat-mark.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/bearcat-mark.jpg"
+    },
+    {
       "source": "/sms/bearcat.jpg",
       "destination": "https://bearcat-den.vercel.app/sms/bearcat.jpg"
+    },
+    {
+      "source": "/sms/school.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/school.jpg"
+    },
+    {
+      "source": "/sms/sms-floor.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/sms-floor.jpg"
     },
     {
       "source": "/bistro",
@@ -392,6 +845,15 @@
         {
           "key": "X-Tech-Room-Rev",
           "value": "2026-09-22-span-spire"
+        }
+      ]
+    },
+    {
+      "source": "/bertybeatz/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
