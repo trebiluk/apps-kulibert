@@ -140,6 +140,59 @@ button:disabled { cursor: default; opacity: 0.45; }
 }
 .caption.pass strong { color: var(--pass); }
 .caption.fail strong { color: var(--fail); }
+.caption.fail strong { color: var(--fail); }
+.caption.pass #cap-mark { color: var(--pass); }
+.caption.fail #cap-mark { color: var(--fail); }
+.top-actions #retry.fat {
+  min-height: 52px;
+  min-width: 96px;
+  font-weight: 800;
+}
+#cap-mark {
+  font-size: 1.35rem;
+  font-weight: 800;
+  min-width: 1.1em;
+}
+#predict {
+  margin-left: auto;
+  min-height: 44px;
+  padding: 0 0.8rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  font-weight: 750;
+}
+#predict[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.edge-pocket {
+  position: fixed;
+  z-index: 6;
+  top: max(0.45rem, env(safe-area-inset-top));
+  right: max(0.45rem, env(safe-area-inset-right));
+}
+.edge-pocket button,
+.edge-pocket a {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 700;
+}
+#edge-menu {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+#edge-menu[hidden] { display: none; }
+.pocket button { min-height: 48px; }
 
 .kinds {
   grid-area: kinds;

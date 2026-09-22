@@ -156,11 +156,30 @@ button:disabled { cursor: default; opacity: 0.45; }
   font-weight: 700;
   color: var(--muted);
 }
-#height-read strong {
-  color: var(--text);
-  font-size: 1.5rem;
-  font-weight: 800;
+#streak {
+  margin: 0 0 0 auto;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--muted);
 }
+#streak strong { color: var(--text); font-size: 1.5rem; font-weight: 800; }
+.top-actions #retry.fat { min-height: 52px; min-width: 96px; font-weight: 800; }
+#cap-mark { font-size: 1.35rem; font-weight: 800; }
+.caption.pass #cap-mark { color: var(--pass); }
+.caption.fail #cap-mark { color: var(--fail); }
+.edge-pocket {
+  position: fixed; z-index: 6;
+  top: max(0.45rem, env(safe-area-inset-top));
+  right: max(0.45rem, env(safe-area-inset-right));
+}
+.edge-pocket button, .edge-pocket a {
+  display: flex; align-items: center; min-height: 44px; padding: 0 0.85rem;
+  border-radius: 10px; border: 1px solid var(--border); background: var(--panel);
+  color: var(--text); text-decoration: none; font-weight: 700;
+}
+#edge-menu { margin-top: 0.35rem; display: flex; flex-direction: column; gap: 0.3rem; }
+#edge-menu[hidden] { display: none; }
+.pocket button { min-height: 48px; }
 .kinds button {
   display: inline-flex;
   align-items: center;

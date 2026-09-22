@@ -1,5 +1,6 @@
-// Spire Lab — original height stack for the Tech Room.
-// Timing drop, keep the overlap, read height. No stock tower art, audio, or names.
+// Spire Lab — one height-stand prove. Original draw. tower_game MIT math only.
+
+import { GRIP, drawTether } from "../shared/stretch.js";
 
 const KEY = "kulibert-spire-height-v1";
 const SLAB_H = 26;
@@ -11,6 +12,8 @@ const caption = document.getElementById("caption");
 const capWord = document.getElementById("cap-word");
 const capText = document.getElementById("cap-text");
 const heightN = document.getElementById("height-n");
+const streakChip = document.getElementById("streak");
+const streakN = document.getElementById("streak-n");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
 const dropBtn = document.getElementById("tool-test");
@@ -18,14 +21,16 @@ const dropBtn = document.getElementById("tool-test");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
-  assist: false,
+  assist: true,
   phase: "ready",
   height: 0,
   best: 0,
+  perfectCount: 0,
   slabs: [],
   mover: null,
   scraps: [],
   scale: 1,
+  grab: null,
 };
 
 let cssW = 0;
@@ -35,7 +40,27 @@ let last = 0;
 function setStatus(word, text, tone) {
   capWord.textContent = word;
   capText.textContent = text;
+  const mark = document.getElementById("cap-mark");
+  if (mark) mark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
   caption.className = "caption" + (tone ? " " + tone : "");
+}
+
+function showStreak() {
+  if (!streakChip || !streakN) return;
+  if (state.perfectCount > 0) {
+    streakChip.hidden = false;
+    streakN.textContent = String(state.perfectCount);
+  } else {
+    streakChip.hidden = true;
+    streakN.textContent = "0";
+  }
+}
+
+function towerPerfect(moverLeft, topLeft, width) {
+  const calWidth = width / 2;
+  const lineX = topLeft;
+  const blockX = moverLeft + calWidth;
+  return blockX > lineX + calWidth * 0.8 && blockX < lineX + calWidth * 1.2;
 }
 
 function readBest() {
@@ -82,9 +107,11 @@ function resetTower() {
     dir: 1,
   };
   heightN.textContent = "0";
+  state.perfectCount = 0;
+  showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
-  setStatus("Ready", "Drop the slab. Height is how many stay." + best, "");
+  setStatus("Ready", "Drop the slab. Height is how many stay standing." + best, "");
 }
 
 function topSlab() {
@@ -106,6 +133,8 @@ function dropSlab() {
   const right = Math.min(mover.x + mover.w, top.x + top.w);
   const overlap = right - left;
   if (overlap < 4) {
+    state.perfectCount = 0;
+    showStreak();
     state.scraps.push({
       x: mover.x,
       y: mover.y,
@@ -122,7 +151,8 @@ function dropSlab() {
     setStatus("Miss", "The slab missed. Height " + state.height + ". Best " + state.best + ".", "fail");
     return;
   }
-  const aligned = Math.abs(mover.x - top.x) <= snapBand();
+  const even = towerPerfect(mover.x, top.x, top.w);
+  const aligned = even || Math.abs(mover.x - top.x) <= snapBand();
   let piece;
   if (aligned) {
     piece = { x: top.x, y: top.y + top.h, w: top.w, h: SLAB_H };
@@ -155,6 +185,8 @@ function dropSlab() {
   state.height += 1;
   heightN.textContent = String(state.height);
   writeBest();
+  state.perfectCount = even ? state.perfectCount + 1 : 0;
+  showStreak();
   const span = travel();
   state.mover = {
     x: span.lo,
@@ -163,7 +195,8 @@ function dropSlab() {
     h: SLAB_H,
     dir: 1,
   };
-  setStatus("Height", "Height " + state.height + ". Best " + state.best + ".", "pass");
+  const streakLine = state.perfectCount ? " Even. Streak " + state.perfectCount + "." : "";
+  setStatus("Height", "Height " + state.height + ". Best " + state.best + "." + streakLine, "pass");
 }
 
 function targetScale() {
@@ -227,6 +260,9 @@ function draw() {
 
   if (state.mover && state.phase !== "over") {
     drawSlab(state.mover, 1);
+    const hook = { x: cssW / 2, y: 36 };
+    const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
+    drawTether(ctx, hook.x, hook.y, grip.x, grip.y);
   }
 
   for (const scrap of state.scraps) {
@@ -247,7 +283,7 @@ function draw() {
 function tick(now) {
   const dt = Math.min(0.05, last ? (now - last) / 1000 : 0.016);
   last = now;
-  if (state.phase === "run" && state.mover) {
+  if (state.phase !== "over" && state.mover && !state.grab) {
     const limit = travel();
     state.mover.x += state.mover.dir * speed() * dt;
     if (state.mover.x < limit.lo) {
@@ -304,8 +340,41 @@ assistBtn.addEventListener("click", () => {
 
 canvas.addEventListener("pointerdown", (ev) => {
   canvas.focus();
+  if (!state.mover || state.phase === "over") {
+    if (ev.target === canvas) dropSlab();
+    return;
+  }
+  const pt = eventPoint(ev);
+  const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
+  const near = Math.hypot(pt.x - grip.x, pt.y - grip.y) <= GRIP + 10;
+  if (near) {
+    state.grab = true;
+    state.phase = "run";
+    canvas.setPointerCapture(ev.pointerId);
+    return;
+  }
   if (ev.target === canvas) dropSlab();
 });
+
+canvas.addEventListener("pointermove", (ev) => {
+  if (!state.grab || !state.mover) return;
+  const pt = eventPoint(ev);
+  const limit = travel();
+  let x = (pt.x - cssW / 2) / state.scale - state.mover.w / 2;
+  x = Math.max(limit.lo, Math.min(limit.hi - state.mover.w, x));
+  state.mover.x = x;
+});
+
+canvas.addEventListener("pointerup", () => {
+  if (!state.grab) return;
+  state.grab = false;
+  dropSlab();
+});
+
+function eventPoint(ev) {
+  const rect = canvas.getBoundingClientRect();
+  return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
+}
 
 window.addEventListener("keydown", (ev) => {
   if (ev.key === " " || ev.key === "Enter") {
@@ -317,6 +386,15 @@ window.addEventListener("keydown", (ev) => {
 
 readBest();
 resetTower();
+const edgeBtn = document.getElementById("edge-btn");
+const edgeMenu = document.getElementById("edge-menu");
+if (edgeBtn && edgeMenu) {
+  edgeBtn.addEventListener("click", () => {
+    const open = edgeMenu.hidden;
+    edgeMenu.hidden = !open;
+    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
 resize();
 window.addEventListener("resize", resize);
 requestAnimationFrame(tick);

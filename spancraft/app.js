@@ -1,11 +1,13 @@
 import { judgeSpan, spanSpec, supportCols } from "./logic.js";
 import { proveLoad } from "./physics.js";
+import { GRIP, drawTether } from "../shared/stretch.js";
 
 const KEY = "kulibert-spancraft-mvp";
+const MASTER = "kulibert-spancraft-mastery-v1";
 const KINDS = ["deck", "beam", "pier"];
 
 const COACH = {
-  empty: ["Ready", "Place decks from bank to bank. Then press Test."],
+  empty: ["Ready", "Drag a part. It stretches, then drops. Then press Test."],
   gap: ["Build", "Fill every spot on the deck line, bank to bank."],
   nodeck: ["Build", "Put a deck in the middle. The load sits on a deck."],
   partial: ["Build", "Finish the pier down to the water."],
@@ -26,7 +28,9 @@ const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
 const caption = document.getElementById("caption");
 const capWord = document.getElementById("cap-word");
+const capMark = document.getElementById("cap-mark");
 const capText = document.getElementById("cap-text");
+const predictBtn = document.getElementById("predict");
 const kindsEl = document.getElementById("kinds");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
@@ -41,13 +45,18 @@ const testBtn = document.getElementById("tool-test");
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
-  assist: false,
+  assist: true,
   tool: "add",
   kind: "deck",
   parts: [],
   cursor: { c: 1, r: 0 },
   hover: null,
   drag: null,
+  stretch: null,
+  predict: null,
+  predictArmed: false,
+  bestStars: 0,
+  ghost: null,
   phase: "idle",
   verdict: null,
   animU: 0,
@@ -62,9 +71,90 @@ function spec() {
   return spanSpec(state.assist);
 }
 
+function budgetOf(s) {
+  return s.cols - 2 + s.pierDepth;
+}
+
+function starPhrase(n) {
+  if (!n) return "";
+  const marks = "★".repeat(n) + "☆".repeat(3 - n);
+  const word = n === 1 ? "1 star" : n + " stars";
+  return marks + " " + word;
+}
+
+function loadMaster() {
+  try {
+    const data = JSON.parse(localStorage.getItem(MASTER) || "null");
+    if (!data || data.v !== 1) return;
+    state.bestStars = data.bestStars || 0;
+    state.ghost = Array.isArray(data.ghost) ? data.ghost : null;
+  } catch {
+    /* keep playing */
+  }
+}
+
+function saveMaster() {
+  try {
+    localStorage.setItem(MASTER, JSON.stringify({
+      v: 1,
+      bestStars: state.bestStars,
+      ghost: state.ghost,
+    }));
+  } catch {
+    /* private mode */
+  }
+}
+
+function syncPredict() {
+  if (!predictBtn) return;
+  predictBtn.hidden = state.bestStars < 1;
+  predictBtn.setAttribute("aria-pressed", state.predictArmed ? "true" : "false");
+}
+
+function weakJoint(s, parts, reason) {
+  const mid = Math.floor(s.cols / 2);
+  if (reason === "gap" || reason === "empty") {
+    for (let c = 1; c < s.cols - 1; c++) {
+      if (!parts.some((p) => p.r === 0 && (p.kind === "deck" || p.kind === "beam") && p.c === c)) {
+        return { c, r: 0 };
+      }
+    }
+  }
+  if (reason === "partial") {
+    for (let c = 1; c < s.cols - 1; c++) {
+      let filled = 0;
+      for (let r = 1; r <= s.pierDepth; r++) {
+        if (parts.some((p) => p.kind === "pier" && p.c === c && p.r === r)) filled += 1;
+      }
+      if (filled > 0 && filled < s.pierDepth) return { c, r: Math.max(1, filled) };
+    }
+  }
+  return { c: mid, r: 0 };
+}
+
+function pierUnder(s, parts, c) {
+  if (s.pierDepth <= 0) return false;
+  for (let r = 1; r <= s.pierDepth; r++) {
+    if (!parts.some((p) => p.kind === "pier" && p.c === c && p.r === r)) return false;
+  }
+  return true;
+}
+
+function scoreStars(s, verdict) {
+  if (!verdict.ok) return 0;
+  let n = 1;
+  if (state.parts.length <= budgetOf(s)) n = 2;
+  const mid = Math.floor(s.cols / 2);
+  if (n === 2 && verdict.sag < 10 && pierUnder(s, state.parts, mid)) n = 3;
+  return n;
+}
+
 function setStatus(word, text, tone) {
   capWord.textContent = word;
   capText.textContent = text;
+  if (capMark) {
+    capMark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
+  }
   caption.className = "caption" + (tone ? " " + tone : "");
   caption.setAttribute("aria-live", tone === "pass" || tone === "fail" ? "assertive" : "polite");
 }
@@ -90,9 +180,10 @@ function syncControls() {
   for (const btn of kindButtons) {
     btn.setAttribute("aria-checked", btn.dataset.kind === state.kind ? "true" : "false");
   }
-  kindsEl.hidden = state.tool !== "add";
+  kindsEl.hidden = state.tool !== "add" && state.tool !== "move";
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   document.body.dataset.phase = state.phase;
+  syncPredict();
 }
 
 function save() {
@@ -318,8 +409,21 @@ function draw() {
   ctx.fillText("Water", cssW - 16, cssH - 16);
 
   const draggingId = state.drag && state.hover ? state.drag.id : null;
+  if (state.ghost && state.ghost.length && state.phase === "idle" && !state.stretch) {
+    ctx.save();
+    ctx.globalAlpha = 0.28;
+    ctx.setLineDash([5, 6]);
+    for (const p of state.ghost) {
+      const box = cellRect(g, p.c, p.r);
+      ctx.strokeStyle = "#e8f7ff";
+      ctx.lineWidth = 2;
+      roundRect(box.x + 8, box.y + 8, box.w - 16, box.h - 16, 8);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
   for (const p of state.parts) {
-    if (p.id && p.id === draggingId) continue;
+    if (p.id && (p.id === draggingId || (state.stretch && p.id === state.stretch.id))) continue;
     drawPart(p.kind, cellRect(g, p.c, p.r), 1, sagAmount(g, s, p.c));
   }
 
@@ -346,6 +450,33 @@ function draw() {
     ctx.lineWidth = 3;
     roundRect(box.x + 2, box.y + 2, box.w - 4, box.h - 4, 8);
     ctx.stroke();
+  }
+
+  if (state.predict) {
+    const box = cellRect(g, state.predict.c, state.predict.r);
+    ctx.strokeStyle = "#f4b942";
+    ctx.lineWidth = 3;
+    roundRect(box.x + 4, box.y + 4, box.w - 8, box.h - 8, 8);
+    ctx.stroke();
+  }
+
+  if (state.stretch) {
+    const part = state.parts.find((p) => p.id === state.stretch.id);
+    if (part) {
+      const home = cellRect(g, part.c, part.r);
+      drawTether(ctx, home.x + home.w / 2, home.y + home.h / 2, state.stretch.x, state.stretch.y);
+    }
+  } else if (state.phase === "idle") {
+    ctx.save();
+    ctx.strokeStyle = "#8fb4c9";
+    ctx.lineWidth = 2;
+    for (const p of state.parts) {
+      const box = cellRect(g, p.c, p.r);
+      ctx.beginPath();
+      ctx.arc(box.x + box.w / 2, box.y + box.h / 2, GRIP, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
   }
 
   paintLoad(g, s);
@@ -399,7 +530,7 @@ function resize() {
 function pickCell(x, y) {
   const s = spec();
   const g = layout();
-  const slop = state.assist ? g.cell * 0.45 : 0;
+  const slop = Math.max(GRIP, g.cell * (state.assist ? 0.45 : 0.2));
   let best = null;
   let bestD = Infinity;
   for (let r = 0; r <= s.pierDepth; r++) {
@@ -520,18 +651,48 @@ function animate(ms, done) {
 function startTest() {
   if (busy()) return;
   state.drag = null;
-  const verdict = proveLoad(spec(), state.parts);
+  state.stretch = null;
+  const s = spec();
+  if (state.bestStars >= 1 && !state.predict) {
+    state.predictArmed = true;
+    syncPredict();
+    setStatus("Guess", "Tap the joint you think fails, then Test.", "");
+    draw();
+    return;
+  }
+  const verdict = proveLoad(s, state.parts);
+  const stars = scoreStars(s, verdict);
   state.verdict = verdict.reason;
   state.phase = "drop";
   state.animU = 0;
   syncControls();
   const prove = PROVE[verdict.reason] || PROVE.long;
   setStatus("Test", "The load is hanging.", "");
-  animate(reduceMotion ? 0 : 700, () => {
+  const started = performance.now();
+  animate(reduceMotion ? 0 : 420, () => {
     state.phase = verdict.ok ? "pass" : "fail";
     state.animU = 1;
+    if (stars > state.bestStars) state.bestStars = stars;
+    if (stars === 3) {
+      state.ghost = state.parts.map((p) => ({ c: p.c, r: p.r, kind: p.kind }));
+    }
+    if (stars > 0) saveMaster();
+    let extra = "";
+    if (stars) extra += " " + starPhrase(stars) + ".";
+    if (state.bestStars >= 1) extra += " Parts " + state.parts.length + " of " + budgetOf(s) + ".";
+    if (state.predict) {
+      const weak = weakJoint(s, state.parts, verdict.reason);
+      const hit = state.predict.c === weak.c;
+      extra += hit
+        ? " You found the joint."
+        : " That joint held. Look again if you want.";
+    }
+    state.predictArmed = false;
     syncControls();
-    setStatus(prove[0], prove[1], verdict.ok ? "pass" : "fail");
+    setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
+    if (performance.now() - started > 2000) {
+      setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
+    }
     draw();
   });
 }
@@ -539,6 +700,7 @@ function startTest() {
 function retry() {
   cancelAnim();
   state.drag = null;
+  state.stretch = null;
   state.phase = "idle";
   state.verdict = null;
   state.animU = 0;
@@ -594,10 +756,23 @@ canvas.addEventListener("pointerdown", (ev) => {
   canvas.focus();
   const pt = eventPoint(ev);
   const cell = pickCell(pt.x, pt.y);
+  if (state.predictArmed && cell) {
+    state.predict = { c: cell.c, r: cell.r };
+    state.cursor = cell;
+    setStatus("Guess", "Got it. Press Test when you are ready.", "");
+    draw();
+    return;
+  }
   if (!cell) return;
   state.cursor = cell;
+  const part = partAt(cell.c, cell.r);
+  if (part && state.tool !== "delete") {
+    state.stretch = { id: part.id, x: pt.x, y: pt.y };
+    canvas.setPointerCapture(ev.pointerId);
+    draw();
+    return;
+  }
   if (state.tool === "move") {
-    const part = partAt(cell.c, cell.r);
     if (part) {
       state.drag = { id: part.id, pointerId: ev.pointerId };
       canvas.setPointerCapture(ev.pointerId);
@@ -611,6 +786,12 @@ canvas.addEventListener("pointerdown", (ev) => {
 
 canvas.addEventListener("pointermove", (ev) => {
   const pt = eventPoint(ev);
+  if (state.stretch) {
+    state.stretch.x = pt.x;
+    state.stretch.y = pt.y;
+    draw();
+    return;
+  }
   const cell = pickCell(pt.x, pt.y);
   const prev = state.hover ? state.hover.c + "," + state.hover.r : "";
   state.hover = cell;
@@ -622,6 +803,16 @@ canvas.addEventListener("pointerup", (ev) => {
   if (busy()) return;
   const pt = eventPoint(ev);
   const cell = pickCell(pt.x, pt.y);
+  if (state.stretch) {
+    const id = state.stretch.id;
+    state.stretch = null;
+    if (cell) moveTo(id, cell.c, cell.r);
+    else {
+      setStatus("Look", "It sprang back. Try an open spot.", "");
+      draw();
+    }
+    return;
+  }
   if (state.drag && state.drag.id && !state.drag.fromKey) {
     const id = state.drag.id;
     state.drag = null;
@@ -650,6 +841,9 @@ canvas.addEventListener("keydown", (ev) => {
   const s = spec();
   if (ev.key === "Escape") {
     state.drag = null;
+    state.stretch = null;
+    state.predictArmed = false;
+    syncPredict();
     showCoach();
     draw();
     return;
@@ -677,7 +871,24 @@ kindButtons.forEach((btn) => btn.addEventListener("click", () => setKind(btn.dat
 testBtn.addEventListener("click", startTest);
 retryBtn.addEventListener("click", retry);
 assistBtn.addEventListener("click", toggleAssist);
+if (predictBtn) {
+  predictBtn.addEventListener("click", () => {
+    state.predictArmed = !state.predictArmed;
+    syncPredict();
+    setStatus("Guess", state.predictArmed ? "Tap the joint you think fails, then Test." : "Guess put away.", "");
+  });
+}
+const edgeBtn = document.getElementById("edge-btn");
+const edgeMenu = document.getElementById("edge-menu");
+if (edgeBtn && edgeMenu) {
+  edgeBtn.addEventListener("click", () => {
+    const open = edgeMenu.hidden;
+    edgeMenu.hidden = !open;
+    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
 
+loadMaster();
 const restored = load();
 syncControls();
 if (restored) setStatus("Ready", "Build restored on this Chromebook.", "");
