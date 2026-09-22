@@ -244,28 +244,6 @@
       "destination": "https://bearcat-den.vercel.app/:path*"
     },
     {
-      "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
-        }
-      ],
-      "destination": "https://bearcat-den.vercel.app/assets/:path*"
-    },
-    {
-      "source": "/sms/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
-        }
-      ],
-      "destination": "https://bearcat-den.vercel.app/sms/:path*"
-    },
-    {
       "source": "/favicon.svg",
       "has": [
         {
@@ -288,72 +266,184 @@
       "destination": "https://bearcat-den.vercel.app/__grok/:path*"
     },
     {
-      "source": "/assets/styles-BHVfncu-.css",
-      "destination": "https://bearcat-den.vercel.app/assets/styles-BHVfncu-.css"
+      "source": "/assets/app-chrome-DYueTXz-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/app-chrome-DYueTXz-.js"
     },
     {
-      "source": "/assets/index-Bq7xXU7M.js",
-      "destination": "https://bearcat-den.vercel.app/assets/index-Bq7xXU7M.js"
+      "source": "/assets/board-rL05hogY.js",
+      "destination": "https://bearcat-den.vercel.app/assets/board-rL05hogY.js"
+    },
+    {
+      "source": "/assets/brand-B-4-_7NA.js",
+      "destination": "https://bearcat-den.vercel.app/assets/brand-B-4-_7NA.js"
+    },
+    {
+      "source": "/assets/building-CjU83sZ3.js",
+      "destination": "https://bearcat-den.vercel.app/assets/building-CjU83sZ3.js"
+    },
+    {
+      "source": "/assets/button-B9Vxg7xO.js",
+      "destination": "https://bearcat-den.vercel.app/assets/button-B9Vxg7xO.js"
+    },
+    {
+      "source": "/assets/check-D8UeoGzN.js",
+      "destination": "https://bearcat-den.vercel.app/assets/check-D8UeoGzN.js"
+    },
+    {
+      "source": "/assets/classroom-screen-DPDtk4p4.js",
+      "destination": "https://bearcat-den.vercel.app/assets/classroom-screen-DPDtk4p4.js"
+    },
+    {
+      "source": "/assets/client-C85fcJ4s.js",
+      "destination": "https://bearcat-den.vercel.app/assets/client-C85fcJ4s.js"
+    },
+    {
+      "source": "/assets/clubs-BZQknuOF.js",
+      "destination": "https://bearcat-den.vercel.app/assets/clubs-BZQknuOF.js"
+    },
+    {
+      "source": "/assets/code-poster-B3VAg7P-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/code-poster-B3VAg7P-.js"
+    },
+    {
+      "source": "/assets/conduct-eVXIuQbA.js",
+      "destination": "https://bearcat-den.vercel.app/assets/conduct-eVXIuQbA.js"
+    },
+    {
+      "source": "/assets/day-run-hzKIQdlS.js",
+      "destination": "https://bearcat-den.vercel.app/assets/day-run-hzKIQdlS.js"
+    },
+    {
+      "source": "/assets/delay-D5b5kprl.js",
+      "destination": "https://bearcat-den.vercel.app/assets/delay-D5b5kprl.js"
+    },
+    {
+      "source": "/assets/delay-banner-Dp5brGfa.js",
+      "destination": "https://bearcat-den.vercel.app/assets/delay-banner-Dp5brGfa.js"
+    },
+    {
+      "source": "/assets/den-3Zty-CfE.js",
+      "destination": "https://bearcat-den.vercel.app/assets/den-3Zty-CfE.js"
+    },
+    {
+      "source": "/assets/desk-BcCKVSMy.js",
+      "destination": "https://bearcat-den.vercel.app/assets/desk-BcCKVSMy.js"
+    },
+    {
+      "source": "/assets/embed-frame-B18qP0PI.js",
+      "destination": "https://bearcat-den.vercel.app/assets/embed-frame-B18qP0PI.js"
+    },
+    {
+      "source": "/assets/footprints-iUTtJiq0.js",
+      "destination": "https://bearcat-den.vercel.app/assets/footprints-iUTtJiq0.js"
+    },
+    {
+      "source": "/assets/gates-DBoXctF7.js",
+      "destination": "https://bearcat-den.vercel.app/assets/gates-DBoXctF7.js"
+    },
+    {
+      "source": "/assets/hall-map-BmeRspi5.js",
+      "destination": "https://bearcat-den.vercel.app/assets/hall-map-BmeRspi5.js"
+    },
+    {
+      "source": "/assets/index-xZxhOxZ-.js",
+      "destination": "https://bearcat-den.vercel.app/assets/index-xZxhOxZ-.js"
+    },
+    {
+      "source": "/assets/jsx-runtime-FXir3jLF.js",
+      "destination": "https://bearcat-den.vercel.app/assets/jsx-runtime-FXir3jLF.js"
+    },
+    {
+      "source": "/assets/lazyRouteComponent-i8nwzbod.js",
+      "destination": "https://bearcat-den.vercel.app/assets/lazyRouteComponent-i8nwzbod.js"
+    },
+    {
+      "source": "/assets/link-wBkbwMKU.js",
+      "destination": "https://bearcat-den.vercel.app/assets/link-wBkbwMKU.js"
+    },
+    {
+      "source": "/assets/login-odggYj1M.js",
+      "destination": "https://bearcat-den.vercel.app/assets/login-odggYj1M.js"
+    },
+    {
+      "source": "/assets/middleware-BQEcB11b.js",
+      "destination": "https://bearcat-den.vercel.app/assets/middleware-BQEcB11b.js"
+    },
+    {
+      "source": "/assets/office-session-BbfOl6WH.js",
+      "destination": "https://bearcat-den.vercel.app/assets/office-session-BbfOl6WH.js"
+    },
+    {
+      "source": "/assets/privacy-Cb-3g3gc.js",
+      "destination": "https://bearcat-den.vercel.app/assets/privacy-Cb-3g3gc.js"
     },
     {
       "source": "/assets/react-SIfiwpqq.js",
       "destination": "https://bearcat-den.vercel.app/assets/react-SIfiwpqq.js"
     },
     {
-      "source": "/assets/building-D-NT2UV3.js",
-      "destination": "https://bearcat-den.vercel.app/assets/building-D-NT2UV3.js"
+      "source": "/assets/refresh-cw-9fFor8NO.js",
+      "destination": "https://bearcat-den.vercel.app/assets/refresh-cw-9fFor8NO.js"
     },
     {
-      "source": "/assets/link-D_Rt3DJK.js",
-      "destination": "https://bearcat-den.vercel.app/assets/link-D_Rt3DJK.js"
-    },
-    {
-      "source": "/assets/lazyRouteComponent-CU8K1QD0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/lazyRouteComponent-CU8K1QD0.js"
-    },
-    {
-      "source": "/assets/routes-BdqzXol1.js",
-      "destination": "https://bearcat-den.vercel.app/assets/routes-BdqzXol1.js"
-    },
-    {
-      "source": "/assets/gates-ZtjMj2B0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/gates-ZtjMj2B0.js"
-    },
-    {
-      "source": "/assets/classroom-screen-D2hvVkwt.js",
-      "destination": "https://bearcat-den.vercel.app/assets/classroom-screen-D2hvVkwt.js"
-    },
-    {
-      "source": "/assets/utils-DojpP95n.js",
-      "destination": "https://bearcat-den.vercel.app/assets/utils-DojpP95n.js"
-    },
-    {
-      "source": "/assets/delay-banner-eLvcCU_y.js",
-      "destination": "https://bearcat-den.vercel.app/assets/delay-banner-eLvcCU_y.js"
+      "source": "/assets/routes-DXEaV-u4.js",
+      "destination": "https://bearcat-den.vercel.app/assets/routes-DXEaV-u4.js"
     },
     {
       "source": "/assets/school-day-p876jYf1.js",
       "destination": "https://bearcat-den.vercel.app/assets/school-day-p876jYf1.js"
     },
     {
-      "source": "/assets/status-ribbon-koaiw4po.js",
-      "destination": "https://bearcat-den.vercel.app/assets/status-ribbon-koaiw4po.js"
+      "source": "/assets/screen-DXBObIbi.js",
+      "destination": "https://bearcat-den.vercel.app/assets/screen-DXBObIbi.js"
     },
     {
-      "source": "/assets/app-chrome-BiLQ4nSI.js",
-      "destination": "https://bearcat-den.vercel.app/assets/app-chrome-BiLQ4nSI.js"
+      "source": "/assets/status-ribbon-CTq8tgKj.js",
+      "destination": "https://bearcat-den.vercel.app/assets/status-ribbon-CTq8tgKj.js"
     },
     {
-      "source": "/assets/button-CJcG3bum.js",
-      "destination": "https://bearcat-den.vercel.app/assets/button-CJcG3bum.js"
+      "source": "/assets/styles-DegkV609.css",
+      "destination": "https://bearcat-den.vercel.app/assets/styles-DegkV609.css"
+    },
+    {
+      "source": "/assets/textarea-CLYAyglR.js",
+      "destination": "https://bearcat-den.vercel.app/assets/textarea-CLYAyglR.js"
+    },
+    {
+      "source": "/assets/today-zPuI8PZk.js",
+      "destination": "https://bearcat-den.vercel.app/assets/today-zPuI8PZk.js"
+    },
+    {
+      "source": "/assets/trail-zfZ8CTIf.js",
+      "destination": "https://bearcat-den.vercel.app/assets/trail-zfZ8CTIf.js"
     },
     {
       "source": "/assets/use-current-user-C4dygdOb.js",
       "destination": "https://bearcat-den.vercel.app/assets/use-current-user-C4dygdOb.js"
     },
     {
+      "source": "/assets/useNavigate-CvxEMzDL.js",
+      "destination": "https://bearcat-den.vercel.app/assets/useNavigate-CvxEMzDL.js"
+    },
+    {
+      "source": "/assets/utils-DojpP95n.js",
+      "destination": "https://bearcat-den.vercel.app/assets/utils-DojpP95n.js"
+    },
+    {
+      "source": "/sms/bearcat-mark.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/bearcat-mark.jpg"
+    },
+    {
       "source": "/sms/bearcat.jpg",
       "destination": "https://bearcat-den.vercel.app/sms/bearcat.jpg"
+    },
+    {
+      "source": "/sms/school.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/school.jpg"
+    },
+    {
+      "source": "/sms/sms-floor.jpg",
+      "destination": "https://bearcat-den.vercel.app/sms/sms-floor.jpg"
     },
     {
       "source": "/bistro",
@@ -378,7 +468,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-bertybeatz-1.0"
+          "value": "2026-09-22-den"
         }
       ]
     },
@@ -391,7 +481,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-bertybeatz-1.0"
+          "value": "2026-09-22-den"
         }
       ]
     },
