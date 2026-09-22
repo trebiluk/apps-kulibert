@@ -74,12 +74,12 @@
     @media (min-width:640px){.hero{min-height:12.25rem;padding:3.2rem 1rem 5.4rem}}
     @media (min-width:960px){.hero{min-height:13.5rem;padding-top:3.4rem}}
     .corner-k{
-      position:absolute;z-index:3;display:block;
+      position:absolute;z-index:5;display:block;opacity:1;
       top:max(.55rem, env(safe-area-inset-top));
       left:max(.55rem, env(safe-area-inset-left));
       width:2rem;height:2rem;min-width:24px;min-height:24px;
     }
-    .corner-k img{display:block;width:100%;height:100%}
+    .corner-k img{display:block;width:100%;height:100%;opacity:1}
     @media (min-width:960px){
       .corner-k{width:3rem;height:3rem}
     }
@@ -160,25 +160,12 @@
     @media (min-width:1024px){
       .board{grid-template-columns:repeat(4,minmax(0,1fr))}
     }
-    /* Wide PC: 6 ~1600, 7 ~1800, 8 ~1920. Later steps keep tracks near the tile cap so centering never opens side gutters. */
+    /* Wide ≥1367: 6 columns, 7 from 1800. Tiles stretch to the track — no centered max-width island. */
     @media (min-width:1367px){
-      .board{grid-template-columns:repeat(5,minmax(0,1fr));justify-items:center}
-      a.tile,button.tile,.cut-wrap{max-width:17rem;justify-self:center}
-    }
-    @media (min-width:1600px){
-      .board{grid-template-columns:repeat(6,minmax(0,1fr))}
+      .board{grid-template-columns:repeat(6,minmax(0,1fr));justify-items:stretch}
     }
     @media (min-width:1800px){
       .board{grid-template-columns:repeat(7,minmax(0,1fr))}
-    }
-    @media (min-width:1920px){
-      .board{grid-template-columns:repeat(8,minmax(0,1fr))}
-    }
-    @media (min-width:2400px){
-      .board{grid-template-columns:repeat(10,minmax(0,1fr))}
-    }
-    @media (min-width:3200px){
-      .board{grid-template-columns:repeat(12,minmax(0,1fr))}
     }
     a.tile{
       width:100%;height:auto;aspect-ratio:1;
@@ -194,11 +181,12 @@
       min-width:44px;min-height:44px;
     }
     a.tile svg{
-      width:min(48%,7.5rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(52%,100%);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
     a.tile img.mark{
-      width:min(62%,13rem);height:auto;aspect-ratio:1;display:block;object-fit:contain;border:0;
+      width:68%;min-width:min(72px,100%);max-width:100%;
+      height:auto;aspect-ratio:1;display:block;object-fit:contain;border:0;
     }
     a.tile:hover{
       color:var(--text);
@@ -279,7 +267,7 @@
       min-width:44px;min-height:44px;
     }
     button.tile svg{
-      width:min(48%,7.5rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(52%,100%);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
     button.tile.add{border-style:dashed;background:transparent}
@@ -396,12 +384,12 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><strong>Last updated</strong> · 2026-09-22 · <span class="rev">rev 2026-09-22-hub-pc-density</span></span>
-            <button type="button" class="hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">More</button>
+            <span class="lead"><span class="rev">rev 2026-09-22-hub-pc-density</span> · <strong>What’s new</strong> · Wide PC is 6–7 columns</span>
+            <button type="button" class="hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <ul id="hub-log">
-            <li>Hub PC density: 6 columns from 1600px · 7 from 1800px · 8 from 1920px · tile cap 17rem</li>
-            <li>Phone 2 · Chromebook 3–4 · viewport fill · labels ≥14px · hits ≥44px</li>
+            <li>Wide ≥1367px: 6 columns · 7 from 1800px · tiles fill the width · mark ≥72px</li>
+            <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
             <li>Firm KuliNet marks on every app tile · corner K</li>
             <li>Berty Run: L1 First Trace playable · BertyBeatz: BZ 1.2.0 playable</li>
             <li>SpanCraft + Spire Lab: list only · not built</li>
@@ -1075,7 +1063,7 @@
         var open = plate.classList.contains("is-open");
         plate.classList.toggle("is-clamped", !open);
         moreBtn.hidden = false;
-        moreBtn.textContent = open ? "Less" : "More";
+        moreBtn.textContent = open ? "Less" : "Expand";
         moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
       }
       if (moreBtn) {
