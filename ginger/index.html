@@ -17,9 +17,7 @@
       </svg>
       <span class="brand">GINGER</span>
       <span class="chip" id="chip" title="version">v1.0.1</span>
-      <nav class="menus" aria-label="Studio menus">
-        <span>File</span><span>Edit</span><span>View</span><span>Add</span><span>Object</span>
-      </nav>
+      <nav class="menus" aria-label="Studio menus"><span>File</span><span>Edit</span><span>View</span><span>Add</span><span>Object</span></nav>
       <nav class="workspaces" aria-label="Workspaces">
         <button type="button" class="ws on" data-ws="layout">Layout</button>
         <button type="button" class="ws" data-ws="model">Modeling</button>
@@ -35,21 +33,17 @@
     <div class="studio">
       <aside class="shelf" aria-label="Tool shelf">
         <button type="button" data-tool="select" aria-pressed="true"><span>Select</span></button>
-        <button type="button" data-tool="wall" aria-pressed="false"><span>Wall</span></button>
-        <button type="button" data-tool="room" aria-pressed="false"><span>Room</span></button>
-        <button type="button" data-tool="door" aria-pressed="false"><span>Door</span></button>
-        <button type="button" data-tool="window" aria-pressed="false"><span>Window</span></button>
+        <button type="button" data-tool="wall"><span>Wall</span></button>
+        <button type="button" data-tool="room"><span>Room</span></button>
+        <button type="button" data-tool="door"><span>Door</span></button>
+        <button type="button" data-tool="window"><span>Window</span></button>
         <div class="shelf-gap"></div>
         <button type="button" id="undo"><span>Undo</span></button>
         <button type="button" id="redo"><span>Redo</span></button>
       </aside>
       <section class="viewport">
         <div class="view-header">
-          <span class="gizmo">Ortho</span>
-          <span class="gizmo">Snap 0.5'</span>
-          <span class="gizmo">Units FT</span>
-          <span class="gizmo">Grid ON</span>
-          <span class="gizmo mute">G · R · S</span>
+          <span class="gizmo">Ortho</span><span class="gizmo">Snap 0.5'</span><span class="gizmo">Units FT</span><span class="gizmo">Grid ON</span><span class="gizmo mute">G · R · S</span>
         </div>
         <canvas id="plan" width="1400" height="900" aria-label="Floor plan"></canvas>
       </section>
@@ -68,5 +62,6 @@
     </footer>
   </div>
   <script src="./app.js"></script>
+  <script>document.getElementById("chip").textContent="v1.0.1";</script>
 </body>
 </html>
