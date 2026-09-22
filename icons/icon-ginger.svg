@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Ginger">
+  <rect width="128" height="128" rx="28" fill="#12141a"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#6E72F5" stroke-width="3"/>
+  <rect x="34" y="36" width="60" height="48" fill="none" stroke="#F4F4F6" stroke-width="4"/>
+  <path d="M34 58h60M62 36v48" fill="none" stroke="#6E72F5" stroke-width="3"/>
+</svg>

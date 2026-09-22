@@ -3,65 +3,65 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#1c1c1c" />
-  <title>Ginger 1.0.1 — studio planner</title>
+  <meta name="theme-color" content="#ffffff" />
+  <title>Ginger 1.0.1 — floor plan</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body data-theme="paper">
   <div class="app">
-    <header class="ribbon" role="banner">
+    <header class="bar">
       <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="2" y="2" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2"/>
-        <path d="M6 22 L16 8 L26 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
-        <circle cx="16" cy="18" r="2" fill="currentColor"/>
+        <rect x="2" y="6" width="28" height="20" fill="none" stroke="#6E72F5" stroke-width="2"/>
+        <path d="M2 14h28M14 6v20" fill="none" stroke="#0a0a0a" stroke-width="2"/>
       </svg>
-      <span class="brand">GINGER</span>
+      <span class="brand">Ginger</span>
       <span class="chip" id="chip" title="version">v1.0.1</span>
-      <nav class="menus" aria-label="Studio menus"><span>File</span><span>Edit</span><span>View</span><span>Add</span><span>Object</span></nav>
-      <nav class="workspaces" aria-label="Workspaces">
-        <button type="button" class="ws on" data-ws="layout">Layout</button>
-        <button type="button" class="ws" data-ws="model">Modeling</button>
-        <button type="button" class="ws" id="lab3d" data-ws="lab">Lab 3D</button>
+      <nav class="tools" aria-label="Draw tools">
+        <button type="button" data-tool="select" aria-pressed="true">Select</button>
+        <button type="button" data-tool="wall">Wall</button>
+        <button type="button" data-tool="door">Door</button>
+        <button type="button" data-tool="window">Window</button>
+        <button type="button" data-tool="room">Room</button>
+        <button type="button" data-tool="item">Item</button>
       </nav>
-      <div class="ribbon-end">
-        <button type="button" id="theme">Night</button>
-        <button type="button" id="export">Export</button>
-        <button type="button" id="imp">Import</button>
-        <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
-      </div>
+      <button type="button" id="undo">Undo</button>
+      <button type="button" id="redo">Redo</button>
+      <button type="button" id="theme">Night</button>
+      <button type="button" id="lab3d" aria-pressed="false">3D peek</button>
+      <button type="button" id="export">Export</button>
+      <button type="button" id="imp">Import</button>
+      <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
     </header>
-    <div class="studio">
-      <aside class="shelf" aria-label="Tool shelf">
-        <button type="button" data-tool="select" aria-pressed="true"><span>Select</span></button>
-        <button type="button" data-tool="wall"><span>Wall</span></button>
-        <button type="button" data-tool="room"><span>Room</span></button>
-        <button type="button" data-tool="door"><span>Door</span></button>
-        <button type="button" data-tool="window"><span>Window</span></button>
-        <div class="shelf-gap"></div>
-        <button type="button" id="undo"><span>Undo</span></button>
-        <button type="button" id="redo"><span>Redo</span></button>
-      </aside>
-      <section class="viewport">
-        <div class="view-header">
-          <span class="gizmo">Ortho</span><span class="gizmo">Snap 0.5'</span><span class="gizmo">Units FT</span><span class="gizmo">Grid ON</span><span class="gizmo mute">G · R · S</span>
+    <main class="stage">
+      <canvas id="plan" width="1400" height="900" aria-label="Floor plan. One grid square is one foot."></canvas>
+      <aside class="side">
+        <h2>Properties</h2>
+        <div class="props" id="props"></div>
+        <h2>Items</h2>
+        <div class="items" aria-label="Furniture symbols">
+          <button type="button" data-item="table" aria-pressed="true">Table</button>
+          <button type="button" data-item="bed">Bed</button>
+          <button type="button" data-item="chair">Chair</button>
+          <button type="button" data-item="sofa">Sofa</button>
+          <button type="button" data-item="toilet">Toilet</button>
+          <button type="button" data-item="sink">Sink</button>
         </div>
-        <canvas id="plan" width="1400" height="900" aria-label="Floor plan"></canvas>
-      </section>
-      <aside class="docks">
-        <section class="dock"><h2>Item</h2><div class="props" id="props"><p class="hint">Select a wall, room, door, or window.</p></div></section>
-        <section class="dock"><h2>Room schedule</h2><div class="sched"><table id="rooms"><thead><tr><th>Mark</th><th>Name</th><th>sf</th></tr></thead><tbody></tbody></table></div></section>
-        <section class="dock"><h2>Door schedule</h2><div class="sched"><table id="doors"><thead><tr><th>Mark</th><th>W</th><th>Type</th></tr></thead><tbody></tbody></table></div></section>
-        <section class="dock"><h2>Window schedule</h2><div class="sched"><table id="wins"><thead><tr><th>Mark</th><th>W</th><th>Type</th></tr></thead><tbody></tbody></table></div></section>
-        <section class="dock peek-dock"><h2>Lab peek</h2><div class="peek-wrap" id="peekWrap"><canvas id="peek" width="640" height="360"></canvas></div></section>
+        <h2>Room schedule</h2>
+        <div class="sched"><table id="rooms"><thead><tr><th>Mark</th><th>Name</th><th>Area (sf)</th></tr></thead><tbody></tbody></table></div>
+        <h2>Door schedule</h2>
+        <div class="sched"><table id="doors"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+        <h2>Window schedule</h2>
+        <div class="sched"><table id="wins"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+        <h2>3D peek</h2>
+        <p class="hint">Off until you ask. A light picture of this level — not a game view.</p>
+        <div class="peek-wrap" id="peekWrap"><canvas id="peek" width="640" height="320" aria-label="Isometric peek of the walls"></canvas></div>
       </aside>
-    </div>
-    <footer class="statusbar">
-      <span id="status">Object Mode · Grid = 1 ft</span>
-      <span class="quiet">Local JSON only · no names</span>
-      <span class="quiet">CEA classroom tool — not Autodesk</span>
+    </main>
+    <footer class="foot">
+      <span id="status">Select a wall, door, window, room, or corner.</span>
+      <span class="quiet">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
-  <script src="./app.js"></script>
-  <script>document.getElementById("chip").textContent="v1.0.1";</script>
+  <script type="module" src="./app.js"></script>
 </body>
 </html>

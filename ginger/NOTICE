@@ -1,5 +1,17 @@
-Ginger 1.0 classroom AEC planner. Quiet dedication: CEA practice associated with Dr. Donna Matteson / PLTW CEA. Not Autodesk.
+Ginger 1.0.1 classroom floor planner.
+Quiet dedication: CEA practice associated with Dr. Donna Matteson. Not Autodesk. Not a Revit file.
 
-Drawing patterns inspired by cvdlab/react-planner (MIT) https://github.com/cvdlab/react-planner — original implementation, not a Redux port.
+Drawing model (vertices, lines, holes on a line, areas from closed walls, items, properties, schedules)
+follows the element pattern of cvdlab/react-planner (MIT):
+https://github.com/cvdlab/react-planner
+Copyright (c) 2016-2020 CVDLAB
+Original implementation. Ginger does not ship that app, its Redux store, or three.js.
 
-No student names or accounts.
+Plan symbols (table, bed, chair, sofa, toilet, sink, door swing, window) are original marks
+in the same categories as 1337GameDev/FloorPlanSVGSymbols (MIT, Copyright (c) 2023 Richard Duerr):
+https://github.com/1337GameDev/FloorPlanSVGSymbols
+Path data from that set is not copied.
+
+Quaternius and Kenney meshes are not in this build. The 3D peek is a canvas picture so Chromebooks stay light.
+
+No student names. Plans stay in the browser as .ginger.json.

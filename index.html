@@ -4,15 +4,11 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-22-span-matter-spire-height"/>
+  <meta name="tech-room-rev" content="2026-09-22-ginger-101"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
-  <link rel="manifest" href="/manifest.webmanifest"/>
-  <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="/shared/brand/kulinet/shadcn-kulinet-tokens.css?v=2026-09-22-span-matter-spire-height"/>
+  <link rel="stylesheet" href="/shared/brand/kulinet/shadcn-kulinet-tokens.css?v=2026-09-22-ginger-101"/>
   <style>
     /* Layout, density, and Button / Dialog / Menu recipes only.
        Colors come from shadcn-kulinet-tokens.css on [data-kn-theme="tech-room"]. */
@@ -264,22 +260,6 @@
       outline:2px solid var(--ring);outline-offset:2px;
     }
     ul.chips strong{color:var(--primary);font-weight:800}
-
-    .groups{margin:1.15rem 0 0}
-    .group{margin:0 0 1.15rem}
-    .group.is-empty{display:none}
-    .group h2{font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-foreground);margin:0 0 .7rem;font-weight:650}
-    .group .board{margin:0}
-    a.tile.is-first{box-shadow:inset 0 0 0 2px var(--ring)}
-    .pwa-tip{
-      display:flex;align-items:center;gap:.75rem;margin:.9rem 0 0;
-      padding:.55rem .65rem .55rem .9rem;border-radius:12px;
-      border:1px solid color-mix(in srgb,var(--primary) 28%,transparent);
-      background:var(--secondary);color:var(--muted-foreground);font-size:.85rem;line-height:1.35;
-    }
-    .pwa-tip[hidden]{display:none}
-    .pwa-tip span{flex:1;min-width:0}
-    .pwa-tip button{min-height:44px;min-width:44px;flex:0 0 auto;padding:0 .9rem}
     .empty{color:var(--muted-foreground);font-size:.9rem;padding:.5rem 0 0}
     footer{margin:2rem 0 0;color:var(--muted-foreground);font-size:.875rem;line-height:1.4}
     @media (prefers-reduced-motion:reduce){
@@ -438,18 +418,17 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-22-span-matter-spire-height</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-22-ginger-101</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <ul id="hub-log">
-            <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
-            <li>Groups: Class, Make, Campus, Play</li>
             <li>Staff edit stays locked until the hub password · Sign out on this device</li>
             <li>Dark Tech Room board · labels on ink cards · cyan focus</li>
             <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
             <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
-            <li>SpanCraft load prove runs matter-js. Spire Lab height stack. Stock tower brand stays out.</li>
+            <li>Berty Run L1 First Trace · SpanCraft Load prove · Spire Lab Stand prove · Beatz BZ 1.2.1</li>
             <li>Debugzy list tile only · playable hold · First Trace stays</li>
+            <li>Ginger 1.0.1 · walls, doors, rooms, schedules</li>
             <li>Berty Run BR 1.5.0 · five 2D boards · five 3D boards · 3D loads when picked</li>
           </ul>
         </div>
@@ -461,101 +440,82 @@
       </label>
     </section>
     <p class="closed-banner" id="closed-banner" hidden></p>
-    <p class="pwa-tip" id="pwa-tip" hidden>
-      <span>Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.</span>
-      <button type="button" class="btn btn-secondary" id="pwa-tip-dismiss">Got it</button>
-    </p>
 
-    <div class="groups" id="app-groups">
-      <section class="group" data-group="class">
-        <h2>Class</h2>
-        <nav class="board">
-          <a class="tile" data-id="techworks" data-keywords="techworks tw class" href="https://tw.kulibert.net">
-            <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
-            <span class="label">TechWorks</span>
-          </a>
-          <a class="tile" data-id="baboo" data-keywords="baboo class" href="https://baboo.kulibert.net">
-            <img class="mark" src="/icons/icon-baboo.svg" alt="" width="72" height="72"/>
-            <span class="label">Baboo</span>
-          </a>
-          <a class="tile" data-id="koderized" data-keywords="koderized kz code class" href="https://tw.kulibert.net/koderized/">
-            <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
-            <span class="label">Koderized</span>
-          </a>
-        </nav>
-      </section>
-      <section class="group" data-group="make">
-        <h2>Make</h2>
-        <nav class="board">
-          <a class="tile" data-id="bertycad" data-keywords="bertycad cad draw make" href="/bertycad/">
-            <img class="mark" src="/icons/icon-bertycad.svg" alt="" width="72" height="72"/>
-            <span class="label">BertyCAD</span>
-          </a>
-          <a class="tile" data-id="bertybots" data-keywords="bertybots bots botz make" href="/bertybots/">
-            <img class="mark" src="/icons/icon-bertybots.svg" alt="" width="72" height="72"/>
-            <span class="label">Berty's Botz</span>
-          </a>
-          <a class="tile" data-id="berty-run" data-keywords="berty run br make" href="/berty-run/">
-            <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
-            <span class="label">Berty Run</span>
-          </a>
-          <a class="tile" data-id="bertybeatz" data-keywords="bertybeatz beatz bz music make" href="/bertybeatz/">
-            <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
-            <span class="label">BertyBeatz</span>
-          </a>
-          <a class="tile" data-id="paperlab" data-keywords="paperlab paper lab make" href="/paperlab/">
-            <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
-            <span class="label">PaperLab</span>
-          </a>
-          <a class="tile" data-id="logolab" data-keywords="logolab logo lab make" href="/logolab/">
-            <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
-            <span class="label">LogoLab</span>
-          </a>
-          <a class="tile" data-id="sprocket" data-keywords="sprocket make" href="/sprocket/index.html">
-            <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
-            <span class="label">Sprocket</span>
-          </a>
-          <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold make" href="/debugzy/">
-            <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
-            <span class="label">Debugzy</span>
-          </a>
-        </nav>
-      </section>
-      <section class="group" data-group="campus">
-        <h2>Campus</h2>
-        <nav class="board">
-          <a class="tile" data-id="den" data-keywords="den bearcat campus" href="/den/">
-            <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
-            <span class="label">Bearcat Den</span>
-          </a>
-          <a class="tile" data-id="bistro" data-keywords="bistro bearcat lunch campus" href="/bistro/">
-            <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
-            <span class="label">Bearcat Bistro</span>
-          </a>
-          <a class="tile" data-id="housekit" data-keywords="housekit house kit campus" href="/housekit/">
-            <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
-            <span class="label">HouseKit</span>
-          </a>
-        </nav>
-      </section>
-      <section class="group" data-group="play">
-        <h2>Play</h2>
-        <nav class="board">
-          <a class="tile" data-id="drift" data-keywords="drift glide play" href="/drift/">
-            <img class="mark" src="/icons/icon-drift.svg" alt="" width="72" height="72"/>
-            <span class="label">Drift · Tech 6–8</span>
-          </a>
-          <a class="tile" data-id="spancraft" data-keywords="spancraft span craft play" href="/spancraft/">
-            <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
-            <span class="label">SpanCraft</span>
-          </a>
-          <a class="tile" data-id="spire-lab" data-keywords="spire lab play" href="/spire-lab/">
-            <img class="mark" src="/icons/icon-spire-lab.svg" alt="" width="72" height="72"/>
-            <span class="label">Spire Lab</span>
-          </a>
-        </nav>
-      </section>
-    </div>
+    <nav class="board" aria-label="Apps">
+      <a class="tile" data-id="techworks" href="https://tw.kulibert.net">
+        <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
+        <span class="label">TechWorks</span>
+      </a>
+      <a class="tile" data-id="baboo" href="https://baboo.kulibert.net">
+        <img class="mark" src="/icons/icon-baboo.svg" alt="" width="72" height="72"/>
+        <span class="label">Baboo</span>
+      </a>
+      <a class="tile" data-id="koderized" href="https://tw.kulibert.net/koderized/">
+        <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
+        <span class="label">Koderized</span>
+      </a>
+      <a class="tile" data-id="bertycad" href="/bertycad/">
+        <img class="mark" src="/icons/icon-bertycad.svg" alt="" width="72" height="72"/>
+        <span class="label">BertyCAD</span>
+      </a>
+      <a class="tile" data-id="bertybots" href="/bertybots/">
+        <img class="mark" src="/icons/icon-bertybots.svg" alt="" width="72" height="72"/>
+        <span class="label">Berty's Botz</span>
+      </a>
+      <a class="tile" data-id="berty-run" href="/berty-run/">
+        <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
+        <span class="label">Berty Run</span>
+      </a>
+      <a class="tile" data-id="bertybeatz" href="/bertybeatz/">
+        <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
+        <span class="label">BertyBeatz</span>
+      </a>
+      <a class="tile" data-id="paperlab" href="/paperlab/">
+        <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
+        <span class="label">PaperLab</span>
+      </a>
+      <a class="tile" data-id="logolab" href="/logolab/">
+        <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
+        <span class="label">LogoLab</span>
+      </a>
+      <a class="tile" data-id="sprocket" href="/sprocket/index.html">
+        <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
+        <span class="label">Sprocket</span>
+      </a>
+      <a class="tile" data-id="den" href="/den/">
+        <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
+        <span class="label">Bearcat Den</span>
+      </a>
+      <a class="tile" data-id="bistro" href="/bistro/">
+        <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
+        <span class="label">Bearcat Bistro</span>
+      </a>
+      <a class="tile" data-id="housekit" href="/housekit/">
+        <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
+        <span class="label">HouseKit</span>
+      </a>
+      <a class="tile" data-id="drift" href="/drift/">
+        <img class="mark" src="/icons/icon-drift.svg" alt="" width="72" height="72"/>
+        <span class="label">Drift · Tech 6–8</span>
+      </a>
+      <a class="tile" data-id="spancraft" href="/spancraft/">
+        <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
+        <span class="label">SpanCraft</span>
+      </a>
+      <a class="tile" data-id="spire-lab" href="/spire-lab/">
+        <img class="mark" src="/icons/icon-spire-lab.svg" alt="" width="72" height="72"/>
+        <span class="label">Spire Lab</span>
+      </a>
+      <a class="tile" data-id="ginger" href="/ginger/">
+        <img class="mark" src="/icons/icon-ginger.svg" alt="" width="72" height="72"/>
+        <span class="label">Ginger</span>
+      </a>
+      <a class="tile" data-id="debugzy" href="/debugzy/">
+        <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
+        <span class="label">Debugzy</span>
+      </a>
+    </nav>
+
 
     <section class="school" id="school-wrap" aria-label="School shortcuts">
       <div class="school-head">
@@ -589,7 +549,8 @@
         <li><a href="/berty-run/">Berty Run <strong>BR 1.5.0</strong></a></li>
         <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.2.1</strong></a></li>
         <li><a href="/spancraft/">SpanCraft <strong>Load prove</strong></a></li>
-        <li><a href="/spire-lab/">Spire Lab <strong>Height</strong></a></li>
+        <li><a href="/spire-lab/">Spire Lab <strong>Stand prove</strong></a></li>
+        <li><a href="/ginger/">Ginger <strong>1.0.1</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>list · not built</strong></a></li>
       </ul>
     </section>
@@ -642,7 +603,7 @@
       var CUT_KEY = "tech-room-shortcuts";
       var MAX = 18;
       var POLL = 40000;
-      var appBoard = document.getElementById("app-groups");
+      var appBoard = document.querySelector("nav.board[aria-label='Apps']");
       var input = document.getElementById("q");
       var opened = document.getElementById("opened");
       var list = document.getElementById("opened-list");
@@ -684,49 +645,6 @@
         news: '<path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/><path d="M18 14h-8"/><path d="M15 18h-5"/><path d="M10 6h8v4h-8V6Z"/>',
         school: '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.839l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>'
       };
-
-
-      /* Search, slash keys, and result grouping follow Homer (Apache-2.0).
-         Copyright 2018 Bastien Wirtz. See /NOTICE. Subsequence match is added
-         so a short Chromebook query still hits. */
-      function matchScore(hay, needle) {
-        hay = String(hay || "").toLowerCase();
-        needle = String(needle || "").toLowerCase().trim();
-        if (!needle) return 0;
-        var at = hay.indexOf(needle);
-        if (at === 0) return 0;
-        if (at > 0) return 1;
-        var words = hay.split(/[^a-z0-9]+/).filter(Boolean);
-        var initials = words.map(function (word) { return word.charAt(0); }).join("");
-        if (initials.indexOf(needle) !== -1) return 2;
-        if (needle.length >= 3) {
-          var i = 0;
-          for (var c = 0; c < hay.length && i < needle.length; c++) {
-            if (hay.charAt(c) === needle.charAt(i)) i += 1;
-          }
-          if (i === needle.length) return 3;
-        }
-        return 99;
-      }
-      function fuzzyHit(hay, needle) {
-        return matchScore(hay, needle) < 99;
-      }
-      function tileBlob(tile) {
-        var label = tile.querySelector(".label");
-        return (label ? label.textContent : "") + " " + (tile.getAttribute("data-keywords") || "") + " " + (tile.getAttribute("href") || "");
-      }
-      function bestTile() {
-        var q = (input.value || "").trim();
-        var tiles = launchTiles();
-        if (!q) return tiles[0] || null;
-        var best = null;
-        var bestScore = 99;
-        tiles.forEach(function (tile) {
-          var score = matchScore(tileBlob(tile), q);
-          if (score < bestScore) { bestScore = score; best = tile; }
-        });
-        return best;
-      }
 
       function svg(inner) {
         return '<svg viewBox="0 0 24 24" aria-hidden="true">' + inner + "</svg>";
@@ -860,7 +778,7 @@
           schoolNoteEl.hidden = !schoolNote || !roomShowNote;
         }
         schoolRows.forEach(function (row) {
-          var hit = fuzzyHit(row.name + " " + row.href, q);
+          var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
           if (!hit) return;
           var a = document.createElement("a");
           a.className = "tile";
@@ -966,15 +884,11 @@
         document.body.classList.toggle("is-no-cuts", pack && pack.shortcuts === false);
         tileOrder.forEach(function (id) {
           var tile = appBoard.querySelector('[data-id="' + id + '"]');
-          if (tile && tile.parentElement) tile.parentElement.appendChild(tile);
+          if (tile) appBoard.appendChild(tile);
         });
         if (focus) {
           var spotlight = appBoard.querySelector('[data-id="' + focus + '"]');
-          if (spotlight && spotlight.parentElement) {
-            spotlight.parentElement.insertBefore(spotlight, spotlight.parentElement.firstChild);
-            var group = spotlight.closest(".group");
-            if (group && group.parentElement) group.parentElement.insertBefore(group, group.parentElement.firstChild);
-          }
+          if (spotlight) appBoard.insertBefore(spotlight, appBoard.firstChild);
         }
         appTiles().forEach(function (tile) {
           var id = tile.getAttribute("data-id") || "";
@@ -982,8 +896,9 @@
           if (roomNewTab) { tile.setAttribute("target", "_blank"); tile.setAttribute("rel", "noopener noreferrer"); }
           else { tile.removeAttribute("target"); tile.removeAttribute("rel"); }
         });
+        paintSchool();
+        paintCuts();
         paint();
-        filter();
       }
 
       function fetchJson(url, ms) {
@@ -1026,7 +941,7 @@
         var rows = readCuts();
         board.innerHTML = "";
         rows.forEach(function (row) {
-          var hit = fuzzyHit(row.name + " " + row.href, q);
+          var hit = !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
           if (!hit) return;
           var wrap = document.createElement("div");
           wrap.className = "cut-wrap";
@@ -1059,45 +974,23 @@
         if (cutsSec) cutsSec.hidden = !roomAllowCuts && board.children.length === 0;
       }
 
-      function syncGroups() {
-        if (!appBoard) return;
-        Array.prototype.forEach.call(appBoard.querySelectorAll(".group"), function (group) {
-          var any = false;
-          Array.prototype.forEach.call(group.querySelectorAll("a.tile"), function (tile) {
-            if (!tile.classList.contains("is-hidden") && !tile.classList.contains("is-room-hidden")) any = true;
-          });
-          group.classList.toggle("is-empty", !any);
-        });
-      }
-
-      function markFirst() {
-        document.querySelectorAll("a.tile.is-first").forEach(function (el) { el.classList.remove("is-first"); });
-        var q = (input.value || "").trim();
-        if (!q) return;
-        var tile = bestTile();
-        if (tile) tile.classList.add("is-first");
-      }
-
       function filter() {
         var q = (input.value || "").trim().toLowerCase();
         var shown = 0;
         appTiles().forEach(function (tile) {
-          var label = tile.querySelector(".label").textContent;
-          var keys = tile.getAttribute("data-keywords") || "";
-          var hit = fuzzyHit(label + " " + keys + " " + (tile.getAttribute("data-id") || ""), q);
+          var label = tile.querySelector(".label").textContent.toLowerCase();
+          var hit = !q || label.indexOf(q) !== -1;
           tile.classList.toggle("is-hidden", !hit);
-          if (hit && !tile.classList.contains("is-room-hidden")) shown += 1;
+          if (hit) shown += 1;
         });
         paintCuts();
         paintSchool();
-        syncGroups();
         var schoolHits = schoolRows.filter(function (row) {
-          return fuzzyHit(row.name + " " + row.href, q);
+          return !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
         }).length;
         var cutHits = readCuts().filter(function (row) {
-          return fuzzyHit(row.name + " " + row.href, q);
+          return !q || row.name.toLowerCase().indexOf(q) !== -1 || row.href.toLowerCase().indexOf(q) !== -1;
         }).length;
-        markFirst();
         var empty = document.getElementById("empty-filter");
         if (!shown && !schoolHits && !cutHits && q) {
           if (!empty) {
@@ -1110,17 +1003,6 @@
         } else if (empty) {
           empty.remove();
         }
-      }
-
-      function openFirst(blank) {
-        var tile = bestTile();
-        if (!tile) return false;
-        var href = tile.getAttribute("href");
-        if (!href) return false;
-        remember(entryFromTile(tile));
-        if (blank) window.open(href, "_blank", "noopener,noreferrer");
-        else window.location.href = href;
-        return true;
       }
 
       function openModal(row, seed) {
@@ -1216,14 +1098,9 @@
       input.addEventListener("keydown", function (event) {
         if (event.key !== "Enter") return;
         var pasted = (input.value || "").trim();
-        if (!event.altKey && roomAllowPaste && roomAllowCuts && looksLikeUrl(pasted)) {
-          event.preventDefault();
-          openModal(null, { name: nameFromHost(pasted), href: pasted });
-          return;
-        }
-        if (!pasted) return;
+        if (!roomAllowPaste || !roomAllowCuts || !looksLikeUrl(pasted)) return;
         event.preventDefault();
-        openFirst(event.altKey || roomNewTab);
+        openModal(null, { name: nameFromHost(pasted), href: pasted });
       });
 
       document.addEventListener("keydown", function (event) {
@@ -1234,11 +1111,7 @@
           if (!modal.hidden) { event.preventDefault(); closeModal(); return; }
           var pocketMenu = document.getElementById("edge-pocket-menu");
           if (pocketMenu && !pocketMenu.hidden) { event.preventDefault(); setPocket(false); return; }
-          if (document.activeElement === input) {
-            event.preventDefault();
-            if (input.value) { input.value = ""; filter(); }
-            input.blur();
-          }
+          if (typing) input.blur();
           return;
         }
         if (staffGate && !staffGate.hidden) return;
@@ -1400,23 +1273,6 @@
         });
       }
       syncPlate();
-
-
-      var pwaTip = document.getElementById("pwa-tip");
-      var pwaDismiss = document.getElementById("pwa-tip-dismiss");
-      var pwaStandalone = false;
-      try {
-        pwaStandalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-      } catch (e) {}
-      try {
-        if (pwaTip && !pwaStandalone && localStorage.getItem("tech-room-pwa-tip") !== "1") pwaTip.hidden = false;
-      } catch (e2) {}
-      if (pwaDismiss) {
-        pwaDismiss.addEventListener("click", function () {
-          if (pwaTip) pwaTip.hidden = true;
-          try { localStorage.setItem("tech-room-pwa-tip", "1"); } catch (e3) {}
-        });
-      }
 
       paint();
       paintCuts();

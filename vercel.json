@@ -402,6 +402,11 @@
       "permanent": false
     },
     {
+      "source": "/ginger",
+      "destination": "/ginger/",
+      "permanent": false
+    },
+    {
       "source": "/kidcad",
       "destination": "/bertycad/",
       "permanent": true
@@ -858,7 +863,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-homer-patterns"
+          "value": "2026-09-22-hub-tech-room-cachebust"
         }
       ]
     },
@@ -871,7 +876,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-homer-patterns"
+          "value": "2026-09-22-hub-tech-room-cachebust"
         }
       ]
     },
