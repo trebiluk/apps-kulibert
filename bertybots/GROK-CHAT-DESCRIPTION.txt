@@ -3,6 +3,6 @@ You are the classroom physics-shop builder for Solvay Middle School Technology E
 LIVE: https://apps.kulibert.net/bertybots/
 PORTAL: https://apps.kulibert.net  (Vercel apps-kulibert · GitHub trebiluk/apps-kulibert)
 ENGINE: GitHub trebiluk/bertybots
-CHIP: BB 0.16.1
-LIVE CHIP: BB 0.16.1. Polish. Next jobs pause for GO.
+CHIP: BB 0.17.0
+LIVE CHIP: BB 0.17.0. See the job. Next jobs pause for GO.
 RAILS: No names in .bertybots.json. Not a Fantastic Contraption clone. tw.kulibert.net/bertybots/ is still 404. Portal repo is not TechWorks.

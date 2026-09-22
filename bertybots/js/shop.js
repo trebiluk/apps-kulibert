@@ -400,6 +400,29 @@ export function boot() {
     };
   }
 
+  function jobBounds() {
+    const s = doc.level.shop;
+    const d = doc.level.drop;
+    let x0 = s.x, y0 = Math.min(s.y, 0.2), x1 = s.x + s.w, y1 = s.y + s.h;
+    if (d) {
+      x0 = Math.min(x0, d.x);
+      y0 = Math.min(y0, d.y);
+      x1 = Math.max(x1, d.x + d.w);
+      y1 = Math.max(y1, d.y + d.h);
+    }
+    for (const c of doc.level.cores || []) {
+      x0 = Math.min(x0, c.x - 0.5);
+      y0 = Math.min(y0, c.y - 0.5);
+      x1 = Math.max(x1, c.x + 0.5);
+      y1 = Math.max(y1, c.y + 0.8);
+    }
+    x0 -= 1.0;
+    y0 -= 0.25;
+    x1 += 1.2;
+    y1 += 0.7;
+    return { x: x0, y: Math.max(-0.2, y0), w: x1 - x0, h: y1 - y0 };
+  }
+
   function focusTarget() {
     if (typeof isMeasure === "function" && isMeasure()) return { x: WORLD_W / 2, y: 5.2 };
     if (playing && sim && sim.cores[0]) {
@@ -408,16 +431,22 @@ export function boot() {
       const look = drop ? p.x * 0.7 + (drop.x + drop.w / 2) * 0.3 : p.x;
       return { x: look, y: Math.max(2.5, p.y + 1.35) };
     }
-    const s = doc.level.shop;
-    const d = doc.level.drop;
-    const peek = d ? Math.min(s.x + s.w + 5.2, d.x + 1.2) : s.x + s.w + 3;
-    return { x: (s.x + peek) / 2, y: Math.max(3.0, (s.y + s.h) * 0.42 + 1.6) };
+    const b = jobBounds();
+    return { x: b.x + b.w * 0.46, y: b.y + b.h * 0.42 };
   }
 
   function frameSpan() {
     if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
     const phone = window.innerHeight < 540 || window.innerWidth < 920;
-    return phone ? { w: 12.2, h: 6.5 } : { w: 15.0, h: 7.6 };
+    const b = jobBounds();
+    const minW = phone ? 12.2 : 14.0;
+    const minH = phone ? 6.5 : 7.2;
+    const maxW = phone ? 18.5 : 23.5;
+    const maxH = phone ? 9.2 : 11.4;
+    return {
+      w: Math.max(minW, Math.min(maxW, b.w)),
+      h: Math.max(minH, Math.min(maxH, b.h)),
+    };
   }
 
   function applyCam(snap) {

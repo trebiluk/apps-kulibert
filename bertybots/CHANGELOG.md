@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.16.1** · 2026-09-21 · channel **live**  
+**Chip: BB 0.17.0** · 2026-09-21 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.16.1` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.17.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,18 @@ Rules:
 
 ---
 
-## Current train (0.16.x live)
+## Current train (0.17.x live)
+
+### 0.17.0 — See the job — 2026-09-21
+
+- Camera frames Shop Floor and Drop Zone on every challenge. High Shelf and Around the Bend no longer hide the zone off-screen.
+- Click-test: all 11 courses load, Starter cart, Play, Stop. Site Editor Level tab stays locked on challenges.
+
+Hard refresh if a cart still says 0.16.1.
+
+---
+
+## 0.16.x
 
 ### 0.16.1 — Polish — 2026-09-21
 
