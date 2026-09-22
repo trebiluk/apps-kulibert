@@ -415,11 +415,11 @@
   "rewrites": [
     {
       "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/:path*",
@@ -831,7 +831,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-den-2"
+          "value": "2026-09-22-lab-home"
         }
       ]
     },
@@ -844,7 +844,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-den-2"
+          "value": "2026-09-22-lab-home"
         }
       ]
     },
