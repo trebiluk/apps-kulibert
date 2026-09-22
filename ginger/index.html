@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#f4f1ea" />
+  <title>Ginger 1.0 — classroom AEC planner</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body data-theme="paper">
+  <div class="app">
+    <header class="bar">
+      <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
+        <rect x="3" y="8" width="26" height="18" fill="none" stroke="#6E72F5" stroke-width="2"/>
+        <path d="M3 14h26M12 8v18" fill="none" stroke="#12141a" stroke-width="2"/>
+      </svg>
+      <span class="brand">Ginger</span>
+      <span class="chip" id="chip" title="version">v1.0.0</span>
+      <nav class="tools" aria-label="Draw tools">
+        <button type="button" data-tool="select" aria-pressed="true">Select</button>
+        <button type="button" data-tool="wall">Wall</button>
+        <button type="button" data-tool="room">Room</button>
+        <button type="button" data-tool="door">Door</button>
+        <button type="button" data-tool="window">Window</button>
+      </nav>
+      <button type="button" id="undo">Undo</button>
+      <button type="button" id="redo">Redo</button>
+      <button type="button" id="theme">Night CAD</button>
+      <button type="button" id="lab3d">3D peek (lab)</button>
+      <button type="button" id="export">Export JSON</button>
+      <button type="button" id="imp">Import</button>
+      <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
+    </header>
+    <main class="stage">
+      <canvas id="plan" width="1400" height="900" aria-label="Floor plan"></canvas>
+      <aside class="side">
+        <h2>Properties</h2>
+        <div class="props" id="props"><p class="hint">Select a wall, room, door, or window.</p></div>
+        <h2>Room schedule</h2>
+        <div class="sched"><table id="rooms"><thead><tr><th>Mark</th><th>Name</th><th>Area (sf)</th></tr></thead><tbody></tbody></table></div>
+        <h2>Door schedule</h2>
+        <div class="sched"><table id="doors"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+        <h2>Window schedule</h2>
+        <div class="sched"><table id="wins"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
+        <h2>Lab peek</h2>
+        <p class="hint">Off by default for mid/low Chromebooks. Teacher/lab only.</p>
+        <div class="peek-wrap" id="peekWrap"><canvas id="peek" width="640" height="360"></canvas></div>
+      </aside>
+    </main>
+    <footer class="foot">
+      <span id="status">Wall tool: tap start, tap end. Grid = 1 ft.</span>
+      <span class="quiet">Plans stay on this device. No names. No accounts.</span>
+      <span class="quiet">Quiet CEA classroom nod — not Autodesk.</span>
+    </footer>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
