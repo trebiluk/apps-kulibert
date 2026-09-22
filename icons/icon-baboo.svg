@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Baboo">
+  <rect width="128" height="128" rx="28" fill="#F7F9FC"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#2563EB" stroke-width="3"/>
+  <g fill="#1E3A8A">
+    <rect x="30" y="30" width="30" height="20" rx="3"/>
+    <rect x="68" y="30" width="30" height="20" rx="3"/>
+    <rect x="30" y="56" width="30" height="18" rx="3"/>
+    <rect x="68" y="56" width="30" height="18" rx="3"/>
+    <rect x="30" y="80" width="30" height="18" rx="3"/>
+    <rect x="68" y="80" width="30" height="18" rx="3"/>
+  </g>
+</svg>

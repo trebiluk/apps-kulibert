@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Drift">
+  <rect width="128" height="128" rx="28" fill="#6EB5E0"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#FFF3C8" stroke-width="3"/>
+  <g fill="none" stroke="#F7F4EE" stroke-width="4" stroke-linecap="round">
+    <path d="M36 42 64 64M64 64 92 40M64 64 90 90"/>
+  </g>
+  <circle cx="36" cy="42" r="8" fill="#FFF3C8" stroke="#1E3A5F" stroke-width="2"/>
+  <circle cx="64" cy="64" r="9" fill="#F7F4EE" stroke="#1E3A5F" stroke-width="2"/>
+  <circle cx="92" cy="40" r="7" fill="#FFF3C8" stroke="#1E3A5F" stroke-width="2"/>
+  <circle cx="90" cy="90" r="8" fill="#F7F4EE" stroke="#1E3A5F" stroke-width="2"/>
+</svg>

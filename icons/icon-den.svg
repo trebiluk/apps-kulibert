@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Bearcat Den">
+  <rect width="128" height="128" rx="28" fill="#123049"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#F4C95D" stroke-width="3"/>
+  <rect x="30" y="48" width="68" height="46" rx="6" fill="#F4C95D"/>
+  <path d="M30 58h68" stroke="#123049" stroke-width="4"/>
+  <path d="M52 48v-8a12 12 0 0 1 24 0v8" fill="none" stroke="#F4C95D" stroke-width="6" stroke-linecap="round"/>
+  <rect x="58" y="64" width="12" height="10" rx="2" fill="#123049"/>
+</svg>

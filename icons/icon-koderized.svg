@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Koderized">
+  <rect width="128" height="128" rx="28" fill="#1B365D"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#FBBF24" stroke-width="3"/>
+  <path fill="none" stroke="#F8FAFC" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" d="M48 42 32 64l16 22M80 42l16 22-16 22M72 36 56 92"/>
+</svg>
