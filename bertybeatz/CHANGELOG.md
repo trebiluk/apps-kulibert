@@ -1,13 +1,13 @@
 # BertyBeatz changelog
 
-**Chip: BZ 1.2.0** · 2026-09-22 · channel **live**
+**Chip: BZ 1.2.1** · 2026-09-22 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Live classroom | `BZ 1.2.0` | `https://apps.kulibert.net/bertybeatz/` |
+| Live classroom | `BZ 1.2.1` | `https://apps.kulibert.net/bertybeatz/` |
 
 Rules:
 
@@ -17,6 +17,14 @@ Rules:
 4. Hard refresh (Ctrl+Shift+R) if a cart still shows an old chip.
 
 ## Current train
+
+### 1.2.1 — Gate clears — 2026-09-22
+
+- Tap to start actually leaves the cover. The studio and Looks can be clicked.
+- Same four looks. Same pass codes. No other change.
+- Hub chip **BZ 1.2.1**.
+
+Hard refresh if a cart still says 1.2.0.
 
 ### 1.2.0 — See it move — 2026-09-22
 
