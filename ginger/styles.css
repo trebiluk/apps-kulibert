@@ -1,0 +1,83 @@
+/* Ginger 1.0 — Paper / Night CAD tokens. Stark default. Not TechWorks Dream. */
+:root,
+[data-theme="paper"] {
+  --bg: #f4f1ea;
+  --sheet: #fffdf8;
+  --ink: #12141a;
+  --muted: #5b6170;
+  --line: #2a2e38;
+  --grid: #d9d3c6;
+  --flash: #6e72f5;
+  --flash-2: #8b8dff;
+  --wall: #1a1d24;
+  --door: #2f6f4e;
+  --win: #2a6f9a;
+  --room: rgba(110, 114, 245, 0.10);
+  --panel: #ffffff;
+  --edge: #c9c3b6;
+  --hit: #6e72f5;
+  --chip: #12141a;
+  --chip-ink: #fffdf8;
+  --danger: #9b2c2c;
+  --ok: #1f6b45;
+  --shadow: 0 8px 28px rgba(18, 20, 26, 0.10);
+}
+[data-theme="night"] {
+  --bg: #0e1118;
+  --sheet: #161b24;
+  --ink: #e8ebf2;
+  --muted: #9aa3b5;
+  --line: #e8ebf2;
+  --grid: #2a3140;
+  --flash: #8b8dff;
+  --flash-2: #6e72f5;
+  --wall: #e8ebf2;
+  --door: #7dcea0;
+  --win: #7ec8e8;
+  --room: rgba(139, 141, 255, 0.14);
+  --panel: #1b2130;
+  --edge: #3a4254;
+  --hit: #8b8dff;
+  --chip: #e8ebf2;
+  --chip-ink: #0e1118;
+  --danger: #f0a0a0;
+  --ok: #8fdfb5;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+button, input, select { font: inherit; color: inherit; }
+.app { display: grid; grid-template-rows: 56px 1fr 28px; height: 100%; }
+.bar { display: flex; align-items: center; gap: 8px; padding: 6px 10px; background: var(--panel); border-bottom: 1px solid var(--edge); overflow-x: auto; }
+.mark { width: 32px; height: 32px; flex: none; }
+.brand { font-weight: 700; letter-spacing: 0.02em; }
+.chip { min-height: 44px; display: inline-flex; align-items: center; padding: 0 12px; border-radius: 8px; background: var(--chip); color: var(--chip-ink); font-size: 13px; font-variant-numeric: tabular-nums; }
+.tools { display: flex; gap: 6px; }
+.tools button, .bar button, .props button {
+  min-height: 44px; min-width: 44px; padding: 0 12px; border: 1px solid var(--edge); background: var(--sheet); border-radius: 8px; cursor: pointer;
+}
+.tools button[aria-pressed="true"] { outline: 3px solid var(--flash); background: var(--room); }
+.stage { display: grid; grid-template-columns: 1fr minmax(280px, 340px); min-height: 0; }
+canvas#plan, canvas#peek { width: 100%; height: 100%; display: block; background-color: var(--sheet); touch-action: none; }
+.side { border-left: 1px solid var(--edge); background: var(--panel); overflow: auto; padding: 12px; }
+h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; margin: 16px 0 8px; color: var(--muted); }
+h2:first-child { margin-top: 0; }
+.props label { display: block; font-size: 13px; margin: 8px 0 4px; }
+.props input, .props select { width: 100%; min-height: 44px; padding: 0 10px; border: 1px solid var(--edge); border-radius: 8px; background: var(--sheet); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--edge); }
+th { color: var(--muted); font-weight: 600; }
+.foot { display: flex; align-items: center; gap: 12px; padding: 0 10px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--edge); background: var(--panel); }
+.quiet { opacity: 0.75; }
+.peek-wrap { height: 180px; border: 1px solid var(--edge); border-radius: 8px; overflow: hidden; display: none; }
+.peek-wrap.on { display: block; }
+.hint { font-size: 13px; color: var(--muted); line-height: 1.4; }
+@media (max-width: 900px) {
+  .stage { grid-template-columns: 1fr; grid-template-rows: 1fr 42vh; }
+  .side { border-left: 0; border-top: 1px solid var(--edge); }
+}
