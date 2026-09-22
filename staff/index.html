@@ -44,7 +44,7 @@
 </head>
 <body>
   <div class="wrap">
-    <form class="card" id="hub-gate">
+    <form class="card" id="hub-gate" autocomplete="off">
       <p class="chip"><i></i> Locked · Hub staff</p>
       <h1>Staff</h1>
       <p>Enter the staff password. This device stays unlocked until Sign out. The TechWorks desk key is a separate lock.</p>
@@ -53,7 +53,7 @@
         <input id="hub-pass" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="hub-gate-error"/>
         <button class="ghost" id="hub-pass-toggle" type="button" aria-controls="hub-pass" aria-pressed="false">Show</button>
       </div>
-      <button class="save" type="submit">Unlock</button>
+      <button class="save" id="hub-pass-unlock" type="button">Unlock</button>
       <p class="err" id="hub-gate-error" role="alert"></p>
       <p><a href="/">← Tech Room door</a></p>
     </form>
@@ -152,6 +152,7 @@
           form: $("hub-gate"),
           input: $("hub-pass"),
           toggle: $("hub-pass-toggle"),
+          unlock: $("hub-pass-unlock"),
           error: $("hub-gate-error"),
           onUnlock: function () { paintHubLock(); }
         });

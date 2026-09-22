@@ -553,7 +553,7 @@
   </div>
 
   <div class="modal kn-dialog" id="staff-gate" hidden role="dialog" aria-modal="true" aria-labelledby="staff-gate-title">
-    <form class="sheet kn-dialog-content" id="staff-gate-form">
+    <form class="sheet kn-dialog-content" id="staff-gate-form" autocomplete="off">
       <h2 id="staff-gate-title">Staff</h2>
       <p class="desc" id="staff-gate-desc">Enter the staff password. This device stays unlocked until Sign out.</p>
       <label for="staff-pass">Staff password</label>
@@ -563,7 +563,7 @@
       </div>
       <p id="staff-gate-error" role="alert"></p>
       <div class="actions">
-        <button class="btn btn-default save" type="submit">Unlock</button>
+        <button class="btn btn-default save" id="staff-gate-unlock" type="button">Unlock</button>
         <button class="btn btn-secondary ghost" type="button" id="staff-gate-cancel">Cancel</button>
       </div>
     </form>
@@ -1215,6 +1215,7 @@
           form: document.getElementById("staff-gate-form"),
           input: staffPass,
           toggle: document.getElementById("staff-pass-toggle"),
+          unlock: document.getElementById("staff-gate-unlock"),
           error: document.getElementById("staff-gate-error"),
           onUnlock: function () {
             if (staffGate) staffGate.hidden = true;

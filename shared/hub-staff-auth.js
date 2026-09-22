@@ -62,8 +62,7 @@
     var busy = false;
     if (!form || !input) return;
 
-    form.addEventListener("submit", function (event) {
-      event.preventDefault();
+    function attempt() {
       if (busy) return;
       busy = true;
       tryPassword(input.value).then(function (ok) {
@@ -83,7 +82,24 @@
         if (error) error.textContent = WRONG;
         input.focus();
       });
+    }
+
+    form.setAttribute("autocomplete", "off");
+    input.setAttribute("autocomplete", "off");
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      attempt();
     });
+    input.addEventListener("keydown", function (event) {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      attempt();
+    });
+    if (opts.unlock) {
+      opts.unlock.addEventListener("click", function () {
+        attempt();
+      });
+    }
 
     input.addEventListener("input", function () {
       if (error && error.textContent) error.textContent = "";
