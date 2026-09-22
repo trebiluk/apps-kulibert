@@ -578,6 +578,11 @@ a { color: var(--orange); }
   .btn:active, .tool:active { transform: none; }
 }
 
+body[data-embed="1"] #rotate-gate { display: none; }
+body[data-embed="1"] .howto { display: none !important; }
+body[data-embed="1"] .rank { display: none; }
+body[data-embed="1"] .hud { min-height: 40px; }
+
 .heat {
   display: flex; align-items: center; gap: 6px;
   flex: 0 0 auto; padding: 4px 10px; min-height: 32px;

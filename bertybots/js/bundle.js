@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.17.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.18.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.17.0";
+const APP_VERSION = "0.18.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.17.0";
+const APP_CHIP = "BB 0.18.0";
 const APP_BUILT = "2026-09-21";
 
 const FORMAT = 1;
@@ -2663,11 +2663,16 @@ function boot() {
   refreshMeta();
   const assigned = new URLSearchParams(location.search).get("course");
   debugOn = new URLSearchParams(location.search).get("debug") === "1";
+  let embed = new URLSearchParams(location.search).get("embed") === "1"
+    || new URLSearchParams(location.search).get("tw") === "1";
+  try { if (window.self !== window.top) embed = true; } catch (e) { embed = true; }
+  document.body.dataset.embed = embed ? "1" : "0";
+  document.body.dataset.tw = embed ? "1" : "0";
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
   } else {
     try {
-      if (!localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
+      if (!embed && !localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
     } catch (e) { /* ignore */ }
   }
   requestAnimationFrame(loop);

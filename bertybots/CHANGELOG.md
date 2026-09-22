@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.17.0** · 2026-09-21 · channel **live**  
+**Chip: BB 0.18.0** · 2026-09-21 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.17.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.18.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,18 @@ Rules:
 
 ---
 
-## Current train (0.17.x live)
+## Current train (0.18.x live)
+
+### 0.18.0 — TechWorks hang — 2026-09-21
+
+- Teach Hang on TechWorks pins this shop (Open Shop, Forces, Measure, Roll Out). Deck plays the live URL — the shop is not copied onto tw.kulibert.net.
+- Menu has TechWorks and Tech Room. Embed mode skips How-to. No names.
+
+Hard refresh if a cart still says 0.17.0.
+
+---
+
+## 0.17.x
 
 ### 0.17.0 — See the job — 2026-09-21
 
