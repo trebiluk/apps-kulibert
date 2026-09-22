@@ -90,7 +90,7 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 
 .rail-pin {
   display: flex; align-items: center; gap: 10px;
-  min-height: 40px; padding: 6px 8px;
+  min-height: 44px; min-width: 44px; padding: 6px 8px;
   border: 0; border-radius: var(--radius);
   background: #0003; color: var(--yellow);
   font-weight: 800;
@@ -110,7 +110,7 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 
 .tool {
   display: flex; align-items: center; gap: 10px;
-  min-height: 48px; padding: 4px 6px;
+  min-height: 48px; min-width: 44px; padding: 4px 6px;
   border: 1px solid transparent;
   border-radius: var(--radius);
   background: rgb(0 0 0 / 18%);
@@ -370,7 +370,7 @@ body[data-play="1"] .lesson .hint { display: none; }
 }
 .xp-n { font-size: 11px; font-weight: 600; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
 .hud-pick {
-  min-width: 0; flex: 0 1 10rem; max-width: 12rem;
+  min-width: 44px; min-height: 44px; flex: 0 1 10rem; max-width: 12rem;
   color: var(--text);
   appearance: none;
   background-color: #4a4f56;
@@ -387,7 +387,7 @@ body[data-play="1"] .lesson .hint { display: none; }
 .btn {
   background: #4a4f56; color: var(--text); border: 1px solid #2f3338;
   border-radius: var(--radius); padding: 7px 12px; font-weight: 650; font-size: 13px;
-  min-height: 40px; white-space: nowrap; letter-spacing: 0.01em;
+  min-height: 44px; min-width: 44px; white-space: nowrap; letter-spacing: 0.01em;
   transition: background var(--motion-quick) var(--ease-out), transform var(--motion-quick) var(--ease-out);
 }
 .btn:hover { background: #555b63; }
@@ -398,7 +398,7 @@ body[data-play="1"] .lesson .hint { display: none; }
 .btn.ok { background: var(--ok); color: #f4efe6; border-color: #2f6845; }
 .btn.ok:hover { background: #448a5e; }
 .btn.ghost { background: transparent; }
-.btn.tight { min-height: 34px; padding: 5px 10px; border-radius: var(--radius-sm); }
+.btn.tight { min-height: 44px; min-width: 44px; padding: 6px 10px; border-radius: var(--radius-sm); }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
 .sheet-card .btn, .howto-card .btn {
   color: var(--text);
@@ -424,16 +424,14 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
 .crew-label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; color: var(--ink); }
 .hint { font-size: 12px; color: var(--muted); }
 
-/* Shop fill: 1280×760 is the art aspect, not a required pixel size.
-   The stage scales up to the shop cell (max, not min) and letterboxes
-   inside shop set-dressing — never a bare ink gutter. */
+/* Playfield stretch: the flat canvas fills the shop cell.
+   No fixed 1280×760 box. No grey gutter. No 3D. */
 .stage-fit {
   position: relative;
   min-width: 0;
   min-height: 0;
   display: grid;
-  place-items: center;
-  container-type: size;
+  place-items: stretch;
   background-color: #d3c4ae;
   background-image:
     linear-gradient(180deg, #e7dcc8 0%, #d3c4ae 42%, #c4b49c 100%);
@@ -446,14 +444,6 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   height: 100%;
   background: #d9cbb8;
   touch-action: none;
-}
-@supports (width: 1cqw) {
-  .stage {
-    width: min(100cqw, calc(100cqh * 1280 / 760));
-    height: min(100cqh, calc(100cqw * 760 / 1280));
-    max-width: 100%;
-    max-height: 100%;
-  }
 }
 #c { display: block; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
 .btn[data-tool="driveR"],
@@ -585,20 +575,21 @@ a { color: var(--orange); }
   .hud-pick {
     flex: 1 1 6.5rem;
     max-width: 10rem;
-    min-height: 40px;
+    min-height: 44px;
+    min-width: 44px;
     padding: 6px 8px;
     font-size: 13px;
   }
-  .hud-play .btn, #btn-crew { min-height: 40px; padding: 6px 10px; }
+  .hud-play .btn, #btn-crew { min-height: 44px; min-width: 44px; padding: 6px 10px; }
 }
 
 @media (max-width: 860px) {
-  :root { --rail: 56px; }
+  :root { --rail: 68px; }
   #btn-slow { display: none; }
   .hud-pick { max-width: 8.5rem; }
   .lesson { width: min(11rem, 34vw); padding: 6px 8px 4px; font-size: 11px; top: 6px; right: 6px; }
   .role { display: none; }
-  .tool { min-height: 44px; padding: 2px 4px; }
+  .tool { min-height: 44px; min-width: 44px; padding: 2px 4px; }
   .pic { width: 36px; height: 36px; flex-basis: 36px; }
   .status .hint { max-width: 42vw; }
 }
@@ -611,7 +602,7 @@ a { color: var(--orange); }
 body[data-embed="1"] #rotate-gate { display: none; }
 body[data-embed="1"] .howto { display: none !important; }
 body[data-embed="1"] .rank { display: none; }
-body[data-embed="1"] .hud { min-height: 40px; }
+body[data-embed="1"] .hud { min-height: 44px; }
 
 .heat {
   display: flex; align-items: center; gap: 6px;
@@ -634,7 +625,7 @@ body[data-embed="1"] .hud { min-height: 40px; }
   border: 1px solid #0003;
 }
 .role-btn {
-  min-height: 36px; min-width: 44px; padding: 6px 12px;
+  min-height: 44px; min-width: 44px; padding: 6px 12px;
   border-radius: 999px; font-weight: 650; font-size: 12px; letter-spacing: .02em;
   background: transparent; color: var(--text); border: 0;
 }
