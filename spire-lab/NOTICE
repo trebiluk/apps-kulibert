@@ -1,0 +1,6 @@
+Spire Lab reads height from a timing stack. This folder does not ship
+stock tower_game art, audio, fonts, hearts, score UI, or WeChat screens.
+
+The overlap-cut drop is an original Kulibert Tech Ed reimplementation.
+Upstream license is kept beside this file as LICENSE
+(MIT, Copyright (c) 2018 BMQB, Inc). Do not strip LICENSE or this NOTICE.

@@ -1,0 +1,4 @@
+SpanCraft load prove uses matter-js 0.20.0 (MIT).
+Copyright (c) Liam Brummitt and contributors.
+The license is vendor/LICENSE. The browser build is vendor/matter.min.js
+from the npm package "matter-js". Do not strip this NOTICE or that LICENSE.

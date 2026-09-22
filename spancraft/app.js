@@ -1,4 +1,5 @@
 import { judgeSpan, spanSpec, supportCols } from "./logic.js";
+import { proveLoad } from "./physics.js";
 
 const KEY = "kulibert-spancraft-mvp";
 const KINDS = ["deck", "beam", "pier"];
@@ -383,7 +384,7 @@ function paintLoad(g, s) {
 }
 
 function resize() {
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
   const w = canvas.clientWidth;
   const h = canvas.clientHeight;
   if (w < 2 || h < 2) return;
@@ -519,12 +520,12 @@ function animate(ms, done) {
 function startTest() {
   if (busy()) return;
   state.drag = null;
-  const verdict = judgeSpan(spec(), state.parts);
+  const verdict = proveLoad(spec(), state.parts);
   state.verdict = verdict.reason;
   state.phase = "drop";
   state.animU = 0;
   syncControls();
-  const prove = PROVE[verdict.reason];
+  const prove = PROVE[verdict.reason] || PROVE.long;
   setStatus("Test", "The load is hanging.", "");
   animate(reduceMotion ? 0 : 700, () => {
     state.phase = verdict.ok ? "pass" : "fail";
