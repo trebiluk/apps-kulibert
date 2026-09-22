@@ -1,5 +1,8 @@
 (() => {
+  if (window.__BERTYBEATZ__ === "1.1.0") return;
+  window.__BERTYBEATZ__ = "1.1.0";
   const STEP_COUNT = 16;
+  const CHIP = "BZ 1.1.0";
   const STORAGE = "bertybeatz.v1";
   const TRACKS = [
     { id: "kick", kind: "drum", label: "Kick" },
@@ -210,6 +213,87 @@
   const NOUNS = ["Beat", "Loop", "Jam", "Pulse", "Drop", "Sketch"];
   function funName() {
     return `${NAMES[Math.floor(Math.random() * NAMES.length)]} ${NOUNS[Math.floor(Math.random() * NOUNS.length)]}`;
+  }
+
+  function packBits(arr) {
+    let n = 0;
+    for (let i = 0; i < STEP_COUNT; i++) if (arr[i]) n |= 1 << i;
+    return n.toString(16).padStart(4, "0");
+  }
+
+  function cleanTitle(name) {
+    return String(name || "Beat")
+      .replace(/[~]/g, "-")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 24) || "Beat";
+  }
+
+  function packBeat() {
+    const bits = TRACKS.map((t) => packBits(state.steps[t.id])).join("");
+    return `BZ1~${cleanTitle(state.name)}~${state.bpm}~${state.swing}~${state.kit}~${state.mood}~${state.key}~${bits}`;
+  }
+
+  function unpackBeat(raw) {
+    if (!raw) return null;
+    let text = String(raw).trim();
+    const fromUrl = text.match(/[?&]b=([^&\s]+)/i);
+    if (fromUrl) text = fromUrl[1];
+    try {
+      text = decodeURIComponent(text);
+    } catch {
+      /* already decoded */
+    }
+    const parts = text.split("~");
+    if (parts.length < 8 || parts[0] !== "BZ1") return null;
+    const name = cleanTitle(parts[1]);
+    const kit = parts[4];
+    const mood = parts[5];
+    const key = parts[6];
+    const bits = parts[7];
+    if (bits.length !== TRACKS.length * 4) return null;
+    if (!KITS.some((k) => k.id === kit)) return null;
+    if (!MOODS.some((m) => m.id === mood)) return null;
+    if (!KEYS.includes(key)) return null;
+    const steps = emptySteps();
+    TRACKS.forEach((t, ti) => {
+      const n = parseInt(bits.slice(ti * 4, ti * 4 + 4), 16);
+      if (Number.isNaN(n)) return;
+      for (let i = 0; i < STEP_COUNT; i++) steps[t.id][i] = Boolean(n & (1 << i));
+    });
+    return {
+      name,
+      bpm: Math.min(160, Math.max(70, Number(parts[2]) || 110)),
+      swing: Math.min(60, Math.max(0, Number(parts[3]) || 0)),
+      kit,
+      mood,
+      key,
+      steps,
+    };
+  }
+
+  function doorUrl(code) {
+    const u = new URL(window.location.href);
+    u.hash = "";
+    u.search = "";
+    u.pathname = u.pathname.replace(/index\.html$/, "");
+    u.searchParams.set("b", code);
+    return u.toString();
+  }
+
+  async function copyText(value) {
+    try {
+      await navigator.clipboard.writeText(value);
+      return true;
+    } catch {
+      const ta = document.createElement("textarea");
+      ta.value = value;
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    }
   }
 
   const state = {
@@ -745,6 +829,58 @@
     $("modal-ok").hidden = true;
   });
 
+  $("pass-btn").addEventListener("click", () => {
+    const code = packBeat();
+    const link = doorUrl(code);
+    modalBody.innerHTML = "";
+    const codeBox = document.createElement("textarea");
+    codeBox.readOnly = true;
+    codeBox.value = code;
+    codeBox.setAttribute("aria-label", "Pass code");
+    codeBox.rows = 3;
+    const copyCode = document.createElement("button");
+    copyCode.type = "button";
+    copyCode.className = "btn primary";
+    copyCode.textContent = "Copy code";
+    copyCode.addEventListener("click", async () => {
+      const ok = await copyText(code);
+      copyCode.textContent = ok ? "Copied" : "Copy failed";
+    });
+    const copyLink = document.createElement("button");
+    copyLink.type = "button";
+    copyLink.className = "btn";
+    copyLink.textContent = "Copy door link";
+    copyLink.addEventListener("click", async () => {
+      const ok = await copyText(link);
+      copyLink.textContent = ok ? "Link copied" : "Copy failed";
+    });
+    const paste = document.createElement("input");
+    paste.id = "pass-paste";
+    paste.placeholder = "Paste a code here";
+    paste.setAttribute("aria-label", "Paste a pass code");
+    const load = document.createElement("button");
+    load.type = "button";
+    load.className = "btn";
+    load.textContent = "Load pasted code";
+    load.addEventListener("click", () => {
+      const beat = unpackBeat(paste.value);
+      if (!beat) {
+        paste.value = "";
+        paste.placeholder = "That code did not load";
+        return;
+      }
+      applyPreset(beat);
+      modal.close();
+    });
+    const row = document.createElement("div");
+    row.className = "modal-actions";
+    row.style.margin = "0 0 0.8rem";
+    row.append(copyCode, copyLink);
+    modalBody.append(codeBox, row, paste, load);
+    openModal("Pass this beat", "No names. Copy the code or the door link. The next Chromebook pastes it, or opens the link.", null);
+    $("modal-ok").hidden = true;
+  });
+
   $("start-btn").addEventListener("click", () => {
     engine.unlock();
     $("gate").hidden = true;
@@ -795,6 +931,12 @@
   }
 
   loadLibrary();
+  const incoming = unpackBeat(new URLSearchParams(window.location.search).get("b") || "");
+  if (incoming) applyPreset(incoming);
+  ["gate-chip", "chip-label", "foot-chip"].forEach((id) => {
+    const el = $(id);
+    if (el) el.textContent = CHIP;
+  });
   renderAll();
   drawViz();
 })();
