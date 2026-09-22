@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-22-berty-run-multi"/>
+  <meta name="tech-room-rev" content="2026-09-22-hub-staff-password"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
@@ -125,6 +125,10 @@
       background:var(--accent);color:var(--accent-foreground);
       outline:2px solid var(--ring);outline-offset:2px;
     }
+    button.edge-pocket-item{
+      width:100%;border:0;background:transparent;font:inherit;text-align:left;cursor:pointer;
+    }
+    .edge-pocket-item[hidden]{display:none}
     @media (max-width:639px){
       .search{width:calc(100% - 1.5rem)}
     }
@@ -331,6 +335,18 @@
     .icons button[aria-pressed="true"]{border-color:color-mix(in srgb,var(--primary) 70%,transparent);background:var(--card)}
     .icons svg{width:1.25rem;height:1.25rem;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
     .sheet .err{color:var(--muted-foreground);font-size:.85rem;min-height:1.15rem;margin:0 0 .7rem}
+    #staff-gate label{margin-bottom:.35rem}
+    .staff-gate-row{display:flex;align-items:stretch;gap:.5rem;margin:0 0 .8rem}
+    #staff-pass{
+      flex:1 1 auto;min-width:0;width:100%;min-height:48px;height:3.25rem;
+      border-radius:12px;border:1px solid var(--input);background:var(--secondary);
+      color:var(--foreground);padding:0 1rem;font:inherit;font-size:1.125rem;font-weight:650;
+    }
+    #staff-pass:focus,#staff-pass:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+    #staff-pass-toggle{flex:0 0 auto;min-height:48px;min-width:5.25rem}
+    #staff-gate-error{
+      color:var(--destructive);font-size:1rem;font-weight:650;min-height:1.35rem;margin:0 0 .75rem;
+    }
     .sheet .actions{display:flex;flex-wrap:wrap;gap:.5rem}
     .sheet .actions button{
       height:2.75rem;min-height:44px;border-radius:10px;border:0;padding:0 1rem;
@@ -355,6 +371,7 @@
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
         <div class="edge-pocket-menu" id="edge-pocket-menu" role="menu" hidden>
           <a class="edge-pocket-item" id="staff-edit" role="menuitem" href="/staff/">Staff edit</a>
+          <button type="button" class="edge-pocket-item" id="staff-sign-out" role="menuitem" hidden>Sign out</button>
         </div>
       </div>
       <div class="field" aria-hidden="true">
@@ -401,10 +418,11 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-22-berty-run-multi</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-22-hub-staff-password</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <ul id="hub-log">
+            <li>Staff edit stays locked until the hub password · Sign out on this device</li>
             <li>Dark Tech Room board · labels on ink cards · cyan focus</li>
             <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
             <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
@@ -534,6 +552,23 @@
     <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · The Tech Room · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
+  <div class="modal kn-dialog" id="staff-gate" hidden role="dialog" aria-modal="true" aria-labelledby="staff-gate-title">
+    <form class="sheet kn-dialog-content" id="staff-gate-form" autocomplete="off">
+      <h2 id="staff-gate-title">Staff</h2>
+      <p class="desc" id="staff-gate-desc">Enter the staff password. This device stays unlocked until Sign out.</p>
+      <label for="staff-pass">Staff password</label>
+      <div class="staff-gate-row">
+        <input id="staff-pass" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="staff-gate-error"/>
+        <button class="btn btn-secondary" id="staff-pass-toggle" type="button" aria-controls="staff-pass" aria-pressed="false">Show</button>
+      </div>
+      <p id="staff-gate-error" role="alert"></p>
+      <div class="actions">
+        <button class="btn btn-default save" id="staff-gate-unlock" type="button">Unlock</button>
+        <button class="btn btn-secondary ghost" type="button" id="staff-gate-cancel">Cancel</button>
+      </div>
+    </form>
+  </div>
+
   <div class="modal kn-dialog" id="cut-modal" hidden role="dialog" aria-modal="true" aria-labelledby="cut-title">
     <form class="sheet kn-dialog-content" id="cut-form">
       <h2 id="cut-title">Add shortcut</h2>
@@ -555,6 +590,7 @@
     </form>
   </div>
 
+  <script src="/shared/hub-staff-auth.js"></script>
   <script>
     (function () {
       var KEY = "tech-room-opened";
@@ -1063,13 +1099,16 @@
 
       document.addEventListener("keydown", function (event) {
         var typing = event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA");
+        var staffGate = document.getElementById("staff-gate");
         if (event.key === "Escape") {
+          if (staffGate && !staffGate.hidden) { event.preventDefault(); closeStaffGate(); return; }
           if (!modal.hidden) { event.preventDefault(); closeModal(); return; }
           var pocketMenu = document.getElementById("edge-pocket-menu");
           if (pocketMenu && !pocketMenu.hidden) { event.preventDefault(); setPocket(false); return; }
           if (typing) input.blur();
           return;
         }
+        if (staffGate && !staffGate.hidden) return;
         if ((event.key === "/" || ((event.key === "k") && (event.metaKey || event.ctrlKey))) && !typing) {
           if (document.querySelector(".poster.is-no-search")) return;
           event.preventDefault();
@@ -1118,6 +1157,99 @@
         setPocket(false);
       });
       window.addEventListener("resize", placePocket);
+
+      var staffEdit = document.getElementById("staff-edit");
+      var staffSignOut = document.getElementById("staff-sign-out");
+      var staffGate = document.getElementById("staff-gate");
+      var staffPass = document.getElementById("staff-pass");
+      function paintStaffLock() {
+        var on = window.HubStaffAuth && HubStaffAuth.isUnlocked();
+        if (staffSignOut) staffSignOut.hidden = !on;
+      }
+      function closeStaffGate() {
+        if (!staffGate) return;
+        staffGate.hidden = true;
+        var err = document.getElementById("staff-gate-error");
+        if (err) err.textContent = "";
+        if (staffPass) staffPass.removeAttribute("aria-invalid");
+        if (staffEdit) staffEdit.focus();
+      }
+      function openStaffGate() {
+        setPocket(false);
+        if (!staffGate) return;
+        var err = document.getElementById("staff-gate-error");
+        if (err) err.textContent = "";
+        if (staffPass) {
+          staffPass.value = "";
+          staffPass.removeAttribute("aria-invalid");
+          staffPass.type = "password";
+        }
+        var toggle = document.getElementById("staff-pass-toggle");
+        if (toggle) {
+          toggle.textContent = "Show";
+          toggle.setAttribute("aria-pressed", "false");
+        }
+        staffGate.hidden = false;
+        if (staffPass) staffPass.focus();
+      }
+      if (staffEdit) {
+        staffEdit.addEventListener("click", function (event) {
+          if (window.HubStaffAuth && HubStaffAuth.isUnlocked()) return;
+          event.preventDefault();
+          openStaffGate();
+        });
+        staffEdit.addEventListener("auxclick", function (event) {
+          if (window.HubStaffAuth && HubStaffAuth.isUnlocked()) return;
+          event.preventDefault();
+        });
+      }
+      if (staffSignOut) {
+        staffSignOut.addEventListener("click", function () {
+          if (window.HubStaffAuth) HubStaffAuth.signOut();
+          paintStaffLock();
+          setPocket(false);
+        });
+      }
+      if (window.HubStaffAuth) {
+        HubStaffAuth.mount({
+          form: document.getElementById("staff-gate-form"),
+          input: staffPass,
+          toggle: document.getElementById("staff-pass-toggle"),
+          unlock: document.getElementById("staff-gate-unlock"),
+          error: document.getElementById("staff-gate-error"),
+          onUnlock: function () {
+            if (staffGate) staffGate.hidden = true;
+            paintStaffLock();
+            window.location.assign("/staff/");
+          }
+        });
+      }
+      var staffCancel = document.getElementById("staff-gate-cancel");
+      if (staffCancel) staffCancel.addEventListener("click", closeStaffGate);
+      if (staffGate) {
+        staffGate.addEventListener("click", function (event) {
+          if (event.target === staffGate) closeStaffGate();
+        });
+        staffGate.addEventListener("keydown", function (event) {
+          if (event.key !== "Tab" || staffGate.hidden) return;
+          var nodes = staffGate.querySelectorAll("input, button");
+          var list = Array.prototype.filter.call(nodes, function (el) {
+            return !el.disabled && !el.hidden;
+          });
+          if (!list.length) return;
+          var first = list[0];
+          var last = list[list.length - 1];
+          if (event.shiftKey && document.activeElement === first) {
+            event.preventDefault();
+            last.focus();
+          } else if (!event.shiftKey && document.activeElement === last) {
+            event.preventDefault();
+            first.focus();
+          }
+        });
+      }
+      paintStaffLock();
+
       var plate = document.getElementById("hub-plate");
       var moreBtn = document.getElementById("hub-more");
       function syncPlate() {
