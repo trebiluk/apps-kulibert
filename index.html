@@ -3,26 +3,49 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-22-hub-pc-density"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <meta name="tech-room-rev" content="2026-09-22-hub-shadcn-shell"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <style>
+    /* KuliNet Stark shell. shadcn semantic names.
+       Flash values are Baboo Stark: #6E72F5 / #8B8DFF (themes.ts STARK_FLASH).
+       Surfaces match html[data-gui-theme=stark] in Baboo index.css.
+       Hub chrome does not use the TechWorks Dream lockup (#22D3EE → #6D28D9). */
     :root{
-      color-scheme:dark;
-      --bg:#050814;
-      --panel:#0b152c;
-      --cell:#0b152c;
-      --elevated:#10203f;
-      --border:#16324f;
-      --text:#e8f7ff;
-      --muted:#8fb4c9;
-      --subtle:#8fb4c9;
-      --accent:#22d3ee;
-      --live:#14b8a6;
-      --tk-logo-grad:linear-gradient(90deg,#22D3EE 0%,#14B8A6 45%,#6D28D9 100%);
+      color-scheme:light;
+      --background:#ffffff;
+      --foreground:#0a0a0a;
+      --card:#ffffff;
+      --card-foreground:#0a0a0a;
+      --popover:#ffffff;
+      --popover-foreground:#0a0a0a;
+      --primary:#6e72f5;
+      --primary-foreground:#ffffff;
+      --secondary:#f4f4f6;
+      --secondary-foreground:#0a0a0a;
+      --muted-foreground:#3f3f46;
+      --muted:var(--muted-foreground);
+      --accent-foreground:#0a0a0a;
+      --destructive:#e11d48;
+      --destructive-foreground:#ffffff;
+      --border:#e4e4ea;
+      --input:#e4e4ea;
+      --ring:#6e72f5;
       --radius:16px;
+      --kn-hover:#ececef;
+      --kn-flash-soft:#8b8dff;
+      --kn-deep:#3f3db8;
+      --scrim:#0a0a0a61;
+      --bg:var(--background);
+      --panel:var(--secondary);
+      --cell:var(--card);
+      --elevated:var(--popover);
+      --text:var(--foreground);
+      --subtle:#71717a;
+      --accent:var(--primary);
+      --live:var(--primary);
     }
     *{box-sizing:border-box}
     html,body{
@@ -64,7 +87,7 @@
     .cell svg{width:44%;height:44%;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
     .vignette{
       position:absolute;inset:0;pointer-events:none;
-      background:radial-gradient(ellipse 68% 70% at 50% 46%,transparent 0%,transparent 38%,color-mix(in srgb,var(--bg) 35%,transparent) 68%,color-mix(in srgb,var(--bg) 78%,transparent) 100%);
+      background:radial-gradient(ellipse 68% 70% at 50% 46%,var(--background) 0%,var(--background) 42%,transparent 100%);
     }
     .hero{
       position:relative;z-index:1;
@@ -94,18 +117,45 @@
     .hub-summary .lead{
       flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
     }
-    .hub-plate strong{color:#f4b942;font-weight:800}
-    .hub-plate .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.875rem;color:#9ecbff}
+    .hub-plate strong{color:var(--primary);font-weight:800}
+    .hub-plate .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.875rem;color:var(--muted-foreground)}
     .hub-plate ul{margin:.45rem 0 .25rem;padding-left:1.15rem}
     .hub-plate li{margin:.15rem 0}
     .hub-plate.is-clamped ul{display:none}
-    .hub-more{
-      margin:0 0 0 auto;flex:0 0 auto;min-height:44px;min-width:44px;padding:0 .9rem;
-      border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
-      background:var(--elevated);color:var(--text);font:inherit;font-size:.875rem;font-weight:700;
-      cursor:pointer;
+    .kn-btn{
+      display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
+      min-height:44px;min-width:44px;padding:0 .9rem;
+      border-radius:calc(var(--radius) - 6px);border:1px solid transparent;
+      background:var(--secondary);color:var(--secondary-foreground);
+      font:inherit;font-size:.875rem;font-weight:650;cursor:pointer;
     }
-    .hub-more:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    .kn-btn:focus-visible{outline:2px solid var(--ring);outline-offset:3px}
+    .kn-btn-default{background:var(--primary);color:var(--primary-foreground)}
+    .kn-btn-default:hover{background:var(--kn-deep)}
+    .kn-btn-outline{background:var(--background);color:var(--foreground);border-color:var(--input)}
+    .kn-btn-outline:hover{background:var(--kn-hover)}
+    .kn-btn-ghost{background:transparent;color:var(--foreground)}
+    .kn-btn-ghost:hover,.kn-btn-ghost[aria-expanded="true"]{background:var(--kn-hover)}
+    .hub-more{margin:0 0 0 auto;flex:0 0 auto}
+    .edge-pocket{
+      position:absolute;z-index:6;
+      top:max(.55rem, env(safe-area-inset-top));
+      right:max(.55rem, env(safe-area-inset-right));
+    }
+    .edge-pocket[hidden]{display:none}
+    .edge-pocket-chip{padding:0 .85rem}
+    .kn-menu{
+      position:fixed;z-index:30;min-width:12rem;margin:0;padding:.35rem;
+      background:var(--popover);color:var(--popover-foreground);
+      border:1px solid var(--border);border-radius:calc(var(--radius) - 4px);
+      box-shadow:0 16px 40px -24px #0a0a0a;
+    }
+    .kn-menu[hidden]{display:none}
+    .kn-menu-item{
+      display:flex;align-items:center;min-height:44px;padding:0 .75rem;border-radius:calc(var(--radius) - 8px);
+      color:var(--popover-foreground);text-decoration:none;font-size:.875rem;font-weight:650;
+    }
+    .kn-menu-item:hover,.kn-menu-item:focus-visible{background:var(--kn-hover);outline:2px solid var(--ring);outline-offset:2px}
     @media (max-width:639px){
       .search{width:calc(100% - 1.5rem)}
     }
@@ -120,13 +170,11 @@
     h1{margin:0;position:relative;isolation:isolate;text-rendering:geometricPrecision;text-wrap:balance}
     .lockup-the{
       display:block;font-weight:800;letter-spacing:.2em;line-height:1;
-      font-size:clamp(.95rem,3.6vw,1.45rem);color:#c9eef6;
+      font-size:clamp(.95rem,3.6vw,1.45rem);color:var(--muted-foreground);
     }
     .lockup-room{
       display:block;margin-top:.06em;font-weight:800;letter-spacing:-.04em;line-height:.88;
-      font-size:clamp(1.7rem,7vw,3.15rem);
-      background:var(--tk-logo-grad);
-      -webkit-background-clip:text;background-clip:text;color:transparent;
+      font-size:clamp(1.7rem,7vw,3.15rem);color:var(--foreground);
     }
     .sub{margin:.9rem 0 0;max-width:28rem;color:var(--muted);font-size:.95rem;line-height:1.45;font-weight:500}
     .search{
@@ -191,7 +239,7 @@
     a.tile:hover{
       color:var(--text);
       border-color:color-mix(in srgb,var(--accent) 62%,transparent);
-      background:var(--elevated);
+      background:var(--kn-hover);
       box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 10%,transparent);
     }
     a.tile:focus-visible{
@@ -219,14 +267,6 @@
     body.is-no-chips .live{display:none}
     body.is-no-cuts .cuts{display:none}
     body.is-same-tab a.tile{/* target set in JS */}
-    a.tile[data-id="baboo"]{
-      border-color:color-mix(in srgb,#2563EB 58%,var(--border));
-      background:#f4f7fb;color:#1e3a5f;
-    }
-    a.tile[data-id="baboo"]:hover,
-    a.tile[data-id="baboo"]:focus-visible{
-      color:#0f172a;background:#fff;
-    }
     .recents{margin:1.4rem 0 0}
     .recents h2,.live h2{
       font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;
@@ -271,7 +311,7 @@
       stroke-linecap:round;stroke-linejoin:round;
     }
     button.tile.add{border-style:dashed;background:transparent}
-    button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--elevated)}
+    button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--kn-hover)}
     button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .tile .label,button.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
     @media (min-width:1024px){
@@ -299,7 +339,7 @@
     .cut-wrap .edit svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.7}
     .modal{
       position:fixed;inset:0;z-index:40;display:grid;place-items:center;
-      background:color-mix(in srgb,var(--bg) 80%,transparent);padding:1rem;
+      background:var(--scrim);padding:1rem;
     }
     .modal[hidden]{display:none}
     .sheet{
@@ -327,8 +367,10 @@
       height:2.75rem;min-height:44px;border-radius:10px;border:0;padding:0 1rem;
       font:inherit;font-weight:650;cursor:pointer;
     }
-    .sheet .save{background:var(--accent);color:#041018;flex:1}
-    .sheet .ghost{background:var(--panel);color:var(--text);border:1px solid var(--border)}
+    .sheet .actions button.save{background:var(--primary);color:var(--primary-foreground);border:0;flex:1}
+    .sheet .actions button.save:hover{background:var(--kn-deep)}
+    .sheet .actions button.ghost{background:var(--background);color:var(--foreground);border:1px solid var(--input)}
+    .sheet .actions button.ghost:hover{background:var(--kn-hover)}
     @media (prefers-reduced-motion:reduce){
       button.tile,button.tile:active{transition:none;transform:none}
     }
@@ -339,6 +381,12 @@
     <section class="poster" aria-label="The Tech Room">
       <div class="corner-k">
         <img src="/icons/icon-kulinet-k.svg" width="48" height="48" alt="KuliNet"/>
+      </div>
+      <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
+        <button type="button" class="kn-btn kn-btn-ghost edge-pocket-chip" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
+        <div class="kn-menu" id="edge-pocket-menu" role="menu" hidden>
+          <a class="kn-menu-item" id="staff-edit" role="menuitem" href="/staff/">Staff edit</a>
+        </div>
       </div>
       <div class="field" aria-hidden="true">
         <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
@@ -384,13 +432,13 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-22-hub-pc-density</span> · <strong>What’s new</strong> · Wide PC is 6–7 columns</span>
-            <button type="button" class="hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
+            <span class="lead"><span class="rev">rev 2026-09-22-hub-shadcn-shell</span> · <strong>What’s new</strong> · Hub shell on KuliNet Stark</span>
+            <button type="button" class="kn-btn kn-btn-outline hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <ul id="hub-log">
+            <li>Shell: shadcn Button, Dialog, and Edge Pocket on KuliNet Stark</li>
             <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
             <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
-            <li>Firm KuliNet marks · corner K</li>
             <li>Berty Run L1 First Trace · SpanCraft Load prove · Spire Lab Stand prove · Beatz BZ 1.2.0</li>
           </ul>
         </div>
@@ -474,7 +522,6 @@
     <section class="school" id="school-wrap" aria-label="School shortcuts">
       <div class="school-head">
         <h2>School</h2>
-        <a class="hint" id="staff-edit" href="/staff/">Staff edit</a>
       </div>
       <p class="door-line" id="school-note" hidden></p>
       <nav class="board" id="school-board"></nav>
@@ -508,11 +555,11 @@
       </ul>
     </section>
     <p class="room-meta" id="room-meta" hidden></p>
-    <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · dark default · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
+    <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · KuliNet Stark shell · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
-  <div class="modal" id="cut-modal" hidden>
-    <form class="sheet" id="cut-form">
+  <div class="modal kn-dialog" id="cut-modal" hidden role="dialog" aria-modal="true" aria-labelledby="cut-title">
+    <form class="sheet kn-dialog-content" id="cut-form">
       <h2 id="cut-title">Add shortcut</h2>
       <p class="desc">Stays on this Chromebook. Name it, paste a link, pick an icon.</p>
       <label>Name
@@ -525,9 +572,9 @@
       <div class="icons" id="cut-icons" role="group" aria-label="Icon"></div>
       <p class="err" id="cut-error" role="alert"></p>
       <div class="actions">
-        <button class="save" type="submit">Save on this Chromebook</button>
-        <button class="ghost" type="button" id="cut-remove" hidden>Remove</button>
-        <button class="ghost" type="button" id="cut-cancel">Cancel</button>
+        <button class="kn-btn kn-btn-default save" type="submit">Save on this Chromebook</button>
+        <button class="kn-btn kn-btn-outline ghost" type="button" id="cut-remove" hidden>Remove</button>
+        <button class="kn-btn kn-btn-outline ghost" type="button" id="cut-cancel">Cancel</button>
       </div>
     </form>
   </div>
@@ -778,7 +825,17 @@
           closedEl.textContent = closed ? String(pack.closedMsg || "Doors closed this period.").replace(/<[^>]*>/g, "").slice(0, 80) : "";
         }
         var staffEl = document.getElementById("staff-edit");
+        var pocket = document.getElementById("edge-pocket");
         if (staffEl) staffEl.hidden = !roomStaffEdit;
+        if (pocket) {
+          pocket.hidden = !roomStaffEdit;
+          if (!roomStaffEdit) {
+            var pocketMenu = document.getElementById("edge-pocket-menu");
+            var pocketBtn = document.getElementById("edge-pocket-btn");
+            if (pocketMenu) pocketMenu.hidden = true;
+            if (pocketBtn) pocketBtn.setAttribute("aria-expanded", "false");
+          }
+        }
         if (pack && pack.search) input.setAttribute("placeholder", String(pack.search).slice(0, 40));
         var foot = document.getElementById("room-footer");
         if (foot && pack && pack.footer) foot.textContent = String(pack.footer).slice(0, 80);
@@ -1032,6 +1089,8 @@
         var typing = event.target && (event.target.tagName === "INPUT" || event.target.tagName === "TEXTAREA");
         if (event.key === "Escape") {
           if (!modal.hidden) { event.preventDefault(); closeModal(); return; }
+          var pocketMenu = document.getElementById("edge-pocket-menu");
+          if (pocketMenu && !pocketMenu.hidden) { event.preventDefault(); setPocket(false); return; }
           if (typing) input.blur();
           return;
         }
@@ -1055,6 +1114,34 @@
         }
       });
 
+      var pocketBtn = document.getElementById("edge-pocket-btn");
+      var pocketMenu = document.getElementById("edge-pocket-menu");
+      function placePocket() {
+        if (!pocketBtn || !pocketMenu || pocketMenu.hidden) return;
+        var rect = pocketBtn.getBoundingClientRect();
+        pocketMenu.style.top = Math.round(rect.bottom + 6) + "px";
+        pocketMenu.style.right = Math.round(Math.max(8, window.innerWidth - rect.right)) + "px";
+        pocketMenu.style.left = "auto";
+      }
+      function setPocket(open) {
+        if (!pocketBtn || !pocketMenu) return;
+        pocketMenu.hidden = !open;
+        pocketBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) placePocket();
+      }
+      if (pocketBtn) {
+        pocketBtn.addEventListener("click", function () {
+          setPocket(pocketMenu.hidden);
+        });
+      }
+      document.addEventListener("mousedown", function (event) {
+        if (!pocketMenu || pocketMenu.hidden) return;
+        var pocket = document.getElementById("edge-pocket");
+        if (pocket && pocket.contains(event.target)) return;
+        if (pocketMenu.contains(event.target)) return;
+        setPocket(false);
+      });
+      window.addEventListener("resize", placePocket);
       var plate = document.getElementById("hub-plate");
       var moreBtn = document.getElementById("hub-more");
       function syncPlate() {
