@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="theme-color" content="#050814"/>
+  <title>Debugzy · The Tech Room</title>
+  <link rel="icon" href="/icons/icon-debugzy.svg" type="image/svg+xml"/>
+  <link rel="stylesheet" href="/fonts/room.css"/>
+  <style>
+    :root{
+      color-scheme:dark;
+      --bg:#050814;
+      --panel:#0b152c;
+      --elevated:#10203f;
+      --border:#16324f;
+      --text:#e8f7ff;
+      --muted:#8fb4c9;
+      --accent:#22d3ee;
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0;min-height:100%;background:var(--bg);color:var(--text);
+      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+      -webkit-font-smoothing:antialiased;
+    }
+    body{padding:1.25rem .9rem 2.5rem}
+    .wrap{max-width:28rem;margin:0 auto}
+    .chip{
+      display:inline-flex;align-items:center;gap:.4rem;margin:0 0 .7rem;
+      padding:.3rem .75rem;border-radius:999px;
+      background:color-mix(in srgb,var(--panel) 88%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
+      color:var(--muted);font-size:.72rem;font-weight:600;
+    }
+    h1{margin:0 0 .45rem;font-size:1.7rem;font-weight:800;letter-spacing:-.03em}
+    p{margin:0 0 .85rem;color:var(--muted);line-height:1.5;font-weight:500}
+    .card{
+      background:var(--elevated);border:1px solid var(--border);
+      border-radius:16px;padding:1.15rem 1.1rem 1.05rem;margin:1rem 0 1.2rem;
+    }
+    ul{margin:.4rem 0 0;padding:0 0 0 1.15rem;color:var(--muted);line-height:1.55;font-weight:500}
+    li{margin:0 0 .35rem}
+    nav{display:flex;flex-wrap:wrap;gap:.6rem}
+    a.btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      min-height:44px;padding:.55rem 1rem;border-radius:10px;
+      text-decoration:none;font-weight:650;font-size:.95rem;
+    }
+    a.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    a.home{background:var(--accent);color:#041018}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="chip">idea list · not built yet</p>
+    <h1>Debugzy</h1>
+    <p>On The Tech Room list. Nothing to play here yet.</p>
+    <div class="card">
+      <p>A debugging lab for Chromebooks. Find the bad step. Change one thing. Try again.</p>
+      <ul>
+        <li>No game on this page</li>
+        <li>No engine, no canvas, no try-it stub</li>
+        <li>The playable build is on hold</li>
+      </ul>
+    </div>
+    <nav>
+      <a class="btn home" href="/">Tech Room</a>
+    </nav>
+  </div>
+</body>
+</html>

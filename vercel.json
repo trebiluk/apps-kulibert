@@ -397,6 +397,11 @@
       "permanent": false
     },
     {
+      "source": "/debugzy",
+      "destination": "/debugzy/",
+      "permanent": false
+    },
+    {
       "source": "/kidcad",
       "destination": "/bertycad/",
       "permanent": true
@@ -853,7 +858,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-tech-room-dark"
+          "value": "2026-09-22-hub-debugzy-list"
         }
       ]
     },
@@ -866,7 +871,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-tech-room-dark"
+          "value": "2026-09-22-hub-debugzy-list"
         }
       ]
     },
@@ -953,6 +958,33 @@
     },
     {
       "source": "/drift/index.html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/debugzy",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/debugzy/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/debugzy/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
