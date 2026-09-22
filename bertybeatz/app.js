@@ -1,9 +1,10 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.1.0") return;
-  window.__BERTYBEATZ__ = "1.1.0";
+  if (window.__BERTYBEATZ__ === "1.2.0") return;
+  window.__BERTYBEATZ__ = "1.2.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.1.0";
+  const CHIP = "BZ 1.2.0";
   const STORAGE = "bertybeatz.v1";
+  const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
     { id: "kick", kind: "drum", label: "Kick" },
     { id: "snare", kind: "drum", label: "Snare" },
@@ -26,11 +27,18 @@
     { id: "moody", label: "Moody" },
   ];
   const KEYS = ["C", "D", "E", "F", "G", "A", "Bb"];
+  const LOOKS = [
+    { id: "bars", label: "Bars" },
+    { id: "kaleido", label: "Kaleidoscope" },
+    { id: "clouds", label: "Clouds" },
+    { id: "stars", label: "Stars" },
+  ];
   const KEY_PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, Bb: 10 };
   const MAJOR_PENT = [0, 2, 4, 7, 9];
   const MINOR_PENT = [0, 3, 5, 7, 10];
   const NAMES_SHARP = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
   const NAMES_FLAT = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"];
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const $ = (id) => document.getElementById(id);
 
@@ -58,6 +66,22 @@
     const midi = noteMidi(degree, key, mood);
     const names = key === "Bb" || mood === "moody" ? NAMES_FLAT : NAMES_SHARP;
     return names[((midi % 12) + 12) % 12];
+  }
+  function loadLook() {
+    try {
+      const raw = localStorage.getItem(LOOK_STORE);
+      if (LOOKS.some((l) => l.id === raw)) return raw;
+    } catch {
+      /* ignore */
+    }
+    return "bars";
+  }
+  function persistLook(id) {
+    try {
+      localStorage.setItem(LOOK_STORE, id);
+    } catch {
+      /* ignore */
+    }
   }
 
   const PRESETS = {
@@ -310,6 +334,7 @@
     playhead: -1,
     bank: 0,
     library: [],
+    look: loadLook(),
   };
 
   function loadLibrary() {
@@ -339,6 +364,7 @@
       this.lookahead = 0.12;
       this.interval = 25;
       this.master = null;
+      this.volNode = null;
       this.comp = null;
       this.analyser = null;
       this.delay = null;
@@ -357,7 +383,9 @@
     buildGraph() {
       const ctx = this.ctx;
       this.master = ctx.createGain();
-      this.master.gain.value = 0.7;
+      this.master.gain.value = 1;
+      this.volNode = ctx.createGain();
+      this.volNode.gain.value = 0.7;
       this.comp = ctx.createDynamicsCompressor();
       this.comp.threshold.value = -14;
       this.comp.knee.value = 18;
@@ -365,7 +393,8 @@
       this.comp.attack.value = 0.003;
       this.comp.release.value = 0.14;
       this.analyser = ctx.createAnalyser();
-      this.analyser.fftSize = 64;
+      this.analyser.fftSize = 128;
+      this.analyser.smoothingTimeConstant = 0.72;
       this.delay = ctx.createDelay(0.5);
       this.delay.delayTime.value = 0.22;
       const fb = ctx.createGain();
@@ -379,16 +408,17 @@
       this.master.connect(this.comp);
       this.master.connect(this.delay);
       this.comp.connect(this.analyser);
-      this.analyser.connect(ctx.destination);
+      this.analyser.connect(this.volNode);
+      this.volNode.connect(ctx.destination);
       const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate);
       const data = buf.getChannelData(0);
       for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
       this.noise = buf;
     }
     setVolume(v) {
-      if (!this.master) return;
+      if (!this.volNode) return;
       const now = this.ctx.currentTime;
-      this.master.gain.setTargetAtTime(Math.max(0.0001, v * v * 0.85), now, 0.03);
+      this.volNode.gain.setTargetAtTime(Math.max(0.0001, v * v * 0.85), now, 0.03);
     }
     setKit(kit) {
       if (!this.delayGain) return;
@@ -544,6 +574,7 @@
   }
 
   function renderChips(el, items, current, onPick, labelKey = "label") {
+    if (!el) return;
     el.innerHTML = "";
     for (const item of items) {
       const id = typeof item === "string" ? item : item.id;
@@ -552,6 +583,7 @@
       b.type = "button";
       b.className = "btn" + (id === current ? " on" : "");
       b.textContent = label;
+      b.setAttribute("aria-pressed", String(id === current));
       b.addEventListener("click", () => onPick(id));
       el.appendChild(b);
     }
@@ -591,6 +623,9 @@
     $("lcd-bpm").textContent = `${state.bpm} BPM`;
     $("lcd-kit").textContent = KITS.find((k) => k.id === state.kit).label;
     $("lcd-key").textContent = `${state.key === "Bb" ? "B♭" : state.key} ${state.mood === "bright" ? "Bright" : "Moody"}`;
+    const lookName = LOOKS.find((l) => l.id === state.look)?.label || "Bars";
+    const live = $("look-live");
+    if (live) live.textContent = lookName;
     renderChips($("kits"), KITS, state.kit, (id) => {
       state.kit = id;
       engine.setKit(id);
@@ -602,6 +637,11 @@
     });
     renderChips($("keys"), KEYS, state.key, (id) => {
       state.key = id;
+      renderAll();
+    });
+    renderChips($("looks"), LOOKS, state.look, (id) => {
+      state.look = id;
+      persistLook(id);
       renderAll();
     });
     $("play-btn").classList.toggle("is-on", state.playing);
@@ -898,36 +938,199 @@
       else engine.play();
       renderAll();
     }
+    if (e.code === "Digit1") pickLook("bars");
+    if (e.code === "Digit2") pickLook("kaleido");
+    if (e.code === "Digit3") pickLook("clouds");
+    if (e.code === "Digit4") pickLook("stars");
   });
+  function pickLook(id) {
+    if ($("gate").hidden === false) return;
+    state.look = id;
+    persistLook(id);
+    renderAll();
+  }
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "visible" && engine.ctx) engine.ctx.resume();
   });
 
   const viz = $("viz");
   const vctx = viz.getContext("2d");
-  const bins = new Uint8Array(32);
+  const bins = new Uint8Array(64);
+  const clouds = Array.from({ length: 7 }, (_, i) => ({
+    x: 0.12 + (i * 0.13) % 0.84,
+    y: 0.28 + ((i * 37) % 50) / 100,
+    r: 0.12 + (i % 3) * 0.04,
+    hue: i % 3,
+    sp: 0.04 + (i % 4) * 0.015,
+  }));
+  const stars = Array.from({ length: 56 }, () => ({
+    x: Math.random(),
+    y: Math.random(),
+    s: 0.4 + Math.random() * 1.6,
+    p: Math.random() * Math.PI * 2,
+  }));
+  let spin = 0;
+  let lastKick = 0;
+
+  function sizeViz() {
+    const wrap = viz.parentElement;
+    const cssW = Math.max(280, wrap.clientWidth);
+    const cssH = Math.max(150, Math.round(parseFloat(getComputedStyle(viz).height) || 220));
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    viz.width = Math.round(cssW * dpr);
+    viz.height = Math.round(cssH * dpr);
+    vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    viz._w = cssW;
+    viz._h = cssH;
+  }
+  function band(a, b) {
+    let s = 0;
+    const n = Math.max(1, b - a);
+    for (let i = a; i < b && i < bins.length; i++) s += bins[i];
+    return s / n / 255;
+  }
+  function idleFill() {
+    const t = performance.now() / 1000;
+    for (let i = 0; i < bins.length; i++) {
+      bins[i] = 22 + 14 * Math.sin(t * 0.8 + i * 0.28) + (i % 4 === 0 ? 10 : 0);
+    }
+  }
+  function fillBins() {
+    if (engine.analyser && state.playing) {
+      engine.analyser.getByteFrequencyData(bins);
+    } else {
+      idleFill();
+    }
+  }
+  function drawBars(w, h) {
+    const n = 24;
+    const gap = 4;
+    const bw = (w - gap * (n + 1)) / n;
+    const play = state.playhead;
+    for (let i = 0; i < n; i++) {
+      const src = Math.floor((i / n) * 32);
+      const v = bins[src] / 255;
+      const bh = Math.max(6, v * (h - 18));
+      const x = gap + i * (bw + gap);
+      const y = h - bh - 8;
+      const onBeat = play >= 0 && Math.floor((play / 16) * n) === i;
+      vctx.fillStyle = onBeat ? "#e8f7ff" : i % 4 === 0 ? "#22d3ee" : "#14b8a6";
+      vctx.globalAlpha = 0.55 + v * 0.45;
+      const r = Math.min(6, bw / 2);
+      vctx.beginPath();
+      vctx.moveTo(x, y + r);
+      vctx.arcTo(x, y, x + r, y, r);
+      vctx.arcTo(x + bw, y, x + bw, y + r, r);
+      vctx.lineTo(x + bw, h - 8);
+      vctx.lineTo(x, h - 8);
+      vctx.closePath();
+      vctx.fill();
+    }
+    vctx.globalAlpha = 1;
+  }
+  function drawKaleido(w, h) {
+    const bass = band(0, 5);
+    const mid = band(5, 16);
+    const cx = w / 2;
+    const cy = h / 2;
+    const folds = 8;
+    if (!reduceMotion) spin += 0.006 + bass * 0.01;
+    const radius = Math.min(w, h) * (0.34 + mid * 0.18);
+    vctx.save();
+    vctx.translate(cx, cy);
+    vctx.rotate(spin);
+    for (let f = 0; f < folds; f++) {
+      vctx.save();
+      vctx.rotate((f * Math.PI * 2) / folds);
+      if (f % 2) vctx.scale(-1, 1);
+      for (let i = 0; i < 10; i++) {
+        const v = bins[i + 2] / 255;
+        const a = (i / 10) * (Math.PI / folds);
+        vctx.strokeStyle = i % 3 === 0 ? "#22d3ee" : i % 3 === 1 ? "#a78bfa" : "#14b8a6";
+        vctx.globalAlpha = 0.25 + v * 0.7;
+        vctx.lineWidth = 2 + v * 5;
+        vctx.beginPath();
+        vctx.moveTo(8, 0);
+        vctx.lineTo(Math.cos(a) * radius * (0.4 + v), Math.sin(a) * radius * (0.25 + v * 0.5));
+        vctx.stroke();
+      }
+      vctx.restore();
+    }
+    vctx.beginPath();
+    vctx.fillStyle = "#e8f7ff";
+    vctx.globalAlpha = 0.35 + bass * 0.4;
+    vctx.arc(0, 0, 6 + bass * 10, 0, Math.PI * 2);
+    vctx.fill();
+    vctx.restore();
+    vctx.globalAlpha = 1;
+  }
+  function drawClouds(w, h) {
+    const t = performance.now() / 1000;
+    const bass = band(0, 6);
+    const mid = band(6, 18);
+    const high = band(18, 32);
+    const energy = [bass, mid, high];
+    clouds.forEach((c, i) => {
+      const drift = reduceMotion ? 0 : Math.sin(t * c.sp + i) * 0.04;
+      const x = (c.x + drift) * w;
+      const y = (c.y + Math.sin(t * 0.2 + i) * (reduceMotion ? 0 : 0.04)) * h;
+      const r = c.r * Math.min(w, h) * (1.1 + energy[c.hue] * 1.4);
+      const g = vctx.createRadialGradient(x, y, 0, x, y, r);
+      const col = c.hue === 0 ? "34,211,238" : c.hue === 1 ? "20,184,166" : "167,139,250";
+      g.addColorStop(0, `rgba(${col},${0.42 + energy[c.hue] * 0.35})`);
+      g.addColorStop(1, `rgba(${col},0)`);
+      vctx.fillStyle = g;
+      vctx.beginPath();
+      vctx.arc(x, y, r, 0, Math.PI * 2);
+      vctx.fill();
+    });
+  }
+  function drawStars(w, h) {
+    const bass = band(0, 5);
+    const mid = band(5, 14);
+    const high = band(14, 28);
+    const t = performance.now() / 1000;
+    const kickNow = state.playhead >= 0 && state.steps.kick[state.playhead];
+    if (kickNow) lastKick = t;
+    const kickGlow = Math.max(0, 1 - (t - lastKick) * 3);
+    vctx.fillStyle = `rgba(232,247,255,${0.04 + kickGlow * 0.08})`;
+    vctx.fillRect(0, 0, w, h);
+    stars.forEach((s, i) => {
+      const tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * (reduceMotion ? 0.6 : 2.2) + s.p));
+      const boost = i % 7 === 0 ? bass : i % 5 === 0 ? mid : high;
+      const size = s.s * (1 + boost * 2.2) * (0.8 + tw);
+      const x = s.x * w;
+      const y = s.y * h;
+      vctx.fillStyle = i % 9 === 0 ? "#f59e0b" : i % 4 === 0 ? "#22d3ee" : "#e8f7ff";
+      vctx.globalAlpha = 0.25 + tw * 0.75;
+      vctx.beginPath();
+      vctx.arc(x, y, size, 0, Math.PI * 2);
+      vctx.fill();
+    });
+    vctx.globalAlpha = 1;
+    if (state.playhead >= 0 && state.steps.snare[state.playhead] && !reduceMotion) {
+      vctx.strokeStyle = "rgba(232,247,255,0.28)";
+      vctx.lineWidth = 1;
+      vctx.beginPath();
+      vctx.moveTo(w * 0.15, h * 0.2);
+      vctx.lineTo(w * 0.85, h * 0.72);
+      vctx.stroke();
+    }
+  }
   function drawViz() {
     requestAnimationFrame(drawViz);
     const step = engine.currentStep();
     if (step !== state.playhead) setPlayhead(step);
-    vctx.clearRect(0, 0, viz.width, viz.height);
-    if (!engine.analyser) {
-      vctx.fillStyle = "#16324f";
-      for (let i = 0; i < 16; i++) {
-        const h = 8 + (i % 4) * 4;
-        vctx.fillRect(8 + i * 16, viz.height - h - 8, 10, h);
-      }
-      return;
-    }
-    engine.analyser.getByteFrequencyData(bins);
-    const n = 16;
-    const w = viz.width / n;
-    for (let i = 0; i < n; i++) {
-      const v = bins[i] / 255;
-      const h = Math.max(4, v * (viz.height - 10));
-      vctx.fillStyle = i === state.playhead ? "#e8f7ff" : "#14b8a6";
-      vctx.fillRect(i * w + 3, viz.height - h - 4, w - 6, h);
-    }
+    const w = viz._w || viz.clientWidth;
+    const h = viz._h || viz.clientHeight;
+    fillBins();
+    vctx.clearRect(0, 0, w, h);
+    vctx.fillStyle = "#050814";
+    vctx.fillRect(0, 0, w, h);
+    if (state.look === "kaleido") drawKaleido(w, h);
+    else if (state.look === "clouds") drawClouds(w, h);
+    else if (state.look === "stars") drawStars(w, h);
+    else drawBars(w, h);
   }
 
   loadLibrary();
@@ -937,6 +1140,8 @@
     const el = $(id);
     if (el) el.textContent = CHIP;
   });
+  sizeViz();
+  window.addEventListener("resize", sizeViz);
   renderAll();
   drawViz();
 })();

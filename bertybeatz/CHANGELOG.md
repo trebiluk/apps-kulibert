@@ -1,13 +1,13 @@
 # BertyBeatz changelog
 
-**Chip: BZ 1.1.0** · 2026-09-22 · channel **live**
+**Chip: BZ 1.2.0** · 2026-09-22 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Live classroom | `BZ 1.1.0` | `https://apps.kulibert.net/bertybeatz/` |
+| Live classroom | `BZ 1.2.0` | `https://apps.kulibert.net/bertybeatz/` |
 
 Rules:
 
@@ -18,14 +18,21 @@ Rules:
 
 ## Current train
 
+### 1.2.0 — See it move — 2026-09-22
+
+- Lights stage with four looks: Bars, Kaleidoscope, Clouds, Stars.
+- Same beat, different pictures. Mute still drives the lights (never sound-only).
+- Reduced-motion path: no spin, no streaks.
+- Hub chip **BZ 1.2.0**. Pass codes from 1.1.0 still load.
+
+Hard refresh if a cart still says 1.1.0.
+
 ### 1.1.0 — Pass the beat — 2026-09-22
 
 - Pass copies a short code or a door link (`?b=`). Next Chromebook loads the same loop.
 - No names in the code. Title of the beat only.
 - Teacher notes + privacy page.
 - Hub chip **BZ 1.1.0**.
-
-Hard refresh if a cart still says 1.0.0.
 
 ### 1.0.0 — Playable studio — 2026-09-22
 

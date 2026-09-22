@@ -8,15 +8,15 @@
   <title>BertyBeatz · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.1.0"/>
+  <link rel="stylesheet" href="./styles.css?v=1.2.0"/>
 </head>
 <body>
   <div id="gate" class="gate">
     <div class="gate-inner">
       <img class="gate-mark" src="./mark.svg" alt=""/>
-      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.1.0</span></p>
+      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.2.0</span></p>
       <h1>BertyBeatz</h1>
-      <p class="lede">Tap squares. Make a song. Every note stays in key, so it always sounds like a beat.</p>
+      <p class="lede">Tap squares. Make a song. Watch it become light.</p>
       <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
       <p class="hint">Needs one tap so Chromebook sound can play.</p>
     </div>
@@ -27,7 +27,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyBeatz</strong>
-        <em id="chip-label">BZ 1.1.0</em>
+        <em id="chip-label">BZ 1.2.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -42,21 +42,29 @@
       <li>Tap a square to turn a sound on. Tap again to turn it off.</li>
       <li>Press Play. The moving column is the beat walking across the grid.</li>
       <li>Top rows are drums. Bottom rows are notes that always fit the key.</li>
+      <li><strong>Look</strong> chips change the pictures — Bars, Kaleidoscope, Clouds, Stars. Same beat, different lights. Mute is OK.</li>
       <li><strong>Pass</strong> copies a code — no names — so the next Chromebook can load the same beat.</li>
     </ol>
-    <p>Space bar plays and stops. Tap a row name to hear that sound. Title only, never a student name.</p>
+    <p>Space bar plays and stops. Keys 1–4 switch Looks. Tap a row name to hear that sound. Title only, never a student name.</p>
   </section>
 
-  <section class="lcd" aria-label="Transport display">
-    <canvas id="viz" width="280" height="56" aria-hidden="true"></canvas>
-    <div class="lcd-meta">
-      <p class="lcd-name" id="song-name">First Beat</p>
-      <p class="lcd-readout">
-        <span id="lcd-bpm">110 BPM</span>
-        <span id="lcd-kit">Studio</span>
-        <span id="lcd-key">C Bright</span>
-        <span id="lcd-pos" class="tabular">1.1</span>
-      </p>
+  <section class="stage" aria-label="Lights">
+    <canvas id="viz" class="stage-canvas" width="640" height="220" aria-hidden="true"></canvas>
+    <div class="stage-bar">
+      <div class="lcd-meta">
+        <p class="lcd-name" id="song-name">First Beat</p>
+        <p class="lcd-readout">
+          <span id="lcd-bpm">110 BPM</span>
+          <span id="lcd-kit">Studio</span>
+          <span id="lcd-key">C Bright</span>
+          <span id="lcd-pos" class="tabular">1.1</span>
+          <span id="look-live">Bars</span>
+        </p>
+      </div>
+      <div class="stage-look">
+        <span class="tool-label">Look</span>
+        <div class="chips" id="looks"></div>
+      </div>
     </div>
   </section>
 
@@ -113,7 +121,7 @@
     </div>
   </section>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.1.0</span> · Pass the beat · no names ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.2.0</span> · See it move · no names ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a>
   </p>
@@ -130,6 +138,6 @@
     </form>
   </dialog>
 
-  <script src="./app.js?v=1.1.0"></script>
+  <script src="./app.js?v=1.2.0"></script>
 </body>
 </html>
