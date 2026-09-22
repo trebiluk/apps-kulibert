@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-22-span-spire-mvp"/>
+  <meta name="tech-room-rev" content="2026-09-22-hub-pc-density"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
@@ -74,35 +74,39 @@
     @media (min-width:640px){.hero{min-height:12.25rem;padding:3.2rem 1rem 5.4rem}}
     @media (min-width:960px){.hero{min-height:13.5rem;padding-top:3.4rem}}
     .corner-k{
-      position:absolute;z-index:3;
+      position:absolute;z-index:5;display:block;opacity:1;
       top:max(.55rem, env(safe-area-inset-top));
       left:max(.55rem, env(safe-area-inset-left));
       width:2rem;height:2rem;min-width:24px;min-height:24px;
     }
-    .corner-k img{display:block;width:100%;height:100%}
+    .corner-k img{display:block;width:100%;height:100%;opacity:1}
     @media (min-width:960px){
       .corner-k{width:3rem;height:3rem}
     }
     .hub-plate{
-      margin:.75rem 0 0;padding:.65rem .8rem;border-radius:12px;
+      margin:.75rem 0 0;padding:.35rem .45rem .35rem .85rem;border-radius:12px;
       background:color-mix(in srgb,var(--panel) 88%,transparent);
       border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
       color:var(--text);font-size:1rem;line-height:1.35;font-weight:500;
-      max-width:36rem;width:min(100%,36rem);text-align:left;
+      max-width:52rem;width:min(100%,52rem);text-align:left;
+    }
+    .hub-summary{display:flex;align-items:center;gap:.45rem .7rem;min-width:0}
+    .hub-summary .lead{
+      flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
     }
     .hub-plate strong{color:#f4b942;font-weight:800}
     .hub-plate .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.875rem;color:#9ecbff}
-    .hub-plate ul{margin:.35rem 0 0;padding-left:1.15rem}
+    .hub-plate ul{margin:.45rem 0 .25rem;padding-left:1.15rem}
     .hub-plate li{margin:.15rem 0}
+    .hub-plate.is-clamped ul{display:none}
     .hub-more{
-      margin-top:.35rem;min-height:44px;min-width:44px;padding:0 .9rem;
+      margin:0 0 0 auto;flex:0 0 auto;min-height:44px;min-width:44px;padding:0 .9rem;
       border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
       background:var(--elevated);color:var(--text);font:inherit;font-size:.875rem;font-weight:700;
       cursor:pointer;
     }
     .hub-more:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     @media (max-width:639px){
-      .hub-plate.is-clamped ul{max-height:calc(1.35em * 3);overflow:hidden}
       .search{width:calc(100% - 1.5rem)}
     }
     .chip{
@@ -156,8 +160,12 @@
     @media (min-width:1024px){
       .board{grid-template-columns:repeat(4,minmax(0,1fr))}
     }
+    /* Wide ≥1367: 6 columns, 7 from 1800. Tiles stretch to the track — no centered max-width island. */
     @media (min-width:1367px){
-      .board{grid-template-columns:repeat(5,minmax(0,1fr))}
+      .board{grid-template-columns:repeat(6,minmax(0,1fr));justify-items:stretch}
+    }
+    @media (min-width:1800px){
+      .board{grid-template-columns:repeat(7,minmax(0,1fr))}
     }
     a.tile{
       width:100%;height:auto;aspect-ratio:1;
@@ -173,11 +181,12 @@
       min-width:44px;min-height:44px;
     }
     a.tile svg{
-      width:min(38%,2.6rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(52%,100%);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
     a.tile img.mark{
-      width:min(46%,4.75rem);height:auto;aspect-ratio:1;display:block;object-fit:contain;border:0;
+      width:68%;min-width:min(72px,100%);max-width:100%;
+      height:auto;aspect-ratio:1;display:block;object-fit:contain;border:0;
     }
     a.tile:hover{
       color:var(--text);
@@ -258,13 +267,16 @@
       min-width:44px;min-height:44px;
     }
     button.tile svg{
-      width:min(38%,2.6rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(52%,100%);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
     button.tile.add{border-style:dashed;background:transparent}
     button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--elevated)}
     button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
     .tile .label,button.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
+    @media (min-width:1024px){
+      a.tile .label,.tile .label,button.tile .label{font-size:1rem}
+    }
     .school{margin:1.4rem 0 0}
     .school[hidden]{display:none}
     .school-head,.cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
@@ -371,16 +383,16 @@
         </h1>
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
-          <div><strong>Last updated</strong> · 2026-09-22 · SpanCraft Load prove + Spire Lab Stand prove · Berty Run First Trace still live</div>
-          <div class="rev">rev 2026-09-22-span-spire-mvp</div>
+          <div class="hub-summary">
+            <span class="lead"><span class="rev">rev 2026-09-22-hub-pc-density</span> · <strong>What’s new</strong> · Wide PC is 6–7 columns</span>
+            <button type="button" class="hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
+          </div>
           <ul id="hub-log">
-            <li>Berty Run: L1 First Trace still live</li>
-            <li>SpanCraft: Load prove playable · Spire Lab: Stand prove playable</li>
-            <li>Viewport fill: tiles grow with the width · 2 / 3–4 / 4–5 columns · labels ≥14px · hits ≥44px</li>
-            <li>Firm KuliNet marks on every app tile · corner K</li>
-            <li>BertyBeatz: BZ 1.2.0 playable</li>
+            <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
+            <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
+            <li>Firm KuliNet marks · corner K</li>
+            <li>Berty Run L1 First Trace · SpanCraft Load prove · Spire Lab Stand prove · Beatz BZ 1.2.0</li>
           </ul>
-          <button type="button" class="hub-more" id="hub-more" hidden>More</button>
         </div>
       </div>
       <label class="search" id="search-box">
@@ -1045,19 +1057,12 @@
 
       var plate = document.getElementById("hub-plate");
       var moreBtn = document.getElementById("hub-more");
-      var plateQuery = window.matchMedia("(max-width: 639px)");
       function syncPlate() {
         if (!plate || !moreBtn) return;
-        var narrow = plateQuery.matches;
-        if (!narrow) {
-          plate.classList.remove("is-clamped");
-          moreBtn.hidden = true;
-          return;
-        }
         var open = plate.classList.contains("is-open");
         plate.classList.toggle("is-clamped", !open);
         moreBtn.hidden = false;
-        moreBtn.textContent = open ? "Less" : "More";
+        moreBtn.textContent = open ? "Less" : "Expand";
         moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
       }
       if (moreBtn) {
@@ -1066,8 +1071,6 @@
           syncPlate();
         });
       }
-      if (plateQuery.addEventListener) plateQuery.addEventListener("change", syncPlate);
-      else if (plateQuery.addListener) plateQuery.addListener(syncPlate);
       syncPlate();
 
       paint();
