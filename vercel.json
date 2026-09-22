@@ -52,15 +52,15 @@
   "rewrites": [
     {
       "source": "/logolab",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/",
-      "destination": "https://logolab-rho.vercel.app/"
+      "destination": "https://logolab-rho.vercel.app/logolab/"
     },
     {
       "source": "/logolab/:path*",
-      "destination": "https://logolab-rho.vercel.app/:path*"
+      "destination": "https://logolab-rho.vercel.app/logolab/:path*"
     },
     {
       "source": "/assets/:path*",
@@ -245,11 +245,26 @@
     },
     {
       "source": "/assets/:path*",
-      "has": [
+      "missing": [
         {
           "type": "header",
           "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
+          "value": "https://apps.kulibert.net/paperlab(.*)"
+        },
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/bertycad(.*)"
+        },
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/logolab(.*)"
+        },
+        {
+          "type": "header",
+          "key": "referer",
+          "value": "https://apps.kulibert.net/drift(.*)"
         }
       ],
       "destination": "https://bearcat-den.vercel.app/assets/:path*"
@@ -286,70 +301,6 @@
         }
       ],
       "destination": "https://bearcat-den.vercel.app/__grok/:path*"
-    },
-    {
-      "source": "/assets/styles-BHVfncu-.css",
-      "destination": "https://bearcat-den.vercel.app/assets/styles-BHVfncu-.css"
-    },
-    {
-      "source": "/assets/index-Bq7xXU7M.js",
-      "destination": "https://bearcat-den.vercel.app/assets/index-Bq7xXU7M.js"
-    },
-    {
-      "source": "/assets/react-SIfiwpqq.js",
-      "destination": "https://bearcat-den.vercel.app/assets/react-SIfiwpqq.js"
-    },
-    {
-      "source": "/assets/building-D-NT2UV3.js",
-      "destination": "https://bearcat-den.vercel.app/assets/building-D-NT2UV3.js"
-    },
-    {
-      "source": "/assets/link-D_Rt3DJK.js",
-      "destination": "https://bearcat-den.vercel.app/assets/link-D_Rt3DJK.js"
-    },
-    {
-      "source": "/assets/lazyRouteComponent-CU8K1QD0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/lazyRouteComponent-CU8K1QD0.js"
-    },
-    {
-      "source": "/assets/routes-BdqzXol1.js",
-      "destination": "https://bearcat-den.vercel.app/assets/routes-BdqzXol1.js"
-    },
-    {
-      "source": "/assets/gates-ZtjMj2B0.js",
-      "destination": "https://bearcat-den.vercel.app/assets/gates-ZtjMj2B0.js"
-    },
-    {
-      "source": "/assets/classroom-screen-D2hvVkwt.js",
-      "destination": "https://bearcat-den.vercel.app/assets/classroom-screen-D2hvVkwt.js"
-    },
-    {
-      "source": "/assets/utils-DojpP95n.js",
-      "destination": "https://bearcat-den.vercel.app/assets/utils-DojpP95n.js"
-    },
-    {
-      "source": "/assets/delay-banner-eLvcCU_y.js",
-      "destination": "https://bearcat-den.vercel.app/assets/delay-banner-eLvcCU_y.js"
-    },
-    {
-      "source": "/assets/school-day-p876jYf1.js",
-      "destination": "https://bearcat-den.vercel.app/assets/school-day-p876jYf1.js"
-    },
-    {
-      "source": "/assets/status-ribbon-koaiw4po.js",
-      "destination": "https://bearcat-den.vercel.app/assets/status-ribbon-koaiw4po.js"
-    },
-    {
-      "source": "/assets/app-chrome-BiLQ4nSI.js",
-      "destination": "https://bearcat-den.vercel.app/assets/app-chrome-BiLQ4nSI.js"
-    },
-    {
-      "source": "/assets/button-CJcG3bum.js",
-      "destination": "https://bearcat-den.vercel.app/assets/button-CJcG3bum.js"
-    },
-    {
-      "source": "/assets/use-current-user-C4dygdOb.js",
-      "destination": "https://bearcat-den.vercel.app/assets/use-current-user-C4dygdOb.js"
     },
     {
       "source": "/sms/bearcat.jpg",
