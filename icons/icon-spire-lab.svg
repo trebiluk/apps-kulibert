@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Spire Lab">
+  <rect width="128" height="128" rx="28" fill="#0B1220"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#A78BFA" stroke-width="3"/>
+  <path fill="#E9D5FF" d="M64 22 80 56H48Z"/>
+  <rect x="52" y="56" width="24" height="38" rx="2" fill="#C4B5FD"/>
+  <rect x="42" y="94" width="44" height="10" rx="3" fill="#F8FAFC"/>
+</svg>

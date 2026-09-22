@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="SpanCraft">
+  <rect width="128" height="128" rx="28" fill="#0B1220"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#2DD4BF" stroke-width="3"/>
+  <rect x="26" y="62" width="12" height="34" rx="2" fill="#5EEAD4"/>
+  <rect x="90" y="62" width="12" height="34" rx="2" fill="#5EEAD4"/>
+  <rect x="22" y="54" width="84" height="10" rx="3" fill="#F8FAFC"/>
+  <path d="M38 54c6 20 46 20 52 0" fill="none" stroke="#22D3EE" stroke-width="4" stroke-linecap="round"/>
+</svg>
