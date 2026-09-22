@@ -2,72 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
+  <meta name="description" content="BertyBeatz — tap squares, make a song. Classroom sequencer for Solvay Tech Ed."/>
   <title>BertyBeatz · The Tech Room</title>
+  <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <style>
-    :root{
-      color-scheme:dark;
-      --bg:#050814;
-      --panel:#0b152c;
-      --elevated:#10203f;
-      --border:#16324f;
-      --text:#e8f7ff;
-      --muted:#8fb4c9;
-      --accent:#22d3ee;
-    }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;min-height:100%;background:var(--bg);color:var(--text);
-      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
-      -webkit-font-smoothing:antialiased;
-    }
-    body{padding:1.25rem .9rem 2.5rem}
-    .wrap{max-width:28rem;margin:0 auto}
-    .chip{
-      display:inline-flex;align-items:center;gap:.4rem;margin:0 0 .7rem;
-      padding:.3rem .75rem;border-radius:999px;
-      background:color-mix(in srgb,var(--panel) 88%,transparent);
-      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
-      color:var(--muted);font-size:.72rem;font-weight:600;
-    }
-    h1{margin:0 0 .45rem;font-size:1.7rem;font-weight:800;letter-spacing:-.03em}
-    p{margin:0 0 .85rem;color:var(--muted);line-height:1.5;font-weight:500}
-    .card{
-      background:var(--elevated);border:1px solid var(--border);
-      border-radius:16px;padding:1.15rem 1.1rem 1.05rem;margin:1rem 0 1.2rem;
-    }
-    .mark{display:block;width:4.5rem;height:4.5rem;margin:0 0 .9rem}
-    ul{margin:.4rem 0 0;padding:0 0 0 1.15rem;color:var(--muted);line-height:1.55;font-weight:500}
-    li{margin:0 0 .35rem}
-    nav{display:flex;flex-wrap:wrap;gap:.6rem}
-    a.btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:44px;padding:.55rem 1rem;border-radius:10px;
-      text-decoration:none;font-weight:650;font-size:.95rem;
-    }
-    a.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-    a.home{background:var(--accent);color:#041018}
-  </style>
+  <link rel="stylesheet" href="./styles.css"/>
 </head>
 <body>
-  <div class="wrap">
-    <p class="chip">idea list · not built yet</p>
-    <h1>BertyBeatz</h1>
-    <p>On The Tech Room list. Nothing to play here yet.</p>
-    <div class="card">
-      <img class="mark" src="mark.svg" alt=""/>
-      <p>One door for beat craft and the visualizer. Sequencer and viz stay together. Build on hold.</p>
-      <ul>
-        <li>No sequencer on this page</li>
-        <li>No visualizer, no canvas, no try-it stub</li>
-        <li>Build is on hold until the crew is ready</li>
-      </ul>
+  <div id="gate" class="gate">
+    <div class="gate-inner">
+      <img class="gate-mark" src="./mark.svg" alt=""/>
+      <p class="chip"><i></i> Tech Room · Solvay Middle</p>
+      <h1>BertyBeatz</h1>
+      <p class="lede">Tap squares. Make a song. Every note stays in key, so it always sounds like a beat.</p>
+      <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
+      <p class="hint">Needs one tap so Chromebook sound can play.</p>
     </div>
-    <nav>
-      <a class="btn home" href="/">Tech Room</a>
-    </nav>
   </div>
+
+  <header class="top">
+    <a class="brand" href="/" title="Back to The Tech Room">
+      <img src="./mark.svg" alt="" width="36" height="36"/>
+      <span>
+        <strong>BertyBeatz</strong>
+        <em>Tech Room</em>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button type="button" id="help-btn" class="btn ghost" aria-expanded="false">How</button>
+      <a class="btn ghost" href="/">Room</a>
+    </div>
+  </header>
+
+  <section id="help" class="help" hidden>
+    <h2>How it works</h2>
+    <ol>
+      <li>Tap a square to turn a sound on. Tap again to turn it off.</li>
+      <li>Press Play. The moving column is the beat walking across the grid.</li>
+      <li>Top rows are drums. Bottom rows are notes that always fit the key.</li>
+      <li>Stuck? Hit Surprise me. Like it? Save it with a name.</li>
+    </ol>
+    <p>Space bar plays and stops. Tap a row name to hear that sound.</p>
+  </section>
+
+  <section class="lcd" aria-label="Transport display">
+    <canvas id="viz" width="280" height="56" aria-hidden="true"></canvas>
+    <div class="lcd-meta">
+      <p class="lcd-name" id="song-name">First Beat</p>
+      <p class="lcd-readout">
+        <span id="lcd-bpm">110 BPM</span>
+        <span id="lcd-kit">Studio</span>
+        <span id="lcd-key">C Bright</span>
+        <span id="lcd-pos" class="tabular">1.1</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="transport" aria-label="Transport">
+    <button type="button" id="play-btn" class="play" aria-label="Play">
+      <span class="play-icon" aria-hidden="true"></span>
+    </button>
+    <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
+      <span class="stop-icon" aria-hidden="true"></span>
+    </button>
+    <label class="dial">
+      <span>Tempo</span>
+      <input id="bpm" type="range" min="70" max="160" value="110"/>
+    </label>
+    <label class="dial">
+      <span>Swing</span>
+      <input id="swing" type="range" min="0" max="60" value="8"/>
+    </label>
+    <label class="dial">
+      <span>Vol</span>
+      <input id="vol" type="range" min="0" max="100" value="80"/>
+    </label>
+  </section>
+
+  <div class="bank-bar" id="bank-bar">
+    <button type="button" class="seg on" data-bank="0">Steps 1–8</button>
+    <button type="button" class="seg" data-bank="1">Steps 9–16</button>
+  </div>
+
+  <div class="grid-wrap">
+    <div id="grid" class="grid" role="grid" aria-label="Beat grid"></div>
+  </div>
+
+  <section class="tools">
+    <div class="tool-row">
+      <span class="tool-label">Kit</span>
+      <div class="chips" id="kits"></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-label">Mood</span>
+      <div class="chips" id="moods"></div>
+    </div>
+    <div class="tool-row">
+      <span class="tool-label">Key</span>
+      <div class="chips" id="keys"></div>
+    </div>
+    <div class="actions">
+      <button type="button" id="surprise-btn" class="btn primary">Surprise me</button>
+      <button type="button" id="preset-btn" class="btn">Starter beats</button>
+      <button type="button" id="save-btn" class="btn">Save</button>
+      <button type="button" id="library-btn" class="btn">My beats</button>
+      <button type="button" id="clear-btn" class="btn danger">Clear</button>
+    </div>
+  </section>
+
+  <p class="foot">Kulibert Tech Ed · Chromebook-first · sounds stay on this device</p>
+
+  <dialog id="modal" class="modal">
+    <form method="dialog" id="modal-form">
+      <h2 id="modal-title">Save beat</h2>
+      <p id="modal-desc" class="desc"></p>
+      <div id="modal-body"></div>
+      <div class="modal-actions">
+        <button type="submit" id="modal-ok" class="btn primary">Save</button>
+        <button type="button" id="modal-cancel" class="btn" value="cancel">Close</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="./app.js"></script>
 </body>
 </html>
