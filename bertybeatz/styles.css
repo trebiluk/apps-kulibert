@@ -468,7 +468,26 @@ button {
   margin: 0 0 0.4rem;
 }
 .saved-list button { flex: 1; }
-.modal-actions { display: flex; gap: 0.5rem; }
+.modal textarea {
+  width: 100%;
+  min-height: 4.5rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  resize: vertical;
+  margin-bottom: 0.55rem;
+}
+.foot a {
+  color: var(--accent);
+  font-weight: 650;
+  text-decoration: none;
+}
+.foot a:hover { text-decoration: underline; }
 
 @media (max-width: 760px) {
   .lcd { grid-template-columns: 1fr; }
