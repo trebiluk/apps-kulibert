@@ -18,9 +18,12 @@
     label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600;margin:0 0 .75rem}
     .check{flex-direction:row;align-items:center;justify-content:space-between;gap:.75rem;min-height:44px}
     input,button{font:inherit}
-    input[type=text],input[type=url],input[type=number]{height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
+    input[type=text],input[type=url],input[type=number],input[type=password]{height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
     input:focus{outline:2px solid var(--accent);outline-offset:2px}
     button{min-height:44px;border-radius:10px;border:0;padding:0 1rem;font-weight:650;cursor:pointer}
+    .pass-row{display:flex;align-items:stretch;gap:.4rem}
+    .pass-row input{flex:1;min-width:0;min-height:44px}
+    .showhide{min-width:44px;min-height:44px;padding:0 .9rem;background:var(--panel);color:var(--text);border:1px solid var(--border);flex-shrink:0}
     .save{background:var(--accent);color:#041018}
     .ghost{background:var(--panel);color:var(--text);border:1px solid var(--border)}
     .card{background:var(--elevated);border:1px solid var(--border);border-radius:16px;padding:1rem;margin:1rem 0}
@@ -37,22 +40,25 @@
 </head>
 <body>
   <div class="wrap">
-    <p class="chip"><i></i> Locked · Cloud desk key</p>
+    <p class="chip"><i></i> Locked · Hub password</p>
     <h1>Room desk</h1>
-    <p>Not a class tile. Unlock with the TechWorks Cloud desk key from Records → Cloud. Hashed in this tab. Close the tab to lock. Names and https only — no roster.</p>
+    <p>Staff edit on this door. Hub password only — not the TechWorks PIN. Checked in this tab. Close the tab to lock. Names and https only — no roster.</p>
     <p><a href="/">← Tech Room door</a></p>
 
     <form class="card" id="key-form">
       <ol>
-        <li><strong>Not a class tile.</strong> Staff on a Chromebook is only a local switch.</li>
-        <li><strong>Cloud desk key.</strong> Same 12-character key. SHA-256 in the browser. First save claims the door.</li>
+        <li><strong>Hub password.</strong> Opens Staff edit. The TechWorks class PIN does not.</li>
+        <li><strong>Cloud desk key is separate.</strong> It writes TechWorks after this page is open. Not this password.</li>
         <li><strong>This tab only.</strong> Close the tab, it locks. Nothing stored on student machines.</li>
       </ol>
-      <label>TechWorks desk key
-        <input id="desk-key" type="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX"/>
+      <label>Hub password
+        <span class="pass-row">
+          <input id="hub-pass" type="password" autocomplete="current-password" spellcheck="false" placeholder="Hub password"/>
+          <button class="showhide" id="hub-show" type="button" aria-pressed="false" aria-label="Show password">Show</button>
+        </span>
       </label>
       <button class="save" type="submit">Unlock this tab</button>
-      <p class="err" id="key-status">Paste the Cloud desk key. First save claims the door if nobody has yet.</p>
+      <p class="err" id="key-status">Hub password only. The TechWorks PIN will not open this.</p>
     </form>
 
     <div id="desk" hidden>
@@ -104,6 +110,13 @@
         <label>Search placeholder <input id="search" maxlength="40"/></label>
         <label>Footer <input id="footer" maxlength="80"/></label>
       </form>
+      <label>Cloud desk key
+        <span class="pass-row">
+          <input id="desk-key" type="password" autocomplete="off" spellcheck="false" placeholder="Records → Cloud"/>
+          <button class="showhide" id="desk-show" type="button" aria-pressed="false" aria-label="Show password">Show</button>
+        </span>
+      </label>
+      <p>Writes TechWorks. Not the class PIN. Not the Hub password.</p>
       <button class="save" id="save-all" type="button">Save to every Chromebook</button>
       <button class="ghost" id="lock" type="button">Lock this tab</button>
     </div>
@@ -114,7 +127,9 @@
       var API = "https://tw.kulibert.net/api/door-links";
       var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
       var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true };
+      var HUB_HASH = "f94b0a1f54f32e6e4177197099a57834915c73cefc321b8f8e9591d83e10c1c5";
       var token = sessionStorage.getItem("tech-room-desk-gate") || "";
+      var hubTries = 0;
 
       function formatKey(raw) {
         return String(raw || "").replace(/[^a-z0-9]/gi, "").toUpperCase().slice(0, 12);
@@ -124,6 +139,24 @@
         return Array.from(new Uint8Array(buf)).map(function (x) { return x.toString(16).padStart(2, "0"); }).join("");
       }
       async function deskToken(key) { return shaHex("techworks-desk-v1:" + key); }
+      async function hubToken(pass) { return shaHex("tech-room-hub-v1:" + pass); }
+      function sameHex(a, b) {
+        if (!a || !b || a.length !== b.length) return false;
+        var n = 0;
+        for (var i = 0; i < a.length; i++) n |= a.charCodeAt(i) ^ b.charCodeAt(i);
+        return n === 0;
+      }
+      function wireShow(btnId, inputId) {
+        var btn = $(btnId), input = $(inputId);
+        if (!btn || !input) return;
+        btn.addEventListener("click", function () {
+          var show = input.type === "password";
+          input.type = show ? "text" : "password";
+          btn.textContent = show ? "Hide" : "Show";
+          btn.setAttribute("aria-pressed", show ? "true" : "false");
+          btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        });
+      }
       function $(id) { return document.getElementById(id); }
 
       function paintApps() {
@@ -263,6 +296,15 @@
       }
 
       async function save() {
+        var typed = formatKey($("desk-key") && $("desk-key").value);
+        if (typed.length >= 8) {
+          token = await deskToken(typed);
+          sessionStorage.setItem("tech-room-desk-gate", token);
+        }
+        if (!token) {
+          $("status").textContent = "Hub password opened this page. Cloud desk key still writes TechWorks — not the class PIN.";
+          return;
+        }
         collect();
         $("status").textContent = "Saving…";
         var res = await fetch(API, {
@@ -279,25 +321,49 @@
       }
 
       function showDesk() {
+        $("key-form").hidden = true;
         $("desk").hidden = false;
-        $("key-status").textContent = "Unlocked on this tab only. Not stored on student machines.";
+        var chip = document.querySelector(".chip");
+        if (chip) chip.innerHTML = "<i></i> Open · this tab";
       }
 
-      if (token) showDesk();
+      if (sessionStorage.getItem("tech-room-hub-gate") === HUB_HASH) showDesk();
       load().catch(function () { $("status").textContent = "Could not reach TechWorks."; });
+      wireShow("hub-show", "hub-pass");
+      wireShow("desk-show", "desk-key");
 
       $("key-form").addEventListener("submit", async function (event) {
         event.preventDefault();
-        var key = formatKey($("desk-key").value);
-        if (key.length < 8) { $("key-status").textContent = "Need the full Cloud desk key."; return; }
-        token = await deskToken(key);
-        sessionStorage.setItem("tech-room-desk-gate", token);
+        if (hubTries >= 6) { $("key-status").textContent = "Too many tries. Close the tab."; return; }
+        var pass = String($("hub-pass").value || "").trim();
+        if (/^\d{4}$/.test(pass)) {
+          hubTries += 1;
+          $("key-status").textContent = "That's the TechWorks PIN. Use the Hub password.";
+          return;
+        }
+        if (pass.length < 8) {
+          $("key-status").textContent = "Hub password only. The TechWorks PIN will not open this.";
+          return;
+        }
+        var got = await hubToken(pass);
+        if (!sameHex(got, HUB_HASH)) {
+          hubTries += 1;
+          $("hub-pass").value = "";
+          $("key-status").textContent = "Hub password did not match.";
+          return;
+        }
+        sessionStorage.setItem("tech-room-hub-gate", HUB_HASH);
+        $("hub-pass").value = "";
         showDesk();
       });
       $("lock").addEventListener("click", function () {
         token = "";
         sessionStorage.removeItem("tech-room-desk-gate");
+        sessionStorage.removeItem("tech-room-hub-gate");
         $("desk").hidden = true;
+        $("key-form").hidden = false;
+        var chip = document.querySelector(".chip");
+        if (chip) chip.innerHTML = "<i></i> Locked · Hub password";
         $("key-status").textContent = "Locked.";
       });
       $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
