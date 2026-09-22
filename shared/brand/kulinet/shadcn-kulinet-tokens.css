@@ -1,0 +1,179 @@
+/**
+ * KuliNet × shadcn — theme tokens (StyleBot · 2026-09-22)
+ * Restyle ONLY. Leave default shadcn purple-gray out of products.
+ * Sources: BABOO-THEMES.md (Stark) · THEME-DREAM-PURPLE-BLUE.md (Dream)
+ * Selector: [data-kn-theme="stark" | "dream"]
+ * Never mix Stark + Dream in one product surface.
+ */
+
+/* ── Shared interactive floor ─────────────────────────────────────────── */
+:where([data-kn-theme]) {
+  --kn-hit-min: 44px;
+  --radius: 0.75rem; /* 12px — Dream plate / Baboo quiet luxury */
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   STARK — Baboo default (white + royal blue)
+   Canonical: bg #FFFFFF · surface #F5F6F8 · elevated #FFFFFF · canvas #F0F2F5
+              fg #0A0E17 · muted #475569 · accent/royal #2563EB · deep #1E3A8A
+              borders #E2E5EB · hover #ECEEF2 · on-accent #FFFFFF
+              scrim color-mix(#0A0E17 38%, transparent)
+   Destructive reuses family loss #FF2B3A (THEME-DREAM / TW — no invented hue)
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-kn-theme="stark"] {
+  color-scheme: light;
+
+  --background: #ffffff;
+  --foreground: #0a0e17;
+
+  --card: #ffffff;
+  --card-foreground: #0a0e17;
+
+  --popover: #ffffff;
+  --popover-foreground: #0a0e17;
+
+  --primary: #2563eb; /* royal / accent */
+  --primary-foreground: #ffffff; /* on-accent */
+
+  --secondary: #f5f6f8; /* surface */
+  --secondary-foreground: #0a0e17;
+
+  --muted: #f0f2f5; /* canvas */
+  --muted-foreground: #475569;
+
+  --accent: #eceef2; /* hover — cool gray step, never white-flash */
+  --accent-foreground: #0a0e17;
+
+  --destructive: #ff2b3a; /* family --tw-loss */
+  --destructive-foreground: #ffffff;
+
+  --border: #e2e5eb;
+  --input: #e2e5eb;
+  --ring: #2563eb; /* royal focus */
+
+  --radius: 0.75rem;
+
+  --scrim: color-mix(in srgb, #0a0e17 38%, transparent);
+
+  /* Graft helpers (non-shadcn aliases) */
+  --kn-surface: #f5f6f8;
+  --kn-elevated: #ffffff;
+  --kn-canvas: #f0f2f5;
+  --kn-deep: #1e3a8a;
+  --kn-hover: #eceef2;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   DREAM — TechWorks Board (purple–blue dark)
+   Canonical: --tw-bg #06122B · surface #0B1A40 · elevated #132A5C
+              fg #F7F9FF · muted #B7C4EA · accent #22D3EE · accent-fg #06122B
+              royal #3B82F6 · violet #A855F7 · solid scrim · focus royal
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-kn-theme="dream"] {
+  color-scheme: dark;
+
+  --background: #06122b;
+  --foreground: #f7f9ff;
+
+  --card: #0b1a40; /* surface */
+  --card-foreground: #f7f9ff;
+
+  --popover: #132a5c; /* elevated */
+  --popover-foreground: #f7f9ff;
+
+  --primary: #22d3ee; /* CTA / Save cyan */
+  --primary-foreground: #06122b; /* accent-fg */
+
+  --secondary: #132a5c; /* elevated */
+  --secondary-foreground: #f7f9ff;
+
+  --muted: #0b1a40; /* surface as muted plate */
+  --muted-foreground: #b7c4ea;
+
+  --accent: #1a3a6e; /* --tw-hover-hi — never #fff */
+  --accent-foreground: #f7f9ff;
+
+  --destructive: #ff2b3a; /* --tw-loss */
+  --destructive-foreground: #ffffff;
+
+  --border: color-mix(in srgb, #3b82f6 40%, #0b1a40); /* --tw-line */
+  --input: color-mix(in srgb, #6366f1 55%, #132a5c); /* --tw-line-strong */
+  --ring: #3b82f6; /* royal focus / active */
+
+  --radius: 0.75rem;
+
+  --scrim: color-mix(in srgb, #06122b 82%, #000); /* solid — no backdrop-filter */
+
+  --kn-surface: #0b1a40;
+  --kn-elevated: #132a5c;
+  --kn-royal: #3b82f6;
+  --kn-violet: #a855f7;
+  --kn-hover: #132a5c;
+  --kn-hover-hi: #1a3a6e;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   COMPONENT RECIPES (comment contracts for Debugzy / graft)
+   Apply on top of copied shadcn primitives; tokens drive color only.
+   ═══════════════════════════════════════════════════════════════════════
+
+   BUTTON
+   ------
+   .btn { min-height: var(--kn-hit-min); padding-inline: 1rem; border-radius: var(--radius);
+          font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem;
+          border: 1px solid transparent; }
+   .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+   default      → bg: var(--primary); color: var(--primary-foreground);
+                  hover: Stark → deep #1E3A8A; Dream → soft cyan mix / keep plate (no white)
+   secondary    → bg: var(--secondary); color: var(--secondary-foreground);
+                  border: 1px solid var(--border); hover: var(--accent)
+   ghost        → bg: transparent; color: var(--foreground);
+                  hover: var(--accent) / var(--accent-foreground)  /* cool gray or elevated */
+   destructive  → bg: var(--destructive); color: var(--destructive-foreground);
+                  hover: slightly deepen (color-mix with #000 12%) — never white flash
+   Always icon + text when meaning is action (not color alone).
+
+   DIALOG
+   ------
+   Overlay: position fixed; inset 0; background: var(--scrim);  /* SOLID — forbid backdrop-filter */
+   Panel:   bg: var(--card); color: var(--card-foreground); border: 1px solid var(--border);
+            border-radius: calc(var(--radius) + 4px); padding: 1.25rem 1.5rem;
+            Dream: elevated plate OK (use --popover / --kn-elevated)
+   Title:   plain text, font-weight 700, color: var(--foreground)
+   Body:    color: var(--muted-foreground)
+   Footer:  Cancel = secondary/ghost (≥44px); Save = default primary (≥44px)
+   Focus trap + Escape; first focusable gets focus-visible ring via --ring
+
+   MENU (DropdownMenu)
+   -------------------
+   Trigger: same as secondary/ghost button, min-height 44px, icon+text
+   Content: bg: var(--popover); border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 0.35rem; box-shadow: one plate drop only (Chromebook)
+   Item:    min-height: 44px; padding-inline: 0.75rem; border-radius: calc(var(--radius) - 2px);
+            color: var(--popover-foreground)
+   Item focused / highlighted: bg: var(--accent); color: var(--accent-foreground)
+   Item destructive: color: var(--destructive); focused → soft mix bg, keep label text
+   Separators: border-color var(--border)
+
+   TABS
+   ----
+   List:    display flex; gap: 0.25rem; bg: var(--muted); padding: 0.25rem;
+            border-radius: var(--radius); border: 1px solid var(--border)
+   Trigger: min-height 44px; flex 1; font-weight 600; color: var(--muted-foreground);
+            border-radius: calc(var(--radius) - 2px); bg transparent
+   Trigger[data-state=active] / [aria-selected=true]:
+            Stark → bg: var(--background); color: var(--foreground); box-shadow thin border
+            Dream → bg: var(--kn-elevated); color: var(--foreground);
+                    box-shadow: 0 0 0 2px var(--ring)  /* royal active — hard ring, not blur */
+   Panel:   padding-block 1rem; color: var(--foreground)
+   Keyboard: arrow keys between triggers; focus-visible uses --ring
+
+   INCLUSION
+   ---------
+   · Hit ≥44px on every interactive control
+   · Visible focus-visible ring via --ring (Stark royal / Dream royal)
+   · Icon + text labels; never meaning-by-color alone
+   · @media (prefers-reduced-motion: reduce) { * { animation/transition → 0.01ms } }
+   · Solid --scrim only; no backdrop-filter / blur stacks
+   · No white-flash hovers (Stark → #ECEEF2; Dream → elevated / #1A3A6E)
+*/
