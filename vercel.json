@@ -853,7 +853,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-viewport-fill"
+          "value": "2026-09-22-berty-run-first-trace"
         }
       ]
     },
@@ -866,7 +866,34 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-viewport-fill"
+          "value": "2026-09-22-berty-run-first-trace"
+        }
+      ]
+    },
+    {
+      "source": "/berty-run",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/berty-run/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/berty-run/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
         }
       ]
     },
