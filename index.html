@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-kn-theme="stark">
+<html lang="en" data-kn-theme="tech-room">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#ffffff"/>
-  <meta name="tech-room-rev" content="2026-09-22-hub-shadcn-shell"/>
+  <meta name="theme-color" content="#050814"/>
+  <meta name="tech-room-rev" content="2026-09-22-hub-tech-room-dark"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="stylesheet" href="/shared/brand/kulinet/shadcn-kulinet-tokens.css"/>
   <style>
     /* Layout, density, and Button / Dialog / Menu recipes only.
-       Colors come from shadcn-kulinet-tokens.css on [data-kn-theme="stark"]. */
+       Colors come from shadcn-kulinet-tokens.css on [data-kn-theme="tech-room"]. */
     *{box-sizing:border-box}
     html,body{
       margin:0;min-height:100%;min-height:100dvh;background:var(--background);color:var(--foreground);
@@ -282,7 +282,7 @@
     button.tile.add{border-style:dashed;background:transparent}
     button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--foreground);border-color:color-mix(in srgb,var(--primary) 62%,transparent);background:var(--accent)}
     button.tile:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
-    .tile .label,button.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
+    .tile .label,button.tile .label{color:var(--foreground);font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
     @media (min-width:1024px){
       a.tile .label,.tile .label,button.tile .label{font-size:1rem}
     }
@@ -401,11 +401,11 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-22-hub-shadcn-shell</span> · <strong>What’s new</strong> · Hub shell on KuliNet Stark</span>
+            <span class="lead"><span class="rev">rev 2026-09-22-hub-tech-room-dark</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <ul id="hub-log">
-            <li>Shell: shadcn Button, Dialog, and Edge Pocket on KuliNet Stark</li>
+            <li>Dark Tech Room board · labels on ink cards · cyan focus</li>
             <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
             <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
             <li>Berty Run L1 First Trace · SpanCraft Load prove · Spire Lab Stand prove · Beatz BZ 1.2.0</li>
@@ -524,7 +524,7 @@
       </ul>
     </section>
     <p class="room-meta" id="room-meta" hidden></p>
-    <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · KuliNet Stark shell · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
+    <footer id="room-footer">Kulibert Tech Ed · Solvay Middle School · The Tech Room · school tiles + door line from TechWorks · Chromebook shortcuts stay here</footer>
   </div>
 
   <div class="modal kn-dialog" id="cut-modal" hidden role="dialog" aria-modal="true" aria-labelledby="cut-title">

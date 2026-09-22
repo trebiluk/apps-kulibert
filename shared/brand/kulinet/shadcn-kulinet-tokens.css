@@ -2,8 +2,10 @@
  * KuliNet × shadcn — theme tokens (StyleBot · 2026-09-22)
  * Restyle ONLY. Leave default shadcn purple-gray out of products.
  * Sources: BABOO-THEMES.md (Stark) · THEME-DREAM-PURPLE-BLUE.md (Dream)
- * Selector: [data-kn-theme="stark" | "dream"]
+ *            STYLEBOT-HUB-DARK-TECH-ROOM.md (Tech Room)
+ * Selector: [data-kn-theme="stark" | "dream" | "tech-room"]
  * Never mix Stark + Dream in one product surface.
+ * Hub door uses tech-room only. Stark stays Baboo. Dream stays TechWorks.
  */
 
 /* ── Shared interactive floor ─────────────────────────────────────────── */
@@ -113,6 +115,53 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════════
+   TECH ROOM — Hub door (dark ink + cyan)
+   Flo/Diego lock: bg #050814 · cards #0B1220 · labels #F7F9FF · cyan #22D3EE
+   Supporting slots are color-mixes of that lock (no Stark white, no Dream wash).
+   Destructive reuses family loss #FF2B3A.
+   ═══════════════════════════════════════════════════════════════════════ */
+[data-kn-theme="tech-room"] {
+  color-scheme: dark;
+
+  --background: #050814;
+  --foreground: #f7f9ff; /* labels */
+
+  --card: #0b1220;
+  --card-foreground: #f7f9ff;
+
+  --popover: color-mix(in srgb, #f7f9ff 7%, #0b1220); /* elevated plate */
+  --popover-foreground: #f7f9ff;
+
+  --primary: #22d3ee;
+  --primary-foreground: #050814; /* ink on cyan */
+
+  --secondary: #0b1220; /* card surface */
+  --secondary-foreground: #f7f9ff;
+
+  --muted: #050814;
+  --muted-foreground: color-mix(in srgb, #f7f9ff 62%, #050814);
+
+  --accent: color-mix(in srgb, #22d3ee 18%, #0b1220); /* hover plate — never white */
+  --accent-foreground: #f7f9ff;
+
+  --destructive: #ff2b3a;
+  --destructive-foreground: #ffffff;
+
+  --border: color-mix(in srgb, #22d3ee 32%, #0b1220);
+  --input: color-mix(in srgb, #22d3ee 42%, #0b1220);
+  --ring: #22d3ee;
+
+  --radius: 0.75rem;
+
+  --scrim: color-mix(in srgb, #050814 82%, #000); /* solid — no backdrop-filter */
+
+  --kn-surface: #0b1220;
+  --kn-elevated: color-mix(in srgb, #f7f9ff 7%, #0b1220);
+  --kn-deep: color-mix(in srgb, #22d3ee 68%, #050814); /* primary hover — not Stark royal */
+  --kn-hover: color-mix(in srgb, #22d3ee 12%, #0b1220);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
    COMPONENT RECIPES (comment contracts for Debugzy / graft)
    Apply on top of copied shadcn primitives; tokens drive color only.
    ═══════════════════════════════════════════════════════════════════════
@@ -124,7 +173,8 @@
           border: 1px solid transparent; }
    .btn:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
    default      → bg: var(--primary); color: var(--primary-foreground);
-                  hover: Stark → deep #1E3A8A; Dream → soft cyan mix / keep plate (no white)
+                  hover: Stark → deep #1E3A8A; Dream → soft cyan mix / keep plate (no white);
+                         Tech Room → --kn-deep (cyan mixed into #050814, never white)
    secondary    → bg: var(--secondary); color: var(--secondary-foreground);
                   border: 1px solid var(--border); hover: var(--accent)
    ghost        → bg: transparent; color: var(--foreground);
@@ -175,5 +225,5 @@
    · Icon + text labels; never meaning-by-color alone
    · @media (prefers-reduced-motion: reduce) { * { animation/transition → 0.01ms } }
    · Solid --scrim only; no backdrop-filter / blur stacks
-   · No white-flash hovers (Stark → #ECEEF2; Dream → elevated / #1A3A6E)
+   · No white-flash hovers (Stark → #ECEEF2; Dream → elevated / #1A3A6E; Tech Room → cyan mix on #0B1220)
 */
