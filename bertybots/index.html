@@ -9,13 +9,13 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.15.0 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.16.0 — Solvay Tech Ed</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.15.0">
+  <link rel="stylesheet" href="css/app.css?v=0.16.0">
 </head>
 <body>
   <div id="rotate-gate">
@@ -119,7 +119,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.15.0</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.16.0</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -136,6 +136,7 @@
           <option value="open">Open Shop</option>
           <option value="editor">Site Editor</option>
           <option value="measure">Measure</option>
+          <option value="forces">Forces</option>
           <option value="roll">Roll Out</option>
           <option value="curb">Up the Curb</option>
           <option value="pit">Mind the Pit</option>
@@ -158,11 +159,16 @@
           <button class="role-btn" data-role="observer" id="role-observer" type="button" aria-pressed="false">Observer</button>
         </div>
         <div class="lesson" id="lesson" hidden>
-          <p class="lesson-kicker">Lesson · Measure</p>
-          <ol>
+          <p class="lesson-kicker" id="lesson-kicker">Lesson · Measure</p>
+          <ol id="measure-jobs">
             <li data-job="shop">Shop Floor width</li>
             <li data-job="drop">Drop Zone width</li>
             <li data-job="gap">Shop Floor to Drop Zone</li>
+          </ol>
+          <ol id="force-jobs" hidden>
+            <li data-job="gravity">Gravity pulls the crate down</li>
+            <li data-job="torque">Drive torque — wheel and axle</li>
+            <li data-job="motion">Unbalanced force — crate translates</li>
           </ol>
           <p class="hint" id="tape-readout">Tape: click two corners. 1 square = 1 unit.</p>
         </div>
@@ -235,6 +241,6 @@
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="https://cdn.jsdelivr.net/npm/planck-js@0.3.14/dist/planck.min.js"></script>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.15.0"></script>
+  <script src="js/bundle.js?v=0.16.0"></script>
 </body>
 </html>

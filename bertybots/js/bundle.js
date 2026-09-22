@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.15.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.16.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.15.0";
+const APP_VERSION = "0.16.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.15.0";
+const APP_CHIP = "BB 0.16.0";
 const APP_BUILT = "2026-09-21";
 
 const FORMAT = 1;
@@ -131,6 +131,7 @@ const BUILTIN = [
   { id: "open", label: "Open Shop", url: null },
   { id: "editor", label: "Site Editor", url: null },
   { id: "measure", label: "Measure", url: "levels/measure.json" },
+  { id: "forces", label: "Forces", url: "levels/forces.json" },
   { id: "roll", label: "Roll Out", url: "levels/roll-out.json" },
   { id: "curb", label: "Up the Curb", url: "levels/up-the-curb.json" },
   { id: "pit", label: "Mind the Pit", url: "levels/mind-the-pit.json" },
@@ -169,12 +170,18 @@ const RANKS = [
   { name: "Shop tech", at: 180 },
 ];
 
-const PAR = { open: 5, editor: 8, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12, measure: 4 };
+const PAR = { open: 5, editor: 8, roll: 4, curb: 7, pit: 8, wall: 9, shelf: 10, bend: 10, pair: 12, measure: 4, forces: 5 };
 
 const MEASURE_JOBS = [
   { id: "shop", label: "Shop Floor width", get: (d) => d.level.shop.w },
   { id: "drop", label: "Drop Zone width", get: (d) => d.level.drop.w },
   { id: "gap", label: "Gap from Shop Floor to Drop Zone", get: (d) => d.level.drop.x - (d.level.shop.x + d.level.shop.w) },
+];
+
+const FORCE_JOBS = [
+  { id: "gravity", label: "Gravity pulls the crate down" },
+  { id: "torque", label: "Drive torque turns a wheel-and-axle" },
+  { id: "motion", label: "Unbalanced force — the crate translates" },
 ];
 
 const GUIDE = {
@@ -204,6 +211,15 @@ const GUIDE = {
     test: "Test your count: if the tape says 8.0, you counted 8 squares.",
     improve: "Improve: re-tape if you were off. Corners, not middles.",
     system: "Measure — Input: grid. Process: tape two points. Output: three lengths. Feedback: the readout. Constraint: 1 square = 1 unit.",
+  },
+  forces: {
+    ask: "Ask: what forces move the crate? Gravity down. Drive torque at the axle. Unbalanced force means it translates.",
+    imagine: "Imagine a wheel-and-axle (Drive) linked with Steel. Rollers are free wheels. Ghost misses the machine.",
+    plan: "Plan a tiny pusher. Play. Watch the yellow g arrow and the torque on Drive.",
+    create: "Create on the Shop Floor. Hub snap glows when a wheel will join.",
+    test: "Test: Play. Logs tick when you see gravity, torque, then motion.",
+    improve: "Improve: one change to the linkage. Same job, fewer parts.",
+    system: "Forces — Input: gravity + Drive torque. Process: wheel-and-axle + linkage. Output: crate translation. Feedback: arrows and trail. Constraint: unbalanced force needed to move.",
   },
   roll: {
     ask: "Ask: Roll Out. Flat floor. Crate starts on the Shop Floor. Drop Zone is to the right.",
@@ -449,6 +465,8 @@ function boot() {
   let tapeA = null;
   let tapeB = null;
   let measureDone = {};
+  let forceDone = {};
+  let playAge = 0;
   let progress = { xp: 0, wins: {} };
   try {
     const raw = localStorage.getItem("bb-progress-v1");
@@ -594,6 +612,8 @@ function boot() {
     lastReadout = "";
     if (courseId !== "measure") measureDone = {};
     else measureDone = (progress.wins.measure && progress.wins.measure.jobs) ? { ...progress.wins.measure.jobs } : {};
+    if (courseId !== "forces") forceDone = {};
+    else forceDone = (progress.wins.forces && progress.wins.forces.jobs) ? { ...progress.wins.forces.jobs } : {};
     refreshGuide();
     refreshLesson();
   }
@@ -652,24 +672,81 @@ function boot() {
   }
 
   function isMeasure() { return courseId === "measure"; }
+  function isForces() { return courseId === "forces"; }
 
   function refreshLesson() {
     const card = document.getElementById("lesson");
     const tapeBtn = document.getElementById("tape-tool");
+    const kicker = document.getElementById("lesson-kicker");
+    const measureOl = document.getElementById("measure-jobs");
+    const forceOl = document.getElementById("force-jobs");
     if (tapeBtn) tapeBtn.hidden = !isMeasure();
     if (!card) return;
-    card.hidden = !isMeasure();
-    if (!isMeasure()) return;
-    card.querySelectorAll("[data-job]").forEach((li) => {
-      const id = li.getAttribute("data-job");
-      li.classList.toggle("ok", !!measureDone[id]);
-    });
-    const read = document.getElementById("tape-readout");
-    if (read) {
-      const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
-      read.textContent = n >= 3
-        ? "Three logs in. You can still build."
-        : "Tape: click two corners on a grid line. 1 square = 1 unit.";
+    const on = isMeasure() || isForces();
+    card.hidden = !on;
+    if (!on) return;
+    if (kicker) kicker.textContent = isForces() ? "Lesson · Forces" : "Lesson · Measure";
+    if (measureOl) measureOl.hidden = !isMeasure();
+    if (forceOl) forceOl.hidden = !isForces();
+    if (isMeasure()) {
+      card.querySelectorAll("#measure-jobs [data-job]").forEach((li) => {
+        li.classList.toggle("ok", !!measureDone[li.getAttribute("data-job")]);
+      });
+      const read = document.getElementById("tape-readout");
+      if (read) {
+        const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
+        read.textContent = n >= 3
+          ? "Three logs in. You can still build."
+          : "Tape: click two corners on a grid line. 1 square = 1 unit.";
+      }
+    } else {
+      card.querySelectorAll("#force-jobs [data-job]").forEach((li) => {
+        li.classList.toggle("ok", !!forceDone[li.getAttribute("data-job")]);
+      });
+      const read = document.getElementById("tape-readout");
+      if (read) {
+        const n = FORCE_JOBS.filter((j) => forceDone[j.id]).length;
+        read.textContent = n >= 3
+          ? "Three logs in. Gravity, torque, motion."
+          : "Play a pusher. Watch g, torque, then the crate move.";
+      }
+    }
+  }
+
+  function noteForce(id) {
+    if (!isForces() || forceDone[id]) return;
+    forceDone[id] = true;
+    const n = FORCE_JOBS.filter((j) => forceDone[j.id]).length;
+    const rec = progress.wins.forces || { bestParts: 99, n: 0, jobs: {} };
+    rec.jobs = { ...forceDone };
+    progress.wins.forces = rec;
+    if (n >= 3 && !rec.complete) {
+      rec.complete = true;
+      rec.n = (rec.n || 0) + 1;
+      progress.xp += 18;
+      saveProgress();
+      refreshRank();
+      toast("Forces lesson done. +18 XP. Gravity, torque, motion.");
+    } else {
+      saveProgress();
+      const hit = FORCE_JOBS.find((j) => j.id === id);
+      toast(`${hit ? hit.label : id}. Logged ${n} / 3.`);
+    }
+    refreshLesson();
+  }
+
+  function sampleForces() {
+    if (!isForces() || !sim) return;
+    if (playAge > 0.45) noteForce("gravity");
+    if (sim.cores[0]) {
+      const v = sim.cores[0].getLinearVelocity();
+      if (Math.hypot(v.x, v.y) > 0.6) noteForce("motion");
+    }
+    for (const item of sim.bodies) {
+      const t = item.part.type;
+      if ((t === "driveR" || t === "driveL") && Math.abs(item.body.getAngularVelocity()) > 1.2) {
+        noteForce("torque");
+      }
     }
   }
 
@@ -930,6 +1007,7 @@ function boot() {
     trail = [];
     lastTrail = [];
     lastReadout = "";
+    playAge = 0;
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
@@ -1112,6 +1190,8 @@ function boot() {
       trail.push({ x: p.x, y: p.y });
       if (trail.length > 90) trail.shift();
     }
+    playAge += DT * n;
+    sampleForces();
     checkWin();
   }
 
@@ -1491,6 +1571,61 @@ function boot() {
     ctx.setLineDash([]);
   }
 
+  function drawWorldArrow(x, y, dx, dy, label, color) {
+    const x0 = wx(x), y0 = wy(y);
+    const x1 = wx(x + dx), y1 = wy(y + dy);
+    ctx.save();
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    const ang = Math.atan2(y1 - y0, x1 - x0);
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - Math.cos(ang - 0.45) * 8, y1 - Math.sin(ang - 0.45) * 8);
+    ctx.lineTo(x1 - Math.cos(ang + 0.45) * 8, y1 - Math.sin(ang + 0.45) * 8);
+    ctx.closePath();
+    ctx.fill();
+    if (label) {
+      ctx.font = `700 ${Math.max(10, Math.round(11 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(label, x1, y1 - 4);
+    }
+    ctx.restore();
+  }
+
+  function drawForceMarks() {
+    if (!playing || !sim) return;
+    const loud = isForces();
+    for (const b of sim.cores) {
+      const p = b.getPosition();
+      const v = b.getLinearVelocity();
+      drawWorldArrow(p.x, p.y, 0, -0.85, loud ? "gravity" : "g", "#f0c000");
+      if (Math.hypot(v.x, v.y) > 0.35) {
+        const s = 0.45 / Math.max(0.45, Math.hypot(v.x, v.y));
+        drawWorldArrow(p.x, p.y + 0.2, v.x * s, v.y * s, loud ? "v" : "", ORANGE);
+      }
+    }
+    if (loud) {
+      for (const item of sim.bodies) {
+        const t = item.part.type;
+        if (t !== "driveR" && t !== "driveL") continue;
+        const p = item.body.getPosition();
+        ctx.save();
+        ctx.strokeStyle = ORANGE;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(wx(p.x), wy(p.y), wr(WHEEL_R + 0.18), t === "driveR" ? 0.2 : Math.PI - 0.2, t === "driveR" ? 1.4 : Math.PI - 1.4);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+  }
+
   function drawShopSet(now) {
     const wall = ctx.createLinearGradient(0, 0, 0, canvas.height);
     wall.addColorStop(0, "#3a434c");
@@ -1538,6 +1673,17 @@ function boot() {
       ctx.fill();
     }
 
+    if (playing) {
+      for (let i = 0; i < 18; i++) {
+        const x = ((i * 97 + now * 0.02) % canvas.width);
+        const y = 40 * dpr + (i * 53 % (canvas.height * 0.55));
+        ctx.fillStyle = "rgba(255,248,220,0.14)";
+        ctx.beginPath();
+        ctx.arc(x, y, 1.3 * dpr, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
     for (const t of [0.24, 0.5, 0.76]) {
       const px = canvas.width * t;
       const py = 10 * dpr;
@@ -1573,15 +1719,6 @@ function boot() {
     }
     const drop = doc.level.drop;
     if (drop) drawCone(drop.x + drop.w + 0.55, 1.05);
-
-    for (let i = 0; i < 18; i++) {
-      const x = ((i * 97 + now * 0.02) % canvas.width);
-      const y = 40 * dpr + (i * 53 % (canvas.height * 0.55));
-      ctx.fillStyle = "rgba(255,248,220,0.14)";
-      ctx.beginPath();
-      ctx.arc(x, y, 1.3 * dpr, 0, Math.PI * 2);
-      ctx.fill();
-    }
   }
 
   function drawGraphPaper() {
@@ -1755,6 +1892,16 @@ function boot() {
       }
       if (drag && drag.kind === "place" && drag.x != null) {
         const ok = inRect(drag.x, drag.y, doc.level.shop);
+        const pt = { x: drag.x, y: drag.y };
+        for (const n of allNodes()) {
+          if (dist(n, pt) < SNAP * 1.8) {
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(245,196,0,0.95)";
+            ctx.lineWidth = 2.5;
+            ctx.arc(wx(n.x), wy(n.y), Math.max(7, wr(0.18)), 0, Math.PI * 2);
+            ctx.stroke();
+          }
+        }
         ctx.globalAlpha = 0.7;
         drawWheel(drag.x, drag.y, 0, drag.type);
         ctx.globalAlpha = 1;
@@ -1797,6 +1944,7 @@ function boot() {
         }
         else drawWheel(p.x, p.y, a, t);
       }
+      drawForceMarks();
     }
 
     if (debugOn) {
