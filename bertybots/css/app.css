@@ -28,7 +28,7 @@
     linear-gradient(150deg, #484d54 12%, transparent 12.5%, transparent 87%, #484d54 87.5%, #484d54);
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; background: var(--ink); color: var(--text); font-family: var(--font); font-feature-settings: "ss01", "tnum"; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--text); font-family: var(--font); font-feature-settings: "ss01", "tnum"; overflow: hidden; overscroll-behavior: none; }
 button, input, select { font-family: inherit; }
 button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 :focus { outline: none; }
@@ -525,9 +525,22 @@ a { color: var(--orange); }
 }
 
 @media (hover: none) {
-  .rail { width: var(--rail); }
-  .rail.open { width: var(--rail-open); }
-  .btn, .role-btn { min-height: 44px; }
+  .rail,
+  .rail:hover,
+  .rail:focus-within { width: var(--rail); }
+  .rail .lbl,
+  .rail:hover .lbl,
+  .rail:focus-within .lbl {
+    opacity: 0;
+    max-width: 0;
+  }
+  .rail.open { width: min(var(--rail-open), 46vw); }
+  .rail.open .lbl { opacity: 1; max-width: 9rem; }
+  .rail:hover .guide-line,
+  .rail:focus-within .guide-line { display: none; }
+  .rail.open .guide-line { display: none; }
+  .role { display: none; }
+  .btn, .role-btn, .tool { min-height: 44px; }
 }
 
 @media (max-width: 1100px) {
@@ -548,6 +561,10 @@ a { color: var(--orange); }
   #btn-slow { display: none; }
   .hud-pick { max-width: 8.5rem; }
   .lesson { width: min(13rem, 46vw); padding: 8px 10px; font-size: 12px; }
+  .role { display: none; }
+  .tool { min-height: 44px; padding: 2px 4px; }
+  .pic { width: 36px; height: 36px; flex-basis: 36px; }
+  .status .hint { max-width: 42vw; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -318,10 +318,11 @@ export function boot() {
     const r = role === "observer" ? "observer" : "builder";
     try { sessionStorage.setItem(ROLE_KEY, r); } catch (e) { /* private mode */ }
     document.body.dataset.role = r;
-    const b = document.getElementById("role-builder");
-    const o = document.getElementById("role-observer");
-    if (b) { b.classList.toggle("on", r === "builder"); b.setAttribute("aria-pressed", r === "builder" ? "true" : "false"); }
-    if (o) { o.classList.toggle("on", r === "observer"); o.setAttribute("aria-pressed", r === "observer" ? "true" : "false"); }
+    document.querySelectorAll("[data-role]").forEach((b) => {
+      const on = b.getAttribute("data-role") === r;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
     if (!quiet) toast(r === "observer" ? "Observer: watch the crate." : "Builder: place parts.");
   }
   try { setRole(sessionStorage.getItem(ROLE_KEY) || "builder", true); } catch (e) { setRole("builder", true); }
@@ -657,6 +658,18 @@ export function boot() {
     root.hidden = !on;
   }
 
+  function coarsePointer() {
+    return window.matchMedia("(hover: none)").matches || window.innerWidth < 900;
+  }
+
+  function collapseRail() {
+    const rail = document.getElementById("rail");
+    const btn = document.getElementById("btn-rail");
+    if (!rail) return;
+    rail.classList.remove("open");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
+
   function tightHud() {
     return window.matchMedia("(orientation: portrait) and (max-width: 900px)").matches
       || window.innerHeight < 500;
@@ -832,6 +845,7 @@ export function boot() {
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
+    if (coarsePointer()) collapseRail();
     refreshMeta();
   }
 
@@ -2015,10 +2029,9 @@ export function boot() {
     });
     const periodBtn = document.getElementById("btn-period");
     if (periodBtn) periodBtn.addEventListener("click", () => resetHeat(false));
-    const roleB = document.getElementById("role-builder");
-    const roleO = document.getElementById("role-observer");
-    if (roleB) roleB.addEventListener("click", () => setRole("builder"));
-    if (roleO) roleO.addEventListener("click", () => setRole("observer"));
+    document.querySelectorAll("[data-role]").forEach((b) => {
+      b.addEventListener("click", () => setRole(b.getAttribute("data-role")));
+    });
     document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
     document.getElementById("btn-stop").addEventListener("click", stopPlay);
     const toggleSlow = () => {

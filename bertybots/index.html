@@ -9,13 +9,13 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.14.1 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.15.0 — Solvay Tech Ed</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.14.1">
+  <link rel="stylesheet" href="css/app.css?v=0.15.0">
 </head>
 <body>
   <div id="rotate-gate">
@@ -119,7 +119,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.14.1</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.15.0</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -154,8 +154,8 @@
       <div class="stage">
         <canvas id="c"></canvas>
         <div class="role" id="role" role="group" aria-label="Pair role">
-          <button class="role-btn on" id="role-builder" type="button" aria-pressed="true">Builder</button>
-          <button class="role-btn" id="role-observer" type="button" aria-pressed="false">Observer</button>
+          <button class="role-btn on" data-role="builder" id="role-builder" type="button" aria-pressed="true">Builder</button>
+          <button class="role-btn" data-role="observer" id="role-observer" type="button" aria-pressed="false">Observer</button>
         </div>
         <div class="lesson" id="lesson" hidden>
           <p class="lesson-kicker">Lesson · Measure</p>
@@ -198,6 +198,10 @@
           <div class="sheet-card" role="dialog" aria-labelledby="crew-title">
             <h2 id="crew-title">Menu</h2>
             <p class="hint" id="rank-menu">Helper · 0 XP</p>
+            <div class="row role-menu" role="group" aria-label="Pair role">
+              <button class="btn on" data-role="builder" type="button" aria-pressed="true">Builder</button>
+              <button class="btn" data-role="observer" type="button" aria-pressed="false">Observer</button>
+            </div>
             <label class="crew-label" for="title">Level title (no names)</label>
             <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
             <div class="row">
@@ -231,6 +235,6 @@
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="https://cdn.jsdelivr.net/npm/planck-js@0.3.14/dist/planck.min.js"></script>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.14.1"></script>
+  <script src="js/bundle.js?v=0.15.0"></script>
 </body>
 </html>

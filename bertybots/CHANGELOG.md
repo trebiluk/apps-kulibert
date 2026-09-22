@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.14.1** · 2026-09-21 · channel **live**  
+**Chip: BB 0.15.0** · 2026-09-21 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.14.1` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.15.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,7 +28,19 @@ Rules:
 
 ---
 
-## Current train (0.14.x live)
+## Current train (0.15.x live)
+
+### 0.15.0 — Phone play — 2026-09-21
+
+- On a phone, the tool bin stays icon-sized unless you pin Tools. Tap no longer wedges it open.
+- Builder / Observer sit in Menu so they do not cover the crate.
+- Play still collapses the bin so the floor can fill the screen.
+
+Hard refresh if a cart still says 0.14.1.
+
+---
+
+## 0.14.x
 
 ### 0.14.1 — Polish — 2026-09-21
 
