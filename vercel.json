@@ -858,7 +858,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-staff-password"
+          "value": "2026-09-22-hub-tech-room-cachebust"
         }
       ]
     },
@@ -871,7 +871,7 @@
         },
         {
           "key": "X-Tech-Room-Rev",
-          "value": "2026-09-22-hub-staff-password"
+          "value": "2026-09-22-hub-tech-room-cachebust"
         }
       ]
     },
