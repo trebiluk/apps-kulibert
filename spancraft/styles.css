@@ -1,0 +1,272 @@
+:root {
+  color-scheme: dark;
+  --bg: #050814;
+  --panel: #0b152c;
+  --elevated: #10203f;
+  --border: #16324f;
+  --text: #e8f7ff;
+  --muted: #8fb4c9;
+  --accent: #22d3ee;
+  --accent-fg: #041018;
+  --pass: #5eead4;
+  --fail: #ffb4c0;
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Outfit, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+body { overflow: hidden; }
+button, a { font: inherit; color: inherit; }
+button { cursor: pointer; }
+button:disabled { cursor: default; opacity: 0.45; }
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.shell {
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-columns: 7.75rem minmax(0, 1fr);
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+  grid-template-areas:
+    "pocket top"
+    "pocket caption"
+    "pocket kinds"
+    "pocket stage";
+  background: var(--bg);
+  padding:
+    env(safe-area-inset-top)
+    env(safe-area-inset-right)
+    env(safe-area-inset-bottom)
+    env(safe-area-inset-left);
+}
+
+.top {
+  grid-area: top;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 52px;
+  padding: 0.2rem 0.65rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-height: 44px;
+  min-width: 44px;
+  text-decoration: none;
+  color: inherit;
+}
+.brand img { width: 40px; height: 40px; display: block; }
+.brand h1 {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+.brand p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  font-weight: 700;
+}
+.top-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-end; }
+.top-actions button,
+.top-actions a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  text-decoration: none;
+  font-weight: 750;
+  font-size: 1rem;
+}
+.top-actions button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+.top-actions svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.caption {
+  grid-area: caption;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.7rem;
+  padding: 0.55rem 0.8rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  line-height: 1.3;
+}
+.caption strong {
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.caption span {
+  font-size: 1.15rem;
+  font-weight: 650;
+}
+.caption.pass strong { color: var(--pass); }
+.caption.fail strong { color: var(--fail); }
+
+.kinds {
+  grid-area: kinds;
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  padding: 0.4rem 0.65rem;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+}
+.kinds[hidden] { display: none; }
+.kinds button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  font-weight: 750;
+  font-size: 1rem;
+}
+.kinds button[aria-checked="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+.kinds svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.stage {
+  grid-area: stage;
+  min-width: 0;
+  min-height: 0;
+  background: var(--bg);
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  background: var(--bg);
+}
+canvas:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -3px;
+}
+
+.pocket {
+  grid-area: pocket;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.45rem;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+}
+.pocket button {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.35rem 0.25rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  font-weight: 800;
+  font-size: 1rem;
+  line-height: 1.1;
+}
+.pocket button[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
+.pocket button.go {
+  background: color-mix(in srgb, var(--accent) 16%, var(--elevated));
+  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+}
+.pocket button.go[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+.pocket svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 720px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "top"
+      "caption"
+      "kinds"
+      "stage"
+      "pocket";
+  }
+  .pocket {
+    flex-direction: row;
+    border-right: 0;
+    border-top: 1px solid var(--border);
+  }
+  .pocket button { min-height: 52px; }
+  .brand h1 { font-size: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto; }
+}
