@@ -270,25 +270,31 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 
 .lesson {
-  position: absolute; top: 10px; left: 10px;
-  width: min(16rem, 42vw);
-  background: rgb(243 238 228 / 94%);
+  position: absolute; top: 8px; right: 8px; left: auto;
+  width: min(13.5rem, 36vw);
+  background: rgb(243 238 228 / 92%);
   color: var(--ink);
   border: 1px solid var(--hair);
-  border-radius: calc(var(--radius) + 8px);
-  padding: 10px 12px 8px;
+  border-radius: calc(var(--radius) + 6px);
+  padding: 8px 10px 6px;
   z-index: 3;
-  font-weight: 600;
+  font-weight: 550;
+  font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
 }
 .lesson-kicker {
-  margin: 0 0 6px;
-  font-size: 11px; font-weight: 800;
-  letter-spacing: .08em; text-transform: uppercase;
+  margin: 0 0 4px;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
   color: var(--orange);
 }
-.lesson ol { margin: 0 0 8px; padding-left: 1.2rem; }
-.lesson li { margin: 0 0 4px; }
-.lesson li.ok { color: var(--ok); text-decoration: line-through; }
+.lesson ol { margin: 0 0 6px; padding-left: 1.15rem; }
+.lesson li { margin: 0 0 3px; }
+.lesson li.ok { color: var(--ok); text-decoration: none; }
+.lesson li.ok::marker { color: var(--ok); }
+body[data-play="1"] .lesson { opacity: 0.86; }
+body[data-play="1"] .lesson .hint { display: none; }
 
 .rail-guide {
   margin-top: auto;
@@ -560,7 +566,7 @@ a { color: var(--orange); }
   :root { --rail: 56px; }
   #btn-slow { display: none; }
   .hud-pick { max-width: 8.5rem; }
-  .lesson { width: min(13rem, 46vw); padding: 8px 10px; font-size: 12px; }
+  .lesson { width: min(11rem, 34vw); padding: 6px 8px 4px; font-size: 11px; top: 6px; right: 6px; }
   .role { display: none; }
   .tool { min-height: 44px; padding: 2px 4px; }
   .pic { width: 36px; height: 36px; flex-basis: 36px; }

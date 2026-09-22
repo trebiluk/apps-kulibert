@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.16.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.16.1 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.16.0";
+const APP_VERSION = "0.16.1";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.16.0";
+const APP_CHIP = "BB 0.16.1";
 const APP_BUILT = "2026-09-21";
 
 const FORMAT = 1;
@@ -870,6 +870,7 @@ function boot() {
     titleEl.value = doc.title;
     countEl.textContent = `${pieceCount(doc)} / ${PIECE_CAP}`;
     modeEl.textContent = playing ? (slowMo ? "Slow" : "Play") : "Shop";
+    document.body.dataset.play = playing ? "1" : "0";
     const slowBtn = document.getElementById("btn-slow");
     if (slowBtn) slowBtn.classList.toggle("on", slowMo);
     const slowMenu = document.getElementById("btn-slow-menu");
@@ -1593,6 +1594,10 @@ function boot() {
       ctx.font = `700 ${Math.max(10, Math.round(11 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "bottom";
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = "rgba(26,26,26,0.7)";
+      ctx.strokeText(label, x1, y1 - 4);
+      ctx.fillStyle = color;
       ctx.fillText(label, x1, y1 - 4);
     }
     ctx.restore();
@@ -1604,10 +1609,10 @@ function boot() {
     for (const b of sim.cores) {
       const p = b.getPosition();
       const v = b.getLinearVelocity();
-      drawWorldArrow(p.x, p.y, 0, -0.85, loud ? "gravity" : "g", "#f0c000");
+      drawWorldArrow(p.x, p.y, 0, -0.72, "g", "#f0c000");
       if (Math.hypot(v.x, v.y) > 0.35) {
-        const s = 0.45 / Math.max(0.45, Math.hypot(v.x, v.y));
-        drawWorldArrow(p.x, p.y + 0.2, v.x * s, v.y * s, loud ? "v" : "", ORANGE);
+        const s = 0.5 / Math.max(0.5, Math.hypot(v.x, v.y));
+        drawWorldArrow(p.x + 0.38, p.y + 0.12, v.x * s, v.y * s, "v", ORANGE);
       }
     }
     if (loud) {
