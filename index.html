@@ -22,7 +22,6 @@
       --accent:#22d3ee;
       --live:#14b8a6;
       --tk-logo-grad:linear-gradient(90deg,#22D3EE 0%,#14B8A6 45%,#6D28D9 100%);
-      --tile:6.9rem;
       --radius:16px;
     }
     *{box-sizing:border-box}
@@ -39,7 +38,7 @@
         max(2.5rem, env(safe-area-inset-bottom))
         max(.8rem, env(safe-area-inset-left));
     }
-    .wrap{max-width:75rem;margin:0 auto}
+    .wrap{width:100%;max-width:none}
     .poster{
       position:relative;overflow:hidden;
       border:1px solid var(--border);border-radius:22px;min-height:10.25rem;
@@ -372,13 +371,14 @@
         </h1>
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
-          <div><strong>Last updated</strong> · 2026-09-22 · SpanCraft Load prove + Spire Lab Stand prove</div>
+          <div><strong>Last updated</strong> · 2026-09-22 · SpanCraft Load prove + Spire Lab Stand prove · Berty Run First Trace still live</div>
           <div class="rev">rev 2026-09-22-span-spire-mvp</div>
           <ul id="hub-log">
+            <li>Berty Run: L1 First Trace still live</li>
             <li>SpanCraft: Load prove playable · Spire Lab: Stand prove playable</li>
+            <li>Viewport fill: tiles grow with the width · 2 / 3–4 / 4–5 columns · labels ≥14px · hits ≥44px</li>
             <li>Firm KuliNet marks on every app tile · corner K</li>
-            <li>Viewport shell: 2 / 3–4 / 4–5 columns · labels ≥14px · hits ≥44px</li>
-            <li>BertyBeatz: BZ 1.2.0 playable · Berty Run: list only · not built</li>
+            <li>BertyBeatz: BZ 1.2.0 playable</li>
           </ul>
           <button type="button" class="hub-more" id="hub-more" hidden>More</button>
         </div>
@@ -489,7 +489,7 @@
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.1.1</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.8.0</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.11.0</strong></a></li>
-        <li><a href="/berty-run/">Berty Run <strong>list · not built</strong></a></li>
+        <li><a href="/berty-run/">Berty Run <strong>First Trace</strong></a></li>
         <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.2.0</strong></a></li>
         <li><a href="/spancraft/">SpanCraft <strong>Load prove</strong></a></li>
         <li><a href="/spire-lab/">Spire Lab <strong>Stand prove</strong></a></li>
