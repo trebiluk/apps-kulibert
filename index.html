@@ -2,9 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
+  <meta name="tech-room-rev" content="2026-09-22-span-spire"/>
   <title>The Tech Room · apps.kulibert.net</title>
+  <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <style>
     :root{
@@ -25,12 +27,19 @@
     }
     *{box-sizing:border-box}
     html,body{
-      margin:0;min-height:100%;background:var(--bg);color:var(--text);
+      margin:0;min-height:100%;min-height:100dvh;background:var(--bg);color:var(--text);
       font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-size:16px;
       -webkit-font-smoothing:antialiased;
     }
-    body{padding:1rem .8rem 2.5rem}
-    .wrap{max-width:52rem;margin:0 auto}
+    body{
+      padding:
+        max(1rem, env(safe-area-inset-top))
+        max(.8rem, env(safe-area-inset-right))
+        max(2.5rem, env(safe-area-inset-bottom))
+        max(.8rem, env(safe-area-inset-left));
+    }
+    .wrap{max-width:75rem;margin:0 auto}
     .poster{
       position:relative;overflow:hidden;
       border:1px solid var(--border);border-radius:22px;min-height:10.25rem;
@@ -61,16 +70,48 @@
     .hero{
       position:relative;z-index:1;
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      min-height:10.25rem;padding:.7rem .75rem 3.85rem;text-align:center;
+      min-height:10.25rem;padding:3.15rem .75rem 5.4rem;text-align:center;
     }
-    @media (min-width:640px){.hero{min-height:12.25rem;padding:.85rem 1rem 4rem}}
-    @media (min-width:960px){.hero{min-height:13.5rem}}
+    @media (min-width:640px){.hero{min-height:12.25rem;padding:3.2rem 1rem 5.4rem}}
+    @media (min-width:960px){.hero{min-height:13.5rem;padding-top:3.4rem}}
+    .corner-k{
+      position:absolute;z-index:3;
+      top:max(.55rem, env(safe-area-inset-top));
+      left:max(.55rem, env(safe-area-inset-left));
+      width:2rem;height:2rem;min-width:24px;min-height:24px;
+    }
+    .corner-k img{display:block;width:100%;height:100%}
+    @media (min-width:960px){
+      .corner-k{width:3rem;height:3rem}
+    }
+    .hub-plate{
+      margin:.75rem 0 0;padding:.65rem .8rem;border-radius:12px;
+      background:color-mix(in srgb,var(--panel) 88%,transparent);
+      border:1px solid color-mix(in srgb,var(--accent) 22%,transparent);
+      color:var(--text);font-size:1rem;line-height:1.35;font-weight:500;
+      max-width:36rem;width:min(100%,36rem);text-align:left;
+    }
+    .hub-plate strong{color:#f4b942;font-weight:800}
+    .hub-plate .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.875rem;color:#9ecbff}
+    .hub-plate ul{margin:.35rem 0 0;padding-left:1.15rem}
+    .hub-plate li{margin:.15rem 0}
+    .hub-more{
+      margin-top:.35rem;min-height:44px;min-width:44px;padding:0 .9rem;
+      border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);
+      background:var(--elevated);color:var(--text);font:inherit;font-size:.875rem;font-weight:700;
+      cursor:pointer;
+    }
+    .hub-more:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+    @media (max-width:639px){
+      .hub-plate.is-clamped ul{max-height:calc(1.35em * 3);overflow:hidden}
+      .search{width:calc(100% - 1.5rem)}
+    }
     .chip{
       display:inline-flex;align-items:center;gap:.4rem;margin-bottom:.45rem;
       padding:.3rem .75rem;border-radius:999px;
       background:color-mix(in srgb,var(--panel) 88%,transparent);
       border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
-      color:var(--muted);font-size:.72rem;font-weight:600;
+      color:var(--muted);font-size:.875rem;font-weight:600;
     }
     .chip i{width:.45rem;height:.45rem;border-radius:50%;background:var(--live);display:inline-block}
     h1{margin:0;position:relative;isolation:isolate;text-rendering:geometricPrecision;text-wrap:balance}
@@ -91,7 +132,7 @@
     }
     .search input{
       width:100%;height:3rem;min-height:44px;border:0;border-radius:999px;outline:none;
-      padding:0 1rem 0 2.7rem;color:var(--text);font:inherit;font-size:.95rem;font-weight:500;
+      padding:0 1rem 0 2.7rem;color:var(--text);font:inherit;font-size:1rem;font-weight:500;
       background:color-mix(in srgb,var(--panel) 92%,transparent);
       border:1px solid color-mix(in srgb,var(--accent) 28%,transparent);
       box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
@@ -106,13 +147,22 @@
     }
     .board{
       margin:1.2rem 0 0;
-      display:grid;gap:.7rem;
-      grid-template-columns:repeat(auto-fill,minmax(var(--tile),1fr));
-      justify-items:center;
+      display:grid;gap:.85rem;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      justify-items:stretch;
+    }
+    @media (min-width:640px){
+      .board{grid-template-columns:repeat(3,minmax(0,1fr))}
+    }
+    @media (min-width:1024px){
+      .board{grid-template-columns:repeat(4,minmax(0,1fr))}
+    }
+    @media (min-width:1367px){
+      .board{grid-template-columns:repeat(5,minmax(0,1fr))}
     }
     a.tile{
-      width:var(--tile);height:var(--tile);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
+      width:100%;height:auto;aspect-ratio:1;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;
       text-decoration:none;color:var(--muted);
       background:var(--cell);
       border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
@@ -121,14 +171,14 @@
       transition:border-color .15s,background .15s,box-shadow .15s,transform .15s,color .15s;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
-      min-width:56px;min-height:56px;
+      min-width:44px;min-height:44px;
     }
     a.tile svg{
-      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(38%,2.6rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
-    a.tile[data-id="bertybeatz"] img{
-      width:2.15rem;height:2.15rem;display:block;object-fit:contain;border:0;
+    a.tile img.mark{
+      width:min(46%,4.75rem);height:auto;aspect-ratio:1;display:block;object-fit:contain;border:0;
     }
     a.tile:hover{
       color:var(--text);
@@ -141,7 +191,7 @@
       outline:2px solid var(--accent);outline-offset:3px;
     }
     a.tile:active{transform:scale(.96)}
-    a.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    a.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
     a.tile.is-hidden{display:none}
     a.tile.is-room-hidden,button.tile.is-room-hidden{display:none}
     .closed-banner{margin:1rem 0 0;padding:.85rem 1rem;border-radius:12px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--border));background:var(--panel);color:var(--text);font-size:.9rem;font-weight:600;line-height:1.4}
@@ -156,18 +206,22 @@
     .poster.is-lockup-off .hero{padding:.7rem .75rem .85rem}
     .poster.is-no-search .search{display:none}
     .poster.is-no-search .hero{padding-bottom:.85rem}
-    body.room-compact{--tile:5.2rem}
+    body.room-compact .board{gap:.5rem}
     body.is-no-recents #opened{display:none !important}
     body.is-no-chips .live{display:none}
     body.is-no-cuts .cuts{display:none}
     body.is-same-tab a.tile{/* target set in JS */}
     a.tile[data-id="baboo"]{
-      border-color:color-mix(in srgb,var(--live) 58%,var(--border));
+      border-color:color-mix(in srgb,#2563EB 58%,var(--border));
+      background:#f4f7fb;color:#1e3a5f;
     }
-    a.tile[data-id="baboo"] svg{stroke:var(--live)}
+    a.tile[data-id="baboo"]:hover,
+    a.tile[data-id="baboo"]:focus-visible{
+      color:#0f172a;background:#fff;
+    }
     .recents{margin:1.4rem 0 0}
     .recents h2,.live h2{
-      font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;
+      font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;
       color:var(--subtle);margin:0 0 .7rem;font-weight:650;
     }
     .recents[hidden]{display:none}
@@ -186,57 +240,48 @@
     }
     ul.chips strong{color:var(--accent);font-weight:800}
     .empty{color:var(--muted);font-size:.9rem;padding:.5rem 0 0}
-    footer{margin:2rem 0 0;color:var(--subtle);font-size:.78rem}
-    @media (min-width:640px){
-      :root{--tile:7.6rem}
-      a.tile svg{width:2.4rem;height:2.4rem}
-      a.tile[data-id="bertybeatz"] img{width:2.4rem;height:2.4rem}
-    }
-    @media (max-width:400px){
-      :root{--tile:5.85rem}
-      a.tile{min-width:52px;min-height:52px}
-    }
+    footer{margin:2rem 0 0;color:var(--subtle);font-size:.875rem;line-height:1.4}
     @media (prefers-reduced-motion:reduce){
       a.tile,a.tile:active{transition:none;transform:none}
     }
 
     button.tile{
-      width:var(--tile);height:var(--tile);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.45rem;
+      width:100%;height:auto;aspect-ratio:1;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;
       text-decoration:none;color:var(--muted);
       background:var(--cell);
       border:1px solid color-mix(in srgb,var(--accent) 32%,transparent);
       border-radius:var(--radius);
       box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 8%,transparent);
-      font:inherit;cursor:pointer;
+      font:inherit;font-size:1rem;cursor:pointer;
       -webkit-tap-highlight-color:transparent;
       touch-action:manipulation;
-      min-width:56px;min-height:56px;
+      min-width:44px;min-height:44px;
     }
     button.tile svg{
-      width:2.15rem;height:2.15rem;stroke:var(--accent);fill:none;stroke-width:1.7;
+      width:min(38%,2.6rem);height:auto;aspect-ratio:1;stroke:var(--accent);fill:none;stroke-width:1.7;
       stroke-linecap:round;stroke-linejoin:round;
     }
     button.tile.add{border-style:dashed;background:transparent}
     button.tile.add:hover,button.tile.add:focus-visible{border-style:solid;color:var(--text);border-color:color-mix(in srgb,var(--accent) 62%,transparent);background:var(--elevated)}
     button.tile:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-    .tile .label,button.tile .label{font-size:.8rem;font-weight:650;text-align:center;line-height:1.2;padding:0 .4rem;max-width:100%}
+    .tile .label,button.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
     .school{margin:1.4rem 0 0}
     .school[hidden]{display:none}
     .school-head,.cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
-    .school h2,.cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
-    .school .hint,.cuts .hint{font-size:.7rem;color:var(--subtle)}
+    .school h2,.cuts h2{font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
+    .school .hint,.cuts .hint{font-size:.875rem;color:var(--subtle)}
     .school .board,.cuts .board{margin:0}
-    .door-line{margin:.1rem 0 .55rem;color:var(--muted);font-size:.82rem;line-height:1.35;font-weight:500}
+    .door-line{margin:.1rem 0 .55rem;color:var(--muted);font-size:.875rem;line-height:1.35;font-weight:500}
     .cuts{margin:1.4rem 0 0}
     .cuts-head{display:flex;align-items:center;justify-content:space-between;gap:.75rem;margin:0 0 .7rem}
-    .cuts h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
-    .cuts .hint{font-size:.7rem;color:var(--subtle)}
+    .cuts h2{font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;color:var(--subtle);margin:0;font-weight:650}
+    .cuts .hint{font-size:.875rem;color:var(--subtle)}
     .cuts .board{margin:0}
-    .cut-wrap{position:relative;width:var(--tile);height:var(--tile)}
+    .cut-wrap{position:relative;width:100%;aspect-ratio:1;height:auto}
     .cut-wrap .tile{width:100%;height:100%}
     .cut-wrap .edit{
-      position:absolute;top:.2rem;right:.2rem;width:2rem;height:2rem;padding:0;
+      position:absolute;top:.2rem;right:.2rem;width:44px;height:44px;padding:0;
       display:grid;place-items:center;border:0;border-radius:8px;cursor:pointer;
       background:color-mix(in srgb,var(--bg) 80%,transparent);color:var(--muted);
     }
@@ -273,17 +318,17 @@
     }
     .sheet .save{background:var(--accent);color:#041018;flex:1}
     .sheet .ghost{background:var(--panel);color:var(--text);border:1px solid var(--border)}
-    @media (min-width:640px){
-      button.tile svg{width:2.4rem;height:2.4rem}
-    }
-    @media (max-width:400px){
-      button.tile{min-width:52px;min-height:52px}
+    @media (prefers-reduced-motion:reduce){
+      button.tile,button.tile:active{transition:none;transform:none}
     }
   </style>
 </head>
 <body>
   <div class="wrap">
     <section class="poster" aria-label="The Tech Room">
+      <div class="corner-k">
+        <img src="/icons/icon-kulinet-k.svg" width="48" height="48" alt="KuliNet"/>
+      </div>
       <div class="field" aria-hidden="true">
         <span class="cell"><svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></span>
         <span class="cell"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
@@ -326,6 +371,17 @@
           <span class="lockup-room">TECH ROOM</span>
         </h1>
         <p class="welcome-line" id="welcome-line" hidden></p>
+        <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
+          <div><strong>Last updated</strong> · 2026-09-22 · SpanCraft + Spire Lab list doors</div>
+          <div class="rev">rev 2026-09-22-span-spire</div>
+          <ul id="hub-log">
+            <li>SpanCraft + Spire Lab: list only · not built</li>
+            <li>Firm KuliNet marks on every app tile · corner K</li>
+            <li>Viewport shell: 2 / 3–4 / 4–5 columns · labels ≥14px · hits ≥44px</li>
+            <li>BertyBeatz: BZ 1.2.0 playable · Berty Run: list only · not built</li>
+          </ul>
+          <button type="button" class="hub-more" id="hub-more" hidden>More</button>
+        </div>
       </div>
       <label class="search" id="search-box">
         <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps or paste a link</span>
@@ -337,56 +393,68 @@
 
     <nav class="board" aria-label="Apps">
       <a class="tile" data-id="techworks" href="https://tw.kulibert.net">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
         <span class="label">TechWorks</span>
       </a>
       <a class="tile" data-id="baboo" href="https://baboo.kulibert.net">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="1.2"/><path d="M3 11.6h8.2"/><path d="M12 3v18"/><path d="M12 14.8h9"/><path d="M16.6 14.8V21"/><path d="M7.6 11.6v3.4"/></svg>
+        <img class="mark" src="/icons/icon-baboo.svg" alt="" width="72" height="72"/>
         <span class="label">Baboo</span>
       </a>
       <a class="tile" data-id="koderized" href="https://tw.kulibert.net/koderized/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
         <span class="label">Koderized</span>
       </a>
       <a class="tile" data-id="bertycad" href="/bertycad/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+        <img class="mark" src="/icons/icon-bertycad.svg" alt="" width="72" height="72"/>
         <span class="label">BertyCAD</span>
       </a>
       <a class="tile" data-id="bertybots" href="/bertybots/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>
+        <img class="mark" src="/icons/icon-bertybots.svg" alt="" width="72" height="72"/>
         <span class="label">Berty's Botz</span>
       </a>
+      <a class="tile" data-id="berty-run" href="/berty-run/">
+        <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
+        <span class="label">Berty Run</span>
+      </a>
       <a class="tile" data-id="bertybeatz" href="/bertybeatz/">
-        <img src="/bertybeatz/mark.svg" alt="" width="40" height="40"/>
+        <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
         <span class="label">BertyBeatz</span>
       </a>
       <a class="tile" data-id="paperlab" href="/paperlab/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
         <span class="label">PaperLab</span>
       </a>
       <a class="tile" data-id="logolab" href="/logolab/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+        <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
         <span class="label">LogoLab</span>
       </a>
       <a class="tile" data-id="sprocket" href="/sprocket/index.html">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"/><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+        <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
         <span class="label">Sprocket</span>
       </a>
       <a class="tile" data-id="den" href="/den/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+        <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
         <span class="label">Bearcat Den</span>
       </a>
       <a class="tile" data-id="bistro" href="/bistro/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+        <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
         <span class="label">Bearcat Bistro</span>
       </a>
       <a class="tile" data-id="housekit" href="/housekit/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
         <span class="label">HouseKit</span>
       </a>
       <a class="tile" data-id="drift" href="/drift/">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.59 13.51 15.42 17.49M15.41 6.51 8.59 10.49"/></svg>
+        <img class="mark" src="/icons/icon-drift.svg" alt="" width="72" height="72"/>
         <span class="label">Drift · Tech 6–8</span>
+      </a>
+      <a class="tile" data-id="spancraft" href="/spancraft/">
+        <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
+        <span class="label">SpanCraft</span>
+      </a>
+      <a class="tile" data-id="spire-lab" href="/spire-lab/">
+        <img class="mark" src="/icons/icon-spire-lab.svg" alt="" width="72" height="72"/>
+        <span class="label">Spire Lab</span>
       </a>
     </nav>
 
@@ -421,7 +489,10 @@
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.1.1</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.8.0</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.11.0</strong></a></li>
+        <li><a href="/berty-run/">Berty Run <strong>list · not built</strong></a></li>
         <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.2.0</strong></a></li>
+        <li><a href="/spancraft/">SpanCraft <strong>list · not built</strong></a></li>
+        <li><a href="/spire-lab/">Spire Lab <strong>list · not built</strong></a></li>
       </ul>
     </section>
     <p class="room-meta" id="room-meta" hidden></p>
@@ -971,6 +1042,33 @@
           }
         }
       });
+
+      var plate = document.getElementById("hub-plate");
+      var moreBtn = document.getElementById("hub-more");
+      var plateQuery = window.matchMedia("(max-width: 639px)");
+      function syncPlate() {
+        if (!plate || !moreBtn) return;
+        var narrow = plateQuery.matches;
+        if (!narrow) {
+          plate.classList.remove("is-clamped");
+          moreBtn.hidden = true;
+          return;
+        }
+        var open = plate.classList.contains("is-open");
+        plate.classList.toggle("is-clamped", !open);
+        moreBtn.hidden = false;
+        moreBtn.textContent = open ? "Less" : "More";
+        moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+      if (moreBtn) {
+        moreBtn.addEventListener("click", function () {
+          plate.classList.toggle("is-open");
+          syncPlate();
+        });
+      }
+      if (plateQuery.addEventListener) plateQuery.addEventListener("change", syncPlate);
+      else if (plateQuery.addListener) plateQuery.addListener(syncPlate);
+      syncPlate();
 
       paint();
       paintCuts();

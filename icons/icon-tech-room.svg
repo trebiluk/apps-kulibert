@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="The Tech Room">
+  <defs>
+    <linearGradient id="roomPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B152C"/>
+      <stop offset="100%" stop-color="#10203F"/>
+    </linearGradient>
+    <linearGradient id="roomRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="48%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#roomPlate)"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="url(#roomRim)" stroke-width="3"/>
+  <path fill="#E8F7FF" d="M54 36h20v22l16 10v28H38V68l16-10V36z"/>
+  <path fill="#22D3EE" d="M58 78h12v18H58z"/>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="BertyCAD">
+  <rect width="128" height="128" rx="28" fill="#070B12"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#E8A317" stroke-width="3"/>
+  <g fill="none" stroke="#F5C542" stroke-width="3.4" stroke-linejoin="round">
+    <path d="M64 30 100 50 64 70 28 50Z"/>
+    <path d="M28 50 64 70v32L28 82Z"/>
+    <path d="M64 70 100 50v32L64 102Z"/>
+  </g>
+</svg>

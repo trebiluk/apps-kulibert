@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Berty Run">
+  <rect width="128" height="128" rx="28" fill="#070B14"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#22D3EE" stroke-width="3"/>
+  <g fill="none" stroke="#E8FBFF" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="36" y="30" width="56" height="44" rx="14"/>
+    <path d="M52 74v22M76 74v22"/>
+  </g>
+  <circle cx="52" cy="48" r="4.5" fill="#E8FBFF"/>
+  <circle cx="76" cy="48" r="4.5" fill="#E8FBFF"/>
+  <rect x="50" y="58" width="28" height="5.5" rx="2.6" fill="#E8FBFF"/>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Berty's Botz">
+  <rect width="128" height="128" rx="28" fill="#0B1F3A"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#E87722" stroke-width="3"/>
+  <g fill="none" stroke="#F4EFE6" stroke-width="3" stroke-linecap="round">
+    <path d="M46 34v10M64 34v10M82 34v10M46 84v10M64 84v10M82 84v10"/>
+    <path d="M34 50h10M34 64h10M34 78h10M84 50h10M84 64h10M84 78h10"/>
+  </g>
+  <rect x="40" y="44" width="48" height="40" rx="6" fill="#123049" stroke="#F4B942" stroke-width="3"/>
+  <rect x="54" y="56" width="20" height="16" rx="2" fill="#E87722"/>
+</svg>

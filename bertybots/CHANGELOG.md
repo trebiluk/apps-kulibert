@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.18.0** · 2026-09-21 · channel **live**  
+**Chip: BB 0.18.1** · 2026-09-22 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.18.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.18.1` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -29,6 +29,10 @@ Rules:
 ---
 
 ## Current train (0.18.x live)
+
+### 0.18.1 — Shop fill — 2026-09-22
+
+The playfield keeps the 1280×760 shop aspect and scales up to the window. 1280×760 is not a size you need before you can play. Extra space is shop wall, not a grey gutter.
 
 ### 0.18.0 — TechWorks hang — 2026-09-21
 

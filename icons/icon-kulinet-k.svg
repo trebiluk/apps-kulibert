@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="KuliNet">
+  <defs>
+    <linearGradient id="kulinetK" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="46%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#6D28D9"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#kulinetK)"/>
+  <path fill="#071018" d="M40 28h18.5v28.2L86.2 28H108L74.6 62.4 110 100H86.4L58.5 70.8V100H40V28z"/>
+</svg>

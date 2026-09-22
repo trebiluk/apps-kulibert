@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="PaperLab">
+  <rect width="128" height="128" rx="28" fill="#F3EEE4"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#9A3412" stroke-width="3"/>
+  <path fill="#9A3412" d="M46 26h36a4 4 0 0 1 4 4v72l-22-12-22 12V30a4 4 0 0 1 4-4z"/>
+  <path fill="#F3EEE4" d="M56 42h20v6H56zm0 14h16v6H56z"/>
+</svg>

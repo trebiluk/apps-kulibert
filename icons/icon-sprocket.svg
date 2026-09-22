@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Sprocket">
+  <rect width="128" height="128" rx="28" fill="#0E7490"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#ECFEFF" stroke-width="3"/>
+  <g transform="translate(64 64)" fill="#ECFEFF">
+    <rect x="-6" y="-48" width="12" height="18" rx="2"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(45)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(90)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(135)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(180)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(225)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(270)"/>
+    <rect x="-6" y="-48" width="12" height="18" rx="2" transform="rotate(315)"/>
+    <circle r="30"/>
+    <circle r="12" fill="#0E7490"/>
+  </g>
+</svg>
