@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-22-hub-shell-hole"/>
+  <meta name="tech-room-rev" content="2026-09-23-apps-always"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -411,9 +411,81 @@
     .shell-footer a:focus-visible,#shell-home:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home{margin-left:auto;min-height:44px;min-width:44px}
     #shell-home[hidden]{display:none}
+  
+    /* All apps on the screen, all the time. Home fits the tiles. Open app keeps the row. */
+    .app-dock{
+      flex:0 0 auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:.28rem;
+      padding:.28rem .45rem;background:#050814;border-bottom:1px solid #16324f;
+      max-height:96px;overflow:hidden;
+    }
+    .app-dock[hidden]{display:none !important}
+    .app-dock-item{
+      display:inline-flex;align-items:center;gap:.3rem;min-height:40px;max-width:9.5rem;
+      padding:0 .5rem 0 .28rem;border-radius:10px;border:1px solid #16324f;background:#0b152c;
+      color:#e8f7ff;text-decoration:none;font-size:.72rem;font-weight:700;line-height:1.1;
+    }
+    .app-dock-item img{width:22px;height:22px;object-fit:contain;flex:0 0 auto}
+    .app-dock-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .app-dock-item.is-open{border-color:#22d3ee;color:#22d3ee}
+    .app-dock-item:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+    body.apps-always #shell-board{
+      overflow:hidden;display:flex;flex-direction:column;padding:.3rem .5rem .35rem;
+    }
+    body.apps-always.is-framed #shell-board{display:none}
+    body.apps-always.is-framed #app-frame{display:block;flex:1 1 auto}
+    body.apps-always #shell-board > .wrap{
+      flex:1;min-height:0;display:flex;flex-direction:column;gap:.2rem;
+    }
+    body.apps-always .poster{min-height:0;border-radius:14px}
+    body.apps-always .field,
+    body.apps-always .vignette,
+    body.apps-always .corner-k{display:none}
+    body.apps-always .hero{min-height:0;padding:.28rem .5rem .32rem}
+    body.apps-always .lockup-the{font-size:.68rem;letter-spacing:.16em}
+    body.apps-always .lockup-room{font-size:1.15rem;margin-top:0}
+    body.apps-always .chip,
+    body.apps-always .hub-plate,
+    body.apps-always .live,
+    body.apps-always #room-footer,
+    body.apps-always .recents{display:none}
+    body.apps-always .search{width:min(36rem,100%);margin:.15rem auto 0}
+    body.apps-always #app-groups{
+      flex:1;min-height:0;margin:0;
+      display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+      grid-auto-rows:minmax(72px,1fr);gap:.4rem;align-content:stretch;
+    }
+    body.apps-always .group,
+    body.apps-always .group .board{display:contents}
+    body.apps-always .group h2{
+      position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);
+    }
+    body.apps-always a.tile,body.apps-always button.tile{
+      aspect-ratio:auto;height:100%;min-height:44px;gap:.2rem;
+    }
+    body.apps-always a.tile img.mark{
+      width:auto;height:min(52%,88px);min-width:0;max-width:96px;aspect-ratio:1;
+    }
+    body.apps-always a.tile .label,body.apps-always .tile .label{
+      font-size:.9rem;line-height:1.15;
+    }
+    @media (min-width:1200px){
+      body.apps-always #app-groups{grid-template-columns:repeat(7,minmax(0,1fr))}
+    }
+    body.apps-always #school-wrap:not(:has(a.tile)),
+    body.apps-always .cuts:not(:has(a.tile)){display:none}
+    body.apps-always #school-wrap,
+    body.apps-always .cuts{flex:0 1 auto;max-height:24%;min-height:0}
+    @media (max-width:700px){
+      body.apps-always #shell-board{overflow:auto}
+      body.apps-always #app-groups{display:block;flex:none}
+      body.apps-always .group{display:block;flex:none}
+      body.apps-always a.tile{aspect-ratio:1;height:auto}
+      body.apps-always .live,body.apps-always #room-footer{display:block}
+    }
+
   </style>
 </head>
-<body>
+<body class="apps-always">
   <div class="shell" id="hub-shell">
     <header class="shell-header" id="shell-header">
       <span class="shell-brand">THE TECH ROOM</span>
@@ -428,6 +500,7 @@
       </div>
     </header>
     <div class="shell-mid">
+      <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       <div id="shell-board">
   <div class="wrap">
     <section class="poster" aria-label="The Tech Room">
@@ -478,12 +551,13 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-23-viz-0.1.0</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-23-apps-always</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <ul id="hub-log">
+            <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
             <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
@@ -939,6 +1013,7 @@
           n += 1;
         });
         if (schoolWrap) schoolWrap.hidden = schoolRows.length === 0 && !(roomShowNote && schoolNote);
+        paintDock();
       }
 
       function applySchool(pack) {
@@ -1127,6 +1202,7 @@
         }
         var cutsSec = document.querySelector("section.cuts");
         if (cutsSec) cutsSec.hidden = !roomAllowCuts && board.children.length === 0;
+        paintDock();
       }
 
       function syncGroups() {
@@ -1507,6 +1583,54 @@
         if (path === "/staff" || path === "/staff/" || path.indexOf("/staff/") === 0) return false;
         return true;
       }
+
+      var frameHref = "";
+      function paintDock() {
+        var dock = document.getElementById("app-dock");
+        if (!dock) return;
+        var framed = document.body.classList.contains("is-framed");
+        dock.hidden = !framed;
+        if (!framed) return;
+        var seen = {};
+        dock.innerHTML = "";
+        function add(href, name, imgSrc, target) {
+          if (!href || !name || seen[href]) return;
+          seen[href] = 1;
+          var a = document.createElement("a");
+          a.className = "app-dock-item";
+          a.href = href;
+          if (target) {
+            a.target = target;
+            a.rel = "noopener noreferrer";
+          }
+          if (imgSrc) {
+            var img = document.createElement("img");
+            img.src = imgSrc;
+            img.alt = "";
+            img.width = 22;
+            img.height = 22;
+            a.appendChild(img);
+          }
+          var span = document.createElement("span");
+          span.textContent = name;
+          a.appendChild(span);
+          if (frameHref && a.href === frameHref) a.classList.add("is-open");
+          dock.appendChild(a);
+        }
+        document.querySelectorAll("#app-groups a.tile").forEach(function (tile) {
+          if (tile.classList.contains("is-room-hidden")) return;
+          var label = tile.querySelector(".label");
+          var img = tile.querySelector("img.mark");
+          add(tile.getAttribute("href"), label ? label.textContent.replace(/\s+/g, " ").trim() : "", img ? img.getAttribute("src") : "", tile.getAttribute("target") || "");
+        });
+        if (typeof schoolRows !== "undefined" && schoolRows && schoolRows.forEach) {
+          schoolRows.forEach(function (row) { add(row.href, row.name, "", ""); });
+        }
+        if (typeof readCuts === "function") {
+          readCuts().forEach(function (row) { add(row.href, row.name, "", ""); });
+        }
+      }
+
       function openFrame(href, title) {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
@@ -1515,18 +1639,23 @@
         frame.hidden = false;
         if (frame.getAttribute("src") !== href) frame.setAttribute("src", href);
         document.body.classList.add("is-framed");
+        frameHref = href;
         if (home) home.hidden = false;
         if (typeof setPocket === "function") setPocket(false);
+        paintDock();
       }
       function closeFrame() {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         document.body.classList.remove("is-framed");
+        frameHref = "";
         if (frame) {
           frame.hidden = true;
           frame.setAttribute("src", "about:blank");
         }
         if (home) home.hidden = true;
+        var dock = document.getElementById("app-dock");
+        if (dock) dock.hidden = true;
       }
 
       document.addEventListener("click", function (event) {
