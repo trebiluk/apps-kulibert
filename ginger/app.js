@@ -69,7 +69,8 @@ function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({ app: "ginger", ver: VER, ...plan }));
   } catch {
-    /* private mode */
+    const status = $("status");
+    if (status) status.textContent = "Could not save on this Chromebook.";
   }
   try {
     draw();
@@ -78,6 +79,31 @@ function save() {
     if (lab) drawPeek();
   } catch (err) {
     $("status").textContent = "Draw error: " + (err && err.message ? err.message : err);
+  }
+}
+
+function commitOpenFields() {
+  const pname = $("pname");
+  if (pname) plan.name = String(pname.value || plan.name).slice(0, 40);
+  const ceil = $("ceil");
+  if (ceil) plan.ceilingFt = Math.min(12, Math.max(8, Number(ceil.value) || 9));
+  const rn = $("rn");
+  if (rn && selected && selected.kind === "room") {
+    nameRoom(plan, selected.id, String(rn.value || "Room").slice(0, 32) || "Room");
+  }
+  const th = $("th");
+  if (th && selected && selected.kind === "line") {
+    const line = plan.lines.find((l) => l.id === selected.id);
+    if (line) line.thickIn = Number(th.value) || line.thickIn;
+  }
+  const wd = $("wd");
+  const tp = $("tp");
+  if ((wd || tp) && selected && (selected.kind === "door" || selected.kind === "window")) {
+    const hole = plan.holes.find((x) => x.id === selected.id);
+    if (hole) {
+      if (wd) hole.widthFt = Math.min(12, Math.max(1, Number(wd.value) || hole.widthFt));
+      if (tp && tp.value) hole.type = tp.value;
+    }
   }
 }
 
@@ -600,11 +626,20 @@ $("lab3d").onclick = () => {
   if (lab) drawPeek();
 };
 $("export").onclick = () => {
+  commitOpenFields();
+  save();
   const blob = new Blob([JSON.stringify({ app: "ginger", ver: VER, units: "ft", ...plan }, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = (plan.name || "plan").replace(/\s+/g, "-") + ".ginger.json";
+  const safe = (plan.name || "plan").replace(/[^\w\- ]+/g, "").trim().replace(/\s+/g, "-") || "plan";
+  a.href = url;
+  a.download = safe + ".ginger.json";
+  a.rel = "noopener";
+  a.style.display = "none";
+  document.body.appendChild(a);
   a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 2000);
 };
 $("imp").onclick = () => $("file").click();
 $("file").onchange = (e) => {

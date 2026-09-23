@@ -1,6 +1,6 @@
 /** Ginger plan model. Vertex / line / hole / area pattern after cvdlab/react-planner (MIT). Original code. Units: feet. */
 
-export const VER = "1.0.1";
+export const VER = "1.0.3";
 export const WELD = 0.45;
 
 export function uid(prefix) {
