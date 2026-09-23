@@ -1420,12 +1420,14 @@ export function boot() {
 
   function stencil(text, x, y, color) {
     ctx.save();
-    ctx.shadowColor = "rgba(18,20,24,0.65)";
-    ctx.shadowBlur = 4;
-    ctx.fillStyle = color;
-    ctx.font = `700 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `700 ${Math.max(12, Math.round(13 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
+    const w = ctx.measureText(text).width;
+    const h = Math.max(16, Math.round(16 * view.dpr));
+    ctx.fillStyle = "rgba(243,238,228,0.94)";
+    ctx.fillRect(x - 5, y - 3, w + 10, h + 2);
+    ctx.fillStyle = color;
     ctx.fillText(text, x, y);
     ctx.restore();
   }
@@ -1781,6 +1783,13 @@ export function boot() {
     ctx.lineWidth = 2;
     ctx.strokeRect(wx(doc.level.shop.x), wy(doc.level.shop.y + doc.level.shop.h), wr(doc.level.shop.w), wr(doc.level.shop.h));
     ctx.setLineDash([]);
+    const kick = Math.max(4, wr(0.1));
+    const floorX = wx(doc.level.shop.x);
+    const floorY = wy(doc.level.shop.y);
+    ctx.fillStyle = "#1e2226";
+    ctx.fillRect(floorX, floorY - kick - 2, wr(doc.level.shop.w), 2);
+    ctx.fillStyle = "#f0c000";
+    ctx.fillRect(floorX, floorY - kick, wr(doc.level.shop.w), kick);
 
     drawDropBay(doc.level.drop);
 

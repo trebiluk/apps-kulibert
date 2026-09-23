@@ -510,14 +510,23 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
 .status {
   display: flex; align-items: center; gap: 14px;
   padding: 0 12px;
-  background: #32363c;
-  color: var(--muted);
-  font-size: 12px; font-weight: 550;
-  min-height: 26px;
+  background: #2a2e33;
+  color: #f7f4ee;
+  font-size: 13px; font-weight: 650;
+  min-height: 28px;
   overflow: hidden;
-  border-top: 1px solid var(--hair);
+  border-top: 2px solid var(--yellow);
 }
-.status .hint { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.status .hint { color: #f7f4ee; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.whats-new {
+  flex: 0 1 auto;
+  min-width: 0;
+  color: var(--yellow);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .status b { color: var(--yellow); font-variant-numeric: tabular-nums; }
 #mode {
   font-size: 10px; font-weight: 700; letter-spacing: .12em;
