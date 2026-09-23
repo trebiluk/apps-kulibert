@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.0 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.1 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.0";
+const APP_VERSION = "0.19.1";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.0";
+const APP_CHIP = "BB 0.19.1";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -806,8 +806,11 @@ function boot() {
         btn.dataset.course = job.id;
         btn.disabled = state === "lock";
         btn.title = job.label;
-        const mark = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NOW";
-        btn.innerHTML = `<b>${i + 1}</b><span>${mark}</span>`;
+        const num = document.createElement("b");
+        num.textContent = String(i + 1);
+        const mark = document.createElement("span");
+        mark.textContent = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NOW";
+        btn.append(num, mark);
         strip.append(btn);
       });
       if (allClear()) {
@@ -827,8 +830,25 @@ function boot() {
         btn.dataset.course = job.id;
         btn.disabled = !allClear();
         btn.title = job.alias;
-        btn.innerHTML = `<b>C</b><span>${state === "clear" ? "CLEAR" : "CLASS"}</span>`;
+        const num = document.createElement("b");
+        num.textContent = "C";
+        const mark = document.createElement("span");
+        mark.textContent = state === "clear" ? "CLEAR" : "CLASS";
+        btn.append(num, mark);
         strip.append(btn);
+      }
+      if (allClear() && courseId === "editor") {
+        const ex = document.createElement("button");
+        ex.type = "button";
+        ex.className = "job-plate now";
+        ex.id = "btn-export-live";
+        ex.title = "Export .botzlevel.json";
+        const num = document.createElement("b");
+        num.textContent = "↓";
+        const mark = document.createElement("span");
+        mark.textContent = "EXPORT";
+        ex.append(num, mark);
+        strip.append(ex);
       }
     }
     if (pick) {
@@ -1199,6 +1219,7 @@ function boot() {
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
+    showCalmFail("");
     if (coarsePointer()) collapseRail();
     refreshMeta();
   }
@@ -1233,6 +1254,7 @@ function boot() {
     }
     if (playing && !won) lastReadout = crateReadout();
     else if (won) lastReadout = "Parked. Output reached the Drop Zone.";
+    const missed = playing && !won;
     lastTrail = trail.slice();
     playing = false;
     sim = null;
@@ -1241,7 +1263,17 @@ function boot() {
     winEl.classList.remove("show");
     const hint = document.getElementById("status-hint");
     if (hint && lastReadout) hint.textContent = lastReadout;
+    showCalmFail(missed ? lastReadout : "");
     refreshMeta();
+  }
+
+  function showCalmFail(line) {
+    const box = document.getElementById("calm-fail");
+    const text = document.getElementById("calm-fail-line");
+    if (!box) return;
+    if (!line) { box.hidden = true; return; }
+    if (text) text.textContent = line;
+    box.hidden = false;
   }
 
   function buildSim(source) {
@@ -1389,7 +1421,7 @@ function boot() {
   }
 
   function checkWin() {
-    if (!sim || won) return;
+    if (!sim || won || isMeasure() || isForces()) return;
     const drop = doc.level.drop;
     let inside = 0;
     for (const b of sim.cores) {
@@ -2632,9 +2664,23 @@ function boot() {
     const strip = document.getElementById("job-strip");
     if (strip) {
       strip.addEventListener("click", (ev) => {
+        const live = ev.target.closest("#btn-export-live");
+        if (live) {
+          doc.title = sanitizeTitle(document.getElementById("title").value || doc.title);
+          downloadLevel(doc);
+          toast("Saved an alias file. Not permanent.");
+          return;
+        }
         const hit = ev.target.closest("[data-course]");
         if (!hit || hit.disabled) return;
         loadBuiltin(hit.dataset.course);
+      });
+    }
+    const retryBtn = document.getElementById("btn-retry");
+    if (retryBtn) {
+      retryBtn.addEventListener("click", () => {
+        showCalmFail("");
+        if (!playing) startPlay();
       });
     }
     const exportBtn = document.getElementById("btn-export");

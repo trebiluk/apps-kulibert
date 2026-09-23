@@ -62,7 +62,7 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 .job-plate {
   flex: 0 0 auto;
-  min-width: 52px;
+  min-width: 76px;
   min-height: 44px;
   padding: 4px 8px;
   border-radius: 10px;
@@ -73,12 +73,32 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   font-size: 10px;
   letter-spacing: .04em;
   line-height: 1.1;
+  white-space: nowrap;
 }
 .job-plate b { display: block; font-size: 14px; letter-spacing: 0; }
 .job-plate.clear { background: #2f6f4e; color: #f4efe6; }
 .job-plate.test { box-shadow: inset 0 0 0 2px var(--yellow); }
 .job-plate.now { border-color: var(--yellow); }
-.job-plate:disabled { opacity: .4; }
+.calm-fail {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(36rem, calc(100% - 24px));
+  padding: 8px 8px 8px 14px;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid #e2d3b8;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px -18px #000a;
+}
+.calm-fail[hidden] { display: none !important; }
+.calm-fail p { margin: 0; font-size: 14px; font-weight: 600; line-height: 1.3; }
+#btn-retry { flex: 0 0 auto; min-height: 44px; min-width: 44px; }
 
 .rail {
   width: var(--rail);

@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.19.0** · 2026-09-23 · channel **live**  
+**Chip: BB 0.19.1** · 2026-09-23 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.19.0` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.19.1` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -29,6 +29,10 @@ Rules:
 ---
 
 ## Current train (0.18.x live)
+
+### 0.19.1 — Calm Retry — 2026-09-23
+
+A miss shows one line and Retry. No sound. Measure and Forces clear on their logs, not a parked crate. In Design, Export is on the job strip.
 
 ### 0.19.0 — Jobs 1–10 — 2026-09-23
 
