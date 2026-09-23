@@ -1,13 +1,13 @@
 # BertyBeatz changelog
 
-**Chip: BZ 1.5.0** · 2026-09-23 · channel **live**
+**Chip: BZ 1.6.0** · 2026-09-23 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Live classroom | `BZ 1.5.0` | `https://apps.kulibert.net/bertybeatz/` |
+| Live classroom | `BZ 1.6.0` | `https://apps.kulibert.net/bertybeatz/` |
 
 Rules:
 
@@ -17,6 +17,15 @@ Rules:
 4. Hard refresh (Ctrl+Shift+R) if a cart still shows an old chip.
 
 ## Current train
+
+### 1.6.0 — Pattern bank — 2026-09-23
+
+- Four patterns and a song line. Loop stays the default.
+- Humanize nudges timing. Mix sets a level per row. Mute still leaves the lights.
+- A scope line rides every Look. Code can grow a vine or a crystal. Chip **Viz 0.3.0**.
+- An old BZ1 pass still loads. Hub line was not touched.
+
+Hard refresh if a cart still says 1.5.0.
 
 ### 1.5.0 — Code Look — 2026-09-23
 

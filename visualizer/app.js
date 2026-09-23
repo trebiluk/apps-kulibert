@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.2.0") return;
-  window.__VISUALIZER__ = "0.2.0";
+  if (window.__VISUALIZER__ === "0.3.0") return;
+  window.__VISUALIZER__ = "0.3.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.2.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.3.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -21,6 +21,7 @@
     note: [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
   };
   const bins = new Uint8Array(64);
+  const wave = new Uint8Array(64);
   const $ = (id) => document.getElementById(id);
 
   function loadLook() {
@@ -70,6 +71,10 @@
       else if (i < 32) v += (note * 0.55 + hat * 0.4) * 180;
       else v += hat * 150;
       bins[i] = Math.max(0, Math.min(255, v));
+    }
+    for (let w = 0; w < wave.length; w++) {
+      const wobble = Math.sin(t * 6 + w * 0.35) * (kick * 70 + snare * 40 + hat * 24);
+      wave[w] = Math.max(0, Math.min(255, 128 + wobble));
     }
   }
 
@@ -167,6 +172,7 @@
         kick: on && DEMO.kick[step] === 1,
         snare: on && DEMO.snare[step] === 1,
         bins: state.playing ? bins : null,
+        wave: state.playing ? wave : null,
         code: stageApi.loadCode ? stageApi.loadCode() : null,
       };
     });

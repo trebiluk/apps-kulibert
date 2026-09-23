@@ -333,6 +333,33 @@ body.is-loop #lcd-pos {
   cursor: pointer;
 }
 
+.song-box { margin: 0 0 0.7rem; }
+.song-box .tool-row { margin-bottom: 0.45rem; }
+.mix {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.55rem;
+  flex: 1;
+}
+.mix label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 5.2rem;
+  flex: 1;
+}
+.mix .btn {
+  min-height: 44px;
+  padding: 0.2rem 0.45rem;
+  font-size: 0.78rem;
+}
+.mix input[type="range"] {
+  width: 100%;
+  height: 36px;
+  accent-color: var(--accent);
+}
+.mix .btn.on { opacity: 0.55; }
+
 .bank-bar {
   display: none;
   gap: 0.4rem;

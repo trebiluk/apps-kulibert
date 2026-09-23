@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.2.0";
+  var CHIP = "Viz 0.3.0";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -30,6 +30,11 @@
       { id: "still", label: "Still" },
       { id: "beat", label: "Beat" },
     ]},
+    { key: "rule", label: "Rule", options: [
+      { id: "tree", label: "Tree" },
+      { id: "vine", label: "Vine" },
+      { id: "crystal", label: "Crystal" },
+    ]},
   ];
 
   function normalizeCode(raw) {
@@ -37,7 +42,8 @@
     var grow = raw && (raw.grow === "short" || raw.grow === "tall") ? raw.grow : "mid";
     var ink = raw && (raw.ink === "teal" || raw.ink === "amber") ? raw.ink : "cyan";
     var pulse = raw && raw.pulse === "still" ? "still" : "beat";
-    return { folds: folds, grow: grow, ink: ink, pulse: pulse };
+    var rule = raw && (raw.rule === "vine" || raw.rule === "crystal") ? raw.rule : "tree";
+    return { folds: folds, grow: grow, ink: ink, pulse: pulse, rule: rule };
   }
 
   function loadCode() {
@@ -304,6 +310,81 @@
       }
     }
 
+    function drawLSystem(w, h, recipe, axiom, rule, iter, turnDeg) {
+      var str = axiom;
+      var i;
+      var energy = band(0, 8) * 0.65 + band(8, 20) * 0.35;
+      for (i = 0; i < iter; i++) {
+        var next = "";
+        var c;
+        for (c = 0; c < str.length; c++) next += str[c] === "F" ? rule : str[c];
+        if (next.length > 900) break;
+        str = next;
+      }
+      var turn = (turnDeg * Math.PI) / 180;
+      var len = 8;
+      var color = recipe.ink === "teal" ? "#14b8a6" : recipe.ink === "amber" ? "#f59e0b" : "#22d3ee";
+      function walk(draw) {
+        var x = 0;
+        var y = 0;
+        var a = -Math.PI / 2;
+        var stack = [];
+        var minX = 0;
+        var minY = 0;
+        var maxX = 0;
+        var maxY = 0;
+        var segs = 0;
+        var k;
+        for (k = 0; k < str.length; k++) {
+          var ch = str[k];
+          if (ch === "F") {
+            var x2 = x + Math.cos(a) * len;
+            var y2 = y + Math.sin(a) * len;
+            if (draw) {
+              vctx.beginPath();
+              vctx.moveTo(x, y);
+              vctx.lineTo(x2, y2);
+              vctx.stroke();
+            }
+            if (x2 < minX) minX = x2;
+            if (y2 < minY) minY = y2;
+            if (x2 > maxX) maxX = x2;
+            if (y2 > maxY) maxY = y2;
+            x = x2;
+            y = y2;
+            segs += 1;
+            if (segs > 480) break;
+          } else if (ch === "+") a += turn;
+          else if (ch === "-") a -= turn;
+          else if (ch === "[") stack.push([x, y, a]);
+          else if (ch === "]" && stack.length) {
+            var s = stack.pop();
+            x = s[0];
+            y = s[1];
+            a = s[2];
+          }
+        }
+        return { minX: minX, minY: minY, maxX: maxX, maxY: maxY };
+      }
+      var bounds = walk(false);
+      var bw = Math.max(1, bounds.maxX - bounds.minX);
+      var bh = Math.max(1, bounds.maxY - bounds.minY);
+      var scale = Math.min((w - 24) / bw, (h - 24) / bh);
+      if (recipe.pulse === "beat") scale *= 0.9 + energy * 0.16;
+      vctx.save();
+      vctx.translate(
+        w / 2 - ((bounds.minX + bounds.maxX) / 2) * scale,
+        h / 2 - ((bounds.minY + bounds.maxY) / 2) * scale,
+      );
+      vctx.scale(scale, scale);
+      vctx.strokeStyle = color;
+      vctx.globalAlpha = 0.82;
+      vctx.lineWidth = Math.max(0.7, 1.5 / Math.max(scale, 0.2));
+      walk(true);
+      vctx.restore();
+      vctx.globalAlpha = 1;
+    }
+
     function drawCode(w, h) {
       var recipe = loadCode();
       var bass = band(0, 6);
@@ -315,6 +396,14 @@
       var len0 = Math.min(w, h) * (recipe.pulse === "beat" ? 0.16 + energy * 0.08 : 0.18);
       var spread = reduceMotion ? 0.55 : 0.42 + mid * 0.28;
       var color = recipe.ink === "teal" ? "#14b8a6" : recipe.ink === "amber" ? "#f59e0b" : "#22d3ee";
+      if (recipe.rule === "vine") {
+        drawLSystem(w, h, recipe, "F", "F[+F]F[-F]F", recipe.folds === "8" ? 3 : 2, 26);
+        return;
+      }
+      if (recipe.rule === "crystal") {
+        drawLSystem(w, h, recipe, "F+F+F+F", "FF+F+F+F+F+FF", 2, 90);
+        return;
+      }
       function branch(x, y, angle, len, d) {
         if (d <= 0 || len < 1.5) return;
         var x2 = x + Math.cos(angle) * len;
@@ -334,6 +423,40 @@
       for (a = 0; a < arms; a++) {
         branch(w * 0.5, h * 0.5, (a * Math.PI * 2) / arms - Math.PI / 2, len0, depth);
       }
+      vctx.globalAlpha = 1;
+    }
+
+    function drawScope(w, h, snap) {
+      var wave = snap && snap.wave;
+      var n = wave && wave.length ? wave.length : 0;
+      vctx.beginPath();
+      vctx.lineWidth = 1.5;
+      vctx.strokeStyle = "rgba(232,247,255,0.62)";
+      vctx.globalAlpha = reduceMotion ? 0.45 : 0.8;
+      var amp = h * (reduceMotion ? 0.1 : 0.2);
+      if (!n) {
+        var i;
+        var count = 48;
+        for (i = 0; i < count; i++) {
+          var x = (i / (count - 1)) * w;
+          var v = ((bins[i % bins.length] / 255) - 0.35) * amp;
+          if (i === 0) vctx.moveTo(x, h * 0.86 + v);
+          else vctx.lineTo(x, h * 0.86 + v);
+        }
+      } else {
+        var step = reduceMotion ? 4 : 2;
+        var i2;
+        var first = true;
+        for (i2 = 0; i2 < n; i2 += step) {
+          var x2 = (i2 / (n - 1)) * w;
+          var y2 = h * 0.86 + ((wave[i2] - 128) / 128) * amp;
+          if (first) {
+            vctx.moveTo(x2, y2);
+            first = false;
+          } else vctx.lineTo(x2, y2);
+        }
+      }
+      vctx.stroke();
       vctx.globalAlpha = 1;
     }
 
@@ -359,6 +482,7 @@
       else if (look === "stars") drawStars(w, h, snap);
       else if (look === "code") drawCode(w, h);
       else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
+      drawScope(w, h, snap);
     }
 
     size();

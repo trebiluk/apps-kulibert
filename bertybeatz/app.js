@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.5.0") return;
-  window.__BERTYBEATZ__ = "1.5.0";
+  if (window.__BERTYBEATZ__ === "1.6.0") return;
+  window.__BERTYBEATZ__ = "1.6.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.5.0";
+  const CHIP = "BZ 1.6.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -51,6 +51,17 @@
     const out = {};
     for (const t of TRACKS) out[t.id] = steps[t.id].slice();
     return out;
+  }
+  const PATTERN_IDS = ["A", "B", "C", "D"];
+  function emptyBank() {
+    const bank = {};
+    for (const id of PATTERN_IDS) bank[id] = emptySteps();
+    return bank;
+  }
+  function freshBank(steps) {
+    const bank = emptyBank();
+    bank.A = cloneSteps(steps);
+    return bank;
   }
   function pat(str) {
     return str.replace(/\s+/g, "").split("").map((c) => c === "x");
@@ -253,9 +264,39 @@
       .slice(0, 24) || "Beat";
   }
 
+  function packMix() {
+    return TRACKS.map((t) => Math.round(state.mix[t.id] ?? 100).toString(16).padStart(2, "0")).join("");
+  }
+  function unpackMix(raw) {
+    const mix = Object.fromEntries(TRACKS.map((t) => [t.id, 100]));
+    if (!raw || raw.length < TRACKS.length * 2) return mix;
+    TRACKS.forEach((t, i) => {
+      const n = parseInt(raw.slice(i * 2, i * 2 + 2), 16);
+      mix[t.id] = Number.isNaN(n) ? 100 : Math.min(100, Math.max(0, n));
+    });
+    return mix;
+  }
+  function packBank(bank) {
+    return PATTERN_IDS.map((id) => TRACKS.map((t) => packBits(bank[id][t.id])).join("")).join(".");
+  }
+  function unpackBank(raw) {
+    const bank = emptyBank();
+    const chunks = String(raw || "").split(".");
+    PATTERN_IDS.forEach((id, pi) => {
+      const bits = chunks[pi] || "";
+      if (bits.length !== TRACKS.length * 4) return;
+      TRACKS.forEach((t, ti) => {
+        const n = parseInt(bits.slice(ti * 4, ti * 4 + 4), 16);
+        if (Number.isNaN(n)) return;
+        for (let i = 0; i < STEP_COUNT; i++) bank[id][t.id][i] = Boolean(n & (1 << i));
+      });
+    });
+    return bank;
+  }
   function packBeat() {
     const bits = TRACKS.map((t) => packBits(state.steps[t.id])).join("");
-    return `BZ1~${cleanTitle(state.name)}~${state.bpm}~${state.swing}~${state.kit}~${state.mood}~${state.key}~${bits}`;
+    const song = (state.song || ["A"]).join("");
+    return `BZ1~${cleanTitle(state.name)}~${state.bpm}~${state.swing}~${state.kit}~${state.mood}~${state.key}~${bits}~${state.humanize || 0}~${state.pattern}~${song}~${packMix()}~${packBank(state.patterns)}~${state.songOn ? 1 : 0}`;
   }
 
   function unpackBeat(raw) {
@@ -285,7 +326,7 @@
       if (Number.isNaN(n)) return;
       for (let i = 0; i < STEP_COUNT; i++) steps[t.id][i] = Boolean(n & (1 << i));
     });
-    return {
+    const beat = {
       name,
       bpm: Math.min(160, Math.max(70, Number(parts[2]) || 110)),
       swing: Math.min(60, Math.max(0, Number(parts[3]) || 0)),
@@ -294,6 +335,18 @@
       key,
       steps,
     };
+    if (parts.length > 8 && parts[8] !== "") {
+      beat.humanize = Math.min(40, Math.max(0, Number(parts[8]) || 0));
+    }
+    if (PATTERN_IDS.includes(parts[9])) beat.pattern = parts[9];
+    if (parts[10]) {
+      const song = parts[10].split("").filter((c) => PATTERN_IDS.includes(c)).slice(0, 8);
+      if (song.length) beat.song = song;
+    }
+    if (parts[11]) beat.mix = unpackMix(parts[11]);
+    if (parts[12] && parts[12].includes(".")) beat.patterns = unpackBank(parts[12]);
+    if (parts[13] === "1") beat.songOn = true;
+    return beat;
   }
 
   function fileSlug(name) {
@@ -317,10 +370,16 @@
       name: cleanTitle(state.name),
       bpm: state.bpm,
       swing: state.swing,
+      humanize: state.humanize || 0,
       kit: state.kit,
       mood: state.mood,
       key: state.key,
       steps: cloneSteps(state.steps),
+      patterns: state.patterns,
+      pattern: state.pattern,
+      song: state.song.slice(),
+      songOn: Boolean(state.songOn),
+      mix: { ...state.mix },
       code: packBeat(),
     };
   }
@@ -349,15 +408,22 @@
         if (!Array.isArray(row) || row.length !== STEP_COUNT) return null;
         steps[t.id] = row.map((cell) => Boolean(cell));
       }
-      return {
+      const beat = {
         name: cleanTitle(data.name),
         bpm: Math.min(160, Math.max(70, Number(data.bpm) || 110)),
         swing: Math.min(60, Math.max(0, Number(data.swing) || 0)),
+        humanize: Math.min(40, Math.max(0, Number(data.humanize) || 0)),
         kit,
         mood,
         key,
         steps,
       };
+      if (data.patterns) beat.patterns = data.patterns;
+      if (PATTERN_IDS.includes(data.pattern)) beat.pattern = data.pattern;
+      if (Array.isArray(data.song)) beat.song = data.song;
+      if (data.songOn) beat.songOn = true;
+      if (data.mix && typeof data.mix === "object") beat.mix = data.mix;
+      return beat;
     }
     return unpackBeat(trimmed);
   }
@@ -398,6 +464,13 @@
     key: PRESETS.first.key,
     steps: cloneSteps(PRESETS.first.steps),
     muted: Object.fromEntries(TRACKS.map((t) => [t.id, false])),
+    mix: Object.fromEntries(TRACKS.map((t) => [t.id, 100])),
+    pattern: "A",
+    patterns: null,
+    song: ["A", "A", "A", "A"],
+    songOn: false,
+    songPos: 0,
+    humanize: 0,
     volume: 0.8,
     playing: false,
     playhead: -1,
@@ -405,6 +478,22 @@
     library: [],
     look: loadLook(),
   };
+  state.patterns = freshBank(state.steps);
+  state.steps = state.patterns.A;
+
+  function bindSteps(steps) {
+    state.patterns[state.pattern] = steps;
+    state.steps = steps;
+  }
+  function readMix(raw) {
+    const mix = Object.fromEntries(TRACKS.map((t) => [t.id, 100]));
+    if (!raw || typeof raw !== "object") return mix;
+    for (const t of TRACKS) {
+      const n = Number(raw[t.id]);
+      if (!Number.isNaN(n)) mix[t.id] = Math.min(100, Math.max(0, n));
+    }
+    return mix;
+  }
 
   function loadLibrary() {
     try {
@@ -433,11 +522,24 @@
       name: cleanTitle(state.name),
       bpm: state.bpm,
       swing: state.swing,
+      humanize: state.humanize,
       kit: state.kit,
       mood: state.mood,
       key: state.key,
       volume: state.volume,
       steps: cloneSteps(state.steps),
+      pattern: state.pattern,
+      patterns: {
+        A: cloneSteps(state.patterns.A),
+        B: cloneSteps(state.patterns.B),
+        C: cloneSteps(state.patterns.C),
+        D: cloneSteps(state.patterns.D),
+      },
+      song: state.song.slice(),
+      songOn: state.songOn,
+      songPos: state.songPos,
+      mix: { ...state.mix },
+      muted: { ...state.muted },
     };
   }
   function persistLibrary() {
@@ -583,34 +685,36 @@
       o.start(t);
       o.stop(t + dur + 0.03);
     }
-    trigger(id, t, kit, key, mood) {
+    trigger(id, t, kit, key, mood, level = 1) {
       const dest = this.master;
+      const lv = Math.max(0.001, Math.min(1, level));
+      const P = (peak) => Math.max(0.001, peak * lv);
       const k = kit;
       if (id === "kick") {
         if (k === "boom") {
-          this.osc(dest, t, "sine", 90, 38, 0.7, 1.05, 0.002);
+          this.osc(dest, t, "sine", 90, 38, 0.7, P(1.05), 0.002);
         } else if (k === "arcade") {
-          this.osc(dest, t, "square", 140, 48, 0.14, 0.35, 0.001);
+          this.osc(dest, t, "square", 140, 48, 0.14, P(0.35), 0.001);
         } else {
-          this.osc(dest, t, "sine", 170, 42, 0.32, 0.95, 0.002);
-          this.osc(dest, t, "triangle", 80, 40, 0.08, 0.2, 0.001);
+          this.osc(dest, t, "sine", 170, 42, 0.32, P(0.95), 0.002);
+          this.osc(dest, t, "triangle", 80, 40, 0.08, P(0.2), 0.001);
         }
         return;
       }
       if (id === "snare") {
-        this.noiseBurst(dest, t, k === "boom" ? 0.22 : 0.14, "bandpass", 1800, 0.9, 0.55);
-        this.osc(dest, t, "triangle", 210, 140, 0.12, 0.28);
+        this.noiseBurst(dest, t, k === "boom" ? 0.22 : 0.14, "bandpass", 1800, 0.9, P(0.55));
+        this.osc(dest, t, "triangle", 210, 140, 0.12, P(0.28));
         return;
       }
       if (id === "hat") {
         const dur = k === "dream" ? 0.12 : k === "arcade" ? 0.03 : 0.045;
-        this.noiseBurst(dest, t, dur, "highpass", 7000, 0.6, 0.28);
+        this.noiseBurst(dest, t, dur, "highpass", 7000, 0.6, P(0.28));
         return;
       }
       if (id === "clap") {
-        this.noiseBurst(dest, t, 0.04, "bandpass", 1200, 1.2, 0.5);
-        this.noiseBurst(dest, t + 0.018, 0.05, "bandpass", 1400, 1, 0.38);
-        this.noiseBurst(dest, t + 0.038, 0.08, "highpass", 900, 0.7, 0.22);
+        this.noiseBurst(dest, t, 0.04, "bandpass", 1200, 1.2, P(0.5));
+        this.noiseBurst(dest, t + 0.018, 0.05, "bandpass", 1400, 1, P(0.38));
+        this.noiseBurst(dest, t + 0.038, 0.08, "highpass", 900, 0.7, P(0.22));
         return;
       }
       const track = TRACKS.find((tr) => tr.id === id);
@@ -618,15 +722,15 @@
       const hz = midiHz(noteMidi(track.degree, key, mood));
       const isBass = track.degree <= 1;
       if (k === "arcade") {
-        this.osc(dest, t, "square", hz, hz, isBass ? 0.22 : 0.12, isBass ? 0.28 : 0.2);
+        this.osc(dest, t, "square", hz, hz, isBass ? 0.22 : 0.12, P(isBass ? 0.28 : 0.2));
       } else if (k === "dream") {
-        this.osc(dest, t, "sine", hz, hz, 0.7, 0.28, 0.02);
-        this.osc(dest, t, "triangle", hz * 1.004, hz * 1.004, 0.55, 0.12, 0.02);
+        this.osc(dest, t, "sine", hz, hz, 0.7, P(0.28), 0.02);
+        this.osc(dest, t, "triangle", hz * 1.004, hz * 1.004, 0.55, P(0.12), 0.02);
       } else if (k === "boom") {
-        this.osc(dest, t, "sine", hz / (isBass ? 1 : 1), hz, isBass ? 0.45 : 0.22, 0.32);
+        this.osc(dest, t, "sine", hz / (isBass ? 1 : 1), hz, isBass ? 0.45 : 0.22, P(0.32));
       } else {
-        this.osc(dest, t, "sawtooth", hz, hz, isBass ? 0.32 : 0.2, isBass ? 0.22 : 0.16, 0.008);
-        this.osc(dest, t, "triangle", hz * 1.006, hz * 1.006, isBass ? 0.28 : 0.18, 0.12, 0.008);
+        this.osc(dest, t, "sawtooth", hz, hz, isBass ? 0.32 : 0.2, P(isBass ? 0.22 : 0.16), 0.008);
+        this.osc(dest, t, "triangle", hz * 1.006, hz * 1.006, isBass ? 0.28 : 0.18, P(0.12), 0.008);
       }
     }
     preview(id) {
@@ -638,23 +742,47 @@
       const ctx = this.ctx;
       while (this.nextTime < ctx.currentTime + this.lookahead) {
         const step = this.step;
-        const when = this.nextTime;
+        const wobble = [0, 3, -2, 4, -3, 2, -4, 1, 2, -1, 4, -2, 3, -3, 1, -4][step] || 0;
+        const hum = (state.humanize / 40) * 0.012;
+        const when = this.nextTime + wobble * hum;
         this.queued.push({ step, when });
+        const humLevel = 1 - (state.humanize / 40) * 0.18 * (Math.abs(wobble) / 4);
         for (const t of TRACKS) {
           if (state.muted[t.id]) continue;
-          if (state.steps[t.id][step]) this.trigger(t.id, when, state.kit, state.key, state.mood);
+          if (!state.steps[t.id][step]) continue;
+          const level = ((state.mix[t.id] ?? 100) / 100) * humLevel;
+          if (level <= 0.02) continue;
+          this.trigger(t.id, when, state.kit, state.key, state.mood, level);
         }
         const sixteenth = 60 / state.bpm / 4;
         const swingAmt = (state.swing / 100) * 0.55;
         if (step % 2 === 0) this.nextTime += sixteenth * (1 + swingAmt);
         else this.nextTime += sixteenth * (1 - swingAmt);
-        this.step = (this.step + 1) % STEP_COUNT;
+        this.step += 1;
+        if (this.step >= STEP_COUNT) {
+          this.step = 0;
+          if (state.songOn && state.song.length > 1) {
+            state.songPos = (state.songPos + 1) % state.song.length;
+            const nextId = state.song[state.songPos];
+            if (nextId !== state.pattern && state.patterns[nextId]) {
+              state.pattern = nextId;
+              state.steps = state.patterns[nextId];
+              state._songDirty = true;
+            }
+          }
+        }
       }
     };
     play() {
       this.unlock();
       if (state.playing) return;
       state.playing = true;
+      if (state.songOn && state.song.length) {
+        state.songPos = 0;
+        state.pattern = state.song[0];
+        state.steps = state.patterns[state.pattern];
+        state._songDirty = true;
+      }
       this.step = 0;
       this.nextTime = this.ctx.currentTime + 0.06;
       this.queued = [];
@@ -690,12 +818,37 @@
     state.name = p.name;
     state.bpm = p.bpm;
     state.swing = p.swing;
+    state.humanize = Math.min(40, Math.max(0, Number(p.humanize) || 0));
     state.kit = p.kit;
     state.mood = p.mood;
     state.key = p.key;
-    state.steps = cloneSteps(p.steps);
+    if (p.patterns && p.patterns.A) {
+      state.patterns = {
+        A: cloneSteps(p.patterns.A),
+        B: cloneSteps(p.patterns.B || emptySteps()),
+        C: cloneSteps(p.patterns.C || emptySteps()),
+        D: cloneSteps(p.patterns.D || emptySteps()),
+      };
+    } else {
+      state.patterns = freshBank(p.steps);
+    }
+    state.pattern = PATTERN_IDS.includes(p.pattern) ? p.pattern : "A";
+    state.steps = state.patterns[state.pattern];
+    state.song = Array.isArray(p.song) && p.song.length
+      ? p.song.filter((id) => PATTERN_IDS.includes(id)).slice(0, 8)
+      : ["A", "A", "A", "A"];
+    if (!state.song.length) state.song = ["A", "A", "A", "A"];
+    state.songOn = Boolean(p.songOn);
+    state.songPos = 0;
+    if (p.mix) state.mix = readMix(p.mix);
+    else state.mix = Object.fromEntries(TRACKS.map((t) => [t.id, 100]));
+    if (p.muted) {
+      for (const t of TRACKS) state.muted[t.id] = Boolean(p.muted[t.id]);
+    }
     $("bpm").value = String(p.bpm);
     $("swing").value = String(p.swing);
+    const human = $("human");
+    if (human) human.value = String(state.humanize);
     renderAll();
   }
 
@@ -744,6 +897,72 @@
     grid.innerHTML = head.join("") + rows.join("");
   }
 
+  function renderSong() {
+    const box = $("song");
+    if (!box) return;
+    box.innerHTML = "";
+    state.song.forEach((id, index) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (state.songOn && index === state.songPos ? " on" : "");
+      b.textContent = id;
+      b.setAttribute("aria-label", `Song slot ${index + 1}, pattern ${id}`);
+      b.addEventListener("click", () => {
+        pushUndo();
+        const next = PATTERN_IDS[(PATTERN_IDS.indexOf(id) + 1) % PATTERN_IDS.length];
+        state.song[index] = next;
+        remember();
+        renderSong();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderMix() {
+    const box = $("mix");
+    if (!box) return;
+    if (!box.childElementCount) {
+      for (const t of TRACKS) {
+        const lab = document.createElement("label");
+        const name = document.createElement("button");
+        name.type = "button";
+        name.className = "btn mix-name";
+        name.dataset.mix = t.id;
+        name.addEventListener("click", () => {
+          state.muted[t.id] = !state.muted[t.id];
+          name.classList.toggle("on", state.muted[t.id]);
+          name.setAttribute("aria-pressed", String(state.muted[t.id]));
+          remember();
+        });
+        const range = document.createElement("input");
+        range.type = "range";
+        range.min = "0";
+        range.max = "100";
+        range.dataset.mix = t.id;
+        range.addEventListener("input", () => {
+          state.mix[t.id] = Number(range.value);
+          remember();
+        });
+        lab.append(name, range);
+        box.appendChild(lab);
+      }
+    }
+    for (const t of TRACKS) {
+      const name = box.querySelector(`button[data-mix="${t.id}"]`);
+      const range = box.querySelector(`input[data-mix="${t.id}"]`);
+      const label = t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label;
+      if (name) {
+        name.textContent = state.muted[t.id] ? `${label} off` : label;
+        name.classList.toggle("on", state.muted[t.id]);
+        name.setAttribute("aria-pressed", String(state.muted[t.id]));
+        name.setAttribute("aria-label", `${label} mute`);
+      }
+      if (range && document.activeElement !== range) {
+        range.value = String(state.mix[t.id] ?? 100);
+        range.setAttribute("aria-label", `${label} level`);
+      }
+    }
+  }
+
   function renderAll() {
     $("song-name").textContent = state.name;
     $("lcd-bpm").textContent = `${state.bpm} BPM`;
@@ -777,6 +996,21 @@
         window.KulibertStage.syncRecipe(recipe);
       }
     }
+    renderChips($("patterns"), PATTERN_IDS, state.pattern, (id) => {
+      if (id === state.pattern) return;
+      pushUndo();
+      state.pattern = id;
+      state.steps = state.patterns[id];
+      renderAll();
+    });
+    const songOn = $("song-on");
+    if (songOn) {
+      songOn.classList.toggle("on", state.songOn);
+      songOn.textContent = state.songOn ? "Song" : "Loop";
+      songOn.setAttribute("aria-pressed", String(state.songOn));
+    }
+    renderSong();
+    renderMix();
     $("play-btn").classList.toggle("is-on", state.playing);
     $("play-btn").setAttribute("aria-label", state.playing ? "Pause" : "Play");
     document.body.classList.toggle("is-loop", state.playing);
@@ -809,6 +1043,18 @@
     $("grid").querySelectorAll(".nums").forEach((el, i) => {
       el.classList.toggle("play", i === step);
     });
+    if (state._songDirty) {
+      state._songDirty = false;
+      renderGrid();
+      const box = $("patterns");
+      if (box) {
+        box.querySelectorAll("button").forEach((b) => {
+          const on = b.textContent === state.pattern;
+          b.classList.toggle("on", on);
+          b.setAttribute("aria-pressed", String(on));
+        });
+      }
+    }
   }
 
   let paint = null;
@@ -880,6 +1126,20 @@
     state.swing = Number(e.target.value);
     remember();
   });
+  $("human").addEventListener("input", (e) => {
+    state.humanize = Number(e.target.value);
+    remember();
+  });
+  $("song-on").addEventListener("click", () => {
+    state.songOn = !state.songOn;
+    state.songPos = 0;
+    if (state.songOn) {
+      state.pattern = state.song[0];
+      state.steps = state.patterns[state.pattern];
+    }
+    renderAll();
+    remember();
+  });
   $("vol").addEventListener("input", (e) => {
     state.volume = Number(e.target.value) / 100;
     engine.setVolume(state.volume);
@@ -904,7 +1164,7 @@
     state.swing = Math.floor(Math.random() * 28);
     $("bpm").value = String(state.bpm);
     $("swing").value = String(state.swing);
-    state.steps = randomize(state.mood);
+    bindSteps(randomize(state.mood));
     state.name = funName();
     engine.setKit(state.kit);
     renderAll();
@@ -915,7 +1175,7 @@
   $("clear-btn").addEventListener("click", () => {
     openModal("Clear the grid?", "Undo brings the squares back. Saved beats stay.", () => {
       pushUndo();
-      state.steps = emptySteps();
+      bindSteps(emptySteps());
       state.name = "Blank page";
       renderAll();
       remember();
@@ -1188,6 +1448,10 @@
     window.KulibertStage.mount(viz, () => {
       const step = engine.currentStep();
       if (step !== state.playhead) setPlayhead(step);
+      if (engine.analyser) {
+        if (!engine.wave) engine.wave = new Uint8Array(engine.analyser.fftSize);
+        engine.analyser.getByteTimeDomainData(engine.wave);
+      }
       const playhead = state.playhead;
       return {
         look: state.look,
@@ -1196,6 +1460,7 @@
         kick: playhead >= 0 && Boolean(state.steps.kick[playhead]),
         snare: playhead >= 0 && Boolean(state.steps.snare[playhead]),
         analyser: state.playing && engine.analyser ? engine.analyser : null,
+        wave: engine.analyser ? engine.wave : null,
         code: window.KulibertStage && window.KulibertStage.loadCode ? window.KulibertStage.loadCode() : null,
       };
     });
