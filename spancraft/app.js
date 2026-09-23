@@ -399,6 +399,15 @@ function showCoach() {
   setStatus(word, text, "");
 }
 
+function armFailRetry(on) {
+  if (retryBtn) {
+    retryBtn.classList.toggle("is-needed", !!on);
+    retryBtn.disabled = false;
+    retryBtn.hidden = false;
+  }
+  const now = document.getElementById("retry-now");
+  if (now) now.hidden = !on;
+}
 function busy() {
   return state.phase === "drop" || state.phase === "theater";
 }
@@ -908,6 +917,7 @@ function finishProve(verdict, stars, s, prove, started) {
   syncControls();
   setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
   if (retryBtn) retryBtn.classList.toggle("is-needed", !verdict.ok);
+  armFailRetry(!verdict.ok);
   const beats = [];
   if (verdict.ok) {
     if (firstClear) {
@@ -939,6 +949,7 @@ function startTest() {
   state.drag = null;
   state.stretch = null;
   if (retryBtn) retryBtn.classList.remove("is-needed");
+  armFailRetry(false);
   const s = spec();
   // Bet optional (P1) — show chips, never block first CLEAR
   if (state.parts.length) syncBetBar();
@@ -986,6 +997,7 @@ function retry() {
   state.animU = 0;
   state.bet = null;
   if (retryBtn) retryBtn.classList.remove("is-needed");
+  armFailRetry(false);
   syncControls();
   syncBetBar();
   updateSnapHint();
@@ -1151,6 +1163,7 @@ for (const [name, btn] of Object.entries(toolButtons)) {
 kindButtons.forEach((btn) => btn.addEventListener("click", () => setKind(btn.dataset.kind)));
 testBtn.addEventListener("click", startTest);
 retryBtn.addEventListener("click", retry);
+document.getElementById("retry-now").addEventListener("click", retry);
 assistBtn.addEventListener("click", toggleAssist);
 const edgeBtn = document.getElementById("edge-btn");
 const edgeMenu = document.getElementById("edge-menu");
@@ -1175,8 +1188,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.8",
-  note: "What’s new: the prove takes under two seconds, then the plates.",
+  version: "SC 1.3.9",
+  note: "What’s new: a miss always leaves a fat Retry.",
   calmKey: CALM_KEY,
   steps: [
     "Place three Decks across the gap, then Test. That is the first clear.",

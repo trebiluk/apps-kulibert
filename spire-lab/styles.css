@@ -485,10 +485,19 @@ html.calm-clear .flash-spark { display: none !important; }
   color: var(--accent-fg);
 }
 
-#retry.is-needed {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
-  border-color: var(--accent);
+#retry.is-needed,
+#retry-now {
+  min-height: 52px;
+  min-width: 7.5rem;
+  padding: 0 1rem;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 800;
+  font-size: 1.05rem;
 }
+#retry-now[hidden] { display: none !important; }
 
 .assist-plate {
   pointer-events: auto;

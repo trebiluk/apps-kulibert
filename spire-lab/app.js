@@ -374,8 +374,17 @@ function paintHeightRead() {
   if (wrap) wrap.setAttribute("data-goal-met", state.height >= GOAL_FLOORS ? "1" : "0");
 }
 
+function armFailRetry(on) {
+  if (retryBtn) {
+    retryBtn.classList.toggle("is-needed", !!on);
+    retryBtn.disabled = false;
+    retryBtn.hidden = false;
+  }
+  const now = document.getElementById("retry-now");
+  if (now) now.hidden = !on;
+}
 function resetTower() {
-  if (retryBtn) retryBtn.classList.remove("is-needed");
+  armFailRetry(false);
   state.phase = "ready";
   state.height = 0;
   state.scraps = [];
@@ -442,6 +451,7 @@ function doDropSlab() {
       : "Missed the stack. Tap Retry. Three drops that stay is the first clear. Best " + state.best + "." + betLine;
     setStatus("Miss", miss, "fail");
     if (retryBtn) retryBtn.classList.add("is-needed");
+    armFailRetry(true);
     setMasteryChip("");
     playBeats([{ shout: "Miss", caption: "Tap Retry and drop closer to center.", mark: "✕" }]);
     return;
@@ -506,6 +516,7 @@ function doDropSlab() {
   if (state.height === GOAL_FLOORS) toy = markIsleClear() || toy;
   const toyLine = toy ? " Toy: " + toy + "." : "";
   setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
+  armFailRetry(false);
   const beats = [];
   if (firstClear) {
     beats.push({ shout: "First clear", caption: (toy ? toy + " is yours. " : "") + "Three drops stayed.", mark: "✓" });
@@ -528,6 +539,7 @@ function dropSlab() {
   // Bet optional (P1) — chips visible, never block first CLEAR
   syncBetBar();
   if (retryBtn) retryBtn.classList.remove("is-needed");
+  armFailRetry(false);
   const run = () => {
     state.theater = null;
     doDropSlab();
@@ -755,6 +767,7 @@ function retry() {
 
 dropBtn.addEventListener("click", dropSlab);
 retryBtn.addEventListener("click", retry);
+document.getElementById("retry-now").addEventListener("click", retry);
 assistBtn.addEventListener("click", () => {
   if (!state.cleared.first) {
     state.assist = true;
@@ -832,8 +845,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.7",
-  note: "What’s new: the prove takes under two seconds, then the plates.",
+  version: "SL 1.3.8",
+  note: "What’s new: a miss always leaves a fat Retry.",
   calmKey: CALM_KEY,
   steps: [
     "Drop three slabs that stay. That is the first clear.",
