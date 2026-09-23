@@ -262,8 +262,10 @@ canvas:focus-visible {
   border-color: var(--accent);
 }
 .pocket button.go {
-  background: color-mix(in srgb, var(--accent) 16%, var(--elevated));
-  border-color: color-mix(in srgb, var(--accent) 70%, var(--border));
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+  min-height: 52px;
 }
 .pocket svg {
   width: 1.35rem;
@@ -669,7 +671,7 @@ html.calm-clear .flash-spark { display: none !important; }
   pointer-events: none;
   padding: 0.5rem 0.75rem;
 }
-.stage .flash-plate .flash-shout { font-size: 1.2rem; }
+.stage .flash-plate .flash-shout { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; }
 
 /* P2 Drop clarity — soften tether-as-broken look; keep Goal line */
 .drop-cue {

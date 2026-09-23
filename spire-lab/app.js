@@ -1,6 +1,6 @@
 // Spire Lab — one height-stand prove. Original draw. tower_game MIT math only.
 
-import { GRIP, drawTether } from "../shared/stretch.js";
+import { GRIP } from "../shared/stretch.js";
 import {
   quietMode,
   quietToast,
@@ -489,6 +489,7 @@ function doDropSlab() {
   }
   state.slabs.push(piece);
   state.height += 1;
+  const heightHit = state.height > state.best;
   paintHeightRead();
   writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
@@ -518,15 +519,15 @@ function doDropSlab() {
   const toyLine = toy ? " Toy: " + toy + "." : "";
   setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
   armFailRetry(false);
-  const beats = [];
-  if (firstClear) {
-    beats.push({ shout: "First clear", caption: (toy ? toy + " is yours. " : "") + "Three drops stayed.", mark: "✓" });
-  } else {
-    beats.push({ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" });
-  }
+  const beats = [{
+    shout: "STAND",
+    caption: (firstClear && toy ? toy + " is yours. " : "") + "Height " + state.height + ".",
+    mark: "✓",
+  }];
+  if (heightHit) beats.push({ shout: "HEIGHT HIT", caption: "Height " + state.height + ".", mark: "✓" });
   if (state.perfectCount > 0) {
     setMasteryChip("Streak " + state.perfectCount);
-    beats.push({ shout: "Streak", caption: state.perfectCount + " even in a row.", mark: "★" });
+    beats.push({ shout: "STREAK", caption: state.perfectCount + " even in a row.", mark: "★" });
   } else {
     setMasteryChip("");
   }
@@ -604,6 +605,19 @@ function drawSlab(slab, alpha) {
   ctx.restore();
 }
 
+function drawGuide(x1, y1, x2, y2) {
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "rgba(196,181,253,0.55)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  const sag = Math.min(10, dist * 0.05);
+  ctx.quadraticCurveTo((x1 + x2) / 2, (y1 + y2) / 2 + sag, x2, y2);
+  ctx.stroke();
+  ctx.restore();
+}
 function draw() {
   if (cssW < 2 || cssH < 2) return;
   ctx.clearRect(0, 0, cssW, cssH);
@@ -672,6 +686,13 @@ function draw() {
     roundRect(a.x, a.y, b.x - a.x, b.y - a.y, 6 * state.scale);
     ctx.stroke();
     ctx.setLineDash([]);
+    ctx.fillStyle = "#c4b5fd";
+    ctx.font = "800 15px Outfit, system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("Drop", (a.x + b.x) / 2, (a.y + b.y) / 2);
+    ctx.textAlign = "left";
+    ctx.textBaseline = "alphabetic";
     ctx.restore();
   }
 
@@ -681,11 +702,14 @@ function draw() {
     drawSlab(state.mover, 1);
     const hook = { x: cssW / 2, y: 28 };
     const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
-    // P2: quieter guide line (less "broken teal beam"), goal line stays loud
-    ctx.save();
-    ctx.globalAlpha = 0.55;
-    drawTether(ctx, hook.x, hook.y, grip.x, grip.y);
-    ctx.restore();
+    drawGuide(hook.x, hook.y, grip.x, grip.y);
+    ctx.beginPath();
+    ctx.arc(grip.x, grip.y, GRIP, 0, Math.PI * 2);
+    ctx.fillStyle = "#e8f7ff";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#041018";
+    ctx.stroke();
   }
 
   for (const scrap of state.scraps) {
@@ -834,8 +858,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.11",
-  note: "What’s new: a miss leaves the tower in view.",
+  version: "SL 1.3.12",
+  note: "What’s new: Drop is the fat button. A stand says STAND.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
