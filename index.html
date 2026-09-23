@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-23-apps-always"/>
+  <meta name="tech-room-rev" content="2026-09-23-apps-clear"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -440,15 +440,19 @@
     body.apps-always .field,
     body.apps-always .vignette,
     body.apps-always .corner-k{display:none}
-    body.apps-always .hero{min-height:0;padding:.28rem .5rem .32rem}
+    body.apps-always .hero{min-height:0;padding:.45rem .6rem .15rem}
     body.apps-always .lockup-the{font-size:.68rem;letter-spacing:.16em}
-    body.apps-always .lockup-room{font-size:1.15rem;margin-top:0}
+    body.apps-always .lockup-room{font-size:1.35rem;margin-top:0;line-height:.9}
+    body.apps-always .welcome-line{margin:.2rem 0 0}
     body.apps-always .chip,
     body.apps-always .hub-plate,
     body.apps-always .live,
     body.apps-always #room-footer,
     body.apps-always .recents{display:none}
-    body.apps-always .search{width:min(36rem,100%);margin:.15rem auto 0}
+    body.apps-always .search{
+      position:relative;display:block;left:auto;bottom:auto;transform:none;
+      width:min(36rem,calc(100% - 1.5rem));margin:.55rem auto .35rem;
+    }
     body.apps-always #app-groups{
       flex:1;min-height:0;margin:0;
       display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
@@ -551,12 +555,13 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-23-apps-always</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-23-apps-clear</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <ul id="hub-log">
+            <li>Search sits under the welcome line. It no longer covers the title.</li>
             <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
