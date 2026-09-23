@@ -1,14 +1,17 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=1.3.20";
+import { mountTruss } from "../spancraft/truss-play.js?v=1.3.21";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.19",
+  version: "SL 1.3.20",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: the second stretch snaps. Assist stays off the joints.",
+  note: "What’s new: HoldIt is the one student door. This door stays until both HoldIt paths are clear.",
   engageKey: "kulibert-spire-engage-v2",
+  nextDoor: "/holdit/?part=tower",
+  retireTo: "/holdit/",
+  retireFlag: "kulibert-holdit-clear-v1",
   assistKey: "kulibert-spire-assist-intro-v2",
   calmKey: "kulibert-calm-clear",
   firstLine: "Stretch two members up to the top joint, then Test. That is the first clear.",

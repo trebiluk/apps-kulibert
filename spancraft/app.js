@@ -1,14 +1,17 @@
-import { mountTruss } from "./truss-play.js?v=1.3.20";
+import { mountTruss } from "./truss-play.js?v=1.3.21";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.20",
+  version: "SC 1.3.21",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: the second stretch snaps. Assist stays off the joints.",
+  note: "What’s new: HoldIt is the one student door. This door stays until both HoldIt paths are clear.",
   engageKey: "kulibert-spancraft-engage-v2",
+  nextDoor: "/holdit/?part=bridge",
+  retireTo: "/holdit/",
+  retireFlag: "kulibert-holdit-clear-v1",
   assistKey: "kulibert-spancraft-assist-intro-v2",
   calmKey: "kulibert-calm-clear",
   firstLine: "Stretch two members up to the top joint, then Test. That is the first clear.",

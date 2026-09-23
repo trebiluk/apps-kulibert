@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.19** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.20** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.20 — HoldIt door — 2026-09-23
+
+- What’s new: HoldIt is the one student door. This door stays until both HoldIt paths are clear.
 
 ## 1.3.19 — Second stretch — 2026-09-23
 

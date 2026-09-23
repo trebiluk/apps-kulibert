@@ -83,9 +83,17 @@ export function mountTruss(cfg) {
       challengeMet: state.challengeMet,
       bestStars: state.bestStars,
     });
+    if (cfg.partFlag && pathClear()) {
+      writeFlag(cfg.partFlag, true);
+      if (cfg.pairFlag && cfg.retireFlag && readFlag(cfg.pairFlag)) writeFlag(cfg.retireFlag, true);
+    }
   }
   function load() {
-    const data = readJson(cfg.engageKey, null);
+    let data = readJson(cfg.engageKey, null);
+    if ((!data || data.v !== 2) && cfg.seedKey) {
+      const old = readJson(cfg.seedKey, null);
+      if (old && old.v === 2) data = old;
+    }
     if (!data || data.v !== 2) return;
     state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
     state.levelId = catalog.some((l) => l.id === data.levelId) ? data.levelId : levels[0].id;
@@ -94,6 +102,7 @@ export function mountTruss(cfg) {
     state.bestStars = data.bestStars || 0;
     if (state.track === "challenge" && !pathClear()) state.track = "levels";
     if (state.track !== "challenge" && active().free) state.levelId = levels[0].id;
+    if (cfg.partFlag && pathClear()) save();
   }
 
   function setStatus(word, text, tone) {
@@ -325,8 +334,10 @@ export function mountTruss(cfg) {
     for (const j of joints) {
       if (!j.fixed) continue;
       const p = toScreen(j);
-      ctx.fillStyle = "#14506a";
-      ctx.fillRect(p.x - 26, p.y - 4, 52, 22);
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(p.x - 36, p.y - 6, 72, 30);
+      ctx.fillStyle = "#334155";
+      ctx.fillRect(p.x - 36, p.y + 18, 72, 8);
     }
     const slots = level.slots || [];
     ctx.strokeStyle = "rgba(143,180,201,0.45)";
@@ -339,9 +350,8 @@ export function mountTruss(cfg) {
       ctx.arc(p.x, p.y, 12, 0, Math.PI * 2);
       ctx.stroke();
     }
-    ctx.lineWidth = 8;
-    ctx.lineCap = "round";
-    ctx.strokeStyle = "#7ee7f7";
+    ctx.lineCap = "butt";
+    ctx.lineJoin = "round";
     for (const m of state.members) {
       const a = joints[m.a];
       const b = joints[m.b];
@@ -351,6 +361,11 @@ export function mountTruss(cfg) {
       ctx.beginPath();
       ctx.moveTo(pa.x, pa.y);
       ctx.lineTo(pb.x, pb.y);
+      ctx.strokeStyle = "#155e75";
+      ctx.lineWidth = 16;
+      ctx.stroke();
+      ctx.strokeStyle = "#a5f3fc";
+      ctx.lineWidth = 7;
       ctx.stroke();
     }
     if (state.stretch) {
@@ -378,11 +393,15 @@ export function mountTruss(cfg) {
       const p = toScreen(j);
       ctx.beginPath();
       ctx.arc(p.x, p.y, j.fixed ? 18 : 16, 0, Math.PI * 2);
-      ctx.fillStyle = j.fixed ? "#e8f7ff" : "#22d3ee";
+      ctx.fillStyle = j.fixed ? "#e2e8f0" : "#67e8f9";
       ctx.fill();
       ctx.lineWidth = 3;
-      ctx.strokeStyle = "#041018";
+      ctx.strokeStyle = "#0f172a";
       ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = "#0f172a";
+      ctx.fill();
       if (!state.view && i === level.loadIndex && !level.free) {
         ctx.fillStyle = "#fbbf24";
         ctx.fillRect(p.x - 16, p.y + 16, 32, 14);
@@ -392,6 +411,13 @@ export function mountTruss(cfg) {
       const w = toScreen(state.view.weight);
       ctx.fillStyle = "#fbbf24";
       ctx.fillRect(w.x - 18, w.y - 12, 36, 20);
+    }
+    const meters = level.spanM || level.goalM;
+    if (meters && !state.view) {
+      ctx.fillStyle = "#cbd5e1";
+      ctx.font = "700 18px sans-serif";
+      ctx.textAlign = "left";
+      ctx.fillText(cfg.mode === "spire" ? meters + " m height" : meters + " m span", 16, 28);
     }
     paintReadout();
   }
@@ -569,7 +595,7 @@ export function mountTruss(cfg) {
       let line = level.job + " " + starPhrase(stars) + ".";
       if (first) line = "First clear. " + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
-        line += " Path clear. Your truss is open.";
+        line += cfg.nextDoor ? " Path clear. HoldIt is the one door." : " Path clear. Your truss is open.";
       } else if (!level.free && !pathClear()) {
         line += " Open Levels for the next job.";
       }
@@ -585,6 +611,7 @@ export function mountTruss(cfg) {
       syncBet();
     }
     draw();
+    showNext();
   }
 
   function playResult(result) {
@@ -768,7 +795,23 @@ export function mountTruss(cfg) {
     writeFlag(cfg.assistKey, true);
   }
 
+  function showNext() {
+    const next = document.getElementById("next-door");
+    if (!next || !cfg.nextDoor || !pathClear()) return;
+    next.hidden = false;
+    next.removeAttribute("hidden");
+    next.href = cfg.nextDoor;
+  }
+  function stayHere() {
+    return /(?:\?|&)stay=1(?:&|$)/.test(location.search);
+  }
+
   load();
+  if (cfg.retireTo && readFlag(cfg.retireFlag || "kulibert-holdit-clear-v1") && !stayHere()) {
+    location.replace(cfg.retireTo);
+    return;
+  }
+  showNext();
   if (readFlag(cfg.calmKey)) document.documentElement.classList.add("calm-clear");
   cloneLevel(active());
   syncTools();
