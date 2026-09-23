@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#050814"/>
+  <meta name="description" content="Visualizer — lights that play on their own. Bars, Kaleidoscope, Clouds, Stars. Kulibert Tech Ed."/>
+  <title>Visualizer · The Tech Room</title>
+  <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
+  <link rel="stylesheet" href="/fonts/room.css"/>
+  <link rel="stylesheet" href="./styles.css?v=0.1.0"/>
+</head>
+<body class="is-loop">
+  <header class="top">
+    <a class="brand" href="/" title="Back to The Tech Room">
+      <img src="./mark.svg" alt="" width="36" height="36"/>
+      <span>
+        <strong>Visualizer</strong>
+        <em id="chip-label">Viz 0.1.0</em>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button type="button" id="help-btn" class="btn ghost" aria-expanded="false">How</button>
+      <a class="btn ghost" href="/bertybeatz/">Beatz</a>
+      <a class="btn ghost" href="/">Room</a>
+    </div>
+  </header>
+
+  <section id="help" class="help" hidden>
+    <h2>How it works</h2>
+    <ol>
+      <li><strong>What's new:</strong> Lights play on their own. No song required.</li>
+      <li>Pick a Look — Bars, Kaleidoscope, Clouds, Stars. Keys 1–4 do the same.</li>
+      <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
+      <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
+    </ol>
+  </section>
+
+  <section class="stage" aria-label="Lights">
+    <canvas id="viz" class="stage-canvas" width="640" height="360" aria-hidden="true"></canvas>
+    <div class="stage-bar">
+      <div>
+        <p class="lcd-name" id="mode-name">Demo</p>
+        <p class="lcd-readout">
+          <span id="look-live">Bars</span>
+          <span id="lcd-pos" class="tabular">1.1</span>
+          <span id="chip-live">Viz 0.1.0</span>
+        </p>
+      </div>
+      <div class="stage-look">
+        <span class="tool-label">Look</span>
+        <div class="chips" id="looks" role="group" aria-label="Look"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="transport" aria-label="Transport">
+    <button type="button" id="play-btn" class="play is-on" aria-label="Pause">
+      <span class="play-icon" aria-hidden="true"></span>
+    </button>
+    <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
+      <span class="stop-icon" aria-hidden="true"></span>
+    </button>
+  </section>
+
+  <p class="note">Sound can stay off. These lights move anyway. Make a real loop in <a href="/bertybeatz/">BertyBeatz</a>.</p>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.1.0</span> · own door · shared lights</p>
+
+  <script src="/shared/visualizer/stage.js?v=0.1.0"></script>
+  <script src="./app.js?v=0.1.0"></script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Visualizer app mark">
+  <defs>
+    <linearGradient id="vzPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="vzRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="url(#vzPlate)"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="none" stroke="url(#vzRim)" stroke-width="3" opacity="0.9"/>
+  <path d="M64 18 L76 36 L64 32 L52 36 Z" fill="#22D3EE"/>
+  <path d="M64 32 L90 50 L76 50 L64 68 L52 50 L38 50 Z" fill="#14B8A6"/>
+  <path d="M64 68 L76 64 L64 84 L52 64 Z" fill="#A78BFA"/>
+  <g transform="translate(18 112)">
+    <rect x="0" y="-14" width="8" height="14" rx="2" fill="#22D3EE"/>
+    <rect x="13" y="-24" width="8" height="24" rx="2" fill="#14B8A6"/>
+    <rect x="26" y="-16" width="8" height="16" rx="2" fill="#A78BFA"/>
+    <rect x="39" y="-28" width="8" height="28" rx="2" fill="#22D3EE"/>
+    <rect x="52" y="-18" width="8" height="18" rx="2" fill="#14B8A6"/>
+    <rect x="65" y="-26" width="8" height="26" rx="2" fill="#F59E0B"/>
+    <rect x="78" y="-12" width="8" height="12" rx="2" fill="#A78BFA"/>
+  </g>
+</svg>

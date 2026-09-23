@@ -1,13 +1,13 @@
 # BertyBeatz changelog
 
-**Chip: BZ 1.3.0** · 2026-09-23 · channel **live**
+**Chip: BZ 1.4.0** · 2026-09-23 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Live classroom | `BZ 1.3.0` | `https://apps.kulibert.net/bertybeatz/` |
+| Live classroom | `BZ 1.4.0` | `https://apps.kulibert.net/bertybeatz/` |
 
 Rules:
 
@@ -17,6 +17,15 @@ Rules:
 4. Hard refresh (Ctrl+Shift+R) if a cart still shows an old chip.
 
 ## Current train
+
+### 1.4.0 — File the beat — 2026-09-23
+
+- Lights use the shared stage (`/shared/visualizer/stage.js`). Same four Looks.
+- Export downloads the beat as `.json` or `.txt`. Import reads either. Save still stays on this Chromebook.
+- Visualizer is its own door. Chip **Viz 0.1.0**.
+- Hub chip **BZ 1.4.0**.
+
+Hard refresh if a cart still says 1.3.0.
 
 ### 1.3.0 — Keeps the beat — 2026-09-23
 

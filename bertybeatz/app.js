@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.3.0") return;
-  window.__BERTYBEATZ__ = "1.3.0";
+  if (window.__BERTYBEATZ__ === "1.4.0") return;
+  window.__BERTYBEATZ__ = "1.4.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.3.0";
+  const CHIP = "BZ 1.4.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -27,7 +27,7 @@
     { id: "moody", label: "Moody" },
   ];
   const KEYS = ["C", "D", "E", "F", "G", "A", "Bb"];
-  const LOOKS = [
+  const LOOKS = (window.KulibertStage && window.KulibertStage.LOOKS) || [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
     { id: "clouds", label: "Clouds" },
@@ -38,7 +38,6 @@
   const MINOR_PENT = [0, 3, 5, 7, 10];
   const NAMES_SHARP = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"];
   const NAMES_FLAT = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"];
-  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const $ = (id) => document.getElementById(id);
 
@@ -296,6 +295,75 @@
     };
   }
 
+  function fileSlug(name) {
+    return cleanTitle(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "beat";
+  }
+  function downloadFile(filename, text, mime) {
+    const blob = new Blob([text], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+  function beatFile() {
+    return {
+      app: "bertybeatz",
+      format: 1,
+      name: cleanTitle(state.name),
+      bpm: state.bpm,
+      swing: state.swing,
+      kit: state.kit,
+      mood: state.mood,
+      key: state.key,
+      steps: cloneSteps(state.steps),
+      code: packBeat(),
+    };
+  }
+  function beatFromFileText(raw) {
+    const trimmed = String(raw || "").trim();
+    if (!trimmed) return null;
+    if (trimmed.startsWith("{") || trimmed.startsWith("[")) {
+      let data;
+      try {
+        data = JSON.parse(trimmed);
+      } catch {
+        return null;
+      }
+      if (typeof data === "string") return unpackBeat(data);
+      if (data && typeof data.code === "string" && !data.steps) return unpackBeat(data.code);
+      if (!data || !data.steps || typeof data.steps !== "object") return null;
+      const kit = data.kit;
+      const mood = data.mood;
+      const key = data.key;
+      if (!KITS.some((k) => k.id === kit)) return null;
+      if (!MOODS.some((m) => m.id === mood)) return null;
+      if (!KEYS.includes(key)) return null;
+      const steps = emptySteps();
+      for (const t of TRACKS) {
+        const row = data.steps[t.id];
+        if (!Array.isArray(row) || row.length !== STEP_COUNT) return null;
+        steps[t.id] = row.map((cell) => Boolean(cell));
+      }
+      return {
+        name: cleanTitle(data.name),
+        bpm: Math.min(160, Math.max(70, Number(data.bpm) || 110)),
+        swing: Math.min(60, Math.max(0, Number(data.swing) || 0)),
+        kit,
+        mood,
+        key,
+        steps,
+      };
+    }
+    return unpackBeat(trimmed);
+  }
+  function flash(msg) {
+    const el = $("status-line");
+    if (el) el.textContent = msg;
+  }
   function doorUrl(code) {
     const u = new URL(window.location.href);
     u.hash = "";
@@ -1008,6 +1076,59 @@
     $("modal-ok").hidden = true;
   });
 
+  $("export-btn").addEventListener("click", () => {
+    const file = beatFile();
+    modalBody.innerHTML = "";
+    const jsonBtn = document.createElement("button");
+    jsonBtn.type = "button";
+    jsonBtn.className = "btn primary";
+    jsonBtn.textContent = "Download JSON";
+    jsonBtn.addEventListener("click", () => {
+      downloadFile(`${fileSlug(file.name)}.json`, JSON.stringify(file, null, 2), "application/json");
+      flash(`Downloaded ${fileSlug(file.name)}.json`);
+      modal.close();
+    });
+    const txtBtn = document.createElement("button");
+    txtBtn.type = "button";
+    txtBtn.className = "btn";
+    txtBtn.textContent = "Download text";
+    txtBtn.addEventListener("click", () => {
+      downloadFile(`${fileSlug(file.name)}.txt`, file.code + "\n", "text/plain");
+      flash(`Downloaded ${fileSlug(file.name)}.txt`);
+      modal.close();
+    });
+    const row = document.createElement("div");
+    row.className = "modal-actions";
+    row.append(jsonBtn, txtBtn);
+    modalBody.appendChild(row);
+    openModal("Export this beat", "A file you can keep. No names. Save still stores it on this Chromebook.", null);
+    $("modal-ok").hidden = true;
+  });
+
+  $("import-btn").addEventListener("click", () => {
+    $("import-file").click();
+  });
+  $("import-file").addEventListener("change", () => {
+    const input = $("import-file");
+    const file = input.files && input.files[0];
+    input.value = "";
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const beat = beatFromFileText(String(reader.result || ""));
+      if (!beat) {
+        flash("That file did not load.");
+        return;
+      }
+      pushUndo();
+      applyPreset(beat);
+      remember();
+      flash(`Imported ${beat.name}.`);
+    };
+    reader.onerror = () => flash("That file did not load.");
+    reader.readAsText(file);
+  });
+
   $("start-btn").addEventListener("click", () => {
     $("gate").hidden = true;
     safeUnlock();
@@ -1054,183 +1175,20 @@
   });
 
   const viz = $("viz");
-  const vctx = viz.getContext("2d");
-  const bins = new Uint8Array(64);
-  const clouds = Array.from({ length: 7 }, (_, i) => ({
-    x: 0.12 + (i * 0.13) % 0.84,
-    y: 0.28 + ((i * 37) % 50) / 100,
-    r: 0.12 + (i % 3) * 0.04,
-    hue: i % 3,
-    sp: 0.04 + (i % 4) * 0.015,
-  }));
-  const stars = Array.from({ length: 56 }, () => ({
-    x: Math.random(),
-    y: Math.random(),
-    s: 0.4 + Math.random() * 1.6,
-    p: Math.random() * Math.PI * 2,
-  }));
-  let spin = 0;
-  let lastKick = 0;
-
-  function sizeViz() {
-    const wrap = viz.parentElement;
-    const cssW = Math.max(280, wrap.clientWidth);
-    const cssH = Math.max(150, Math.round(parseFloat(getComputedStyle(viz).height) || 220));
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    viz.width = Math.round(cssW * dpr);
-    viz.height = Math.round(cssH * dpr);
-    vctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    viz._w = cssW;
-    viz._h = cssH;
-  }
-  function band(a, b) {
-    let s = 0;
-    const n = Math.max(1, b - a);
-    for (let i = a; i < b && i < bins.length; i++) s += bins[i];
-    return s / n / 255;
-  }
-  function idleFill() {
-    const t = performance.now() / 1000;
-    for (let i = 0; i < bins.length; i++) {
-      bins[i] = 22 + 14 * Math.sin(t * 0.8 + i * 0.28) + (i % 4 === 0 ? 10 : 0);
-    }
-  }
-  function fillBins() {
-    if (engine.analyser && state.playing) {
-      engine.analyser.getByteFrequencyData(bins);
-    } else {
-      idleFill();
-    }
-  }
-  function drawBars(w, h) {
-    const n = 24;
-    const gap = 4;
-    const bw = (w - gap * (n + 1)) / n;
-    const play = state.playhead;
-    for (let i = 0; i < n; i++) {
-      const src = Math.floor((i / n) * 32);
-      const v = bins[src] / 255;
-      const bh = Math.max(6, v * (h - 18));
-      const x = gap + i * (bw + gap);
-      const y = h - bh - 8;
-      const onBeat = play >= 0 && Math.floor((play / 16) * n) === i;
-      vctx.fillStyle = onBeat ? "#e8f7ff" : i % 4 === 0 ? "#22d3ee" : "#14b8a6";
-      vctx.globalAlpha = 0.55 + v * 0.45;
-      const r = Math.min(6, bw / 2);
-      vctx.beginPath();
-      vctx.moveTo(x, y + r);
-      vctx.arcTo(x, y, x + r, y, r);
-      vctx.arcTo(x + bw, y, x + bw, y + r, r);
-      vctx.lineTo(x + bw, h - 8);
-      vctx.lineTo(x, h - 8);
-      vctx.closePath();
-      vctx.fill();
-    }
-    vctx.globalAlpha = 1;
-  }
-  function drawKaleido(w, h) {
-    const bass = band(0, 5);
-    const mid = band(5, 16);
-    const cx = w / 2;
-    const cy = h / 2;
-    const folds = 8;
-    if (!reduceMotion) spin += 0.006 + bass * 0.01;
-    const radius = Math.min(w, h) * (0.34 + mid * 0.18);
-    vctx.save();
-    vctx.translate(cx, cy);
-    vctx.rotate(spin);
-    for (let f = 0; f < folds; f++) {
-      vctx.save();
-      vctx.rotate((f * Math.PI * 2) / folds);
-      if (f % 2) vctx.scale(-1, 1);
-      for (let i = 0; i < 10; i++) {
-        const v = bins[i + 2] / 255;
-        const a = (i / 10) * (Math.PI / folds);
-        vctx.strokeStyle = i % 3 === 0 ? "#22d3ee" : i % 3 === 1 ? "#a78bfa" : "#14b8a6";
-        vctx.globalAlpha = 0.25 + v * 0.7;
-        vctx.lineWidth = 2 + v * 5;
-        vctx.beginPath();
-        vctx.moveTo(8, 0);
-        vctx.lineTo(Math.cos(a) * radius * (0.4 + v), Math.sin(a) * radius * (0.25 + v * 0.5));
-        vctx.stroke();
-      }
-      vctx.restore();
-    }
-    vctx.beginPath();
-    vctx.fillStyle = "#e8f7ff";
-    vctx.globalAlpha = 0.35 + bass * 0.4;
-    vctx.arc(0, 0, 6 + bass * 10, 0, Math.PI * 2);
-    vctx.fill();
-    vctx.restore();
-    vctx.globalAlpha = 1;
-  }
-  function drawClouds(w, h) {
-    const t = performance.now() / 1000;
-    const bass = band(0, 6);
-    const mid = band(6, 18);
-    const high = band(18, 32);
-    const energy = [bass, mid, high];
-    clouds.forEach((c, i) => {
-      const drift = reduceMotion ? 0 : Math.sin(t * c.sp + i) * 0.04;
-      const x = (c.x + drift) * w;
-      const y = (c.y + Math.sin(t * 0.2 + i) * (reduceMotion ? 0 : 0.04)) * h;
-      const r = c.r * Math.min(w, h) * (1.1 + energy[c.hue] * 1.4);
-      const g = vctx.createRadialGradient(x, y, 0, x, y, r);
-      const col = c.hue === 0 ? "34,211,238" : c.hue === 1 ? "20,184,166" : "167,139,250";
-      g.addColorStop(0, `rgba(${col},${0.42 + energy[c.hue] * 0.35})`);
-      g.addColorStop(1, `rgba(${col},0)`);
-      vctx.fillStyle = g;
-      vctx.beginPath();
-      vctx.arc(x, y, r, 0, Math.PI * 2);
-      vctx.fill();
+  if (window.KulibertStage) {
+    window.KulibertStage.mount(viz, () => {
+      const step = engine.currentStep();
+      if (step !== state.playhead) setPlayhead(step);
+      const playhead = state.playhead;
+      return {
+        look: state.look,
+        playing: state.playing,
+        playhead,
+        kick: playhead >= 0 && Boolean(state.steps.kick[playhead]),
+        snare: playhead >= 0 && Boolean(state.steps.snare[playhead]),
+        analyser: state.playing && engine.analyser ? engine.analyser : null,
+      };
     });
-  }
-  function drawStars(w, h) {
-    const bass = band(0, 5);
-    const mid = band(5, 14);
-    const high = band(14, 28);
-    const t = performance.now() / 1000;
-    const kickNow = state.playhead >= 0 && state.steps.kick[state.playhead];
-    if (kickNow) lastKick = t;
-    const kickGlow = Math.max(0, 1 - (t - lastKick) * 3);
-    vctx.fillStyle = `rgba(232,247,255,${0.04 + kickGlow * 0.08})`;
-    vctx.fillRect(0, 0, w, h);
-    stars.forEach((s, i) => {
-      const tw = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * (reduceMotion ? 0.6 : 2.2) + s.p));
-      const boost = i % 7 === 0 ? bass : i % 5 === 0 ? mid : high;
-      const size = s.s * (1 + boost * 2.2) * (0.8 + tw);
-      const x = s.x * w;
-      const y = s.y * h;
-      vctx.fillStyle = i % 9 === 0 ? "#f59e0b" : i % 4 === 0 ? "#22d3ee" : "#e8f7ff";
-      vctx.globalAlpha = 0.25 + tw * 0.75;
-      vctx.beginPath();
-      vctx.arc(x, y, size, 0, Math.PI * 2);
-      vctx.fill();
-    });
-    vctx.globalAlpha = 1;
-    if (state.playhead >= 0 && state.steps.snare[state.playhead] && !reduceMotion) {
-      vctx.strokeStyle = "rgba(232,247,255,0.28)";
-      vctx.lineWidth = 1;
-      vctx.beginPath();
-      vctx.moveTo(w * 0.15, h * 0.2);
-      vctx.lineTo(w * 0.85, h * 0.72);
-      vctx.stroke();
-    }
-  }
-  function drawViz() {
-    requestAnimationFrame(drawViz);
-    const step = engine.currentStep();
-    if (step !== state.playhead) setPlayhead(step);
-    const w = viz._w || viz.clientWidth;
-    const h = viz._h || viz.clientHeight;
-    fillBins();
-    vctx.clearRect(0, 0, w, h);
-    vctx.fillStyle = "#050814";
-    vctx.fillRect(0, 0, w, h);
-    if (state.look === "kaleido") drawKaleido(w, h);
-    else if (state.look === "clouds") drawClouds(w, h);
-    else if (state.look === "stars") drawStars(w, h);
-    else drawBars(w, h);
   }
 
   loadLibrary();
@@ -1249,8 +1207,5 @@
     const el = $(id);
     if (el) el.textContent = CHIP;
   });
-  sizeViz();
-  window.addEventListener("resize", sizeViz);
   renderAll();
-  drawViz();
 })();

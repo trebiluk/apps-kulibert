@@ -447,7 +447,7 @@ body.is-loop .cell.play {
   text-transform: uppercase;
 }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
-.chips .btn { min-height: 40px; padding: 0.35rem 0.75rem; }
+.chips .btn { min-height: 44px; padding: 0.35rem 0.75rem; }
 .chips .btn.on {
   background: var(--accent);
   color: var(--accent-fg);
@@ -460,6 +460,13 @@ body.is-loop .cell.play {
   margin-top: 0.35rem;
 }
 
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.modal-actions .btn { flex: 1; min-width: 8rem; }
+.tools .hint { margin: 0.65rem 0 0; }
 .foot {
   margin: 1.1rem 0 0;
   color: var(--muted);

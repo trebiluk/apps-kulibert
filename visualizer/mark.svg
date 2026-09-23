@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Visualizer">
+  <defs>
+    <linearGradient id="vzPlate" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="55%" stop-color="#1E1B4B"/>
+      <stop offset="100%" stop-color="#312E81"/>
+    </linearGradient>
+    <linearGradient id="vzRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="50%" stop-color="#14B8A6"/>
+      <stop offset="100%" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="url(#vzPlate)"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="none" stroke="url(#vzRim)" stroke-width="3" opacity="0.9"/>
+  <path d="M64 28 L78 52 L64 46 L50 52 Z" fill="#22D3EE"/>
+  <path d="M64 46 L92 64 L78 64 L64 82 L50 64 L36 64 Z" fill="#14B8A6"/>
+  <path d="M64 82 L78 76 L64 100 L50 76 Z" fill="#A78BFA"/>
+</svg>
