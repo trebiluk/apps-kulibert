@@ -961,9 +961,6 @@ function finishProve(verdict, stars, s, prove, started) {
   playBeats(beats);
   state.bet = null;
   syncBetBar();
-  if (performance.now() - started > 2000) {
-    setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
-  }
   draw();
 }
 
@@ -1205,8 +1202,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.13",
-  note: "What’s new: the first Deck glows. A miss is the bet.",
+  version: "SC 1.3.14",
+  note: "What’s new: the bet stays on the result.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [

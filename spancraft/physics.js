@@ -1,37 +1,50 @@
-// Load prove. Matter.js (npm matter-js 0.20.0) decides if the truck stays up.
+// Load prove. Matter.js (npm matter-js 0.20.0) decides if the load stays up.
 // The page loads ./vendor/matter.min.js before this module. Coach hints stay in logic.js.
+// If the vendor script fails, the classroom check still returns a word so Help and Test stay up.
 
-const { Engine, Bodies, Composite, Constraint } = globalThis.Matter;
+import { judgeSpan } from "./logic.js";
 
-const CELL = 64;
-const DECK_H = 16;
-const DECK_Y = 120;
-
-function pierFull(spec, parts, c) {
-  if (spec.pierDepth <= 0) return false;
-  for (let r = 1; r <= spec.pierDepth; r++) {
-    if (!parts.some((p) => p.kind === "pier" && p.c === c && p.r === r)) return false;
-  }
-  return true;
-}
-
-function link(bodyA, pointA, bodyB, pointB, stiffness) {
-  const ax = bodyA.position.x + pointA.x;
-  const ay = bodyA.position.y + pointA.y;
-  const bx = bodyB.position.x + pointB.x;
-  const by = bodyB.position.y + pointB.y;
-  return Constraint.create({
-    bodyA,
-    pointA,
-    bodyB,
-    pointB,
-    length: Math.hypot(ax - bx, ay - by),
-    stiffness,
-    damping: 0.45,
-  });
+function matterNs() {
+  const M = globalThis.Matter;
+  if (!M || !M.Engine || !M.Bodies || !M.Composite || !M.Constraint) return null;
+  return M;
 }
 
 export function proveLoad(spec, parts) {
+  const M = matterNs();
+  if (!M) {
+    const coach = judgeSpan(spec, parts);
+    return { ok: coach.ok, reason: coach.reason, sag: coach.ok ? 0 : 99 };
+  }
+  const { Engine, Bodies, Composite, Constraint } = M;
+  const CELL = 64;
+  const DECK_H = 16;
+  const DECK_Y = 120;
+
+  function pierFull(spec, parts, c) {
+    if (spec.pierDepth <= 0) return false;
+    for (let r = 1; r <= spec.pierDepth; r++) {
+      if (!parts.some((p) => p.kind === "pier" && p.c === c && p.r === r)) return false;
+    }
+    return true;
+  }
+
+  function link(bodyA, pointA, bodyB, pointB, stiffness) {
+    const ax = bodyA.position.x + pointA.x;
+    const ay = bodyA.position.y + pointA.y;
+    const bx = bodyB.position.x + pointB.x;
+    const by = bodyB.position.y + pointB.y;
+    return Constraint.create({
+      bodyA,
+      pointA,
+      bodyB,
+      pointB,
+      length: Math.hypot(ax - bx, ay - by),
+      stiffness,
+      damping: 0.45,
+    });
+  }
+
   const deck = new Map();
   const beam = new Set();
   let partial = false;

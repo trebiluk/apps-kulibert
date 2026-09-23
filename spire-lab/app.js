@@ -442,19 +442,24 @@ function doDropSlab() {
     state.phase = "over";
     writeBest();
     paintHeightRead();
-    let betLine = "";
-    if (state.bet === "fall") betLine = " Bet matched — it fell.";
-    else if (state.bet === "hold") betLine = " Bet missed — try center, then Drop again.";
+    let shout = "Miss";
+    let caption = "Tap Retry and drop closer to center.";
+    let mark = "✕";
+    if (state.bet === "fall") {
+      shout = "Bet";
+      caption = "You said it would fall. It did. Tap Retry.";
+      mark = "✓";
+    } else if (state.bet === "hold") {
+      shout = "Bet";
+      caption = "You said it would hold. It missed. Tap Retry.";
+    }
+    setStatus("Miss", caption, "fail");
     state.bet = null;
     syncBetBar();
-    const miss = state.cleared.first
-      ? "Missed the stack. Tap Retry — hang a new slab. Goal is the dashed line at " + GOAL_FLOORS + ". Best " + state.best + "." + betLine
-      : "Missed the stack. Tap Retry. Three drops that stay is the first clear. Best " + state.best + "." + betLine;
-    setStatus("Miss", miss, "fail");
     if (retryBtn) retryBtn.classList.add("is-needed");
     armFailRetry(true);
     setMasteryChip("");
-    playBeats([{ shout: "Miss", caption: "Tap Retry and drop closer to center.", mark: "✕" }]);
+    playBeats([{ shout, caption, mark }]);
     return;
   }
   const even = towerPerfect(mover.x, top.x, top.w);
@@ -858,8 +863,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.12",
-  note: "What’s new: Drop is the fat button. A stand says STAND.",
+  version: "SL 1.3.13",
+  note: "What’s new: a miss says the bet.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
