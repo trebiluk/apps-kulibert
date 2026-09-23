@@ -8,15 +8,15 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.3.0"/>
+  <link rel="stylesheet" href="./styles.css?v=0.4.0"/>
 </head>
-<body class="is-loop">
+<body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.3.0</em>
+        <em id="chip-label">Viz 0.4.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,7 +29,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> A scope line rides every Look. Code can grow a vine or a crystal.</li>
+      <li><strong>What's new:</strong> Pick a beat from the library. Lights follow it. Device sound is a choice, never required.</li>
       <li>Pick a Look — Bars, Kaleidoscope, Clouds, Stars, Code. Keys 1–5 do the same.</li>
       <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
       <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
@@ -44,7 +44,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.3.0</span>
+          <span id="chip-live">Viz 0.4.0</span>
         </p>
       </div>
       <div class="stage-look">
@@ -56,18 +56,33 @@
   </section>
 
   <section class="transport" aria-label="Transport">
-    <button type="button" id="play-btn" class="play is-on" aria-label="Pause">
+    <button type="button" id="play-btn" class="play" aria-label="Play">
       <span class="play-icon" aria-hidden="true"></span>
     </button>
+    <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
     <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
     </button>
   </section>
 
-  <p class="note">Sound can stay off. These lights move anyway. Make a real loop in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.3.0</span> · own door · shared lights</p>
+  <section class="feed" aria-label="Beats">
+    <span class="tool-label">Beat</span>
+    <div class="chips" id="feed"></div>
+  </section>
 
-  <script src="/shared/visualizer/stage.js?v=0.3.0"></script>
-  <script src="./app.js?v=0.3.0"></script>
+  <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
+  <section id="more-panel" class="tools deep" aria-label="More">
+    <button type="button" id="device-btn" class="btn">Use this device's sound</button>
+    <button type="button" id="library-src" class="btn">Use the library</button>
+    <button type="button" id="import-btn" class="btn">Import a beat</button>
+    <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden/>
+    <p id="status-line" class="note" role="status"></p>
+  </section>
+
+  <p class="note">Sound can stay off. These lights move anyway. Make a real loop in <a href="/bertybeatz/">BertyBeatz</a>.</p>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.4.0</span> · own door · shared lights</p>
+
+  <script src="/shared/visualizer/stage.js?v=0.4.0"></script>
+  <script src="./app.js?v=0.4.0"></script>
 </body>
 </html>

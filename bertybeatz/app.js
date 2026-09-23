@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.6.0") return;
-  window.__BERTYBEATZ__ = "1.6.0";
+  if (window.__BERTYBEATZ__ === "1.7.0") return;
+  window.__BERTYBEATZ__ = "1.7.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.6.0";
+  const CHIP = "BZ 1.7.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -786,7 +786,7 @@
       this.step = 0;
       this.nextTime = this.ctx.currentTime + 0.06;
       this.queued = [];
-      this.setVolume(state.volume);
+      this.setVolume(state.soundOff ? 0 : state.volume);
       this.setKit(state.kit);
       this.scheduler();
       this.timer = window.setInterval(this.scheduler, this.interval);
@@ -1058,6 +1058,15 @@
   }
 
   let paint = null;
+  function paintCell(cell) {
+    if (!cell || !paint) return;
+    const track = cell.dataset.track;
+    const step = Number(cell.dataset.step);
+    if (!track || !state.steps[track]) return;
+    state.steps[track][step] = paint.value;
+    cell.classList.toggle("on", paint.value);
+    cell.setAttribute("aria-pressed", String(paint.value));
+  }
   $("grid").addEventListener("pointerdown", (e) => {
     const preview = e.target.closest("[data-preview]");
     if (preview) {
@@ -1066,6 +1075,7 @@
     }
     const cell = e.target.closest("[data-track]");
     if (!cell) return;
+    e.preventDefault();
     if (!paint) pushUndo();
     const track = cell.dataset.track;
     const step = Number(cell.dataset.step);
@@ -1074,26 +1084,48 @@
     cell.classList.toggle("on", next);
     cell.setAttribute("aria-pressed", String(next));
     paint = { value: next, pointerId: e.pointerId };
-    if (e.pointerType === "mouse" || e.pointerType === "pen") {
-      cell.setPointerCapture(e.pointerId);
-    }
+    try { $("grid").setPointerCapture(e.pointerId); } catch { /* already captured */ }
   });
-  $("grid").addEventListener("pointerenter", (e) => {
-    if (!paint || e.pointerType === "touch") return;
-    const cell = e.target.closest("[data-track]");
-    if (!cell) return;
-    const track = cell.dataset.track;
-    const step = Number(cell.dataset.step);
-    state.steps[track][step] = paint.value;
-    cell.classList.toggle("on", paint.value);
-    cell.setAttribute("aria-pressed", String(paint.value));
-  }, true);
+  $("grid").addEventListener("pointermove", (e) => {
+    if (!paint || e.pointerId !== paint.pointerId) return;
+    const hit = document.elementFromPoint(e.clientX, e.clientY);
+    const cell = hit && hit.closest ? hit.closest("[data-track]") : null;
+    if (!cell || !$("grid").contains(cell)) return;
+    paintCell(cell);
+  });
   $("grid").addEventListener("pointerup", () => {
     if (paint) remember();
     paint = null;
   });
   $("grid").addEventListener("pointercancel", () => {
     paint = null;
+  });
+
+  const DAY_KEY = "kulibert.beatz.played";
+  function markDay() {
+    try { localStorage.setItem(DAY_KEY, "1"); } catch { /* ignore */ }
+    document.body.classList.remove("is-day");
+    const more = $("more-btn");
+    if (more) more.hidden = false;
+  }
+  function syncDay() {
+    let seen = false;
+    try { seen = localStorage.getItem(DAY_KEY) === "1"; } catch { seen = false; }
+    document.body.classList.toggle("is-day", !seen);
+    const more = $("more-btn");
+    if (more) more.hidden = !seen;
+  }
+  syncDay();
+  $("more-btn").addEventListener("click", () => {
+    const on = document.body.classList.toggle("show-more");
+    $("more-btn").setAttribute("aria-expanded", String(on));
+    $("more-btn").textContent = on ? "Less" : "More";
+  });
+  $("mute-btn").addEventListener("click", () => {
+    state.soundOff = !state.soundOff;
+    $("mute-btn").textContent = state.soundOff ? "Muted" : "Sound on";
+    $("mute-btn").setAttribute("aria-pressed", String(Boolean(state.soundOff)));
+    engine.setVolume(state.soundOff ? 0 : state.volume);
   });
 
   function safeUnlock() {
@@ -1107,7 +1139,10 @@
     safeUnlock();
     try {
       if (state.playing) engine.stop();
-      else engine.play();
+      else {
+        engine.play();
+        markDay();
+      }
     } catch {
       state.playing = false;
     }
@@ -1143,6 +1178,7 @@
   $("vol").addEventListener("input", (e) => {
     state.volume = Number(e.target.value) / 100;
     engine.setVolume(state.volume);
+    if (state.soundOff) engine.setVolume(0);
     remember();
   });
   document.querySelectorAll("[data-bank]").forEach((b) => {

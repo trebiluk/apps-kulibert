@@ -36,7 +36,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 body {
-  padding: 0.75rem 0.75rem calc(1.5rem + env(safe-area-inset-bottom));
+  padding: calc(0.75rem + env(safe-area-inset-top)) 0.75rem calc(1.5rem + env(safe-area-inset-bottom));
   max-width: 72rem;
   margin: 0 auto;
 }
@@ -230,6 +230,17 @@ button {
   gap: 0.55rem 0.7rem;
   margin-bottom: 0.7rem;
 }
+.dials {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem 0.7rem;
+}
+.more-btn { width: 100%; margin: 0 0 0.75rem; }
+body.is-day .deep,
+body:not(.show-more) .deep { display: none; }
+.grid, .cell { touch-action: none; }
+#mute-btn { min-height: 48px; }
 .play {
   width: 3.4rem;
   height: 3.4rem;
@@ -582,14 +593,15 @@ body.is-loop .cell.play {
 .foot a:hover { text-decoration: underline; }
 
 @media (max-width: 760px) {
-  .stage-canvas { height: 168px; }
+  .stage-canvas { height: min(32vh, 220px); min-height: 168px; }
   .bank-bar { display: flex; }
   .grid {
     min-width: 0;
-    grid-template-columns: 4.4rem repeat(8, minmax(2.75rem, 1fr));
+    grid-template-columns: 4.4rem repeat(8, minmax(44px, 1fr));
   }
   .grid.is-b1 .bank0 { display: none; }
   .grid.is-b0 .bank1 { display: none; }
+  .play, #mute-btn, #stop-btn { min-width: 48px; min-height: 48px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .play, .cell { transition: none; }

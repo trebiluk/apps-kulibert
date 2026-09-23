@@ -25,7 +25,7 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 body {
-  padding: 0.75rem 0.75rem calc(1.5rem + env(safe-area-inset-bottom));
+  padding: calc(0.75rem + env(safe-area-inset-top)) 0.75rem calc(1.5rem + env(safe-area-inset-bottom));
   max-width: 72rem;
   margin: 0 auto;
 }
@@ -229,6 +229,24 @@ body.is-loop .stage {
   gap: 0.35rem;
 }
 .code-group .btn { min-height: 44px; min-width: 44px; }
+.feed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+.more-btn { width: 100%; margin: 0 0 0.75rem; }
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+}
+.tools .note { width: 100%; margin: 0; }
+body.is-day .deep,
+body:not(.show-more) .deep { display: none; }
+#mute-btn, .play, #stop-btn { min-width: 48px; min-height: 48px; }
 .note {
   margin: 0.2rem 0 0;
   color: var(--muted);

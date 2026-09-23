@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.3.0";
+  var CHIP = "Viz 0.4.0";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -460,10 +460,15 @@
       vctx.globalAlpha = 1;
     }
 
-    function frame() {
+    var lastDraw = 0;
+    function frame(now) {
       if (!alive) return;
       raf = requestAnimationFrame(frame);
       if (document.hidden) return;
+      if (typeof now !== "number") now = performance.now();
+      var cap = reduceMotion ? 1000 / 15 : 1000 / 30;
+      if (now - lastDraw < cap) return;
+      lastDraw = now;
       var snap = {};
       try {
         snap = getSnap() || {};

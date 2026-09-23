@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.7.0** · 2026-09-23 · channel **live**
+
+Phone day-one is Play, the current pattern, and Mute. Eight steps on a narrow screen. A finger paints cells. Export, mix, and the song line sit under More after the first play. Lights still move when sound is off.
+
+## Earlier
+
 **Chip: BZ 1.6.0** · 2026-09-23 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
