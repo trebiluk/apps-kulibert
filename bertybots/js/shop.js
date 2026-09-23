@@ -233,6 +233,18 @@ function rectsOverlap(a, b) {
   return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
+function coreInDropAt(x, y, drop) {
+  if (!drop) return false;
+  if (inRect(x, y, drop)) return true;
+  const box = { x: x - CORE_S / 2, y: y - CORE_S / 2, w: CORE_S, h: CORE_S };
+  if (!rectsOverlap(box, drop)) return false;
+  const x0 = Math.max(box.x, drop.x);
+  const y0 = Math.max(box.y, drop.y);
+  const x1 = Math.min(box.x + box.w, drop.x + drop.w);
+  const y1 = Math.min(box.y + box.h, drop.y + drop.h);
+  return (x1 - x0) * (y1 - y0) >= CORE_S * CORE_S * 0.5;
+}
+
 function dist(a, b) {
   const dx = a.x - b.x, dy = a.y - b.y;
   return Math.hypot(dx, dy);
@@ -1132,7 +1144,7 @@ export function boot() {
     const drop = doc.level.drop;
     const shop = doc.level.shop;
     if (last.y < -0.8) return "Crate left the world. Failed output.";
-    if (drop && inRect(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
+    if (drop && coreInDropAt(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
     const xs = trail.slice(-24).map((p) => p.x);
     const span = xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
     if (shop && last.x >= shop.x - 0.2 && last.x <= shop.x + shop.w + 0.2 && span < 0.55) {
@@ -1318,19 +1330,19 @@ export function boot() {
     }
     playAge += DT * n;
     sampleForces();
-    checkWin();
+    checkWin(DT * n);
   }
 
-  function checkWin() {
+  function checkWin(dtAcc) {
     if (!sim || won || isMeasure() || isForces()) return;
     const drop = doc.level.drop;
     let inside = 0;
     for (const b of sim.cores) {
       const p = b.getPosition();
-      if (inRect(p.x, p.y, drop)) inside++;
+      if (coreInDropAt(p.x, p.y, drop)) inside++;
     }
     if (sim.cores.length && inside === sim.cores.length) {
-      winT += DT;
+      winT += dtAcc;
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
