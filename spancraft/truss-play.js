@@ -91,9 +91,22 @@ export function mountTruss(cfg) {
     if (n === 1 || state.stretch) return "Tap or let go where the other end goes.";
     return "Let go on a joint to connect.";
   }
+  function assistOn() {
+    return !!(assistBtn && assistBtn.getAttribute("aria-pressed") === "true");
+  }
+  function faceName(level) {
+    if (cfg.workshop && level.free) return "Your build";
+    return level.name;
+  }
+  function faceJob(level) {
+    if (!cfg.workshop || !level.free) return level.job;
+    return cfg.mode === "spire"
+      ? "Your tower. Test pushes from both sides."
+      : "Your bridge across 40 m. Test tries the load at three joints.";
+  }
   function syncAssistCue() {
     if (!cfg.workshop) return;
-    const on = assistBtn && assistBtn.getAttribute("aria-pressed") === "true";
+    const on = assistOn();
     const cue = document.getElementById("assist-cue");
     const text = jointHint();
     if (cue) {
@@ -115,6 +128,10 @@ export function mountTruss(cfg) {
     plate.classList.add("show");
     plate.hidden = false;
     plate.removeAttribute("hidden");
+    if (capWord && (capWord.textContent === "Ready" || capWord.textContent === "Assist")) {
+      capWord.textContent = "Assist";
+      capText.textContent = text;
+    }
   }
   let cssW = 0;
   let cssH = 0;
@@ -250,7 +267,7 @@ export function mountTruss(cfg) {
     if (onFree()) {
       setStatus(
         state.challengeMet ? "CLEAR" : "Challenge",
-        state.challengeMet ? "Your truss passed the test. " + level.job : level.job,
+        state.challengeMet ? (cfg.workshop ? "Your build passed the test. " : "Your truss passed the test. ") + faceJob(level) : faceJob(level),
         state.challengeMet ? "pass" : "",
       );
       return;
@@ -500,6 +517,50 @@ export function mountTruss(cfg) {
       ctx.lineWidth = cfg.workshop ? 3 : 7;
       ctx.stroke();
     }
+    if (cfg.workshop && assistOn() && !state.stretch && !state.view && joints.length >= 2) {
+      let pair = null;
+      const target = joints[level.loadIndex] ? level.loadIndex : 0;
+      for (let i = 0; i < joints.length; i++) {
+        if (i !== target && !hasMember(i, target)) {
+          pair = [i, target];
+          break;
+        }
+      }
+      if (!pair) {
+        for (let i = 0; i < joints.length && !pair; i++) {
+          for (let j = i + 1; j < joints.length; j++) {
+            if (!hasMember(i, j)) {
+              pair = [i, j];
+              break;
+            }
+          }
+        }
+      }
+      if (pair) {
+        const ga = toScreen(joints[pair[0]]);
+        const gb = toScreen(joints[pair[1]]);
+        ctx.save();
+        ctx.globalAlpha = 0.5;
+        ctx.setLineDash([12, 8]);
+        ctx.lineCap = "round";
+        ctx.strokeStyle = "#f8fafc";
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(ga.x, ga.y);
+        ctx.lineTo(gb.x, gb.y);
+        ctx.stroke();
+        const ang = Math.atan2(gb.y - ga.y, gb.x - ga.x);
+        ctx.setLineDash([]);
+        ctx.beginPath();
+        ctx.moveTo(gb.x, gb.y);
+        ctx.lineTo(gb.x - 16 * Math.cos(ang - 0.45), gb.y - 16 * Math.sin(ang - 0.45));
+        ctx.lineTo(gb.x - 16 * Math.cos(ang + 0.45), gb.y - 16 * Math.sin(ang + 0.45));
+        ctx.closePath();
+        ctx.fillStyle = "#f8fafc";
+        ctx.fill();
+        ctx.restore();
+      }
+    }
     if (state.stretch) {
       const a = toScreen(state.joints[state.stretch.from]);
       const aim = nearestJoint(state.stretch.sx, state.stretch.sy, 64);
@@ -569,10 +630,14 @@ export function mountTruss(cfg) {
       const open = pathClear();
       chal.classList.toggle("is-locked", !open);
       chal.setAttribute("aria-disabled", open ? "false" : "true");
+      if (cfg.workshop) {
+        const label = chal.querySelector(".chal-label");
+        if (label) label.textContent = open ? "Challenge" : "Clear Levels first";
+      }
     }
     if (brief) {
       brief.hidden = !free;
-      if (free) brief.textContent = freeLevel.job;
+      if (free) brief.textContent = faceJob(freeLevel);
     }
   }
   function syncTools() {
@@ -617,8 +682,8 @@ export function mountTruss(cfg) {
       const band = level.free ? "After the path" : (level.n + " · " + level.band);
       btn.innerHTML =
         '<span class="isle-tag">' + band + " · " + tag + "</span>" +
-        "<h3>" + level.name + "</h3>" +
-        "<p>" + level.job + "</p>" +
+        "<h3>" + faceName(level) + "</h3>" +
+        "<p>" + faceJob(level) + "</p>" +
         '<span class="isle-toy">Stars show this try</span>';
       btn.addEventListener("click", () => {
         if (!open) return;
@@ -786,7 +851,7 @@ export function mountTruss(cfg) {
       setStatus,
       totalMs: cfg.mode === "span" ? 1500 : 1200,
       lines: cfg.mode === "span"
-        ? [["Span", (level.spanM || 0) + " m."], ["Truck", "One load hangs on the truss."], ["Watch", "Triangles stay. Squares fold."]]
+        ? [["Span", (level.spanM || 0) + " m."], ["Load", cfg.workshop ? "One load hangs on the bridge." : "One load hangs on the truss."], ["Watch", "Triangles stay. Squares fold."]]
         : [["Height", (level.goalM || 0) + " m goal."], ["Load", "A weight sits on the top."], ["Watch", "A diagonal keeps the story from folding."]],
       onDone: go,
     });
@@ -807,7 +872,7 @@ export function mountTruss(cfg) {
     if (!bar) return;
     bar.hidden = state.members.length === 0 || state.phase !== "idle";
     const label = bar.querySelector(".bet-label");
-    if (label) label.textContent = "Will the truss hold?";
+    if (label) label.textContent = cfg.workshop ? "Will it hold?" : "Will the truss hold?";
     for (const btn of bar.querySelectorAll(".bet-chip")) {
       btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
     }
@@ -1020,7 +1085,7 @@ export function mountTruss(cfg) {
   if (trackChallenge) trackChallenge.addEventListener("click", () => {
     if (busy()) return;
     if (!pathClear()) {
-      setStatus("Path", "Clear ten levels. Then make your own truss.", "");
+      setStatus("Path", cfg.workshop ? "Clear Levels first." : "Clear ten levels. Then make your own truss.", "");
       return;
     }
     beginLevel(freeLevel.id);
@@ -1029,7 +1094,9 @@ export function mountTruss(cfg) {
     btn.addEventListener("click", () => {
       state.bet = btn.dataset.bet;
       syncBet();
-      setStatus("Bet", btn.dataset.bet === "hold" ? "You bet the truss will hold. Press Test." : "You bet the truss will fold. Press Test.", "");
+      setStatus("Bet", btn.dataset.bet === "hold"
+        ? (cfg.workshop ? "You bet it will hold. Press Test." : "You bet the truss will hold. Press Test.")
+        : (cfg.workshop ? "You bet it will fall. Press Test." : "You bet the truss will fold. Press Test."), "");
     });
   }
   const got = document.getElementById("assist-gotit");

@@ -1,5 +1,9 @@
-**Chip: HI 1.0.1** · 2026-09-23 · channel **live**
+**Chip: HI 1.0.2** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.0.2 — Challenge, Assist, plain Help — 2026-09-23
+
+- What’s new: Challenge shows a lock and a reason. Assist draws the next bar. Help says Build, Test, Fix one bar.
 
 ## 1.0.1 — Workshop world — 2026-09-23
 

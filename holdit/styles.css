@@ -25,6 +25,20 @@
   background: #99f6e4;
 }
 body.is-tower .assist-cue i { background: #c4b5fd; }
+body.workshop .track button.is-locked {
+  opacity: 1;
+  background: var(--elevated);
+  color: var(--text);
+}
+body.workshop #track-challenge {
+  min-height: 44px;
+}
+body.workshop #track-challenge:not(.is-locked) .lock-glyph { display: none; }
+body.workshop #track-challenge[aria-pressed="true"] {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}
 body.workshop .flash-plate {
   background: #1e293b;
   border: 1px solid #94a3b8;
