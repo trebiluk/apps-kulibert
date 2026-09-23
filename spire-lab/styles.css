@@ -527,10 +527,11 @@ html.calm-clear .flash-spark { display: none !important; }
 #retry-now[hidden] { display: none !important; }
 
 .assist-plate {
-  pointer-events: auto;
+  pointer-events: none;
   max-width: min(22rem, 88vw);
 }
 .assist-plate .assist-gotit {
+  pointer-events: auto;
   margin-top: 0.55rem;
   min-height: 44px;
   width: 100%;

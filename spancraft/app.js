@@ -1,13 +1,13 @@
-import { mountTruss } from "./truss-play.js?v=1.3.19";
+import { mountTruss } from "./truss-play.js?v=1.3.20";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.19",
+  version: "SC 1.3.20",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: ten truss levels. Clear the path, then build your own.",
+  note: "What’s new: the second stretch snaps. Assist stays off the joints.",
   engageKey: "kulibert-spancraft-engage-v2",
   assistKey: "kulibert-spancraft-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

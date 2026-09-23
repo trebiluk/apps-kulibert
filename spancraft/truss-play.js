@@ -181,6 +181,10 @@ export function mountTruss(cfg) {
       setStatus("Ready", cfg.firstLine, "");
       return;
     }
+    if (state.members.length === 1 && level.n === 1) {
+      setStatus("Job 1", "One side is in. Stretch the other joint up to the same top joint.", "");
+      return;
+    }
     setStatus("Job " + level.n, level.job, "");
   }
 
@@ -216,7 +220,7 @@ export function mountTruss(cfg) {
     const bh = Math.max(80, maxY - minY);
     const padX = 80;
     const padTop = 48;
-    const padBot = 168;
+    const padBot = 220;
     state.scale = Math.min((cssW - padX) / bw, (cssH - padTop - padBot) / bh);
     state.origin = {
       x: (cssW - bw * state.scale) / 2 - minX * state.scale,
@@ -239,10 +243,10 @@ export function mountTruss(cfg) {
     const rect = canvas.getBoundingClientRect();
     return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
   }
-  function nearestJoint(sx, sy) {
+  function nearestJoint(sx, sy, radius) {
     const joints = state.view ? state.view.joints : state.joints;
     let best = -1;
-    let bestD = 28;
+    let bestD = radius == null ? 56 : radius;
     joints.forEach((j, i) => {
       const p = toScreen(j);
       const d = Math.hypot(p.x - sx, p.y - sy);
@@ -351,15 +355,24 @@ export function mountTruss(cfg) {
     }
     if (state.stretch) {
       const a = toScreen(state.joints[state.stretch.from]);
+      const aim = nearestJoint(state.stretch.sx, state.stretch.sy, 64);
+      const end = aim >= 0 ? toScreen(state.joints[aim]) : { x: state.stretch.sx, y: state.stretch.sy };
       ctx.save();
-      ctx.setLineDash([8, 8]);
+      ctx.setLineDash(aim >= 0 ? [] : [8, 8]);
       ctx.strokeStyle = "#fbbf24";
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
-      ctx.lineTo(state.stretch.sx, state.stretch.sy);
+      ctx.lineTo(end.x, end.y);
       ctx.stroke();
       ctx.restore();
+      if (aim >= 0 && aim !== state.stretch.from) {
+        ctx.beginPath();
+        ctx.arc(end.x, end.y, 26, 0, Math.PI * 2);
+        ctx.strokeStyle = "#fbbf24";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
     }
     joints.forEach((j, i) => {
       const p = toScreen(j);
@@ -637,11 +650,34 @@ export function mountTruss(cfg) {
     }
   }
 
+  function finishPointer(ev) {
+    const s = eventPoint(ev);
+    if (state.drag != null) {
+      state.drag = null;
+      draw();
+      return;
+    }
+    if (!state.stretch) return;
+    const from = state.stretch.from;
+    state.stretch = null;
+    const hit = nearestJoint(s.x, s.y, 64);
+    if (hit < 0) {
+      setStatus("Stretch", "Let go on the other joint. A gold ring means it will snap.", "");
+    } else if (!addMember(from, hit)) {
+      if (from !== hit && hasMember(from, hit)) {
+        setStatus("Stretch", "That side is in. Stretch the other joint up to the top.", "");
+      }
+    } else {
+      syncBet();
+      coach();
+    }
+    draw();
+  }
   canvas.addEventListener("pointerdown", (ev) => {
     if (busy()) return;
-    canvas.setPointerCapture(ev.pointerId);
+    if (canvas.setPointerCapture) canvas.setPointerCapture(ev.pointerId);
     const s = eventPoint(ev);
-    const hit = nearestJoint(s.x, s.y);
+    const hit = nearestJoint(s.x, s.y, 56);
     if (state.tool === "delete") {
       if (hit >= 0 && !state.joints[hit].fixed) {
         state.joints.splice(hit, 1);
@@ -677,7 +713,8 @@ export function mountTruss(cfg) {
       }
     }
   });
-  canvas.addEventListener("pointermove", (ev) => {
+  window.addEventListener("pointermove", (ev) => {
+    if (!state.stretch && state.drag == null) return;
     const s = eventPoint(ev);
     if (state.drag != null) {
       const m = toModel(s.x, s.y);
@@ -686,27 +723,12 @@ export function mountTruss(cfg) {
       draw();
       return;
     }
-    if (!state.stretch) return;
     state.stretch.sx = s.x;
     state.stretch.sy = s.y;
     draw();
   });
-  canvas.addEventListener("pointerup", (ev) => {
-    const s = eventPoint(ev);
-    if (state.drag != null) {
-      state.drag = null;
-      draw();
-      return;
-    }
-    if (!state.stretch) return;
-    const from = state.stretch.from;
-    state.stretch = null;
-    const hit = nearestJoint(s.x, s.y);
-    if (hit >= 0) addMember(from, hit);
-    syncBet();
-    coach();
-    draw();
-  });
+  window.addEventListener("pointerup", finishPointer);
+  window.addEventListener("pointercancel", finishPointer);
 
   function setTool(name) {
     if (busy()) return;

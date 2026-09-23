@@ -1,13 +1,13 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=1.3.18";
+import { mountTruss } from "../spancraft/truss-play.js?v=1.3.20";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.18",
+  version: "SL 1.3.19",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: ten truss levels. Clear the path, then build your own.",
+  note: "What’s new: the second stretch snaps. Assist stays off the joints.",
   engageKey: "kulibert-spire-engage-v2",
   assistKey: "kulibert-spire-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

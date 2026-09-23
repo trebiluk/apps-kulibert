@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.19** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.20** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.20 — Second stretch — 2026-09-23
+
+- What’s new: the second stretch snaps. Assist stays off the joints.
 
 ## 1.3.19 — Truss path — 2026-09-23
 
