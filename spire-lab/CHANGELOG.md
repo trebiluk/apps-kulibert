@@ -1,8 +1,12 @@
 # Spire Lab changelog
 
-**Chip: SL 1.1.0** · 2026-09-22 · channel **live**
+**Chip: SL 1.1.1** · 2026-09-22 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
-Twin of SpanCraft **SC 1.1.0**.
+
+## 1.1.1 — Polish — 2026-09-22
+
+- What’s new: height is the stack, plain labels, fits this Chromebook.
+- Help is one line. Height reads as floors standing. The drop prove is unchanged.
 
 ## 1.1.0 — Streak — 2026-09-22
 

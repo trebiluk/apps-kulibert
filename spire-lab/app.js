@@ -45,6 +45,16 @@ function setStatus(word, text, tone) {
   caption.className = "caption" + (tone ? " " + tone : "");
 }
 
+function floorWord(n) {
+  return n === 1 ? "floor" : "floors";
+}
+
+function paintHeight() {
+  heightN.textContent = String(state.height);
+  const unit = document.querySelector("#height-read span");
+  if (unit) unit.textContent = floorWord(state.height);
+}
+
 function showStreak() {
   if (!streakChip || !streakN) return;
   if (state.perfectCount > 0) {
@@ -106,12 +116,12 @@ function resetTower() {
     h: SLAB_H,
     dir: 1,
   };
-  heightN.textContent = "0";
+  paintHeight();
   state.perfectCount = 0;
   showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
-  setStatus("Ready", "Drop the slab. Height is how many stay standing." + best, "");
+  setStatus("Ready", "Drop the slab. Height is the floors that stay up." + best, "");
 }
 
 function topSlab() {
@@ -147,8 +157,8 @@ function dropSlab() {
     state.mover = null;
     state.phase = "over";
     writeBest();
-    heightN.textContent = String(state.height);
-    setStatus("Miss", "The slab missed. Height " + state.height + ". Best " + state.best + ".", "fail");
+    paintHeight();
+    setStatus("Miss", state.height + " " + floorWord(state.height) + " standing. The slab missed. Best " + state.best + ".", "fail");
     return;
   }
   const even = towerPerfect(mover.x, top.x, top.w);
@@ -183,7 +193,7 @@ function dropSlab() {
   }
   state.slabs.push(piece);
   state.height += 1;
-  heightN.textContent = String(state.height);
+  paintHeight();
   writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
   showStreak();
@@ -195,8 +205,8 @@ function dropSlab() {
     h: SLAB_H,
     dir: 1,
   };
-  const streakLine = state.perfectCount ? " Even. Streak " + state.perfectCount + "." : "";
-  setStatus("Height", "Height " + state.height + ". Best " + state.best + "." + streakLine, "pass");
+  const streakLine = state.perfectCount ? " Lined up. Streak " + state.perfectCount + "." : "";
+  setStatus("Height", state.height + " " + floorWord(state.height) + " standing. Best " + state.best + "." + streakLine, "pass");
 }
 
 function targetScale() {
@@ -386,15 +396,10 @@ window.addEventListener("keydown", (ev) => {
 
 readBest();
 resetTower();
-const edgeBtn = document.getElementById("edge-btn");
-const edgeMenu = document.getElementById("edge-menu");
-if (edgeBtn && edgeMenu) {
-  edgeBtn.addEventListener("click", () => {
-    const open = edgeMenu.hidden;
-    edgeMenu.hidden = !open;
-    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-}
 resize();
+const stage = canvas.parentElement;
+if (typeof ResizeObserver === "function" && stage) {
+  new ResizeObserver(() => resize()).observe(stage);
+}
 window.addEventListener("resize", resize);
 requestAnimationFrame(tick);
