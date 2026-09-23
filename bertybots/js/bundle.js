@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.2 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.3 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.2";
+const APP_VERSION = "0.19.3";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.2";
+const APP_CHIP = "BB 0.19.3";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -216,7 +216,7 @@ const GUIDE = {
     plan: "Plan: build only on the Shop Floor. 48-part cap. Builder places the parts.",
     create: "Create: drag a wheel onto a hub. Steel pulls from a node. Starter cart is a pusher, not a finished design.",
     test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
-    improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
+    improve: "Improve: change one thing, then test again.",
     system: "Open Shop is a straight process path. Input energy on the floor, process through the machine, output the crate into the zone.",
   },
   editor: {
@@ -443,7 +443,7 @@ function boot() {
     renderHeat();
     if (!fromRemote) {
       try { if (heatCh) heatCh.postMessage({ t: "reset" }); } catch (e) { /* ignore */ }
-      toast("New period. Heat is 0 parked.");
+      toast("Parked count is back to 0.");
     }
   }
   if (heatCh) {
@@ -821,7 +821,7 @@ function boot() {
         const num = document.createElement("b");
         num.textContent = String(i + 1);
         const mark = document.createElement("span");
-        mark.textContent = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NOW";
+        mark.textContent = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NEXT";
         btn.append(num, mark);
         strip.append(btn);
       });
@@ -889,6 +889,8 @@ function boot() {
       if ([...pick.options].some((opt) => opt.value === cur)) pick.value = cur;
     }
     if (exportBtn) exportBtn.hidden = !(allClear() && courseId === "editor");
+    const designBlock = document.getElementById("designer-block");
+    if (designBlock) designBlock.hidden = !allClear();
   }
 
   function isMeasure() { return courseId === "measure"; }
