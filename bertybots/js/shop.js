@@ -57,20 +57,20 @@ const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 
 const HOWTO = [
   {
-    title: "Park the crate",
-    body: "Job: Bot Core in the Drop Zone for one second. Watch the crate roll in.",
+    title: "What this game is",
+    body: "Berty's Botz is a construction shop. You design a machine. Gravity and the Drive wheels are the forces. The job is to park the Bot Core crate in the Drop Zone.",
   },
   {
-    title: "Parts do jobs",
-    body: "Drive-R goes right. Drive-L goes left. Steel is a silver bar. Ghost is dashed — it misses the machine.",
+    title: "The job",
+    body: "The crate must sit inside the orange Drop Zone for one second. You build on the Shop Floor. The Drop Zone is the goal.",
+  },
+  {
+    title: "The parts",
+    body: "Drive-R rolls right. Drive-L rolls left. Roller is a free wheel. Steel is a silver bar. Ghost is dashed — it misses the machine and can touch the crate.",
   },
   {
     title: "Build, then Play",
-    body: "Drag a wheel onto a hub. Then Play. Stop puts the shop back.",
-  },
-  {
-    title: "Lean machines earn more",
-    body: "Same job, fewer parts = more XP. Rank stays on this Chromebook. No names.",
+    body: "Drag a wheel onto a hub. Play runs the test. Stop puts the shop back. Fewer parts for the same park earns more XP. No names.",
   },
 ];
 
@@ -569,14 +569,13 @@ export function boot() {
     const card = HOWTO[howtoIndex] || HOWTO[0];
     title.textContent = card.title;
     body.textContent = card.body;
-    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? "Try Roll Out" : "Next";
+    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? "Build" : "Next";
     root.hidden = false;
   }
 
   function hideHowto() {
     const root = document.getElementById("howto");
     if (root) root.hidden = true;
-    try { localStorage.setItem("bb-howto-v2", "1"); } catch (e) { /* private mode */ }
   }
 
   function rankAt(xp) {
@@ -787,7 +786,6 @@ export function boot() {
     if (!root) return;
     root.hidden = !on;
     if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
-    if (on) hideHowto();
   }
 
   function setPacket(on) {
@@ -1795,6 +1793,18 @@ export function boot() {
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
     stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
+    if (canEditSite() && doc.level.drop) {
+      const d = doc.level.drop;
+      const cx = wx(d.x + d.w / 2);
+      const cy = wy(d.y + d.h / 2);
+      ctx.fillStyle = "rgba(243,238,228,0.94)";
+      ctx.fillRect(cx - 40, cy - 11, 80, 22);
+      ctx.fillStyle = "#1e2226";
+      ctx.font = `700 ${Math.max(12, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText("drag goal", cx, cy);
+    }
     if (isMeasure()) drawTape();
 
     if ((playing && trail.length > 1) || (!playing && lastTrail.length > 1)) {
@@ -1960,6 +1970,8 @@ export function boot() {
         toast("Stay on the Shop Floor.");
       }
       dirty = true;
+    } else if (d.kind === "goal") {
+      dirty = true;
     } else if (d.kind === "place" && d.x != null) {
       const pt = { x: d.x, y: d.y };
       if (!canPlaceWheel(pt)) toast("Build on the Shop Floor.");
@@ -2014,6 +2026,12 @@ export function boot() {
     if (tool === "tape") {
       if (!tapeA || tapeB) { tapeA = { x: pt.x, y: pt.y }; tapeB = null; }
       else { tapeB = { x: pt.x, y: pt.y }; scoreTape(); }
+      return;
+    }
+
+    if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !hitPart(pt) && tool !== "erase") {
+      const drop = doc.level.drop;
+      drag = { kind: "goal", x0: pt.x, y0: pt.y, ox: drop.x, oy: drop.y };
       return;
     }
 
@@ -2093,7 +2111,11 @@ export function boot() {
     }
     const over = ev.target === canvas || canvas.contains(ev.target);
     const pt = over ? worldFromEvent(ev) : hover;
-    if (over) hover = pt;
+    if (over) {
+      hover = pt;
+      if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !playing) canvas.style.cursor = "grab";
+      else if (!drag) canvas.style.cursor = "crosshair";
+    }
     if (!drag || playing) return;
     if (drag.kind === "bar") {
       const n = nearestNode(pt, SNAP * 1.55);
@@ -2108,6 +2130,17 @@ export function boot() {
       drag.x2 = x2; drag.y2 = y2; drag.snap = !!n;
     } else if (drag.kind === "rect") {
       drag.x2 = pt.x; drag.y2 = pt.y;
+    } else if (drag.kind === "goal") {
+      const drop = doc.level.drop;
+      let x = drag.ox + (pt.x - drag.x0);
+      let y = drag.oy + (pt.y - drag.y0);
+      x = Math.max(0.3, Math.min(WORLD_W - drop.w - 0.3, x));
+      y = Math.max(0.3, Math.min(10, y));
+      const next = { x, y, w: drop.w, h: drop.h };
+      if (!rectsOverlap(next, doc.level.shop)) {
+        drop.x = x;
+        drop.y = y;
+      }
     } else if (drag.kind === "move") {
       const dx = pt.x - drag.x0, dy = pt.y - drag.y0;
       const p = drag.part;
@@ -2317,26 +2350,24 @@ export function boot() {
     if (howtoSkip) howtoSkip.addEventListener("click", hideHowto);
     const howtoNext = document.getElementById("howto-next");
     if (howtoNext) {
-      howtoNext.addEventListener("click", async () => {
+      howtoNext.addEventListener("click", () => {
         if (howtoIndex >= HOWTO.length - 1) {
           hideHowto();
-          const pick = document.getElementById("level-pick");
-          if (pick) pick.value = "roll";
-          const res = await fetch("levels/roll-out.json");
-          doc = unpackDoc(await res.json());
-          dirty = false;
-          resetLoop("roll");
-          refreshMeta();
-          toast("Tutorial course: Roll Out. Ask, then Create, then Play.");
           return;
         }
         showHowto(howtoIndex + 1);
       });
     }
     const howtoRoot = document.getElementById("howto");
-    if (howtoRoot) {
-      howtoRoot.addEventListener("click", (ev) => {
-        if (ev.target === howtoRoot) hideHowto();
+    const goalBtn = document.getElementById("btn-goal");
+    if (goalBtn) {
+      goalBtn.addEventListener("click", async () => {
+        hideHowto();
+        showCrew(false);
+        if (courseId !== "editor") await loadBuiltin("editor");
+        setLayer("level");
+        setTool("move");
+        toast("Drag the Drop Zone. Challenges keep the goal locked.");
       });
     }
     const railBtn = document.getElementById("btn-rail");
@@ -2591,10 +2622,10 @@ export function boot() {
   document.body.dataset.tw = embed ? "1" : "0";
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
-  } else {
-    try {
-      if (!embed && !localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
-    } catch (e) { /* ignore */ }
+  }
+  if (!embed) {
+    showCrew(true);
+    showHowto(0);
   }
   requestAnimationFrame(loop);
 }

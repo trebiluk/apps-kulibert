@@ -9,11 +9,11 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.18.3 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.18.5 — Solvay Tech Ed</title>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.18.3">
+  <link rel="stylesheet" href="css/app.css?v=0.18.5">
 </head>
 <body>
   <div id="rotate-gate">
@@ -117,7 +117,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.18.3</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.18.5</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -148,7 +148,7 @@
           <button class="btn" id="btn-slow" title="S">Slow</button>
           <button class="btn" id="btn-stop">Stop</button>
         </div>
-        <button class="btn gold" id="btn-crew" type="button" aria-expanded="false">Menu</button>
+        <button class="btn gold" id="btn-crew" type="button" aria-expanded="true">Menu</button>
       </header>
       <div class="stage-fit">
       <div class="stage">
@@ -173,12 +173,12 @@
         </div>
         <div class="toast" id="toast"></div>
         <div class="win" id="win">In the zone</div>
-        <div class="howto" id="howto" hidden>
+        <div class="howto" id="howto">
           <div class="howto-card" role="dialog" aria-labelledby="howto-title">
-            <p class="howto-kicker">How to shop · watch the example</p>
+            <p class="howto-kicker">Lesson · what this game is</p>
             <canvas id="howto-demo" width="640" height="240" aria-hidden="true"></canvas>
-            <h2 id="howto-title">How this shop works</h2>
-            <p id="howto-body"></p>
+            <h2 id="howto-title">What this game is</h2>
+            <p id="howto-body">Berty's Botz is a construction shop. You design a machine. Gravity and the Drive wheels are the forces. The job is to park the Bot Core crate in the Drop Zone.</p>
             <div class="row howto-actions">
               <button class="btn" id="howto-skip">Skip</button>
               <button class="btn gold" id="howto-next">Next</button>
@@ -199,21 +199,26 @@
             <button class="btn gold" id="systems-close">Close</button>
           </div>
         </div>
-        <div class="sheet" id="crew" hidden>
-          <div class="sheet-card" role="dialog" aria-labelledby="crew-title">
+        <div class="sheet" id="crew">
+          <div class="sheet-card menu-card" role="dialog" aria-labelledby="crew-title">
+            <p class="howto-kicker">Shop menu</p>
             <h2 id="crew-title">Menu</h2>
+            <p class="menu-lead">Build a machine on the Shop Floor. Park the crate in the Drop Zone.</p>
             <p class="hint" id="rank-menu">Helper · 0 XP</p>
+            <p class="crew-label">Pair</p>
             <div class="row role-menu" role="group" aria-label="Pair role">
               <button class="btn on" data-role="builder" type="button" aria-pressed="true">Builder</button>
               <button class="btn" data-role="observer" type="button" aria-pressed="false">Observer</button>
             </div>
             <label class="crew-label" for="title">Level title (no names)</label>
             <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
+            <p class="crew-label">File</p>
             <div class="row">
               <button class="btn" id="btn-new">New</button>
               <button class="btn" id="btn-open">Open</button>
               <button class="btn gold" id="btn-save">Save file</button>
             </div>
+            <p class="crew-label">Shop</p>
             <div class="row">
               <button class="btn" id="btn-slow-menu">Slow</button>
               <button class="btn" id="btn-cart">Starter cart</button>
@@ -222,6 +227,12 @@
               <button class="btn" id="btn-clear">Clear machine</button>
               <button class="btn" id="btn-period">New period</button>
             </div>
+            <p class="crew-label">Designer</p>
+            <div class="row">
+              <button class="btn" id="btn-goal" type="button">Move the goal</button>
+            </div>
+            <p class="hint">Drag the Drop Zone in Site Editor. A challenge keeps the goal locked.</p>
+            <p class="crew-label">Room</p>
             <div class="row">
               <a class="btn ghost" href="https://tw.kulibert.net/">TechWorks</a>
               <a class="btn ghost" href="https://apps.kulibert.net/">Tech Room</a>
@@ -236,13 +247,13 @@
       <footer class="status">
         <span id="mode">Shop</span>
         <span>Parts <b id="count">0 / 48</b></span>
-        <span class="whats-new">What's new: polish — shop fills the window.</span>
+        <span class="whats-new">What's new: lesson on open. Designer can drag the goal.</span>
         <span class="hint" id="status-hint">Hover the left bin for tools · Space play · Z undo</span>
       </footer>
     </div>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.18.3"></script>
+  <script src="js/bundle.js?v=0.18.5"></script>
 </body>
 </html>
