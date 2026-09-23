@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-23-hub-restore"/>
+  <meta name="tech-room-rev" content="2026-09-23-hub-lunch"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -34,8 +34,10 @@
     a.tile svg{stroke:#22d3ee;fill:none;stroke-width:1.7}
     a.tile .label{font-size:.9rem;font-weight:650;text-align:center}
     #school-wrap:not(:has(a.tile)),section.cuts:not(:has(a.tile)){display:none!important}
-    .shell-footer{flex:0 0 auto;min-height:44px;display:flex;align-items:center;gap:.75rem;padding:0 .75rem;border-top:1px solid #16324f;color:#8fb4c9;font-size:.85rem;font-weight:600}
-    .shell-footer a{color:#22d3ee;font-weight:700;text-decoration:none}
+    .shell-footer{flex:0 0 auto;min-height:44px;display:flex;align-items:center;justify-content:flex-end;gap:.75rem;padding:0 1rem;border-top:1px solid #16324f;color:#8fb4c9;font-size:.85rem;font-weight:600}
+    .shell-footer a{color:#22d3ee;font-weight:700;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+    .search svg{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);width:1rem;height:1rem;stroke:#8fb4c9;fill:none;stroke-width:1.75;pointer-events:none}
+    .search input{padding-left:2.4rem}
     .edge-pocket-menu{position:absolute;right:.5rem;top:48px;background:#0b152c;border:1px solid #16324f;border-radius:10px;padding:.35rem;min-width:12rem}
     .edge-pocket-menu[hidden]{display:none}
     .edge-pocket-item{display:flex;align-items:center;min-height:44px;padding:0 .75rem;color:#e8f7ff;text-decoration:none;font-weight:600}
@@ -46,7 +48,7 @@
     <header class="shell-header">
       <span class="shell-brand">THE TECH ROOM</span>
       <span class="shell-chip">Solvay</span>
-      <span class="shell-chip">rev 2026-09-23-hub-restore</span>
+      <span class="shell-chip">rev 2026-09-23-hub-lunch</span>
       <div class="edge-pocket">
         <button type="button" class="btn" id="more">More</button>
         <div class="edge-pocket-menu" id="more-menu" hidden>
@@ -57,7 +59,7 @@
     <section class="poster">
       <span class="lockup-the">THE</span>
       <span class="lockup-room">TECH ROOM</span>
-      <div class="search"><input id="q" type="search" placeholder="Search or paste a link"/></div>
+      <div class="search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg><input id="q" type="search" placeholder="Search or paste a link" autocomplete="off"/></div>
     </section>
     <div id="app-groups">
       <section class="group"><h2>Class</h2><nav class="board">
@@ -93,10 +95,11 @@
         <nav class="board" id="school-board"></nav>
       </section>
     </div>
-    <footer class="shell-footer"><span>Lunch · placeholder</span><a href="/bistro/">Bistro</a></footer>
+    <footer class="shell-footer"><a href="/bistro/">Lunch · Bearcat Bistro</a></footer>
   </div>
   <script>
     document.getElementById('more').onclick=function(){var m=document.getElementById('more-menu');m.hidden=!m.hidden};
+    document.addEventListener('keydown',function(e){if(e.key==='/'&&document.activeElement!==q){e.preventDefault();q.focus();}});
     var q=document.getElementById('q');
     q.addEventListener('input',function(){var s=q.value.toLowerCase();document.querySelectorAll('a.tile').forEach(function(t){t.style.display=!s||t.textContent.toLowerCase().indexOf(s)>=0?'':'none';});});
   </script>
