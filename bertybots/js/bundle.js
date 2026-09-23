@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.18.9 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.0 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.18.9";
+const APP_VERSION = "0.19.0";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.18.9";
+const APP_CHIP = "BB 0.19.0";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -94,6 +94,18 @@ function downloadDoc(doc, filename) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 
+function downloadLevel(doc) {
+  const packed = packDoc(doc);
+  packed.kind = "botzlevel";
+  const blob = new Blob([JSON.stringify(packed, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  const alias = sanitizeTitle(doc.title).replace(/[^\w.-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase() || "level";
+  a.href = URL.createObjectURL(blob);
+  a.download = `${alias}.botzlevel.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
 function readFile(file) {
   return file.text().then((text) => unpackDoc(JSON.parse(text)));
 }
@@ -141,7 +153,7 @@ const BUILTIN = [
   { id: "pair", label: "Pair of Crates", url: "levels/pair-of-crates.json" },
 ];
 
-const PATH = [
+const JOBS = [
   { id: "open", label: "Open Shop" },
   { id: "roll", label: "Roll Out" },
   { id: "curb", label: "Up the Curb" },
@@ -150,8 +162,6 @@ const PATH = [
   { id: "shelf", label: "High Shelf" },
   { id: "bend", label: "Around the Bend" },
   { id: "pair", label: "Pair of Crates" },
-];
-const LESSONS = [
   { id: "measure", label: "Measure" },
   { id: "forces", label: "Forces" },
 ];
@@ -203,7 +213,7 @@ const GUIDE = {
   open: {
     ask: "Ask: park the Bot Core crate in the Drop Zone. That is the job.",
     imagine: "Imagine: Drive-R / Drive-L (energy), Roller, Steel (structure), Ghost (misses the machine).",
-    plan: "Plan: build only on the Shop Floor. 48-part cap. Pair — builder places, observer watches the crate.",
+    plan: "Plan: build only on the Shop Floor. 48-part cap. Builder places the parts.",
     create: "Create: drag a wheel onto a hub. Steel pulls from a node. Starter cart is a pusher, not a finished design.",
     test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
     improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
@@ -487,7 +497,7 @@ function boot() {
     const raw = localStorage.getItem("bb-progress-v1");
     if (raw) {
       const p = JSON.parse(raw);
-      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {} };
+      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {}, tried: p.tried || {} };
     }
   } catch (e) { /* private mode */ }
 
@@ -717,6 +727,33 @@ function boot() {
     refreshPath();
   }
 
+  function classJobs() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("bb-class-jobs-v1") || "[]");
+      if (!Array.isArray(raw)) return [];
+      return raw.filter((j) => j && j.id && j.alias && j.doc && j.doc.app === "bertybots").slice(0, 8);
+    } catch (e) { return []; }
+  }
+
+  function allClear() {
+    return JOBS.every((job) => levelDone(job.id));
+  }
+
+  function jobUnlocked(id) {
+    if (levelDone(id)) return true;
+    if (id === "editor" || classJobs().some((job) => job.id === id)) return allClear();
+    const i = JOBS.findIndex((job) => job.id === id);
+    if (i < 0) return false;
+    if (i === 0) return true;
+    return levelDone(JOBS[i - 1].id);
+  }
+
+  function plateState(id) {
+    if (levelDone(id)) return "clear";
+    if (progress.tried && progress.tried[id]) return "test";
+    if (!jobUnlocked(id)) return "lock";
+    return "now";
+  }
   function levelDone(id) {
     const rec = progress.wins[id];
     return !!(rec && rec.n > 0);
@@ -725,34 +762,101 @@ function boot() {
   function refreshPath() {
     const list = document.getElementById("path-done");
     const nextBtn = document.getElementById("path-next");
-    if (!list || !nextBtn) return;
-    const done = PATH.concat(LESSONS).filter((level) => levelDone(level.id));
-    list.replaceChildren();
-    if (!done.length) {
-      const li = document.createElement("li");
-      li.className = "path-empty";
-      li.textContent = "None yet.";
-      list.append(li);
-    } else {
-      for (const level of done) {
+    const strip = document.getElementById("job-strip");
+    const pick = document.getElementById("level-pick");
+    const exportBtn = document.getElementById("btn-export");
+    const done = JOBS.filter((level) => levelDone(level.id));
+    if (list && nextBtn) {
+      list.replaceChildren();
+      if (!done.length) {
         const li = document.createElement("li");
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "path-link";
-        btn.dataset.course = level.id;
-        btn.textContent = level.label;
-        li.append(btn);
+        li.className = "path-empty";
+        li.textContent = "None yet.";
         list.append(li);
+      } else {
+        for (const level of done) {
+          const li = document.createElement("li");
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "path-link";
+          btn.dataset.course = level.id;
+          const n = JOBS.findIndex((job) => job.id === level.id) + 1;
+          btn.textContent = `Job ${n} · ${level.label}`;
+          li.append(btn);
+          list.append(li);
+        }
+      }
+      const upcoming = JOBS.find((level) => !levelDone(level.id));
+      if (upcoming) {
+        const n = JOBS.findIndex((job) => job.id === upcoming.id) + 1;
+        nextBtn.textContent = `Job ${n} · ${upcoming.label}`;
+        nextBtn.dataset.course = upcoming.id;
+      } else {
+        nextBtn.textContent = "Design a level";
+        nextBtn.dataset.course = "editor";
       }
     }
-    const upcoming = PATH.find((level) => !levelDone(level.id));
-    if (upcoming) {
-      nextBtn.textContent = upcoming.label;
-      nextBtn.dataset.course = upcoming.id;
-    } else {
-      nextBtn.textContent = "All parked. Replay Open Shop";
-      nextBtn.dataset.course = "open";
+    if (strip) {
+      strip.replaceChildren();
+      JOBS.forEach((job, i) => {
+        const btn = document.createElement("button");
+        const state = plateState(job.id);
+        btn.type = "button";
+        btn.className = `job-plate ${state}`;
+        btn.dataset.course = job.id;
+        btn.disabled = state === "lock";
+        btn.title = job.label;
+        const mark = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NOW";
+        btn.innerHTML = `<b>${i + 1}</b><span>${mark}</span>`;
+        strip.append(btn);
+      });
+      if (allClear()) {
+        const design = document.createElement("button");
+        design.type = "button";
+        design.className = "job-plate now";
+        design.dataset.course = "editor";
+        design.title = "Design a level";
+        design.innerHTML = "<b>D</b><span>DESIGN</span>";
+        strip.append(design);
+      }
+      for (const job of classJobs()) {
+        const btn = document.createElement("button");
+        const state = !allClear() ? "lock" : (levelDone(job.id) ? "clear" : "now");
+        btn.type = "button";
+        btn.className = `job-plate ${state}`;
+        btn.dataset.course = job.id;
+        btn.disabled = !allClear();
+        btn.title = job.alias;
+        btn.innerHTML = `<b>C</b><span>${state === "clear" ? "CLEAR" : "CLASS"}</span>`;
+        strip.append(btn);
+      }
     }
+    if (pick) {
+      const cur = courseId;
+      pick.replaceChildren();
+      JOBS.forEach((job, i) => {
+        const opt = document.createElement("option");
+        opt.value = job.id;
+        opt.textContent = `Job ${i + 1} · ${job.label}`;
+        opt.disabled = !jobUnlocked(job.id);
+        pick.append(opt);
+      });
+      if (allClear()) {
+        const opt = document.createElement("option");
+        opt.value = "editor";
+        opt.textContent = "Design a level";
+        pick.append(opt);
+      }
+      for (const job of classJobs()) {
+        const opt = document.createElement("option");
+        opt.value = job.id;
+        opt.textContent = `Class · ${job.alias}`;
+        opt.disabled = !allClear();
+        pick.append(opt);
+      }
+      if ([...pick.options].some((opt) => opt.value === cur)) pick.value = cur;
+    }
+    if (exportBtn) exportBtn.hidden = !(allClear() && courseId === "editor");
   }
 
   function isMeasure() { return courseId === "measure"; }
@@ -1122,6 +1226,11 @@ function boot() {
   }
 
   function stopPlay() {
+    if (playing && !won && JOBS.some((job) => job.id === courseId) && !levelDone(courseId)) {
+      progress.tried = progress.tried || {};
+      progress.tried[courseId] = true;
+      saveProgress();
+    }
     if (playing && !won) lastReadout = crateReadout();
     else if (won) lastReadout = "Parked. Output reached the Drop Zone.";
     lastTrail = trail.slice();
@@ -2360,6 +2469,23 @@ function boot() {
   }
 
   async function loadBuiltin(id) {
+    if (!jobUnlocked(id)) {
+      toast(id === "editor" ? "Design unlocks after Job 10 is clear." : "Clear the job before this one.");
+      refreshPath();
+      return;
+    }
+    const custom = classJobs().find((job) => job.id === id);
+    if (custom) {
+      if (playing) stopPlay();
+      doc = unpackDoc(custom.doc);
+      dirty = false;
+      resetLoop(id);
+      setLayer("machine");
+      setTool("driveR");
+      applyCam(true);
+      refreshMeta();
+      return;
+    }
     const item = BUILTIN.find((x) => x.id === id);
     if (!item) return;
     if (playing) stopPlay();
@@ -2503,6 +2629,26 @@ function boot() {
       });
     }
     const howtoRoot = document.getElementById("howto");
+    const strip = document.getElementById("job-strip");
+    if (strip) {
+      strip.addEventListener("click", (ev) => {
+        const hit = ev.target.closest("[data-course]");
+        if (!hit || hit.disabled) return;
+        loadBuiltin(hit.dataset.course);
+      });
+    }
+    const exportBtn = document.getElementById("btn-export");
+    if (exportBtn) {
+      exportBtn.addEventListener("click", () => {
+        if (!allClear() || courseId !== "editor") {
+          toast("Export unlocks in Design, after Job 10.");
+          return;
+        }
+        doc.title = sanitizeTitle(document.getElementById("title").value || doc.title);
+        downloadLevel(doc);
+        toast("Saved an alias file. Not permanent.");
+      });
+    }
     const goalBtn = document.getElementById("btn-goal");
     if (goalBtn) {
       goalBtn.addEventListener("click", async () => {

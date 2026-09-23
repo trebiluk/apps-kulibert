@@ -9,11 +9,11 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.18.9 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.19.0 — Solvay Tech Ed</title>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.18.9">
+  <link rel="stylesheet" href="css/app.css?v=0.19.0">
 </head>
 <body>
   <div id="rotate-gate">
@@ -123,7 +123,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.18.9</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.19.0</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -150,13 +150,10 @@
           <option value="pair">Pair of Crates</option>
         </select>
       </header>
+      <div class="job-strip" id="job-strip" aria-label="Jobs 1 to 10"></div>
       <div class="stage-fit">
       <div class="stage">
         <canvas id="c"></canvas>
-        <div class="role" id="role" role="group" aria-label="Pair role">
-          <button class="role-btn on" data-role="builder" id="role-builder" type="button" aria-pressed="true">Builder</button>
-          <button class="role-btn" data-role="observer" id="role-observer" type="button" aria-pressed="false">Observer</button>
-        </div>
         <div class="lesson" id="lesson" hidden>
           <p class="lesson-kicker" id="lesson-kicker">Lesson · Measure</p>
           <ol id="measure-jobs">
@@ -195,7 +192,7 @@
               <li><b>Feedback</b> — orange trail, Slow, In the zone, Stop restores the shop</li>
             </ol>
             <p class="systems-course" id="systems-course"></p>
-            <p class="hint">Constraints: 48 parts, Shop Floor, slabs, period time. Pair: builder + observer.</p>
+            <p class="hint">Constraints: 48 parts, Shop Floor, slabs, period time.</p>
             <button class="btn gold" id="systems-close">Close</button>
           </div>
         </div>
@@ -221,18 +218,14 @@
               <button class="step" type="button" data-step="test" role="tab" aria-selected="false">Test</button>
               <button class="step" type="button" data-step="improve" role="tab" aria-selected="false">Improve</button>
             </div>
-            <p class="crew-label">Pair</p>
-            <div class="row role-menu" role="group" aria-label="Pair role">
-              <button class="btn on" data-role="builder" type="button" aria-pressed="true">Builder</button>
-              <button class="btn" data-role="observer" type="button" aria-pressed="false">Observer</button>
-            </div>
-            <label class="crew-label" for="title">Level title (no names)</label>
+            <label class="crew-label" for="title">Alias (no names)</label>
             <input class="title" id="title" maxlength="48" aria-label="Level title" placeholder="Level title (no names)">
             <p class="crew-label">File</p>
             <div class="row">
               <button class="btn" id="btn-new">New</button>
               <button class="btn" id="btn-open">Open</button>
               <button class="btn gold" id="btn-save">Save file</button>
+              <button class="btn" id="btn-export" type="button" hidden>Export level</button>
             </div>
             <p class="crew-label">Shop</p>
             <div class="row">
@@ -264,13 +257,13 @@
       <footer class="status">
         <span id="mode">Shop</span>
         <span>Parts <b id="count">0 / 48</b></span>
-        <span class="whats-new">What's new: Play, Slow, Stop, and Menu are on the left.</span>
+        <span class="whats-new">What's new: Jobs 1–10 in order. Design after the tenth clear.</span>
         <span class="hint" id="status-hint">Hover the left bin for tools · Space play · Z undo</span>
       </footer>
     </div>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.18.9"></script>
+  <script src="js/bundle.js?v=0.19.0"></script>
 </body>
 </html>

@@ -87,6 +87,18 @@ export function downloadDoc(doc, filename) {
   setTimeout(() => URL.revokeObjectURL(a.href), 1500);
 }
 
+export function downloadLevel(doc) {
+  const packed = packDoc(doc);
+  packed.kind = "botzlevel";
+  const blob = new Blob([JSON.stringify(packed, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  const alias = sanitizeTitle(doc.title).replace(/[^\w.-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "").toLowerCase() || "level";
+  a.href = URL.createObjectURL(blob);
+  a.download = `${alias}.botzlevel.json`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1500);
+}
+
 export function readFile(file) {
   return file.text().then((text) => unpackDoc(JSON.parse(text)));
 }

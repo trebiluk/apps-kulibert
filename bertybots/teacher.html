@@ -4,15 +4,61 @@
   <meta charset="utf-8">
   <title>Berty's Botz — Teacher</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="css/app.css?v=0.18.9">
+  <link rel="stylesheet" href="css/app.css?v=0.19.0">
 </head>
 <body>
   <div style="max-width:44rem;margin:2rem auto;padding:0 1rem 3rem;line-height:1.45">
     <p><a href="index.html">← Shop</a></p>
-    <h1>Teacher notes · BB 0.18.9</h1>
+    <h1>Teacher notes · BB 0.19.0</h1>
     <p>Phones: landscape. Tool icons stay in a slim bin — tap Tools only if you want labels. Builder / Observer live in Menu so they do not cover the crate.</p>
 
-    <h2>TechWorks</h2>
+    <h2>Class jobs</h2>
+    <p>Jobs 1–10 stay on every cart. They are not replaced. After a student clears Job 10, this Chromebook can show extra class jobs. Upload a <code>.botzlevel.json</code>, check the alias, then <strong>Make permanent</strong>. Students cannot make a level permanent. No names.</p>
+    <p>
+      <input id="class-file" type="file" accept=".json,.botzlevel.json,application/json">
+    </p>
+    <p>
+      <button class="btn gold" id="class-make" type="button">Make permanent</button>
+    </p>
+    <ul id="class-list"></ul>
+    <script>
+      const KEY = "bb-class-jobs-v1";
+      function readJobs() {
+        try { const raw = JSON.parse(localStorage.getItem(KEY) || "[]"); return Array.isArray(raw) ? raw : []; }
+        catch (e) { return []; }
+      }
+      function writeJobs(jobs) { localStorage.setItem(KEY, JSON.stringify(jobs.slice(0, 8))); }
+      function paint() {
+        const list = document.getElementById("class-list");
+        list.replaceChildren();
+        for (const job of readJobs()) {
+          const li = document.createElement("li");
+          li.textContent = job.alias || "Level";
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "btn";
+          btn.textContent = "Remove";
+          btn.addEventListener("click", () => writeJobs(readJobs().filter((j) => j.id !== job.id)) || paint());
+          li.append(" ", btn);
+          list.append(li);
+        }
+        if (!list.childElementCount) list.textContent = "No class jobs on this Chromebook.";
+      }
+      document.getElementById("class-make").addEventListener("click", async () => {
+        const file = document.getElementById("class-file").files[0];
+        if (!file) { alert("Choose a .botzlevel.json first."); return; }
+        let doc;
+        try { doc = JSON.parse(await file.text()); }
+        catch (e) { alert("That file is not JSON."); return; }
+        if (!doc || doc.app !== "bertybots" || !doc.level) { alert("Not a Berty's Botz level."); return; }
+        const alias = String(doc.title || "level").replace(/\s+/g, " ").trim().slice(0, 48) || "level";
+        const jobs = readJobs().filter((j) => j.alias !== alias);
+        jobs.push({ id: "class-" + alias.toLowerCase().replace(/[^\w.-]+/g, "-").slice(0, 24), alias, doc });
+        writeJobs(jobs);
+        paint();
+      });
+      paint();
+    </script>
     <p>Teach → Hang. Tap Open Shop, Forces, Measure, or Roll Out. Deck plays this live shop. Do not copy the files onto the TechWorks desk. Door tile on the Tech Room stays <a href="https://apps.kulibert.net/bertybots/">apps.kulibert.net/bertybots</a>. No names.</p>
 
     <h2>Forces lesson</h2>
