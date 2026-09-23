@@ -1,7 +1,12 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.16** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.17** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.17 — Eight jobs — 2026-09-23
+
+- What’s new: eight jobs. Clear one, the next opens. Challenge waits until the path is clear.
+- Bands: Forces, Towers, Shapes, Materials, Big. Challenge stays a 12 m even tower, not a harder level.
 
 ## 1.3.16 — Big tower — 2026-09-23
 

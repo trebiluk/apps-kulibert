@@ -24,11 +24,15 @@ const BASE_W = 260;
 const GOAL_FLOORS = 10; // tallest in-app goal — later isles
 
 const ISLES = [
-  { id: "first", name: "First Stack", job: "A wide base holds a short tower.", goal: 3, toy: "Sticky joint", unlock: null },
-  { id: "tall", name: "Tall Peak", job: "Go taller and keep the stack even.", goal: 6, toy: "Soft spring", unlock: "first" },
-  { id: "wind", name: "Wind Peak", job: "Stand through a wobble.", goal: 7, toy: "Wind fan", unlock: "tall" },
-  { id: "offset", name: "Offset Peak", job: "An offset stack still has to stand.", goal: 8, toy: "Offset pad", unlock: "wind" },
-  { id: "open", name: "Open Spire", job: "Your tower. Reach the high line.", goal: 10, toy: "Longer beam", unlock: "offset" },
+  { n: 1, id: "first", band: "Forces", name: "Stand", job: "Stand to 9 m. Three floors that stay.", goal: 3, toy: "Sticky joint", unlock: null },
+  { n: 2, id: "force2", band: "Forces", name: "Even stand", job: "9 m. Every floor lands even.", goal: 3, even: true, unlock: "first" },
+  { n: 3, id: "tower1", band: "Towers", name: "12 m", job: "Stand to 12 m.", goal: 4, unlock: "force2" },
+  { n: 4, id: "tower2", band: "Towers", name: "15 m", job: "Stand to 15 m.", goal: 5, unlock: "tower1" },
+  { n: 5, id: "shape", band: "Shapes", name: "Straight", job: "12 m. A straight tower. Every floor lands even.", goal: 4, even: true, unlock: "tower2" },
+  { n: 6, id: "tower3", band: "Towers", name: "18 m", job: "Stand to 18 m.", goal: 6, unlock: "shape" },
+  { n: 7, id: "materials", band: "Materials", name: "Even floors", job: "15 m. Every floor lands even.", goal: 5, even: true, unlock: "tower3" },
+  { n: 8, id: "big", band: "Big", name: "Big tower", job: "Stand to 24 m. Every floor lands even.", goal: 8, even: true, unlock: "materials" },
+  { n: 0, id: "open", band: "Open", name: "Open tower", job: "Your tower. Reach 30 m. Not a level.", goal: 10, free: true, unlock: "big" },
 ];
 
 const canvas = document.getElementById("board");
@@ -195,6 +199,8 @@ function loadEngage() {
   state.isleId = typeof data.isleId === "string" ? data.isleId : "first";
   state.track = data.track === "challenge" ? "challenge" : "levels";
   state.challengeMet = !!data.challengeMet;
+  if (!ISLES.some((i) => i.id === state.isleId)) state.isleId = "first";
+  if (state.track === "challenge" && !pathClear()) state.track = "levels";
   try {
     const g = Number(localStorage.getItem(GHOST_KEY));
     state.ghostBest = Number.isFinite(g) && g > 0 ? Math.floor(g) : 0;
@@ -243,15 +249,16 @@ function unlockToyForIsle(isleId) {
   state.toys.push(isle.toy);
   return isle.toy;
 }
+function pathJobs() {
+  return ISLES.filter((i) => !i.free);
+}
+function pathClear() {
+  return pathJobs().every((i) => state.cleared[i.id]);
+}
 function markIsleClear() {
   const id = state.isleId || "first";
   state.cleared[id] = true;
   const toy = unlockToyForIsle(id);
-  const idx = ISLES.findIndex((i) => i.id === id);
-  if (idx >= 0 && idx < ISLES.length - 1) {
-    const next = ISLES[idx + 1];
-    if (!state.cleared[next.id]) state.isleId = next.id;
-  }
   saveEngage();
   return toy;
 }
@@ -274,19 +281,23 @@ function renderIsleMap() {
     btn.dataset.state = st === "open" ? "active" : st;
     btn.disabled = st === "locked";
     const tag = st === "clear" ? "Done" : st === "locked" ? "Locked" : (isle.id === state.isleId ? "Now" : "Open");
-    const owned = state.toys.includes(isle.toy);
+    const owned = isle.toy && state.toys.includes(isle.toy);
+    const toyLine = isle.toy
+      ? (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy)
+      : "Stars show this try";
+    const band = isle.free ? "After the path" : (isle.n + " · " + isle.band);
     btn.innerHTML =
-      '<span class="isle-tag">' + tag + "</span>" +
+      '<span class="isle-tag">' + band + " · " + tag + "</span>" +
       "<h3>" + isle.name + "</h3>" +
       "<p>" + isle.job + "</p>" +
-      '<span class="isle-toy">' + (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy) + "</span>";
+      '<span class="isle-toy">' + toyLine + "</span>";
     btn.addEventListener("click", () => {
       if (st === "locked") return;
+      state.track = "levels";
       state.isleId = isle.id;
       saveEngage();
       closeIsleMap();
-      setStatus("Peak", isle.name + " — " + isle.job, "");
-      renderIsleMap();
+      resetTower();
     });
     grid.appendChild(btn);
   }
@@ -309,7 +320,12 @@ function syncTrack() {
   const chal = document.getElementById("track-challenge");
   const brief = document.getElementById("brief");
   if (levels) levels.setAttribute("aria-pressed", onChallenge() ? "false" : "true");
-  if (chal) chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+  if (chal) {
+    chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+    const open = pathClear();
+    chal.classList.toggle("is-locked", !open);
+    chal.setAttribute("aria-disabled", open ? "false" : "true");
+  }
   if (brief) {
     brief.hidden = !onChallenge();
     if (onChallenge()) brief.textContent = CHALLENGE.brief;
@@ -318,21 +334,16 @@ function syncTrack() {
 }
 function setTrack(track) {
   if (state.phase === "theater") return;
+  if (track === "challenge" && !pathClear()) {
+    setStatus("Path", "Clear the path. Then take a Challenge.", "");
+    return;
+  }
   state.track = track === "challenge" ? "challenge" : "levels";
   saveEngage();
+  resetTower();
   syncTrack();
   if (onChallenge()) {
-    const met = state.height >= CHALLENGE.height && state.perfectCount >= state.height;
-    if (met) {
-      state.challengeMet = true;
-      saveEngage();
-    }
-    setStatus(met ? "CLEAR" : "Challenge", met ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, met ? "pass" : "");
     showAssistPlate("This is Challenge.\nThe brief has to be met. Standing is not enough.", false);
-  } else if (!state.cleared.first && state.height === 0) {
-    setStatus("Ready", "Drop three slabs that stay. That is the first clear.", "");
-  } else {
-    setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to the Goal line (" + activeGoal() + ").", "");
   }
 }
 function setMasteryChip(text) {
@@ -451,11 +462,12 @@ function resetTower() {
     setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
     return;
   }
+  const isle = activeIsle();
   const best = state.best ? " Best " + state.best + "." : "";
-  const line = state.cleared.first
-    ? "Hang the slab over the tower, then Drop. Climb to the Goal line (" + activeGoal() + ")." + best
-    : "Drop three slabs that stay. That is the first clear." + best;
-  setStatus("Ready", line, "");
+  const line = !state.cleared.first && isle.id === "first"
+    ? "Drop three slabs that stay. That is the first clear." + best
+    : (isle.free ? isle.job : "Job " + isle.n + ". " + isle.job) + best;
+  setStatus(isle.free ? "Open" : "Ready", line, "");
 }
 
 const STORY_M = 3;
@@ -606,10 +618,14 @@ function doDropSlab() {
   let toy = null;
   let stars = 0;
   const isle = activeIsle();
-  const goal = isle.goal;
+  const goal = onChallenge() ? CHALLENGE.height : isle.goal;
+  const evenOk = onChallenge() ? state.perfectCount >= state.height : (!isle.even || state.perfectCount >= state.height);
+  const reached = state.height >= goal && evenOk;
   const wasChallenge = state.challengeMet;
-  const justClear = !onChallenge() && state.height >= goal && state.height - 1 < goal;
-  const firstClear = justClear && isle.id === "first" && !state.cleared.first;
+  const already = !onChallenge() && state.cleared[isle.id];
+  const justClear = !onChallenge() && reached && !already;
+  const needEven = !onChallenge() && isle.even && state.height >= isle.goal && !evenOk && !already;
+  const firstClear = justClear && isle.id === "first";
   const challengeMetNow = onChallenge() && state.height >= CHALLENGE.height && state.perfectCount >= state.height;
   if (justClear) {
     stars = 1;
@@ -641,12 +657,19 @@ function doDropSlab() {
     setMasteryChip(state.perfectCount ? "Even " + state.perfectCount : "");
     beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
   } else if (justClear) {
-    const clearLine = (firstClear ? "First clear. " : "") + isle.job + " " + starPhrase(stars) + "." + toyLine;
+    let clearLine = (firstClear ? "First clear. " : "") + isle.job + " " + starPhrase(stars) + "." + toyLine;
+    if (pathClear() && isle.id === "big") clearLine += " Path clear. Challenge is open.";
+    else if (!isle.free) clearLine += " Open Stand Peak for the next job.";
     setStatus("CLEAR", "Test pass. " + clearLine, "pass");
     setMasteryChip("★ " + stars + "/4");
     beats.push({ shout: "TEST PASS", caption: "It stood. Height " + state.height + ".", mark: "✓" });
     beats.push({ shout: "CLEAR", caption: clearLine, mark: "✓" });
     if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
+  } else if (needEven) {
+    const line = "It stood. This job still needs every floor even. Tap Retry.";
+    setStatus("TEST PASS", line, "pass");
+    armFailRetry(true);
+    beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
   } else {
     const line = "It stood. Height " + state.height + "." + streakLine + betLine;
     setStatus("TEST PASS", line, "pass");
@@ -990,13 +1013,14 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.16",
-  note: "What’s new: each floor is 3 m. The tower fills the stage.",
+  version: "SL 1.3.17",
+  note: "What’s new: eight jobs. Clear one, the next opens. Challenge waits until the path is clear.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Levels: drop floors until the Goal. Test pass means it stood. Clear means you reached that Goal. Stars show how even the stack was.",
-    "Challenge: stand to 12 m, four even floors. A stand alone is not the challenge.",
+    "Big structures fight forces. Build → Test → Fix one thing. Clear the path. Then take a Challenge.",
+    "Levels: eight jobs. A Clear opens the next one. Stars show this try. They are not a class grade.",
+    "Challenge is one even tower, 12 m. Standing alone is not the challenge.",
     "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {

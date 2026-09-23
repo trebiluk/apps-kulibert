@@ -224,6 +224,9 @@ button:disabled { cursor: default; opacity: 0.45; }
   color: var(--accent-fg);
   border-color: var(--accent);
 }
+.track button.is-locked {
+  opacity: 0.55;
+}
 .brief {
   margin: 0;
   flex: 1 1 16rem;
@@ -606,6 +609,11 @@ html.calm-clear .flash-spark { display: none !important; }
   margin-bottom: 0.75rem;
 }
 .isle-head h2 { margin: 0; font-size: 1.25rem; }
+.isle-wall {
+  margin: 0 0 0.75rem;
+  font-weight: 650;
+  line-height: 1.35;
+}
 .isle-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(11.5rem, 1fr));
@@ -615,7 +623,7 @@ html.calm-clear .flash-spark { display: none !important; }
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  min-height: 11rem;
+  min-height: 7.25rem;
   padding: 0.85rem;
   border-radius: 16px;
   border: 2px solid var(--border);

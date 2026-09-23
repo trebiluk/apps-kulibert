@@ -1,4 +1,4 @@
-import { judgeSpan, spanSpec, supportCols } from "./logic.js";
+import { judgeSpan, supportCols } from "./logic.js";
 import { proveLoad } from "./physics.js";
 import { GRIP, drawTether } from "../shared/stretch.js";
 import {
@@ -22,11 +22,15 @@ const CALM_KEY = "kulibert-calm-clear";
 const KINDS = ["deck", "beam", "pier"];
 
 const ISLES = [
-  { id: "first", name: "First Gap", job: "Short span · snap a joint", toy: "Sticky joint", unlock: null },
-  { id: "long", name: "Long Gap", job: "Longer · fewer parts", toy: "Longer beam", unlock: "first" },
-  { id: "wind", name: "Wind Gap", job: "Hold against the breeze", toy: "Soft spring", unlock: "long" },
-  { id: "offset", name: "Offset Gap", job: "Load off-center · fix one", toy: "Offset pad", unlock: "wind" },
-  { id: "open", name: "Open Span", job: "Your bridge · one load", toy: "Edge pocket bonus", unlock: "offset" },
+  { n: 1, id: "first", band: "Forces", name: "The truck", job: "24 m. Three decks. The truck has to stay up.", cols: 5, pierDepth: 1, maxRun: 3, toy: "Sticky joint", unlock: null },
+  { n: 2, id: "force2", band: "Forces", name: "Push down", job: "24 m. The truck pushes the middle. Add a pier.", cols: 5, pierDepth: 1, maxRun: 2, needPier: true, unlock: "first" },
+  { n: 3, id: "span1", band: "Spans", name: "Longer span", job: "40 m between the banks. Hold the truck.", cols: 7, pierDepth: 1, maxRun: 3, unlock: "force2" },
+  { n: 4, id: "span2", band: "Spans", name: "Supports", job: "40 m. Add a pier so the gap is not too long.", cols: 7, pierDepth: 1, maxRun: 2, unlock: "span1" },
+  { n: 5, id: "shape1", band: "Shapes", name: "Column", job: "Stack a pier to the water under the middle.", cols: 5, pierDepth: 2, maxRun: 2, needPier: true, unlock: "span2" },
+  { n: 6, id: "shape2", band: "Shapes", name: "Truss", job: "56 m. Pier the middle down to the water.", cols: 9, pierDepth: 2, maxRun: 3, needPier: true, unlock: "shape1" },
+  { n: 7, id: "budget", band: "Materials", name: "Budget", job: "40 m. Hold the truck. Use no more parts than Budget.", cols: 7, pierDepth: 1, maxRun: 2, onBudget: true, unlock: "shape2" },
+  { n: 8, id: "big", band: "Big", name: "Big span", job: "56 m. Hold the truck. Stay on Budget. Pier the middle.", cols: 9, pierDepth: 2, maxRun: 3, onBudget: true, needPier: true, unlock: "budget" },
+  { n: 0, id: "open", band: "Open", name: "Open span", job: "Your bridge. One truck. Not a level.", cols: 7, pierDepth: 1, maxRun: 5, free: true, unlock: "big" },
 ];
 
 const COACH = {
@@ -96,7 +100,9 @@ let cssH = 0;
 let animToken = 0;
 
 function spec() {
-  return spanSpec(state.assist);
+  if (onChallenge()) return { cols: 7, pierDepth: 2, maxRun: 2 };
+  const job = activeIsle();
+  return { cols: job.cols, pierDepth: job.pierDepth, maxRun: job.maxRun };
 }
 
 function budgetOf(s) {
@@ -110,7 +116,34 @@ function spanMeters(s) {
 }
 
 function challengeBrief() {
-  return spanMeters(spec()) + " m span. Hold the truck. Stay on Budget. Pier the middle.";
+  return "40 m efficient truss. The truck stays up. Stay on Budget. Pier the middle to the water.";
+}
+
+function activeIsle() {
+  return ISLES.find((i) => i.id === state.isleId) || ISLES[0];
+}
+
+function pathJobs() {
+  return ISLES.filter((i) => !i.free);
+}
+
+function pathClear() {
+  return pathJobs().every((i) => state.cleared[i.id]);
+}
+
+function levelCheck(s, verdict) {
+  const job = activeIsle();
+  if (!verdict.ok) return { met: false, held: false, why: "miss" };
+  if (job.free) return { met: true, held: true, why: "met" };
+  if (job.onBudget && state.parts.length > budgetOf(s)) return { met: false, held: true, why: "budget" };
+  if (job.needPier && !pierUnder(s, state.parts, Math.floor(s.cols / 2))) return { met: false, held: true, why: "pier" };
+  return { met: true, held: true, why: "met" };
+}
+
+function levelStill(why) {
+  if (why === "budget") return "The truck stayed up. This job still needs fewer parts than Budget.";
+  if (why === "pier") return "The truck stayed up. This job still needs a pier under the middle, down to the water.";
+  return "The truck stayed up. This job is not clear yet.";
 }
 
 function onChallenge() {
@@ -305,6 +338,8 @@ function loadEngage() {
   state.firstSnap = data.firstSnap !== false;
   state.track = data.track === "challenge" ? "challenge" : "levels";
   state.challengeMet = !!data.challengeMet;
+  if (!ISLES.some((i) => i.id === state.isleId)) state.isleId = "first";
+  if (state.track === "challenge" && !pathClear()) state.track = "levels";
 }
 function saveEngage() {
   writeJson(ENGAGE, {
@@ -364,12 +399,6 @@ function markIsleClear() {
   const id = state.isleId || "first";
   state.cleared[id] = true;
   const toy = unlockToyForIsle(id);
-  // unlock next isle as active
-  const idx = ISLES.findIndex((i) => i.id === id);
-  if (idx >= 0 && idx < ISLES.length - 1) {
-    const next = ISLES[idx + 1];
-    if (!state.cleared[next.id]) state.isleId = next.id;
-  }
   saveEngage();
   return toy;
 }
@@ -392,22 +421,40 @@ function renderIsleMap() {
     btn.dataset.state = st === "open" ? "active" : st;
     btn.disabled = st === "locked";
     const tag = st === "clear" ? "Done" : st === "locked" ? "Locked" : (isle.id === state.isleId ? "Now" : "Open");
-    const owned = state.toys.includes(isle.toy);
+    const owned = isle.toy && state.toys.includes(isle.toy);
+    const toyLine = isle.toy
+      ? (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy)
+      : "Stars show this try";
+    const band = isle.free ? "After the path" : (isle.n + " · " + isle.band);
     btn.innerHTML =
-      '<span class="isle-tag">' + tag + "</span>" +
+      '<span class="isle-tag">' + band + " · " + tag + "</span>" +
       "<h3>" + isle.name + "</h3>" +
       "<p>" + isle.job + "</p>" +
-      '<span class="isle-toy">' + (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy) + "</span>";
+      '<span class="isle-toy">' + toyLine + "</span>";
     btn.addEventListener("click", () => {
       if (st === "locked") return;
-      state.isleId = isle.id;
-      saveEngage();
-      closeIsleMap();
-      setStatus("Isle", isle.name + " — " + isle.job, "");
-      renderIsleMap();
+      startJob(isle);
     });
     grid.appendChild(btn);
   }
+}
+function startJob(isle) {
+  state.track = "levels";
+  state.isleId = isle.id;
+  state.parts = [];
+  state.phase = "idle";
+  state.verdict = null;
+  state.drag = null;
+  state.stretch = null;
+  state.bet = null;
+  nextId = 1;
+  saveEngage();
+  closeIsleMap();
+  syncTrack();
+  paintBudget();
+  syncBetBar();
+  showCoach();
+  draw();
 }
 function openIsleMap() {
   const map = document.getElementById("isle-map");
@@ -427,7 +474,12 @@ function syncTrack() {
   const chal = document.getElementById("track-challenge");
   const brief = document.getElementById("brief");
   if (levels) levels.setAttribute("aria-pressed", onChallenge() ? "false" : "true");
-  if (chal) chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+  if (chal) {
+    chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+    const open = pathClear();
+    chal.classList.toggle("is-locked", !open);
+    chal.setAttribute("aria-disabled", open ? "false" : "true");
+  }
   if (brief) {
     brief.hidden = !onChallenge();
     if (onChallenge()) brief.textContent = challengeBrief();
@@ -435,6 +487,10 @@ function syncTrack() {
 }
 function setTrack(track) {
   if (busy()) return;
+  if (track === "challenge" && !pathClear()) {
+    setStatus("Path", "Clear the path. Then take a Challenge.", "");
+    return;
+  }
   state.track = track === "challenge" ? "challenge" : "levels";
   saveEngage();
   syncTrack();
@@ -473,8 +529,13 @@ function showCoach() {
     setStatus("Challenge", state.challengeMet ? "Challenge met. " + challengeBrief() : challengeBrief(), state.challengeMet ? "pass" : "");
     return;
   }
-  if (!state.cleared.first && state.parts.length === 0) {
+  if (!state.cleared.first && activeIsle().id === "first" && state.parts.length === 0) {
     setStatus("Ready", "Place three Decks across the gap, then Test. That is the first clear.", "");
+    return;
+  }
+  if (state.parts.length === 0) {
+    const job = activeIsle();
+    setStatus(job.free ? "Open" : "Job " + job.n, job.job, "");
     return;
   }
   const reason = judgeSpan(spec(), state.parts).reason;
@@ -1027,11 +1088,12 @@ function finishProve(verdict, stars, s, prove, started) {
       ? " Bet matched — nice read."
       : " Bet missed — try one fix, then Test again.";
   }
-  const clearedIsle = ISLES.find((i) => i.id === (state.isleId || "first")) || ISLES[0];
+  const clearedIsle = activeIsle();
   const challenge = onChallenge() ? challengeCheck(s, verdict) : null;
-  const levelPass = verdict.ok && !challenge;
-  const firstClear = levelPass && !state.cleared.first;
-  const toy = levelPass ? markIsleClear() : null;
+  const level = challenge ? null : levelCheck(s, verdict);
+  const levelMet = !!(level && level.met);
+  const firstClear = levelMet && clearedIsle.id === "first" && !state.cleared.first;
+  const toy = levelMet ? markIsleClear() : null;
   if (challenge && challenge.met) {
     state.challengeMet = true;
     saveEngage();
@@ -1067,13 +1129,23 @@ function finishProve(verdict, stars, s, prove, started) {
     setStatus("CLEAR", line, "pass");
     beats.push({ shout: "TEST PASS", caption: "The truck stayed up.", mark: "✓" });
     beats.push({ shout: "CLEAR", caption: line, mark: "✓" });
-  } else {
-    const clearLine = (firstClear ? (toy ? toy + " is yours. " : "") + "First clear. " : "") + clearedIsle.job + ". " + starPhrase(stars) + ".";
+  } else if (verdict.ok && level && !level.met) {
+    const line = levelStill(level.why);
+    setMasteryChip(stars ? "★ " + stars + "/4" : "");
+    setStatus("TEST PASS", line + (stars ? " " + starPhrase(stars) + "." : ""), "pass");
+    beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
+  } else if (levelMet) {
+    let clearLine = (firstClear ? (toy ? toy + " is yours. " : "") + "First clear. " : "") + clearedIsle.job + " " + starPhrase(stars) + ".";
+    if (pathClear() && clearedIsle.id === "big") clearLine += " Path clear. Challenge is open.";
+    else if (!clearedIsle.free) clearLine += " Open Gap Isles for the next job.";
     setStatus("CLEAR", "Test pass. " + clearLine, "pass");
     if (stars > 0) setMasteryChip("★ " + stars + "/4");
     beats.push({ shout: "TEST PASS", caption: "The truck stayed up.", mark: "✓" });
     beats.push({ shout: "CLEAR", caption: clearLine, mark: "✓" });
     if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
+  } else {
+    setStatus("TEST PASS", "The truck stayed up.", "pass");
+    beats.push({ shout: "TEST PASS", caption: "The truck stayed up.", mark: "✓" });
   }
   playBeats(beats);
   state.bet = null;
@@ -1320,13 +1392,14 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.17",
-  note: "What’s new: the gap is a real span in meters. Test hangs one truck.",
+  version: "SC 1.3.18",
+  note: "What’s new: eight jobs. Clear one, the next opens. Challenge waits until the path is clear.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Levels: place three Decks across the gap, then Test. The truck has to stay up. Clear means the gap job is done. Stars show how few parts you used.",
-    "Challenge: hold the truck on that span, stay on Budget, and put a pier under the middle. Holding alone is not the challenge.",
+    "Big structures fight forces. Build → Test → Fix one thing. Clear the path. Then take a Challenge.",
+    "Levels: eight jobs. A Clear opens the next one. Stars show this try. They are not a class grade.",
+    "Challenge is one efficient truss. The truck has to stay up, on Budget, with a pier to the water. Holding alone is not the challenge.",
     "If it misses, tap Retry and change one thing.",
   ],
   onReplayIntro: () => {

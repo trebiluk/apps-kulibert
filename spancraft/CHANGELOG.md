@@ -1,7 +1,13 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.17** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.18** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.18 — Eight jobs — 2026-09-23
+
+- What’s new: eight jobs. Clear one, the next opens. Challenge waits until the path is clear.
+- Bands: Forces, Spans, Shapes, Materials, Big. Stars show the try. They are not a class grade.
+- Challenge is one 40 m efficient truss. A hold alone is Test pass, not Clear.
 
 ## 1.3.17 — Big span — 2026-09-23
 
