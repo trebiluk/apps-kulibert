@@ -136,17 +136,6 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   max-width: 9rem;
 }
 
-.rail-run {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.rail-run .btn {
-  width: 100%;
-  min-width: 0;
-  padding: 6px 4px;
-  font-size: 13px;
-}
 .rail-pin {
   display: flex; align-items: center; gap: 10px;
   min-height: 44px; min-width: 44px; padding: 6px 8px;
@@ -165,6 +154,7 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 .rail.open .chev, .rail:hover .chev { transform: rotate(45deg); margin-left: 6px; }
 
 .rail-tabs, .rail-tools { display: flex; flex-direction: column; gap: 4px; }
+.rail-tools { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
 .rail-tabs { padding-bottom: 8px; border-bottom: 2px solid #0004; }
 
 .tool {
@@ -440,7 +430,7 @@ body[data-play="1"] .lesson .hint { display: none; }
   background-repeat: no-repeat;
   padding-right: 22px;
 }
-.hud-play { display: flex; gap: 6px; margin-left: auto; flex: 0 0 auto; }
+.hud-play { display: flex; gap: 6px; flex: 0 0 auto; }
 #btn-crew { flex: 0 0 auto; }
 
 .btn {
