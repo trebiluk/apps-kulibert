@@ -1,8 +1,8 @@
 import { judgeSpan, spanSpec, supportCols } from "./logic.js";
 import { proveLoad } from "./physics.js";
-import { GRIP, drawJoint, drawTether } from "../shared/stretch.js";
+import { GRIP, drawTether } from "../shared/stretch.js";
+import { award, paintLadder } from "../shared/xp-wallet.js";
 
-const PORTAL = "stage-1";
 const KEY = "kulibert-spancraft-mvp";
 const MASTER = "kulibert-spancraft-mastery-v1";
 const KINDS = ["deck", "beam", "pier"];
@@ -35,7 +35,7 @@ const predictBtn = document.getElementById("predict");
 const kindsEl = document.getElementById("kinds");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
-const kindButtons = [...kindsEl.querySelectorAll("button[data-kind]")];
+const kindButtons = [...kindsEl.querySelectorAll("button")];
 const toolButtons = {
   add: document.getElementById("tool-add"),
   move: document.getElementById("tool-move"),
@@ -57,7 +57,6 @@ const state = {
   predict: null,
   predictArmed: false,
   bestStars: 0,
-  bestParts: null,
   ghost: null,
   phase: "idle",
   verdict: null,
@@ -87,14 +86,7 @@ function starPhrase(n) {
 function loadMaster() {
   try {
     const data = JSON.parse(localStorage.getItem(MASTER) || "null");
-    if (!data) return;
-    if (data.v === 2 && data.portal === PORTAL && data.best) {
-      state.bestStars = data.best.stars || 0;
-      state.bestParts = Number.isInteger(data.best.parts) ? data.best.parts : null;
-      state.ghost = Array.isArray(data.ghost) ? data.ghost : null;
-      return;
-    }
-    if (data.v !== 1) return;
+    if (!data || data.v !== 1) return;
     state.bestStars = data.bestStars || 0;
     state.ghost = Array.isArray(data.ghost) ? data.ghost : null;
   } catch {
@@ -105,30 +97,13 @@ function loadMaster() {
 function saveMaster() {
   try {
     localStorage.setItem(MASTER, JSON.stringify({
-      v: 2,
-      portal: PORTAL,
-      level: { id: PORTAL, name: "First span" },
-      best: { stars: state.bestStars, parts: state.bestParts },
+      v: 1,
+      bestStars: state.bestStars,
       ghost: state.ghost,
     }));
   } catch {
     /* private mode */
   }
-}
-
-function syncMaster() {
-  const marks = document.getElementById("star-marks");
-  const word = document.getElementById("star-word");
-  const n = state.bestStars;
-  if (marks) marks.textContent = "★".repeat(n) + "☆".repeat(3 - n);
-  if (word) word.textContent = n ? (n === 1 ? "1 star" : n + " stars") : "No stars yet";
-  const budget = document.getElementById("budget");
-  if (!budget) return;
-  budget.hidden = n < 1;
-  const partsN = document.getElementById("parts-n");
-  const budgetN = document.getElementById("budget-n");
-  if (partsN) partsN.textContent = String(state.bestParts == null ? state.parts.length : state.bestParts);
-  if (budgetN) budgetN.textContent = String(budgetOf(spec()));
 }
 
 function syncPredict() {
@@ -175,6 +150,63 @@ function scoreStars(s, verdict) {
   return n;
 }
 
+
+/* Shop Prove Flash plates */
+let flashTimer = 0;
+function showFlash(shout, caption, mark) {
+  const plate = document.getElementById("flash-plate");
+  const s = document.getElementById("flash-shout");
+  const c = document.getElementById("flash-caption");
+  const m = document.getElementById("flash-mark");
+  if (!plate || !s || !c) return;
+  window.clearTimeout(flashTimer);
+  s.textContent = shout;
+  c.textContent = caption || "";
+  if (m) m.textContent = mark || "";
+  plate.hidden = false;
+  plate.removeAttribute("hidden");
+  plate.classList.add("show");
+  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
+    const spark = document.createElement("div");
+    spark.className = "flash-spark";
+    spark.style.left = "50%";
+    spark.style.top = "38%";
+    spark.style.opacity = "1";
+    document.body.appendChild(spark);
+    window.setTimeout(() => spark.remove(), 320);
+  }
+  flashTimer = window.setTimeout(() => {
+    plate.classList.remove("show");
+    plate.hidden = true;
+    plate.setAttribute("hidden", "");
+  }, 1500);
+}
+function showAssistPlate(text) {
+  const plate = document.getElementById("assist-plate");
+  const p = document.getElementById("assist-plate-text");
+  if (!plate || !p) return;
+  p.textContent = text;
+  plate.hidden = false;
+  plate.classList.add("show");
+  window.setTimeout(() => {
+    plate.classList.remove("show");
+    plate.hidden = true;
+    plate.setAttribute("hidden", "");
+  }, 3200);
+}
+function setMasteryChip(text) {
+  const chip = document.getElementById("mastery-chip");
+  if (!chip) return;
+  if (!text) {
+    chip.hidden = true;
+    chip.textContent = "";
+    return;
+  }
+  chip.hidden = false;
+  chip.textContent = text;
+}
+
 function setStatus(word, text, tone) {
   capWord.textContent = word;
   capText.textContent = text;
@@ -206,14 +238,10 @@ function syncControls() {
   for (const btn of kindButtons) {
     btn.setAttribute("aria-checked", btn.dataset.kind === state.kind ? "true" : "false");
   }
-  kindsEl.hidden = false;
-  for (const btn of kindButtons) {
-    btn.hidden = state.tool !== "add" && state.tool !== "move";
-  }
+  kindsEl.hidden = state.tool !== "add" && state.tool !== "move";
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   document.body.dataset.phase = state.phase;
   syncPredict();
-  syncMaster();
 }
 
 function save() {
@@ -371,14 +399,15 @@ function drawPart(kind, box, alpha, dy) {
 }
 
 function paintBanner() {
-  if (state.phase !== "pass" && state.phase !== "fail" && state.phase !== "drop") return;
-  const prove = PROVE[state.verdict] || PROVE.gap;
-  const word = state.phase === "drop" ? "Test" : prove[0];
-  ctx.font = "800 28px Outfit, system-ui, sans-serif";
-  ctx.textAlign = "left";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = word === "Pass" ? "#5eead4" : word === "Fail" ? "#ffb4c0" : "#e8f7ff";
-  ctx.fillText(word, 16, 26);
+  // Caption + flash plate own the shout — keep canvas mark-free for clarity.
+  if (state.phase !== "fail" && state.phase !== "drop") return;
+  if (state.phase === "fail") {
+    ctx.font = "800 22px Outfit, system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = "#ffb4c0";
+    ctx.fillText("✕", 16, 26);
+  }
 }
 
 function draw() {
@@ -494,21 +523,7 @@ function draw() {
     const part = state.parts.find((p) => p.id === state.stretch.id);
     if (part) {
       const home = cellRect(g, part.c, part.r);
-      const hx = home.x + home.w / 2;
-      const hy = home.y + home.h / 2;
-      const snap = state.stretch.snap;
-      const x = snap ? snap.x * 0.7 + state.stretch.x * 0.3 : state.stretch.x;
-      const y = snap ? snap.y * 0.7 + state.stretch.y * 0.3 : state.stretch.y;
-      for (const other of state.parts) {
-        if (other.id === part.id) continue;
-        const beside = other.r === part.r && Math.abs(other.c - part.c) === 1;
-        const stacked = other.c === part.c && Math.abs(other.r - part.r) === 1;
-        if (!beside && !stacked) continue;
-        const box = cellRect(g, other.c, other.r);
-        drawJoint(ctx, box.x + box.w / 2, box.y + box.h / 2, x, y);
-      }
-      drawTether(ctx, hx, hy, x, y);
-      drawPart(part.kind, { x: x - home.w / 2, y: y - home.h / 2, w: home.w, h: home.h }, 1, 0);
+      drawTether(ctx, home.x + home.w / 2, home.y + home.h / 2, state.stretch.x, state.stretch.y);
     }
   } else if (state.phase === "idle") {
     ctx.save();
@@ -551,15 +566,11 @@ function paintLoad(g, s) {
   roundRect(x, y, size, size, 8);
   ctx.fillStyle = "#f4b942";
   ctx.fill();
-  ctx.strokeStyle = "#041018";
-  ctx.lineWidth = 4;
-  ctx.lineCap = "round";
-  ctx.beginPath();
-  ctx.moveTo(x + size * 0.22, y + size / 2);
-  ctx.lineTo(x + size * 0.78, y + size / 2);
-  ctx.moveTo(x + size / 2, y + size * 0.22);
-  ctx.lineTo(x + size / 2, y + size * 0.78);
-  ctx.stroke();
+  ctx.fillStyle = "#041018";
+  ctx.font = "800 16px Outfit, system-ui, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillText("Load", x + size / 2, y + size / 2);
 }
 
 function resize() {
@@ -602,23 +613,6 @@ function eventPoint(ev) {
   return { x: ev.clientX - rect.left, y: ev.clientY - rect.top };
 }
 
-function snapCell(pt) {
-  if (!state.stretch) return null;
-  const part = state.parts.find((p) => p.id === state.stretch.id);
-  if (!part) return null;
-  const cell = pickCell(pt.x, pt.y);
-  if (!cell) return null;
-  const same = cell.c === part.c && cell.r === part.r;
-  if (!same && !canOccupy(spec(), part.kind, cell.c, cell.r, state.parts, part.id).ok) return null;
-  const g = layout();
-  const box = cellRect(g, cell.c, cell.r);
-  const x = box.x + box.w / 2;
-  const y = box.y + box.h / 2;
-  const reach = g.cell * (state.assist ? 0.62 : 0.38);
-  if (Math.hypot(pt.x - x, pt.y - y) > reach) return null;
-  return { c: cell.c, r: cell.r, x, y };
-}
-
 function partAt(c, r) {
   return state.parts.find((p) => p.c === c && p.r === r) || null;
 }
@@ -631,6 +625,7 @@ function placeAt(c, r) {
   }
   wake();
   state.parts.push({ id: nextId++, c, r, kind: state.kind });
+  showFlash("SNAP", "Joint set", "✓");
   save();
   showCoach();
   draw();
@@ -737,12 +732,7 @@ function startTest() {
   animate(reduceMotion ? 0 : 420, () => {
     state.phase = verdict.ok ? "pass" : "fail";
     state.animU = 1;
-    if (stars > state.bestStars) {
-      state.bestStars = stars;
-      state.bestParts = state.parts.length;
-    } else if (stars > 0 && stars === state.bestStars && (state.bestParts == null || state.parts.length < state.bestParts)) {
-      state.bestParts = state.parts.length;
-    }
+    if (stars > state.bestStars) state.bestStars = stars;
     if (stars === 3) {
       state.ghost = state.parts.map((p) => ({ c: p.c, r: p.r, kind: p.kind }));
     }
@@ -757,9 +747,26 @@ function startTest() {
         ? " You found the joint."
         : " That joint held. Look again if you want.";
     }
+    const bag = award("spancraft", [
+      ...(stars >= 1 ? ["cross"] : []),
+      ...(stars >= 2 ? ["short"] : []),
+      ...(stars >= 3 ? ["clean"] : []),
+    ]);
+    paintLadder("spancraft");
+    if (bag.gained) extra += " +" + bag.gained + " XP.";
     state.predictArmed = false;
     syncControls();
     setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
+    if (verdict.ok) {
+      showFlash("LOAD HELD", "The load stayed up", "✓");
+      if (stars > 0) setMasteryChip("★ " + stars + "/3");
+      if (stars === 3) {
+        window.setTimeout(() => showFlash("★★★", "Parts on budget", "★★★"), 1600);
+      }
+      window.setTimeout(() => showFlash("CLEAR", "Prove complete", "✓"), stars === 3 ? 3200 : 1600);
+    } else {
+      setMasteryChip("");
+    }
     if (performance.now() - started > 2000) {
       setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
     }
@@ -814,7 +821,7 @@ function toggleAssist() {
   syncControls();
   save();
   const lead = state.assist
-    ? "Assist on. Easier snap. Shorter span."
+    ? "Assist on. Fewer parts and a wider snap."
     : "Assist off. Full span.";
   const extra = dropped ? " Some parts came off the shorter span." : "";
   setStatus(state.assist ? "Assist" : "Ready", lead + extra, "");
@@ -859,7 +866,6 @@ canvas.addEventListener("pointermove", (ev) => {
   if (state.stretch) {
     state.stretch.x = pt.x;
     state.stretch.y = pt.y;
-    state.stretch.snap = snapCell(pt);
     draw();
     return;
   }
@@ -876,9 +882,8 @@ canvas.addEventListener("pointerup", (ev) => {
   const cell = pickCell(pt.x, pt.y);
   if (state.stretch) {
     const id = state.stretch.id;
-    const snap = state.stretch.snap;
     state.stretch = null;
-    if (snap) moveTo(id, snap.c, snap.r);
+    if (cell) moveTo(id, cell.c, cell.r);
     else {
       setStatus("Look", "It sprang back. Try an open spot.", "");
       draw();
@@ -950,8 +955,18 @@ if (predictBtn) {
     setStatus("Guess", state.predictArmed ? "Tap the joint you think fails, then Test." : "Guess put away.", "");
   });
 }
+const edgeBtn = document.getElementById("edge-btn");
+const edgeMenu = document.getElementById("edge-menu");
+if (edgeBtn && edgeMenu) {
+  edgeBtn.addEventListener("click", () => {
+    const open = edgeMenu.hidden;
+    edgeMenu.hidden = !open;
+    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+}
 
 loadMaster();
+paintLadder("spancraft");
 const restored = load();
 syncControls();
 if (restored) setStatus("Ready", "Build restored on this Chromebook.", "");

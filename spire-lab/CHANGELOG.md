@@ -1,7 +1,12 @@
 # Spire Lab changelog
 
-**Chip: SL 1.2.0** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.0** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.0 — Missions — 2026-09-23
+
+- What’s new: mission ladder and an XP wallet.
+- Stand, Line, and Climb pay once. The same XP purse is on SpanCraft.
 
 ## 1.2.0 — Stand — 2026-09-23
 

@@ -1,7 +1,12 @@
 # SpanCraft changelog
 
-**Chip: SC 1.2.0** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.0** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.0 — Missions — 2026-09-23
+
+- What’s new: mission ladder and an XP wallet.
+- Cross, Short, and Clean pay once. The same XP purse is on Spire Lab.
 
 ## 1.2.0 — Stretch — 2026-09-23
 
