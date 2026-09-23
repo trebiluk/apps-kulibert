@@ -244,7 +244,16 @@ button {
   transition: transform var(--motion-quick) var(--ease);
 }
 .play:active { transform: scale(0.96); }
-.play.is-on { background: var(--live); }
+.play.is-on {
+  background: var(--live);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 72%, transparent);
+}
+body.is-loop .stage {
+  border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
+}
+body.is-loop #lcd-pos {
+  color: var(--text);
+}
 .play-icon {
   width: 0;
   height: 0;
@@ -390,6 +399,7 @@ button {
   color: var(--muted);
 }
 .nums { background: transparent; }
+.nums.play { color: var(--text); }
 .cell {
   min-height: 44px;
   min-width: 44px;
@@ -406,6 +416,9 @@ button {
 }
 .cell.play {
   box-shadow: inset 0 0 0 2px var(--step-play);
+}
+body.is-loop .cell.play {
+  box-shadow: inset 0 0 0 2px var(--step-play), 0 0 8px color-mix(in srgb, var(--accent) 32%, transparent);
 }
 .cell.on.play {
   background: var(--step-play);

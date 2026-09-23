@@ -1,13 +1,13 @@
 # BertyBeatz changelog
 
-**Chip: BZ 1.2.1** · 2026-09-22 · channel **live**
+**Chip: BZ 1.2.2** · 2026-09-22 · channel **live**
 Source of truth: `app.js` `CHIP` + this file. If a zip disagrees, the chip wins.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Live classroom | `BZ 1.2.1` | `https://apps.kulibert.net/bertybeatz/` |
+| Live classroom | `BZ 1.2.2` | `https://apps.kulibert.net/bertybeatz/` |
 
 Rules:
 
@@ -17,6 +17,14 @@ Rules:
 4. Hard refresh (Ctrl+Shift+R) if a cart still shows an old chip.
 
 ## Current train
+
+### 1.2.2 — Play loop polish — 2026-09-22
+
+- Play rings the loop and brightens the moving column. Same beat. No new modes.
+- What's new is one line in How.
+- Hub chip **BZ 1.2.2**.
+
+Hard refresh if a cart still says 1.2.1.
 
 ### 1.2.1 — Gate clears — 2026-09-22
 

@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.2.1") return;
-  window.__BERTYBEATZ__ = "1.2.1";
+  if (window.__BERTYBEATZ__ === "1.2.2") return;
+  window.__BERTYBEATZ__ = "1.2.2";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.2.1";
+  const CHIP = "BZ 1.2.2";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -646,6 +646,7 @@
     });
     $("play-btn").classList.toggle("is-on", state.playing);
     $("play-btn").setAttribute("aria-label", state.playing ? "Pause" : "Play");
+    document.body.classList.toggle("is-loop", state.playing);
     document.querySelectorAll("[data-bank]").forEach((b) => {
       b.classList.toggle("on", Number(b.dataset.bank) === state.bank);
     });
@@ -670,6 +671,9 @@
     $("grid").querySelectorAll("[data-step]").forEach((el) => {
       const s = Number(el.dataset.step);
       el.classList.toggle("play", s === step);
+    });
+    $("grid").querySelectorAll(".nums").forEach((el, i) => {
+      el.classList.toggle("play", i === step);
     });
   }
 
