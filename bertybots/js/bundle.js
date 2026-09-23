@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.18.6 — bundled for any http(s) host */
+/* Berty's Botz BB 0.18.7 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.18.6";
+const APP_VERSION = "0.18.7";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.18.6";
+const APP_CHIP = "BB 0.18.7";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -626,6 +626,8 @@ function boot() {
     });
     const text = guideFor(step);
     lineEl.textContent = text;
+    const menuGuide = document.getElementById("menu-guide");
+    if (menuGuide) menuGuide.textContent = text;
     if (hintEl) hintEl.textContent = lastReadout || text;
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;

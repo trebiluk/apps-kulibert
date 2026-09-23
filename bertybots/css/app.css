@@ -476,7 +476,6 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   padding: 16px; z-index: 6;
 }
 .howto { z-index: 8; }
-.howto:not([hidden]) ~ #crew { visibility: hidden; }
 .howto[hidden], .sheet[hidden] { display: none !important; }
 .howto-card, .sheet-card {
   width: min(32rem, 100%);
@@ -518,6 +517,19 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
 .systems-course { color: var(--ink); }
 .sheet-card .hint { color: #4a5c6a; }
 .menu-lead { margin: 0 0 6px; font-size: 15px; font-weight: 600; line-height: 1.4; color: #3a342c; }
+.menu-guide {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #241f18;
+}
+.menu-steps { margin-bottom: 8px; }
+.menu-steps .step {
+  background: #fff;
+  color: #241f18;
+  border-color: #e2d3b8;
+}
 .menu-card .crew-label { margin-top: 4px; }
 .menu-card .row .btn { flex: 1 1 auto; }
 
@@ -587,7 +599,7 @@ a { color: var(--orange); }
   .rail.open .lbl { opacity: 1; max-width: 9rem; }
   .rail:hover .guide-line,
   .rail:focus-within .guide-line { display: none; }
-  .rail.open .guide-line { display: none; }
+  .rail.open .guide-line { display: block; }
   .role { display: none; }
   .btn, .role-btn, .tool { min-height: 44px; }
 }

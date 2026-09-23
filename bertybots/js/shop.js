@@ -538,6 +538,8 @@ export function boot() {
     });
     const text = guideFor(step);
     lineEl.textContent = text;
+    const menuGuide = document.getElementById("menu-guide");
+    if (menuGuide) menuGuide.textContent = text;
     if (hintEl) hintEl.textContent = lastReadout || text;
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;
