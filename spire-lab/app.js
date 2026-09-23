@@ -1,10 +1,13 @@
 // Spire Lab — one height-stand prove. Original draw. tower_game MIT math only.
 
-import { GRIP, drawTether } from "../shared/stretch.js";
+import { GRIP, drawJoint, drawTether } from "../shared/stretch.js";
 
 const KEY = "kulibert-spire-height-v1";
+const MASTER = "kulibert-spire-mastery-v1";
+const PORTAL = "stage-1";
 const SLAB_H = 26;
 const BASE_W = 168;
+const HOLD_MS = 1000;
 
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
@@ -16,7 +19,10 @@ const streakChip = document.getElementById("streak");
 const streakN = document.getElementById("streak-n");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
-const dropBtn = document.getElementById("tool-test");
+const dropBtn = document.getElementById("tool-add");
+const moveBtn = document.getElementById("tool-move");
+const deleteBtn = document.getElementById("tool-delete");
+const testBtn = document.getElementById("tool-test");
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -25,7 +31,10 @@ const state = {
   phase: "ready",
   height: 0,
   best: 0,
+  bestStreak: 0,
   perfectCount: 0,
+  tool: "add",
+  holding: false,
   slabs: [],
   mover: null,
   scraps: [],
@@ -36,6 +45,7 @@ const state = {
 let cssW = 0;
 let cssH = 0;
 let last = 0;
+let holdToken = 0;
 
 function setStatus(word, text, tone) {
   capWord.textContent = word;
@@ -43,6 +53,7 @@ function setStatus(word, text, tone) {
   const mark = document.getElementById("cap-mark");
   if (mark) mark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
   caption.className = "caption" + (tone ? " " + tone : "");
+  caption.setAttribute("aria-live", tone === "pass" || tone === "fail" ? "assertive" : "polite");
 }
 
 function floorWord(n) {
@@ -57,13 +68,13 @@ function paintHeight() {
 
 function showStreak() {
   if (!streakChip || !streakN) return;
-  if (state.perfectCount > 0) {
-    streakChip.hidden = false;
-    streakN.textContent = String(state.perfectCount);
-  } else {
-    streakChip.hidden = true;
-    streakN.textContent = "0";
-  }
+  streakChip.hidden = false;
+  streakN.textContent = String(state.perfectCount);
+}
+
+function syncTools() {
+  if (dropBtn) dropBtn.setAttribute("aria-pressed", state.tool === "add" ? "true" : "false");
+  if (moveBtn) moveBtn.setAttribute("aria-pressed", state.tool === "move" ? "true" : "false");
 }
 
 function towerPerfect(moverLeft, topLeft, width) {
@@ -75,6 +86,16 @@ function towerPerfect(moverLeft, topLeft, width) {
 
 function readBest() {
   try {
+    const data = JSON.parse(localStorage.getItem(MASTER) || "null");
+    if (data && data.v === 2 && data.portal === PORTAL && data.best) {
+      state.best = data.best.floors || 0;
+      state.bestStreak = data.best.streak || 0;
+      return;
+    }
+  } catch {
+    /* fall through */
+  }
+  try {
     const n = Number(localStorage.getItem(KEY));
     state.best = Number.isFinite(n) && n > 0 ? Math.floor(n) : 0;
   } catch {
@@ -83,10 +104,16 @@ function readBest() {
 }
 
 function writeBest() {
-  if (state.height <= state.best) return;
-  state.best = state.height;
+  if (state.height > state.best) state.best = state.height;
+  if (state.perfectCount > state.bestStreak) state.bestStreak = state.perfectCount;
   try {
     localStorage.setItem(KEY, String(state.best));
+    localStorage.setItem(MASTER, JSON.stringify({
+      v: 2,
+      portal: PORTAL,
+      level: { id: PORTAL, name: "First stack" },
+      best: { floors: state.best, streak: state.bestStreak },
+    }));
   } catch {
     /* private mode */
   }
@@ -119,6 +146,7 @@ function resetTower() {
   paintHeight();
   state.perfectCount = 0;
   showStreak();
+  syncTools();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
   setStatus("Ready", "Drop the slab. Height is the floors that stay up." + best, "");
@@ -132,6 +160,16 @@ function travel() {
   const top = topSlab();
   const pad = state.assist ? 64 : 110;
   return { lo: top.x - pad, hi: top.x + top.w + pad };
+}
+
+function afterHold(done) {
+  const token = ++holdToken;
+  setStatus("Hold", "Holding.", "");
+  const ms = reduceMotion ? 0 : HOLD_MS;
+  setTimeout(() => {
+    if (token !== holdToken) return;
+    done();
+  }, ms);
 }
 
 function dropSlab() {
@@ -165,7 +203,7 @@ function dropSlab() {
   const aligned = even || Math.abs(mover.x - top.x) <= snapBand();
   let piece;
   if (aligned) {
-    piece = { x: top.x, y: top.y + top.h, w: top.w, h: SLAB_H };
+    piece = { x: mover.x, y: top.y + top.h, w: top.w, h: SLAB_H, settle: top.x };
   } else {
     piece = { x: left, y: top.y + top.h, w: overlap, h: SLAB_H };
     if (mover.x < top.x) {
@@ -194,9 +232,9 @@ function dropSlab() {
   state.slabs.push(piece);
   state.height += 1;
   paintHeight();
-  writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
   showStreak();
+  writeBest();
   const span = travel();
   state.mover = {
     x: span.lo,
@@ -206,7 +244,13 @@ function dropSlab() {
     dir: 1,
   };
   const streakLine = state.perfectCount ? " Lined up. Streak " + state.perfectCount + "." : "";
-  setStatus("Height", state.height + " " + floorWord(state.height) + " standing. Best " + state.best + "." + streakLine, "pass");
+  afterHold(() => {
+    setStatus(
+      "Height",
+      state.height + " " + floorWord(state.height) + " standing. Held 1s." + streakLine,
+      "pass",
+    );
+  });
 }
 
 function targetScale() {
@@ -270,8 +314,11 @@ function draw() {
 
   if (state.mover && state.phase !== "over") {
     drawSlab(state.mover, 1);
-    const hook = { x: cssW / 2, y: 36 };
+    const top = topSlab();
+    const seat = worldToScreen(top.x + top.w / 2, top.y + top.h);
     const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
+    drawJoint(ctx, seat.x, seat.y, grip.x, grip.y);
+    const hook = { x: cssW / 2, y: 36 };
     drawTether(ctx, hook.x, hook.y, grip.x, grip.y);
   }
 
@@ -293,7 +340,7 @@ function draw() {
 function tick(now) {
   const dt = Math.min(0.05, last ? (now - last) / 1000 : 0.016);
   last = now;
-  if (state.phase !== "over" && state.mover && !state.grab) {
+  if (state.phase !== "over" && state.mover && !state.grab && !state.holding && state.tool !== "move") {
     const limit = travel();
     state.mover.x += state.mover.dir * speed() * dt;
     if (state.mover.x < limit.lo) {
@@ -308,6 +355,14 @@ function tick(now) {
     scrap.vy += 980 * dt;
     scrap.y -= scrap.vy * dt;
     scrap.rot += scrap.spin * dt;
+  }
+  for (const slab of state.slabs) {
+    if (slab.settle == null) continue;
+    slab.x += (slab.settle - slab.x) * Math.min(1, dt * 10);
+    if (Math.abs(slab.settle - slab.x) < 0.4) {
+      slab.x = slab.settle;
+      slab.settle = null;
+    }
   }
   state.scraps = state.scraps.filter((s) => s.y > -400);
   const aim = targetScale();
@@ -330,11 +385,66 @@ function resize() {
 }
 
 function retry() {
+  holdToken += 1;
+  state.holding = false;
+  state.grab = null;
   resetTower();
   draw();
 }
 
-dropBtn.addEventListener("click", dropSlab);
+function deleteTop() {
+  holdToken += 1;
+  state.holding = false;
+  if (state.phase === "over" || state.slabs.length <= 1) {
+    setStatus("Look", state.phase === "over" ? "That miss already fell. Press Retry." : "The base stays.", "");
+    return;
+  }
+  state.slabs.pop();
+  state.height = Math.max(0, state.slabs.length - 1);
+  state.perfectCount = 0;
+  showStreak();
+  paintHeight();
+  const top = topSlab();
+  const span = travel();
+  state.mover = { x: span.lo, y: top.y + top.h, w: top.w, h: SLAB_H, dir: 1 };
+  state.phase = "ready";
+  writeBest();
+  setStatus("Ready", "Top floor off. " + state.height + " " + floorWord(state.height) + " standing.", "");
+  draw();
+}
+
+function standProve() {
+  if (state.phase === "over") {
+    setStatus("Miss", state.height + " " + floorWord(state.height) + " standing. The slab missed.", "fail");
+    return;
+  }
+  state.holding = true;
+  state.grab = null;
+  afterHold(() => {
+    state.holding = false;
+    const n = state.height;
+    const ok = n > 0 && state.phase !== "over";
+    setStatus(
+      ok ? "Height" : "Miss",
+      n + " " + floorWord(n) + " standing." + (ok ? " Held 1s." : " Nothing stood."),
+      ok ? "pass" : "fail",
+    );
+    draw();
+  });
+}
+
+function setTool(tool) {
+  state.tool = tool;
+  syncTools();
+}
+
+dropBtn.addEventListener("click", () => {
+  setTool("add");
+  dropSlab();
+});
+moveBtn.addEventListener("click", () => setTool("move"));
+deleteBtn.addEventListener("click", deleteTop);
+testBtn.addEventListener("click", standProve);
 retryBtn.addEventListener("click", retry);
 assistBtn.addEventListener("click", () => {
   state.assist = !state.assist;
@@ -357,13 +467,13 @@ canvas.addEventListener("pointerdown", (ev) => {
   const pt = eventPoint(ev);
   const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
   const near = Math.hypot(pt.x - grip.x, pt.y - grip.y) <= GRIP + 10;
-  if (near) {
+  if (near || state.tool === "move") {
     state.grab = true;
     state.phase = "run";
     canvas.setPointerCapture(ev.pointerId);
     return;
   }
-  if (ev.target === canvas) dropSlab();
+  if (state.tool === "add" && ev.target === canvas) dropSlab();
 });
 
 canvas.addEventListener("pointermove", (ev) => {
@@ -378,7 +488,7 @@ canvas.addEventListener("pointermove", (ev) => {
 canvas.addEventListener("pointerup", () => {
   if (!state.grab) return;
   state.grab = false;
-  dropSlab();
+  if (state.tool === "add") dropSlab();
 });
 
 function eventPoint(ev) {

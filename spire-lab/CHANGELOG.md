@@ -1,7 +1,13 @@
 # Spire Lab changelog
 
-**Chip: SL 1.1.1** · 2026-09-22 · channel **live**
+**Chip: SL 1.2.0** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.2.0 — Stand — 2026-09-23
+
+- What’s new: stretchy stack, hold to stand, streak stays.
+- A lined-up slab eases onto the stack. Test holds it for one second, then the caption says if it stood.
+- The streak chip stays up. Best floors and streak stay on this Chromebook.
 
 ## 1.1.1 — Polish — 2026-09-22
 

@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="spire-rev" content="2026-09-22-sl-1.1.1"/>
+  <meta name="spire-rev" content="2026-09-23-sl-1.2.0"/>
   <meta name="description" content="Spire Lab — drop a slab, keep the overlap, read the height."/>
   <title>Spire Lab · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spire-lab.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2026-09-22-sl-1.1.1"/>
+  <link rel="stylesheet" href="./styles.css?v=2026-09-23-sl-1.2.0"/>
 </head>
 <body>
   <div class="shell">
@@ -18,7 +18,7 @@
         <img src="/icons/icon-spire-lab.svg" width="40" height="40" alt=""/>
         <span>
           <h1>Spire Lab</h1>
-          <p>SL 1.1.1</p>
+          <p>SL 1.2.0</p>
         </span>
       </a>
       <div class="top-actions">
@@ -33,7 +33,7 @@
         <details class="help">
           <summary>Help</summary>
           <div class="help-panel">
-            <p>What’s new: height is the stack, plain labels, fits this Chromebook.</p>
+            <p>What’s new: stretchy stack, hold to stand, streak stays.</p>
             <a href="./changelog.html">For class</a>
           </div>
         </details>
@@ -49,20 +49,32 @@
 
     <div class="kinds" id="kinds">
       <p id="height-read">Height <strong id="height-n">0</strong> <span>floors</span></p>
-      <p id="streak" hidden>Streak <strong id="streak-n">0</strong></p>
+      <p id="streak">Streak <strong id="streak-n">0</strong></p>
     </div>
 
-    <nav class="pocket" aria-label="Tools">
+    <nav class="pocket" aria-label="Edge">
+      <button type="button" id="tool-add" aria-pressed="true">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        Add
+      </button>
+      <button type="button" id="tool-move" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M8 7l4-4 4 4M8 17l4 4 4-4M7 8 3 12l4 4M17 8l4 4-4 4"/></svg>
+        Move
+      </button>
+      <button type="button" id="tool-delete" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V5h6v2M8 7l1 13h6l1-13"/></svg>
+        Delete
+      </button>
       <button type="button" id="tool-test" class="go">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10l4 4 4-4M6 20h12"/></svg>
-        Drop
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M12 5v14"/></svg>
+        Test
       </button>
     </nav>
 
     <div class="stage">
-      <canvas id="board" tabindex="0" aria-label="Tower. Drag the grip or press Drop. Height is the floors that stay standing."></canvas>
+      <canvas id="board" tabindex="0" aria-label="Tower. Drag the grip or press Add. Test holds the stack."></canvas>
     </div>
   </div>
-  <script type="module" src="./app.js?v=2026-09-22-sl-1.1.1"></script>
+  <script type="module" src="./app.js?v=2026-09-23-sl-1.2.0"></script>
 </body>
 </html>
