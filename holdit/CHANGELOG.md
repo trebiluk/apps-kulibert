@@ -1,5 +1,10 @@
-**Chip: HI 1.1.0** · 2026-09-23 · channel **live**
+**Chip: HI 1.1.1** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.1 — Fatter tools — 2026-09-23
+
+- What’s new: Test and the tool dock are finger-sized. The lesson sits off the deck. Phone tools stay on screen; Fill and materials are under More.
+- Stars show on the job list on a narrow screen.
 
 ## 1.1.0 — Drafting table — 2026-09-23
 
