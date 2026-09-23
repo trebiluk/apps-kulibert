@@ -134,6 +134,7 @@ export function mountHelpOverlay(cfg) {
     "<ol class=\"help-steps\">" +
     steps.map((s) => "<li>" + s + "</li>").join("") +
     "</ol>" +
+    (cfg.classHref ? '<p class="help-class"><a href="' + cfg.classHref + '">For class</a></p>' : "") +
     '<div class="help-actions">' +
     '<button type="button" class="fat" data-help="close">Got it</button>' +
     (onReplayIntro
@@ -181,21 +182,16 @@ export function mountHelpOverlay(cfg) {
 }
 
 export function wireEdgeHelp(edgeBtn, edgeMenu, openHelp) {
-  if (!edgeBtn || !edgeMenu) return;
+  if (!edgeBtn) return;
   edgeBtn.textContent = "Help";
   edgeBtn.setAttribute("aria-label", "Help");
-  // Keep Room + class links; prepend Help how-to
-  let how = edgeMenu.querySelector("[data-edge=howto]");
-  if (!how) {
-    how = document.createElement("button");
-    how.type = "button";
-    how.setAttribute("data-edge", "howto");
-    how.textContent = "How to play";
-    edgeMenu.insertBefore(how, edgeMenu.firstChild);
-  }
-  how.onclick = () => {
-    edgeMenu.hidden = true;
+  edgeBtn.setAttribute("aria-haspopup", "dialog");
+  edgeBtn.setAttribute("aria-controls", "help-overlay");
+  if (edgeMenu) edgeMenu.hidden = true;
+  edgeBtn.addEventListener("click", (ev) => {
+    ev.preventDefault();
+    if (edgeMenu) edgeMenu.hidden = true;
     edgeBtn.setAttribute("aria-expanded", "false");
     openHelp();
-  };
+  });
 }

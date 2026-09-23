@@ -628,11 +628,14 @@ html.calm-clear .flash-spark { display: none !important; }
 .help-overlay[hidden] { display: none !important; }
 .help-card {
   width: min(26rem, 100%);
+  max-height: calc(100% - 1rem);
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 1rem 1.1rem 1.15rem;
 }
+.help-class { margin: 0 0 0.7rem; }
+.help-class a { color: var(--muted); font-weight: 700; }
 .help-card h2 { margin: 0; font-size: 1.3rem; }
 .help-rev { margin: 0.2rem 0 0.7rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
 .help-steps { margin: 0 0 0.9rem; padding-left: 1.2rem; }

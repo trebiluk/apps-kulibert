@@ -845,8 +845,9 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.8",
-  note: "What’s new: a miss always leaves a fat Retry.",
+  version: "SL 1.3.9",
+  note: "What’s new: Help is one screen, with the version.",
+  classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
     "Drop three slabs that stay. That is the first clear.",
@@ -862,13 +863,7 @@ wireEdgeHelp(document.getElementById("edge-btn"), document.getElementById("edge-
 
 const edgeBtn = document.getElementById("edge-btn");
 const edgeMenu = document.getElementById("edge-menu");
-if (edgeBtn && edgeMenu) {
-  edgeBtn.addEventListener("click", () => {
-    const open = edgeMenu.hidden;
-    edgeMenu.hidden = !open;
-    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-}
+if (edgeMenu) edgeMenu.hidden = true;
 
 const assistGot = document.getElementById("assist-gotit");
 if (assistGot) assistGot.addEventListener("click", dismissFirstAssist);

@@ -1167,13 +1167,7 @@ document.getElementById("retry-now").addEventListener("click", retry);
 assistBtn.addEventListener("click", toggleAssist);
 const edgeBtn = document.getElementById("edge-btn");
 const edgeMenu = document.getElementById("edge-menu");
-if (edgeBtn && edgeMenu) {
-  edgeBtn.addEventListener("click", () => {
-    const open = edgeMenu.hidden;
-    edgeMenu.hidden = !open;
-    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
-  });
-}
+if (edgeMenu) edgeMenu.hidden = true;
 
 loadMaster();
 loadEngage();
@@ -1188,8 +1182,9 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.9",
-  note: "What’s new: a miss always leaves a fat Retry.",
+  version: "SC 1.3.10",
+  note: "What’s new: Help is one screen, with the version.",
+  classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
     "Place three Decks across the gap, then Test. That is the first clear.",
