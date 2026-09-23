@@ -158,14 +158,19 @@ function openFirstAssist() {
   // Intro opens Assist ON once for first clear; default remains OFF after dismiss for harder stack
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate("Drop the slab on the stack. Goal is the dashed line.", true);
+  showAssistPlate("Drop three slabs that stay. That is the first clear.", true);
 }
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
-  // Keep Assist default OFF after intro (SL 1.2.3+ harder stack)
+  hideAssistPlate();
+  if (!state.cleared.first) {
+    state.assist = true;
+    if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
+    setStatus("Ready", "Drop three slabs that stay. That is the first clear.", "");
+    return;
+  }
   state.assist = false;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "false");
-  hideAssistPlate();
   setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to Goal " + GOAL_FLOORS + ".", "");
 }
 function loadEngage() {
@@ -339,7 +344,7 @@ function writeBest() {
 }
 
 function speed() {
-  // Harder default: faster sweep + steeper height ramp. Assist is gentler, not free.
+  if (!state.cleared.first) return 64;
   const base = state.assist ? 110 : 156;
   const climb = state.assist ? 14 : 28;
   const cap = state.assist ? 230 : 360;
@@ -349,6 +354,7 @@ function speed() {
 }
 
 function snapBand() {
+  if (!state.cleared.first) return 28;
   return state.assist ? 5 : 2.2;
 }
 
@@ -379,7 +385,10 @@ function resetTower() {
   showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
-  setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to the Goal line (" + GOAL_FLOORS + ")." + best, "");
+  const line = state.cleared.first
+    ? "Hang the slab over the tower, then Drop. Climb to the Goal line (" + GOAL_FLOORS + ")." + best
+    : "Drop three slabs that stay. That is the first clear." + best;
+  setStatus("Ready", line, "");
 }
 
 function topSlab() {
@@ -388,7 +397,7 @@ function topSlab() {
 
 function travel() {
   const top = topSlab();
-  const pad = state.assist ? 36 : 58;
+  const pad = !state.cleared.first ? 90 : state.assist ? 36 : 58;
   return { lo: top.x - pad, hi: top.x + top.w + pad };
 }
 
@@ -421,7 +430,10 @@ function doDropSlab() {
     else if (state.bet === "hold") betLine = " Bet missed — try center, then Drop again.";
     state.bet = null;
     syncBetBar();
-    setStatus("Miss", "Missed the stack. Tap Retry — hang a new slab. Goal is the dashed line at " + GOAL_FLOORS + ". Best " + state.best + "." + betLine, "fail");
+    const miss = state.cleared.first
+      ? "Missed the stack. Tap Retry — hang a new slab. Goal is the dashed line at " + GOAL_FLOORS + ". Best " + state.best + "." + betLine
+      : "Missed the stack. Tap Retry. Three drops that stay is the first clear. Best " + state.best + "." + betLine;
+    setStatus("Miss", miss, "fail");
     if (retryBtn) retryBtn.classList.add("is-needed");
     setMasteryChip("");
     playBeats([{ shout: "Miss", caption: "Tap Retry and drop closer to center.", mark: "✕" }]);
@@ -482,18 +494,24 @@ function doDropSlab() {
     try { localStorage.setItem(GHOST_KEY, String(state.ghostBest)); } catch { /* private */ }
   }
   let toy = null;
-  if (state.height === 3 && state.isleId === "first" && !state.cleared.first) toy = markIsleClear();
+  const firstClear = state.height === 3 && !state.cleared.first;
+  if (firstClear) toy = markIsleClear();
   if (state.height === GOAL_FLOORS) toy = markIsleClear() || toy;
   const toyLine = toy ? " Toy: " + toy + "." : "";
   setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
-  const beats = [{ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" }];
+  const beats = [];
+  if (firstClear) {
+    beats.push({ shout: "First clear", caption: (toy ? toy + " is yours. " : "") + "Three drops stayed.", mark: "✓" });
+  } else {
+    beats.push({ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" });
+  }
   if (state.perfectCount > 0) {
     setMasteryChip("Streak " + state.perfectCount);
     beats.push({ shout: "Streak", caption: state.perfectCount + " even in a row.", mark: "★" });
   } else {
     setMasteryChip("");
   }
-  if (toy) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
+  if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   playBeats(beats);
 }
 
@@ -509,6 +527,10 @@ function dropSlab() {
   };
   window.clearTimeout(flashTimer);
   hideQuietToast();
+  if (!state.cleared.first) {
+    run();
+    return;
+  }
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   state.theater = runProveTheater({
@@ -730,6 +752,12 @@ function retry() {
 dropBtn.addEventListener("click", dropSlab);
 retryBtn.addEventListener("click", retry);
 assistBtn.addEventListener("click", () => {
+  if (!state.cleared.first) {
+    state.assist = true;
+    assistBtn.setAttribute("aria-pressed", "true");
+    setStatus("Assist", "Assist stays on until the first clear.", "");
+    return;
+  }
   state.assist = !state.assist;
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   if (state.phase !== "over") {
@@ -791,17 +819,21 @@ readBest();
 loadEngage();
 if (readFlag(CALM_KEY)) document.documentElement.classList.add("calm-clear");
 resetTower();
+if (!state.cleared.first) {
+  state.assist = true;
+  if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
+}
 syncToysChip();
 syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.4",
-  note: "What’s new: a miss points at a calm Retry. Reduced motion uses a quiet toast.",
+  version: "SL 1.3.5",
+  note: "What’s new: the first clear is three drops that stay.",
   calmKey: CALM_KEY,
   steps: [
-    "Drop the slab on the stack.",
-    "Goal is the dashed line.",
+    "Drop three slabs that stay. That is the first clear.",
+    "Goal is the dashed line after that.",
     "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {

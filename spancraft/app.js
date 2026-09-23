@@ -237,13 +237,15 @@ function showAssistPlate(text, sticky) {
 function openFirstAssist() {
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate("Drag a Deck across the gap, then press Test.", true);
+  showAssistPlate("Place three Decks across the gap, then Test. That is the first clear.", true);
   updateSnapHint();
 }
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
   hideAssistPlate();
-  setStatus("Ready", "Add a Deck in the middle, then fill bank to bank. Press Test when ready.", "");
+  setStatus("Ready", state.cleared.first
+    ? "Add a Deck in the middle, then fill bank to bank. Press Test when ready."
+    : "Place three Decks across the gap, then Test. That is the first clear.", "");
 }
 function loadEngage() {
   const data = readJson(ENGAGE, null);
@@ -384,6 +386,10 @@ function setStatus(word, text, tone) {
 }
 
 function showCoach() {
+  if (!state.cleared.first && state.parts.length === 0) {
+    setStatus("Ready", "Place three Decks across the gap, then Test. That is the first clear.", "");
+    return;
+  }
   const reason = judgeSpan(spec(), state.parts).reason;
   const [word, text] = COACH[reason] || COACH.empty;
   setStatus(word, text, "");
@@ -891,6 +897,7 @@ function finishProve(verdict, stars, s, prove, started) {
       ? " Bet matched — nice read."
       : " Bet missed — try one fix, then Test again.";
   }
+  const firstClear = verdict.ok && !state.cleared.first;
   const toy = verdict.ok ? markIsleClear() : null;
   if (toy) extra += " Toy: " + toy + ".";
   syncControls();
@@ -898,12 +905,16 @@ function finishProve(verdict, stars, s, prove, started) {
   if (retryBtn) retryBtn.classList.toggle("is-needed", !verdict.ok);
   const beats = [];
   if (verdict.ok) {
-    beats.push({ shout: "Held", caption: "The load stayed up.", mark: "✓" });
+    if (firstClear) {
+      beats.push({ shout: "First clear", caption: (toy ? toy + " is yours. " : "") + "Three decks held.", mark: "✓" });
+    } else {
+      beats.push({ shout: "Held", caption: "The load stayed up.", mark: "✓" });
+    }
     if (stars > 0) {
       setMasteryChip("★ " + stars + "/3");
       beats.push({ shout: stars + (stars === 1 ? " star" : " stars"), caption: starPhrase(stars) + ".", mark: "★".repeat(stars) });
     }
-    if (toy) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
+    if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   } else {
     setMasteryChip("");
     setStatus("Fail", prove[1] + " Tap Retry — change one thing.", "fail");
@@ -942,6 +953,10 @@ function startTest() {
   };
   window.clearTimeout(flashTimer);
   hideQuietToast();
+  if (!state.cleared.first) {
+    runDrop();
+    return;
+  }
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   syncControls();
@@ -997,6 +1012,12 @@ function setKind(kind) {
 }
 
 function toggleAssist() {
+  if (!state.cleared.first) {
+    state.assist = true;
+    syncControls();
+    setStatus("Assist", "Assist stays on until the first clear.", "");
+    return;
+  }
   cancelAnim();
   state.drag = null;
   state.assist = !state.assist;
@@ -1153,11 +1174,11 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.5",
-  note: "What’s new: a miss points at a calm Retry. Reduced motion uses a quiet toast.",
+  version: "SC 1.3.6",
+  note: "What’s new: the first clear is three Decks, then Test.",
   calmKey: CALM_KEY,
   steps: [
-    "Drag a Deck from bank to bank.",
+    "Place three Decks across the gap, then Test. That is the first clear.",
     "Press Test. The word says if it held.",
     "If it misses, tap Retry and change one thing.",
   ],
