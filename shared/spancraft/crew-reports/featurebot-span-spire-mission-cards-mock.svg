@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 720" role="img" aria-label="Mock of SpanCraft and Spire Lab mission cards. Not a door change.">
+  <rect width="1240" height="720" fill="#050814"/>
+  <text x="40" y="48" fill="#e8f7ff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="28" font-weight="800">Mission cards · mock</text>
+  <text x="40" y="76" fill="#8fb4c9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="16" font-weight="600">Gap Isles and Stand Peak as they already read. Not a new door.</text>
+
+  <text x="40" y="118" fill="#22d3ee" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="800">SPANCRAFT · SC 1.3.4</text>
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <g transform="translate(40 136)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#5eead4" stroke-width="2"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">DONE</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">First Gap</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Short span · snap a joint</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#5eead4" font-size="14" font-weight="700">Yours · Sticky joint</text>
+    </g>
+    <g transform="translate(272 136)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#22d3ee" stroke-width="2"/>
+      <text x="16" y="32" fill="#22d3ee" font-size="12" font-weight="800">NOW</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Long Gap</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Longer · fewer parts</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#e8f7ff" font-size="14" font-weight="700">Toy · Longer beam</text>
+    </g>
+    <g transform="translate(504 136)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Wind Gap</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Hold against the breeze</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="14" font-weight="700">Next toy · Soft spring</text>
+    </g>
+    <g transform="translate(736 136)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Offset Gap</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Load off-center · fix one</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="14" font-weight="700">Next toy · Offset pad</text>
+    </g>
+    <g transform="translate(968 136)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Open Span</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Your bridge · one load</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="12" font-weight="700">Next toy · Edge pocket bonus</text>
+    </g>
+  </g>
+
+  <text x="40" y="368" fill="#a78bfa" font-family="ui-sans-serif, system-ui, sans-serif" font-size="15" font-weight="800">SPIRE LAB · SL 1.3.3</text>
+  <g font-family="ui-sans-serif, system-ui, sans-serif">
+    <g transform="translate(40 386)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#5eead4" stroke-width="2"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">DONE</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">First Stack</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Short stack · wide base</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#5eead4" font-size="14" font-weight="700">Yours · Sticky joint</text>
+    </g>
+    <g transform="translate(272 386)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#a78bfa" stroke-width="2"/>
+      <text x="16" y="32" fill="#a78bfa" font-size="12" font-weight="800">NOW</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Tall Peak</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Go taller · keep balance</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#e8f7ff" font-size="14" font-weight="700">Toy · Soft spring</text>
+    </g>
+    <g transform="translate(504 386)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Wind Peak</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Stand in a wobble</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="14" font-weight="700">Next toy · Wind fan</text>
+    </g>
+    <g transform="translate(736 386)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Offset Peak</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Offset stack · fix one</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="14" font-weight="700">Next toy · Offset pad</text>
+    </g>
+    <g transform="translate(968 386)">
+      <rect width="220" height="176" rx="16" fill="#0b152c" stroke="#1e3348" stroke-width="2" opacity="0.72"/>
+      <text x="16" y="32" fill="#8fb4c9" font-size="12" font-weight="800">LOCKED</text>
+      <text x="16" y="64" fill="#e8f7ff" font-size="20" font-weight="800">Open Spire</text>
+      <text x="16" y="92" fill="#8fb4c9" font-size="14" font-weight="600">Your tower · stand check</text>
+      <rect x="16" y="116" width="188" height="40" rx="12" fill="#050814" stroke="#1e3348"/>
+      <text x="28" y="142" fill="#8fb4c9" font-size="14" font-weight="700">Next toy · Longer beam</text>
+    </g>
+  </g>
+
+  <text x="40" y="600" fill="#8fb4c9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">Done = pass border. Now = the card you can open. Locked = next toy only. A new toy is named on the stage, then the chip shows the name.</text>
+  <text x="40" y="626" fill="#8fb4c9" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" font-weight="600">Mock for crew. Kid doors stay SC 1.3.4 and SL 1.3.3 until a GO.</text>
+</svg>
