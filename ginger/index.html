@@ -4,18 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Ginger 1.0.1 — floor plan</title>
+  <title>Ginger 1.0.2 — floor plan</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body data-theme="paper">
   <div class="app">
     <header class="bar">
       <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
-        <rect x="2" y="6" width="28" height="20" fill="none" stroke="#6E72F5" stroke-width="2"/>
-        <path d="M2 14h28M14 6v20" fill="none" stroke="#0a0a0a" stroke-width="2"/>
+        <rect x="3" y="3" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"/>
+        <path d="M8 22 L16 8 L24 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
       </svg>
-      <span class="brand">Ginger</span>
-      <span class="chip" id="chip" title="version">v1.0.1</span>
+      <span class="brand">GINGER</span>
+      <span class="chip" id="chip" title="version">v1.0.2</span>
       <nav class="tools" aria-label="Draw tools">
         <button type="button" data-tool="select" aria-pressed="true">Select</button>
         <button type="button" data-tool="wall">Wall</button>
@@ -30,6 +30,10 @@
       <button type="button" id="lab3d" aria-pressed="false">3D peek</button>
       <button type="button" id="export">Export</button>
       <button type="button" id="imp">Import</button>
+      <details class="help">
+        <summary>Help</summary>
+        <p>What’s new in 1.0.2: tighter CAD chrome. Same walls, rooms, doors, windows, items. Plans stay on this Chromebook.</p>
+      </details>
       <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
     </header>
     <main class="stage">
@@ -59,6 +63,7 @@
     </main>
     <footer class="foot">
       <span id="status">Select a wall, door, window, room, or corner.</span>
+      <span class="whats">What’s new: 1.0.2 tighter CAD chrome. Same tools.</span>
       <span class="quiet">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
