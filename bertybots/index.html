@@ -9,11 +9,11 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.18.7 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.18.8 — Solvay Tech Ed</title>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.18.7">
+  <link rel="stylesheet" href="css/app.css?v=0.18.8">
 </head>
 <body>
   <div id="rotate-gate">
@@ -117,7 +117,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.18.7</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.18.8</small></div>
         <div class="rank" id="rank" title="Shop rank stays on this Chromebook. No names.">
           <span class="rank-name" id="rank-name">Helper</span>
           <div class="xp" id="xp-bar" role="progressbar" aria-valuemin="0" aria-valuenow="0" aria-valuemax="20" aria-label="Shop XP">
@@ -203,6 +203,13 @@
           <div class="sheet-card menu-card" role="dialog" aria-labelledby="crew-title">
             <p class="howto-kicker">Shop menu</p>
             <h2 id="crew-title">Menu</h2>
+            <p class="hint" id="rank-menu">Helper · 0 XP</p>
+            <p class="crew-label">Done</p>
+            <ul class="path-done" id="path-done"></ul>
+            <p class="crew-label">Next</p>
+            <button class="btn gold path-next" id="path-next" type="button">Roll Out</button>
+            <button class="btn" id="btn-more" type="button" aria-expanded="false">More</button>
+            <div id="menu-more" hidden>
             <p class="menu-lead">Build a machine on the Shop Floor. Park the crate in the Drop Zone.</p>
             <p class="crew-label">Guide</p>
             <p class="menu-guide" id="menu-guide">Ask: park the Bot Core crate in the Drop Zone. That is the job.</p>
@@ -214,7 +221,6 @@
               <button class="step" type="button" data-step="test" role="tab" aria-selected="false">Test</button>
               <button class="step" type="button" data-step="improve" role="tab" aria-selected="false">Improve</button>
             </div>
-            <p class="hint" id="rank-menu">Helper · 0 XP</p>
             <p class="crew-label">Pair</p>
             <div class="row role-menu" role="group" aria-label="Pair role">
               <button class="btn on" data-role="builder" type="button" aria-pressed="true">Builder</button>
@@ -249,6 +255,7 @@
               <a class="btn ghost" href="teacher.html">Teacher</a>
               <a class="btn ghost" href="privacy.html">Privacy</a>
             </div>
+            </div>
             <button class="btn gold" id="crew-close">Close</button>
           </div>
         </div>
@@ -257,13 +264,13 @@
       <footer class="status">
         <span id="mode">Shop</span>
         <span>Parts <b id="count">0 / 48</b></span>
-        <span class="whats-new">What's new: splash menu and guide are back.</span>
+        <span class="whats-new">What's new: menu shows done, next, then More.</span>
         <span class="hint" id="status-hint">Hover the left bin for tools · Space play · Z undo</span>
       </footer>
     </div>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.18.7"></script>
+  <script src="js/bundle.js?v=0.18.8"></script>
 </body>
 </html>

@@ -516,7 +516,36 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
 .ipof li { margin: 0 0 8px; }
 .systems-course { color: var(--ink); }
 .sheet-card .hint { color: #4a5c6a; }
-.menu-lead { margin: 0 0 6px; font-size: 15px; font-weight: 600; line-height: 1.4; color: #3a342c; }
+.path-done {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.path-done li { margin: 0; }
+.path-empty { font-size: 14px; font-weight: 600; color: #6b6256; }
+.path-link, .path-next, #btn-more {
+  width: 100%;
+}
+.path-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #c9bda8;
+  background: #fff;
+  color: #241f18;
+  font-weight: 600;
+  font-size: 13px;
+}
+.path-link::before { content: "✓"; color: var(--ok); font-weight: 700; }
+.path-next { margin-bottom: 8px; }
+#btn-more { margin-bottom: 8px; }
+#menu-more { margin-bottom: 8px; }
 .menu-guide {
   margin: 0 0 8px;
   font-size: 14px;

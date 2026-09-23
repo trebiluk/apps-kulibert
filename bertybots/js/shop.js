@@ -53,6 +53,21 @@ const BUILTIN = [
   { id: "pair", label: "Pair of Crates", url: "levels/pair-of-crates.json" },
 ];
 
+const PATH = [
+  { id: "open", label: "Open Shop" },
+  { id: "roll", label: "Roll Out" },
+  { id: "curb", label: "Up the Curb" },
+  { id: "pit", label: "Mind the Pit" },
+  { id: "wall", label: "The Wall" },
+  { id: "shelf", label: "High Shelf" },
+  { id: "bend", label: "Around the Bend" },
+  { id: "pair", label: "Pair of Crates" },
+];
+const LESSONS = [
+  { id: "measure", label: "Measure" },
+  { id: "forces", label: "Forces" },
+];
+
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 
 const HOWTO = [
@@ -610,6 +625,45 @@ export function boot() {
       bar.setAttribute("aria-valuenow", String(progress.xp));
       bar.setAttribute("aria-valuemax", String(next ? next.at : rank.at + span));
       bar.setAttribute("aria-label", `${rank.name}, ${progress.xp} XP`);
+    }
+    refreshPath();
+  }
+
+  function levelDone(id) {
+    const rec = progress.wins[id];
+    return !!(rec && rec.n > 0);
+  }
+
+  function refreshPath() {
+    const list = document.getElementById("path-done");
+    const nextBtn = document.getElementById("path-next");
+    if (!list || !nextBtn) return;
+    const done = PATH.concat(LESSONS).filter((level) => levelDone(level.id));
+    list.replaceChildren();
+    if (!done.length) {
+      const li = document.createElement("li");
+      li.className = "path-empty";
+      li.textContent = "None yet.";
+      list.append(li);
+    } else {
+      for (const level of done) {
+        const li = document.createElement("li");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "path-link";
+        btn.dataset.course = level.id;
+        btn.textContent = level.label;
+        li.append(btn);
+        list.append(li);
+      }
+    }
+    const upcoming = PATH.find((level) => !levelDone(level.id));
+    if (upcoming) {
+      nextBtn.textContent = upcoming.label;
+      nextBtn.dataset.course = upcoming.id;
+    } else {
+      nextBtn.textContent = "All parked. Replay Open Shop";
+      nextBtn.dataset.course = "open";
     }
   }
 
@@ -2370,6 +2424,26 @@ export function boot() {
         setLayer("level");
         setTool("move");
         toast("Drag the Drop Zone. Challenges keep the goal locked.");
+      });
+    }
+    const moreBtn = document.getElementById("btn-more");
+    const more = document.getElementById("menu-more");
+    if (moreBtn && more) {
+      moreBtn.addEventListener("click", () => {
+        const open = more.hidden;
+        more.hidden = !open;
+        moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        moreBtn.textContent = open ? "Less" : "More";
+      });
+    }
+    const menuCard = document.querySelector(".menu-card");
+    if (menuCard) {
+      menuCard.addEventListener("click", async (ev) => {
+        const hit = ev.target.closest("[data-course]");
+        if (!hit || !hit.dataset.course) return;
+        hideHowto();
+        showCrew(false);
+        await loadBuiltin(hit.dataset.course);
       });
     }
     const railBtn = document.getElementById("btn-rail");
