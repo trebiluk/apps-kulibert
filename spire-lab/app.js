@@ -1,11 +1,33 @@
 // Spire Lab — one height-stand prove. Original draw. tower_game MIT math only.
 
 import { GRIP, drawTether } from "../shared/stretch.js";
-import { award, paintLadder } from "../shared/xp-wallet.js";
+import {
+  quietMode,
+  readFlag,
+  writeFlag,
+  readJson,
+  writeJson,
+  runProveTheater,
+  mountHelpOverlay,
+  wireEdgeHelp,
+} from "../shared/engage-help.js";
 
 const KEY = "kulibert-spire-height-v1";
+const ENGAGE = "kulibert-spire-engage-v1";
+const ASSIST_SEEN = "kulibert-spire-assist-intro-v1";
+const CALM_KEY = "kulibert-calm-clear";
+const GHOST_KEY = "kulibert-spire-ghost-v1";
 const SLAB_H = 26;
 const BASE_W = 168;
+const GOAL_FLOORS = 10; // classroom clear target — dashed line on board
+
+const ISLES = [
+  { id: "first", name: "First Stack", job: "Short stack · wide base", toy: "Sticky joint", unlock: null },
+  { id: "tall", name: "Tall Peak", job: "Go taller · keep balance", toy: "Soft spring", unlock: "first" },
+  { id: "wind", name: "Wind Peak", job: "Stand in a wobble", toy: "Wind fan", unlock: "tall" },
+  { id: "offset", name: "Offset Peak", job: "Offset stack · fix one", toy: "Offset pad", unlock: "wind" },
+  { id: "open", name: "Open Spire", job: "Your tower · stand check", toy: "Longer beam", unlock: "offset" },
+];
 
 const canvas = document.getElementById("board");
 const ctx = canvas.getContext("2d");
@@ -32,6 +54,13 @@ const state = {
   scraps: [],
   scale: 1,
   grab: null,
+  bet: null,
+  isleId: "first",
+  cleared: {},
+  toys: [],
+  theater: null,
+  ghostBest: 0,
+  pendingDrop: false,
 };
 
 let cssW = 0;
@@ -39,61 +68,189 @@ let cssH = 0;
 let last = 0;
 
 
-/* Prove theater — one beat at a time, docked on the stage. */
+/* Shop Prove Flash plates */
 let flashTimer = 0;
-const BEAT_MS = 1400;
-
-function hideTheater() {
-  const plate = document.getElementById("flash-plate");
-  if (!plate) return;
-  plate.classList.remove("show");
-  plate.hidden = true;
-  plate.setAttribute("hidden", "");
-}
-
-function showBeat(beat) {
+function showFlash(shout, caption, mark) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  s.textContent = beat.shout;
-  c.textContent = beat.caption || "";
-  if (m) m.textContent = beat.mark || "";
+  window.clearTimeout(flashTimer);
+  s.textContent = shout;
+  c.textContent = caption || "";
+  if (m) m.textContent = mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-}
-
-function playTheater(beats) {
-  window.clearTimeout(flashTimer);
-  const list = (beats || []).filter(Boolean);
-  if (!list.length) {
-    hideTheater();
-    return;
+  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
+    const spark = document.createElement("div");
+    spark.className = "flash-spark";
+    spark.style.left = "50%";
+    spark.style.top = "38%";
+    spark.style.opacity = "1";
+    document.body.appendChild(spark);
+    window.setTimeout(() => spark.remove(), 320);
   }
-  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const run = calm ? [list[list.length - 1]] : list;
-  let i = 0;
-  const step = () => {
-    showBeat(run[i]);
-    i += 1;
-    flashTimer = window.setTimeout(i < run.length ? step : hideTheater, calm ? 900 : BEAT_MS);
-  };
-  step();
+  flashTimer = window.setTimeout(() => {
+    plate.classList.remove("show");
+    plate.hidden = true;
+    plate.setAttribute("hidden", "");
+  }, 2200);
 }
-function showAssistPlate(text) {
+function hideAssistPlate() {
+  const plate = document.getElementById("assist-plate");
+  if (!plate) return;
+  plate.classList.remove("show", "sticky");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
+}
+function showAssistPlate(text, sticky) {
   const plate = document.getElementById("assist-plate");
   const p = document.getElementById("assist-plate-text");
   if (!plate || !p) return;
   p.textContent = text;
   plate.hidden = false;
+  plate.removeAttribute("hidden");
   plate.classList.add("show");
-  window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 3200);
+  if (sticky) plate.classList.add("sticky");
+  else plate.classList.remove("sticky");
+  if (!sticky) {
+    window.setTimeout(() => {
+      if (plate.classList.contains("sticky")) return;
+      plate.classList.remove("show");
+      plate.hidden = true;
+      plate.setAttribute("hidden", "");
+    }, 3200);
+  }
+}
+function openFirstAssist() {
+  // Intro opens Assist ON once for first clear; default remains OFF after dismiss for harder stack
+  state.assist = true;
+  if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
+  showAssistPlate(
+    "Hang the slab over the center of the tower, then press Drop. Goal is the dashed line at 10. Assist slows the sweep.",
+    true,
+  );
+}
+function dismissFirstAssist() {
+  writeFlag(ASSIST_SEEN, true);
+  // Keep Assist default OFF after intro (SL 1.2.3+ harder stack)
+  state.assist = false;
+  if (assistBtn) assistBtn.setAttribute("aria-pressed", "false");
+  hideAssistPlate();
+  setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to Goal " + GOAL_FLOORS + ".", "");
+}
+function loadEngage() {
+  const data = readJson(ENGAGE, null);
+  if (!data || data.v !== 1) return;
+  state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
+  state.toys = Array.isArray(data.toys) ? data.toys : [];
+  state.isleId = typeof data.isleId === "string" ? data.isleId : "first";
+  try {
+    const g = Number(localStorage.getItem(GHOST_KEY));
+    state.ghostBest = Number.isFinite(g) && g > 0 ? Math.floor(g) : 0;
+  } catch {
+    state.ghostBest = 0;
+  }
+}
+function saveEngage() {
+  writeJson(ENGAGE, {
+    v: 1,
+    cleared: state.cleared,
+    toys: state.toys,
+    isleId: state.isleId,
+  });
+  syncToysChip();
+}
+function syncToysChip() {
+  const chip = document.getElementById("toys-chip");
+  if (!chip) return;
+  const n = state.toys.length;
+  if (!n) {
+    chip.hidden = true;
+    chip.textContent = "Toys 0";
+    return;
+  }
+  chip.hidden = false;
+  chip.textContent = "Toys " + n;
+}
+function syncBetBar() {
+  const bar = document.getElementById("bet-bar");
+  if (!bar) return;
+  const show = state.phase === "ready" || state.phase === "run";
+  bar.hidden = !show;
+  for (const btn of bar.querySelectorAll(".bet-chip")) {
+    btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
+  }
+}
+function unlockToyForIsle(isleId) {
+  const isle = ISLES.find((i) => i.id === isleId);
+  if (!isle || !isle.toy) return null;
+  if (state.toys.includes(isle.toy)) return null;
+  state.toys.push(isle.toy);
+  return isle.toy;
+}
+function markIsleClear() {
+  const id = state.isleId || "first";
+  state.cleared[id] = true;
+  const toy = unlockToyForIsle(id);
+  const idx = ISLES.findIndex((i) => i.id === id);
+  if (idx >= 0 && idx < ISLES.length - 1) {
+    const next = ISLES[idx + 1];
+    if (!state.cleared[next.id]) state.isleId = next.id;
+  }
+  saveEngage();
+  return toy;
+}
+function isleState(isle) {
+  if (state.cleared[isle.id]) return "clear";
+  if (isle.id === state.isleId) return "active";
+  if (!isle.unlock) return "active";
+  if (state.cleared[isle.unlock]) return "open";
+  return "locked";
+}
+function renderIsleMap() {
+  const grid = document.getElementById("isle-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  for (const isle of ISLES) {
+    const st = isleState(isle);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "isle-card";
+    btn.dataset.state = st === "open" ? "active" : st;
+    btn.disabled = st === "locked";
+    const tag = st === "clear" ? "CLEAR" : st === "locked" ? "LOCKED" : (isle.id === state.isleId ? "ACTIVE" : "PEAK");
+    btn.innerHTML =
+      '<span class="isle-tag">' + tag + "</span>" +
+      "<h3>" + isle.name + "</h3>" +
+      "<p>" + isle.job + "</p>" +
+      '<span class="isle-toy">' + (st === "locked" ? "Unlocks " + isle.toy : "Toy · " + isle.toy) + "</span>";
+    btn.addEventListener("click", () => {
+      if (st === "locked") return;
+      state.isleId = isle.id;
+      saveEngage();
+      closeIsleMap();
+      setStatus("Peak", isle.name + " — " + isle.job, "");
+      renderIsleMap();
+    });
+    grid.appendChild(btn);
+  }
+}
+function openIsleMap() {
+  const map = document.getElementById("isle-map");
+  if (!map) return;
+  renderIsleMap();
+  map.hidden = false;
+  map.removeAttribute("hidden");
+}
+function closeIsleMap() {
+  const map = document.getElementById("isle-map");
+  if (!map) return;
+  map.hidden = true;
+  map.setAttribute("hidden", "");
 }
 function setMasteryChip(text) {
   const chip = document.getElementById("mastery-chip");
@@ -167,7 +324,17 @@ function snapBand() {
   return state.assist ? 5 : 2.2;
 }
 
+
+function paintHeightRead() {
+  if (heightN) heightN.textContent = String(state.height);
+  const goalEl = document.getElementById("goal-n");
+  if (goalEl) goalEl.textContent = String(GOAL_FLOORS);
+  const wrap = document.getElementById("height-read");
+  if (wrap) wrap.setAttribute("data-goal-met", state.height >= GOAL_FLOORS ? "1" : "0");
+}
+
 function resetTower() {
+  if (retryBtn) retryBtn.classList.remove("is-needed");
   state.phase = "ready";
   state.height = 0;
   state.scraps = [];
@@ -179,12 +346,12 @@ function resetTower() {
     h: SLAB_H,
     dir: 1,
   };
-  heightN.textContent = "0";
+  paintHeightRead();
   state.perfectCount = 0;
   showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
-  setStatus("Ready", "Drop on center. It gets faster and narrower as you climb." + best, "");
+  setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to the Goal line (" + GOAL_FLOORS + ")." + best, "");
 }
 
 function topSlab() {
@@ -197,7 +364,7 @@ function travel() {
   return { lo: top.x - pad, hi: top.x + top.w + pad };
 }
 
-function dropSlab() {
+function doDropSlab() {
   if (state.phase === "over") return;
   state.phase = "run";
   const top = topSlab();
@@ -220,10 +387,15 @@ function dropSlab() {
     state.mover = null;
     state.phase = "over";
     writeBest();
-    heightN.textContent = String(state.height);
-    setStatus("Miss", "The slab missed. Height " + state.height + ". Best " + state.best + ".", "fail");
+    paintHeightRead();
+    let betLine = "";
+    if (state.bet === "fall") betLine = " Bet matched — it fell.";
+    else if (state.bet === "hold") betLine = " Bet missed — try center, then Drop again.";
+    state.bet = null;
+    syncBetBar();
+    setStatus("Miss", "Missed the stack. Tap Retry — hang a new slab. Goal is the dashed line at " + GOAL_FLOORS + ". Best " + state.best + "." + betLine, "fail");
+    if (retryBtn) retryBtn.classList.add("is-needed");
     setMasteryChip("");
-    playTheater([{ shout: "Miss", caption: "The slab missed the stack.", mark: "✕" }]);
     return;
   }
   const even = towerPerfect(mover.x, top.x, top.w);
@@ -258,7 +430,7 @@ function dropSlab() {
   }
   state.slabs.push(piece);
   state.height += 1;
-  heightN.textContent = String(state.height);
+  paintHeightRead();
   writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
   showStreak();
@@ -271,22 +443,59 @@ function dropSlab() {
     dir: 1,
   };
   const streakLine = state.perfectCount ? " Even. Streak " + state.perfectCount + "." : "";
-  const bag = award("spire", [
-    ...(state.height >= 1 ? ["stand"] : []),
-    ...(state.perfectCount >= 2 ? ["line"] : []),
-    ...(state.height >= 3 ? ["climb"] : []),
-  ]);
-  paintLadder("spire");
-  const xpLine = bag.gained ? " +" + bag.gained + " XP." : "";
-  setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + xpLine, "pass");
-  const beats = [{ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" }];
+  let betLine = "";
+  if (state.bet === "hold") betLine = " Bet matched — it held.";
+  else if (state.bet === "fall") betLine = " Bet missed — it stood anyway.";
+  state.bet = null;
+  syncBetBar();
+  setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine, "pass");
+  showFlash("STAND", "It stood for this drop", "✓");
+  // Ghost You stub: best height outline marker (local)
+  if (state.height > state.ghostBest) {
+    state.ghostBest = state.height;
+    try { localStorage.setItem(GHOST_KEY, String(state.ghostBest)); } catch { /* private */ }
+  }
+  if (state.height === GOAL_FLOORS) {
+    const toy = markIsleClear();
+    window.setTimeout(() => showFlash("HEIGHT HIT", toy ? ("Goal " + GOAL_FLOORS + " · toy " + toy) : ("Goal " + GOAL_FLOORS + " — tower reached the line"), "✓"), 2300);
+  } else if (state.height > GOAL_FLOORS && state.height % 5 === 0) {
+    window.setTimeout(() => showFlash("HEIGHT HIT", "Past goal · height " + state.height, ""), 2300);
+  }
+  // First Stack clear early (height 3) so first CLEAR path ≤90s
+  if (state.height === 3 && state.isleId === "first" && !state.cleared.first) {
+    const toy = markIsleClear();
+    if (toy) window.setTimeout(() => showFlash("CLEAR", "First Stack · " + toy, "✓"), 2300);
+  }
   if (state.perfectCount > 0) {
     setMasteryChip("Streak " + state.perfectCount);
-    beats.push({ shout: "Streak", caption: state.perfectCount + " even in a row.", mark: "★" });
+    window.setTimeout(() => showFlash("STREAK", state.perfectCount + " in a row", "★"), state.height >= GOAL_FLOORS ? 4600 : 2300);
   } else {
     setMasteryChip("");
   }
-  playTheater(beats);
+}
+
+function dropSlab() {
+  if (state.phase === "over") return;
+  if (state.phase === "theater") return;
+  // Bet optional (P1) — chips visible, never block first CLEAR
+  syncBetBar();
+  if (retryBtn) retryBtn.classList.remove("is-needed");
+  const run = () => {
+    state.theater = null;
+    doDropSlab();
+  };
+  if (state.theater && state.theater.cancel) state.theater.cancel();
+  state.phase = "theater";
+  state.theater = runProveTheater({
+    setStatus,
+    totalMs: 1400,
+    lines: [
+      ["Prove", "Watch the stack…"],
+      ["Prove", "Hold steady…"],
+      ["Prove", "Drop."],
+    ],
+    onDone: run,
+  });
 }
 
 function targetScale() {
@@ -339,6 +548,16 @@ function draw() {
   ctx.fillRect(0, 0, cssW, cssH);
 
   const ground = cssH - 28;
+  // crane rail (cheap realism)
+  ctx.strokeStyle = "rgba(248,250,252,0.35)";
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(20, 28);
+  ctx.lineTo(cssW - 20, 28);
+  ctx.stroke();
+  ctx.fillStyle = "rgba(248,250,252,0.5)";
+  ctx.fillRect(cssW / 2 - 10, 18, 20, 12);
+
   ctx.strokeStyle = "#f8fafc";
   ctx.lineWidth = 3;
   ctx.beginPath();
@@ -346,13 +565,76 @@ function draw() {
   ctx.lineTo(cssW - 16, ground);
   ctx.stroke();
 
+  // Goal line — classroom target height
+  const goalY = worldToScreen(0, GOAL_FLOORS * SLAB_H).y;
+  ctx.save();
+  ctx.setLineDash([10, 8]);
+  ctx.strokeStyle = state.height >= GOAL_FLOORS ? "#34d399" : "#a78bfa";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(24, goalY);
+  ctx.lineTo(cssW - 24, goalY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = state.height >= GOAL_FLOORS ? "#34d399" : "#c4b5fd";
+  ctx.font = "700 13px Outfit, system-ui, sans-serif";
+  ctx.fillText(state.height >= GOAL_FLOORS ? "Goal " + GOAL_FLOORS + " · done" : "Goal " + GOAL_FLOORS, 28, goalY - 8);
+  if (state.ghostBest > 0) {
+    const gy = worldToScreen(0, state.ghostBest * SLAB_H).y;
+    ctx.setLineDash([4, 6]);
+    ctx.strokeStyle = "rgba(248,250,252,0.35)";
+    ctx.beginPath();
+    ctx.moveTo(24, gy);
+    ctx.lineTo(cssW - 24, gy);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = "rgba(248,250,252,0.55)";
+    ctx.font = "600 12px Outfit, system-ui, sans-serif";
+    ctx.fillText("Ghost You " + state.ghostBest, cssW - 120, gy - 6);
+  }
+  ctx.restore();
+
+  // Ghost landing pad on top slab so Drop target is obvious
+  if (state.phase !== "over" && state.slabs.length) {
+    const top = state.slabs[state.slabs.length - 1];
+    const ghost = { x: top.x, y: top.y + top.h, w: top.w, h: SLAB_H };
+    const a = worldToScreen(ghost.x, ghost.y + ghost.h);
+    const b = worldToScreen(ghost.x + ghost.w, ghost.y);
+    ctx.save();
+    ctx.setLineDash([6, 5]);
+    ctx.strokeStyle = "rgba(167,139,250,0.85)";
+    ctx.lineWidth = 2;
+    roundRect(a.x, a.y, b.x - a.x, b.y - a.y, 6 * state.scale);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
   for (const slab of state.slabs) drawSlab(slab, 1);
 
   if (state.mover && state.phase !== "over") {
     drawSlab(state.mover, 1);
-    const hook = { x: cssW / 2, y: 36 };
+    const hook = { x: cssW / 2, y: 28 };
     const grip = worldToScreen(state.mover.x + state.mover.w / 2, state.mover.y + state.mover.h);
+    // P2: quieter guide line (less "broken teal beam"), goal line stays loud
+    ctx.save();
+    ctx.globalAlpha = 0.55;
     drawTether(ctx, hook.x, hook.y, grip.x, grip.y);
+    ctx.restore();
+  } else if (state.phase === "over") {
+    // After miss: big Retry cue on canvas so kids aren't stuck staring at a dead tower
+    ctx.save();
+    ctx.fillStyle = "rgba(5,8,20,0.55)";
+    ctx.fillRect(0, 0, cssW, cssH);
+    ctx.fillStyle = "#f8fafc";
+    ctx.font = "800 22px Outfit, system-ui, sans-serif";
+    ctx.textAlign = "center";
+    ctx.fillText("Tap Retry", cssW / 2, cssH * 0.42);
+    ctx.font = "600 15px Outfit, system-ui, sans-serif";
+    ctx.fillStyle = "#c4b5fd";
+    ctx.fillText("Goal is the dashed line at " + GOAL_FLOORS, cssW / 2, cssH * 0.42 + 28);
+    ctx.textAlign = "left";
+    ctx.restore();
   }
 
   for (const scrap of state.scraps) {
@@ -410,7 +692,12 @@ function resize() {
 }
 
 function retry() {
+  if (state.theater && state.theater.cancel) state.theater.cancel();
+  state.theater = null;
+  state.bet = null;
+  if (retryBtn) retryBtn.classList.remove("is-needed");
   resetTower();
+  syncBetBar();
   draw();
 }
 
@@ -475,8 +762,31 @@ window.addEventListener("keydown", (ev) => {
 });
 
 readBest();
-paintLadder("spire");
+loadEngage();
+if (readFlag(CALM_KEY)) document.documentElement.classList.add("calm-clear");
 resetTower();
+syncToysChip();
+syncBetBar();
+
+const helpApi = mountHelpOverlay({
+  title: "How to play · Spire Lab",
+  version: "SL 1.3.1",
+  note: "What’s new: Help sits in the bar. The prove stays on the stage.",
+  calmKey: CALM_KEY,
+  steps: [
+    "Hang the slab over the center of the tower.",
+    "Bet It’ll hold or It’ll fall, then press Drop.",
+    "Watch Prove Theater, then STAND / STREAK / HEIGHT HIT plates.",
+    "Miss? Tap fat Retry and try again. Goal is the dashed line at 10.",
+    "CLEAR / goal unlocks a toy on Stand Peak. Assist is optional (default off).",
+  ],
+  onReplayIntro: () => {
+    writeFlag(ASSIST_SEEN, false);
+    openFirstAssist();
+  },
+});
+wireEdgeHelp(document.getElementById("edge-btn"), document.getElementById("edge-menu"), helpApi.open);
+
 const edgeBtn = document.getElementById("edge-btn");
 const edgeMenu = document.getElementById("edge-menu");
 if (edgeBtn && edgeMenu) {
@@ -486,6 +796,27 @@ if (edgeBtn && edgeMenu) {
     edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
   });
 }
+
+const assistGot = document.getElementById("assist-gotit");
+if (assistGot) assistGot.addEventListener("click", dismissFirstAssist);
+
+const islesBtn = document.getElementById("isles-btn");
+if (islesBtn) islesBtn.addEventListener("click", openIsleMap);
+const isleClose = document.getElementById("isle-close");
+if (isleClose) isleClose.addEventListener("click", closeIsleMap);
+const isleMap = document.getElementById("isle-map");
+if (isleMap) isleMap.addEventListener("click", (ev) => { if (ev.target === isleMap) closeIsleMap(); });
+
+for (const btn of document.querySelectorAll(".bet-chip")) {
+  btn.addEventListener("click", () => {
+    state.bet = btn.dataset.bet;
+    syncBetBar();
+    setStatus("Bet", btn.dataset.bet === "hold" ? "You bet it’ll hold. Press Drop." : "You bet it’ll fall. Press Drop.", "");
+  });
+}
+
+if (!readFlag(ASSIST_SEEN)) openFirstAssist();
+
 resize();
 window.addEventListener("resize", resize);
 requestAnimationFrame(tick);

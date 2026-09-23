@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="spancraft-rev" content="2026-09-23-sc-1.3.1"/>
+  <meta name="spancraft-rev" content="2026-09-23-sc-1.3.2"/>
   <meta name="description" content="SpanCraft — stretch a span, hang a load, read the stars."/>
   <title>SpanCraft · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spancraft.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2026-09-23-sc-1.3.1"/>
+  <link rel="stylesheet" href="./styles.css?v=1.3.2"/>
 </head>
 <body>
   <div class="shell">
@@ -18,10 +18,12 @@
         <img src="/icons/icon-spancraft.svg" width="40" height="40" alt=""/>
         <span>
           <h1>SpanCraft</h1>
-          <p>SC 1.3.1</p>
+          <p>SC 1.3.2</p>
         </span>
       </a>
       <div class="top-actions">
+        <span id="toys-chip" class="toys-chip" hidden>Toys 0</span>
+        <button type="button" id="isles-btn" class="chip-btn">Gap Isles</button>
         <button type="button" id="assist" aria-pressed="true">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/></svg>
           Assist
@@ -30,13 +32,6 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
           Retry
         </button>
-        <details class="help">
-          <summary>Help</summary>
-          <div class="help-panel">
-            <p>What’s new: Help is the play. The prove stays on the stage.</p>
-            <a href="./changelog.html">For class</a>
-          </div>
-        </details>
         <a href="/">Room</a>
       </div>
     </header>
@@ -45,7 +40,7 @@
       <strong id="cap-word">Ready</strong>
       <span id="cap-mark" aria-hidden="true"></span>
       <span id="mastery-chip" class="mastery-chip" hidden></span>
-      <span id="cap-text">Drag a part. It stretches, then drops. Then press Test.</span>
+      <span id="cap-text">Drag a Deck onto the middle. It stretches, then drops. Then press Test.</span>
     </p>
 
     <div class="kinds" id="kinds">
@@ -61,9 +56,20 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="18" rx="1.5"/></svg>
         Pier
       </button>
-      <button type="button" id="predict" hidden>I think this joint fails</button>
-      <p id="xp-wallet" class="xp-chip">XP <strong id="xp-n">0</strong></p>
-      <ol id="ladder" class="ladder" aria-label="Missions"></ol>
+      <div class="edge-pocket">
+        <button type="button" id="edge-btn" aria-expanded="false" aria-controls="edge-menu">Help</button>
+        <div id="edge-menu" hidden>
+          <button type="button" data-edge="howto">How to play</button>
+          <a href="/">Room</a>
+          <a href="./changelog.html">For class</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bet-bar" id="bet-bar" hidden>
+      <p class="bet-label">Bet before Test</p>
+      <button type="button" class="bet-chip" data-bet="hold" id="bet-hold">It’ll hold</button>
+      <button type="button" class="bet-chip" data-bet="fall" id="bet-fall">It’ll fall</button>
     </div>
 
     <nav class="pocket" aria-label="Tools">
@@ -87,26 +93,32 @@
 
     <div class="stage">
       <canvas id="board" tabindex="0" aria-label="Bridge span. Drag a grip. It stretches, then drops. Enter uses the tool."></canvas>
+      <div id="snap-hint" class="snap-hint" hidden aria-hidden="true">First Deck here</div>
       <div id="flash-plate" class="flash-plate" role="status" aria-live="polite" hidden>
         <p class="flash-shout" id="flash-shout"></p>
         <p class="flash-caption" id="flash-caption"></p>
         <span class="flash-mark" id="flash-mark" aria-hidden="true"></span>
       </div>
     </div>
-    <div class="edge-pocket">
-      <button type="button" id="edge-btn" aria-expanded="false" aria-controls="edge-menu">More</button>
-      <div id="edge-menu" hidden>
-        <a href="/">Room</a>
-        <a href="./changelog.html">For class</a>
-      </div>
+  </div>
+
+  <div id="isle-map" class="isle-map" hidden role="dialog" aria-modal="true" aria-labelledby="isle-title">
+    <div class="isle-card-wrap">
+      <header class="isle-head">
+        <h2 id="isle-title">Gap Isles</h2>
+        <button type="button" id="isle-close" class="fat">Close</button>
+      </header>
+      <div class="isle-grid" id="isle-grid"></div>
     </div>
   </div>
+
   <script src="./vendor/matter.min.js"></script>
-  <script type="module" src="./app.js?v=2026-09-23-sc-1.3.1"></script>
+  <script type="module" src="./app.js?v=1.3.2"></script>
 
     <div id="assist-plate" class="assist-plate" role="status" aria-live="polite" hidden>
       <strong>Assist</strong>
       <p id="assist-plate-text"></p>
+      <button type="button" id="assist-gotit" class="fat assist-gotit">Got it</button>
     </div>
 </body>
 </html>

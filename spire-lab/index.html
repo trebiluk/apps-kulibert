@@ -9,7 +9,7 @@
   <title>Spire Lab · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spire-lab.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2026-09-23-sl-1.3.1"/>
+  <link rel="stylesheet" href="./styles.css?v=1.3.1"/>
 </head>
 <body>
   <div class="shell">
@@ -22,6 +22,8 @@
         </span>
       </a>
       <div class="top-actions">
+        <span id="toys-chip" class="toys-chip" hidden>Toys 0</span>
+        <button type="button" id="isles-btn" class="chip-btn">Stand Peak</button>
         <button type="button" id="assist" aria-pressed="false">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V4h4M16 4h4v4M20 16v4h-4M8 20H4v-4"/></svg>
           Assist
@@ -30,13 +32,6 @@
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>
           Retry
         </button>
-        <details class="help">
-          <summary>Help</summary>
-          <div class="help-panel">
-            <p>What’s new: Help is the play. The prove stays on the stage.</p>
-            <a href="./changelog.html">For class</a>
-          </div>
-        </details>
         <a href="/">Room</a>
       </div>
     </header>
@@ -45,14 +40,26 @@
       <strong id="cap-word">Ready</strong>
       <span id="cap-mark" aria-hidden="true"></span>
       <span id="mastery-chip" class="mastery-chip" hidden></span>
-      <span id="cap-text">Drop the slab. Height is how many stay standing.</span>
+      <span id="cap-text">Hang the slab over the tower, then Drop. Climb to Goal 10.</span>
     </p>
 
     <div class="kinds" id="kinds">
-      <p id="height-read">Height <strong id="height-n">0</strong></p>
+      <p id="height-read">Height <strong id="height-n">0</strong> <span class="goal-read">/ Goal <strong id="goal-n">10</strong></span></p>
       <p id="streak" hidden>Streak <strong id="streak-n">0</strong></p>
-      <p id="xp-wallet" class="xp-chip">XP <strong id="xp-n">0</strong></p>
-      <ol id="ladder" class="ladder" aria-label="Missions"></ol>
+      <div class="edge-pocket">
+        <button type="button" id="edge-btn" aria-expanded="false" aria-controls="edge-menu">Help</button>
+        <div id="edge-menu" hidden>
+          <button type="button" data-edge="howto">How to play</button>
+          <a href="/">Room</a>
+          <a href="./changelog.html">For class</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="bet-bar" id="bet-bar" hidden>
+      <p class="bet-label">Bet before Drop</p>
+      <button type="button" class="bet-chip" data-bet="hold" id="bet-hold">It’ll hold</button>
+      <button type="button" class="bet-chip" data-bet="fall" id="bet-fall">It’ll fall</button>
     </div>
 
     <nav class="pocket" aria-label="Tools">
@@ -70,19 +77,24 @@
         <span class="flash-mark" id="flash-mark" aria-hidden="true"></span>
       </div>
     </div>
-    <div class="edge-pocket">
-      <button type="button" id="edge-btn" aria-expanded="false" aria-controls="edge-menu">More</button>
-      <div id="edge-menu" hidden>
-        <a href="/">Room</a>
-        <a href="./changelog.html">For class</a>
-      </div>
+  </div>
+
+  <div id="isle-map" class="isle-map" hidden role="dialog" aria-modal="true" aria-labelledby="isle-title">
+    <div class="isle-card-wrap">
+      <header class="isle-head">
+        <h2 id="isle-title">Stand Peak</h2>
+        <button type="button" id="isle-close" class="fat">Close</button>
+      </header>
+      <div class="isle-grid" id="isle-grid"></div>
     </div>
   </div>
-  <script type="module" src="./app.js?v=2026-09-23-sl-1.3.1"></script>
+
+  <script type="module" src="./app.js?v=1.3.1"></script>
 
     <div id="assist-plate" class="assist-plate" role="status" aria-live="polite" hidden>
       <strong>Assist</strong>
       <p id="assist-plate-text"></p>
+      <button type="button" id="assist-gotit" class="fat assist-gotit">Got it</button>
     </div>
 </body>
 </html>

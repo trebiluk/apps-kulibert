@@ -1,14 +1,34 @@
 import { judgeSpan, spanSpec, supportCols } from "./logic.js";
 import { proveLoad } from "./physics.js";
 import { GRIP, drawTether } from "../shared/stretch.js";
-import { award, paintLadder } from "../shared/xp-wallet.js";
+import {
+  quietMode,
+  readFlag,
+  writeFlag,
+  readJson,
+  writeJson,
+  runProveTheater,
+  mountHelpOverlay,
+  wireEdgeHelp,
+} from "../shared/engage-help.js";
 
 const KEY = "kulibert-spancraft-mvp";
 const MASTER = "kulibert-spancraft-mastery-v1";
+const ENGAGE = "kulibert-spancraft-engage-v1";
+const ASSIST_SEEN = "kulibert-spancraft-assist-intro-v1";
+const CALM_KEY = "kulibert-calm-clear";
 const KINDS = ["deck", "beam", "pier"];
 
+const ISLES = [
+  { id: "first", name: "First Gap", job: "Short span · snap a joint", toy: "Sticky joint", unlock: null },
+  { id: "long", name: "Long Gap", job: "Longer · fewer parts", toy: "Longer beam", unlock: "first" },
+  { id: "wind", name: "Wind Gap", job: "Hold against the breeze", toy: "Soft spring", unlock: "long" },
+  { id: "offset", name: "Offset Gap", job: "Load off-center · fix one", toy: "Offset pad", unlock: "wind" },
+  { id: "open", name: "Open Span", job: "Your bridge · one load", toy: "Edge pocket bonus", unlock: "offset" },
+];
+
 const COACH = {
-  empty: ["Ready", "Drag a part. It stretches, then drops. Then press Test."],
+  empty: ["Ready", "Drag a Deck onto the middle. It stretches, then drops. Then press Test."],
   gap: ["Build", "Fill every spot on the deck line, bank to bank."],
   nodeck: ["Build", "Put a deck in the middle. The load sits on a deck."],
   partial: ["Build", "Finish the pier down to the water."],
@@ -31,7 +51,6 @@ const caption = document.getElementById("caption");
 const capWord = document.getElementById("cap-word");
 const capMark = document.getElementById("cap-mark");
 const capText = document.getElementById("cap-text");
-const predictBtn = document.getElementById("predict");
 const kindsEl = document.getElementById("kinds");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
@@ -54,13 +73,17 @@ const state = {
   hover: null,
   drag: null,
   stretch: null,
-  predict: null,
-  predictArmed: false,
   bestStars: 0,
   ghost: null,
   phase: "idle",
   verdict: null,
   animU: 0,
+  bet: null,
+  isleId: "first",
+  cleared: {},
+  toys: [],
+  theater: null,
+  firstSnap: true,
 };
 
 let nextId = 1;
@@ -106,32 +129,6 @@ function saveMaster() {
   }
 }
 
-function syncPredict() {
-  if (!predictBtn) return;
-  predictBtn.hidden = state.bestStars < 1;
-  predictBtn.setAttribute("aria-pressed", state.predictArmed ? "true" : "false");
-}
-
-function weakJoint(s, parts, reason) {
-  const mid = Math.floor(s.cols / 2);
-  if (reason === "gap" || reason === "empty") {
-    for (let c = 1; c < s.cols - 1; c++) {
-      if (!parts.some((p) => p.r === 0 && (p.kind === "deck" || p.kind === "beam") && p.c === c)) {
-        return { c, r: 0 };
-      }
-    }
-  }
-  if (reason === "partial") {
-    for (let c = 1; c < s.cols - 1; c++) {
-      let filled = 0;
-      for (let r = 1; r <= s.pierDepth; r++) {
-        if (parts.some((p) => p.kind === "pier" && p.c === c && p.r === r)) filled += 1;
-      }
-      if (filled > 0 && filled < s.pierDepth) return { c, r: Math.max(1, filled) };
-    }
-  }
-  return { c: mid, r: 0 };
-}
 
 function pierUnder(s, parts, c) {
   if (s.pierDepth <= 0) return false;
@@ -151,65 +148,190 @@ function scoreStars(s, verdict) {
 }
 
 
-/* Prove theater — one beat at a time, docked on the stage. */
+/* Shop Prove Flash plates */
 let flashTimer = 0;
-const BEAT_MS = 1400;
-
-function hideTheater() {
-  const plate = document.getElementById("flash-plate");
-  if (!plate) return;
-  plate.classList.remove("show");
-  plate.hidden = true;
-  plate.setAttribute("hidden", "");
-}
-
-function showBeat(beat) {
+function showFlash(shout, caption, mark) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  s.textContent = beat.shout;
-  c.textContent = beat.caption || "";
-  if (m) m.textContent = beat.mark || "";
+  window.clearTimeout(flashTimer);
+  s.textContent = shout;
+  c.textContent = caption || "";
+  if (m) m.textContent = mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-}
-
-function playTheater(beats) {
-  window.clearTimeout(flashTimer);
-  const list = (beats || []).filter(Boolean);
-  if (!list.length) {
-    hideTheater();
-    return;
+  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
+    const spark = document.createElement("div");
+    spark.className = "flash-spark";
+    spark.style.left = "50%";
+    spark.style.top = "38%";
+    spark.style.opacity = "1";
+    document.body.appendChild(spark);
+    window.setTimeout(() => spark.remove(), 320);
   }
-  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const run = calm ? [list[list.length - 1]] : list;
-  let i = 0;
-  const step = () => {
-    showBeat(run[i]);
-    i += 1;
-    flashTimer = window.setTimeout(i < run.length ? step : hideTheater, calm ? 900 : BEAT_MS);
-  };
-  step();
+  flashTimer = window.setTimeout(() => {
+    plate.classList.remove("show");
+    plate.hidden = true;
+    plate.setAttribute("hidden", "");
+  }, 1500);
 }
-
-function showFlash(shout, caption, mark) {
-  playTheater([{ shout, caption, mark }]);
+function hideAssistPlate() {
+  const plate = document.getElementById("assist-plate");
+  if (!plate) return;
+  plate.classList.remove("show", "sticky");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
 }
-function showAssistPlate(text) {
+function showAssistPlate(text, sticky) {
   const plate = document.getElementById("assist-plate");
   const p = document.getElementById("assist-plate-text");
   if (!plate || !p) return;
   p.textContent = text;
   plate.hidden = false;
+  plate.removeAttribute("hidden");
   plate.classList.add("show");
-  window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 3200);
+  if (sticky) plate.classList.add("sticky");
+  else plate.classList.remove("sticky");
+  if (!sticky) {
+    window.setTimeout(() => {
+      if (plate.classList.contains("sticky")) return;
+      plate.classList.remove("show");
+      plate.hidden = true;
+      plate.setAttribute("hidden", "");
+    }, 3200);
+  }
+}
+function openFirstAssist() {
+  state.assist = true;
+  if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
+  showAssistPlate(
+    "Snap a Deck on the glowing middle spot. Stretch, drop, then press Test. Assist widens the snap.",
+    true,
+  );
+  updateSnapHint();
+}
+function dismissFirstAssist() {
+  writeFlag(ASSIST_SEEN, true);
+  hideAssistPlate();
+  setStatus("Ready", "Add a Deck in the middle, then fill bank to bank. Press Test when ready.", "");
+}
+function loadEngage() {
+  const data = readJson(ENGAGE, null);
+  if (!data || data.v !== 1) return;
+  state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
+  state.toys = Array.isArray(data.toys) ? data.toys : [];
+  state.isleId = typeof data.isleId === "string" ? data.isleId : "first";
+  state.firstSnap = data.firstSnap !== false;
+}
+function saveEngage() {
+  writeJson(ENGAGE, {
+    v: 1,
+    cleared: state.cleared,
+    toys: state.toys,
+    isleId: state.isleId,
+    firstSnap: state.firstSnap,
+  });
+  syncToysChip();
+}
+function syncToysChip() {
+  const chip = document.getElementById("toys-chip");
+  if (!chip) return;
+  const n = state.toys.length;
+  if (!n) {
+    chip.hidden = true;
+    chip.textContent = "Toys 0";
+    return;
+  }
+  chip.hidden = false;
+  chip.textContent = "Toys " + n;
+}
+function updateSnapHint() {
+  const hint = document.getElementById("snap-hint");
+  if (!hint) return;
+  const show = state.firstSnap && state.parts.length === 0 && state.phase === "idle";
+  hint.hidden = !show;
+}
+function syncBetBar() {
+  const bar = document.getElementById("bet-bar");
+  if (!bar) return;
+  // Show bet when build has parts and not busy
+  const show = state.parts.length > 0 && state.phase === "idle";
+  bar.hidden = !show;
+  for (const btn of bar.querySelectorAll(".bet-chip")) {
+    btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
+  }
+}
+function unlockToyForIsle(isleId) {
+  const isle = ISLES.find((i) => i.id === isleId);
+  if (!isle || !isle.toy) return null;
+  if (state.toys.includes(isle.toy)) return null;
+  state.toys.push(isle.toy);
+  return isle.toy;
+}
+function markIsleClear() {
+  const id = state.isleId || "first";
+  state.cleared[id] = true;
+  const toy = unlockToyForIsle(id);
+  // unlock next isle as active
+  const idx = ISLES.findIndex((i) => i.id === id);
+  if (idx >= 0 && idx < ISLES.length - 1) {
+    const next = ISLES[idx + 1];
+    if (!state.cleared[next.id]) state.isleId = next.id;
+  }
+  saveEngage();
+  return toy;
+}
+function isleState(isle) {
+  if (state.cleared[isle.id]) return "clear";
+  if (isle.id === state.isleId) return "active";
+  if (!isle.unlock) return "active";
+  if (state.cleared[isle.unlock]) return "open";
+  return "locked";
+}
+function renderIsleMap() {
+  const grid = document.getElementById("isle-grid");
+  if (!grid) return;
+  grid.innerHTML = "";
+  for (const isle of ISLES) {
+    const st = isleState(isle);
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "isle-card";
+    btn.dataset.state = st === "open" ? "active" : st;
+    btn.disabled = st === "locked";
+    const tag = st === "clear" ? "CLEAR" : st === "locked" ? "LOCKED" : st === "active" || st === "open" ? (isle.id === state.isleId ? "ACTIVE" : "ISLE") : "ISLE";
+    btn.innerHTML =
+      '<span class="isle-tag">' + tag + "</span>" +
+      "<h3>" + isle.name + "</h3>" +
+      "<p>" + isle.job + "</p>" +
+      '<span class="isle-toy">' + (st === "locked" ? "Unlocks " + isle.toy : "Toy · " + isle.toy) + "</span>";
+    btn.addEventListener("click", () => {
+      if (st === "locked") return;
+      state.isleId = isle.id;
+      saveEngage();
+      closeIsleMap();
+      setStatus("Isle", isle.name + " — " + isle.job, "");
+      renderIsleMap();
+    });
+    grid.appendChild(btn);
+  }
+}
+function openIsleMap() {
+  const map = document.getElementById("isle-map");
+  if (!map) return;
+  renderIsleMap();
+  map.hidden = false;
+  map.removeAttribute("hidden");
+}
+function closeIsleMap() {
+  const map = document.getElementById("isle-map");
+  if (!map) return;
+  map.hidden = true;
+  map.setAttribute("hidden", "");
 }
 function setMasteryChip(text) {
   const chip = document.getElementById("mastery-chip");
@@ -240,7 +362,7 @@ function showCoach() {
 }
 
 function busy() {
-  return state.phase === "drop";
+  return state.phase === "drop" || state.phase === "theater";
 }
 
 function syncControls() {
@@ -257,7 +379,6 @@ function syncControls() {
   kindsEl.hidden = state.tool !== "add" && state.tool !== "move";
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   document.body.dataset.phase = state.phase;
-  syncPredict();
 }
 
 function save() {
@@ -527,13 +648,6 @@ function draw() {
     ctx.stroke();
   }
 
-  if (state.predict) {
-    const box = cellRect(g, state.predict.c, state.predict.r);
-    ctx.strokeStyle = "#f4b942";
-    ctx.lineWidth = 3;
-    roundRect(box.x + 4, box.y + 4, box.w - 8, box.h - 8, 8);
-    ctx.stroke();
-  }
 
   if (state.stretch) {
     const part = state.parts.find((p) => p.id === state.stretch.id);
@@ -641,9 +755,15 @@ function placeAt(c, r) {
   }
   wake();
   state.parts.push({ id: nextId++, c, r, kind: state.kind });
+  if (state.firstSnap) {
+    state.firstSnap = false;
+    saveEngage();
+  }
+  updateSnapHint();
   showFlash("SNAP", "Joint set", "✓");
   save();
   showCoach();
+  syncBetBar();
   draw();
 }
 
@@ -724,81 +844,102 @@ function animate(ms, done) {
   requestAnimationFrame(step);
 }
 
+function finishProve(verdict, stars, s, prove, started) {
+  state.phase = verdict.ok ? "pass" : "fail";
+  state.animU = 1;
+  if (stars > state.bestStars) state.bestStars = stars;
+  // Ghost You: faint best CLEAR outline (any pass, prefer 3★)
+  if (verdict.ok && (stars === 3 || !state.ghost)) {
+    state.ghost = state.parts.map((p) => ({ c: p.c, r: p.r, kind: p.kind }));
+  }
+  if (stars > 0) saveMaster();
+  let extra = "";
+  if (stars) extra += " " + starPhrase(stars) + ".";
+  if (state.bestStars >= 1) extra += " Parts " + state.parts.length + " of " + budgetOf(s) + ".";
+  if (state.bet) {
+    const held = !!verdict.ok;
+    const right = (state.bet === "hold" && held) || (state.bet === "fall" && !held);
+    extra += right
+      ? " Bet matched — nice read."
+      : " Bet missed — try one fix, then Test again.";
+  }
+  syncControls();
+  setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
+  if (retryBtn) retryBtn.classList.toggle("is-needed", !verdict.ok);
+  if (verdict.ok) {
+    showFlash("LOAD HELD", "The load stayed up", "✓");
+    if (stars > 0) setMasteryChip("★ " + stars + "/3");
+    if (stars === 3) {
+      window.setTimeout(() => showFlash("★★★", "Parts on budget", "★★★"), 1600);
+    }
+    const toy = markIsleClear();
+    const clearCap = toy ? ("New toy · " + toy) : "Prove complete";
+    window.setTimeout(() => showFlash("CLEAR", clearCap, "✓"), stars === 3 ? 3200 : 1600);
+  } else {
+    setMasteryChip("");
+    setStatus("Fail", prove[1] + " Tap Retry — change one thing.", "fail");
+  }
+  state.bet = null;
+  syncBetBar();
+  if (performance.now() - started > 2000) {
+    setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
+  }
+  draw();
+}
+
 function startTest() {
   if (busy()) return;
   state.drag = null;
   state.stretch = null;
+  if (retryBtn) retryBtn.classList.remove("is-needed");
   const s = spec();
-  if (state.bestStars >= 1 && !state.predict) {
-    state.predictArmed = true;
-    syncPredict();
-    setStatus("Guess", "Tap the joint you think fails, then Test.", "");
-    draw();
-    return;
-  }
+  // Bet optional (P1) — show chips, never block first CLEAR
+  if (state.parts.length) syncBetBar();
   const verdict = proveLoad(s, state.parts);
   const stars = scoreStars(s, verdict);
   state.verdict = verdict.reason;
-  state.phase = "drop";
-  state.animU = 0;
-  syncControls();
   const prove = PROVE[verdict.reason] || PROVE.long;
-  setStatus("Test", "The load is hanging.", "");
-  playTheater([{ shout: "Hanging", caption: "The load is on the span.", mark: "" }]);
   const started = performance.now();
-  animate(reduceMotion ? 0 : 420, () => {
-    state.phase = verdict.ok ? "pass" : "fail";
-    state.animU = 1;
-    if (stars > state.bestStars) state.bestStars = stars;
-    if (stars === 3) {
-      state.ghost = state.parts.map((p) => ({ c: p.c, r: p.r, kind: p.kind }));
-    }
-    if (stars > 0) saveMaster();
-    let extra = "";
-    if (stars) extra += " " + starPhrase(stars) + ".";
-    if (state.bestStars >= 1) extra += " Parts " + state.parts.length + " of " + budgetOf(s) + ".";
-    if (state.predict) {
-      const weak = weakJoint(s, state.parts, verdict.reason);
-      const hit = state.predict.c === weak.c;
-      extra += hit
-        ? " You found the joint."
-        : " That joint held. Look again if you want.";
-    }
-    const bag = award("spancraft", [
-      ...(stars >= 1 ? ["cross"] : []),
-      ...(stars >= 2 ? ["short"] : []),
-      ...(stars >= 3 ? ["clean"] : []),
-    ]);
-    paintLadder("spancraft");
-    if (bag.gained) extra += " +" + bag.gained + " XP.";
-    state.predictArmed = false;
+  const runDrop = () => {
+    state.phase = "drop";
+    state.animU = 0;
     syncControls();
-    setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
-    if (verdict.ok) {
-      const beats = [{ shout: "Held", caption: "The load stayed up.", mark: "✓" }];
-      if (stars >= 1) beats.push({ shout: stars + " star" + (stars === 1 ? "" : "s"), caption: starPhrase(stars) + ".", mark: "★".repeat(stars) });
-      playTheater(beats);
-      if (stars > 0) setMasteryChip("★ " + stars + "/3");
-    } else {
-      playTheater([{ shout: "Miss", caption: prove[1], mark: "✕" }]);
-      setMasteryChip("");
-    }
-    if (performance.now() - started > 2000) {
-      setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
-    }
-    draw();
+    setStatus("Test", "The load is hanging.", "");
+    animate(quietMode() || reduceMotion ? 0 : 420, () => {
+      finishProve(verdict, stars, s, prove, started);
+    });
+  };
+  // Prove Theater ≤2s → existing Flash plates
+  if (state.theater && state.theater.cancel) state.theater.cancel();
+  state.phase = "theater";
+  syncControls();
+  state.theater = runProveTheater({
+    setStatus,
+    totalMs: 1500,
+    lines: [
+      ["Prove", "Weight rolling in…"],
+      ["Prove", "Watch the span…"],
+      ["Prove", "Hang the load."],
+    ],
+    onDone: runDrop,
   });
 }
 
 function retry() {
   cancelAnim();
+  if (state.theater && state.theater.cancel) state.theater.cancel();
+  state.theater = null;
   state.drag = null;
   state.stretch = null;
   state.phase = "idle";
   state.verdict = null;
   state.animU = 0;
+  state.bet = null;
+  if (retryBtn) retryBtn.classList.remove("is-needed");
   syncControls();
-  if (state.parts.length) setStatus("Ready", "Test cleared. Your build is still here.", "");
+  syncBetBar();
+  updateSnapHint();
+  if (state.parts.length) setStatus("Ready", "Test cleared. Your build is still here. Change one thing, then Test.", "");
   else showCoach();
   draw();
 }
@@ -849,13 +990,6 @@ canvas.addEventListener("pointerdown", (ev) => {
   canvas.focus();
   const pt = eventPoint(ev);
   const cell = pickCell(pt.x, pt.y);
-  if (state.predictArmed && cell) {
-    state.predict = { c: cell.c, r: cell.r };
-    state.cursor = cell;
-    setStatus("Guess", "Got it. Press Test when you are ready.", "");
-    draw();
-    return;
-  }
   if (!cell) return;
   state.cursor = cell;
   const part = partAt(cell.c, cell.r);
@@ -935,9 +1069,7 @@ canvas.addEventListener("keydown", (ev) => {
   if (ev.key === "Escape") {
     state.drag = null;
     state.stretch = null;
-    state.predictArmed = false;
-    syncPredict();
-    showCoach();
+      showCoach();
     draw();
     return;
   }
@@ -964,13 +1096,6 @@ kindButtons.forEach((btn) => btn.addEventListener("click", () => setKind(btn.dat
 testBtn.addEventListener("click", startTest);
 retryBtn.addEventListener("click", retry);
 assistBtn.addEventListener("click", toggleAssist);
-if (predictBtn) {
-  predictBtn.addEventListener("click", () => {
-    state.predictArmed = !state.predictArmed;
-    syncPredict();
-    setStatus("Guess", state.predictArmed ? "Tap the joint you think fails, then Test." : "Guess put away.", "");
-  });
-}
 const edgeBtn = document.getElementById("edge-btn");
 const edgeMenu = document.getElementById("edge-menu");
 if (edgeBtn && edgeMenu) {
@@ -982,11 +1107,58 @@ if (edgeBtn && edgeMenu) {
 }
 
 loadMaster();
-paintLadder("spancraft");
+loadEngage();
+if (readFlag(CALM_KEY)) document.documentElement.classList.add("calm-clear");
 const restored = load();
 syncControls();
+syncToysChip();
+syncBetBar();
+updateSnapHint();
 if (restored) setStatus("Ready", "Build restored on this Chromebook.", "");
 else showCoach();
+
+const helpApi = mountHelpOverlay({
+  title: "How to play · SpanCraft",
+  version: "SC 1.3.2",
+  note: "What’s new: Help sits in the bar. The prove stays on the stage.",
+  calmKey: CALM_KEY,
+  steps: [
+    "Add a Deck in the middle (glowing hint on first visit).",
+    "Fill bank to bank. Stretchy drag snaps the joint.",
+    "Bet It’ll hold or It’ll fall, then press Test.",
+    "Watch Prove Theater, then the Flash plates. Fail = tap fat Retry and change one thing.",
+    "CLEAR unlocks a toy on Gap Isles. Assist and Help stay available.",
+  ],
+  onReplayIntro: () => {
+    writeFlag(ASSIST_SEEN, false);
+    openFirstAssist();
+  },
+});
+wireEdgeHelp(document.getElementById("edge-btn"), document.getElementById("edge-menu"), helpApi.open);
+
+const assistGot = document.getElementById("assist-gotit");
+if (assistGot) assistGot.addEventListener("click", dismissFirstAssist);
+
+const islesBtn = document.getElementById("isles-btn");
+if (islesBtn) islesBtn.addEventListener("click", openIsleMap);
+const isleClose = document.getElementById("isle-close");
+if (isleClose) isleClose.addEventListener("click", closeIsleMap);
+const isleMap = document.getElementById("isle-map");
+if (isleMap) isleMap.addEventListener("click", (ev) => { if (ev.target === isleMap) closeIsleMap(); });
+
+for (const btn of document.querySelectorAll(".bet-chip")) {
+  btn.addEventListener("click", () => {
+    state.bet = btn.dataset.bet;
+    syncBetBar();
+    setStatus("Bet", btn.dataset.bet === "hold" ? "You bet it’ll hold. Press Test." : "You bet it’ll fall. Press Test.", "");
+  });
+}
+
+if (!readFlag(ASSIST_SEEN)) {
+  openFirstAssist();
+} else if (!restored) {
+  setStatus("Ready", "Drag a Deck onto the middle. It stretches, then drops. Then press Test.", "");
+}
 
 const stage = canvas.parentElement;
 if (typeof ResizeObserver === "function") {
