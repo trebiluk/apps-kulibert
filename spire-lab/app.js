@@ -129,10 +129,7 @@ function openFirstAssist() {
   // Intro opens Assist ON once for first clear; default remains OFF after dismiss for harder stack
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate(
-    "Hang the slab over the center of the tower, then press Drop. Goal is the dashed line at 10. Assist slows the sweep.",
-    true,
-  );
+  showAssistPlate("Drop the slab on the stack. Goal is the dashed line.", true);
 }
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
@@ -770,15 +767,13 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.1",
-  note: "What’s new: Help sits in the bar. The prove stays on the stage.",
+  version: "SL 1.3.2",
+  note: "What’s new: Help is one play. It sits in the bar.",
   calmKey: CALM_KEY,
   steps: [
-    "Hang the slab over the center of the tower.",
-    "Bet It’ll hold or It’ll fall, then press Drop.",
-    "Watch Prove Theater, then STAND / STREAK / HEIGHT HIT plates.",
-    "Miss? Tap fat Retry and try again. Goal is the dashed line at 10.",
-    "CLEAR / goal unlocks a toy on Stand Peak. Assist is optional (default off).",
+    "Drop the slab on the stack.",
+    "Goal is the dashed line.",
+    "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {
     writeFlag(ASSIST_SEEN, false);

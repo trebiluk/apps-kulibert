@@ -208,10 +208,7 @@ function showAssistPlate(text, sticky) {
 function openFirstAssist() {
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate(
-    "Snap a Deck on the glowing middle spot. Stretch, drop, then press Test. Assist widens the snap.",
-    true,
-  );
+  showAssistPlate("Drag a Deck across the gap, then press Test.", true);
   updateSnapHint();
 }
 function dismissFirstAssist() {
@@ -1119,15 +1116,13 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.2",
-  note: "What’s new: Help sits in the bar. The prove stays on the stage.",
+  version: "SC 1.3.3",
+  note: "What’s new: Help is one play. It sits in the bar.",
   calmKey: CALM_KEY,
   steps: [
-    "Add a Deck in the middle (glowing hint on first visit).",
-    "Fill bank to bank. Stretchy drag snaps the joint.",
-    "Bet It’ll hold or It’ll fall, then press Test.",
-    "Watch Prove Theater, then the Flash plates. Fail = tap fat Retry and change one thing.",
-    "CLEAR unlocks a toy on Gap Isles. Assist and Help stay available.",
+    "Drag a Deck from bank to bank.",
+    "Press Test. The word says if it held.",
+    "If it misses, tap Retry and change one thing.",
   ],
   onReplayIntro: () => {
     writeFlag(ASSIST_SEEN, false);

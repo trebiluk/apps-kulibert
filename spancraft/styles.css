@@ -691,3 +691,17 @@ html.calm-clear #retry.is-needed { animation: none; }
   padding: 0.5rem 0.75rem;
 }
 .stage .flash-plate .flash-shout { font-size: 1.2rem; }
+
+.assist-plate {
+  left: 7.6rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  max-width: none;
+}
+@media (max-width: 720px) {
+  .assist-plate {
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: 4.8rem;
+  }
+}

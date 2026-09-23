@@ -685,3 +685,17 @@ html.calm-clear #retry.is-needed { animation: none; }
   font-size: 0.9rem;
 }
 .stage { position: relative; }
+
+.assist-plate {
+  left: 7.6rem;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  max-width: none;
+}
+@media (max-width: 720px) {
+  .assist-plate {
+    left: 0.65rem;
+    right: 0.65rem;
+    bottom: 4.8rem;
+  }
+}
