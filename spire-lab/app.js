@@ -173,6 +173,10 @@ function openFirstAssist() {
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
   hideAssistPlate();
+  if (onChallenge()) {
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    return;
+  }
   if (!state.cleared.first) {
     state.assist = true;
     if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
@@ -407,9 +411,11 @@ function snapBand() {
 
 function paintHeightRead() {
   if (heightN) heightN.textContent = String(state.height);
+  const goal = shownFloors();
   const goalEl = document.getElementById("goal-n");
-  const goal = onChallenge() ? CHALLENGE.height : activeGoal();
   if (goalEl) goalEl.textContent = String(goal);
+  const meters = document.getElementById("goal-m");
+  if (meters) meters.textContent = storyMeters(goal) + " m";
   const wrap = document.getElementById("height-read");
   if (wrap) wrap.setAttribute("data-goal-met", state.height >= goal ? "1" : "0");
 }
@@ -452,13 +458,20 @@ function resetTower() {
   setStatus("Ready", line, "");
 }
 
+const STORY_M = 3;
 const CHALLENGE = {
   name: "Even tower",
   height: 4,
-  brief: "Stand to height 4. Every slab lands even.",
+  brief: "Stand to 12 m. Every floor lands even.",
 };
 function onChallenge() {
   return state.track === "challenge";
+}
+function storyMeters(floors) {
+  return floors * STORY_M;
+}
+function shownFloors() {
+  return onChallenge() ? CHALLENGE.height : activeGoal();
 }
 function activeIsle() {
   return ISLES.find((i) => i.id === state.isleId) || ISLES[0];
@@ -664,17 +677,19 @@ function dropSlab() {
     setStatus,
     totalMs: 1200,
     lines: [
-      ["Watch", "Look at the stack."],
-      ["Drop", "Let it land."],
+      ["Story", "Each floor is 3 m."],
+      ["Drop", "Let this floor land even."],
     ],
     onDone: run,
   });
 }
 
 function targetScale() {
-  const tower = (state.slabs.length + 1) * SLAB_H + 120;
-  const fit = (cssH - 72) / tower;
-  return Math.max(1.05, Math.min(2.15, fit));
+  const floors = Math.max(state.slabs.length + 1, shownFloors());
+  const topNeed = floors * SLAB_H + 16;
+  const fitH = Math.max(150, cssH - 20) / topNeed;
+  const fitW = (Math.max(280, cssW) * 0.56) / BASE_W;
+  return Math.max(0.48, Math.min(2.45, Math.min(fitW, fitH)));
 }
 
 function roundRect(x, y, w, h, r) {
@@ -706,10 +721,12 @@ function drawSlab(slab, alpha) {
   ctx.save();
   ctx.globalAlpha = alpha;
   roundRect(x, y, w, h, 8 * state.scale);
-  ctx.fillStyle = slab.base ? "#10203f" : "#c4b5fd";
+  ctx.fillStyle = slab.base ? "#10203f" : "#d6ccff";
   ctx.fill();
-  ctx.lineWidth = 2;
-  ctx.strokeStyle = slab.base ? "#f8fafc" : "#7c6bb5";
+  ctx.fillStyle = slab.base ? "#1c3358" : "#7c6bb5";
+  ctx.fillRect(x, y + h * 0.62, w, Math.max(4, h * 0.38));
+  ctx.lineWidth = Math.max(2, 2 * state.scale);
+  ctx.strokeStyle = slab.base ? "#f8fafc" : "#2a2148";
   ctx.stroke();
   ctx.restore();
 }
@@ -752,19 +769,23 @@ function draw() {
   ctx.stroke();
 
   // Goal line — classroom target height
-  const goalY = worldToScreen(0, activeGoal() * SLAB_H).y;
+  const goalFloors = shownFloors();
+  const goalY = worldToScreen(0, goalFloors * SLAB_H).y;
   ctx.save();
   ctx.setLineDash([10, 8]);
-  ctx.strokeStyle = state.height >= activeGoal() ? "#34d399" : "#a78bfa";
+  ctx.strokeStyle = state.height >= goalFloors ? "#34d399" : "#a78bfa";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(24, goalY);
   ctx.lineTo(cssW - 24, goalY);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = state.height >= activeGoal() ? "#34d399" : "#c4b5fd";
-  ctx.font = "700 13px Outfit, system-ui, sans-serif";
-  ctx.fillText(state.height >= activeGoal() ? "Goal " + activeGoal() + " · done" : "Goal " + activeGoal(), 28, goalY - 8);
+  ctx.fillStyle = state.height >= goalFloors ? "#34d399" : "#c4b5fd";
+  ctx.font = "700 16px Outfit, system-ui, sans-serif";
+  const goalLabel = state.height >= goalFloors
+    ? "Goal " + storyMeters(goalFloors) + " m · done"
+    : "Goal " + storyMeters(goalFloors) + " m";
+  ctx.fillText(goalLabel, 28, goalY - 8);
   if (state.ghostBest > 0) {
     const gy = worldToScreen(0, state.ghostBest * SLAB_H).y;
     ctx.setLineDash([4, 6]);
@@ -870,6 +891,7 @@ function resize() {
   if (w < 2 || h < 2) return;
   cssW = w;
   cssH = h;
+  if (state.scale <= 1) state.scale = targetScale();
   canvas.width = Math.round(w * dpr);
   canvas.height = Math.round(h * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -968,13 +990,13 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.15",
-  note: "What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it stood.",
+  version: "SL 1.3.16",
+  note: "What’s new: each floor is 3 m. The tower fills the stage.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Levels: drop slabs that stay until the Goal. Test pass means it stood. Clear means you reached that Goal. Stars show how even the stack was.",
-    "Challenge: stand to height 4 with every slab even. A stand alone is not the challenge.",
+    "Levels: drop floors until the Goal. Test pass means it stood. Clear means you reached that Goal. Stars show how even the stack was.",
+    "Challenge: stand to 12 m, four even floors. A stand alone is not the challenge.",
     "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {

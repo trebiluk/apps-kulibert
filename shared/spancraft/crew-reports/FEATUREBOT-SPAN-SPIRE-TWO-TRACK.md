@@ -13,6 +13,11 @@
 
 Plates say **TEST PASS**, then **CLEAR** only when the level job or the challenge brief is met. Miss stays a word plus Retry. Sound is never the grade.
 
-## Hold
+## Scale (1.3.17 / 1.3.16)
 
-Building Big and any longer teach spine stay off the kid UI until Curriculum files the concepts. Fold those words on the next cut. Do not rename the tracks. Do not add a second challenge list in this cut.
+Classroom mass, not a tiny sandbox. No PBS name on the kid UI.
+
+- SpanCraft: each open bay is 8 m. Assist gap is 24 m. Test hangs one truck. Challenge brief uses that span.
+- Spire Lab: each floor is 3 m. First Goal is 9 m. Challenge is 12 m. The goal line stays on screen. The tower fills the stage.
+- Help, Prove Theater, and the bet chips stay. Teach is those lines, not a new shell.
+

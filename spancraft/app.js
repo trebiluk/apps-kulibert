@@ -32,7 +32,7 @@ const ISLES = [
 const COACH = {
   empty: ["Ready", "Drag a Deck onto the middle. It stretches, then drops. Then press Test."],
   gap: ["Build", "Fill every spot on the deck line, bank to bank."],
-  nodeck: ["Build", "Put a deck in the middle. The load sits on a deck."],
+  nodeck: ["Build", "Put a deck in the middle. The truck sits on a deck."],
   partial: ["Build", "Finish the pier down to the water."],
   long: ["Build", "Add a pier under the middle, down to the water."],
   pass: ["Ready", "Looks ready. Press Test."],
@@ -41,10 +41,10 @@ const COACH = {
 const PROVE = {
   empty: ["Fail", "The span does not reach both banks."],
   gap: ["Fail", "The span does not reach both banks."],
-  nodeck: ["Fail", "The load needs a deck in the middle."],
+  nodeck: ["Fail", "The truck needs a deck in the middle."],
   partial: ["Fail", "Finish the pier down to the water."],
   long: ["Fail", "Add a pier. The middle is too long."],
-  pass: ["Pass", "The load stayed up."],
+  pass: ["Pass", "The truck stayed up."],
 };
 
 const canvas = document.getElementById("board");
@@ -103,10 +103,15 @@ function budgetOf(s) {
   return s.cols - 2 + s.pierDepth;
 }
 
-const CHALLENGE = {
-  name: "Tight span",
-  brief: "Hold the load. Stay on Budget. Put a pier under the middle.",
-};
+const BAY_M = 8;
+
+function spanMeters(s) {
+  return (s.cols - 2) * BAY_M;
+}
+
+function challengeBrief() {
+  return spanMeters(spec()) + " m span. Hold the truck. Stay on Budget. Pier the middle.";
+}
 
 function onChallenge() {
   return state.track === "challenge";
@@ -124,9 +129,9 @@ function challengeCheck(s, verdict) {
 }
 
 function challengeStill(why) {
-  if (why === "budget") return "It held. Challenge still open — use fewer parts than Budget.";
-  if (why === "pier") return "It held. Challenge still open — put a pier under the middle.";
-  return "It held. Challenge still open — fewer parts, and a pier under the middle.";
+  if (why === "budget") return "The truck stayed up. Challenge still open — use fewer parts than Budget.";
+  if (why === "pier") return "The truck stayed up. Challenge still open — put a pier under the middle.";
+  return "The truck stayed up. Challenge still open — fewer parts, and a pier under the middle.";
 }
 
 function starPhrase(n) {
@@ -183,7 +188,10 @@ function scoreStars(s, verdict) {
 
 function paintBudget() {
   const el = document.getElementById("budget-n");
-  if (el) el.textContent = String(budgetOf(spec()));
+  const s = spec();
+  if (el) el.textContent = String(budgetOf(s));
+  const span = document.getElementById("span-m");
+  if (span) span.textContent = spanMeters(s) + " m";
 }
 
 
@@ -280,6 +288,10 @@ function openFirstAssist() {
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
   hideAssistPlate();
+  if (onChallenge()) {
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + challengeBrief() : challengeBrief(), state.challengeMet ? "pass" : "");
+    return;
+  }
   setStatus("Ready", state.cleared.first
     ? "Add a Deck in the middle, then fill bank to bank. Press Test when ready."
     : "Place three Decks across the gap, then Test. That is the first clear.", "");
@@ -336,7 +348,7 @@ function syncBetBar() {
   const show = state.parts.length > 0 && state.phase === "idle";
   bar.hidden = !show;
   const label = bar.querySelector(".bet-label");
-  if (label) label.textContent = state.bestStars >= 1 ? "Will this joint hold?" : "Bet before Test";
+  if (label) label.textContent = "Will the truck hold?";
   for (const btn of bar.querySelectorAll(".bet-chip")) {
     btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
   }
@@ -418,7 +430,7 @@ function syncTrack() {
   if (chal) chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
   if (brief) {
     brief.hidden = !onChallenge();
-    if (onChallenge()) brief.textContent = CHALLENGE.brief;
+    if (onChallenge()) brief.textContent = challengeBrief();
   }
 }
 function setTrack(track) {
@@ -427,7 +439,7 @@ function setTrack(track) {
   saveEngage();
   syncTrack();
   if (onChallenge()) {
-    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + challengeBrief() : challengeBrief(), state.challengeMet ? "pass" : "");
     showAssistPlate("This is Challenge.\nThe brief has to be met. Holding is not enough.", false);
   } else {
     showCoach();
@@ -458,7 +470,7 @@ function setStatus(word, text, tone) {
 
 function showCoach() {
   if (onChallenge()) {
-    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + challengeBrief() : challengeBrief(), state.challengeMet ? "pass" : "");
     return;
   }
   if (!state.cleared.first && state.parts.length === 0) {
@@ -712,7 +724,7 @@ function draw() {
   ctx.textBaseline = "middle";
   if (state.phase === "idle") {
     ctx.textAlign = "left";
-    ctx.fillText("Deck line", 16, 26);
+    ctx.fillText(spanMeters(s) + " m span", 16, 26);
   }
   ctx.textAlign = "right";
   ctx.fillText("Water", cssW - 16, cssH - 16);
@@ -804,35 +816,55 @@ function draw() {
   updateSnapHint(g, s);
 }
 
-function paintLoad(g, s) {
-  if (state.phase === "idle" || !state.verdict) return;
-  const mid = Math.floor(s.cols / 2);
-  const deck = cellRect(g, mid, 0);
-  const size = Math.min(56, Math.max(36, g.cell * 0.55));
-  const x = deck.x + (deck.w - size) / 2;
-  const sag = sagAmount(g, s, mid);
-  const slabH = Math.max(18, deck.h * 0.42);
-  const slabTop = deck.y + (deck.h - slabH) / 2 + sag;
-  const rest = slabTop - size + 8;
-  const water = cssH - size - 16;
-  const top = 6;
-  const end = state.verdict === "pass" ? rest : water;
-  const u = state.phase === "drop" ? state.animU : 1;
-  const y = top + (end - top) * u;
-  ctx.strokeStyle = "#f4b942";
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(x + size / 2, 0);
-  ctx.lineTo(x + size / 2, y);
-  ctx.stroke();
-  roundRect(x, y, size, size, 8);
+function drawTruck(x, y, w, h) {
+  roundRect(x, y, w, h, 8);
   ctx.fillStyle = "#f4b942";
+  ctx.fill();
+  const cab = Math.max(16, w * 0.28);
+  roundRect(x + w - cab - 4, y + 4, cab, h - 8, 4);
+  ctx.fillStyle = "#041018";
   ctx.fill();
   ctx.fillStyle = "#041018";
   ctx.font = "800 16px Outfit, system-ui, sans-serif";
   ctx.textAlign = "center";
   ctx.textBaseline = "middle";
-  ctx.fillText("Load", x + size / 2, y + size / 2);
+  ctx.fillText("Truck", x + (w - cab) / 2, y + h / 2);
+}
+
+function paintLoad(g, s) {
+  const mid = Math.floor(s.cols / 2);
+  const deck = cellRect(g, mid, 0);
+  const w = Math.min(Math.max(120, g.cell * 1.65), deck.w * 1.9);
+  const h = Math.max(48, g.cell * 0.48);
+  const x = deck.x + (deck.w - w) / 2;
+  const sag = sagAmount(g, s, mid);
+  const slabH = Math.max(18, deck.h * 0.42);
+  const slabTop = deck.y + (deck.h - slabH) / 2 + sag;
+  if (state.phase === "idle" && !state.verdict) {
+    const y = Math.max(8, deck.y - h - 28);
+    ctx.strokeStyle = "#f4b942";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(x + w / 2, 0);
+    ctx.lineTo(x + w / 2, y);
+    ctx.stroke();
+    drawTruck(x, y, w, h);
+    return;
+  }
+  if (!state.verdict) return;
+  const rest = slabTop - h - 6;
+  const water = cssH - h - 12;
+  const top = 6;
+  const end = state.verdict === "pass" ? Math.max(top, rest) : water;
+  const u = state.phase === "drop" ? state.animU : 1;
+  const y = top + (end - top) * u;
+  ctx.strokeStyle = "#f4b942";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(x + w / 2, 0);
+  ctx.lineTo(x + w / 2, y);
+  ctx.stroke();
+  drawTruck(x, y, w, h);
 }
 
 function resize() {
@@ -1030,16 +1062,16 @@ function finishProve(verdict, stars, s, prove, started) {
     setStatus("TEST PASS", line + (stars ? " " + starPhrase(stars) + "." : ""), "pass");
     beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
   } else if (challenge && challenge.met) {
-    const line = "Challenge met. " + CHALLENGE.brief + (stars ? " " + starPhrase(stars) + "." : "");
+    const line = "Challenge met. " + challengeBrief() + (stars ? " " + starPhrase(stars) + "." : "");
     setMasteryChip(stars ? "★ " + stars + "/4" : "");
     setStatus("CLEAR", line, "pass");
-    beats.push({ shout: "TEST PASS", caption: "The load stayed up.", mark: "✓" });
+    beats.push({ shout: "TEST PASS", caption: "The truck stayed up.", mark: "✓" });
     beats.push({ shout: "CLEAR", caption: line, mark: "✓" });
   } else {
     const clearLine = (firstClear ? (toy ? toy + " is yours. " : "") + "First clear. " : "") + clearedIsle.job + ". " + starPhrase(stars) + ".";
     setStatus("CLEAR", "Test pass. " + clearLine, "pass");
     if (stars > 0) setMasteryChip("★ " + stars + "/4");
-    beats.push({ shout: "TEST PASS", caption: "The load stayed up.", mark: "✓" });
+    beats.push({ shout: "TEST PASS", caption: "The truck stayed up.", mark: "✓" });
     beats.push({ shout: "CLEAR", caption: clearLine, mark: "✓" });
     if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   }
@@ -1067,7 +1099,7 @@ function startTest() {
     state.phase = "drop";
     state.animU = 0;
     syncControls();
-    setStatus("Test", "The load is hanging.", "");
+    setStatus("Test", "The truck is hanging on the " + spanMeters(s) + " m span.", "");
     animate(quietMode() || reduceMotion ? 0 : 420, () => {
       finishProve(verdict, stars, s, prove, started);
     });
@@ -1082,9 +1114,9 @@ function startTest() {
     setStatus,
     totalMs: 1500,
     lines: [
-      ["Hanging", "The load is coming on."],
-      ["Watch", "Look at the span."],
-      ["Drop", "The load is on it."],
+      ["Span", spanMeters(s) + " m between the banks."],
+      ["Truck", "One truck hangs on the middle."],
+      ["Watch", "Look at the deck."],
     ],
     onDone: runDrop,
   });
@@ -1288,13 +1320,13 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.16",
-  note: "What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it held.",
+  version: "SC 1.3.17",
+  note: "What’s new: the gap is a real span in meters. Test hangs one truck.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Levels: place three Decks across the gap, then Test. Test pass means it held. Clear means the gap job is done. Stars show how few parts you used.",
-    "Challenge: hold the load, stay on Budget, and put a pier under the middle. Holding alone is not the challenge.",
+    "Levels: place three Decks across the gap, then Test. The truck has to stay up. Clear means the gap job is done. Stars show how few parts you used.",
+    "Challenge: hold the truck on that span, stay on Budget, and put a pier under the middle. Holding alone is not the challenge.",
     "If it misses, tap Retry and change one thing.",
   ],
   onReplayIntro: () => {

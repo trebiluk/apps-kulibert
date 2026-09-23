@@ -1,7 +1,12 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.16** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.17** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.17 — Big span — 2026-09-23
+
+- What’s new: the gap is a real span in meters. Test hangs one truck.
+- Challenge still means the brief. A truck that stays up is Test pass, not Clear, until Budget and the middle pier are met.
 
 ## 1.3.16 — Two tracks — 2026-09-23
 

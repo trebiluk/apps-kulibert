@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="spire-rev" content="2026-09-23-sl-1.3.15"/>
+  <meta name="spire-rev" content="2026-09-23-sl-1.3.16"/>
   <meta name="description" content="Spire Lab — drop a slab, keep the overlap, read the height."/>
   <title>Spire Lab · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spire-lab.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.3.15"/>
+  <link rel="stylesheet" href="./styles.css?v=1.3.16"/>
 </head>
 <body>
   <div class="shell">
@@ -18,7 +18,7 @@
         <img src="/icons/icon-spire-lab.svg" width="40" height="40" alt=""/>
         <span>
           <h1>Spire Lab</h1>
-          <p>SL 1.3.15</p>
+          <p>SL 1.3.16</p>
         </span>
       </a>
       <div class="top-actions">
@@ -49,8 +49,8 @@
         <button type="button" id="track-levels" aria-pressed="true">Levels</button>
         <button type="button" id="track-challenge" aria-pressed="false">Challenge</button>
       </div>
-      <p id="brief" class="brief" hidden>Stand to height 4. Every slab lands even.</p>
-      <p id="height-read">Height <strong id="height-n">0</strong> <span class="goal-read">/ Goal <strong id="goal-n">3</strong></span></p>
+      <p id="brief" class="brief" hidden>Stand to 12 m. Every floor lands even.</p>
+      <p id="height-read">Height <strong id="height-n">0</strong> <span class="goal-read">/ Goal <strong id="goal-n">3</strong> · <span id="goal-m">9 m</span></span></p>
       <p id="streak" hidden>Streak <strong id="streak-n">0</strong></p>
       <div class="edge-pocket">
         <button type="button" id="edge-btn" aria-haspopup="dialog" aria-controls="help-overlay">Help</button>
@@ -63,7 +63,7 @@
     </div>
 
     <div class="bet-bar" id="bet-bar" hidden>
-      <p class="bet-label">Bet before Drop</p>
+      <p class="bet-label">Will this floor hold?</p>
       <button type="button" class="bet-chip" data-bet="hold" id="bet-hold">It’ll hold</button>
       <button type="button" class="bet-chip" data-bet="fall" id="bet-fall">It’ll fall</button>
     </div>
@@ -96,7 +96,7 @@
     </div>
   </div>
 
-  <script type="module" src="./app.js?v=1.3.15"></script>
+  <script type="module" src="./app.js?v=1.3.16"></script>
 
     <div id="assist-plate" class="assist-plate" role="status" aria-live="polite" hidden>
       <strong>Assist</strong>
