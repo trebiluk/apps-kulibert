@@ -150,34 +150,47 @@ function scoreStars(s, verdict) {
 
 /* Shop Prove Flash plates */
 let flashTimer = 0;
-function showFlash(shout, caption, mark) {
+function paintPlate(shout, caption, mark) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  window.clearTimeout(flashTimer);
   s.textContent = shout;
   c.textContent = caption || "";
   if (m) m.textContent = mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
-    const spark = document.createElement("div");
-    spark.className = "flash-spark";
-    spark.style.left = "50%";
-    spark.style.top = "38%";
-    spark.style.opacity = "1";
-    document.body.appendChild(spark);
-    window.setTimeout(() => spark.remove(), 320);
+}
+function hidePlate() {
+  const plate = document.getElementById("flash-plate");
+  if (!plate) return;
+  plate.classList.remove("show");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
+}
+function showFlash(shout, caption, mark) {
+  window.clearTimeout(flashTimer);
+  paintPlate(shout, caption, mark);
+  flashTimer = window.setTimeout(hidePlate, 1500);
+}
+function playBeats(beats) {
+  window.clearTimeout(flashTimer);
+  const list = (beats || []).filter(Boolean);
+  if (!list.length) {
+    hidePlate();
+    return;
   }
-  flashTimer = window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 1500);
+  const run = quietMode() ? [list[list.length - 1]] : list;
+  let i = 0;
+  const step = () => {
+    const beat = run[i];
+    paintPlate(beat.shout, beat.caption, beat.mark);
+    i += 1;
+    flashTimer = window.setTimeout(i < run.length ? step : hidePlate, 1400);
+  };
+  step();
 }
 function hideAssistPlate() {
   const plate = document.getElementById("assist-plate");
@@ -244,7 +257,8 @@ function syncToysChip() {
     return;
   }
   chip.hidden = false;
-  chip.textContent = "Toys " + n;
+  chip.textContent = n === 1 ? state.toys[0] : "Toys " + n;
+  chip.title = state.toys.join(" · ");
 }
 function updateSnapHint() {
   const hint = document.getElementById("snap-hint");
@@ -300,12 +314,13 @@ function renderIsleMap() {
     btn.className = "isle-card";
     btn.dataset.state = st === "open" ? "active" : st;
     btn.disabled = st === "locked";
-    const tag = st === "clear" ? "CLEAR" : st === "locked" ? "LOCKED" : st === "active" || st === "open" ? (isle.id === state.isleId ? "ACTIVE" : "ISLE") : "ISLE";
+    const tag = st === "clear" ? "Done" : st === "locked" ? "Locked" : (isle.id === state.isleId ? "Now" : "Open");
+    const owned = state.toys.includes(isle.toy);
     btn.innerHTML =
       '<span class="isle-tag">' + tag + "</span>" +
       "<h3>" + isle.name + "</h3>" +
       "<p>" + isle.job + "</p>" +
-      '<span class="isle-toy">' + (st === "locked" ? "Unlocks " + isle.toy : "Toy · " + isle.toy) + "</span>";
+      '<span class="isle-toy">' + (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy) + "</span>";
     btn.addEventListener("click", () => {
       if (st === "locked") return;
       state.isleId = isle.id;
@@ -860,22 +875,25 @@ function finishProve(verdict, stars, s, prove, started) {
       ? " Bet matched — nice read."
       : " Bet missed — try one fix, then Test again.";
   }
+  const toy = verdict.ok ? markIsleClear() : null;
+  if (toy) extra += " Toy: " + toy + ".";
   syncControls();
   setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
   if (retryBtn) retryBtn.classList.toggle("is-needed", !verdict.ok);
+  const beats = [];
   if (verdict.ok) {
-    showFlash("LOAD HELD", "The load stayed up", "✓");
-    if (stars > 0) setMasteryChip("★ " + stars + "/3");
-    if (stars === 3) {
-      window.setTimeout(() => showFlash("★★★", "Parts on budget", "★★★"), 1600);
+    beats.push({ shout: "Held", caption: "The load stayed up.", mark: "✓" });
+    if (stars > 0) {
+      setMasteryChip("★ " + stars + "/3");
+      beats.push({ shout: stars + (stars === 1 ? " star" : " stars"), caption: starPhrase(stars) + ".", mark: "★".repeat(stars) });
     }
-    const toy = markIsleClear();
-    const clearCap = toy ? ("New toy · " + toy) : "Prove complete";
-    window.setTimeout(() => showFlash("CLEAR", clearCap, "✓"), stars === 3 ? 3200 : 1600);
+    if (toy) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   } else {
     setMasteryChip("");
     setStatus("Fail", prove[1] + " Tap Retry — change one thing.", "fail");
+    beats.push({ shout: "Miss", caption: "Tap Retry and change one thing.", mark: "✕" });
   }
+  playBeats(beats);
   state.bet = null;
   syncBetBar();
   if (performance.now() - started > 2000) {
@@ -906,7 +924,7 @@ function startTest() {
       finishProve(verdict, stars, s, prove, started);
     });
   };
-  // Prove Theater ≤2s → existing Flash plates
+  window.clearTimeout(flashTimer);
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   syncControls();
@@ -914,10 +932,11 @@ function startTest() {
     setStatus,
     totalMs: 1500,
     lines: [
-      ["Prove", "Weight rolling in…"],
-      ["Prove", "Watch the span…"],
-      ["Prove", "Hang the load."],
+      ["Hanging", "The load is coming on."],
+      ["Watch", "Look at the span."],
+      ["Drop", "The load is on it."],
     ],
+    onBeat(line) { paintPlate(line[0], line[1], ""); },
     onDone: runDrop,
   });
 }
@@ -1116,8 +1135,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.3",
-  note: "What’s new: Help is one play. It sits in the bar.",
+  version: "SC 1.3.4",
+  note: "What’s new: the prove plays on the stage, and a new toy is named.",
   calmKey: CALM_KEY,
   steps: [
     "Drag a Deck from bank to bank.",

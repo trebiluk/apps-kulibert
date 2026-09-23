@@ -70,34 +70,47 @@ let last = 0;
 
 /* Shop Prove Flash plates */
 let flashTimer = 0;
-function showFlash(shout, caption, mark) {
+function paintPlate(shout, caption, mark) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  window.clearTimeout(flashTimer);
   s.textContent = shout;
   c.textContent = caption || "";
   if (m) m.textContent = mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
-    const spark = document.createElement("div");
-    spark.className = "flash-spark";
-    spark.style.left = "50%";
-    spark.style.top = "38%";
-    spark.style.opacity = "1";
-    document.body.appendChild(spark);
-    window.setTimeout(() => spark.remove(), 320);
+}
+function hidePlate() {
+  const plate = document.getElementById("flash-plate");
+  if (!plate) return;
+  plate.classList.remove("show");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
+}
+function showFlash(shout, caption, mark) {
+  window.clearTimeout(flashTimer);
+  paintPlate(shout, caption, mark);
+  flashTimer = window.setTimeout(hidePlate, 1500);
+}
+function playBeats(beats) {
+  window.clearTimeout(flashTimer);
+  const list = (beats || []).filter(Boolean);
+  if (!list.length) {
+    hidePlate();
+    return;
   }
-  flashTimer = window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 2200);
+  const run = quietMode() ? [list[list.length - 1]] : list;
+  let i = 0;
+  const step = () => {
+    const beat = run[i];
+    paintPlate(beat.shout, beat.caption, beat.mark);
+    i += 1;
+    flashTimer = window.setTimeout(i < run.length ? step : hidePlate, 1400);
+  };
+  step();
 }
 function hideAssistPlate() {
   const plate = document.getElementById("assist-plate");
@@ -171,7 +184,8 @@ function syncToysChip() {
     return;
   }
   chip.hidden = false;
-  chip.textContent = "Toys " + n;
+  chip.textContent = n === 1 ? state.toys[0] : "Toys " + n;
+  chip.title = state.toys.join(" · ");
 }
 function syncBetBar() {
   const bar = document.getElementById("bet-bar");
@@ -219,12 +233,13 @@ function renderIsleMap() {
     btn.className = "isle-card";
     btn.dataset.state = st === "open" ? "active" : st;
     btn.disabled = st === "locked";
-    const tag = st === "clear" ? "CLEAR" : st === "locked" ? "LOCKED" : (isle.id === state.isleId ? "ACTIVE" : "PEAK");
+    const tag = st === "clear" ? "Done" : st === "locked" ? "Locked" : (isle.id === state.isleId ? "Now" : "Open");
+    const owned = state.toys.includes(isle.toy);
     btn.innerHTML =
       '<span class="isle-tag">' + tag + "</span>" +
       "<h3>" + isle.name + "</h3>" +
       "<p>" + isle.job + "</p>" +
-      '<span class="isle-toy">' + (st === "locked" ? "Unlocks " + isle.toy : "Toy · " + isle.toy) + "</span>";
+      '<span class="isle-toy">' + (st === "locked" ? "Next toy · " + isle.toy : owned ? "Yours · " + isle.toy : "Toy · " + isle.toy) + "</span>";
     btn.addEventListener("click", () => {
       if (st === "locked") return;
       state.isleId = isle.id;
@@ -393,6 +408,7 @@ function doDropSlab() {
     setStatus("Miss", "Missed the stack. Tap Retry — hang a new slab. Goal is the dashed line at " + GOAL_FLOORS + ". Best " + state.best + "." + betLine, "fail");
     if (retryBtn) retryBtn.classList.add("is-needed");
     setMasteryChip("");
+    playBeats([{ shout: "Miss", caption: "Tap Retry and drop closer to center.", mark: "✕" }]);
     return;
   }
   const even = towerPerfect(mover.x, top.x, top.w);
@@ -445,30 +461,24 @@ function doDropSlab() {
   else if (state.bet === "fall") betLine = " Bet missed — it stood anyway.";
   state.bet = null;
   syncBetBar();
-  setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine, "pass");
-  showFlash("STAND", "It stood for this drop", "✓");
-  // Ghost You stub: best height outline marker (local)
   if (state.height > state.ghostBest) {
     state.ghostBest = state.height;
     try { localStorage.setItem(GHOST_KEY, String(state.ghostBest)); } catch { /* private */ }
   }
-  if (state.height === GOAL_FLOORS) {
-    const toy = markIsleClear();
-    window.setTimeout(() => showFlash("HEIGHT HIT", toy ? ("Goal " + GOAL_FLOORS + " · toy " + toy) : ("Goal " + GOAL_FLOORS + " — tower reached the line"), "✓"), 2300);
-  } else if (state.height > GOAL_FLOORS && state.height % 5 === 0) {
-    window.setTimeout(() => showFlash("HEIGHT HIT", "Past goal · height " + state.height, ""), 2300);
-  }
-  // First Stack clear early (height 3) so first CLEAR path ≤90s
-  if (state.height === 3 && state.isleId === "first" && !state.cleared.first) {
-    const toy = markIsleClear();
-    if (toy) window.setTimeout(() => showFlash("CLEAR", "First Stack · " + toy, "✓"), 2300);
-  }
+  let toy = null;
+  if (state.height === 3 && state.isleId === "first" && !state.cleared.first) toy = markIsleClear();
+  if (state.height === GOAL_FLOORS) toy = markIsleClear() || toy;
+  const toyLine = toy ? " Toy: " + toy + "." : "";
+  setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
+  const beats = [{ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" }];
   if (state.perfectCount > 0) {
     setMasteryChip("Streak " + state.perfectCount);
-    window.setTimeout(() => showFlash("STREAK", state.perfectCount + " in a row", "★"), state.height >= GOAL_FLOORS ? 4600 : 2300);
+    beats.push({ shout: "Streak", caption: state.perfectCount + " even in a row.", mark: "★" });
   } else {
     setMasteryChip("");
   }
+  if (toy) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
+  playBeats(beats);
 }
 
 function dropSlab() {
@@ -481,16 +491,17 @@ function dropSlab() {
     state.theater = null;
     doDropSlab();
   };
+  window.clearTimeout(flashTimer);
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   state.theater = runProveTheater({
     setStatus,
-    totalMs: 1400,
+    totalMs: 1200,
     lines: [
-      ["Prove", "Watch the stack…"],
-      ["Prove", "Hold steady…"],
-      ["Prove", "Drop."],
+      ["Watch", "Look at the stack."],
+      ["Drop", "Let it land."],
     ],
+    onBeat(line) { paintPlate(line[0], line[1], ""); },
     onDone: run,
   });
 }
@@ -767,8 +778,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.2",
-  note: "What’s new: Help is one play. It sits in the bar.",
+  version: "SL 1.3.3",
+  note: "What’s new: the prove plays on the stage, and a new toy is named.",
   calmKey: CALM_KEY,
   steps: [
     "Drop the slab on the stack.",

@@ -45,12 +45,7 @@ export function writeJson(key, data) {
 
 /** Prove Theater ≤2s caption build-up, then callback. Quiet = skip motion. */
 export function runProveTheater(opts) {
-  const {
-    setStatus,
-    lines,
-    onDone,
-    totalMs = 1600,
-  } = opts;
+  const { setStatus, lines, onDone, onBeat, totalMs = 1600 } = opts;
   const quiet = quietMode();
   if (quiet || !lines || !lines.length) {
     onDone();
@@ -59,7 +54,11 @@ export function runProveTheater(opts) {
   let cancelled = false;
   const step = Math.max(280, Math.floor(totalMs / lines.length));
   let i = 0;
-  setStatus(lines[0][0], lines[0][1], "");
+  const paint = (line) => {
+    setStatus(line[0], line[1], "");
+    if (onBeat) onBeat(line);
+  };
+  paint(lines[0]);
   const timer = window.setInterval(() => {
     if (cancelled) return;
     i += 1;
@@ -68,7 +67,7 @@ export function runProveTheater(opts) {
       onDone();
       return;
     }
-    setStatus(lines[i][0], lines[i][1], "");
+    paint(lines[i]);
   }, step);
   return {
     cancel() {
