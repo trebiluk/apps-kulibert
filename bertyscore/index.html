@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+  <meta name="theme-color" content="#050814"/>
+  <meta name="description" content="BertyScore — mark a score, hear the song, edit the song, watch the score change."/>
+  <title>BertyScore · The Tech Room</title>
+  <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
+  <link rel="stylesheet" href="/fonts/room.css"/>
+  <link rel="stylesheet" href="./styles.css?v=0.1.0"/>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/" title="Back to The Tech Room">
+      <img src="./mark.svg" alt="" width="36" height="36"/>
+      <span>
+        <strong>BertyScore</strong>
+        <em id="chip-label">BS 0.1.0</em>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button type="button" id="help-btn" class="btn ghost">How to</button>
+      <a class="btn ghost" href="/">Room</a>
+    </div>
+  </header>
+
+  <p class="teach" id="teach">Tap a pitch, then a beat. Play lights the note even if sound is off.</p>
+
+  <section class="staff-wrap" aria-label="Score">
+    <div id="staff"></div>
+  </section>
+
+  <section class="transport" aria-label="Play">
+    <button type="button" id="play-btn" class="play" aria-label="Play">
+      <span class="play-icon" aria-hidden="true"></span>
+    </button>
+    <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
+    <label class="alias">
+      <span>Alias</span>
+      <input id="alias" maxlength="24" autocomplete="off" placeholder="not your real name"/>
+    </label>
+    <label class="tempo">
+      <span>Tempo <b id="tempo-read">96</b></span>
+      <input id="tempo" type="range" min="60" max="160" value="96"/>
+    </label>
+    <button type="button" id="save-btn" class="btn">Save</button>
+    <button type="button" id="import-btn" class="btn">Import</button>
+    <input id="import-file" type="file" accept=".json,application/json" hidden/>
+  </section>
+  <p id="status" class="status" role="status"></p>
+
+  <div class="work">
+    <section class="panel" aria-label="Beats">
+      <h2>Beats</h2>
+      <p class="panel-note">Pick a pitch. Tap a beat in this measure.</p>
+      <div class="chips" id="pitches" role="group" aria-label="Pitch"></div>
+      <p class="measure-name" id="focus-name">Measure A</p>
+      <div class="beats" id="beats"></div>
+    </section>
+    <section class="panel" aria-label="Sequence">
+      <h2>Sequence</h2>
+      <p class="panel-note">Order the measures. Tap a dot to add or clear a note.</p>
+      <div id="sequence"></div>
+      <button type="button" id="add-measure" class="btn">Add measure</button>
+    </section>
+  </div>
+
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BS 0.1.0</span> · no names · no mic ·
+    <a href="./privacy.html">Privacy</a> ·
+    <a href="./NOTICE.md">Notices</a>
+  </p>
+
+  <div id="later" hidden data-later="publish perform"></div>
+
+  <dialog id="howto" class="modal">
+    <form method="dialog">
+      <p class="chip"><i></i> How to · <span id="how-step">1</span> / 3</p>
+      <h2 id="how-title">Place a note</h2>
+      <p id="how-body" class="desc">Tap a pitch on the left, then tap a beat. The staff draws that note.</p>
+      <div class="modal-actions">
+        <button type="button" id="how-next" class="btn primary">Next</button>
+        <button type="button" id="how-skip" class="btn" hidden>Skip</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/shared/song/model.js?v=0.1.0"></script>
+  <script src="./vendor/abcjs-basic-min.js?v=6.4.4"></script>
+  <script src="./vendor/tone.min.js?v=15.0.4"></script>
+  <script src="./app.js?v=0.1.0"></script>
+</body>
+</html>

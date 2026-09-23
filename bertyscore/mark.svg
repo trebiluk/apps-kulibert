@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="BertyScore">
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#0B1220"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="none" stroke="#22D3EE" stroke-width="3"/>
+  <path d="M28 46h72M28 64h72M28 82h72" stroke="#8FB4C9" stroke-width="2"/>
+  <ellipse cx="48" cy="64" rx="8" ry="6" fill="#22D3EE"/>
+  <ellipse cx="78" cy="50" rx="8" ry="6" fill="#14B8A6"/>
+</svg>
