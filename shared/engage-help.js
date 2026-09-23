@@ -75,7 +75,10 @@ export function runProveTheater(opts) {
     return { cancel() {} };
   }
   let cancelled = false;
-  const step = Math.max(280, Math.floor(totalMs / lines.length));
+  const budget = Math.min(2000, totalMs || 1600);
+  let step = Math.floor(budget / lines.length);
+  if (step * lines.length > 2000) step = Math.floor(2000 / lines.length);
+  if (step < 200) step = 200;
   let i = 0;
   const paint = (line) => {
     setStatus(line[0], line[1], "");

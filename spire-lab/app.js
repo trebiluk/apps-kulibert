@@ -534,10 +534,7 @@ function dropSlab() {
   };
   window.clearTimeout(flashTimer);
   hideQuietToast();
-  if (!state.cleared.first) {
-    run();
-    return;
-  }
+  hidePlate();
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   state.theater = runProveTheater({
@@ -547,7 +544,6 @@ function dropSlab() {
       ["Watch", "Look at the stack."],
       ["Drop", "Let it land."],
     ],
-    onBeat(line) { paintPlate(line[0], line[1], ""); },
     onDone: run,
   });
 }
@@ -836,8 +832,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.6",
-  note: "What’s new: Assist opens once and points at the center drop.",
+  version: "SL 1.3.7",
+  note: "What’s new: the prove takes under two seconds, then the plates.",
   calmKey: CALM_KEY,
   steps: [
     "Drop three slabs that stay. That is the first clear.",

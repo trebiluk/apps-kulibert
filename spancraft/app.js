@@ -958,10 +958,7 @@ function startTest() {
   };
   window.clearTimeout(flashTimer);
   hideQuietToast();
-  if (!state.cleared.first) {
-    runDrop();
-    return;
-  }
+  hidePlate();
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   syncControls();
@@ -973,7 +970,6 @@ function startTest() {
       ["Watch", "Look at the span."],
       ["Drop", "The load is on it."],
     ],
-    onBeat(line) { paintPlate(line[0], line[1], ""); },
     onDone: runDrop,
   });
 }
@@ -1179,8 +1175,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.7",
-  note: "What’s new: Assist opens once and points at the first Deck.",
+  version: "SC 1.3.8",
+  note: "What’s new: the prove takes under two seconds, then the plates.",
   calmKey: CALM_KEY,
   steps: [
     "Place three Decks across the gap, then Test. That is the first clear.",
