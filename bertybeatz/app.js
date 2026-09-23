@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.4.0") return;
-  window.__BERTYBEATZ__ = "1.4.0";
+  if (window.__BERTYBEATZ__ === "1.5.0") return;
+  window.__BERTYBEATZ__ = "1.5.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.4.0";
+  const CHIP = "BZ 1.5.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -32,6 +32,7 @@
     { id: "kaleido", label: "Kaleidoscope" },
     { id: "clouds", label: "Clouds" },
     { id: "stars", label: "Stars" },
+    { id: "code", label: "Code" },
   ];
   const KEY_PC = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, Bb: 10 };
   const MAJOR_PENT = [0, 2, 4, 7, 9];
@@ -769,6 +770,13 @@
       persistLook(id);
       renderAll();
     });
+    const recipe = $("code-look");
+    if (recipe) {
+      recipe.hidden = state.look !== "code";
+      if (state.look === "code" && window.KulibertStage && window.KulibertStage.syncRecipe) {
+        window.KulibertStage.syncRecipe(recipe);
+      }
+    }
     $("play-btn").classList.toggle("is-on", state.playing);
     $("play-btn").setAttribute("aria-label", state.playing ? "Pause" : "Play");
     document.body.classList.toggle("is-loop", state.playing);
@@ -1163,6 +1171,7 @@
     if (e.code === "Digit2") pickLook("kaleido");
     if (e.code === "Digit3") pickLook("clouds");
     if (e.code === "Digit4") pickLook("stars");
+    if (e.code === "Digit5") pickLook("code");
   });
   function pickLook(id) {
     if ($("gate").hidden === false) return;
@@ -1187,6 +1196,7 @@
         kick: playhead >= 0 && Boolean(state.steps.kick[playhead]),
         snare: playhead >= 0 && Boolean(state.steps.snare[playhead]),
         analyser: state.playing && engine.analyser ? engine.analyser : null,
+        code: window.KulibertStage && window.KulibertStage.loadCode ? window.KulibertStage.loadCode() : null,
       };
     });
   }

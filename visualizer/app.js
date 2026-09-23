@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.1.0") return;
-  window.__VISUALIZER__ = "0.1.0";
+  if (window.__VISUALIZER__ === "0.2.0") return;
+  window.__VISUALIZER__ = "0.2.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.1.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.2.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -10,6 +10,7 @@
         { id: "kaleido", label: "Kaleidoscope" },
         { id: "clouds", label: "Clouds" },
         { id: "stars", label: "Stars" },
+        { id: "code", label: "Code" },
       ];
   const LOOK_STORE = "visualizer.look";
   const BPM = 108;
@@ -93,6 +94,11 @@
       b.addEventListener("click", () => pickLook(item.id));
       box.appendChild(b);
     }
+    const recipe = $("code-look");
+    if (recipe) {
+      recipe.hidden = state.look !== "code";
+      if (state.look === "code" && stageApi && stageApi.syncRecipe) stageApi.syncRecipe(recipe);
+    }
   }
 
   function pickLook(id) {
@@ -135,6 +141,7 @@
     if (e.code === "Digit2") pickLook("kaleido");
     if (e.code === "Digit3") pickLook("clouds");
     if (e.code === "Digit4") pickLook("stars");
+    if (e.code === "Digit5") pickLook("code");
   });
 
   ["chip-label", "chip-live", "foot-chip"].forEach((id) => {
@@ -160,6 +167,7 @@
         kick: on && DEMO.kick[step] === 1,
         snare: on && DEMO.snare[step] === 1,
         bins: state.playing ? bins : null,
+        code: stageApi.loadCode ? stageApi.loadCode() : null,
       };
     });
   }

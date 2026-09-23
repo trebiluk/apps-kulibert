@@ -1,13 +1,113 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
-   Chip lives here. Hub live line must say the same Viz chip. */
+   Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.1.0";
+  var CHIP = "Viz 0.2.0";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
     { id: "clouds", label: "Clouds" },
     { id: "stars", label: "Stars" },
+    { id: "code", label: "Code" },
   ];
+  var CODE_KEY = "kulibert.codelook";
+  var CODE_GROUPS = [
+    { key: "folds", label: "Folds", options: [
+      { id: "4", label: "4" },
+      { id: "6", label: "6" },
+      { id: "8", label: "8" },
+    ]},
+    { key: "grow", label: "Size", options: [
+      { id: "short", label: "Short" },
+      { id: "mid", label: "Mid" },
+      { id: "tall", label: "Tall" },
+    ]},
+    { key: "ink", label: "Color", options: [
+      { id: "cyan", label: "Cyan" },
+      { id: "teal", label: "Teal" },
+      { id: "amber", label: "Amber" },
+    ]},
+    { key: "pulse", label: "Pulse", options: [
+      { id: "still", label: "Still" },
+      { id: "beat", label: "Beat" },
+    ]},
+  ];
+
+  function normalizeCode(raw) {
+    var folds = raw && (raw.folds === "4" || raw.folds === "8" || raw.folds === 4 || raw.folds === 8) ? String(raw.folds) : "6";
+    var grow = raw && (raw.grow === "short" || raw.grow === "tall") ? raw.grow : "mid";
+    var ink = raw && (raw.ink === "teal" || raw.ink === "amber") ? raw.ink : "cyan";
+    var pulse = raw && raw.pulse === "still" ? "still" : "beat";
+    return { folds: folds, grow: grow, ink: ink, pulse: pulse };
+  }
+
+  function loadCode() {
+    try {
+      return normalizeCode(JSON.parse(localStorage.getItem(CODE_KEY) || "null"));
+    } catch (err) {
+      return normalizeCode(null);
+    }
+  }
+
+  function saveCode(next) {
+    var recipe = normalizeCode(next);
+    try {
+      localStorage.setItem(CODE_KEY, JSON.stringify(recipe));
+    } catch (err) {
+      /* title-only storage; ignore a full disk */
+    }
+    return recipe;
+  }
+
+  function paintRecipe(el) {
+    var recipe = loadCode();
+    var buttons = el.querySelectorAll("button[data-key]");
+    var i;
+    for (i = 0; i < buttons.length; i++) {
+      var b = buttons[i];
+      var on = String(recipe[b.getAttribute("data-key")]) === b.getAttribute("data-val");
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    }
+  }
+
+  function syncRecipe(el) {
+    if (!el) return loadCode();
+    if (!el.getAttribute("data-ready")) {
+      el.setAttribute("data-ready", "1");
+      el.innerHTML = "";
+      CODE_GROUPS.forEach(function (group) {
+        var wrap = document.createElement("div");
+        wrap.className = "code-group";
+        var lab = document.createElement("span");
+        lab.className = "tool-label";
+        lab.textContent = group.label;
+        wrap.appendChild(lab);
+        var chips = document.createElement("div");
+        chips.className = "chips";
+        chips.setAttribute("role", "group");
+        chips.setAttribute("aria-label", group.label);
+        group.options.forEach(function (opt) {
+          var b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn";
+          b.textContent = opt.label;
+          b.setAttribute("data-key", group.key);
+          b.setAttribute("data-val", opt.id);
+          b.addEventListener("click", function () {
+            var cur = loadCode();
+            cur[group.key] = opt.id;
+            saveCode(cur);
+            paintRecipe(el);
+          });
+          chips.appendChild(b);
+        });
+        wrap.appendChild(chips);
+        el.appendChild(wrap);
+      });
+    }
+    paintRecipe(el);
+    return loadCode();
+  }
 
   function mount(canvas, getSnap) {
     var vctx = canvas.getContext("2d");
@@ -204,6 +304,39 @@
       }
     }
 
+    function drawCode(w, h) {
+      var recipe = loadCode();
+      var bass = band(0, 6);
+      var mid = band(6, 18);
+      var energy = bass * 0.65 + mid * 0.35;
+      var grow = recipe.grow === "short" ? 0.56 : recipe.grow === "tall" ? 0.74 : 0.66;
+      var arms = recipe.folds === "4" ? 4 : recipe.folds === "8" ? 8 : 6;
+      var depth = arms >= 8 ? 4 : 5;
+      var len0 = Math.min(w, h) * (recipe.pulse === "beat" ? 0.16 + energy * 0.08 : 0.18);
+      var spread = reduceMotion ? 0.55 : 0.42 + mid * 0.28;
+      var color = recipe.ink === "teal" ? "#14b8a6" : recipe.ink === "amber" ? "#f59e0b" : "#22d3ee";
+      function branch(x, y, angle, len, d) {
+        if (d <= 0 || len < 1.5) return;
+        var x2 = x + Math.cos(angle) * len;
+        var y2 = y + Math.sin(angle) * len;
+        vctx.strokeStyle = color;
+        vctx.globalAlpha = 0.22 + (d / depth) * 0.62;
+        vctx.lineWidth = Math.max(1.1, d * 0.7);
+        vctx.beginPath();
+        vctx.moveTo(x, y);
+        vctx.lineTo(x2, y2);
+        vctx.stroke();
+        var next = len * grow;
+        branch(x2, y2, angle - spread, next, d - 1);
+        branch(x2, y2, angle + spread, next, d - 1);
+      }
+      var a;
+      for (a = 0; a < arms; a++) {
+        branch(w * 0.5, h * 0.5, (a * Math.PI * 2) / arms - Math.PI / 2, len0, depth);
+      }
+      vctx.globalAlpha = 1;
+    }
+
     function frame() {
       if (!alive) return;
       raf = requestAnimationFrame(frame);
@@ -224,6 +357,7 @@
       if (look === "kaleido") drawKaleido(w, h);
       else if (look === "clouds") drawClouds(w, h);
       else if (look === "stars") drawStars(w, h, snap);
+      else if (look === "code") drawCode(w, h);
       else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
     }
 
@@ -242,5 +376,11 @@
     };
   }
 
-  global.KulibertStage = { CHIP: CHIP, LOOKS: LOOKS, mount: mount };
+  global.KulibertStage = {
+    CHIP: CHIP,
+    LOOKS: LOOKS,
+    mount: mount,
+    loadCode: loadCode,
+    syncRecipe: syncRecipe,
+  };
 })(window);
