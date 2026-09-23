@@ -1,7 +1,12 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.18** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.19** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.19 — Truss path — 2026-09-23
+
+- What’s new: ten truss levels. Clear the path, then build your own.
+- Stretch members between joints. A triangle holds. A square folds. Your truss tests the truck at three joints.
 
 ## 1.3.18 — Eight jobs — 2026-09-23
 

@@ -1,7 +1,12 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.17** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.18** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.18 — Truss path — 2026-09-23
+
+- What’s new: ten truss levels. Clear the path, then build your own.
+- Stretch members between joints. Height is the goal. Your truss is pushed from both sides.
 
 ## 1.3.17 — Eight jobs — 2026-09-23
 
