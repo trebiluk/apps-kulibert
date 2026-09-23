@@ -3,6 +3,8 @@ import { proveLoad } from "./physics.js";
 import { GRIP, drawTether } from "../shared/stretch.js";
 import {
   quietMode,
+  quietToast,
+  hideQuietToast,
   readFlag,
   writeFlag,
   readJson,
@@ -172,6 +174,12 @@ function hidePlate() {
 }
 function showFlash(shout, caption, mark) {
   window.clearTimeout(flashTimer);
+  if (quietMode()) {
+    hidePlate();
+    quietToast(shout + (caption ? ". " + caption : ""));
+    return;
+  }
+  hideQuietToast();
   paintPlate(shout, caption, mark);
   flashTimer = window.setTimeout(hidePlate, 1500);
 }
@@ -180,9 +188,17 @@ function playBeats(beats) {
   const list = (beats || []).filter(Boolean);
   if (!list.length) {
     hidePlate();
+    hideQuietToast();
     return;
   }
-  const run = quietMode() ? [list[list.length - 1]] : list;
+  if (quietMode()) {
+    hidePlate();
+    const last = list[list.length - 1];
+    quietToast(last.shout + (last.caption ? ". " + last.caption : ""));
+    return;
+  }
+  hideQuietToast();
+  const run = list;
   let i = 0;
   const step = () => {
     const beat = run[i];
@@ -925,6 +941,7 @@ function startTest() {
     });
   };
   window.clearTimeout(flashTimer);
+  hideQuietToast();
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.phase = "theater";
   syncControls();
@@ -943,6 +960,7 @@ function startTest() {
 
 function retry() {
   cancelAnim();
+  hideQuietToast();
   if (state.theater && state.theater.cancel) state.theater.cancel();
   state.theater = null;
   state.drag = null;
@@ -1135,8 +1153,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.4",
-  note: "What’s new: the prove plays on the stage, and a new toy is named.",
+  version: "SC 1.3.5",
+  note: "What’s new: a miss points at a calm Retry. Reduced motion uses a quiet toast.",
   calmKey: CALM_KEY,
   steps: [
     "Drag a Deck from bank to bank.",

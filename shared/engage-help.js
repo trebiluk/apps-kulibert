@@ -8,6 +8,29 @@ export function quietMode() {
   );
 }
 
+export function quietToast(text) {
+  let el = document.getElementById("quiet-toast");
+  if (!el) {
+    el = document.createElement("p");
+    el.id = "quiet-toast";
+    el.className = "quiet-toast";
+    el.setAttribute("role", "status");
+    el.setAttribute("aria-live", "polite");
+    const stage = document.querySelector(".stage");
+    (stage || document.body).appendChild(el);
+  }
+  el.textContent = text;
+  el.hidden = false;
+  el.removeAttribute("hidden");
+}
+
+export function hideQuietToast() {
+  const el = document.getElementById("quiet-toast");
+  if (!el) return;
+  el.hidden = true;
+  el.setAttribute("hidden", "");
+}
+
 export function readFlag(key) {
   try {
     return localStorage.getItem(key) === "1";

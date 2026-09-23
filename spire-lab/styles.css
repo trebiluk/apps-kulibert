@@ -487,16 +487,7 @@ html.calm-clear .flash-spark { display: none !important; }
 #retry.is-needed {
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 55%, transparent);
   border-color: var(--accent);
-  animation: retry-pulse 1.4s ease-in-out infinite;
 }
-@keyframes retry-pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-}
-@media (prefers-reduced-motion: reduce) {
-  #retry.is-needed { animation: none; }
-}
-html.calm-clear #retry.is-needed { animation: none; }
 
 .assist-plate {
   pointer-events: auto;
@@ -699,3 +690,21 @@ html.calm-clear #retry.is-needed { animation: none; }
     bottom: 4.8rem;
   }
 }
+
+.quiet-toast {
+  position: absolute;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  z-index: 5;
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  font-weight: 700;
+  line-height: 1.35;
+  pointer-events: none;
+}
+.quiet-toast[hidden] { display: none !important; }
