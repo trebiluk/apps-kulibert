@@ -407,6 +407,7 @@ canvas:focus-visible {
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.35;
+  white-space: pre-line;
 }
 .flash-spark {
   position: fixed;
@@ -676,6 +677,16 @@ html.calm-clear .flash-spark { display: none !important; }
   font-size: 0.9rem;
 }
 .stage { position: relative; }
+
+#drop-cue {
+  top: 46%;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  border: 2px dashed var(--accent);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 28%, transparent);
+  color: var(--accent);
+}
+#drop-cue[hidden] { display: none !important; }
 
 .assist-plate {
   left: 7.6rem;

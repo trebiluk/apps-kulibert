@@ -419,6 +419,7 @@ canvas:focus-visible {
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1.35;
+  white-space: pre-line;
 }
 .flash-spark {
   position: fixed;
@@ -510,6 +511,7 @@ html.calm-clear .flash-spark { display: none !important; }
   font-weight: 800;
   font-size: 0.95rem;
   text-align: center;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 28%, transparent);
 }
 .snap-hint[hidden] { display: none !important; }
 .stage { position: relative; }

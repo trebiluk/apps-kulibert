@@ -154,11 +154,18 @@ function showAssistPlate(text, sticky) {
     }, 3200);
   }
 }
+function updateDropCue() {
+  const cue = document.getElementById("drop-cue");
+  if (!cue) return;
+  const show = !state.cleared.first && state.height === 0 && state.phase !== "over";
+  cue.hidden = !show;
+}
 function openFirstAssist() {
   // Intro opens Assist ON once for first clear; default remains OFF after dismiss for harder stack
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate("Drop three slabs that stay. That is the first clear.", true);
+  showAssistPlate("Assist is on.\nDrop when the slab crosses the center.", true);
+  updateDropCue();
 }
 function dismissFirstAssist() {
   writeFlag(ASSIST_SEEN, true);
@@ -697,6 +704,7 @@ function draw() {
     ctx.fill();
     ctx.restore();
   }
+  updateDropCue();
 }
 
 function tick(now) {
@@ -828,8 +836,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.5",
-  note: "What’s new: the first clear is three drops that stay.",
+  version: "SL 1.3.6",
+  note: "What’s new: Assist opens once and points at the center drop.",
   calmKey: CALM_KEY,
   steps: [
     "Drop three slabs that stay. That is the first clear.",

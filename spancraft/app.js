@@ -237,7 +237,7 @@ function showAssistPlate(text, sticky) {
 function openFirstAssist() {
   state.assist = true;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
-  showAssistPlate("Place three Decks across the gap, then Test. That is the first clear.", true);
+  showAssistPlate("Assist is on.\nSnap the first Deck on the glow.", true);
   updateSnapHint();
 }
 function dismissFirstAssist() {
@@ -278,11 +278,15 @@ function syncToysChip() {
   chip.textContent = n === 1 ? state.toys[0] : "Toys " + n;
   chip.title = state.toys.join(" · ");
 }
-function updateSnapHint() {
+function updateSnapHint(g, s) {
   const hint = document.getElementById("snap-hint");
   if (!hint) return;
   const show = state.firstSnap && state.parts.length === 0 && state.phase === "idle";
   hint.hidden = !show;
+  if (!show || !g || !s) return;
+  const mid = Math.floor(s.cols / 2);
+  hint.style.left = (g.x0 + (mid + 0.5) * g.cell) + "px";
+  hint.style.top = (g.y0 + g.cell * 0.5) + "px";
 }
 function syncBetBar() {
   const bar = document.getElementById("bet-bar");
@@ -704,6 +708,7 @@ function draw() {
 
   paintLoad(g, s);
   paintBanner();
+  updateSnapHint(g, s);
 }
 
 function paintLoad(g, s) {
@@ -1174,8 +1179,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.6",
-  note: "What’s new: the first clear is three Decks, then Test.",
+  version: "SC 1.3.7",
+  note: "What’s new: Assist opens once and points at the first Deck.",
   calmKey: CALM_KEY,
   steps: [
     "Place three Decks across the gap, then Test. That is the first clear.",
