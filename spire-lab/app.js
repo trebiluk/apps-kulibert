@@ -212,8 +212,9 @@ function syncToysChip() {
     return;
   }
   chip.hidden = false;
-  chip.textContent = n === 1 ? state.toys[0] : "Toys " + n;
+  chip.textContent = "Toys " + n;
   chip.title = state.toys.join(" · ");
+  chip.setAttribute("aria-label", "Toys " + n + ". " + state.toys.join(", "));
 }
 function syncBetBar() {
   const bar = document.getElementById("bet-bar");
@@ -845,8 +846,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.9",
-  note: "What’s new: Help is one screen, with the version.",
+  version: "SL 1.3.10",
+  note: "What’s new: the chip says Toys n. Ghost You is the faint line.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [

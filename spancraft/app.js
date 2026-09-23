@@ -275,8 +275,9 @@ function syncToysChip() {
     return;
   }
   chip.hidden = false;
-  chip.textContent = n === 1 ? state.toys[0] : "Toys " + n;
+  chip.textContent = "Toys " + n;
   chip.title = state.toys.join(" · ");
+  chip.setAttribute("aria-label", "Toys " + n + ". " + state.toys.join(", "));
 }
 function updateSnapHint(g, s) {
   const hint = document.getElementById("snap-hint");
@@ -664,6 +665,10 @@ function draw() {
       ctx.stroke();
     }
     ctx.restore();
+    ctx.fillStyle = "#8fb4c9";
+    ctx.font = "700 14px Outfit, system-ui, sans-serif";
+    ctx.textAlign = "left";
+    ctx.fillText("Ghost You", 16, 48);
   }
   for (const p of state.parts) {
     if (p.id && (p.id === draggingId || (state.stretch && p.id === state.stretch.id))) continue;
@@ -1182,8 +1187,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.10",
-  note: "What’s new: Help is one screen, with the version.",
+  version: "SC 1.3.11",
+  note: "What’s new: the chip says Toys n. Ghost You is the faint mark.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
