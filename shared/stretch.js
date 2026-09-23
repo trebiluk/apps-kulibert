@@ -4,6 +4,21 @@
 
 export const GRIP = 22;
 
+export function drawJoint(ctx, x1, y1, x2, y2) {
+  const dist = Math.hypot(x2 - x1, y2 - y1);
+  ctx.save();
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#22d3ee";
+  ctx.globalAlpha = 0.85;
+  ctx.lineWidth = Math.max(3, 10 - dist / 40);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  const sag = Math.min(18, dist * 0.1);
+  ctx.quadraticCurveTo((x1 + x2) / 2, (y1 + y2) / 2 + sag, x2, y2);
+  ctx.stroke();
+  ctx.restore();
+}
+
 export function drawTether(ctx, x1, y1, x2, y2) {
   const dist = Math.hypot(x2 - x1, y2 - y1);
   const spike = dist > 110;

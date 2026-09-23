@@ -1,7 +1,14 @@
 # SpanCraft changelog
 
-**Chip: SC 1.1.1** · 2026-09-22 · channel **live**
+**Chip: SC 1.2.0** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.2.0 — Stretch — 2026-09-23
+
+- What’s new: stretchy drag, a weight on Test, stars for a short build.
+- A near drop eases into the spot. Joints stretch while you drag.
+- Test hangs a weight. Pass or fail is a word and a mark.
+- Stars stay on the bar. Parts show after the first star. Best score stays on this Chromebook.
 
 ## 1.1.1 — Polish — 2026-09-22
 

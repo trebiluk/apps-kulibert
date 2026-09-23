@@ -155,7 +155,9 @@ button:disabled { cursor: default; opacity: 0.45; }
   font-weight: 800;
   min-width: 1.1em;
 }
-#predict[hidden] { display: none; }
+.kinds button[hidden],
+#predict[hidden],
+#budget[hidden] { display: none !important; }
 #predict {
   margin-left: auto;
   flex: 0 0 auto;
@@ -170,6 +172,18 @@ button:disabled { cursor: default; opacity: 0.45; }
   background: var(--accent);
   color: var(--accent-fg);
 }
+#master, #budget {
+  margin: 0 0 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  min-height: 44px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+#budget { margin-left: 0.35rem; color: var(--muted); font-weight: 700; }
+#star-marks { letter-spacing: 0.04em; font-size: 1.15rem; }
+#star-word { font-size: 1rem; color: var(--muted); font-weight: 700; }
 .help { position: relative; }
 .help:not([open]) .help-panel { display: none; }
 .help summary { list-style: none; }
