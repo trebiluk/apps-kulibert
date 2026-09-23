@@ -508,7 +508,6 @@ html.calm-clear .flash-spark { display: none !important; }
   position: absolute;
   left: 50%;
   top: 42%;
-  transform: translate(-50%, -50%);
   z-index: 2;
   pointer-events: none;
   min-height: 44px;
@@ -521,6 +520,7 @@ html.calm-clear .flash-spark { display: none !important; }
   font-size: 0.95rem;
   text-align: center;
   box-shadow: 0 0 0 6px color-mix(in srgb, var(--accent) 28%, transparent);
+  transform: translate(-50%, -100%);
 }
 .snap-hint[hidden] { display: none !important; }
 .stage { position: relative; }

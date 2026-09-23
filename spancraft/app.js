@@ -287,14 +287,15 @@ function updateSnapHint(g, s) {
   if (!show || !g || !s) return;
   const mid = Math.floor(s.cols / 2);
   hint.style.left = (g.x0 + (mid + 0.5) * g.cell) + "px";
-  hint.style.top = (g.y0 + g.cell * 0.5) + "px";
+  hint.style.top = Math.max(36, g.y0 - 6) + "px";
 }
 function syncBetBar() {
   const bar = document.getElementById("bet-bar");
   if (!bar) return;
-  // Show bet when build has parts and not busy
   const show = state.parts.length > 0 && state.phase === "idle";
   bar.hidden = !show;
+  const label = bar.querySelector(".bet-label");
+  if (label) label.textContent = state.bestStars >= 1 ? "Will this joint hold?" : "Bet before Test";
   for (const btn of bar.querySelectorAll(".bet-chip")) {
     btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
   }
@@ -644,6 +645,20 @@ function draw() {
   ctx.textAlign = "right";
   ctx.fillText("Water", cssW - 16, cssH - 16);
 
+  if (state.firstSnap && state.parts.length === 0 && state.phase === "idle") {
+    const mid = Math.floor(s.cols / 2);
+    const box = cellRect(g, mid, 0);
+    ctx.save();
+    ctx.strokeStyle = "#22d3ee";
+    ctx.lineWidth = 3;
+    ctx.setLineDash([7, 5]);
+    ctx.shadowColor = "#22d3ee";
+    ctx.shadowBlur = 16;
+    roundRect(box.x + 6, box.y + 6, box.w - 12, box.h - 12, 10);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   const draggingId = state.drag && state.hover ? state.drag.id : null;
   if (state.ghost && state.ghost.length && state.phase === "idle" && !state.stretch) {
     ctx.save();
@@ -929,8 +944,19 @@ function finishProve(verdict, stars, s, prove, started) {
     if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   } else {
     setMasteryChip("");
-    setStatus("Fail", prove[1] + " Tap Retry — change one thing.", "fail");
-    beats.push({ shout: "Miss", caption: "Tap Retry and change one thing.", mark: "✕" });
+    let caption = "Tap Retry and change one thing.";
+    let shout = "Miss";
+    let mark = "✕";
+    if (state.bet === "fall") {
+      shout = "Bet";
+      caption = "You said the joint would fall. It did. Tap Retry.";
+      mark = "✓";
+    } else if (state.bet === "hold") {
+      shout = "Bet";
+      caption = "You said the joint would hold. It missed. Tap Retry.";
+    }
+    setStatus("Fail", caption, "fail");
+    beats.push({ shout, caption, mark });
   }
   playBeats(beats);
   state.bet = null;
@@ -1179,8 +1205,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.12",
-  note: "What’s new: a miss leaves the span in view.",
+  version: "SC 1.3.13",
+  note: "What’s new: the first Deck glows. A miss is the bet.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
