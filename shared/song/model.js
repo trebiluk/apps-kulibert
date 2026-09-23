@@ -66,7 +66,7 @@
       family: "kulibert.song",
       rev: 1,
       app: "bertyscore",
-      chip: "BS 0.1.0",
+      chip: "BS 0.2.0",
       alias: cleanAlias(raw && (raw.alias || raw.name)),
       bpm: bpm,
       tempo: bpm,
@@ -187,12 +187,106 @@
     } catch (err) {
       return null;
     }
-    if (!data || data.family !== "kulibert.song" || !Array.isArray(data.measures)) return null;
-    return normalize(data);
+    if (!data || typeof data !== "object") return null;
+    if (data.family === "kulibert.song" && Array.isArray(data.measures)) return normalize(data);
+    if (data.steps && typeof data.steps === "object") return fromBeat(data);
+    return null;
+  }
+
+  var ROW_PITCH = [
+    { row: "n4", pitch: "A" },
+    { row: "n3", pitch: "G" },
+    { row: "n2", pitch: "E" },
+    { row: "n1", pitch: "D" },
+    { row: "n0", pitch: "C" },
+  ];
+  var PITCH_ROW = { C: "n0", D: "n1", E: "n2", F: "n2", G: "n3", A: "n4", B: "n4", c: "n4" };
+  var BRIDGE = "kulibert.song.bridge";
+
+  function cellOn(row, index) {
+    if (!row || index < 0 || index >= row.length) return false;
+    return row[index] === true || row[index] === 1;
+  }
+
+  function fromBeat(beat) {
+    var steps = (beat && beat.steps) || {};
+    var labels = "ABCD";
+    var measures = [];
+    var m, b, step, r, pitch;
+    for (m = 0; m < 4; m++) {
+      var beats = [null, null, null, null];
+      for (b = 0; b < 4; b++) {
+        step = m * 4 + b;
+        pitch = null;
+        for (r = 0; r < ROW_PITCH.length; r++) {
+          if (cellOn(steps[ROW_PITCH[r].row], step)) {
+            pitch = ROW_PITCH[r].pitch;
+            break;
+          }
+        }
+        beats[b] = pitch;
+      }
+      measures.push({ id: "beat-" + m, label: labels[m], beats: beats });
+    }
+    return normalize({
+      alias: beat && (beat.alias || beat.name) || "",
+      bpm: beat && (beat.bpm || beat.tempo),
+      measures: measures,
+    });
+  }
+
+  function toBeat(song) {
+    var s = normalize(song);
+    var ids = ["kick", "snare", "hat", "clap", "n4", "n3", "n2", "n1", "n0"];
+    var steps = {};
+    var i;
+    ids.forEach(function (id) {
+      steps[id] = [];
+      for (i = 0; i < 16; i++) steps[id][i] = false;
+    });
+    var fitted = 0;
+    events(s).forEach(function (ev, index) {
+      if (index >= 16 || !ev.pitch) return;
+      var row = PITCH_ROW[ev.pitch];
+      if (!row) return;
+      steps[row][index] = true;
+      if (ev.pitch === "F" || ev.pitch === "B" || ev.pitch === "c") fitted += 1;
+    });
+    return {
+      name: s.alias || "Score",
+      bpm: Math.max(70, Math.min(160, s.bpm)),
+      steps: steps,
+      fitted: fitted,
+    };
+  }
+
+  function writeBridge(from, song, beat) {
+    try {
+      localStorage.setItem(BRIDGE, JSON.stringify({
+        from: from || "bertyscore",
+        at: Date.now(),
+        song: normalize(song),
+        beat: beat || null,
+      }));
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function readBridge() {
+    try {
+      var data = JSON.parse(localStorage.getItem(BRIDGE) || "null");
+      if (!data || !data.song) return null;
+      data.song = normalize(data.song);
+      return data;
+    } catch (err) {
+      return null;
+    }
   }
 
   global.KulibertSong = {
-    CHIP: "BS 0.1.0",
+    CHIP: "BS 0.2.0",
     PITCHES: PITCHES,
     BEATS: BEATS,
     starter: starter,
@@ -206,6 +300,10 @@
     moveMeasure: moveMeasure,
     serialize: serialize,
     parse: parse,
+    fromBeat: fromBeat,
+    toBeat: toBeat,
+    writeBridge: writeBridge,
+    readBridge: readBridge,
     pitchById: pitchById,
   };
 })(typeof window !== "undefined" ? window : globalThis);

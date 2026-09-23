@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.7.0") return;
-  window.__BERTYBEATZ__ = "1.7.0";
+  if (window.__BERTYBEATZ__ === "1.8.0") return;
+  window.__BERTYBEATZ__ = "1.8.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.7.0";
+  const CHIP = "BZ 1.8.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1409,6 +1409,38 @@
     $("modal-ok").hidden = true;
   });
 
+  function sendSong(where) {
+    const Song = window.KulibertSong;
+    if (!Song) {
+      window.location.href = where;
+      return;
+    }
+    const song = Song.fromBeat({ name: state.name, bpm: state.bpm, steps: state.steps });
+    Song.writeBridge("bertybeatz", song, { name: state.name, bpm: state.bpm, steps: state.steps });
+    window.location.href = where;
+  }
+  $("score-btn").addEventListener("click", () => sendSong("/bertyscore/?from=bridge"));
+  $("lights-btn").addEventListener("click", () => sendSong("/visualizer/?from=bridge"));
+
+  function takeScore() {
+    const Song = window.KulibertSong;
+    if (!Song) return false;
+    if (new URLSearchParams(window.location.search).get("from") !== "bridge") return false;
+    const bridge = Song.readBridge();
+    if (!bridge || !bridge.song) return false;
+    const beat = Song.toBeat(bridge.song);
+    const steps = cloneSteps(state.steps);
+    ["n0", "n1", "n2", "n3", "n4"].forEach((id) => {
+      if (beat.steps[id]) steps[id] = beat.steps[id].map(Boolean);
+    });
+    state.name = beat.name || state.name;
+    state.bpm = Math.min(160, Math.max(70, beat.bpm || state.bpm));
+    const bpm = $("bpm");
+    if (bpm) bpm.value = String(state.bpm);
+    bindSteps(steps);
+    flash(beat.fitted ? "Notes came from the score. F, B, and high C used the nearest grid note. Drums stayed." : "Notes came from the score. Drums stayed.");
+    return true;
+  }
   $("import-btn").addEventListener("click", () => {
     $("import-file").click();
   });
@@ -1419,7 +1451,29 @@
     if (!file) return;
     const reader = new FileReader();
     reader.onload = () => {
-      const beat = beatFromFileText(String(reader.result || ""));
+      const text = String(reader.result || "");
+      let song = null;
+      try {
+        const data = JSON.parse(text);
+        if (data && data.family === "kulibert.song" && window.KulibertSong) song = window.KulibertSong.parse(text);
+      } catch { /* a beat file, not a score */ }
+      if (song && window.KulibertSong) {
+        const beat = window.KulibertSong.toBeat(song);
+        const steps = cloneSteps(state.steps);
+        ["n0", "n1", "n2", "n3", "n4"].forEach((id) => {
+          if (beat.steps[id]) steps[id] = beat.steps[id].map(Boolean);
+        });
+        pushUndo();
+        state.name = beat.name || state.name;
+        state.bpm = Math.min(160, Math.max(70, beat.bpm || state.bpm));
+        $("bpm").value = String(state.bpm);
+        bindSteps(steps);
+        renderAll();
+        remember();
+        flash(beat.fitted ? "Score notes landed on the grid. F, B, and high C moved to the nearest note. Drums stayed." : "Score notes landed on the grid. Drums stayed.");
+        return;
+      }
+      const beat = beatFromFileText(text);
       if (!beat) {
         flash("That file did not load.");
         return;
@@ -1513,6 +1567,7 @@
       if (vol) vol.value = String(Math.round(state.volume * 100));
     }
   }
+  takeScore();
   window.addEventListener("pagehide", flushNow);
   ["gate-chip", "chip-label", "foot-chip"].forEach((id) => {
     const el = $(id);

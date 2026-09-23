@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.1.0";
+  const CHIP = "BS 0.2.0";
   const HOW_KEY = "kulibert.bertyscore.howto";
   if (!Song) return;
 
@@ -11,8 +11,20 @@
     ["Save it", "Save downloads a score file. Import opens that same file on this Chromebook."],
   ];
 
+  const params = new URLSearchParams(window.location.search);
+  let arrival = "";
+  let opening = Song.starter();
+  if (params.get("from") === "bridge" && Song.readBridge) {
+    const bridge = Song.readBridge();
+    if (bridge && bridge.song) {
+      opening = bridge.song;
+      arrival = bridge.from === "bertybeatz" || bridge.from === "visualizer"
+        ? "Pitched notes came from the beat. Drums stay in Beats."
+        : "Brought the song back.";
+    }
+  }
   const state = {
-    song: Song.starter(),
+    song: opening,
     pitch: "E",
     focus: 0,
     beat: 0,
@@ -379,7 +391,7 @@
       renderStaff();
       renderBeats();
       renderSequence();
-      status("Imported. Same notes, same order.");
+      status(next.alias ? "Imported " + next.alias + "." : "Imported. Pitched notes are on the staff.");
     };
     reader.readAsText(file);
   });
@@ -393,6 +405,12 @@
     state.focus = state.song.measures.length - 1;
     changed("Added a measure.");
   });
+  function send(where) {
+    Song.writeBridge("bertyscore", state.song, Song.toBeat(state.song));
+    window.location.href = where;
+  }
+  $("beats-btn").addEventListener("click", () => send("/bertybeatz/?from=bridge"));
+  $("lights-btn").addEventListener("click", () => send("/visualizer/?from=bridge"));
   $("help-btn").addEventListener("click", () => {
     state.how = 0;
     paintHow();
@@ -420,9 +438,13 @@
     if (el) el.textContent = CHIP;
   });
   renderPitches();
+  $("alias").value = state.song.alias || "";
+  $("tempo").value = String(state.song.bpm);
+  $("tempo-read").textContent = String(state.song.bpm);
   renderStaff();
   renderBeats();
   renderSequence();
+  if (arrival) status(arrival);
   let seen = false;
   try { seen = localStorage.getItem(HOW_KEY) === "1"; } catch (err) { seen = false; }
   if (!seen) {

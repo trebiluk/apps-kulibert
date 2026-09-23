@@ -8,13 +8,13 @@
   <title>BertyBeatz · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.7.0"/>
+  <link rel="stylesheet" href="./styles.css?v=1.8.0"/>
 </head>
 <body>
   <div id="gate" class="gate">
     <div class="gate-inner">
       <img class="gate-mark" src="./mark.svg" alt=""/>
-      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.7.0</span></p>
+      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.8.0</span></p>
       <h1>BertyBeatz</h1>
       <p class="lede">Tap squares. Make a song. Watch it become light.</p>
       <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
@@ -27,7 +27,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyBeatz</strong>
-        <em id="chip-label">BZ 1.7.0</em>
+        <em id="chip-label">BZ 1.8.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -39,7 +39,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> On a phone, eight steps at a time. Drag a finger to paint. More tools wait until you have played once.</li>
+      <li><strong>What's new:</strong> Score opens this beat as written notes. Lights can follow it. Drums stay on the grid.</li>
       <li>Tap a square to turn a sound on. Tap again to turn it off.</li>
       <li>Press Play. The moving column is the beat walking across the grid.</li>
       <li>Top rows are drums. Bottom rows are notes that always fit the key.</li>
@@ -75,6 +75,7 @@
       <span class="play-icon" aria-hidden="true"></span>
     </button>
     <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
+    <button type="button" id="score-btn" class="btn">Score</button>
     <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
     </button>
@@ -153,7 +154,8 @@
     <p id="status-line" class="hint" role="status"></p>
   </section>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.7.0</span> · See it move · no names ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.8.0</span> · See it move · no names ·
+    <button type="button" id="lights-btn" class="link">Lights</button> ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a>
   </p>
@@ -170,7 +172,8 @@
     </form>
   </dialog>
 
-  <script src="/shared/visualizer/stage.js?v=0.4.0"></script>
-  <script src="./app.js?v=1.7.0"></script>
+  <script src="/shared/song/model.js?v=0.2.0"></script>
+  <script src="/shared/visualizer/stage.js?v=0.5.0"></script>
+  <script src="./app.js?v=1.8.0"></script>
 </body>
 </html>

@@ -585,10 +585,17 @@ body.is-loop .cell.play {
   resize: vertical;
   margin-bottom: 0.55rem;
 }
-.foot a {
+.foot a, .foot .link {
   color: var(--accent);
   font-weight: 650;
   text-decoration: none;
+}
+.foot .link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 44px;
+  font-weight: 650;
 }
 .foot a:hover { text-decoration: underline; }
 

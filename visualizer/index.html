@@ -8,7 +8,7 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.4.0"/>
+  <link rel="stylesheet" href="./styles.css?v=0.5.0"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.4.0</em>
+        <em id="chip-label">Viz 0.5.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,7 +29,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> Pick a beat from the library. Lights follow it. Device sound is a choice, never required.</li>
+      <li><strong>What's new:</strong> A beat from Beats or a score can drive these lights. Device sound is still a choice.</li>
       <li>Pick a Look — Bars, Kaleidoscope, Clouds, Stars, Code. Keys 1–5 do the same.</li>
       <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
       <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
@@ -44,7 +44,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.4.0</span>
+          <span id="chip-live">Viz 0.5.0</span>
         </p>
       </div>
       <div class="stage-look">
@@ -68,6 +68,7 @@
   <section class="feed" aria-label="Beats">
     <span class="tool-label">Beat</span>
     <div class="chips" id="feed"></div>
+    <button type="button" id="score-btn" class="btn">Score</button>
   </section>
 
   <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
@@ -79,10 +80,11 @@
     <p id="status-line" class="note" role="status"></p>
   </section>
 
-  <p class="note">Sound can stay off. These lights move anyway. Make a real loop in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.4.0</span> · own door · shared lights</p>
+  <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.5.0</span> · own door · shared lights</p>
 
-  <script src="/shared/visualizer/stage.js?v=0.4.0"></script>
-  <script src="./app.js?v=0.4.0"></script>
+  <script src="/shared/song/model.js?v=0.2.0"></script>
+  <script src="/shared/visualizer/stage.js?v=0.5.0"></script>
+  <script src="./app.js?v=0.5.0"></script>
 </body>
 </html>

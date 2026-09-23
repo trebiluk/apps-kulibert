@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.4.0") return;
-  window.__VISUALIZER__ = "0.4.0";
+  if (window.__VISUALIZER__ === "0.5.0") return;
+  window.__VISUALIZER__ = "0.5.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.4.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.5.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -117,6 +117,18 @@
     const raw = String(text || "").trim();
     if (!raw) return null;
     if (raw.startsWith("BZ1~")) return beatFromParts(raw.split("~"));
+    if (window.KulibertSong && raw.includes("kulibert.song")) {
+      const song = window.KulibertSong.parse(raw);
+      if (song) {
+        const beat = window.KulibertSong.toBeat(song);
+        return {
+          id: "file-" + Date.now(),
+          name: beat.name || "Score",
+          bpm: beat.bpm,
+          steps: normalizeSteps(beat.steps),
+        };
+      }
+    }
     let data;
     try { data = JSON.parse(raw); } catch { return null; }
     if (typeof data === "string") return beatFromText(data);
@@ -205,8 +217,21 @@
   }
   state.look = loadLook();
 
+  function scoreBeat() {
+    const Song = window.KulibertSong;
+    if (!Song || !Song.readBridge) return [];
+    const bridge = Song.readBridge();
+    if (!bridge || !bridge.song) return [];
+    const beat = Song.toBeat(bridge.song);
+    return [{
+      id: "score",
+      name: "Written",
+      bpm: beat.bpm,
+      steps: normalizeSteps(beat.steps),
+    }];
+  }
   function catalog() {
-    return localBeats().concat(BUILTIN).concat(state.imported);
+    return scoreBeat().concat(localBeats()).concat(BUILTIN).concat(state.imported);
   }
   function currentBeat() {
     const list = catalog();
@@ -423,6 +448,16 @@
     renderChrome();
   }
 
+  $("score-btn").addEventListener("click", () => {
+    const Song = window.KulibertSong;
+    const beat = currentBeat();
+    if (!Song || !beat) {
+      window.location.href = "/bertyscore/";
+      return;
+    }
+    Song.writeBridge("visualizer", Song.fromBeat(beat), beat);
+    window.location.href = "/bertyscore/?from=bridge";
+  });
   $("play-btn").addEventListener("click", () => {
     if (state.playing && state.source !== "device") stop();
     else if (state.source === "device" && state.playing) {
@@ -503,6 +538,13 @@
   document.body.classList.toggle("is-day", !seen);
   $("more-btn").hidden = !seen;
   ensureBeat();
+  if (new URLSearchParams(window.location.search).get("from") === "bridge") {
+    state.beatId = "score";
+    state.source = "library";
+    state.playing = true;
+    state.startedAt = performance.now();
+    markDay();
+  }
   renderChrome();
 
   const canvas = $("viz");

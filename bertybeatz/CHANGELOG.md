@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.0** · 2026-09-23 · channel **live**
+
+Score, Beats, and Lights share one song on this Chromebook. Pitched notes move. Drums stay on the grid. An old pass and an old score file still open.
+
+## Earlier
+
 **Chip: BZ 1.7.0** · 2026-09-23 · channel **live**
 
 Phone day-one is Play, the current pattern, and Mute. Eight steps on a narrow screen. A finger paints cells. Export, mix, and the song line sit under More after the first play. Lights still move when sound is off.
