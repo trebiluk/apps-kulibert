@@ -1,5 +1,11 @@
-**Chip: HI 1.0.2** · 2026-09-23 · channel **live**
+**Chip: HI 1.1.0** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.0 — Drafting table — 2026-09-23
+
+- What’s new: the door opens on the job list (Bridges, Towers, Case files), then the drafting table. Cyan is tension. Rust is compression. Swap materials and press Test.
+- The stretch board is still there for staff: /holdit/classic/
+- Stars stay on this Chromebook.
 
 ## 1.0.2 — Challenge, Assist, plain Help — 2026-09-23
 

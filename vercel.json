@@ -424,6 +424,30 @@
   ],
   "rewrites": [
     {
+      "source": "/holdit/play/:levelId",
+      "destination": "/holdit/index.html"
+    },
+    {
+      "source": "/holdit/lab",
+      "destination": "/holdit/index.html"
+    },
+    {
+      "source": "/holdit/help",
+      "destination": "/holdit/index.html"
+    },
+    {
+      "source": "/holdit/help/:who",
+      "destination": "/holdit/index.html"
+    },
+    {
+      "source": "/holdit/whats-new",
+      "destination": "/holdit/index.html"
+    },
+    {
+      "source": "/holdit/debug",
+      "destination": "/holdit/index.html"
+    },
+    {
       "source": "/logolab",
       "destination": "https://logolab-rho.vercel.app/logolab/"
     },
