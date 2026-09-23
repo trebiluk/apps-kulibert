@@ -88,6 +88,17 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
   max-width: 9rem;
 }
 
+.rail-run {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rail-run .btn {
+  width: 100%;
+  min-width: 0;
+  padding: 6px 4px;
+  font-size: 13px;
+}
 .rail-pin {
   display: flex; align-items: center; gap: 10px;
   min-height: 44px; min-width: 44px; padding: 6px 8px;
@@ -649,7 +660,6 @@ a { color: var(--orange); }
 
 @media (max-width: 860px) {
   :root { --rail: 68px; }
-  #btn-slow { display: none; }
   .hud-pick { max-width: 8.5rem; }
   .lesson { width: min(11rem, 34vw); padding: 6px 8px 4px; font-size: 11px; top: 6px; right: 6px; }
   .role { display: none; }

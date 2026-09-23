@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.18.8** · 2026-09-23 · channel **live**  
+**Chip: BB 0.18.9** · 2026-09-23 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.18.8` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.18.9` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -29,6 +29,10 @@ Rules:
 ---
 
 ## Current train (0.18.x live)
+
+### 0.18.9 — Controls on the left — 2026-09-23
+
+Play, Slow, Stop, and Menu sit in the left pane. The top bar keeps rank, heat, and the course.
 
 ### 0.18.8 — Done, next, More — 2026-09-23
 
