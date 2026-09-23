@@ -19,16 +19,16 @@ const ENGAGE = "kulibert-spire-engage-v1";
 const ASSIST_SEEN = "kulibert-spire-assist-intro-v1";
 const CALM_KEY = "kulibert-calm-clear";
 const GHOST_KEY = "kulibert-spire-ghost-v1";
-const SLAB_H = 26;
-const BASE_W = 168;
-const GOAL_FLOORS = 10; // classroom clear target — dashed line on board
+const SLAB_H = 36;
+const BASE_W = 260;
+const GOAL_FLOORS = 10; // tallest in-app goal — later isles
 
 const ISLES = [
-  { id: "first", name: "First Stack", job: "Short stack · wide base", toy: "Sticky joint", unlock: null },
-  { id: "tall", name: "Tall Peak", job: "Go taller · keep balance", toy: "Soft spring", unlock: "first" },
-  { id: "wind", name: "Wind Peak", job: "Stand in a wobble", toy: "Wind fan", unlock: "tall" },
-  { id: "offset", name: "Offset Peak", job: "Offset stack · fix one", toy: "Offset pad", unlock: "wind" },
-  { id: "open", name: "Open Spire", job: "Your tower · stand check", toy: "Longer beam", unlock: "offset" },
+  { id: "first", name: "First Stack", job: "A wide base holds a short tower.", goal: 3, toy: "Sticky joint", unlock: null },
+  { id: "tall", name: "Tall Peak", job: "Go taller and keep the stack even.", goal: 6, toy: "Soft spring", unlock: "first" },
+  { id: "wind", name: "Wind Peak", job: "Stand through a wobble.", goal: 7, toy: "Wind fan", unlock: "tall" },
+  { id: "offset", name: "Offset Peak", job: "An offset stack still has to stand.", goal: 8, toy: "Offset pad", unlock: "wind" },
+  { id: "open", name: "Open Spire", job: "Your tower. Reach the high line.", goal: 10, toy: "Longer beam", unlock: "offset" },
 ];
 
 const canvas = document.getElementById("board");
@@ -51,6 +51,7 @@ const state = {
   height: 0,
   best: 0,
   perfectCount: 0,
+  flushCount: 0,
   slabs: [],
   mover: null,
   scraps: [],
@@ -178,7 +179,7 @@ function dismissFirstAssist() {
   }
   state.assist = false;
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "false");
-  setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to Goal " + GOAL_FLOORS + ".", "");
+  setStatus("Ready", "Drop three slabs that stay. Goal is " + activeGoal() + ".", "");
 }
 function loadEngage() {
   const data = readJson(ENGAGE, null);
@@ -352,7 +353,7 @@ function writeBest() {
 }
 
 function speed() {
-  if (!state.cleared.first) return 64;
+  if (!state.cleared.first) return 48;
   const base = state.assist ? 110 : 156;
   const climb = state.assist ? 14 : 28;
   const cap = state.assist ? 230 : 360;
@@ -370,9 +371,9 @@ function snapBand() {
 function paintHeightRead() {
   if (heightN) heightN.textContent = String(state.height);
   const goalEl = document.getElementById("goal-n");
-  if (goalEl) goalEl.textContent = String(GOAL_FLOORS);
+  if (goalEl) goalEl.textContent = String(activeGoal());
   const wrap = document.getElementById("height-read");
-  if (wrap) wrap.setAttribute("data-goal-met", state.height >= GOAL_FLOORS ? "1" : "0");
+  if (wrap) wrap.setAttribute("data-goal-met", state.height >= activeGoal() ? "1" : "0");
 }
 
 function armFailRetry(on) {
@@ -399,22 +400,43 @@ function resetTower() {
   };
   paintHeightRead();
   state.perfectCount = 0;
+  state.flushCount = 0;
   showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   const best = state.best ? " Best " + state.best + "." : "";
   const line = state.cleared.first
-    ? "Hang the slab over the tower, then Drop. Climb to the Goal line (" + GOAL_FLOORS + ")." + best
+    ? "Hang the slab over the tower, then Drop. Climb to the Goal line (" + activeGoal() + ")." + best
     : "Drop three slabs that stay. That is the first clear." + best;
   setStatus("Ready", line, "");
 }
 
+function activeIsle() {
+  return ISLES.find((i) => i.id === state.isleId) || ISLES[0];
+}
+function activeGoal() {
+  return activeIsle().goal || GOAL_FLOORS;
+}
+function gradeTower() {
+  const goal = activeGoal();
+  if (state.height < goal) return 0;
+  let n = 1;
+  if (state.flushCount >= 1) n = 2;
+  if (state.flushCount >= 2) n = 3;
+  if (state.flushCount >= goal) n = 4;
+  return n;
+}
+function starPhrase(n) {
+  if (!n) return "";
+  return "★".repeat(n) + "☆".repeat(Math.max(0, 4 - n)) + " " + (n === 1 ? "1 star" : n + " stars");
+}
 function topSlab() {
   return state.slabs[state.slabs.length - 1];
 }
 
 function travel() {
   const top = topSlab();
-  const pad = !state.cleared.first ? 90 : state.assist ? 36 : 58;
+  const ratio = !state.cleared.first ? 0.95 : state.assist ? 0.92 : 1.05;
+  const pad = Math.round(top.w * ratio);
   return { lo: top.x - pad, hi: top.x + top.w + pad };
 }
 
@@ -428,6 +450,7 @@ function doDropSlab() {
   const overlap = right - left;
   if (overlap < Math.max(10, top.w * 0.12)) {
     state.perfectCount = 0;
+    state.flushCount = 0;
     showStreak();
     state.scraps.push({
       x: mover.x,
@@ -498,6 +521,7 @@ function doDropSlab() {
   paintHeightRead();
   writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
+  state.flushCount = aligned ? state.flushCount + 1 : 0;
   showStreak();
   const span = travel();
   state.mover = {
@@ -518,23 +542,43 @@ function doDropSlab() {
     try { localStorage.setItem(GHOST_KEY, String(state.ghostBest)); } catch { /* private */ }
   }
   let toy = null;
-  const firstClear = state.height === 3 && !state.cleared.first;
-  if (firstClear) toy = markIsleClear();
-  if (state.height === GOAL_FLOORS) toy = markIsleClear() || toy;
+  const isle = activeIsle();
+  const goal = isle.goal;
+  const justClear = state.height >= goal && state.height - 1 < goal;
+  const firstClear = justClear && isle.id === "first" && !state.cleared.first;
+  let stars = 0;
+  if (justClear) {
+    stars = 1;
+    if (state.flushCount >= 1) stars = 2;
+    if (state.flushCount >= 2) stars = 3;
+    if (state.flushCount >= goal) stars = 4;
+    toy = markIsleClear();
+    paintHeightRead();
+  }
   const toyLine = toy ? " Toy: " + toy + "." : "";
   setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
   armFailRetry(false);
-  const beats = [{
-    shout: "STAND",
-    caption: (firstClear && toy ? toy + " is yours. " : "") + "Height " + state.height + ".",
-    mark: "✓",
-  }];
-  if (heightHit) beats.push({ shout: "HEIGHT HIT", caption: "Height " + state.height + ".", mark: "✓" });
-  if (state.perfectCount > 0) {
-    setMasteryChip("Streak " + state.perfectCount);
-    beats.push({ shout: "STREAK", caption: state.perfectCount + " even in a row.", mark: "★" });
+  const beats = [];
+  if (justClear) {
+    beats.push({
+      shout: "CLEAR",
+      caption: (firstClear ? "First clear. " : "") + isle.job + " " + starPhrase(stars) + ".",
+      mark: "✓",
+    });
+    setMasteryChip("★ " + stars + "/4");
   } else {
-    setMasteryChip("");
+    beats.push({
+      shout: "STAND",
+      caption: (firstClear && toy ? toy + " is yours. " : "") + "Height " + state.height + ".",
+      mark: "✓",
+    });
+    if (heightHit) beats.push({ shout: "HEIGHT HIT", caption: "Height " + state.height + ".", mark: "✓" });
+    if (state.perfectCount > 0) {
+      setMasteryChip("Streak " + state.perfectCount);
+      beats.push({ shout: "STREAK", caption: state.perfectCount + " even in a row.", mark: "★" });
+    } else {
+      setMasteryChip("");
+    }
   }
   if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   playBeats(beats);
@@ -570,7 +614,7 @@ function dropSlab() {
 function targetScale() {
   const tower = (state.slabs.length + 1) * SLAB_H + 120;
   const fit = (cssH - 72) / tower;
-  return Math.max(0.42, Math.min(1.7, fit));
+  return Math.max(1.05, Math.min(2.15, fit));
 }
 
 function roundRect(x, y, w, h, r) {
@@ -648,19 +692,19 @@ function draw() {
   ctx.stroke();
 
   // Goal line — classroom target height
-  const goalY = worldToScreen(0, GOAL_FLOORS * SLAB_H).y;
+  const goalY = worldToScreen(0, activeGoal() * SLAB_H).y;
   ctx.save();
   ctx.setLineDash([10, 8]);
-  ctx.strokeStyle = state.height >= GOAL_FLOORS ? "#34d399" : "#a78bfa";
+  ctx.strokeStyle = state.height >= activeGoal() ? "#34d399" : "#a78bfa";
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.moveTo(24, goalY);
   ctx.lineTo(cssW - 24, goalY);
   ctx.stroke();
   ctx.setLineDash([]);
-  ctx.fillStyle = state.height >= GOAL_FLOORS ? "#34d399" : "#c4b5fd";
+  ctx.fillStyle = state.height >= activeGoal() ? "#34d399" : "#c4b5fd";
   ctx.font = "700 13px Outfit, system-ui, sans-serif";
-  ctx.fillText(state.height >= GOAL_FLOORS ? "Goal " + GOAL_FLOORS + " · done" : "Goal " + GOAL_FLOORS, 28, goalY - 8);
+  ctx.fillText(state.height >= activeGoal() ? "Goal " + activeGoal() + " · done" : "Goal " + activeGoal(), 28, goalY - 8);
   if (state.ghostBest > 0) {
     const gy = worldToScreen(0, state.ghostBest * SLAB_H).y;
     ctx.setLineDash([4, 6]);
@@ -736,7 +780,7 @@ function draw() {
 function tick(now) {
   const dt = Math.min(0.05, last ? (now - last) / 1000 : 0.016);
   last = now;
-  if (state.phase !== "over" && state.mover && !state.grab) {
+  if (state.phase !== "over" && state.phase !== "theater" && state.mover && !state.grab) {
     const limit = travel();
     state.mover.x += state.mover.dir * speed() * dt;
     if (state.mover.x < limit.lo) {
@@ -863,13 +907,13 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.13",
-  note: "What’s new: a miss says the bet.",
+  version: "SL 1.3.14",
+  note: "What’s new: a clear can earn 4 stars. Goal is the challenge.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
     "Drop three slabs that stay. That is the first clear.",
-    "Goal is the dashed line after that.",
+    "A clear means you reached the Goal line. Stars show how even the stack was.",
     "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {

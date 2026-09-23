@@ -103,7 +103,7 @@ function budgetOf(s) {
 
 function starPhrase(n) {
   if (!n) return "";
-  const marks = "★".repeat(n) + "☆".repeat(3 - n);
+  const marks = "★".repeat(n) + "☆".repeat(Math.max(0, 4 - n));
   const word = n === 1 ? "1 star" : n + " stars";
   return marks + " " + word;
 }
@@ -142,11 +142,20 @@ function pierUnder(s, parts, c) {
 
 function scoreStars(s, verdict) {
   if (!verdict.ok) return 0;
-  let n = 1;
-  if (state.parts.length <= budgetOf(s)) n = 2;
+  const budget = budgetOf(s);
   const mid = Math.floor(s.cols / 2);
-  if (n === 2 && verdict.sag < 10 && pierUnder(s, state.parts, mid)) n = 3;
+  const stiff = verdict.sag < 18 && pierUnder(s, state.parts, mid);
+  const nParts = state.parts.length;
+  let n = 1;
+  if (nParts <= budget) n = 2;
+  if (nParts < budget) n = 3;
+  if (nParts <= budget && stiff) n = 4;
   return n;
+}
+
+function paintBudget() {
+  const el = document.getElementById("budget-n");
+  if (el) el.textContent = String(budgetOf(spec()));
 }
 
 
@@ -415,6 +424,7 @@ function busy() {
 }
 
 function syncControls() {
+  paintBudget();
   const lock = busy();
   for (const btn of Object.values(toolButtons)) btn.disabled = lock;
   testBtn.disabled = lock;
@@ -425,7 +435,9 @@ function syncControls() {
   for (const btn of kindButtons) {
     btn.setAttribute("aria-checked", btn.dataset.kind === state.kind ? "true" : "false");
   }
-  kindsEl.hidden = state.tool !== "add" && state.tool !== "move";
+  const showKinds = state.tool === "add" || state.tool === "move";
+  kindsEl.hidden = false;
+  for (const btn of kindButtons) btn.hidden = !showKinds;
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
   document.body.dataset.phase = state.phase;
 }
@@ -553,7 +565,7 @@ function drawPart(kind, box, alpha, dy) {
   ctx.globalAlpha = alpha;
   const y = box.y + dy;
   if (kind === "deck") {
-    const h = Math.max(18, box.h * 0.42);
+    const h = Math.max(22, box.h * 0.62);
     const x = box.x + box.w * 0.08;
     const w = box.w * 0.84;
     const top = y + (box.h - h) / 2;
@@ -575,7 +587,7 @@ function drawPart(kind, box, alpha, dy) {
     ctx.lineWidth = 3;
     ctx.stroke();
   } else {
-    const w = Math.max(18, box.w * 0.46);
+    const w = Math.max(28, box.w * 0.62);
     const x = box.x + (box.w - w) / 2;
     roundRect(x, y + 3, w, box.h - 4, 6);
     ctx.fillStyle = "#5eead4";
@@ -629,7 +641,7 @@ function draw() {
   ctx.lineWidth = 2;
   for (let c = 1; c < s.cols - 1; c++) {
     const box = cellRect(g, c, 0);
-    const h = Math.max(18, box.h * 0.42);
+    const h = Math.max(22, box.h * 0.62);
     roundRect(box.x + box.w * 0.08, box.y + (box.h - h) / 2, box.w * 0.84, h, 8);
     ctx.stroke();
   }
@@ -909,7 +921,7 @@ function finishProve(verdict, stars, s, prove, started) {
   state.animU = 1;
   if (stars > state.bestStars) state.bestStars = stars;
   // Ghost You: faint best CLEAR outline (any pass, prefer 3★)
-  if (verdict.ok && (stars === 3 || !state.ghost)) {
+  if (verdict.ok && (stars === 4 || !state.ghost)) {
     state.ghost = state.parts.map((p) => ({ c: p.c, r: p.r, kind: p.kind }));
   }
   if (stars > 0) saveMaster();
@@ -923,6 +935,7 @@ function finishProve(verdict, stars, s, prove, started) {
       ? " Bet matched — nice read."
       : " Bet missed — try one fix, then Test again.";
   }
+  const clearedIsle = ISLES.find((i) => i.id === (state.isleId || "first")) || ISLES[0];
   const firstClear = verdict.ok && !state.cleared.first;
   const toy = verdict.ok ? markIsleClear() : null;
   if (toy) extra += " Toy: " + toy + ".";
@@ -933,13 +946,13 @@ function finishProve(verdict, stars, s, prove, started) {
   const beats = [];
   if (verdict.ok) {
     if (firstClear) {
-      beats.push({ shout: "First clear", caption: (toy ? toy + " is yours. " : "") + "Three decks held.", mark: "✓" });
+      beats.push({ shout: "CLEAR", caption: (toy ? toy + " is yours. " : "") + "First clear. " + clearedIsle.job + ". " + starPhrase(stars) + ".", mark: "✓" });
     } else {
-      beats.push({ shout: "Held", caption: "The load stayed up.", mark: "✓" });
+      beats.push({ shout: "CLEAR", caption: clearedIsle.job + ". " + starPhrase(stars) + ".", mark: "✓" });
     }
     if (stars > 0) {
-      setMasteryChip("★ " + stars + "/3");
-      beats.push({ shout: stars + (stars === 1 ? " star" : " stars"), caption: starPhrase(stars) + ".", mark: "★".repeat(stars) });
+      setMasteryChip("★ " + stars + "/4");
+      beats.push({ shout: stars + (stars === 1 ? " star" : " stars"), caption: starPhrase(stars) + ".", mark: "★".repeat(Math.min(4, stars)) });
     }
     if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   } else {
@@ -1202,13 +1215,13 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.14",
-  note: "What’s new: the bet stays on the result.",
+  version: "SC 1.3.15",
+  note: "What’s new: a clear can earn 4 stars. Budget is the challenge.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
     "Place three Decks across the gap, then Test. That is the first clear.",
-    "Press Test. The word says if it held.",
+    "A clear means the span held. Stars show how few parts you used versus Budget. Four stars means the middle stayed stiff too.",
     "If it misses, tap Retry and change one thing.",
   ],
   onReplayIntro: () => {

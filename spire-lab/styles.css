@@ -611,7 +611,7 @@ html.calm-clear .flash-spark { display: none !important; }
   padding: 1rem 1.1rem 1.15rem;
 }
 .help-class { margin: 0 0 0.7rem; }
-.help-class a { color: var(--muted); font-weight: 700; }
+.help-class a { color: var(--muted); font-weight: 700; display: inline-flex; align-items: center; min-height: 44px; }
 .help-card h2 { margin: 0; font-size: 1.3rem; }
 .help-rev { margin: 0.2rem 0 0.7rem; color: var(--muted); font-size: 0.85rem; font-weight: 700; }
 .help-steps { margin: 0 0 0.9rem; padding-left: 1.2rem; }
