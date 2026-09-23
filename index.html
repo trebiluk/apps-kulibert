@@ -1681,6 +1681,34 @@
       var shellHome = document.getElementById("shell-home");
       if (shellHome) shellHome.addEventListener("click", function () { closeFrame(); });
 
+      window.addEventListener("message", function (ev) {
+        if (ev.origin !== location.origin) return;
+        var data = ev.data;
+        if (!data || data.type !== "tech-room-home") return;
+        if (document.body.classList.contains("is-framed")) closeFrame();
+      });
+      (function captureDoor() {
+        var open;
+        try { open = new URLSearchParams(location.search).get("open"); } catch (e) { return; }
+        if (!open || !isSameOriginDoor(open)) return;
+        var url;
+        try { url = new URL(open, location.href); } catch (e2) { return; }
+        if (url.origin !== location.origin) return;
+        var title = "App";
+        var tiles = document.querySelectorAll("a.tile");
+        for (var i = 0; i < tiles.length; i++) {
+          var href = tiles[i].getAttribute("href") || "";
+          try {
+            if (new URL(href, location.href).pathname.replace(/\/$/, "") === url.pathname.replace(/\/$/, "")) {
+              var label = tiles[i].querySelector(".label");
+              if (label) title = label.textContent.replace(/\s+/g, " ").trim().slice(0, 80);
+              break;
+            }
+          } catch (e3) {}
+        }
+        openFrame(url.href, title);
+      })();
+
       paint();
       paintCuts();
       loadSchool();
