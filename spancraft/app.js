@@ -86,6 +86,8 @@ const state = {
   toys: [],
   theater: null,
   firstSnap: true,
+  track: "levels",
+  challengeMet: false,
 };
 
 let nextId = 1;
@@ -99,6 +101,32 @@ function spec() {
 
 function budgetOf(s) {
   return s.cols - 2 + s.pierDepth;
+}
+
+const CHALLENGE = {
+  name: "Tight span",
+  brief: "Hold the load. Stay on Budget. Put a pier under the middle.",
+};
+
+function onChallenge() {
+  return state.track === "challenge";
+}
+
+function challengeCheck(s, verdict) {
+  if (!verdict.ok) return { met: false, held: false, why: "miss" };
+  const onBudget = state.parts.length <= budgetOf(s);
+  const mid = Math.floor(s.cols / 2);
+  const pier = pierUnder(s, state.parts, mid);
+  if (onBudget && pier) return { met: true, held: true, why: "met" };
+  if (!onBudget && !pier) return { met: false, held: true, why: "both" };
+  if (!onBudget) return { met: false, held: true, why: "budget" };
+  return { met: false, held: true, why: "pier" };
+}
+
+function challengeStill(why) {
+  if (why === "budget") return "It held. Challenge still open — use fewer parts than Budget.";
+  if (why === "pier") return "It held. Challenge still open — put a pier under the middle.";
+  return "It held. Challenge still open — fewer parts, and a pier under the middle.";
 }
 
 function starPhrase(n) {
@@ -263,6 +291,8 @@ function loadEngage() {
   state.toys = Array.isArray(data.toys) ? data.toys : [];
   state.isleId = typeof data.isleId === "string" ? data.isleId : "first";
   state.firstSnap = data.firstSnap !== false;
+  state.track = data.track === "challenge" ? "challenge" : "levels";
+  state.challengeMet = !!data.challengeMet;
 }
 function saveEngage() {
   writeJson(ENGAGE, {
@@ -271,6 +301,8 @@ function saveEngage() {
     toys: state.toys,
     isleId: state.isleId,
     firstSnap: state.firstSnap,
+    track: state.track,
+    challengeMet: state.challengeMet,
   });
   syncToysChip();
 }
@@ -378,6 +410,30 @@ function closeIsleMap() {
   map.hidden = true;
   map.setAttribute("hidden", "");
 }
+function syncTrack() {
+  const levels = document.getElementById("track-levels");
+  const chal = document.getElementById("track-challenge");
+  const brief = document.getElementById("brief");
+  if (levels) levels.setAttribute("aria-pressed", onChallenge() ? "false" : "true");
+  if (chal) chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+  if (brief) {
+    brief.hidden = !onChallenge();
+    if (onChallenge()) brief.textContent = CHALLENGE.brief;
+  }
+}
+function setTrack(track) {
+  if (busy()) return;
+  state.track = track === "challenge" ? "challenge" : "levels";
+  saveEngage();
+  syncTrack();
+  if (onChallenge()) {
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    showAssistPlate("This is Challenge.\nThe brief has to be met. Holding is not enough.", false);
+  } else {
+    showCoach();
+  }
+  draw();
+}
 function setMasteryChip(text) {
   const chip = document.getElementById("mastery-chip");
   if (!chip) return;
@@ -401,6 +457,10 @@ function setStatus(word, text, tone) {
 }
 
 function showCoach() {
+  if (onChallenge()) {
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    return;
+  }
   if (!state.cleared.first && state.parts.length === 0) {
     setStatus("Ready", "Place three Decks across the gap, then Test. That is the first clear.", "");
     return;
@@ -936,26 +996,20 @@ function finishProve(verdict, stars, s, prove, started) {
       : " Bet missed — try one fix, then Test again.";
   }
   const clearedIsle = ISLES.find((i) => i.id === (state.isleId || "first")) || ISLES[0];
-  const firstClear = verdict.ok && !state.cleared.first;
-  const toy = verdict.ok ? markIsleClear() : null;
+  const challenge = onChallenge() ? challengeCheck(s, verdict) : null;
+  const levelPass = verdict.ok && !challenge;
+  const firstClear = levelPass && !state.cleared.first;
+  const toy = levelPass ? markIsleClear() : null;
+  if (challenge && challenge.met) {
+    state.challengeMet = true;
+    saveEngage();
+  }
   if (toy) extra += " Toy: " + toy + ".";
   syncControls();
-  setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
   if (retryBtn) retryBtn.classList.toggle("is-needed", !verdict.ok);
   armFailRetry(!verdict.ok);
   const beats = [];
-  if (verdict.ok) {
-    if (firstClear) {
-      beats.push({ shout: "CLEAR", caption: (toy ? toy + " is yours. " : "") + "First clear. " + clearedIsle.job + ". " + starPhrase(stars) + ".", mark: "✓" });
-    } else {
-      beats.push({ shout: "CLEAR", caption: clearedIsle.job + ". " + starPhrase(stars) + ".", mark: "✓" });
-    }
-    if (stars > 0) {
-      setMasteryChip("★ " + stars + "/4");
-      beats.push({ shout: stars + (stars === 1 ? " star" : " stars"), caption: starPhrase(stars) + ".", mark: "★".repeat(Math.min(4, stars)) });
-    }
-    if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
-  } else {
+  if (!verdict.ok) {
     setMasteryChip("");
     let caption = "Tap Retry and change one thing.";
     let shout = "Miss";
@@ -970,6 +1024,24 @@ function finishProve(verdict, stars, s, prove, started) {
     }
     setStatus("Fail", caption, "fail");
     beats.push({ shout, caption, mark });
+  } else if (challenge && !challenge.met) {
+    const line = challengeStill(challenge.why);
+    setMasteryChip(stars ? "★ " + stars + "/4" : "");
+    setStatus("TEST PASS", line + (stars ? " " + starPhrase(stars) + "." : ""), "pass");
+    beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
+  } else if (challenge && challenge.met) {
+    const line = "Challenge met. " + CHALLENGE.brief + (stars ? " " + starPhrase(stars) + "." : "");
+    setMasteryChip(stars ? "★ " + stars + "/4" : "");
+    setStatus("CLEAR", line, "pass");
+    beats.push({ shout: "TEST PASS", caption: "The load stayed up.", mark: "✓" });
+    beats.push({ shout: "CLEAR", caption: line, mark: "✓" });
+  } else {
+    const clearLine = (firstClear ? (toy ? toy + " is yours. " : "") + "First clear. " : "") + clearedIsle.job + ". " + starPhrase(stars) + ".";
+    setStatus("CLEAR", "Test pass. " + clearLine, "pass");
+    if (stars > 0) setMasteryChip("★ " + stars + "/4");
+    beats.push({ shout: "TEST PASS", caption: "The load stayed up.", mark: "✓" });
+    beats.push({ shout: "CLEAR", caption: clearLine, mark: "✓" });
+    if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   }
   playBeats(beats);
   state.bet = null;
@@ -1207,6 +1279,7 @@ loadEngage();
 if (readFlag(CALM_KEY)) document.documentElement.classList.add("calm-clear");
 const restored = load();
 syncControls();
+syncTrack();
 syncToysChip();
 syncBetBar();
 updateSnapHint();
@@ -1215,13 +1288,13 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.15",
-  note: "What’s new: a clear can earn 4 stars. Budget is the challenge.",
+  version: "SC 1.3.16",
+  note: "What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it held.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Place three Decks across the gap, then Test. That is the first clear.",
-    "A clear means the span held. Stars show how few parts you used versus Budget. Four stars means the middle stayed stiff too.",
+    "Levels: place three Decks across the gap, then Test. Test pass means it held. Clear means the gap job is done. Stars show how few parts you used.",
+    "Challenge: hold the load, stay on Budget, and put a pier under the middle. Holding alone is not the challenge.",
     "If it misses, tap Retry and change one thing.",
   ],
   onReplayIntro: () => {
@@ -1240,6 +1313,10 @@ const isleClose = document.getElementById("isle-close");
 if (isleClose) isleClose.addEventListener("click", closeIsleMap);
 const isleMap = document.getElementById("isle-map");
 if (isleMap) isleMap.addEventListener("click", (ev) => { if (ev.target === isleMap) closeIsleMap(); });
+const trackLevels = document.getElementById("track-levels");
+const trackChallenge = document.getElementById("track-challenge");
+if (trackLevels) trackLevels.addEventListener("click", () => setTrack("levels"));
+if (trackChallenge) trackChallenge.addEventListener("click", () => setTrack("challenge"));
 
 for (const btn of document.querySelectorAll(".bet-chip")) {
   btn.addEventListener("click", () => {

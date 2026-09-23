@@ -1,7 +1,12 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.1** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.15** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.15 — Two tracks — 2026-09-23
+
+- What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it stood.
+- Even tower: height 4, every slab even. A stand alone is Test pass, not Clear.
 
 ## 1.3.1 — Help — 2026-09-23
 

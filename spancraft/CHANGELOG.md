@@ -1,7 +1,12 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.1** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.16** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.16 — Two tracks — 2026-09-23
+
+- What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it held.
+- Tight span: hold the load, stay on Budget, pier under the middle. A hold alone is Test pass, not Clear.
 
 ## 1.3.1 — Help — 2026-09-23
 

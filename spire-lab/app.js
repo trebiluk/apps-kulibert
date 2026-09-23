@@ -64,6 +64,8 @@ const state = {
   theater: null,
   ghostBest: 0,
   pendingDrop: false,
+  track: "levels",
+  challengeMet: false,
 };
 
 let cssW = 0;
@@ -187,6 +189,8 @@ function loadEngage() {
   state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
   state.toys = Array.isArray(data.toys) ? data.toys : [];
   state.isleId = typeof data.isleId === "string" ? data.isleId : "first";
+  state.track = data.track === "challenge" ? "challenge" : "levels";
+  state.challengeMet = !!data.challengeMet;
   try {
     const g = Number(localStorage.getItem(GHOST_KEY));
     state.ghostBest = Number.isFinite(g) && g > 0 ? Math.floor(g) : 0;
@@ -200,6 +204,8 @@ function saveEngage() {
     cleared: state.cleared,
     toys: state.toys,
     isleId: state.isleId,
+    track: state.track,
+    challengeMet: state.challengeMet,
   });
   syncToysChip();
 }
@@ -294,6 +300,37 @@ function closeIsleMap() {
   map.hidden = true;
   map.setAttribute("hidden", "");
 }
+function syncTrack() {
+  const levels = document.getElementById("track-levels");
+  const chal = document.getElementById("track-challenge");
+  const brief = document.getElementById("brief");
+  if (levels) levels.setAttribute("aria-pressed", onChallenge() ? "false" : "true");
+  if (chal) chal.setAttribute("aria-pressed", onChallenge() ? "true" : "false");
+  if (brief) {
+    brief.hidden = !onChallenge();
+    if (onChallenge()) brief.textContent = CHALLENGE.brief;
+  }
+  paintHeightRead();
+}
+function setTrack(track) {
+  if (state.phase === "theater") return;
+  state.track = track === "challenge" ? "challenge" : "levels";
+  saveEngage();
+  syncTrack();
+  if (onChallenge()) {
+    const met = state.height >= CHALLENGE.height && state.perfectCount >= state.height;
+    if (met) {
+      state.challengeMet = true;
+      saveEngage();
+    }
+    setStatus(met ? "CLEAR" : "Challenge", met ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, met ? "pass" : "");
+    showAssistPlate("This is Challenge.\nThe brief has to be met. Standing is not enough.", false);
+  } else if (!state.cleared.first && state.height === 0) {
+    setStatus("Ready", "Drop three slabs that stay. That is the first clear.", "");
+  } else {
+    setStatus("Ready", "Hang the slab over the tower, then Drop. Climb to the Goal line (" + activeGoal() + ").", "");
+  }
+}
 function setMasteryChip(text) {
   const chip = document.getElementById("mastery-chip");
   if (!chip) return;
@@ -371,9 +408,10 @@ function snapBand() {
 function paintHeightRead() {
   if (heightN) heightN.textContent = String(state.height);
   const goalEl = document.getElementById("goal-n");
-  if (goalEl) goalEl.textContent = String(activeGoal());
+  const goal = onChallenge() ? CHALLENGE.height : activeGoal();
+  if (goalEl) goalEl.textContent = String(goal);
   const wrap = document.getElementById("height-read");
-  if (wrap) wrap.setAttribute("data-goal-met", state.height >= activeGoal() ? "1" : "0");
+  if (wrap) wrap.setAttribute("data-goal-met", state.height >= goal ? "1" : "0");
 }
 
 function armFailRetry(on) {
@@ -403,6 +441,10 @@ function resetTower() {
   state.flushCount = 0;
   showStreak();
   assistBtn.setAttribute("aria-pressed", state.assist ? "true" : "false");
+  if (onChallenge()) {
+    setStatus("Challenge", state.challengeMet ? "Challenge met. " + CHALLENGE.brief : CHALLENGE.brief, state.challengeMet ? "pass" : "");
+    return;
+  }
   const best = state.best ? " Best " + state.best + "." : "";
   const line = state.cleared.first
     ? "Hang the slab over the tower, then Drop. Climb to the Goal line (" + activeGoal() + ")." + best
@@ -410,6 +452,14 @@ function resetTower() {
   setStatus("Ready", line, "");
 }
 
+const CHALLENGE = {
+  name: "Even tower",
+  height: 4,
+  brief: "Stand to height 4. Every slab lands even.",
+};
+function onChallenge() {
+  return state.track === "challenge";
+}
 function activeIsle() {
   return ISLES.find((i) => i.id === state.isleId) || ISLES[0];
 }
@@ -517,7 +567,6 @@ function doDropSlab() {
   }
   state.slabs.push(piece);
   state.height += 1;
-  const heightHit = state.height > state.best;
   paintHeightRead();
   writeBest();
   state.perfectCount = even ? state.perfectCount + 1 : 0;
@@ -542,11 +591,13 @@ function doDropSlab() {
     try { localStorage.setItem(GHOST_KEY, String(state.ghostBest)); } catch { /* private */ }
   }
   let toy = null;
+  let stars = 0;
   const isle = activeIsle();
   const goal = isle.goal;
-  const justClear = state.height >= goal && state.height - 1 < goal;
+  const wasChallenge = state.challengeMet;
+  const justClear = !onChallenge() && state.height >= goal && state.height - 1 < goal;
   const firstClear = justClear && isle.id === "first" && !state.cleared.first;
-  let stars = 0;
+  const challengeMetNow = onChallenge() && state.height >= CHALLENGE.height && state.perfectCount >= state.height;
   if (justClear) {
     stars = 1;
     if (state.flushCount >= 1) stars = 2;
@@ -555,32 +606,41 @@ function doDropSlab() {
     toy = markIsleClear();
     paintHeightRead();
   }
+  if (challengeMetNow) {
+    state.challengeMet = true;
+    saveEngage();
+  }
   const toyLine = toy ? " Toy: " + toy + "." : "";
-  setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + betLine + toyLine, "pass");
   armFailRetry(false);
   const beats = [];
-  if (justClear) {
-    beats.push({
-      shout: "CLEAR",
-      caption: (firstClear ? "First clear. " : "") + isle.job + " " + starPhrase(stars) + ".",
-      mark: "✓",
-    });
+  if (onChallenge() && challengeMetNow && !wasChallenge) {
+    setStatus("CLEAR", "Challenge met. " + CHALLENGE.brief, "pass");
+    setMasteryChip("★ 4/4");
+    beats.push({ shout: "TEST PASS", caption: "It stood. Height " + state.height + ".", mark: "✓" });
+    beats.push({ shout: "CLEAR", caption: "Challenge met. Every slab landed even.", mark: "✓" });
+  } else if (onChallenge()) {
+    const line = challengeMetNow
+      ? "Challenge already met. Height " + state.height + "."
+      : (state.perfectCount < state.height
+        ? "It stood. Challenge still open — every slab has to land even."
+        : "It stood. Height " + state.height + " of " + CHALLENGE.height + ". Keep every slab even.");
+    setStatus(challengeMetNow ? "CLEAR" : "TEST PASS", line, "pass");
+    setMasteryChip(state.perfectCount ? "Even " + state.perfectCount : "");
+    beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
+  } else if (justClear) {
+    const clearLine = (firstClear ? "First clear. " : "") + isle.job + " " + starPhrase(stars) + "." + toyLine;
+    setStatus("CLEAR", "Test pass. " + clearLine, "pass");
     setMasteryChip("★ " + stars + "/4");
+    beats.push({ shout: "TEST PASS", caption: "It stood. Height " + state.height + ".", mark: "✓" });
+    beats.push({ shout: "CLEAR", caption: clearLine, mark: "✓" });
+    if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   } else {
-    beats.push({
-      shout: "STAND",
-      caption: (firstClear && toy ? toy + " is yours. " : "") + "Height " + state.height + ".",
-      mark: "✓",
-    });
-    if (heightHit) beats.push({ shout: "HEIGHT HIT", caption: "Height " + state.height + ".", mark: "✓" });
-    if (state.perfectCount > 0) {
-      setMasteryChip("Streak " + state.perfectCount);
-      beats.push({ shout: "STREAK", caption: state.perfectCount + " even in a row.", mark: "★" });
-    } else {
-      setMasteryChip("");
-    }
+    const line = "It stood. Height " + state.height + "." + streakLine + betLine;
+    setStatus("TEST PASS", line, "pass");
+    if (state.perfectCount > 0) setMasteryChip("Streak " + state.perfectCount);
+    else setMasteryChip("");
+    beats.push({ shout: "TEST PASS", caption: line, mark: "✓" });
   }
-  if (toy && !firstClear) beats.push({ shout: "Toy", caption: toy + " is yours.", mark: "✓" });
   playBeats(beats);
 }
 
@@ -903,17 +963,18 @@ if (!state.cleared.first) {
   if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
 }
 syncToysChip();
+syncTrack();
 syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.14",
-  note: "What’s new: a clear can earn 4 stars. Goal is the challenge.",
+  version: "SL 1.3.15",
+  note: "What’s new: Levels and Challenge are two tracks. Challenge is the brief, not just that it stood.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
-    "Drop three slabs that stay. That is the first clear.",
-    "A clear means you reached the Goal line. Stars show how even the stack was.",
+    "Levels: drop slabs that stay until the Goal. Test pass means it stood. Clear means you reached that Goal. Stars show how even the stack was.",
+    "Challenge: stand to height 4 with every slab even. A stand alone is not the challenge.",
     "If it misses, tap Retry.",
   ],
   onReplayIntro: () => {
@@ -936,6 +997,10 @@ const isleClose = document.getElementById("isle-close");
 if (isleClose) isleClose.addEventListener("click", closeIsleMap);
 const isleMap = document.getElementById("isle-map");
 if (isleMap) isleMap.addEventListener("click", (ev) => { if (ev.target === isleMap) closeIsleMap(); });
+const trackLevels = document.getElementById("track-levels");
+const trackChallenge = document.getElementById("track-challenge");
+if (trackLevels) trackLevels.addEventListener("click", () => setTrack("levels"));
+if (trackChallenge) trackChallenge.addEventListener("click", () => setTrack("challenge"));
 
 for (const btn of document.querySelectorAll(".bet-chip")) {
   btn.addEventListener("click", () => {
