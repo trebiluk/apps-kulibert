@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.2.2") return;
-  window.__BERTYBEATZ__ = "1.2.2";
+  if (window.__BERTYBEATZ__ === "1.3.0") return;
+  window.__BERTYBEATZ__ = "1.3.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.2.2";
+  const CHIP = "BZ 1.3.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -343,17 +343,74 @@
       if (!raw) return;
       const data = JSON.parse(raw);
       if (Array.isArray(data.library)) state.library = data.library;
+      if (validNow(data.now)) pendingNow = data.now;
     } catch {
       /* ignore */
     }
+  }
+  function validNow(now) {
+    if (!now || typeof now !== "object" || !now.steps) return false;
+    if (!KITS.some((k) => k.id === now.kit)) return false;
+    if (!MOODS.some((m) => m.id === now.mood)) return false;
+    if (!KEYS.includes(now.key)) return false;
+    for (const t of TRACKS) {
+      const row = now.steps[t.id];
+      if (!Array.isArray(row) || row.length !== STEP_COUNT) return false;
+    }
+    return true;
+  }
+  function snapshotNow() {
+    return {
+      name: cleanTitle(state.name),
+      bpm: state.bpm,
+      swing: state.swing,
+      kit: state.kit,
+      mood: state.mood,
+      key: state.key,
+      volume: state.volume,
+      steps: cloneSteps(state.steps),
+    };
   }
   function persistLibrary() {
+    flushNow();
+  }
+  let saveTimer = 0;
+  function remember() {
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(flushNow, 280);
+  }
+  function flushNow() {
     try {
-      localStorage.setItem(STORAGE, JSON.stringify({ library: state.library }));
+      localStorage.setItem(
+        STORAGE,
+        JSON.stringify({ library: state.library, now: snapshotNow() }),
+      );
     } catch {
       /* ignore */
     }
   }
+  const undoStack = [];
+  function pushUndo() {
+    undoStack.push(snapshotNow());
+    if (undoStack.length > 16) undoStack.shift();
+    const btn = $("undo-btn");
+    if (btn) btn.disabled = false;
+  }
+  function undo() {
+    const prev = undoStack.pop();
+    if (!prev) return;
+    applyPreset(prev);
+    if (typeof prev.volume === "number") {
+      state.volume = Math.min(1, Math.max(0, prev.volume));
+      const vol = $("vol");
+      if (vol) vol.value = String(Math.round(state.volume * 100));
+      engine.setVolume(state.volume);
+    }
+    const btn = $("undo-btn");
+    if (btn) btn.disabled = undoStack.length === 0;
+    flushNow();
+  }
+  let pendingNow = null;
 
   class Engine {
     constructor() {
@@ -651,6 +708,7 @@
       b.classList.toggle("on", Number(b.dataset.bank) === state.bank);
     });
     renderGrid();
+    remember();
   }
 
   function setPlayhead(step) {
@@ -686,6 +744,7 @@
     }
     const cell = e.target.closest("[data-track]");
     if (!cell) return;
+    if (!paint) pushUndo();
     const track = cell.dataset.track;
     const step = Number(cell.dataset.step);
     const next = !state.steps[track][step];
@@ -708,16 +767,28 @@
     cell.setAttribute("aria-pressed", String(paint.value));
   }, true);
   $("grid").addEventListener("pointerup", () => {
+    if (paint) remember();
     paint = null;
   });
   $("grid").addEventListener("pointercancel", () => {
     paint = null;
   });
 
+  function safeUnlock() {
+    try {
+      engine.unlock();
+    } catch {
+      /* Chromebook audio can fail. Lights still run. */
+    }
+  }
   $("play-btn").addEventListener("click", () => {
-    engine.unlock();
-    if (state.playing) engine.stop();
-    else engine.play();
+    safeUnlock();
+    try {
+      if (state.playing) engine.stop();
+      else engine.play();
+    } catch {
+      state.playing = false;
+    }
     renderAll();
   });
   $("stop-btn").addEventListener("click", () => {
@@ -727,13 +798,16 @@
   $("bpm").addEventListener("input", (e) => {
     state.bpm = Number(e.target.value);
     $("lcd-bpm").textContent = `${state.bpm} BPM`;
+    remember();
   });
   $("swing").addEventListener("input", (e) => {
     state.swing = Number(e.target.value);
+    remember();
   });
   $("vol").addEventListener("input", (e) => {
     state.volume = Number(e.target.value) / 100;
     engine.setVolume(state.volume);
+    remember();
   });
   document.querySelectorAll("[data-bank]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -747,6 +821,7 @@
     $("help-btn").setAttribute("aria-expanded", String(!box.hidden));
   });
   $("surprise-btn").addEventListener("click", () => {
+    pushUndo();
     if (Math.random() > 0.55) state.kit = KITS[Math.floor(Math.random() * KITS.length)].id;
     if (Math.random() > 0.6) state.mood = Math.random() > 0.5 ? "bright" : "moody";
     state.bpm = 88 + Math.floor(Math.random() * 36);
@@ -757,12 +832,17 @@
     state.name = funName();
     engine.setKit(state.kit);
     renderAll();
+    remember();
   });
+  const undoBtn = $("undo-btn");
+  if (undoBtn) undoBtn.addEventListener("click", () => undo());
   $("clear-btn").addEventListener("click", () => {
-    openModal("Clear the grid?", "This wipes the squares. Saved beats stay.", () => {
+    openModal("Clear the grid?", "Undo brings the squares back. Saved beats stay.", () => {
+      pushUndo();
       state.steps = emptySteps();
       state.name = "Blank page";
       renderAll();
+      remember();
       $("modal").close();
     }, "Clear");
   });
@@ -796,6 +876,7 @@
       b.className = "btn";
       b.textContent = p.name;
       b.addEventListener("click", () => {
+        pushUndo();
         applyPreset(p);
         modal.close();
       });
@@ -853,6 +934,7 @@
       load.className = "btn";
       load.textContent = item.name;
       load.addEventListener("click", () => {
+        pushUndo();
         applyPreset(item);
         modal.close();
       });
@@ -914,6 +996,7 @@
         return;
       }
       applyPreset(beat);
+      remember();
       modal.close();
     });
     const row = document.createElement("div");
@@ -926,20 +1009,33 @@
   });
 
   $("start-btn").addEventListener("click", () => {
-    engine.unlock();
     $("gate").hidden = true;
-    engine.play();
+    safeUnlock();
+    try {
+      engine.play();
+    } catch {
+      state.playing = false;
+    }
     renderAll();
   });
 
   document.addEventListener("keydown", (e) => {
     if (e.target.matches("input, textarea")) return;
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") {
+      e.preventDefault();
+      undo();
+      return;
+    }
     if (e.code === "Space") {
       e.preventDefault();
       if ($("gate").hidden === false) return;
-      engine.unlock();
-      if (state.playing) engine.stop();
-      else engine.play();
+      safeUnlock();
+      try {
+        if (state.playing) engine.stop();
+        else engine.play();
+      } catch {
+        state.playing = false;
+      }
       renderAll();
     }
     if (e.code === "Digit1") pickLook("bars");
@@ -1140,6 +1236,15 @@
   loadLibrary();
   const incoming = unpackBeat(new URLSearchParams(window.location.search).get("b") || "");
   if (incoming) applyPreset(incoming);
+  else if (pendingNow) {
+    applyPreset(pendingNow);
+    if (typeof pendingNow.volume === "number") {
+      state.volume = Math.min(1, Math.max(0, pendingNow.volume));
+      const vol = $("vol");
+      if (vol) vol.value = String(Math.round(state.volume * 100));
+    }
+  }
+  window.addEventListener("pagehide", flushNow);
   ["gate-chip", "chip-label", "foot-chip"].forEach((id) => {
     const el = $(id);
     if (el) el.textContent = CHIP;
