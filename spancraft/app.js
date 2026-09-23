@@ -34,7 +34,7 @@ const predictBtn = document.getElementById("predict");
 const kindsEl = document.getElementById("kinds");
 const assistBtn = document.getElementById("assist");
 const retryBtn = document.getElementById("retry");
-const kindButtons = [...kindsEl.querySelectorAll("button")];
+const kindButtons = [...kindsEl.querySelectorAll("button[data-kind]")];
 const toolButtons = {
   add: document.getElementById("tool-add"),
   move: document.getElementById("tool-move"),
@@ -744,7 +744,7 @@ function toggleAssist() {
   syncControls();
   save();
   const lead = state.assist
-    ? "Assist on. Fewer parts and a wider snap."
+    ? "Assist on. Easier snap. Shorter span."
     : "Assist off. Full span.";
   const extra = dropped ? " Some parts came off the shorter span." : "";
   setStatus(state.assist ? "Assist" : "Ready", lead + extra, "");
@@ -876,15 +876,6 @@ if (predictBtn) {
     state.predictArmed = !state.predictArmed;
     syncPredict();
     setStatus("Guess", state.predictArmed ? "Tap the joint you think fails, then Test." : "Guess put away.", "");
-  });
-}
-const edgeBtn = document.getElementById("edge-btn");
-const edgeMenu = document.getElementById("edge-menu");
-if (edgeBtn && edgeMenu) {
-  edgeBtn.addEventListener("click", () => {
-    const open = edgeMenu.hidden;
-    edgeMenu.hidden = !open;
-    edgeBtn.setAttribute("aria-expanded", open ? "true" : "false");
   });
 }
 

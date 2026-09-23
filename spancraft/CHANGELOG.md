@@ -1,8 +1,13 @@
 # SpanCraft changelog
 
-**Chip: SC 1.1.0** · 2026-09-22 · channel **live**
+**Chip: SC 1.1.1** · 2026-09-22 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
-Twin of Spire Lab **SL 1.1.0**.
+
+## 1.1.1 — Polish — 2026-09-22
+
+- What’s new: plain labels, load prove, fits this Chromebook.
+- Help is one line. Guess stays a short word. The load prove is unchanged.
+- Buttons sit in the bar. Nothing covers Retry.
 
 ## 1.1.0 — Stars — 2026-09-22
 
