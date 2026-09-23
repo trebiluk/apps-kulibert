@@ -1,5 +1,9 @@
-**Chip: HI 1.0.0** · 2026-09-23 · channel **live**
+**Chip: HI 1.0.1** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.0.1 — Workshop world — 2026-09-23
+
+- What’s new: the board is a workshop site. One joint can start a member. Assist shows the next step.
 
 ## 1.0.0 — One door — 2026-09-23
 

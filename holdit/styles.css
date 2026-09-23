@@ -1,0 +1,35 @@
+.assist-cue {
+  position: absolute;
+  z-index: 4;
+  left: 0.75rem;
+  top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: min(24rem, 86%);
+  min-height: 44px;
+  padding: 0.4rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid #94a3b8;
+  background: rgba(22, 28, 36, 0.92);
+  color: #f8fafc;
+  font-weight: 750;
+  line-height: 1.25;
+}
+.assist-cue[hidden] { display: none !important; }
+.assist-cue i {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 28px;
+  border-radius: 2px;
+  background: #99f6e4;
+}
+body.is-tower .assist-cue i { background: #c4b5fd; }
+body.workshop .flash-plate {
+  background: #1e293b;
+  border: 1px solid #94a3b8;
+  box-shadow: inset 6px 0 0 #99f6e4;
+}
+body.workshop.is-tower .flash-plate { box-shadow: inset 6px 0 0 #c4b5fd; }
+body.workshop .flash-plate .flash-shout { color: #f8fafc; }
+body.workshop .flash-plate .flash-caption { color: #e2e8f0; }

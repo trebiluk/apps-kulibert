@@ -47,6 +47,75 @@ export function mountTruss(cfg) {
     origin: { x: 40, y: 40 },
   };
 
+  const art = {};
+  function knockOut(img) {
+    const c = document.createElement("canvas");
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+    c.width = w;
+    c.height = h;
+    const g = c.getContext("2d");
+    g.drawImage(img, 0, 0);
+    try {
+      const data = g.getImageData(0, 0, w, h);
+      const d = data.data;
+      for (let i = 0; i < d.length; i += 4) {
+        if (d[i] + d[i + 1] + d[i + 2] < 78) d[i + 3] = 0;
+      }
+      g.putImageData(data, 0, 0);
+    } catch (err) {
+      return img;
+    }
+    return c;
+  }
+  if (cfg.workshop) {
+    const names = [
+      "world-sky", "world-water", "world-ground",
+      "abutment-left", "abutment-right", "pier", "deck-panel", "steel-member",
+      "gusset-joint", "tower-base-pad", "tower-block",
+    ];
+    for (const name of names) {
+      const img = new Image();
+      img.onload = () => {
+        art[name] = name.indexOf("world-") === 0 ? img : knockOut(img);
+        draw();
+      };
+      img.src = "/holdit/art/" + name + ".png";
+    }
+  }
+
+  function jointHint() {
+    const n = state.joints.length;
+    if (!cfg.workshop) return cfg.assistText;
+    if (n === 0) return "Tap the board to place a joint.";
+    if (n === 1 || state.stretch) return "Tap or let go where the other end goes.";
+    return "Let go on a joint to connect.";
+  }
+  function syncAssistCue() {
+    if (!cfg.workshop) return;
+    const on = assistBtn && assistBtn.getAttribute("aria-pressed") === "true";
+    const cue = document.getElementById("assist-cue");
+    const text = jointHint();
+    if (cue) {
+      cue.hidden = !on;
+      if (on) cue.removeAttribute("hidden");
+      const span = cue.querySelector("span");
+      if (span && span.textContent !== text) span.textContent = text;
+    }
+    const plate = document.getElementById("assist-plate");
+    const plateText = document.getElementById("assist-plate-text");
+    if (!plate) return;
+    if (!on) {
+      plate.classList.remove("show");
+      plate.hidden = true;
+      plate.setAttribute("hidden", "");
+      return;
+    }
+    if (plateText && plateText.textContent !== text) plateText.textContent = text;
+    plate.classList.add("show");
+    plate.hidden = false;
+    plate.removeAttribute("hidden");
+  }
   let cssW = 0;
   let cssH = 0;
   let plateTimer = 0;
@@ -320,16 +389,79 @@ export function mountTruss(cfg) {
     return true;
   }
 
+  function paintWorld(joints) {
+    const sky = art["world-sky"];
+    if (sky) ctx.drawImage(sky, 0, 0, cssW, Math.max(80, cssH * 0.78));
+    else {
+      const g = ctx.createLinearGradient(0, 0, 0, cssH);
+      g.addColorStop(0, "#b7c4ce");
+      g.addColorStop(1, "#6d7f8c");
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, cssW, cssH);
+    }
+    const bases = joints.filter((j) => j.fixed);
+    const baseY = bases.length ? Math.max(...bases.map((j) => toScreen(j).y)) : cssH * 0.72;
+    if (cfg.mode === "span") {
+      const water = art["world-water"];
+      if (water) ctx.drawImage(water, 0, baseY - 6, cssW, cssH - baseY + 6);
+      else {
+        ctx.fillStyle = "#3e5963";
+        ctx.fillRect(0, baseY, cssW, cssH - baseY);
+      }
+      const fixed = bases.slice().sort((a, b) => a.x - b.x);
+      if (fixed.length && art["abutment-left"]) {
+        const p = toScreen(fixed[0]);
+        ctx.drawImage(art["abutment-left"], p.x - 78, p.y - 28, 96, 96);
+      }
+      if (fixed.length > 1 && art["abutment-right"]) {
+        const p = toScreen(fixed[fixed.length - 1]);
+        ctx.drawImage(art["abutment-right"], p.x - 18, p.y - 28, 96, 96);
+      }
+      if (fixed.length > 1 && art["deck-panel"]) {
+        const a = toScreen(fixed[0]);
+        const b = toScreen(fixed[fixed.length - 1]);
+        ctx.drawImage(art["deck-panel"], a.x, a.y - 16, Math.max(20, b.x - a.x), 24);
+      }
+      if (fixed.length > 1 && art["pier"]) {
+        const mid = toScreen({
+          x: (fixed[0].x + fixed[fixed.length - 1].x) / 2,
+          y: fixed[0].y,
+        });
+        ctx.drawImage(art["pier"], mid.x - 16, mid.y - 8, 32, 78);
+      }
+    } else {
+      const ground = art["world-ground"];
+      if (ground) ctx.drawImage(ground, 0, baseY - 24, cssW, cssH - baseY + 24);
+      else {
+        ctx.fillStyle = "#6d655a";
+        ctx.fillRect(0, baseY, cssW, cssH - baseY);
+      }
+      if (bases.length && art["tower-base-pad"]) {
+        const xs = bases.map((j) => toScreen(j).x);
+        const left = Math.min(...xs);
+        const right = Math.max(...xs);
+        ctx.drawImage(art["tower-base-pad"], left - 40, baseY - 16, Math.max(80, right - left + 80), 52);
+        if (art["tower-block"]) {
+          ctx.drawImage(art["tower-block"], (left + right) / 2 - 24, baseY - 62, 48, 48);
+        }
+      }
+    }
+  }
+
   function draw() {
     ctx.clearRect(0, 0, cssW, cssH);
-    ctx.fillStyle = "#07101f";
-    ctx.fillRect(0, 0, cssW, cssH);
     const level = active();
     const joints = state.view ? state.view.joints : state.joints;
-    if (cfg.mode === "span") {
-      const base = toScreen({ x: 0, y: 250 });
-      ctx.fillStyle = "#12324a";
-      ctx.fillRect(0, base.y, cssW, cssH - base.y);
+    if (cfg.workshop) {
+      paintWorld(joints);
+    } else {
+      ctx.fillStyle = "#07101f";
+      ctx.fillRect(0, 0, cssW, cssH);
+      if (cfg.mode === "span") {
+        const base = toScreen({ x: 0, y: 250 });
+        ctx.fillStyle = "#12324a";
+        ctx.fillRect(0, base.y, cssW, cssH - base.y);
+      }
     }
     for (const j of joints) {
       if (!j.fixed) continue;
@@ -361,11 +493,11 @@ export function mountTruss(cfg) {
       ctx.beginPath();
       ctx.moveTo(pa.x, pa.y);
       ctx.lineTo(pb.x, pb.y);
-      ctx.strokeStyle = "#155e75";
-      ctx.lineWidth = 16;
+      ctx.strokeStyle = cfg.workshop ? "#3f4a55" : "#155e75";
+      ctx.lineWidth = cfg.workshop ? 12 : 16;
       ctx.stroke();
-      ctx.strokeStyle = "#a5f3fc";
-      ctx.lineWidth = 7;
+      ctx.strokeStyle = cfg.workshop ? (cfg.mode === "spire" ? "#c4b5fd" : "#99f6e4") : "#a5f3fc";
+      ctx.lineWidth = cfg.workshop ? 3 : 7;
       ctx.stroke();
     }
     if (state.stretch) {
@@ -391,8 +523,11 @@ export function mountTruss(cfg) {
     }
     joints.forEach((j, i) => {
       const p = toScreen(j);
+      if (cfg.workshop && art["gusset-joint"]) {
+        ctx.drawImage(art["gusset-joint"], p.x - 16, p.y - 16, 32, 32);
+      }
       ctx.beginPath();
-      ctx.arc(p.x, p.y, j.fixed ? 18 : 16, 0, Math.PI * 2);
+      ctx.arc(p.x, p.y, cfg.workshop ? 11 : (j.fixed ? 18 : 16), 0, Math.PI * 2);
       ctx.fillStyle = j.fixed ? "#e2e8f0" : "#67e8f9";
       ctx.fill();
       ctx.lineWidth = 3;
@@ -420,6 +555,7 @@ export function mountTruss(cfg) {
       ctx.fillText(cfg.mode === "spire" ? meters + " m height" : meters + " m span", 16, 28);
     }
     paintReadout();
+    syncAssistCue();
   }
 
   function syncTrack() {
@@ -677,6 +813,23 @@ export function mountTruss(cfg) {
     }
   }
 
+  function placeEnd(from, sx, sy) {
+    const A = state.joints[from];
+    if (!A) return false;
+    const m = toModel(sx, sy);
+    const dx = m.x - A.x;
+    const dy = m.y - A.y;
+    const len = Math.hypot(dx, dy);
+    if (len < 28) {
+      setStatus("Stretch", "Tap or let go where the other end goes.", "");
+      return false;
+    }
+    const cap = 175;
+    const scale = len > cap ? cap / len : 1;
+    state.joints.push({ x: A.x + dx * scale, y: A.y + dy * scale, fixed: false });
+    state.members.push({ a: from, b: state.joints.length - 1 });
+    return true;
+  }
   function finishPointer(ev) {
     const s = eventPoint(ev);
     if (state.drag != null) {
@@ -689,7 +842,16 @@ export function mountTruss(cfg) {
     state.stretch = null;
     const hit = nearestJoint(s.x, s.y, 64);
     if (hit < 0) {
-      setStatus("Stretch", "Let go on the other joint. A gold ring means it will snap.", "");
+      if (cfg.workshop && state.joints.length < 2) {
+        if (placeEnd(from, s.x, s.y)) {
+          syncBet();
+          coach();
+        }
+      } else if (cfg.workshop || state.joints.length >= 2) {
+        setStatus("Stretch", "Let go on a joint to connect.", "");
+      } else {
+        setStatus("Stretch", "Tap or let go where the other end goes.", "");
+      }
     } else if (!addMember(from, hit)) {
       if (from !== hit && hasMember(from, hit)) {
         setStatus("Stretch", "That side is in. Stretch the other joint up to the top.", "");
@@ -728,16 +890,25 @@ export function mountTruss(cfg) {
     }
     if (hit >= 0) {
       state.stretch = { from: hit, sx: s.x, sy: s.y };
+      if (cfg.workshop && state.joints.length < 2) {
+        setStatus("Stretch", "Tap or let go where the other end goes.", "");
+      }
       draw();
       return;
     }
     if (state.tool === "joint") {
-      const slot = nearestSlot(toModel(s.x, s.y));
+      const model = toModel(s.x, s.y);
+      const slot = nearestSlot(model);
       if (slot) {
         state.joints.push({ x: slot.x, y: slot.y, fixed: !!slot.fixed });
-        coach();
-        draw();
+      } else if (cfg.workshop) {
+        state.joints.push({ x: model.x, y: model.y, fixed: false });
+      } else {
+        return;
       }
+      setStatus("Joint", state.joints.length < 2 ? "Tap or let go where the other end goes." : "Let go on a joint to connect.", "");
+      if (!cfg.workshop) coach();
+      draw();
     }
   });
   window.addEventListener("pointermove", (ev) => {
@@ -793,6 +964,8 @@ export function mountTruss(cfg) {
     plate.hidden = true;
     plate.setAttribute("hidden", "");
     writeFlag(cfg.assistKey, true);
+    if (cfg.workshop && assistBtn) assistBtn.setAttribute("aria-pressed", "false");
+    syncAssistCue();
   }
 
   function showNext() {
@@ -867,6 +1040,7 @@ export function mountTruss(cfg) {
       assistBtn.setAttribute("aria-pressed", on ? "true" : "false");
       if (on) openAssist();
       else hideAssist();
+      if (cfg.workshop) syncAssistCue();
     });
   }
   window.addEventListener("keydown", (ev) => {
@@ -876,7 +1050,15 @@ export function mountTruss(cfg) {
       startTest();
     }
   });
-  if (!readFlag(cfg.assistKey)) openAssist();
+  if (cfg.workshop) {
+    if (!readFlag(cfg.assistKey)) {
+      if (assistBtn) assistBtn.setAttribute("aria-pressed", "true");
+      openAssist();
+    } else if (assistBtn) {
+      assistBtn.setAttribute("aria-pressed", "false");
+    }
+    syncAssistCue();
+  } else if (!readFlag(cfg.assistKey)) openAssist();
   paintReadout();
   draw();
 }

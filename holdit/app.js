@@ -1,4 +1,4 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=1.3.21";
+import { mountTruss } from "../spancraft/truss-play.js?v=1.0.1";
 import { SPAN_LEVELS, SPAN_FREE } from "../spancraft/levels.js";
 import { SPIRE_LEVELS, SPIRE_FREE } from "../spire-lab/levels.js";
 
@@ -23,13 +23,16 @@ if (towerBtn) {
 
 const bridge = part === "bridge";
 
+document.body.classList.toggle("is-tower", part === "tower");
+
 mountTruss({
   mode: bridge ? "span" : "spire",
+  workshop: true,
   levels: bridge ? SPAN_LEVELS : SPIRE_LEVELS,
   freeLevel: bridge ? SPAN_FREE : SPIRE_FREE,
-  version: "HI 1.0.0",
+  version: "HI 1.0.1",
   helpTitle: "How to play · HoldIt",
-  note: "What’s new: one door for bridges and towers. Clear both paths.",
+  note: "What’s new: the board is a workshop site. One joint can start a member. Assist shows the next step.",
   engageKey: bridge ? "kulibert-holdit-bridge-v2" : "kulibert-holdit-tower-v2",
   seedKey: bridge ? "kulibert-spancraft-engage-v2" : "kulibert-spire-engage-v2",
   assistKey: "kulibert-holdit-assist-intro-v1",
