@@ -1,7 +1,12 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.0** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.1** · 2026-09-23 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.1 — Help — 2026-09-23
+
+- What’s new: Help is the play. The prove stays on the stage.
+- Test plays one beat at a time along the bottom. The span stays in view.
 
 ## 1.3.0 — Missions — 2026-09-23
 

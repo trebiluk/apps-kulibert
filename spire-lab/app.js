@@ -39,36 +39,48 @@ let cssH = 0;
 let last = 0;
 
 
-/* Shop Prove Flash plates */
+/* Prove theater — one beat at a time, docked on the stage. */
 let flashTimer = 0;
-function showFlash(shout, caption, mark) {
+const BEAT_MS = 1400;
+
+function hideTheater() {
+  const plate = document.getElementById("flash-plate");
+  if (!plate) return;
+  plate.classList.remove("show");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
+}
+
+function showBeat(beat) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  window.clearTimeout(flashTimer);
-  s.textContent = shout;
-  c.textContent = caption || "";
-  if (m) m.textContent = mark || "";
+  s.textContent = beat.shout;
+  c.textContent = beat.caption || "";
+  if (m) m.textContent = beat.mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
-    const spark = document.createElement("div");
-    spark.className = "flash-spark";
-    spark.style.left = "50%";
-    spark.style.top = "38%";
-    spark.style.opacity = "1";
-    document.body.appendChild(spark);
-    window.setTimeout(() => spark.remove(), 320);
+}
+
+function playTheater(beats) {
+  window.clearTimeout(flashTimer);
+  const list = (beats || []).filter(Boolean);
+  if (!list.length) {
+    hideTheater();
+    return;
   }
-  flashTimer = window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 2200);
+  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const run = calm ? [list[list.length - 1]] : list;
+  let i = 0;
+  const step = () => {
+    showBeat(run[i]);
+    i += 1;
+    flashTimer = window.setTimeout(i < run.length ? step : hideTheater, calm ? 900 : BEAT_MS);
+  };
+  step();
 }
 function showAssistPlate(text) {
   const plate = document.getElementById("assist-plate");
@@ -211,6 +223,7 @@ function dropSlab() {
     heightN.textContent = String(state.height);
     setStatus("Miss", "The slab missed. Height " + state.height + ". Best " + state.best + ".", "fail");
     setMasteryChip("");
+    playTheater([{ shout: "Miss", caption: "The slab missed the stack.", mark: "✕" }]);
     return;
   }
   const even = towerPerfect(mover.x, top.x, top.w);
@@ -266,15 +279,14 @@ function dropSlab() {
   paintLadder("spire");
   const xpLine = bag.gained ? " +" + bag.gained + " XP." : "";
   setStatus("STAND", "It stood. Height " + state.height + ". Best " + state.best + "." + streakLine + xpLine, "pass");
-  showFlash("STAND", "It stood for this drop", "✓");
-  // Stagger after dwell so StyleBot/kids can catch each plate (flash dwell 2.2s).
-  window.setTimeout(() => showFlash("HEIGHT HIT", "Above the line · height " + state.height, ""), 2300);
+  const beats = [{ shout: "Stood", caption: "Height " + state.height + ". It stayed up.", mark: "✓" }];
   if (state.perfectCount > 0) {
     setMasteryChip("Streak " + state.perfectCount);
-    window.setTimeout(() => showFlash("STREAK", state.perfectCount + " in a row", "★"), 4600);
+    beats.push({ shout: "Streak", caption: state.perfectCount + " even in a row.", mark: "★" });
   } else {
     setMasteryChip("");
   }
+  playTheater(beats);
 }
 
 function targetScale() {

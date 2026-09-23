@@ -4,12 +4,12 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="spancraft-rev" content="2026-09-23-sc-1.3.0"/>
+  <meta name="spancraft-rev" content="2026-09-23-sc-1.3.1"/>
   <meta name="description" content="SpanCraft — stretch a span, hang a load, read the stars."/>
   <title>SpanCraft · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spancraft.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2026-09-23-sc-1.3.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2026-09-23-sc-1.3.1"/>
 </head>
 <body>
   <div class="shell">
@@ -18,7 +18,7 @@
         <img src="/icons/icon-spancraft.svg" width="40" height="40" alt=""/>
         <span>
           <h1>SpanCraft</h1>
-          <p>SC 1.3.0</p>
+          <p>SC 1.3.1</p>
         </span>
       </a>
       <div class="top-actions">
@@ -33,7 +33,7 @@
         <details class="help">
           <summary>Help</summary>
           <div class="help-panel">
-            <p>What’s new: mission ladder and an XP wallet.</p>
+            <p>What’s new: Help is the play. The prove stays on the stage.</p>
             <a href="./changelog.html">For class</a>
           </div>
         </details>
@@ -87,6 +87,11 @@
 
     <div class="stage">
       <canvas id="board" tabindex="0" aria-label="Bridge span. Drag a grip. It stretches, then drops. Enter uses the tool."></canvas>
+      <div id="flash-plate" class="flash-plate" role="status" aria-live="polite" hidden>
+        <p class="flash-shout" id="flash-shout"></p>
+        <p class="flash-caption" id="flash-caption"></p>
+        <span class="flash-mark" id="flash-mark" aria-hidden="true"></span>
+      </div>
     </div>
     <div class="edge-pocket">
       <button type="button" id="edge-btn" aria-expanded="false" aria-controls="edge-menu">More</button>
@@ -97,13 +102,8 @@
     </div>
   </div>
   <script src="./vendor/matter.min.js"></script>
-  <script type="module" src="./app.js?v=2026-09-23-sc-1.3.0"></script>
+  <script type="module" src="./app.js?v=2026-09-23-sc-1.3.1"></script>
 
-    <div id="flash-plate" class="flash-plate" role="status" aria-live="polite" hidden>
-      <p class="flash-shout" id="flash-shout"></p>
-      <p class="flash-caption" id="flash-caption"></p>
-      <span class="flash-mark" id="flash-mark" aria-hidden="true"></span>
-    </div>
     <div id="assist-plate" class="assist-plate" role="status" aria-live="polite" hidden>
       <strong>Assist</strong>
       <p id="assist-plate-text"></p>

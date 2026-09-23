@@ -237,6 +237,7 @@ button:disabled { cursor: default; opacity: 0.45; }
 
 .stage {
   grid-area: stage;
+  position: relative;
   min-width: 0;
   min-height: 0;
   background: var(--bg);
@@ -354,21 +355,23 @@ canvas:focus-visible {
 }
 .mastery-chip[hidden] { display: none !important; }
 .flash-plate {
-  position: fixed;
-  z-index: 12;
-  left: 50%;
-  top: 42%;
-  transform: translate(-50%, -50%);
-  min-width: min(86vw, 22rem);
-  max-width: 24rem;
-  padding: 1rem 1.15rem 1.1rem;
-  border-radius: 16px;
+  position: absolute;
+  z-index: 4;
+  left: 0.65rem;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  top: auto;
+  transform: none;
+  min-width: 0;
+  max-width: none;
+  max-height: 30%;
+  padding: 0.5rem 0.75rem 0.55rem;
+  border-radius: 12px;
   border: 1px solid var(--border);
-  background: var(--plate);
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--plate) 92%, transparent);
   color: var(--text);
-  text-align: center;
-  pointer-events: auto;
+  text-align: left;
+  pointer-events: none;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.18s ease, visibility 0.18s ease;
@@ -379,9 +382,9 @@ canvas:focus-visible {
 }
 .flash-plate .flash-shout {
   margin: 0;
-  font-size: clamp(1.6rem, 5vw, 2.1rem);
+  font-size: 1.2rem;
   font-weight: 900;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--accent);
 }

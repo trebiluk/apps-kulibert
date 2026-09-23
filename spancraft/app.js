@@ -151,36 +151,52 @@ function scoreStars(s, verdict) {
 }
 
 
-/* Shop Prove Flash plates */
+/* Prove theater — one beat at a time, docked on the stage. */
 let flashTimer = 0;
-function showFlash(shout, caption, mark) {
+const BEAT_MS = 1400;
+
+function hideTheater() {
+  const plate = document.getElementById("flash-plate");
+  if (!plate) return;
+  plate.classList.remove("show");
+  plate.hidden = true;
+  plate.setAttribute("hidden", "");
+}
+
+function showBeat(beat) {
   const plate = document.getElementById("flash-plate");
   const s = document.getElementById("flash-shout");
   const c = document.getElementById("flash-caption");
   const m = document.getElementById("flash-mark");
   if (!plate || !s || !c) return;
-  window.clearTimeout(flashTimer);
-  s.textContent = shout;
-  c.textContent = caption || "";
-  if (m) m.textContent = mark || "";
+  s.textContent = beat.shout;
+  c.textContent = beat.caption || "";
+  if (m) m.textContent = beat.mark || "";
   plate.hidden = false;
   plate.removeAttribute("hidden");
   plate.classList.add("show");
-  // tiny spark (skipped by CSS if reduced-motion / calm-clear)
-  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches && !document.documentElement.classList.contains("calm-clear")) {
-    const spark = document.createElement("div");
-    spark.className = "flash-spark";
-    spark.style.left = "50%";
-    spark.style.top = "38%";
-    spark.style.opacity = "1";
-    document.body.appendChild(spark);
-    window.setTimeout(() => spark.remove(), 320);
+}
+
+function playTheater(beats) {
+  window.clearTimeout(flashTimer);
+  const list = (beats || []).filter(Boolean);
+  if (!list.length) {
+    hideTheater();
+    return;
   }
-  flashTimer = window.setTimeout(() => {
-    plate.classList.remove("show");
-    plate.hidden = true;
-    plate.setAttribute("hidden", "");
-  }, 1500);
+  const calm = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const run = calm ? [list[list.length - 1]] : list;
+  let i = 0;
+  const step = () => {
+    showBeat(run[i]);
+    i += 1;
+    flashTimer = window.setTimeout(i < run.length ? step : hideTheater, calm ? 900 : BEAT_MS);
+  };
+  step();
+}
+
+function showFlash(shout, caption, mark) {
+  playTheater([{ shout, caption, mark }]);
 }
 function showAssistPlate(text) {
   const plate = document.getElementById("assist-plate");
@@ -728,6 +744,7 @@ function startTest() {
   syncControls();
   const prove = PROVE[verdict.reason] || PROVE.long;
   setStatus("Test", "The load is hanging.", "");
+  playTheater([{ shout: "Hanging", caption: "The load is on the span.", mark: "" }]);
   const started = performance.now();
   animate(reduceMotion ? 0 : 420, () => {
     state.phase = verdict.ok ? "pass" : "fail";
@@ -758,13 +775,12 @@ function startTest() {
     syncControls();
     setStatus(prove[0], prove[1] + extra, verdict.ok ? "pass" : "fail");
     if (verdict.ok) {
-      showFlash("LOAD HELD", "The load stayed up", "✓");
+      const beats = [{ shout: "Held", caption: "The load stayed up.", mark: "✓" }];
+      if (stars >= 1) beats.push({ shout: stars + " star" + (stars === 1 ? "" : "s"), caption: starPhrase(stars) + ".", mark: "★".repeat(stars) });
+      playTheater(beats);
       if (stars > 0) setMasteryChip("★ " + stars + "/3");
-      if (stars === 3) {
-        window.setTimeout(() => showFlash("★★★", "Parts on budget", "★★★"), 1600);
-      }
-      window.setTimeout(() => showFlash("CLEAR", "Prove complete", "✓"), stars === 3 ? 3200 : 1600);
     } else {
+      playTheater([{ shout: "Miss", caption: prove[1], mark: "✕" }]);
       setMasteryChip("");
     }
     if (performance.now() - started > 2000) {
