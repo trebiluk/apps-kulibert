@@ -653,7 +653,9 @@ function draw() {
     ctx.setLineDash([]);
     ctx.fillStyle = "rgba(248,250,252,0.55)";
     ctx.font = "600 12px Outfit, system-ui, sans-serif";
-    ctx.fillText("Ghost You " + state.ghostBest, cssW - 120, gy - 6);
+    ctx.textAlign = "right";
+    ctx.fillText("Ghost You " + state.ghostBest, cssW - 28, gy - 6);
+    ctx.textAlign = "left";
   }
   ctx.restore();
 
@@ -683,20 +685,6 @@ function draw() {
     ctx.save();
     ctx.globalAlpha = 0.55;
     drawTether(ctx, hook.x, hook.y, grip.x, grip.y);
-    ctx.restore();
-  } else if (state.phase === "over") {
-    // After miss: big Retry cue on canvas so kids aren't stuck staring at a dead tower
-    ctx.save();
-    ctx.fillStyle = "rgba(5,8,20,0.55)";
-    ctx.fillRect(0, 0, cssW, cssH);
-    ctx.fillStyle = "#f8fafc";
-    ctx.font = "800 22px Outfit, system-ui, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText("Tap Retry", cssW / 2, cssH * 0.42);
-    ctx.font = "600 15px Outfit, system-ui, sans-serif";
-    ctx.fillStyle = "#c4b5fd";
-    ctx.fillText("Goal is the dashed line at " + GOAL_FLOORS, cssW / 2, cssH * 0.42 + 28);
-    ctx.textAlign = "left";
     ctx.restore();
   }
 
@@ -846,8 +834,8 @@ syncBetBar();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · Spire Lab",
-  version: "SL 1.3.10",
-  note: "What’s new: the chip says Toys n. Ghost You is the faint line.",
+  version: "SL 1.3.11",
+  note: "What’s new: a miss leaves the tower in view.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [

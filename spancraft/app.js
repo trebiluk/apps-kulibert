@@ -584,15 +584,7 @@ function drawPart(kind, box, alpha, dy) {
 }
 
 function paintBanner() {
-  // Caption + flash plate own the shout — keep canvas mark-free for clarity.
-  if (state.phase !== "fail" && state.phase !== "drop") return;
-  if (state.phase === "fail") {
-    ctx.font = "800 22px Outfit, system-ui, sans-serif";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "middle";
-    ctx.fillStyle = "#ffb4c0";
-    ctx.fillText("✕", 16, 26);
-  }
+  // The caption owns the word. The span stays clear.
 }
 
 function draw() {
@@ -1187,8 +1179,8 @@ else showCoach();
 
 const helpApi = mountHelpOverlay({
   title: "How to play · SpanCraft",
-  version: "SC 1.3.11",
-  note: "What’s new: the chip says Toys n. Ghost You is the faint mark.",
+  version: "SC 1.3.12",
+  note: "What’s new: a miss leaves the span in view.",
   classHref: "./changelog.html",
   calmKey: CALM_KEY,
   steps: [
