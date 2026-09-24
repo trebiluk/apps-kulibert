@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Catapult Shop">
+  <rect width="128" height="128" rx="28" fill="#0C8F78"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#F3FFFB" stroke-width="3"/>
+  <rect x="28" y="78" width="62" height="14" rx="3" fill="#F0A202"/>
+  <rect x="46" y="68" width="26" height="8" rx="2" fill="#FFE14A"/>
+  <path d="M38 82 L88 42" fill="none" stroke="#F3FFFB" stroke-width="10" stroke-linecap="round"/>
+  <rect x="80" y="32" width="20" height="14" rx="3" fill="#FF5D93"/>
+</svg>
