@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-23-hub-polish"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-format-lock"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -23,6 +23,77 @@
       font-size:16px;
       -webkit-font-smoothing:antialiased;
     }
+
+    /* Soft Tron atmosphere — dark board + cyan/blue/white accents (no white wall, no flash) */
+    body{
+      background:
+        radial-gradient(ellipse 90% 55% at 50% -10%, color-mix(in srgb, #22d3ee 18%, transparent) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 45% at 85% 110%, color-mix(in srgb, #3b82f6 16%, transparent) 0%, transparent 50%),
+        radial-gradient(ellipse 50% 40% at 10% 90%, color-mix(in srgb, #22d3ee 10%, transparent) 0%, transparent 45%),
+        var(--background);
+      background-attachment: fixed;
+    }
+    body::before{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      opacity:.28;
+      background-image:
+        linear-gradient(color-mix(in srgb, #22d3ee 14%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in srgb, #22d3ee 14%, transparent) 1px, transparent 1px);
+      background-size:48px 48px;
+      mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 20%, transparent 75%);
+      -webkit-mask-image: radial-gradient(ellipse 75% 70% at 50% 40%, #000 20%, transparent 75%);
+    }
+    body::after{
+      content:"";
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      opacity:.12;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent 0 3px,
+        color-mix(in srgb, #22d3ee 22%, transparent) 3px 4px
+      );
+    }
+    @media (prefers-reduced-motion: reduce){
+      body::before, body::after{ opacity:.08; }
+    }
+    .wrap, #shell-root, .shell, main, .poster, #shell-board{ position:relative; z-index:1; }
+    .poster{
+      border-color: color-mix(in srgb, #22d3ee 42%, var(--border));
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, #22d3ee 18%, transparent),
+        0 0 28px color-mix(in srgb, #22d3ee 12%, transparent),
+        inset 0 1px 0 color-mix(in srgb, #fff 8%, transparent);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, #0b1a40 70%, transparent) 0%, transparent 55%),
+        var(--background);
+    }
+    .field{ opacity:.34; }
+    .cell{
+      border-color: color-mix(in srgb, #22d3ee 34%, transparent);
+      box-shadow:
+        inset 0 1px 0 color-mix(in srgb, #fff 10%, transparent),
+        0 0 10px color-mix(in srgb, #22d3ee 10%, transparent);
+    }
+    a.tile, .tile{
+      border-color: color-mix(in srgb, #22d3ee 28%, var(--border));
+      box-shadow: 0 0 0 1px color-mix(in srgb, #22d3ee 8%, transparent);
+    }
+    a.tile:hover, .tile:hover, a.tile:focus-visible, .tile:focus-visible{
+      border-color: color-mix(in srgb, #22d3ee 70%, var(--border));
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, #22d3ee 35%, transparent),
+        0 0 18px color-mix(in srgb, #22d3ee 22%, transparent);
+      background: color-mix(in srgb, #122443 88%, #22d3ee);
+    }
+    .shell-brand, .brand, h1, .hero-title{
+      text-shadow: 0 0 18px color-mix(in srgb, #22d3ee 35%, transparent);
+    }
+    .shell-footer{
+      border-top: 1px solid color-mix(in srgb, #22d3ee 28%, var(--border));
+      background: color-mix(in srgb, var(--background) 82%, #0b1a40);
+    }
+
     body{
       padding:
         max(1rem, env(safe-area-inset-top))
@@ -401,42 +472,46 @@
     #shell-board{flex:1 1 auto;min-height:0;overflow:auto;padding:1rem .8rem 1.25rem}
     body.is-framed #shell-board{display:none}
     #app-frame{flex:1 1 auto;width:100%;min-height:0;border:0;background:#050814}
-    #app-frame[hidden]{display:none !important}
+    #app-frame[hidden]{display:none !important;pointer-events:none !important}
     .shell-footer{
-      flex:0 0 auto;min-height:44px;display:flex;align-items:center;gap:.75rem;
-      padding:0 .75rem;background:#050814;color:#8fb4c9;
-      border-top:1px solid #16324f;font-size:.85rem;font-weight:600;
+      flex:0 0 auto;min-height:36px;display:flex;align-items:center;gap:.55rem;flex-wrap:nowrap;
+      padding:0 .65rem;background:#050814;color:#7aa0b5;
+      border-top:1px solid #16324f;font-size:.72rem;font-weight:600;
     }
-    .shell-footer a{color:#22d3ee;min-height:44px;display:inline-flex;align-items:center;text-decoration:none;font-weight:700}
+    .shell-footer #shell-lunch{color:#7aa0b5;font-weight:600;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:11rem}
+    .shell-footer a{color:#5ec8e0;min-height:32px;padding:0 .15rem;display:inline-flex;align-items:center;text-decoration:none;font-weight:650;font-size:.72rem}
+    body.is-framed .shell-footer a{font-size:.7rem;min-height:30px}
     .shell-footer a:focus-visible,#shell-home:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
-    #shell-lunch{margin-left:auto}#shell-home{margin-left:.5rem;min-height:44px;min-width:44px}
+    #shell-home{margin-left:auto;min-height:44px;min-width:44px}
     #shell-home[hidden]{display:none}
   
     /* All apps on the screen, all the time. Home fits the tiles. Open app keeps the row. */
     .app-dock{
-      flex:0 0 auto;display:flex;flex-wrap:wrap;align-content:flex-start;gap:.28rem;
-      padding:.28rem .45rem;background:#050814;border-bottom:1px solid #16324f;
-      max-height:96px;overflow:hidden;
+      display:flex;flex-wrap:nowrap;gap:.3rem;align-items:center;
+      padding:.28rem .5rem;background:#071018;border-bottom:1px solid #16324f;
+      overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+      scrollbar-width:thin;
     }
     .app-dock[hidden]{display:none !important}
     .app-dock-item{
-      display:inline-flex;align-items:center;gap:.3rem;min-height:40px;max-width:9.5rem;
-      padding:0 .5rem 0 .28rem;border-radius:10px;border:1px solid #16324f;background:#0b152c;
-      color:#e8f7ff;text-decoration:none;font-size:.72rem;font-weight:700;line-height:1.1;
+      display:inline-flex;align-items:center;gap:.28rem;min-height:34px;max-width:7.25rem;flex:0 0 auto;
+      padding:.15rem .45rem;border-radius:999px;border:1px solid #1e3a55;
+      background:#0b1524;color:#cfe7f5;font-size:.68rem;font-weight:650;text-decoration:none;
     }
     .app-dock-item img{width:22px;height:22px;object-fit:contain;flex:0 0 auto}
     .app-dock-item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .app-dock-item.is-open{border-color:#22d3ee;color:#22d3ee}
     .app-dock-item:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     body.apps-always #shell-board{
-      overflow:hidden;display:flex;flex-direction:column;padding:.3rem .5rem .35rem;
+      /* Chromebook: hidden overflow + stretched tiles trapped clicks below the fold */
+      overflow:auto;display:flex;flex-direction:column;padding:.3rem .5rem .35rem;
     }
     body.apps-always.is-framed #shell-board{display:none}
     body.apps-always.is-framed #app-frame{display:block;flex:1 1 auto}
     body.apps-always #shell-board > .wrap{
-      flex:1;min-height:0;display:flex;flex-direction:column;gap:.2rem;
+      flex:1;min-height:0;display:flex;flex-direction:column;gap:.35rem;
     }
-    body.apps-always .poster{min-height:0;border-radius:14px}
+    body.apps-always .poster{min-height:0;border-radius:14px;flex:0 0 auto}
     body.apps-always .field,
     body.apps-always .vignette,
     body.apps-always .corner-k{display:none}
@@ -451,51 +526,131 @@
     body.apps-always .recents{display:none}
     body.apps-always .search{
       position:relative;display:block;left:auto;bottom:auto;transform:none;
-      width:min(36rem,calc(100% - 1.5rem));margin:.55rem auto .35rem;
+      width:min(36rem,calc(100% - 1.5rem));margin:.45rem auto .25rem;
     }
+    /* No display:contents — older Chromebook Chrome drops hit-testing on contents children */
     body.apps-always #app-groups{
-      flex:1;min-height:0;margin:0;
-      display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
-      grid-auto-rows:minmax(72px,1fr);gap:.4rem;align-content:stretch;
+      flex:1 1 auto;min-height:0;margin:0;overflow:auto;
+      display:flex;flex-direction:column;gap:.55rem;align-content:start;
     }
-    body.apps-always .group,
-    body.apps-always .group .board{display:contents}
+    body.apps-always .group{display:block;flex:0 0 auto;min-height:0}
     body.apps-always .group h2{
-      position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);
+      position:static;width:auto;height:auto;overflow:visible;clip:auto;
+      margin:0 0 .3rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+      color:var(--muted-foreground);font-weight:700;
+    }
+    /* format-lock: columns are fixed. Tiles fill the cell. Do not switch this back to auto-fill. */
+    body.apps-always .group .board{
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:.45rem;align-content:start;justify-items:stretch;
     }
     body.apps-always a.tile,body.apps-always button.tile{
-      aspect-ratio:auto;height:100%;min-height:44px;gap:.2rem;
+      aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;
+      min-height:44px;gap:.2rem;justify-self:stretch;
     }
     body.apps-always a.tile img.mark{
-      width:auto;height:min(52%,88px);min-width:0;max-width:96px;aspect-ratio:1;
+      width:auto;height:clamp(2.25rem,36%,3.5rem);min-width:0;max-width:3.5rem;aspect-ratio:1;
     }
     body.apps-always a.tile .label,body.apps-always .tile .label{
-      font-size:.9rem;line-height:1.15;
+      font-size:.875rem;line-height:1.15;
     }
-    @media (min-width:1100px){
-      body.apps-always #app-groups{grid-template-columns:repeat(6,minmax(0,1fr))}
-    }
-    @media (min-width:1800px){
-      body.apps-always #app-groups{grid-template-columns:repeat(7,minmax(0,1fr))}
-    }
+    /* Class / Cuts “extra” doors — keep compact on CB */
     body.apps-always #school-wrap:not(:has(a.tile)),
     body.apps-always .cuts:not(:has(a.tile)){display:none}
     body.apps-always #school-wrap,
-    body.apps-always .cuts{flex:0 1 auto;max-height:24%;min-height:0}
+    body.apps-always .cuts{flex:0 0 auto;max-height:none;min-height:0}
+    body.apps-always #school-wrap .board,
+    body.apps-always .cuts .board{
+      grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+    body.apps-always #school-wrap a.tile,
+    body.apps-always .cuts a.tile,
+    body.apps-always .group[data-group="class"] a.tile{
+      max-width:none;max-height:none;
+    }
+    body.apps-always .hub-plate .cut-line a,
+    body.apps-always .live a{
+      font-size:.85rem;font-weight:650;
+    }
+    @media (min-width:1100px){
+      body.apps-always .group .board,
+      body.apps-always #school-wrap .board,
+      body.apps-always .cuts .board{grid-template-columns:repeat(6,minmax(0,1fr))}
+    }
+    @media (min-width:1800px){
+      body.apps-always .group .board,
+      body.apps-always #school-wrap .board,
+      body.apps-always .cuts .board{grid-template-columns:repeat(7,minmax(0,1fr))}
+    }
     @media (max-width:700px){
       body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch}
-      body.apps-always #app-groups{display:flex;flex-direction:column;gap:.7rem;flex:none}
+      body.apps-always #app-groups{display:flex;flex:none}
       body.apps-always .group{display:block;flex:none}
-      body.apps-always .group .board{
-        display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem;
-      }
+      body.apps-always .group .board,
+      body.apps-always #school-wrap .board,
+      body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
       body.apps-always a.tile,body.apps-always button.tile{
-        aspect-ratio:1;height:auto;min-height:44px;
+        aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;min-height:44px;justify-self:stretch;
       }
-      body.apps-always a.tile img.mark{height:46%;max-height:64px}
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
       body.apps-always .live,body.apps-always #room-footer{display:block}
     }
+
+/* hub-restore: single ribbon — dock lives in header, icons only */
+    .shell-header{display:flex;align-items:center;gap:.35rem;flex-wrap:nowrap;min-height:40px}
+    /* Diego icons-only top row: even X slots, readable glyph, one row + More */
+    .shell-header .app-dock{
+      display:flex;align-items:center;justify-content:flex-start;
+      gap:6px;flex:1 1 auto;min-width:0;
+      overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap !important;
+      scrollbar-width:thin;margin:0;padding:0 .2rem;border:0;background:transparent;
+    }
+    .shell-header .app-dock[hidden]{display:none !important}
+    .shell-header .app-dock-item{
+      flex:0 0 auto;box-sizing:border-box;
+      width:40px;height:40px;min-width:40px;min-height:40px;padding:0;
+      display:inline-flex;align-items:center;justify-content:center;
+      border-radius:10px;border:1px solid transparent;
+    }
+    .shell-header .app-dock-item span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+    .shell-header .app-dock-item img{width:22px;height:22px;object-fit:contain;flex:0 0 auto}
+    body.is-framed .shell-mid > .app-dock{display:none !important} /* belt: no second dock */
+    /* P0 single ribbon: never wrap dock into a second row; never show a cloned header */
+    .shell-header{flex-wrap:nowrap !important;max-height:48px;overflow:hidden}
+    .shell-header .app-dock{flex-wrap:nowrap !important;overflow-x:auto;overflow-y:hidden}
+    .shell > .shell-header ~ .shell-header{display:none !important}
+    .shell-mid > .app-dock,.shell > nav.app-dock:not(#app-dock){display:none !important}
+
+    /* Mobile framed: ONE hub chrome strip (top). Bottom Lunch/Bistro bar stacks on app chrome. */
+    @media (max-width:700px){
+      body.is-framed .shell-footer{display:none !important}
+      body.is-framed .shell-chip{display:none !important}
+      body.is-framed .shell-brand{font-size:.68rem;letter-spacing:.04em;max-width:5.5rem;overflow:hidden;text-overflow:ellipsis}
+      body.is-framed .shell-header{max-height:48px}
+      body.is-framed .shell-header .app-dock{flex:1 1 auto;min-width:0;width:auto}
+      body.is-framed #shell-home{
+        display:inline-flex !important;align-items:center;justify-content:center;
+        margin-left:0;min-height:40px;min-width:44px;height:40px;padding:0 .55rem;
+        border-radius:10px;border:1px solid #1e3a55;background:#0b1524;color:#e8f7ff;
+        font-size:.72rem;font-weight:700;
+      }
+      body.is-framed .shell-header #shell-home{order:3}
+      body.is-framed .shell-header .edge-pocket{order:4;margin-left:.15rem}
+    }
+
+    /* door-size: school + shortcut tiles match standard doors */
+    body.apps-always #school-wrap a.tile,
+    body.apps-always .cuts a.tile,
+    body.apps-always .group[data-group="class"] a.tile{
+      aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;
+      min-height:44px;gap:.2rem;justify-self:stretch;
+    }
+    body.apps-always #school-wrap a.tile img.mark,
+    body.apps-always .cuts a.tile img.mark{
+      width:48px;height:48px;max-width:48px;max-height:48px;object-fit:contain;
+    }
+    body.apps-always #school-wrap .chip,
+    body.apps-always .cuts .chip{font-size:.65rem;padding:.1rem .35rem;position:static}
 
   </style>
 </head>
@@ -505,6 +660,7 @@
       <span class="shell-brand">THE TECH ROOM</span>
       <span class="shell-chip" id="shell-weather">Solvay · Clear</span>
       <span class="shell-chip" id="shell-temp">68°F</span>
+      <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
         <div class="edge-pocket-menu" id="edge-pocket-menu" role="menu" hidden>
@@ -514,7 +670,6 @@
       </div>
     </header>
     <div class="shell-mid">
-      <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       <div id="shell-board">
   <div class="wrap">
     <section class="poster" aria-label="The Tech Room">
@@ -565,19 +720,21 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-23-hub-polish</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-format-lock</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
-          <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.1</strong> — Fatter tools. The lesson sits off the deck.</p>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
-          <ul id="hub-log">
-            <li>HoldIt HI 1.1.1 · fatter tools · lesson off the deck · Fill and materials under More.</li>
-            <li>Shell is back. Header and footer stay. Same-door apps open in the frame. Home brings the tiles back.</li>
+                    <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
+<ul id="hub-log">
+            <li>Format lock: phone is 2 columns, Chromebook fills 6. Labels stay 14px. The app list did not change.</li>
+            <li>Sync cut: full Hub shell kept · Spire SL 1.3.17 + Span SC 1.3.18 from main · 2026-09-23-hub-sync</li>
+            <li>Hub rev plate + What’s new visible · top-row icons even 40px slots / 22px glyph</li>
             <li>Search sits under the welcome line. It no longer covers the title.</li>
             <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
+            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-format-lock</li>
             <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
             <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
             <li>Groups: Class, Make, Campus, Play</li>
@@ -586,7 +743,7 @@
             <li>Dark Tech Room board · labels on ink cards · cyan focus</li>
             <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
             <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
-            <li>SpanCraft SC 1.3.16 · Levels and Challenge are two tracks. Spire Lab SL 1.3.15 · Challenge is the brief, not just a stand.</li>
+            <li>SpanCraft SC 1.3.18 · the first Deck glows. A miss is the bet. Spire Lab SL 1.3.17 · Drop is the fat button. A stand says STAND.</li>
             <li>Debugzy list tile only · playable hold · First Trace stays</li>
             <li>Berty Run BR 1.5.4 · polish: 3D copper bus, shaped Berty, softer light</li>
           </ul>
@@ -653,6 +810,10 @@
             <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
             <span class="label">PaperLab</span>
           </a>
+          <a class="tile" data-id="catapult" data-keywords="catapult size lab jolly stick measure make techworks" href="/catapult/">
+            <img class="mark" src="/icons/icon-catapult.svg" alt="" width="72" height="72"/>
+            <span class="label">Catapult Size Lab</span>
+          </a>
           <a class="tile" data-id="logolab" data-keywords="logolab logo lab make" href="/logolab/">
             <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
             <span class="label">LogoLab</span>
@@ -689,16 +850,22 @@
         <nav class="board">
           <a class="tile" data-id="drift" data-keywords="drift glide play" href="/drift/">
             <img class="mark" src="/icons/icon-drift.svg" alt="" width="72" height="72"/>
-            <span class="label">Drift · Tech 6–8</span>
+            <span class="label">Drift</span>
           </a>
-          <a class="tile" data-id="holdit" data-keywords="holdit spancraft spire lab span truss bridge tower play" href="/holdit/">
+          <a class="tile" data-id="spancraft" data-keywords="spancraft span craft play" href="/spancraft/">
+            <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
+            <span class="label">SpanCraft</span>
+          </a>
+        <a class="tile" data-id="holdit" data-keywords="holdit spancraft spire lab span truss bridge tower play" href="/holdit/">
             <img class="mark" src="/holdit/icon.svg" alt="" width="72" height="72"/>
             <span class="label">HoldIt</span>
           </a>
+          <a class="tile" data-id="spire-lab" data-keywords="spire lab play" href="/spire-lab/">
+            <img class="mark" src="/icons/icon-spire-lab.svg" alt="" width="72" height="72"/>
+            <span class="label">Spire Lab</span>
+          </a>
         </nav>
       </section>
-    </div>
-
     <section class="school" id="school-wrap" aria-label="School shortcuts">
       <div class="school-head">
         <h2>School</h2>
@@ -716,6 +883,8 @@
     </section>
 
 
+        </div>
+
     <section class="recents" id="opened" hidden>
       <h2>Opened here</h2>
       <ul class="chips" id="opened-list"></ul>
@@ -728,13 +897,13 @@
         <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.1.1</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>1.8.0</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.11.0</strong></a></li>
-        <li><a href="/berty-run/">Berty Run <strong>BR 1.5.11</strong></a></li>
-        <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.6.0</strong></a></li>
-        <li><a href="/visualizer/">Visualizer <strong>Viz 0.3.0</strong></a></li>
-        <li><a href="/holdit/">HoldIt <strong>HI 1.1.1</strong></a></li>
-        <li><a href="/spancraft/?stay=1">SpanCraft <strong>SC 1.3.21</strong></a></li>
-        <li><a href="/spire-lab/?stay=1">Spire Lab <strong>SL 1.3.20</strong></a></li>
-        <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
+        <li><a href="/berty-run/">Berty Run <strong>BR 1.5.4</strong></a></li>
+        <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.4.0</strong></a></li>
+        <li><a href="/visualizer/">Visualizer <strong>Viz 0.1.0</strong></a></li>
+        <li><a href="/spancraft/">SpanCraft <strong>SC 1.3.18</strong></a></li>
+        <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.17</strong></a></li>
+        <li><a href="/ginger/">Ginger <strong>1.0.1</strong></a></li>
+        <li><a href="/catapult/">Catapult Size Lab <strong>JC 1.0.0</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>list · not built</strong></a></li>
       </ul>
     </section>
@@ -745,7 +914,8 @@
       <iframe id="app-frame" title="App" hidden></iframe>
     </div>
     <footer class="shell-footer" id="shell-footer">
-      <a href="/bistro/" id="shell-lunch">Lunch · Bearcat Bistro</a>
+      <span id="shell-lunch">Lunch</span>
+      <a href="/bistro/">Bistro</a>
       <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
     </footer>
   </div>
@@ -788,7 +958,7 @@
     </form>
   </div>
 
-  <script src="/shared/hub-staff-auth.js"></script>
+  <script src="/shared/hub-staff-auth.js?v=2026-09-23-hub-ribbon"></script>
   <script>
     (function () {
       var KEY = "tech-room-opened";
@@ -823,6 +993,7 @@
       var roomStaffEdit = true;
       var roomHotkeys = true;
       var roomNewTab = true;
+      var roomOutsideShell = ["baboo", "ginger", "den", "bistro"];
       var roomShowNote = true;
       var tileOrder = appTiles().map(function (t) { return t.getAttribute("data-id"); });
       var ICONS = {
@@ -1071,6 +1242,9 @@
         roomStaffEdit = pack && pack.staffEdit === false ? false : true;
         roomHotkeys = pack && pack.hotkeys === false ? false : true;
         roomNewTab = pack && pack.newTab === false ? false : true;
+        roomOutsideShell = Array.isArray(pack && pack.outsideShell)
+          ? pack.outsideShell.map(function (id) { return String(id); }).filter(Boolean)
+          : ["baboo", "ginger", "den", "bistro"];
         roomShowNote = pack && pack.showNote === false ? false : true;
         var closedEl = document.getElementById("closed-banner");
         if (closedEl) {
@@ -1133,7 +1307,10 @@
         appTiles().forEach(function (tile) {
           var id = tile.getAttribute("data-id") || "";
           tile.classList.toggle("is-room-hidden", roomHidden.indexOf(id) !== -1);
-          if (roomNewTab && isExternalHref(tile.getAttribute("href"))) {
+          var leave = roomOutsideShell.indexOf(id) !== -1 || isExternalHref(tile.getAttribute("href"));
+          if (leave) tile.setAttribute("data-outside-shell", "1");
+          else tile.removeAttribute("data-outside-shell");
+          if (leave && roomNewTab) {
             tile.setAttribute("target", "_blank");
             tile.setAttribute("rel", "noopener noreferrer");
           } else {
@@ -1599,7 +1776,41 @@
       }
 
       var frameHref = "";
+
+
+      function parkHomeForFrame(framed) {
+        var home = document.getElementById("shell-home");
+        var header = document.getElementById("shell-header");
+        var footer = document.getElementById("shell-footer");
+        var pocket = document.getElementById("edge-pocket");
+        if (!home || !header || !footer) return;
+        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+        if (framed && narrow) {
+          if (pocket && pocket.parentNode === header) header.insertBefore(home, pocket);
+          else header.appendChild(home);
+          home.hidden = false;
+        } else if (home.parentNode !== footer) {
+          footer.appendChild(home);
+        }
+      }
+      function ensureSingleChrome() {
+        var headers = document.querySelectorAll("header.shell-header, #shell-header");
+        for (var hi = 1; hi < headers.length; hi++) {
+          try { headers[hi].parentNode.removeChild(headers[hi]); } catch (eH) {}
+        }
+        var keepDock = document.querySelector("#shell-header #app-dock") || document.getElementById("app-dock");
+        document.querySelectorAll("nav.app-dock, #app-dock").forEach(function (d) {
+          if (keepDock && d !== keepDock) {
+            try { d.parentNode.removeChild(d); } catch (eD) {}
+          }
+        });
+        document.querySelectorAll(".shell-mid > .app-dock").forEach(function (d) {
+          try { d.parentNode.removeChild(d); } catch (eM) {}
+        });
+      }
+
       function paintDock() {
+        ensureSingleChrome();
         var dock = document.getElementById("app-dock");
         if (!dock) return;
         var framed = document.body.classList.contains("is-framed");
@@ -1645,23 +1856,38 @@
         }
       }
 
-      function openFrame(href, title) {
+      function openFrame(href, title, fromPop) {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         if (!frame) return;
+        ensureSingleChrome();
         frame.title = title || "App";
         frame.hidden = false;
         if (frame.getAttribute("src") !== href) frame.setAttribute("src", href);
         document.body.classList.add("is-framed");
+        parkHomeForFrame(true);
         frameHref = href;
         if (home) home.hidden = false;
         if (typeof setPocket === "function") setPocket(false);
+        if (!fromPop) {
+          try {
+            var abs = new URL(href, location.href);
+            var openPath = abs.pathname + abs.search + abs.hash;
+            var u = new URL(location.href);
+            if (u.searchParams.get("open") !== openPath) {
+              u.searchParams.set("open", openPath);
+              history.pushState({ techRoomFrame: 1, href: abs.href }, "", u.pathname + u.search + u.hash);
+            }
+          } catch (ePush) {}
+        }
         paintDock();
       }
-      function closeFrame() {
+
+      function closeFrame(fromPop) {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         document.body.classList.remove("is-framed");
+        parkHomeForFrame(false);
         frameHref = "";
         if (frame) {
           frame.hidden = true;
@@ -1669,10 +1895,23 @@
         }
         if (home) home.hidden = true;
         var dock = document.getElementById("app-dock");
-        if (dock) dock.hidden = true;
+        if (dock) {
+          dock.hidden = true;
+          dock.innerHTML = "";
+        }
+        ensureSingleChrome();
+        if (!fromPop) {
+          try {
+            var u = new URL(location.href);
+            if (u.searchParams.has("open")) {
+              u.searchParams.delete("open");
+              history.replaceState({}, "", u.pathname + u.search + u.hash);
+            }
+          } catch (eClear) {}
+        }
       }
 
-      document.addEventListener("click", function (event) {
+document.addEventListener("click", function (event) {
         if (event.defaultPrevented || event.button !== 0) return;
         if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
         var node = event.target;
@@ -1681,8 +1920,11 @@
         if (!link || link.id === "staff-edit") return;
         var hrefAttr = link.getAttribute("href");
         if (!hrefAttr || !isSameOriginDoor(hrefAttr)) return;
+        if (link.getAttribute("data-outside-shell") === "1") return;
         var target = (link.getAttribute("target") || "").toLowerCase();
         if (target === "_blank") return;
+        var tileId = link.getAttribute("data-id") || "";
+        if (tileId && roomOutsideShell.indexOf(tileId) !== -1) return;
         event.preventDefault();
         var label = (link.querySelector(".label") || link).textContent || "App";
         openFrame(new URL(hrefAttr, location.href).href, label.replace(/\s+/g, " ").trim().slice(0, 80));
@@ -1717,6 +1959,24 @@
         }
         openFrame(url.href, title);
       })();
+
+      window.addEventListener("popstate", function () {
+        ensureSingleChrome();
+        var openParam = null;
+        try { openParam = new URLSearchParams(location.search).get("open"); } catch (ePop) {}
+        if (openParam && isSameOriginDoor(openParam)) {
+          try {
+            openFrame(new URL(openParam, location.href).href, "App", true);
+          } catch (eOpen) {
+            closeFrame(true);
+          }
+        } else {
+          closeFrame(true);
+        }
+      });
+      window.addEventListener("pageshow", function () {
+        ensureSingleChrome();
+      });
 
       paint();
       paintCuts();
