@@ -37,9 +37,6 @@ mountTruss({
   seedKey: bridge ? "kulibert-spancraft-engage-v2" : "kulibert-spire-engage-v2",
   assistKey: "kulibert-holdit-assist-intro-v1",
   calmKey: "kulibert-calm-clear",
-  partFlag: bridge ? "kulibert-holdit-bridge-clear" : "kulibert-holdit-tower-clear",
-  pairFlag: bridge ? "kulibert-holdit-tower-clear" : "kulibert-holdit-bridge-clear",
-  retireFlag: "kulibert-holdit-clear-v1",
   firstLine: bridge
     ? "Bridge. Stretch two bars up to the top joint, then Test."
     : "Tower. Stretch two bars up to the top joint, then Test.",
@@ -47,7 +44,7 @@ mountTruss({
     ? "Stretch from a bank joint to the top joint. Then the other side. Press Test."
     : "Stretch from a base joint to the top joint. Then the other side. Press Test.",
   steps: [
-    "HoldIt is one door. Bridge is the span. Tower is the height.",
+    "This stretch board is not the design tool. The front door of HoldIt is where you design.",
     "Build → Test → Fix one bar.",
     "Ten levels on each. A pass opens the next one. Stars show this try. They are not a class grade.",
     "Finish Bridge and finish Tower. Then the Challenge is yours.",

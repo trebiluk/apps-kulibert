@@ -796,7 +796,7 @@ export function mountTruss(cfg) {
       let line = level.job + " " + starPhrase(stars) + ".";
       if (first) line = "First clear. " + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
-        line += cfg.nextDoor ? " Path clear. HoldIt is the one door." : " Path clear. Your truss is open.";
+        line += " Path clear. This challenge stays yours.";
       } else if (!level.free && !pathClear()) {
         line += " Open Levels for the next job.";
       }

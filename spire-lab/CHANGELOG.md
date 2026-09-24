@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.20** · 2026-09-23 · channel **live**
+**Chip: SL 1.3.21** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.21 — Own challenge — 2026-09-24
+
+- What’s new: Spire Lab stays the tower challenge. It does not send you to HoldIt. HoldIt is the design tool.
 
 ## 1.3.20 — HoldIt door — 2026-09-23
 

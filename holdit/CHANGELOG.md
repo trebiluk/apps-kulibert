@@ -1,5 +1,9 @@
-**Chip: HI 1.1.1** · 2026-09-23 · channel **live**
+**Chip: HI 1.1.2** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.2 — Design tool — 2026-09-24
+
+- What’s new: HoldIt stays the design tool. SpanCraft and Spire Lab stay their own challenge games.
 
 ## 1.1.1 — Fatter tools — 2026-09-23
 

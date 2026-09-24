@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.21** · 2026-09-23 · channel **live**
+**Chip: SC 1.3.22** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.22 — Own challenge — 2026-09-24
+
+- What’s new: SpanCraft stays the bridge challenge. It does not send you to HoldIt. HoldIt is the design tool.
 
 ## 1.3.21 — HoldIt door — 2026-09-23
 
