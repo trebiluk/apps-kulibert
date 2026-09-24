@@ -1,5 +1,9 @@
-**Chip: HI 1.1.2** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.3** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.3 — One button to start — 2026-09-24
+
+- What’s new: Start sits under the title, on the next job. Place a joint, draw the bars, press Test. A pass says It held.
 
 ## 1.1.2 — Design tool — 2026-09-24
 
