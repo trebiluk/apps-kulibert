@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-24-hub-sort"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-chrome"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -662,6 +662,31 @@
     body.apps-always #school-wrap .chip,
     body.apps-always .cuts .chip{font-size:.65rem;padding:.1rem .35rem;position:static}
 
+    /* Chromebook: short header and footer so the icons get the screen. */
+    @media (min-width:1100px){
+      body.apps-always .shell-header{min-height:36px;max-height:40px;padding:0 .45rem}
+      body.apps-always .shell-chip{height:22px;font-size:.68rem;padding:0 .5rem}
+      body.apps-always .shell-footer{min-height:28px;padding:0 .45rem}
+      body.apps-always .shell-footer a{min-height:28px;font-size:.72rem}
+      body.apps-always #shell-board{padding:.15rem .4rem .15rem}
+      body.apps-always .poster{border-radius:12px}
+      body.apps-always .hero{padding:.15rem .4rem 0}
+      body.apps-always .hero h1,
+      body.apps-always .welcome-line,
+      body.apps-always #alpha-title{display:none}
+      body.apps-always .search{margin:.1rem auto .15rem}
+      body.apps-always .search input{height:2.4rem;min-height:40px}
+      body.apps-always .hub-tools{margin:0 0 .1rem}
+      body.apps-always .hub-tools button{min-height:36px;padding:0 .65rem;font-size:.8rem}
+      body.apps-always #app-groups{gap:.3rem}
+      body.apps-always a.tile,body.apps-always button.tile{
+        aspect-ratio:auto;min-height:104px;padding:.2rem .15rem .3rem;
+      }
+      body.apps-always a.tile img.mark{
+        width:72px;height:72px;min-width:72px;max-width:72px;max-height:72px;
+      }
+    }
+
   </style>
 </head>
 <body class="apps-always">
@@ -730,13 +755,14 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-24-hub-sort</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-chrome</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
                     <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
 <ul id="hub-log">
+            <li>Chromebook: shorter header and footer. Icons are 72px. The app list did not change.</li>
             <li>Sort and filter stay on this Chromebook. A–Z is the default. Z–A and Group are there too. All, Class, Make, Campus, and Play filter the same list.</li>
             <li>Format lock: phone is 2 columns, Chromebook fills 6. Labels stay 14px. The app list did not change.</li>
             <li>Sync cut: full Hub shell kept · Spire SL 1.3.17 + Span SC 1.3.18 from main · 2026-09-23-hub-sync</li>
@@ -745,7 +771,7 @@
             <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
-            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-sort</li>
+            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-chrome</li>
             <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
             <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
             <li>Groups: Class, Make, Campus, Play</li>
