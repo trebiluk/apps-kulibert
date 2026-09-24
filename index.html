@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-24-hub-format-lock"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-sort"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -341,6 +341,16 @@
     .groups{margin:1.15rem 0 0}
     .group{margin:0 0 1.15rem}
     .group.is-empty{display:none}
+    .hub-tools{display:flex;flex-wrap:wrap;gap:.35rem .6rem;align-items:center;margin:.2rem 0 .15rem}
+    .hub-tools-row{display:flex;flex-wrap:wrap;gap:.35rem}
+    .hub-tools button{
+      min-height:44px;min-width:44px;padding:0 .8rem;border-radius:999px;
+      border:1px solid #1e3a55;background:#0b1524;color:#cfe7f5;
+      font:inherit;font-size:.875rem;font-weight:700;cursor:pointer;
+    }
+    .hub-tools button.is-on{border-color:#22d3ee;color:#e8f7ff;background:#10283c}
+    .hub-tools button:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+
     .group h2{font-size:.875rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted-foreground);margin:0 0 .7rem;font-weight:650}
     .group .board{margin:0}
     a.tile.is-first{box-shadow:inset 0 0 0 2px var(--ring)}
@@ -720,13 +730,14 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-24-hub-format-lock</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-sort</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
                     <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
 <ul id="hub-log">
+            <li>Sort and filter stay on this Chromebook. A–Z is the default. Z–A and Group are there too. All, Class, Make, Campus, and Play filter the same list.</li>
             <li>Format lock: phone is 2 columns, Chromebook fills 6. Labels stay 14px. The app list did not change.</li>
             <li>Sync cut: full Hub shell kept · Spire SL 1.3.17 + Span SC 1.3.18 from main · 2026-09-23-hub-sync</li>
             <li>Hub rev plate + What’s new visible · top-row icons even 40px slots / 22px glyph</li>
@@ -734,7 +745,7 @@
             <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
-            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-format-lock</li>
+            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-sort</li>
             <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
             <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
             <li>Groups: Class, Make, Campus, Play</li>
@@ -761,7 +772,25 @@
       <button type="button" class="btn btn-secondary" id="pwa-tip-dismiss">Got it</button>
     </p>
 
+    <div class="hub-tools" id="hub-tools">
+      <div class="hub-tools-row" role="group" aria-label="Sort">
+        <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
+        <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
+        <button type="button" data-sort="group" aria-pressed="false">Group</button>
+      </div>
+      <div class="hub-tools-row" role="group" aria-label="Filter">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="class" aria-pressed="false">Class</button>
+        <button type="button" data-filter="make" aria-pressed="false">Make</button>
+        <button type="button" data-filter="campus" aria-pressed="false">Campus</button>
+        <button type="button" data-filter="play" aria-pressed="false">Play</button>
+      </div>
+    </div>
     <div class="groups" id="app-groups">
+      <section class="group" id="alpha-group" data-group="alpha" hidden>
+        <h2 id="alpha-title">A–Z</h2>
+        <nav class="board" id="alpha-board"></nav>
+      </section>
       <section class="group" data-group="class">
         <h2>Class</h2>
         <nav class="board">
@@ -966,6 +995,27 @@
       var MAX = 18;
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
+      var hubSort = "alpha";
+      var hubFilter = "all";
+      try {
+        var savedSort = localStorage.getItem("tech-room-sort");
+        var savedFilter = localStorage.getItem("tech-room-filter");
+        if (savedSort === "alpha" || savedSort === "za" || savedSort === "group") hubSort = savedSort;
+        if (savedFilter === "all" || savedFilter === "class" || savedFilter === "make" || savedFilter === "campus" || savedFilter === "play") hubFilter = savedFilter;
+      } catch (eSort) {}
+      Array.prototype.forEach.call(appBoard.querySelectorAll(".group"), function (group) {
+        var g = group.getAttribute("data-group");
+        if (!g || g === "alpha") return;
+        var home = group.querySelector(".board");
+        if (!home) return;
+        var n = 0;
+        Array.prototype.forEach.call(home.children, function (tile) {
+          if (!tile.classList || !tile.classList.contains("tile")) return;
+          tile.setAttribute("data-group", g);
+          tile.setAttribute("data-order", String(n));
+          n += 1;
+        });
+      });
       var input = document.getElementById("q");
       var opened = document.getElementById("opened");
       var list = document.getElementById("opened-list");
@@ -1319,7 +1369,7 @@
           }
         });
         paint();
-        filter();
+        applyView();
       }
 
       function fetchJson(url, ms) {
@@ -1421,7 +1471,8 @@
         appTiles().forEach(function (tile) {
           var label = tile.querySelector(".label").textContent;
           var keys = tile.getAttribute("data-keywords") || "";
-          var hit = fuzzyHit(label + " " + keys + " " + (tile.getAttribute("data-id") || ""), q);
+          var groupOk = hubFilter === "all" || tile.getAttribute("data-group") === hubFilter;
+          var hit = groupOk && fuzzyHit(label + " " + keys + " " + (tile.getAttribute("data-id") || ""), q);
           tile.classList.toggle("is-hidden", !hit);
           if (hit && !tile.classList.contains("is-room-hidden")) shown += 1;
         });
@@ -1447,6 +1498,61 @@
         } else if (empty) {
           empty.remove();
         }
+      }
+
+
+      function tileName(tile) {
+        var lab = tile.querySelector(".label");
+        return (lab ? lab.textContent : "").replace(/\s+/g, " ").trim();
+      }
+
+      function appSortTiles() {
+        var out = [];
+        Array.prototype.forEach.call(appBoard.querySelectorAll("a.tile"), function (tile) {
+          var g = tile.getAttribute("data-group");
+          if (g && g !== "alpha") out.push(tile);
+        });
+        return out;
+      }
+
+      function applyView() {
+        var tiles = appSortTiles();
+        var alpha = document.getElementById("alpha-group");
+        var alphaBoard = document.getElementById("alpha-board");
+        var alphaTitle = document.getElementById("alpha-title");
+        if (hubSort === "group") {
+          tiles.sort(function (a, b) {
+            return Number(a.getAttribute("data-order")) - Number(b.getAttribute("data-order"));
+          });
+          tiles.forEach(function (tile) {
+            var home = appBoard.querySelector('.group[data-group="' + tile.getAttribute("data-group") + '"] .board');
+            if (home) home.appendChild(tile);
+          });
+          if (alpha) alpha.hidden = true;
+        } else {
+          tiles.sort(function (a, b) {
+            return tileName(a).localeCompare(tileName(b), "en", { sensitivity: "base", numeric: true });
+          });
+          if (hubSort === "za") tiles.reverse();
+          tiles.forEach(function (tile) { alphaBoard.appendChild(tile); });
+          if (alphaTitle) alphaTitle.textContent = hubSort === "za" ? "Z–A" : "A–Z";
+          if (alpha) alpha.hidden = false;
+        }
+        Array.prototype.forEach.call(document.querySelectorAll("#hub-tools [data-sort]"), function (btn) {
+          var on = btn.getAttribute("data-sort") === hubSort;
+          btn.classList.toggle("is-on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        Array.prototype.forEach.call(document.querySelectorAll("#hub-tools [data-filter]"), function (btn) {
+          var on = btn.getAttribute("data-filter") === hubFilter;
+          btn.classList.toggle("is-on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        try {
+          localStorage.setItem("tech-room-sort", hubSort);
+          localStorage.setItem("tech-room-filter", hubFilter);
+        } catch (eSave) {}
+        filter();
       }
 
       function openFirst(blank) {
@@ -1548,6 +1654,16 @@
           remember(entryFromTile(tile));
         });
       });
+
+      var hubTools = document.getElementById("hub-tools");
+      if (hubTools) hubTools.addEventListener("click", function (event) {
+        var btn = event.target && event.target.closest ? event.target.closest("button") : null;
+        if (!btn || !hubTools.contains(btn)) return;
+        if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
+        if (btn.hasAttribute("data-filter")) hubFilter = btn.getAttribute("data-filter");
+        applyView();
+      });
+      applyView();
 
       input.addEventListener("input", filter);
       input.addEventListener("keydown", function (event) {
