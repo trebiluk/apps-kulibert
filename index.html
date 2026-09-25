@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-25-hub-themes"/>
+  <meta name="tech-room-rev" content="2026-09-25-hub-fit"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -573,8 +573,9 @@
     }
 
     /* Hub shell: one header row, scrolling board or iframe, one footer. Dark only. */
-    body{padding:0;background:#050814;color:#e8f7ff;overflow:hidden}
-    .shell{height:100dvh;min-height:100dvh;display:flex;flex-direction:column;background:#050814;color:#e8f7ff}
+    body{padding:0;background:#050814;color:#e8f7ff;overflow:hidden;max-width:100%}
+    html{overflow:hidden;max-width:100%}
+    .shell{height:100dvh;min-height:100dvh;width:100%;max-width:100%;overflow:hidden;display:flex;flex-direction:column;background:#050814;color:#e8f7ff}
     .shell-header{
       flex:0 0 auto;min-height:48px;display:flex;align-items:center;gap:.5rem;
       padding:0 .55rem 0 .75rem;background:#050814;color:#e8f7ff;
@@ -781,6 +782,7 @@
     }
     .shell-header .app-dock[hidden]{display:none !important}
     .shell-header .app-dock-item{
+      position:relative;overflow:hidden;
       flex:0 0 auto;box-sizing:border-box;
       width:40px;height:40px;min-width:40px;min-height:40px;padding:0;
       display:inline-flex;align-items:center;justify-content:center;
@@ -799,7 +801,7 @@
     @media (max-width:700px){
       body.is-framed .shell-footer{display:none !important}
       body.is-framed .shell-chip{display:none !important}
-      body.is-framed .shell-brand{font-size:.68rem;letter-spacing:.04em;max-width:5.5rem;overflow:hidden;text-overflow:ellipsis}
+      body.is-framed .shell-brand{display:none}
       body.is-framed .shell-header{max-height:48px}
       body.is-framed .shell-header .app-dock{flex:1 1 auto;min-width:0;width:auto}
       body.is-framed #shell-home{
@@ -919,7 +921,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-25-hub-themes</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-25-hub-fit</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.8</strong> — A pass leads with Next. The count stays tucked.</p>
@@ -927,6 +929,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.2</strong> — origins pictures redrawn.</p>
           <ul id="hub-log">
+            <li>Phone: the room no longer slides sideways. The open app stays on the screen.</li>
             <li>HoldIt HI 1.1.8 · a pass leads with Next. SpanCraft SC 1.3.23 and Spire Lab SL 1.3.22 · a miss stays as one fix.</li>
             <li>Three looks: Room, Graph, and Miami. A new visit picks one. Theme keeps the one you tap.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
