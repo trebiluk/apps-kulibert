@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-24-hub-open"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-polish"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -582,7 +582,7 @@
       width:auto;height:clamp(2.25rem,36%,3.5rem);min-width:0;max-width:3.5rem;aspect-ratio:1;
     }
     body.apps-always a.tile .label,body.apps-always .tile .label{
-      font-size:.875rem;line-height:1.15;
+      font-size:.875rem;line-height:1.15;color:#e8f7ff;font-weight:650;
     }
     /* Class / Cuts “extra” doors — keep compact on CB */
     body.apps-always #school-wrap:not(:has(a.tile)),
@@ -614,6 +614,7 @@
     }
     @media (max-width:700px){
       body.apps-always .poster{height:10.25rem;border-radius:20px}
+      body.apps-always .hero{padding-top:1.45rem}
       body.apps-always .lockup-room{font-size:clamp(2.7rem,13vw,3.4rem)}
       body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch}
       body.apps-always #app-groups{display:flex;flex:none}
@@ -623,6 +624,9 @@
       body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
       body.apps-always a.tile,body.apps-always button.tile{
         aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;min-height:44px;justify-self:stretch;
+      }
+      body.apps-always a.tile img.mark{
+        width:auto;height:52%;max-width:72%;max-height:none;min-width:0;
       }
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
       body.apps-always .live,body.apps-always #room-footer{display:block}
@@ -774,7 +778,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-24-hub-open</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-polish</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.7</strong> — When it falls, the plan line becomes the fix.</p>
@@ -782,6 +786,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
           <ul id="hub-log">
+            <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
             <li>Footer is gone. The Hub chip sits on the card. Tap it to load the newest door. Phone tiles fill the screen.</li>
             <li>Hub chip sits in the footer. Tap it to load the newest door. The app list did not change.</li>
             <li>The Tech Room card is back: icon field and the cyan lockup. Search sits on the card. The app list did not change.</li>
