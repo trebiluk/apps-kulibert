@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.2") return;
-  window.__BERTYBEATZ__ = "1.8.2";
+  if (window.__BERTYBEATZ__ === "1.8.3") return;
+  window.__BERTYBEATZ__ = "1.8.3";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.2";
+  const CHIP = "BZ 1.8.3";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -775,7 +775,6 @@
       }
     };
     play() {
-      this.unlock();
       if (state.playing) return;
       state.playing = true;
       if (state.songOn && state.song.length) {
@@ -785,12 +784,18 @@
         state._songDirty = true;
       }
       this.step = 0;
-      this.nextTime = this.ctx.currentTime + 0.06;
       this.queued = [];
-      this.setVolume(state.soundOff ? 0 : state.volume);
-      this.setKit(state.kit);
-      this.scheduler();
-      this.timer = window.setInterval(this.scheduler, this.interval);
+      this.visualStart = performance.now();
+      try {
+        this.unlock();
+        this.nextTime = this.ctx.currentTime + 0.06;
+        this.setVolume(state.soundOff ? 0 : state.volume);
+        this.setKit(state.kit);
+        this.scheduler();
+        this.timer = window.setInterval(this.scheduler, this.interval);
+      } catch {
+        /* The column and the word Now still run. */
+      }
     }
     stop() {
       state.playing = false;
@@ -811,6 +816,12 @@
         if (q.when <= now) step = q.step;
       }
       return step;
+    }
+    visualStep() {
+      if (!state.playing) return -1;
+      const sixteenth = 60000 / Math.max(1, state.bpm) / 4;
+      const elapsed = performance.now() - (this.visualStart || performance.now());
+      return Math.floor(Math.max(0, elapsed) / sixteenth) % STEP_COUNT;
     }
   }
 
@@ -1592,7 +1603,8 @@
   const viz = $("viz");
   if (window.KulibertStage) {
     window.KulibertStage.mount(viz, () => {
-      const step = engine.currentStep();
+      let step = engine.currentStep();
+      if (step < 0) step = engine.visualStep();
       if (step !== state.playhead) setPlayhead(step);
       if (engine.analyser) {
         if (!engine.wave) engine.wave = new Uint8Array(engine.analyser.fftSize);

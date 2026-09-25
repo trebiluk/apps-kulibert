@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.3** · 2026-09-24 · channel **live**
+
+The column and the word Now keep moving when a Chromebook never starts sound. Mute is still a correct way to work.
+
+## Earlier
+
 **Chip: BZ 1.8.2** · 2026-09-24 · channel **live**
 
 The word Now names the sound in the column. The teacher page is the grades 5–8 plan, including deaf and hard of hearing, vision, special education, and multilingual learners. Kid screens stay plain.
