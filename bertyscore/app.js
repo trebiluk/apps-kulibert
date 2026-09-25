@@ -1,14 +1,14 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.0";
+  const CHIP = "BS 0.2.1";
   const HOW_KEY = "kulibert.bertyscore.howto";
   if (!Song) return;
 
   const $ = (id) => document.getElementById(id);
   const steps = [
-    ["Place a note", "Tap a pitch on the left, then tap a beat. The staff draws that note."],
-    ["Hear it", "Press Play. The note lights up on the staff. Mute is fine — the light still moves."],
-    ["Save it", "Save downloads a score file. Import opens that same file on this Chromebook."],
+    ["Hear it", "Press Play. The notes light up. Mute is fine — the light still moves."],
+    ["Change it", "Tap a pitch, then a beat. The staff draws the new note."],
+    ["Send it", "Beats puts these notes on the grid. Lights follows them. Save keeps a file."],
   ];
 
   const params = new URLSearchParams(window.location.search);
@@ -31,6 +31,7 @@
     playing: false,
     muted: false,
     how: 0,
+    heard: false,
     timer: 0,
   };
   let synth = null;
@@ -125,7 +126,8 @@
         const next = pitch === state.pitch ? null : state.pitch;
         Song.setBeat(song, state.focus, bi, next);
         state.beat = bi;
-        changed("Score updated.");
+        const info = Song.pitchById(next);
+        changed(info ? "You placed " + info.label + ". Press Play." : "That beat is a rest.");
       });
       box.appendChild(b);
     });
@@ -164,7 +166,8 @@
         pip.addEventListener("click", () => {
           Song.setBeat(state.song, mi, bi, pitch ? null : state.pitch);
           state.focus = mi;
-          changed("Sequence updated the score.");
+          const placed = Song.pitchById(pitch ? null : state.pitch);
+          changed(placed ? "You placed " + placed.label + ". Press Play." : "That beat is a rest.");
         });
         pips.appendChild(pip);
       });
@@ -270,6 +273,16 @@
     }, reduce ? beat : beat);
   }
 
+  function celebrate() {
+    if (state.heard) return;
+    state.heard = true;
+    status("That's your song.");
+    const wrap = document.querySelector(".staff-wrap");
+    if (!wrap) return;
+    wrap.classList.add("did-it");
+    window.setTimeout(() => wrap.classList.remove("did-it"), 1600);
+  }
+
   async function play() {
     state.playing = true;
     paintPlay();
@@ -285,12 +298,14 @@
         }
         armTone();
         if (window.Tone.Transport.state !== "started") window.Tone.Transport.start();
+        celebrate();
         return;
       } catch (err) {
         status("Sound needs another tap. The score still lights up.");
       }
     }
     armFallback();
+    celebrate();
   }
 
   function stop() {

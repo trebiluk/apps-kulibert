@@ -45,7 +45,7 @@
       bpm: 96,
       measures: [
         { id: "start-a", label: "A", beats: ["C", null, "E", null] },
-        { id: "start-b", label: "B", beats: ["G", null, "c", "E"] },
+        { id: "start-b", label: "B", beats: ["G", null, "A", "E"] },
       ],
     });
   }
@@ -66,7 +66,7 @@
       family: "kulibert.song",
       rev: 1,
       app: "bertyscore",
-      chip: "BS 0.2.0",
+      chip: "BS 0.2.1",
       alias: cleanAlias(raw && (raw.alias || raw.name)),
       bpm: bpm,
       tempo: bpm,
@@ -286,7 +286,7 @@
   }
 
   global.KulibertSong = {
-    CHIP: "BS 0.2.0",
+    CHIP: "BS 0.2.1",
     PITCHES: PITCHES,
     BEATS: BEATS,
     starter: starter,

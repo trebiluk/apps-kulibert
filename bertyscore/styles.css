@@ -61,7 +61,7 @@ button { cursor: pointer; }
   margin-bottom: 0.75rem;
   overflow: hidden;
 }
-#staff { width: 100%; }
+.staff-wrap.did-it { outline: 3px solid var(--live); outline-offset: 2px; }
 #staff svg { width: 100%; height: auto; display: block; }
 .abcjs-note { cursor: pointer; }
 .abcjs-note.is-now path,
