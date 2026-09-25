@@ -630,6 +630,28 @@
     },
     {
       "source": "/den",
+      "has": [
+        {
+          "type": "query",
+          "key": "tab",
+          "value": "lunch"
+        }
+      ],
+      "destination": "/hub/den-lunch.html"
+    },
+    {
+      "source": "/den/",
+      "has": [
+        {
+          "type": "query",
+          "key": "tab",
+          "value": "lunch"
+        }
+      ],
+      "destination": "/hub/den-lunch.html"
+    },
+    {
+      "source": "/den",
       "destination": "https://bearcat-den.vercel.app/"
     },
     {

@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-25-hub-ticker"/>
+  <meta name="tech-room-rev" content="2026-09-25-hub-chips-truth"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -297,6 +297,23 @@
       outline:2px solid var(--ring);outline-offset:2px;
     }
     a.tile:active{transform:scale(.96)}
+    a.tile.is-soon{
+      opacity:.62;cursor:default;
+      border-style:dashed;
+      border-color:color-mix(in srgb,var(--muted-foreground) 45%,transparent);
+      box-shadow:none;
+    }
+    a.tile.is-soon img.mark{filter:grayscale(1);opacity:.72}
+    a.tile.is-soon .label{color:var(--muted-foreground);font-weight:600}
+    a.tile.is-soon:hover,
+    a.tile.is-soon:focus-visible,
+    a.tile.is-soon:active{
+      color:var(--muted-foreground);
+      background:var(--card);
+      border-color:color-mix(in srgb,var(--muted-foreground) 45%,transparent);
+      box-shadow:none;
+      transform:none;
+    }
     a.tile .label{font-size:.875rem;font-weight:650;text-align:center;line-height:1.25;padding:0 .35rem;max-width:100%}
     a.tile.is-hidden{display:none}
     a.tile.is-room-hidden,button.tile.is-room-hidden{display:none}
@@ -477,6 +494,7 @@
       border-radius:999px;border:1px solid color-mix(in srgb,#22d3ee 40%,#16324f);
       background:#0b152c;color:#8fb4c9;font-size:.75rem;font-weight:650;
     }
+    .shell-chip[hidden]{display:none !important}
     .shell-header .edge-pocket{position:relative;top:auto;right:auto;margin-left:auto;z-index:6}
     .shell-marquee{
       position:relative;flex:0 0 auto;height:30px;overflow:hidden;display:flex;align-items:center;
@@ -690,6 +708,7 @@
     @media (max-width:700px){
       body.is-framed .shell-footer{display:none !important}
       body.is-framed .shell-chip{display:none !important}
+      body.is-framed #shell-door-chip:not([hidden]){display:inline-flex !important;max-width:6.5rem;overflow:hidden}
       body.is-framed .shell-brand{font-size:.68rem;letter-spacing:.04em;max-width:5.5rem;overflow:hidden;text-overflow:ellipsis}
       body.is-framed .shell-header{max-height:48px}
       body.is-framed .shell-header .app-dock{flex:1 1 auto;min-width:0;width:auto}
@@ -737,6 +756,16 @@
         width:72px;height:72px;min-width:72px;max-width:72px;max-height:72px;
       }
     }
+    body.apps-always a.tile.is-soon,
+    body.apps-always a.tile.is-soon:hover,
+    body.apps-always a.tile.is-soon:focus-visible,
+    body.apps-always a.tile.is-soon:active{
+      opacity:.62;cursor:default;color:#8fb4c9;
+      border-style:dashed;border-color:#3d5a70;background:#0b152c;
+      box-shadow:none;transform:none;
+    }
+    body.apps-always a.tile.is-soon .label{color:#8fb4c9;font-weight:600}
+    body.apps-always a.tile.is-soon img.mark{filter:grayscale(1);opacity:.72}
 
   </style>
 </head>
@@ -746,6 +775,7 @@
       <span class="shell-brand">THE TECH ROOM</span>
       <span class="shell-chip" id="shell-weather">Solvay · Clear</span>
       <span class="shell-chip" id="shell-temp">68°F</span>
+      <span class="shell-chip" id="shell-door-chip" hidden></span>
       <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
@@ -810,14 +840,16 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-25-hub-ticker</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-25-hub-chips-truth</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
+          <p class="cut-line">Live chips match the doors. Debugzy is not built.</p>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.8</strong> — A pass leads with Next. The count stays tucked.</p>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.2</strong> — origins pictures redrawn.</p>
           <ul id="hub-log">
+            <li>Live chips match the doors. Debugzy is not built.</li>
             <li>HoldIt HI 1.1.8 · a pass leads with Next. SpanCraft SC 1.3.23 and Spire Lab SL 1.3.22 · a miss stays as one fix.</li>
             <li>The door shows the top 3 on each board, once. A short line stays still. A long line scrolls.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
@@ -940,9 +972,9 @@
             <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
             <span class="label">Sprocket</span>
           </a>
-          <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold make" href="/debugzy/">
+          <a class="tile is-soon" data-id="debugzy" data-keywords="debugzy debug hold make coming soon" aria-disabled="true">
             <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
-            <span class="label">Debugzy</span>
+            <span class="label">Debugzy · coming soon</span>
           </a>
         </nav>
       </section>
@@ -1011,19 +1043,19 @@
     <section class="live" aria-label="Live chips">
       <h2>Live now</h2>
       <ul class="chips">
-        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.107</strong></a></li>
-        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.1.1</strong></a></li>
-        <li><a href="/bertycad/">BertyCAD <strong>1.8.0</strong></a></li>
-        <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.11.0</strong></a></li>
-        <li><a href="/berty-run/">Berty Run <strong>BR 1.5.11</strong></a></li>
-        <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.6.0</strong></a></li>
-        <li><a href="/visualizer/">Visualizer <strong>Viz 0.3.0</strong></a></li>
+        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.115</strong></a></li>
+        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.2.1</strong></a></li>
+        <li><a href="/bertycad/">BertyCAD <strong>BC 1.10.4</strong></a></li>
+        <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.21.0</strong></a></li>
+        <li><a href="/berty-run/">Berty Run <strong>BR 1.9.6</strong></a></li>
+        <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.8.6</strong></a></li>
+        <li><a href="/visualizer/">Visualizer <strong>Viz 0.6.5</strong></a></li>
         <li><a href="/holdit/">HoldIt <strong>HI 1.1.8</strong></a></li>
         <li><a href="/spancraft/">SpanCraft <strong>SC 1.3.23</strong></a></li>
         <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.22</strong></a></li>
         <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 1.9.2</strong></a></li>
-        <li><a href="/debugzy/">Debugzy <strong>list · not built</strong></a></li>
+        <li><a href="/debugzy/">Debugzy <strong>not built</strong></a></li>
       </ul>
     </section>
     <p class="room-meta" id="room-meta" hidden></p>
@@ -1905,6 +1937,7 @@
 
       appTiles().forEach(function (tile) {
         tile.addEventListener("click", function () {
+          if (!tile.getAttribute("href")) return;
           remember(entryFromTile(tile));
         });
       });
@@ -2006,10 +2039,12 @@
         if (n >= 1 && n <= 9) {
           var tile = launchTiles()[n - 1];
           if (tile) {
+            var hotHref = tile.getAttribute("href");
+            if (!hotHref) return;
             event.preventDefault();
             remember(entryFromTile(tile));
-            if (roomNewTab) window.open(tile.getAttribute("href"), "_blank", "noopener,noreferrer");
-            else window.location.href = tile.getAttribute("href");
+            if (roomNewTab) window.open(hotHref, "_blank", "noopener,noreferrer");
+            else window.location.href = hotHref;
           }
         }
       });
@@ -2261,12 +2296,47 @@
         }
       }
 
+      var doorChipCache = {};
+      function paintDoorChip(href, frame, title) {
+        var el = document.getElementById("shell-door-chip");
+        if (!el) return;
+        var path = "";
+        try { path = new URL(href, location.href).pathname; } catch (ePath) { path = ""; }
+        if (path.indexOf("/berty-run") !== 0) {
+          el.hidden = true;
+          el.textContent = "";
+          return;
+        }
+        function show(chip) {
+          var text = chip || "BR 1.9.6";
+          el.textContent = text;
+          el.hidden = false;
+          if (frame) frame.title = (title || "Berty Run") + " · " + text;
+        }
+        if (doorChipCache["berty-run"]) {
+          show(doorChipCache["berty-run"]);
+          return;
+        }
+        show("BR 1.9.6");
+        fetch("/berty-run/", { credentials: "same-origin" }).then(function (res) {
+          return res.ok ? res.text() : "";
+        }).then(function (html) {
+          var match = /name="berty-run-rev"\s+content="([^"]+)"/.exec(html || "");
+          var chip = match && match[1] ? match[1].replace(/\s+/g, " ").trim() : "BR 1.9.6";
+          doorChipCache["berty-run"] = chip;
+          if (document.body.classList.contains("is-framed")) show(chip);
+        }).catch(function () {
+          show("BR 1.9.6");
+        });
+      }
+
       function openFrame(href, title, fromPop) {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         if (!frame) return;
         ensureSingleChrome();
         frame.title = title || "App";
+        paintDoorChip(href, frame, title);
         frame.hidden = false;
         if (frame.getAttribute("src") !== href) frame.setAttribute("src", href);
         document.body.classList.add("is-framed");
@@ -2291,6 +2361,8 @@
       function closeFrame(fromPop) {
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
+        var doorChip = document.getElementById("shell-door-chip");
+        if (doorChip) { doorChip.hidden = true; doorChip.textContent = ""; }
         document.body.classList.remove("is-framed");
         parkHomeForFrame(false);
         frameHref = "";
