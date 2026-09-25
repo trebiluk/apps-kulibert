@@ -95,6 +95,17 @@
         <label>Doors <input id="doors" maxlength="24" placeholder="7:55a"/></label>
         <label>Last bell <input id="lastBell" maxlength="24" placeholder="2:37p"/></label>
       </form>
+      <form class="card" id="lb-form">
+        <p class="chip">Leaderboards</p>
+        <p>Shows once, under the door ribbon. The same name on the same board updates the score. It does not add a second line.</p>
+        <label class="check">Show the marquee <input id="lb-on" type="checkbox" checked/></label>
+        <label>Board <input id="lb-board" maxlength="24" placeholder="SpanCraft"/></label>
+        <label>Name <input id="lb-name" maxlength="24" placeholder="Alias"/></label>
+        <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
+        <button class="save" type="submit">Add or update</button>
+        <p class="err" id="lb-status"></p>
+        <div id="lb-list"></div>
+      </form>
       <form class="card" id="add-form">
         <p class="chip">School tiles</p>
         <label>Name <input id="name" maxlength="24" placeholder="NYSED"/></label>
@@ -137,7 +148,7 @@
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
       var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["visualizer","Visualizer"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
-      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true };
+      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
       var token = sessionStorage.getItem("tech-room-desk-gate") || "";
       function paintHubLock() {
         var on = window.HubStaffAuth && HubStaffAuth.isUnlocked();
@@ -237,8 +248,10 @@
         $("maxCuts").value = room.maxCuts || 18;
         $("search").value = room.search || "";
         $("footer").value = room.footer || "";
+        if ($("lb-on")) $("lb-on").checked = room.boardsOn !== false;
         paintApps();
         paintList();
+        paintLb();
       }
 
       function collect() {
@@ -268,6 +281,80 @@
         room.maxCuts = Math.min(18, Math.max(1, Number($("maxCuts").value) || 18));
         room.search = $("search").value;
         room.footer = $("footer").value;
+        room.boardsOn = $("lb-on") ? $("lb-on").checked : room.boardsOn !== false;
+        room.boards = dedupeBoards(room.boards);
+      }
+
+      function boardNorm(value) {
+        return String(value || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
+      }
+      function dedupeBoards(rows) {
+        var seen = {};
+        var out = [];
+        (Array.isArray(rows) ? rows : []).forEach(function (row) {
+          if (!row) return;
+          var board = boardNorm(row.board).slice(0, 24);
+          var name = boardNorm(row.name).slice(0, 24);
+          var score = boardNorm(row.score).slice(0, 12);
+          if (!board || !name || !score) return;
+          var key = board.toLowerCase() + "\0" + name.toLowerCase();
+          if (seen[key]) return;
+          seen[key] = 1;
+          out.push({ board: board, name: name, score: score });
+        });
+        return out.slice(0, 24);
+      }
+      function boardsFromHref(href) {
+        var raw = String(href || "");
+        var hash = raw.indexOf("#");
+        if (hash < 0) return [];
+        try { return dedupeBoards(JSON.parse(decodeURIComponent(raw.slice(hash + 1)))); }
+        catch (e) { return []; }
+      }
+      function unpackBoards(pack) {
+        var field = dedupeBoards(pack && pack.boards);
+        var linked = [];
+        var links = Array.isArray(pack && pack.links) ? pack.links : [];
+        links.forEach(function (row) {
+          if (row && row.id === "lbpack-live") linked = linked.concat(boardsFromHref(row.href));
+        });
+        room.links = links.filter(function (row) { return row && row.id !== "lbpack-live"; });
+        room.boards = dedupeBoards(field.concat(linked));
+        room.boardsOn = !pack || pack.boardsOn !== false;
+      }
+      function packBoards() {
+        room.boards = dedupeBoards(room.boards);
+        room.links = (room.links || []).filter(function (row) { return !row || row.id !== "lbpack-live"; });
+        if (!room.boards.length) return;
+        var href = "https://apps.kulibert.net/lb#" + encodeURIComponent(JSON.stringify(room.boards));
+        if (href.length > 1800) {
+          room.boards = room.boards.slice(0, 12);
+          href = "https://apps.kulibert.net/lb#" + encodeURIComponent(JSON.stringify(room.boards));
+        }
+        room.links.push({ id: "lbpack-live", name: "Leaderboards", href: href, icon: "board" });
+      }
+      function paintLb() {
+        var box = $("lb-list");
+        if (!box) return;
+        box.innerHTML = "";
+        if (!room.boards.length) { box.textContent = "No lines yet."; return; }
+        room.boards.forEach(function (row, index) {
+          var div = document.createElement("div");
+          div.className = "row";
+          var label = document.createElement("span");
+          label.textContent = row.board + " · " + row.name + " · " + row.score;
+          var remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "ghost";
+          remove.textContent = "Remove";
+          remove.addEventListener("click", function () {
+            room.boards = room.boards.filter(function (_, i) { return i !== index; });
+            paintLb();
+          });
+          div.appendChild(label);
+          div.appendChild(remove);
+          box.appendChild(div);
+        });
       }
 
       function paintList() {
@@ -275,6 +362,7 @@
         box.innerHTML = "";
         if (!room.links.length) { box.textContent = "No school links yet."; return; }
         room.links.forEach(function (row, index) {
+          if (!row || row.id === "lbpack-live") return;
           var div = document.createElement("div");
           div.className = "row";
           var a = document.createElement("a");
@@ -311,12 +399,14 @@
         });
         room.links = Array.isArray(pack.links) ? pack.links : [];
         room.hidden = Array.isArray(pack.hidden) ? pack.hidden : [];
+        unpackBoards(pack);
         fill();
         $("status").textContent = room.links.length + " live on the door.";
       }
 
       async function save() {
         collect();
+        packBoards();
         $("status").textContent = "Saving…";
         var res = await fetch(API, {
           method: "PUT",
@@ -326,7 +416,7 @@
         if (res.status === 401) { $("status").textContent = "Desk key did not match TechWorks Cloud."; return; }
         if (!res.ok) { $("status").textContent = "Save failed (" + res.status + ")."; return; }
         var pack = await res.json();
-        room.links = Array.isArray(pack.links) ? pack.links : room.links;
+        room.links = room.links.filter(function (row) { return row && row.id !== "lbpack-live"; });
         paintList();
         $("status").textContent = (pack.n || room.links.length) + " live. Chromebooks refresh while the tab is open.";
       }
@@ -356,6 +446,30 @@
       $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
       $("preset-paper").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Paper day — no Chromebooks this period"; });
       $("preset-sub").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Sub coverage — stay on assigned apps"; });
+      $("lb-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        var board = boardNorm($("lb-board").value).slice(0, 24);
+        var name = boardNorm($("lb-name").value).slice(0, 24);
+        var score = boardNorm($("lb-score").value).slice(0, 12);
+        var status = $("lb-status");
+        if (!board || !name || !score) {
+          if (status) status.textContent = "Need a board, a name, and a score.";
+          return;
+        }
+        var key = board.toLowerCase() + "\0" + name.toLowerCase();
+        var updated = false;
+        room.boards = dedupeBoards(room.boards).map(function (row) {
+          if ((row.board.toLowerCase() + "\0" + row.name.toLowerCase()) !== key) return row;
+          updated = true;
+          return { board: board, name: name, score: score };
+        });
+        if (!updated) room.boards.push({ board: board, name: name, score: score });
+        room.boards = dedupeBoards(room.boards);
+        $("lb-name").value = "";
+        $("lb-score").value = "";
+        if (status) status.textContent = updated ? "Updated " + name + " on " + board + ". Save to every Chromebook." : "Added " + name + ". Save to every Chromebook.";
+        paintLb();
+      });
       $("add-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var name = $("name").value.replace(/\s+/g, " ").trim().slice(0, 24);
