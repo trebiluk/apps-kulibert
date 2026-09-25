@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.5") return;
-  window.__BERTYBEATZ__ = "1.8.5";
+  if (window.__BERTYBEATZ__ === "1.8.6") return;
+  window.__BERTYBEATZ__ = "1.8.6";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.5";
+  const CHIP = "BZ 1.8.6";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -756,18 +756,20 @@
         this.step += 1;
         if (this.step >= STEP_COUNT) {
           this.step = 0;
-          if (state.songOn && state.song.length > 1) {
-            state.songPos = (state.songPos + 1) % state.song.length;
-            const nextId = state.song[state.songPos];
-            if (nextId !== state.pattern && state.patterns[nextId]) {
-              state.pattern = nextId;
-              state.steps = state.patterns[nextId];
-              state._songDirty = true;
-            }
-          }
+          this.advanceSong();
         }
       }
     };
+    advanceSong() {
+      if (!state.songOn || !state.song || state.song.length < 2) return;
+      state.songPos = (state.songPos + 1) % state.song.length;
+      const nextId = state.song[state.songPos];
+      if (nextId !== state.pattern && state.patterns[nextId]) {
+        state.pattern = nextId;
+        state.steps = state.patterns[nextId];
+        state._songDirty = true;
+      }
+    }
     play() {
       if (state.playing) return;
       state.playing = true;
@@ -780,6 +782,7 @@
       this.step = 0;
       this.queued = [];
       this.visualStart = performance.now();
+      this.visualBar = 0;
       try {
         this.unlock();
         this.nextTime = this.ctx.currentTime + 0.06;
@@ -811,11 +814,24 @@
       }
       return step;
     }
+    noteAudioBar() {
+      const sixteenth = 60000 / Math.max(1, state.bpm) / 4;
+      const elapsed = performance.now() - (this.visualStart || performance.now());
+      this.visualBar = Math.floor(Math.max(0, elapsed) / sixteenth / STEP_COUNT);
+    }
     visualStep() {
       if (!state.playing) return -1;
       const sixteenth = 60000 / Math.max(1, state.bpm) / 4;
       const elapsed = performance.now() - (this.visualStart || performance.now());
-      return Math.floor(Math.max(0, elapsed) / sixteenth) % STEP_COUNT;
+      const index = Math.floor(Math.max(0, elapsed) / sixteenth);
+      const bar = Math.floor(index / STEP_COUNT);
+      if (this.visualBar == null) this.visualBar = bar;
+      if (bar > this.visualBar) {
+        const jumped = bar - this.visualBar;
+        this.visualBar = bar;
+        for (let i = 0; i < jumped; i++) this.advanceSong();
+      }
+      return index % STEP_COUNT;
     }
   }
 
@@ -1294,6 +1310,21 @@
     $("modal-ok").hidden = true;
   });
 
+  $("song-name").addEventListener("click", () => {
+    const box = $("title-lists");
+    const Titles = window.KulibertTitles;
+    if (!box || !Titles) return;
+    const opening = box.hidden;
+    box.hidden = !opening;
+    $("song-name").setAttribute("aria-expanded", String(opening));
+    if (!opening) return;
+    const starting = Titles.partsOf(state.name) ? state.name : Titles.starterTitle();
+    Titles.mount(box, starting, (title) => {
+      state.name = title;
+      $("song-name").textContent = title;
+      remember();
+    });
+  });
   $("save-btn").addEventListener("click", () => {
     modalBody.innerHTML = "";
     const Titles = window.KulibertTitles;
@@ -1606,6 +1637,7 @@
     window.KulibertStage.mount(viz, () => {
       let step = engine.currentStep();
       if (step < 0) step = engine.visualStep();
+      else engine.noteAudioBar();
       if (step !== state.playhead) setPlayhead(step);
       if (engine.analyser) {
         if (!engine.wave) engine.wave = new Uint8Array(engine.analyser.fftSize);

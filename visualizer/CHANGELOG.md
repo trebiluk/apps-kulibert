@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.3** · 2026-09-25 · channel **live**
+
+Beats keeps the kit, mood, and key when a beat is sent across. A missing kit still lands on Studio.
+
+## Earlier
+
 **Chip: Viz 0.6.2** · 2026-09-25 · channel **live**
 
 A built title such as whimsical blue gopher ballad stays on the lights. Any other typed title still becomes Class beat.

@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.6** · 2026-09-25 · channel **live**
+
+Tap the title on the screen to build it from the four lists. If sound never starts, the song line still moves to the next pattern.
+
+## Earlier
+
 **Chip: BZ 1.8.5** · 2026-09-25 · channel **live**
 
 A title is four taps: Feel, Color, Animal, Kind. Example: whimsical blue gopher ballad. Kids still cannot type a title.

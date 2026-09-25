@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.2") return;
-  window.__VISUALIZER__ = "0.6.2";
+  if (window.__VISUALIZER__ === "0.6.3") return;
+  window.__VISUALIZER__ = "0.6.3";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.2";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.3";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -118,6 +118,10 @@
       id: "code-" + bits.slice(0, 6),
       name: safeName(parts[1] || "Class beat"),
       bpm: Math.min(160, Math.max(70, Number(parts[2]) || 110)),
+      swing: Number(parts[3]) || 0,
+      kit: parts[4],
+      mood: parts[5],
+      key: parts[6],
       steps,
     };
   }
@@ -149,6 +153,10 @@
         id: "file-" + Date.now(),
         name: safeName(data.name || "Class beat"),
         bpm: Math.min(160, Math.max(60, Number(data.bpm) || 110)),
+        swing: data.swing,
+        kit: data.kit,
+        mood: data.mood,
+        key: data.key,
         steps: normalizeSteps(data.steps),
       };
     }
@@ -165,6 +173,10 @@
           id: "now",
           name: safeName(data.now.name || "Class beat"),
           bpm: data.now.bpm || 110,
+          swing: data.now.swing,
+          kit: data.now.kit,
+          mood: data.now.mood,
+          key: data.now.key,
           steps: normalizeSteps(data.now.steps),
         });
       }
@@ -175,6 +187,10 @@
             id: "lib-" + item.id,
             name: safeName(item.name || "Class beat"),
             bpm: item.bpm || 110,
+            swing: item.swing,
+            kit: item.kit,
+            mood: item.mood,
+            key: item.key,
             steps: normalizeSteps(item.steps),
           });
         });
@@ -244,11 +260,24 @@
     for (let i = 0; i < 16; i++) if (arr && (arr[i] === true || arr[i] === 1)) n |= 1 << i;
     return n.toString(16).padStart(4, "0");
   }
+  function toneOf(beat) {
+    const kits = ["studio", "arcade", "dream", "boom"];
+    const moods = ["bright", "moody"];
+    const keys = ["C", "D", "E", "F", "G", "A", "Bb"];
+    const swing = Math.min(60, Math.max(0, Math.round(Number(beat && beat.swing) || 0)));
+    return {
+      swing,
+      kit: kits.includes(beat && beat.kit) ? beat.kit : "studio",
+      mood: moods.includes(beat && beat.mood) ? beat.mood : "bright",
+      key: keys.includes(beat && beat.key) ? beat.key : "C",
+    };
+  }
   function toBeatzCode(beat) {
     const bits = TRACKS.map((id) => packBits(beat.steps[id])).join("");
     const name = safeName(beat.name || "Class beat").replace(/~/g, " ");
     const bpm = Math.min(160, Math.max(70, Math.round(Number(beat.bpm) || 110)));
-    return "BZ1~" + name + "~" + bpm + "~8~studio~bright~C~" + bits;
+    const tone = toneOf(beat);
+    return "BZ1~" + name + "~" + bpm + "~" + tone.swing + "~" + tone.kit + "~" + tone.mood + "~" + tone.key + "~" + bits;
   }
   function loadLook() {
     try {
