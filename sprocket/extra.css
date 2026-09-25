@@ -1,0 +1,14 @@
+button, a, input, select, textarea, .chip, .pill-btn { -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 3px solid #FFC130; outline-offset: 2px; }
+.btn.ghost { background: var(--card); color: var(--ink); border: 1px solid var(--line); }
+.help a { background: var(--card); }
+.sheet { padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 380px) {
+  .nav button { font-size: 10px; min-height: 60px; }
+  .brand { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  button:active, .chip:active, .check:active { transform: none; }
+}
+.now-do { font-weight: 800; margin: 0 0 8px; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
