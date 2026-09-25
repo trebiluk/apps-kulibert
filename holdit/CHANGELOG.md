@@ -1,5 +1,10 @@
-**Chip: HI 1.1.3** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.4** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.4 — Harder jobs, new tools — 2026-09-24
+
+- What’s new: each job adds one material or tool. Then cost contests, lightest contests, and challenge jobs.
+- A first clear says so. Beat your cost or your mass and the card says so.
 
 ## 1.1.3 — One button to start — 2026-09-24
 
