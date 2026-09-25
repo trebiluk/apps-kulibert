@@ -760,12 +760,18 @@
     body.apps-always a.tile.is-soon:hover,
     body.apps-always a.tile.is-soon:focus-visible,
     body.apps-always a.tile.is-soon:active{
-      opacity:.62;cursor:default;color:#8fb4c9;
-      border-style:dashed;border-color:#3d5a70;background:#0b152c;
+      opacity:.72;cursor:default;color:#8fb4c9;
+      border-style:dashed;border-color:#6d8ea3;background:#0b152c;
       box-shadow:none;transform:none;
+      aspect-ratio:auto;min-height:132px;height:auto;
     }
-    body.apps-always a.tile.is-soon .label{color:#8fb4c9;font-weight:600}
-    body.apps-always a.tile.is-soon img.mark{filter:grayscale(1);opacity:.72}
+    body.apps-always a.tile.is-soon .label{
+      color:#8fb4c9;font-weight:650;white-space:normal;font-size:.8rem;
+    }
+    body.apps-always a.tile.is-soon img.mark{
+      filter:grayscale(1);opacity:.65;
+      width:48px;height:48px;min-width:48px;max-width:48px;max-height:48px;
+    }
 
   </style>
 </head>
@@ -1972,6 +1978,11 @@
         var h = Math.floor((avail - gap * (rows - 1)) / rows);
         if (h < 128) h = 128;
         Array.prototype.forEach.call(tiles, function (tile) {
+          if (tile.classList.contains("is-soon")) {
+            tile.style.height = "";
+            tile.style.aspectRatio = "auto";
+            return;
+          }
           tile.style.aspectRatio = "auto";
           tile.style.height = h + "px";
         });
