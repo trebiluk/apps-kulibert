@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.6** · 2026-09-25 · channel **live**
+
+Gizmos start closed so Play stays up. A half-typed Code line says to add a number. An old beat name that is not on the lists becomes a class title. The drums stay.
+
+## Earlier
+
 **Chip: Viz 0.6.5** · 2026-09-25 · channel **live**
 
 Code updates the picture while you type. Try is a button. On a phone the looks slide sideways so Play stays on screen.

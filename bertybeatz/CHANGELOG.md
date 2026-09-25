@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.7** · 2026-09-25 · channel **live**
+
+An old title that is not on the class lists becomes a class title. The squares stay. Kids still cannot type a title.
+
+## Earlier
+
 **Chip: BZ 1.8.6** · 2026-09-25 · channel **live**
 
 Tap the title on the screen to build it from the four lists. If sound never starts, the song line still moves to the next pattern.

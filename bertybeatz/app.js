@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.6") return;
-  window.__BERTYBEATZ__ = "1.8.6";
+  if (window.__BERTYBEATZ__ === "1.8.7") return;
+  window.__BERTYBEATZ__ = "1.8.7";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.6";
+  const CHIP = "BZ 1.8.7";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [

@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.5") return;
-  window.__VISUALIZER__ = "0.6.5";
+  if (window.__VISUALIZER__ === "0.6.6") return;
+  window.__VISUALIZER__ = "0.6.6";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.5";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.6";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -238,7 +238,7 @@
     try {
       const saved = JSON.parse(localStorage.getItem(GEAR_KEY) || "null");
       Object.keys(GEAR_BASE).forEach((key) => {
-        const n = Number(saved && saved[key]);
+        const n = saved && saved[key] != null ? Number(saved[key]) : NaN;
         if (n === n) gear[key] = n;
       });
     } catch { /* ignore */ }
@@ -476,7 +476,9 @@
       box.appendChild(b);
     }
     const onLook = box.querySelector(".on");
-    if (onLook && onLook.scrollIntoView) onLook.scrollIntoView({ inline: "nearest", block: "nearest" });
+    if (onLook && box.scrollWidth > box.clientWidth) {
+      box.scrollLeft = Math.max(0, onLook.offsetLeft - 8);
+    }
     const recipe = $("code-look");
     if (recipe) {
       recipe.hidden = state.look !== "code";
@@ -669,6 +671,16 @@
   $("more-btn").hidden = !seen;
   ensureBeat();
   paintGear();
+  const gizmoBox = $("gizmo-box");
+  if (gizmoBox) {
+    const moved = Object.keys(GEAR_BASE).some((key) => Number(state.gear[key]) !== GEAR_BASE[key]);
+    let opened = false;
+    try { opened = localStorage.getItem("kulibert.viz.gizmos") === "1"; } catch (err) { opened = false; }
+    gizmoBox.open = moved || opened;
+    gizmoBox.addEventListener("toggle", () => {
+      try { localStorage.setItem("kulibert.viz.gizmos", gizmoBox.open ? "1" : "0"); } catch (err) { /* ignore */ }
+    });
+  }
   if (new URLSearchParams(window.location.search).get("from") === "bridge") {
     state.beatId = "score";
     state.source = "library";

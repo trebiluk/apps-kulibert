@@ -33,15 +33,28 @@
     return out;
   }
 
+  function stableTitle(text) {
+    var n = 0;
+    var i;
+    for (i = 0; i < text.length; i++) n = (n * 33 + text.charCodeAt(i)) >>> 0;
+    var parts = [];
+    for (i = 0; i < LISTS.length; i++) {
+      parts.push(LISTS[i].words[(n >>> (i * 3)) % LISTS[i].words.length]);
+    }
+    return compose(parts);
+  }
+
   function safeTitle(value, fallback) {
     var text = String(value || "").replace(/[~<>]/g, " ").replace(/\s+/g, " ").trim();
     var i;
+    if (!text) return fallback == null ? "Class beat" : fallback;
     for (i = 0; i < RESERVED.length; i++) {
       if (RESERVED[i].toLowerCase() === text.toLowerCase()) return RESERVED[i];
     }
     var parts = partsOf(text);
     if (parts) return compose(parts);
-    return fallback == null ? "Class beat" : fallback;
+    if (fallback === "") return "";
+    return stableTitle(text.toLowerCase());
   }
 
   function starterTitle() {

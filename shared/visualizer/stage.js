@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.5";
+  var CHIP = "Viz 0.6.6";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -153,6 +153,11 @@
     if (!el.getAttribute("data-ready")) {
       el.setAttribute("data-ready", "1");
       el.innerHTML = "";
+      var more = document.createElement("details");
+      more.className = "code-more";
+      var moreLabel = document.createElement("summary");
+      moreLabel.textContent = "Or use the buttons";
+      more.appendChild(moreLabel);
       CODE_GROUPS.forEach(function (group) {
         var wrap = document.createElement("div");
         wrap.className = "code-group";
@@ -195,7 +200,7 @@
           chips.appendChild(b);
         });
         wrap.appendChild(chips);
-        el.appendChild(wrap);
+        more.appendChild(wrap);
       });
       var typeRow = document.createElement("div");
       typeRow.className = "code-group";
@@ -235,7 +240,10 @@
       }
       function commit(force) {
         var kind = classifyLine(field.value);
-        if (kind.wait && !force) return;
+        if (kind.wait && !force) {
+          note.textContent = "Add a number.";
+          return;
+        }
         if (kind.error || (kind.wait && force)) {
           note.textContent = "Use arms, grow, turn, skip, twist, or F + - [ ].";
           markSurprises();
@@ -273,6 +281,7 @@
       typeRow.appendChild(tryBtn);
       typeRow.appendChild(note);
       el.insertBefore(typeRow, el.firstChild);
+      el.appendChild(more);
     }
     paintRecipe(el);
     return loadCode();

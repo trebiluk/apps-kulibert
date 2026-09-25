@@ -248,16 +248,30 @@ body.is-loop .stage {
   margin-bottom: 0.75rem;
 }
 .gizmos {
+  display: block;
+  margin: 0 0 0.85rem;
+}
+.gizmos summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 750;
+  cursor: pointer;
+}
+.gizmos[open] {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   gap: 0.55rem 0.75rem;
-  margin: 0 0 0.85rem;
 }
-.gizmos h2 {
-  grid-column: 1 / -1;
-  margin: 0;
-  font-size: 1rem;
-  letter-spacing: -0.02em;
+.gizmos summary,
+.gizmos #g-reset { grid-column: 1 / -1; }
+.code-more { width: 100%; }
+.code-more summary {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  font-weight: 750;
+  cursor: pointer;
 }
 .gizmo {
   display: flex;
@@ -301,6 +315,9 @@ body:not(.show-more) .deep { display: none; }
 }
 .foot a { color: var(--accent); font-weight: 650; text-decoration: none; }
 
+@media (max-height: 820px) {
+  .stage-canvas { height: 220px; min-height: 180px; }
+}
 @media (max-width: 760px) {
   .stage-canvas { height: 240px; min-height: 200px; }
   #looks {
