@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-24-hub-chip"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-open"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -483,18 +483,15 @@
     body.is-framed #shell-board{display:none}
     #app-frame{flex:1 1 auto;width:100%;min-height:0;border:0;background:#050814}
     #app-frame[hidden]{display:none !important;pointer-events:none !important}
-    .shell-footer{
-      flex:0 0 auto;min-height:36px;display:flex;align-items:center;gap:.55rem;flex-wrap:nowrap;
-      padding:0 .65rem;background:#050814;color:#7aa0b5;
-      border-top:1px solid #16324f;font-size:.72rem;font-weight:600;
-    }
+    .shell-footer{display:none !important}
     .shell-footer #shell-lunch{color:#7aa0b5;font-weight:600;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:11rem}
     .shell-footer a{color:#5ec8e0;min-height:32px;padding:0 .15rem;display:inline-flex;align-items:center;text-decoration:none;font-weight:650;font-size:.72rem}
     body.is-framed .shell-footer a{font-size:.7rem;min-height:30px}
     .shell-footer a:focus-visible,#shell-home:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home{margin-left:auto;min-height:44px;min-width:44px}
     .hub-rev{
-      margin-left:auto;height:28px;min-height:28px;padding:0 .7rem;
+      position:absolute;z-index:4;top:.45rem;right:.5rem;margin:0;
+      height:28px;min-height:28px;padding:0 .7rem;
       border-radius:999px;border:1px solid color-mix(in srgb,#22d3ee 45%,#16324f);
       background:#0b152c;color:#d7f6ff;font:inherit;font-size:.72rem;font-weight:750;
       cursor:pointer;white-space:nowrap;
@@ -729,6 +726,7 @@
       <div id="shell-board">
   <div class="wrap">
     <section class="poster" aria-label="The Tech Room">
+      <button type="button" class="hub-rev" id="hub-rev">Hub · open</button>
       <div class="corner-k">
         <img src="/icons/icon-kulinet-k.svg" width="48" height="48" alt="KuliNet"/>
       </div>
@@ -776,7 +774,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-24-hub-chip</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-open</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.7</strong> — When it falls, the plan line becomes the fix.</p>
@@ -784,6 +782,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
           <ul id="hub-log">
+            <li>Footer is gone. The Hub chip sits on the card. Tap it to load the newest door. Phone tiles fill the screen.</li>
             <li>Hub chip sits in the footer. Tap it to load the newest door. The app list did not change.</li>
             <li>The Tech Room card is back: icon field and the cyan lockup. Search sits on the card. The app list did not change.</li>
             <li>HoldIt HI 1.1.7 · when it falls, the plan line becomes the fix.</li>
@@ -997,7 +996,6 @@
     <footer class="shell-footer" id="shell-footer">
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
-      <button type="button" class="hub-rev" id="hub-rev">Hub · chip</button>
       <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
     </footer>
   </div>
@@ -1606,6 +1604,7 @@
           localStorage.setItem("tech-room-filter", hubFilter);
         } catch (eSave) {}
         filter();
+        fitPhoneTiles();
       }
 
       function openFirst(blank) {
@@ -1717,6 +1716,33 @@
         applyView();
       });
       applyView();
+
+      function fitPhoneTiles() {
+        var tiles = document.querySelectorAll("#app-groups .group .board a.tile");
+        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+        if (!narrow) {
+          Array.prototype.forEach.call(tiles, function (tile) {
+            tile.style.height = "";
+            tile.style.aspectRatio = "";
+          });
+          return;
+        }
+        var board = document.querySelector("#app-groups .group:not(.is-empty) .board");
+        if (!board) return;
+        var top = board.getBoundingClientRect().top;
+        var avail = window.innerHeight - top - 8;
+        if (avail < 160) return;
+        var gap = 8;
+        var rows = Math.max(2, Math.round(avail / 168));
+        var h = Math.floor((avail - gap * (rows - 1)) / rows);
+        if (h < 128) h = 128;
+        Array.prototype.forEach.call(tiles, function (tile) {
+          tile.style.aspectRatio = "auto";
+          tile.style.height = h + "px";
+        });
+      }
+      fitPhoneTiles();
+      window.addEventListener("resize", fitPhoneTiles);
 
       var hubRevBtn = document.getElementById("hub-rev");
       if (hubRevBtn) {
@@ -1962,17 +1988,12 @@
       function parkHomeForFrame(framed) {
         var home = document.getElementById("shell-home");
         var header = document.getElementById("shell-header");
-        var footer = document.getElementById("shell-footer");
         var pocket = document.getElementById("edge-pocket");
-        if (!home || !header || !footer) return;
-        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
-        if (framed && narrow) {
-          if (pocket && pocket.parentNode === header) header.insertBefore(home, pocket);
-          else header.appendChild(home);
-          home.hidden = false;
-        } else if (home.parentNode !== footer) {
-          footer.appendChild(home);
-        }
+        if (!home || !header) return;
+        if (!framed) return;
+        if (pocket && pocket.parentNode === header) header.insertBefore(home, pocket);
+        else header.appendChild(home);
+        home.hidden = false;
       }
       function ensureSingleChrome() {
         var headers = document.querySelectorAll("header.shell-header, #shell-header");
