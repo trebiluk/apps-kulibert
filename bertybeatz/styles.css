@@ -536,7 +536,7 @@ body.is-loop .cell.play {
 }
 
 .modal {
-  width: min(28rem, calc(100vw - 1.5rem));
+  width: min(40rem, calc(100vw - 1.5rem));
   border: 1px solid var(--border);
   border-radius: 18px;
   background: var(--elevated);
@@ -545,6 +545,24 @@ body.is-loop .cell.play {
 }
 .modal::backdrop {
   background: color-mix(in srgb, var(--bg) 80%, transparent);
+}
+.title-live {
+  margin: 0 0 0.45rem;
+  font-size: 1.05rem;
+  font-weight: 750;
+}
+.title-build .title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0.3rem 0;
+}
+.title-build .title-row > span { min-width: 4.4rem; font-weight: 750; }
+.title-build .btn.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
 }
 .modal h2 {
   margin: 0 0 0.35rem;

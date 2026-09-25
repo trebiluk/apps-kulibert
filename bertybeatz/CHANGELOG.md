@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.5** · 2026-09-25 · channel **live**
+
+A title is four taps: Feel, Color, Animal, Kind. Example: whimsical blue gopher ballad. Kids still cannot type a title.
+
+## Earlier
+
 **Chip: BZ 1.8.4** · 2026-09-25 · channel **live**
 
 A beat title is picked from the class list. Kids do not type one. A file with any other title comes in as Class beat.

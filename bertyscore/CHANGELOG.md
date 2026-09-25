@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.4** · 2026-09-25 · channel **live**
+
+Tap a title, then one word from each list. The example is whimsical blue gopher ballad.
+
+## Earlier
+
 **Chip: BS 0.2.3** · 2026-09-25 · channel **live**
 
 The title is a button on the class list. Kids do not type one.

@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.2** · 2026-09-25 · channel **live**
+
+A built title such as whimsical blue gopher ballad stays on the lights. Any other typed title still becomes Class beat.
+
+## Earlier
+
 **Chip: Viz 0.6.1** · 2026-09-25 · channel **live**
 
 Beat names on the lights come from the class list. A file with any other title shows as Class beat.

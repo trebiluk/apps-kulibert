@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.3";
+  const CHIP = "BS 0.2.4";
   const HOW_KEY = "kulibert.bertyscore.howto";
   if (!Song) return;
 
@@ -390,11 +390,24 @@
   });
   function paintAlias() {
     const btn = $("alias");
-    if (btn) btn.textContent = state.song.alias || "Pick a title";
+    if (btn) btn.textContent = state.song.alias || "Tap a title";
   }
   $("alias").addEventListener("click", () => {
-    state.song.alias = window.KulibertTitles ? window.KulibertTitles.nextTitle(state.song.alias) : "Class beat";
+    const box = $("title-lists");
+    const Titles = window.KulibertTitles;
+    if (!box || !Titles) return;
+    const open = box.hidden;
+    box.hidden = !open;
+    $("alias").setAttribute("aria-expanded", String(open));
+    if (!open) return;
+    const starting = Titles.partsOf(state.song.alias) ? state.song.alias : Titles.starterTitle();
+    state.song.alias = starting;
     paintAlias();
+    Titles.mount(box, starting, (title) => {
+      state.song.alias = title;
+      paintAlias();
+      renderStaff();
+    });
     renderStaff();
   });
   $("tempo").addEventListener("input", (e) => {

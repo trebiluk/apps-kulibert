@@ -119,15 +119,32 @@ button { cursor: pointer; }
   outline-offset: 1px;
 }
 .alias, .tempo { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.75rem; font-weight: 700; color: var(--muted); }
-.alias button, .tempo input { min-height: 44px; }
+.title-lists { margin: 0 0 0.75rem; }
+.title-row, .title-build .title-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+  margin: 0.35rem 0;
+}
+.title-row > span, .title-build .title-row > span {
+  min-width: 4.4rem;
+  font-weight: 750;
+}
+.title-lists .btn.on, .title-build .btn.on {
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: transparent;
+}
 .alias button {
   min-width: 8.5rem;
+  min-height: 44px;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--panel);
   padding: 0 0.7rem;
 }
-.tempo input { width: 8.5rem; accent-color: var(--accent); }
+.tempo input { width: 8.5rem; min-height: 44px; accent-color: var(--accent); }
 .status { min-height: 1.2rem; margin: 0 0 0.7rem; color: var(--muted); font-weight: 650; }
 .work {
   display: grid;

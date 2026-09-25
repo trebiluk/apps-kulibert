@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.4") return;
-  window.__BERTYBEATZ__ = "1.8.4";
+  if (window.__BERTYBEATZ__ === "1.8.5") return;
+  window.__BERTYBEATZ__ = "1.8.5";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.4";
+  const CHIP = "BZ 1.8.5";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1296,24 +1296,20 @@
 
   $("save-btn").addEventListener("click", () => {
     modalBody.innerHTML = "";
-    const picks = window.KulibertTitles ? window.KulibertTitles.choices(6, state.name) : ["Class beat"];
-    let chosen = cleanTitle(state.name);
-    if (!picks.includes(chosen)) chosen = picks[0];
+    const Titles = window.KulibertTitles;
+    let chosen = Titles && Titles.partsOf(state.name) ? state.name : (Titles ? Titles.starterTitle() : "Class beat");
+    const live = document.createElement("p");
+    live.className = "title-live";
+    live.textContent = chosen;
     const box = document.createElement("div");
-    box.className = "chips";
-    picks.forEach((title) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "btn" + (title === chosen ? " on" : "");
-      b.textContent = title;
-      b.addEventListener("click", () => {
+    modalBody.append(live, box);
+    if (Titles) {
+      Titles.mount(box, chosen, (title) => {
         chosen = title;
-        box.querySelectorAll("button").forEach((el) => el.classList.toggle("on", el === b));
+        live.textContent = title;
       });
-      box.appendChild(b);
-    });
-    modalBody.appendChild(box);
-    openModal("Save this beat", "Pick a class title. You don't type one.", () => {
+    }
+    openModal("Save this beat", "Tap one word from each list.", () => {
       const name = chosen;
       state.name = name;
       state.library.unshift({
