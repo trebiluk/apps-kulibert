@@ -126,6 +126,9 @@
       <form class="card" id="board-form">
         <p class="chip">Board</p>
         <div id="apps"></div>
+        <p class="chip">Outside the shell</p>
+        <p>Checked tiles leave The Tech Room and open full page (or a new tab). Unchecked tiles open inside the Hub frame.</p>
+        <div id="outside-shell"></div>
         <p class="chip">Policy</p>
         <label class="check">Personal shortcuts <input id="shortcuts" type="checkbox" checked/></label>
         <label class="check">Paste a link in search <input id="paste" type="checkbox" checked/></label>
@@ -157,8 +160,8 @@
   <script>
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
-      var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["visualizer","Visualizer"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
-      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
+      var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["ginger","Ginger"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["visualizer","Visualizer"],["paperlab","PaperLab"],["catapult","Catapult Size Lab"],["drawin","Drawin' stuff"],["logolab","LogoLab"],["sprocket","Sprocket"],["debugzy","Debugzy"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"],["holdit","HoldIt"],["spancraft","SpanCraft"],["spire-lab","Spire Lab"]];
+      var room = { links: [], note: "", hidden: [], outsideShell: ["baboo","ginger","den","bistro"], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
       var token = sessionStorage.getItem("tech-room-desk-gate") || "";
       function paintHubLock() {
         var on = window.HubStaffAuth && HubStaffAuth.isUnlocked();
@@ -200,6 +203,26 @@
       async function deskToken(key) { return shaHex("techworks-desk-v1:" + key); }
       function $(id) { return document.getElementById(id); }
 
+      function paintOutside() {
+        var box = $("outside-shell");
+        if (!box) return;
+        if (!Array.isArray(room.outsideShell)) room.outsideShell = ["baboo","ginger","den","bistro"];
+        box.innerHTML = "";
+        APPS.forEach(function (pair) {
+          var wrap = document.createElement("label");
+          wrap.className = "check";
+          var cb = document.createElement("input");
+          cb.type = "checkbox";
+          cb.checked = room.outsideShell.indexOf(pair[0]) !== -1;
+          cb.addEventListener("change", function () {
+            if (cb.checked) { if (room.outsideShell.indexOf(pair[0]) === -1) room.outsideShell.push(pair[0]); }
+            else room.outsideShell = room.outsideShell.filter(function (id) { return id !== pair[0]; });
+          });
+          wrap.appendChild(document.createTextNode(pair[1] + " "));
+          wrap.appendChild(cb);
+          box.appendChild(wrap);
+        });
+      }
       function paintApps() {
         var box = $("apps");
         box.innerHTML = "";
@@ -260,6 +283,7 @@
         $("footer").value = room.footer || "";
         if ($("lb-on")) $("lb-on").checked = room.boardsOn !== false;
         paintApps();
+        paintOutside();
         paintList();
         paintLb();
       }
@@ -500,6 +524,7 @@
         });
         room.links = Array.isArray(pack.links) ? pack.links : [];
         room.hidden = Array.isArray(pack.hidden) ? pack.hidden : [];
+        room.outsideShell = Array.isArray(pack.outsideShell) ? pack.outsideShell.map(String) : ["baboo","ginger","den","bistro"];
         unpackBoards(pack);
         fill();
         $("status").textContent = room.links.length + " live on the door.";
