@@ -645,15 +645,15 @@
     },
     {
       "source": "/den",
-      "destination": "https://bearcat-den.vercel.app/"
+      "destination": "https://bearcat-den-weld.vercel.app/"
     },
     {
       "source": "/den/",
-      "destination": "https://bearcat-den.vercel.app/"
+      "destination": "https://bearcat-den-weld.vercel.app/"
     },
     {
       "source": "/den/:path*",
-      "destination": "https://bearcat-den.vercel.app/:path*"
+      "destination": "https://bearcat-den-weld.vercel.app/:path*"
     },
     {
       "source": "/assets/:path*",
@@ -664,7 +664,7 @@
           "value": "https://apps.kulibert.net/den(.*)"
         }
       ],
-      "destination": "https://bearcat-den.vercel.app/assets/:path*"
+      "destination": "https://bearcat-den-weld.vercel.app/assets/:path*"
     },
     {
       "source": "/sms/:path*",
@@ -675,7 +675,7 @@
           "value": "https://apps.kulibert.net/den(.*)"
         }
       ],
-      "destination": "https://bearcat-den.vercel.app/sms/:path*"
+      "destination": "https://bearcat-den-weld.vercel.app/sms/:path*"
     },
     {
       "source": "/assets/app-chrome-DhrJBqkJ.js",
@@ -866,7 +866,7 @@
           "value": "https://apps.kulibert.net/den(.*)"
         }
       ],
-      "destination": "https://bearcat-den.vercel.app/favicon.svg"
+      "destination": "https://bearcat-den-weld.vercel.app/favicon.svg"
     },
     {
       "source": "/__grok/:path*",
@@ -877,7 +877,7 @@
           "value": "https://apps.kulibert.net/den(.*)"
         }
       ],
-      "destination": "https://bearcat-den.vercel.app/__grok/:path*"
+      "destination": "https://bearcat-den-weld.vercel.app/__grok/:path*"
     },
     {
       "source": "/bistro",
