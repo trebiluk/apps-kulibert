@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.0") return;
-  window.__BERTYBEATZ__ = "1.8.0";
+  if (window.__BERTYBEATZ__ === "1.8.1") return;
+  window.__BERTYBEATZ__ = "1.8.1";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.0";
+  const CHIP = "BZ 1.8.1";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -477,6 +477,7 @@
     bank: 0,
     library: [],
     look: loadLook(),
+    arrived: null,
   };
   state.patterns = freshBank(state.steps);
   state.steps = state.patterns.A;
@@ -889,8 +890,9 @@
         const beat = i % 4 === 0 ? " beat" : "";
         const play = state.playhead === i ? " play" : "";
         const bank = i < 8 ? "bank0" : "bank1";
+        const arrived = state.arrived && state.arrived.has(t.id + ":" + i) ? " arrived" : "";
         rows.push(
-          `<button type="button" class="cell${beat}${on ? " on" : ""}${play} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} step ${i + 1}"></button>`,
+          `<button type="button" class="cell${beat}${on ? " on" : ""}${play}${arrived} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} step ${i + 1}"></button>`,
         );
       }
     }
@@ -1140,6 +1142,9 @@
     try {
       if (state.playing) engine.stop();
       else {
+        state.arrived = null;
+        const arrive = $("arrive");
+        if (arrive) arrive.hidden = true;
         engine.play();
         markDay();
       }
@@ -1422,6 +1427,32 @@
   $("score-btn").addEventListener("click", () => sendSong("/bertyscore/?from=bridge"));
   $("lights-btn").addEventListener("click", () => sendSong("/visualizer/?from=bridge"));
 
+  function songLine(fitted) {
+    return fitted
+      ? "That's the song. Press Play. F, B, and high C moved to the nearest note. Drums stayed."
+      : "That's the song. Press Play. Drums stayed.";
+  }
+  function showSong(beat) {
+    const keys = [];
+    ["n0", "n1", "n2", "n3", "n4"].forEach((id) => {
+      (beat.steps[id] || []).forEach((on, i) => {
+        if (on) keys.push(id + ":" + i);
+      });
+    });
+    state.arrived = new Set(keys);
+    const early = keys.some((key) => Number(key.split(":")[1]) < 8);
+    if (!early && keys.length) state.bank = 1;
+    const line = songLine(beat.fitted);
+    const arrive = $("arrive");
+    if (arrive) {
+      arrive.hidden = false;
+      arrive.textContent = line;
+    }
+    const gateLede = $("gate-lede");
+    const gate = $("gate");
+    if (gateLede && gate && !gate.hidden) gateLede.textContent = "That's the song. Tap to start, then press Play.";
+    flash(line);
+  }
   function takeScore() {
     const Song = window.KulibertSong;
     if (!Song) return false;
@@ -1438,7 +1469,7 @@
     const bpm = $("bpm");
     if (bpm) bpm.value = String(state.bpm);
     bindSteps(steps);
-    flash(beat.fitted ? "Notes came from the score. F, B, and high C used the nearest grid note. Drums stayed." : "Notes came from the score. Drums stayed.");
+    showSong(beat);
     return true;
   }
   $("import-btn").addEventListener("click", () => {
@@ -1468,9 +1499,9 @@
         state.bpm = Math.min(160, Math.max(70, beat.bpm || state.bpm));
         $("bpm").value = String(state.bpm);
         bindSteps(steps);
+        showSong(beat);
         renderAll();
         remember();
-        flash(beat.fitted ? "Score notes landed on the grid. F, B, and high C moved to the nearest note. Drums stayed." : "Score notes landed on the grid. Drums stayed.");
         return;
       }
       const beat = beatFromFileText(text);

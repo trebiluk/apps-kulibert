@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.1** · 2026-09-24 · channel **live**
+
+When a score arrives, the start screen says "That's the song" and rings those notes. The old line was hidden under More. Drums stay. An old pass still loads.
+
+## Earlier
+
 **Chip: BZ 1.8.0** · 2026-09-23 · channel **live**
 
 Score, Beats, and Lights share one song on this Chromebook. Pitched notes move. Drums stay on the grid. An old pass and an old score file still open.
