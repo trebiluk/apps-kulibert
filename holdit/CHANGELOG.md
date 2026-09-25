@@ -1,5 +1,9 @@
-**Chip: HI 1.1.7** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.8** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.8 — The win is the next job — 2026-09-25
+
+- What’s new: a pass leads with It held, the stars, and Next. The count stays tucked.
 
 ## 1.1.7 — The plan becomes the fix — 2026-09-24
 

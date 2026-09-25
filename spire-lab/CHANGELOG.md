@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.21** · 2026-09-24 · channel **live**
+**Chip: SL 1.3.22** · 2026-09-25 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.22 — Fix it, then it stands — 2026-09-25
+
+- What’s new: a miss stays on the table as one fix. Change that member, then Test. A stand says You fixed it.
 
 ## 1.3.21 — Own challenge — 2026-09-24
 

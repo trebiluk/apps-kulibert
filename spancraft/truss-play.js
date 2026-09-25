@@ -43,6 +43,8 @@ export function mountTruss(cfg) {
     view: null,
     bestStars: 0,
     challengeMet: false,
+    hadMiss: false,
+    fixLine: "",
     scale: 1,
     origin: { x: 40, y: 40 },
   };
@@ -278,6 +280,10 @@ export function mountTruss(cfg) {
     }
     if (state.members.length === 1 && level.n === 1) {
       setStatus("Job 1", "One side is in. Stretch the other joint up to the same top joint.", "");
+      return;
+    }
+    if (state.fixLine) {
+      setStatus("Fix", state.fixLine + " Then press Test.", "");
       return;
     }
     setStatus("Job " + level.n, level.job, "");
@@ -708,10 +714,10 @@ export function mountTruss(cfg) {
   }
 
   function failReason(result) {
-    if (result.reason === "few") return "Stretch at least two members, then Test.";
-    if (result.reason === "lean") return "It leaned. Add a diagonal, then Test.";
+    if (result.reason === "few") return "Stretch at least two members.";
+    if (result.reason === "lean") return "It leaned. Add a diagonal.";
     if (result.reason === "short") return "It is short of the height goal. Add another story.";
-    return "It sagged. Add a triangle, then Test.";
+    return "It sagged. Add a triangle.";
   }
 
   function runCheck() {
@@ -786,22 +792,29 @@ export function mountTruss(cfg) {
     }
     if (!held) {
       const line = failReason(result);
-      setStatus("Fail", line, "fail");
-      showPlate("Miss", line, "✕");
+      state.hadMiss = true;
+      state.fixLine = line;
+      setStatus("Fix", line + " Then press Test.", "fail");
+      showPlate("Fix", line, "✕");
     } else if (!met) {
+      state.fixLine = "";
       const line = "It held. This job still needs fewer members than Budget.";
       setStatus("TEST PASS", line + " " + starPhrase(stars) + ".", "pass");
       showPlate("TEST PASS", line, "✓");
     } else {
+      state.fixLine = "";
+      const fixed = state.hadMiss;
+      state.hadMiss = false;
       let line = level.job + " " + starPhrase(stars) + ".";
-      if (first) line = "First clear. " + line;
+      if (fixed) line = "You fixed it. " + line;
+      else if (first) line = "First clear. " + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
         line += " Path clear. This challenge stays yours.";
       } else if (!level.free && !pathClear()) {
         line += " Open Levels for the next job.";
       }
-      setStatus("CLEAR", "Test pass. " + line, "pass");
-      showPlate("CLEAR", line, "✓");
+      setStatus(fixed ? "You fixed it" : "CLEAR", "Test pass. " + line, "pass");
+      showPlate(fixed ? "You fixed it" : "CLEAR", line, "✓");
     }
     if (state.bet) {
       const saidHold = state.bet === "hold";
@@ -861,6 +874,8 @@ export function mountTruss(cfg) {
     if (theater && theater.cancel) theater.cancel();
     theater = null;
     state.phase = "idle";
+    state.hadMiss = false;
+    state.fixLine = "";
     cloneLevel(active());
     armRetry(false);
     coach();
@@ -872,7 +887,13 @@ export function mountTruss(cfg) {
     if (!bar) return;
     bar.hidden = state.members.length === 0 || state.phase !== "idle";
     const label = bar.querySelector(".bet-label");
-    if (label) label.textContent = cfg.workshop ? "Will it hold?" : "Will the truss hold?";
+    if (label) {
+      label.textContent = cfg.mode === "spire"
+        ? "Will the tower stand?"
+        : cfg.workshop
+          ? "Will it hold?"
+          : "Will the truss hold?";
+    }
     for (const btn of bar.querySelectorAll(".bet-chip")) {
       btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
     }

@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.22** · 2026-09-24 · channel **live**
+**Chip: SC 1.3.23** · 2026-09-25 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.23 — Fix it, then it holds — 2026-09-25
+
+- What’s new: a miss stays on the table as one fix. Change that member, then Test. A hold says You fixed it.
 
 ## 1.3.22 — Own challenge — 2026-09-24
 
