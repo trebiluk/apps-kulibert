@@ -236,7 +236,28 @@ body.is-loop .stage {
   gap: 0.45rem;
   margin-bottom: 0.75rem;
 }
-.more-btn { width: 100%; margin: 0 0 0.75rem; }
+.gizmos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.55rem 0.75rem;
+  margin: 0 0 0.85rem;
+}
+.gizmos h2 {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+}
+.gizmo {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.45rem;
+  min-height: 44px;
+  font-weight: 700;
+}
+.gizmo b { color: var(--live); font-weight: 750; }
+.gizmo input { width: 100%; min-height: 44px; }
 .tools {
   display: flex;
   flex-wrap: wrap;

@@ -8,7 +8,7 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.5.1"/>
+  <link rel="stylesheet" href="./styles.css?v=0.6.0"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.5.1</em>
+        <em id="chip-label">Viz 0.6.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,7 +29,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> The word Now names the sound. Sound can stay off. The lights still move.</li>
+      <li><strong>What's new:</strong> Gizmos change the picture. Beats sends this whole grid, drums included.</li>
       <li>Pick a Look — Bars, Kaleidoscope, Clouds, Stars, Code. Keys 1–5 do the same.</li>
       <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
       <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
@@ -44,7 +44,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.5.1</span>
+          <span id="chip-live">Viz 0.6.0</span>
         </p>
       </div>
       <div class="stage-look">
@@ -70,8 +70,24 @@
     <span class="tool-label">Beat</span>
     <div class="chips" id="feed"></div>
     <button type="button" id="score-btn" class="btn">Score</button>
+    <button type="button" id="beats-btn" class="btn">Beats</button>
   </section>
 
+  <p id="send-line" class="note" role="status"></p>
+  <section class="gizmos" aria-label="Gizmos">
+    <h2>Gizmos</h2>
+    <label class="gizmo">Zoom <b id="n-zoom">100</b><input id="g-zoom" type="range" min="40" max="160" value="100"/></label>
+    <label class="gizmo">Spin <b id="n-spin">100</b><input id="g-spin" type="range" min="0" max="100" value="100"/></label>
+    <label class="gizmo">Glow <b id="n-glow">70</b><input id="g-glow" type="range" min="0" max="100" value="70"/></label>
+    <label class="gizmo">Thick <b id="n-thick">3</b><input id="g-thick" type="range" min="1" max="12" value="3"/></label>
+    <label class="gizmo">Count <b id="n-count">24</b><input id="g-count" type="range" min="4" max="32" value="24"/></label>
+    <label class="gizmo">Tint <b id="n-tint">0</b><input id="g-tint" type="range" min="0" max="100" value="0"/></label>
+    <label class="gizmo">Trail <b id="n-trail">0</b><input id="g-trail" type="range" min="0" max="70" value="0"/></label>
+    <label class="gizmo">Bounce <b id="n-bounce">100</b><input id="g-bounce" type="range" min="0" max="100" value="100"/></label>
+    <label class="gizmo">Scope <b id="n-scope">100</b><input id="g-scope" type="range" min="0" max="100" value="100"/></label>
+    <label class="gizmo">Smooth <b id="n-smooth">0</b><input id="g-smooth" type="range" min="0" max="100" value="0"/></label>
+    <button type="button" id="g-reset" class="btn">Reset gizmos</button>
+  </section>
   <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
   <section id="more-panel" class="tools deep" aria-label="More">
     <button type="button" id="device-btn" class="btn">Use this device's sound</button>
@@ -82,12 +98,12 @@
   </section>
 
   <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.5.1</span> · own door · shared lights ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.6.0</span> · own door · shared lights ·
     <a href="./teacher.html">Teacher</a>
   </p>
 
   <script src="/shared/song/model.js?v=0.2.0"></script>
-  <script src="/shared/visualizer/stage.js?v=0.5.1"></script>
-  <script src="./app.js?v=0.5.1"></script>
+  <script src="/shared/visualizer/stage.js?v=0.6.0"></script>
+  <script src="./app.js?v=0.6.0"></script>
 </body>
 </html>

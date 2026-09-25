@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.0** · 2026-09-25 · channel **live**
+
+Ten gizmos change the picture: zoom, spin, glow, thick, count, tint, trail, bounce, scope, and smooth. Beats sends the whole grid, drums included. Score still sends the written notes only.
+
+## Earlier
+
 **Chip: Viz 0.5.1** · 2026-09-24 · channel **live**
 
 The word Now names Kick, Snare, Hat, Clap, or Note. Sound can stay off. The teacher page points at the grades 5–8 plan.

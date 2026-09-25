@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.5.1") return;
-  window.__VISUALIZER__ = "0.5.1";
+  if (window.__VISUALIZER__ === "0.6.0") return;
+  window.__VISUALIZER__ = "0.6.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.5.1";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -15,6 +15,11 @@
   const LOOK_STORE = "visualizer.look";
   const DAY_KEY = "kulibert.viz.played";
   const FEED_KEY = "kulibert.viz.feed";
+  const GEAR_KEY = "kulibert.viz.gear";
+  const GEAR_BASE = {
+    zoom: 100, spin: 100, glow: 70, thick: 3, count: 24,
+    tint: 0, trail: 0, bounce: 100, scope: 100, smooth: 0,
+  };
   const BEATZ_KEY = "bertybeatz.v1";
   const TRACKS = ["kick", "snare", "hat", "clap", "n4", "n3", "n2", "n1", "n0"];
   const $ = (id) => document.getElementById(id);
@@ -201,6 +206,7 @@
     startedAt: performance.now(),
     playhead: -1,
     status: "",
+    gear: loadGear(),
   };
   let audioCtx = null;
   let master = null;
@@ -208,6 +214,39 @@
   let micCtx = null;
   let micAnalyser = null;
 
+  function loadGear() {
+    const gear = { ...GEAR_BASE };
+    try {
+      const saved = JSON.parse(localStorage.getItem(GEAR_KEY) || "null");
+      Object.keys(GEAR_BASE).forEach((key) => {
+        const n = Number(saved && saved[key]);
+        if (n === n) gear[key] = n;
+      });
+    } catch { /* ignore */ }
+    return gear;
+  }
+  function paintGear() {
+    Object.keys(GEAR_BASE).forEach((key) => {
+      const input = $("g-" + key);
+      const read = $("n-" + key);
+      if (input) input.value = String(state.gear[key]);
+      if (read) read.textContent = String(state.gear[key]);
+    });
+  }
+  function saveGear() {
+    try { localStorage.setItem(GEAR_KEY, JSON.stringify(state.gear)); } catch { /* ignore */ }
+  }
+  function packBits(arr) {
+    let n = 0;
+    for (let i = 0; i < 16; i++) if (arr && (arr[i] === true || arr[i] === 1)) n |= 1 << i;
+    return n.toString(16).padStart(4, "0");
+  }
+  function toBeatzCode(beat) {
+    const bits = TRACKS.map((id) => packBits(beat.steps[id])).join("");
+    const name = String(beat.name || "Lights").replace(/~/g, "-").replace(/\s+/g, " ").trim().slice(0, 24) || "Lights";
+    const bpm = Math.min(160, Math.max(70, Math.round(Number(beat.bpm) || 110)));
+    return "BZ1~" + name + "~" + bpm + "~8~studio~bright~C~" + bits;
+  }
   function loadLook() {
     try {
       const raw = localStorage.getItem(LOOK_STORE);
@@ -484,6 +523,32 @@
     Song.writeBridge("visualizer", Song.fromBeat(beat), beat);
     window.location.href = "/bertyscore/?from=bridge";
   });
+  $("beats-btn").addEventListener("click", () => {
+    const beat = currentBeat();
+    const line = $("send-line");
+    if (state.source === "device" || !beat || !beat.steps) {
+      if (line) line.textContent = "Pick a beat in the library. Device sound is not a grid.";
+      return;
+    }
+    const code = toBeatzCode(beat);
+    if (line) line.textContent = "Opening Beats with " + beat.name + ". Drums come too.";
+    window.location.href = "/bertybeatz/?b=" + encodeURIComponent(code);
+  });
+  Object.keys(GEAR_BASE).forEach((key) => {
+    const input = $("g-" + key);
+    if (!input) return;
+    input.addEventListener("input", () => {
+      state.gear[key] = Number(input.value);
+      const read = $("n-" + key);
+      if (read) read.textContent = input.value;
+      saveGear();
+    });
+  });
+  $("g-reset").addEventListener("click", () => {
+    state.gear = { ...GEAR_BASE };
+    paintGear();
+    saveGear();
+  });
   $("play-btn").addEventListener("click", () => {
     if (state.playing && state.source !== "device") stop();
     else if (state.source === "device" && state.playing) {
@@ -564,6 +629,7 @@
   document.body.classList.toggle("is-day", !seen);
   $("more-btn").hidden = !seen;
   ensureBeat();
+  paintGear();
   if (new URLSearchParams(window.location.search).get("from") === "bridge") {
     state.beatId = "score";
     state.source = "library";
@@ -597,7 +663,7 @@
         bins: state.source === "device" ? null : (state.playing ? bins : null),
         wave: state.source === "device" ? null : (state.playing ? wave : null),
         analyser: state.source === "device" && state.playing ? micAnalyser : null,
-        code: stageApi.loadCode ? stageApi.loadCode() : null,
+        gear: state.gear,
       };
     });
   }
