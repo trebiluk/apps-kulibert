@@ -377,6 +377,21 @@
       "permanent": false
     },
     {
+      "source": "/baboo",
+      "destination": "https://baboo.kulibert.net/",
+      "permanent": false
+    },
+    {
+      "source": "/baboo/",
+      "destination": "https://baboo.kulibert.net/",
+      "permanent": false
+    },
+    {
+      "source": "/baboo/:path*",
+      "destination": "https://baboo.kulibert.net/:path*",
+      "permanent": false
+    },
+    {
       "source": "/koderized",
       "destination": "https://tw.kulibert.net/koderized/",
       "permanent": true
