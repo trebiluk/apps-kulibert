@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-24-hub-chrome"/>
+  <meta name="tech-room-rev" content="2026-09-24-hub-card"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -521,22 +521,38 @@
     body.apps-always #shell-board > .wrap{
       flex:1;min-height:0;display:flex;flex-direction:column;gap:.35rem;
     }
-    body.apps-always .poster{min-height:0;border-radius:14px;flex:0 0 auto}
-    body.apps-always .field,
-    body.apps-always .vignette,
+    body.apps-always .poster{
+      min-height:0;height:8.75rem;border-radius:18px;flex:0 0 auto;
+    }
     body.apps-always .corner-k{display:none}
-    body.apps-always .hero{min-height:0;padding:.45rem .6rem .15rem}
-    body.apps-always .lockup-the{font-size:.68rem;letter-spacing:.16em}
-    body.apps-always .lockup-room{font-size:1.35rem;margin-top:0;line-height:.9}
-    body.apps-always .welcome-line{margin:.2rem 0 0}
+    body.apps-always .field{opacity:.72}
+    body.apps-always .hero{
+      min-height:0;height:100%;box-sizing:border-box;
+      padding:1rem .6rem 3rem;justify-content:center;
+    }
+    body.apps-always .lockup-the{
+      font-size:.72rem;letter-spacing:.32em;color:#7ee7ff;
+    }
+    body.apps-always .lockup-room{
+      margin-top:.02em;line-height:.84;letter-spacing:-.045em;
+      font-size:clamp(2.15rem,7.2vw,3.6rem);
+      background:linear-gradient(100deg,#7af0ff 0%,#22d3ee 42%,#38bdf8 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+      filter:drop-shadow(0 0 16px rgba(34,211,238,.5));
+    }
+    body.apps-always .welcome-line{
+      margin:.15rem 0 0;font-size:.75rem;max-width:22rem;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    body.apps-always #alpha-title{display:none}
     body.apps-always .chip,
     body.apps-always .hub-plate,
     body.apps-always .live,
     body.apps-always #room-footer,
     body.apps-always .recents{display:none}
     body.apps-always .search{
-      position:relative;display:block;left:auto;bottom:auto;transform:none;
-      width:min(36rem,calc(100% - 1.5rem));margin:.45rem auto .25rem;
+      position:absolute;display:block;left:50%;bottom:.5rem;transform:translateX(-50%);
+      width:min(28rem,calc(100% - 1.4rem));margin:0;
     }
     /* No display:contents — older Chromebook Chrome drops hit-testing on contents children */
     body.apps-always #app-groups{
@@ -593,6 +609,8 @@
       body.apps-always .cuts .board{grid-template-columns:repeat(7,minmax(0,1fr))}
     }
     @media (max-width:700px){
+      body.apps-always .poster{height:10.25rem;border-radius:20px}
+      body.apps-always .lockup-room{font-size:clamp(2.7rem,13vw,3.4rem)}
       body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch}
       body.apps-always #app-groups{display:flex;flex:none}
       body.apps-always .group{display:block;flex:none}
@@ -669,13 +687,9 @@
       body.apps-always .shell-footer{min-height:28px;padding:0 .45rem}
       body.apps-always .shell-footer a{min-height:28px;font-size:.72rem}
       body.apps-always #shell-board{padding:.15rem .4rem .15rem}
-      body.apps-always .poster{border-radius:12px}
-      body.apps-always .hero{padding:.15rem .4rem 0}
-      body.apps-always .hero h1,
-      body.apps-always .welcome-line,
-      body.apps-always #alpha-title{display:none}
-      body.apps-always .search{margin:.1rem auto .15rem}
-      body.apps-always .search input{height:2.4rem;min-height:40px}
+      body.apps-always .poster{height:7.6rem;border-radius:16px}
+      body.apps-always .lockup-room{font-size:clamp(2.4rem,4.6vw,3.5rem)}
+      body.apps-always .search input{height:2.35rem;min-height:40px}
       body.apps-always .hub-tools{margin:0 0 .1rem}
       body.apps-always .hub-tools button{min-height:36px;padding:0 .65rem;font-size:.8rem}
       body.apps-always #app-groups{gap:.3rem}
@@ -755,7 +769,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-24-hub-chrome</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-24-hub-card</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.3</strong> — Start the next job. A pass says It held.</p>
@@ -763,6 +777,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
           <ul id="hub-log">
+            <li>The Tech Room card is back: icon field and the cyan lockup. Search sits on the card. The app list did not change.</li>
             <li>HoldIt HI 1.1.3 · Start is first · a pass says It held · still the design tool.</li>
             <li>Chromebook: shorter header and footer. Icons are 72px. The app list did not change.</li>
             <li>Sort and filter stay on this Chromebook. A–Z is the default. Z–A and Group are there too. All, Class, Make, Campus, and Play filter the same list.</li>
@@ -773,7 +788,7 @@
             <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
             <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
             <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
-            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-chrome</li>
+            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-card</li>
             <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
             <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
             <li>Groups: Class, Make, Campus, Play</li>
