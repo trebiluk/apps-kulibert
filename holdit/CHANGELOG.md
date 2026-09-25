@@ -1,5 +1,9 @@
-**Chip: HI 1.1.6** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.7** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.7 — The plan becomes the fix — 2026-09-24
+
+- What’s new: when it falls, the plan line switches to the one fix. You do not have to press a button to keep it.
 
 ## 1.1.6 — A plan on the table — 2026-09-24
 
