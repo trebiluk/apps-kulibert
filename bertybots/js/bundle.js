@@ -1070,6 +1070,12 @@ function boot() {
     if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
   }
 
+  function clearWalls() {
+    hideHowto();
+    showSystems(false);
+    showCrew(false);
+  }
+
   function setPacket(on) {
     const d = document.getElementById("guide-drawer");
     const b = document.getElementById("btn-packet");
@@ -1217,6 +1223,14 @@ function boot() {
 
   function startPlay() {
     if (playing) return;
+    if (!doc.machine.parts.length) {
+      const line = "Add a part first.";
+      lastReadout = line;
+      const hint = document.getElementById("status-hint");
+      if (hint) hint.textContent = line;
+      toast(line);
+      return;
+    }
     try {
       sim = buildSim(doc);
     } catch (err) {
@@ -2480,6 +2494,28 @@ function boot() {
     if (drag && drag.kind === "place") onPtrUp(ev);
   });
 
+  async function fillOpenShop() {
+    hideHowto();
+    showSystems(false);
+    showCrew(false);
+    if (courseId !== "open") await loadBuiltin("open");
+    if (playing) stopPlay();
+    if (doc.machine.parts.some((p) => p.type === "driveR")) {
+      toast("Drive-R is already on the floor.");
+      return;
+    }
+    const s = doc.level.shop;
+    const core = (doc.level.cores && doc.level.cores[0]) || { x: s.x + 2 };
+    const y = s.y + WHEEL_R + 0.04;
+    const x = Math.max(s.x + WHEEL_R + 0.2, core.x - 0.95);
+    if (!inRect(x, y, s)) {
+      toast("Shop Floor is too small.");
+      return;
+    }
+    if (!addPart({ type: "driveR", x, y, a: 0 })) return;
+    toast("Drive-R on the floor.");
+  }
+
   function starterCart() {
     if (playing) stopPlay();
     const s = doc.level.shop;
@@ -2573,6 +2609,8 @@ function boot() {
       b.addEventListener("click", () => setRole(b.getAttribute("data-role")));
     });
     document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
+    const fillBtn = document.getElementById("btn-fill");
+    if (fillBtn) fillBtn.addEventListener("click", () => { fillOpenShop(); });
     document.getElementById("btn-stop").addEventListener("click", stopPlay);
     const toggleSlow = () => {
       slowMo = !slowMo;
@@ -2653,7 +2691,7 @@ function boot() {
     const sysBtn = document.getElementById("btn-systems");
     if (sysBtn) sysBtn.addEventListener("click", () => showSystems(true));
     const sysClose = document.getElementById("systems-close");
-    if (sysClose) sysClose.addEventListener("click", () => showSystems(false));
+    if (sysClose) sysClose.addEventListener("click", () => clearWalls());
     const sysRoot = document.getElementById("systems");
     if (sysRoot) {
       sysRoot.addEventListener("click", (ev) => {
@@ -2663,7 +2701,7 @@ function boot() {
     const howtoBtn = document.getElementById("btn-howto");
     if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0));
     const howtoSkip = document.getElementById("howto-skip");
-    if (howtoSkip) howtoSkip.addEventListener("click", hideHowto);
+    if (howtoSkip) howtoSkip.addEventListener("click", clearWalls);
     const howtoNext = document.getElementById("howto-next");
     if (howtoNext) {
       howtoNext.addEventListener("click", () => {
@@ -2757,7 +2795,7 @@ function boot() {
       });
     }
     const crewClose = document.getElementById("crew-close");
-    if (crewClose) crewClose.addEventListener("click", () => showCrew(false));
+    if (crewClose) crewClose.addEventListener("click", () => clearWalls());
     const crewRoot = document.getElementById("crew");
     if (crewRoot) {
       crewRoot.addEventListener("click", (ev) => {
@@ -2993,10 +3031,10 @@ function boot() {
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
   }
-  if (!embed) {
-    showCrew(true);
-    showHowto(0);
-  }
+  showCrew(false);
+  showSystems(false);
+  if (!embed) showHowto(0);
+  else hideHowto();
   requestAnimationFrame(loop);
 }
 

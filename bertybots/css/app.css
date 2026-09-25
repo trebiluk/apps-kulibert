@@ -659,8 +659,20 @@ a { color: var(--orange); }
 }
 
 @media (orientation: portrait) and (max-width: 900px) {
-  #rotate-gate { display: grid; }
-  #app { visibility: hidden; pointer-events: none; }
+  #rotate-gate {
+    display: flex;
+    inset: auto 10px 10px 10px;
+    height: auto;
+    padding: 8px 12px;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: 14px;
+    z-index: 30;
+  }
+  #rotate-gate h1 { font-size: 1rem; }
+  #app { visibility: visible; pointer-events: auto; }
 }
 
 @media (hover: none) {

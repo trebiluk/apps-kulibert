@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.19.4">
+  <link rel="stylesheet" href="css/app.css?v=0.19.4b">
 </head>
 <body>
   <div id="rotate-gate">
@@ -120,6 +120,7 @@
         <div class="brand">Berty's Botz <small id="chip">BB 0.19.4</small></div>
         <div class="hud-play">
           <button class="btn ok" id="btn-play" type="button">Play</button>
+          <button class="btn" id="btn-fill" type="button">Fill · Open Shop</button>
           <button class="btn" id="btn-slow" title="S" type="button">Slow</button>
           <button class="btn" id="btn-stop" type="button">Stop</button>
           <button class="btn gold" id="btn-crew" type="button" aria-expanded="true">Menu</button>
@@ -199,7 +200,7 @@
             <button class="btn gold" id="systems-close">Close</button>
           </div>
         </div>
-        <div class="sheet" id="crew">
+        <div class="sheet" id="crew" hidden>
           <div class="sheet-card menu-card" role="dialog" aria-labelledby="crew-title">
             <p class="howto-kicker">Shop</p>
             <h2 id="crew-title">Your jobs</h2>
@@ -268,6 +269,6 @@
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.19.4"></script>
+  <script src="js/bundle.js?v=0.19.4b"></script>
 </body>
 </html>
