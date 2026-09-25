@@ -239,8 +239,11 @@ button {
 .more-btn { width: 100%; margin: 0 0 0.75rem; }
 body.is-day .deep,
 body:not(.show-more) .deep { display: none; }
-.arrive {
+.arrive,
+.now-line {
   margin: 0 0 0.55rem;
+  min-height: 1.4em;
+  font-size: 1.05rem;
   font-weight: 750;
   letter-spacing: -0.02em;
 }

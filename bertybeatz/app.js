@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.1") return;
-  window.__BERTYBEATZ__ = "1.8.1";
+  if (window.__BERTYBEATZ__ === "1.8.2") return;
+  window.__BERTYBEATZ__ = "1.8.2";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.1";
+  const CHIP = "BZ 1.8.2";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -800,6 +800,7 @@
         this.timer = 0;
       }
       this.queued = [];
+      writeNow(-1);
     }
     currentStep() {
       if (!this.ctx || !state.playing) return -1;
@@ -1023,6 +1024,26 @@
     remember();
   }
 
+  function writeNow(step) {
+    const el = $("now-line");
+    if (!el) return;
+    if (!state.playing) {
+      el.textContent = "Press Play. Watch the column. Sound can stay off.";
+      return;
+    }
+    if (step < 0) {
+      el.textContent = (state.soundOff ? "Sound is off. " : "") + "Playing. Watch the column.";
+      return;
+    }
+    const names = [];
+    for (const t of TRACKS) {
+      if (!state.steps[t.id] || !state.steps[t.id][step]) continue;
+      names.push(t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label);
+    }
+    const off = state.soundOff ? "Sound is off. " : "";
+    el.textContent = names.length ? off + "Now: " + names.join(", ") + "." : off + "Rest. The column still moves.";
+  }
+
   function setPlayhead(step) {
     if (step === state.playhead) return;
     state.playhead = step;
@@ -1045,6 +1066,7 @@
     $("grid").querySelectorAll(".nums").forEach((el, i) => {
       el.classList.toggle("play", i === step);
     });
+    writeNow(step);
     if (state._songDirty) {
       state._songDirty = false;
       renderGrid();
@@ -1128,6 +1150,7 @@
     $("mute-btn").textContent = state.soundOff ? "Muted" : "Sound on";
     $("mute-btn").setAttribute("aria-pressed", String(Boolean(state.soundOff)));
     engine.setVolume(state.soundOff ? 0 : state.volume);
+    writeNow(state.playhead);
   });
 
   function safeUnlock() {
@@ -1147,6 +1170,7 @@
         if (arrive) arrive.hidden = true;
         engine.play();
         markDay();
+        writeNow(state.playhead);
       }
     } catch {
       state.playing = false;
@@ -1526,6 +1550,7 @@
     } catch {
       state.playing = false;
     }
+    writeNow(state.playhead);
     renderAll();
   });
 

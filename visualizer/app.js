@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.5.0") return;
-  window.__VISUALIZER__ = "0.5.0";
+  if (window.__VISUALIZER__ === "0.5.1") return;
+  window.__VISUALIZER__ = "0.5.1";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.5.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.5.1";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -351,6 +351,31 @@
     });
   }
 
+  function writeNow(step) {
+    const el = $("now-line");
+    if (!el) return;
+    if (state.source === "device" && state.playing) {
+      el.textContent = state.muted ? "Sound is off. Now: this device." : "Now: this device.";
+      return;
+    }
+    if (!state.playing || step < 0) {
+      el.textContent = "Press Play. Read the word. Sound can stay off.";
+      return;
+    }
+    const beat = currentBeat();
+    const steps = beat && beat.steps;
+    const names = [];
+    if (steps) {
+      if (steps.kick && steps.kick[step]) names.push("Kick");
+      if (steps.snare && steps.snare[step]) names.push("Snare");
+      if (steps.clap && steps.clap[step]) names.push("Clap");
+      if (steps.hat && steps.hat[step]) names.push("Hat");
+      if (["n0", "n1", "n2", "n3", "n4"].some((id) => steps[id] && steps[id][step])) names.push("Note");
+    }
+    const off = state.muted ? "Sound is off. " : "";
+    el.textContent = names.length ? off + "Now: " + names.join(", ") + "." : off + "Rest. The lights still move.";
+  }
+
   function renderChrome() {
     const lookName = LOOKS.find((l) => l.id === state.look)?.label || "Bars";
     const beat = currentBeat();
@@ -367,6 +392,7 @@
       mute.textContent = state.muted ? "Muted" : "Sound on";
       mute.setAttribute("aria-pressed", String(state.muted));
     }
+    writeNow(state.playing ? state.playhead : -1);
     const box = $("looks");
     box.innerHTML = "";
     for (const item of LOOKS) {
@@ -555,6 +581,7 @@
         state.playhead = step;
         playStep(step);
         $("lcd-pos").textContent = `${Math.floor(step / 4) + 1}.${(step % 4) + 1}`;
+        writeNow(step);
       } else if (state.source === "device") {
         state.playhead = -1;
       }

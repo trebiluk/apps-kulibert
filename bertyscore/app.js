@@ -1,12 +1,12 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.1";
+  const CHIP = "BS 0.2.2";
   const HOW_KEY = "kulibert.bertyscore.howto";
   if (!Song) return;
 
   const $ = (id) => document.getElementById(id);
   const steps = [
-    ["Hear it", "Press Play. The notes light up. Mute is fine — the light still moves."],
+    ["Hear it", "Press Play. The word Now names the note. Mute is fine — the light still moves."],
     ["Change it", "Tap a pitch, then a beat. The staff draws the new note."],
     ["Send it", "Beats puts these notes on the grid. Lights follows them. Save keeps a file."],
   ];
@@ -218,8 +218,24 @@
     });
   }
 
+  function writeNow(ev) {
+    const el = $("now-line");
+    if (!el) return;
+    const off = state.muted ? "Sound is off. " : "";
+    if (!state.playing) {
+      el.textContent = "Press Play. The notes light up. Sound can stay off.";
+      return;
+    }
+    if (!ev || !ev.pitch) {
+      el.textContent = off + "Rest.";
+      return;
+    }
+    el.textContent = off + "Now: " + (ev.label || ev.pitch) + ".";
+  }
+
   function showNow(ev) {
     state._now = ev;
+    writeNow(ev);
     const notes = document.querySelectorAll("#staff .abcjs-note");
     notes.forEach((node, i) => node.classList.toggle("is-now", Boolean(ev) && ev.soundIndex === i));
     document.querySelectorAll(".beat, .pip, .card").forEach((node) => node.classList.remove("now"));
@@ -252,8 +268,6 @@
     evs.forEach((ev, i) => {
       Tone.Transport.schedule((time) => {
         if (ev.tone && !state.muted && synth) synth.triggerAttackRelease(ev.tone, "8n", time, 0.75);
-        if (Tone.Draw) Tone.Draw.schedule(() => showNow(ev), time);
-        else showNow(ev);
       }, i * beat);
     });
     Tone.Transport.loop = true;
@@ -264,8 +278,9 @@
   function armFallback() {
     const evs = Song.events(state.song);
     const beat = 60000 / state.song.bpm;
-    let i = 0;
     window.clearInterval(state.timer);
+    if (evs.length) showNow(evs[0]);
+    let i = 1;
     state.timer = window.setInterval(() => {
       if (!state.playing) return;
       showNow(evs[i % evs.length]);
@@ -286,6 +301,7 @@
   async function play() {
     state.playing = true;
     paintPlay();
+    armFallback();
     if (window.Tone) {
       try {
         await window.Tone.start();
@@ -298,13 +314,11 @@
         }
         armTone();
         if (window.Tone.Transport.state !== "started") window.Tone.Transport.start();
-        celebrate();
-        return;
+        armFallback();
       } catch (err) {
         status("Sound needs another tap. The score still lights up.");
       }
     }
-    armFallback();
     celebrate();
   }
 
@@ -372,6 +386,7 @@
     $("mute-btn").textContent = state.muted ? "Muted" : "Sound on";
     $("mute-btn").setAttribute("aria-pressed", String(state.muted));
     status(state.muted ? "Sound is off. The score still lights up." : "Sound is on.");
+    writeNow(state._now);
   });
   $("alias").addEventListener("input", (e) => {
     state.song.alias = e.target.value.replace(/[^\w .\-']/g, "").slice(0, 24);

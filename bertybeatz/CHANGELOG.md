@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.2** · 2026-09-24 · channel **live**
+
+The word Now names the sound in the column. The teacher page is the grades 5–8 plan, including deaf and hard of hearing, vision, special education, and multilingual learners. Kid screens stay plain.
+
+## Earlier
+
 **Chip: BZ 1.8.1** · 2026-09-24 · channel **live**
 
 When a score arrives, the start screen says "That's the song" and rings those notes. The old line was hidden under More. Drums stay. An old pass still loads.
