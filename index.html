@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-25-hub-ticker"/>
+  <meta name="theme-color" id="theme-color" content="#050814"/>
+  <meta name="tech-room-rev" content="2026-09-25-hub-themes"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,6 +12,25 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
+  <script>
+    (function () {
+      var themes = ["room", "graph", "miami"];
+      var colors = { room: "#050814", graph: "#efeae0", miami: "#14061f" };
+      var choice = "";
+      try { choice = localStorage.getItem("tech-room-theme") || ""; } catch (e) {}
+      var theme = themes.indexOf(choice) >= 0 ? choice : "";
+      if (!theme) {
+        try { theme = sessionStorage.getItem("tech-room-theme-visit") || ""; } catch (e2) {}
+        if (themes.indexOf(theme) < 0) {
+          theme = themes[Math.floor(Math.random() * themes.length)];
+          try { sessionStorage.setItem("tech-room-theme-visit", theme); } catch (e3) {}
+        }
+      }
+      document.documentElement.setAttribute("data-hub-theme", theme);
+      var bar = document.getElementById("theme-color");
+      if (bar && colors[theme]) bar.setAttribute("content", colors[theme]);
+    })();
+  </script>
   <link rel="stylesheet" href="/shared/brand/kulinet/shadcn-kulinet-tokens.css?v=2026-09-22-hub-shell-hole"/>
   <style>
     /* Layout, density, and Button / Dialog / Menu recipes only.
@@ -57,6 +76,96 @@
     @media (prefers-reduced-motion: reduce){
       body::before, body::after{ opacity:.08; }
     }
+    html[data-hub-theme="graph"] body,
+    html[data-hub-theme="graph"] .shell,
+    html[data-hub-theme="graph"] .shell-mid,
+    html[data-hub-theme="graph"] #shell-board,
+    html[data-hub-theme="graph"] #app-frame{background:#efeae0;color:#1c1915}
+    html[data-hub-theme="graph"] body::before{
+      opacity:1;
+      background-image:linear-gradient(#c9c2b4 1px, transparent 1px),linear-gradient(90deg, #c9c2b4 1px, transparent 1px);
+      background-size:22px 22px;mask-image:none;-webkit-mask-image:none;
+    }
+    html[data-hub-theme="graph"] body::after{opacity:0}
+    html[data-hub-theme="graph"] .shell-header,
+    html[data-hub-theme="graph"] .shell-marquee,
+    html[data-hub-theme="graph"] .app-dock{background:#efeae0;color:#1c1915;border-bottom-color:#2c2824}
+    html[data-hub-theme="graph"] .shell-brand,
+    html[data-hub-theme="graph"] .shell-chip,
+    html[data-hub-theme="graph"] .edge-pocket-btn,
+    html[data-hub-theme="graph"] .mq-bit,
+    html[data-hub-theme="graph"] .mq-score,
+    html[data-hub-theme="graph"] .app-dock-item{color:#1c1915;background:#fffdf8;border-color:#2c2824}
+    html[data-hub-theme="graph"] .mq-board{color:#1d4e89}
+    html[data-hub-theme="graph"] .mq-gap{color:#5c564c}
+    html[data-hub-theme="graph"] body.apps-always .poster{background:#fffdf8;border:1.5px solid #2c2824;box-shadow:3px 3px 0 #2c2824}
+    html[data-hub-theme="graph"] body.apps-always .field{opacity:.22}
+    html[data-hub-theme="graph"] body.apps-always .lockup-the{color:#3f3a34}
+    html[data-hub-theme="graph"] body.apps-always .lockup-room{
+      background:none;-webkit-background-clip:border-box;background-clip:border-box;
+      color:#1c1915;-webkit-text-fill-color:#1c1915;filter:none;font-family:Palatino,Georgia,serif;
+    }
+    html[data-hub-theme="graph"] .search input{background:#fff;color:#1c1915;border:1.5px solid #2c2824}
+    html[data-hub-theme="graph"] .search input::placeholder{color:#5c564c}
+    html[data-hub-theme="graph"] .search svg{stroke:#3f3a34}
+    html[data-hub-theme="graph"] .hub-rev,
+    html[data-hub-theme="graph"] .hub-tools button{background:#fffdf8;color:#1c1915;border-color:#2c2824}
+    html[data-hub-theme="graph"] .hub-tools button.is-on,
+    html[data-hub-theme="graph"] #hub-theme.is-on{background:#1c1915;color:#fffdf8;border-color:#1c1915}
+    html[data-hub-theme="graph"] body.apps-always a.tile,
+    html[data-hub-theme="graph"] body.apps-always button.tile{
+      background:#fffdf8;border:1.5px solid #2c2824;box-shadow:2px 2px 0 #2c2824;color:#1c1915;
+    }
+    html[data-hub-theme="graph"] body.apps-always a.tile .label,
+    html[data-hub-theme="graph"] body.apps-always .tile .label,
+    html[data-hub-theme="graph"] .welcome-line{color:#1c1915}
+    html[data-hub-theme="graph"] a.tile:hover{background:#f7f1e4}
+    html[data-hub-theme="miami"] body,
+    html[data-hub-theme="miami"] .shell,
+    html[data-hub-theme="miami"] .shell-mid,
+    html[data-hub-theme="miami"] #shell-board,
+    html[data-hub-theme="miami"] #app-frame{background:#14061f;color:#fff6fb}
+    html[data-hub-theme="miami"] body::before{
+      opacity:.45;
+      background-image:linear-gradient(rgba(255,74,216,.28) 1px, transparent 1px),linear-gradient(90deg, rgba(94,246,255,.22) 1px, transparent 1px);
+      background-size:36px 36px;mask-image:none;-webkit-mask-image:none;
+    }
+    html[data-hub-theme="miami"] body::after{opacity:.08}
+    html[data-hub-theme="miami"] .shell-header,
+    html[data-hub-theme="miami"] .shell-marquee,
+    html[data-hub-theme="miami"] .app-dock{background:#14061f;color:#fff6fb;border-bottom-color:#ff4ad8}
+    html[data-hub-theme="miami"] .shell-brand{color:#fff6fb}
+    html[data-hub-theme="miami"] .shell-chip,
+    html[data-hub-theme="miami"] .edge-pocket-btn,
+    html[data-hub-theme="miami"] .hub-rev,
+    html[data-hub-theme="miami"] .app-dock-item{background:#240a3a;color:#fff6fb;border-color:#ff4ad8}
+    html[data-hub-theme="miami"] .mq-board{color:#5ef6ff}
+    html[data-hub-theme="miami"] .mq-bit{color:#ffd6f2}
+    html[data-hub-theme="miami"] .mq-score{color:#fff}
+    html[data-hub-theme="miami"] body.apps-always .poster{
+      background:#1a0830;border:1px solid #ff4ad8;
+      box-shadow:0 0 0 1px rgba(94,246,255,.35),0 0 24px rgba(255,74,216,.25);
+    }
+    html[data-hub-theme="miami"] body.apps-always .lockup-the{color:#ffd6f2}
+    html[data-hub-theme="miami"] body.apps-always .lockup-room{
+      background:linear-gradient(100deg,#ff4ad8 0%,#ffd0f0 46%,#5ef6ff 100%);
+      -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+      filter:drop-shadow(0 0 10px rgba(255,74,216,.4));
+    }
+    html[data-hub-theme="miami"] .search input{background:#240a3a;color:#fff6fb;border:1px solid #5ef6ff}
+    html[data-hub-theme="miami"] .search input::placeholder{color:#ffd6f2}
+    html[data-hub-theme="miami"] .search svg{stroke:#5ef6ff}
+    html[data-hub-theme="miami"] .hub-tools button{background:#240a3a;color:#fff6fb;border-color:#5c2a55}
+    html[data-hub-theme="miami"] .hub-tools button.is-on,
+    html[data-hub-theme="miami"] #hub-theme.is-on{background:#ff4ad8;color:#1a0614;border-color:#ff4ad8}
+    html[data-hub-theme="miami"] body.apps-always a.tile,
+    html[data-hub-theme="miami"] body.apps-always button.tile{
+      background:#1a0830;border-color:#ff4ad8;color:#fff6fb;box-shadow:0 0 0 1px rgba(94,246,255,.25);
+    }
+    html[data-hub-theme="miami"] body.apps-always a.tile .label,
+    html[data-hub-theme="miami"] body.apps-always .tile .label,
+    html[data-hub-theme="miami"] .welcome-line{color:#fff6fb}
+    html[data-hub-theme="miami"] a.tile:hover{background:#2a0d48}
     .wrap, #shell-root, .shell, main, .poster, #shell-board{ position:relative; z-index:1; }
     .poster{
       border-color: color-mix(in srgb, #22d3ee 42%, var(--border));
@@ -810,7 +919,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-25-hub-ticker</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-25-hub-themes</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.8</strong> — A pass leads with Next. The count stays tucked.</p>
@@ -819,7 +928,7 @@
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.2</strong> — origins pictures redrawn.</p>
           <ul id="hub-log">
             <li>HoldIt HI 1.1.8 · a pass leads with Next. SpanCraft SC 1.3.23 and Spire Lab SL 1.3.22 · a miss stays as one fix.</li>
-            <li>The door shows the top 3 on each board, once. A short line stays still. A long line scrolls.</li>
+            <li>Three looks: Room, Graph, and Miami. A new visit picks one. Theme keeps the one you tap.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
             <li>Footer is gone. The Hub chip sits on the card. Tap it to load the newest door. Phone tiles fill the screen.</li>
             <li>Hub chip sits in the footer. Tap it to load the newest door. The app list did not change.</li>
@@ -866,6 +975,7 @@
         <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
         <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
         <button type="button" data-sort="group" aria-pressed="false">Group</button>
+        <button type="button" id="hub-theme">Room</button>
       </div>
       <div class="hub-tools-row" role="group" aria-label="Filter">
         <button type="button" data-filter="all" aria-pressed="true">All</button>
@@ -1918,6 +2028,32 @@
         applyView();
       });
       applyView();
+
+      var HUB_THEMES = ["room", "graph", "miami"];
+      var HUB_THEME_NAMES = { room: "Room", graph: "Graph", miami: "Miami" };
+      var HUB_THEME_COLORS = { room: "#050814", graph: "#efeae0", miami: "#14061f" };
+      function paintThemeButton() {
+        var btn = document.getElementById("hub-theme");
+        var theme = document.documentElement.getAttribute("data-hub-theme") || "room";
+        if (HUB_THEMES.indexOf(theme) < 0) theme = "room";
+        if (btn) {
+          btn.textContent = HUB_THEME_NAMES[theme];
+          btn.classList.add("is-on");
+          btn.setAttribute("aria-label", "Theme is " + HUB_THEME_NAMES[theme] + ". Tap for the next look.");
+        }
+        var bar = document.getElementById("theme-color");
+        if (bar) bar.setAttribute("content", HUB_THEME_COLORS[theme]);
+      }
+      paintThemeButton();
+      var themeBtn = document.getElementById("hub-theme");
+      if (themeBtn) themeBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        var current = document.documentElement.getAttribute("data-hub-theme") || "room";
+        var next = HUB_THEMES[(Math.max(0, HUB_THEMES.indexOf(current)) + 1) % HUB_THEMES.length];
+        document.documentElement.setAttribute("data-hub-theme", next);
+        try { localStorage.setItem("tech-room-theme", next); } catch (eTheme) {}
+        paintThemeButton();
+      });
 
       function fitPhoneTiles() {
         var tiles = document.querySelectorAll("#app-groups .group .board a.tile");
