@@ -1,5 +1,9 @@
-**Chip: HI 1.1.4** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.5** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.5 — Watch it fail, then fix it — 2026-09-24
+
+- What’s new: a bad plan plays out. Watch where it breaks, fix that bar, press Test. If it holds, the card says You fixed it.
 
 ## 1.1.4 — Harder jobs, new tools — 2026-09-24
 
