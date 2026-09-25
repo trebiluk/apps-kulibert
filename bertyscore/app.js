@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.2";
+  const CHIP = "BS 0.2.3";
   const HOW_KEY = "kulibert.bertyscore.howto";
   if (!Song) return;
 
@@ -388,9 +388,13 @@
     status(state.muted ? "Sound is off. The score still lights up." : "Sound is on.");
     writeNow(state._now);
   });
-  $("alias").addEventListener("input", (e) => {
-    state.song.alias = e.target.value.replace(/[^\w .\-']/g, "").slice(0, 24);
-    if (e.target.value !== state.song.alias) e.target.value = state.song.alias;
+  function paintAlias() {
+    const btn = $("alias");
+    if (btn) btn.textContent = state.song.alias || "Pick a title";
+  }
+  $("alias").addEventListener("click", () => {
+    state.song.alias = window.KulibertTitles ? window.KulibertTitles.nextTitle(state.song.alias) : "Class beat";
+    paintAlias();
     renderStaff();
   });
   $("tempo").addEventListener("input", (e) => {
@@ -415,13 +419,13 @@
       stop();
       state.song = next;
       state.focus = 0;
-      $("alias").value = next.alias;
+      paintAlias();
       $("tempo").value = String(next.bpm);
       $("tempo-read").textContent = String(next.bpm);
       renderStaff();
       renderBeats();
       renderSequence();
-      status(next.alias ? "Imported " + next.alias + "." : "Imported. Pitched notes are on the staff.");
+      status(next.alias ? "Imported " + next.alias + "." : "Imported. Pick a class title.");
     };
     reader.readAsText(file);
   });
@@ -468,7 +472,7 @@
     if (el) el.textContent = CHIP;
   });
   renderPitches();
-  $("alias").value = state.song.alias || "";
+  paintAlias();
   $("tempo").value = String(state.song.bpm);
   $("tempo-read").textContent = String(state.song.bpm);
   renderStaff();

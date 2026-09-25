@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.4** · 2026-09-25 · channel **live**
+
+A beat title is picked from the class list. Kids do not type one. A file with any other title comes in as Class beat.
+
+## Earlier
+
 **Chip: BZ 1.8.3** · 2026-09-24 · channel **live**
 
 The column and the word Now keep moving when a Chromebook never starts sound. Mute is still a correct way to work.

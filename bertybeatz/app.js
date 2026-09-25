@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.3") return;
-  window.__BERTYBEATZ__ = "1.8.3";
+  if (window.__BERTYBEATZ__ === "1.8.4") return;
+  window.__BERTYBEATZ__ = "1.8.4";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.3";
+  const CHIP = "BZ 1.8.4";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -242,26 +242,18 @@
     return steps;
   }
 
-  const NAMES = [
-    "Locker", "Hallway", "Late Bell", "Comet", "Pixel", "Pocket", "Skyline", "Paper",
-  ];
-  const NOUNS = ["Beat", "Loop", "Jam", "Pulse", "Drop", "Sketch"];
   function funName() {
-    return `${NAMES[Math.floor(Math.random() * NAMES.length)]} ${NOUNS[Math.floor(Math.random() * NOUNS.length)]}`;
+    return window.KulibertTitles ? window.KulibertTitles.pickTitle(state && state.name) : "Class beat";
+  }
+
+  function cleanTitle(name) {
+    return window.KulibertTitles ? window.KulibertTitles.safeTitle(name, "Class beat") : "Class beat";
   }
 
   function packBits(arr) {
     let n = 0;
     for (let i = 0; i < STEP_COUNT; i++) if (arr[i]) n |= 1 << i;
     return n.toString(16).padStart(4, "0");
-  }
-
-  function cleanTitle(name) {
-    return String(name || "Beat")
-      .replace(/[~]/g, "-")
-      .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 24) || "Beat";
   }
 
   function packMix() {
@@ -501,7 +493,9 @@
       const raw = localStorage.getItem(STORAGE);
       if (!raw) return;
       const data = JSON.parse(raw);
-      if (Array.isArray(data.library)) state.library = data.library;
+      if (Array.isArray(data.library)) {
+        state.library = data.library.map((item) => ({ ...item, name: cleanTitle(item && item.name) }));
+      }
       if (validNow(data.now)) pendingNow = data.now;
     } catch {
       /* ignore */
@@ -828,7 +822,7 @@
   const engine = new Engine();
 
   function applyPreset(p) {
-    state.name = p.name;
+    state.name = cleanTitle(p.name);
     state.bpm = p.bpm;
     state.swing = p.swing;
     state.humanize = Math.min(40, Math.max(0, Number(p.humanize) || 0));
@@ -1302,14 +1296,25 @@
 
   $("save-btn").addEventListener("click", () => {
     modalBody.innerHTML = "";
-    const input = document.createElement("input");
-    input.id = "save-name";
-    input.maxLength = 32;
-    input.value = state.name === "Blank page" ? funName() : state.name;
-    input.setAttribute("aria-label", "Beat name");
-    modalBody.appendChild(input);
-    openModal("Save this beat", "Stored on this Chromebook only.", () => {
-      const name = input.value.trim() || funName();
+    const picks = window.KulibertTitles ? window.KulibertTitles.choices(6, state.name) : ["Class beat"];
+    let chosen = cleanTitle(state.name);
+    if (!picks.includes(chosen)) chosen = picks[0];
+    const box = document.createElement("div");
+    box.className = "chips";
+    picks.forEach((title) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (title === chosen ? " on" : "");
+      b.textContent = title;
+      b.addEventListener("click", () => {
+        chosen = title;
+        box.querySelectorAll("button").forEach((el) => el.classList.toggle("on", el === b));
+      });
+      box.appendChild(b);
+    });
+    modalBody.appendChild(box);
+    openModal("Save this beat", "Pick a class title. You don't type one.", () => {
+      const name = chosen;
       state.name = name;
       state.library.unshift({
         id: String(Date.now()),

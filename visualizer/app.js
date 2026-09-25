@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.0") return;
-  window.__VISUALIZER__ = "0.6.0";
+  if (window.__VISUALIZER__ === "0.6.1") return;
+  window.__VISUALIZER__ = "0.6.1";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.1";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -98,6 +98,9 @@
     });
     return steps;
   }
+  function safeName(name) {
+    return window.KulibertTitles ? window.KulibertTitles.safeTitle(name, "Class beat") : "Class beat";
+  }
   function beatFromParts(parts) {
     if (!parts || parts.length < 8 || parts[0] !== "BZ1") return null;
     const bits = parts[7];
@@ -113,7 +116,7 @@
     });
     return {
       id: "code-" + bits.slice(0, 6),
-      name: String(parts[1] || "Pass").slice(0, 32),
+      name: safeName(parts[1] || "Class beat"),
       bpm: Math.min(160, Math.max(70, Number(parts[2]) || 110)),
       steps,
     };
@@ -128,7 +131,7 @@
         const beat = window.KulibertSong.toBeat(song);
         return {
           id: "file-" + Date.now(),
-          name: beat.name || "Score",
+          name: safeName(beat.name || "Written"),
           bpm: beat.bpm,
           steps: normalizeSteps(beat.steps),
         };
@@ -144,7 +147,7 @@
     if (data && data.steps) {
       return {
         id: "file-" + Date.now(),
-        name: String(data.name || "Imported").slice(0, 32),
+        name: safeName(data.name || "Class beat"),
         bpm: Math.min(160, Math.max(60, Number(data.bpm) || 110)),
         steps: normalizeSteps(data.steps),
       };
@@ -160,7 +163,7 @@
       if (data && data.now && data.now.steps) {
         out.push({
           id: "now",
-          name: data.now.name || "Open beat",
+          name: safeName(data.now.name || "Class beat"),
           bpm: data.now.bpm || 110,
           steps: normalizeSteps(data.now.steps),
         });
@@ -170,7 +173,7 @@
           if (!item || !item.steps) return;
           out.push({
             id: "lib-" + item.id,
-            name: item.name || "Saved beat",
+            name: safeName(item.name || "Class beat"),
             bpm: item.bpm || 110,
             steps: normalizeSteps(item.steps),
           });
@@ -185,7 +188,7 @@
       const list = raw ? JSON.parse(raw) : [];
       return Array.isArray(list) ? list.map((item) => ({
         id: item.id,
-        name: item.name,
+        name: safeName(item.name),
         bpm: item.bpm,
         steps: normalizeSteps(item.steps),
       })) : [];
@@ -243,7 +246,7 @@
   }
   function toBeatzCode(beat) {
     const bits = TRACKS.map((id) => packBits(beat.steps[id])).join("");
-    const name = String(beat.name || "Lights").replace(/~/g, "-").replace(/\s+/g, " ").trim().slice(0, 24) || "Lights";
+    const name = safeName(beat.name || "Class beat").replace(/~/g, " ");
     const bpm = Math.min(160, Math.max(70, Math.round(Number(beat.bpm) || 110)));
     return "BZ1~" + name + "~" + bpm + "~8~studio~bright~C~" + bits;
   }

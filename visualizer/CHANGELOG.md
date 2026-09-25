@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.1** · 2026-09-25 · channel **live**
+
+Beat names on the lights come from the class list. A file with any other title shows as Class beat.
+
+## Earlier
+
 **Chip: Viz 0.6.0** · 2026-09-25 · channel **live**
 
 Ten gizmos change the picture: zoom, spin, glow, thick, count, tint, trail, bounce, scope, and smooth. Beats sends the whole grid, drums included. Score still sends the written notes only.

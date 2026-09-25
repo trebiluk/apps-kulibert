@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.3** · 2026-09-25 · channel **live**
+
+The title is a button on the class list. Kids do not type one.
+
+## Earlier
+
 **Chip: BS 0.2.2** · 2026-09-24 · channel **live**
 
 The word Now names the note while it plays, so a class can follow with the sound off. The teacher page is the grades 5–8 plan.

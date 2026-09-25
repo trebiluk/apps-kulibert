@@ -27,7 +27,8 @@
   }
 
   function cleanAlias(value) {
-    return String(value || "").replace(/[^\w .\-']/g, "").trim().slice(0, 24);
+    if (global.KulibertTitles) return global.KulibertTitles.safeTitle(value, "");
+    return "";
   }
 
   function measure(label, beats, id) {

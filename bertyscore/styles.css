@@ -119,13 +119,13 @@ button { cursor: pointer; }
   outline-offset: 1px;
 }
 .alias, .tempo { display: flex; flex-direction: column; gap: 0.15rem; font-size: 0.75rem; font-weight: 700; color: var(--muted); }
-.alias input, .tempo input { min-height: 44px; }
-.alias input {
+.alias button, .tempo input { min-height: 44px; }
+.alias button {
+  min-width: 8.5rem;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--panel);
   padding: 0 0.7rem;
-  min-width: 10rem;
 }
 .tempo input { width: 8.5rem; accent-color: var(--accent); }
 .status { min-height: 1.2rem; margin: 0 0 0.7rem; color: var(--muted); font-weight: 650; }
@@ -180,7 +180,7 @@ button { cursor: pointer; }
   .work { grid-template-columns: 1fr; }
   .staff-wrap { min-height: 120px; }
   .alias, .tempo { width: 100%; }
-  .alias input, .tempo input { width: 100%; }
+  .alias button, .tempo input { width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .beat.now, .pip.now, .abcjs-note.is-now { outline-style: solid; }
