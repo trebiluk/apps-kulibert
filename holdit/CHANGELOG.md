@@ -1,5 +1,9 @@
-**Chip: HI 1.1.5** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.6** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.6 — A plan on the table — 2026-09-24
+
+- What’s new: each job shows one plan while you draw. Creek Crossing still starts with the steps.
 
 ## 1.1.5 — Watch it fail, then fix it — 2026-09-24
 
