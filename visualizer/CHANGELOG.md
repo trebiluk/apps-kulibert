@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.4** · 2026-09-25 · channel **live**
+
+Five new looks: Rings, Ripple, Tiles, Orbit, Rain. Code takes typed variables. arms, grow, turn, skip, and twist change the shape. A line of F + - [ ] draws a new one. Other words are ignored.
+
+## Earlier
+
 **Chip: Viz 0.6.3** · 2026-09-25 · channel **live**
 
 Beats keeps the kit, mood, and key when a beat is sent across. A missing kit still lands on Studio.

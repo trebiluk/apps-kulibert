@@ -515,6 +515,17 @@ body.is-loop .cell.play {
   padding: 0.35rem 0.15rem 0.1rem;
 }
 .code-look[hidden] { display: none; }
+.code-line {
+  width: min(22rem, 100%);
+  min-height: 44px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  padding: 0 0.7rem;
+  font: inherit;
+}
+.code-note { margin: 0; color: var(--muted); font-size: 0.88rem; }
 .code-group {
   display: flex;
   flex-wrap: wrap;

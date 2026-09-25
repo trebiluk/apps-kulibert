@@ -1,13 +1,18 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.3";
+  var CHIP = "Viz 0.6.4";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
     { id: "clouds", label: "Clouds" },
     { id: "stars", label: "Stars" },
     { id: "code", label: "Code" },
+    { id: "rings", label: "Rings" },
+    { id: "ripple", label: "Ripple" },
+    { id: "tiles", label: "Tiles" },
+    { id: "orbit", label: "Orbit" },
+    { id: "rain", label: "Rain" },
   ];
   var CODE_KEY = "kulibert.codelook";
   var CODE_GROUPS = [
@@ -37,13 +42,63 @@
     ]},
   ];
 
+  function clampNum(v, min, max) {
+    var n = Number(v);
+    if (n !== n) return null;
+    return Math.max(min, Math.min(max, Math.round(n)));
+  }
+  function cleanLine(value) {
+    var text = String(value || "").toUpperCase().replace(/[^F+\-\[\]]/g, "");
+    if (text.length < 2 || text.indexOf("F") < 0) return "";
+    return text.slice(0, 18);
+  }
   function normalizeCode(raw) {
     var folds = raw && (raw.folds === "4" || raw.folds === "8" || raw.folds === 4 || raw.folds === 8) ? String(raw.folds) : "6";
     var grow = raw && (raw.grow === "short" || raw.grow === "tall") ? raw.grow : "mid";
     var ink = raw && (raw.ink === "teal" || raw.ink === "amber") ? raw.ink : "cyan";
     var pulse = raw && raw.pulse === "still" ? "still" : "beat";
-    var rule = raw && (raw.rule === "vine" || raw.rule === "crystal") ? raw.rule : "tree";
-    return { folds: folds, grow: grow, ink: ink, pulse: pulse, rule: rule };
+    var rule = raw && (raw.rule === "vine" || raw.rule === "crystal" || raw.rule === "type") ? raw.rule : "tree";
+    return {
+      folds: folds,
+      grow: grow,
+      ink: ink,
+      pulse: pulse,
+      rule: rule,
+      arms: clampNum(raw && raw.arms, 3, 12),
+      growN: clampNum(raw && raw.growN, 40, 90),
+      turn: clampNum(raw && raw.turn, 8, 80),
+      skip: clampNum(raw && raw.skip, 0, 4),
+      twist: clampNum(raw && raw.twist, 0, 40),
+      line: cleanLine(raw && raw.line),
+    };
+  }
+  function applyLine(text, recipe) {
+    var raw = String(text || "").trim();
+    recipe.arms = null;
+    recipe.growN = null;
+    recipe.turn = null;
+    recipe.skip = null;
+    recipe.twist = null;
+    recipe.line = "";
+    if (!raw) return { recipe: recipe };
+    if (/^[Ff+\-\[\] ]+$/.test(raw) && /f/i.test(raw)) {
+      recipe.line = cleanLine(raw);
+      recipe.rule = "type";
+      return { recipe: recipe };
+    }
+    var bits = raw.toLowerCase().split(/\s+/);
+    var map = { arms: [3, 12], grow: [40, 90], turn: [8, 80], skip: [0, 4], twist: [0, 40] };
+    if (bits.length % 2) return { error: true };
+    var i;
+    for (i = 0; i < bits.length; i += 2) {
+      var spec = map[bits[i]];
+      var n = Number(bits[i + 1]);
+      if (!spec || n !== n) return { error: true };
+      var key = bits[i] === "grow" ? "growN" : bits[i];
+      recipe[key] = Math.max(spec[0], Math.min(spec[1], Math.round(n)));
+    }
+    if (recipe.rule === "type") recipe.rule = "tree";
+    return { recipe: recipe };
   }
 
   function loadCode() {
@@ -101,8 +156,19 @@
           b.setAttribute("data-val", opt.id);
           b.addEventListener("click", function () {
             var cur = loadCode();
+            cur.arms = null;
+            cur.growN = null;
+            cur.turn = null;
+            cur.skip = null;
+            cur.twist = null;
+            cur.line = "";
+            if (cur.rule === "type") cur.rule = "tree";
             cur[group.key] = opt.id;
             saveCode(cur);
+            var field = el.querySelector(".code-line");
+            if (field) field.value = "";
+            var note = el.querySelector(".code-note");
+            if (note) note.textContent = "Or type F + - [ ] to draw a new shape.";
             paintRecipe(el);
           });
           chips.appendChild(b);
@@ -110,6 +176,56 @@
         wrap.appendChild(chips);
         el.appendChild(wrap);
       });
+      var typeRow = document.createElement("div");
+      typeRow.className = "code-group";
+      var typeLab = document.createElement("span");
+      typeLab.className = "tool-label";
+      typeLab.textContent = "Type";
+      var field = document.createElement("input");
+      field.className = "code-line";
+      field.maxLength = 42;
+      field.spellcheck = false;
+      field.setAttribute("autocomplete", "off");
+      field.setAttribute("aria-label", "Code variables");
+      field.placeholder = "arms 7 turn 28 skip 2";
+      var note = document.createElement("p");
+      note.className = "code-note";
+      note.textContent = "Or type F + - [ ] to draw a new shape.";
+      var surprises = [
+        { label: "Spiky", line: "arms 11 turn 16 twist 22" },
+        { label: "Holes", line: "arms 7 skip 2 grow 70" },
+        { label: "Lean", line: "arms 5 turn 42 twist 28" },
+        { label: "Fern", line: "F[+F]F[-F]F" },
+      ];
+      var surpriseBox = document.createElement("div");
+      surpriseBox.className = "chips";
+      surprises.forEach(function (item) {
+        var b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = item.label;
+        b.addEventListener("click", function () {
+          field.value = item.line;
+          field.dispatchEvent(new Event("change"));
+        });
+        surpriseBox.appendChild(b);
+      });
+      field.addEventListener("change", function () {
+        var cur = loadCode();
+        var parsed = applyLine(field.value, cur);
+        if (parsed.error) {
+          note.textContent = "Use arms, grow, turn, skip, twist, or F + - [ ].";
+          return;
+        }
+        saveCode(parsed.recipe);
+        paintRecipe(el);
+        note.textContent = parsed.recipe.line ? "That rule draws a new shape." : "Those numbers change the shape.";
+      });
+      typeRow.appendChild(typeLab);
+      typeRow.appendChild(surpriseBox);
+      typeRow.appendChild(field);
+      typeRow.appendChild(note);
+      el.appendChild(typeRow);
     }
     paintRecipe(el);
     return loadCode();
@@ -120,6 +236,7 @@
     var bins = new Uint8Array(64);
     var clouds = [];
     var stars = [];
+    var ripples = [];
     var i;
     for (i = 0; i < 7; i++) {
       clouds.push({
@@ -421,18 +538,25 @@
       var bass = band(0, 6);
       var mid = band(6, 18);
       var energy = bass * 0.65 + mid * 0.35;
-      var grow = recipe.grow === "short" ? 0.56 : recipe.grow === "tall" ? 0.74 : 0.66;
-      var arms = recipe.folds === "4" ? 4 : recipe.folds === "8" ? 8 : 6;
+      var grow = recipe.growN ? recipe.growN / 100 : recipe.grow === "short" ? 0.56 : recipe.grow === "tall" ? 0.74 : 0.66;
+      var arms = recipe.arms || (recipe.folds === "4" ? 4 : recipe.folds === "8" ? 8 : 6);
       var depth = arms >= 8 ? 4 : 5;
       var len0 = Math.min(w, h) * (recipe.pulse === "beat" ? 0.16 + energy * 0.08 : 0.18) * gear.zoom;
       var spread = reduceMotion ? 0.55 : 0.42 + mid * 0.28;
+      var turnDeg = recipe.turn || 26;
+      var skip = recipe.skip || 0;
+      var twist = reduceMotion ? 0 : recipe.twist || 0;
       var color = recipe.ink === "teal" ? "#14b8a6" : recipe.ink === "amber" ? "#f59e0b" : "#22d3ee";
+      if (recipe.line) {
+        drawLSystem(w, h, recipe, "F", recipe.line, recipe.line.length > 10 ? 2 : 3, turnDeg);
+        return;
+      }
       if (recipe.rule === "vine") {
-        drawLSystem(w, h, recipe, "F", "F[+F]F[-F]F", recipe.folds === "8" ? 3 : 2, 26);
+        drawLSystem(w, h, recipe, "F", "F[+F]F[-F]F", recipe.folds === "8" ? 3 : 2, turnDeg);
         return;
       }
       if (recipe.rule === "crystal") {
-        drawLSystem(w, h, recipe, "F+F+F+F", "FF+F+F+F+F+FF", 2, 90);
+        drawLSystem(w, h, recipe, "F+F+F+F", "FF+F+F+F+F+FF", 2, recipe.turn || 90);
         return;
       }
       function branch(x, y, angle, len, d) {
@@ -447,12 +571,119 @@
         vctx.lineTo(x2, y2);
         vctx.stroke();
         var next = len * grow;
-        branch(x2, y2, angle - spread, next, d - 1);
-        branch(x2, y2, angle + spread, next, d - 1);
+        var wobble = (twist * Math.PI) / 180 * (d % 2 ? 1 : -1);
+        if (skip && d % (skip + 1) === 0) {
+          branch(x2, y2, angle + spread + wobble, next, d - 1);
+          return;
+        }
+        branch(x2, y2, angle - spread + wobble, next, d - 1);
+        branch(x2, y2, angle + spread - wobble, next, d - 1);
       }
       var a;
       for (a = 0; a < arms; a++) {
         branch(w * 0.5, h * 0.5, (a * Math.PI * 2) / arms - Math.PI / 2, len0, depth);
+      }
+      vctx.globalAlpha = 1;
+    }
+
+    function drawRings(w, h) {
+      var cx = w / 2;
+      var cy = h / 2;
+      var n = Math.max(4, Math.min(10, Math.round(gear.count / 3)));
+      var i;
+      for (i = n; i >= 1; i--) {
+        var v = bins[(i * 4) % bins.length] / 255;
+        var r = Math.min(w, h) * 0.07 * i * gear.zoom * (0.82 + v * 0.35 * gear.bounce);
+        vctx.beginPath();
+        vctx.strokeStyle = i % 2 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
+        vctx.globalAlpha = Math.min(0.8, 0.22 + gear.glow * 0.5);
+        vctx.lineWidth = Math.max(1, gear.thick * 0.6);
+        vctx.arc(cx, cy, Math.max(4, r), 0, Math.PI * 2);
+        vctx.stroke();
+      }
+      vctx.globalAlpha = 1;
+    }
+    function drawRipple(w, h) {
+      var bass = band(0, 5);
+      if (ripples.length < 5 && bass > 0.42 && (ripples.length === 0 || ripples[ripples.length - 1].t > 0.2)) {
+        ripples.push({ t: 0 });
+      }
+      if (!ripples.length) ripples.push({ t: 0.15 });
+      var next = [];
+      var i;
+      for (i = 0; i < ripples.length; i++) {
+        var p = ripples[i];
+        p.t += reduceMotion ? 0.008 : 0.018 * Math.max(0.2, gear.spin);
+        if (p.t < 1) next.push(p);
+        vctx.beginPath();
+        vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
+        vctx.globalAlpha = Math.min(0.75, (1 - p.t) * (0.3 + gear.glow));
+        vctx.lineWidth = Math.max(1, gear.thick * 0.7);
+        vctx.arc(w / 2, h / 2, Math.max(2, p.t * Math.min(w, h) * 0.52 * gear.zoom), 0, Math.PI * 2);
+        vctx.stroke();
+      }
+      ripples = next;
+      vctx.globalAlpha = 1;
+    }
+    function drawTiles(w, h) {
+      var cols = Math.max(4, Math.min(10, Math.round(gear.count / 3)));
+      var rows = 4;
+      var gap = 4;
+      var tw = (w - gap * (cols + 1)) / cols;
+      var th = (h - gap * (rows + 1)) / rows;
+      var r;
+      var c;
+      for (r = 0; r < rows; r++) {
+        for (c = 0; c < cols; c++) {
+          var v = bins[(r * cols + c) % bins.length] / 255;
+          vctx.fillStyle = (r + c) % 3 === 0 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
+          vctx.globalAlpha = Math.min(0.85, 0.15 + v * (0.3 + gear.glow) * gear.bounce);
+          vctx.fillRect(gap + c * (tw + gap), gap + r * (th + gap), tw, th * (0.35 + v * 0.65));
+        }
+      }
+      vctx.globalAlpha = 1;
+    }
+    function drawOrbit(w, h) {
+      var t = performance.now() / 1000;
+      var moons = Math.max(3, Math.min(8, Math.round(gear.count / 4)));
+      var cx = w / 2;
+      var cy = h / 2;
+      var m;
+      vctx.fillStyle = ink("#e8f7ff", "#f7f1e4");
+      vctx.globalAlpha = Math.min(0.7, 0.3 + gear.glow * 0.4);
+      vctx.beginPath();
+      vctx.arc(cx, cy, 6 + band(0, 5) * 10 * gear.bounce, 0, Math.PI * 2);
+      vctx.fill();
+      for (m = 0; m < moons; m++) {
+        var v = bins[(m * 5) % bins.length] / 255;
+        var spin = reduceMotion ? m : t * (0.3 + m * 0.08) * gear.spin + m;
+        var rx = Math.min(w, h) * (0.16 + m * 0.04) * gear.zoom;
+        var ry = rx * 0.62;
+        vctx.fillStyle = m % 2 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
+        vctx.globalAlpha = Math.min(0.85, 0.35 + v * gear.glow);
+        vctx.beginPath();
+        vctx.arc(cx + Math.cos(spin) * rx, cy + Math.sin(spin) * ry, 3 + v * 5 * gear.thick * 0.3, 0, Math.PI * 2);
+        vctx.fill();
+      }
+      vctx.globalAlpha = 1;
+    }
+    function drawRain(w, h) {
+      var t = performance.now() / 1000;
+      var drops = Math.max(8, Math.min(22, Math.round(gear.count)));
+      var i;
+      vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
+      vctx.lineWidth = Math.max(1, gear.thick * 0.45);
+      for (i = 0; i < drops; i++) {
+        var v = bins[i % bins.length] / 255;
+        var speed = reduceMotion ? 0.05 : 0.15 + v * 0.45 * gear.spin;
+        var y = ((t * speed * 80 + i * 37) % (h + 30)) - 20;
+        var x = ((i + 0.5) / drops) * w;
+        var len = (8 + v * 18) * gear.zoom;
+        vctx.globalAlpha = Math.min(0.75, 0.2 + gear.glow * 0.5);
+        vctx.beginPath();
+        vctx.moveTo(x, y);
+        vctx.lineTo(x, y + len);
+        vctx.stroke();
       }
       vctx.globalAlpha = 1;
     }
@@ -517,6 +748,11 @@
       else if (look === "clouds") drawClouds(w, h);
       else if (look === "stars") drawStars(w, h, snap);
       else if (look === "code") drawCode(w, h);
+      else if (look === "rings") drawRings(w, h);
+      else if (look === "ripple") drawRipple(w, h);
+      else if (look === "tiles") drawTiles(w, h);
+      else if (look === "orbit") drawOrbit(w, h);
+      else if (look === "rain") drawRain(w, h);
       else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
       drawScope(w, h, snap);
     }

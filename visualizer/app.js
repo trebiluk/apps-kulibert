@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.3") return;
-  window.__VISUALIZER__ = "0.6.3";
+  if (window.__VISUALIZER__ === "0.6.4") return;
+  window.__VISUALIZER__ = "0.6.4";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.3";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.4";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -650,6 +650,11 @@
     if (e.code === "Digit3") pickLook("clouds");
     if (e.code === "Digit4") pickLook("stars");
     if (e.code === "Digit5") pickLook("code");
+    if (e.code === "Digit6") pickLook("rings");
+    if (e.code === "Digit7") pickLook("ripple");
+    if (e.code === "Digit8") pickLook("tiles");
+    if (e.code === "Digit9") pickLook("orbit");
+    if (e.code === "Digit0") pickLook("rain");
   });
 
   ["chip-label", "chip-live", "foot-chip"].forEach((id) => {
