@@ -97,8 +97,16 @@
       </form>
       <form class="card" id="lb-form">
         <p class="chip">Leaderboards</p>
-        <p>Shows once, under the door ribbon. The same name on the same board updates the score. It does not add a second line.</p>
+        <p>One marquee under the ribbon. Lines are ranked. The same name on the same board updates the score.</p>
         <label class="check">Show the marquee <input id="lb-on" type="checkbox" checked/></label>
+        <div class="presets" id="lb-picks">
+          <button class="ghost" type="button" data-board="SpanCraft">SpanCraft</button>
+          <button class="ghost" type="button" data-board="HoldIt">HoldIt</button>
+          <button class="ghost" type="button" data-board="Spire Lab">Spire Lab</button>
+          <button class="ghost" type="button" data-board="Catapult Size Lab">Catapult</button>
+          <button class="ghost" type="button" data-board="Berty Run">Berty Run</button>
+          <button class="ghost" type="button" data-board="Drift">Drift</button>
+        </div>
         <label>Board <input id="lb-board" maxlength="24" placeholder="SpanCraft"/></label>
         <label>Name <input id="lb-name" maxlength="24" placeholder="Alias"/></label>
         <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
@@ -288,12 +296,26 @@
       function boardNorm(value) {
         return String(value || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
       }
+      var BOARD_NAMES = ["SpanCraft","HoldIt","Spire Lab","Catapult Size Lab","Berty Run","Drift","PaperLab","BertyBeatz","Visualizer","Debugzy"];
+      function canonBoard(value) {
+        var raw = boardNorm(value).slice(0, 24);
+        var key = raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+        var i;
+        for (i = 0; i < BOARD_NAMES.length; i++) {
+          if (BOARD_NAMES[i].toLowerCase().replace(/[^a-z0-9]/g, "") === key) return BOARD_NAMES[i];
+        }
+        return raw;
+      }
+      function scoreNum(score) {
+        var n = parseFloat(String(score || "").replace(/,/g, ""));
+        return isNaN(n) ? null : n;
+      }
       function dedupeBoards(rows) {
         var seen = {};
         var out = [];
         (Array.isArray(rows) ? rows : []).forEach(function (row) {
           if (!row) return;
-          var board = boardNorm(row.board).slice(0, 24);
+          var board = canonBoard(row.board);
           var name = boardNorm(row.name).slice(0, 24);
           var score = boardNorm(row.score).slice(0, 12);
           if (!board || !name || !score) return;
@@ -303,6 +325,16 @@
           out.push({ board: board, name: name, score: score });
         });
         return out.slice(0, 24);
+      }
+      function rankBoards(rows) {
+        return dedupeBoards(rows).slice().sort(function (a, b) {
+          var byBoard = a.board.localeCompare(b.board);
+          if (byBoard) return byBoard;
+          var na = scoreNum(a.score);
+          var nb = scoreNum(b.score);
+          if (na != null && nb != null && na !== nb) return nb - na;
+          return a.name.localeCompare(b.name);
+        });
       }
       function boardsFromHref(href) {
         var raw = String(href || "");
@@ -338,21 +370,47 @@
         if (!box) return;
         box.innerHTML = "";
         if (!room.boards.length) { box.textContent = "No lines yet."; return; }
-        room.boards.forEach(function (row, index) {
+        var place = {};
+        rankBoards(room.boards).forEach(function (row, index, all) {
+          var rank = 1;
+          var i;
+          for (i = 0; i < index; i++) if (all[i].board === row.board) rank += 1;
+          place[row.board.toLowerCase() + "\0" + row.name.toLowerCase()] = rank;
+        });
+        rankBoards(room.boards).forEach(function (row) {
+          var key = row.board.toLowerCase() + "\0" + row.name.toLowerCase();
           var div = document.createElement("div");
           div.className = "row";
           var label = document.createElement("span");
-          label.textContent = row.board + " · " + row.name + " · " + row.score;
+          label.textContent = row.board + "  " + (place[key] || 1) + ". " + row.name + "  " + row.score;
+          var btns = document.createElement("div");
+          btns.className = "row-btns";
+          var edit = document.createElement("button");
+          edit.type = "button";
+          edit.className = "ghost";
+          edit.textContent = "Edit";
+          edit.addEventListener("click", function () {
+            $("lb-board").value = row.board;
+            $("lb-name").value = row.name;
+            $("lb-score").value = row.score;
+            $("lb-score").focus();
+            var status = $("lb-status");
+            if (status) status.textContent = "Editing " + row.name + ". Change the score, then Add or update.";
+          });
           var remove = document.createElement("button");
           remove.type = "button";
           remove.className = "ghost";
           remove.textContent = "Remove";
           remove.addEventListener("click", function () {
-            room.boards = room.boards.filter(function (_, i) { return i !== index; });
+            room.boards = room.boards.filter(function (item) {
+              return (item.board.toLowerCase() + "\0" + item.name.toLowerCase()) !== key;
+            });
             paintLb();
           });
+          btns.appendChild(edit);
+          btns.appendChild(remove);
           div.appendChild(label);
-          div.appendChild(remove);
+          div.appendChild(btns);
           box.appendChild(div);
         });
       }
@@ -446,9 +504,16 @@
       $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
       $("preset-paper").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Paper day — no Chromebooks this period"; });
       $("preset-sub").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Sub coverage — stay on assigned apps"; });
+      var lbPicks = $("lb-picks");
+      if (lbPicks) lbPicks.addEventListener("click", function (event) {
+        var btn = event.target && event.target.closest ? event.target.closest("[data-board]") : null;
+        if (!btn) return;
+        $("lb-board").value = btn.getAttribute("data-board");
+        $("lb-name").focus();
+      });
       $("lb-form").addEventListener("submit", function (event) {
         event.preventDefault();
-        var board = boardNorm($("lb-board").value).slice(0, 24);
+        var board = canonBoard($("lb-board").value);
         var name = boardNorm($("lb-name").value).slice(0, 24);
         var score = boardNorm($("lb-score").value).slice(0, 12);
         var status = $("lb-status");

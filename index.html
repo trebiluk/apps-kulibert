@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="tech-room-rev" content="2026-09-25-hub-boards"/>
+  <meta name="tech-room-rev" content="2026-09-25-hub-ranks"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -479,19 +479,23 @@
     }
     .shell-header .edge-pocket{position:relative;top:auto;right:auto;margin-left:auto;z-index:6}
     .shell-marquee{
-      flex:0 0 auto;height:28px;overflow:hidden;display:flex;align-items:center;
+      position:relative;flex:0 0 auto;height:30px;overflow:hidden;display:flex;align-items:center;
       border-bottom:1px solid #16324f;background:#071018;color:#d7f6ff;
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
+      mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);
     }
     .shell-marquee[hidden]{display:none !important}
     .shell > .shell-marquee ~ .shell-marquee{display:none !important}
     body.is-framed .shell-marquee{display:none !important}
     .shell-marquee-track{
       display:inline-block;white-space:nowrap;padding-left:100%;
-      font-size:.78rem;font-weight:650;
-      animation:hub-marquee 32s linear infinite;
+      font-size:.78rem;font-weight:650;letter-spacing:.01em;
+      animation:hub-marquee 36s linear infinite;
     }
+    .shell-marquee:hover .shell-marquee-track{animation-play-state:paused}
     @keyframes hub-marquee{from{transform:translateX(0)}to{transform:translateX(-100%)}}
     @media (prefers-reduced-motion:reduce){
+      .shell-marquee{mask-image:none;-webkit-mask-image:none}
       .shell-marquee-track{animation:none;padding-left:.75rem}
     }
     .shell-mid{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;background:#050814}
@@ -797,7 +801,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-            <span class="lead"><span class="rev">rev 2026-09-25-hub-boards</span> · <strong>What’s new</strong> · The Tech Room</span>
+            <span class="lead"><span class="rev">rev 2026-09-25-hub-ranks</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.7</strong> — When it falls, the plan line becomes the fix.</p>
@@ -805,7 +809,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">Catapult Size Lab</a> <strong>JC 1.0.0</strong> — stick size gates back on Hub.</p>
           <ul id="hub-log">
-            <li>One marquee under the ribbon. Staff updates a leaderboard line. The same name on the same board replaces the score.</li>
+            <li>Leaderboard lines are ranked. Span Craft and SpanCraft stay one board. The marquee still appears once.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
             <li>Footer is gone. The Hub chip sits on the card. Tap it to load the newest door. Phone tiles fill the screen.</li>
             <li>Hub chip sits in the footer. Tap it to load the newest door. The app list did not change.</li>
@@ -1331,8 +1335,21 @@
         return String(value || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
       }
 
-      function boardKey(row) {
-        return boardNorm(row && row.board).toLowerCase() + "\0" + boardNorm(row && row.name).toLowerCase();
+      var BOARD_NAMES = ["SpanCraft","HoldIt","Spire Lab","Catapult Size Lab","Berty Run","Drift","PaperLab","BertyBeatz","Visualizer","Debugzy"];
+
+      function canonBoard(value) {
+        var raw = boardNorm(value).slice(0, 24);
+        var key = raw.toLowerCase().replace(/[^a-z0-9]/g, "");
+        var i;
+        for (i = 0; i < BOARD_NAMES.length; i++) {
+          if (BOARD_NAMES[i].toLowerCase().replace(/[^a-z0-9]/g, "") === key) return BOARD_NAMES[i];
+        }
+        return raw;
+      }
+
+      function scoreNum(score) {
+        var n = parseFloat(String(score || "").replace(/,/g, ""));
+        return isNaN(n) ? null : n;
       }
 
       function dedupeBoards(rows) {
@@ -1340,7 +1357,7 @@
         var out = [];
         (Array.isArray(rows) ? rows : []).forEach(function (row) {
           if (!row) return;
-          var board = boardNorm(row.board).slice(0, 24);
+          var board = canonBoard(row.board);
           var name = boardNorm(row.name).slice(0, 24);
           var score = boardNorm(row.score).slice(0, 12);
           if (!board || !name || !score) return;
@@ -1350,6 +1367,34 @@
           out.push({ board: board, name: name, score: score });
         });
         return out.slice(0, 24);
+      }
+
+      function rankBoards(rows) {
+        return dedupeBoards(rows).slice().sort(function (a, b) {
+          var byBoard = a.board.localeCompare(b.board);
+          if (byBoard) return byBoard;
+          var na = scoreNum(a.score);
+          var nb = scoreNum(b.score);
+          if (na != null && nb != null && na !== nb) return nb - na;
+          return a.name.localeCompare(b.name);
+        });
+      }
+
+      function marqueeLine(rows) {
+        var ranked = rankBoards(rows);
+        var groups = [];
+        var current = "";
+        var parts = [];
+        ranked.forEach(function (row) {
+          if (row.board !== current) {
+            if (parts.length) groups.push(current + "   " + parts.join("   "));
+            current = row.board;
+            parts = [];
+          }
+          parts.push((parts.length + 1) + ". " + row.name + " " + row.score);
+        });
+        if (parts.length) groups.push(current + "   " + parts.join("   "));
+        return groups.join("        ·        ");
       }
 
       function boardsFromHref(href) {
@@ -1378,16 +1423,16 @@
         var bar = document.getElementById("shell-marquee");
         var track = document.getElementById("shell-marquee-track");
         if (!bar || !track) return;
-        rows = dedupeBoards(rows);
+        rows = rankBoards(rows);
         if (!on || !rows.length) {
           bar.hidden = true;
           track.textContent = "";
           return;
         }
-        var text = rows.map(function (row) {
-          return row.board + "  " + row.name + "  " + row.score;
-        }).join("      ·      ");
-        if (track.textContent !== text) track.textContent = text;
+        var text = marqueeLine(rows);
+        var quiet = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        var shown = quiet ? text : text + "          ·          " + text;
+        if (track.textContent !== shown) track.textContent = shown;
         bar.hidden = false;
       }
 
