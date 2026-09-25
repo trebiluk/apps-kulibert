@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.4";
+  var CHIP = "Viz 0.6.5";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -72,33 +72,50 @@
       line: cleanLine(raw && raw.line),
     };
   }
-  function applyLine(text, recipe) {
+  function classifyLine(text) {
     var raw = String(text || "").trim();
+    if (!raw) return { empty: true };
+    if (/^[Ff+\-\[\] ]+$/.test(raw) && /f/i.test(raw)) return { line: cleanLine(raw) };
+    var bits = raw.toLowerCase().split(/\s+/);
+    var map = { arms: [3, 12], grow: [40, 90], turn: [8, 80], skip: [0, 4], twist: [0, 40] };
+    if (bits.length % 2) return { wait: true };
+    var values = {};
+    var i;
+    for (i = 0; i < bits.length; i += 2) {
+      var spec = map[bits[i]];
+      var n = Number(bits[i + 1]);
+      if (!spec) return { error: true };
+      if (n !== n) return { error: true };
+      values[bits[i] === "grow" ? "growN" : bits[i]] = Math.max(spec[0], Math.min(spec[1], Math.round(n)));
+    }
+    return { values: values };
+  }
+  function lineFrom(recipe) {
+    if (recipe.line) return recipe.line;
+    var parts = [];
+    if (recipe.arms) parts.push("arms " + recipe.arms);
+    if (recipe.growN) parts.push("grow " + recipe.growN);
+    if (recipe.turn) parts.push("turn " + recipe.turn);
+    if (recipe.skip) parts.push("skip " + recipe.skip);
+    if (recipe.twist) parts.push("twist " + recipe.twist);
+    return parts.join(" ");
+  }
+  function writeLine(recipe, kind) {
     recipe.arms = null;
     recipe.growN = null;
     recipe.turn = null;
     recipe.skip = null;
     recipe.twist = null;
     recipe.line = "";
-    if (!raw) return { recipe: recipe };
-    if (/^[Ff+\-\[\] ]+$/.test(raw) && /f/i.test(raw)) {
-      recipe.line = cleanLine(raw);
+    if (kind.line) {
+      recipe.line = kind.line;
       recipe.rule = "type";
-      return { recipe: recipe };
+      return;
     }
-    var bits = raw.toLowerCase().split(/\s+/);
-    var map = { arms: [3, 12], grow: [40, 90], turn: [8, 80], skip: [0, 4], twist: [0, 40] };
-    if (bits.length % 2) return { error: true };
-    var i;
-    for (i = 0; i < bits.length; i += 2) {
-      var spec = map[bits[i]];
-      var n = Number(bits[i + 1]);
-      if (!spec || n !== n) return { error: true };
-      var key = bits[i] === "grow" ? "growN" : bits[i];
-      recipe[key] = Math.max(spec[0], Math.min(spec[1], Math.round(n)));
+    if (kind.values) {
+      Object.keys(kind.values).forEach(function (key) { recipe[key] = kind.values[key]; });
+      if (recipe.rule === "type") recipe.rule = "tree";
     }
-    if (recipe.rule === "type") recipe.rule = "tree";
-    return { recipe: recipe };
   }
 
   function loadCode() {
@@ -168,7 +185,11 @@
             var field = el.querySelector(".code-line");
             if (field) field.value = "";
             var note = el.querySelector(".code-note");
-            if (note) note.textContent = "Or type F + - [ ] to draw a new shape.";
+            if (note) note.textContent = "The buttons are in charge.";
+            el.querySelectorAll("[data-line]").forEach(function (b) {
+              b.classList.remove("on");
+              b.setAttribute("aria-pressed", "false");
+            });
             paintRecipe(el);
           });
           chips.appendChild(b);
@@ -188,9 +209,14 @@
       field.setAttribute("autocomplete", "off");
       field.setAttribute("aria-label", "Code variables");
       field.placeholder = "arms 7 turn 28 skip 2";
+      field.value = lineFrom(loadCode());
+      var tryBtn = document.createElement("button");
+      tryBtn.type = "button";
+      tryBtn.className = "btn";
+      tryBtn.textContent = "Try";
       var note = document.createElement("p");
       note.className = "code-note";
-      note.textContent = "Or type F + - [ ] to draw a new shape.";
+      note.textContent = "The picture changes as you type.";
       var surprises = [
         { label: "Spiky", line: "arms 11 turn 16 twist 22" },
         { label: "Holes", line: "arms 7 skip 2 grow 70" },
@@ -199,33 +225,54 @@
       ];
       var surpriseBox = document.createElement("div");
       surpriseBox.className = "chips";
+      var timer = 0;
+      function markSurprises() {
+        surpriseBox.querySelectorAll("button").forEach(function (b) {
+          var on = b.getAttribute("data-line") === field.value.trim();
+          b.classList.toggle("on", on);
+          b.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+      }
+      function commit(force) {
+        var kind = classifyLine(field.value);
+        if (kind.wait && !force) return;
+        if (kind.error || (kind.wait && force)) {
+          note.textContent = "Use arms, grow, turn, skip, twist, or F + - [ ].";
+          markSurprises();
+          return;
+        }
+        var cur = loadCode();
+        writeLine(cur, kind);
+        saveCode(cur);
+        paintRecipe(el);
+        markSurprises();
+        note.textContent = kind.line ? "That rule draws a new shape." : kind.empty ? "The buttons are in charge." : "Those numbers change the shape.";
+      }
       surprises.forEach(function (item) {
         var b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
         b.textContent = item.label;
+        b.setAttribute("data-line", item.line);
         b.addEventListener("click", function () {
           field.value = item.line;
-          field.dispatchEvent(new Event("change"));
+          commit(true);
         });
         surpriseBox.appendChild(b);
       });
-      field.addEventListener("change", function () {
-        var cur = loadCode();
-        var parsed = applyLine(field.value, cur);
-        if (parsed.error) {
-          note.textContent = "Use arms, grow, turn, skip, twist, or F + - [ ].";
-          return;
-        }
-        saveCode(parsed.recipe);
-        paintRecipe(el);
-        note.textContent = parsed.recipe.line ? "That rule draws a new shape." : "Those numbers change the shape.";
+      field.addEventListener("input", function () {
+        window.clearTimeout(timer);
+        timer = window.setTimeout(function () { commit(false); }, 180);
       });
+      field.addEventListener("change", function () { commit(true); });
+      tryBtn.addEventListener("click", function () { commit(true); });
+      markSurprises();
       typeRow.appendChild(typeLab);
       typeRow.appendChild(surpriseBox);
       typeRow.appendChild(field);
+      typeRow.appendChild(tryBtn);
       typeRow.appendChild(note);
-      el.appendChild(typeRow);
+      el.insertBefore(typeRow, el.firstChild);
     }
     paintRecipe(el);
     return loadCode();

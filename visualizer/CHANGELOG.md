@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.5** · 2026-09-25 · channel **live**
+
+Code updates the picture while you type. Try is a button. On a phone the looks slide sideways so Play stays on screen.
+
+## Earlier
+
 **Chip: Viz 0.6.4** · 2026-09-25 · channel **live**
 
 Five new looks: Rings, Ripple, Tiles, Orbit, Rain. Code takes typed variables. arms, grow, turn, skip, and twist change the shape. A line of F + - [ ] draws a new one. Other words are ignored.

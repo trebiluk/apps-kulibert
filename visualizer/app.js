@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.4") return;
-  window.__VISUALIZER__ = "0.6.4";
+  if (window.__VISUALIZER__ === "0.6.5") return;
+  window.__VISUALIZER__ = "0.6.5";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.4";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.5";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -475,6 +475,8 @@
       b.addEventListener("click", () => pickLook(item.id));
       box.appendChild(b);
     }
+    const onLook = box.querySelector(".on");
+    if (onLook && onLook.scrollIntoView) onLook.scrollIntoView({ inline: "nearest", block: "nearest" });
     const recipe = $("code-look");
     if (recipe) {
       recipe.hidden = state.look !== "code";

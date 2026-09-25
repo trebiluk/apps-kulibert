@@ -303,6 +303,12 @@ body:not(.show-more) .deep { display: none; }
 
 @media (max-width: 760px) {
   .stage-canvas { height: 240px; min-height: 200px; }
+  #looks {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  #looks .btn { flex: 0 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .play { transition: none; }
