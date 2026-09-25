@@ -39,7 +39,8 @@
     .row-btns{display:flex;gap:.35rem;flex-shrink:0}
     .presets{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 .8rem}
     ol{padding-left:1.1rem;color:var(--muted)}
-    li{margin:.35rem 0}
+    .lb-preview{margin:.35rem 0 .8rem;padding:.6rem .75rem;border-radius:10px;background:#071018;border:1px solid var(--border);color:var(--text);font-size:.85rem;line-height:1.45}
+    .lb-head{margin:.75rem 0 .1rem;color:var(--accent);font-size:.75rem;font-weight:750;letter-spacing:.04em}
   </style>
 </head>
 <body>
@@ -112,6 +113,7 @@
         <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
         <button class="save" type="submit">Add or update</button>
         <p class="err" id="lb-status"></p>
+        <p class="lb-preview" id="lb-preview">The door stays quiet until you add a line.</p>
         <div id="lb-list"></div>
       </form>
       <form class="card" id="add-form">
@@ -326,6 +328,38 @@
         });
         return out.slice(0, 24);
       }
+      function doorTop(rows) {
+        var counts = {};
+        var out = [];
+        rankBoards(rows).forEach(function (row) {
+          counts[row.board] = (counts[row.board] || 0) + 1;
+          if (counts[row.board] <= 3) out.push(row);
+        });
+        return out;
+      }
+      function doorSentence(rows) {
+        var groups = [];
+        var current = "";
+        var parts = [];
+        doorTop(rows).forEach(function (row) {
+          if (row.board !== current) {
+            if (parts.length) groups.push(current + "  " + parts.join("  "));
+            current = row.board;
+            parts = [];
+          }
+          parts.push((parts.length + 1) + ". " + row.name + " " + row.score);
+        });
+        if (parts.length) groups.push(current + "  " + parts.join("  "));
+        return groups.join("   ·   ");
+      }
+      function paintPreview() {
+        var el = $("lb-preview");
+        if (!el) return;
+        if (room.boardsOn === false) { el.textContent = "The marquee is off."; return; }
+        if (!room.boards.length) { el.textContent = "The door stays quiet until you add a line."; return; }
+        var extra = rankBoards(room.boards).length - doorTop(room.boards).length;
+        el.textContent = doorSentence(room.boards) + (extra > 0 ? "   Door shows the top 3." : "");
+      }
       function rankBoards(rows) {
         return dedupeBoards(rows).slice().sort(function (a, b) {
           var byBoard = a.board.localeCompare(b.board);
@@ -369,8 +403,9 @@
         var box = $("lb-list");
         if (!box) return;
         box.innerHTML = "";
-        if (!room.boards.length) { box.textContent = "No lines yet."; return; }
+        if (!room.boards.length) { box.textContent = "No lines yet."; paintPreview(); return; }
         var place = {};
+        var last = "";
         rankBoards(room.boards).forEach(function (row, index, all) {
           var rank = 1;
           var i;
@@ -379,10 +414,17 @@
         });
         rankBoards(room.boards).forEach(function (row) {
           var key = row.board.toLowerCase() + "\0" + row.name.toLowerCase();
+          if (row.board !== last) {
+            var head = document.createElement("p");
+            head.className = "lb-head";
+            head.textContent = row.board;
+            box.appendChild(head);
+            last = row.board;
+          }
           var div = document.createElement("div");
           div.className = "row";
           var label = document.createElement("span");
-          label.textContent = row.board + "  " + (place[key] || 1) + ". " + row.name + "  " + row.score;
+          label.textContent = (place[key] || 1) + ". " + row.name + "  " + row.score;
           var btns = document.createElement("div");
           btns.className = "row-btns";
           var edit = document.createElement("button");
@@ -413,6 +455,7 @@
           div.appendChild(btns);
           box.appendChild(div);
         });
+        paintPreview();
       }
 
       function paintList() {
@@ -510,6 +553,10 @@
         if (!btn) return;
         $("lb-board").value = btn.getAttribute("data-board");
         $("lb-name").focus();
+      });
+      if ($("lb-on")) $("lb-on").addEventListener("change", function () {
+        room.boardsOn = $("lb-on").checked;
+        paintPreview();
       });
       $("lb-form").addEventListener("submit", function (event) {
         event.preventDefault();
