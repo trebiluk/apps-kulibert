@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.4 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.5 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.4";
+const APP_VERSION = "0.19.5";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.4";
+const APP_CHIP = "BB 0.19.5";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -168,6 +168,74 @@ const JOBS = [
 
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 
+const ACCESS_KEY = "bz-access-v1";
+const ACCESS_COPY = {
+  en: {
+    settings: "Settings", lang: "Language", read: "Read", close: "Close",
+    speak: "Read aloud", big: "Big text", fewer: "Fewer answers",
+    on: "On", off: "Off", speakOn: "Read aloud is on.",
+    english: "English.", simple: "Simple words.", es: "Español.",
+  },
+  simple: {
+    settings: "Settings", lang: "Language", read: "Read", close: "Close",
+    speak: "Read aloud", big: "Big text", fewer: "Fewer answers",
+    on: "On", off: "Off", speakOn: "Read aloud is on.",
+    english: "English.", simple: "Simple words.", es: "Español.",
+  },
+  es: {
+    settings: "Ajustes", lang: "Idioma", read: "Leer", close: "Cerrar",
+    speak: "Leer en voz alta", big: "Texto grande", fewer: "Menos respuestas",
+    on: "Sí", off: "No", speakOn: "Lectura activada.",
+    english: "English.", simple: "Palabras simples.", es: "Español.",
+  },
+};
+const HOWTO_SHORT = {
+  simple: [
+    { title: "The shop", body: "Build a machine. Park the crate in the orange box." },
+    { title: "The job", body: "The crate stays in the orange box for one second." },
+    { title: "The parts", body: "Drive-R goes right. Drive-L goes left. Steel is the bar." },
+    { title: "Then Play", body: "Drag a wheel. Tap Play. Tap Stop to go back." },
+  ],
+  es: [
+    { title: "La tienda", body: "Armas una máquina. Deja la caja en la zona naranja." },
+    { title: "El trabajo", body: "La caja queda en la zona naranja un segundo." },
+    { title: "Las piezas", body: "Drive-R va a la derecha. Drive-L va a la izquierda." },
+    { title: "Luego Play", body: "Arrastra una rueda. Toca Play. Toca Stop para volver." },
+  ],
+};
+
+function readAccess() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(ACCESS_KEY) || "{}");
+    const lang = raw.lang === "simple" || raw.lang === "es" ? raw.lang : "en";
+    return { lang, speak: !!raw.speak, big: !!raw.big, fewer: !!raw.fewer };
+  } catch (e) {
+    return { lang: "en", speak: false, big: false, fewer: false };
+  }
+}
+
+function writeAccess(next) {
+  try { localStorage.setItem(ACCESS_KEY, JSON.stringify(next)); } catch (e) { /* private mode */ }
+  document.documentElement.dataset.big = next.big ? "1" : "0";
+  document.documentElement.dataset.lang = next.lang;
+  window.dispatchEvent(new Event("bz-access"));
+}
+
+function say(text, lang) {
+  if (!window.speechSynthesis || !text) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang === "es" ? "es-US" : "en-US";
+  u.rate = lang === "simple" ? 0.85 : 0.95;
+  window.speechSynthesis.speak(u);
+}
+
+function stopSay() {
+  if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
+
+let access = readAccess();
+writeAccess(access);
 const HOWTO = [
   {
     title: "What this game is",
@@ -657,9 +725,15 @@ function boot() {
     }
     const step = pinnedStep && STEPS.includes(pinnedStep) ? pinnedStep : autoStep();
     document.querySelectorAll(".step").forEach((b) => {
-      const on = b.getAttribute("data-step") === step;
+      const id = b.getAttribute("data-step");
+      const on = id === step;
       b.classList.toggle("on", on);
       b.setAttribute("aria-selected", on ? "true" : "false");
+      if (access.fewer) {
+        const i = STEPS.indexOf(id);
+        const cur = STEPS.indexOf(step);
+        b.hidden = !(i === cur || i === Math.min(STEPS.length - 1, cur + 1));
+      } else b.hidden = false;
     });
     const text = guideFor(step);
     lineEl.textContent = text;
@@ -686,23 +760,71 @@ function boot() {
     refreshLesson();
   }
 
-  function showHowto(i) {
+  function howtoCard(i) {
+    const en = HOWTO[i] || HOWTO[0];
+    if (access.lang === "en") return { card: en, canSpeak: true };
+    const alt = (HOWTO_SHORT[access.lang] || [])[i];
+    if (!alt) return { card: en, canSpeak: false };
+    return { card: alt, canSpeak: true };
+  }
+
+  function showHowto(i, speakNow) {
     howtoIndex = Math.max(0, i);
     const root = document.getElementById("howto");
     const title = document.getElementById("howto-title");
     const body = document.getElementById("howto-body");
     const next = document.getElementById("howto-next");
+    const read = document.getElementById("howto-read");
     if (!root || !title || !body) return;
-    const card = HOWTO[howtoIndex] || HOWTO[0];
-    title.textContent = card.title;
-    body.textContent = card.body;
-    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? "Build" : "Next";
+    const picked = howtoCard(howtoIndex);
+    title.textContent = picked.card.title;
+    body.textContent = picked.card.body;
+    const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
+    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? (access.lang === "es" ? "Armar" : "Build") : (access.lang === "es" ? "Siguiente" : "Next");
+    if (read) read.textContent = copy.read;
     root.hidden = false;
+    if (speakNow && access.speak && picked.canSpeak) say(`${picked.card.title}. ${picked.card.body}`, access.lang);
   }
 
   function hideHowto() {
+    stopSay();
     const root = document.getElementById("howto");
     if (root) root.hidden = true;
+  }
+
+  function paintAccess() {
+    const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
+    const gear = document.getElementById("btn-settings");
+    if (gear) gear.textContent = copy.settings;
+    const title = document.getElementById("access-title");
+    if (title) title.textContent = copy.settings;
+    const langLabel = document.getElementById("access-lang-label");
+    if (langLabel) langLabel.textContent = copy.lang;
+    const close = document.getElementById("access-close");
+    if (close) close.textContent = copy.close;
+    const speakBtn = document.getElementById("access-speak");
+    if (speakBtn) {
+      speakBtn.textContent = `${copy.speak}: ${access.speak ? copy.on : copy.off}`;
+      speakBtn.classList.toggle("on", access.speak);
+      speakBtn.setAttribute("aria-pressed", access.speak ? "true" : "false");
+    }
+    const bigBtn = document.getElementById("access-big");
+    if (bigBtn) {
+      bigBtn.textContent = `${copy.big}: ${access.big ? copy.on : copy.off}`;
+      bigBtn.classList.toggle("on", access.big);
+      bigBtn.setAttribute("aria-pressed", access.big ? "true" : "false");
+    }
+    const fewerBtn = document.getElementById("access-fewer");
+    if (fewerBtn) {
+      fewerBtn.textContent = `${copy.fewer}: ${access.fewer ? copy.on : copy.off}`;
+      fewerBtn.classList.toggle("on", access.fewer);
+      fewerBtn.setAttribute("aria-pressed", access.fewer ? "true" : "false");
+    }
+    document.querySelectorAll("[data-lang]").forEach((b) => {
+      const on = b.getAttribute("data-lang") === access.lang;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on ? "true" : "false");
+    });
   }
 
   function rankAt(xp) {
@@ -2699,9 +2821,16 @@ function boot() {
       });
     }
     const howtoBtn = document.getElementById("btn-howto");
-    if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0));
+    if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0, true));
     const howtoSkip = document.getElementById("howto-skip");
     if (howtoSkip) howtoSkip.addEventListener("click", clearWalls);
+    const howtoRead = document.getElementById("howto-read");
+    if (howtoRead) {
+      howtoRead.addEventListener("click", () => {
+        const picked = howtoCard(howtoIndex);
+        if (picked.canSpeak) say(`${picked.card.title}. ${picked.card.body}`, access.lang);
+      });
+    }
     const howtoNext = document.getElementById("howto-next");
     if (howtoNext) {
       howtoNext.addEventListener("click", () => {
@@ -2709,10 +2838,65 @@ function boot() {
           hideHowto();
           return;
         }
-        showHowto(howtoIndex + 1);
+        showHowto(howtoIndex + 1, true);
       });
     }
-    const howtoRoot = document.getElementById("howto");
+    const settingsBtn = document.getElementById("btn-settings");
+    const accessSheet = document.getElementById("access");
+    function showAccess(on) {
+      if (!accessSheet) return;
+      accessSheet.hidden = !on;
+      paintAccess();
+    }
+    if (settingsBtn) settingsBtn.addEventListener("click", () => showAccess(true));
+    const accessClose = document.getElementById("access-close");
+    if (accessClose) accessClose.addEventListener("click", () => showAccess(false));
+    if (accessSheet) {
+      accessSheet.addEventListener("click", (ev) => {
+        if (ev.target === accessSheet) showAccess(false);
+      });
+      accessSheet.querySelectorAll("[data-lang]").forEach((b) => {
+        b.addEventListener("click", () => {
+          const lang = b.getAttribute("data-lang");
+          if (lang !== "en" && lang !== "simple" && lang !== "es") return;
+          access = { ...access, lang };
+          writeAccess(access);
+          paintAccess();
+          if (!document.getElementById("howto").hidden) showHowto(howtoIndex, false);
+          const copy = ACCESS_COPY[lang];
+          say(lang === "es" ? copy.es : lang === "simple" ? copy.simple : copy.english, lang);
+          refreshGuide();
+        });
+      });
+    }
+    const speakBtn = document.getElementById("access-speak");
+    if (speakBtn) {
+      speakBtn.addEventListener("click", () => {
+        access = { ...access, speak: !access.speak };
+        writeAccess(access);
+        paintAccess();
+        if (access.speak) say((ACCESS_COPY[access.lang] || ACCESS_COPY.en).speakOn, access.lang);
+        else stopSay();
+      });
+    }
+    const bigBtn = document.getElementById("access-big");
+    if (bigBtn) {
+      bigBtn.addEventListener("click", () => {
+        access = { ...access, big: !access.big };
+        writeAccess(access);
+        paintAccess();
+      });
+    }
+    const fewerBtn = document.getElementById("access-fewer");
+    if (fewerBtn) {
+      fewerBtn.addEventListener("click", () => {
+        access = { ...access, fewer: !access.fewer };
+        writeAccess(access);
+        paintAccess();
+        refreshGuide();
+      });
+    }
+    paintAccess();
     const strip = document.getElementById("job-strip");
     if (strip) {
       strip.addEventListener("click", (ev) => {

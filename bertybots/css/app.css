@@ -38,6 +38,12 @@ button:not(:disabled), [role="button"]:not(:disabled) { cursor: pointer; }
 }
 .tool.on:focus-visible, .btn.on:focus-visible { outline-offset: 3px; }
 [hidden] { display: none !important; }
+html[data-big="1"] body { font-size: 18px; }
+html[data-big="1"] .btn,
+html[data-big="1"] .tool,
+html[data-big="1"] .howto-card,
+html[data-big="1"] .menu-card { font-size: 17px; }
+#access .btn { width: 100%; }
 
 #app {
   display: grid;
@@ -525,6 +531,7 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   padding: 16px; z-index: 6;
 }
 .howto { z-index: 8; }
+#access { z-index: 9; }
 .howto[hidden], .sheet[hidden] { display: none !important; }
 .howto-card, .sheet-card {
   width: min(32rem, 100%);
