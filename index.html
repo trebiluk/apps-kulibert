@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-sticky"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-rest"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -92,6 +92,11 @@
     html[data-hub-theme="room"] .shell-marquee,
     html[data-hub-theme="room"] .app-dock{background:#050814}
     html[data-hub-theme="room"] #app-frame{background:#050814}
+    html[data-hub-theme="room"] body::before{opacity:.55;mask-image:none;-webkit-mask-image:none}
+    html[data-hub-theme="room"] body.apps-always .poster{
+      border-color:rgba(34,211,238,.75);
+      box-shadow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.22);
+    }
     html[data-hub-theme="room"] body.apps-always .group h2{color:#b7e7f6}
     html[data-hub-theme="graph"] body{color:#1c1915}
     html[data-hub-theme="graph"] .shell{color:#1c1915}
@@ -124,7 +129,8 @@
     html[data-hub-theme="graph"] .mq-board{color:#1d4e89}
     html[data-hub-theme="graph"] .mq-gap{color:#5c564c}
     html[data-hub-theme="graph"] body.apps-always .poster{
-      background:rgba(255,253,248,.94);border:1.5px solid #2c2824;box-shadow:3px 3px 0 #2c2824;
+      background:rgba(255,253,248,.9);border:1.5px solid #2c2824;
+      box-shadow:inset 14px 0 0 rgba(196,68,68,.8),3px 3px 0 #2c2824;
     }
     html[data-hub-theme="graph"] body.apps-always .group h2,
     html[data-hub-theme="graph"] .live h2,
@@ -138,7 +144,7 @@
     html[data-hub-theme="graph"] .search input{background:#fff;color:#1c1915;border:1.5px solid #2c2824}
     html[data-hub-theme="graph"] .search input::placeholder{color:#5c564c}
     html[data-hub-theme="graph"] .search svg{stroke:#3f3a34}
-    html[data-hub-theme="graph"] .hub-rev{background:#fffdf8;color:#1c1915;border-color:#2c2824}
+    html[data-hub-theme="graph"] .hub-rev{background:transparent;color:#5c564c;border:0;box-shadow:none}
     html[data-hub-theme="graph"] .hub-tools button{
       background:transparent;color:#5c564c;border:0;box-shadow:none;
     }
@@ -186,14 +192,15 @@
     html[data-hub-theme="miami"] .shell-brand{color:#fff6fb}
     html[data-hub-theme="miami"] .shell-chip,
     html[data-hub-theme="miami"] .edge-pocket-btn,
-    html[data-hub-theme="miami"] .hub-rev,
     html[data-hub-theme="miami"] .app-dock-item{background:#240a3a;color:#fff6fb;border-color:#ff4ad8}
+    html[data-hub-theme="miami"] .hub-rev{background:transparent;color:#e7c3dd;border:0;box-shadow:none}
     html[data-hub-theme="miami"] .mq-board{color:#5ef6ff}
     html[data-hub-theme="miami"] .mq-bit{color:#ffd6f2}
     html[data-hub-theme="miami"] .mq-score{color:#fff}
     html[data-hub-theme="miami"] body.apps-always .poster{
-      background:#1a0830;border:1px solid #ff4ad8;
-      box-shadow:0 0 0 1px rgba(94,246,255,.35),0 0 24px rgba(255,74,216,.25);
+      background:linear-gradient(180deg,#1a0830 0%,#1a0830 68%,#c12678 100%);
+      border:1px solid #ff4ad8;
+      box-shadow:0 0 0 1px rgba(94,246,255,.4),0 8px 0 rgba(255,107,61,.45);
     }
     html[data-hub-theme="miami"] body.apps-always .lockup-the{color:#ffd6f2}
     html[data-hub-theme="miami"] body.apps-always .lockup-room{
@@ -693,11 +700,11 @@
     .shell-footer a:focus-visible,#shell-home:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home{margin-left:auto;min-height:44px;min-width:44px}
     .hub-rev{
-      position:absolute;z-index:4;top:.45rem;right:.5rem;margin:0;
-      height:28px;min-height:28px;padding:0 .7rem;
-      border-radius:999px;border:1px solid color-mix(in srgb,#22d3ee 45%,#16324f);
-      background:#0b152c;color:#d7f6ff;font:inherit;font-size:.72rem;font-weight:750;
-      cursor:pointer;white-space:nowrap;
+      position:static;z-index:1;margin:0;
+      height:auto;min-height:36px;padding:0 .35rem;
+      border:0;border-radius:0;background:transparent;color:#8fb4c9;
+      font:inherit;font-size:.72rem;font-weight:650;
+      cursor:pointer;white-space:nowrap;box-shadow:none;
     }
     .hub-rev:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home[hidden]{display:none}
@@ -895,7 +902,7 @@
       body.apps-always .hero{
         height:auto;min-height:0;padding:.55rem .7rem .65rem;justify-content:center;
       }
-      body.apps-always .hero h1{width:100%;padding-right:4.5rem;box-sizing:border-box}
+      body.apps-always .hero h1{width:100%;box-sizing:border-box}
       body.apps-always .lockup-room{font-size:clamp(2rem,10.5vw,2.55rem)}
       body.apps-always .welcome-line{
         position:static;margin:.2rem 0 0;max-width:100%;
@@ -913,7 +920,7 @@
       body.apps-always .group{display:block;flex:none}
       body.apps-always .group .board,
       body.apps-always #school-wrap .board,
-      body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
+      body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
       body.apps-always a.tile,body.apps-always button.tile{
         aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;min-height:44px;justify-self:stretch;
       }
@@ -1002,7 +1009,7 @@
         width:min(24rem,46%);flex:0 1 24rem;margin-left:auto;
       }
       body.apps-always .search input{height:2.4rem;min-height:40px}
-      body.apps-always .hub-rev{top:50%;right:.55rem;transform:translateY(-50%)}
+      body.apps-always .hub-rev{position:static;top:auto;right:auto;transform:none}
       body.apps-always .hub-tools{flex-wrap:nowrap;margin:0}
       body.apps-always .hub-tools-sort{order:1}
       body.apps-always .hub-tools-filter{order:2;flex-basis:auto;margin-left:.45rem;padding-left:.55rem;box-shadow:inset 1px 0 0 rgba(143,180,201,.4)}
@@ -1011,7 +1018,7 @@
       body.apps-always #app-groups{gap:.35rem}
       body.apps-always .group .board,
       body.apps-always #school-wrap .board,
-      body.apps-always .cuts .board{gap:.5rem}
+      body.apps-always .cuts .board{gap:.75rem}
       body.apps-always a.tile,body.apps-always button.tile{
         aspect-ratio:auto;min-height:108px;padding:.18rem .12rem .2rem;
       }
@@ -1048,7 +1055,6 @@
       <p class="announce" id="announce" hidden></p>
     </div>
     <section class="poster" aria-label="The Tech Room">
-      <button type="button" class="hub-rev" id="hub-rev">Hub · open</button>
       <div class="corner-k">
         <img src="/icons/icon-kulinet-k.svg" width="48" height="48" alt="KuliNet"/>
       </div>
@@ -1100,7 +1106,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-sticky</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-rest</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
@@ -1143,6 +1149,7 @@
       </div>
       <div class="hub-tools-row hub-tools-theme" role="group" aria-label="Theme">
         <button type="button" id="hub-theme">Room</button>
+        <button type="button" class="hub-rev" id="hub-rev">Hub</button>
       </div>
     </div>
     <div class="groups" id="app-groups">
@@ -2253,7 +2260,7 @@
       var hubTools = document.getElementById("hub-tools");
       if (hubTools) hubTools.addEventListener("click", function (event) {
         var btn = event.target && event.target.closest ? event.target.closest("button") : null;
-        if (!btn || !hubTools.contains(btn)) return;
+        if (!btn || !hubTools.contains(btn) || btn.id === "hub-rev") return;
         if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
         if (btn.hasAttribute("data-filter")) hubFilter = btn.getAttribute("data-filter");
         applyView();
@@ -2320,7 +2327,7 @@
         var avail = limit - board.getBoundingClientRect().top - 6;
         if (avail < 220) return;
         var peek = 34;
-        var gap = 10;
+        var gap = 14;
         var h = Math.floor((avail - peek - gap) / 2);
         if (h < 128) h = 128;
         if (h > 230) h = 230;
