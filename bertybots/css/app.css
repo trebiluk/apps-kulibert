@@ -498,6 +498,7 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   min-height: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   background: #d9cbb8;
   touch-action: none;
 }
@@ -529,14 +530,15 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   position: absolute; inset: 0;
   background: rgb(30 34 38 / 62%);
   display: grid; place-items: center;
-  padding: 16px; z-index: 6;
+  padding: 8px; z-index: 6;
+  overflow: hidden;
 }
 .howto { z-index: 8; }
 #access { z-index: 9; }
 .howto[hidden], .sheet[hidden] { display: none !important; }
 .howto-card, .sheet-card {
   width: min(32rem, 100%);
-  max-height: calc(100dvh - 24px);
+  max-height: 100%;
   overflow: auto;
   background:
     linear-gradient(var(--yellow), var(--yellow)) 0 0 / 100% 4px no-repeat,
@@ -544,7 +546,7 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   color: #241f18;
   border: 1px solid #e4d5bc;
   border-radius: 18px;
-  padding: 18px 22px 16px;
+  padding: 12px 16px 10px;
   box-shadow: 0 28px 64px -32px #000c;
 }
 .howto-kicker {
@@ -566,7 +568,7 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   margin: 0 0 12px;
   font-size: 15px; line-height: 1.45; font-weight: 500; color: #3a342c;
 }
-.howto-actions { justify-content: flex-end; margin-top: 4px; gap: 8px; }
+.howto-actions { justify-content: flex-end; margin-top: 4px; gap: 8px; position: sticky; bottom: 0; background: #f7f1e6; padding-top: 6px; }
 .howto-card .btn, .sheet-card .btn { font-weight: 600; letter-spacing: 0.01em; border-radius: 12px; }
 .sheet-card .row { margin-bottom: 8px; }
 .ipof { margin: 0 0 12px; padding-left: 1.2rem; line-height: 1.45; }
@@ -716,6 +718,16 @@ a { color: var(--orange); }
     font-size: 13px;
   }
   .hud-play .btn, #btn-crew { min-height: 44px; min-width: 44px; padding: 6px 10px; }
+}
+
+@media (max-height: 520px) {
+  .howto, .sheet { padding: 4px; }
+  .howto-card, .sheet-card { padding: 8px 12px 8px; border-radius: 14px; }
+  .howto-kicker { margin: 0 0 2px; }
+  #howto-demo { height: 72px; margin-bottom: 6px; }
+  .howto-card h2, .sheet-card h2 { font-size: 1.05rem; margin-bottom: 4px; }
+  .howto-card p, .sheet-card p { font-size: 13px; line-height: 1.3; margin-bottom: 4px; }
+  .job-strip { padding: 4px 6px; }
 }
 
 @media (max-width: 860px) {
