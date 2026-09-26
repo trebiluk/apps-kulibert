@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.6.0** · 2026-09-26 · channel **live**
+
+The song is eight beats on the page. Dots show what is in each beat. Tap a number, then a pad. Space bar plays.
+
+## Earlier
+
 **Chip: MU 1.5.0** · 2026-09-26 · channel **live**
 
 A tap stays on the beat, even without Record. The page says Saved. Clear asks twice, and Bring it back restores the drums. A spare copy is kept if the newest save breaks.

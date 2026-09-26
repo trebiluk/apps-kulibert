@@ -7,13 +7,13 @@
   <title>Music · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.5.0"/>
+  <link rel="stylesheet" href="./styles.css?v=1.6.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Music</strong><em id="chip">MU 1.5.0</em></span>
+      <span><strong>Music</strong><em id="chip">MU 1.6.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -48,10 +48,11 @@
         <button type="button" id="rec-btn" class="btn rec" aria-pressed="false">Record</button>
         <button type="button" id="turn-btn" class="btn">Your turn</button>
       </div>
-      <p id="now-line" class="now">Press Play. Read the word. Sound can stay off.</p>
-      <div id="count" class="count" aria-hidden="true"></div>
-      <p id="lesson" class="lesson">Tap a pad. The beat lights up and stays. You do not have to press Record.</p>
-      <p id="saved-line" class="saved">Saved</p>
+      <p id="song-title" class="song-title">Your song</p>
+      <p id="now-line" class="now" aria-live="polite">Press Play. Read the word. Sound can stay off.</p>
+      <div id="lane" class="lane" role="group" aria-label="The eight beats"></div>
+      <p id="lesson" class="lesson">Tap a pad. It stays on that beat. Tap a number to pick a different beat.</p>
+      <p id="saved-line" class="saved" aria-live="polite">Saved</p>
       <button type="button" id="undo-clear" class="btn undo" hidden>Bring it back</button>
     </section>
   </div>
@@ -115,7 +116,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.5.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.6.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -123,6 +124,6 @@
   <script src="/shared/song/model.js?v=0.2.8"></script>
   <script src="/shared/visualizer/stage.js?v=0.6.15"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
-  <script src="./app.js?v=1.5.0"></script>
+  <script src="./app.js?v=1.6.0"></script>
 </body>
 </html>

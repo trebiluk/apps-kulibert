@@ -55,6 +55,7 @@
     held: {},
     lastStamp: 0,
     writeStep: 0,
+    lock: null,
   };
   const FREQ = { C: 261.6, D: 293.7, E: 329.6, G: 392, A: 440 };
 
@@ -228,6 +229,7 @@
       ok = false;
     }
     paintSaved(ok);
+    paintCount();
     const beat = Song.toBeat(state.song);
     ROWS.forEach(([id]) => { beat.steps[id] = state.drums[id].concat(Array(8).fill(false)); });
     if (Song.writeBridge) Song.writeBridge("music", state.song, beat);
@@ -412,12 +414,20 @@
       if (cell) cell.classList.add("on");
     } else return;
     keep();
+    paintCount();
   }
   function placeStep() {
     if (state.armBeats > 0) return -1;
     if (state.playing && state.step >= 0) return state.step;
     const now = Date.now();
     if (now - state.lastStamp < 400) return state.writeStep;
+    if (state.lock != null) {
+      state.writeStep = state.lock;
+      state.step = state.lock;
+      state.lastStamp = now;
+      paintCount();
+      return state.lock;
+    }
     state.writeStep = state.step < 0 ? 0 : (state.step + 1) % 8;
     state.step = state.writeStep;
     state.lastStamp = now;
@@ -440,6 +450,7 @@
       else if (id === "hat") noise(0.04, 0.18);
       else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
     }
+    if (navigator.vibrate) navigator.vibrate(12);
     const step = placeStep();
     if (step >= 0) writeHit(id, step);
     if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
@@ -493,17 +504,53 @@
     return names;
   }
 
+  function chooseBeat(i) {
+    state.lock = i;
+    state.step = i;
+    state.writeStep = i;
+    state.lastStamp = Date.now();
+    paintCount();
+    $("lesson").textContent = "Beat " + (i + 1) + " is picked. Tap a pad. It stays there.";
+  }
   function paintCount() {
-    const box = $("count");
+    const box = $("lane");
     if (!box) return;
-    if (!box.children.length) {
+    if (box.children.length !== 8) {
+      box.innerHTML = "";
       for (let i = 0; i < 8; i++) {
-        const mark = document.createElement("i");
-        mark.textContent = String(i + 1);
-        box.appendChild(mark);
+        const col = document.createElement("button");
+        col.type = "button";
+        col.className = "col";
+        col.addEventListener("click", () => chooseBeat(i));
+        const n = document.createElement("b");
+        n.textContent = String(i + 1);
+        const marks = document.createElement("span");
+        marks.className = "marks";
+        col.append(n, marks);
+        box.appendChild(col);
       }
     }
-    [...box.children].forEach((el, i) => el.classList.toggle("on", i === state.step));
+    const evs = Song.events(state.song);
+    [...box.children].forEach((col, i) => {
+      col.classList.toggle("on", i === state.step);
+      col.classList.toggle("lock", state.lock === i);
+      const names = [];
+      const bits = [];
+      ROWS.forEach(([id, label]) => {
+        if (!state.drums[id][i]) return;
+        names.push(label);
+        bits.push('<i class="' + id + '"></i>');
+      });
+      const ev = evs[i];
+      if (ev && ev.label) {
+        names.push(ev.label);
+        bits.push("<em>" + ev.label + "</em>");
+      }
+      col.querySelector(".marks").innerHTML = bits.join("");
+      col.setAttribute("aria-label", "Beat " + (i + 1) + (names.length ? ". " + names.join(", ") : ". Empty"));
+    });
+    const title = $("song-title");
+    if (title) title.textContent = state.song.alias || "Your song";
   }
   function pulse(step) {
     state.step = step;
@@ -858,6 +905,14 @@
     forgetClip();
     releaseMic();
     $("mic-status").textContent = "Deleted. Nothing was kept.";
+  });
+  window.addEventListener("keydown", (e) => {
+    const tag = e.target && e.target.tagName;
+    if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+    if (e.code === "Space") {
+      e.preventDefault();
+      $("play-btn").click();
+    }
   });
   window.addEventListener("pagehide", () => { keep(); releaseMic(); forgetClip(); });
 
