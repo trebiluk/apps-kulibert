@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.9";
+  const CHIP = "BS 0.3.0";
   const HOW_KEY = "kulibert.bertyscore.howto";
   const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;
@@ -16,7 +16,7 @@
   let arrival = "";
   let opening = Song.starter();
   try {
-    const saved = Song.parse(localStorage.getItem(SONG_KEY) || "");
+    const saved = Song.parse(localStorage.getItem(SONG_KEY) || "") || Song.parse(localStorage.getItem(SONG_KEY + ".bak") || "");
     if (saved) opening = saved;
   } catch (err) { /* a fresh score is fine */ }
   if (params.get("from") === "bridge" && Song.readBridge) {
@@ -382,7 +382,14 @@
   }
 
   function keep() {
-    try { localStorage.setItem(SONG_KEY, Song.serialize(state.song)); } catch (err) { /* the file export still works */ }
+    const body = Song.serialize(state.song);
+    try {
+      const prev = localStorage.getItem(SONG_KEY);
+      if (prev && prev !== body) localStorage.setItem(SONG_KEY + ".bak", prev);
+      localStorage.setItem(SONG_KEY, body);
+    } catch (err) {
+      status("Not saved. Tap Export.");
+    }
     if (Song.writeBridge) Song.writeBridge("bertyscore", state.song, Song.toBeat(state.song));
   }
 

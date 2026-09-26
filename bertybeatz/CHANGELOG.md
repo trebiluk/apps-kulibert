@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.9.4** · 2026-09-26 · channel **live**
+
+Surprise can be undone. If the save breaks, the last copy is still there. The page says Export when it cannot save.
+
+## Earlier
+
 **Chip: BZ 1.9.3** · 2026-09-26 · channel **live**
 
 Sliders and the lesson sit tighter. The menu buttons no longer stretch apart.

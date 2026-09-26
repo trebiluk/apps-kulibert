@@ -107,7 +107,9 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .mode svg { width: 100%; height: 100%; }
 .mode.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
 .staff-wrap { background: var(--paper); color: var(--ink); border-radius: var(--radius); min-height: 140px; padding: 0.35rem; overflow: hidden; }
-.now, .lesson { margin: 0.45rem 0 0; font-weight: 750; }
+.saved { margin: 0.35rem 0 0; font-weight: 800; color: #14b8a6; }
+.saved.bad { color: #fb7185; }
+.undo { margin-top: 0.45rem; }
 .lesson { color: var(--muted); font-weight: 600; }
 .hint { color: var(--muted); margin: 0.35rem 0 0.6rem; }
 .drums { display: grid; gap: 0.35rem; }

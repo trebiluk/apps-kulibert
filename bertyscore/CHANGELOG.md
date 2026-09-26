@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.3.0** · 2026-09-26 · channel **live**
+
+If the save breaks, the page opens the copy before it. If it cannot save, it says to tap Export.
+
+## Earlier
+
 **Chip: BS 0.2.9** · 2026-09-26 · channel **live**
 
 The play row and the lesson are tighter. Sliders use the same accent.

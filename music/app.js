@@ -53,31 +53,41 @@
     turn: "",
     turnLeft: 0,
     held: {},
+    lastStamp: 0,
+    writeStep: 0,
   };
   const FREQ = { C: 261.6, D: 293.7, E: 329.6, G: 392, A: 440 };
 
-  try {
-    const saved = JSON.parse(localStorage.getItem(KEY) || "null");
-    const raw = saved && (saved.song || saved);
-    const song = raw && Song.parse(typeof raw === "string" ? raw : JSON.stringify(raw));
-    if (song) state.song = song;
-    if (saved && saved.drums) {
+  const BACKUP = KEY + ".bak";
+  function applySaved(saved) {
+    if (!saved || typeof saved !== "object" || !saved.song) return false;
+    const song = Song.parse(typeof saved.song === "string" ? saved.song : JSON.stringify(saved.song));
+    if (!song) return false;
+    state.song = song;
+    if (saved.drums) {
       ROWS.forEach(([id]) => {
         if (Array.isArray(saved.drums[id])) state.drums[id] = saved.drums[id].slice(0, 8);
       });
     }
-    if (saved && saved.look) state.look = saved.look;
-    if (saved && saved.fx) state.fx = saved.fx;
-    if (saved && saved.wave) state.wave = saved.wave;
-    if (saved && typeof saved.bright === "number") state.bright = saved.bright;
-    if (saved && typeof saved.noteLen === "number") state.noteLen = saved.noteLen;
-    if (saved && typeof saved.echo === "number") state.echo = saved.echo;
-    if (saved && typeof saved.wobble === "number") state.wobble = saved.wobble;
-    if (saved && typeof saved.hip === "number") state.hip = saved.hip;
-    if (saved && typeof saved.delay === "number") state.delay = saved.delay;
-    if (saved && typeof saved.feedback === "number") state.feedback = saved.feedback;
-    if (saved && saved.bpm) state.song.bpm = saved.bpm;
-  } catch (err) { /* a fresh song is fine */ }
+    if (saved.look) state.look = saved.look;
+    if (saved.fx) state.fx = saved.fx;
+    if (saved.wave) state.wave = saved.wave;
+    if (typeof saved.bright === "number") state.bright = saved.bright;
+    if (typeof saved.noteLen === "number") state.noteLen = saved.noteLen;
+    if (typeof saved.echo === "number") state.echo = saved.echo;
+    if (typeof saved.wobble === "number") state.wobble = saved.wobble;
+    if (typeof saved.hip === "number") state.hip = saved.hip;
+    if (typeof saved.delay === "number") state.delay = saved.delay;
+    if (typeof saved.feedback === "number") state.feedback = saved.feedback;
+    if (saved.bpm) state.song.bpm = saved.bpm;
+    return true;
+  }
+  function readBox(key) {
+    try { return JSON.parse(localStorage.getItem(key) || "null"); } catch (err) { return null; }
+  }
+  const openedMain = applySaved(readBox(KEY));
+  const openedBak = openedMain ? false : applySaved(readBox(BACKUP));
+  state.restored = openedBak;
 
   const FX = [
     { id: "plain", name: "Plain", wave: "triangle", bright: 5200, noteLen: 0.28, echo: 0, wobble: 0, hip: 40, delay: 0, feedback: 0 },
@@ -186,24 +196,38 @@
     src.start();
   }
 
+  function paintSaved(ok) {
+    const line = $("saved-line");
+    if (!line) return;
+    line.classList.toggle("bad", !ok);
+    line.textContent = ok ? "Saved" : "Not saved. Open the menu and tap Save a file.";
+  }
   function keep() {
+    const body = JSON.stringify({
+      song: JSON.parse(Song.serialize(state.song)),
+      drums: state.drums,
+      look: state.look,
+      fx: state.fx,
+      wave: state.wave,
+      bright: state.bright,
+      noteLen: state.noteLen,
+      echo: state.echo,
+      wobble: state.wobble,
+      hip: state.hip,
+      delay: state.delay,
+      feedback: state.feedback,
+      bpm: state.song.bpm,
+    });
+    let ok = false;
     try {
-      localStorage.setItem(KEY, JSON.stringify({
-        song: JSON.parse(Song.serialize(state.song)),
-        drums: state.drums,
-        look: state.look,
-        fx: state.fx,
-        wave: state.wave,
-        bright: state.bright,
-        noteLen: state.noteLen,
-        echo: state.echo,
-        wobble: state.wobble,
-        hip: state.hip,
-        delay: state.delay,
-        feedback: state.feedback,
-        bpm: state.song.bpm,
-      }));
-    } catch (err) { /* the file save still works */ }
+      const prev = localStorage.getItem(KEY);
+      if (prev && prev !== body) localStorage.setItem(BACKUP, prev);
+      localStorage.setItem(KEY, body);
+      ok = true;
+    } catch (err) {
+      ok = false;
+    }
+    paintSaved(ok);
     const beat = Song.toBeat(state.song);
     ROWS.forEach(([id]) => { beat.steps[id] = state.drums[id].concat(Array(8).fill(false)); });
     if (Song.writeBridge) Song.writeBridge("music", state.song, beat);
@@ -383,12 +407,22 @@
       Song.setBeat(state.song, ev.measure, ev.beat, id);
       renderStaff();
     } else if (state.drums[id]) {
-      if (state.drums[id][step]) return;
       state.drums[id][step] = true;
       const cell = document.querySelector('.cell[data-track="' + id + '"][data-step="' + step + '"]');
       if (cell) cell.classList.add("on");
     } else return;
     keep();
+  }
+  function placeStep() {
+    if (state.armBeats > 0) return -1;
+    if (state.playing && state.step >= 0) return state.step;
+    const now = Date.now();
+    if (now - state.lastStamp < 400) return state.writeStep;
+    state.writeStep = state.step < 0 ? 0 : (state.step + 1) % 8;
+    state.step = state.writeStep;
+    state.lastStamp = now;
+    paintCount();
+    return state.writeStep;
   }
   function strike(id, el) {
     arm();
@@ -406,11 +440,12 @@
       else if (id === "hat") noise(0.04, 0.18);
       else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
     }
-    if (canStamp()) writeHit(id, state.step);
+    const step = placeStep();
+    if (step >= 0) writeHit(id, step);
     if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
-    $("lesson").textContent = canStamp()
-      ? "That tap is on the beat you see."
-      : "You played it. Press Record, count four, then tap with the flash.";
+    $("lesson").textContent = step < 0
+      ? "Wait for the count. Then each tap stays."
+      : "Beat " + (step + 1) + " is saved.";
   }
   function bindPad(el, id) {
     el.addEventListener("pointerdown", (e) => {
@@ -607,12 +642,32 @@
     if (!state.playing) play();
     $("lesson").textContent = "Count four. Then tap the pads with the flash.";
   });
+  let clearArm = 0;
+  let drumUndo = null;
   $("clear-btn").addEventListener("click", () => {
+    if (Date.now() > clearArm) {
+      clearArm = Date.now() + 5000;
+      $("clear-btn").textContent = "Tap again to clear";
+      $("lesson").textContent = "Tap clear one more time. Bring it back puts the drums back.";
+      return;
+    }
+    clearArm = 0;
+    drumUndo = JSON.parse(JSON.stringify(state.drums));
     ROWS.forEach(([id]) => { state.drums[id] = Array(8).fill(false); });
     keep();
     renderDrums();
-    document.body.classList.remove("menu-open");
-    $("lesson").textContent = "The drums are clear. Press Record and tap a new beat.";
+    $("clear-btn").textContent = "Clear the drums";
+    $("undo-clear").hidden = false;
+    $("lesson").textContent = "The drums are clear. Bring it back is under the beat.";
+  });
+  $("undo-clear").addEventListener("click", () => {
+    if (!drumUndo) return;
+    state.drums = drumUndo;
+    drumUndo = null;
+    $("undo-clear").hidden = true;
+    keep();
+    renderDrums();
+    $("lesson").textContent = "The drums are back. Saved.";
   });
   $("mode-notes").addEventListener("click", () => setMode("notes"));
   $("mode-drums").addEventListener("click", () => setMode("drums"));
@@ -804,7 +859,7 @@
     releaseMic();
     $("mic-status").textContent = "Deleted. Nothing was kept.";
   });
-  window.addEventListener("pagehide", () => { releaseMic(); forgetClip(); });
+  window.addEventListener("pagehide", () => { keep(); releaseMic(); forgetClip(); });
 
   const Titles = window.KulibertTitles;
   if (Titles && $("title-lists")) {
@@ -826,6 +881,7 @@
   paintWaves();
   syncSynth();
   paintCount();
+  if (state.restored) $("lesson").textContent = "Brought back the last song we could open.";
   keep();
 
   const canvas = $("viz");

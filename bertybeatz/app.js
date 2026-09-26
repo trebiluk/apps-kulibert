@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.9.3") return;
-  window.__BERTYBEATZ__ = "1.9.3";
+  if (window.__BERTYBEATZ__ === "1.9.4") return;
+  window.__BERTYBEATZ__ = "1.9.4";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.9.3";
+  const CHIP = "BZ 1.9.4";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -510,7 +510,7 @@
 
   function loadLibrary() {
     try {
-      const raw = localStorage.getItem(STORAGE);
+      const raw = localStorage.getItem(STORAGE) || localStorage.getItem(STORAGE + ".bak");
       if (!raw) return;
       const data = JSON.parse(raw);
       if (Array.isArray(data.library)) {
@@ -518,7 +518,8 @@
       }
       if (validNow(data.now)) pendingNow = data.now;
     } catch {
-      /* ignore */
+      const line = $("status-line");
+      if (line) line.textContent = "Could not open the last beat. Tap My beats or Import.";
     }
   }
   function validNow(now) {
@@ -571,12 +572,13 @@
   }
   function flushNow() {
     try {
-      localStorage.setItem(
-        STORAGE,
-        JSON.stringify({ library: state.library, now: snapshotNow() }),
-      );
+      const body = JSON.stringify({ library: state.library, now: snapshotNow() });
+      const prev = localStorage.getItem(STORAGE);
+      if (prev && prev !== body) localStorage.setItem(STORAGE + ".bak", prev);
+      localStorage.setItem(STORAGE, body);
     } catch {
-      /* ignore */
+      const line = $("status-line");
+      if (line) line.textContent = "Not saved. Tap Export.";
     }
   }
   const undoStack = [];
@@ -1521,6 +1523,7 @@
     $("help-btn").setAttribute("aria-expanded", "true");
   });
   $("surprise-btn").addEventListener("click", () => {
+    pushUndo();
     pushUndo();
     if (Math.random() > 0.55) state.kit = KITS[Math.floor(Math.random() * KITS.length)].id;
     if (Math.random() > 0.6) state.mood = Math.random() > 0.5 ? "bright" : "moody";
