@@ -1,5 +1,9 @@
-**Chip: HI 1.1.9** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.10** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.10 — A fir and steel bench — 2026-09-26
+
+- What’s new: job cards are fir. The bar and tools are steel. The drawing stays clear.
 
 ## 1.1.9 — Read the line — 2026-09-25
 
