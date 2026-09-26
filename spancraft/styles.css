@@ -345,7 +345,25 @@ canvas:focus-visible {
     border-top: 1px solid var(--border);
   }
   .pocket button { min-height: 52px; }
-  .brand h1 { font-size: 1rem; }
+  .brand h1 { font-size: 0.95rem; }
+  .brand img { width: 32px; height: 32px; }
+  .brand { flex: 0 0 auto; }
+  .top { padding-left: 0.4rem; padding-right: 0.4rem; gap: 0.35rem; }
+  .top-actions { flex-wrap: nowrap; gap: 0.25rem; }
+  .top-actions a[href="/"] { display: none; }
+  .top-actions button, .top-actions a { padding: 0 0.45rem; font-size: 0.9rem; }
+  .caption {
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas: "word mark chip read" "text text text text";
+    align-items: center;
+    column-gap: 0.45rem;
+  }
+  #cap-word { grid-area: word; }
+  #cap-mark { grid-area: mark; }
+  #mastery-chip { grid-area: chip; justify-self: start; }
+  #read-line { grid-area: read; justify-self: end; }
+  #cap-text { grid-area: text; }
 }
 
 @media (prefers-reduced-motion: reduce) {

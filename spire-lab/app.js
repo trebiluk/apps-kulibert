@@ -1,14 +1,14 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20260926a";
+import { mountTruss } from "../spancraft/truss-play.js?v=20260926b";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.24",
+  version: "SL 1.3.25",
   accessKey: "sl-access-v1",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: the test pushes the top. Braced is not the same job as Three stories.",
+  note: "What’s new: on a phone the joints stay clear. A miss stays on that job. The loose joint stays marked.",
   engageKey: "kulibert-spire-engage-v2",
   assistKey: "kulibert-spire-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.25** · 2026-09-26 · channel **live**
+**Chip: SC 1.3.26** · 2026-09-26 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.26 — Clear the joints — 2026-09-26
+
+- What’s new: on a phone the joints stay clear of the hint card. A miss stays on that job. The joint that moved stays marked.
 
 ## 1.3.25 — The truck stops — 2026-09-26
 

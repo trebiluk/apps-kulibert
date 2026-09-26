@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20260926a";
+import { mountTruss } from "./truss-play.js?v=20260926b";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.25",
+  version: "SC 1.3.26",
   accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: the truck stops in every bay. Stars belong to that job.",
+  note: "What’s new: on a phone the joints stay clear. A miss stays on that job. The loose joint stays marked.",
   engageKey: "kulibert-spancraft-engage-v2",
   assistKey: "kulibert-spancraft-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

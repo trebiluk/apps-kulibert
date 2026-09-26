@@ -240,6 +240,7 @@ export function mountTruss(cfg) {
       "The truck moved and that bay folded, so add a triangle there.": "El camión se movió y ese tramo se dobló, así que añade un triángulo ahí.",
       "The top leaned, so add a diagonal on the story that folded.": "La cima se inclinó, así que añade una diagonal en el piso que se dobló.",
       "Connect a higher joint, because height counts the joints your bars reach.": "Conecta una junta más alta, porque la altura cuenta las juntas que alcanzan tus barras.",
+      "Place a joint on the deck. The truck stops there.": "Pon una junta en el tablero. El camión se detiene ahí.",
       "It sagged. Add a triangle.": "Se hundió. Añade un triángulo.",
       "Then press Test.": "Luego pulsa Probar.",
       "You fixed it.": "Lo arreglaste.",
@@ -507,6 +508,15 @@ export function mountTruss(cfg) {
   }
   function coach() {
     const level = active();
+    syncJobAssist();
+    if (state.members.length === 1 && level.n === 1 && !level.free) {
+      setStatus("Job 1", "One side is in. Stretch the other joint up to the same top joint.", "");
+      return;
+    }
+    if (state.fixLine) {
+      setStatus("Fix", state.fixLine + " Then press Test.", "");
+      return;
+    }
     if (onFree()) {
       setStatus(
         state.challengeMet ? "CLEAR" : "Challenge",
@@ -517,14 +527,6 @@ export function mountTruss(cfg) {
     }
     if (!state.cleared[levels[0].id] && level.id === levels[0].id && state.members.length === 0) {
       setStatus("Ready", cfg.firstLine, "");
-      return;
-    }
-    if (state.members.length === 1 && level.n === 1) {
-      setStatus("Job 1", "One side is in. Stretch the other joint up to the same top joint.", "");
-      return;
-    }
-    if (state.fixLine) {
-      setStatus("Fix", state.fixLine + " Then press Test.", "");
       return;
     }
     setStatus("Job " + level.n, level.job, "");
@@ -560,9 +562,9 @@ export function mountTruss(cfg) {
     }
     const bw = Math.max(80, maxX - minX);
     const bh = Math.max(80, maxY - minY);
-    const padX = 80;
-    const padTop = 48;
-    const padBot = 220;
+    const padX = cssW < 520 ? 36 : 80;
+    const padTop = cssW < 520 ? 28 : 48;
+    const padBot = cssW < 520 ? Math.max(88, Math.round(cssH * 0.22)) : 200;
     state.scale = Math.min((cssW - padX) / bw, (cssH - padTop - padBot) / bh);
     state.origin = {
       x: (cssW - bw * state.scale) / 2 - minX * state.scale,
@@ -851,7 +853,7 @@ export function mountTruss(cfg) {
         ctx.fillRect(p.x - 16, p.y + 16, 32, 14);
       }
     });
-    if (state.view && state.hot != null && joints[state.hot]) {
+    if (state.hot != null && joints[state.hot]) {
       const p = toScreen(joints[state.hot]);
       ctx.beginPath();
       ctx.arc(p.x, p.y, 28, 0, Math.PI * 2);
@@ -912,6 +914,9 @@ export function mountTruss(cfg) {
     state.levelId = id;
     if (levelById(id).free) state.track = "challenge";
     else state.track = "levels";
+    state.hadMiss = false;
+    state.fixLine = "";
+    state.hot = null;
     cloneLevel(active());
     state.phase = "idle";
     armRetry(false);
@@ -967,6 +972,7 @@ export function mountTruss(cfg) {
 
   function failReason(result) {
     if (result.reason === "few") return "Stretch at least two members.";
+    if (result.reason === "deck") return "Place a joint on the deck. The truck stops there.";
     if (result.reason === "roll") return "The truck moved and that bay folded, so add a triangle there.";
     if (result.reason === "gust") return "The top leaned, so add a diagonal on the story that folded.";
     if (result.reason === "lean") return "It leaned. Add a diagonal.";
@@ -1003,7 +1009,7 @@ export function mountTruss(cfg) {
     }
     if (level.roll || (level.free && cfg.mode === "span")) {
       const picks = deckIndexes(level);
-      if (!picks.length) return { ok: false, reason: "few", sag: 99, lean: 0, frames: [] };
+      if (!picks.length) return { ok: false, reason: "deck", sag: 99, lean: 0, frames: [] };
       let worst = null;
       for (const loadIndex of picks) {
         const r = tagFail(level, proveTruss({ joints: state.joints, members: state.members, loadIndex }, opts));
@@ -1031,7 +1037,7 @@ export function mountTruss(cfg) {
   function finish(result) {
     state.phase = "idle";
     state.view = null;
-    state.hot = null;
+    state.hot = !result.ok && Number.isInteger(result.hot) ? result.hot : null;
     const level = active();
     const held = !!result.ok;
     const onBudget = state.members.length <= level.budget;
@@ -1064,16 +1070,17 @@ export function mountTruss(cfg) {
       state.fixLine = "";
       const fixed = state.hadMiss;
       state.hadMiss = false;
-      let line = level.job + " " + starPhrase(stars) + ".";
+      let line = starPhrase(stars) + ".";
       if (stars > 0 && stars < 3) line += " Fewer members can earn more stars.";
       if (fixed) line = "You fixed it. " + line;
       else if (first) line = "First clear. " + line;
+      else line = "It held. " + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
-        line += " Path clear. This challenge stays yours.";
+        line += " Path clear. Your truss is open.";
       } else if (!level.free && !pathClear()) {
         line += " Open Levels for the next job.";
       }
-      setStatus(fixed ? "You fixed it" : "CLEAR", "Test pass. " + line, "pass");
+      setStatus(fixed ? "You fixed it" : "CLEAR", line, "pass");
       showPlate(fixed ? "You fixed it" : "CLEAR", line, "✓");
     }
     if (state.bet) {
@@ -1322,11 +1329,32 @@ export function mountTruss(cfg) {
   });
   wireEdgeHelp(document.getElementById("edge-btn"), document.getElementById("edge-menu"), helpApi.open);
 
+  function narrowBoard() {
+    return window.matchMedia("(max-width: 720px)").matches;
+  }
+  function assistLine() {
+    const level = active();
+    if (!level.free && level.n === 1 && state.members.length < 2) return cfg.assistText;
+    return level.job;
+  }
+  function syncJobAssist() {
+    const text = document.getElementById("assist-plate-text");
+    const plate = document.getElementById("assist-plate");
+    if (!text || !plate || plate.hidden) return;
+    const line = assistLine();
+    if (text.textContent !== line) text.textContent = line;
+  }
   function openAssist() {
     const plate = document.getElementById("assist-plate");
     const text = document.getElementById("assist-plate-text");
     if (!plate || !text) return;
-    text.textContent = cfg.assistText;
+    if (narrowBoard() && !cfg.workshop) {
+      plate.classList.remove("show");
+      plate.hidden = true;
+      plate.setAttribute("hidden", "");
+      return;
+    }
+    text.textContent = assistLine();
     plate.classList.add("show");
     plate.hidden = false;
     plate.removeAttribute("hidden");

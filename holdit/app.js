@@ -1,4 +1,4 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20260926a";
+import { mountTruss } from "../spancraft/truss-play.js?v=20260926b";
 import { SPAN_LEVELS, SPAN_FREE } from "../spancraft/levels.js";
 import { SPIRE_LEVELS, SPIRE_FREE } from "../spire-lab/levels.js";
 

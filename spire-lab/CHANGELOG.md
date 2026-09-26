@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.24** · 2026-09-26 · channel **live**
+**Chip: SL 1.3.25** · 2026-09-26 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.25 — Clear the joints — 2026-09-26
+
+- What’s new: on a phone the joints stay clear of the hint card. A miss stays on that job. The joint that moved stays marked.
 
 ## 1.3.24 — Push the top — 2026-09-26
 
