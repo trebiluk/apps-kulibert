@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-phone-fit"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-quiet-tools"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -138,10 +138,14 @@
     html[data-hub-theme="graph"] .search input{background:#fff;color:#1c1915;border:1.5px solid #2c2824}
     html[data-hub-theme="graph"] .search input::placeholder{color:#5c564c}
     html[data-hub-theme="graph"] .search svg{stroke:#3f3a34}
-    html[data-hub-theme="graph"] .hub-rev,
-    html[data-hub-theme="graph"] .hub-tools button{background:#fffdf8;color:#1c1915;border-color:#2c2824}
+    html[data-hub-theme="graph"] .hub-rev{background:#fffdf8;color:#1c1915;border-color:#2c2824}
+    html[data-hub-theme="graph"] .hub-tools button{
+      background:transparent;color:#5c564c;border:0;box-shadow:none;
+    }
     html[data-hub-theme="graph"] .hub-tools button.is-on,
-    html[data-hub-theme="graph"] #hub-theme.is-on{background:#1c1915;color:#fffdf8;border-color:#1c1915}
+    html[data-hub-theme="graph"] #hub-theme.is-on{
+      background:transparent;color:#1c1915;border:0;box-shadow:inset 0 -2px 0 #1c1915;
+    }
     html[data-hub-theme="graph"] body.apps-always a.tile,
     html[data-hub-theme="graph"] body.apps-always button.tile{
       background:#fffdf8;border:1.5px solid #2c2824;box-shadow:2px 2px 0 #2c2824;color:#1c1915;
@@ -200,9 +204,13 @@
     html[data-hub-theme="miami"] .search input{background:#240a3a;color:#fff6fb;border:1px solid #5ef6ff}
     html[data-hub-theme="miami"] .search input::placeholder{color:#ffd6f2}
     html[data-hub-theme="miami"] .search svg{stroke:#5ef6ff}
-    html[data-hub-theme="miami"] .hub-tools button{background:#240a3a;color:#fff6fb;border-color:#5c2a55}
+    html[data-hub-theme="miami"] .hub-tools button{
+      background:transparent;color:#e7c3dd;border:0;box-shadow:none;
+    }
     html[data-hub-theme="miami"] .hub-tools button.is-on,
-    html[data-hub-theme="miami"] #hub-theme.is-on{background:#ff4ad8;color:#1a0614;border-color:#ff4ad8}
+    html[data-hub-theme="miami"] #hub-theme.is-on{
+      background:transparent;color:#fff6fb;border:0;box-shadow:inset 0 -2px 0 #ff4ad8;
+    }
     html[data-hub-theme="miami"] body.apps-always a.tile,
     html[data-hub-theme="miami"] body.apps-always button.tile{
       background:#1a0830;border-color:#ff4ad8;color:#fff6fb;box-shadow:0 0 0 1px rgba(94,246,255,.25);
@@ -728,8 +736,24 @@
       scrollbar-width:none;-webkit-overflow-scrolling:touch;
     }
     body.apps-always .hub-tools::-webkit-scrollbar{display:none}
-    body.apps-always .hub-tools-row{flex-wrap:nowrap;gap:.4rem}
-    body.apps-always .hub-tools button{flex:0 0 auto}
+    body.apps-always .hub-tools-row{flex-wrap:nowrap;gap:.15rem}
+    body.apps-always .hub-tools button{
+      flex:0 0 auto;min-height:40px;padding:0 .45rem;border:0;border-radius:0;
+      background:transparent;color:#8fb4c9;box-shadow:none;
+      font-size:.8rem;font-weight:650;letter-spacing:.01em;
+    }
+    body.apps-always .hub-tools button.is-on{
+      color:#e8f7ff;background:transparent;border:0;box-shadow:inset 0 -2px 0 #22d3ee;
+    }
+    body.apps-always #hub-theme{margin-left:.35rem;padding-left:.7rem}
+    html[data-hub-theme="graph"] body.apps-always .hub-tools button{color:#5c564c}
+    html[data-hub-theme="graph"] body.apps-always .hub-tools button.is-on{
+      color:#1c1915;box-shadow:inset 0 -2px 0 #1c1915;
+    }
+    html[data-hub-theme="miami"] body.apps-always .hub-tools button{color:#e7c3dd}
+    html[data-hub-theme="miami"] body.apps-always .hub-tools button.is-on{
+      color:#fff6fb;box-shadow:inset 0 -2px 0 #ff4ad8;
+    }
     body.apps-always .hero{
       min-height:0;height:100%;box-sizing:border-box;
       padding:1rem .6rem 3rem;justify-content:center;
@@ -1014,7 +1038,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-phone-fit</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-quiet-tools</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.9</strong> — Read speaks the one line. Read aloud stays off until you turn it on.</p>
