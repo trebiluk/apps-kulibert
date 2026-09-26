@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-cabinet"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-grid"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -824,7 +824,7 @@
       flex:1 1 auto;min-height:0;margin:0;overflow:auto;
       display:flex;flex-direction:column;gap:.55rem;align-content:start;
     }
-    body.apps-always .group{display:block;flex:0 0 auto;min-height:0}
+    body.apps-always .group:not(#alpha-group){display:none !important}
     body.apps-always .drawer{
       width:100%;display:flex;align-items:center;justify-content:space-between;gap:.75rem;
       min-height:48px;padding:0 .9rem;border-radius:14px;border:1px solid #1e3a55;
@@ -1110,7 +1110,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-cabinet</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-grid</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
@@ -1139,8 +1139,9 @@
     </p>
 
     <div class="hub-tools" id="hub-tools">
-      <div class="hub-tools-row hub-tools-sort" role="group" aria-label="List">
-        <button type="button" id="hub-az" data-sort="alpha" aria-pressed="false">A–Z</button>
+      <div class="hub-tools-row hub-tools-sort" role="group" aria-label="Sort">
+        <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
+        <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
       </div>
       <div class="hub-tools-row hub-tools-theme" role="group" aria-label="Theme">
         <button type="button" id="hub-theme">Room</button>
@@ -1393,21 +1394,12 @@
       var MAX = 18;
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
-      var hubSort = "group";
+      var hubSort = "alpha";
       var hubFilter = "all";
       try {
         var savedSort = localStorage.getItem("tech-room-sort");
-        var drawerSet = localStorage.getItem("tech-room-drawer-default");
-        if (!drawerSet) {
-          hubSort = "group";
-          localStorage.setItem("tech-room-drawer-default", "1");
-          localStorage.setItem("tech-room-sort", "group");
-        } else if (savedSort === "alpha" || savedSort === "za") {
-          hubSort = "alpha";
-        } else {
-          hubSort = "group";
-        }
-        hubFilter = "all";
+        hubSort = savedSort === "za" ? "za" : "alpha";
+        localStorage.setItem("tech-room-sort", hubSort);
       } catch (eSort) {}
       Array.prototype.forEach.call(appBoard.querySelectorAll(".group"), function (group) {
         var g = group.getAttribute("data-group");
@@ -2287,8 +2279,7 @@
       if (hubTools) hubTools.addEventListener("click", function (event) {
         var btn = event.target && event.target.closest ? event.target.closest("button") : null;
         if (!btn || !hubTools.contains(btn) || btn.id === "hub-rev") return;
-        if (btn.id === "hub-az") hubSort = hubSort === "alpha" ? "group" : "alpha";
-        else if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
+        if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
         applyView();
       });
       applyView();
@@ -2340,27 +2331,6 @@
         Array.prototype.forEach.call(tiles, function (tile) {
           tile.style.height = "";
           tile.style.aspectRatio = "";
-        });
-        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
-        if (!narrow || hubSort === "group") return;
-        var board = document.querySelector("#alpha-board");
-        if (!board || board.offsetParent === null) {
-          board = document.querySelector("#app-groups .group:not(.is-empty) .board");
-        }
-        if (!board) return;
-        var shell = document.querySelector(".shell");
-        var limit = shell ? shell.getBoundingClientRect().bottom : window.innerHeight;
-        var avail = limit - board.getBoundingClientRect().top - 6;
-        if (avail < 220) return;
-        var peek = 34;
-        var gap = 14;
-        var h = Math.floor((avail - peek - gap) / 2);
-        if (h < 128) h = 128;
-        if (h > 230) h = 230;
-        Array.prototype.forEach.call(tiles, function (tile) {
-          if (tile.offsetParent === null) return;
-          tile.style.aspectRatio = "auto";
-          tile.style.height = h + "px";
         });
       }
       fitPhoneTiles();
