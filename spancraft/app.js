@@ -1,13 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20260925";
+import { mountTruss } from "./truss-play.js?v=20260925b";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.23",
+  version: "SC 1.3.24",
+  accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: a miss stays on the table as one fix. Change that, then Test. A hold says You fixed it.",
+  note: "What’s new: Settings has Read aloud. It stays off until you turn it on. Read speaks the line.",
   engageKey: "kulibert-spancraft-engage-v2",
   assistKey: "kulibert-spancraft-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

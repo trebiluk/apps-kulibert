@@ -193,11 +193,148 @@ export function mountTruss(cfg) {
     if (cfg.partFlag && pathClear()) save();
   }
 
+  const access = readAccess();
+  let voiceReady = false;
+  let lastSaid = "";
+  function readAccess() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(cfg.accessKey || "xx-access-v1") || "{}");
+      const lang = raw.lang === "simple" || raw.lang === "es" ? raw.lang : "en";
+      return { lang: lang, speak: !!raw.speak, big: !!raw.big, fewer: !!raw.fewer };
+    } catch (e) {
+      return { lang: "en", speak: false, big: false, fewer: false };
+    }
+  }
+  function writeAccess(next) {
+    access.lang = next.lang;
+    access.speak = next.speak;
+    access.big = next.big;
+    access.fewer = next.fewer;
+    try { localStorage.setItem(cfg.accessKey || "xx-access-v1", JSON.stringify(next)); } catch (e) {}
+    document.documentElement.dataset.big = next.big ? "1" : "0";
+    document.documentElement.dataset.lang = next.lang;
+    window.dispatchEvent(new Event((cfg.accessKey || "xx").split("-")[0] + "-access"));
+    paintAccess();
+  }
+  function voiceOf(text) {
+    const es = {
+      "Stretch at least two members.": "Estira al menos dos barras.",
+      "It leaned. Add a diagonal.": "Se inclinó. Añade una diagonal.",
+      "It is short of the height goal. Add another story.": "Le falta altura. Añade otro piso.",
+      "It sagged. Add a triangle.": "Se hundió. Añade un triángulo.",
+      "Then press Test.": "Luego pulsa Probar.",
+      "You fixed it.": "Lo arreglaste.",
+      "Read aloud is on.": "Lectura activada.",
+      "Read aloud is off.": "Lectura apagada.",
+      "English.": "Inglés.",
+      "Simple words.": "Palabras simples.",
+      "Español.": "Español.",
+    };
+    if (access.lang === "es") return es[text] || null;
+    return text;
+  }
+  function say(text, lang) {
+    const spoken = voiceOf(text) || (lang === "es" ? null : text);
+    if (!window.speechSynthesis || !spoken) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(spoken);
+    u.lang = (lang || access.lang) === "es" ? "es-US" : "en-US";
+    u.rate = (lang || access.lang) === "simple" ? 0.85 : 0.95;
+    window.speechSynthesis.speak(u);
+  }
+  function stopSay() {
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+  }
+  function maybeSay(word, text) {
+    if (!voiceReady || !access.speak) return;
+    if (word === "Stretch" || word === "Joint" || word === "Member" || word === "Bet") return;
+    const line = String(text || "").split(". ")[0];
+    if (!line || line === lastSaid) return;
+    if (access.lang === "es" && !voiceOf(line) && !voiceOf(text)) return;
+    lastSaid = line;
+    say(line, access.lang);
+  }
+  function paintAccess() {
+    document.documentElement.dataset.big = access.big ? "1" : "0";
+    document.documentElement.dataset.lang = access.lang;
+    const sheet = document.getElementById("access-sheet");
+    if (!sheet) return;
+    sheet.querySelectorAll("[data-lang]").forEach((btn) => {
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === access.lang ? "true" : "false");
+    });
+    const speakBtn = document.getElementById("access-speak");
+    const bigBtn = document.getElementById("access-big");
+    if (speakBtn) speakBtn.setAttribute("aria-pressed", access.speak ? "true" : "false");
+    if (bigBtn) bigBtn.setAttribute("aria-pressed", access.big ? "true" : "false");
+  }
+  function mountAccess() {
+    if (!cfg.accessKey || document.getElementById("access-sheet")) return;
+    const readBtn = document.createElement("button");
+    readBtn.type = "button";
+    readBtn.id = "read-line";
+    readBtn.className = "fat";
+    readBtn.textContent = "Read";
+    caption.appendChild(readBtn);
+    readBtn.addEventListener("click", () => {
+      lastSaid = "";
+      const text = capText.textContent || "";
+      if (access.lang === "es" && !voiceOf(text.split(". ")[0])) say(text, "en");
+      else say(text.split(". ")[0], access.lang);
+    });
+    const gear = document.createElement("button");
+    gear.type = "button";
+    gear.id = "access-gear";
+    gear.className = "fat";
+    gear.textContent = "Settings";
+    const kinds = document.getElementById("kinds");
+    if (kinds) kinds.appendChild(gear);
+    const sheet = document.createElement("div");
+    sheet.id = "access-sheet";
+    sheet.hidden = true;
+    sheet.innerHTML =
+      '<p class="access-title">Settings</p>' +
+      '<p class="access-label">Language</p>' +
+      '<div class="access-row">' +
+      '<button type="button" data-lang="en">English</button>' +
+      '<button type="button" data-lang="simple">Simple words</button>' +
+      '<button type="button" data-lang="es">Español</button>' +
+      "</div>" +
+      '<div class="access-row">' +
+      '<button type="button" id="access-speak">Read aloud</button>' +
+      '<button type="button" id="access-big">Big text</button>' +
+      "</div>" +
+      '<button type="button" id="access-close" class="fat">Close</button>';
+    document.body.appendChild(sheet);
+    gear.addEventListener("click", () => {
+      sheet.hidden = !sheet.hidden;
+      paintAccess();
+    });
+    sheet.querySelector("#access-close").addEventListener("click", () => { sheet.hidden = true; });
+    sheet.querySelectorAll("[data-lang]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const lang = btn.getAttribute("data-lang");
+        writeAccess({ lang: lang, speak: access.speak, big: access.big, fewer: false });
+        const name = lang === "es" ? "Español." : lang === "simple" ? "Simple words." : "English.";
+        say(name, lang);
+      });
+    });
+    sheet.querySelector("#access-speak").addEventListener("click", () => {
+      const speak = !access.speak;
+      writeAccess({ lang: access.lang, speak: speak, big: access.big, fewer: false });
+      say(speak ? "Read aloud is on." : "Read aloud is off.", access.lang);
+    });
+    sheet.querySelector("#access-big").addEventListener("click", () => {
+      writeAccess({ lang: access.lang, speak: access.speak, big: !access.big, fewer: false });
+    });
+    paintAccess();
+  }
+
   function setStatus(word, text, tone) {
     capWord.textContent = word;
     capText.textContent = text;
     if (capMark) capMark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
     caption.className = "caption" + (tone ? " " + tone : "");
+    maybeSay(word, text);
   }
   function starPhrase(n) {
     if (!n) return "";
@@ -1075,7 +1212,9 @@ export function mountTruss(cfg) {
   cloneLevel(active());
   syncTools();
   syncTrack();
+  mountAccess();
   coach();
+  voiceReady = true;
   resize();
   window.addEventListener("resize", resize);
 

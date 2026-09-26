@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.22** · 2026-09-25 · channel **live**
+**Chip: SL 1.3.23** · 2026-09-25 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.23 — Read the line — 2026-09-25
+
+- What’s new: Settings has Read aloud. It stays off until you turn it on. Read speaks the one line on the table.
 
 ## 1.3.22 — Fix it, then it stands — 2026-09-25
 

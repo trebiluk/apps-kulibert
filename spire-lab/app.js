@@ -1,13 +1,14 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20260925";
+import { mountTruss } from "../spancraft/truss-play.js?v=20260925b";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.22",
+  version: "SL 1.3.23",
+  accessKey: "sl-access-v1",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: a miss stays on the table as one fix. Change that, then Test. A stand says You fixed it.",
+  note: "What’s new: Settings has Read aloud. It stays off until you turn it on. Read speaks the line.",
   engageKey: "kulibert-spire-engage-v2",
   assistKey: "kulibert-spire-assist-intro-v2",
   calmKey: "kulibert-calm-clear",

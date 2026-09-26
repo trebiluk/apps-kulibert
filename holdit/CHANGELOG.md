@@ -1,5 +1,9 @@
-**Chip: HI 1.1.8** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.9** · 2026-09-24 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.9 — Read the line — 2026-09-25
+
+- What’s new: Read aloud stays off until you turn it on. Read speaks the one line in front of you.
 
 ## 1.1.8 — The win is the next job — 2026-09-25
 

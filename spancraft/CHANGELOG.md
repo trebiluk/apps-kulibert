@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.23** · 2026-09-25 · channel **live**
+**Chip: SC 1.3.24** · 2026-09-25 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.24 — Read the line — 2026-09-25
+
+- What’s new: Settings has Read aloud. It stays off until you turn it on. Read speaks the one line on the table.
 
 ## 1.3.23 — Fix it, then it holds — 2026-09-25
 
