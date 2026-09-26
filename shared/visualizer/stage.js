@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.7";
+  var CHIP = "Viz 0.6.8";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -13,6 +13,9 @@
     { id: "tiles", label: "Tiles" },
     { id: "orbit", label: "Orbit" },
     { id: "rain", label: "Rain" },
+    { id: "tunnel", label: "Tunnel" },
+    { id: "ribbon", label: "Ribbon" },
+    { id: "bloom", label: "Bloom" },
   ];
   var CODE_KEY = "kulibert.codelook";
   var CODE_GROUPS = [
@@ -743,6 +746,58 @@
       }
       vctx.globalAlpha = 1;
     }
+    function drawTunnel(w, h) {
+      var t = performance.now() / 1000;
+      var cx = w / 2;
+      var cy = h / 2;
+      var bass = band(0, 6) / 255;
+      var rings = Math.max(6, Math.min(14, Math.round(gear.count / 2)));
+      var i;
+      vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
+      vctx.lineWidth = Math.max(1, gear.thick * 0.4);
+      for (i = 0; i < rings; i++) {
+        var phase = reduceMotion ? i / rings : ((t * (0.12 + bass * 0.4) * gear.spin) + i / rings) % 1;
+        var rad = phase * Math.min(w, h) * 0.55 * gear.zoom;
+        vctx.globalAlpha = Math.min(0.8, (1 - phase) * (0.25 + gear.glow * 0.6));
+        vctx.beginPath();
+        vctx.arc(cx, cy, Math.max(2, rad), 0, Math.PI * 2);
+        vctx.stroke();
+      }
+      vctx.globalAlpha = 1;
+    }
+    function drawRibbon(w, h) {
+      var n = 36;
+      var i;
+      vctx.beginPath();
+      vctx.lineWidth = Math.max(2, gear.thick);
+      vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
+      vctx.globalAlpha = Math.min(0.9, 0.4 + gear.glow * 0.45);
+      for (i = 0; i < n; i++) {
+        var v = bins[i % bins.length] / 255;
+        var x = (i / (n - 1)) * w;
+        var y = h * 0.5 - (v - 0.25) * h * 0.5 * gear.zoom * gear.bounce;
+        if (i === 0) vctx.moveTo(x, y);
+        else vctx.lineTo(x, y);
+      }
+      vctx.stroke();
+      vctx.globalAlpha = 1;
+    }
+    function drawBloom(w, h) {
+      var blobs = Math.max(3, Math.min(7, Math.round(gear.count / 5)));
+      var i;
+      for (i = 0; i < blobs; i++) {
+        var v = bins[i % bins.length] / 255;
+        var x = ((i + 0.5) / blobs) * w;
+        var y = h * (0.32 + (i % 3) * 0.16);
+        var rad = (16 + v * 64) * gear.zoom * gear.bounce;
+        vctx.fillStyle = i % 2 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
+        vctx.globalAlpha = Math.min(0.42, 0.1 + gear.glow * 0.28);
+        vctx.beginPath();
+        vctx.arc(x, y, Math.max(8, rad), 0, Math.PI * 2);
+        vctx.fill();
+      }
+      vctx.globalAlpha = 1;
+    }
 
     function drawScope(w, h, snap) {
       var wave = snap && snap.wave;
@@ -809,6 +864,9 @@
       else if (look === "tiles") drawTiles(w, h);
       else if (look === "orbit") drawOrbit(w, h);
       else if (look === "rain") drawRain(w, h);
+      else if (look === "tunnel") drawTunnel(w, h);
+      else if (look === "ribbon") drawRibbon(w, h);
+      else if (look === "bloom") drawBloom(w, h);
       else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
       drawScope(w, h, snap);
     }

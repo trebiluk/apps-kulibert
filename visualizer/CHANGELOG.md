@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.8** · 2026-09-25 · channel **live**
+
+Tunnel, Ribbon, and Bloom are our own drawings. The music moves them. No extra app, and the microphone stays off unless a student asks.
+
+## Earlier
+
 **Chip: Viz 0.6.7** · 2026-09-25 · channel **live**
 
 The written song from Score shows under its class title. Press Play and the lights follow those notes.
