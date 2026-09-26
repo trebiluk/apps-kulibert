@@ -74,6 +74,9 @@ body.menu-open .drawer { transform: none; }
 .drawer .btn { width: 100%; justify-content: flex-start; margin-top: 0.35rem; }
 .title-row { display: grid; grid-template-columns: 4.5rem 1fr; gap: 0.4rem; align-items: center; margin: 0.35rem 0; }
 .title-row select { min-height: 44px; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: var(--panel); color: var(--text); font: inherit; }
+input[type="range"] { width: 100%; accent-color: var(--accent, #22d3ee); }
+.transport .btn { min-height: 44px; }
+.lesson { padding: 0.65rem 0.75rem; }
 .lesson-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .lesson {
   background: var(--elevated);

@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.8";
+  const CHIP = "BS 0.2.9";
   const HOW_KEY = "kulibert.bertyscore.howto";
   const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;

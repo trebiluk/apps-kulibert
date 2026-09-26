@@ -620,6 +620,9 @@ body.menu-open .drawer { transform: none; }
 .drawer h2 { margin: 0.9rem 0 0.35rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .drawer .chips { display: grid; grid-template-columns: 1fr 1fr; }
 .drawer .btn { width: 100%; justify-content: flex-start; }
+input[type="range"] { width: 100%; accent-color: var(--accent, #22d3ee); }
+.drawer .chips .btn, .drawer .chips button { margin-top: 0; }
+.lesson { padding: 0.65rem 0.75rem; }
 .lesson-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .title-build .title-row {
   display: grid;

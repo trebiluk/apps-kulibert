@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.4.0** · 2026-09-26 · channel **live**
+
+The tools sit in groups. Play, Sound, Record, and Your turn stay on one row. Eight beat numbers show where you are.
+
+## Earlier
+
 **Chip: MU 1.3.0** · 2026-09-26 · channel **live**
 
 Ten ready-made effects and four synth sliders. They change the pads. The choice stays on this Chromebook.

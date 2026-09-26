@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.14") return;
-  window.__VISUALIZER__ = "0.6.14";
+  if (window.__VISUALIZER__ === "0.6.15") return;
+  window.__VISUALIZER__ = "0.6.15";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.14";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.15";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [

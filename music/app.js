@@ -458,8 +458,21 @@
     return names;
   }
 
+  function paintCount() {
+    const box = $("count");
+    if (!box) return;
+    if (!box.children.length) {
+      for (let i = 0; i < 8; i++) {
+        const mark = document.createElement("i");
+        mark.textContent = String(i + 1);
+        box.appendChild(mark);
+      }
+    }
+    [...box.children].forEach((el, i) => el.classList.toggle("on", i === state.step));
+  }
   function pulse(step) {
     state.step = step;
+    paintCount();
     state.kick = !!state.drums.kick[step];
     state.snare = !!state.drums.snare[step];
     const evs = Song.events(state.song);
@@ -608,6 +621,10 @@
     $("menu-btn").setAttribute("aria-expanded", String(on));
   });
   $("scrim").addEventListener("click", () => {
+    document.body.classList.remove("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", "false");
+  });
+  $("menu-close").addEventListener("click", () => {
     document.body.classList.remove("menu-open");
     $("menu-btn").setAttribute("aria-expanded", "false");
   });
@@ -808,6 +825,7 @@
   paintFx();
   paintWaves();
   syncSynth();
+  paintCount();
   keep();
 
   const canvas = $("viz");

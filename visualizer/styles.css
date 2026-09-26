@@ -252,6 +252,10 @@ body.menu-open .drawer { transform: none; }
   font: inherit;
   padding: 0 0.5rem;
 }
+input[type="range"] { width: 100%; accent-color: var(--accent, #22d3ee); }
+.drawer .chips .btn, .drawer .chips button { margin-top: 0; }
+.drawer .swatch-btn { margin-top: 0; }
+.lesson { padding: 0.65rem 0.75rem; }
 .lesson-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .chips.scroll { flex-wrap: nowrap; overflow-x: auto; }
 .chips .btn svg { width: 16px; height: 16px; margin-right: 0.28rem; vertical-align: -3px; flex: 0 0 auto; }

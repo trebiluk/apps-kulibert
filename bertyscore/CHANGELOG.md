@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.9** · 2026-09-26 · channel **live**
+
+The play row and the lesson are tighter. Sliders use the same accent.
+
+## Earlier
+
 **Chip: BS 0.2.8** · 2026-09-26 · channel **live**
 
 The title is four menus, not a wall of words. Export, Import, Beats, and Lights sit in the left menu.

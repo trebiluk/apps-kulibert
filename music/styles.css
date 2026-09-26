@@ -36,31 +36,66 @@ button { cursor: pointer; }
   .work.is-drums #notes-pane, .work.is-notes #drums-pane { display: block; }
 }
 canvas {
-  width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 42vh;
+  width: 100%; height: auto; aspect-ratio: 16 / 8; max-height: 26vh;
   background: #050814; border-radius: var(--radius); display: block;
+  border: 1px solid var(--border);
+}
+@media (min-width: 860px) {
+  canvas { max-height: 42vh; aspect-ratio: 16 / 9; }
 }
 .kit { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.55rem; }
 .pad, .key {
   touch-action: none;
   user-select: none;
-  min-height: 76px;
+  min-height: 72px;
   border: 0;
   border-radius: 18px;
   font-weight: 800;
   font-size: 1.05rem;
+  box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.28);
 }
+.pad.hit, .key.hit { filter: brightness(1.4); transform: translateY(2px); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.28); }
+.transport {
+  display: grid;
+  grid-template-columns: 64px 1fr 1fr 1fr;
+  gap: 0.4rem;
+  align-items: stretch;
+  margin-top: 0.55rem;
+}
+.transport .btn { min-height: 64px; padding: 0.35rem 0.4rem; line-height: 1.1; }
+.count { display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.25rem; margin-top: 0.45rem; }
+.count i {
+  display: grid; place-items: center; height: 28px; border-radius: 8px;
+  background: var(--panel); color: var(--muted); font-style: normal; font-size: 0.72rem; font-weight: 800;
+}
+.count i.on { background: var(--accent); color: var(--accent-fg); }
+.group {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.7rem 0.75rem 0.85rem;
+  margin: 0.55rem 0;
+}
+.group h2 { margin: 0 0 0.4rem; }
+.group .hint { margin: 0 0 0.45rem; }
+.drawer .btn { width: 100%; margin-top: 0.4rem; }
+.looks .btn, .close { margin-top: 0; }
+.close { margin-bottom: 0.2rem; }
+.tempo { display: grid; gap: 0.2rem; margin-top: 0.45rem; font-weight: 700; }
+.tempo b { color: var(--accent); }
+input[type="range"] { width: 100%; accent-color: var(--accent); }
 .pad.kick { background: #0e7490; }
 .pad.snare { background: #b45309; }
 .pad.hat { background: #4338ca; }
 .pad.clap { background: #be185d; }
-.pad.hit, .key.hit { filter: brightness(1.35); transform: scale(0.98); }
+.pad.hit, .key.hit { filter: brightness(1.4); transform: translateY(2px); }
 .keys { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.35rem; }
 .key { min-height: 64px; background: #f7f1e4; color: #1a140c; border-radius: 14px 14px 8px 8px; }
 .meter { height: 12px; margin-top: 0.5rem; background: var(--panel); border-radius: 99px; overflow: hidden; }
 .meter span { display: block; height: 100%; width: 0; background: var(--accent); }
-.transport { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.55rem; flex-wrap: wrap; }
 .play {
   width: 64px; height: 64px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-fg);
+  display: grid; place-items: center;
 }
 .play-icon { display: block; width: 0; height: 0; margin-left: 4px; border-left: 16px solid currentColor; border-top: 10px solid transparent; border-bottom: 10px solid transparent; }
 .play.on .play-icon { width: 14px; height: 14px; margin: 0; border: 0; background: currentColor; }
@@ -91,11 +126,10 @@ body.menu-open .scrim { display: block; }
   padding: 0.9rem; transform: translateX(-105%);
 }
 body.menu-open .drawer { transform: none; }
-.drawer h2 { margin: 0.8rem 0 0.3rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-.drawer .btn { width: 100%; margin-top: 0.7rem; }
-.title-row { display: grid; grid-template-columns: 4.5rem 1fr; gap: 0.4rem; align-items: center; margin: 0.35rem 0; }
-.title-row select, .tempo input { min-height: 44px; width: 100%; }
+.drawer h2 { margin: 0.2rem 0 0.35rem; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
 .looks { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
+.title-row { display: grid; grid-template-columns: 4.5rem 1fr; gap: 0.4rem; align-items: center; margin: 0.35rem 0; }
+.title-row select { min-height: 44px; width: 100%; border-radius: 10px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font: inherit; }
 .looks .btn.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
 .foot { color: var(--muted); font-size: 0.85rem; }
 .foot a { color: inherit; }
