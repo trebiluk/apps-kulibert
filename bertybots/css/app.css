@@ -109,8 +109,14 @@ html[data-big="1"] .menu-card { font-size: 17px; }
   color: #f7f4ee;
 }
 .job-plate.test { box-shadow: 0 0 0 2px var(--yellow); }
-.glyph { display: none; }
-.hud-play .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.glyph { display: block; width: 22px; height: 22px; }
+.hud-play .lbl {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.hud-play .btn { width: 44px; min-width: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 .calm-fail {
   position: absolute;
   left: 50%;
@@ -732,7 +738,6 @@ a { color: var(--orange); }
 }
 
 @media (max-width: 1100px) {
-  .brand, .rank { display: none; }
   .hud { gap: 6px; padding: 4px 6px; min-height: 44px; }
   .hud-pick {
     flex: 1 1 6.5rem;
@@ -742,51 +747,7 @@ a { color: var(--orange); }
     padding: 6px 8px;
     font-size: 13px;
   }
-  .hud-play .btn, #btn-crew { min-height: 44px; min-width: 44px; padding: 6px 10px; }
-}
-
-@media (max-width: 1280px), (max-height: 560px) {
-  .hud-play .lbl {
-    position: absolute;
-    width: 1px; height: 1px;
-    overflow: hidden;
-    clip: rect(0 0 0 0);
-  }
-  .hud-play .glyph { display: block; }
-  .hud-play .btn { width: 44px; min-width: 44px; padding: 0; }
-  .heat { display: none; }
-  .glyph.play {
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 7px 0 7px 12px;
-    border-color: transparent transparent transparent currentColor;
-  }
-  .glyph.stop { width: 12px; height: 12px; border-radius: 2px; background: currentColor; }
-  .glyph.slow {
-    width: 14px; height: 12px;
-    background:
-      linear-gradient(currentColor, currentColor) 0 1px / 14px 2px no-repeat,
-      linear-gradient(currentColor, currentColor) 0 9px / 8px 2px no-repeat;
-  }
-  .glyph.menu {
-    width: 16px; height: 12px;
-    background:
-      linear-gradient(currentColor, currentColor) 0 0 / 16px 2px no-repeat,
-      linear-gradient(currentColor, currentColor) 0 5px / 16px 2px no-repeat,
-      linear-gradient(currentColor, currentColor) 0 10px / 12px 2px no-repeat;
-  }
-  .glyph.fill {
-    width: 14px; height: 14px;
-    border-radius: 2px;
-    background: var(--crate);
-    box-shadow: inset 0 0 0 2px #1a1400;
-  }
-  .glyph.set {
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    border: 2px solid currentColor;
-  }
-  .btn.ok .glyph.play { border-left-color: #102216; }
+  .hud-play .btn, #btn-crew { min-height: 44px; min-width: 44px; }
 }
 
 @media (max-height: 520px) {
@@ -801,7 +762,6 @@ a { color: var(--orange); }
 
 @media (max-width: 860px) {
   :root { --rail: 68px; }
-  .heat { display: none; }
   .hud-pick { max-width: 8.5rem; }
   .lesson { width: min(11rem, 34vw); padding: 6px 8px 4px; font-size: 11px; top: 6px; right: 6px; }
   .role { display: none; }
@@ -821,14 +781,18 @@ body[data-embed="1"] .rank { display: none; }
 body[data-embed="1"] .hud { min-height: 44px; }
 
 .heat {
-  display: flex; align-items: center; gap: 6px;
-  flex: 0 0 auto; padding: 4px 10px; min-height: 32px;
-  background: #2a2e33; border-radius: 999px;
-  border: 1px solid #0004;
+  display: grid; place-items: center;
+  width: 44px; height: 44px; min-height: 44px; padding: 0;
+  flex: 0 0 44px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #6a7078, #3e444b 62%, #2e3338);
+  border: 1px solid #1c2024;
+  box-shadow: inset 0 1px 0 #ffffff2e;
 }
 .heat-k {
-  font-size: 9px; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--yellow);
+  position: absolute;
+  width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0);
 }
 .heat strong { font-size: 15px; font-weight: 700; color: var(--paper); line-height: 1; font-variant-numeric: tabular-nums; }
 .heat-u { font-size: 11px; font-weight: 500; color: var(--muted); }
