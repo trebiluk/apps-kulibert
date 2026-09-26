@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.6") return;
-  window.__VISUALIZER__ = "0.6.6";
+  if (window.__VISUALIZER__ === "0.6.7") return;
+  window.__VISUALIZER__ = "0.6.7";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.6";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.7";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -296,7 +296,7 @@
     const beat = Song.toBeat(bridge.song);
     return [{
       id: "score",
-      name: "Written",
+      name: safeName(beat.name || "Written"),
       bpm: beat.bpm,
       steps: normalizeSteps(beat.steps),
     }];

@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.5** · 2026-09-25 · channel **live**
+
+Tap the staff to write a note. Higher on the lines is a higher note. The song saves on this Chromebook and goes to Beats and Lights. Export downloads the file.
+
+## Earlier
+
 **Chip: BS 0.2.4** · 2026-09-25 · channel **live**
 
 Tap a title, then one word from each list. The example is whimsical blue gopher ballad.

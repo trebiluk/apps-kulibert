@@ -8,7 +8,7 @@
   <title>BertyScore · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.2.4"/>
+  <link rel="stylesheet" href="./styles.css?v=0.2.5"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyScore</strong>
-        <em id="chip-label">BS 0.2.4</em>
+        <em id="chip-label">BS 0.2.5</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,6 +29,7 @@
 
   <section class="staff-wrap" aria-label="Score">
     <div id="staff"></div>
+    <p class="staff-hint">Tap the staff. Higher on the lines is a higher note. It saves itself.</p>
   </section>
 
   <section class="transport" aria-label="Play">
@@ -44,7 +45,7 @@
       <span>Tempo <b id="tempo-read">96</b></span>
       <input id="tempo" type="range" min="60" max="160" value="96"/>
     </label>
-    <button type="button" id="save-btn" class="btn">Save</button>
+    <button type="button" id="save-btn" class="btn">Export</button>
     <button type="button" id="import-btn" class="btn">Import</button>
     <button type="button" id="beats-btn" class="btn">Beats</button>
     <button type="button" id="lights-btn" class="btn">Lights</button>
@@ -56,7 +57,7 @@
   <div class="work">
     <section class="panel" aria-label="Beats">
       <h2>Beats</h2>
-      <p class="panel-note">Pick a pitch. Tap a beat in this measure.</p>
+      <p class="panel-note">Or tap the staff. The pitch buttons still work.</p>
       <div class="chips" id="pitches" role="group" aria-label="Pitch"></div>
       <p class="measure-name" id="focus-name">Measure A</p>
       <div class="beats" id="beats"></div>
@@ -69,7 +70,7 @@
     </section>
   </div>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BS 0.2.4</span> · no names · no mic ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BS 0.2.5</span> · no names · no mic ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a> ·
     <a href="./NOTICE.md">Notices</a>
@@ -90,9 +91,9 @@
   </dialog>
 
   <script src="/shared/titles.js?v=2"></script>
-  <script src="/shared/song/model.js?v=0.2.4"></script>
+  <script src="/shared/song/model.js?v=0.2.5"></script>
   <script src="./vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="./vendor/tone.min.js?v=15.0.4"></script>
-  <script src="./app.js?v=0.2.4"></script>
+  <script src="./app.js?v=0.2.5"></script>
 </body>
 </html>

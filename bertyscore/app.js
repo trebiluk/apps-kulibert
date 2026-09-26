@@ -1,19 +1,24 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.4";
+  const CHIP = "BS 0.2.5";
   const HOW_KEY = "kulibert.bertyscore.howto";
+  const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;
 
   const $ = (id) => document.getElementById(id);
   const steps = [
     ["Hear it", "Press Play. The word Now names the note. Mute is fine — the light still moves."],
-    ["Change it", "Tap a pitch, then a beat. The staff draws the new note."],
-    ["Send it", "Beats puts these notes on the grid. Lights follows them. Save keeps a file."],
+    ["Change it", "Tap the staff where the note should sit. Higher on the lines is a higher note. Tap that note again for a rest."],
+    ["Send it", "It saves on this Chromebook. Export keeps a file. Beats and Lights use the same song."],
   ];
 
   const params = new URLSearchParams(window.location.search);
   let arrival = "";
   let opening = Song.starter();
+  try {
+    const saved = Song.parse(localStorage.getItem(SONG_KEY) || "");
+    if (saved) opening = saved;
+  } catch (err) { /* a fresh score is fine */ }
   if (params.get("from") === "bridge" && Song.readBridge) {
     const bridge = Song.readBridge();
     if (bridge && bridge.song) {
@@ -72,21 +77,50 @@
       if (!ev) return;
       node.tabIndex = 0;
       node.setAttribute("role", "button");
-      node.setAttribute("aria-label", ev.label + " in measure " + (ev.measure + 1));
-      const pick = () => {
-        state.focus = ev.measure;
-        state.beat = ev.beat;
-        renderBeats();
-        renderSequence();
-      };
-      node.addEventListener("click", pick);
-      node.addEventListener("keydown", (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          pick();
+      node.setAttribute("aria-label", ev.label + " in measure " + (ev.measure + 1) + ". Tap the staff to move it.");
+    });
+    const svg = host.querySelector("svg");
+    if (svg) svg.addEventListener("click", placeFromStaff);
+  }
+
+  function placeFromStaff(e) {
+    const host = $("staff");
+    const svg = host.querySelector("svg");
+    const evs = Song.events(state.song);
+    if (!svg || !evs.length) return;
+    const marks = [...host.querySelectorAll(".abcjs-note, .abcjs-rest")];
+    let index = 0;
+    if (marks.length === evs.length) {
+      let best = Infinity;
+      marks.forEach((node, i) => {
+        const rect = node.getBoundingClientRect();
+        const dx = Math.abs(e.clientX - (rect.left + rect.width / 2));
+        if (dx < best) {
+          best = dx;
+          index = i;
         }
       });
-    });
+    } else {
+      const box = svg.getBoundingClientRect();
+      index = Math.round(((e.clientX - box.left) / Math.max(1, box.width)) * (evs.length - 1));
+      index = Math.max(0, Math.min(evs.length - 1, index));
+    }
+    const ev = evs[index];
+    const staff = host.querySelector(".abcjs-staff") || svg;
+    const box = staff.getBoundingClientRect();
+    const pitches = Song.PITCHES.map((p) => p.id);
+    const top = box.top - box.height * 0.22;
+    const bottom = box.bottom + box.height * 0.42;
+    let pi = Math.round((1 - (e.clientY - top) / Math.max(1, bottom - top)) * (pitches.length - 1));
+    pi = Math.max(0, Math.min(pitches.length - 1, pi));
+    const pitch = pitches[pi];
+    const next = ev.pitch === pitch ? null : pitch;
+    Song.setBeat(state.song, ev.measure, ev.beat, next);
+    state.focus = ev.measure;
+    state.beat = ev.beat;
+    state.pitch = pitch;
+    const info = Song.pitchById(next);
+    changed(info ? "Wrote " + info.label + " on the staff." : "That beat is a rest.");
   }
 
   function renderPitches() {
@@ -336,12 +370,18 @@
   }
 
   function changed(message) {
+    keep();
     renderStaff();
     renderBeats();
     renderSequence();
     if (state.playing && window.Tone && synth) armTone();
     else if (state.playing) armFallback();
     status(message);
+  }
+
+  function keep() {
+    try { localStorage.setItem(SONG_KEY, Song.serialize(state.song)); } catch (err) { /* the file export still works */ }
+    if (Song.writeBridge) Song.writeBridge("bertyscore", state.song, Song.toBeat(state.song));
   }
 
   function fileSlug() {
@@ -359,7 +399,7 @@
     a.click();
     a.remove();
     window.setTimeout(() => URL.revokeObjectURL(url), 1500);
-    status("Saved " + a.download + " on this Chromebook.");
+    status("Exported " + a.download + ". It is already saved on this Chromebook.");
   }
 
   function paintHow() {
@@ -406,6 +446,7 @@
     Titles.mount(box, starting, (title) => {
       state.song.alias = title;
       paintAlias();
+      keep();
       renderStaff();
     });
     renderStaff();
@@ -414,6 +455,7 @@
     state.song.bpm = Number(e.target.value);
     state.song.tempo = state.song.bpm;
     $("tempo-read").textContent = String(state.song.bpm);
+    keep();
     if (state.playing && window.Tone && synth) armTone();
   });
   $("save-btn").addEventListener("click", save);
@@ -491,6 +533,7 @@
   renderStaff();
   renderBeats();
   renderSequence();
+  keep();
   if (arrival) status(arrival);
   let seen = false;
   try { seen = localStorage.getItem(HOW_KEY) === "1"; } catch (err) { seen = false; }

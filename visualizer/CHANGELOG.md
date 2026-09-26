@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.7** · 2026-09-25 · channel **live**
+
+The written song from Score shows under its class title. Press Play and the lights follow those notes.
+
+## Earlier
+
 **Chip: Viz 0.6.6** · 2026-09-25 · channel **live**
 
 Gizmos start closed so Play stays up. A half-typed Code line says to add a number. An old beat name that is not on the lists becomes a class title. The drums stay.

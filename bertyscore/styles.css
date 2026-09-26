@@ -65,7 +65,13 @@ button { cursor: pointer; }
 }
 .staff-wrap.did-it { outline: 3px solid var(--live); outline-offset: 2px; }
 #staff svg { width: 100%; height: auto; display: block; }
-.abcjs-note { cursor: pointer; }
+#staff svg { cursor: pointer; touch-action: manipulation; }
+.abcjs-note, .abcjs-rest { cursor: pointer; }
+.staff-hint {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-weight: 650;
+}
 .abcjs-note.is-now path,
 .abcjs-note.is-now { fill: #0e7490; }
 .transport { margin-bottom: 0.35rem; }
