@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-rest"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-cabinet"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -699,12 +699,10 @@
     body.is-framed .shell-footer a{font-size:.7rem;min-height:30px}
     .shell-footer a:focus-visible,#shell-home:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home{margin-left:auto;min-height:44px;min-width:44px}
-    .hub-rev{
-      position:static;z-index:1;margin:0;
-      height:auto;min-height:36px;padding:0 .35rem;
-      border:0;border-radius:0;background:transparent;color:#8fb4c9;
-      font:inherit;font-size:.72rem;font-weight:650;
-      cursor:pointer;white-space:nowrap;box-shadow:none;
+    .edge-pocket-menu .hub-rev{
+      position:static;width:100%;min-height:44px;padding:0 .75rem;
+      border:0;border-radius:calc(var(--radius) - 2px);background:transparent;
+      color:inherit;font-size:.875rem;font-weight:600;text-align:left;box-shadow:none;
     }
     .hub-rev:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
     #shell-home[hidden]{display:none}
@@ -854,11 +852,14 @@
       margin:0 0 .3rem;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
       color:var(--muted-foreground);font-weight:700;
     }
-    /* format-lock: columns are fixed. Tiles fill the cell. Do not switch this back to auto-fill. */
-    body.apps-always .group .board{
-      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:.45rem;align-content:start;justify-items:stretch;
-    }
+    /* format-lock: a drawer uses only as many columns as it has apps. A–Z stays a full grid. */
+    body.apps-always .group .board{display:grid;gap:.75rem;align-content:start;justify-items:stretch}
+    body.apps-always .group .board[data-n="1"]{grid-template-columns:minmax(0,200px);justify-content:start}
+    body.apps-always .group .board[data-n="2"]{grid-template-columns:repeat(2,minmax(0,200px));justify-content:start}
+    body.apps-always .group .board[data-n="3"]{grid-template-columns:repeat(3,minmax(0,200px));justify-content:start}
+    body.apps-always .group .board[data-n="4"]{grid-template-columns:repeat(4,minmax(0,1fr))}
+    body.apps-always .group .board[data-n="5"]{grid-template-columns:repeat(5,minmax(0,1fr))}
+    body.apps-always .group .board[data-n="6"]{grid-template-columns:repeat(6,minmax(0,1fr))}
     body.apps-always a.tile,body.apps-always button.tile{
       aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;
       min-height:44px;gap:.15rem;justify-self:stretch;border-radius:16px;
@@ -888,7 +889,7 @@
       font-size:.85rem;font-weight:650;
     }
     @media (min-width:1100px){
-      body.apps-always .group .board,
+      body.apps-always #alpha-board,
       body.apps-always #school-wrap .board,
       body.apps-always .cuts .board{grid-template-columns:repeat(6,minmax(0,1fr))}
     }
@@ -919,8 +920,11 @@
       body.apps-always #app-groups{display:flex;flex:none}
       body.apps-always .group{display:block;flex:none}
       body.apps-always .group .board,
+      body.apps-always #alpha-board,
       body.apps-always #school-wrap .board,
       body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.85rem}
+      body.apps-always .group .board[data-n]{grid-template-columns:repeat(2,minmax(0,1fr))}
+      body.apps-always .group .board[data-n="1"]{grid-template-columns:minmax(0,50%)}
       body.apps-always a.tile,body.apps-always button.tile{
         aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;min-height:44px;justify-self:stretch;
       }
@@ -1000,7 +1004,7 @@
       body.apps-always .poster{height:4.85rem;border-radius:16px}
       body.apps-always .hero{
         flex-direction:row;align-items:center;justify-content:flex-start;
-        text-align:left;padding:0 6.4rem 0 1rem;gap:.75rem;
+        text-align:left;padding:0 1rem;gap:.75rem;
       }
       body.apps-always .lockup-the{font-size:.62rem;letter-spacing:.26em}
       body.apps-always .lockup-room{font-size:clamp(1.7rem,2.8vw,2.35rem);margin-top:0}
@@ -1012,8 +1016,7 @@
       body.apps-always .hub-rev{position:static;top:auto;right:auto;transform:none}
       body.apps-always .hub-tools{flex-wrap:nowrap;margin:0}
       body.apps-always .hub-tools-sort{order:1}
-      body.apps-always .hub-tools-filter{order:2;flex-basis:auto;margin-left:.45rem;padding-left:.55rem;box-shadow:inset 1px 0 0 rgba(143,180,201,.4)}
-      body.apps-always .hub-tools-theme{order:3;margin-left:auto;padding-left:.55rem;box-shadow:inset 1px 0 0 rgba(143,180,201,.4)}
+      body.apps-always .hub-tools-theme{order:2;margin-left:auto;padding-left:.55rem}
       body.apps-always .hub-tools button{min-height:34px;padding:0 .55rem;font-size:.8rem}
       body.apps-always #app-groups{gap:.35rem}
       body.apps-always .group .board,
@@ -1039,6 +1042,7 @@
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
         <div class="edge-pocket-menu" id="edge-pocket-menu" role="menu" hidden>
+          <button type="button" class="edge-pocket-item hub-rev" id="hub-rev" role="menuitem">Hub</button>
           <a class="edge-pocket-item" id="staff-edit" role="menuitem" href="/staff/">Staff edit</a>
           <button type="button" class="edge-pocket-item" id="staff-sign-out" role="menuitem" hidden>Sign out</button>
         </div>
@@ -1106,7 +1110,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-rest</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-cabinet</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
@@ -1134,22 +1138,11 @@
     </p>
 
     <div class="hub-tools" id="hub-tools">
-      <div class="hub-tools-row hub-tools-sort" role="group" aria-label="Sort">
-        <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
-        <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
-        <button type="button" data-sort="group" aria-pressed="false">Group</button>
-      </div>
-      <div class="hub-tools-row hub-tools-filter" role="group" aria-label="Filter">
-        <button type="button" data-filter="all" aria-pressed="true">All</button>
-        <button type="button" data-filter="tools" aria-pressed="false">Tools</button>
-        <button type="button" data-filter="class" aria-pressed="false">Class</button>
-        <button type="button" data-filter="make" aria-pressed="false">Make</button>
-        <button type="button" data-filter="campus" aria-pressed="false">Campus</button>
-        <button type="button" data-filter="play" aria-pressed="false">Play</button>
+      <div class="hub-tools-row hub-tools-sort" role="group" aria-label="List">
+        <button type="button" id="hub-az" data-sort="alpha" aria-pressed="false">A–Z</button>
       </div>
       <div class="hub-tools-row hub-tools-theme" role="group" aria-label="Theme">
         <button type="button" id="hub-theme">Room</button>
-        <button type="button" class="hub-rev" id="hub-rev">Hub</button>
       </div>
     </div>
     <div class="groups" id="app-groups">
@@ -1172,75 +1165,6 @@
           <a class="tile" data-id="visualizer" data-keywords="visualizer viz lights look bars kaleidoscope make tools" href="/visualizer/">
             <img class="mark" src="/icons/icon-visualizer.svg" alt="" width="72" height="72"/>
             <span class="label">Visualizer</span>
-          </a>
-        </nav>
-        </div>
-      </section>
-      <section class="group" data-group="class">
-        <button type="button" class="drawer" aria-expanded="false">Class <span class="drawer-count"></span></button>
-        <div class="drawer-panel">
-        <nav class="board">
-          <a class="tile" data-id="techworks" data-keywords="techworks tw class" href="https://tw.kulibert.net">
-            <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
-            <span class="label">TechWorks</span>
-          </a>
-          <a class="tile" data-id="koderized" data-keywords="koderized kz code class" href="https://tw.kulibert.net/koderized/">
-            <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
-            <span class="label">Koderized</span>
-          </a>
-        </nav>
-        </div>
-      </section>
-      <section class="group" data-group="make">
-        <button type="button" class="drawer" aria-expanded="false">Make <span class="drawer-count"></span></button>
-        <div class="drawer-panel">
-        <nav class="board">
-          <a class="tile" data-id="ginger" data-keywords="ginger floor plan cad make" href="/ginger/">
-            <img class="mark" src="/icons/icon-ginger.svg" alt="" width="72" height="72"/>
-            <span class="label">Ginger</span>
-          </a>
-          <a class="tile" data-id="bertybeatz" data-keywords="bertybeatz beatz bz music make" href="/bertybeatz/">
-            <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
-            <span class="label">BertyBeatz</span>
-          </a>
-          <a class="tile" data-id="paperlab" data-keywords="paperlab paper lab make" href="/paperlab/">
-            <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
-            <span class="label">PaperLab</span>
-          </a>
-          <a class="tile" data-id="catapult" data-keywords="throwit catapult shop jolly rancher parts ticket glasses" href="/catapult/">
-            <img class="mark" src="/icons/icon-catapult.svg" alt="" width="72" height="72"/>
-            <span class="label">ThrowIt</span>
-          </a>
-          <a class="tile" data-id="logolab" data-keywords="logolab logo lab make" href="/logolab/">
-            <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
-            <span class="label">LogoLab</span>
-          </a>
-          <a class="tile" data-id="sprocket" data-keywords="sprocket make" href="/sprocket/index.html">
-            <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
-            <span class="label">Sprocket</span>
-          </a>
-          <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold make" href="/debugzy/">
-            <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
-            <span class="label">Debugzy</span>
-          </a>
-        </nav>
-        </div>
-      </section>
-      <section class="group" data-group="campus">
-        <button type="button" class="drawer" aria-expanded="false">Campus <span class="drawer-count"></span></button>
-        <div class="drawer-panel">
-        <nav class="board">
-          <a class="tile" data-id="den" data-keywords="den bearcat campus" href="/den/">
-            <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
-            <span class="label">Bearcat Den</span>
-          </a>
-          <a class="tile" data-id="bistro" data-keywords="bistro bearcat lunch campus" href="/bistro/">
-            <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
-            <span class="label">Bearcat Bistro</span>
-          </a>
-          <a class="tile" data-id="housekit" data-keywords="housekit house kit campus" href="/housekit/">
-            <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
-            <span class="label">HouseKit</span>
           </a>
         </nav>
         </div>
@@ -1272,6 +1196,96 @@
           <a class="tile" data-id="holdit" data-keywords="holdit design tool engineering bridge tower materials play" href="/holdit/">
             <img class="mark" src="/holdit/icon.svg" alt="" width="72" height="72"/>
             <span class="label">HoldIt</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="design">
+        <button type="button" class="drawer" aria-expanded="false">Design <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="ginger" data-keywords="ginger floor plan cad design" href="/ginger/">
+            <img class="mark" src="/icons/icon-ginger.svg" alt="" width="72" height="72"/>
+            <span class="label">Ginger</span>
+          </a>
+          <a class="tile" data-id="paperlab" data-keywords="paperlab paper lab design" href="/paperlab/">
+            <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
+            <span class="label">PaperLab</span>
+          </a>
+          <a class="tile" data-id="logolab" data-keywords="logolab logo lab design" href="/logolab/">
+            <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
+            <span class="label">LogoLab</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="shop">
+        <button type="button" class="drawer" aria-expanded="false">Shop <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="catapult" data-keywords="throwit catapult shop jolly rancher parts ticket glasses" href="/catapult/">
+            <img class="mark" src="/icons/icon-catapult.svg" alt="" width="72" height="72"/>
+            <span class="label">ThrowIt</span>
+          </a>
+          <a class="tile" data-id="sprocket" data-keywords="sprocket shop" href="/sprocket/index.html">
+            <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
+            <span class="label">Sprocket</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="sound">
+        <button type="button" class="drawer" aria-expanded="false">Sound <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="bertybeatz" data-keywords="bertybeatz beatz bz music sound" href="/bertybeatz/">
+            <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
+            <span class="label">BertyBeatz</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="class">
+        <button type="button" class="drawer" aria-expanded="false">Class <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="techworks" data-keywords="techworks tw class" href="https://tw.kulibert.net">
+            <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
+            <span class="label">TechWorks</span>
+          </a>
+          <a class="tile" data-id="koderized" data-keywords="koderized kz code class" href="https://tw.kulibert.net/koderized/">
+            <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
+            <span class="label">Koderized</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="campus">
+        <button type="button" class="drawer" aria-expanded="false">Campus <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="den" data-keywords="den bearcat campus" href="/den/">
+            <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
+            <span class="label">Bearcat Den</span>
+          </a>
+          <a class="tile" data-id="bistro" data-keywords="bistro bearcat lunch campus" href="/bistro/">
+            <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
+            <span class="label">Bearcat Bistro</span>
+          </a>
+          <a class="tile" data-id="housekit" data-keywords="housekit house kit campus" href="/housekit/">
+            <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
+            <span class="label">HouseKit</span>
+          </a>
+        </nav>
+        </div>
+      </section>
+      <section class="group" data-group="crew">
+        <button type="button" class="drawer" aria-expanded="false">Crew <span class="drawer-count"></span></button>
+        <div class="drawer-panel">
+        <nav class="board">
+          <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold crew" href="/debugzy/">
+            <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
+            <span class="label">Debugzy</span>
           </a>
         </nav>
         </div>
@@ -1382,16 +1396,17 @@
       var hubFilter = "all";
       try {
         var savedSort = localStorage.getItem("tech-room-sort");
-        var savedFilter = localStorage.getItem("tech-room-filter");
         var drawerSet = localStorage.getItem("tech-room-drawer-default");
         if (!drawerSet) {
           hubSort = "group";
           localStorage.setItem("tech-room-drawer-default", "1");
           localStorage.setItem("tech-room-sort", "group");
-        } else if (savedSort === "alpha" || savedSort === "za" || savedSort === "group") {
-          hubSort = savedSort;
+        } else if (savedSort === "alpha" || savedSort === "za") {
+          hubSort = "alpha";
+        } else {
+          hubSort = "group";
         }
-        if (savedFilter === "all" || savedFilter === "tools" || savedFilter === "class" || savedFilter === "make" || savedFilter === "campus" || savedFilter === "play") hubFilter = savedFilter;
+        hubFilter = "all";
       } catch (eSort) {}
       Array.prototype.forEach.call(appBoard.querySelectorAll(".group"), function (group) {
         var g = group.getAttribute("data-group");
@@ -2056,6 +2071,7 @@
             if (openBtn) openBtn.setAttribute("aria-expanded", "true");
           }
         });
+        sizeBoards();
       }
 
       function markFirst() {
@@ -2116,6 +2132,19 @@
         return out;
       }
 
+      function sizeBoards() {
+        if (!appBoard) return;
+        Array.prototype.forEach.call(appBoard.querySelectorAll(".group .board"), function (board) {
+          if (board.id === "alpha-board") return;
+          var n = 0;
+          Array.prototype.forEach.call(board.querySelectorAll(":scope > a.tile"), function (tile) {
+            if (tile.classList.contains("is-hidden") || tile.classList.contains("is-room-hidden")) return;
+            n += 1;
+          });
+          board.setAttribute("data-n", String(n < 1 ? 1 : Math.min(n, 6)));
+        });
+      }
+
       function applyView() {
         var tiles = appSortTiles();
         var alpha = document.getElementById("alpha-group");
@@ -2139,13 +2168,9 @@
           if (alphaTitle) alphaTitle.textContent = hubSort === "za" ? "Z–A" : "A–Z";
           if (alpha) alpha.hidden = false;
         }
+        sizeBoards();
         Array.prototype.forEach.call(document.querySelectorAll("#hub-tools [data-sort]"), function (btn) {
           var on = btn.getAttribute("data-sort") === hubSort;
-          btn.classList.toggle("is-on", on);
-          btn.setAttribute("aria-pressed", on ? "true" : "false");
-        });
-        Array.prototype.forEach.call(document.querySelectorAll("#hub-tools [data-filter]"), function (btn) {
-          var on = btn.getAttribute("data-filter") === hubFilter;
           btn.classList.toggle("is-on", on);
           btn.setAttribute("aria-pressed", on ? "true" : "false");
         });
@@ -2261,8 +2286,8 @@
       if (hubTools) hubTools.addEventListener("click", function (event) {
         var btn = event.target && event.target.closest ? event.target.closest("button") : null;
         if (!btn || !hubTools.contains(btn) || btn.id === "hub-rev") return;
-        if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
-        if (btn.hasAttribute("data-filter")) hubFilter = btn.getAttribute("data-filter");
+        if (btn.id === "hub-az") hubSort = hubSort === "alpha" ? "group" : "alpha";
+        else if (btn.hasAttribute("data-sort")) hubSort = btn.getAttribute("data-sort");
         applyView();
       });
       applyView();
