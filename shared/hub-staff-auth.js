@@ -2,7 +2,7 @@
    Compare SHA-256 hex of the UTF-8 password (no salt) to the embedded digest.
    The TechWorks desk key is a different lock and must not set this flag. */
 (function (root) {
-  var HASH = "abc6527e3cdc04042defe8da629326e01441d61c356f939c1a3236a967cffbf1";
+  var HASH = "cfcbac83d71735800727d556ae8f97afc25213427bc10df77447a72df901966e";
   var FLAG = "tech-room-hub-staff";
   var WRONG = "Wrong password — try again";
   var memory = false;
