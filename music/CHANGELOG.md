@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.3.0** · 2026-09-26 · channel **live**
+
+Ten ready-made effects and four synth sliders. They change the pads. The choice stays on this Chromebook.
+
+## Earlier
+
 **Chip: MU 1.2.0** · 2026-09-26 · channel **live**
 
 Optional mic. Two taps. One loop, eight seconds at most, then the mic turns off. The loop is not saved unless they download it. No still leaves the pads working.

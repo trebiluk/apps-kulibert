@@ -31,6 +31,15 @@
     song: Song.starter(),
     drums: blankDrums(),
     look: "ribbon",
+    fx: "plain",
+    wave: "triangle",
+    bright: 5200,
+    noteLen: 0.28,
+    echo: 0,
+    wobble: 0,
+    hip: 40,
+    delay: 0,
+    feedback: 0,
     playing: false,
     muted: false,
     step: -1,
@@ -58,39 +67,113 @@
       });
     }
     if (saved && saved.look) state.look = saved.look;
+    if (saved && saved.fx) state.fx = saved.fx;
+    if (saved && saved.wave) state.wave = saved.wave;
+    if (saved && typeof saved.bright === "number") state.bright = saved.bright;
+    if (saved && typeof saved.noteLen === "number") state.noteLen = saved.noteLen;
+    if (saved && typeof saved.echo === "number") state.echo = saved.echo;
+    if (saved && typeof saved.wobble === "number") state.wobble = saved.wobble;
+    if (saved && typeof saved.hip === "number") state.hip = saved.hip;
+    if (saved && typeof saved.delay === "number") state.delay = saved.delay;
+    if (saved && typeof saved.feedback === "number") state.feedback = saved.feedback;
     if (saved && saved.bpm) state.song.bpm = saved.bpm;
   } catch (err) { /* a fresh song is fine */ }
 
+  const FX = [
+    { id: "plain", name: "Plain", wave: "triangle", bright: 5200, noteLen: 0.28, echo: 0, wobble: 0, hip: 40, delay: 0, feedback: 0 },
+    { id: "soft", name: "Soft", wave: "sine", bright: 900, noteLen: 0.4, echo: 0.12, wobble: 0, hip: 40, delay: 0.08, feedback: 0.15 },
+    { id: "bright", name: "Bright", wave: "square", bright: 7000, noteLen: 0.18, echo: 0, wobble: 0, hip: 80, delay: 0, feedback: 0 },
+    { id: "echo", name: "Echo", wave: "triangle", bright: 4200, noteLen: 0.22, echo: 0.45, wobble: 0, hip: 40, delay: 0.26, feedback: 0.38 },
+    { id: "room", name: "Room", wave: "triangle", bright: 3600, noteLen: 0.32, echo: 0.28, wobble: 0, hip: 40, delay: 0.07, feedback: 0.25 },
+    { id: "hall", name: "Hall", wave: "sine", bright: 2800, noteLen: 0.5, echo: 0.55, wobble: 0, hip: 40, delay: 0.19, feedback: 0.48 },
+    { id: "robot", name: "Robot", wave: "square", bright: 1600, noteLen: 0.2, echo: 0.16, wobble: 10, hip: 180, delay: 0.08, feedback: 0.2 },
+    { id: "radio", name: "Radio", wave: "square", bright: 1400, noteLen: 0.16, echo: 0.08, wobble: 0, hip: 500, delay: 0.05, feedback: 0.1 },
+    { id: "space", name: "Space", wave: "sawtooth", bright: 3000, noteLen: 0.45, echo: 0.62, wobble: 2, hip: 40, delay: 0.36, feedback: 0.52 },
+    { id: "deep", name: "Deep", wave: "sine", bright: 480, noteLen: 0.55, echo: 0.22, wobble: 3, hip: 30, delay: 0.2, feedback: 0.35 },
+  ];
+  const WAVES = [
+    ["sine", "Round"],
+    ["triangle", "Soft"],
+    ["square", "Bright"],
+    ["sawtooth", "Buzz"],
+  ];
   let ctx = null;
   let master = null;
+  let bus = null;
+  let filter = null;
+  let hip = null;
+  let delayNode = null;
+  let fb = null;
+  let wet = null;
+  let lfo = null;
+  let lfoGain = null;
+  function applyFx() {
+    if (!filter) return;
+    filter.frequency.value = state.bright;
+    filter.Q.value = state.fx === "radio" ? 6 : 0.7;
+    hip.frequency.value = state.hip;
+    delayNode.delayTime.value = state.delay;
+    fb.gain.value = state.feedback;
+    wet.gain.value = state.echo;
+    lfo.frequency.value = Math.max(0.1, state.wobble || 0.1);
+    lfoGain.gain.value = state.wobble > 0 ? 0.45 : 0;
+  }
   function arm() {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     if (!ctx) {
       ctx = new AC();
       master = ctx.createGain();
-      master.gain.value = 0.8;
       master.connect(ctx.destination);
+      bus = ctx.createGain();
+      hip = ctx.createBiquadFilter();
+      hip.type = "highpass";
+      filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      const trem = ctx.createGain();
+      trem.gain.value = 1;
+      const dry = ctx.createGain();
+      delayNode = ctx.createDelay(1.2);
+      fb = ctx.createGain();
+      wet = ctx.createGain();
+      lfo = ctx.createOscillator();
+      lfoGain = ctx.createGain();
+      lfo.connect(lfoGain);
+      lfoGain.connect(trem.gain);
+      lfo.start();
+      bus.connect(hip);
+      hip.connect(filter);
+      filter.connect(trem);
+      trem.connect(dry);
+      dry.connect(master);
+      filter.connect(delayNode);
+      delayNode.connect(fb);
+      fb.connect(delayNode);
+      delayNode.connect(wet);
+      wet.connect(master);
+      applyFx();
     }
     if (ctx.state === "suspended") ctx.resume();
-    master.gain.value = state.muted ? 0 : 0.8;
+    master.gain.value = state.muted ? 0 : 0.75;
+    applyFx();
   }
   function tone(freq, dur, type, level) {
     if (!ctx || state.muted) return;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = type || "triangle";
+    osc.type = type || state.wave || "triangle";
     osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    const length = dur || state.noteLen || 0.28;
     gain.gain.setValueAtTime(level || 0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + length);
     osc.connect(gain);
-    gain.connect(master);
+    gain.connect(bus);
     osc.start();
-    osc.stop(ctx.currentTime + dur);
+    osc.stop(ctx.currentTime + length + 0.02);
   }
   function noise(dur, level) {
     if (!ctx || state.muted) return;
-    const buffer = ctx.createBuffer(1, ctx.sampleRate * dur, ctx.sampleRate);
+    const buffer = ctx.createBuffer(1, Math.max(1, ctx.sampleRate * dur), ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
     const src = ctx.createBufferSource();
@@ -99,7 +182,7 @@
     gain.gain.setValueAtTime(level, ctx.currentTime);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
     src.connect(gain);
-    gain.connect(master);
+    gain.connect(bus);
     src.start();
   }
 
@@ -109,6 +192,15 @@
         song: JSON.parse(Song.serialize(state.song)),
         drums: state.drums,
         look: state.look,
+        fx: state.fx,
+        wave: state.wave,
+        bright: state.bright,
+        noteLen: state.noteLen,
+        echo: state.echo,
+        wobble: state.wobble,
+        hip: state.hip,
+        delay: state.delay,
+        feedback: state.feedback,
         bpm: state.song.bpm,
       }));
     } catch (err) { /* the file save still works */ }
@@ -213,6 +305,65 @@
       box.appendChild(b);
     });
   }
+  function syncSynth() {
+    $("s-bright").value = String(state.bright);
+    $("n-bright").textContent = String(state.bright);
+    $("s-len").value = String(Math.round(state.noteLen * 100));
+    $("n-len").textContent = String(Math.round(state.noteLen * 100));
+    $("s-echo").value = String(Math.round(state.echo * 100));
+    $("n-echo").textContent = String(Math.round(state.echo * 100));
+    $("s-wob").value = String(state.wobble);
+    $("n-wob").textContent = String(state.wobble);
+  }
+  function paintFx() {
+    const box = $("fx");
+    box.innerHTML = "";
+    FX.forEach((fx) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (state.fx === fx.id ? " on" : "");
+      b.textContent = fx.name;
+      b.addEventListener("click", () => {
+        state.fx = fx.id;
+        state.wave = fx.wave;
+        state.bright = fx.bright;
+        state.noteLen = fx.noteLen;
+        state.echo = fx.echo;
+        state.wobble = fx.wobble;
+        state.hip = fx.hip;
+        state.delay = fx.delay;
+        state.feedback = fx.feedback;
+        applyFx();
+        syncSynth();
+        paintFx();
+        paintWaves();
+        keep();
+        arm();
+        tone(392, state.noteLen, state.wave, 0.2);
+        $("lesson").textContent = fx.name + " is on. The pads use it. Move a synth slider to tweak it.";
+      });
+      box.appendChild(b);
+    });
+  }
+  function paintWaves() {
+    const box = $("waves");
+    box.innerHTML = "";
+    WAVES.forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (state.wave === id ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        state.wave = id;
+        paintWaves();
+        keep();
+        arm();
+        tone(392, state.noteLen, state.wave, 0.2);
+        $("lesson").textContent = label + " is the note shape. The drums stay drums.";
+      });
+      box.appendChild(b);
+    });
+  }
 
   function paintRec() {
     const btn = $("rec-btn");
@@ -253,7 +404,7 @@
       if (id === "kick") tone(140, 0.18, "sine", 0.9);
       else if (id === "snare" || id === "clap") noise(0.12, 0.35);
       else if (id === "hat") noise(0.04, 0.18);
-      else if (FREQ[id]) tone(FREQ[id], 0.28, "triangle", 0.24);
+      else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
     }
     if (canStamp()) writeHit(id, state.step);
     if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
@@ -368,7 +519,7 @@
     if (state.drums.hat[step]) noise(0.04, 0.18);
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
-      if (freq) tone(freq, 0.28, "triangle", 0.22);
+      if (freq) tone(freq, state.noteLen, state.wave, 0.22);
     }
   }
 
@@ -467,6 +618,34 @@
     if (state.playing) { stop(); play(); }
     $("lesson").textContent = "Tempo is the speed. The count is still 1, 2, 3, 4.";
   });
+  function tweak(key, read) {
+    return () => {
+      read();
+      applyFx();
+      keep();
+      arm();
+    };
+  }
+  $("s-bright").addEventListener("input", tweak("bright", () => {
+    state.bright = Number($("s-bright").value);
+    $("n-bright").textContent = $("s-bright").value;
+    $("lesson").textContent = "Brightness is how sharp the sound is.";
+  }));
+  $("s-len").addEventListener("input", tweak("len", () => {
+    state.noteLen = Number($("s-len").value) / 100;
+    $("n-len").textContent = $("s-len").value;
+    $("lesson").textContent = "Length is how long a note holds.";
+  }));
+  $("s-echo").addEventListener("input", tweak("echo", () => {
+    state.echo = Number($("s-echo").value) / 100;
+    $("n-echo").textContent = $("s-echo").value;
+    $("lesson").textContent = "Echo repeats the sound.";
+  }));
+  $("s-wob").addEventListener("input", tweak("wob", () => {
+    state.wobble = Number($("s-wob").value);
+    $("n-wob").textContent = $("s-wob").value;
+    $("lesson").textContent = "Wobble moves the sound up and down.";
+  }));
   $("save-btn").addEventListener("click", () => {
     const blob = new Blob([Song.serialize(state.song)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -626,6 +805,9 @@
   renderStaff();
   renderDrums();
   paintLooks();
+  paintFx();
+  paintWaves();
+  syncSynth();
   keep();
 
   const canvas = $("viz");
