@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-scenes"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-today"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1097,16 +1097,17 @@
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
     body.apps-always .stickies{
-      position:sticky;top:0;z-index:4;flex:0 0 auto;
-      display:flex;align-items:center;gap:.45rem;
-      margin:0;padding:.3rem .15rem;
-      background:#050814;
+      position:relative;top:auto;z-index:4;flex:0 0 auto;
+      display:flex;align-items:center;gap:.5rem;
+      min-height:44px;margin:0;padding:0 .65rem;
+      background:#050814;color:#e8f7ff;
+      border-bottom:1px solid color-mix(in srgb, currentColor 22%, transparent);
     }
     body.apps-always .stickies[hidden]{display:none !important}
     body.apps-always .sticky-icons{display:flex;gap:.35rem;flex:0 0 auto}
     body.apps-always .sticky-icon{
-      width:44px;height:44px;display:grid;place-items:center;position:relative;
-      border-radius:12px;border:1px solid #1e3a55;background:#0c1730;text-decoration:none;
+      width:36px;height:36px;display:grid;place-items:center;position:relative;
+      border-radius:10px;border:1px solid #1e3a55;background:#0c1730;text-decoration:none;
     }
     body.apps-always .sticky-icon img{width:28px;height:28px;object-fit:contain}
     body.apps-always .sticky-icon .label{
@@ -1114,7 +1115,8 @@
     }
     body.apps-always .announce{
       flex:1 1 auto;min-width:0;margin:0;
-      font-size:.85rem;font-weight:650;line-height:1.3;color:#e8f7ff;
+      font-size:.85rem;font-weight:650;line-height:1.2;color:#e8f7ff;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
     body.apps-always .announce[hidden]{display:none !important}
     html[data-hub-theme="graph"] body.apps-always .stickies{background:#f4f7fb}
@@ -1259,8 +1261,6 @@
       }
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
       body.apps-always .hub-tools button{min-height:40px}
-      body.apps-always .hub-tools-filter{flex-basis:100%}
-      body.apps-always .live,body.apps-always #room-footer{display:block}
     }
 
 /* hub-restore: single ribbon — dock lives in header, icons only */
@@ -1362,8 +1362,6 @@
   <div class="shell" id="hub-shell">
     <header class="shell-header" id="shell-header">
       <span class="shell-brand">THE TECH ROOM</span>
-      <span class="shell-chip" id="shell-weather">Solvay · Clear</span>
-      <span class="shell-chip" id="shell-temp">68°F</span>
       <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
@@ -1374,16 +1372,16 @@
         </div>
       </div>
     </header>
+    <div class="stickies" id="stickies" hidden>
+      <p class="announce" id="announce" hidden></p>
+      <div class="sticky-icons" id="sticky-icons"></div>
+    </div>
     <div class="shell-marquee" id="shell-marquee" hidden>
       <div class="shell-marquee-track" id="shell-marquee-track"></div>
     </div>
     <div class="shell-mid">
       <div id="shell-board">
   <div class="wrap">
-    <div class="stickies" id="stickies" hidden>
-      <div class="sticky-icons" id="sticky-icons"></div>
-      <p class="announce" id="announce" hidden></p>
-    </div>
     <section class="poster" aria-label="The Tech Room">
       <div class="corner-k">
         <img src="/icons/icon-kulinet-k.svg" width="48" height="48" alt="KuliNet"/>
@@ -1436,7 +1434,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-scenes</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-today</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
@@ -1797,13 +1795,6 @@
         var words = hay.split(/[^a-z0-9]+/).filter(Boolean);
         var initials = words.map(function (word) { return word.charAt(0); }).join("");
         if (initials.indexOf(needle) !== -1) return 2;
-        if (needle.length >= 3) {
-          var i = 0;
-          for (var c = 0; c < hay.length && i < needle.length; c++) {
-            if (hay.charAt(c) === needle.charAt(i)) i += 1;
-          }
-          if (i === needle.length) return 3;
-        }
         return 99;
       }
       function fuzzyHit(hay, needle) {
@@ -2324,6 +2315,7 @@
         var text = pack && pack.announce ? String(pack.announce).replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().slice(0, 140) : "";
         note.textContent = text;
         note.hidden = !text;
+        bar.setAttribute("aria-label", "Today");
         bar.hidden = !box.children.length && !text;
       }
 
