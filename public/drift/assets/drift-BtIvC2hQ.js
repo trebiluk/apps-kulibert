@@ -1,0 +1,1 @@
+import{t as e}from"./DriftExperience-Bk8wO6fS.js";var t=e;export{t as component};

@@ -78,7 +78,7 @@ if dst.exists():
     shutil.rmtree(dst)
 dst.mkdir(parents=True)
 
-for name in ("assets", "favicon.svg", "og.jpg", "x-banner.jpg"):
+for name in ("assets", "sounds", "favicon.svg", "og.jpg", "x-banner.jpg"):
     item = src / name
     if not item.exists():
         continue
