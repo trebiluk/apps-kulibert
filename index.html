@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-layout"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-phone-fit"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -626,7 +626,10 @@
     /* Hub shell: one header row, scrolling board or iframe, one footer. Dark only. */
     body{padding:0;background:#050814;color:#e8f7ff;overflow:hidden;max-width:100%}
     html{overflow:hidden;max-width:100%}
-    .shell{height:100dvh;min-height:100dvh;width:100%;max-width:100%;overflow:hidden;display:flex;flex-direction:column;background:#050814;color:#e8f7ff}
+    .shell{height:100dvh;min-height:100dvh;width:100%;max-width:100%;overflow:hidden;display:flex;flex-direction:column;background:#050814;color:#e8f7ff;box-sizing:border-box}
+    @media (display-mode: standalone){
+      .shell{padding-bottom:max(48px, env(safe-area-inset-bottom, 0px))}
+    }
     .shell-header{
       flex:0 0 auto;min-height:48px;display:flex;align-items:center;gap:.5rem;
       padding:0 .55rem 0 .75rem;background:#050814;color:#e8f7ff;
@@ -810,10 +813,24 @@
       body.apps-always .cuts .board{grid-template-columns:repeat(7,minmax(0,1fr))}
     }
     @media (max-width:700px){
-      body.apps-always .poster{height:8.2rem;border-radius:18px}
-      body.apps-always .hero{padding:.7rem .7rem 2.85rem}
+      body.apps-always .poster{height:auto;min-height:0;border-radius:18px}
+      body.apps-always .hero{
+        height:auto;min-height:0;padding:.55rem .7rem .65rem;justify-content:center;
+      }
+      body.apps-always .hero h1{width:100%;padding-right:4.5rem;box-sizing:border-box}
       body.apps-always .lockup-room{font-size:clamp(2rem,10.5vw,2.55rem)}
-      body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch;padding:.4rem .55rem .5rem}
+      body.apps-always .welcome-line{
+        position:static;margin:.2rem 0 0;max-width:100%;
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      }
+      body.apps-always .search{
+        position:relative;left:auto;bottom:auto;transform:none;
+        width:100%;margin:.4rem 0 0;
+      }
+      body.apps-always #shell-board{
+        overflow:auto;-webkit-overflow-scrolling:touch;
+        padding:.4rem .55rem calc(.65rem + env(safe-area-inset-bottom, 0px));
+      }
       body.apps-always #app-groups{display:flex;flex:none}
       body.apps-always .group{display:block;flex:none}
       body.apps-always .group .board,
@@ -827,6 +844,10 @@
       }
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
       body.apps-always .hub-tools button{min-height:40px}
+      body.apps-always .hub-tools{
+        -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);
+        mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);
+      }
       body.apps-always .live,body.apps-always #room-footer{display:block}
     }
 
@@ -993,7 +1014,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-layout</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-phone-fit</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.9</strong> — Read speaks the one line. Read aloud stays off until you turn it on.</p>
