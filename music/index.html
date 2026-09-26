@@ -7,13 +7,13 @@
   <title>Music · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.0.0"/>
+  <link rel="stylesheet" href="./styles.css?v=1.1.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Music</strong><em id="chip">MU 1.0.0</em></span>
+      <span><strong>Music</strong><em id="chip">MU 1.1.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -21,6 +21,7 @@
 
   <div class="desk">
     <section class="work" id="work">
+      <div class="kit" id="kit" aria-label="Tap with a finger"></div>
       <div class="modes" role="tablist" aria-label="What to edit">
         <button type="button" id="mode-notes" class="mode on" aria-label="Notes" aria-pressed="true">
           <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 8h20M6 13h20M6 18h20M6 23h20" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="18" r="3.2" fill="currentColor"/><path d="M17.2 18V8" stroke="currentColor" stroke-width="1.6"/></svg>
@@ -44,9 +45,11 @@
       <div class="transport">
         <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon"></span></button>
         <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
+        <button type="button" id="rec-btn" class="btn rec" aria-pressed="false">Record</button>
+        <button type="button" id="turn-btn" class="btn">Your turn</button>
       </div>
       <p id="now-line" class="now">Press Play. Read the word. Sound can stay off.</p>
-      <p id="lesson" class="lesson">Count Beat 1, 2, 3, 4. That steady count is the beat.</p>
+      <p id="lesson" class="lesson">Tap a pad. It plays at once. Record keeps the taps on the beat.</p>
     </section>
   </div>
 
@@ -59,11 +62,12 @@
     <div id="title-lists"></div>
     <h2>Picture</h2>
     <div class="looks" id="looks"></div>
+    <button type="button" id="clear-btn" class="btn">Clear the drums</button>
     <button type="button" id="save-btn" class="btn">Save a file</button>
     <p class="hint">This Chromebook keeps the song. No names.</p>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.0.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.1.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -71,6 +75,6 @@
   <script src="/shared/song/model.js?v=0.2.8"></script>
   <script src="/shared/visualizer/stage.js?v=0.6.14"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
-  <script src="./app.js?v=1.0.0"></script>
+  <script src="./app.js?v=1.1.0"></script>
 </body>
 </html>

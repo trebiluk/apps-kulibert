@@ -39,7 +39,25 @@ canvas {
   width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 42vh;
   background: #050814; border-radius: var(--radius); display: block;
 }
-.transport { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.55rem; }
+.kit { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; margin-bottom: 0.55rem; }
+.pad, .key {
+  touch-action: none;
+  user-select: none;
+  min-height: 76px;
+  border: 0;
+  border-radius: 18px;
+  font-weight: 800;
+  font-size: 1.05rem;
+}
+.pad.kick { background: #0e7490; }
+.pad.snare { background: #b45309; }
+.pad.hat { background: #4338ca; }
+.pad.clap { background: #be185d; }
+.pad.hit, .key.hit { filter: brightness(1.35); transform: scale(0.98); }
+.keys { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.35rem; }
+.key { min-height: 64px; background: #f7f1e4; color: #1a140c; border-radius: 14px 14px 8px 8px; }
+.rec.on { background: #e11d48; color: #fff; border-color: transparent; }
+.transport { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.55rem; flex-wrap: wrap; }
 .play {
   width: 64px; height: 64px; border-radius: 50%; border: 0; background: var(--accent); color: var(--accent-fg);
 }

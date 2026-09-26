@@ -39,7 +39,13 @@
     kick: false,
     snare: false,
     mode: "notes",
+    recording: false,
+    armBeats: 0,
+    turn: "",
+    turnLeft: 0,
+    held: {},
   };
+  const FREQ = { C: 261.6, D: 293.7, E: 329.6, G: 392, A: 440 };
 
   try {
     const saved = JSON.parse(localStorage.getItem(KEY) || "null");
@@ -175,6 +181,8 @@
         cell.type = "button";
         cell.className = "cell" + (state.drums[id][i] ? " on" : "") + (state.step === i ? " now" : "");
         cell.setAttribute("aria-label", label + " beat " + (i + 1));
+        cell.dataset.track = id;
+        cell.dataset.step = String(i);
         cell.addEventListener("click", () => {
           state.drums[id][i] = !state.drums[id][i];
           keep();
@@ -206,6 +214,89 @@
     });
   }
 
+  function paintRec() {
+    const btn = $("rec-btn");
+    if (!btn) return;
+    btn.classList.toggle("on", state.recording);
+    btn.textContent = state.recording ? "Recording" : "Record";
+    btn.setAttribute("aria-pressed", String(state.recording));
+  }
+  function canStamp() {
+    return state.recording && state.armBeats === 0 && state.playing && state.step >= 0;
+  }
+  function writeHit(id, step) {
+    if (step < 0 || step > 7) return;
+    if (FREQ[id]) {
+      const ev = Song.events(state.song)[step];
+      if (!ev || ev.pitch === id) return;
+      Song.setBeat(state.song, ev.measure, ev.beat, id);
+      renderStaff();
+    } else if (state.drums[id]) {
+      if (state.drums[id][step]) return;
+      state.drums[id][step] = true;
+      const cell = document.querySelector('.cell[data-track="' + id + '"][data-step="' + step + '"]');
+      if (cell) cell.classList.add("on");
+    } else return;
+    keep();
+  }
+  function strike(id, el) {
+    arm();
+    if (el) {
+      el.classList.add("hit");
+      window.setTimeout(() => el.classList.remove("hit"), 140);
+    }
+    if (id === "kick") { state.kick = true; state.bins[2] = 255; }
+    else if (id === "snare" || id === "clap") { state.snare = true; state.bins[10] = 220; }
+    else if (id === "hat") state.bins[42] = 210;
+    else if (FREQ[id]) state.bins[24] = 230;
+    if (!state.muted) {
+      if (id === "kick") tone(140, 0.18, "sine", 0.9);
+      else if (id === "snare" || id === "clap") noise(0.12, 0.35);
+      else if (id === "hat") noise(0.04, 0.18);
+      else if (FREQ[id]) tone(FREQ[id], 0.28, "triangle", 0.24);
+    }
+    if (canStamp()) writeHit(id, state.step);
+    if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
+    $("lesson").textContent = canStamp()
+      ? "That tap is on the beat you see."
+      : "You played it. Press Record, count four, then tap with the flash.";
+  }
+  function bindPad(el, id) {
+    el.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      state.held[id] = true;
+      try { el.setPointerCapture(e.pointerId); } catch (err) { /* a tap still counts */ }
+      strike(id, el);
+    });
+    const up = () => { state.held[id] = false; };
+    el.addEventListener("pointerup", up);
+    el.addEventListener("pointercancel", up);
+  }
+  function buildKit() {
+    const box = $("kit");
+    ROWS.forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pad " + id;
+      b.textContent = label;
+      b.setAttribute("aria-label", label);
+      bindPad(b, id);
+      box.appendChild(b);
+    });
+    const keys = document.createElement("div");
+    keys.className = "keys";
+    LEARN.forEach((id) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "key";
+      b.textContent = id;
+      b.setAttribute("aria-label", "Note " + id);
+      bindPad(b, id);
+      keys.appendChild(b);
+    });
+    box.appendChild(keys);
+  }
+
   function namesAt(step) {
     const evs = Song.events(state.song);
     const ev = evs[step];
@@ -228,9 +319,41 @@
     if (state.snare) bins[10] = 180;
     if (state.drums.hat[step]) bins[40] = 140;
     if (ev && ev.tone) bins[22] = 200;
+    let counting = false;
+    if (state.armBeats > 0) {
+      counting = true;
+      const count = 5 - state.armBeats;
+      state.armBeats -= 1;
+      $("now-line").textContent = "Count " + count + ". Then tap.";
+      if (!state.muted) tone(880, 0.06, "square", 0.15);
+    }
+    if (state.recording && state.armBeats === 0) {
+      Object.keys(state.held).forEach((id) => {
+        if (state.held[id]) writeHit(id, step);
+      });
+    }
+    if (state.turn === "listen" || state.turn === "answer") {
+      state.turnLeft -= 1;
+      if (state.turn === "listen" && state.turnLeft <= 0) {
+        state.turn = "answer";
+        state.turnLeft = 8;
+        state.recording = true;
+        state.armBeats = 0;
+        paintRec();
+        $("lesson").textContent = "Your turn. Tap the pads. The beats you tap stay in the song.";
+      } else if (state.turn === "answer" && state.turnLeft <= 0) {
+        state.turn = "";
+        state.recording = false;
+        paintRec();
+        $("lesson").textContent = "The class can hear your turn. Press Play to hear it again.";
+      }
+    }
     const off = state.muted ? "Sound is off. " : "";
-    $("now-line").textContent = off + "Beat " + (step + 1) + ". Now: " + namesAt(step).join(" and ") + ".";
-    if (state.playing && step === 0) $("lesson").textContent = "Beat 1 is the strong beat. Count along. Sound can stay off.";
+    const lead = state.turn === "listen" ? "Listen. " : state.turn === "answer" ? "Your turn. " : "";
+    if (!counting) $("now-line").textContent = lead + off + "Beat " + (step + 1) + ". Now: " + namesAt(step).join(" and ") + ".";
+    if (state.playing && step === 0 && !state.recording && !state.turn) {
+      $("lesson").textContent = "Beat 1 is the strong beat. Tap a pad on the flash.";
+    }
     document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest").forEach((node, i) => {
       node.classList.toggle("now", i === step);
     });
@@ -266,6 +389,11 @@
     window.clearInterval(state.timer);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", "Play");
+    state.recording = false;
+    state.armBeats = 0;
+    state.turn = "";
+    state.held = {};
+    paintRec();
     $("now-line").textContent = "Press Play. Read the word. Sound can stay off.";
   }
 
@@ -289,6 +417,38 @@
     $("mute-btn").setAttribute("aria-pressed", String(state.muted));
     if (master) master.gain.value = state.muted ? 0 : 0.8;
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";
+  });
+  $("turn-btn").addEventListener("click", () => {
+    state.turn = "listen";
+    state.turnLeft = 8;
+    state.recording = false;
+    state.armBeats = 0;
+    paintRec();
+    if (!state.playing) play();
+    $("lesson").textContent = "Listen once. Then it says Your turn, and your taps stay in the song.";
+  });
+  $("rec-btn").addEventListener("click", () => {
+    if (state.recording) {
+      state.recording = false;
+      state.armBeats = 0;
+      state.turn = "";
+      paintRec();
+      $("lesson").textContent = "Record is off. Taps still play. They do not write.";
+      return;
+    }
+    state.turn = "";
+    state.recording = true;
+    state.armBeats = 4;
+    paintRec();
+    if (!state.playing) play();
+    $("lesson").textContent = "Count four. Then tap the pads with the flash.";
+  });
+  $("clear-btn").addEventListener("click", () => {
+    ROWS.forEach(([id]) => { state.drums[id] = Array(8).fill(false); });
+    keep();
+    renderDrums();
+    document.body.classList.remove("menu-open");
+    $("lesson").textContent = "The drums are clear. Press Record and tap a new beat.";
   });
   $("mode-notes").addEventListener("click", () => setMode("notes"));
   $("mode-drums").addEventListener("click", () => setMode("drums"));
@@ -329,6 +489,7 @@
   $("tempo").value = String(state.song.bpm || 96);
   $("tempo-read").textContent = String(state.song.bpm || 96);
   setMode("notes");
+  buildKit();
   renderStaff();
   renderDrums();
   paintLooks();
