@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.9.0") return;
-  window.__BERTYBEATZ__ = "1.9.0";
+  if (window.__BERTYBEATZ__ === "1.9.1") return;
+  window.__BERTYBEATZ__ = "1.9.1";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.9.0";
+  const CHIP = "BZ 1.9.1";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1409,26 +1409,55 @@
       body: "Press Play. Count the word: Beat 1, Beat 2, Beat 3, Beat 4. That steady count is the beat. Sound can stay off.",
       check: () => state.playing || state.sawDownbeat,
       miss: "Press Play, then watch the word.",
+      spot: "#play-btn",
     },
     {
       title: "The strong beat",
       body: "Beat 1 is the strong beat. It is the one you tap your foot on. Wait until the word says Beat 1.",
       check: () => state.sawDownbeat,
       miss: "Keep it playing until the word says Beat 1.",
+      spot: "#now-line",
     },
     {
       title: "The pulse",
       body: "Light the first Kick square. A kick on beat 1 is the pulse. The other drums sit around it.",
       check: () => Boolean(state.steps.kick && state.steps.kick[0]),
       miss: "Tap the first Kick square so it turns on.",
+      spot: "#grid [data-track='kick'][data-step='0']",
     },
     {
       title: "Time",
       body: "4/4 means four beats, then it starts over. Tap 3/4. Count 1, 2, 3. The bottom rows are notes: C, D, E, G, and A.",
       check: () => state.meter === "3/4",
       miss: "Tap 3/4 in the Time row.",
+      spot: "#meters",
+    },
+    {
+      title: "Tempo",
+      body: "Move Tempo. Faster or slower is the tempo. You still count the same beats. Tempo is speed. Time is how many beats.",
+      check: () => state.bpm !== state.lessonBpm,
+      miss: "Move the Tempo slider.",
+      spot: "#bpm",
     },
   ];
+  function clearSpot() {
+    document.querySelectorAll(".spot").forEach((el) => el.classList.remove("spot"));
+  }
+  function coachLesson() {
+    const box = $("lesson");
+    if (!box || box.hidden) {
+      clearSpot();
+      return;
+    }
+    const step = LESSON[state.lesson];
+    if (!step) return;
+    clearSpot();
+    const el = step.spot && document.querySelector(step.spot);
+    if (el) el.classList.add("spot");
+    const ok = !step.check || step.check();
+    $("lesson-next").classList.toggle("ready", ok);
+    if (ok) $("lesson-miss").textContent = "Got it.";
+  }
   function lessonDone() {
     try { return localStorage.getItem(LESSON_KEY) === "done"; } catch (err) { return false; }
   }
@@ -1442,14 +1471,19 @@
     const step = LESSON[state.lesson];
     box.hidden = false;
     $("lesson-n").textContent = String(state.lesson + 1);
+    const total = $("lesson-total");
+    if (total) total.textContent = String(LESSON.length);
     $("lesson-title").textContent = step.title;
     $("lesson-body").textContent = step.body;
     $("lesson-miss").textContent = "";
+    $("lesson-next").classList.remove("ready");
     $("lesson-next").textContent = state.lesson === LESSON.length - 1 ? "Done" : "I did this";
     $("lesson-skip").hidden = state.lesson < 1;
+    coachLesson();
   }
   function finishLesson() {
     state.lesson = LESSON.length;
+    clearSpot();
     try { localStorage.setItem(LESSON_KEY, "done"); } catch (err) { /* the card can still close */ }
     paintLesson();
   }
@@ -1466,10 +1500,13 @@
   });
   $("lesson-skip").addEventListener("click", finishLesson);
   state.lesson = lessonDone() ? LESSON.length : 0;
+  state.lessonBpm = state.bpm;
+  if (!state.coachTimer) state.coachTimer = window.setInterval(coachLesson, 400);
 
   $("help-btn").addEventListener("click", () => {
     state.lesson = 0;
     state.sawDownbeat = false;
+    state.lessonBpm = state.bpm;
     paintLesson();
     $("help-btn").setAttribute("aria-expanded", "true");
   });

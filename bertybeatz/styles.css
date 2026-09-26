@@ -140,6 +140,8 @@ button {
 }
 .top-actions { display: flex; gap: 0.5rem; }
 
+.lesson-next.ready { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.spot { outline: 3px solid var(--accent); outline-offset: 3px; }
 .lesson {
   background: var(--elevated);
   border: 1px solid var(--border);

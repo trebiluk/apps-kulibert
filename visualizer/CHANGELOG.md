@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.13** · 2026-09-26 · channel **live**
+
+The lesson outlines Play, the word, or the color dots. The button says Got it when that step is done.
+
+## Earlier
+
 **Chip: Viz 0.6.12** · 2026-09-26 · channel **live**
 
 How starts a lesson: see the beat, read the word, then change a color without changing the music.

@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.7** · 2026-09-26 · channel **live**
+
+The lesson outlines Play or the staff. The button says Got it when the note, the move, or the rest has happened.
+
+## Earlier
+
 **Chip: BS 0.2.6** · 2026-09-26 · channel **live**
 
 The lesson teaches pitch, higher and lower, and a rest. The next step waits until the staff actually changed. Sound can stay off.

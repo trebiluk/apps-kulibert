@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.6";
+  const CHIP = "BS 0.2.7";
   const HOW_KEY = "kulibert.bertyscore.howto";
   const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;
@@ -508,26 +508,48 @@
       body: "Press Play. The word names a letter. That letter is the pitch. Sound can stay off. The note still lights.",
       check: () => state.playing || state.sawNote,
       miss: "Press Play and watch the word.",
+      spot: "#play-btn",
     },
     {
       title: "Higher and lower",
       body: "Higher on the staff is a higher pitch. These notes are C, D, E, G, and A. Tap the staff to move one.",
       check: () => Song.serialize(state.song) !== state.opened,
       miss: "Tap the staff so one note moves.",
+      spot: "#staff",
     },
     {
       title: "Rest",
       body: "Tap a note to turn it into a rest. A rest is silence on that beat. The word says Rest. The song still moves.",
       check: () => state.sawRest,
       miss: "Press Play, then tap a lit note until the word says Rest.",
+      spot: "#staff",
     },
     {
       title: "On the beat",
       body: "Each note sits on a beat. Open Beats to put a kick on beat 1. Open Lights to watch that same song.",
       check: () => true,
       miss: "",
+      spot: "#beats-btn",
     },
   ];
+  function clearSpot() {
+    document.querySelectorAll(".spot").forEach((el) => el.classList.remove("spot"));
+  }
+  function coachScore() {
+    const box = $("lesson");
+    if (!box || box.hidden) {
+      clearSpot();
+      return;
+    }
+    const step = SCORE_LESSON[state.lesson];
+    if (!step) return;
+    clearSpot();
+    const el = step.spot && document.querySelector(step.spot);
+    if (el) el.classList.add("spot");
+    const ok = !step.check || step.check();
+    $("lesson-next").classList.toggle("ready", ok);
+    if (ok) $("lesson-miss").textContent = "Got it.";
+  }
   function paintScoreLesson() {
     const box = $("lesson");
     if (!box) return;
@@ -538,14 +560,19 @@
     const step = SCORE_LESSON[state.lesson];
     box.hidden = false;
     $("lesson-n").textContent = String(state.lesson + 1);
+    const total = $("lesson-total");
+    if (total) total.textContent = String(SCORE_LESSON.length);
     $("lesson-title").textContent = step.title;
     $("lesson-body").textContent = step.body;
     $("lesson-miss").textContent = "";
+    $("lesson-next").classList.remove("ready");
     $("lesson-next").textContent = state.lesson === SCORE_LESSON.length - 1 ? "Done" : "I did this";
     $("lesson-skip").hidden = state.lesson < 1;
+    coachScore();
   }
   function finishScoreLesson() {
     state.lesson = SCORE_LESSON.length;
+    clearSpot();
     try { localStorage.setItem(HOW_KEY, "1"); } catch (err) { /* ignore */ }
     paintScoreLesson();
   }
@@ -605,4 +632,5 @@
   state.sawNote = false;
   state.sawRest = false;
   if (!seen) paintScoreLesson();
+  if (!state.coachTimer) state.coachTimer = window.setInterval(coachScore, 400);
 })();

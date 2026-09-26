@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.12") return;
-  window.__VISUALIZER__ = "0.6.12";
+  if (window.__VISUALIZER__ === "0.6.13") return;
+  window.__VISUALIZER__ = "0.6.13";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.12";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.13";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -749,26 +749,48 @@
       body: "Press Play. The picture moves with the beat. Sound can stay off. You still read the word.",
       check: () => state.playing,
       miss: "Press Play.",
+      spot: "#play-btn",
     },
     {
       title: "The word",
       body: "Read the word under Play. When it names Kick, Snare, Hat, or a note, that sound is happening now.",
       check: () => state.playing && state.playhead >= 0,
       miss: "Keep Play on until the word names a sound.",
+      spot: "#now-line",
     },
     {
       title: "Color is not the music",
       body: "Tap a different color dot. The picture changes. The beat does not. The music is the beat and the notes.",
       check: () => state.color !== state.lessonColor,
       miss: "Tap a color dot that is not already on.",
+      spot: "#colors",
     },
     {
       title: "One song",
       body: "Beats is the drums and the count. Score is the notes on the staff. This door only shows the song.",
       check: () => true,
       miss: "",
+      spot: "#beats-btn",
     },
   ];
+  function clearSpot() {
+    document.querySelectorAll(".spot").forEach((el) => el.classList.remove("spot"));
+  }
+  function coachViz() {
+    const box = $("lesson");
+    if (!box || box.hidden) {
+      clearSpot();
+      return;
+    }
+    const step = VIZ_LESSON[state.lesson];
+    if (!step) return;
+    clearSpot();
+    const el = step.spot && document.querySelector(step.spot);
+    if (el) el.classList.add("spot");
+    const ok = !step.check || step.check();
+    $("lesson-next").classList.toggle("ready", ok);
+    if (ok) $("lesson-miss").textContent = "Got it.";
+  }
   function vizLessonDone() {
     try { return localStorage.getItem(VIZ_KEY) === "done"; } catch (err) { return false; }
   }
@@ -782,14 +804,19 @@
     const step = VIZ_LESSON[state.lesson];
     box.hidden = false;
     $("lesson-n").textContent = String(state.lesson + 1);
+    const total = $("lesson-total");
+    if (total) total.textContent = String(VIZ_LESSON.length);
     $("lesson-title").textContent = step.title;
     $("lesson-body").textContent = step.body;
     $("lesson-miss").textContent = "";
+    $("lesson-next").classList.remove("ready");
     $("lesson-next").textContent = state.lesson === VIZ_LESSON.length - 1 ? "Done" : "I did this";
     $("lesson-skip").hidden = state.lesson < 1;
+    coachViz();
   }
   function finishVizLesson() {
     state.lesson = VIZ_LESSON.length;
+    clearSpot();
     try { localStorage.setItem(VIZ_KEY, "done"); } catch (err) { /* ignore */ }
     paintVizLesson();
   }
@@ -807,6 +834,7 @@
     else paintVizLesson();
   });
   $("lesson-skip").addEventListener("click", finishVizLesson);
+  if (!state.coachTimer) state.coachTimer = window.setInterval(coachViz, 400);
   $("help-btn").addEventListener("click", () => {
     state.lesson = 0;
     state.lessonColor = state.color;

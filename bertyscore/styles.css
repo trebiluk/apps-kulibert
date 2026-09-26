@@ -54,6 +54,8 @@ button { cursor: pointer; }
   font-weight: 750;
   letter-spacing: -0.02em;
 }
+.lesson-next.ready { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.spot { outline: 3px solid var(--accent); outline-offset: 3px; }
 .lesson {
   background: var(--elevated);
   border: 1px solid var(--border);

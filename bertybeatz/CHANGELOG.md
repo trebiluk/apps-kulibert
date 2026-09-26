@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.9.1** · 2026-09-26 · channel **live**
+
+The lesson outlines the control. The button says Got it when the step is done. Tempo is the last step: speed, not how many beats.
+
+## Earlier
+
 **Chip: BZ 1.9.0** · 2026-09-26 · channel **live**
 
 How starts a lesson: the beat, the strong beat, a kick on beat 1, and 3/4. The next step waits until that action is done. Sound can stay off.
