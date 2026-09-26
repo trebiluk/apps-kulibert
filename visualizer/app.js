@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.9") return;
-  window.__VISUALIZER__ = "0.6.9";
+  if (window.__VISUALIZER__ === "0.6.10") return;
+  window.__VISUALIZER__ = "0.6.10";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.9";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.10";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -569,7 +569,7 @@
       b.setAttribute("aria-label", item.label);
       const dot = document.createElement("i");
       dot.style.background = item.dot;
-      b.append(dot, document.createTextNode(item.label));
+      b.append(dot);
       b.addEventListener("click", () => {
         state.color = item.id;
         try { localStorage.setItem(COLOR_KEY, item.id); } catch (err) { /* ignore */ }

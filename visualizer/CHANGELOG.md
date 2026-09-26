@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.10** · 2026-09-26 · channel **live**
+
+Play sits under the picture. Colors are dots in one row. Looks and examples slide sideways instead of stacking.
+
+## Earlier
+
 **Chip: Viz 0.6.9** · 2026-09-26 · channel **live**
 
 Each look follows the color, the examples, and the sliders. Rain splashes and leans. Fireworks explode. Crazy mixes a new picture. The line under the looks says what you are changing.

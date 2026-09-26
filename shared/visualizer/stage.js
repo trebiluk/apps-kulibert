@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.9";
+  var CHIP = "Viz 0.6.10";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -848,18 +848,27 @@
       vctx.globalAlpha = 1;
     }
     function drawBloom(w, h) {
-      var blobs = Math.max(3, Math.min(7, Math.round(gear.count / 5)));
+      var blobs = Math.max(6, Math.min(14, Math.round(gear.count / 2)));
+      var t = performance.now() / 1000;
       var i;
+      var cx = w / 2;
+      var cy = h / 2;
       for (i = 0; i < blobs; i++) {
         var v = bins[i % bins.length] / 255;
-        var x = ((i + 0.5) / blobs) * w;
-        var y = h * (0.32 + (i % 3) * 0.16);
-        var rad = (16 + v * 64) * gear.zoom * gear.bounce;
-        vctx.fillStyle = i % 2 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
-        vctx.globalAlpha = Math.min(0.42, 0.1 + gear.glow * 0.28);
+        var ang = (i / blobs) * Math.PI * 2 + (reduceMotion ? 0 : t * 0.2 * gear.spin);
+        var orbit = Math.min(w, h) * (0.08 + (i % 4) * 0.06) * gear.zoom;
+        var x = cx + Math.cos(ang) * orbit;
+        var y = cy + Math.sin(ang * 1.3) * orbit * 0.72;
+        var rad = (14 + v * 36) * gear.zoom * (0.65 + gear.bounce * 0.5) * (0.75 + gear.wild * 0.6);
+        vctx.fillStyle = hue();
+        vctx.globalAlpha = Math.min(0.5, 0.1 + gear.glow * 0.32);
         vctx.beginPath();
         vctx.arc(x, y, Math.max(8, rad), 0, Math.PI * 2);
         vctx.fill();
+        vctx.globalAlpha = Math.min(0.85, 0.35 + gear.glow * 0.4);
+        vctx.strokeStyle = hue();
+        vctx.lineWidth = Math.max(1, gear.thick * 0.35);
+        vctx.stroke();
       }
       vctx.globalAlpha = 1;
     }

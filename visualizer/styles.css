@@ -94,7 +94,7 @@ body.is-loop .stage {
 }
 .stage-canvas {
   width: 100%;
-  height: min(52vh, 420px);
+  height: min(46vh, 420px);
   min-height: 220px;
   display: block;
   border-radius: var(--radius);
@@ -208,16 +208,29 @@ body.is-loop .stage {
 }
 .btn.ghost { background: transparent; }
 .btn.icon { width: 44px; padding: 0; }
-.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
-.chips .btn svg { width: 16px; height: 16px; margin-right: 0.28rem; vertical-align: -3px; }
-.picture { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.45rem; }
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; min-width: 0; }
+.chips.scroll { flex-wrap: nowrap; overflow-x: auto; }
+.chips .btn svg { width: 16px; height: 16px; margin-right: 0.28rem; vertical-align: -3px; flex: 0 0 auto; }
+.picks { display: flex; flex-direction: column; gap: 0.35rem; margin: 0.15rem 0 0.75rem; }
+.pick {
+  display: grid;
+  grid-template-columns: 3.2rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.35rem;
+}
+.swatch-btn {
+  width: 44px;
+  min-width: 44px;
+  padding: 0;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
 .swatch-btn i {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 0.3rem;
+  display: block;
+  width: 18px;
+  height: 18px;
+  margin: 0;
   border-radius: 50%;
-  vertical-align: -2px;
 }
 .chips .btn.on {
   background: var(--accent);
@@ -250,10 +263,10 @@ body.is-loop .stage {
 }
 .code-group .btn { min-height: 44px; min-width: 44px; }
 .feed {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   margin-bottom: 0.75rem;
 }
 .gizmos {
@@ -324,17 +337,9 @@ body:not(.show-more) .deep { display: none; }
 }
 .foot a { color: var(--accent); font-weight: 650; text-decoration: none; }
 
-@media (max-height: 820px) {
-  .stage-canvas { height: 220px; min-height: 180px; }
-}
 @media (max-width: 760px) {
-  .stage-canvas { height: 240px; min-height: 200px; }
-  #looks {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    max-width: 100%;
-  }
-  #looks .btn { flex: 0 0 auto; }
+  .stage-canvas { height: min(38vh, 280px); min-height: 180px; }
+  .chips.scroll .btn { flex: 0 0 auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .btn, .play { transition: none; }
