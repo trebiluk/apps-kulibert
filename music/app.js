@@ -31,6 +31,7 @@
     song: Song.starter(),
     drums: blankDrums(),
     look: "ribbon",
+    band: "trumpet",
     fx: "plain",
     wave: "triangle",
     bright: 5200,
@@ -71,6 +72,7 @@
       });
     }
     if (saved.look) state.look = saved.look;
+    if (saved.band) state.band = saved.band;
     if (saved.fx) state.fx = saved.fx;
     if (saved.wave) state.wave = saved.wave;
     if (typeof saved.bright === "number") state.bright = saved.bright;
@@ -208,6 +210,7 @@
       song: JSON.parse(Song.serialize(state.song)),
       drums: state.drums,
       look: state.look,
+      band: state.band,
       fx: state.fx,
       wave: state.wave,
       bright: state.bright,
@@ -643,14 +646,142 @@
     $("now-line").textContent = "Press Play. Read the word. Sound can stay off.";
   }
 
+  const BAND = [
+    { id: "flute", name: "Flute", start: "Blow across the hole, like a bottle. Keep the air steady.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Use the B-flat fingering in your book.", freq: 466.2 },
+      { name: "C", how: "Left thumb and first finger.", freq: 523.3 },
+      { name: "D", how: "Left three fingers and right three fingers.", freq: 587.3 },
+      { name: "Eb", how: "Lift the left first finger. The other fingers stay down.", freq: 622.3 },
+      { name: "F", how: "Left three fingers, right first finger, and the right pinky.", freq: 698.5 },
+    ]},
+    { id: "clarinet", name: "Clarinet", start: "Flat chin. Firm corners. Soft air into the mouthpiece.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
+      { name: "C", how: "Thumb, and three fingers on each hand.", freq: 466.2 },
+      { name: "D", how: "Lift the right pinky.", freq: 523.3 },
+      { name: "E", how: "Lift the right ring finger.", freq: 587.3 },
+      { name: "F", how: "Lift the right middle finger too.", freq: 622.3 },
+      { name: "G", how: "Left hand only. Thumb and three fingers.", freq: 698.5 },
+    ]},
+    { id: "alto", name: "Alto sax", start: "Relaxed mouth. Even air. The neck strap holds the weight.", concert: "You read E-flat. Your written G is the band's B-flat.", notes: [
+      { name: "G", how: "Three fingers on the left hand.", freq: 466.2 },
+      { name: "A", how: "Two fingers on the left hand.", freq: 523.3 },
+      { name: "B", how: "One finger on the left hand.", freq: 587.3 },
+      { name: "C", how: "No fingers down.", freq: 622.3 },
+      { name: "D", how: "Octave key, and three fingers on the left.", freq: 698.5 },
+    ]},
+    { id: "trumpet", name: "Trumpet", start: "Buzz in the mouthpiece. Corners firm. Soft air.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
+      { name: "C", how: "Open. No valves.", freq: 466.2 },
+      { name: "D", how: "Valves 1 and 3.", freq: 523.3 },
+      { name: "E", how: "Valves 1 and 2.", freq: 587.3 },
+      { name: "F", how: "Valve 1.", freq: 622.3 },
+      { name: "G", how: "Open. No valves.", freq: 698.5 },
+    ]},
+    { id: "trombone", name: "Trombone", start: "Buzz in the mouthpiece. Move the slide straight.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Position 1. Slide all the way in.", freq: 466.2 },
+      { name: "C", how: "Position 3.", freq: 523.3 },
+      { name: "D", how: "Position 4.", freq: 587.3 },
+      { name: "Eb", how: "Position 3.", freq: 622.3 },
+      { name: "F", how: "Position 1.", freq: 698.5 },
+    ]},
+    { id: "percussion", name: "Percussion", start: "Sticks in the center of the head. Soft wrists.", concert: "You play the beat. Your count matches the band.", notes: [
+      { name: "Bass", how: "Bass drum on the beat. Let it ring.", drum: "kick" },
+      { name: "Snare", how: "Snare in the center.", drum: "snare" },
+      { name: "Tap", how: "A quiet tap, or the rim.", drum: "hat" },
+      { name: "Both", how: "Bass and snare together.", drum: "both" },
+      { name: "Rest", how: "Hands still. Count the beat anyway.", drum: "rest" },
+    ]},
+  ];
+  const WRITTEN = { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "B" };
+  function bandNow() {
+    return BAND.find((item) => item.id === state.band) || BAND[3];
+  }
+  function playBand(note, step) {
+    arm();
+    $("band-finger").textContent = note.name + ". " + note.how;
+    if (note.drum === "rest") {
+      $("lesson").textContent = "Rest. Count it. Hands still.";
+      return;
+    }
+    if (!state.muted) {
+      if (note.drum === "kick" || note.drum === "both") tone(140, 0.18, "sine", 0.9);
+      if (note.drum === "snare" || note.drum === "both") noise(0.12, 0.35);
+      if (note.drum === "hat") noise(0.04, 0.18);
+      if (note.freq) tone(note.freq, Math.max(0.4, state.noteLen), "triangle", 0.22);
+    }
+    const at = step == null ? placeStep() : step;
+    if (at < 0) return;
+    if (note.drum === "kick" || note.drum === "both") writeHit("kick", at);
+    if (note.drum === "snare" || note.drum === "both") writeHit("snare", at);
+    if (note.drum === "hat") writeHit("hat", at);
+    const pitch = WRITTEN[note.name];
+    if (pitch) {
+      const ev = Song.events(state.song)[at];
+      if (ev && ev.pitch !== pitch) {
+        Song.setBeat(state.song, ev.measure, ev.beat, pitch);
+        renderStaff();
+        keep();
+      }
+    }
+    state.step = at;
+    paintCount();
+    $("lesson").textContent = note.name + " on beat " + (at + 1) + ". Saved.";
+  }
+  let warmTimer = [];
+  function paintBand() {
+    const inst = bandNow();
+    const picks = $("band-picks");
+    picks.innerHTML = "";
+    BAND.forEach((item) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (item.id === inst.id ? " on" : "");
+      b.textContent = item.name;
+      b.addEventListener("click", () => {
+        state.band = item.id;
+        keep();
+        paintBand();
+        $("lesson").textContent = item.name + ". " + item.start;
+      });
+      picks.appendChild(b);
+    });
+    $("band-start").textContent = inst.start;
+    $("band-concert").textContent = inst.concert;
+    const notes = $("band-notes");
+    notes.innerHTML = "";
+    inst.notes.forEach((note) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "key";
+      b.textContent = note.name;
+      b.setAttribute("aria-label", note.name + ". " + note.how);
+      b.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        playBand(note);
+      });
+      notes.appendChild(b);
+    });
+  }
+  function warmUp() {
+    warmTimer.forEach((id) => window.clearTimeout(id));
+    warmTimer = [];
+    const inst = bandNow();
+    const beat = Math.round(60000 / Math.max(70, state.song.bpm || 96));
+    $("lesson").textContent = "Warm-up. Five sounds. Count 1 2 3 4 5.";
+    inst.notes.forEach((note, i) => {
+      warmTimer.push(window.setTimeout(() => playBand(note, i), i * beat));
+    });
+  }
+
   function setMode(mode) {
     state.mode = mode;
     $("work").classList.toggle("is-notes", mode === "notes");
     $("work").classList.toggle("is-drums", mode === "drums");
-    $("mode-notes").classList.toggle("on", mode === "notes");
-    $("mode-drums").classList.toggle("on", mode === "drums");
-    $("mode-notes").setAttribute("aria-pressed", String(mode === "notes"));
-    $("mode-drums").setAttribute("aria-pressed", String(mode === "drums"));
+    $("work").classList.toggle("is-band", mode === "band");
+    ["notes", "drums", "band"].forEach((name) => {
+      const btn = $("mode-" + name);
+      btn.classList.toggle("on", mode === name);
+      btn.setAttribute("aria-pressed", String(mode === name));
+    });
+    if (mode === "band") paintBand();
   }
 
   $("play-btn").addEventListener("click", () => {
@@ -718,6 +849,8 @@
   });
   $("mode-notes").addEventListener("click", () => setMode("notes"));
   $("mode-drums").addEventListener("click", () => setMode("drums"));
+  $("mode-band").addEventListener("click", () => setMode("band"));
+  $("band-warm").addEventListener("click", () => warmUp());
   $("menu-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("menu-open");
     $("menu-btn").setAttribute("aria-expanded", String(on));

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.7.0** · 2026-09-26 · channel **live**
+
+Concert band. Six beginner instruments. First five notes, written the way that student reads, sounding as one band. Warm-up counts them.
+
+## Earlier
+
 **Chip: MU 1.6.0** · 2026-09-26 · channel **live**
 
 The song is eight beats on the page. Dots show what is in each beat. Tap a number, then a pad. Space bar plays.
