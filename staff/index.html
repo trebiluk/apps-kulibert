@@ -91,6 +91,7 @@
         <label>Door line <input id="note" maxlength="80" placeholder="This week: bring your sketch"/></label>
         <label class="check">Show door line <input id="showNote" type="checkbox" checked/></label>
         <label>Welcome <input id="welcome" maxlength="60"/></label>
+        <label>Announcement <input id="announce" maxlength="140" placeholder="Leave blank. The box stays hidden."/></label>
         <label>Period pin <input id="period" maxlength="24" placeholder="Period 3"/></label>
         <label>Next club <input id="club" maxlength="80"/></label>
         <label>Doors <input id="doors" maxlength="24" placeholder="7:55a"/></label>
@@ -146,6 +147,11 @@
         <p class="chip">Voice</p>
         <label>Search placeholder <input id="search" maxlength="40"/></label>
         <label>Footer <input id="footer" maxlength="80"/></label>
+        <p class="chip">Sticky icons</p>
+        <p>Up to three. They stay at the top of the door. Leave a slot blank to skip it.</p>
+        <label>Icon 1 <select id="sticky-1"></select></label>
+        <label>Icon 2 <select id="sticky-2"></select></label>
+        <label>Icon 3 <select id="sticky-3"></select></label>
       </form>
       <button class="save" id="save-all" type="button">Save to every Chromebook</button>
       <button class="ghost" id="lock" type="button">Lock this tab</button>
@@ -158,7 +164,7 @@
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
       var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["visualizer","Visualizer"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
-      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
+      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", announce: "", sticky: [], period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
       var token = sessionStorage.getItem("tech-room-desk-gate") || "";
       function paintHubLock() {
         var on = window.HubStaffAuth && HubStaffAuth.isUnlocked();
@@ -231,6 +237,33 @@
         });
       }
 
+      var STICKY_APPS = [["","None"],["baboo","Baboo"],["bertycad","BertyCAD"],["visualizer","Visualizer"],["techworks","TechWorks"],["koderized","Koderized"],["ginger","Ginger"],["bertybeatz","BertyBeatz"],["paperlab","PaperLab"],["catapult","ThrowIt"],["logolab","LogoLab"],["sprocket","Sprocket"],["debugzy","Debugzy"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["bertybots","Berty's Botz"],["berty-run","Berty Run"],["spancraft","SpanCraft"],["spire-lab","Spire Lab"],["drift","Drift"],["holdit","HoldIt"]];
+      function paintSticky() {
+        var picked = Array.isArray(room.sticky) ? room.sticky : [];
+        ["sticky-1","sticky-2","sticky-3"].forEach(function (id, index) {
+          var sel = $(id);
+          if (!sel) return;
+          if (!sel.options.length) {
+            STICKY_APPS.forEach(function (pair) {
+              var opt = document.createElement("option");
+              opt.value = pair[0];
+              opt.textContent = pair[1];
+              sel.appendChild(opt);
+            });
+          }
+          sel.value = picked[index] || "";
+        });
+      }
+      function readSticky() {
+        var out = [];
+        ["sticky-1","sticky-2","sticky-3"].forEach(function (id) {
+          var sel = $(id);
+          var value = sel ? sel.value : "";
+          if (value && out.indexOf(value) === -1) out.push(value);
+        });
+        return out.slice(0, 3);
+      }
+
       function fill() {
         $("note").value = room.note || "";
         $("club").value = room.club || "";
@@ -240,6 +273,7 @@
         $("closedMsg").value = room.closedMsg || "";
         $("showNote").checked = room.showNote !== false;
         $("welcome").value = room.welcome || "";
+        $("announce").value = room.announce || "";
         $("period").value = room.period || "";
         $("shortcuts").checked = room.shortcuts !== false;
         $("paste").checked = room.paste !== false;
@@ -258,6 +292,7 @@
         $("maxCuts").value = room.maxCuts || 18;
         $("search").value = room.search || "";
         $("footer").value = room.footer || "";
+        paintSticky();
         if ($("lb-on")) $("lb-on").checked = room.boardsOn !== false;
         paintApps();
         paintList();
@@ -273,6 +308,7 @@
         room.closedMsg = $("closedMsg").value;
         room.showNote = $("showNote").checked;
         room.welcome = $("welcome").value;
+        room.announce = String($("announce").value || "").replace(/<[^>]*>/g, "").slice(0, 140);
         room.period = $("period").value;
         room.shortcuts = $("shortcuts").checked;
         room.paste = $("paste").checked;
@@ -291,6 +327,7 @@
         room.maxCuts = Math.min(18, Math.max(1, Number($("maxCuts").value) || 18));
         room.search = $("search").value;
         room.footer = $("footer").value;
+        room.sticky = readSticky();
         room.boardsOn = $("lb-on") ? $("lb-on").checked : room.boardsOn !== false;
         room.boards = dedupeBoards(room.boards);
       }
