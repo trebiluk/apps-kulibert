@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.9 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.10 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.9";
+const APP_VERSION = "0.19.10";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.9";
+const APP_CHIP = "BB 0.19.10";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -532,7 +532,6 @@ function boot() {
       b.classList.toggle("on", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
-    if (!quiet) toast(r === "observer" ? "Observer: watch the crate." : "Builder: place parts.");
   }
   try { setRole(sessionStorage.getItem(ROLE_KEY) || "builder", true); } catch (e) { setRole("builder", true); }
 
@@ -2634,7 +2633,7 @@ function boot() {
     const s = doc.level.shop;
     const core = (doc.level.cores && doc.level.cores[0]) || { x: s.x + 2 };
     const y = s.y + WHEEL_R + 0.04;
-    const x = Math.max(s.x + WHEEL_R + 0.2, core.x - 0.95);
+    const x = Math.max(s.x + WHEEL_R + 0.2, core.x - 1.7);
     if (!inRect(x, y, s)) {
       toast("Shop Floor is too small.");
       return;
