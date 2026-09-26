@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.11** · 2026-09-26 · channel **live**
+
+The picture has a glow. Ribbon is a thick line with a soft edge. Bloom is a soft light, not a flat circle. Two beats with the same name show a number.
+
+## Earlier
+
 **Chip: Viz 0.6.10** · 2026-09-26 · channel **live**
 
 Play sits under the picture. Colors are dots in one row. Looks and examples slide sideways instead of stacking.

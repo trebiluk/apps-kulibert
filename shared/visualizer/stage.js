@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.10";
+  var CHIP = "Viz 0.6.11";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -830,21 +830,50 @@
       }
       vctx.globalAlpha = 1;
     }
+    function wash(w, h) {
+      var glow = vctx.createRadialGradient(w * 0.5, h * 0.42, 10, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
+      glow.addColorStop(0, hue());
+      glow.addColorStop(1, "rgba(5,8,20,0)");
+      vctx.globalAlpha = 0.14 + gear.glow * 0.14;
+      vctx.fillStyle = glow;
+      vctx.fillRect(0, 0, w, h);
+      vctx.globalAlpha = 1;
+    }
     function drawRibbon(w, h) {
-      var n = 36;
+      var n = 40;
+      var pts = [];
       var i;
-      vctx.beginPath();
-      vctx.lineWidth = Math.max(2, gear.thick);
-      vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
-      vctx.globalAlpha = Math.min(0.9, 0.4 + gear.glow * 0.45);
       for (i = 0; i < n; i++) {
         var v = bins[i % bins.length] / 255;
-        var x = (i / (n - 1)) * w;
-        var y = h * 0.5 - (v - 0.25) * h * 0.5 * gear.zoom * gear.bounce;
-        if (i === 0) vctx.moveTo(x, y);
-        else vctx.lineTo(x, y);
+        pts.push({
+          x: (i / (n - 1)) * w,
+          y: h * 0.5 - (v - 0.25) * h * 0.42 * gear.zoom * gear.bounce,
+        });
       }
-      vctx.stroke();
+      function stroke(width, alpha) {
+        vctx.beginPath();
+        vctx.lineWidth = width;
+        vctx.lineJoin = "round";
+        vctx.strokeStyle = hue();
+        vctx.globalAlpha = alpha;
+        pts.forEach(function (p, idx) {
+          if (idx === 0) vctx.moveTo(p.x, p.y);
+          else vctx.lineTo(p.x, p.y);
+        });
+        vctx.stroke();
+      }
+      stroke(Math.max(10, gear.thick * 3.2), 0.16 + gear.glow * 0.22);
+      stroke(Math.max(2, gear.thick), 0.9);
+      if (gear.wild > 0.25) {
+        vctx.beginPath();
+        pts.forEach(function (p, idx) {
+          var y = h - p.y;
+          if (idx === 0) vctx.moveTo(p.x, y);
+          else vctx.lineTo(p.x, y);
+        });
+        vctx.globalAlpha = 0.28 * gear.wild;
+        vctx.stroke();
+      }
       vctx.globalAlpha = 1;
     }
     function drawBloom(w, h) {
@@ -860,15 +889,15 @@
         var x = cx + Math.cos(ang) * orbit;
         var y = cy + Math.sin(ang * 1.3) * orbit * 0.72;
         var rad = (14 + v * 36) * gear.zoom * (0.65 + gear.bounce * 0.5) * (0.75 + gear.wild * 0.6);
-        vctx.fillStyle = hue();
-        vctx.globalAlpha = Math.min(0.5, 0.1 + gear.glow * 0.32);
+        var blob = vctx.createRadialGradient(x, y, 2, x, y, Math.max(12, rad));
+        blob.addColorStop(0, "#f8fafc");
+        blob.addColorStop(0.35, hue());
+        blob.addColorStop(1, "rgba(5,8,20,0)");
+        vctx.fillStyle = blob;
+        vctx.globalAlpha = Math.min(0.85, 0.35 + gear.glow * 0.5);
         vctx.beginPath();
-        vctx.arc(x, y, Math.max(8, rad), 0, Math.PI * 2);
+        vctx.arc(x, y, Math.max(12, rad), 0, Math.PI * 2);
         vctx.fill();
-        vctx.globalAlpha = Math.min(0.85, 0.35 + gear.glow * 0.4);
-        vctx.strokeStyle = hue();
-        vctx.lineWidth = Math.max(1, gear.thick * 0.35);
-        vctx.stroke();
       }
       vctx.globalAlpha = 1;
     }
@@ -928,6 +957,7 @@
       fillBins(snap);
       vctx.fillStyle = gear.trail > 0.01 ? "rgba(5,8,20," + (1 - gear.trail * 0.72) + ")" : "#050814";
       vctx.fillRect(0, 0, w, h);
+      wash(w, h);
       var look = snap.look || "bars";
       if (look === "kaleido") drawKaleido(w, h);
       else if (look === "clouds") drawClouds(w, h);

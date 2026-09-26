@@ -8,7 +8,7 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.6.10"/>
+  <link rel="stylesheet" href="./styles.css?v=0.6.11"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.6.10</em>
+        <em id="chip-label">Viz 0.6.11</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,7 +29,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> Play sits under the picture. Colors are dots in one row. Slide sideways for looks and examples.</li>
+      <li><strong>What's new:</strong> The picture has a glow. Ribbon is a thick line. Bloom is a soft light. Repeated beat names get a number.</li>
       <li>Pick a Look. Keys 1–5 are the first five. Keys 6–9 and 0 are the new ones.</li>
       <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
       <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
@@ -44,7 +44,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.6.10</span>
+          <span id="chip-live">Viz 0.6.11</span>
         </p>
       </div>
     </div>
@@ -89,7 +89,7 @@
 
   <p id="send-line" class="note" role="status"></p>
   <details class="gizmos" id="gizmo-box">
-    <summary>Sliders — these change the picture</summary>
+    <summary>Sliders</summary>
     <label class="gizmo">Size <b id="n-zoom">100</b><input id="g-zoom" type="range" min="40" max="160" value="100"/></label>
     <label class="gizmo">Lean <b id="n-spin">55</b><input id="g-spin" type="range" min="0" max="100" value="55"/></label>
     <label class="gizmo">Glow <b id="n-glow">85</b><input id="g-glow" type="range" min="0" max="100" value="85"/></label>
@@ -113,13 +113,13 @@
   </section>
 
   <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.6.10</span> · own door · shared lights ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.6.11</span> · own door · shared lights ·
     <a href="./teacher.html">Teacher</a>
   </p>
 
   <script src="/shared/titles.js?v=3"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
-  <script src="/shared/visualizer/stage.js?v=0.6.10"></script>
-  <script src="./app.js?v=0.6.10"></script>
+  <script src="/shared/visualizer/stage.js?v=0.6.11"></script>
+  <script src="./app.js?v=0.6.11"></script>
 </body>
 </html>

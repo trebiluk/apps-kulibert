@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.10") return;
-  window.__VISUALIZER__ = "0.6.10";
+  if (window.__VISUALIZER__ === "0.6.11") return;
+  window.__VISUALIZER__ = "0.6.11";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.10";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.11";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -453,11 +453,19 @@
     const box = $("feed");
     if (!box) return;
     box.innerHTML = "";
+    const seen = {};
+    catalog().forEach((item) => {
+      const base = item.name || "Beat";
+      seen[base] = (seen[base] || 0) + 1;
+    });
+    const used = {};
     catalog().forEach((item) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (item.id === state.beatId ? " on" : "");
-      b.textContent = item.name;
+      const base = item.name || "Beat";
+      used[base] = (used[base] || 0) + 1;
+      b.textContent = seen[base] > 1 ? base + " " + used[base] : base;
       b.setAttribute("aria-pressed", String(item.id === state.beatId));
       b.addEventListener("click", () => {
         stopDevice();
