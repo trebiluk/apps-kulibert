@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-graph-chips"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-scenes"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -76,16 +76,41 @@
     @media (prefers-reduced-motion: reduce){
       body::before, body::after{ opacity:.08; }
     }
-    html[data-hub-theme="graph"] body,
+    html[data-hub-theme="room"] body{
+      color:#e8f7ff;
+      background:
+        radial-gradient(ellipse 80% 42% at 50% -8%, rgba(34,211,238,.28), transparent 58%),
+        radial-gradient(ellipse 50% 36% at 100% 100%, rgba(59,130,246,.22), transparent 60%),
+        radial-gradient(circle at 12% 88%, rgba(34,211,238,.12), transparent 42%),
+        #050814;
+      background-attachment:fixed;
+    }
+    html[data-hub-theme="room"] .shell,
+    html[data-hub-theme="room"] .shell-mid,
+    html[data-hub-theme="room"] #shell-board{background:transparent}
+    html[data-hub-theme="room"] .shell-header,
+    html[data-hub-theme="room"] .shell-marquee,
+    html[data-hub-theme="room"] .app-dock{background:#050814}
+    html[data-hub-theme="room"] #app-frame{background:#050814}
+    html[data-hub-theme="room"] body.apps-always .group h2{color:#b7e7f6}
+    html[data-hub-theme="graph"] body{color:#1c1915}
+    html[data-hub-theme="graph"] .shell{color:#1c1915}
+    html[data-hub-theme="graph"] body{
+      background-color:#f4f7fb;
+      background-image:
+        linear-gradient(90deg, transparent 26px, rgba(196,68,68,.72) 26px, rgba(196,68,68,.72) 27px, transparent 27px),
+        linear-gradient(#c5d4ea 1px, transparent 1px),
+        linear-gradient(90deg, #c5d4ea 1px, transparent 1px),
+        linear-gradient(#8eadd4 1.5px, transparent 1.5px),
+        linear-gradient(90deg, #8eadd4 1.5px, transparent 1.5px);
+      background-size:auto, 22px 22px, 22px 22px, 110px 110px, 110px 110px;
+      background-attachment:fixed;
+    }
     html[data-hub-theme="graph"] .shell,
     html[data-hub-theme="graph"] .shell-mid,
-    html[data-hub-theme="graph"] #shell-board,
-    html[data-hub-theme="graph"] #app-frame{background:#efeae0;color:#1c1915}
-    html[data-hub-theme="graph"] body::before{
-      opacity:1;
-      background-image:linear-gradient(#c9c2b4 1px, transparent 1px),linear-gradient(90deg, #c9c2b4 1px, transparent 1px);
-      background-size:22px 22px;mask-image:none;-webkit-mask-image:none;
-    }
+    html[data-hub-theme="graph"] #shell-board{background:transparent}
+    html[data-hub-theme="graph"] #app-frame{background:#efeae0}
+    html[data-hub-theme="graph"] body::before{opacity:0}
     html[data-hub-theme="graph"] body::after{opacity:0}
     html[data-hub-theme="graph"] .shell-header,
     html[data-hub-theme="graph"] .shell-marquee,
@@ -98,7 +123,12 @@
     html[data-hub-theme="graph"] .app-dock-item{color:#1c1915;background:#fffdf8;border-color:#2c2824}
     html[data-hub-theme="graph"] .mq-board{color:#1d4e89}
     html[data-hub-theme="graph"] .mq-gap{color:#5c564c}
-    html[data-hub-theme="graph"] body.apps-always .poster{background:#fffdf8;border:1.5px solid #2c2824;box-shadow:3px 3px 0 #2c2824}
+    html[data-hub-theme="graph"] body.apps-always .poster{
+      background:rgba(255,253,248,.94);border:1.5px solid #2c2824;box-shadow:3px 3px 0 #2c2824;
+    }
+    html[data-hub-theme="graph"] body.apps-always .group h2,
+    html[data-hub-theme="graph"] .live h2,
+    html[data-hub-theme="graph"] .recents h2{color:#3f3a34}
     html[data-hub-theme="graph"] body.apps-always .field{opacity:.22}
     html[data-hub-theme="graph"] body.apps-always .lockup-the{color:#3f3a34}
     html[data-hub-theme="graph"] body.apps-always .lockup-room{
@@ -129,17 +159,23 @@
     }
     html[data-hub-theme="graph"] ul.chips a:hover{border-color:#1d4e89}
     html[data-hub-theme="graph"] ul.chips strong{color:#5ee4ff}
-    html[data-hub-theme="miami"] body,
+    html[data-hub-theme="miami"] body{color:#fff6fb}
+    html[data-hub-theme="miami"] .shell{color:#fff6fb}
+    html[data-hub-theme="miami"] body{
+      background:
+        radial-gradient(circle at 84% 16%, #fff3b0 0 16px, #ffb703 20px, rgba(255,183,3,0) 46px),
+        linear-gradient(180deg, #1a0538 0%, #4a1468 30%, #c12678 56%, #ff6b3d 76%, #14061f 76%);
+      background-attachment:fixed;
+    }
     html[data-hub-theme="miami"] .shell,
     html[data-hub-theme="miami"] .shell-mid,
-    html[data-hub-theme="miami"] #shell-board,
-    html[data-hub-theme="miami"] #app-frame{background:#14061f;color:#fff6fb}
-    html[data-hub-theme="miami"] body::before{
-      opacity:.45;
-      background-image:linear-gradient(rgba(255,74,216,.28) 1px, transparent 1px),linear-gradient(90deg, rgba(94,246,255,.22) 1px, transparent 1px);
-      background-size:36px 36px;mask-image:none;-webkit-mask-image:none;
+    html[data-hub-theme="miami"] #shell-board{background:transparent}
+    html[data-hub-theme="miami"] #app-frame{background:#14061f}
+    html[data-hub-theme="miami"] body::before{opacity:.22}
+    html[data-hub-theme="miami"] body::after{
+      opacity:1;
+      background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 90' preserveAspectRatio='none'%3E%3Cpath fill='%2312061c' d='M0 90V62h16V44h12v18h14V30h16v32h12V48h10V24h18v38h14V36h12V18h14v18h12V52h16V40h14V22h12v18h16V58h18V34h14V20h12v14h18V62h20V90z'/%3E%3C/svg%3E") bottom center / 100% 150px no-repeat;
     }
-    html[data-hub-theme="miami"] body::after{opacity:.08}
     html[data-hub-theme="miami"] .shell-header,
     html[data-hub-theme="miami"] .shell-marquee,
     html[data-hub-theme="miami"] .app-dock{background:#14061f;color:#fff6fb;border-bottom-color:#ff4ad8}
@@ -175,6 +211,12 @@
     html[data-hub-theme="miami"] body.apps-always .tile .label,
     html[data-hub-theme="miami"] .welcome-line{color:#fff6fb}
     html[data-hub-theme="miami"] a.tile:hover{background:#2a0d48}
+    html[data-hub-theme="miami"] body.apps-always .group h2,
+    html[data-hub-theme="miami"] .live h2,
+    html[data-hub-theme="miami"] .recents h2,
+    html[data-hub-theme="miami"] #room-footer{color:#fff6fb;text-shadow:0 1px 2px #14061f}
+    html[data-hub-theme="miami"] ul.chips a{background:#1a0830;color:#fff6fb;border-color:#ff4ad8}
+    html[data-hub-theme="miami"] ul.chips strong{color:#5ef6ff}
     .wrap, #shell-root, .shell, main, .poster, #shell-board{ position:relative; z-index:1; }
     .poster{
       border-color: color-mix(in srgb, #22d3ee 42%, var(--border));
@@ -930,7 +972,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-graph-chips</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-scenes</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.9</strong> — Read speaks the one line. Read aloud stays off until you turn it on.</p>
@@ -938,7 +980,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.4</strong> — read aloud, off until you turn it on.</p>
           <ul id="hub-log">
-            <li>Phone: the room no longer slides sideways. The open app stays on the screen.</li>
+            <li>Room, Graph, and Miami each have a faint scene behind the tiles. The names stay on solid cards.</li>
             <li>HoldIt HI 1.1.9, SpanCraft SC 1.3.24, Spire Lab SL 1.3.23 · Read speaks the one line. Read aloud stays off until you turn it on.</li>
             <li>Three looks: Room, Graph, and Miami. A new visit picks one. Theme keeps the one you tap.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
