@@ -209,7 +209,16 @@ body.is-loop .stage {
 .btn.ghost { background: transparent; }
 .btn.icon { width: 44px; padding: 0; }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; flex: 1; }
-.chips .btn { min-height: 44px; }
+.chips .btn svg { width: 16px; height: 16px; margin-right: 0.28rem; vertical-align: -3px; }
+.picture { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-top: 0.45rem; }
+.swatch-btn i {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 0.3rem;
+  border-radius: 50%;
+  vertical-align: -2px;
+}
 .chips .btn.on {
   background: var(--accent);
   color: var(--accent-fg);

@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.6.8";
+  var CHIP = "Viz 0.6.9";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -16,7 +16,16 @@
     { id: "tunnel", label: "Tunnel" },
     { id: "ribbon", label: "Ribbon" },
     { id: "bloom", label: "Bloom" },
+    { id: "fireworks", label: "Fireworks" },
   ];
+  var PALETTE = {
+    cyan: ["#22d3ee", "#5eead4", "#e8f7ff"],
+    amber: ["#f59e0b", "#fbbf24", "#fff7ed"],
+    violet: ["#a78bfa", "#c4b5fd", "#f5f3ff"],
+    rose: ["#fb7185", "#fda4af", "#fff1f2"],
+    lime: ["#84cc16", "#bef264", "#f7fee7"],
+    ice: ["#93c5fd", "#e0f2fe", "#f8fafc"],
+  };
   var CODE_KEY = "kulibert.codelook";
   var CODE_GROUPS = [
     { key: "folds", label: "Folds", options: [
@@ -357,9 +366,15 @@
       gear.bounce = num(g.bounce, 0, 100, 100) / 100;
       gear.scope = num(g.scope, 0, 100, 100) / 100;
       gear.smooth = num(g.smooth, 0, 100, 0) / 100;
+      gear.wild = num(g.wild, 0, 100, 35) / 100;
+      gear.color = PALETTE[g.color] ? g.color : "cyan";
     }
-    function ink(a, b) {
-      return gear.tint > 0.66 ? b : gear.tint > 0.33 ? "#5eead4" : a;
+    function hue() {
+      var set = PALETTE[gear.color] || PALETTE.cyan;
+      return gear.tint > 0.66 ? set[1] : gear.tint > 0.33 ? set[2] : set[0];
+    }
+    function ink() {
+      return hue();
     }
     function band(a, b) {
       var s = 0;
@@ -420,6 +435,10 @@
         vctx.lineTo(x, h - 8);
         vctx.closePath();
         vctx.fill();
+        if (gear.wild > 0.15) {
+          vctx.globalAlpha = 0.2 + gear.wild * 0.35;
+          vctx.fillRect(x, 10, bw, Math.max(4, bh * gear.wild * 0.4));
+        }
       }
       vctx.globalAlpha = 1;
     }
@@ -728,22 +747,68 @@
     }
     function drawRain(w, h) {
       var t = performance.now() / 1000;
-      var drops = Math.max(8, Math.min(22, Math.round(gear.count)));
+      var drops = Math.max(12, Math.min(46, Math.round(gear.count * 1.5)));
+      var wind = (gear.spin - 0.5) * 36 * gear.zoom;
       var i;
-      vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
-      vctx.lineWidth = Math.max(1, gear.thick * 0.45);
+      vctx.strokeStyle = hue();
+      vctx.lineWidth = Math.max(1, gear.thick * 0.4);
       for (i = 0; i < drops; i++) {
         var v = bins[i % bins.length] / 255;
-        var speed = reduceMotion ? 0.05 : 0.15 + v * 0.45 * gear.spin;
-        var y = ((t * speed * 80 + i * 37) % (h + 30)) - 20;
-        var x = ((i + 0.5) / drops) * w;
-        var len = (8 + v * 18) * gear.zoom;
-        vctx.globalAlpha = Math.min(0.75, 0.2 + gear.glow * 0.5);
+        var speed = reduceMotion ? 0.05 : 0.14 + v * 0.55 * (0.35 + gear.bounce);
+        var y = ((t * speed * 110 + i * 29) % (h + 36)) - 8;
+        var x = ((i + 0.5) / drops) * w + wind * (y / h);
+        var len = (12 + v * 26) * gear.zoom * (1 + gear.wild);
+        vctx.globalAlpha = Math.min(0.9, 0.28 + gear.glow * 0.6);
         vctx.beginPath();
         vctx.moveTo(x, y);
-        vctx.lineTo(x, y + len);
+        vctx.lineTo(x + wind * 0.12, y + len);
+        if (gear.wild > 0.25 && i % 2 === 0) {
+          vctx.moveTo(x, y + len * 0.45);
+          vctx.lineTo(x + 10 * gear.wild, y + len * 0.72);
+        }
         vctx.stroke();
+        if (y + len > h - 16) {
+          vctx.globalAlpha = 0.4 * gear.glow;
+          vctx.beginPath();
+          vctx.ellipse(x, h - 8, 3 + v * 12 * gear.zoom, 1.6, 0, 0, Math.PI * 2);
+          vctx.stroke();
+        }
       }
+      vctx.globalAlpha = 1;
+    }
+    var sparks = [];
+    function drawFireworks(w, h) {
+      var bass = band(0, 6);
+      var cap = Math.max(8, Math.min(16, Math.round(gear.count / 2)));
+      if (sparks.length < cap * 6 && Math.random() < (reduceMotion ? 0.08 : 0.18 + bass * 0.55)) {
+        var burst = 7 + Math.round(gear.wild * 12);
+        var sx = w * (0.18 + Math.random() * 0.64);
+        var sy = h * (0.16 + Math.random() * 0.4);
+        var i;
+        for (i = 0; i < burst; i++) {
+          var ang = (i / burst) * Math.PI * 2 + gear.spin * 3;
+          var speed = (0.7 + gear.zoom * 0.8) * (0.6 + bass);
+          sparks.push({ x: sx, y: sy, vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed, life: 1 });
+        }
+      }
+      var keep = [];
+      var grav = reduceMotion ? 0.01 : 0.025 + (1 - gear.bounce) * 0.07;
+      var s;
+      for (s = 0; s < sparks.length; s++) {
+        var p = sparks[s];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += grav;
+        p.life -= reduceMotion ? 0.05 : 0.012;
+        if (p.life <= 0 || p.y > h + 8) continue;
+        keep.push(p);
+        vctx.fillStyle = hue();
+        vctx.globalAlpha = Math.max(0, p.life) * (0.35 + gear.glow * 0.65);
+        vctx.beginPath();
+        vctx.arc(p.x, p.y, Math.max(1.2, gear.thick * 0.42 * p.life), 0, Math.PI * 2);
+        vctx.fill();
+      }
+      sparks = keep.length > 90 ? keep.slice(keep.length - 90) : keep;
       vctx.globalAlpha = 1;
     }
     function drawTunnel(w, h) {
@@ -867,6 +932,7 @@
       else if (look === "tunnel") drawTunnel(w, h);
       else if (look === "ribbon") drawRibbon(w, h);
       else if (look === "bloom") drawBloom(w, h);
+      else if (look === "fireworks") drawFireworks(w, h);
       else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
       drawScope(w, h, snap);
     }
@@ -889,6 +955,7 @@
   global.KulibertStage = {
     CHIP: CHIP,
     LOOKS: LOOKS,
+    PALETTE: PALETTE,
     mount: mount,
     loadCode: loadCode,
     syncRecipe: syncRecipe,

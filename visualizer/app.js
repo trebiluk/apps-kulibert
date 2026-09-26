@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.8") return;
-  window.__VISUALIZER__ = "0.6.8";
+  if (window.__VISUALIZER__ === "0.6.9") return;
+  window.__VISUALIZER__ = "0.6.9";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.8";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.9";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -17,8 +17,57 @@
   const FEED_KEY = "kulibert.viz.feed";
   const GEAR_KEY = "kulibert.viz.gear";
   const GEAR_BASE = {
-    zoom: 100, spin: 100, glow: 70, thick: 3, count: 24,
-    tint: 0, trail: 0, bounce: 100, scope: 100, smooth: 0,
+    zoom: 100, spin: 55, glow: 85, thick: 3, count: 24,
+    tint: 0, trail: 18, bounce: 100, scope: 100, smooth: 0, wild: 35,
+  };
+  const COLOR_KEY = "kulibert.viz.color";
+  const COLORS = [
+    { id: "cyan", label: "Cyan", dot: "#22d3ee" },
+    { id: "amber", label: "Amber", dot: "#f59e0b" },
+    { id: "violet", label: "Violet", dot: "#a78bfa" },
+    { id: "rose", label: "Rose", dot: "#fb7185" },
+    { id: "lime", label: "Lime", dot: "#84cc16" },
+    { id: "ice", label: "Ice", dot: "#93c5fd" },
+  ];
+  const HINTS = {
+    bars: "Columns grow with the music. Wild copies them up top.",
+    kaleido: "The same shape repeats around the middle. How many adds folds.",
+    clouds: "Soft blobs drift. Size and Glow make them bigger.",
+    stars: "Dots scatter. Bounce makes them jump.",
+    code: "Type numbers or F + - [ ]. The picture follows the rule.",
+    rings: "Circles sit on the beat. Thickness widens the line.",
+    ripple: "Rings spread from the middle. Trails leave an afterimage.",
+    tiles: "Blocks light up. How many changes the grid.",
+    orbit: "Dots travel in ovals. Lean changes the speed.",
+    rain: "Drops fall and splash. Lean pushes them sideways. Wild adds forks.",
+    tunnel: "Rings rush forward. Lean and the low sound change the speed.",
+    ribbon: "One line follows the music. Thickness is the line.",
+    bloom: "Soft circles grow. Glow is how bright they get.",
+    fireworks: "Bursts explode. How many sets the bursts. Bounce is gravity. Wild adds sparks.",
+  };
+  const EXAMPLES = {
+    rain: [
+      { name: "Drizzle", gear: { count: 8, spin: 15, thick: 1, wild: 0, glow: 50, zoom: 80 } },
+      { name: "Storm", gear: { count: 32, spin: 85, thick: 2, wild: 60, glow: 95, bounce: 80, zoom: 120 } },
+      { name: "Forks", gear: { count: 22, spin: 40, thick: 3, wild: 100, glow: 80, trail: 20 } },
+    ],
+    fireworks: [
+      { name: "Tiny sparks", gear: { count: 8, thick: 1, wild: 10, bounce: 90, zoom: 70, glow: 70 } },
+      { name: "Big boom", gear: { count: 32, thick: 9, wild: 100, bounce: 35, glow: 100, zoom: 150, trail: 30 } },
+      { name: "Slow float", gear: { count: 14, thick: 4, wild: 45, bounce: 100, trail: 45, spin: 20 } },
+    ],
+    bars: [
+      { name: "City", gear: { count: 18, wild: 8, glow: 70, zoom: 100, thick: 3 } },
+      { name: "Echo", gear: { count: 28, wild: 100, glow: 100, trail: 35, zoom: 130 } },
+    ],
+  };
+  const ICONS = {
+    bars: "M3 18h3V8H3zm5 0h3V4H8zm5 0h3v-7h-3z",
+    rain: "M6 3l-2 9M12 2l-2 11M18 4l-2 9",
+    fireworks: "M12 3v6M12 15v6M3 12h6M15 12h6M6 6l4 4M14 14l4 4M18 6l-4 4M10 14l-4 4",
+    tunnel: "M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 12m-6 0a6 6 0 1 0 12 0a6 6 0 1 0-12 0",
+    ribbon: "M3 14c3-8 6 8 9 0s6-8 9 0",
+    bloom: "M12 12m-3 0a3 3 0 1 0 6 0a3 3 0 1 0-6 0M5 8m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M18 9m-2 0a2 2 0 1 0 4 0",
   };
   const BEATZ_KEY = "bertybeatz.v1";
   const TRACKS = ["kick", "snare", "hat", "clap", "n4", "n3", "n2", "n1", "n0"];
@@ -226,6 +275,7 @@
     playhead: -1,
     status: "",
     gear: loadGear(),
+    color: "cyan",
   };
   let audioCtx = null;
   let master = null;
@@ -470,7 +520,21 @@
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (item.id === state.look ? " on" : "");
-      b.textContent = item.label;
+      b.textContent = "";
+      const icon = ICONS[item.id];
+      if (icon) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("viewBox", "0 0 24 24");
+        svg.setAttribute("aria-hidden", "true");
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", icon);
+        path.setAttribute("fill", "none");
+        path.setAttribute("stroke", "currentColor");
+        path.setAttribute("stroke-width", "2");
+        svg.appendChild(path);
+        b.appendChild(svg);
+      }
+      b.appendChild(document.createTextNode(item.label));
       b.setAttribute("aria-pressed", String(item.id === state.look));
       b.addEventListener("click", () => pickLook(item.id));
       box.appendChild(b);
@@ -484,9 +548,76 @@
       recipe.hidden = state.look !== "code";
       if (state.look === "code" && stageApi && stageApi.syncRecipe) stageApi.syncRecipe(recipe);
     }
+    const hint = $("look-hint");
+    if (hint) hint.textContent = HINTS[state.look] || "Move a slider and watch the picture change.";
+    renderColors();
+    renderExamples();
     const status = $("status-line");
     if (status) status.textContent = state.status;
     renderFeed();
+  }
+
+  function renderColors() {
+    const box = $("colors");
+    if (!box) return;
+    box.innerHTML = "";
+    COLORS.forEach((item) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn swatch-btn" + (item.id === state.color ? " on" : "");
+      b.setAttribute("aria-pressed", String(item.id === state.color));
+      b.setAttribute("aria-label", item.label);
+      const dot = document.createElement("i");
+      dot.style.background = item.dot;
+      b.append(dot, document.createTextNode(item.label));
+      b.addEventListener("click", () => {
+        state.color = item.id;
+        try { localStorage.setItem(COLOR_KEY, item.id); } catch (err) { /* ignore */ }
+        renderColors();
+      });
+      box.appendChild(b);
+    });
+  }
+  function renderExamples() {
+    const box = $("examples");
+    if (!box) return;
+    box.innerHTML = "";
+    const list = EXAMPLES[state.look] || [
+      { name: "Soft", gear: { wild: 10, glow: 50, count: 12, thick: 2 } },
+      { name: "Loud", gear: { wild: 70, glow: 100, count: 28, thick: 6, zoom: 130 } },
+      { name: "Wild", gear: { wild: 100, trail: 40, spin: 90, glow: 90, count: 32 } },
+    ];
+    list.forEach((item) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = item.name;
+      b.addEventListener("click", () => {
+        state.gear = Object.assign({}, state.gear, item.gear);
+        paintGear();
+        saveGear();
+      });
+      box.appendChild(b);
+    });
+  }
+  function crazy() {
+    const pick = COLORS[Math.floor(Math.random() * COLORS.length)];
+    state.color = pick.id;
+    try { localStorage.setItem(COLOR_KEY, pick.id); } catch (err) { /* ignore */ }
+    state.gear.zoom = 70 + Math.floor(Math.random() * 80);
+    state.gear.count = 8 + Math.floor(Math.random() * 24);
+    state.gear.spin = Math.floor(Math.random() * 100);
+    state.gear.glow = 50 + Math.floor(Math.random() * 50);
+    state.gear.thick = 1 + Math.floor(Math.random() * 10);
+    state.gear.tint = Math.floor(Math.random() * 100);
+    state.gear.trail = Math.floor(Math.random() * 50);
+    state.gear.bounce = 30 + Math.floor(Math.random() * 70);
+    state.gear.wild = 40 + Math.floor(Math.random() * 60);
+    paintGear();
+    saveGear();
+    renderColors();
+    const hint = $("look-hint");
+    if (hint) hint.textContent = "Crazy mixed the sliders and the color. Press it again for another mix.";
   }
 
   function pickLook(id) {
@@ -585,6 +716,8 @@
     paintGear();
     saveGear();
   });
+  const crazyBtn = $("crazy-btn");
+  if (crazyBtn) crazyBtn.addEventListener("click", crazy);
   $("play-btn").addEventListener("click", () => {
     if (state.playing && state.source !== "device") stop();
     else if (state.source === "device" && state.playing) {
@@ -670,6 +803,10 @@
   document.body.classList.toggle("is-day", !seen);
   $("more-btn").hidden = !seen;
   ensureBeat();
+  try {
+    const savedColor = localStorage.getItem(COLOR_KEY);
+    if (COLORS.some((item) => item.id === savedColor)) state.color = savedColor;
+  } catch (err) { /* cyan stays */ }
   paintGear();
   const gizmoBox = $("gizmo-box");
   if (gizmoBox) {
@@ -714,7 +851,7 @@
         bins: state.source === "device" ? null : (state.playing ? bins : null),
         wave: state.source === "device" ? null : (state.playing ? wave : null),
         analyser: state.source === "device" && state.playing ? micAnalyser : null,
-        gear: state.gear,
+        gear: Object.assign({}, state.gear, { color: state.color }),
       };
     });
   }

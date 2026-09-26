@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.9** · 2026-09-26 · channel **live**
+
+Each look follows the color, the examples, and the sliders. Rain splashes and leans. Fireworks explode. Crazy mixes a new picture. The line under the looks says what you are changing.
+
+## Earlier
+
 **Chip: Viz 0.6.8** · 2026-09-25 · channel **live**
 
 Tunnel, Ribbon, and Bloom are our own drawings. The music moves them. No extra app, and the microphone stays off unless a student asks.
