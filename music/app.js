@@ -477,6 +477,139 @@
     URL.revokeObjectURL(url);
   });
 
+  let micStream = null;
+  let micRec = null;
+  let micUrl = "";
+  let micTimer = 0;
+  let micWatch = 0;
+  let micAudio = null;
+  function releaseMic() {
+    window.clearTimeout(micTimer);
+    window.cancelAnimationFrame(micWatch);
+    if (micStream) {
+      micStream.getTracks().forEach((track) => track.stop());
+      micStream = null;
+    }
+    const meter = $("mic-meter");
+    if (meter) meter.hidden = true;
+  }
+  function forgetClip() {
+    if (micAudio) {
+      micAudio.pause();
+      micAudio = null;
+    }
+    if (micUrl) URL.revokeObjectURL(micUrl);
+    micUrl = "";
+    ["mic-hear", "mic-down", "mic-del"].forEach((id) => {
+      const el = $(id);
+      if (el) el.hidden = true;
+    });
+  }
+  function showClip(blob) {
+    forgetClip();
+    if (!blob || blob.size < 1) {
+      $("mic-status").textContent = "Nothing was kept. The pads still work.";
+      return;
+    }
+    micUrl = URL.createObjectURL(blob);
+    ["mic-hear", "mic-down", "mic-del"].forEach((id) => { $(id).hidden = false; });
+    $("mic-status").textContent = "One loop is ready. It is not saved here unless you download it.";
+  }
+  function watchLevel(stream) {
+    arm();
+    if (!ctx) return;
+    const source = ctx.createMediaStreamSource(stream);
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    source.connect(analyser);
+    const data = new Uint8Array(analyser.fftSize);
+    const tick = () => {
+      if (!micStream) return;
+      analyser.getByteTimeDomainData(data);
+      let peak = 0;
+      for (let i = 0; i < data.length; i++) peak = Math.max(peak, Math.abs(data[i] - 128));
+      $("mic-level").style.width = Math.min(100, Math.round(peak * 1.5)) + "%";
+      $("mic-meter").hidden = false;
+      micWatch = window.requestAnimationFrame(tick);
+    };
+    tick();
+  }
+  async function startMicLoop() {
+    $("mic-ask-box").hidden = true;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === "undefined") {
+      $("mic-status").textContent = "This Chromebook cannot open the mic here. The pads still work.";
+      return;
+    }
+    forgetClip();
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 },
+        video: false,
+      });
+    } catch (err) {
+      releaseMic();
+      $("mic-status").textContent = "The mic stayed off. That's fine. The pads still work.";
+      return;
+    }
+    const ms = Math.min(8000, Math.round(60000 / Math.max(70, state.song.bpm || 96)) * 8);
+    let recorder;
+    try {
+      const mime = window.MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "";
+      recorder = mime ? new MediaRecorder(micStream, { mimeType: mime }) : new MediaRecorder(micStream);
+    } catch (err) {
+      releaseMic();
+      $("mic-status").textContent = "The mic stayed off. The pads still work.";
+      return;
+    }
+    micRec = recorder;
+    const chunks = [];
+    recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+    recorder.onstop = () => {
+      const type = recorder.mimeType || "audio/webm";
+      releaseMic();
+      showClip(new Blob(chunks, { type: type }));
+    };
+    recorder.start();
+    watchLevel(micStream);
+    if (!state.playing) play();
+    $("mic-status").textContent = "Listening for one loop. Then the mic turns off.";
+    $("lesson").textContent = "The mic is on for this loop only. Tap the pads or play along.";
+    micTimer = window.setTimeout(() => {
+      if (recorder.state === "recording") recorder.stop();
+    }, ms);
+  }
+  $("mic-ask").addEventListener("click", () => {
+    $("mic-ask-box").hidden = false;
+    $("mic-status").textContent = "";
+  });
+  $("mic-yes").addEventListener("click", () => { startMicLoop(); });
+  $("mic-no").addEventListener("click", () => {
+    $("mic-ask-box").hidden = true;
+    releaseMic();
+    $("mic-status").textContent = "Not now. The pads still work.";
+  });
+  $("mic-hear").addEventListener("click", () => {
+    if (!micUrl) return;
+    if (micAudio) micAudio.pause();
+    micAudio = new Audio(micUrl);
+    micAudio.play().catch(() => {
+      $("mic-status").textContent = "Press Hear the loop again.";
+    });
+  });
+  $("mic-down").addEventListener("click", () => {
+    if (!micUrl) return;
+    const a = document.createElement("a");
+    a.href = micUrl;
+    a.download = "class-loop.webm";
+    a.click();
+  });
+  $("mic-del").addEventListener("click", () => {
+    forgetClip();
+    releaseMic();
+    $("mic-status").textContent = "Deleted. Nothing was kept.";
+  });
+  window.addEventListener("pagehide", () => { releaseMic(); forgetClip(); });
+
   const Titles = window.KulibertTitles;
   if (Titles && $("title-lists")) {
     const starting = Titles.partsOf(state.song.alias) ? state.song.alias : Titles.starterTitle();
