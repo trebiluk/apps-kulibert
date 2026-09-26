@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.9.0** · 2026-09-26 · channel **live**
+
+How starts a lesson: the beat, the strong beat, a kick on beat 1, and 3/4. The next step waits until that action is done. Sound can stay off.
+
+## Earlier
+
 **Chip: BZ 1.8.9** · 2026-09-26 · channel **live**
 
 Pick 4/4, 3/4, 2/4, or 6/8. Click counts the beat out loud and on the screen. Tap Kick, Snare, Hats, or Clap. Record prints the taps onto the grid.

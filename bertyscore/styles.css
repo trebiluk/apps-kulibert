@@ -54,6 +54,18 @@ button { cursor: pointer; }
   font-weight: 750;
   letter-spacing: -0.02em;
 }
+.lesson {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin: 0 0 0.8rem;
+}
+.lesson h2 { margin: 0.1rem 0 0.3rem; font-size: 1.15rem; }
+.lesson-kicker { margin: 0; color: var(--muted); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.lesson-body { margin: 0.25rem 0 0; line-height: 1.45; }
+.lesson-miss { margin: 0.4rem 0 0; min-height: 1.2em; font-weight: 750; }
+.lesson-actions { display: flex; gap: 0.45rem; margin-top: 0.7rem; }
 .staff-wrap {
   background: var(--paper);
   color: var(--ink);

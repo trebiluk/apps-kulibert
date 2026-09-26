@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.5";
+  const CHIP = "BS 0.2.6";
   const HOW_KEY = "kulibert.bertyscore.howto";
   const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;
@@ -261,9 +261,11 @@
       return;
     }
     if (!ev || !ev.pitch) {
+      if (state.playing) state.sawRest = true;
       el.textContent = off + "Rest.";
       return;
     }
+    state.sawNote = true;
     el.textContent = off + "Now: " + (ev.label || ev.pitch) + ".";
   }
 
@@ -500,10 +502,71 @@
   }
   $("beats-btn").addEventListener("click", () => send("/bertybeatz/?from=bridge"));
   $("lights-btn").addEventListener("click", () => send("/visualizer/?from=bridge"));
+  const SCORE_LESSON = [
+    {
+      title: "Pitch",
+      body: "Press Play. The word names a letter. That letter is the pitch. Sound can stay off. The note still lights.",
+      check: () => state.playing || state.sawNote,
+      miss: "Press Play and watch the word.",
+    },
+    {
+      title: "Higher and lower",
+      body: "Higher on the staff is a higher pitch. These notes are C, D, E, G, and A. Tap the staff to move one.",
+      check: () => Song.serialize(state.song) !== state.opened,
+      miss: "Tap the staff so one note moves.",
+    },
+    {
+      title: "Rest",
+      body: "Tap a note to turn it into a rest. A rest is silence on that beat. The word says Rest. The song still moves.",
+      check: () => state.sawRest,
+      miss: "Press Play, then tap a lit note until the word says Rest.",
+    },
+    {
+      title: "On the beat",
+      body: "Each note sits on a beat. Open Beats to put a kick on beat 1. Open Lights to watch that same song.",
+      check: () => true,
+      miss: "",
+    },
+  ];
+  function paintScoreLesson() {
+    const box = $("lesson");
+    if (!box) return;
+    if (state.lesson == null || state.lesson >= SCORE_LESSON.length) {
+      box.hidden = true;
+      return;
+    }
+    const step = SCORE_LESSON[state.lesson];
+    box.hidden = false;
+    $("lesson-n").textContent = String(state.lesson + 1);
+    $("lesson-title").textContent = step.title;
+    $("lesson-body").textContent = step.body;
+    $("lesson-miss").textContent = "";
+    $("lesson-next").textContent = state.lesson === SCORE_LESSON.length - 1 ? "Done" : "I did this";
+    $("lesson-skip").hidden = state.lesson < 1;
+  }
+  function finishScoreLesson() {
+    state.lesson = SCORE_LESSON.length;
+    try { localStorage.setItem(HOW_KEY, "1"); } catch (err) { /* ignore */ }
+    paintScoreLesson();
+  }
+  $("lesson-next").addEventListener("click", () => {
+    const step = SCORE_LESSON[state.lesson];
+    if (!step) return;
+    if (step.check && !step.check()) {
+      $("lesson-miss").textContent = step.miss;
+      return;
+    }
+    state.lesson += 1;
+    if (state.lesson >= SCORE_LESSON.length) finishScoreLesson();
+    else paintScoreLesson();
+  });
+  $("lesson-skip").addEventListener("click", finishScoreLesson);
+
   $("help-btn").addEventListener("click", () => {
-    state.how = 0;
-    paintHow();
-    $("howto").showModal();
+    state.lesson = 0;
+    state.sawRest = false;
+    state.opened = Song.serialize(state.song);
+    paintScoreLesson();
   });
   $("how-next").addEventListener("click", () => {
     if (state.how >= steps.length - 1) finishHow();
@@ -537,8 +600,9 @@
   if (arrival) status(arrival);
   let seen = false;
   try { seen = localStorage.getItem(HOW_KEY) === "1"; } catch (err) { seen = false; }
-  if (!seen) {
-    paintHow();
-    $("howto").showModal();
-  }
+  state.opened = Song.serialize(state.song);
+  state.lesson = seen ? SCORE_LESSON.length : 0;
+  state.sawNote = false;
+  state.sawRest = false;
+  if (!seen) paintScoreLesson();
 })();

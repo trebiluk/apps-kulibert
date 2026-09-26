@@ -8,7 +8,7 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.6.11"/>
+  <link rel="stylesheet" href="./styles.css?v=0.6.12"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.6.11</em>
+        <em id="chip-label">Viz 0.6.12</em>
       </span>
     </a>
     <div class="top-actions">
@@ -29,7 +29,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> The picture has a glow. Ribbon is a thick line. Bloom is a soft light. Repeated beat names get a number.</li>
+      <li><strong>What's new:</strong> How starts a lesson: see the beat, read the word, then change a color without changing the music.</li>
       <li>Pick a Look. Keys 1–5 are the first five. Keys 6–9 and 0 are the new ones.</li>
       <li>Play runs a demo pulse. Stop rests on a quiet idle. Mute is fine. The win is the picture.</li>
       <li>Want your own beat? Open <a href="/bertybeatz/">BertyBeatz</a>. Same lights.</li>
@@ -44,7 +44,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.6.11</span>
+          <span id="chip-live">Viz 0.6.12</span>
         </p>
       </div>
     </div>
@@ -61,6 +61,16 @@
   </section>
 
   <p id="now-line" class="now-line">Press Play. Read the word. Sound can stay off.</p>
+  <section id="lesson" class="lesson" hidden>
+    <p class="lesson-kicker">Lesson <span id="lesson-n">1</span> of 4</p>
+    <h2 id="lesson-title">See it</h2>
+    <p id="lesson-body" class="lesson-body"></p>
+    <p id="lesson-miss" class="lesson-miss" role="status"></p>
+    <div class="lesson-actions">
+      <button type="button" id="lesson-next" class="btn">I did this</button>
+      <button type="button" id="lesson-skip" class="btn">Skip</button>
+    </div>
+  </section>
 
   <div class="picks">
     <div class="pick">
@@ -113,13 +123,13 @@
   </section>
 
   <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.6.11</span> · own door · shared lights ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.6.12</span> · own door · shared lights ·
     <a href="./teacher.html">Teacher</a>
   </p>
 
   <script src="/shared/titles.js?v=3"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
-  <script src="/shared/visualizer/stage.js?v=0.6.11"></script>
-  <script src="./app.js?v=0.6.11"></script>
+  <script src="/shared/visualizer/stage.js?v=0.6.12"></script>
+  <script src="./app.js?v=0.6.12"></script>
 </body>
 </html>

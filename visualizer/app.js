@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.11") return;
-  window.__VISUALIZER__ = "0.6.11";
+  if (window.__VISUALIZER__ === "0.6.12") return;
+  window.__VISUALIZER__ = "0.6.12";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.11";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.12";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -742,10 +742,76 @@
     if (master) master.gain.value = state.muted ? 0 : 0.8;
     renderChrome();
   });
+  const VIZ_KEY = "kulibert.viz.lesson";
+  const VIZ_LESSON = [
+    {
+      title: "See the beat",
+      body: "Press Play. The picture moves with the beat. Sound can stay off. You still read the word.",
+      check: () => state.playing,
+      miss: "Press Play.",
+    },
+    {
+      title: "The word",
+      body: "Read the word under Play. When it names Kick, Snare, Hat, or a note, that sound is happening now.",
+      check: () => state.playing && state.playhead >= 0,
+      miss: "Keep Play on until the word names a sound.",
+    },
+    {
+      title: "Color is not the music",
+      body: "Tap a different color dot. The picture changes. The beat does not. The music is the beat and the notes.",
+      check: () => state.color !== state.lessonColor,
+      miss: "Tap a color dot that is not already on.",
+    },
+    {
+      title: "One song",
+      body: "Beats is the drums and the count. Score is the notes on the staff. This door only shows the song.",
+      check: () => true,
+      miss: "",
+    },
+  ];
+  function vizLessonDone() {
+    try { return localStorage.getItem(VIZ_KEY) === "done"; } catch (err) { return false; }
+  }
+  function paintVizLesson() {
+    const box = $("lesson");
+    if (!box) return;
+    if (state.lesson == null || state.lesson >= VIZ_LESSON.length) {
+      box.hidden = true;
+      return;
+    }
+    const step = VIZ_LESSON[state.lesson];
+    box.hidden = false;
+    $("lesson-n").textContent = String(state.lesson + 1);
+    $("lesson-title").textContent = step.title;
+    $("lesson-body").textContent = step.body;
+    $("lesson-miss").textContent = "";
+    $("lesson-next").textContent = state.lesson === VIZ_LESSON.length - 1 ? "Done" : "I did this";
+    $("lesson-skip").hidden = state.lesson < 1;
+  }
+  function finishVizLesson() {
+    state.lesson = VIZ_LESSON.length;
+    try { localStorage.setItem(VIZ_KEY, "done"); } catch (err) { /* ignore */ }
+    paintVizLesson();
+  }
+  state.lesson = vizLessonDone() ? VIZ_LESSON.length : 0;
+  state.lessonColor = state.color;
+  $("lesson-next").addEventListener("click", () => {
+    const step = VIZ_LESSON[state.lesson];
+    if (!step) return;
+    if (step.check && !step.check()) {
+      $("lesson-miss").textContent = step.miss;
+      return;
+    }
+    state.lesson += 1;
+    if (state.lesson >= VIZ_LESSON.length) finishVizLesson();
+    else paintVizLesson();
+  });
+  $("lesson-skip").addEventListener("click", finishVizLesson);
   $("help-btn").addEventListener("click", () => {
-    const box = $("help");
-    box.hidden = !box.hidden;
-    $("help-btn").setAttribute("aria-expanded", String(!box.hidden));
+    state.lesson = 0;
+    state.lessonColor = state.color;
+    paintVizLesson();
+    $("help-btn").setAttribute("aria-expanded", "true");
   });
   $("more-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("show-more");
@@ -834,6 +900,7 @@
     markDay();
   }
   renderChrome();
+  paintVizLesson();
 
   const canvas = $("viz");
   if (stageApi) {

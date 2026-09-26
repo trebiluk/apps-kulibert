@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.6** · 2026-09-26 · channel **live**
+
+The lesson teaches pitch, higher and lower, and a rest. The next step waits until the staff actually changed. Sound can stay off.
+
+## Earlier
+
 **Chip: BS 0.2.5** · 2026-09-25 · channel **live**
 
 Tap the staff to write a note. Higher on the lines is a higher note. The song saves on this Chromebook and goes to Beats and Lights. Export downloads the file.

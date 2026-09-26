@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.12** · 2026-09-26 · channel **live**
+
+How starts a lesson: see the beat, read the word, then change a color without changing the music.
+
+## Earlier
+
 **Chip: Viz 0.6.11** · 2026-09-26 · channel **live**
 
 The picture has a glow. Ribbon is a thick line with a soft edge. Bloom is a soft light, not a flat circle. Two beats with the same name show a number.

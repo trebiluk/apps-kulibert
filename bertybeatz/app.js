@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.9") return;
-  window.__BERTYBEATZ__ = "1.8.9";
+  if (window.__BERTYBEATZ__ === "1.9.0") return;
+  window.__BERTYBEATZ__ = "1.9.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.9";
+  const CHIP = "BZ 1.9.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1230,6 +1230,7 @@
         });
       }
       $("lcd-pos").textContent = state.meter + " · " + beatName(step);
+      if (step === 0) state.sawDownbeat = true;
     }
     $("grid").querySelectorAll("[data-step]").forEach((el) => {
       const s = Number(el.dataset.step);
@@ -1401,10 +1402,76 @@
       renderAll();
     });
   });
+  const LESSON_KEY = "kulibert.beatz.lesson";
+  const LESSON = [
+    {
+      title: "The beat",
+      body: "Press Play. Count the word: Beat 1, Beat 2, Beat 3, Beat 4. That steady count is the beat. Sound can stay off.",
+      check: () => state.playing || state.sawDownbeat,
+      miss: "Press Play, then watch the word.",
+    },
+    {
+      title: "The strong beat",
+      body: "Beat 1 is the strong beat. It is the one you tap your foot on. Wait until the word says Beat 1.",
+      check: () => state.sawDownbeat,
+      miss: "Keep it playing until the word says Beat 1.",
+    },
+    {
+      title: "The pulse",
+      body: "Light the first Kick square. A kick on beat 1 is the pulse. The other drums sit around it.",
+      check: () => Boolean(state.steps.kick && state.steps.kick[0]),
+      miss: "Tap the first Kick square so it turns on.",
+    },
+    {
+      title: "Time",
+      body: "4/4 means four beats, then it starts over. Tap 3/4. Count 1, 2, 3. The bottom rows are notes: C, D, E, G, and A.",
+      check: () => state.meter === "3/4",
+      miss: "Tap 3/4 in the Time row.",
+    },
+  ];
+  function lessonDone() {
+    try { return localStorage.getItem(LESSON_KEY) === "done"; } catch (err) { return false; }
+  }
+  function paintLesson() {
+    const box = $("lesson");
+    if (!box) return;
+    if (state.lesson == null || state.lesson >= LESSON.length) {
+      box.hidden = true;
+      return;
+    }
+    const step = LESSON[state.lesson];
+    box.hidden = false;
+    $("lesson-n").textContent = String(state.lesson + 1);
+    $("lesson-title").textContent = step.title;
+    $("lesson-body").textContent = step.body;
+    $("lesson-miss").textContent = "";
+    $("lesson-next").textContent = state.lesson === LESSON.length - 1 ? "Done" : "I did this";
+    $("lesson-skip").hidden = state.lesson < 1;
+  }
+  function finishLesson() {
+    state.lesson = LESSON.length;
+    try { localStorage.setItem(LESSON_KEY, "done"); } catch (err) { /* the card can still close */ }
+    paintLesson();
+  }
+  $("lesson-next").addEventListener("click", () => {
+    const step = LESSON[state.lesson];
+    if (!step) return;
+    if (step.check && !step.check()) {
+      $("lesson-miss").textContent = step.miss;
+      return;
+    }
+    state.lesson += 1;
+    if (state.lesson >= LESSON.length) finishLesson();
+    else paintLesson();
+  });
+  $("lesson-skip").addEventListener("click", finishLesson);
+  state.lesson = lessonDone() ? LESSON.length : 0;
+
   $("help-btn").addEventListener("click", () => {
-    const box = $("help");
-    box.hidden = !box.hidden;
-    $("help-btn").setAttribute("aria-expanded", String(!box.hidden));
+    state.lesson = 0;
+    state.sawDownbeat = false;
+    paintLesson();
+    $("help-btn").setAttribute("aria-expanded", "true");
   });
   $("surprise-btn").addEventListener("click", () => {
     pushUndo();
@@ -1759,6 +1826,7 @@
     }
     writeNow(state.playhead);
     renderAll();
+    paintLesson();
   });
 
   document.addEventListener("keydown", (e) => {
