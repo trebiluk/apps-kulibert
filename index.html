@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-scenes"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-layout"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -718,8 +718,15 @@
     body.apps-always .poster{
       min-height:0;height:8.75rem;border-radius:18px;flex:0 0 auto;
     }
+    body.apps-always .field{opacity:.38}
     body.apps-always .corner-k{display:none}
-    body.apps-always .field{opacity:.72}
+    body.apps-always .hub-tools{
+      flex:0 0 auto;flex-wrap:nowrap;overflow-x:auto;gap:.4rem;margin:0;
+      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+    }
+    body.apps-always .hub-tools::-webkit-scrollbar{display:none}
+    body.apps-always .hub-tools-row{flex-wrap:nowrap;gap:.4rem}
+    body.apps-always .hub-tools button{flex:0 0 auto}
     body.apps-always .hero{
       min-height:0;height:100%;box-sizing:border-box;
       padding:1rem .6rem 3rem;justify-content:center;
@@ -766,10 +773,10 @@
     }
     body.apps-always a.tile,body.apps-always button.tile{
       aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;
-      min-height:44px;gap:.2rem;justify-self:stretch;
+      min-height:44px;gap:.15rem;justify-self:stretch;border-radius:16px;
     }
     body.apps-always a.tile img.mark{
-      width:auto;height:clamp(2.25rem,36%,3.5rem);min-width:0;max-width:3.5rem;aspect-ratio:1;
+      width:auto;height:58%;min-width:0;max-width:72%;max-height:none;aspect-ratio:1;
     }
     body.apps-always a.tile .label,body.apps-always .tile .label{
       font-size:.875rem;line-height:1.15;color:#e8f7ff;font-weight:650;
@@ -803,22 +810,23 @@
       body.apps-always .cuts .board{grid-template-columns:repeat(7,minmax(0,1fr))}
     }
     @media (max-width:700px){
-      body.apps-always .poster{height:10.25rem;border-radius:20px}
-      body.apps-always .hero{padding-top:1.45rem}
-      body.apps-always .lockup-room{font-size:clamp(2.7rem,13vw,3.4rem)}
-      body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch}
+      body.apps-always .poster{height:8.2rem;border-radius:18px}
+      body.apps-always .hero{padding:.7rem .7rem 2.85rem}
+      body.apps-always .lockup-room{font-size:clamp(2rem,10.5vw,2.55rem)}
+      body.apps-always #shell-board{overflow:auto;-webkit-overflow-scrolling:touch;padding:.4rem .55rem .5rem}
       body.apps-always #app-groups{display:flex;flex:none}
       body.apps-always .group{display:block;flex:none}
       body.apps-always .group .board,
       body.apps-always #school-wrap .board,
-      body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.55rem}
+      body.apps-always .cuts .board{grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem}
       body.apps-always a.tile,body.apps-always button.tile{
         aspect-ratio:1;width:100%;height:auto;max-width:none;max-height:none;min-height:44px;justify-self:stretch;
       }
       body.apps-always a.tile img.mark{
-        width:auto;height:52%;max-width:72%;max-height:none;min-width:0;
+        width:auto;height:54%;max-width:70%;max-height:none;min-width:0;
       }
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
+      body.apps-always .hub-tools button{min-height:40px}
       body.apps-always .live,body.apps-always #room-footer{display:block}
     }
 
@@ -874,7 +882,7 @@
     }
     body.apps-always #school-wrap a.tile img.mark,
     body.apps-always .cuts a.tile img.mark{
-      width:48px;height:48px;max-width:48px;max-height:48px;object-fit:contain;
+      width:auto;height:58%;max-width:72%;max-height:none;object-fit:contain;
     }
     body.apps-always #school-wrap .chip,
     body.apps-always .cuts .chip{font-size:.65rem;padding:.1rem .35rem;position:static}
@@ -885,18 +893,31 @@
       body.apps-always .shell-chip{height:22px;font-size:.68rem;padding:0 .5rem}
       body.apps-always .shell-footer{min-height:28px;padding:0 .45rem}
       body.apps-always .shell-footer a{min-height:28px;font-size:.72rem}
-      body.apps-always #shell-board{padding:.15rem .4rem .15rem}
-      body.apps-always .poster{height:7.6rem;border-radius:16px}
-      body.apps-always .lockup-room{font-size:clamp(2.4rem,4.6vw,3.5rem)}
-      body.apps-always .search input{height:2.35rem;min-height:40px}
-      body.apps-always .hub-tools{margin:0 0 .1rem}
-      body.apps-always .hub-tools button{min-height:36px;padding:0 .65rem;font-size:.8rem}
-      body.apps-always #app-groups{gap:.3rem}
+      body.apps-always #shell-board{padding:.15rem .45rem .2rem}
+      body.apps-always .poster{height:4.85rem;border-radius:16px}
+      body.apps-always .hero{
+        flex-direction:row;align-items:center;justify-content:flex-start;
+        text-align:left;padding:0 6.4rem 0 1rem;gap:.75rem;
+      }
+      body.apps-always .lockup-the{font-size:.62rem;letter-spacing:.26em}
+      body.apps-always .lockup-room{font-size:clamp(1.7rem,2.8vw,2.35rem);margin-top:0}
+      body.apps-always .search{
+        position:relative;left:auto;bottom:auto;transform:none;
+        width:min(24rem,46%);flex:0 1 24rem;margin-left:auto;
+      }
+      body.apps-always .search input{height:2.4rem;min-height:40px}
+      body.apps-always .hub-rev{top:50%;right:.55rem;transform:translateY(-50%)}
+      body.apps-always .hub-tools{margin:0}
+      body.apps-always .hub-tools button{min-height:34px;padding:0 .7rem;font-size:.8rem}
+      body.apps-always #app-groups{gap:.35rem}
+      body.apps-always .group .board,
+      body.apps-always #school-wrap .board,
+      body.apps-always .cuts .board{gap:.5rem}
       body.apps-always a.tile,body.apps-always button.tile{
-        aspect-ratio:auto;min-height:104px;padding:.2rem .15rem .3rem;
+        aspect-ratio:auto;min-height:118px;padding:.22rem .15rem .26rem;
       }
       body.apps-always a.tile img.mark{
-        width:72px;height:72px;min-width:72px;max-width:72px;max-height:72px;
+        width:auto;height:70%;min-width:0;max-width:58%;max-height:92px;
       }
     }
 
@@ -972,7 +993,7 @@
         <p class="welcome-line" id="welcome-line" hidden></p>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-scenes</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-layout</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.9</strong> — Read speaks the one line. Read aloud stays off until you turn it on.</p>
@@ -980,7 +1001,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.4</strong> — read aloud, off until you turn it on.</p>
           <ul id="hub-log">
-            <li>Room, Graph, and Miami each have a faint scene behind the tiles. The names stay on solid cards.</li>
+            <li>Layout: the title and search share one bar on a Chromebook. Filters stay on one line. Icons fill the tile.</li>
             <li>HoldIt HI 1.1.9, SpanCraft SC 1.3.24, Spire Lab SL 1.3.23 · Read speaks the one line. Read aloud stays off until you turn it on.</li>
             <li>Three looks: Room, Graph, and Miami. A new visit picks one. Theme keeps the one you tap.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
@@ -2112,26 +2133,9 @@
 
       function fitPhoneTiles() {
         var tiles = document.querySelectorAll("#app-groups .group .board a.tile");
-        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
-        if (!narrow) {
-          Array.prototype.forEach.call(tiles, function (tile) {
-            tile.style.height = "";
-            tile.style.aspectRatio = "";
-          });
-          return;
-        }
-        var board = document.querySelector("#app-groups .group:not(.is-empty) .board");
-        if (!board) return;
-        var top = board.getBoundingClientRect().top;
-        var avail = window.innerHeight - top - 8;
-        if (avail < 160) return;
-        var gap = 8;
-        var rows = Math.max(2, Math.round(avail / 168));
-        var h = Math.floor((avail - gap * (rows - 1)) / rows);
-        if (h < 128) h = 128;
         Array.prototype.forEach.call(tiles, function (tile) {
-          tile.style.aspectRatio = "auto";
-          tile.style.height = h + "px";
+          tile.style.height = "";
+          tile.style.aspectRatio = "";
         });
       }
       fitPhoneTiles();
