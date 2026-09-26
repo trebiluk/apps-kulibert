@@ -8,13 +8,13 @@
   <title>BertyBeatz · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.8.7"/>
+  <link rel="stylesheet" href="./styles.css?v=1.8.8"/>
 </head>
 <body>
   <div id="gate" class="gate">
     <div class="gate-inner">
       <img class="gate-mark" src="./mark.svg" alt=""/>
-      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.8.7</span></p>
+      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.8.8</span></p>
       <h1>BertyBeatz</h1>
       <p class="lede" id="gate-lede">Tap squares. Make a song. Watch it become light.</p>
       <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
@@ -27,7 +27,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyBeatz</strong>
-        <em id="chip-label">BZ 1.8.7</em>
+        <em id="chip-label">BZ 1.8.8</em>
       </span>
     </a>
     <div class="top-actions">
@@ -39,7 +39,7 @@
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> An old title that is not on the lists becomes a class title. The squares stay.</li>
+      <li><strong>What's new:</strong> The mixer is on the page. Each sound has a volume, Off, Solo, and Soft or Bright.</li>
       <li>Tap a square to turn a sound on. Tap again to turn it off.</li>
       <li>Press Play. The moving column is the beat walking across the grid.</li>
       <li>Top rows are drums. Bottom rows are notes that always fit the key.</li>
@@ -81,7 +81,7 @@
     <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
     </button>
-    <div class="deep dials">
+    <div class="dials">
     <label class="dial">
       <span>Tempo</span>
       <input id="bpm" type="range" min="70" max="160" value="110"/>
@@ -111,10 +111,6 @@
       <button type="button" id="song-on" class="btn" aria-pressed="false">Loop</button>
       <div class="chips" id="song"></div>
     </div>
-    <div class="tool-row deep">
-      <span class="tool-label">Mix</span>
-      <div class="mix" id="mix"></div>
-    </div>
   </section>
 
   <div class="bank-bar" id="bank-bar">
@@ -127,6 +123,12 @@
   <div class="grid-wrap">
     <div id="grid" class="grid" role="grid" aria-label="Beat grid"></div>
   </div>
+
+  <section class="mixer" aria-label="Mixer">
+    <h2>Mixer</h2>
+    <p class="staff-hint">Each row is one sound. Off hides it. Solo keeps only the rows you mark. Soft and Bright change the color. The song saves itself.</p>
+    <div class="mix" id="mix"></div>
+  </section>
 
   <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
 
@@ -158,7 +160,7 @@
     <p id="status-line" class="hint" role="status"></p>
   </section>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.8.7</span> · See it move · no names ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.8.8</span> · See it move · no names ·
     <button type="button" id="lights-btn" class="link">Lights</button> ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a>
@@ -179,6 +181,6 @@
   <script src="/shared/titles.js?v=3"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
   <script src="/shared/visualizer/stage.js?v=0.6.8"></script>
-  <script src="./app.js?v=1.8.7"></script>
+  <script src="./app.js?v=1.8.8"></script>
 </body>
 </html>

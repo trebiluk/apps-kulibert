@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.8** · 2026-09-25 · channel **live**
+
+The mixer sits under the grid. Every sound has a volume, Off, Solo, and Soft or Bright. Tempo, swing, and the main volume stay on the page. The mix saves with the beat.
+
+## Earlier
+
 **Chip: BZ 1.8.7** · 2026-09-25 · channel **live**
 
 An old title that is not on the class lists becomes a class title. The squares stay. Kids still cannot type a title.

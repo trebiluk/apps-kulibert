@@ -363,30 +363,33 @@ body.is-loop #lcd-pos {
 
 .song-box { margin: 0 0 0.7rem; }
 .song-box .tool-row { margin-bottom: 0.45rem; }
-.mix {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.55rem;
-  flex: 1;
+.mixer { margin: 0.9rem 0 1rem; }
+.mixer h2 { margin: 0 0 0.2rem; font-size: 1.05rem; letter-spacing: -0.02em; }
+.staff-hint { margin: 0 0 0.55rem; color: var(--muted); font-weight: 650; }
+.mix { display: flex; flex-direction: column; gap: 0.15rem; }
+.mix-row {
+  display: grid;
+  grid-template-columns: minmax(5.5rem, 1.3fr) auto;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-top: 1px solid var(--border);
 }
-.mix label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  min-width: 5.2rem;
-  flex: 1;
-}
-.mix .btn {
-  min-height: 44px;
-  padding: 0.2rem 0.45rem;
-  font-size: 0.78rem;
-}
-.mix input[type="range"] {
+.mix-tones { display: flex; gap: 0.3rem; grid-column: 1 / -1; }
+.mix-tones .btn { flex: 1; min-height: 44px; }
+.mix-row .mix-name,
+.mix-row .mix-solo { min-height: 44px; }
+.mix-row input[type="range"] {
+  grid-column: 1 / -1;
   width: 100%;
-  height: 36px;
+  min-height: 44px;
   accent-color: var(--accent);
 }
-.mix .btn.on { opacity: 0.55; }
+.mix .btn.on { background: var(--accent); color: var(--accent-fg); }
+@media (min-width: 760px) {
+  .mix-row { grid-template-columns: minmax(6rem, 8rem) auto minmax(14rem, 1fr); }
+  .mix-tones { grid-column: auto; }
+}
 
 .bank-bar {
   display: none;

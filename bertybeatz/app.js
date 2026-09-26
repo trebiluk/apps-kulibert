@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.7") return;
-  window.__BERTYBEATZ__ = "1.8.7";
+  if (window.__BERTYBEATZ__ === "1.8.8") return;
+  window.__BERTYBEATZ__ = "1.8.8";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.7";
+  const CHIP = "BZ 1.8.8";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -456,6 +456,8 @@
     key: PRESETS.first.key,
     steps: cloneSteps(PRESETS.first.steps),
     muted: Object.fromEntries(TRACKS.map((t) => [t.id, false])),
+    solo: Object.fromEntries(TRACKS.map((t) => [t.id, false])),
+    tone: Object.fromEntries(TRACKS.map((t) => [t.id, "norm"])),
     mix: Object.fromEntries(TRACKS.map((t) => [t.id, 100])),
     pattern: "A",
     patterns: null,
@@ -535,6 +537,8 @@
       songPos: state.songPos,
       mix: { ...state.mix },
       muted: { ...state.muted },
+      solo: { ...state.solo },
+      tone: { ...state.tone },
     };
   }
   function persistLibrary() {
@@ -680,10 +684,12 @@
       o.start(t);
       o.stop(t + dur + 0.03);
     }
-    trigger(id, t, kit, key, mood, level = 1) {
+    trigger(id, t, kit, key, mood, level = 1, tone = "norm") {
       const dest = this.master;
       const lv = Math.max(0.001, Math.min(1, level));
-      const P = (peak) => Math.max(0.001, peak * lv);
+      const soften = tone === "soft" ? 0.62 : 1;
+      const P = (peak) => Math.max(0.001, peak * lv * soften);
+      if (tone === "bright") this.osc(dest, t, "triangle", 1600, 700, 0.035, P(0.07), 0.001);
       const k = kit;
       if (id === "kick") {
         if (k === "boom") {
@@ -742,12 +748,14 @@
         const when = this.nextTime + wobble * hum;
         this.queued.push({ step, when });
         const humLevel = 1 - (state.humanize / 40) * 0.18 * (Math.abs(wobble) / 4);
+        const anySolo = TRACKS.some((t) => state.solo[t.id]);
         for (const t of TRACKS) {
           if (state.muted[t.id]) continue;
+          if (anySolo && !state.solo[t.id]) continue;
           if (!state.steps[t.id][step]) continue;
           const level = ((state.mix[t.id] ?? 100) / 100) * humLevel;
           if (level <= 0.02) continue;
-          this.trigger(t.id, when, state.kit, state.key, state.mood, level);
+          this.trigger(t.id, when, state.kit, state.key, state.mood, level, state.tone[t.id] || "norm");
         }
         const sixteenth = 60 / state.bpm / 4;
         const swingAmt = (state.swing / 100) * 0.55;
@@ -868,6 +876,17 @@
     if (p.muted) {
       for (const t of TRACKS) state.muted[t.id] = Boolean(p.muted[t.id]);
     }
+    state.solo = Object.fromEntries(TRACKS.map((t) => [t.id, false]));
+    if (p.solo) {
+      for (const t of TRACKS) state.solo[t.id] = Boolean(p.solo[t.id]);
+    }
+    state.tone = Object.fromEntries(TRACKS.map((t) => [t.id, "norm"]));
+    if (p.tone) {
+      for (const t of TRACKS) {
+        const tone = p.tone[t.id];
+        state.tone[t.id] = tone === "soft" || tone === "bright" ? tone : "norm";
+      }
+    }
     $("bpm").value = String(p.bpm);
     $("swing").value = String(p.swing);
     const human = $("human");
@@ -944,18 +963,49 @@
   function renderMix() {
     const box = $("mix");
     if (!box) return;
-    if (!box.childElementCount) {
+    const tones = [
+      { id: "soft", label: "Soft" },
+      { id: "norm", label: "Norm" },
+      { id: "bright", label: "Bright" },
+    ];
+    if (!box.querySelector(".mix-row")) {
       for (const t of TRACKS) {
-        const lab = document.createElement("label");
+        const row = document.createElement("div");
+        row.className = "mix-row";
+        row.dataset.track = t.id;
         const name = document.createElement("button");
         name.type = "button";
         name.className = "btn mix-name";
         name.dataset.mix = t.id;
         name.addEventListener("click", () => {
           state.muted[t.id] = !state.muted[t.id];
-          name.classList.toggle("on", state.muted[t.id]);
-          name.setAttribute("aria-pressed", String(state.muted[t.id]));
           remember();
+          renderMix();
+        });
+        const solo = document.createElement("button");
+        solo.type = "button";
+        solo.className = "btn mix-solo";
+        solo.dataset.solo = t.id;
+        solo.textContent = "Solo";
+        solo.addEventListener("click", () => {
+          state.solo[t.id] = !state.solo[t.id];
+          remember();
+          renderMix();
+        });
+        const toneBox = document.createElement("div");
+        toneBox.className = "mix-tones";
+        tones.forEach((tone) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn";
+          b.dataset.tone = tone.id;
+          b.textContent = tone.label;
+          b.addEventListener("click", () => {
+            state.tone[t.id] = tone.id;
+            remember();
+            renderMix();
+          });
+          toneBox.appendChild(b);
         });
         const range = document.createElement("input");
         range.type = "range";
@@ -966,23 +1016,32 @@
           state.mix[t.id] = Number(range.value);
           remember();
         });
-        lab.append(name, range);
-        box.appendChild(lab);
+        row.append(name, solo, toneBox, range);
+        box.appendChild(row);
       }
     }
     for (const t of TRACKS) {
-      const name = box.querySelector(`button[data-mix="${t.id}"]`);
-      const range = box.querySelector(`input[data-mix="${t.id}"]`);
+      const row = box.querySelector(`.mix-row[data-track="${t.id}"]`);
+      if (!row) continue;
       const label = t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label;
-      if (name) {
-        name.textContent = state.muted[t.id] ? `${label} off` : label;
-        name.classList.toggle("on", state.muted[t.id]);
-        name.setAttribute("aria-pressed", String(state.muted[t.id]));
-        name.setAttribute("aria-label", `${label} mute`);
-      }
-      if (range && document.activeElement !== range) {
+      const name = row.querySelector(".mix-name");
+      const solo = row.querySelector(".mix-solo");
+      const range = row.querySelector("input");
+      name.textContent = state.muted[t.id] ? `${label} off` : label;
+      name.classList.toggle("on", state.muted[t.id]);
+      name.setAttribute("aria-pressed", String(state.muted[t.id]));
+      name.setAttribute("aria-label", `${label} off`);
+      solo.classList.toggle("on", state.solo[t.id]);
+      solo.setAttribute("aria-pressed", String(state.solo[t.id]));
+      solo.setAttribute("aria-label", `${label} solo`);
+      row.querySelectorAll(".mix-tones .btn").forEach((b) => {
+        const on = b.dataset.tone === (state.tone[t.id] || "norm");
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-pressed", String(on));
+      });
+      if (document.activeElement !== range) {
         range.value = String(state.mix[t.id] ?? 100);
-        range.setAttribute("aria-label", `${label} level`);
+        range.setAttribute("aria-label", `${label} volume`);
       }
     }
   }
