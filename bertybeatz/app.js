@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.8.8") return;
-  window.__BERTYBEATZ__ = "1.8.8";
+  if (window.__BERTYBEATZ__ === "1.8.9") return;
+  window.__BERTYBEATZ__ = "1.8.9";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.8.8";
+  const CHIP = "BZ 1.8.9";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -26,7 +26,22 @@
     { id: "bright", label: "Bright" },
     { id: "moody", label: "Moody" },
   ];
+  const METERS = [
+    { id: "4/4", label: "4/4", steps: 16, every: 4, accent: 16 },
+    { id: "3/4", label: "3/4", steps: 12, every: 4, accent: 12 },
+    { id: "2/4", label: "2/4", steps: 8, every: 4, accent: 8 },
+    { id: "6/8", label: "6/8", steps: 12, every: 2, accent: 6 },
+  ];
   const KEYS = ["C", "D", "E", "F", "G", "A", "Bb"];
+  function meterNow() {
+    return METERS.find((m) => m.id === state.meter) || METERS[0];
+  }
+  function loopLength() {
+    return meterNow().steps;
+  }
+  function beatName(step) {
+    return String(Math.floor(step / meterNow().every) + 1);
+  }
   const LOOKS = (window.KulibertStage && window.KulibertStage.LOOKS) || [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -465,6 +480,9 @@
     songOn: false,
     songPos: 0,
     humanize: 0,
+    meter: "4/4",
+    click: true,
+    record: false,
     volume: 0.8,
     playing: false,
     playhead: -1,
@@ -535,6 +553,8 @@
       song: state.song.slice(),
       songOn: state.songOn,
       songPos: state.songPos,
+      meter: state.meter,
+      click: state.click,
       mix: { ...state.mix },
       muted: { ...state.muted },
       solo: { ...state.solo },
@@ -738,6 +758,10 @@
       this.unlock();
       this.trigger(id, this.ctx.currentTime + 0.01, state.kit, state.key, state.mood);
     }
+    clickAt(when, accent) {
+      if (!state.click || state.soundOff || !this.ctx) return;
+      this.osc(this.master, when, "square", accent ? 1600 : 1040, accent ? 800 : 640, 0.03, accent ? 0.11 : 0.05, 0.001);
+    }
     scheduler = () => {
       if (!this.ctx || !state.playing) return;
       const ctx = this.ctx;
@@ -748,6 +772,8 @@
         const when = this.nextTime + wobble * hum;
         this.queued.push({ step, when });
         const humLevel = 1 - (state.humanize / 40) * 0.18 * (Math.abs(wobble) / 4);
+        const meter = meterNow();
+        if (state.click && step % meter.every === 0) this.clickAt(when, step % meter.accent === 0);
         const anySolo = TRACKS.some((t) => state.solo[t.id]);
         for (const t of TRACKS) {
           if (state.muted[t.id]) continue;
@@ -762,7 +788,7 @@
         if (step % 2 === 0) this.nextTime += sixteenth * (1 + swingAmt);
         else this.nextTime += sixteenth * (1 - swingAmt);
         this.step += 1;
-        if (this.step >= STEP_COUNT) {
+        if (this.step >= loopLength()) {
           this.step = 0;
           this.advanceSong();
         }
@@ -825,21 +851,22 @@
     noteAudioBar() {
       const sixteenth = 60000 / Math.max(1, state.bpm) / 4;
       const elapsed = performance.now() - (this.visualStart || performance.now());
-      this.visualBar = Math.floor(Math.max(0, elapsed) / sixteenth / STEP_COUNT);
+      this.visualBar = Math.floor(Math.max(0, elapsed) / sixteenth / loopLength());
     }
     visualStep() {
       if (!state.playing) return -1;
       const sixteenth = 60000 / Math.max(1, state.bpm) / 4;
       const elapsed = performance.now() - (this.visualStart || performance.now());
       const index = Math.floor(Math.max(0, elapsed) / sixteenth);
-      const bar = Math.floor(index / STEP_COUNT);
+      const span = loopLength();
+      const bar = Math.floor(index / span);
       if (this.visualBar == null) this.visualBar = bar;
       if (bar > this.visualBar) {
         const jumped = bar - this.visualBar;
         this.visualBar = bar;
         for (let i = 0; i < jumped; i++) this.advanceSong();
       }
-      return index % STEP_COUNT;
+      return index % span;
     }
   }
 
@@ -871,6 +898,8 @@
     if (!state.song.length) state.song = ["A", "A", "A", "A"];
     state.songOn = Boolean(p.songOn);
     state.songPos = 0;
+    state.meter = METERS.some((m) => m.id === p.meter) ? p.meter : "4/4";
+    if (typeof p.click === "boolean") state.click = p.click;
     if (p.mix) state.mix = readMix(p.mix);
     else state.mix = Object.fromEntries(TRACKS.map((t) => [t.id, 100]));
     if (p.muted) {
@@ -917,7 +946,7 @@
     const head = ['<div></div>'];
     for (let i = 0; i < STEP_COUNT; i++) {
       const bank = i < 8 ? "bank0" : "bank1";
-      head.push(`<div class="nums ${bank}">${i + 1}</div>`);
+      head.push(`<div class="nums ${bank}${i >= loopLength() ? " quiet" : ""}">${i + 1}</div>`);
     }
     const rows = [];
     for (const t of TRACKS) {
@@ -930,14 +959,58 @@
         const on = state.steps[t.id][i];
         const beat = i % 4 === 0 ? " beat" : "";
         const play = state.playhead === i ? " play" : "";
+        const quiet = i >= loopLength() ? " quiet" : "";
         const bank = i < 8 ? "bank0" : "bank1";
         const arrived = state.arrived && state.arrived.has(t.id + ":" + i) ? " arrived" : "";
         rows.push(
-          `<button type="button" class="cell${beat}${on ? " on" : ""}${play}${arrived} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} step ${i + 1}"></button>`,
+          `<button type="button" class="cell${beat}${on ? " on" : ""}${play}${arrived}${quiet} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} step ${i + 1}"></button>`,
         );
       }
     }
     grid.innerHTML = head.join("") + rows.join("");
+  }
+
+  function renderPads() {
+    const box = $("pads");
+    if (!box || box.childElementCount) return;
+    TRACKS.filter((t) => t.kind === "drum").forEach((t) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "pad";
+      b.dataset.pad = t.id;
+      b.textContent = t.label;
+      b.addEventListener("pointerdown", (e) => {
+        if (e.button != null && e.button !== 0) return;
+        e.preventDefault();
+        stampPad(t.id);
+      });
+      box.appendChild(b);
+    });
+  }
+  function stampPad(id) {
+    try { engine.preview(id); } catch (err) { /* the pad still lights */ }
+    const pad = document.querySelector(`.pad[data-pad="${id}"]`);
+    if (pad) {
+      pad.classList.add("hit");
+      window.setTimeout(() => {
+        if (state.playhead < 0 || !state.steps[id][state.playhead]) pad.classList.remove("hit");
+      }, 140);
+    }
+    if (!state.record) return;
+    if (!state.playing) {
+      try { engine.play(); } catch (err) { state.playing = true; }
+      $("play-btn").classList.add("is-on");
+    }
+    const step = state.playhead >= 0 ? state.playhead : 0;
+    if (step >= loopLength() || state.steps[id][step]) return;
+    pushUndo();
+    state.steps[id][step] = true;
+    const cell = document.querySelector(`#grid [data-track="${id}"][data-step="${step}"]`);
+    if (cell) {
+      cell.classList.add("on");
+      cell.setAttribute("aria-pressed", "true");
+    }
+    remember();
   }
 
   function renderSong() {
@@ -1067,6 +1140,24 @@
       state.key = id;
       renderAll();
     });
+    renderChips($("meters"), METERS, state.meter, (id) => {
+      state.meter = id;
+      if (engine.step >= loopLength()) engine.step = 0;
+      renderAll();
+    });
+    const clickBtn = $("click-btn");
+    if (clickBtn) {
+      clickBtn.textContent = state.click ? "Click on" : "Click off";
+      clickBtn.classList.toggle("on", state.click);
+      clickBtn.setAttribute("aria-pressed", String(state.click));
+    }
+    const recBtn = $("record-btn");
+    if (recBtn) {
+      recBtn.textContent = state.record ? "Recording" : "Record";
+      recBtn.classList.toggle("on", state.record);
+      recBtn.setAttribute("aria-pressed", String(state.record));
+    }
+    renderPads();
     renderChips($("looks"), LOOKS, state.look, (id) => {
       state.look = id;
       persistLook(id);
@@ -1121,7 +1212,8 @@
       names.push(t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label);
     }
     const off = state.soundOff ? "Sound is off. " : "";
-    el.textContent = names.length ? off + "Now: " + names.join(", ") + "." : off + "Rest. The column still moves.";
+    const beat = "Beat " + beatName(step);
+    el.textContent = names.length ? off + beat + " · " + names.join(", ") + "." : off + beat + " · rest.";
   }
 
   function setPlayhead(step) {
@@ -1137,7 +1229,7 @@
           b.classList.toggle("on", Number(b.dataset.bank) === state.bank);
         });
       }
-      $("lcd-pos").textContent = `${Math.floor(step / 4) + 1}.${(step % 4) + 1}`;
+      $("lcd-pos").textContent = state.meter + " · " + beatName(step);
     }
     $("grid").querySelectorAll("[data-step]").forEach((el) => {
       const s = Number(el.dataset.step);
@@ -1147,6 +1239,10 @@
       el.classList.toggle("play", i === step);
     });
     writeNow(step);
+    document.querySelectorAll(".pad").forEach((pad) => {
+      const id = pad.dataset.pad;
+      pad.classList.toggle("hit", step >= 0 && Boolean(state.steps[id] && state.steps[id][step]));
+    });
     if (state._songDirty) {
       state._songDirty = false;
       renderGrid();
@@ -1166,7 +1262,7 @@
     if (!cell || !paint) return;
     const track = cell.dataset.track;
     const step = Number(cell.dataset.step);
-    if (!track || !state.steps[track]) return;
+    if (!track || !state.steps[track] || step >= loopLength()) return;
     state.steps[track][step] = paint.value;
     cell.classList.toggle("on", paint.value);
     cell.setAttribute("aria-pressed", String(paint.value));
@@ -1231,6 +1327,15 @@
     $("mute-btn").setAttribute("aria-pressed", String(Boolean(state.soundOff)));
     engine.setVolume(state.soundOff ? 0 : state.volume);
     writeNow(state.playhead);
+  });
+  $("click-btn").addEventListener("click", () => {
+    state.click = !state.click;
+    remember();
+    renderAll();
+  });
+  $("record-btn").addEventListener("click", () => {
+    state.record = !state.record;
+    renderAll();
   });
 
   function safeUnlock() {

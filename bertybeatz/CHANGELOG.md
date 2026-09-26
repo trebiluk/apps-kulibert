@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.8.9** · 2026-09-26 · channel **live**
+
+Pick 4/4, 3/4, 2/4, or 6/8. Click counts the beat out loud and on the screen. Tap Kick, Snare, Hats, or Clap. Record prints the taps onto the grid.
+
+## Earlier
+
 **Chip: BZ 1.8.8** · 2026-09-25 · channel **live**
 
 The mixer sits under the grid. Every sound has a volume, Off, Solo, and Soft or Bright. Tempo, swing, and the main volume stay on the page. The mix saves with the beat.

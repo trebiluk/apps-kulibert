@@ -363,7 +363,24 @@ body.is-loop #lcd-pos {
 
 .song-box { margin: 0 0 0.7rem; }
 .song-box .tool-row { margin-bottom: 0.45rem; }
-.mixer { margin: 0.9rem 0 1rem; }
+.kit-play { margin: 0.2rem 0 0.7rem; }
+.pads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+  margin-top: 0.45rem;
+}
+.pad {
+  min-height: 84px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  background: var(--elevated);
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.03em;
+}
+.pad.hit { background: var(--accent); color: var(--accent-fg); }
+.cell.quiet, .nums.quiet { opacity: 0.28; pointer-events: none; }
 .mixer h2 { margin: 0 0 0.2rem; font-size: 1.05rem; letter-spacing: -0.02em; }
 .staff-hint { margin: 0 0 0.55rem; color: var(--muted); font-weight: 650; }
 .mix { display: flex; flex-direction: column; gap: 0.15rem; }
