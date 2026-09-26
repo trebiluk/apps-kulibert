@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-26-hub-quiet-tools"/>
+<meta name="tech-room-rev" content="2026-09-26-hub-three"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -644,6 +644,8 @@
       border-bottom:1px solid #16324f;flex-wrap:nowrap;
     }
     .shell-brand{font-weight:750;letter-spacing:.06em;font-size:.78rem;white-space:nowrap;color:#e8f7ff}
+    body.apps-always .shell-brand{display:none}
+    body.apps-always .edge-pocket{margin-left:auto}
     .shell-chip{
       display:inline-flex;align-items:center;height:28px;padding:0 .65rem;white-space:nowrap;
       border-radius:999px;border:1px solid color-mix(in srgb,#22d3ee 40%,#16324f);
@@ -732,20 +734,22 @@
     body.apps-always .field{opacity:.38}
     body.apps-always .corner-k{display:none}
     body.apps-always .hub-tools{
-      flex:0 0 auto;flex-wrap:nowrap;overflow-x:auto;gap:.4rem;margin:0;
-      scrollbar-width:none;-webkit-overflow-scrolling:touch;
+      flex:0 0 auto;display:flex;flex-wrap:wrap;align-items:center;
+      overflow:visible;gap:.05rem .2rem;margin:0;
     }
-    body.apps-always .hub-tools::-webkit-scrollbar{display:none}
-    body.apps-always .hub-tools-row{flex-wrap:nowrap;gap:.15rem}
+    body.apps-always .hub-tools-row{flex:0 0 auto;flex-wrap:nowrap;gap:.05rem}
+    body.apps-always .hub-tools-sort{order:1}
+    body.apps-always .hub-tools-theme{order:2;margin-left:auto}
+    body.apps-always .hub-tools-filter{order:3;flex-basis:100%}
     body.apps-always .hub-tools button{
-      flex:0 0 auto;min-height:40px;padding:0 .45rem;border:0;border-radius:0;
+      flex:0 0 auto;min-height:36px;padding:0 .4rem;border:0;border-radius:0;
       background:transparent;color:#8fb4c9;box-shadow:none;
       font-size:.8rem;font-weight:650;letter-spacing:.01em;
     }
     body.apps-always .hub-tools button.is-on{
       color:#e8f7ff;background:transparent;border:0;box-shadow:inset 0 -2px 0 #22d3ee;
     }
-    body.apps-always #hub-theme{margin-left:.35rem;padding-left:.7rem}
+    body.apps-always #hub-theme{margin-left:0;padding-left:.4rem}
     html[data-hub-theme="graph"] body.apps-always .hub-tools button{color:#5c564c}
     html[data-hub-theme="graph"] body.apps-always .hub-tools button.is-on{
       color:#1c1915;box-shadow:inset 0 -2px 0 #1c1915;
@@ -769,7 +773,8 @@
       filter:drop-shadow(0 0 16px rgba(34,211,238,.5));
     }
     body.apps-always .welcome-line{
-      margin:.15rem 0 0;font-size:.75rem;max-width:22rem;
+      flex:0 0 auto;margin:0;padding:0 .15rem;font-size:.75rem;font-weight:550;
+      color:#8fb4c9;max-width:none;text-align:left;
       white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
     }
     body.apps-always #alpha-title,#alpha-group > h2{display:none !important}
@@ -868,10 +873,7 @@
       }
       body.apps-always a.tile .label,body.apps-always .tile .label{font-size:.875rem}
       body.apps-always .hub-tools button{min-height:40px}
-      body.apps-always .hub-tools{
-        -webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);
-        mask-image:linear-gradient(90deg,#000 calc(100% - 18px),transparent);
-      }
+      body.apps-always .hub-tools-filter{flex-basis:100%}
       body.apps-always .live,body.apps-always #room-footer{display:block}
     }
 
@@ -952,14 +954,17 @@
       }
       body.apps-always .search input{height:2.4rem;min-height:40px}
       body.apps-always .hub-rev{top:50%;right:.55rem;transform:translateY(-50%)}
-      body.apps-always .hub-tools{margin:0}
-      body.apps-always .hub-tools button{min-height:34px;padding:0 .7rem;font-size:.8rem}
+      body.apps-always .hub-tools{flex-wrap:nowrap;margin:0}
+      body.apps-always .hub-tools-sort{order:1}
+      body.apps-always .hub-tools-filter{order:2;flex-basis:auto;margin-left:.45rem;padding-left:.55rem;box-shadow:inset 1px 0 0 rgba(143,180,201,.4)}
+      body.apps-always .hub-tools-theme{order:3;margin-left:auto;padding-left:.55rem;box-shadow:inset 1px 0 0 rgba(143,180,201,.4)}
+      body.apps-always .hub-tools button{min-height:34px;padding:0 .55rem;font-size:.8rem}
       body.apps-always #app-groups{gap:.35rem}
       body.apps-always .group .board,
       body.apps-always #school-wrap .board,
       body.apps-always .cuts .board{gap:.5rem}
       body.apps-always a.tile,body.apps-always button.tile{
-        aspect-ratio:auto;min-height:118px;padding:.22rem .15rem .26rem;
+        aspect-ratio:auto;min-height:108px;padding:.18rem .12rem .2rem;
       }
       body.apps-always a.tile img.mark{
         width:auto;height:70%;min-width:0;max-width:58%;max-height:92px;
@@ -1035,10 +1040,14 @@
           <span class="lockup-the">THE</span>
           <span class="lockup-room">TECH ROOM</span>
         </h1>
-        <p class="welcome-line" id="welcome-line" hidden></p>
+        <label class="search" id="search-box">
+          <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps or paste a link</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input id="q" type="search" placeholder="Search or paste a link" autocomplete="off" spellcheck="false"/>
+        </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-26-hub-quiet-tools</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-26-hub-three</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.9</strong> — Read speaks the one line. Read aloud stays off until you turn it on.</p>
@@ -1046,44 +1055,19 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.9.4</strong> — read aloud, off until you turn it on.</p>
           <ul id="hub-log">
+            <li>One title on the card. Sort, filter, and theme are three controls. Phone shows two full rows and the top of a third.</li>
             <li>Layout: the title and search share one bar on a Chromebook. Filters stay on one line. Icons fill the tile.</li>
             <li>HoldIt HI 1.1.9, SpanCraft SC 1.3.24, Spire Lab SL 1.3.23 · Read speaks the one line. Read aloud stays off until you turn it on.</li>
             <li>Three looks: Room, Graph, and Miami. A new visit picks one. Theme keeps the one you tap.</li>
             <li>Polish: phone icons fill the tile. Chromebook stays 72px so every app is on screen. Names stay light on the dark card.</li>
             <li>Footer is gone. The Hub chip sits on the card. Tap it to load the newest door. Phone tiles fill the screen.</li>
-            <li>Hub chip sits in the footer. Tap it to load the newest door. The app list did not change.</li>
             <li>The Tech Room card is back: icon field and the cyan lockup. Search sits on the card. The app list did not change.</li>
-            <li>HoldIt HI 1.1.7 · when it falls, the plan line becomes the fix.</li>
-            <li>Chromebook: shorter header and footer. Icons are 72px. The app list did not change.</li>
-            <li>Sort and filter stay on this Chromebook. A–Z is the default. Z–A and Group are there too. All, Class, Make, Campus, and Play filter the same list.</li>
             <li>Format lock: phone is 2 columns, Chromebook fills 6. Labels stay 14px. The app list did not change.</li>
-            <li>Sync cut: full Hub shell kept · Spire SL 1.3.17 + Span SC 1.3.18 from main · 2026-09-23-hub-sync</li>
-            <li>Hub rev plate + What’s new visible · top-row icons even 40px slots / 22px glyph</li>
-            <li>Search sits under the welcome line. It no longer covers the title.</li>
-            <li>All apps stay on the screen. Home fits every tile. An open app keeps the full app row.</li>
-            <li>Visualizer Viz 0.1.0 · own door · demo lights, no mic · /visualizer/</li>
-            <li>BertyBeatz BZ 1.4.0 · export the beat as a file · shared lights</li>
-            <li>Mobile framed: one top hub strip (no bottom Lunch bar stacking on app chrome) · 2026-09-24-hub-card</li>
-            <li>Frame stays. Same-door apps open in the iframe hole. Home brings the tiles back.</li>
-            <li>Fuzzy search · press / · Enter opens the first match · Alt+Enter a new tab</li>
-            <li>Groups: Class, Make, Campus, Play</li>
-            <li>Ginger 1.0.1 · floor plan, properties, schedules · /ginger/</li>
-            <li>Staff edit stays locked until the hub password · Sign out on this device</li>
-            <li>Dark Tech Room board · labels on ink cards · cyan focus</li>
-            <li>Wide ≥1367: 6 cols · 7 from 1800 · tiles fill width · mark ≥72px</li>
-            <li>Phone 2 · Chromebook 3–4 · labels ≥14px · hits ≥44px</li>
-            <li>SpanCraft SC 1.3.18 · the first Deck glows. A miss is the bet. Spire Lab SL 1.3.17 · Drop is the fat button. A stand says STAND.</li>
-            <li>Debugzy list tile only · playable hold · First Trace stays</li>
-            <li>Berty Run BR 1.5.4 · polish: 3D copper bus, shaped Berty, softer light</li>
           </ul>
         </div>
       </div>
-      <label class="search" id="search-box">
-        <span class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Search apps or paste a link</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input id="q" type="search" placeholder="Search or paste a link" autocomplete="off" spellcheck="false"/>
-      </label>
     </section>
+    <p class="welcome-line" id="welcome-line" hidden></p>
     <p class="closed-banner" id="closed-banner" hidden></p>
     <p class="pwa-tip" id="pwa-tip" hidden>
       <span>Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.</span>
@@ -1091,18 +1075,20 @@
     </p>
 
     <div class="hub-tools" id="hub-tools">
-      <div class="hub-tools-row" role="group" aria-label="Sort">
+      <div class="hub-tools-row hub-tools-sort" role="group" aria-label="Sort">
         <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
         <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
         <button type="button" data-sort="group" aria-pressed="false">Group</button>
-        <button type="button" id="hub-theme">Room</button>
       </div>
-      <div class="hub-tools-row" role="group" aria-label="Filter">
+      <div class="hub-tools-row hub-tools-filter" role="group" aria-label="Filter">
         <button type="button" data-filter="all" aria-pressed="true">All</button>
         <button type="button" data-filter="class" aria-pressed="false">Class</button>
         <button type="button" data-filter="make" aria-pressed="false">Make</button>
         <button type="button" data-filter="campus" aria-pressed="false">Campus</button>
         <button type="button" data-filter="play" aria-pressed="false">Play</button>
+      </div>
+      <div class="hub-tools-row hub-tools-theme" role="group" aria-label="Theme">
+        <button type="button" id="hub-theme">Room</button>
       </div>
     </div>
     <div class="groups" id="app-groups">
@@ -1805,6 +1791,7 @@
           var w = pack && pack.welcome ? String(pack.welcome).replace(/<[^>]*>/g, "").slice(0, 60) : "";
           welcome.textContent = w;
           welcome.hidden = !w;
+          if (typeof fitPhoneTiles === "function") fitPhoneTiles();
         }
         var meta = document.getElementById("room-meta");
         if (meta) {
@@ -2177,14 +2164,36 @@
       });
 
       function fitPhoneTiles() {
-        var tiles = document.querySelectorAll("#app-groups .group .board a.tile");
+        var tiles = document.querySelectorAll("#app-groups .board a.tile");
         Array.prototype.forEach.call(tiles, function (tile) {
           tile.style.height = "";
           tile.style.aspectRatio = "";
         });
+        var narrow = window.matchMedia && window.matchMedia("(max-width:700px)").matches;
+        if (!narrow) return;
+        var board = document.querySelector("#alpha-board");
+        if (!board || board.offsetParent === null) {
+          board = document.querySelector("#app-groups .group:not(.is-empty) .board");
+        }
+        if (!board) return;
+        var shell = document.querySelector(".shell");
+        var limit = shell ? shell.getBoundingClientRect().bottom : window.innerHeight;
+        var avail = limit - board.getBoundingClientRect().top - 6;
+        if (avail < 220) return;
+        var peek = 34;
+        var gap = 10;
+        var h = Math.floor((avail - peek - gap) / 2);
+        if (h < 128) h = 128;
+        if (h > 230) h = 230;
+        Array.prototype.forEach.call(tiles, function (tile) {
+          if (tile.offsetParent === null) return;
+          tile.style.aspectRatio = "auto";
+          tile.style.height = h + "px";
+        });
       }
       fitPhoneTiles();
       window.addEventListener("resize", fitPhoneTiles);
+      requestAnimationFrame(function () { fitPhoneTiles(); });
       window.addEventListener("resize", fitMarquee);
 
       var hubRevBtn = document.getElementById("hub-rev");
