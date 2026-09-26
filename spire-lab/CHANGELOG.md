@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.23** · 2026-09-25 · channel **live**
+**Chip: SL 1.3.24** · 2026-09-26 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.24 — Push the top — 2026-09-26
+
+- What’s new: Braced is not a copy of Three stories. Height counts the joints your bars reach. The test pushes the top. One diagonal each story. A second one misses Budget. Stars belong to that job.
 
 ## 1.3.23 — Read the line — 2026-09-25
 

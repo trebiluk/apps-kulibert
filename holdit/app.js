@@ -1,4 +1,4 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=1.0.2";
+import { mountTruss } from "../spancraft/truss-play.js?v=20260926a";
 import { SPAN_LEVELS, SPAN_FREE } from "../spancraft/levels.js";
 import { SPIRE_LEVELS, SPIRE_FREE } from "../spire-lab/levels.js";
 
@@ -46,7 +46,7 @@ mountTruss({
   steps: [
     "This stretch board is not the design tool. The front door of HoldIt is where you design.",
     "Build → Test → Fix one bar.",
-    "Ten levels on each. A pass opens the next one. Stars show this try. They are not a class grade.",
+    "Ten levels on each. A pass opens the next one. Stars belong to that job. They are not a class grade.",
     "Finish Bridge and finish Tower. Then the Challenge is yours.",
   ],
 });

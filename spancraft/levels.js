@@ -1,23 +1,31 @@
 // Ten truss-bridge jobs, then a free design. Joints are pre-placed on the path.
 // The kid stretches members. Meters are the classroom span, not a pixel count.
+// parMembers is the intended build. Stars compare steel length to that set.
 
 const BAY = 110;
 
-function warren(n, seedBottom) {
+function warren(n, seedBottom, kind) {
   const joints = [];
   for (let i = 0; i <= n; i++) {
-    joints.push({ x: i * BAY, y: 240, fixed: i === 0 || i === n });
+    const pier = kind === "pier" && i === Math.floor(n / 2);
+    joints.push({ x: i * BAY, y: 240, fixed: i === 0 || i === n || pier });
   }
-  for (let i = 0; i < n; i++) joints.push({ x: i * BAY + BAY / 2, y: 150, fixed: false });
+  for (let i = 0; i < n; i++) {
+    let rise = 90;
+    if (kind === "arch") {
+      const t = (i + 0.5) / n;
+      rise = 50 + Math.sin(Math.PI * t) * 80;
+    }
+    joints.push({ x: i * BAY + BAY / 2, y: 240 - rise, fixed: false });
+  }
   const seed = [];
   if (seedBottom) {
     for (let i = 0; i < n; i++) seed.push({ a: i, b: i + 1 });
   }
-  return { joints, seed, loadIndex: Math.floor(n / 2), members: n + n * 2 };
+  return { joints, seed, loadIndex: Math.floor(n / 2) };
 }
 
-function fullWarren(n) {
-  const built = warren(n, false);
+function triangles(n) {
   const members = [];
   for (let i = 0; i < n; i++) members.push({ a: i, b: i + 1 });
   for (let i = 0; i < n; i++) {
@@ -27,7 +35,11 @@ function fullWarren(n) {
   return members;
 }
 
-export { fullWarren };
+function fullWarren(n) {
+  return triangles(n);
+}
+
+export { fullWarren, triangles };
 
 export const SPAN_LEVELS = [
   {
@@ -41,6 +53,11 @@ export const SPAN_LEVELS = [
     ],
     seed: [],
     loadIndex: 2,
+    parMembers: [
+      { a: 0, b: 2 },
+      { a: 1, b: 2 },
+      { a: 0, b: 1 },
+    ],
   },
   {
     n: 2, id: "deck", band: "Forces", name: "Deck",
@@ -57,6 +74,13 @@ export const SPAN_LEVELS = [
       { a: 3, b: 2 },
     ],
     loadIndex: 1,
+    parMembers: [
+      { a: 0, b: 3 },
+      { a: 3, b: 2 },
+      { a: 0, b: 1 },
+      { a: 1, b: 2 },
+      { a: 3, b: 1 },
+    ],
   },
   {
     n: 3, id: "diag", band: "Shapes", name: "Diagonal",
@@ -74,76 +98,83 @@ export const SPAN_LEVELS = [
       { a: 2, b: 3 },
     ],
     loadIndex: 2,
+    parMembers: [
+      { a: 0, b: 2 },
+      { a: 1, b: 3 },
+      { a: 2, b: 3 },
+      { a: 0, b: 3 },
+    ],
   },
   {
     n: 4, id: "two", band: "Shapes", name: "Two bays",
-    job: "32 m. The deck is in. Add triangles across the gap.",
+    job: "32 m. Two bays. The deck is in. Triangle each bay.",
     spanM: 32, budget: 8, sagLimit: 16, leanLimit: 24,
     ...(() => {
       const w = warren(2, true);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(2) };
     })(),
   },
   {
-    n: 5, id: "across", band: "Spans", name: "Across",
-    job: "40 m. Triangles all the way from bank to bank.",
-    spanM: 40, budget: 11, sagLimit: 22, leanLimit: 28,
+    n: 5, id: "stops", band: "Spans", name: "Stops",
+    job: "40 m. The truck stops in every bay. Triangle each one.",
+    spanM: 40, budget: 11, sagLimit: 22, leanLimit: 28, roll: true,
     ...(() => {
       const w = warren(3, true);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(3) };
     })(),
   },
   {
-    n: 6, id: "long", band: "Spans", name: "Long span",
-    job: "48 m. Keep the triangles going. A long deck still needs them.",
-    spanM: 48, budget: 14, sagLimit: 30, leanLimit: 28,
+    n: 6, id: "endbay", band: "Spans", name: "End bay",
+    job: "48 m. A missing end bay folds when the truck stops there.",
+    spanM: 48, budget: 14, sagLimit: 30, leanLimit: 28, roll: true,
     ...(() => {
       const w = warren(4, true);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(4) };
     })(),
   },
   {
-    n: 7, id: "budget", band: "Materials", name: "Budget",
-    job: "40 m. Hold the truck. Use no more members than Budget.",
-    spanM: 40, budget: 9, onBudget: true, sagLimit: 22, leanLimit: 28,
+    n: 7, id: "tight", band: "Materials", name: "Budget",
+    job: "40 m. Extra bars miss Budget. The truck still stops in every bay.",
+    spanM: 40, budget: 9, onBudget: true, sagLimit: 22, leanLimit: 28, roll: true,
     ...(() => {
       const w = warren(3, false);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(3) };
     })(),
   },
   {
-    n: 8, id: "wide", band: "Big", name: "Wider",
-    job: "48 m. A wider span. Triangles, then stay near Budget.",
-    spanM: 48, budget: 14, sagLimit: 30, leanLimit: 28,
+    n: 8, id: "arch", band: "Big", name: "Arch",
+    job: "48 m. The road stays flat. The top is higher in the middle. Triangle every bay.",
+    spanM: 48, budget: 14, sagLimit: 30, leanLimit: 28, roll: true,
     ...(() => {
-      const w = warren(4, true);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      const w = warren(4, true, "arch");
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(4) };
     })(),
   },
   {
-    n: 9, id: "fifty", band: "Big", name: "Longer",
-    job: "56 m. Bank to bank. The truck has to stay up.",
-    spanM: 56, budget: 17, sagLimit: 36, leanLimit: 30,
+    n: 9, id: "pier", band: "Big", name: "Pier",
+    job: "48 m. The pier holds the middle. Triangle both sides.",
+    spanM: 48, budget: 14, sagLimit: 24, leanLimit: 28, roll: true,
     ...(() => {
-      const w = warren(5, true);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      const w = warren(4, true, "pier");
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(4) };
     })(),
   },
   {
-    n: 10, id: "efficient", band: "Big", name: "Efficient",
-    job: "48 m. Hold the truck and stay on Budget.",
-    spanM: 48, budget: 12, onBudget: true, sagLimit: 30, leanLimit: 28,
+    n: 10, id: "spare", band: "Big", name: "Efficient",
+    job: "48 m. Hold every bay and stay on Budget.",
+    spanM: 48, budget: 12, onBudget: true, sagLimit: 30, leanLimit: 28, roll: true,
     ...(() => {
       const w = warren(4, false);
-      return { joints: w.joints, seed: w.seed, loadIndex: w.loadIndex };
+      return { joints: w.joints, seed: w.seed, loadIndex: 1, parMembers: triangles(4) };
     })(),
   },
 ];
 
 export const SPAN_FREE = {
   n: 0, id: "yours", band: "Yours", name: "Your truss",
-  job: "Your truss across 40 m. Test tries the truck at three joints.",
-  spanM: 40, budget: 12, sagLimit: 22, leanLimit: 28, free: true,
+  job: "Your truss across 40 m. The truck stops in every bay.",
+  spanM: 40, budget: 12, sagLimit: 22, leanLimit: 28, free: true, roll: true,
+  par: 116.7,
   ...(() => {
     const w = warren(3, false);
     return { slots: w.joints, joints: w.joints.filter((j) => j.fixed), seed: [], loadIndex: 1 };

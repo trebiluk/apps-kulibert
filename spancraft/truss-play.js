@@ -42,6 +42,8 @@ export function mountTruss(cfg) {
     drag: null,
     view: null,
     bestStars: 0,
+    stars: {},
+    hot: null,
     challengeMet: false,
     hadMiss: false,
     fixLine: "",
@@ -103,8 +105,8 @@ export function mountTruss(cfg) {
   function faceJob(level) {
     if (!cfg.workshop || !level.free) return level.job;
     return cfg.mode === "spire"
-      ? "Your tower. Test pushes from both sides."
-      : "Your bridge across 40 m. Test tries the load at three joints.";
+      ? "Your tower. Reach the height. The test pushes the top from both sides."
+      : "Your bridge. The truck stops in every bay.";
   }
   function syncAssistCue() {
     if (!cfg.workshop) return;
@@ -169,6 +171,7 @@ export function mountTruss(cfg) {
       cleared: state.cleared,
       track: state.track,
       challengeMet: state.challengeMet,
+      stars: state.stars,
       bestStars: state.bestStars,
     });
     if (cfg.partFlag && pathClear()) {
@@ -184,10 +187,23 @@ export function mountTruss(cfg) {
     }
     if (!data || data.v !== 2) return;
     state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
-    state.levelId = catalog.some((l) => l.id === data.levelId) ? data.levelId : levels[0].id;
+    const OLD_LEVEL = {
+      span: { across: "stops", long: "endbay", budget: "tight", wide: "arch", fifty: "pier", efficient: "spare" },
+      spire: { two: "stack", three: "add", brace: "cross", tall: "floors", budget: "limit", push: "shove", thirty: "climb", efficient: "spare" },
+    };
+    let savedId = data.levelId;
+    if (savedId && !catalog.some((l) => l.id === savedId)) {
+      const next = (OLD_LEVEL[cfg.mode] || {})[savedId];
+      if (next) savedId = next;
+    }
+    state.levelId = catalog.some((l) => l.id === savedId) ? savedId : levels[0].id;
     state.track = data.track === "challenge" ? "challenge" : "levels";
     state.challengeMet = !!data.challengeMet;
+    state.stars = data.stars && typeof data.stars === "object" ? { ...data.stars } : {};
     state.bestStars = data.bestStars || 0;
+    if (!data.stars && data.bestStars && data.levelId && catalog.some((l) => l.id === data.levelId) && !state.stars[data.levelId]) {
+      state.stars[data.levelId] = data.bestStars;
+    }
     if (state.track === "challenge" && !pathClear()) state.track = "levels";
     if (state.track !== "challenge" && active().free) state.levelId = levels[0].id;
     if (cfg.partFlag && pathClear()) save();
@@ -221,6 +237,9 @@ export function mountTruss(cfg) {
       "Stretch at least two members.": "Estira al menos dos barras.",
       "It leaned. Add a diagonal.": "Se inclinó. Añade una diagonal.",
       "It is short of the height goal. Add another story.": "Le falta altura. Añade otro piso.",
+      "The truck moved and that bay folded, so add a triangle there.": "El camión se movió y ese tramo se dobló, así que añade un triángulo ahí.",
+      "The top leaned, so add a diagonal on the story that folded.": "La cima se inclinó, así que añade una diagonal en el piso que se dobló.",
+      "Connect a higher joint, because height counts the joints your bars reach.": "Conecta una junta más alta, porque la altura cuenta las juntas que alcanzan tus barras.",
       "It sagged. Add a triangle.": "Se hundió. Añade un triángulo.",
       "Then press Test.": "Luego pulsa Probar.",
       "You fixed it.": "Lo arreglaste.",
@@ -340,12 +359,13 @@ export function mountTruss(cfg) {
     if (!n) return "";
     return "★".repeat(n) + "☆".repeat(Math.max(0, 4 - n)) + " " + (n === 1 ? "1 star" : n + " stars");
   }
-  function starsFor(ok, memberCount, budget, sag, limit) {
+  function starsFor(ok, meters, par, sag, limit) {
     if (!ok) return 0;
+    if (!par) return 1;
     let n = 1;
-    if (memberCount <= budget + 2) n = 2;
-    if (memberCount <= budget) n = 3;
-    if (memberCount <= budget && sag <= limit * 0.9) n = 4;
+    if (meters <= par * 1.25 + 0.05) n = 2;
+    if (meters <= par * 1.02 + 0.05) n = 3;
+    if (n === 3 && sag <= (limit || 30) * 0.9) n = 4;
     return n;
   }
   function showPlate(shout, captionText, mark) {
@@ -384,15 +404,99 @@ export function mountTruss(cfg) {
     const goalN = document.getElementById("goal-n");
     const goalM = document.getElementById("goal-m");
     const heightN = document.getElementById("height-n");
-    const h = heightM(state.joints);
+    const h = cfg.mode === "spire" ? linkedHeight(state.joints, state.members) : heightM(state.joints);
     if (heightN) heightN.textContent = String(Math.round(h));
     if (goalN) goalN.textContent = String(level.goalM || 0);
     if (goalM) goalM.textContent = (level.goalM || 0) + " m";
     const chip = document.getElementById("mastery-chip");
-    if (chip && state.bestStars) {
-      chip.hidden = false;
-      chip.textContent = "Best ★ " + state.bestStars + "/4";
+    const best = state.stars[level.id] || 0;
+    if (chip) {
+      chip.hidden = !best;
+      if (best) chip.textContent = "Best ★ " + best + "/4";
     }
+  }
+  function pxPerMeter(level) {
+    if (cfg.mode === "spire" || (!level.spanM && level.goalM)) return 15;
+    const src = (level.slots && level.slots.length ? level.slots : level.joints) || [];
+    if (!src.length || !level.spanM) return 1;
+    const xs = src.map((j) => j.x);
+    const span = Math.max(...xs) - Math.min(...xs);
+    return span > 0 ? span / level.spanM : 1;
+  }
+  function metersOf(joints, members, level) {
+    const p = pxPerMeter(level);
+    let m = 0;
+    for (const mem of members) {
+      const a = joints[mem.a];
+      const b = joints[mem.b];
+      if (!a || !b) continue;
+      m += Math.hypot(a.x - b.x, a.y - b.y) / p;
+    }
+    return m;
+  }
+  function parMeters(level) {
+    if (typeof level.par === "number" && level.par > 0) return level.par;
+    const src = level.joints && level.joints.length ? level.joints : state.joints;
+    return metersOf(src, level.parMembers || [], level);
+  }
+  function linkedSet(joints, members) {
+    const adj = joints.map(() => []);
+    for (const m of members) {
+      if (!joints[m.a] || !joints[m.b]) continue;
+      adj[m.a].push(m.b);
+      adj[m.b].push(m.a);
+    }
+    const seen = new Set();
+    const q = [];
+    joints.forEach((j, i) => {
+      if (j.fixed) {
+        seen.add(i);
+        q.push(i);
+      }
+    });
+    while (q.length) {
+      const i = q.pop();
+      for (const k of adj[i]) {
+        if (seen.has(k)) continue;
+        seen.add(k);
+        q.push(k);
+      }
+    }
+    return seen;
+  }
+  function linkedHeight(joints, members) {
+    const bases = [];
+    joints.forEach((j, i) => { if (j.fixed) bases.push(i); });
+    if (!bases.length) return 0;
+    const baseY = Math.max(...bases.map((i) => joints[i].y));
+    let top = baseY;
+    linkedSet(joints, members).forEach((i) => { top = Math.min(top, joints[i].y); });
+    return Math.max(0, (baseY - top) / 15);
+  }
+  function topLinkedIndex() {
+    let best = -1;
+    let bestY = Infinity;
+    linkedSet(state.joints, state.members).forEach((i) => {
+      if (state.joints[i].fixed) return;
+      if (state.joints[i].y < bestY) {
+        bestY = state.joints[i].y;
+        best = i;
+      }
+    });
+    return best;
+  }
+  function deckIndexes(level) {
+    const joints = state.joints;
+    const ref = (level.slots && level.slots.length ? level.slots : level.joints) || joints;
+    let maxY = -Infinity;
+    for (const j of ref) if (j && j.y > maxY) maxY = j.y;
+    const picks = [];
+    joints.forEach((j, i) => {
+      if (j.fixed) return;
+      if (Math.abs(j.y - maxY) <= 16) picks.push(i);
+    });
+    picks.sort((a, b) => joints[a].x - joints[b].x);
+    return picks;
   }
   function heightM(joints) {
     const bases = joints.filter((j) => j.fixed);
@@ -725,6 +829,7 @@ export function mountTruss(cfg) {
         ctx.stroke();
       }
     }
+    const deckMark = !state.view && level.roll ? new Set(deckIndexes(level)) : null;
     joints.forEach((j, i) => {
       const p = toScreen(j);
       if (cfg.workshop && art["gusset-joint"]) {
@@ -741,11 +846,19 @@ export function mountTruss(cfg) {
       ctx.arc(p.x, p.y, 4, 0, Math.PI * 2);
       ctx.fillStyle = "#0f172a";
       ctx.fill();
-      if (!state.view && i === level.loadIndex && !level.free) {
+      if (!state.view && ((deckMark && deckMark.has(i)) || (i === level.loadIndex && !level.free && !level.roll))) {
         ctx.fillStyle = "#fbbf24";
         ctx.fillRect(p.x - 16, p.y + 16, 32, 14);
       }
     });
+    if (state.view && state.hot != null && joints[state.hot]) {
+      const p = toScreen(joints[state.hot]);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 28, 0, Math.PI * 2);
+      ctx.strokeStyle = "#fb7185";
+      ctx.lineWidth = 3;
+      ctx.stroke();
+    }
     if (state.view && state.view.weight) {
       const w = toScreen(state.view.weight);
       ctx.fillStyle = "#fbbf24";
@@ -823,11 +936,13 @@ export function mountTruss(cfg) {
       btn.disabled = locked;
       const tag = state.cleared[level.id] ? "Done" : locked ? "Locked" : (level.id === state.levelId ? "Now" : "Open");
       const band = level.free ? "After the path" : (level.n + " · " + level.band);
+      const best = state.stars[level.id] || 0;
+      const starLine = best ? ("Best ★ " + best + "/4 on this job") : "Stars belong to this job";
       btn.innerHTML =
         '<span class="isle-tag">' + band + " · " + tag + "</span>" +
         "<h3>" + faceName(level) + "</h3>" +
         "<p>" + faceJob(level) + "</p>" +
-        '<span class="isle-toy">Stars show this try</span>';
+        '<span class="isle-toy">' + starLine + "</span>";
       btn.addEventListener("click", () => {
         if (!open) return;
         closeMap();
@@ -852,67 +967,78 @@ export function mountTruss(cfg) {
 
   function failReason(result) {
     if (result.reason === "few") return "Stretch at least two members.";
+    if (result.reason === "roll") return "The truck moved and that bay folded, so add a triangle there.";
+    if (result.reason === "gust") return "The top leaned, so add a diagonal on the story that folded.";
     if (result.reason === "lean") return "It leaned. Add a diagonal.";
-    if (result.reason === "short") return "It is short of the height goal. Add another story.";
+    if (result.reason === "short") return "Connect a higher joint, because height counts the joints your bars reach.";
     return "It sagged. Add a triangle.";
+  }
+  function proveOpts(level) {
+    return {
+      ...PROVE,
+      sagLimit: level.sagLimit,
+      leanLimit: level.leanLimit,
+      nudge: level.nudge == null ? PROVE.nudge : level.nudge,
+      gust: !!level.gust,
+    };
+  }
+  function tagFail(level, result) {
+    if (result.ok || result.reason === "few" || result.reason === "short" || result.reason === "nophysics") return result;
+    if (level.gust) return { ...result, reason: "gust" };
+    if (level.roll || (level.free && cfg.mode === "span")) return { ...result, reason: "roll" };
+    return result;
   }
 
   function runCheck() {
     const level = active();
-    const opts = {
-      ...PROVE,
-      sagLimit: level.sagLimit,
-      leanLimit: level.leanLimit,
-      nudge: level.nudge || PROVE.nudge,
-    };
+    const opts = proveOpts(level);
     if (state.joints.length < 2 || state.members.length < 2) {
       return { ok: false, reason: "few", sag: 99, lean: 0, frames: [] };
     }
     if (cfg.mode === "spire") {
-      const h = heightM(state.joints);
+      const h = linkedHeight(state.joints, state.members);
       if (h + 0.2 < (level.goalM || 0)) {
         return { ok: false, reason: "short", sag: 0, lean: 0, frames: [] };
       }
     }
-    if (level.free && cfg.mode === "span") {
-      const free = state.joints.map((j, i) => ({ j, i })).filter((x) => !x.j.fixed);
-      if (free.length < 3) return { ok: false, reason: "few", sag: 99, lean: 0, frames: [] };
-      free.sort((a, b) => a.j.x - b.j.x);
-      const picks = [free[0].i, free[Math.floor(free.length / 2)].i, free[free.length - 1].i];
+    if (level.roll || (level.free && cfg.mode === "span")) {
+      const picks = deckIndexes(level);
+      if (!picks.length) return { ok: false, reason: "few", sag: 99, lean: 0, frames: [] };
       let worst = null;
       for (const loadIndex of picks) {
-        const r = proveTruss({ joints: state.joints, members: state.members, loadIndex }, opts);
+        const r = tagFail(level, proveTruss({ joints: state.joints, members: state.members, loadIndex }, opts));
         if (!r.ok) return r;
         if (!worst || r.sag > worst.sag) worst = r;
       }
       return worst;
     }
     if (level.free && cfg.mode === "spire") {
-      let top = 0;
-      state.joints.forEach((j, i) => {
-        if (j.y < state.joints[top].y) top = i;
-      });
-      const a = proveTruss({ joints: state.joints, members: state.members, loadIndex: top }, { ...opts, nudgeSign: 1 });
+      const top = topLinkedIndex();
+      if (top < 0) return { ok: false, reason: "short", sag: 0, lean: 0, frames: [] };
+      const gust = { ...opts, gust: true };
+      const a = tagFail(level, proveTruss({ joints: state.joints, members: state.members, loadIndex: top }, { ...gust, nudgeSign: 1 }));
       if (!a.ok) return a;
-      const b = proveTruss({ joints: state.joints, members: state.members, loadIndex: top }, { ...opts, nudgeSign: -1 });
-      return b.ok ? a : b;
+      const b = tagFail(level, proveTruss({ joints: state.joints, members: state.members, loadIndex: top }, { ...gust, nudgeSign: -1 }));
+      return b.ok ? (a.sag >= b.sag ? a : b) : b;
     }
-    return proveTruss({
+    return tagFail(level, proveTruss({
       joints: state.joints,
       members: state.members,
       loadIndex: level.loadIndex,
-    }, opts);
+    }, opts));
   }
 
   function finish(result) {
     state.phase = "idle";
     state.view = null;
+    state.hot = null;
     const level = active();
     const held = !!result.ok;
     const onBudget = state.members.length <= level.budget;
     const met = held && (!level.onBudget || onBudget);
-    const stars = starsFor(held, state.members.length, level.budget, result.sag || 0, level.sagLimit || 30);
-    if (stars > state.bestStars) state.bestStars = stars;
+    const stars = starsFor(held, metersOf(state.joints, state.members, level), parMeters(level), result.sag || 0, level.sagLimit || 30);
+    if (stars > (state.stars[level.id] || 0)) state.stars[level.id] = stars;
+    state.bestStars = Math.max(state.bestStars, stars);
     let first = false;
     if (met) {
       first = !state.cleared[level.id] && level.id === levels[0].id;
@@ -922,11 +1048,7 @@ export function mountTruss(cfg) {
     save();
     syncTrack();
     armRetry(!held);
-    const chip = document.getElementById("mastery-chip");
-    if (chip) {
-      chip.hidden = stars === 0;
-      if (stars) chip.textContent = "★ " + stars + "/4";
-    }
+    paintReadout();
     if (!held) {
       const line = failReason(result);
       state.hadMiss = true;
@@ -943,6 +1065,7 @@ export function mountTruss(cfg) {
       const fixed = state.hadMiss;
       state.hadMiss = false;
       let line = level.job + " " + starPhrase(stars) + ".";
+      if (stars > 0 && stars < 3) line += " Fewer members can earn more stars.";
       if (fixed) line = "You fixed it. " + line;
       else if (first) line = "First clear. " + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
@@ -967,6 +1090,7 @@ export function mountTruss(cfg) {
 
   function playResult(result) {
     const frames = result.frames || [];
+    state.hot = Number.isInteger(result.hot) ? result.hot : null;
     if (quietMode() || frames.length < 2) {
       finish(result);
       return;
@@ -984,6 +1108,34 @@ export function mountTruss(cfg) {
     requestAnimationFrame(step);
   }
 
+  function theaterLines(level) {
+    if (cfg.mode === "span") {
+      if (level.roll || level.free) {
+        return [
+          ["Span", (level.spanM || 0) + " m."],
+          ["Truck", "It stops in every bay."],
+          ["Watch", "A missing triangle folds."],
+        ];
+      }
+      return [
+        ["Span", (level.spanM || 0) + " m."],
+        ["Load", cfg.workshop ? "One load hangs on the bridge." : "One load hangs on the truss."],
+        ["Watch", "Triangles stay. Squares fold."],
+      ];
+    }
+    if (level.gust || level.free) {
+      return [
+        ["Height", (level.goalM || 0) + " m goal."],
+        ["Push", "The test pushes the top."],
+        ["Watch", "A diagonal keeps that story from folding."],
+      ];
+    }
+    return [
+      ["Height", (level.goalM || 0) + " m goal."],
+      ["Load", "A weight sits on the top."],
+      ["Watch", "A diagonal keeps the story from folding."],
+    ];
+  }
   function startTest() {
     if (busy()) return;
     state.stretch = null;
@@ -1000,9 +1152,7 @@ export function mountTruss(cfg) {
     theater = runProveTheater({
       setStatus,
       totalMs: cfg.mode === "span" ? 1500 : 1200,
-      lines: cfg.mode === "span"
-        ? [["Span", (level.spanM || 0) + " m."], ["Load", cfg.workshop ? "One load hangs on the bridge." : "One load hangs on the truss."], ["Watch", "Triangles stay. Squares fold."]]
-        : [["Height", (level.goalM || 0) + " m goal."], ["Load", "A weight sits on the top."], ["Watch", "A diagonal keeps the story from folding."]],
+      lines: theaterLines(level),
       onDone: go,
     });
   }
@@ -1011,6 +1161,7 @@ export function mountTruss(cfg) {
     if (theater && theater.cancel) theater.cancel();
     theater = null;
     state.phase = "idle";
+    state.hot = null;
     state.hadMiss = false;
     state.fixLine = "";
     cloneLevel(active());

@@ -65,6 +65,38 @@ export function proveTruss(model, opts = {}) {
   const startY = bodies.map((b) => b.position.y);
   const steps = opts.steps || 160;
   const nudge = opts.nudge == null ? 0.0008 : opts.nudge;
+  const gust = !!opts.gust;
+  const linked = new Set();
+  if (gust) {
+    const adj = bodies.map(() => []);
+    for (const m of members) {
+      if (!bodies[m.a] || !bodies[m.b]) continue;
+      adj[m.a].push(m.b);
+      adj[m.b].push(m.a);
+    }
+    const q = [];
+    bodies.forEach((b, i) => {
+      if (b.isStatic) {
+        linked.add(i);
+        q.push(i);
+      }
+    });
+    while (q.length) {
+      const i = q.pop();
+      for (const k of adj[i]) {
+        if (linked.has(k)) continue;
+        linked.add(k);
+        q.push(k);
+      }
+    }
+  }
+  let gustTop = Infinity;
+  if (gust) {
+    for (let i = 0; i < bodies.length; i++) {
+      if (!linked.has(i) || bodies[i].isStatic) continue;
+      gustTop = Math.min(gustTop, startY[i]);
+    }
+  }
   const frames = [];
   const snap = () => {
     frames.push({
@@ -75,8 +107,12 @@ export function proveTruss(model, opts = {}) {
   snap();
   for (let i = 0; i < steps; i++) {
     if (nudge) {
-      for (const b of bodies) {
-        if (!b.isStatic) b.force.x += nudge * (opts.nudgeSign || 1) * b.mass;
+      const sign = opts.nudgeSign || 1;
+      for (let bi = 0; bi < bodies.length; bi++) {
+        const b = bodies[bi];
+        if (b.isStatic) continue;
+        if (gust && (!linked.has(bi) || startY[bi] > gustTop + 30)) continue;
+        b.force.x += nudge * sign * b.mass;
       }
     }
     Engine.update(engine, 1000 / 60);
@@ -84,10 +120,19 @@ export function proveTruss(model, opts = {}) {
   }
   let sag = 0;
   let lean = 0;
+  let hot = -1;
+  let hotScore = -1;
   for (let i = 0; i < bodies.length; i++) {
     if (bodies[i].isStatic) continue;
-    sag = Math.max(sag, bodies[i].position.y - startY[i]);
-    lean = Math.max(lean, Math.abs(bodies[i].position.x - joints[i].x));
+    const drop = bodies[i].position.y - startY[i];
+    const side = Math.abs(bodies[i].position.x - joints[i].x);
+    sag = Math.max(sag, drop);
+    lean = Math.max(lean, side);
+    const score = drop + side;
+    if (score > hotScore) {
+      hotScore = score;
+      hot = i;
+    }
   }
   if (weight && loadJoint) sag = Math.max(sag, weight.position.y - (startY[loadIndex] + 34));
   const sagLimit = opts.sagLimit == null ? 48 : opts.sagLimit;
@@ -97,5 +142,11 @@ export function proveTruss(model, opts = {}) {
   if (joints.length < 2 || members.length < 2) reason = "few";
   else if (!ok && sag > sagLimit) reason = "sag";
   else if (!ok) reason = "lean";
-  return { ok, reason, sag: Math.round(sag), lean: Math.round(lean), frames };
+  try {
+    if (M.World && M.World.clear) M.World.clear(world, false);
+    if (M.Engine && M.Engine.clear) M.Engine.clear(engine);
+  } catch (err) {
+    /* the grade is already on the table */
+  }
+  return { ok, reason, sag: Math.round(sag), lean: Math.round(lean), hot, frames };
 }

@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.24** · 2026-09-25 · channel **live**
+**Chip: SC 1.3.25** · 2026-09-26 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.25 — The truck stops — 2026-09-26
+
+- What’s new: after the triangle, the truck stops in every bay. An arch and a pier are their own jobs. Extra bars miss Budget. Stars belong to that job.
 
 ## 1.3.24 — Read the line — 2026-09-25
 
