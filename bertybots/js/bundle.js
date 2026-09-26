@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.7 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.8 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.7";
+const APP_VERSION = "0.19.8";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.7";
+const APP_CHIP = "BB 0.19.8";
 const APP_BUILT = "2026-09-23";
 
 const FORMAT = 1;
@@ -795,7 +795,11 @@ function boot() {
   function paintAccess() {
     const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
     const gear = document.getElementById("btn-settings");
-    if (gear) gear.textContent = copy.settings;
+    if (gear) {
+      const lbl = gear.querySelector(".lbl");
+      if (lbl) lbl.textContent = copy.settings;
+      gear.setAttribute("aria-label", copy.settings);
+    }
     const title = document.getElementById("access-title");
     if (title) title.textContent = copy.settings;
     const langLabel = document.getElementById("access-lang-label");
@@ -939,7 +943,8 @@ function boot() {
         btn.className = `job-plate ${state}`;
         btn.dataset.course = job.id;
         btn.disabled = state === "lock";
-        btn.title = job.label;
+        btn.title = `${i + 1}. ${job.label}`;
+        btn.setAttribute("aria-label", `Job ${i + 1}, ${job.label}`);
         const num = document.createElement("b");
         num.textContent = String(i + 1);
         const mark = document.createElement("span");

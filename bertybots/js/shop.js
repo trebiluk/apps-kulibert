@@ -696,7 +696,11 @@ export function boot() {
   function paintAccess() {
     const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
     const gear = document.getElementById("btn-settings");
-    if (gear) gear.textContent = copy.settings;
+    if (gear) {
+      const lbl = gear.querySelector(".lbl");
+      if (lbl) lbl.textContent = copy.settings;
+      gear.setAttribute("aria-label", copy.settings);
+    }
     const title = document.getElementById("access-title");
     if (title) title.textContent = copy.settings;
     const langLabel = document.getElementById("access-lang-label");
@@ -840,7 +844,8 @@ export function boot() {
         btn.className = `job-plate ${state}`;
         btn.dataset.course = job.id;
         btn.disabled = state === "lock";
-        btn.title = job.label;
+        btn.title = `${i + 1}. ${job.label}`;
+        btn.setAttribute("aria-label", `Job ${i + 1}, ${job.label}`);
         const num = document.createElement("b");
         num.textContent = String(i + 1);
         const mark = document.createElement("span");
