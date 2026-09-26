@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.9.2** · 2026-09-26 · channel **live**
+
+The word chips are off the page. The menu on the left holds looks, time, tempo, and the title. The page keeps Play, the pads, and the grid.
+
+## Earlier
+
 **Chip: BZ 1.9.1** · 2026-09-26 · channel **live**
 
 The lesson outlines the control. The button says Got it when the step is done. Tempo is the last step: speed, not how many beats.

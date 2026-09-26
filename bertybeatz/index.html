@@ -8,13 +8,13 @@
   <title>BertyBeatz · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.9.1"/>
+  <link rel="stylesheet" href="./styles.css?v=1.9.2"/>
 </head>
 <body>
   <div id="gate" class="gate">
     <div class="gate-inner">
       <img class="gate-mark" src="./mark.svg" alt=""/>
-      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.9.1</span></p>
+      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.9.2</span></p>
       <h1>BertyBeatz</h1>
       <p class="lede" id="gate-lede">Tap squares. Make a song. Watch it become light.</p>
       <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
@@ -27,14 +27,14 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyBeatz</strong>
-        <em id="chip-label">BZ 1.9.1</em>
+        <em id="chip-label">BZ 1.9.2</em>
       </span>
     </a>
     <div class="top-actions">
-      <button type="button" id="help-btn" class="btn ghost" aria-expanded="false">How</button>
-      <a class="btn ghost" href="/">Room</a>
+      <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </header>
+  <div class="scrim" id="scrim"></div>
 
   <section id="help" class="help" hidden>
     <h2>How it works</h2>
@@ -62,55 +62,17 @@
           <span id="look-live">Bars</span>
         </p>
       </div>
-      <div class="stage-look">
-        <span class="tool-label">Look</span>
-        <div class="chips" id="looks"></div>
-      </div>
     </div>
-    <div id="code-look" class="code-look" hidden></div>
   </section>
-
-  <section id="title-lists" class="title-lists" hidden aria-label="Title words"></section>
 
   <section class="transport" aria-label="Transport">
     <button type="button" id="play-btn" class="play" aria-label="Play">
       <span class="play-icon" aria-hidden="true"></span>
     </button>
     <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
-    <button type="button" id="score-btn" class="btn">Score</button>
     <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
     </button>
-    <div class="dials">
-    <label class="dial">
-      <span>Tempo</span>
-      <input id="bpm" type="range" min="70" max="160" value="110"/>
-    </label>
-    <label class="dial">
-      <span>Swing</span>
-      <input id="swing" type="range" min="0" max="60" value="8"/>
-    </label>
-    <label class="dial">
-      <span>Human</span>
-      <input id="human" type="range" min="0" max="40" value="0" aria-label="Humanize"/>
-    </label>
-    <label class="dial">
-      <span>Vol</span>
-      <input id="vol" type="range" min="0" max="100" value="80"/>
-    </label>
-    </div>
-  </section>
-
-  <section class="song-box" aria-label="Patterns and song">
-    <div class="tool-row">
-      <span class="tool-label">Pattern</span>
-      <div class="chips" id="patterns"></div>
-    </div>
-    <div class="tool-row deep">
-      <span class="tool-label">Song</span>
-      <button type="button" id="song-on" class="btn" aria-pressed="false">Loop</button>
-      <div class="chips" id="song"></div>
-    </div>
   </section>
 
   <div class="bank-bar" id="bank-bar">
@@ -132,12 +94,6 @@
   </section>
 
   <section class="kit-play" aria-label="Drum kit">
-    <div class="tool-row">
-      <span class="tool-label">Time</span>
-      <div class="chips" id="meters"></div>
-      <button type="button" id="click-btn" class="btn on" aria-pressed="true">Click on</button>
-      <button type="button" id="record-btn" class="btn" aria-pressed="false">Record</button>
-    </div>
     <div class="pads" id="pads"></div>
   </section>
 
@@ -145,43 +101,52 @@
     <div id="grid" class="grid" role="grid" aria-label="Beat grid"></div>
   </div>
 
-  <section class="mixer" aria-label="Mixer">
+  <aside class="drawer" id="drawer" aria-label="Menu">
+    <button type="button" id="help-btn" class="btn">How</button>
+    <button type="button" id="score-btn" class="btn">Score</button>
+    <a class="btn" href="/">Room</a>
+    <h2>Look</h2>
+    <div class="chips" id="looks"></div>
+    <div id="code-look" class="code-look" hidden></div>
+    <h2>Title</h2>
+    <section id="title-lists" class="title-lists" aria-label="Title words"></section>
+    <h2>Tempo</h2>
+    <div class="dials">
+      <label class="dial"><span>Tempo</span><input id="bpm" type="range" min="70" max="160" value="110"/></label>
+      <label class="dial"><span>Swing</span><input id="swing" type="range" min="0" max="60" value="8"/></label>
+      <label class="dial"><span>Human</span><input id="human" type="range" min="0" max="40" value="0" aria-label="Humanize"/></label>
+      <label class="dial"><span>Vol</span><input id="vol" type="range" min="0" max="100" value="80"/></label>
+    </div>
+    <h2>Time</h2>
+    <div class="chips" id="meters"></div>
+    <button type="button" id="click-btn" class="btn on" aria-pressed="true">Click on</button>
+    <button type="button" id="record-btn" class="btn" aria-pressed="false">Record</button>
+    <h2>Pattern</h2>
+    <div class="chips" id="patterns"></div>
+    <button type="button" id="song-on" class="btn" aria-pressed="false">Loop</button>
+    <div class="chips" id="song"></div>
     <h2>Mixer</h2>
     <p class="staff-hint">Each row is one sound. Off hides it. Solo keeps only the rows you mark. Soft and Bright change the color. The song saves itself.</p>
     <div class="mix" id="mix"></div>
-  </section>
 
-  <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
-
-  <section class="tools deep">
-    <div class="tool-row">
-      <span class="tool-label">Kit</span>
-      <div class="chips" id="kits"></div>
-    </div>
-    <div class="tool-row">
-      <span class="tool-label">Mood</span>
-      <div class="chips" id="moods"></div>
-    </div>
-    <div class="tool-row">
-      <span class="tool-label">Key</span>
-      <div class="chips" id="keys"></div>
-    </div>
-    <div class="actions">
-      <button type="button" id="surprise-btn" class="btn primary">Surprise me</button>
-      <button type="button" id="preset-btn" class="btn">Starter beats</button>
-      <button type="button" id="pass-btn" class="btn">Pass</button>
-      <button type="button" id="export-btn" class="btn">Export</button>
-      <button type="button" id="import-btn" class="btn">Import</button>
-      <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden/>
-      <button type="button" id="save-btn" class="btn">Save</button>
-      <button type="button" id="library-btn" class="btn">My beats</button>
-      <button type="button" id="clear-btn" class="btn danger">Clear</button>
-      <button type="button" id="undo-btn" class="btn" disabled>Undo</button>
-    </div>
+  <h2>Kit</h2>
+    <div class="chips" id="kits"></div>
+    <div class="chips" id="moods"></div>
+    <div class="chips" id="keys"></div>
+    <button type="button" id="surprise-btn" class="btn primary">Surprise me</button>
+    <button type="button" id="preset-btn" class="btn">Starter beats</button>
+    <button type="button" id="pass-btn" class="btn">Pass</button>
+    <button type="button" id="export-btn" class="btn">Export</button>
+    <button type="button" id="import-btn" class="btn">Import</button>
+    <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden/>
+    <button type="button" id="save-btn" class="btn">Save</button>
+    <button type="button" id="library-btn" class="btn">My beats</button>
+    <button type="button" id="clear-btn" class="btn danger">Clear</button>
+    <button type="button" id="undo-btn" class="btn" disabled>Undo</button>
     <p id="status-line" class="hint" role="status"></p>
-  </section>
+  </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.9.1</span> · See it move · no names ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.9.2</span> · See it move · no names ·
     <button type="button" id="lights-btn" class="link">Lights</button> ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a>
@@ -199,9 +164,9 @@
     </form>
   </dialog>
 
-  <script src="/shared/titles.js?v=3"></script>
+  <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
-  <script src="/shared/visualizer/stage.js?v=0.6.13"></script>
-  <script src="./app.js?v=1.9.1"></script>
+  <script src="/shared/visualizer/stage.js?v=0.6.14"></script>
+  <script src="./app.js?v=1.9.2"></script>
 </body>
 </html>

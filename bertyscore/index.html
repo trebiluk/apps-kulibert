@@ -8,7 +8,7 @@
   <title>BertyScore · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.2.7"/>
+  <link rel="stylesheet" href="./styles.css?v=0.2.8"/>
 </head>
 <body>
   <header class="top">
@@ -16,14 +16,14 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyScore</strong>
-        <em id="chip-label">BS 0.2.7</em>
+        <em id="chip-label">BS 0.2.8</em>
       </span>
     </a>
     <div class="top-actions">
-      <button type="button" id="help-btn" class="btn ghost">How to</button>
-      <a class="btn ghost" href="/">Room</a>
+      <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
     </div>
   </header>
+  <div class="scrim" id="scrim"></div>
 
   <p class="teach" id="now-line">Press Play. The notes light up. Sound can stay off.</p>
   <section id="lesson" class="lesson" hidden>
@@ -55,13 +55,19 @@
       <span>Tempo <b id="tempo-read">96</b></span>
       <input id="tempo" type="range" min="60" max="160" value="96"/>
     </label>
+  </section>
+  <aside class="drawer" id="drawer" aria-label="Menu">
+    <button type="button" id="help-btn" class="btn">How</button>
+    <a class="btn" href="/">Room</a>
+    <h2>Title</h2>
+    <section id="title-lists" class="title-lists" aria-label="Title words"></section>
+    <h2>File</h2>
     <button type="button" id="save-btn" class="btn">Export</button>
     <button type="button" id="import-btn" class="btn">Import</button>
+    <input id="import-file" type="file" accept=".json,application/json" hidden/>
     <button type="button" id="beats-btn" class="btn">Beats</button>
     <button type="button" id="lights-btn" class="btn">Lights</button>
-    <input id="import-file" type="file" accept=".json,application/json" hidden/>
-  </section>
-  <section id="title-lists" class="title-lists" hidden aria-label="Title words"></section>
+  </aside>
   <p id="status" class="status" role="status"></p>
 
   <div class="work">
@@ -80,7 +86,7 @@
     </section>
   </div>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BS 0.2.7</span> · no names · no mic ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BS 0.2.8</span> · no names · no mic ·
     <a href="./teacher.html">Teacher</a> ·
     <a href="./privacy.html">Privacy</a> ·
     <a href="./NOTICE.md">Notices</a>
@@ -100,10 +106,10 @@
     </form>
   </dialog>
 
-  <script src="/shared/titles.js?v=2"></script>
-  <script src="/shared/song/model.js?v=0.2.7"></script>
+  <script src="/shared/titles.js?v=4"></script>
+  <script src="/shared/song/model.js?v=0.2.8"></script>
   <script src="./vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="./vendor/tone.min.js?v=15.0.4"></script>
-  <script src="./app.js?v=0.2.7"></script>
+  <script src="./app.js?v=0.2.8"></script>
 </body>
 </html>

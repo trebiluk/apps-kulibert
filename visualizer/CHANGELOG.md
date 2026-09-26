@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.6.14** · 2026-09-26 · channel **live**
+
+Looks, colors, examples, and beats are in the left menu. The page keeps the picture and Play.
+
+## Earlier
+
 **Chip: Viz 0.6.13** · 2026-09-26 · channel **live**
 
 The lesson outlines Play, the word, or the color dots. The button says Got it when that step is done.

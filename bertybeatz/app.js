@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.9.1") return;
-  window.__BERTYBEATZ__ = "1.9.1";
+  if (window.__BERTYBEATZ__ === "1.9.2") return;
+  window.__BERTYBEATZ__ = "1.9.2";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.9.1";
+  const CHIP = "BZ 1.9.2";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1317,10 +1317,19 @@
     if (more) more.hidden = !seen;
   }
   syncDay();
-  $("more-btn").addEventListener("click", () => {
+  const moreBtn = $("more-btn");
+  if (moreBtn) moreBtn.addEventListener("click", () => {
     const on = document.body.classList.toggle("show-more");
-    $("more-btn").setAttribute("aria-expanded", String(on));
-    $("more-btn").textContent = on ? "Less" : "More";
+    moreBtn.setAttribute("aria-expanded", String(on));
+    moreBtn.textContent = on ? "Less" : "More";
+  });
+  $("menu-btn").addEventListener("click", () => {
+    const on = document.body.classList.toggle("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", String(on));
+  });
+  $("scrim").addEventListener("click", () => {
+    document.body.classList.remove("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", "false");
   });
   $("mute-btn").addEventListener("click", () => {
     state.soundOff = !state.soundOff;
@@ -1508,6 +1517,7 @@
     state.sawDownbeat = false;
     state.lessonBpm = state.bpm;
     paintLesson();
+    document.body.classList.remove("menu-open");
     $("help-btn").setAttribute("aria-expanded", "true");
   });
   $("surprise-btn").addEventListener("click", () => {
@@ -1582,9 +1592,10 @@
     const box = $("title-lists");
     const Titles = window.KulibertTitles;
     if (!box || !Titles) return;
-    const opening = box.hidden;
-    box.hidden = !opening;
-    $("song-name").setAttribute("aria-expanded", String(opening));
+    const opening = true;
+    box.hidden = false;
+    document.body.classList.add("menu-open");
+    $("song-name").setAttribute("aria-expanded", "true");
     if (!opening) return;
     const starting = Titles.partsOf(state.name) ? state.name : Titles.starterTitle();
     Titles.mount(box, starting, (title) => {

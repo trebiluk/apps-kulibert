@@ -1,6 +1,6 @@
 (() => {
   const Song = window.KulibertSong;
-  const CHIP = "BS 0.2.7";
+  const CHIP = "BS 0.2.8";
   const HOW_KEY = "kulibert.bertyscore.howto";
   const SONG_KEY = "kulibert.bertyscore.now";
   if (!Song) return;
@@ -438,10 +438,9 @@
     const box = $("title-lists");
     const Titles = window.KulibertTitles;
     if (!box || !Titles) return;
-    const open = box.hidden;
-    box.hidden = !open;
-    $("alias").setAttribute("aria-expanded", String(open));
-    if (!open) return;
+    box.hidden = false;
+    document.body.classList.add("menu-open");
+    $("alias").setAttribute("aria-expanded", "true");
     const starting = Titles.partsOf(state.song.alias) ? state.song.alias : Titles.starterTitle();
     state.song.alias = starting;
     paintAlias();
@@ -594,6 +593,16 @@
     state.sawRest = false;
     state.opened = Song.serialize(state.song);
     paintScoreLesson();
+    document.body.classList.remove("menu-open");
+  });
+  $("menu-btn").addEventListener("click", () => {
+    const on = document.body.classList.toggle("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", String(on));
+    if (on) $("alias").click();
+  });
+  $("scrim").addEventListener("click", () => {
+    document.body.classList.remove("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", "false");
   });
   $("how-next").addEventListener("click", () => {
     if (state.how >= steps.length - 1) finishHow();

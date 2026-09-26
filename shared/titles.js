@@ -72,28 +72,24 @@
     parent.innerHTML = "";
     parent.classList.add("title-build");
     LISTS.forEach(function (list, index) {
-      var row = document.createElement("div");
+      var row = document.createElement("label");
       row.className = "title-row";
-      var label = document.createElement("span");
-      label.textContent = list.label;
-      row.appendChild(label);
+      var name = document.createElement("span");
+      name.textContent = list.label;
+      var sel = document.createElement("select");
+      sel.setAttribute("aria-label", list.label);
       list.words.forEach(function (word) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "btn" + (word === parts[index] ? " on" : "");
-        b.textContent = word;
-        b.setAttribute("aria-pressed", String(word === parts[index]));
-        b.addEventListener("click", function () {
-          parts[index] = word;
-          row.querySelectorAll("button").forEach(function (el) {
-            var on = el === b;
-            el.classList.toggle("on", on);
-            el.setAttribute("aria-pressed", String(on));
-          });
-          if (onChange) onChange(compose(parts));
-        });
-        row.appendChild(b);
+        var opt = document.createElement("option");
+        opt.value = word;
+        opt.textContent = word;
+        if (word === parts[index]) opt.selected = true;
+        sel.appendChild(opt);
       });
+      sel.addEventListener("change", function () {
+        parts[index] = sel.value;
+        onChange(compose(parts));
+      });
+      row.append(name, sel);
       parent.appendChild(row);
     });
     return compose(parts);

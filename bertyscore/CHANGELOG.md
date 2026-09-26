@@ -1,5 +1,11 @@
 # BertyScore changelog
 
+**Chip: BS 0.2.8** · 2026-09-26 · channel **live**
+
+The title is four menus, not a wall of words. Export, Import, Beats, and Lights sit in the left menu.
+
+## Earlier
+
 **Chip: BS 0.2.7** · 2026-09-26 · channel **live**
 
 The lesson outlines Play or the staff. The button says Got it when the note, the move, or the rest has happened.

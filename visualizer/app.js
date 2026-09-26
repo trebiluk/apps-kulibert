@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.13") return;
-  window.__VISUALIZER__ = "0.6.13";
+  if (window.__VISUALIZER__ === "0.6.14") return;
+  window.__VISUALIZER__ = "0.6.14";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.13";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.14";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -839,7 +839,16 @@
     state.lesson = 0;
     state.lessonColor = state.color;
     paintVizLesson();
+    document.body.classList.remove("menu-open");
     $("help-btn").setAttribute("aria-expanded", "true");
+  });
+  $("menu-btn").addEventListener("click", () => {
+    const on = document.body.classList.toggle("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", String(on));
+  });
+  $("scrim").addEventListener("click", () => {
+    document.body.classList.remove("menu-open");
+    $("menu-btn").setAttribute("aria-expanded", "false");
   });
   $("more-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("show-more");
