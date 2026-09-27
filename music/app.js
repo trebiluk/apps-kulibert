@@ -528,6 +528,11 @@
       bindPad(b, id);
       box.appendChild(b);
     });
+    const extra = $("more-kit");
+    ["rim", "bell", "tamb", "crash"].forEach((id) => {
+      const pad = box.querySelector(".pad." + id);
+      if (pad && extra) extra.appendChild(pad);
+    });
     const keys = document.createElement("div");
     keys.className = "keys";
     LEARN.forEach((id) => {
@@ -934,6 +939,15 @@
       btn.setAttribute("aria-pressed", String(mode === name));
     });
     document.body.classList.toggle("is-lights", mode === "lights");
+    if (!state.playing) {
+      const hints = {
+        notes: "Tap the staff, or tap C, F, G, or Am.",
+        drums: "Tap a pad. It stays on that beat.",
+        lights: "Pick a scene or a layer. The picture follows the song.",
+        band: "Pick an instrument. Tap a letter.",
+      };
+      $("lesson").textContent = hints[mode] || $("lesson").textContent;
+    }
     if (mode === "band") paintBand();
     paintLights();
   }

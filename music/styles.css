@@ -59,6 +59,17 @@ button { cursor: pointer; }
   .rail { display: grid; grid-template-columns: repeat(4, 1fr); position: static; }
   .rail-kicker, .rail .alone { display: none; }
   .rail button { text-align: center; padding: 0.3rem 0.1rem; font-size: 0.82rem; }
+  canvas { max-height: 18vh; }
+  .col { min-height: 56px; }
+  .work.is-drums #drums-pane { order: -1; }
+  .work.is-drums .keys { display: none; }
+  .transport {
+    position: sticky;
+    bottom: 0;
+    z-index: 4;
+    background: var(--bg);
+    padding: 0.35rem 0;
+  }
 }
 .out { order: -1; }
 .desk { display: flex; flex-direction: column; gap: 0.7rem; }
@@ -133,7 +144,11 @@ canvas {
 .marks i.shaker { background: #facc15; }
 .mix { display: grid; gap: 0.2rem; margin: 0.45rem 0; }
 .mix label { display: grid; grid-template-columns: 4.2rem 1fr 2rem; gap: 0.35rem; align-items: center; font-size: 0.85rem; }
-#patterns { margin-top: 0.45rem; }
+.work { display: flex; flex-direction: column; }
+.more-box { margin-top: 0.45rem; border: 1px solid var(--border); border-radius: 12px; padding: 0.2rem 0.65rem 0.45rem; background: var(--panel); }
+.more-box:not([open]) > :not(summary) { display: none; }
+.more-box summary { min-height: 44px; display: flex; align-items: center; font-weight: 800; cursor: pointer; }
+#more-kit { margin-top: 0.35rem; }
 #click-btn { width: 100%; margin-top: 0.35rem; }
 #crazy-btn { width: 100%; margin-top: 0.45rem; }
 .marks em { font-style: normal; font-size: 0.68rem; font-weight: 800; color: var(--paper); }
