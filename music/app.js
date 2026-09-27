@@ -688,7 +688,7 @@
     const btn = $("rec-btn");
     if (!btn) return;
     btn.classList.toggle("on", state.recording);
-    btn.textContent = state.recording ? "Recording" : "Record";
+    btn.textContent = state.recording ? "Counting" : "Count, then I play";
     btn.setAttribute("aria-pressed", String(state.recording));
   }
   function canStamp() {
@@ -1045,6 +1045,7 @@
     state.once = !!(opts && opts.once);
     state.playing = true;
     document.body.classList.add("playing");
+    sayHow(state.mode);
     state.counting = false;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", "Stop");
@@ -1068,6 +1069,7 @@
   function stop() {
     state.playing = false;
     document.body.classList.remove("playing");
+    sayHow(state.mode);
     window.clearTimeout(state.timer);
     window.clearTimeout(state.eighthTimer);
     window.clearInterval(state.timer);
@@ -1344,13 +1346,13 @@
       rgb.setAttribute("aria-pressed", String(state.rgb));
     }
     document.body.classList.toggle("is-lights", state.mode === "lights");
-    const out = document.querySelector(".out");
-    if (out) {
-      ["night", "dusk", "sunset", "sea", "aurora", "candy"].forEach((id) => out.classList.remove("wall-" + id));
-      ["none", "line", "glow", "double", "rgb"].forEach((id) => out.classList.remove("frame-" + id));
-      out.classList.add("wall-" + (state.wall || "night"));
-      out.classList.add("frame-" + (state.frame || "none"));
-      out.classList.toggle("is-rgb", !!state.rgb);
+    const stage = document.querySelector(".stage-wrap");
+    if (stage) {
+      ["night", "dusk", "sunset", "sea", "aurora", "candy"].forEach((id) => stage.classList.remove("wall-" + id));
+      ["none", "line", "glow", "double", "rgb"].forEach((id) => stage.classList.remove("frame-" + id));
+      stage.classList.add("wall-" + (state.wall || "night"));
+      stage.classList.add("frame-" + (state.frame || "none"));
+      stage.classList.toggle("is-rgb", !!state.rgb);
     }
   }
   function applyViz(viz) {
@@ -1427,6 +1429,17 @@
     $("rgb-btn").addEventListener("click", () => { state.rgb = !state.rgb; saveSkin(); paintLights(); });
   }
 
+  function sayHow(mode) {
+    const line = $("how");
+    if (!line) return;
+    const text = {
+      notes: "Tap a letter. It goes on the staff. Then press Play.",
+      drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
+      lights: "This picture follows the song. Press Play to see it move.",
+      band: "Choose Strings. Then Conduct. Down means beat 1.",
+    };
+    line.textContent = state.playing ? "Press the square to stop." : (text[mode] || text.notes);
+  }
   function setMode(mode) {
     state.mode = mode;
     $("work").classList.toggle("is-notes", mode === "notes");
@@ -1442,14 +1455,15 @@
     document.body.classList.toggle("is-score", mode === "notes");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
+    sayHow(mode);
     if (!state.playing) {
       const hints = {
-        notes: state.expert ? "Expert. The score fills the page. Add a bar when you need a longer song." : "The score is on top. The big word names the note.",
+        notes: "The staff is the song. Tap a letter to change a note.",
         drums: state.along
-          ? "Play along. Tap when the beat flashes. The score stays put."
-          : "Add to the song. A tap stays on that beat.",
-        lights: "Pick a scene or a layer. The picture follows the song.",
-        band: "Pick an instrument. Tap a letter.",
+          ? "Play along is on. Tap with the flash. The song stays the same."
+          : "Tap Kick or Snare. A tap is saved on that beat.",
+        lights: "Pick a picture. Press Play.",
+        band: "Choose Strings. Down is beat 1.",
       };
       $("lesson").textContent = hints[mode] || $("lesson").textContent;
     }
@@ -1462,15 +1476,15 @@
     if (!btn) return;
     btn.classList.toggle("on", state.along);
     btn.setAttribute("aria-pressed", String(state.along));
-    btn.textContent = state.along ? "Add to the song" : "Play along";
+    btn.textContent = state.along ? "Playing along" : "Play along";
   }
   $("along-btn").addEventListener("click", () => {
     state.along = !state.along;
     paintAlong();
     keep();
     $("lesson").textContent = state.along
-      ? "Play along. Taps do not change the score. Follow the flash."
-      : "Add to the song. Taps stay on the beat.";
+      ? "Play along is on. Your taps do not change the song. Match the flash."
+      : "Play along is off. Your taps are saved on the beat.";
   });
   $("play-btn").addEventListener("click", () => {
     if (state.showing) {
@@ -1492,13 +1506,7 @@
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
     const full = state.muted ? "Muted" : "Sound on";
-    const btn = $("mute-btn");
-    const wide = btn.querySelector(".full");
-    const slim = btn.querySelector(".short");
-    if (wide && slim) {
-      wide.textContent = full;
-      slim.textContent = state.muted ? "Muted" : "Sound";
-    } else btn.textContent = full;
+    $("mute-btn").textContent = full;
     $("mute-btn").setAttribute("aria-pressed", String(state.muted));
     if (master) master.gain.value = state.muted ? 0 : 0.8;
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";
@@ -1518,7 +1526,7 @@
       state.armBeats = 0;
       state.turn = "";
       paintRec();
-      $("lesson").textContent = "Record is off. Taps still play. They do not write.";
+      $("lesson").textContent = "That count is off. Taps still play. They are saved when Play along is off.";
       return;
     }
     state.turn = "";

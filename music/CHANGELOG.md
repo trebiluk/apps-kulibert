@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.14.0** · 2026-09-27 · channel **live**
+
+One instruction at the top. Play and Sound are the only buttons on the bottom bar. The other controls say what they do, and they no longer cover the pads.
+
+## Earlier
+
 **Chip: MU 2.13.0** · 2026-09-27 · channel **live**
 
 Play no longer yanks the page back to the top. Stop stays on the screen while the song plays.
