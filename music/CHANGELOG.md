@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.20.0** · 2026-09-27 · channel **live**
+
+A teacher can assign practice to a TechWorks-style alias. The student sees it when they use that alias.
+
+## Earlier
+
 **Chip: MU 2.19.0** · 2026-09-27 · channel **live**
 
 Band opens on the student's instrument and the fingering. The tabs and lists are no longer pills.

@@ -2730,6 +2730,202 @@
     }
   }
 
+  const TASKS = {
+    five: "Hear the five notes",
+    read: "Read each fingering",
+    save: "Play the five notes into the song",
+  };
+  const ASSIGN_KEY = "kulibert.music.assign.v1";
+  function whoApi() { return window.KulibertWho || null; }
+  function cleanAlias(raw) {
+    const api = whoApi();
+    if (api && api.clean) return api.clean(raw);
+    return String(raw || "").trim().slice(0, 16);
+  }
+  function codeOf(alias) {
+    const api = whoApi();
+    return api && api.codeOf ? api.codeOf(cleanAlias(alias)) : "";
+  }
+  function loadAssign() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(ASSIGN_KEY) || "null");
+      return raw && Array.isArray(raw.items) ? raw.items : [];
+    } catch (err) {
+      return [];
+    }
+  }
+  function saveAssign(items) {
+    try { localStorage.setItem(ASSIGN_KEY, JSON.stringify({ v: 1, items: items })); } catch (err) { /* still on screen */ }
+  }
+  function taskName(id) { return TASKS[id] || TASKS.five; }
+  function instName(id) {
+    const item = BAND.find((row) => row.id === id);
+    return item ? item.name : "Trumpet";
+  }
+  function mine() {
+    const who = whoApi() && whoApi().read();
+    if (!who) return null;
+    return loadAssign().find((item) => item.code === who.code && !item.done) || null;
+  }
+  function paintPractice() {
+    const box = $("practice");
+    const line = $("practice-line");
+    const who = whoApi() && whoApi().read();
+    const input = $("who-alias");
+    const code = $("who-code");
+    if (input && who && document.activeElement !== input) input.value = who.alias;
+    if (code) code.textContent = who ? "Your code is " + who.code + "." : "Add an alias to see practice. No real names.";
+    const job = mine();
+    if (!box || !line) return;
+    if (!job) { box.hidden = true; return; }
+    box.hidden = false;
+    line.textContent = who.alias + " · " + instName(job.instrument) + ". " + taskName(job.task) + ".";
+  }
+  function startPractice() {
+    const job = mine();
+    if (!job) return;
+    state.band = job.instrument;
+    const sound = { Woodwind: "winds", Brass: "brass", Strings: "strings", Keyboard: "winds", Percussion: "beep" };
+    const inst = bandNow();
+    if (inst && sound[inst.family]) state.orch = sound[inst.family];
+    setMode("band");
+    paintBand();
+    if (job.task === "five") warmUp();
+    else if (job.task === "save") $("lesson").textContent = "Tap each note. It is saved on a beat.";
+    else $("lesson").textContent = "Tap each note. Read the fingering.";
+  }
+  function finishPractice() {
+    const who = whoApi() && whoApi().read();
+    if (!who) return;
+    const items = loadAssign();
+    const job = items.find((item) => item.code === who.code && !item.done);
+    if (job) job.done = true;
+    saveAssign(items);
+    if (whoApi()) whoApi().saveApp("music", { practice: job ? job.task : "", instrument: job ? job.instrument : "", done: true });
+    paintPractice();
+    paintAssign();
+    $("lesson").textContent = "Practice is marked done on this Chromebook.";
+  }
+  function paintAssign() {
+    const list = $("assign-list");
+    const inst = $("assign-inst");
+    if (inst && !inst.childElementCount) {
+      BAND.forEach((item) => {
+        const opt = document.createElement("option");
+        opt.value = item.id;
+        opt.textContent = item.name;
+        inst.appendChild(opt);
+      });
+      inst.value = "trumpet";
+    }
+    if (!list) return;
+    list.innerHTML = "";
+    loadAssign().forEach((item, index) => {
+      const row = document.createElement("div");
+      row.className = "assign-row";
+      const text = document.createElement("span");
+      text.textContent = item.alias + " · " + instName(item.instrument) + " · " + taskName(item.task) + (item.done ? " · done" : "");
+      const drop = document.createElement("button");
+      drop.type = "button";
+      drop.className = "btn";
+      drop.textContent = "Remove";
+      drop.addEventListener("click", () => {
+        const items = loadAssign();
+        items.splice(index, 1);
+        saveAssign(items);
+        paintAssign();
+        paintPractice();
+      });
+      row.appendChild(text);
+      row.appendChild(drop);
+      list.appendChild(row);
+    });
+  }
+  const whoInput = $("who-alias");
+  if (whoInput) {
+    const who = whoApi() && whoApi().read();
+    if (who) whoInput.value = who.alias;
+    whoInput.addEventListener("change", () => {
+      if (whoApi()) whoApi().write(whoInput.value);
+      paintPractice();
+    });
+  }
+  const assignAdd = $("assign-add");
+  if (assignAdd) assignAdd.addEventListener("click", () => {
+    const alias = cleanAlias($("assign-alias").value);
+    const code = codeOf(alias);
+    if (!alias || !code) {
+      $("lesson").textContent = "Type an alias first. Not a real name.";
+      return;
+    }
+    const items = loadAssign().filter((item) => !(item.code === code && item.task === $("assign-task").value && !item.done));
+    items.unshift({
+      alias: alias,
+      code: code,
+      instrument: $("assign-inst").value || "trumpet",
+      task: $("assign-task").value || "five",
+      done: false,
+    });
+    saveAssign(items.slice(0, 40));
+    $("assign-alias").value = "";
+    paintAssign();
+    paintPractice();
+    $("lesson").textContent = alias + " · " + code + ". Assigned on this Chromebook.";
+  });
+  const assignFile = $("assign-file");
+  if (assignFile) assignFile.addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify({ v: 1, kind: "kulibert.music.practice", items: loadAssign() }, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "music-practice.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  const assignOpen = $("assign-open");
+  const assignIn = $("assign-file-in");
+  if (assignOpen && assignIn) {
+    assignOpen.addEventListener("click", () => assignIn.click());
+    assignIn.addEventListener("change", () => {
+      const file = assignIn.files && assignIn.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const raw = JSON.parse(String(reader.result || ""));
+          const incoming = Array.isArray(raw.items) ? raw.items : [];
+          const items = loadAssign();
+          incoming.forEach((item) => {
+            const alias = cleanAlias(item.alias);
+            const code = codeOf(alias);
+            if (!alias || !code) return;
+            if (items.some((row) => row.code === code && row.task === item.task && row.done === !!item.done)) return;
+            items.unshift({
+              alias: alias,
+              code: code,
+              instrument: BAND.some((row) => row.id === item.instrument) ? item.instrument : "trumpet",
+              task: TASKS[item.task] ? item.task : "five",
+              done: !!item.done,
+            });
+          });
+          saveAssign(items.slice(0, 40));
+          paintAssign();
+          paintPractice();
+          $("lesson").textContent = "Class file opened. Aliases only.";
+        } catch (err) {
+          $("lesson").textContent = "That file is not a class practice list.";
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+  const practiceGo = $("practice-go");
+  if (practiceGo) practiceGo.addEventListener("click", startPractice);
+  const practiceDone = $("practice-done");
+  if (practiceDone) practiceDone.addEventListener("click", finishPractice);
+  paintAssign();
+  paintPractice();
+
   const canvas = $("viz");
   if (window.KulibertStage) {
     window.KulibertStage.mount(canvas, () => ({

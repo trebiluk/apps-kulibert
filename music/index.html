@@ -7,13 +7,13 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.19.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2.20.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.19.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.20.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -26,6 +26,11 @@
     <button type="button" id="mode-band" aria-pressed="false">Band</button>
   </nav>
   <p id="how" class="how">Tap a letter. It goes on the staff. Then press Play.</p>
+  <div id="practice" class="practice" hidden>
+    <p id="practice-line"></p>
+    <button type="button" id="practice-go">Start</button>
+    <button type="button" id="practice-done">Done</button>
+  </div>
   <div class="lab">
     <div class="desk">
     <section class="work" id="work">
@@ -107,6 +112,8 @@
       </div>
       <div id="band-pane">
         <button type="button" id="inst-now" class="inst-now">Choose your instrument</button>
+        <label class="who">Your alias <input id="who-alias" maxlength="16" autocomplete="off" placeholder="Blue Jay" aria-label="Your alias"/></label>
+        <p id="who-code" class="hint"></p>
         <div id="band-picks" class="inst-list" hidden aria-label="Instrument"></div>
         <p id="band-start" class="teach-line"></p>
         <div id="band-notes" class="keys" aria-label="First five notes"></div>
@@ -251,21 +258,38 @@
       <button type="button" id="mic-del" class="btn" hidden>Delete</button>
     </section>
     <section class="group">
+      <h2>Assign practice</h2>
+      <p class="hint">Alias only, the same kind TechWorks uses. No real names. This Chromebook keeps the list. Download the class file to move it.</p>
+      <input id="assign-alias" maxlength="16" placeholder="Blue Jay" aria-label="Student alias"/>
+      <select id="assign-inst" aria-label="Instrument"></select>
+      <select id="assign-task" aria-label="Practice">
+        <option value="five">Hear the five notes</option>
+        <option value="read">Read each fingering</option>
+        <option value="save">Play the five notes into the song</option>
+      </select>
+      <button type="button" id="assign-add" class="btn">Assign</button>
+      <div id="assign-list"></div>
+      <button type="button" id="assign-file" class="btn">Download class file</button>
+      <button type="button" id="assign-open" class="btn">Open a class file</button>
+      <input id="assign-file-in" type="file" accept="application/json,.json" hidden/>
+    </section>
+    <section class="group">
       <button type="button" id="clear-btn" class="btn">Clear the drums</button>
       <button type="button" id="save-btn" class="btn">Save a file</button>
-      <p class="hint">This Chromebook keeps the song. No names.</p>
+      <p class="hint">This Chromebook keeps the song. No real names. An alias is optional.</p>
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.19.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.20.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
+  <script src="/berty-run/kw-who.js?v=1"></script>
   <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.4.1"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=2.19.0"></script>
+  <script src="./app.js?v=2.20.0"></script>
 </body>
 </html>

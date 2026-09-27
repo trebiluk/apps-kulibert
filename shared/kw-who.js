@@ -54,5 +54,5 @@
     } catch (e) {}
     return who;
   }
-  root.KulibertWho = { read: read, write: write, saveApp: saveApp };
+  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf };
 })(typeof window !== "undefined" ? window : globalThis);
