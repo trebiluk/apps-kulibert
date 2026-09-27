@@ -469,11 +469,10 @@
     $("lesson").textContent = words[state.pen] || "The note is saved.";
   }
   function paintKeypad() {
+    const pen = $("pen");
     const box = $("keypad");
-    if (!box) return;
-    if (!box.childElementCount) {
-      const pens = [["quarter", "Quarter"], ["eighth", "Eighths"], ["tie", "Tie"], ["rest", "Rest"], ["chord", "Chord"], ["staccato", "Short"], ["accent", "Accent"], ["tenuto", "Hold"]];
-      pens.forEach(([id, label]) => {
+    if (pen && !pen.childElementCount) {
+      [["quarter", "1 beat"], ["eighth", "Fast"], ["tie", "Longer"], ["rest", "Rest"]].forEach(([id, label]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
@@ -482,7 +481,28 @@
         b.addEventListener("click", () => {
           state.pen = id;
           paintKeypad();
-          $("lesson").textContent = label + " is the tool. Tap a note or the staff.";
+          const help = {
+            quarter: "1 beat. Tap a letter.",
+            eighth: "Fast. Tap a letter twice for two quick notes.",
+            tie: "Longer. Tap the letter that is already on this beat.",
+            rest: "Rest. Tap a letter to leave a silence.",
+          };
+          $("lesson").textContent = help[id];
+        });
+        pen.appendChild(b);
+      });
+    }
+    if (box && !box.childElementCount) {
+      [["chord", "Chord"], ["staccato", "Short"], ["accent", "Louder hit"], ["tenuto", "Full hold"]].forEach(([id, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.pen = id;
+        b.textContent = label;
+        b.addEventListener("click", () => {
+          state.pen = id;
+          paintKeypad();
+          $("lesson").textContent = label + ". Then tap a letter.";
         });
         box.appendChild(b);
       });
@@ -491,7 +511,7 @@
         b.type = "button";
         b.className = "btn";
         b.dataset.key = key;
-        b.textContent = key;
+        b.textContent = "Key " + key;
         b.addEventListener("click", () => {
           if (Song.setKey) Song.setKey(state.song, key);
           keep();
@@ -501,12 +521,12 @@
         });
         box.appendChild(b);
       });
-      ["pp", "p", "mf", "f", "ff"].forEach((dyn) => {
+      [["pp", "Very soft"], ["p", "Soft"], ["mf", "Medium"], ["f", "Loud"], ["ff", "Very loud"]].forEach(([dyn, label]) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
         b.dataset.dyn = dyn;
-        b.textContent = dyn;
+        b.textContent = label;
         b.addEventListener("click", () => {
           const evs = Song.events(state.song);
           const ev = evs[state.cursor] || evs[0];
@@ -514,14 +534,17 @@
           state.dyn = dyn;
           keep();
           renderStaff();
-          $("lesson").textContent = dyn + " is written on this beat. The band follows it.";
+          $("lesson").textContent = label + " is written on this beat.";
         });
         box.appendChild(b);
       });
     }
-    [...box.children].forEach((btn) => {
-      if (btn.dataset.pen) btn.classList.toggle("on", btn.dataset.pen === state.pen);
-      if (btn.dataset.key) btn.classList.toggle("on", btn.dataset.key === state.song.key);
+    [pen, box].forEach((host) => {
+      if (!host) return;
+      [...host.children].forEach((btn) => {
+        if (btn.dataset.pen) btn.classList.toggle("on", btn.dataset.pen === state.pen);
+        if (btn.dataset.key) btn.classList.toggle("on", btn.dataset.key === state.song.key);
+      });
     });
   }
 
@@ -1049,6 +1072,8 @@
     state.counting = false;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", "Stop");
+    const playWord = $("play-word");
+    if (playWord) playWord.textContent = "Stop";
     let step = 0;
     const tick = () => {
       if (!state.playing) return;
@@ -1075,6 +1100,8 @@
     window.clearInterval(state.timer);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", "Play");
+    const playWord = $("play-word");
+    if (playWord) playWord.textContent = "Play";
     state.recording = false;
     state.armBeats = 0;
     state.turn = "";
@@ -1433,7 +1460,7 @@
     const line = $("how");
     if (!line) return;
     const text = {
-      notes: "Tap a letter. It goes on the staff. Then press Play.",
+      notes: "Tap a letter. Then press Play.",
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
       lights: "This picture follows the song. Press Play to see it move.",
       band: "Choose Strings. Then Conduct. Down means beat 1.",
