@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.24 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.25 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.24";
+const APP_VERSION = "0.19.25";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.24";
+const APP_CHIP = "BB 0.19.25";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -639,22 +639,16 @@ function boot() {
       return { x: look, y: Math.max(2.5, p.y + 1.35) };
     }
     const b = jobBounds();
-    return { x: b.x + b.w * 0.5, y: b.y + b.h * 0.36 };
+    const core = (doc.level.cores || [])[0];
+    if (core) return { x: core.x + 0.15, y: core.y + 0.45 };
+    return { x: b.x + b.w * 0.5, y: b.y + b.h * 0.45 };
   }
 
   function frameSpan() {
     if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
     const phone = window.innerHeight < 540 || window.innerWidth < 920;
     if (won) return { w: phone ? 8.5 : 10, h: phone ? 5.2 : 6 };
-    const b = jobBounds();
-    const minW = phone ? 7.4 : 8.6;
-    const minH = phone ? 4.0 : 4.4;
-    const maxW = phone ? 11 : 13;
-    const maxH = phone ? 6.6 : 7.6;
-    return {
-      w: Math.max(minW, Math.min(maxW, b.w)),
-      h: Math.max(minH, Math.min(maxH, b.h)),
-    };
+    return { w: phone ? 6.8 : 7.6, h: phone ? 3.6 : 4.1 };
   }
 
   function applyCam(snap) {
@@ -670,7 +664,7 @@ function boot() {
     view.zoom = Math.max(0.55, Math.min(2.4, view.zoom));
     view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
     view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
-    view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
+    view.oy = canvas.height * 0.46 - view.fy * view.scale + view.pany;
     clampLook();
   }
 
@@ -711,7 +705,7 @@ function boot() {
     view.panx -= shiftX * scale;
     view.pany -= shiftY * scale;
     view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
-    view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
+    view.oy = canvas.height * 0.46 - view.fy * view.scale + view.pany;
   }
 
   function fit() {
@@ -2739,7 +2733,7 @@ function boot() {
     const sx = wx(cx);
     const sy = wy(cy);
     const dpr = view.dpr || 1;
-    const m = 36 * dpr;
+    const m = 78 * dpr;
     if (sx >= m && sx <= canvas.width - m && sy >= m && sy <= canvas.height - m) return;
     const ax = Math.max(m, Math.min(canvas.width - m, sx));
     const ay = Math.max(m, Math.min(canvas.height - m, sy));
@@ -2751,21 +2745,23 @@ function boot() {
     ctx.strokeStyle = "#1a1400";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(16 * dpr, 0);
-    ctx.lineTo(-10 * dpr, 11 * dpr);
-    ctx.lineTo(-10 * dpr, -11 * dpr);
+    ctx.moveTo(14 * dpr, 0);
+    ctx.lineTo(-12 * dpr, 10 * dpr);
+    ctx.lineTo(-12 * dpr, -10 * dpr);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
     ctx.restore();
-    ctx.font = `800 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
-    ctx.textAlign = "center";
+    const inward = sx > canvas.width * 0.5 ? -1 : 1;
+    const lx = ax + inward * 22 * dpr;
+    ctx.font = `800 ${Math.round(14 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = inward < 0 ? "right" : "left";
     ctx.textBaseline = "middle";
-    ctx.lineWidth = 3;
+    ctx.lineWidth = 4;
     ctx.strokeStyle = "#1a1400";
-    ctx.strokeText("GOAL", ax, ay - 20 * dpr);
+    ctx.strokeText("GOAL", lx, ay);
     ctx.fillStyle = "#f0c000";
-    ctx.fillText("GOAL", ax, ay - 20 * dpr);
+    ctx.fillText("GOAL", lx, ay);
   }
 
   function normRect(x1, y1, x2, y2) {

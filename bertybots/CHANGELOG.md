@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.25 — Closer — 2026-09-27
+
+- The camera sits on the crate, not the empty shop.
+- The GOAL mark stays inside the screen.
+
 ## 0.19.24 — Big enough to grab — 2026-09-27
 
 - The shop starts close again. Scroll still reaches a far Drop Zone.
