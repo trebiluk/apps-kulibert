@@ -993,7 +993,6 @@
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     const evNow = evs[step];
     marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
-    if (marks[step] && marks[step].scrollIntoView) marks[step].scrollIntoView({ block: "nearest", inline: "nearest" });
     document.querySelectorAll(".cell").forEach((cell) => cell.classList.remove("now"));
     document.querySelectorAll(".drum-row").forEach((row) => {
       const cells = row.querySelectorAll(".cell");
@@ -1045,6 +1044,7 @@
     arm();
     state.once = !!(opts && opts.once);
     state.playing = true;
+    document.body.classList.add("playing");
     state.counting = false;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", "Stop");
@@ -1067,6 +1067,7 @@
   }
   function stop() {
     state.playing = false;
+    document.body.classList.remove("playing");
     window.clearTimeout(state.timer);
     window.clearTimeout(state.eighthTimer);
     window.clearInterval(state.timer);
