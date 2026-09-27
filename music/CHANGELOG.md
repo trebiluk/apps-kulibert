@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.7.0** · 2026-09-27 · channel **live**
+
+Play it as. The notes stay. The beat can be trap, hip-hop, rock, funk, disco, reggae, jazz, blues, march, latin, afrobeat, samba, bossa, country, dance, lullaby, folk, jig, drumline, or claps.
+
+## Earlier
+
 **Chip: MU 2.6.0** · 2026-09-27 · channel **live**
 
 Song library. Folk tunes from Africa, East Asia, South Asia, Europe, the Americas, islands, and lullabies. Simple white-key versions. Change any note. Make it trap still works on whatever is loaded.

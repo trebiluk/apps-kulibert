@@ -1644,43 +1644,69 @@
         const teach = $("teach");
         if (teach && !state.expert) teach.textContent = name + ". Press Play. The line names each note.";
       };
-      const trapIt = () => {
-        const trap = {
-          kick: [1, 0, 0, 0, 0, 0, 1, 0],
-          snare: [0, 0, 0, 0, 1, 0, 0, 0],
-          clap: [0, 0, 0, 0, 1, 0, 0, 1],
-          hat: [1, 0, 1, 1, 1, 0, 1, 1],
-          shaker: [0, 1, 0, 1, 0, 1, 0, 1],
-        };
+      const z = [0, 0, 0, 0, 0, 0, 0, 0];
+      const styles = {
+        Trap: { bpm: 74, bass: true, blend: 32, swing: 0, wave: "sine", len: 0.42, drums: { kick: [1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0], clap: [0, 0, 0, 0, 1, 0, 0, 1], hat: [1, 0, 1, 1, 1, 0, 1, 1], shaker: [0, 1, 0, 1, 0, 1, 0, 1] } },
+        "Hip-hop": { bpm: 92, bass: true, blend: 36, swing: 8, wave: "sine", len: 0.34, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0], hat: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Rock: { bpm: 124, bass: true, blend: 40, swing: 0, wave: "square", len: 0.22, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0], hat: [1, 1, 1, 1, 1, 1, 1, 1], crash: [1, 0, 0, 0, 0, 0, 0, 0] } },
+        Funk: { bpm: 104, bass: true, blend: 34, swing: 12, wave: "square", len: 0.16, drums: { kick: [1, 0, 0, 1, 0, 1, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0], hat: [0, 1, 0, 1, 0, 1, 0, 1] } },
+        Disco: { bpm: 118, bass: true, blend: 38, swing: 0, wave: "sawtooth", len: 0.2, drums: { kick: [1, 0, 1, 0, 1, 0, 1, 0], hat: [0, 1, 0, 1, 0, 1, 0, 1], clap: [0, 0, 1, 0, 0, 0, 1, 0] } },
+        Reggae: { bpm: 78, bass: true, blend: 30, swing: 0, wave: "sine", len: 0.36, drums: { kick: [0, 0, 1, 0, 0, 0, 1, 0], hat: [0, 0, 1, 0, 0, 0, 1, 0], rim: [0, 0, 1, 0, 0, 0, 1, 0] } },
+        Jazz: { bpm: 138, bass: true, blend: 48, swing: 50, wave: "triangle", len: 0.24, drums: { kick: [1, 0, 0, 0, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0], bell: [1, 0, 1, 1, 1, 0, 1, 1] } },
+        Blues: { bpm: 84, bass: true, blend: 42, swing: 36, wave: "triangle", len: 0.3, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 1, 0, 0, 0, 1, 1], hat: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        March: { bpm: 112, bass: false, blend: 45, swing: 0, wave: "square", len: 0.18, drums: { kick: [1, 0, 1, 0, 1, 0, 1, 0], snare: [1, 1, 1, 1, 1, 1, 1, 1], crash: [1, 0, 0, 0, 1, 0, 0, 0] } },
+        Latin: { bpm: 108, bass: true, blend: 40, swing: 0, wave: "triangle", len: 0.22, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], tom: [0, 0, 1, 0, 0, 1, 0, 1], clap: [0, 0, 0, 1, 0, 0, 1, 0], shaker: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Afrobeat: { bpm: 112, bass: true, blend: 34, swing: 0, wave: "square", len: 0.18, drums: { kick: [1, 0, 1, 0, 1, 0, 0, 1], snare: [0, 0, 0, 1, 0, 0, 1, 0], hat: [0, 1, 0, 1, 0, 1, 0, 1], bell: [1, 0, 1, 0, 1, 1, 0, 1] } },
+        Samba: { bpm: 104, bass: false, blend: 36, swing: 0, wave: "triangle", len: 0.16, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 1, 0, 0, 1, 1, 0], shaker: [1, 1, 1, 1, 1, 1, 1, 1], tamb: [0, 1, 0, 1, 0, 1, 0, 1] } },
+        Bossa: { bpm: 128, bass: true, blend: 55, swing: 6, wave: "sine", len: 0.3, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], rim: [0, 0, 1, 0, 0, 0, 1, 0], shaker: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Country: { bpm: 110, bass: true, blend: 46, swing: 10, wave: "triangle", len: 0.24, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], snare: [0, 0, 1, 0, 0, 0, 1, 0], hat: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Dance: { bpm: 128, bass: true, blend: 30, swing: 0, wave: "sawtooth", len: 0.16, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], clap: [0, 0, 0, 0, 1, 0, 0, 0], hat: [1, 1, 1, 1, 1, 1, 1, 1] } },
+        Lullaby: { bpm: 66, bass: false, blend: 72, swing: 0, wave: "sine", len: 0.62, drums: { kick: [1, 0, 0, 0, 0, 0, 0, 0], bell: [1, 0, 0, 1, 0, 0, 1, 0] } },
+        Folk: { bpm: 96, bass: false, blend: 62, swing: 0, wave: "triangle", len: 0.32, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], shaker: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Jig: { bpm: 126, bass: false, blend: 44, swing: 18, wave: "triangle", len: 0.18, drums: { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 1, 0, 0, 1, 0, 0], bell: [1, 0, 1, 0, 1, 0, 1, 0] } },
+        Drumline: { bpm: 132, bass: false, blend: 28, swing: 0, wave: "square", len: 0.12, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], snare: [1, 0, 1, 1, 1, 0, 1, 0], rim: [0, 0, 1, 0, 0, 0, 1, 1] } },
+        Claps: { bpm: 100, bass: false, blend: 40, swing: 0, wave: "triangle", len: 0.28, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], clap: [1, 0, 1, 0, 1, 0, 1, 0] } },
+      };
+      const applyStyle = (name) => {
+        const style = styles[name];
+        if (!style) return;
         ROWS.forEach(([id]) => {
-          state.drums[id] = (trap[id] || [0, 0, 0, 0, 0, 0, 0, 0]).map((on) => !!on);
+          state.drums[id] = (style.drums[id] || z).map((on) => !!on);
         });
-        state.song.bpm = 74;
-        state.song.tempo = 74;
-        state.bass = true;
-        state.blend = 32;
-        state.swing = 0;
-        state.wave = "sine";
-        state.noteLen = 0.42;
+        state.song.bpm = style.bpm;
+        state.song.tempo = style.bpm;
+        state.bass = !!style.bass;
+        state.blend = style.blend;
+        state.swing = style.swing || 0;
+        state.wave = style.wave || "triangle";
+        state.noteLen = style.len || 0.28;
         const bassBtn = $("bass-btn");
         if (bassBtn) {
-          bassBtn.classList.add("on");
-          bassBtn.setAttribute("aria-pressed", "true");
-          bassBtn.textContent = "Bass is on";
+          bassBtn.classList.toggle("on", state.bass);
+          bassBtn.setAttribute("aria-pressed", String(state.bass));
+          bassBtn.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
         }
         if ($("tempo")) {
-          $("tempo").value = "74";
-          $("tempo-read").textContent = "74";
+          $("tempo").value = String(style.bpm);
+          $("tempo-read").textContent = String(style.bpm);
         }
         if ($("blend")) {
-          $("blend").value = "32";
-          $("blend-read").textContent = blendWord(32);
+          $("blend").value = String(style.blend);
+          $("blend-read").textContent = blendWord(style.blend);
         }
+        if ($("swing")) {
+          $("swing").value = String(state.swing);
+          $("swing-read").textContent = String(state.swing);
+        }
+        document.querySelectorAll("#styles .btn").forEach((btn) => {
+          btn.classList.toggle("on", btn.textContent === name);
+        });
         renderDrums();
         keep();
         if (state.playing) { stop(); play(); }
-        $("lesson").textContent = "Trap beat. Same notes. Slow kick, clap on the back. Saved.";
+        $("lesson").textContent = name + " under the same notes. Saved.";
       };
+      const trapIt = () => applyStyle("Trap");
       let odeNotes = null;
       const shelves = [
         ["Africa", [
@@ -1749,8 +1775,17 @@
         trapIt();
       });
       classics.appendChild(joyTrap);
-      const trap = $("trap-btn");
-      if (trap) trap.addEventListener("click", trapIt);
+      const trap = $("styles");
+      if (trap && !trap.childElementCount) {
+        Object.keys(styles).forEach((name) => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn";
+          b.textContent = name;
+          b.addEventListener("click", () => applyStyle(name));
+          trap.appendChild(b);
+        });
+      }
     }
     const bass = $("bass-btn");
     if (bass && !bass.dataset.ready) {
