@@ -2300,6 +2300,12 @@ function markScroll() {
     el.classList.toggle("can-scroll", el.scrollWidth > el.clientWidth + 4 || el.scrollHeight > el.clientHeight + 4);
   }
 }
+function setPanel(open) {
+  document.body.classList.toggle("panel-open", open);
+  const btn = $("panel-toggle");
+  if (btn) btn.setAttribute("aria-pressed", open ? "true" : "false");
+  requestAnimationFrame(() => { fitPage(); drawRulers(); markScroll(); });
+}
 function boot() {
   let loaded = null;
   try { loaded = JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); } catch { loaded = null; }
@@ -2312,6 +2318,11 @@ function boot() {
     document.body.classList.add("hub");
     $("paint-link").hidden = false;
   }
+  if ((window.innerWidth <= 900 || window.innerHeight <= 520) && window.innerHeight < 560) {
+    document.body.classList.remove("panel-open");
+  }
+  setPanel(document.body.classList.contains("panel-open"));
+  $("panel-toggle").addEventListener("click", () => setPanel(!document.body.classList.contains("panel-open")));
   docName.value = state.doc.name;
   docName.addEventListener("change", () => { state.doc.name = docName.value || "Untitled"; saveSoon(); });
   renderChrome();
@@ -2340,7 +2351,11 @@ function boot() {
     reader.onload = () => importSvgText(String(reader.result || ""));
     reader.readAsText(file);
   });
-  window.addEventListener("resize", () => { drawRulers(); markScroll(); });
+  window.addEventListener("resize", () => {
+    drawRulers();
+    markScroll();
+    requestAnimationFrame(() => { fitPage(); markScroll(); });
+  });
   requestAnimationFrame(() => { fitPage(); markScroll(); });
   renderInspector();
   hintEl.textContent = HINTS.select;
