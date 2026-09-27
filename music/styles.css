@@ -44,7 +44,22 @@ button { cursor: pointer; }
 .feel.on { color: #5eead4; }
 .feel.early { color: #facc15; }
 .feel.late { color: #fb7185; }
-body.is-lights canvas { max-height: 70vh; aspect-ratio: 16 / 9; }
+body.is-score .desk { display: flex !important; flex-direction: column; }
+body.is-score .work { display: flex; flex-direction: column; }
+body.is-score #notes-pane { order: -5; }
+body.is-score .out { order: 4 !important; position: static !important; }
+body.is-score .staff-wrap { min-height: 240px; }
+body.expert.is-score .kit,
+body.expert.is-score .out,
+body.expert.is-score #chords,
+body.expert.is-score #bass-btn,
+body.expert.is-score .more-box,
+body.expert.is-score #lane { display: none !important; }
+body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
+.score-tools, .meters { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.score-tools { margin-bottom: 0.4rem; }
+.inks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; margin: 0.45rem 0; }
+.teach-line { margin: 0.45rem 0; font-size: 1.15rem; font-weight: 800; }
 .work.is-drums #notes-pane { display: block; order: -1; }
 .work.is-drums #notes-pane > :not(.staff-wrap) { display: none; }
 .work.is-drums .staff-wrap { min-height: 0; max-height: 108px; margin-bottom: 0.45rem; }

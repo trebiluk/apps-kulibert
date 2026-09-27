@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.4.0** · 2026-09-27 · channel **live**
+
+The score sits on top and names each note. A song can be 32 bars in 2/4, 3/4, 4/4, or 6/8. Record taps the notes to a click. Expert fills the page.
+
+## Earlier
+
 **Chip: MU 2.3.0** · 2026-09-27 · channel **live**
 
 A big word shows the note, or On it, Early, and Late. Blend slides from drums to the score.

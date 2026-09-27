@@ -50,6 +50,10 @@
     click: false,
     along: false,
     blend: 50,
+    expert: false,
+    ink: "C",
+    cursor: 0,
+    armTotal: 4,
     bass: false,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
@@ -97,6 +101,7 @@
     if (typeof saved.swing === "number") state.swing = saved.swing;
     if (typeof saved.along === "boolean") state.along = saved.along;
     if (typeof saved.blend === "number") state.blend = saved.blend;
+    if (saved.expert) state.expert = true;
     if (typeof saved.bass === "boolean") state.bass = saved.bass;
     if (saved.gear && typeof saved.gear === "object") state.gear = Object.assign(state.gear, saved.gear);
     if (saved.fx) state.fx = saved.fx;
@@ -252,6 +257,7 @@
       click: state.click,
       along: state.along,
       blend: state.blend,
+      expert: state.expert,
       bass: state.bass,
       gear: state.gear,
     });
@@ -269,6 +275,77 @@
     const beat = Song.toBeat(state.song);
     ROWS.forEach(([id]) => { beat.steps[id] = state.drums[id].concat(Array(8).fill(false)); });
     if (Song.writeBridge) Song.writeBridge("music", state.song, beat);
+  }
+
+  const TEACH = {
+    C: "C hangs under the staff. It is the home note.",
+    D: "D sits just under the staff.",
+    E: "E sits on the bottom line.",
+    F: "F sits in the first space.",
+    G: "G sits on the second line.",
+    A: "A sits in the second space.",
+    B: "B sits on the middle line.",
+    c: "High C sits in the third space.",
+  };
+  function songLen() {
+    return Math.max(1, Song.events(state.song).length);
+  }
+  function paintMeters() {
+    const box = $("meters");
+    if (!box) return;
+    box.innerHTML = "";
+    ["2/4", "3/4", "4/4", "6/8"].forEach((meter) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (state.song.meter === meter ? " on" : "");
+      b.textContent = meter;
+      b.addEventListener("click", () => {
+        Song.setMeter(state.song, meter);
+        state.cursor = 0;
+        keep();
+        renderStaff();
+        paintMeters();
+        paintCount();
+      });
+      box.appendChild(b);
+    });
+    const expert = $("expert-btn");
+    if (expert) {
+      expert.classList.toggle("on", state.expert);
+      expert.setAttribute("aria-pressed", String(state.expert));
+      expert.textContent = state.expert ? "Teach" : "Expert";
+    }
+  }
+  function paintInks() {
+    const box = $("inks");
+    if (!box || !Song.PITCHES) return;
+    box.innerHTML = "";
+    Song.PITCHES.forEach((pitch) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (state.ink === pitch.id ? " on" : "");
+      b.textContent = pitch.label;
+      b.addEventListener("click", () => writePitch(pitch.id));
+      box.appendChild(b);
+    });
+  }
+  function writePitch(pitch) {
+    if (state.along) {
+      $("lesson").textContent = "Play along is on. Turn it off to write the note.";
+      return;
+    }
+    state.ink = pitch;
+    const evs = Song.events(state.song);
+    const step = state.playing && state.step >= 0 ? state.step : state.cursor;
+    const ev = evs[step] || evs[0];
+    if (!ev) return;
+    Song.setBeat(state.song, ev.measure, ev.beat, ev.pitch === pitch ? null : pitch);
+    keep();
+    renderStaff();
+    paintInks();
+    const fact = TEACH[pitch] || pitch;
+    const teach = $("teach");
+    if (teach && !state.expert) teach.textContent = fact + " It is saved.";
   }
 
   function renderStaff() {
@@ -294,7 +371,7 @@
 
   function placeNote(e) {
     const host = $("staff");
-    const evs = Song.events(state.song).slice(0, 8);
+    const evs = Song.events(state.song);
     const svg = host.querySelector("svg");
     if (!svg || !evs.length) return;
     const marks = [...host.querySelectorAll(".abcjs-note, .abcjs-rest")];
@@ -603,63 +680,66 @@
   function paintCount() {
     const box = $("lane");
     if (!box) return;
-    if (box.children.length !== 8) {
+    const evs = Song.events(state.song);
+    const step = state.step < 0 ? state.cursor : state.step;
+    const here = evs[Math.max(0, step)] || evs[0];
+    const bar = here ? here.measure : 0;
+    const start = evs.findIndex((ev) => ev.measure === bar);
+    const beats = evs.filter((ev) => ev.measure === bar);
+    if (box.children.length !== beats.length || box.dataset.bar !== String(bar)) {
+      box.dataset.bar = String(bar);
       box.innerHTML = "";
-      for (let i = 0; i < 8; i++) {
+      beats.forEach((ev, i) => {
         const col = document.createElement("button");
         col.type = "button";
         col.className = "col";
-        col.addEventListener("click", () => chooseBeat(i));
+        col.addEventListener("click", () => {
+          state.cursor = start + i;
+          if (!state.playing) state.step = state.cursor;
+          paintCount();
+          $("lesson").textContent = "Bar " + (bar + 1) + ", beat " + (i + 1) + " is picked. Tap a note. It stays.";
+        });
         const n = document.createElement("b");
         n.textContent = String(i + 1);
         const marks = document.createElement("span");
         marks.className = "marks";
         col.append(n, marks);
         box.appendChild(col);
-      }
-    }
-    const evs = Song.events(state.song);
-    [...box.children].forEach((col, i) => {
-      col.classList.toggle("on", i === state.step);
-      col.classList.toggle("lock", state.lock === i);
-      const names = [];
-      const bits = [];
-      ROWS.forEach(([id, label]) => {
-        if (!state.drums[id][i]) return;
-        names.push(label);
-        bits.push('<i class="' + id + '"></i>');
       });
-      const ev = evs[i];
-      if (ev && ev.label) {
-        names.push(ev.label);
-        bits.push("<em>" + ev.label + "</em>");
-      }
+    }
+    const local = here ? here.beat : 0;
+    [...box.children].forEach((col, i) => {
+      col.classList.toggle("on", i === local);
+      const ev = beats[i];
+      const bits = [];
+      if (ev && ev.label) bits.push("<em>" + ev.label + "</em>");
       col.querySelector(".marks").innerHTML = bits.join("");
-      col.setAttribute("aria-label", "Beat " + (i + 1) + (names.length ? ". " + names.join(", ") : ". Empty"));
+      col.setAttribute("aria-label", "Bar " + (bar + 1) + " beat " + (i + 1) + (ev && ev.label ? ". " + ev.label : ". Rest"));
     });
     const title = $("song-title");
-    if (title) title.textContent = state.song.alias || "Your song";
+    if (title) title.textContent = (state.song.alias || "Your song") + " · " + (state.song.meter || "4/4") + " · " + state.song.measures.length + " bars";
   }
   function pulse(step) {
     state.beatAt = performance.now();
     state.step = step;
     paintCount();
-    state.kick = !!state.drums.kick[step];
-    state.snare = !!state.drums.snare[step];
+    const drum = step % 8;
+    state.kick = !!state.drums.kick[drum];
+    state.snare = !!state.drums.snare[drum];
     const evs = Song.events(state.song);
     const ev = evs[step];
     const bins = state.bins;
     for (let i = 0; i < bins.length; i++) bins[i] = 24;
     if (state.kick) bins[2] = 230;
     if (state.snare) bins[10] = 180;
-    if (state.drums.hat[step]) bins[40] = 140;
-    if (state.drums.tom && state.drums.tom[step]) bins[12] = 170;
-    if (state.drums.shaker && state.drums.shaker[step]) bins[50] = 130;
+    if (state.drums.hat[drum]) bins[40] = 140;
+    if (state.drums.tom && state.drums.tom[drum]) bins[12] = 170;
+    if (state.drums.shaker && state.drums.shaker[drum]) bins[50] = 130;
     if (ev && ev.tone) bins[22] = 200;
     let counting = false;
     if (state.armBeats > 0) {
       counting = true;
-      const count = 5 - state.armBeats;
+      const count = (state.armTotal || 4) - state.armBeats + 1;
       state.armBeats -= 1;
       $("now-line").textContent = "Count " + count + ". Then tap.";
       if (!state.muted) tone(880, 0.06, "square", 0.15);
@@ -689,32 +769,42 @@
     const lead = state.turn === "listen" ? "Listen. " : state.turn === "answer" ? "Your turn. " : "";
     if (!counting) {
       const note = ev && ev.label ? ev.label : "Rest";
-      $("now-line").textContent = lead + off + "Beat " + (step + 1) + ". Now: " + namesAt(step).join(" and ") + ".";
+      const bar = ev ? ev.measure + 1 : 1;
+      const beat = ev ? ev.beat + 1 : step + 1;
+      $("now-line").textContent = lead + off + "Bar " + bar + ", beat " + beat + ". Now: " + namesAt(drum).join(" and ") + ".";
       if (!state.along) paintFeel(note, note === "Rest" ? "" : "on");
+      const teach = $("teach");
+      if (teach) {
+        teach.textContent = state.expert
+          ? "Bar " + bar + " of " + state.song.measures.length + "."
+          : (ev && ev.pitch ? TEACH[ev.pitch] || note : "Rest. Count it. Nothing plays.");
+      }
     }
     if (state.playing && step === 0 && !state.recording && !state.turn) {
       $("lesson").textContent = "Beat 1 is the strong beat. Tap a pad on the flash.";
     }
-    document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest").forEach((node, i) => {
-      node.classList.toggle("now", i === step);
-    });
+    const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
+    marks.forEach((node, i) => node.classList.toggle("now", i === step));
+    if (marks[step] && marks[step].scrollIntoView) marks[step].scrollIntoView({ block: "nearest", inline: "nearest" });
     document.querySelectorAll(".cell").forEach((cell) => cell.classList.remove("now"));
     document.querySelectorAll(".drum-row").forEach((row) => {
       const cells = row.querySelectorAll(".cell");
-      if (cells[step]) cells[step].classList.add("now");
+      if (cells[drum]) cells[drum].classList.add("now");
     });
+    if (state.muted && !(state.recording && state.mode === "notes")) return;
+    if (state.click || (state.recording && state.mode === "notes")) tone(1400, 0.03, "square", 0.07);
     if (state.muted) return;
-    if (state.click) tone(1400, 0.03, "square", 0.07);
-    ROWS.forEach(([id]) => { if (state.drums[id][step]) hitSound(id); });
+    ROWS.forEach(([id]) => { if (state.drums[id][drum]) hitSound(id); });
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
       if (freq) tone(freq, state.noteLen, state.wave, 0.22 * side("notes"));
-      if (state.bass && state.drums.kick[step]) tone(freq / 2, 0.34, "sine", 0.34 * side("notes"));
-    } else if (state.bass && state.drums.kick[step]) tone(65.4, 0.34, "sine", 0.34 * side("notes"));
+      if (state.bass && state.drums.kick[drum]) tone(freq / 2, 0.34, "sine", 0.34 * side("notes"));
+    } else if (state.bass && state.drums.kick[drum]) tone(65.4, 0.34, "sine", 0.34 * side("notes"));
   }
 
   function gapAfter(step) {
-    const base = 60000 / Math.max(70, state.song.bpm || 96);
+    const unit = state.song.meter === "6/8" ? 2 : 1;
+    const base = 60000 / Math.max(70, state.song.bpm || 96) / unit;
     const lean = Math.max(0, Math.min(60, state.swing || 0)) / 100;
     return Math.round(base * (step % 2 === 0 ? 1 + lean * 0.45 : 1 - lean * 0.45));
   }
@@ -728,7 +818,7 @@
       if (!state.playing) return;
       pulse(step);
       const wait = gapAfter(step);
-      step = (step + 1) % 8;
+      step = (step + 1) % songLen();
       state.timer = window.setTimeout(tick, wait);
     };
     tick();
@@ -978,10 +1068,12 @@
       btn.classList.toggle("on", mode === name);
       btn.setAttribute("aria-pressed", String(mode === name));
     });
+    document.body.classList.toggle("is-score", mode === "notes");
+    document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
     if (!state.playing) {
       const hints = {
-        notes: "This is the score. Beats can ride on top of it.",
+        notes: state.expert ? "Expert. The score fills the page. Add a bar when you need a longer song." : "The score is on top. The big word names the note.",
         drums: state.along
           ? "Play along. Tap when the beat flashes. The score stays put."
           : "Add to the song. A tap stays on that beat.",
@@ -1040,10 +1132,13 @@
     }
     state.turn = "";
     state.recording = true;
-    state.armBeats = 4;
+    const per = Song.beatsFor ? Song.beatsFor(state.song.meter) : 4;
+    state.armTotal = per;
+    state.armBeats = per;
+    state.click = true;
     paintRec();
     if (!state.playing) play();
-    $("lesson").textContent = "Count four. Then tap the pads with the flash.";
+    $("lesson").textContent = "Count " + per + ". Then tap a note. The click is the metronome. It saves.";
   });
   let clearArm = 0;
   let drumUndo = null;
@@ -1296,6 +1391,24 @@
   loadSkin();
   fillLights();
   paintAlong();
+  paintMeters();
+  paintInks();
+  $("add-bar").addEventListener("click", () => {
+    const before = state.song.measures.length;
+    Song.addMeasure(state.song);
+    keep();
+    renderStaff();
+    paintCount();
+    $("lesson").textContent = state.song.measures.length === before
+      ? "That is 32 bars. That is a long song."
+      : "A new bar is on the score. It is saved.";
+  });
+  $("expert-btn").addEventListener("click", () => {
+    state.expert = !state.expert;
+    keep();
+    paintMeters();
+    setMode(state.mode);
+  });
   paintMix();
   setMode((() => {
     const board = new URLSearchParams(window.location.search).get("board");

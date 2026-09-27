@@ -12,9 +12,10 @@
     { id: "B", abc: "B", tone: "B4", label: "B" },
     { id: "c", abc: "c", tone: "C5", label: "C high" },
   ];
+  var METERS = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 };
   var BEATS = 4;
-  var LETTERS = "ABCDEFGH";
-  var MAX = 8;
+  var LETTERS = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  var MAX = 32;
 
   function pitchById(id) {
     var i;
@@ -31,13 +32,16 @@
     return "";
   }
 
-  function measure(label, beats, id) {
-    var row = [null, null, null, null];
+  function beatsFor(meter) {
+    return METERS[meter] || 4;
+  }
+
+  function measure(label, beats, id, count) {
+    var n = count || BEATS;
+    var row = [];
     var i;
-    if (beats && beats.length) {
-      for (i = 0; i < BEATS; i++) row[i] = pitchById(beats[i]) ? beats[i] : null;
-    }
-    return { id: id || uid(), label: String(label || "A").slice(0, 2), beats: row };
+    for (i = 0; i < n; i++) row[i] = beats && pitchById(beats[i]) ? beats[i] : null;
+    return { id: id || uid(), label: String(label || "A").slice(0, 3), beats: row };
   }
 
   function starter() {
@@ -52,12 +56,14 @@
   }
 
   function normalize(raw) {
+    var meter = METERS[raw && raw.meter] ? raw.meter : "4/4";
+    var count = beatsFor(meter);
     var list = raw && Array.isArray(raw.measures) ? raw.measures : [];
     var measures = [];
     var i;
     for (i = 0; i < list.length && measures.length < MAX; i++) {
       var src = list[i] || {};
-      measures.push(measure(src.label || LETTERS[measures.length] || "A", src.beats, src.id ? String(src.id).slice(0, 16) : ""));
+      measures.push(measure(src.label || LETTERS[measures.length] || String(measures.length + 1), src.beats, src.id ? String(src.id).slice(0, 16) : "", count));
     }
     if (!measures.length) {
       measures.push(measure("A", ["C", null, "E", null], "start-a"));
@@ -72,7 +78,7 @@
       bpm: bpm,
       tempo: bpm,
       key: "C",
-      meter: "4/4",
+      meter: meter,
       measures: measures,
       pattern: measures[0].label,
       song: measures.map(function (m) { return m.label; }).join(""),
@@ -86,6 +92,7 @@
     song.rev = 1;
     song.bpm = Math.max(60, Math.min(160, Math.round(Number(song.bpm) || 96)));
     song.tempo = song.bpm;
+    if (!METERS[song.meter]) song.meter = "4/4";
     song.pattern = song.measures[0] ? song.measures[0].label : "A";
     song.song = song.measures.map(function (m) { return m.label; }).join("");
     song.publish = song.publish || null;
@@ -95,20 +102,25 @@
 
   function toAbc(song) {
     var s = normalize(song);
-    var body = s.measures.map(function (m) {
-      return m.beats.map(function (b) {
-        var p = pitchById(b);
-        return p ? p.abc : "z";
-      }).join("");
-    }).join(" | ");
+    var unit = s.meter === "6/8" ? "1/8" : "1/4";
+    var lines = [];
+    var i;
+    for (i = 0; i < s.measures.length; i += 4) {
+      lines.push(s.measures.slice(i, i + 4).map(function (m) {
+        return m.beats.map(function (b) {
+          var p = pitchById(b);
+          return p ? p.abc : "z";
+        }).join("");
+      }).join(" | "));
+    }
     return [
       "X:1",
       "T:" + (s.alias || "Score"),
-      "M:4/4",
-      "L:1/4",
+      "M:" + s.meter,
+      "L:" + unit,
       "Q:1/4=" + s.bpm,
       "K:C",
-      body + " |",
+      lines.join(" |\n") + " |",
     ].join("\n");
   }
 
@@ -136,8 +148,21 @@
 
   function setBeat(song, mi, bi, pitch) {
     var m = song.measures[mi];
-    if (!m || bi < 0 || bi >= BEATS) return song;
+    if (!m || bi < 0 || bi >= m.beats.length) return song;
     m.beats[bi] = pitchById(pitch) ? pitch : null;
+    return stamp(song);
+  }
+
+  function setMeter(song, meter) {
+    if (!METERS[meter]) return song;
+    var n = METERS[meter];
+    song.meter = meter;
+    song.measures.forEach(function (m) {
+      var next = [];
+      var i;
+      for (i = 0; i < n; i++) next[i] = pitchById(m.beats[i]) ? m.beats[i] : null;
+      m.beats = next;
+    });
     return stamp(song);
   }
 
@@ -151,14 +176,14 @@
 
   function addMeasure(song) {
     if (song.measures.length >= MAX) return song;
-    song.measures.push(measure(nextLabel(song), [null, null, null, null]));
+    song.measures.push(measure(nextLabel(song), [], "", beatsFor(song.meter)));
     return stamp(song);
   }
 
   function duplicateMeasure(song, mi) {
     var m = song.measures[mi];
     if (!m || song.measures.length >= MAX) return song;
-    song.measures.splice(mi + 1, 0, measure(nextLabel(song), m.beats.slice()));
+    song.measures.splice(mi + 1, 0, measure(nextLabel(song), m.beats.slice(), "", m.beats.length));
     return stamp(song);
   }
 
@@ -287,9 +312,12 @@
   }
 
   global.KulibertSong = {
-    CHIP: "BS 0.2.1",
+    CHIP: "BS 0.3.0",
     PITCHES: PITCHES,
     BEATS: BEATS,
+    METERS: METERS,
+    beatsFor: beatsFor,
+    setMeter: setMeter,
     starter: starter,
     normalize: normalize,
     toAbc: toAbc,
