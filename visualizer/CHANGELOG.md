@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.9.0** · 2026-09-27 · channel **live**
+
+Brighter lights. Fireworks leave trails and bloom. Rings glow and spin. The ribbon is thicker.
+
+## Earlier
+
 **Chip: Viz 0.8.0** · 2026-09-27 · channel **live**
 
 Three looks can stack, each in its own color. RGB cycle shifts them. Gradient walls and frames sit around the picture.

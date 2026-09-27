@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.8.0";
+  var CHIP = "Viz 0.9.0";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -700,18 +700,32 @@
     function drawRings(w, h) {
       var cx = w / 2;
       var cy = h / 2;
-      var n = Math.max(4, Math.min(10, Math.round(gear.count / 3)));
+      var t = performance.now() / 1000;
+      var bass = band(0, 6);
+      var n = Math.max(5, Math.min(12, Math.round(gear.count / 2.4)));
+      var core = vctx.createRadialGradient(cx, cy, 2, cx, cy, Math.min(w, h) * 0.28);
+      core.addColorStop(0, hue());
+      core.addColorStop(1, "rgba(0,0,0,0)");
+      vctx.globalAlpha = 0.4 + bass * 0.5 * gear.glow;
+      vctx.fillStyle = core;
+      vctx.beginPath();
+      vctx.arc(cx, cy, Math.min(w, h) * (0.14 + bass * 0.1), 0, Math.PI * 2);
+      vctx.fill();
+      vctx.shadowColor = hue();
+      vctx.shadowBlur = reduceMotion ? 0 : 14;
       var i;
       for (i = n; i >= 1; i--) {
         var v = bins[(i * 4) % bins.length] / 255;
-        var r = Math.min(w, h) * 0.07 * i * gear.zoom * (0.82 + v * 0.35 * gear.bounce);
+        var spin = reduceMotion ? 0 : t * 0.2 * gear.spin;
+        var r = Math.min(w, h) * 0.055 * i * gear.zoom * (0.78 + v * 0.45 * gear.bounce);
         vctx.beginPath();
-        vctx.strokeStyle = i % 2 ? ink("#22d3ee", "#f59e0b") : ink("#14b8a6", "#f7f1e4");
-        vctx.globalAlpha = Math.min(0.8, 0.22 + gear.glow * 0.5);
-        vctx.lineWidth = Math.max(1, gear.thick * 0.6);
-        vctx.arc(cx, cy, Math.max(4, r), 0, Math.PI * 2);
+        vctx.strokeStyle = hue();
+        vctx.globalAlpha = Math.min(0.95, 0.3 + gear.glow * 0.5 + v * 0.25);
+        vctx.lineWidth = Math.max(2, gear.thick * (i < 3 ? 1.15 : 0.55));
+        vctx.arc(cx, cy, Math.max(8, r), spin, spin + Math.PI * 1.7);
         vctx.stroke();
       }
+      vctx.shadowBlur = 0;
       vctx.globalAlpha = 1;
     }
     function drawRipple(w, h) {
@@ -813,42 +827,60 @@
     function drawFireworks(w, h) {
       var bass = band(0, 6);
       var cap = Math.max(8, Math.min(16, Math.round(gear.count / 2)));
-      if (sparks.length < cap * 6 && Math.random() < (reduceMotion ? 0.08 : 0.18 + bass * 0.55)) {
-        var burst = 7 + Math.round(gear.wild * 12);
-        var sx = w * (0.18 + Math.random() * 0.64);
-        var sy = h * (0.16 + Math.random() * 0.4);
+      if (sparks.length < cap * 8 && Math.random() < (reduceMotion ? 0.1 : 0.28 + bass * 0.7)) {
+        var burst = 12 + Math.round(gear.wild * 18 + bass * 12);
+        var sx = w * (0.14 + Math.random() * 0.72);
+        var sy = h * (0.1 + Math.random() * 0.45);
         var i;
         for (i = 0; i < burst; i++) {
-          var ang = (i / burst) * Math.PI * 2 + gear.spin * 3;
-          var speed = (0.7 + gear.zoom * 0.8) * (0.6 + bass);
-          sparks.push({ x: sx, y: sy, vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed, life: 1 });
+          var ang = (i / burst) * Math.PI * 2 + Math.random() * 0.25;
+          var speed = (1.2 + gear.zoom * 0.9) * (0.5 + bass) * (0.7 + Math.random() * 0.6);
+          sparks.push({
+            x: sx, y: sy, px: sx, py: sy,
+            vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed, life: 1,
+          });
         }
       }
+      vctx.save();
+      vctx.globalCompositeOperation = "lighter";
+      vctx.shadowColor = hue();
+      vctx.shadowBlur = reduceMotion ? 0 : 12;
       var keep = [];
-      var grav = reduceMotion ? 0.01 : 0.025 + (1 - gear.bounce) * 0.07;
+      var grav = reduceMotion ? 0.008 : 0.02 + (1 - gear.bounce) * 0.06;
       var s;
       for (s = 0; s < sparks.length; s++) {
         var p = sparks[s];
+        p.px = p.x;
+        p.py = p.y;
         p.x += p.vx;
         p.y += p.vy;
         p.vy += grav;
-        p.life -= reduceMotion ? 0.05 : 0.012;
-        if (p.life <= 0 || p.y > h + 8) continue;
+        p.vx *= 0.99;
+        p.life -= reduceMotion ? 0.04 : 0.01;
+        if (p.life <= 0 || p.y > h + 12) continue;
         keep.push(p);
-        vctx.fillStyle = hue();
-        vctx.globalAlpha = Math.max(0, p.life) * (0.35 + gear.glow * 0.65);
+        var hot = Math.max(0, p.life) * (0.45 + gear.glow * 0.55);
+        vctx.globalAlpha = hot;
+        vctx.strokeStyle = hue();
+        vctx.lineWidth = Math.max(1.4, gear.thick * 0.45 * p.life);
         vctx.beginPath();
-        vctx.arc(p.x, p.y, Math.max(1.2, gear.thick * 0.42 * p.life), 0, Math.PI * 2);
+        vctx.moveTo(p.px, p.py);
+        vctx.lineTo(p.x, p.y);
+        vctx.stroke();
+        vctx.fillStyle = hue();
+        vctx.beginPath();
+        vctx.arc(p.x, p.y, Math.max(1.6, gear.thick * 0.55 * p.life), 0, Math.PI * 2);
         vctx.fill();
       }
-      sparks = keep.length > 90 ? keep.slice(keep.length - 90) : keep;
+      sparks = keep.length > 140 ? keep.slice(keep.length - 140) : keep;
+      vctx.restore();
       vctx.globalAlpha = 1;
     }
     function drawTunnel(w, h) {
       var t = performance.now() / 1000;
       var cx = w / 2;
       var cy = h / 2;
-      var bass = band(0, 6) / 255;
+      var bass = band(0, 6);
       var rings = Math.max(6, Math.min(14, Math.round(gear.count / 2)));
       var i;
       vctx.strokeStyle = ink("#22d3ee", "#f59e0b");
@@ -867,7 +899,7 @@
       var glow = vctx.createRadialGradient(w * 0.5, h * 0.42, 10, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
       glow.addColorStop(0, hue());
       glow.addColorStop(1, "rgba(5,8,20,0)");
-      vctx.globalAlpha = 0.14 + gear.glow * 0.14;
+      vctx.globalAlpha = 0.28 + gear.glow * 0.28;
       vctx.fillStyle = glow;
       vctx.fillRect(0, 0, w, h);
       vctx.globalAlpha = 1;
@@ -895,8 +927,8 @@
         });
         vctx.stroke();
       }
-      stroke(Math.max(10, gear.thick * 3.2), 0.16 + gear.glow * 0.22);
-      stroke(Math.max(2, gear.thick), 0.9);
+      stroke(Math.max(16, gear.thick * 5), 0.22 + gear.glow * 0.35);
+      stroke(Math.max(2.5, gear.thick * 1.15), 0.95);
       if (gear.wild > 0.25) {
         vctx.beginPath();
         pts.forEach(function (p, idx) {
