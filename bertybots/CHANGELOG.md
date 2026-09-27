@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.24 — Big enough to grab — 2026-09-27
+
+- The shop starts close again. Scroll still reaches a far Drop Zone.
+- If the stripes are off screen, a GOAL arrow points at them.
+- The job you are on has a ring, so it is not confused with the next one.
+
 ## 0.19.23 — Tools look like tools — 2026-09-27
 
 - Shortcut chips no longer sit on the pictures. They show when you point at a button.

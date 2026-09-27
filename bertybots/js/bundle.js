@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.23 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.24 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.23";
+const APP_VERSION = "0.19.24";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.23";
+const APP_CHIP = "BB 0.19.24";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -598,10 +598,15 @@ function boot() {
     let x1 = s.x + s.w;
     let y1 = 3.2;
     if (d) {
-      x0 = Math.min(x0, d.x);
-      x1 = Math.max(x1, d.x + d.w);
-      y0 = Math.min(y0, d.y);
-      y1 = Math.max(y1, d.y + d.h);
+      const gapR = d.x - (s.x + s.w);
+      const gapL = s.x - (d.x + d.w);
+      const near = gapR < 5.5 || (gapL >= -0.4 && gapL < 8);
+      if (near) {
+        x0 = Math.min(x0, d.x);
+        x1 = Math.max(x1, d.x + d.w);
+        y0 = Math.min(y0, d.y);
+        y1 = Math.max(y1, d.y + Math.min(d.h, 2.4));
+      }
     }
     for (const p of doc.machine.parts || []) {
       const xs = p.x != null ? [p.x] : [p.x1, p.x2];
@@ -644,8 +649,8 @@ function boot() {
     const b = jobBounds();
     const minW = phone ? 7.4 : 8.6;
     const minH = phone ? 4.0 : 4.4;
-    const maxW = phone ? 28 : 32;
-    const maxH = phone ? 14 : 16;
+    const maxW = phone ? 11 : 13;
+    const maxH = phone ? 6.6 : 7.6;
     return {
       w: Math.max(minW, Math.min(maxW, b.w)),
       h: Math.max(minH, Math.min(maxH, b.h)),
@@ -1281,7 +1286,7 @@ function boot() {
         const btn = document.createElement("button");
         const state = plateState(job.id);
         btn.type = "button";
-        btn.className = `job-plate ${state}`;
+        btn.className = `job-plate ${state}${job.id === courseId ? " here" : ""}`;
         btn.dataset.course = job.id;
         btn.disabled = state === "lock";
         btn.title = `${i + 1}. ${job.label}`;
@@ -2721,8 +2726,46 @@ function boot() {
       ctx.fillStyle = "#f4efe6";
       ctx.fillText(lastReadout || (playing ? "test" : "shop"), 14, 32);
     }
+    drawGoalCue();
     drawCoach();
     drawBerty(now);
+  }
+
+  function drawGoalCue() {
+    const drop = doc.level && doc.level.drop;
+    if (!drop || (winEl && winEl.classList.contains("show"))) return;
+    const cx = drop.x + drop.w / 2;
+    const cy = drop.y + Math.min(drop.h, 1.4) * 0.45;
+    const sx = wx(cx);
+    const sy = wy(cy);
+    const dpr = view.dpr || 1;
+    const m = 36 * dpr;
+    if (sx >= m && sx <= canvas.width - m && sy >= m && sy <= canvas.height - m) return;
+    const ax = Math.max(m, Math.min(canvas.width - m, sx));
+    const ay = Math.max(m, Math.min(canvas.height - m, sy));
+    const ang = Math.atan2(sy - ay, sx - ax);
+    ctx.save();
+    ctx.translate(ax, ay);
+    ctx.rotate(ang);
+    ctx.fillStyle = "#f0c000";
+    ctx.strokeStyle = "#1a1400";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(16 * dpr, 0);
+    ctx.lineTo(-10 * dpr, 11 * dpr);
+    ctx.lineTo(-10 * dpr, -11 * dpr);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+    ctx.font = `800 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#1a1400";
+    ctx.strokeText("GOAL", ax, ay - 20 * dpr);
+    ctx.fillStyle = "#f0c000";
+    ctx.fillText("GOAL", ax, ay - 20 * dpr);
   }
 
   function normRect(x1, y1, x2, y2) {
