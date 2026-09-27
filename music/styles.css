@@ -122,11 +122,10 @@ body.is-score .work { display: flex; flex-direction: column; }
 body.is-score #notes-pane { order: -5; }
 body.is-score .out { order: 4 !important; position: static !important; }
 body.is-score .staff-wrap { min-height: 240px; }
-body.expert.is-score .kit,
+body.is-score .kit,
+body.is-score #lane,
+body.is-score #feel { display: none; }
 body.expert.is-score .out,
-body.expert.is-score #chords,
-body.expert.is-score #bass-btn,
-body.expert.is-score .more-box,
 body.expert.is-score #lane { display: none !important; }
 body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
 .score-tools, .meters { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
@@ -179,8 +178,7 @@ body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
   .lab { display: block; }
   canvas { max-height: 22vh; }
   .feel { font-size: 1.35rem; }
-  body.is-score .kit { display: none; }
-  body.is-score .staff-wrap { min-height: 150px; }
+  body.is-score .staff-wrap { min-height: 180px; }
   body.expert.is-score .staff-wrap { min-height: 38vh; }
   .keypad { flex-wrap: nowrap; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0.15rem; }
   .keypad .btn { flex: 0 0 auto; }

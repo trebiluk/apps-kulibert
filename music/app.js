@@ -412,7 +412,7 @@
     if (expert) {
       expert.classList.toggle("on", state.expert);
       expert.setAttribute("aria-pressed", String(state.expert));
-      expert.textContent = state.expert ? "Teach" : "Expert";
+      expert.textContent = state.expert ? "Show the buttons" : "Just the staff";
     }
   }
   function paintInks() {

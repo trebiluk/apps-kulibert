@@ -7,13 +7,13 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.15.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2.16.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.15.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.16.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -31,60 +31,66 @@
     <section class="work" id="work">
       <div class="kit" id="kit" aria-label="Tap with a finger"></div>
       <div id="notes-pane">
-        <div class="score-tools">
-          <div id="meters" class="meters" aria-label="Time signature"></div>
-          <button type="button" id="add-bar" class="btn">Add a bar</button>
-          <button type="button" id="expert-btn" class="btn" aria-pressed="false">Expert</button>
-        </div>
         <div class="staff-wrap"><div id="staff"></div></div>
         <p id="teach" class="teach-line">Tap a letter under the staff.</p>
         <div id="inks" class="inks" aria-label="Notes"></div>
         <div id="pen" class="pen" aria-label="How long the note lasts"></div>
-        <details class="more-box">
-          <summary>More note tools</summary>
-          <div id="keypad" class="keypad" aria-label="More note tools"></div>
-        </details>
-        <details class="more-box">
-          <summary>Chords</summary>
-          <div id="chords" class="looks" aria-label="Chords"></div>
-          <button type="button" id="bass-btn" class="btn" aria-pressed="false">Bass follows the kick</button>
-        </details>
-        <details class="more-box">
-          <summary>Melody ideas</summary>
-          <div id="melodies" class="looks" aria-label="Melody ideas"></div>
-        </details>
-        <details class="more-box">
-          <summary>Song library</summary>
-          <p class="hint">Folk songs from many places. These are simple white-key versions. Change any note.</p>
-          <div id="classics" aria-label="Song library"></div>
-          <p class="shelf">Play it as</p>
-          <div id="styles" class="shelf-songs" aria-label="Styles"></div>
-        </details>
-        <details class="more-box">
-          <summary>This song's picture</summary>
-          <p id="viz-now" class="hint">The picture travels with the song.</p>
-          <div id="viz-picks" class="shelf-songs" aria-label="Pictures"></div>
-          <button type="button" id="viz-use" class="btn">Use this picture</button>
-        </details>
-        <details class="more-box">
-          <summary>Defend the notes</summary>
-          <p id="why-progress" class="hint">Give every mark a reason you can say out loud.</p>
-          <p id="why-ask" class="teach-line"></p>
-          <div id="why-reasons" class="shelf-songs" aria-label="Reasons"></div>
-          <button type="button" id="why-next" class="btn">Next mark</button>
-        </details>
-        <details class="more-box">
-          <summary>Remixes</summary>
-          <p class="hint">A remix keeps the picture and clears the reasons, so the next student can defend the new notes. Files can move to another computer.</p>
-          <button type="button" id="remix-btn" class="btn">Remix this</button>
-          <div id="shelf" class="shelf-songs" aria-label="Saved remixes"></div>
-          <button type="button" id="open-btn" class="btn">Open a song file</button>
-          <input id="open-file" type="file" accept="application/json,.json" hidden/>
+        <details class="more-box" id="song-more">
+          <summary>More</summary>
+          <div class="score-tools">
+            <div id="meters" class="meters" aria-label="Time signature"></div>
+            <button type="button" id="add-bar" class="btn">Add a bar</button>
+            <button type="button" id="expert-btn" class="btn" aria-pressed="false">Just the staff</button>
+          </div>
+          <details class="more-box">
+            <summary>More note tools</summary>
+            <div id="keypad" class="keypad" aria-label="More note tools"></div>
+          </details>
+          <details class="more-box">
+            <summary>Chords</summary>
+            <div id="chords" class="looks" aria-label="Chords"></div>
+            <button type="button" id="bass-btn" class="btn" aria-pressed="false">Bass follows the kick</button>
+          </details>
+          <details class="more-box">
+            <summary>Melody ideas</summary>
+            <div id="melodies" class="looks" aria-label="Melody ideas"></div>
+          </details>
+          <details class="more-box">
+            <summary>Song library</summary>
+            <p class="hint">Folk songs from many places. These are simple white-key versions. Change any note.</p>
+            <div id="classics" aria-label="Song library"></div>
+            <p class="shelf">Play it as</p>
+            <div id="styles" class="shelf-songs" aria-label="Styles"></div>
+          </details>
+          <details class="more-box">
+            <summary>This song's picture</summary>
+            <p id="viz-now" class="hint">The picture travels with the song.</p>
+            <div id="viz-picks" class="shelf-songs" aria-label="Pictures"></div>
+            <button type="button" id="viz-use" class="btn">Use this picture</button>
+          </details>
+          <details class="more-box">
+            <summary>Defend the notes</summary>
+            <p id="why-progress" class="hint">Give every mark a reason you can say out loud.</p>
+            <p id="why-ask" class="teach-line"></p>
+            <div id="why-reasons" class="shelf-songs" aria-label="Reasons"></div>
+            <button type="button" id="why-next" class="btn">Next mark</button>
+          </details>
+          <details class="more-box">
+            <summary>Remixes</summary>
+            <p class="hint">A remix keeps the picture and clears the reasons. A file can move to another computer.</p>
+            <button type="button" id="remix-btn" class="btn">Remix this</button>
+            <div id="shelf" class="shelf-songs" aria-label="Saved remixes"></div>
+            <button type="button" id="open-btn" class="btn">Open a song file</button>
+            <input id="open-file" type="file" accept="application/json,.json" hidden/>
+          </details>
         </details>
       </div>
       <div id="drums-pane">
-        <div id="drums" class="drums" aria-label="Drums"></div>
-        <p class="hint">Tap Kick or Snare. Press Play. The pad lights on that beat.</p>
+        <p class="hint">Tap a colored pad. Press Play.</p>
+        <details class="more-box">
+          <summary>See every beat</summary>
+          <div id="drums" class="drums" aria-label="Drums"></div>
+        </details>
         <details class="more-box">
           <summary>More drums</summary>
           <div id="more-kit" class="kit"></div>
@@ -248,7 +254,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.15.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.16.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -257,6 +263,6 @@
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=2.15.0"></script>
+  <script src="./app.js?v=2.16.0"></script>
 </body>
 </html>

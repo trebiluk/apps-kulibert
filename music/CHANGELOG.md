@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.16.0** · 2026-09-27 · channel **live**
+
+The score opens on the staff, the letters, and Play. Everything else is inside More.
+
+## Earlier
+
 **Chip: MU 2.15.0** · 2026-09-27 · channel **live**
 
 Play says Play. Stop says Stop. The note letters are big keys. The four choices under them are 1 beat, Fast, Longer, and Rest.
