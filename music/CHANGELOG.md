@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.9.0** · 2026-09-27 · channel **live**
+
+More on the boards. Tom and shaker, a loudness slider for each drum, swing, a click, one-tap patterns, and the light sliders plus Crazy.
+
+## Earlier
+
 **Chip: MU 1.8.0** · 2026-09-27 · channel **live**
 
 Berty's MusicLab. One left panel switches Song, Beats, Lights, and Band. They share the song. The old doors still open alone.

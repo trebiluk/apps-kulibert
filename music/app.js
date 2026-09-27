@@ -7,6 +7,8 @@
     ["snare", "Snare"],
     ["hat", "Hat"],
     ["clap", "Clap"],
+    ["tom", "Tom"],
+    ["shaker", "Shaker"],
   ];
   const LOOKS = [
     ["bars", "Bars"],
@@ -39,6 +41,10 @@
     rgb: false,
     wall: "dusk",
     frame: "glow",
+    mix: { kick: 100, snare: 90, hat: 70, clap: 80, tom: 75, shaker: 60 },
+    swing: 0,
+    click: false,
+    gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
     fx: "plain",
     wave: "triangle",
@@ -80,7 +86,10 @@
       });
     }
     if (saved.look) state.look = saved.look;
-    if (saved.band) state.band = saved.band;
+    if (saved.mix && typeof saved.mix === "object") state.mix = Object.assign(state.mix, saved.mix);
+    if (typeof saved.swing === "number") state.swing = saved.swing;
+    if (typeof saved.click === "boolean") state.click = saved.click;
+    if (saved.gear && typeof saved.gear === "object") state.gear = Object.assign(state.gear, saved.gear);
     if (saved.fx) state.fx = saved.fx;
     if (saved.wave) state.wave = saved.wave;
     if (typeof saved.bright === "number") state.bright = saved.bright;
@@ -229,6 +238,10 @@
       delay: state.delay,
       feedback: state.feedback,
       bpm: state.song.bpm,
+      mix: state.mix,
+      swing: state.swing,
+      click: state.click,
+      gear: state.gear,
     });
     let ok = false;
     try {
@@ -449,6 +462,20 @@
     paintCount();
     return state.writeStep;
   }
+  function vol(id, base) {
+    const n = state.mix && typeof state.mix[id] === "number" ? state.mix[id] : 100;
+    return base * Math.max(0, Math.min(100, n)) / 100;
+  }
+  function hitSound(id) {
+    if (state.muted) return;
+    if (id === "kick") tone(90, 0.22, "sine", vol("kick", 0.95));
+    else if (id === "snare") noise(0.14, vol("snare", 0.4));
+    else if (id === "clap") noise(0.1, vol("clap", 0.32));
+    else if (id === "hat") noise(0.04, vol("hat", 0.2));
+    else if (id === "tom") tone(160, 0.2, "triangle", vol("tom", 0.7));
+    else if (id === "shaker") noise(0.06, vol("shaker", 0.16));
+    else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
+  }
   function strike(id, el) {
     arm();
     if (el) {
@@ -459,12 +486,7 @@
     else if (id === "snare" || id === "clap") { state.snare = true; state.bins[10] = 220; }
     else if (id === "hat") state.bins[42] = 210;
     else if (FREQ[id]) state.bins[24] = 230;
-    if (!state.muted) {
-      if (id === "kick") tone(140, 0.18, "sine", 0.9);
-      else if (id === "snare" || id === "clap") noise(0.12, 0.35);
-      else if (id === "hat") noise(0.04, 0.18);
-      else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
-    }
+    if (!state.muted) hitSound(id);
     if (navigator.vibrate) navigator.vibrate(12);
     const step = placeStep();
     if (step >= 0) writeHit(id, step);
@@ -579,6 +601,8 @@
     if (state.kick) bins[2] = 230;
     if (state.snare) bins[10] = 180;
     if (state.drums.hat[step]) bins[40] = 140;
+    if (state.drums.tom && state.drums.tom[step]) bins[12] = 170;
+    if (state.drums.shaker && state.drums.shaker[step]) bins[50] = 130;
     if (ev && ev.tone) bins[22] = 200;
     let counting = false;
     if (state.armBeats > 0) {
@@ -624,29 +648,37 @@
       if (cells[step]) cells[step].classList.add("now");
     });
     if (state.muted) return;
-    if (state.kick) tone(140, 0.18, "sine", 0.9);
-    if (state.snare || state.drums.clap[step]) noise(0.12, 0.35);
-    if (state.drums.hat[step]) noise(0.04, 0.18);
+    if (state.click) tone(1400, 0.03, "square", 0.07);
+    ROWS.forEach(([id]) => { if (state.drums[id][step]) hitSound(id); });
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
       if (freq) tone(freq, state.noteLen, state.wave, 0.22);
     }
   }
 
+  function gapAfter(step) {
+    const base = 60000 / Math.max(70, state.song.bpm || 96);
+    const lean = Math.max(0, Math.min(60, state.swing || 0)) / 100;
+    return Math.round(base * (step % 2 === 0 ? 1 + lean * 0.45 : 1 - lean * 0.45));
+  }
   function play() {
     arm();
     state.playing = true;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", "Stop");
     let step = 0;
-    pulse(0);
-    state.timer = window.setInterval(() => {
-      step = (step + 1) % 8;
+    const tick = () => {
+      if (!state.playing) return;
       pulse(step);
-    }, Math.round(60000 / Math.max(70, state.song.bpm || 96)));
+      const wait = gapAfter(step);
+      step = (step + 1) % 8;
+      state.timer = window.setTimeout(tick, wait);
+    };
+    tick();
   }
   function stop() {
     state.playing = false;
+    window.clearTimeout(state.timer);
     window.clearInterval(state.timer);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", "Play");
@@ -1152,6 +1184,7 @@
   $("tempo-read").textContent = String(state.song.bpm || 96);
   loadSkin();
   fillLights();
+  paintMix();
   setMode((() => {
     const board = new URLSearchParams(window.location.search).get("board");
     if (board === "beats" || board === "drums") return "drums";
@@ -1170,6 +1203,120 @@
   if (state.restored) $("lesson").textContent = "Brought back the last song we could open.";
   keep();
 
+  function paintMix() {
+    const box = $("mix");
+    if (!box || box.childElementCount) return;
+    ROWS.forEach(([id, label]) => {
+      const row = document.createElement("label");
+      const name = document.createElement("span");
+      name.textContent = label;
+      const slider = document.createElement("input");
+      slider.type = "range";
+      slider.min = "0";
+      slider.max = "100";
+      slider.value = String(state.mix[id] || 0);
+      slider.setAttribute("aria-label", label + " loudness");
+      const read = document.createElement("b");
+      read.textContent = slider.value;
+      slider.addEventListener("input", () => {
+        state.mix[id] = Number(slider.value);
+        read.textContent = slider.value;
+        keep();
+      });
+      row.append(name, slider, read);
+      box.appendChild(row);
+    });
+    const swing = $("swing");
+    if (swing) {
+      swing.value = String(state.swing || 0);
+      $("swing-read").textContent = swing.value;
+      swing.addEventListener("input", () => {
+        state.swing = Number(swing.value);
+        $("swing-read").textContent = swing.value;
+        keep();
+      });
+    }
+    const click = $("click-btn");
+    if (click) {
+      click.classList.toggle("on", state.click);
+      click.setAttribute("aria-pressed", String(state.click));
+      click.addEventListener("click", () => {
+        state.click = !state.click;
+        click.classList.toggle("on", state.click);
+        click.setAttribute("aria-pressed", String(state.click));
+        click.textContent = state.click ? "Click is on" : "Add a click";
+        keep();
+      });
+    }
+    const patterns = {
+      "Kicks": { kick: [1, 0, 1, 0, 1, 0, 1, 0] },
+      "Backbeat": { snare: [0, 0, 0, 0, 1, 0, 0, 0], clap: [0, 0, 0, 0, 1, 0, 0, 0] },
+      "Hats": { hat: [1, 0, 1, 0, 1, 0, 1, 0] },
+      "Shaker": { shaker: [1, 1, 1, 1, 1, 1, 1, 1] },
+      "Toms": { tom: [0, 1, 0, 1, 0, 0, 1, 0] },
+    };
+    const host = $("patterns");
+    if (host) {
+      Object.keys(patterns).forEach((name) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => {
+          const spec = patterns[name];
+          Object.keys(spec).forEach((id) => {
+            spec[id].forEach((on, i) => { if (on) state.drums[id][i] = true; });
+          });
+          renderDrums();
+          keep();
+          $("lesson").textContent = name + " added. Saved.";
+        });
+        host.appendChild(b);
+      });
+    }
+    ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
+      const slider = $("g-" + key);
+      const read = $("n-" + key);
+      if (!slider || !read) return;
+      slider.value = String(state.gear[key]);
+      read.textContent = slider.value;
+      slider.addEventListener("input", () => {
+        state.gear[key] = Number(slider.value);
+        read.textContent = slider.value;
+        try { localStorage.setItem("kulibert.viz.gear", JSON.stringify(state.gear)); } catch (err) { /* ignore */ }
+        keep();
+      });
+    });
+    const crazy = $("crazy-btn");
+    if (crazy) {
+      crazy.addEventListener("click", () => {
+        const roll = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+        state.gear.zoom = roll(70, 160);
+        state.gear.spin = roll(0, 100);
+        state.gear.glow = roll(60, 100);
+        state.gear.thick = roll(2, 12);
+        state.gear.count = roll(8, 32);
+        state.gear.trail = roll(0, 55);
+        state.gear.bounce = roll(20, 100);
+        state.gear.wild = roll(40, 100);
+        state.rgb = true;
+        const walls = ["dusk", "sunset", "sea", "aurora", "candy"];
+        state.wall = walls[roll(0, walls.length - 1)];
+        ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
+          const slider = $("g-" + key);
+          const read = $("n-" + key);
+          if (slider) slider.value = String(state.gear[key]);
+          if (read) read.textContent = String(state.gear[key]);
+        });
+        if ($("wall")) $("wall").value = state.wall;
+        saveSkin();
+        paintLights();
+        keep();
+        $("lesson").textContent = "Crazy mixed the lights. Press it again for another mix.";
+      });
+    }
+  }
+
   const canvas = $("viz");
   if (window.KulibertStage) {
     window.KulibertStage.mount(canvas, () => ({
@@ -1178,6 +1325,7 @@
       layers: state.layers,
       rgb: state.rgb,
       wall: state.wall,
+      gear: Object.assign({}, state.gear),
       bins: state.bins,
       kick: state.kick,
       snare: state.snare,
