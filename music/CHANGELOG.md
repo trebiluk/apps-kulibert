@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.6.0** · 2026-09-27 · channel **live**
+
+Song library. Folk tunes from Africa, East Asia, South Asia, Europe, the Americas, islands, and lullabies. Simple white-key versions. Change any note. Make it trap still works on whatever is loaded.
+
+## Earlier
+
 **Chip: MU 2.5.0** · 2026-09-27 · channel **live**
 
 Classics you can change: Ode to Joy, Twinkle, Little Lamb, Frere Jacques, The Saints, Amazing Grace, Jingle Bells, and Simple Gifts. Ode, but trap keeps the melody and puts a slow trap beat under it. Make it trap does that to whatever is on the staff.

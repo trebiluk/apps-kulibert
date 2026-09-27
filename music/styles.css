@@ -59,7 +59,8 @@ body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
 .score-tools, .meters { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
 .score-tools { margin-bottom: 0.4rem; }
 .inks { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.35rem; margin: 0.45rem 0; }
-.teach-line { margin: 0.45rem 0; font-size: 1.15rem; font-weight: 800; }
+.shelf { margin: 0.55rem 0 0.2rem; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.shelf-songs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.35rem; }
 .work.is-drums #notes-pane { display: block; order: -1; }
 .work.is-drums #notes-pane > :not(.staff-wrap) { display: none; }
 .work.is-drums .staff-wrap { min-height: 0; max-height: 108px; margin-bottom: 0.45rem; }

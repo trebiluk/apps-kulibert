@@ -1614,17 +1614,7 @@
     }
     const classics = $("classics");
     if (classics && !classics.childElementCount) {
-      const tunes = [
-        ["Ode to Joy", ["E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "E", "D", "D", null, "E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "D", "C", "C", null]],
-        ["Twinkle", ["C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null, "G", "G", "F", "F", "E", "E", "D", null, "C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null]],
-        ["Little Lamb", ["E", "D", "C", "D", "E", "E", "E", null, "D", "D", "D", null, "E", "G", "G", null, "E", "D", "C", "D", "E", "E", "E", "E", "D", "D", "E", "D", "C", null, null, null]],
-        ["Frere Jacques", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null]],
-        ["The Saints", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null]],
-        ["Amazing Grace", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null]],
-        ["Jingle Bells", ["E", "E", "E", null, "E", "E", "E", null, "E", "G", "C", "D", "E", null, null, null, "F", "F", "F", "F", "F", "E", "E", "E", "E", "D", "D", "E", "D", "G", null, null]],
-        ["Simple Gifts", ["C", "C", "D", "E", "G", "E", null, null, "D", "E", "F", "E", "D", "C", null, null, "C", "C", "D", "E", "G", "E", "D", "C", "D", "E", "C", null]],
-      ];
-      const loadTune = (name, notes, bpm) => {
+      const loadTune = (name, place, notes, bpm) => {
         const measures = [];
         const bars = Math.ceil(notes.length / 4);
         for (let i = 0; i < bars; i++) {
@@ -1650,7 +1640,7 @@
         paintMeters();
         paintCount();
         keep();
-        $("lesson").textContent = name + " is on the staff. Change any note. Saved.";
+        $("lesson").textContent = name + " from " + place + ". White-key version. Change any note. Saved.";
         const teach = $("teach");
         if (teach && !state.expert) teach.textContent = name + ". Press Play. The line names each note.";
       };
@@ -1691,20 +1681,71 @@
         if (state.playing) { stop(); play(); }
         $("lesson").textContent = "Trap beat. Same notes. Slow kick, clap on the back. Saved.";
       };
-      tunes.forEach(([name, notes]) => {
-        const b = document.createElement("button");
-        b.type = "button";
-        b.className = "btn";
-        b.textContent = name;
-        b.addEventListener("click", () => loadTune(name, notes, name === "Ode to Joy" ? 104 : 96));
-        classics.appendChild(b);
+      let odeNotes = null;
+      const shelves = [
+        ["Africa", [
+          ["Kye Kye Kule", "Ghana", ["C", "E", "G", "G", "A", "G", "E", "C", "C", "E", "G", "G", "A", "G", "E", "C"], 104],
+          ["Banuwa", "Liberia", ["C", "E", "G", "A", "G", "E", "C", null, "D", "E", "D", "C", "E", "G", "E", "C"], 92],
+          ["Shosholoza", "Southern Africa", ["C", "E", "E", "E", "G", "G", "E", "D", "C", "E", "E", "E", "G", "E", "D", "C"], 108],
+        ]],
+        ["East Asia", [
+          ["Sakura", "Japan", ["A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "D", "C", "A", "A", "B", "A", "A", "B", "A", "G", "E", "E", "G", "A", "G", "E", "C", null], 80],
+          ["Arirang", "Korea", ["G", "A", "c", "A", "G", "E", "E", "D", "E", "G", "A", "G", "E", "D", "C", null], 88],
+          ["Jasmine Flower", "China", ["E", "G", "A", "G", "E", "D", "C", null, "D", "E", "G", "A", "G", "E", "D", "C"], 84],
+        ]],
+        ["South Asia", [
+          ["Chanda Mama", "India", ["C", "E", "G", "A", "G", "E", "C", null, "D", "F", "E", "D", "C", null, null, null], 86],
+        ]],
+        ["Europe", [
+          ["Ode to Joy", "Germany", ["E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "E", "D", "D", null, "E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "D", "C", "C", null], 104],
+          ["Korobeiniki", "Russia", ["E", "G", "A", "c", "A", "G", "F", "E", "D", "F", "G", "B", "G", "F", "E", "D", "C", "E", "F", "A", "G", "F", "E", "D", "C", null, null, null], 120],
+          ["Frere Jacques", "France", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null], 96],
+          ["Scarborough Fair", "England", ["A", "A", "E", "F", "E", "D", "C", null, "D", "E", "F", "E", "D", "A", "A", null], 76],
+        ]],
+        ["Americas", [
+          ["The Saints", "United States", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null], 112],
+          ["La Cucaracha", "Mexico", ["C", "C", "C", "F", "A", "A", "A", null, "F", "F", "F", "A", "c", "c", "c", null, "G", "G", "G", "B", "c", "A", "F", null], 116],
+          ["Cielito Lindo", "Mexico", ["C", "E", "G", "G", "A", "G", "E", "C", "D", "E", "F", "E", "D", "C", null, null], 100],
+          ["Simple Gifts", "United States", ["C", "C", "D", "E", "G", "E", null, null, "D", "E", "F", "E", "D", "C", null, null, "C", "C", "D", "E", "G", "E", "D", "C", "D", "E", "C", null], 96],
+        ]],
+        ["Islands and more", [
+          ["Aloha Oe", "Hawaiʻi", ["C", "E", "G", "A", "G", "E", "C", null, "E", "G", "A", "G", "E", "D", "C", null], 84],
+          ["Tumbalalaika", "Yiddish folk", ["E", "G", "A", "B", "c", "A", "G", "E", "D", "G", "A", "B", "A", "G", "E", null], 92],
+          ["Zum Gali Gali", "Israel", ["C", "C", "C", "G", "A", "G", "E", "C", "C", "C", "C", "G", "A", "G", "E", "C"], 108],
+          ["Dona Nobis", "a round", ["C", "D", "E", "G", "A", "G", "E", "C", "E", "F", "G", "c", "B", "A", "G", "E", "G", "A", "c", "B", "A", "G", "E", "C"], 80],
+        ]],
+        ["Lullabies", [
+          ["Twinkle", "many places", ["C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null, "G", "G", "F", "F", "E", "E", "D", null, "C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null], 96],
+          ["Little Lamb", "United States", ["E", "D", "C", "D", "E", "E", "E", null, "D", "D", "D", null, "E", "G", "G", null, "E", "D", "C", "D", "E", "E", "E", "E", "D", "D", "E", "D", "C", null, null, null], 96],
+          ["Amazing Grace", "many places", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null], 72],
+          ["Jingle Bells", "United States", ["E", "E", "E", null, "E", "E", "E", null, "E", "G", "C", "D", "E", null, null, null, "F", "F", "F", "F", "F", "E", "E", "E", "E", "D", "D", "E", "D", "G", null, null], 120],
+        ]],
+      ];
+      shelves.forEach(([place, songs]) => {
+        const h = document.createElement("p");
+        h.className = "shelf";
+        h.textContent = place;
+        classics.appendChild(h);
+        const grid = document.createElement("div");
+        grid.className = "shelf-songs";
+        songs.forEach(([name, from, notes, bpm]) => {
+          if (name === "Ode to Joy") odeNotes = notes;
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "btn";
+          b.textContent = name;
+          b.addEventListener("click", () => loadTune(name, from, notes, bpm));
+          grid.appendChild(b);
+        });
+        classics.appendChild(grid);
       });
       const joyTrap = document.createElement("button");
       joyTrap.type = "button";
       joyTrap.className = "btn";
       joyTrap.textContent = "Ode, but trap";
       joyTrap.addEventListener("click", () => {
-        loadTune("Ode to Joy", tunes[0][1], 74);
+        if (!odeNotes) return;
+        loadTune("Ode to Joy", "Germany", odeNotes, 74);
         trapIt();
       });
       classics.appendChild(joyTrap);
