@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-27-drawin-vector"/>
+<meta name="tech-room-rev" content="2026-09-27-hub-guest"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1497,7 +1497,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-27-drawin-vector</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-27-hub-guest</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/drawin/">Drawin'</a> <strong>DS 0.2.0</strong> — vector pen, nodes, and booleans. Paint is still on the same door.</p>
@@ -3146,6 +3146,22 @@ document.addEventListener("click", function (event) {
       }, true);
       var shellHome = document.getElementById("shell-home");
       if (shellHome) shellHome.addEventListener("click", function () { closeFrame(); });
+
+      function helloFrame() {
+        var frame = document.getElementById("app-frame");
+        if (!frame || frame.hidden) return;
+        var src = frame.getAttribute("src") || "";
+        if (!src || src === "about:blank") return;
+        var note = document.getElementById("announce");
+        var text = note && !note.hidden ? String(note.textContent || "").replace(/\s+/g, " ").trim().slice(0, 140) : "";
+        try {
+          frame.contentWindow.postMessage({ type: "tech-room-hello", embed: true, announce: text }, location.origin);
+        } catch (eHello) {}
+      }
+      var frameEl = document.getElementById("app-frame");
+      if (frameEl) frameEl.addEventListener("load", function () {
+        if (document.body.classList.contains("is-framed")) helloFrame();
+      });
 
       window.addEventListener("message", function (ev) {
         if (ev.origin !== location.origin) return;
