@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.5.0** · 2026-09-27 · channel **live**
+
+Classics you can change: Ode to Joy, Twinkle, Little Lamb, Frere Jacques, The Saints, Amazing Grace, Jingle Bells, and Simple Gifts. Ode, but trap keeps the melody and puts a slow trap beat under it. Make it trap does that to whatever is on the staff.
+
+## Earlier
+
 **Chip: MU 2.4.0** · 2026-09-27 · channel **live**
 
 The score sits on top and names each note. A song can be 32 bars in 2/4, 3/4, 4/4, or 6/8. Record taps the notes to a click. Expert fills the page.

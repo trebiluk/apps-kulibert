@@ -1612,6 +1612,105 @@
       });
       ideas.appendChild(again);
     }
+    const classics = $("classics");
+    if (classics && !classics.childElementCount) {
+      const tunes = [
+        ["Ode to Joy", ["E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "E", "D", "D", null, "E", "E", "F", "G", "G", "F", "E", "D", "C", "C", "D", "E", "D", "C", "C", null]],
+        ["Twinkle", ["C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null, "G", "G", "F", "F", "E", "E", "D", null, "C", "C", "G", "G", "A", "A", "G", null, "F", "F", "E", "E", "D", "D", "C", null]],
+        ["Little Lamb", ["E", "D", "C", "D", "E", "E", "E", null, "D", "D", "D", null, "E", "G", "G", null, "E", "D", "C", "D", "E", "E", "E", "E", "D", "D", "E", "D", "C", null, null, null]],
+        ["Frere Jacques", ["C", "D", "E", "C", "C", "D", "E", "C", "E", "F", "G", null, "E", "F", "G", null, "G", "A", "G", "F", "E", "C", null, null, "C", "G", "C", null]],
+        ["The Saints", ["C", "E", "F", "G", "C", "E", "F", "G", "C", "E", "F", "G", "E", "C", "E", "D", "C", null, null, null]],
+        ["Amazing Grace", ["G", "C", "E", "C", "E", "D", "C", null, "G", "C", "E", "C", "E", "D", null, null, "C", "E", "G", "A", "G", "E", "C", null, "E", "D", "C", null]],
+        ["Jingle Bells", ["E", "E", "E", null, "E", "E", "E", null, "E", "G", "C", "D", "E", null, null, null, "F", "F", "F", "F", "F", "E", "E", "E", "E", "D", "D", "E", "D", "G", null, null]],
+        ["Simple Gifts", ["C", "C", "D", "E", "G", "E", null, null, "D", "E", "F", "E", "D", "C", null, null, "C", "C", "D", "E", "G", "E", "D", "C", "D", "E", "C", null]],
+      ];
+      const loadTune = (name, notes, bpm) => {
+        const measures = [];
+        const bars = Math.ceil(notes.length / 4);
+        for (let i = 0; i < bars; i++) {
+          measures.push({
+            id: "tune-" + i,
+            label: String(i + 1),
+            beats: [0, 1, 2, 3].map((b) => notes[i * 4 + b] || null),
+          });
+        }
+        state.song = Song.normalize({
+          alias: state.song.alias,
+          bpm: bpm || 96,
+          meter: "4/4",
+          measures: measures,
+        });
+        state.cursor = 0;
+        state.step = 0;
+        if ($("tempo")) {
+          $("tempo").value = String(state.song.bpm);
+          $("tempo-read").textContent = String(state.song.bpm);
+        }
+        renderStaff();
+        paintMeters();
+        paintCount();
+        keep();
+        $("lesson").textContent = name + " is on the staff. Change any note. Saved.";
+        const teach = $("teach");
+        if (teach && !state.expert) teach.textContent = name + ". Press Play. The line names each note.";
+      };
+      const trapIt = () => {
+        const trap = {
+          kick: [1, 0, 0, 0, 0, 0, 1, 0],
+          snare: [0, 0, 0, 0, 1, 0, 0, 0],
+          clap: [0, 0, 0, 0, 1, 0, 0, 1],
+          hat: [1, 0, 1, 1, 1, 0, 1, 1],
+          shaker: [0, 1, 0, 1, 0, 1, 0, 1],
+        };
+        ROWS.forEach(([id]) => {
+          state.drums[id] = (trap[id] || [0, 0, 0, 0, 0, 0, 0, 0]).map((on) => !!on);
+        });
+        state.song.bpm = 74;
+        state.song.tempo = 74;
+        state.bass = true;
+        state.blend = 32;
+        state.swing = 0;
+        state.wave = "sine";
+        state.noteLen = 0.42;
+        const bassBtn = $("bass-btn");
+        if (bassBtn) {
+          bassBtn.classList.add("on");
+          bassBtn.setAttribute("aria-pressed", "true");
+          bassBtn.textContent = "Bass is on";
+        }
+        if ($("tempo")) {
+          $("tempo").value = "74";
+          $("tempo-read").textContent = "74";
+        }
+        if ($("blend")) {
+          $("blend").value = "32";
+          $("blend-read").textContent = blendWord(32);
+        }
+        renderDrums();
+        keep();
+        if (state.playing) { stop(); play(); }
+        $("lesson").textContent = "Trap beat. Same notes. Slow kick, clap on the back. Saved.";
+      };
+      tunes.forEach(([name, notes]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => loadTune(name, notes, name === "Ode to Joy" ? 104 : 96));
+        classics.appendChild(b);
+      });
+      const joyTrap = document.createElement("button");
+      joyTrap.type = "button";
+      joyTrap.className = "btn";
+      joyTrap.textContent = "Ode, but trap";
+      joyTrap.addEventListener("click", () => {
+        loadTune("Ode to Joy", tunes[0][1], 74);
+        trapIt();
+      });
+      classics.appendChild(joyTrap);
+      const trap = $("trap-btn");
+      if (trap) trap.addEventListener("click", trapIt);
+    }
     const bass = $("bass-btn");
     if (bass && !bass.dataset.ready) {
       bass.dataset.ready = "1";
