@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.6.15") return;
-  window.__VISUALIZER__ = "0.6.15";
+  if (window.__VISUALIZER__ === "0.7.0") return;
+  window.__VISUALIZER__ = "0.7.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.6.15";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.7.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -334,7 +334,7 @@
       const raw = localStorage.getItem(LOOK_STORE);
       if (LOOKS.some((l) => l.id === raw)) return raw;
     } catch { /* ignore */ }
-    return "bars";
+    return "fireworks";
   }
   state.look = loadLook();
 
@@ -343,16 +343,21 @@
     if (!Song || !Song.readBridge) return [];
     const bridge = Song.readBridge();
     if (!bridge || !bridge.song) return [];
-    const beat = Song.toBeat(bridge.song);
+    const fromSong = Song.toBeat ? Song.toBeat(bridge.song) : { name: "Your song", bpm: 96, steps: {} };
+    const steps = bridge.beat && bridge.beat.steps
+      ? normalizeSteps(bridge.beat.steps)
+      : normalizeSteps(fromSong.steps);
+    const name = (bridge.song && bridge.song.alias) || (bridge.beat && bridge.beat.name) || fromSong.name || "Your song";
     return [{
       id: "score",
-      name: safeName(beat.name || "Written"),
-      bpm: beat.bpm,
-      steps: normalizeSteps(beat.steps),
+      name: safeName(name),
+      bpm: (bridge.beat && bridge.beat.bpm) || fromSong.bpm || bridge.song.bpm || 96,
+      steps: steps,
+      song: true,
     }];
   }
   function catalog() {
-    return scoreBeat().concat(localBeats()).concat(BUILTIN).concat(state.imported);
+    return scoreBeat().concat(localBeats()).concat(state.imported);
   }
   function currentBeat() {
     const list = catalog();
@@ -415,7 +420,8 @@
 
   function paintBeat(step) {
     const beat = currentBeat();
-    const steps = beat ? beat.steps : BUILTIN[0].steps;
+    const steps = beat ? beat.steps : null;
+    if (!steps) return;
     const bpm = beat ? beat.bpm : 108;
     const sixteenth = 60 / bpm / 4;
     const into = (performance.now() - state.startedAt) / 1000;
@@ -440,12 +446,25 @@
     }
   }
 
+  function loopOf(beat) {
+    const bpm = beat && beat.bpm ? beat.bpm : 96;
+    const steps = beat && beat.steps;
+    let later = false;
+    if (steps) {
+      TRACKS.forEach((id) => {
+        const row = steps[id] || [];
+        for (let i = 8; i < row.length; i++) if (row[i]) later = true;
+      });
+    }
+    if (!later) return { count: 8, ms: 60000 / bpm };
+    return { count: 16, ms: 60000 / bpm / 4 };
+  }
   function stepNow() {
     if (!state.playing || state.source !== "library") return -1;
     const beat = currentBeat();
-    const bpm = beat ? beat.bpm : 108;
-    const sixteenth = 60000 / bpm / 4;
-    return Math.floor((performance.now() - state.startedAt) / sixteenth) % 16;
+    if (!beat) return -1;
+    const loop = loopOf(beat);
+    return Math.floor((performance.now() - state.startedAt) / loop.ms) % loop.count;
   }
 
   function renderFeed() {
@@ -488,7 +507,10 @@
       return;
     }
     if (!state.playing || step < 0) {
-      el.textContent = "Press Play. Read the word. Sound can stay off.";
+      const beat = currentBeat();
+      el.textContent = beat
+        ? "This is " + beat.name + ". Press Play. The picture follows the beats."
+        : "No song yet. Make one in Music. The picture will use it.";
       return;
     }
     const beat = currentBeat();
@@ -943,17 +965,18 @@
   if (stageApi) {
     stageApi.mount(canvas, () => {
       const step = stepNow();
+      const beat = currentBeat();
       if (state.source === "library" && state.playing && step !== state.playhead && step >= 0) {
         state.playhead = step;
         playStep(step);
-        $("lcd-pos").textContent = `${Math.floor(step / 4) + 1}.${(step % 4) + 1}`;
+        const loop = loopOf(beat || {});
+        $("lcd-pos").textContent = loop.count === 8 ? "Beat " + (step + 1) : `${Math.floor(step / 4) + 1}.${(step % 4) + 1}`;
         writeNow(step);
       } else if (state.source === "device") {
         state.playhead = -1;
       }
       if (state.source === "library" && state.playing && step >= 0) paintBeat(step);
       const on = state.playing && step >= 0 && state.source === "library";
-      const beat = currentBeat();
       return {
         look: state.look,
         playing: state.playing,

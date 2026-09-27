@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.7.0** · 2026-09-27 · channel **live**
+
+The picture uses the student's song, including the drums. An 8-beat song counts in beats, not a demo grid. No song means it says so.
+
+## Earlier
+
 **Chip: Viz 0.6.15** · 2026-09-26 · channel **live**
 
 The menu and the lesson are tighter. Sliders match the other music doors.
