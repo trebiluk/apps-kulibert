@@ -1,8 +1,75 @@
-<!DOCTYPE html><html lang=en><link rel=stylesheet href=drawin-stuff.badcc7c6.css><meta charset=UTF-8><title>Drawin' stuff</title><base href=./><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name=color-scheme content="dark light"><link rel=icon type=image/png href=klecks-icon.ec3e5aec.png><script>const theme=localStorage.getItem("klecks-theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"===theme&&document.documentElement.classList.add("kl-theme-dark");</script><style>:root{background:#999;font-family:system-ui,sans-serif}body{margin:0}#loading-screen{color:#eee;text-align:center;width:100vw;margin-top:100px;font-size:25px}</style><body>
-        <div id=loading-screen>Loading Drawin' stuff…</div>
-        <link rel=stylesheet href=drawin-stuff.baaf7057.css>
-        <script type=module src=drawin-stuff.bfb6de19.js></script>
-        
-        <script type=module src=drawin-stuff.76168f2c.js></script>
-    
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="theme-color" content="#161513"/>
+<title>Drawin'</title>
+<style>
+@font-face {
+  font-family: "Drawin Sans";
+  src: url("./vector/fonts/source-sans-3-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Drawin Serif";
+  src: url("./vector/fonts/source-serif-4-600.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+html, body { height: 100%; margin: 0; background: #161513; color: #f3efe6; }
+body { display: grid; grid-template-rows: 52px minmax(0, 1fr); font: 15px/1.4 "Drawin Sans", "Segoe UI", sans-serif; }
+header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 0 14px; border-bottom: 1px solid #454037; background: #161513;
+}
+.brand { font-family: "Drawin Serif", Georgia, serif; font-size: 22px; }
+nav { display: flex; gap: 6px; }
+button {
+  min-height: 36px; padding: 0 14px; border-radius: 999px;
+  border: 1px solid #454037; background: transparent; color: inherit;
+  font: inherit; cursor: pointer;
+}
+button[aria-pressed="true"] { background: #d08a2d; color: #161513; border-color: transparent; font-weight: 600; }
+iframe { width: 100%; height: 100%; border: 0; background: #161513; }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Drawin'</div>
+  <nav aria-label="Studio">
+    <button type="button" id="tab-vector" aria-pressed="true">Vector</button>
+    <button type="button" id="tab-paint" aria-pressed="false">Paint</button>
+  </nav>
+</header>
+<iframe id="frame" title="Drawin' studio" src="./vector/index.html?hub=1"></iframe>
+<script>
+const KEY = "drawin-door";
+const frame = document.getElementById("frame");
+const tabs = {
+  vector: document.getElementById("tab-vector"),
+  paint: document.getElementById("tab-paint"),
+};
+function show(mode) {
+  const next = mode === "paint" ? "paint" : "vector";
+  frame.src = next === "paint" ? "./paint/" : "./vector/index.html?hub=1";
+  tabs.vector.setAttribute("aria-pressed", next === "vector" ? "true" : "false");
+  tabs.paint.setAttribute("aria-pressed", next === "paint" ? "true" : "false");
+  try { localStorage.setItem(KEY, next); } catch (err) { /* private mode */ }
+}
+tabs.vector.addEventListener("click", () => show("vector"));
+tabs.paint.addEventListener("click", () => show("paint"));
+try {
+  if (localStorage.getItem(KEY) === "paint") show("paint");
+} catch (err) { /* private mode */ }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((regs) => {
+    for (const reg of regs) {
+      if (reg.scope.endsWith("/drawin/")) reg.unregister();
+    }
+  });
+}
+</script>
+</body>
+</html>

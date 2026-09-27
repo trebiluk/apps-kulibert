@@ -27,4 +27,4 @@ Solvay blocks Vercel preview hosts, so `/coderized/` is a **static copy** of Git
 - `Kulibotz-Grok-Build-Handoff.pdf.b64` — base64 of the handoff PDF (see HANDOFF-PDF-README.md)
 
 ## Drawin' (`/drawin/`)
-Classroom paint — brushes, layers, text, PSD. Hub tile **Drawin'** → `/drawin/` (DS 0.1.0). Same-origin snapshot so Solvay does not need a `vercel.app` host. Do not proxy this door to `drawin-stuff.vercel.app`. Built on Klecks (MIT); `drawin/LICENSE` stays with the snapshot.
+Classroom draw door (DS 0.2.0). Hub tile **Drawin'** → `/drawin/`. Vector studio (pen, nodes, booleans, type, SVG) is the default; Paint (brushes, layers, PSD) is the other tab and also `/drawin/paint/`. Same-origin snapshot so Solvay does not need a `vercel.app` host. Do not proxy this door to `drawin-stuff.vercel.app`. Paint is Klecks (MIT); `drawin/paint/LICENSE` stays with that snapshot. The old `/drawin/` service worker is a stub that unregisters itself.
