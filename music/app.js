@@ -9,6 +9,10 @@
     ["clap", "Clap"],
     ["tom", "Tom"],
     ["shaker", "Shaker"],
+    ["rim", "Rim"],
+    ["bell", "Bell"],
+    ["tamb", "Tamb"],
+    ["crash", "Crash"],
   ];
   const LOOKS = [
     ["bars", "Bars"],
@@ -41,9 +45,10 @@
     rgb: false,
     wall: "dusk",
     frame: "glow",
-    mix: { kick: 100, snare: 90, hat: 70, clap: 80, tom: 75, shaker: 60 },
+    mix: { kick: 100, snare: 90, hat: 70, clap: 80, tom: 75, shaker: 60, rim: 55, bell: 65, tamb: 50, crash: 70 },
     swing: 0,
     click: false,
+    bass: false,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
     fx: "plain",
@@ -89,6 +94,7 @@
     if (saved.mix && typeof saved.mix === "object") state.mix = Object.assign(state.mix, saved.mix);
     if (typeof saved.swing === "number") state.swing = saved.swing;
     if (typeof saved.click === "boolean") state.click = saved.click;
+    if (typeof saved.bass === "boolean") state.bass = saved.bass;
     if (saved.gear && typeof saved.gear === "object") state.gear = Object.assign(state.gear, saved.gear);
     if (saved.fx) state.fx = saved.fx;
     if (saved.wave) state.wave = saved.wave;
@@ -241,6 +247,7 @@
       mix: state.mix,
       swing: state.swing,
       click: state.click,
+      bass: state.bass,
       gear: state.gear,
     });
     let ok = false;
@@ -474,6 +481,10 @@
     else if (id === "hat") noise(0.04, vol("hat", 0.2));
     else if (id === "tom") tone(160, 0.2, "triangle", vol("tom", 0.7));
     else if (id === "shaker") noise(0.06, vol("shaker", 0.16));
+    else if (id === "rim") tone(740, 0.04, "square", vol("rim", 0.28));
+    else if (id === "bell") tone(540, 0.16, "square", vol("bell", 0.22));
+    else if (id === "tamb") noise(0.09, vol("tamb", 0.2));
+    else if (id === "crash") noise(0.4, vol("crash", 0.28));
     else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
   }
   function strike(id, el) {
@@ -653,7 +664,8 @@
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
       if (freq) tone(freq, state.noteLen, state.wave, 0.22);
-    }
+      if (state.bass && state.drums.kick[step]) tone(freq / 2, 0.34, "sine", 0.34);
+    } else if (state.bass && state.drums.kick[step]) tone(65.4, 0.34, "sine", 0.34);
   }
 
   function gapAfter(step) {
@@ -732,6 +744,27 @@
       { name: "Tap", how: "A quiet tap, or the rim.", drum: "hat" },
       { name: "Both", how: "Bass and snare together.", drum: "both" },
       { name: "Rest", how: "Hands still. Count the beat anyway.", drum: "rest" },
+    ]},
+    { id: "tuba", name: "Tuba", start: "Big air. Loose buzz. Let the low note bloom.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Your B-flat. Use the fingering in your book.", freq: 233.1 },
+      { name: "C", how: "Your C. Use the fingering in your book.", freq: 261.6 },
+      { name: "D", how: "Your D. Use the fingering in your book.", freq: 293.7 },
+      { name: "Eb", how: "Your E-flat. Use the fingering in your book.", freq: 311.1 },
+      { name: "F", how: "Your F. Use the fingering in your book.", freq: 349.2 },
+    ]},
+    { id: "bari", name: "Bari sax", start: "The strap holds it. Even air. Relaxed mouth.", concert: "You read E-flat. Your written G is the band's low B-flat.", notes: [
+      { name: "G", how: "Three fingers on the left hand.", freq: 233.1 },
+      { name: "A", how: "Two fingers on the left hand.", freq: 261.6 },
+      { name: "B", how: "One finger on the left hand.", freq: 293.7 },
+      { name: "C", how: "No fingers down.", freq: 311.1 },
+      { name: "D", how: "Octave key, and three fingers on the left.", freq: 349.2 },
+    ]},
+    { id: "bells", name: "Bells", start: "Mallet in the center of the bar. Let it ring.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "The B-flat bar.", freq: 466.2 },
+      { name: "C", how: "The C bar.", freq: 523.3 },
+      { name: "D", how: "The D bar.", freq: 587.3 },
+      { name: "Eb", how: "The E-flat bar.", freq: 622.3 },
+      { name: "F", how: "The F bar.", freq: 698.5 },
     ]},
   ];
   const WRITTEN = { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "B" };
@@ -1254,6 +1287,11 @@
       "Hats": { hat: [1, 0, 1, 0, 1, 0, 1, 0] },
       "Shaker": { shaker: [1, 1, 1, 1, 1, 1, 1, 1] },
       "Toms": { tom: [0, 1, 0, 1, 0, 0, 1, 0] },
+      "Disco": { kick: [1, 0, 1, 0, 1, 0, 1, 0], hat: [0, 1, 0, 1, 0, 1, 0, 1] },
+      "Reggae": { kick: [0, 0, 1, 0, 0, 0, 1, 0], hat: [0, 0, 1, 0, 0, 0, 1, 0], rim: [0, 0, 1, 0, 0, 0, 1, 0] },
+      "Rock": { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0], hat: [1, 1, 1, 1, 1, 1, 1, 1] },
+      "Fill": { snare: [0, 0, 0, 0, 1, 1, 1, 1], tom: [0, 0, 1, 0, 1, 0, 1, 1], crash: [0, 0, 0, 0, 0, 0, 0, 1] },
+      "Bells": { bell: [1, 0, 0, 1, 0, 0, 1, 0] },
     };
     const host = $("patterns");
     if (host) {
@@ -1272,6 +1310,105 @@
           $("lesson").textContent = name + " added. Saved.";
         });
         host.appendChild(b);
+      });
+      const surprise = document.createElement("button");
+      surprise.type = "button";
+      surprise.className = "btn";
+      surprise.textContent = "Surprise";
+      surprise.addEventListener("click", () => {
+        drumUndo = JSON.parse(JSON.stringify(state.drums));
+        $("undo-clear").hidden = false;
+        ROWS.forEach(([id]) => {
+          if (id === "crash") return;
+          for (let i = 0; i < 8; i++) state.drums[id][i] = Math.random() < (id === "kick" ? 0.34 : 0.22);
+        });
+        state.drums.kick[0] = true;
+        renderDrums();
+        keep();
+        $("lesson").textContent = "Surprise beat. Bring it back puts the old drums back.";
+      });
+      host.appendChild(surprise);
+    }
+    const chords = $("chords");
+    if (chords && !chords.childElementCount) {
+      const sets = [
+        ["C", ["C", "E", "G", "C"]],
+        ["F", ["F", "A", "C", "F"]],
+        ["G", ["G", "B", "D", "G"]],
+        ["Am", ["A", "C", "E", "A"]],
+      ];
+      sets.forEach(([name, notes]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => {
+          const evs = Song.events(state.song);
+          notes.forEach((pitch, i) => {
+            const ev = evs[i];
+            if (ev) Song.setBeat(state.song, ev.measure, ev.beat, pitch);
+          });
+          renderStaff();
+          keep();
+          $("lesson").textContent = name + " is on beats 1 to 4. Saved.";
+        });
+        chords.appendChild(b);
+      });
+    }
+    const bass = $("bass-btn");
+    if (bass && !bass.dataset.ready) {
+      bass.dataset.ready = "1";
+      bass.classList.toggle("on", state.bass);
+      bass.setAttribute("aria-pressed", String(state.bass));
+      bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+      bass.addEventListener("click", () => {
+        state.bass = !state.bass;
+        bass.classList.toggle("on", state.bass);
+        bass.setAttribute("aria-pressed", String(state.bass));
+        bass.textContent = state.bass ? "Bass is on" : "Bass follows the kick";
+        keep();
+      });
+    }
+    const scenes = $("scenes");
+    if (scenes && !scenes.childElementCount) {
+      const packs = {
+        Storm: { wall: "sea", rgb: false, layers: [{ look: "rain", color: "ice" }, { look: "tunnel", color: "cyan" }, { look: "off", color: "ice" }], gear: { count: 32, wild: 80, glow: 100, spin: 85, trail: 24, zoom: 120, thick: 2, bounce: 80 } },
+        Neon: { wall: "candy", rgb: true, layers: [{ look: "fireworks", color: "rose" }, { look: "rings", color: "lime" }, { look: "orbit", color: "violet" }], gear: { wild: 90, glow: 100, count: 28, thick: 6, trail: 30, zoom: 140, spin: 70, bounce: 60 } },
+        Soft: { wall: "dusk", rgb: false, layers: [{ look: "bloom", color: "violet" }, { look: "ribbon", color: "ice" }, { look: "off", color: "cyan" }], gear: { wild: 15, glow: 55, count: 12, thick: 3, trail: 40, zoom: 90, spin: 20, bounce: 100 } },
+        Space: { wall: "night", rgb: true, layers: [{ look: "stars", color: "ice" }, { look: "tunnel", color: "violet" }, { look: "orbit", color: "cyan" }], gear: { wild: 70, glow: 90, count: 26, thick: 2, trail: 50, zoom: 130, spin: 40, bounce: 100 } },
+      };
+      Object.keys(packs).forEach((name) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => {
+          const pack = packs[name];
+          state.wall = pack.wall;
+          state.rgb = pack.rgb;
+          state.layers = pack.layers.map((layer) => Object.assign({}, layer));
+          state.look = state.layers[0].look;
+          Object.assign(state.gear, pack.gear);
+          ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
+            const slider = $("g-" + key);
+            const read = $("n-" + key);
+            if (slider && state.gear[key] != null) slider.value = String(state.gear[key]);
+            if (read && state.gear[key] != null) read.textContent = String(state.gear[key]);
+          });
+          for (let i = 0; i < 3; i++) {
+            const look = $("layer-" + i);
+            const ink = $("ink-" + i);
+            if (look) look.value = state.layers[i].look;
+            if (ink) ink.value = state.layers[i].color;
+          }
+          if ($("wall")) $("wall").value = state.wall;
+          saveSkin();
+          paintLights();
+          paintLooks();
+          keep();
+          $("lesson").textContent = name + " is on. Saved.";
+        });
+        scenes.appendChild(b);
       });
     }
     ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {

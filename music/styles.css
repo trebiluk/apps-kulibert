@@ -119,7 +119,16 @@ canvas {
 .marks i.snare { background: #f59e0b; }
 .marks i.hat { background: #818cf8; }
 .pad.tom { background: #34d399; color: #042016; }
-.pad.shaker { background: #facc15; color: #1a140c; }
+.pad.rim { background: #e2e8f0; color: #0f172a; }
+.pad.bell { background: #fbbf24; color: #1a140c; }
+.pad.tamb { background: #fb7185; color: #1a140c; }
+.pad.crash { background: #c4b5fd; color: #1e1b4b; }
+.marks i.rim { background: #e2e8f0; }
+.marks i.bell { background: #fbbf24; }
+.marks i.tamb { background: #fb7185; }
+.marks i.crash { background: #c4b5fd; }
+#chords, #scenes { margin-top: 0.4rem; }
+#bass-btn { width: 100%; margin-top: 0.35rem; }
 .marks i.tom { background: #34d399; }
 .marks i.shaker { background: #facc15; }
 .mix { display: grid; gap: 0.2rem; margin: 0.45rem 0; }

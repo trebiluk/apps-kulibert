@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.0.0** · 2026-09-27 · channel **live**
+
+More drums, more patterns, chords, a bass, three more band instruments, and light scenes.
+
+## Earlier
+
 **Chip: MU 1.9.0** · 2026-09-27 · channel **live**
 
 More on the boards. Tom and shaker, a loudness slider for each drum, swing, a click, one-tap patterns, and the light sliders plus Crazy.
