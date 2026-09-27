@@ -48,6 +48,7 @@
     mix: { kick: 100, snare: 90, hat: 70, clap: 80, tom: 75, shaker: 60, rim: 55, bell: 65, tamb: 50, crash: 70 },
     swing: 0,
     click: false,
+    along: false,
     bass: false,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
@@ -93,7 +94,7 @@
     if (saved.look) state.look = saved.look;
     if (saved.mix && typeof saved.mix === "object") state.mix = Object.assign(state.mix, saved.mix);
     if (typeof saved.swing === "number") state.swing = saved.swing;
-    if (typeof saved.click === "boolean") state.click = saved.click;
+    if (typeof saved.along === "boolean") state.along = saved.along;
     if (typeof saved.bass === "boolean") state.bass = saved.bass;
     if (saved.gear && typeof saved.gear === "object") state.gear = Object.assign(state.gear, saved.gear);
     if (saved.fx) state.fx = saved.fx;
@@ -247,6 +248,7 @@
       mix: state.mix,
       swing: state.swing,
       click: state.click,
+      along: state.along,
       bass: state.bass,
       gear: state.gear,
     });
@@ -499,6 +501,12 @@
     else if (FREQ[id]) state.bins[24] = 230;
     if (!state.muted) hitSound(id);
     if (navigator.vibrate) navigator.vibrate(12);
+    if (state.along) {
+      if (!state.playing) play();
+      const beat = state.step >= 0 ? state.step + 1 : 1;
+      $("lesson").textContent = "Beat " + beat + ". You played along. The score stayed the same.";
+      return;
+    }
     const step = placeStep();
     if (step >= 0) writeHit(id, step);
     if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
@@ -941,8 +949,10 @@
     document.body.classList.toggle("is-lights", mode === "lights");
     if (!state.playing) {
       const hints = {
-        notes: "Tap the staff, or tap C, F, G, or Am.",
-        drums: "Tap a pad. It stays on that beat.",
+        notes: "This is the score. Beats can ride on top of it.",
+        drums: state.along
+          ? "Play along. Tap when the beat flashes. The score stays put."
+          : "Add to the song. A tap stays on that beat.",
         lights: "Pick a scene or a layer. The picture follows the song.",
         band: "Pick an instrument. Tap a letter.",
       };
@@ -952,6 +962,21 @@
     paintLights();
   }
 
+  function paintAlong() {
+    const btn = $("along-btn");
+    if (!btn) return;
+    btn.classList.toggle("on", state.along);
+    btn.setAttribute("aria-pressed", String(state.along));
+    btn.textContent = state.along ? "Add to the song" : "Play along";
+  }
+  $("along-btn").addEventListener("click", () => {
+    state.along = !state.along;
+    paintAlong();
+    keep();
+    $("lesson").textContent = state.along
+      ? "Play along. Taps do not change the score. Follow the flash."
+      : "Add to the song. Taps stay on the beat.";
+  });
   $("play-btn").addEventListener("click", () => {
     if (state.playing) stop();
     else play();
@@ -1231,6 +1256,7 @@
   $("tempo-read").textContent = String(state.song.bpm || 96);
   loadSkin();
   fillLights();
+  paintAlong();
   paintMix();
   setMode((() => {
     const board = new URLSearchParams(window.location.search).get("board");

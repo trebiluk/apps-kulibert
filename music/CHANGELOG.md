@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.2.0** · 2026-09-27 · channel **live**
+
+Score is the first tab. Beats rides on that score. Play along lets a student tap the tempo without changing the song. Settings sit on the left.
+
+## Earlier
+
 **Chip: MU 2.1.0** · 2026-09-27 · channel **live**
 
 Melody ideas, three more beats, and two more pictures. They stay inside the drawers so the first screen stays clear.
