@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 1.8.0** · 2026-09-27 · channel **live**
+
+Berty's MusicLab. One left panel switches Song, Beats, Lights, and Band. They share the song. The old doors still open alone.
+
+## Earlier
+
 **Chip: MU 1.7.0** · 2026-09-26 · channel **live**
 
 Concert band. Six beginner instruments. First five notes, written the way that student reads, sounding as one band. Warm-up counts them.

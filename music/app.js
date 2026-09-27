@@ -31,6 +31,14 @@
     song: Song.starter(),
     drums: blankDrums(),
     look: "ribbon",
+    layers: [
+      { look: "ribbon", color: "cyan" },
+      { look: "rings", color: "violet" },
+      { look: "off", color: "amber" },
+    ],
+    rgb: false,
+    wall: "dusk",
+    frame: "glow",
     band: "trumpet",
     fx: "plain",
     wave: "triangle",
@@ -328,6 +336,10 @@
       b.textContent = label;
       b.addEventListener("click", () => {
         state.look = id;
+        if (state.layers[0]) state.layers[0].look = id;
+        const layer = $("layer-0");
+        if (layer) layer.value = id;
+        saveSkin();
         keep();
         paintLooks();
       });
@@ -771,17 +783,94 @@
     });
   }
 
+  const INKS = [["cyan", "Cyan"], ["amber", "Amber"], ["violet", "Violet"], ["rose", "Rose"], ["lime", "Lime"], ["ice", "Ice"]];
+  function saveSkin() {
+    try {
+      localStorage.setItem("kulibert.viz.skin", JSON.stringify({
+        layers: state.layers, rgb: state.rgb, wall: state.wall, frame: state.frame,
+      }));
+    } catch (err) { /* the picture still changes */ }
+  }
+  function loadSkin() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("kulibert.viz.skin") || "null");
+      if (!raw || !Array.isArray(raw.layers)) return;
+      state.layers = raw.layers.slice(0, 3);
+      while (state.layers.length < 3) state.layers.push({ look: "off", color: "cyan" });
+      state.rgb = !!raw.rgb;
+      if (raw.wall) state.wall = raw.wall;
+      if (raw.frame) state.frame = raw.frame;
+      if (state.layers[0] && state.layers[0].look && state.layers[0].look !== "off") state.look = state.layers[0].look;
+    } catch (err) { /* starter layers stay */ }
+  }
+  function paintLights() {
+    const stageLooks = (window.KulibertStage && window.KulibertStage.LOOKS) || LOOKS.map(([id, label]) => ({ id: id, label: label }));
+    const rgb = $("rgb-btn");
+    if (rgb) {
+      rgb.classList.toggle("on", state.rgb);
+      rgb.setAttribute("aria-pressed", String(state.rgb));
+    }
+    document.body.classList.toggle("is-lights", state.mode === "lights");
+    const out = document.querySelector(".out");
+    if (out) {
+      ["night", "dusk", "sunset", "sea", "aurora", "candy"].forEach((id) => out.classList.remove("wall-" + id));
+      ["none", "line", "glow", "double", "rgb"].forEach((id) => out.classList.remove("frame-" + id));
+      out.classList.add("wall-" + (state.wall || "night"));
+      out.classList.add("frame-" + (state.frame || "none"));
+      out.classList.toggle("is-rgb", !!state.rgb);
+    }
+  }
+  function fillLights() {
+    if (!$("layer-0")) return;
+    const stageLooks = (window.KulibertStage && window.KulibertStage.LOOKS) || [];
+    for (let i = 0; i < 3; i++) {
+      const look = $("layer-" + i);
+      const ink = $("ink-" + i);
+      const options = (i === 0 ? [] : [{ id: "off", label: "Off" }]).concat(stageLooks);
+      look.innerHTML = options.map((item) => `<option value="${item.id}">${item.label}</option>`).join("");
+      ink.innerHTML = INKS.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+      look.value = state.layers[i].look;
+      ink.value = state.layers[i].color;
+      look.addEventListener("change", () => {
+        state.layers[i].look = look.value;
+        if (i === 0 && look.value !== "off") {
+          state.look = look.value;
+          paintLooks();
+        }
+        saveSkin();
+        keep();
+      });
+      ink.addEventListener("change", () => {
+        state.layers[i].color = ink.value;
+        saveSkin();
+      });
+    }
+    const walls = [["night", "Night"], ["dusk", "Dusk"], ["sunset", "Sunset"], ["sea", "Sea"], ["aurora", "Aurora"], ["candy", "Candy"]];
+    const frames = [["none", "None"], ["line", "Line"], ["glow", "Glow"], ["double", "Double"], ["rgb", "RGB"]];
+    $("wall").innerHTML = walls.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+    $("frame").innerHTML = frames.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+    $("wall").value = state.wall;
+    $("frame").value = state.frame;
+    $("wall").addEventListener("change", () => { state.wall = $("wall").value; saveSkin(); paintLights(); });
+    $("frame").addEventListener("change", () => { state.frame = $("frame").value; saveSkin(); paintLights(); });
+    $("rgb-btn").addEventListener("click", () => { state.rgb = !state.rgb; saveSkin(); paintLights(); });
+  }
+
   function setMode(mode) {
     state.mode = mode;
     $("work").classList.toggle("is-notes", mode === "notes");
     $("work").classList.toggle("is-drums", mode === "drums");
     $("work").classList.toggle("is-band", mode === "band");
-    ["notes", "drums", "band"].forEach((name) => {
+    $("work").classList.toggle("is-lights", mode === "lights");
+    ["notes", "drums", "band", "lights"].forEach((name) => {
       const btn = $("mode-" + name);
+      if (!btn) return;
       btn.classList.toggle("on", mode === name);
       btn.setAttribute("aria-pressed", String(mode === name));
     });
+    document.body.classList.toggle("is-lights", mode === "lights");
     if (mode === "band") paintBand();
+    paintLights();
   }
 
   $("play-btn").addEventListener("click", () => {
@@ -850,6 +939,7 @@
   $("mode-notes").addEventListener("click", () => setMode("notes"));
   $("mode-drums").addEventListener("click", () => setMode("drums"));
   $("mode-band").addEventListener("click", () => setMode("band"));
+  $("mode-lights").addEventListener("click", () => setMode("lights"));
   $("band-warm").addEventListener("click", () => warmUp());
   $("menu-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("menu-open");
@@ -1060,7 +1150,15 @@
   }
   $("tempo").value = String(state.song.bpm || 96);
   $("tempo-read").textContent = String(state.song.bpm || 96);
-  setMode("notes");
+  loadSkin();
+  fillLights();
+  setMode((() => {
+    const board = new URLSearchParams(window.location.search).get("board");
+    if (board === "beats" || board === "drums") return "drums";
+    if (board === "lights") return "lights";
+    if (board === "band") return "band";
+    return "notes";
+  })());
   buildKit();
   renderStaff();
   renderDrums();
@@ -1077,6 +1175,9 @@
     window.KulibertStage.mount(canvas, () => ({
       playing: state.playing,
       look: state.look,
+      layers: state.layers,
+      rgb: state.rgb,
+      wall: state.wall,
       bins: state.bins,
       kick: state.kick,
       snare: state.snare,

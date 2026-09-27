@@ -4,35 +4,35 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>Music · The Tech Room</title>
+  <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=1.7.0"/>
+  <link rel="stylesheet" href="./styles.css?v=1.8.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Music</strong><em id="chip">MU 1.7.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 1.8.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
   <div class="scrim" id="scrim"></div>
 
-  <div class="desk">
+  <div class="lab">
+    <nav class="rail" aria-label="Boards">
+      <p class="rail-kicker">Boards</p>
+      <button type="button" id="mode-notes" class="on" aria-pressed="true">Song</button>
+      <button type="button" id="mode-drums" aria-pressed="false">Beats</button>
+      <button type="button" id="mode-lights" aria-pressed="false">Lights</button>
+      <button type="button" id="mode-band" aria-pressed="false">Band</button>
+      <a class="alone" href="/visualizer/">Lights alone</a>
+      <a class="alone" href="/bertybeatz/">Beats alone</a>
+      <a class="alone" href="/bertyscore/">Score alone</a>
+    </nav>
+    <div class="desk">
     <section class="work" id="work">
       <div class="kit" id="kit" aria-label="Tap with a finger"></div>
-      <div class="modes" role="tablist" aria-label="What to edit">
-        <button type="button" id="mode-notes" class="mode on" aria-label="Notes" aria-pressed="true">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 8h20M6 13h20M6 18h20M6 23h20" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="14" cy="18" r="3.2" fill="currentColor"/><path d="M17.2 18V8" stroke="currentColor" stroke-width="1.6"/></svg>
-        </button>
-        <button type="button" id="mode-drums" class="mode" aria-label="Drums" aria-pressed="false">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="14" rx="10" ry="4" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6 14v8c0 2.2 4.5 4 10 4s10-1.8 10-4v-8" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
-        </button>
-        <button type="button" id="mode-band" class="mode" aria-label="Band" aria-pressed="false">
-          <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 20c2-6 6-9 8-9s6 3 8 9" fill="none" stroke="currentColor" stroke-width="1.6"/><circle cx="16" cy="12" r="2.2" fill="currentColor"/><path d="M10 22h12" stroke="currentColor" stroke-width="1.6"/></svg>
-        </button>
-      </div>
       <div id="notes-pane">
         <div class="staff-wrap"><div id="staff"></div></div>
         <p class="hint">Tap the staff. Higher is a higher note.</p>
@@ -49,6 +49,15 @@
         <p id="band-finger" class="lesson">Tap a letter. That is the fingering.</p>
         <button type="button" id="band-warm" class="btn">Warm-up</button>
         <p class="hint">Sit tall. Horn down while someone talks. Play when you see beat 1.</p>
+      </div>
+      <div id="lights-pane">
+        <p class="hint">Stack up to three looks. Each one keeps its own color.</p>
+        <label class="stack">1 <select id="layer-0" aria-label="Layer 1"></select><select id="ink-0" aria-label="Layer 1 color"></select></label>
+        <label class="stack">2 <select id="layer-1" aria-label="Layer 2"></select><select id="ink-1" aria-label="Layer 2 color"></select></label>
+        <label class="stack">3 <select id="layer-2" aria-label="Layer 3"></select><select id="ink-2" aria-label="Layer 3 color"></select></label>
+        <button type="button" id="rgb-btn" class="btn" aria-pressed="false">RGB cycle</button>
+        <label class="stack">Wall <select id="wall" aria-label="Wallpaper"></select></label>
+        <label class="stack">Frame <select id="frame" aria-label="Frame"></select></label>
       </div>
     </section>
 
@@ -67,6 +76,7 @@
       <p id="saved-line" class="saved" aria-live="polite">Saved</p>
       <button type="button" id="undo-clear" class="btn undo" hidden>Bring it back</button>
     </section>
+    </div>
   </div>
 
   <aside class="drawer" id="drawer" aria-label="Menu">
@@ -128,7 +138,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.7.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 1.8.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -136,6 +146,6 @@
   <script src="/shared/song/model.js?v=0.2.8"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
-  <script src="./app.js?v=1.7.0"></script>
+  <script src="./app.js?v=1.8.0"></script>
 </body>
 </html>
