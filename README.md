@@ -25,3 +25,6 @@ Solvay blocks Vercel preview hosts, so `/coderized/` is a **static copy** of Git
 - `GROK-BUILD-WHEN-CREW-OFF.md` — live locks + hard rails
 - `GROK-CHAT-DESCRIPTION.txt` — paste into Grok Build project Description
 - `Kulibotz-Grok-Build-Handoff.pdf.b64` — base64 of the handoff PDF (see HANDOFF-PDF-README.md)
+
+## Drawin' (`/drawin/`)
+Classroom paint — brushes, layers, text, PSD. Hub tile **Drawin'** → `/drawin/` (DS 0.1.0). Same-origin snapshot so Solvay does not need a `vercel.app` host. Do not proxy this door to `drawin-stuff.vercel.app`. Built on Klecks (MIT); `drawin/LICENSE` stays with the snapshot.
