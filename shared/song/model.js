@@ -36,11 +36,45 @@
     return METERS[meter] || 4;
   }
 
+  var ART = { staccato: 1, accent: 1, tenuto: 1 };
+  var DYN = { pp: 1, p: 1, mf: 1, f: 1, ff: 1 };
+  var KEYS = { C: "C", G: "G", D: "D", F: "F", Bb: "Bb" };
+  var SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11, c: 12 };
+  var KEY_ALT = { C: {}, G: { F: 1 }, D: { F: 1, C: 1 }, F: { B: -1 }, Bb: { B: -1, E: -1 } };
+
+  function cellFrom(raw) {
+    var eighths = null;
+    var chord = [];
+    var i;
+    if (raw && Array.isArray(raw.eighths) && raw.eighths.length === 2) {
+      eighths = [
+        pitchById(raw.eighths[0]) ? raw.eighths[0] : null,
+        pitchById(raw.eighths[1]) ? raw.eighths[1] : null,
+      ];
+    }
+    if (raw && Array.isArray(raw.chord)) {
+      for (i = 0; i < raw.chord.length && chord.length < 3; i++) {
+        if (pitchById(raw.chord[i])) chord.push(raw.chord[i]);
+      }
+    }
+    var p = null;
+    if (typeof raw === "string") p = pitchById(raw) ? raw : null;
+    else if (raw && (raw.p || raw.pitch)) p = pitchById(raw.p || raw.pitch) ? (raw.p || raw.pitch) : null;
+    return {
+      p: eighths ? null : p,
+      tie: !!(raw && typeof raw === "object" && raw.tie) && !eighths,
+      art: raw && ART[raw.art] ? raw.art : "",
+      chord: eighths ? [] : chord,
+      eighths: eighths,
+      dyn: raw && DYN[raw.dyn] ? raw.dyn : "",
+    };
+  }
+
   function measure(label, beats, id, count) {
     var n = count || BEATS;
     var row = [];
     var i;
-    for (i = 0; i < n; i++) row[i] = beats && pitchById(beats[i]) ? beats[i] : null;
+    for (i = 0; i < n; i++) row[i] = cellFrom(beats && beats[i]);
     return { id: id || uid(), label: String(label || "A").slice(0, 3), beats: row };
   }
 
@@ -77,7 +111,7 @@
       alias: cleanAlias(raw && (raw.alias || raw.name)),
       bpm: bpm,
       tempo: bpm,
-      key: "C",
+      key: KEYS[raw && raw.key] ? raw.key : "C",
       meter: meter,
       measures: measures,
       pattern: measures[0].label,
@@ -96,6 +130,7 @@
     song.bpm = Math.max(60, Math.min(160, Math.round(Number(song.bpm) || 96)));
     song.tempo = song.bpm;
     if (!METERS[song.meter]) song.meter = "4/4";
+    if (!KEYS[song.key]) song.key = "C";
     song.pattern = song.measures[0] ? song.measures[0].label : "A";
     song.song = song.measures.map(function (m) { return m.label; }).join("");
     song.publish = song.publish || null;
@@ -157,56 +192,175 @@
     return out;
   }
 
-  function toAbc(song) {
-    var s = normalize(song);
-    var unit = s.meter === "6/8" ? "1/8" : "1/4";
-    var lines = [];
-    var i;
-    for (i = 0; i < s.measures.length; i += 4) {
-      lines.push(s.measures.slice(i, i + 4).map(function (m) {
-        return m.beats.map(function (b) {
-          var p = pitchById(b);
-          return p ? p.abc : "z";
-        }).join("");
-      }).join(" | "));
+  function freqOf(id, key) {
+    if (!SEMI.hasOwnProperty(id)) return null;
+    var alt = (KEY_ALT[KEYS[key] ? key : "C"] || {})[id] || 0;
+    return Math.round(261.63 * Math.pow(2, (SEMI[id] + alt) / 12) * 100) / 100;
+  }
+
+  function spell(cell, len) {
+    var dyn = cell.dyn ? "!" + cell.dyn + "!" : "";
+    var art = cell.art === "staccato" ? "." : cell.art === "accent" ? "!accent!" : cell.art === "tenuto" ? "!tenuto!" : "";
+    var suf = len > 1 ? String(len) : "";
+    if (cell.eighths) {
+      var a = pitchById(cell.eighths[0]);
+      var b = pitchById(cell.eighths[1]);
+      return dyn + art + (a ? a.abc : "z") + "/2" + (b ? b.abc : "z") + "/2";
     }
-    return [
+    var p = pitchById(cell.p);
+    var head = p ? p.abc : "z";
+    if (p && cell.chord && cell.chord.length) {
+      var notes = [head];
+      cell.chord.forEach(function (id) {
+        var extra = pitchById(id);
+        if (extra && id !== cell.p) notes.push(extra.abc);
+      });
+      head = "[" + notes.join("") + "]";
+    }
+    return dyn + art + head + suf;
+  }
+
+  function engrave(song) {
+    var s = normalize(song);
+    var events = [];
+    var glyph = 0;
+    var lines = [];
+    var mi;
+    var line = [];
+    for (mi = 0; mi < s.measures.length; mi++) {
+      var beats = s.measures[mi].beats;
+      var parts = [];
+      var i = 0;
+      while (i < beats.length) {
+        var cell = beats[i];
+        var len = 1;
+        if (!cell.eighths && cell.p && cell.tie) {
+          var j = i;
+          while (beats[j] && beats[j].tie && j + 1 < beats.length && beats[j + 1].p === cell.p && !beats[j + 1].eighths) {
+            len += 1;
+            j += 1;
+          }
+        }
+        parts.push(spell(cell, len));
+        var k;
+        for (k = 0; k < len; k++) {
+          var here = beats[i + k];
+          var p = pitchById(here.p);
+          var tiedFrom = k > 0;
+          events.push({
+            measure: mi,
+            beat: i + k,
+            pitch: p ? p.id : (here.eighths && pitchById(here.eighths[0]) ? here.eighths[0] : null),
+            tone: p ? p.tone : null,
+            label: p ? p.label : "",
+            sound: Boolean(p || here.eighths) && !tiedFrom,
+            tiedFrom: tiedFrom,
+            durBeats: here.eighths ? 0.5 : (tiedFrom ? 0 : len),
+            eighths: here.eighths || null,
+            art: here.art || "",
+            dyn: here.dyn || "",
+            chord: tiedFrom ? [] : (here.chord || []),
+            freq: p ? freqOf(p.id, s.key) : (here.eighths && here.eighths[0] ? freqOf(here.eighths[0], s.key) : null),
+            glyph: glyph,
+          });
+        }
+        glyph += 1;
+        i += len;
+      }
+      line.push(parts.join(""));
+      if (line.length === 4 || mi === s.measures.length - 1) {
+        lines.push(line.join(" | "));
+        line = [];
+      }
+    }
+    var unit = s.meter === "6/8" ? "1/8" : "1/4";
+    var abc = [
       "X:1",
       "T:" + (s.alias || "Score"),
       "M:" + s.meter,
       "L:" + unit,
       "Q:1/4=" + s.bpm,
-      "K:C",
+      "K:" + s.key,
       lines.join(" |\n") + " |",
     ].join("\n");
+    return { abc: abc, events: events };
+  }
+
+  function toAbc(song) {
+    return engrave(song).abc;
   }
 
   function events(song) {
-    var s = normalize(song);
-    var out = [];
-    var sound = 0;
-    s.measures.forEach(function (m, mi) {
-      m.beats.forEach(function (b, bi) {
-        var p = pitchById(b);
-        out.push({
-          measure: mi,
-          beat: bi,
-          pitch: p ? p.id : null,
-          tone: p ? p.tone : null,
-          label: p ? p.label : "",
-          sound: Boolean(p),
-          soundIndex: p ? sound : -1,
-        });
-        if (p) sound += 1;
-      });
-    });
-    return out;
+    return engrave(song).events;
+  }
+
+  function cellAt(song, mi, bi) {
+    var m = song.measures[mi];
+    if (!m || bi < 0 || bi >= m.beats.length) return null;
+    if (!m.beats[bi] || typeof m.beats[bi] !== "object") m.beats[bi] = cellFrom(m.beats[bi]);
+    return m.beats[bi];
   }
 
   function setBeat(song, mi, bi, pitch) {
+    var cell = cellAt(song, mi, bi);
+    if (!cell) return song;
+    cell.p = pitchById(pitch) ? pitch : null;
+    cell.eighths = null;
+    if (!cell.p) {
+      cell.tie = false;
+      cell.chord = [];
+      cell.art = "";
+    }
+    return stamp(song);
+  }
+
+  function setEighths(song, mi, bi, pitch) {
+    var cell = cellAt(song, mi, bi);
+    if (!cell || !pitchById(pitch)) return song;
+    if (!cell.eighths) cell.eighths = [pitch, null];
+    else if (!cell.eighths[1]) cell.eighths[1] = pitch;
+    else cell.eighths = [pitch, cell.eighths[1] === pitch ? null : pitch];
+    cell.p = null;
+    cell.tie = false;
+    cell.chord = [];
+    return stamp(song);
+  }
+
+  function toggleTie(song, mi, bi) {
+    var cell = cellAt(song, mi, bi);
     var m = song.measures[mi];
-    if (!m || bi < 0 || bi >= m.beats.length) return song;
-    m.beats[bi] = pitchById(pitch) ? pitch : null;
+    if (!cell || !cell.p || cell.eighths) return song;
+    cell.tie = !cell.tie;
+    if (cell.tie && m.beats[bi + 1] && !m.beats[bi + 1].p && !m.beats[bi + 1].eighths) m.beats[bi + 1].p = cell.p;
+    return stamp(song);
+  }
+
+  function setArt(song, mi, bi, art) {
+    var cell = cellAt(song, mi, bi);
+    if (!cell) return song;
+    cell.art = cell.art === art ? "" : (ART[art] ? art : "");
+    return stamp(song);
+  }
+
+  function addChord(song, mi, bi, pitch) {
+    var cell = cellAt(song, mi, bi);
+    if (!cell || !cell.p || !pitchById(pitch) || pitch === cell.p) return song;
+    var i = cell.chord.indexOf(pitch);
+    if (i >= 0) cell.chord.splice(i, 1);
+    else if (cell.chord.length < 3) cell.chord.push(pitch);
+    return stamp(song);
+  }
+
+  function setDyn(song, mi, bi, dyn) {
+    var cell = cellAt(song, mi, bi);
+    if (!cell || !DYN[dyn]) return song;
+    cell.dyn = cell.dyn === dyn ? "" : dyn;
+    return stamp(song);
+  }
+
+  function setKey(song, key) {
+    if (!KEYS[key]) return song;
+    song.key = key;
     return stamp(song);
   }
 
@@ -217,7 +371,7 @@
     song.measures.forEach(function (m) {
       var next = [];
       var i;
-      for (i = 0; i < n; i++) next[i] = pitchById(m.beats[i]) ? m.beats[i] : null;
+      for (i = 0; i < n; i++) next[i] = cellFrom(m.beats[i]);
       m.beats = next;
     });
     return stamp(song);
@@ -369,17 +523,25 @@
   }
 
   global.KulibertSong = {
-    CHIP: "BS 0.3.0",
+    CHIP: "BS 0.4.0",
     PITCHES: PITCHES,
     BEATS: BEATS,
     METERS: METERS,
+    KEYS: ["C", "G", "D", "F", "Bb"],
     beatsFor: beatsFor,
     setMeter: setMeter,
+    setKey: setKey,
+    freqOf: freqOf,
     starter: starter,
     normalize: normalize,
     toAbc: toAbc,
     events: events,
     setBeat: setBeat,
+    setEighths: setEighths,
+    toggleTie: toggleTie,
+    setArt: setArt,
+    addChord: addChord,
+    setDyn: setDyn,
     addMeasure: addMeasure,
     duplicateMeasure: duplicateMeasure,
     removeMeasure: removeMeasure,

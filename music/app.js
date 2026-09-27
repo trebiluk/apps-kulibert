@@ -100,6 +100,7 @@
     blend: 50,
     expert: false,
     ink: "C",
+    pen: "quarter",
     cursor: 0,
     showing: false,
     counting: false,
@@ -427,6 +428,22 @@
       box.appendChild(b);
     });
   }
+  function writeAt(ev, pitch) {
+    if (!ev) return;
+    const pen = state.pen || "quarter";
+    if (pen === "eighth" && Song.setEighths) Song.setEighths(state.song, ev.measure, ev.beat, pitch);
+    else if (pen === "tie" && Song.toggleTie) Song.toggleTie(state.song, ev.measure, ev.beat);
+    else if (pen === "rest") Song.setBeat(state.song, ev.measure, ev.beat, null);
+    else if (pen === "chord" && Song.addChord) {
+      if (!ev.pitch) Song.setBeat(state.song, ev.measure, ev.beat, pitch);
+      else Song.addChord(state.song, ev.measure, ev.beat, pitch);
+    } else if ((pen === "staccato" || pen === "accent" || pen === "tenuto") && Song.setArt) Song.setArt(state.song, ev.measure, ev.beat, pen);
+    else Song.setBeat(state.song, ev.measure, ev.beat, ev.pitch === pitch ? null : pitch);
+    keep();
+    renderStaff();
+    paintInks();
+    paintKeypad();
+  }
   function writePitch(pitch) {
     if (state.along) {
       $("lesson").textContent = "Play along is on. Turn it off to write the note.";
@@ -436,14 +453,76 @@
     const evs = Song.events(state.song);
     const step = state.playing && state.step >= 0 ? state.step : state.cursor;
     const ev = evs[step] || evs[0];
-    if (!ev) return;
-    Song.setBeat(state.song, ev.measure, ev.beat, ev.pitch === pitch ? null : pitch);
-    keep();
-    renderStaff();
-    paintInks();
-    const fact = TEACH[pitch] || pitch;
+    writeAt(ev, pitch);
+    const words = {
+      quarter: "A quarter note. It is saved.",
+      eighth: "Two eighth notes share this beat. It is saved.",
+      tie: "Tied notes sound as one longer note. It is saved.",
+      rest: "A rest. Count it. It is saved.",
+      chord: "A chord stacks notes on this beat. It is saved.",
+      staccato: "Staccato is short. It is saved.",
+      accent: "An accent is louder. It is saved.",
+      tenuto: "Tenuto holds the full beat. It is saved.",
+    };
     const teach = $("teach");
-    if (teach && !state.expert) teach.textContent = fact + " It is saved.";
+    if (teach && !state.expert) teach.textContent = (TEACH[pitch] || "") + " " + (words[state.pen] || "It is saved.");
+    $("lesson").textContent = words[state.pen] || "The note is saved.";
+  }
+  function paintKeypad() {
+    const box = $("keypad");
+    if (!box) return;
+    if (!box.childElementCount) {
+      const pens = [["quarter", "Quarter"], ["eighth", "Eighths"], ["tie", "Tie"], ["rest", "Rest"], ["chord", "Chord"], ["staccato", "Short"], ["accent", "Accent"], ["tenuto", "Hold"]];
+      pens.forEach(([id, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.pen = id;
+        b.textContent = label;
+        b.addEventListener("click", () => {
+          state.pen = id;
+          paintKeypad();
+          $("lesson").textContent = label + " is the tool. Tap a note or the staff.";
+        });
+        box.appendChild(b);
+      });
+      (Song.KEYS || ["C"]).forEach((key) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.key = key;
+        b.textContent = key;
+        b.addEventListener("click", () => {
+          if (Song.setKey) Song.setKey(state.song, key);
+          keep();
+          renderStaff();
+          paintKeypad();
+          $("lesson").textContent = "Key of " + key + ". The staff shows that signature.";
+        });
+        box.appendChild(b);
+      });
+      ["pp", "p", "mf", "f", "ff"].forEach((dyn) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.dyn = dyn;
+        b.textContent = dyn;
+        b.addEventListener("click", () => {
+          const evs = Song.events(state.song);
+          const ev = evs[state.cursor] || evs[0];
+          if (ev && Song.setDyn) Song.setDyn(state.song, ev.measure, ev.beat, dyn);
+          state.dyn = dyn;
+          keep();
+          renderStaff();
+          $("lesson").textContent = dyn + " is written on this beat. The band follows it.";
+        });
+        box.appendChild(b);
+      });
+    }
+    [...box.children].forEach((btn) => {
+      if (btn.dataset.pen) btn.classList.toggle("on", btn.dataset.pen === state.pen);
+      if (btn.dataset.key) btn.classList.toggle("on", btn.dataset.key === state.song.key);
+    });
   }
 
   function renderStaff() {
@@ -473,27 +552,26 @@
     const svg = host.querySelector("svg");
     if (!svg || !evs.length) return;
     const marks = [...host.querySelectorAll(".abcjs-note, .abcjs-rest")];
-    let index = 0;
-    if (marks.length >= evs.length) {
+    let glyph = 0;
+    if (marks.length) {
       let best = Infinity;
       marks.forEach((node, i) => {
-        if (i >= evs.length) return;
         const rect = node.getBoundingClientRect();
         const dx = Math.abs(e.clientX - (rect.left + rect.width / 2));
-        if (dx < best) { best = dx; index = i; }
+        if (dx < best) { best = dx; glyph = i; }
       });
     }
-    const ev = evs[index];
+    const ev = evs.find((item) => item.glyph === glyph) || evs[Math.min(glyph, evs.length - 1)];
     const box = (host.querySelector(".abcjs-staff") || svg).getBoundingClientRect();
     const top = box.top - box.height * 0.15;
     const span = Math.max(1, box.height * 1.5);
     let pi = Math.round((1 - (e.clientY - top) / span) * (LEARN.length - 1));
     pi = Math.max(0, Math.min(LEARN.length - 1, pi));
     const pitch = LEARN[pi];
-    Song.setBeat(state.song, ev.measure, ev.beat, ev.pitch === pitch ? null : pitch);
-    keep();
-    renderStaff();
-    $("lesson").textContent = "Higher on the staff is a higher note. Tap the same spot for a rest.";
+    state.cursor = evs.indexOf(ev);
+    state.ink = pitch;
+    writeAt(ev, pitch);
+    $("lesson").textContent = "Higher on the staff is a higher note.";
   }
 
   function renderDrums() {
@@ -913,7 +991,8 @@
       if (bar) bar.style.width = Math.round(((step + 1) / songLen()) * 100) + "%";
     }
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
-    marks.forEach((node, i) => node.classList.toggle("now", i === step));
+    const evNow = evs[step];
+    marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
     if (marks[step] && marks[step].scrollIntoView) marks[step].scrollIntoView({ block: "nearest", inline: "nearest" });
     document.querySelectorAll(".cell").forEach((cell) => cell.classList.remove("now"));
     document.querySelectorAll(".drum-row").forEach((row) => {
@@ -924,12 +1003,35 @@
     if (state.click || (state.recording && state.mode === "notes")) tone(1400, 0.03, "square", 0.07);
     if (state.muted) return;
     ROWS.forEach(([id]) => { if (state.drums[id][drum]) hitSound(id); });
-    if (ev && ev.tone) {
-      const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
-      if (freq && state.orch !== "beep") sectionTone(freq, Math.max(0.28, state.noteLen), state.orch, state.dyn);
-      else if (freq) tone(freq, state.noteLen, state.wave, 0.22 * side("notes"));
-      if (state.bass && state.drums.kick[drum]) tone((freq || 130.8) / 2, 0.34, "sine", 0.34 * side("notes"));
-    } else if (state.bass && state.drums.kick[drum]) tone(65.4, 0.34, "sine", 0.34 * side("notes"));
+    const playWritten = (freq, beats, art, dyn) => {
+      if (!freq) return;
+      const steps = ["pp", "p", "mf", "f", "ff"];
+      let use = dyn || state.dyn || "mf";
+      if (art === "accent") {
+        const i = steps.indexOf(use);
+        use = steps[Math.min(4, Math.max(0, i) + 1)] || "f";
+      }
+      let hold = (60 / Math.max(70, state.song.bpm || 96)) * Math.max(0.35, beats || 1);
+      if (state.song.meter === "6/8") hold *= 0.5;
+      if (art === "staccato") hold *= 0.4;
+      if (state.orch !== "beep") sectionTone(freq, hold, state.orch, use);
+      else tone(freq, hold, state.wave, (art === "accent" ? 0.32 : 0.22) * side("notes"));
+    };
+    window.clearTimeout(state.eighthTimer);
+    if (ev && ev.eighths && !ev.tiedFrom) {
+      if (ev.dyn) state.dyn = ev.dyn;
+      playWritten(Song.freqOf ? Song.freqOf(ev.eighths[0], state.song.key) : ev.freq, 0.5, ev.art, ev.dyn || state.dyn);
+      const wait = gapAfter(step) / 2;
+      state.eighthTimer = window.setTimeout(() => {
+        playWritten(Song.freqOf ? Song.freqOf(ev.eighths[1], state.song.key) : null, 0.5, "", ev.dyn || state.dyn);
+      }, wait);
+    } else if (ev && !ev.tiedFrom && (ev.freq || ev.pitch)) {
+      if (ev.dyn) state.dyn = ev.dyn;
+      const freq = ev.freq || (Song.freqOf ? Song.freqOf(ev.pitch, state.song.key) : null);
+      playWritten(freq, ev.durBeats || 1, ev.art, ev.dyn || state.dyn);
+      (ev.chord || []).forEach((id) => playWritten(Song.freqOf(id, state.song.key), ev.durBeats || 1, ev.art, ev.dyn || state.dyn));
+    }
+    if (ev && state.bass && state.drums.kick[drum]) tone((ev.freq || 130.8) / 2, 0.34, "sine", 0.34 * side("notes"));
   }
 
   function gapAfter(step) {
@@ -966,6 +1068,7 @@
   function stop() {
     state.playing = false;
     window.clearTimeout(state.timer);
+    window.clearTimeout(state.eighthTimer);
     window.clearInterval(state.timer);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", "Play");
@@ -1990,6 +2093,7 @@
   paintAlong();
   paintMeters();
   paintInks();
+  paintKeypad();
   $("add-bar").addEventListener("click", () => {
     const before = state.song.measures.length;
     Song.addMeasure(state.song);

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.11.0** · 2026-09-27 · channel **live**
+
+A score keypad: quarter, eighths, tie, rest, chord, short, accent, and hold. Keys C, G, D, F, and B-flat. Written dynamics play through the band. This is a school score, not Sibelius.
+
+## Earlier
+
 **Chip: MU 2.10.0** · 2026-09-27 · channel **live**
 
 Strings, brass, and winds play the song with soft-to-loud dynamics. Conduct the band by choosing Down, In, Out, or Up, or by drawing the beat. The avatar shows the move. A bigger gesture is louder.
