@@ -52,7 +52,14 @@ body {
 }
 input, textarea { user-select: text; }
 button, input, select, textarea { font: inherit; color: inherit; }
-button { cursor: pointer; }
+:focus-visible {
+  outline: 2px solid var(--brass);
+  outline-offset: 2px;
+}
+.tool, .mini, .menu-btn, .swatch, .layer-btn, .obj, #menu button, #dialog-ok, #dialog-cancel {
+  transition: background-color 150ms cubic-bezier(0.22, 1, 0.36, 1), border-color 150ms cubic-bezier(0.22, 1, 0.36, 1), color 150ms cubic-bezier(0.22, 1, 0.36, 1), transform 80ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tool:active, .mini:active, #menu button:active, #dialog-ok:active { transform: scale(0.98); }
 .sr {
   position: absolute;
   width: 1px;
@@ -175,6 +182,11 @@ button { cursor: pointer; }
 }
 .tool:hover { background: var(--raised); }
 .tool[aria-pressed="true"]:hover { background: var(--brass-2); }
+#tools.can-scroll {
+  -webkit-mask-image: linear-gradient(#000 0, #000 calc(100% - 18px), transparent);
+  mask-image: linear-gradient(#000 0, #000 calc(100% - 18px), transparent);
+}
+.tool[aria-pressed="true"]:hover { background: var(--brass-2); }
 
 #stage-wrap {
   grid-area: stage;
@@ -260,29 +272,40 @@ input[type="color"] {
 }
 .swatches { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
 .swatch {
-  width: 28px;
-  height: 28px;
-  min-height: 28px;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
   padding: 0;
   border-radius: 50%;
   border: 1px solid var(--line);
 }
+.swatch.on { box-shadow: 0 0 0 2px var(--ink-2), 0 0 0 4px var(--brass); }
+.actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.actions.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .mini {
   flex: 1;
   border: 1px solid var(--line);
-  min-height: 36px;
+  min-height: 40px;
   background: var(--ink);
+  white-space: nowrap;
+  padding: 0 6px;
 }
 .mini:hover { border-color: var(--brass); }
 .layer {
   display: grid;
-  grid-template-columns: 28px 28px 1fr auto;
+  grid-template-columns: 40px 40px minmax(0, 1fr) 40px;
   gap: 4px;
   align-items: center;
   margin-bottom: 4px;
 }
 .layer.on { background: var(--raised); border-radius: 8px; }
-.layer button { min-height: 36px; }
+.layer button { min-height: 40px; }
+.layer-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .objs { display: flex; flex-direction: column; gap: 2px; margin: 4px 0 8px; max-height: 200px; overflow: auto; }
 .obj {
   text-align: left;
@@ -309,17 +332,25 @@ input[type="color"] {
   font-size: 12px;
 }
 #hint { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-#coords { white-space: nowrap; color: var(--fg); }
+#coords { white-space: nowrap; color: var(--fg); font-variant-numeric: tabular-nums; }
 
 #menu {
   position: fixed;
   z-index: 20;
-  min-width: 220px;
+  min-width: min(240px, calc(100vw - 16px));
+  max-height: min(70vh, 480px);
+  overflow: auto;
   background: var(--ink-2);
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 6px;
   box-shadow: var(--shadow);
+  transform-origin: top left;
+  animation: menu-in 150ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes menu-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: none; }
 }
 #menu button {
   width: 100%;
@@ -334,7 +365,7 @@ input[type="color"] {
   gap: 16px;
 }
 #menu button:hover { background: var(--raised); }
-#menu kbd { color: var(--muted); font-family: var(--sans); }
+#menu kbd { color: var(--muted); font-family: var(--sans); font-size: 12px; }
 
 #dialog {
   position: fixed;
@@ -350,9 +381,14 @@ input[type="color"] {
   width: min(420px, 100%);
   background: var(--ink-2);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: 24px;
   padding: 16px;
   box-shadow: var(--shadow);
+  animation: dialog-in 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: none; }
 }
 #dialog h2 { font-family: var(--serif); margin: 0 0 12px; font-size: 26px; }
 #dialog-body label { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; color: var(--muted); }
@@ -403,6 +439,10 @@ input[type="color"] {
     overflow-x: auto;
     overflow-y: hidden;
   }
+  #tools.can-scroll {
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 22px), transparent);
+  }
   .tool { width: 44px; height: 44px; flex: 0 0 44px; }
   #inspector { overflow: auto; }
 }
@@ -421,5 +461,5 @@ input[type="color"] {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * { scroll-behavior: auto; transition: none !important; }
+  *, *::before, *::after { scroll-behavior: auto; transition: none !important; animation: none !important; }
 }

@@ -256,7 +256,9 @@ function mutate(fn) {
     saveSoon();
   }
   renderAll();
-  if (!inspector.contains(document.activeElement)) renderInspector();
+  const active = document.activeElement;
+  const typing = active && inspector.contains(active) && /^(input|textarea|select)$/i.test(active.tagName);
+  if (!typing) renderInspector();
 }
 function beginChange() {
   if (!state.before) state.before = snapshot();
@@ -1939,9 +1941,9 @@ function setTool(id) {
 function renderChrome() {
   menusEl.innerHTML = "";
   const menus = {
-    File: [["New page", newDoc], ["Open SVG…", openSvg], ["Save SVG", saveSvg], ["Export PNG", exportPng]],
-    Edit: [["Undo", undo], ["Redo", redo], ["Cut", cut], ["Copy", copy], ["Paste", paste], ["Duplicate", duplicate], ["Delete", del], ["Select all", selectAll]],
-    Object: [["Group", group], ["Ungroup", ungroup], ["Flip horizontal", () => flipSel("h")], ["Flip vertical", () => flipSel("v")], ["Raise", () => orderZ("raise")], ["Lower", () => orderZ("lower")], ["To front", () => orderZ("front")], ["To back", () => orderZ("back")]],
+    File: [["New page", newDoc], ["Open SVG…", openSvg, "Ctrl O"], ["Save SVG", saveSvg, "Ctrl S"], ["Export PNG", exportPng, "Ctrl E"]],
+    Edit: [["Undo", undo, "Ctrl Z"], ["Redo", redo, "Ctrl Y"], ["Cut", cut, "Ctrl X"], ["Copy", copy, "Ctrl C"], ["Paste", paste, "Ctrl V"], ["Duplicate", duplicate, "Ctrl D"], ["Delete", del, "Del"], ["Select all", selectAll, "Ctrl A"]],
+    Object: [["Group", group, "Ctrl G"], ["Ungroup", ungroup, "Ctrl Shift G"], ["Flip horizontal", () => flipSel("h")], ["Flip vertical", () => flipSel("v")], ["Raise", () => orderZ("raise"), "["], ["Lower", () => orderZ("lower"), "]"], ["To front", () => orderZ("front"), "Shift ]"], ["To back", () => orderZ("back"), "Shift ["]],
     Path: [
       ["Union", () => boolOp("unite")],
       ["Difference", () => boolOp("subtract")],
@@ -1970,10 +1972,15 @@ function renderChrome() {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const rect = btn.getBoundingClientRect();
-      menuEl.innerHTML = items.map((item, i) => `<button type="button" data-i="${i}">${item[0]}</button>`).join("");
-      menuEl.style.left = `${rect.left}px`;
-      menuEl.style.top = `${rect.bottom + 4}px`;
+      menuEl.innerHTML = items.map((item, i) => `<button type="button" data-i="${i}"><span>${item[0]}</span>${item[2] ? `<kbd>${item[2]}</kbd>` : ""}</button>`).join("");
       menuEl.hidden = false;
+      const box = menuEl.getBoundingClientRect();
+      let left = rect.left;
+      let top = rect.bottom + 4;
+      if (left + box.width > innerWidth - 8) left = Math.max(8, innerWidth - box.width - 8);
+      if (top + box.height > innerHeight - 8) top = Math.max(8, rect.top - box.height - 4);
+      menuEl.style.left = `${left}px`;
+      menuEl.style.top = `${top}px`;
       menuEl.onclick = (ev) => {
         const b = ev.target.closest("button");
         if (!b) return;
@@ -2014,11 +2021,12 @@ function renderInspector() {
   const stroke = one ? one.stroke : paint.stroke;
   const fillSolid = typeof fill === "string" ? fill : fill?.stops?.[0]?.c || "#1c1915";
   const strokeSolid = typeof stroke === "string" ? stroke : "#1c1915";
+  const activeFill = typeof fill === "string" ? fill.toLowerCase() : "";
   const sw = one?.sw ?? paint.sw;
   const b = items.length ? unionBBox(items.map(itemBBox)) : null;
   inspector.innerHTML = `
     <h3>${items.length ? `${items.length} selected` : "Style"}</h3>
-    <div class="swatches">${SWATCHES.map((c) => `<button type="button" class="swatch" data-swatch="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div>
+    <div class="swatches">${SWATCHES.map((c) => `<button type="button" class="swatch${activeFill === c ? " on" : ""}" data-swatch="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div>
     <div class="row">
       <label>Fill <input data-field="fill" type="color" value="${esc(fillSolid && fillSolid !== "none" ? fillSolid : "#1c1915")}"></label>
       <button type="button" class="mini" data-act="no-fill">None</button>
@@ -2072,24 +2080,20 @@ function renderInspector() {
       <label>H <input data-field="h" type="number" min="1" step="1" value="${Math.round(b.h)}" ${items.length !== 1 ? "disabled" : ""}></label>
     </div>` : ""}
     <h3>Arrange</h3>
-    <div class="row">
+    <div class="actions">
       <button type="button" class="mini" data-align="left">Left</button>
       <button type="button" class="mini" data-align="cx">Center</button>
       <button type="button" class="mini" data-align="right">Right</button>
-    </div>
-    <div class="row">
       <button type="button" class="mini" data-align="top">Top</button>
       <button type="button" class="mini" data-align="cy">Middle</button>
       <button type="button" class="mini" data-align="bottom">Bottom</button>
+      <button type="button" class="mini" data-align="page-left">To left</button>
+      <button type="button" class="mini" data-align="page-cx">To center</button>
+      <button type="button" class="mini" data-align="page-right">To right</button>
     </div>
-    <div class="row">
+    <div class="actions two">
       <button type="button" class="mini" data-dist="x">Distribute H</button>
       <button type="button" class="mini" data-dist="y">Distribute V</button>
-    </div>
-    <div class="row">
-      <button type="button" class="mini" data-align="page-left">Page left</button>
-      <button type="button" class="mini" data-align="page-cx">Page center</button>
-      <button type="button" class="mini" data-align="page-right">Page right</button>
     </div>
     ${b ? `<p class="check">${Math.round(b.x)}, ${Math.round(b.y)} · ${Math.round(b.w)} × ${Math.round(b.h)}</p>` : ""}
     <h3>Page</h3>
@@ -2102,10 +2106,10 @@ function renderInspector() {
     <label class="check"><input data-page="snap" type="checkbox" ${state.doc.snap ? "checked" : ""}> Snap to grid, nodes, guides</label>
     <h3>Layers</h3>
     ${state.doc.layers.map((l) => `<div class="layer ${l.id === state.doc.active ? "on" : ""}">
-      <button type="button" class="layer-btn" data-layer-eye="${l.id}" aria-label="Show">${l.visible ? "●" : "○"}</button>
-      <button type="button" class="layer-btn" data-layer-lock="${l.id}" aria-label="Lock">${l.locked ? "▮" : "▯"}</button>
+      <button type="button" class="layer-btn" data-layer-eye="${l.id}" aria-label="${l.visible ? "Hide layer" : "Show layer"}" aria-pressed="${l.visible}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>${l.visible ? "" : `<path d="M4 5l16 14"/>`}</svg></button>
+      <button type="button" class="layer-btn" data-layer-lock="${l.id}" aria-label="${l.locked ? "Unlock layer" : "Lock layer"}" aria-pressed="${l.locked}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${l.locked ? "M8 11V8a4 4 0 0 1 8 0v3M6 11h12v9H6z" : "M9 11V8a3 3 0 0 1 5.5-1.5M6 11h12v9H6z"}"/></svg></button>
       <button type="button" class="layer-btn" data-layer-pick="${l.id}">${esc(l.name)}</button>
-      <button type="button" class="layer-btn" data-layer-up="${l.id}" aria-label="Raise layer">↑</button>
+      <button type="button" class="layer-btn" data-layer-up="${l.id}" aria-label="Raise layer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button>
     </div>`).join("")}
     <div class="row">
       <button type="button" class="mini" data-act="add-layer">Add layer</button>
@@ -2291,6 +2295,11 @@ function rulerDown(axis, e) {
   state.gesture = { type: "guide", index: state.guides.length - 1 };
   renderOverlay();
 }
+function markScroll() {
+  for (const el of [toolsEl, menusEl]) {
+    el.classList.toggle("can-scroll", el.scrollWidth > el.clientWidth + 4 || el.scrollHeight > el.clientHeight + 4);
+  }
+}
 function boot() {
   let loaded = null;
   try { loaded = JSON.parse(localStorage.getItem(SAVE_KEY) || "null"); } catch { loaded = null; }
@@ -2331,8 +2340,8 @@ function boot() {
     reader.onload = () => importSvgText(String(reader.result || ""));
     reader.readAsText(file);
   });
-  window.addEventListener("resize", () => { drawRulers(); });
-  requestAnimationFrame(() => fitPage());
+  window.addEventListener("resize", () => { drawRulers(); markScroll(); });
+  requestAnimationFrame(() => { fitPage(); markScroll(); });
   renderInspector();
   hintEl.textContent = HINTS.select;
 }
