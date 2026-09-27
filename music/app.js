@@ -1006,9 +1006,6 @@
           : (ev && ev.pitch ? TEACH[ev.pitch] || note : "Rest. Count it. Nothing plays.");
       }
     }
-    if (state.playing && step === 0 && !state.recording && !state.turn) {
-      $("lesson").textContent = "Beat 1 is the strong beat. Tap a pad on the flash.";
-    }
     if (state.showing) {
       const bar = $("show-bar");
       if (bar) bar.style.width = Math.round(((step + 1) / songLen()) * 100) + "%";
@@ -1465,7 +1462,7 @@
       lights: "This picture follows the song. Press Play to see it move.",
       band: "Choose Strings. Then Conduct. Down means beat 1.",
     };
-    line.textContent = state.playing ? "Press the square to stop." : (text[mode] || text.notes);
+    line.textContent = state.playing ? "Press Stop." : (text[mode] || text.notes);
   }
   function setMode(mode) {
     state.mode = mode;
@@ -1480,6 +1477,7 @@
       btn.setAttribute("aria-pressed", String(mode === name));
     });
     document.body.classList.toggle("is-score", mode === "notes");
+    document.body.classList.toggle("is-drums", mode === "drums");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
     sayHow(mode);

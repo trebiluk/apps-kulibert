@@ -10,7 +10,7 @@
     { id: "G", abc: "G", tone: "G4", label: "G" },
     { id: "A", abc: "A", tone: "A4", label: "A" },
     { id: "B", abc: "B", tone: "B4", label: "B" },
-    { id: "c", abc: "c", tone: "C5", label: "C high" },
+    { id: "c", abc: "c", tone: "C5", label: "Hi C" },
   ];
   var METERS = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 };
   var BEATS = 4;

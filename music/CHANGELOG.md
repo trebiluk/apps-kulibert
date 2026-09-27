@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.17.0** · 2026-09-27 · channel **live**
+
+Beats opens on the pads. The score no longer shows a chopped picture. The line says Press Stop.
+
+## Earlier
+
 **Chip: MU 2.16.0** · 2026-09-27 · channel **live**
 
 The score opens on the staff, the letters, and Play. Everything else is inside More.
