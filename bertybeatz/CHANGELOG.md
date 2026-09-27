@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.9.5** · 2026-09-27 · channel **live**
+
+Lights and Score, opened from the hub, stay in the hub and land in MusicLab. The address bar follows.
+
+## Earlier
+
 **Chip: BZ 1.9.4** · 2026-09-26 · channel **live**
 
 Surprise can be undone. If the save breaks, the last copy is still there. The page says Export when it cannot save.

@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.9.4") return;
-  window.__BERTYBEATZ__ = "1.9.4";
+  if (window.__BERTYBEATZ__ === "1.9.5") return;
+  window.__BERTYBEATZ__ = "1.9.5";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.9.4";
+  const CHIP = "BZ 1.9.5";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -1765,16 +1765,20 @@
 
   function sendSong(where) {
     const Song = window.KulibertSong;
-    if (!Song) {
-      window.location.href = where;
-      return;
+    if (Song) {
+      const song = Song.fromBeat({ name: state.name, bpm: state.bpm, steps: state.steps });
+      Song.writeBridge("bertybeatz", song, { name: state.name, bpm: state.bpm, steps: state.steps });
     }
-    const song = Song.fromBeat({ name: state.name, bpm: state.bpm, steps: state.steps });
-    Song.writeBridge("bertybeatz", song, { name: state.name, bpm: state.bpm, steps: state.steps });
+    if (window.parent !== window) {
+      try {
+        window.parent.postMessage({ type: "tech-room-open", href: where }, window.location.origin);
+        return;
+      } catch (err) { /* fall through */ }
+    }
     window.location.href = where;
   }
-  $("score-btn").addEventListener("click", () => sendSong("/bertyscore/?from=bridge"));
-  $("lights-btn").addEventListener("click", () => sendSong("/visualizer/?from=bridge"));
+  $("score-btn").addEventListener("click", () => sendSong("/music/?board=song"));
+  $("lights-btn").addEventListener("click", () => sendSong("/music/?board=lights"));
 
   function songLine(fitted) {
     return fitted
