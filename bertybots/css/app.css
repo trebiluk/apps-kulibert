@@ -515,7 +515,6 @@ body[data-coach="1"] #rank,
 body[data-coach="1"] #heat,
 body[data-coach="1"] #btn-fill,
 body[data-coach="1"] #btn-settings,
-body[data-coach="1"] #btn-slow,
 body[data-coach="1"] .status > span:not(#status-hint) { display: none !important; }
 body[data-coach="1"] #status-hint {
   flex: 1;

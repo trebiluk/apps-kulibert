@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.21 — Next job is one click — 2026-09-27
+
+- Next job opens Job 2 on the first click. The clear card closes when you pick a job.
+- Slow stays on the top row. The footer stays a short line.
+
 ## 0.19.20 — Keys — 2026-09-27
 
 - 1–5 pick parts, E erases, M moves, Space plays, S is slow, Esc stops, Z undoes. The key sits on the button.

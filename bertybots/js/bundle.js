@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.20 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.21 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.20";
+const APP_VERSION = "0.19.21";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.20";
+const APP_CHIP = "BB 0.19.21";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -756,7 +756,7 @@ function boot() {
     lineEl.textContent = text;
     const menuGuide = document.getElementById("menu-guide");
     if (menuGuide) menuGuide.textContent = text;
-    if (hintEl) hintEl.textContent = lastReadout || text;
+    if (hintEl) hintEl.textContent = statusLine();
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;
   }
@@ -1118,15 +1118,22 @@ function boot() {
     return "";
   }
 
+  function statusLine() {
+    if (winEl && winEl.classList.contains("show")) return "Parked.";
+    if (lastReadout) return lastReadout;
+    const line = coachLine();
+    if (line) return line;
+    if (JOBS.some((j) => j.id === courseId) && levelDone(courseId)) return "Clear.";
+    if (JOBS.some((j) => j.id === courseId)) return "Build on the shop floor.";
+    return guideFor(autoStep());
+  }
+
   function applyCoach() {
     const showingWin = winEl && winEl.classList.contains("show");
     const building = JOBS.some((j) => j.id === courseId) && (!levelDone(courseId) || showingWin);
     document.body.dataset.coach = building ? "1" : "0";
-    const line = coachLine();
     const hint = document.getElementById("status-hint");
-    if (winEl && winEl.classList.contains("show")) {
-      if (hint) hint.textContent = "Parked.";
-    } else if (line && hint) hint.textContent = lastReadout || line;
+    if (hint) hint.textContent = statusLine();
     const pip = document.getElementById("coach-play");
     const pose = wheelPose();
     let ready = pose === "ready";
@@ -1710,7 +1717,7 @@ function boot() {
   function crateReadout() {
     if (won) return "Parked.";
     if (courseId === "open" && wheelPose() !== "ready") {
-      return "You tested it. Drag the wheel behind the crate.";
+      return "Drag the wheel behind the crate.";
     }
     if (!trail.length) return "No trail. Test needs a crate in motion.";
     const last = trail[trail.length - 1];
@@ -3312,6 +3319,8 @@ function boot() {
       refreshPath();
       return;
     }
+    if (winEl) winEl.classList.remove("show");
+    clearTour = false;
     const custom = classJobs().find((job) => job.id === id);
     if (custom) {
       if (playing) stopPlay();
@@ -3374,11 +3383,6 @@ function boot() {
     const winSkip = document.getElementById("win-skip");
     if (winNext) {
       winNext.addEventListener("click", async () => {
-        if (clearTour && clearBeat < 2) {
-          clearBeat += 1;
-          paintClear();
-          return;
-        }
         await goNextJob();
       });
     }
@@ -3576,7 +3580,7 @@ function boot() {
     if (exportBtn) {
       exportBtn.addEventListener("click", () => {
         if (!allClear() || courseId !== "editor") {
-          toast("Export unlocks in Design, after Job 10.");
+          toast("Export unlocks in Design, after the last build job.");
           return;
         }
         doc.title = sanitizeTitle(document.getElementById("title").value || doc.title);
