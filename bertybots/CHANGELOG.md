@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.26 — Look at the goal — 2026-09-27
+
+- The GOAL button jumps the view to the stripes. The job number, or H, brings the crate back. G does the look.
+- The job name sits next to the numbers.
+
 ## 0.19.25 — Closer — 2026-09-27
 
 - The camera sits on the crate, not the empty shop.

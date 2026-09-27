@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.25 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.26 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.25";
+const APP_VERSION = "0.19.26";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.25";
+const APP_CHIP = "BB 0.19.26";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -559,6 +559,7 @@ function boot() {
   let fpsT = 0;
   let lastDraw = 0;
   let panning = null;
+  let goalCue = null;
   let courseId = "open";
   let everTested = false;
   let pinnedStep = null;
@@ -1292,6 +1293,11 @@ function boot() {
         btn.append(num, mark);
         strip.append(btn);
       });
+      const name = document.createElement("span");
+      name.className = "job-name";
+      const curJob = JOBS.find((job) => job.id === courseId);
+      name.textContent = curJob ? curJob.label : (courseId === "editor" ? "Design" : "");
+      strip.append(name);
       if (allClear()) {
         const design = document.createElement("button");
         design.type = "button";
@@ -1736,6 +1742,8 @@ function boot() {
     playing = true;
     won = false;
     winT = 0;
+    view.panx = 0;
+    view.pany = 0;
     trail = [];
     lastTrail = [];
     lastMiss = null;
@@ -2726,6 +2734,7 @@ function boot() {
   }
 
   function drawGoalCue() {
+    goalCue = null;
     const drop = doc.level && doc.level.drop;
     if (!drop || (winEl && winEl.classList.contains("show"))) return;
     const cx = drop.x + drop.w / 2;
@@ -2733,35 +2742,58 @@ function boot() {
     const sx = wx(cx);
     const sy = wy(cy);
     const dpr = view.dpr || 1;
-    const m = 78 * dpr;
-    if (sx >= m && sx <= canvas.width - m && sy >= m && sy <= canvas.height - m) return;
-    const ax = Math.max(m, Math.min(canvas.width - m, sx));
-    const ay = Math.max(m, Math.min(canvas.height - m, sy));
-    const ang = Math.atan2(sy - ay, sx - ax);
+    const pad = 28 * dpr;
+    if (sx >= pad && sx <= canvas.width - pad && sy >= pad && sy <= canvas.height - pad) return;
+    const w = 104 * dpr;
+    const h = 40 * dpr;
+    const edge = 12 * dpr;
+    const ax = Math.max(edge, Math.min(canvas.width - w - edge, sx > canvas.width * 0.5 ? canvas.width - w - edge : edge));
+    const ay = Math.max(edge, Math.min(canvas.height - h - edge, sy - h / 2));
+    goalCue = { x: ax, y: ay, w, h };
     ctx.save();
-    ctx.translate(ax, ay);
-    ctx.rotate(ang);
+    roundBubble(ax, ay, w, h, 12 * dpr);
     ctx.fillStyle = "#f0c000";
-    ctx.strokeStyle = "#1a1400";
+    ctx.fill();
     ctx.lineWidth = 2;
+    ctx.strokeStyle = "#1a1400";
+    ctx.stroke();
+    const pointingRight = sx > canvas.width * 0.5;
+    ctx.fillStyle = "#1a1400";
     ctx.beginPath();
-    ctx.moveTo(14 * dpr, 0);
-    ctx.lineTo(-12 * dpr, 10 * dpr);
-    ctx.lineTo(-12 * dpr, -10 * dpr);
+    if (pointingRight) {
+      ctx.moveTo(ax + w - 16 * dpr, ay + h / 2);
+      ctx.lineTo(ax + w - 28 * dpr, ay + 12 * dpr);
+      ctx.lineTo(ax + w - 28 * dpr, ay + h - 12 * dpr);
+    } else {
+      ctx.moveTo(ax + 16 * dpr, ay + h / 2);
+      ctx.lineTo(ax + 28 * dpr, ay + 12 * dpr);
+      ctx.lineTo(ax + 28 * dpr, ay + h - 12 * dpr);
+    }
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
-    ctx.restore();
-    const inward = sx > canvas.width * 0.5 ? -1 : 1;
-    const lx = ax + inward * 22 * dpr;
-    ctx.font = `800 ${Math.round(14 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
-    ctx.textAlign = inward < 0 ? "right" : "left";
+    ctx.font = `800 ${Math.round(15 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = "#1a1400";
-    ctx.strokeText("GOAL", lx, ay);
-    ctx.fillStyle = "#f0c000";
-    ctx.fillText("GOAL", lx, ay);
+    ctx.fillText("GOAL", ax + w / 2 + (pointingRight ? -8 : 8) * dpr, ay + h / 2 + 1);
+    ctx.restore();
+  }
+
+  function hitGoalCue(ev) {
+    if (!goalCue) return false;
+    const r = canvas.getBoundingClientRect();
+    const x = (ev.clientX - r.left) * (canvas.width / Math.max(1, r.width));
+    const y = (ev.clientY - r.top) * (canvas.height / Math.max(1, r.height));
+    return x >= goalCue.x && x <= goalCue.x + goalCue.w && y >= goalCue.y && y <= goalCue.y + goalCue.h;
+  }
+
+  function lookAtDrop() {
+    const drop = doc.level && doc.level.drop;
+    if (!drop || !view.scale) return;
+    const x = drop.x + drop.w / 2;
+    const y = drop.y + Math.min(drop.h, 1.6) * 0.5;
+    view.panx = canvas.width * 0.08 + (view.fx - x) * view.scale;
+    view.pany = (view.fy - y) * view.scale;
+    applyCam(false);
   }
 
   function normRect(x1, y1, x2, y2) {
@@ -3183,6 +3215,11 @@ function boot() {
     const pt = worldFromEvent(ev);
     hover = pt;
 
+    if (hitGoalCue(ev)) {
+      lookAtDrop();
+      return;
+    }
+
     if (tool === "tape") {
       if (!tapeA || tapeB) { tapeA = { x: pt.x, y: pt.y }; tapeB = null; }
       else { tapeB = { x: pt.x, y: pt.y }; scoreTape(); }
@@ -3278,7 +3315,8 @@ function boot() {
     const pt = over ? worldFromEvent(ev) : hover;
     if (over) {
       hover = pt;
-      if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !playing) canvas.style.cursor = "grab";
+      if (hitGoalCue(ev)) canvas.style.cursor = "pointer";
+      else if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !playing) canvas.style.cursor = "grab";
       else if (!drag) canvas.style.cursor = "crosshair";
     }
     if (!drag || playing) return;
@@ -3656,6 +3694,10 @@ function boot() {
         }
         const hit = ev.target.closest("[data-course]");
         if (!hit || hit.disabled) return;
+        if (hit.dataset.course === courseId) {
+          resetView();
+          return;
+        }
         loadBuiltin(hit.dataset.course);
       });
     }
@@ -3771,6 +3813,8 @@ function boot() {
         refreshMeta();
         return;
       }
+      if (key === "g") { lookAtDrop(); return; }
+      if (key === "h") { resetView(); return; }
       if (key === "z") { undo(); return; }
       if (key === "t" && isMeasure()) setTool("tape");
       if (ev.key === "Escape") {

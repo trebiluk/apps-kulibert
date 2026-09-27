@@ -111,6 +111,14 @@ html[data-big="1"] .menu-card { font-size: 17px; }
 .job-plate.here { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1a1400; }
 .job-plate.now.here { box-shadow: 0 0 0 2px #1a1400, 0 0 0 4px var(--yellow); }
 .job-plate.test { box-shadow: 0 0 0 2px var(--yellow); }
+.job-name {
+  margin-left: 4px;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--paper);
+  white-space: nowrap;
+}
 .glyph { display: block; width: 22px; height: 22px; }
 .hud-play .lbl {
   position: absolute;
