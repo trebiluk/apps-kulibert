@@ -597,7 +597,8 @@ function niceStep(unit) {
 function fitPage() {
   const rect = stage.getBoundingClientRect();
   if (rect.width < 20) return;
-  const z = Math.min((rect.width - 64) / state.doc.w, (rect.height - 64) / state.doc.h);
+  const pad = Math.min(48, Math.max(12, Math.min(rect.width, rect.height) * 0.08));
+  const z = Math.min((rect.width - pad * 2) / state.doc.w, (rect.height - pad * 2) / state.doc.h);
   state.view.z = Math.max(0.05, Math.min(8, z));
   state.view.x = (rect.width - state.doc.w * state.view.z) / 2;
   state.view.y = (rect.height - state.doc.h * state.view.z) / 2;
@@ -2298,7 +2299,10 @@ function boot() {
     state.guides = loaded.guides || [];
     seq = loaded.seq || 1;
   } else state.doc = blankDoc();
-  if (new URLSearchParams(location.search).get("hub") === "1") $("paint-link").hidden = false;
+  if (new URLSearchParams(location.search).get("hub") === "1") {
+    document.body.classList.add("hub");
+    $("paint-link").hidden = false;
+  }
   docName.value = state.doc.name;
   docName.addEventListener("change", () => { state.doc.name = docName.value || "Untitled"; saveSoon(); });
   renderChrome();
