@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-27-hub-tw"/>
+<meta name="tech-room-rev" content="2026-09-27-hub-tw-2"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1504,7 +1504,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-27-hub-tw</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-27-hub-tw-2</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/drawin/">Drawin'</a> <strong>DS 0.2.0</strong> — vector pen, nodes, and booleans. Paint is still on the same door.</p>
@@ -1513,7 +1513,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.10.0</strong> — ThrowIt Cup, six castles, score code.</p>
           <ul id="hub-log">
-            <li>TW Connected on Visualizer, BertyBeatz, and Berty Run. Scores and settings stay on this Chromebook.</li>
+            <li>TW Connected on every app that keeps progress. Sprocket and HouseKit do not. Scores and settings stay on this Chromebook.</li>
             <li>One title on the card. Sort, filter, and theme are three controls. Phone shows two full rows and the top of a third.</li>
             <li>Layout: the title and search share one bar on a Chromebook. Filters stay on one line. Icons fill the tile.</li>
             <li>SpanCraft SC 1.3.26 · phone joints stay clear. Spire Lab SL 1.3.25 · a miss stays on that job.</li>
@@ -1808,6 +1808,19 @@
       var MAX = 18;
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
+      (function paintTw() {
+        var skip = { sprocket: 1, housekit: 1, den: 1, bistro: 1, debugzy: 1, techworks: 1 };
+        if (!appBoard) return;
+        appBoard.querySelectorAll("a.tile[data-id]").forEach(function (tile) {
+          var id = tile.getAttribute("data-id");
+          if (skip[id] || tile.querySelector(".tw-on")) return;
+          var mark = document.createElement("span");
+          mark.className = "tw-on";
+          mark.title = "In the Tech Room. Scores and settings stay on this Chromebook.";
+          mark.innerHTML = '<img src="/berty-run/favicon.svg" alt="" width="14" height="14"/>TW Connected';
+          tile.appendChild(mark);
+        });
+      })();
       var hubSort = "alpha";
       var hubFilter = "all";
       try {
