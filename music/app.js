@@ -1459,8 +1459,8 @@
     const text = {
       notes: "Tap a letter. Then press Play.",
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
-      lights: "This picture follows the song. Press Play to see it move.",
-      band: "Choose Strings. Then Conduct. Down means beat 1.",
+      lights: "Tap a picture. Then press Play.",
+      band: "Press Conduct. Down is beat 1.",
     };
     line.textContent = state.playing ? "Press Stop." : (text[mode] || text.notes);
   }
@@ -2586,6 +2586,7 @@
           paintLights();
           paintLooks();
           keep();
+          scenes.querySelectorAll(".btn").forEach((btn) => btn.classList.toggle("on", btn === b));
           $("lesson").textContent = name + " is on. Saved.";
         });
         scenes.appendChild(b);

@@ -7,13 +7,13 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.17.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2.18.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.17.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.18.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -106,46 +106,49 @@
         </details>
       </div>
       <div id="band-pane">
-        <div id="band-picks" class="looks" aria-label="Instrument"></div>
-        <p id="band-start" class="hint"></p>
-        <p id="band-concert" class="hint"></p>
-        <div id="band-notes" class="keys" aria-label="First five notes"></div>
-        <p id="band-finger" class="lesson">Tap a letter. That is the fingering.</p>
-        <button type="button" id="band-warm" class="btn">Warm-up</button>
-        <p class="shelf">Orchestra</p>
-        <div id="orch" class="shelf-songs" aria-label="Orchestra"></div>
-        <div id="dyn" class="shelf-songs" aria-label="Dynamics"></div>
         <div class="podium">
           <div id="avatar" class="avatar idle dyn-mf" aria-hidden="true"><i class="head"></i><i class="body"></i><i class="arm"></i></div>
           <p id="conduct-ask">Beat 1 wants Down.</p>
         </div>
         <div id="gestures" class="shelf-songs" aria-label="Gestures"></div>
-        <div id="baton" class="baton">Draw Down, In, Out, or Up</div>
         <button type="button" id="conduct-btn" class="btn">Conduct the band</button>
-        <p class="hint">Sit tall. Horn down while someone talks. Play when you see beat 1. A bigger move is louder.</p>
+        <details class="more-box">
+          <summary>Instruments</summary>
+          <div id="band-picks" class="looks" aria-label="Instrument"></div>
+          <p id="band-start" class="hint"></p>
+          <p id="band-concert" class="hint"></p>
+          <div id="band-notes" class="keys" aria-label="First five notes"></div>
+          <p id="band-finger" class="lesson">Tap a letter. That is the fingering.</p>
+          <button type="button" id="band-warm" class="btn">Warm-up</button>
+          <p class="shelf">Orchestra</p>
+          <div id="orch" class="shelf-songs" aria-label="Orchestra"></div>
+          <div id="dyn" class="shelf-songs" aria-label="Dynamics"></div>
+          <div id="baton" class="baton">Draw Down, In, Out, or Up</div>
+          <p class="hint">Sit tall. Horn down while someone talks. A bigger move is louder.</p>
+        </details>
       </div>
       <div id="lights-pane">
-        <p class="hint">Stack up to three looks. Each one keeps its own color.</p>
-        <label class="stack">1 <select id="layer-0" aria-label="Layer 1"></select><select id="ink-0" aria-label="Layer 1 color"></select></label>
-        <label class="stack">2 <select id="layer-1" aria-label="Layer 2"></select><select id="ink-1" aria-label="Layer 2 color"></select></label>
-        <label class="stack">3 <select id="layer-2" aria-label="Layer 3"></select><select id="ink-2" aria-label="Layer 3 color"></select></label>
-        <button type="button" id="rgb-btn" class="btn" aria-pressed="false">RGB cycle</button>
-        <label class="stack">Wall <select id="wall" aria-label="Wallpaper"></select></label>
-        <label class="stack">Frame <select id="frame" aria-label="Frame"></select></label>
-        <button type="button" id="crazy-btn" class="btn">Crazy</button>
-        <div id="scenes" class="looks" aria-label="Scenes"></div>
+        <div id="scenes" class="looks" aria-label="Pictures"></div>
         <details class="more-box">
-          <summary>Sliders</summary>
+          <summary>Change the picture</summary>
+          <p class="hint">Three layers. Each one can have its own color.</p>
+          <label class="stack">1 <select id="layer-0" aria-label="Layer 1"></select><select id="ink-0" aria-label="Layer 1 color"></select></label>
+          <label class="stack">2 <select id="layer-1" aria-label="Layer 2"></select><select id="ink-1" aria-label="Layer 2 color"></select></label>
+          <label class="stack">3 <select id="layer-2" aria-label="Layer 3"></select><select id="ink-2" aria-label="Layer 3 color"></select></label>
+          <button type="button" id="rgb-btn" class="btn" aria-pressed="false">RGB cycle</button>
+          <label class="stack">Wall <select id="wall" aria-label="Wallpaper"></select></label>
+          <label class="stack">Frame <select id="frame" aria-label="Frame"></select></label>
+          <button type="button" id="crazy-btn" class="btn">Crazy</button>
           <div class="gizmos">
-          <label class="tempo">Size <b id="n-zoom">110</b><input id="g-zoom" type="range" min="40" max="160" value="110"/></label>
-          <label class="tempo">Lean <b id="n-spin">60</b><input id="g-spin" type="range" min="0" max="100" value="60"/></label>
-          <label class="tempo">Glow <b id="n-glow">90</b><input id="g-glow" type="range" min="0" max="100" value="90"/></label>
-          <label class="tempo">Thick <b id="n-thick">4</b><input id="g-thick" type="range" min="1" max="12" value="4"/></label>
-          <label class="tempo">How many <b id="n-count">24</b><input id="g-count" type="range" min="4" max="32" value="24"/></label>
-          <label class="tempo">Trails <b id="n-trail">22</b><input id="g-trail" type="range" min="0" max="70" value="22"/></label>
-          <label class="tempo">Bounce <b id="n-bounce">100</b><input id="g-bounce" type="range" min="0" max="100" value="100"/></label>
-          <label class="tempo">Wild <b id="n-wild">55</b><input id="g-wild" type="range" min="0" max="100" value="55"/></label>
-        </div>
+            <label class="tempo">Size <b id="n-zoom">110</b><input id="g-zoom" type="range" min="40" max="160" value="110"/></label>
+            <label class="tempo">Lean <b id="n-spin">60</b><input id="g-spin" type="range" min="0" max="100" value="60"/></label>
+            <label class="tempo">Glow <b id="n-glow">90</b><input id="g-glow" type="range" min="0" max="100" value="90"/></label>
+            <label class="tempo">Thick <b id="n-thick">4</b><input id="g-thick" type="range" min="1" max="12" value="4"/></label>
+            <label class="tempo">How many <b id="n-count">24</b><input id="g-count" type="range" min="4" max="32" value="24"/></label>
+            <label class="tempo">Trails <b id="n-trail">22</b><input id="g-trail" type="range" min="0" max="70" value="22"/></label>
+            <label class="tempo">Bounce <b id="n-bounce">100</b><input id="g-bounce" type="range" min="0" max="100" value="100"/></label>
+            <label class="tempo">Wild <b id="n-wild">55</b><input id="g-wild" type="range" min="0" max="100" value="55"/></label>
+          </div>
         </details>
       </div>
     </section>
@@ -254,7 +257,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.17.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.18.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -263,6 +266,6 @@
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=2.17.0"></script>
+  <script src="./app.js?v=2.18.0"></script>
 </body>
 </html>

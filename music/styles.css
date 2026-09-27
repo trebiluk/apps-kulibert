@@ -133,10 +133,17 @@ body.is-score:not(.show) #more-ways { display: none; }
 body.is-drums .desk { display: flex !important; flex-direction: column; }
 body.is-drums .work { order: -1; }
 body.is-drums .out { order: 1 !important; position: static !important; }
-body.is-drums #feel,
-body.is-drums #lane,
-body.is-drums #lesson,
-body.is-drums #more-ways { display: none; }
+body.is-lights #lane,
+body.is-lights #feel,
+body.is-lights #lesson,
+body.is-lights #more-ways,
+body.is-band #lane,
+body.is-band #feel,
+body.is-band #lesson,
+body.is-band #more-ways { display: none; }
+#scenes, #gestures { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+#scenes .btn, #gestures .btn { min-height: 64px; font-size: 1.1rem; font-weight: 800; }
+#conduct-btn { width: 100%; min-height: 64px; margin-top: 0.45rem; font-weight: 800; background: var(--accent); color: var(--accent-fg); border: 0; }
 body.expert.is-score .out,
 body.expert.is-score #lane { display: none !important; }
 body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
@@ -197,6 +204,9 @@ body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
   .keypad .btn { flex: 0 0 auto; }
   .work.is-drums #notes-pane { display: none; }
   .work.is-drums #drums-pane { order: 0; }
+  body.is-band .work { order: -1; }
+  body.is-band .out { order: 1 !important; }
+  body.is-lights canvas { max-height: 28vh; }
   .work.is-drums .keys { display: none; }
   .work.is-band #band-pane { display: flex; flex-direction: column; }
   .work.is-band .podium,

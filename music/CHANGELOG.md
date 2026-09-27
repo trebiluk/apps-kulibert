@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.18.0** · 2026-09-27 · channel **live**
+
+Lights opens on picture names. Band opens on the conductor and Down, In, Out, Up.
+
+## Earlier
+
 **Chip: MU 2.17.0** · 2026-09-27 · channel **live**
 
 Beats opens on the pads. The score no longer shows a chopped picture. The line says Press Stop.
