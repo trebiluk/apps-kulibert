@@ -105,6 +105,10 @@
     counting: false,
     once: false,
     bass: false,
+    orch: "beep",
+    dyn: "mf",
+    conducting: false,
+    miss: 0,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
     fx: "plain",
@@ -264,6 +268,50 @@
     gain.connect(bus);
     osc.start();
     osc.stop(ctx.currentTime + length + 0.02);
+  }
+  const DYN_GAIN = { pp: 0.1, p: 0.2, mf: 0.36, f: 0.55, ff: 0.78 };
+  const DYN_WORD = { pp: "very soft", p: "soft", mf: "medium", f: "loud", ff: "very loud" };
+  function sectionTone(freq, dur, section, dyn) {
+    arm();
+    if (!ctx || state.muted || !freq) return;
+    const now = ctx.currentTime;
+    const amount = DYN_GAIN[dyn] || DYN_GAIN.mf;
+    const loud = dyn === "f" || dyn === "ff";
+    const out = ctx.createGain();
+    const toneFilter = ctx.createBiquadFilter();
+    toneFilter.type = "lowpass";
+    toneFilter.connect(out);
+    out.connect(bus);
+    let voices = [[freq, "triangle", 0.6]];
+    if (section === "strings") {
+      toneFilter.frequency.setValueAtTime(loud ? 2600 : 980, now);
+      voices = [[freq, "sawtooth", 0.42], [freq * 1.006, "sawtooth", 0.28], [freq / 2, "triangle", 0.32]];
+      out.gain.setValueAtTime(0.0001, now);
+      out.gain.exponentialRampToValueAtTime(amount, now + 0.1);
+    } else if (section === "brass") {
+      toneFilter.frequency.setValueAtTime(loud ? 3200 : 760, now);
+      voices = [[freq, "sawtooth", 0.48], [freq * 2, "square", 0.1]];
+      out.gain.setValueAtTime(0.0001, now);
+      out.gain.exponentialRampToValueAtTime(amount, now + 0.03);
+    } else {
+      toneFilter.frequency.setValueAtTime(loud ? 2200 : 1400, now);
+      voices = [[freq, "triangle", 0.5], [freq * 1.004, "sine", 0.28]];
+      out.gain.setValueAtTime(0.0001, now);
+      out.gain.exponentialRampToValueAtTime(amount * 0.85, now + 0.06);
+    }
+    const length = Math.max(0.22, dur || 0.4);
+    out.gain.exponentialRampToValueAtTime(0.0001, now + length + 0.18);
+    voices.forEach(([f, type, mix]) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.value = f;
+      gain.gain.value = mix;
+      osc.connect(gain);
+      gain.connect(toneFilter);
+      osc.start(now);
+      osc.stop(now + length + 0.2);
+    });
   }
   function noise(dur, level) {
     if (!ctx || state.muted) return;
@@ -878,8 +926,9 @@
     ROWS.forEach(([id]) => { if (state.drums[id][drum]) hitSound(id); });
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
-      if (freq) tone(freq, state.noteLen, state.wave, 0.22 * side("notes"));
-      if (state.bass && state.drums.kick[drum]) tone(freq / 2, 0.34, "sine", 0.34 * side("notes"));
+      if (freq && state.orch !== "beep") sectionTone(freq, Math.max(0.28, state.noteLen), state.orch, state.dyn);
+      else if (freq) tone(freq, state.noteLen, state.wave, 0.22 * side("notes"));
+      if (state.bass && state.drums.kick[drum]) tone((freq || 130.8) / 2, 0.34, "sine", 0.34 * side("notes"));
     } else if (state.bass && state.drums.kick[drum]) tone(65.4, 0.34, "sine", 0.34 * side("notes"));
   }
 
@@ -1403,6 +1452,169 @@
   $("mode-band").addEventListener("click", () => setMode("band"));
   $("mode-lights").addEventListener("click", () => setMode("lights"));
   $("band-warm").addEventListener("click", () => warmUp());
+  const DYN_STEPS = ["pp", "p", "mf", "f", "ff"];
+  function wanted(beat) {
+    const patterns = {
+      "2/4": ["down", "up"],
+      "3/4": ["down", "out", "up"],
+      "4/4": ["down", "in", "out", "up"],
+      "6/8": ["down", "in", "out", "up", "out", "up"],
+    };
+    const pat = patterns[state.song.meter] || patterns["4/4"];
+    return pat[beat % pat.length];
+  }
+  function gestureWord(id) {
+    return { down: "Down", in: "In", out: "Out", up: "Up", big: "Bigger", small: "Smaller" }[id] || id;
+  }
+  function paintAvatar(gesture) {
+    const avatar = $("avatar");
+    if (!avatar) return;
+    avatar.className = "avatar " + (gesture || "idle") + " dyn-" + (state.dyn || "mf");
+  }
+  function paintOrch() {
+    document.querySelectorAll("#orch .btn").forEach((btn) => btn.classList.toggle("on", btn.dataset.orch === state.orch));
+    document.querySelectorAll("#dyn .btn").forEach((btn) => btn.classList.toggle("on", btn.dataset.dyn === state.dyn));
+    paintAvatar(state.conducting ? wanted((markAt(state.cursor) || { beat: 0 }).beat) : "idle");
+  }
+  function askConduct() {
+    const ev = markAt(state.cursor);
+    const beat = ev ? ev.beat : 0;
+    const ask = $("conduct-ask");
+    if (ask) ask.textContent = "Beat " + (beat + 1) + " wants " + gestureWord(wanted(beat)) + ".";
+  }
+  function shiftDyn(dir) {
+    let i = DYN_STEPS.indexOf(state.dyn);
+    if (i < 0) i = 2;
+    i = Math.max(0, Math.min(DYN_STEPS.length - 1, i + dir));
+    state.dyn = DYN_STEPS[i];
+    paintOrch();
+    $("lesson").textContent = dir > 0 ? "A bigger gesture. The band is " + DYN_WORD[state.dyn] + "." : "A smaller gesture. The band is " + DYN_WORD[state.dyn] + ".";
+  }
+  function give(gesture) {
+    if (gesture === "big" || gesture === "small") {
+      shiftDyn(gesture === "big" ? 1 : -1);
+      paintAvatar(gesture === "big" ? "out" : "in");
+      return;
+    }
+    const ev = markAt(state.cursor);
+    const beat = ev ? ev.beat : 0;
+    const want = wanted(beat);
+    if (!state.conducting) {
+      paintAvatar(gesture);
+      $("lesson").textContent = gestureWord(gesture) + " is a beat shape. Conduct the band when you want them to follow.";
+      return;
+    }
+    paintAvatar(want);
+    if (gesture !== want) {
+      state.miss += 1;
+      $("conduct-ask").textContent = "Not yet. Beat " + (beat + 1) + " wants " + gestureWord(want) + ".";
+      $("lesson").textContent = "The avatar shows " + gestureWord(want) + ". Try that one.";
+      if (state.miss < 2) return;
+      $("lesson").textContent = gestureWord(want) + ". The band will play this beat.";
+    }
+    state.miss = 0;
+    arm();
+    pulse(state.cursor);
+    const evs = Song.events(state.song);
+    if (state.cursor + 1 >= evs.length) {
+      state.conducting = false;
+      $("conduct-btn").textContent = "Conduct the band";
+      $("conduct-ask").textContent = "The band finished your song.";
+      $("lesson").textContent = "That was the last mark. You can conduct it again.";
+      return;
+    }
+    state.cursor += 1;
+    askConduct();
+    $("band-finger").textContent = gestureWord(want) + ". The band follows you.";
+  }
+  function startConduct() {
+    if (state.playing) stop();
+    if (state.orch === "beep") state.orch = "strings";
+    state.conducting = true;
+    state.cursor = 0;
+    state.miss = 0;
+    setMode("band");
+    paintOrch();
+    askConduct();
+    $("conduct-btn").textContent = "Stop conducting";
+    $("lesson").textContent = "Give the gesture. The band plays your song one beat at a time.";
+  }
+  const orchHost = $("orch");
+  if (orchHost) {
+    [["strings", "Strings"], ["brass", "Brass"], ["winds", "Winds"], ["beep", "Beep"]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.dataset.orch = id;
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        state.orch = id;
+        paintOrch();
+        keep();
+        $("lesson").textContent = label === "Beep"
+          ? "The plain sound is back."
+          : label + " play the notes. Louder moves are brighter.";
+      });
+      orchHost.appendChild(b);
+    });
+  }
+  const dynHost = $("dyn");
+  if (dynHost) {
+    DYN_STEPS.forEach((id) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.dataset.dyn = id;
+      b.textContent = id + " " + DYN_WORD[id];
+      b.addEventListener("click", () => {
+        state.dyn = id;
+        paintOrch();
+        $("lesson").textContent = id + " means " + DYN_WORD[id] + ".";
+      });
+      dynHost.appendChild(b);
+    });
+  }
+  const gestureHost = $("gestures");
+  if (gestureHost) {
+    ["down", "in", "out", "up", "big", "small"].forEach((id) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = gestureWord(id);
+      b.addEventListener("click", () => give(id));
+      gestureHost.appendChild(b);
+    });
+  }
+  const baton = $("baton");
+  if (baton) {
+    let start = null;
+    baton.addEventListener("pointerdown", (e) => {
+      start = { x: e.clientX, y: e.clientY };
+      baton.setPointerCapture(e.pointerId);
+    });
+    baton.addEventListener("pointerup", (e) => {
+      if (!start) return;
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      start = null;
+      if (Math.hypot(dx, dy) < 18) return;
+      if (Math.abs(dx) > Math.abs(dy)) give(dx > 0 ? "out" : "in");
+      else give(dy > 0 ? "down" : "up");
+    });
+  }
+  if ($("conduct-btn")) {
+    $("conduct-btn").addEventListener("click", () => {
+      if (state.conducting) {
+        state.conducting = false;
+        $("conduct-btn").textContent = "Conduct the band";
+        $("conduct-ask").textContent = "The band is waiting.";
+        paintAvatar("idle");
+        return;
+      }
+      startConduct();
+    });
+  }
+  paintOrch();
   $("menu-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("menu-open");
     $("menu-btn").setAttribute("aria-expanded", String(on));

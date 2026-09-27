@@ -71,6 +71,25 @@ body.show canvas { width: 100%; height: 100%; max-height: none; aspect-ratio: au
 body.show .show-progress { display: block; }
 body.show .song-title, body.show .feel, body.show .now { text-align: center; }
 body.show .song-title { font-size: clamp(1.6rem, 4vw, 3rem); }
+.podium { display: grid; justify-items: center; gap: 0.35rem; margin: 0.45rem 0; }
+.avatar { position: relative; width: 140px; height: 170px; transition: transform 0.18s ease; }
+.avatar .head { position: absolute; left: 48px; top: 6px; width: 44px; height: 44px; border-radius: 50%; background: #f3d2b3; }
+.avatar .body { position: absolute; left: 46px; top: 54px; width: 48px; height: 72px; border-radius: 18px; background: #1d4ed8; }
+.avatar .arm { position: absolute; left: 84px; top: 70px; width: 52px; height: 8px; border-radius: 8px; background: #f3d2b3; transform-origin: left center; transition: transform 0.16s ease; }
+.avatar.down .arm { transform: rotate(72deg); }
+.avatar.in .arm { transform: rotate(168deg); }
+.avatar.out .arm { transform: rotate(8deg); }
+.avatar.up .arm { transform: rotate(-48deg); }
+.avatar.idle .arm { transform: rotate(24deg); }
+.avatar.dyn-pp { transform: scale(0.84); }
+.avatar.dyn-p { transform: scale(0.92); }
+.avatar.dyn-mf { transform: scale(1); }
+.avatar.dyn-f { transform: scale(1.08); }
+.avatar.dyn-ff { transform: scale(1.16); }
+.baton { min-height: 112px; margin: 0.4rem 0; border-radius: 16px; border: 1px dashed #67e8f9; display: grid; place-items: center; text-align: center; color: var(--muted); touch-action: none; }
+@media (prefers-reduced-motion: reduce) {
+  .avatar, .avatar .arm { transition: none; }
+}
 .feel.early { color: #facc15; }
 .feel.late { color: #fb7185; }
 body.is-score .desk { display: flex !important; flex-direction: column; }
