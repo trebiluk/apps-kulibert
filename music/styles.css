@@ -34,8 +34,9 @@ button { cursor: pointer; }
   margin: 0 0 0.4rem; padding: 0;
   background: transparent; border: 0; border-bottom: 1px solid var(--border); border-radius: 0;
 }
+.tabs { overflow-x: auto; }
 .tabs button {
-  flex: 1; min-height: 48px; border-radius: 0; border: 0; border-bottom: 2px solid transparent;
+  flex: 1 0 4.4rem; min-height: 48px; border-radius: 0; border: 0; border-bottom: 2px solid transparent;
   background: transparent; color: var(--muted); font-weight: 700; padding: 0.3rem 0.2rem;
 }
 .tabs button.on { background: transparent; color: var(--text); border-bottom-color: var(--accent); }
@@ -203,8 +204,19 @@ body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
 .work.is-drums #notes-pane { display: block; order: 1; }
 .work.is-drums #notes-pane > :not(.staff-wrap) { display: none; }
 .work.is-drums .staff-wrap { min-height: 0; max-height: 108px; margin-bottom: 0.45rem; }
-#lights-pane { display: none; }
-.work.is-lights #lights-pane { display: block; }
+#lights-pane, #sound-pane { display: none; }
+.work.is-lights #lights-pane, .work.is-sound #sound-pane { display: block; }
+.work.is-sound .kit, .work.is-sound #notes-pane, .work.is-sound #drums-pane, .work.is-sound #band-pane, .work.is-sound #lights-pane { display: none; }
+.wave-view { width: 100%; height: 160px; background: #071018; border-radius: 8px; display: block; }
+#sound-pane .keys { margin: 0.55rem 0; }
+#sound-pane .pen { margin-top: 0.45rem; }
+body.is-sound:not(.show) .stage-wrap,
+body.is-sound #song-title,
+body.is-sound #feel,
+body.is-sound #now-line,
+body.is-sound #lane,
+body.is-sound #lesson,
+body.is-sound #more-ways { display: none; }
 .work.is-lights .kit, .work.is-lights #notes-pane, .work.is-lights #drums-pane, .work.is-lights #band-pane { display: none; }
 .stack { display: flex; gap: 0.35rem; align-items: center; margin: 0.28rem 0; }
 .stack select { flex: 1; min-width: 0; min-height: 44px; border-radius: 10px; border: 1px solid var(--border); background: #071018; color: inherit; font: inherit; }

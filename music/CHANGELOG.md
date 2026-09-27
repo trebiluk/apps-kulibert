@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.21.0** · 2026-09-27 · channel **live**
+
+Sound shows the wave, major and minor chords, overtones, and string length. No microphone.
+
+## Earlier
+
 **Chip: MU 2.20.0** · 2026-09-27 · channel **live**
 
 A teacher can assign practice to a TechWorks-style alias. The student sees it when they use that alias.

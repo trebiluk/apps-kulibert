@@ -1556,6 +1556,7 @@
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
       lights: "Tap a picture. Then press Play.",
       band: "Choose your instrument. Tap a note to see the fingering.",
+      sound: "Tap a note. Watch the wave. Then try Major or Minor.",
     };
     line.textContent = state.playing ? "Press Stop." : (text[mode] || text.notes);
   }
@@ -1565,7 +1566,8 @@
     $("work").classList.toggle("is-drums", mode === "drums");
     $("work").classList.toggle("is-band", mode === "band");
     $("work").classList.toggle("is-lights", mode === "lights");
-    ["notes", "drums", "band", "lights"].forEach((name) => {
+    $("work").classList.toggle("is-sound", mode === "sound");
+    ["notes", "drums", "band", "lights", "sound"].forEach((name) => {
       const btn = $("mode-" + name);
       if (!btn) return;
       btn.classList.toggle("on", mode === name);
@@ -1575,6 +1577,7 @@
     document.body.classList.toggle("is-drums", mode === "drums");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
+    document.body.classList.toggle("is-sound", mode === "sound");
     sayHow(mode);
     if (!state.playing) {
       const hints = {
@@ -1584,6 +1587,7 @@
           : "Tap Kick or Snare. A tap is saved on that beat.",
         lights: "Pick a picture. Press Play.",
         band: "Tap a note. The line under it is the fingering.",
+        sound: "Tap a note. The wave matches the shape.",
       };
       $("lesson").textContent = hints[mode] || $("lesson").textContent;
     }
@@ -2252,6 +2256,7 @@
     if (board === "beats" || board === "drums") return "drums";
     if (board === "lights") return "lights";
     if (board === "band") return "band";
+    if (board === "sound") return "sound";
     return "notes";
   })());
   buildKit();
@@ -2925,6 +2930,150 @@
   if (practiceDone) practiceDone.addEventListener("click", finishPractice);
   paintAssign();
   paintPractice();
+
+  const lab = { freq: 261.63, shape: "smooth", partials: [true, false, false, false, false], len: 100, chord: "major" };
+  const SHAPES = { smooth: "sine", bright: "sawtooth", buzz: "square", hollow: "triangle" };
+  function waveAt(shape, p) {
+    const x = (p % 1) * Math.PI * 2;
+    if (shape === "buzz") return Math.sign(Math.sin(x)) || 0;
+    if (shape === "bright") return ((p % 1) * 2) - 1;
+    if (shape === "hollow") return Math.asin(Math.sin(x)) / (Math.PI / 2);
+    return Math.sin(x);
+  }
+  function drawTeachWave() {
+    const canvas = $("wave-view");
+    if (!canvas) return;
+    const g = canvas.getContext("2d");
+    const w = canvas.width;
+    const h = canvas.height;
+    g.clearRect(0, 0, w, h);
+    g.strokeStyle = "#8fb4c9";
+    g.lineWidth = 2;
+    const cycles = 100 / lab.len;
+    g.beginPath();
+    for (let x = 0; x < w; x++) {
+      const p = (x / w) * 3 * cycles;
+      let y = 0;
+      let weight = 0;
+      lab.partials.forEach((on, i) => {
+        if (!on) return;
+        const amp = 1 / (i + 1);
+        y += waveAt(i === 0 ? lab.shape : "smooth", p * (i + 1)) * amp;
+        weight += amp;
+      });
+      const py = h * 0.42 - (y / (weight || 1)) * (h * 0.28);
+      if (x === 0) g.moveTo(x, py);
+      else g.lineTo(x, py);
+    }
+    g.stroke();
+    const span = Math.max(40, (lab.len / 100) * (w - 48));
+    g.strokeStyle = "#22d3ee";
+    g.lineWidth = 3;
+    g.beginPath();
+    g.moveTo(24, h - 28);
+    g.lineTo(24 + span, h - 28);
+    g.stroke();
+  }
+  function addPartials(freq, dur) {
+    lab.partials.forEach((on, i) => {
+      if (on && i > 0) tone(freq * (i + 1), dur, "sine", 0.06);
+    });
+  }
+  function playLab(freq, dur) {
+    arm();
+    lab.freq = freq;
+    drawTeachWave();
+    tone(freq, dur || 0.45, SHAPES[lab.shape] || "sine", 0.22);
+    addPartials(freq, dur || 0.45);
+    const how = $("how");
+    if (how && state.mode === "sound") how.textContent = "That line is the shape of the sound. It still moves if the sound is off.";
+  }
+  function playLabChord(arp) {
+    arm();
+    const steps = lab.chord === "minor" ? [0, 3, 7] : [0, 4, 7];
+    steps.forEach((semi, i) => {
+      const freq = lab.freq * Math.pow(2, semi / 12);
+      window.setTimeout(() => {
+        tone(freq, arp ? 0.3 : 0.7, SHAPES[lab.shape] || "sine", 0.16);
+        addPartials(freq, arp ? 0.3 : 0.7);
+      }, arp ? i * 200 : 0);
+    });
+    drawTeachWave();
+    const how = $("how");
+    if (how && state.mode === "sound") {
+      how.textContent = arp
+        ? "One by one. Those are the notes of the chord."
+        : (lab.chord === "minor" ? "Minor. The middle note is one step lower." : "Major. Three notes at once.");
+    }
+  }
+  function bootSound() {
+    const notes = $("sound-notes");
+    const shapes = $("sound-shapes");
+    const partials = $("sound-partials");
+    if (!notes || notes.childElementCount) return;
+    [["C", 261.63], ["D", 293.66], ["E", 329.63], ["F", 349.23], ["G", 392.0], ["A", 440], ["B", 493.88], ["Hi C", 523.25]].forEach(([name, freq]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "key";
+      b.textContent = name;
+      b.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        playLab(freq, 0.5);
+      });
+      notes.appendChild(b);
+    });
+    [["smooth", "Smooth"], ["bright", "Bright"], ["buzz", "Buzz"], ["hollow", "Hollow"]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (id === "smooth" ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        lab.shape = id;
+        state.wave = SHAPES[id];
+        shapes.querySelectorAll(".btn").forEach((btn) => btn.classList.toggle("on", btn === b));
+        drawTeachWave();
+        playLab(lab.freq, 0.4);
+      });
+      shapes.appendChild(b);
+    });
+    [1, 2, 3, 4, 5].forEach((n, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (i === 0 ? " on" : "");
+      b.textContent = String(n);
+      b.addEventListener("click", () => {
+        if (i === 0) return;
+        lab.partials[i] = !lab.partials[i];
+        b.classList.toggle("on", lab.partials[i]);
+        drawTeachWave();
+        playLab(lab.freq, 0.55);
+      });
+      partials.appendChild(b);
+    });
+    $("chord-major").addEventListener("click", () => {
+      lab.chord = "major";
+      $("chord-major").classList.add("on");
+      $("chord-minor").classList.remove("on");
+      playLabChord(false);
+    });
+    $("chord-minor").addEventListener("click", () => {
+      lab.chord = "minor";
+      $("chord-minor").classList.add("on");
+      $("chord-major").classList.remove("on");
+      playLabChord(false);
+    });
+    $("chord-arp").addEventListener("click", () => playLabChord(true));
+    const slider = $("string-len");
+    const read = $("string-read");
+    slider.addEventListener("input", () => {
+      lab.len = Number(slider.value);
+      read.textContent = lab.len > 70 ? "Long" : lab.len > 40 ? "Medium" : "Short";
+      drawTeachWave();
+    });
+    $("string-hear").addEventListener("click", () => playLab(261.63 * (100 / lab.len), 0.6));
+    drawTeachWave();
+  }
+  bootSound();
 
   const canvas = $("viz");
   if (window.KulibertStage) {
