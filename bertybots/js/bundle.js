@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.10 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.20 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.10";
+const APP_VERSION = "0.19.20";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.10";
-const APP_BUILT = "2026-09-23";
+const APP_CHIP = "BB 0.19.20";
+const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -154,16 +154,13 @@ const BUILTIN = [
 ];
 
 const JOBS = [
-  { id: "open", label: "Open Shop" },
+  { id: "open", label: "Fix it" },
   { id: "roll", label: "Roll Out" },
   { id: "curb", label: "Up the Curb" },
   { id: "pit", label: "Mind the Pit" },
   { id: "wall", label: "The Wall" },
   { id: "shelf", label: "High Shelf" },
-  { id: "bend", label: "Around the Bend" },
   { id: "pair", label: "Pair of Crates" },
-  { id: "measure", label: "Measure" },
-  { id: "forces", label: "Forces" },
 ];
 
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
@@ -238,20 +235,16 @@ let access = readAccess();
 writeAccess(access);
 const HOWTO = [
   {
-    title: "What this game is",
-    body: "Berty's Botz is a construction shop. You design a machine. Gravity and the Drive wheels are the forces. The job is to park the Bot Core crate in the Drop Zone.",
+    title: "Right wheel",
+    body: "The orange wheel rolls to the right. Put it behind the crate so it can push.",
   },
   {
-    title: "The job",
-    body: "The crate must sit inside the orange Drop Zone for one second. You build on the Shop Floor. The Drop Zone is the goal.",
+    title: "The other parts",
+    body: "The left wheel rolls the other way. A silver bar connects. A dashed bar misses the machine.",
   },
   {
-    title: "The parts",
-    body: "Drive-R rolls right. Drive-L rolls left. Roller is a free wheel. Steel is a silver bar. Ghost is dashed — it misses the machine and can touch the crate.",
-  },
-  {
-    title: "Build, then Play",
-    body: "Drag a wheel onto a hub. Play runs the test. Stop puts the shop back. Fewer parts for the same park earns more XP. No names.",
+    title: "Then Play",
+    body: "Play runs the test. Stop puts the shop back. On the next job, you place the wheel yourself.",
   },
 ];
 
@@ -333,7 +326,7 @@ const GUIDE = {
     system: "Up the Curb — Input energy must lift the payload. The curb is a constraint in the process path. Output is up, not just right.",
   },
   pit: {
-    ask: "Ask: Mind the Pit. There is a gap in the world. The crate cannot fall in.",
+    ask: "Ask: the wheel falls in. Lay a silver bar across the hole.",
     imagine: "Imagine a bridge, a long reach, or a launch that clears the pit. Falling is a failed output.",
     plan: "Plan the path across the missing slab. Ghost can span world without snagging the machine.",
     create: "Create the crossing on the Shop Floor. Do not fill the pit by editing the course unless you are in Level layer.",
@@ -410,6 +403,10 @@ function coreInDropAt(x, y, drop) {
   const x1 = Math.min(box.x + box.w, drop.x + drop.w);
   const y1 = Math.min(box.y + box.h, drop.y + drop.h);
   return (x1 - x0) * (y1 - y0) >= CORE_S * CORE_S * 0.5;
+}
+
+function isWheelPart(p) {
+  return !!p && (p.type === "driveR" || p.type === "driveL" || p.type === "roller");
 }
 
 function dist(a, b) {
@@ -554,6 +551,7 @@ function boot() {
   let history = [];
   let trail = [];
   let lastTrail = [];
+  let lastMiss = null;
   let lastReadout = "";
   let debugOn = false;
   let frames = 0;
@@ -595,28 +593,40 @@ function boot() {
   function jobBounds() {
     const s = doc.level.shop;
     const d = doc.level.drop;
-    let x0 = s.x, y0 = Math.min(s.y, 0.2), x1 = s.x + s.w, y1 = s.y + s.h;
-    if (d) {
+    let x0 = s.x;
+    let y0 = 0.05;
+    let x1 = s.x + s.w;
+    let y1 = 3.2;
+    const far = d && d.x > s.x + s.w + 6;
+    if (d && !far) {
       x0 = Math.min(x0, d.x);
-      y0 = Math.min(y0, d.y);
       x1 = Math.max(x1, d.x + d.w);
-      y1 = Math.max(y1, d.y + d.h);
+      y1 = Math.max(y1, d.y + Math.min(d.h, 2.2));
+    }
+    for (const p of doc.machine.parts || []) {
+      const xs = p.x != null ? [p.x] : [p.x1, p.x2];
+      const ys = p.y != null ? [p.y] : [p.y1, p.y2];
+      for (const x of xs) { x0 = Math.min(x0, x - 0.5); x1 = Math.max(x1, x + 0.5); }
+      for (const y of ys) { y0 = Math.min(y0, y - 0.35); y1 = Math.max(y1, y + 0.7); }
     }
     for (const c of doc.level.cores || []) {
-      x0 = Math.min(x0, c.x - 0.5);
-      y0 = Math.min(y0, c.y - 0.5);
-      x1 = Math.max(x1, c.x + 0.5);
-      y1 = Math.max(y1, c.y + 0.8);
+      x0 = Math.min(x0, c.x - 0.6);
+      y0 = Math.min(y0, c.y - 0.45);
+      x1 = Math.max(x1, c.x + 0.7);
+      y1 = Math.max(y1, c.y + 0.9);
     }
-    x0 -= 1.0;
-    y0 -= 0.25;
-    x1 += 1.2;
-    y1 += 0.7;
-    return { x: x0, y: Math.max(-0.2, y0), w: x1 - x0, h: y1 - y0 };
+    x0 -= 0.55;
+    x1 += 0.7;
+    y1 += 0.35;
+    return { x: x0, y: Math.max(-0.15, y0), w: Math.max(4.2, x1 - x0), h: Math.max(2.8, y1 - y0) };
   }
 
   function focusTarget() {
     if (typeof isMeasure === "function" && isMeasure()) return { x: WORLD_W / 2, y: 5.2 };
+    if (won && sim && sim.cores[0]) {
+      const p = sim.cores[0].getPosition();
+      return { x: p.x, y: Math.max(2.2, p.y) };
+    }
     if (playing && sim && sim.cores[0]) {
       const p = sim.cores[0].getPosition();
       const drop = doc.level.drop;
@@ -624,17 +634,18 @@ function boot() {
       return { x: look, y: Math.max(2.5, p.y + 1.35) };
     }
     const b = jobBounds();
-    return { x: b.x + b.w * 0.46, y: b.y + b.h * 0.42 };
+    return { x: b.x + b.w * 0.5, y: b.y + b.h * 0.36 };
   }
 
   function frameSpan() {
     if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
     const phone = window.innerHeight < 540 || window.innerWidth < 920;
+    if (won) return { w: phone ? 8.5 : 10, h: phone ? 5.2 : 6 };
     const b = jobBounds();
-    const minW = phone ? 12.2 : 14.0;
-    const minH = phone ? 6.5 : 7.2;
-    const maxW = phone ? 18.5 : 23.5;
-    const maxH = phone ? 9.2 : 11.4;
+    const minW = phone ? 7.4 : 8.6;
+    const minH = phone ? 4.0 : 4.4;
+    const maxW = phone ? 14 : 16;
+    const maxH = phone ? 6.8 : 7.4;
     return {
       w: Math.max(minW, Math.min(maxW, b.w)),
       h: Math.max(minH, Math.min(maxH, b.h)),
@@ -651,6 +662,13 @@ function boot() {
     const sx = (canvas.width - pad * 2) / sp.w;
     const sy = (canvas.height - pad * 2) / sp.h;
     view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
+    if (JOBS.some((job) => job.id === courseId)) {
+      view.zoom = Math.max(0.9, Math.min(1.45, view.zoom));
+      const leash = 48 * (view.dpr || 1);
+      view.panx = Math.max(-leash, Math.min(leash, view.panx));
+      view.pany = Math.max(-leash, Math.min(leash, view.pany));
+      view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
+    }
     view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
     view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
   }
@@ -750,7 +768,11 @@ function boot() {
     tapeA = null;
     tapeB = null;
     lastTrail = [];
+    lastMiss = null;
     lastReadout = "";
+    view.zoom = 1;
+    view.panx = 0;
+    view.pany = 0;
     if (courseId !== "measure") measureDone = {};
     else measureDone = (progress.wins.measure && progress.wins.measure.jobs) ? { ...progress.wins.measure.jobs } : {};
     if (courseId !== "forces") forceDone = {};
@@ -894,6 +916,283 @@ function boot() {
   function levelDone(id) {
     const rec = progress.wins[id];
     return !!(rec && rec.n > 0);
+  }
+
+  let clearBeat = 0;
+  let clearTour = false;
+
+  function wheelPose() {
+    const c = (doc.level.cores || [])[0];
+    const spot = behindSpot();
+    if (!c || !spot) return "none";
+    const wheels = (doc.machine.parts || []).filter((p) => p.x != null && (p.type === "driveR" || p.type === "driveL" || p.type === "roller"));
+    if (!wheels.length) return "none";
+    let best = "front";
+    for (const p of wheels) {
+      if (p.type === "driveL" && Math.hypot(p.x - spot.x, p.y - spot.y) < 0.55) return "left";
+      if (p.type !== "driveR") continue;
+      if (Math.hypot(p.x - spot.x, p.y - spot.y) < 0.2) return "ready";
+      if (p.x < spot.x - 0.35) best = "far";
+      else if (p.x < c.x - 0.15 && best === "front") best = "close";
+    }
+    return best;
+  }
+
+  function behindSpot() {
+    const s = doc.level.shop;
+    const c = (doc.level.cores || [])[0];
+    if (!s || !c) return null;
+    return { x: c.x - 0.8, y: s.y + WHEEL_R + 0.04 };
+  }
+
+  function stickBehind(part) {
+    if (!part || part.type !== "driveR" || part.x == null) return false;
+    const guiding = ["open", "roll", "curb", "pit", "shelf", "pair"].includes(courseId) && !levelDone(courseId);
+    if (!guiding) return false;
+    const spot = behindSpot();
+    const c = (doc.level.cores || [])[0];
+    if (!spot || !c || part.x > c.x - 0.15) return false;
+    if (Math.hypot(part.x - spot.x, part.y - spot.y) > 1.4) return false;
+    part.x = spot.x;
+    part.y = spot.y;
+    part.a = 0;
+    return true;
+  }
+
+  function otherSpot() {
+    const s = doc.level.shop;
+    const c = (doc.level.cores || [])[0];
+    if (!s || !c) return null;
+    return { x: c.x + 0.8, y: s.y + WHEEL_R + 0.04 };
+  }
+
+  function stickOther(part) {
+    if (courseId !== "wall" || levelDone("wall") || !part || part.type !== "driveL" || part.x == null) return false;
+    const spot = otherSpot();
+    const c = (doc.level.cores || [])[0];
+    if (!spot || !c || part.x < c.x + 0.15) return false;
+    if (Math.hypot(part.x - spot.x, part.y - spot.y) > 1.4) return false;
+    part.x = spot.x;
+    part.y = spot.y;
+    part.a = 0;
+    return true;
+  }
+
+  function wallReady() {
+    const spot = otherSpot();
+    const c = (doc.level.cores || [])[0];
+    if (!spot || !c) return false;
+    const blue = (doc.machine.parts || []).some((p) => p.type === "driveL" && Math.hypot(p.x - spot.x, p.y - spot.y) < 0.28);
+    const orangeFighting = (doc.machine.parts || []).some((p) => p.type === "driveR" && p.x < c.x);
+    return blue && !orangeFighting;
+  }
+
+  function laneBlocked() {
+    return (doc.machine.parts || []).some((p) => p.type === "roller" && p.x > 5.7 && p.x < 8.6 && p.y < 2.6);
+  }
+
+  function pitBridged() {
+    return (doc.machine.parts || []).some((p) => {
+      if (p.type !== "steel" || p.x1 == null) return false;
+      const mid = (p.x1 + p.x2) / 2;
+      const len = Math.hypot(p.x2 - p.x1, p.y2 - p.y1);
+      return mid > 6.3 && mid < 8.8 && len > 2.4;
+    });
+  }
+
+  function stickPitBar(part) {
+    if (courseId !== "pit" || levelDone("pit") || !part || part.type !== "steel") return false;
+    const xL = Math.min(part.x1, part.x2);
+    const xR = Math.max(part.x1, part.x2);
+    const mid = (part.x1 + part.x2) / 2;
+    const len = Math.hypot(part.x2 - part.x1, part.y2 - part.y1);
+    const crosses = xL < 6.6 && xR > 8.2 && len > 1.6;
+    const over = mid > 6.2 && mid < 8.8 && len > 2.0;
+    if (!crosses && !over) return false;
+    part.x1 = 5.6;
+    part.y1 = 1.35;
+    part.x2 = 9.2;
+    part.y2 = 1.35;
+    return true;
+  }
+
+  function pairLinked() {
+    const cores = doc.level.cores || [];
+    if (cores.length < 2) return false;
+    return (doc.machine.parts || []).some((p) => {
+      if (p.type !== "steel" || p.x1 == null) return false;
+      const mid = (p.x1 + p.x2) / 2;
+      const gap = (cores[0].x + cores[1].x) / 2;
+      return Math.abs(mid - gap) < 0.45 && Math.abs(((p.y1 + p.y2) / 2) - 1.55) < 0.25;
+    });
+  }
+
+  function stickPairBar(part) {
+    if (courseId !== "pair" || levelDone("pair") || !part || part.type !== "steel") return false;
+    const cores = doc.level.cores || [];
+    if (cores.length < 2) return false;
+    const mid = { x: (part.x1 + part.x2) / 2, y: (part.y1 + part.y2) / 2 };
+    const gap = { x: (cores[0].x + cores[1].x) / 2, y: 1.55 };
+    if (Math.hypot(mid.x - gap.x, mid.y - gap.y) > 1.35) return false;
+    if (Math.hypot(part.x2 - part.x1, part.y2 - part.y1) < 0.6) return false;
+    part.x1 = cores[0].x + 0.15;
+    part.y1 = 1.55;
+    part.x2 = cores[1].x + 0.5;
+    part.y2 = 1.55;
+    return true;
+  }
+
+  function seedFix() {
+    if (levelDone(courseId)) return;
+    if (doc.machine.parts && doc.machine.parts.length) return;
+    const s = doc.level.shop;
+    const c = (doc.level.cores || [])[0];
+    if (!s || !c) return;
+    const y = s.y + WHEEL_R + 0.04;
+    const spot = behindSpot();
+    if (courseId === "open") {
+      const x = Math.min(s.x + s.w - WHEEL_R - 0.3, c.x + 1.2);
+      if (!inRect(x, y, s)) return;
+      doc.machine.parts = [{ type: "driveR", x, y, a: 0 }];
+      doc.title = "Fix it";
+    } else if (courseId === "roll") {
+      const x = s.x + 1.15;
+      if (inRect(x, y, s)) doc.machine.parts = [{ type: "roller", x, y, a: 0 }];
+    } else if (courseId === "curb") {
+      const x = Math.min(s.x + s.w - WHEEL_R - 0.25, c.x - 0.8);
+      if (inRect(x, y, s)) doc.machine.parts = [{ type: "driveL", x, y, a: 0 }];
+    } else if (courseId === "pit" && spot && inRect(spot.x, spot.y, s)) {
+      doc.machine.parts = [{ type: "driveR", x: spot.x, y: spot.y, a: 0 }];
+    } else if (courseId === "wall" && spot && inRect(spot.x, spot.y, s)) {
+      doc.machine.parts = [{ type: "driveR", x: spot.x, y: spot.y, a: 0 }];
+    } else if (courseId === "shelf" && spot && inRect(spot.x, spot.y, s)) {
+      const roller = { type: "roller", x: 6.55, y, a: 0 };
+      doc.machine.parts = [{ type: "driveR", x: spot.x, y: spot.y, a: 0 }];
+      if (inRect(roller.x, roller.y, s)) doc.machine.parts.push(roller);
+    }
+  }
+
+  function coachLine() {
+    const job = JOBS.some((j) => j.id === courseId);
+    if (!job || levelDone(courseId)) return "";
+    const pose = wheelPose();
+    if (courseId === "open") {
+      if (playing && pose !== "ready") return "That wheel is in front.";
+      if (pose === "ready") return "Press Play.";
+      if (pose === "far") return "Closer. Just behind the crate.";
+      if (pose === "close") return "A little further back.";
+      if (pose === "left") return "That wheel rolls left. Use the orange one.";
+      if (pose === "none") return "Drag the orange wheel behind the crate.";
+      return "Drag the wheel behind the crate.";
+    }
+    if (courseId === "roll") {
+      return pose === "ready"
+        ? "Press Play."
+        : "The loose wheel doesn't push. Use the orange one.";
+    }
+    if (courseId === "curb") {
+      if (pose === "ready") return "Press Play.";
+      if (pose === "left") return "Blue wheel rolls the wrong way. Use the orange one.";
+      return "Put the orange wheel in the circle.";
+    }
+    if (courseId === "pit") {
+      return pitBridged()
+        ? "Press Play."
+        : "That wheel falls in. Bridge the hole.";
+    }
+    if (courseId === "wall") {
+      const blueOn = (doc.machine.parts || []).some((p) => p.type === "driveL");
+      if (wallReady()) return "Press Play.";
+      if (blueOn) return "Drag the orange wheel off.";
+      return "Orange hits the wall. Blue goes the other way.";
+    }
+    if (courseId === "shelf") {
+      if (laneBlocked()) return "Drag the loose wheel off the step.";
+      if (pose === "ready") return "Press Play.";
+      return "Orange wheel in the circle. Keep the step clear.";
+    }
+    if (courseId === "pair") {
+      if (!pairLinked()) return "Lay a silver bar between the crates.";
+      return pose === "ready" ? "Press Play." : "Orange wheel behind the first crate.";
+    }
+    return "";
+  }
+
+  function applyCoach() {
+    const showingWin = winEl && winEl.classList.contains("show");
+    const building = JOBS.some((j) => j.id === courseId) && (!levelDone(courseId) || showingWin);
+    document.body.dataset.coach = building ? "1" : "0";
+    const line = coachLine();
+    const hint = document.getElementById("status-hint");
+    if (winEl && winEl.classList.contains("show")) {
+      if (hint) hint.textContent = "Parked.";
+    } else if (line && hint) hint.textContent = lastReadout || line;
+    const pip = document.getElementById("coach-play");
+    const pose = wheelPose();
+    let ready = pose === "ready";
+    if (courseId === "wall") ready = wallReady();
+    if (courseId === "shelf") ready = !laneBlocked() && pose === "ready";
+    if (courseId === "pit") ready = pitBridged();
+    if (courseId === "pair") ready = pairLinked() && pose === "ready";
+    const showPip = building && !playing && ready;
+    if (pip) pip.hidden = !showPip;
+    const play = document.getElementById("btn-play");
+    if (play) play.classList.toggle("nudge", showPip);
+  }
+
+  function clearCopy() {
+    const i = JOBS.findIndex((job) => job.id === courseId);
+    const n = i >= 0 ? i + 1 : 1;
+    const label = i >= 0 ? JOBS[i].label : "Clear";
+    if (clearTour) {
+      return { k: "Job 1 clear", t: "The crate parked", b: "The wheel was behind it." };
+    }
+    const nxt = JOBS[i + 1];
+    const said = {
+      roll: "The orange wheel pushes. The loose one doesn't.",
+      curb: "Orange wheel. The blue one was rolling the wrong way.",
+      pit: "The bar crossed the hole. The wheel alone falls in.",
+      wall: "Blue wheel. The wall stops the orange one.",
+      shelf: "The loose wheel was sitting on the step.",
+      pair: "The bar made the two crates one load.",
+    };
+    return {
+      k: `Job ${n} clear`,
+      t: label,
+      b: said[courseId] || (nxt ? `${nxt.label} is open.` : "That was the last build job."),
+    };
+  }
+
+  function paintClear() {
+    const c = clearCopy();
+    const k = document.getElementById("win-kicker");
+    const t = document.getElementById("win-title");
+    const b = document.getElementById("win-body");
+    const next = document.getElementById("win-next");
+    const skip = document.getElementById("win-skip");
+    if (k) k.textContent = c.k;
+    if (t) t.textContent = c.t;
+    if (b) b.textContent = c.b;
+    if (next) next.textContent = "Next job";
+    if (skip) skip.hidden = true;
+    if (winEl) winEl.classList.add("show");
+  }
+
+  function presentClear() {
+    let seen = false;
+    try { seen = !!localStorage.getItem("bb-parts-v1"); } catch (e) { seen = true; }
+    clearTour = courseId === "open" && !seen;
+    clearBeat = 0;
+    paintClear();
+  }
+
+  async function goNextJob() {
+    try { localStorage.setItem("bb-parts-v1", "1"); } catch (e) { /* private */ }
+    clearTour = false;
+    if (winEl) winEl.classList.remove("show");
+    const i = JOBS.findIndex((job) => job.id === courseId);
+    const nxt = JOBS[i + 1];
+    if (nxt) await loadBuiltin(nxt.id);
   }
 
   function refreshPath() {
@@ -1150,7 +1449,6 @@ function boot() {
     let gain = first ? 12 : 3;
     if (first || better) gain += 6 + lean * 3;
     else gain += Math.min(3, lean);
-    const before = rankAt(progress.xp).name;
     progress.xp += gain;
     progress.wins[courseId] = {
       bestParts: Math.min(parts, rec ? rec.bestParts : parts),
@@ -1159,9 +1457,7 @@ function boot() {
     saveProgress();
     refreshRank();
     parkHeat();
-    const after = rankAt(progress.xp).name;
-    if (after !== before) toast(`${after} rank. Lean machines earn more XP.`);
-    else toast(`+${gain} XP · ${parts} parts${lean > 0 ? " · lean bonus" : ""}. In the zone.`);
+    presentClear();
   }
 
   function showSystems(on) {
@@ -1208,8 +1504,6 @@ function boot() {
     if (!d) return;
     d.hidden = !on;
     if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
-    const rail = document.getElementById("rail");
-    if (on && rail) rail.classList.add("open");
   }
 
   function tryWide() {
@@ -1234,6 +1528,7 @@ function boot() {
     refreshGuide();
     refreshRank();
     refreshLesson();
+    applyCoach();
   }
 
   function pushHist() {
@@ -1259,13 +1554,40 @@ function boot() {
   }
 
   function nearestNode(pt, max = SNAP, skipPart) {
+    const wheel = wheelSnap(pt, skipPart);
+    if (wheel) return wheel;
     let best = null, bd = max;
     for (const n of allNodes()) {
       if (skipPart && n.part === skipPart) continue;
+      if (isWheelPart(n.part)) continue;
       const d = dist(pt, n);
       if (d < bd) { bd = d; best = n; }
     }
     return best;
+  }
+
+  function wheelSnap(pt, skipPart) {
+    let hub = null, hubD = WHEEL_R + 0.2;
+    for (const n of allNodes()) {
+      if (skipPart && n.part === skipPart) continue;
+      if (n.kind !== "hub" || !isWheelPart(n.part)) continue;
+      const d = dist(pt, n);
+      if (d < hubD) { hubD = d; hub = n; }
+    }
+    if (!hub) return null;
+    const dx = pt.x - hub.x, dy = pt.y - hub.y;
+    const d = Math.hypot(dx, dy);
+    if (d > WHEEL_R * 0.96) {
+      const a = Math.round(Math.atan2(dy, dx) / (Math.PI / 2)) * (Math.PI / 2);
+      const rim = {
+        x: hub.x + Math.cos(a) * WHEEL_R,
+        y: hub.y + Math.sin(a) * WHEEL_R,
+        kind: "rim",
+        part: hub.part,
+      };
+      if (dist(pt, rim) <= 0.24) return rim;
+    }
+    return d <= WHEEL_R + 0.2 ? hub : null;
   }
 
   function snapPt(pt, skipPart) {
@@ -1283,16 +1605,22 @@ function boot() {
 
   function snapPartToHub(p) {
     const nodes = partNodes(p);
-    let best = null, bd = SNAP * 1.55;
-    for (const n of nodes) {
-      const hit = nearestNode(n, SNAP * 1.55, p);
-      if (!hit) continue;
+    const hubs = nodes.filter((n) => n.kind === "hub");
+    const rest = nodes.filter((n) => n.kind !== "hub");
+    let best = null, bd = Infinity;
+    const consider = (n, limit) => {
+      const hit = nearestNode(n, limit, p);
+      if (!hit) return;
       const d = dist(n, hit);
       if (d < bd) { bd = d; best = { from: n, to: hit }; }
+    };
+    for (const n of hubs) consider(n, WHEEL_R + 0.2);
+    if (!best) {
+      for (const n of rest) consider(n, n.kind === "rim" ? 0.24 : SNAP * 1.55);
     }
-    if (!best) return false;
+    if (!best) return null;
     translatePart(p, best.to.x - best.from.x, best.to.y - best.from.y);
-    return true;
+    return best.to;
   }
 
   function hitPart(pt) {
@@ -1368,6 +1696,7 @@ function boot() {
     winT = 0;
     trail = [];
     lastTrail = [];
+    lastMiss = null;
     lastReadout = "";
     playAge = 0;
     everTested = true;
@@ -1379,37 +1708,52 @@ function boot() {
   }
 
   function crateReadout() {
-    if (won) return "Parked. Output reached the Drop Zone.";
+    if (won) return "Parked.";
+    if (courseId === "open" && wheelPose() !== "ready") {
+      return "You tested it. Drag the wheel behind the crate.";
+    }
     if (!trail.length) return "No trail. Test needs a crate in motion.";
     const last = trail[trail.length - 1];
     const drop = doc.level.drop;
     const shop = doc.level.shop;
-    if (last.y < -0.8) return "Crate left the world. Failed output.";
-    if (drop && coreInDropAt(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
+    if (last.y < -0.2) return "It fell in. Bridge the hole with a silver bar.";
+    if (drop && coreInDropAt(last.x, last.y, drop)) return "Almost. It has to sit in the stripes for a second.";
     const xs = trail.slice(-24).map((p) => p.x);
     const span = xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
     if (shop && last.x >= shop.x - 0.2 && last.x <= shop.x + shop.w + 0.2 && span < 0.55) {
-      return "Crate sat still. Add Drive on a hub, then Play.";
+      return "It didn't move. The orange wheel has to be behind the crate.";
     }
-    if (trail.length < 18 && span < 0.45) return "Crate barely moved. Check Drive on a hub.";
-    if (shop && drop && last.x > shop.x + shop.w && last.x < drop.x && last.y < 0.85) {
-      return "Crate fell in a gap. Process path broke.";
-    }
-    if (span < 0.4 && last.x < (drop ? drop.x : 20)) return "Crate stalled. A wall or friction ate the process.";
-    if (drop && last.x > drop.x + drop.w + 0.4) return "Crate overshot the Drop Zone.";
-    return "Crate missed the Drop Zone. The trail is feedback — Improve one thing.";
+    if (trail.length < 18 && span < 0.45) return "It barely moved.";
+    if (span < 0.4 && last.x < (drop ? drop.x : 20)) return "It stopped. Something is in the way.";
+    if (drop && last.x > drop.x + drop.w + 0.4) return "Too fast. It rolled past the stripes.";
+    return "It missed the stripes. Look at where it stopped.";
   }
 
   function stopPlay() {
+    if (playing && won) {
+      playing = false;
+      sim = null;
+      refreshMeta();
+      return;
+    }
     if (playing && !won && JOBS.some((job) => job.id === courseId) && !levelDone(courseId)) {
       progress.tried = progress.tried || {};
       progress.tried[courseId] = true;
       saveProgress();
     }
     if (playing && !won) lastReadout = crateReadout();
-    else if (won) lastReadout = "Parked. Output reached the Drop Zone.";
+    else if (won) lastReadout = "Parked.";
     const missed = playing && !won;
     lastTrail = trail.slice();
+    if (missed && trail.length) {
+      let end = trail[trail.length - 1];
+      if (end.y < 0.4) {
+        for (let i = trail.length - 1; i >= 0; i--) {
+          if (trail[i].y > 0.7) { end = trail[i]; break; }
+        }
+      }
+      lastMiss = { x: end.x, y: Math.max(1.05, end.y) };
+    }
     playing = false;
     sim = null;
     won = false;
@@ -1945,6 +2289,11 @@ function boot() {
       ctx.fill();
     }
     ctx.restore();
+    ctx.fillStyle = won ? "#1f6b45" : "#c2410c";
+    ctx.font = `800 ${Math.max(22, wr(0.72))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("PARK", x + w / 2, y + h / 2);
     ctx.setLineDash([8, 6]);
     ctx.strokeStyle = won ? OK : ORANGE;
     ctx.lineWidth = 2;
@@ -2040,24 +2389,6 @@ function boot() {
       }
     }
 
-    for (const t of [0.2, 0.5, 0.8]) {
-      const x = canvas.width * t - 36 * dpr;
-      const y = 12 * dpr;
-      const w = 70 * dpr, h = 48 * dpr;
-      ctx.fillStyle = "rgba(210,230,245,0.28)";
-      ctx.fillRect(x, y, w, h);
-      ctx.strokeStyle = "rgba(255,255,255,0.3)";
-      ctx.strokeRect(x, y, w, h);
-      ctx.fillStyle = "rgba(245,196,0,0.09)";
-      ctx.beginPath();
-      ctx.moveTo(x, y + h);
-      ctx.lineTo(x + w, y + h);
-      ctx.lineTo(x + w + 50 * dpr, canvas.height);
-      ctx.lineTo(x - 50 * dpr, canvas.height);
-      ctx.closePath();
-      ctx.fill();
-    }
-
     if (playing) {
       for (let i = 0; i < 18; i++) {
         const x = ((i * 97 + now * 0.02) % canvas.width);
@@ -2067,34 +2398,6 @@ function boot() {
         ctx.arc(x, y, 1.3 * dpr, 0, Math.PI * 2);
         ctx.fill();
       }
-    }
-
-    for (const t of [0.24, 0.5, 0.76]) {
-      const px = canvas.width * t;
-      const py = 10 * dpr;
-      const swing = Math.sin(now / 1400 + t * 8) * 6 * dpr;
-      ctx.strokeStyle = "#2a2e33";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(px, 0);
-      ctx.lineTo(px + swing, py + 18 * dpr);
-      ctx.stroke();
-      const g = ctx.createRadialGradient(px + swing, py + 20 * dpr, 4, px + swing, py + 20 * dpr, 120 * dpr);
-      g.addColorStop(0, "rgba(245,196,0,0.32)");
-      g.addColorStop(1, "rgba(245,196,0,0)");
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(px + swing, py + 20 * dpr, 120 * dpr, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(px + swing - 8 * dpr, py + 16 * dpr);
-      ctx.lineTo(px + swing + 8 * dpr, py + 16 * dpr);
-      ctx.lineTo(px + swing, py + 28 * dpr);
-      ctx.closePath();
-      ctx.fillStyle = "#f5c400";
-      ctx.fill();
-      ctx.strokeStyle = "#2a2e33";
-      ctx.stroke();
     }
 
     const shop = doc.level.shop;
@@ -2192,6 +2495,17 @@ function boot() {
     drawShopSet(now);
     if (isMeasure()) drawGraphPaper();
 
+    const floors = (doc.level.world || []).filter((s) => s.h <= 2.6 && s.y <= 0.05).sort((a, b) => a.x - b.x);
+    for (let i = 0; i < floors.length - 1; i++) {
+      const gap = floors[i + 1].x - (floors[i].x + floors[i].w);
+      if (gap < 0.45) continue;
+      const x0 = floors[i].x + floors[i].w;
+      ctx.fillStyle = "#2a2118";
+      ctx.fillRect(wx(x0), wy(1.15), wr(gap), wr(2.4));
+      ctx.fillStyle = "rgba(0,0,0,0.28)";
+      ctx.fillRect(wx(x0), wy(0.35), wr(gap), wr(0.7));
+    }
+
     for (const s of doc.level.world || []) {
       drawRectWorld(s, "#1a1f24", "#3d4a56");
       hatchRect(s, "rgba(255,255,255,0.05)", 0.46);
@@ -2231,7 +2545,6 @@ function boot() {
     drawDropBay(doc.level.drop);
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
-    stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
     if (canEditSite() && doc.level.drop) {
       const d = doc.level.drop;
       const cx = wx(d.x + d.w / 2);
@@ -2259,6 +2572,20 @@ function boot() {
       ctx.stroke();
       ctx.setLineDash([]);
     }
+    if (!playing && lastMiss && !(winEl && winEl.classList.contains("show"))) {
+      ctx.save();
+      ctx.strokeStyle = "#c2410c";
+      ctx.lineWidth = 3;
+      ctx.setLineDash([6, 5]);
+      const s = Math.max(16, wr(CORE_S));
+      ctx.strokeRect(wx(lastMiss.x) - s / 2, wy(lastMiss.y) - s / 2, s, s);
+      ctx.setLineDash([]);
+      ctx.font = `800 ${Math.max(14, Math.round(14 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.fillStyle = "#c2410c";
+      ctx.textAlign = "center";
+      ctx.fillText("Stopped", wx(lastMiss.x), wy(lastMiss.y) - s / 2 - 8);
+      ctx.restore();
+    }
 
     if (!playing) {
       for (const c of doc.level.cores || []) drawCrate(c.x, c.y, 0);
@@ -2282,13 +2609,7 @@ function boot() {
         const ghost = drag.type === "ghost";
         if (ghost) drawCautionBar(drag.x1, drag.y1, drag.x2, drag.y2);
         else drawIBeam(drag.x1, drag.y1, drag.x2, drag.y2);
-        if (drag.snap) {
-          ctx.beginPath();
-          ctx.strokeStyle = ORANGE;
-          ctx.lineWidth = 2;
-          ctx.arc(wx(drag.x2), wy(drag.y2), Math.max(6, wr(0.16)), 0, Math.PI * 2);
-          ctx.stroke();
-        }
+        if (drag.snap) drawSnapCoach(drag.x2, drag.y2, drag.snapKind);
       }
       if (drag && drag.kind === "rect") {
         const r = normRect(drag.x1, drag.y1, drag.x2, drag.y2);
@@ -2296,31 +2617,20 @@ function boot() {
       }
       if (drag && drag.kind === "place" && drag.x != null) {
         const ok = inRect(drag.x, drag.y, doc.level.shop);
-        const pt = { x: drag.x, y: drag.y };
-        for (const n of allNodes()) {
-          if (dist(n, pt) < SNAP * 1.8) {
-            ctx.beginPath();
-            ctx.strokeStyle = "rgba(245,196,0,0.95)";
-            ctx.lineWidth = 2.5;
-            ctx.arc(wx(n.x), wy(n.y), Math.max(7, wr(0.18)), 0, Math.PI * 2);
-            ctx.stroke();
-          }
-        }
         ctx.globalAlpha = 0.7;
         drawWheel(drag.x, drag.y, 0, drag.type);
         ctx.globalAlpha = 1;
-        ctx.beginPath();
-        ctx.strokeStyle = drag.snap ? ORANGE : (ok ? "#9db0c4" : "#b91c1c");
-        ctx.lineWidth = 2;
-        ctx.arc(wx(drag.x), wy(drag.y), Math.max(8, wr(WHEEL_R + 0.08)), 0, Math.PI * 2);
-        ctx.stroke();
+        if (drag.snap) drawSnapCoach(drag.x, drag.y, drag.snapKind);
+        else {
+          ctx.beginPath();
+          ctx.strokeStyle = ok ? "#9db0c4" : "#b91c1c";
+          ctx.lineWidth = 2;
+          ctx.arc(wx(drag.x), wy(drag.y), Math.max(8, wr(WHEEL_R + 0.08)), 0, Math.PI * 2);
+          ctx.stroke();
+        }
       }
       if (drag && drag.kind === "move" && drag.snapTo) {
-        ctx.beginPath();
-        ctx.strokeStyle = ORANGE;
-        ctx.lineWidth = 2;
-        ctx.arc(wx(drag.snapTo.x), wy(drag.snapTo.y), Math.max(6, wr(0.16)), 0, Math.PI * 2);
-        ctx.stroke();
+        drawSnapCoach(drag.snapTo.x, drag.snapTo.y, drag.snapKind);
       }
     } else if (sim) {
       for (const item of sim.bodies) {
@@ -2368,6 +2678,8 @@ function boot() {
       ctx.fillStyle = "#f4efe6";
       ctx.fillText(lastReadout || (playing ? "test" : "shop"), 14, 32);
     }
+    drawCoach();
+    drawBerty(now);
   }
 
   function normRect(x1, y1, x2, y2) {
@@ -2377,6 +2689,25 @@ function boot() {
 
   function endPan() { panning = null; }
 
+  function drawSnapCoach(x, y, kind) {
+    ctx.save();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = ORANGE;
+    ctx.beginPath();
+    ctx.arc(wx(x), wy(y), Math.max(9, wr(kind === "hub" ? 0.13 : 0.09)), 0, Math.PI * 2);
+    ctx.stroke();
+    if (kind === "hub") {
+      ctx.fillStyle = "#f0c000";
+      for (let i = 0; i < 4; i++) {
+        const a = i * Math.PI / 2;
+        ctx.beginPath();
+        ctx.arc(wx(x + Math.cos(a) * WHEEL_R), wy(y + Math.sin(a) * WHEEL_R), Math.max(5, wr(0.075)), 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    ctx.restore();
+  }
+
   function finishDrag() {
     if (!drag) { activePtr = null; return; }
     const d = drag;
@@ -2385,7 +2716,10 @@ function boot() {
     if (d.kind === "bar") {
       const len = Math.hypot(d.x2 - d.x1, d.y2 - d.y1);
       if (len >= MIN_BAR && inRect(d.x1, d.y1, doc.level.shop)) {
-        addPart({ type: d.type, x1: d.x1, y1: d.y1, x2: d.x2, y2: d.y2 });
+        const part = { type: d.type, x1: d.x1, y1: d.y1, x2: d.x2, y2: d.y2 };
+        stickPairBar(part);
+        stickPitBar(part);
+        addPart(part);
       }
     } else if (d.kind === "rect") {
       if (!canEditSite()) return;
@@ -2403,7 +2737,11 @@ function boot() {
         }
       }
     } else if (d.kind === "move") {
-      snapPartToHub(d.part);
+      const hit = snapPartToHub(d.part);
+      if (!hit) {
+        stickBehind(d.part);
+        stickOther(d.part);
+      }
       if (d.part.x != null && !inRect(d.part.x, d.part.y, doc.level.shop) && d.part.type !== "core") {
         Object.assign(d.part, d.orig);
         toast("Stay on the Shop Floor.");
@@ -2414,7 +2752,297 @@ function boot() {
     } else if (d.kind === "place" && d.x != null) {
       const pt = { x: d.x, y: d.y };
       if (!canPlaceWheel(pt)) toast("Build on the Shop Floor.");
-      else addPart({ type: d.type, x: pt.x, y: pt.y, a: 0 });
+      else {
+        const part = { type: d.type, x: pt.x, y: pt.y, a: 0 };
+        if (!d.snap) {
+          stickBehind(part);
+          stickOther(part);
+        }
+        addPart(part);
+      }
+    }
+    lastReadout = "";
+    showCalmFail("");
+    refreshMeta();
+  }
+
+  function drawPointer(x, y, tx, ty, label) {
+    const x0 = wx(x), y0 = wy(y), x1 = wx(tx), y1 = wy(ty);
+    const ang = Math.atan2(y1 - y0, x1 - x0);
+    const pulse = 0.72 + 0.28 * Math.sin(performance.now() / 160);
+    ctx.save();
+    ctx.globalAlpha = pulse;
+    ctx.strokeStyle = "#f0c000";
+    ctx.fillStyle = "#f0c000";
+    ctx.lineWidth = Math.max(5, wr(0.09));
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.stroke();
+    const ah = Math.max(16, wr(0.32));
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x1 - ah * Math.cos(ang - 0.42), y1 - ah * Math.sin(ang - 0.42));
+    ctx.lineTo(x1 - ah * Math.cos(ang + 0.42), y1 - ah * Math.sin(ang + 0.42));
+    ctx.closePath();
+    ctx.fill();
+    ctx.font = `800 ${Math.max(16, Math.round(16 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+    ctx.lineWidth = 5;
+    ctx.strokeStyle = "#1a1400";
+    ctx.strokeText(label, x0, y0 - 8);
+    ctx.fillStyle = "#f0c000";
+    ctx.fillText(label, x0, y0 - 8);
+    ctx.restore();
+  }
+
+  const bertyFly = { x: 0, y: 0, ready: false };
+
+  function wrapLines(text, maxW) {
+    const words = String(text || "").split(/\s+/);
+    const lines = [];
+    let cur = "";
+    for (const w of words) {
+      const next = cur ? `${cur} ${w}` : w;
+      if (cur && ctx.measureText(next).width > maxW) {
+        lines.push(cur);
+        cur = w;
+      } else cur = next;
+    }
+    if (cur) lines.push(cur);
+    return lines.slice(0, 3);
+  }
+
+  function roundBubble(x, y, w, h, r) {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function bertyTarget() {
+    if (courseId === "wall" && !wallReady()) {
+      const right = otherSpot();
+      if (right) return right;
+    }
+    if (courseId === "pit" && !pitBridged()) return { x: 7.4, y: 1.7 };
+    if (courseId === "pair" && !pairLinked()) {
+      const cores = doc.level.cores || [];
+      if (cores.length > 1) return { x: (cores[0].x + cores[1].x) / 2, y: cores[0].y + 0.5 };
+    }
+    if (courseId === "shelf" && laneBlocked()) {
+      const roller = (doc.machine.parts || []).find((p) => p.type === "roller" && p.x > 5.7);
+      if (roller) return { x: roller.x, y: roller.y };
+    }
+    const spot = behindSpot();
+    return spot || (doc.level.cores || [])[0] || { x: 4, y: 2 };
+  }
+
+  function drawCrew(x, y, u) {
+    ctx.fillStyle = "rgba(26,20,0,0.16)";
+    ctx.beginPath();
+    ctx.ellipse(x + 28 * u, y + 92 * u, 20 * u, 5 * u, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#123049";
+    ctx.fillRect(x + 16 * u, y + 64 * u, 10 * u, 20 * u);
+    ctx.fillRect(x + 30 * u, y + 64 * u, 10 * u, 20 * u);
+    ctx.fillStyle = "#2a2e33";
+    ctx.fillRect(x + 13 * u, y + 82 * u, 15 * u, 7 * u);
+    ctx.fillRect(x + 28 * u, y + 82 * u, 15 * u, 7 * u);
+    ctx.fillStyle = "#e87722";
+    ctx.fillRect(x + 12 * u, y + 38 * u, 32 * u, 28 * u);
+    ctx.fillStyle = "#f0c000";
+    ctx.fillRect(x + 12 * u, y + 48 * u, 32 * u, 5 * u);
+    ctx.strokeStyle = "#f3d2b0";
+    ctx.lineWidth = 6 * u;
+    ctx.lineCap = "round";
+    ctx.beginPath();
+    ctx.moveTo(x + 42 * u, y + 48 * u);
+    ctx.lineTo(x + 56 * u, y + 62 * u);
+    ctx.stroke();
+    ctx.fillStyle = "#f3d2b0";
+    ctx.beginPath();
+    ctx.arc(x + 28 * u, y + 30 * u, 14 * u, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#f0c000";
+    ctx.fillRect(x + 14 * u, y + 10 * u, 28 * u, 12 * u);
+    ctx.beginPath();
+    ctx.ellipse(x + 28 * u, y + 20 * u, 18 * u, 6 * u, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = "#1a1400";
+    ctx.beginPath();
+    ctx.arc(x + 23 * u, y + 30 * u, 1.8 * u, 0, Math.PI * 2);
+    ctx.arc(x + 33 * u, y + 30 * u, 1.8 * u, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#1a1400";
+    ctx.lineWidth = 1.6 * u;
+    ctx.beginPath();
+    ctx.arc(x + 28 * u, y + 33 * u, 4.2 * u, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+  }
+
+  function drawBerty(now) {
+    const line = coachLine();
+    if (!line) return;
+    if (winEl && winEl.classList.contains("show")) return;
+    const dpr = view.dpr || 1;
+    const cssW = canvas.width / dpr;
+    const cssH = canvas.height / dpr;
+    const phone = cssW < 860 || cssH < 480;
+    const short = cssH < 360;
+    const u = (short ? 0.52 : phone ? 0.72 : 1.05) * dpr;
+    const aim = bertyTarget();
+    const ax = wx(aim.x);
+    const ay = wy(aim.y);
+    ctx.save();
+    const fontPx = Math.round((short ? 18 : phone ? 20 : 28) * dpr);
+    ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
+    const bubbleMax = Math.min(canvas.width - (short ? 78 : 96) * u, (short ? 520 : phone ? 250 : 420) * dpr);
+    const lines = wrapLines(line, Math.max(80 * dpr, bubbleMax - 28 * dpr));
+    const lineH = Math.round(fontPx * 1.15);
+    const bubbleW = Math.min(canvas.width - 24 * dpr, Math.max(80 * dpr, ...lines.map((t) => ctx.measureText(t).width)) + 28 * dpr);
+    const bubbleH = lines.length * lineH + 16 * dpr;
+    if (short) {
+      const x = 8 * dpr;
+      const y = 6 * dpr;
+      drawCrew(x, y, u);
+      const bx = x + 58 * u;
+      const by = y;
+      roundBubble(bx, by, bubbleW, bubbleH, 12 * dpr);
+      ctx.fillStyle = "#f7f1e6";
+      ctx.fill();
+      ctx.lineWidth = Math.max(2, 2 * dpr);
+      ctx.strokeStyle = "#1a1400";
+      ctx.stroke();
+      ctx.fillStyle = "#1a1400";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
+      ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
+      lines.forEach((t, i) => ctx.fillText(t, bx + 12 * dpr, by + 8 * dpr + i * lineH));
+      ctx.restore();
+      return;
+    }
+    const figW = 70 * u;
+    let tx = ax - figW * 0.35;
+    const block = figW + 10 * dpr + bubbleW;
+    tx = Math.max(12 * dpr, Math.min(canvas.width - block - 12 * dpr, tx));
+    let ty = 14 * dpr;
+    if (!bertyFly.ready) {
+      bertyFly.x = tx;
+      bertyFly.y = ty;
+      bertyFly.ready = true;
+    }
+    bertyFly.x += (tx - bertyFly.x) * 0.14;
+    bertyFly.y += (ty - bertyFly.y) * 0.14;
+    const x = bertyFly.x;
+    const y = bertyFly.y + Math.sin(now / 260) * 6 * u;
+    const handX = x + 54 * u;
+    const handY = y + 62 * u;
+    if (Math.hypot(ax - handX, ay - handY) > 70 * u) {
+      ctx.strokeStyle = "#f0c000";
+      ctx.fillStyle = "#f0c000";
+      ctx.lineWidth = Math.max(4 * dpr, 5 * u);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ctx.moveTo(handX, handY);
+      ctx.lineTo(ax, ay);
+      ctx.stroke();
+      const ang = Math.atan2(ay - handY, ax - handX);
+      const ah = 16 * u;
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.lineTo(ax - ah * Math.cos(ang - 0.42), ay - ah * Math.sin(ang - 0.42));
+      ctx.lineTo(ax - ah * Math.cos(ang + 0.42), ay - ah * Math.sin(ang + 0.42));
+      ctx.closePath();
+      ctx.fill();
+    }
+    drawCrew(x, y, u);
+    const bx = Math.min(x + 64 * u, canvas.width - bubbleW - 8 * dpr);
+    const by = Math.max(8 * dpr, y - 6 * u);
+    roundBubble(bx, by, bubbleW, bubbleH, 14 * dpr);
+    ctx.fillStyle = "#f7f1e6";
+    ctx.fill();
+    ctx.lineWidth = Math.max(2, 2.5 * dpr);
+    ctx.strokeStyle = "#1a1400";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(bx + 16 * dpr, by + bubbleH);
+    ctx.lineTo(x + 34 * u, y + 22 * u);
+    ctx.lineTo(bx + 40 * dpr, by + bubbleH);
+    ctx.closePath();
+    ctx.fillStyle = "#f7f1e6";
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#1a1400";
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
+    lines.forEach((t, i) => ctx.fillText(t, bx + 14 * dpr, by + 8 * dpr + i * lineH));
+    ctx.restore();
+  }
+
+  function drawCoach() {
+    const spot = behindSpot();
+    if (!spot || playing || levelDone(courseId)) return;
+    if (!JOBS.some((job) => job.id === courseId)) return;
+    if (winEl && winEl.classList.contains("show")) return;
+    const pose = wheelPose();
+    const needWheel = courseId !== "wall" && pose !== "ready" && !(courseId === "pair" && !pairLinked());
+    if (courseId !== "wall" && (pose !== "ready" || courseId === "pair")) {
+      ctx.save();
+      ctx.setLineDash([7, 6]);
+      ctx.strokeStyle = "#f0c000";
+      ctx.lineWidth = 3;
+      if (needWheel || courseId !== "pair") {
+        ctx.beginPath();
+        ctx.arc(wx(spot.x), wy(spot.y), Math.max(18, wr(WHEEL_R + 0.12)), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+    if (courseId === "pair" && !pairLinked()) {
+      const cores = doc.level.cores || [];
+      if (cores.length > 1) drawPointer(cores[0].x, cores[0].y + 1.5, (cores[0].x + cores[1].x) / 2, cores[0].y + 0.35, "Bar");
+    }
+    if (courseId === "pit" && !pitBridged()) {
+      drawPointer(4.4, 2.7, 7.4, 1.55, "Bar");
+    }
+    if (courseId === "curb" && pose === "left") {
+      const blue = (doc.machine.parts || []).find((p) => p.type === "driveL");
+      if (blue) drawPointer(blue.x, blue.y + 1.15, spot.x, spot.y + 0.5, "Orange");
+      return;
+    }
+    if (courseId === "wall" && !wallReady()) {
+      const right = otherSpot();
+      if (right) {
+        ctx.save();
+        ctx.setLineDash([7, 6]);
+        ctx.strokeStyle = "#f0c000";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(wx(right.x), wy(right.y), Math.max(18, wr(WHEEL_R + 0.12)), 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+        drawPointer(right.x, right.y + 1.6, right.x, right.y + 0.5, "Blue");
+      }
+      return;
+    }
+    if (courseId === "shelf" && laneBlocked()) {
+      const roller = (doc.machine.parts || []).find((p) => p.type === "roller" && p.x > 5.7);
+      if (roller) drawPointer(roller.x, roller.y + 1.25, roller.x - 1.5, roller.y, "Off");
+      return;
+    }
+    const wheel = (doc.machine.parts || []).find((p) => (p.type === "driveR" || p.type === "roller") && p.x != null);
+    if (wheel && pose !== "ready" && courseId !== "wall") {
+      drawPointer(wheel.x, wheel.y + 1.15, spot.x, spot.y + 0.55, courseId === "roll" && wheel.type === "roller" ? "Not this" : "Behind");
+    } else if (pose !== "ready" && courseId !== "wall" && courseId !== "pair") {
+      drawPointer(spot.x - 0.1, spot.y + 1.7, spot.x, spot.y + 0.55, "Wheel");
     }
   }
 
@@ -2430,6 +3058,7 @@ function boot() {
       x: snapped.x,
       y: snapped.y,
       snap: !!(snapped.node),
+      snapKind: snapped.node ? snapped.node.kind : "",
       sx: ev.clientX,
       sy: ev.clientY,
     };
@@ -2566,7 +3195,7 @@ function boot() {
         x2 = drag.x1 + (x2 - drag.x1) * k;
         y2 = drag.y1 + (y2 - drag.y1) * k;
       }
-      drag.x2 = x2; drag.y2 = y2; drag.snap = !!n;
+      drag.x2 = x2; drag.y2 = y2; drag.snap = !!n; drag.snapKind = n ? n.kind : "";
     } else if (drag.kind === "rect") {
       drag.x2 = pt.x; drag.y2 = pt.y;
     } else if (drag.kind === "goal") {
@@ -2590,12 +3219,13 @@ function boot() {
         p.x2 = s.x2 + dx; p.y2 = s.y2 + dy;
       }
       const snapped = snapPartToHub(p);
-      drag.snapTo = snapped ? { x: p.x != null ? p.x : (p.x1 + p.x2) / 2, y: p.y != null ? p.y : (p.y1 + p.y2) / 2 } : null;
+      drag.snapKind = snapped ? snapped.kind : "";
+      drag.snapTo = snapped ? { x: snapped.x, y: snapped.y } : null;
     } else if (drag.kind === "place") {
       if (!over && drag.x == null && Math.hypot(ev.clientX - drag.sx, ev.clientY - drag.sy) < DRAG_PX) return;
       const use = over ? pt : worldFromEvent(ev);
       const s = snapPt(use);
-      drag.x = s.x; drag.y = s.y; drag.snap = !!s.node;
+      drag.x = s.x; drag.y = s.y; drag.snap = !!s.node; drag.snapKind = s.node ? s.node.kind : "";
     }
   }
 
@@ -2678,7 +3308,7 @@ function boot() {
 
   async function loadBuiltin(id) {
     if (!jobUnlocked(id)) {
-      toast(id === "editor" ? "Design unlocks after Job 10 is clear." : "Clear the job before this one.");
+      toast(id === "editor" ? "Design unlocks after the build jobs are clear." : "Clear the job before this one.");
       refreshPath();
       return;
     }
@@ -2710,6 +3340,8 @@ function boot() {
     if (pick) pick.value = item.id;
     setLayer("machine");
     setTool(item.id === "measure" ? "tape" : "driveR");
+    seedFix();
+    if (item.id === "open" && !levelDone("open")) doc.title = "Fix it";
     applyCam(true);
     refreshMeta();
   }
@@ -2734,6 +3366,23 @@ function boot() {
     document.querySelectorAll("[data-role]").forEach((b) => {
       b.addEventListener("click", () => setRole(b.getAttribute("data-role")));
     });
+    const lessonMeasure = document.getElementById("btn-lesson-measure");
+    const lessonForces = document.getElementById("btn-lesson-forces");
+    if (lessonMeasure) lessonMeasure.addEventListener("click", () => { showCrew(false); loadBuiltin("measure"); });
+    if (lessonForces) lessonForces.addEventListener("click", () => { showCrew(false); loadBuiltin("forces"); });
+    const winNext = document.getElementById("win-next");
+    const winSkip = document.getElementById("win-skip");
+    if (winNext) {
+      winNext.addEventListener("click", async () => {
+        if (clearTour && clearBeat < 2) {
+          clearBeat += 1;
+          paintClear();
+          return;
+        }
+        await goNextJob();
+      });
+    }
+    if (winSkip) winSkip.addEventListener("click", () => { goNextJob(); });
     document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
     const fillBtn = document.getElementById("btn-fill");
     if (fillBtn) fillBtn.addEventListener("click", () => { fillOpenShop(); });
@@ -3000,26 +3649,43 @@ function boot() {
     const wideBtn = document.getElementById("btn-wide");
     if (wideBtn) wideBtn.addEventListener("click", tryWide);
     window.addEventListener("keydown", (ev) => {
-      if (ev.target.matches("input, textarea")) return;
+      if (ev.metaKey || ev.ctrlKey || ev.altKey) {
+        if ((ev.key === "z" || ev.key === "Z") && (ev.ctrlKey || ev.metaKey) && !ev.altKey) {
+          ev.preventDefault();
+          undo();
+        }
+        return;
+      }
+      const el = ev.target;
+      if (el && el.closest && el.closest("input, textarea, select")) return;
+      const key = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
       if (ev.code === "Space") {
         ev.preventDefault();
+        if (won) return;
         playing ? stopPlay() : startPlay();
+        return;
       }
-      if (ev.key === "1") setTool("driveR");
-      if (ev.key === "2") setTool("driveL");
-      if (ev.key === "3") setTool("roller");
-      if (ev.key === "4") setTool("steel");
-      if (ev.key === "5") setTool("ghost");
-      if (ev.key === "e" || ev.key === "E") setTool("erase");
-      if (ev.key === "m" || ev.key === "M") setTool("move");
-      if (ev.key === "z" && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); undo(); }
-      if (ev.key === "z" && !ev.ctrlKey && !ev.metaKey) undo();
-      if (ev.key === "t" || ev.key === "T") { if (isMeasure()) setTool("tape"); }
+      const toolKey = { "1": "driveR", "2": "driveL", "3": "roller", "4": "steel", "5": "ghost", e: "erase", m: "move" };
+      if (toolKey[key]) {
+        setLayer("machine");
+        setTool(toolKey[key]);
+        return;
+      }
+      if (key === "s") {
+        ev.preventDefault();
+        slowMo = !slowMo;
+        refreshMeta();
+        return;
+      }
+      if (key === "z") { undo(); return; }
+      if (key === "t" && isMeasure()) setTool("tape");
       if (ev.key === "Escape") {
+        if (playing) stopPlay();
         showCrew(false);
         showSystems(false);
         hideHowto();
         debugOn = false;
+        return;
       }
       if (ev.key === "`") debugOn = !debugOn;
     });
@@ -3180,13 +3846,16 @@ function boot() {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
     const howtoOpen = document.getElementById("howto") && !document.getElementById("howto").hidden;
-    const busy = playing || drag || howtoOpen || debugOn;
+    const winOpen = winEl && winEl.classList.contains("show");
+    applyCoach();
+    const coaching = document.body.dataset.coach === "1" || (courseId === "roll" && !levelDone("roll"));
+    const busy = playing || drag || howtoOpen || debugOn || winOpen || coaching;
     if (!busy && now - lastDraw < 50) {
       requestAnimationFrame(loop);
       return;
     }
     lastDraw = now;
-    if (playing && sim) {
+    if (playing && sim && !won) {
       acc += dt;
       let steps = 0;
       const stepCost = slowMo ? DT / 0.35 : DT;
@@ -3196,6 +3865,12 @@ function boot() {
         steps++;
       }
       if (acc >= DT) acc = 0;
+      if (playing && !won && sim && sim.cores[0]) {
+        const p = sim.cores[0].getPosition();
+        const ago = trail.length > 45 ? trail[trail.length - 45] : null;
+        const stuck = playAge > 3.2 && ago && Math.hypot(p.x - ago.x, p.y - ago.y) < 0.22;
+        if (p.y < -0.4 || playAge > 12 || stuck) stopPlay();
+      }
     }
     applyCam(false);
     draw();
@@ -3218,11 +3893,15 @@ function boot() {
   document.body.dataset.tw = embed ? "1" : "0";
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
+  } else {
+    seedFix();
+    doc.title = "Fix it";
+    if (titleEl) titleEl.value = doc.title;
   }
   showCrew(false);
   showSystems(false);
-  if (!embed) showHowto(0);
-  else hideHowto();
+  hideHowto();
+  applyCoach();
   requestAnimationFrame(loop);
 }
 

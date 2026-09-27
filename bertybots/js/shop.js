@@ -6,7 +6,6 @@ import {
   packDoc,
   unpackDoc,
   downloadDoc,
-  downloadLevel,
   readFile,
   sanitizeTitle,
 } from "./io.js";
@@ -54,105 +53,24 @@ const BUILTIN = [
   { id: "pair", label: "Pair of Crates", url: "levels/pair-of-crates.json" },
 ];
 
-const JOBS = [
-  { id: "open", label: "Open Shop" },
-  { id: "roll", label: "Roll Out" },
-  { id: "curb", label: "Up the Curb" },
-  { id: "pit", label: "Mind the Pit" },
-  { id: "wall", label: "The Wall" },
-  { id: "shelf", label: "High Shelf" },
-  { id: "bend", label: "Around the Bend" },
-  { id: "pair", label: "Pair of Crates" },
-  { id: "measure", label: "Measure" },
-  { id: "forces", label: "Forces" },
-];
-
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 
-const ACCESS_KEY = "bz-access-v1";
-const ACCESS_COPY = {
-  en: {
-    settings: "Settings", lang: "Language", read: "Read", close: "Close",
-    speak: "Read aloud", big: "Big text", fewer: "Fewer answers",
-    on: "On", off: "Off", speakOn: "Read aloud is on.",
-    english: "English.", simple: "Simple words.", es: "Español.",
-  },
-  simple: {
-    settings: "Settings", lang: "Language", read: "Read", close: "Close",
-    speak: "Read aloud", big: "Big text", fewer: "Fewer answers",
-    on: "On", off: "Off", speakOn: "Read aloud is on.",
-    english: "English.", simple: "Simple words.", es: "Español.",
-  },
-  es: {
-    settings: "Ajustes", lang: "Idioma", read: "Leer", close: "Cerrar",
-    speak: "Leer en voz alta", big: "Texto grande", fewer: "Menos respuestas",
-    on: "Sí", off: "No", speakOn: "Lectura activada.",
-    english: "English.", simple: "Palabras simples.", es: "Español.",
-  },
-};
-const HOWTO_SHORT = {
-  simple: [
-    { title: "The shop", body: "Build a machine. Park the crate in the orange box." },
-    { title: "The job", body: "The crate stays in the orange box for one second." },
-    { title: "The parts", body: "Drive-R goes right. Drive-L goes left. Steel is the bar." },
-    { title: "Then Play", body: "Drag a wheel. Tap Play. Tap Stop to go back." },
-  ],
-  es: [
-    { title: "La tienda", body: "Armas una máquina. Deja la caja en la zona naranja." },
-    { title: "El trabajo", body: "La caja queda en la zona naranja un segundo." },
-    { title: "Las piezas", body: "Drive-R va a la derecha. Drive-L va a la izquierda." },
-    { title: "Luego Play", body: "Arrastra una rueda. Toca Play. Toca Stop para volver." },
-  ],
-};
-
-function readAccess() {
-  try {
-    const raw = JSON.parse(localStorage.getItem(ACCESS_KEY) || "{}");
-    const lang = raw.lang === "simple" || raw.lang === "es" ? raw.lang : "en";
-    return { lang, speak: !!raw.speak, big: !!raw.big, fewer: !!raw.fewer };
-  } catch (e) {
-    return { lang: "en", speak: false, big: false, fewer: false };
-  }
-}
-
-function writeAccess(next) {
-  try { localStorage.setItem(ACCESS_KEY, JSON.stringify(next)); } catch (e) { /* private mode */ }
-  document.documentElement.dataset.big = next.big ? "1" : "0";
-  document.documentElement.dataset.lang = next.lang;
-  window.dispatchEvent(new Event("bz-access"));
-}
-
-function say(text, lang) {
-  if (!window.speechSynthesis || !text) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang === "es" ? "es-US" : "en-US";
-  u.rate = lang === "simple" ? 0.85 : 0.95;
-  window.speechSynthesis.speak(u);
-}
-
-function stopSay() {
-  if (window.speechSynthesis) window.speechSynthesis.cancel();
-}
-
-let access = readAccess();
-writeAccess(access);
 const HOWTO = [
   {
-    title: "What this game is",
-    body: "Berty's Botz is a construction shop. You design a machine. Gravity and the Drive wheels are the forces. The job is to park the Bot Core crate in the Drop Zone.",
+    title: "Park the crate",
+    body: "Job: Bot Core in the Drop Zone for one second. Watch the crate roll in.",
   },
   {
-    title: "The job",
-    body: "The crate must sit inside the orange Drop Zone for one second. You build on the Shop Floor. The Drop Zone is the goal.",
-  },
-  {
-    title: "The parts",
-    body: "Drive-R rolls right. Drive-L rolls left. Roller is a free wheel. Steel is a silver bar. Ghost is dashed — it misses the machine and can touch the crate.",
+    title: "Parts do jobs",
+    body: "Drive-R goes right. Drive-L goes left. Steel is a silver bar. Ghost is dashed — it misses the machine.",
   },
   {
     title: "Build, then Play",
-    body: "Drag a wheel onto a hub. Play runs the test. Stop puts the shop back. Fewer parts for the same park earns more XP. No names.",
+    body: "Drag a wheel onto a hub. Then Play. Stop puts the shop back.",
+  },
+  {
+    title: "Lean machines earn more",
+    body: "Same job, fewer parts = more XP. Rank stays on this Chromebook. No names.",
   },
 ];
 
@@ -182,10 +100,10 @@ const GUIDE = {
   open: {
     ask: "Ask: park the Bot Core crate in the Drop Zone. That is the job.",
     imagine: "Imagine: Drive-R / Drive-L (energy), Roller, Steel (structure), Ghost (misses the machine).",
-    plan: "Plan: build only on the Shop Floor. 48-part cap. Builder places the parts.",
+    plan: "Plan: build only on the Shop Floor. 48-part cap. Pair — builder places, observer watches the crate.",
     create: "Create: drag a wheel onto a hub. Steel pulls from a node. Starter cart is a pusher, not a finished design.",
     test: "Test: Play. Gravity and Drive are inputs. The orange trail is feedback. Stop restores the shop.",
-    improve: "Improve: change one thing, then test again.",
+    improve: "Improve: change one thing, test again. Save a course title only — no names in the file.",
     system: "Open Shop is a straight process path. Input energy on the floor, process through the machine, output the crate into the zone.",
   },
   editor: {
@@ -301,18 +219,6 @@ function rectsOverlap(a, b) {
   return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
 }
 
-function coreInDropAt(x, y, drop) {
-  if (!drop) return false;
-  if (inRect(x, y, drop)) return true;
-  const box = { x: x - CORE_S / 2, y: y - CORE_S / 2, w: CORE_S, h: CORE_S };
-  if (!rectsOverlap(box, drop)) return false;
-  const x0 = Math.max(box.x, drop.x);
-  const y0 = Math.max(box.y, drop.y);
-  const x1 = Math.min(box.x + box.w, drop.x + drop.w);
-  const y1 = Math.min(box.y + box.h, drop.y + drop.h);
-  return (x1 - x0) * (y1 - y0) >= CORE_S * CORE_S * 0.5;
-}
-
 function dist(a, b) {
   const dx = a.x - b.x, dy = a.y - b.y;
   return Math.hypot(dx, dy);
@@ -412,7 +318,7 @@ export function boot() {
     renderHeat();
     if (!fromRemote) {
       try { if (heatCh) heatCh.postMessage({ t: "reset" }); } catch (e) { /* ignore */ }
-      toast("Parked count is back to 0.");
+      toast("New period. Heat is 0 parked.");
     }
   }
   if (heatCh) {
@@ -433,6 +339,7 @@ export function boot() {
       b.classList.toggle("on", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    if (!quiet) toast(r === "observer" ? "Observer: watch the crate." : "Builder: place parts.");
   }
   try { setRole(sessionStorage.getItem(ROLE_KEY) || "builder", true); } catch (e) { setRole("builder", true); }
 
@@ -477,7 +384,7 @@ export function boot() {
     const raw = localStorage.getItem("bb-progress-v1");
     if (raw) {
       const p = JSON.parse(raw);
-      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {}, tried: p.tried || {} };
+      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {} };
     }
   } catch (e) { /* private mode */ }
 
@@ -625,20 +532,12 @@ export function boot() {
     }
     const step = pinnedStep && STEPS.includes(pinnedStep) ? pinnedStep : autoStep();
     document.querySelectorAll(".step").forEach((b) => {
-      const id = b.getAttribute("data-step");
-      const on = id === step;
+      const on = b.getAttribute("data-step") === step;
       b.classList.toggle("on", on);
       b.setAttribute("aria-selected", on ? "true" : "false");
-      if (access.fewer) {
-        const i = STEPS.indexOf(id);
-        const cur = STEPS.indexOf(step);
-        b.hidden = !(i === cur || i === Math.min(STEPS.length - 1, cur + 1));
-      } else b.hidden = false;
     });
     const text = guideFor(step);
     lineEl.textContent = text;
-    const menuGuide = document.getElementById("menu-guide");
-    if (menuGuide) menuGuide.textContent = text;
     if (hintEl) hintEl.textContent = lastReadout || text;
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;
@@ -660,75 +559,24 @@ export function boot() {
     refreshLesson();
   }
 
-  function howtoCard(i) {
-    const en = HOWTO[i] || HOWTO[0];
-    if (access.lang === "en") return { card: en, canSpeak: true };
-    const alt = (HOWTO_SHORT[access.lang] || [])[i];
-    if (!alt) return { card: en, canSpeak: false };
-    return { card: alt, canSpeak: true };
-  }
-
-  function showHowto(i, speakNow) {
+  function showHowto(i) {
     howtoIndex = Math.max(0, i);
     const root = document.getElementById("howto");
     const title = document.getElementById("howto-title");
     const body = document.getElementById("howto-body");
     const next = document.getElementById("howto-next");
-    const read = document.getElementById("howto-read");
     if (!root || !title || !body) return;
-    const picked = howtoCard(howtoIndex);
-    title.textContent = picked.card.title;
-    body.textContent = picked.card.body;
-    const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
-    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? (access.lang === "es" ? "Armar" : "Build") : (access.lang === "es" ? "Siguiente" : "Next");
-    if (read) read.textContent = copy.read;
+    const card = HOWTO[howtoIndex] || HOWTO[0];
+    title.textContent = card.title;
+    body.textContent = card.body;
+    if (next) next.textContent = howtoIndex >= HOWTO.length - 1 ? "Try Roll Out" : "Next";
     root.hidden = false;
-    if (speakNow && access.speak && picked.canSpeak) say(`${picked.card.title}. ${picked.card.body}`, access.lang);
   }
 
   function hideHowto() {
-    stopSay();
     const root = document.getElementById("howto");
     if (root) root.hidden = true;
-  }
-
-  function paintAccess() {
-    const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
-    const gear = document.getElementById("btn-settings");
-    if (gear) {
-      const lbl = gear.querySelector(".lbl");
-      if (lbl) lbl.textContent = copy.settings;
-      gear.setAttribute("aria-label", copy.settings);
-    }
-    const title = document.getElementById("access-title");
-    if (title) title.textContent = copy.settings;
-    const langLabel = document.getElementById("access-lang-label");
-    if (langLabel) langLabel.textContent = copy.lang;
-    const close = document.getElementById("access-close");
-    if (close) close.textContent = copy.close;
-    const speakBtn = document.getElementById("access-speak");
-    if (speakBtn) {
-      speakBtn.textContent = `${copy.speak}: ${access.speak ? copy.on : copy.off}`;
-      speakBtn.classList.toggle("on", access.speak);
-      speakBtn.setAttribute("aria-pressed", access.speak ? "true" : "false");
-    }
-    const bigBtn = document.getElementById("access-big");
-    if (bigBtn) {
-      bigBtn.textContent = `${copy.big}: ${access.big ? copy.on : copy.off}`;
-      bigBtn.classList.toggle("on", access.big);
-      bigBtn.setAttribute("aria-pressed", access.big ? "true" : "false");
-    }
-    const fewerBtn = document.getElementById("access-fewer");
-    if (fewerBtn) {
-      fewerBtn.textContent = `${copy.fewer}: ${access.fewer ? copy.on : copy.off}`;
-      fewerBtn.classList.toggle("on", access.fewer);
-      fewerBtn.setAttribute("aria-pressed", access.fewer ? "true" : "false");
-    }
-    document.querySelectorAll("[data-lang]").forEach((b) => {
-      const on = b.getAttribute("data-lang") === access.lang;
-      b.classList.toggle("on", on);
-      b.setAttribute("aria-pressed", on ? "true" : "false");
-    });
+    try { localStorage.setItem("bb-howto-v2", "1"); } catch (e) { /* private mode */ }
   }
 
   function rankAt(xp) {
@@ -762,162 +610,6 @@ export function boot() {
       bar.setAttribute("aria-valuemax", String(next ? next.at : rank.at + span));
       bar.setAttribute("aria-label", `${rank.name}, ${progress.xp} XP`);
     }
-    refreshPath();
-  }
-
-  function classJobs() {
-    try {
-      const raw = JSON.parse(localStorage.getItem("bb-class-jobs-v1") || "[]");
-      if (!Array.isArray(raw)) return [];
-      return raw.filter((j) => j && j.id && j.alias && j.doc && j.doc.app === "bertybots").slice(0, 8);
-    } catch (e) { return []; }
-  }
-
-  function allClear() {
-    return JOBS.every((job) => levelDone(job.id));
-  }
-
-  function jobUnlocked(id) {
-    if (levelDone(id)) return true;
-    if (id === "editor" || classJobs().some((job) => job.id === id)) return allClear();
-    const i = JOBS.findIndex((job) => job.id === id);
-    if (i < 0) return false;
-    if (i === 0) return true;
-    return levelDone(JOBS[i - 1].id);
-  }
-
-  function plateState(id) {
-    if (levelDone(id)) return "clear";
-    if (progress.tried && progress.tried[id]) return "test";
-    if (!jobUnlocked(id)) return "lock";
-    return "now";
-  }
-  function levelDone(id) {
-    const rec = progress.wins[id];
-    return !!(rec && rec.n > 0);
-  }
-
-  function refreshPath() {
-    const list = document.getElementById("path-done");
-    const nextBtn = document.getElementById("path-next");
-    const strip = document.getElementById("job-strip");
-    const pick = document.getElementById("level-pick");
-    const exportBtn = document.getElementById("btn-export");
-    const done = JOBS.filter((level) => levelDone(level.id));
-    if (list && nextBtn) {
-      list.replaceChildren();
-      if (!done.length) {
-        const li = document.createElement("li");
-        li.className = "path-empty";
-        li.textContent = "None yet.";
-        list.append(li);
-      } else {
-        for (const level of done) {
-          const li = document.createElement("li");
-          const btn = document.createElement("button");
-          btn.type = "button";
-          btn.className = "path-link";
-          btn.dataset.course = level.id;
-          const n = JOBS.findIndex((job) => job.id === level.id) + 1;
-          btn.textContent = `Job ${n} · ${level.label}`;
-          li.append(btn);
-          list.append(li);
-        }
-      }
-      const upcoming = JOBS.find((level) => !levelDone(level.id));
-      if (upcoming) {
-        const n = JOBS.findIndex((job) => job.id === upcoming.id) + 1;
-        nextBtn.textContent = `Job ${n} · ${upcoming.label}`;
-        nextBtn.dataset.course = upcoming.id;
-      } else {
-        nextBtn.textContent = "Design a level";
-        nextBtn.dataset.course = "editor";
-      }
-    }
-    if (strip) {
-      strip.replaceChildren();
-      JOBS.forEach((job, i) => {
-        const btn = document.createElement("button");
-        const state = plateState(job.id);
-        btn.type = "button";
-        btn.className = `job-plate ${state}`;
-        btn.dataset.course = job.id;
-        btn.disabled = state === "lock";
-        btn.title = `${i + 1}. ${job.label}`;
-        btn.setAttribute("aria-label", `Job ${i + 1}, ${job.label}`);
-        const num = document.createElement("b");
-        num.textContent = String(i + 1);
-        const mark = document.createElement("span");
-        mark.textContent = state === "clear" ? "CLEAR" : state === "test" ? "TEST PASS" : state === "lock" ? "LOCKED" : "NEXT";
-        btn.append(num, mark);
-        strip.append(btn);
-      });
-      if (allClear()) {
-        const design = document.createElement("button");
-        design.type = "button";
-        design.className = "job-plate now";
-        design.dataset.course = "editor";
-        design.title = "Design a level";
-        design.innerHTML = "<b>D</b><span>DESIGN</span>";
-        strip.append(design);
-      }
-      for (const job of classJobs()) {
-        const btn = document.createElement("button");
-        const state = !allClear() ? "lock" : (levelDone(job.id) ? "clear" : "now");
-        btn.type = "button";
-        btn.className = `job-plate ${state}`;
-        btn.dataset.course = job.id;
-        btn.disabled = !allClear();
-        btn.title = job.alias;
-        const num = document.createElement("b");
-        num.textContent = "C";
-        const mark = document.createElement("span");
-        mark.textContent = state === "clear" ? "CLEAR" : "CLASS";
-        btn.append(num, mark);
-        strip.append(btn);
-      }
-      if (allClear() && courseId === "editor") {
-        const ex = document.createElement("button");
-        ex.type = "button";
-        ex.className = "job-plate now";
-        ex.id = "btn-export-live";
-        ex.title = "Export .botzlevel.json";
-        const num = document.createElement("b");
-        num.textContent = "↓";
-        const mark = document.createElement("span");
-        mark.textContent = "EXPORT";
-        ex.append(num, mark);
-        strip.append(ex);
-      }
-    }
-    if (pick) {
-      const cur = courseId;
-      pick.replaceChildren();
-      JOBS.forEach((job, i) => {
-        const opt = document.createElement("option");
-        opt.value = job.id;
-        opt.textContent = `Job ${i + 1} · ${job.label}`;
-        opt.disabled = !jobUnlocked(job.id);
-        pick.append(opt);
-      });
-      if (allClear()) {
-        const opt = document.createElement("option");
-        opt.value = "editor";
-        opt.textContent = "Design a level";
-        pick.append(opt);
-      }
-      for (const job of classJobs()) {
-        const opt = document.createElement("option");
-        opt.value = job.id;
-        opt.textContent = `Class · ${job.alias}`;
-        opt.disabled = !allClear();
-        pick.append(opt);
-      }
-      if ([...pick.options].some((opt) => opt.value === cur)) pick.value = cur;
-    }
-    if (exportBtn) exportBtn.hidden = !(allClear() && courseId === "editor");
-    const designBlock = document.getElementById("designer-block");
-    if (designBlock) designBlock.hidden = !allClear();
   }
 
   function isMeasure() { return courseId === "measure"; }
@@ -1095,12 +787,7 @@ export function boot() {
     if (!root) return;
     root.hidden = !on;
     if (btn) btn.setAttribute("aria-expanded", on ? "true" : "false");
-  }
-
-  function clearWalls() {
-    hideHowto();
-    showSystems(false);
-    showCrew(false);
+    if (on) hideHowto();
   }
 
   function setPacket(on) {
@@ -1250,14 +937,6 @@ export function boot() {
 
   function startPlay() {
     if (playing) return;
-    if (!doc.machine.parts.length) {
-      const line = "Add a part first.";
-      lastReadout = line;
-      const hint = document.getElementById("status-hint");
-      if (hint) hint.textContent = line;
-      toast(line);
-      return;
-    }
     try {
       sim = buildSim(doc);
     } catch (err) {
@@ -1274,7 +953,6 @@ export function boot() {
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
-    showCalmFail("");
     if (coarsePointer()) collapseRail();
     refreshMeta();
   }
@@ -1286,7 +964,7 @@ export function boot() {
     const drop = doc.level.drop;
     const shop = doc.level.shop;
     if (last.y < -0.8) return "Crate left the world. Failed output.";
-    if (drop && coreInDropAt(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
+    if (drop && inRect(last.x, last.y, drop)) return "Close. In the zone, but not for a full second.";
     const xs = trail.slice(-24).map((p) => p.x);
     const span = xs.length ? Math.max(...xs) - Math.min(...xs) : 0;
     if (shop && last.x >= shop.x - 0.2 && last.x <= shop.x + shop.w + 0.2 && span < 0.55) {
@@ -1302,14 +980,8 @@ export function boot() {
   }
 
   function stopPlay() {
-    if (playing && !won && JOBS.some((job) => job.id === courseId) && !levelDone(courseId)) {
-      progress.tried = progress.tried || {};
-      progress.tried[courseId] = true;
-      saveProgress();
-    }
     if (playing && !won) lastReadout = crateReadout();
     else if (won) lastReadout = "Parked. Output reached the Drop Zone.";
-    const missed = playing && !won;
     lastTrail = trail.slice();
     playing = false;
     sim = null;
@@ -1318,17 +990,7 @@ export function boot() {
     winEl.classList.remove("show");
     const hint = document.getElementById("status-hint");
     if (hint && lastReadout) hint.textContent = lastReadout;
-    showCalmFail(missed ? lastReadout : "");
     refreshMeta();
-  }
-
-  function showCalmFail(line) {
-    const box = document.getElementById("calm-fail");
-    const text = document.getElementById("calm-fail-line");
-    if (!box) return;
-    if (!line) { box.hidden = true; return; }
-    if (text) text.textContent = line;
-    box.hidden = false;
   }
 
   function buildSim(source) {
@@ -1472,19 +1134,19 @@ export function boot() {
     }
     playAge += DT * n;
     sampleForces();
-    checkWin(DT * n);
+    checkWin();
   }
 
-  function checkWin(dtAcc) {
-    if (!sim || won || isMeasure() || isForces()) return;
+  function checkWin() {
+    if (!sim || won) return;
     const drop = doc.level.drop;
     let inside = 0;
     for (const b of sim.cores) {
       const p = b.getPosition();
-      if (coreInDropAt(p.x, p.y, drop)) inside++;
+      if (inRect(p.x, p.y, drop)) inside++;
     }
     if (sim.cores.length && inside === sim.cores.length) {
-      winT += dtAcc;
+      winT += DT;
       if (winT >= WIN_SECS) {
         won = true;
         winEl.classList.add("show");
@@ -1758,14 +1420,12 @@ export function boot() {
 
   function stencil(text, x, y, color) {
     ctx.save();
-    ctx.font = `700 ${Math.max(12, Math.round(13 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.shadowColor = "rgba(18,20,24,0.65)";
+    ctx.shadowBlur = 4;
+    ctx.fillStyle = color;
+    ctx.font = `700 ${Math.max(11, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    const w = ctx.measureText(text).width;
-    const h = Math.max(16, Math.round(16 * view.dpr));
-    ctx.fillStyle = "rgba(243,238,228,0.94)";
-    ctx.fillRect(x - 5, y - 3, w + 10, h + 2);
-    ctx.fillStyle = color;
     ctx.fillText(text, x, y);
     ctx.restore();
   }
@@ -2121,30 +1781,11 @@ export function boot() {
     ctx.lineWidth = 2;
     ctx.strokeRect(wx(doc.level.shop.x), wy(doc.level.shop.y + doc.level.shop.h), wr(doc.level.shop.w), wr(doc.level.shop.h));
     ctx.setLineDash([]);
-    const kick = Math.max(4, wr(0.1));
-    const floorX = wx(doc.level.shop.x);
-    const floorY = wy(doc.level.shop.y);
-    ctx.fillStyle = "#1e2226";
-    ctx.fillRect(floorX, floorY - kick - 2, wr(doc.level.shop.w), 2);
-    ctx.fillStyle = "#f0c000";
-    ctx.fillRect(floorX, floorY - kick, wr(doc.level.shop.w), kick);
 
     drawDropBay(doc.level.drop);
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
     stencil("Drop Zone", wx(doc.level.drop.x) + 8, wy(doc.level.drop.y + doc.level.drop.h) + 8, ORANGE);
-    if (canEditSite() && doc.level.drop) {
-      const d = doc.level.drop;
-      const cx = wx(d.x + d.w / 2);
-      const cy = wy(d.y + d.h / 2);
-      ctx.fillStyle = "rgba(243,238,228,0.94)";
-      ctx.fillRect(cx - 40, cy - 11, 80, 22);
-      ctx.fillStyle = "#1e2226";
-      ctx.font = `700 ${Math.max(12, Math.round(12 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillText("drag goal", cx, cy);
-    }
     if (isMeasure()) drawTape();
 
     if ((playing && trail.length > 1) || (!playing && lastTrail.length > 1)) {
@@ -2310,8 +1951,6 @@ export function boot() {
         toast("Stay on the Shop Floor.");
       }
       dirty = true;
-    } else if (d.kind === "goal") {
-      dirty = true;
     } else if (d.kind === "place" && d.x != null) {
       const pt = { x: d.x, y: d.y };
       if (!canPlaceWheel(pt)) toast("Build on the Shop Floor.");
@@ -2366,12 +2005,6 @@ export function boot() {
     if (tool === "tape") {
       if (!tapeA || tapeB) { tapeA = { x: pt.x, y: pt.y }; tapeB = null; }
       else { tapeB = { x: pt.x, y: pt.y }; scoreTape(); }
-      return;
-    }
-
-    if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !hitPart(pt) && tool !== "erase") {
-      const drop = doc.level.drop;
-      drag = { kind: "goal", x0: pt.x, y0: pt.y, ox: drop.x, oy: drop.y };
       return;
     }
 
@@ -2451,11 +2084,7 @@ export function boot() {
     }
     const over = ev.target === canvas || canvas.contains(ev.target);
     const pt = over ? worldFromEvent(ev) : hover;
-    if (over) {
-      hover = pt;
-      if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !playing) canvas.style.cursor = "grab";
-      else if (!drag) canvas.style.cursor = "crosshair";
-    }
+    if (over) hover = pt;
     if (!drag || playing) return;
     if (drag.kind === "bar") {
       const n = nearestNode(pt, SNAP * 1.55);
@@ -2470,17 +2099,6 @@ export function boot() {
       drag.x2 = x2; drag.y2 = y2; drag.snap = !!n;
     } else if (drag.kind === "rect") {
       drag.x2 = pt.x; drag.y2 = pt.y;
-    } else if (drag.kind === "goal") {
-      const drop = doc.level.drop;
-      let x = drag.ox + (pt.x - drag.x0);
-      let y = drag.oy + (pt.y - drag.y0);
-      x = Math.max(0.3, Math.min(WORLD_W - drop.w - 0.3, x));
-      y = Math.max(0.3, Math.min(10, y));
-      const next = { x, y, w: drop.w, h: drop.h };
-      if (!rectsOverlap(next, doc.level.shop)) {
-        drop.x = x;
-        drop.y = y;
-      }
     } else if (drag.kind === "move") {
       const dx = pt.x - drag.x0, dy = pt.y - drag.y0;
       const p = drag.part;
@@ -2521,28 +2139,6 @@ export function boot() {
     if (drag && drag.kind === "place") onPtrUp(ev);
   });
 
-  async function fillOpenShop() {
-    hideHowto();
-    showSystems(false);
-    showCrew(false);
-    if (courseId !== "open") await loadBuiltin("open");
-    if (playing) stopPlay();
-    if (doc.machine.parts.some((p) => p.type === "driveR")) {
-      toast("Drive-R is already on the floor.");
-      return;
-    }
-    const s = doc.level.shop;
-    const core = (doc.level.cores && doc.level.cores[0]) || { x: s.x + 2 };
-    const y = s.y + WHEEL_R + 0.04;
-    const x = Math.max(s.x + WHEEL_R + 0.2, core.x - 1.7);
-    if (!inRect(x, y, s)) {
-      toast("Shop Floor is too small.");
-      return;
-    }
-    if (!addPart({ type: "driveR", x, y, a: 0 })) return;
-    toast("Drive-R on the floor.");
-  }
-
   function starterCart() {
     if (playing) stopPlay();
     const s = doc.level.shop;
@@ -2578,23 +2174,6 @@ export function boot() {
   }
 
   async function loadBuiltin(id) {
-    if (!jobUnlocked(id)) {
-      toast(id === "editor" ? "Design unlocks after Job 10 is clear." : "Clear the job before this one.");
-      refreshPath();
-      return;
-    }
-    const custom = classJobs().find((job) => job.id === id);
-    if (custom) {
-      if (playing) stopPlay();
-      doc = unpackDoc(custom.doc);
-      dirty = false;
-      resetLoop(id);
-      setLayer("machine");
-      setTool("driveR");
-      applyCam(true);
-      refreshMeta();
-      return;
-    }
     const item = BUILTIN.find((x) => x.id === id);
     if (!item) return;
     if (playing) stopPlay();
@@ -2636,8 +2215,6 @@ export function boot() {
       b.addEventListener("click", () => setRole(b.getAttribute("data-role")));
     });
     document.getElementById("btn-play").addEventListener("click", () => playing ? stopPlay() : startPlay());
-    const fillBtn = document.getElementById("btn-fill");
-    if (fillBtn) fillBtn.addEventListener("click", () => { fillOpenShop(); });
     document.getElementById("btn-stop").addEventListener("click", stopPlay);
     const toggleSlow = () => {
       slowMo = !slowMo;
@@ -2718,7 +2295,7 @@ export function boot() {
     const sysBtn = document.getElementById("btn-systems");
     if (sysBtn) sysBtn.addEventListener("click", () => showSystems(true));
     const sysClose = document.getElementById("systems-close");
-    if (sysClose) sysClose.addEventListener("click", () => clearWalls());
+    if (sysClose) sysClose.addEventListener("click", () => showSystems(false));
     const sysRoot = document.getElementById("systems");
     if (sysRoot) {
       sysRoot.addEventListener("click", (ev) => {
@@ -2726,145 +2303,31 @@ export function boot() {
       });
     }
     const howtoBtn = document.getElementById("btn-howto");
-    if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0, true));
+    if (howtoBtn) howtoBtn.addEventListener("click", () => showHowto(0));
     const howtoSkip = document.getElementById("howto-skip");
-    if (howtoSkip) howtoSkip.addEventListener("click", clearWalls);
-    const howtoRead = document.getElementById("howto-read");
-    if (howtoRead) {
-      howtoRead.addEventListener("click", () => {
-        const picked = howtoCard(howtoIndex);
-        if (picked.canSpeak) say(`${picked.card.title}. ${picked.card.body}`, access.lang);
-      });
-    }
+    if (howtoSkip) howtoSkip.addEventListener("click", hideHowto);
     const howtoNext = document.getElementById("howto-next");
     if (howtoNext) {
-      howtoNext.addEventListener("click", () => {
+      howtoNext.addEventListener("click", async () => {
         if (howtoIndex >= HOWTO.length - 1) {
           hideHowto();
+          const pick = document.getElementById("level-pick");
+          if (pick) pick.value = "roll";
+          const res = await fetch("levels/roll-out.json");
+          doc = unpackDoc(await res.json());
+          dirty = false;
+          resetLoop("roll");
+          refreshMeta();
+          toast("Tutorial course: Roll Out. Ask, then Create, then Play.");
           return;
         }
-        showHowto(howtoIndex + 1, true);
+        showHowto(howtoIndex + 1);
       });
     }
-    const settingsBtn = document.getElementById("btn-settings");
-    const accessSheet = document.getElementById("access");
-    function showAccess(on) {
-      if (!accessSheet) return;
-      accessSheet.hidden = !on;
-      paintAccess();
-    }
-    if (settingsBtn) settingsBtn.addEventListener("click", () => showAccess(true));
-    const accessClose = document.getElementById("access-close");
-    if (accessClose) accessClose.addEventListener("click", () => showAccess(false));
-    if (accessSheet) {
-      accessSheet.addEventListener("click", (ev) => {
-        if (ev.target === accessSheet) showAccess(false);
-      });
-      accessSheet.querySelectorAll("[data-lang]").forEach((b) => {
-        b.addEventListener("click", () => {
-          const lang = b.getAttribute("data-lang");
-          if (lang !== "en" && lang !== "simple" && lang !== "es") return;
-          access = { ...access, lang };
-          writeAccess(access);
-          paintAccess();
-          if (!document.getElementById("howto").hidden) showHowto(howtoIndex, false);
-          const copy = ACCESS_COPY[lang];
-          say(lang === "es" ? copy.es : lang === "simple" ? copy.simple : copy.english, lang);
-          refreshGuide();
-        });
-      });
-    }
-    const speakBtn = document.getElementById("access-speak");
-    if (speakBtn) {
-      speakBtn.addEventListener("click", () => {
-        access = { ...access, speak: !access.speak };
-        writeAccess(access);
-        paintAccess();
-        if (access.speak) say((ACCESS_COPY[access.lang] || ACCESS_COPY.en).speakOn, access.lang);
-        else stopSay();
-      });
-    }
-    const bigBtn = document.getElementById("access-big");
-    if (bigBtn) {
-      bigBtn.addEventListener("click", () => {
-        access = { ...access, big: !access.big };
-        writeAccess(access);
-        paintAccess();
-      });
-    }
-    const fewerBtn = document.getElementById("access-fewer");
-    if (fewerBtn) {
-      fewerBtn.addEventListener("click", () => {
-        access = { ...access, fewer: !access.fewer };
-        writeAccess(access);
-        paintAccess();
-        refreshGuide();
-      });
-    }
-    paintAccess();
-    const strip = document.getElementById("job-strip");
-    if (strip) {
-      strip.addEventListener("click", (ev) => {
-        const live = ev.target.closest("#btn-export-live");
-        if (live) {
-          doc.title = sanitizeTitle(document.getElementById("title").value || doc.title);
-          downloadLevel(doc);
-          toast("Saved an alias file. Not permanent.");
-          return;
-        }
-        const hit = ev.target.closest("[data-course]");
-        if (!hit || hit.disabled) return;
-        loadBuiltin(hit.dataset.course);
-      });
-    }
-    const retryBtn = document.getElementById("btn-retry");
-    if (retryBtn) {
-      retryBtn.addEventListener("click", () => {
-        showCalmFail("");
-        if (!playing) startPlay();
-      });
-    }
-    const exportBtn = document.getElementById("btn-export");
-    if (exportBtn) {
-      exportBtn.addEventListener("click", () => {
-        if (!allClear() || courseId !== "editor") {
-          toast("Export unlocks in Design, after Job 10.");
-          return;
-        }
-        doc.title = sanitizeTitle(document.getElementById("title").value || doc.title);
-        downloadLevel(doc);
-        toast("Saved an alias file. Not permanent.");
-      });
-    }
-    const goalBtn = document.getElementById("btn-goal");
-    if (goalBtn) {
-      goalBtn.addEventListener("click", async () => {
-        hideHowto();
-        showCrew(false);
-        if (courseId !== "editor") await loadBuiltin("editor");
-        setLayer("level");
-        setTool("move");
-        toast("Drag the Drop Zone. Challenges keep the goal locked.");
-      });
-    }
-    const moreBtn = document.getElementById("btn-more");
-    const more = document.getElementById("menu-more");
-    if (moreBtn && more) {
-      moreBtn.addEventListener("click", () => {
-        const open = more.hidden;
-        more.hidden = !open;
-        moreBtn.setAttribute("aria-expanded", open ? "true" : "false");
-        moreBtn.textContent = open ? "Less" : "More";
-      });
-    }
-    const menuCard = document.querySelector(".menu-card");
-    if (menuCard) {
-      menuCard.addEventListener("click", async (ev) => {
-        const hit = ev.target.closest("[data-course]");
-        if (!hit || !hit.dataset.course) return;
-        hideHowto();
-        showCrew(false);
-        await loadBuiltin(hit.dataset.course);
+    const howtoRoot = document.getElementById("howto");
+    if (howtoRoot) {
+      howtoRoot.addEventListener("click", (ev) => {
+        if (ev.target === howtoRoot) hideHowto();
       });
     }
     const railBtn = document.getElementById("btn-rail");
@@ -2884,7 +2347,7 @@ export function boot() {
       });
     }
     const crewClose = document.getElementById("crew-close");
-    if (crewClose) crewClose.addEventListener("click", () => clearWalls());
+    if (crewClose) crewClose.addEventListener("click", () => showCrew(false));
     const crewRoot = document.getElementById("crew");
     if (crewRoot) {
       crewRoot.addEventListener("click", (ev) => {
@@ -3119,10 +2582,10 @@ export function boot() {
   document.body.dataset.tw = embed ? "1" : "0";
   if (assigned && BUILTIN.some((x) => x.id === assigned)) {
     loadBuiltin(assigned);
+  } else {
+    try {
+      if (!embed && !localStorage.getItem("bb-howto-v2") && !tightHud()) showHowto(0);
+    } catch (e) { /* ignore */ }
   }
-  showCrew(false);
-  showSystems(false);
-  if (!embed) showHowto(0);
-  else hideHowto();
   requestAnimationFrame(loop);
 }

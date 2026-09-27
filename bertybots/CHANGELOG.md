@@ -1,6 +1,6 @@
 # Berty's Botz changelog (structured)
 
-**Chip: BB 0.19.10** · 2026-09-26 · channel **live**  
+**Chip: BB 0.18.0** · 2026-09-21 · channel **live**  
 Source of truth: `js/version.js` + this file.  
 If the intern and an old zip disagree, the chip wins.
 
@@ -14,7 +14,7 @@ English notes for the period board. Teachers do not need to code.
 | --- | --- | --- |
 | Spec / scaffold | `BB 0.0.x` | Repo only. No cart. |
 | Debug drop | `BB 0.1.0-d3` | Workshop / intern. Chip must say **DEBUG**. Not the classroom URL. |
-| Live classroom | `BB 0.19.10` | `https://apps.kulibert.net/bertybots/` |
+| Live classroom | `BB 0.18.0` | `https://apps.kulibert.net/bertybots/` |
 
 Rules:
 
@@ -28,83 +28,57 @@ Rules:
 
 ---
 
+## 0.19.20 — Keys — 2026-09-27
+
+- 1–5 pick parts, E erases, M moves, Space plays, S is slow, Esc stops, Z undoes. The key sits on the button.
+
+## 0.19.19 — Stay on the job — 2026-09-27
+
+- The camera cannot wander off into the brick wall.
+- The hanging shop lights are gone. They looked like the puzzle.
+
+## 0.19.18 — Berty points — 2026-09-27
+
+- The shop opens closer, on the machine.
+- Berty, in a hard hat, flies in the shop and points with a big speech bubble.
+
+## 0.19.17 — Center, then a side — 2026-09-27
+
+- A wheel locks to its center first. Push past the rim to catch a quadrant.
+
+## 0.19.16 — The shop stays still — 2026-09-27
+
+- The tool bar no longer grows and shrinks. The playfield does not jump.
+
+## 0.19.15 — The line fits — 2026-09-26
+
+- The bottom line is the only text while you build, and it is short enough to read.
+- The stripes say PARK once. A clear is one card, then the next job.
+
+## 0.19.14 — Three different moves — 2026-09-26
+
+- Up the Curb starts with the blue wheel. It rolls the wrong way. The orange one climbs the step.
+- The Wall is not a movie. The orange wheel hits the wall. The blue one goes the other way.
+- High Shelf starts solved except a loose wheel sitting on the step. Drag it off.
+- A clear freezes the parked machine and puts a small card in the corner, so the machine stays the picture.
+
+## 0.19.13 — The hole eats the old wheel — 2026-09-26
+
+- Mind the Pit is wide enough that the wheel from the earlier jobs falls in. A silver bar across the hole parks the crate.
+- A miss leaves a Stopped mark. The stripes say PARK. The miss line says what happened, not "process."
+
+## 0.19.12 — The toy stays up — 2026-09-26
+
+- Build jobs keep the extra buttons hidden. One line tells you the move.
+- Job 2 starts with a loose wheel. The step, the hole, the low wall, and the two steps are close enough to see. Pair needs a bar between the crates.
+
+## 0.19.11 — Fix the cart — 2026-09-26
+
+- Job 1 opens on a broken cart. Drag the right wheel behind the crate, then Play.
+- Build jobs are Fix it, Roll Out, Curb, Pit, Wall, Shelf, Pair. Measure and Forces sit in Menu. Around the Bend stays off the strip.
+- A clear is a card, then the next job.
+
 ## Current train (0.18.x live)
-
-### 0.19.10 — Floor is clear — 2026-09-26
-
-The systems card was stuck on the shop floor. It stays closed until Systems is opened. Fill drops Drive-R behind the crate.
-
-### 0.19.9 — Same pictures — 2026-09-26
-
-Play, Fill, Slow, Stop, Menu, and Settings are the same pictures on the phone and on a wide screen. Parked is a round tag everywhere.
-
-### 0.19.8 — Shop tags — 2026-09-26
-
-Jobs are round metal tags, not word chips. On a phone, Play, Fill, Slow, Stop, Menu, and Settings are pictures.
-
-### 0.19.7 — Lesson fits — 2026-09-26
-
-The lesson card stays inside the shop on a short phone. Read, Skip, and Next stay on the card.
-
-### 0.19.6 — Phone floor — 2026-09-26
-
-The status line no longer steals the rail column, so the shop floor fills the phone. Play stays on the top row. Fill is a short button.
-
-### 0.19.5 — Read aloud — 2026-09-25
-
-Settings holds language, Read aloud, big text, and fewer answers. Speech stays off until a student turns it on. Read speaks the lesson card. Play, scores, and the menu stay quiet. Key `bz-access-v1`. No microphone.
-
-### 0.19.4 — Play on the top row — 2026-09-23
-
-Play, Slow, Stop, and Menu sit next to the logo. The left rail is tools again, and that list can scroll so the lower buttons stay reachable.
-
-### 0.19.3 — Student menu — 2026-09-23
-
-The menu opens on your jobs. Parked count replaces Heat. Design tools stay hidden until Job 10 is clear. Teacher notes stay off this screen.
-
-### 0.19.2 — Drop Zone dwell — 2026-09-23
-
-A Bot Core counts as in the zone when its center is inside, or at least half the crate overlaps the Drop Zone. The one-second hold follows sim time, so a slow Chromebook frame still clears.
-
-### 0.19.1 — Calm Retry — 2026-09-23
-
-A miss shows one line and Retry. No sound. Measure and Forces clear on their logs, not a parked crate. In Design, Export is on the job strip.
-
-### 0.19.0 — Jobs 1–10 — 2026-09-23
-
-Ten jobs, in order. A plate says TEST PASS or CLEAR. Design and export unlock after Job 10. The file name is an alias. Make permanent is on the teacher page only, and class jobs sit after the ten. Builder only.
-
-### 0.18.9 — Controls on the left — 2026-09-23
-
-Play, Slow, Stop, and Menu sit in the left pane. The top bar keeps rank, heat, and the course.
-
-### 0.18.8 — Done, next, More — 2026-09-23
-
-The menu shows levels already parked and the next one. File tools, the guide, designer, and room links sit under More.
-
-### 0.18.7 — Splash and guide — 2026-09-23
-
-The opening menu is back under the lesson. The design-process guide is on that menu, and it stays visible when the tool bin is pinned.
-
-### 0.18.6 — Type — 2026-09-23
-
-Barlow weights the shop actually has. The lesson is one card. Skip, and the menu is the same paper.
-
-### 0.18.5 — Lesson and a movable goal — 2026-09-23
-
-The shop opens on a lesson: what this game is. Skip is there. The menu is grouped and sits underneath. In Site Editor, drag the Drop Zone. A challenge still locks the goal.
-
-### 0.18.3 — Polish — 2026-09-22
-
-What's new: polish — the shop floor fills the window. Shop Floor and Drop Zone sit on paper labels. The status line is easier to read. Still flat 2D.
-
-### 0.18.2 — Playfield stretch — 2026-09-22
-
-The flat canvas fills the shop cell. No 1280×760 letterbox. Play, Stop, Menu, tools, and Builder / Observer are at least 44×44. Still flat 2D.
-
-### 0.18.1 — Shop fill — 2026-09-22
-
-The playfield keeps the 1280×760 shop aspect and scales up to the window. 1280×760 is not a size you need before you can play. Extra space is shop wall, not a grey gutter.
 
 ### 0.18.0 — TechWorks hang — 2026-09-21
 

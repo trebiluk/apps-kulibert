@@ -8,6 +8,9 @@ for line in (root / "version.js").read_text().splitlines():
     if "APP_VERSION" in line:
         chip = line.split('"')[1]
         break
+shop = (root / "shop.js").read_text()
+if "seedFix" not in shop:
+    raise SystemExit("shop.js is behind bundle.js — edit bundle.js, do not pack over it")
 parts = []
 for name in ("version.js", "io.js", "shop.js"):
     t = (root / name).read_text()
