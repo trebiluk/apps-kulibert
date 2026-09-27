@@ -1490,7 +1490,14 @@
   $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
-    $("mute-btn").textContent = state.muted ? "Muted" : "Sound on";
+    const full = state.muted ? "Muted" : "Sound on";
+    const btn = $("mute-btn");
+    const wide = btn.querySelector(".full");
+    const slim = btn.querySelector(".short");
+    if (wide && slim) {
+      wide.textContent = full;
+      slim.textContent = state.muted ? "Muted" : "Sound";
+    } else btn.textContent = full;
     $("mute-btn").setAttribute("aria-pressed", String(state.muted));
     if (master) master.gain.value = state.muted ? 0 : 0.8;
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";

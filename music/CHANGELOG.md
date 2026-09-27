@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.12.0** · 2026-09-27 · channel **live**
+
+Phone layout. Play stays on the bottom of the screen. The score stays on top. Tools slide sideways instead of stacking. The page no longer scrolls left and right.
+
+## Earlier
+
 **Chip: MU 2.11.0** · 2026-09-27 · channel **live**
 
 A score keypad: quarter, eighths, tie, rest, chord, short, accent, and hold. Keys C, G, D, F, and B-flat. Written dynamics play through the band. This is a school score, not Sibelius.
