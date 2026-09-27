@@ -49,6 +49,7 @@
     swing: 0,
     click: false,
     along: false,
+    blend: 50,
     bass: false,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
@@ -95,6 +96,7 @@
     if (saved.mix && typeof saved.mix === "object") state.mix = Object.assign(state.mix, saved.mix);
     if (typeof saved.swing === "number") state.swing = saved.swing;
     if (typeof saved.along === "boolean") state.along = saved.along;
+    if (typeof saved.blend === "number") state.blend = saved.blend;
     if (typeof saved.bass === "boolean") state.bass = saved.bass;
     if (saved.gear && typeof saved.gear === "object") state.gear = Object.assign(state.gear, saved.gear);
     if (saved.fx) state.fx = saved.fx;
@@ -249,6 +251,7 @@
       swing: state.swing,
       click: state.click,
       along: state.along,
+      blend: state.blend,
       bass: state.bass,
       gear: state.gear,
     });
@@ -471,9 +474,25 @@
     paintCount();
     return state.writeStep;
   }
+  function side(which) {
+    const blend = Math.max(0, Math.min(100, state.blend == null ? 50 : state.blend));
+    const amt = which === "notes" ? blend : 100 - blend;
+    return Math.min(1.15, amt / 70);
+  }
+  function blendWord(n) {
+    if (n < 35) return "Drums";
+    if (n > 65) return "Score";
+    return "Both";
+  }
+  function paintFeel(text, kind) {
+    const el = $("feel");
+    if (!el) return;
+    el.textContent = text;
+    el.className = "feel" + (kind ? " " + kind : "");
+  }
   function vol(id, base) {
     const n = state.mix && typeof state.mix[id] === "number" ? state.mix[id] : 100;
-    return base * Math.max(0, Math.min(100, n)) / 100;
+    return base * Math.max(0, Math.min(100, n)) / 100 * side("drums");
   }
   function hitSound(id) {
     if (state.muted) return;
@@ -487,7 +506,7 @@
     else if (id === "bell") tone(540, 0.16, "square", vol("bell", 0.22));
     else if (id === "tamb") noise(0.09, vol("tamb", 0.2));
     else if (id === "crash") noise(0.4, vol("crash", 0.28));
-    else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24);
+    else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24 * side("notes"));
   }
   function strike(id, el) {
     arm();
@@ -503,8 +522,16 @@
     if (navigator.vibrate) navigator.vibrate(12);
     if (state.along) {
       if (!state.playing) play();
+      const gap = Math.max(1, gapAfter(Math.max(0, state.step)));
+      const age = performance.now() - (state.beatAt || performance.now());
+      const ratio = age / gap;
+      let word = "On it";
+      let kind = "on";
+      if (ratio > 0.42 && ratio < 0.75) { word = "Late"; kind = "late"; }
+      else if (ratio >= 0.75) { word = "Early"; kind = "early"; }
       const beat = state.step >= 0 ? state.step + 1 : 1;
-      $("lesson").textContent = "Beat " + beat + ". You played along. The score stayed the same.";
+      paintFeel(word, kind);
+      $("lesson").textContent = word + " on beat " + beat + ". The score stayed the same.";
       return;
     }
     const step = placeStep();
@@ -614,6 +641,7 @@
     if (title) title.textContent = state.song.alias || "Your song";
   }
   function pulse(step) {
+    state.beatAt = performance.now();
     state.step = step;
     paintCount();
     state.kick = !!state.drums.kick[step];
@@ -659,7 +687,11 @@
     }
     const off = state.muted ? "Sound is off. " : "";
     const lead = state.turn === "listen" ? "Listen. " : state.turn === "answer" ? "Your turn. " : "";
-    if (!counting) $("now-line").textContent = lead + off + "Beat " + (step + 1) + ". Now: " + namesAt(step).join(" and ") + ".";
+    if (!counting) {
+      const note = ev && ev.label ? ev.label : "Rest";
+      $("now-line").textContent = lead + off + "Beat " + (step + 1) + ". Now: " + namesAt(step).join(" and ") + ".";
+      if (!state.along) paintFeel(note, note === "Rest" ? "" : "on");
+    }
     if (state.playing && step === 0 && !state.recording && !state.turn) {
       $("lesson").textContent = "Beat 1 is the strong beat. Tap a pad on the flash.";
     }
@@ -676,9 +708,9 @@
     ROWS.forEach(([id]) => { if (state.drums[id][step]) hitSound(id); });
     if (ev && ev.tone) {
       const freq = { C4: 261.6, D4: 293.7, E4: 329.6, F4: 349.2, G4: 392, A4: 440, B4: 493.9, C5: 523.3 }[ev.tone];
-      if (freq) tone(freq, state.noteLen, state.wave, 0.22);
-      if (state.bass && state.drums.kick[step]) tone(freq / 2, 0.34, "sine", 0.34);
-    } else if (state.bass && state.drums.kick[step]) tone(65.4, 0.34, "sine", 0.34);
+      if (freq) tone(freq, state.noteLen, state.wave, 0.22 * side("notes"));
+      if (state.bass && state.drums.kick[step]) tone(freq / 2, 0.34, "sine", 0.34 * side("notes"));
+    } else if (state.bass && state.drums.kick[step]) tone(65.4, 0.34, "sine", 0.34 * side("notes"));
   }
 
   function gapAfter(step) {
@@ -1064,6 +1096,11 @@
     if (state.playing) { stop(); play(); }
     $("lesson").textContent = "Tempo is the speed. The count is still 1, 2, 3, 4.";
   });
+  $("blend").addEventListener("input", (e) => {
+    state.blend = Number(e.target.value);
+    $("blend-read").textContent = blendWord(state.blend);
+    keep();
+  });
   function tweak(key, read) {
     return () => {
       read();
@@ -1254,6 +1291,8 @@
   }
   $("tempo").value = String(state.song.bpm || 96);
   $("tempo-read").textContent = String(state.song.bpm || 96);
+  $("blend").value = String(state.blend);
+  $("blend-read").textContent = blendWord(state.blend);
   loadSkin();
   fillLights();
   paintAlong();

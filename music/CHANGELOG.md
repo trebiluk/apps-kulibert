@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.3.0** · 2026-09-27 · channel **live**
+
+A big word shows the note, or On it, Early, and Late. Blend slides from drums to the score.
+
+## Earlier
+
 **Chip: MU 2.2.0** · 2026-09-27 · channel **live**
 
 Score is the first tab. Beats rides on that score. Play along lets a student tap the tempo without changing the song. Settings sit on the left.

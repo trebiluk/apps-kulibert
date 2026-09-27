@@ -7,13 +7,13 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.2.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2.3.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.2.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.3.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -101,6 +101,7 @@
         <button type="button" id="turn-btn" class="btn">Your turn</button>
       </div>
       <p id="song-title" class="song-title">Your song</p>
+      <p id="feel" class="feel">Ready</p>
       <p id="now-line" class="now" aria-live="polite">Press Play. Read the word. Sound can stay off.</p>
       <div id="lane" class="lane" role="group" aria-label="The eight beats"></div>
       <p id="lesson" class="lesson">Tap a pad. It stays on that beat. Tap a number to pick a different beat.</p>
@@ -117,6 +118,10 @@
       <label class="tempo">Speed <b id="tempo-read">96</b>
         <input id="tempo" type="range" min="70" max="140" value="96"/>
       </label>
+      <label class="tempo">Blend <b id="blend-read">Both</b>
+        <input id="blend" type="range" min="0" max="100" value="50" aria-label="Drums or score"/>
+      </label>
+      <p class="hint">Left is the drums. Right is the score. The middle plays both.</p>
     </section>
     <section class="group">
       <h2>Title</h2>
@@ -169,7 +174,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.2.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.3.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -178,6 +183,6 @@
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=2.2.0"></script>
+  <script src="./app.js?v=2.3.0"></script>
 </body>
 </html>

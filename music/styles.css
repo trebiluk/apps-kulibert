@@ -28,13 +28,23 @@ button { cursor: pointer; }
 .menu-btn span { display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px; }
 .lab { display: block; }
 .tabs {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.35rem; margin: 0 0 0.6rem;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.25rem;
+  margin: 0 0 0.7rem; padding: 0.25rem;
+  background: #07101f; border: 1px solid var(--border); border-radius: 16px;
 }
 .tabs button {
-  min-height: 48px; border-radius: 12px; border: 1px solid var(--border); background: var(--panel);
+  min-height: 48px; border-radius: 12px; border: 0; background: transparent;
   font-weight: 800; padding: 0.3rem 0.2rem;
 }
-.tabs button.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+.tabs button.on { background: var(--accent); color: var(--accent-fg); }
+.feel {
+  margin: 0.15rem 0 0; font-weight: 800; letter-spacing: -0.04em; line-height: 0.95;
+  font-size: clamp(2rem, 6vw, 3.4rem);
+}
+.feel.on { color: #5eead4; }
+.feel.early { color: #facc15; }
+.feel.late { color: #fb7185; }
+body.is-lights canvas { max-height: 70vh; aspect-ratio: 16 / 9; }
 .work.is-drums #notes-pane { display: block; order: -1; }
 .work.is-drums #notes-pane > :not(.staff-wrap) { display: none; }
 .work.is-drums .staff-wrap { min-height: 0; max-height: 108px; margin-bottom: 0.45rem; }
