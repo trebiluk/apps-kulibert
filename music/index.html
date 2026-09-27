@@ -7,13 +7,13 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.0.1"/>
+  <link rel="stylesheet" href="./styles.css?v=2.1.0"/>
 </head>
 <body>
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.0.1</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.1.0</em></span>
     </a>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
@@ -38,6 +38,10 @@
         <p class="hint">Tap the staff. Higher is a higher note.</p>
         <div id="chords" class="looks" aria-label="Chords"></div>
         <button type="button" id="bass-btn" class="btn" aria-pressed="false">Bass follows the kick</button>
+        <details class="more-box">
+          <summary>Melody ideas</summary>
+          <div id="melodies" class="looks" aria-label="Melody ideas"></div>
+        </details>
       </div>
       <div id="drums-pane">
         <div id="drums" class="drums" aria-label="Drums"></div>
@@ -168,7 +172,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.0.1</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.1.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -176,6 +180,6 @@
   <script src="/shared/song/model.js?v=0.2.8"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
-  <script src="./app.js?v=2.0.1"></script>
+  <script src="./app.js?v=2.1.0"></script>
 </body>
 </html>

@@ -1306,6 +1306,9 @@
       "Rock": { kick: [1, 0, 0, 1, 0, 0, 1, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0], hat: [1, 1, 1, 1, 1, 1, 1, 1] },
       "Fill": { snare: [0, 0, 0, 0, 1, 1, 1, 1], tom: [0, 0, 1, 0, 1, 0, 1, 1], crash: [0, 0, 0, 0, 0, 0, 0, 1] },
       "Bells": { bell: [1, 0, 0, 1, 0, 0, 1, 0] },
+      "Clave": { rim: [1, 0, 0, 1, 0, 0, 1, 0], bell: [1, 0, 0, 1, 0, 1, 0, 0] },
+      "Half": { kick: [1, 0, 0, 0, 0, 0, 0, 0], snare: [0, 0, 0, 0, 1, 0, 0, 0] },
+      "Offbeats": { hat: [0, 1, 0, 1, 0, 1, 0, 1], shaker: [0, 1, 0, 1, 0, 1, 0, 1] },
     };
     const host = $("patterns");
     if (host) {
@@ -1369,6 +1372,68 @@
         chords.appendChild(b);
       });
     }
+    const ideas = $("melodies");
+    if (ideas && !ideas.childElementCount) {
+      const writeLine = (name, notes) => {
+        const evs = Song.events(state.song);
+        notes.forEach((pitch, i) => {
+          const ev = evs[i];
+          if (ev) Song.setBeat(state.song, ev.measure, ev.beat, pitch);
+        });
+        renderStaff();
+        keep();
+        $("lesson").textContent = name + " is on the staff. Saved.";
+      };
+      const lines = [
+        ["Walk", ["C", "D", "E", "F", "G", "A", "B", "c"]],
+        ["Pop", ["C", "C", "G", "G", "A", "A", "F", "F"]],
+        ["Home", ["C", "E", "G", "c", "C", "E", "G", "c"]],
+        ["Question", ["C", "D", "E", "G", "E", "D", "C", "C"]],
+      ];
+      lines.forEach(([name, notes]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => writeLine(name, notes));
+        ideas.appendChild(b);
+      });
+      const again = document.createElement("button");
+      again.type = "button";
+      again.className = "btn";
+      again.textContent = "Again";
+      again.addEventListener("click", () => {
+        const evs = Song.events(state.song);
+        for (let i = 0; i < 4; i++) {
+          if (evs[i] && evs[i + 4]) Song.setBeat(state.song, evs[i + 4].measure, evs[i + 4].beat, evs[i].pitch);
+        }
+        renderStaff();
+        keep();
+        $("lesson").textContent = "The first four notes play again. Saved.";
+      });
+      const shift = (dir, word) => {
+        const ids = (Song.PITCHES || []).map((p) => p.id);
+        Song.events(state.song).forEach((ev) => {
+          if (!ev.pitch) return;
+          let i = ids.indexOf(ev.pitch) + dir;
+          if (i < 0) i = 0;
+          if (i >= ids.length) i = ids.length - 1;
+          Song.setBeat(state.song, ev.measure, ev.beat, ids[i]);
+        });
+        renderStaff();
+        keep();
+        $("lesson").textContent = "The tune moved " + word + ". Saved.";
+      };
+      [["Up", 1, "up"], ["Down", -1, "down"]].forEach(([name, dir, word]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.textContent = name;
+        b.addEventListener("click", () => shift(dir, word));
+        ideas.appendChild(b);
+      });
+      ideas.appendChild(again);
+    }
     const bass = $("bass-btn");
     if (bass && !bass.dataset.ready) {
       bass.dataset.ready = "1";
@@ -1390,6 +1455,8 @@
         Neon: { wall: "candy", rgb: true, layers: [{ look: "fireworks", color: "rose" }, { look: "rings", color: "lime" }, { look: "orbit", color: "violet" }], gear: { wild: 90, glow: 100, count: 28, thick: 6, trail: 30, zoom: 140, spin: 70, bounce: 60 } },
         Soft: { wall: "dusk", rgb: false, layers: [{ look: "bloom", color: "violet" }, { look: "ribbon", color: "ice" }, { look: "off", color: "cyan" }], gear: { wild: 15, glow: 55, count: 12, thick: 3, trail: 40, zoom: 90, spin: 20, bounce: 100 } },
         Space: { wall: "night", rgb: true, layers: [{ look: "stars", color: "ice" }, { look: "tunnel", color: "violet" }, { look: "orbit", color: "cyan" }], gear: { wild: 70, glow: 90, count: 26, thick: 2, trail: 50, zoom: 130, spin: 40, bounce: 100 } },
+        Fire: { wall: "sunset", rgb: false, layers: [{ look: "fireworks", color: "amber" }, { look: "bloom", color: "rose" }, { look: "off", color: "amber" }], gear: { wild: 100, glow: 100, count: 30, thick: 7, trail: 18, zoom: 150, spin: 80, bounce: 40 } },
+        Ocean: { wall: "sea", rgb: false, layers: [{ look: "rain", color: "cyan" }, { look: "ribbon", color: "ice" }, { look: "rings", color: "violet" }], gear: { wild: 35, glow: 70, count: 20, thick: 3, trail: 45, zoom: 100, spin: 30, bounce: 90 } },
       };
       Object.keys(packs).forEach((name) => {
         const b = document.createElement("button");

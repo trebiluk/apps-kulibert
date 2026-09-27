@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.1.0** · 2026-09-27 · channel **live**
+
+Melody ideas, three more beats, and two more pictures. They stay inside the drawers so the first screen stays clear.
+
+## Earlier
+
 **Chip: MU 2.0.1** · 2026-09-27 · channel **live**
 
 The extra drums, the mixer, and the light sliders stay tucked away until you open them. Switching boards tells you where you are.
