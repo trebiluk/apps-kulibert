@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.19.0** · 2026-09-27 · channel **live**
+
+Band opens on the student's instrument and the fingering. The tabs and lists are no longer pills.
+
+## Earlier
+
 **Chip: MU 2.18.0** · 2026-09-27 · channel **live**
 
 Lights opens on picture names. Band opens on the conductor and Down, In, Out, Up.

@@ -1197,68 +1197,145 @@
   }
 
   const BAND = [
-    { id: "flute", name: "Flute", start: "Blow across the hole, like a bottle. Keep the air steady.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
-      { name: "Bb", how: "Use the B-flat fingering in your book.", freq: 466.2 },
+    { id: "flute", family: "Woodwind", name: "Flute", start: "Blow across the hole, like a bottle. Keep the air steady.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Thumb and first finger, plus the B-flat thumb key.", freq: 466.2 },
       { name: "C", how: "Left thumb and first finger.", freq: 523.3 },
-      { name: "D", how: "Left three fingers and right three fingers.", freq: 587.3 },
+      { name: "D", how: "Left thumb and three fingers. Right three fingers.", freq: 587.3 },
       { name: "Eb", how: "Lift the left first finger. The other fingers stay down.", freq: 622.3 },
       { name: "F", how: "Left three fingers, right first finger, and the right pinky.", freq: 698.5 },
     ]},
-    { id: "clarinet", name: "Clarinet", start: "Flat chin. Firm corners. Soft air into the mouthpiece.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
+    { id: "oboe", family: "Woodwind", name: "Oboe", start: "Both lips on the reed. Small air. Sit tall.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "B", how: "Left thumb and first finger.", freq: 493.9 },
+      { name: "C", how: "Add the left second finger.", freq: 523.3 },
+      { name: "D", how: "Left thumb and three fingers.", freq: 587.3 },
+      { name: "E", how: "Add the right first finger.", freq: 659.3 },
+      { name: "F", how: "Add the right second finger.", freq: 698.5 },
+    ]},
+    { id: "clarinet", family: "Woodwind", name: "Clarinet", start: "Flat chin. Firm corners. Soft air into the mouthpiece.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
       { name: "C", how: "Thumb, and three fingers on each hand.", freq: 466.2 },
-      { name: "D", how: "Lift the right pinky.", freq: 523.3 },
-      { name: "E", how: "Lift the right ring finger.", freq: 587.3 },
+      { name: "D", how: "Lift the right pinky. Keep the other fingers down.", freq: 523.3 },
+      { name: "E", how: "Lift the right ring finger too.", freq: 587.3 },
       { name: "F", how: "Lift the right middle finger too.", freq: 622.3 },
       { name: "G", how: "Left hand only. Thumb and three fingers.", freq: 698.5 },
     ]},
-    { id: "alto", name: "Alto sax", start: "Relaxed mouth. Even air. The neck strap holds the weight.", concert: "You read E-flat. Your written G is the band's B-flat.", notes: [
+    { id: "basscl", family: "Woodwind", name: "Bass clarinet", start: "The peg or strap holds it. Flat chin. Soft air.", concert: "You read B-flat, one octave lower. Your written C is the band's low B-flat.", notes: [
+      { name: "C", how: "Thumb, and three fingers on each hand.", freq: 233.1 },
+      { name: "D", how: "Lift the right pinky. Keep the other fingers down.", freq: 261.6 },
+      { name: "E", how: "Lift the right ring finger too.", freq: 293.7 },
+      { name: "F", how: "Lift the right middle finger too.", freq: 311.1 },
+      { name: "G", how: "Left hand only. Thumb and three fingers.", freq: 349.2 },
+    ]},
+    { id: "alto", family: "Woodwind", name: "Alto sax", start: "Relaxed mouth. Even air. The neck strap holds the weight.", concert: "You read E-flat. Your written G is the band's B-flat.", notes: [
       { name: "G", how: "Three fingers on the left hand.", freq: 466.2 },
       { name: "A", how: "Two fingers on the left hand.", freq: 523.3 },
       { name: "B", how: "One finger on the left hand.", freq: 587.3 },
       { name: "C", how: "No fingers down.", freq: 622.3 },
       { name: "D", how: "Octave key, and three fingers on the left.", freq: 698.5 },
     ]},
-    { id: "trumpet", name: "Trumpet", start: "Buzz in the mouthpiece. Corners firm. Soft air.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
-      { name: "C", how: "Open. No valves.", freq: 466.2 },
-      { name: "D", how: "Valves 1 and 3.", freq: 523.3 },
-      { name: "E", how: "Valves 1 and 2.", freq: 587.3 },
-      { name: "F", how: "Valve 1.", freq: 622.3 },
-      { name: "G", how: "Open. No valves.", freq: 698.5 },
+    { id: "tenor", family: "Woodwind", name: "Tenor sax", start: "The strap holds it. Relaxed mouth. Even air.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
+      { name: "C", how: "No fingers down. This is the band's B-flat.", freq: 466.2 },
+      { name: "D", how: "Octave key, and three fingers on the left.", freq: 523.3 },
+      { name: "E", how: "Octave key, and two fingers on the left.", freq: 587.3 },
+      { name: "F", how: "Octave key, and one finger on the left.", freq: 622.3 },
+      { name: "G", how: "Octave key. No fingers down.", freq: 698.5 },
     ]},
-    { id: "trombone", name: "Trombone", start: "Buzz in the mouthpiece. Move the slide straight.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
-      { name: "Bb", how: "Position 1. Slide all the way in.", freq: 466.2 },
-      { name: "C", how: "Position 3.", freq: 523.3 },
-      { name: "D", how: "Position 4.", freq: 587.3 },
-      { name: "Eb", how: "Position 3.", freq: 622.3 },
-      { name: "F", how: "Position 1.", freq: 698.5 },
-    ]},
-    { id: "percussion", name: "Percussion", start: "Sticks in the center of the head. Soft wrists.", concert: "You play the beat. Your count matches the band.", notes: [
-      { name: "Bass", how: "Bass drum on the beat. Let it ring.", drum: "kick" },
-      { name: "Snare", how: "Snare in the center.", drum: "snare" },
-      { name: "Tap", how: "A quiet tap, or the rim.", drum: "hat" },
-      { name: "Both", how: "Bass and snare together.", drum: "both" },
-      { name: "Rest", how: "Hands still. Count the beat anyway.", drum: "rest" },
-    ]},
-    { id: "tuba", name: "Tuba", start: "Big air. Loose buzz. Let the low note bloom.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
-      { name: "Bb", how: "Your B-flat. Use the fingering in your book.", freq: 233.1 },
-      { name: "C", how: "Your C. Use the fingering in your book.", freq: 261.6 },
-      { name: "D", how: "Your D. Use the fingering in your book.", freq: 293.7 },
-      { name: "Eb", how: "Your E-flat. Use the fingering in your book.", freq: 311.1 },
-      { name: "F", how: "Your F. Use the fingering in your book.", freq: 349.2 },
-    ]},
-    { id: "bari", name: "Bari sax", start: "The strap holds it. Even air. Relaxed mouth.", concert: "You read E-flat. Your written G is the band's low B-flat.", notes: [
+    { id: "bari", family: "Woodwind", name: "Bari sax", start: "The strap holds it. Even air. Relaxed mouth.", concert: "You read E-flat. Your written G is the band's low B-flat.", notes: [
       { name: "G", how: "Three fingers on the left hand.", freq: 233.1 },
       { name: "A", how: "Two fingers on the left hand.", freq: 261.6 },
       { name: "B", how: "One finger on the left hand.", freq: 293.7 },
       { name: "C", how: "No fingers down.", freq: 311.1 },
       { name: "D", how: "Octave key, and three fingers on the left.", freq: 349.2 },
     ]},
-    { id: "bells", name: "Bells", start: "Mallet in the center of the bar. Let it ring.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+    { id: "bassoon", family: "Woodwind", name: "Bassoon", start: "Seat strap on. Both lips on the reed. Soft air.", concert: "You read concert pitch, bass clef. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Whisper key, and the B-flat fingering on your chart.", freq: 233.1 },
+      { name: "C", how: "Use the C on your fingering chart.", freq: 261.6 },
+      { name: "D", how: "Use the D on your fingering chart.", freq: 293.7 },
+      { name: "Eb", how: "Use the E-flat on your fingering chart.", freq: 311.1 },
+      { name: "F", how: "Use the F on your fingering chart.", freq: 349.2 },
+    ]},
+    { id: "trumpet", family: "Brass", name: "Trumpet", start: "Buzz in the mouthpiece. Corners firm. Soft air.", concert: "You read B-flat. Your written C is the band's B-flat.", notes: [
+      { name: "C", how: "Open. No valves.", freq: 466.2 },
+      { name: "D", how: "Valves 1 and 3.", freq: 523.3 },
+      { name: "E", how: "Valves 1 and 2.", freq: 587.3 },
+      { name: "F", how: "Valve 1.", freq: 622.3 },
+      { name: "G", how: "Open. No valves.", freq: 698.5 },
+    ]},
+    { id: "horn", family: "Brass", name: "Horn", start: "Right hand in the bell. Buzz softly. The notes sit close together.", concert: "You read in F. Your written C is the band's F. Check the chart on your stand.", notes: [
+      { name: "C", how: "Open. No valves.", freq: 349.2 },
+      { name: "D", how: "Valve 1.", freq: 392.0 },
+      { name: "E", how: "Open, with a little more air.", freq: 440.0 },
+      { name: "F", how: "Valve 1.", freq: 466.2 },
+      { name: "G", how: "Open.", freq: 523.3 },
+    ]},
+    { id: "trombone", family: "Brass", name: "Trombone", start: "Buzz in the mouthpiece. Move the slide straight.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Position 1. Slide all the way in.", freq: 466.2 },
+      { name: "C", how: "Position 6.", freq: 523.3 },
+      { name: "D", how: "Position 4.", freq: 587.3 },
+      { name: "Eb", how: "Position 3.", freq: 622.3 },
+      { name: "F", how: "Position 1.", freq: 698.5 },
+    ]},
+    { id: "baritone", family: "Brass", name: "Baritone", start: "Buzz in the mouthpiece. The valves match the trumpet if you read treble clef.", concert: "Treble clef: your written C is the band's B-flat. Bass clef readers, use the same valves an octave lower.", notes: [
+      { name: "C", how: "Open. No valves.", freq: 233.1 },
+      { name: "D", how: "Valves 1 and 3.", freq: 261.6 },
+      { name: "E", how: "Valves 1 and 2.", freq: 293.7 },
+      { name: "F", how: "Valve 1.", freq: 311.1 },
+      { name: "G", how: "Open. No valves.", freq: 349.2 },
+    ]},
+    { id: "tuba", family: "Brass", name: "Tuba", start: "Big air. Loose buzz. Let the low note bloom.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
+      { name: "Bb", how: "Open. No valves.", freq: 116.5 },
+      { name: "C", how: "Valves 1 and 3.", freq: 130.8 },
+      { name: "D", how: "Valves 1 and 2.", freq: 146.8 },
+      { name: "Eb", how: "Valve 1.", freq: 155.6 },
+      { name: "F", how: "Open. No valves.", freq: 174.6 },
+    ]},
+    { id: "percussion", family: "Percussion", name: "Snare and bass", start: "Sticks in the center of the head. Soft wrists.", concert: "You play the beat. Your count matches the band.", notes: [
+      { name: "Bass", how: "Bass drum on the beat. Let it ring.", drum: "kick" },
+      { name: "Snare", how: "Snare in the center.", drum: "snare" },
+      { name: "Tap", how: "A quiet tap on the rim.", drum: "hat" },
+      { name: "Both", how: "Bass and snare together.", drum: "both" },
+      { name: "Rest", how: "Hands still. Count the beat anyway.", drum: "rest" },
+    ]},
+    { id: "bells", family: "Percussion", name: "Bells", start: "Mallet in the center of the bar. Let it ring.", concert: "You read concert pitch. Your B-flat is the band's B-flat.", notes: [
       { name: "Bb", how: "The B-flat bar.", freq: 466.2 },
       { name: "C", how: "The C bar.", freq: 523.3 },
       { name: "D", how: "The D bar.", freq: 587.3 },
       { name: "Eb", how: "The E-flat bar.", freq: 622.3 },
       { name: "F", how: "The F bar.", freq: 698.5 },
+    ]},
+    { id: "violin", family: "Strings", name: "Violin", start: "Bow between the bridge and the fingerboard. Elbow loose.", concert: "You read concert pitch. These notes start on the D string.", notes: [
+      { name: "D", how: "Open D string. No fingers.", freq: 293.7 },
+      { name: "E", how: "First finger on the D string.", freq: 329.6 },
+      { name: "F", how: "Second finger, low, close to the first.", freq: 349.2 },
+      { name: "G", how: "Third finger on the D string.", freq: 392.0 },
+      { name: "A", how: "Open A string.", freq: 440.0 },
+    ]},
+    { id: "viola", family: "Strings", name: "Viola", start: "Same bow as violin, on a bigger instrument. Read alto clef.", concert: "You read concert pitch. These notes start on the G string.", notes: [
+      { name: "G", how: "Open G string.", freq: 196.0 },
+      { name: "A", how: "First finger on the G string.", freq: 220.0 },
+      { name: "B", how: "Second finger on the G string.", freq: 246.9 },
+      { name: "C", how: "Third finger on the G string.", freq: 261.6 },
+      { name: "D", how: "Open D string.", freq: 293.7 },
+    ]},
+    { id: "cello", family: "Strings", name: "Cello", start: "Endpin on the floor. Bow straight across the string.", concert: "You read concert pitch, bass clef. These notes start on the D string.", notes: [
+      { name: "D", how: "Open D string.", freq: 146.8 },
+      { name: "E", how: "First finger on the D string.", freq: 164.8 },
+      { name: "F", how: "Second finger, low.", freq: 174.6 },
+      { name: "G", how: "Third finger on the D string.", freq: 196.0 },
+      { name: "A", how: "Open A string.", freq: 220.0 },
+    ]},
+    { id: "guitar", family: "Strings", name: "Guitar", start: "Left hand on the fretboard. Press just behind the fret.", concert: "These notes are on the high E string. You read concert pitch.", notes: [
+      { name: "E", how: "High E string, open. No fingers.", freq: 329.6 },
+      { name: "F", how: "First fret.", freq: 349.2 },
+      { name: "G", how: "Third fret.", freq: 392.0 },
+      { name: "A", how: "Fifth fret.", freq: 440.0 },
+      { name: "B", how: "Seventh fret.", freq: 493.9 },
+    ]},
+    { id: "piano", family: "Keyboard", name: "Piano", start: "Find the two black keys. C is the white key just to the left.", concert: "You read concert pitch. Your C is the band's C.", notes: [
+      { name: "C", how: "White key just left of the two black keys.", freq: 261.6 },
+      { name: "D", how: "The next white key up.", freq: 293.7 },
+      { name: "E", how: "The next white key up.", freq: 329.6 },
+      { name: "F", how: "White key just left of the three black keys.", freq: 349.2 },
+      { name: "G", how: "The next white key up.", freq: 392.0 },
     ]},
   ];
   const WRITTEN = { C: "C", D: "D", E: "E", F: "F", G: "G", A: "A", B: "B" };
@@ -1299,16 +1376,29 @@
   let warmTimer = [];
   function paintBand() {
     const inst = bandNow();
+    const now = $("inst-now");
+    if (now) now.textContent = inst.name;
     const picks = $("band-picks");
     picks.innerHTML = "";
+    let family = "";
     BAND.forEach((item) => {
+      if (item.family !== family) {
+        family = item.family;
+        const head = document.createElement("div");
+        head.className = "family";
+        head.textContent = family;
+        picks.appendChild(head);
+      }
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (item.id === inst.id ? " on" : "");
       b.textContent = item.name;
       b.addEventListener("click", () => {
         state.band = item.id;
+        const sound = { Woodwind: "winds", Brass: "brass", Strings: "strings", Keyboard: "winds", Percussion: "beep" }[item.family];
+        if (sound) state.orch = sound;
         keep();
+        picks.hidden = true;
         paintBand();
         $("lesson").textContent = item.name + ". " + item.start;
       });
@@ -1331,6 +1421,11 @@
       notes.appendChild(b);
     });
   }
+  const instNow = $("inst-now");
+  if (instNow) instNow.addEventListener("click", () => {
+    const picks = $("band-picks");
+    picks.hidden = !picks.hidden;
+  });
   function warmUp() {
     warmTimer.forEach((id) => window.clearTimeout(id));
     warmTimer = [];
@@ -1460,7 +1555,7 @@
       notes: "Tap a letter. Then press Play.",
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
       lights: "Tap a picture. Then press Play.",
-      band: "Press Conduct. Down is beat 1.",
+      band: "Choose your instrument. Tap a note to see the fingering.",
     };
     line.textContent = state.playing ? "Press Stop." : (text[mode] || text.notes);
   }
@@ -1488,7 +1583,7 @@
           ? "Play along is on. Tap with the flash. The song stays the same."
           : "Tap Kick or Snare. A tap is saved on that beat.",
         lights: "Pick a picture. Press Play.",
-        band: "Choose Strings. Down is beat 1.",
+        band: "Tap a note. The line under it is the fingering.",
       };
       $("lesson").textContent = hints[mode] || $("lesson").textContent;
     }
