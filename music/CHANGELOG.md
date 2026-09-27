@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.8.0** · 2026-09-27 · channel **live**
+
+Talent show. One start, a count of four, the whole song once, lights across the stage, then a bow. Play it again or go back to class. Mute still shows the picture.
+
+## Earlier
+
 **Chip: MU 2.7.0** · 2026-09-27 · channel **live**
 
 Play it as. The notes stay. The beat can be trap, hip-hop, rock, funk, disco, reggae, jazz, blues, march, latin, afrobeat, samba, bossa, country, dance, lullaby, folk, jig, drumline, or claps.

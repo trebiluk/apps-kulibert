@@ -53,7 +53,9 @@
     expert: false,
     ink: "C",
     cursor: 0,
-    armTotal: 4,
+    showing: false,
+    counting: false,
+    once: false,
     bass: false,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
@@ -783,6 +785,10 @@
     if (state.playing && step === 0 && !state.recording && !state.turn) {
       $("lesson").textContent = "Beat 1 is the strong beat. Tap a pad on the flash.";
     }
+    if (state.showing) {
+      const bar = $("show-bar");
+      if (bar) bar.style.width = Math.round(((step + 1) / songLen()) * 100) + "%";
+    }
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     marks.forEach((node, i) => node.classList.toggle("now", i === step));
     if (marks[step] && marks[step].scrollIntoView) marks[step].scrollIntoView({ block: "nearest", inline: "nearest" });
@@ -808,9 +814,12 @@
     const lean = Math.max(0, Math.min(60, state.swing || 0)) / 100;
     return Math.round(base * (step % 2 === 0 ? 1 + lean * 0.45 : 1 - lean * 0.45));
   }
-  function play() {
+  function play(opts) {
+    window.clearTimeout(state.timer);
     arm();
+    state.once = !!(opts && opts.once);
     state.playing = true;
+    state.counting = false;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", "Stop");
     let step = 0;
@@ -818,6 +827,13 @@
       if (!state.playing) return;
       pulse(step);
       const wait = gapAfter(step);
+      if (state.once && step + 1 >= songLen()) {
+        state.timer = window.setTimeout(() => {
+          stop();
+          if (state.showing) bow();
+        }, wait);
+        return;
+      }
       step = (step + 1) % songLen();
       state.timer = window.setTimeout(tick, wait);
     };
@@ -834,7 +850,96 @@
     state.turn = "";
     state.held = {};
     paintRec();
+    $("now-line").textContent = state.showing ? "The stage is ready." : "Press Play. Read the word. Sound can stay off.";
+  }
+
+  function showCurtain() {
+    const curtain = $("curtain");
+    const bow = $("bow");
+    if (bow) bow.hidden = true;
+    if (!curtain) return;
+    curtain.hidden = false;
+    $("curtain-title").textContent = state.song.alias || "Your song";
+    const bars = state.song.measures ? state.song.measures.length : 1;
+    $("curtain-meta").textContent = bars + " bars · " + (state.song.meter || "4/4") + " · " + state.song.bpm;
+    $("feel").textContent = "Ready";
+    $("feel").className = "feel";
+    const bar = $("show-bar");
+    if (bar) bar.style.width = "0%";
+  }
+  function openShow() {
+    if (state.playing) stop();
+    window.clearTimeout(state.timer);
+    state.showing = true;
+    state.counting = false;
+    state.showBackup = { rgb: state.rgb, wild: state.gear.wild, frame: state.frame };
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) {
+      state.rgb = true;
+      state.gear.wild = Math.max(78, state.gear.wild);
+    }
+    if (state.frame === "none") state.frame = "glow";
+    document.body.classList.add("show");
+    showCurtain();
+    $("now-line").textContent = "One song. The picture follows. Sound can stay off.";
+  }
+  function closeShow() {
+    state.counting = false;
+    state.once = false;
+    if (state.playing) stop();
+    window.clearTimeout(state.timer);
+    state.showing = false;
+    if (state.showBackup) {
+      state.rgb = state.showBackup.rgb;
+      state.gear.wild = state.showBackup.wild;
+      state.frame = state.showBackup.frame;
+      state.showBackup = null;
+    }
+    document.body.classList.remove("show");
+    if ($("curtain")) $("curtain").hidden = true;
+    if ($("bow")) $("bow").hidden = true;
+    $("feel").textContent = "Ready";
     $("now-line").textContent = "Press Play. Read the word. Sound can stay off.";
+  }
+  function bow() {
+    if (!state.showing) return;
+    if ($("curtain")) $("curtain").hidden = true;
+    const card = $("bow");
+    if (card) card.hidden = false;
+    $("bow-title").textContent = state.song.alias || "Your song";
+    $("feel").textContent = "Yes";
+    $("feel").className = "feel on";
+    $("now-line").textContent = "That's the song.";
+    const bar = $("show-bar");
+    if (bar) bar.style.width = "100%";
+    state.kick = true;
+    state.snare = true;
+    state.bins[2] = 255;
+    state.bins[10] = 220;
+    state.bins[22] = 240;
+  }
+  function beginShow() {
+    if (!state.showing) openShow();
+    window.clearTimeout(state.timer);
+    if ($("curtain")) $("curtain").hidden = true;
+    if ($("bow")) $("bow").hidden = true;
+    state.counting = true;
+    let left = 4;
+    const gap = Math.round(60000 / Math.max(70, state.song.bpm || 96));
+    const tick = () => {
+      if (!state.showing || !state.counting) return;
+      $("feel").textContent = String(left);
+      $("feel").className = "feel on";
+      $("now-line").textContent = "Count " + left + ".";
+      if (!state.muted) tone(880, 0.05, "square", 0.1);
+      left -= 1;
+      if (left < 1) {
+        state.timer = window.setTimeout(() => play({ once: true }), gap);
+        return;
+      }
+      state.timer = window.setTimeout(tick, gap);
+    };
+    tick();
   }
 
   const BAND = [
@@ -1102,9 +1207,22 @@
       : "Add to the song. Taps stay on the beat.";
   });
   $("play-btn").addEventListener("click", () => {
+    if (state.showing) {
+      if (state.playing || state.counting) {
+        state.counting = false;
+        stop();
+        showCurtain();
+      } else beginShow();
+      return;
+    }
     if (state.playing) stop();
     else play();
   });
+  $("show-btn").addEventListener("click", openShow);
+  $("curtain-start").addEventListener("click", beginShow);
+  $("show-again").addEventListener("click", beginShow);
+  $("curtain-exit").addEventListener("click", closeShow);
+  $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
     $("mute-btn").textContent = state.muted ? "Muted" : "Sound on";
