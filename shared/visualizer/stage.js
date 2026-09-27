@@ -1,7 +1,7 @@
 /* Kulibert lights stage — one draw path for /visualizer/ and /bertybeatz/.
    Chip lives on the doors. Hub live line is the Hub lane's job. */
 (function (global) {
-  var CHIP = "Viz 0.7.0";
+  var CHIP = "Viz 0.8.0";
   var LOOKS = [
     { id: "bars", label: "Bars" },
     { id: "kaleido", label: "Kaleidoscope" },
@@ -368,6 +368,39 @@
       gear.smooth = num(g.smooth, 0, 100, 0) / 100;
       gear.wild = num(g.wild, 0, 100, 35) / 100;
       gear.color = PALETTE[g.color] ? g.color : "cyan";
+    }
+    function paintLook(look, w, h, snap) {
+      if (look === "kaleido") drawKaleido(w, h);
+      else if (look === "clouds") drawClouds(w, h);
+      else if (look === "stars") drawStars(w, h, snap);
+      else if (look === "code") drawCode(w, h);
+      else if (look === "rings") drawRings(w, h);
+      else if (look === "ripple") drawRipple(w, h);
+      else if (look === "tiles") drawTiles(w, h);
+      else if (look === "orbit") drawOrbit(w, h);
+      else if (look === "rain") drawRain(w, h);
+      else if (look === "tunnel") drawTunnel(w, h);
+      else if (look === "ribbon") drawRibbon(w, h);
+      else if (look === "bloom") drawBloom(w, h);
+      else if (look === "fireworks") drawFireworks(w, h);
+      else if (look && look !== "off") drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
+    }
+    var WALLS = {
+      night: ["#050814", "#0b1224"],
+      dusk: ["#1e1b4b", "#083344"],
+      sunset: ["#7c2d12", "#312e81"],
+      sea: ["#042f2e", "#0c4a6e"],
+      aurora: ["#064e3b", "#4c1d95"],
+      candy: ["#4c0519", "#1e3a8a"],
+    };
+    function drawWall(w, h, id) {
+      var pair = WALLS[id] || WALLS.night;
+      var g = vctx.createLinearGradient(0, 0, w, h);
+      g.addColorStop(0, pair[0]);
+      g.addColorStop(0.55, pair[1]);
+      g.addColorStop(1, "#050814");
+      vctx.fillStyle = g;
+      vctx.fillRect(0, 0, w, h);
     }
     function hue() {
       var set = PALETTE[gear.color] || PALETTE.cyan;
@@ -955,24 +988,33 @@
       var w = canvas._w || canvas.clientWidth;
       var h = canvas._h || canvas.clientHeight;
       fillBins(snap);
-      vctx.fillStyle = gear.trail > 0.01 ? "rgba(5,8,20," + (1 - gear.trail * 0.72) + ")" : "#050814";
+      var wall = snap.wall && WALLS[snap.wall] ? snap.wall : "night";
+      var veil = wall === "night" ? (gear.trail > 0.01 ? 1 - gear.trail * 0.72 : 1) : 0.42;
+      vctx.fillStyle = "rgba(5,8,20," + veil + ")";
       vctx.fillRect(0, 0, w, h);
+      vctx.globalCompositeOperation = "destination-over";
+      drawWall(w, h, wall);
+      vctx.globalCompositeOperation = "source-over";
       wash(w, h);
-      var look = snap.look || "bars";
-      if (look === "kaleido") drawKaleido(w, h);
-      else if (look === "clouds") drawClouds(w, h);
-      else if (look === "stars") drawStars(w, h, snap);
-      else if (look === "code") drawCode(w, h);
-      else if (look === "rings") drawRings(w, h);
-      else if (look === "ripple") drawRipple(w, h);
-      else if (look === "tiles") drawTiles(w, h);
-      else if (look === "orbit") drawOrbit(w, h);
-      else if (look === "rain") drawRain(w, h);
-      else if (look === "tunnel") drawTunnel(w, h);
-      else if (look === "ribbon") drawRibbon(w, h);
-      else if (look === "bloom") drawBloom(w, h);
-      else if (look === "fireworks") drawFireworks(w, h);
-      else drawBars(w, h, typeof snap.playhead === "number" ? snap.playhead : -1);
+      var base = snap.look || "bars";
+      var layers = Array.isArray(snap.layers) && snap.layers.length
+        ? snap.layers.filter(function (layer) { return layer && layer.look && layer.look !== "off"; }).slice(0, 3)
+        : [{ look: base, color: gear.color }];
+      if (!layers.length) layers = [{ look: base, color: gear.color }];
+      var cycle = ["rose", "amber", "lime", "cyan", "ice", "violet"];
+      var shift = (!reduceMotion && snap.rgb) ? Math.floor(performance.now() / 650) % cycle.length : 0;
+      var savedColor = gear.color;
+      var li;
+      for (li = 0; li < layers.length; li++) {
+        var layer = layers[li];
+        var color = snap.rgb ? cycle[(shift + li) % cycle.length] : layer.color;
+        gear.color = PALETTE[color] ? color : savedColor;
+        vctx.save();
+        vctx.globalAlpha = li === 0 ? 1 : 0.78;
+        paintLook(layer.look, w, h, snap);
+        vctx.restore();
+      }
+      gear.color = savedColor;
       drawScope(w, h, snap);
     }
 

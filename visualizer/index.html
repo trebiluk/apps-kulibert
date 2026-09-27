@@ -8,7 +8,7 @@
   <title>Visualizer · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=0.7.0"/>
+  <link rel="stylesheet" href="./styles.css?v=0.8.0"/>
 </head>
 <body>
   <header class="top">
@@ -16,7 +16,7 @@
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.7.0</em>
+        <em id="chip-label">Viz 0.8.0</em>
       </span>
     </a>
     <div class="top-actions">
@@ -43,7 +43,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.7.0</span>
+          <span id="chip-live">Viz 0.8.0</span>
         </p>
       </div>
     </div>
@@ -86,6 +86,15 @@
       <div class="chips scroll" id="colors"></div>
     </div>
     <div class="pick">
+      <span class="tool-label">Layers</span>
+      <label class="layer">1 <select id="layer-0" aria-label="Layer 1 look"></select><select id="ink-0" aria-label="Layer 1 color"></select></label>
+      <label class="layer">2 <select id="layer-1" aria-label="Layer 2 look"></select><select id="ink-1" aria-label="Layer 2 color"></select></label>
+      <label class="layer">3 <select id="layer-2" aria-label="Layer 3 look"></select><select id="ink-2" aria-label="Layer 3 color"></select></label>
+      <button type="button" id="rgb-btn" class="btn" aria-pressed="false">RGB cycle</button>
+    </div>
+    <label class="layer">Wall <select id="wall" aria-label="Wallpaper"></select></label>
+    <label class="layer">Frame <select id="frame" aria-label="Frame"></select></label>
+    <div class="pick">
       <span class="tool-label">Try</span>
       <div class="chips scroll" id="examples"></div>
       <button type="button" id="crazy-btn" class="btn">Crazy</button>
@@ -127,13 +136,13 @@
   </aside>
 
   <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.7.0</span> · own door · shared lights ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.8.0</span> · own door · shared lights ·
     <a href="./teacher.html">Teacher</a>
   </p>
 
   <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
-  <script src="/shared/visualizer/stage.js?v=0.7.0"></script>
-  <script src="./app.js?v=0.7.0"></script>
+  <script src="/shared/visualizer/stage.js?v=0.8.0"></script>
+  <script src="./app.js?v=0.8.0"></script>
 </body>
 </html>

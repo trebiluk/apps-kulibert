@@ -1,5 +1,11 @@
 # Visualizer changelog
 
+**Chip: Viz 0.8.0** · 2026-09-27 · channel **live**
+
+Three looks can stack, each in its own color. RGB cycle shifts them. Gradient walls and frames sit around the picture.
+
+## Earlier
+
 **Chip: Viz 0.7.0** · 2026-09-27 · channel **live**
 
 The picture uses the student's song, including the drums. An 8-beat song counts in beats, not a demo grid. No song means it says so.

@@ -1,8 +1,8 @@
 (() => {
-  if (window.__VISUALIZER__ === "0.7.0") return;
-  window.__VISUALIZER__ = "0.7.0";
+  if (window.__VISUALIZER__ === "0.8.0") return;
+  window.__VISUALIZER__ = "0.8.0";
   const stageApi = window.KulibertStage;
-  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.7.0";
+  const CHIP = stageApi ? stageApi.CHIP : "Viz 0.8.0";
   const LOOKS = stageApi
     ? stageApi.LOOKS
     : [
@@ -276,6 +276,14 @@
     status: "",
     gear: loadGear(),
     color: "cyan",
+    layers: [
+      { look: "fireworks", color: "amber" },
+      { look: "rings", color: "violet" },
+      { look: "off", color: "cyan" },
+    ],
+    rgb: false,
+    wall: "dusk",
+    frame: "glow",
   };
   let audioCtx = null;
   let master = null;
@@ -337,6 +345,8 @@
     return "fireworks";
   }
   state.look = loadLook();
+  loadSkin();
+  if (state.layers[0] && state.layers[0].look && state.layers[0].look !== "off") state.look = state.layers[0].look;
 
   function scoreBeat() {
     const Song = window.KulibertSong;
@@ -602,6 +612,11 @@
       b.append(dot);
       b.addEventListener("click", () => {
         state.color = item.id;
+        if (state.layers[0]) state.layers[0].color = item.id;
+        const ink = $("ink-0");
+        if (ink) ink.value = item.id;
+        saveSkin();
+        paintSkin();
         try { localStorage.setItem(COLOR_KEY, item.id); } catch (err) { /* ignore */ }
         renderColors();
       });
@@ -650,8 +665,89 @@
     if (hint) hint.textContent = "Crazy mixed the sliders and the color. Press it again for another mix.";
   }
 
+  function saveSkin() {
+    try {
+      localStorage.setItem("kulibert.viz.skin", JSON.stringify({
+        layers: state.layers,
+        rgb: state.rgb,
+        wall: state.wall,
+        frame: state.frame,
+      }));
+    } catch (err) { /* the picture still changes */ }
+  }
+  function loadSkin() {
+    try {
+      const raw = JSON.parse(localStorage.getItem("kulibert.viz.skin") || "null");
+      if (!raw || !Array.isArray(raw.layers)) return false;
+      state.layers = raw.layers.slice(0, 3);
+      while (state.layers.length < 3) state.layers.push({ look: "off", color: "cyan" });
+      state.rgb = !!raw.rgb;
+      if (raw.wall) state.wall = raw.wall;
+      if (raw.frame) state.frame = raw.frame;
+      if (state.layers[0] && state.layers[0].look && state.layers[0].look !== "off") state.look = state.layers[0].look;
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+  function paintSkin() {
+    const stage = document.querySelector(".stage");
+    if (stage) {
+      ["night", "dusk", "sunset", "sea", "aurora", "candy"].forEach((id) => stage.classList.remove("wall-" + id));
+      ["none", "line", "glow", "double", "rgb"].forEach((id) => stage.classList.remove("frame-" + id));
+      stage.classList.add("wall-" + (state.wall || "night"));
+      stage.classList.add("frame-" + (state.frame || "none"));
+      stage.classList.toggle("is-rgb", !!state.rgb);
+    }
+    const rgb = $("rgb-btn");
+    if (rgb) {
+      rgb.classList.toggle("on", !!state.rgb);
+      rgb.setAttribute("aria-pressed", String(!!state.rgb));
+    }
+  }
+  function fillSkin() {
+    if (!$("layer-0")) return;
+    for (let i = 0; i < 3; i++) {
+      const look = $("layer-" + i);
+      const ink = $("ink-" + i);
+      const options = (i === 0 ? [] : [["off", "Off"]]).concat(LOOKS.map((item) => [item.id, item.label]));
+      look.innerHTML = options.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+      ink.innerHTML = COLORS.map((item) => `<option value="${item.id}">${item.label}</option>`).join("");
+      look.value = state.layers[i].look;
+      ink.value = state.layers[i].color;
+      look.addEventListener("change", () => {
+        state.layers[i].look = look.value;
+        if (i === 0) {
+          state.look = look.value;
+          try { localStorage.setItem(LOOK_STORE, look.value); } catch (err) { /* ignore */ }
+        }
+        saveSkin();
+        renderChrome();
+      });
+      ink.addEventListener("change", () => {
+        state.layers[i].color = ink.value;
+        if (i === 0) state.color = ink.value;
+        saveSkin();
+        renderColors();
+      });
+    }
+    const walls = [["night", "Night"], ["dusk", "Dusk"], ["sunset", "Sunset"], ["sea", "Sea"], ["aurora", "Aurora"], ["candy", "Candy"]];
+    const frames = [["none", "None"], ["line", "Line"], ["glow", "Glow"], ["double", "Double"], ["rgb", "RGB"]];
+    $("wall").innerHTML = walls.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+    $("frame").innerHTML = frames.map((pair) => `<option value="${pair[0]}">${pair[1]}</option>`).join("");
+    $("wall").value = state.wall;
+    $("frame").value = state.frame;
+    $("wall").addEventListener("change", () => { state.wall = $("wall").value; saveSkin(); paintSkin(); });
+    $("frame").addEventListener("change", () => { state.frame = $("frame").value; saveSkin(); paintSkin(); });
+    $("rgb-btn").addEventListener("click", () => { state.rgb = !state.rgb; saveSkin(); paintSkin(); });
+  }
+
   function pickLook(id) {
     state.look = id;
+    if (!state.layers) state.layers = [];
+    state.layers[0] = Object.assign({ color: state.color }, state.layers[0], { look: id });
+    const sel = $("layer-0");
+    if (sel) sel.value = id;
     try { localStorage.setItem(LOOK_STORE, id); } catch { /* ignore */ }
     renderChrome();
   }
@@ -936,6 +1032,8 @@
   document.body.classList.toggle("is-day", !seen);
   $("more-btn").hidden = !seen;
   ensureBeat();
+  fillSkin();
+  paintSkin();
   try {
     const savedColor = localStorage.getItem(COLOR_KEY);
     if (COLORS.some((item) => item.id === savedColor)) state.color = savedColor;
@@ -987,6 +1085,9 @@
         wave: state.source === "device" ? null : (state.playing ? wave : null),
         analyser: state.source === "device" && state.playing ? micAnalyser : null,
         gear: Object.assign({}, state.gear, { color: state.color }),
+        layers: state.layers,
+        rgb: state.rgb,
+        wall: state.wall,
       };
     });
   }

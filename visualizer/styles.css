@@ -89,6 +89,30 @@ button { font: inherit; color: inherit; }
   padding: 0.55rem;
   margin-bottom: 0.75rem;
 }
+.stage.wall-dusk { background: linear-gradient(145deg, #1e1b4b, #083344); }
+.stage.wall-sunset { background: linear-gradient(145deg, #7c2d12, #312e81); }
+.stage.wall-sea { background: linear-gradient(160deg, #042f2e, #0c4a6e); }
+.stage.wall-aurora { background: linear-gradient(140deg, #064e3b, #4c1d95 55%, #083344); }
+.stage.wall-candy { background: linear-gradient(145deg, #4c0519, #1e3a8a); }
+.stage.frame-line { box-shadow: inset 0 0 0 2px rgba(232, 247, 255, 0.6); }
+.stage.frame-glow { box-shadow: 0 0 0 2px #e8f7ff, 0 0 24px rgba(34, 211, 238, 0.45); }
+.stage.frame-double { box-shadow: inset 0 0 0 1px #fff, inset 0 0 0 8px transparent, inset 0 0 0 9px rgba(255, 255, 255, 0.45); }
+.stage.frame-rgb, .stage.is-rgb { animation: rgbframe 5s linear infinite; }
+@keyframes rgbframe {
+  0% { box-shadow: 0 0 0 3px #ef4444, 0 0 28px #ef4444; }
+  33% { box-shadow: 0 0 0 3px #22c55e, 0 0 28px #22c55e; }
+  66% { box-shadow: 0 0 0 3px #3b82f6, 0 0 28px #3b82f6; }
+  100% { box-shadow: 0 0 0 3px #ef4444, 0 0 28px #ef4444; }
+}
+.layer { display: flex; gap: 0.35rem; align-items: center; margin: 0.28rem 0; }
+.layer select { flex: 1; min-width: 0; }
+.layer select, #wall, #frame {
+  min-height: 44px; width: 100%; border-radius: 10px; border: 1px solid var(--border);
+  background: #071018; color: inherit; font: inherit;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage.frame-rgb, .stage.is-rgb { animation: none; box-shadow: 0 0 0 3px #e8f7ff; }
+}
 body.is-loop .stage {
   border-color: color-mix(in srgb, var(--accent) 58%, var(--border));
 }
