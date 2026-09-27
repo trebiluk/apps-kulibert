@@ -28,6 +28,10 @@ Rules:
 
 ---
 
+## 0.19.22 — You can look at the goal — 2026-09-27
+
+- The Drop Zone is in the frame. Scroll sideways to move along the job. Ctrl-scroll zooms. The view still cannot leave the job.
+
 ## 0.19.21 — Next job is one click — 2026-09-27
 
 - Next job opens Job 2 on the first click. The clear card closes when you pick a job.

@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.21 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.22 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.21";
+const APP_VERSION = "0.19.22";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.21";
+const APP_CHIP = "BB 0.19.22";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -597,11 +597,11 @@ function boot() {
     let y0 = 0.05;
     let x1 = s.x + s.w;
     let y1 = 3.2;
-    const far = d && d.x > s.x + s.w + 6;
-    if (d && !far) {
+    if (d) {
       x0 = Math.min(x0, d.x);
       x1 = Math.max(x1, d.x + d.w);
-      y1 = Math.max(y1, d.y + Math.min(d.h, 2.2));
+      y0 = Math.min(y0, d.y);
+      y1 = Math.max(y1, d.y + d.h);
     }
     for (const p of doc.machine.parts || []) {
       const xs = p.x != null ? [p.x] : [p.x1, p.x2];
@@ -644,8 +644,8 @@ function boot() {
     const b = jobBounds();
     const minW = phone ? 7.4 : 8.6;
     const minH = phone ? 4.0 : 4.4;
-    const maxW = phone ? 14 : 16;
-    const maxH = phone ? 6.8 : 7.4;
+    const maxW = phone ? 28 : 32;
+    const maxH = phone ? 14 : 16;
     return {
       w: Math.max(minW, Math.min(maxW, b.w)),
       h: Math.max(minH, Math.min(maxH, b.h)),
@@ -662,13 +662,49 @@ function boot() {
     const sx = (canvas.width - pad * 2) / sp.w;
     const sy = (canvas.height - pad * 2) / sp.h;
     view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
-    if (JOBS.some((job) => job.id === courseId)) {
-      view.zoom = Math.max(0.9, Math.min(1.45, view.zoom));
-      const leash = 48 * (view.dpr || 1);
-      view.panx = Math.max(-leash, Math.min(leash, view.panx));
-      view.pany = Math.max(-leash, Math.min(leash, view.pany));
-      view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
+    view.zoom = Math.max(0.55, Math.min(2.4, view.zoom));
+    view.scale = Math.max(8, Math.min(sx, sy) * view.zoom);
+    view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
+    view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
+    clampLook();
+  }
+
+  function jobReach() {
+    const s = doc.level && doc.level.shop;
+    const d = doc.level && doc.level.drop;
+    let x0 = s ? s.x : 0;
+    let y0 = s ? s.y : 0;
+    let x1 = s ? s.x + s.w : 10;
+    let y1 = s ? s.y + s.h : 4;
+    if (d) {
+      x0 = Math.min(x0, d.x);
+      y0 = Math.min(y0, d.y);
+      x1 = Math.max(x1, d.x + d.w);
+      y1 = Math.max(y1, d.y + d.h);
     }
+    return { x0: x0 - 2.4, y0: Math.max(-0.6, y0 - 0.8), x1: x1 + 2.4, y1: y1 + 1.8 };
+  }
+
+  function clampLook() {
+    const s = doc.level && doc.level.shop;
+    if (!s || !view.scale) return;
+    const b = jobReach();
+    const scale = view.scale;
+    const left = -view.ox / scale;
+    const right = (canvas.width - view.ox) / scale;
+    const bottom = -view.oy / scale;
+    const top = (canvas.height - view.oy) / scale;
+    let shiftX = 0;
+    let shiftY = 0;
+    if (right - left >= b.x1 - b.x0) shiftX = (b.x0 + b.x1) / 2 - (left + right) / 2;
+    else if (left < b.x0) shiftX = b.x0 - left;
+    else if (right > b.x1) shiftX = b.x1 - right;
+    if (top - bottom >= b.y1 - b.y0) shiftY = (b.y0 + b.y1) / 2 - (bottom + top) / 2;
+    else if (bottom < b.y0) shiftY = b.y0 - bottom;
+    else if (top > b.y1) shiftY = b.y1 - top;
+    if (!shiftX && !shiftY) return;
+    view.panx -= shiftX * scale;
+    view.pany -= shiftY * scale;
     view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
     view.oy = canvas.height * 0.38 - view.fy * view.scale + view.pany;
   }
@@ -3075,12 +3111,22 @@ function boot() {
 
   canvas.addEventListener("wheel", (ev) => {
     ev.preventDefault();
-    const before = worldFromEvent(ev);
-    view.zoom = Math.max(0.7, Math.min(2.2, view.zoom * (ev.deltaY > 0 ? 0.9 : 1.1)));
-    fit();
-    const after = worldFromEvent(ev);
-    view.panx += (after.x - before.x) * view.scale;
-    view.pany -= (after.y - before.y) * view.scale;
+    if (ev.ctrlKey || ev.metaKey) {
+      const before = worldFromEvent(ev);
+      view.zoom = Math.max(0.55, Math.min(2.4, view.zoom * (ev.deltaY > 0 ? 0.9 : 1.1)));
+      fit();
+      const after = worldFromEvent(ev);
+      view.panx += (after.x - before.x) * view.scale;
+      view.pany -= (after.y - before.y) * view.scale;
+      fit();
+      return;
+    }
+    const unit = (ev.deltaMode === 1 ? 16 : ev.deltaMode === 2 ? 400 : 1) * (view.dpr || 1);
+    const dx = ev.deltaX * unit;
+    const dy = ev.deltaY * unit;
+    if (ev.shiftKey) view.pany -= dy;
+    else if (Math.abs(dx) > Math.abs(dy)) view.panx -= dx;
+    else view.panx -= dy;
     fit();
   }, { passive: false });
 
@@ -3165,7 +3211,12 @@ function boot() {
       };
       return;
     }
-    if (tool === "move") return;
+    if (tool === "move") {
+      if (!grabbed) {
+        panning = { x: ev.clientX, y: ev.clientY, px: view.panx, py: view.pany };
+      }
+      return;
+    }
     if (tool === "steel" || tool === "ghost") {
       const start = onNode ? { x: onNode.x, y: onNode.y } : pt;
       if (!inRect(start.x, start.y, doc.level.shop)) { toast("Build on the Shop Floor."); return; }
