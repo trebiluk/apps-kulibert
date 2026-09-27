@@ -119,22 +119,34 @@ html[data-big="1"] .menu-card { font-size: 17px; }
 .hud-play .btn { position: relative; width: 44px; min-width: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
 .key {
   position: absolute;
-  right: 3px;
-  top: 3px;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
-  border-radius: 5px;
-  background: #1a1400;
-  color: var(--yellow);
-  border: 1px solid var(--yellow);
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--paper);
+  color: #1a1400;
+  border: 1px solid #1a1400;
   font-size: 12px;
   font-weight: 800;
-  line-height: 16px;
+  line-height: 20px;
   text-align: center;
+  white-space: nowrap;
   pointer-events: none;
   letter-spacing: 0;
-  z-index: 2;
+  opacity: 0;
+  z-index: 12;
+  box-shadow: 0 8px 16px -10px #000a;
+}
+.tool:hover > .key,
+.tool:focus-visible > .key,
+.hud-play .btn:hover > .key,
+.hud-play .btn:focus-visible > .key { opacity: 1; }
+.hud-play .key {
+  left: 50%;
+  top: calc(100% + 6px);
+  transform: translateX(-50%);
 }
 .calm-fail {
   position: absolute;
@@ -210,18 +222,20 @@ html[data-big="1"] .menu-card { font-size: 17px; }
 
 .tool {
   position: relative;
-  display: flex; align-items: center; gap: 10px;
-  min-height: 48px; min-width: 44px; padding: 4px 6px;
-  border: 1px solid transparent;
-  border-radius: var(--radius);
-  background: rgb(0 0 0 / 18%);
+  display: flex; align-items: center; justify-content: center; gap: 0;
+  min-height: 48px; min-width: 44px; padding: 4px;
+  border: 1px solid #1a140e;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #727880, #3c4248);
   color: var(--text);
   text-align: left;
+  box-shadow: inset 0 1px 0 #fff4, 0 1px 0 #0005;
 }
-.tool:hover { background: rgb(255 255 255 / 8%); }
+.tool:hover { background: linear-gradient(180deg, #848b94, #4a5158); }
 .tool.on {
-  background: color-mix(in srgb, var(--yellow) 18%, #3a3e44);
-  border-color: var(--hair);
+  background: linear-gradient(180deg, #ffe978, #e2b000);
+  border-color: #1a1400;
+  box-shadow: inset 0 1px 0 #fff8, 0 0 0 2px #1a1400;
 }
 .tool:active { transform: scale(0.98); }
 
@@ -407,19 +421,32 @@ body[data-play="1"] .lesson .hint { display: none; }
 }
 .guide-line { display: none; }
 .guide-drawer {
-  position: absolute;
-  left: calc(100% + 8px);
-  bottom: 0;
-  width: 15rem;
+  position: fixed;
+  left: calc(var(--rail) + 16px);
+  top: 112px;
+  bottom: auto;
+  width: 16.5rem;
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 8px;
-  background: #2a2e33;
-  border: 1px solid var(--hair);
-  border-radius: 12px;
-  box-shadow: 0 16px 28px -16px #000c;
+  gap: 8px;
+  padding: 10px;
+  background: var(--paper);
+  color: #1a1400;
+  border: 2px solid #1a1400;
+  border-radius: 16px;
+  box-shadow: 4px 4px 0 #1a1400;
   z-index: 8;
+}
+.guide-drawer .step {
+  background: #fff;
+  color: #1a1400;
+  border-color: #1a140022;
+}
+.guide-drawer .step.on { background: var(--yellow); color: #1a1400; }
+.guide-drawer .btn:not(.gold) {
+  background: #fff;
+  color: #1a1400;
+  border-color: #1a140033;
 }
 .rail-guide { position: relative; }
 .guide-steps { display: flex; flex-wrap: wrap; gap: 4px; }
@@ -527,12 +554,21 @@ body[data-coach="1"] .rail-tabs { display: none !important; }
 #btn-crew { flex: 0 0 auto; }
 
 .btn {
-  background: #4a4f56; color: var(--text); border: 1px solid #2f3338;
-  border-radius: var(--radius); padding: 7px 12px; font-weight: 600; font-size: 13px;
-  min-height: 44px; min-width: 44px; white-space: nowrap; letter-spacing: 0.01em;
+  background: linear-gradient(180deg, #6a7078, #3e444b);
+  color: var(--text);
+  border: 1px solid #1a140e;
+  border-radius: 12px;
+  padding: 7px 12px;
+  font-weight: 700;
+  font-size: 13px;
+  min-height: 44px;
+  min-width: 44px;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  box-shadow: inset 0 1px 0 #fff3;
   transition: background var(--motion-quick) var(--ease-out), transform var(--motion-quick) var(--ease-out);
 }
-.btn:hover { background: #555b63; }
+.btn:hover { background: linear-gradient(180deg, #808890, #4a525a); }
 .btn:active { transform: scale(0.98); }
 .btn.on { box-shadow: inset 0 0 0 1px var(--yellow); }
 .btn.gold { background: var(--yellow); color: #1a1400; border-color: #c9a000; }

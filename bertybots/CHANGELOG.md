@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.23 — Tools look like tools — 2026-09-27
+
+- Shortcut chips no longer sit on the pictures. They show when you point at a button.
+- The guide opens as a paper card up high, off the crate.
+
 ## 0.19.22 — You can look at the goal — 2026-09-27
 
 - The Drop Zone is in the frame. Scroll sideways to move along the job. Ctrl-scroll zooms. The view still cannot leave the job.
