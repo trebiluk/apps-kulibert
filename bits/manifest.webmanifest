@@ -1,0 +1,8 @@
+{
+  "name": "Bits and Bobs",
+  "short_name": "Bits",
+  "start_url": "/bits/",
+  "display": "standalone",
+  "background_color": "#efe6d6",
+  "theme_color": "#efe6d6"
+}

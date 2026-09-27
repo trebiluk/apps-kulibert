@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Bits and Bobs">
+  <rect width="128" height="128" rx="28" fill="#E25C12"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#FFF7F2" stroke-width="3"/>
+  <g fill="none" stroke="#FFF7F2" stroke-width="6" stroke-linecap="round">
+    <circle cx="48" cy="58" r="16"/>
+    <path d="M48 34v8M48 74v8M24 58h8M64 58h8M31 41l6 6M59 69l6 6M31 75l6-6M59 47l6-6"/>
+    <path d="M78 40h26M78 54h20M78 68h26M78 82h16"/>
+  </g>
+</svg>
