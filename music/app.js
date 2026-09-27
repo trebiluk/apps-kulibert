@@ -14,6 +14,54 @@
     ["tamb", "Tamb"],
     ["crash", "Crash"],
   ];
+  function picture(look, color, wall, frame, rgb, look2, color2) {
+    return {
+      layers: [
+        { look: look, color: color },
+        { look: look2 || "off", color: color2 || color },
+        { look: "off", color: "ice" },
+      ],
+      wall: wall,
+      frame: frame || "glow",
+      rgb: !!rgb,
+    };
+  }
+  const PICTURES = {
+    "Kye Kye Kule": picture("tiles", "lime", "candy", "glow", false, "rings", "amber"),
+    "Banuwa": picture("bloom", "violet", "dusk", "glow", false, "ribbon", "rose"),
+    "Shosholoza": picture("tunnel", "amber", "night", "rgb", true, "bars", "rose"),
+    "Sakura": picture("bloom", "rose", "dusk", "glow", false, "rain", "ice"),
+    "Arirang": picture("ribbon", "ice", "night", "line", false, "stars", "violet"),
+    "Jasmine Flower": picture("bloom", "lime", "aurora", "glow", false, "clouds", "ice"),
+    "Chanda Mama": picture("stars", "ice", "night", "glow", false, "orbit", "violet"),
+    "Ode to Joy": picture("fireworks", "amber", "sunset", "glow", false, "rings", "rose"),
+    "Korobeiniki": picture("orbit", "cyan", "night", "rgb", true, "tiles", "violet"),
+    "Frere Jacques": picture("rings", "violet", "dusk", "glow", false, "stars", "amber"),
+    "Scarborough Fair": picture("rain", "ice", "sea", "line", false, "clouds", "cyan"),
+    "The Saints": picture("fireworks", "rose", "sunset", "glow", false, "bars", "amber"),
+    "La Cucaracha": picture("fireworks", "lime", "candy", "rgb", true, "tiles", "rose"),
+    "Cielito Lindo": picture("ribbon", "rose", "sunset", "glow", false, "bloom", "amber"),
+    "Simple Gifts": picture("bloom", "amber", "dusk", "line", false, "clouds", "rose"),
+    "Aloha Oe": picture("ribbon", "cyan", "sea", "glow", false, "rain", "ice"),
+    "Tumbalalaika": picture("stars", "violet", "night", "glow", false, "orbit", "ice"),
+    "Zum Gali Gali": picture("tiles", "amber", "sunset", "glow", false, "bars", "rose"),
+    "Dona Nobis": picture("bloom", "ice", "dusk", "glow", false, "rings", "violet"),
+    "Twinkle": picture("stars", "amber", "night", "glow", false, "orbit", "cyan"),
+    "Little Lamb": picture("clouds", "ice", "dusk", "line", false, "bloom", "rose"),
+    "Amazing Grace": picture("ribbon", "violet", "night", "glow", false, "stars", "ice"),
+    "Jingle Bells": picture("fireworks", "ice", "night", "rgb", true, "stars", "cyan"),
+  };
+  const REASONS = [
+    ["home", "It is the home note."],
+    ["line", "It sits on a line."],
+    ["space", "It sits in a space."],
+    ["higher", "It is higher than the one before."],
+    ["lower", "It is lower than the one before."],
+    ["rest", "It is a rest. We still count."],
+    ["beat", "It lands on a strong beat."],
+    ["again", "It repeats the note before."],
+    ["returns", "It comes back home."],
+  ];
   const LOOKS = [
     ["bars", "Bars"],
     ["ribbon", "Ribbon"],
@@ -720,6 +768,33 @@
     });
     const title = $("song-title");
     if (title) title.textContent = (state.song.alias || "Your song") + " · " + (state.song.meter || "4/4") + " · " + state.song.measures.length + " bars";
+    paintWhy();
+  }
+  function markAt(step) {
+    const evs = Song.events(state.song);
+    return evs[Math.max(0, step)] || evs[0];
+  }
+  function paintWhy() {
+    const ask = $("why-ask");
+    const progress = $("why-progress");
+    if (!ask || !progress) return;
+    const evs = Song.events(state.song);
+    const why = state.song.why || {};
+    let done = 0;
+    evs.forEach((ev) => { if (why[ev.measure + "-" + ev.beat]) done += 1; });
+    progress.textContent = done === evs.length
+      ? "You can defend every mark on this score."
+      : done + " of " + evs.length + " marks have a reason.";
+    const step = state.playing && state.step >= 0 ? state.step : state.cursor;
+    const ev = markAt(step);
+    if (!ev) return;
+    const fact = ev.pitch ? (TEACH[ev.pitch] || ev.label) : "Rest. Count it. Nothing plays.";
+    const said = why[ev.measure + "-" + ev.beat];
+    const sentence = said ? (REASONS.find((pair) => pair[0] === said) || ["", ""])[1] : "Why is it here?";
+    ask.textContent = "Bar " + (ev.measure + 1) + ", beat " + (ev.beat + 1) + ". " + fact + " " + sentence;
+    document.querySelectorAll("#why-reasons .btn").forEach((btn) => {
+      btn.classList.toggle("on", btn.dataset.why === said);
+    });
   }
   function pulse(step) {
     state.beatAt = performance.now();
@@ -1125,6 +1200,44 @@
       out.classList.toggle("is-rgb", !!state.rgb);
     }
   }
+  function applyViz(viz) {
+    if (!viz || !viz.layers) return;
+    state.layers = viz.layers.map((layer) => ({ look: layer.look, color: layer.color }));
+    while (state.layers.length < 3) state.layers.push({ look: "off", color: "cyan" });
+    if (state.layers[0].look && state.layers[0].look !== "off") state.look = state.layers[0].look;
+    state.wall = viz.wall || state.wall;
+    state.frame = viz.frame || state.frame;
+    state.rgb = !!viz.rgb;
+    for (let i = 0; i < 3; i++) {
+      const look = $("layer-" + i);
+      const ink = $("ink-" + i);
+      if (look && state.layers[i]) look.value = state.layers[i].look;
+      if (ink && state.layers[i]) ink.value = state.layers[i].color;
+    }
+    if ($("wall")) $("wall").value = state.wall;
+    if ($("frame")) $("frame").value = state.frame;
+    paintLights();
+    const now = $("viz-now");
+    if (now) now.textContent = "Picture: " + (state.layers[0].look || "bars") + ". It is saved on the song.";
+  }
+  function snapshotViz() {
+    state.song.viz = {
+      layers: state.layers.map((layer) => ({ look: layer.look, color: layer.color })),
+      wall: state.wall,
+      frame: state.frame,
+      rgb: !!state.rgb,
+    };
+    state.song = Song.parse(Song.serialize(state.song));
+  }
+  function fromLine(song) {
+    const from = (song && song.from) || [];
+    if (!from.length) return "No remix yet";
+    const root = from[0];
+    const n = from.filter((name) => name === "Remix").length;
+    if (!n) return root;
+    if (n === 1) return "Remix of " + root;
+    return "Remix of a remix of " + root;
+  }
   function fillLights() {
     if (!$("layer-0")) return;
     const stageLooks = (window.KulibertStage && window.KulibertStage.LOOKS) || [];
@@ -1343,14 +1456,167 @@
     $("lesson").textContent = "Wobble moves the sound up and down.";
   }));
   $("save-btn").addEventListener("click", () => {
-    const blob = new Blob([Song.serialize(state.song)], { type: "application/json" });
+    snapshotViz();
+    const blob = new Blob([JSON.stringify({ family: "kulibert.music", song: JSON.parse(Song.serialize(state.song)), drums: state.drums }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = "class-song.bertysong.json";
     a.click();
     URL.revokeObjectURL(url);
+    $("lesson").textContent = "The file has the notes, the picture, and the reasons.";
   });
+  const SHELF = "kulibert.music.shelf";
+  function readShelf() {
+    try {
+      const list = JSON.parse(localStorage.getItem(SHELF) || "[]");
+      return Array.isArray(list) ? list : [];
+    } catch (err) {
+      return [];
+    }
+  }
+  function paintShelf() {
+    const box = $("shelf");
+    if (!box) return;
+    box.innerHTML = "";
+    readShelf().forEach((item) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = fromLine(item.song || {});
+      b.addEventListener("click", () => loadPack(item));
+      box.appendChild(b);
+    });
+  }
+  function rememberPack() {
+    const list = readShelf();
+    list.unshift({ song: JSON.parse(Song.serialize(state.song)), drums: state.drums });
+    try {
+      localStorage.setItem(SHELF, JSON.stringify(list.slice(0, 12)));
+    } catch (err) {
+      paintSaved(false);
+    }
+    paintShelf();
+  }
+  function loadPack(data) {
+    const raw = data && data.song ? data.song : data;
+    const song = Song.parse(JSON.stringify(raw || {}));
+    if (!song) {
+      $("lesson").textContent = "That file is not a song.";
+      return;
+    }
+    state.song = song;
+    if (data && data.drums) {
+      ROWS.forEach(([id]) => {
+        if (Array.isArray(data.drums[id])) state.drums[id] = data.drums[id].slice(0, 8).map((on) => !!on);
+      });
+    }
+    state.cursor = 0;
+    state.step = 0;
+    if (song.viz) applyViz(song.viz);
+    if ($("tempo")) {
+      $("tempo").value = String(song.bpm);
+      $("tempo-read").textContent = String(song.bpm);
+    }
+    renderStaff();
+    renderDrums();
+    paintMeters();
+    paintCount();
+    keep();
+    $("lesson").textContent = song.viz
+      ? fromLine(song) + " is loaded. The picture came with it. Saved."
+      : "This song has no picture yet. Open This song's picture and pick one.";
+  }
+  function remixSong() {
+    snapshotViz();
+    const from = (state.song.from || []).slice();
+    if (!from.length) from.push(state.song.alias || "Class song");
+    if (from[from.length - 1] !== "Remix") from.push("Remix");
+    state.song.from = from.slice(0, 4);
+    state.song.why = {};
+    state.song = Song.parse(Song.serialize(state.song));
+    rememberPack();
+    keep();
+    paintWhy();
+    $("lesson").textContent = fromLine(state.song) + ". Change the notes, then defend them. Saved.";
+  }
+  const reasons = $("why-reasons");
+  if (reasons && !reasons.childElementCount) {
+    REASONS.forEach(([id, sentence]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.dataset.why = id;
+      b.textContent = sentence.replace(/\.$/, "");
+      b.addEventListener("click", () => {
+        const ev = markAt(state.playing && state.step >= 0 ? state.step : state.cursor);
+        if (!ev) return;
+        state.song.why = Object.assign({}, state.song.why || {});
+        state.song.why[ev.measure + "-" + ev.beat] = id;
+        state.song = Song.parse(Song.serialize(state.song));
+        keep();
+        paintWhy();
+        $("lesson").textContent = sentence + " Saved.";
+      });
+      reasons.appendChild(b);
+    });
+  }
+  if ($("why-next")) {
+    $("why-next").addEventListener("click", () => {
+      const evs = Song.events(state.song);
+      const step = state.playing && state.step >= 0 ? state.step : state.cursor;
+      state.cursor = (step + 1) % Math.max(1, evs.length);
+      if (!state.playing) state.step = state.cursor;
+      paintCount();
+      paintWhy();
+    });
+  }
+  const picks = $("viz-picks");
+  if (picks && !picks.childElementCount && window.KulibertStage) {
+    window.KulibertStage.LOOKS.forEach((item) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.textContent = item.label;
+      b.addEventListener("click", () => {
+        state.layers[0].look = item.id;
+        state.look = item.id;
+        const look = $("layer-0");
+        if (look) look.value = item.id;
+        snapshotViz();
+        applyViz(state.song.viz);
+        keep();
+        $("lesson").textContent = item.label + " is this song's picture. Saved.";
+      });
+      picks.appendChild(b);
+    });
+  }
+  if ($("viz-use")) {
+    $("viz-use").addEventListener("click", () => {
+      snapshotViz();
+      applyViz(state.song.viz);
+      keep();
+      $("lesson").textContent = "This picture stays with the song. Saved.";
+    });
+  }
+  if ($("remix-btn")) $("remix-btn").addEventListener("click", remixSong);
+  paintShelf();
+  if ($("open-btn") && $("open-file")) {
+    $("open-btn").addEventListener("click", () => $("open-file").click());
+    $("open-file").addEventListener("change", () => {
+      const file = $("open-file").files && $("open-file").files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        let data = null;
+        try { data = JSON.parse(String(reader.result || "")); } catch (err) { data = null; }
+        if (data && data.family === "kulibert.music") loadPack(data);
+        else if (data) loadPack({ song: data });
+        else $("lesson").textContent = "That file is not a song.";
+      };
+      reader.readAsText(file);
+    });
+  }
 
   let micStream = null;
   let micRec = null;
@@ -1506,8 +1772,9 @@
   $("tempo-read").textContent = String(state.song.bpm || 96);
   $("blend").value = String(state.blend);
   $("blend-read").textContent = blendWord(state.blend);
-  loadSkin();
   fillLights();
+  if (state.song.viz) applyViz(state.song.viz);
+  else loadSkin();
   paintAlong();
   paintMeters();
   paintInks();
@@ -1747,9 +2014,13 @@
           bpm: bpm || 96,
           meter: "4/4",
           measures: measures,
+          viz: PICTURES[name] || null,
+          why: {},
+          from: [name],
         });
         state.cursor = 0;
         state.step = 0;
+        if (state.song.viz) applyViz(state.song.viz);
         if ($("tempo")) {
           $("tempo").value = String(state.song.bpm);
           $("tempo-read").textContent = String(state.song.bpm);

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.9.0** · 2026-09-27 · channel **live**
+
+Every library song brings its own picture. A student can assign a picture to an opened song. Remix keeps the picture, clears the reasons, and can be remixed again. Defend the notes gives every mark a sentence the student can say.
+
+## Earlier
+
 **Chip: MU 2.8.0** · 2026-09-27 · channel **live**
 
 Talent show. One start, a count of four, the whole song once, lights across the stage, then a bow. Play it again or go back to class. Mute still shows the picture.

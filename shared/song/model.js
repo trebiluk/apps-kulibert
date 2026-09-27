@@ -84,6 +84,9 @@
       song: measures.map(function (m) { return m.label; }).join(""),
       publish: raw && raw.publish ? raw.publish : null,
       perform: raw && raw.perform ? raw.perform : null,
+      viz: cleanViz(raw && raw.viz),
+      why: cleanWhy(raw && raw.why),
+      from: cleanFrom(raw && raw.from),
     };
   }
 
@@ -97,7 +100,61 @@
     song.song = song.measures.map(function (m) { return m.label; }).join("");
     song.publish = song.publish || null;
     song.perform = song.perform || null;
+    song.viz = cleanViz(song.viz);
+    song.why = cleanWhy(song.why);
+    song.from = cleanFrom(song.from);
     return song;
+  }
+
+  var WHY = { home: 1, line: 1, space: 1, higher: 1, lower: 1, rest: 1, beat: 1, again: 1, returns: 1 };
+  var WALLS = { night: 1, dusk: 1, sunset: 1, sea: 1, aurora: 1, candy: 1 };
+  var FRAMES = { none: 1, line: 1, glow: 1, double: 1, rgb: 1 };
+  var COLORS = { cyan: 1, amber: 1, violet: 1, rose: 1, lime: 1, ice: 1 };
+  var LOOKS = { bars: 1, kaleido: 1, clouds: 1, stars: 1, code: 1, rings: 1, ripple: 1, tiles: 1, orbit: 1, rain: 1, tunnel: 1, ribbon: 1, bloom: 1, fireworks: 1, off: 1 };
+
+  function cleanViz(raw) {
+    if (!raw || typeof raw !== "object" || !Array.isArray(raw.layers)) return null;
+    var layers = [];
+    var i;
+    for (i = 0; i < raw.layers.length && layers.length < 3; i++) {
+      var layer = raw.layers[i] || {};
+      layers.push({
+        look: LOOKS[layer.look] ? layer.look : "off",
+        color: COLORS[layer.color] ? layer.color : "cyan",
+      });
+    }
+    if (!layers.length) return null;
+    return {
+      layers: layers,
+      wall: WALLS[raw.wall] ? raw.wall : "dusk",
+      frame: FRAMES[raw.frame] ? raw.frame : "glow",
+      rgb: !!raw.rgb,
+    };
+  }
+
+  function cleanWhy(raw) {
+    var out = {};
+    var keys;
+    var i;
+    if (!raw || typeof raw !== "object") return out;
+    keys = Object.keys(raw);
+    for (i = 0; i < keys.length && i < 240; i++) {
+      if (!/^\d+-\d+$/.test(keys[i])) continue;
+      if (WHY[raw[keys[i]]]) out[keys[i]] = raw[keys[i]];
+    }
+    return out;
+  }
+
+  function cleanFrom(raw) {
+    var out = [];
+    var i;
+    var name;
+    if (!Array.isArray(raw)) return out;
+    for (i = 0; i < raw.length && out.length < 4; i++) {
+      name = String(raw[i] || "").replace(/[\u0000-\u001f]/g, "").trim().slice(0, 40);
+      if (name) out.push(name);
+    }
+    return out;
   }
 
   function toAbc(song) {
