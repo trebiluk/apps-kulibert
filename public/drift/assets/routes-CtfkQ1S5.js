@@ -1,1 +1,0 @@
-import{t as e}from"./DriftExperience-JFeOcbez.js";import{r as t}from"./index-C-ATGVaQ.js";var n=t();function r(){return(0,n.jsx)(e,{})}export{r as component};
