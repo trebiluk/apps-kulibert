@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.27 — Optional curriculum — 2026-09-28
+
+- Curriculum is off until you turn it on. Then the six design steps, Measure, Forces, and Systems sit above the shop. The build jobs stay.
+- Assign with `?curriculum=1`. Turn off with `?curriculum=0` or Menu → More → Curriculum.
+
 ## 0.19.26 — Look at the goal — 2026-09-27
 
 - The GOAL button jumps the view to the stripes. The job number, or H, brings the crate back. G does the look.

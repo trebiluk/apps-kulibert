@@ -9,11 +9,11 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.19.26 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.19.27 — Solvay Tech Ed</title>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.19.26">
+  <link rel="stylesheet" href="css/app.css?v=0.19.27">
 </head>
 <body>
   <div id="rotate-gate">
@@ -124,7 +124,7 @@
     </aside>
     <div class="shop">
       <header class="hud">
-        <div class="brand">Berty's Botz <small id="chip">BB 0.19.26</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.19.27</small></div>
         <div class="hud-play">
           <span class="coach-play" id="coach-play" hidden>Play</span>
           <button class="btn ok" id="btn-play" type="button" aria-label="Play" title="Play · Space"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><span class="lbl">Play</span><span class="key">␣</span></button>
@@ -159,7 +159,17 @@
           <option value="pair">Pair of Crates</option>
         </select>
       </header>
+      <div class="job-stack">
       <div class="job-strip" id="job-strip" aria-label="Build jobs"></div>
+      <div class="curr-bar" id="curr-bar" hidden>
+        <span class="curr-k">Curriculum</span>
+        <div class="curr-steps" id="curr-steps" role="tablist" aria-label="Design process"></div>
+        <p class="curr-line" id="curr-line">Ask what the crate has to do.</p>
+        <button class="btn" id="btn-curr-measure" type="button">Measure</button>
+        <button class="btn" id="btn-curr-forces" type="button">Forces</button>
+        <button class="btn" id="btn-curr-systems" type="button">Systems</button>
+      </div>
+      </div>
       <div class="stage-fit">
       <div class="stage">
         <canvas id="c" tabindex="0"></canvas>
@@ -255,6 +265,10 @@
             <div id="menu-more" hidden>
             <p class="crew-label">Lessons</p>
             <div class="row">
+              <button class="btn" id="btn-curriculum" type="button" aria-pressed="false">Curriculum: Off</button>
+            </div>
+            <p class="hint">Optional. Design steps, Measure, and Forces. The build jobs stay.</p>
+            <div class="row">
               <button class="btn" id="btn-lesson-measure" type="button">Measure</button>
               <button class="btn" id="btn-lesson-forces" type="button">Forces</button>
             </div>
@@ -309,13 +323,13 @@
       <footer class="status">
         <span id="mode">Shop</span>
         <span>Parts <b id="count">0 / 48</b></span>
-        <span class="whats-new">What's new: tap GOAL to see the stripes. Tap the job number to come back. G and H do the same.</span>
+        <span class="whats-new">What's new: optional curriculum. Menu → More → Curriculum. Build jobs stay.</span>
         <span class="hint" id="status-hint">Build on the shop floor. Play to test.</span>
       </footer>
     </div>
   </div>
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
-  <script src="js/bundle.js?v=0.19.26"></script>
+  <script src="js/bundle.js?v=0.19.27"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.26 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.27 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.26";
+const APP_VERSION = "0.19.27";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.26";
+const APP_CHIP = "BB 0.19.27";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -164,6 +164,15 @@ const JOBS = [
 ];
 
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
+const CURR_KEY = "bb-curriculum-v1";
+const CURR_LINE = {
+  ask: "Ask what the crate has to do.",
+  imagine: "Imagine more than one way.",
+  plan: "Plan the wheel before you drop it.",
+  create: "Create it on the shop floor.",
+  test: "Test it. Press Play.",
+  improve: "Improve one thing, then test again.",
+};
 
 const ACCESS_KEY = "bz-access-v1";
 const ACCESS_COPY = {
@@ -564,6 +573,8 @@ function boot() {
   let everTested = false;
   let pinnedStep = null;
   let guideOn = true;
+  let curriculumOn = false;
+  try { curriculumOn = localStorage.getItem(CURR_KEY) === "1"; } catch (e) { curriculumOn = false; }
   let howtoIndex = 0;
   let tapeA = null;
   let tapeB = null;
@@ -795,6 +806,42 @@ function boot() {
     if (hintEl) hintEl.textContent = statusLine();
     const pack = GUIDE[courseId] || GUIDE.open;
     if (sysCourse) sysCourse.textContent = pack.system;
+    paintCurriculum();
+  }
+
+  function setCurriculum(on) {
+    curriculumOn = !!on;
+    try { localStorage.setItem(CURR_KEY, curriculumOn ? "1" : "0"); } catch (e) { /* private */ }
+    document.body.dataset.curriculum = curriculumOn ? "1" : "0";
+    const btn = document.getElementById("btn-curriculum");
+    if (btn) {
+      btn.textContent = curriculumOn ? "Curriculum: On" : "Curriculum: Off";
+      btn.setAttribute("aria-pressed", curriculumOn ? "true" : "false");
+      btn.classList.toggle("on", curriculumOn);
+    }
+    paintCurriculum();
+  }
+
+  function paintCurriculum() {
+    const bar = document.getElementById("curr-bar");
+    if (bar) bar.hidden = !curriculumOn;
+    const steps = document.getElementById("curr-steps");
+    if (steps && !steps.childElementCount) {
+      STEPS.forEach((id) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "step";
+        b.dataset.step = id;
+        b.textContent = id.charAt(0).toUpperCase() + id.slice(1);
+        steps.append(b);
+      });
+    }
+    const line = document.getElementById("curr-line");
+    if (!line || !curriculumOn) return;
+    const step = pinnedStep && STEPS.includes(pinnedStep) ? pinnedStep : autoStep();
+    if (courseId === "measure") line.textContent = "Count squares. 1 square = 1 unit.";
+    else if (courseId === "forces") line.textContent = "Gravity down. The wheel turns. Unbalanced force moves the crate.";
+    else line.textContent = CURR_LINE[step] || CURR_LINE.ask;
   }
 
   function resetLoop(id) {
@@ -936,6 +983,7 @@ function boot() {
 
   function jobUnlocked(id) {
     if (levelDone(id)) return true;
+    if (id === "measure" || id === "forces") return true;
     if (id === "editor" || classJobs().some((job) => job.id === id)) return allClear();
     const i = JOBS.findIndex((job) => job.id === id);
     if (i < 0) return false;
@@ -3507,6 +3555,24 @@ function boot() {
     const lessonForces = document.getElementById("btn-lesson-forces");
     if (lessonMeasure) lessonMeasure.addEventListener("click", () => { showCrew(false); loadBuiltin("measure"); });
     if (lessonForces) lessonForces.addEventListener("click", () => { showCrew(false); loadBuiltin("forces"); });
+    const currBtn = document.getElementById("btn-curriculum");
+    if (currBtn) currBtn.addEventListener("click", () => setCurriculum(!curriculumOn));
+    const currSteps = document.getElementById("curr-steps");
+    if (currSteps) {
+      currSteps.addEventListener("click", (ev) => {
+        const b = ev.target.closest("[data-step]");
+        if (!b) return;
+        guideOn = true;
+        pinnedStep = b.getAttribute("data-step");
+        refreshGuide();
+      });
+    }
+    const currMeasure = document.getElementById("btn-curr-measure");
+    const currForces = document.getElementById("btn-curr-forces");
+    const currSystems = document.getElementById("btn-curr-systems");
+    if (currMeasure) currMeasure.addEventListener("click", () => loadBuiltin("measure"));
+    if (currForces) currForces.addEventListener("click", () => loadBuiltin("forces"));
+    if (currSystems) currSystems.addEventListener("click", () => showSystems(true));
     const winNext = document.getElementById("win-next");
     const winSkip = document.getElementById("win-skip");
     if (winNext) {
@@ -4023,6 +4089,7 @@ function boot() {
   setLayer("machine");
   refreshMeta();
   const assigned = new URLSearchParams(location.search).get("course");
+  const currQ = new URLSearchParams(location.search).get("curriculum");
   debugOn = new URLSearchParams(location.search).get("debug") === "1";
   let embed = new URLSearchParams(location.search).get("embed") === "1"
     || new URLSearchParams(location.search).get("tw") === "1";
@@ -4039,6 +4106,9 @@ function boot() {
   showCrew(false);
   showSystems(false);
   hideHowto();
+  if (currQ === "1" || currQ === "on") setCurriculum(true);
+  else if (currQ === "0" || currQ === "off") setCurriculum(false);
+  else setCurriculum(curriculumOn);
   applyCoach();
   requestAnimationFrame(loop);
 }
