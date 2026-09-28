@@ -64,6 +64,12 @@
     <p>Not a class tile. Unlock with the TechWorks Cloud desk key from Records → Cloud. Hashed in this tab. Close the tab to lock. Names and https only — no roster.</p>
     <p><a href="/">← Tech Room door</a></p>
     <p><button class="ghost" id="hub-sign-out" type="button">Sign out</button></p>
+    <form class="card" id="pin-form">
+      <p class="chip">Student PIN</p>
+      <p>The alias stays. Reset only when this student forgot the PIN. A student cannot do this.</p>
+      <button class="save" id="pin-reset" type="button">Reset PIN on this Chromebook</button>
+      <p class="err" id="pin-status"></p>
+    </form>
 
     <form class="card" id="key-form">
       <ol>
@@ -159,6 +165,8 @@
     <p class="err" id="status"></p>
     </div>
   </div>
+  <script src="/shared/kw-who.js?v=2026-09-28-tw-session"></script>
+  <script src="/shared/tw-session.js?v=2026-09-28-tw-session"></script>
   <script src="/shared/hub-staff-auth.js?v=2026-09-26-hub-pass"></script>
   <script>
     (function () {
@@ -192,6 +200,15 @@
           if (toggle) { toggle.textContent = "Show"; toggle.setAttribute("aria-pressed", "false"); }
           paintHubLock();
           if (!HubStaffAuth.isUnlocked() && $("hub-pass")) $("hub-pass").focus();
+        });
+        var pinReset = $("pin-reset");
+        if (pinReset) pinReset.addEventListener("click", function () {
+          var status = $("pin-status");
+          if (!window.TwSession || !TwSession.resetPin()) {
+            if (status) status.textContent = "Unlock the staff password first.";
+            return;
+          }
+          if (status) status.textContent = "PIN cleared on this Chromebook. The alias stayed.";
         });
         if (!HubStaffAuth.isUnlocked() && $("hub-pass")) $("hub-pass").focus();
       }

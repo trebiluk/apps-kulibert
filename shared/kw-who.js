@@ -108,7 +108,20 @@
     });
     rows.push({ alias: who.alias, code: who.code, app: id, line: text, saved: new Date().toISOString() });
     writePending(rows);
+    try { root.dispatchEvent(new Event("kw-mark")); } catch (e) {}
     return who;
+  }
+  function flush() {
+    var rows = pending();
+    if (!rows.length) return Promise.resolve(true);
+    return fetch("https://tw.kulibert.net/api/marks", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ marks: rows })
+    }).then(function (res) {
+      if (res && res.ok) ack(rows);
+      return !!(res && res.ok);
+    }).catch(function () { return false; });
   }
   function ack(sent) {
     var done = {};
@@ -120,5 +133,5 @@
       return !done[key] || done[key] !== row.line;
     }));
   }
-  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, pending: pending, ack: ack };
+  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, pending: pending, ack: ack, flush: flush };
 })(typeof window !== "undefined" ? window : globalThis);
