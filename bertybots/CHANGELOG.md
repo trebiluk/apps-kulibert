@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.28 — Races — 2026-09-28
+
+- Sprint, Gates, and Long Lap. The clock starts on Play. Gates must be passed in order. Best time stays on this Chromebook. No names.
+- The build jobs are unchanged. Race plates sit after them.
+
 ## 0.19.27 — Optional curriculum — 2026-09-28
 
 - Curriculum is off until you turn it on. Then the six design steps, Measure, Forces, and Systems sit above the shop. The build jobs stay.

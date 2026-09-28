@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.27 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.28 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.27";
+const APP_VERSION = "0.19.28";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.27";
+const APP_CHIP = "BB 0.19.28";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -73,13 +73,16 @@ function unpackDoc(raw) {
   const cores = Array.isArray(level.cores) && level.cores.length
     ? level.cores.slice(0, 3).map((c) => ({ x: +c.x, y: +c.y }))
     : base.level.cores;
+  const gates = Array.isArray(level.gates)
+    ? level.gates.slice(0, 6).map((g) => ({ x: +g.x, y: +g.y, w: +g.w, h: +g.h }))
+    : [];
   const tools = Array.isArray(level.tools) && level.tools.length ? level.tools : base.level.tools;
   const parts = raw.machine && Array.isArray(raw.machine.parts) ? raw.machine.parts.map((p) => ({ ...p })) : [];
   return {
     app: "bertybots",
     format: FORMAT,
     title: sanitizeTitle(raw.title),
-    level: { shop, drop, world, cores, tools },
+    level: { shop, drop, world, cores, tools, gates },
     machine: { parts },
   };
 }
@@ -151,6 +154,15 @@ const BUILTIN = [
   { id: "shelf", label: "High Shelf", url: "levels/high-shelf.json" },
   { id: "bend", label: "Around the Bend", url: "levels/around-the-bend.json" },
   { id: "pair", label: "Pair of Crates", url: "levels/pair-of-crates.json" },
+  { id: "sprint", label: "Sprint", url: "levels/sprint.json" },
+  { id: "gates", label: "Gates", url: "levels/gates.json" },
+  { id: "lap", label: "Long Lap", url: "levels/long-lap.json" },
+];
+
+const RACES = [
+  { id: "sprint", label: "Sprint", mark: "S" },
+  { id: "gates", label: "Gates", mark: "G" },
+  { id: "lap", label: "Long Lap", mark: "L" },
 ];
 
 const JOBS = [
@@ -370,6 +382,33 @@ const GUIDE = {
     improve: "Improve timing and contact, not part count first.",
     system: "Around the Bend — process path has a direction change. Feedback is a trail that corners or a crate that wedges.",
   },
+  sprint: {
+    ask: "Ask: Sprint. Build a pusher, then Play. The clock starts.",
+    imagine: "Imagine the shortest machine that still reaches the stripes.",
+    plan: "Plan a straight push. Extra parts cost time.",
+    create: "Create on the shop floor. Orange wheel behind the crate.",
+    test: "Test: Play. The board is your time.",
+    improve: "Improve one thing and run it again. Best time stays on this Chromebook.",
+    system: "Sprint — Input: Drive. Process: a short push. Output: crate in the stripes. Feedback: the clock.",
+  },
+  gates: {
+    ask: "Ask: Gates. Pass gate 1, then gate 2, then park. Order counts.",
+    imagine: "Imagine a machine that stays on the floor through both banners.",
+    plan: "Plan the line. Missing a gate does not stop the clock.",
+    create: "Create the pusher, then send it through the banners.",
+    test: "Test: the banner turns green when the crate passes.",
+    improve: "Improve the line, not just the speed.",
+    system: "Gates — a course. Feedback is the banner and the clock. Output is the stripes after every gate.",
+  },
+  lap: {
+    ask: "Ask: Long Lap. Three gates, then the stripes. One clock.",
+    imagine: "Imagine a machine that holds together for the whole floor.",
+    plan: "Plan a straight run. A wobble at gate 3 still counts.",
+    create: "Create on the shop floor. The course is the world.",
+    test: "Test the full lap. Stop and change one thing.",
+    improve: "Improve for a cleaner lap, then Run again.",
+    system: "Long Lap — same system as Sprint, longer process path. The clock is the feedback.",
+  },
   pair: {
     ask: "Ask: Pair of Crates. Every Bot Core must stay in the Drop Zone — one crate is not enough.",
     imagine: "Imagine one machine that moves both, or two subsystems that do not fight.",
@@ -581,12 +620,13 @@ function boot() {
   let measureDone = {};
   let forceDone = {};
   let playAge = 0;
+  let gateN = 0;
   let progress = { xp: 0, wins: {} };
   try {
     const raw = localStorage.getItem("bb-progress-v1");
     if (raw) {
       const p = JSON.parse(raw);
-      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {}, tried: p.tried || {} };
+      if (p && typeof p.xp === "number") progress = { xp: p.xp, wins: p.wins || {}, tried: p.tried || {}, bests: p.bests || {} };
     }
   } catch (e) { /* private mode */ }
 
@@ -856,6 +896,8 @@ function boot() {
     view.zoom = 1;
     view.panx = 0;
     view.pany = 0;
+    gateN = 0;
+    playAge = 0;
     if (courseId !== "measure") measureDone = {};
     else measureDone = (progress.wins.measure && progress.wins.measure.jobs) ? { ...progress.wins.measure.jobs } : {};
     if (courseId !== "forces") forceDone = {};
@@ -984,6 +1026,7 @@ function boot() {
   function jobUnlocked(id) {
     if (levelDone(id)) return true;
     if (id === "measure" || id === "forces") return true;
+    if (RACES.some((race) => race.id === id)) return true;
     if (id === "editor" || classJobs().some((job) => job.id === id)) return allClear();
     const i = JOBS.findIndex((job) => job.id === id);
     if (i < 0) return false;
@@ -1204,6 +1247,12 @@ function boot() {
 
   function statusLine() {
     if (winEl && winEl.classList.contains("show")) return "Parked.";
+    if (isRace()) {
+      const gates = raceGates();
+      if (!playing) return "Build a pusher. Play starts the clock.";
+      if (gates.length && gateN < gates.length) return `Gate ${gateN + 1} of ${gates.length}.`;
+      return "Park it. The clock stops in the stripes.";
+    }
     if (lastReadout) return lastReadout;
     const line = coachLine();
     if (line) return line;
@@ -1238,6 +1287,17 @@ function boot() {
     if (clearTour) {
       return { k: "Job 1 clear", t: "The crate parked", b: "The wheel was behind it." };
     }
+    if (isRace()) {
+      const t = formatTime(playAge);
+      const best = progress.bests && progress.bests[courseId];
+      const race = RACES.find((item) => item.id === courseId);
+      const fresh = best != null && playAge <= best + 0.05;
+      return {
+        k: fresh ? "New best" : "Finish",
+        t,
+        b: best != null ? `${race ? race.label : "Race"} · best ${formatTime(best)}` : "First finish on this Chromebook.",
+      };
+    }
     const nxt = JOBS[i + 1];
     const said = {
       roll: "The orange wheel pushes. The loose one doesn't.",
@@ -1264,7 +1324,7 @@ function boot() {
     if (k) k.textContent = c.k;
     if (t) t.textContent = c.t;
     if (b) b.textContent = c.b;
-    if (next) next.textContent = "Next job";
+    if (next) next.textContent = isRace() ? "Run again" : "Next job";
     if (skip) skip.hidden = true;
     if (winEl) winEl.classList.add("show");
   }
@@ -1343,7 +1403,7 @@ function boot() {
       });
       const name = document.createElement("span");
       name.className = "job-name";
-      const curJob = JOBS.find((job) => job.id === courseId);
+      const curJob = JOBS.find((job) => job.id === courseId) || RACES.find((job) => job.id === courseId);
       name.textContent = curJob ? curJob.label : (courseId === "editor" ? "Design" : "");
       strip.append(name);
       if (allClear()) {
@@ -1370,6 +1430,21 @@ function boot() {
         btn.append(num, mark);
         strip.append(btn);
       }
+      RACES.forEach((race) => {
+        const btn = document.createElement("button");
+        const best = progress.bests && progress.bests[race.id];
+        btn.type = "button";
+        btn.className = `job-plate race${race.id === courseId ? " here" : ""}`;
+        btn.dataset.course = race.id;
+        btn.title = best != null ? `${race.label} · ${formatTime(best)}` : `${race.label}. Clock starts on Play.`;
+        btn.setAttribute("aria-label", best != null ? `${race.label}, best ${formatTime(best)}` : race.label);
+        const num = document.createElement("b");
+        num.textContent = race.mark;
+        const mark = document.createElement("span");
+        mark.textContent = best != null ? formatTime(best) : "RACE";
+        btn.append(num, mark);
+        strip.append(btn);
+      });
       if (allClear() && courseId === "editor") {
         const ex = document.createElement("button");
         ex.type = "button";
@@ -1400,6 +1475,13 @@ function boot() {
         opt.textContent = "Design a level";
         pick.append(opt);
       }
+      RACES.forEach((race) => {
+        const opt = document.createElement("option");
+        opt.value = race.id;
+        const best = progress.bests && progress.bests[race.id];
+        opt.textContent = best != null ? `Race · ${race.label} · ${formatTime(best)}` : `Race · ${race.label}`;
+        pick.append(opt);
+      });
       for (const job of classJobs()) {
         const opt = document.createElement("option");
         opt.value = job.id;
@@ -1416,6 +1498,16 @@ function boot() {
 
   function isMeasure() { return courseId === "measure"; }
   function isForces() { return courseId === "forces"; }
+  function isRace() { return RACES.some((race) => race.id === courseId); }
+  function raceGates() { return (doc.level && doc.level.gates) || []; }
+  function formatTime(sec) {
+    const s = Math.max(0, Number(sec) || 0);
+    const m = Math.floor(s / 60);
+    const rem = s - m * 60;
+    const whole = Math.floor(rem);
+    const tenth = Math.floor((rem - whole) * 10);
+    return `${m}:${String(whole).padStart(2, "0")}.${tenth}`;
+  }
 
   function refreshLesson() {
     const card = document.getElementById("lesson");
@@ -1550,6 +1642,11 @@ function boot() {
       bestParts: Math.min(parts, rec ? rec.bestParts : parts),
       n: (rec && rec.n ? rec.n : 0) + 1,
     };
+    if (isRace()) {
+      progress.bests = progress.bests || {};
+      const prev = progress.bests[courseId];
+      if (prev == null || playAge < prev) progress.bests[courseId] = Math.round(playAge * 10) / 10;
+    }
     saveProgress();
     refreshRank();
     parkHeat();
@@ -1797,6 +1894,7 @@ function boot() {
     lastMiss = null;
     lastReadout = "";
     playAge = 0;
+    gateN = 0;
     everTested = true;
     pinnedStep = null;
     winEl.classList.remove("show");
@@ -2012,12 +2110,24 @@ function boot() {
       if (trail.length > 90) trail.shift();
     }
     playAge += DT * n;
+    tickGates();
     sampleForces();
     checkWin(DT * n);
   }
 
+  function tickGates() {
+    const gates = raceGates();
+    if (!sim || !sim.cores[0] || gateN >= gates.length) return;
+    const p = sim.cores[0].getPosition();
+    if (inRect(p.x, p.y, gates[gateN])) gateN += 1;
+  }
+
   function checkWin(dtAcc) {
     if (!sim || won || isMeasure() || isForces()) return;
+    if (isRace() && gateN < raceGates().length) {
+      winT = 0;
+      return;
+    }
     const drop = doc.level.drop;
     let inside = 0;
     for (const b of sim.cores) {
@@ -2641,6 +2751,7 @@ function boot() {
     ctx.fillRect(floorX, floorY - kick, wr(doc.level.shop.w), kick);
 
     drawDropBay(doc.level.drop);
+    drawGates();
 
     stencil("Shop Floor", wx(doc.level.shop.x) + 6, wy(doc.level.shop.y + doc.level.shop.h) + 8, NAVY);
     if (canEditSite() && doc.level.drop) {
@@ -2777,18 +2888,28 @@ function boot() {
       ctx.fillText(lastReadout || (playing ? "test" : "shop"), 14, 32);
     }
     drawGoalCue();
+    drawRaceBoard();
     drawCoach();
     drawBerty(now);
   }
 
+  function raceAim() {
+    const gates = raceGates();
+    if (isRace() && gateN < gates.length) {
+      const g = gates[gateN];
+      return { x: g.x + g.w / 2, y: g.y + g.h * 0.45, label: "GATE" };
+    }
+    const drop = doc.level && doc.level.drop;
+    if (!drop) return null;
+    return { x: drop.x + drop.w / 2, y: drop.y + Math.min(drop.h, 1.4) * 0.45, label: "GOAL" };
+  }
+
   function drawGoalCue() {
     goalCue = null;
-    const drop = doc.level && doc.level.drop;
-    if (!drop || (winEl && winEl.classList.contains("show"))) return;
-    const cx = drop.x + drop.w / 2;
-    const cy = drop.y + Math.min(drop.h, 1.4) * 0.45;
-    const sx = wx(cx);
-    const sy = wy(cy);
+    const aim = raceAim();
+    if (!aim || (winEl && winEl.classList.contains("show"))) return;
+    const sx = wx(aim.x);
+    const sy = wy(aim.y);
     const dpr = view.dpr || 1;
     const pad = 28 * dpr;
     if (sx >= pad && sx <= canvas.width - pad && sy >= pad && sy <= canvas.height - pad) return;
@@ -2822,7 +2943,7 @@ function boot() {
     ctx.font = `800 ${Math.round(15 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
-    ctx.fillText("GOAL", ax + w / 2 + (pointingRight ? -8 : 8) * dpr, ay + h / 2 + 1);
+    ctx.fillText(aim.label, ax + w / 2 + (pointingRight ? -8 : 8) * dpr, ay + h / 2 + 1);
     ctx.restore();
   }
 
@@ -2835,13 +2956,70 @@ function boot() {
   }
 
   function lookAtDrop() {
-    const drop = doc.level && doc.level.drop;
-    if (!drop || !view.scale) return;
-    const x = drop.x + drop.w / 2;
-    const y = drop.y + Math.min(drop.h, 1.6) * 0.5;
-    view.panx = canvas.width * 0.08 + (view.fx - x) * view.scale;
-    view.pany = (view.fy - y) * view.scale;
+    const aim = raceAim();
+    if (!aim || !view.scale) return;
+    view.panx = canvas.width * 0.08 + (view.fx - aim.x) * view.scale;
+    view.pany = (view.fy - aim.y) * view.scale;
     applyCam(false);
+  }
+
+  function drawGates() {
+    const gates = raceGates();
+    if (!gates.length) return;
+    const dpr = view.dpr || 1;
+    gates.forEach((g, i) => {
+      const done = i < gateN;
+      const x = wx(g.x);
+      const y = wy(g.y + g.h);
+      const w = wr(g.w);
+      const h = wr(g.h);
+      ctx.save();
+      ctx.fillStyle = done ? "rgba(58,125,84,0.28)" : "rgba(26,20,0,0.12)";
+      ctx.fillRect(x, y, w, h);
+      ctx.fillStyle = done ? "#2f6f4e" : "#1a1400";
+      ctx.fillRect(x, y, Math.max(4, 5 * dpr), h);
+      ctx.fillRect(x + w - Math.max(4, 5 * dpr), y, Math.max(4, 5 * dpr), h);
+      const banner = Math.max(10, 14 * dpr);
+      ctx.fillStyle = done ? "#3a7d54" : "#f0c000";
+      ctx.fillRect(x, y, w, banner);
+      ctx.fillStyle = done ? "#f4efe6" : "#1a1400";
+      const step = Math.max(6, w / 6);
+      for (let k = 0; k < w; k += step * 2) ctx.fillRect(x + k, y, step, banner);
+      ctx.fillStyle = "#1a1400";
+      ctx.font = `800 ${Math.round(16 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(String(i + 1), x + w / 2, y + h * 0.55);
+      ctx.restore();
+    });
+  }
+
+  function drawRaceBoard() {
+    if (!isRace()) return;
+    const dpr = view.dpr || 1;
+    const time = formatTime(playing || won ? playAge : (playAge || 0));
+    const best = progress.bests && progress.bests[courseId];
+    const sub = best != null ? `BEST ${formatTime(best)}` : "BEST —";
+    const w = 148 * dpr;
+    const h = 58 * dpr;
+    const x = canvas.width - w - 12 * dpr;
+    const y = 12 * dpr;
+    ctx.save();
+    roundBubble(x, y, w, h, 12 * dpr);
+    ctx.fillStyle = "#1a1400";
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = "#f0c000";
+    ctx.stroke();
+    ctx.fillStyle = "#f0c000";
+    ctx.font = `800 ${Math.round(26 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(time, x + w / 2, y + 22 * dpr);
+    ctx.font = `700 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.fillStyle = "#f4efe6";
+    ctx.fillText(sub, x + w / 2, y + 44 * dpr);
+    ctx.restore();
   }
 
   function normRect(x1, y1, x2, y2) {
@@ -3573,10 +3751,27 @@ function boot() {
     if (currMeasure) currMeasure.addEventListener("click", () => loadBuiltin("measure"));
     if (currForces) currForces.addEventListener("click", () => loadBuiltin("forces"));
     if (currSystems) currSystems.addEventListener("click", () => showSystems(true));
+    const raceSprint = document.getElementById("btn-race-sprint");
+    const raceGatesBtn = document.getElementById("btn-race-gates");
+    const raceLap = document.getElementById("btn-race-lap");
+    if (raceSprint) raceSprint.addEventListener("click", () => { showCrew(false); loadBuiltin("sprint"); });
+    if (raceGatesBtn) raceGatesBtn.addEventListener("click", () => { showCrew(false); loadBuiltin("gates"); });
+    if (raceLap) raceLap.addEventListener("click", () => { showCrew(false); loadBuiltin("lap"); });
     const winNext = document.getElementById("win-next");
     const winSkip = document.getElementById("win-skip");
     if (winNext) {
       winNext.addEventListener("click", async () => {
+        if (isRace()) {
+          playing = false;
+          sim = null;
+          won = false;
+          winT = 0;
+          gateN = 0;
+          playAge = 0;
+          if (winEl) winEl.classList.remove("show");
+          refreshMeta();
+          return;
+        }
         await goNextJob();
       });
     }

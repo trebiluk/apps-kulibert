@@ -1,0 +1,18 @@
+{
+  "app": "bertybots",
+  "format": 1,
+  "title": "Sprint",
+  "level": {
+    "shop": { "x": 1.2, "y": 1.2, "w": 6.2, "h": 3.2 },
+    "drop": { "x": 11.4, "y": 1.2, "w": 4.2, "h": 2.4 },
+    "world": [
+      { "type": "slab", "x": 0, "y": 0, "w": 22, "h": 1.2 },
+      { "type": "slab", "x": 0, "y": 1.2, "w": 0.4, "h": 8 },
+      { "type": "slab", "x": 21.6, "y": 1.2, "w": 0.4, "h": 8 }
+    ],
+    "cores": [{ "x": 4.4, "y": 1.48 }],
+    "gates": [],
+    "tools": ["driveR", "driveL", "roller", "steel", "ghost"]
+  },
+  "machine": { "parts": [] }
+}
