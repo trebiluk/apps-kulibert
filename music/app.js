@@ -2806,7 +2806,8 @@
     const job = items.find((item) => item.code === who.code && !item.done);
     if (job) job.done = true;
     saveAssign(items);
-    if (whoApi()) whoApi().saveApp("music", { practice: job ? job.task : "", instrument: job ? job.instrument : "", done: true });
+    if (whoApi()) whoApi().saveApp("musiclab", { line: state.song.alias || "Song", practice: job ? job.task : "", instrument: job ? job.instrument : "", done: true });
+    if (whoApi() && whoApi().mark) whoApi().mark("musiclab", state.song.alias || "Song");
     paintPractice();
     paintAssign();
     $("lesson").textContent = "Practice is marked done on this Chromebook.";

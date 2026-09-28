@@ -10,6 +10,7 @@ mountTruss({
   helpTitle: "How to play · Spire Lab",
   note: "What’s new: on a phone the joints stay clear. A miss stays on that job. The loose joint stays marked.",
   engageKey: "kulibert-spire-engage-v2",
+  twApp: "spire-lab",
   assistKey: "kulibert-spire-assist-intro-v2",
   calmKey: "kulibert-calm-clear",
   firstLine: "Stretch two members up to the top joint, then Test. That is the first clear.",

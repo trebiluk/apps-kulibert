@@ -985,6 +985,9 @@ function boot() {
 
   function saveProgress() {
     try { localStorage.setItem("bb-progress-v1", JSON.stringify(progress)); } catch (e) { /* private mode */ }
+    try {
+      if (window.KulibertWho) KulibertWho.mark("bertybots", rankAt(progress.xp || 0).name || "Shop");
+    } catch (e2) {}
   }
 
   function refreshRank() {

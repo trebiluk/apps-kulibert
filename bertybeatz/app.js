@@ -576,6 +576,7 @@
       const prev = localStorage.getItem(STORAGE);
       if (prev && prev !== body) localStorage.setItem(STORAGE + ".bak", prev);
       localStorage.setItem(STORAGE, body);
+      if (window.KulibertWho) KulibertWho.mark("bertybeatz", state.name || "Beat");
     } catch {
       const line = $("status-line");
       if (line) line.textContent = "Not saved. Tap Export.";

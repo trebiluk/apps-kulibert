@@ -674,6 +674,7 @@
         frame: state.frame,
       }));
     } catch (err) { /* the picture still changes */ }
+    if (window.KulibertWho) KulibertWho.mark("visualizer", state.look || "Look");
   }
   function loadSkin() {
     try {

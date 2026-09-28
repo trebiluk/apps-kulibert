@@ -68,6 +68,7 @@ function pushHist() {
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({ app: "ginger", ver: VER, ...plan }));
+    if (window.KulibertWho) KulibertWho.mark("ginger", plan.name || "Plan");
   } catch {
     const status = $("status");
     if (status) status.textContent = "Could not save on this Chromebook.";

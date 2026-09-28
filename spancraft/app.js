@@ -10,6 +10,7 @@ mountTruss({
   helpTitle: "How to play · SpanCraft",
   note: "What’s new: on a phone the joints stay clear. A miss stays on that job. The loose joint stays marked.",
   engageKey: "kulibert-spancraft-engage-v2",
+  twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",
   calmKey: "kulibert-calm-clear",
   firstLine: "Stretch two members up to the top joint, then Test. That is the first clear.",

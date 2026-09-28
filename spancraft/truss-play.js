@@ -174,6 +174,13 @@ export function mountTruss(cfg) {
       stars: state.stars,
       bestStars: state.bestStars,
     });
+    try {
+      if (window.KulibertWho && cfg.twApp) {
+        var job = active();
+        var jobName = job && (job.name || job.title || job.id) || state.levelId;
+        KulibertWho.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
+      }
+    } catch (eMark) {}
     if (cfg.partFlag && pathClear()) {
       writeFlag(cfg.partFlag, true);
       if (cfg.pairFlag && cfg.retireFlag && readFlag(cfg.pairFlag)) writeFlag(cfg.retireFlag, true);

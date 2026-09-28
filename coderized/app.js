@@ -16,6 +16,7 @@ function load(code) {
 function save(st) {
   set(key(st.code), JSON.stringify(st));
   try { bc.postMessage({ code: st.code }); } catch (e) {}
+  try { if (window.KulibertWho) KulibertWho.mark("koderized", QUEST_TITLE); } catch (e2) {}
 }
 let bc;
 try { bc = new BroadcastChannel("qlcb"); } catch (e) { bc = { postMessage() {}, addEventListener() {} }; }
