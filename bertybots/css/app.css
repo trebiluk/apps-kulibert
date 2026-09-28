@@ -111,18 +111,25 @@ html[data-big="1"] .menu-card { font-size: 17px; }
 .job-plate.here { box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1a1400; }
 .job-plate.now.here { box-shadow: 0 0 0 2px #1a1400, 0 0 0 4px var(--yellow); }
 .job-plate.race {
-  background:
-    repeating-conic-gradient(#1a1400 0% 25%, #f0c000 0% 50%);
-  background-size: 12px 12px;
-  color: #1a1400;
+  background: radial-gradient(circle at 35% 30%, #4a5158, #1c2126 68%);
+  color: #f0c000;
 }
 .job-plate.race b {
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: #f7f4ee;
+  width: auto;
+  height: auto;
+  display: block;
+  border-radius: 0;
+  background: none;
+  color: #f0c000;
+}
+.job-plate.race.here { box-shadow: 0 0 0 2px #1a1400, 0 0 0 4px #f0c000; }
+.race-k {
+  margin-left: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f0c000;
 }
 .job-plate.test { box-shadow: 0 0 0 2px var(--yellow); }
 .job-name {

@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.28 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.29 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.28";
+const APP_VERSION = "0.19.29";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.28";
+const APP_CHIP = "BB 0.19.29";
 const APP_BUILT = "2026-09-26";
 
 const FORMAT = 1;
@@ -1430,6 +1430,10 @@ function boot() {
         btn.append(num, mark);
         strip.append(btn);
       }
+      const raceTag = document.createElement("span");
+      raceTag.className = "race-k";
+      raceTag.textContent = "Race";
+      strip.append(raceTag);
       RACES.forEach((race) => {
         const btn = document.createElement("button");
         const best = progress.bests && progress.bests[race.id];
@@ -2974,22 +2978,22 @@ function boot() {
       const w = wr(g.w);
       const h = wr(g.h);
       ctx.save();
-      ctx.fillStyle = done ? "rgba(58,125,84,0.28)" : "rgba(26,20,0,0.12)";
-      ctx.fillRect(x, y, w, h);
       ctx.fillStyle = done ? "#2f6f4e" : "#1a1400";
-      ctx.fillRect(x, y, Math.max(4, 5 * dpr), h);
-      ctx.fillRect(x + w - Math.max(4, 5 * dpr), y, Math.max(4, 5 * dpr), h);
-      const banner = Math.max(10, 14 * dpr);
+      const post = Math.max(5, 6 * dpr);
+      ctx.fillRect(x, y, post, h);
+      ctx.fillRect(x + w - post, y, post, h);
+      const banner = Math.max(16, 22 * dpr);
       ctx.fillStyle = done ? "#3a7d54" : "#f0c000";
       ctx.fillRect(x, y, w, banner);
-      ctx.fillStyle = done ? "#f4efe6" : "#1a1400";
-      const step = Math.max(6, w / 6);
-      for (let k = 0; k < w; k += step * 2) ctx.fillRect(x + k, y, step, banner);
+      ctx.fillStyle = "#f7f4ee";
+      ctx.beginPath();
+      ctx.arc(x + w / 2, y + banner / 2, banner * 0.38, 0, Math.PI * 2);
+      ctx.fill();
       ctx.fillStyle = "#1a1400";
-      ctx.font = `800 ${Math.round(16 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.font = `800 ${Math.round(13 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(String(i + 1), x + w / 2, y + h * 0.55);
+      ctx.fillText(String(i + 1), x + w / 2, y + banner / 2 + 1);
       ctx.restore();
     });
   }
@@ -3000,10 +3004,10 @@ function boot() {
     const time = formatTime(playing || won ? playAge : (playAge || 0));
     const best = progress.bests && progress.bests[courseId];
     const sub = best != null ? `BEST ${formatTime(best)}` : "BEST —";
-    const w = 148 * dpr;
-    const h = 58 * dpr;
-    const x = canvas.width - w - 12 * dpr;
-    const y = 12 * dpr;
+    const w = 132 * dpr;
+    const h = 52 * dpr;
+    const x = (canvas.width - w) / 2;
+    const y = 10 * dpr;
     ctx.save();
     roundBubble(x, y, w, h, 12 * dpr);
     ctx.fillStyle = "#1a1400";

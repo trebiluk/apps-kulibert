@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.29 — Race polish — 2026-09-28
+
+- Race plates match the shop. A Race label separates them from the build jobs.
+- Gates are posts and a number, not a muddy box. The clock sits at the top center.
+
 ## 0.19.28 — Races — 2026-09-28
 
 - Sprint, Gates, and Long Lap. The clock starts on Play. Gates must be passed in order. Best time stays on this Chromebook. No names.
