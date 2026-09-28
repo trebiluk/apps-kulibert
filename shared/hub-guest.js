@@ -16,6 +16,20 @@
   function pathOf(href) {
     try {
       var url = new URL(href, location.href);
+      var host = url.hostname.replace(/^www\./, "").toLowerCase();
+      var doors = {
+        "logolab-rho.vercel.app": "/logolab/",
+        "paperlab-one.vercel.app": "/paperlab/",
+        "bertycad.vercel.app": "/bertycad/",
+        "kidcad.vercel.app": "/bertycad/",
+        "kidcad-phi.vercel.app": "/bertycad/",
+        "bearcat-den-weld.vercel.app": "/den/",
+        "bearcat-den.vercel.app": "/den/",
+        "bearcat-bistro.vercel.app": "/bistro/",
+        "drift-psi-two.vercel.app": "/drift/"
+      };
+      if (doors[host]) return doors[host] + url.search + url.hash;
+      if (host.endsWith(".vercel.app") || host.endsWith(".vercel.com") || host === "vercel.com" || host === "grok.com" || host.endsWith(".grok.com")) return "";
       if (url.origin !== origin) return null;
       return url.pathname + url.search + url.hash;
     } catch (e) {
