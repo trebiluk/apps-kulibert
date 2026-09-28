@@ -1444,6 +1444,7 @@
     </header>
     <div class="stickies" id="stickies" hidden>
       <p class="announce" id="announce" hidden></p>
+      <p class="announce" id="desk-chip" hidden></p>
       <div class="sticky-icons" id="sticky-icons"></div>
     </div>
     <div class="shell-marquee" id="shell-marquee" hidden>
@@ -1511,7 +1512,7 @@
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.1.0</strong> — lights play alone. Four Looks.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
-          <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.12.0</strong> — polish. Jobs read clearer, Cup fits.</p>
+          <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.13.0</strong> — alias and desk code for the Hub.</p>
           <ul id="hub-log">
             <li>TW Connected on every app that keeps progress. Sprocket and HouseKit do not. Scores and settings stay on this Chromebook.</li>
             <li>One title on the card. Sort, filter, and theme are three controls. Phone shows two full rows and the top of a third.</li>
@@ -1744,7 +1745,7 @@
         <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.25</strong></a></li>
         <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
         <li><a href="/drawin/">Drawin' <strong>DS 0.2.0</strong></a></li>
-        <li><a href="/catapult/">ThrowIt <strong>JC 1.12.0</strong></a></li>
+        <li><a href="/catapult/">ThrowIt <strong>JC 1.13.0</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.5</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>list · not built</strong></a></li>
       </ul>
@@ -3187,10 +3188,26 @@ document.addEventListener("click", function (event) {
         if (document.body.classList.contains("is-framed")) helloFrame();
       });
 
+      function rememberDesk(data) {
+        var alias = data && typeof data.alias === "string" ? data.alias.replace(/[<>]/g, "").slice(0, 16) : "";
+        var code = data && typeof data.code === "string" ? data.code.replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "";
+        var chip = document.getElementById("desk-chip");
+        if (!alias || !code) {
+          try { localStorage.removeItem("tech-room-progress"); } catch (eClear) {}
+          if (chip) { chip.hidden = true; chip.textContent = ""; }
+          return;
+        }
+        try { localStorage.setItem("tech-room-progress", JSON.stringify({ type: "tech-room-progress", app: "throwit", alias: alias, code: code })); } catch (eSave) {}
+        if (!chip) return;
+        chip.hidden = false;
+        chip.textContent = "ThrowIt · " + alias + " · " + code;
+      }
+      try { rememberDesk(JSON.parse(localStorage.getItem("tech-room-progress") || "null")); } catch (eDesk) {}
       window.addEventListener("message", function (ev) {
         if (ev.origin !== location.origin) return;
         var data = ev.data;
         if (!data) return;
+        if (data.type === "tech-room-progress" && data.app === "throwit") { rememberDesk(data); return; }
         if (data.type === "kw-shell") {
           document.body.classList.toggle("shell-gone", !!data.hide);
           return;
