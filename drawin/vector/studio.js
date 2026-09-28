@@ -287,6 +287,7 @@ function saveSoon() {
   saveTimer = setTimeout(() => {
     try {
       localStorage.setItem(SAVE_KEY, snapshot());
+        if (window.KulibertWho) KulibertWho.mark("drawin", (state.doc && state.doc.name) || "Drawing");
     } catch { /* ignore quota */ }
   }, 250);
 }
