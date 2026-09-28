@@ -423,7 +423,7 @@ function renderPage() {
     (d.showGrid
       ? `<pattern id="grid" width="${step}" height="${step}" patternUnits="userSpaceOnUse"><path d="M ${step} 0 L 0 0 0 ${step}" fill="none" stroke="#d9d2c3" stroke-width="${sw}"/></pattern>`
       : "") + allGrads();
-  pageG.innerHTML = `<rect class="sheet" data-page="1" x="0" y="0" width="${d.w}" height="${d.h}" fill="${esc(d.bg)}"/>${
+  pageG.innerHTML = `<rect class="sheet" data-page="1" x="0" y="0" width="${d.w}" height="${d.h}" fill="${esc(d.bg)}" stroke="#e7dcc8" stroke-width="${1 / state.view.z}"/>${
     d.showGrid ? `<rect x="0" y="0" width="${d.w}" height="${d.h}" fill="url(#grid)" pointer-events="none"/>` : ""
   }`;
 }
@@ -485,7 +485,7 @@ function renderOverlay() {
     if (b.w || b.h) {
       parts.push(`<rect class="selbox" x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" stroke-width="${1.4 * k}"/>`);
       for (const h of handlesFor(b)) {
-        parts.push(`<rect data-handle="${h.name}" class="handle" x="${h.x - h.k}" y="${h.y - h.k}" width="${h.k * 2}" height="${h.k * 2}" style="cursor:${h.cursor}"/>`);
+        parts.push(`<rect data-handle="${h.name}" class="handle" x="${h.x - h.k}" y="${h.y - h.k}" width="${h.k * 2}" height="${h.k * 2}" rx="${h.k * 0.4}" style="cursor:${h.cursor}"/>`);
       }
       const rx = b.x + b.w / 2;
       const ry = b.y - 22 * k;
@@ -500,11 +500,11 @@ function renderOverlay() {
         sub.nodes.forEach((n, ni) => {
           const on = state.nodeSel.some((s) => s.id === it.id && s.si === si && s.ni === ni);
           if (n.inx != null) {
-            parts.push(`<line x1="${n.x}" y1="${n.y}" x2="${n.inx}" y2="${n.iny}" stroke="#24344c" stroke-width="${k}"/>`);
+            parts.push(`<line x1="${n.x}" y1="${n.y}" x2="${n.inx}" y2="${n.iny}" stroke="#d08a2d" stroke-width="${k}" opacity="0.85"/>`);
             parts.push(`<circle data-node="${it.id}:${si}:${ni}" data-which="in" class="node" cx="${n.inx}" cy="${n.iny}" r="${3.5 * k}"/>`);
           }
           if (n.outx != null) {
-            parts.push(`<line x1="${n.x}" y1="${n.y}" x2="${n.outx}" y2="${n.outy}" stroke="#24344c" stroke-width="${k}"/>`);
+            parts.push(`<line x1="${n.x}" y1="${n.y}" x2="${n.outx}" y2="${n.outy}" stroke="#d08a2d" stroke-width="${k}" opacity="0.85"/>`);
             parts.push(`<circle data-node="${it.id}:${si}:${ni}" data-which="out" class="node" cx="${n.outx}" cy="${n.outy}" r="${3.5 * k}"/>`);
           }
           parts.push(`<rect data-node="${it.id}:${si}:${ni}" data-which="pt" class="node${on ? " on" : ""}" x="${n.x - 4 * k}" y="${n.y - 4 * k}" width="${8 * k}" height="${8 * k}"/>`);
@@ -555,36 +555,57 @@ function drawRulers() {
   cy.setTransform(dpr, 0, 0, dpr, 0, 0);
   cx.clearRect(0, 0, rw, 22);
   cy.clearRect(0, 0, 22, rh);
-  cx.fillStyle = "#a39c90";
-  cy.fillStyle = "#a39c90";
-  cx.font = "10px Drawin Sans, sans-serif";
-  cy.font = "10px Drawin Sans, sans-serif";
+  cx.font = "600 9px Drawin Sans, sans-serif";
+  cy.font = "600 9px Drawin Sans, sans-serif";
+  cx.fillStyle = "#c4b8a4";
+  cy.fillStyle = "#c4b8a4";
+  cx.lineWidth = 1;
+  cy.lineWidth = 1;
   const z = state.view.z;
   const step = niceStep(80 / z);
+  const minor = step / 5;
   const stageRect = stage.getBoundingClientRect();
   const svgRect = svg.getBoundingClientRect();
   const x0 = (svgRect.left - stageRect.left - state.view.x) / z;
   const x1 = x0 + rw / z;
   const y0 = (0 - state.view.y) / z;
   const y1 = y0 + rh / z;
-  cx.strokeStyle = "#454037";
-  cy.strokeStyle = "#454037";
+  if (minor * z >= 6) {
+    cx.strokeStyle = "#3a362f";
+    cy.strokeStyle = "#3a362f";
+    for (let x = Math.floor(x0 / minor) * minor; x < x1; x += minor) {
+      const sx = state.view.x + x * z;
+      cx.beginPath();
+      cx.moveTo(sx + 0.5, 22);
+      cx.lineTo(sx + 0.5, 17);
+      cx.stroke();
+    }
+    for (let y = Math.floor(y0 / minor) * minor; y < y1; y += minor) {
+      const sy = state.view.y + y * z;
+      cy.beginPath();
+      cy.moveTo(22, sy + 0.5);
+      cy.lineTo(17, sy + 0.5);
+      cy.stroke();
+    }
+  }
+  cx.strokeStyle = "#d08a2d";
+  cy.strokeStyle = "#d08a2d";
   for (let x = Math.floor(x0 / step) * step; x < x1; x += step) {
     const sx = state.view.x + x * z;
     cx.beginPath();
-    cx.moveTo(sx, 22);
-    cx.lineTo(sx, 12);
+    cx.moveTo(sx + 0.5, 22);
+    cx.lineTo(sx + 0.5, 10);
     cx.stroke();
-    cx.fillText(String(Math.round(x)), sx + 2, 10);
+    cx.fillText(String(Math.round(x)), sx + 3, 9);
   }
   for (let y = Math.floor(y0 / step) * step; y < y1; y += step) {
     const sy = state.view.y + y * z;
     cy.beginPath();
-    cy.moveTo(22, sy);
-    cy.lineTo(12, sy);
+    cy.moveTo(22, sy + 0.5);
+    cy.lineTo(10, sy + 0.5);
     cy.stroke();
     cy.save();
-    cy.translate(10, sy + 2);
+    cy.translate(9, sy - 3);
     cy.rotate(-Math.PI / 2);
     cy.fillText(String(Math.round(y)), 0, 0);
     cy.restore();
@@ -1938,31 +1959,38 @@ function setTool(id) {
   renderOverlay();
   renderInspector();
 }
+function closeMenus() {
+  menuEl.hidden = true;
+  for (const b of menusEl.querySelectorAll(".menu-btn")) b.removeAttribute("aria-expanded");
+}
 function renderChrome() {
   menusEl.innerHTML = "";
   const menus = {
     File: [["New page", newDoc], ["Open SVG…", openSvg, "Ctrl O"], ["Save SVG", saveSvg, "Ctrl S"], ["Export PNG", exportPng, "Ctrl E"]],
-    Edit: [["Undo", undo, "Ctrl Z"], ["Redo", redo, "Ctrl Y"], ["Cut", cut, "Ctrl X"], ["Copy", copy, "Ctrl C"], ["Paste", paste, "Ctrl V"], ["Duplicate", duplicate, "Ctrl D"], ["Delete", del, "Del"], ["Select all", selectAll, "Ctrl A"]],
-    Object: [["Group", group, "Ctrl G"], ["Ungroup", ungroup, "Ctrl Shift G"], ["Flip horizontal", () => flipSel("h")], ["Flip vertical", () => flipSel("v")], ["Raise", () => orderZ("raise"), "["], ["Lower", () => orderZ("lower"), "]"], ["To front", () => orderZ("front"), "Shift ]"], ["To back", () => orderZ("back"), "Shift ["]],
+    Edit: [["Undo", undo, "Ctrl Z"], ["Redo", redo, "Ctrl Y"], null, ["Cut", cut, "Ctrl X"], ["Copy", copy, "Ctrl C"], ["Paste", paste, "Ctrl V"], ["Duplicate", duplicate, "Ctrl D"], null, ["Delete", del, "Del"], ["Select all", selectAll, "Ctrl A"]],
+    Object: [["Group", group, "Ctrl G"], ["Ungroup", ungroup, "Ctrl Shift G"], null, ["Flip horizontal", () => flipSel("h")], ["Flip vertical", () => flipSel("v")], null, ["Raise", () => orderZ("raise"), "["], ["Lower", () => orderZ("lower"), "]"], ["To front", () => orderZ("front"), "Shift ]"], ["To back", () => orderZ("back"), "Shift ["]],
     Path: [
       ["Union", () => boolOp("unite")],
       ["Difference", () => boolOp("subtract")],
       ["Intersection", () => boolOp("intersect")],
       ["Exclusion", () => boolOp("exclude")],
       ["Division", () => boolOp("divide")],
+      null,
       ["Combine", combineSel],
       ["Break apart", breakApart],
       ["Close", closeSel],
+      null,
       ["Outset…", () => offsetAsk(1)],
       ["Inset…", () => offsetAsk(-1)],
       ["Stroke to path", strokeToPath],
+      null,
       ["Simplify", simplifySel],
       ["Reverse", reverseSel],
       ["Join ends", joinSel],
       ["Break at node", breakSel],
     ],
     Text: [["Text to path", textToPath], ["Put on path", putOnPath], ["Take off path", takeOffPath]],
-    View: [["Zoom in", () => zoomAt({ clientX: innerWidth / 2, clientY: innerHeight / 2 }, 1.2)], ["Zoom out", () => zoomAt({ clientX: innerWidth / 2, clientY: innerHeight / 2 }, 1 / 1.2)], ["Fit page", fitPage], ["Fit selection", fitSel], ["Grid", () => mutate(() => { state.doc.showGrid = !state.doc.showGrid; })], ["Snap", () => { state.doc.snap = !state.doc.snap; toast(state.doc.snap ? "Snap on" : "Snap off"); renderInspector(); }]],
+    View: [["Zoom in", () => zoomAt({ clientX: innerWidth / 2, clientY: innerHeight / 2 }, 1.2)], ["Zoom out", () => zoomAt({ clientX: innerWidth / 2, clientY: innerHeight / 2 }, 1 / 1.2)], ["Fit page", fitPage], ["Fit selection", fitSel], null, ["Grid", () => mutate(() => { state.doc.showGrid = !state.doc.showGrid; })], ["Snap", () => { state.doc.snap = !state.doc.snap; toast(state.doc.snap ? "Snap on" : "Snap off"); renderInspector(); }]],
   };
   for (const [name, items] of Object.entries(menus)) {
     const btn = document.createElement("button");
@@ -1971,20 +1999,26 @@ function renderChrome() {
     btn.textContent = name;
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
+      const was = btn.getAttribute("aria-expanded") === "true";
+      closeMenus();
+      if (was) return;
+      btn.setAttribute("aria-expanded", "true");
       const rect = btn.getBoundingClientRect();
-      menuEl.innerHTML = items.map((item, i) => `<button type="button" data-i="${i}"><span>${item[0]}</span>${item[2] ? `<kbd>${item[2]}</kbd>` : ""}</button>`).join("");
+      menuEl.innerHTML = items.map((item, i) => item
+        ? `<button type="button" data-i="${i}"><span>${item[0]}</span>${item[2] ? `<kbd>${item[2]}</kbd>` : ""}</button>`
+        : `<div class="sep"></div>`).join("");
       menuEl.hidden = false;
       const box = menuEl.getBoundingClientRect();
       let left = rect.left;
-      let top = rect.bottom + 4;
+      let top = rect.bottom + 6;
       if (left + box.width > innerWidth - 8) left = Math.max(8, innerWidth - box.width - 8);
-      if (top + box.height > innerHeight - 8) top = Math.max(8, rect.top - box.height - 4);
+      if (top + box.height > innerHeight - 8) top = Math.max(8, rect.top - box.height - 6);
       menuEl.style.left = `${left}px`;
       menuEl.style.top = `${top}px`;
       menuEl.onclick = (ev) => {
         const b = ev.target.closest("button");
         if (!b) return;
-        menuEl.hidden = true;
+        closeMenus();
         items[+b.dataset.i][1]();
       };
     });
@@ -2340,7 +2374,7 @@ function boot() {
   $("ruler-x").addEventListener("pointerdown", (e) => rulerDown("y", e));
   $("ruler-y").addEventListener("pointerdown", (e) => rulerDown("x", e));
   window.addEventListener("pointerdown", (e) => {
-    if (!menuEl.contains(e.target) && !e.target.closest?.(".menu-btn")) menuEl.hidden = true;
+    if (!menuEl.contains(e.target) && !e.target.closest?.(".menu-btn")) closeMenus();
   });
   window.addEventListener("dragover", (e) => e.preventDefault());
   window.addEventListener("drop", (e) => {
