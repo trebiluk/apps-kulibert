@@ -1539,6 +1539,7 @@
           <ul id="hub-log">
 <li>Hub clicks stay on kulibert.net. A vercel.app address is sent to the school door instead.</li>
             <li>The Den is TW Connected. A student types their class code and their buttons stay with it. Sprocket, HouseKit, Bistro, and Debugzy stay off.</li>
+            <li>ThrowIt is on this Hub. Set an alias in the app. This Chromebook shows the desk code on the ThrowIt tile.</li>
             <li>One title on the card. Sort, filter, and theme are three controls. Phone shows two full rows and the top of a third.</li>
             <li>Layout: the title and search share one bar on a Chromebook. Filters stay on one line. Icons fill the tile.</li>
             <li>SpanCraft SC 1.3.26 · phone joints stay clear. Spire Lab SL 1.3.25 · a miss stays on that job.</li>
@@ -3315,15 +3316,22 @@ document.addEventListener("click", function (event) {
         var alias = data && typeof data.alias === "string" ? data.alias.replace(/[<>]/g, "").slice(0, 16) : "";
         var code = data && typeof data.code === "string" ? data.code.replace(/[^A-Z0-9-]/g, "").slice(0, 16) : "";
         var chip = document.getElementById("desk-chip");
+        var bar = document.getElementById("stickies");
+        var labels = document.querySelectorAll('a.tile[data-id="catapult"] .label');
         if (!alias || !code) {
-          try { localStorage.removeItem("tech-room-progress"); } catch (eClear) {}
+          if (data && data.type === "tech-room-progress") {
+            try { localStorage.removeItem("tech-room-progress"); } catch (eClear) {}
+          }
           if (chip) { chip.hidden = true; chip.textContent = ""; }
+          for (var i = 0; i < labels.length; i++) labels[i].textContent = "ThrowIt";
+          var note = document.getElementById("announce");
+          if (bar && note && note.hidden) bar.hidden = true;
           return;
         }
         try { localStorage.setItem("tech-room-progress", JSON.stringify({ type: "tech-room-progress", app: "throwit", alias: alias, code: code })); } catch (eSave) {}
-        if (!chip) return;
-        chip.hidden = false;
-        chip.textContent = "ThrowIt · " + alias + " · " + code;
+        if (bar) bar.hidden = false;
+        if (chip) { chip.hidden = false; chip.textContent = "ThrowIt · " + alias + " · " + code; }
+        for (var j = 0; j < labels.length; j++) labels[j].textContent = "ThrowIt · " + code;
       }
       try { rememberDesk(JSON.parse(localStorage.getItem("tech-room-progress") || "null")); } catch (eDesk) {}
       window.addEventListener("message", function (ev) {
