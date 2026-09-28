@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-28-school-door"/>
+<meta name="tech-room-rev" content="2026-09-28-who-find"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <script src="/shared/kw-who.js?v=2026-09-28-tw-session"></script>
-  <script src="/shared/tw-session.js?v=2026-09-28-tw-session"></script>
+  <script src="/shared/tw-session.js?v=2026-09-28-who-find"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1528,7 +1528,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-28-school-door</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-28-who-find</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/drawin/">Drawin'</a> <strong>DS 0.2.0</strong> — vector pen, nodes, and booleans. Paint is still on the same door.</p>
@@ -1537,7 +1537,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.14.0</strong> — the Cup shows the arc.</p>
           <ul id="hub-log">
-<li>Hub clicks stay on kulibert.net. A vercel.app address is sent to the school door instead.</li>
+<li>Sign in from any app. Type an alias, pick the picture, then the code and the teacher PIN.</li>
             <li>The Den is TW Connected. A student types their class code and their buttons stay with it. Sprocket, HouseKit, Bistro, and Debugzy stay off.</li>
             <li>ThrowIt is on this Hub. Set an alias in the app. This Chromebook shows the desk code on the ThrowIt tile.</li>
             <li>One title on the card. Sort, filter, and theme are three controls. Phone shows two full rows and the top of a third.</li>
@@ -3301,7 +3301,7 @@ document.addEventListener("click", function (event) {
           if (doc && doc.head && !doc.getElementById("tw-session-boot")) {
             var boot = doc.createElement("script");
             boot.id = "tw-session-boot";
-            boot.src = "/shared/tw-session.js?v=2026-09-28-tw-session";
+            boot.src = "/shared/tw-session.js?v=2026-09-28-who-find";
             doc.head.appendChild(boot);
           }
           var slot = document.getElementById("tw-session-slot");
