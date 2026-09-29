@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.21.1** · 2026-09-29 · channel **live**
+
+On a Chromebook the score sheet and the note keys fill the main column. Tempo, Title, and Picture stay on the left. Phone layout is unchanged.
+
+## Earlier
+
 **Chip: MU 2.21.0** · 2026-09-27 · channel **live**
 
 Sound shows the wave, major and minor chords, overtones, and string length. No microphone.

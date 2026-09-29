@@ -429,6 +429,18 @@ body.menu-open .drawer { transform: none; }
 .foot a { color: inherit; }
 .abcjs-note.now, .abcjs-rest.now { outline: 3px solid #0e7490; }
 @media (min-width: 980px) {
+  body.is-score .desk { align-items: stretch; }
+  body.is-score .work,
+  body.is-score #notes-pane,
+  body.is-score .staff-wrap,
+  body.is-score #inks,
+  body.is-score #pen { width: 100%; max-width: none; align-self: stretch; }
+  body.is-score #inks { grid-template-columns: repeat(8, minmax(72px, 1fr)); gap: 0.65rem; }
+  body.is-score #inks .btn { min-height: 96px; font-size: 1.7rem; }
+  body.is-score #pen .btn { min-height: 64px; font-size: 1.05rem; }
+  body.is-score .staff-wrap { min-height: 280px; }
+  body.is-score #staff,
+  body.is-score #staff svg { width: 100%; max-width: none; height: auto; }
   body { display: grid; grid-template-columns: 240px minmax(0, 1fr); column-gap: 0.8rem; align-items: start; }
   .top, .tabs, .lab, .foot { grid-column: 2; }
   .drawer {

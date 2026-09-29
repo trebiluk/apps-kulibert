@@ -2571,6 +2571,10 @@ export function boot() {
   }
 
   window.addEventListener("resize", fit);
+  if (window.ResizeObserver) {
+    const stageBox = document.querySelector(".stage-fit");
+    if (stageBox) new ResizeObserver(() => fit()).observe(stageBox);
+  }
   fit();
   bind();
   setTool("driveR");
