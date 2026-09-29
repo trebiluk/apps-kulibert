@@ -2,71 +2,119 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
+  <meta name="description" content="Debugzy — Chromebook debugging lab for Solvay Tech Ed. Find the bad step. Change one thing. Try again."/>
   <title>Debugzy · The Tech Room</title>
   <link rel="icon" href="/icons/icon-debugzy.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <style>
-    :root{
-      color-scheme:dark;
-      --bg:#050814;
-      --panel:#0b152c;
-      --elevated:#10203f;
-      --border:#16324f;
-      --text:#e8f7ff;
-      --muted:#8fb4c9;
-      --accent:#22d3ee;
-    }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;min-height:100%;background:var(--bg);color:var(--text);
-      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
-      -webkit-font-smoothing:antialiased;
-    }
-    body{padding:1.25rem .9rem 2.5rem}
-    .wrap{max-width:28rem;margin:0 auto}
-    .chip{
-      display:inline-flex;align-items:center;gap:.4rem;margin:0 0 .7rem;
-      padding:.3rem .75rem;border-radius:999px;
-      background:color-mix(in srgb,var(--panel) 88%,transparent);
-      border:1px solid color-mix(in srgb,var(--accent) 16%,transparent);
-      color:var(--muted);font-size:.72rem;font-weight:600;
-    }
-    h1{margin:0 0 .45rem;font-size:1.7rem;font-weight:800;letter-spacing:-.03em}
-    p{margin:0 0 .85rem;color:var(--muted);line-height:1.5;font-weight:500}
-    .card{
-      background:var(--elevated);border:1px solid var(--border);
-      border-radius:16px;padding:1.15rem 1.1rem 1.05rem;margin:1rem 0 1.2rem;
-    }
-    ul{margin:.4rem 0 0;padding:0 0 0 1.15rem;color:var(--muted);line-height:1.55;font-weight:500}
-    li{margin:0 0 .35rem}
-    nav{display:flex;flex-wrap:wrap;gap:.6rem}
-    a.btn{
-      display:inline-flex;align-items:center;justify-content:center;
-      min-height:44px;padding:.55rem 1rem;border-radius:10px;
-      text-decoration:none;font-weight:650;font-size:.95rem;
-    }
-    a.btn:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-    a.home{background:var(--accent);color:#041018}
-  </style>
+  <link rel="stylesheet" href="/debugzy/styles.css?v=0.1.0"/>
 </head>
 <body>
-  <div class="wrap">
-    <p class="chip">idea list · not built yet</p>
-    <h1>Debugzy</h1>
-    <p>On The Tech Room list. Nothing to play here yet.</p>
-    <div class="card">
-      <p>A debugging lab for Chromebooks. Find the bad step. Change one thing. Try again.</p>
-      <ul>
-        <li>No game on this page</li>
-        <li>No engine, no canvas, no try-it stub</li>
-        <li>The playable build is on hold</li>
-      </ul>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="top">
+    <a class="brand" href="/" title="Back to The Tech Room">
+      <img src="/debugzy/mark.svg" alt="" width="36" height="36"/>
+      <span>
+        <strong>Debugzy</strong>
+        <em class="chip" id="ver-chip">v0.1.0</em>
+      </span>
+    </a>
+    <div class="top-actions">
+      <button type="button" id="help-btn" class="btn ghost" aria-expanded="false" aria-controls="help">
+        <span class="ico" aria-hidden="true">?</span>
+        <span>Help</span>
+      </button>
+      <a class="btn ghost" href="/">
+        <span class="ico" aria-hidden="true">←</span>
+        <span>Tech Room</span>
+      </a>
     </div>
-    <nav>
-      <a class="btn home" href="/">Tech Room</a>
+  </header>
+
+  <section id="help" class="help" hidden>
+    <h2>Help · Easy steps</h2>
+    <ol class="help-loop">
+      <li>Read the whole sequence once.</li>
+      <li>Point to the step you think is <strong>wrong</strong>.</li>
+      <li>Say why in one short sentence.</li>
+      <li>Change <strong>one</strong> thing only.</li>
+      <li>Press <strong>Try again</strong> (or Run).</li>
+      <li>Watch the result.</li>
+      <li>Pass = it works. Fail = name why · go back to step 2.</li>
+      <li>Write your <strong>alias</strong> on the ticket if you keep paper proof.</li>
+    </ol>
+    <h3 class="help-sub">Stuck (calm)</h3>
+    <table class="stuck">
+      <thead><tr><th>Problem</th><th>One change</th></tr></thead>
+      <tbody>
+        <tr><td>Changed three things</td><td>Undo · change only one · try again</td></tr>
+        <tr><td>Guessing fast</td><td>Read every step out loud · then point</td></tr>
+        <tr><td>Still fails</td><td>Keep the same bad-step guess · try a different one change</td></tr>
+        <tr><td>Frustrated</td><td>Pause · breathe · same puzzle · ask a peer to point first</td></tr>
+      </tbody>
+    </table>
+    <p class="quiet alias-note">Alias only, not your real name.</p>
+    <p class="whats-new"><strong>What’s new</strong> · v0.1.0 playable lab · curriculum lock · find → change one → try again.</p>
+  </section>
+
+  <main id="main" class="stage">
+    <p class="progress" id="progress">Puzzle 1 of 5</p>
+    <h1 class="title" id="puzzle-title">Debugzy</h1>
+    <p class="lede" id="puzzle-lede">Find the bad step. Change one thing. Try again.</p>
+
+    <div class="panel" id="alias-panel">
+      <label class="panel-label" for="alias-input">Alias only, not your real name.</label>
+      <div class="alias-row">
+        <input id="alias-input" class="alias-input" type="text" maxlength="24" autocomplete="off" spellcheck="false" placeholder="Classroom nickname"/>
+        <button type="button" id="alias-save" class="btn ghost">
+          <span class="ico" aria-hidden="true">✓</span>
+          <span>Save</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="panel" id="steps-panel">
+      <h2 class="panel-label" id="steps-label">Sequence · pick the bad step</h2>
+      <div class="steps" id="steps" role="listbox" aria-labelledby="steps-label" aria-multiselectable="false"></div>
+      <p class="hint" id="step-hint">Tap the step that breaks the run.</p>
+    </div>
+
+    <div class="panel" id="change-panel" hidden>
+      <h2 class="panel-label" id="change-label">One change</h2>
+      <div class="choices" id="choices" role="listbox" aria-labelledby="change-label"></div>
+      <p class="hint" id="change-hint">Pick exactly one fix. Then press Try again.</p>
+    </div>
+
+    <div class="result" id="result" role="status" aria-live="polite" hidden></div>
+
+    <nav class="actions" aria-label="Puzzle actions">
+      <button type="button" id="try-btn" class="btn primary xl" disabled>
+        <span class="ico" aria-hidden="true">↻</span>
+        <span>Try again</span>
+      </button>
+      <button type="button" id="next-btn" class="btn primary xl" hidden>
+        <span class="ico" aria-hidden="true">→</span>
+        <span>Next</span>
+      </button>
+      <button type="button" id="skip-btn" class="btn ghost">
+        <span class="ico" aria-hidden="true">»</span>
+        <span>Skip this one</span>
+      </button>
     </nav>
-  </div>
+
+    <p class="done-banner" id="done-banner" hidden>
+      Lab complete. Point to a bad step · say your one change · show a pass run. Alias only on any paper ticket.
+    </p>
+  </main>
+
+  <footer class="foot">
+    <span>Solvay Tech 6–8 · Chromebook lab</span>
+    <span class="quiet">No accounts · v0.1.0 playable</span>
+  </footer>
+
+  <script src="/shared/kw-who.js?v=2026-09-29-hub-return"></script>
+  <script src="/debugzy/app.js?v=0.1.0" defer></script>
 </body>
 </html>
