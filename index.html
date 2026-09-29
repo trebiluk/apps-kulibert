@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <script src="/shared/kw-who.js?v=2026-09-29-hub-return"></script>
-  <script src="/shared/tw-session.js?v=2026-09-29-hub-return"></script>
+  <script src="/shared/tw-session.js?v=2026-09-29-hub-pill"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1428,17 +1428,36 @@
         width:auto;height:70%;min-width:0;max-width:58%;max-height:92px;
       }
     }
-    /* Home: the dock stays hidden. The sign-in row stays, so the alias is always at the top left. */
-    body.apps-always:not(.is-framed) .dock-clip{display:none !important}
+    /* Header row: one pill, then the icon ribbon, Home and More pinned right. */
+    body.apps-always .dock-clip,
+    body.apps-always:not(.is-framed) .dock-clip{
+      display:flex !important;flex:1 1 auto;min-width:0;height:36px;max-height:36px;
+      align-items:center;overflow:hidden;
+    }
     body.apps-always:not(.is-framed) .shell-header{
-      flex:0 0 36px !important;height:36px !important;min-height:36px !important;max-height:36px !important;
-      margin:0 !important;padding:0 .55rem !important;
+      flex:0 0 40px !important;height:40px !important;min-height:40px !important;max-height:40px !important;
+      margin:0 !important;padding:0 .4rem !important;
       border-bottom:1px solid #16324f !important;
-      overflow:visible !important;background:#050814 !important;
+      overflow:visible !important;flex-wrap:nowrap !important;gap:.3rem;
     }
-    body.apps-always:not(.is-framed) .shell-header .edge-pocket{
-      position:relative !important;top:auto !important;right:auto !important;margin-left:auto;z-index:8;
+    body.apps-always .shell-header .app-dock{
+      flex:1 1 auto;width:100% !important;max-width:100%;
+      justify-content:space-evenly;gap:0;overflow:hidden;
+      flex-wrap:nowrap !important;height:36px;
     }
+    body.apps-always .shell-header .app-dock-item{
+      flex:1 1 0;width:auto;min-width:0;max-width:46px;
+      height:32px;min-height:32px;padding:0;
+    }
+    body.apps-always .shell-header #shell-home,
+    body.apps-always .shell-header .edge-pocket{
+      flex:0 0 auto;margin-left:0 !important;position:relative !important;top:auto !important;right:auto !important;
+    }
+    body.apps-always .shell-header #shell-home{
+      height:28px;min-height:28px;min-width:0;padding:0 .55rem;font-size:.72rem;
+    }
+    body.apps-always .shell-header #shell-home[hidden]{display:none !important}
+    body.apps-always:not(.is-framed) .shell-header .edge-pocket{z-index:8}
     @media (min-width:1100px){
       body.apps-always:not(.is-framed) .shell-header .edge-pocket{top:auto;right:auto}
       body.apps-always:not(.is-framed) .search{margin-right:0}
@@ -3181,9 +3200,7 @@
         ensureSingleChrome();
         var dock = document.getElementById("app-dock");
         if (!dock) return;
-        var framed = document.body.classList.contains("is-framed");
-        dock.hidden = !framed;
-        if (!framed) return;
+        dock.hidden = false;
         var seen = {};
         dock.innerHTML = "";
         function add(href, name, imgSrc, target) {
@@ -3269,12 +3286,8 @@
           frame.setAttribute("src", "about:blank");
         }
         if (home) home.hidden = true;
-        var dock = document.getElementById("app-dock");
-        if (dock) {
-          dock.hidden = true;
-          dock.innerHTML = "";
-        }
         ensureSingleChrome();
+        paintDock();
         if (!fromPop) {
           try {
             var u = new URL(location.href);
