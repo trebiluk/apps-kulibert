@@ -1,5 +1,5 @@
 # Drawin' Vector
-DS 0.2.0. Pen, nodes, booleans, type, and SVG import/export. No account. The drawing stays in this browser.
+DS 0.2.1. Pen, nodes, booleans, type, and SVG import/export. No account. The drawing stays in this browser.
 
 Third-party code, kept with the studio:
 - Paper.js 0.12.18, MIT, Jürg Lehni and Jonathan Puckey. https://github.com/paperjs/paper.js
