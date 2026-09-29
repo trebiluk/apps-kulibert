@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-28-who-find"/>
+<meta name="tech-room-rev" content="2026-09-29-hub-alias-toggle"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <script src="/shared/kw-who.js?v=2026-09-28-tw-session"></script>
-  <script src="/shared/tw-session.js?v=2026-09-28-who-find"></script>
+  <script src="/shared/kw-who.js?v=2026-09-29-hub-return"></script>
+  <script src="/shared/tw-session.js?v=2026-09-29-hub-return"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -778,6 +778,10 @@
       color:var(--foreground);
     }
     a.tile .tw-on img{width:14px;height:14px;border-radius:3px;flex:0 0 auto;display:block}
+    html.hub-alias-off #tw-session-slot,
+    html.hub-alias-off #who-bar,
+    html.hub-alias-off #who-alias,
+    html.hub-alias-off a.tile .tw-on{display:none !important}
     .who-bar{
       display:flex;align-items:center;gap:.4rem;flex-wrap:wrap;margin:.2rem 0 0;
     }
@@ -1528,7 +1532,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-28-who-find</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-29-hub-alias-toggle</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/drawin/">Drawin'</a> <strong>DS 0.2.1</strong> — vector pen, nodes, and booleans. Paint is still on the same door.</p>
@@ -1537,6 +1541,9 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.4.0</strong> — download the beat as a file.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.14.0</strong> — the Cup shows the arc.</p>
           <ul id="hub-log">
+<li>Staff can turn Hub aliases off. Off hides Hub Sign in. TechWorks still uses aliases.</li>
+<li>Sign in keeps the TechWorks code. Marks go out only after that check, and only while Hub aliases are on.</li>
+<li>A full-page door shows Sign in and Back to the Hub. A good sign-in opens that door inside the Hub.</li>
 <li>Sign in from any app. Type an alias, pick the picture, then the code and the teacher PIN.</li>
             <li>The Den is TW Connected. A student types their class code and their buttons stay with it. Sprocket, HouseKit, Bistro, and Debugzy stay off.</li>
             <li>ThrowIt is on this Hub. Set an alias in the app. This Chromebook shows the desk code on the ThrowIt tile.</li>
@@ -1609,7 +1616,6 @@
           <a class="tile" data-id="berty-run" data-keywords="berty run br play" href="/berty-run/">
             <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
             <span class="label">Berty Run</span>
-            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/berty-run/favicon.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
           <a class="tile" data-id="spancraft" data-keywords="spancraft span bridge challenge esports play" href="/spancraft/">
             <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
@@ -1834,14 +1840,36 @@
       var MAX = 18;
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
+      var hubAliasesOn = true;
+      /* Tiles whose door calls KulibertWho.mark. No call, no badge. */
+      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1 };
+      function paintAliasGate() {
+        document.documentElement.classList.toggle("hub-alias-off", !hubAliasesOn);
+        var slot = document.getElementById("tw-session-slot");
+        if (slot) slot.hidden = !hubAliasesOn;
+        var bar = document.getElementById("who-bar");
+        if (bar) bar.hidden = !hubAliasesOn;
+        var alias = document.getElementById("who-alias");
+        if (alias) alias.hidden = !hubAliasesOn;
+        syncFrameSession();
+      }
+      function syncFrameSession() {
+        var frame = document.getElementById("app-frame");
+        if (!frame || !frame.contentWindow) return;
+        try {
+          frame.contentWindow.postMessage({ type: "tw-hide", hide: true }, location.origin);
+        } catch (eSync) {}
+      }
       function paintTw() {
-        var skip = { sprocket: 1, housekit: 1, bistro: 1, debugzy: 1, techworks: 1 };
         if (!appBoard) return;
         var lines = window.KulibertWho && KulibertWho.lines ? KulibertWho.lines() : {};
         appBoard.querySelectorAll("a.tile[data-id]").forEach(function (tile) {
           var id = tile.getAttribute("data-id");
-          if (skip[id]) return;
           var mark = tile.querySelector(".tw-on");
+          if (!TW_READ[id]) {
+            if (mark && mark.parentNode) mark.parentNode.removeChild(mark);
+            return;
+          }
           if (!mark) {
             mark = document.createElement("span");
             mark.className = "tw-on";
@@ -1874,20 +1902,13 @@
       }
       function flushMarks() {
         var who = window.KulibertWho;
-        if (!who || !who.pending || !who.ack) return;
-        var rows = who.pending();
-        if (!rows.length) return;
-        fetch("https://tw.kulibert.net/api/marks", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ marks: rows })
-        }).then(function (res) {
-          if (res && res.ok) who.ack(rows);
-        }).catch(function () {});
+        if (!who || !who.flush) return;
+        who.flush();
       }
       var whoBar = document.getElementById("who-bar");
       if (whoBar) whoBar.addEventListener("submit", function (event) {
         event.preventDefault();
+        if (!hubAliasesOn) return;
         var input = document.getElementById("who-alias");
         if (!window.KulibertWho || !input) return;
         var who = KulibertWho.write(input.value);
@@ -1898,7 +1919,6 @@
       });
       paintWho();
       window.addEventListener("storage", function () { paintTw(); paintWho(); });
-      flushMarks();
       var hubSort = "alpha";
       var hubFilter = "all";
       try {
@@ -2344,7 +2364,7 @@
         var focus = String(pack && pack.focus || "");
         if (focus === "bearcat-den") focus = "den";
         if (focus === "bearcat-bistro") focus = "bistro";
-        var sig = String(pack && pack.updated || "") + "\0" + note + "\0" + (pack && pack.closed ? "1" : "0") + "\0" + hidden.join(",") + "\0" + focus + "\0" + (pack && pack.density) + "\0" + rows.map(function (r) { return r.href; }).join("|") + "\0" + (boardsOn ? "1" : "0") + "\0" + boardRows.map(function (r) { return r.board + r.name + r.score; }).join("|") + "\0" + String(pack && pack.announce || "") + "\0" + (Array.isArray(pack && pack.sticky) ? pack.sticky.join(",") : "");
+        var sig = String(pack && pack.updated || "") + "\0" + note + "\0" + (pack && pack.closed ? "1" : "0") + "\0" + hidden.join(",") + "\0" + focus + "\0" + (pack && pack.density) + "\0" + rows.map(function (r) { return r.href; }).join("|") + "\0" + (boardsOn ? "1" : "0") + "\0" + boardRows.map(function (r) { return r.board + r.name + r.score; }).join("|") + "\0" + String(pack && pack.announce || "") + "\0" + (Array.isArray(pack && pack.sticky) ? pack.sticky.join(",") : "") + "\0" + (pack && pack.hubAliases === false ? "0" : "1");
         if (sig === schoolSig) return;
         schoolSig = sig;
         schoolRows = rows;
@@ -2408,6 +2428,11 @@
         document.body.classList.toggle("is-no-recents", pack && pack.recents === false);
         document.body.classList.toggle("is-no-chips", pack && pack.chips === false);
         document.body.classList.toggle("is-no-cuts", pack && pack.shortcuts === false);
+        hubAliasesOn = !(pack && pack.hubAliases === false);
+        try { localStorage.setItem("kw-hub-aliases", hubAliasesOn ? "1" : "0"); } catch (eAlias) {}
+        paintAliasGate();
+        paintTw();
+        flushMarks();
         paintMarquee(boardRows, boardsOn);
         tileOrder.forEach(function (id) {
           var tile = appBoard.querySelector('[data-id="' + id + '"]');
@@ -2847,7 +2872,7 @@
       var hubRevBtn = document.getElementById("hub-rev");
       if (hubRevBtn) {
         var hubMeta = document.querySelector('meta[name="tech-room-rev"]');
-        var hubName = hubMeta && hubMeta.content ? hubMeta.content.split("hub-").pop() : "chip";
+        var hubName = hubMeta && hubMeta.content ? hubMeta.content : "chip";
         hubRevBtn.textContent = "Hub · " + hubName;
         hubRevBtn.addEventListener("click", function () {
           var next = new URL(location.href);
@@ -3297,13 +3322,7 @@ document.addEventListener("click", function (event) {
       if (frameEl) frameEl.addEventListener("load", function () {
         if (document.body.classList.contains("is-framed")) helloFrame();
         try {
-          var doc = frameEl.contentDocument;
-          if (doc && doc.head && !doc.getElementById("tw-session-boot")) {
-            var boot = doc.createElement("script");
-            boot.id = "tw-session-boot";
-            boot.src = "/shared/tw-session.js?v=2026-09-28-who-find";
-            doc.head.appendChild(boot);
-          }
+          syncFrameSession();
           var slot = document.getElementById("tw-session-slot");
           if (slot && slot.__paint) {
             var bit = new URL(frameEl.src, location.href).pathname.split("/").filter(Boolean)[0] || "";
