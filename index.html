@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <script src="/shared/kw-who.js?v=2026-09-28-tw-session"></script>
-  <script src="/shared/tw-session.js?v=2026-09-28-who-find"></script>
+  <script src="/shared/kw-who.js?v=2026-09-29-hub-login"></script>
+  <script src="/shared/tw-session.js?v=2026-09-29-hub-login"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1542,6 +1542,7 @@
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.14.0</strong> — the Cup shows the arc.</p>
           <ul id="hub-log">
 <li>Staff can turn Hub aliases off. Off hides Hub Sign in. TechWorks still uses aliases.</li>
+<li>Sign in keeps the TechWorks code. Marks go out only after that check, and only while Hub aliases are on.</li>
 <li>Sign in from any app. Type an alias, pick the picture, then the code and the teacher PIN.</li>
             <li>The Den is TW Connected. A student types their class code and their buttons stay with it. Sprocket, HouseKit, Bistro, and Debugzy stay off.</li>
             <li>ThrowIt is on this Hub. Set an alias in the app. This Chromebook shows the desk code on the ThrowIt tile.</li>
@@ -1614,7 +1615,6 @@
           <a class="tile" data-id="berty-run" data-keywords="berty run br play" href="/berty-run/">
             <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
             <span class="label">Berty Run</span>
-            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/berty-run/favicon.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
           <a class="tile" data-id="spancraft" data-keywords="spancraft span bridge challenge esports play" href="/spancraft/">
             <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
@@ -1840,8 +1840,8 @@
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
       var hubAliasesOn = true;
-      /* Tiles whose door reads Hub who-find (kw-who.js or kw-who-v1). No read, no badge. */
-      var TW_READ = { visualizer: 1, bertybots: 1, "berty-run": 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1 };
+      /* Tiles whose door calls KulibertWho.mark. No call, no badge. */
+      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1 };
       function paintAliasGate() {
         document.documentElement.classList.toggle("hub-alias-off", !hubAliasesOn);
         var slot = document.getElementById("tw-session-slot");
@@ -1854,16 +1854,9 @@
       }
       function syncFrameSession() {
         var frame = document.getElementById("app-frame");
-        if (!frame) return;
+        if (!frame || !frame.contentWindow) return;
         try {
-          var doc = frame.contentDocument;
-          if (hubAliasesOn && doc && doc.head && !doc.getElementById("tw-session-boot")) {
-            var boot = doc.createElement("script");
-            boot.id = "tw-session-boot";
-            boot.src = "/shared/tw-session.js?v=2026-09-28-who-find";
-            doc.head.appendChild(boot);
-          }
-          if (frame.contentWindow) frame.contentWindow.postMessage({ type: "tw-hide", hide: !hubAliasesOn }, location.origin);
+          frame.contentWindow.postMessage({ type: "tw-hide", hide: true }, location.origin);
         } catch (eSync) {}
       }
       function paintTw() {
@@ -1871,8 +1864,11 @@
         var lines = window.KulibertWho && KulibertWho.lines ? KulibertWho.lines() : {};
         appBoard.querySelectorAll("a.tile[data-id]").forEach(function (tile) {
           var id = tile.getAttribute("data-id");
-          if (!TW_READ[id]) return;
           var mark = tile.querySelector(".tw-on");
+          if (!TW_READ[id]) {
+            if (mark && mark.parentNode) mark.parentNode.removeChild(mark);
+            return;
+          }
           if (!mark) {
             mark = document.createElement("span");
             mark.className = "tw-on";
@@ -1905,16 +1901,8 @@
       }
       function flushMarks() {
         var who = window.KulibertWho;
-        if (!who || !who.pending || !who.ack) return;
-        var rows = who.pending();
-        if (!rows.length) return;
-        fetch("https://tw.kulibert.net/api/marks", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ marks: rows })
-        }).then(function (res) {
-          if (res && res.ok) who.ack(rows);
-        }).catch(function () {});
+        if (!who || !who.flush) return;
+        who.flush();
       }
       var whoBar = document.getElementById("who-bar");
       if (whoBar) whoBar.addEventListener("submit", function (event) {
@@ -1930,7 +1918,6 @@
       });
       paintWho();
       window.addEventListener("storage", function () { paintTw(); paintWho(); });
-      flushMarks();
       var hubSort = "alpha";
       var hubFilter = "all";
       try {
@@ -2441,8 +2428,10 @@
         document.body.classList.toggle("is-no-chips", pack && pack.chips === false);
         document.body.classList.toggle("is-no-cuts", pack && pack.shortcuts === false);
         hubAliasesOn = !(pack && pack.hubAliases === false);
+        try { localStorage.setItem("kw-hub-aliases", hubAliasesOn ? "1" : "0"); } catch (eAlias) {}
         paintAliasGate();
         paintTw();
+        flushMarks();
         paintMarquee(boardRows, boardsOn);
         tileOrder.forEach(function (id) {
           var tile = appBoard.querySelector('[data-id="' + id + '"]');

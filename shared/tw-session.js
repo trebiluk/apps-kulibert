@@ -3,13 +3,69 @@
 (function (root) {
   var SESSION = "kw-session-v1";
   var WHO = "https://tw.kulibert.net/api/who";
+  var LOCK = "kw-who-lock";
   var styleId = "tw-session-style";
   var picked = "";
 
   function whoApi() { return root.KulibertWho || null; }
   function framed() { return root.parent !== root; }
   function on() {
+    var api = whoApi();
+    if (api && api.active) return !!api.active();
     try { return sessionStorage.getItem(SESSION) === "1"; } catch (e) { return false; }
+  }
+  function lockState() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(LOCK) || "null");
+      if (!raw || typeof raw !== "object") return { n: 0, until: 0 };
+      return { n: Number(raw.n) || 0, until: Number(raw.until) || 0 };
+    } catch (e) { return { n: 0, until: 0 }; }
+  }
+  function saveLock(state) {
+    try { localStorage.setItem(LOCK, JSON.stringify({ n: state.n || 0, until: state.until || 0 })); } catch (e) {}
+  }
+  function clearLock() {
+    try { localStorage.removeItem(LOCK); } catch (e) {}
+  }
+  function lockedNow() {
+    var state = lockState();
+    return !!(state.until && Date.now() < state.until);
+  }
+  function bumpFail() {
+    var state = lockState();
+    if (state.until && Date.now() >= state.until) state = { n: 0, until: 0 };
+    state.n += 1;
+    if (state.n >= 5) {
+      state.n = 0;
+      state.until = Date.now() + 30000;
+    }
+    saveLock(state);
+    return state;
+  }
+  function armLock(pop) {
+    var note = pop.querySelector(".tw-note");
+    var btn = pop.querySelector(".tw-keep");
+    if (!lockedNow()) {
+      if (btn) btn.disabled = false;
+      return false;
+    }
+    if (note) note.textContent = "Wait a moment, then try again.";
+    if (btn) btn.disabled = true;
+    var wait = Math.max(0, lockState().until - Date.now());
+    root.setTimeout(function () {
+      if (lockedNow()) return;
+      if (btn) btn.disabled = false;
+      if (note && note.textContent === "Wait a moment, then try again.") {
+        note.textContent = "Pick your name from the picture. The code and the PIN come from your teacher.";
+      }
+    }, wait + 40);
+    return true;
+  }
+  function signOut() {
+    try { sessionStorage.removeItem(SESSION); } catch (e) {}
+    try { localStorage.removeItem("kw-shop-v1"); } catch (e2) {}
+    var api = whoApi();
+    if (api && api.forget) api.forget();
   }
   function appFromPath() {
     var bit = location.pathname.replace(/\/$/, "").split("/").filter(Boolean)[0] || "";
@@ -111,15 +167,18 @@
           showHits(people);
           if (note && !people.length) note.textContent = "No saved name like that yet. Your teacher publishes names from TechWorks.";
         }).catch(function () {
-          if (note) note.textContent = "The name list did not load. Try again on the school network.";
+          if (note) note.textContent = "TechWorks did not answer. Try again on the school network.";
         });
       }, 180);
     });
     pop.querySelector("form").addEventListener("submit", function (event) {
       event.preventDefault();
+      if (armLock(pop)) return;
       var alias = (picked || input.value || "").trim();
       var code = String(pop.querySelector(".tw-code").value || "").toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 5);
-      var pin = String(pop.querySelector(".tw-pin").value || "").replace(/\D/g, "").slice(0, 4);
+      var pinEl = pop.querySelector(".tw-pin");
+      var pin = String(pinEl && pinEl.value || "").replace(/\D/g, "").slice(0, 4);
+      if (pinEl) pinEl.value = "";
       if (!alias || code.length !== 5 || pin.length !== 4) {
         note.textContent = "Pick your name, then the 5-character code and the 4-digit PIN.";
         return;
@@ -130,14 +189,19 @@
         body: JSON.stringify({ alias: alias, code: code, pin: pin })
       }).then(function (res) { return res.json(); }).then(function (pack) {
         if (!pack || !pack.ok) {
-          note.textContent = (pack && pack.error) || "That code or PIN does not match.";
+          bumpFail();
+          note.textContent = lockedNow() ? "Wait a moment, then try again." : "That code or PIN does not match.";
+          armLock(pop);
           return;
         }
+        clearLock();
         var api = whoApi();
-        if (api && api.write) api.write(pack.alias);
+        var kept = pack.alias || alias;
+        var twCode = pack.code || code;
+        if (api && api.write) api.write(kept, twCode);
         try { sessionStorage.setItem(SESSION, "1"); } catch (e) {}
-        try { localStorage.setItem("kw-shop-v1", pack.code); } catch (e2) {}
-        pop.querySelector(".tw-pin").value = "";
+        try { localStorage.setItem("kw-shop-v1", twCode); } catch (e2) {}
+        if (pinEl) pinEl.value = "";
         pop.hidden = true;
         if (api && api.flush) api.flush();
         done();
@@ -145,6 +209,7 @@
         note.textContent = "TechWorks did not answer. Try again on the school network.";
       });
     });
+    armLock(pop);
   }
   function paintShell(host) {
     var api = whoApi();
@@ -181,10 +246,12 @@
       pop.hidden = false;
       var bar = host.closest(".shell-header");
       if (bar) bar.style.overflow = "visible";
-      host.querySelector(".tw-alias").focus();
+      if (!armLock(pop)) host.querySelector(".tw-alias").focus();
     });
     host.querySelector(".tw-off").addEventListener("click", function () {
-      try { sessionStorage.removeItem(SESSION); } catch (e) {}
+      signOut();
+      var pinEl = pop.querySelector(".tw-pin");
+      if (pinEl) pinEl.value = "";
       pop.hidden = true;
       paint();
     });
@@ -211,54 +278,9 @@
     var msg = { type: "tw-session", on: on(), alias: who ? who.alias : "", state: light(appFromPath()) };
     try { if (framed()) root.parent.postMessage(msg, location.origin); } catch (e) {}
   }
-  function mountApp() {
-    css();
-    if (document.querySelector(".tw-app-status")) return;
-    var pill = document.createElement("button");
-    pill.type = "button";
-    pill.className = "tw-app-status";
-    pill.innerHTML = '<i class="tw-dot"></i><span></span>';
-    var pop = document.createElement("div");
-    pop.className = "tw-pop";
-    pop.hidden = true;
-    pop.innerHTML = formHtml();
-    pop.style.position = "fixed";
-    pop.style.top = "2.4rem";
-    pop.style.left = ".45rem";
-    document.body.appendChild(pill);
-    document.body.appendChild(pop);
-    function paint() {
-      var api = whoApi();
-      var who = api && api.read();
-      var signed = on() && !!who;
-      var state = signed ? light(appFromPath()) : "out";
-      pill.dataset.state = state;
-      pill.querySelector("span").textContent = signed ? who.alias + " · " + words(state) : "Not signed in";
-      var hide = document.documentElement.classList.contains("tw-session-hide") || !!document.fullscreenElement;
-      pill.hidden = hide;
-      if (hide) pop.hidden = true;
-    }
-    bindForm(pop, function () { paint(); tell(); });
-    pill.addEventListener("click", function () {
-      if (on()) return;
-      pop.hidden = false;
-      pop.querySelector(".tw-alias").focus();
-    });
-    root.addEventListener("kw-mark", paint);
-    root.addEventListener("storage", paint);
-    document.addEventListener("fullscreenchange", paint);
-    root.addEventListener("message", function (ev) {
-      if (ev.origin !== location.origin || !ev.data || ev.data.type !== "tw-hide") return;
-      document.documentElement.classList.toggle("tw-session-hide", !!ev.data.hide);
-      paint();
-    });
-    paint();
-    tell();
-  }
   function boot() {
     var slot = document.getElementById("tw-session-slot");
     if (slot) mountShell(slot);
-    else if (framed()) mountApp();
   }
   root.TwSession = { boot: boot, light: light };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
