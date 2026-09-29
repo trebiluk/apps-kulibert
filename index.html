@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-29-next5"/>
+<meta name="tech-room-rev" content="2026-09-29-debugzy"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1551,16 +1551,18 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-29-next5</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-29-debugzy</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
+          <p class="cut-line"><a href="/debugzy/">Debugzy</a> <strong>v0.1.0</strong>: 5 find-the-bad-step puzzles.</p>
           <p class="cut-line"><a href="/drawin/">Drawin'</a> <strong>DS 0.2.1</strong> — Paint saves now show on the shop list.</p>
           <p class="cut-line"><a href="/holdit/">HoldIt</a> <strong>HI 1.1.10</strong> — Job cards are fir. The bar and tools are steel.</p>
           <p class="cut-line"><a href="/visualizer/">Visualizer</a> <strong>Viz 0.9.0</strong> — brighter lights. Fireworks leave trails. Rings glow and spin.</p>
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in MusicLab.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 1.14.0</strong> — the Cup shows the arc.</p>
           <ul id="hub-log">
-            <li>Live chips match the doors. Debugzy says Coming soon. Staff can pick apps that open outside the shell.</li>
+            <li>Debugzy v0.1.0: 5 find-the-bad-step puzzles.</li>
+            <li>Live chips match the doors. Staff can pick apps that open outside the shell.</li>
 <li>Staff can turn Hub aliases off. Off hides Hub Sign in. TechWorks still uses aliases.</li>
 <li>Sign in keeps the TechWorks code. Marks go out only after that check, and only while Hub aliases are on.</li>
 <li>A full-page door shows Sign in and Back to the Hub. A good sign-in opens that door inside the Hub.</li>
@@ -1750,7 +1752,7 @@
         <nav class="board">
           <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold crew" href="/debugzy/">
             <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
-            <span class="label">Debugzy · Coming soon</span>
+            <span class="label">Debugzy</span>
           </a>
         </nav>
         </div>
@@ -1798,7 +1800,7 @@
         <li><a href="/drawin/">Drawin' <strong>DS 0.2.1</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 1.14.0</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.29</strong></a></li>
-        <li><a href="/debugzy/">Debugzy <strong>list · not built</strong></a></li>
+        <li><a href="/debugzy/">Debugzy <strong>v0.1.0</strong></a></li>
       </ul>
     </section>
     <p class="room-meta" id="room-meta" hidden></p>
@@ -1862,7 +1864,7 @@
       var appBoard = document.getElementById("app-groups");
       var hubAliasesOn = true;
       /* Tiles whose door calls KulibertWho.mark. No call, no badge. */
-      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1 };
+      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1, debugzy: 1 };
       function paintAliasGate() {
         document.documentElement.classList.toggle("hub-alias-off", !hubAliasesOn);
         var slot = document.getElementById("tw-session-slot");
