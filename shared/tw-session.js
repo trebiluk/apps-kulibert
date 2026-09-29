@@ -90,18 +90,61 @@
     if (state === "waiting") return "Not saved yet";
     return "Not signed in";
   }
+  function faceOf(alias) {
+    try {
+      var saved = sessionStorage.getItem("kw-session-face") || "";
+      if (saved) return saved;
+    } catch (e) {}
+    var letter = String(alias || "").trim().charAt(0).toUpperCase();
+    return letter || "?";
+  }
+  function rememberFace(avatar) {
+    try {
+      if (avatar) sessionStorage.setItem("kw-session-face", avatar);
+      else sessionStorage.removeItem("kw-session-face");
+    } catch (e) {}
+  }
+  function placeMenu(menu, anchor) {
+    var r = anchor.getBoundingClientRect();
+    menu.style.position = "fixed";
+    menu.style.zIndex = "80";
+    menu.style.left = Math.max(8, Math.min(r.left, root.innerWidth - 150)) + "px";
+    if (r.top > root.innerHeight * 0.55) {
+      menu.style.top = "auto";
+      menu.style.bottom = (root.innerHeight - r.top + 6) + "px";
+    } else {
+      menu.style.bottom = "auto";
+      menu.style.top = (r.bottom + 6) + "px";
+    }
+    var bar = anchor.closest && anchor.closest(".shell-header");
+    if (bar) {
+      bar.style.overflow = "visible";
+      bar.style.contain = "none";
+    }
+  }
   function css() {
     if (document.getElementById(styleId)) return;
     var node = document.createElement("style");
     node.id = styleId;
     node.textContent = [
-      ".tw-session{display:flex;align-items:center;gap:.35rem;min-width:0;position:relative;flex:0 0 auto}",
-      ".tw-session button,.tw-name{height:28px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;padding:0 .6rem;white-space:nowrap}",
-      ".tw-session button{cursor:pointer}",
-      ".tw-name{display:inline-flex;align-items:center;gap:.35rem;max-width:11rem;overflow:hidden}",
+      ".tw-session{display:flex;align-items:center;min-width:0;position:relative;flex:0 0 auto}",
+      ".tw-pill{position:relative;display:inline-flex;align-items:center;gap:.35rem;height:28px;max-width:9.5rem;padding:0 .5rem 0 .28rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer;white-space:nowrap}",
+      ".tw-pill[hidden],.tw-face[hidden],.tw-dot[hidden],.tw-menu[hidden]{display:none !important}",
+      ".tw-pop button{height:36px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;padding:0 .6rem;cursor:pointer}",
+      ".tw-face{width:20px;height:20px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;background:#123049;font-size:.8rem;line-height:1;flex:0 0 auto}",
+      ".tw-alias-label{overflow:hidden;text-overflow:ellipsis;min-width:0}",
       ".tw-dot{width:8px;height:8px;border-radius:99px;background:#c45b4a;flex:0 0 auto}",
       ".tw-session[data-state=saved] .tw-dot,.tw-app-status[data-state=saved] .tw-dot{background:#3ecf8e}",
       ".tw-session[data-state=sending] .tw-dot,.tw-session[data-state=waiting] .tw-dot,.tw-app-status[data-state=sending] .tw-dot,.tw-app-status[data-state=waiting] .tw-dot{background:#e3b341}",
+      ".tw-session[data-state=out] .tw-dot,.tw-app-status[data-state=out] .tw-dot{background:#c45b4a}",
+      ".tw-menu{min-width:8.75rem;padding:.3rem;border-radius:12px;background:#071018;color:#e8f7ff;border:1px solid #24506d;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:.15rem}",
+      ".tw-menu[hidden]{display:none !important}",
+      ".tw-menu button{height:36px;border:0;border-radius:8px;background:transparent;color:inherit;text-align:left;padding:0 .65rem;font:650 .8rem/1 system-ui,sans-serif;cursor:pointer}",
+      ".tw-menu button:hover,.tw-menu button:focus-visible{background:#123049}",
+      "@media (max-width:700px){.tw-who .tw-alias-label,.tw-app-status.is-in .tw-alias-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.tw-who,.tw-app-status.is-in{max-width:none;padding:0 .35rem 0 .22rem}}",
+      "html[data-hub-theme=graph] .tw-pill,html[data-hub-theme=spa] .tw-pill,html[data-hub-theme=nature] .tw-pill,html[data-hub-theme=peaks] .tw-pill,html[data-hub-theme=graph] .tw-menu,html[data-hub-theme=spa] .tw-menu,html[data-hub-theme=nature] .tw-menu,html[data-hub-theme=peaks] .tw-menu{background:#fffdf8;color:#1c1915;border-color:#2c2824}",
+      "html[data-hub-theme=graph] .tw-face,html[data-hub-theme=spa] .tw-face,html[data-hub-theme=nature] .tw-face,html[data-hub-theme=peaks] .tw-face{background:#efeae0}",
+      "html[data-hub-theme=graph] .tw-menu button:hover,html[data-hub-theme=spa] .tw-menu button:hover,html[data-hub-theme=nature] .tw-menu button:hover,html[data-hub-theme=peaks] .tw-menu button:hover{background:#efeae0}",
       ".tw-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:50;width:16.5rem;padding:.7rem;border-radius:12px;background:#071018;color:#e8f7ff;border:1px solid #24506d;box-shadow:0 10px 30px rgba(0,0,0,.35)}",
       ".tw-pop[hidden]{display:none !important}",
       ".tw-pop label{display:block;font-size:.75rem;font-weight:700;margin:.35rem 0}",
@@ -112,13 +155,14 @@
       ".tw-hits button{display:flex;align-items:center;justify-content:flex-start;gap:.4rem;width:100%;height:36px}",
       ".tw-pick{margin:.35rem 0 0;font-size:1rem;font-weight:750}",
       ".tw-pick[hidden]{display:none !important}",
-      ".tw-app-status{position:fixed;top:.45rem;left:.45rem;z-index:30;display:inline-flex;align-items:center;gap:.35rem;height:28px;padding:0 .6rem;border-radius:999px;background:#071018;color:#e8f7ff;border:1px solid #24506d;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer}",
+      ".tw-app-status{position:static}",
       ".tw-app-status[hidden]{display:none !important}",
-      ".tw-app-bar{position:fixed;top:.45rem;left:.45rem;z-index:40;display:flex;align-items:center;gap:.35rem}",
-      ".tw-app-bar .tw-app-status{position:static}",
-      ".tw-app-bar .tw-pop{top:calc(100% + 6px);left:0}",
-      ".tw-back{height:28px;padding:0 .6rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer}",
-      "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop,html.tw-session-hide .tw-app-bar,html.tw-session-hide .tw-back{display:none !important}"
+      ".tw-app-bar{position:fixed;left:.5rem;bottom:.5rem;top:auto;z-index:40;display:flex;align-items:center;gap:.3rem;max-width:calc(100vw - 1rem)}",
+      "@media (min-width:721px){.tw-app-bar{left:8.4rem}}",
+      ".tw-app-bar .tw-pill,.tw-app-bar .tw-back{height:26px;font-size:.7rem;background:rgba(7,16,24,.62);border-color:rgba(180,210,230,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}",
+      ".tw-app-bar .tw-back{padding:0 .5rem;border-radius:999px;border:1px solid rgba(180,210,230,.35);color:#e8f7ff;font:650 .7rem/1 system-ui,sans-serif;cursor:pointer}",
+      ".tw-app-bar .tw-pop{position:absolute;left:0;bottom:calc(100% + 6px);top:auto}",
+      "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop,html.tw-session-hide .tw-app-bar,html.tw-session-hide .tw-back,html.tw-session-hide .tw-menu{display:none !important}"
     ].join("");
     document.head.appendChild(node);
   }
@@ -149,6 +193,7 @@
         btn.textContent = (person.avatar || "🐾") + "  " + person.alias;
         btn.addEventListener("click", function () {
           picked = person.alias;
+          rememberFace(person.avatar || "");
           input.value = person.alias;
           pick.hidden = false;
           pick.textContent = (person.avatar || "🐾") + "  " + person.alias;
@@ -221,48 +266,80 @@
     var signed = on() && !!who;
     var state = light(host.getAttribute("data-app") || "");
     host.dataset.state = signed ? state : "out";
-    var name = host.querySelector(".tw-alias-label");
-    if (name) name.textContent = signed ? who.alias : "Not signed in";
-    var save = host.querySelector(".tw-save");
-    if (save) { save.hidden = !signed; save.textContent = words(state); }
+    var whoBtn = host.querySelector(".tw-who");
     var out = host.querySelector(".tw-out");
+    var menu = host.querySelector(".tw-menu");
+    var face = host.querySelector(".tw-face");
+    var name = host.querySelector(".tw-alias-label");
+    if (whoBtn) whoBtn.hidden = !signed;
     if (out) out.hidden = signed;
-    var offBtn = host.querySelector(".tw-off");
-    if (offBtn) offBtn.hidden = !signed;
-    var reconnect = host.querySelector(".tw-reconnect");
-    if (reconnect) reconnect.hidden = !(signed && (state === "sending" || state === "waiting"));
+    if (!signed && menu) menu.hidden = true;
+    if (face) face.textContent = signed ? faceOf(who.alias) : "";
+    if (name) name.textContent = signed ? who.alias : "";
+    var tip = signed ? who.alias + ", " + words(state) : "Sign in";
+    if (whoBtn) {
+      whoBtn.title = tip;
+      whoBtn.setAttribute("aria-label", tip);
+      if (menu && menu.hidden) whoBtn.setAttribute("aria-expanded", "false");
+    }
+    if (out) out.setAttribute("aria-label", "Sign in");
   }
   function mountShell(host) {
     css();
     host.className = "tw-session";
     host.innerHTML = [
-      '<span class="tw-name"><i class="tw-dot"></i><span class="tw-alias-label">Not signed in</span></span>',
-      '<span class="tw-save" hidden>Saved</span>',
-      '<button type="button" class="tw-out">Sign in</button>',
-      '<button type="button" class="tw-off" hidden>Log out</button>',
-      '<button type="button" class="tw-reconnect" hidden>Reconnect</button>',
+      '<button type="button" class="tw-pill tw-who" hidden aria-haspopup="menu" aria-expanded="false">',
+      '<span class="tw-face" aria-hidden="true"></span><span class="tw-alias-label"></span><i class="tw-dot" aria-hidden="true"></i>',
+      '</button>',
+      '<button type="button" class="tw-pill tw-out">Sign in</button>',
+      '<div class="tw-menu" hidden role="menu">',
+      '<button type="button" class="tw-off" role="menuitem">Log out</button>',
+      '<button type="button" class="tw-reconnect" role="menuitem">Reconnect</button>',
+      '</div>',
       '<div class="tw-pop" hidden>', formHtml(), '</div>'
     ].join("");
     var pop = host.querySelector(".tw-pop");
+    var menu = host.querySelector(".tw-menu");
+    var whoBtn = host.querySelector(".tw-who");
     function paint() { paintShell(host); tell(); }
+    function closeMenu() {
+      menu.hidden = true;
+      whoBtn.setAttribute("aria-expanded", "false");
+    }
     bindForm(pop, paint);
+    whoBtn.addEventListener("click", function (event) {
+      event.stopPropagation();
+      pop.hidden = true;
+      menu.hidden = !menu.hidden;
+      whoBtn.setAttribute("aria-expanded", menu.hidden ? "false" : "true");
+      if (!menu.hidden) placeMenu(menu, whoBtn);
+    });
     host.querySelector(".tw-out").addEventListener("click", function () {
+      closeMenu();
       pop.hidden = false;
       var bar = host.closest(".shell-header");
-      if (bar) bar.style.overflow = "visible";
+      if (bar) { bar.style.overflow = "visible"; bar.style.contain = "none"; }
       if (!armLock(pop)) host.querySelector(".tw-alias").focus();
     });
     host.querySelector(".tw-off").addEventListener("click", function () {
+      rememberFace("");
       signOut();
       var pinEl = pop.querySelector(".tw-pin");
       if (pinEl) pinEl.value = "";
       pop.hidden = true;
+      closeMenu();
       paint();
     });
     host.querySelector(".tw-reconnect").addEventListener("click", function () {
       var api = whoApi();
+      closeMenu();
       if (!api || !api.flush) return;
       api.flush().then(paint);
+    });
+    document.addEventListener("click", function (event) {
+      if (menu.hidden) return;
+      if (host.contains(event.target)) return;
+      closeMenu();
     });
     root.addEventListener("kw-mark", function () { paintShell(host); });
     root.addEventListener("storage", function () { paintShell(host); });
@@ -303,34 +380,73 @@
     var bar = document.createElement("div");
     bar.className = "tw-app-bar";
     bar.innerHTML = [
-      '<button type="button" class="tw-app-status" data-state="out"><i class="tw-dot"></i><span class="tw-alias-label">Not signed in</span></button>',
+      '<button type="button" class="tw-pill tw-app-status" data-state="out" aria-haspopup="menu" aria-expanded="false">',
+      '<span class="tw-face" aria-hidden="true"></span><span class="tw-alias-label">Sign in</span><i class="tw-dot" hidden aria-hidden="true"></i>',
+      '</button>',
       '<button type="button" class="tw-back">Back to the Hub</button>',
+      '<div class="tw-menu" hidden role="menu">',
+      '<button type="button" class="tw-off" role="menuitem">Log out</button>',
+      '<button type="button" class="tw-reconnect" role="menuitem">Reconnect</button>',
+      '</div>',
       '<div class="tw-pop" hidden>', formHtml(), '</div>'
     ].join("");
     document.body.appendChild(bar);
     var pill = bar.querySelector(".tw-app-status");
     var pop = bar.querySelector(".tw-pop");
+    var menu = bar.querySelector(".tw-menu");
     function paint() {
       var api = whoApi();
       var who = api && api.read();
       var signed = on() && !!who;
       var state = signed ? light(appFromPath()) : "out";
       pill.dataset.state = state;
+      pill.classList.toggle("is-in", signed);
+      var face = pill.querySelector(".tw-face");
       var label = pill.querySelector(".tw-alias-label");
-      if (label) label.textContent = signed ? who.alias : "Not signed in";
+      var dot = pill.querySelector(".tw-dot");
+      if (face) { face.hidden = !signed; face.textContent = signed ? faceOf(who.alias) : ""; }
+      if (dot) dot.hidden = !signed;
+      if (label) label.textContent = signed ? who.alias : "Sign in";
+      var tip = signed ? who.alias + ", " + words(state) : "Sign in";
+      pill.title = tip;
+      pill.setAttribute("aria-label", tip);
       var covered = document.documentElement.classList.contains("tw-session-hide") || !!document.fullscreenElement;
       pill.hidden = covered || aliasesOff();
-      if (pill.hidden) pop.hidden = true;
+      if (pill.hidden) { pop.hidden = true; menu.hidden = true; }
       bar.hidden = covered;
     }
     bindForm(pop, function () { paint(); tell(); returnToHub(); });
     pill.addEventListener("click", function () {
-      if (on() || aliasesOff()) return;
+      if (aliasesOff()) return;
+      if (on()) {
+        pop.hidden = true;
+        menu.hidden = !menu.hidden;
+        pill.setAttribute("aria-expanded", menu.hidden ? "false" : "true");
+        if (!menu.hidden) placeMenu(menu, pill);
+        return;
+      }
+      menu.hidden = true;
       pop.hidden = false;
       if (!armLock(pop)) {
         var alias = pop.querySelector(".tw-alias");
         if (alias) alias.focus();
       }
+    });
+    bar.querySelector(".tw-off").addEventListener("click", function () {
+      rememberFace("");
+      signOut();
+      var pinEl = pop.querySelector(".tw-pin");
+      if (pinEl) pinEl.value = "";
+      pop.hidden = true;
+      menu.hidden = true;
+      paint();
+      tell();
+    });
+    bar.querySelector(".tw-reconnect").addEventListener("click", function () {
+      var api = whoApi();
+      menu.hidden = true;
+      if (!api || !api.flush) return;
+      api.flush().then(function () { paint(); tell(); });
     });
     bar.querySelector(".tw-back").addEventListener("click", returnToHub);
     root.addEventListener("kw-mark", paint);
