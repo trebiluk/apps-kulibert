@@ -196,4 +196,15 @@
     }));
   }
   root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, pending: pending, ack: ack, flush: flush, forget: forget, active: active };
+  function hubHome() {
+    var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+    if (path === "/index.html") path = "/";
+    return path === "/" || path === "/staff" || path === "/staff/index.html";
+  }
+  if (typeof document !== "undefined" && root.top === root && !hubHome() && !document.getElementById("tw-session-boot")) {
+    var boot = document.createElement("script");
+    boot.id = "tw-session-boot";
+    boot.src = "/shared/tw-session.js?v=2026-09-29-hub-return";
+    (document.head || document.documentElement).appendChild(boot);
+  }
 })(typeof window !== "undefined" ? window : globalThis);

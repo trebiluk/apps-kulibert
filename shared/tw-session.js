@@ -114,7 +114,11 @@
       ".tw-pick[hidden]{display:none !important}",
       ".tw-app-status{position:fixed;top:.45rem;left:.45rem;z-index:30;display:inline-flex;align-items:center;gap:.35rem;height:28px;padding:0 .6rem;border-radius:999px;background:#071018;color:#e8f7ff;border:1px solid #24506d;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer}",
       ".tw-app-status[hidden]{display:none !important}",
-      "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop{display:none !important}"
+      ".tw-app-bar{position:fixed;top:.45rem;left:.45rem;z-index:40;display:flex;align-items:center;gap:.35rem}",
+      ".tw-app-bar .tw-app-status{position:static}",
+      ".tw-app-bar .tw-pop{top:calc(100% + 6px);left:0}",
+      ".tw-back{height:28px;padding:0 .6rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer}",
+      "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop,html.tw-session-hide .tw-app-bar,html.tw-session-hide .tw-back{display:none !important}"
     ].join("");
     document.head.appendChild(node);
   }
@@ -278,9 +282,76 @@
     var msg = { type: "tw-session", on: on(), alias: who ? who.alias : "", state: light(appFromPath()) };
     try { if (framed()) root.parent.postMessage(msg, location.origin); } catch (e) {}
   }
+  function solo() {
+    try { return new URLSearchParams(location.search).get("solo") === "1"; } catch (e) { return false; }
+  }
+  function hubPage() {
+    var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+    if (path === "/index.html") path = "/";
+    return path === "/" || path === "/staff" || path === "/staff/index.html";
+  }
+  function aliasesOff() {
+    try { return localStorage.getItem("kw-hub-aliases") === "0"; } catch (e) { return false; }
+  }
+  function returnToHub() {
+    if (framed() || solo() || hubPage()) return;
+    location.replace("/?open=" + encodeURIComponent(location.pathname + location.search));
+  }
+  function mountApp() {
+    css();
+    if (document.querySelector(".tw-app-bar")) return;
+    var bar = document.createElement("div");
+    bar.className = "tw-app-bar";
+    bar.innerHTML = [
+      '<button type="button" class="tw-app-status" data-state="out"><i class="tw-dot"></i><span class="tw-alias-label">Not signed in</span></button>',
+      '<button type="button" class="tw-back">Back to the Hub</button>',
+      '<div class="tw-pop" hidden>', formHtml(), '</div>'
+    ].join("");
+    document.body.appendChild(bar);
+    var pill = bar.querySelector(".tw-app-status");
+    var pop = bar.querySelector(".tw-pop");
+    function paint() {
+      var api = whoApi();
+      var who = api && api.read();
+      var signed = on() && !!who;
+      var state = signed ? light(appFromPath()) : "out";
+      pill.dataset.state = state;
+      var label = pill.querySelector(".tw-alias-label");
+      if (label) label.textContent = signed ? who.alias : "Not signed in";
+      var covered = document.documentElement.classList.contains("tw-session-hide") || !!document.fullscreenElement;
+      pill.hidden = covered || aliasesOff();
+      if (pill.hidden) pop.hidden = true;
+      bar.hidden = covered;
+    }
+    bindForm(pop, function () { paint(); tell(); returnToHub(); });
+    pill.addEventListener("click", function () {
+      if (on() || aliasesOff()) return;
+      pop.hidden = false;
+      if (!armLock(pop)) {
+        var alias = pop.querySelector(".tw-alias");
+        if (alias) alias.focus();
+      }
+    });
+    bar.querySelector(".tw-back").addEventListener("click", returnToHub);
+    root.addEventListener("kw-mark", paint);
+    root.addEventListener("storage", paint);
+    document.addEventListener("fullscreenchange", paint);
+    root.addEventListener("message", function (ev) {
+      if (ev.origin !== location.origin || !ev.data || ev.data.type !== "tw-hide") return;
+      document.documentElement.classList.toggle("tw-session-hide", !!ev.data.hide);
+      paint();
+    });
+    paint();
+    tell();
+  }
+  var booted = false;
   function boot() {
+    if (booted) return;
+    booted = true;
     var slot = document.getElementById("tw-session-slot");
-    if (slot) mountShell(slot);
+    if (slot) { mountShell(slot); return; }
+    if (framed() || hubPage()) return;
+    mountApp();
   }
   root.TwSession = { boot: boot, light: light };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
