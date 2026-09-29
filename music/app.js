@@ -1080,6 +1080,10 @@
     state.once = !!(opts && opts.once);
     state.playing = true;
     document.body.classList.add("playing");
+    const kid = window.KulibertWho && window.KulibertWho.read && window.KulibertWho.read();
+    if (kid && kid.verified && window.KulibertWho.active && window.KulibertWho.active() && window.KulibertWho.mark) {
+      window.KulibertWho.mark("music", state.song.alias || "Song");
+    }
     sayHow(state.mode);
     state.counting = false;
     $("play-btn").classList.add("on");
@@ -3049,9 +3053,29 @@
     if (api && api.clean) return api.clean(raw);
     return String(raw || "").trim().slice(0, 16);
   }
-  function codeOf(alias) {
+  function signedKid() {
     const api = whoApi();
-    return api && api.codeOf ? api.codeOf(cleanAlias(alias)) : "";
+    if (!api || !api.read || !api.active || !api.active()) return null;
+    const who = api.read();
+    if (!who || !who.verified || String(who.code || "").length !== 5) return null;
+    return who;
+  }
+  function mine() {
+    const who = signedKid();
+    if (!who) return null;
+    return loadAssign().find((item) => item.code === who.code && !item.done) || null;
+  }
+  function paintPractice() {
+    const box = $("practice");
+    const line = $("practice-line");
+    const who = signedKid();
+    const code = $("who-code");
+    if (code) code.textContent = who ? who.alias : "Sign in to keep a mark. You can still play.";
+    const job = mine();
+    if (!box || !line) return;
+    if (!who || !job) { box.hidden = true; return; }
+    box.hidden = false;
+    line.textContent = who.alias + " · " + instName(job.instrument) + ". " + taskName(job.task) + ".";
   }
   function loadAssign() {
     try {
@@ -3069,25 +3093,6 @@
     const item = BAND.find((row) => row.id === id);
     return item ? item.name : "Trumpet";
   }
-  function mine() {
-    const who = whoApi() && whoApi().read();
-    if (!who) return null;
-    return loadAssign().find((item) => item.code === who.code && !item.done) || null;
-  }
-  function paintPractice() {
-    const box = $("practice");
-    const line = $("practice-line");
-    const who = whoApi() && whoApi().read();
-    const input = $("who-alias");
-    const code = $("who-code");
-    if (input && who && document.activeElement !== input) input.value = who.alias;
-    if (code) code.textContent = who ? "Your code is " + who.code + "." : "Add an alias to see practice. No real names.";
-    const job = mine();
-    if (!box || !line) return;
-    if (!job) { box.hidden = true; return; }
-    box.hidden = false;
-    line.textContent = who.alias + " · " + instName(job.instrument) + ". " + taskName(job.task) + ".";
-  }
   function startPractice() {
     const job = mine();
     if (!job) return;
@@ -3102,14 +3107,13 @@
     else $("lesson").textContent = "Tap each note. Read the fingering.";
   }
   function finishPractice() {
-    const who = whoApi() && whoApi().read();
+    const who = signedKid();
     if (!who) return;
     const items = loadAssign();
     const job = items.find((item) => item.code === who.code && !item.done);
     if (job) job.done = true;
     saveAssign(items);
-    if (whoApi()) whoApi().saveApp("musiclab", { line: state.song.alias || "Song", practice: job ? job.task : "", instrument: job ? job.instrument : "", done: true });
-    if (whoApi() && whoApi().mark) whoApi().mark("musiclab", state.song.alias || "Song");
+    if (whoApi() && who.verified && whoApi().mark) whoApi().mark("music", state.song.alias || "Song");
     paintPractice();
     paintAssign();
     $("lesson").textContent = "Practice is marked done on this Chromebook.";
@@ -3149,36 +3153,25 @@
       list.appendChild(row);
     });
   }
-  const whoInput = $("who-alias");
-  if (whoInput) {
-    const who = whoApi() && whoApi().read();
-    if (who) whoInput.value = who.alias;
-    whoInput.addEventListener("change", () => {
-      if (whoApi()) whoApi().write(whoInput.value);
-      paintPractice();
-    });
-  }
   const assignAdd = $("assign-add");
   if (assignAdd) assignAdd.addEventListener("click", () => {
-    const alias = cleanAlias($("assign-alias").value);
-    const code = codeOf(alias);
-    if (!alias || !code) {
-      $("lesson").textContent = "Type an alias first. Not a real name.";
+    const who = signedKid();
+    if (!who) {
+      $("lesson").textContent = "Sign in first. The name comes from TechWorks. You can still play.";
       return;
     }
-    const items = loadAssign().filter((item) => !(item.code === code && item.task === $("assign-task").value && !item.done));
+    const items = loadAssign().filter((item) => !(item.code === who.code && item.task === $("assign-task").value && !item.done));
     items.unshift({
-      alias: alias,
-      code: code,
+      alias: who.alias,
+      code: who.code,
       instrument: $("assign-inst").value || "trumpet",
       task: $("assign-task").value || "five",
       done: false,
     });
     saveAssign(items.slice(0, 40));
-    $("assign-alias").value = "";
     paintAssign();
     paintPractice();
-    $("lesson").textContent = alias + " · " + code + ". Assigned on this Chromebook.";
+    $("lesson").textContent = who.alias + " has practice on this Chromebook.";
   });
   const assignFile = $("assign-file");
   if (assignFile) assignFile.addEventListener("click", () => {
@@ -3205,8 +3198,8 @@
           const items = loadAssign();
           incoming.forEach((item) => {
             const alias = cleanAlias(item.alias);
-            const code = codeOf(alias);
-            if (!alias || !code) return;
+            const code = String(item.code || "").toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 5);
+            if (!alias || code.length !== 5) return;
             if (items.some((row) => row.code === code && row.task === item.task && row.done === !!item.done)) return;
             items.unshift({
               alias: alias,

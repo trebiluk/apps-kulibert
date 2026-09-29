@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.23.0** · 2026-09-29 · channel **live**
+
+No typed names. Sign in is the TechWorks code and PIN. The alias shows only after it matches.
+
+## Earlier
+
 **Chip: MU 2.22.0** · 2026-09-29 · channel **live**
 
 Home asks what to do. The library shows a picture on every song.

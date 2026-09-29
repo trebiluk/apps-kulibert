@@ -1,5 +1,5 @@
 /* One sign-in widget for every Tech Room app.
-   Type an alias, pick the avatar, then the 5-character code and the teacher PIN. */
+   The kid enters the TechWorks code and PIN. The alias comes back from TechWorks. */
 (function (root) {
   var SESSION = "kw-session-v1";
   var WHO = "https://tw.kulibert.net/api/who";
@@ -169,87 +169,44 @@
   function formHtml() {
     return [
       '<form>',
-      '<label>Alias <input class="tw-alias" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Start typing"/></label>',
-      '<div class="tw-hits"></div>',
-      '<p class="tw-pick" hidden></p>',
       '<label>Code <input class="tw-code" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="5 characters"/></label>',
       '<label>PIN <input class="tw-pin" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="From your teacher"/></label>',
       '<div class="tw-row"><button type="submit" class="tw-keep">Sign in</button></div>',
-      '<p class="tw-note">Pick your name from the picture. The code and the PIN come from your teacher.</p>',
+      '<p class="tw-note">The code and the PIN come from your teacher. Your name shows after they match.</p>',
       '</form>'
     ].join("");
   }
   function bindForm(pop, done) {
-    var input = pop.querySelector(".tw-alias");
-    var hits = pop.querySelector(".tw-hits");
-    var pick = pop.querySelector(".tw-pick");
     var note = pop.querySelector(".tw-note");
-    var wait = 0;
-    function showHits(people) {
-      hits.innerHTML = "";
-      (people || []).forEach(function (person) {
-        var btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = (person.avatar || "🐾") + "  " + person.alias;
-        btn.addEventListener("click", function () {
-          picked = person.alias;
-          rememberFace(person.avatar || "");
-          input.value = person.alias;
-          pick.hidden = false;
-          pick.textContent = (person.avatar || "🐾") + "  " + person.alias;
-          hits.innerHTML = "";
-          var code = pop.querySelector(".tw-code");
-          if (code) code.focus();
-        });
-        hits.appendChild(btn);
-      });
-    }
-    input.addEventListener("input", function () {
-      picked = "";
-      pick.hidden = true;
-      var q = input.value.trim();
-      root.clearTimeout(wait);
-      if (q.length < 2) { hits.innerHTML = ""; return; }
-      wait = root.setTimeout(function () {
-        fetch(WHO + "?q=" + encodeURIComponent(q)).then(function (res) { return res.json(); }).then(function (pack) {
-          var people = pack && pack.people || [];
-          showHits(people);
-          if (note && !people.length) note.textContent = "No saved name like that yet. Your teacher publishes names from TechWorks.";
-        }).catch(function () {
-          if (note) note.textContent = "TechWorks did not answer. Try again on the school network.";
-        });
-      }, 180);
-    });
     pop.querySelector("form").addEventListener("submit", function (event) {
       event.preventDefault();
       if (armLock(pop)) return;
-      var alias = (picked || input.value || "").trim();
       var code = String(pop.querySelector(".tw-code").value || "").toUpperCase().replace(/[^A-Z2-9]/g, "").slice(0, 5);
       var pinEl = pop.querySelector(".tw-pin");
       var pin = String(pinEl && pinEl.value || "").replace(/\D/g, "").slice(0, 4);
       if (pinEl) pinEl.value = "";
-      if (!alias || code.length !== 5 || pin.length !== 4) {
-        note.textContent = "Pick your name, then the 5-character code and the 4-digit PIN.";
+      if (code.length !== 5 || pin.length !== 4) {
+        note.textContent = "Enter the 5-character code and the 4-digit PIN.";
         return;
       }
       fetch(WHO, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ alias: alias, code: code, pin: pin })
+        body: JSON.stringify({ code: code, pin: pin })
       }).then(function (res) { return res.json(); }).then(function (pack) {
-        if (!pack || !pack.ok) {
+        if (!pack || !pack.ok || !pack.alias) {
           bumpFail();
-          note.textContent = lockedNow() ? "Wait a moment, then try again." : "That code or PIN does not match.";
+          note.textContent = lockedNow() ? "Wait a moment, then try again." : (pack && pack.error) || "That code or PIN does not match.";
           armLock(pop);
           return;
         }
         clearLock();
         var api = whoApi();
-        var kept = pack.alias || alias;
         var twCode = pack.code || code;
-        if (api && api.write) api.write(kept, twCode);
+        if (api && api.write) api.write(pack.alias, twCode);
         try { sessionStorage.setItem(SESSION, "1"); } catch (e) {}
         try { localStorage.setItem("kw-shop-v1", twCode); } catch (e2) {}
+        if (pack.avatar) rememberFace(pack.avatar);
         if (pinEl) pinEl.value = "";
         pop.hidden = true;
         if (api && api.flush) api.flush();
@@ -319,7 +276,10 @@
       pop.hidden = false;
       var bar = host.closest(".shell-header");
       if (bar) { bar.style.overflow = "visible"; bar.style.contain = "none"; }
-      if (!armLock(pop)) host.querySelector(".tw-alias").focus();
+      if (!armLock(pop)) {
+        var code = host.querySelector(".tw-code");
+        if (code) code.focus();
+      }
     });
     host.querySelector(".tw-off").addEventListener("click", function () {
       rememberFace("");
@@ -428,8 +388,8 @@
       menu.hidden = true;
       pop.hidden = false;
       if (!armLock(pop)) {
-        var alias = pop.querySelector(".tw-alias");
-        if (alias) alias.focus();
+        var codeBox = pop.querySelector(".tw-code");
+        if (codeBox) codeBox.focus();
       }
     });
     bar.querySelector(".tw-off").addEventListener("click", function () {

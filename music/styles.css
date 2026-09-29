@@ -27,7 +27,7 @@ button { cursor: pointer; }
   width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border);
   background: var(--panel); display: grid; gap: 5px; place-content: center;
 }
-.menu-btn span { display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px; }
+body .tw-app-bar { top: 0.45rem !important; bottom: auto !important; left: auto !important; right: 3.5rem !important; z-index: 20; }
 .lab { display: block; }
 .home, .make, .library { display: none; }
 body.is-home .home, body.is-make .make, body.is-library .library { display: block; }

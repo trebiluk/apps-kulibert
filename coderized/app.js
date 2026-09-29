@@ -119,7 +119,7 @@ function goTeacher() { hide("screen-landing"); hide("screen-student"); show("scr
 $("btn-student").onclick = () => {
   session.role = "student";
   session.code = ($("join-code").value || "QUEST4").toUpperCase();
-  session.alias = ($("join-alias").value || "Player").trim();
+  session.alias = (window.KulibertWho && window.KulibertWho.read && window.KulibertWho.active && window.KulibertWho.active() && window.KulibertWho.read().alias) || "Player";
   session.id = session.id || uid();
   const st = load(session.code);
   ensure(st, session.alias, session.id).alias = session.alias;
