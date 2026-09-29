@@ -157,11 +157,12 @@
       ".tw-pick[hidden]{display:none !important}",
       ".tw-app-status{position:static}",
       ".tw-app-status[hidden]{display:none !important}",
-      ".tw-app-bar{position:fixed;left:.5rem;bottom:.5rem;top:auto;z-index:40;display:flex;align-items:center;gap:.3rem;max-width:calc(100vw - 1rem)}",
-      "@media (min-width:721px){.tw-app-bar{left:8.4rem}}",
+      ".tw-app-bar{position:fixed !important;top:max(8px, env(safe-area-inset-top));right:max(8px, env(safe-area-inset-right));left:auto;bottom:auto;z-index:40;display:flex;align-items:center;gap:.3rem;width:max-content !important;height:auto !important;max-width:calc(100vw - 16px) !important;pointer-events:none}",
+      ".tw-app-bar .tw-pill,.tw-app-bar .tw-back,.tw-app-bar .tw-pop,.tw-app-bar .tw-menu{pointer-events:auto}",
       ".tw-app-bar .tw-pill,.tw-app-bar .tw-back{height:26px;font-size:.7rem;background:rgba(7,16,24,.62);border-color:rgba(180,210,230,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}",
       ".tw-app-bar .tw-back{padding:0 .5rem;border-radius:999px;border:1px solid rgba(180,210,230,.35);color:#e8f7ff;font:650 .7rem/1 system-ui,sans-serif;cursor:pointer}",
-      ".tw-app-bar .tw-pop{position:absolute;left:0;bottom:calc(100% + 6px);top:auto}",
+      ".tw-app-bar .tw-pop{position:absolute;right:0;left:auto;top:calc(100% + 6px);bottom:auto}",
+      ".tw-app-bar.is-low .tw-pop{top:auto;bottom:calc(100% + 6px)}",
       "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop,html.tw-session-hide .tw-app-bar,html.tw-session-hide .tw-back,html.tw-session-hide .tw-menu{display:none !important}"
     ].join("");
     document.head.appendChild(node);
@@ -374,6 +375,184 @@
     if (framed() || solo() || hubPage()) return;
     location.replace("/?open=" + encodeURIComponent(location.pathname + location.search));
   }
+  function doorOverlap(a, b) {
+    var w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    var h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    return w > 1 && h > 1 ? w * h : 0;
+  }
+  function doorInk(n) {
+    var r = n.getBoundingClientRect();
+    var tag = n.tagName;
+    var textual = tag === "P" || tag === "H1" || tag === "H2" || n.classList.contains("brand") || n.classList.contains("caption");
+    if (!textual || r.width < root.innerWidth * 0.45) return r;
+    try {
+      var range = document.createRange();
+      range.selectNodeContents(n);
+      var tr = range.getBoundingClientRect();
+      if (tr.width >= 8 && tr.height >= 8 && tr.width < r.width - 4) return tr;
+    } catch (e) {}
+    return r;
+  }
+  function doorControl(n) {
+    var tag = n.tagName;
+    if (tag === "BUTTON" || tag === "A" || tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA" || tag === "SUMMARY" || tag === "NAV") return true;
+    if (n.getAttribute("role") === "button") return true;
+    if (n.classList.contains("assist-plate") || n.classList.contains("caption")) return true;
+    return false;
+  }
+  function doorBlocks(bar) {
+    var nodes = document.querySelectorAll("a, button, input, select, textarea, summary, [role='button'], .assist-plate, nav, .brand, .caption, h1, h2, p, [role='status']");
+    var rects = [];
+    var i;
+    for (i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      if (bar.contains(n)) continue;
+      if (n.closest && n.closest(".tw-app-bar")) continue;
+      if (n.hidden) continue;
+      var cs = getComputedStyle(n);
+      if (cs.display === "none" || cs.visibility === "hidden") continue;
+      var r = doorInk(n);
+      if (r.width < 12 || r.height < 12) continue;
+      if (r.width > root.innerWidth * 0.92 && r.height > root.innerHeight * 0.45) continue;
+      rects.push({ r: r, control: doorControl(n) });
+    }
+    return rects;
+  }
+  function placeDoor(bar) {
+    if (!bar || bar.hidden) return;
+    var safeT = "max(8px, env(safe-area-inset-top))";
+    var safeR = "max(8px, env(safe-area-inset-right))";
+    var safeL = "max(8px, env(safe-area-inset-left))";
+    var spots = [
+      { top: safeT, right: safeR, bottom: "auto", left: "auto", low: false },
+      { top: safeT, left: safeL, bottom: "auto", right: "auto", low: false }
+    ];
+    var head = document.querySelector("header, .topbar");
+    if (head) {
+      var hr = head.getBoundingClientRect();
+      if (hr.height > 24 && hr.height < root.innerHeight * 0.4 && hr.bottom > 0) {
+        var below = Math.round(hr.bottom + 8) + "px";
+        spots.push({ top: below, right: safeR, bottom: "auto", left: "auto", low: false });
+        spots.push({ top: below, left: safeL, bottom: "auto", right: "auto", low: false });
+      }
+    }
+    var status = document.querySelector(".caption, [role='status']");
+    if (status) {
+      var sr = status.getBoundingClientRect();
+      if (sr.height > 16 && sr.bottom > 0 && sr.bottom < root.innerHeight * 0.7) {
+        var under = Math.round(sr.bottom + 8) + "px";
+        spots.push({ top: under, right: safeR, bottom: "auto", left: "auto", low: false });
+        spots.push({ top: under, left: safeL, bottom: "auto", right: "auto", low: false });
+      }
+    }
+    var foot = document.querySelector("footer, .status");
+    if (foot && !bar.contains(foot)) {
+      var ftr = foot.getBoundingClientRect();
+      if (ftr.height > 16 && ftr.top > root.innerHeight * 0.5) {
+        var aboveFoot = Math.round(root.innerHeight - ftr.top + 8) + "px";
+        spots.push({ top: "auto", bottom: aboveFoot, right: safeR, left: "auto", low: true });
+        spots.push({ top: "auto", bottom: aboveFoot, left: safeL, right: "auto", low: true });
+      }
+    }
+    spots.push({ top: "42%", right: safeR, bottom: "auto", left: "auto", low: false });
+    spots.push({ top: "42%", left: safeL, bottom: "auto", right: "auto", low: false });
+    function liftSpot(topEdge) {
+      if (topEdge < root.innerHeight * 0.45) return;
+      var lift = Math.round(root.innerHeight - topEdge + 8) + "px";
+      spots.push({ top: "auto", bottom: lift, right: safeR, left: "auto", low: true });
+      spots.push({ top: "auto", bottom: lift, left: safeL, right: "auto", low: true });
+    }
+    var plates = document.querySelectorAll(".assist-plate");
+    var p;
+    for (p = 0; p < plates.length; p++) {
+      var pcs = getComputedStyle(plates[p]);
+      if (pcs.display === "none" || pcs.visibility === "hidden") continue;
+      var pr = plates[p].getBoundingClientRect();
+      if (pr.height < 20) continue;
+      liftSpot(pr.top);
+    }
+    var fixed = document.querySelectorAll("nav, footer, .transport");
+    var f;
+    for (f = 0; f < fixed.length; f++) {
+      var el = fixed[f];
+      if (bar.contains(el)) continue;
+      var fcs = getComputedStyle(el);
+      if (fcs.position !== "fixed" && fcs.position !== "sticky") continue;
+      var fr = el.getBoundingClientRect();
+      if (fr.height < 24 || fr.width < root.innerWidth * 0.4) continue;
+      liftSpot(fr.top);
+    }
+    var blocks = doorBlocks(bar);
+    bar.style.top = spots[0].top;
+    bar.style.right = spots[0].right;
+    bar.style.bottom = spots[0].bottom;
+    bar.style.left = spots[0].left;
+    var sized = bar.getBoundingClientRect();
+    var barW = sized.width || 160;
+    var barH = sized.height || 28;
+    function laneGaps(x0, x1) {
+      var vh = root.innerHeight;
+      var spans = [];
+      var i;
+      for (i = 0; i < blocks.length; i++) {
+        var r = blocks[i].r;
+        if (r.right <= x0 + 1 || r.left >= x1 - 1) continue;
+        var top = Math.max(0, r.top);
+        var bot = Math.min(vh, r.bottom);
+        if (bot - top > 1) spans.push([top, bot]);
+      }
+      spans.sort(function (a, b) { return a[0] - b[0]; });
+      var merged = [];
+      for (i = 0; i < spans.length; i++) {
+        if (!merged.length || spans[i][0] > merged[merged.length - 1][1]) merged.push([spans[i][0], spans[i][1]]);
+        else if (spans[i][1] > merged[merged.length - 1][1]) merged[merged.length - 1][1] = spans[i][1];
+      }
+      var gaps = [];
+      var cursor = 8;
+      var need = barH + 10;
+      for (i = 0; i < merged.length; i++) {
+        if (merged[i][0] - cursor >= need) gaps.push(Math.round(cursor));
+        cursor = Math.max(cursor, merged[i][1] + 8);
+      }
+      if (vh - 8 - cursor >= barH) gaps.push(Math.round(cursor));
+      return gaps;
+    }
+    var rightX0 = Math.max(8, root.innerWidth - barW - 8);
+    var gapList = laneGaps(rightX0, root.innerWidth - 8);
+    var gi;
+    for (gi = 0; gi < gapList.length; gi++) {
+      spots.push({ top: gapList[gi] + "px", right: safeR, bottom: "auto", left: "auto", low: false });
+    }
+    gapList = laneGaps(8, Math.min(root.innerWidth - 8, 8 + barW));
+    for (gi = 0; gi < gapList.length; gi++) {
+      spots.push({ top: gapList[gi] + "px", left: safeL, bottom: "auto", right: "auto", low: false });
+    }
+    var best = spots[0];
+    var bestHit = Infinity;
+    var s;
+    for (s = 0; s < spots.length; s++) {
+      var spot = spots[s];
+      bar.style.top = spot.top;
+      bar.style.right = spot.right;
+      bar.style.bottom = spot.bottom;
+      bar.style.left = spot.left;
+      var br = bar.getBoundingClientRect();
+      var hit = 0;
+      var b;
+      for (b = 0; b < blocks.length; b++) {
+        var area = doorOverlap(br, blocks[b].r);
+        if (!area) continue;
+        hit += blocks[b].control ? area * 1000 : area;
+      }
+      if (hit < bestHit) { bestHit = hit; best = spot; }
+      if (hit === 0) { best = spot; break; }
+    }
+    bar.style.top = best.top;
+    bar.style.right = best.right;
+    bar.style.bottom = best.bottom;
+    bar.style.left = best.left;
+    bar.classList.toggle("is-low", !!best.low);
+  }
   function mountApp() {
     css();
     if (document.querySelector(".tw-app-bar")) return;
@@ -414,6 +593,7 @@
       pill.hidden = covered || aliasesOff();
       if (pill.hidden) { pop.hidden = true; menu.hidden = true; }
       bar.hidden = covered;
+      placeDoor(bar);
     }
     bindForm(pop, function () { paint(); tell(); returnToHub(); });
     pill.addEventListener("click", function () {
@@ -459,6 +639,26 @@
     });
     paint();
     tell();
+    var parkWait = 0;
+    function schedulePark() {
+      root.clearTimeout(parkWait);
+      parkWait = root.setTimeout(function () { placeDoor(bar); }, 80);
+    }
+    root.addEventListener("resize", schedulePark);
+    if (root.MutationObserver) {
+      var watcher = new MutationObserver(function (recs) {
+        var i;
+        for (i = 0; i < recs.length; i++) {
+          var t = recs[i].target;
+          if (t === bar || (bar.contains && bar.contains(t))) continue;
+          schedulePark();
+          return;
+        }
+      });
+      watcher.observe(document.body, { attributes: true, subtree: true, attributeFilter: ["class", "hidden"] });
+    }
+    root.setTimeout(schedulePark, 400);
+    root.setTimeout(schedulePark, 1400);
   }
   var booted = false;
   function boot() {

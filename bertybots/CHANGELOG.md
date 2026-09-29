@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.30 — Stage fits the phone — 2026-09-29
+
+- The shop stage scales to the width and height beside the tool column. The level buttons stay on their strip. Nothing runs off the right edge.
+- A phone held upright shows a full-screen Turn your phone sideways gate, including inside the Hub frame. Landscape fits the short height. The tool column, Play, and Stop stay on screen.
+
 ## 0.19.29 — Race polish — 2026-09-28
 
 - Race plates match the shop. A Race label separates them from the build jobs.
