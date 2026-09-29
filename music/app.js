@@ -2386,7 +2386,7 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn" + ((map[key] || "song") === bank.id ? " on" : "");
-        b.textContent = bank.name;
+        b.textContent = bank.id === "song" ? "This song" : bank.name;
         b.addEventListener("click", () => {
           saveVizChoice(key, bank.id);
           const viz = bank.viz || songViz(key, PICTURES[key]);
@@ -2404,13 +2404,14 @@
           $("library").hidden = true;
           document.body.classList.add("viz-full");
           setMode("lights");
-          $("how").textContent = bank.name + " is the picture for " + row.name + ". Home takes you back.";
+          const label = bank.id === "song" ? "This song" : bank.name;
+          $("how").textContent = label + " is now the picture. Home takes you back.";
         });
         chips.appendChild(b);
       });
       const open = document.createElement("button");
       open.type = "button";
-      open.className = "btn";
+      open.className = "btn open-song";
       open.textContent = "Open this song";
       open.addEventListener("click", row.open);
       if (row.shelf != null) {
@@ -2445,14 +2446,14 @@
     const cards = $("do-cards");
     if (!cards || cards.childElementCount) return;
     const jobs = [
-      ["Make a song", "Pick a feel, a speed, and who plays.", showMake],
-      ["Tap a score", "Tap a letter. It lands on the staff.", () => { setMode("notes"); $("how").textContent = "Tap a letter. It goes on the next beat."; }],
-      ["Write a score", "The staff is empty until you change it.", () => setMode("notes")],
-      ["Tap along", "Play with the flash. The song stays.", () => { state.along = true; if (typeof paintAlong === "function") paintAlong(); setMode("drums"); }],
+      ["Make a song", "Pick a feel and a speed. Then the staff.", showMake],
+      ["Tap a score", "Tap a letter. It lands on the next beat.", () => { setMode("notes"); $("how").textContent = "Tap a letter. It goes on the next beat."; }],
+      ["Write a score", "Change any note on the staff.", () => setMode("notes")],
+      ["Tap along", "Hit the pads when they flash.", () => { state.along = true; if (typeof paintAlong === "function") paintAlong(); setMode("drums"); }],
       ["See the picture", "The song fills the screen.", () => { document.body.classList.add("viz-full"); setMode("lights"); }],
-      ["Remix a song", "Open the library. You get a copy.", showLibrary],
-      ["Remix a picture", "Pick a look, then save it on the song.", () => setMode("lights")],
-      ["Band", "Your instrument, then the band.", () => setMode("band")],
+      ["Remix a song", "Start from a song in the library.", showLibrary],
+      ["Change the picture", "Pick a look for this song.", () => setMode("lights")],
+      ["Band", "Fingerings for your instrument.", () => setMode("band")],
     ];
     jobs.forEach(([title, line, go]) => {
       const b = document.createElement("button");

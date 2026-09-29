@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.24.0** · 2026-09-29 · channel **live**
+
+Home cards stay in two columns. The Score, Beats, Lights, Band, and Sound bar is back, and it stays hidden on Home.
+
+## Earlier
+
 **Chip: MU 2.23.0** · 2026-09-29 · channel **live**
 
 No typed names. Sign in is the TechWorks code and PIN. The alias shows only after it matches.
