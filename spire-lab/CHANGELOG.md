@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.25** · 2026-09-26 · channel **live**
+**Chip: SL 1.3.26** · 2026-09-29 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.26 — Sign in, no typed name — 2026-09-29
+
+- What’s new: Sign in is the Hub button. You do not type a name. A mark uses your TechWorks code. Signed out, the tower still plays on this Chromebook and no mark is sent.
 
 ## 1.3.25 — Clear the joints — 2026-09-26
 

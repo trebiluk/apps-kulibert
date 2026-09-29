@@ -364,6 +364,7 @@ canvas:focus-visible {
   #mastery-chip { grid-area: chip; justify-self: start; }
   #read-line { grid-area: read; justify-self: end; }
   #cap-text { grid-area: text; }
+  body .tw-app-bar { bottom: 4.75rem; left: 0.4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

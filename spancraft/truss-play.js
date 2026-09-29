@@ -175,10 +175,13 @@ export function mountTruss(cfg) {
       bestStars: state.bestStars,
     });
     try {
-      if (window.KulibertWho && cfg.twApp) {
+      var whoApi = window.KulibertWho;
+      var who = whoApi && whoApi.read ? whoApi.read() : null;
+      var codeOk = who && who.verified === true && /^[A-Z2-9]{5}$/.test(String(who.code || ""));
+      if (whoApi && cfg.twApp && codeOk && whoApi.active && whoApi.active()) {
         var job = active();
         var jobName = job && (job.name || job.title || job.id) || state.levelId;
-        KulibertWho.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
+        whoApi.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
       }
     } catch (eMark) {}
     if (cfg.partFlag && pathClear()) {
