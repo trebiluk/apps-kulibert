@@ -138,6 +138,8 @@
         <label class="check">Opened here <input id="recents" type="checkbox" checked/></label>
         <label class="check">Keys 1–9 <input id="hotkeys" type="checkbox" checked/></label>
         <label class="check">Nickname field <input id="aliasOn" type="checkbox" checked/></label>
+        <label class="check">Hub aliases — On / Off <input id="hubAliases" type="checkbox" checked/></label>
+        <p>Off hides Hub Sign in. TechWorks still uses aliases. Always.</p>
         <label class="check">Staff lane <input id="staffLane" type="checkbox" checked/></label>
         <label class="check">Staff edit link <input id="staffEdit" type="checkbox" checked/></label>
         <label>Max personal shortcuts <input id="maxCuts" type="number" min="1" max="18" value="18"/></label>
@@ -170,7 +172,7 @@
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
       var APPS = [["techworks","TechWorks"],["baboo","Baboo"],["koderized","Koderized"],["bertycad","BertyCAD"],["bertybots","Berty's Botz"],["berty-run","Pipe Draft"],["bertybeatz","BertyBeatz"],["visualizer","Visualizer"],["paperlab","PaperLab"],["logolab","LogoLab"],["sprocket","Sprocket"],["den","Bearcat Den"],["bistro","Bearcat Bistro"],["housekit","HouseKit"],["drift","Drift"]];
-      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", announce: "", sticky: [], period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
+      var room = { links: [], note: "", hidden: [], club: "", doors: "", lastBell: "", search: "", footer: "", closed: false, closedMsg: "", staffEdit: true, shortcuts: true, paste: true, maxCuts: 18, welcome: "", announce: "", sticky: [], period: "", showNote: true, recents: true, pins: true, searchOn: true, bellsOn: true, aliasOn: true, hubAliases: true, staffLane: true, hotkeys: true, newTab: true, lockup: true, density: "roomy", focus: "", chips: true, boards: [], boardsOn: true };
       var token = sessionStorage.getItem("tech-room-desk-gate") || "";
       function paintHubLock() {
         var on = window.HubStaffAuth && HubStaffAuth.isUnlocked();
@@ -296,6 +298,7 @@
         $("recents").checked = room.recents !== false;
         $("hotkeys").checked = room.hotkeys !== false;
         $("aliasOn").checked = room.aliasOn !== false;
+        $("hubAliases").checked = room.hubAliases !== false;
         $("staffLane").checked = room.staffLane !== false;
         $("staffEdit").checked = room.staffEdit !== false;
         $("lockup").checked = room.lockup !== false;
@@ -331,6 +334,7 @@
         room.recents = $("recents").checked;
         room.hotkeys = $("hotkeys").checked;
         room.aliasOn = $("aliasOn").checked;
+        room.hubAliases = $("hubAliases").checked;
         room.staffLane = $("staffLane").checked;
         room.staffEdit = $("staffEdit").checked;
         room.lockup = $("lockup").checked;
