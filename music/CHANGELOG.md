@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.22.0** · 2026-09-29 · channel **live**
+
+Home asks what to do. The library shows a picture on every song.
+
+## Earlier
+
 **Chip: MU 2.21.0** · 2026-09-27 · channel **live**
 
 Sound shows the wave, major and minor chords, overtones, and string length. No microphone.

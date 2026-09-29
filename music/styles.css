@@ -29,12 +29,39 @@ button { cursor: pointer; }
 }
 .menu-btn span { display: block; width: 18px; height: 2px; background: currentColor; border-radius: 2px; }
 .lab { display: block; }
+.home, .make, .library { display: none; }
+body.is-home .home, body.is-make .make, body.is-library .library { display: block; }
+body.is-home .tabs, body.is-home .lab, body.is-home #how, body.is-home #practice,
+body.is-make .tabs, body.is-make .lab, body.is-make #how,
+body.is-library .tabs, body.is-library .lab, body.is-library #how { display: none; }
+.home h1, .make h1, .library h1 { margin: 0.2rem 0 0.7rem; font-size: 1.55rem; letter-spacing: -0.03em; }
+.do-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.do-card, .lib-song {
+  text-align: left; color: inherit; font: inherit;
+  border: 1px solid var(--border); background: transparent; border-radius: 8px;
+}
+.do-card { min-height: 84px; padding: 0.75rem 0.8rem; }
+.do-card strong, .lib-song h2 { display: block; font-size: 1.05rem; }
+.do-card span, .lib-song p { display: block; margin-top: 0.25rem; color: var(--muted); font-size: 0.92rem; }
+.do-card.on { box-shadow: inset 3px 0 0 var(--accent); }
+#library-find { width: 100%; min-height: 44px; margin-bottom: 0.45rem; border: 0; border-bottom: 1px solid var(--border); background: transparent; color: inherit; font: inherit; }
+.lib-song { padding: 0.7rem 0.75rem; margin: 0 0 0.45rem; }
+.viz-row { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0.45rem 0; }
+.viz-row button { min-height: 36px; }
+#make-go, #back-home { margin-top: 0.7rem; }
+body.viz-full .work { display: none; }
+body.viz-full .stage-wrap, body.viz-full canvas#viz { display: block; max-height: none; height: min(62vh, 520px); }
+@media (min-width: 1100px) {
+  .do-cards { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) and (orientation: portrait) {
+  .do-cards { grid-template-columns: 1fr; }
+}
 .tabs {
-  display: flex; gap: 0;
+  display: flex; gap: 0; overflow-x: auto;
   margin: 0 0 0.4rem; padding: 0;
   background: transparent; border: 0; border-bottom: 1px solid var(--border); border-radius: 0;
 }
-.tabs { overflow-x: auto; }
 .tabs button {
   flex: 1 0 4.4rem; min-height: 48px; border-radius: 0; border: 0; border-bottom: 2px solid transparent;
   background: transparent; color: var(--muted); font-weight: 700; padding: 0.3rem 0.2rem;
@@ -429,11 +456,18 @@ body.menu-open .drawer { transform: none; }
 .foot a { color: inherit; }
 .abcjs-note.now, .abcjs-rest.now { outline: 3px solid #0e7490; }
 @media (min-width: 980px) {
-  body { display: grid; grid-template-columns: 240px minmax(0, 1fr); column-gap: 0.8rem; align-items: start; }
-  .top, .tabs, .lab, .foot { grid-column: 2; }
+  body.playing:not(.show) .transport { left: 0; }
+}
+@media (min-width: 980px) {
+  body { display: block; }
+  .top, .tabs, .lab, .foot { grid-column: auto; }
   .drawer {
-    grid-column: 1; grid-row: 1 / span 5;
-    position: sticky; top: 0; transform: none; width: auto; height: 100vh; z-index: 1;
+    position: fixed; top: 0; left: 0; bottom: 0; width: min(22rem, 88vw);
+    height: auto; transform: translateX(-105%); z-index: 40;
   }
-  .menu-btn, #menu-close, .scrim { display: none !important; }
+  body.menu-open .drawer { transform: none; }
+  .menu-btn { display: grid !important; }
+  #menu-close, .scrim { display: none; }
+  body.menu-open .scrim { display: block; }
+  body.menu-open #menu-close { display: inline-flex; }
 }

@@ -51,6 +51,21 @@
     "Amazing Grace": picture("ribbon", "violet", "night", "glow", false, "stars", "ice"),
     "Jingle Bells": picture("fireworks", "ice", "night", "rgb", true, "stars", "cyan"),
   };
+  const VIZ_BANK = [
+    { id: "song", name: "Its picture" },
+    { id: "storm", name: "Storm", viz: picture("rain", "ice", "sea", "glow", false, "tunnel", "cyan") },
+    { id: "neon", name: "Neon", viz: picture("fireworks", "rose", "candy", "rgb", true, "rings", "lime") },
+    { id: "soft", name: "Soft", viz: picture("bloom", "violet", "dusk", "glow", false, "ribbon", "ice") },
+    { id: "space", name: "Space", viz: picture("stars", "ice", "night", "glow", true, "orbit", "cyan") },
+    { id: "fire", name: "Fire", viz: picture("fireworks", "amber", "sunset", "glow", false, "bloom", "rose") },
+    { id: "ocean", name: "Ocean", viz: picture("rain", "cyan", "sea", "glow", false, "ribbon", "ice") },
+  ];
+  const VIZ_MAP = "kulibert.music.vizmap";
+  let songCatalog = [];
+  let openTune = function () {};
+  let libraryFilter = "all";
+  let makeFeel = "bright";
+  let makeInst = "piano";
   const REASONS = [
     ["home", "It is the home note."],
     ["line", "It sits on a line."],
@@ -1562,6 +1577,8 @@
   }
   function setMode(mode) {
     state.mode = mode;
+    document.body.classList.remove("is-home", "is-make", "is-library");
+    if ($("back-home")) $("back-home").hidden = false;
     $("work").classList.toggle("is-notes", mode === "notes");
     $("work").classList.toggle("is-drums", mode === "drums");
     $("work").classList.toggle("is-band", mode === "band");
@@ -1945,7 +1962,13 @@
   }
   function rememberPack() {
     const list = readShelf();
-    list.unshift({ song: JSON.parse(Song.serialize(state.song)), drums: state.drums });
+    list.unshift({
+      song: JSON.parse(Song.serialize(state.song)),
+      drums: state.drums,
+      pub: false,
+      maker: (window.KulibertWho && window.KulibertWho.read() && window.KulibertWho.read().alias) || "You",
+      instrument: state.band || "",
+    });
     try {
       localStorage.setItem(SHELF, JSON.stringify(list.slice(0, 12)));
     } catch (err) {
@@ -2250,15 +2273,290 @@
     paintMeters();
     setMode(state.mode);
   });
+  function readVizMap() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(VIZ_MAP) || "{}");
+      return raw && typeof raw === "object" ? raw : {};
+    } catch (err) {
+      return {};
+    }
+  }
+  function songViz(name, own) {
+    const id = readVizMap()[name];
+    if (id && id !== "song") {
+      const bank = VIZ_BANK.find((item) => item.id === id);
+      if (bank && bank.viz) return bank.viz;
+    }
+    return own || PICTURES[name] || null;
+  }
+  function saveVizChoice(name, id) {
+    const map = readVizMap();
+    map[name] = id;
+    try { localStorage.setItem(VIZ_MAP, JSON.stringify(map)); } catch (err) { /* the picture still shows */ }
+  }
+  function showHome() {
+    state.mode = "home";
+    document.body.classList.add("is-home");
+    document.body.classList.remove("is-score", "is-drums", "is-lights", "is-band", "is-sound", "is-make", "is-library", "viz-full", "expert");
+    ["notes", "drums", "band", "lights", "sound"].forEach((name) => {
+      const btn = $("mode-" + name);
+      if (btn) btn.classList.remove("on");
+    });
+    if ($("home")) $("home").hidden = false;
+    if ($("make")) $("make").hidden = true;
+    if ($("library")) $("library").hidden = true;
+    if ($("back-home")) $("back-home").hidden = true;
+  }
+  function showMake() {
+    document.body.classList.remove("is-home", "is-library");
+    document.body.classList.add("is-make");
+    $("home").hidden = true;
+    $("make").hidden = false;
+    $("back-home").hidden = false;
+  }
+  function showLibrary() {
+    document.body.classList.remove("is-home", "is-make");
+    document.body.classList.add("is-library");
+    $("home").hidden = true;
+    $("library").hidden = false;
+    $("back-home").hidden = false;
+    paintLibrary();
+  }
+  function paintLibrary() {
+    const list = $("library-list");
+    if (!list) return;
+    const q = ($("library-find") && $("library-find").value || "").trim().toLowerCase();
+    const map = readVizMap();
+    list.innerHTML = "";
+    const rows = [];
+    songCatalog.forEach((item) => {
+      rows.push({
+        kind: "class",
+        name: item.name,
+        who: item.from,
+        feel: item.feel,
+        instrument: "",
+        open: () => {
+          openTune(item.name, item.from, item.notes, item.bpm);
+          const viz = songViz(item.name, PICTURES[item.name]);
+          if (viz) applyViz(viz);
+          document.body.classList.remove("is-library");
+          $("library").hidden = true;
+          setMode("notes");
+        },
+      });
+    });
+    readShelf().forEach((item, index) => {
+      const song = item.song || {};
+      rows.push({
+        kind: item.pub ? "class" : "mine",
+        name: song.alias || "Your song",
+        who: item.maker || "You",
+        feel: (song.bpm || 96) < 90 ? "calm" : (song.bpm || 96) > 110 ? "drive" : "bright",
+        instrument: item.instrument || "",
+        shelf: index,
+        open: () => {
+          loadPack(item);
+          document.body.classList.remove("is-library");
+          $("library").hidden = true;
+          setMode("notes");
+        },
+      });
+    });
+    rows.filter((row) => {
+      if (libraryFilter === "class" && row.kind !== "class") return false;
+      if (libraryFilter === "mine" && row.kind !== "mine") return false;
+      const hay = (row.name + " " + row.who + " " + row.feel + " " + row.instrument).toLowerCase();
+      return !q || hay.indexOf(q) !== -1;
+    }).forEach((row) => {
+      const card = document.createElement("article");
+      card.className = "lib-song";
+      const title = document.createElement("h2");
+      title.textContent = row.name;
+      const meta = document.createElement("p");
+      meta.textContent = row.who + " · " + row.feel + (row.instrument ? " · " + row.instrument : "") + (row.kind === "class" ? " · class" : " · private");
+      const chips = document.createElement("div");
+      chips.className = "viz-row";
+      const key = row.name;
+      VIZ_BANK.forEach((bank) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn" + ((map[key] || "song") === bank.id ? " on" : "");
+        b.textContent = bank.name;
+        b.addEventListener("click", () => {
+          saveVizChoice(key, bank.id);
+          const viz = bank.viz || songViz(key, PICTURES[key]);
+          if (viz) {
+            applyViz(viz);
+            if (row.shelf != null) {
+              const shelf = readShelf();
+              if (shelf[row.shelf] && shelf[row.shelf].song) {
+                shelf[row.shelf].song.viz = viz;
+                try { localStorage.setItem(SHELF, JSON.stringify(shelf)); } catch (err) { /* still on screen */ }
+              }
+            }
+          }
+          document.body.classList.remove("is-library");
+          $("library").hidden = true;
+          document.body.classList.add("viz-full");
+          setMode("lights");
+          $("how").textContent = bank.name + " is the picture for " + row.name + ". Home takes you back.";
+        });
+        chips.appendChild(b);
+      });
+      const open = document.createElement("button");
+      open.type = "button";
+      open.className = "btn";
+      open.textContent = "Open this song";
+      open.addEventListener("click", row.open);
+      if (row.shelf != null) {
+        const pub = document.createElement("button");
+        pub.type = "button";
+        pub.className = "btn";
+        const shelf = readShelf();
+        const isPub = !!(shelf[row.shelf] && shelf[row.shelf].pub);
+        pub.textContent = isPub ? "Class can see it" : "Only you";
+        pub.addEventListener("click", () => {
+          const next = readShelf();
+          if (!next[row.shelf]) return;
+          next[row.shelf].pub = !next[row.shelf].pub;
+          try { localStorage.setItem(SHELF, JSON.stringify(next)); } catch (err) { /* still on screen */ }
+          paintLibrary();
+        });
+        card.appendChild(title);
+        card.appendChild(meta);
+        card.appendChild(chips);
+        card.appendChild(open);
+        card.appendChild(pub);
+      } else {
+        card.appendChild(title);
+        card.appendChild(meta);
+        card.appendChild(chips);
+        card.appendChild(open);
+      }
+      list.appendChild(card);
+    });
+  }
+  function bootHome() {
+    const cards = $("do-cards");
+    if (!cards || cards.childElementCount) return;
+    const jobs = [
+      ["Make a song", "Pick a feel, a speed, and who plays.", showMake],
+      ["Tap a score", "Tap a letter. It lands on the staff.", () => { setMode("notes"); $("how").textContent = "Tap a letter. It goes on the next beat."; }],
+      ["Write a score", "The staff is empty until you change it.", () => setMode("notes")],
+      ["Tap along", "Play with the flash. The song stays.", () => { state.along = true; if (typeof paintAlong === "function") paintAlong(); setMode("drums"); }],
+      ["See the picture", "The song fills the screen.", () => { document.body.classList.add("viz-full"); setMode("lights"); }],
+      ["Remix a song", "Open the library. You get a copy.", showLibrary],
+      ["Remix a picture", "Pick a look, then save it on the song.", () => setMode("lights")],
+      ["Band", "Your instrument, then the band.", () => setMode("band")],
+    ];
+    jobs.forEach(([title, line, go]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "do-card";
+      const strong = document.createElement("strong");
+      strong.textContent = title;
+      const span = document.createElement("span");
+      span.textContent = line;
+      b.appendChild(strong);
+      b.appendChild(span);
+      b.addEventListener("click", () => {
+        document.body.classList.remove("is-home", "viz-full");
+        if ($("home")) $("home").hidden = true;
+        if ($("back-home")) $("back-home").hidden = false;
+        go();
+      });
+      cards.appendChild(b);
+    });
+    const feels = [["calm", "Calm"], ["bright", "Bright"], ["drive", "Drive"]];
+    const feelBox = $("make-feels");
+    feels.forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "do-card" + (id === makeFeel ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        makeFeel = id;
+        feelBox.querySelectorAll(".do-card").forEach((el) => el.classList.toggle("on", el === b));
+        const tempo = id === "calm" ? 80 : id === "drive" ? 124 : 104;
+        $("make-tempo").value = String(tempo);
+        $("make-tempo-read").textContent = String(tempo);
+      });
+      feelBox.appendChild(b);
+    });
+    $("make-tempo").addEventListener("input", () => {
+      $("make-tempo-read").textContent = $("make-tempo").value;
+    });
+    [["piano", "Piano"], ["flute", "Flute"], ["trumpet", "Trumpet"], ["violin", "Violin"], ["percussion", "Drums"]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "do-card" + (id === makeInst ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        makeInst = id;
+        $("make-inst").querySelectorAll(".do-card").forEach((el) => el.classList.toggle("on", el === b));
+      });
+      $("make-inst").appendChild(b);
+    });
+    $("make-go").addEventListener("click", () => {
+      const tempo = Number($("make-tempo").value) || 96;
+      state.song.bpm = tempo;
+      state.song.tempo = tempo;
+      if ($("tempo")) {
+        $("tempo").value = String(tempo);
+        $("tempo-read").textContent = String(tempo);
+      }
+      state.band = makeInst === "percussion" ? "percussion" : makeInst;
+      const sound = { piano: "winds", flute: "winds", trumpet: "brass", violin: "strings", percussion: "beep" }[makeInst];
+      if (sound) state.orch = sound;
+      ROWS.forEach(([id]) => { state.drums[id] = Array(8).fill(false); });
+      state.drums.kick[0] = true;
+      if (makeFeel !== "calm") state.drums.snare[4] = true;
+      if (makeFeel === "drive") {
+        state.drums.hat[0] = true;
+        state.drums.hat[2] = true;
+        state.drums.hat[4] = true;
+        state.drums.hat[6] = true;
+      }
+      const look = makeFeel === "calm" ? "soft" : makeFeel === "drive" ? "storm" : "fire";
+      const bank = VIZ_BANK.find((item) => item.id === look);
+      if (bank && bank.viz) applyViz(bank.viz);
+      document.body.classList.remove("is-make");
+      $("make").hidden = true;
+      setMode("notes");
+      $("how").textContent = "The feel is set. Tap a letter to change a note.";
+      keep();
+      renderDrums();
+    });
+    [["all", "All"], ["class", "Class"], ["mine", "Mine"]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (id === "all" ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        libraryFilter = id;
+        $("library-filters").querySelectorAll(".btn").forEach((el) => el.classList.toggle("on", el === b));
+        paintLibrary();
+      });
+      $("library-filters").appendChild(b);
+    });
+    $("library-find").addEventListener("input", paintLibrary);
+    $("back-home").addEventListener("click", showHome);
+  }
+  bootHome();
+
   paintMix();
-  setMode((() => {
+  const startBoard = (() => {
     const board = new URLSearchParams(window.location.search).get("board");
     if (board === "beats" || board === "drums") return "drums";
     if (board === "lights") return "lights";
     if (board === "band") return "band";
     if (board === "sound") return "sound";
-    return "notes";
-  })());
+    if (board === "notes" || board === "score") return "notes";
+    return "";
+  })();
+  if (startBoard) setMode(startBoard);
+  else showHome();
   buildKit();
   renderStaff();
   renderDrums();
@@ -2554,6 +2852,7 @@
       };
       const trapIt = () => applyStyle("Trap");
       let odeNotes = null;
+      const catalog = [];
       const shelves = [
         ["Africa", [
           ["Kye Kye Kule", "Ghana", ["C", "E", "G", "G", "A", "G", "E", "C", "C", "E", "G", "G", "A", "G", "E", "C"], 104],
@@ -2602,6 +2901,7 @@
         grid.className = "shelf-songs";
         songs.forEach(([name, from, notes, bpm]) => {
           if (name === "Ode to Joy") odeNotes = notes;
+          catalog.push({ name: name, from: from, notes: notes, bpm: bpm, feel: bpm < 90 ? "calm" : bpm > 110 ? "drive" : "bright" });
           const b = document.createElement("button");
           b.type = "button";
           b.className = "btn";
@@ -2632,6 +2932,8 @@
           trap.appendChild(b);
         });
       }
+      songCatalog = catalog;
+      openTune = loadTune;
     }
     const bass = $("bass-btn");
     if (bass && !bass.dataset.ready) {
