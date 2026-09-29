@@ -1706,11 +1706,29 @@ function boot() {
     if (b) b.setAttribute("aria-expanded", on ? "true" : "false");
   }
 
+  function lockLandscape() {
+    try {
+      if (screen.orientation && typeof screen.orientation.lock === "function") {
+        const pending = screen.orientation.lock("landscape");
+        if (pending && typeof pending.catch === "function") pending.catch(() => {});
+      }
+    } catch (e) {}
+  }
+
   function tryWide() {
-    const lock = screen.orientation && screen.orientation.lock
-      ? screen.orientation.lock("landscape")
-      : Promise.reject();
-    lock.catch(() => toast("Flip the phone sideways — this shop is landscape."));
+    const root = document.documentElement;
+    try {
+      if (!document.fullscreenElement && root.requestFullscreen) {
+        const pending = root.requestFullscreen();
+        if (pending && typeof pending.then === "function") {
+          pending.then(lockLandscape).catch(lockLandscape);
+          return;
+        }
+      } else if (!document.fullscreenElement && root.webkitRequestFullscreen) {
+        root.webkitRequestFullscreen();
+      }
+    } catch (e) {}
+    lockLandscape();
   }
 
   function refreshMeta() {
@@ -4050,8 +4068,14 @@ function boot() {
         setPacket(!!(d && d.hidden));
       });
     }
-    const wideBtn = document.getElementById("btn-wide");
-    if (wideBtn) wideBtn.addEventListener("click", tryWide);
+    const wideGate = document.getElementById("rotate-gate");
+    if (wideGate) wideGate.addEventListener("click", tryWide);
+    document.addEventListener("fullscreenchange", () => {
+      if (document.fullscreenElement) lockLandscape();
+    });
+    document.addEventListener("webkitfullscreenchange", () => {
+      if (document.webkitFullscreenElement) lockLandscape();
+    });
     window.addEventListener("keydown", (ev) => {
       if (ev.metaKey || ev.ctrlKey || ev.altKey) {
         if ((ev.key === "z" || ev.key === "Z") && (ev.ctrlKey || ev.metaKey) && !ev.altKey) {

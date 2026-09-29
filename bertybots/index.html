@@ -16,9 +16,14 @@
   <link rel="stylesheet" href="css/app.css?v=0.19.30">
 </head>
 <body>
-  <div id="rotate-gate">
+  <div id="rotate-gate" role="dialog" aria-modal="true" aria-label="Turn your phone sideways">
+    <svg class="rotate-icon" viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="24" y="6" width="16" height="28" rx="3" fill="none" stroke="currentColor" stroke-width="3"/>
+      <path d="M12 38a20 20 0 0 0 36 8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      <path d="M46 34l4 12-11 1" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
     <p class="rotate-kicker">Berty's Botz</p>
-    <h1>Turn sideways</h1>
+    <h1>Turn your phone sideways</h1>
     <p>The shop is landscape, like a workbench.</p>
     <button class="btn gold" id="btn-wide" type="button">Try landscape</button>
   </div>
