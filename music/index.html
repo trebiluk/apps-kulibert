@@ -4,17 +4,17 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>Berty's MusicLab · The Tech Room</title>
+  <title>DJ Berty · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.25.0e"/>
+  <link rel="stylesheet" href="./styles.css?v=2.26.0g"/>
 </head>
 <body>
   <div class="mast">
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.25.0</em></span>
+      <span><strong>DJ Berty</strong><em id="chip">MU 2.26.0</em></span>
     </a>
     <button type="button" id="back-home" class="quiet" hidden>Home</button>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
@@ -32,7 +32,7 @@
 
   <section id="home" class="home">
     <h1>Songs</h1>
-    <p class="how">Open one song. Everything else works on that song.</p>
+    <p class="how">Open one song. Score and drums work on that song.</p>
     <div class="shelf-block">
       <h2>Start</h2>
       <div class="choice">
@@ -59,7 +59,7 @@
     <div class="shelf-block">
       <h2>Bring a file in</h2>
       <div class="choice">
-        <button type="button" id="import-lab" class="do-card">MusicLab file</button>
+        <button type="button" id="import-lab" class="do-card">DJ Berty file</button>
         <button type="button" id="import-abc" class="do-card">ABC</button>
         <button type="button" id="import-midi" class="do-card">MIDI</button>
         <button type="button" id="import-xml" class="do-card">MusicXML</button>
@@ -85,9 +85,10 @@
     <div id="library-filters" class="pen"></div>
     <div id="library-list"></div>
   </section>
-  <nav class="tabs" aria-label="Sections">
-    <button type="button" id="mode-notes" class="on" aria-pressed="true">Score</button>
-    <button type="button" id="mode-drums" aria-pressed="false">Beats</button>
+  <nav class="tabs" aria-label="Workspace">
+    <button type="button" id="mode-both" class="on" aria-pressed="true">Score + drums</button>
+    <button type="button" id="mode-notes" aria-pressed="false">Score</button>
+    <button type="button" id="mode-drums" aria-pressed="false">Drums</button>
     <button type="button" id="mode-lights" aria-pressed="false">Lights</button>
     <button type="button" id="mode-band" aria-pressed="false">Band</button>
     <button type="button" id="mode-sound" aria-pressed="false">Sound</button>
@@ -157,6 +158,7 @@
           </details>
         </details>
       </div>
+      <div id="ws-split" class="ws-split" role="separator" aria-orientation="vertical" aria-label="Drag to resize the staff and the drums" aria-valuemin="28" aria-valuemax="72" aria-valuenow="58" tabindex="0" hidden></div>
       <div id="drums-pane">
         <p class="hint">Tap a colored pad. Press Play.</p>
         <details class="more-box">
@@ -361,7 +363,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.25.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.26.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -372,6 +374,6 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=1"></script>
-  <script src="./app.js?v=2.25.0d"></script>
+  <script src="./app.js?v=2.26.0f"></script>
 </body>
 </html>

@@ -568,16 +568,21 @@
   function renderStaff() {
     const host = $("staff");
     host.innerHTML = "";
-    const abc = Song.toAbc(state.song);
+    let abc = Song.toAbc(state.song);
+    if (window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
       return;
     }
     try {
+      const wide = Math.max(220, host.clientWidth - 8);
       window.ABCJS.renderAbc(host, abc, {
         responsive: "resize",
         add_classes: true,
-        staffwidth: Math.max(260, host.clientWidth - 12),
+        staffwidth: wide,
+        wrap: { minSpacing: 1.6, maxSpacing: 2.4, preferredMeasuresPerLine: wide < 420 ? 2 : 4 },
+        paddingleft: 8,
+        paddingright: 8,
       });
     } catch (err) {
       host.textContent = abc;
@@ -1573,37 +1578,71 @@
     const line = $("how");
     if (!line) return;
     const text = {
+      both: "The staff and the drums are this song. Tap a letter or a pad. Then press Play.",
       notes: "Tap a letter. Then press Play.",
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
       lights: "Tap a picture. Then press Play.",
       band: "Choose your instrument. Tap a note to see the fingering.",
       sound: "Tap a note. Watch the wave. Then try Major or Minor.",
     };
-    line.textContent = state.playing ? "Press Stop." : (text[mode] || text.notes);
+    line.textContent = state.playing ? "Press Stop." : (text[mode] || text.both);
+  }
+  const WS_KEY = "kulibert.music.workspace";
+  const WS_MODES = ["both", "notes", "drums", "lights", "band", "sound"];
+  function readWorkspace() {
+    try {
+      const data = JSON.parse(localStorage.getItem(WS_KEY) || "");
+      const preset = WS_MODES.indexOf(data.preset) >= 0 ? data.preset : "both";
+      let score = Number(data.score);
+      if (!Number.isFinite(score)) score = 58;
+      score = Math.max(28, Math.min(72, Math.round(score)));
+      return { preset: preset, score: score };
+    } catch (err) {
+      return { preset: "both", score: 58 };
+    }
+  }
+  function writeWorkspace(preset, score) {
+    const safe = WS_MODES.indexOf(preset) >= 0 ? preset : "both";
+    const width = Math.max(28, Math.min(72, Math.round(Number(score) || 58)));
+    try { localStorage.setItem(WS_KEY, JSON.stringify({ preset: safe, score: width })); } catch (err) { /* layout only */ }
+    return { preset: safe, score: width };
+  }
+  function applySplit(score) {
+    const width = Math.max(28, Math.min(72, Math.round(Number(score) || 58)));
+    const work = $("work");
+    if (work) work.style.setProperty("--ws-score", width + "%");
+    const split = $("ws-split");
+    if (split) split.setAttribute("aria-valuenow", String(width));
+    return width;
   }
   function setMode(mode) {
+    if (WS_MODES.indexOf(mode) < 0) mode = "both";
     state.mode = mode;
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("back-home")) $("back-home").hidden = false;
-    $("work").classList.toggle("is-notes", mode === "notes");
-    $("work").classList.toggle("is-drums", mode === "drums");
-    $("work").classList.toggle("is-band", mode === "band");
-    $("work").classList.toggle("is-lights", mode === "lights");
-    $("work").classList.toggle("is-sound", mode === "sound");
-    ["notes", "drums", "band", "lights", "sound"].forEach((name) => {
+    const work = $("work");
+    WS_MODES.forEach((name) => {
+      if (work) work.classList.toggle("is-" + name, mode === name);
+    });
+    WS_MODES.forEach((name) => {
       const btn = $("mode-" + name);
       if (!btn) return;
       btn.classList.toggle("on", mode === name);
       btn.setAttribute("aria-pressed", String(mode === name));
     });
+    document.body.classList.toggle("is-both", mode === "both");
     document.body.classList.toggle("is-score", mode === "notes");
     document.body.classList.toggle("is-drums", mode === "drums");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
     document.body.classList.toggle("is-sound", mode === "sound");
+    const split = $("ws-split");
+    if (split) split.hidden = mode !== "both";
+    if (mode === "both") applySplit(readWorkspace().score);
     sayHow(mode);
     if (!state.playing) {
       const hints = {
+        both: "Score and drums together. A letter changes the staff. A pad changes the beat.",
         notes: "The staff is the song. Tap a letter to change a note.",
         drums: state.along
           ? "Play along is on. Tap with the flash. The song stays the same."
@@ -1616,6 +1655,16 @@
     }
     if (mode === "band") paintBand();
     paintLights();
+    if (mode === "both" || mode === "notes") {
+      window.requestAnimationFrame(() => {
+        if (state.mode === mode) renderStaff();
+      });
+    }
+  }
+  function chooseWorkspace(mode) {
+    const cur = readWorkspace();
+    writeWorkspace(mode, cur.score);
+    setMode(mode);
   }
 
   function paintAlong() {
@@ -1713,10 +1762,42 @@
     renderDrums();
     $("lesson").textContent = "The drums are back. Saved.";
   });
-  $("mode-notes").addEventListener("click", () => setMode("notes"));
-  $("mode-drums").addEventListener("click", () => setMode("drums"));
-  $("mode-band").addEventListener("click", () => setMode("band"));
-  $("mode-lights").addEventListener("click", () => setMode("lights"));
+  ["both", "notes", "drums", "band", "lights", "sound"].forEach((name) => {
+    const btn = $("mode-" + name);
+    if (btn) btn.addEventListener("click", () => chooseWorkspace(name));
+  });
+  const wsSplit = $("ws-split");
+  if (wsSplit) {
+    wsSplit.addEventListener("pointerdown", (event) => {
+      if (state.mode !== "both") return;
+      event.preventDefault();
+      const work = $("work");
+      if (!work) return;
+      wsSplit.setPointerCapture(event.pointerId);
+      const move = (ev) => {
+        const rect = work.getBoundingClientRect();
+        if (rect.width < 80) return;
+        const next = applySplit(((ev.clientX - rect.left) / rect.width) * 100);
+        writeWorkspace("both", next);
+      };
+      const up = () => {
+        wsSplit.removeEventListener("pointermove", move);
+        wsSplit.removeEventListener("pointerup", up);
+        wsSplit.removeEventListener("pointercancel", up);
+      };
+      wsSplit.addEventListener("pointermove", move);
+      wsSplit.addEventListener("pointerup", up);
+      wsSplit.addEventListener("pointercancel", up);
+    });
+    wsSplit.addEventListener("keydown", (event) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+      event.preventDefault();
+      const cur = readWorkspace();
+      const next = applySplit(cur.score + (event.key === "ArrowRight" ? 4 : -4));
+      writeWorkspace("both", next);
+      setMode("both");
+    });
+  }
   $("band-warm").addEventListener("click", () => warmUp());
   const DYN_STEPS = ["pp", "p", "mf", "f", "ff"];
   function wanted(beat) {
@@ -2399,13 +2480,14 @@
       state.song.from = [item.name, item.name === "Happy Birthday" ? "Trap remix" : "Remix"];
       state.song = Song.parse(Song.serialize(state.song));
       renderDrums();
+      renderStaff();
       paintSongBar();
       keep();
     }
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
     if ($("back-home")) $("back-home").hidden = false;
-    setMode(remix && item.name === "Happy Birthday" ? "drums" : "notes");
+    setMode(remix && item.name === "Happy Birthday" ? "both" : readWorkspace().preset);
     if (remix && item.name === "Happy Birthday") {
       const grid = $("drums");
       const box = grid && grid.closest("details");
@@ -2473,7 +2555,7 @@
           paintSongBar();
           document.body.classList.remove("is-home");
           $("home").hidden = true;
-          setMode("notes");
+          setMode(readWorkspace().preset);
         });
         const remix = document.createElement("button");
         remix.type = "button";
@@ -2491,7 +2573,7 @@
           keep();
           document.body.classList.remove("is-home");
           $("home").hidden = true;
-          setMode("notes");
+          setMode(readWorkspace().preset);
           $("how").textContent = "A copy of your save. Change it.";
           rememberPack();
         });
@@ -2503,8 +2585,8 @@
   function showHome() {
     state.mode = "home";
     document.body.classList.add("is-home");
-    document.body.classList.remove("is-score", "is-drums", "is-lights", "is-band", "is-sound", "is-make", "is-library", "viz-full", "expert");
-    ["notes", "drums", "band", "lights", "sound"].forEach((name) => {
+    document.body.classList.remove("is-score", "is-drums", "is-lights", "is-band", "is-sound", "is-both", "is-make", "is-library", "viz-full", "expert");
+    ["both", "notes", "drums", "band", "lights", "sound"].forEach((name) => {
       const btn = $("mode-" + name);
       if (btn) btn.classList.remove("on");
     });
@@ -2550,7 +2632,7 @@
           if (viz) applyViz(viz);
           document.body.classList.remove("is-library");
           $("library").hidden = true;
-          setMode("notes");
+          setMode(readWorkspace().preset);
         },
       });
     });
@@ -2567,7 +2649,7 @@
           loadPack(item);
           document.body.classList.remove("is-library");
           $("library").hidden = true;
-          setMode("notes");
+          setMode(readWorkspace().preset);
         },
       });
     });
@@ -2732,8 +2814,8 @@
       if (bank && bank.viz) applyViz(bank.viz);
       document.body.classList.remove("is-make");
       $("make").hidden = true;
-      setMode("notes");
-      $("how").textContent = "The feel is set. Tap a letter to change a note.";
+      setMode(readWorkspace().preset);
+      $("how").textContent = "The feel is set. Tap a letter or a pad. Then press Play.";
       keep();
       renderDrums();
     });
@@ -2765,7 +2847,7 @@
       document.body.classList.remove("is-home");
       $("home").hidden = true;
       $("back-home").hidden = false;
-      setMode("notes");
+      setMode(readWorkspace().preset);
       $("how").textContent = "Empty staff. Tap a letter to place a note.";
       rememberPack();
     });
@@ -2813,7 +2895,7 @@
       document.body.classList.remove("is-home");
       $("home").hidden = true;
       $("back-home").hidden = false;
-      setMode("notes");
+      setMode(readWorkspace().preset);
       $("how").textContent = pickMeter + " in " + pickKey + ". Tap a letter.";
       rememberPack();
     });
@@ -2860,12 +2942,12 @@
           document.body.classList.remove("is-home");
           $("home").hidden = true;
           $("back-home").hidden = false;
-          setMode("notes");
+          setMode(readWorkspace().preset);
           paintSongBar();
           rememberPack();
           $("how").textContent = "That file is the song now. Press Play.";
         } catch (err) {
-          $("how").textContent = "That file did not open. Try ABC, MIDI, MusicXML, or a MusicLab file.";
+          $("how").textContent = "That file did not open. Try ABC, MIDI, MusicXML, or a DJ Berty file.";
         }
       };
       if (importKind === "midi") reader.readAsArrayBuffer(file);

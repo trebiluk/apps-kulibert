@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.26.0** · 2026-09-30 · channel **live**
+
+The door is DJ Berty. The address is still /music/. Songs, saves, and the shelf stay. Score and drums open together on the current song. Drag the line between them on a wide screen. Score, Drums, Lights, Band, and Sound are still one tap.
+
+## Earlier
+
 **Chip: MU 2.25.0** · 2026-09-30 · channel **live**
 
 One song at a time. The Songs shelf is the door: blank staff, tempo and key, public-domain songs, saves, and ABC, MIDI, MusicXML, or a MusicLab file. Remix copies a song. Happy Birthday can become a trap remix. The song name and cover stay at the top of every view.
