@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Drawin'">
+  <rect width="128" height="128" rx="28" fill="#6D28D9"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#FDE68A" stroke-width="3"/>
+  <g transform="translate(2 -4)">
+  <path d="M22 92c8-16 18-16 22-2s12 10 16-2" fill="none" stroke="#22D3EE" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="30" cy="40" r="6" fill="#FF5D93"/>
+  <circle cx="46" cy="30" r="4" fill="#FDE68A"/>
+  <g transform="translate(60 90) rotate(-45)" stroke="#1E1033" stroke-width="3" stroke-linejoin="round">
+    <path d="M0 0 18-10V10Z" fill="#FDDCB5"/>
+    <path d="M0 0 7-3.9V3.9Z" fill="#1E1033"/>
+    <rect x="18" y="-10" width="30" height="20" fill="#FFB020"/>
+    <rect x="48" y="-10" width="7" height="20" fill="#CBD5E1"/>
+    <path d="M55-10h4a6 6 0 0 1 6 6v8a6 6 0 0 1-6 6h-4Z" fill="#FF5D93"/>
+  </g>
+  </g>
+</svg>

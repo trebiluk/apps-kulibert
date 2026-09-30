@@ -11,8 +11,8 @@
       <stop offset="100%" stop-color="#A78BFA"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" fill="url(#vzPlate)"/>
-  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="url(#vzRim)" stroke-width="3" opacity="0.9"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="url(#vzPlate)"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="none" stroke="url(#vzRim)" stroke-width="3" opacity="0.9"/>
   <path d="M64 18 L76 36 L64 32 L52 36 Z" fill="#22D3EE"/>
   <path d="M64 32 L90 50 L76 50 L64 68 L52 50 L38 50 Z" fill="#14B8A6"/>
   <path d="M64 68 L76 64 L64 84 L52 64 Z" fill="#A78BFA"/>

@@ -11,8 +11,8 @@
       <stop offset="100%" stop-color="#6D28D9"/>
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="28" fill="url(#bbPlate)"/>
-  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="url(#bbRim)" stroke-width="3" opacity="0.9"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="url(#bbPlate)"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" ry="28" fill="none" stroke="url(#bbRim)" stroke-width="3" opacity="0.9"/>
   <!-- 4-step beat pads -->
   <rect x="22" y="28" width="18" height="18" rx="5" fill="#22D3EE"/>
   <rect x="44" y="28" width="18" height="18" rx="5" fill="#14B8A6"/>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="TechWorks">
+  <defs>
+    <linearGradient id="twMark" x1="0%" y1="20%" x2="100%" y2="80%">
+      <stop offset="0%" stop-color="#1D4ED8"/>
+      <stop offset="55%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#67E8F9"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#twMark)"/>
+  <path fill="#071018" d="M22 22h84v26H78v58H50V48H22z"/>
+</svg>
