@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-29-fit"/>
+<meta name="tech-room-rev" content="2026-09-30-style"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1076,7 +1076,7 @@
     body.apps-always .hub-tools-theme{order:2;margin-left:auto}
     body.apps-always .hub-tools-filter{order:3;flex-basis:100%}
     body.apps-always .hub-tools button{
-      flex:0 0 auto;min-height:36px;padding:0 .4rem;border:0;border-radius:0;
+      flex:0 0 auto;min-height:44px;min-width:44px;padding:0 .55rem;border:0;border-radius:0;
       background:transparent;color:#8fb4c9;box-shadow:none;
       font-size:.8rem;font-weight:650;letter-spacing:.01em;
     }
@@ -1084,6 +1084,31 @@
       color:#e8f7ff;background:transparent;border:0;box-shadow:inset 0 -2px 0 #22d3ee;
     }
     body.apps-always #hub-theme{margin-left:0;padding-left:.4rem}
+    .style-k{font-size:.75rem;font-weight:750;white-space:nowrap;color:#8fb4c9}
+    .hub-tools-theme{display:flex;align-items:center;gap:6px;flex:1 1 12rem;min-width:0;max-width:100%;overflow-x:auto;scrollbar-width:none}
+    .hub-tools-theme::-webkit-scrollbar{display:none}
+    .style-swatch{
+      width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:999px;
+      border:2px solid rgba(255,255,255,.45);box-shadow:none;cursor:pointer;
+      transition:transform 120ms ease;
+    }
+    .style-swatch:active{transform:scale(.92)}
+    .style-swatch.is-on{box-shadow:0 0 0 2px #22d3ee}
+    .style-swatch[data-style="room"]{background:#050814}
+    .style-swatch[data-style="graph"]{background:#efeae0}
+    .style-swatch[data-style="miami"]{background:linear-gradient(135deg,#ff4ad8,#5ef6ff)}
+    .style-swatch[data-style="spa"]{background:#c4b8a8}
+    .style-swatch[data-style="nature"]{background:#3e6b32}
+    .style-swatch[data-style="peaks"]{background:#8aa0b8}
+    .style-swatch[data-style="city"]{background:#e8a317}
+    .style-swatch[data-style="space"]{background:#1a2458}
+    .style-swatch[data-style="berty"]{background:#e87722}
+    .style-note{font-size:.75rem;font-weight:650;white-space:nowrap;color:#8fb4c9}
+    body.apps-always a.tile,body.apps-always button.tile{transition:transform 120ms ease}
+    body.apps-always a.tile:active,body.apps-always button.tile:active{transform:scale(.97)}
+    @media (prefers-reduced-motion:reduce){
+      .style-swatch,body.apps-always a.tile,body.apps-always button.tile{transition:none}
+    }
     html[data-hub-theme="graph"] body.apps-always .hub-tools button{color:#5c564c}
     html[data-hub-theme="graph"] body.apps-always .hub-tools button.is-on{
       color:#1c1915;box-shadow:inset 0 -2px 0 #1c1915;
@@ -1416,7 +1441,7 @@
       body.apps-always .hub-tools{flex-wrap:nowrap;margin:0}
       body.apps-always .hub-tools-sort{order:1}
       body.apps-always .hub-tools-theme{order:2;margin-left:auto;padding-left:.55rem}
-      body.apps-always .hub-tools button{min-height:34px;padding:0 .55rem;font-size:.8rem}
+      body.apps-always .hub-tools button{min-height:44px;min-width:44px;padding:0 .55rem;font-size:.8rem}
       body.apps-always #app-groups{gap:.35rem}
       body.apps-always .group .board,
       body.apps-always #school-wrap .board,
@@ -1592,7 +1617,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-29-fit</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-30-style</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/debugzy/">Debugzy</a> <strong>v0.1.0</strong>: 5 find-the-bad-step puzzles.</p>
@@ -1602,6 +1627,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in MusicLab.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.1.1</strong> — Sign in on the Tech Room bar. No typed names.</p>
           <ul id="hub-log">
+            <li>My style: nine looks. Tap one. This Chromebook remembers it. Tiles press in when you tap them.</li>
             <li>Phone header icons stay full size and scroll sideways. Sign in stays left. Home and More stay right. Botz on a phone asks you to turn sideways.</li>
             <li>Debugzy v0.1.0: 5 find-the-bad-step puzzles.</li>
             <li>Live chips match the doors. Staff can pick apps that open outside the shell.</li>
@@ -1636,8 +1662,18 @@
         <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
         <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
       </div>
-      <div class="hub-tools-row hub-tools-theme" role="group" aria-label="Theme">
-        <button type="button" id="hub-theme">Room</button>
+      <div class="hub-tools-row hub-tools-theme" id="style-row" role="group" aria-label="My style">
+        <span class="style-k">My style</span>
+        <button type="button" class="style-swatch" data-style="room" aria-label="Room"></button>
+        <button type="button" class="style-swatch" data-style="graph" aria-label="Graph"></button>
+        <button type="button" class="style-swatch" data-style="miami" aria-label="Miami"></button>
+        <button type="button" class="style-swatch" data-style="spa" aria-label="Spa"></button>
+        <button type="button" class="style-swatch" data-style="nature" aria-label="Nature"></button>
+        <button type="button" class="style-swatch" data-style="peaks" aria-label="Peaks"></button>
+        <button type="button" class="style-swatch" data-style="city" aria-label="City"></button>
+        <button type="button" class="style-swatch" data-style="space" aria-label="Space"></button>
+        <button type="button" class="style-swatch" data-style="berty" aria-label="Berty"></button>
+        <span class="style-note" id="style-note" hidden>Saved on this Chromebook.</span>
       </div>
     </div>
     <div class="groups" id="app-groups">
@@ -2898,26 +2934,48 @@
       var HUB_THEME_NAMES = { room: "Room", graph: "Graph", miami: "Miami", spa: "Spa", nature: "Nature", peaks: "Peaks", city: "City", space: "Space", berty: "Berty" };
       var HUB_THEME_COLORS = { room: "#050814", graph: "#efeae0", miami: "#14061f", spa: "#f3efe8", nature: "#e7f4d8", peaks: "#e8eef4", city: "#12151c", space: "#070b16", berty: "#1a120c" };
       function paintThemeButton() {
-        var btn = document.getElementById("hub-theme");
         var theme = document.documentElement.getAttribute("data-hub-theme") || "room";
         if (HUB_THEMES.indexOf(theme) < 0) theme = "room";
-        if (btn) {
-          btn.textContent = HUB_THEME_NAMES[theme];
-          btn.classList.add("is-on");
-          btn.setAttribute("aria-label", "Theme is " + HUB_THEME_NAMES[theme] + ". Tap for the next look.");
-        }
+        Array.prototype.forEach.call(document.querySelectorAll(".style-swatch"), function (swatch) {
+          var on = swatch.getAttribute("data-style") === theme;
+          swatch.classList.toggle("is-on", on);
+          swatch.setAttribute("aria-pressed", on ? "true" : "false");
+        });
         var bar = document.getElementById("theme-color");
         if (bar) bar.setAttribute("content", HUB_THEME_COLORS[theme]);
       }
       paintThemeButton();
-      var themeBtn = document.getElementById("hub-theme");
-      if (themeBtn) themeBtn.addEventListener("click", function (event) {
+      var styleTickCtx = null;
+      function styleTick() {
+        try {
+          if (!styleTickCtx) styleTickCtx = new (window.AudioContext || window.webkitAudioContext)();
+          var o = styleTickCtx.createOscillator();
+          var g = styleTickCtx.createGain();
+          o.frequency.value = 620;
+          g.gain.value = 0.03;
+          o.connect(g);
+          g.connect(styleTickCtx.destination);
+          o.start();
+          g.gain.exponentialRampToValueAtTime(0.0001, styleTickCtx.currentTime + 0.07);
+          o.stop(styleTickCtx.currentTime + 0.08);
+        } catch (eTick) {}
+      }
+      var styleRow = document.getElementById("style-row");
+      if (styleRow) styleRow.addEventListener("click", function (event) {
+        var swatch = event.target && event.target.closest ? event.target.closest(".style-swatch") : null;
+        if (!swatch) return;
         event.stopPropagation();
-        var current = document.documentElement.getAttribute("data-hub-theme") || "room";
-        var next = HUB_THEMES[(Math.max(0, HUB_THEMES.indexOf(current)) + 1) % HUB_THEMES.length];
+        var next = swatch.getAttribute("data-style");
+        if (HUB_THEMES.indexOf(next) < 0) return;
         document.documentElement.setAttribute("data-hub-theme", next);
         try { localStorage.setItem("tech-room-theme", next); } catch (eTheme) {}
         paintThemeButton();
+        styleTick();
+        var note = document.getElementById("style-note");
+        if (note) {
+          note.hidden = false;
+          note.textContent = HUB_THEME_NAMES[next] + " saved on this Chromebook.";
+        }
       });
 
       function fitPhoneTiles() {
