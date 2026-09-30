@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-30-style"/>
+<meta name="tech-room-rev" content="2026-09-30-icons"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1617,7 +1617,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-30-style</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-30-icons</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.26.0</strong> — Same songs, same saves. Score and drums sit together.</p>
@@ -1628,6 +1628,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.2.1</strong> — Contest week. Safety first. Arm 8 to 12 inches.</p>
           <ul id="hub-log">
+            <li>Fresh icons: arcade Berty's Run, a real Drawin' icon, a TechWorks badge, and every icon fills its tile.</li>
             <li>My style: nine looks. Tap one. This Chromebook remembers it. Tiles press in when you tap them.</li>
             <li>Phone header icons stay full size and scroll sideways. Sign in stays left. Home and More stay right. Botz on a phone asks you to turn sideways.</li>
             <li>Debugzy v0.1.0: 5 find-the-bad-step puzzles.</li>
@@ -1697,7 +1698,7 @@
           <a class="tile" data-id="visualizer" data-keywords="visualizer viz lights look bars kaleidoscope make tools" href="/visualizer/">
             <img class="mark" src="/icons/icon-visualizer.svg" alt="" width="72" height="72"/>
             <span class="label">Visualizer</span>
-            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/berty-run/favicon.svg" alt="" width="14" height="14"/>TW Connected</span>
+            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
           <a class="tile" data-id="bits" data-keywords="bits bobs math calculator measure shop science tools" href="/bits/">
             <img class="mark" src="/icons/icon-bits.svg" alt="" width="72" height="72"/>
@@ -1754,7 +1755,7 @@
             <span class="label">LogoLab</span>
           </a>
           <a class="tile" data-id="drawin" data-keywords="drawin stuff paint draw brush layers photo edit design psd vector pen bezier inkscape" href="/drawin/">
-            <img class="mark" src="/drawin/icon.png" alt="" width="72" height="72"/>
+            <img class="mark" src="/icons/icon-drawin.svg" alt="" width="72" height="72"/>
             <span class="label">Drawin'</span>
           </a>
         </nav>
@@ -1786,7 +1787,7 @@
           <a class="tile" data-id="bertybeatz" data-keywords="bertybeatz beatz bz music sound" href="/bertybeatz/">
             <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
             <span class="label">BertyBeatz</span>
-            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/berty-run/favicon.svg" alt="" width="14" height="14"/>TW Connected</span>
+            <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
         </nav>
         </div>
@@ -1973,12 +1974,12 @@
           if (!mark) {
             mark = document.createElement("span");
             mark.className = "tw-on";
-            mark.innerHTML = '<img src="/berty-run/favicon.svg" alt="" width="14" height="14"/><span class="tw-line"></span>';
+            mark.innerHTML = '<img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/><span class="tw-line"></span>';
             tile.appendChild(mark);
           }
           var line = mark.querySelector(".tw-line");
           if (!line) {
-            mark.innerHTML = '<img src="/berty-run/favicon.svg" alt="" width="14" height="14"/><span class="tw-line"></span>';
+            mark.innerHTML = '<img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/><span class="tw-line"></span>';
             line = mark.querySelector(".tw-line");
           }
           var text = lines[id] || "TW Connected";
