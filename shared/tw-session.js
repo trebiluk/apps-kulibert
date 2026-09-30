@@ -157,11 +157,10 @@
       ".tw-pick[hidden]{display:none !important}",
       ".tw-app-status{position:static}",
       ".tw-app-status[hidden]{display:none !important}",
-      ".tw-app-bar{position:fixed;left:.5rem;bottom:.5rem;top:auto;z-index:40;display:flex;align-items:center;gap:.3rem;max-width:calc(100vw - 1rem)}",
-      "@media (min-width:721px){.tw-app-bar{left:8.4rem}}",
+      ".tw-app-bar{position:fixed;right:.5rem;top:.45rem;left:auto;bottom:auto;z-index:40;display:flex;align-items:center;gap:.3rem;max-width:calc(100vw - 1rem)}",
       ".tw-app-bar .tw-pill,.tw-app-bar .tw-back{height:26px;font-size:.7rem;background:rgba(7,16,24,.62);border-color:rgba(180,210,230,.35);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}",
       ".tw-app-bar .tw-back{padding:0 .5rem;border-radius:999px;border:1px solid rgba(180,210,230,.35);color:#e8f7ff;font:650 .7rem/1 system-ui,sans-serif;cursor:pointer}",
-      ".tw-app-bar .tw-pop{position:absolute;left:0;bottom:calc(100% + 6px);top:auto}",
+      ".tw-app-bar .tw-pop{position:absolute;right:0;left:auto;top:calc(100% + 6px);bottom:auto}",
       "html.tw-session-hide .tw-app-status,html.tw-session-hide .tw-pop,html.tw-session-hide .tw-app-bar,html.tw-session-hide .tw-back,html.tw-session-hide .tw-menu{display:none !important}"
     ].join("");
     document.head.appendChild(node);

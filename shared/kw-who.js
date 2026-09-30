@@ -204,7 +204,7 @@
   if (typeof document !== "undefined" && root.top === root && !hubHome() && !document.getElementById("tw-session-boot")) {
     var boot = document.createElement("script");
     boot.id = "tw-session-boot";
-    boot.src = "/shared/tw-session.js?v=2026-09-29-code-pin";
+    boot.src = "/shared/tw-session.js?v=2026-09-29-fit";
     (document.head || document.documentElement).appendChild(boot);
   }
 })(typeof window !== "undefined" ? window : globalThis);

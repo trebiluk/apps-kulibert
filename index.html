@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-29-debugzy"/>
+<meta name="tech-room-rev" content="2026-09-29-fit"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <script src="/shared/kw-who.js?v=2026-09-29-code-pin"></script>
-  <script src="/shared/tw-session.js?v=2026-09-29-hub-pill"></script>
+  <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
+  <script src="/shared/tw-session.js?v=2026-09-29-fit"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1462,6 +1462,46 @@
       body.apps-always:not(.is-framed) .shell-header .edge-pocket{top:auto;right:auto}
       body.apps-always:not(.is-framed) .search{margin-right:0}
     }
+    /* Phone ribbon: one 48px row. Icons stay 40px and scroll. Sign in left. Home and More right. */
+    @media (max-width:700px){
+      body.apps-always .shell-header,
+      body.apps-always:not(.is-framed) .shell-header,
+      body.apps-always.is-framed .shell-header{
+        flex:0 0 48px !important;height:48px !important;min-height:48px !important;max-height:48px !important;
+        flex-wrap:nowrap !important;align-items:center !important;gap:.25rem !important;
+        overflow:visible !important;padding:0 .3rem !important;
+      }
+      body.apps-always .shell-header #tw-session-slot{flex:0 0 auto;order:0}
+      body.apps-always .dock-clip,
+      body.apps-always:not(.is-framed) .dock-clip,
+      body.apps-always.is-framed .dock-clip{
+        display:flex !important;flex:1 1 auto;min-width:0;height:40px;max-height:40px;
+        overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
+        scroll-snap-type:x mandatory;scrollbar-width:none;
+        -webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+        mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent);
+      }
+      body.apps-always .dock-clip::-webkit-scrollbar{display:none;height:0}
+      body.apps-always .shell-header .app-dock,
+      body.apps-always.is-framed .shell-header .app-dock{
+        width:max-content !important;max-width:none;height:40px;max-height:40px;
+        justify-content:flex-start;gap:6px;overflow:visible !important;flex-wrap:nowrap !important;
+      }
+      body.apps-always .shell-header .app-dock-item{
+        flex:0 0 40px !important;width:40px !important;min-width:40px !important;max-width:40px !important;
+        height:40px !important;min-height:40px !important;scroll-snap-align:start;
+      }
+      body.apps-always .shell-header .app-dock-item img{width:28px !important;height:28px !important}
+      body.apps-always .shell-header #shell-home,
+      body.apps-always .shell-header #shell-home[hidden],
+      body.apps-always .shell-header .edge-pocket{
+        display:inline-flex !important;flex:0 0 auto;position:relative !important;
+        top:auto !important;right:auto !important;margin-left:0 !important;
+        min-height:40px;min-width:44px;align-items:center;justify-content:center;
+      }
+      body.apps-always .shell-header .edge-pocket{order:4}
+      body.apps-always .shell-header #shell-home{order:3;height:40px;padding:0 .5rem}
+    }
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
@@ -1474,6 +1514,7 @@
       <div class="dock-clip">
         <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       </div>
+      <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
         <div class="edge-pocket-menu" id="edge-pocket-menu" role="menu" hidden>
@@ -1551,7 +1592,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-29-debugzy</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-09-29-fit</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/debugzy/">Debugzy</a> <strong>v0.1.0</strong>: 5 find-the-bad-step puzzles.</p>
@@ -1561,6 +1602,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in MusicLab.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.1.1</strong> — Sign in on the Tech Room bar. No typed names.</p>
           <ul id="hub-log">
+            <li>Phone header icons stay full size and scroll sideways. Sign in stays left. Home and More stay right. Botz on a phone asks you to turn sideways.</li>
             <li>Debugzy v0.1.0: 5 find-the-bad-step puzzles.</li>
             <li>Live chips match the doors. Staff can pick apps that open outside the shell.</li>
 <li>Staff can turn Hub aliases off. Off hides Hub Sign in. TechWorks still uses aliases.</li>
@@ -1799,7 +1841,7 @@
         <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
         <li><a href="/drawin/">Drawin' <strong>DS 0.2.1</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 2.1.1</strong></a></li>
-        <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.29</strong></a></li>
+        <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.30</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>v0.1.0</strong></a></li>
       </ul>
     </section>
@@ -1812,7 +1854,6 @@
     <footer class="shell-footer" id="shell-footer">
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
-      <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
     </footer>
   </div>
 
