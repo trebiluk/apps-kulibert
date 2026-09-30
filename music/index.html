@@ -7,21 +7,66 @@
   <title>Berty's MusicLab · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.24.0"/>
+  <link rel="stylesheet" href="./styles.css?v=2.25.0e"/>
 </head>
 <body>
+  <div class="mast">
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.24.0</em></span>
+      <span><strong>Berty's MusicLab</strong><em id="chip">MU 2.25.0</em></span>
     </a>
     <button type="button" id="back-home" class="quiet" hidden>Home</button>
     <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </header>
+  <div id="songbar" class="songbar">
+    <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
+    <div class="songbar-copy">
+      <strong id="songbar-name">New song</strong>
+      <span id="songbar-meta">96 · C · 4/4</span>
+    </div>
+    <button type="button" id="songs-btn" class="btn">Songs</button>
+  </div>
+  </div>
   <div class="scrim" id="scrim"></div>
 
   <section id="home" class="home">
-    <h1>What do you want to do?</h1>
+    <h1>Songs</h1>
+    <p class="how">Open one song. Everything else works on that song.</p>
+    <div class="shelf-block">
+      <h2>Start</h2>
+      <div class="choice">
+        <button type="button" id="start-blank" class="do-card">Blank staff</button>
+        <button type="button" id="start-key" class="do-card">Tempo and key</button>
+      </div>
+      <div id="key-pick" hidden>
+        <label class="tempo">Speed <b id="key-tempo-read">96</b>
+          <input id="key-tempo" type="range" min="70" max="140" value="96"/>
+        </label>
+        <div id="key-keys" class="choice" aria-label="Key"></div>
+        <div id="key-meters" class="choice" aria-label="Time"></div>
+        <button type="button" id="key-go" class="btn">Use this</button>
+      </div>
+    </div>
+    <div class="shelf-block">
+      <h2>Open songs</h2>
+      <div id="open-songs"></div>
+    </div>
+    <div class="shelf-block">
+      <h2>My saves</h2>
+      <div id="my-saves"></div>
+    </div>
+    <div class="shelf-block">
+      <h2>Bring a file in</h2>
+      <div class="choice">
+        <button type="button" id="import-lab" class="do-card">MusicLab file</button>
+        <button type="button" id="import-abc" class="do-card">ABC</button>
+        <button type="button" id="import-midi" class="do-card">MIDI</button>
+        <button type="button" id="import-xml" class="do-card">MusicXML</button>
+      </div>
+      <input id="import-file" type="file" hidden/>
+    </div>
+    <h2>Work on this song</h2>
     <div class="do-cards" id="do-cards"></div>
   </section>
   <section id="make" class="make" hidden>
@@ -316,7 +361,7 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.24.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.25.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
@@ -326,6 +371,7 @@
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=2.24.0"></script>
+  <script src="./import.js?v=1"></script>
+  <script src="./app.js?v=2.25.0d"></script>
 </body>
 </html>

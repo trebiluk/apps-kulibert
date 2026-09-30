@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.25.0** · 2026-09-30 · channel **live**
+
+One song at a time. The Songs shelf is the door: blank staff, tempo and key, public-domain songs, saves, and ABC, MIDI, MusicXML, or a MusicLab file. Remix copies a song. Happy Birthday can become a trap remix. The song name and cover stay at the top of every view.
+
+## Earlier
+
 **Chip: MU 2.24.0** · 2026-09-29 · channel **live**
 
 Home cards stay in two columns. The Score, Beats, Lights, Band, and Sound bar is back, and it stays hidden on Home.

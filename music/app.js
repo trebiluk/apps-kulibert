@@ -50,6 +50,7 @@
     "Little Lamb": picture("clouds", "ice", "dusk", "line", false, "bloom", "rose"),
     "Amazing Grace": picture("ribbon", "violet", "night", "glow", false, "stars", "ice"),
     "Jingle Bells": picture("fireworks", "ice", "night", "rgb", true, "stars", "cyan"),
+    "Happy Birthday": picture("bloom", "rose", "sunset", "glow", false, "stars", "amber"),
   };
   const VIZ_BANK = [
     { id: "song", name: "Its picture" },
@@ -386,6 +387,7 @@
     }
     paintSaved(ok);
     paintCount();
+    paintSongBar();
     const beat = Song.toBeat(state.song);
     ROWS.forEach(([id]) => { beat.steps[id] = state.drums[id].concat(Array(8).fill(false)); });
     if (Song.writeBridge) Song.writeBridge("music", state.song, beat);
@@ -2298,6 +2300,206 @@
     map[name] = id;
     try { localStorage.setItem(VIZ_MAP, JSON.stringify(map)); } catch (err) { /* the picture still shows */ }
   }
+  function songTitle(song) {
+    const from = (song && song.from || []).filter((name) => name && name !== "Remix" && name !== "Trap remix");
+    const source = from[0];
+    const alias = song && song.alias;
+    if (source && alias && source !== alias) return alias + " · " + source;
+    return source || alias || "New song";
+  }
+  function paintSongBar() {
+    const song = state.song || {};
+    const name = $("songbar-name");
+    const meta = $("songbar-meta");
+    const cover = $("song-cover");
+    if (name) name.textContent = songTitle(song);
+    if (meta) meta.textContent = (song.bpm || 96) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
+    if (cover) {
+      const ink = { cyan: "#22d3ee", amber: "#fbbf24", violet: "#a78bfa", rose: "#fb7185", lime: "#a3e635", ice: "#bae6fd" };
+      const color = song.viz && song.viz.layers && song.viz.layers[0] && ink[song.viz.layers[0].color];
+      cover.style.background = "linear-gradient(145deg, " + (color || "#22d3ee") + ", #10203f)";
+    }
+  }
+  const BIRTHDAY = ["F", "F", "G", "F", "B", "c", "F", "F", "G", "F", "c", "B", "F", "F", "F", "D", "B", "A", "G", "c", "c", "B", "G", "A", "F", null, null];
+  function placeSong(opts) {
+    const meter = opts.meter || "4/4";
+    const per = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter] || 4;
+    const notes = opts.notes || [];
+    const measures = [];
+    for (let i = 0; notes.length ? i < notes.length && measures.length < 32 : measures.length < 1; i += per) {
+      const beats = [];
+      for (let b = 0; b < per; b++) beats.push(notes[i + b] == null ? null : notes[i + b]);
+      measures.push({ id: "in-" + measures.length, label: String(measures.length + 1), beats: beats });
+      if (!notes.length) break;
+    }
+    const TitlesNow = window.KulibertTitles;
+    const alias = opts.alias || (TitlesNow && TitlesNow.partsOf(state.song.alias) ? state.song.alias : (TitlesNow ? TitlesNow.starterTitle() : ""));
+    state.song = Song.normalize({
+      alias: alias,
+      bpm: opts.bpm || 96,
+      meter: meter,
+      key: opts.key || "C",
+      measures: measures,
+      viz: opts.viz || null,
+      why: {},
+      from: opts.from || [],
+    });
+    state.cursor = 0;
+    state.step = 0;
+    if (opts.drums) {
+      ROWS.forEach(([id]) => {
+        if (Array.isArray(opts.drums[id])) state.drums[id] = opts.drums[id].slice(0, 8).map((on) => !!on);
+      });
+    }
+    if (state.song.viz) applyViz(state.song.viz);
+    if ($("tempo")) {
+      $("tempo").value = String(state.song.bpm);
+      $("tempo-read").textContent = String(state.song.bpm);
+    }
+    renderStaff();
+    renderDrums();
+    paintMeters();
+    paintCount();
+    paintSongBar();
+    keep();
+  }
+  function layTrap() {
+    const trap = {
+      kick: [1, 0, 0, 0, 0, 0, 1, 0],
+      snare: [0, 0, 0, 0, 1, 0, 0, 0],
+      clap: [0, 0, 0, 0, 1, 0, 0, 1],
+      hat: [1, 0, 1, 1, 1, 0, 1, 1],
+      shaker: [0, 1, 0, 1, 0, 1, 0, 1],
+    };
+    ROWS.forEach(([id]) => {
+      state.drums[id] = (trap[id] || Array(8).fill(0)).map((on) => !!on);
+    });
+    state.song.bpm = 74;
+    state.song.tempo = 74;
+    state.bass = true;
+    state.blend = 32;
+    if ($("tempo")) {
+      $("tempo").value = "74";
+      $("tempo-read").textContent = "74";
+    }
+  }
+  function openShelfSong(item, remix) {
+    placeSong({
+      notes: item.notes,
+      bpm: item.bpm,
+      meter: item.meter || "4/4",
+      key: item.key || "C",
+      viz: PICTURES[item.name] || null,
+      from: [item.name],
+      drums: item.drums,
+      alias: remix && window.KulibertTitles ? window.KulibertTitles.pickTitle() : undefined,
+    });
+    if (remix) {
+      if (item.name === "Happy Birthday") layTrap();
+      state.song.from = [item.name, item.name === "Happy Birthday" ? "Trap remix" : "Remix"];
+      state.song = Song.parse(Song.serialize(state.song));
+      renderDrums();
+      paintSongBar();
+      keep();
+    }
+    document.body.classList.remove("is-home", "is-make", "is-library");
+    if ($("home")) $("home").hidden = true;
+    if ($("back-home")) $("back-home").hidden = false;
+    setMode(remix && item.name === "Happy Birthday" ? "drums" : "notes");
+    if (remix && item.name === "Happy Birthday") {
+      const grid = $("drums");
+      const box = grid && grid.closest("details");
+      if (box) box.open = true;
+    }
+    $("how").textContent = remix
+      ? (item.name === "Happy Birthday" ? "Happy Birthday, with trap drums. Press Play." : "A copy. Change it. The first song stays in the list.")
+      : item.name + " is the song. Press Play.";
+    rememberPack();
+  }
+  function paintSongShelf() {
+    const openBox = $("open-songs");
+    const saveBox = $("my-saves");
+    if (openBox) {
+      openBox.innerHTML = "";
+      const rows = [{ name: "Happy Birthday", from: "public domain", notes: BIRTHDAY, bpm: 90, meter: "3/4", key: "F", feel: "bright" }].concat(songCatalog.filter((item) => item.name !== "Happy Birthday"));
+      rows.slice(0, 28).forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "song-row";
+        const text = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = item.name;
+        const span = document.createElement("span");
+        span.textContent = (item.from || "class") + " · " + (item.meter || "4/4");
+        text.append(strong, span);
+        const open = document.createElement("button");
+        open.type = "button";
+        open.className = "btn";
+        open.textContent = "Open";
+        open.addEventListener("click", () => openShelfSong(item, false));
+        const remix = document.createElement("button");
+        remix.type = "button";
+        remix.className = "btn";
+        remix.textContent = item.name === "Happy Birthday" ? "Trap remix" : "Remix";
+        remix.addEventListener("click", () => openShelfSong(item, true));
+        row.append(text, open, remix);
+        openBox.appendChild(row);
+      });
+    }
+    if (saveBox) {
+      saveBox.innerHTML = "";
+      const saved = readShelf();
+      if (!saved.length) {
+        const empty = document.createElement("p");
+        empty.className = "hint";
+        empty.textContent = "Nothing saved on this Chromebook yet.";
+        saveBox.appendChild(empty);
+      }
+      saved.forEach((item) => {
+        const song = item.song || {};
+        const row = document.createElement("div");
+        row.className = "song-row";
+        const text = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = songTitle(song);
+        const span = document.createElement("span");
+        span.textContent = item.pub ? "Class" : "Only this Chromebook";
+        text.append(strong, span);
+        const open = document.createElement("button");
+        open.type = "button";
+        open.className = "btn";
+        open.textContent = "Open";
+        open.addEventListener("click", () => {
+          loadPack(item);
+          paintSongBar();
+          document.body.classList.remove("is-home");
+          $("home").hidden = true;
+          setMode("notes");
+        });
+        const remix = document.createElement("button");
+        remix.type = "button";
+        remix.className = "btn";
+        remix.textContent = "Remix";
+        remix.addEventListener("click", () => {
+          loadPack(item);
+          const TitlesNow = window.KulibertTitles;
+          if (TitlesNow) state.song.alias = TitlesNow.pickTitle();
+          const source = (song.from && song.from[0]) || song.alias || "Your song";
+          state.song.from = [source, "Remix"];
+          state.song.why = {};
+          state.song = Song.parse(Song.serialize(state.song));
+          paintSongBar();
+          keep();
+          document.body.classList.remove("is-home");
+          $("home").hidden = true;
+          setMode("notes");
+          $("how").textContent = "A copy of your save. Change it.";
+          rememberPack();
+        });
+        row.append(text, open, remix);
+        saveBox.appendChild(row);
+      });
+    }
+  }
   function showHome() {
     state.mode = "home";
     document.body.classList.add("is-home");
@@ -2310,6 +2512,8 @@
     if ($("make")) $("make").hidden = true;
     if ($("library")) $("library").hidden = true;
     if ($("back-home")) $("back-home").hidden = true;
+    paintSongBar();
+    paintSongShelf();
   }
   function showMake() {
     document.body.classList.remove("is-home", "is-library");
@@ -2546,6 +2750,127 @@
       $("library-filters").appendChild(b);
     });
     $("library-find").addEventListener("input", paintLibrary);
+    $("songs-btn").addEventListener("click", showHome);
+    $("song-cover").addEventListener("click", showHome);
+    $("start-blank").addEventListener("click", () => {
+      const TitlesNow = window.KulibertTitles;
+      placeSong({
+        notes: [null, null, null, null],
+        bpm: 96,
+        meter: "4/4",
+        key: "C",
+        from: [],
+        alias: TitlesNow ? TitlesNow.pickTitle() : "",
+      });
+      document.body.classList.remove("is-home");
+      $("home").hidden = true;
+      $("back-home").hidden = false;
+      setMode("notes");
+      $("how").textContent = "Empty staff. Tap a letter to place a note.";
+      rememberPack();
+    });
+    let pickKey = "C";
+    let pickMeter = "4/4";
+    $("start-key").addEventListener("click", () => {
+      $("key-pick").hidden = !$("key-pick").hidden;
+    });
+    [["C", "C"], ["G", "G"], ["D", "D"], ["F", "F"], ["Bb", "B flat"]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "do-card" + (id === "C" ? " on" : "");
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        pickKey = id;
+        $("key-keys").querySelectorAll(".do-card").forEach((el) => el.classList.toggle("on", el === b));
+      });
+      $("key-keys").appendChild(b);
+    });
+    ["4/4", "3/4", "2/4", "6/8"].forEach((id) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "do-card" + (id === "4/4" ? " on" : "");
+      b.textContent = id;
+      b.addEventListener("click", () => {
+        pickMeter = id;
+        $("key-meters").querySelectorAll(".do-card").forEach((el) => el.classList.toggle("on", el === b));
+      });
+      $("key-meters").appendChild(b);
+    });
+    $("key-tempo").addEventListener("input", () => {
+      $("key-tempo-read").textContent = $("key-tempo").value;
+    });
+    $("key-go").addEventListener("click", () => {
+      const per = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[pickMeter] || 4;
+      const TitlesNow = window.KulibertTitles;
+      placeSong({
+        notes: Array(per).fill(null),
+        bpm: Number($("key-tempo").value) || 96,
+        meter: pickMeter,
+        key: pickKey,
+        from: [],
+        alias: TitlesNow ? TitlesNow.pickTitle() : "",
+      });
+      document.body.classList.remove("is-home");
+      $("home").hidden = true;
+      $("back-home").hidden = false;
+      setMode("notes");
+      $("how").textContent = pickMeter + " in " + pickKey + ". Tap a letter.";
+      rememberPack();
+    });
+    let importKind = "lab";
+    function beginImport(kind) {
+      importKind = kind;
+      const input = $("import-file");
+      input.accept = kind === "midi" ? ".mid,.midi,audio/midi" : kind === "abc" ? ".abc,.txt" : kind === "xml" ? ".xml,.musicxml" : ".json";
+      input.value = "";
+      input.click();
+    }
+    $("import-lab").addEventListener("click", () => beginImport("lab"));
+    $("import-abc").addEventListener("click", () => beginImport("abc"));
+    $("import-midi").addEventListener("click", () => beginImport("midi"));
+    $("import-xml").addEventListener("click", () => beginImport("xml"));
+    $("import-file").addEventListener("change", () => {
+      const input = $("import-file");
+      const file = input.files && input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          const Import = window.KulibertImport;
+          let got = null;
+          if (importKind === "lab") {
+            const data = JSON.parse(String(reader.result || ""));
+            loadPack(data && data.song ? data : { song: data });
+          } else if (importKind === "abc") {
+            got = Import.abc(String(reader.result || ""));
+          } else if (importKind === "xml") {
+            got = Import.xml(String(reader.result || ""));
+          } else {
+            got = Import.midi(reader.result);
+          }
+          if (got) {
+            placeSong({
+              notes: got.notes,
+              bpm: got.bpm,
+              meter: got.meter,
+              key: got.key,
+              from: [file.name.replace(/\.[^.]+$/, "")],
+            });
+          }
+          document.body.classList.remove("is-home");
+          $("home").hidden = true;
+          $("back-home").hidden = false;
+          setMode("notes");
+          paintSongBar();
+          rememberPack();
+          $("how").textContent = "That file is the song now. Press Play.";
+        } catch (err) {
+          $("how").textContent = "That file did not open. Try ABC, MIDI, MusicXML, or a MusicLab file.";
+        }
+      };
+      if (importKind === "midi") reader.readAsArrayBuffer(file);
+      else reader.readAsText(file);
+    });
     $("back-home").addEventListener("click", showHome);
   }
   bootHome();
@@ -2939,6 +3264,7 @@
       }
       songCatalog = catalog;
       openTune = loadTune;
+      paintSongShelf();
     }
     const bass = $("bass-btn");
     if (bass && !bass.dataset.ready) {
