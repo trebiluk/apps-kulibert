@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.33.0** · 2026-10-01 · channel **live**
+
+A signed-in save calls KulibertWho.record for musiclab: event save, skill music, stars 0–3. If record is missing, it falls back to mark.
+
+## Earlier
+
 **Chip: MU 2.32.0** · 2026-10-01 · channel **live**
 
 The Hub bar loads for this door as musiclab. There is no typed name. Sign-in stays on the Hub.

@@ -1284,26 +1284,29 @@
       if (hit) used += 1;
       on += hit;
     });
-    const stars = used >= 3 ? 3 : used >= 2 ? 2 : 1;
+    const stars = used >= 3 ? 3 : used >= 2 ? 2 : used >= 1 ? 1 : 0;
     return { on: on, stars: stars };
   }
-  function wireScore(event, level, score, max, stars, xp) {
+  function wireScore(level, score, max, stars, xp) {
     const api = window.KulibertWho;
     if (!api || !signedKid()) return;
-    const line = (event === "clear" ? "Practice " + (level || "five") : "Beat " + score).slice(0, 32);
+    const id = String(level || "beat").replace(/\s+/g, " ").trim().slice(0, 40) || "beat";
+    const line = (id + " " + score).slice(0, 32);
     if (api.saveApp) api.saveApp("musiclab", { line: line });
+    const star = Math.max(0, Math.min(3, Number(stars) || 0));
+    const ms = state.playAt ? Math.max(0, Date.now() - state.playAt) : 0;
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.32.0",
-        event: event,
-        level: String(level || "beat").slice(0, 40),
+        version: "MU 2.33.0",
+        event: "save",
+        level: id,
         score: score,
         max: max,
-        stars: stars,
+        stars: star,
         xp: xp,
-        skill: "rhythm",
-        ms: 0
+        skill: "music",
+        ms: ms
       });
       return;
     }
@@ -1319,6 +1322,7 @@
     arm();
     state.once = !!(opts && opts.once);
     state.playing = true;
+    state.playAt = Date.now();
     state.confettiDone = false;
     document.body.classList.add("playing");
     sayHow(state.mode);
@@ -1391,7 +1395,7 @@
           popConfetti();
           const heard = beatScore();
           if (heard.on > state.sentScore) {
-            wireScore("score", "beat", heard.on, 64, heard.stars, 5);
+            wireScore("beat", heard.on, 64, heard.stars, 5);
             state.sentScore = heard.on;
           }
         }
@@ -2725,6 +2729,8 @@
     a.download = "class-song.bertysong.json";
     a.click();
     URL.revokeObjectURL(url);
+    const heard = beatScore();
+    wireScore("file", heard.on || 1, 64, heard.stars, 5);
     $("lesson").textContent = "The file has the notes, the picture, and the reasons.";
   });
   const SHELF = "kulibert.music.shelf";
@@ -4247,7 +4253,7 @@
     const job = items.find((item) => item.code === who.code && !item.done);
     if (job) {
       job.done = true;
-      wireScore("clear", job.task || "five", 1, 1, 1, 10);
+      wireScore(job.task || "five", 1, 1, 1, 10);
     }
     saveAssign(items);
     paintPractice();
