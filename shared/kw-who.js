@@ -223,7 +223,7 @@
     if (!text || !id) return null;
     var who = saveApp(id, { line: text });
     if (who && who.verified && active() && aliasesOn()) enqueue(who.alias, who.code, id, text);
-    record({ app: id, event: "line", level: text });
+    record({ app: id, event: "score", level: text, score: 1, max: 1, stars: 1, xp: 1 });
     try { root.dispatchEvent(new Event("kw-mark")); } catch (e) {}
     return who;
   }
@@ -233,6 +233,7 @@
     if (!rows.length) return Promise.resolve(true);
     return fetch("https://tw.kulibert.net/api/marks", {
       method: "POST",
+      credentials: "include",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ marks: rows })
     }).then(function (res) {
@@ -250,7 +251,25 @@
       return !done[key] || done[key] !== row.line;
     }));
   }
-  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, record: record, records: readRecords, pending: pending, ack: ack, flush: flush, forget: forget, active: active };
+  function prefsCode() {
+    var who = read();
+    var code = cleanCode(who && who.code);
+    return code.length === 5 ? code : "";
+  }
+  function getPrefs(app) {
+    var code = prefsCode();
+    var url = "https://tw.kulibert.net/api/prefs?app=" + encodeURIComponent(app || "") + (code ? "&code=" + encodeURIComponent(code) : "");
+    return fetch(url, { credentials: "include" }).then(function (res) { return res.json(); });
+  }
+  function setPrefs(app, obj) {
+    return fetch("https://tw.kulibert.net/api/prefs", {
+      method: "PUT",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ code: prefsCode(), app: app, prefs: obj || {} })
+    }).then(function (res) { return res.json(); });
+  }
+  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, record: record, records: readRecords, pending: pending, ack: ack, flush: flush, forget: forget, active: active, prefs: { get: getPrefs, set: setPrefs } };
   function hubHome() {
     var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
     if (path === "/index.html") path = "/";
