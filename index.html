@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-09-30-icons"/>
+<meta name="tech-room-rev" content="2026-10-01-staff"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -679,6 +679,21 @@
       width:100%;border:0;background:transparent;font:inherit;text-align:left;cursor:pointer;
     }
     .edge-pocket-item[hidden]{display:none}
+    .staff-drawer[hidden]{display:none}
+    .staff-drawer{
+      display:flex;flex-direction:column;gap:.1rem;margin-top:.25rem;padding-top:.3rem;
+      border-top:1px solid var(--border);
+    }
+    .staff-app{
+      display:flex;align-items:center;gap:.55rem;min-height:44px;padding:0 .45rem;
+      border-radius:8px;color:inherit;text-decoration:none;font-size:.875rem;font-weight:650;
+    }
+    .staff-app img{width:28px;height:28px;flex:0 0 auto}
+    .staff-app:hover,.staff-app:focus-visible{
+      background:var(--accent);color:var(--accent-foreground);
+      outline:2px solid var(--ring);outline-offset:2px;
+    }
+    body:not(.hub-classic) #alpha-board a[data-staff="1"]{display:none !important}
     @media (max-width:639px){
       .search{width:calc(100% - 1.5rem)}
     }
@@ -1546,6 +1561,8 @@
           <button type="button" class="edge-pocket-item hub-rev" id="hub-rev" role="menuitem">Hub</button>
           <a class="edge-pocket-item" id="staff-edit" role="menuitem" href="/staff/">Staff edit</a>
           <button type="button" class="edge-pocket-item" id="staff-sign-out" role="menuitem" hidden>Sign out</button>
+          <button type="button" class="edge-pocket-item" id="staff-apps-btn" role="menuitem" aria-expanded="false" aria-controls="staff-drawer">Staff</button>
+          <div class="staff-drawer" id="staff-drawer" hidden></div>
         </div>
       </div>
     </header>
@@ -1617,7 +1634,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-09-30-icons</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-01-staff</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.28.0</strong> — Make a beat plays at once. Save, share, and the sound stay on the page, including phone landscape.</p>
@@ -1628,6 +1645,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.0</strong> — One THROW. A real arc. Aim and power matter.</p>
           <ul id="hub-log">
+            <li>Staff tools moved to More > Staff.</li>
             <li>Fresh icons: arcade Berty's Run, a real Drawin' icon, a TechWorks badge, and every icon fills its tile.</li>
             <li>My style: nine looks. Tap one. This Chromebook remembers it. Tiles press in when you tap them.</li>
             <li>Phone header icons stay full size and scroll sideways. Sign in stays left. Home and More stay right. Botz on a phone asks you to turn sideways.</li>
@@ -1811,15 +1829,15 @@
         <button type="button" class="drawer" aria-expanded="false">Campus <span class="drawer-count"></span></button>
         <div class="drawer-panel">
         <nav class="board">
-          <a class="tile" data-id="den" data-keywords="den bearcat campus" href="/den/">
+          <a class="tile" data-id="den" data-staff="1" data-keywords="den bearcat campus" href="/den/">
             <img class="mark" src="/icons/icon-den.svg" alt="" width="72" height="72"/>
             <span class="label">Bearcat Den</span>
           </a>
-          <a class="tile" data-id="bistro" data-keywords="bistro bearcat lunch campus" href="/bistro/">
+          <a class="tile" data-id="bistro" data-staff="1" data-keywords="bistro bearcat lunch campus" href="/bistro/">
             <img class="mark" src="/icons/icon-bistro.svg" alt="" width="72" height="72"/>
             <span class="label">Bearcat Bistro</span>
           </a>
-          <a class="tile" data-id="housekit" data-keywords="housekit house kit campus" href="/housekit/">
+          <a class="tile" data-id="housekit" data-staff="1" data-keywords="housekit house kit campus" href="/housekit/">
             <img class="mark" src="/icons/icon-housekit.svg" alt="" width="72" height="72"/>
             <span class="label">HouseKit</span>
           </a>
@@ -2022,6 +2040,9 @@
       window.addEventListener("storage", function () { paintTw(); paintWho(); });
       var hubSort = "alpha";
       var hubFilter = "all";
+      var hubClassic = false;
+      try { hubClassic = new URL(location.href).searchParams.get("hub") === "classic"; } catch (eClassic) {}
+      document.body.classList.toggle("hub-classic", hubClassic);
       try {
         var savedSort = localStorage.getItem("tech-room-sort");
         hubSort = savedSort === "za" ? "za" : "alpha";
@@ -2710,6 +2731,10 @@
         var q = (input.value || "").trim().toLowerCase();
         var shown = 0;
         appTiles().forEach(function (tile) {
+          if (!hubClassic && tile.getAttribute("data-staff") === "1") {
+            tile.classList.add("is-hidden");
+            return;
+          }
           var label = tile.querySelector(".label").textContent;
           var keys = tile.getAttribute("data-keywords") || "";
           var groupOk = hubFilter === "all" || tile.getAttribute("data-group") === hubFilter;
@@ -2751,7 +2776,9 @@
         var out = [];
         Array.prototype.forEach.call(appBoard.querySelectorAll("a.tile"), function (tile) {
           var g = tile.getAttribute("data-group");
-          if (g && g !== "alpha") out.push(tile);
+          if (!g || g === "alpha") return;
+          if (!hubClassic && tile.getAttribute("data-staff") === "1") return;
+          out.push(tile);
         });
         return out;
       }
@@ -2804,6 +2831,7 @@
         } catch (eSave) {}
         filter();
         fitPhoneTiles();
+        paintStaffDrawer();
       }
 
       function openFirst(blank) {
@@ -3075,11 +3103,65 @@
         if (!pocketBtn || !pocketMenu) return;
         pocketMenu.hidden = !open;
         pocketBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        if (!open) {
+          var drawer = document.getElementById("staff-drawer");
+          var staffAppsBtn = document.getElementById("staff-apps-btn");
+          if (drawer) drawer.hidden = true;
+          if (staffAppsBtn) staffAppsBtn.setAttribute("aria-expanded", "false");
+        }
         if (open) placePocket();
       }
       if (pocketBtn) {
         pocketBtn.addEventListener("click", function () {
           setPocket(pocketMenu.hidden);
+        });
+      }
+      function paintStaffDrawer() {
+        var btn = document.getElementById("staff-apps-btn");
+        var box = document.getElementById("staff-drawer");
+        if (!btn || !box) return;
+        if (hubClassic) {
+          btn.hidden = true;
+          box.hidden = true;
+          return;
+        }
+        btn.hidden = false;
+        box.innerHTML = "";
+        ["housekit", "bistro", "den"].forEach(function (id) {
+          var tile = appBoard.querySelector('a.tile[data-id="' + id + '"]');
+          if (!tile) return;
+          var a = document.createElement("a");
+          a.className = "staff-app";
+          a.href = tile.getAttribute("href");
+          a.setAttribute("data-id", id);
+          a.setAttribute("role", "menuitem");
+          var img = tile.querySelector("img.mark");
+          if (img) {
+            var copy = document.createElement("img");
+            copy.src = img.getAttribute("src");
+            copy.alt = "";
+            copy.width = 28;
+            copy.height = 28;
+            a.appendChild(copy);
+          }
+          var span = document.createElement("span");
+          span.className = "label";
+          span.textContent = tileName(tile);
+          a.appendChild(span);
+          box.appendChild(a);
+        });
+      }
+      var staffAppsBtn = document.getElementById("staff-apps-btn");
+      if (staffAppsBtn) {
+        staffAppsBtn.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          var box = document.getElementById("staff-drawer");
+          if (!box) return;
+          var open = box.hidden;
+          box.hidden = !open;
+          staffAppsBtn.setAttribute("aria-expanded", open ? "true" : "false");
+          placePocket();
         });
       }
       document.addEventListener("mousedown", function (event) {
@@ -3332,6 +3414,7 @@
         }
         document.querySelectorAll("#app-groups a.tile").forEach(function (tile) {
           if (tile.classList.contains("is-room-hidden")) return;
+          if (!hubClassic && tile.getAttribute("data-staff") === "1") return;
           var label = tile.querySelector(".label");
           var img = tile.querySelector("img.mark");
           add(tile.getAttribute("href"), label ? label.textContent.replace(/\s+/g, " ").trim() : "", img ? img.getAttribute("src") : "", tile.getAttribute("target") || "");
