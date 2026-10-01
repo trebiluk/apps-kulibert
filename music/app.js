@@ -173,6 +173,7 @@
     plan: [],
     raf: 0,
     confettiDone: false,
+    sentScore: 0,
     made: 0,
     armBeats: 0,
     turn: "",
@@ -1273,6 +1274,35 @@
     const heard = names.length ? names.join(" · ") : "Rest";
     line.textContent = "Beat " + (grid + 1) + " · " + heard + ". You can leave the sound off.";
   }
+  function beatScore() {
+    const voices = ["kick", "snare", "hat", "clap"];
+    let on = 0;
+    let used = 0;
+    voices.forEach((id) => {
+      const steps = to16(state.drums && state.drums[id]);
+      const hit = steps.reduce((n, step) => n + (step ? 1 : 0), 0);
+      if (hit) used += 1;
+      on += hit;
+    });
+    const stars = used >= 3 ? 3 : used >= 2 ? 2 : 1;
+    return { on: on, stars: stars };
+  }
+  function wireScore(event, level, score, max, stars, xp) {
+    const api = window.KulibertWho;
+    if (!api || typeof api.record !== "function" || !signedKid()) return;
+    api.record({
+      app: "musiclab",
+      version: "MU 2.30.0",
+      event: event,
+      level: String(level || "beat").slice(0, 40),
+      score: score,
+      max: max,
+      stars: stars,
+      xp: xp,
+      skill: "rhythm",
+      ms: 0
+    });
+  }
   function play(opts) {
     window.clearTimeout(state.timer);
     window.cancelAnimationFrame(state.raf);
@@ -1281,10 +1311,6 @@
     state.playing = true;
     state.confettiDone = false;
     document.body.classList.add("playing");
-    const kid = window.KulibertWho && window.KulibertWho.read && window.KulibertWho.read();
-    if (kid && kid.verified && window.KulibertWho.active && window.KulibertWho.active() && window.KulibertWho.mark) {
-      window.KulibertWho.mark("music", state.song.alias || "Song");
-    }
     sayHow(state.mode);
     state.counting = false;
     $("play-btn").classList.add("on");
@@ -1353,6 +1379,11 @@
         if (hit.grid === 0 && now - start > 0.2 && !state.confettiDone) {
           state.confettiDone = true;
           popConfetti();
+          const heard = beatScore();
+          if (heard.on > state.sentScore) {
+            wireScore("score", "beat", heard.on, 64, heard.stars, 5);
+            state.sentScore = heard.on;
+          }
         }
         if (state.bins) {
           state.bins[2] = state.drums.kick && state.drums.kick[hit.grid] ? 230 : 40;
@@ -4192,9 +4223,11 @@
     if (!who) return;
     const items = loadAssign();
     const job = items.find((item) => item.code === who.code && !item.done);
-    if (job) job.done = true;
+    if (job) {
+      job.done = true;
+      wireScore("clear", job.task || "five", 1, 1, 1, 10);
+    }
     saveAssign(items);
-    if (whoApi() && who.verified && whoApi().mark) whoApi().mark("music", state.song.alias || "Song");
     paintPractice();
     paintAssign();
     $("lesson").textContent = "Practice is marked done on this Chromebook.";

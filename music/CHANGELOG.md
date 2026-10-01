@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.30.0** · 2026-10-01 · channel **live**
+
+A finished beat sends a score to TechWorks after Sign in. Practice done sends a clear. Shared settings travel with the TechWorks code and the app id. Signed out, nothing is sent.
+
+## Earlier
+
 **Chip: MU 2.29.0** · 2026-10-01 · channel **live**
 
 Pads show a dot when they are on, not only an orange fill. The playhead has a thick border. Tempo numbers are dark. Save sits above Play so they do not cover each other. A beat line names the step. Sound off, less motion, and contrast come from the shared prefs.

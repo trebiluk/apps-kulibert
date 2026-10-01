@@ -14,6 +14,14 @@
     } catch (e) {}
     return false;
   }
+  function appId() {
+    var path = "/";
+    try { path = String(location.pathname || "/").toLowerCase(); } catch (e) {}
+    if (path.indexOf("/music") === 0) return "musiclab";
+    var seg = path.split("/").filter(Boolean)[0] || "hub";
+    if (seg === "index.html") return "hub";
+    return seg.slice(0, 24);
+  }
   function blank() {
     var less = false;
     try { less = root.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) {}
@@ -174,17 +182,18 @@
     fetch("https://tw.kulibert.net/api/prefs", {
       method: "PUT",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ code: who.code, prefs: p })
+      body: JSON.stringify({ code: who.code, app: appId(), prefs: p })
     }).catch(function () {});
   }
   function pullRemote() {
     var who = root.KulibertWho && root.KulibertWho.read && root.KulibertWho.read();
     if (!who || !who.verified || !root.KulibertWho.active || !root.KulibertWho.active()) return;
-    fetch("https://tw.kulibert.net/api/prefs?code=" + encodeURIComponent(who.code)).then(function (res) {
+    fetch("https://tw.kulibert.net/api/prefs?code=" + encodeURIComponent(who.code) + "&app=" + encodeURIComponent(appId())).then(function (res) {
       if (!res.ok) return null;
       return res.json();
     }).then(function (pack) {
-      if (!pack || !pack.prefs) return;
+      if (!pack || !pack.prefs || typeof pack.prefs !== "object") return;
+      if (!Object.keys(pack.prefs).length) return;
       var p = tidy(pack.prefs);
       write(p);
       apply(p);
