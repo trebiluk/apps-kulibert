@@ -1,27 +1,35 @@
 /* One settings bag for every Tech Room app. No names. No libraries.
-   Other origins read #kp= once. /api/prefs is used only after a real sign-in. */
+   App themes stay in each app. This file sets colors only when data-kp-contrast is 1.
+   Sound can be off for one app without muting the others. */
 (function (root) {
   var KEY = "kulibert-prefs-v1";
+  var APPKEY = "kulibert-prefs-app-v1";
   var SCALE = { S: ".9", M: "1", L: "1.25", XL: "1.5" };
   var BRIDGE = ["sc-access-v1", "sl-access-v1", "br-access-v1", "ti-access-v1", "bz-access-v1", "kz-access-v1"];
   var fans = [];
+  var gains = [];
   var cssOn = false;
 
   function classic() {
     try {
-      var q = new URLSearchParams(location.search);
-      if (q.get("hub") === "classic" || q.get("theme") === "classic") return true;
+      if (new URLSearchParams(location.search).get("hub") === "classic") return true;
+      if (new URLSearchParams(location.search).get("theme") === "classic") return true;
       if (localStorage.getItem("tech-room-hub") === "classic") return true;
     } catch (e) {}
     return false;
   }
+  function onHub() {
+    var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
+    return path === "/" || path === "/index.html";
+  }
   function appId() {
-    var path = "/";
-    try { path = String(location.pathname || "/").toLowerCase(); } catch (e) {}
-    if (path.indexOf("/music") === 0) return "musiclab";
-    var seg = path.split("/").filter(Boolean)[0] || "hub";
-    if (seg === "index.html") return "hub";
-    return seg.slice(0, 24);
+    if (onHub()) return "";
+    var node = document.querySelector("script[src*='kulibert-bar.js'][data-app]") || document.querySelector("script[data-app]");
+    var fromTag = node && node.getAttribute("data-app");
+    if (fromTag) return fromTag;
+    var bit = (location.pathname || "").split("/").filter(Boolean)[0] || "";
+    if (bit === "music") return "musiclab";
+    return bit;
   }
   function blank() {
     var less = false;
@@ -52,6 +60,24 @@
   function stored() {
     try { return tidy(JSON.parse(localStorage.getItem(KEY) || "null")); } catch (e) { return blank(); }
   }
+  function readApps() {
+    try {
+      var raw = JSON.parse(localStorage.getItem(APPKEY) || "{}");
+      return raw && typeof raw === "object" ? raw : {};
+    } catch (e) { return {}; }
+  }
+  function writeApps(apps) {
+    try { localStorage.setItem(APPKEY, JSON.stringify(apps)); } catch (e) {}
+  }
+  function soundOn() {
+    if (classic()) return true;
+    var id = appId();
+    if (id) {
+      var row = readApps()[id];
+      if (row && typeof row.sound === "boolean") return row.sound;
+    }
+    return stored().sound !== false;
+  }
   function get() {
     if (classic()) return blank();
     var p = stored();
@@ -62,6 +88,7 @@
         if (next) { p = next; write(p); }
       }
     } catch (e2) {}
+    p.sound = soundOn();
     return p;
   }
   function write(p) {
@@ -82,10 +109,8 @@
     cssOn = true;
     var node = document.createElement("style");
     node.id = "kp-style";
+    /* App colors and fonts stay in the app. Only high contrast paints the page. */
     node.textContent = [
-      "html[data-kp-size=S]{font-size:90%}",
-      "html[data-kp-size=L] body{font-size:1.25rem !important}",
-      "html[data-kp-size=XL] body{font-size:1.5rem !important}",
       "html[data-kp-motion=less],html[data-kp-motion=less] *{animation:none !important;transition:none !important;scroll-behavior:auto !important}",
       "html[data-kp-contrast='1'] body{background:#000 !important;color:#fff !important}",
       "html[data-kp-contrast='1'] button,html[data-kp-contrast='1'] a,html[data-kp-contrast='1'] input{background:#000 !important;color:#ffe14a !important;border-color:#ffe14a !important}",
@@ -100,6 +125,12 @@
     ["data-kp-size", "data-kp-contrast", "data-kp-motion", "data-kp-sound", "data-kp-lang", "data-kp-read", "data-kp-captions"].forEach(function (name) { el.removeAttribute(name); });
     el.style.removeProperty("--kp-scale");
   }
+  function syncGains() {
+    var vol = soundOn() ? 1 : 0;
+    gains.forEach(function (node) {
+      try { node.gain.setValueAtTime(vol, node.context.currentTime || 0); } catch (e) {}
+    });
+  }
   function apply(p) {
     if (classic()) { clearAttrs(); return; }
     css();
@@ -107,16 +138,17 @@
     el.setAttribute("data-kp-size", p.size);
     el.setAttribute("data-kp-contrast", p.contrast ? "1" : "0");
     el.setAttribute("data-kp-motion", p.motion === "less" ? "less" : "full");
-    el.setAttribute("data-kp-sound", p.sound ? "1" : "0");
+    el.setAttribute("data-kp-sound", soundOn() ? "1" : "0");
     el.setAttribute("data-kp-lang", p.lang);
     el.setAttribute("data-kp-read", p.read ? "1" : "0");
     el.setAttribute("data-kp-captions", p.captions ? "1" : "0");
     el.style.setProperty("--kp-scale", SCALE[p.size] || "1");
-    if (document.body) {
-      document.body.style.fontSize = p.size === "XL" ? "1.5rem" : p.size === "L" ? "1.25rem" : p.size === "S" ? ".9rem" : "";
-    }
     bridge(p);
     armMute();
+    syncGains();
+  }
+  function tell(p) {
+    fans.forEach(function (fn) { try { fn(p); } catch (e) {} });
   }
   function live() {
     var node = document.getElementById("kp-live");
@@ -135,7 +167,7 @@
     var line = live();
     line.hidden = false;
     line.textContent = words;
-    if (!p.read || p.sound === false || !root.speechSynthesis) return;
+    if (!p.read || !soundOn() || !root.speechSynthesis) return;
     try {
       root.speechSynthesis.cancel();
       var u = new SpeechSynthesisUtterance(words);
@@ -155,7 +187,7 @@
     root.__kpMute = 1;
     var play = HTMLMediaElement.prototype.play;
     HTMLMediaElement.prototype.play = function () {
-      if (get().sound === false) { try { this.pause(); } catch (e) {} return Promise.resolve(); }
+      if (!soundOn()) { try { this.pause(); } catch (e) {} return Promise.resolve(); }
       return play.apply(this, arguments);
     };
     ["AudioContext", "webkitAudioContext"].forEach(function (name) {
@@ -165,9 +197,12 @@
         var ctx = new (Function.prototype.bind.apply(Native, [null].concat([].slice.call(arguments))))();
         try {
           var gain = ctx.createGain();
-          gain.connect(ctx.destination);
+          var dest = ctx.destination;
+          gain.connect(dest);
+          gains.push(gain);
+          try { gain.gain.setValueAtTime(soundOn() ? 1 : 0, ctx.currentTime || 0); } catch (e0) {}
           Object.defineProperty(ctx, "destination", { configurable: true, get: function () {
-            gain.gain.value = get().sound === false ? 0 : 1;
+            try { gain.gain.setValueAtTime(soundOn() ? 1 : 0, ctx.currentTime || 0); } catch (e1) {}
             return gain;
           } });
         } catch (e) {}
@@ -177,41 +212,88 @@
       root[name] = Wrapped;
     });
   }
-  function pushRemote(p) {
+  function whoOk() {
     var who = root.KulibertWho && root.KulibertWho.read && root.KulibertWho.read();
-    if (!who || !who.verified || !root.KulibertWho.active || !root.KulibertWho.active()) return;
+    return who && who.verified && root.KulibertWho.active && root.KulibertWho.active() ? who : null;
+  }
+  function pushRemote(p, app) {
+    var who = whoOk();
+    if (!who) return;
+    var body = { code: who.code, prefs: p };
+    if (app) body.app = app;
     fetch("https://tw.kulibert.net/api/prefs", {
       method: "PUT",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ code: who.code, app: appId(), prefs: p })
+      body: JSON.stringify(body)
     }).catch(function () {});
   }
   function pullRemote() {
-    var who = root.KulibertWho && root.KulibertWho.read && root.KulibertWho.read();
-    if (!who || !who.verified || !root.KulibertWho.active || !root.KulibertWho.active()) return;
-    fetch("https://tw.kulibert.net/api/prefs?code=" + encodeURIComponent(who.code) + "&app=" + encodeURIComponent(appId())).then(function (res) {
+    var who = whoOk();
+    if (!who) return;
+    var id = onHub() ? "" : appId();
+    var url = "https://tw.kulibert.net/api/prefs?code=" + encodeURIComponent(who.code);
+    if (id) url += "&app=" + encodeURIComponent(id);
+    fetch(url).then(function (res) {
       if (!res.ok) return null;
       return res.json();
     }).then(function (pack) {
-      if (!pack || !pack.prefs || typeof pack.prefs !== "object") return;
-      if (!Object.keys(pack.prefs).length) return;
+      if (!pack) return;
+      if (id) {
+        var sound = null;
+        if (pack.prefs && typeof pack.prefs.sound === "boolean") sound = pack.prefs.sound;
+        else if (typeof pack.sound === "boolean") sound = pack.sound;
+        if (sound === null) return;
+        var apps = readApps();
+        apps[id] = Object.assign({}, apps[id] || {}, { sound: sound });
+        writeApps(apps);
+        apply(stored());
+        tell(get());
+        return;
+      }
+      if (pack.app || !pack.prefs) return;
       var p = tidy(pack.prefs);
       write(p);
       apply(p);
-      fans.forEach(function (fn) { try { fn(p); } catch (e) {} });
+      tell(p);
     }).catch(function () {});
   }
   function set(partial) {
     if (classic()) return get();
-    var p = tidy(Object.assign(stored(), partial || {}));
+    partial = Object.assign({}, partial || {});
+    if (!onHub() && typeof partial.sound === "boolean") {
+      setApp({ sound: partial.sound });
+      delete partial.sound;
+    }
+    if (!onHub()) return get();
+    var p = tidy(Object.assign(stored(), partial));
     write(p);
     apply(p);
-    fans.forEach(function (fn) { try { fn(p); } catch (e) {} });
+    tell(p);
     pushRemote(p);
     return p;
   }
+  function setApp(partial) {
+    if (classic()) return get();
+    var id = appId();
+    if (!id || !partial) return get();
+    var apps = readApps();
+    var row = Object.assign({}, apps[id] || {});
+    if (typeof partial.sound === "boolean") row.sound = partial.sound;
+    apps[id] = row;
+    writeApps(apps);
+    apply(stored());
+    tell(get());
+    if (typeof row.sound === "boolean") pushRemote({ sound: row.sound }, id);
+    return get();
+  }
   function on(fn) { if (typeof fn === "function") fans.push(fn); }
-  root.KulibertPrefs = { get: get, set: set, on: on, say: say, cue: cue, code: function () { return codeOf(get()); } };
+  root.addEventListener("storage", function (ev) {
+    if (!ev || (ev.key !== KEY && ev.key !== APPKEY)) return;
+    if (classic()) return;
+    apply(stored());
+    tell(get());
+  });
+  root.KulibertPrefs = { get: get, set: set, setApp: setApp, on: on, say: say, cue: cue, code: function () { return codeOf(stored()); } };
   if (!classic()) {
     apply(get());
     pullRemote();

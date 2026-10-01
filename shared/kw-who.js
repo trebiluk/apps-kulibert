@@ -278,7 +278,7 @@
   if (typeof document !== "undefined" && root.top === root && !hubHome() && !document.getElementById("tw-session-boot") && !document.querySelector("script[src*='kulibert-bar.js']")) {
     var boot = document.createElement("script");
     boot.id = "tw-session-boot";
-    boot.src = "/shared/kulibert-bar.js?v=2026-10-01-connected";
+    boot.src = "/shared/kulibert-bar.js?v=2026-10-01-left";
     (document.head || document.documentElement).appendChild(boot);
   }
 })(typeof window !== "undefined" ? window : globalThis);

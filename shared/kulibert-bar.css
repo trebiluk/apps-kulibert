@@ -6,7 +6,7 @@
   font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
   border-bottom:1px solid #1e3a55;box-sizing:border-box;
 }
-.kb-home,.kb-help,.kb-settings{
+.kb-home,.kb-help,.kb-settings,.kb-menu{
   min-width:44px;min-height:44px;height:44px;padding:0 .7rem;
   display:inline-flex;align-items:center;justify-content:center;
   border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;

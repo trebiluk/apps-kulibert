@@ -12,7 +12,13 @@
   var script = barScript();
   var app = (script && script.getAttribute("data-app")) || "";
   var version = (script && script.getAttribute("data-version")) || "";
+  var name = (script && script.getAttribute("data-name")) || "";
   var helpSel = (script && script.getAttribute("data-help")) || "";
+  var menuSel = (script && script.getAttribute("data-menu")) || "";
+  if (helpSel && menuSel && helpSel === menuSel) {
+    console.warn("kulibert-bar: data-help matches data-menu, ignoring help");
+    helpSel = "";
+  }
   var helpFn = null;
   var toastTimer = 0;
   var assetOrigin = "https://apps.kulibert.net";
@@ -22,7 +28,11 @@
   function asset(path) { return assetOrigin + path; }
 
   function classic() {
-    try { return localStorage.getItem("tech-room-hub") === "classic"; } catch (e) { return false; }
+    try {
+      var q = new URLSearchParams(location.search);
+      if (q.get("hub") === "classic" || q.get("theme") === "classic") return true;
+      return localStorage.getItem("tech-room-hub") === "classic";
+    } catch (e) { return false; }
   }
   function framed() {
     try { return root.parent !== root; } catch (e) { return false; }
@@ -37,7 +47,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-01-job");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-01-left");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -74,6 +84,19 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { el.hidden = true; }, 2800);
   }
+  function plateText() {
+    return [name || app, version].filter(Boolean).join(" \u00b7 ");
+  }
+  function openMenu() {
+    if (!menuSel) return;
+    var el = document.querySelector(menuSel);
+    if (!el || !el.click) return;
+    el.click();
+    var open = el.getAttribute("aria-expanded") === "true";
+    var btn = document.querySelector(".kb-menu");
+    if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+    postUp({ type: "kb-menu-state", open: open });
+  }
   function openHelp() {
     if (typeof helpFn === "function") { helpFn(); return; }
     if (helpSel) {
@@ -86,6 +109,7 @@
     if (!data || !data.type) return;
     if (!schoolOrigin(ev.origin)) return;
     if (data.type === "kb-help") { openHelp(); return; }
+    if (data.type === "kb-menu") { openMenu(); return; }
     if (data.type !== "kw-who") return;
     ensureWho(function () {
       var api = root.KulibertWho;
@@ -120,7 +144,7 @@
   if (framed()) {
     document.documentElement.classList.add("kb-framed");
     ensureCss();
-    postUp({ type: "kb-app", app: app, version: version, help: !!helpSel || true });
+    postUp({ type: "kb-app", app: app, name: name || app, version: version, help: !!helpSel, menu: !!menuSel });
     return;
   }
 
@@ -131,16 +155,20 @@
     bar.className = "kb-bar";
     bar.innerHTML = [
       '<a class="kb-home" href="https://apps.kulibert.net/" target="_top">\u2302 Home</a>',
+      menuSel ? '<button type="button" class="kb-menu" aria-expanded="false">\u2630 Menu</button>' : '',
       '<span class="kb-plate"></span>',
       '<button type="button" class="kb-settings" hidden aria-label="My settings">\u2699</button>',
       '<span class="kb-alias">Sign in</span>',
-      '<button type="button" class="kb-help" aria-label="Help">?</button>'
+      helpSel ? '<button type="button" class="kb-help" aria-label="Help">?</button>' : ''
     ].join("");
     document.body.insertBefore(bar, document.body.firstChild);
     document.body.classList.add("kb-on");
     var plate = bar.querySelector(".kb-plate");
-    plate.textContent = [app, version].filter(Boolean).join(" \u00b7 ");
-    bar.querySelector(".kb-help").addEventListener("click", openHelp);
+    plate.textContent = plateText();
+    var menuBtn = bar.querySelector(".kb-menu");
+    if (menuBtn) menuBtn.addEventListener("click", openMenu);
+    var helpBtn = bar.querySelector(".kb-help");
+    if (helpBtn) helpBtn.addEventListener("click", openHelp);
     ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); });
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
   }
