@@ -87,13 +87,34 @@
   if (!Song) return;
   const $ = (id) => document.getElementById(id);
 
+  const GRID = 16;
+  function to16(arr) {
+    const src = Array.isArray(arr) ? arr : [];
+    const out = Array(GRID).fill(false);
+    if (src.length >= GRID) {
+      for (let i = 0; i < GRID; i++) out[i] = !!src[i];
+    } else if (src.length === 8) {
+      for (let i = 0; i < 8; i++) out[i * 2] = !!src[i];
+    } else {
+      for (let i = 0; i < src.length && i < GRID; i++) out[i] = !!src[i];
+    }
+    return out;
+  }
   function blankDrums() {
     const drums = {};
-    ROWS.forEach(([id]) => {
-      drums[id] = Array(8).fill(false);
-    });
+    ROWS.forEach(([id]) => { drums[id] = Array(GRID).fill(false); });
     drums.kick[0] = true;
+    drums.kick[8] = true;
     drums.snare[4] = true;
+    drums.snare[12] = true;
+    drums.hat[0] = true;
+    drums.hat[2] = true;
+    drums.hat[4] = true;
+    drums.hat[6] = true;
+    drums.hat[8] = true;
+    drums.hat[10] = true;
+    drums.hat[12] = true;
+    drums.hat[14] = true;
     return drums;
   }
 
@@ -146,6 +167,12 @@
     snare: false,
     mode: "notes",
     recording: false,
+    grid: 0,
+    parts: { drums: true, bass: false, chords: false, melody: true },
+    plan: [],
+    raf: 0,
+    confettiDone: false,
+    made: 0,
     armBeats: 0,
     turn: "",
     turnLeft: 0,
@@ -164,7 +191,7 @@
     state.song = song;
     if (saved.drums) {
       ROWS.forEach(([id]) => {
-        if (Array.isArray(saved.drums[id])) state.drums[id] = saved.drums[id].slice(0, 8);
+        if (Array.isArray(saved.drums[id])) state.drums[id] = to16(saved.drums[id]);
       });
     }
     if (saved.look) state.look = saved.look;
@@ -214,6 +241,7 @@
   ];
   let ctx = null;
   let master = null;
+  let stageApi = null;
   let bus = null;
   let filter = null;
   let hip = null;
@@ -259,39 +287,57 @@
       bus.connect(hip);
       hip.connect(filter);
       filter.connect(trem);
-      trem.connect(dry);
-      dry.connect(master);
+      const comp = ctx.createDynamicsCompressor();
+      comp.threshold.value = -16;
+      comp.knee.value = 8;
+      comp.ratio.value = 3.5;
+      comp.attack.value = 0.004;
+      comp.release.value = 0.18;
+      const limiter = ctx.createDynamicsCompressor();
+      limiter.threshold.value = -3;
+      limiter.knee.value = 0;
+      limiter.ratio.value = 20;
+      limiter.attack.value = 0.001;
+      limiter.release.value = 0.08;
+      trem.connect(comp);
       filter.connect(delayNode);
       delayNode.connect(fb);
       fb.connect(delayNode);
       delayNode.connect(wet);
-      wet.connect(master);
+      wet.connect(comp);
+      comp.connect(limiter);
+      limiter.connect(master);
       applyFx();
     }
     if (ctx.state === "suspended") ctx.resume();
-    master.gain.value = state.muted ? 0 : 0.75;
+    master.gain.value = state.muted ? 0 : 0.95;
     applyFx();
   }
-  function tone(freq, dur, type, level) {
-    if (!ctx || state.muted) return;
+  function atTime(when) {
+    return typeof when === "number" ? when : ctx.currentTime;
+  }
+  function tone(freq, dur, type, level, when) {
+    if (!ctx || state.muted || !freq) return;
+    const t = atTime(when);
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
+    state.made += 2;
     osc.type = type || state.wave || "triangle";
-    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    osc.frequency.setValueAtTime(freq, t);
     const length = dur || state.noteLen || 0.28;
-    gain.gain.setValueAtTime(level || 0.2, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + length);
+    gain.gain.setValueAtTime(Math.max(0.001, level || 0.2), t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + length);
     osc.connect(gain);
     gain.connect(bus);
-    osc.start();
-    osc.stop(ctx.currentTime + length + 0.02);
+    osc.start(t);
+    osc.stop(t + length + 0.02);
   }
   const DYN_GAIN = { pp: 0.1, p: 0.2, mf: 0.36, f: 0.55, ff: 0.78 };
   const DYN_WORD = { pp: "very soft", p: "soft", mf: "medium", f: "loud", ff: "very loud" };
-  function sectionTone(freq, dur, section, dyn) {
+  function sectionTone(freq, dur, section, dyn, when) {
     arm();
     if (!ctx || state.muted || !freq) return;
-    const now = ctx.currentTime;
+    const now = atTime(when);
     const amount = DYN_GAIN[dyn] || DYN_GAIN.mf;
     const loud = dyn === "f" || dyn === "ff";
     const out = ctx.createGain();
@@ -321,6 +367,7 @@
     voices.forEach(([f, type, mix]) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
+      state.made += 2;
       osc.type = type;
       osc.frequency.value = f;
       gain.gain.value = mix;
@@ -330,19 +377,31 @@
       osc.stop(now + length + 0.2);
     });
   }
-  function noise(dur, level) {
+  function noise(dur, level, when, hipHz) {
     if (!ctx || state.muted) return;
+    const t = atTime(when);
     const buffer = ctx.createBuffer(1, Math.max(1, ctx.sampleRate * dur), ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
     const src = ctx.createBufferSource();
     const gain = ctx.createGain();
+    state.made += 2;
     src.buffer = buffer;
-    gain.gain.setValueAtTime(level, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-    src.connect(gain);
+    let node = src;
+    if (hipHz) {
+      const hp = ctx.createBiquadFilter();
+      hp.type = "highpass";
+      hp.frequency.value = hipHz;
+      src.connect(hp);
+      node = hp;
+      state.made += 1;
+    }
+    gain.gain.setValueAtTime(Math.max(0.001, level), t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+    node.connect(gain);
     gain.connect(bus);
-    src.start();
+    src.start(t);
+    src.stop(t + dur + 0.02);
   }
 
   function paintSaved(ok) {
@@ -389,7 +448,7 @@
     paintCount();
     paintSongBar();
     const beat = Song.toBeat(state.song);
-    ROWS.forEach(([id]) => { beat.steps[id] = state.drums[id].concat(Array(8).fill(false)); });
+    ROWS.forEach(([id]) => { beat.steps[id] = to16(state.drums[id]); });
     if (Song.writeBridge) Song.writeBridge("music", state.song, beat);
   }
 
@@ -622,16 +681,16 @@
   function renderDrums() {
     const box = $("drums");
     box.innerHTML = "";
-    ROWS.forEach(([id, label]) => {
+    ROWS.forEach(([id, label], index) => {
       const row = document.createElement("div");
-      row.className = "drum-row";
+      row.className = "drum-row" + (index > 3 ? " is-extra" : "");
       const name = document.createElement("b");
       name.textContent = label;
       row.appendChild(name);
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < GRID; i++) {
         const cell = document.createElement("button");
         cell.type = "button";
-        cell.className = "cell" + (state.drums[id][i] ? " on" : "") + (state.step === i ? " now" : "");
+        cell.className = "cell" + (state.drums[id][i] ? " on" : "") + (state.grid === i ? " now" : "");
         cell.setAttribute("aria-label", label + " beat " + (i + 1));
         cell.dataset.track = id;
         cell.dataset.step = String(i);
@@ -733,14 +792,14 @@
     const btn = $("rec-btn");
     if (!btn) return;
     btn.classList.toggle("on", state.recording);
-    btn.textContent = state.recording ? "Counting" : "Count, then I play";
+    btn.textContent = state.recording ? "Recording" : "Record";
     btn.setAttribute("aria-pressed", String(state.recording));
   }
   function canStamp() {
     return state.recording && state.armBeats === 0 && state.playing && state.step >= 0;
   }
   function writeHit(id, step) {
-    if (step < 0 || step > 7) return;
+    if (step < 0 || step > 15) return;
     if (FREQ[id]) {
       const ev = Song.events(state.song)[step];
       if (!ev || ev.pitch === id) return;
@@ -766,7 +825,7 @@
       paintCount();
       return state.lock;
     }
-    state.writeStep = state.step < 0 ? 0 : (state.step + 1) % 8;
+    state.writeStep = state.step < 0 ? 0 : (state.step + 1) % GRID;
     state.step = state.writeStep;
     state.lastStamp = now;
     paintCount();
@@ -792,19 +851,37 @@
     const n = state.mix && typeof state.mix[id] === "number" ? state.mix[id] : 100;
     return base * Math.max(0, Math.min(100, n)) / 100 * side("drums");
   }
-  function hitSound(id) {
-    if (state.muted) return;
-    if (id === "kick") tone(90, 0.22, "sine", vol("kick", 0.95));
-    else if (id === "snare") noise(0.14, vol("snare", 0.4));
-    else if (id === "clap") noise(0.1, vol("clap", 0.32));
-    else if (id === "hat") noise(0.04, vol("hat", 0.2));
-    else if (id === "tom") tone(160, 0.2, "triangle", vol("tom", 0.7));
-    else if (id === "shaker") noise(0.06, vol("shaker", 0.16));
-    else if (id === "rim") tone(740, 0.04, "square", vol("rim", 0.28));
-    else if (id === "bell") tone(540, 0.16, "square", vol("bell", 0.22));
-    else if (id === "tamb") noise(0.09, vol("tamb", 0.2));
-    else if (id === "crash") noise(0.4, vol("crash", 0.28));
-    else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24 * side("notes"));
+  function hitSound(id, when) {
+    if (state.muted || !ctx) return;
+    const t = atTime(when);
+    if (id === "kick") {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      state.made += 2;
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(164, t);
+      osc.frequency.exponentialRampToValueAtTime(42, t + 0.14);
+      gain.gain.setValueAtTime(Math.max(0.001, vol("kick", 0.9)), t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+      osc.connect(gain);
+      gain.connect(bus);
+      osc.start(t);
+      osc.stop(t + 0.46);
+    } else if (id === "snare") {
+      tone(188, 0.16, "triangle", vol("snare", 0.35), t);
+      noise(0.16, vol("snare", 0.42), t, 900);
+    } else if (id === "clap") {
+      noise(0.04, vol("clap", 0.34), t, 1200);
+      noise(0.04, vol("clap", 0.28), t + 0.012, 1200);
+      noise(0.07, vol("clap", 0.22), t + 0.026, 1000);
+    } else if (id === "hat") noise(0.035, vol("hat", 0.18), t, 7000);
+    else if (id === "tom") tone(148, 0.2, "triangle", vol("tom", 0.55), t);
+    else if (id === "shaker") noise(0.05, vol("shaker", 0.14), t, 5000);
+    else if (id === "rim") tone(740, 0.04, "square", vol("rim", 0.22), t);
+    else if (id === "bell") tone(540, 0.16, "square", vol("bell", 0.18), t);
+    else if (id === "tamb") noise(0.08, vol("tamb", 0.16), t, 4000);
+    else if (id === "crash") noise(0.35, vol("crash", 0.22), t, 3500);
+    else if (FREQ[id]) tone(FREQ[id], state.noteLen, state.wave, 0.24 * side("notes"), t);
   }
   function strike(id, el) {
     arm();
@@ -967,11 +1044,12 @@
       btn.classList.toggle("on", btn.dataset.why === said);
     });
   }
-  function pulse(step) {
+  function pulse(step, opts) {
+    opts = opts || {};
     state.beatAt = performance.now();
-    state.step = step;
+    if (!opts.audioOnly) state.step = opts.event != null ? opts.event : step;
     paintCount();
-    const drum = step % 8;
+    const drum = typeof opts.grid === "number" ? opts.grid : (step % GRID);
     state.kick = !!state.drums.kick[drum];
     state.snare = !!state.drums.snare[drum];
     const evs = Song.events(state.song);
@@ -1040,12 +1118,16 @@
       const cells = row.querySelectorAll(".cell");
       if (cells[drum]) cells[drum].classList.add("now");
     });
+    const when = typeof opts.when === "number" ? opts.when : (ctx ? ctx.currentTime : 0);
+    if (opts.visualOnly) return;
     if (state.muted && !(state.recording && state.mode === "notes")) return;
-    if (state.click || (state.recording && state.mode === "notes")) tone(1400, 0.03, "square", 0.07);
+    if (state.click || (state.recording && state.mode === "notes")) tone(1400, 0.03, "square", 0.07, when);
     if (state.muted) return;
-    ROWS.forEach(([id]) => { if (state.drums[id][drum]) hitSound(id); });
-    const playWritten = (freq, beats, art, dyn) => {
-      if (!freq) return;
+    if (state.parts.drums !== false) {
+      ROWS.forEach(([id]) => { if (state.drums[id] && state.drums[id][drum]) hitSound(id, when); });
+    }
+    const playWritten = (freq, beats, art, dyn, at) => {
+      if (!freq || state.parts.melody === false) return;
       const steps = ["pp", "p", "mf", "f", "ff"];
       let use = dyn || state.dyn || "mf";
       if (art === "accent") {
@@ -1055,24 +1137,38 @@
       let hold = (60 / Math.max(70, state.song.bpm || 96)) * Math.max(0.35, beats || 1);
       if (state.song.meter === "6/8") hold *= 0.5;
       if (art === "staccato") hold *= 0.4;
-      if (state.orch !== "beep") sectionTone(freq, hold, state.orch, use);
-      else tone(freq, hold, state.wave, (art === "accent" ? 0.32 : 0.22) * side("notes"));
+      if (state.orch !== "beep") sectionTone(freq, hold, state.orch, use, at);
+      else tone(freq, hold, state.wave, (art === "accent" ? 0.32 : 0.22) * side("notes"), at);
     };
-    window.clearTimeout(state.eighthTimer);
-    if (ev && ev.eighths && !ev.tiedFrom) {
+    const melodyOn = opts.melody !== false;
+    if (melodyOn && ev && ev.eighths && !ev.tiedFrom) {
       if (ev.dyn) state.dyn = ev.dyn;
-      playWritten(Song.freqOf ? Song.freqOf(ev.eighths[0], state.song.key) : ev.freq, 0.5, ev.art, ev.dyn || state.dyn);
-      const wait = gapAfter(step) / 2;
-      state.eighthTimer = window.setTimeout(() => {
-        playWritten(Song.freqOf ? Song.freqOf(ev.eighths[1], state.song.key) : null, 0.5, "", ev.dyn || state.dyn);
-      }, wait);
-    } else if (ev && !ev.tiedFrom && (ev.freq || ev.pitch)) {
+      playWritten(Song.freqOf ? Song.freqOf(ev.eighths[0], state.song.key) : ev.freq, 0.5, ev.art, ev.dyn || state.dyn, when);
+      const half = (typeof opts.when === "number" ? (60 / Math.max(70, state.song.bpm || 96)) / 4 : gapAfter(step) / 2000);
+      if (typeof opts.when === "number") {
+        playWritten(Song.freqOf ? Song.freqOf(ev.eighths[1], state.song.key) : null, 0.5, "", ev.dyn || state.dyn, when + half * 2);
+      } else {
+        window.clearTimeout(state.eighthTimer);
+        state.eighthTimer = window.setTimeout(() => {
+          playWritten(Song.freqOf ? Song.freqOf(ev.eighths[1], state.song.key) : null, 0.5, "", ev.dyn || state.dyn);
+        }, gapAfter(step) / 2);
+      }
+    } else if (melodyOn && ev && !ev.tiedFrom && (ev.freq || ev.pitch)) {
       if (ev.dyn) state.dyn = ev.dyn;
       const freq = ev.freq || (Song.freqOf ? Song.freqOf(ev.pitch, state.song.key) : null);
-      playWritten(freq, ev.durBeats || 1, ev.art, ev.dyn || state.dyn);
-      (ev.chord || []).forEach((id) => playWritten(Song.freqOf(id, state.song.key), ev.durBeats || 1, ev.art, ev.dyn || state.dyn));
+      playWritten(freq, ev.durBeats || 1, ev.art, ev.dyn || state.dyn, when);
+      (ev.chord || []).forEach((id) => playWritten(Song.freqOf(id, state.song.key), ev.durBeats || 1, ev.art, ev.dyn || state.dyn, when));
     }
-    if (ev && state.bass && state.drums.kick[drum]) tone((ev.freq || 130.8) / 2, 0.34, "sine", 0.34 * side("notes"));
+    if ((state.bass || state.parts.bass) && state.drums.kick && state.drums.kick[drum]) {
+      const root = ({ C: 65.41, G: 98, D: 73.42, F: 87.31, Bb: 58.27 })[state.song.key] || 65.41;
+      tone(root, 0.36, "sine", 0.42 * side("notes"), when);
+    }
+    if (state.parts.chords && drum % 8 === 0) {
+      const root = ({ C: 130.81, G: 196, D: 146.83, F: 174.61, Bb: 116.54 })[state.song.key] || 130.81;
+      tone(root, 0.28, "triangle", 0.12, when);
+      tone(root * 1.2599, 0.28, "triangle", 0.1, when);
+      tone(root * 1.4983, 0.28, "triangle", 0.1, when);
+    }
   }
 
   function gapAfter(step) {
@@ -1081,11 +1177,47 @@
     const lean = Math.max(0, Math.min(60, state.swing || 0)) / 100;
     return Math.round(base * (step % 2 === 0 ? 1 + lean * 0.45 : 1 - lean * 0.45));
   }
+  function stepSeconds(grid) {
+    const bpm = Math.max(70, state.song.bpm || 96);
+    const base = (60 / bpm) / 4;
+    const lean = Math.max(0, Math.min(60, state.swing || 0)) / 100;
+    return base * (grid % 2 === 0 ? 1 + lean * 0.45 : 1 - lean * 0.45);
+  }
+  function stepsPerEvent() {
+    return state.song.meter === "6/8" ? 2 : 4;
+  }
+  function scheduleHit(grid, eventIndex, when, melody) {
+    if (!ctx || state.muted) return;
+    if (state.parts.drums !== false) {
+      ROWS.forEach(([id]) => { if (state.drums[id] && state.drums[id][grid]) hitSound(id, when); });
+    }
+    if (melody && state.parts.melody !== false) {
+      const ev = Song.events(state.song)[eventIndex];
+      if (ev && !ev.tiedFrom && (ev.freq || ev.pitch)) {
+        const freq = ev.freq || (Song.freqOf ? Song.freqOf(ev.pitch, state.song.key) : null);
+        const hold = (60 / Math.max(70, state.song.bpm || 96)) * Math.max(0.35, ev.durBeats || 1);
+        if (state.orch !== "beep") sectionTone(freq, hold, state.orch, ev.dyn || state.dyn, when);
+        else tone(freq, Math.min(0.45, hold), state.wave, 0.22 * side("notes"), when);
+      }
+    }
+    if ((state.bass || state.parts.bass) && state.drums.kick && state.drums.kick[grid]) {
+      const root = ({ C: 65.41, G: 98, D: 73.42, F: 87.31, Bb: 58.27 })[state.song.key] || 65.41;
+      tone(root, 0.38, "sine", 0.46, when);
+    }
+    if (state.parts.chords && grid % 8 === 0) {
+      const root = ({ C: 130.81, G: 196, D: 146.83, F: 174.61, Bb: 116.54 })[state.song.key] || 130.81;
+      tone(root, 0.26, "triangle", 0.12, when);
+      tone(root * 1.2599, 0.26, "triangle", 0.09, when);
+      tone(root * 1.4983, 0.26, "triangle", 0.09, when);
+    }
+  }
   function play(opts) {
     window.clearTimeout(state.timer);
+    window.cancelAnimationFrame(state.raf);
     arm();
     state.once = !!(opts && opts.once);
     state.playing = true;
+    state.confettiDone = false;
     document.body.classList.add("playing");
     const kid = window.KulibertWho && window.KulibertWho.read && window.KulibertWho.read();
     if (kid && kid.verified && window.KulibertWho.active && window.KulibertWho.active() && window.KulibertWho.mark) {
@@ -1097,22 +1229,67 @@
     $("play-btn").setAttribute("aria-label", "Stop");
     const playWord = $("play-word");
     if (playWord) playWord.textContent = "Stop";
-    let step = 0;
-    const tick = () => {
-      if (!state.playing) return;
-      pulse(step);
-      const wait = gapAfter(step);
-      if (state.once && step + 1 >= songLen()) {
-        state.timer = window.setTimeout(() => {
-          stop();
-          if (state.showing) bow();
-        }, wait);
-        return;
+    if (!ctx) return;
+    const spe = stepsPerEvent();
+    const start = ctx.currentTime + 0.04;
+    let grid = 0;
+    let ev = 0;
+    let next = start;
+    let eventCount = 0;
+    const songN = songLen();
+    state.plan = [];
+    const schedule = () => {
+      if (!state.playing || !ctx) return;
+      const horizon = ctx.currentTime + 0.12;
+      while (next < horizon) {
+        const melody = grid % spe === 0;
+        scheduleHit(grid, ev, next, melody);
+        state.plan.push({ when: next, grid: grid, event: ev });
+        if (state.plan.length > 48) state.plan.shift();
+        if (melody) {
+          eventCount += 1;
+          if (state.once && eventCount >= songN) {
+            const endAt = next + stepSeconds(grid);
+            state.timer = window.setTimeout(() => {
+              stop();
+              if (state.showing) bow();
+            }, Math.max(20, (endAt - ctx.currentTime) * 1000));
+            return;
+          }
+          ev = (ev + 1) % songN;
+        }
+        next += stepSeconds(grid);
+        grid = (grid + 1) % GRID;
       }
-      step = (step + 1) % songLen();
-      state.timer = window.setTimeout(tick, wait);
+      state.timer = window.setTimeout(schedule, 25);
     };
-    tick();
+    schedule();
+    const follow = () => {
+      if (!state.playing || !ctx) return;
+      const now = ctx.currentTime;
+      let hit = null;
+      state.plan.forEach((item) => { if (item.when <= now) hit = item; });
+      if (hit) {
+        state.grid = hit.grid;
+        state.step = hit.event;
+        document.querySelectorAll(".cell").forEach((cell) => {
+          cell.classList.toggle("now", Number(cell.dataset.step) === hit.grid);
+        });
+        const bob = $("berty-bob");
+        if (bob) bob.classList.toggle("on", hit.grid % 2 === 0);
+        if (hit.grid === 0 && now - start > 0.2 && !state.confettiDone) {
+          state.confettiDone = true;
+          popConfetti();
+        }
+        if (state.bins) {
+          state.bins[2] = state.drums.kick && state.drums.kick[hit.grid] ? 230 : 40;
+          state.bins[10] = state.drums.snare && state.drums.snare[hit.grid] ? 200 : 30;
+          state.bins[40] = state.drums.hat && state.drums.hat[hit.grid] ? 160 : 24;
+        }
+      }
+      state.raf = window.requestAnimationFrame(follow);
+    };
+    state.raf = window.requestAnimationFrame(follow);
   }
   function stop() {
     state.playing = false;
@@ -1120,7 +1297,7 @@
     sayHow(state.mode);
     window.clearTimeout(state.timer);
     window.clearTimeout(state.eighthTimer);
-    window.clearInterval(state.timer);
+    window.cancelAnimationFrame(state.raf);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", "Play");
     const playWord = $("play-word");
@@ -1130,6 +1307,8 @@
     state.turn = "";
     state.held = {};
     paintRec();
+    const bob = $("berty-bob");
+    if (bob) bob.classList.remove("on");
     $("now-line").textContent = state.showing ? "The stage is ready." : "Press Play. Read the word. Sound can stay off.";
   }
 
@@ -1160,8 +1339,14 @@
     }
     if (state.frame === "none") state.frame = "glow";
     document.body.classList.add("show");
+    fitViz();
     showCurtain();
     $("now-line").textContent = "One song. The picture follows. Sound can stay off.";
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        if (stageApi && stageApi.resize) stageApi.resize();
+      });
+    });
   }
   function closeShow() {
     state.counting = false;
@@ -1176,6 +1361,7 @@
       state.showBackup = null;
     }
     document.body.classList.remove("show");
+    fitViz();
     if ($("curtain")) $("curtain").hidden = true;
     if ($("bow")) $("bow").hidden = true;
     $("feel").textContent = "Ready";
@@ -1580,6 +1766,7 @@
     const text = {
       both: "The staff and the drums are this song. Tap a letter or a pad. Then press Play.",
       notes: "Tap a letter. Then press Play.",
+      beat: "Tap a pad. Press Play.",
       drums: "Tap Kick or Snare. Press Play. Your tap is saved on that beat.",
       lights: "Tap a picture. Then press Play.",
       band: "Choose your instrument. Tap a note to see the fingering.",
@@ -1588,7 +1775,7 @@
     line.textContent = state.playing ? "Press Stop." : (text[mode] || text.both);
   }
   const WS_KEY = "kulibert.music.workspace";
-  const WS_MODES = ["both", "notes", "drums", "lights", "band", "sound"];
+  const WS_MODES = ["beat", "both", "notes", "drums", "lights", "band", "sound"];
   function readWorkspace() {
     try {
       const data = JSON.parse(localStorage.getItem(WS_KEY) || "");
@@ -1618,6 +1805,7 @@
   function setMode(mode) {
     if (WS_MODES.indexOf(mode) < 0) mode = "both";
     state.mode = mode;
+    resetScroll();
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("back-home")) $("back-home").hidden = false;
     const work = $("work");
@@ -1631,17 +1819,20 @@
       btn.setAttribute("aria-pressed", String(mode === name));
     });
     document.body.classList.toggle("is-both", mode === "both");
+    document.body.classList.toggle("is-beat", mode === "beat");
     document.body.classList.toggle("is-score", mode === "notes");
     document.body.classList.toggle("is-drums", mode === "drums");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
     document.body.classList.toggle("is-sound", mode === "sound");
+    fitViz();
     const split = $("ws-split");
     if (split) split.hidden = mode !== "both";
     if (mode === "both") applySplit(readWorkspace().score);
     sayHow(mode);
     if (!state.playing) {
       const hints = {
+        beat: "Tap a pad. Press Play. The light shows the step.",
         both: "Score and drums together. A letter changes the staff. A pad changes the beat.",
         notes: "The staff is the song. Tap a letter to change a note.",
         drums: state.along
@@ -1660,6 +1851,7 @@
         if (state.mode === mode) renderStaff();
       });
     }
+    window.requestAnimationFrame(() => { if (stageApi && stageApi.resize) stageApi.resize(); });
   }
   function chooseWorkspace(mode) {
     const cur = readWorkspace();
@@ -1746,7 +1938,7 @@
     }
     clearArm = 0;
     drumUndo = JSON.parse(JSON.stringify(state.drums));
-    ROWS.forEach(([id]) => { state.drums[id] = Array(8).fill(false); });
+    ROWS.forEach(([id]) => { state.drums[id] = Array(GRID).fill(false); });
     keep();
     renderDrums();
     $("clear-btn").textContent = "Clear the drums";
@@ -1962,6 +2154,359 @@
     });
   }
   paintOrch();
+  function resetScroll() {
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }
+  function fitViz() {
+    const canvas = $("viz");
+    const wrap = canvas && canvas.parentElement;
+    const show = document.body.classList.contains("show");
+    const strip = !show && (document.body.classList.contains("is-beat") || document.body.classList.contains("is-both"));
+    if (canvas) {
+      canvas.style.height = show ? "100%" : strip ? "84px" : "";
+      canvas.style.maxHeight = show ? "none" : strip ? "84px" : "";
+      canvas.style.aspectRatio = show || strip ? "auto" : "";
+    }
+    if (wrap) {
+      wrap.style.height = strip ? "92px" : "";
+      wrap.style.maxHeight = strip ? "92px" : "";
+      wrap.style.overflow = show || strip ? "hidden" : "";
+      if (show || strip) {
+        wrap.style.setProperty("contain", "paint", "important");
+        wrap.style.setProperty("clip-path", "inset(0)", "important");
+        wrap.style.setProperty("transform", "translateZ(0)", "important");
+      } else {
+        wrap.style.contain = "";
+        wrap.style.clipPath = "";
+        wrap.style.transform = "";
+      }
+    }
+  }
+  function closeMenu() {
+    document.body.classList.remove("menu-open");
+    const btn = $("menu-btn");
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
+  function popConfetti() {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const canvas = $("confetti");
+    if (!canvas) return;
+    canvas.hidden = false;
+    const g = canvas.getContext("2d");
+    const dpr = Math.min(2, window.devicePixelRatio || 1);
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(window.innerHeight * dpr);
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const bits = Array.from({ length: 42 }, () => ({
+      x: window.innerWidth * 0.5,
+      y: window.innerHeight * 0.4,
+      vx: (Math.random() - 0.5) * 14,
+      vy: -6 - Math.random() * 8,
+      c: ["#f0a020", "#1a140c", "#fff8ea", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
+    }));
+    let frame = 0;
+    const tick = () => {
+      g.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      bits.forEach((bit) => {
+        bit.x += bit.vx;
+        bit.y += bit.vy;
+        bit.vy += 0.35;
+        g.fillStyle = bit.c;
+        g.fillRect(bit.x, bit.y, 8, 8);
+      });
+      frame += 1;
+      if (frame < 36) requestAnimationFrame(tick);
+      else canvas.hidden = true;
+    };
+    tick();
+  }
+  const PACKS = {
+    Trap: { bpm: 140, bass: true, drums: { kick: [1,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0], snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,1], clap: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], hat: [1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1] } },
+    "Lo-fi": { bpm: 84, bass: true, drums: { kick: [1,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0], snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], hat: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] } },
+    Rock: { bpm: 124, bass: true, drums: { kick: [1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0], snare: [0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0], hat: [1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,0], crash: [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] } },
+    Marching: { bpm: 112, bass: false, drums: { kick: [1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0], snare: [1,0,1,1,1,0,1,0,1,0,1,1,1,0,1,0], rim: [0,0,1,0,0,0,1,0,0,0,1,0,0,0,1,0] } },
+  };
+  function applyPack(name) {
+    const pack = PACKS[name];
+    if (!pack) return;
+    ROWS.forEach(([id]) => { state.drums[id] = to16(pack.drums[id] || []); });
+    state.song.bpm = pack.bpm;
+    state.song.tempo = pack.bpm;
+    state.bass = !!pack.bass;
+    state.parts.bass = !!pack.bass;
+    state.parts.drums = true;
+    if ($("tempo")) {
+      $("tempo").value = String(pack.bpm);
+      $("tempo-read").textContent = String(pack.bpm);
+    }
+    renderDrums();
+    keep();
+    document.querySelectorAll("#style-row button").forEach((btn) => btn.classList.toggle("on", btn.dataset.pack === name));
+  }
+  function paintLayers() {
+    const cast = $("cast");
+    const row = $("style-row");
+    if (cast && !cast.childElementCount) {
+      [["drums", "Drums"], ["bass", "Bass"], ["chords", "Chords"], ["melody", "Melody"]].forEach(([id, label]) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.textContent = label;
+        b.className = state.parts[id] ? "on" : "";
+        b.addEventListener("click", () => {
+          state.parts[id] = !state.parts[id];
+          if (id === "bass") state.bass = state.parts.bass;
+          b.classList.toggle("on", state.parts[id]);
+          if (!state.playing) {
+            arm();
+            if (id === "drums") hitSound("kick");
+            else if (id === "bass") hitSound("kick");
+            else tone(id === "melody" ? 392 : 261, 0.2, "triangle", 0.2);
+          }
+        });
+        cast.appendChild(b);
+      });
+    }
+    if (row && !row.childElementCount) {
+      Object.keys(PACKS).forEach((name) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.dataset.pack = name;
+        b.textContent = name;
+        b.addEventListener("click", () => applyPack(name));
+        row.appendChild(b);
+      });
+    }
+  }
+  function makeBeat() {
+    closeMenu();
+    resetScroll();
+    state.parts = { drums: true, bass: true, chords: true, melody: true };
+    applyPack("Rock");
+    state.song.bpm = 104;
+    state.song.tempo = 104;
+    if ($("tempo")) {
+      $("tempo").value = "104";
+      $("tempo-read").textContent = "104";
+    }
+    document.body.classList.remove("is-home", "is-make", "is-library");
+    if ($("home")) $("home").hidden = true;
+    if ($("back-home")) $("back-home").hidden = false;
+    setMode("beat");
+    const grid = $("drums");
+    const box = grid && grid.closest("details");
+    if (box) box.open = true;
+    arm();
+    play();
+  }
+  const CLASS_KEY = "kulibert.music.class.v1";
+  function readClass() {
+    try {
+      const list = JSON.parse(localStorage.getItem(CLASS_KEY) || "[]");
+      return Array.isArray(list) ? list : [];
+    } catch (err) {
+      return [];
+    }
+  }
+  function shareSong() {
+    const who = window.KulibertWho && window.KulibertWho.read && window.KulibertWho.read();
+    const code = who && who.verified && who.code ? String(who.code) : "";
+    const id = Math.random().toString(36).slice(2, 8);
+    const pack = {
+      id: id,
+      at: Date.now(),
+      code: code,
+      song: JSON.parse(Song.serialize(state.song)),
+      drums: state.drums,
+    };
+    const list = readClass();
+    list.unshift(pack);
+    try { localStorage.setItem(CLASS_KEY, JSON.stringify(list.slice(0, 40))); } catch (err) { /* still on screen */ }
+    const link = location.origin + "/music/?class=" + id;
+    const line = $("share-line");
+    if (line) {
+      line.hidden = false;
+      line.textContent = (code ? "Shared for " + code + ". " : "Shared on this Chromebook. ") + link;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(link).catch(() => {});
+    }
+    $("lesson").textContent = code ? "Shared with class. The link is under the pads." : "Shared on this Chromebook. Sign in to attach your class code.";
+    paintSongShelf();
+  }
+  function encodeWav(audioBuffer) {
+    const channels = audioBuffer.numberOfChannels;
+    const rate = audioBuffer.sampleRate;
+    const samples = audioBuffer.length;
+    const bytes = samples * channels * 2;
+    const buffer = new ArrayBuffer(44 + bytes);
+    const view = new DataView(buffer);
+    function write(off, text) { for (let i = 0; i < text.length; i++) view.setUint8(off + i, text.charCodeAt(i)); }
+    write(0, "RIFF");
+    view.setUint32(4, 36 + bytes, true);
+    write(8, "WAVE");
+    write(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, channels, true);
+    view.setUint32(24, rate, true);
+    view.setUint32(28, rate * channels * 2, true);
+    view.setUint16(32, channels * 2, true);
+    view.setUint16(34, 16, true);
+    write(36, "data");
+    view.setUint32(40, bytes, true);
+    let offset = 44;
+    const data = [];
+    for (let c = 0; c < channels; c++) data.push(audioBuffer.getChannelData(c));
+    for (let i = 0; i < samples; i++) {
+      for (let c = 0; c < channels; c++) {
+        const s = Math.max(-1, Math.min(1, data[c][i]));
+        view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+        offset += 2;
+      }
+    }
+    return buffer;
+  }
+  async function saveWav() {
+    arm();
+    const rate = 44100;
+    const bpm = Math.max(70, state.song.bpm || 96);
+    const sec = (60 / bpm) / 4;
+    const dur = sec * GRID + 0.4;
+    const off = new OfflineAudioContext(2, Math.ceil(rate * dur), rate);
+    const live = ctx;
+    const oldBus = bus;
+    const made = state.made;
+    try {
+      ctx = off;
+      const dest = off.createGain();
+      dest.gain.value = 1;
+      const comp = off.createDynamicsCompressor();
+      comp.threshold.value = -16;
+      comp.knee.value = 8;
+      comp.ratio.value = 3.5;
+      comp.attack.value = 0.003;
+      comp.release.value = 0.12;
+      const limiter = off.createDynamicsCompressor();
+      limiter.threshold.value = -1.5;
+      limiter.knee.value = 0;
+      limiter.ratio.value = 20;
+      limiter.attack.value = 0.001;
+      limiter.release.value = 0.05;
+      bus = dest;
+      dest.connect(comp);
+      comp.connect(limiter);
+      limiter.connect(off.destination);
+      for (let i = 0; i < GRID; i++) scheduleHit(i, Math.floor(i / stepsPerEvent()) % songLen(), 0.05 + sec * i, i % stepsPerEvent() === 0);
+    } finally {
+      ctx = live;
+      bus = oldBus;
+      state.made = made;
+    }
+    const audio = await off.startRendering();
+    const wav = encodeWav(audio);
+    window.__djWav = wav;
+    const blob = new Blob([wav], { type: "audio/wav" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "dj-berty.wav";
+    a.click();
+    const player = new Audio(url);
+    player.play().catch(() => {});
+    $("lesson").textContent = "Saved as sound. The file is a WAV of this loop.";
+  }
+  function vlq(n) {
+    const bytes = [n & 127];
+    n >>= 7;
+    while (n > 0) {
+      bytes.unshift((n & 127) | 128);
+      n >>= 7;
+    }
+    return bytes;
+  }
+  function saveMidi() {
+    const tpq = 480;
+    const bpm = Math.max(70, Math.min(160, state.song.bpm || 96));
+    const us = Math.round(60000000 / bpm);
+    const events = [];
+    events.push([0, 0xff, 0x51, 0x03, (us >> 16) & 255, (us >> 8) & 255, us & 255]);
+    const evs = Song.events(state.song);
+    const pitch = { C: 60, D: 62, E: 64, F: 65, G: 67, A: 69, B: 71, c: 72 };
+    evs.forEach((ev, i) => {
+      if (!ev || !ev.pitch || !pitch[ev.pitch]) return;
+      const tick = i * tpq;
+      events.push([tick, 0x90, pitch[ev.pitch], 90]);
+      events.push([tick + Math.round(tpq * 0.8), 0x80, pitch[ev.pitch], 0]);
+    });
+    events.sort((a, b) => a[0] - b[0]);
+    const track = [];
+    let last = 0;
+    events.forEach((ev) => {
+      vlq(Math.max(0, ev[0] - last)).forEach((b) => track.push(b));
+      last = ev[0];
+      for (let i = 1; i < ev.length; i++) track.push(ev[i]);
+    });
+    vlq(0).forEach((b) => track.push(b));
+    track.push(0xff, 0x2f, 0x00);
+    const header = [0x4d, 0x54, 0x68, 0x64, 0, 0, 0, 6, 0, 0, 0, 1, (tpq >> 8) & 255, tpq & 255];
+    const len = track.length;
+    const out = header.concat([0x4d, 0x54, 0x72, 0x6b, (len >>> 24) & 255, (len >>> 16) & 255, (len >>> 8) & 255, len & 255], track);
+    const bytes = new Uint8Array(out);
+    window.__djMidi = bytes;
+    const blob = new Blob([bytes], { type: "audio/midi" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "dj-berty.mid";
+    a.click();
+    $("lesson").textContent = "MIDI file saved. It opens again from Bring a file in.";
+  }
+  function openClass(id) {
+    const item = readClass().find((row) => row.id === id);
+    if (!item) return;
+    loadPack(item);
+    document.body.classList.remove("is-home");
+    if ($("home")) $("home").hidden = true;
+    setMode("beat");
+  }
+  paintLayers();
+  if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
+  if ($("my-songs")) $("my-songs").addEventListener("click", () => {
+    resetScroll();
+    if ($("home")) $("home").hidden = false;
+    if ($("shelf-extra")) $("shelf-extra").hidden = false;
+    document.body.classList.add("is-home");
+    const box = $("my-saves");
+    if (box) box.scrollIntoView({ block: "start" });
+  });
+  if ($("save-dock")) $("save-dock").addEventListener("click", () => { if ($("save-btn")) $("save-btn").click(); });
+  if ($("share-btn")) $("share-btn").addEventListener("click", shareSong);
+  if ($("wav-btn")) $("wav-btn").addEventListener("click", () => { saveWav().catch(() => { $("lesson").textContent = "That sound did not save. Press Play, then try again."; }); });
+  if ($("midi-out")) $("midi-out").addEventListener("click", saveMidi);
+  [["menu-songs", () => { if ($("shelf-extra")) $("shelf-extra").hidden = false; showHome(); if ($("shelf-extra")) $("shelf-extra").hidden = false; }],
+    ["menu-blank", () => { if ($("start-blank")) $("start-blank").click(); }],
+    ["menu-key", () => { if ($("shelf-extra")) $("shelf-extra").hidden = false; showHome(); if ($("shelf-extra")) $("shelf-extra").hidden = false; if ($("start-key")) $("start-key").click(); }],
+    ["menu-import", () => { if ($("shelf-extra")) $("shelf-extra").hidden = false; showHome(); if ($("shelf-extra")) $("shelf-extra").hidden = false; }],
+    ["menu-score", () => setMode("both")],
+    ["menu-band", () => setMode("band")],
+    ["menu-sound", () => setMode("sound")],
+    ["menu-lights", () => setMode("lights")],
+    ["menu-show", () => { if ($("show-btn")) $("show-btn").click(); }],
+    ["menu-library", () => { if (typeof showLibrary === "function") showLibrary(); }],
+  ].forEach(([id, go]) => {
+    const btn = $(id);
+    if (!btn) return;
+    btn.addEventListener("click", () => { closeMenu(); go(); });
+  });
+  const classId = new URLSearchParams(location.search).get("class");
+  if (classId) window.setTimeout(() => openClass(classId), 0);
+  window.__dj = {
+    nodes: () => state.made,
+    ctx: () => (ctx ? ctx.state : "none"),
+    grid: () => state.grid,
+    classes: () => readClass(),
+  };
   $("menu-btn").addEventListener("click", () => {
     const on = document.body.classList.toggle("menu-open");
     $("menu-btn").setAttribute("aria-expanded", String(on));
@@ -2073,7 +2618,7 @@
     state.song = song;
     if (data && data.drums) {
       ROWS.forEach(([id]) => {
-        if (Array.isArray(data.drums[id])) state.drums[id] = data.drums[id].slice(0, 8).map((on) => !!on);
+        if (Array.isArray(data.drums[id])) state.drums[id] = to16(data.drums[id]);
       });
     }
     state.cursor = 0;
@@ -2315,6 +2860,10 @@
     $("mic-status").textContent = "Deleted. Nothing was kept.";
   });
   window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeMenu();
+      return;
+    }
     const tag = e.target && e.target.tagName;
     if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
     if (e.code === "Space") {
@@ -2429,7 +2978,7 @@
     state.step = 0;
     if (opts.drums) {
       ROWS.forEach(([id]) => {
-        if (Array.isArray(opts.drums[id])) state.drums[id] = opts.drums[id].slice(0, 8).map((on) => !!on);
+        if (Array.isArray(opts.drums[id])) state.drums[id] = to16(opts.drums[id]);
       });
     }
     if (state.song.viz) applyViz(state.song.viz);
@@ -2446,22 +2995,22 @@
   }
   function layTrap() {
     const trap = {
-      kick: [1, 0, 0, 0, 0, 0, 1, 0],
-      snare: [0, 0, 0, 0, 1, 0, 0, 0],
-      clap: [0, 0, 0, 0, 1, 0, 0, 1],
-      hat: [1, 0, 1, 1, 1, 0, 1, 1],
-      shaker: [0, 1, 0, 1, 0, 1, 0, 1],
+      kick: [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+      snare: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+      clap: [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+      hat: [1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1],
     };
-    ROWS.forEach(([id]) => {
-      state.drums[id] = (trap[id] || Array(8).fill(0)).map((on) => !!on);
-    });
-    state.song.bpm = 74;
-    state.song.tempo = 74;
+    ROWS.forEach(([id]) => { state.drums[id] = to16(trap[id] || []); });
+    state.song.bpm = 100;
+    state.song.tempo = 100;
     state.bass = true;
+    state.parts.bass = true;
+    state.parts.drums = true;
+    state.parts.melody = true;
     state.blend = 32;
     if ($("tempo")) {
-      $("tempo").value = "74";
-      $("tempo-read").textContent = "74";
+      $("tempo").value = "100";
+      $("tempo-read").textContent = "100";
     }
   }
   function openShelfSong(item, remix) {
@@ -2580,22 +3129,41 @@
         row.append(text, open, remix);
         saveBox.appendChild(row);
       });
+      readClass().forEach((item) => {
+        const row = document.createElement("div");
+        row.className = "song-row";
+        const text = document.createElement("div");
+        const strong = document.createElement("strong");
+        strong.textContent = (item.song && item.song.alias) || "Class song";
+        const span = document.createElement("span");
+        span.textContent = item.code ? "Class " + item.code : "Class on this Chromebook";
+        text.append(strong, span);
+        const open = document.createElement("button");
+        open.type = "button";
+        open.className = "btn";
+        open.textContent = "Open";
+        open.addEventListener("click", () => openClass(item.id));
+        row.append(text, open);
+        saveBox.appendChild(row);
+      });
     }
   }
   function showHome() {
     state.mode = "home";
     document.body.classList.add("is-home");
-    document.body.classList.remove("is-score", "is-drums", "is-lights", "is-band", "is-sound", "is-both", "is-make", "is-library", "viz-full", "expert");
+    document.body.classList.remove("is-score", "is-drums", "is-lights", "is-band", "is-sound", "is-both", "is-beat", "is-make", "is-library", "viz-full", "expert");
     ["both", "notes", "drums", "band", "lights", "sound"].forEach((name) => {
       const btn = $("mode-" + name);
       if (btn) btn.classList.remove("on");
     });
     if ($("home")) $("home").hidden = false;
+    if ($("shelf-extra")) $("shelf-extra").hidden = true;
     if ($("make")) $("make").hidden = true;
     if ($("library")) $("library").hidden = true;
     if ($("back-home")) $("back-home").hidden = true;
     paintSongBar();
     paintSongShelf();
+    resetScroll();
   }
   function showMake() {
     document.body.classList.remove("is-home", "is-library");
@@ -2800,7 +3368,7 @@
       state.band = makeInst === "percussion" ? "percussion" : makeInst;
       const sound = { piano: "winds", flute: "winds", trumpet: "brass", violin: "strings", percussion: "beep" }[makeInst];
       if (sound) state.orch = sound;
-      ROWS.forEach(([id]) => { state.drums[id] = Array(8).fill(false); });
+      ROWS.forEach(([id]) => { state.drums[id] = Array(GRID).fill(false); });
       state.drums.kick[0] = true;
       if (makeFeel !== "calm") state.drums.snare[4] = true;
       if (makeFeel === "drive") {
@@ -3067,7 +3635,7 @@
         $("undo-clear").hidden = false;
         ROWS.forEach(([id]) => {
           if (id === "crash") return;
-          for (let i = 0; i < 8; i++) state.drums[id][i] = Math.random() < (id === "kick" ? 0.34 : 0.22);
+          for (let i = 0; i < GRID; i++) state.drums[id][i] = Math.random() < (id === "kick" ? 0.22 : 0.16);
         });
         state.drums.kick[0] = true;
         renderDrums();
@@ -3227,7 +3795,7 @@
         const style = styles[name];
         if (!style) return;
         ROWS.forEach(([id]) => {
-          state.drums[id] = (style.drums[id] || z).map((on) => !!on);
+          state.drums[id] = to16(style.drums[id] || z);
         });
         state.song.bpm = style.bpm;
         state.song.tempo = style.bpm;
@@ -3782,7 +4350,7 @@
 
   const canvas = $("viz");
   if (window.KulibertStage) {
-    window.KulibertStage.mount(canvas, () => ({
+    stageApi = window.KulibertStage.mount(canvas, () => ({
       playing: state.playing,
       look: state.look,
       layers: state.layers,

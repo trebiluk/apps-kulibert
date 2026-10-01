@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.27.0** · 2026-09-30 · channel **live**
+
+DJ Berty. Make a beat plays a loop on the first tap. The pad grid, Play, Tempo, and Record stay put. Save, Share, a WAV, and MIDI sit on the workspace. Trap, Lo-fi, Rock, and Marching are style packs. Drums, Bass, Chords, and Melody stack in key. The menu button is a menu. Phone landscape scrolls back to the pads.
+
+## Earlier
+
 **Chip: MU 2.26.0** · 2026-09-30 · channel **live**
 
 The door is DJ Berty. The address is still /music/. Songs, saves, and the shelf stay. Score and drums open together on the current song. Drag the line between them on a wide screen. Score, Drums, Lights, Band, and Sound are still one tap.

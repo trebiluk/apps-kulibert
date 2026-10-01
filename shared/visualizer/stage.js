@@ -338,10 +338,25 @@
     if (reduceQuery.addEventListener) reduceQuery.addEventListener("change", onReduce);
 
     function size() {
+      var show = document.body && document.body.classList.contains("show");
+      var beat = document.body && document.body.classList.contains("is-beat") && !show;
       var wrap = canvas.parentElement || canvas;
-      var cssW = Math.max(280, wrap.clientWidth);
-      var cssH = Math.max(150, Math.round(parseFloat(getComputedStyle(canvas).height) || 220));
-      var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      var cssW;
+      var cssH;
+      var dprCap = 1.5;
+      if (show) {
+        cssW = Math.max(320, wrap.clientWidth || window.innerWidth || 320);
+        cssH = Math.max(180, wrap.clientHeight || (window.innerHeight - 168));
+        dprCap = 2;
+      } else if (beat) {
+        cssW = Math.max(280, wrap.clientWidth || canvas.clientWidth || 320);
+        cssH = Math.max(64, Math.round(canvas.clientHeight || parseFloat(getComputedStyle(canvas).height) || 84));
+        dprCap = 2;
+      } else {
+        cssW = Math.max(280, wrap.clientWidth || canvas.clientWidth || 320);
+        cssH = Math.max(150, Math.round(parseFloat(getComputedStyle(canvas).height) || 220));
+      }
+      var dpr = Math.min(window.devicePixelRatio || 1, dprCap);
       canvas.width = Math.round(cssW * dpr);
       canvas.height = Math.round(cssH * dpr);
       vctx.setTransform(dpr, 0, 0, dpr, 0, 0);

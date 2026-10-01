@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#050814"/>
+  <meta name="theme-color" content="#efe6d2"/>
   <title>DJ Berty · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <link rel="stylesheet" href="./styles.css?v=2.26.0g"/>
+  <link rel="stylesheet" href="./styles.css?v=2.27.0"/>
 </head>
 <body>
   <div class="mast">
   <header class="top">
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
-      <span><strong>DJ Berty</strong><em id="chip">MU 2.26.0</em></span>
+      <span><strong>DJ Berty</strong><em id="chip">MU 2.27.0</em></span>
     </a>
     <button type="button" id="back-home" class="quiet" hidden>Home</button>
-    <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><i><span></span><span></span><span></span></i><b>Menu</b></button>
   </header>
   <div id="songbar" class="songbar">
     <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
@@ -31,6 +31,9 @@
   <div class="scrim" id="scrim"></div>
 
   <section id="home" class="home">
+    <button type="button" id="make-beat" class="make-beat">Make a beat</button>
+    <button type="button" id="my-songs" class="my-songs">My songs</button>
+    <div id="shelf-extra" hidden>
     <h1>Songs</h1>
     <p class="how">Open one song. Score and drums work on that song.</p>
     <div class="shelf-block">
@@ -68,6 +71,7 @@
     </div>
     <h2>Work on this song</h2>
     <div class="do-cards" id="do-cards"></div>
+    </div>
   </section>
   <section id="make" class="make" hidden>
     <h1>Make a song</h1>
@@ -160,9 +164,14 @@
       </div>
       <div id="ws-split" class="ws-split" role="separator" aria-orientation="vertical" aria-label="Drag to resize the staff and the drums" aria-valuemin="28" aria-valuemax="72" aria-valuenow="58" tabindex="0" hidden></div>
       <div id="drums-pane">
-        <p class="hint">Tap a colored pad. Press Play.</p>
-        <details class="more-box">
-          <summary>See every beat</summary>
+        <details class="more-box" id="layers-box">
+          <summary>Layers and styles</summary>
+          <div class="cast" id="cast" aria-label="Layers"></div>
+          <div class="style-row" id="style-row" aria-label="Styles"></div>
+        </details>
+        <p class="hint" id="step-hint">Tap a pad. It stays on that step.</p>
+        <details class="more-box grid-box" open>
+          <summary>The 16 steps</summary>
           <div id="drums" class="drums" aria-label="Drums"></div>
         </details>
         <details class="more-box">
@@ -247,6 +256,8 @@
     <section class="out" aria-label="What you see">
       <div class="stage-wrap">
         <canvas id="viz" width="640" height="280" aria-hidden="true"></canvas>
+        <i id="berty-bob" class="berty-bob" aria-hidden="true"></i>
+        <canvas id="confetti" class="confetti" hidden></canvas>
         <div id="curtain" class="curtain" hidden>
           <p class="kicker">Talent show</p>
           <h2 id="curtain-title">Your song</h2>
@@ -262,10 +273,20 @@
         </div>
       </div>
       <div class="show-progress" aria-hidden="true"><i id="show-bar"></i></div>
-      <div class="transport">
+      <div class="transport" id="transport">
         <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon"></span><span id="play-word">Play</span></button>
-        <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
+        <label class="tempo">Tempo <b id="tempo-read">96</b>
+          <input id="tempo" type="range" min="70" max="160" value="96"/>
+        </label>
+        <button type="button" id="rec-btn" class="btn rec" aria-pressed="false">Record</button>
       </div>
+      <div class="dock" id="dock">
+        <button type="button" id="save-dock" class="btn">Save</button>
+        <button type="button" id="share-btn" class="btn">Share</button>
+        <button type="button" id="wav-btn" class="btn">Save as sound</button>
+        <button type="button" id="midi-out" class="btn">MIDI</button>
+      </div>
+      <p id="share-line" class="share-line" hidden></p>
       <p id="song-title" class="song-title">Your song</p>
       <p id="feel" class="feel">Ready</p>
       <p id="now-line" class="now" aria-live="polite">Press Play. You can leave the sound off.</p>
@@ -275,9 +296,9 @@
         <summary>More ways</summary>
         <p class="hint">You do not need these to hear the song.</p>
         <button type="button" id="along-btn" class="btn" aria-pressed="false">Play along</button>
-        <button type="button" id="rec-btn" class="btn rec" aria-pressed="false">Count, then I play</button>
         <button type="button" id="turn-btn" class="btn">Listen, then my turn</button>
         <button type="button" id="show-btn" class="btn show-go">Perform</button>
+        <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
       </details>
       <p id="saved-line" class="saved" aria-live="polite">Saved</p>
       <button type="button" id="undo-clear" class="btn undo" hidden>Bring it back</button>
@@ -288,10 +309,20 @@
   <aside class="drawer" id="drawer" aria-label="Menu">
     <button type="button" id="menu-close" class="btn close">Close</button>
     <section class="group">
-      <h2>Tempo</h2>
-      <label class="tempo">Speed <b id="tempo-read">96</b>
-        <input id="tempo" type="range" min="70" max="140" value="96"/>
-      </label>
+      <h2>Go</h2>
+      <button type="button" id="menu-songs" class="btn">Song list</button>
+      <button type="button" id="menu-blank" class="btn">Blank staff</button>
+      <button type="button" id="menu-key" class="btn">Tempo and key</button>
+      <button type="button" id="menu-import" class="btn">Bring a file in</button>
+      <button type="button" id="menu-score" class="btn">Score</button>
+      <button type="button" id="menu-band" class="btn">Band</button>
+      <button type="button" id="menu-sound" class="btn">Sound</button>
+      <button type="button" id="menu-lights" class="btn">Lights</button>
+      <button type="button" id="menu-show" class="btn">Perform</button>
+      <button type="button" id="menu-library" class="btn">Library</button>
+    </section>
+    <section class="group">
+      <h2>Blend</h2>
       <label class="tempo">Blend <b id="blend-read">Both</b>
         <input id="blend" type="range" min="0" max="100" value="50" aria-label="Drums or score"/>
       </label>
@@ -363,17 +394,17 @@
     </section>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.26.0</span> ·
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">MU 2.27.0</span> ·
     <a href="./teacher.html">Teacher</a> · <a href="./privacy.html">Privacy</a>
   </p>
 
   <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
   <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.4.1"></script>
-  <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
+  <script src="/shared/visualizer/stage.js?v=0.9.2"></script>
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./import.js?v=1"></script>
-  <script src="./app.js?v=2.26.0f"></script>
+  <script src="./import.js?v=2.27.0"></script>
+  <script src="./app.js?v=2.27.0"></script>
 </body>
 </html>
