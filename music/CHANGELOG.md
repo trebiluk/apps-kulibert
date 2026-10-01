@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.28.0** · 2026-09-30 · channel **live**
+
+Phone landscape keeps Save, Share, Save as sound, and MIDI on the beat workspace, in a compact row above Play.
+
+## Earlier
+
 **Chip: MU 2.27.0** · 2026-09-30 · channel **live**
 
 DJ Berty. Make a beat plays a loop on the first tap. The pad grid, Play, Tempo, and Record stay put. Save, Share, a WAV, and MIDI sit on the workspace. Trap, Lo-fi, Rock, and Marching are style packs. Drums, Bass, Chords, and Melody stack in key. The menu button is a menu. Phone landscape scrolls back to the pads.

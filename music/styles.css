@@ -782,18 +782,30 @@ body.show .transport {
   body.is-beat:not(.show) .stage-wrap,
   body.is-both:not(.show) .stage-wrap,
   body.is-beat:not(.show) #layers-box,
-  body.is-beat:not(.show) .dock,
   body.is-beat:not(.show) #step-hint,
   body.is-beat:not(.show) .songbar,
   #share-line { display: none !important; }
   .songbar, .tabs, #how { display: none !important; }
-  body.is-beat:not(.show) { padding-top: 0.15rem; padding-bottom: 4.2rem; }
+  body.is-beat:not(.show) { padding-top: 0.15rem; padding-bottom: 6.5rem; }
   body.is-beat:not(.show) #drums-pane { display: block !important; }
   body.is-beat:not(.show) .cell { height: 48px !important; min-height: 48px !important; }
   .top { min-height: 40px; }
+  body.is-beat:not(.show) .dock {
+    display: flex !important;
+    bottom: 3.35rem;
+    padding: 0.12rem 0.3rem;
+    gap: 0.25rem;
+    z-index: 26;
+  }
+  body.is-beat:not(.show) .dock .btn {
+    min-height: 36px;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.78rem;
+    box-shadow: 2px 2px 0 #1a140c;
+  }
   body.is-beat:not(.show) .transport .play,
   body.is-beat:not(.show) .transport .btn,
-  body.is-beat:not(.show) .transport .tempo { min-height: 48px; }
+  body.is-beat:not(.show) .transport .tempo { min-height: 44px; }
 }
 @media (max-width: 720px) {
   body.is-home .make-beat { margin-top: 3.4rem; }
