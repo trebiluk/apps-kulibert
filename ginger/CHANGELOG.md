@@ -1,5 +1,9 @@
 # Ginger
 
+## 1.0.4 — 2026-10-01
+- The Tech Room bar replaces the Back to the Hub pill. Home goes to the tiles.
+- Opening the seed plan no longer marks “Studio plan”. A room is recorded when you name it.
+
 ## 1.0.3 — 2026-09-23
 - The chip and the exported file use the same version. The extra script that forced 1.0.2 is gone.
 - Export writes the name, ceiling, room, width, and type you just typed, then keeps the download attached for a Chromebook.

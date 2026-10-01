@@ -68,7 +68,6 @@ function pushHist() {
 function save() {
   try {
     localStorage.setItem(KEY, JSON.stringify({ app: "ginger", ver: VER, ...plan }));
-    if (window.KulibertWho) KulibertWho.mark("ginger", plan.name || "Plan");
   } catch {
     const status = $("status");
     if (status) status.textContent = "Could not save on this Chromebook.";
@@ -83,6 +82,32 @@ function save() {
   }
 }
 
+function recordRoom(name) {
+  const label = String(name || "").trim();
+  if (!label || label === "Room" || label === "Studio") return;
+  const api = window.KulibertWho;
+  if (!api || typeof api.record !== "function") return;
+  let already = false;
+  try { already = sessionStorage.getItem("ginger-room-plan") === "1"; } catch { /* ignore */ }
+  if (already) return;
+  const row = api.record({
+    app: "ginger",
+    version: "v" + VER,
+    event: "job",
+    level: "room-plan",
+    score: 1,
+    max: 1,
+    stars: 1,
+    xp: 5,
+    skill: "drafting",
+    ms: 0,
+  });
+  if (!row) return;
+  try { sessionStorage.setItem("ginger-room-plan", "1"); } catch { /* ignore */ }
+  if (window.KulibertBar && typeof window.KulibertBar.toast === "function") {
+    window.KulibertBar.toast("Saved");
+  }
+}
 function commitOpenFields() {
   const pname = $("pname");
   if (pname) plan.name = String(pname.value || plan.name).slice(0, 40);
@@ -90,7 +115,9 @@ function commitOpenFields() {
   if (ceil) plan.ceilingFt = Math.min(12, Math.max(8, Number(ceil.value) || 9));
   const rn = $("rn");
   if (rn && selected && selected.kind === "room") {
-    nameRoom(plan, selected.id, String(rn.value || "Room").slice(0, 32) || "Room");
+    const name = String(rn.value || "Room").slice(0, 32) || "Room";
+    nameRoom(plan, selected.id, name);
+    recordRoom(name);
   }
   const th = $("th");
   if (th && selected && selected.kind === "line") {
@@ -419,8 +446,10 @@ function props() {
     box.innerHTML = `<label>Room name</label><input id="rn" value="${esc(room.name)}" /><p>${Math.round(room.area)} sf · from the closed walls</p>`;
     $("rn").onchange = (e) => {
       pushHist();
-      nameRoom(plan, room.key, e.target.value.slice(0, 32) || "Room");
+      const name = e.target.value.slice(0, 32) || "Room";
+      nameRoom(plan, room.key, name);
       save();
+      recordRoom(name);
     };
   }
   if (selected.kind === "door" || selected.kind === "window") {

@@ -1922,7 +1922,7 @@
       <h2>Live now</h2>
       <ul class="chips">
         <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.93.2</strong></a></li>
-        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.13.1</strong></a></li>
+        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.13.2</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>BC 1.10.13</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.22.0</strong></a></li>
         <li><a href="/berty-run/">Berty Run <strong>BR 1.12.2</strong></a></li>
@@ -1933,7 +1933,7 @@
 <li><a href="/holdit/">HoldIt <strong>HI 1.1.10</strong></a></li>
         <li><a href="/spancraft/">SpanCraft <strong>SC 1.3.28</strong></a></li>
         <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.27</strong></a></li>
-        <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
+        <li><a href="/ginger/">Ginger <strong>1.0.4</strong></a></li>
         <li><a href="/drawin/">Drawin' <strong>DS 0.3.0</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 2.3.0</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.30</strong></a></li>
@@ -3811,7 +3811,11 @@ document.addEventListener("click", function (event) {
         var host = "";
         try { host = new URL(ev.origin).hostname; } catch (eHost) { return; }
         if (!(host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
-        if (data.type === "kb-app") showPlate(data.app || "App", data.version || "");
+        if (data.type === "kb-app") {
+          showPlate(data.app || "App", data.version || "");
+          var liveFrame = document.getElementById("app-frame");
+          if (liveFrame && ev.source && liveFrame.contentWindow === ev.source) postWho(liveFrame);
+        }
         if (data.type === "kw-record") { paintKeep(); paintProgress(); }
       });
       try {

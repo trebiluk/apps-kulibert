@@ -1,12 +1,25 @@
 /* One Tech Room bar. Inside the Hub it stays quiet and talks to the strip.
-   Standalone, it draws Home, the app plate, the alias, and Help. */
+   Standalone, it draws Home, the app plate, the alias, and Help.
+   A deferred script has no currentScript, and a cross-origin app
+   (baboo.kulibert.net) cannot load /shared from its own origin. */
 (function (root) {
-  var script = document.currentScript;
+  function barScript() {
+    var current = document.currentScript;
+    if (current && current.src && current.src.indexOf("kulibert-bar.js") !== -1) return current;
+    var nodes = document.querySelectorAll("script[src*='kulibert-bar.js']");
+    return nodes.length ? nodes[nodes.length - 1] : current;
+  }
+  var script = barScript();
   var app = (script && script.getAttribute("data-app")) || "";
   var version = (script && script.getAttribute("data-version")) || "";
   var helpSel = (script && script.getAttribute("data-help")) || "";
   var helpFn = null;
   var toastTimer = 0;
+  var assetOrigin = "https://apps.kulibert.net";
+  try {
+    if (script && script.src) assetOrigin = new URL(script.src, location.href).origin;
+  } catch (eOrigin) {}
+  function asset(path) { return assetOrigin + path; }
 
   function classic() {
     try { return localStorage.getItem("tech-room-hub") === "classic"; } catch (e) { return false; }
@@ -20,10 +33,18 @@
       return host === "kulibert.net" || host.slice(-13) === ".kulibert.net" || origin === location.origin;
     } catch (e) { return false; }
   }
+  function ensureCss() {
+    if (document.querySelector("link[data-kb-css]")) return;
+    var link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-01-job");
+    link.setAttribute("data-kb-css", "1");
+    (document.head || document.documentElement).appendChild(link);
+  }
   function ensureWho(done) {
     if (root.KulibertWho) { done(); return; }
     var s = document.createElement("script");
-    s.src = "/shared/kw-who.js?v=2026-10-01-connected";
+    s.src = asset("/shared/kw-who.js?v=2026-10-01-job");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -39,6 +60,7 @@
     node.textContent = on && who ? who.alias : "Sign in";
   }
   function toast(text) {
+    ensureCss();
     var el = document.getElementById("kb-toast");
     if (!el) {
       el = document.createElement("p");
@@ -50,7 +72,7 @@
     el.hidden = false;
     el.textContent = String(text || "").slice(0, 80);
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { el.hidden = true; }, 1600);
+    toastTimer = setTimeout(function () { el.hidden = true; }, 2800);
   }
   function openHelp() {
     if (typeof helpFn === "function") { helpFn(); return; }
@@ -88,7 +110,7 @@
     if (!document.getElementById("tw-session-boot")) {
       var shim = document.createElement("script");
       shim.id = "tw-session-boot";
-      shim.src = "/shared/tw-session.js?v=2026-10-01-connected";
+      shim.src = asset("/shared/tw-session.js?v=2026-10-01-job");
       (document.head || document.documentElement).appendChild(shim);
     }
     return;
@@ -97,16 +119,14 @@
   document.documentElement.setAttribute("data-kb-bar", "1");
   if (framed()) {
     document.documentElement.classList.add("kb-framed");
+    ensureCss();
     postUp({ type: "kb-app", app: app, version: version, help: !!helpSel || true });
     return;
   }
 
   function draw() {
     if (document.querySelector(".kb-bar")) return;
-    var link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = "/shared/kulibert-bar.css?v=2026-10-01-connected";
-    document.head.appendChild(link);
+    ensureCss();
     var bar = document.createElement("div");
     bar.className = "kb-bar";
     bar.innerHTML = [

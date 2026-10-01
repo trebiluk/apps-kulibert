@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Ginger 1.0.3 — floor plan</title>
+  <title>Ginger 1.0.4 — floor plan</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body data-theme="paper">
@@ -15,7 +15,7 @@
         <path d="M8 22 L16 8 L24 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
       </svg>
       <span class="brand">GINGER</span>
-      <span class="chip" id="chip" title="version">v1.0.3</span>
+      <span class="chip" id="chip" title="version">v1.0.4</span>
       <nav class="tools" aria-label="Draw tools">
         <button type="button" data-tool="select" aria-pressed="true">Select</button>
         <button type="button" data-tool="wall">Wall</button>
@@ -30,9 +30,9 @@
       <button type="button" id="lab3d" aria-pressed="false">3D peek</button>
       <button type="button" id="export">Export</button>
       <button type="button" id="imp">Import</button>
-      <details class="help">
+      <details class="help" id="ginger-help">
         <summary>Help</summary>
-        <p>What’s new in 1.0.3: Export includes the name you just typed, and the file matches this chip. Stark paper stays the default. Plans stay on this Chromebook.</p>
+        <p>What’s new in 1.0.4: Home is the Tech Room bar. A room is saved when you name it, not when the page opens. Stark paper stays the default. Plans stay on this Chromebook.</p>
       </details>
       <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
     </header>
@@ -63,11 +63,11 @@
     </main>
     <footer class="foot">
       <span id="status">Select a wall, door, window, room, or corner.</span>
-      <span class="whats">What’s new: 1.0.3 export keeps the fields you typed.</span>
+      <span class="whats">What’s new: 1.0.4 names a room, then saves that check.</span>
       <span class="quiet">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
-  <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-01-job" data-app="ginger" data-version="v1.0.4" data-help="#ginger-help" defer></script>
   <script type="module" src="./app.js"></script>
 </body>
 </html>
