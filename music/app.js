@@ -1295,7 +1295,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.31.0",
+        version: "MU 2.32.0",
         event: event,
         level: String(level || "beat").slice(0, 40),
         score: score,

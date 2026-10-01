@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.32.0** · 2026-10-01 · channel **live**
+
+The Hub bar loads for this door as musiclab. There is no typed name. Sign-in stays on the Hub.
+
+## Earlier
+
 **Chip: MU 2.31.0** · 2026-10-01 · channel **live**
 
 This door is wired to TechWorks. A finished beat saves a musiclab score and a tile line. Practice done sends a clear. Sound settings load and save with the TechWorks code. The Hub plate reads DJ Berty.
