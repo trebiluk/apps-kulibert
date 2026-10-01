@@ -97,13 +97,27 @@ const TOOLS = [
   ["hand", "H", "Hand", "M8 11V6M12 11V4M16 11V6M8 11c0 5 2 8 4 8s6-3 6-7v-1"],
 ];
 
-const SWATCHES = ["#1c1915", "#f4f0e6", "#d08a2d", "#8f4a32", "#3d5a4c", "#24344c", "#a33b32", "#e7d7b1"];
+const SWATCHES = [
+  ["#1c1915", "Ink"],
+  ["#f4f0e6", "Paper"],
+  ["#d08a2d", "Brass"],
+  ["#8f4a32", "Rust"],
+  ["#3d5a4c", "Pine"],
+  ["#24344c", "Navy"],
+  ["#a33b32", "Brick"],
+  ["#e7d7b1", "Sand"],
+];
+const KID = { Node: "Points", Path: "Shape tools", "Distribute H": "Space out ↔", "Distribute V": "Space out ↕" };
+function kidWord(label) {
+  return KID[label] || label;
+}
 
 function uid() {
   return "i" + (seq++).toString(36);
 }
 function toast(msg) {
   hintEl.textContent = msg;
+  if (window.KulibertPrefs && document.documentElement.getAttribute("data-kp-read") === "1") KulibertPrefs.say(msg);
 }
 function activeLayer() {
   return state.doc.layers.find((l) => l.id === state.doc.active) || state.doc.layers[0];
@@ -1977,6 +1991,7 @@ function setTool(id) {
   stage.classList.toggle("tool-hand", id === "hand");
   for (const btn of toolsEl.querySelectorAll(".tool")) btn.setAttribute("aria-pressed", btn.dataset.tool === id ? "true" : "false");
   hintEl.textContent = HINTS[id] || "";
+  if (window.KulibertPrefs) KulibertPrefs.say(HINTS[id] || "");
   renderOverlay();
   renderInspector();
 }
@@ -2017,7 +2032,8 @@ function renderChrome() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "menu-btn";
-    btn.textContent = name;
+    btn.textContent = kidWord(name);
+    btn.title = name === kidWord(name) ? name : name;
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const was = btn.getAttribute("aria-expanded") === "true";
@@ -2046,7 +2062,7 @@ function renderChrome() {
     menusEl.appendChild(btn);
   }
   toolsEl.innerHTML = TOOLS.map(([id, key, label, d]) =>
-    `<button type="button" class="tool" data-tool="${id}" aria-pressed="${id === state.tool}" title="${label} (${key})" aria-label="${label}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg></button>`,
+    `<button type="button" class="tool" data-tool="${id}" aria-pressed="${id === state.tool}" title="${label} (${key})" aria-label="${kidWord(label)} ${key}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg><span class="tw">${kidWord(label)} ${key}</span></button>`,
   ).join("");
   toolsEl.onclick = (e) => {
     const btn = e.target.closest(".tool");
@@ -2081,7 +2097,7 @@ function renderInspector() {
   const b = items.length ? unionBBox(items.map(itemBBox)) : null;
   inspector.innerHTML = `
     <h3>${items.length ? `${items.length} selected` : "Style"}</h3>
-    <div class="swatches">${SWATCHES.map((c) => `<button type="button" class="swatch${activeFill === c ? " on" : ""}" data-swatch="${c}" style="background:${c}" aria-label="${c}"></button>`).join("")}</div>
+    <div class="swatches">${SWATCHES.map(([c, name]) => `<button type="button" class="swatch${activeFill === c ? " on" : ""}" data-swatch="${c}" style="background:${c}" aria-label="${name}" title="${name}">${activeFill === c ? "✓" : ""}</button>`).join("")}</div>
     <div class="row">
       <label>Fill <input data-field="fill" type="color" value="${esc(fillSolid && fillSolid !== "none" ? fillSolid : "#1c1915")}"></label>
       <button type="button" class="mini" data-act="no-fill">None</button>
@@ -2414,6 +2430,7 @@ function boot() {
   requestAnimationFrame(() => { fitPage(); markScroll(); });
   renderInspector();
   hintEl.textContent = HINTS.select;
+  if (window.KulibertPrefs) KulibertPrefs.say(HINTS.select);
 }
 
 boot();

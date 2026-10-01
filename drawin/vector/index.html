@@ -17,6 +17,7 @@
   </head>
   <body class="panel-open">
     <p id="ds-prompt">Draw a robot face. Tap Save when done.</p>
+    <p class="ds-ar" lang="ar" dir="rtl" hidden>ارسم وجهاً. ثم احفظ.</p>
     <div id="app">
       <header id="bar">
         <div class="brand">Drawin' <em>Vector</em></div>
@@ -47,7 +48,7 @@
       </div>
       <aside id="inspector" aria-label="Properties"></aside>
       <footer id="status">
-        <span id="hint"></span>
+        <span id="hint" role="status"></span>
         <span id="coords"></span>
       </footer>
     </div>
@@ -69,6 +70,7 @@
     </div>
     <button type="button" id="ds-help" aria-label="Help">?</button>
     <script>window.__dsStart = Date.now();</script>
+    <script src="/shared/kulibert-prefs.js?v=2026-10-01-settings"></script>
     <script src="/shared/kulibert-bar.js?v=2026-10-01-connected" data-app="drawin" data-version="DS 0.3.0" data-help="#ds-help" defer></script>
     <script src="/shared/kw-who.js?v=2026-10-01-connected"></script>
     <script src="./vendor/paper-full.min.js"></script>

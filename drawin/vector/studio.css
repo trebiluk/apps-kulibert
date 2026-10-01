@@ -348,7 +348,35 @@ input[type="color"] {
   border-radius: 50%;
   border: 1px solid var(--line);
 }
-.swatch.on { box-shadow: 0 0 0 2px var(--ink-2), 0 0 0 4px var(--brass); }
+html[data-kp-size="L"] .mini,
+html[data-kp-size="XL"] .mini,
+html[data-kp-size="L"] select,
+html[data-kp-size="XL"] select,
+html[data-kp-size="L"] .swatch,
+html[data-kp-size="XL"] .swatch,
+html[data-kp-size="L"] .layer-btn,
+html[data-kp-size="XL"] .layer-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+html[data-kp-size="L"],
+html[data-kp-size="XL"],
+html[data-kp-lang="ar"] { --rail: 96px; }
+html[data-kp-size="L"] .tool .tw,
+html[data-kp-size="XL"] .tool .tw,
+html[data-kp-lang="ar"] .tool .tw {
+  display: block;
+  font-size: .75rem;
+  line-height: 1.1;
+  text-align: center;
+}
+html[data-kp-lang="ar"] .ds-ar { display: block !important; }
+.tool { height: auto; min-height: 44px; }
+.swatch { forced-color-adjust: none; color: #000; font-weight: 800; }
+html[data-kp-contrast="1"] #bar,
+html[data-kp-contrast="1"] #tools,
+html[data-kp-contrast="1"] #inspector { background: #000; color: #ffe14a; }
+#app { overflow: hidden; }
 .actions {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

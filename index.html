@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-01-connected"/>
+<meta name="tech-room-rev" content="2026-10-01-settings"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -694,7 +694,22 @@
       outline:2px solid var(--ring);outline-offset:2px;
     }
     body:not(.hub-classic) #alpha-board a[data-staff="1"]{display:none !important}
-    .tile .blurb{display:block;font-size:.68rem;font-weight:550;line-height:1.15;opacity:.82}
+    .tile .blurb{display:block;font-size:14px;font-weight:550;line-height:1.15;opacity:.82}
+    .style-k,.shell-chip,.hub-tools button{font-size:14px}
+    #my-settings{min-height:44px;min-width:44px;padding:0 .8rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 14px/1 Outfit,system-ui,sans-serif;cursor:pointer}
+    #kp-panel{margin:.4rem 0;padding:.7rem;border:1px solid #1e3a55;border-radius:14px;background:#0c1730;max-width:40rem}
+    #kp-panel[hidden]{display:none !important}
+    #kp-panel .kp-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.35rem 0}
+    #kp-panel button,#kp-panel .kp-row button{min-height:44px;min-width:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 14px/1 Outfit,system-ui,sans-serif}
+    #kp-panel button[aria-pressed="true"]{background:#ffe14a;color:#000}
+    #kp-help{font-size:14px;margin:.4rem 0}
+    .kp-cards{display:flex;flex-wrap:wrap;gap:.5rem}
+    .kp-cards article{width:8.5rem;min-height:7rem;border:1px solid #24506d;border-radius:12px;padding:.4rem;background:#050814}
+    .kp-cards p{margin:.2rem 0 0;font-size:14px}
+    .kp-cards svg{width:64px;height:40px;display:block}
+    body.hub-classic #my-settings,body.hub-classic #kp-panel,body.hub-classic #kp-help,body.hub-classic .kp-cards{display:none !important}
+    html[data-kp-contrast="1"] body.apps-always,html[data-kp-contrast="1"] .shell,html[data-kp-contrast="1"] .shell-header,html[data-kp-contrast="1"] a.tile{background:#000 !important;color:#fff !important;border-color:#ffe14a !important}
+    :focus-visible{outline:3px solid #ffe14a;outline-offset:2px}
     body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic #progress{display:none !important}
     .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8f7ff}
     .kb-help,.kb-settings{min-width:44px;min-height:44px;height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
@@ -731,7 +746,7 @@
       width:min(calc(100% - 1.5rem),28rem);
     }
     .search input{
-      width:100%;height:3rem;min-height:44px;border:0;border-radius:999px;outline:none;
+      width:100%;height:3rem;min-height:44px;border:0;border-radius:999px;
       padding:0 1rem 0 2.7rem;color:var(--foreground);font:inherit;font-size:1rem;font-weight:500;
       background:color-mix(in srgb,var(--secondary) 92%,transparent);
       border:1px solid color-mix(in srgb,var(--primary) 28%,transparent);
@@ -1482,11 +1497,11 @@
     /* Header row: one pill, then the icon ribbon, Home and More pinned right. */
     body.apps-always .dock-clip,
     body.apps-always:not(.is-framed) .dock-clip{
-      display:flex !important;flex:1 1 auto;min-width:0;height:36px;max-height:36px;
+      display:flex !important;flex:1 1 auto;min-width:0;height:44px;max-height:44px;
       align-items:center;overflow:hidden;
     }
     body.apps-always:not(.is-framed) .shell-header{
-      flex:0 0 40px !important;height:40px !important;min-height:40px !important;max-height:40px !important;
+      flex:0 0 48px !important;height:48px !important;min-height:48px !important;max-height:48px !important;
       margin:0 !important;padding:0 .4rem !important;
       border-bottom:1px solid #16324f !important;
       overflow:visible !important;flex-wrap:nowrap !important;gap:.3rem;
@@ -1494,11 +1509,11 @@
     body.apps-always .shell-header .app-dock{
       flex:1 1 auto;width:100% !important;max-width:100%;
       justify-content:space-evenly;gap:0;overflow:hidden;
-      flex-wrap:nowrap !important;height:36px;
+      flex-wrap:nowrap !important;height:44px;
     }
     body.apps-always .shell-header .app-dock-item{
-      flex:1 1 0;width:auto;min-width:0;max-width:46px;
-      height:32px;min-height:32px;padding:0;
+      flex:1 1 0;width:auto;min-width:44px;max-width:48px;
+      height:44px;min-height:44px;padding:0;
     }
     body.apps-always .shell-header #shell-home,
     body.apps-always .shell-header .edge-pocket{
@@ -1526,7 +1541,7 @@
       body.apps-always .dock-clip,
       body.apps-always:not(.is-framed) .dock-clip,
       body.apps-always.is-framed .dock-clip{
-        display:flex !important;flex:1 1 auto;min-width:0;height:40px;max-height:40px;
+        display:flex !important;flex:1 1 auto;min-width:0;height:44px;max-height:44px;
         overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;
         scroll-snap-type:x mandatory;scrollbar-width:none;
         -webkit-mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent);
@@ -1535,12 +1550,12 @@
       body.apps-always .dock-clip::-webkit-scrollbar{display:none;height:0}
       body.apps-always .shell-header .app-dock,
       body.apps-always.is-framed .shell-header .app-dock{
-        width:max-content !important;max-width:none;height:40px;max-height:40px;
+        width:max-content !important;max-width:none;height:44px;max-height:44px;
         justify-content:flex-start;gap:6px;overflow:visible !important;flex-wrap:nowrap !important;
       }
       body.apps-always .shell-header .app-dock-item{
-        flex:0 0 40px !important;width:40px !important;min-width:40px !important;max-width:40px !important;
-        height:40px !important;min-height:40px !important;scroll-snap-align:start;
+        flex:0 0 44px !important;width:44px !important;min-width:44px !important;max-width:44px !important;
+        height:44px !important;min-height:44px !important;scroll-snap-align:start;
       }
       body.apps-always .shell-header .app-dock-item img{width:28px !important;height:28px !important}
       body.apps-always .shell-header #shell-home,
@@ -1556,6 +1571,7 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-01-settings"></script>
 </head>
 <body class="apps-always">
   <div class="shell" id="hub-shell">
@@ -1649,7 +1665,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-01-connected</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-01-settings</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.28.0</strong> — Make a beat plays at once. Save, share, and the sound stay on the page, including phone landscape.</p>
@@ -1660,6 +1676,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.0</strong> — One THROW. A real arc. Aim and power matter.</p>
           <ul id="hub-log">
+            <li>My settings: one text size, contrast, sound, and language for every app.</li>
             <li>One sign-in. Your alias rides into every door. More, then My progress.</li>
             <li>Staff tools moved to More > Staff.</li>
             <li>Fresh icons: arcade Berty's Run, a real Drawin' icon, a TechWorks badge, and every icon fills its tile.</li>
@@ -1711,8 +1728,38 @@
         <button type="button" class="style-swatch" data-style="space" aria-label="Space"></button>
         <button type="button" class="style-swatch" data-style="berty" aria-label="Berty"></button>
         <span class="style-note" id="style-note" hidden>Saved on this Chromebook.</span>
+        <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel">My settings</button>
       </div>
     </div>
+    <p id="kp-help">Pick a size. Your apps can use it.</p>
+    <section id="kp-panel" hidden role="dialog" aria-modal="true" aria-labelledby="kp-title">
+      <h2 id="kp-title">My settings</h2>
+      <div class="kp-row" role="group" aria-label="Text size">
+        <span>Text size</span>
+        <button type="button" data-size="S">S</button>
+        <button type="button" data-size="M" aria-pressed="true">M</button>
+        <button type="button" data-size="L">L</button>
+        <button type="button" data-size="XL">XL</button>
+      </div>
+      <div class="kp-row">
+        <button type="button" id="kp-contrast" aria-pressed="false">High contrast</button>
+        <button type="button" id="kp-motion" aria-pressed="false">Less motion</button>
+        <button type="button" id="kp-sound" aria-pressed="true">Sound</button>
+        <button type="button" id="kp-captions" aria-pressed="true">Show words for sounds and speech</button>
+        <button type="button" id="kp-read" aria-pressed="false">Read it to me</button>
+      </div>
+      <div class="kp-row" role="group" aria-label="Help language">
+        <span>Help language</span>
+        <button type="button" id="kp-en" aria-pressed="true">English</button>
+        <button type="button" id="kp-ar" aria-pressed="false">العربية</button>
+      </div>
+      <div class="kp-cards" aria-label="Picture cards">
+        <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M4 28h56M8 28V16h10l6 8h16l6-8h10v12" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>bridge</bdi></p><p lang="ar" dir="rtl">جسر</p></article>
+        <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M8 20h36M36 12l12 8-12 8" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>force</bdi></p><p lang="ar" dir="rtl">قوة</p></article>
+        <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M32 6L56 34H8z" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>triangle</bdi></p><p lang="ar" dir="rtl">مثلث</p></article>
+      </div>
+      <div class="kp-row"><button type="button" id="kp-close">Close</button></div>
+    </section>
     <section id="progress" hidden aria-label="My progress"></section>
     <div class="groups" id="app-groups">
       <section class="group" id="alpha-group" data-group="alpha" hidden>
@@ -3518,6 +3565,13 @@
       function openFrame(href, title, fromPop, replace) {
         href = schoolHref(href);
         if (!href) return;
+        try {
+          var door = new URL(href, location.href);
+          if (/^baboo\.kulibert\.net$|^tw\.kulibert\.net$/.test(door.hostname) && window.KulibertPrefs) {
+            door.hash = "kp=" + KulibertPrefs.code();
+            href = door.href;
+          }
+        } catch (eKp) {}
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         if (!frame) return;
@@ -3886,6 +3940,74 @@ document.addEventListener("click", function (event) {
 
       paint();
       paintCuts();
+      (function wireSettings() {
+        var btn = document.getElementById("my-settings");
+        var panel = document.getElementById("kp-panel");
+        var help = document.getElementById("kp-help");
+        if (!btn || !panel || !window.KulibertPrefs) return;
+        var HELP = {
+          en: "Pick a size. Your apps can use it.",
+          ar: "اختر الحجم. التطبيقات تستخدمه."
+        };
+        function prefs() { return KulibertPrefs.get(); }
+        function paintSettings() {
+          var p = prefs();
+          panel.querySelectorAll("[data-size]").forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-size") === p.size ? "true" : "false");
+          });
+          document.getElementById("kp-contrast").setAttribute("aria-pressed", p.contrast ? "true" : "false");
+          document.getElementById("kp-motion").setAttribute("aria-pressed", p.motion === "less" ? "true" : "false");
+          document.getElementById("kp-sound").setAttribute("aria-pressed", p.sound ? "true" : "false");
+          document.getElementById("kp-captions").setAttribute("aria-pressed", p.captions ? "true" : "false");
+          document.getElementById("kp-read").setAttribute("aria-pressed", p.read ? "true" : "false");
+          document.getElementById("kp-en").setAttribute("aria-pressed", p.lang === "en" ? "true" : "false");
+          document.getElementById("kp-ar").setAttribute("aria-pressed", p.lang === "ar" ? "true" : "false");
+          if (help) {
+            help.textContent = HELP[p.lang] || HELP.en;
+            if (p.lang === "ar") { help.lang = "ar"; help.dir = "rtl"; }
+            else { help.lang = "en"; help.dir = "ltr"; }
+          }
+          document.querySelectorAll("a.tile").forEach(function (a) {
+            var href = a.getAttribute("href") || "";
+            if (!/baboo\.kulibert\.net|tw\.kulibert\.net/.test(href)) return;
+            a.setAttribute("href", href.split("#")[0] + "#kp=" + KulibertPrefs.code());
+          });
+        }
+        function shut() {
+          panel.hidden = true;
+          btn.setAttribute("aria-expanded", "false");
+        }
+        btn.addEventListener("click", function () {
+          panel.hidden = !panel.hidden;
+          btn.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
+          if (!panel.hidden) {
+            var first = panel.querySelector("button");
+            if (first) first.focus();
+          }
+        });
+        panel.addEventListener("click", function (event) {
+          var t = event.target.closest("button");
+          if (!t) return;
+          if (t.id === "kp-close") { shut(); return; }
+          if (t.hasAttribute("data-size")) KulibertPrefs.set({ size: t.getAttribute("data-size") });
+          if (t.id === "kp-contrast") KulibertPrefs.set({ contrast: t.getAttribute("aria-pressed") !== "true" });
+          if (t.id === "kp-motion") KulibertPrefs.set({ motion: t.getAttribute("aria-pressed") === "true" ? "full" : "less" });
+          if (t.id === "kp-sound") KulibertPrefs.set({ sound: t.getAttribute("aria-pressed") !== "true" });
+          if (t.id === "kp-captions") KulibertPrefs.set({ captions: t.getAttribute("aria-pressed") !== "true" });
+          if (t.id === "kp-read") {
+            var on = t.getAttribute("aria-pressed") !== "true";
+            KulibertPrefs.set({ read: on });
+            if (on) KulibertPrefs.say(help.textContent);
+          }
+          if (t.id === "kp-en") KulibertPrefs.set({ lang: "en" });
+          if (t.id === "kp-ar") KulibertPrefs.set({ lang: "ar" });
+          paintSettings();
+        });
+        document.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && !panel.hidden) shut();
+        });
+        paintSettings();
+      })();
       loadSchool();
       setInterval(loadSchool, POLL);
       document.addEventListener("visibilitychange", function () {

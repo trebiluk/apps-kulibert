@@ -12,3 +12,4 @@ button, a, input, select, textarea, .chip, .pill-btn { -webkit-tap-highlight-col
 }
 .now-do { font-weight: 800; margin: 0 0 8px; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.sr:focus { position: fixed; left: 8px; top: 8px; width: auto; height: auto; clip: auto; overflow: visible; background: #000; color: #fff; padding: 8px 12px; z-index: 80; }

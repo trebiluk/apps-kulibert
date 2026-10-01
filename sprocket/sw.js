@@ -1,4 +1,4 @@
-const CACHE = "sprocket-v1.5.0";
+const CACHE = "sprocket-v1.5.0-access";
 const FILES = ["./", "./index.html", "./styles.css", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {

@@ -151,7 +151,7 @@
       ".tw-menu[hidden]{display:none !important}",
       ".tw-menu button{height:36px;border:0;border-radius:8px;background:transparent;color:inherit;text-align:left;padding:0 .65rem;font:650 .8rem/1 system-ui,sans-serif;cursor:pointer}",
       ".tw-menu button:hover,.tw-menu button:focus-visible{background:#123049}",
-      "@media (max-width:700px){.tw-who,.tw-app-status.is-in{max-width:11rem}}",
+      "@media (max-width:700px){.tw-app-bar{left:0;right:0;top:0;width:100%;height:48px;padding:0 .4rem;background:#050814;justify-content:space-between}body:has(.tw-app-bar){padding-top:48px}}",
       "html[data-hub-theme=graph] .tw-pill,html[data-hub-theme=spa] .tw-pill,html[data-hub-theme=nature] .tw-pill,html[data-hub-theme=peaks] .tw-pill,html[data-hub-theme=graph] .tw-menu,html[data-hub-theme=spa] .tw-menu,html[data-hub-theme=nature] .tw-menu,html[data-hub-theme=peaks] .tw-menu{background:#fffdf8;color:#1c1915;border-color:#2c2824}",
       "html[data-hub-theme=graph] .tw-face,html[data-hub-theme=spa] .tw-face,html[data-hub-theme=nature] .tw-face,html[data-hub-theme=peaks] .tw-face{background:#efeae0}",
       "html[data-hub-theme=graph] .tw-menu button:hover,html[data-hub-theme=spa] .tw-menu button:hover,html[data-hub-theme=nature] .tw-menu button:hover,html[data-hub-theme=peaks] .tw-menu button:hover{background:#efeae0}",
