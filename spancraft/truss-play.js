@@ -49,6 +49,8 @@ export function mountTruss(cfg) {
     fixLine: "",
     scale: 1,
     origin: { x: 40, y: 40 },
+    openedAt: Date.now(),
+    sentScore: {},
   };
 
   const art = {};
@@ -174,30 +176,6 @@ export function mountTruss(cfg) {
       stars: state.stars,
       bestStars: state.bestStars,
     });
-    try {
-      var whoApi = window.KulibertWho;
-      var who = whoApi && whoApi.read ? whoApi.read() : null;
-      var codeOk = who && who.verified === true && /^[A-Z2-9]{5}$/.test(String(who.code || ""));
-      if (whoApi && cfg.twApp && codeOk && whoApi.active && whoApi.active()) {
-        var job = active();
-        var jobName = job && (job.name || job.title || job.id) || state.levelId;
-        if (state.cleared && state.cleared[state.levelId] && whoApi.record) {
-          whoApi.record({
-            app: cfg.twApp,
-            version: cfg.twApp === "spancraft" ? "SC 1.3.28" : "SL 1.3.27",
-            event: "clear",
-            level: state.levelId,
-            score: state.stars && state.stars[state.levelId] ? state.stars[state.levelId] : 1,
-            max: 3,
-            stars: state.stars && state.stars[state.levelId] ? state.stars[state.levelId] : 1,
-            xp: 10,
-            skill: "build"
-          });
-        } else if (whoApi.mark) {
-          whoApi.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
-        }
-      }
-    } catch (eMark) {}
     if (cfg.partFlag && pathClear()) {
       writeFlag(cfg.partFlag, true);
       if (cfg.pairFlag && cfg.retireFlag && readFlag(cfg.pairFlag)) writeFlag(cfg.retireFlag, true);
@@ -965,6 +943,7 @@ export function mountTruss(cfg) {
     state.hadMiss = false;
     state.fixLine = "";
     state.hot = null;
+    state.openedAt = Date.now();
     cloneLevel(active());
     state.phase = "idle";
     armRetry(false);
@@ -1082,6 +1061,42 @@ export function mountTruss(cfg) {
     }, opts));
   }
 
+  function shipClear(level, stars) {
+    if (!cfg.twApp || !level) return null;
+    const id = String(level.id || "");
+    if (!id || state.sentScore[id]) return null;
+    const api = window.KulibertWho;
+    if (!api) return null;
+    const earned = Math.max(1, Math.min(4, stars || 1));
+    const star = earned >= 4 ? 3 : earned;
+    const ms = Math.max(0, Date.now() - (state.openedAt || Date.now()));
+    let row = null;
+    try {
+      if (typeof api.record === "function") {
+        row = api.record({
+          app: cfg.twApp,
+          version: String(cfg.version || ""),
+          event: "score",
+          level: id,
+          score: earned,
+          max: 4,
+          stars: star,
+          xp: earned * 2,
+          skill: "structures",
+          ms: ms,
+        });
+      } else if (typeof api.mark === "function") {
+        row = api.mark(cfg.twApp, ("Clear " + (level.name || id)).slice(0, 32));
+      }
+    } catch (eScore) {}
+    if (!row) return null;
+    state.sentScore[id] = true;
+    if (window.KulibertBar && typeof window.KulibertBar.toast === "function") {
+      window.KulibertBar.toast("Saved");
+    }
+    return row;
+  }
+
   function finish(result) {
     state.phase = "idle";
     state.view = null;
@@ -1130,6 +1145,7 @@ export function mountTruss(cfg) {
       }
       setStatus(fixed ? "You fixed it" : "CLEAR", line, "pass");
       showPlate(fixed ? "You fixed it" : "CLEAR", line, "✓");
+      shipClear(level, stars);
     }
     if (state.bet) {
       const saidHold = state.bet === "hold";

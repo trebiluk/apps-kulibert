@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.28** · 2026-10-01 · channel **live**
+**Chip: SC 1.3.29** · 2026-10-01 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.29 — Score — 2026-10-01
+
+- What’s new: A clear sends your score. Sign in stays the Hub button. You do not type a name.
 
 ## 1.3.28 — Phone sideways — 2026-10-01
 

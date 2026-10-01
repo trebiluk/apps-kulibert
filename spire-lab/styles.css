@@ -1121,4 +1121,21 @@ html:not([data-theme="classic"]) .top > .tw-app-bar { margin-left: auto; }
   }
 }
 
+body.kb-on .shell { height: calc(100dvh - 48px); }
+html.kb-framed .shell { height: 100dvh; margin-top: 0; }
+@media (orientation: landscape) and (max-height: 500px) {
+  html:not(.kb-framed):not([data-theme="classic"]) body.kb-on { padding-top: 0; }
+  html:not(.kb-framed):not([data-theme="classic"]) .shell {
+    height: calc(100dvh - 48px);
+    margin-top: 48px;
+  }
+  html:not(.kb-framed):not([data-theme="classic"]) .top,
+  html:not(.kb-framed):not([data-theme="classic"]) .caption,
+  html:not(.kb-framed):not([data-theme="classic"]) .kinds,
+  html:not(.kb-framed):not([data-theme="classic"]) .assist-plate.show,
+  html:not(.kb-framed):not([data-theme="classic"]) .land-drawer {
+    top: 48px;
+  }
+}
+
 
