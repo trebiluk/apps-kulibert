@@ -363,7 +363,8 @@ export function mountTruss(cfg) {
     capWord.textContent = word;
     capText.textContent = text;
     if (capMark) capMark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
-    caption.className = "caption" + (tone ? " " + tone : "");
+    const open = caption.classList.contains("is-open");
+    caption.className = "caption" + (tone ? " " + tone : "") + (open ? " is-open" : "");
     maybeSay(word, text);
   }
   function starPhrase(n) {
@@ -542,10 +543,17 @@ export function mountTruss(cfg) {
     setStatus("Job " + level.n, level.job, "");
   }
 
+  function classicTheme() {
+    return document.documentElement.dataset.theme === "classic";
+  }
+  function shortLand() {
+    return window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+  }
   function resize() {
     const rect = canvas.getBoundingClientRect();
-    cssW = Math.max(320, rect.width);
-    cssH = Math.max(240, rect.height);
+    const classic = classicTheme();
+    cssW = Math.max(classic ? 320 : 1, rect.width || 0);
+    cssH = classic ? Math.max(240, rect.height || 0) : Math.max(1, rect.height || 0);
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
@@ -572,13 +580,29 @@ export function mountTruss(cfg) {
     }
     const bw = Math.max(80, maxX - minX);
     const bh = Math.max(80, maxY - minY);
-    const padX = cssW < 520 ? 36 : 80;
-    const padTop = cssW < 520 ? 28 : 48;
-    const padBot = cssW < 520 ? Math.max(88, Math.round(cssH * 0.22)) : 200;
-    state.scale = Math.min((cssW - padX) / bw, (cssH - padTop - padBot) / bh);
+    const classic = classicTheme();
+    const narrow = cssW < 520;
+    let padX = narrow ? 36 : 80;
+    let padTop = narrow ? 28 : 48;
+    let padBot = narrow ? Math.max(88, Math.round(cssH * 0.22)) : 200;
+    if (!classic) {
+      if (narrow) padX = 88;
+      if (shortLand()) {
+        padX = Math.min(64, Math.max(24, cssW * 0.04));
+        padTop = Math.min(64, Math.max(56, cssH * 0.14));
+        padBot = Math.min(200, Math.max(72, cssH * 0.22));
+      }
+      if (cssH - padTop - padBot < 48) {
+        padTop = Math.min(padTop, Math.max(8, cssH * 0.12));
+        padBot = Math.max(8, cssH - padTop - 48);
+      }
+    }
+    const innerW = Math.max(48, cssW - padX);
+    const innerH = Math.max(48, cssH - padTop - padBot);
+    state.scale = Math.max(0.05, Math.min(innerW / bw, innerH / bh));
     state.origin = {
       x: (cssW - bw * state.scale) / 2 - minX * state.scale,
-      y: padTop + (cssH - padTop - padBot - bh * state.scale) / 2 - minY * state.scale,
+      y: padTop + Math.max(0, (innerH - bh * state.scale) / 2) - minY * state.scale,
     };
   }
   function toScreen(p) {
@@ -1391,6 +1415,120 @@ export function mountTruss(cfg) {
     return /(?:\?|&)stay=1(?:&|$)/.test(location.search);
   }
 
+  function rememberHome(el) {
+    if (!el || el.__home) return;
+    el.__home = { parent: el.parentNode, next: el.nextSibling };
+  }
+  function restoreHome(el) {
+    if (!el || !el.__home || !el.__home.parent) return;
+    const home = el.__home;
+    if (home.next && home.next.parentNode === home.parent) home.parent.insertBefore(el, home.next);
+    else home.parent.appendChild(el);
+  }
+  function landPieces() {
+    return [
+      document.querySelector(".top-actions"),
+      document.querySelector(".track"),
+      document.querySelector(".edge-pocket"),
+      document.getElementById("access-gear"),
+      document.getElementById("read-line"),
+    ].filter(Boolean);
+  }
+  function parkWho() {
+    const bar = document.querySelector(".tw-app-bar");
+    if (!bar) return;
+    const park = document.getElementById("who-park");
+    const kinds = document.getElementById("kinds");
+    const top = document.querySelector(".top");
+    const actions = document.querySelector(".top-actions");
+    const portrait = window.matchMedia("(max-width: 720px) and (orientation: portrait)").matches;
+    if (!classicTheme() && shortLand() && park) {
+      if (bar.parentElement !== park) park.appendChild(bar);
+      return;
+    }
+    if (!classicTheme() && portrait && kinds) {
+      if (bar.parentElement !== kinds) kinds.insertBefore(bar, kinds.firstChild);
+      return;
+    }
+    if (!classicTheme() && top) {
+      const before = actions && actions.parentElement === top ? actions : null;
+      if (bar.parentElement !== top) {
+        if (before) top.insertBefore(bar, before);
+        else top.appendChild(bar);
+      }
+      return;
+    }
+    if (bar.parentElement !== document.body) document.body.appendChild(bar);
+  }
+  function mountLand() {
+    if (classicTheme()) return;
+    const pocket = document.querySelector(".pocket");
+    if (!pocket || document.getElementById("land-menu")) return;
+    const menu = document.createElement("button");
+    menu.type = "button";
+    menu.id = "land-menu";
+    menu.className = "land-menu";
+    menu.setAttribute("aria-expanded", "false");
+    menu.setAttribute("aria-controls", "land-drawer");
+    menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menu';
+    pocket.insertBefore(menu, pocket.firstChild);
+    const drawer = document.createElement("div");
+    drawer.id = "land-drawer";
+    drawer.className = "land-drawer";
+    drawer.hidden = true;
+    drawer.innerHTML = '<div id="land-drawer-body"></div>';
+    document.body.appendChild(drawer);
+    const body = drawer.querySelector("#land-drawer-body");
+    const park = document.createElement("div");
+    park.id = "who-park";
+    pocket.appendChild(park);
+    let landed = false;
+    const key = "kulibert-land-drawer";
+    function syncLand() {
+      const want = shortLand() && !classicTheme();
+      if (want !== landed) {
+        landed = want;
+        if (want) {
+          landPieces().forEach((el) => {
+            rememberHome(el);
+            body.appendChild(el);
+          });
+          let open = false;
+          try { open = localStorage.getItem(key) === "open"; } catch (e) {}
+          document.documentElement.classList.toggle("land-open", open);
+          drawer.hidden = !open;
+          menu.setAttribute("aria-expanded", open ? "true" : "false");
+        } else {
+          document.documentElement.classList.remove("land-open");
+          drawer.hidden = true;
+          menu.setAttribute("aria-expanded", "false");
+          landPieces().forEach(restoreHome);
+        }
+        resize();
+      }
+      parkWho();
+    }
+    menu.addEventListener("click", () => {
+      if (!shortLand() || classicTheme()) return;
+      const open = !document.documentElement.classList.contains("land-open");
+      document.documentElement.classList.toggle("land-open", open);
+      drawer.hidden = !open;
+      menu.setAttribute("aria-expanded", open ? "true" : "false");
+      try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
+    });
+    if (caption) {
+      caption.addEventListener("click", (ev) => {
+        if (!shortLand() || classicTheme()) return;
+        if (ev.target.closest("button, a")) return;
+        caption.classList.toggle("is-open");
+      });
+    }
+    const mo = new MutationObserver(() => parkWho());
+    mo.observe(document.body, { childList: true });
+    syncLand();
+    window.addEventListener("resize", syncLand);
+  }
+
   load();
   if (cfg.retireTo && readFlag(cfg.retireFlag || "kulibert-holdit-clear-v1") && !stayHere()) {
     location.replace(cfg.retireTo);
@@ -1406,6 +1544,11 @@ export function mountTruss(cfg) {
   voiceReady = true;
   resize();
   window.addEventListener("resize", resize);
+  if (window.ResizeObserver) {
+    const watch = new ResizeObserver(() => resize());
+    watch.observe(canvas);
+  }
+  mountLand();
 
   const addBtn = document.getElementById("tool-add");
   const moveBtn = document.getElementById("tool-move");

@@ -1,7 +1,11 @@
 # SpanCraft changelog
 
-**Chip: SC 1.3.27** · 2026-09-29 · channel **live**
+**Chip: SC 1.3.28** · 2026-10-01 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.28 — Phone sideways — 2026-10-01
+
+- What’s new: Phone sideways, the bridge fills the screen. Menu holds Levels and Help. The bet sits on the picture and does not move the board.
 
 ## 1.3.27 — Sign in, no typed name — 2026-09-29
 

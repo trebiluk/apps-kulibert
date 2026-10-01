@@ -817,3 +817,308 @@ html[data-big="1"] { font-size: 118%; }
 }
 #access-close { margin-top: 0.7rem; background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
 
+/* Phone landscape — SL 1.3.27. Classic theme keeps the stacked board. */
+.pocket > .land-menu { display: none !important; }
+.land-drawer[hidden] { display: none !important; }
+#who-park:empty { display: none; }
+#isle-close { min-width: 44px; min-height: 44px; padding: 0 0.85rem; }
+
+html:not([data-theme="classic"]) body > .tw-app-bar {
+  top: auto !important;
+  bottom: max(0.45rem, env(safe-area-inset-bottom));
+  right: max(0.45rem, env(safe-area-inset-right));
+  left: auto !important;
+}
+html:not([data-theme="classic"]) body > .tw-app-bar .tw-pill,
+html:not([data-theme="classic"]) body > .tw-app-bar .tw-back,
+html:not([data-theme="classic"]) .top > .tw-app-bar .tw-pill,
+html:not([data-theme="classic"]) .top > .tw-app-bar .tw-back,
+html:not([data-theme="classic"]) #kinds > .tw-app-bar .tw-pill,
+html:not([data-theme="classic"]) #kinds > .tw-app-bar .tw-back,
+html:not([data-theme="classic"]) #who-park .tw-app-bar .tw-pill,
+html:not([data-theme="classic"]) #who-park .tw-app-bar .tw-back {
+  height: 44px !important;
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 0.8rem;
+}
+html:not([data-theme="classic"]) .top > .tw-app-bar,
+html:not([data-theme="classic"]) #kinds > .tw-app-bar {
+  position: static !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  max-width: none;
+  z-index: 5;
+}
+html:not([data-theme="classic"]) .top > .tw-app-bar { margin-left: auto; }
+
+@media (max-height: 500px) {
+  .help-overlay { padding: 0.35rem; align-items: stretch; }
+  .help-card {
+    max-height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .help-steps { overflow: auto; min-height: 0; flex: 1 1 auto; margin-bottom: 0.4rem; }
+  .help-actions {
+    position: sticky;
+    bottom: 0;
+    background: var(--panel);
+    padding-top: 0.35rem;
+  }
+  .isle-map { padding: 0.35rem; }
+  .isle-card-wrap { max-height: 100%; }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  html:not([data-theme="classic"]),
+  html:not([data-theme="classic"]) body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  html:not([data-theme="classic"]) .shell {
+    grid-template-columns: 7.25rem minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-areas: "pocket stage";
+    height: 100%;
+    height: 100dvh;
+    padding: 0;
+    overflow: hidden;
+  }
+  html:not([data-theme="classic"]) .pocket {
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    gap: 0.15rem;
+    padding: 0.2rem;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border-right: 1px solid var(--border);
+    border-top: 0;
+  }
+  html:not([data-theme="classic"]) .pocket button {
+    flex: 1 1 0;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  html:not([data-theme="classic"]) .pocket > .land-menu {
+    display: flex !important;
+    flex: 0 0 44px;
+    flex-direction: row;
+    gap: 0.25rem;
+    min-height: 44px;
+  }
+  html:not([data-theme="classic"]) .land-drawer:not([hidden]) {
+    display: flex;
+    position: fixed;
+    z-index: 30;
+    top: 0;
+    bottom: 0;
+    left: 7.25rem;
+    width: min(20rem, calc(100vw - 7.25rem));
+    overflow: auto;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 0.35rem;
+    box-shadow: 8px 0 28px rgba(0, 0, 0, 0.4);
+  }
+  html:not([data-theme="classic"]) #land-drawer-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    align-content: start;
+    width: 100%;
+  }
+  html:not([data-theme="classic"]) .land-drawer .top-actions,
+  html:not([data-theme="classic"]) .land-drawer .track,
+  html:not([data-theme="classic"]) .land-drawer .edge-pocket {
+    display: contents !important;
+  }
+  html:not([data-theme="classic"]) .land-drawer #edge-menu:not([hidden]) {
+    display: flex !important;
+    flex-direction: column;
+    gap: 0.3rem;
+    grid-column: 1 / -1;
+    position: static !important;
+    margin: 0;
+  }
+  html:not([data-theme="classic"]) .land-drawer .top-actions button,
+  html:not([data-theme="classic"]) .land-drawer .top-actions a,
+  html:not([data-theme="classic"]) .land-drawer .track button,
+  html:not([data-theme="classic"]) .land-drawer .edge-pocket > button,
+  html:not([data-theme="classic"]) .land-drawer .edge-pocket > a,
+  html:not([data-theme="classic"]) .land-drawer #edge-menu button,
+  html:not([data-theme="classic"]) .land-drawer #edge-menu a,
+  html:not([data-theme="classic"]) .land-drawer #access-gear,
+  html:not([data-theme="classic"]) .land-drawer #read-line {
+    min-height: 44px;
+    min-width: 44px;
+    width: 100%;
+    justify-content: center;
+  }
+  html:not([data-theme="classic"]) .land-drawer .top-actions a[href="/"] { display: inline-flex !important; }
+  html:not([data-theme="classic"]) #who-park {
+    flex: 0 0 auto;
+    display: flex;
+    min-height: 44px;
+  }
+  html:not([data-theme="classic"]) #who-park .tw-app-bar {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+    width: 100%;
+    max-width: 100%;
+    z-index: 5;
+  }
+  html:not([data-theme="classic"]) #who-park .tw-pill,
+  html:not([data-theme="classic"]) #who-park .tw-back {
+    width: 100%;
+    height: auto !important;
+    min-height: 44px;
+    padding: 0.15rem 0.2rem;
+    font-size: 0.68rem !important;
+    line-height: 1.1;
+    white-space: normal;
+    text-align: center;
+    justify-content: center;
+  }
+  html:not([data-theme="classic"]) .top {
+    position: fixed;
+    z-index: 9;
+    top: 0;
+    left: 7.25rem;
+    right: auto;
+    width: auto;
+    min-height: 0;
+    padding: 0 0.35rem;
+    background: color-mix(in srgb, var(--panel) 86%, transparent);
+    border: 0;
+    border-radius: 0 0 12px 0;
+    pointer-events: none;
+  }
+  html:not([data-theme="classic"]) .top .brand {
+    pointer-events: auto;
+    min-height: 44px;
+    gap: 0.3rem;
+  }
+  html:not([data-theme="classic"]) .top .brand img { width: 28px; height: 28px; }
+  html:not([data-theme="classic"]) .top .brand h1 { font-size: 0.95rem; }
+  html:not([data-theme="classic"]) .top .brand p { font-size: 0.72rem; }
+  html:not([data-theme="classic"]) .kinds {
+    position: fixed;
+    z-index: 9;
+    top: 0;
+    right: 5.8rem;
+    left: auto;
+    width: auto;
+    min-height: 0;
+    padding: 0.15rem 0.45rem;
+    background: color-mix(in srgb, var(--panel) 86%, transparent);
+    border: 0;
+    border-radius: 0 0 0 12px;
+    pointer-events: none;
+  }
+  html:not([data-theme="classic"]) #budget-read {
+    margin: 0;
+    font-size: 0.72rem;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+  html:not([data-theme="classic"]) .caption {
+    position: fixed;
+    z-index: 7;
+    top: 0;
+    left: 7.25rem;
+    right: 0;
+    height: 36px;
+    max-height: 36px;
+    margin: 0;
+    padding: 0 18rem 0 11rem;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 0.35rem;
+    overflow: hidden;
+    background: color-mix(in srgb, var(--panel) 55%, transparent);
+    border: 0;
+    pointer-events: auto;
+  }
+  html:not([data-theme="classic"]) .caption strong#cap-word {
+    font-size: 0.85rem;
+    letter-spacing: 0;
+  }
+  html:not([data-theme="classic"]) .caption #cap-text {
+    font-size: 0.78rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+  }
+  html:not([data-theme="classic"]) .caption.is-open {
+    height: auto;
+    max-height: 42%;
+    flex-wrap: wrap;
+    overflow: auto;
+    background: color-mix(in srgb, var(--panel) 94%, transparent);
+  }
+  html:not([data-theme="classic"]) .caption.is-open #cap-text { white-space: normal; }
+  html:not([data-theme="classic"]) .bet-bar:not([hidden]) {
+    position: fixed;
+    z-index: 8;
+    left: 7.25rem;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: auto;
+    margin: 0;
+    padding: 0.2rem 0.45rem 0.35rem;
+    background: linear-gradient(transparent, color-mix(in srgb, var(--bg) 75%, transparent) 45%);
+    border: 0;
+    justify-content: center;
+    flex-wrap: nowrap;
+    pointer-events: none;
+  }
+  html:not([data-theme="classic"]) .bet-bar .bet-label { display: none; }
+  html:not([data-theme="classic"]) .bet-bar .bet-chip {
+    pointer-events: auto;
+    min-height: 44px;
+    min-width: 44px;
+  }
+  html:not([data-theme="classic"]) .assist-plate.show {
+    left: auto;
+    right: 0.25rem;
+    top: 0;
+    bottom: auto;
+    width: auto;
+    max-width: none;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    pointer-events: none;
+  }
+  html:not([data-theme="classic"]) .assist-plate.show strong,
+  html:not([data-theme="classic"]) .assist-plate.show p { display: none !important; }
+  html:not([data-theme="classic"]) .assist-plate.show .assist-gotit {
+    pointer-events: auto;
+    margin: 0;
+    width: auto;
+    min-width: 5.2rem;
+    min-height: 44px;
+    padding: 0 0.7rem;
+  }
+}
+
+

@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.26** · 2026-09-29 · channel **live**
+**Chip: SL 1.3.27** · 2026-10-01 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.27 — Phone sideways — 2026-10-01
+
+- What’s new: Phone sideways, the tower fills the screen. Menu holds Levels and Help. The bet sits on the picture and does not move the board.
 
 ## 1.3.26 — Sign in, no typed name — 2026-09-29
 
