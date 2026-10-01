@@ -1,4 +1,4 @@
-/* Bits and Bobs BB 2.0.1 — tech-room HUD. Classic board: ?theme=classic */
+/* Bits and Bobs BB 2.0.2 — tech-room HUD. Classic board: ?theme=classic */
 (function () {
   if (document.documentElement.classList.contains("is-classic")) {
     var frame = document.querySelector(".classic-frame");
@@ -307,6 +307,7 @@
         if (left <= 0) {
           stop();
           if (!reduced()) wrap.classList.add("shake");
+          shipScore("drama", 1, 1);
           if (bag.chime) {
             try {
               var ac = new AudioContext();
@@ -417,6 +418,7 @@
           var a = show[n];
           cube.style.transform = "rotateX(" + (a[0] + turn * 360) + "deg) rotateY(" + (a[1] + turn * 360) + "deg)";
           res.set("Die " + n);
+          shipScore("dice", n, 6);
         });
         host.append(roll);
         res.set("Die 1");
@@ -535,6 +537,7 @@
         evalExpr.ans = v;
         res.set(fmt(v));
         expr = fmt(v);
+        shipScore("calc", 1, 1);
       } catch (e) { res.set("Can't read that"); expr = ""; }
     }
     function keys() {
@@ -681,6 +684,7 @@
           segB.addEventListener("click", function () {
             bag.parts[item.pi].done[item.i] = !bag.parts[item.pi].done[item.i];
             ctx.save(); paint();
+            shipScore("cuts", 1, 1);
           });
           bar.append(segB);
         });
@@ -825,6 +829,7 @@
       bag.tries.push({ load: bag.load, mass: bag.mass });
       if (bag.tries.length > 12) bag.tries.shift();
       ctx.save(); paint();
+      shipScore("strength", 1, 1);
     });
     body.append(log);
     var note = el("p", "note");
@@ -1197,6 +1202,7 @@
       });
       host.append(box);
       res.set(winner >= 0 ? "Lane " + (winner + 1) + " wins" : "First to " + bag.laps + " laps");
+      if (winner >= 0) shipScore("race", bag.laps, bag.laps);
     }
     var reset = btn("Reset race");
     reset.addEventListener("click", function () { draw(true); });
@@ -1380,6 +1386,7 @@
     saveTimer = setTimeout(function () {
       try { localStorage.setItem("bits-hud-v2", JSON.stringify(slim())); } catch (e) {}
       pushCloud();
+      pushPrefs();
     }, 200);
   }
   function pushCloud() {
@@ -1389,11 +1396,100 @@
     if (!rec || !rec.verified) return;
     try { api.saveApp("bits", { v: 2, hud: slim() }); } catch (e) {}
   }
+  var scored = false;
+  try { scored = sessionStorage.getItem("bits-score-v1") === "1"; } catch (eScore) {}
+  var openedAt = Date.now();
+  var prefsPulled = false;
+  function shipScore(level, score, max) {
+    if (scored) return;
+    var api = window.KulibertWho;
+    if (!api) return;
+    var s = Number(score), m = Number(max);
+    if (!isFinite(s)) s = 1;
+    if (!isFinite(m) || m < 1) m = 1;
+    s = Math.max(0, Math.round(s));
+    m = Math.max(1, Math.round(m));
+    if (s > m) s = m;
+    var stars = s <= 0 ? 0 : s >= m ? 3 : s * 2 >= m ? 2 : 1;
+    var row = null;
+    if (typeof api.record === "function") {
+      row = api.record({
+        app: "bits",
+        version: "BB 2.0.2",
+        event: "score",
+        level: String(level || "task").slice(0, 40),
+        score: s,
+        max: m,
+        stars: stars,
+        xp: Math.max(1, Math.min(25, s || 1)),
+        skill: "makers",
+        ms: Math.max(0, Date.now() - openedAt)
+      });
+    } else if (typeof api.mark === "function") {
+      row = api.mark("bits", String(level || "task").slice(0, 32));
+    }
+    if (!row) return;
+    scored = true;
+    try { sessionStorage.setItem("bits-score-v1", "1"); } catch (e2) {}
+    if (window.KulibertBar && typeof window.KulibertBar.toast === "function") window.KulibertBar.toast("Saved");
+  }
+  function prefsPayload() {
+    var p = slim();
+    try {
+      if (JSON.stringify(p).length > 24000) {
+        p = { v: 2, theme: state.theme, accent: state.accent, big: !!state.big, order: state.order, layout: state.layout, layouts: state.layouts || {}, colsAt: state.colsAt };
+      }
+    } catch (e3) {}
+    return p;
+  }
+  function pushPrefs() {
+    if (!prefsPulled) return;
+    var api = window.KulibertWho;
+    if (!api || !api.prefs || typeof api.prefs.set !== "function" || !api.active || !api.active()) return;
+    api.prefs.set("bits", prefsPayload()).catch(function () {});
+  }
+  function applyPrefs(p) {
+    if (!p || p.v !== 2 || !Array.isArray(p.order)) return;
+    var order = p.order.filter(byId);
+    if (!order.length) return;
+    state.theme = p.theme || state.theme;
+    state.accent = p.accent || state.accent;
+    state.big = !!p.big;
+    state.order = order;
+    if (p.layout && typeof p.layout === "object") state.layout = p.layout;
+    state.layouts = p.layouts && typeof p.layouts === "object" ? p.layouts : {};
+    state.colsAt = p.colsAt == null ? null : p.colsAt;
+    if (p.bags && typeof p.bags === "object") state.bags = p.bags;
+    applyTheme();
+    Array.from(tiles.keys()).forEach(function (id) {
+      if (state.order.indexOf(id) < 0) {
+        var node = tiles.get(id);
+        if (node && node._dispose) node._dispose();
+        if (node) node.remove();
+        tiles.delete(id);
+      }
+    });
+    ensure();
+  }
+  function pullPrefs() {
+    var api = window.KulibertWho;
+    if (!api || !api.prefs || typeof api.prefs.get !== "function" || !api.active || !api.active()) {
+      prefsPulled = true;
+      return;
+    }
+    api.prefs.get("bits").then(function (pack) {
+      var p = pack && pack.prefs;
+      if (p && p.v === 2) applyPrefs(p);
+    }).catch(function () {}).then(function () {
+      prefsPulled = true;
+      pushPrefs();
+    });
+  }
 
   var top = el("header", "top");
   var brand = el("div", "brand");
   var h1 = el("h1"); h1.textContent = "Bits & Bobs";
-  var ver = el("span", "ver"); ver.textContent = "BB 2.0.1";
+  var ver = el("span", "ver"); ver.textContent = "BB 2.0.2";
   var who = el("span", "who"); who.id = "who"; who.textContent = "Not signed in";
   brand.append(h1, ver, who); top.append(brand);
   var board = el("div", "board");
@@ -1708,6 +1804,7 @@
       state.order.forEach(function (id) { applyBox(id, id !== drag.id); });
     }
     drag = null; save(); fitBoard();
+    shipScore("layout", 1, 1);
   });
   board.addEventListener("pointerdown", function (e) {
     var tile = e.target.closest(".tile");
@@ -1827,7 +1924,7 @@
       classic.addEventListener("click", function () { location.href = "/bits/?theme=classic"; });
       panel.append(classic);
       var note = el("p", "note");
-      note.textContent = "The layout autosaves on this Chromebook. TechWorks has no prefs route yet — /api/prefs answers 404. A GET and PUT by the verified code, small JSON, would carry this board to the next Chromebook. This app does not pretend that save exists.";
+      note.textContent = "The layout autosaves on this Chromebook. Signed in, the same layout and theme go to TechWorks with your code. No name is stored.";
       panel.append(note);
     });
   });
@@ -1869,10 +1966,22 @@
   window.addEventListener("kw-mark", function () { paintWho(); pushCloud(); });
   setInterval(paintWho, 800);
 
-  var s = document.createElement("script");
-  s.src = "/shared/kw-who.js?v=2026-09-30-hud";
-  s.onload = paintWho;
-  document.head.appendChild(s);
+  function whenWho(fn) {
+    if (window.KulibertWho) { fn(); return; }
+    var n = 0;
+    var t = setInterval(function () {
+      n += 1;
+      if (window.KulibertWho || n > 40) {
+        clearInterval(t);
+        if (window.KulibertWho) { fn(); return; }
+        var s = document.createElement("script");
+        s.src = "/shared/kw-who.js?v=2026-10-01-job";
+        s.onload = fn;
+        document.head.appendChild(s);
+      }
+    }, 50);
+  }
+  whenWho(function () { paintWho(); pullPrefs(); });
 
   applyTheme();
   ensure();
