@@ -174,6 +174,7 @@
     raf: 0,
     confettiDone: false,
     sentScore: 0,
+    finishStamp: "",
     made: 0,
     armBeats: 0,
     turn: "",
@@ -1298,8 +1299,8 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.33.0",
-        event: "save",
+        version: "MU 2.34.0",
+        event: "score",
         level: id,
         score: score,
         max: max,
@@ -1311,6 +1312,15 @@
       return;
     }
     if (api.mark) api.mark("musiclab", line);
+  }
+  function finishSong(level) {
+    if (!signedKid()) return;
+    const heard = beatScore();
+    const title = state.song && (state.song.title || state.song.name) ? String(state.song.title || state.song.name) : "";
+    const stamp = title + ":" + heard.on + ":" + heard.stars;
+    if (state.finishStamp === stamp) return;
+    state.finishStamp = stamp;
+    wireScore(level, heard.on || 1, 64, heard.stars, Math.max(5, heard.stars * 5));
   }
   function shopPrefs() {
     const who = window.KulibertWho;
@@ -1393,11 +1403,6 @@
         if (hit.grid === 0 && now - start > 0.2 && !state.confettiDone) {
           state.confettiDone = true;
           popConfetti();
-          const heard = beatScore();
-          if (heard.on > state.sentScore) {
-            wireScore("beat", heard.on, 64, heard.stars, 5);
-            state.sentScore = heard.on;
-          }
         }
         if (state.bins) {
           state.bins[2] = state.drums.kick && state.drums.kick[hit.grid] ? 230 : 40;
@@ -2460,6 +2465,7 @@
     }
     $("lesson").textContent = code ? "Shared with class. The link is under the pads." : "Shared on this Chromebook. Sign in to attach your class code.";
     paintSongShelf();
+    finishSong("share");
   }
   function encodeWav(audioBuffer) {
     const channels = audioBuffer.numberOfChannels;
@@ -2729,8 +2735,7 @@
     a.download = "class-song.bertysong.json";
     a.click();
     URL.revokeObjectURL(url);
-    const heard = beatScore();
-    wireScore("file", heard.on || 1, 64, heard.stars, 5);
+    finishSong("save");
     $("lesson").textContent = "The file has the notes, the picture, and the reasons.";
   });
   const SHELF = "kulibert.music.shelf";
@@ -4251,10 +4256,7 @@
     if (!who) return;
     const items = loadAssign();
     const job = items.find((item) => item.code === who.code && !item.done);
-    if (job) {
-      job.done = true;
-      wireScore(job.task || "five", 1, 1, 1, 10);
-    }
+    if (job) job.done = true;
     saveAssign(items);
     paintPractice();
     paintAssign();

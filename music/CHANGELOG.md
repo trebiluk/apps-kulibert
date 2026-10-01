@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.34.0** · 2026-10-01 · channel **live**
+
+Save or Share of the current song records one musiclab score. A loop does not. TechWorks keeps event score, not save.
+
+## Earlier
+
 **Chip: MU 2.33.0** · 2026-10-01 · channel **live**
 
 A signed-in save calls KulibertWho.record for musiclab: event save, skill music, stars 0–3. If record is missing, it falls back to mark.
