@@ -1205,3 +1205,471 @@ button, .btn, .play, .cell, select { min-height: 44px; }
   .cell.on::after { content: "●"; color: HighlightText; }
   .cell.now { outline: 4px solid CanvasText; }
 }
+
+/* MU 2.35.1 — the grid stays above the transport */
+html { overflow: hidden; height: 100%; }
+html[data-kb-bar] #menu-btn { display: none !important; }
+.more-pop[hidden] { display: none !important; }
+.cast[hidden], #cast[hidden] { display: none !important; }
+body.is-beat #kit, body.is-both #kit,
+body.is-beat #drums-pane > details, body.is-both #drums-pane > details { display: none !important; }
+body.is-beat .work, body.is-both .work, .work.is-both {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+body.is-beat #notes-pane, body.is-both #notes-pane, .work.is-both #notes-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  width: 100% !important;
+}
+body.is-beat #notes-pane > :not(.staff-wrap):not(.note-row),
+body.is-both #notes-pane > :not(.staff-wrap):not(.note-row) { display: none !important; }
+body.is-beat .staff-wrap, body.is-both .staff-wrap {
+  flex: 0 1 64px;
+  max-height: 72px !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+body.is-score .staff-wrap, body.is-score #staff, body.is-score #staff svg,
+body.is-beat #staff, body.is-beat #staff svg, body.is-both #staff svg {
+  width: 100% !important;
+  max-width: none !important;
+}
+body.is-score .staff-wrap { flex: 1 1 auto; max-height: none !important; min-height: 0; overflow: auto; }
+.note-row { display: flex !important; flex-wrap: nowrap; flex: 0 0 auto; }
+.note-row .inks, .note-row .pen { display: flex; flex: 1 1 auto; flex-wrap: nowrap; min-width: 0; }
+.note-row button, #inks .btn, #pen .btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 40px;
+  height: 40px;
+  background: var(--elevated);
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+#inks .btn.on, #pen .btn.on { background: var(--accent); color: var(--accent-fg); }
+body.is-beat #drums-pane, body.is-both #drums-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  width: 100% !important;
+}
+body.is-beat #drums, body.is-both #drums {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  display: grid !important;
+  grid-template-rows: repeat(10, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+}
+.drum-row, .drum-row.is-extra { display: grid !important; min-height: 0; }
+body.is-beat .cell, body.is-both .cell {
+  min-width: 0;
+  min-height: 0 !important;
+  height: 100%;
+}
+@media (min-width: 1000px) {
+  body.is-beat .drum-row, body.is-both .drum-row {
+    grid-template-columns: 4.2rem repeat(16, minmax(0, 1fr));
+  }
+}
+.style-row { flex: 0 0 auto; max-height: 44px; overflow: hidden; margin: 0; flex-wrap: nowrap; }
+.beat-speak { flex: 0 0 auto; min-height: 0; margin: 0; }
+.sound-banner { position: static; flex: 0 0 auto; }
+.songbar { max-height: 44px; padding: 0.15rem 0.5rem; }
+#scenes .btn { color: var(--text) !important; background: var(--panel) !important; }
+#scenes .btn.on {
+  background: var(--elevated) !important;
+  color: var(--text) !important;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+body.is-beat:not(.show) .cell, body.is-both:not(.show) .cell {
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+}
+
+/* MU 2.35.1 lock — one column, grid above the transport, one menu */
+body:not(.show):not(.is-home):not(.is-make):not(.is-library) {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+  padding: 48px 0 0 !important;
+}
+html.kb-framed body:not(.show) {
+  padding-top: 0 !important;
+}
+body:not(.show) .lab {
+  margin-top: 0 !important;
+  flex: 1 1 auto !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+body:not(.show) .transport {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 64px;
+  max-height: none !important;
+  display: flex !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  background: #0b152c !important;
+  color: #e8f7ff !important;
+  border-top: 1px solid #16324f !important;
+  grid-template-columns: none !important;
+}
+body.is-beat:not(.show) .transport,
+body.is-both:not(.show) .transport,
+body.is-score:not(.show) .transport,
+body.is-lights:not(.show) .transport,
+body.is-band:not(.show) .transport,
+body.is-sound:not(.show) .transport,
+body.playing:not(.show) .transport {
+  background: #0b152c !important;
+  color: #e8f7ff !important;
+  border-top: 1px solid #16324f !important;
+}
+body.is-home .transport,
+body.is-make .transport,
+body.is-library .transport { display: none !important; }
+.ws-split, body.is-both .ws-split, .work.is-both .ws-split { display: none !important; }
+body.is-beat .out, body.is-both .out, body.is-score .out { display: none !important; }
+#dock-left { gap: 0.12rem; padding: 0.2rem; }
+#dock-left button {
+  display: flex !important;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 40px !important;
+  height: 40px;
+  max-height: 44px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.1;
+  font-size: 15px;
+}
+#dock-left button::before {
+  content: attr(data-ico);
+  display: inline !important;
+  font-size: 15px;
+  line-height: 1;
+  flex: 0 0 auto;
+}
+.side, #dock-left {
+  min-height: 0;
+  overflow-y: auto;
+}
+body.is-beat #drums, body.is-both #drums {
+  gap: 1px !important;
+  overflow: hidden !important;
+  height: 100% !important;
+  align-content: stretch;
+}
+body.is-beat .drum-row, body.is-both .drum-row {
+  min-height: 0 !important;
+  height: auto;
+  overflow: hidden;
+  align-items: stretch;
+}
+body.is-beat .drum-row b, body.is-both .drum-row b {
+  display: flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-height: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  font-size: 0.68rem;
+  line-height: 1;
+}
+body.is-beat .drum-row svg, body.is-both .drum-row svg {
+  width: 14px;
+  height: 14px;
+  flex: 0 0 auto;
+}
+#pen .btn, #inks .btn, .note-row .btn, .transport .btn, .drawer .btn,
+.read-me, #read-lesson, .cast button, .style-row button, .pad, .berty-bob, .do-card {
+  background: var(--elevated) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+  box-shadow: none !important;
+}
+#pen .btn.on, #inks .btn.on, .note-row .btn.on, .style-row button.on,
+.cast button.on, .pad.on, .transport .play, .make-beat, .berty-bob {
+  background: var(--accent) !important;
+  color: var(--accent-fg) !important;
+}
+#tempo-read, .transport .tempo, .transport .tempo b {
+  color: var(--text) !important;
+  background: transparent !important;
+  text-decoration-color: var(--accent) !important;
+}
+#scenes .btn.on::after { content: none !important; }
+body.is-lights .desk {
+  display: grid !important;
+  grid-template-columns: minmax(220px, 0.82fr) minmax(280px, 1.25fr) !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+body.is-lights .desk > * { width: auto !important; max-width: none !important; }
+body.is-lights .songbar { grid-column: 1 / -1; grid-row: 1; }
+body.is-lights .work {
+  grid-column: 1;
+  grid-row: 2;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  display: block !important;
+}
+body.is-lights .out {
+  display: flex !important;
+  grid-column: 2;
+  grid-row: 2;
+  position: relative !important;
+  min-width: 0;
+  min-height: 0;
+  height: auto !important;
+  overflow: hidden !important;
+  order: 0 !important;
+}
+body.is-lights .stage-wrap, body.is-lights canvas#viz {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+  min-height: 0 !important;
+  flex: 1 1 auto;
+}
+body:has(#sound-banner:not([hidden])).is-beat .staff-wrap,
+body:has(#sound-banner:not([hidden])).is-both .staff-wrap {
+  max-height: 52px !important;
+  flex-basis: 48px !important;
+}
+@media (max-width: 1023px) {
+  .side {
+    position: fixed !important;
+    top: 48px !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: min(300px, 86vw) !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    padding-bottom: 9rem !important;
+    box-sizing: border-box !important;
+    transform: translateX(-110%);
+  }
+  html.kb-framed .side { top: 0 !important; }
+  body.menu-open .side { transform: none !important; }
+  .drawer, body.menu-open .drawer {
+    position: static !important;
+    transform: none !important;
+    width: auto !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    top: auto !important;
+    bottom: auto !important;
+  }
+}
+@media (min-width: 1024px) {
+  .drawer {
+    overflow-y: auto !important;
+    top: 48px;
+    bottom: 0;
+    max-height: calc(100dvh - 48px);
+    padding-bottom: 6rem;
+  }
+  html.kb-framed .drawer { top: 0; max-height: 100dvh; }
+}
+@media (max-width: 700px) {
+  body:not(.show) .transport {
+    flex-wrap: wrap !important;
+    align-content: center;
+    row-gap: 0.15rem;
+    min-height: 0;
+    padding-top: 0.25rem;
+    padding-bottom: 0.3rem;
+  }
+  .transport .play, .transport .btn, .transport .tempo { min-height: 44px; }
+  .transport .tempo { flex: 1 1 7.5rem; min-width: 6.5rem; order: 2; }
+  #play-btn { order: 1; flex: 0 0 auto; }
+  #save-dock { order: 3; flex: 0 0 auto; }
+  #mute-btn { order: 4; flex: 0 0 auto; }
+  #more-tools { order: 5; flex: 0 0 auto; }
+  #rec-btn { order: 6; }
+  #share-btn { order: 7; }
+  body.is-beat .drum-row, body.is-both .drum-row {
+    grid-template-columns: 2.6rem repeat(16, minmax(0, 1fr)) !important;
+  }
+}
+@media (max-height: 520px) {
+  body.is-beat .songbar, body.is-both .songbar,
+  body.is-beat .style-row, body.is-both .style-row,
+  body.is-beat .note-row, body.is-both .note-row,
+  body.is-score .note-row { display: none !important; }
+  body.is-beat .staff-wrap, body.is-both .staff-wrap {
+    max-height: 36px !important;
+    flex-basis: 36px !important;
+  }
+  .beat-speak { min-height: 0; }
+  #beat-line { font-size: 13px; }
+}
+.key, .staff-wrap, .abcjs-container, .abcjs-staff {
+  /* piano keys and staff paper keep their paper colors */
+}
+
+/* MU 2.35.1 fit — definite column so the grid shrinks instead of spilling */
+html.kb-framed body:not(.show):not(.is-home):not(.is-make):not(.is-library) {
+  padding-top: 0 !important;
+}
+body:not(.show) .lab {
+  width: 100% !important;
+  grid-template-rows: minmax(0, 1fr) !important;
+  align-items: stretch !important;
+}
+body:not(.show) .desk {
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden !important;
+  align-self: stretch !important;
+}
+body.is-beat #notes-pane,
+body.is-both #notes-pane,
+body.is-score #notes-pane,
+body.is-score .work,
+body.is-beat .staff-wrap,
+body.is-both .staff-wrap,
+body.is-score .staff-wrap,
+body.is-score #staff {
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch !important;
+  min-width: 0 !important;
+}
+body.is-lights .out > :not(.stage-wrap) { display: none !important; }
+body.is-lights .stage-wrap { position: relative !important; flex: 1 1 auto; min-height: 0; height: 100% !important; }
+body.is-lights canvas#viz {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+}
+@media (max-width: 720px) {
+  body.is-lights .desk {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) !important;
+  }
+}
+
+/* MU 2.35.1 — both-mode grid and the lights stage fill the column */
+body.is-both .work.is-both #drums-pane,
+body.is-beat #drums-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+body.is-both .work.is-both #drums,
+body.is-beat #drums {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: 100% !important;
+}
+body.is-lights .desk {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr) !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  grid-template-areas: "bar bar" "controls stage" !important;
+  align-content: stretch !important;
+  height: 100% !important;
+}
+body.is-lights .songbar { grid-area: bar !important; }
+body.is-lights .work {
+  grid-area: controls !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: auto !important;
+  align-self: stretch !important;
+}
+body.is-lights .out {
+  grid-area: stage !important;
+  position: relative !important;
+  top: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  overflow: hidden !important;
+}
+body.is-lights .stage-wrap {
+  position: absolute !important;
+  inset: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+}
+body.is-lights canvas#viz {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+}
+@media (max-height: 520px) {
+  body.is-beat .beat-speak, body.is-both .beat-speak { min-height: 0 !important; max-height: 28px; }
+  body.is-beat #read-lesson, body.is-both #read-lesson { width: 32px; height: 28px; min-height: 0; }
+}
+@media (max-height: 430px) {
+  body.is-beat:not(.show) #drums-pane,
+  body.is-both .work.is-both #drums-pane {
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+  body.is-beat:not(.show) .cell,
+  body.is-both:not(.show) .cell {
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+  body.is-beat:not(.show) { padding-bottom: 0 !important; }
+}
+body.is-lights .work,
+body.is-lights .out,
+body.is-lights .songbar,
+body.is-lights .stage-wrap,
+body.is-lights canvas#viz {
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+
+

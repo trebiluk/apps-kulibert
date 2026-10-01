@@ -636,15 +636,18 @@
 
   function renderStaff() {
     const host = $("staff");
+    if (!host) return;
     host.innerHTML = "";
     let abc = Song.toAbc(state.song);
     if (window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
+      nameLooseSvgs();
       return;
     }
     try {
-      const wide = Math.max(220, host.clientWidth - 8);
+      const pane = host.closest("#notes-pane") || host.parentElement || host;
+      const wide = Math.max(280, (pane.clientWidth || host.clientWidth || 640) - 12);
       window.ABCJS.renderAbc(host, abc, {
         responsive: "resize",
         add_classes: true,
@@ -660,10 +663,22 @@
     if (svg) {
       svg.setAttribute("role", "img");
       svg.setAttribute("aria-label", "Staff for this song");
+      svg.style.width = "100%";
+      svg.style.maxWidth = "none";
+      svg.removeAttribute("height");
       svg.addEventListener("pointerdown", placeNote);
     }
+    nameLooseSvgs();
   }
 
+
+  function nameLooseSvgs() {
+    document.querySelectorAll("svg[role='img']").forEach((svg) => {
+      if (svg.getAttribute("aria-label") || svg.getAttribute("aria-labelledby")) return;
+      if (svg.getAttribute("aria-hidden") === "true") return;
+      svg.setAttribute("aria-hidden", "true");
+    });
+  }
   function placeNote(e) {
     const host = $("staff");
     const evs = Song.events(state.song);
@@ -1241,6 +1256,8 @@
       : '<span aria-hidden="true">🔊</span> Sound on';
     btn.setAttribute("aria-pressed", String(!!state.muted));
     btn.setAttribute("aria-label", state.muted ? "Sound off" : "Sound on");
+    const banner = $("sound-banner");
+    if (banner) banner.hidden = !state.muted;
   }
   function advanceTurn() {
     if (state.turn !== "listen" && state.turn !== "answer") return;
@@ -1309,7 +1326,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.0",
+        version: "MU 2.35.1",
         event: "score",
         level: id,
         score: score,
@@ -1944,7 +1961,6 @@
     state.mode = mode;
     resetScroll();
     document.body.classList.remove("is-home", "is-make", "is-library");
-    if ($("back-home")) $("back-home").hidden = false;
     const work = $("work");
     WS_MODES.forEach((name) => {
       if (work) work.classList.toggle("is-" + name, mode === name);
@@ -1964,8 +1980,13 @@
     document.body.classList.toggle("is-sound", mode === "sound");
     fitViz();
     const split = $("ws-split");
-    if (split) split.hidden = mode !== "both";
-    if (mode === "both") applySplit(readWorkspace().score);
+    if (split) split.hidden = true;
+    if (mode === "both" || mode === "notes" || mode === "beat") {
+      requestAnimationFrame(() => {
+        renderStaff();
+        requestAnimationFrame(() => renderStaff());
+      });
+    }
     sayHow(mode);
     if (!state.playing) {
       const hints = {
@@ -2444,7 +2465,6 @@
     }
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
-    if ($("back-home")) $("back-home").hidden = false;
     setMode("beat");
     const grid = $("drums");
     const box = grid && grid.closest("details");
@@ -3226,7 +3246,6 @@
     }
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
-    if ($("back-home")) $("back-home").hidden = false;
     setMode(remix && item.name === "Happy Birthday" ? "both" : readWorkspace().preset);
     if (remix && item.name === "Happy Birthday") {
       const grid = $("drums");
@@ -3351,7 +3370,6 @@
     if ($("shelf-extra")) $("shelf-extra").hidden = true;
     if ($("make")) $("make").hidden = true;
     if ($("library")) $("library").hidden = true;
-    if ($("back-home")) $("back-home").hidden = true;
     paintSongBar();
     paintSongShelf();
     resetScroll();
@@ -3361,14 +3379,12 @@
     document.body.classList.add("is-make");
     $("home").hidden = true;
     $("make").hidden = false;
-    $("back-home").hidden = false;
   }
   function showLibrary() {
     document.body.classList.remove("is-home", "is-make");
     document.body.classList.add("is-library");
     $("home").hidden = true;
     $("library").hidden = false;
-    $("back-home").hidden = false;
     paintLibrary();
   }
   function paintLibrary() {
@@ -3513,7 +3529,6 @@
       b.addEventListener("click", () => {
         document.body.classList.remove("is-home", "viz-full");
         if ($("home")) $("home").hidden = true;
-        if ($("back-home")) $("back-home").hidden = false;
         go();
       });
       cards.appendChild(b);
@@ -3621,7 +3636,6 @@
       });
       document.body.classList.remove("is-home");
       $("home").hidden = true;
-      $("back-home").hidden = false;
       setMode(readWorkspace().preset);
       $("how").textContent = "Empty staff. Tap a letter to place a note.";
       rememberPack();
@@ -3669,7 +3683,6 @@
       });
       document.body.classList.remove("is-home");
       $("home").hidden = true;
-      $("back-home").hidden = false;
       setMode(readWorkspace().preset);
       $("how").textContent = pickMeter + " in " + pickKey + ". Tap a letter.";
       rememberPack();
@@ -3716,7 +3729,6 @@
           }
           document.body.classList.remove("is-home");
           $("home").hidden = true;
-          $("back-home").hidden = false;
           setMode(readWorkspace().preset);
           paintSongBar();
           rememberPack();
@@ -3728,7 +3740,6 @@
       if (importKind === "midi") reader.readAsArrayBuffer(file);
       else reader.readAsText(file);
     });
-    $("back-home").addEventListener("click", showHome);
   }
   bootHome();
 
@@ -3746,6 +3757,7 @@
   else showHome();
   buildKit();
   renderStaff();
+  nameLooseSvgs();
   window.addEventListener("resize", () => {
     if (state.mode === "both" || state.mode === "notes" || state.mode === "beat") renderStaff();
   });
@@ -4154,6 +4166,8 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
+        b.dataset.scene = name;
+        b.dataset.wall = packs[name].wall;
         b.textContent = name;
         b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", () => {
@@ -4180,15 +4194,26 @@
           paintLights();
           paintLooks();
           keep();
-          scenes.querySelectorAll(".btn").forEach((btn) => {
-            const on = btn === b;
-            btn.classList.toggle("on", on);
-            btn.setAttribute("aria-pressed", on ? "true" : "false");
-          });
+          markScene(b);
           $("lesson").textContent = name + " is on. Saved.";
         });
         scenes.appendChild(b);
       });
+      function markScene(active) {
+        scenes.querySelectorAll(".btn").forEach((btn) => {
+          const on = btn === active;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+          const label = btn.dataset.scene || btn.textContent.replace(/\s*✓\s*$/, "");
+          btn.textContent = on ? label + " ✓" : label;
+        });
+      }
+      const look0 = state.layers && state.layers[0] && state.layers[0].look;
+      const pick = [...scenes.querySelectorAll(".btn")].find((btn) => {
+        const pack = packs[btn.dataset.scene];
+        return pack && pack.wall === (state.wall || "night") && pack.layers[0].look === look0;
+      }) || scenes.querySelector('[data-wall="' + (state.wall || "night") + '"]') || scenes.querySelector(".btn");
+      if (pick) markScene(pick);
     }
     ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
       const slider = $("g-" + key);

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.1** · 2026-10-01 · channel **live**
+
+DJ Berty fits on one screen: all 16 steps show, More stays closed until you tap it, one Menu, readable Lights.
+
+## Earlier
+
 **Chip: MU 2.35.0** · 2026-10-01 · channel **live**
 
 DJ Berty's own night colors are back. Sound plays on the first tap, and Sound on works right away. Tools sit in a left dock. The staff and all 16 steps fit on one screen.
