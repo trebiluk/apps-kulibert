@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.31.0** · 2026-10-01 · channel **live**
+
+This door is wired to TechWorks. A finished beat saves a musiclab score and a tile line. Practice done sends a clear. Sound settings load and save with the TechWorks code. The Hub plate reads DJ Berty.
+
+## Earlier
+
 **Chip: MU 2.30.0** · 2026-10-01 · channel **live**
 
 A finished beat sends a score to TechWorks after Sign in. Practice done sends a clear. Shared settings travel with the TechWorks code and the app id. Signed out, nothing is sent.

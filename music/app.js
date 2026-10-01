@@ -1289,19 +1289,29 @@
   }
   function wireScore(event, level, score, max, stars, xp) {
     const api = window.KulibertWho;
-    if (!api || typeof api.record !== "function" || !signedKid()) return;
-    api.record({
-      app: "musiclab",
-      version: "MU 2.30.0",
-      event: event,
-      level: String(level || "beat").slice(0, 40),
-      score: score,
-      max: max,
-      stars: stars,
-      xp: xp,
-      skill: "rhythm",
-      ms: 0
-    });
+    if (!api || !signedKid()) return;
+    const line = (event === "clear" ? "Practice " + (level || "five") : "Beat " + score).slice(0, 32);
+    if (api.saveApp) api.saveApp("musiclab", { line: line });
+    if (typeof api.record === "function") {
+      api.record({
+        app: "musiclab",
+        version: "MU 2.31.0",
+        event: event,
+        level: String(level || "beat").slice(0, 40),
+        score: score,
+        max: max,
+        stars: stars,
+        xp: xp,
+        skill: "rhythm",
+        ms: 0
+      });
+      return;
+    }
+    if (api.mark) api.mark("musiclab", line);
+  }
+  function shopPrefs() {
+    const who = window.KulibertWho;
+    return who && who.prefs ? who.prefs : null;
   }
   function play(opts) {
     window.clearTimeout(state.timer);
@@ -2000,6 +2010,10 @@
     paintMute();
     if (master) master.gain.value = state.muted ? 0 : 0.95;
     if (window.KulibertPrefs && window.KulibertPrefs.set) window.KulibertPrefs.set({ sound: !state.muted });
+    const shop = shopPrefs();
+    if (shop && shop.set && signedKid() && window.KulibertPrefs && window.KulibertPrefs.get) {
+      shop.set("musiclab", window.KulibertPrefs.get());
+    }
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";
   });
   $("turn-btn").addEventListener("click", () => {
@@ -2590,6 +2604,14 @@
         if (master) master.gain.value = state.muted ? 0 : 0.95;
       });
     }
+  }
+  const shop = shopPrefs();
+  if (shop && shop.get && signedKid()) {
+    shop.get("musiclab").then((pack) => {
+      if (!pack || !pack.prefs || typeof pack.prefs !== "object") return;
+      if (!Object.keys(pack.prefs).length) return;
+      if (window.KulibertPrefs && window.KulibertPrefs.set) window.KulibertPrefs.set(pack.prefs);
+    }).catch(() => {});
   }
   if ($("read-lesson")) {
     $("read-lesson").addEventListener("click", () => {
