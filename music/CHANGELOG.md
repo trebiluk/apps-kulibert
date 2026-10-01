@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.0** · 2026-10-01 · channel **live**
+
+DJ Berty's own night colors are back. Sound plays on the first tap, and Sound on works right away. Tools sit in a left dock. The staff and all 16 steps fit on one screen.
+
+## Earlier
+
 **Chip: MU 2.34.0** · 2026-10-01 · channel **live**
 
 Save or Share of the current song records one musiclab score. A loop does not. TechWorks keeps event score, not save.

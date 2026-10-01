@@ -315,6 +315,13 @@
     if (ctx.state === "suspended") ctx.resume();
     master.gain.value = state.muted ? 0 : 0.95;
     applyFx();
+    resyncBus();
+  }
+  function resyncBus() {
+    if (!ctx || !master) return;
+    try { master.disconnect(); } catch (err) { /* reconnect below */ }
+    try { master.connect(ctx.destination); } catch (err) { /* bus stays */ }
+    master.gain.value = state.muted ? 0 : 0.95;
   }
   function atTime(when) {
     return typeof when === "number" ? when : ctx.currentTime;
@@ -1229,8 +1236,11 @@
   function paintMute() {
     const btn = $("mute-btn");
     if (!btn) return;
-    btn.textContent = state.muted ? "Muted" : "Sound on";
+    btn.innerHTML = state.muted
+      ? '<span aria-hidden="true">🔇</span> Sound off'
+      : '<span aria-hidden="true">🔊</span> Sound on';
     btn.setAttribute("aria-pressed", String(!!state.muted));
+    btn.setAttribute("aria-label", state.muted ? "Sound off" : "Sound on");
   }
   function advanceTurn() {
     if (state.turn !== "listen" && state.turn !== "answer") return;
@@ -1299,7 +1309,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.34.0",
+        version: "MU 2.35.0",
         event: "score",
         level: id,
         score: score,
@@ -1330,6 +1340,10 @@
     window.clearTimeout(state.timer);
     window.cancelAnimationFrame(state.raf);
     arm();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    resyncBus();
+    const banner = $("sound-banner");
+    if (banner) banner.hidden = document.documentElement.getAttribute("data-kp-sound") !== "0";
     state.once = !!(opts && opts.once);
     state.playing = true;
     state.playAt = Date.now();
@@ -1884,7 +1898,7 @@
   }
 
   function sayHow(mode) {
-    const line = $("how");
+    const line = $("beat-line") || $("how");
     if (!line) return;
     const text = {
       both: "The staff and the drums are this song. Tap a letter or a pad. Then press Play.",
@@ -1969,7 +1983,7 @@
     }
     if (mode === "band") paintBand();
     paintLights();
-    if (mode === "both" || mode === "notes") {
+    if (mode === "both" || mode === "notes" || mode === "beat") {
       window.requestAnimationFrame(() => {
         if (state.mode === mode) renderStaff();
       });
@@ -2016,14 +2030,21 @@
   $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
-    paintMute();
-    if (master) master.gain.value = state.muted ? 0 : 0.95;
     if (window.KulibertPrefs && window.KulibertPrefs.set) window.KulibertPrefs.set({ sound: !state.muted });
+    paintMute();
+    resyncBus();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    const banner = $("sound-banner");
+    if (banner && !state.muted) banner.hidden = true;
     const shop = shopPrefs();
     if (shop && shop.set && signedKid() && window.KulibertPrefs && window.KulibertPrefs.get) {
       shop.set("musiclab", window.KulibertPrefs.get());
     }
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";
+  });
+  const bannerOn = $("sound-banner-on");
+  if (bannerOn) bannerOn.addEventListener("click", () => {
+    if (state.muted && $("mute-btn")) $("mute-btn").click();
   });
   $("turn-btn").addEventListener("click", () => {
     state.turn = "listen";
@@ -2083,7 +2104,7 @@
     renderDrums();
     $("lesson").textContent = "The drums are back. Saved.";
   });
-  ["both", "notes", "drums", "band", "lights", "sound"].forEach((name) => {
+  ["beat", "both", "notes", "drums", "band", "lights", "sound"].forEach((name) => {
     const btn = $("mode-" + name);
     if (btn) btn.addEventListener("click", () => chooseWorkspace(name));
   });
@@ -2335,7 +2356,7 @@
       y: window.innerHeight * 0.4,
       vx: (Math.random() - 0.5) * 14,
       vy: -6 - Math.random() * 8,
-      c: ["#f0a020", "#1a140c", "#fff8ea", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
+      c: ["#22d3ee", "#e8f7ff", "#10203f", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
     }));
     let frame = 0;
     const tick = () => {
@@ -2611,7 +2632,9 @@
       window.KulibertPrefs.on((next) => {
         state.muted = !next || next.sound === false;
         paintMute();
-        if (master) master.gain.value = state.muted ? 0 : 0.95;
+        resyncBus();
+        const banner = $("sound-banner");
+        if (banner && !state.muted) banner.hidden = true;
       });
     }
   }
@@ -3568,7 +3591,23 @@
       $("library-filters").appendChild(b);
     });
     $("library-find").addEventListener("input", paintLibrary);
-    $("songs-btn").addEventListener("click", showHome);
+    if ($("songs-btn")) $("songs-btn").addEventListener("click", showHome);
+    if ($("dock-songs")) $("dock-songs").addEventListener("click", showHome);
+    if ($("dock-library")) $("dock-library").addEventListener("click", () => { if (typeof showLibrary === "function") showLibrary(); });
+    if ($("dock-import")) $("dock-import").addEventListener("click", () => {
+      if ($("shelf-extra")) $("shelf-extra").hidden = false;
+      showHome();
+      const box = $("import-file");
+      if (box && box.parentElement) box.parentElement.scrollIntoView({ block: "start" });
+    });
+    const moreTools = $("more-tools");
+    if (moreTools) moreTools.addEventListener("click", () => {
+      const pop = $("more-pop");
+      if (!pop) return;
+      const open = pop.hidden;
+      pop.hidden = !open;
+      moreTools.setAttribute("aria-expanded", String(open));
+    });
     $("song-cover").addEventListener("click", showHome);
     $("start-blank").addEventListener("click", () => {
       const TitlesNow = window.KulibertTitles;
@@ -3707,6 +3746,9 @@
   else showHome();
   buildKit();
   renderStaff();
+  window.addEventListener("resize", () => {
+    if (state.mode === "both" || state.mode === "notes" || state.mode === "beat") renderStaff();
+  });
   renderDrums();
   paintLooks();
   paintFx();
@@ -4113,6 +4155,7 @@
         b.type = "button";
         b.className = "btn";
         b.textContent = name;
+        b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", () => {
           const pack = packs[name];
           state.wall = pack.wall;
@@ -4137,7 +4180,11 @@
           paintLights();
           paintLooks();
           keep();
-          scenes.querySelectorAll(".btn").forEach((btn) => btn.classList.toggle("on", btn === b));
+          scenes.querySelectorAll(".btn").forEach((btn) => {
+            const on = btn === b;
+            btn.classList.toggle("on", on);
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+          });
           $("lesson").textContent = name + " is on. Saved.";
         });
         scenes.appendChild(b);
@@ -4181,7 +4228,7 @@
         saveSkin();
         paintLights();
         keep();
-        $("lesson").textContent = "Crazy mixed the lights. Press it again for another mix.";
+        $("lesson").textContent = "Surprise me mixed the lights. Press it again for another mix.";
       });
     }
   }
