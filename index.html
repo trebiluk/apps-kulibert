@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-01-left"/>
+<meta name="tech-room-rev" content="2026-10-02-strip"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -13,6 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
+  <script src="/shared/tw-session.js?v=2026-10-02-strip"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -710,7 +711,7 @@
     html[data-kp-contrast="1"] body.apps-always,html[data-kp-contrast="1"] .shell,html[data-kp-contrast="1"] .shell-header,html[data-kp-contrast="1"] a.tile{background:#000 !important;color:#fff !important;border-color:#ffe14a !important}
     :focus-visible{outline:3px solid #ffe14a;outline-offset:2px}
     body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic #kb-menu,body.hub-classic #progress{display:none !important}
-    .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8f7ff}
+    .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
     .kb-help,.kb-settings,#kb-menu{min-width:44px;min-height:44px;height:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
     #kb-menu{flex:0 0 auto;order:-1}
     .kb-settings[hidden],.kb-plate[hidden],.kb-help[hidden],#kb-menu[hidden],#progress[hidden]{display:none !important}
@@ -1568,6 +1569,37 @@
       body.apps-always .shell-header .edge-pocket{order:4}
       body.apps-always .shell-header #shell-home{order:3;height:44px;padding:0 .55rem}
     }
+    /* Icon field clips at short card heights. Hide it everywhere, including the first paint. */
+    .poster .field,.poster .vignette{display:none !important}
+    html[data-hub-theme="room"] #kb-plate{color:#e8f7ff}
+    html[data-hub-theme="graph"] #kb-plate{color:#1c1915}
+    html[data-hub-theme="miami"] #kb-plate{color:#fff6fb}
+    html[data-hub-theme="spa"] #kb-plate{color:#1c2420}
+    html[data-hub-theme="nature"] #kb-plate{color:#163222}
+    html[data-hub-theme="peaks"] #kb-plate{color:#1c2836}
+    html[data-hub-theme="city"] #kb-plate{color:#f4efe6}
+    html[data-hub-theme="space"] #kb-plate{color:#eef3ff}
+    html[data-hub-theme="berty"] #kb-plate{color:#fff6ea}
+    body.apps-always.is-framed #kb-plate{
+      order:1;flex:0 0 auto;width:auto;min-width:max-content;max-width:none;
+      overflow:visible;text-overflow:clip;
+    }
+    body.apps-always.is-framed .dock-clip{order:2;flex:1 1 0 !important;min-width:0 !important}
+    body.hub-classic #tw-session-slot{display:none !important}
+    #kp-panel #style-row{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;margin:.35rem 0}
+    #kp-panel #kp-help{margin:0}
+    #kp-panel .style-swatch{padding:0;width:44px;min-width:44px}
+    #kp-panel .style-swatch[data-style="room"]{background:#050814}
+    #kp-panel .style-swatch[data-style="graph"]{background:#efeae0}
+    #kp-panel .style-swatch[data-style="miami"]{background:linear-gradient(135deg,#ff4ad8,#5ef6ff)}
+    #kp-panel .style-swatch[data-style="spa"]{background:#c4b8a8}
+    #kp-panel .style-swatch[data-style="nature"]{background:#3e6b32}
+    #kp-panel .style-swatch[data-style="peaks"]{background:#8aa0b8}
+    #kp-panel .style-swatch[data-style="city"]{background:#e8a317}
+    #kp-panel .style-swatch[data-style="space"]{background:#1a2458}
+    #kp-panel .style-swatch[data-style="berty"]{background:#e87722}
+    #kp-panel .style-swatch.is-on{box-shadow:0 0 0 2px #22d3ee}
+    body.apps-always #hub-tools #my-settings{margin-left:auto}
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
@@ -1666,7 +1698,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-01-left</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-02-strip</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.1</strong> — All 16 steps show. More stays closed until you tap it. One Menu.</p>
@@ -1677,6 +1709,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.1</strong> — A scored round lands on TechWorks.</p>
           <ul id="hub-log">
+            <li>No empty boxes in the top card. The app name is readable in every theme. Sign in works from inside an app.</li>
             <li>Menu sits top-left in every app. Sound on works right away. One app's sound no longer mutes the others.</li>
             <li>My settings: one text size, contrast, sound, and language for every app.</li>
             <li>One sign-in. Your alias rides into every door. More, then My progress.</li>
@@ -1719,7 +1752,11 @@
         <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
         <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
       </div>
-      <div class="hub-tools-row hub-tools-theme" id="style-row" role="group" aria-label="My style">
+      <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel">My settings</button>
+    </div>
+    <section id="kp-panel" hidden role="dialog" aria-modal="true" aria-labelledby="kp-title">
+      <h2 id="kp-title">My settings</h2>
+      <div class="kp-row" id="style-row" role="group" aria-label="My style">
         <span class="style-k">My style</span>
         <button type="button" class="style-swatch" data-style="room" aria-label="Room"></button>
         <button type="button" class="style-swatch" data-style="graph" aria-label="Graph"></button>
@@ -1731,14 +1768,9 @@
         <button type="button" class="style-swatch" data-style="space" aria-label="Space"></button>
         <button type="button" class="style-swatch" data-style="berty" aria-label="Berty"></button>
         <span class="style-note" id="style-note" hidden>Saved on this Chromebook.</span>
-        <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel">My settings</button>
       </div>
-    </div>
-    <p id="kp-help">Pick a size. Your apps can use it.</p>
-    <section id="kp-panel" hidden role="dialog" aria-modal="true" aria-labelledby="kp-title">
-      <h2 id="kp-title">My settings</h2>
       <div class="kp-row" role="group" aria-label="Text size">
-        <span>Text size</span>
+        <p id="kp-help">Pick a size. Your apps can use it.</p>
         <button type="button" data-size="S">S</button>
         <button type="button" data-size="M" aria-pressed="true">M</button>
         <button type="button" data-size="L">L</button>
@@ -2651,8 +2683,8 @@
         document.body.classList.toggle("is-no-recents", pack && pack.recents === false);
         document.body.classList.toggle("is-no-chips", pack && pack.chips === false);
         document.body.classList.toggle("is-no-cuts", pack && pack.shortcuts === false);
-        hubAliasesOn = !(pack && pack.hubAliases === false);
-        try { localStorage.setItem("kw-hub-aliases", hubAliasesOn ? "1" : "0"); } catch (eAlias) {}
+        hubAliasesOn = true;
+        try { localStorage.setItem("kw-hub-aliases", "1"); } catch (eAlias) {}
         paintAliasGate();
         paintTw();
         flushMarks();
@@ -3550,7 +3582,29 @@
         } catch (eWho) { return; }
         try { frame.contentWindow.postMessage(msg, origin); } catch (ePost) {}
       }
-      function showPlate(name, version, menu, help) {
+      var plateState = null;
+      function tileNameFor(app) {
+        var key = String(app || "").toLowerCase();
+        if (!key) return "";
+        var alias = { musiclab: "music", music: "music", throwit: "catapult", catapult: "catapult" };
+        var want = alias[key] || key;
+        var tiles = document.querySelectorAll("#app-groups a.tile");
+        for (var i = 0; i < tiles.length; i++) {
+          var tile = tiles[i];
+          var id = (tile.getAttribute("data-id") || "").toLowerCase();
+          var labelEl = tile.querySelector(".label");
+          var label = labelEl ? labelEl.textContent.replace(/\s+/g, " ").trim() : "";
+          if (!label) continue;
+          if (id === want || id === key) return label;
+          var href = tile.getAttribute("href") || "";
+          var path = "";
+          try { path = new URL(href, location.href).pathname.toLowerCase(); } catch (ePath) {}
+          if (path === "/" + want || path === "/" + key || path.indexOf("/" + want + "/") === 0 || path.indexOf("/" + key + "/") === 0) return label;
+        }
+        return "";
+      }
+      function showPlate(name, version, menu, help, appId) {
+        plateState = { name: name || "", version: version || "", menu: !!menu, help: !!help, app: appId || "" };
         var plate = document.getElementById("kb-plate");
         var helpBtn = document.getElementById("kb-help");
         var menuBtn = document.getElementById("kb-menu");
@@ -3561,13 +3615,37 @@
           if (menuBtn) { menuBtn.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); }
           return;
         }
+        var shown = name || "";
+        var slug = String(appId || name || "").toLowerCase();
+        var fromTile = tileNameFor(appId || name);
+        if (fromTile && (!shown || shown.toLowerCase() === slug)) shown = fromTile;
+        var narrow = false;
+        try { narrow = window.matchMedia("(max-width: 800px)").matches; } catch (eNarrow) {}
         if (plate) {
-          plate.hidden = !name;
-          plate.textContent = version ? name + " \u00b7 " + version : name;
+          plate.hidden = !shown;
+          plate.textContent = (!narrow && version) ? shown + " \u00b7 " + version : shown;
         }
         if (helpBtn) helpBtn.hidden = !help;
         if (menuBtn) menuBtn.hidden = !menu;
       }
+      function openHubSignIn() {
+        if (hubClassic) return;
+        var slot = document.getElementById("tw-session-slot");
+        if (!slot) return;
+        slot.hidden = false;
+        var out = slot.querySelector(".tw-out");
+        var pop = slot.querySelector(".tw-pop");
+        if (out && !out.hidden) { out.click(); return; }
+        if (pop) {
+          pop.hidden = false;
+          var code = pop.querySelector(".tw-code");
+          if (code) code.focus();
+        }
+      }
+      window.addEventListener("resize", function () {
+        if (!plateState || !document.body.classList.contains("is-framed")) return;
+        showPlate(plateState.name, plateState.version, plateState.menu, plateState.help, plateState.app);
+      });
       function openFrame(href, title, fromPop, replace) {
         href = schoolHref(href);
         if (!href) return;
@@ -3878,7 +3956,7 @@ document.addEventListener("click", function (event) {
         try { host = new URL(ev.origin).hostname; } catch (eHost) { return; }
         if (!(host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
         if (data.type === "kb-app") {
-          showPlate(data.name || data.app || "App", data.version || "", !!data.menu, !!data.help);
+          showPlate(data.name || data.app || "App", data.version || "", !!data.menu, !!data.help, data.app || "");
           var liveFrame = document.getElementById("app-frame");
           if (liveFrame && ev.source && liveFrame.contentWindow === ev.source) postWho(liveFrame);
         }
@@ -3886,6 +3964,7 @@ document.addEventListener("click", function (event) {
           var menuBtn = document.getElementById("kb-menu");
           if (menuBtn) menuBtn.setAttribute("aria-expanded", data.open ? "true" : "false");
         }
+        if (data.type === "tw-session-open") openHubSignIn();
         if (data.type === "kw-record") {
           if (data.row && data.row.v === 2 && data.row.app) {
             try {
