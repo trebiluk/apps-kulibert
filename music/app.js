@@ -160,6 +160,7 @@
     feedback: 0,
     playing: false,
     muted: false,
+    seenGrid: -1,
     step: -1,
     timer: 0,
     bins: new Uint8Array(64),
@@ -647,7 +648,11 @@
       host.textContent = abc;
     }
     const svg = host.querySelector("svg");
-    if (svg) svg.addEventListener("pointerdown", placeNote);
+    if (svg) {
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "Staff for this song");
+      svg.addEventListener("pointerdown", placeNote);
+    }
   }
 
   function placeNote(e) {
@@ -681,17 +686,25 @@
   function renderDrums() {
     const box = $("drums");
     box.innerHTML = "";
+    const icons = {
+      kick: '<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
+      snare: '<svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="3"/><path d="M6 12h12" stroke="currentColor" stroke-width="2"/></svg>',
+      hat: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 9h18M4 15h16" fill="none" stroke="currentColor" stroke-width="3"/></svg>',
+      clap: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 16c2 3 6 3 8 0M7 12V7M12 12V5M17 12V7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
+    };
     ROWS.forEach(([id, label], index) => {
       const row = document.createElement("div");
       row.className = "drum-row" + (index > 3 ? " is-extra" : "");
       const name = document.createElement("b");
-      name.textContent = label;
+      name.innerHTML = (icons[id] || "") + "<span>" + label + "</span>";
       row.appendChild(name);
       for (let i = 0; i < GRID; i++) {
+        const on = !!state.drums[id][i];
         const cell = document.createElement("button");
         cell.type = "button";
-        cell.className = "cell" + (state.drums[id][i] ? " on" : "") + (state.grid === i ? " now" : "");
-        cell.setAttribute("aria-label", label + " beat " + (i + 1));
+        cell.className = "cell" + (on ? " on" : "") + (state.grid === i ? " now" : "");
+        cell.setAttribute("aria-pressed", on ? "true" : "false");
+        cell.setAttribute("aria-label", label + " beat " + (i + 1) + (on ? ", on" : ", off"));
         cell.dataset.track = id;
         cell.dataset.step = String(i);
         cell.addEventListener("click", () => {
@@ -1211,6 +1224,55 @@
       tone(root * 1.4983, 0.26, "triangle", 0.09, when);
     }
   }
+  function paintMute() {
+    const btn = $("mute-btn");
+    if (!btn) return;
+    btn.textContent = state.muted ? "Muted" : "Sound on";
+    btn.setAttribute("aria-pressed", String(!!state.muted));
+  }
+  function advanceTurn() {
+    if (state.turn !== "listen" && state.turn !== "answer") return;
+    state.turnLeft -= 1;
+    if (state.turn === "listen" && state.turnLeft <= 0) {
+      state.turn = "answer";
+      state.turnLeft = GRID;
+      state.recording = true;
+      paintRec();
+      state.turnNote = "Your turn. Tap the pads. You can leave the sound off.";
+      if ($("lesson")) $("lesson").textContent = "Your turn. Tap the pads. The beats you tap stay in the song.";
+    } else if (state.turn === "answer" && state.turnLeft <= 0) {
+      state.turn = "";
+      state.recording = false;
+      paintRec();
+      state.turnNote = "Your taps stayed in the song. You can leave the sound off.";
+      if ($("lesson")) $("lesson").textContent = "The class can hear your turn. Press Play to hear it again.";
+    }
+  }
+  function paintBeat(grid) {
+    const names = [];
+    document.querySelectorAll(".drum-row").forEach((row) => {
+      row.querySelectorAll(".cell").forEach((cell) => {
+        const here = Number(cell.dataset.step) === grid;
+        cell.classList.toggle("now", here);
+        const sounding = here && cell.classList.contains("on");
+        cell.classList.toggle("flash", sounding);
+        const shown = row.offsetParent !== null;
+        if (sounding && shown) {
+          const word = row.querySelector("b span");
+          if (word && names.indexOf(word.textContent) < 0) names.push(word.textContent);
+        }
+      });
+    });
+    const line = $("beat-line");
+    if (!line) return;
+    if (state.turnNote) {
+      line.textContent = state.turnNote;
+      state.turnNote = "";
+      return;
+    }
+    const heard = names.length ? names.join(" · ") : "Rest";
+    line.textContent = "Beat " + (grid + 1) + " · " + heard + ". You can leave the sound off.";
+  }
   function play(opts) {
     window.clearTimeout(state.timer);
     window.cancelAnimationFrame(state.raf);
@@ -1276,7 +1338,18 @@
           cell.classList.toggle("now", Number(cell.dataset.step) === hit.grid);
         });
         const bob = $("berty-bob");
-        if (bob) bob.classList.toggle("on", hit.grid % 2 === 0);
+        const less = document.documentElement.getAttribute("data-kp-motion") === "less"
+          || document.body.classList.contains("pref-less-motion")
+          || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (bob) {
+          if (less) bob.classList.remove("on");
+          else bob.classList.toggle("on", hit.grid % 2 === 0);
+        }
+        if (hit.grid !== state.seenGrid) {
+          state.seenGrid = hit.grid;
+          advanceTurn();
+          paintBeat(hit.grid);
+        }
         if (hit.grid === 0 && now - start > 0.2 && !state.confettiDone) {
           state.confettiDone = true;
           popConfetti();
@@ -1893,20 +1966,22 @@
   $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
-    const full = state.muted ? "Muted" : "Sound on";
-    $("mute-btn").textContent = full;
-    $("mute-btn").setAttribute("aria-pressed", String(state.muted));
-    if (master) master.gain.value = state.muted ? 0 : 0.8;
+    paintMute();
+    if (master) master.gain.value = state.muted ? 0 : 0.95;
+    if (window.KulibertPrefs && window.KulibertPrefs.set) window.KulibertPrefs.set({ sound: !state.muted });
     $("lesson").textContent = state.muted ? "Sound is off. The word and the picture still move." : "Sound is on. The word still names the beat.";
   });
   $("turn-btn").addEventListener("click", () => {
     state.turn = "listen";
-    state.turnLeft = 8;
+    state.turnLeft = GRID;
+    state.seenGrid = -1;
     state.recording = false;
     state.armBeats = 0;
     paintRec();
     if (!state.playing) play();
-    $("lesson").textContent = "Listen once. Then it says Your turn, and your taps stay in the song.";
+    $("lesson").textContent = "Listen once. Each pad flashes. Then it says Your turn.";
+    const beat = $("beat-line");
+    if (beat) beat.textContent = "Listen. You can leave the sound off.";
   });
   $("rec-btn").addEventListener("click", () => {
     if (state.recording) {
@@ -2191,6 +2266,8 @@
   }
   function popConfetti() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (document.documentElement.getAttribute("data-kp-motion") === "less") return;
+    if (document.body.classList.contains("pref-less-motion")) return;
     const canvas = $("confetti");
     if (!canvas) return;
     canvas.hidden = false;
@@ -2471,6 +2548,33 @@
     setMode("beat");
   }
   paintLayers();
+  if (window.KulibertPrefs && window.KulibertPrefs.get) {
+    const prefs = window.KulibertPrefs.get();
+    if (prefs.sound === false) state.muted = true;
+    paintMute();
+    if (window.KulibertPrefs.on) {
+      window.KulibertPrefs.on((next) => {
+        state.muted = !next || next.sound === false;
+        paintMute();
+        if (master) master.gain.value = state.muted ? 0 : 0.95;
+      });
+    }
+  }
+  if ($("read-lesson")) {
+    $("read-lesson").addEventListener("click", () => {
+      const line = $("beat-line");
+      const lesson = $("lesson");
+      const text = (line && line.textContent) || (lesson && lesson.textContent) || "Press Play. You can leave the sound off.";
+      if (!window.speechSynthesis) {
+        if (lesson) lesson.textContent = text;
+        return;
+      }
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = "en";
+      window.speechSynthesis.speak(utter);
+    });
+  }
   if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
   if ($("my-songs")) $("my-songs").addEventListener("click", () => {
     resetScroll();

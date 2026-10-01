@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.29.0** · 2026-10-01 · channel **live**
+
+Pads show a dot when they are on, not only an orange fill. The playhead has a thick border. Tempo numbers are dark. Save sits above Play so they do not cover each other. A beat line names the step. Sound off, less motion, and contrast come from the shared prefs.
+
+## Earlier
+
 **Chip: MU 2.28.0** · 2026-09-30 · channel **live**
 
 Phone landscape keeps Save, Share, Save as sound, and MIDI on the beat workspace, in a compact row above Play.
