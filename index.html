@@ -3816,7 +3816,20 @@ document.addEventListener("click", function (event) {
           var liveFrame = document.getElementById("app-frame");
           if (liveFrame && ev.source && liveFrame.contentWindow === ev.source) postWho(liveFrame);
         }
-        if (data.type === "kw-record") { paintKeep(); paintProgress(); }
+        if (data.type === "kw-record") {
+          if (data.row && data.row.v === 2 && data.row.app) {
+            try {
+              var kept = JSON.parse(localStorage.getItem("kw-records-v1") || "[]");
+              if (!Array.isArray(kept)) kept = [];
+              var seen = kept.some(function (item) {
+                return item && item.app === data.row.app && item.level === data.row.level && item.ts === data.row.ts;
+              });
+              if (!seen) localStorage.setItem("kw-records-v1", JSON.stringify(kept.concat([data.row]).slice(-300)));
+            } catch (eKeep) {}
+          }
+          paintKeep();
+          paintProgress();
+        }
       });
       try {
         if (new URLSearchParams(location.search).get("view") === "progress" && !hubClassic) {

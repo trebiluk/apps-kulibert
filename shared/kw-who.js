@@ -212,7 +212,7 @@
     writePending(rows);
     try { root.dispatchEvent(new CustomEvent("kw-record", { detail: row })); } catch (eEv) {}
     try {
-      if (root.parent && root.parent !== root) root.parent.postMessage({ type: "kw-record", app: row.app }, "*");
+      if (root.parent && root.parent !== root) root.parent.postMessage({ type: "kw-record", app: row.app, row: row }, "*");
     } catch (ePost) {}
     flush();
     return row;
