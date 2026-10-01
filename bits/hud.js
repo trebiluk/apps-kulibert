@@ -1,4 +1,4 @@
-/* Bits and Bobs BB 2.0.0 — tech-room HUD. Classic board: ?theme=classic */
+/* Bits and Bobs BB 2.0.1 — tech-room HUD. Classic board: ?theme=classic */
 (function () {
   if (document.documentElement.classList.contains("is-classic")) {
     var frame = document.querySelector(".classic-frame");
@@ -39,12 +39,13 @@
 
   function el(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
   function btn(label) { var b = el("button", "btn"); b.type = "button"; b.textContent = label; return b; }
-  function fmt(n) {
+  function fmt(n, dp) {
     if (!Number.isFinite(n)) return "—";
-    var r = Math.round(n * 1e6) / 1e6;
+    var d = dp == null ? 2 : dp;
+    var p = Math.pow(10, d);
+    var r = Math.round((n + Number.EPSILON) * p) / p;
     if (Object.is(r, -0)) r = 0;
-    if (Math.abs(r) >= 1e7 || (r !== 0 && Math.abs(r) < 1e-4)) return String(Number(r.toExponential(3)));
-    return String(r);
+    return r.toFixed(d);
   }
   function parseLen(raw) {
     if (raw == null) return null;
@@ -75,8 +76,8 @@
     if (whole && num) text = whole + " " + num + "/" + den;
     else if (whole) text = String(whole);
     else if (num) text = num + "/" + den;
-    var mm = Math.round(Math.abs(inches) * 25.4);
-    return (neg ? "-" : "") + text + " in = " + mm + " mm";
+    var mm = Math.round(Math.abs(inches) * 254) / 10;
+    return (neg ? "-" : "") + text + " in = " + mm.toFixed(1) + " mm";
   }
   function say(text) {
     if (!window.speechSynthesis || !text) return;
@@ -216,6 +217,17 @@
     if (!(sw > 0) || !(sh > 0)) return null;
     return Math.min(matW / sw, matH / sh) * 100;
   }
+  function sheetSummary(matW, matH, w, h, gap) {
+    var a = packCount(matW, matH, w, h, gap);
+    var b = packCount(matW, matH, h, w, gap);
+    var turned = b.n > a.n;
+    var best = turned ? b : a;
+    var pctA = shrinkPct(matW, matH, w, h);
+    var pctB = shrinkPct(matW, matH, h, w);
+    var pct = Math.max(pctA || 0, pctB || 0);
+    if (best.n > 0) return best.n + " fit" + (turned ? " turned" : "");
+    return "0 fit · Shrink to " + fmt(pct) + "% to fit one";
+  }
   function driveMath(diameter, distance) {
     if (!(diameter > 0) || !Number.isFinite(distance)) return null;
     var turns = distance / (Math.PI * diameter);
@@ -229,8 +241,12 @@
 
   function selfCheck() {
     if (parseLen("10 1/2") !== 10.5) console.error("parse 10 1/2");
-    if (inchLabel(3 + 5 / 8) !== "3 5/8 in = 92 mm") console.error("tape label", inchLabel(3 + 5 / 8));
+    if (inchLabel(3 + 5 / 8) !== "3 5/8 in = 92.1 mm") console.error("tape label", inchLabel(3 + 5 / 8));
     if (fmt(13.720000000000002) !== "13.72") console.error("fmt", fmt(13.720000000000002));
+    if (inchLabel(1) !== "1 in = 25.4 mm") console.error("mm", inchLabel(1));
+    if (fmt(1762.947062, 1) !== "1762.9") console.error("deg");
+    if (sheetSummary(18, 24, 4, 3, 0.25) !== "28 fit") console.error("sheet", sheetSummary(18, 24, 4, 3, 0.25));
+    if (sheetSummary(12, 24, 20, 10, 0) !== "1 fit turned") console.error("turn", sheetSummary(12, 24, 20, 10, 0));
     if (Math.abs(evalExpr("200-10%", true) - 180) > 1e-6) console.error("percent");
     if (Math.abs(evalExpr("sin(90)", true) - 1) > 1e-6) console.error("sin");
     var fit = packCount(12, 12, 4, 3, 0.25);
@@ -584,7 +600,7 @@
       node.classList.add("lit");
       var label = inchLabel(n / 16);
       res.set(label);
-      if (!fromTap) mm.input.value = String(Math.round(n / 16 * 25.4));
+      if (!fromTap) mm.input.value = (n / 16 * 25.4).toFixed(1);
       var left = node.offsetLeft - scroller.clientWidth / 2 + 22;
       scroller.scrollLeft = Math.max(0, left);
     }
@@ -633,21 +649,25 @@
       });
       items.sort(function (a, b) { return b.len - a.len; });
       var sticks = [];
+      var tooLong = [];
       items.forEach(function (item) {
+        if (!(stockIn > 0) || item.len > stockIn + 1e-6) { tooLong.push(item); return; }
         var placed = false;
-        if (stockIn > 0 && item.len <= stockIn) {
-          for (var s = 0; s < sticks.length; s++) {
-            var used = sticks[s].reduce(function (sum, x) { return sum + x.len; }, 0) + kerfIn * sticks[s].length;
-            if (used + item.len <= stockIn + 1e-6) { sticks[s].push(item); placed = true; break; }
-          }
+        for (var s = 0; s < sticks.length; s++) {
+          var used = sticks[s].reduce(function (sum, x) { return sum + x.len; }, 0) + kerfIn * sticks[s].length;
+          if (used + item.len <= stockIn + 1e-6) { sticks[s].push(item); placed = true; break; }
         }
         if (!placed) sticks.push([item]);
       });
       host.textContent = "";
+      tooLong.forEach(function (item) {
+        var warn = el("p", "note");
+        warn.textContent = (item.piece || "Piece") + " is too long for one stick";
+        host.append(warn);
+      });
       sticks.forEach(function (stick, si) {
         var lab = el("div", "note");
-        var too = stick.some(function (x) { return stockIn > 0 && x.len > stockIn; });
-        lab.textContent = "Stick " + (si + 1) + (too ? " · too long for one stick" : "");
+        lab.textContent = "Stick " + (si + 1);
         var bar = el("div", "stick");
         stick.forEach(function (item, ii) {
           if (ii > 0) {
@@ -672,7 +692,9 @@
         }
         host.append(lab, bar);
       });
-      res.set("Buy " + sticks.length + " stick" + (sticks.length === 1 ? "" : "s"));
+      var buy = "Buy " + sticks.length + " stick" + (sticks.length === 1 ? "" : "s");
+      if (tooLong.length) buy += " · " + tooLong.length + " too long";
+      res.set(buy);
     }
     draw();
   });
@@ -690,7 +712,7 @@
       var go = driveMath(bag.d, bag.dist);
       var spin = turn90(bag.d, bag.track);
       if (!go) { res.set("Needs a wheel size"); return; }
-      res.set(fmt(go.turns) + " turns · " + fmt(go.degrees) + "°  |  90° turn " + (spin ? fmt(spin.degrees) + "° each wheel" : ""));
+      res.set(fmt(go.turns) + " turns · " + fmt(go.degrees, 1) + "°  |  90° turn " + (spin ? fmt(spin.degrees, 1) + "° each wheel" : ""));
     }
     var d = numField("Wheel size", bag.d, function (v) { bag.d = v; ctx.save(); paint(); });
     var dist = numField("Distance", bag.dist, function (v) { bag.dist = v; ctx.save(); paint(); });
@@ -721,13 +743,15 @@
     if (bag.w == null) bag.w = 4;
     if (bag.h == null) bag.h = 3;
     if (bag.gap == null) bag.gap = 0.25;
+    if (bag.sheetW == null) bag.sheetW = 18;
+    if (bag.sheetH == null) bag.sheetH = 24;
     if (!bag.mat) bag.mat = "12×12";
     var res = resultBar(body);
     var pic = el("div"); body.append(pic);
     function matSize() {
-      if (bag.mat === "12×12") return bag.unit === "cm" ? [30.48, 30.48] : [12, 12];
+      if (bag.mat === "Sheet") return [bag.sheetW, bag.sheetH];
       if (bag.mat === "12×24") return bag.unit === "cm" ? [30.48, 60.96] : [12, 24];
-      return [bag.sheetW || 12, bag.sheetH || 12];
+      return bag.unit === "cm" ? [30.48, 30.48] : [12, 12];
     }
     function paint() {
       var mat = matSize();
@@ -736,14 +760,17 @@
       var turned = b.n > a.n;
       var best = turned ? b : a;
       var sw = turned ? bag.h : bag.w, sh = turned ? bag.w : bag.h;
-      var pct = shrinkPct(mat[0], mat[1], bag.w, bag.h);
-      var shrink = pct == null ? "—" : (pct >= 100 ? "Fits at 100%" : "Shrink to " + fmt(pct) + "% to fit one");
-      res.set(best.n + " fit" + (turned ? " turned" : "") + " · " + shrink);
+      res.set(sheetSummary(mat[0], mat[1], bag.w, bag.h, bag.gap));
       pic.textContent = "";
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 " + mat[0] + " " + mat[1]);
+      svg.setAttribute("class", "mat");
       svg.style.width = "100%"; svg.style.height = "180px";
-      svg.style.background = "rgba(255,255,255,.04)";
+      var frame = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      frame.setAttribute("x", "0.35"); frame.setAttribute("y", "0.35");
+      frame.setAttribute("width", Math.max(0, mat[0] - 0.7)); frame.setAttribute("height", Math.max(0, mat[1] - 0.7));
+      frame.setAttribute("fill", "none"); frame.setAttribute("stroke", "currentColor"); frame.setAttribute("stroke-width", String(Math.max(mat[0], mat[1]) * 0.012));
+      svg.append(frame);
       var stepX = sw + bag.gap, stepY = sh + bag.gap;
       for (var r = 0; r < best.rows; r++) for (var c = 0; c < best.cols; c++) {
         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -833,7 +860,8 @@
       var u = units[bag.cat];
       if (u.indexOf(bag.from) < 0) bag.from = u[0];
       if (u.indexOf(bag.to) < 0) bag.to = u[Math.min(1, u.length - 1)];
-      res.set(fmt(convert(bag.cat, bag.n, bag.from, bag.to)) + " " + bag.to);
+      var dp = bag.to === "mm" ? 1 : 2;
+      res.set(fmt(convert(bag.cat, bag.n, bag.from, bag.to), dp) + " " + bag.to);
     }
     body.append(seg(["Length", "Mass", "Volume", "Temp"], bag.cat, function (c) { bag.cat = c; ctx.save(); build(); paint(); }));
     var host = el("div", "row"); body.append(host);
@@ -920,10 +948,17 @@
     if (bag.i == null) bag.i = 0.02;
     if (bag.r == null) bag.r = 450;
     if (bag.r2 == null) bag.r2 = 450;
+    if (!bag.solve) bag.solve = "Ohms";
     var res = resultBar(body);
     function paint() {
-      if (bag.mode === "Ohm") res.set(fmt(bag.i ? bag.v / bag.i : NaN) + " Ω  ·  " + fmt(bag.r ? bag.v / bag.r : NaN) + " A  ·  " + fmt(bag.i * bag.r) + " V");
-      else if (bag.mode === "Series") {
+      if (bag.mode === "Ohm") {
+        var out = "—";
+        if (!bag.solve) bag.solve = "Ohms";
+        if (bag.solve === "Ohms") out = bag.i ? fmt(bag.v / bag.i) + " Ω" : "Needs amps";
+        else if (bag.solve === "Amps") out = bag.r ? fmt(bag.v / bag.r) + " A" : "Needs ohms";
+        else out = fmt(bag.i * bag.r) + " V";
+        res.set(out);
+      } else if (bag.mode === "Series") {
         var r = bag.r + bag.r2;
         res.set(fmt(r) + " Ω series" + (r ? " · " + fmt(bag.v / r) + " A" : ""));
       } else {
@@ -932,6 +967,7 @@
       }
     }
     body.append(seg(["Ohm", "Series", "Parallel"], bag.mode, function (m) { bag.mode = m; ctx.save(); paint(); }));
+    body.append(seg(["Volts", "Amps", "Ohms"], bag.solve, function (s) { bag.solve = s; ctx.save(); paint(); }));
     var v = numField("Volts", bag.v, function (n) { bag.v = n; ctx.save(); paint(); });
     var i = numField("Amps", bag.i, function (n) { bag.i = n; ctx.save(); paint(); });
     var r = numField("Ohms", bag.r, function (n) { bag.r = n; ctx.save(); paint(); });
@@ -946,7 +982,7 @@
     if (bag.ea == null) bag.ea = 40;
     var res = resultBar(body);
     var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("viewBox", "0 0 200 80"); svg.style.width = "100%"; svg.style.height = "90px";
+    svg.setAttribute("viewBox", "0 0 200 80"); svg.setAttribute("class", "fig"); svg.style.width = "100%"; svg.style.height = "90px";
     body.append(svg);
     function paint() {
       var effort = bag.ea > 0 ? bag.load * bag.la / bag.ea : NaN;
@@ -975,16 +1011,25 @@
     if (bag.n == null) bag.n = 1;
     if (bag.actual == null) bag.actual = false;
     var res = resultBar(body);
-    function paint() {
-      var t = bag.t, w = bag.w;
-      if (bag.actual && bag.t === 2 && bag.w === 4) { t = 1.5; w = 3.5; }
-      var bf = t * w * bag.l / 12 * bag.n;
-      res.set(fmt(bf) + " board feet");
+    function dressed(n) {
+      var table = { 1: 0.75, 2: 1.5, 4: 3.5, 6: 5.5, 8: 7.25, 10: 9.25, 12: 11.25 };
+      if (table[n]) return table[n];
+      if (!Number.isFinite(n) || n <= 0) return n;
+      if (n < 2) return 0.75;
+      if (n < 8) return Math.round((n - 0.5) * 100) / 100;
+      return Math.round((n - 0.75) * 100) / 100;
     }
-    var actual = btn("Nominal sizes");
+    function paint() {
+      var t = bag.actual ? dressed(bag.t) : bag.t;
+      var w = bag.actual ? dressed(bag.w) : bag.w;
+      var bf = t * w * bag.l / 12 * bag.n;
+      res.set(fmt(bf) + " board feet" + (bag.actual ? " · actual " + fmt(t) + "×" + fmt(w) : ""));
+    }
+    var actual = btn(bag.actual ? "Actual sizes" : "Nominal sizes");
+    actual.setAttribute("aria-pressed", bag.actual ? "true" : "false");
     actual.addEventListener("click", function () {
       bag.actual = !bag.actual;
-      actual.textContent = bag.actual ? "Actual 2×4 is 1.5×3.5" : "Nominal sizes";
+      actual.textContent = bag.actual ? "Actual sizes" : "Nominal sizes";
       actual.setAttribute("aria-pressed", bag.actual ? "true" : "false");
       ctx.save(); paint();
     });
@@ -1008,7 +1053,7 @@
       var ang = bag.run ? Math.atan2(bag.rise, bag.run) * 180 / Math.PI : NaN;
       var hyp = Math.hypot(bag.rise, bag.run);
       var c = Math.hypot(bag.a, bag.b);
-      res.set(fmt(pitch) + " in 12 · " + fmt(ang) + "° · rafter " + fmt(hyp) + " · triangle c " + fmt(c));
+      res.set(fmt(pitch) + " in 12 · " + fmt(ang, 1) + "° · rafter " + fmt(hyp) + " · triangle c " + fmt(c));
     }
     var rise = numField("Rise", bag.rise, function (v) { bag.rise = v; ctx.save(); paint(); });
     var run = numField("Run", bag.run, function (v) { bag.run = v; ctx.save(); paint(); });
@@ -1103,18 +1148,20 @@
       handle.setAttribute("cx", String(x)); handle.setAttribute("cy", String(y)); handle.setAttribute("r", "12");
       handle.setAttribute("fill", "currentColor");
       svg.append(arc, ray, handle);
-      var comp = deg <= 90 ? " · complement " + fmt(90 - deg) + "°" : "";
-      res.set(Math.round(deg) + "° · supplement " + fmt(180 - deg) + "°" + comp);
+      var comp = deg <= 90 ? " · complement " + fmt(90 - deg, 1) + "°" : "";
+      res.set(fmt(deg, 1) + "° · supplement " + fmt(180 - deg, 1) + "°" + comp);
     }
     function setFrom(e) {
-      var rec = svg.getBoundingClientRect();
-      var x = (e.clientX - rec.left) / rec.width * 200;
-      var y = (e.clientY - rec.top) / rec.height * 120;
-      var deg = Math.atan2(108 - y, x - 100) * 180 / Math.PI;
+      var pt = svg.createSVGPoint();
+      pt.x = e.clientX; pt.y = e.clientY;
+      var ctm = svg.getScreenCTM();
+      if (!ctm) return;
+      var p = pt.matrixTransform(ctm.inverse());
+      var deg = Math.atan2(108 - p.y, p.x - 100) * 180 / Math.PI;
       bag.deg = Math.max(0, Math.min(180, deg));
       ctx.save(); paint();
     }
-    svg.addEventListener("pointerdown", function (e) { svg.setPointerCapture(e.pointerId); setFrom(e); });
+    svg.addEventListener("pointerdown", function (e) { setFrom(e); try { svg.setPointerCapture(e.pointerId); } catch (err) {} });
     svg.addEventListener("pointermove", function (e) { if (e.pressure || e.buttons) setFrom(e); });
     paint();
   });
@@ -1288,7 +1335,7 @@
     roof: "roof", volume: "volume", wheel: "robot", chance: "dice", data: "strength", wires: "circuits"
   };
   function fresh() {
-    return { v: 2, theme: "hud", accent: "#e25c12", big: false, order: DEFAULTS.slice(), layout: {}, bags: {}, colsAt: null };
+    return { v: 2, theme: "hud", accent: "#e25c12", big: false, order: DEFAULTS.slice(), layout: {}, layouts: {}, bags: {}, colsAt: null };
   }
   function load() {
     try {
@@ -1311,12 +1358,14 @@
   }
 
   var state = load();
+  if (!state.layouts || typeof state.layouts !== "object") state.layouts = {};
   var tiles = new Map();
   var app = document.getElementById("app");
   var saveTimer = 0;
 
+  function defaultSize(id) { return id === "drama" || id === "calc" ? "L" : "M"; }
   function lay(id) {
-    if (!state.layout[id]) state.layout[id] = { size: "M", pin: false, col: null, row: null };
+    if (!state.layout[id]) state.layout[id] = { size: defaultSize(id), pin: false, col: null, row: null };
     return state.layout[id];
   }
   function bag(id) {
@@ -1324,7 +1373,7 @@
     return state.bags[id];
   }
   function slim() {
-    return { v: 2, theme: state.theme, accent: state.accent, big: state.big, order: state.order, layout: state.layout, bags: state.bags, colsAt: state.colsAt };
+    return { v: 2, theme: state.theme, accent: state.accent, big: state.big, order: state.order, layout: state.layout, layouts: state.layouts || {}, bags: state.bags, colsAt: state.colsAt };
   }
   function save() {
     clearTimeout(saveTimer);
@@ -1344,7 +1393,7 @@
   var top = el("header", "top");
   var brand = el("div", "brand");
   var h1 = el("h1"); h1.textContent = "Bits & Bobs";
-  var ver = el("span", "ver"); ver.textContent = "BB 2.0.0";
+  var ver = el("span", "ver"); ver.textContent = "BB 2.0.1";
   var who = el("span", "who"); who.id = "who"; who.textContent = "Not signed in";
   brand.append(h1, ver, who); top.append(brand);
   var board = el("div", "board");
@@ -1354,7 +1403,10 @@
   var projBtn = btn("Projector");
   var setBtn = btn("Settings");
   dock.append(addBtn, bigBtn, projBtn, setBtn);
-  app.append(top, board, dock);
+  var exitBtn = btn("Exit");
+  exitBtn.className = "proj-exit";
+  exitBtn.addEventListener("click", function () { setProj(false); });
+  app.append(top, board, dock, exitBtn);
 
   function applyTheme() {
     document.documentElement.dataset.theme = state.theme || "hud";
@@ -1363,9 +1415,9 @@
     bigBtn.setAttribute("aria-pressed", state.big ? "true" : "false");
   }
   function spans(size, cols) {
-    var desk = { S: [3, 3], M: [4, 3], L: [6, 4], XL: [8, 5] };
-    var tab = { S: [4, 3], M: [4, 3], L: [8, 4], XL: [8, 5] };
-    var phone = { S: [4, 3], M: [4, 4], L: [4, 5], XL: [4, 6] };
+    var desk = { S: [3, 3], M: [4, 4], L: [6, 5], XL: [8, 6] };
+    var tab = { S: [4, 4], M: [4, 4], L: [8, 5], XL: [8, 6] };
+    var phone = { S: [4, 4], M: [4, 5], L: [4, 6], XL: [4, 7] };
     var table = cols <= 4 ? phone : cols <= 8 ? tab : desk;
     var pair = table[size] || table.M;
     return [Math.min(pair[0], cols), pair[1]];
@@ -1375,7 +1427,10 @@
     var cols = w < 700 ? 4 : w < 1100 ? 8 : 12;
     var pad = 8;
     var inner = Math.max(200, w - pad * 2);
-    return { cols: cols, cell: inner / cols, row: cols === 12 ? 100 : cols === 8 ? 92 : 86, pad: pad };
+    var proj = document.documentElement.classList.contains("is-projector");
+    var row = cols === 12 ? 112 : cols === 8 ? 100 : 96;
+    if (proj) row = Math.round(row * 1.5);
+    return { cols: cols, cell: inner / cols, row: row, pad: pad };
   }
   function hits(c, r, w, h, ignore) {
     var g = metrics();
@@ -1392,39 +1447,83 @@
   function nearest(col, row, w, h, ignore) {
     var g = metrics();
     var best = null, bestD = 1e9, r, c;
-    for (r = 0; r < 36; r++) for (c = 0; c <= g.cols - w; c++) {
+    for (r = 0; r < 500; r++) for (c = 0; c <= g.cols - w; c++) {
       if (hits(c, r, w, h, ignore)) continue;
       var d = Math.abs(c - col) + Math.abs(r - row);
       if (d < bestD) { bestD = d; best = { c: c, r: r }; }
     }
-    return best || { c: 0, r: 0 };
+    return best || { c: 0, r: r };
   }
   function firstFit(w, h, ignore) {
     var g = metrics();
     var r, c;
-    for (r = 0; r < 40; r++) for (c = 0; c <= g.cols - w; c++) {
+    for (r = 0; r < 500; r++) for (c = 0; c <= g.cols - w; c++) {
       if (!hits(c, r, w, h, ignore)) return { c: c, r: r };
     }
-    return { c: 0, r: 0 };
+    return { c: 0, r: r };
   }
-  function reflow() {
+  function placeOne(id) {
     var g = metrics();
+    var L = lay(id);
+    var sp = spans(L.size, g.cols);
+    var spot = firstFit(sp[0], sp[1], id);
+    L.col = Math.max(0, Math.min(spot.c, g.cols - sp[0]));
+    L.row = Math.max(0, spot.r);
+  }
+  function clampTile(id) {
+    var g = metrics();
+    var L = lay(id);
+    var sp = spans(L.size, g.cols);
+    if (L.col == null) { placeOne(id); return; }
+    L.col = Math.max(0, Math.min(L.col, g.cols - sp[0]));
+    L.row = Math.max(0, L.row || 0);
+  }
+  function settleAround(id) {
+    var guard = 0, moved = true;
+    while (moved && guard < 40) {
+      moved = false;
+      guard++;
+      state.order.forEach(function (other) {
+        if (other === id || lay(other).pin) return;
+        var L = lay(other);
+        var sp = spans(L.size, metrics().cols);
+        if (L.col == null || hits(L.col, L.row, sp[0], sp[1], other)) {
+          var beforeC = L.col, beforeR = L.row;
+          placeOne(other);
+          if (L.col !== beforeC || L.row !== beforeR) moved = true;
+        }
+      });
+    }
+  }
+  function snapshot(cols) {
+    if (!cols) return;
+    if (!state.layouts) state.layouts = {};
+    var copy = {};
     state.order.forEach(function (id) {
       var L = lay(id);
-      if (!L.pin) { L.col = null; L.row = null; }
+      copy[id] = { size: L.size, pin: !!L.pin, col: L.col, row: L.row };
     });
+    state.layouts[String(cols)] = copy;
+  }
+  function restore(cols) {
+    var saved = state.layouts && state.layouts[String(cols)];
+    if (!saved) {
+      state.order.forEach(function (id) { if (!lay(id).pin) { lay(id).col = null; lay(id).row = null; } });
+      state.order.forEach(function (id) { if (lay(id).col == null) placeOne(id); });
+      return;
+    }
     state.order.forEach(function (id) {
+      var t = saved[id];
       var L = lay(id);
-      var sp = spans(L.size, g.cols);
-      if (L.pin && L.col != null) {
-        L.col = Math.max(0, Math.min(L.col, g.cols - sp[0]));
-        L.row = Math.max(0, L.row || 0);
-        return;
-      }
-      var spot = firstFit(sp[0], sp[1], id);
-      L.col = spot.c; L.row = spot.r;
+      if (!t) { L.col = null; L.row = null; return; }
+      L.size = t.size || L.size;
+      L.pin = !!t.pin;
+      L.col = t.col;
+      L.row = t.row;
+      var sp = spans(L.size, cols);
+      if (L.col == null || L.col < 0 || L.col + sp[0] > cols) { L.col = null; L.row = null; }
     });
-    state.colsAt = g.cols;
+    state.order.forEach(function (id) { if (lay(id).col == null) placeOne(id); });
   }
   function applyBox(id, animate) {
     var node = tiles.get(id);
@@ -1432,7 +1531,8 @@
     var g = metrics();
     var L = lay(id);
     var sp = spans(L.size, g.cols);
-    if (L.col == null) { var spot = nearest(0, 0, sp[0], sp[1], id); L.col = spot.c; L.row = spot.r; }
+    if (L.col == null) placeOne(id);
+    L.col = Math.max(0, Math.min(L.col, g.cols - sp[0]));
     var x = g.pad + L.col * g.cell;
     var y = g.pad + L.row * g.row;
     node.style.width = Math.max(120, sp[0] * g.cell - 10) + "px";
@@ -1463,7 +1563,7 @@
       var L = lay(id), sp = spans(L.size, g.cols);
       max = Math.max(max, g.pad + (L.row + sp[1]) * g.row);
     });
-    board.style.height = Math.max(max + 96, window.innerHeight - 64) + "px";
+    board.style.height = Math.max(max + 112, window.innerHeight) + "px";
   }
   function mount(id) {
     if (tiles.has(id) || !byId(id)) return;
@@ -1500,10 +1600,35 @@
     state.order = state.order.filter(function (x) { return x !== id; });
     save(); layoutAll(false);
   }
+  function untangle() {
+    var guard = 0, moved = true;
+    while (moved && guard < 60) {
+      moved = false;
+      guard++;
+      state.order.forEach(function (id) {
+        if (lay(id).pin) return;
+        var L = lay(id);
+        var sp = spans(L.size, metrics().cols);
+        if (L.col == null || hits(L.col, L.row, sp[0], sp[1], id)) {
+          var beforeC = L.col, beforeR = L.row;
+          placeOne(id);
+          if (L.col !== beforeC || L.row !== beforeR) moved = true;
+        }
+      });
+    }
+  }
   function layoutAll(animate) {
     var g = metrics();
-    if (state.colsAt !== g.cols || state.order.some(function (id) { return lay(id).col == null; })) reflow();
+    if (state.colsAt !== g.cols) {
+      if (state.colsAt) snapshot(state.colsAt);
+      restore(g.cols);
+      state.colsAt = g.cols;
+    } else {
+      state.order.forEach(function (id) { if (lay(id).col == null) placeOne(id); });
+    }
+    untangle();
     state.order.forEach(function (id) { mount(id); applyBox(id, animate); });
+    snapshot(g.cols);
     fitBoard();
   }
   function ensure() {
@@ -1532,6 +1657,7 @@
         if (d < bestD) { bestD = d; best = s; }
       });
       lay(drag.id).size = best;
+      clampTile(drag.id);
       applyBox(drag.id, false);
     }
   });
@@ -1550,9 +1676,36 @@
       var sp = spans(lay(drag.id).size, g.cols);
       var col = Math.round((x - g.pad) / g.cell);
       var row = Math.round((y - g.pad) / g.row);
-      var spot = nearest(col, row, sp[0], sp[1], drag.id);
-      lay(drag.id).col = spot.c; lay(drag.id).row = spot.r;
+      col = Math.max(0, Math.min(col, g.cols - sp[0]));
+      row = Math.max(0, row);
+      var other = null;
+      state.order.forEach(function (id) {
+        if (id === drag.id || other) return;
+        var node = tiles.get(id);
+        if (!node || lay(id).col == null) return;
+        var r = node.getBoundingClientRect();
+        if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) other = id;
+      });
+      if (other && !lay(other).pin) {
+        var O = lay(other);
+        var oc = O.col, orow = O.row;
+        var spO = spans(O.size, g.cols);
+        O.col = Math.max(0, Math.min(drag.origin.c, g.cols - spO[0]));
+        O.row = drag.origin.r;
+        lay(drag.id).col = Math.max(0, Math.min(oc, g.cols - sp[0]));
+        lay(drag.id).row = orow;
+        settleAround(drag.id);
+        applyBox(other, true);
+      } else {
+        var spot = nearest(col, row, sp[0], sp[1], drag.id);
+        lay(drag.id).col = Math.max(0, Math.min(spot.c, g.cols - sp[0]));
+        lay(drag.id).row = spot.r;
+      }
       applyBox(drag.id, true);
+    } else {
+      clampTile(drag.id);
+      settleAround(drag.id);
+      state.order.forEach(function (id) { applyBox(id, id !== drag.id); });
     }
     drag = null; save(); fitBoard();
   });
@@ -1566,7 +1719,7 @@
     var L = lay(id);
     if (resize) {
       resize.setPointerCapture(e.pointerId);
-      drag = { type: "resize", id: id, pid: e.pointerId, sx: e.clientX, sy: e.clientY, size: L.size };
+      drag = { type: "resize", id: id, pid: e.pointerId, sx: e.clientX, sy: e.clientY, size: L.size, origin: { c: L.col, r: L.row } };
       tile._tok = (tile._tok || 0) + 1;
       return;
     }
@@ -1576,7 +1729,7 @@
     e.target.closest("[data-drag]").setPointerCapture(e.pointerId);
     tile.classList.add("dragging");
     tile._tok = (tile._tok || 0) + 1;
-    drag = { type: "move", id: id, pid: e.pointerId, ox: e.clientX - (g.pad + L.col * g.cell), oy: e.clientY - (g.pad + L.row * g.row), last: [{ t: performance.now(), x: e.clientX, y: e.clientY }] };
+    drag = { type: "move", id: id, pid: e.pointerId, ox: e.clientX - (g.pad + L.col * g.cell), oy: e.clientY - (g.pad + L.row * g.row), origin: { c: L.col, r: L.row }, last: [{ t: performance.now(), x: e.clientX, y: e.clientY }] };
   });
 
   function openSheet(title, build) {
@@ -1607,7 +1760,7 @@
         b.addEventListener("click", function () {
           if (state.order.indexOf(tool.id) >= 0) return;
           state.order.push(tool.id);
-          lay(tool.id).col = null;
+          placeOne(tool.id);
           save(); ensure();
           b.textContent = "Showing"; b.disabled = true;
         });
@@ -1641,7 +1794,11 @@
           var o = el("option"); o.value = s; o.textContent = s; if (lay(id).size === s) o.selected = true; sel.append(o);
         });
         sel.addEventListener("change", function () {
-          lay(id).size = sel.value; lay(id).col = null; save(); layoutAll(true);
+          lay(id).size = sel.value;
+          clampTile(id);
+          settleAround(id);
+          save();
+          layoutAll(true);
         });
         row.append(sel); panel.append(row);
       });
@@ -1650,7 +1807,7 @@
         var box = el("input"); box.type = "checkbox"; box.checked = state.order.indexOf(tool.id) >= 0;
         var span = el("span"); span.textContent = tool.name;
         box.addEventListener("change", function () {
-          if (box.checked) { if (state.order.indexOf(tool.id) < 0) state.order.push(tool.id); lay(tool.id).col = null; }
+          if (box.checked) { if (state.order.indexOf(tool.id) < 0) { state.order.push(tool.id); placeOne(tool.id); } }
           else state.order = state.order.filter(function (x) { return x !== tool.id; });
           save(); ensure();
         });
@@ -1660,6 +1817,7 @@
       reset.addEventListener("click", function () {
         state.order = DEFAULTS.slice();
         state.layout = {};
+        state.layouts = {};
         state.colsAt = null;
         save(); ensure();
         document.querySelector(".sheet").remove();
@@ -1679,6 +1837,7 @@
     document.documentElement.classList.toggle("tw-session-hide", on);
     if (on) { var p = document.documentElement.requestFullscreen; if (p) p.call(document.documentElement).catch(function () {}); }
     else if (document.fullscreenElement) document.exitFullscreen().catch(function () {});
+    layoutAll(false);
   }
   projBtn.addEventListener("click", function () { setProj(!document.documentElement.classList.contains("is-projector")); });
   document.addEventListener("fullscreenchange", function () {
@@ -1686,15 +1845,18 @@
       document.documentElement.classList.remove("is-projector");
       document.documentElement.classList.remove("tw-session-hide");
     }
+    layoutAll(false);
   });
   document.addEventListener("keydown", function (e) {
-    if (e.target.closest("input, textarea")) return;
-    if (e.key === "f" || e.key === "F") { e.preventDefault(); setProj(!document.documentElement.classList.contains("is-projector")); }
     if (e.key === "Escape") {
       var sheet = document.querySelector(".sheet");
-      if (sheet) { sheet.remove(); return; }
+      if (sheet) { sheet.remove(); e.preventDefault(); return; }
+      if (e.target.closest("input, textarea, select")) return;
       setProj(false);
+      return;
     }
+    if (e.target.closest("input, textarea, select")) return;
+    if (e.key === "f" || e.key === "F") { e.preventDefault(); setProj(!document.documentElement.classList.contains("is-projector")); }
   });
   window.addEventListener("resize", function () { layoutAll(false); });
 
