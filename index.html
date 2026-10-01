@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-01-staff"/>
+<meta name="tech-room-rev" content="2026-10-01-connected"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css"/>
-  <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
-  <script src="/shared/tw-session.js?v=2026-09-29-fit"></script>
+  <script src="/shared/kw-who.js?v=2026-10-01-connected"></script>
+  <script src="/shared/tw-session.js?v=2026-10-01-connected"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -694,6 +694,17 @@
       outline:2px solid var(--ring);outline-offset:2px;
     }
     body:not(.hub-classic) #alpha-board a[data-staff="1"]{display:none !important}
+    .tile .blurb{display:block;font-size:.68rem;font-weight:550;line-height:1.15;opacity:.82}
+    body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic #progress{display:none !important}
+    .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#e8f7ff}
+    .kb-help,.kb-settings{min-width:44px;min-height:44px;height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
+    .kb-settings[hidden],.kb-plate[hidden],.kb-help[hidden],#progress[hidden]{display:none !important}
+    #progress{margin:.4rem 0;padding:.7rem;border:1px solid #1e3a55;border-radius:14px;background:#0c1730}
+    #progress h2{margin:.1rem 0 .4rem;font-size:1rem}
+    .progress-row{display:flex;align-items:center;gap:.55rem;min-height:44px}
+    .progress-row img{width:44px;height:44px}
+    .progress-row button,.progress-row a{min-height:44px;min-width:44px}
+    html[data-pwa-tip="off"] .pwa-tip{display:none !important}
     @media (max-width:639px){
       .search{width:calc(100% - 1.5rem)}
     }
@@ -1494,7 +1505,7 @@
       flex:0 0 auto;margin-left:0 !important;position:relative !important;top:auto !important;right:auto !important;
     }
     body.apps-always .shell-header #shell-home{
-      height:28px;min-height:28px;min-width:0;padding:0 .55rem;font-size:.72rem;
+      height:44px;min-height:44px;min-width:44px;padding:0 .7rem;font-size:.8rem;
     }
     body.apps-always .shell-header #shell-home[hidden]{display:none !important}
     body.apps-always:not(.is-framed) .shell-header .edge-pocket{z-index:8}
@@ -1533,14 +1544,14 @@
       }
       body.apps-always .shell-header .app-dock-item img{width:28px !important;height:28px !important}
       body.apps-always .shell-header #shell-home,
-      body.apps-always .shell-header #shell-home[hidden],
       body.apps-always .shell-header .edge-pocket{
         display:inline-flex !important;flex:0 0 auto;position:relative !important;
         top:auto !important;right:auto !important;margin-left:0 !important;
-        min-height:40px;min-width:44px;align-items:center;justify-content:center;
+        min-height:44px;min-width:44px;align-items:center;justify-content:center;
       }
+      body.apps-always .shell-header #shell-home[hidden]{display:none !important}
       body.apps-always .shell-header .edge-pocket{order:4}
-      body.apps-always .shell-header #shell-home{order:3;height:40px;padding:0 .5rem}
+      body.apps-always .shell-header #shell-home{order:3;height:44px;padding:0 .55rem}
     }
 
   </style>
@@ -1554,6 +1565,9 @@
       <div class="dock-clip">
         <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       </div>
+      <span id="kb-plate" class="kb-plate" hidden></span>
+      <button type="button" id="kb-help" class="kb-help" hidden aria-label="Help">?</button>
+      <button type="button" id="kb-settings" class="kb-settings" hidden aria-label="My settings">⚙</button>
       <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
@@ -1561,6 +1575,7 @@
           <button type="button" class="edge-pocket-item hub-rev" id="hub-rev" role="menuitem">Hub</button>
           <a class="edge-pocket-item" id="staff-edit" role="menuitem" href="/staff/">Staff edit</a>
           <button type="button" class="edge-pocket-item" id="staff-sign-out" role="menuitem" hidden>Sign out</button>
+          <button type="button" class="edge-pocket-item" id="my-progress-btn" role="menuitem">My progress</button>
           <button type="button" class="edge-pocket-item" id="staff-apps-btn" role="menuitem" aria-expanded="false" aria-controls="staff-drawer">Staff</button>
           <div class="staff-drawer" id="staff-drawer" hidden></div>
         </div>
@@ -1634,7 +1649,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-01-staff</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-01-connected</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.28.0</strong> — Make a beat plays at once. Save, share, and the sound stay on the page, including phone landscape.</p>
@@ -1645,6 +1660,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.0</strong> — One THROW. A real arc. Aim and power matter.</p>
           <ul id="hub-log">
+            <li>One sign-in. Your alias rides into every door. More, then My progress.</li>
             <li>Staff tools moved to More > Staff.</li>
             <li>Fresh icons: arcade Berty's Run, a real Drawin' icon, a TechWorks badge, and every icon fills its tile.</li>
             <li>My style: nine looks. Tap one. This Chromebook remembers it. Tiles press in when you tap them.</li>
@@ -1697,6 +1713,7 @@
         <span class="style-note" id="style-note" hidden>Saved on this Chromebook.</span>
       </div>
     </div>
+    <section id="progress" hidden aria-label="My progress"></section>
     <div class="groups" id="app-groups">
       <section class="group" id="alpha-group" data-group="alpha" hidden>
         <h2 id="alpha-title">A–Z</h2>
@@ -1709,19 +1726,23 @@
           <a class="tile" data-id="baboo" data-keywords="baboo class tools draw" href="https://baboo.kulibert.net">
             <img class="mark" src="/icons/icon-baboo.svg" alt="" width="72" height="72"/>
             <span class="label">Baboo</span>
+            <span class="blurb">Draw a house plan</span>
           </a>
           <a class="tile" data-id="bertycad" data-keywords="bertycad cad draw make tools" href="/bertycad/">
             <img class="mark" src="/icons/icon-bertycad.svg" alt="" width="72" height="72"/>
             <span class="label">BertyCAD</span>
+            <span class="blurb">Build 3D shapes</span>
           </a>
           <a class="tile" data-id="visualizer" data-keywords="visualizer viz lights look bars kaleidoscope make tools" href="/visualizer/">
             <img class="mark" src="/icons/icon-visualizer.svg" alt="" width="72" height="72"/>
             <span class="label">Visualizer</span>
+            <span class="blurb">Make lights dance</span>
             <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
           <a class="tile" data-id="bits" data-keywords="bits bobs calculator measure shop gears timer dice circuits" href="/bits/">
             <img class="mark" src="/icons/icon-bits.svg" alt="" width="72" height="72"/>
             <span class="label">Bits & Bobs</span>
+            <span class="blurb">Shop timers and tools</span>
           </a>
         </nav>
         </div>
@@ -1733,26 +1754,32 @@
           <a class="tile" data-id="bertybots" data-keywords="bertybots bots botz play" href="/bertybots/">
             <img class="mark" src="/icons/icon-bertybots.svg" alt="" width="72" height="72"/>
             <span class="label">Berty's Botz</span>
+            <span class="blurb">Solve machine puzzles</span>
           </a>
           <a class="tile" data-id="berty-run" data-keywords="berty run br play" href="/berty-run/">
             <img class="mark" src="/icons/icon-berty-run.svg" alt="" width="72" height="72"/>
             <span class="label">Berty Run</span>
+            <span class="blurb">Run, jump, grab PC parts</span>
           </a>
           <a class="tile" data-id="spancraft" data-keywords="spancraft span bridge challenge esports play" href="/spancraft/">
             <img class="mark" src="/icons/icon-spancraft.svg" alt="" width="72" height="72"/>
             <span class="label">SpanCraft</span>
+            <span class="blurb">Build a bridge that holds</span>
           </a>
           <a class="tile" data-id="spire-lab" data-keywords="spire lab tower challenge esports play" href="/spire-lab/">
             <img class="mark" src="/icons/icon-spire-lab.svg" alt="" width="72" height="72"/>
             <span class="label">Spire Lab</span>
+            <span class="blurb">Build a tall tower</span>
           </a>
           <a class="tile" data-id="drift" data-keywords="drift glide play" href="/drift/">
             <img class="mark" src="/icons/icon-drift.svg" alt="" width="72" height="72"/>
             <span class="label">Drift</span>
+            <span class="blurb">Fly a calm glider</span>
           </a>
           <a class="tile" data-id="holdit" data-keywords="holdit design tool engineering bridge tower materials play" href="/holdit/">
             <img class="mark" src="/holdit/icon.svg" alt="" width="72" height="72"/>
             <span class="label">HoldIt</span>
+            <span class="blurb">Test a bridge design</span>
           </a>
         </nav>
         </div>
@@ -1764,18 +1791,22 @@
           <a class="tile" data-id="ginger" data-keywords="ginger floor plan cad design" href="/ginger/">
             <img class="mark" src="/icons/icon-ginger.svg" alt="" width="72" height="72"/>
             <span class="label">Ginger</span>
+            <span class="blurb">Plan a room</span>
           </a>
           <a class="tile" data-id="paperlab" data-keywords="paperlab paper lab design" href="/paperlab/">
             <img class="mark" src="/icons/icon-paperlab.svg" alt="" width="72" height="72"/>
             <span class="label">PaperLab</span>
+            <span class="blurb">Build with one sheet</span>
           </a>
           <a class="tile" data-id="logolab" data-keywords="logolab logo lab design" href="/logolab/">
             <img class="mark" src="/icons/icon-logolab.svg" alt="" width="72" height="72"/>
             <span class="label">LogoLab</span>
+            <span class="blurb">Make your own logo</span>
           </a>
           <a class="tile" data-id="drawin" data-keywords="drawin stuff paint draw brush layers photo edit design psd vector pen bezier inkscape" href="/drawin/">
             <img class="mark" src="/icons/icon-drawin.svg" alt="" width="72" height="72"/>
             <span class="label">Drawin'</span>
+            <span class="blurb">Draw and paint</span>
           </a>
         </nav>
         </div>
@@ -1787,10 +1818,12 @@
           <a class="tile" data-id="catapult" data-keywords="throwit catapult shop jolly rancher parts ticket glasses" href="/catapult/">
             <img class="mark" src="/icons/icon-catapult.svg" alt="" width="72" height="72"/>
             <span class="label">ThrowIt</span>
+            <span class="blurb">Toss candy at a target</span>
           </a>
           <a class="tile" data-id="sprocket" data-keywords="sprocket shop" href="/sprocket/index.html">
             <img class="mark" src="/icons/icon-sprocket.svg" alt="" width="72" height="72"/>
             <span class="label">Sprocket</span>
+            <span class="blurb">Get the 3D printer ready</span>
           </a>
         </nav>
         </div>
@@ -1802,10 +1835,12 @@
           <a class="tile" data-id="musiclab" data-keywords="dj berty musiclab music score beats lights band song" href="/music/">
             <img class="mark" src="/icons/icon-musiclab.svg" alt="" width="72" height="72"/>
             <span class="label">DJ Berty</span>
+            <span class="blurb">Make a beat</span>
           </a>
           <a class="tile" data-id="bertybeatz" data-keywords="bertybeatz beatz bz music sound" href="/bertybeatz/">
             <img class="mark" src="/icons/icon-bertybeatz.svg" alt="" width="72" height="72"/>
             <span class="label">BertyBeatz</span>
+            <span class="blurb">Tap squares, make a song</span>
             <span class="tw-on" title="In the Tech Room. Scores and settings stay on this Chromebook."><img src="/icons/icon-tw-mark.svg" alt="" width="14" height="14"/>TW Connected</span>
           </a>
         </nav>
@@ -1818,10 +1853,12 @@
           <a class="tile" data-id="techworks" data-keywords="techworks tw class" href="https://tw.kulibert.net">
             <img class="mark" src="/icons/icon-techworks.svg" alt="" width="72" height="72"/>
             <span class="label">TechWorks</span>
+            <span class="blurb">See your class and XP</span>
           </a>
           <a class="tile" data-id="koderized" data-keywords="koderized kz code class" href="https://tw.kulibert.net/koderized/">
             <img class="mark" src="/icons/icon-koderized.svg" alt="" width="72" height="72"/>
             <span class="label">Koderized</span>
+            <span class="blurb">Code a robot</span>
           </a>
         </nav>
         </div>
@@ -1852,6 +1889,7 @@
           <a class="tile" data-id="debugzy" data-keywords="debugzy debug hold crew" href="/debugzy/">
             <img class="mark" src="/icons/icon-debugzy.svg" alt="" width="72" height="72"/>
             <span class="label">Debugzy</span>
+            <span class="blurb">Find the bad step</span>
           </a>
         </nav>
         </div>
@@ -1883,20 +1921,20 @@
     <section class="live" aria-label="Live chips">
       <h2>Live now</h2>
       <ul class="chips">
-        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.92.142</strong></a></li>
-        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.12.0</strong></a></li>
+        <li><a href="https://tw.kulibert.net">TechWorks <strong>v1.93.2</strong></a></li>
+        <li><a href="https://baboo.kulibert.net">Baboo <strong>v2.13.1</strong></a></li>
         <li><a href="/bertycad/">BertyCAD <strong>BC 1.10.13</strong></a></li>
         <li><a href="https://tw.kulibert.net/koderized/">Koderized <strong>KZ 1.22.0</strong></a></li>
-        <li><a href="/berty-run/">Berty Run <strong>BR 1.10.32</strong></a></li>
+        <li><a href="/berty-run/">Berty Run <strong>BR 1.12.2</strong></a></li>
         <li><a href="/music/">DJ Berty <strong>MU 2.28.0</strong></a></li>
         <li><a href="/bertybeatz/">BertyBeatz <strong>BZ 1.9.5</strong></a></li>
         <li><a href="/visualizer/">Visualizer <strong>Viz 0.9.0</strong></a></li>
         <li><a href="/bits/">Bits & Bobs <strong>BB 2.0.1</strong></a></li>
-        <li><a href="/holdit/">HoldIt <strong>HI 1.1.11</strong></a></li>
+<li><a href="/holdit/">HoldIt <strong>HI 1.1.10</strong></a></li>
         <li><a href="/spancraft/">SpanCraft <strong>SC 1.3.28</strong></a></li>
         <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.27</strong></a></li>
         <li><a href="/ginger/">Ginger <strong>1.0.3</strong></a></li>
-        <li><a href="/drawin/">Drawin' <strong>DS 0.2.1</strong></a></li>
+        <li><a href="/drawin/">Drawin' <strong>DS 0.3.0</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 2.3.0</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.30</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>v0.1.0</strong></a></li>
@@ -1961,8 +1999,9 @@
       var POLL = 40000;
       var appBoard = document.getElementById("app-groups");
       var hubAliasesOn = true;
-      /* Tiles whose door calls KulibertWho.mark. No call, no badge. */
-      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1, debugzy: 1 };
+      /* Scored doors call KulibertWho.record (mark is the line shim). Classic keeps the old list. */
+      var TW_OLD = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, ginger: 1, drawin: 1, musiclab: 1, bertybeatz: 1, debugzy: 1 };
+      var TW_READ = { visualizer: 1, bertybots: 1, spancraft: 1, "spire-lab": 1, drawin: 1, musiclab: 1, bertybeatz: 1, debugzy: 1, "berty-run": 1, holdit: 1 };
       function paintAliasGate() {
         document.documentElement.classList.toggle("hub-alias-off", !hubAliasesOn);
         var slot = document.getElementById("tw-session-slot");
@@ -1982,11 +2021,12 @@
       }
       function paintTw() {
         if (!appBoard) return;
+        var badgeSet = hubClassic ? TW_OLD : TW_READ;
         var lines = window.KulibertWho && KulibertWho.lines ? KulibertWho.lines() : {};
         appBoard.querySelectorAll("a.tile[data-id]").forEach(function (tile) {
           var id = tile.getAttribute("data-id");
           var mark = tile.querySelector(".tw-on");
-          if (!TW_READ[id]) {
+          if (!badgeSet[id]) {
             if (mark && mark.parentNode) mark.parentNode.removeChild(mark);
             return;
           }
@@ -2003,9 +2043,9 @@
           }
           var text = lines[id] || "TW Connected";
           line.textContent = text;
-          mark.title = lines[id]
-            ? "This line goes to the TechWorks grade book."
-            : "In the Tech Room. The line goes to TechWorks when this app saves.";
+          mark.title = hubClassic
+            ? "In the Tech Room. Scores and settings stay on this Chromebook."
+            : "Your scores go to TechWorks";
         });
       }
       paintTw();
@@ -2042,7 +2082,17 @@
       var hubSort = "alpha";
       var hubFilter = "all";
       var hubClassic = false;
-      try { hubClassic = new URL(location.href).searchParams.get("hub") === "classic"; } catch (eClassic) {}
+      try {
+        var hubParam = new URL(location.href).searchParams.get("hub");
+        if (hubParam === "classic") {
+          hubClassic = true;
+          localStorage.setItem("tech-room-hub", "classic");
+        } else if (hubParam === "new") {
+          localStorage.removeItem("tech-room-hub");
+        } else if (localStorage.getItem("tech-room-hub") === "classic") {
+          hubClassic = true;
+        }
+      } catch (eClassic) {}
       document.body.classList.toggle("hub-classic", hubClassic);
       try {
         var savedSort = localStorage.getItem("tech-room-sort");
@@ -2089,7 +2139,7 @@
       var roomStaffEdit = true;
       var roomHotkeys = true;
       var roomNewTab = true;
-      var roomOutsideShell = ["baboo", "ginger", "den", "bistro"];
+      var roomOutsideShell = [];
       var roomShowNote = true;
       var tileOrder = appTiles().map(function (t) { return t.getAttribute("data-id"); });
       var ICONS = {
@@ -2146,7 +2196,7 @@
       }
 
       function appTiles() {
-        return Array.prototype.slice.call(appBoard.querySelectorAll("a.tile"));
+        return Array.prototype.slice.call(appBoard.querySelectorAll("a.tile:not(#keep-going)"));
       }
 
       function launchTiles() {
@@ -2499,9 +2549,9 @@
         roomStaffEdit = pack && pack.staffEdit === false ? false : true;
         roomHotkeys = pack && pack.hotkeys === false ? false : true;
         roomNewTab = pack && pack.newTab === false ? false : true;
-        roomOutsideShell = Array.isArray(pack && pack.outsideShell)
-          ? pack.outsideShell.map(function (id) { return String(id); }).filter(Boolean)
-          : ["baboo", "ginger", "den", "bistro"];
+        roomOutsideShell = hubClassic
+          ? (Array.isArray(pack && pack.outsideShell) ? pack.outsideShell.map(function (id) { return String(id); }).filter(Boolean) : ["baboo", "ginger", "den", "bistro"])
+          : [];
         roomShowNote = pack && pack.showNote === false ? false : true;
         var closedEl = document.getElementById("closed-banner");
         if (closedEl) {
@@ -2572,7 +2622,8 @@
         appTiles().forEach(function (tile) {
           var id = tile.getAttribute("data-id") || "";
           tile.classList.toggle("is-room-hidden", roomHidden.indexOf(id) !== -1);
-          var leave = roomOutsideShell.indexOf(id) !== -1 || isExternalHref(tile.getAttribute("href"));
+          var href = tile.getAttribute("href");
+          var leave = roomOutsideShell.indexOf(id) !== -1 || (isExternalHref(href) && !isSameOriginDoor(href));
           if (leave) tile.setAttribute("data-outside-shell", "1");
           else tile.removeAttribute("data-outside-shell");
           if (leave && roomNewTab) {
@@ -2833,6 +2884,7 @@
         filter();
         fitPhoneTiles();
         paintStaffDrawer();
+        paintKeep();
       }
 
       function openFirst(blank) {
@@ -3298,6 +3350,7 @@
         pwaDismiss.addEventListener("click", function () {
           if (pwaTip) pwaTip.hidden = true;
           try { localStorage.setItem("tech-room-pwa-tip", "1"); } catch (e3) {}
+          document.documentElement.setAttribute("data-pwa-tip", "off");
         });
       }
 
@@ -3329,9 +3382,12 @@
       function isSameOriginDoor(href) {
         var url;
         try { url = new URL(href, location.href); } catch (e) { return false; }
-        if (url.origin !== location.origin) return false;
-        var path = url.pathname;
-        if (path === "/" || path === "/index.html") return false;
+        var host = url.hostname;
+        var school = host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net";
+        if (!school) return false;
+        if (host !== location.hostname && url.protocol !== "https:") return false;
+        var path = url.pathname || "/";
+        if (host === location.hostname && (path === "/" || path === "/index.html")) return false;
         if (path === "/staff" || path === "/staff/" || path.indexOf("/staff/") === 0) return false;
         return true;
       }
@@ -3414,6 +3470,7 @@
           dock.appendChild(a);
         }
         document.querySelectorAll("#app-groups a.tile").forEach(function (tile) {
+          if (tile.id === "keep-going") return;
           if (tile.classList.contains("is-room-hidden")) return;
           if (!hubClassic && tile.getAttribute("data-staff") === "1") return;
           var label = tile.querySelector(".label");
@@ -3428,6 +3485,36 @@
         }
       }
 
+      function postWho(frame) {
+        if (!frame || !frame.contentWindow) return;
+        var api = window.KulibertWho;
+        var who = api && api.read ? api.read() : null;
+        var on = !!(who && who.verified && api.active && api.active());
+        var msg = on ? { type: "kw-who", alias: who.alias, code: who.code, at: who.at || Date.now(), on: true } : { type: "kw-who", on: false };
+        var origin = "";
+        try {
+          var url = new URL(frame.getAttribute("src") || frame.src || "", location.href);
+          var host = url.hostname;
+          if (!(host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
+          origin = url.origin;
+        } catch (eWho) { return; }
+        try { frame.contentWindow.postMessage(msg, origin); } catch (ePost) {}
+      }
+      function showPlate(name, version) {
+        var plate = document.getElementById("kb-plate");
+        var help = document.getElementById("kb-help");
+        var framed = document.body.classList.contains("is-framed");
+        if (hubClassic || !framed) {
+          if (plate) plate.hidden = true;
+          if (help) help.hidden = true;
+          return;
+        }
+        if (plate) {
+          plate.hidden = !name;
+          plate.textContent = version ? name + " \u00b7 " + version : name;
+        }
+        if (help) help.hidden = false;
+      }
       function openFrame(href, title, fromPop, replace) {
         href = schoolHref(href);
         if (!href) return;
@@ -3448,7 +3535,7 @@
         if (!fromPop) {
           try {
             var abs = new URL(href, location.href);
-            var openPath = abs.pathname + abs.search + abs.hash;
+            var openPath = abs.origin === location.origin ? (abs.pathname + abs.search + abs.hash) : abs.href;
             var u = new URL(location.href);
             if (u.searchParams.get("open") !== openPath) {
               u.searchParams.set("open", openPath);
@@ -3459,6 +3546,8 @@
           } catch (ePush) {}
         }
         paintDock();
+        showPlate(title || "App", "");
+        postWho(frame);
       }
 
       function closeFrame(fromPop) {
@@ -3473,6 +3562,7 @@
           frame.setAttribute("src", "about:blank");
         }
         if (home) home.hidden = true;
+        showPlate("", "");
         ensureSingleChrome();
         paintDock();
         if (!fromPop) {
@@ -3598,13 +3688,152 @@ document.addEventListener("click", function (event) {
         if (!window.__brWide || !screen.orientation || !screen.orientation.lock) return;
         screen.orientation.lock("landscape").catch(function () {});
       });
+      function newestPlay() {
+        var rows = [];
+        try { rows = window.KulibertWho && KulibertWho.records ? KulibertWho.records() : []; } catch (eRec) { rows = []; }
+        rows = (rows || []).filter(function (row) { return row && row.app && row.event !== "line"; });
+        if (rows.length) return rows[rows.length - 1];
+        try {
+          var opened = JSON.parse(localStorage.getItem("tech-room-opened") || "[]");
+          if (opened && opened[0] && opened[0].href) return { app: "", href: opened[0].href, name: opened[0].name || "" };
+        } catch (eOpen) {}
+        return null;
+      }
+      function paintKeep() {
+        var old = document.getElementById("keep-going");
+        if (old && old.parentNode) old.parentNode.removeChild(old);
+        if (hubClassic) return;
+        var row = newestPlay();
+        if (!row) return;
+        var board = document.getElementById("alpha-board");
+        if (!board) return;
+        var id = row.app === "music" ? "musiclab" : row.app;
+        var tile = id ? appBoard.querySelector('a.tile[data-id="' + id + '"]') : null;
+        var href = row.href || (tile ? tile.getAttribute("href") : "");
+        if (!href) return;
+        if (row.level) {
+          var join = href.indexOf("?") >= 0 ? "&" : "?";
+          if (href.indexOf("level=") < 0) href += join + "level=" + encodeURIComponent(row.level);
+        }
+        var name = tile ? tileName(tile) : (row.name || row.app || "that app");
+        var a = document.createElement("a");
+        a.id = "keep-going";
+        a.className = "tile keep-going";
+        a.href = href;
+        var img = tile && tile.querySelector("img.mark");
+        if (img) a.appendChild(img.cloneNode(true));
+        var label = document.createElement("span");
+        label.className = "label";
+        label.textContent = "Keep going: " + name + (row.level ? " · level " + row.level : "");
+        a.appendChild(label);
+        board.insertBefore(a, board.firstChild);
+      }
+      function paintProgress() {
+        var box = document.getElementById("progress");
+        var btn = document.getElementById("my-progress-btn");
+        if (btn) btn.hidden = !!hubClassic;
+        if (!box || hubClassic) { if (box) box.hidden = true; return; }
+        var api = window.KulibertWho;
+        var who = api && api.read ? api.read() : null;
+        var on = !!(who && who.verified && api.active && api.active());
+        if (!on) {
+          box.innerHTML = '<h2>My progress</h2><p>Sign in to see your progress.</p><button type="button" class="btn btn-secondary" id="progress-sign">Sign in</button>';
+          var sign = document.getElementById("progress-sign");
+          if (sign) sign.addEventListener("click", function () {
+            var out = document.querySelector(".tw-out");
+            if (out) out.click();
+          });
+          return;
+        }
+        var rows = api.records ? api.records().filter(function (row) { return row && row.code === who.code && row.event !== "line"; }) : [];
+        var xp = 0;
+        var by = {};
+        rows.forEach(function (row) {
+          xp += Number(row.xp) || 0;
+          var key = row.app;
+          var cur = by[key] || { app: key, score: null, max: null, stars: 0, ts: 0, skill: "" };
+          if (row.score != null && (cur.score == null || row.score > cur.score)) { cur.score = row.score; cur.max = row.max; }
+          if ((row.stars || 0) > cur.stars) cur.stars = row.stars;
+          if ((row.ts || 0) > cur.ts) cur.ts = row.ts;
+          if (row.skill) cur.skill = row.skill;
+          by[key] = cur;
+        });
+        var level = Math.floor(xp / 50) + 1;
+        var html = '<h2>' + who.alias + ' · ' + xp + ' XP · Level ' + level + '</h2>';
+        Object.keys(by).forEach(function (key) {
+          var row = by[key];
+          var id = key === "music" ? "musiclab" : key;
+          var tile = appBoard.querySelector('a.tile[data-id="' + id + '"]');
+          var name = tile ? tileName(tile) : key;
+          var src = tile && tile.querySelector("img") ? tile.querySelector("img").getAttribute("src") : "";
+          var when = row.ts ? new Date(row.ts).toLocaleDateString("en", { weekday: "short" }) : "";
+          var score = row.score == null ? "" : (row.score + (row.max != null ? "/" + row.max : ""));
+          html += '<div class="progress-row"><img alt="" src="' + src + '"/><span><strong>' + name + '</strong> ' + (row.stars ? "★".repeat(Math.min(3, row.stars)) + " " : "") + score + ' ' + when + (row.skill ? ' <em>' + row.skill + '</em>' : '') + '</span><button type="button" data-play="' + id + '">Play</button></div>';
+        });
+        html += '<p class="progress-note">Saved on this Chromebook</p>';
+        box.innerHTML = html;
+        box.querySelectorAll("[data-play]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var id = btn.getAttribute("data-play");
+            var tile = appBoard.querySelector('a.tile[data-id="' + id + '"]');
+            if (!tile) return;
+            box.hidden = true;
+            openFrame(tile.getAttribute("href"), tileName(tile));
+          });
+        });
+        if (who.code) {
+          fetch("https://tw.kulibert.net/api/marks?code=" + encodeURIComponent(who.code)).then(function (res) {
+            if (!res.ok) return;
+            var note = box.querySelector(".progress-note");
+            if (note) note.textContent = "Saved to TechWorks";
+          }).catch(function () {});
+        }
+      }
+      var progressBtn = document.getElementById("my-progress-btn");
+      if (progressBtn) progressBtn.addEventListener("click", function () {
+        var box = document.getElementById("progress");
+        if (!box) return;
+        paintProgress();
+        box.hidden = !box.hidden;
+        if (typeof setPocket === "function") setPocket(false);
+      });
+      var kbHelp = document.getElementById("kb-help");
+      if (kbHelp) kbHelp.addEventListener("click", function () {
+        var frame = document.getElementById("app-frame");
+        if (!frame || !frame.contentWindow) return;
+        try { frame.contentWindow.postMessage({ type: "kb-help" }, "*"); } catch (eHelp) {}
+      });
+      var appFrame = document.getElementById("app-frame");
+      if (appFrame) appFrame.addEventListener("load", function () { postWho(appFrame); });
+      window.addEventListener("message", function (ev) {
+        var data = ev.data;
+        if (!data || !data.type) return;
+        var host = "";
+        try { host = new URL(ev.origin).hostname; } catch (eHost) { return; }
+        if (!(host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
+        if (data.type === "kb-app") showPlate(data.app || "App", data.version || "");
+        if (data.type === "kw-record") { paintKeep(); paintProgress(); }
+      });
+      try {
+        if (new URLSearchParams(location.search).get("view") === "progress" && !hubClassic) {
+          var box = document.getElementById("progress");
+          if (box) { paintProgress(); box.hidden = false; }
+        } else paintProgress();
+      } catch (eView) {}
+      try {
+        if (localStorage.getItem("tech-room-pwa-tip") === "1") document.documentElement.setAttribute("data-pwa-tip", "off");
+      } catch (ePwa) {}
+
       (function captureDoor() {
         var open;
         try { open = new URLSearchParams(location.search).get("open"); } catch (e) { return; }
         if (!open || !isSameOriginDoor(open)) return;
         var url;
         try { url = new URL(open, location.href); } catch (e2) { return; }
-        if (url.origin !== location.origin) return;
+        if (url.origin !== location.origin) {
+          var host = url.hostname;
+          if (!(host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
+        }
         var title = "App";
         var tiles = document.querySelectorAll("a.tile");
         for (var i = 0; i < tiles.length; i++) {

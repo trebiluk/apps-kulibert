@@ -1718,6 +1718,24 @@ function toSvg() {
 function fileBase() {
   return (state.doc.name || "drawing").replace(/[^\w\- ]+/g, "").trim() || "drawing";
 }
+function dsRecord(level) {
+  var api = window.KulibertWho;
+  if (!api || !api.record) return;
+  var start = window.__dsStart || Date.now();
+  api.record({
+    app: "drawin",
+    version: "DS 0.3.0",
+    event: "save",
+    level: level,
+    score: 1,
+    max: 1,
+    stars: 1,
+    xp: 5,
+    skill: "design",
+    ms: Date.now() - start
+  });
+  if (window.KulibertBar && KulibertBar.toast) KulibertBar.toast("Saved");
+}
 function download(name, blob) {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -1727,6 +1745,7 @@ function download(name, blob) {
 }
 function saveSvg() {
   download(`${fileBase()}.svg`, new Blob([toSvg()], { type: "image/svg+xml" }));
+  dsRecord("vector");
 }
 function exportPng() {
   const xml = toSvg();
@@ -1744,6 +1763,7 @@ function exportPng() {
     c.toBlob((blob) => {
       if (blob) download(`${fileBase()}.png`, blob);
       URL.revokeObjectURL(url);
+      dsRecord("vector");
     });
   };
   img.onerror = () => toast("Could not rasterize this page.");

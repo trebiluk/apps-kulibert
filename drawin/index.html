@@ -3,89 +3,56 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-<meta name="theme-color" content="#161513"/>
-<title>Drawin'</title>
+<meta name="theme-color" content="#050814"/>
+<title>Drawin' · DS 0.3.0</title>
+<link rel="stylesheet" href="/fonts/room.css"/>
 <style>
-@font-face {
-  font-family: "Drawin Sans";
-  src: url("./vector/fonts/source-sans-3-600.woff2") format("woff2");
-  font-weight: 600;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Drawin Serif";
-  src: url("./vector/fonts/source-serif-4-600.woff2") format("woff2");
-  font-weight: 600;
-  font-display: swap;
-}
-html, body { height: 100%; margin: 0; background: #161513; color: #f3efe6; }
-body {
-  display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  min-height: 0;
-  overflow: hidden;
-  font: 14px/1.4 "Drawin Sans", "Segoe UI", sans-serif;
-}
-header {
-  display: flex; align-items: center; gap: 14px;
-  min-height: 48px; padding: 0 14px;
-  border-bottom: 1px solid rgba(243, 239, 230, 0.08);
-  background: #1c1b18;
-}
-.brand {
-  font-family: "Drawin Serif", Georgia, serif;
-  font-size: 22px;
-  letter-spacing: -0.03em;
-  white-space: nowrap;
-}
-nav { display: flex; gap: 4px; }
-button {
-  min-height: 32px; padding: 0 14px; border-radius: 999px;
-  border: 0; background: transparent; color: #a39c90;
-  font: inherit; cursor: pointer; letter-spacing: 0.01em;
-  box-shadow: inset 0 0 0 1px rgba(243, 239, 230, 0.1);
-}
-button[aria-pressed="true"] {
-  background: #d08a2d; color: #161513;
-  font-weight: 600;
-  box-shadow: inset 0 1px 0 rgba(255, 248, 230, 0.4);
-}
-iframe { width: 100%; height: 100%; min-height: 0; border: 0; background: #161513; display: block; }
-@media (max-height: 520px) {
-  header { min-height: 40px; padding: 0 10px; gap: 8px; }
-  .brand { font-size: 18px; }
-  button { min-height: 28px; padding: 0 12px; }
-}
+  html, body { height: 100%; margin: 0; background: #050814; color: #e8f7ff; }
+  body { font-family: Outfit, system-ui, sans-serif; }
+  #chooser {
+    min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1rem; padding: 1.2rem; text-align: center;
+  }
+  #chooser h1 { margin: 0; font-size: 2rem; }
+  #chooser .rev { color: #8fb4c9; font-weight: 650; }
+  #chooser p { margin: 0; font-size: 1.05rem; max-width: 28rem; }
+  .pick { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+  .pick button {
+    width: min(42vw, 220px); min-width: 140px; min-height: 140px;
+    border-radius: 18px; border: 1px solid #24506d; background: #0b152c; color: #e8f7ff;
+    font: 750 1.15rem/1.2 Outfit, system-ui, sans-serif; cursor: pointer;
+  }
+  .pick button span { display: block; font-size: 2.4rem; margin-bottom: .35rem; }
+  #studio { display: none; height: 100%; }
+  body.is-studio #chooser { display: none; }
+  body.is-studio #studio { display: block; }
+  iframe { width: 100%; height: 100%; border: 0; background: #111; }
 </style>
 </head>
 <body>
-<header>
-  <div class="brand">Drawin'</div>
-  <nav aria-label="Studio">
-    <button type="button" id="tab-vector" aria-pressed="true">Vector</button>
-    <button type="button" id="tab-paint" aria-pressed="false">Paint</button>
-  </nav>
-</header>
-<iframe id="frame" title="Drawin' studio" src="./vector/index.html?hub=1"></iframe>
+<section id="chooser">
+  <h1>Drawin'</h1>
+  <div class="rev">DS 0.3.0</div>
+  <p>Pick Vector for shapes or Paint for brushes.</p>
+  <div class="pick">
+    <button type="button" id="pick-vector"><span>◇</span>Vector</button>
+    <button type="button" id="pick-paint"><span>🖌</span>Paint</button>
+  </div>
+</section>
+<div id="studio">
+  <iframe id="frame" title="Drawin' studio"></iframe>
+</div>
+<script src="/shared/kulibert-bar.js?v=2026-10-01-connected" data-app="drawin" data-version="DS 0.3.0" defer></script>
 <script>
-const KEY = "drawin-door";
 const frame = document.getElementById("frame");
-const tabs = {
-  vector: document.getElementById("tab-vector"),
-  paint: document.getElementById("tab-paint"),
-};
 function show(mode) {
   const next = mode === "paint" ? "paint" : "vector";
   frame.src = next === "paint" ? "./paint/" : "./vector/index.html?hub=1";
-  tabs.vector.setAttribute("aria-pressed", next === "vector" ? "true" : "false");
-  tabs.paint.setAttribute("aria-pressed", next === "paint" ? "true" : "false");
-  try { localStorage.setItem(KEY, next); } catch (err) { /* private mode */ }
+  document.body.classList.add("is-studio");
+  try { localStorage.setItem("drawin-door", next); } catch (err) {}
 }
-tabs.vector.addEventListener("click", () => show("vector"));
-tabs.paint.addEventListener("click", () => show("paint"));
-try {
-  if (localStorage.getItem(KEY) === "paint") show("paint");
-} catch (err) { /* private mode */ }
+document.getElementById("pick-vector").addEventListener("click", () => show("vector"));
+document.getElementById("pick-paint").addEventListener("click", () => show("paint"));
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.getRegistrations().then((regs) => {
     for (const reg of regs) {
@@ -94,6 +61,5 @@ if ("serviceWorker" in navigator) {
   });
 }
 </script>
-<script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
 </body>
 </html>

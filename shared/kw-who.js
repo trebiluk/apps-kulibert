@@ -162,13 +162,68 @@
     });
     return out;
   }
+  var REC = "kw-records-v1";
+  function readRecords() {
+    try {
+      var rows = JSON.parse(localStorage.getItem(REC) || "[]");
+      return Array.isArray(rows) ? rows : [];
+    } catch (e) { return []; }
+  }
+  function record(rec) {
+    rec = rec || {};
+    if (!active() || !aliasesOn()) return null;
+    var who = read();
+    if (!who || !who.verified) return null;
+    var score = rec.score;
+    var hasScore = typeof score === "number" && isFinite(score);
+    var row = {
+      v: 2,
+      app: String(rec.app || "").slice(0, 24),
+      version: String(rec.version || "").slice(0, 32),
+      code: who.code,
+      alias: who.alias,
+      event: String(rec.event || "play").slice(0, 24),
+      level: String(rec.level == null ? "" : rec.level).slice(0, 40),
+      score: hasScore ? score : null,
+      max: typeof rec.max === "number" && isFinite(rec.max) ? rec.max : null,
+      stars: typeof rec.stars === "number" && isFinite(rec.stars) ? rec.stars : null,
+      xp: typeof rec.xp === "number" && isFinite(rec.xp) ? rec.xp : 0,
+      skill: String(rec.skill || "").slice(0, 24),
+      ms: typeof rec.ms === "number" && isFinite(rec.ms) ? rec.ms : null,
+      ts: Date.now()
+    };
+    if (!row.app) return null;
+    if (row.event === "line" && !hasScore) {
+      try { localStorage.setItem(REC, JSON.stringify(readRecords().concat([row]).slice(-300))); } catch (eLine) {}
+      return row;
+    }
+    if (!hasScore) return null;
+    try { localStorage.setItem(REC, JSON.stringify(readRecords().concat([row]).slice(-300))); } catch (eSave) {}
+    var rows = pending().filter(function (item) {
+      return !(item && item.v === 2 && item.code === who.code && item.app === row.app && item.level === row.level && item.ts === row.ts);
+    });
+    rows.push({
+      v: 2, alias: who.alias, code: who.code, app: row.app, version: row.version,
+      event: row.event, level: row.level, score: row.score, max: row.max, stars: row.stars,
+      xp: row.xp, skill: row.skill, ms: row.ms, ts: row.ts,
+      line: clipLine(row.event + " " + row.level + " " + row.score),
+      saved: new Date(row.ts).toISOString()
+    });
+    writePending(rows);
+    try { root.dispatchEvent(new CustomEvent("kw-record", { detail: row })); } catch (eEv) {}
+    try {
+      if (root.parent && root.parent !== root) root.parent.postMessage({ type: "kw-record", app: row.app }, "*");
+    } catch (ePost) {}
+    flush();
+    return row;
+  }
   function mark(appId, line) {
     var text = clipLine(line);
     var id = String(appId || "").slice(0, 24);
     if (!text || !id) return null;
     var who = saveApp(id, { line: text });
-    if (!who) return null;
-    if (who.verified && active() && aliasesOn()) enqueue(who.alias, who.code, id, text);
+    if (who && who.verified && active() && aliasesOn()) enqueue(who.alias, who.code, id, text);
+    record({ app: id, event: "line", level: text });
     try { root.dispatchEvent(new Event("kw-mark")); } catch (e) {}
     return who;
   }
@@ -195,16 +250,16 @@
       return !done[key] || done[key] !== row.line;
     }));
   }
-  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, pending: pending, ack: ack, flush: flush, forget: forget, active: active };
+  root.KulibertWho = { read: read, write: write, saveApp: saveApp, clean: clean, codeOf: codeOf, lines: lines, mark: mark, record: record, records: readRecords, pending: pending, ack: ack, flush: flush, forget: forget, active: active };
   function hubHome() {
     var path = (location.pathname || "/").replace(/\/+$/, "") || "/";
     if (path === "/index.html") path = "/";
     return path === "/" || path === "/staff" || path === "/staff/index.html";
   }
-  if (typeof document !== "undefined" && root.top === root && !hubHome() && !document.getElementById("tw-session-boot")) {
+  if (typeof document !== "undefined" && root.top === root && !hubHome() && !document.getElementById("tw-session-boot") && !document.querySelector("script[src*='kulibert-bar.js']")) {
     var boot = document.createElement("script");
     boot.id = "tw-session-boot";
-    boot.src = "/shared/tw-session.js?v=2026-09-29-fit";
+    boot.src = "/shared/kulibert-bar.js?v=2026-10-01-connected";
     (document.head || document.documentElement).appendChild(boot);
   }
 })(typeof window !== "undefined" ? window : globalThis);

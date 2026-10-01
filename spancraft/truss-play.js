@@ -181,7 +181,21 @@ export function mountTruss(cfg) {
       if (whoApi && cfg.twApp && codeOk && whoApi.active && whoApi.active()) {
         var job = active();
         var jobName = job && (job.name || job.title || job.id) || state.levelId;
-        whoApi.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
+        if (state.cleared && state.cleared[state.levelId] && whoApi.record) {
+          whoApi.record({
+            app: cfg.twApp,
+            version: cfg.twApp === "spancraft" ? "SC 1.3.28" : "SL 1.3.27",
+            event: "clear",
+            level: state.levelId,
+            score: state.stars && state.stars[state.levelId] ? state.stars[state.levelId] : 1,
+            max: 3,
+            stars: state.stars && state.stars[state.levelId] ? state.stars[state.levelId] : 1,
+            xp: 10,
+            skill: "build"
+          });
+        } else if (whoApi.mark) {
+          whoApi.mark(cfg.twApp, (state.cleared && state.cleared[state.levelId] ? "Clear " : "") + jobName);
+        }
       }
     } catch (eMark) {}
     if (cfg.partFlag && pathClear()) {

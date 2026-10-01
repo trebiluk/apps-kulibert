@@ -1,0 +1,28 @@
+/* Shared Tech Room bar. Home always means the Hub. */
+.kb-bar{
+  position:fixed;top:0;left:0;right:0;z-index:60;height:48px;
+  display:flex;align-items:center;gap:.4rem;padding:0 .45rem;
+  background:#050814;color:#e8f7ff;
+  font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+  border-bottom:1px solid #1e3a55;box-sizing:border-box;
+}
+.kb-home,.kb-help,.kb-settings{
+  min-width:44px;min-height:44px;height:44px;padding:0 .7rem;
+  display:inline-flex;align-items:center;justify-content:center;
+  border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;
+  font:700 .85rem/1 Outfit,system-ui,sans-serif;text-decoration:none;cursor:pointer;
+}
+.kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kb-alias{
+  margin-left:auto;max-width:9rem;min-height:44px;height:44px;padding:0 .7rem;
+  display:inline-flex;align-items:center;border-radius:999px;border:1px solid #24506d;
+  background:#0b152c;color:#e8f7ff;font:650 .8rem/1 Outfit,system-ui,sans-serif;
+}
+.kb-settings[hidden],.kb-toast[hidden]{display:none !important}
+.kb-toast{
+  position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);
+  background:#0b152c;color:#e8f7ff;border:1px solid #22d3ee;border-radius:999px;
+  padding:.45rem .9rem;z-index:70;font:650 .85rem/1 Outfit,system-ui,sans-serif;
+}
+body.kb-on{padding-top:48px}
+html.kb-framed body.kb-on{padding-top:0}

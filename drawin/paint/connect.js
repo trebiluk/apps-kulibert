@@ -33,6 +33,20 @@
     lastLine = line;
     lastAt = now;
     api.mark("drawin", line);
+    if (api.record) {
+      api.record({
+        app: "drawin",
+        version: "DS 0.3.0",
+        event: "save",
+        level: "paint",
+        score: 1,
+        max: 1,
+        stars: 1,
+        xp: 5,
+        skill: "design",
+        ms: 0
+      });
+    }
     if (api.flush) api.flush();
     if (api.read && api.read()) toast();
   }

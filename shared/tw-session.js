@@ -56,7 +56,7 @@
       if (lockedNow()) return;
       if (btn) btn.disabled = false;
       if (note && note.textContent === "Wait a moment, then try again.") {
-        note.textContent = "Pick your name from the picture. The code and the PIN come from your teacher.";
+        note.textContent = "The code and the PIN come from your teacher.";
       }
     }, wait + 40);
     return true;
@@ -66,6 +66,16 @@
     try { localStorage.removeItem("kw-shop-v1"); } catch (e2) {}
     var api = whoApi();
     if (api && api.forget) api.forget();
+    var bye = { type: "kw-who", on: false };
+    try { if (root.parent && root.parent !== root) root.parent.postMessage(bye, "*"); } catch (e3) {}
+    try {
+      var frame = document.getElementById("app-frame");
+      if (frame && frame.contentWindow) {
+        var origin = "*";
+        try { origin = new URL(frame.src, location.href).origin; } catch (e4) {}
+        frame.contentWindow.postMessage(bye, origin);
+      }
+    } catch (e5) {}
   }
   function appFromPath() {
     var bit = location.pathname.replace(/\/$/, "").split("/").filter(Boolean)[0] || "";
@@ -128,9 +138,9 @@
     node.id = styleId;
     node.textContent = [
       ".tw-session{display:flex;align-items:center;min-width:0;position:relative;flex:0 0 auto}",
-      ".tw-pill{position:relative;display:inline-flex;align-items:center;gap:.35rem;height:28px;max-width:9.5rem;padding:0 .5rem 0 .28rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;cursor:pointer;white-space:nowrap}",
+      ".tw-pill{position:relative;display:inline-flex;align-items:center;gap:.35rem;height:44px;min-height:44px;max-width:14rem;padding:0 .7rem 0 .35rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .8rem/1 Outfit,system-ui,sans-serif;cursor:pointer;white-space:nowrap}",
       ".tw-pill[hidden],.tw-face[hidden],.tw-dot[hidden],.tw-menu[hidden]{display:none !important}",
-      ".tw-pop button{height:36px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .75rem/1 system-ui,sans-serif;padding:0 .6rem;cursor:pointer}",
+      ".tw-pop button{height:44px;min-width:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:650 .8rem/1 Outfit,system-ui,sans-serif;padding:0 .8rem;cursor:pointer}",
       ".tw-face{width:20px;height:20px;border-radius:99px;display:inline-flex;align-items:center;justify-content:center;background:#123049;font-size:.8rem;line-height:1;flex:0 0 auto}",
       ".tw-alias-label{overflow:hidden;text-overflow:ellipsis;min-width:0}",
       ".tw-dot{width:8px;height:8px;border-radius:99px;background:#c45b4a;flex:0 0 auto}",
@@ -141,7 +151,7 @@
       ".tw-menu[hidden]{display:none !important}",
       ".tw-menu button{height:36px;border:0;border-radius:8px;background:transparent;color:inherit;text-align:left;padding:0 .65rem;font:650 .8rem/1 system-ui,sans-serif;cursor:pointer}",
       ".tw-menu button:hover,.tw-menu button:focus-visible{background:#123049}",
-      "@media (max-width:700px){.tw-who .tw-alias-label,.tw-app-status.is-in .tw-alias-label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}.tw-who,.tw-app-status.is-in{max-width:none;padding:0 .35rem 0 .22rem}}",
+      "@media (max-width:700px){.tw-who,.tw-app-status.is-in{max-width:11rem}}",
       "html[data-hub-theme=graph] .tw-pill,html[data-hub-theme=spa] .tw-pill,html[data-hub-theme=nature] .tw-pill,html[data-hub-theme=peaks] .tw-pill,html[data-hub-theme=graph] .tw-menu,html[data-hub-theme=spa] .tw-menu,html[data-hub-theme=nature] .tw-menu,html[data-hub-theme=peaks] .tw-menu{background:#fffdf8;color:#1c1915;border-color:#2c2824}",
       "html[data-hub-theme=graph] .tw-face,html[data-hub-theme=spa] .tw-face,html[data-hub-theme=nature] .tw-face,html[data-hub-theme=peaks] .tw-face{background:#efeae0}",
       "html[data-hub-theme=graph] .tw-menu button:hover,html[data-hub-theme=spa] .tw-menu button:hover,html[data-hub-theme=nature] .tw-menu button:hover,html[data-hub-theme=peaks] .tw-menu button:hover{background:#efeae0}",
@@ -169,8 +179,8 @@
     return [
       '<form>',
       '<label>Code <input class="tw-code" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="5 characters"/></label>',
-      '<label>PIN <input class="tw-pin" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="From your teacher"/></label>',
-      '<div class="tw-row"><button type="submit" class="tw-keep">Sign in</button></div>',
+      '<label>PIN <input class="tw-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="From your teacher"/></label>',
+      '<div class="tw-row"><button type="submit" class="tw-keep">Sign in</button><button type="button" class="tw-close">Close</button></div>',
       '<p class="tw-note">The code and the PIN come from your teacher. Your name shows after they match.</p>',
       '</form>'
     ].join("");
@@ -213,6 +223,16 @@
       }).catch(function () {
         note.textContent = "TechWorks did not answer. Try again on the school network.";
       });
+    });
+    var closeBtn = pop.querySelector(".tw-close");
+    if (closeBtn) closeBtn.addEventListener("click", function () { pop.hidden = true; });
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape" && pop && !pop.hidden) pop.hidden = true;
+    });
+    document.addEventListener("mousedown", function (event) {
+      if (!pop || pop.hidden) return;
+      if (pop.contains(event.target)) return;
+      pop.hidden = true;
     });
     armLock(pop);
   }
@@ -426,6 +446,8 @@
     var slot = document.getElementById("tw-session-slot");
     if (slot) { mountShell(slot); return; }
     if (framed() || hubPage()) return;
+    if (document.documentElement.getAttribute("data-kb-bar") === "1") return;
+    if (document.querySelector(".kb-bar")) return;
     mountApp();
   }
   root.TwSession = { boot: boot, light: light };

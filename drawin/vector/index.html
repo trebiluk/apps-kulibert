@@ -6,8 +6,17 @@
     <meta name="theme-color" content="#161513" />
     <title>Drawin' Vector</title>
     <link rel="stylesheet" href="./studio.css?v=7" />
+    <style>
+      body{font-family:Outfit,system-ui,sans-serif}
+      #bar,#tools,#inspector{background:#050814}
+      #ds-prompt{margin:0;padding:.35rem .7rem;background:#0b152c;color:#e8f7ff;font:650 .9rem/1.3 Outfit,system-ui,sans-serif}
+      #ds-help{position:fixed;left:8px;bottom:8px;z-index:5;min-width:44px;min-height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff}
+      #ds-tips[hidden]{display:none}
+      #ds-tips{position:fixed;left:8px;bottom:60px;z-index:5;background:#0b152c;color:#e8f7ff;padding:.6rem .8rem;border-radius:12px;max-width:16rem}
+    </style>
   </head>
   <body class="panel-open">
+    <p id="ds-prompt">Draw a robot face. Tap Save when done.</p>
     <div id="app">
       <header id="bar">
         <div class="brand">Drawin' <em>Vector</em></div>
@@ -53,9 +62,26 @@
         </div>
       </form>
     </div>
-    <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
+    <div id="ds-tips" hidden>
+      <p>1. Pick a shape.</p>
+      <p>2. Draw on the page.</p>
+      <p>3. File, then Save SVG.</p>
+    </div>
+    <button type="button" id="ds-help" aria-label="Help">?</button>
+    <script>window.__dsStart = Date.now();</script>
+    <script src="/shared/kulibert-bar.js?v=2026-10-01-connected" data-app="drawin" data-version="DS 0.3.0" data-help="#ds-help" defer></script>
+    <script src="/shared/kw-who.js?v=2026-10-01-connected"></script>
     <script src="./vendor/paper-full.min.js"></script>
     <script src="./vendor/opentype.min.js"></script>
     <script type="module" src="./studio.js?v=7"></script>
+    <script>
+      document.getElementById("ds-help").addEventListener("click", function () {
+        var tips = document.getElementById("ds-tips");
+        tips.hidden = !tips.hidden;
+      });
+      if (window.KulibertBar) KulibertBar.setHelp(function () {
+        document.getElementById("ds-help").click();
+      });
+    </script>
   </body>
 </html>
