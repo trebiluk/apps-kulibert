@@ -1,5 +1,10 @@
 # Ginger
 
+## 1.0.5 — 2026-10-01
+- Plan name and ceiling have visible labels. The footer line is darker.
+- On a short screen, the tools wrap under the sign-in chips and Properties opens from a button.
+- Help has three picture steps and Read it to me. Room names are chips. Big text, high contrast, and Arabic help come from the Tech Room settings. `?theme=classic` stays the plain look. Night is still its own look.
+
 ## 1.0.4 — 2026-10-01
 - The Tech Room bar replaces the Back to the Hub pill. Home goes to the tiles.
 - Opening the seed plan no longer marks “Studio plan”. A room is recorded when you name it.

@@ -36,6 +36,60 @@ let selected = null;
 let drag = null;
 let hist = [];
 let future = [];
+const ROOM_NAMES = ["Bedroom", "Kitchen", "Bath", "Living", "Studio"];
+
+function kpScale() {
+  const n = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--kp-scale"));
+  return Number.isFinite(n) && n > 0 ? n : 1;
+}
+
+function labelFont(px, weight) {
+  const box = planCanvas.getBoundingClientRect();
+  const fit = planCanvas.width / Math.max(1, box.width || planCanvas.width);
+  const size = Math.max(14, Math.round(px * fit * kpScale()));
+  return (weight ? weight + " " : "") + size + "px sans-serif";
+}
+
+function contrastOn() {
+  return document.documentElement.getAttribute("data-kp-contrast") === "1";
+}
+
+function mapRootSize() {
+  const size = document.documentElement.getAttribute("data-kp-size") || "M";
+  const map = { S: "90%", M: "100%", L: "125%", XL: "150%" };
+  document.documentElement.style.fontSize = map[size] || "100%";
+  document.body.style.setProperty("font-size", "1rem", "important");
+}
+
+function applyHelpDir() {
+  const help = $("ginger-help");
+  if (!help) return;
+  if (document.documentElement.getAttribute("data-kp-lang") === "ar") help.setAttribute("dir", "rtl");
+  else help.removeAttribute("dir");
+}
+
+function roomPicks() {
+  return `<div class="name-picks" role="group" aria-label="Room names">${ROOM_NAMES.map((n) => `<button type="button" class="name-pick" data-room-name="${n}">${n}</button>`).join("")}</div>`;
+}
+
+function bindRoomPicks(key) {
+  document.querySelectorAll("[data-room-name]").forEach((btn) => {
+    btn.onclick = () => {
+      const rooms = roomsOf(plan);
+      const room = key ? rooms.find((r) => r.key === key) : rooms[0];
+      if (!room) {
+        $("status").textContent = "Close the walls first, then pick a room name.";
+        return;
+      }
+      pushHist();
+      const name = btn.getAttribute("data-room-name") || "Room";
+      nameRoom(plan, room.key, name);
+      save();
+      recordRoom(name);
+    };
+  });
+}
+
 const plan = load() || seed();
 
 function load() {
@@ -232,17 +286,19 @@ function draw() {
       else ctx.lineTo(q.x, q.y);
     });
     ctx.closePath();
-    ctx.fillStyle = selected && selected.kind === "room" && selected.id === room.key ? "rgba(110,114,245,0.22)" : cssVar("--aw-room");
+    const picked = selected && selected.kind === "room" && selected.id === room.key;
+    ctx.fillStyle = picked ? (contrastOn() ? "#ffe14a" : "rgba(110,114,245,0.22)") : cssVar("--aw-room");
     ctx.fill();
     const top = room.pts.reduce((m, p) => Math.min(m, p.y), 1e9);
     const c = toPx(room.cx, top + 1.15);
+    const nameSize = Math.max(14, Math.round(16 * (planCanvas.width / Math.max(1, planCanvas.getBoundingClientRect().width || planCanvas.width)) * kpScale()));
     ctx.fillStyle = cssVar("--aw-fg");
-    ctx.font = "600 15px sans-serif";
+    ctx.font = labelFont(16, "600");
     ctx.textAlign = "center";
     ctx.fillText(room.name, c.x, c.y);
-    ctx.font = "13px sans-serif";
-    ctx.fillStyle = cssVar("--aw-muted");
-    ctx.fillText(Math.round(room.area) + " sf", c.x, c.y + 18);
+    ctx.font = labelFont(14);
+    ctx.fillStyle = contrastOn() ? "#000" : cssVar("--aw-muted");
+    ctx.fillText(Math.round(room.area) + " sf", c.x, c.y + nameSize + 4);
     ctx.textAlign = "left";
   }
   for (const line of plan.lines) {
@@ -335,8 +391,8 @@ function drawHole(line, e, h) {
     ctx.lineTo(g1.x, g1.y);
     ctx.stroke();
   }
-  ctx.fillStyle = cssVar("--aw-muted");
-  ctx.font = "11px sans-serif";
+  ctx.fillStyle = contrastOn() ? "#000" : cssVar("--aw-muted");
+  ctx.font = labelFont(14);
   ctx.fillText(h.kind === "door" ? "D" : "W", c.x + 4, c.y - 6);
 }
 
@@ -348,13 +404,18 @@ function drawItem(it) {
   ctx.translate(c.x, c.y);
   ctx.rotate(it.rot || 0);
   const on = selected && selected.kind === "item" && selected.id === it.id;
-  ctx.fillStyle = on ? "rgba(110,114,245,0.28)" : "rgba(255,255,255,0.8)";
-  ctx.strokeStyle = on ? cssVar("--aw-accent") : cssVar("--aw-fg");
-  ctx.lineWidth = 1.5;
+  ctx.fillStyle = on ? (contrastOn() ? "#ffe14a" : "rgba(110,114,245,0.28)") : "rgba(255,255,255,0.8)";
+  ctx.strokeStyle = on ? (contrastOn() ? "#000" : cssVar("--aw-accent")) : cssVar("--aw-fg");
+  ctx.lineWidth = on && contrastOn() ? 3 : 1.5;
   ctx.fillRect((-w / 2) * view.s, (-d / 2) * view.s, w * view.s, d * view.s);
   ctx.strokeRect((-w / 2) * view.s, (-d / 2) * view.s, w * view.s, d * view.s);
+  if (on && contrastOn()) {
+    ctx.strokeStyle = "#ffe14a";
+    ctx.lineWidth = 3;
+    ctx.strokeRect((-w / 2) * view.s, (-d / 2) * view.s, w * view.s, d * view.s);
+  }
   ctx.fillStyle = cssVar("--aw-fg");
-  ctx.font = "12px sans-serif";
+  ctx.font = labelFont(14);
   ctx.textAlign = "center";
   ctx.fillText(cat.label, 0, 4);
   ctx.restore();
@@ -407,10 +468,11 @@ function schedules() {
 function props() {
   const box = $("props");
   if (!selected) {
-    box.innerHTML = `<p class="hint">${esc(plan.level)} · ${plan.lines.length} walls · ${roomsOf(plan).length} rooms</p><label>Plan name</label><input id="pname" value="${esc(plan.name)}" /><label>Ceiling (ft)</label><input id="ceil" type="number" min="8" max="12" step="1" value="${plan.ceilingFt}" />`;
+    box.innerHTML = `<p class="hint">${esc(plan.level)} · ${plan.lines.length} walls · ${roomsOf(plan).length} rooms</p><label for="pname">Plan name</label><input id="pname" value="${esc(plan.name)}" /><label for="ceil">Ceiling (ft)</label><input id="ceil" type="number" min="8" max="12" step="1" value="${plan.ceilingFt}" /><p class="hint">Room name</p>${roomPicks()}`;
     $("pname").onchange = (e) => {
       pushHist();
-      plan.name = e.target.value.slice(0, 40);
+      plan.name = String(e.target.value || "").slice(0, 40) || "Studio plan";
+      e.target.value = plan.name;
       save();
     };
     $("ceil").onchange = (e) => {
@@ -418,11 +480,12 @@ function props() {
       plan.ceilingFt = Math.min(12, Math.max(8, Number(e.target.value) || 9));
       save();
     };
+    bindRoomPicks();
     return;
   }
   if (selected.kind === "line") {
     const line = plan.lines.find((l) => l.id === selected.id);
-    box.innerHTML = `<p>Wall · ${lineLength(plan, line).toFixed(1)} ft</p><label>Thickness</label><select id="th"><option value="4">4 in</option><option value="6">6 in</option><option value="8">8 in</option></select><button type="button" id="del">Delete wall</button>`;
+    box.innerHTML = `<p>Wall · ${lineLength(plan, line).toFixed(1)} ft</p><label for="th">Thickness</label><select id="th"><option value="4">4 in</option><option value="6">6 in</option><option value="8">8 in</option></select><button type="button" id="del">Delete wall</button>`;
     $("th").value = String(line.thickIn || 6);
     $("th").onchange = (e) => {
       pushHist();
@@ -443,7 +506,7 @@ function props() {
       props();
       return;
     }
-    box.innerHTML = `<label>Room name</label><input id="rn" value="${esc(room.name)}" /><p>${Math.round(room.area)} sf · from the closed walls</p>`;
+    box.innerHTML = `<label for="rn">Room name</label><input id="rn" value="${esc(room.name)}" />${roomPicks()}<p>${Math.round(room.area)} sf · from the closed walls</p>`;
     $("rn").onchange = (e) => {
       pushHist();
       const name = e.target.value.slice(0, 32) || "Room";
@@ -451,11 +514,12 @@ function props() {
       save();
       recordRoom(name);
     };
+    bindRoomPicks(room.key);
   }
   if (selected.kind === "door" || selected.kind === "window") {
     const h = plan.holes.find((x) => x.id === selected.id);
     const types = h.kind === "door" ? ["Swing", "Pocket", "Bifold"] : ["Fixed", "Slider", "Awning"];
-    box.innerHTML = `<label>Width (ft)</label><input id="wd" type="number" min="1" max="12" step="0.5" value="${h.widthFt}" /><label>Type</label><select id="tp">${types.map((t) => `<option>${t}</option>`).join("")}</select>${h.kind === "door" ? `<button type="button" id="flip">Flip swing</button>` : ""}<button type="button" id="del">Delete</button>`;
+    box.innerHTML = `<label for="wd">Width (ft)</label><input id="wd" type="number" min="1" max="12" step="0.5" value="${h.widthFt}" /><label for="tp">Type</label><select id="tp">${types.map((t) => `<option>${t}</option>`).join("")}</select>${h.kind === "door" ? `<button type="button" id="flip">Flip swing</button>` : ""}<button type="button" id="del">Delete</button>`;
     $("tp").value = types.includes(h.type) ? h.type : types[0];
     $("wd").onchange = (e) => {
       pushHist();
@@ -731,5 +795,31 @@ document.addEventListener("keydown", (ev) => {
 
 $("chip").textContent = "v" + VER;
 $("chip").title = "Ginger " + VER;
+$("props-toggle").onclick = () => {
+  const side = $("side");
+  const open = side.classList.toggle("is-open");
+  $("props-toggle").setAttribute("aria-expanded", open ? "true" : "false");
+};
+$("read-help").onclick = () => {
+  const ar = document.documentElement.getAttribute("data-kp-lang") === "ar";
+  const text = ar ? "ارسم جدارًا. أضف بابًا. سمِّ الغرفة." : "Draw a wall. Add a door. Name the room.";
+  if (window.KulibertPrefs && typeof window.KulibertPrefs.say === "function") window.KulibertPrefs.say(text);
+  else if (window.speechSynthesis) {
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = ar ? "ar" : "en";
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  }
+};
+mapRootSize();
+applyHelpDir();
+function onPrefs() {
+  mapRootSize();
+  applyHelpDir();
+  draw();
+}
+if (window.KulibertPrefs && typeof window.KulibertPrefs.on === "function") window.KulibertPrefs.on(onPrefs);
+document.addEventListener("DOMContentLoaded", onPrefs);
+window.addEventListener("resize", () => draw());
 setTool("select");
 save();

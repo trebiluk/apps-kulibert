@@ -9,7 +9,8 @@
 
   function classic() {
     try {
-      if (new URLSearchParams(location.search).get("hub") === "classic") return true;
+      var q = new URLSearchParams(location.search);
+      if (q.get("hub") === "classic" || q.get("theme") === "classic") return true;
       if (localStorage.getItem("tech-room-hub") === "classic") return true;
     } catch (e) {}
     return false;
