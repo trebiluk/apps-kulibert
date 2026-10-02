@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.30 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.31 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.30";
+const APP_VERSION = "0.19.31";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.30";
-const APP_BUILT = "2026-09-26";
+const APP_CHIP = "BB 0.19.31";
+const APP_BUILT = "2026-10-02";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -174,6 +174,78 @@ const JOBS = [
   { id: "shelf", label: "High Shelf" },
   { id: "pair", label: "Pair of Crates" },
 ];
+
+const HUB_LANGS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
+const JOB_KEY = {
+  open: "fixIt", roll: "rollOut", curb: "upCurb", pit: "mindPit", wall: "theWall",
+  shelf: "highShelf", pair: "pair", sprint: "sprint", gates: "gates", lap: "lap",
+  measure: "measure", forces: "forces",
+};
+const I18N_EXTRA = {
+  en: { noneYet: "None yet.", jobWord: "Job" },
+  uk: { noneYet: "Ще немає.", jobWord: "Робота" },
+  ru: { noneYet: "Пока нет.", jobWord: "Работа" },
+  es: { noneYet: "Aún no.", jobWord: "Trabajo" },
+  ar: { noneYet: "لا شيء بعد.", jobWord: "عمل" },
+  "fa-AF": { noneYet: "هنوز نه.", jobWord: "کار" },
+  rw: { noneYet: "Nta na kimwe.", jobWord: "Umurimo" },
+  ti: { noneYet: "ገና የለን።", jobWord: "ስራሕ" },
+};
+let uiLang = "en";
+
+function textRtl() { return uiLang === "ar" || uiLang === "fa-AF"; }
+
+function tr(key, vars) {
+  const all = window.BB_I18N || {};
+  const row = all[uiLang] || {};
+  const en = all.en || {};
+  const extra = I18N_EXTRA[uiLang] || {};
+  let s = row[key];
+  if (s == null) s = extra[key];
+  if (s == null) s = en[key];
+  if (s == null && I18N_EXTRA.en) s = I18N_EXTRA.en[key];
+  if (s == null) s = key;
+  if (vars) {
+    Object.keys(vars).forEach((k) => {
+      s = String(s).split("{" + k + "}").join(String(vars[k]));
+    });
+  }
+  return s;
+}
+
+function jobLabel(id) {
+  const key = JOB_KEY[id];
+  return key ? tr(key) : "";
+}
+
+function applyDomI18n() {
+  const root = document.documentElement;
+  root.lang = uiLang;
+  root.dir = textRtl() ? "rtl" : "ltr";
+  if (document.body) document.body.dataset.dir = root.dir;
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (key) el.textContent = tr(key);
+  });
+  document.querySelectorAll("[data-i18n-label]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-label");
+    if (!key) return;
+    const word = tr(key);
+    el.setAttribute("aria-label", word);
+    el.title = word;
+  });
+}
+
+function hubLangNow() {
+  try {
+    if (window.KulibertPrefs && typeof KulibertPrefs.get === "function") {
+      const lang = KulibertPrefs.get().lang;
+      if (lang === "simple") return "en";
+      if (HUB_LANGS.indexOf(lang) >= 0) return lang;
+    }
+  } catch (e) { /* prefs missing */ }
+  return "en";
+}
 
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 const CURR_KEY = "bb-curriculum-v1";
@@ -939,39 +1011,39 @@ function boot() {
   }
 
   function paintAccess() {
-    const copy = ACCESS_COPY[access.lang] || ACCESS_COPY.en;
     const gear = document.getElementById("btn-settings");
     if (gear) {
       const lbl = gear.querySelector(".lbl");
-      if (lbl) lbl.textContent = copy.settings;
-      gear.setAttribute("aria-label", copy.settings);
+      if (lbl) lbl.textContent = tr("settings");
+      gear.setAttribute("aria-label", tr("settings"));
+      gear.title = tr("settings");
     }
     const title = document.getElementById("access-title");
-    if (title) title.textContent = copy.settings;
+    if (title) title.textContent = tr("settings");
     const langLabel = document.getElementById("access-lang-label");
-    if (langLabel) langLabel.textContent = copy.lang;
+    if (langLabel) langLabel.textContent = tr("language");
     const close = document.getElementById("access-close");
-    if (close) close.textContent = copy.close;
+    if (close) close.textContent = tr("close");
     const speakBtn = document.getElementById("access-speak");
     if (speakBtn) {
-      speakBtn.textContent = `${copy.speak}: ${access.speak ? copy.on : copy.off}`;
+      speakBtn.textContent = `${tr("read")}: ${access.speak ? tr("on") : tr("off")}`;
       speakBtn.classList.toggle("on", access.speak);
       speakBtn.setAttribute("aria-pressed", access.speak ? "true" : "false");
     }
     const bigBtn = document.getElementById("access-big");
     if (bigBtn) {
-      bigBtn.textContent = `${copy.big}: ${access.big ? copy.on : copy.off}`;
+      bigBtn.textContent = `${tr("big")}: ${access.big ? tr("on") : tr("off")}`;
       bigBtn.classList.toggle("on", access.big);
       bigBtn.setAttribute("aria-pressed", access.big ? "true" : "false");
     }
     const fewerBtn = document.getElementById("access-fewer");
     if (fewerBtn) {
-      fewerBtn.textContent = `${copy.fewer}: ${access.fewer ? copy.on : copy.off}`;
+      fewerBtn.textContent = `${tr("fewer")}: ${access.fewer ? tr("on") : tr("off")}`;
       fewerBtn.classList.toggle("on", access.fewer);
       fewerBtn.setAttribute("aria-pressed", access.fewer ? "true" : "false");
     }
     document.querySelectorAll("[data-lang]").forEach((b) => {
-      const on = b.getAttribute("data-lang") === access.lang;
+      const on = b.getAttribute("data-lang") === uiLang;
       b.classList.toggle("on", on);
       b.setAttribute("aria-pressed", on ? "true" : "false");
     });
@@ -985,9 +1057,6 @@ function boot() {
 
   function saveProgress() {
     try { localStorage.setItem("bb-progress-v1", JSON.stringify(progress)); } catch (e) { /* private mode */ }
-    try {
-      if (window.KulibertWho) KulibertWho.mark("bertybots", rankAt(progress.xp || 0).name || "Shop");
-    } catch (e2) {}
   }
 
   function refreshRank() {
@@ -1207,60 +1276,56 @@ function boot() {
     if (!job || levelDone(courseId)) return "";
     const pose = wheelPose();
     if (courseId === "open") {
-      if (playing && pose !== "ready") return "That wheel is in front.";
-      if (pose === "ready") return "Press Play.";
-      if (pose === "far") return "Closer. Just behind the crate.";
-      if (pose === "close") return "A little further back.";
-      if (pose === "left") return "That wheel rolls left. Use the orange one.";
-      if (pose === "none") return "Drag the orange wheel behind the crate.";
-      return "Drag the wheel behind the crate.";
+      if (playing && pose !== "ready") return tr("wheelFront");
+      if (pose === "ready") return tr("pressPlay");
+      if (pose === "far") return tr("closer");
+      if (pose === "close") return tr("further");
+      if (pose === "left") return tr("leftWheel");
+      if (pose === "none") return tr("dragOrange");
+      return tr("dragBehind");
     }
     if (courseId === "roll") {
-      return pose === "ready"
-        ? "Press Play."
-        : "The loose wheel doesn't push. Use the orange one.";
+      return pose === "ready" ? tr("pressPlay") : tr("looseWheel");
     }
     if (courseId === "curb") {
-      if (pose === "ready") return "Press Play.";
-      if (pose === "left") return "Blue wheel rolls the wrong way. Use the orange one.";
-      return "Put the orange wheel in the circle.";
+      if (pose === "ready") return tr("pressPlay");
+      if (pose === "left") return tr("blueWrong");
+      return tr("inCircle");
     }
     if (courseId === "pit") {
-      return pitBridged()
-        ? "Press Play."
-        : "That wheel falls in. Bridge the hole.";
+      return pitBridged() ? tr("pressPlay") : tr("fallsIn");
     }
     if (courseId === "wall") {
       const blueOn = (doc.machine.parts || []).some((p) => p.type === "driveL");
-      if (wallReady()) return "Press Play.";
-      if (blueOn) return "Drag the orange wheel off.";
-      return "Orange hits the wall. Blue goes the other way.";
+      if (wallReady()) return tr("pressPlay");
+      if (blueOn) return tr("dragOff");
+      return tr("orangeWall");
     }
     if (courseId === "shelf") {
-      if (laneBlocked()) return "Drag the loose wheel off the step.";
-      if (pose === "ready") return "Press Play.";
-      return "Orange wheel in the circle. Keep the step clear.";
+      if (laneBlocked()) return tr("offStep");
+      if (pose === "ready") return tr("pressPlay");
+      return tr("shelfReady");
     }
     if (courseId === "pair") {
-      if (!pairLinked()) return "Lay a silver bar between the crates.";
-      return pose === "ready" ? "Press Play." : "Orange wheel behind the first crate.";
+      if (!pairLinked()) return tr("silverBar");
+      return pose === "ready" ? tr("pressPlay") : tr("orangeFirst");
     }
     return "";
   }
 
   function statusLine() {
-    if (winEl && winEl.classList.contains("show")) return "Parked.";
+    if (winEl && winEl.classList.contains("show")) return tr("parked");
     if (isRace()) {
       const gates = raceGates();
-      if (!playing) return "Build a pusher. Play starts the clock.";
-      if (gates.length && gateN < gates.length) return `Gate ${gateN + 1} of ${gates.length}.`;
-      return "Park it. The clock stops in the stripes.";
+      if (!playing) return tr("buildPusher");
+      if (gates.length && gateN < gates.length) return tr("gateOf", { n: gateN + 1, m: gates.length });
+      return tr("parkStripes");
     }
     if (lastReadout) return lastReadout;
     const line = coachLine();
     if (line) return line;
-    if (JOBS.some((j) => j.id === courseId) && levelDone(courseId)) return "Clear.";
-    if (JOBS.some((j) => j.id === courseId)) return "Build on the shop floor.";
+    if (JOBS.some((j) => j.id === courseId) && levelDone(courseId)) return tr("clear");
+    if (JOBS.some((j) => j.id === courseId)) return tr("buildFloor");
     return guideFor(autoStep());
   }
 
@@ -1361,7 +1426,7 @@ function boot() {
       if (!done.length) {
         const li = document.createElement("li");
         li.className = "path-empty";
-        li.textContent = "None yet.";
+        li.textContent = tr("noneYet");
         list.append(li);
       } else {
         for (const level of done) {
@@ -1371,7 +1436,7 @@ function boot() {
           btn.className = "path-link";
           btn.dataset.course = level.id;
           const n = JOBS.findIndex((job) => job.id === level.id) + 1;
-          btn.textContent = `Job ${n} · ${level.label}`;
+          btn.textContent = `${tr("jobWord")} ${n} · ${jobLabel(level.id)}`;
           li.append(btn);
           list.append(li);
         }
@@ -1379,7 +1444,7 @@ function boot() {
       const upcoming = JOBS.find((level) => !levelDone(level.id));
       if (upcoming) {
         const n = JOBS.findIndex((job) => job.id === upcoming.id) + 1;
-        nextBtn.textContent = `Job ${n} · ${upcoming.label}`;
+        nextBtn.textContent = `${tr("jobWord")} ${n} · ${jobLabel(upcoming.id)}`;
         nextBtn.dataset.course = upcoming.id;
       } else {
         nextBtn.textContent = "Design a level";
@@ -1395,8 +1460,8 @@ function boot() {
         btn.className = `job-plate ${state}${job.id === courseId ? " here" : ""}`;
         btn.dataset.course = job.id;
         btn.disabled = state === "lock";
-        btn.title = `${i + 1}. ${job.label}`;
-        btn.setAttribute("aria-label", `Job ${i + 1}, ${job.label}`);
+        btn.title = `${i + 1}. ${jobLabel(job.id)}`;
+        btn.setAttribute("aria-label", `${tr("jobWord")} ${i + 1}, ${jobLabel(job.id)}`);
         const num = document.createElement("b");
         num.textContent = String(i + 1);
         const mark = document.createElement("span");
@@ -1407,7 +1472,7 @@ function boot() {
       const name = document.createElement("span");
       name.className = "job-name";
       const curJob = JOBS.find((job) => job.id === courseId) || RACES.find((job) => job.id === courseId);
-      name.textContent = curJob ? curJob.label : (courseId === "editor" ? "Design" : "");
+      name.textContent = curJob ? jobLabel(curJob.id) : (courseId === "editor" ? "Design" : "");
       strip.append(name);
       if (allClear()) {
         const design = document.createElement("button");
@@ -1435,7 +1500,7 @@ function boot() {
       }
       const raceTag = document.createElement("span");
       raceTag.className = "race-k";
-      raceTag.textContent = "Race";
+      raceTag.textContent = tr("race");
       strip.append(raceTag);
       RACES.forEach((race) => {
         const btn = document.createElement("button");
@@ -1443,12 +1508,13 @@ function boot() {
         btn.type = "button";
         btn.className = `job-plate race${race.id === courseId ? " here" : ""}`;
         btn.dataset.course = race.id;
-        btn.title = best != null ? `${race.label} · ${formatTime(best)}` : `${race.label}. Clock starts on Play.`;
-        btn.setAttribute("aria-label", best != null ? `${race.label}, best ${formatTime(best)}` : race.label);
+        btn.title = best != null ? `${jobLabel(race.id)} · ${formatTime(best)}` : jobLabel(race.id);
+        btn.setAttribute("aria-label", best != null ? `${jobLabel(race.id)}, ${formatTime(best)}` : jobLabel(race.id));
         const num = document.createElement("b");
-        num.textContent = race.mark;
+        const markCh = uiLang === "en" ? race.mark : (Array.from(jobLabel(race.id))[0] || race.mark);
+        num.textContent = markCh;
         const mark = document.createElement("span");
-        mark.textContent = best != null ? formatTime(best) : "RACE";
+        mark.textContent = best != null ? formatTime(best) : tr("raceWord");
         btn.append(num, mark);
         strip.append(btn);
       });
@@ -1472,7 +1538,7 @@ function boot() {
       JOBS.forEach((job, i) => {
         const opt = document.createElement("option");
         opt.value = job.id;
-        opt.textContent = `Job ${i + 1} · ${job.label}`;
+        opt.textContent = `${tr("jobWord")} ${i + 1} · ${jobLabel(job.id)}`;
         opt.disabled = !jobUnlocked(job.id);
         pick.append(opt);
       });
@@ -1486,7 +1552,7 @@ function boot() {
         const opt = document.createElement("option");
         opt.value = race.id;
         const best = progress.bests && progress.bests[race.id];
-        opt.textContent = best != null ? `Race · ${race.label} · ${formatTime(best)}` : `Race · ${race.label}`;
+        opt.textContent = best != null ? `${tr("race")} · ${jobLabel(race.id)} · ${formatTime(best)}` : `${tr("race")} · ${jobLabel(race.id)}`;
         pick.append(opt);
       });
       for (const job of classJobs()) {
@@ -2706,6 +2772,7 @@ function boot() {
 
   function draw() {
     const now = performance.now();
+    ctx.direction = "ltr";
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawShopSet(now);
     if (isMeasure()) drawGraphPaper();
@@ -2904,11 +2971,11 @@ function boot() {
     const gates = raceGates();
     if (isRace() && gateN < gates.length) {
       const g = gates[gateN];
-      return { x: g.x + g.w / 2, y: g.y + g.h * 0.45, label: "GATE" };
+      return { x: g.x + g.w / 2, y: g.y + g.h * 0.45, label: tr("gate") };
     }
     const drop = doc.level && doc.level.drop;
     if (!drop) return null;
-    return { x: drop.x + drop.w / 2, y: drop.y + Math.min(drop.h, 1.4) * 0.45, label: "GOAL" };
+    return { x: drop.x + drop.w / 2, y: drop.y + Math.min(drop.h, 1.4) * 0.45, label: tr("goal") };
   }
 
   function drawGoalCue() {
@@ -2920,7 +2987,10 @@ function boot() {
     const dpr = view.dpr || 1;
     const pad = 28 * dpr;
     if (sx >= pad && sx <= canvas.width - pad && sy >= pad && sy <= canvas.height - pad) return;
-    const w = 104 * dpr;
+    ctx.font = `800 ${Math.round(15 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.direction = textRtl() ? "rtl" : "ltr";
+    const labelW = ctx.measureText(aim.label).width;
+    const w = Math.max(104 * dpr, labelW + 48 * dpr);
     const h = 40 * dpr;
     const edge = 12 * dpr;
     const ax = Math.max(edge, Math.min(canvas.width - w - edge, sx > canvas.width * 0.5 ? canvas.width - w - edge : edge));
@@ -2950,6 +3020,7 @@ function boot() {
     ctx.font = `800 ${Math.round(15 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+    ctx.direction = textRtl() ? "rtl" : "ltr";
     ctx.fillText(aim.label, ax + w / 2 + (pointingRight ? -8 : 8) * dpr, ay + h / 2 + 1);
     ctx.restore();
   }
@@ -3006,7 +3077,7 @@ function boot() {
     const dpr = view.dpr || 1;
     const time = formatTime(playing || won ? playAge : (playAge || 0));
     const best = progress.bests && progress.bests[courseId];
-    const sub = best != null ? `BEST ${formatTime(best)}` : "BEST —";
+    const sub = best != null ? `${tr("best")} ${formatTime(best)}` : `${tr("best")} —`;
     const w = 132 * dpr;
     const h = 52 * dpr;
     const x = (canvas.width - w) / 2;
@@ -3025,6 +3096,7 @@ function boot() {
     ctx.fillText(time, x + w / 2, y + 22 * dpr);
     ctx.font = `700 ${Math.round(12 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.fillStyle = "#f4efe6";
+    ctx.direction = textRtl() ? "rtl" : "ltr";
     ctx.fillText(sub, x + w / 2, y + 44 * dpr);
     ctx.restore();
   }
@@ -3135,6 +3207,7 @@ function boot() {
     ctx.closePath();
     ctx.fill();
     ctx.font = `800 ${Math.max(16, Math.round(16 * view.dpr))}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.direction = textRtl() ? "rtl" : "ltr";
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
     ctx.lineWidth = 5;
@@ -3249,6 +3322,7 @@ function boot() {
     ctx.save();
     const fontPx = Math.round((short ? 18 : phone ? 20 : 28) * dpr);
     ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.direction = textRtl() ? "rtl" : "ltr";
     const bubbleMax = Math.min(canvas.width - (short ? 78 : 96) * u, (short ? 520 : phone ? 250 : 420) * dpr);
     const lines = wrapLines(line, Math.max(80 * dpr, bubbleMax - 28 * dpr));
     const lineH = Math.round(fontPx * 1.15);
@@ -3267,10 +3341,11 @@ function boot() {
       ctx.strokeStyle = "#1a1400";
       ctx.stroke();
       ctx.fillStyle = "#1a1400";
-      ctx.textAlign = "left";
+      ctx.textAlign = textRtl() ? "right" : "left";
       ctx.textBaseline = "top";
+      ctx.direction = textRtl() ? "rtl" : "ltr";
       ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
-      lines.forEach((t, i) => ctx.fillText(t, bx + 12 * dpr, by + 8 * dpr + i * lineH));
+      lines.forEach((t, i) => ctx.fillText(t, textRtl() ? bx + bubbleW - 12 * dpr : bx + 12 * dpr, by + 8 * dpr + i * lineH));
       ctx.restore();
       return;
     }
@@ -3326,10 +3401,11 @@ function boot() {
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = "#1a1400";
-    ctx.textAlign = "left";
+    ctx.textAlign = textRtl() ? "right" : "left";
     ctx.textBaseline = "top";
+    ctx.direction = textRtl() ? "rtl" : "ltr";
     ctx.font = `800 ${fontPx}px ${getComputedStyle(document.body).fontFamily}`;
-    lines.forEach((t, i) => ctx.fillText(t, bx + 14 * dpr, by + 8 * dpr + i * lineH));
+    lines.forEach((t, i) => ctx.fillText(t, textRtl() ? bx + bubbleW - 14 * dpr : bx + 14 * dpr, by + 8 * dpr + i * lineH));
     ctx.restore();
   }
 
@@ -3355,14 +3431,14 @@ function boot() {
     }
     if (courseId === "pair" && !pairLinked()) {
       const cores = doc.level.cores || [];
-      if (cores.length > 1) drawPointer(cores[0].x, cores[0].y + 1.5, (cores[0].x + cores[1].x) / 2, cores[0].y + 0.35, "Bar");
+      if (cores.length > 1) drawPointer(cores[0].x, cores[0].y + 1.5, (cores[0].x + cores[1].x) / 2, cores[0].y + 0.35, tr("bar"));
     }
     if (courseId === "pit" && !pitBridged()) {
-      drawPointer(4.4, 2.7, 7.4, 1.55, "Bar");
+      drawPointer(4.4, 2.7, 7.4, 1.55, tr("bar"));
     }
     if (courseId === "curb" && pose === "left") {
       const blue = (doc.machine.parts || []).find((p) => p.type === "driveL");
-      if (blue) drawPointer(blue.x, blue.y + 1.15, spot.x, spot.y + 0.5, "Orange");
+      if (blue) drawPointer(blue.x, blue.y + 1.15, spot.x, spot.y + 0.5, tr("orange"));
       return;
     }
     if (courseId === "wall" && !wallReady()) {
@@ -3376,20 +3452,20 @@ function boot() {
         ctx.arc(wx(right.x), wy(right.y), Math.max(18, wr(WHEEL_R + 0.12)), 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
-        drawPointer(right.x, right.y + 1.6, right.x, right.y + 0.5, "Blue");
+        drawPointer(right.x, right.y + 1.6, right.x, right.y + 0.5, tr("blue"));
       }
       return;
     }
     if (courseId === "shelf" && laneBlocked()) {
       const roller = (doc.machine.parts || []).find((p) => p.type === "roller" && p.x > 5.7);
-      if (roller) drawPointer(roller.x, roller.y + 1.25, roller.x - 1.5, roller.y, "Off");
+      if (roller) drawPointer(roller.x, roller.y + 1.25, roller.x - 1.5, roller.y, tr("off"));
       return;
     }
     const wheel = (doc.machine.parts || []).find((p) => (p.type === "driveR" || p.type === "roller") && p.x != null);
     if (wheel && pose !== "ready" && courseId !== "wall") {
-      drawPointer(wheel.x, wheel.y + 1.15, spot.x, spot.y + 0.55, courseId === "roll" && wheel.type === "roller" ? "Not this" : "Behind");
+      drawPointer(wheel.x, wheel.y + 1.15, spot.x, spot.y + 0.55, courseId === "roll" && wheel.type === "roller" ? tr("notThis") : tr("behind"));
     } else if (pose !== "ready" && courseId !== "wall" && courseId !== "pair") {
-      drawPointer(spot.x - 0.1, spot.y + 1.7, spot.x, spot.y + 0.55, "Wheel");
+      drawPointer(spot.x - 0.1, spot.y + 1.7, spot.x, spot.y + 0.55, tr("wheel"));
     }
   }
 
@@ -3911,14 +3987,12 @@ function boot() {
       accessSheet.querySelectorAll("[data-lang]").forEach((b) => {
         b.addEventListener("click", () => {
           const lang = b.getAttribute("data-lang");
-          if (lang !== "en" && lang !== "simple" && lang !== "es") return;
-          access = { ...access, lang };
-          writeAccess(access);
-          paintAccess();
+          if (HUB_LANGS.indexOf(lang) < 0) return;
+          try {
+            if (window.KulibertPrefs && typeof KulibertPrefs.acceptLang === "function") KulibertPrefs.acceptLang(lang);
+          } catch (e) { /* prefs missing */ }
+          syncHubLang(lang);
           if (!document.getElementById("howto").hidden) showHowto(howtoIndex, false);
-          const copy = ACCESS_COPY[lang];
-          say(lang === "es" ? copy.es : lang === "simple" ? copy.simple : copy.english, lang);
-          refreshGuide();
         });
       });
     }
@@ -4311,7 +4385,19 @@ function boot() {
   if (currQ === "1" || currQ === "on") setCurriculum(true);
   else if (currQ === "0" || currQ === "off") setCurriculum(false);
   else setCurriculum(curriculumOn);
-  applyCoach();
+  function syncHubLang(lang) {
+    const next = lang === "simple" ? "en" : (HUB_LANGS.indexOf(lang) >= 0 ? lang : "en");
+    uiLang = next;
+    applyDomI18n();
+    refreshPath();
+    applyCoach();
+    paintAccess();
+  }
+  syncHubLang(hubLangNow());
+  window.addEventListener("kulibert-lang", (ev) => {
+    const lang = ev && ev.detail && ev.detail.lang;
+    syncHubLang(lang || hubLangNow());
+  });
   requestAnimationFrame(loop);
 }
 

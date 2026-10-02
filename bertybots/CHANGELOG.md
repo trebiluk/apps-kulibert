@@ -28,11 +28,11 @@ Rules:
 
 ---
 
-## 0.19.30 — Phone fit — 2026-09-30
+## 0.19.31 — Hub language — 2026-10-02
 
-- The shop stays beside the tools. Nothing runs off the right edge.
-- A phone held upright asks you to turn sideways, including inside the Hub.
-- Sideways, the bar is 44px and Play and Stop stay on screen.
+- The shop follows the Hub language (English, Ukrainian, Russian, Spanish, Arabic, Dari, Kinyarwanda, Tigrinya). Arabic and Dari flip the words, not the board.
+- Every part has a name under its picture. Play, Step, and Stop say so. Menu sits at the top-left and opens from the left.
+- What's new: Botz speaks your Hub language, and every part has a name.
 
 ## 0.19.29 — Race polish — 2026-09-28
 
