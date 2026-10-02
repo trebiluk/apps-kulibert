@@ -20,7 +20,7 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: Outfit, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--kp-font, Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif);
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
 }
@@ -1145,4 +1145,30 @@ html.kb-framed .shell { height: 100dvh; margin-top: 0; }
   html:not(.kb-framed):not([data-theme="classic"]) .land-drawer {
     top: 48px;
   }
+}
+
+html[dir="rtl"] .shell,
+html[dir="rtl"] .pocket,
+html[dir="rtl"] .top,
+html[dir="rtl"] .top-actions,
+html[dir="rtl"] .kinds,
+html[dir="rtl"] .track,
+html[dir="rtl"] .stage,
+html[dir="rtl"] .bet-bar,
+html[dir="rtl"] .land-drawer {
+  direction: ltr;
+}
+html[dir="rtl"] .caption,
+html[dir="rtl"] .brief,
+html[dir="rtl"] #help-overlay .help-card,
+html[dir="rtl"] #access-sheet,
+html[dir="rtl"] .isle-card-wrap,
+html[dir="rtl"] .assist-plate,
+html[dir="rtl"] .flash-plate {
+  direction: rtl;
+  text-align: start;
+}
+html[dir="rtl"] .stage,
+html[dir="rtl"] #board {
+  direction: ltr;
 }

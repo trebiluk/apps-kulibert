@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20261001b";
+import { mountTruss } from "./truss-play.js?v=20261004a";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.29",
+  version: "SC 1.3.30",
   accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: A clear sends your score. Sign in stays the Hub button. You do not type a name.",
+  note: "What’s new: SpanCraft shows and reads your language.",
   engageKey: "kulibert-spancraft-engage-v2",
   twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",

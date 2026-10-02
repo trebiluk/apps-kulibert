@@ -2,6 +2,7 @@
 // Stretch a member from joint to joint. Test is a pin-joint check, not a gradebook.
 
 import { proveTruss } from "./truss-prove.js";
+import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js";
 import {
   quietMode,
   readFlag,
@@ -90,25 +91,40 @@ export function mountTruss(cfg) {
     }
   }
 
+  function modeKey() {
+    return cfg.mode === "spire" ? "spire" : "span";
+  }
+  function lineFirst() {
+    if (cfg.workshop) return cfg.firstLine;
+    return cfg.mode === "spire" ? t("firstSpire") : t("firstSpan");
+  }
+  function lineAssist() {
+    if (cfg.workshop) return cfg.assistText;
+    return cfg.mode === "spire" ? t("assistSpire") : t("assistSpan");
+  }
   function jointHint() {
     const n = state.joints.length;
-    if (!cfg.workshop) return cfg.assistText;
-    if (n === 0) return "Tap the board to place a joint.";
-    if (n === 1 || state.stretch) return "Tap or let go where the other end goes.";
-    return "Let go on a joint to connect.";
+    if (!cfg.workshop) return lineAssist();
+    if (n === 1 || state.stretch) return t("tapEnd");
+    if (n === 0) return t("tapEnd");
+    return t("letGo");
   }
   function assistOn() {
     return !!(assistBtn && assistBtn.getAttribute("aria-pressed") === "true");
   }
   function faceName(level) {
-    if (cfg.workshop && level.free) return "Your build";
-    return level.name;
+    if (cfg.workshop && level.free) return t("yourBuild");
+    const hit = t("name." + modeKey() + "." + level.id);
+    return hit || level.name;
   }
   function faceJob(level) {
-    if (!cfg.workshop || !level.free) return level.job;
-    return cfg.mode === "spire"
-      ? "Your tower. Reach the height. The test pushes the top from both sides."
-      : "Your bridge. The truck stops in every bay.";
+    if (cfg.workshop) {
+      if (!level.free) return level.job;
+      return cfg.mode === "spire"
+        ? "Your tower. Reach the height. The test pushes the top from both sides."
+        : "Your bridge. The truck stops in every bay.";
+    }
+    return t("job." + modeKey() + "." + level.id) || level.job || "";
   }
   function syncAssistCue() {
     if (!cfg.workshop) return;
@@ -134,8 +150,9 @@ export function mountTruss(cfg) {
     plate.classList.add("show");
     plate.hidden = false;
     plate.removeAttribute("hidden");
-    if (capWord && (capWord.textContent === "Ready" || capWord.textContent === "Assist")) {
-      capWord.textContent = "Assist";
+    if (capWord && (capWord.dataset.k === "ready" || capWord.dataset.k === "assist")) {
+      capWord.dataset.k = "assist";
+      capWord.textContent = t("assist");
       capText.textContent = text;
     }
   }
@@ -234,47 +251,60 @@ export function mountTruss(cfg) {
     window.dispatchEvent(new Event((cfg.accessKey || "xx").split("-")[0] + "-access"));
     paintAccess();
   }
-  function voiceOf(text) {
-    const es = {
-      "Stretch at least two members.": "Estira al menos dos barras.",
-      "It leaned. Add a diagonal.": "Se inclinó. Añade una diagonal.",
-      "It is short of the height goal. Add another story.": "Le falta altura. Añade otro piso.",
-      "The truck moved and that bay folded, so add a triangle there.": "El camión se movió y ese tramo se dobló, así que añade un triángulo ahí.",
-      "The top leaned, so add a diagonal on the story that folded.": "La cima se inclinó, así que añade una diagonal en el piso que se dobló.",
-      "Connect a higher joint, because height counts the joints your bars reach.": "Conecta una junta más alta, porque la altura cuenta las juntas que alcanzan tus barras.",
-      "Place a joint on the deck. The truck stops there.": "Pon una junta en el tablero. El camión se detiene ahí.",
-      "It sagged. Add a triangle.": "Se hundió. Añade un triángulo.",
-      "Then press Test.": "Luego pulsa Probar.",
-      "You fixed it.": "Lo arreglaste.",
-      "Read aloud is on.": "Lectura activada.",
-      "Read aloud is off.": "Lectura apagada.",
-      "English.": "Inglés.",
-      "Simple words.": "Palabras simples.",
-      "Español.": "Español.",
-    };
-    if (access.lang === "es") return es[text] || null;
-    return text;
+  function voiceOf() {
+    return null;
   }
-  function say(text, lang) {
-    const spoken = voiceOf(text) || (lang === "es" ? null : text);
-    if (!window.speechSynthesis || !spoken) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(spoken);
-    u.lang = (lang || access.lang) === "es" ? "es-US" : "en-US";
-    u.rate = (lang || access.lang) === "simple" ? 0.85 : 0.95;
-    window.speechSynthesis.speak(u);
+  function wantSpeak() {
+    if (access.speak) return true;
+    try {
+      const prefs = window.KulibertPrefs;
+      if (prefs && typeof prefs.get === "function" && prefs.get().read) return true;
+    } catch (e) {}
+    return false;
+  }
+  function say(text) {
+    const words = String(text || "").replace(/\s+/g, " ").trim();
+    if (!words) return;
+    const lang = uiLang();
+    let line = document.getElementById("kp-live") || document.getElementById("game-live");
+    if (!line) {
+      line = document.createElement("div");
+      line.id = "game-live";
+      line.setAttribute("role", "status");
+      line.setAttribute("aria-live", "polite");
+      line.style.cssText = "position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)";
+      document.body.appendChild(line);
+    }
+    const prefs = window.KulibertPrefs;
+    const voice = prefs && typeof prefs.voiceFor === "function" ? prefs.voiceFor(lang) : null;
+    const noVoice = lang === "rw" || lang === "ti" || !voice;
+    if (noVoice || !window.speechSynthesis) {
+      line.hidden = false;
+      line.textContent = words + " " + noVoiceLine();
+      return;
+    }
+    line.textContent = words;
+    try {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(words);
+      u.voice = voice;
+      u.lang = voice.lang || "en-US";
+      u.rate = lang === "simple" ? 0.85 : 0.95;
+      window.speechSynthesis.speak(u);
+    } catch (eSay) {
+      line.hidden = false;
+      line.textContent = words + " " + noVoiceLine();
+    }
   }
   function stopSay() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   }
-  function maybeSay(word, text) {
-    if (!voiceReady || !access.speak) return;
-    if (word === "Stretch" || word === "Joint" || word === "Member" || word === "Bet") return;
+  function maybeSay(text, quiet) {
+    if (quiet || !voiceReady || !wantSpeak()) return;
     const line = String(text || "").split(". ")[0];
     if (!line || line === lastSaid) return;
-    if (access.lang === "es" && !voiceOf(line) && !voiceOf(text)) return;
     lastSaid = line;
-    say(line, access.lang);
+    say(line);
   }
   function paintAccess() {
     document.documentElement.dataset.big = access.big ? "1" : "0";
@@ -282,7 +312,7 @@ export function mountTruss(cfg) {
     const sheet = document.getElementById("access-sheet");
     if (!sheet) return;
     sheet.querySelectorAll("[data-lang]").forEach((btn) => {
-      btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === access.lang ? "true" : "false");
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-lang") === uiLang() ? "true" : "false");
     });
     const speakBtn = document.getElementById("access-speak");
     const bigBtn = document.getElementById("access-big");
@@ -295,37 +325,35 @@ export function mountTruss(cfg) {
     readBtn.type = "button";
     readBtn.id = "read-line";
     readBtn.className = "fat";
-    readBtn.textContent = "Read";
+    readBtn.textContent = chrome("read") || "Read";
     caption.appendChild(readBtn);
     readBtn.addEventListener("click", () => {
       lastSaid = "";
-      const text = capText.textContent || "";
-      if (access.lang === "es" && !voiceOf(text.split(". ")[0])) say(text, "en");
-      else say(text.split(". ")[0], access.lang);
+      say(capText.textContent || "");
     });
     const gear = document.createElement("button");
     gear.type = "button";
     gear.id = "access-gear";
     gear.className = "fat";
-    gear.textContent = "Settings";
+    gear.textContent = chrome("settings");
     const kinds = document.getElementById("kinds");
     if (kinds) kinds.appendChild(gear);
     const sheet = document.createElement("div");
     sheet.id = "access-sheet";
     sheet.hidden = true;
     sheet.innerHTML =
-      '<p class="access-title">Settings</p>' +
-      '<p class="access-label">Language</p>' +
+      '<p class="access-title" id="access-title"></p>' +
+      '<p class="access-label" id="access-lang-label"></p>' +
       '<div class="access-row">' +
       '<button type="button" data-lang="en">English</button>' +
       '<button type="button" data-lang="simple">Simple words</button>' +
       '<button type="button" data-lang="es">Español</button>' +
       "</div>" +
       '<div class="access-row">' +
-      '<button type="button" id="access-speak">Read aloud</button>' +
-      '<button type="button" id="access-big">Big text</button>' +
+      '<button type="button" id="access-speak"></button>' +
+      '<button type="button" id="access-big"></button>' +
       "</div>" +
-      '<button type="button" id="access-close" class="fat">Close</button>';
+      '<button type="button" id="access-close" class="fat"></button>';
     document.body.appendChild(sheet);
     gear.addEventListener("click", () => {
       sheet.hidden = !sheet.hidden;
@@ -336,14 +364,19 @@ export function mountTruss(cfg) {
       btn.addEventListener("click", () => {
         const lang = btn.getAttribute("data-lang");
         writeAccess({ lang: lang, speak: access.speak, big: access.big, fewer: false });
-        const name = lang === "es" ? "Español." : lang === "simple" ? "Simple words." : "English.";
-        say(name, lang);
+        try {
+          if (window.KulibertPrefs && typeof window.KulibertPrefs.acceptLang === "function") {
+            window.KulibertPrefs.acceptLang(lang);
+          }
+        } catch (eLang) {}
+        paintLang();
+        say(btn.textContent || "");
       });
     });
     sheet.querySelector("#access-speak").addEventListener("click", () => {
       const speak = !access.speak;
       writeAccess({ lang: access.lang, speak: speak, big: access.big, fewer: false });
-      say(speak ? "Read aloud is on." : "Read aloud is off.", access.lang);
+      say(speak ? t("readOn") : t("readOff"));
     });
     sheet.querySelector("#access-big").addEventListener("click", () => {
       writeAccess({ lang: access.lang, speak: access.speak, big: !access.big, fewer: false });
@@ -351,17 +384,19 @@ export function mountTruss(cfg) {
     paintAccess();
   }
 
-  function setStatus(word, text, tone) {
+  function setStatus(word, text, tone, quiet) {
     capWord.textContent = word;
+    capWord.dataset.k = quiet ? "quiet" : "line";
     capText.textContent = text;
     if (capMark) capMark.textContent = tone === "pass" ? "✓" : tone === "fail" ? "✕" : "";
     const open = caption.classList.contains("is-open");
     caption.className = "caption" + (tone ? " " + tone : "") + (open ? " is-open" : "");
-    maybeSay(word, text);
+    maybeSay(text, !!quiet);
   }
   function starPhrase(n) {
     if (!n) return "";
-    return "★".repeat(n) + "☆".repeat(Math.max(0, 4 - n)) + " " + (n === 1 ? "1 star" : n + " stars");
+    const words = n === 1 ? t("starOne") : (n + t("starsN"));
+    return "★".repeat(n) + "☆".repeat(Math.max(0, 4 - n)) + " " + words;
   }
   function starsFor(ok, meters, par, sag, limit) {
     if (!ok) return 0;
@@ -416,8 +451,14 @@ export function mountTruss(cfg) {
     const best = state.stars[level.id] || 0;
     if (chip) {
       chip.hidden = !best;
-      if (best) chip.textContent = "Best ★ " + best + "/4";
+      if (best) chip.textContent = t("best") + " ★ " + best + "/4";
     }
+    const budgetWord = document.getElementById("budget-word");
+    const heightWord = document.getElementById("height-word");
+    const goalWord = document.getElementById("goal-word");
+    if (budgetWord) budgetWord.textContent = t("members");
+    if (heightWord) heightWord.textContent = t("height");
+    if (goalWord) goalWord.textContent = t("goal");
   }
   function pxPerMeter(level) {
     if (cfg.mode === "spire" || (!level.spanM && level.goalM)) return 15;
@@ -513,26 +554,27 @@ export function mountTruss(cfg) {
     const level = active();
     syncJobAssist();
     if (state.members.length === 1 && level.n === 1 && !level.free) {
-      setStatus("Job 1", "One side is in. Stretch the other joint up to the same top joint.", "");
+      setStatus(t("job") + " 1", t("oneSide"), "");
       return;
     }
     if (state.fixLine) {
-      setStatus("Fix", state.fixLine + " Then press Test.", "");
+      setStatus(t("fix"), state.fixLine + t("thenTest"), "");
       return;
     }
     if (onFree()) {
+      const pass = cfg.workshop ? t("passBuild") : t("passTruss");
       setStatus(
-        state.challengeMet ? "CLEAR" : "Challenge",
-        state.challengeMet ? (cfg.workshop ? "Your build passed the test. " : "Your truss passed the test. ") + faceJob(level) : faceJob(level),
+        state.challengeMet ? t("clear") : t("challenge"),
+        state.challengeMet ? pass + faceJob(level) : faceJob(level),
         state.challengeMet ? "pass" : "",
       );
       return;
     }
     if (!state.cleared[levels[0].id] && level.id === levels[0].id && state.members.length === 0) {
-      setStatus("Ready", cfg.firstLine, "");
+      setStatus(t("ready"), lineFirst(), "");
       return;
     }
-    setStatus("Job " + level.n, level.job, "");
+    setStatus(t("job") + " " + level.n, faceJob(level), "");
   }
 
   function classicTheme() {
@@ -674,7 +716,7 @@ export function mountTruss(cfg) {
     const B = state.joints[b];
     if (!A || !B) return false;
     if (Math.hypot(A.x - B.x, A.y - B.y) > 175) {
-      setStatus("Member", "That reach is too long. Connect nearby joints so you get a triangle.", "");
+      setStatus(t("members"), t("tooLong"), "", true);
       return false;
     }
     state.members.push({ a, b });
@@ -895,9 +937,9 @@ export function mountTruss(cfg) {
     const meters = level.spanM || level.goalM;
     if (meters && !state.view) {
       ctx.fillStyle = "#cbd5e1";
-      ctx.font = "700 18px sans-serif";
+      ctx.font = "700 18px " + (getComputedStyle(document.body).fontFamily || "sans-serif");
       ctx.textAlign = "left";
-      ctx.fillText(cfg.mode === "spire" ? meters + " m height" : meters + " m span", 16, 28);
+      ctx.fillText((cfg.mode === "spire" ? meters + t("metersHeight") : meters + t("metersSpan")), 16, 28);
     }
     paintReadout();
     syncAssistCue();
@@ -916,7 +958,7 @@ export function mountTruss(cfg) {
       chal.setAttribute("aria-disabled", open ? "false" : "true");
       if (cfg.workshop) {
         const label = chal.querySelector(".chal-label");
-        if (label) label.textContent = open ? "Challenge" : "Clear Levels first";
+        if (label) label.textContent = open ? t("challenge") : t("clearLevels");
       }
     }
     if (brief) {
@@ -966,10 +1008,10 @@ export function mountTruss(cfg) {
       btn.className = "isle-card";
       btn.dataset.state = st;
       btn.disabled = locked;
-      const tag = state.cleared[level.id] ? "Done" : locked ? "Locked" : (level.id === state.levelId ? "Now" : "Open");
-      const band = level.free ? "After the path" : (level.n + " · " + level.band);
+      const tag = state.cleared[level.id] ? t("done") : locked ? t("locked") : (level.id === state.levelId ? t("now") : t("open"));
+      const band = level.free ? t("afterPath") : String(level.n);
       const best = state.stars[level.id] || 0;
-      const starLine = best ? ("Best ★ " + best + "/4 on this job") : "Stars belong to this job";
+      const starLine = best ? (t("best") + " ★ " + best + "/4") : t("starsJob");
       btn.innerHTML =
         '<span class="isle-tag">' + band + " · " + tag + "</span>" +
         "<h3>" + faceName(level) + "</h3>" +
@@ -998,13 +1040,13 @@ export function mountTruss(cfg) {
   }
 
   function failReason(result) {
-    if (result.reason === "few") return "Stretch at least two members.";
-    if (result.reason === "deck") return "Place a joint on the deck. The truck stops there.";
-    if (result.reason === "roll") return "The truck moved and that bay folded, so add a triangle there.";
-    if (result.reason === "gust") return "The top leaned, so add a diagonal on the story that folded.";
-    if (result.reason === "lean") return "It leaned. Add a diagonal.";
-    if (result.reason === "short") return "Connect a higher joint, because height counts the joints your bars reach.";
-    return "It sagged. Add a triangle.";
+    if (result.reason === "few") return t("few");
+    if (result.reason === "deck") return t("deck");
+    if (result.reason === "roll") return t("roll");
+    if (result.reason === "gust") return t("gust");
+    if (result.reason === "lean") return t("lean");
+    if (result.reason === "short") return t("short");
+    return t("sag");
   }
   function proveOpts(level) {
     return {
@@ -1122,35 +1164,35 @@ export function mountTruss(cfg) {
       const line = failReason(result);
       state.hadMiss = true;
       state.fixLine = line;
-      setStatus("Fix", line + " Then press Test.", "fail");
-      showPlate("Fix", line, "✕");
+      setStatus(t("fix"), line + t("thenTest"), "fail");
+      showPlate(t("fix"), line, "✕");
     } else if (!met) {
       state.fixLine = "";
-      const line = "It held. This job still needs fewer members than Budget.";
-      setStatus("TEST PASS", line + " " + starPhrase(stars) + ".", "pass");
-      showPlate("TEST PASS", line, "✓");
+      const line = t("budget");
+      setStatus(t("testPass"), line + " " + starPhrase(stars) + ".", "pass");
+      showPlate(t("testPass"), line, "✓");
     } else {
       state.fixLine = "";
       const fixed = state.hadMiss;
       state.hadMiss = false;
       let line = starPhrase(stars) + ".";
-      if (stars > 0 && stars < 3) line += " Fewer members can earn more stars.";
-      if (fixed) line = "You fixed it. " + line;
-      else if (first) line = "First clear. " + line;
-      else line = "It held. " + line;
+      if (stars > 0 && stars < 3) line += t("fewer");
+      if (fixed) line = t("fixedLead") + line;
+      else if (first) line = t("firstClear") + line;
+      else line = t("held") + line;
       if (!level.free && level.id === levels[levels.length - 1].id && pathClear()) {
-        line += " Path clear. Your truss is open.";
+        line += t("pathOpen");
       } else if (!level.free && !pathClear()) {
-        line += " Open Levels for the next job.";
+        line += t("nextJob");
       }
-      setStatus(fixed ? "You fixed it" : "CLEAR", line, "pass");
-      showPlate(fixed ? "You fixed it" : "CLEAR", line, "✓");
+      setStatus(fixed ? t("youFixed") : t("clear"), line, "pass");
+      showPlate(fixed ? t("youFixed") : t("clear"), line, "✓");
       shipClear(level, stars);
     }
     if (state.bet) {
       const saidHold = state.bet === "hold";
       const right = saidHold === held;
-      const extra = right ? " Bet matched." : " Bet missed.";
+      const extra = right ? t("betMatch") : t("betMiss");
       capText.textContent = capText.textContent + extra;
       state.bet = null;
       syncBet();
@@ -1180,31 +1222,32 @@ export function mountTruss(cfg) {
   }
 
   function theaterLines(level) {
-    if (cfg.mode === "span") {
+    const spire = cfg.mode === "spire";
+    if (!spire) {
       if (level.roll || level.free) {
         return [
-          ["Span", (level.spanM || 0) + " m."],
-          ["Truck", "It stops in every bay."],
-          ["Watch", "A missing triangle folds."],
+          [t("thSpan"), (level.spanM || 0) + " m."],
+          [t("thTruck"), t("truckBay")],
+          [t("thWatch"), t("watchFold")],
         ];
       }
       return [
-        ["Span", (level.spanM || 0) + " m."],
-        ["Load", cfg.workshop ? "One load hangs on the bridge." : "One load hangs on the truss."],
-        ["Watch", "Triangles stay. Squares fold."],
+        [t("thSpan"), (level.spanM || 0) + " m."],
+        [t("thLoad"), cfg.workshop ? t("loadBridge") : t("loadTruss")],
+        [t("thWatch"), t("watchTri")],
       ];
     }
     if (level.gust || level.free) {
       return [
-        ["Height", (level.goalM || 0) + " m goal."],
-        ["Push", "The test pushes the top."],
-        ["Watch", "A diagonal keeps that story from folding."],
+        [t("height"), (level.goalM || 0) + t("goalTail")],
+        [t("thPush"), t("pushTop")],
+        [t("thWatch"), t("watchStory")],
       ];
     }
     return [
-      ["Height", (level.goalM || 0) + " m goal."],
-      ["Load", "A weight sits on the top."],
-      ["Watch", "A diagonal keeps the story from folding."],
+      [t("height"), (level.goalM || 0) + t("goalTail")],
+      [t("thLoad"), t("loadTop")],
+      [t("thWatch"), t("watchDiag")],
     ];
   }
   function startTest() {
@@ -1266,7 +1309,7 @@ export function mountTruss(cfg) {
     const dy = m.y - A.y;
     const len = Math.hypot(dx, dy);
     if (len < 28) {
-      setStatus("Stretch", "Tap or let go where the other end goes.", "");
+      setStatus(t("stretch"), t("tapEnd"), "", true);
       return false;
     }
     const cap = 175;
@@ -1293,13 +1336,13 @@ export function mountTruss(cfg) {
           coach();
         }
       } else if (cfg.workshop || state.joints.length >= 2) {
-        setStatus("Stretch", "Let go on a joint to connect.", "");
+        setStatus(t("stretch"), t("letGo"), "", true);
       } else {
-        setStatus("Stretch", "Tap or let go where the other end goes.", "");
+        setStatus(t("stretch"), t("tapEnd"), "", true);
       }
     } else if (!addMember(from, hit)) {
       if (from !== hit && hasMember(from, hit)) {
-        setStatus("Stretch", "That side is in. Stretch the other joint up to the top.", "");
+        setStatus(t("stretch"), t("sideIn"), "", true);
       }
     } else {
       syncBet();
@@ -1336,7 +1379,7 @@ export function mountTruss(cfg) {
     if (hit >= 0) {
       state.stretch = { from: hit, sx: s.x, sy: s.y };
       if (cfg.workshop && state.joints.length < 2) {
-        setStatus("Stretch", "Tap or let go where the other end goes.", "");
+        setStatus(t("stretch"), t("tapEnd"), "", true);
       }
       draw();
       return;
@@ -1351,7 +1394,7 @@ export function mountTruss(cfg) {
       } else {
         return;
       }
-      setStatus("Joint", state.joints.length < 2 ? "Tap or let go where the other end goes." : "Let go on a joint to connect.", "");
+      setStatus(t("joint"), state.joints.length < 2 ? t("tapEnd") : t("letGo"), "", true);
       if (!cfg.workshop) coach();
       draw();
     }
@@ -1398,8 +1441,8 @@ export function mountTruss(cfg) {
   }
   function assistLine() {
     const level = active();
-    if (!level.free && level.n === 1 && state.members.length < 2) return cfg.assistText;
-    return level.job;
+    if (!level.free && level.n === 1 && state.members.length < 2) return lineAssist();
+    return faceJob(level);
   }
   function syncJobAssist() {
     const text = document.getElementById("assist-plate-text");
@@ -1500,7 +1543,7 @@ export function mountTruss(cfg) {
     menu.className = "land-menu";
     menu.setAttribute("aria-expanded", "false");
     menu.setAttribute("aria-controls", "land-drawer");
-    menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menu';
+    menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="menu-word"></span>';
     pocket.insertBefore(menu, pocket.firstChild);
     const drawer = document.createElement("div");
     drawer.id = "land-drawer";
@@ -1559,6 +1602,122 @@ export function mountTruss(cfg) {
     window.addEventListener("resize", syncLand);
   }
 
+  function setLabel(el, text) {
+    if (!el || text == null || text === "") return;
+    for (let i = el.childNodes.length - 1; i >= 0; i--) {
+      const n = el.childNodes[i];
+      if (n.nodeType === 3 && n.textContent.trim()) {
+        n.textContent = " " + text;
+        return;
+      }
+    }
+    if (el.querySelector("svg")) {
+      el.appendChild(document.createTextNode(" " + text));
+      return;
+    }
+    el.textContent = text;
+  }
+  function paintHelp() {
+    if (cfg.workshop) return;
+    const title = document.getElementById("help-title");
+    if (title) title.textContent = cfg.mode === "spire" ? t("helpTitleSpire") : t("helpTitleSpan");
+    const note = document.querySelector("#help-overlay .help-note");
+    if (note) note.textContent = cfg.mode === "spire" ? t("noteSpire") : t("noteSpan");
+    const steps = document.querySelectorAll("#help-overlay .help-steps li");
+    const keys = ["step1", "step2", cfg.mode === "spire" ? "step3p" : "step3s", "step4"];
+    steps.forEach((li, i) => {
+      if (keys[i]) li.textContent = t(keys[i]);
+    });
+    const close = document.querySelector("#help-overlay [data-help=close]");
+    if (close) close.textContent = t("gotIt");
+    const replay = document.querySelector("#help-overlay [data-help=replay]");
+    if (replay) replay.textContent = t("replay");
+    const calm = document.querySelector("#help-overlay [data-help=calm]");
+    if (calm) {
+      calm.dataset.on = t("calmOn");
+      calm.dataset.off = t("calm");
+      const on = calm.getAttribute("aria-pressed") === "true";
+      calm.textContent = on ? calm.dataset.on : calm.dataset.off;
+    }
+    const klass = document.querySelector("#help-overlay .help-class a");
+    if (klass) klass.textContent = t("forClass");
+  }
+  function paintLang() {
+    applyDir();
+    const stage = document.querySelector(".stage");
+    if (stage) stage.setAttribute("dir", "ltr");
+    const board = document.getElementById("board");
+    if (board) board.setAttribute("dir", "ltr");
+    setLabel(document.getElementById("tool-add"), t("joint"));
+    setLabel(document.getElementById("tool-move"), t("move"));
+    setLabel(document.getElementById("tool-delete"), t("delete"));
+    setLabel(document.getElementById("tool-test"), t("test"));
+    setLabel(document.getElementById("assist"), t("assist"));
+    setLabel(document.getElementById("retry"), chrome("retry"));
+    setLabel(document.getElementById("retry-now"), chrome("retry"));
+    setLabel(document.getElementById("isles-btn"), chrome("levels"));
+    const levelsBtn = document.getElementById("track-levels");
+    if (levelsBtn && !levelsBtn.querySelector("svg")) levelsBtn.textContent = chrome("levels");
+    const chal = document.getElementById("track-challenge");
+    if (chal && !chal.querySelector(".chal-label") && !chal.querySelector("svg")) chal.textContent = t("challenge");
+    document.querySelectorAll(".top-actions a[href='/'], #edge-menu a[href='/']").forEach((a) => {
+      a.textContent = chrome("room");
+    });
+    const edge = document.getElementById("edge-btn");
+    if (edge) {
+      setLabel(edge, chrome("help"));
+      edge.setAttribute("aria-label", chrome("help"));
+    }
+    const howto = document.querySelector("[data-edge=howto]");
+    if (howto) howto.textContent = t("howTo");
+    const design = document.querySelector("#edge-menu a[href='/holdit/']");
+    if (design) design.textContent = t("design");
+    const forClass = document.querySelector("#edge-menu a[href='./changelog.html']");
+    if (forClass) forClass.textContent = t("forClass");
+    const betLabel = document.querySelector(".bet-label");
+    if (betLabel) betLabel.textContent = cfg.mode === "spire" ? t("betAskSpire") : t("betAsk");
+    const hold = document.getElementById("bet-hold");
+    const fall = document.getElementById("bet-fall");
+    if (hold) hold.textContent = t("hold");
+    if (fall) fall.textContent = t("fall");
+    const isleTitle = document.getElementById("isle-title");
+    if (isleTitle) isleTitle.textContent = t("pathTitle");
+    const isleClose = document.getElementById("isle-close");
+    if (isleClose) isleClose.textContent = chrome("close");
+    const wall = document.querySelector(".isle-wall");
+    if (wall) wall.textContent = cfg.mode === "spire" ? t("isleWallSpire") : t("isleWallSpan");
+    const menuWord = document.querySelector("#land-menu .menu-word");
+    if (menuWord) menuWord.textContent = chrome("menu");
+    const got = document.getElementById("assist-gotit");
+    if (got) got.textContent = t("gotIt");
+    const strong = document.querySelector("#assist-plate strong");
+    if (strong) strong.textContent = t("assist");
+    const gear = document.getElementById("access-gear");
+    if (gear) gear.textContent = chrome("settings");
+    const readBtn = document.getElementById("read-line");
+    if (readBtn) readBtn.textContent = chrome("read");
+    const title = document.getElementById("access-title");
+    if (title) title.textContent = chrome("settings");
+    const lab = document.getElementById("access-lang-label");
+    if (lab) lab.textContent = chrome("language");
+    const speakBtn = document.getElementById("access-speak");
+    if (speakBtn) speakBtn.textContent = chrome("read");
+    const bigBtn = document.getElementById("access-big");
+    if (bigBtn) bigBtn.textContent = t("big");
+    const closeBtn = document.getElementById("access-close");
+    if (closeBtn) closeBtn.textContent = chrome("close");
+    const h1 = document.querySelector(".brand h1");
+    if (h1 && !h1.querySelector("bdi")) {
+      const name = h1.textContent.trim();
+      h1.innerHTML = "<bdi>" + name + "</bdi>";
+    }
+    paintAccess();
+    paintHelp();
+    paintReadout();
+    syncTrack();
+    if (state.phase === "idle") coach();
+  }
+
   load();
   if (cfg.retireTo && readFlag(cfg.retireFlag || "kulibert-holdit-clear-v1") && !stayHere()) {
     location.replace(cfg.retireTo);
@@ -1607,7 +1766,7 @@ export function mountTruss(cfg) {
   if (trackChallenge) trackChallenge.addEventListener("click", () => {
     if (busy()) return;
     if (!pathClear()) {
-      setStatus("Path", cfg.workshop ? "Clear Levels first." : "Clear ten levels. Then make your own truss.", "");
+      setStatus(t("path"), cfg.workshop ? t("pathFirst") : t("pathTen"), "");
       return;
     }
     beginLevel(freeLevel.id);
@@ -1616,9 +1775,9 @@ export function mountTruss(cfg) {
     btn.addEventListener("click", () => {
       state.bet = btn.dataset.bet;
       syncBet();
-      setStatus("Bet", btn.dataset.bet === "hold"
-        ? (cfg.workshop ? "You bet it will hold. Press Test." : "You bet the truss will hold. Press Test.")
-        : (cfg.workshop ? "You bet it will fall. Press Test." : "You bet the truss will fold. Press Test."), "");
+      setStatus(t("bet"), btn.dataset.bet === "hold"
+        ? (cfg.workshop ? t("betHold") : t("betHoldSoft"))
+        : (cfg.workshop ? t("betFall") : t("betFallSoft")), "");
     });
   }
   const got = document.getElementById("assist-gotit");
@@ -1650,4 +1809,19 @@ export function mountTruss(cfg) {
   } else if (!readFlag(cfg.assistKey)) openAssist();
   paintReadout();
   draw();
+  paintLang();
+  window.addEventListener("kulibert-lang", (ev) => {
+    const lang = (ev && ev.detail && ev.detail.lang) || uiLang();
+    const again = () => {
+      paintLang();
+      const map = document.getElementById("isle-map");
+      if (map && !map.hidden) renderMap();
+    };
+    if (window.KulibertI18n && typeof window.KulibertI18n.ready === "function") {
+      window.KulibertI18n.ready(lang, again);
+    } else again();
+  });
+  if (window.KulibertI18n && typeof window.KulibertI18n.ready === "function") {
+    window.KulibertI18n.ready(uiLang(), () => paintLang());
+  }
 }

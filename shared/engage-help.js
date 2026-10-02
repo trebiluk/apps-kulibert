@@ -173,7 +173,7 @@ export function mountHelpOverlay(cfg) {
         document.documentElement.classList.toggle("calm-clear", next);
         writeFlag(cfg.calmKey || "kulibert-calm-clear", next);
         btn.setAttribute("aria-pressed", next ? "true" : "false");
-        btn.textContent = next ? "Calm Clear on" : "Calm Clear";
+        btn.textContent = next ? (btn.dataset.on || "Calm Clear on") : (btn.dataset.off || "Calm Clear");
         if (onCalmToggle) onCalmToggle(next);
       }
     });

@@ -4,15 +4,15 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <meta name="spancraft-rev" content="2026-10-01-sc-1.3.29"/>
+  <meta name="spancraft-rev" content="2026-10-04-sc-1.3.30"/>
   <meta name="description" content="SpanCraft — the bridge challenge. Stretch, test, clear. HoldIt is the design tool."/>
   <title>SpanCraft · The Tech Room</title>
   <link rel="icon" href="/icons/icon-spancraft.svg" type="image/svg+xml"/>
   <script>if(new URLSearchParams(location.search).get("theme")==="classic")document.documentElement.dataset.theme="classic";</script>
-  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="spancraft" data-version="SC 1.3.29" data-help="#edge-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="spancraft" data-version="SC 1.3.30" data-help="#edge-btn" defer></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=20261001b"/>
+  <link rel="stylesheet" href="./styles.css?v=20261004a"/>
 </head>
 <body>
   <div class="shell">
@@ -20,8 +20,8 @@
       <a class="brand" href="/">
         <img src="/icons/icon-spancraft.svg" width="40" height="40" alt=""/>
         <span>
-          <h1>SpanCraft</h1>
-          <p>SC 1.3.29</p>
+          <h1><bdi>SpanCraft</bdi></h1>
+          <p>SC 1.3.30</p>
         </span>
       </a>
       <div class="top-actions">
@@ -53,7 +53,7 @@
         <button type="button" id="track-challenge" aria-pressed="false">Challenge</button>
       </div>
       <p id="brief" class="brief" hidden>Your truss across 40 m. The truck stops in every bay.</p>
-      <p id="budget-read">Members · <strong id="budget-n">0</strong> / <strong id="budget-max">3</strong> · <span id="span-m">24 m</span></p>
+      <p id="budget-read"><span id="budget-word">Members</span> · <strong id="budget-n">0</strong> / <strong id="budget-max">3</strong> · <span id="span-m">24 m</span></p>
       <div class="edge-pocket">
         <button type="button" id="edge-btn" aria-haspopup="dialog" aria-controls="help-overlay">Help</button>
         <div id="edge-menu" hidden>
@@ -114,7 +114,7 @@
 
   <script src="/shared/kw-who.js?v=2026-10-01-score"></script>
   <script src="./vendor/matter.min.js"></script>
-  <script type="module" src="./app.js?v=20261001b"></script>
+  <script type="module" src="./app.js?v=20261004a"></script>
 
     <div id="assist-plate" class="assist-plate" role="status" aria-live="polite" hidden>
       <strong>Assist</strong>
