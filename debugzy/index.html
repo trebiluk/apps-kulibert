@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
   <meta name="description" content="Debugzy — Chromebook debugging lab for Solvay Tech Ed. Find the bad step. Change one thing. Try again."/>
-  <title>Debugzy · The Tech Room</title>
+  <title>Debugzy · v0.1.1 · The Tech Room</title>
   <link rel="icon" href="/icons/icon-debugzy.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="/debugzy/styles.css?v=0.1.0"/>
+  <link rel="stylesheet" href="/debugzy/styles.css?v=0.1.1"/>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -18,50 +18,15 @@
       <img src="/debugzy/mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Debugzy</strong>
-        <em class="chip" id="ver-chip">v0.1.0</em>
+        <em class="chip" id="ver-chip">v0.1.1</em>
       </span>
     </a>
-    <div class="top-actions">
-      <button type="button" id="help-btn" class="btn ghost" aria-expanded="false" aria-controls="help">
-        <span class="ico" aria-hidden="true">?</span>
-        <span>Help</span>
-      </button>
-      <a class="btn ghost" href="/">
-        <span class="ico" aria-hidden="true">←</span>
-        <span>Tech Room</span>
-      </a>
-    </div>
   </header>
-
-  <section id="help" class="help" hidden>
-    <h2>Help · Easy steps</h2>
-    <ol class="help-loop">
-      <li>Read the whole sequence once.</li>
-      <li>Point to the step you think is <strong>wrong</strong>.</li>
-      <li>Say why in one short sentence.</li>
-      <li>Change <strong>one</strong> thing only.</li>
-      <li>Press <strong>Try again</strong> (or Run).</li>
-      <li>Watch the result.</li>
-      <li>Pass = it works. Fail = name why · go back to step 2.</li>
-      <li>Write your <strong>alias</strong> on the ticket if you keep paper proof.</li>
-    </ol>
-    <h3 class="help-sub">Stuck (calm)</h3>
-    <table class="stuck">
-      <thead><tr><th>Problem</th><th>One change</th></tr></thead>
-      <tbody>
-        <tr><td>Changed three things</td><td>Undo · change only one · try again</td></tr>
-        <tr><td>Guessing fast</td><td>Read every step out loud · then point</td></tr>
-        <tr><td>Still fails</td><td>Keep the same bad-step guess · try a different one change</td></tr>
-        <tr><td>Frustrated</td><td>Pause · breathe · same puzzle · ask a peer to point first</td></tr>
-      </tbody>
-    </table>
-    <p class="whats-new"><strong>What’s new</strong> · v0.1.0 playable lab · curriculum lock · find → change one → try again.</p>
-  </section>
 
   <main id="main" class="stage">
     <p class="progress" id="progress">Puzzle 1 of 5</p>
-    <h1 class="title" id="puzzle-title">Debugzy</h1>
-    <p class="lede" id="puzzle-lede">Find the bad step. Change one thing. Try again.</p>
+    <h1 class="title" id="puzzle-title">Fold then save</h1>
+    <p class="lede" id="puzzle-lede">A paper airplane fold sequence got scrambled. Find the bad step.</p>
 
     <div class="panel" id="steps-panel">
       <h2 class="panel-label" id="steps-label">Sequence · pick the bad step</h2>
@@ -80,15 +45,15 @@
     <nav class="actions" aria-label="Puzzle actions">
       <button type="button" id="try-btn" class="btn primary xl" disabled>
         <span class="ico" aria-hidden="true">↻</span>
-        <span>Try again</span>
+        <span data-tx>Try again</span>
       </button>
       <button type="button" id="next-btn" class="btn primary xl" hidden>
         <span class="ico" aria-hidden="true">→</span>
-        <span>Next</span>
+        <span data-tx>Next</span>
       </button>
       <button type="button" id="skip-btn" class="btn ghost">
         <span class="ico" aria-hidden="true">»</span>
-        <span>Skip this one</span>
+        <span data-tx>Skip this one</span>
       </button>
     </nav>
 
@@ -98,11 +63,17 @@
   </main>
 
   <footer class="foot">
-    <span>Solvay Tech 6–8 · Chromebook lab</span>
-    <span class="quiet">No accounts · v0.1.0 playable</span>
+    <span id="foot-place">Solvay Tech 6–8 · Chromebook lab</span>
+    <span class="quiet" id="foot-save">Sign in from the Hub to save</span>
+    <span class="quiet">v0.1.1</span>
   </footer>
 
-  <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
-  <script src="/debugzy/app.js?v=0.1.0" defer></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-05-signin"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
+  <script src="/debugzy/i18n.js?v=0.1.1"></script>
+  <script src="/shared/kw-who.js?v=2026-10-01-score"></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-08-menu" data-app="debugzy" data-version="v0.1.1" data-rtl="1" data-menu="#dz-nav" defer></script>
+  <script src="/debugzy/chrome.js?v=0.1.1" defer></script>
+  <script src="/debugzy/app.js?v=0.1.1" defer></script>
 </body>
 </html>

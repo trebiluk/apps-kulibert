@@ -372,3 +372,9 @@ code {
   body { padding-top: 1rem; }
   .title { font-size: 1.65rem; }
 }
+
+
+/* v0.1.1 — drawer lives in chrome.js. Keep steps top to bottom in RTL. */
+html[dir="rtl"] .step,
+html[dir="rtl"] .choice { text-align: start; }
+.step-num { direction: ltr; }

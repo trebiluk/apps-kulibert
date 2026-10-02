@@ -1,9 +1,15 @@
 (() => {
-  const VERSION = "0.1.0";
+  const VERSION = "0.1.1";
   window.__DEBUGZY__ = VERSION;
 
   const STORAGE_KEY = "debugzy-v010";
-  const ALIAS_KEY = "debugzy-alias";
+
+  function tx(en) {
+    try {
+      if (window.DebugzyTx) return DebugzyTx(en);
+    } catch (_) { /* english fallback */ }
+    return en;
+  }
 
   /** @typedef {{ id:string, title:string, lede:string, steps:string[], badIndex:number, changes:{label:string, ok:boolean, why:string}[], failWrongStep:string }} Puzzle */
 
@@ -90,31 +96,31 @@
       lede: "Finished CAD part must land in the class Shared drive folder. One step sends it elsewhere.",
       steps: [
         "Finish the 3D model and name it clearly",
-        "Choose File → Export → STL",
+        "Choose File, then Export, then STL",
         "Save into Downloads only and close the tab",
-        "Open the class Shared drive → Tech 7 → Prints",
+        "Open the class Shared drive, then Tech 7, then Prints",
         "Upload the STL and tell the teacher it is ready"
       ],
       badIndex: 2,
       changes: [
         { label: "After export, move or save the STL into the Shared drive folder", ok: true, why: "Downloads alone is not the class hand-in path. One change: get the file into Shared drive." },
         { label: "Skip naming the model", ok: false, why: "Clear names help. The bug is stopping in Downloads." },
-        { label: "Export OBJ instead and still leave it in Downloads", ok: false, why: "Format swap does not fix the missing Shared drive step." }
+        { label: "Export OBJ instead and still leave it in Downloads", ok: false, why: "A format swap does not fix the missing Shared drive step." }
       ],
       failWrongStep: "Export is fine. Find where the file stops short of Shared drive."
     }
   ];
 
   const els = {
-    helpBtn: document.getElementById("help-btn"),
-    help: document.getElementById("help"),
     chip: document.getElementById("ver-chip"),
     progress: document.getElementById("progress"),
     title: document.getElementById("puzzle-title"),
     lede: document.getElementById("puzzle-lede"),
+    stepsLabel: document.getElementById("steps-label"),
     steps: document.getElementById("steps"),
     stepHint: document.getElementById("step-hint"),
     changePanel: document.getElementById("change-panel"),
+    changeLabel: document.getElementById("change-label"),
     choices: document.getElementById("choices"),
     changeHint: document.getElementById("change-hint"),
     result: document.getElementById("result"),
@@ -122,47 +128,28 @@
     nextBtn: document.getElementById("next-btn"),
     skipBtn: document.getElementById("skip-btn"),
     doneBanner: document.getElementById("done-banner"),
-    aliasInput: document.getElementById("alias-input"),
-    aliasSave: document.getElementById("alias-save"),
-    aliasPanel: document.getElementById("alias-panel")
+    footPlace: document.getElementById("foot-place"),
+    footSave: document.getElementById("foot-save")
   };
 
   let index = 0;
   let selectedStep = null;
   let selectedChange = null;
   let passed = false;
+  let finished = false;
 
   function loadState() {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return;
       const data = JSON.parse(raw);
-      if (typeof data.index === "number" && data.index >= 0 && data.index < PUZZLES.length) {
-        index = data.index;
-      }
+      if (typeof data.index === "number" && data.index >= 0 && data.index < PUZZLES.length) index = data.index;
     } catch (_) { /* ignore */ }
   }
 
   function saveState() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ index }));
-    } catch (_) { /* ignore */ }
-  }
-
-  function loadAlias() {
-    try {
-      const a = localStorage.getItem(ALIAS_KEY);
-      if (a && els.aliasInput) els.aliasInput.value = a;
-    } catch (_) { /* ignore */ }
-  }
-
-  function saveAlias() {
-    if (!els.aliasInput) return;
-    const v = (els.aliasInput.value || "").trim().slice(0, 24);
-    els.aliasInput.value = v;
-    try {
-      if (v) localStorage.setItem(ALIAS_KEY, v);
-      else localStorage.removeItem(ALIAS_KEY);
     } catch (_) { /* ignore */ }
   }
 
@@ -180,6 +167,36 @@
     els.result.className = "result";
   }
 
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, "&")
+      .replace(/</g, "<")
+      .replace(/>/g, ">")
+      .replace(/"/g, """);
+  }
+
+  function labelOf(btn) {
+    const span = btn && btn.querySelector("[data-tx]");
+    return span || btn;
+  }
+
+  function paintChromeText() {
+    if (els.chip) els.chip.textContent = "v" + VERSION;
+    if (els.stepsLabel) els.stepsLabel.textContent = tx("Sequence · pick the bad step");
+    if (els.changeLabel) els.changeLabel.textContent = tx("One change");
+    if (els.footPlace) els.footPlace.textContent = tx("Solvay Tech 6–8 · Chromebook lab");
+    if (els.footSave) els.footSave.textContent = tx("Sign in from the Hub to save");
+    const tryLab = labelOf(els.tryBtn);
+    const nextLab = labelOf(els.nextBtn);
+    const skipLab = labelOf(els.skipBtn);
+    if (tryLab) tryLab.textContent = tx("Try again");
+    if (nextLab) nextLab.textContent = tx("Next");
+    if (skipLab) skipLab.textContent = tx("Skip this one");
+    if (els.doneBanner && !els.doneBanner.hidden) {
+      els.doneBanner.textContent = tx("Lab complete. Point to a bad step · say your one change · show a pass run. Alias only on any paper ticket.");
+    }
+  }
+
   function renderSteps(puzzle) {
     els.steps.innerHTML = "";
     puzzle.steps.forEach((text, i) => {
@@ -187,9 +204,10 @@
       btn.type = "button";
       btn.className = "step";
       btn.setAttribute("role", "option");
-      btn.setAttribute("aria-selected", "false");
+      btn.setAttribute("aria-selected", selectedStep === i ? "true" : "false");
+      if (selectedStep === i) btn.classList.add("is-selected");
       btn.dataset.index = String(i);
-      btn.innerHTML = `<span class="step-num" aria-hidden="true">${i + 1}</span><span class="step-text">${escapeHtml(text)}</span>`;
+      btn.innerHTML = `<span class="step-num" dir="ltr" aria-hidden="true">${i + 1}</span><span class="step-text">${escapeHtml(tx(text))}</span>`;
       btn.addEventListener("click", () => selectStep(i));
       els.steps.appendChild(btn);
     });
@@ -202,20 +220,14 @@
       btn.type = "button";
       btn.className = "choice";
       btn.setAttribute("role", "option");
-      btn.setAttribute("aria-selected", "false");
+      const on = selectedChange === i;
+      btn.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) btn.classList.add("is-selected");
       btn.dataset.index = String(i);
-      btn.innerHTML = `<span class="choice-mark" aria-hidden="true">○</span><span class="choice-text">${escapeHtml(ch.label)}</span>`;
+      btn.innerHTML = `<span class="choice-mark" aria-hidden="true">${on ? "●" : "○"}</span><span class="choice-text">${escapeHtml(tx(ch.label))}</span>`;
       btn.addEventListener("click", () => selectChange(i));
       els.choices.appendChild(btn);
     });
-  }
-
-  function escapeHtml(s) {
-    return String(s)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
   }
 
   function selectStep(i) {
@@ -226,15 +238,11 @@
     els.nextBtn.hidden = true;
     els.tryBtn.hidden = false;
     els.tryBtn.disabled = true;
-    [...els.steps.children].forEach((el, n) => {
-      const on = n === i;
-      el.classList.toggle("is-selected", on);
-      el.setAttribute("aria-selected", on ? "true" : "false");
-    });
+    renderSteps(PUZZLES[index]);
     els.changePanel.hidden = false;
     renderChanges(PUZZLES[index]);
-    els.stepHint.textContent = "Bad step marked. Now pick one change.";
-    els.changeHint.textContent = "Pick exactly one fix. Then press Try again.";
+    els.stepHint.textContent = tx("Bad step marked. Now pick one change.");
+    els.changeHint.textContent = tx("Pick exactly one fix. Then press Try again.");
   }
 
   function selectChange(i) {
@@ -243,34 +251,28 @@
     clearResult();
     els.nextBtn.hidden = true;
     els.tryBtn.hidden = false;
-    [...els.choices.children].forEach((el, n) => {
-      const on = n === i;
-      el.classList.toggle("is-selected", on);
-      el.setAttribute("aria-selected", on ? "true" : "false");
-      const mark = el.querySelector(".choice-mark");
-      if (mark) mark.textContent = on ? "●" : "○";
-    });
+    renderChanges(PUZZLES[index]);
     els.tryBtn.disabled = false;
-    els.changeHint.textContent = "One change ready. Press Try again.";
+    els.changeHint.textContent = tx("One change ready. Press Try again.");
   }
 
   function tryAgain() {
     const puzzle = PUZZLES[index];
     if (selectedStep === null) {
-      setResult("fail", "<strong>Fail</strong> · Point to a bad step first.");
+      setResult("fail", "<strong>" + escapeHtml(tx("Fail")) + "</strong> · " + escapeHtml(tx("Point to a bad step first.")));
       return;
     }
     if (selectedChange === null) {
-      setResult("fail", "<strong>Fail</strong> · Pick one change, then try again.");
+      setResult("fail", "<strong>" + escapeHtml(tx("Fail")) + "</strong> · " + escapeHtml(tx("Pick one change, then try again.")));
       return;
     }
     if (selectedStep !== puzzle.badIndex) {
-      setResult("fail", `<strong>Fail</strong> · ${escapeHtml(puzzle.failWrongStep)} Stay on this puzzle.`);
+      setResult("fail", "<strong>" + escapeHtml(tx("Fail")) + "</strong> · " + escapeHtml(tx(puzzle.failWrongStep)) + " " + escapeHtml(tx("Stay on this puzzle.")));
       return;
     }
     const change = puzzle.changes[selectedChange];
     if (!change.ok) {
-      setResult("fail", `<strong>Fail</strong> · ${escapeHtml(change.why)} Keep the same bad-step guess · try a different one change.`);
+      setResult("fail", "<strong>" + escapeHtml(tx("Fail")) + "</strong> · " + escapeHtml(tx(change.why)) + " " + escapeHtml(tx("Keep the same bad-step guess · try a different one change.")));
       return;
     }
     passed = true;
@@ -282,17 +284,19 @@
     els.tryBtn.disabled = true;
     els.tryBtn.hidden = true;
     els.nextBtn.hidden = false;
-    setResult("pass", `<strong>Pass</strong> · ${escapeHtml(change.why)} Ready for Next when you can say the bad step and the one change.`);
+    setResult("pass", "<strong>" + escapeHtml(tx("Pass")) + "</strong> · " + escapeHtml(tx(change.why)) + " " + escapeHtml(tx("Ready for Next when you can say the bad step and the one change.")));
   }
 
   function showPuzzle() {
     const puzzle = PUZZLES[index];
     passed = false;
+    finished = false;
     selectedStep = null;
     selectedChange = null;
-    els.progress.textContent = `Puzzle ${index + 1} of ${PUZZLES.length}`;
-    els.title.textContent = puzzle.title;
-    els.lede.textContent = puzzle.lede;
+    paintChromeText();
+    els.progress.textContent = tx("Puzzle {n} of {total}").replace("{n}", String(index + 1)).replace("{total}", String(PUZZLES.length));
+    els.title.textContent = tx(puzzle.title);
+    els.lede.textContent = tx(puzzle.lede);
     els.changePanel.hidden = true;
     els.choices.innerHTML = "";
     els.tryBtn.hidden = false;
@@ -302,7 +306,7 @@
     els.skipBtn.hidden = false;
     clearResult();
     renderSteps(puzzle);
-    els.stepHint.textContent = "Tap the step that breaks the run.";
+    els.stepHint.textContent = tx("Tap the step that breaks the run.");
     saveState();
   }
 
@@ -315,59 +319,47 @@
     finishLab();
   }
 
-  function skipPuzzle() {
-    if (index < PUZZLES.length - 1) {
-      index += 1;
-      showPuzzle();
-      return;
-    }
-    finishLab();
-  }
-
   function finishLab() {
     passed = true;
-    els.progress.textContent = `Puzzle ${PUZZLES.length} of ${PUZZLES.length} · done`;
+    finished = true;
+    els.progress.textContent = tx("Puzzle {n} of {total} · done").replace("{n}", String(PUZZLES.length)).replace("{total}", String(PUZZLES.length));
     els.tryBtn.hidden = true;
     els.nextBtn.hidden = true;
     els.skipBtn.hidden = true;
     els.changePanel.hidden = true;
     els.doneBanner.hidden = false;
-    setResult("pass", "<strong>Pass run complete</strong> · Prove talk: point to a bad step · say one change · show it worked.");
+    els.doneBanner.textContent = tx("Lab complete. Point to a bad step · say your one change · show a pass run. Alias only on any paper ticket.");
+    setResult("pass", "<strong>" + escapeHtml(tx("Pass run complete")) + "</strong> · " + escapeHtml(tx("Prove talk: point to a bad step · say one change · show it worked.")));
     saveState();
   }
 
-  function wireHelp() {
-    if (!els.helpBtn || !els.help) return;
-    els.helpBtn.addEventListener("click", () => {
-      const open = els.help.hidden;
-      els.help.hidden = !open;
-      els.helpBtn.setAttribute("aria-expanded", open ? "true" : "false");
-    });
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && !els.help.hidden) {
-        els.help.hidden = true;
-        els.helpBtn.setAttribute("aria-expanded", "false");
-        els.helpBtn.focus();
-      }
-    });
+  function repaint() {
+    paintChromeText();
+    if (finished) {
+      finishLab();
+      return;
+    }
+    const puzzle = PUZZLES[index];
+    els.progress.textContent = tx("Puzzle {n} of {total}").replace("{n}", String(index + 1)).replace("{total}", String(PUZZLES.length));
+    els.title.textContent = tx(puzzle.title);
+    els.lede.textContent = tx(puzzle.lede);
+    renderSteps(puzzle);
+    if (selectedStep !== null) {
+      els.stepHint.textContent = tx("Bad step marked. Now pick one change.");
+      renderChanges(puzzle);
+      els.changeHint.textContent = selectedChange === null
+        ? tx("Pick exactly one fix. Then press Try again.")
+        : tx("One change ready. Press Try again.");
+    } else {
+      els.stepHint.textContent = tx("Tap the step that breaks the run.");
+    }
   }
 
   if (els.chip) els.chip.textContent = "v" + VERSION;
-  wireHelp();
-  loadAlias();
   loadState();
-  if (els.aliasSave) els.aliasSave.addEventListener("click", saveAlias);
-  if (els.aliasInput) {
-    els.aliasInput.addEventListener("change", saveAlias);
-    els.aliasInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        saveAlias();
-      }
-    });
-  }
   els.tryBtn.addEventListener("click", tryAgain);
   els.nextBtn.addEventListener("click", nextPuzzle);
-  els.skipBtn.addEventListener("click", skipPuzzle);
+  els.skipBtn.addEventListener("click", nextPuzzle);
+  window.addEventListener("kulibert-lang", repaint);
   showPuzzle();
 })();
