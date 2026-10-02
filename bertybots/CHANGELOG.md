@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.32 — Menu rows — 2026-10-02
+
+- What's new and Settings are rows in the left Menu, under the plate.
+- English follows the Hub language on the first paint. English stays English.
+- The shop no longer blocks portrait. Kids can rotate the Chromebook.
+
 ## 0.19.31 — Hub language — 2026-10-02
 
 - The shop follows the Hub language (English, Ukrainian, Russian, Spanish, Arabic, Dari, Kinyarwanda, Tigrinya). Arabic and Dari flip the words, not the board.

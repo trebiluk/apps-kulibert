@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.31 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.32 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.31";
+const APP_VERSION = "0.19.32";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.31";
+const APP_CHIP = "BB 0.19.32";
 const APP_BUILT = "2026-10-02";
 
 const FORMAT = 1;
@@ -223,12 +223,12 @@ function applyDomI18n() {
   root.lang = uiLang;
   root.dir = textRtl() ? "rtl" : "ltr";
   if (document.body) document.body.dataset.dir = root.dir;
-  document.querySelectorAll("[data-i18n]").forEach((el) => {
-    const key = el.getAttribute("data-i18n");
+  document.querySelectorAll("[data-bb]").forEach((el) => {
+    const key = el.getAttribute("data-bb");
     if (key) el.textContent = tr(key);
   });
-  document.querySelectorAll("[data-i18n-label]").forEach((el) => {
-    const key = el.getAttribute("data-i18n-label");
+  document.querySelectorAll("[data-bb-label]").forEach((el) => {
+    const key = el.getAttribute("data-bb-label");
     if (!key) return;
     const word = tr(key);
     el.setAttribute("aria-label", word);
@@ -236,7 +236,19 @@ function applyDomI18n() {
   });
 }
 
+function readStoredLang() {
+  try {
+    const raw = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "null");
+    const lang = raw && raw.lang;
+    if (lang === "simple") return "en";
+    if (HUB_LANGS.indexOf(lang) >= 0) return lang;
+  } catch (e) { /* private mode */ }
+  return "";
+}
+
 function hubLangNow() {
+  const stored = readStoredLang();
+  if (stored) return stored;
   try {
     if (window.KulibertPrefs && typeof KulibertPrefs.get === "function") {
       const lang = KulibertPrefs.get().lang;
@@ -246,6 +258,19 @@ function hubLangNow() {
   } catch (e) { /* prefs missing */ }
   return "en";
 }
+
+let onLang = function () {};
+
+function syncHubLang(lang) {
+  const picked = lang == null ? hubLangNow() : lang;
+  const next = picked === "simple" ? "en" : (HUB_LANGS.indexOf(picked) >= 0 ? picked : "en");
+  uiLang = next;
+  applyDomI18n();
+  onLang();
+}
+
+uiLang = hubLangNow();
+if (document.body) applyDomI18n();
 
 const STEPS = ["ask", "imagine", "plan", "create", "test", "improve"];
 const CURR_KEY = "bb-curriculum-v1";
@@ -1773,10 +1798,7 @@ function boot() {
   }
 
   function tryWide() {
-    const lock = screen.orientation && screen.orientation.lock
-      ? screen.orientation.lock("landscape")
-      : Promise.reject();
-    lock.catch(() => toast("Flip the phone sideways — this shop is landscape."));
+    /* The Chromebook rotates on its own. Do not lock the screen. */
   }
 
   function refreshMeta() {
@@ -3978,6 +4000,13 @@ function boot() {
       paintAccess();
     }
     if (settingsBtn) settingsBtn.addEventListener("click", () => showAccess(true));
+    const menuSettings = document.getElementById("menu-settings");
+    if (menuSettings) {
+      menuSettings.addEventListener("click", () => {
+        showCrew(false);
+        showAccess(true);
+      });
+    }
     const accessClose = document.getElementById("access-close");
     if (accessClose) accessClose.addEventListener("click", () => showAccess(false));
     if (accessSheet) {
@@ -4385,19 +4414,19 @@ function boot() {
   if (currQ === "1" || currQ === "on") setCurriculum(true);
   else if (currQ === "0" || currQ === "off") setCurriculum(false);
   else setCurriculum(curriculumOn);
-  function syncHubLang(lang) {
-    const next = lang === "simple" ? "en" : (HUB_LANGS.indexOf(lang) >= 0 ? lang : "en");
-    uiLang = next;
-    applyDomI18n();
+  onLang = function () {
     refreshPath();
     applyCoach();
     paintAccess();
-  }
+    const plate = document.getElementById("menu-chip");
+    if (plate) plate.textContent = APP_CHIP;
+  };
   syncHubLang(hubLangNow());
   window.addEventListener("kulibert-lang", (ev) => {
     const lang = ev && ev.detail && ev.detail.lang;
     syncHubLang(lang || hubLangNow());
   });
+  window.addEventListener("pageshow", () => syncHubLang(hubLangNow()));
   requestAnimationFrame(loop);
 }
 
