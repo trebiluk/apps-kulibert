@@ -355,3 +355,17 @@ html[dir="rtl"] .proj-exit { left: 12px; right: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.tool-ico, .tile-ico { flex: 0 0 24px; width: 24px; height: 24px; display: inline-flex; color: var(--accent); }
+.tool-ico svg, .tile-ico svg { width: 24px; height: 24px; display: block; }
+.sheet .panel > .row { flex-wrap: nowrap; min-height: 44px; }
+.sheet .panel > .row strong { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sheet .panel > .row .note { display: none; }
+.sheet .panel > .row > .btn { flex: 0 0 104px; width: 104px; min-width: 104px; max-width: 104px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tile-bar [data-gear] { flex: 0 0 48px; width: 48px; min-width: 48px; height: 48px; min-height: 48px; font-size: 1.35rem; line-height: 1; padding: 0; }
+.tile[data-title="0"] .tile-bar h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.tile[data-corners="square"] { border-radius: 0; }
+.tile[data-quiet="1"], .tile[data-quiet="1"]:hover { box-shadow: none; }
+.tile[data-digits="S"] .num { font-size: 1.2rem; }
+.tile[data-digits="L"] .num { font-size: 2.6rem; }
+.sheet.tool-settings .panel { inset-inline-start: auto; inset-inline-end: auto; right: auto; left: 12px; }
