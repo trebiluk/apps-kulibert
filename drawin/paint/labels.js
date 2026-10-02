@@ -3,7 +3,9 @@
   var META = "width=device-width, initial-scale=1, viewport-fit=cover";
   var busy = false;
   function pin() {
-    if (document.documentElement.getAttribute("dir") !== "ltr") document.documentElement.setAttribute("dir", "ltr");
+    var lang = document.documentElement.getAttribute("data-kp-lang") || "";
+    var want = lang === "ar" || lang === "fa-AF" ? "rtl" : "ltr";
+    if (document.documentElement.getAttribute("dir") !== want) document.documentElement.setAttribute("dir", want);
     var meta = document.querySelector('meta[name="viewport"]');
     if (meta && /maximum-scale|user-scalable\s*=\s*no/i.test(meta.getAttribute("content") || "")) meta.setAttribute("content", META);
   }

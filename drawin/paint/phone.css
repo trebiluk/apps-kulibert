@@ -1,4 +1,5 @@
-/* Phone/tablet override. Klecks sizes the tool panel at 271px and clips it. */
+/* Phone/tablet override. Klecks sizes the tool panel at 271px and clips it.
+   Main chrome stays at least 44px so a Chromebook finger can hit it. */
 html, body { height: 100%; }
 .kl-toolspace {
   overflow-x: hidden !important;
@@ -6,4 +7,36 @@ html, body { height: 100%; }
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y !important;
   overscroll-behavior: contain;
+}
+.toolspace-row-button,
+.kl-toolspace-row,
+.kl-button,
+.kl-dropdown-menu button,
+.brush-alpha,
+.brush-alpha--selected,
+.kl-scroller {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+.brush-alpha,
+.brush-alpha--selected {
+  width: 44px !important;
+  height: 44px !important;
+}
+.toolspace-row-button {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.toolspace-row-button .ds-name {
+  display: block;
+  max-width: 72px;
+  font-size: 10px;
+  line-height: 1.05;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

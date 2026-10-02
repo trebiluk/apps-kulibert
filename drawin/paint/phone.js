@@ -42,4 +42,22 @@
   }, 250);
   window.addEventListener("resize", maybeCollapse);
   setTimeout(function () { clearInterval(timer); }, 12000);
+
+  function labelTools() {
+    var nodes = document.querySelectorAll(".toolspace-row-button");
+    for (var i = 0; i < nodes.length; i++) {
+      var btn = nodes[i];
+      if (btn.querySelector(".ds-name")) continue;
+      var name = btn.getAttribute("title") || btn.getAttribute("aria-label") || "";
+      name = name.replace(/\s*\(.*$/, "").trim();
+      if (!name || name.length > 18) continue;
+      if ((btn.textContent || "").replace(/\s+/g, "")) continue;
+      var s = document.createElement("span");
+      s.className = "ds-name";
+      s.textContent = name;
+      btn.appendChild(s);
+    }
+  }
+  var labelTimer = setInterval(labelTools, 700);
+  setTimeout(function () { clearInterval(labelTimer); }, 15000);
 })();

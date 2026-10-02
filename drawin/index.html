@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
 <meta name="theme-color" content="#050814"/>
-<title>Drawin' · DS 0.3.1</title>
+<title>Drawin' · DS 0.3.2</title>
 <link rel="stylesheet" href="/fonts/room.css?v=2026-10-05-signin"/>
 <style>
   html, body { height: 100%; margin: 0; background: #050814; color: #e8f7ff; }
@@ -13,80 +13,64 @@
   html[dir="rtl"] .kb-bar { direction: ltr; }
   #chooser {
     min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 1rem; padding: 1.2rem; text-align: start;
+    gap: 1rem; padding: 4.2rem 1.2rem 1.2rem; text-align: start;
   }
   #chooser h1 { margin: 0; font-size: 2rem; }
   #chooser .rev { color: #8fb4c9; font-weight: 650; }
-  #chooser p { margin: 0; font-size: 1.05rem; max-width: 28rem; }
+  #chooser p { margin: 0; font-size: 1.05rem; max-width: 32rem; }
+  #ds-news { padding: .7rem .9rem; border-radius: 14px; background: #0b152c; border: 1px solid #24506d; }
   .pick { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
-  .pick button {
+  .pick a {
     width: min(42vw, 220px); min-width: 140px; min-height: 140px;
     border-radius: 18px; border: 1px solid #24506d; background: #0b152c; color: #e8f7ff;
     font: 750 1.15rem/1.2 var(--kp-font), Outfit, system-ui, sans-serif; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-decoration: none; text-align: center;
   }
-  .pick button span { display: block; font-size: 2.4rem; margin-bottom: .35rem; }
-  #studio { display: none; height: 100%; }
-  body.is-studio #chooser { display: none; }
-  body.is-studio #studio { display: block; }
-  iframe { width: 100%; height: 100%; border: 0; background: #111; }
+  .pick a span { display: block; font-size: 2.4rem; margin-bottom: .35rem; }
+  .ds-gear { margin-top: .2rem; }
 </style>
 </head>
 <body>
 <section id="chooser">
   <h1><bdi>Drawin'</bdi></h1>
-  <div class="rev">DS 0.3.1</div>
-  <p id="ds-news">Drawin' tools have names in your language.</p>
+  <div class="rev">DS 0.3.2</div>
+  <p id="ds-news" role="status">DS 0.3.2: Vector and Paint open from the door. Tools are big enough to tap.</p>
   <p id="ds-blurb">Pick Vector for shapes or Paint for brushes.</p>
   <div class="pick">
-    <button type="button" id="pick-vector"><span>◇</span>Vector</button>
-    <button type="button" id="pick-paint"><span>🖌</span>Paint</button>
+    <a id="pick-vector" href="/drawin/vector/"><span aria-hidden="true">◇</span>Vector</a>
+    <a id="pick-paint" href="/drawin/paint/"><span aria-hidden="true">🖌</span>Paint</a>
   </div>
+  <button type="button" id="ds-settings" class="ds-gear"><span aria-hidden="true">⚙</span><span>My settings</span></button>
 </section>
-<div id="studio">
-  <iframe id="frame" title="Drawin' studio"></iframe>
-</div>
 <script src="/shared/kulibert-prefs.js?v=2026-10-05-signin"></script>
 <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
-<script src="./i18n.js?v=1"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-signin" data-app="drawin" data-version="DS 0.3.1" data-rtl="1" defer></script>
+<script src="./i18n.js?v=2"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-signin" data-app="drawin" data-version="DS 0.3.2" data-rtl="1" data-menu="#ds-nav" defer></script>
+<script src="./chrome.js?v=2" defer></script>
 <script>
-const frame = document.getElementById("frame");
-function langNow() {
+function withLang(anchor) {
   try {
-    if (window.KulibertPrefs && KulibertPrefs.lang) return KulibertPrefs.lang;
+    var lang = (window.KulibertPrefs && KulibertPrefs.lang) || document.documentElement.getAttribute("data-kp-lang") || "en";
+    var url = new URL(anchor.getAttribute("href"), location.href);
+    url.searchParams.set("lang", lang);
+    anchor.href = url.pathname + url.search;
   } catch (e) {}
-  return document.documentElement.getAttribute("data-kp-lang") || "en";
 }
-function show(mode) {
-  const next = mode === "paint" ? "paint" : "vector";
-  const lang = encodeURIComponent(langNow());
-  frame.src = next === "paint" ? "./paint/?lang=" + lang : "./vector/index.html?hub=1&lang=" + lang;
-  document.body.classList.add("is-studio");
-  try { localStorage.setItem("drawin-door", next); } catch (err) {}
-}
-function forward(lang) {
-  if (!frame.src || !frame.contentWindow) return;
-  try { frame.contentWindow.postMessage({ type: "kp-lang", lang: lang }, location.origin); } catch (e) {}
-}
-document.getElementById("pick-vector").addEventListener("click", () => show("vector"));
-document.getElementById("pick-paint").addEventListener("click", () => show("paint"));
-window.addEventListener("message", function (ev) {
-  if (!ev.data || ev.data.type !== "kp-lang") return;
-  if (window.DrawinPaintChooser) DrawinPaintChooser();
-  forward(ev.data.lang);
+document.querySelectorAll(".pick a").forEach(function (a) {
+  a.addEventListener("click", function () { withLang(a); });
 });
-window.addEventListener("kulibert-lang", function (ev) {
+window.addEventListener("kulibert-lang", function () {
   if (window.DrawinPaintChooser) DrawinPaintChooser();
-  forward(ev.detail && ev.detail.lang);
 });
 if (window.DrawinPaintChooser) DrawinPaintChooser();
 if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(null, function () {
   if (window.DrawinPaintChooser) DrawinPaintChooser();
 });
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.getRegistrations().then((regs) => {
-    for (const reg of regs) {
-      if (reg.scope.endsWith("/drawin/")) reg.unregister();
+  navigator.serviceWorker.getRegistrations().then(function (regs) {
+    for (var i = 0; i < regs.length; i++) {
+      if (regs[i].scope.endsWith("/drawin/")) regs[i].unregister();
     }
   });
 }

@@ -209,7 +209,7 @@
     var blurb = document.getElementById("ds-blurb");
     if (blurb) blurb.textContent = tx("Pick Vector for shapes or Paint for brushes.");
     var news = document.getElementById("ds-news");
-    if (news) news.textContent = tx("Drawin' tools have names in your language.");
+    if (news) news.textContent = "DS 0.3.2: Vector and Paint open from the door. Tools are big enough to tap.";
     var vector = document.getElementById("pick-vector");
     var paint = document.getElementById("pick-paint");
     function label(btn, word) {

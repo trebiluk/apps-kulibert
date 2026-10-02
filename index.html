@@ -713,7 +713,7 @@
     :focus-visible{outline:3px solid #ffe14a;outline-offset:2px}
     body.hub-classic .blurb,body.hub-classic #keep-going,body.hub-classic #kb-plate,body.hub-classic #kb-help,body.hub-classic #kb-menu,body.hub-classic #progress{display:none !important}
     .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:inherit}
-    .kb-help,.kb-settings,#kb-menu{min-width:44px;min-height:44px;height:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
+    .kb-help,.kb-settings,#kb-menu{min-width:44px;min-height:44px;height:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem}
     #kb-menu{flex:0 0 auto;order:-1}
     .kb-settings[hidden],.kb-plate[hidden],.kb-help[hidden],#kb-menu[hidden],#progress[hidden]{display:none !important}
     #progress{margin:.4rem 0;padding:.7rem;border:1px solid #1e3a55;border-radius:14px;background:#0c1730}
@@ -1627,7 +1627,10 @@
       </div>
       <span id="kb-plate" class="kb-plate" hidden></span>
       <button type="button" id="kb-help" class="kb-help" hidden data-i18n-label="help" aria-label="Help">?</button>
-      <button type="button" id="kb-settings" class="kb-settings" hidden aria-label="My settings">⚙</button>
+      <button type="button" id="kb-settings" class="kb-settings" hidden>
+        <span aria-hidden="true">⚙</span>
+        <span data-i18n="mySettings">My settings</span>
+      </button>
       <button type="button" class="btn btn-secondary" id="shell-home" hidden data-i18n="home">Home</button>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
@@ -3697,11 +3700,13 @@
         var plate = document.getElementById("kb-plate");
         var helpBtn = document.getElementById("kb-help");
         var menuBtn = document.getElementById("kb-menu");
+        var gear = document.getElementById("kb-settings");
         var framed = document.body.classList.contains("is-framed");
         if (hubClassic || !framed) {
           if (plate) plate.hidden = true;
           if (helpBtn) helpBtn.hidden = true;
           if (menuBtn) { menuBtn.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); }
+          if (gear) gear.hidden = true;
           return;
         }
         var shown = name || "";
@@ -3727,6 +3732,7 @@
         }
         if (helpBtn) helpBtn.hidden = !help;
         if (menuBtn) menuBtn.hidden = !menu;
+        if (gear) gear.hidden = String(appId || name || "").toLowerCase() !== "drawin";
       }
       function openHubSignIn() {
         if (hubClassic) return;
@@ -4051,6 +4057,12 @@ document.addEventListener("click", function (event) {
         var frame = document.getElementById("app-frame");
         if (!frame || !frame.contentWindow) return;
         try { frame.contentWindow.postMessage({ type: "kb-menu" }, "*"); } catch (eMenu) {}
+      });
+      var kbSettings = document.getElementById("kb-settings");
+      if (kbSettings) kbSettings.addEventListener("click", function () {
+        var frame = document.getElementById("app-frame");
+        if (!frame || !frame.contentWindow) return;
+        try { frame.contentWindow.postMessage({ type: "kb-settings" }, "*"); } catch (eSet) {}
       });
       var appFrame = document.getElementById("app-frame");
       if (appFrame) appFrame.addEventListener("load", function () { postWho(appFrame); postLang(appFrame); });
