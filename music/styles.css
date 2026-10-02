@@ -14,7 +14,7 @@
   --shadow: none;
 }
 * { box-sizing: border-box; }
-html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Outfit, system-ui, sans-serif; font-size: 16px; }
+html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--kp-font), Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif; font-size: 16px; }
 body {
   max-width: none; margin: 0;
   padding: 0;
@@ -1670,6 +1670,53 @@ body.is-lights canvas#viz {
   border: 0 !important;
   box-shadow: none !important;
 }
+
+/* MU 2.35.2 — Hub language. Dock stays left. Beat grid, notes, and tempo stay left to right. */
+html, body, button, input, select, textarea {
+  font-family: var(--kp-font), Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif;
+}
+html[dir="rtl"] .lab { direction: ltr !important; }
+html[dir="rtl"] .home,
+html[dir="rtl"] .make,
+html[dir="rtl"] .library,
+html[dir="rtl"] .drawer,
+html[dir="rtl"] .songbar-copy,
+html[dir="rtl"] .how,
+html[dir="rtl"] .beat-speak,
+html[dir="rtl"] .sound-banner,
+html[dir="rtl"] .transport,
+html[dir="rtl"] .lesson,
+html[dir="rtl"] .teach-line,
+html[dir="rtl"] .hint,
+html[dir="rtl"] #band-pane,
+html[dir="rtl"] #sound-pane,
+html[dir="rtl"] .saved,
+html[dir="rtl"] .share-line,
+html[dir="rtl"] .curtain,
+html[dir="rtl"] .bow {
+  direction: rtl;
+  text-align: start;
+}
+html[dir="rtl"] #drums,
+html[dir="rtl"] .drum-row,
+html[dir="rtl"] .note-row,
+html[dir="rtl"] #inks,
+html[dir="rtl"] #pen,
+html[dir="rtl"] .staff-wrap,
+html[dir="rtl"] #staff,
+html[dir="rtl"] .transport .tempo,
+html[dir="rtl"] .style-row,
+html[dir="rtl"] #lane,
+html[dir="rtl"] .keys,
+html[dir="rtl"] #sound-notes,
+html[dir="rtl"] #songbar-name,
+html[dir="rtl"] #classics,
+html[dir="rtl"] #open-songs strong,
+html[dir="rtl"] #my-saves strong {
+  direction: ltr !important;
+}
+html[dir="rtl"] .drawer { left: 0; right: auto; }
+
 
 
 

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.2** · 2026-10-01 · channel **live**
+
+DJ Berty follows the Hub language. Beats still play left to right. Song names stay English.
+
+## Earlier
+
 **Chip: MU 2.35.1** · 2026-10-01 · channel **live**
 
 DJ Berty fits on one screen: all 16 steps show, More stays closed until you tap it, one Menu, readable Lights.

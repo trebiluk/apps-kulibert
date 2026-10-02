@@ -7,184 +7,184 @@
   <title>DJ Berty · The Tech Room</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=2.35.1"/>
+  <link rel="stylesheet" href="./styles.css?v=2.35.2"/>
 </head>
 <body>
-  <em id="chip" hidden>MU 2.35.1</em>
+  <em id="chip" hidden>MU 2.35.2</em>
   <div class="scrim" id="scrim"></div>
 
   <section id="home" class="home">
-    <button type="button" id="make-beat" class="make-beat">Make a beat</button>
-    <button type="button" id="my-songs" class="my-songs">My songs</button>
+    <button type="button" id="make-beat" class="make-beat" data-mu="makeBeat">Make a beat</button>
+    <button type="button" id="my-songs" class="my-songs" data-mu="mySongs">My songs</button>
     <div id="shelf-extra" hidden>
-    <h1>Songs</h1>
-    <p class="how">Open one song. Score and drums work on that song.</p>
+    <h1 data-mu="songsH">Songs</h1>
+    <p class="how" data-mu="openOne">Open one song. Score and drums work on that song.</p>
     <div class="shelf-block">
-      <h2>Start</h2>
+      <h2 data-mu="start">Start</h2>
       <div class="choice">
-        <button type="button" id="start-blank" class="do-card">Blank staff</button>
-        <button type="button" id="start-key" class="do-card">Tempo and key</button>
+        <button type="button" id="start-blank" class="do-card" data-mu="blankStaff">Blank staff</button>
+        <button type="button" id="start-key" class="do-card" data-mu="tempoKey">Tempo and key</button>
       </div>
       <div id="key-pick" hidden>
-        <label class="tempo">Speed <b id="key-tempo-read">96</b>
+        <label class="tempo"><span data-mu="speed">Speed</span> <b id="key-tempo-read">96</b>
           <input id="key-tempo" type="range" min="70" max="140" value="96"/>
         </label>
         <div id="key-keys" class="choice" aria-label="Key"></div>
         <div id="key-meters" class="choice" aria-label="Time"></div>
-        <button type="button" id="key-go" class="btn">Use this</button>
+        <button type="button" id="key-go" class="btn" data-mu="useThis">Use this</button>
       </div>
     </div>
     <div class="shelf-block">
-      <h2>Open songs</h2>
+      <h2 data-mu="openSongs">Open songs</h2>
       <div id="open-songs"></div>
     </div>
     <div class="shelf-block">
-      <h2>My saves</h2>
+      <h2 data-mu="mySaves">My saves</h2>
       <div id="my-saves"></div>
     </div>
     <div class="shelf-block">
-      <h2>Bring a file in</h2>
+      <h2 data-mu="bringHead">Bring a file in</h2>
       <div class="choice">
-        <button type="button" id="import-lab" class="do-card">DJ Berty file</button>
-        <button type="button" id="import-abc" class="do-card">ABC</button>
-        <button type="button" id="import-midi" class="do-card">MIDI</button>
-        <button type="button" id="import-xml" class="do-card">MusicXML</button>
+        <button type="button" id="import-lab" class="do-card" data-mu-html="djFile">File · <bdi>DJ Berty</bdi></button>
+        <button type="button" id="import-abc" class="do-card" data-mu="abc">ABC</button>
+        <button type="button" id="import-midi" class="do-card" data-mu="midi">MIDI</button>
+        <button type="button" id="import-xml" class="do-card" data-mu="musicxml">MusicXML</button>
       </div>
       <input id="import-file" type="file" hidden/>
     </div>
-    <h2>Work on this song</h2>
+    <h2 data-mu="workOn">Work on this song</h2>
     <div class="do-cards" id="do-cards"></div>
     </div>
   </section>
   <section id="make" class="make" hidden>
-    <h1>Make a song</h1>
-    <p id="make-step" class="how">Pick a feel. Then a speed. Then who plays.</p>
+    <h1 data-mu="makeSong">Make a song</h1>
+    <p id="make-step" class="how" data-mu="pickFeel">Pick a feel. Then a speed. Then who plays.</p>
     <div id="make-feels" class="choice"></div>
-    <label class="tempo">Speed <b id="make-tempo-read">96</b>
+    <label class="tempo"><span data-mu="speed">Speed</span> <b id="make-tempo-read">96</b>
       <input id="make-tempo" type="range" min="70" max="140" value="96"/>
     </label>
     <div id="make-inst" class="choice" aria-label="Who plays"></div>
-    <button type="button" id="make-go" class="btn">Start building</button>
+    <button type="button" id="make-go" class="btn" data-mu="startBuilding">Start building</button>
   </section>
   <section id="library" class="library" hidden>
-    <h1>Library</h1>
-    <input id="library-find" type="search" placeholder="Search feel, instrument, or who" aria-label="Search the library"/>
+    <h1 data-mu="library">Library</h1>
+    <input id="library-find" type="search" placeholder="Search feel, instrument, or who" data-mu-ph="searchPh" aria-label="Search the library"/>
     <div id="library-filters" class="pen"></div>
     <div id="library-list"></div>
   </section>
-  <p id="how" class="how" hidden>Tap a letter. It goes on the staff. Then press Play.</p>
+  <p id="how" class="how" hidden data-mu="howNotes">Tap a letter. It goes on the staff. Then press Play.</p>
   <div id="practice" class="practice" hidden>
     <p id="practice-line"></p>
-    <button type="button" id="practice-go">Start</button>
+    <button type="button" id="practice-go" data-mu="startBtn">Start</button>
     <button type="button" id="practice-done">Done</button>
   </div>
   <div class="lab">
     <div class="side" id="side">
       <nav class="dock-left" id="dock-left" aria-label="Workspace">
-        <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-ico="☰">☰ Menu</button>
-        <button type="button" id="mode-beat" data-ico="🥁" aria-pressed="false">Beat</button>
-        <button type="button" id="mode-both" class="on" data-ico="♩" aria-pressed="true">Score + drums</button>
-        <button type="button" id="mode-notes" data-ico="𝄞" aria-pressed="false">Score</button>
-        <button type="button" id="mode-lights" data-ico="✦" aria-pressed="false">Lights</button>
-        <button type="button" id="mode-band" data-ico="🎺" aria-pressed="false">Band</button>
-        <button type="button" id="mode-sound" data-ico="〰" aria-pressed="false">Sound</button>
-        <button type="button" id="dock-songs" data-ico="☰">Songs</button>
-        <button type="button" id="show-btn" class="btn show-go" data-ico="★">Perform</button>
-        <button type="button" id="turn-btn" class="btn" data-ico="↻">Listen, then my turn</button>
-        <button type="button" id="along-btn" class="btn" data-ico="👏" aria-pressed="false">Play along</button>
-        <button type="button" id="dock-library" data-ico="⌕">Library</button>
-        <button type="button" id="dock-import" data-ico="↓">Bring a file in</button>
+        <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-ico="☰" data-i18n-label="menu"><span data-i18n="menu">Menu</span></button>
+        <button type="button" id="mode-beat" data-ico="🥁" aria-pressed="false" data-mu="beat">Beat</button>
+        <button type="button" id="mode-both" class="on" data-ico="♩" aria-pressed="true" data-mu="scoreDrums">Score + drums</button>
+        <button type="button" id="mode-notes" data-ico="𝄞" aria-pressed="false" data-mu="score">Score</button>
+        <button type="button" id="mode-lights" data-ico="✦" aria-pressed="false" data-mu="lights">Lights</button>
+        <button type="button" id="mode-band" data-ico="🎺" aria-pressed="false" data-mu="band">Band</button>
+        <button type="button" id="mode-sound" data-ico="〰" aria-pressed="false" data-i18n="sound">Sound</button>
+        <button type="button" id="dock-songs" data-ico="☰" data-mu="songs">Songs</button>
+        <button type="button" id="show-btn" class="btn show-go" data-ico="★" data-mu="perform">Perform</button>
+        <button type="button" id="turn-btn" class="btn" data-ico="↻" data-mu="listenTurn">Listen, then my turn</button>
+        <button type="button" id="along-btn" class="btn" data-ico="👏" aria-pressed="false" data-mu="playAlong">Play along</button>
+        <button type="button" id="dock-library" data-ico="⌕" data-mu="library">Library</button>
+        <button type="button" id="dock-import" data-ico="↓" data-mu="bringFile">Bring a file in</button>
       </nav>
   <aside class="drawer" id="drawer" aria-label="Menu">
-    <button type="button" id="menu-close" class="btn close">Close</button>
+    <button type="button" id="menu-close" class="btn close" data-i18n="close">Close</button>
     <section class="group">
-      <h2>Go</h2>
-      <button type="button" id="menu-songs" class="btn">Song list</button>
-      <button type="button" id="menu-blank" class="btn">Blank staff</button>
-      <button type="button" id="menu-key" class="btn">Tempo and key</button>
-      <button type="button" id="menu-import" class="btn">Bring a file in</button>
-      <button type="button" id="menu-score" class="btn">Score</button>
-      <button type="button" id="menu-band" class="btn">Band</button>
-      <button type="button" id="menu-sound" class="btn">Sound</button>
-      <button type="button" id="menu-lights" class="btn">Lights</button>
-      <button type="button" id="menu-show" class="btn">Perform</button>
-      <button type="button" id="menu-library" class="btn">Library</button>
+      <h2 data-mu="go">Go</h2>
+      <button type="button" id="menu-songs" class="btn" data-mu="songList">Song list</button>
+      <button type="button" id="menu-blank" class="btn" data-mu="blankStaff">Blank staff</button>
+      <button type="button" id="menu-key" class="btn" data-mu="tempoKey">Tempo and key</button>
+      <button type="button" id="menu-import" class="btn" data-mu="bringFile">Bring a file in</button>
+      <button type="button" id="menu-score" class="btn" data-mu="score">Score</button>
+      <button type="button" id="menu-band" class="btn" data-mu="band">Band</button>
+      <button type="button" id="menu-sound" class="btn" data-i18n="sound">Sound</button>
+      <button type="button" id="menu-lights" class="btn" data-mu="lights">Lights</button>
+      <button type="button" id="menu-show" class="btn" data-mu="perform">Perform</button>
+      <button type="button" id="menu-library" class="btn" data-mu="library">Library</button>
     </section>
     <section class="group">
-      <h2>Blend</h2>
-      <label class="tempo">Blend <b id="blend-read">Both</b>
+      <h2 data-mu="blend">Blend</h2>
+      <label class="tempo"><span data-mu="blend">Blend</span> <b id="blend-read" data-mu="both">Both</b>
         <input id="blend" type="range" min="0" max="100" value="50" aria-label="Drums or score"/>
       </label>
-      <p class="hint">Left is the drums. Right is the score. The middle plays both.</p>
+      <p class="hint" data-mu="blendHint">Left is the drums. Right is the score. The middle plays both.</p>
     </section>
     <section class="group">
-      <h2>Title</h2>
+      <h2 data-mu="title">Title</h2>
       <div id="title-lists"></div>
     </section>
     <section class="group">
-      <h2>Picture</h2>
+      <h2 data-mu="picture">Picture</h2>
       <div class="looks" id="looks"></div>
     </section>
     <section class="group">
-      <h2>Effects</h2>
-      <p class="hint">Pick a sound. The pads use it.</p>
+      <h2 data-mu="effects">Effects</h2>
+      <p class="hint" data-mu="fxHint">Pick a sound. The pads use it.</p>
       <div class="looks" id="fx"></div>
     </section>
     <section class="group">
-      <h2>Synth</h2>
+      <h2 data-mu="synth">Synth</h2>
       <div class="looks" id="waves"></div>
-      <label class="tempo">Brightness <b id="n-bright">5200</b>
+      <label class="tempo"><span data-mu="brightness">Brightness</span> <b id="n-bright">5200</b>
         <input id="s-bright" type="range" min="200" max="8000" value="5200"/>
       </label>
-      <label class="tempo">Length <b id="n-len">28</b>
+      <label class="tempo"><span data-mu="length">Length</span> <b id="n-len">28</b>
         <input id="s-len" type="range" min="8" max="80" value="28"/>
       </label>
-      <label class="tempo">Echo <b id="n-echo">0</b>
+      <label class="tempo"><span data-mu="echo">Echo</span> <b id="n-echo">0</b>
         <input id="s-echo" type="range" min="0" max="70" value="0"/>
       </label>
-      <label class="tempo">Wobble <b id="n-wob">0</b>
+      <label class="tempo"><span data-mu="wobble">Wobble</span> <b id="n-wob">0</b>
         <input id="s-wob" type="range" min="0" max="14" value="0"/>
       </label>
     </section>
     <section class="group">
-      <h2>One loop</h2>
-      <p class="hint">Optional. One loop, then the mic turns off.</p>
-      <button type="button" id="mic-ask" class="btn">Use the mic once</button>
+      <h2 data-mu="oneLoop">One loop</h2>
+      <p class="hint" data-mu="loopHint">Optional. One loop, then the mic turns off.</p>
+      <button type="button" id="mic-ask" class="btn" data-mu="micOnce">Use the mic once</button>
       <div id="mic-ask-box" hidden>
-        <p class="hint">You can say no. The pads still work.</p>
-        <button type="button" id="mic-yes" class="btn">Start the loop</button>
-        <button type="button" id="mic-no" class="btn">Not now</button>
+        <p class="hint" data-mu="micNoHint">You can say no. The pads still work.</p>
+        <button type="button" id="mic-yes" class="btn" data-mu="startLoop">Start the loop</button>
+        <button type="button" id="mic-no" class="btn" data-mu="notNow">Not now</button>
       </div>
       <div id="mic-meter" class="meter" hidden><span id="mic-level"></span></div>
       <p id="mic-status" class="hint" role="status"></p>
-      <button type="button" id="mic-hear" class="btn" hidden>Hear the loop</button>
-      <button type="button" id="mic-down" class="btn" hidden>Download</button>
-      <button type="button" id="mic-del" class="btn" hidden>Delete</button>
+      <button type="button" id="mic-hear" class="btn" hidden data-mu="hearLoop">Hear the loop</button>
+      <button type="button" id="mic-down" class="btn" hidden data-mu="download">Download</button>
+      <button type="button" id="mic-del" class="btn" hidden data-mu="del">Delete</button>
     </section>
     <section class="group">
-      <h2>Assign practice</h2>
-      <p class="hint">Sign in as the student. The name comes from TechWorks. Then assign the practice.</p>
+      <h2 data-mu="assignHead">Assign practice</h2>
+      <p class="hint" data-mu="assignHint">Sign in as the student. The name comes from TechWorks. Then assign the practice.</p>
       <select id="assign-inst" aria-label="Instrument"></select>
       <select id="assign-task" aria-label="Practice">
-        <option value="five">Hear the five notes</option>
-        <option value="read">Read each fingering</option>
-        <option value="save">Play the five notes into the song</option>
+        <option value="five" data-mu="hearFive">Hear the five notes</option>
+        <option value="read" data-mu="readFinger">Read each fingering</option>
+        <option value="save" data-mu="playFive">Play the five notes into the song</option>
       </select>
-      <button type="button" id="assign-add" class="btn">Assign</button>
+      <button type="button" id="assign-add" class="btn" data-mu="assign">Assign</button>
       <div id="assign-list"></div>
-      <button type="button" id="assign-file" class="btn">Download class file</button>
-      <button type="button" id="assign-open" class="btn">Open a class file</button>
+      <button type="button" id="assign-file" class="btn" data-mu="downloadClass">Download class file</button>
+      <button type="button" id="assign-open" class="btn" data-mu="openClass">Open a class file</button>
       <input id="assign-file-in" type="file" accept="application/json,.json" hidden/>
     </section>
     <section class="group">
-      <button type="button" id="clear-btn" class="btn">Clear the drums</button>
-      <button type="button" id="save-btn" class="btn">Save a file</button>
-      <p class="hint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
+      <button type="button" id="clear-btn" class="btn" data-mu="clearDrums">Clear the drums</button>
+      <button type="button" id="save-btn" class="btn" data-mu="saveFile">Save a file</button>
+      <p class="hint" data-mu="saveHint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
     </section>
     <section class="group">
-      <p>Kulibert Tech Ed · <span id="foot-chip">MU 2.35.1</span></p>
-      <a class="btn" href="./teacher.html">Teacher</a>
-      <a class="btn" href="./privacy.html">Privacy</a>
+      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.2</span></p>
+      <a class="btn" href="./teacher.html" data-mu="teacher">Teacher</a>
+      <a class="btn" href="./privacy.html" data-mu="privacy">Privacy</a>
     </section>
   </aside>
 
@@ -193,7 +193,7 @@
     <div id="songbar" class="songbar">
       <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
       <div class="songbar-copy">
-        <strong id="songbar-name">New song</strong>
+        <strong id="songbar-name"><bdi>New song</bdi></strong>
         <span id="songbar-meta">96 · C · 4/4</span>
       </div>
     </div>
@@ -207,11 +207,11 @@
         <div id="pen" class="pen" aria-label="How long the note lasts"></div>
         </div>
         <details class="more-box" id="song-more">
-          <summary>Score tools</summary>
+          <summary data-mu="scoreTools">Score tools</summary>
           <div class="score-tools">
             <div id="meters" class="meters" aria-label="Time signature"></div>
-            <button type="button" id="add-bar" class="btn">Add a bar</button>
-            <button type="button" id="expert-btn" class="btn" aria-pressed="false">Just the staff</button>
+            <button type="button" id="add-bar" class="btn" data-mu="addBar">Add a bar</button>
+            <button type="button" id="expert-btn" class="btn" aria-pressed="false" data-mu="justStaff">Just the staff</button>
           </div>
           <details class="more-box">
             <summary>More note tools</summary>
@@ -237,7 +237,7 @@
             <summary>This song's picture</summary>
             <p id="viz-now" class="hint">The picture travels with the song.</p>
             <div id="viz-picks" class="shelf-songs" aria-label="Pictures"></div>
-            <button type="button" id="viz-use" class="btn">Use this picture</button>
+            <button type="button" id="viz-use" class="btn" data-mu="useThis">Use this picture</button>
           </details>
           <details class="more-box">
             <summary>Defend the notes</summary>
@@ -260,22 +260,22 @@
       <div id="drums-pane">
         <div class="style-row" id="style-row" aria-label="Styles"></div>
         <div class="cast" id="cast" aria-label="Layers" hidden></div>
-        <p id="sound-banner" class="sound-banner" hidden>Sound is off. <button type="button" id="sound-banner-on">Turn sound on</button></p>
-        <p class="beat-speak" id="beat-speak"><span id="beat-line" class="beat-line" aria-live="polite">Press Play. You can leave the sound off.</span>
-          <button type="button" id="read-lesson" class="btn read-me" aria-label="Read it to me">🔊</button></p>
-        <p class="hint" id="step-hint" hidden>Tap a pad. It stays on that step.</p>
+        <p id="sound-banner" class="sound-banner" hidden><span data-mu="soundBanner">Sound is off.</span> <button type="button" id="sound-banner-on" data-mu="turnSoundOn">Turn sound on</button></p>
+        <p class="beat-speak" id="beat-speak"><span id="beat-line" class="beat-line" aria-live="polite" data-mu="pressPlay">Press Play. You can leave the sound off.</span>
+          <button type="button" id="read-lesson" class="btn read-me" aria-label="Read it to me" data-mu-label="readMe">🔊</button></p>
+        <p class="hint" id="step-hint" hidden data-mu="stepHint">Tap a pad. It stays on that step.</p>
         <div id="drums" class="drums" aria-label="Drums"></div>
         <details class="more-box">
-          <summary>Extra drums (Tom, Shaker…)</summary>
+          <summary data-mu="extraDrums">Extra drums (Tom, Shaker…)</summary>
           <div id="more-kit" class="kit"></div>
         </details>
         <details class="more-box">
-          <summary>Volume, swing, patterns</summary>
+          <summary data-mu="volSwing">Volume, swing, patterns</summary>
           <div id="mix" class="mix" aria-label="Loudness"></div>
-          <label class="tempo">Swing <b id="swing-read">0</b>
+          <label class="tempo"><span data-mu="swing">Swing</span> <b id="swing-read">0</b>
             <input id="swing" type="range" min="0" max="60" value="0"/>
           </label>
-          <button type="button" id="click-btn" class="btn" aria-pressed="false">Add a click</button>
+          <button type="button" id="click-btn" class="btn" aria-pressed="false" data-mu="addClick">Add a click</button>
           <div id="patterns" class="looks" aria-label="Add a pattern"></div>
         </details>
       </div>
@@ -287,7 +287,7 @@
         <div id="band-notes" class="keys" aria-label="First five notes"></div>
         <p id="band-finger" class="lesson">Tap a note. The fingering shows here.</p>
         <p id="band-concert" class="hint"></p>
-        <button type="button" id="band-warm" class="btn">Hear the five notes</button>
+        <button type="button" id="band-warm" class="btn" data-mu="hearFive">Hear the five notes</button>
         <details class="more-box">
           <summary>Play with the band</summary>
           <div class="podium">
@@ -333,9 +333,9 @@
         <div id="sound-notes" class="keys" aria-label="Notes"></div>
         <div id="sound-shapes" class="pen" aria-label="Wave shape"></div>
         <div class="pen" aria-label="Chord">
-          <button type="button" id="chord-major" class="btn on">Major</button>
-          <button type="button" id="chord-minor" class="btn">Minor</button>
-          <button type="button" id="chord-arp" class="btn">One by one</button>
+          <button type="button" id="chord-major" class="btn on" data-mu="major">Major</button>
+          <button type="button" id="chord-minor" class="btn" data-mu="minor">Minor</button>
+          <button type="button" id="chord-arp" class="btn" data-mu="oneByOne">One by one</button>
         </div>
         <p class="hint">Overtones. 1 is the note. 2, 3, 4, and 5 sit above it.</p>
         <div id="sound-partials" class="pen" aria-label="Overtones"></div>
@@ -352,49 +352,49 @@
         <i id="berty-bob" class="berty-bob" aria-hidden="true"></i>
         <canvas id="confetti" class="confetti" hidden></canvas>
         <div id="curtain" class="curtain" hidden>
-          <p class="kicker">Talent show</p>
-          <h2 id="curtain-title">Your song</h2>
+          <p class="kicker" data-mu="talent">Talent show</p>
+          <h2 id="curtain-title"><bdi>Your song</bdi></h2>
           <p id="curtain-meta" class="hint"></p>
-          <button type="button" id="curtain-start" class="btn on">Start</button>
-          <button type="button" id="curtain-exit" class="btn">Not yet</button>
+          <button type="button" id="curtain-start" class="btn on" data-mu="startBtn">Start</button>
+          <button type="button" id="curtain-exit" class="btn" data-mu="notYet">Not yet</button>
         </div>
         <div id="bow" class="bow" hidden>
-          <p class="kicker">That's the song</p>
-          <h2 id="bow-title">Your song</h2>
-          <button type="button" id="show-again" class="btn on">Play it again</button>
-          <button type="button" id="bow-exit" class="btn">Back to class</button>
+          <p class="kicker" data-mu="thatsSong">That's the song</p>
+          <h2 id="bow-title"><bdi>Your song</bdi></h2>
+          <button type="button" id="show-again" class="btn on" data-mu="playAgain">Play it again</button>
+          <button type="button" id="bow-exit" class="btn" data-mu="backClass">Back to class</button>
         </div>
       </div>
       <div class="show-progress" aria-hidden="true"><i id="show-bar"></i></div>
       <p id="share-line" class="share-line" hidden></p>
-      <p id="song-title" class="song-title">Your song</p>
-      <p id="feel" class="feel">Ready</p>
+      <p id="song-title" class="song-title" data-mu="yourSong">Your song</p>
+      <p id="feel" class="feel" data-mu="ready">Ready</p>
       <p id="now-line" class="now" aria-live="polite">Press Play. You can leave the sound off.</p>
       <div id="lane" class="lane" role="group" aria-label="The eight beats"></div>
       <p id="lesson" class="lesson" hidden>Tap a pad. It stays on that beat.</p>
-      <p id="saved-line" class="saved" aria-live="polite">Saved</p>
-      <button type="button" id="undo-clear" class="btn undo" hidden>Bring it back</button>
+      <p id="saved-line" class="saved" aria-live="polite" data-mu="saved">Saved</p>
+      <button type="button" id="undo-clear" class="btn undo" hidden data-mu="bringBack">Bring it back</button>
     </section>
     </div>
   </div>
 
   <div class="transport" id="transport">
     <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word">Play</span></button>
-    <label class="tempo">Tempo <b id="tempo-read">96</b>
+    <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read">96</b>
       <input id="tempo" type="range" min="70" max="160" value="96" aria-label="Tempo"/>
     </label>
-    <button type="button" id="save-dock" class="btn">Save</button>
+    <button type="button" id="save-dock" class="btn" data-mu="save">Save</button>
     <button type="button" id="mute-btn" class="btn" aria-pressed="false" aria-label="Sound on"><span aria-hidden="true">🔊</span> Sound on</button>
-    <button type="button" id="rec-btn" class="btn rec" aria-pressed="false">Record</button>
-    <button type="button" id="share-btn" class="btn">Share</button>
-    <button type="button" id="more-tools" class="btn" aria-expanded="false" aria-controls="more-pop">More ▾</button>
+    <button type="button" id="rec-btn" class="btn rec" aria-pressed="false" data-mu="record">Record</button>
+    <button type="button" id="share-btn" class="btn" data-mu="share">Share</button>
+    <button type="button" id="more-tools" class="btn" aria-expanded="false" aria-controls="more-pop" data-mu="more">More ▾</button>
     <div id="more-pop" class="more-pop" hidden>
-      <button type="button" id="wav-btn" class="btn">Save as sound</button>
-      <button type="button" id="midi-out" class="btn">MIDI</button>
+      <button type="button" id="wav-btn" class="btn" data-mu="saveSound">Save as sound</button>
+      <button type="button" id="midi-out" class="btn" data-mu="midi">MIDI</button>
     </div>
   </div>
 
-  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="musiclab" data-name="DJ Berty" data-version="MU 2.35.1" data-menu="#menu-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.2" data-menu="#menu-btn" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -403,6 +403,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./app.js?v=2.35.1"></script>
+  <script src="./strings.js?v=2.35.2"></script>
+  <script src="./app.js?v=2.35.2"></script>
 </body>
 </html>
