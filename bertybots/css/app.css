@@ -59,16 +59,19 @@ html[data-big="1"] .menu-card { font-size: 17px; }
   grid-column: 2;
   grid-row: 2;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto minmax(0, 1fr) auto;
   min-width: 0;
   min-height: 0;
   direction: ltr;
 }
+.job-stack { min-width: 0; }
 .job-strip {
   display: flex;
   gap: 8px;
   align-items: center;
   overflow-x: auto;
+  min-width: 0;
   padding: 6px 10px;
   background:
     linear-gradient(#2c3136, #2c3136) padding-box,
@@ -825,7 +828,33 @@ body:not([data-site="1"]) .rail-tabs { display: none; }
   box-shadow: 12px 0 40px -18px #000c;
 }
 .howto { z-index: 8; }
-#access { z-index: 9; }
+#access.sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 31;
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  padding: 0;
+  direction: ltr;
+  background: rgb(30 34 38 / 46%);
+}
+#access .sheet-card {
+  width: min(22rem, 88vw);
+  max-width: 22rem;
+  height: 100%;
+  max-height: 100%;
+  margin: 0;
+  border-radius: 0 18px 18px 0;
+  box-shadow: 12px 0 40px -18px #000c;
+}
+#access-close {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  min-height: 44px;
+  min-width: 44px;
+}
 .howto[hidden], .sheet[hidden] { display: none !important; }
 .howto-card, .sheet-card {
   width: min(32rem, 100%);
@@ -1113,6 +1142,7 @@ html[dir="rtl"] .shop,
 html[dir="rtl"] .stage,
 html[dir="rtl"] .job-strip,
 html[dir="rtl"] #crew.sheet,
+html[dir="rtl"] #access.sheet,
 html[dir="rtl"] canvas {
   direction: ltr;
 }

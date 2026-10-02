@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.33 — Phone fit — 2026-10-02
+
+- Settings opens from the left. Close sits at the top. Esc closes it and focus returns to Settings.
+- The shop fits an upright phone. The board letterboxes so the wheel and the goal stay on screen.
+- What's new: Settings opens from the left with Close at the top. The playfield fits phones held upright.
+
 ## 0.19.32 — Menu rows — 2026-10-02
 
 - What's new and Settings are rows in the left Menu, under the plate.

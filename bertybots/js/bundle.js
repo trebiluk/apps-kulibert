@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.32 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.33 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.32";
+const APP_VERSION = "0.19.33";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.32";
+const APP_CHIP = "BB 0.19.33";
 const APP_BUILT = "2026-10-02";
 
 const FORMAT = 1;
@@ -777,6 +777,10 @@ function boot() {
 
   function focusTarget() {
     if (typeof isMeasure === "function" && isMeasure()) return { x: WORLD_W / 2, y: 5.2 };
+    if (narrowBoard()) {
+      const b = jobReach();
+      return { x: (b.x0 + b.x1) / 2, y: (b.y0 + b.y1) / 2 };
+    }
     if (won && sim && sim.cores[0]) {
       const p = sim.cores[0].getPosition();
       return { x: p.x, y: Math.max(2.2, p.y) };
@@ -793,8 +797,17 @@ function boot() {
     return { x: b.x + b.w * 0.5, y: b.y + b.h * 0.45 };
   }
 
+  function narrowBoard() {
+    const w = canvas.clientWidth || 0;
+    return w > 0 && w <= 440;
+  }
+
   function frameSpan() {
     if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
+    if (narrowBoard()) {
+      const b = jobReach();
+      return { w: Math.max(8, b.x1 - b.x0), h: Math.max(4, b.y1 - b.y0) };
+    }
     const phone = window.innerHeight < 540 || window.innerWidth < 920;
     if (won) return { w: phone ? 8.5 : 10, h: phone ? 5.2 : 6 };
     return { w: phone ? 6.8 : 7.6, h: phone ? 3.6 : 4.1 };
@@ -1048,7 +1061,9 @@ function boot() {
     const langLabel = document.getElementById("access-lang-label");
     if (langLabel) langLabel.textContent = tr("language");
     const close = document.getElementById("access-close");
+    const closeEnd = document.getElementById("access-close-end");
     if (close) close.textContent = tr("close");
+    if (closeEnd) closeEnd.textContent = tr("close");
     const speakBtn = document.getElementById("access-speak");
     if (speakBtn) {
       speakBtn.textContent = `${tr("read")}: ${access.speak ? tr("on") : tr("off")}`;
@@ -3994,21 +4009,39 @@ function boot() {
     }
     const settingsBtn = document.getElementById("btn-settings");
     const accessSheet = document.getElementById("access");
+    let accessFrom = null;
     function showAccess(on) {
       if (!accessSheet) return;
+      const was = !accessSheet.hidden;
       accessSheet.hidden = !on;
       paintAccess();
+      if (on) {
+        const close = document.getElementById("access-close");
+        if (close) close.focus();
+      } else if (was) {
+        const back = accessFrom;
+        accessFrom = null;
+        const crew = document.getElementById("crew");
+        if (back && back.id === "menu-settings" && crew && crew.hidden) showCrew(true);
+        if (back && typeof back.focus === "function") back.focus();
+      }
     }
-    if (settingsBtn) settingsBtn.addEventListener("click", () => showAccess(true));
+    if (settingsBtn) settingsBtn.addEventListener("click", () => {
+      accessFrom = settingsBtn;
+      showAccess(true);
+    });
     const menuSettings = document.getElementById("menu-settings");
     if (menuSettings) {
       menuSettings.addEventListener("click", () => {
+        accessFrom = menuSettings;
         showCrew(false);
         showAccess(true);
       });
     }
     const accessClose = document.getElementById("access-close");
+    const accessCloseEnd = document.getElementById("access-close-end");
     if (accessClose) accessClose.addEventListener("click", () => showAccess(false));
+    if (accessCloseEnd) accessCloseEnd.addEventListener("click", () => showAccess(false));
     if (accessSheet) {
       accessSheet.addEventListener("click", (ev) => {
         if (ev.target === accessSheet) showAccess(false);
@@ -4189,10 +4222,12 @@ function boot() {
       if (key === "z") { undo(); return; }
       if (key === "t" && isMeasure()) setTool("tape");
       if (ev.key === "Escape") {
+        const accessOpen = accessSheet && !accessSheet.hidden;
         if (playing) stopPlay();
         showCrew(false);
         showSystems(false);
         hideHowto();
+        if (accessOpen) showAccess(false);
         debugOn = false;
         return;
       }
