@@ -1,6 +1,6 @@
-/* Debugzy v0.1.2 chrome. Hub Menu opens this left drawer. */
+/* Debugzy v0.1.3 chrome. Hub Menu opens this left drawer. */
 (function () {
-  var NEWS = "Fixed a glitch that stopped puzzles from loading.";
+  var NEWS = "Fixed the blank screen in Arabic and Dari on phones.";
   var LANGS = [
     ["en", "English"],
     ["uk", "Українська"],
@@ -68,7 +68,7 @@
   drawer.id = "dz-drawer";
   drawer.setAttribute("aria-label", "Debugzy");
   drawer.innerHTML = [
-    '<p class="dz-chip">v0.1.2</p>',
+    '<p class="dz-chip">v0.1.3</p>',
     '<h2 data-k="whats"></h2>',
     '<p id="dz-news"></p>',
     '<h2 data-k="help"></h2>',

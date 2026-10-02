@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "0.1.2";
+  const VERSION = "0.1.3";
   window.__DEBUGZY__ = VERSION;
 
   const STORAGE_KEY = "debugzy-v010";

@@ -1,15 +1,20 @@
 # Debugzy changelog
 
-**Chip: v0.1.2** · 2026-10-02 · channel **playable**
+**Chip: v0.1.3** · 2026-10-02 · channel **playable**
 Source of truth: `app.js` `VERSION` + this file.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Playable lab | `v0.1.2` | https://apps.kulibert.net/debugzy/ |
+| Playable lab | `v0.1.3` | https://apps.kulibert.net/debugzy/ |
 
 ## Current train
+
+### 0.1.3 — Arabic and Dari phones — 2026-10-02
+
+- What’s new: Fixed the blank screen in Arabic and Dari on phones.
+- `.skip` uses `inset-inline-start` instead of `left: -9999px`, so RTL pages no longer get 10,000px wide on phones.
 
 ### 0.1.2 — Puzzles load again — 2026-10-02
 

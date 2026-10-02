@@ -37,7 +37,7 @@ body {
 
 .skip {
   position: absolute;
-  left: -9999px;
+  inset-inline-start: -9999px;
   top: 0;
   background: var(--accent);
   color: var(--accent-fg);
@@ -45,7 +45,7 @@ body {
   z-index: 50;
   font-weight: 700;
 }
-.skip:focus { left: 0.5rem; top: 0.5rem; }
+.skip:focus { inset-inline-start: 0.5rem; top: 0.5rem; }
 
 .top {
   display: flex;
