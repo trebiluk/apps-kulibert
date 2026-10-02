@@ -15,6 +15,9 @@
   var name = (script && script.getAttribute("data-name")) || "";
   var helpSel = (script && script.getAttribute("data-help")) || "";
   var menuSel = (script && script.getAttribute("data-menu")) || "";
+  var foundMenu = null;
+  var lastReportedMenu = null;
+  var menuGen = 0;
   if (helpSel && menuSel && helpSel === menuSel) {
     console.warn("kulibert-bar: data-help matches data-menu, ignoring help");
     helpSel = "";
@@ -94,14 +97,14 @@
   }
   var whatsAttr = (script && script.getAttribute("data-whats-new")) || "";
   var WHATS = {
-    en: "Menus and My settings have a Close button. Esc closes them too.",
-    uk: "Меню й «Мої налаштування» мають кнопку «Закрити». Esc теж їх закриває.",
-    ru: "У меню и «Моих настроек» есть кнопка «Закрыть». Esc тоже их закрывает.",
-    es: "Los menús y Mis ajustes tienen un botón Cerrar. Esc también los cierra.",
-    ar: "القوائم وإعداداتي فيها زر إغلاق. مفتاح Esc يغلقها أيضًا.",
-    "fa-AF": "فهرست‌ها و تنظیمات من دکمهٔ بستن دارند. Esc هم آن‌ها را می‌بندد.",
-    rw: "Menu na Igenamiterere ryanjye bifite buto Funga. Esc na yo ibifunga.",
-    ti: "መላገቢታትን ናተይ ቅጥዕታትን መዕጸዊ መጠወቒ ኣለዎም። Esc እውን ይዓጽዎም።"
+    en: "One Menu button in every app. It opens that app's menu.",
+    uk: "Одна кнопка «Меню» в кожній програмі. Вона відкриває меню цієї програми.",
+    ru: "Одна кнопка «Меню» в каждом приложении. Она открывает меню этого приложения.",
+    es: "Un solo botón Menú en cada aplicación. Abre el menú de esa aplicación.",
+    ar: "زر قائمة واحد في كل تطبيق. يفتح قائمة ذلك التطبيق.",
+    "fa-AF": "در هر برنامه یک دکمهٔ فهرست است. فهرست همان برنامه را باز می‌کند.",
+    rw: "Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
+    ti: "ኣብ ነፍሲ ወከፍ መተግበሪ ሓደ መጠወቒ ዝርዝር ኣሎ። ዝርዝር ናይታ መተግበሪ ይኸፍት።"
   };
   function whatsText() {
     if (whatsAttr) return whatsAttr;
@@ -218,20 +221,108 @@
     });
     paintDrawer();
   }
+  var dupeLock = false;
+  function ensureDupeCss(sels) {
+    var ok = [];
+    for (var i = 0; i < sels.length; i++) {
+      try { document.querySelector(sels[i]); ok.push(sels[i]); } catch (eSel) {}
+    }
+    if (!ok.length) return;
+    var strong = [];
+    for (var j = 0; j < ok.length; j++) strong.push("html.kb-framed " + ok[j] + ".kb-menu-dupe");
+    var css = ok.join(",") + "{display:none !important}" + strong.join(",") + "{display:none !important}";
+    var tag = document.getElementById("kb-dupe-style");
+    if (!tag) {
+      tag = document.createElement("style");
+      tag.id = "kb-dupe-style";
+      (document.head || document.documentElement).appendChild(tag);
+    }
+    if (tag.textContent !== css) tag.textContent = css;
+  }
   function hideDupes() {
-    var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", ".tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "header.sticky > button[aria-expanded]"];
-    sels.forEach(function (sel) {
-      var nodes = document.querySelectorAll(sel);
-      for (var i = 0; i < nodes.length; i++) {
-        var el = nodes[i];
-        if (el.classList.contains("kb-menu") && el.closest && el.closest(".kb-bar")) continue;
-        if (el.closest && (el.closest(".kb-drawer") || el.closest("#hub-drawer"))) continue;
-        el.classList.add("kb-menu-dupe");
-      }
-    });
+    if (dupeLock) return;
+    dupeLock = true;
+    try {
+      var sels = dupeSelectors();
+      var tag = document.getElementById("kb-dupe-style");
+      if (tag) tag.disabled = true;
+      var touched = [];
+      sels.forEach(function (sel) {
+        var nodes = [];
+        try { nodes = document.querySelectorAll(sel); } catch (eSel) { return; }
+        for (var i = 0; i < nodes.length; i++) {
+          var el = nodes[i];
+          if (!el || !el.classList) continue;
+          if (el.classList.contains("kb-menu") && el.closest && el.closest(".kb-bar")) continue;
+          if (el.closest && (el.closest(".kb-drawer") || el.closest("#hub-drawer"))) continue;
+          if (el.getAttribute("data-kb-was-shown") !== "1" && shownControl(el)) el.setAttribute("data-kb-was-shown", "1");
+          el.classList.add("kb-menu-dupe");
+          if (touched.indexOf(el) === -1) touched.push(el);
+        }
+      });
+      if (tag) tag.disabled = false;
+      ensureDupeCss(sels);
+      if (!menuSel) foundMenu = touched.length === 1 ? touched[0] : null;
+      reportFrame();
+    } finally {
+      dupeLock = false;
+    }
+  }
+  function dupeSelectors() {
+    var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", ".tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "#hi-menu", "header.sticky > button[aria-expanded]", "button.menu-btn[aria-controls='baboo-menu']"];
+    if (menuSel) sels.push(menuSel);
+    return sels;
+  }
+  function reportFrame() {
+    if (!framed()) return;
+    var hasMenu = !!(menuSel || (foundMenu && foundMenu.isConnected));
+    if (lastReportedMenu === hasMenu) return;
+    lastReportedMenu = hasMenu;
+    postUp({ type: "kb-app", app: app, name: name || app, version: version, help: !!helpSel, menu: hasMenu });
+  }
+  function watchDupes() {
+    if (!root.MutationObserver || !document.body) return;
+    if (document.documentElement.getAttribute("data-kb-dupe-watch")) return;
+    document.documentElement.setAttribute("data-kb-dupe-watch", "1");
+    new MutationObserver(function () { hideDupes(); }).observe(document.body, { childList: true, subtree: true });
+  }
+  function menuEl() {
+    if (menuSel) {
+      try {
+        var picked = document.querySelector(menuSel);
+        if (picked) return picked;
+      } catch (ePick) {}
+    }
+    if (foundMenu && foundMenu.isConnected) return foundMenu;
+    return null;
+  }
+  function signalMenu(open) {
+    var btn = document.querySelector(".kb-bar .kb-menu");
+    if (btn) btn.setAttribute("aria-expanded", open ? "true" : "false");
+    postUp({ type: "kb-menu-state", open: !!open });
+  }
+  function readMenuOpen(el, fallback) {
+    if (!el) return !!fallback;
+    var id = el.getAttribute("aria-controls");
+    if (id) {
+      var box = document.getElementById(id);
+      if (!box || box.hidden) return false;
+      var s = getComputedStyle(box);
+      if (s.display === "none" || s.visibility === "hidden") return false;
+      var r = box.getBoundingClientRect();
+      if (r.width < 8 || r.height < 8) return false;
+      if (r.right < 0 || r.bottom < 0 || r.left > window.innerWidth || r.top > window.innerHeight) return false;
+      return true;
+    }
+    var state = el.getAttribute("data-state");
+    if (state === "closed") return false;
+    if (state === "open") return !!(appPanels().length || pointPanel());
+    if (el.hasAttribute("aria-expanded")) return el.getAttribute("aria-expanded") === "true";
+    return !!fallback;
   }
   function shownControl(el) {
     if (!el || el.hidden) return false;
+    if (el.getAttribute("data-kb-was-shown") === "1") return true;
     var s = getComputedStyle(el);
     if (s.display === "none" || s.visibility === "hidden") return false;
     var r = el.getBoundingClientRect();
@@ -276,26 +367,47 @@
     if (back) back.hidden = true;
   }
   function openMenu() {
-    var btn = document.querySelector(".kb-bar .kb-menu");
-    var el = menuSel ? document.querySelector(menuSel) : null;
-    if (btn) btn.setAttribute("aria-expanded", "true");
+    var gen = ++menuGen;
+    var el = menuEl();
     if (el && typeof el.click === "function") {
       var trust = shownControl(el);
       var before = appPanels();
       var beforePoint = pointPanel();
+      var wasOpen = el.getAttribute("data-kb-open") === "1" || el.getAttribute("aria-expanded") === "true";
+      var beforeExp = el.getAttribute("aria-expanded");
       el.click();
       if (trust) {
-        postUp({ type: "kb-menu-state", open: true });
+        var afterExp = el.getAttribute("aria-expanded");
+        var flipped = afterExp !== beforeExp && (afterExp === "true" || afterExp === "false");
+        var isOpen = flipped ? afterExp === "true" : !wasOpen;
+        el.setAttribute("data-kb-open", isOpen ? "1" : "0");
+        signalMenu(isOpen);
         hideStrayDrawer();
+        setTimeout(function () {
+          if (gen !== menuGen) return;
+          var confirmed = readMenuOpen(el, isOpen);
+          el.setAttribute("data-kb-open", confirmed ? "1" : "0");
+          signalMenu(confirmed);
+        }, 350);
         return;
       }
       setTimeout(function () {
+        if (gen !== menuGen) return;
         var now = appPanels();
         var grew = false;
         for (var i = 0; i < now.length; i++) if (before.indexOf(now[i]) === -1) grew = true;
         var nowPoint = pointPanel();
-        if (grew || (nowPoint && nowPoint !== beforePoint) || (before.length && !now.length)) {
-          postUp({ type: "kb-menu-state", open: true });
+        var opened = grew || (!!nowPoint && nowPoint !== beforePoint);
+        var closed = !opened && ((before.length && !now.length) || (!!beforePoint && !nowPoint));
+        if (opened || closed) {
+          var isOpen = readMenuOpen(el, opened);
+          el.setAttribute("data-kb-open", isOpen ? "1" : "0");
+          signalMenu(isOpen);
+          hideStrayDrawer();
+          return;
+        }
+        if (framed() && (menuSel || foundMenu)) {
+          signalMenu(readMenuOpen(el, false));
           hideStrayDrawer();
           return;
         }
@@ -303,6 +415,10 @@
         var box = document.getElementById("kb-drawer");
         setDrawer(!box || box.hidden);
       }, 350);
+      return;
+    }
+    if (framed() && menuSel) {
+      signalMenu(false);
       return;
     }
     ensureDrawer();
@@ -399,7 +515,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-11-close");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-12-one-menu");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -451,7 +567,35 @@
   if (framed()) {
     document.documentElement.classList.add("kb-framed");
     ensureCss();
-    postUp({ type: "kb-app", app: app, name: name || app, version: version, help: !!helpSel, menu: !!menuSel });
+    function armFrameDupes() {
+      hideDupes();
+      watchDupes();
+    }
+    if (document.body) armFrameDupes();
+    else document.addEventListener("DOMContentLoaded", armFrameDupes);
+    root.addEventListener("keydown", function (ev) {
+      if (!ev || ev.key !== "Escape" || ev.repeat) return;
+      var el = menuEl();
+      var was = !!(el && (readMenuOpen(el, false) || el.getAttribute("data-kb-open") === "1"));
+      if (!was) {
+        var tgt = ev.target;
+        var typing = tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.tagName === "SELECT" || tgt.isContentEditable);
+        if (typing) return;
+        postUp({ type: "kb-esc" });
+        return;
+      }
+      setTimeout(function () {
+        var still = el && el.isConnected && readMenuOpen(el, false);
+        if (!still) {
+          menuGen++;
+          if (el) el.setAttribute("data-kb-open", "0");
+          signalMenu(false);
+          hideStrayDrawer();
+          return;
+        }
+        openMenu();
+      }, 80);
+    }, true);
     return;
   }
 
@@ -483,10 +627,7 @@
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
     root.addEventListener("resize", function () { plate.textContent = plateText(); });
     hideDupes();
-    if (root.MutationObserver) {
-      var watch = new MutationObserver(function () { hideDupes(); });
-      watch.observe(document.body, { childList: true, subtree: true });
-    }
+    watchDupes();
   }
   if (document.body) draw();
   else document.addEventListener("DOMContentLoaded", draw);
