@@ -1,5 +1,10 @@
 # Ginger
 
+## 1.0.6 — 2026-10-02
+- Ginger speaks the Hub language: English, Ukrainian, Russian, Spanish, Arabic, Dari, Kinyarwanda, and Tigrinya.
+- Arabic and Dari read right to left. The floor plan stays the same way round.
+- Read it to me uses that language’s voice, or shows “No voice yet”.
+
 ## 1.0.5 — 2026-10-01
 - Plan name and ceiling have visible labels. The footer line is darker.
 - On a short screen, the tools wrap under the sign-in chips and Properties opens from a button.

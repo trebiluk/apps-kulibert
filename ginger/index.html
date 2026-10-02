@@ -4,8 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Ginger 1.0.5 — floor plan</title>
+  <title>Ginger 1.0.6 — floor plan</title>
+  <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
   <link rel="stylesheet" href="./styles.css" />
+  <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
 <body data-theme="paper">
@@ -15,39 +17,39 @@
         <rect x="3" y="3" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"/>
         <path d="M8 22 L16 8 L24 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
       </svg>
-      <span class="brand">GINGER</span>
-      <span class="chip" id="chip" title="version">v1.0.5</span>
+      <span class="brand"><bdi>GINGER</bdi></span>
+      <span class="chip" id="chip" title="version">v1.0.6</span>
       <nav class="tools" aria-label="Draw tools">
-        <button type="button" data-tool="select" aria-pressed="true">Select</button>
-        <button type="button" data-tool="wall"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4v18H5zM15 3h4v18h-4z" fill="currentColor"/></svg>Wall</button>
-        <button type="button" data-tool="door"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8v18H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 21a8 8 0 0 0 0-16" fill="none" stroke="currentColor" stroke-width="2"/></svg>Door</button>
-        <button type="button" data-tool="window"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 5v14M3 12h18" stroke="currentColor" stroke-width="2"/></svg>Window</button>
-        <button type="button" data-tool="room"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg>Room</button>
-        <button type="button" data-tool="item"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 14v5M18 14v5" stroke="currentColor" stroke-width="2"/></svg>Item</button>
+        <button type="button" data-tool="select" aria-pressed="true"><span data-i18n="tool.select">Select</span></button>
+        <button type="button" data-tool="wall"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4v18H5zM15 3h4v18h-4z" fill="currentColor"/></svg><span data-i18n="tool.wall">Wall</span></button>
+        <button type="button" data-tool="door"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8v18H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 21a8 8 0 0 0 0-16" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="tool.door">Door</span></button>
+        <button type="button" data-tool="window"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 5v14M3 12h18" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="tool.window">Window</span></button>
+        <button type="button" data-tool="room"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="tool.room">Room</span></button>
+        <button type="button" data-tool="item"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="8" width="18" height="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M6 14v5M18 14v5" stroke="currentColor" stroke-width="2"/></svg><span data-i18n="tool.item">Item</span></button>
       </nav>
-      <button type="button" id="props-toggle" aria-expanded="false" aria-controls="side">Properties</button>
-      <button type="button" id="undo">Undo</button>
-      <button type="button" id="redo">Redo</button>
-      <button type="button" id="theme">Night</button>
-      <button type="button" id="lab3d" aria-pressed="false">3D peek</button>
-      <button type="button" id="export">Export</button>
-      <button type="button" id="imp">Import</button>
+      <button type="button" id="props-toggle" aria-expanded="false" aria-controls="side"><span data-i18n="props">Properties</span></button>
+      <button type="button" id="undo"><span data-i18n="undo">Undo</span></button>
+      <button type="button" id="redo"><span data-i18n="redo">Redo</span></button>
+      <button type="button" id="theme"><span data-i18n="night">Night</span></button>
+      <button type="button" id="lab3d" aria-pressed="false"><span data-i18n="peek">3D peek</span></button>
+      <button type="button" id="export"><span data-i18n="export">Export</span></button>
+      <button type="button" id="imp"><span data-i18n="import">Import</span></button>
       <details class="help" id="ginger-help">
-        <summary>Help</summary>
+        <summary><span data-i18n="help">Help</span></summary>
         <div class="help-panel">
           <ol class="help-steps help-en">
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg>Draw a wall</li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg>Add a door</li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/><text x="24" y="20" text-anchor="middle" font-size="9" fill="currentColor">Room</text></svg>Name the room</li>
+            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg><span data-i18n="help.wall">Draw a wall</span></li>
+            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg><span data-i18n="help.door">Add a door</span></li>
+            <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/><text x="24" y="20" text-anchor="middle" font-size="9" fill="currentColor">Room</text></svg><span data-i18n="help.room">Name the room</span></li>
           </ol>
           <ol class="help-steps help-ar" lang="ar">
             <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg>ارسم جدارًا</li>
             <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg>أضف بابًا</li>
             <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/></svg>سمِّ الغرفة</li>
           </ol>
-          <p class="help-en">What’s new in 1.0.5: labels, bigger plan words, and room-name chips. Plans stay on this Chromebook.</p>
+          <p class="help-en" data-i18n="help.new">What’s new in 1.0.6: Ginger speaks your language. The plan stays the same way round.</p>
           <p class="help-ar" lang="ar">الجديد: أسماء الغرف جاهزة. المخطط يبقى على هذا الجهاز.</p>
-          <button type="button" id="read-help"><span class="help-en">Read it to me</span><span class="help-ar" lang="ar">اقرأها لي</span></button>
+          <button type="button" id="read-help"><span data-i18n="help.read">Read it to me</span></button>
         </div>
       </details>
       <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
@@ -55,35 +57,35 @@
     <main class="stage">
       <canvas id="plan" width="1400" height="900" aria-label="Floor plan. One grid square is one foot."></canvas>
       <aside class="side" id="side" tabindex="0" aria-label="Properties">
-        <h2>Properties</h2>
+        <h2 data-i18n="props">Properties</h2>
         <div class="props" id="props"></div>
-        <h2>Items</h2>
+        <h2 data-i18n="sched.items">Items</h2>
         <div class="items" aria-label="Furniture symbols">
-          <button type="button" data-item="table" aria-pressed="true">Table</button>
-          <button type="button" data-item="bed">Bed</button>
-          <button type="button" data-item="chair">Chair</button>
-          <button type="button" data-item="sofa">Sofa</button>
-          <button type="button" data-item="toilet">Toilet</button>
-          <button type="button" data-item="sink">Sink</button>
+          <button type="button" data-item="table" aria-pressed="true"><span data-i18n="item.table">Table</span></button>
+          <button type="button" data-item="bed"><span data-i18n="item.bed">Bed</span></button>
+          <button type="button" data-item="chair"><span data-i18n="item.chair">Chair</span></button>
+          <button type="button" data-item="sofa"><span data-i18n="item.sofa">Sofa</span></button>
+          <button type="button" data-item="toilet"><span data-i18n="item.toilet">Toilet</span></button>
+          <button type="button" data-item="sink"><span data-i18n="item.sink">Sink</span></button>
         </div>
-        <h2>Room schedule</h2>
-        <div class="sched"><table id="rooms"><thead><tr><th>Mark</th><th>Name</th><th>Area (sf)</th></tr></thead><tbody></tbody></table></div>
-        <h2>Door schedule</h2>
-        <div class="sched"><table id="doors"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
-        <h2>Window schedule</h2>
-        <div class="sched"><table id="wins"><thead><tr><th>Mark</th><th>Width</th><th>Type</th></tr></thead><tbody></tbody></table></div>
-        <h2>3D peek</h2>
-        <p class="hint">Off until you ask. A light picture of this level — not a game view.</p>
+        <h2 data-i18n="sched.rooms">Room schedule</h2>
+        <div class="sched"><table id="rooms"><thead><tr><th data-i18n="sched.mark">Mark</th><th data-i18n="sched.name">Name</th><th data-i18n="sched.area">Area (sf)</th></tr></thead><tbody></tbody></table></div>
+        <h2 data-i18n="sched.doors">Door schedule</h2>
+        <div class="sched"><table id="doors"><thead><tr><th data-i18n="sched.mark">Mark</th><th data-i18n="sched.width">Width</th><th data-i18n="sched.type">Type</th></tr></thead><tbody></tbody></table></div>
+        <h2 data-i18n="sched.windows">Window schedule</h2>
+        <div class="sched"><table id="wins"><thead><tr><th data-i18n="sched.mark">Mark</th><th data-i18n="sched.width">Width</th><th data-i18n="sched.type">Type</th></tr></thead><tbody></table></div>
+        <h2 data-i18n="sched.peek">3D peek</h2>
+        <p class="hint" data-i18n="hint.peek">Off until you ask. A light picture of this level — not a game view.</p>
         <div class="peek-wrap" id="peekWrap"><canvas id="peek" width="640" height="320" aria-label="Isometric peek of the walls"></canvas></div>
       </aside>
     </main>
     <footer class="foot">
-      <span id="status">Select a wall, door, window, room, or corner.</span>
-      <span class="whats">What’s new: 1.0.5 labels, picture help, and room-name chips.</span>
-      <span class="quiet">Level 1 stays on this Chromebook. No names. No accounts.</span>
+      <span id="status" data-i18n="status.pick">Select a wall, door, window, room, or corner.</span>
+      <span class="whats" data-i18n="foot.new">What’s new: Ginger speaks your language. The plan stays the same way round.</span>
+      <span class="quiet" data-i18n="foot.stay">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="ginger" data-version="v1.0.5" data-help="#ginger-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="ginger" data-version="v1.0.6" data-help="#ginger-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script type="module" src="./app.js"></script>
 </body>

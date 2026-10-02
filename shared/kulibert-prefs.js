@@ -236,13 +236,14 @@
     line.lang = htmlLang(p.lang);
     line.dir = dirOf(p.lang);
     line.textContent = words;
-    if (!p.read || !soundOn()) return;
+    if (!soundOn()) return;
     withVoices(function (voices) {
       var voice = voiceFor(p.lang, voices);
       if (!voice || !root.speechSynthesis) {
         line.textContent = words + " " + noVoiceLine();
         return;
       }
+      if (!p.read) return;
       try {
         root.speechSynthesis.cancel();
         var u = new SpeechSynthesisUtterance(words);

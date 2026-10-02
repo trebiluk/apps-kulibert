@@ -18,6 +18,7 @@ import {
   roundFt,
   seed,
 } from "./model.js";
+import { ROOM_CANON, gingerDir, gingerLang, roomLabel, tr } from "./strings.js";
 
 const KEY = "ginger.plan.v2";
 const $ = (id) => document.getElementById(id);
@@ -36,7 +37,7 @@ let selected = null;
 let drag = null;
 let hist = [];
 let future = [];
-const ROOM_NAMES = ["Bedroom", "Kitchen", "Bath", "Living", "Studio"];
+const ROOM_NAMES = ROOM_CANON;
 
 function kpScale() {
   const n = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--kp-scale"));
@@ -62,14 +63,32 @@ function mapRootSize() {
 }
 
 function applyHelpDir() {
+  const lang = gingerLang();
   const help = $("ginger-help");
-  if (!help) return;
-  if (document.documentElement.getAttribute("data-kp-lang") === "ar") help.setAttribute("dir", "rtl");
-  else help.removeAttribute("dir");
+  const root = document.documentElement;
+  root.lang = lang === "fa-AF" ? "fa-AF" : lang;
+  root.dir = gingerDir(lang);
+  root.setAttribute("data-kp-lang", lang);
+  if (help) {
+    if (gingerDir(lang) === "rtl") help.setAttribute("dir", "rtl");
+    else help.removeAttribute("dir");
+  }
+  document.querySelectorAll("[data-i18n]").forEach((node) => {
+    const key = node.getAttribute("data-i18n");
+    if (!key) return;
+    if (node.id === "theme") return;
+    node.textContent = tr(key, lang);
+  });
+  const theme = $("theme");
+  const themeLabel = theme && theme.querySelector("[data-i18n]");
+  if (themeLabel) themeLabel.textContent = tr(document.body.getAttribute("data-theme") === "night" ? "paper" : "night", lang);
+  const bar = document.querySelector(".bar");
+  if (bar) bar.setAttribute("dir", "ltr");
 }
 
 function roomPicks() {
-  return `<div class="name-picks" role="group" aria-label="Room names">${ROOM_NAMES.map((n) => `<button type="button" class="name-pick" data-room-name="${n}">${n}</button>`).join("")}</div>`;
+  const lang = gingerLang();
+  return `<div class="name-picks" role="group" aria-label="${tr("hint.names", lang)}">${ROOM_NAMES.map((n) => `<button type="button" class="name-pick" data-room-name="${n}">${roomLabel(n, lang)}</button>`).join("")}</div>`;
 }
 
 function bindRoomPicks(key) {
@@ -78,7 +97,7 @@ function bindRoomPicks(key) {
       const rooms = roomsOf(plan);
       const room = key ? rooms.find((r) => r.key === key) : rooms[0];
       if (!room) {
-        $("status").textContent = "Close the walls first, then pick a room name.";
+        $("status").textContent = tr("status.needRoom");
         return;
       }
       pushHist();
@@ -295,7 +314,7 @@ function draw() {
     ctx.fillStyle = cssVar("--aw-fg");
     ctx.font = labelFont(16, "600");
     ctx.textAlign = "center";
-    ctx.fillText(room.name, c.x, c.y);
+    ctx.fillText(roomLabel(room.name), c.x, c.y);
     ctx.font = labelFont(14);
     ctx.fillStyle = contrastOn() ? "#000" : cssVar("--aw-muted");
     ctx.fillText(Math.round(room.area) + " sf", c.x, c.y + nameSize + 4);
@@ -417,7 +436,7 @@ function drawItem(it) {
   ctx.fillStyle = cssVar("--aw-fg");
   ctx.font = labelFont(14);
   ctx.textAlign = "center";
-  ctx.fillText(cat.label, 0, 4);
+  ctx.fillText(tr("item." + it.kind) || cat.label, 0, 4);
   ctx.restore();
 }
 
@@ -453,22 +472,22 @@ function drawPeek() {
 function schedules() {
   const rooms = roomsOf(plan);
   $("rooms").tBodies[0].innerHTML =
-    rooms.map((r) => `<tr><td>${r.mark}</td><td>${esc(r.name)}</td><td>${Math.round(r.area)}</td></tr>`).join("") ||
-    `<tr><td colspan="3">Close the walls to make a room.</td></tr>`;
+    rooms.map((r) => `<tr><td>${r.mark}</td><td>${esc(roomLabel(r.name))}</td><td>${Math.round(r.area)}</td></tr>`).join("") ||
+    `<tr><td colspan="3">${esc(tr("sched.close"))}</td></tr>`;
   const doors = plan.holes.filter((h) => h.kind === "door");
   const wins = plan.holes.filter((h) => h.kind === "window");
   $("doors").tBodies[0].innerHTML =
     doors.map((d, i) => `<tr><td>D${i + 1}</td><td>${ftIn(d.widthFt)}</td><td>${esc(d.type)}</td></tr>`).join("") ||
-    `<tr><td colspan="3">None</td></tr>`;
+    `<tr><td colspan="3">${esc(tr("sched.none"))}</td></tr>`;
   $("wins").tBodies[0].innerHTML =
     wins.map((n, i) => `<tr><td>W${i + 1}</td><td>${ftIn(n.widthFt)}</td><td>${esc(n.type)}</td></tr>`).join("") ||
-    `<tr><td colspan="3">None</td></tr>`;
+    `<tr><td colspan="3">${esc(tr("sched.none"))}</td></tr>`;
 }
 
 function props() {
   const box = $("props");
   if (!selected) {
-    box.innerHTML = `<p class="hint">${esc(plan.level)} · ${plan.lines.length} walls · ${roomsOf(plan).length} rooms</p><label for="pname">Plan name</label><input id="pname" value="${esc(plan.name)}" /><label for="ceil">Ceiling (ft)</label><input id="ceil" type="number" min="8" max="12" step="1" value="${plan.ceilingFt}" /><p class="hint">Room name</p>${roomPicks()}`;
+    box.innerHTML = `<p class="hint">${esc(plan.level)} · ${plan.lines.length} ${esc(tr("tool.wall"))} · ${roomsOf(plan).length} ${esc(tr("tool.room"))}</p><label for="pname">${esc(tr("prop.plan"))}</label><input id="pname" value="${esc(plan.name)}" /><label for="ceil">${esc(tr("prop.ceiling"))}</label><input id="ceil" type="number" min="8" max="12" step="1" value="${plan.ceilingFt}" /><p class="hint">${esc(tr("hint.names"))}</p>${roomPicks()}`;
     $("pname").onchange = (e) => {
       pushHist();
       plan.name = String(e.target.value || "").slice(0, 40) || "Studio plan";
@@ -485,7 +504,7 @@ function props() {
   }
   if (selected.kind === "line") {
     const line = plan.lines.find((l) => l.id === selected.id);
-    box.innerHTML = `<p>Wall · ${lineLength(plan, line).toFixed(1)} ft</p><label for="th">Thickness</label><select id="th"><option value="4">4 in</option><option value="6">6 in</option><option value="8">8 in</option></select><button type="button" id="del">Delete wall</button>`;
+    box.innerHTML = `<p>${esc(tr("tool.wall"))} · ${lineLength(plan, line).toFixed(1)} ft</p><label for="th">${esc(tr("prop.thick"))}</label><select id="th"><option value="4">4 in</option><option value="6">6 in</option><option value="8">8 in</option></select><button type="button" id="del">${esc(tr("prop.delWall"))}</button>`;
     $("th").value = String(line.thickIn || 6);
     $("th").onchange = (e) => {
       pushHist();
@@ -506,7 +525,7 @@ function props() {
       props();
       return;
     }
-    box.innerHTML = `<label for="rn">Room name</label><input id="rn" value="${esc(room.name)}" />${roomPicks()}<p>${Math.round(room.area)} sf · from the closed walls</p>`;
+    box.innerHTML = `<label for="rn">${esc(tr("prop.room"))}</label><input id="rn" value="${esc(room.name)}" />${roomPicks()}<p>${Math.round(room.area)} sf · ${esc(tr("sched.close"))}</p>`;
     $("rn").onchange = (e) => {
       pushHist();
       const name = e.target.value.slice(0, 32) || "Room";
@@ -519,7 +538,7 @@ function props() {
   if (selected.kind === "door" || selected.kind === "window") {
     const h = plan.holes.find((x) => x.id === selected.id);
     const types = h.kind === "door" ? ["Swing", "Pocket", "Bifold"] : ["Fixed", "Slider", "Awning"];
-    box.innerHTML = `<label for="wd">Width (ft)</label><input id="wd" type="number" min="1" max="12" step="0.5" value="${h.widthFt}" /><label for="tp">Type</label><select id="tp">${types.map((t) => `<option>${t}</option>`).join("")}</select>${h.kind === "door" ? `<button type="button" id="flip">Flip swing</button>` : ""}<button type="button" id="del">Delete</button>`;
+    box.innerHTML = `<label for="wd">${esc(tr("prop.width"))}</label><input id="wd" type="number" min="1" max="12" step="0.5" value="${h.widthFt}" /><label for="tp">${esc(tr("prop.type"))}</label><select id="tp">${types.map((t) => `<option>${t}</option>`).join("")}</select>${h.kind === "door" ? `<button type="button" id="flip">${esc(tr("prop.flip"))}</button>` : ""}<button type="button" id="del">${esc(tr("prop.del"))}</button>`;
     $("tp").value = types.includes(h.type) ? h.type : types[0];
     $("wd").onchange = (e) => {
       pushHist();
@@ -547,7 +566,7 @@ function props() {
   }
   if (selected.kind === "item") {
     const it = plan.items.find((x) => x.id === selected.id);
-    box.innerHTML = `<p>${esc((CATALOG[it.kind] || CATALOG.table).label)}</p><button type="button" id="rot">Turn 90°</button><button type="button" id="del">Delete</button>`;
+    box.innerHTML = `<p>${esc(tr("item." + it.kind) || (CATALOG[it.kind] || CATALOG.table).label)}</p><button type="button" id="rot">${esc(tr("prop.turn"))}</button><button type="button" id="del">${esc(tr("prop.del"))}</button>`;
     $("rot").onclick = () => {
       pushHist();
       it.rot = ((it.rot || 0) + Math.PI / 2) % (Math.PI * 2);
@@ -562,7 +581,7 @@ function props() {
   }
   if (selected.kind === "vertex") {
     const v = plan.vertices.find((x) => x.id === selected.id);
-    box.innerHTML = `<p>Corner ${v.x.toFixed(1)} ft, ${v.y.toFixed(1)} ft</p><p class="hint">Drag the corner on the plan.</p>`;
+    box.innerHTML = `<p>${esc(tr("tool.select"))} ${v.x.toFixed(1)} ft, ${v.y.toFixed(1)} ft</p><p class="hint">${esc(tr("prop.corner"))}</p>`;
   }
 }
 
@@ -709,7 +728,8 @@ $("redo").onclick = () => {
 $("theme").onclick = () => {
   theme = theme === "paper" ? "night" : "paper";
   document.body.setAttribute("data-theme", theme);
-  $("theme").textContent = theme === "paper" ? "Night" : "Paper";
+  const themeLabel = $("theme") && $("theme").querySelector("[data-i18n]");
+  if (themeLabel) themeLabel.textContent = tr(theme === "paper" ? "night" : "paper");
   draw();
   if (lab) drawPeek();
 };
@@ -801,24 +821,36 @@ $("props-toggle").onclick = () => {
   $("props-toggle").setAttribute("aria-expanded", open ? "true" : "false");
 };
 $("read-help").onclick = () => {
-  const ar = document.documentElement.getAttribute("data-kp-lang") === "ar";
-  const text = ar ? "ارسم جدارًا. أضف بابًا. سمِّ الغرفة." : "Draw a wall. Add a door. Name the room.";
-  if (window.KulibertPrefs && typeof window.KulibertPrefs.say === "function") window.KulibertPrefs.say(text);
-  else if (window.speechSynthesis) {
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = ar ? "ar" : "en";
-    window.speechSynthesis.cancel();
-    window.speechSynthesis.speak(u);
-  }
+  const lang = gingerLang();
+  const text = tr("help.speak", lang);
+  const prefs = window.KulibertPrefs;
+  if (prefs && typeof prefs.say === "function") prefs.say(text, lang);
+  else $("status").textContent = text;
 };
 mapRootSize();
 applyHelpDir();
 function onPrefs() {
   mapRootSize();
   applyHelpDir();
+  try { props(); schedules(); } catch { /* first paint */ }
   draw();
 }
 if (window.KulibertPrefs && typeof window.KulibertPrefs.on === "function") window.KulibertPrefs.on(onPrefs);
+window.addEventListener("kulibert-lang", onPrefs);
+window.addEventListener("message", (ev) => {
+  const data = ev.data;
+  if (!data || (data.type !== "kulibert-lang" && data.type !== "kp-lang") || !data.lang) return;
+  let host = "";
+  try { host = new URL(ev.origin).hostname; } catch { return; }
+  const local = location.hostname;
+  if (!(host === local || host === "kulibert.net" || host.endsWith(".kulibert.net"))) return;
+  const prefs = window.KulibertPrefs;
+  if (prefs && typeof prefs.acceptLang === "function" && prefs.lang !== data.lang) prefs.acceptLang(data.lang);
+  onPrefs();
+});
+if (window.KulibertI18n && typeof window.KulibertI18n.ready === "function") {
+  window.KulibertI18n.ready(gingerLang(), onPrefs);
+}
 document.addEventListener("DOMContentLoaded", onPrefs);
 window.addEventListener("resize", () => draw());
 setTool("select");

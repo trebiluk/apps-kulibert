@@ -37,9 +37,10 @@
 * { box-sizing: border-box; }
 html, body { height: 100%; margin: 0; }
 body {
-  font-family: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  font-family: var(--kp-font, "IBM Plex Sans", "Segoe UI", system-ui, sans-serif);
   background: var(--aw-surface);
   color: var(--aw-fg);
+  line-height: 1.35;
 }
 button, input, select { font: inherit; color: inherit; }
 button, [role="button"] { cursor: pointer; }
@@ -214,15 +215,19 @@ html[data-kp-size="L"] body[data-theme],
 html[data-kp-size="XL"] body[data-theme] {
   font-size: 1rem !important;
 }
-html[data-kp-lang="ar"] #ginger-help { direction: rtl; }
-html[data-kp-lang="ar"] .help-en { display: none; }
-html[data-kp-lang="ar"] .help-ar { display: block; }
-html[data-kp-lang="ar"] ol.help-ar { display: grid; }
-html[data-kp-lang="ar"] .stage,
-html[data-kp-lang="ar"] canvas,
-html[data-kp-lang="ar"] .side,
-html[data-kp-lang="ar"] .bar,
-html[data-kp-lang="ar"] .foot { direction: ltr; }
+html[dir="rtl"] .bar,
+html[dir="rtl"] .tools { direction: ltr; }
+html[dir="rtl"] .side,
+html[dir="rtl"] .foot,
+html[dir="rtl"] .help-panel,
+html[dir="rtl"] .props { direction: rtl; text-align: start; }
+html[dir="rtl"] .stage,
+html[dir="rtl"] canvas#plan { direction: ltr; }
+html[data-kp-lang="ar"] body,
+html[data-kp-lang="fa-AF"] body,
+html[data-kp-lang="ti"] body { line-height: 1.5; }
+.help-ar { display: none; }
+html, body { overflow-x: hidden; }
 html[data-kp-contrast="1"] body[data-theme] {
   --aw-bg: #fff;
   --aw-surface: #fff;
