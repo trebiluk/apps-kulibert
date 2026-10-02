@@ -1652,8 +1652,14 @@
     } catch (e) {}
     return false;
   }
+  var followPrefs = false;
   function lang() {
     if (classic()) return "en";
+    if (followPrefs) {
+      try {
+        if (root.KulibertPrefs && OK[root.KulibertPrefs.lang]) return root.KulibertPrefs.lang;
+      } catch (ePick) {}
+    }
     try {
       var q = new URLSearchParams(location.search).get("lang") || "";
       if (OK[q]) return q;
@@ -1752,12 +1758,14 @@
     }, 40);
   }
   root.addEventListener("kulibert-lang", function (ev) {
+    followPrefs = true;
     var code = ev && ev.detail && ev.detail.lang;
     if (root.KulibertI18n && root.KulibertI18n.ready) root.KulibertI18n.ready(code || lang(), paint);
     else paint();
   });
   root.addEventListener("storage", function (ev) {
     if (!ev || ev.key !== "kulibert-prefs-v1") return;
+    followPrefs = true;
     whenShared(paint);
   });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);

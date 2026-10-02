@@ -1717,6 +1717,54 @@ html[dir="rtl"] #my-saves strong {
 }
 html[dir="rtl"] .drawer { left: 0; right: auto; }
 
+/* MU 2.35.3 — dock rows are easy to tap. Arabic menu stays on the physical left. */
+#dock-left button {
+  min-height: 44px !important;
+  height: 44px !important;
+  max-height: 44px !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.kb-bar .kb-home {
+  box-sizing: border-box;
+  width: 9.5rem;
+  min-width: 9.5rem;
+  max-width: 9.5rem;
+  justify-content: center;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#menu-langs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+#menu-langs .btn {
+  min-height: 44px;
+  min-width: 44px;
+}
+#menu-langs .btn.on {
+  background: var(--elevated);
+  color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+#whats-line { margin: 0.15rem 0 0.7rem; }
+html[dir="rtl"] .kb-bar { direction: ltr; }
+html[dir="rtl"] .drawer,
+html[dir="rtl"] body.menu-open .drawer {
+  left: 0 !important;
+  right: auto !important;
+}
+html[dir="rtl"] .drawer { transform: translateX(-105%); }
+html[dir="rtl"] body.menu-open .drawer { transform: none !important; }
+html[dir="rtl"] .kb-menu {
+  position: relative;
+  left: auto;
+  right: auto;
+}
+
 
 
 

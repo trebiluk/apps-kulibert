@@ -1355,7 +1355,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.2",
+        version: "MU 2.35.3",
         event: "score",
         level: id,
         score: score,
@@ -2758,6 +2758,29 @@
     document.body.classList.remove("menu-open");
     $("menu-btn").setAttribute("aria-expanded", "false");
   });
+  function markLang() {
+    const code = (window.KulibertPrefs && window.KulibertPrefs.lang) || "en";
+    document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+      const on = btn.getAttribute("data-set-lang") === code;
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+  document.querySelectorAll("[data-set-lang]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const code = btn.getAttribute("data-set-lang");
+      if (window.KulibertPrefs && window.KulibertPrefs.acceptLang) window.KulibertPrefs.acceptLang(code);
+      markLang();
+    });
+  });
+  markLang();
+  window.addEventListener("kulibert-lang", markLang);
+  if ($("menu-help")) {
+    $("menu-help").addEventListener("click", () => {
+      const go = document.querySelector('#drawer h2[data-mu="go"]');
+      if (go && go.scrollIntoView) go.scrollIntoView({ block: "start" });
+    });
+  }
   $("tempo").addEventListener("input", (e) => {
     state.song.bpm = Number(e.target.value);
     $("tempo-read").textContent = String(state.song.bpm);

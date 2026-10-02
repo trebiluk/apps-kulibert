@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.3** · 2026-10-02 · channel **live**
+
+Tool rows are easy to tap. Menu has What's new and Settings. Arabic menu stays on the left.
+
+## Earlier
+
 **Chip: MU 2.35.2** · 2026-10-01 · channel **live**
 
 DJ Berty follows the Hub language. Beats still play left to right. Song names stay English.
