@@ -40,7 +40,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "The Hub speaks your language, and Settings opens from the left.",
+  "whatsNewLine": "The Menu button at the top left opens in every app.",
   "myProgress": "My progress",
   "staff": "Staff",
   "signOut": "Sign out",
@@ -175,7 +175,7 @@
     if (pending[name]) { pending[name].push(cb || function () {}); return; }
     pending[name] = cb ? [cb] : [];
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v3:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v4:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -184,12 +184,12 @@
       finish(name);
       return;
     }
-    fetch("/shared/i18n/" + name + ".json?v=2026-10-07-polish", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch("/shared/i18n/" + name + ".json?v=2026-10-08-menu", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (data) {
       if (data && typeof data === "object") {
         packs[name] = data;
-        try { sessionStorage.setItem("kulibert-i18n-v3:" + name, JSON.stringify(data)); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v4:" + name, JSON.stringify(data)); } catch (e3) {}
       }
     }).catch(function () {}).then(function () { finish(name); });
   }

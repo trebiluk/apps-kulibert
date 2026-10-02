@@ -1,6 +1,6 @@
 /* Shared Tech Room bar. Home always means the Hub. */
 .kb-bar{
-  position:fixed;top:0;left:0;right:0;z-index:60;height:48px;
+  position:fixed;top:0;left:0;right:0;z-index:90;height:48px;
   display:flex;align-items:center;gap:.35rem;padding:0 .4rem;
   flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;direction:ltr;
   background:#050814;color:#e8f7ff;
@@ -26,6 +26,34 @@
   .kb-home{flex:0 0 auto}
   .kb-menu,.kb-home,.kb-alias{white-space:nowrap}
   .kb-help{display:none}
+  .kb-plate{flex:0 0 auto; min-width:0; max-width:none; overflow:visible; text-overflow:clip}
+}
+.kb-menu-dupe{display:none !important}
+html:not([data-theme="classic"]) .kb-bar .kb-menu{display:inline-flex !important}
+html:not([data-theme="classic"]) #land-menu.kb-menu-dupe{display:none !important}
+.kb-drawer{
+  position:fixed; z-index:100; top:48px; left:0; right:auto; bottom:0;
+  width:min(22rem, 88vw); box-sizing:border-box; overflow:auto;
+  direction:ltr; text-align:left; padding:.8rem .85rem 1.2rem;
+  background:#0c1730; color:#e8f7ff; border-right:1px solid #1e3a55;
+}
+.kb-drawer[hidden]{display:none !important}
+.kb-drawer-title{margin:0 0 .35rem; font-weight:750; font-size:1rem}
+.kb-drawer-news{margin:0 0 .7rem; font-size:.95rem; line-height:1.35}
+.kb-drawer a,.kb-drawer > button{
+  display:flex; align-items:center; width:100%; min-height:44px; min-width:44px;
+  margin:.2rem 0; padding:0 .8rem; border-radius:12px; box-sizing:border-box;
+  border:1px solid #24506d; background:#0b152c; color:#e8f7ff;
+  font:700 .95rem/1.2 Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
+  cursor:pointer; text-align:left; text-decoration:none;
+}
+.kb-drawer-langs{display:flex; flex-wrap:wrap; gap:.35rem; margin:.2rem 0 .4rem}
+.kb-drawer-langs[hidden]{display:none !important}
+.kb-drawer-langs button{
+  min-height:44px; min-width:44px; padding:0 .7rem; border-radius:999px; box-sizing:border-box;
+  border:1px solid #24506d; background:#0b152c; color:#e8f7ff;
+  font:700 .85rem/1 Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
+  cursor:pointer;
 }
 .kb-settings[hidden],.kb-toast[hidden]{display:none !important}
 .kb-settings[hidden],.kb-toast[hidden]{display:none !important}
