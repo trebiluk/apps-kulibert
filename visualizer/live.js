@@ -1,4 +1,4 @@
-/* Re-apply Hub language after app.js paints English. Canvas is not mirrored. */
+/* Re-apply Hub language after app.js paints English. Does not call VzI18n.paint. */
 (function (root) {
   var api = root.VzI18n;
   if (!api) return;
@@ -34,15 +34,24 @@
       if (title && step.title) title.textContent = step.title;
       if (body && step.body) body.textContent = step.body;
       var next = document.getElementById("lesson-next");
-      if (next) next.textContent = next.classList.contains("ready") && n === 4 ? t("done") : t("iDid");
+      if (next) next.textContent = n === 4 && next.classList.contains("ready") ? t("done") : t("iDid");
       var miss = document.getElementById("lesson-miss");
-      if (miss && miss.textContent === "Got it.") miss.textContent = t("gotIt");
+      if (miss && (miss.textContent === "Got it." || miss.textContent === "Press Play.")) {
+        miss.textContent = miss.textContent === "Got it." ? t("gotIt") : t("les1m");
+      }
     }
-    api.paint();
+    ["chip-label", "chip-live", "foot-chip", "drawer-chip"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = "Viz 0.9.1";
+    });
   }
   root.VzPaintLive = paintLive;
-  root.addEventListener("kulibert-lang", paintLive);
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(paintLive, 40); });
-  else setTimeout(paintLive, 40);
-  setInterval(paintLive, 700);
+  function both() {
+    api.paint();
+    paintLive();
+  }
+  root.addEventListener("kulibert-lang", both);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", function () { setTimeout(both, 60); });
+  else setTimeout(both, 60);
+  setInterval(both, 800);
 })(window);
