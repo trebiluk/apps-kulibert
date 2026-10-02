@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-09-menu"/>
+<meta name="tech-room-rev" content="2026-10-10-sideways"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1613,7 +1613,7 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-09-menu"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-10-sideways"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <style id="hub-polish">
     body.apps-always .lockup-the{color:#f4fdff !important;opacity:1}
@@ -1657,6 +1657,65 @@
     body.apps-always:not(.dock-names) .shell-header .app-dock-item .dock-mono{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;border:1px solid currentColor;font:800 14px/1 Outfit,system-ui,sans-serif}
     #hub-tools .hub-tools-sort > button,#q,.search input{box-sizing:border-box !important;min-height:44px !important;height:44px !important}
     @media (max-width:700px){body.apps-always .hub-tools button{min-height:44px !important}}
+    /* 2026-10-10-sideways: a short phone (landscape) scrolls as one column.
+       Logo and search share one 48px row. Tiles never shrink below two rows.
+       The install tip is one line under the tiles. */
+    @media (max-height: 500px) {
+      html:has(body.apps-always:not(.is-framed)),
+      body.apps-always:not(.is-framed){
+        overflow:auto !important;height:auto !important;max-height:none !important;
+      }
+      body.apps-always:not(.is-framed) .shell{
+        height:auto !important;min-height:100dvh;max-height:none !important;overflow:visible !important;
+      }
+      body.apps-always:not(.is-framed) .shell-mid,
+      body.apps-always:not(.is-framed) #shell-board,
+      body.apps-always:not(.is-framed) #shell-board > .wrap{
+        overflow:visible !important;height:auto !important;max-height:none !important;
+        flex:1 1 auto;min-height:0;
+      }
+      body.apps-always:not(.is-framed) #shell-board > .wrap{flex-shrink:0}
+      body.apps-always:not(.is-framed) .poster{
+        height:48px !important;min-height:48px !important;max-height:48px !important;
+        flex:0 0 48px;overflow:hidden;border-radius:12px;
+      }
+      body.apps-always:not(.is-framed) .hero{
+        height:48px !important;min-height:0 !important;max-height:48px !important;
+        padding:0 .4rem !important;flex-direction:row !important;
+        align-items:center !important;justify-content:flex-start !important;
+        gap:.4rem;text-align:left;
+      }
+      body.apps-always:not(.is-framed) .hero h1{
+        margin:0;flex:0 1 auto;min-width:0;overflow:hidden;
+        display:flex;flex-direction:row;align-items:baseline;gap:.28rem;white-space:nowrap;
+      }
+      body.apps-always:not(.is-framed) .lockup-the{
+        display:inline !important;font-size:.62rem !important;letter-spacing:.14em !important;
+      }
+      body.apps-always:not(.is-framed) .lockup-room{
+        display:inline !important;margin:0 !important;line-height:1 !important;
+        font-size:1.05rem !important;letter-spacing:-.03em !important;
+      }
+      body.apps-always:not(.is-framed) .search{
+        position:relative !important;left:auto !important;bottom:auto !important;transform:none !important;
+        width:auto !important;flex:1 1 auto;min-width:7.5rem;margin:0 !important;
+      }
+      body.apps-always:not(.is-framed) #app-groups{
+        flex:1 1 auto;flex-shrink:0;overflow:visible !important;height:auto !important;
+        min-height:calc((100dvh - 180px) + .75rem);
+      }
+      body.apps-always:not(.is-framed) #alpha-board > a.tile{
+        aspect-ratio:auto !important;width:100%;max-width:none;max-height:none;
+        height:calc((100dvh - 180px) / 2) !important;min-height:72px !important;
+      }
+      body.apps-always:not(.is-framed) .pwa-tip{
+        order:20;flex:0 0 auto;flex-wrap:nowrap;align-items:center;
+        min-height:44px;max-height:48px;margin:.35rem 0 0;padding:0 .45rem 0 .7rem;overflow:hidden;
+      }
+      body.apps-always:not(.is-framed) .pwa-tip span{
+        white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+      }
+    }
   </style>
 </head>
 <body class="apps-always">
@@ -1688,8 +1747,8 @@
       </div>
     </header>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-09-menu</span></p>
-      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Menu opens the app's own menu, with nothing on top of it.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-10-sideways</span></p>
+      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
@@ -1761,7 +1820,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-09-menu</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Menu opens the app's own menu, with nothing on top of it.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-10-sideways</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.4</strong> — Menu opens from the left on every screen.</p>
@@ -1772,8 +1831,9 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.10.1</strong> — The Menu button at the top left opens the menu.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.4.2</strong> — The 3D Cup shows the safety check right there. Tap I'm safe, then fire.</p>
           <ul id="hub-log">
-            <li data-i18n="whatsNewLine">Menu opens the app's own menu, with nothing on top of it.</li>
+            <li data-i18n="whatsNewLine">Tiles show on phones held sideways.</li>
             <li data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</li>
+            <li>Menu opens the app's own menu, with nothing on top of it.</li>
             <li>The Menu button at the top left opens in every app.</li>
             <li>HoldIt HI 1.1.15. Settings is in the left menu.</li>
             <li>SpanCraft SC 1.3.31 · Spire Lab SL 1.3.30. Menu is top-left at every size, and Settings has all 8 languages.</li>
@@ -2163,8 +2223,8 @@
       <iframe id="app-frame" title="App" hidden allowfullscreen allow="accelerometer; gyroscope; magnetometer; fullscreen; orientation-lock"></iframe>
     </div>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-09-menu</span>
-      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Menu opens the app's own menu, with nothing on top of it.</span></span>
+      <span class="hub-foot-rev">rev 2026-10-10-sideways</span>
+      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span></span>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
     </footer>
