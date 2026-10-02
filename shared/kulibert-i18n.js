@@ -79,18 +79,21 @@
   function paint() {
     var nodes = document.querySelectorAll("[data-i18n]");
     for (var i = 0; i < nodes.length; i++) {
-      var v = t(nodes[i].getAttribute("data-i18n"));
-      if (v) nodes[i].textContent = v;
+      var key = nodes[i].getAttribute("data-i18n");
+      var v = t(key);
+      if (v && v !== key) nodes[i].textContent = v;
     }
     var labels = document.querySelectorAll("[data-i18n-label]");
     for (var j = 0; j < labels.length; j++) {
-      var label = t(labels[j].getAttribute("data-i18n-label"));
-      if (label) labels[j].setAttribute("aria-label", label);
+      var labelKey = labels[j].getAttribute("data-i18n-label");
+      var label = t(labelKey);
+      if (label && label !== labelKey) labels[j].setAttribute("aria-label", label);
     }
     var places = document.querySelectorAll("[data-i18n-placeholder]");
     for (var p = 0; p < places.length; p++) {
-      var hint = t(places[p].getAttribute("data-i18n-placeholder"));
-      if (hint) places[p].setAttribute("placeholder", hint);
+      var placeKey = places[p].getAttribute("data-i18n-placeholder");
+      var hint = t(placeKey);
+      if (hint && hint !== placeKey) places[p].setAttribute("placeholder", hint);
     }
   }
   function finish(name) {
