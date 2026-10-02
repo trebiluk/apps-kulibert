@@ -1,5 +1,5 @@
-const CACHE = "sprocket-v1.5.0-access";
-const FILES = ["./", "./index.html", "./styles.css", "./manifest.json", "./icon.svg"];
+const CACHE = "sprocket-v1.5.1-lang";
+const FILES = ["./", "./index.html", "./styles.css", "./lang.js", "./manifest.json", "./icon.svg"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).catch(() => {}));

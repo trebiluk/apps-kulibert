@@ -24,11 +24,23 @@
   "close": "Close",
   "readAloud": "Read aloud",
   "noVoice": "No voice yet. Read the words.",
-  "appsFollow": "Your apps will use this language."
+  "appsFollow": "Your apps will use this language.",
+  "code": "Code",
+  "pin": "PIN",
+  "codeHint": "5 characters",
+  "pinHint": "From your teacher",
+  "signNote": "The code and the PIN come from your teacher. Your name shows after they match.",
+  "signTeacher": "The code and the PIN come from your teacher.",
+  "errWait": "Wait a moment, then try again.",
+  "errNeedBoth": "Enter the 5-character code and the 4-digit PIN.",
+  "errNoMatch": "That code or PIN does not match.",
+  "errNotListed": "That code is not on the list.",
+  "errOffline": "TechWorks did not answer. Try again on the school network."
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var packs = { en: EN };
   var pending = {};
+  var warned = Object.create(null);
   function fileFor(lang) {
     if (!lang || lang === "simple" || !FILES[lang]) return "en";
     return lang;
@@ -41,14 +53,28 @@
     if (attr === "simple" || FILES[attr]) return attr;
     return "en";
   }
-  function t(key) {
-    var k = String(key || "");
-    if (!k) return "";
+  function lookup(pack, k) {
+    if (!pack || typeof pack !== "object") return "";
+    if (!Object.prototype.hasOwnProperty.call(pack, k)) return "";
+    var v = pack[k];
+    return typeof v === "string" && v.trim() ? v : "";
+  }
+  function warnMissing(k) {
+    if (warned[k]) return;
+    warned[k] = 1;
+    try { console.warn("KulibertI18n missing: " + k); } catch (e) {}
+  }
+  function t(key, fallback) {
+    var k = String(key == null ? "" : key);
+    var fb = typeof fallback === "string" ? fallback : "";
+    if (!k) return fb || k;
     var file = fileFor(current());
-    var pack = packs[file];
-    if (pack && pack[k]) return pack[k];
-    if (EN[k]) return EN[k];
-    return "";
+    var hit = lookup(packs[file], k);
+    if (hit) return hit;
+    var enHit = lookup(file === "en" ? EN : (packs.en || EN), k) || lookup(EN, k);
+    if (enHit) return enHit;
+    if (!pending[file]) warnMissing(k);
+    return fb || k;
   }
   function paint() {
     var nodes = document.querySelectorAll("[data-i18n]");
@@ -61,6 +87,11 @@
       var label = t(labels[j].getAttribute("data-i18n-label"));
       if (label) labels[j].setAttribute("aria-label", label);
     }
+    var places = document.querySelectorAll("[data-i18n-placeholder]");
+    for (var p = 0; p < places.length; p++) {
+      var hint = t(places[p].getAttribute("data-i18n-placeholder"));
+      if (hint) places[p].setAttribute("placeholder", hint);
+    }
   }
   function finish(name) {
     var waiters = pending[name] || [];
@@ -72,7 +103,7 @@
     if (pending[name]) { pending[name].push(cb || function () {}); return; }
     pending[name] = cb ? [cb] : [];
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v1:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v2:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -86,7 +117,7 @@
     }).then(function (data) {
       if (data && typeof data === "object") {
         packs[name] = data;
-        try { sessionStorage.setItem("kulibert-i18n-v1:" + name, JSON.stringify(data)); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v2:" + name, JSON.stringify(data)); } catch (e3) {}
       }
     }).catch(function () {}).then(function () { finish(name); });
   }

@@ -51,8 +51,15 @@ body.dark .chip, body.dark .btn.ghost, body.dark input, body.dark select, body.d
 .sr:focus { position: fixed; left: 8px; top: 8px; width: auto; height: auto; clip: auto; overflow: visible; background: #000; color: #fff; padding: 8px 12px; z-index: 80; }
 html, body {
   margin: 0; min-height: 100%; background: var(--bg); color: var(--ink);
-  font-family: Arial, Helvetica, sans-serif; font-size: var(--font); line-height: 1.35;
+  font-family: var(--kp-font), Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", Arial, Helvetica, sans-serif;
+  font-size: var(--font); line-height: 1.35;
 }
+html[data-kp-lang="ar"] body,
+html[data-kp-lang="fa-AF"] body,
+html[data-kp-lang="ti"] body { line-height: 1.55; }
+html[dir="rtl"] .kb-bar,
+html[dir="rtl"] .topbar,
+html[dir="rtl"] .nav { direction: ltr; }
 body {
   padding-bottom: calc(84px + env(safe-area-inset-bottom, 0px));
   padding-left: env(safe-area-inset-left, 0px);

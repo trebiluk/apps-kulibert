@@ -22,5 +22,16 @@
   "close": "Funga",
   "readAloud": "Soma mu ijwi riranguruye",
   "noVoice": "Nta jwi rirahaba. Soma amagambo.",
-  "appsFollow": "Porogaramu zawe zizakoresha uru rurimi."
+  "appsFollow": "Porogaramu zawe zizakoresha uru rurimi.",
+  "code": "Kode",
+  "pin": "PIN",
+  "codeHint": "Inyuguti 5",
+  "pinHint": "Biva ku mwarimu",
+  "signNote": "Kode na PIN biva ku mwarimu. Izina ryawe rigaragara nibyo bihuye.",
+  "signTeacher": "Kode na PIN biva ku mwarimu.",
+  "errWait": "Tegereza gato, hanyuma ongera ugerageze.",
+  "errNeedBoth": "Andika kode y'inyuguti 5 na PIN y'imibare 4.",
+  "errNoMatch": "Iyo kode cyangwa PIN ntibihuye.",
+  "errNotListed": "Iyo kode ntiba ku rutonde.",
+  "errOffline": "TechWorks ntiyashubije. Ongera ugerageze ku murongo w'ishuri."
 }

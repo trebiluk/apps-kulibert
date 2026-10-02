@@ -14,7 +14,18 @@
     "menu": "فهرست",
     "readAloud": "بلند خواندن",
     "noVoice": "هنوز صدا نیست. کلمه‌ها را بخوان.",
-    "appsFollow": "برنامه‌های شما این زبان را استفاده می‌کنند."
+    "appsFollow": "برنامه‌های شما این زبان را استفاده می‌کنند.",
+    "code": "† کود",
+    "pin": "† پین",
+    "codeHint": "† ۵ حرف",
+    "pinHint": "† از معلم",
+    "signNote": "† کود و پین را معلم می دهد. نامت وقتی درست باشد دیده می شود.",
+    "signTeacher": "† کود و پین را معلم می دهد.",
+    "errWait": "† کمی صبر کن، بعد دوباره کوشش کن.",
+    "errNeedBoth": "† کود ۵ حرفی و پین ۴ رقمی را بنویس.",
+    "errNoMatch": "† کود یا پین درست نیست.",
+    "errNotListed": "† این کود در لیست نیست.",
+    "errOffline": "† TechWorks جواب نداد. در شبکهٔ مکتب دوباره کوشش کن."
   },
   "rw": {
     "home": "Ahabanza",
@@ -40,7 +51,18 @@
     "close": "Funga",
     "readAloud": "Soma mu ijwi riranguruye",
     "noVoice": "Nta jwi rirahaba. Soma amagambo.",
-    "appsFollow": "Porogaramu zawe zizakoresha uru rurimi."
+    "appsFollow": "Porogaramu zawe zizakoresha uru rurimi.",
+    "code": "† Kode",
+    "pin": "† PIN",
+    "codeHint": "† Inyuguti 5",
+    "pinHint": "† Biva ku mwarimu",
+    "signNote": "† Kode na PIN biva ku mwarimu. Izina ryawe rigaragara nibyo bihuye.",
+    "signTeacher": "† Kode na PIN biva ku mwarimu.",
+    "errWait": "† Tegereza gato, hanyuma ongera ugerageze.",
+    "errNeedBoth": "† Andika kode y'inyuguti 5 na PIN y'imibare 4.",
+    "errNoMatch": "† Iyo kode cyangwa PIN ntibihuye.",
+    "errNotListed": "† Iyo kode ntiba ku rutonde.",
+    "errOffline": "† TechWorks ntiyashubije. Ongera ugerageze ku murongo w'ishuri."
   },
   "ti": {
     "home": "መበገሲ",
@@ -66,6 +88,17 @@
     "close": "ዕጸው",
     "readAloud": "ብዓው ኣንብብ",
     "noVoice": "ገና ድምጺ የለን። ቃላት ኣንብብ።",
-    "appsFollow": "መተግበሪታትካ እዚ ቋንቋ ክጥቀሙ እየን."
+    "appsFollow": "መተግበሪታትካ እዚ ቋንቋ ክጥቀሙ እየን.",
+    "code": "† ኮድ",
+    "pin": "† ፒን",
+    "codeHint": "† 5 ፊደላት",
+    "pinHint": "† ካብ መምህርካ",
+    "signNote": "† ኮድን ፒንን መምህር እዩ ዝህብ። ስምካ ምስ ዝሰማማዑ ይረአ።",
+    "signTeacher": "† ኮድን ፒንን መምህር እዩ ዝህብ።",
+    "errWait": "† ቅሩብ ተጸበ፣ ደጊምካ ፈትን።",
+    "errNeedBoth": "† ኮድ 5 ፊደላትን ፒን 4 ኣሃዝን ኣእቱ።",
+    "errNoMatch": "† እቲ ኮድ ወይ ፒን ኣይሰማማዕን።",
+    "errNotListed": "† እቲ ኮድ ኣብ ዝርዝር የለን።",
+    "errOffline": "† TechWorks ኣይመለሰን። ኣብ መርበብ ቤት ትምህርቲ ደጊምካ ፈትን።"
   }
 }

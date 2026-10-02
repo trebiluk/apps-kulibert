@@ -111,13 +111,21 @@ const KID = { Node: "Points", Path: "Shape tools", "Distribute H": "Space out �
 function kidWord(label) {
   return KID[label] || label;
 }
+function tx(s) {
+  if (s == null) return "";
+  const text = String(s);
+  if (!text) return text;
+  if (window.DrawinTx) return window.DrawinTx(text);
+  return text;
+}
 
 function uid() {
   return "i" + (seq++).toString(36);
 }
 function toast(msg) {
-  hintEl.textContent = msg;
-  if (window.KulibertPrefs && document.documentElement.getAttribute("data-kp-read") === "1") KulibertPrefs.say(msg);
+  const line = tx(msg);
+  hintEl.textContent = line;
+  if (window.KulibertPrefs && document.documentElement.getAttribute("data-kp-read") === "1") KulibertPrefs.say(line);
 }
 function activeLayer() {
   return state.doc.layers.find((l) => l.id === state.doc.active) || state.doc.layers[0];
@@ -1492,7 +1500,7 @@ function closeSel() {
 async function offsetAsk(sign) {
   const data = await ask({
     title: sign > 0 ? "Outset" : "Inset",
-    body: `<label>Distance <input name="d" type="number" min="0.5" step="0.5" value="8"></label>`,
+    body: `<label>${tx("Distance")} <input name="d" type="number" min="0.5" step="0.5" value="8"></label>`,
     ok: sign > 0 ? "Outset" : "Inset",
   });
   if (!data) return;
@@ -1738,7 +1746,7 @@ function dsRecord(level) {
   var start = window.__dsStart || Date.now();
   api.record({
     app: "drawin",
-    version: "DS 0.3.0",
+    version: "DS 0.3.1",
     event: "save",
     level: level,
     score: 1,
@@ -1936,9 +1944,10 @@ function paste() {
 }
 function ask(opts) {
   dialog.hidden = false;
-  dialogTitle.textContent = opts.title;
+  dialogTitle.textContent = tx(opts.title);
   dialogBody.innerHTML = opts.body;
-  dialogOk.textContent = opts.ok || "OK";
+  dialogOk.textContent = tx(opts.ok || "OK");
+  dialogCancel.textContent = tx("Cancel");
   dialogCancel.hidden = !!opts.hideCancel;
   return new Promise((resolve) => {
     const cleanup = () => {
@@ -1960,12 +1969,12 @@ function ask(opts) {
 }
 async function newDoc() {
   if (countItems()) {
-    const ok = await ask({ title: "New page", body: "<p>Replace the drawing on this page?</p>", ok: "Replace" });
+    const ok = await ask({ title: "New page", body: `<p>${tx("Replace the drawing on this page?")}</p>`, ok: "Replace" });
     if (!ok) return;
   }
   const size = await ask({
     title: "Page size",
-    body: `<label>Width <input name="w" type="number" min="32" value="960"></label><label>Height <input name="h" type="number" min="32" value="640"></label>`,
+    body: `<label>${tx("Width")} <input name="w" type="number" min="32" value="960"></label><label>${tx("Height")} <input name="h" type="number" min="32" value="640"></label>`,
     ok: "Create",
   });
   if (!size) return;
@@ -1990,8 +1999,8 @@ function setTool(id) {
   stage.classList.toggle("tool-select", id === "select");
   stage.classList.toggle("tool-hand", id === "hand");
   for (const btn of toolsEl.querySelectorAll(".tool")) btn.setAttribute("aria-pressed", btn.dataset.tool === id ? "true" : "false");
-  hintEl.textContent = HINTS[id] || "";
-  if (window.KulibertPrefs) KulibertPrefs.say(HINTS[id] || "");
+  hintEl.textContent = tx(HINTS[id] || "");
+  if (window.KulibertPrefs && KulibertPrefs.get && KulibertPrefs.get().read) KulibertPrefs.say(tx(HINTS[id] || ""));
   renderOverlay();
   renderInspector();
 }
@@ -2032,8 +2041,8 @@ function renderChrome() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "menu-btn";
-    btn.textContent = kidWord(name);
-    btn.title = name === kidWord(name) ? name : name;
+    btn.textContent = tx(kidWord(name));
+    btn.title = name === kidWord(name) ? tx(name) : `${tx(name)} · ${tx(kidWord(name))}`;
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       const was = btn.getAttribute("aria-expanded") === "true";
@@ -2042,7 +2051,7 @@ function renderChrome() {
       btn.setAttribute("aria-expanded", "true");
       const rect = btn.getBoundingClientRect();
       menuEl.innerHTML = items.map((item, i) => item
-        ? `<button type="button" data-i="${i}"><span>${item[0]}</span>${item[2] ? `<kbd>${item[2]}</kbd>` : ""}</button>`
+        ? `<button type="button" data-i="${i}"><span>${tx(item[0])}</span>${item[2] ? `<kbd>${item[2]}</kbd>` : ""}</button>`
         : `<div class="sep"></div>`).join("");
       menuEl.hidden = false;
       const box = menuEl.getBoundingClientRect();
@@ -2061,9 +2070,10 @@ function renderChrome() {
     });
     menusEl.appendChild(btn);
   }
-  toolsEl.innerHTML = TOOLS.map(([id, key, label, d]) =>
-    `<button type="button" class="tool" data-tool="${id}" aria-pressed="${id === state.tool}" title="${label} (${key})" aria-label="${kidWord(label)} ${key}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg><span class="tw">${kidWord(label)} ${key}</span></button>`,
-  ).join("");
+  toolsEl.innerHTML = TOOLS.map(([id, key, label, d]) => {
+    const word = tx(kidWord(label));
+    return `<button type="button" class="tool" data-tool="${id}" aria-pressed="${id === state.tool}" title="${tx(label)} (${key})" aria-label="${word}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${d}"/></svg><span class="tw">${word}</span></button>`;
+  }).join("");
   toolsEl.onclick = (e) => {
     const btn = e.target.closest(".tool");
     if (btn) setTool(btn.dataset.tool);
@@ -2096,52 +2106,52 @@ function renderInspector() {
   const sw = one?.sw ?? paint.sw;
   const b = items.length ? unionBBox(items.map(itemBBox)) : null;
   inspector.innerHTML = `
-    <h3>${items.length ? `${items.length} selected` : "Style"}</h3>
-    <div class="swatches">${SWATCHES.map(([c, name]) => `<button type="button" class="swatch${activeFill === c ? " on" : ""}" data-swatch="${c}" style="background:${c}" aria-label="${name}" title="${name}">${activeFill === c ? "✓" : ""}</button>`).join("")}</div>
+    <h3>${items.length ? `${items.length} ${tx("selected")}` : tx("Style")}</h3>
+    <div class="swatches">${SWATCHES.map(([c, name]) => `<button type="button" class="swatch${activeFill === c ? " on" : ""}" data-swatch="${c}" style="background:${c}" aria-label="${tx(name)}" title="${tx(name)}">${activeFill === c ? "✓" : ""}</button>`).join("")}</div>
     <div class="row">
-      <label>Fill <input data-field="fill" type="color" value="${esc(fillSolid && fillSolid !== "none" ? fillSolid : "#1c1915")}"></label>
-      <button type="button" class="mini" data-act="no-fill">None</button>
+      <label>${tx("Fill")} <input data-field="fill" type="color" value="${esc(fillSolid && fillSolid !== "none" ? fillSolid : "#1c1915")}"></label>
+      <button type="button" class="mini" data-act="no-fill">${tx("None")}</button>
     </div>
     <div class="row">
-      <label>Stroke <input data-field="stroke" type="color" value="${esc(strokeSolid && strokeSolid !== "none" ? strokeSolid : "#1c1915")}"></label>
-      <button type="button" class="mini" data-act="no-stroke">None</button>
+      <label>${tx("Stroke")} <input data-field="stroke" type="color" value="${esc(strokeSolid && strokeSolid !== "none" ? strokeSolid : "#1c1915")}"></label>
+      <button type="button" class="mini" data-act="no-stroke">${tx("None")}</button>
     </div>
     <div class="row">
-      <label>Width <input data-field="sw" type="number" min="0" step="0.5" value="${sw}"></label>
-      <label>Opacity <input data-field="opacity" type="number" min="0" max="1" step="0.05" value="${one?.opacity ?? 1}"></label>
+      <label>${tx("Width")} <input data-field="sw" type="number" min="0" step="0.5" value="${sw}"></label>
+      <label>${tx("Opacity")} <input data-field="opacity" type="number" min="0" max="1" step="0.05" value="${one?.opacity ?? 1}"></label>
     </div>
     <div class="row">
-      <label>Dash
+      <label>${tx("Dash")}
         <select data-field="dash">
-          <option value="" ${!one?.dash ? "selected" : ""}>Solid</option>
-          <option value="8 5" ${one?.dash === "8 5" ? "selected" : ""}>Dash</option>
-          <option value="1.5 5" ${one?.dash === "1.5 5" ? "selected" : ""}>Dots</option>
+          <option value="" ${!one?.dash ? "selected" : ""}>${tx("Solid")}</option>
+          <option value="8 5" ${one?.dash === "8 5" ? "selected" : ""}>${tx("Dash")}</option>
+          <option value="1.5 5" ${one?.dash === "1.5 5" ? "selected" : ""}>${tx("Dots")}</option>
         </select>
       </label>
-      <label>Cap
+      <label>${tx("Cap")}
         <select data-field="cap">
-          <option value="butt" ${(one?.cap || "butt") === "butt" ? "selected" : ""}>Butt</option>
-          <option value="round" ${one?.cap === "round" ? "selected" : ""}>Round</option>
-          <option value="square" ${one?.cap === "square" ? "selected" : ""}>Square</option>
+          <option value="butt" ${(one?.cap || "butt") === "butt" ? "selected" : ""}>${tx("Butt")}</option>
+          <option value="round" ${one?.cap === "round" ? "selected" : ""}>${tx("Round")}</option>
+          <option value="square" ${one?.cap === "square" ? "selected" : ""}>${tx("Square")}</option>
         </select>
       </label>
-      <label>Join
+      <label>${tx("Join")}
         <select data-field="join">
-          <option value="miter" ${(one?.join || "miter") === "miter" ? "selected" : ""}>Miter</option>
-          <option value="round" ${one?.join === "round" ? "selected" : ""}>Round</option>
-          <option value="bevel" ${one?.join === "bevel" ? "selected" : ""}>Bevel</option>
+          <option value="miter" ${(one?.join || "miter") === "miter" ? "selected" : ""}>${tx("Miter")}</option>
+          <option value="round" ${one?.join === "round" ? "selected" : ""}>${tx("Round")}</option>
+          <option value="bevel" ${one?.join === "bevel" ? "selected" : ""}>${tx("Bevel")}</option>
         </select>
       </label>
     </div>
-    ${one?.kind === "text" ? `<div class="row"><label>Text <input data-field="text" type="text" value="${esc(one.text)}"></label></div>
-      <div class="row"><label>Size <input data-field="size" type="number" min="1" value="${one.size}"></label>
-      <label>Align <select data-field="anchor"><option value="start" ${one.anchor === "start" ? "selected" : ""}>Left</option><option value="middle" ${one.anchor === "middle" ? "selected" : ""}>Center</option><option value="end" ${one.anchor === "end" ? "selected" : ""}>Right</option></select></label></div>` : ""}
+    ${one?.kind === "text" ? `<div class="row"><label>${tx("Text")} <input data-field="text" type="text" value="${esc(one.text)}"></label></div>
+      <div class="row"><label>${tx("Size")} <input data-field="size" type="number" min="1" value="${one.size}"></label>
+      <label>${tx("Align")} <select data-field="anchor"><option value="start" ${one.anchor === "start" ? "selected" : ""}>${tx("Left")}</option><option value="middle" ${one.anchor === "middle" ? "selected" : ""}>${tx("Center")}</option><option value="end" ${one.anchor === "end" ? "selected" : ""}>${tx("Right")}</option></select></label></div>` : ""}
     ${state.tool === "polygon" || state.tool === "star" || state.tool === "spiral" ? `<div class="row">
-      ${state.tool !== "spiral" ? `<label>Sides <input data-opt="sides" type="number" min="3" max="40" value="${state.tool === "star" ? state.toolOpts.starPoints : state.toolOpts.sides}"></label>` : ""}
-      ${state.tool === "star" ? `<label>Inner <input data-opt="inner" type="number" min="0.05" max="0.95" step="0.05" value="${state.toolOpts.inner}"></label>` : ""}
-      ${state.tool === "spiral" ? `<label>Turns <input data-opt="turns" type="number" min="0.5" max="20" step="0.5" value="${state.toolOpts.turns}"></label>` : ""}
+      ${state.tool !== "spiral" ? `<label>${tx("Sides")} <input data-opt="sides" type="number" min="3" max="40" value="${state.tool === "star" ? state.toolOpts.starPoints : state.toolOpts.sides}"></label>` : ""}
+      ${state.tool === "star" ? `<label>${tx("Inner")} <input data-opt="inner" type="number" min="0.05" max="0.95" step="0.05" value="${state.toolOpts.inner}"></label>` : ""}
+      ${state.tool === "spiral" ? `<label>${tx("Turns")} <input data-opt="turns" type="number" min="0.5" max="20" step="0.5" value="${state.toolOpts.turns}"></label>` : ""}
     </div>` : ""}
-    ${state.tool === "node" ? `<div class="row"><button type="button" class="mini" data-act="corner">Corner</button><button type="button" class="mini" data-act="smooth">Smooth</button><button type="button" class="mini" data-act="symmetric">Symmetric</button></div>` : ""}
+    ${state.tool === "node" ? `<div class="row"><button type="button" class="mini" data-act="corner">${tx("Corner")}</button><button type="button" class="mini" data-act="smooth">${tx("Smooth")}</button><button type="button" class="mini" data-act="symmetric">${tx("Symmetric")}</button></div>` : ""}
     ${b ? `<div class="row">
       <label>X <input data-field="x" type="number" step="1" value="${Math.round(b.x)}" ${items.length !== 1 ? "disabled" : ""}></label>
       <label>Y <input data-field="y" type="number" step="1" value="${Math.round(b.y)}" ${items.length !== 1 ? "disabled" : ""}></label>
@@ -2150,45 +2160,45 @@ function renderInspector() {
       <label>W <input data-field="w" type="number" min="1" step="1" value="${Math.round(b.w)}" ${items.length !== 1 ? "disabled" : ""}></label>
       <label>H <input data-field="h" type="number" min="1" step="1" value="${Math.round(b.h)}" ${items.length !== 1 ? "disabled" : ""}></label>
     </div>` : ""}
-    <h3>Arrange</h3>
+    <h3>${tx("Arrange")}</h3>
     <div class="actions">
-      <button type="button" class="mini" data-align="left">Left</button>
-      <button type="button" class="mini" data-align="cx">Center</button>
-      <button type="button" class="mini" data-align="right">Right</button>
-      <button type="button" class="mini" data-align="top">Top</button>
-      <button type="button" class="mini" data-align="cy">Middle</button>
-      <button type="button" class="mini" data-align="bottom">Bottom</button>
-      <button type="button" class="mini" data-align="page-left">To left</button>
-      <button type="button" class="mini" data-align="page-cx">To center</button>
-      <button type="button" class="mini" data-align="page-right">To right</button>
+      <button type="button" class="mini" data-align="left">${tx("Left")}</button>
+      <button type="button" class="mini" data-align="cx">${tx("Center")}</button>
+      <button type="button" class="mini" data-align="right">${tx("Right")}</button>
+      <button type="button" class="mini" data-align="top">${tx("Top")}</button>
+      <button type="button" class="mini" data-align="cy">${tx("Middle")}</button>
+      <button type="button" class="mini" data-align="bottom">${tx("Bottom")}</button>
+      <button type="button" class="mini" data-align="page-left">${tx("To left")}</button>
+      <button type="button" class="mini" data-align="page-cx">${tx("To center")}</button>
+      <button type="button" class="mini" data-align="page-right">${tx("To right")}</button>
     </div>
     <div class="actions two">
-      <button type="button" class="mini" data-dist="x">Distribute H</button>
-      <button type="button" class="mini" data-dist="y">Distribute V</button>
+      <button type="button" class="mini" data-dist="x">${tx("Space out ↔")}</button>
+      <button type="button" class="mini" data-dist="y">${tx("Space out ↕")}</button>
     </div>
     ${b ? `<p class="check">${Math.round(b.x)}, ${Math.round(b.y)} · ${Math.round(b.w)} × ${Math.round(b.h)}</p>` : ""}
-    <h3>Page</h3>
+    <h3>${tx("Page")}</h3>
     <div class="row">
       <label>W <input data-page="w" type="number" min="32" value="${state.doc.w}"></label>
       <label>H <input data-page="h" type="number" min="32" value="${state.doc.h}"></label>
-      <label>Paper <input data-page="bg" type="color" value="${esc(state.doc.bg)}"></label>
+      <label>${tx("Paper")} <input data-page="bg" type="color" value="${esc(state.doc.bg)}"></label>
     </div>
-    <label class="check"><input data-page="grid" type="checkbox" ${state.doc.showGrid ? "checked" : ""}> Grid</label>
-    <label class="check"><input data-page="snap" type="checkbox" ${state.doc.snap ? "checked" : ""}> Snap to grid, nodes, guides</label>
-    <h3>Layers</h3>
+    <label class="check"><input data-page="grid" type="checkbox" ${state.doc.showGrid ? "checked" : ""}> ${tx("Grid")}</label>
+    <label class="check"><input data-page="snap" type="checkbox" ${state.doc.snap ? "checked" : ""}> ${tx("Snap to grid, nodes, guides")}</label>
+    <h3>${tx("Layers")}</h3>
     ${state.doc.layers.map((l) => `<div class="layer ${l.id === state.doc.active ? "on" : ""}">
-      <button type="button" class="layer-btn" data-layer-eye="${l.id}" aria-label="${l.visible ? "Hide layer" : "Show layer"}" aria-pressed="${l.visible}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>${l.visible ? "" : `<path d="M4 5l16 14"/>`}</svg></button>
-      <button type="button" class="layer-btn" data-layer-lock="${l.id}" aria-label="${l.locked ? "Unlock layer" : "Lock layer"}" aria-pressed="${l.locked}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${l.locked ? "M8 11V8a4 4 0 0 1 8 0v3M6 11h12v9H6z" : "M9 11V8a3 3 0 0 1 5.5-1.5M6 11h12v9H6z"}"/></svg></button>
+      <button type="button" class="layer-btn" data-layer-eye="${l.id}" aria-label="${l.visible ? tx("Hide layer") : tx("Show layer")}" aria-pressed="${l.visible}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/>${l.visible ? "" : `<path d="M4 5l16 14"/>`}</svg></button>
+      <button type="button" class="layer-btn" data-layer-lock="${l.id}" aria-label="${l.locked ? tx("Unlock layer") : tx("Lock layer")}" aria-pressed="${l.locked}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="${l.locked ? "M8 11V8a4 4 0 0 1 8 0v3M6 11h12v9H6z" : "M9 11V8a3 3 0 0 1 5.5-1.5M6 11h12v9H6z"}"/></svg></button>
       <button type="button" class="layer-btn" data-layer-pick="${l.id}">${esc(l.name)}</button>
-      <button type="button" class="layer-btn" data-layer-up="${l.id}" aria-label="Raise layer"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button>
+      <button type="button" class="layer-btn" data-layer-up="${l.id}" aria-label="${tx("Raise layer")}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 14l6-6 6 6"/></svg></button>
     </div>`).join("")}
     <div class="row">
-      <button type="button" class="mini" data-act="add-layer">Add layer</button>
-      <button type="button" class="mini" data-act="del-layer">Delete</button>
+      <button type="button" class="mini" data-act="add-layer">${tx("Add layer")}</button>
+      <button type="button" class="mini" data-act="del-layer">${tx("Delete")}</button>
     </div>
-    <h3>Objects</h3>
-    <div class="objs">${objectRows().map(({ it, depth }) => `<button type="button" class="obj${state.sel.has(it.id) ? " on" : ""}" data-pick="${it.id}" style="padding-left:${8 + depth * 12}px">${esc(it.name || it.kind)}</button>`).join("") || `<p class="check">Nothing on this layer.</p>`}</div>
-    ${one?.subs ? `<h3>Path data</h3><textarea data-field="d">${esc(subsToD(one.subs))}</textarea>` : ""}
+    <h3>${tx("Objects")}</h3>
+    <div class="objs">${objectRows().map(({ it, depth }) => `<button type="button" class="obj${state.sel.has(it.id) ? " on" : ""}" data-pick="${it.id}" style="padding-left:${8 + depth * 12}px">${esc(it.name || it.kind)}</button>`).join("") || `<p class="check">${tx("Nothing on this layer.")}</p>`}</div>
+    ${one?.subs ? `<h3>${tx("Path data")}</h3><textarea data-field="d">${esc(subsToD(one.subs))}</textarea>` : ""}
   `;
   docName.value = state.doc.name;
 }
@@ -2429,8 +2439,41 @@ function boot() {
   });
   requestAnimationFrame(() => { fitPage(); markScroll(); });
   renderInspector();
-  hintEl.textContent = HINTS.select;
-  if (window.KulibertPrefs) KulibertPrefs.say(HINTS.select);
+  hintEl.textContent = tx(HINTS.select);
+  if (window.KulibertPrefs && KulibertPrefs.get && KulibertPrefs.get().read) KulibertPrefs.say(tx(HINTS.select));
+  paintDoorCopy();
+  window.addEventListener("kulibert-lang", () => {
+    document.documentElement.setAttribute("dir", "ltr");
+    renderChrome();
+    renderInspector();
+    paintDoorCopy();
+    hintEl.textContent = tx(HINTS[state.tool] || "");
+  });
+}
+
+function paintDoorCopy() {
+  const prompt = document.getElementById("ds-prompt");
+  if (prompt) prompt.textContent = tx("Draw a robot face. Tap Save when done.");
+  const empty = document.getElementById("empty");
+  if (empty) empty.innerHTML = `${tx("Blank page")}<span>${tx("Pen, a shape, or drop an SVG.")}</span>`;
+  const brand = document.querySelector(".brand");
+  if (brand) brand.innerHTML = `<bdi>Drawin'</bdi> <em>${tx("Vector")}</em>`;
+  const toggle = document.getElementById("panel-toggle");
+  if (toggle) toggle.textContent = tx("Style");
+  const docLabel = document.querySelector(".docname .sr");
+  if (docLabel) docLabel.textContent = tx("Document name");
+  const tips = document.getElementById("ds-tips");
+  if (tips) {
+    const lines = tips.querySelectorAll("p");
+    const keys = ["1. Pick a brush.", "2. Draw on the page.", "3. Tap Save."];
+    for (let i = 0; i < lines.length && i < keys.length; i++) lines[i].textContent = tx(keys[i]);
+  }
+  const help = document.getElementById("ds-help");
+  if (help) {
+    const word = window.KulibertI18n ? window.KulibertI18n.t("help", "Help") : "Help";
+    help.textContent = word;
+    help.setAttribute("aria-label", word);
+  }
 }
 
 boot();

@@ -10,8 +10,10 @@
   <link rel="manifest" href="./manifest.json">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <title>Sprocket</title>
-  <link rel="stylesheet" href="./styles.css?v=access">
-  <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
+  <link rel="stylesheet" href="/fonts/room.css?v=2026-10-05-signin">
+  <link rel="stylesheet" href="./styles.css?v=1.5.1">
+  <script src="/shared/kulibert-prefs.js?v=2026-10-05-signin"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
 </head>
 <body class="dark">
   <a class="sr" href="#app">Skip to tools</a>
@@ -27,8 +29,8 @@
         <circle cx="42.6" cy="32.2" r="2.4" fill="#343B45"/>
         <path d="M26 42c2.2 2.4 9.8 2.4 12 0" fill="none" stroke="#343B45" stroke-width="1.8" stroke-linecap="round"/>
       </svg>
-      Sprocket
-      <span class="verchip">1.5.0</span>
+      <bdi>Sprocket</bdi>
+      <span class="verchip">1.5.1</span>
     </div>
     <div class="tools">
       <button type="button" id="dark-btn">Light</button>
@@ -44,83 +46,20 @@
     <button type="button" data-tab="help"><span>?</span>Help</button>
     <button type="button" data-tab="more"><span>⚙</span>More</button>
   </nav>
+  <script src="./lang.js?v=1.5.1"></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-signin" data-app="sprocket" data-name="Sprocket" data-version="1.5.1" data-rtl="1" defer></script>
   <script>
-  const KEY="printkit-v2";
-  const views={
-    home:`<div class="wrap"><h1>Shop desk</h1>
-      <p class="now-do muted">Do the check boxes. Then tap AMS / stock or Timers.</p>
-      <div class="pills">
-        <button class="pill-btn" data-tab="stock"><b>4</b> starter spools</button>
-        <button class="pill-btn" data-tab="timers">Timers</button>
-        <button class="pill-btn">P1S / P2S</button>
-      </div>
-      <div class="card"><strong>Before you print</strong>
-        <div class="gloss">
-          <article><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="8" width="24" height="16" fill="none" stroke="currentColor" stroke-width="2"/></svg><p><bdi>AMS = the color box</bdi></p></article>
-          <article><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="16" r="3"/></svg><p><bdi>spool = the roll of plastic</bdi></p></article>
-          <article><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="6" y="10" width="20" height="14" fill="none" stroke="currentColor" stroke-width="2"/></svg><p><bdi>P1S / P2S = the printer</bdi></p></article>
-        </div>
-        <label class="check"><input type="checkbox"><svg viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="14" width="24" height="8" fill="none" stroke="currentColor"/></svg> Clean plate</label>
-        <label class="check"><input type="checkbox"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 22l6-14 6 14" fill="none" stroke="currentColor"/></svg> Glue stick if the plate needs it</label>
-        <label class="check"><input type="checkbox"><svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="8" fill="none" stroke="currentColor"/></svg> Enough plastic on the spool</label>
-        <p class="ar-help" lang="ar" dir="rtl">نظّف اللوحة. الصق إن لزم. تأكد من بكرة البلاستيك.</p>
-      </div>
-      <div class="card"><strong>Stay safe</strong><p class="muted">Hot nozzle. Moving parts. Do not reach in while it prints. Wait for the cool timer. Teacher starts the job.</p></div>
-      <div class="card"><strong>First layer look</strong><p class="muted">Too high: lines do not stick. Too low: plastic smears. Squish should look like a flat ribbon, not a round noodle.</p></div>
-      <div class="quick">
-        <button class="btn secondary" data-tab="convert">Convert</button>
-        <button class="btn secondary" data-tab="stock">AMS / stock</button>
-        <button class="btn secondary" data-tab="help">Bambu help</button>
-        <button class="btn secondary" data-tab="timers">Timers</button>
-      </div></div>`,
-    convert:`<div class="wrap"><h1>Convert</h1>
-      <div class="card"><label>mm</label><input id="mm" type="number" inputmode="decimal" value="25.4">
-      <div class="big" id="mmout"></div></div>
-      <div class="card"><label>C</label><input id="c" type="number" inputmode="decimal" value="215">
-      <div class="big" id="cout"></div></div>
-      <p class="formula">1 in = 25.4 mm. F = C × 9/5 + 32. Always check the spool.</p></div>`,
-    stock:`<div class="wrap"><h1>Stock</h1>
-      <div class="card"><strong>AMS map</strong>
-        <div class="ams-grid">
-          <div class="ams-slot"><b>AMS 1</b><span>Jade White PLA</span><small>820 g</small></div>
-          <div class="ams-slot"><b>AMS 2</b><span>Black PLA</span><small>140 g · low</small></div>
-          <div class="ams-slot"><b>AMS 3</b><span>Teal PLA</span><small>610 g</small></div>
-          <div class="ams-slot"><b>AMS 4</b><span>Yellow PETG</span><small>430 g</small></div>
-        </div>
-        <p class="muted">This live desk shows the starter map. Full edit / subtract lives in Sprocket.html on the teacher PC.</p>
-      </div></div>`,
-    timers:`<div class="wrap"><h1>Timers</h1>
-      <div class="card"><strong id="tlab">No timer</strong><div class="timer-time" id="tclk">0:00</div>
-      <div class="chips">
-        <button class="chip" data-min="120">Print 2 h</button>
-        <button class="chip" data-min="20">Cool 20</button>
-        <button class="chip" data-min="2">Glue 2</button>
-        <button class="chip" data-min="240">Dry PLA 4 h</button>
-      </div>
-      <p class="muted">Keep this tab open for the clock. Dry heat is a reminder only — set the dryer yourself.</p>
-      </div></div>`,
-    help:`<div class="wrap"><h1>Bambu help</h1>
-      <div class="help">
-        <a href="https://wiki.bambulab.com/en/studio-handy" target="_blank" rel="noopener">Studio + Handy hub<small>Official start page</small></a>
-        <a href="https://wiki.bambulab.com/en/ams" target="_blank" rel="noopener">AMS guides<small>Slots, lights, limits</small></a>
-        <a href="https://wiki.bambulab.com/en/filament-acc" target="_blank" rel="noopener">Filament wiki<small>Dry and store notes</small></a>
-        <a href="https://wiki.bambulab.com/en/software/bambu-studio/failed-to-connect-printer" target="_blank" rel="noopener">Cannot connect printer<small>Studio cannot see the machine</small></a>
-      </div>
-      <div class="warnbox">Official Bambu pages only. Handy needs cloud mode.</div></div>`,
-    more:`<div class="wrap"><h1>More</h1>
-      <div class="card"><strong>Sprocket 1.5.0</strong>
-        <p class="muted">Classroom helper. Data key printkit-v2. No live printer control. Open sliced files in Studio on the teacher PC.</p>
-        <p class="muted">Full converters, spool edit, queue, PIN lock, and JSON backup are in the local Sprocket.html file.</p>
-      </div></div>`
-  };
   let ends=0;
+  let tab="home";
   function show(name){
+    tab=name;
     document.querySelectorAll(".nav button").forEach(b=>{
       const on=b.dataset.tab===name;
       b.classList.toggle("on", on);
       if(on) b.setAttribute("aria-current","page"); else b.removeAttribute("aria-current");
     });
-    document.getElementById("app").innerHTML=views[name]||views.home;
+    document.getElementById("app").innerHTML=SprocketI18n.view(name);
+    SprocketI18n.paintNav();
     document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>show(b.dataset.tab));
     if(name==="convert"){
       const run=()=>{
@@ -139,18 +78,22 @@
         document.getElementById("tlab").textContent=b.textContent;
       });
     }
+    if(name==="home" && window.KulibertPrefs && KulibertPrefs.get().read){
+      KulibertPrefs.say(SprocketI18n.tx("nowDo"));
+    }
   }
   function tick(){
     const el=document.getElementById("tclk");
     if(!el||!ends) return;
     const s=Math.max(0,Math.floor((ends-Date.now())/1000));
     if(s===0){
-      el.textContent="Done ✓";
+      const word=SprocketI18n.doneWord();
+      el.textContent=word+" ✓";
       el.classList.add("is-done");
       const lab=document.getElementById("tlab");
-      if(lab) lab.textContent="Done ✓";
+      if(lab) lab.textContent=word+" ✓";
       ends=0;
-      if(window.KulibertPrefs) KulibertPrefs.cue("Done");
+      if(window.KulibertPrefs) KulibertPrefs.cue("next");
       return;
     }
     el.classList.remove("is-done");
@@ -161,29 +104,33 @@
     document.body.classList.toggle("student");
     const on=document.body.classList.contains("student");
     const btn=document.getElementById("mode-btn");
-    btn.textContent=on?"Normal type":"Big type";
+    btn.textContent=on?SprocketI18n.tx("normal"):SprocketI18n.tx("big");
     btn.setAttribute("aria-pressed", on?"true":"false");
   };
   document.getElementById("dark-btn").onclick=()=>{
     document.body.classList.toggle("dark");
-    document.getElementById("dark-btn").textContent=document.body.classList.contains("dark")?"Light":"Dark";
+    SprocketI18n.paintNav();
   };
+  function bootLang(){
+    if(window.KulibertPrefs){
+      const p=KulibertPrefs.get();
+      if(p.size==="L"||p.size==="XL"){
+        document.body.classList.add("student");
+        document.getElementById("mode-btn").setAttribute("aria-pressed","true");
+      }
+    }
+    show(tab||"home");
+  }
+  window.addEventListener("kulibert-lang", function(){
+    if(window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(null, bootLang);
+    else bootLang();
+  });
   if ("serviceWorker" in navigator && location.protocol.indexOf("http")===0) {
     navigator.serviceWorker.register("./sw.js").catch(function(){});
   }
-  show("home");
-  if(window.KulibertPrefs){
-    const p=KulibertPrefs.get();
-    if(p.size==="L"||p.size==="XL"){
-      document.body.classList.add("student");
-      const btn=document.getElementById("mode-btn");
-      btn.textContent="Normal type";
-      btn.setAttribute("aria-pressed","true");
-    }
-    if(p.read) KulibertPrefs.say("Do the check boxes. Then tap AMS or Timers.");
-  }
+  bootLang();
   setInterval(tick,500);
   </script>
-  <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
+    <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
 </body>
 </html>

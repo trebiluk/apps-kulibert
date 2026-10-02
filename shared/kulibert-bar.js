@@ -137,7 +137,7 @@
     if (!document.getElementById("tw-session-boot")) {
       var shim = document.createElement("script");
       shim.id = "tw-session-boot";
-      shim.src = asset("/shared/tw-session.js?v=2026-10-01-job");
+      shim.src = asset("/shared/tw-session.js?v=2026-10-05-signin");
       (document.head || document.documentElement).appendChild(shim);
     }
     return;
@@ -188,7 +188,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-04-i18n");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-05-signin");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -222,6 +222,12 @@
   ensureI18n(function () { applyBarLang(pageLang()); });
   root.addEventListener("kulibert-lang", function (ev) {
     var lang = ev && ev.detail && ev.detail.lang;
+    if (allowRtl && lang && !classic()) {
+      var code = langCode(lang) || "en";
+      document.documentElement.lang = code === "simple" ? "en" : code;
+      document.documentElement.setAttribute("data-kp-lang", code);
+      document.documentElement.dir = dirOfLang(code);
+    }
     var go = function () { paintBar(); };
     if (root.KulibertI18n && root.KulibertI18n.ready) root.KulibertI18n.ready(lang, go);
     else go();

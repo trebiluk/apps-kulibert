@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-04-lang"/>
+<meta name="tech-room-rev" content="2026-10-05-signin"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="/shared/tw-session.js?v=2026-10-02-strip"></script>
+  <script src="/shared/tw-session.js?v=2026-10-05-signin"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1613,7 +1613,7 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-04-i18n"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
 <body class="apps-always">
@@ -1706,7 +1706,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-04-lang</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-05-signin</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.1</strong> — All 16 steps show. More stays closed until you tap it. One Menu.</p>
@@ -1717,6 +1717,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.1</strong> — A scored round lands on TechWorks.</p>
           <ul id="hub-log">
+            <li>Sign in speaks your language too.</li>
             <li>Pick your language in My settings. Your apps follow it. Arabic and Dari read right to left.</li>
             <li>No empty boxes in the top card. The app name is readable in every theme. Sign in works from inside an app.</li>
             <li>Menu sits top-left in every app. Sound on works right away. One app's sound no longer mutes the others.</li>
@@ -1810,7 +1811,7 @@
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M8 20h36M36 12l12 8-12 8" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>force</bdi></p><p lang="ar" dir="rtl">قوة</p></article>
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M32 6L56 34H8z" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>triangle</bdi></p><p lang="ar" dir="rtl">مثلث</p></article>
       </div>
-      <div class="kp-row"><button type="button" id="kp-close">Close</button></div>
+      <div class="kp-row"><button type="button" id="kp-close" data-i18n="close">Close</button></div>
     </section>
     <section id="progress" hidden aria-label="My progress"></section>
     <div class="groups" id="app-groups">
@@ -2033,7 +2034,7 @@
         <li><a href="/spancraft/">SpanCraft <strong>SC 1.3.29</strong></a></li>
         <li><a href="/spire-lab/">Spire Lab <strong>SL 1.3.28</strong></a></li>
         <li><a href="/ginger/">Ginger <strong>1.0.5</strong></a></li>
-        <li><a href="/drawin/">Drawin' <strong>DS 0.3.0</strong></a></li>
+        <li><a href="/drawin/">Drawin' <strong>DS 0.3.1</strong></a></li>
         <li><a href="/catapult/">ThrowIt <strong>JC 2.3.1</strong></a></li>
         <li><a href="/bertybots/">Berty's Botz <strong>BB 0.19.30</strong></a></li>
         <li><a href="/debugzy/">Debugzy <strong>v0.1.0</strong></a></li>

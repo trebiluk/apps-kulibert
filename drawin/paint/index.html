@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang=en><link rel=stylesheet href=drawin-stuff.badcc7c6.css><meta charset=UTF-8><title>Drawin' stuff</title><base href=./><meta name=viewport content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"><meta name=color-scheme content="dark light"><link rel=icon type=image/png href=klecks-icon.ec3e5aec.png><script>const theme=localStorage.getItem("klecks-theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"===theme&&document.documentElement.classList.add("kl-theme-dark");</script><style>:root{background:#999;font-family:system-ui,sans-serif}body{margin:0}#loading-screen{color:#eee;text-align:center;width:100vw;margin-top:100px;font-size:25px}</style><body>
+<!DOCTYPE html><html lang=en dir=ltr><link rel=stylesheet href=/fonts/room.css?v=2026-10-05-signin><link rel=stylesheet href=drawin-stuff.badcc7c6.css><meta charset=UTF-8><title>Drawin' stuff</title><base href=./><meta name=viewport content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name=color-scheme content="dark light"><link rel=icon type=image/png href=klecks-icon.ec3e5aec.png><script>const theme=localStorage.getItem("klecks-theme")||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");"dark"===theme&&document.documentElement.classList.add("kl-theme-dark");</script><style>:root{background:#999;font-family:var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif}html[data-kp-lang=ar],html[data-kp-lang=fa-AF],html[data-kp-lang=ti]{line-height:1.55}html[dir=rtl] .kb-bar{direction:ltr}body{margin:0}#loading-screen{color:#eee;text-align:center;width:100vw;margin-top:100px;font-size:25px}</style><body>
         <div id=loading-screen>Loading Drawin' stuff…</div>
         <link rel=stylesheet href=drawin-stuff.baaf7057.css>
         <script type=module src=drawin-stuff.bfb6de19.js></script>
@@ -10,8 +10,11 @@
 <p id=ds-prompt style="margin:0;padding:.4rem .7rem;background:#050814;color:#e8f7ff;font:650 .9rem/1.3 Outfit,system-ui,sans-serif">Draw a robot face. Tap Save when done.</p>
 <div id=ds-tips hidden style="position:fixed;right:8px;top:56px;z-index:8;background:#0b152c;color:#e8f7ff;padding:.6rem;border-radius:12px;max-width:16rem"><p>1. Pick a brush.</p><p>2. Draw on the page.</p><p>3. Tap Save.</p></div>
 <button type=button id=ds-help aria-label=Help style="position:fixed;right:8px;bottom:8px;z-index:8;min-width:44px;min-height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff">?</button>
-<script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="drawin" data-version="DS 0.3.0" data-help="#ds-help" defer></script>
+<script src="/shared/kulibert-prefs.js?v=2026-10-05-signin"></script>
+<script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
+<script src="../i18n.js?v=1"></script>
+<script src="labels.js?v=1" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-signin" data-app="drawin" data-version="DS 0.3.1" data-help="#ds-help" defer></script>
 <script src="/shared/kw-who.js?v=2026-10-01-connected"></script>
 <script>document.getElementById("ds-help").addEventListener("click",function(){var t=document.getElementById("ds-tips");t.hidden=!t.hidden;});</script>
 <script src="connect.js"></script>

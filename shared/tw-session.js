@@ -49,15 +49,14 @@
       if (btn) btn.disabled = false;
       return false;
     }
-    if (note) note.textContent = "Wait a moment, then try again.";
+    if (note) note.textContent = tt("errWait", "Wait a moment, then try again.");
+    if (note) note.setAttribute("data-i18n", "errWait");
     if (btn) btn.disabled = true;
     var wait = Math.max(0, lockState().until - Date.now());
     root.setTimeout(function () {
       if (lockedNow()) return;
       if (btn) btn.disabled = false;
-      if (note && note.textContent === "Wait a moment, then try again.") {
-        note.textContent = "The code and the PIN come from your teacher.";
-      }
+      if (note && note.getAttribute("data-i18n") === "errWait") sayNote(pop, "signTeacher", "The code and the PIN come from your teacher.");
     }, wait + 40);
     return true;
   }
@@ -132,6 +131,40 @@
       bar.style.contain = "none";
     }
   }
+  function tt(key, fallback) {
+    var api = root.KulibertI18n;
+    if (api && api.t) {
+      try {
+        var v = api.t(key, fallback || "");
+        if (v) return v;
+      } catch (e) {}
+    }
+    return fallback || key;
+  }
+  var ERR_KEYS = {
+    "That code is not on the list.": "errNotListed",
+    "That code or PIN does not match.": "errNoMatch",
+    "Wait a moment, then try again.": "errWait",
+    "Enter the 5-character code and the 4-digit PIN.": "errNeedBoth",
+    "TechWorks did not answer. Try again on the school network.": "errOffline",
+    "The code and the PIN come from your teacher.": "signTeacher"
+  };
+  function sayNote(pop, key, fallback) {
+    var note = pop && pop.querySelector(".tw-note");
+    if (!note) return;
+    note.setAttribute("data-i18n", key);
+    note.textContent = tt(key, fallback || "");
+  }
+  function sayServer(pop, raw) {
+    var text = String(raw || "");
+    var key = ERR_KEYS[text];
+    if (key) { sayNote(pop, key, text); return; }
+    var note = pop && pop.querySelector(".tw-note");
+    if (!note) return;
+    if (!text) { sayNote(pop, "errNoMatch", "That code or PIN does not match."); return; }
+    note.removeAttribute("data-i18n");
+    note.textContent = text;
+  }
   function css() {
     if (document.getElementById(styleId)) return;
     var node = document.createElement("style");
@@ -178,15 +211,14 @@
   function formHtml() {
     return [
       '<form>',
-      '<label>Code <input class="tw-code" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="5 characters"/></label>',
-      '<label>PIN <input class="tw-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" placeholder="From your teacher"/></label>',
-      '<div class="tw-row"><button type="submit" class="tw-keep">Sign in</button><button type="button" class="tw-close">Close</button></div>',
-      '<p class="tw-note">The code and the PIN come from your teacher. Your name shows after they match.</p>',
+      '<label><span data-i18n="code">Code</span> <input class="tw-code" maxlength="5" autocomplete="off" autocapitalize="characters" spellcheck="false" data-i18n-placeholder="codeHint" placeholder="5 characters"/></label>',
+      '<label><span data-i18n="pin">PIN</span> <input class="tw-pin" type="password" inputmode="numeric" maxlength="4" autocomplete="off" data-i18n-placeholder="pinHint" placeholder="From your teacher"/></label>',
+      '<div class="tw-row"><button type="submit" class="tw-keep" data-i18n="signIn">Sign in</button><button type="button" class="tw-close" data-i18n="close">Close</button></div>',
+      '<p class="tw-note" data-i18n="signNote">The code and the PIN come from your teacher. Your name shows after they match.</p>',
       '</form>'
     ].join("");
   }
   function bindForm(pop, done) {
-    var note = pop.querySelector(".tw-note");
     pop.querySelector("form").addEventListener("submit", function (event) {
       event.preventDefault();
       if (armLock(pop)) return;
@@ -195,7 +227,7 @@
       var pin = String(pinEl && pinEl.value || "").replace(/\D/g, "").slice(0, 4);
       if (pinEl) pinEl.value = "";
       if (code.length !== 5 || pin.length !== 4) {
-        note.textContent = "Enter the 5-character code and the 4-digit PIN.";
+        sayNote(pop, "errNeedBoth", "Enter the 5-character code and the 4-digit PIN.");
         return;
       }
       fetch(WHO, {
@@ -205,7 +237,7 @@
       }).then(function (res) { return res.json(); }).then(function (pack) {
         if (!pack || !pack.ok || !pack.alias) {
           bumpFail();
-          note.textContent = lockedNow() ? "Wait a moment, then try again." : (pack && pack.error) || "That code or PIN does not match.";
+          sayServer(pop, lockedNow() ? "Wait a moment, then try again." : (pack && pack.error) || "That code or PIN does not match.");
           armLock(pop);
           return;
         }
@@ -221,7 +253,7 @@
         if (api && api.flush) api.flush();
         done();
       }).catch(function () {
-        note.textContent = "TechWorks did not answer. Try again on the school network.";
+        sayNote(pop, "errOffline", "TechWorks did not answer. Try again on the school network.");
       });
     });
     var closeBtn = pop.querySelector(".tw-close");
@@ -252,13 +284,18 @@
     if (!signed && menu) menu.hidden = true;
     if (face) face.textContent = signed ? faceOf(who.alias) : "";
     if (name) name.textContent = signed ? who.alias : "";
-    var tip = signed ? who.alias + ", " + words(state) : "Sign in";
+    var signWord = tt("signIn", "Sign in");
+    var tip = signed ? who.alias + ", " + words(state) : signWord;
     if (whoBtn) {
       whoBtn.title = tip;
       whoBtn.setAttribute("aria-label", tip);
       if (menu && menu.hidden) whoBtn.setAttribute("aria-expanded", "false");
     }
-    if (out) out.setAttribute("aria-label", "Sign in");
+    if (out) {
+      out.textContent = signWord;
+      out.setAttribute("data-i18n", "signIn");
+      out.setAttribute("aria-label", signWord);
+    }
   }
   function mountShell(host) {
     css();
@@ -267,7 +304,7 @@
       '<button type="button" class="tw-pill tw-who" hidden aria-haspopup="menu" aria-expanded="false">',
       '<span class="tw-face" aria-hidden="true"></span><span class="tw-alias-label"></span><i class="tw-dot" aria-hidden="true"></i>',
       '</button>',
-      '<button type="button" class="tw-pill tw-out">Sign in</button>',
+      '<button type="button" class="tw-pill tw-out" data-i18n="signIn" data-i18n-label="signIn" aria-label="Sign in">Sign in</button>',
       '<div class="tw-menu" hidden role="menu">',
       '<button type="button" class="tw-off" role="menuitem">Log out</button>',
       '<button type="button" class="tw-reconnect" role="menuitem">Reconnect</button>',
@@ -385,8 +422,16 @@
       var dot = pill.querySelector(".tw-dot");
       if (face) { face.hidden = !signed; face.textContent = signed ? faceOf(who.alias) : ""; }
       if (dot) dot.hidden = !signed;
-      if (label) label.textContent = signed ? who.alias : "Sign in";
-      var tip = signed ? who.alias + ", " + words(state) : "Sign in";
+      if (label) {
+        if (signed) {
+          label.removeAttribute("data-i18n");
+          label.textContent = who.alias;
+        } else {
+          label.setAttribute("data-i18n", "signIn");
+          label.textContent = tt("signIn", "Sign in");
+        }
+      }
+      var tip = signed ? who.alias + ", " + words(state) : tt("signIn", "Sign in");
       pill.title = tip;
       pill.setAttribute("aria-label", tip);
       var covered = document.documentElement.classList.contains("tw-session-hide") || !!document.fullscreenElement;
@@ -438,19 +483,43 @@
     });
     paint();
     tell();
+    bar.__paint = paint;
   }
   var booted = false;
   function boot() {
     if (booted) return;
     booted = true;
     var slot = document.getElementById("tw-session-slot");
-    if (slot) { mountShell(slot); return; }
+    if (slot) { mountShell(slot); refreshWords(); return; }
     if (framed() || hubPage()) return;
     if (document.documentElement.getAttribute("data-kb-bar") === "1") return;
     if (document.querySelector(".kb-bar")) return;
     mountApp();
+    refreshWords();
+  }
+  function refreshWords() {
+    if (!root.KulibertI18n || !root.KulibertI18n.ready) return;
+    root.KulibertI18n.ready(null, function () {
+      if (root.KulibertI18n.paint) root.KulibertI18n.paint();
+      var hosts = document.querySelectorAll(".tw-session");
+      for (var i = 0; i < hosts.length; i++) if (hosts[i].__paint) hosts[i].__paint();
+      var bar = document.querySelector(".tw-app-bar");
+      if (bar && bar.__paint) bar.__paint();
+    });
   }
   root.TwSession = { boot: boot, light: light };
+  root.addEventListener("kulibert-lang", function (ev) {
+    var lang = ev && ev.detail && ev.detail.lang;
+    function go() {
+      if (root.KulibertI18n && root.KulibertI18n.paint) root.KulibertI18n.paint();
+      var hosts = document.querySelectorAll(".tw-session");
+      for (var i = 0; i < hosts.length; i++) if (hosts[i].__paint) hosts[i].__paint();
+      var bar = document.querySelector(".tw-app-bar");
+      if (bar && bar.__paint) bar.__paint();
+    }
+    if (root.KulibertI18n && root.KulibertI18n.ready) root.KulibertI18n.ready(lang, go);
+    else go();
+  });
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
 })(window);

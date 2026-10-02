@@ -22,5 +22,16 @@
   "close": "Cerrar",
   "readAloud": "Leer en voz alta",
   "noVoice": "Aún no hay voz. Lee las palabras.",
-  "appsFollow": "Tus aplicaciones usarán este idioma."
+  "appsFollow": "Tus aplicaciones usarán este idioma.",
+  "code": "Código",
+  "pin": "PIN",
+  "codeHint": "5 caracteres",
+  "pinHint": "De tu profe",
+  "signNote": "El código y el PIN los da tu profe. Tu nombre sale cuando coinciden.",
+  "signTeacher": "El código y el PIN los da tu profe.",
+  "errWait": "Espera un momento y vuelve a intentar.",
+  "errNeedBoth": "Escribe el código de 5 caracteres y el PIN de 4 números.",
+  "errNoMatch": "Ese código o PIN no coincide.",
+  "errNotListed": "Ese código no está en la lista.",
+  "errOffline": "TechWorks no respondió. Inténtalo en la red de la escuela."
 }
