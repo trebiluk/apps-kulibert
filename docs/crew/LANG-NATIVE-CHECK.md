@@ -23,3 +23,7 @@ The older Baboo pack was already in the app. New this round, and still unchecked
 - Baboo keeps the old Farsi table as the starting point. Iranian-only words still in that table include می‌، هٔ (واژهٔ، همهٔ، گوشهٔ), ذخیره، and راهنما. Settings and Help on the bar use تنظیم and کمک instead. A Dari reader should replace the rest.
 
 What’s new: Baboo follows the Hub language. Arabic and Kinyarwanda added. Farsi is now Dari. Ginger speaks your language. The plan stays the same way round.
+
+## Ginger 1.0.7 — new lines
+
+English is fixed: “Tools and Properties sit on the left so the plan stays open on the right.” Still unchecked: the Dari, Kinyarwanda, and Tigrinya versions of that sentence, plus `lang.lead` in those three.

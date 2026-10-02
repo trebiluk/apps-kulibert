@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Ginger 1.0.6 — floor plan</title>
+  <title>Ginger 1.0.7 — floor plan</title>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
   <link rel="stylesheet" href="./styles.css" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
@@ -13,12 +13,16 @@
 <body data-theme="paper">
   <div class="app">
     <header class="bar">
+      <button type="button" id="menu-btn" class="menu-btn" aria-expanded="false" aria-controls="menu-drawer">
+        <span aria-hidden="true">☰</span>
+        <span data-i18n="menu">Menu</span>
+      </button>
       <svg class="mark" viewBox="0 0 32 32" aria-hidden="true">
         <rect x="3" y="3" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2"/>
         <path d="M8 22 L16 8 L24 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
       </svg>
       <span class="brand"><bdi>GINGER</bdi></span>
-      <span class="chip" id="chip" title="version">v1.0.6</span>
+      <span class="chip" id="chip" title="version">v1.0.7</span>
       <nav class="tools" aria-label="Draw tools">
         <button type="button" data-tool="select" aria-pressed="true"><span data-i18n="tool.select">Select</span></button>
         <button type="button" data-tool="wall"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4v18H5zM15 3h4v18h-4z" fill="currentColor"/></svg><span data-i18n="tool.wall">Wall</span></button>
@@ -30,32 +34,49 @@
       <button type="button" id="props-toggle" aria-expanded="false" aria-controls="side"><span data-i18n="props">Properties</span></button>
       <button type="button" id="undo"><span data-i18n="undo">Undo</span></button>
       <button type="button" id="redo"><span data-i18n="redo">Redo</span></button>
-      <button type="button" id="theme"><span data-i18n="night">Night</span></button>
-      <button type="button" id="lab3d" aria-pressed="false"><span data-i18n="peek">3D peek</span></button>
-      <button type="button" id="export"><span data-i18n="export">Export</span></button>
-      <button type="button" id="imp"><span data-i18n="import">Import</span></button>
-      <details class="help" id="ginger-help">
-        <summary><span data-i18n="help">Help</span></summary>
-        <div class="help-panel">
-          <ol class="help-steps help-en">
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg><span data-i18n="help.wall">Draw a wall</span></li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg><span data-i18n="help.door">Add a door</span></li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/><text x="24" y="20" text-anchor="middle" font-size="9" fill="currentColor">Room</text></svg><span data-i18n="help.room">Name the room</span></li>
-          </ol>
-          <ol class="help-steps help-ar" lang="ar">
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg>ارسم جدارًا</li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg>أضف بابًا</li>
-            <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/></svg>سمِّ الغرفة</li>
-          </ol>
-          <p class="help-en" data-i18n="help.new">What’s new in 1.0.6: Ginger speaks your language. The plan stays the same way round.</p>
-          <p class="help-ar" lang="ar">الجديد: أسماء الغرف جاهزة. المخطط يبقى على هذا الجهاز.</p>
-          <button type="button" id="read-help"><span data-i18n="help.read">Read it to me</span></button>
-        </div>
-      </details>
       <input id="file" type="file" accept="application/json,.json,.ginger.json" hidden />
     </header>
+    <div id="menu-backdrop" class="menu-backdrop" hidden></div>
+    <aside id="menu-drawer" class="menu-drawer" hidden aria-labelledby="menu-title">
+      <div class="menu-head">
+        <h2 id="menu-title" data-i18n="menu">Menu</h2>
+        <button type="button" id="menu-close" data-i18n="close">Close</button>
+      </div>
+      <section id="ginger-help">
+        <h2 data-i18n="help">Help</h2>
+        <ol class="help-steps">
+          <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M6 26 L42 6" fill="none" stroke="currentColor" stroke-width="4"/></svg><span data-i18n="help.wall">Draw a wall</span></li>
+          <li><svg viewBox="0 0 48 32" aria-hidden="true"><path d="M10 6v20h12V6" fill="none" stroke="currentColor" stroke-width="3"/><path d="M22 26a12 12 0 0 0 0-20" fill="none" stroke="currentColor" stroke-width="3"/></svg><span data-i18n="help.door">Add a door</span></li>
+          <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/><text x="24" y="20" text-anchor="middle" font-size="9" fill="currentColor">Room</text></svg><span data-i18n="help.room">Name the room</span></li>
+        </ol>
+        <button type="button" id="read-help"><span data-i18n="help.read">Read it to me</span></button>
+      </section>
+      <section>
+        <h2 data-i18n="whatsNew">What’s new</h2>
+        <p data-i18n="help.new">v1.0.7: Tools and Properties sit on the left so the plan stays open on the right.</p>
+      </section>
+      <section>
+        <h2 data-i18n="settings">Settings</h2>
+        <p class="hint" data-i18n="lang.lead">Hub language. Ginger follows it.</p>
+        <div class="lang-picks" id="lang-picks" role="group">
+          <button type="button" data-hub-lang="en" lang="en">English</button>
+          <button type="button" data-hub-lang="uk" lang="uk">Українська</button>
+          <button type="button" data-hub-lang="ru" lang="ru">Русский</button>
+          <button type="button" data-hub-lang="es" lang="es">Español</button>
+          <button type="button" data-hub-lang="ar" lang="ar" dir="rtl">العربية</button>
+          <button type="button" data-hub-lang="fa-AF" lang="fa-AF" dir="rtl">دری</button>
+          <button type="button" data-hub-lang="rw" lang="rw">Ikinyarwanda</button>
+          <button type="button" data-hub-lang="ti" lang="ti">ትግርኛ</button>
+        </div>
+      </section>
+      <section class="menu-actions">
+        <button type="button" id="export"><span data-i18n="export">Export</span></button>
+        <button type="button" id="imp"><span data-i18n="import">Import</span></button>
+        <button type="button" id="theme"><span data-i18n="night">Night</span></button>
+        <button type="button" id="lab3d" aria-pressed="false"><span data-i18n="peek">3D peek</span></button>
+      </section>
+    </aside>
     <main class="stage">
-      <canvas id="plan" width="1400" height="900" aria-label="Floor plan. One grid square is one foot."></canvas>
       <aside class="side" id="side" tabindex="0" aria-label="Properties">
         <h2 data-i18n="props">Properties</h2>
         <div class="props" id="props"></div>
@@ -78,14 +99,15 @@
         <p class="hint" data-i18n="hint.peek">Off until you ask. A light picture of this level — not a game view.</p>
         <div class="peek-wrap" id="peekWrap"><canvas id="peek" width="640" height="320" aria-label="Isometric peek of the walls"></canvas></div>
       </aside>
+      <canvas id="plan" width="1400" height="900" aria-label="Floor plan. One grid square is one foot."></canvas>
     </main>
     <footer class="foot">
       <span id="status" data-i18n="status.pick">Select a wall, door, window, room, or corner.</span>
-      <span class="whats" data-i18n="foot.new">What’s new: Ginger speaks your language. The plan stays the same way round.</span>
+      <span class="whats" data-i18n="foot.new">v1.0.7: Tools and Properties sit on the left so the plan stays open on the right.</span>
       <span class="quiet" data-i18n="foot.stay">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="ginger" data-version="v1.0.6" data-help="#ginger-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-04-i18n" data-app="ginger" data-version="v1.0.7" data-help="#ginger-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script type="module" src="./app.js"></script>
 </body>

@@ -1,5 +1,9 @@
 # Ginger
 
+## 1.0.7 — 2026-10-02
+- Tools and Properties sit on the left so the plan stays open on the right.
+- The left menu has Help, What’s new, Settings, Export, Import, Night, and 3D peek.
+
 ## 1.0.6 — 2026-10-02
 - Ginger speaks the Hub language: English, Ukrainian, Russian, Spanish, Arabic, Dari, Kinyarwanda, and Tigrinya.
 - Arabic and Dari read right to left. The floor plan stays the same way round.

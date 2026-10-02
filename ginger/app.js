@@ -84,6 +84,10 @@ function applyHelpDir() {
   if (themeLabel) themeLabel.textContent = tr(document.body.getAttribute("data-theme") === "night" ? "paper" : "night", lang);
   const bar = document.querySelector(".bar");
   if (bar) bar.setAttribute("dir", "ltr");
+  const use = lang === "fa" ? "fa-AF" : lang;
+  document.querySelectorAll("[data-hub-lang]").forEach((btn) => {
+    btn.setAttribute("aria-pressed", btn.getAttribute("data-hub-lang") === use ? "true" : "false");
+  });
 }
 
 function roomPicks() {
@@ -783,6 +787,10 @@ $("file").onchange = (e) => {
 };
 
 document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape" && $("menu-drawer") && !$("menu-drawer").hidden) {
+    setMenu(false);
+    return;
+  }
   const typing = ev.target && (ev.target.tagName === "INPUT" || ev.target.tagName === "SELECT" || ev.target.tagName === "TEXTAREA");
   if ((ev.metaKey || ev.ctrlKey) && ev.key.toLowerCase() === "z") {
     ev.preventDefault();
@@ -827,6 +835,37 @@ $("read-help").onclick = () => {
   if (prefs && typeof prefs.say === "function") prefs.say(text, lang);
   else $("status").textContent = text;
 };
+function setMenu(open) {
+  const drawer = $("menu-drawer");
+  const back = $("menu-backdrop");
+  if (!drawer) return;
+  drawer.hidden = !open;
+  if (back) back.hidden = !open;
+  $("menu-btn").setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) {
+    const close = $("menu-close");
+    if (close) close.focus();
+  }
+}
+$("menu-btn").onclick = () => setMenu($("menu-drawer").hidden);
+$("menu-close").onclick = () => setMenu(false);
+$("menu-backdrop").onclick = () => setMenu(false);
+document.querySelectorAll("[data-hub-lang]").forEach((btn) => {
+  btn.onclick = () => {
+    const next = btn.getAttribute("data-hub-lang");
+    const prefs = window.KulibertPrefs;
+    if (prefs && typeof prefs.acceptLang === "function") prefs.acceptLang(next);
+    else if (prefs && typeof prefs.set === "function") prefs.set({ lang: next });
+    onPrefs();
+  };
+});
+if (window.KulibertBar && typeof window.KulibertBar.setHelp === "function") {
+  window.KulibertBar.setHelp(() => {
+    setMenu(true);
+    const help = $("ginger-help");
+    if (help && help.scrollIntoView) help.scrollIntoView({ block: "nearest" });
+  });
+}
 mapRootSize();
 applyHelpDir();
 function onPrefs() {
