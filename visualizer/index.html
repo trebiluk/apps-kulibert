@@ -5,42 +5,43 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
   <meta name="description" content="Visualizer — lights that play on their own. Rings, Rain, Code, and more. Kulibert Tech Ed."/>
-  <title>Visualizer · The Tech Room</title>
+  <title>Visualizer · Viz 0.9.1</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/lab.css?v=1"/>
-  <link rel="stylesheet" href="./styles.css?v=0.9.0"/>
+  <link rel="stylesheet" href="./styles.css?v=0.9.1"/>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/hub-guest.js?v=2026-09-27-hub-guest"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-04-i18n"></script>
+  <script src="./strings.js?v=0.9.1"></script>
 </head>
 <body>
   <header class="top">
+    <button type="button" id="menu-btn" class="menu-btn" data-vz-label="menu" aria-label="Menu" aria-expanded="false"><span class="menu-mark" aria-hidden="true">☰</span> <span class="menu-word" data-vz="menu">Menu</span></button>
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.9.0</em>
+        <em id="chip-label">Viz 0.9.1</em>
       </span>
     </a>
-    <div class="top-actions">
-      <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    </div>
   </header>
   <nav class="boards" aria-label="Berty's MusicLab">
-    <a href="/music/?board=score">Score</a>
-    <a href="/music/?board=beats">Beats</a>
-    <a class="on" href="/visualizer/" aria-current="page">Lights</a>
-    <a href="/music/?board=band">Band</a>
+    <a href="/music/?board=score" data-vz="score">Score</a>
+    <a href="/music/?board=beats" data-vz="beats">Beats</a>
+    <a class="on" href="/visualizer/" aria-current="page" data-vz="lights">Lights</a>
+    <a href="/music/?board=band" data-vz="band">Band</a>
   </nav>
   <div class="scrim" id="scrim"></div>
 
   <section id="help" class="help" hidden>
-    <h2>How it works</h2>
+    <h2 data-vz="howTitle">How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> The lesson lights Play, the word, or the color dots. The button says Got it when that step is done.</li>
-      <li>Pick a Look. Keys 1–5 are the first five. Keys 6–9 and 0 are the new ones.</li>
-      <li>Press Play. The picture follows your song from Music. Sound can stay off.</li>
-      <li>No song yet? Make one in <a href="/music/">Music</a>. Come back. The same beats drive the lights.</li>
+      <li data-vz="help1">The lesson lights Play, the word, or the color dots. The button says Got it when that step is done.</li>
+      <li data-vz="help2">Pick a Look. Keys 1–5 are the first five. Keys 6–9 and 0 are the new ones.</li>
+      <li data-vz="help3">Press Play. The picture follows your song from Music. Sound can stay off.</li>
+      <li data-vz="help4">No song yet? Make one in Music. Come back. The same beats drive the lights.</li>
     </ol>
   </section>
 
@@ -52,75 +53,80 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.9.0</span>
+          <span id="chip-live">Viz 0.9.1</span>
         </p>
       </div>
     </div>
   </section>
 
   <section class="transport" aria-label="Transport">
-    <button type="button" id="play-btn" class="play" aria-label="Play">
+    <button type="button" id="play-btn" class="play" data-vz-label="play" aria-label="Play">
       <span class="play-icon" aria-hidden="true"></span>
+      <span class="play-word" id="play-word" data-vz="play">Play</span>
     </button>
-    <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
-    <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
+    <button type="button" id="mute-btn" class="btn" data-vz="soundOn" aria-pressed="false">Sound on</button>
+    <button type="button" id="stop-btn" class="btn" data-vz-label="stop" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
+      <span class="stop-word" data-vz="stop">Stop</span>
     </button>
   </section>
 
-  <p id="now-line" class="now-line">Press Play. Read the word. Sound can stay off.</p>
+  <p id="now-line" class="now-line" data-vz="nowIdle">Press Play. Read the word. Sound can stay off.</p>
   <section id="lesson" class="lesson" hidden>
-    <p class="lesson-kicker">Lesson <span id="lesson-n">1</span> of <span id="lesson-total">4</span></p>
-    <h2 id="lesson-title">See it</h2>
+    <p class="lesson-kicker"><span data-vz="lesson">Lesson</span> <span id="lesson-n">1</span> <span data-vz="of">of</span> <span id="lesson-total">4</span></p>
+    <h2 id="lesson-title">See the beat</h2>
     <p id="lesson-body" class="lesson-body"></p>
     <p id="lesson-miss" class="lesson-miss" role="status"></p>
     <div class="lesson-actions">
-      <button type="button" id="lesson-next" class="btn">I did this</button>
-      <button type="button" id="lesson-skip" class="btn">Skip</button>
+      <button type="button" id="lesson-next" class="btn" data-vz="iDid">I did this</button>
+      <button type="button" id="lesson-skip" class="btn" data-vz="skip">Skip</button>
     </div>
   </section>
 
-  <aside class="drawer" id="drawer" aria-label="Menu">
-    <button type="button" id="help-btn" class="btn">How</button>
-    <a class="btn" href="/bertybeatz/">Beats</a>
-    <a class="btn" href="/music/">Learn</a>
+  <aside class="drawer" id="drawer" data-vz-label="menu" aria-label="Menu">
+    <p class="drawer-plate" id="drawer-chip">Viz 0.9.1</p>
+    <h2 data-vz="whatsNew">What's new</h2>
+    <p class="whats-line" data-vz="whats">Visualizer speaks your Hub language. Menu is top-left.</p>
+    <button type="button" id="help-btn" class="btn" data-vz="how">How</button>
+    <a class="btn" href="/bertybeatz/" data-vz="beats">Beats</a>
+    <a class="btn" href="/music/" data-vz="learn">Learn</a>
   <div class="picks">
     <div class="pick">
-      <span class="tool-label">Look</span>
+      <span class="tool-label" data-vz="look">Look</span>
       <div class="chips scroll" id="looks" role="group" aria-label="Look"></div>
     </div>
     <p id="look-hint" class="note">Columns grow with the music. Wild copies them up top.</p>
     <div class="pick">
-      <span class="tool-label">Color</span>
+      <span class="tool-label" data-vz="color">Color</span>
       <div class="chips scroll" id="colors"></div>
     </div>
     <div class="pick">
-      <span class="tool-label">Layers</span>
+      <span class="tool-label" data-vz="layers">Layers</span>
       <label class="layer">1 <select id="layer-0" aria-label="Layer 1 look"></select><select id="ink-0" aria-label="Layer 1 color"></select></label>
       <label class="layer">2 <select id="layer-1" aria-label="Layer 2 look"></select><select id="ink-1" aria-label="Layer 2 color"></select></label>
       <label class="layer">3 <select id="layer-2" aria-label="Layer 3 look"></select><select id="ink-2" aria-label="Layer 3 color"></select></label>
-      <button type="button" id="rgb-btn" class="btn" aria-pressed="false">RGB cycle</button>
+      <button type="button" id="rgb-btn" class="btn" aria-pressed="false" data-vz="rgb">RGB cycle</button>
     </div>
-    <label class="layer">Wall <select id="wall" aria-label="Wallpaper"></select></label>
-    <label class="layer">Frame <select id="frame" aria-label="Frame"></select></label>
+    <label class="layer"><span data-vz="wall">Wall</span> <select id="wall" aria-label="Wallpaper"></select></label>
+    <label class="layer"><span data-vz="frame">Frame</span> <select id="frame" aria-label="Frame"></select></label>
     <div class="pick">
-      <span class="tool-label">Try</span>
+      <span class="tool-label" data-vz="try">Try</span>
       <div class="chips scroll" id="examples"></div>
-      <button type="button" id="crazy-btn" class="btn">Crazy</button>
+      <button type="button" id="crazy-btn" class="btn" data-vz="crazy">Crazy</button>
     </div>
     <div id="code-look" class="code-look" hidden></div>
   </div>
 
   <section class="feed" aria-label="Beats">
-    <span class="tool-label">Beat</span>
+    <span class="tool-label" data-vz="beat">Beat</span>
     <div class="chips scroll" id="feed"></div>
-    <button type="button" id="score-btn" class="btn">Score</button>
-    <button type="button" id="beats-btn" class="btn">Beats</button>
+    <button type="button" id="score-btn" class="btn" data-vz="score">Score</button>
+    <button type="button" id="beats-btn" class="btn" data-vz="beats">Beats</button>
   </section>
 
   <p id="send-line" class="note" role="status"></p>
   <details class="gizmos" id="gizmo-box">
-    <summary>Sliders</summary>
+    <summary data-vz="sliders">Sliders</summary>
     <label class="gizmo">Size <b id="n-zoom">100</b><input id="g-zoom" type="range" min="40" max="160" value="100"/></label>
     <label class="gizmo">Lean <b id="n-spin">55</b><input id="g-spin" type="range" min="0" max="100" value="55"/></label>
     <label class="gizmo">Glow <b id="n-glow">85</b><input id="g-glow" type="range" min="0" max="100" value="85"/></label>
@@ -132,27 +138,28 @@
     <label class="gizmo">Wave <b id="n-scope">100</b><input id="g-scope" type="range" min="0" max="100" value="100"/></label>
     <label class="gizmo">Smooth <b id="n-smooth">0</b><input id="g-smooth" type="range" min="0" max="100" value="0"/></label>
     <label class="gizmo">Wild <b id="n-wild">35</b><input id="g-wild" type="range" min="0" max="100" value="35"/></label>
-    <button type="button" id="g-reset" class="btn">Reset gizmos</button>
+    <button type="button" id="g-reset" class="btn" data-vz="reset">Reset gizmos</button>
   </details>
-  <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false">More</button>
+  <button type="button" id="more-btn" class="btn more-btn" hidden aria-expanded="false" data-vz="more">More</button>
   <section id="more-panel" class="tools deep" aria-label="More">
-    <button type="button" id="device-btn" class="btn">Use this device's sound</button>
-    <button type="button" id="library-src" class="btn">Use the library</button>
-    <button type="button" id="import-btn" class="btn">Import a beat</button>
+    <button type="button" id="device-btn" class="btn" data-vz="device">Use this device's sound</button>
+    <button type="button" id="library-src" class="btn" data-vz="library">Use the library</button>
+    <button type="button" id="import-btn" class="btn" data-vz="importBeat">Import a beat</button>
     <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden/>
     <p id="status-line" class="note" role="status"></p>
   </section>
   </aside>
 
-  <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.9.0</span> · own door · shared lights ·
-    <a href="./teacher.html">Teacher</a>
+  <p class="note" data-vz="foot">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.9.1</span> · <span data-vz="own">own door</span> · <span data-vz="shared">shared lights</span> ·
+    <a href="./teacher.html" data-vz="teacher">Teacher</a>
   </p>
 
   <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=0.9.0"></script>
+  <script src="./app.js?v=0.9.1"></script>
+  <script src="./live.js?v=0.9.1"></script>
 </body>
 </html>
