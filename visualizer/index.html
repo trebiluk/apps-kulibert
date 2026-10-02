@@ -5,26 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
   <meta name="description" content="Visualizer — lights that play on their own. Rings, Rain, Code, and more. Kulibert Tech Ed."/>
-  <title>Visualizer · Viz 0.9.1</title>
+  <title>Visualizer · Viz 0.9.2</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/lab.css?v=1"/>
-  <link rel="stylesheet" href="./styles.css?v=0.9.1"/>
-  <script src="/shared/kulibert-bar.js?v=2026-10-09-menu" data-app="visualizer" data-name="Visualizer" data-version="Viz 0.9.1" data-rtl="1" data-menu="#menu-btn" defer></script>
+  <link rel="stylesheet" href="./styles.css?v=0.9.2"/>
+  <script src="/shared/kulibert-bar.js?v=2026-10-09-menu" data-app="visualizer" data-name="Visualizer" data-version="Viz 0.9.2" data-rtl="1" data-menu="#menu-btn" data-whats-new="Settings and What's new are in the left Menu." defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/hub-guest.js?v=2026-09-27-hub-guest"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/kulibert-i18n.js?v=2026-10-04-i18n"></script>
-  <script src="./strings.js?v=0.9.1"></script>
+  <script src="./strings.js?v=0.9.2"></script>
 </head>
 <body>
   <header class="top">
-    <button type="button" id="menu-btn" class="menu-btn" data-vz-label="menu" aria-label="Menu" aria-expanded="false"><span class="menu-mark" aria-hidden="true">☰</span> <span class="menu-word" data-vz="menu">Menu</span></button>
+    <button type="button" id="menu-btn" class="menu-btn" data-vz-label="menu" aria-label="Menu" aria-expanded="false" aria-controls="drawer"><span class="menu-mark" aria-hidden="true">☰</span> <span class="menu-word" data-vz="menu">Menu</span></button>
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>Visualizer</strong>
-        <em id="chip-label">Viz 0.9.1</em>
+        <em id="chip-label">Viz 0.9.2</em>
       </span>
     </a>
   </header>
@@ -54,7 +54,7 @@
         <p class="lcd-readout">
           <span id="look-live">Bars</span>
           <span id="lcd-pos" class="tabular">1.1</span>
-          <span id="chip-live">Viz 0.9.1</span>
+          <span id="chip-live">Viz 0.9.2</span>
         </p>
       </div>
     </div>
@@ -85,9 +85,11 @@
   </section>
 
   <aside class="drawer" id="drawer" data-vz-label="menu" aria-label="Menu">
-    <p class="drawer-plate" id="drawer-chip">Viz 0.9.1</p>
-    <h2 data-vz="whatsNew">What's new</h2>
-    <p class="whats-line" data-vz="whats">Visualizer speaks your Hub language. Menu is top-left.</p>
+    <p class="drawer-plate" id="drawer-chip">Viz 0.9.2</p>
+    <button type="button" id="whats-btn" class="btn menu-row" data-vz="whatsNew" aria-expanded="true" aria-controls="whats-line">What's new</button>
+    <p id="whats-line" class="whats-line" data-vz="whats">Settings and What's new are in the left Menu.</p>
+    <button type="button" id="settings-btn" class="btn menu-row" data-vz="settings" aria-expanded="false" aria-controls="lang-list">Settings</button>
+    <div id="lang-list" class="lang-list" hidden role="group" aria-label="Language"></div>
     <button type="button" id="help-btn" class="btn" data-vz="how">How</button>
     <a class="btn" href="/bertybeatz/" data-vz="beats">Beats</a>
     <a class="btn" href="/music/" data-vz="learn">Learn</a>
@@ -151,16 +153,23 @@
   </section>
   </aside>
 
-  <p class="note" data-vz="foot">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.9.1</span> · <span data-vz="own">own door</span> · <span data-vz="shared">shared lights</span> ·
+  <p class="note">Sound can stay off. These lights move anyway. Same song in <a href="/bertybeatz/">BertyBeatz</a>.</p>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">Viz 0.9.2</span> · <span data-vz="own">own door</span> · <span data-vz="shared">shared lights</span> ·
     <a href="./teacher.html" data-vz="teacher">Teacher</a>
   </p>
+  <style>
+    .menu-row, .lang-list button { min-height: 44px; width: 100%; justify-content: flex-start; }
+    .lang-list { display: grid; gap: 0.35rem; margin: 0.35rem 0 0.6rem; }
+    .lang-list[hidden] { display: none; }
+    .lang-list button.on { background: var(--accent); color: var(--accent-fg); border-color: transparent; }
+    #kb-drawer { display: none !important; }
+  </style>
 
   <script src="/shared/titles.js?v=4"></script>
   <script src="/shared/song/model.js?v=0.2.0"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=0.9.1"></script>
-  <script src="./live.js?v=0.9.1"></script>
+  <script src="./app.js?v=0.9.2"></script>
+  <script src="./live.js?v=0.9.2"></script>
 </body>
 </html>
