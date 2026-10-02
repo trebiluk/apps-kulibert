@@ -646,7 +646,7 @@ body.menu-open .drawer { transform: none; }
 input[type="range"] { width: 100%; accent-color: var(--accent, #22d3ee); }
 .drawer .chips .btn, .drawer .chips button { margin-top: 0; }
 .lesson { padding: 0.65rem 0.75rem; }
-.lesson-body { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.lesson-body { display: block; overflow: visible; }
 .title-build .title-row {
   display: grid;
   grid-template-columns: 4.5rem 1fr;
@@ -743,7 +743,8 @@ input[type="range"] { width: 100%; accent-color: var(--accent, #22d3ee); }
   .btn:active, .play:active, .cell:active { transform: none; }
 }
 
-/* BZ 1.10.0 — menu stays on the physical left. The step grid never flips. */
+/* BZ 1.10.1 — the Hub bar is the only Menu. The app button stays for classic. */
+html[data-kb-bar] #menu-btn.menu-btn { display: none !important; }
 html[dir="rtl"] .top { direction: ltr; }
 html[dir="rtl"] .grid,
 html[dir="rtl"] .grid-wrap,

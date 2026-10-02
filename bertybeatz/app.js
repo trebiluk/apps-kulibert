@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.10.0") return;
-  window.__BERTYBEATZ__ = "1.10.0";
+  if (window.__BERTYBEATZ__ === "1.10.1") return;
+  window.__BERTYBEATZ__ = "1.10.1";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.10.0";
+  const CHIP = "BZ 1.10.1";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -994,7 +994,7 @@
         const bank = i < 8 ? "bank0" : "bank1";
         const arrived = state.arrived && state.arrived.has(t.id + ":" + i) ? " arrived" : "";
         rows.push(
-          `<button type="button" class="cell${beat}${on ? " on" : ""}${play}${arrived}${quiet} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} step ${i + 1}"></button>`,
+          `<button type="button" class="cell${beat}${on ? " on" : ""}${play}${arrived}${quiet} ${bank}" data-track="${t.id}" data-step="${i}" aria-pressed="${on}" aria-label="${label} ${tr("step")} ${i + 1}"></button>`,
         );
       }
     }

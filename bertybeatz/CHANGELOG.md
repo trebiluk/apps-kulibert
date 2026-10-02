@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.10.1** · 2026-10-02 · channel **live**
+
+The Menu button at the top left opens the menu.
+
+## Earlier
+
 **Chip: BZ 1.10.0** · 2026-10-02 · channel **live**
 
 BertyBeatz speaks your Hub language. Menu is top-left, and Play and Stop have names.
