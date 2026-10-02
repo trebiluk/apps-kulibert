@@ -54,6 +54,9 @@ NITRO_PID=$!
 cleanup_nitro() { kill "$NITRO_PID" 2>/dev/null || true; }
 trap cleanup_nitro EXIT
 for _ in $(seq 1 40); do
+  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift/; then
+    break
+  fi
   if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift; then
     break
   fi
@@ -106,7 +109,9 @@ if icon_src.exists():
     encoding="utf-8",
 )
 
-html = door.read_bytes().replace(b"\x00", b"").decode("utf-8")
+# TanStack encodes "/" in match ids as NUL. U+FFFD round-trips
+# (hydrateSsrMatchId); deleting the NULs collapses ids and causes React #418.
+html = door.read_bytes().replace(b"\x00", "\ufffd".encode("utf-8")).decode("utf-8")
 html = html.replace("/./assets/", "./assets/")
 html = html.replace('"/./', '"./')
 html = html.replace("https://drift-psi-two.vercel.app/", "./")
