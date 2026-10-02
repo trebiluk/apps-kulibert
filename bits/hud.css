@@ -33,7 +33,7 @@ html[data-theme="contrast"] {
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; max-width: 100%; overflow-x: hidden; }
 body {
-  font: 16px/1.35 "Segoe UI", "Avenir Next", system-ui, sans-serif;
+  font: 16px/1.45 var(--kp-font), Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif;
   color: var(--ink);
   background-color: var(--bg);
   background-image:
@@ -98,7 +98,7 @@ html.is-projector body.kb-on { padding-top: 0; }
   .brand { flex-wrap: wrap; row-gap: 0; }
   .brand h1 { font-size: 1.15rem; flex: 1 0 100%; }
 }
-.board { position: relative; width: 100%; max-width: 100%; min-height: calc(100vh - 64px); }
+.board { position: relative; width: 100%; max-width: 100%; min-height: calc(100vh - 64px); direction: ltr; }
 .tile {
   position: absolute;
   display: flex;
@@ -169,6 +169,7 @@ html[data-theme="contrast"] .tile { border-width: 3px; backdrop-filter: none; bo
   z-index: 30;
   display: flex;
   flex-wrap: nowrap;
+  direction: ltr;
   gap: 6px;
   align-items: center;
   height: 52px;
@@ -203,7 +204,7 @@ html[data-theme="contrast"] .tile { border-width: 3px; backdrop-filter: none; bo
 .sheet { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.45); }
 .panel {
   position: absolute;
-  left: 12px;
+  inset-inline-start: 12px;
   top: 12px;
   bottom: 12px;
   width: min(440px, calc(100vw - 24px));
@@ -333,6 +334,24 @@ html:not(.is-reduced) .shake { animation: buzz .35s linear 3; }
 .check { display: flex; align-items: center; gap: 8px; min-height: 48px; }
 .presets { display: flex; flex-wrap: wrap; gap: 8px; }
 .presets button { width: 48px; padding: 0; border-radius: 50%; }
+html[dir="rtl"] .top { text-align: start; }
+html[dir="rtl"] .tile-bar,
+html[dir="rtl"] .tile .body { direction: rtl; text-align: start; }
+html[dir="rtl"] .tile .body .tape-scroll,
+html[dir="rtl"] .tile .body .stick,
+html[dir="rtl"] .tile .body .keys,
+html[dir="rtl"] .tile .body .pix,
+html[dir="rtl"] .tile .body .pro,
+html[dir="rtl"] .tile .body .gearbox,
+html[dir="rtl"] .tile .body .mat,
+html[dir="rtl"] .tile .body .meter { direction: ltr; }
+html[lang="ar"] body,
+html[lang="fa-AF"] body,
+html[lang="ti"] body,
+html[data-kp-lang="ar"] body,
+html[data-kp-lang="fa-AF"] body,
+html[data-kp-lang="ti"] body { line-height: 1.5; }
+html[dir="rtl"] .proj-exit { left: 12px; right: auto; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }

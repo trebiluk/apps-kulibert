@@ -1,10 +1,16 @@
-/* Bits and Bobs BB 2.0.2 — tech-room HUD. Classic board: ?theme=classic */
+/* Bits and Bobs BB 2.0.3 — tech-room HUD. Classic board: ?theme=classic. Languages follow the Hub. */
 (function () {
   if (document.documentElement.classList.contains("is-classic")) {
     var frame = document.querySelector(".classic-frame");
     frame.src = "/bits/classic.html";
     return;
   }
+  if (window.BitsI18n) BitsI18n.boot();
+  function bb(key) { return window.BitsI18n ? BitsI18n.bb(key) : ""; }
+  function bbf(key, map) { return window.BitsI18n ? BitsI18n.bbf(key, map) : ""; }
+  function onLang(fn) { return window.BitsI18n ? BitsI18n.on(fn) : function () {}; }
+  var COLOR_KEY = ["colorCyan", "colorAmber", "colorViolet", "colorLime", "colorCoral", "colorIce", "colorVermilion", "colorMint"];
+  function colorName(i) { return bb(COLOR_KEY[i] || "colorCyan"); }
 
   var ACCENTS = [["Vermilion", "#e25c12"], ["Cyan", "#3ee0ff"], ["Amber", "#ffb020"], ["Lime", "#b6f25c"], ["Violet", "#c084fc"], ["Ice", "#d7f6ff"]];
   var DEFAULTS = ["drama", "bell", "dice", "noise", "calc", "prompt"];
@@ -80,21 +86,17 @@
     return (neg ? "-" : "") + text + " in = " + mm.toFixed(1) + " mm";
   }
   function say(text) {
-    if (!window.speechSynthesis || !text) return;
-    window.speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(String(text));
-    u.rate = 0.96;
-    window.speechSynthesis.speak(u);
+    if (window.BitsI18n) { BitsI18n.say(text); return; }
   }
-  function hush() { if (window.speechSynthesis) window.speechSynthesis.cancel(); }
+  function hush() { if (window.BitsI18n) BitsI18n.hush(); else if (window.speechSynthesis) window.speechSynthesis.cancel(); }
   function resultBar(parent) {
     var box = el("div", "result");
     var num = el("p", "num");
     num.setAttribute("aria-live", "polite");
     num.textContent = "—";
     var row = el("div", "row");
-    var sp = btn("Speak");
-    var st = btn("Stop");
+    var sp = btn(""); if (window.BitsI18n) BitsI18n.show(sp, "speak"); else sp.textContent = "Speak";
+    var st = btn(""); if (window.BitsI18n) BitsI18n.show(st, "stop"); else st.textContent = "Stop";
     var last = "";
     sp.addEventListener("click", function () { say(last || num.textContent); });
     st.addEventListener("click", hush);
@@ -105,13 +107,18 @@
   }
   function field(label, value, on, kind) {
     var wrap = el("label", "field");
-    wrap.textContent = label;
+    var cap = el("span");
+    var key = "";
+    if (label && typeof label === "object" && label.k) key = label.k;
+    else if (window.BitsI18n) key = BitsI18n.phrase(label) || "";
+    if (key && window.BitsI18n) BitsI18n.show(cap, key);
+    else cap.textContent = typeof label === "string" ? label : "";
     var input = el("input");
     input.type = kind || "text";
     input.value = value == null ? "" : value;
     input.autocomplete = "off";
     input.addEventListener("input", function () { on(input.value); });
-    wrap.append(input);
+    wrap.append(cap, input);
     return { wrap: wrap, input: input };
   }
   function numField(label, value, on) {
@@ -122,12 +129,16 @@
   function seg(labels, current, on) {
     var row = el("div", "seg");
     labels.forEach(function (lab) {
-      var b = btn(lab);
-      b.setAttribute("aria-pressed", lab === current ? "true" : "false");
+      var id = lab && typeof lab === "object" ? lab.id : lab;
+      var key = lab && typeof lab === "object" ? lab.k : (window.BitsI18n ? BitsI18n.phrase(lab) : "");
+      var b = btn("");
+      if (key && window.BitsI18n) BitsI18n.show(b, key);
+      else b.textContent = id;
+      b.setAttribute("aria-pressed", id === current ? "true" : "false");
       b.addEventListener("click", function () {
         row.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", "false"); });
         b.setAttribute("aria-pressed", "true");
-        on(lab);
+        on(id);
       });
       row.append(b);
     });
@@ -228,6 +239,15 @@
     if (best.n > 0) return best.n + " fit" + (turned ? " turned" : "");
     return "0 fit · Shrink to " + fmt(pct) + "% to fit one";
   }
+  function sheetLine(matW, matH, w, h, gap) {
+    var a = packCount(matW, matH, w, h, gap);
+    var b = packCount(matW, matH, h, w, gap);
+    var turned = b.n > a.n;
+    var best = turned ? b : a;
+    if (best.n > 0) return bbf(turned ? "fitTurned" : "fit", { n: best.n });
+    var pct = Math.max(shrinkPct(matW, matH, w, h) || 0, shrinkPct(matW, matH, h, w) || 0);
+    return bbf("shrink", { pct: fmt(pct) });
+  }
   function driveMath(diameter, distance) {
     if (!(diameter > 0) || !Number.isFinite(distance)) return null;
     var turns = distance / (Math.PI * diameter);
@@ -256,7 +276,25 @@
   }
 
   var TOOLS = [];
-  function addTool(id, name, blurb, mount) { TOOLS.push({ id: id, name: name, blurb: blurb, mount: mount }); }
+  function addTool(id, name, blurb, mount) {
+    var nameKey = window.BitsI18n ? BitsI18n.toolKey(name) : "";
+    var blurbKey = window.BitsI18n ? BitsI18n.toolKey(blurb) : "";
+    TOOLS.push({
+      id: id,
+      nameKey: nameKey,
+      blurbKey: blurbKey,
+      enName: name,
+      enBlurb: blurb,
+      get name() { return nameKey ? bb(nameKey) : name; },
+      get blurb() { return blurbKey ? bb(blurbKey) : blurb; },
+      mount: function (body, ctx) {
+        var offs = [];
+        ctx.onLang = function (fn) { offs.push(onLang(fn)); };
+        var dispose = mount(body, ctx) || function () {};
+        return function () { offs.forEach(function (fn) { fn(); }); try { dispose(); } catch (e) {} };
+      }
+    });
+  }
   function byId(id) { for (var i = 0; i < TOOLS.length; i++) if (TOOLS[i].id === id) return TOOLS[i]; return null; }
 
   addTool("drama", "Drama Timer", "A huge ring for the scene.", function (body, ctx) {
@@ -274,9 +312,19 @@
     c.setAttribute("stroke", "currentColor"); c.setAttribute("transform", "rotate(-90 60 60)");
     svg.append(c); wrap.append(svg); body.append(wrap);
     var row = el("div", "row");
-    var start = btn("Start"); var reset = btn("Reset"); var chime = btn("Chime off");
-    chime.setAttribute("aria-pressed", bag.chime ? "true" : "false");
-    chime.textContent = bag.chime ? "Chime on" : "Chime off";
+    var start = btn(""); var reset = btn(""); var chime = btn("");
+    function paintRun() {
+      if (running && window.BitsI18n) BitsI18n.showShared(start, "pause");
+      else if (window.BitsI18n) BitsI18n.show(start, "start");
+      else start.textContent = running ? "Pause" : "Start";
+    }
+    function paintChime() {
+      chime.setAttribute("aria-pressed", bag.chime ? "true" : "false");
+      if (window.BitsI18n) BitsI18n.show(chime, bag.chime ? "chimeOn" : "chimeOff");
+      else chime.textContent = bag.chime ? "Chime on" : "Chime off";
+    }
+    if (window.BitsI18n) BitsI18n.show(reset, "reset"); else reset.textContent = "Reset";
+    paintRun(); paintChime();
     row.append(start, reset, chime); body.append(row);
     var setRow = el("div", "row");
     var mins = numField("Minutes", Math.floor(bag.sec / 60), function () {});
@@ -293,7 +341,7 @@
       c.setAttribute("stroke", left <= 10 ? "#ff5a4a" : "currentColor");
       wrap.classList.toggle("boom", left === 0);
     }
-    function stop() { running = false; clearInterval(timer); start.textContent = "Start"; }
+    function stop() { running = false; clearInterval(timer); paintRun(); }
     start.addEventListener("click", function () {
       if (running) { stop(); return; }
       if (left <= 0) {
@@ -301,7 +349,7 @@
         bag.sec = t; total = t; left = t; ctx.save();
       }
       if (left <= 0) return;
-      running = true; start.textContent = "Pause";
+      running = true; paintRun();
       timer = setInterval(function () {
         left -= 1; paint();
         if (left <= 0) {
@@ -329,10 +377,10 @@
       bag.sec = t; total = t || 1; left = t; ctx.save(); paint();
     });
     chime.addEventListener("click", function () {
-      bag.chime = !bag.chime; chime.textContent = bag.chime ? "Chime on" : "Chime off";
-      chime.setAttribute("aria-pressed", bag.chime ? "true" : "false"); ctx.save();
+      bag.chime = !bag.chime; paintChime(); ctx.save();
     });
     paint();
+    ctx.onLang(paintRun); ctx.onLang(paintChime);
     return function () { clearInterval(timer); };
   });
 
@@ -348,17 +396,18 @@
     if (!bag.periods) bag.periods = BELLS.map(function (p) { return { id: p[0], start: p[1], end: p[2] }; });
     var res = resultBar(body);
     var note = el("p", "note");
-    note.textContent = "Starting Solvay day. Edit the times for this Chromebook.";
+    if (window.BitsI18n) BitsI18n.show(note, "bellNote"); else note.textContent = "Starting Solvay day. Edit the times for this Chromebook.";
     body.append(note);
-    var edit = btn("Edit times");
+    var edit = btn("");
+    if (window.BitsI18n) BitsI18n.show(edit, "editTimes"); else edit.textContent = "Edit times";
     body.append(edit);
     var form = el("div");
     form.hidden = true;
     bag.periods.forEach(function (p) {
       var row = el("div", "row");
       var lab = el("strong"); lab.textContent = p.id;
-      var a = field("Start", p.start, function (v) { p.start = v; ctx.save(); }, "time");
-      var b = field("End", p.end, function (v) { p.end = v; ctx.save(); }, "time");
+      var a = field({ k: "periodStart" }, p.start, function (v) { p.start = v; ctx.save(); }, "time");
+      var b = field({ k: "periodEnd" }, p.end, function (v) { p.end = v; ctx.save(); }, "time");
       row.append(lab, a.wrap, b.wrap); form.append(row);
     });
     body.append(form);
@@ -373,11 +422,12 @@
         if (m >= a && m < b) cur = { p: p, left: b - m };
         else if (a > m && (!next || a < next.at)) next = { p: p, at: a, left: a - m };
       });
-      if (cur) res.set(leftText(cur.left) + " left in " + cur.p.id);
-      else if (next) res.set(leftText(next.left) + " until " + next.p.id);
-      else res.set("Day is over");
+      if (cur) res.set(bbf("leftIn", { time: leftText(cur.left), id: cur.p.id }));
+      else if (next) res.set(bbf("until", { time: leftText(next.left), id: next.p.id }));
+      else res.set(bb("dayOver"));
     }
     tick();
+    ctx.onLang(tick);
     var timer = setInterval(tick, 250);
     return function () { clearInterval(timer); };
   });
@@ -411,17 +461,18 @@
           cube.append(f);
         });
         scene.append(cube); host.append(scene);
-        var roll = btn("Roll");
+        var roll = btn("");
+        if (window.BitsI18n) BitsI18n.show(roll, "roll"); else roll.textContent = "Roll";
         roll.addEventListener("click", function () {
           var n = 1 + Math.floor(Math.random() * 6);
           if (!reduced()) turn += 2;
           var a = show[n];
           cube.style.transform = "rotateX(" + (a[0] + turn * 360) + "deg) rotateY(" + (a[1] + turn * 360) + "deg)";
-          res.set("Die " + n);
+          res.set(bbf("die", { n: n }));
           shipScore("dice", n, 6);
         });
         host.append(roll);
-        res.set("Die 1");
+        res.set(bbf("die", { n: 1 }));
       } else if (bag.mode === "Wheel") {
         var pointer = el("div", "pointer");
         var rotor = el("div", "rotor");
@@ -429,7 +480,8 @@
         rotor.style.background = "conic-gradient(" + stops + ")";
         var deg = 0;
         host.append(pointer, rotor);
-        var spin = btn("Spin");
+        var spin = btn("");
+        if (window.BitsI18n) BitsI18n.show(spin, "spin"); else spin.textContent = "Spin";
         spin.addEventListener("click", function () {
           var pick = Math.floor(Math.random() * 6);
           var target = (360 - (pick * 60 + 30) + 360) % 360;
@@ -437,45 +489,51 @@
           var delta = (target - current + 360) % 360;
           deg += (reduced() ? 0 : 1440) + delta;
           rotor.style.transform = "rotate(" + deg + "deg)";
-          var names = ["Cyan", "Amber", "Violet", "Lime", "Coral", "Ice"];
-          res.set(names[pick] + " crew");
+          var names = COLOR_KEY.slice(0, 6).map(colorName);
+          res.set(bbf("crew", { name: names[pick] }));
         });
         host.append(spin);
-        res.set("Spin the wheel");
+        res.set(bb("spinWheel"));
       } else {
         var teams = numField("Teams", bag.teams, function (v) { bag.teams = Math.max(2, Math.min(8, v || 2)); ctx.save(); draw(); });
         var seats = numField("Seats", bag.seats, function (v) { bag.seats = Math.max(bag.teams, Math.min(36, v || bag.teams)); ctx.save(); draw(); });
         var row = el("div", "row"); row.append(teams.wrap, seats.wrap); host.append(row);
         var grid = el("div", "teamgrid");
-        var names = ["Cyan", "Amber", "Violet", "Lime", "Coral", "Ice", "Vermilion", "Mint"];
+        var names = COLOR_KEY.map(colorName);
         for (var i = 1; i <= bag.seats; i++) {
           var t = (i - 1) % bag.teams;
           var s = el("div", "seat");
           s.style.background = CREW[t];
           s.style.color = "#102033";
           s.textContent = String(i);
-          s.title = "Seat " + i + " · " + names[t];
+          s.title = bbf("seat", { n: i, name: names[t] });
           grid.append(s);
         }
         host.append(grid);
-        res.set(bag.teams + " crews, " + bag.seats + " seats");
+        res.set(bbf("crews", { teams: bag.teams, seats: bag.seats }));
       }
     }
     draw();
+    ctx.onLang(draw);
   });
 
-  addTool("noise", "Noise Meter", "Live only. Never recorded.", function (body) {
+  addTool("noise", "Noise Meter", "Live only. Never recorded.", function (body, ctx) {
     var res = resultBar(body);
     var meter = el("div", "meter");
     meter.append(el("i", "c"), el("i", "l"), el("i", "h"));
     var needle = el("div", "needle");
     body.append(meter, needle);
     var note = el("p", "note");
-    note.textContent = "Calm, then loud. The mic is asked on the first tap and is not saved.";
+    if (window.BitsI18n) BitsI18n.show(note, "noiseNote"); else note.textContent = "Calm, then loud. The mic is asked on the first tap and is not saved.";
     body.append(note);
-    var listen = btn("Listen");
+    var listen = btn("");
     body.append(listen);
-    var stream = null, ac = null, raf = 0, on = false;
+    var stream = null, ac = null, raf = 0, on = false, zoneKey = "";
+    function paintListen() {
+      if (window.BitsI18n) BitsI18n.show(listen, on ? "stopMic" : "listen");
+      else listen.textContent = on ? "Stop mic" : "Listen";
+    }
+    paintListen();
     function level(buf) {
       var s = 0, i;
       for (i = 0; i < buf.length; i++) { var v = (buf[i] - 128) / 128; s += v * v; }
@@ -485,12 +543,12 @@
       on = false; cancelAnimationFrame(raf);
       if (stream) stream.getTracks().forEach(function (t) { t.stop(); });
       if (ac) ac.close();
-      stream = null; ac = null; listen.textContent = "Listen";
+      stream = null; ac = null; paintListen();
     }
     listen.addEventListener("click", function () {
-      if (on) { stop(); res.set("Mic off"); return; }
+      if (on) { stop(); res.set(bb("micOff")); return; }
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        res.set("Mic stayed off. Nothing was recorded.");
+        res.set(bb("micDenied"));
         return;
       }
       navigator.mediaDevices.getUserMedia({ audio: true, video: false }).then(function (st) {
@@ -499,21 +557,22 @@
         var an = ac.createAnalyser();
         an.fftSize = 1024; src.connect(an);
         var buf = new Uint8Array(an.fftSize);
-        on = true; listen.textContent = "Stop mic";
+        on = true; paintListen();
         var loop = function () {
           if (!on) return;
           an.getByteTimeDomainData(buf);
           var rms = level(buf);
           var pct = Math.max(0, Math.min(100, rms * 280));
           needle.style.marginLeft = "calc(" + pct + "% - 9px)";
-          var zone = pct < 45 ? "Calm" : pct < 75 ? "Chatty" : "Loud";
-          res.set(zone + " · " + Math.round(pct));
+          zoneKey = pct < 45 ? "calm" : pct < 75 ? "chatty" : "loud";
+          res.set(bbf("zone", { zone: bb(zoneKey), n: Math.round(pct) }));
           raf = requestAnimationFrame(loop);
         };
         loop();
-      }).catch(function () { res.set("Mic stayed off. Nothing was recorded."); });
+      }).catch(function () { res.set(bb("micDenied")); });
     });
-    res.set("Tap Listen");
+    res.set(bb("tapListen"));
+    ctx.onLang(function () { paintListen(); if (zoneKey) { /* live loop refreshes */ } });
     return stop;
   });
 
@@ -525,8 +584,13 @@
     var res = resultBar(body);
     res.set("0");
     body.append(seg(["Basic", "Scientific"], bag.mode, function (m) { bag.mode = m; ctx.save(); keys(); }));
-    var ang = btn(bag.deg ? "Degrees" : "Radians");
-    ang.addEventListener("click", function () { bag.deg = !bag.deg; ang.textContent = bag.deg ? "Degrees" : "Radians"; ctx.save(); });
+    var ang = btn("");
+    function paintAng() {
+      if (window.BitsI18n) BitsI18n.show(ang, bag.deg ? "degrees" : "radians");
+      else ang.textContent = bag.deg ? "Degrees" : "Radians";
+    }
+    paintAng();
+    ang.addEventListener("click", function () { bag.deg = !bag.deg; paintAng(); ctx.save(); });
     body.append(ang);
     var pad = el("div", "keys");
     body.append(pad);
@@ -538,7 +602,7 @@
         res.set(fmt(v));
         expr = fmt(v);
         shipScore("calc", 1, 1);
-      } catch (e) { res.set("Can't read that"); expr = ""; }
+      } catch (e) { res.set(bb("cantRead")); expr = ""; }
     }
     function keys() {
       pad.textContent = "";
@@ -561,16 +625,22 @@
       pad.append(clr, eq);
     }
     keys();
+    ctx.onLang(paintAng);
   });
 
   addTool("prompt", "Random Prompt", "A design challenge on tap.", function (body, ctx) {
     var bag = ctx.bag;
     if (bag.i == null) bag.i = Math.floor(Math.random() * PROMPTS.length);
     var res = resultBar(body);
-    function show() { res.set(PROMPTS[bag.i]); }
-    var b = btn("New prompt");
+    function show() {
+      var rows = window.BitsI18n ? BitsI18n.prompts() : PROMPTS;
+      res.set(rows[bag.i] || PROMPTS[bag.i] || "");
+    }
+    var b = btn("");
+    if (window.BitsI18n) BitsI18n.show(b, "newPrompt"); else b.textContent = "New prompt";
     b.addEventListener("click", function () { bag.i = (bag.i + 1) % PROMPTS.length; ctx.save(); show(); });
     body.append(b); show();
+    ctx.onLang(show);
   });
 
   addTool("tape", "Tape reader", "Tap a tick or type millimeters.", function (body) {
@@ -620,7 +690,8 @@
     var kerf = field("Kerf", bag.kerf, function (v) { bag.kerf = v; ctx.save(); draw(); });
     var top = el("div", "row"); top.append(stock.wrap, kerf.wrap); body.append(top);
     var list = el("div"); body.append(list);
-    var add = btn("Add piece");
+    var add = btn("");
+    if (window.BitsI18n) BitsI18n.show(add, "addPiece"); else add.textContent = "Add piece";
     add.addEventListener("click", function () {
       bag.parts.push({ piece: "shelf", len: "12", qty: 1, done: {} }); ctx.save(); draw();
     });
@@ -630,10 +701,11 @@
       list.textContent = "";
       bag.parts.forEach(function (p, idx) {
         var row = el("div", "row");
-        var piece = field("Piece", p.piece, function (v) { p.piece = v.slice(0, 24); ctx.save(); paint(); });
-        var len = field("Length", p.len, function (v) { p.len = v; ctx.save(); paint(); });
+        var piece = field({ k: "piece" }, p.piece, function (v) { p.piece = v.slice(0, 24); ctx.save(); paint(); });
+        var len = field({ k: "length" }, p.len, function (v) { p.len = v; ctx.save(); paint(); });
         var qty = numField("How many", p.qty, function (v) { p.qty = Math.max(1, Math.min(24, v || 1)); ctx.save(); paint(); });
-        var rm = btn("Remove");
+        var rm = btn("");
+        if (window.BitsI18n) BitsI18n.show(rm, "remove"); else rm.textContent = "Remove";
         rm.addEventListener("click", function () { bag.parts.splice(idx, 1); ctx.save(); draw(); });
         row.append(piece.wrap, len.wrap, qty.wrap, rm); list.append(row);
       });
@@ -665,12 +737,12 @@
       host.textContent = "";
       tooLong.forEach(function (item) {
         var warn = el("p", "note");
-        warn.textContent = (item.piece || "Piece") + " is too long for one stick";
+        warn.textContent = bbf("tooLong", { piece: item.piece || bb("piece") });
         host.append(warn);
       });
       sticks.forEach(function (stick, si) {
         var lab = el("div", "note");
-        lab.textContent = "Stick " + (si + 1);
+        lab.textContent = bbf("stickN", { n: si + 1 });
         var bar = el("div", "stick");
         stick.forEach(function (item, ii) {
           if (ii > 0) {
@@ -696,11 +768,12 @@
         }
         host.append(lab, bar);
       });
-      var buy = "Buy " + sticks.length + " stick" + (sticks.length === 1 ? "" : "s");
-      if (tooLong.length) buy += " · " + tooLong.length + " too long";
+      var buy = sticks.length === 1 ? bb("buyOne") : bbf("buyMany", { n: sticks.length });
+      if (tooLong.length) buy += " · " + bbf("tooLongN", { n: tooLong.length });
       res.set(buy);
     }
     draw();
+    ctx.onLang(draw);
   });
 
   addTool("robot", "Robot drive", "Wheel, distance, and a 90° turn.", function (body, ctx) {
@@ -715,17 +788,18 @@
     function paint() {
       var go = driveMath(bag.d, bag.dist);
       var spin = turn90(bag.d, bag.track);
-      if (!go) { res.set("Needs a wheel size"); return; }
-      res.set(fmt(go.turns) + " turns · " + fmt(go.degrees, 1) + "°  |  90° turn " + (spin ? fmt(spin.degrees, 1) + "° each wheel" : ""));
+      if (!go) { res.set(bb("needsWheel")); return; }
+      res.set(bbf("turns", { turns: fmt(go.turns), deg: fmt(go.degrees, 1), each: spin ? fmt(spin.degrees, 1) : "—" }));
     }
     var d = numField("Wheel size", bag.d, function (v) { bag.d = v; ctx.save(); paint(); });
     var dist = numField("Distance", bag.dist, function (v) { bag.dist = v; ctx.save(); paint(); });
     var track = numField("Track (90°)", bag.track, function (v) { bag.track = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(d.wrap, dist.wrap, track.wrap); body.append(row);
     var note = el("p", "note");
-    note.textContent = "Same unit for wheel, distance, and track. A point turn rolls the wheels opposite ways.";
+    if (window.BitsI18n) BitsI18n.show(note, "robotNote"); else note.textContent = "Same unit for wheel, distance, and track. A point turn rolls the wheels opposite ways.";
     body.append(note);
-    var roll = btn("Roll");
+    var roll = btn("");
+    if (window.BitsI18n) BitsI18n.show(roll, "roll"); else roll.textContent = "Roll";
     roll.addEventListener("click", function () {
       var go = driveMath(bag.d, bag.dist);
       if (!go) return;
@@ -739,6 +813,7 @@
       });
     });
     body.append(roll); paint();
+    ctx.onLang(paint);
   });
 
   addTool("sheet", "Sheet fit", "How many fit on a Cricut mat.", function (body, ctx) {
@@ -764,7 +839,7 @@
       var turned = b.n > a.n;
       var best = turned ? b : a;
       var sw = turned ? bag.h : bag.w, sh = turned ? bag.w : bag.h;
-      res.set(sheetSummary(mat[0], mat[1], bag.w, bag.h, bag.gap));
+      res.set(sheetLine(mat[0], mat[1], bag.w, bag.h, bag.gap));
       pic.textContent = "";
       var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       svg.setAttribute("viewBox", "0 0 " + mat[0] + " " + mat[1]);
@@ -795,6 +870,7 @@
     var sh = numField("Sheet height", bag.sheetH || 24, function (v) { bag.sheetH = v; ctx.save(); paint(); });
     var row2 = el("div", "row"); row2.append(sw.wrap, sh.wrap); body.append(row2);
     paint();
+    ctx.onLang(paint);
   });
 
   addTool("strength", "Strength score", "Load ÷ build mass. No names.", function (body, ctx) {
@@ -808,7 +884,7 @@
     function score(load, mass) { return mass > 0 ? load / mass : null; }
     function paint() {
       var s = score(bag.load, bag.mass);
-      res.set(s == null ? "Needs a build mass" : "Score " + fmt(s));
+      res.set(s == null ? bb("needsMass") : bbf("score", { n: fmt(s) }));
       bars.textContent = "";
       var max = 1;
       bag.tries.forEach(function (t) { var v = score(t.load, t.mass); if (v > max) max = v; });
@@ -816,16 +892,17 @@
         var v = score(t.load, t.mass) || 0;
         var col = el("span");
         col.style.height = Math.max(4, v / max * 100) + "%";
-        col.title = "Try " + (i + 1) + " · " + fmt(v);
+        col.title = bbf("tryTitle", { n: i + 1, v: fmt(v) });
         bars.append(col);
       });
     }
     var load = numField("Load held", bag.load, function (v) { bag.load = v; ctx.save(); paint(); });
     var mass = numField("Build mass", bag.mass, function (v) { bag.mass = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(load.wrap, mass.wrap); body.append(row);
-    var log = btn("Log try");
+    var log = btn("");
+    if (window.BitsI18n) BitsI18n.show(log, "logTry"); else log.textContent = "Log try";
     log.addEventListener("click", function () {
-      if (!(bag.mass > 0)) { res.set("Needs a build mass"); return; }
+      if (!(bag.mass > 0)) { res.set(bb("needsMass")); return; }
       bag.tries.push({ load: bag.load, mass: bag.mass });
       if (bag.tries.length > 12) bag.tries.shift();
       ctx.save(); paint();
@@ -833,9 +910,10 @@
     });
     body.append(log);
     var note = el("p", "note");
-    note.textContent = "Same unit on both. The bar is the try, not a person.";
+    if (window.BitsI18n) BitsI18n.show(note, "strengthNote"); else note.textContent = "Same unit on both. The bar is the try, not a person.";
     body.append(note);
     paint();
+    ctx.onLang(paint);
   });
 
   function convert(cat, amount, from, to) {
@@ -868,7 +946,7 @@
       var dp = bag.to === "mm" ? 1 : 2;
       res.set(fmt(convert(bag.cat, bag.n, bag.from, bag.to), dp) + " " + bag.to);
     }
-    body.append(seg(["Length", "Mass", "Volume", "Temp"], bag.cat, function (c) { bag.cat = c; ctx.save(); build(); paint(); }));
+    body.append(seg([{ id: "Length", k: "catLength" }, { id: "Mass", k: "catMass" }, { id: "Volume", k: "catVolume" }, { id: "Temp", k: "catTemp" }], bag.cat, function (c) { bag.cat = c; ctx.save(); build(); paint(); }));
     var host = el("div", "row"); body.append(host);
     function build() {
       host.textContent = "";
@@ -876,7 +954,10 @@
       host.append(n.wrap);
       ["from", "to"].forEach(function (key) {
         var lab = el("label", "field");
-        lab.textContent = key === "from" ? "From" : "To";
+        var cap = el("span");
+        if (window.BitsI18n) BitsI18n.show(cap, key === "from" ? "from" : "to");
+        else cap.textContent = key === "from" ? "From" : "To";
+        lab.append(cap);
         var sel = el("select");
         units[bag.cat].forEach(function (u) {
           var o = el("option"); o.value = u; o.textContent = u; if (u === bag[key]) o.selected = true; sel.append(o);
@@ -886,6 +967,7 @@
       });
     }
     build(); paint();
+    ctx.onLang(function () { build(); paint(); });
   });
 
   addTool("scale", "Scale", "Model length times the ratio.", function (body, ctx) {
@@ -896,11 +978,12 @@
     function paint() {
       var real = bag.model * bag.ratio;
       var feet = Math.floor(real / 12), inches = real - feet * 12;
-      res.set(fmt(real) + " in · " + feet + " ft " + fmt(inches) + " in");
+      res.set(bbf("scaleOut", { real: fmt(real), ft: feet, inch: fmt(inches) }));
     }
     var a = numField("Model inches", bag.model, function (v) { bag.model = v; ctx.save(); paint(); });
     var b = numField("1 to", bag.ratio, function (v) { bag.ratio = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(a.wrap, b.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   addTool("volume", "Volume", "Box, cylinder, or sphere.", function (body, ctx) {
@@ -915,13 +998,15 @@
       if (bag.shape === "Box") v = bag.a * bag.b * bag.c;
       else if (bag.shape === "Cylinder") v = Math.PI * bag.a * bag.a * bag.b;
       else v = 4 / 3 * Math.PI * Math.pow(bag.a, 3);
-      res.set(fmt(v) + " cubic · " + fmt(v) + " mL if those units are cm");
+      var shown = fmt(v);
+      res.set(bbf("cubic", { v: shown }));
     }
     body.append(seg(["Box", "Cylinder", "Sphere"], bag.shape, function (s) { bag.shape = s; ctx.save(); paint(); }));
     var a = numField("A / radius", bag.a, function (v) { bag.a = v; ctx.save(); paint(); });
     var b = numField("B / height", bag.b, function (v) { bag.b = v; ctx.save(); paint(); });
     var c = numField("C", bag.c, function (v) { bag.c = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(a.wrap, b.wrap, c.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   addTool("speed", "Speed", "Distance, speed, or time.", function (body, ctx) {
@@ -933,10 +1018,10 @@
     var res = resultBar(body);
     function paint() {
       var out = "—";
-      if (bag.solve === "Time" && bag.v) out = fmt(bag.d / bag.v) + " time";
-      else if (bag.solve === "Speed" && bag.t) out = fmt(bag.d / bag.t) + " speed";
-      else if (bag.solve === "Distance") out = fmt(bag.v * bag.t) + " distance";
-      else out = "Needs a number above 0";
+      if (bag.solve === "Time" && bag.v) out = bbf("timeOut", { n: fmt(bag.d / bag.v) });
+      else if (bag.solve === "Speed" && bag.t) out = bbf("speedOut", { n: fmt(bag.d / bag.t) });
+      else if (bag.solve === "Distance") out = bbf("distOut", { n: fmt(bag.v * bag.t) });
+      else out = bb("needsPos");
       res.set(out);
     }
     body.append(seg(["Distance", "Speed", "Time"], bag.solve, function (s) { bag.solve = s; ctx.save(); paint(); }));
@@ -944,6 +1029,7 @@
     var v = numField("Speed", bag.v, function (v0) { bag.v = v0; ctx.save(); paint(); });
     var t = numField("Time", bag.t, function (v0) { bag.t = v0; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(d.wrap, v.wrap, t.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   addTool("circuits", "Circuits", "Ohm's law, series, and parallel.", function (body, ctx) {
@@ -959,16 +1045,16 @@
       if (bag.mode === "Ohm") {
         var out = "—";
         if (!bag.solve) bag.solve = "Ohms";
-        if (bag.solve === "Ohms") out = bag.i ? fmt(bag.v / bag.i) + " Ω" : "Needs amps";
-        else if (bag.solve === "Amps") out = bag.r ? fmt(bag.v / bag.r) + " A" : "Needs ohms";
+        if (bag.solve === "Ohms") out = bag.i ? fmt(bag.v / bag.i) + " Ω" : bb("needsAmps");
+        else if (bag.solve === "Amps") out = bag.r ? fmt(bag.v / bag.r) + " A" : bb("needsOhms");
         else out = fmt(bag.i * bag.r) + " V";
         res.set(out);
       } else if (bag.mode === "Series") {
         var r = bag.r + bag.r2;
-        res.set(fmt(r) + " Ω series" + (r ? " · " + fmt(bag.v / r) + " A" : ""));
+        res.set(bbf("seriesOut", { r: fmt(r), a: r ? fmt(bag.v / r) : "—" }));
       } else {
         var r2 = (bag.r > 0 && bag.r2 > 0) ? 1 / (1 / bag.r + 1 / bag.r2) : NaN;
-        res.set(fmt(r2) + " Ω parallel" + (r2 ? " · " + fmt(bag.v / r2) + " A" : ""));
+        res.set(bbf("parallelOut", { r: fmt(r2), a: r2 ? fmt(bag.v / r2) : "—" }));
       }
     }
     body.append(seg(["Ohm", "Series", "Parallel"], bag.mode, function (m) { bag.mode = m; ctx.save(); paint(); }));
@@ -978,6 +1064,7 @@
     var r = numField("Ohms", bag.r, function (n) { bag.r = n; ctx.save(); paint(); });
     var r2 = numField("Ohms 2", bag.r2, function (n) { bag.r2 = n; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(v.wrap, i.wrap, r.wrap, r2.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   addTool("levers", "Levers", "Load times arm equals effort times arm.", function (body, ctx) {
@@ -991,7 +1078,7 @@
     body.append(svg);
     function paint() {
       var effort = bag.ea > 0 ? bag.load * bag.la / bag.ea : NaN;
-      res.set("Effort " + fmt(effort));
+      res.set(bbf("effort", { n: fmt(effort) }));
       svg.textContent = "";
       var ful = 40 + (bag.la / Math.max(1, bag.la + bag.ea)) * 120;
       var beam = document.createElementNS("http://www.w3.org/2000/svg", "line");
@@ -1006,6 +1093,7 @@
     var b = numField("Load arm", bag.la, function (v) { bag.la = v; ctx.save(); paint(); });
     var c = numField("Effort arm", bag.ea, function (v) { bag.ea = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(a.wrap, b.wrap, c.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   addTool("lumber", "Lumber", "Board feet from thickness, width, length.", function (body, ctx) {
@@ -1028,14 +1116,18 @@
       var t = bag.actual ? dressed(bag.t) : bag.t;
       var w = bag.actual ? dressed(bag.w) : bag.w;
       var bf = t * w * bag.l / 12 * bag.n;
-      res.set(fmt(bf) + " board feet" + (bag.actual ? " · actual " + fmt(t) + "×" + fmt(w) : ""));
+      res.set(bag.actual ? bbf("boardFtAct", { n: fmt(bf), t: fmt(t), w: fmt(w) }) : bbf("boardFt", { n: fmt(bf) }));
     }
-    var actual = btn(bag.actual ? "Actual sizes" : "Nominal sizes");
-    actual.setAttribute("aria-pressed", bag.actual ? "true" : "false");
+    var actual = btn("");
+    function paintActual() {
+      actual.setAttribute("aria-pressed", bag.actual ? "true" : "false");
+      if (window.BitsI18n) BitsI18n.show(actual, bag.actual ? "actual" : "nominal");
+      else actual.textContent = bag.actual ? "Actual sizes" : "Nominal sizes";
+    }
+    paintActual();
     actual.addEventListener("click", function () {
       bag.actual = !bag.actual;
-      actual.textContent = bag.actual ? "Actual sizes" : "Nominal sizes";
-      actual.setAttribute("aria-pressed", bag.actual ? "true" : "false");
+      paintActual();
       ctx.save(); paint();
     });
     body.append(actual);
@@ -1044,6 +1136,7 @@
     var l = numField("Long ft", bag.l, function (v) { bag.l = v; ctx.save(); paint(); });
     var n = numField("How many", bag.n, function (v) { bag.n = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(t.wrap, w.wrap, l.wrap, n.wrap); body.append(row); paint();
+    ctx.onLang(function () { paintActual(); paint(); });
   });
 
   addTool("roof", "Roof pitch", "Rise, run, and the right triangle.", function (body, ctx) {
@@ -1058,13 +1151,14 @@
       var ang = bag.run ? Math.atan2(bag.rise, bag.run) * 180 / Math.PI : NaN;
       var hyp = Math.hypot(bag.rise, bag.run);
       var c = Math.hypot(bag.a, bag.b);
-      res.set(fmt(pitch) + " in 12 · " + fmt(ang, 1) + "° · rafter " + fmt(hyp) + " · triangle c " + fmt(c));
+      res.set(bbf("pitch", { pitch: fmt(pitch), ang: fmt(ang, 1), hyp: fmt(hyp), c: fmt(c) }));
     }
     var rise = numField("Rise", bag.rise, function (v) { bag.rise = v; ctx.save(); paint(); });
     var run = numField("Run", bag.run, function (v) { bag.run = v; ctx.save(); paint(); });
     var a = numField("Leg a", bag.a, function (v) { bag.a = v; ctx.save(); paint(); });
     var b = numField("Leg b", bag.b, function (v) { bag.b = v; ctx.save(); paint(); });
     var row = el("div", "row"); row.append(rise.wrap, run.wrap, a.wrap, b.wrap); body.append(row); paint();
+    ctx.onLang(paint);
   });
 
   function gearPath(teeth, R) {
@@ -1111,7 +1205,7 @@
       spinA = gear(rA + 4, tA, rA);
       spinB = gear(rA + 4 + dist, tB, rB);
       var rpmB = tB ? bag.rpm * tA / tB : 0;
-      res.set(tA + ":" + tB + " · " + fmt(bag.rpm) + " rpm turns " + fmt(rpmB) + " rpm");
+      res.set(bbf("gear", { a: tA, b: tB, rpm: fmt(bag.rpm), out: fmt(rpmB) }));
       return { tA: tA, tB: tB };
     }
     var ratio = layout();
@@ -1128,6 +1222,7 @@
     var b = numField("Teeth B", bag.b, function (v) { bag.b = v; ctx.save(); ratio = layout(); });
     var rpm = numField("RPM A", bag.rpm, function (v) { bag.rpm = v; ctx.save(); ratio = layout(); });
     var row = el("div", "row"); row.append(a.wrap, b.wrap, rpm.wrap); body.append(row);
+    ctx.onLang(function () { ratio = layout(); });
     return function () { alive = false; };
   });
 
@@ -1153,8 +1248,8 @@
       handle.setAttribute("cx", String(x)); handle.setAttribute("cy", String(y)); handle.setAttribute("r", "12");
       handle.setAttribute("fill", "currentColor");
       svg.append(arc, ray, handle);
-      var comp = deg <= 90 ? " · complement " + fmt(90 - deg, 1) + "°" : "";
-      res.set(fmt(deg, 1) + "° · supplement " + fmt(180 - deg, 1) + "°" + comp);
+      var comp = deg <= 90;
+      res.set(bbf(comp ? "angleComp" : "angle", { deg: fmt(deg, 1), sup: fmt(180 - deg, 1), comp: fmt(90 - deg, 1) }));
     }
     function setFrom(e) {
       var pt = svg.createSVGPoint();
@@ -1169,6 +1264,7 @@
     svg.addEventListener("pointerdown", function (e) { setFrom(e); try { svg.setPointerCapture(e.pointerId); } catch (err) {} });
     svg.addEventListener("pointermove", function (e) { if (e.pressure || e.buttons) setFrom(e); });
     paint();
+    ctx.onLang(paint);
   });
 
   addTool("race", "Stopwatch Race", "Two to four lanes. First to the laps wins.", function (body, ctx) {
@@ -1192,7 +1288,8 @@
       state.forEach(function (lane, i) { if (lane.laps >= bag.laps && winner < 0) winner = i; });
       state.forEach(function (lane, i) {
         var rowL = el("div", "lane" + (i === winner ? " win" : ""));
-        var tap = btn("Lane " + (i + 1) + " · " + lane.laps + "/" + bag.laps);
+        var tap = btn("");
+        tap.textContent = bbf("lane", { n: i + 1, laps: lane.laps, goal: bag.laps });
         tap.addEventListener("click", function () {
           if (winner >= 0) return;
           lane.laps += 1; lane.at = performance.now();
@@ -1201,13 +1298,15 @@
         rowL.append(tap); box.append(rowL);
       });
       host.append(box);
-      res.set(winner >= 0 ? "Lane " + (winner + 1) + " wins" : "First to " + bag.laps + " laps");
+      res.set(winner >= 0 ? bbf("laneWin", { n: winner + 1 }) : bbf("firstTo", { n: bag.laps }));
       if (winner >= 0) shipScore("race", bag.laps, bag.laps);
     }
-    var reset = btn("Reset race");
+    var reset = btn("");
+    if (window.BitsI18n) BitsI18n.show(reset, "resetRace"); else reset.textContent = "Reset race";
     reset.addEventListener("click", function () { draw(true); });
     body.append(reset);
     draw(true);
+    ctx.onLang(function () { draw(false); });
   });
 
   function hslToRgb(h, s, l) {
@@ -1283,16 +1382,19 @@
       host.append(slider("L", 100, function () { return live()[2]; }, function (v) {
         var hsl = live(); var rgb = hslToRgb(hsl[0], hsl[1], v); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
       }));
-      var copy = btn("Copy for TinkerCAD/Cricut");
+      var copy = btn("");
+      if (window.BitsI18n) BitsI18n.show(copy, "copyHex"); else copy.textContent = "Copy for TinkerCAD/Cricut";
       copy.addEventListener("click", function () {
         var h = res.node.textContent.split(/\s+/)[0];
+        function done() { copy.textContent = bbf("copied", { h: h }); }
         if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(h).then(function () { copy.textContent = "Copied " + h; }).catch(function () { copy.textContent = h; });
+          navigator.clipboard.writeText(h).then(done).catch(function () { copy.textContent = h; });
         } else copy.textContent = h;
       });
       host.append(copy);
     }
     build(); paint();
+    ctx.onLang(function () { build(); paint(); });
   });
 
   addTool("binary", "Binary / Pixel", "Eight bits, and a 16×16 grid.", function (body, ctx) {
@@ -1314,7 +1416,7 @@
         row.append(b);
       }
       var ch = bag.bits >= 32 && bag.bits < 127 ? String.fromCharCode(bag.bits) : "·";
-      res.set(bag.bits + " · ASCII " + ch);
+      res.set(bbf("ascii", { n: bag.bits, ch: ch }));
     }
     var grid = el("div", "pix");
     function paintPix() {
@@ -1329,10 +1431,12 @@
       });
     }
     body.append(grid);
-    var clr = btn("Clear grid");
+    var clr = btn("");
+    if (window.BitsI18n) BitsI18n.show(clr, "clearGrid"); else clr.textContent = "Clear grid";
     clr.addEventListener("click", function () { bag.pixels = new Array(256).fill(0); ctx.save(); paintPix(); });
     body.append(clr);
     paintBits(); paintPix();
+    ctx.onLang(paintBits);
   });
 
   var MAP = {
@@ -1415,7 +1519,7 @@
     if (typeof api.record === "function") {
       row = api.record({
         app: "bits",
-        version: "BB 2.0.2",
+        version: "BB 2.0.3",
         event: "score",
         level: String(level || "task").slice(0, 40),
         score: s,
@@ -1431,7 +1535,7 @@
     if (!row) return;
     scored = true;
     try { sessionStorage.setItem("bits-score-v1", "1"); } catch (e2) {}
-    if (window.KulibertBar && typeof window.KulibertBar.toast === "function") window.KulibertBar.toast("Saved");
+    if (window.KulibertBar && typeof window.KulibertBar.toast === "function") window.KulibertBar.toast(bb("saved") || "Saved");
   }
   function prefsPayload() {
     var p = slim();
@@ -1488,18 +1592,33 @@
 
   var top = el("header", "top");
   var brand = el("div", "brand");
-  var h1 = el("h1"); h1.textContent = "Bits & Bobs";
-  var ver = el("span", "ver"); ver.textContent = "BB 2.0.2";
-  var who = el("span", "who"); who.id = "who"; who.textContent = "Not signed in";
+  var h1 = el("h1");
+  var word = el("bdi"); word.textContent = "Bits & Bobs"; h1.append(word);
+  var ver = el("span", "ver");
+  var verBdi = el("bdi"); verBdi.textContent = "BB 2.0.3"; ver.append(verBdi);
+  var who = el("span", "who"); who.id = "who";
   brand.append(h1, ver, who); top.append(brand);
   var board = el("div", "board");
+  board.setAttribute("dir", "ltr");
   var dock = el("div", "dock");
-  var addBtn = btn("+"); addBtn.className = "plus"; addBtn.setAttribute("aria-label", "Add a tool");
-  var bigBtn = btn("Big type");
-  var projBtn = btn("Projector");
-  var setBtn = btn("Settings");
+  dock.setAttribute("dir", "ltr");
+  var addBtn = btn("+"); addBtn.className = "plus";
+  if (window.BitsI18n) BitsI18n.showAria(addBtn, "addTool"); else addBtn.setAttribute("aria-label", "Add a tool");
+  var bigBtn = btn("");
+  var projBtn = btn("");
+  var setBtn = btn("");
+  if (window.BitsI18n) {
+    BitsI18n.show(bigBtn, "bigType");
+    BitsI18n.show(projBtn, "projector");
+    BitsI18n.showShared(setBtn, "settings");
+  } else {
+    bigBtn.textContent = "Big type";
+    projBtn.textContent = "Projector";
+    setBtn.textContent = "Settings";
+  }
   dock.append(addBtn, bigBtn, projBtn, setBtn);
-  var exitBtn = btn("Exit");
+  var exitBtn = btn("");
+  if (window.BitsI18n) BitsI18n.showShared(exitBtn, "exit"); else exitBtn.textContent = "Exit";
   exitBtn.className = "proj-exit";
   exitBtn.addEventListener("click", function () { setProj(false); });
   app.append(top, board, dock, exitBtn);
@@ -1668,19 +1787,25 @@
     node.dataset.id = id;
     var bar = el("div", "tile-bar");
     bar.dataset.drag = "1";
-    var title = el("h2"); title.textContent = tool.name;
-    var pin = btn("Pin"); pin.dataset.pin = "1";
-    var close = btn("×"); close.dataset.close = "1"; close.setAttribute("aria-label", "Remove");
+    var title = el("h2");
+    if (tool.nameKey && window.BitsI18n) BitsI18n.show(title, tool.nameKey); else title.textContent = tool.name;
+    var pin = btn(""); pin.dataset.pin = "1";
+    var close = btn("×"); close.dataset.close = "1";
+    if (window.BitsI18n) BitsI18n.showAria(close, "remove"); else close.setAttribute("aria-label", "Remove");
     bar.append(title, pin, close);
     var body = el("div", "body");
-    var grip = btn(""); grip.className = "grip"; grip.dataset.resize = "1"; grip.setAttribute("aria-label", "Resize");
+    var grip = btn(""); grip.className = "grip"; grip.dataset.resize = "1";
+    if (window.BitsI18n) BitsI18n.showAria(grip, "resize"); else grip.setAttribute("aria-label", "Resize");
     node.append(bar, body, grip);
     var L = lay(id);
-    pin.textContent = L.pin ? "Pinned" : "Pin";
-    pin.setAttribute("aria-pressed", L.pin ? "true" : "false");
+    function paintPin() {
+      pin.setAttribute("aria-pressed", L.pin ? "true" : "false");
+      if (window.BitsI18n) BitsI18n.show(pin, L.pin ? "pinned" : "pin");
+      else pin.textContent = L.pin ? "Pinned" : "Pin";
+    }
+    paintPin();
     pin.addEventListener("click", function () {
-      L.pin = !L.pin; pin.textContent = L.pin ? "Pinned" : "Pin";
-      pin.setAttribute("aria-pressed", L.pin ? "true" : "false"); save();
+      L.pin = !L.pin; paintPin(); save();
     });
     close.addEventListener("click", function () { remove(id); });
     var dispose = tool.mount(body, { bag: bag(id), save: save, reduced: reduced }) || function () {};
@@ -1829,14 +1954,18 @@
     drag = { type: "move", id: id, pid: e.pointerId, ox: e.clientX - (g.pad + L.col * g.cell), oy: e.clientY - (g.pad + L.row * g.row), origin: { c: L.col, r: L.row }, last: [{ t: performance.now(), x: e.clientX, y: e.clientY }] };
   });
 
-  function openSheet(title, build) {
+  function openSheet(title, build, key, sharedKey) {
     var old = document.querySelector(".sheet");
     if (old) old.remove();
     var sheet = el("div", "sheet");
     var panel = el("div", "panel");
     var head = el("div", "row");
-    var h = el("h2"); h.textContent = title;
-    var close = btn("Close");
+    var h = el("h2");
+    if (sharedKey && window.BitsI18n) BitsI18n.showShared(h, sharedKey);
+    else if (key && window.BitsI18n) BitsI18n.show(h, key);
+    else h.textContent = title;
+    var close = btn("");
+    if (window.BitsI18n) BitsI18n.showShared(close, "close"); else close.textContent = "Close";
     close.addEventListener("click", function () { sheet.remove(); });
     head.append(h, close);
     panel.append(head);
@@ -1849,43 +1978,69 @@
     openSheet("Tools", function (panel) {
       TOOLS.forEach(function (tool) {
         var row = el("div", "row");
-        var name = el("strong"); name.textContent = tool.name;
-        var blurb = el("span", "note"); blurb.textContent = tool.blurb;
+        var name = el("strong");
+        var blurb = el("span", "note");
+        if (tool.nameKey && window.BitsI18n) BitsI18n.show(name, tool.nameKey); else name.textContent = tool.name;
+        if (tool.blurbKey && window.BitsI18n) BitsI18n.show(blurb, tool.blurbKey); else blurb.textContent = tool.blurb;
         var on = state.order.indexOf(tool.id) >= 0;
-        var b = btn(on ? "Showing" : "Add");
+        var b = btn("");
         b.disabled = on;
+        function paintAdd() {
+          if (window.BitsI18n) BitsI18n.show(b, b.disabled ? "showing" : "add");
+          else b.textContent = b.disabled ? "Showing" : "Add";
+        }
+        paintAdd();
         b.addEventListener("click", function () {
           if (state.order.indexOf(tool.id) >= 0) return;
           state.order.push(tool.id);
           placeOne(tool.id);
           save(); ensure();
-          b.textContent = "Showing"; b.disabled = true;
+          b.disabled = true;
+          paintAdd();
         });
         row.append(name, blurb, b); panel.append(row);
       });
-    });
+    }, "tools");
   });
   setBtn.addEventListener("click", function () {
     openSheet("Settings", function (panel) {
+      var news = el("p", "note");
+      if (window.BitsI18n) BitsI18n.show(news, "whatsBody");
+      else news.textContent = "Bits & Bobs follows the Hub language. Arabic and Dari menus read right to left, and your board stays put.";
+      var newsLabel = el("p", "note");
+      if (window.BitsI18n) BitsI18n.showShared(newsLabel, "whatsNew"); else newsLabel.textContent = "What's new";
+      panel.append(newsLabel, news);
       panel.append(seg(["HUD dark", "Light", "High-contrast"], state.theme === "light" ? "Light" : state.theme === "contrast" ? "High-contrast" : "HUD dark", function (lab) {
         state.theme = lab === "Light" ? "light" : lab === "High-contrast" ? "contrast" : "hud";
         applyTheme(); save();
       }));
       var presets = el("div", "presets");
+      var ACCENT_KEY = { Vermilion: "colorVermilion", Cyan: "colorCyan", Amber: "colorAmber", Lime: "colorLime", Violet: "colorViolet", Ice: "colorIce" };
       ACCENTS.forEach(function (pair) {
-        var b = btn(""); b.style.background = pair[1]; b.setAttribute("aria-label", pair[0]);
+        var b = btn(""); b.style.background = pair[1];
+        if (window.BitsI18n && ACCENT_KEY[pair[0]]) BitsI18n.showAria(b, ACCENT_KEY[pair[0]]);
+        else b.setAttribute("aria-label", pair[0]);
         b.addEventListener("click", function () { state.accent = pair[1]; applyTheme(); save(); });
         presets.append(b);
       });
       var picker = el("input"); picker.type = "color"; picker.value = state.accent;
       picker.addEventListener("input", function () { state.accent = picker.value; applyTheme(); save(); });
       panel.append(presets, picker);
-      var big = btn(state.big ? "Big type on" : "Big type off");
-      big.addEventListener("click", function () { state.big = !state.big; applyTheme(); big.textContent = state.big ? "Big type on" : "Big type off"; save(); });
+      var big = btn("");
+      function paintBig() {
+        if (window.BitsI18n) BitsI18n.show(big, state.big ? "bigOn" : "bigOff");
+        else big.textContent = state.big ? "Big type on" : "Big type off";
+      }
+      paintBig();
+      big.addEventListener("click", function () { state.big = !state.big; applyTheme(); paintBig(); save(); });
       panel.append(big);
       state.order.forEach(function (id) {
         var row = el("label", "field");
-        row.textContent = byId(id).name + " size";
+        var cap = el("span");
+        function paintSize() { cap.textContent = bbf("sizeOf", { name: byId(id).name }); }
+        paintSize();
+        if (window.BitsI18n) BitsI18n.on(paintSize);
+        row.append(cap);
         var sel = el("select");
         ["S", "M", "L", "XL"].forEach(function (s) {
           var o = el("option"); o.value = s; o.textContent = s; if (lay(id).size === s) o.selected = true; sel.append(o);
@@ -1902,7 +2057,8 @@
       TOOLS.forEach(function (tool) {
         var lab = el("label", "check");
         var box = el("input"); box.type = "checkbox"; box.checked = state.order.indexOf(tool.id) >= 0;
-        var span = el("span"); span.textContent = tool.name;
+        var span = el("span");
+        if (tool.nameKey && window.BitsI18n) BitsI18n.show(span, tool.nameKey); else span.textContent = tool.name;
         box.addEventListener("change", function () {
           if (box.checked) { if (state.order.indexOf(tool.id) < 0) { state.order.push(tool.id); placeOne(tool.id); } }
           else state.order = state.order.filter(function (x) { return x !== tool.id; });
@@ -1910,7 +2066,8 @@
         });
         lab.append(box, span); panel.append(lab);
       });
-      var reset = btn("Reset layout");
+      var reset = btn("");
+      if (window.BitsI18n) BitsI18n.show(reset, "resetLayout"); else reset.textContent = "Reset layout";
       reset.addEventListener("click", function () {
         state.order = DEFAULTS.slice();
         state.layout = {};
@@ -1920,13 +2077,15 @@
         document.querySelector(".sheet").remove();
       });
       panel.append(reset);
-      var classic = btn("Classic board");
+      var classic = btn("");
+      if (window.BitsI18n) BitsI18n.show(classic, "classicBoard"); else classic.textContent = "Classic board";
       classic.addEventListener("click", function () { location.href = "/bits/?theme=classic"; });
       panel.append(classic);
       var note = el("p", "note");
-      note.textContent = "The layout autosaves on this Chromebook. Signed in, the same layout and theme go to TechWorks with your code. No name is stored.";
+      if (window.BitsI18n) BitsI18n.show(note, "layoutNote");
+      else note.textContent = "The layout autosaves on this Chromebook. Signed in, the same layout and theme go to TechWorks with your code. No name is stored.";
       panel.append(note);
-    });
+    }, "", "settings");
   });
   bigBtn.addEventListener("click", function () { state.big = !state.big; applyTheme(); save(); });
   function setProj(on) {
@@ -1960,7 +2119,14 @@
   function paintWho() {
     var api = window.KulibertWho, rec = api && api.read ? api.read() : null;
     var on = api && api.active && api.active() && rec && rec.verified && rec.alias;
-    who.textContent = on ? rec.alias : "Not signed in";
+    if (on) {
+      who.removeAttribute("data-k");
+      who.textContent = "";
+      var bdi = document.createElement("bdi");
+      bdi.textContent = rec.alias;
+      who.append(bdi);
+    } else if (window.BitsI18n) BitsI18n.show(who, "notIn");
+    else who.textContent = "Not signed in";
   }
   window.addEventListener("storage", paintWho);
   window.addEventListener("kw-mark", function () { paintWho(); pushCloud(); });
@@ -1985,6 +2151,7 @@
 
   applyTheme();
   ensure();
+  if (window.BitsI18n) BitsI18n.setLang(BitsI18n.lang());
   selfCheck();
   paintWho();
   save();
