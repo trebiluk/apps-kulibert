@@ -475,17 +475,6 @@
       "destination": "https://logolab-rho.vercel.app/:path*"
     },
     {
-      "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/logolab(.*)"
-        }
-      ],
-      "destination": "https://logolab-rho.vercel.app/assets/:path*"
-    },
-    {
       "source": "/favicon.svg",
       "has": [
         {
@@ -657,13 +646,6 @@
     },
     {
       "source": "/assets/:path*",
-      "has": [
-        {
-          "type": "header",
-          "key": "referer",
-          "value": "https://apps.kulibert.net/den(.*)"
-        }
-      ],
       "destination": "https://bearcat-den-weld.vercel.app/assets/:path*"
     },
     {
