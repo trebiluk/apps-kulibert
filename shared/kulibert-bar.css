@@ -22,6 +22,12 @@
   display:inline-flex;align-items:center;border-radius:999px;border:1px solid #24506d;
   background:#0b152c;color:#e8f7ff;font:650 .8rem/1 var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
 }
+@media (max-width: 440px){
+  .kb-bar{gap:.2rem;padding:0 .2rem}
+  .kb-home,.kb-help,.kb-settings,.kb-menu,.kb-alias{padding:0 .35rem}
+  .kb-alias{max-width:6.5rem}
+  .kb-plate{min-width:0}
+}
 @media (max-width:400px){
   .kb-home{flex:0 0 auto}
   .kb-menu,.kb-home,.kb-alias{white-space:nowrap}

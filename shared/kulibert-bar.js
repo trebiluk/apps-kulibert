@@ -47,7 +47,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-08-menu");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-09-menu");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -93,8 +93,22 @@
     return [name || app, version].filter(Boolean).join(" \u00b7 ");
   }
   var whatsAttr = (script && script.getAttribute("data-whats-new")) || "";
+  var WHATS = {
+    en: "Menu opens the app's own menu, with nothing on top of it.",
+    uk: "\u041c\u0435\u043d\u044e \u0432\u0456\u0434\u043a\u0440\u0438\u0432\u0430\u0454 \u043c\u0435\u043d\u044e \u0441\u0430\u043c\u043e\u0457 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u0438, \u0456 \u043d\u0456\u0447\u043e\u0433\u043e \u0439\u043e\u0433\u043e \u043d\u0435 \u0437\u0430\u043a\u0440\u0438\u0432\u0430\u0454.",
+    ru: "\u041c\u0435\u043d\u044e \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u0442 \u043c\u0435\u043d\u044e \u0441\u0430\u043c\u043e\u0433\u043e \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u044f, \u0438 \u043d\u0438\u0447\u0435\u0433\u043e \u0435\u0433\u043e \u043d\u0435 \u0437\u0430\u043a\u0440\u044b\u0432\u0430\u0435\u0442.",
+    es: "Men\u00fa abre el men\u00fa de la propia aplicaci\u00f3n, sin nada encima.",
+    ar: "\u0627\u0644\u0642\u0627\u0626\u0645\u0629 \u062a\u0641\u062a\u062d \u0642\u0627\u0626\u0645\u0629 \u0627\u0644\u062a\u0637\u0628\u064a\u0642 \u0646\u0641\u0633\u0647\u0627\u060c \u062f\u0648\u0646 \u0634\u064a\u0621 \u0641\u0648\u0642\u0647\u0627.",
+    "fa-AF": "\u0645\u0646\u0648\u060c \u0645\u0646\u0648\u06cc \u062e\u0648\u062f \u0628\u0631\u0646\u0627\u0645\u0647 \u0631\u0627 \u0628\u0627\u0632 \u0645\u06cc\u200c\u06a9\u0646\u062f \u0648 \u0686\u06cc\u0632\u06cc \u0631\u0648\u06cc \u0622\u0646 \u0646\u06cc\u0633\u062a.",
+    rw: "Menu ifungura menu y'aporogaramu ubwayo, nta kindi gihagarara hejuru.",
+    ti: "\u1218\u120b\u1308\u1262 \u1293\u12ed\u1272 \u1218\u1270\u130d\u1260\u122a \u1218\u120b\u1308\u1262 \u12ed\u12b8\u134d\u1275\u1363 \u12a3\u1265 \u120d\u12d5\u120a\u12a1 \u1290\u1308\u122d \u12e8\u1208\u1295\u1362"
+  };
   function whatsText() {
-    return whatsAttr || trBar("whatsNewLine", "The Menu button at the top left opens in every app.");
+    if (whatsAttr) return whatsAttr;
+    var lang = "en";
+    try { lang = pageLang(); } catch (eLang) {}
+    if (lang === "simple") lang = "en";
+    return WHATS[lang] || WHATS.en;
   }
   function setDrawer(open) {
     var box = document.getElementById("kb-drawer");
@@ -173,7 +187,7 @@
     paintDrawer();
   }
   function hideDupes() {
-    var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "header.sticky > button[aria-expanded]"];
+    var sels = ["#btn-menu", "#menu-btn", "#btn-crew", "#land-menu", "[data-bits-menu]", "button.tw-edge-pocket-chip", ".tw-edge-pocket-chip", "[aria-controls='hi-drawer']", "header.sticky > button[aria-expanded]"];
     sels.forEach(function (sel) {
       var nodes = document.querySelectorAll(sel);
       for (var i = 0; i < nodes.length; i++) {
@@ -184,39 +198,77 @@
       }
     });
   }
-  function visibleLeftDrawer() {
-    var list = document.querySelectorAll("#ds-drawer, #menu-drawer, #hi-drawer, #crew, #land-drawer, .ti-dock-drawer, .drawer, .sheet.menu-sheet, #kb-drawer");
-    for (var i = 0; i < list.length; i++) {
-      var el = list[i];
-      if (el.id === "kb-drawer" && el.hidden) continue;
+  function shownControl(el) {
+    if (!el || el.hidden) return false;
+    var s = getComputedStyle(el);
+    if (s.display === "none" || s.visibility === "hidden") return false;
+    var r = el.getBoundingClientRect();
+    return r.width >= 8 && r.height >= 8;
+  }
+  function pointPanel() {
+    var hit = document.elementFromPoint(100, 300);
+    if (!hit || !hit.closest) return null;
+    if (hit.closest(".kb-bar") || hit.closest("#kb-drawer") || hit.closest("#hub-drawer")) return null;
+    var n = hit;
+    while (n && n !== document.documentElement) {
+      if (n.id === "kb-drawer" || n.id === "hub-drawer") return null;
+      var s = getComputedStyle(n);
+      if (s.position === "fixed" || s.position === "absolute") {
+        var r = n.getBoundingClientRect();
+        if (r.width >= 200 && r.height >= 80 && r.left <= 100 && r.right >= 100) return n;
+      }
+      n = n.parentElement;
+    }
+    return null;
+  }
+  function appPanels() {
+    var found = [];
+    var nodes = document.body ? document.body.querySelectorAll("*") : [];
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (!el || el.id === "kb-drawer" || el.id === "hub-drawer") continue;
+      if (el.closest && (el.closest(".kb-bar") || el.closest("#kb-drawer") || el.closest("#hub-drawer"))) continue;
       if (el.hidden) continue;
       var s = getComputedStyle(el);
       if (s.display === "none" || s.visibility === "hidden") continue;
+      if (s.position !== "fixed" && s.position !== "absolute") continue;
       var r = el.getBoundingClientRect();
-      if (r.width >= 40 && r.height >= 40 && r.left >= -1 && r.left <= 12) return true;
+      if (r.width >= 200 && r.height >= 40 && r.left >= -1 && r.left <= 12 && r.top < 240) found.push(el);
     }
-    return false;
+    return found;
+  }
+  function hideStrayDrawer() {
+    var stray = document.getElementById("kb-drawer");
+    if (stray) stray.hidden = true;
   }
   function openMenu() {
     var btn = document.querySelector(".kb-bar .kb-menu");
     var el = menuSel ? document.querySelector(menuSel) : null;
     if (btn) btn.setAttribute("aria-expanded", "true");
     if (el && typeof el.click === "function") {
+      var trust = shownControl(el);
+      var before = appPanels();
+      var beforePoint = pointPanel();
       el.click();
-      if (visibleLeftDrawer()) {
+      if (trust) {
         postUp({ type: "kb-menu-state", open: true });
+        hideStrayDrawer();
         return;
       }
-      requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          if (visibleLeftDrawer()) {
-            postUp({ type: "kb-menu-state", open: true });
-            return;
-          }
-          ensureDrawer();
-          setDrawer(true);
-        });
-      });
+      setTimeout(function () {
+        var now = appPanels();
+        var grew = false;
+        for (var i = 0; i < now.length; i++) if (before.indexOf(now[i]) === -1) grew = true;
+        var nowPoint = pointPanel();
+        if (grew || (nowPoint && nowPoint !== beforePoint) || (before.length && !now.length)) {
+          postUp({ type: "kb-menu-state", open: true });
+          hideStrayDrawer();
+          return;
+        }
+        ensureDrawer();
+        var box = document.getElementById("kb-drawer");
+        setDrawer(!box || box.hidden);
+      }, 350);
       return;
     }
     ensureDrawer();
@@ -261,7 +313,7 @@
     if (!document.getElementById("tw-session-boot")) {
       var shim = document.createElement("script");
       shim.id = "tw-session-boot";
-      shim.src = asset("/shared/tw-session.js?v=2026-10-08-menu");
+      shim.src = asset("/shared/tw-session.js?v=2026-10-09-menu");
       (document.head || document.documentElement).appendChild(shim);
     }
     return;
@@ -313,7 +365,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-08-menu");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-09-menu");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
