@@ -1355,7 +1355,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.3",
+        version: "MU 2.35.4",
         event: "score",
         level: id,
         score: score,
@@ -2386,6 +2386,8 @@
     document.body.classList.remove("menu-open");
     const btn = $("menu-btn");
     if (btn) btn.setAttribute("aria-expanded", "false");
+    const barMenu = document.querySelector(".kb-menu");
+    if (barMenu) barMenu.setAttribute("aria-expanded", "false");
   }
   function popConfetti() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -2750,13 +2752,10 @@
     const on = document.body.classList.toggle("menu-open");
     $("menu-btn").setAttribute("aria-expanded", String(on));
   });
-  $("scrim").addEventListener("click", () => {
-    document.body.classList.remove("menu-open");
-    $("menu-btn").setAttribute("aria-expanded", "false");
-  });
-  $("menu-close").addEventListener("click", () => {
-    document.body.classList.remove("menu-open");
-    $("menu-btn").setAttribute("aria-expanded", "false");
+  $("scrim").addEventListener("click", () => { closeMenu(); });
+  $("menu-close").addEventListener("click", () => { closeMenu(); });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeMenu();
   });
   function markLang() {
     const code = (window.KulibertPrefs && window.KulibertPrefs.lang) || "en";
