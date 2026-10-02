@@ -40,7 +40,8 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "The Menu button at the top left opens in every app.",
+  "whatsNewLine": "The top strip shows app icons only. Turn the names back on in My settings.",
+  "appNames": "App names in the top strip",
   "myProgress": "My progress",
   "staff": "Staff",
   "signOut": "Sign out",
@@ -184,7 +185,7 @@
       finish(name);
       return;
     }
-    fetch("/shared/i18n/" + name + ".json?v=2026-10-08-menu", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch("/shared/i18n/" + name + ".json?v=2026-10-09-icons", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (data) {
       if (data && typeof data === "object") {
