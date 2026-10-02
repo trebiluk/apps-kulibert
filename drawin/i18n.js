@@ -112,12 +112,20 @@
   add("OK", "Гаразд", "ОК", "OK", "حسنًا", "باشه", "Yego", "ሕራይ");
   add("Replace", "Замінити", "Заменить", "Reemplazar", "استبدال", "عوض کن", "Simbuza", "ተክእ");
   add("Replace the drawing on this page?", "Замінити малюнок на цій сторінці?", "Заменить рисунок на этой странице?", "¿Reemplazar el dibujo de esta página?", "هل تستبدل رسم هذه الصفحة؟", "نقاشی این صفحه عوض شود؟", "Gusimbuza iri shusho kuri iyi paji?", "ነዚ ስእሊ ኣብዚ ገጽ ተክእ?");
-  add("Vector", "Вектор", "Вектор", "Vector", "فيكتور", "وکتور", "Vector", "ቬክተር");
+  add("Vector", "Вектор", "Вектор", "Vectores", "فيكتور", "وکتور", "Vekiteri", "ቬክተር");
   add("Paint", "Фарба", "Краска", "Pintura", "رسم", "رنگ", "Irangi", "ሕብሪ");
   add("Blank page", "Порожня сторінка", "Пустая страница", "Página en blanco", "صفحة فارغة", "صفحه خالی", "Paji y'ubusa", "ባዶ ገጽ");
   add("Pen, a shape, or drop an SVG.", "Перо, фігура або кинь SVG.", "Перо, фигура или брось SVG.", "Pluma, una forma o suelta un SVG.", "قلم أو شكل أو أفلت SVG.", "قلم، شکل، یا SVG را رها کن.", "Ikinyuguti, imisusire, cyangwa SVG.", "ብርዒ፡ ቅርጺ፡ ወይ SVG ጠውቕ።");
   add("Draw a robot face. Tap Save when done.", "Намалюй обличчя робота. Потім торкнись Зберегти.", "Нарисуй лицо робота. Потом нажми Сохранить.", "Dibuja una cara de robot. Luego toca Guardar.", "ارسم وجه روبوت. ثم المس احفظ.", "روی ربات را بکش. بعد ثبت را بزن.", "Shushanya isura ya roboti. Hanyuma kanda Bika.", "ገጽ ሮቦት ስኣል። ምስ ወዳእካ ዕቅብ ጠውቕ።");
-  add("Pick Vector for shapes or Paint for brushes.", "Вектор — для фігур. Фарба — для пензлів.", "Вектор — для фигур. Краска — для кистей.", "Vector para formas. Pintura para pinceles.", "فيكتور للأشكال. الرسم للفرش.", "وکتور برای شکل. رنگ برای برس.", "Vector ni imisusire. Irangi ni uburoshi.", "ቬክተር ንቅርጺ። ሕብሪ ንብሩሽ።");
+  add("Pick Vector for shapes or Paint for brushes.", "Вектор — для фігур. Фарба — для пензлів.", "Вектор — для фигур. Краска — для кистей.", "La pluma hace formas. El pincel pinta.", "فيكتور للأشكال. الرسم للفرش.", "وکتور برای شکل. رنگ برای برس.", "Imisusire ni vekiteri. Uburoshi ni irangi.", "ቬክተር ንቅርጺ። ሕብሪ ንብሩሽ።");
+  add("The pen tool bends clean shapes. The brush lays color you can push around. The menu takes you home, shows the news, and opens your choices. Students tap once and start drawing.", "Перо гне рівні фігури. Пензель кладе колір, який можна розтерти. Меню веде на головну, показує новини й відкриває вибір. Учні торкаються раз і починають малювати.", "Перо гнёт ровные фигуры. Кисть кладёт цвет, который можно размазать. Меню ведёт на главную, показывает новости и открывает выбор. Ученики касаются раз и начинают рисовать.", "La pluma dobla formas limpias. El pincel pone color que puedes empujar. El menú vuelve al inicio, muestra novedades y abre tus ajustes. El alumnado toca una vez y empieza a dibujar.", "القلم يحني أشكالاً نظيفة. الفرشاة تضع لوناً تستطيع تحريكه. القائمة تعيدك للرئيسية وتعرض الجديد وتفتح إعداداتك. الطلاب يلمسون مرة ويبدأون الرسم.", "قلم شکل‌های صاف را خم می‌کند. برس رنگی می‌گذارد که می‌توانی بکشانی. فهرست تو را خانه می‌برد، تازه‌ها را نشان می‌دهد و تنظیمات را باز می‌کند. شاگردان یک بار می‌زنند و کشیدن را شروع می‌کنند.", "Ikinyuguti kigonda imisusire isukuye. Uburoshi bushyira ibara ushyira ahandi. Menyu igarura ahabanza, yereka ibishya, ikingura igenamiterere. Abanyeshuri bakanda rimwe batangira gushushanya.", "ብርዒ ጽሩይ ቅርጺ የዕምዕ። ብሩሽ ሕብሪ ዘተንቀሳቐስ የንብር። ዝርዝር ናብ መበገሲ ይመልስ፡ ሓድሽ የርኢ፡ ቅጥዕታት ይኸፍት። ተመሃሮ ሓንሳእ ይጠውቑ ስእሊ የጅምሩ።");
+  add("Home", "Головна", "Главная", "Inicio", "الرئيسية", "خانه", "Ahabanza", "መበገሲ");
+  add("Help", "Допомога", "Помощь", "Ayuda", "مساعدة", "کمک", "Ubufasha", "ሓገዝ");
+  add("What's new", "Що нового", "Что нового", "Novedades", "ما الجديد", "تازه‌ها", "Ibishya", "እንታይ ሓድሽ ኣሎ");
+  add("My settings", "Мої налаштування", "Мои настройки", "Mis ajustes", "إعداداتي", "تنظیمات من", "Igenamiterere ryanjye", "ናተይ ቅጥዕታት");
+  add("Menu", "Меню", "Меню", "Menú", "القائمة", "فهرست", "Menyu", "ዝርዝር");
+  add("Close menu", "Закрити меню", "Закрыть меню", "Cerrar menú", "أغلق القائمة", "فهرست را ببند", "Funga menyu", "ዝርዝር ዕጸው");
+  add("One Menu at the top left, Home is easy to reach, and Drawin' is in your language.", "Одне меню зліва вгорі. Головну легко натиснути. Drawin' — вашою мовою.", "Одно меню слева вверху. Главную легко нажать. Drawin' — на вашем языке.", "Un menú arriba a la izquierda. Inicio es fácil de tocar. Drawin' está en tu idioma.", "قائمة واحدة في أعلى اليسار. الرئيسية سهلة الوصول. Drawin' بلغتك.", "یک فهرست در بالا چپ. خانه آسان است. Drawin' به زبان شماست.", "Menyu imwe hejuru ibumoso. Ahabanza iroroshye. Drawin' iri mu rurimi rwawe.", "ሓንቲ ዝርዝር ኣብ ላዕሊ ጸጋም። መበገሲ ቀሊል እዩ። Drawin' ብቋንቋኻ እዩ።");
   add("Drawin' tools have names in your language.", "Інструменти Drawin' мають назви твоєю мовою.", "Инструменты Drawin' названы на твоём языке.", "Las herramientas de Drawin' tienen nombre en tu idioma.", "أدوات Drawin' لها أسماء بلغتك.", "ابزار Drawin' به زبان تو نام دارد.", "Ibikoresho bya Drawin' bifite amazina mu rurimi rwawe.", "መሳርሒ Drawin' ብቋንቋኻ ስም ኣለዎ።");
   add("1. Pick a brush.", "1. Обери пензель.", "1. Выбери кисть.", "1. Elige un pincel.", "1. اختر فرشاة.", "1. یک برس بگیر.", "1. Hitamo uburoshi.", "1. ብሩሽ ምረጽ።");
   add("2. Draw on the page.", "2. Малюй на сторінці.", "2. Рисуй на странице.", "2. Dibuja en la página.", "2. ارسم على الصفحة.", "2. روی صفحه بکش.", "2. Shushanya kuri paji.", "2. ኣብ ገጽ ስኣል።");
@@ -208,12 +216,16 @@
   function paintChooser() {
     var blurb = document.getElementById("ds-blurb");
     if (blurb) blurb.textContent = tx("Pick Vector for shapes or Paint for brushes.");
+    var more = document.getElementById("ds-more");
+    if (more) more.textContent = tx("The pen tool bends clean shapes. The brush lays color you can push around. The menu takes you home, shows the news, and opens your choices. Students tap once and start drawing.");
     var news = document.getElementById("ds-news");
-    if (news) news.textContent = "DS 0.3.2: Vector and Paint open from the door. Tools are big enough to tap.";
+    if (news) news.textContent = tx("One Menu at the top left, Home is easy to reach, and Drawin' is in your language.");
     var vector = document.getElementById("pick-vector");
     var paint = document.getElementById("pick-paint");
     function label(btn, word) {
       if (!btn) return;
+      var wordEl = btn.querySelector(".tool-word");
+      if (wordEl) { wordEl.textContent = word; return; }
       var nodes = btn.childNodes;
       for (var i = nodes.length - 1; i >= 0; i--) {
         if (nodes[i].nodeType === 3 && nodes[i].textContent.trim()) {

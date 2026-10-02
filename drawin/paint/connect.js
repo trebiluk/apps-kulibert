@@ -36,7 +36,7 @@
     if (api.record) {
       api.record({
         app: "drawin",
-        version: "DS 0.3.2",
+        version: "DS 0.3.3",
         event: "save",
         level: "paint",
         score: 1,

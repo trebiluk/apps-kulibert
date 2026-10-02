@@ -1746,7 +1746,7 @@ function dsRecord(level) {
   var start = window.__dsStart || Date.now();
   api.record({
     app: "drawin",
-    version: "DS 0.3.2",
+    version: "DS 0.3.3",
     event: "save",
     level: level,
     score: 1,
