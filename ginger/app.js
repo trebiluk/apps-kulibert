@@ -823,6 +823,19 @@ document.addEventListener("keydown", (ev) => {
 
 $("chip").textContent = "v" + VER;
 $("chip").title = "Ginger " + VER;
+function fitPlate() {
+  const plate = document.querySelector(".kb-bar .kb-plate");
+  const ver = "v" + VER;
+  if (plate) plate.textContent = window.innerWidth < 400 ? ver : "ginger · " + ver;
+  const bar = document.querySelector(".kb-bar");
+  if (bar && document.body.classList.contains("kb-on")) {
+    const h = Math.max(48, Math.ceil(bar.getBoundingClientRect().height));
+    document.documentElement.style.setProperty("--kb-h", h + "px");
+    document.body.style.paddingTop = h + "px";
+  }
+}
+fitPlate();
+window.addEventListener("resize", fitPlate);
 $("props-toggle").onclick = () => {
   const side = $("side");
   const open = side.classList.toggle("is-open");

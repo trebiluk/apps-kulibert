@@ -27,3 +27,7 @@ What’s new: Baboo follows the Hub language. Arabic and Kinyarwanda added. Fars
 ## Ginger 1.0.7 — new lines
 
 English is fixed: “Tools and Properties sit on the left so the plan stays open on the right.” Still unchecked: the Dari, Kinyarwanda, and Tigrinya versions of that sentence, plus `lang.lead` in those three.
+
+## Ginger 1.0.8 — new lines
+
+English is fixed: “What's new shows in the Menu, and tool names are in one language.” Tool names dropped the English in parentheses. Still unchecked: Dari, Kinyarwanda, and Tigrinya for that sentence.

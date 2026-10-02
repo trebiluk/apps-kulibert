@@ -77,7 +77,7 @@ button, [role="button"] { cursor: pointer; }
   background: var(--aw-bg);
   border-radius: 2px;
 }
-.tools button { display: inline-flex; align-items: center; gap: 6px; }
+.tools button { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .tool-ico { width: 18px; height: 18px; flex: none; }
 .tools button[aria-pressed="true"],
 .items button[aria-pressed="true"] {
@@ -272,6 +272,35 @@ html[dir="rtl"] .side.is-open { left: 0; right: auto; }
 .help-steps li { display: flex; align-items: center; gap: 8px; min-height: 44px; }
 .help-steps svg { width: 48px; height: 32px; flex: none; }
 #read-help { margin-top: 8px; }
+.menu-news { margin: 4px 0 8px; }
+.menu-news h2 { margin-top: 4px; }
+.drawer-plate {
+  margin: 8px 0 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.menu-news p {
+  margin: 0;
+  color: var(--aw-fg);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+body.kb-on .kb-bar { z-index: 70; }
+body.kb-on .app {
+  height: calc(100dvh - var(--kb-h, 48px));
+  min-height: 0;
+}
+body.kb-on .menu-drawer,
+body.kb-on .menu-backdrop { top: var(--kb-h, 48px); }
+@media (max-width: 399px) {
+  .kb-bar { flex-wrap: wrap; height: auto; min-height: 48px; }
+  .kb-bar .kb-plate {
+    flex: 0 0 auto;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: max-content;
+  }
+}
 
 html[data-kp-lang="ar"] body,
 html[data-kp-lang="fa-AF"] body,

@@ -4,9 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#ffffff" />
-  <title>Ginger 1.0.7 — floor plan</title>
+  <title>Ginger 1.0.8 — floor plan</title>
+  <link rel="icon" href="./favicon.svg?v=1.0.8" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=1.0.8" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
@@ -22,7 +23,7 @@
         <path d="M8 22 L16 8 L24 22 Z" fill="none" stroke="currentColor" stroke-width="2"/>
       </svg>
       <span class="brand"><bdi>GINGER</bdi></span>
-      <span class="chip" id="chip" title="version">v1.0.7</span>
+      <span class="chip" id="chip" title="version">v1.0.8</span>
       <nav class="tools" aria-label="Draw tools">
         <button type="button" data-tool="select" aria-pressed="true"><span data-i18n="tool.select">Select</span></button>
         <button type="button" data-tool="wall"><svg class="tool-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h4v18H5zM15 3h4v18h-4z" fill="currentColor"/></svg><span data-i18n="tool.wall">Wall</span></button>
@@ -42,6 +43,11 @@
         <h2 id="menu-title" data-i18n="menu">Menu</h2>
         <button type="button" id="menu-close" data-i18n="close">Close</button>
       </div>
+      <p class="drawer-plate"><bdi>v1.0.8</bdi></p>
+      <section id="whats-new" class="menu-news">
+        <h2 data-i18n="whatsNew">What’s new</h2>
+        <p data-i18n="help.new">What's new shows in the Menu, and tool names are in one language.</p>
+      </section>
       <section id="ginger-help">
         <h2 data-i18n="help">Help</h2>
         <ol class="help-steps">
@@ -50,10 +56,6 @@
           <li><svg viewBox="0 0 48 32" aria-hidden="true"><rect x="8" y="4" width="32" height="24" fill="none" stroke="currentColor" stroke-width="3"/><text x="24" y="20" text-anchor="middle" font-size="9" fill="currentColor">Room</text></svg><span data-i18n="help.room">Name the room</span></li>
         </ol>
         <button type="button" id="read-help"><span data-i18n="help.read">Read it to me</span></button>
-      </section>
-      <section>
-        <h2 data-i18n="whatsNew">What’s new</h2>
-        <p data-i18n="help.new">v1.0.7: Tools and Properties sit on the left so the plan stays open on the right.</p>
       </section>
       <section>
         <h2 data-i18n="settings">Settings</h2>
@@ -103,12 +105,12 @@
     </main>
     <footer class="foot">
       <span id="status" data-i18n="status.pick">Select a wall, door, window, room, or corner.</span>
-      <span class="whats" data-i18n="foot.new">v1.0.7: Tools and Properties sit on the left so the plan stays open on the right.</span>
+      <span class="whats" data-i18n="foot.new">What's new shows in the Menu, and tool names are in one language.</span>
       <span class="quiet" data-i18n="foot.stay">Level 1 stays on this Chromebook. No names. No accounts.</span>
     </footer>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-07-polish" data-app="ginger" data-version="v1.0.7" data-help="#ginger-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-07-polish" data-app="ginger" data-version="v1.0.8" data-help="#ginger-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script type="module" src="./app.js"></script>
+  <script type="module" src="./app.js?v=1.0.8"></script>
 </body>
 </html>

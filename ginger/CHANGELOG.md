@@ -1,5 +1,9 @@
 # Ginger
 
+## 1.0.8 — 2026-10-02
+- What's new shows in the Menu, and tool names are in one language.
+- The version plate shortens to v1.0.8 on a narrow screen. The icon no longer asks the Hub for a missing favicon.
+
 ## 1.0.7 — 2026-10-02
 - Tools and Properties sit on the left so the plan stays open on the right.
 - The left menu has Help, What’s new, Settings, Export, Import, Night, and 3D peek.
