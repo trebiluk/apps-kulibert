@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-10-sideways"/>
+<meta name="tech-room-rev" content="2026-10-11-close"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1613,7 +1613,7 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-10-sideways"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-11-close"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <style id="hub-polish">
     body.apps-always .lockup-the{color:#f4fdff !important;opacity:1}
@@ -1636,7 +1636,16 @@
     body.apps-always:not(.hub-classic) #kb-menu{display:inline-flex !important;order:-5;flex:0 0 auto;white-space:nowrap}
     .hub-drawer{position:fixed;z-index:40;top:48px;left:0;right:auto;bottom:0;width:min(22rem,88vw);box-sizing:border-box;overflow:auto;direction:ltr;text-align:left;padding:.8rem .85rem 1.2rem;background:#0c1730;color:#e8f7ff;border-right:1px solid #1e3a55}
     .hub-drawer[hidden]{display:none !important}
-    body.hub-classic #hub-drawer{display:none !important}
+    #hub-drawer-backdrop{position:fixed;z-index:30;top:48px;left:0;right:0;bottom:0;background:rgba(0,0,0,.35);border:0;padding:0;margin:0}
+    #hub-drawer-backdrop[hidden]{display:none !important}
+    body.hub-classic #hub-drawer,body.hub-classic #hub-drawer-backdrop{display:none !important}
+    #hub-drawer-close{position:sticky;top:0;z-index:2;gap:.4rem}
+    #kp-panel:not([hidden]){position:relative;z-index:45}
+    /* #shell-board and .wrap are z-index:1, so they trap #kp-panel under the backdrop.
+       Flatten only while My settings is open so Close stays clickable and tiles stay dimmed. */
+    body.hub-settings-open #shell-board,
+    body.hub-settings-open #shell-board > .wrap{z-index:auto}
+    #kp-close{display:inline-flex;align-items:center;gap:.4rem}
     .hub-drawer .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;color:#8fb4c9}
     .hub-drawer-news{margin:.35rem 0 .7rem;font-size:.95rem;line-height:1.35}
     .hub-drawer button{display:flex;align-items:center;width:100%;min-height:44px;min-width:44px;margin:.2rem 0;padding:0 .8rem;border-radius:12px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1.2 Outfit,system-ui,sans-serif;cursor:pointer;text-align:left}
@@ -1746,9 +1755,11 @@
         </div>
       </div>
     </header>
+    <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-10-sideways</span></p>
-      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
+      <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-11-close</span></p>
+      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Menus and My settings have a Close button. Esc closes them too.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
@@ -1820,7 +1831,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-10-sideways</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-11-close</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Menus and My settings have a Close button. Esc closes them too.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.4</strong> — Menu opens from the left on every screen.</p>
@@ -1831,7 +1842,8 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.10.1</strong> — The Menu button at the top left opens the menu.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.4.2</strong> — The 3D Cup shows the safety check right there. Tap I'm safe, then fire.</p>
           <ul id="hub-log">
-            <li data-i18n="whatsNewLine">Tiles show on phones held sideways.</li>
+            <li data-i18n="whatsNewLine">Menus and My settings have a Close button. Esc closes them too.</li>
+            <li>Tiles show on phones held sideways.</li>
             <li data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</li>
             <li>Menu opens the app's own menu, with nothing on top of it.</li>
             <li>The Menu button at the top left opens in every app.</li>
@@ -1884,6 +1896,7 @@
       <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel" data-i18n="mySettings">My settings</button>
     </div>
     <section id="kp-panel" hidden role="dialog" aria-modal="true" aria-labelledby="kp-title">
+      <div class="kp-row"><button type="button" id="kp-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button></div>
       <h2 id="kp-title" data-i18n="mySettings">My settings</h2>
       <div class="kp-row" id="style-row" role="group" aria-label="My style" data-i18n-label="myStyle">
         <span class="style-k" data-i18n="myStyle">My style</span>
@@ -1931,7 +1944,6 @@
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M8 20h36M36 12l12 8-12 8" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi data-i18n="cardForce">force</bdi></p><p lang="ar" dir="rtl">قوة</p></article>
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M32 6L56 34H8z" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi data-i18n="cardTriangle">triangle</bdi></p><p lang="ar" dir="rtl">مثلث</p></article>
       </div>
-      <div class="kp-row"><button type="button" id="kp-close" data-i18n="close">Close</button></div>
     </section>
     <section id="progress" hidden aria-label="My progress"></section>
     <div class="groups" id="app-groups">
@@ -2223,8 +2235,8 @@
       <iframe id="app-frame" title="App" hidden allowfullscreen allow="accelerometer; gyroscope; magnetometer; fullscreen; orientation-lock"></iframe>
     </div>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-10-sideways</span>
-      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Tiles show on phones held sideways.</span></span>
+      <span class="hub-foot-rev">rev 2026-10-11-close</span>
+      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Menus and My settings have a Close button. Esc closes them too.</span></span>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
     </footer>
@@ -3408,6 +3420,19 @@
             input.blur();
             return;
           }
+          var kpOpen = document.getElementById("kp-panel");
+          if (kpOpen && !kpOpen.hidden) {
+            event.preventDefault();
+            var kpClose = document.getElementById("kp-close");
+            if (kpClose) kpClose.click();
+            return;
+          }
+          var hubOpen = document.getElementById("hub-drawer");
+          if (hubOpen && !hubOpen.hidden && !document.body.classList.contains("hub-classic")) {
+            event.preventDefault();
+            closeHubDrawer();
+            return;
+          }
           if (document.body.classList.contains("is-framed")) {
             event.preventDefault();
             closeFrame();
@@ -4201,23 +4226,73 @@ document.addEventListener("click", function (event) {
         if (!frame || !frame.contentWindow) return;
         try { frame.contentWindow.postMessage({ type: "kb-help" }, "*"); } catch (eHelp) {}
       });
-      function hubDrawer(open) {
+      var kpReturnFocus = null;
+      function paintCloseLabels() {
+        var lang = "en";
+        var dir = "ltr";
+        try {
+          if (window.KulibertPrefs && KulibertPrefs.get) {
+            var p = KulibertPrefs.get();
+            lang = (p && p.lang) || "en";
+            dir = p && p.dir === "rtl" ? "rtl" : "ltr";
+          }
+        } catch (eCloseLang) {}
+        if (lang === "simple") lang = "en";
+        document.querySelectorAll(".hub-close-label").forEach(function (el) {
+          el.lang = lang;
+          el.dir = dir;
+        });
+      }
+      function syncHubBackdrop() {
+        var back = document.getElementById("hub-drawer-backdrop");
+        if (!back) return;
+        var classic = document.body.classList.contains("hub-classic");
+        var drawer = document.getElementById("hub-drawer");
+        var panel = document.getElementById("kp-panel");
+        var open = !classic && ((drawer && !drawer.hidden) || (panel && !panel.hidden));
+        back.hidden = !open;
+        document.body.classList.toggle("hub-settings-open", !!(panel && !panel.hidden && !classic));
+      }
+      function hubDrawer(open, opts) {
         var box = document.getElementById("hub-drawer");
         var btn = document.getElementById("kb-menu");
         if (!box || !btn || document.body.classList.contains("hub-classic")) return;
         var next = open == null ? box.hidden : !!open;
         box.hidden = !next;
         btn.setAttribute("aria-expanded", next ? "true" : "false");
-        if (next && window.KulibertI18n) KulibertI18n.paint();
+        syncHubBackdrop();
+        if (next) {
+          if (window.KulibertI18n) KulibertI18n.paint();
+          paintCloseLabels();
+          var closeBtn = document.getElementById("hub-drawer-close");
+          if (closeBtn) closeBtn.focus();
+        } else if (!(opts && opts.keepFocus)) {
+          btn.focus();
+        }
       }
       var kbMenu = document.getElementById("kb-menu");
       if (kbMenu) kbMenu.addEventListener("click", function () {
         hubDrawer();
       });
-      function closeHubDrawer() { hubDrawer(false); }
+      function closeHubDrawer(opts) { hubDrawer(false, opts); }
+      var hubDrawerClose = document.getElementById("hub-drawer-close");
+      if (hubDrawerClose) hubDrawerClose.addEventListener("click", function () { closeHubDrawer(); });
+      var hubBackdrop = document.getElementById("hub-drawer-backdrop");
+      if (hubBackdrop) hubBackdrop.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var panel = document.getElementById("kp-panel");
+        if (panel && !panel.hidden) {
+          var settingsClose = document.getElementById("kp-close");
+          if (settingsClose) settingsClose.click();
+          return;
+        }
+        closeHubDrawer();
+      });
       var drawerSettings = document.getElementById("drawer-settings");
       if (drawerSettings) drawerSettings.addEventListener("click", function () {
-        closeHubDrawer();
+        kpReturnFocus = document.getElementById("kb-menu");
+        closeHubDrawer({ keepFocus: true });
         var btn = document.getElementById("my-settings");
         if (btn) btn.click();
       });
@@ -4240,13 +4315,6 @@ document.addEventListener("click", function (event) {
         var open = box.hidden;
         box.hidden = !open;
         drawerStaff.setAttribute("aria-expanded", open ? "true" : "false");
-      });
-      document.addEventListener("mousedown", function (event) {
-        var box = document.getElementById("hub-drawer");
-        var btn = document.getElementById("kb-menu");
-        if (!box || box.hidden) return;
-        if (box.contains(event.target) || (btn && btn.contains(event.target))) return;
-        closeHubDrawer();
       });
       var kbSettings = document.getElementById("kb-settings");
       if (kbSettings) kbSettings.addEventListener("click", function () {
@@ -4410,14 +4478,20 @@ document.addEventListener("click", function (event) {
         function shut() {
           panel.hidden = true;
           btn.setAttribute("aria-expanded", "false");
+          var backTo = kpReturnFocus || btn;
+          kpReturnFocus = null;
+          if (typeof syncHubBackdrop === "function") syncHubBackdrop();
+          if (backTo && backTo.focus) backTo.focus();
         }
         btn.addEventListener("click", function () {
-          panel.hidden = !panel.hidden;
-          btn.setAttribute("aria-expanded", panel.hidden ? "false" : "true");
-          if (!panel.hidden) {
-            var first = panel.querySelector("button");
-            if (first) first.focus();
-          }
+          if (!panel.hidden) { shut(); return; }
+          if (!kpReturnFocus) kpReturnFocus = btn;
+          panel.hidden = false;
+          btn.setAttribute("aria-expanded", "true");
+          if (typeof syncHubBackdrop === "function") syncHubBackdrop();
+          if (typeof paintCloseLabels === "function") paintCloseLabels();
+          var closeBtn = document.getElementById("kp-close");
+          if (closeBtn) closeBtn.focus();
         });
         panel.addEventListener("click", function (event) {
           var t = event.target.closest("button");
@@ -4443,15 +4517,14 @@ document.addEventListener("click", function (event) {
             } catch (eNames) {}
           }
           paintSettings();
-        });
-        document.addEventListener("keydown", function (event) {
-          if (event.key === "Escape" && !panel.hidden) shut();
+          if (typeof paintCloseLabels === "function") paintCloseLabels();
         });
         paintSettings();
         syncHubLang();
         window.addEventListener("kulibert-lang", function () {
           syncHubLang();
           paintSettings();
+          if (typeof paintCloseLabels === "function") paintCloseLabels();
           var frame = document.getElementById("app-frame");
           if (frame && document.body.classList.contains("is-framed")) postLang(frame);
         });

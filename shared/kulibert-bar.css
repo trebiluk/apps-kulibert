@@ -37,6 +37,12 @@
 .kb-menu-dupe{display:none !important}
 html:not([data-theme="classic"]) .kb-bar .kb-menu{display:inline-flex !important}
 html:not([data-theme="classic"]) #land-menu.kb-menu-dupe{display:none !important}
+.kb-drawer-backdrop{
+  position:fixed; z-index:95; top:48px; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,.35);
+}
+.kb-drawer-backdrop[hidden]{display:none !important}
+.kb-drawer-close{position:sticky; top:0; z-index:2}
 .kb-drawer{
   position:fixed; z-index:100; top:48px; left:0; right:auto; bottom:0;
   width:min(22rem, 88vw); box-sizing:border-box; overflow:auto;
