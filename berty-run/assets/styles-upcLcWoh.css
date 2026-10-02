@@ -42,3 +42,10 @@ html[data-sideways="1"] .win-action-pair>button:last-child{grid-column:2;grid-ro
 html[data-sideways="1"] .win-action-pair>button:first-child:not(:last-child){grid-column:1;grid-row:2;min-height:44px!important}
 html[data-sideways="1"] .win-actions>button:last-of-type{grid-column:2;grid-row:2;min-height:44px!important}
 html[data-sideways="1"] .win-actions button{box-sizing:border-box;min-height:48px!important;height:48px!important;max-height:none!important;touch-action:manipulation}
+
+@media (orientation:landscape) and (max-height:500px){
+.win-rest:has([aria-expanded="true"]){overflow-y:auto!important;touch-action:pan-y}
+.win-rest:has([aria-expanded="true"]) .win-more button{touch-action:pan-y}
+}
+html[data-sideways="1"] .win-rest:has([aria-expanded="true"]){overflow-y:auto!important;touch-action:pan-y}
+html[data-sideways="1"] .win-rest:has([aria-expanded="true"]) .win-more button{touch-action:pan-y}
