@@ -1,5 +1,11 @@
 # BertyBeatz changelog
 
+**Chip: BZ 1.10.0** · 2026-10-02 · channel **live**
+
+BertyBeatz speaks your Hub language. Menu is top-left, and Play and Stop have names.
+
+## Earlier
+
 **Chip: BZ 1.9.5** · 2026-09-27 · channel **live**
 
 Lights and Score, opened from the hub, stay in the hub and land in MusicLab. The address bar follows.

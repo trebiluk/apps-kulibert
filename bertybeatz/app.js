@@ -1,8 +1,8 @@
 (() => {
-  if (window.__BERTYBEATZ__ === "1.9.5") return;
-  window.__BERTYBEATZ__ = "1.9.5";
+  if (window.__BERTYBEATZ__ === "1.10.0") return;
+  window.__BERTYBEATZ__ = "1.10.0";
   const STEP_COUNT = 16;
-  const CHIP = "BZ 1.9.5";
+  const CHIP = "BZ 1.10.0";
   const STORAGE = "bertybeatz.v1";
   const LOOK_STORE = "bertybeatz.look";
   const TRACKS = [
@@ -56,6 +56,34 @@
   const NAMES_FLAT = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"];
 
   const $ = (id) => document.getElementById(id);
+  function tr(key, fallback) {
+    const api = window.BzI18n;
+    const v = api && api.t ? api.t(key) : "";
+    return v || (fallback != null ? fallback : key);
+  }
+  const NAME_KEYS = {
+    "First Beat": "firstBeat",
+    "Clap Class": "clapClass",
+    Recess: "recess",
+    "Night Walk": "nightWalk",
+    "Locker Boom": "lockerBoom",
+    "Blank page": "blankPage",
+    "Class beat": "classBeat",
+  };
+  function nameWord(name) {
+    const key = NAME_KEYS[name];
+    return key ? tr(key, name) : name;
+  }
+  function chipLabel(item) {
+    if (typeof item === "string") return item === "Bb" ? "B♭" : item;
+    return tr(String(item.id), item.label || String(item.id));
+  }
+  function trackWord(track) {
+    if (!track) return "";
+    if (track.kind === "note") return noteLabel(track.degree, state.key, state.mood);
+    const key = track.id === "hat" ? "hats" : track.id;
+    return tr(key, track.label);
+  }
 
   function emptySteps() {
     const steps = {};
@@ -931,7 +959,7 @@
     el.innerHTML = "";
     for (const item of items) {
       const id = typeof item === "string" ? item : item.id;
-      const label = typeof item === "string" ? (id === "Bb" ? "B♭" : id) : item[labelKey];
+      const label = chipLabel(item);
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (id === current ? " on" : "");
@@ -953,7 +981,7 @@
     }
     const rows = [];
     for (const t of TRACKS) {
-      const label = t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label;
+      const label = trackWord(t);
       const muted = state.muted[t.id] ? " muted" : "";
       rows.push(
         `<button type="button" class="lab${muted}" data-preview="${t.id}" title="Hear ${label}">${label}</button>`,
@@ -975,19 +1003,24 @@
 
   function renderPads() {
     const box = $("pads");
-    if (!box || box.childElementCount) return;
-    TRACKS.filter((t) => t.kind === "drum").forEach((t) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "pad";
-      b.dataset.pad = t.id;
-      b.textContent = t.label;
-      b.addEventListener("pointerdown", (e) => {
-        if (e.button != null && e.button !== 0) return;
-        e.preventDefault();
-        stampPad(t.id);
+    if (!box) return;
+    if (!box.childElementCount) {
+      TRACKS.filter((t) => t.kind === "drum").forEach((t) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "pad";
+        b.dataset.pad = t.id;
+        b.addEventListener("pointerdown", (e) => {
+          if (e.button != null && e.button !== 0) return;
+          e.preventDefault();
+          stampPad(t.id);
+        });
+        box.appendChild(b);
       });
-      box.appendChild(b);
+    }
+    box.querySelectorAll(".pad").forEach((b) => {
+      const t = TRACKS.find((x) => x.id === b.dataset.pad);
+      if (t) b.textContent = trackWord(t);
     });
   }
   function stampPad(id) {
@@ -1062,7 +1095,7 @@
         solo.type = "button";
         solo.className = "btn mix-solo";
         solo.dataset.solo = t.id;
-        solo.textContent = "Solo";
+        solo.textContent = tr("solo");
         solo.addEventListener("click", () => {
           state.solo[t.id] = !state.solo[t.id];
           remember();
@@ -1075,7 +1108,7 @@
           b.type = "button";
           b.className = "btn";
           b.dataset.tone = tone.id;
-          b.textContent = tone.label;
+          b.textContent = tr(tone.id, tone.label);
           b.addEventListener("click", () => {
             state.tone[t.id] = tone.id;
             remember();
@@ -1099,19 +1132,21 @@
     for (const t of TRACKS) {
       const row = box.querySelector(`.mix-row[data-track="${t.id}"]`);
       if (!row) continue;
-      const label = t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label;
+      const label = trackWord(t);
       const name = row.querySelector(".mix-name");
       const solo = row.querySelector(".mix-solo");
       const range = row.querySelector("input");
-      name.textContent = state.muted[t.id] ? `${label} off` : label;
+      name.textContent = state.muted[t.id] ? `${label} ${tr("offWord")}` : label;
       name.classList.toggle("on", state.muted[t.id]);
       name.setAttribute("aria-pressed", String(state.muted[t.id]));
       name.setAttribute("aria-label", `${label} off`);
+      solo.textContent = tr("solo");
       solo.classList.toggle("on", state.solo[t.id]);
       solo.setAttribute("aria-pressed", String(state.solo[t.id]));
       solo.setAttribute("aria-label", `${label} solo`);
       row.querySelectorAll(".mix-tones .btn").forEach((b) => {
         const on = b.dataset.tone === (state.tone[t.id] || "norm");
+        b.textContent = tr(b.dataset.tone, b.dataset.tone);
         b.classList.toggle("on", on);
         b.setAttribute("aria-pressed", String(on));
       });
@@ -1123,11 +1158,13 @@
   }
 
   function renderAll() {
-    $("song-name").textContent = state.name;
-    $("lcd-bpm").textContent = `${state.bpm} BPM`;
-    $("lcd-kit").textContent = KITS.find((k) => k.id === state.kit).label;
-    $("lcd-key").textContent = `${state.key === "Bb" ? "B♭" : state.key} ${state.mood === "bright" ? "Bright" : "Moody"}`;
-    const lookName = LOOKS.find((l) => l.id === state.look)?.label || "Bars";
+    $("song-name").textContent = nameWord(state.name);
+    $("lcd-bpm").textContent = `${state.bpm} ${tr("bpm")}`;
+    const kit = KITS.find((k) => k.id === state.kit);
+    $("lcd-kit").textContent = tr(state.kit, kit ? kit.label : state.kit);
+    $("lcd-key").textContent = `${state.key === "Bb" ? "B♭" : state.key} ${tr(state.mood)}`;
+    const look = LOOKS.find((l) => l.id === state.look);
+    const lookName = look ? tr(look.id, look.label) : tr("bars");
     const live = $("look-live");
     if (live) live.textContent = lookName;
     renderChips($("kits"), KITS, state.kit, (id) => {
@@ -1150,13 +1187,13 @@
     });
     const clickBtn = $("click-btn");
     if (clickBtn) {
-      clickBtn.textContent = state.click ? "Click on" : "Click off";
+      clickBtn.textContent = state.click ? tr("clickOn") : tr("clickOff");
       clickBtn.classList.toggle("on", state.click);
       clickBtn.setAttribute("aria-pressed", String(state.click));
     }
     const recBtn = $("record-btn");
     if (recBtn) {
-      recBtn.textContent = state.record ? "Recording" : "Record";
+      recBtn.textContent = state.record ? tr("recording") : tr("record");
       recBtn.classList.toggle("on", state.record);
       recBtn.setAttribute("aria-pressed", String(state.record));
     }
@@ -1183,13 +1220,21 @@
     const songOn = $("song-on");
     if (songOn) {
       songOn.classList.toggle("on", state.songOn);
-      songOn.textContent = state.songOn ? "Song" : "Loop";
+      songOn.textContent = state.songOn ? tr("song") : tr("loop");
       songOn.setAttribute("aria-pressed", String(state.songOn));
     }
     renderSong();
     renderMix();
     $("play-btn").classList.toggle("is-on", state.playing);
-    $("play-btn").setAttribute("aria-label", state.playing ? "Pause" : "Play");
+    const playWord = state.playing ? tr("pause") : tr("play");
+    $("play-btn").setAttribute("aria-label", playWord);
+    const playLabel = $("play-btn").querySelector(".play-word");
+    if (playLabel) playLabel.textContent = playWord;
+    const stopWord = tr("stop");
+    $("stop-btn").setAttribute("aria-label", stopWord);
+    const stopLabel = $("stop-btn").querySelector(".stop-word");
+    if (stopLabel) stopLabel.textContent = stopWord;
+    $("mute-btn").textContent = state.soundOff ? tr("muted") : tr("soundOn");
     document.body.classList.toggle("is-loop", state.playing);
     document.querySelectorAll("[data-bank]").forEach((b) => {
       b.classList.toggle("on", Number(b.dataset.bank) === state.bank);
@@ -1202,21 +1247,21 @@
     const el = $("now-line");
     if (!el) return;
     if (!state.playing) {
-      el.textContent = "Press Play. Watch the column. Sound can stay off.";
+      el.textContent = tr("nowIdle");
       return;
     }
     if (step < 0) {
-      el.textContent = (state.soundOff ? "Sound is off. " : "") + "Playing. Watch the column.";
+      el.textContent = (state.soundOff ? tr("soundOff") + " " : "") + tr("nowPlay");
       return;
     }
     const names = [];
     for (const t of TRACKS) {
       if (!state.steps[t.id] || !state.steps[t.id][step]) continue;
-      names.push(t.kind === "note" ? noteLabel(t.degree, state.key, state.mood) : t.label);
+      names.push(trackWord(t));
     }
-    const off = state.soundOff ? "Sound is off. " : "";
-    const beat = "Beat " + beatName(step);
-    el.textContent = names.length ? off + beat + " · " + names.join(", ") + "." : off + beat + " · rest.";
+    const off = state.soundOff ? tr("soundOff") + " " : "";
+    const beat = tr("beat") + " " + beatName(step);
+    el.textContent = names.length ? off + beat + " · " + names.join(", ") + "." : off + beat + " · " + tr("rest") + ".";
   }
 
   function setPlayhead(step) {
@@ -1336,7 +1381,7 @@
   });
   $("mute-btn").addEventListener("click", () => {
     state.soundOff = !state.soundOff;
-    $("mute-btn").textContent = state.soundOff ? "Muted" : "Sound on";
+    $("mute-btn").textContent = state.soundOff ? tr("muted") : tr("soundOn");
     $("mute-btn").setAttribute("aria-pressed", String(Boolean(state.soundOff)));
     engine.setVolume(state.soundOff ? 0 : state.volume);
     writeNow(state.playhead);
@@ -1381,7 +1426,7 @@
   });
   $("bpm").addEventListener("input", (e) => {
     state.bpm = Number(e.target.value);
-    $("lcd-bpm").textContent = `${state.bpm} BPM`;
+    $("lcd-bpm").textContent = `${state.bpm} ${tr("bpm")}`;
     remember();
   });
   $("swing").addEventListener("input", (e) => {
@@ -1417,38 +1462,38 @@
   const LESSON_KEY = "kulibert.beatz.lesson";
   const LESSON = [
     {
-      title: "The beat",
-      body: "Press Play. Count the word: Beat 1, Beat 2, Beat 3, Beat 4. That steady count is the beat. Sound can stay off.",
+      title: "lesBeatT",
+      body: "lesBeatB",
       check: () => state.playing || state.sawDownbeat,
-      miss: "Press Play, then watch the word.",
+      miss: "lesBeatM",
       spot: "#play-btn",
     },
     {
-      title: "The strong beat",
-      body: "Beat 1 is the strong beat. It is the one you tap your foot on. Wait until the word says Beat 1.",
+      title: "lesStrongT",
+      body: "lesStrongB",
       check: () => state.sawDownbeat,
-      miss: "Keep it playing until the word says Beat 1.",
+      miss: "lesStrongM",
       spot: "#now-line",
     },
     {
-      title: "The pulse",
-      body: "Light the first Kick square. A kick on beat 1 is the pulse. The other drums sit around it.",
+      title: "lesPulseT",
+      body: "lesPulseB",
       check: () => Boolean(state.steps.kick && state.steps.kick[0]),
-      miss: "Tap the first Kick square so it turns on.",
+      miss: "lesPulseM",
       spot: "#grid [data-track='kick'][data-step='0']",
     },
     {
-      title: "Time",
-      body: "4/4 means four beats, then it starts over. Tap 3/4. Count 1, 2, 3. The bottom rows are notes: C, D, E, G, and A.",
+      title: "lesTimeT",
+      body: "lesTimeB",
       check: () => state.meter === "3/4",
-      miss: "Tap 3/4 in the Time row.",
+      miss: "lesTimeM",
       spot: "#meters",
     },
     {
-      title: "Tempo",
-      body: "Move Tempo. Faster or slower is the tempo. You still count the same beats. Tempo is speed. Time is how many beats.",
+      title: "lesTempoT",
+      body: "lesTempoB",
       check: () => state.bpm !== state.lessonBpm,
-      miss: "Move the Tempo slider.",
+      miss: "lesTempoM",
       spot: "#bpm",
     },
   ];
@@ -1468,7 +1513,7 @@
     if (el) el.classList.add("spot");
     const ok = !step.check || step.check();
     $("lesson-next").classList.toggle("ready", ok);
-    if (ok) $("lesson-miss").textContent = "Got it.";
+    if (ok) $("lesson-miss").textContent = tr("gotIt");
   }
   function lessonDone() {
     try { return localStorage.getItem(LESSON_KEY) === "done"; } catch (err) { return false; }
@@ -1485,11 +1530,11 @@
     $("lesson-n").textContent = String(state.lesson + 1);
     const total = $("lesson-total");
     if (total) total.textContent = String(LESSON.length);
-    $("lesson-title").textContent = step.title;
-    $("lesson-body").textContent = step.body;
+    $("lesson-title").textContent = tr(step.title);
+    $("lesson-body").textContent = tr(step.body);
     $("lesson-miss").textContent = "";
     $("lesson-next").classList.remove("ready");
-    $("lesson-next").textContent = state.lesson === LESSON.length - 1 ? "Done" : "I did this";
+    $("lesson-next").textContent = state.lesson === LESSON.length - 1 ? tr("done") : tr("iDid");
     $("lesson-skip").hidden = state.lesson < 1;
     coachLesson();
   }
@@ -1503,7 +1548,7 @@
     const step = LESSON[state.lesson];
     if (!step) return;
     if (step.check && !step.check()) {
-      $("lesson-miss").textContent = step.miss;
+      $("lesson-miss").textContent = tr(step.miss);
       return;
     }
     state.lesson += 1;
@@ -1578,7 +1623,7 @@
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn";
-      b.textContent = p.name;
+      b.textContent = nameWord(p.name);
       b.addEventListener("click", () => {
         pushUndo();
         applyPreset(p);
@@ -1958,9 +2003,14 @@
   }
   takeScore();
   window.addEventListener("pagehide", flushNow);
-  ["gate-chip", "chip-label", "foot-chip"].forEach((id) => {
+  ["gate-chip", "chip-label", "foot-chip", "drawer-chip"].forEach((id) => {
     const el = $(id);
     if (el) el.textContent = CHIP;
   });
+  window.BzPaintLive = function () {
+    renderAll();
+    paintLesson();
+    writeNow(state.playhead);
+  };
   renderAll();
 })();

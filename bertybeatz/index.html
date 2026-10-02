@@ -5,57 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
   <meta name="description" content="BertyBeatz — tap squares, make a song. Classroom sequencer for Solvay Tech Ed."/>
-  <title>BertyBeatz · The Tech Room</title>
+  <title>BertyBeatz · BZ 1.10.0</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/lab.css?v=1"/>
-  <link rel="stylesheet" href="./styles.css?v=1.9.4"/>
+  <link rel="stylesheet" href="./styles.css?v=1.10.0"/>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/hub-guest.js?v=2026-09-27-hub-guest"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-04-i18n"></script>
 </head>
 <body>
   <div id="gate" class="gate">
     <div class="gate-inner">
       <img class="gate-mark" src="./mark.svg" alt=""/>
-      <p class="chip"><i></i> Tech Room · <span id="gate-chip">BZ 1.9.5</span></p>
+      <p class="chip"><i></i> <span data-bz="techRoom">Tech Room</span> · <span id="gate-chip">BZ 1.10.0</span></p>
       <h1>BertyBeatz</h1>
-      <p class="lede" id="gate-lede">Tap squares. Make a song. Watch it become light.</p>
-      <button type="button" id="start-btn" class="btn primary xl">Tap to start</button>
-      <p class="hint">Needs one tap so Chromebook sound can play.</p>
+      <p class="lede" id="gate-lede" data-bz="gateLede">Tap squares. Make a song. Watch it become light.</p>
+      <button type="button" id="start-btn" class="btn primary xl" data-bz="tapStart">Tap to start</button>
+      <p class="hint" data-bz="gateHint">Needs one tap so Chromebook sound can play.</p>
     </div>
   </div>
 
   <header class="top">
+    <button type="button" id="menu-btn" class="menu-btn" data-bz-label="menu" aria-label="Menu" aria-expanded="false"><span class="menu-mark" aria-hidden="true">☰</span> <span class="menu-word" data-bz="menu">Menu</span></button>
     <a class="brand" href="/" title="Back to The Tech Room">
       <img src="./mark.svg" alt="" width="36" height="36"/>
       <span>
         <strong>BertyBeatz</strong>
-        <em id="chip-label">BZ 1.9.5</em>
+        <em id="chip-label">BZ 1.10.0</em>
       </span>
     </a>
-    <div class="top-actions">
-      <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
-    </div>
   </header>
   <nav class="boards" aria-label="Berty's MusicLab">
-    <a href="/music/?board=score">Score</a>
-    <a class="on" href="/bertybeatz/" aria-current="page">Beats</a>
-    <a href="/music/?board=lights">Lights</a>
-    <a href="/music/?board=band">Band</a>
+    <a href="/music/?board=score" data-bz="score">Score</a>
+    <a class="on" href="/bertybeatz/" aria-current="page" data-bz="beats">Beats</a>
+    <a href="/music/?board=lights" data-bz="lights">Lights</a>
+    <a href="/music/?board=band" data-bz="band">Band</a>
   </nav>
   <div class="scrim" id="scrim"></div>
 
   <section id="help" class="help" hidden>
-    <h2>How it works</h2>
+    <h2 data-bz="howTitle">How it works</h2>
     <ol>
-      <li><strong>What's new:</strong> The lesson lights the control. The button says Got it when the step is done. Tempo is the last step.</li>
-      <li>Tap a square to turn a sound on. Tap again to turn it off.</li>
-      <li>Press Play. The moving column is the beat walking across the grid.</li>
-      <li>Top rows are drums. Bottom rows are notes that always fit the key.</li>
-      <li><strong>Look</strong> chips change the pictures — Bars, Kaleidoscope, Clouds, Stars, Code. Same beat, different lights. Mute is OK.</li>
-      <li><strong>Pass</strong> copies a code — no names — so the next Chromebook can load the same beat.</li>
+      <li data-bz="whats">BertyBeatz speaks your Hub language. Menu is top-left, and Play and Stop have names.</li>
+      <li data-bz="help2">Tap a square to turn a sound on. Tap again to turn it off.</li>
+      <li data-bz="help3">Press Play. The moving column is the beat walking across the grid.</li>
+      <li data-bz="help4">Top rows are drums. Bottom rows are notes that always fit the key.</li>
+      <li data-bz="help5">Look chips change the pictures — Bars, Kaleidoscope, Clouds, Stars, Code. Same beat, different lights. Mute is OK.</li>
+      <li data-bz="help6">Pass copies a code — no names — so the next Chromebook can load the same beat.</li>
     </ol>
-    <p>Space bar plays and stops. Keys 1–5 switch Looks. Tap a row name to hear that sound. Title only, never a student name.</p>
+    <p data-bz="helpFoot">Space bar plays and stops. Keys 1–5 switch Looks. Tap a row name to hear that sound. Title only, never a student name.</p>
   </section>
 
   <section class="stage" aria-label="Lights">
@@ -75,30 +75,32 @@
   </section>
 
   <section class="transport" aria-label="Transport">
-    <button type="button" id="play-btn" class="play" aria-label="Play">
+    <button type="button" id="play-btn" class="play" data-bz-label="play" aria-label="Play">
       <span class="play-icon" aria-hidden="true"></span>
+      <span class="play-word" data-bz="play">Play</span>
     </button>
-    <button type="button" id="mute-btn" class="btn" aria-pressed="false">Sound on</button>
-    <button type="button" id="stop-btn" class="btn icon" aria-label="Stop">
+    <button type="button" id="mute-btn" class="btn" data-bz="soundOn" aria-pressed="false">Sound on</button>
+    <button type="button" id="stop-btn" class="btn" data-bz-label="stop" aria-label="Stop">
       <span class="stop-icon" aria-hidden="true"></span>
+      <span class="stop-word" data-bz="stop">Stop</span>
     </button>
   </section>
 
   <div class="bank-bar" id="bank-bar">
-    <button type="button" class="seg on" data-bank="0">Steps 1–8</button>
-    <button type="button" class="seg" data-bank="1">Steps 9–16</button>
+    <button type="button" class="seg on" data-bank="0" data-bz="stepsA">Steps 1–8</button>
+    <button type="button" class="seg" data-bank="1" data-bz="stepsB">Steps 9–16</button>
   </div>
 
   <p id="arrive" class="arrive" hidden></p>
-  <p id="now-line" class="now-line">Press Play. Watch the column. Sound can stay off.</p>
+  <p id="now-line" class="now-line" data-bz="nowIdle">Press Play. Watch the column. Sound can stay off.</p>
   <section id="lesson" class="lesson" hidden>
-    <p class="lesson-kicker">Lesson <span id="lesson-n">1</span> of <span id="lesson-total">5</span></p>
+    <p class="lesson-kicker"><span data-bz="lesson">Lesson</span> <span id="lesson-n">1</span> <span data-bz="of">of</span> <span id="lesson-total">5</span></p>
     <h2 id="lesson-title">The beat</h2>
     <p id="lesson-body" class="lesson-body"></p>
     <p id="lesson-miss" class="lesson-miss" role="status"></p>
     <div class="lesson-actions">
-      <button type="button" id="lesson-next" class="btn primary">I did this</button>
-      <button type="button" id="lesson-skip" class="btn">Skip</button>
+      <button type="button" id="lesson-next" class="btn primary" data-bz="iDid">I did this</button>
+      <button type="button" id="lesson-skip" class="btn" data-bz="skip">Skip</button>
     </div>
   </section>
 
@@ -110,65 +112,68 @@
     <div id="grid" class="grid" role="grid" aria-label="Beat grid"></div>
   </div>
 
-  <aside class="drawer" id="drawer" aria-label="Menu">
-    <button type="button" id="help-btn" class="btn">How</button>
-    <button type="button" id="score-btn" class="btn">Score</button>
-    <a class="btn" href="/music/">Learn</a>
-    <h2>Look</h2>
+  <aside class="drawer" id="drawer" data-bz-label="menu" aria-label="Menu">
+    <p class="drawer-plate" id="drawer-chip">BZ 1.10.0</p>
+    <h2 data-bz="whatsNew">What's new</h2>
+    <p id="whats-line" class="whats-line" data-bz="whats">BertyBeatz speaks your Hub language. Menu is top-left, and Play and Stop have names.</p>
+    <button type="button" id="help-btn" class="btn" data-bz="how">How</button>
+    <button type="button" id="score-btn" class="btn" data-bz="score">Score</button>
+    <a class="btn" href="/music/" data-bz="learn">Learn</a>
+    <h2 data-bz="look">Look</h2>
     <div class="chips" id="looks"></div>
     <div id="code-look" class="code-look" hidden></div>
-    <h2>Title</h2>
+    <h2 data-bz="title">Title</h2>
     <section id="title-lists" class="title-lists" aria-label="Title words"></section>
-    <h2>Tempo</h2>
+    <h2 data-bz="tempo">Tempo</h2>
     <div class="dials">
-      <label class="dial"><span>Tempo</span><input id="bpm" type="range" min="70" max="160" value="110"/></label>
-      <label class="dial"><span>Swing</span><input id="swing" type="range" min="0" max="60" value="8"/></label>
-      <label class="dial"><span>Human</span><input id="human" type="range" min="0" max="40" value="0" aria-label="Humanize"/></label>
-      <label class="dial"><span>Vol</span><input id="vol" type="range" min="0" max="100" value="80"/></label>
+      <label class="dial"><span data-bz="tempo">Tempo</span><input id="bpm" type="range" min="70" max="160" value="110"/></label>
+      <label class="dial"><span data-bz="swing">Swing</span><input id="swing" type="range" min="0" max="60" value="8"/></label>
+      <label class="dial"><span data-bz="human">Human</span><input id="human" type="range" min="0" max="40" value="0" aria-label="Humanize"/></label>
+      <label class="dial"><span data-bz="vol">Vol</span><input id="vol" type="range" min="0" max="100" value="80"/></label>
     </div>
-    <h2>Time</h2>
+    <h2 data-bz="time">Time</h2>
     <div class="chips" id="meters"></div>
     <button type="button" id="click-btn" class="btn on" aria-pressed="true">Click on</button>
     <button type="button" id="record-btn" class="btn" aria-pressed="false">Record</button>
-    <h2>Pattern</h2>
+    <h2 data-bz="pattern">Pattern</h2>
     <div class="chips" id="patterns"></div>
     <button type="button" id="song-on" class="btn" aria-pressed="false">Loop</button>
     <div class="chips" id="song"></div>
-    <h2>Mixer</h2>
-    <p class="staff-hint">Each row is one sound. Off hides it. Solo keeps only the rows you mark. Soft and Bright change the color. The song saves itself.</p>
+    <h2 data-bz="mixer">Mixer</h2>
+    <p class="staff-hint" data-bz="mixHint">Each row is one sound. Off hides it. Solo keeps only the rows you mark. Soft and Bright change the color. The song saves itself.</p>
     <div class="mix" id="mix"></div>
 
-  <h2>Kit</h2>
+  <h2 data-bz="kit">Kit</h2>
     <div class="chips" id="kits"></div>
     <div class="chips" id="moods"></div>
     <div class="chips" id="keys"></div>
-    <button type="button" id="surprise-btn" class="btn primary">Surprise me</button>
-    <button type="button" id="preset-btn" class="btn">Starter beats</button>
-    <button type="button" id="pass-btn" class="btn">Pass</button>
-    <button type="button" id="export-btn" class="btn">Export</button>
-    <button type="button" id="import-btn" class="btn">Import</button>
+    <button type="button" id="surprise-btn" class="btn primary" data-bz="surprise">Surprise me</button>
+    <button type="button" id="preset-btn" class="btn" data-bz="starter">Starter beats</button>
+    <button type="button" id="pass-btn" class="btn" data-bz="pass">Pass</button>
+    <button type="button" id="export-btn" class="btn" data-bz="exportBtn">Export</button>
+    <button type="button" id="import-btn" class="btn" data-bz="importBtn">Import</button>
     <input id="import-file" type="file" accept=".json,.txt,application/json,text/plain" hidden/>
-    <button type="button" id="save-btn" class="btn">Save</button>
-    <button type="button" id="library-btn" class="btn">My beats</button>
-    <button type="button" id="clear-btn" class="btn danger">Clear</button>
-    <button type="button" id="undo-btn" class="btn" disabled>Undo</button>
+    <button type="button" id="save-btn" class="btn" data-bz="save">Save</button>
+    <button type="button" id="library-btn" class="btn" data-bz="myBeats">My beats</button>
+    <button type="button" id="clear-btn" class="btn danger" data-bz="clear">Clear</button>
+    <button type="button" id="undo-btn" class="btn" data-bz="undo" disabled>Undo</button>
     <p id="status-line" class="hint" role="status"></p>
   </aside>
 
-  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.9.5</span> · See it move · no names ·
-    <button type="button" id="lights-btn" class="link">Lights</button> ·
-    <a href="./teacher.html">Teacher</a> ·
-    <a href="./privacy.html">Privacy</a>
+  <p class="foot">Kulibert Tech Ed · <span id="foot-chip">BZ 1.10.0</span> · <span data-bz="seeMove">See it move</span> · <span data-bz="noNames">no names</span> ·
+    <button type="button" id="lights-btn" class="link" data-bz="lights">Lights</button> ·
+    <a href="./teacher.html" data-bz="teacher">Teacher</a> ·
+    <a href="./privacy.html" data-bz="privacy">Privacy</a>
   </p>
 
   <dialog id="modal" class="modal">
     <form method="dialog" id="modal-form">
-      <h2 id="modal-title">Save beat</h2>
+      <h2 id="modal-title" data-bz="saveBeat">Save beat</h2>
       <p id="modal-desc" class="desc"></p>
       <div id="modal-body"></div>
       <div class="modal-actions">
-        <button type="submit" id="modal-ok" class="btn primary">Save</button>
-        <button type="button" id="modal-cancel" class="btn" value="cancel">Close</button>
+        <button type="submit" id="modal-ok" class="btn primary" data-bz="save">Save</button>
+        <button type="button" id="modal-cancel" class="btn" data-bz="close" value="cancel">Close</button>
       </div>
     </form>
   </dialog>
@@ -177,6 +182,7 @@
   <script src="/shared/song/model.js?v=0.2.0"></script>
   <script src="/shared/visualizer/stage.js?v=0.9.0"></script>
   <script src="/shared/lab.js?v=1"></script>
-  <script src="./app.js?v=1.9.5"></script>
+  <script src="./strings.js?v=1.10.0"></script>
+  <script src="./app.js?v=1.10.0"></script>
 </body>
 </html>
