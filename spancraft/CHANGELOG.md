@@ -1,7 +1,9 @@
-# SpanCraft changelog
-
-**Chip: SC 1.3.29** · 2026-10-01 · channel **live**
+**Chip: SC 1.3.31** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.31 — Menu and languages — 2026-10-02
+
+- What’s new: Menu is top-left at every size, and Settings has all 8 languages.
 
 ## 1.3.29 — Score — 2026-10-01
 

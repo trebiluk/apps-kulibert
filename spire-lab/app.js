@@ -1,14 +1,14 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20261004a";
+import { mountTruss } from "../spancraft/truss-play.js?v=20261002-sc131";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.29",
+  version: "SL 1.3.30",
   accessKey: "sl-access-v1",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: Spire Lab shows and reads your language.",
+  note: "What’s new: Menu is top-left at every size, and Settings has all 8 languages.",
   engageKey: "kulibert-spire-engage-v2",
   twApp: "spire-lab",
   assistKey: "kulibert-spire-assist-intro-v2",

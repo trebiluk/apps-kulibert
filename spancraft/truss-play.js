@@ -234,7 +234,8 @@ export function mountTruss(cfg) {
   function readAccess() {
     try {
       const raw = JSON.parse(localStorage.getItem(cfg.accessKey || "xx-access-v1") || "{}");
-      const lang = raw.lang === "simple" || raw.lang === "es" ? raw.lang : "en";
+      const LANG_OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
+      const lang = LANG_OK[raw.lang] ? raw.lang : "en";
       return { lang: lang, speak: !!raw.speak, big: !!raw.big, fewer: !!raw.fewer };
     } catch (e) {
       return { lang: "en", speak: false, big: false, fewer: false };
@@ -338,6 +339,17 @@ export function mountTruss(cfg) {
     gear.textContent = chrome("settings");
     const kinds = document.getElementById("kinds");
     if (kinds) kinds.appendChild(gear);
+    const LANG_PICKS = [
+      ["en", "English"],
+      ["simple", "Simple words"],
+      ["uk", "Українська"],
+      ["ru", "Русский"],
+      ["es", "Español"],
+      ["ar", "العربية"],
+      ["fa-AF", "دری"],
+      ["rw", "Ikinyarwanda"],
+      ["ti", "ትግርኛ"],
+    ];
     const sheet = document.createElement("div");
     sheet.id = "access-sheet";
     sheet.hidden = true;
@@ -345,9 +357,7 @@ export function mountTruss(cfg) {
       '<p class="access-title" id="access-title"></p>' +
       '<p class="access-label" id="access-lang-label"></p>' +
       '<div class="access-row">' +
-      '<button type="button" data-lang="en">English</button>' +
-      '<button type="button" data-lang="simple">Simple words</button>' +
-      '<button type="button" data-lang="es">Español</button>' +
+      LANG_PICKS.map((pair) => '<button type="button" data-lang="' + pair[0] + '">' + pair[1] + "</button>").join("") +
       "</div>" +
       '<div class="access-row">' +
       '<button type="button" id="access-speak"></button>' +
@@ -365,9 +375,9 @@ export function mountTruss(cfg) {
         const lang = btn.getAttribute("data-lang");
         writeAccess({ lang: lang, speak: access.speak, big: access.big, fewer: false });
         try {
-          if (window.KulibertPrefs && typeof window.KulibertPrefs.acceptLang === "function") {
-            window.KulibertPrefs.acceptLang(lang);
-          }
+          const prefs = window.KulibertPrefs;
+          if (prefs && typeof prefs.set === "function") prefs.set({ lang: lang });
+          if (prefs && prefs.lang !== lang && typeof prefs.acceptLang === "function") prefs.acceptLang(lang);
         } catch (eLang) {}
         paintLang();
         say(btn.textContent || "");
@@ -623,7 +633,7 @@ export function mountTruss(cfg) {
       if (narrow) padX = 88;
       if (shortLand()) {
         padX = Math.min(64, Math.max(24, cssW * 0.04));
-        padTop = Math.min(64, Math.max(56, cssH * 0.14));
+        padTop = Math.min(88, Math.max(72, cssH * 0.2));
         padBot = Math.min(200, Math.max(72, cssH * 0.22));
       }
       if (cssH - padTop - padBot < 48) {
@@ -1543,15 +1553,27 @@ export function mountTruss(cfg) {
     menu.className = "land-menu";
     menu.setAttribute("aria-expanded", "false");
     menu.setAttribute("aria-controls", "land-drawer");
-    menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="menu-word"></span>';
-    pocket.insertBefore(menu, pocket.firstChild);
+    menu.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg><span class="menu-word">Menu</span>';
+    const bar = document.querySelector(".kb-bar");
+    if (bar) bar.insertBefore(menu, bar.firstChild);
+    else pocket.insertBefore(menu, pocket.firstChild);
     const drawer = document.createElement("div");
     drawer.id = "land-drawer";
     drawer.className = "land-drawer";
     drawer.hidden = true;
-    drawer.innerHTML = '<div id="land-drawer-body"></div>';
+    drawer.innerHTML = '<div id="land-drawer-body"><nav id="land-nav">' +
+      '<button type="button" data-land="levels"></button>' +
+      '<button type="button" data-land="challenge"></button>' +
+      '<button type="button" data-land="help"></button>' +
+      '<button type="button" data-land="settings"></button>' +
+      '<button type="button" data-land="retry"></button>' +
+      '<a data-land="whats" href="./changelog.html"></a>' +
+      '<p id="land-rev"></p>' +
+      '<p id="land-whats"></p>' +
+      "</nav></div>";
     document.body.appendChild(drawer);
     const body = drawer.querySelector("#land-drawer-body");
+    const nav = drawer.querySelector("#land-nav");
     const park = document.createElement("div");
     park.id = "who-park";
     pocket.appendChild(park);
@@ -1582,16 +1604,44 @@ export function mountTruss(cfg) {
       parkWho();
     }
     menu.addEventListener("click", () => {
-      if (!shortLand() || classicTheme()) return;
+      if (classicTheme()) return;
       const open = !document.documentElement.classList.contains("land-open");
       document.documentElement.classList.toggle("land-open", open);
       drawer.hidden = !open;
       menu.setAttribute("aria-expanded", open ? "true" : "false");
       try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
     });
+    if (nav) {
+      nav.addEventListener("click", (ev) => {
+        const hit = ev.target.closest("[data-land]");
+        if (!hit || hit.getAttribute("data-land") === "whats") return;
+        const kind = hit.getAttribute("data-land");
+        const go = {
+          levels: document.getElementById("isles-btn"),
+          challenge: document.getElementById("track-challenge"),
+          help: document.getElementById("edge-btn"),
+          retry: document.getElementById("retry"),
+        }[kind];
+        if (kind === "settings") {
+          const sheet = document.getElementById("access-sheet");
+          drawer.hidden = true;
+          document.documentElement.classList.remove("land-open");
+          menu.setAttribute("aria-expanded", "false");
+          if (sheet) {
+            sheet.hidden = false;
+            paintAccess();
+          }
+          return;
+        }
+        if (go) go.click();
+        drawer.hidden = true;
+        document.documentElement.classList.remove("land-open");
+        menu.setAttribute("aria-expanded", "false");
+      });
+    }
     if (caption) {
       caption.addEventListener("click", (ev) => {
-        if (!shortLand() || classicTheme()) return;
+        if (classicTheme()) return;
         if (ev.target.closest("button, a")) return;
         caption.classList.toggle("is-open");
       });
@@ -1687,7 +1737,28 @@ export function mountTruss(cfg) {
     const wall = document.querySelector(".isle-wall");
     if (wall) wall.textContent = cfg.mode === "spire" ? t("isleWallSpire") : t("isleWallSpan");
     const menuWord = document.querySelector("#land-menu .menu-word");
-    if (menuWord) menuWord.textContent = chrome("menu");
+    const menuLabel = chrome("menu") || "Menu";
+    if (menuWord) menuWord.textContent = menuLabel;
+    const menuBtn = document.getElementById("land-menu");
+    if (menuBtn) menuBtn.setAttribute("aria-label", menuLabel);
+    const landWord = {
+      levels: chrome("levels"),
+      challenge: t("challenge"),
+      help: chrome("help"),
+      settings: chrome("settings"),
+      retry: chrome("retry"),
+      whats: (window.KulibertI18n && typeof window.KulibertI18n.t === "function" && window.KulibertI18n.t("whatsNew")) || "What's new",
+    };
+    Object.keys(landWord).forEach((name) => {
+      const node = document.querySelector("#land-nav [data-land='" + name + "']");
+      if (node && landWord[name]) node.textContent = landWord[name];
+    });
+    const landRev = document.getElementById("land-rev");
+    if (landRev) landRev.textContent = cfg.version || "";
+    const landWhats = document.getElementById("land-whats");
+    if (landWhats) landWhats.textContent = t("whatsNewLead");
+    const brandRev = document.querySelector(".brand p");
+    if (brandRev && cfg.version) brandRev.textContent = cfg.version;
     const got = document.getElementById("assist-gotit");
     if (got) got.textContent = t("gotIt");
     const strong = document.querySelector("#assist-plate strong");
