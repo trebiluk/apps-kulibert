@@ -47,7 +47,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-01-left");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-04-i18n");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -67,7 +67,9 @@
     if (!node) return;
     var who = root.KulibertWho && root.KulibertWho.read && root.KulibertWho.read();
     var on = root.KulibertWho && root.KulibertWho.active && root.KulibertWho.active();
-    node.textContent = on && who ? who.alias : "Sign in";
+    if (on && who && who.alias) { node.textContent = who.alias; return; }
+    var word = root.KulibertI18n && root.KulibertI18n.t ? root.KulibertI18n.t("signIn") : "";
+    node.textContent = word || "Sign in";
   }
   function toast(text) {
     ensureCss();
@@ -110,6 +112,7 @@
     if (!schoolOrigin(ev.origin)) return;
     if (data.type === "kb-help") { openHelp(); return; }
     if (data.type === "kb-menu") { openMenu(); return; }
+    if (data.type === "kp-lang") { applyBarLang(data.lang); return; }
     if (data.type !== "kw-who") return;
     ensureWho(function () {
       var api = root.KulibertWho;
@@ -140,7 +143,94 @@
     return;
   }
 
+  var LANG_OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
+  var allowRtl = script && script.getAttribute("data-rtl") === "1";
+  function langCode(value) {
+    var s = String(value || "");
+    return LANG_OK[s] ? s : "";
+  }
+  function dirOfLang(lang) {
+    return lang === "ar" || lang === "fa-AF" ? "rtl" : "ltr";
+  }
+  function trBar(key, fallback) {
+    var v = root.KulibertI18n && root.KulibertI18n.t ? root.KulibertI18n.t(key) : "";
+    return v || fallback;
+  }
+  function paintBar() {
+    var home = document.querySelector(".kb-bar .kb-home");
+    var menuBtn = document.querySelector(".kb-bar .kb-menu");
+    var helpBtn = document.querySelector(".kb-bar .kb-help");
+    if (home) home.textContent = "\u2302 " + trBar("home", "Home");
+    if (menuBtn) menuBtn.textContent = "\u2630 " + trBar("menu", "Menu");
+    if (helpBtn) {
+      var help = trBar("help", "Help");
+      helpBtn.textContent = help;
+      helpBtn.setAttribute("aria-label", help);
+    }
+    paintAlias(document.querySelector(".kb-bar .kb-alias"));
+  }
+  function storedLang() {
+    try {
+      var raw = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "null");
+      return langCode(raw && raw.lang) || "";
+    } catch (e) { return ""; }
+  }
+  function pageLang() {
+    try {
+      var fromQ = langCode(new URLSearchParams(location.search).get("lang"));
+      if (fromQ) return fromQ;
+    } catch (e) {}
+    try {
+      if (root.KulibertPrefs && root.KulibertPrefs.lang) return langCode(root.KulibertPrefs.lang) || "en";
+    } catch (e2) {}
+    return storedLang() || "en";
+  }
+  function ensureI18n(done) {
+    if (root.KulibertI18n) { done(); return; }
+    var s = document.createElement("script");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-04-i18n");
+    s.onload = function () { done(); };
+    s.onerror = function () { done(); };
+    (document.head || document.documentElement).appendChild(s);
+  }
+  function applyBarLang(lang) {
+    if (classic()) return;
+    var code = langCode(lang) || "en";
+    document.documentElement.lang = code === "simple" ? "en" : code;
+    document.documentElement.setAttribute("data-kp-lang", code);
+    if (allowRtl) document.documentElement.dir = dirOfLang(code);
+    var havePrefs = root.KulibertPrefs && root.KulibertPrefs.acceptLang;
+    if (havePrefs) {
+      try { if (root.KulibertPrefs.lang !== code) root.KulibertPrefs.acceptLang(code); } catch (e) {}
+    } else if (storedLang() !== code) {
+      try {
+        var cur = JSON.parse(localStorage.getItem("kulibert-prefs-v1") || "{}") || {};
+        if (!cur || typeof cur !== "object") cur = {};
+        cur.lang = code;
+        cur.v = 1;
+        localStorage.setItem("kulibert-prefs-v1", JSON.stringify(cur));
+      } catch (eStore) {}
+      try {
+        root.dispatchEvent(new CustomEvent("kulibert-lang", { detail: { lang: code, dir: dirOfLang(code) } }));
+      } catch (e2) {}
+    }
+    var paint = function () { paintBar(); };
+    if (root.KulibertI18n && root.KulibertI18n.ready) root.KulibertI18n.ready(code, paint);
+    else paint();
+  }
   document.documentElement.setAttribute("data-kb-bar", "1");
+  ensureI18n(function () { applyBarLang(pageLang()); });
+  root.addEventListener("kulibert-lang", function (ev) {
+    var lang = ev && ev.detail && ev.detail.lang;
+    var go = function () { paintBar(); };
+    if (root.KulibertI18n && root.KulibertI18n.ready) root.KulibertI18n.ready(lang, go);
+    else go();
+  });
+  root.addEventListener("storage", function (ev) {
+    if (!ev || ev.key !== "kulibert-prefs-v1" || root.KulibertPrefs) return;
+    var code = storedLang();
+    if (code) applyBarLang(code);
+  });
   if (framed()) {
     document.documentElement.classList.add("kb-framed");
     ensureCss();
@@ -169,7 +259,7 @@
     if (menuBtn) menuBtn.addEventListener("click", openMenu);
     var helpBtn = bar.querySelector(".kb-help");
     if (helpBtn) helpBtn.addEventListener("click", openHelp);
-    ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); });
+    ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); paintBar(); });
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
   }
   if (document.body) draw();

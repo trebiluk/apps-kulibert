@@ -4,14 +4,14 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-03-classic"/>
+<meta name="tech-room-rev" content="2026-10-04-lang"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
   <meta name="mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
-  <link rel="stylesheet" href="/fonts/room.css"/>
+  <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/tw-session.js?v=2026-10-02-strip"></script>
   <script>
@@ -40,7 +40,7 @@
     *{box-sizing:border-box}
     html,body{
       margin:0;min-height:100%;min-height:100dvh;background:var(--background);color:var(--foreground);
-      font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+      font-family:var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
       font-size:16px;
       -webkit-font-smoothing:antialiased;
     }
@@ -697,11 +697,11 @@
     .tile .blurb{display:block;font-size:14px;font-weight:550;line-height:1.15;opacity:.82}
     .style-k,.shell-chip,.hub-tools button{font-size:14px}
     #my-settings{min-height:44px;min-width:44px;padding:0 .8rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 14px/1 Outfit,system-ui,sans-serif;cursor:pointer}
-    #kp-panel{margin:.4rem 0;padding:.7rem;border:1px solid #1e3a55;border-radius:14px;background:#0c1730;max-width:40rem;color:#e8f7ff}
+    #kp-panel{margin:.4rem 0;padding:.7rem;border:1px solid #1e3a55;border-radius:14px;background:#0c1730;max-width:min(40rem,100%);color:#e8f7ff}
     #kp-panel h2,#kp-panel p,#kp-panel span{color:#e8f7ff}
     #kp-panel[hidden]{display:none !important}
     #kp-panel .kp-row{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:.35rem 0}
-    #kp-panel button,#kp-panel .kp-row button{min-height:44px;min-width:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 14px/1 Outfit,system-ui,sans-serif}
+    #kp-panel button,#kp-panel .kp-row button{min-height:44px;min-width:44px;padding:0 .7rem;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font-weight:700;font-size:14px;line-height:1.5;font-family:var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif}
     #kp-panel button[aria-pressed="true"]{background:#ffe14a;color:#000}
     #kp-help{font-size:14px;margin:.4rem 0}
     .kp-cards{display:flex;flex-wrap:wrap;gap:.5rem}
@@ -1601,24 +1601,34 @@
     #kp-panel .style-swatch[data-style="berty"]{background:#e87722}
     #kp-panel .style-swatch.is-on{box-shadow:0 0 0 2px #22d3ee}
     body.apps-always #hub-tools #my-settings{margin-left:auto}
+    html[dir="rtl"] .shell-header{direction:ltr}
+    html[dir="rtl"] .tile .label,
+    html[dir="rtl"] .shell-brand,
+    html[dir="rtl"] .lockup-the,
+    html[dir="rtl"] .lockup-room,
+    html[dir="rtl"] #kb-plate,
+    html[dir="rtl"] .app-dock-item{direction:ltr;unicode-bidi:isolate}
+    #kp-lang{flex-wrap:wrap;max-width:100%}
+    #kp-lang button{white-space:nowrap}
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-prefs.js?v=2026-10-01-left"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-04-i18n"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
 <body class="apps-always">
   <div class="shell" id="hub-shell">
     <header class="shell-header" id="shell-header">
-      <button type="button" id="kb-menu" class="kb-menu" hidden aria-expanded="false">☰ Menu</button>
+      <button type="button" id="kb-menu" class="kb-menu" hidden aria-expanded="false"><span aria-hidden="true">☰ </span><span data-i18n="menu">Menu</span></button>
       <div id="tw-session-slot"></div>
-      <span class="shell-brand">THE TECH ROOM</span>
+      <span class="shell-brand" dir="ltr"><bdi>THE TECH ROOM</bdi></span>
       <div class="dock-clip">
         <nav id="app-dock" class="app-dock" aria-label="All apps" hidden></nav>
       </div>
       <span id="kb-plate" class="kb-plate" hidden></span>
-      <button type="button" id="kb-help" class="kb-help" hidden aria-label="Help">?</button>
+      <button type="button" id="kb-help" class="kb-help" hidden data-i18n-label="help" aria-label="Help">?</button>
       <button type="button" id="kb-settings" class="kb-settings" hidden aria-label="My settings">⚙</button>
-      <button type="button" class="btn btn-secondary" id="shell-home" hidden>Home</button>
+      <button type="button" class="btn btn-secondary" id="shell-home" hidden data-i18n="home">Home</button>
       <div class="edge-pocket" id="edge-pocket" data-edge-pocket="more">
         <button type="button" class="btn btn-ghost edge-pocket-btn" id="edge-pocket-btn" aria-expanded="false" aria-haspopup="menu" aria-controls="edge-pocket-menu">More</button>
         <div class="edge-pocket-menu" id="edge-pocket-menu" role="menu" hidden>
@@ -1683,10 +1693,7 @@
       <div class="vignette"></div>
       <div class="hero" id="hero">
         <div class="chip"><i aria-hidden="true"></i> apps.kulibert.net</div>
-        <h1>
-          <span class="lockup-the">THE</span>
-          <span class="lockup-room">TECH ROOM</span>
-        </h1>
+        <h1 dir="ltr"><bdi><span class="lockup-the">THE</span> <span class="lockup-room">TECH ROOM</span></bdi></h1>
         <form class="who-bar" id="who-bar">
           <label id="who-label">Your alias <input id="who-alias" maxlength="16" autocomplete="off" spellcheck="false" placeholder="Spark" aria-describedby="who-code"/></label>
           <button type="submit" id="who-keep">Keep</button>
@@ -1699,7 +1706,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-03-classic</span> · <strong>What’s new</strong> · The Tech Room</span>
+<span class="lead"><span class="rev">rev 2026-10-04-lang</span> · <strong>What’s new</strong> · The Tech Room</span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.1</strong> — All 16 steps show. More stays closed until you tap it. One Menu.</p>
@@ -1710,7 +1717,7 @@
           <p class="cut-line"><a href="/bertybeatz/">BertyBeatz</a> <strong>BZ 1.9.5</strong> — Lights and Score stay in the hub and land in DJ Berty.</p>
           <p class="cut-line"><a href="/catapult/">ThrowIt</a> <strong>JC 2.3.1</strong> — A scored round lands on TechWorks.</p>
           <ul id="hub-log">
-            <li>Classic looks the same again. My settings is readable in every theme.</li>
+            <li>Pick your language in My settings. Your apps follow it. Arabic and Dari read right to left.</li>
             <li>No empty boxes in the top card. The app name is readable in every theme. Sign in works from inside an app.</li>
             <li>Menu sits top-left in every app. Sound on works right away. One app's sound no longer mutes the others.</li>
             <li>My settings: one text size, contrast, sound, and language for every app.</li>
@@ -1754,10 +1761,10 @@
         <button type="button" data-sort="alpha" aria-pressed="true">A–Z</button>
         <button type="button" data-sort="za" aria-pressed="false">Z–A</button>
       </div>
-      <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel">My settings</button>
+      <button type="button" id="my-settings" aria-expanded="false" aria-controls="kp-panel" data-i18n="mySettings">My settings</button>
     </div>
     <section id="kp-panel" hidden role="dialog" aria-modal="true" aria-labelledby="kp-title">
-      <h2 id="kp-title">My settings</h2>
+      <h2 id="kp-title" data-i18n="mySettings">My settings</h2>
       <div class="kp-row" id="style-row" role="group" aria-label="My style">
         <span class="style-k">My style</span>
         <button type="button" class="style-swatch" data-style="room" aria-label="Room"></button>
@@ -1783,13 +1790,21 @@
         <button type="button" id="kp-motion" aria-pressed="false">Less motion</button>
         <button type="button" id="kp-sound" aria-pressed="true">Sound</button>
         <button type="button" id="kp-captions" aria-pressed="true">Show words for sounds and speech</button>
-        <button type="button" id="kp-read" aria-pressed="false">Read it to me</button>
+        <button type="button" id="kp-read" aria-pressed="false" data-i18n="readAloud">Read aloud</button>
       </div>
-      <div class="kp-row" role="group" aria-label="Help language">
-        <span>Help language</span>
-        <button type="button" id="kp-en" aria-pressed="true">English</button>
-        <button type="button" id="kp-ar" aria-pressed="false">العربية</button>
+      <div class="kp-row" id="kp-lang" role="group" aria-label="Language">
+        <span data-i18n="language">Language</span>
+        <button type="button" data-lang="en" lang="en" dir="ltr" aria-pressed="true">English</button>
+        <button type="button" data-lang="simple" lang="en" dir="ltr" aria-pressed="false">Simple English</button>
+        <button type="button" data-lang="uk" lang="uk" dir="ltr" aria-pressed="false">Українська</button>
+        <button type="button" data-lang="ru" lang="ru" dir="ltr" aria-pressed="false">Русский</button>
+        <button type="button" data-lang="es" lang="es" dir="ltr" aria-pressed="false">Español</button>
+        <button type="button" data-lang="ar" lang="ar" dir="rtl" aria-pressed="false">العربية</button>
+        <button type="button" data-lang="fa-AF" lang="fa-AF" dir="rtl" aria-pressed="false">دری</button>
+        <button type="button" data-lang="rw" lang="rw" dir="ltr" aria-pressed="false">Ikinyarwanda</button>
+        <button type="button" data-lang="ti" lang="ti" dir="ltr" aria-pressed="false">ትግርኛ</button>
       </div>
+      <p id="kp-lang-note" data-i18n="appsFollow">Your apps will use this language.</p>
       <div class="kp-cards" aria-label="Picture cards">
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M4 28h56M8 28V16h10l6 8h16l6-8h10v12" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>bridge</bdi></p><p lang="ar" dir="rtl">جسر</p></article>
         <article><svg viewBox="0 0 64 40" aria-hidden="true"><path d="M8 20h36M36 12l12 8-12 8" fill="none" stroke="#ffe14a" stroke-width="2"/></svg><p><bdi>force</bdi></p><p lang="ar" dir="rtl">قوة</p></article>
@@ -3584,6 +3599,20 @@
         } catch (eWho) { return; }
         try { frame.contentWindow.postMessage(msg, origin); } catch (ePost) {}
       }
+      function postLang(frame) {
+        if (!frame || !frame.contentWindow || hubClassic || !window.KulibertPrefs) return;
+        var origin = "";
+        try {
+          var url = new URL(frame.getAttribute("src") || frame.src || "", location.href);
+          var host = url.hostname;
+          if (!(host === location.hostname || host === "kulibert.net" || host.slice(-13) === ".kulibert.net")) return;
+          origin = url.origin;
+        } catch (eLang) { return; }
+        if (!origin || origin === "null") return;
+        try {
+          frame.contentWindow.postMessage({ type: "kp-lang", lang: KulibertPrefs.lang, dir: KulibertPrefs.dir }, origin);
+        } catch (ePostLang) {}
+      }
       var plateState = null;
       function tileNameFor(app) {
         var key = String(app || "").toLowerCase();
@@ -3662,13 +3691,17 @@
       function openFrame(href, title, fromPop, replace) {
         href = schoolHref(href);
         if (!href) return;
-        try {
-          var door = new URL(href, location.href);
-          if (/^baboo\.kulibert\.net$|^tw\.kulibert\.net$/.test(door.hostname) && window.KulibertPrefs) {
-            door.hash = "kp=" + KulibertPrefs.code();
+        if (!hubClassic && window.KulibertPrefs) {
+          try {
+            var door = new URL(href, location.href);
+            if (/^baboo\.kulibert\.net$|^tw\.kulibert\.net$/.test(door.hostname)) {
+              door.hash = "kp=" + KulibertPrefs.code();
+            }
+            door.searchParams.set("lang", KulibertPrefs.lang || "en");
+            door.searchParams.set("dir", KulibertPrefs.dir || "ltr");
             href = door.href;
-          }
-        } catch (eKp) {}
+          } catch (eKp) {}
+        }
         var frame = document.getElementById("app-frame");
         var home = document.getElementById("shell-home");
         if (!frame) return;
@@ -3699,6 +3732,7 @@
         paintDock();
         showPlate(title || "App", "");
         postWho(frame);
+        postLang(frame);
       }
 
       function closeFrame(fromPop) {
@@ -3961,7 +3995,7 @@ document.addEventListener("click", function (event) {
         try { frame.contentWindow.postMessage({ type: "kb-menu" }, "*"); } catch (eMenu) {}
       });
       var appFrame = document.getElementById("app-frame");
-      if (appFrame) appFrame.addEventListener("load", function () { postWho(appFrame); });
+      if (appFrame) appFrame.addEventListener("load", function () { postWho(appFrame); postLang(appFrame); });
       window.addEventListener("message", function (ev) {
         var data = ev.data;
         if (!data || !data.type) return;
@@ -4054,10 +4088,19 @@ document.addEventListener("click", function (event) {
         var help = document.getElementById("kp-help");
         if (!btn || !panel || !window.KulibertPrefs) return;
         var HELP = {
-          en: "Pick a size. Your apps can use it.",
-          ar: "اختر الحجم. التطبيقات تستخدمه."
+          en: "Pick a size. Your apps can use it."
         };
         function prefs() { return KulibertPrefs.get(); }
+        function syncHubLang() {
+          if (hubClassic) {
+            document.documentElement.lang = "en";
+            document.documentElement.dir = "ltr";
+            return;
+          }
+          var p = prefs();
+          document.documentElement.lang = p.lang === "simple" ? "en" : p.lang;
+          document.documentElement.dir = p.dir === "rtl" ? "rtl" : "ltr";
+        }
         function paintSettings() {
           var p = prefs();
           panel.querySelectorAll("[data-size]").forEach(function (b) {
@@ -4068,17 +4111,37 @@ document.addEventListener("click", function (event) {
           document.getElementById("kp-sound").setAttribute("aria-pressed", p.sound ? "true" : "false");
           document.getElementById("kp-captions").setAttribute("aria-pressed", p.captions ? "true" : "false");
           document.getElementById("kp-read").setAttribute("aria-pressed", p.read ? "true" : "false");
-          document.getElementById("kp-en").setAttribute("aria-pressed", p.lang === "en" ? "true" : "false");
-          document.getElementById("kp-ar").setAttribute("aria-pressed", p.lang === "ar" ? "true" : "false");
+          panel.querySelectorAll("[data-lang]").forEach(function (b) {
+            b.setAttribute("aria-pressed", b.getAttribute("data-lang") === p.lang ? "true" : "false");
+          });
+          var group = document.getElementById("kp-lang");
+          if (group && window.KulibertI18n) {
+            var name = KulibertI18n.t("language");
+            if (name) group.setAttribute("aria-label", name);
+          }
+          var note = document.getElementById("kp-lang-note");
+          if (note) {
+            note.lang = p.lang === "simple" ? "en" : p.lang;
+            note.dir = p.dir === "rtl" ? "rtl" : "ltr";
+          }
+          if (window.KulibertI18n) KulibertI18n.paint();
           if (help) {
-            help.textContent = HELP[p.lang] || HELP.en;
-            if (p.lang === "ar") { help.lang = "ar"; help.dir = "rtl"; }
-            else { help.lang = "en"; help.dir = "ltr"; }
+            help.textContent = HELP.en;
+            help.lang = "en";
+            help.dir = "ltr";
           }
           document.querySelectorAll("a.tile").forEach(function (a) {
             var href = a.getAttribute("href") || "";
             if (!/baboo\.kulibert\.net|tw\.kulibert\.net/.test(href)) return;
             a.setAttribute("href", href.split("#")[0] + "#kp=" + KulibertPrefs.code());
+          });
+          document.querySelectorAll(".tile .label").forEach(function (el) {
+            el.setAttribute("dir", "ltr");
+            if (!el.querySelector("bdi")) {
+              var bdi = document.createElement("bdi");
+              while (el.firstChild) bdi.appendChild(el.firstChild);
+              el.appendChild(bdi);
+            }
           });
         }
         function shut() {
@@ -4107,14 +4170,20 @@ document.addEventListener("click", function (event) {
             KulibertPrefs.set({ read: on });
             if (on) KulibertPrefs.say(help.textContent);
           }
-          if (t.id === "kp-en") KulibertPrefs.set({ lang: "en" });
-          if (t.id === "kp-ar") KulibertPrefs.set({ lang: "ar" });
+          if (t.hasAttribute("data-lang")) KulibertPrefs.set({ lang: t.getAttribute("data-lang") });
           paintSettings();
         });
         document.addEventListener("keydown", function (event) {
           if (event.key === "Escape" && !panel.hidden) shut();
         });
         paintSettings();
+        syncHubLang();
+        window.addEventListener("kulibert-lang", function () {
+          syncHubLang();
+          paintSettings();
+          var frame = document.getElementById("app-frame");
+          if (frame && document.body.classList.contains("is-framed")) postLang(frame);
+        });
       })();
       loadSchool();
       setInterval(loadSchool, POLL);

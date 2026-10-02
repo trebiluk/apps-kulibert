@@ -9,6 +9,24 @@
   var fans = [];
   var gains = [];
   var cssOn = false;
+  var firedLang = "";
+  var LANG_OK = { en: 1, simple: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
+  var VOICE = { en: "en-US", simple: "en-US", uk: "uk-UA", ru: "ru-RU", es: "es-US", ar: "ar", "fa-AF": "fa" };
+
+  function langOf(value) {
+    var s = String(value || "");
+    return LANG_OK[s] ? s : "en";
+  }
+  function dirOf(lang) {
+    return lang === "ar" || lang === "fa-AF" ? "rtl" : "ltr";
+  }
+  function htmlLang(lang) {
+    return lang === "simple" ? "en" : (lang || "en");
+  }
+  function withDir(p) {
+    p.dir = dirOf(p.lang);
+    return p;
+  }
 
   function classic() {
     try {
@@ -45,7 +63,7 @@
     p.sound = raw.sound !== false;
     p.captions = raw.captions !== false;
     p.read = !!raw.read;
-    p.lang = raw.lang === "ar" ? "ar" : "en";
+    p.lang = langOf(raw.lang);
     p.v = 1;
     return p;
   }
@@ -79,7 +97,7 @@
     return stored().sound !== false;
   }
   function get() {
-    if (classic()) return blank();
+    if (classic()) return withDir(blank());
     var p = stored();
     try {
       var m = (location.hash || "").match(/(?:^#|&)kp=([^&]+)/);
@@ -89,13 +107,13 @@
       }
     } catch (e2) {}
     p.sound = soundOn();
-    return p;
+    return withDir(p);
   }
   function write(p) {
     try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {}
   }
   function bridge(p) {
-    var shape = JSON.stringify({ lang: p.lang === "ar" ? "ar" : "en", speak: !!p.read, big: p.size === "L" || p.size === "XL", fewer: p.motion === "less", kp: 1 });
+    var shape = JSON.stringify({ lang: p.lang, speak: !!p.read, big: p.size === "L" || p.size === "XL", fewer: p.motion === "less", kp: 1 });
     BRIDGE.forEach(function (key) {
       try {
         var cur = localStorage.getItem(key);
@@ -114,7 +132,7 @@
       "html[data-kp-motion=less],html[data-kp-motion=less] *{animation:none !important;transition:none !important;scroll-behavior:auto !important}",
       "html[data-kp-contrast='1'] body{background:#000 !important;color:#fff !important}",
       "html[data-kp-contrast='1'] button,html[data-kp-contrast='1'] a,html[data-kp-contrast='1'] input{background:#000 !important;color:#ffe14a !important;border-color:#ffe14a !important}",
-      "#kp-live{position:fixed;left:8px;bottom:8px;z-index:80;max-width:min(28rem,92vw);padding:.35rem .7rem;border-radius:10px;background:#000;color:#ffe14a;font:650 14px/1.3 Outfit,system-ui,sans-serif}",
+      "#kp-live{position:fixed;left:8px;bottom:8px;z-index:80;max-width:min(28rem,92vw);padding:.35rem .7rem;border-radius:10px;background:#000;color:#ffe14a;font:650 14px/1.5 var(--kp-font),Outfit,\"Noto Sans\",\"Noto Sans Arabic\",\"Noto Sans Ethiopic\",system-ui,sans-serif}",
       "#kp-live[hidden]{display:none !important}",
       ":focus-visible{outline:3px solid #ffe14a;outline-offset:2px}"
     ].join("");
@@ -140,6 +158,7 @@
     el.setAttribute("data-kp-motion", p.motion === "less" ? "less" : "full");
     el.setAttribute("data-kp-sound", soundOn() ? "1" : "0");
     el.setAttribute("data-kp-lang", p.lang);
+    el.lang = htmlLang(p.lang);
     el.setAttribute("data-kp-read", p.read ? "1" : "0");
     el.setAttribute("data-kp-captions", p.captions ? "1" : "0");
     el.style.setProperty("--kp-scale", SCALE[p.size] || "1");
@@ -160,24 +179,86 @@
     (document.body || document.documentElement).appendChild(node);
     return node;
   }
+  function tr(key) {
+    var api = root.KulibertI18n;
+    if (!api || !api.t) return "";
+    try { return api.t(key) || ""; } catch (e) { return ""; }
+  }
+  function matchVoice(tag, voices) {
+    if (!tag) return null;
+    var want = String(tag).toLowerCase();
+    var primary = want.split("-")[0];
+    var exact = null;
+    var same = null;
+    for (var i = 0; i < voices.length; i++) {
+      var vl = String(voices[i].lang || "").toLowerCase().replace(/_/g, "-");
+      if (vl === want) exact = voices[i];
+      else if (vl === primary || vl.indexOf(primary + "-") === 0) same = same || voices[i];
+    }
+    return exact || same || null;
+  }
+  function voiceFor(lang, voices) {
+    var code = langOf(lang == null ? get().lang : lang);
+    var tag = VOICE[code] || "";
+    if (!tag) return null;
+    var list = voices;
+    if (!list) {
+      try { list = root.speechSynthesis && root.speechSynthesis.getVoices ? root.speechSynthesis.getVoices() : []; } catch (e) { list = []; }
+    }
+    return matchVoice(tag, list || []);
+  }
+  function withVoices(cb) {
+    var synth = root.speechSynthesis;
+    if (!synth || !synth.getVoices) { cb([]); return; }
+    var list = [];
+    try { list = synth.getVoices() || []; } catch (e) { list = []; }
+    if (list.length) { cb(list); return; }
+    var timer = setTimeout(function () {
+      try { synth.removeEventListener("voiceschanged", onv); } catch (e2) {}
+      try { cb(synth.getVoices() || []); } catch (e3) { cb([]); }
+    }, 600);
+    function onv() {
+      clearTimeout(timer);
+      try { synth.removeEventListener("voiceschanged", onv); } catch (e4) {}
+      try { cb(synth.getVoices() || []); } catch (e5) { cb([]); }
+    }
+    try { synth.addEventListener("voiceschanged", onv); } catch (e6) { clearTimeout(timer); cb([]); }
+  }
+  function noVoiceLine() {
+    return tr("noVoice") || "No voice yet. Read the words.";
+  }
   function say(text) {
     var words = String(text || "").replace(/\s+/g, " ").trim().slice(0, 180);
     if (!words || classic()) return;
     var p = get();
     var line = live();
     line.hidden = false;
+    line.lang = htmlLang(p.lang);
+    line.dir = dirOf(p.lang);
     line.textContent = words;
-    if (!p.read || !soundOn() || !root.speechSynthesis) return;
-    try {
-      root.speechSynthesis.cancel();
-      var u = new SpeechSynthesisUtterance(words);
-      u.lang = p.lang === "ar" ? "ar" : "en";
-      root.speechSynthesis.speak(u);
-    } catch (e) {}
+    if (!p.read || !soundOn()) return;
+    withVoices(function (voices) {
+      var voice = voiceFor(p.lang, voices);
+      if (!voice || !root.speechSynthesis) {
+        line.textContent = words + " " + noVoiceLine();
+        return;
+      }
+      try {
+        root.speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(words);
+        u.voice = voice;
+        u.lang = voice.lang || VOICE[p.lang] || "en-US";
+        root.speechSynthesis.speak(u);
+      } catch (e) {
+        line.textContent = words + " " + noVoiceLine();
+      }
+    });
   }
   function cue(kind) {
     if (classic()) return;
-    var words = kind === "pass" ? "Pass" : kind === "fail" ? "Try again" : String(kind || "Done");
+    var raw = String(kind || "");
+    var key = raw === "fail" ? "retry" : raw === "pass" ? "" : raw;
+    var words = (key && tr(key)) || raw || tr("next") || "Done";
     var line = live();
     line.hidden = false;
     line.textContent = words;
@@ -257,6 +338,25 @@
       tell(p);
     }).catch(function () {});
   }
+  function announce(prev) {
+    var out = get();
+    tell(out);
+    if (out.lang !== prev) {
+      firedLang = out.lang;
+      try {
+        root.dispatchEvent(new CustomEvent("kulibert-lang", { detail: { lang: out.lang, dir: out.dir } }));
+      } catch (e) {}
+    }
+    return out;
+  }
+  function acceptLang(lang) {
+    if (classic()) return get();
+    var prev = stored().lang;
+    var p = tidy(Object.assign(stored(), { lang: langOf(lang) }));
+    write(p);
+    apply(p);
+    return announce(prev);
+  }
   function set(partial) {
     if (classic()) return get();
     partial = Object.assign({}, partial || {});
@@ -265,12 +365,12 @@
       delete partial.sound;
     }
     if (!onHub()) return get();
+    var prev = stored().lang;
     var p = tidy(Object.assign(stored(), partial));
     write(p);
     apply(p);
-    tell(p);
     pushRemote(p);
-    return p;
+    return announce(prev);
   }
   function setApp(partial) {
     if (classic()) return get();
@@ -290,12 +390,28 @@
   root.addEventListener("storage", function (ev) {
     if (!ev || (ev.key !== KEY && ev.key !== APPKEY)) return;
     if (classic()) return;
+    var prev = firedLang;
     apply(stored());
-    tell(get());
+    announce(prev);
   });
-  root.KulibertPrefs = { get: get, set: set, setApp: setApp, on: on, say: say, cue: cue, code: function () { return codeOf(stored()); } };
+  root.KulibertPrefs = {
+    get: get,
+    set: set,
+    setApp: setApp,
+    on: on,
+    say: say,
+    cue: cue,
+    acceptLang: acceptLang,
+    voiceFor: voiceFor,
+    code: function () { return codeOf(stored()); }
+  };
+  try {
+    Object.defineProperty(root.KulibertPrefs, "lang", { get: function () { return get().lang; } });
+    Object.defineProperty(root.KulibertPrefs, "dir", { get: function () { return get().dir; } });
+  } catch (eProp) {}
   if (!classic()) {
     apply(get());
+    firedLang = stored().lang;
     pullRemote();
     if (root.MutationObserver) {
       new MutationObserver(function () {

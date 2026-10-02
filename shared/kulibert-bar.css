@@ -3,20 +3,20 @@
   position:fixed;top:0;left:0;right:0;z-index:60;height:48px;
   display:flex;align-items:center;gap:.4rem;padding:0 .45rem;
   background:#050814;color:#e8f7ff;
-  font-family:Outfit,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-family:var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
   border-bottom:1px solid #1e3a55;box-sizing:border-box;
 }
 .kb-home,.kb-help,.kb-settings,.kb-menu{
   min-width:44px;min-height:44px;height:44px;padding:0 .7rem;
   display:inline-flex;align-items:center;justify-content:center;
   border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;
-  font:700 .85rem/1 Outfit,system-ui,sans-serif;text-decoration:none;cursor:pointer;
+  font:700 .85rem/1.5 var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;text-decoration:none;cursor:pointer;
 }
 .kb-plate{flex:1 1 auto;min-width:0;font-weight:700;font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kb-alias{
   margin-left:auto;max-width:9rem;min-height:44px;height:44px;padding:0 .7rem;
   display:inline-flex;align-items:center;border-radius:999px;border:1px solid #24506d;
-  background:#0b152c;color:#e8f7ff;font:650 .8rem/1 Outfit,system-ui,sans-serif;
+  background:#0b152c;color:#e8f7ff;font:650 .8rem/1.5 var(--kp-font),Outfit,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",system-ui,sans-serif;
 }
 .kb-settings[hidden],.kb-toast[hidden]{display:none !important}
 .kb-toast{
