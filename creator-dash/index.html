@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Creator Dash · prototype (example data)</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="demo-banner" role="note"><b>Test page.</b> Every card, alias, and photo is <b>example data</b>. Nothing is uploaded; what you keep stays on this device.</div>
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Menu" aria-controls="drawer" aria-expanded="false">☰</button>
+  <div class="brand"><b>Creator Dash</b><small id="view-title">Class board</small></div>
+  <div class="spacer"></div>
+  <button class="btn primary" id="post-btn">+ Post</button>
+  <div class="who" title="Signed in through the Hub (TechWorks code + PIN). Example sign-in."><span class="av" id="who-av">N</span><span><b id="who-alias">NovaFox</b><small id="who-crew">Crew Volt · example sign-in</small></span></div>
+</header>
+<div id="scrim" hidden></div>
+<nav id="drawer" aria-label="Creator Dash menu">
+  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu">✕</button><b>Menu</b></div>
+  <div class="sec"><h3>Students</h3>
+    <button class="row" data-view="board"><span class="ic">▦</span>Class board</button>
+    <button class="row" data-view="contests"><span class="ic">⏱</span>Contests</button>
+    <button class="row" data-view="post"><span class="ic">＋</span>Post a project</button>
+    <button class="row" data-view="mine"><span class="ic">◎</span>My posts</button>
+  </div>
+  <div class="sec"><h3>Teacher (Hub staff area)</h3>
+    <button class="row" data-view="queue"><span class="ic">✓</span>Approve queue <span class="count" id="q-count">0</span></button>
+    <p class="help">In the real build this sits in the Hub staff area behind the staff PIN. It's open here so the flow can be clicked.</p>
+  </div>
+  <div class="sec"><h3>Rules</h3>
+    <p class="help">Aliases only, never real names. Nothing shows until the teacher approves it. Photos: projects only, no faces or name tags. Max 1600 px, re-saved so location data is removed.</p>
+  </div>
+  <div class="sec"><h3>Demo</h3><button class="row" id="reset-demo"><span class="ic">↺</span>Reset example data</button></div>
+</nav>
+
+<main id="main">
+  <section id="v-board" class="view">
+    <div class="filters" role="group" aria-label="Filters">
+      <label>App<select id="f-app"></select></label>
+      <label>Class<select id="f-cls"></select></label>
+      <label>Contest<select id="f-contest"></select></label>
+      <label>Crew<select id="f-crew"></select></label>
+      <label>Sort<select id="f-sort"><option value="new">Newest</option><option value="likes">Most liked</option><option value="remix">Most remixed</option></select></label>
+      <button class="btn ghost" id="f-clear">Clear</button>
+    </div>
+    <p class="count-line" id="count-line"></p>
+    <div class="masonry" id="board-grid"></div>
+  </section>
+
+  <section id="v-contests" class="view" hidden>
+    <h2>Contests</h2>
+    <p class="lead">The teacher sets the theme, the app, and the timer. Entries go through the same approval queue. When voting opens, each student gets one vote per contest and can't vote for their own entry. The teacher can also give a Teacher pick.</p>
+    <div id="contest-list" class="contest-list"></div>
+  </section>
+
+  <section id="v-post" class="view" hidden>
+    <h2>Post a project</h2>
+    <p class="lead">Your post goes to your teacher first. It shows on the board under your alias <b class="alias-inline">NovaFox</b> after it's approved.</p>
+    <div class="tabs" role="tablist">
+      <button class="tab" role="tab" aria-selected="true" data-kind="app">From an app</button>
+      <button class="tab" role="tab" aria-selected="false" data-kind="workshop">Workshop project (photo)</button>
+    </div>
+    <form id="post-form" class="form" novalidate>
+      <div class="kind-app">
+        <label>App<select id="p-app"><option value="djberty">DJ Berty</option><option value="blocks">Block Builder</option><option value="bertycad">BertyCAD</option><option value="baboo">Baboo</option></select></label>
+        <label>Pick one of your saves<select id="p-save"><option>Night Bus (my remix) · saved 2:14 PM</option><option>Untitled beat 3 · saved Tue</option></select></label>
+        <p class="hint">In the real build, each app has a "Share to Creator Dash" button that fills this in, including the remix credit chain.</p>
+      </div>
+      <div class="kind-workshop" hidden>
+        <label class="drop" id="drop">
+          <input type="file" id="p-photo" accept="image/*" capture="environment">
+          <span id="drop-text"><b>Add a photo of your project</b><br>The project only: no faces, no name tags. It's shrunk to 1600 px and re-saved so location data is removed.</span>
+          <img id="preview" alt="Photo preview" hidden>
+        </label>
+        <p class="hint" id="size-line"></p>
+        <div class="two">
+          <label>Main tool<select id="p-tool"><option>Miter saw</option><option>Laser cutter</option><option>3D printer</option><option>Drill press</option><option>Pocket-hole jig</option><option>Scroll saw</option><option>Hand tools</option><option>Other</option></select></label>
+          <label>Material<select id="p-mat"><option>Pine 1x6</option><option>Birch ply 3 mm</option><option>PLA</option><option>Poplar</option><option>Cardboard</option><option>Acrylic</option><option>Other</option></select></label>
+        </div>
+      </div>
+      <label>Title<input id="p-title" maxlength="40" placeholder="e.g. Pine birdhouse" required></label>
+      <label>Short description <small id="desc-left">280 left</small><textarea id="p-desc" maxlength="280" rows="3" placeholder="What you made, and one thing you'd change next time."></textarea></label>
+      <label>Contest (optional)<select id="p-contest"></select></label>
+      <p class="hint">Don't use real names, yours or anyone else's. Your alias is added for you.</p>
+      <div class="actions"><button class="btn primary" type="submit">Send to teacher</button><span id="post-note" role="status"></span></div>
+    </form>
+  </section>
+
+  <section id="v-mine" class="view" hidden>
+    <h2>My posts <small class="muted">(NovaFox)</small></h2>
+    <div id="mine-list" class="list"></div>
+  </section>
+
+  <section id="v-queue" class="view" hidden>
+    <h2>Approve queue <small class="muted">teacher view</small></h2>
+    <p class="lead">Check each post: aliases only, no faces or name tags in photos, school-appropriate, and on topic. Rejected posts go back to the student with your reason.</p>
+    <div id="queue-list" class="list"></div>
+  </section>
+</main>
+
+<dialog id="detail" aria-labelledby="d-title">
+  <div class="d-wrap">
+    <button class="icon-btn d-close" id="d-close" aria-label="Close">✕</button>
+    <div class="d-art" id="d-art"></div>
+    <div class="d-body">
+      <p class="badges" id="d-badges"></p>
+      <h2 id="d-title"></h2>
+      <p class="by" id="d-by"></p>
+      <p id="d-desc"></p>
+      <p class="kv" id="d-kv"></p>
+      <h3>Credit chain</h3>
+      <ol class="chain" id="d-chain"></ol>
+      <h3 id="d-rmx-h">Remixes of this</h3>
+      <ul class="chain" id="d-remixes"></ul>
+      <div class="actions" id="d-actions"></div>
+    </div>
+  </div>
+</dialog>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="data.js"></script>
+<script src="art.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

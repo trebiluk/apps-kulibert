@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:,">
+<title>Block Builder · Cut 1 test</title>
+<style>
+:root{--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);color:var(--snow);font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+#stage{position:fixed;inset:0}
+#stage canvas{width:100%;height:100%;display:block;touch-action:none;outline:none}
+.top{position:fixed;left:0;right:0;top:0;height:56px;display:flex;align-items:center;gap:12px;padding:6px 12px;background:rgba(11,18,32,.86);border-bottom:1px solid var(--line);z-index:5;backdrop-filter:blur(4px)}
+.icon-btn{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:grid;place-items:center;font-size:22px;line-height:1}
+.icon-btn:hover{border-color:var(--teal)}
+.brand{display:flex;flex-direction:column;min-width:0}
+.brand b{font-size:16px;letter-spacing:.2px}
+.brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid rgba(34,211,238,.45);color:var(--cyan);white-space:nowrap}
+.spacer{flex:1}
+.status{display:flex;flex-direction:column;align-items:flex-end;font-size:12px;color:var(--muted);min-width:0}
+.status #current{color:var(--snow);font-size:14px;font-weight:600}
+#save-state{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
+#perf{position:fixed;top:64px;right:12px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
+.cross{position:fixed;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:3;pointer-events:none}
+.cross:before,.cross:after{content:"";position:absolute;background:rgba(248,250,252,.92);box-shadow:0 0 0 1px rgba(11,18,32,.6)}
+.cross:before{left:10px;top:0;width:2px;height:22px}.cross:after{top:10px;left:0;height:2px;width:22px}
+#scrim{position:fixed;inset:0;background:rgba(5,8,20,.45);z-index:8}
+#drawer{position:fixed;left:0;top:0;bottom:0;width:min(300px,86vw);background:var(--ink);border-right:1px solid var(--line);z-index:9;transform:translateX(-102%);transition:transform .18s ease;display:flex;flex-direction:column;padding:10px 12px 16px;overflow:auto}
+#drawer.open{transform:none}
+@media (prefers-reduced-motion:reduce){#drawer{transition:none}}
+.dhead{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.dhead b{font-size:16px}
+.sec{border-top:1px solid var(--line);padding:12px 0 6px}
+.sec h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.row{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 10px;margin:0 0 6px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);text-align:left}
+.row:hover{border-color:var(--teal)}
+.row .ic{width:24px;text-align:center;color:var(--teal)}
+.row[disabled]{opacity:.55;cursor:not-allowed}
+.row .later{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 7px}
+.row.on{border-color:var(--teal);box-shadow:inset 3px 0 0 var(--teal)}
+.help{color:var(--muted);font-size:13px;margin:4px 2px}
+.help kbd{font:12px ui-monospace,monospace;background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--snow)}
+.credit{color:var(--muted);font-size:11px;margin-top:auto;padding-top:10px}
+.credit a{color:var(--cyan)}
+#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(11,18,32,.88);border-top:1px solid var(--line);scrollbar-width:thin}
+.slot{flex:0 0 auto;width:62px;height:64px;position:relative;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
+.slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.18)}
+.sw{width:30px;height:30px;border-radius:4px;background-image:url(assets/atlas.png);image-rendering:pixelated;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.sw.glass{background:url(assets/glass.png) 0 0/100% 100%,repeating-conic-gradient(#2a3550 0 25%,#1a2338 0 50%) 0 0/10px 10px}
+.tag{position:absolute;top:3px;right:4px;font-size:10px;font-weight:700;color:var(--cyan)}
+.lbl{font-size:11px;color:var(--snow);white-space:nowrap;max-width:58px;overflow:hidden;text-overflow:ellipsis}
+.pad{display:none}
+body.touch .pad{display:grid}
+.pad{position:fixed;z-index:4;gap:6px}
+.pad button{width:56px;height:56px;border-radius:12px;border:1px solid rgba(34,211,238,.4);background:rgba(11,18,32,.66);font-size:20px;touch-action:none;user-select:none;-webkit-user-select:none}
+.pad button.down{background:rgba(20,184,166,.55)}
+.move{left:12px;bottom:92px;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(2,56px)}
+.move .f{grid-column:2;grid-row:1}.move .l{grid-column:1;grid-row:2}.move .b{grid-column:2;grid-row:2}.move .r{grid-column:3;grid-row:2}
+.acts{right:12px;bottom:92px;grid-template-columns:repeat(2,auto);align-items:end}
+.acts button{width:76px;height:64px;font-size:14px;font-weight:600}
+.acts .place{border-color:var(--teal);background:rgba(20,184,166,.28)}
+.acts .brk{border-color:var(--blue);background:rgba(59,130,246,.24)}
+.acts .jump{grid-column:1/span 2;width:auto;height:48px}
+.keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px}
+body.touch .keys{display:none}
+@media (max-width:520px){.brand small{display:none}.chip{display:none}}
+</style>
+</head>
+<body>
+<div id="stage"></div>
+<div class="cross" aria-hidden="true"></div>
+<header class="top">
+  <button class="icon-btn" id="menu-btn" aria-label="Menu" aria-controls="drawer" aria-expanded="false">☰</button>
+  <div class="brand"><b>Block Builder</b><small>Cut 1 feasibility test · test page</small></div>
+  <span class="chip">Creative</span>
+  <div class="spacer"></div>
+  <div class="status"><span id="current">Red brick</span><span id="save-state">Loading…</span></div>
+</header>
+<div id="perf" aria-live="off">— fps</div>
+<div class="keys">Click the world to aim · <b>WASD</b> move · <b>Space</b> jump · <b>Left click</b> break · <b>Right click</b> place · <b>1–0</b> / wheel pick · <b>Esc</b> mouse</div>
+<div id="scrim" hidden></div>
+<nav id="drawer" aria-label="Block Builder menu">
+  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu">✕</button><b>Menu</b></div>
+  <div class="sec"><h3>World</h3>
+    <button class="row" id="m-save"><span class="ic">⬇</span>Save now</button>
+    <button class="row" id="m-load"><span class="ic">↺</span>Load my saved world</button>
+    <button class="row" id="m-export"><span class="ic">⇪</span>Export world file</button>
+    <button class="row" id="m-reset"><span class="ic">✱</span>Fresh world</button>
+  </div>
+  <div class="sec"><h3>Mode</h3>
+    <button class="row on" aria-pressed="true"><span class="ic">◆</span>Creative</button>
+    <button class="row" disabled><span class="ic">♥</span>Survival<span class="later">later cut</span></button>
+    <button class="row" disabled><span class="ic">⏱</span>Build contest<span class="later">later cut</span></button>
+  </div>
+  <div class="sec"><h3>Test</h3>
+    <button class="row" id="m-perf"><span class="ic">∿</span>Show / hide speed</button>
+    <p class="help">Keyboard: <kbd>W A S D</kbd> move, <kbd>Space</kbd> jump, left click break, right click place, <kbd>1</kbd>–<kbd>0</kbd> pick a block. Touch: drag to look, use the pads.</p>
+    <p class="help">Saves stay on this Chromebook (IndexedDB). Hub sign-in comes in a later cut.</p>
+  </div>
+  <p class="credit">Engine: noa-engine (MIT) + Babylon.js (Apache-2.0) (<a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a>). Block art: Kenney Voxel Pack (<a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0 license</a>).</p>
+</nav>
+<div class="pad move" aria-label="Move">
+  <button class="f" data-hold="forward" aria-label="Forward">▲</button>
+  <button class="l" data-hold="left" aria-label="Left">◀</button>
+  <button class="b" data-hold="backward" aria-label="Back">▼</button>
+  <button class="r" data-hold="right" aria-label="Right">▶</button>
+</div>
+<div class="pad acts">
+  <button class="brk" id="t-break">Break</button>
+  <button class="place" id="t-place">Place</button>
+  <button class="jump" data-hold="jump">Jump</button>
+</div>
+<div id="hotbar" role="toolbar" aria-label="Blocks"></div>
+<script src="app.js" defer></script>
+</body>
+</html>
