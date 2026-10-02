@@ -1,4 +1,4 @@
-/* Bits and Bobs BB 2.1.0 — tech-room HUD. Classic board: ?theme=classic. Languages follow the Hub. */
+/* Bits and Bobs BB 2.2.0 — tech-room HUD. Classic board: ?theme=classic. Languages follow the Hub. */
 (function () {
   if (document.documentElement.classList.contains("is-classic")) {
     var frame = document.querySelector(".classic-frame");
@@ -98,12 +98,29 @@
     var sp = btn(""); if (window.BitsI18n) BitsI18n.show(sp, "speak"); else sp.textContent = "Speak";
     var st = btn(""); if (window.BitsI18n) BitsI18n.show(st, "stop"); else st.textContent = "Stop";
     var last = "";
-    sp.addEventListener("click", function () { say(last || num.textContent); });
+    sp.addEventListener("click", function () {
+      var tile = parent.closest && parent.closest(".tile");
+      var opt = tile && tile.dataset ? readTool(tile.dataset.id) : null;
+      if (opt && opt.read === "off") return;
+      say(last || num.textContent);
+    });
     st.addEventListener("click", hush);
     row.append(sp, st);
     box.append(num, row);
     parent.append(box);
-    return { set: function (v) { last = String(v); num.textContent = last; }, node: num };
+    return {
+      set: function (v) {
+        var next = String(v);
+        var changed = next !== last;
+        last = next;
+        num.textContent = last;
+        var tile = parent.closest && parent.closest(".tile");
+        var opt = tile && tile.dataset ? readTool(tile.dataset.id) : null;
+        sp.hidden = !!(opt && opt.read === "off");
+        if (changed && opt && opt.read === "auto") say(last);
+      },
+      node: num
+    };
   }
   function field(label, value, on, kind) {
     var wrap = el("label", "field");
@@ -338,7 +355,7 @@
       var p = total > 0 ? left / total : 0;
       c.setAttribute("stroke-dasharray", String(circ));
       c.setAttribute("stroke-dashoffset", String(circ * (1 - p)));
-      c.setAttribute("stroke", left <= 10 ? "#ff5a4a" : "currentColor");
+      c.setAttribute("stroke", left <= (bag.warn == null ? 10 : bag.warn) ? "#ff5a4a" : "currentColor");
       wrap.classList.toggle("boom", left === 0);
     }
     function stop() { running = false; clearInterval(timer); paintRun(); }
@@ -346,7 +363,7 @@
       if (running) { stop(); return; }
       if (left <= 0) {
         var t = Math.max(0, Math.round((Number(mins.input.value) || 0) * 60 + (Number(secs.input.value) || 0)));
-        bag.sec = t; total = t; left = t; mirrorExtra("drama", { minutes: Math.round(t / 60), chime: !!bag.chime }); ctx.save();
+        bag.sec = t; total = t; left = t; mirrorExtra("drama", { minutes: Math.floor(t / 60), seconds: t % 60, chime: !!bag.chime, end: bag.end || (bag.chime ? "chime" : "none") }); ctx.save();
       }
       if (left <= 0) return;
       running = true; paintRun();
@@ -354,18 +371,23 @@
         left -= 1; paint();
         if (left <= 0) {
           stop();
-          if (!reduced()) wrap.classList.add("shake");
+          if (bag.shake !== false && !reduced()) wrap.classList.add("shake");
           shipScore("drama", 1, 1);
-          if (bag.chime) {
+          var end = bag.end || (bag.chime ? "chime" : "none");
+          var snd = readTool("drama");
+          if (end !== "none" && snd.sound !== false) {
             try {
-              var ac = new AudioContext();
-              var o = ac.createOscillator(), g = ac.createGain();
-              o.frequency.value = 880; o.connect(g); g.connect(ac.destination);
-              g.gain.setValueAtTime(0.0001, ac.currentTime);
-              g.gain.exponentialRampToValueAtTime(0.15, ac.currentTime + 0.02);
-              g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.35);
-              o.start(); o.stop(ac.currentTime + 0.4);
-              o.onended = function () { ac.close(); };
+              var vol = Math.max(0, Math.min(100, snd.volume == null ? 80 : snd.volume)) / 100;
+              if (vol > 0) {
+                var ac = new AudioContext();
+                var o = ac.createOscillator(), g = ac.createGain();
+                o.frequency.value = end === "beep" ? 440 : 880; o.connect(g); g.connect(ac.destination);
+                g.gain.setValueAtTime(0.0001, ac.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.2 * vol, ac.currentTime + 0.02);
+                g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.35);
+                o.start(); o.stop(ac.currentTime + 0.4);
+                o.onended = function () { ac.close(); };
+              }
             } catch (e) {}
           }
         }
@@ -374,10 +396,10 @@
     reset.addEventListener("click", function () {
       stop(); wrap.classList.remove("shake");
       var t = Math.max(0, Math.round((Number(mins.input.value) || 0) * 60 + (Number(secs.input.value) || 0)));
-      bag.sec = t; total = t || 1; left = t; mirrorExtra("drama", { minutes: Math.round(t / 60), chime: !!bag.chime }); ctx.save(); paint();
+      bag.sec = t; total = t || 1; left = t; mirrorExtra("drama", { minutes: Math.floor(t / 60), seconds: t % 60, chime: !!bag.chime, end: bag.end || (bag.chime ? "chime" : "none") }); ctx.save(); paint();
     });
     chime.addEventListener("click", function () {
-      bag.chime = !bag.chime; mirrorExtra("drama", { chime: !!bag.chime, minutes: Math.round((bag.sec || 0) / 60) }); paintChime(); ctx.save();
+      bag.chime = !bag.chime; bag.end = bag.chime ? "chime" : "none"; mirrorExtra("drama", { chime: !!bag.chime, end: bag.end, minutes: Math.floor((bag.sec || 0) / 60), seconds: (bag.sec || 0) % 60 }); paintChime(); ctx.save();
     });
     paint();
     ctx.onLang(paintRun); ctx.onLang(paintChime);
@@ -464,32 +486,45 @@
         var roll = btn("");
         if (window.BitsI18n) BitsI18n.show(roll, "roll"); else roll.textContent = "Roll";
         roll.addEventListener("click", function () {
-          var n = 1 + Math.floor(Math.random() * 6);
-          if (!reduced()) turn += 2;
-          var a = show[n];
-          cube.style.transform = "rotateX(" + (a[0] + turn * 360) + "deg) rotateY(" + (a[1] + turn * 360) + "deg)";
-          res.set(bbf("die", { n: n }));
-          shipScore("dice", n, 6);
+          var count = Math.max(1, Math.min(6, Math.round(bag.count || 1)));
+          var sides = [4, 6, 8, 10, 12, 20].indexOf(Number(bag.sides)) >= 0 ? Number(bag.sides) : 6;
+          var rolls = [];
+          for (var r = 0; r < count; r++) rolls.push(1 + Math.floor(Math.random() * sides));
+          var n = rolls[0];
+          if (sides === 6) {
+            if (!reduced()) turn += 2;
+            var a = show[n];
+            cube.style.transform = "rotateX(" + (a[0] + turn * 360) + "deg) rotateY(" + (a[1] + turn * 360) + "deg)";
+          }
+          if (rolls.length === 1) res.set(bbf("die", { n: n }));
+          else {
+            var sum = rolls.reduce(function (x, y) { return x + y; }, 0);
+            res.set(rolls.join(" + ") + " = " + sum);
+          }
+          shipScore("dice", n, sides);
         });
         host.append(roll);
         res.set(bbf("die", { n: 1 }));
       } else if (bag.mode === "Wheel") {
         var pointer = el("div", "pointer");
         var rotor = el("div", "rotor");
-        var stops = CREW.slice(0, 6).map(function (c, i) { return c + " " + (i * 60) + "deg " + ((i + 1) * 60) + "deg"; }).join(", ");
-        rotor.style.background = "conic-gradient(" + stops + ")";
+        var nSlice = Math.max(2, Math.min(8, Math.round(bag.slices || 6)));
+        var step = 360 / nSlice;
+        var stops = [];
+        for (var si = 0; si < nSlice; si++) stops.push(CREW[si % CREW.length] + " " + (si * step) + "deg " + ((si + 1) * step) + "deg");
+        rotor.style.background = "conic-gradient(" + stops.join(", ") + ")";
         var deg = 0;
         host.append(pointer, rotor);
         var spin = btn("");
         if (window.BitsI18n) BitsI18n.show(spin, "spin"); else spin.textContent = "Spin";
         spin.addEventListener("click", function () {
-          var pick = Math.floor(Math.random() * 6);
-          var target = (360 - (pick * 60 + 30) + 360) % 360;
+          var pick = Math.floor(Math.random() * nSlice);
+          var target = (360 - (pick * step + step / 2) + 360) % 360;
           var current = ((deg % 360) + 360) % 360;
           var delta = (target - current + 360) % 360;
           deg += (reduced() ? 0 : 1440) + delta;
           rotor.style.transform = "rotate(" + deg + "deg)";
-          var names = COLOR_KEY.slice(0, 6).map(colorName);
+          var names = COLOR_KEY.slice(0, nSlice).map(colorName);
           res.set(bbf("crew", { name: names[pick] }));
         });
         host.append(spin);
@@ -562,9 +597,12 @@
           if (!on) return;
           an.getByteTimeDomainData(buf);
           var rms = level(buf);
-          var pct = Math.max(0, Math.min(100, rms * 280));
+          var calm = bag.calm == null ? 45 : bag.calm;
+          var loud = bag.loud == null ? 75 : bag.loud;
+          var gain = bag.gain == null ? 280 : bag.gain;
+          var pct = Math.max(0, Math.min(100, rms * gain));
           needle.style.marginLeft = "calc(" + pct + "% - 9px)";
-          zoneKey = pct < 45 ? "calm" : pct < 75 ? "chatty" : "loud";
+          zoneKey = pct < calm ? "calm" : pct < loud ? "chatty" : "loud";
           res.set(bbf("zone", { zone: bb(zoneKey), n: Math.round(pct) }));
           raf = requestAnimationFrame(loop);
         };
@@ -598,9 +636,12 @@
     function run() {
       try {
         var v = evalExpr(expr, bag.deg);
-        evalExpr.ans = v;
-        res.set(fmt(v));
-        expr = fmt(v);
+        var shown;
+        if (bag.decimals === "full") shown = String(Math.round(v * 1e8) / 1e8);
+        else shown = fmt(v, bag.decimals == null ? 2 : Number(bag.decimals));
+        if (bag.keepAns !== false) evalExpr.ans = v;
+        res.set(shown);
+        expr = shown;
         shipScore("calc", 1, 1);
       } catch (e) { res.set(bb("cantRead")); expr = ""; }
     }
@@ -632,13 +673,28 @@
     var bag = ctx.bag;
     if (bag.i == null) bag.i = Math.floor(Math.random() * PROMPTS.length);
     var res = resultBar(body);
+    function rowsOf() {
+      if (Array.isArray(bag.list) && bag.list.length) {
+        var cat = bag.cat || "all";
+        var picked = bag.list.filter(function (p) { return cat === "all" || p.c === cat; });
+        if (!picked.length) picked = bag.list;
+        return picked.map(function (p) { return p.t; });
+      }
+      return window.BitsI18n ? BitsI18n.prompts() : PROMPTS;
+    }
     function show() {
-      var rows = window.BitsI18n ? BitsI18n.prompts() : PROMPTS;
-      res.set(rows[bag.i] || PROMPTS[bag.i] || "");
+      var rows = rowsOf();
+      if (!rows.length) { res.set(""); return; }
+      if (bag.i == null || bag.i >= rows.length || bag.i < 0) bag.i = 0;
+      res.set(rows[bag.i] || "");
     }
     var b = btn("");
     if (window.BitsI18n) BitsI18n.show(b, "newPrompt"); else b.textContent = "New prompt";
-    b.addEventListener("click", function () { bag.i = (bag.i + 1) % PROMPTS.length; ctx.save(); show(); });
+    b.addEventListener("click", function () {
+      var rows = rowsOf();
+      bag.i = ((bag.i || 0) + 1) % Math.max(1, rows.length);
+      ctx.save(); show();
+    });
     body.append(b); show();
     ctx.onLang(show);
   });
@@ -1288,6 +1344,8 @@
       if (!ctm) return;
       var p = pt.matrixTransform(ctm.inverse());
       var deg = Math.atan2(108 - p.y, p.x - 100) * 180 / Math.PI;
+      var snap = Number(bag.snap) || 0;
+      if (snap) deg = Math.round(deg / snap) * snap;
       bag.deg = Math.max(0, Math.min(180, deg));
       ctx.save(); paint();
     }
@@ -1400,18 +1458,23 @@
     function build() {
       host.textContent = "";
       function live() { return rgbToHsl(bag.r, bag.g, bag.b); }
-      host.append(slider("R", 255, function () { return bag.r; }, function (v) { bag.r = v; }));
-      host.append(slider("G", 255, function () { return bag.g; }, function (v) { bag.g = v; }));
-      host.append(slider("B", 255, function () { return bag.b; }, function (v) { bag.b = v; }));
-      host.append(slider("H", 360, function () { return live()[0]; }, function (v) {
-        var hsl = live(); var rgb = hslToRgb(v, hsl[1], hsl[2]); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
-      }));
-      host.append(slider("S", 100, function () { return live()[1]; }, function (v) {
-        var hsl = live(); var rgb = hslToRgb(hsl[0], v, hsl[2]); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
-      }));
-      host.append(slider("L", 100, function () { return live()[2]; }, function (v) {
-        var hsl = live(); var rgb = hslToRgb(hsl[0], hsl[1], v); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
-      }));
+      var mix = bag.mix || "both";
+      if (mix !== "hsl") {
+        host.append(slider("R", 255, function () { return bag.r; }, function (v) { bag.r = v; }));
+        host.append(slider("G", 255, function () { return bag.g; }, function (v) { bag.g = v; }));
+        host.append(slider("B", 255, function () { return bag.b; }, function (v) { bag.b = v; }));
+      }
+      if (mix !== "rgb") {
+        host.append(slider("H", 360, function () { return live()[0]; }, function (v) {
+          var hsl = live(); var rgb = hslToRgb(v, hsl[1], hsl[2]); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
+        }));
+        host.append(slider("S", 100, function () { return live()[1]; }, function (v) {
+          var hsl = live(); var rgb = hslToRgb(hsl[0], v, hsl[2]); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
+        }));
+        host.append(slider("L", 100, function () { return live()[2]; }, function (v) {
+          var hsl = live(); var rgb = hslToRgb(hsl[0], hsl[1], v); bag.r = rgb[0]; bag.g = rgb[1]; bag.b = rgb[2];
+        }));
+      }
       var copy = btn("");
       if (window.BitsI18n) BitsI18n.show(copy, "copyHex"); else copy.textContent = "Copy for TinkerCAD/Cricut";
       copy.addEventListener("click", function () {
@@ -1436,7 +1499,8 @@
     body.append(row);
     function paintBits() {
       row.textContent = "";
-      for (var i = 7; i >= 0; i--) {
+      var width = bag.width === 4 ? 4 : 8;
+      for (var i = width - 1; i >= 0; i--) {
         var on = (bag.bits >> i) & 1;
         var b = btn(on ? "1" : "0");
         b.setAttribute("aria-pressed", on ? "true" : "false");
@@ -1445,8 +1509,8 @@
         })(i);
         row.append(b);
       }
-      var ch = bag.bits >= 32 && bag.bits < 127 ? String.fromCharCode(bag.bits) : "·";
-      res.set(bbf("ascii", { n: bag.bits, ch: ch }));
+      var ch = bag.ascii === false ? "" : (bag.bits >= 32 && bag.bits < 127 ? String.fromCharCode(bag.bits) : "·");
+      res.set(bag.ascii === false ? String(bag.bits) : bbf("ascii", { n: bag.bits, ch: ch }));
     }
     var grid = el("div", "pix");
     function paintPix() {
@@ -1549,7 +1613,7 @@
     if (typeof api.record === "function") {
       row = api.record({
         app: "bits",
-        version: "BB 2.1.0",
+        version: "BB 2.2.0",
         event: "score",
         level: String(level || "task").slice(0, 40),
         score: s,
@@ -1625,15 +1689,23 @@
   var h1 = el("h1");
   var word = el("bdi"); word.textContent = "Bits & Bobs"; h1.append(word);
   var ver = el("span", "ver");
-  var verBdi = el("bdi"); verBdi.textContent = "BB 2.1.0"; ver.append(verBdi);
+  var verBdi = el("bdi"); verBdi.textContent = "BB 2.2.0"; ver.append(verBdi);
   var who = el("span", "who"); who.id = "who";
   brand.append(h1, ver, who); top.append(brand);
   var board = el("div", "board");
   board.setAttribute("dir", "ltr");
   var dock = el("div", "dock");
   dock.setAttribute("dir", "ltr");
-  var addBtn = btn("+"); addBtn.className = "plus";
-  if (window.BitsI18n) BitsI18n.showAria(addBtn, "addTool"); else addBtn.setAttribute("aria-label", "Add a tool");
+  var menuBtn = btn(""); menuBtn.className = "menu-btn"; menuBtn.dataset.bitsMenu = "1";
+  if (window.BitsI18n) BitsI18n.show(menuBtn, "menuBtn"); else menuBtn.textContent = "\u2630 Menu";
+  var addBtn = btn(""); addBtn.className = "plus";
+  if (window.BitsI18n) {
+    BitsI18n.show(addBtn, "plusTools");
+    BitsI18n.showAria(addBtn, "addTool");
+  } else {
+    addBtn.textContent = "+ Tools";
+    addBtn.setAttribute("aria-label", "Add a tool");
+  }
   var bigBtn = btn("");
   var projBtn = btn("");
   var setBtn = btn("");
@@ -1651,6 +1723,7 @@
   if (window.BitsI18n) BitsI18n.showShared(exitBtn, "exit"); else exitBtn.textContent = "Exit";
   exitBtn.className = "proj-exit";
   exitBtn.addEventListener("click", function () { setProj(false); });
+  document.body.appendChild(menuBtn);
   app.append(top, board, dock, exitBtn);
 
   function applyTheme() {
@@ -1813,7 +1886,7 @@
 
   function toolStoreKey(id) { return "bits-tool-v1:" + id + ":1"; }
   function readTool(id) {
-    var d = { accent: "", size: "", pin: null, title: true, digits: "M", quiet: false, corners: "round", extra: {} };
+    var d = { accent: "", size: "", pin: null, title: true, titleText: "", digits: "M", quiet: false, corners: "round", sound: true, volume: 80, read: "buttons", projector: true, extra: {} };
     try {
       var raw = JSON.parse(localStorage.getItem(toolStoreKey(id)) || "null");
       if (raw && typeof raw === "object") {
@@ -1821,9 +1894,14 @@
         if (raw.size === "S" || raw.size === "M" || raw.size === "L" || raw.size === "XL") d.size = raw.size;
         if (typeof raw.pin === "boolean") d.pin = raw.pin;
         if (typeof raw.title === "boolean") d.title = raw.title;
+        if (typeof raw.titleText === "string") d.titleText = raw.titleText.slice(0, 32);
         if (raw.digits === "S" || raw.digits === "M" || raw.digits === "L") d.digits = raw.digits;
         if (typeof raw.quiet === "boolean") d.quiet = raw.quiet;
         if (raw.corners === "square" || raw.corners === "round") d.corners = raw.corners;
+        if (typeof raw.sound === "boolean") d.sound = raw.sound;
+        if (typeof raw.volume === "number") d.volume = Math.max(0, Math.min(100, raw.volume));
+        if (raw.read === "off" || raw.read === "buttons" || raw.read === "auto") d.read = raw.read;
+        if (typeof raw.projector === "boolean") d.projector = raw.projector;
         if (raw.extra && typeof raw.extra === "object") d.extra = raw.extra;
       }
     } catch (e) {}
@@ -1840,18 +1918,16 @@
   function hydrateBag(id) {
     var x = readTool(id).extra || {};
     var b = bag(id);
-    if (id === "drama") {
-      if (typeof x.minutes === "number") b.sec = Math.max(0, Math.round(x.minutes) * 60);
+    Object.keys(x).forEach(function (k) {
+      if (k === "minutes" || k === "seconds") return;
+      if (x[k] !== undefined) b[k] = x[k];
+    });
+    if (id === "drama" && (typeof x.minutes === "number" || typeof x.seconds === "number")) {
+      var m = typeof x.minutes === "number" ? x.minutes : Math.floor((b.sec || 0) / 60);
+      var s = typeof x.seconds === "number" ? x.seconds : ((b.sec || 0) % 60);
+      b.sec = Math.max(0, Math.round(m) * 60 + Math.min(59, Math.round(s)));
+      if (x.end) b.end = x.end;
       if (typeof x.chime === "boolean") b.chime = x.chime;
-    } else if (id === "dice") {
-      if (x.mode === "Dice" || x.mode === "Wheel" || x.mode === "Teams") b.mode = x.mode;
-      if (typeof x.teams === "number") b.teams = x.teams;
-      if (typeof x.seats === "number") b.seats = x.seats;
-    } else if (id === "calc") {
-      if (x.mode === "Basic" || x.mode === "Scientific") b.mode = x.mode;
-      if (typeof x.deg === "boolean") b.deg = x.deg;
-    } else if (id === "tape") {
-      if (x.len === 12 || x.len === 24 || x.len === 36) b.len = x.len;
     }
   }
   function applyToolLayout(id) {
@@ -1872,7 +1948,17 @@
     node.dataset.quiet = t.quiet ? "1" : "0";
     node.dataset.corners = t.corners;
     node.dataset.title = t.title ? "1" : "0";
-    if (tool) node.setAttribute("aria-label", tool.name);
+    node.dataset.sound = t.sound === false ? "0" : "1";
+    node.dataset.read = t.read || "buttons";
+    node.dataset.proj = t.projector === false ? "0" : "1";
+    var titleEl = node.querySelector(".tile-bar h2");
+    if (titleEl && tool) {
+      var custom = (t.titleText || "").trim().slice(0, 32);
+      if (custom) titleEl.textContent = custom;
+      else if (tool.nameKey && window.BitsI18n) BitsI18n.show(titleEl, tool.nameKey);
+      else titleEl.textContent = tool.name;
+    }
+    if (tool) node.setAttribute("aria-label", (t.titleText || "").trim() || tool.name);
     if (node._paintPin) node._paintPin();
   }
   function remount(id) {
@@ -1885,12 +1971,13 @@
   }
   function resetTool(id) {
     try { localStorage.removeItem(toolStoreKey(id)); } catch (e) {}
-    var b = bag(id);
-    if (id === "bell") b.periods = BELLS.map(function (p) { return { id: p[0], start: p[1], end: p[2] }; });
-    if (id === "dice") { b.mode = "Dice"; b.teams = 4; b.seats = 16; }
-    if (id === "drama") { b.sec = 180; b.chime = false; }
-    if (id === "calc") { b.mode = "Basic"; b.deg = true; }
-    if (id === "tape") { delete b.len; delete b.tick; delete b.unit; }
+    state.bags[id] = {};
+    if (id === "bell") {
+      bag(id).periods = BELLS.map(function (p) { return { id: p[0], start: p[1], end: p[2] }; });
+    }
+    var L = lay(id);
+    L.size = defaultSize(id);
+    L.pin = false;
     save();
     remount(id);
   }
@@ -1908,128 +1995,348 @@
       var sheet = panel.parentNode;
       if (sheet) sheet.classList.add("tool-settings");
       var t = readTool(id);
-      function commit() { writeTool(id, t); applyLook(id); save(); layoutAll(true); }
-      function saveExtra(patch) {
+      var b = bag(id);
+      var wait = 0;
+      function commit() { writeTool(id, t); applyLook(id); save(); layoutAll(false); }
+      function saveExtra(patch, live) {
         t.extra = Object.assign({}, t.extra || {}, patch);
         writeTool(id, t);
         hydrateBag(id);
         save();
-        remount(id);
+        if (live) return;
+        clearTimeout(wait);
+        wait = setTimeout(function () { remount(id); }, 40);
+      }
+      function cap(key, node) {
+        var lab = el("div", "field");
+        var span = el("span");
+        if (window.BitsI18n) BitsI18n.show(span, key); else span.textContent = key;
+        lab.append(span, node);
+        return lab;
+      }
+      function choose(labelKey, options, val, apply) {
+        var sel = el("select");
+        options.forEach(function (pair) {
+          var o = el("option");
+          o.value = String(pair[0]);
+          o.textContent = pair[2] ? (bb(pair[2]) || pair[1]) : pair[1];
+          if (String(val) === String(pair[0])) o.selected = true;
+          sel.append(o);
+        });
+        sel.addEventListener("change", function () { apply(sel.value); });
+        return cap(labelKey, sel);
+      }
+      function onOff(onKey, offKey, isOn, flip) {
+        var button = btn("");
+        function paint() {
+          if (window.BitsI18n) BitsI18n.show(button, isOn() ? onKey : offKey);
+          else button.textContent = isOn() ? onKey : offKey;
+        }
+        paint();
+        button.addEventListener("click", function () { flip(); paint(); });
+        return button;
       }
       var accents = el("div", "presets");
       ACCENTS.forEach(function (pair) {
-        var b = btn(""); b.style.background = pair[1]; b.setAttribute("aria-label", pair[0]);
-        b.addEventListener("click", function () { t.accent = pair[1]; commit(); });
-        accents.append(b);
+        var sw = btn(""); sw.style.background = pair[1]; sw.setAttribute("aria-label", pair[0]);
+        sw.addEventListener("click", function () { t.accent = pair[1]; commit(); });
+        accents.append(sw);
       });
-      panel.append(labeled("accentWord", accents));
-      var size = el("select");
-      ["S", "M", "L", "XL"].forEach(function (s) {
-        var o = el("option"); o.value = s; o.textContent = s;
-        if ((t.size || lay(id).size) === s) o.selected = true;
-        size.append(o);
-      });
-      size.addEventListener("change", function () { t.size = size.value; commit(); });
-      panel.append(labeled("sizeWord", size));
-      var pinB = btn("");
-      function paintPinB() {
-        if (window.BitsI18n) BitsI18n.show(pinB, lay(id).pin ? "pinned" : "pin");
-        else pinB.textContent = lay(id).pin ? "Pinned" : "Pin";
-      }
-      paintPinB();
-      pinB.addEventListener("click", function () { t.pin = !lay(id).pin; commit(); paintPinB(); });
-      panel.append(pinB);
-      var titleB = btn("");
-      function paintTitle() {
-        if (window.BitsI18n) BitsI18n.show(titleB, t.title ? "titleOn" : "titleOff");
-        else titleB.textContent = t.title ? "Title on" : "Title off";
-      }
-      paintTitle();
-      titleB.addEventListener("click", function () { t.title = !t.title; commit(); paintTitle(); });
-      panel.append(titleB);
-      var digits = el("select");
-      [["S", "S"], ["M", "M"], ["L", "L"]].forEach(function (pair) {
-        var o = el("option"); o.value = pair[0]; o.textContent = pair[1];
-        if (t.digits === pair[0]) o.selected = true;
-        digits.append(o);
-      });
-      digits.addEventListener("change", function () { t.digits = digits.value; commit(); });
-      panel.append(labeled("numSize", digits));
-      var quiet = btn("");
-      function paintQuiet() {
-        if (window.BitsI18n) BitsI18n.show(quiet, t.quiet ? "quietOn" : "quietOff");
-        else quiet.textContent = t.quiet ? "Quiet glow on" : "Quiet glow off";
-      }
-      paintQuiet();
-      quiet.addEventListener("click", function () { t.quiet = !t.quiet; commit(); paintQuiet(); });
-      panel.append(quiet);
-      panel.append(seg([{ id: "round", k: "roundWord" }, { id: "square", k: "squareWord" }], t.corners, function (v) {
-        t.corners = v; commit();
+      var picker = el("input"); picker.type = "color"; picker.value = /^#[0-9a-fA-F]{6}$/.test(t.accent) ? t.accent : (state.accent || "#e25c12");
+      picker.addEventListener("input", function () { t.accent = picker.value; commit(); });
+      var useBoard = btn("");
+      if (window.BitsI18n) BitsI18n.show(useBoard, "useBoard"); else useBoard.textContent = "Use board color";
+      useBoard.addEventListener("click", function () { t.accent = ""; commit(); });
+      accents.append(picker, useBoard);
+      panel.append(cap("accentWord", accents));
+      panel.append(choose("sizeWord", [["S", "S"], ["M", "M"], ["L", "L"], ["XL", bb("sizeFull") || "Full"]], t.size || lay(id).size, function (v) {
+        t.size = v; commit();
       }));
+      panel.append(onOff("pinned", "pin", function () { return !!lay(id).pin; }, function () { t.pin = !lay(id).pin; commit(); }));
+      var titleIn = el("input"); titleIn.type = "text"; titleIn.maxLength = 32; titleIn.value = t.titleText || "";
+      titleIn.addEventListener("input", function () { t.titleText = titleIn.value.slice(0, 32); commit(); });
+      panel.append(cap("titleText", titleIn));
+      panel.append(onOff("titleOn", "titleOff", function () { return t.title !== false; }, function () { t.title = !t.title; commit(); }));
+      panel.append(choose("numSize", [["S", "S"], ["M", "M"], ["L", "L"]], t.digits || "M", function (v) { t.digits = v; commit(); }));
+      panel.append(onOff("quietOn", "quietOff", function () { return !!t.quiet; }, function () { t.quiet = !t.quiet; commit(); }));
+      panel.append(seg([{ id: "round", k: "roundWord" }, { id: "square", k: "squareWord" }], t.corners, function (v) { t.corners = v; commit(); }));
+      panel.append(onOff("soundOn", "soundOff", function () { return t.sound !== false; }, function () { t.sound = t.sound === false; commit(); }));
+      var vol = el("input"); vol.type = "range"; vol.min = "0"; vol.max = "100"; vol.value = String(t.volume == null ? 80 : t.volume);
+      vol.addEventListener("input", function () { t.volume = Number(vol.value); commit(); });
+      panel.append(cap("volumeWord", vol));
+      panel.append(cap("readAloud", seg([{ id: "off", k: "readOff" }, { id: "buttons", k: "readButtons" }, { id: "auto", k: "readAuto" }], t.read || "buttons", function (v) { t.read = v; commit(); })));
+      panel.append(onOff("showProj", "hideProj", function () { return t.projector !== false; }, function () { t.projector = t.projector === false; commit(); }));
+
       var opts = el("div", "tool-opts");
+      opts.dataset.own = id;
       if (id === "drama") {
-        var mins = numField({ k: "minutes" }, Math.round((bag(id).sec || 180) / 60), function (v) {
-          var minutes = Math.max(0, Math.round(v || 0));
-          bag(id).sec = minutes * 60;
-          saveExtra({ minutes: minutes, chime: !!bag(id).chime });
+        var mins = Math.floor((b.sec || 180) / 60);
+        var secs = (b.sec || 180) % 60;
+        opts.append(numField({ k: "minutes" }, mins, function (v) {
+          mins = Math.max(0, Math.min(180, Math.round(v || 0)));
+          b.sec = mins * 60 + secs;
+          saveExtra({ minutes: mins, seconds: secs, chime: !!b.chime, end: b.end || (b.chime ? "chime" : "none") });
+        }).wrap);
+        opts.append(numField({ k: "seconds" }, secs, function (v) {
+          secs = Math.max(0, Math.min(59, Math.round(v || 0)));
+          b.sec = mins * 60 + secs;
+          saveExtra({ minutes: mins, seconds: secs, chime: !!b.chime, end: b.end || (b.chime ? "chime" : "none") });
+        }).wrap);
+        var presets = el("div", "seg");
+        [[30, "0:30"], [60, "1:00"], [180, "3:00"], [300, "5:00"]].forEach(function (pair) {
+          var chip = btn(pair[1]);
+          chip.addEventListener("click", function () {
+            mins = Math.floor(pair[0] / 60); secs = pair[0] % 60; b.sec = pair[0];
+            saveExtra({ minutes: mins, seconds: secs, chime: !!b.chime, end: b.end || "none", warn: b.warn == null ? 10 : b.warn, shake: b.shake !== false });
+          });
+          presets.append(chip);
         });
-        var ch = btn("");
-        function paintCh() {
-          if (window.BitsI18n) BitsI18n.show(ch, bag(id).chime ? "chimeOn" : "chimeOff");
-          else ch.textContent = bag(id).chime ? "Chime on" : "Chime off";
-        }
-        paintCh();
-        ch.addEventListener("click", function () {
-          bag(id).chime = !bag(id).chime;
-          paintCh();
-          saveExtra({ minutes: Math.round((bag(id).sec || 180) / 60), chime: !!bag(id).chime });
-        });
-        opts.append(mins.wrap, ch);
+        opts.append(presets);
+        opts.append(choose("endSound", [["none", "None", "soundNone"], ["chime", "Chime", "chimeOn"], ["beep", "Beep", "soundBeep"]], b.end || (b.chime ? "chime" : "none"), function (v) {
+          b.end = v; b.chime = v !== "none";
+          saveExtra({ end: v, chime: b.chime, minutes: mins, seconds: secs });
+        }));
+        opts.append(numField({ k: "warnAt" }, b.warn == null ? 10 : b.warn, function (v) {
+          b.warn = Math.max(0, Math.min(120, Math.round(v || 0)));
+          saveExtra({ warn: b.warn, minutes: mins, seconds: secs });
+        }).wrap);
+        opts.append(onOff("shakeOn", "shakeOff", function () { return b.shake !== false; }, function () {
+          b.shake = b.shake === false; saveExtra({ shake: b.shake !== false, minutes: mins, seconds: secs });
+        }));
       } else if (id === "bell") {
         var note = el("p", "note");
         if (window.BitsI18n) BitsI18n.show(note, "solvay"); else note.textContent = "Solvay P1–P9";
         opts.append(note);
+        if (!b.periods) b.periods = BELLS.map(function (p) { return { id: p[0], start: p[1], end: p[2] }; });
+        b.periods.forEach(function (p) {
+          var row = el("div", "row");
+          var lab = el("strong"); lab.textContent = p.id;
+          var a = field({ k: "periodStart" }, p.start, function (v) { p.start = v; saveExtra({ periods: b.periods }, true); }, "time");
+          var c = field({ k: "periodEnd" }, p.end, function (v) { p.end = v; saveExtra({ periods: b.periods }, true); }, "time");
+          row.append(lab, a.wrap, c.wrap);
+          opts.append(row);
+        });
       } else if (id === "dice") {
-        opts.append(seg([{ id: "Dice", k: "modeDice" }, { id: "Wheel", k: "modeWheel" }, { id: "Teams", k: "modeTeams" }], bag(id).mode || "Dice", function (m) {
-          bag(id).mode = m; saveExtra({ mode: m, teams: bag(id).teams || 4, seats: bag(id).seats || 16 });
-        }));
-        var teams = numField({ k: "teams" }, bag(id).teams || 4, function (v) {
-          bag(id).teams = Math.max(2, Math.min(8, v || 2));
-          saveExtra({ mode: bag(id).mode || "Dice", teams: bag(id).teams, seats: bag(id).seats || 16 });
-        });
-        var seats = numField({ k: "seats" }, bag(id).seats || 16, function (v) {
-          bag(id).seats = Math.max(2, Math.min(36, v || 2));
-          saveExtra({ mode: bag(id).mode || "Dice", teams: bag(id).teams || 4, seats: bag(id).seats });
-        });
-        opts.append(teams.wrap, seats.wrap);
-      } else if (id === "calc") {
-        opts.append(seg([{ id: "Basic", k: "basic" }, { id: "Scientific", k: "scientific" }], bag(id).mode || "Basic", function (m) {
-          bag(id).mode = m; saveExtra({ mode: m, deg: bag(id).deg !== false });
-        }));
-        var deg = btn("");
-        function paintDeg() {
-          if (window.BitsI18n) BitsI18n.show(deg, bag(id).deg === false ? "radians" : "degrees");
-          else deg.textContent = bag(id).deg === false ? "Radians" : "Degrees";
+        function dicePatch(over) {
+          return Object.assign({ mode: b.mode || "Dice", teams: b.teams || 4, seats: b.seats || 16, count: b.count || 1, sides: b.sides || 6, slices: b.slices || 6 }, over);
         }
-        paintDeg();
-        deg.addEventListener("click", function () {
-          bag(id).deg = bag(id).deg === false;
-          paintDeg();
-          saveExtra({ mode: bag(id).mode || "Basic", deg: bag(id).deg !== false });
-        });
-        opts.append(deg);
+        opts.append(seg([{ id: "Dice", k: "modeDice" }, { id: "Wheel", k: "modeWheel" }, { id: "Teams", k: "modeTeams" }], b.mode || "Dice", function (m) {
+          b.mode = m; saveExtra(dicePatch({ mode: m }));
+        }));
+        opts.append(numField({ k: "diceCount" }, b.count || 1, function (v) {
+          b.count = Math.max(1, Math.min(6, Math.round(v || 1))); saveExtra(dicePatch({ count: b.count }));
+        }).wrap);
+        opts.append(choose("sides", [[4, "4"], [6, "6"], [8, "8"], [10, "10"], [12, "12"], [20, "20"]], b.sides || 6, function (v) {
+          b.sides = Number(v); saveExtra(dicePatch({ sides: b.sides }));
+        }));
+        opts.append(numField({ k: "slices" }, b.slices || 6, function (v) {
+          b.slices = Math.max(2, Math.min(8, Math.round(v || 6))); saveExtra(dicePatch({ slices: b.slices }));
+        }).wrap);
+        opts.append(numField({ k: "teams" }, b.teams || 4, function (v) {
+          b.teams = Math.max(2, Math.min(8, Math.round(v || 2))); saveExtra(dicePatch({ teams: b.teams }));
+        }).wrap);
+        opts.append(numField({ k: "seats" }, b.seats || 16, function (v) {
+          b.seats = Math.max(2, Math.min(36, Math.round(v || 2))); saveExtra(dicePatch({ seats: b.seats }));
+        }).wrap);
+      } else if (id === "noise") {
+        opts.append(numField({ k: "calmUnder" }, b.calm == null ? 45 : b.calm, function (v) {
+          b.calm = Math.max(0, Math.min(100, Math.round(v || 0))); saveExtra({ calm: b.calm, loud: b.loud == null ? 75 : b.loud, gain: b.gain == null ? 280 : b.gain }, true);
+        }).wrap);
+        opts.append(numField({ k: "loudOver" }, b.loud == null ? 75 : b.loud, function (v) {
+          b.loud = Math.max(0, Math.min(100, Math.round(v || 0))); saveExtra({ loud: b.loud, calm: b.calm == null ? 45 : b.calm, gain: b.gain == null ? 280 : b.gain }, true);
+        }).wrap);
+        opts.append(numField({ k: "sensitivity" }, b.gain == null ? 280 : b.gain, function (v) {
+          b.gain = Math.max(40, Math.min(800, Math.round(v || 280))); saveExtra({ gain: b.gain, calm: b.calm == null ? 45 : b.calm, loud: b.loud == null ? 75 : b.loud }, true);
+        }).wrap);
+      } else if (id === "calc") {
+        opts.append(seg([{ id: "Basic", k: "basic" }, { id: "Scientific", k: "scientific" }], b.mode || "Basic", function (m) {
+          b.mode = m; saveExtra({ mode: m, deg: b.deg !== false, decimals: b.decimals == null ? 2 : b.decimals, keepAns: b.keepAns !== false });
+        }));
+        opts.append(onOff("degrees", "radians", function () { return b.deg !== false; }, function () {
+          b.deg = b.deg === false; saveExtra({ mode: b.mode || "Basic", deg: b.deg !== false, decimals: b.decimals == null ? 2 : b.decimals, keepAns: b.keepAns !== false });
+        }));
+        opts.append(choose("decimals", [["full", "Full", "fullPrec"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]], b.decimals == null ? "2" : String(b.decimals), function (v) {
+          b.decimals = v === "full" ? "full" : Number(v);
+          saveExtra({ decimals: b.decimals, mode: b.mode || "Basic", deg: b.deg !== false, keepAns: b.keepAns !== false });
+        }));
+        opts.append(onOff("keepAnsOn", "keepAnsOff", function () { return b.keepAns !== false; }, function () {
+          b.keepAns = b.keepAns === false; saveExtra({ keepAns: b.keepAns !== false, mode: b.mode || "Basic", deg: b.deg !== false, decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+      } else if (id === "prompt") {
+        var cat = b.cat || "all";
+        var src = (window.BitsI18n ? BitsI18n.prompts() : PROMPTS).slice();
+        var list = (Array.isArray(b.list) && b.list.length) ? b.list.map(function (p) { return { t: String(p.t || "").slice(0, 80), c: p.c || "design" }; }) : src.map(function (text, i) { return { t: text, c: ["design", "build", "measure"][i % 3] }; });
+        function commitList() { b.list = list; b.cat = cat; saveExtra({ list: list, cat: cat }); }
+        opts.append(cap("category", seg([{ id: "all", k: "catAll" }, { id: "design", k: "catDesign" }, { id: "build", k: "catBuild" }, { id: "measure", k: "catMeasure" }], cat, function (v) {
+          cat = v;
+          if (Array.isArray(b.list) && b.list.length) commitList();
+          else saveExtra({ cat: cat });
+        })));
+        var host = el("div", "prompt-edit");
+        function drawList() {
+          host.textContent = "";
+          list.forEach(function (p, idx) {
+            var row = el("div", "row");
+            var input = el("input"); input.type = "text"; input.maxLength = 80; input.value = p.t;
+            input.addEventListener("change", function () { p.t = input.value.slice(0, 80); commitList(); });
+            var sel = el("select");
+            [["design", "catDesign"], ["build", "catBuild"], ["measure", "catMeasure"]].forEach(function (pair) {
+              var o = el("option"); o.value = pair[0]; o.textContent = bb(pair[1]) || pair[0];
+              if (p.c === pair[0]) o.selected = true;
+              sel.append(o);
+            });
+            sel.addEventListener("change", function () { p.c = sel.value; commitList(); });
+            var up = btn("\u2191"); up.setAttribute("aria-label", bb("moveUp") || "Up");
+            var down = btn("\u2193"); down.setAttribute("aria-label", bb("moveDown") || "Down");
+            var rm = btn("\u00d7"); if (window.BitsI18n) BitsI18n.showAria(rm, "remove"); else rm.setAttribute("aria-label", "Remove");
+            up.addEventListener("click", function () {
+              if (idx < 1) return;
+              var tmp = list[idx - 1]; list[idx - 1] = list[idx]; list[idx] = tmp;
+              commitList(); drawList();
+            });
+            down.addEventListener("click", function () {
+              if (idx >= list.length - 1) return;
+              var tmp2 = list[idx + 1]; list[idx + 1] = list[idx]; list[idx] = tmp2;
+              commitList(); drawList();
+            });
+            rm.addEventListener("click", function () { list.splice(idx, 1); commitList(); drawList(); });
+            row.append(input, sel, up, down, rm);
+            host.append(row);
+          });
+        }
+        var addP = btn("");
+        if (window.BitsI18n) BitsI18n.show(addP, "addPrompt"); else addP.textContent = "Add a prompt";
+        addP.addEventListener("click", function () { list.push({ t: "", c: "design" }); commitList(); drawList(); });
+        drawList();
+        opts.append(host, addP);
       } else if (id === "tape") {
-        var len = el("select");
-        [12, 24, 36].forEach(function (n) {
-          var o = el("option"); o.value = String(n); o.textContent = n + " in";
-          if ((bag(id).len || 12) === n) o.selected = true;
-          len.append(o);
-        });
-        len.addEventListener("change", function () {
-          bag(id).len = Number(len.value);
-          saveExtra({ len: bag(id).len });
-        });
-        opts.append(labeled("stickLength", len));
+        opts.append(choose("stickLength", [[12, "12 in"], [24, "24 in"], [36, "36 in"]], b.len || 12, function (v) {
+          b.len = Number(v); saveExtra({ len: b.len, unit: b.unit || "", tick: b.tick || 16, decimals: b.decimals == null ? 1 : b.decimals });
+        }));
+        opts.append(choose("unitWord", [["", bb("bothUnits") || "Inches and mm"], ["in", "in"], ["mm", "mm"]], b.unit || "", function (v) {
+          b.unit = v; saveExtra({ unit: v, len: b.len || 12, tick: b.tick || 16, decimals: b.decimals == null ? 1 : b.decimals });
+        }));
+        opts.append(choose("tickWord", [[8, "1/8"], [16, "1/16"], [32, "1/32"]], b.tick || 16, function (v) {
+          b.tick = Number(v); saveExtra({ tick: b.tick, len: b.len || 12, unit: b.unit || "", decimals: b.decimals == null ? 1 : b.decimals });
+        }));
+        opts.append(choose("decimals", [[1, "1"], [2, "2"], [3, "3"]], b.decimals == null ? 1 : b.decimals, function (v) {
+          b.decimals = Number(v); saveExtra({ decimals: b.decimals, len: b.len || 12, unit: b.unit || "", tick: b.tick || 16 });
+        }));
+      } else if (id === "cuts") {
+        var stock = field({ k: "stockWord" }, b.stock || "96", function (v) { b.stock = v; saveExtra({ stock: v, kerf: b.kerf || "1/8", sortLong: b.sortLong !== false }); });
+        var kerf = field({ k: "kerfWord" }, b.kerf || "1/8", function (v) { b.kerf = v; saveExtra({ kerf: v, stock: b.stock || "96", sortLong: b.sortLong !== false }); });
+        opts.append(stock.wrap, kerf.wrap);
+        opts.append(onOff("sortLongOn", "sortLongOff", function () { return b.sortLong !== false; }, function () {
+          b.sortLong = b.sortLong === false; saveExtra({ sortLong: b.sortLong !== false, stock: b.stock || "96", kerf: b.kerf || "1/8" });
+        }));
+      } else if (id === "robot") {
+        opts.append(numField({ k: "wheelMm" }, b.d == null ? 65 : b.d, function (v) { b.d = v; saveExtra({ d: b.d, dist: b.dist == null ? 1000 : b.dist, track: b.track == null ? 120 : b.track, anim: b.anim !== false }); }).wrap);
+        opts.append(numField({ k: "distMm" }, b.dist == null ? 1000 : b.dist, function (v) { b.dist = v; saveExtra({ dist: b.dist, d: b.d == null ? 65 : b.d, track: b.track == null ? 120 : b.track, anim: b.anim !== false }); }).wrap);
+        opts.append(numField({ k: "trackMm" }, b.track == null ? 120 : b.track, function (v) { b.track = v; saveExtra({ track: b.track, d: b.d == null ? 65 : b.d, dist: b.dist == null ? 1000 : b.dist, anim: b.anim !== false }); }).wrap);
+        opts.append(onOff("spinOn", "spinOff", function () { return b.anim !== false; }, function () {
+          b.anim = b.anim === false; saveExtra({ anim: b.anim !== false, d: b.d == null ? 65 : b.d, dist: b.dist == null ? 1000 : b.dist, track: b.track == null ? 120 : b.track });
+        }));
+      } else if (id === "sheet") {
+        opts.append(choose("unitWord", [["in", "in"], ["cm", "cm"]], b.unit || "in", function (v) { b.unit = v; saveExtra({ unit: v, mat: b.mat || "12×12", turn: b.turn !== false, gap: b.gap == null ? 0.25 : b.gap }); }));
+        opts.append(choose("matWord", [["12×12", "12×12"], ["12×24", "12×24"], ["Sheet", "Sheet"]], b.mat || "12×12", function (v) { b.mat = v; saveExtra({ mat: v, unit: b.unit || "in", turn: b.turn !== false, gap: b.gap == null ? 0.25 : b.gap }); }));
+        opts.append(onOff("turnOn", "turnOff", function () { return b.turn !== false; }, function () {
+          b.turn = b.turn === false; saveExtra({ turn: b.turn !== false, unit: b.unit || "in", mat: b.mat || "12×12", gap: b.gap == null ? 0.25 : b.gap });
+        }));
+        opts.append(numField({ k: "gapWord" }, b.gap == null ? 0.25 : b.gap, function (v) { b.gap = Math.max(0, v || 0); saveExtra({ gap: b.gap, unit: b.unit || "in", mat: b.mat || "12×12", turn: b.turn !== false }); }).wrap);
+      } else if (id === "strength") {
+        opts.append(numField({ k: "triesKept" }, b.keep || 12, function (v) { b.keep = Math.max(1, Math.min(30, Math.round(v || 12))); saveExtra({ keep: b.keep }); }).wrap);
+      } else if (id === "convert") {
+        opts.append(seg([{ id: "Length", k: "catLength" }, { id: "Mass", k: "catMass" }, { id: "Volume", k: "catVolume" }, { id: "Temp", k: "catTemp" }], b.cat || "Length", function (v) {
+          b.cat = v; saveExtra({ cat: v, decimals: b.decimals == null ? null : b.decimals, formula: !!b.formula });
+        }));
+        opts.append(choose("decimals", [["auto", bb("autoWord") || "Auto"], ["0", "0"], ["1", "1"], ["2", "2"], ["3", "3"], ["4", "4"]], b.decimals == null ? "auto" : String(b.decimals), function (v) {
+          b.decimals = v === "auto" ? null : Number(v); saveExtra({ decimals: b.decimals, cat: b.cat || "Length", formula: !!b.formula });
+        }));
+        opts.append(onOff("formulaOn", "formulaOff", function () { return !!b.formula; }, function () {
+          b.formula = !b.formula; saveExtra({ formula: !!b.formula, cat: b.cat || "Length", decimals: b.decimals == null ? null : b.decimals });
+        }));
+      } else if (id === "scale") {
+        opts.append(numField({ k: "ratioWord" }, b.ratio == null ? 12 : b.ratio, function (v) { b.ratio = v; saveExtra({ ratio: b.ratio, decimals: b.decimals == null ? 2 : b.decimals, showFt: b.showFt !== false, unit: b.unit || "" }); }).wrap);
+        opts.append(choose("decimals", [[2, "2"], [0, "0"], [1, "1"], [3, "3"]], b.decimals == null ? 2 : b.decimals, function (v) {
+          b.decimals = Number(v); saveExtra({ decimals: b.decimals, ratio: b.ratio == null ? 12 : b.ratio, showFt: b.showFt !== false, unit: b.unit || "" });
+        }));
+        opts.append(onOff("feetOn", "feetOff", function () { return b.showFt !== false; }, function () {
+          b.showFt = b.showFt === false; saveExtra({ showFt: b.showFt !== false, ratio: b.ratio == null ? 12 : b.ratio, decimals: b.decimals == null ? 2 : b.decimals, unit: b.unit || "" });
+        }));
+        opts.append(choose("unitWord", [["", "in"], ["cm", "cm"]], b.unit || "", function (v) {
+          b.unit = v; saveExtra({ unit: v, ratio: b.ratio == null ? 12 : b.ratio, showFt: b.showFt !== false, decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+      } else if (id === "volume") {
+        opts.append(choose("shapeWord", [["Box", "Box"], ["Cylinder", "Cylinder"], ["Sphere", "Sphere"]], b.shape || "Box", function (v) {
+          b.shape = v; saveExtra({ shape: v, decimals: b.decimals == null ? 2 : b.decimals, ml: !!b.ml, unit: b.unit || "" });
+        }));
+        opts.append(choose("decimals", [[2, "2"], [0, "0"], [1, "1"], [3, "3"]], b.decimals == null ? 2 : b.decimals, function (v) {
+          b.decimals = Number(v); saveExtra({ decimals: b.decimals, shape: b.shape || "Box", ml: !!b.ml, unit: b.unit || "" });
+        }));
+        opts.append(onOff("mlOn", "mlOff", function () { return !!b.ml; }, function () {
+          b.ml = !b.ml; saveExtra({ ml: !!b.ml, shape: b.shape || "Box", decimals: b.decimals == null ? 2 : b.decimals, unit: b.unit || "" });
+        }));
+        opts.append(choose("unitWord", [["", "in"], ["cm", "cm"]], b.unit || "", function (v) {
+          b.unit = v; saveExtra({ unit: v, shape: b.shape || "Box", ml: !!b.ml, decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+      } else if (id === "speed") {
+        opts.append(choose("solveWord", [["Time", "Time"], ["Speed", "Speed"], ["Distance", "Distance"]], b.solve || "Time", function (v) {
+          b.solve = v; saveExtra({ solve: v, decimals: b.decimals == null ? 2 : b.decimals, distU: b.distU || "", timeU: b.timeU || "" });
+        }));
+        opts.append(choose("decimals", [[2, "2"], [0, "0"], [1, "1"], [3, "3"]], b.decimals == null ? 2 : b.decimals, function (v) {
+          b.decimals = Number(v); saveExtra({ decimals: b.decimals, solve: b.solve || "Time", distU: b.distU || "", timeU: b.timeU || "" });
+        }));
+        opts.append(choose("distUnit", [["", "—"], ["m", "m"], ["ft", "ft"], ["km", "km"]], b.distU || "", function (v) {
+          b.distU = v; saveExtra({ distU: v, solve: b.solve || "Time", timeU: b.timeU || "", decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+        opts.append(choose("timeUnit", [["", "—"], ["s", "s"], ["min", "min"], ["h", "h"]], b.timeU || "", function (v) {
+          b.timeU = v; saveExtra({ timeU: v, solve: b.solve || "Time", distU: b.distU || "", decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+      } else if (id === "circuits") {
+        opts.append(choose("modeWord", [["Ohm", "Ohm"], ["Series", "Series"], ["Parallel", "Parallel"]], b.mode || "Ohm", function (v) {
+          b.mode = v; saveExtra({ mode: v, decimals: b.decimals == null ? 2 : b.decimals, prefix: !!b.prefix });
+        }));
+        opts.append(choose("decimals", [[2, "2"], [0, "0"], [1, "1"], [3, "3"]], b.decimals == null ? 2 : b.decimals, function (v) {
+          b.decimals = Number(v); saveExtra({ decimals: b.decimals, mode: b.mode || "Ohm", prefix: !!b.prefix });
+        }));
+        opts.append(onOff("prefixOn", "prefixOff", function () { return !!b.prefix; }, function () {
+          b.prefix = !b.prefix; saveExtra({ prefix: !!b.prefix, mode: b.mode || "Ohm", decimals: b.decimals == null ? 2 : b.decimals });
+        }));
+      } else if (id === "levers") {
+        opts.append(numField({ k: "loadWord" }, b.load == null ? 10 : b.load, function (v) { b.load = v; saveExtra({ load: b.load, la: b.la == null ? 20 : b.la, ea: b.ea == null ? 40 : b.ea }); }).wrap);
+        opts.append(numField({ k: "armLoad" }, b.la == null ? 20 : b.la, function (v) { b.la = v; saveExtra({ la: b.la, load: b.load == null ? 10 : b.load, ea: b.ea == null ? 40 : b.ea }); }).wrap);
+        opts.append(numField({ k: "armEffort" }, b.ea == null ? 40 : b.ea, function (v) { b.ea = v; saveExtra({ ea: b.ea, load: b.load == null ? 10 : b.load, la: b.la == null ? 20 : b.la }); }).wrap);
+      } else if (id === "lumber") {
+        opts.append(onOff("actual", "nominal", function () { return !!b.actual; }, function () { b.actual = !b.actual; saveExtra({ actual: !!b.actual }); }));
+        opts.append(numField({ k: "thickWord" }, b.t == null ? 2 : b.t, function (v) { b.t = v; saveExtra({ t: b.t, w: b.w == null ? 4 : b.w, l: b.l == null ? 8 : b.l, n: b.n == null ? 1 : b.n, actual: !!b.actual }); }).wrap);
+        opts.append(numField({ k: "wideWord" }, b.w == null ? 4 : b.w, function (v) { b.w = v; saveExtra({ w: b.w, t: b.t == null ? 2 : b.t, l: b.l == null ? 8 : b.l, n: b.n == null ? 1 : b.n }); }).wrap);
+        opts.append(numField({ k: "longWord" }, b.l == null ? 8 : b.l, function (v) { b.l = v; saveExtra({ l: b.l, t: b.t == null ? 2 : b.t, w: b.w == null ? 4 : b.w, n: b.n == null ? 1 : b.n }); }).wrap);
+        opts.append(numField({ k: "countWord" }, b.n == null ? 1 : b.n, function (v) { b.n = v; saveExtra({ n: b.n, t: b.t == null ? 2 : b.t, w: b.w == null ? 4 : b.w, l: b.l == null ? 8 : b.l }); }).wrap);
+      } else if (id === "roof") {
+        opts.append(numField({ k: "riseWord" }, b.rise == null ? 6 : b.rise, function (v) { b.rise = v; saveExtra({ rise: b.rise, run: b.run == null ? 12 : b.run }); }).wrap);
+        opts.append(numField({ k: "runWord" }, b.run == null ? 12 : b.run, function (v) { b.run = v; saveExtra({ run: b.run, rise: b.rise == null ? 6 : b.rise }); }).wrap);
+      } else if (id === "gears") {
+        opts.append(numField({ k: "teethA" }, b.a == null ? 12 : b.a, function (v) { b.a = v; saveExtra({ a: b.a, b: b.b == null ? 24 : b.b, rpm: b.rpm == null ? 20 : b.rpm }); }).wrap);
+        opts.append(numField({ k: "teethB" }, b.b == null ? 24 : b.b, function (v) { b.b = v; saveExtra({ b: b.b, a: b.a == null ? 12 : b.a, rpm: b.rpm == null ? 20 : b.rpm }); }).wrap);
+        opts.append(numField({ k: "rpmWord" }, b.rpm == null ? 20 : b.rpm, function (v) { b.rpm = v; saveExtra({ rpm: b.rpm, a: b.a == null ? 12 : b.a, b: b.b == null ? 24 : b.b }); }).wrap);
+      } else if (id === "angles") {
+        opts.append(choose("snapWord", [[0, bb("snapFree") || "Free"], [1, "1°"], [5, "5°"], [15, "15°"]], b.snap || 0, function (v) {
+          b.snap = Number(v); saveExtra({ snap: b.snap });
+        }));
+      } else if (id === "race") {
+        opts.append(numField({ k: "lanesWord" }, b.lanes || 2, function (v) { b.lanes = Math.max(2, Math.min(4, Math.round(v || 2))); saveExtra({ lanes: b.lanes, laps: b.laps || 3 }); }).wrap);
+        opts.append(numField({ k: "lapsWord" }, b.laps || 3, function (v) { b.laps = Math.max(1, Math.min(12, Math.round(v || 1))); saveExtra({ laps: b.laps, lanes: b.lanes || 2 }); }).wrap);
+      } else if (id === "color") {
+        opts.append(choose("sliders", [["both", bb("mixBoth") || "RGB and HSL"], ["rgb", "RGB", "mixRgb"], ["hsl", "HSL", "mixHsl"]], b.mix || "both", function (v) {
+          b.mix = v; saveExtra({ mix: v });
+        }));
+      } else if (id === "binary") {
+        opts.append(choose("bitsWord", [[8, "8"], [4, "4"]], b.width === 4 ? 4 : 8, function (v) {
+          b.width = Number(v); saveExtra({ width: b.width, ascii: b.ascii !== false });
+        }));
+        opts.append(onOff("asciiOn", "asciiOff", function () { return b.ascii !== false; }, function () {
+          b.ascii = b.ascii === false; saveExtra({ ascii: b.ascii !== false, width: b.width === 4 ? 4 : 8 });
+        }));
       }
       panel.append(opts);
       var reset = btn("");
@@ -2056,7 +2363,8 @@
     ico.innerHTML = window.BitsIcons && BitsIcons.svg ? BitsIcons.svg(id) : "";
     var gear = btn("\u2699"); gear.dataset.gear = "1";
     function paintGear() {
-      var label = bbf("setFor", { name: tool.name }) || ("Settings for " + tool.name);
+      var shown = ((readTool(id).titleText || "").trim()) || tool.name;
+      var label = bbf("setFor", { name: shown }) || ("Settings for " + shown);
       gear.setAttribute("aria-label", label);
     }
     paintGear();
@@ -2253,6 +2561,32 @@
     sheet.addEventListener("click", function (e) { if (e.target === sheet) sheet.remove(); });
     document.body.append(sheet);
   }
+  menuBtn.addEventListener("click", function () {
+    openSheet(bb("menuBtn") || "Menu", function (panel) {
+      var sheet = panel.parentNode;
+      if (sheet) sheet.classList.add("menu-sheet");
+      var plate = el("p", "ver");
+      var bdi = el("bdi"); bdi.textContent = "BB 2.2.0"; plate.append(bdi);
+      var lab = el("p", "note");
+      if (window.BitsI18n) BitsI18n.showShared(lab, "whatsNew"); else lab.textContent = "What's new";
+      var news = el("p", "note");
+      if (window.BitsI18n) BitsI18n.show(news, "whatsBody");
+      else news.textContent = "Every tool has its own options now: units, sounds, lists and more. Menu is top-left.";
+      var toolsB = btn("");
+      if (window.BitsI18n) BitsI18n.show(toolsB, "tools"); else toolsB.textContent = "Tools";
+      toolsB.addEventListener("click", function () {
+        var s = document.querySelector(".sheet"); if (s) s.remove();
+        addBtn.click();
+      });
+      var setB = btn("");
+      if (window.BitsI18n) BitsI18n.showShared(setB, "settings"); else setB.textContent = "Settings";
+      setB.addEventListener("click", function () {
+        var s = document.querySelector(".sheet"); if (s) s.remove();
+        setBtn.click();
+      });
+      panel.append(plate, lab, news, toolsB, setB);
+    });
+  });
   addBtn.addEventListener("click", function () {
     openSheet("Tools", function (panel) {
       TOOLS.forEach(function (tool) {
