@@ -1,15 +1,20 @@
 # Debugzy changelog
 
-**Chip: v0.1.1** · 2026-10-02 · channel **playable**
+**Chip: v0.1.2** · 2026-10-02 · channel **playable**
 Source of truth: `app.js` `VERSION` + this file.
 
 ## Version law
 
 | Kind | Looks like | Where it goes |
 | --- | --- | --- |
-| Playable lab | `v0.1.1` | https://apps.kulibert.net/debugzy/ |
+| Playable lab | `v0.1.2` | https://apps.kulibert.net/debugzy/ |
 
 ## Current train
+
+### 0.1.2 — Puzzles load again — 2026-10-02
+
+- What’s new: Fixed a glitch that stopped puzzles from loading.
+- `escapeHtml` in `app.js` has its `&amp;` `&lt;` `&gt;` `&quot;` back, so the script parses and the puzzles show.
 
 ### 0.1.1 — Hub language and Menu — 2026-10-02
 

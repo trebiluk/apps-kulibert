@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = "0.1.1";
+  const VERSION = "0.1.2";
   window.__DEBUGZY__ = VERSION;
 
   const STORAGE_KEY = "debugzy-v010";
@@ -169,10 +169,10 @@
 
   function escapeHtml(s) {
     return String(s)
-      .replace(/&/g, "&")
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, """);
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
   }
 
   function labelOf(btn) {
