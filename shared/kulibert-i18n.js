@@ -35,7 +35,76 @@
   "errNeedBoth": "Enter the 5-character code and the 4-digit PIN.",
   "errNoMatch": "That code or PIN does not match.",
   "errNotListed": "That code is not on the list.",
-  "errOffline": "TechWorks did not answer. Try again on the school network."
+  "errOffline": "TechWorks did not answer. Try again on the school network.",
+  "searchHint": "Search or paste a link",
+  "more": "More",
+  "gotIt": "Got it",
+  "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
+  "whatsNewLine": "The Hub speaks your language, and Settings opens from the left.",
+  "myProgress": "My progress",
+  "staff": "Staff",
+  "signOut": "Sign out",
+  "staffEdit": "Staff edit",
+  "sortAz": "A–Z",
+  "sortZa": "Z–A",
+  "myStyle": "My style",
+  "pickSize": "Pick a size. Your apps can use it.",
+  "highContrast": "High contrast",
+  "lessMotion": "Less motion",
+  "captions": "Show words for sounds and speech",
+  "textSize": "Text size",
+  "pictureCards": "Picture cards",
+  "cardBridge": "bridge",
+  "cardForce": "force",
+  "cardTriangle": "triangle",
+  "savedHere": "Saved on this Chromebook.",
+  "nothingMatches": "Nothing matches. Paste a link and press Enter to pin it here.",
+  "searchLabel": "Search apps or paste a link",
+  "groupTools": "Tools",
+  "groupPlay": "Play",
+  "groupDesign": "Design",
+  "groupShop": "Shop",
+  "groupSound": "Sound",
+  "groupClass": "Class",
+  "groupCampus": "Campus",
+  "groupCrew": "Crew",
+  "school": "School",
+  "myShortcuts": "My shortcuts",
+  "thisChromebook": "This Chromebook only",
+  "liveNow": "Live now",
+  "openedHere": "Opened here",
+  "expand": "Expand",
+  "twConnected": "TW Connected",
+  "styleRoom": "Room",
+  "styleGraph": "Graph",
+  "styleMiami": "Miami",
+  "styleSpa": "Spa",
+  "styleNature": "Nature",
+  "stylePeaks": "Peaks",
+  "styleCity": "City",
+  "styleSpace": "Space",
+  "styleBerty": "Berty",
+  "blurbBaboo": "Draw a house plan",
+  "blurbBertycad": "Build 3D shapes",
+  "blurbVisualizer": "Make lights dance",
+  "blurbBits": "Shop timers and tools",
+  "blurbBotz": "Solve machine puzzles",
+  "blurbRun": "Run, jump, grab PC parts",
+  "blurbSpan": "Build a bridge that holds",
+  "blurbSpire": "Build a tall tower",
+  "blurbDrift": "Fly a calm glider",
+  "blurbHoldit": "Test a bridge design",
+  "blurbGinger": "Plan a room",
+  "blurbPaper": "Build with one sheet",
+  "blurbLogo": "Make your own logo",
+  "blurbDrawin": "Draw and paint",
+  "blurbThrow": "Toss candy at a target",
+  "blurbSprocket": "Get the 3D printer ready",
+  "blurbDj": "Make a beat",
+  "blurbBeatz": "Tap squares, make a song",
+  "blurbTw": "See your class and XP",
+  "blurbKz": "Code a robot",
+  "blurbDebug": "Find the bad step",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var packs = { en: EN };
@@ -106,7 +175,7 @@
     if (pending[name]) { pending[name].push(cb || function () {}); return; }
     pending[name] = cb ? [cb] : [];
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v2:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v3:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -115,12 +184,12 @@
       finish(name);
       return;
     }
-    fetch("/shared/i18n/" + name + ".json", { credentials: "omit" }).then(function (res) {
+    fetch("/shared/i18n/" + name + ".json?v=2026-10-07-polish", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (data) {
       if (data && typeof data === "object") {
         packs[name] = data;
-        try { sessionStorage.setItem("kulibert-i18n-v2:" + name, JSON.stringify(data)); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v3:" + name, JSON.stringify(data)); } catch (e3) {}
       }
     }).catch(function () {}).then(function () { finish(name); });
   }

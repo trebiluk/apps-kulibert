@@ -47,7 +47,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-04-i18n");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-07-polish");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -137,7 +137,7 @@
     if (!document.getElementById("tw-session-boot")) {
       var shim = document.createElement("script");
       shim.id = "tw-session-boot";
-      shim.src = asset("/shared/tw-session.js?v=2026-10-05-signin");
+      shim.src = asset("/shared/tw-session.js?v=2026-10-07-polish");
       (document.head || document.documentElement).appendChild(shim);
     }
     return;
@@ -188,7 +188,7 @@
   function ensureI18n(done) {
     if (root.KulibertI18n) { done(); return; }
     var s = document.createElement("script");
-    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-05-signin");
+    s.src = asset("/shared/kulibert-i18n.js?v=2026-10-07-polish");
     s.onload = function () { done(); };
     s.onerror = function () { done(); };
     (document.head || document.documentElement).appendChild(s);
@@ -250,8 +250,8 @@
     var bar = document.createElement("div");
     bar.className = "kb-bar";
     bar.innerHTML = [
+      '<button type="button" class="kb-menu" aria-expanded="false">\u2630 Menu</button>',
       '<a class="kb-home" href="https://apps.kulibert.net/" target="_top">\u2302 Home</a>',
-      menuSel ? '<button type="button" class="kb-menu" aria-expanded="false">\u2630 Menu</button>' : '',
       '<span class="kb-plate"></span>',
       '<button type="button" class="kb-settings" hidden aria-label="My settings">\u2699</button>',
       '<span class="kb-alias">Sign in</span>',
