@@ -1,7 +1,15 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.28** · 2026-10-01 · channel **live**
+**Chip: SL 1.3.31** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.31 — Next level — 2026-10-02
+
+- What’s new: After a clear, Next level takes you to the next job. Levels opens the job list. The Menu has a Close button, and Esc closes it.
+
+## 1.3.30 — Menu and languages — 2026-10-02
+
+- What’s new: Menu is top-left at every size, and Settings has all 8 languages.
 
 ## 1.3.28 — Score — 2026-10-01
 

@@ -1285,3 +1285,53 @@ html[dir="rtl"]:not([data-theme="classic"]) #access-sheet { left: 0 !important; 
   html:not(.kb-framed):not([data-theme="classic"]) .caption { top: calc(48px + 2.75rem); }
   html:not([data-theme="classic"]) #land-drawer:not([hidden]) { left: 0 !important; width: min(22rem, 92vw); }
 }
+
+/* SL 1.3.31 — Next level, list under the bar, Close and Esc. */
+#next-level {
+  min-height: 56px;
+  min-width: 160px;
+  padding: 0 1.15rem;
+  border-radius: 12px;
+  border: 2px solid var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 800;
+  font-size: 1.05rem;
+  position: relative;
+  z-index: 15;
+}
+#next-level[hidden] { display: none !important; }
+#land-close, #access-close-top {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.9rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-weight: 800;
+}
+#access-close-top { margin: 0 0 0.55rem; }
+.isle-head { position: sticky; top: 0; z-index: 2; background: var(--panel); }
+html:not(.kb-framed) body.kb-on .isle-map { top: 48px; }
+html:not(.kb-framed) body.kb-on #land-drawer:not([hidden]),
+html:not(.kb-framed) body.kb-on #access-sheet { top: 48px; }
+html:not([data-theme="classic"]) .caption:has(#next-level:not([hidden])) {
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  flex-wrap: wrap;
+  z-index: 16;
+}
+@media (max-width: 720px) and (orientation: portrait) {
+  html:not([data-theme="classic"]) .caption {
+    grid-template-areas: "word mark chip read" "text text text text" "next next next next";
+  }
+  #next-level { grid-area: next; width: 100%; min-width: 0; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  html:not(.kb-framed) body.kb-on #land-drawer:not([hidden]),
+  html:not(.kb-framed) body.kb-on #access-sheet,
+  html:not(.kb-framed) body.kb-on .isle-map { top: 48px; }
+}
+

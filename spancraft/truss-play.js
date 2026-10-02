@@ -354,6 +354,7 @@ export function mountTruss(cfg) {
     sheet.id = "access-sheet";
     sheet.hidden = true;
     sheet.innerHTML =
+      '<button type="button" id="access-close-top" class="fat"></button>' +
       '<p class="access-title" id="access-title"></p>' +
       '<p class="access-label" id="access-lang-label"></p>' +
       '<div class="access-row">' +
@@ -365,11 +366,17 @@ export function mountTruss(cfg) {
       "</div>" +
       '<button type="button" id="access-close" class="fat"></button>';
     document.body.appendChild(sheet);
+    const shutSheet = () => {
+      sheet.hidden = true;
+      const menu = document.getElementById("land-menu");
+      if (menu) menu.focus();
+    };
     gear.addEventListener("click", () => {
       sheet.hidden = !sheet.hidden;
       paintAccess();
     });
-    sheet.querySelector("#access-close").addEventListener("click", () => { sheet.hidden = true; });
+    sheet.querySelector("#access-close").addEventListener("click", shutSheet);
+    sheet.querySelector("#access-close-top").addEventListener("click", shutSheet);
     sheet.querySelectorAll("[data-lang]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const lang = btn.getAttribute("data-lang");
@@ -441,6 +448,47 @@ export function mountTruss(cfg) {
     retryBtn.disabled = false;
     const now = document.getElementById("retry-now");
     if (now) now.hidden = !on;
+  }
+  let mapOpener = null;
+  function ensureNextBtn() {
+    let btn = document.getElementById("next-level");
+    if (btn) return btn;
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "next-level";
+    btn.hidden = true;
+    const now = document.getElementById("retry-now");
+    if (now && now.parentNode) now.insertAdjacentElement("afterend", btn);
+    else if (caption) caption.appendChild(btn);
+    btn.addEventListener("click", () => {
+      if (busy()) return;
+      const nxt = nextAfter(active());
+      if (nxt) beginLevel(nxt.id);
+    });
+    return btn;
+  }
+  function hideNextLevel() {
+    const btn = document.getElementById("next-level");
+    if (btn) btn.hidden = true;
+  }
+  function nextAfter(level) {
+    if (!level || level.free) return null;
+    const i = levels.findIndex((l) => l.id === level.id);
+    if (i < 0) return null;
+    if (i >= levels.length - 1) return pathClear() ? freeLevel : null;
+    return levels[i + 1];
+  }
+  function paintNextLevel() {
+    const btn = ensureNextBtn();
+    const level = active();
+    const nxt = nextAfter(level);
+    if (!nxt) {
+      btn.hidden = true;
+      return;
+    }
+    btn.textContent = (nxt.free ? t("challenge") : t("nextLevel")) + " ›";
+    btn.hidden = false;
+    btn.removeAttribute("hidden");
   }
   function paintReadout() {
     const level = active();
@@ -730,6 +778,7 @@ export function mountTruss(cfg) {
       return false;
     }
     state.members.push({ a, b });
+    hideNextLevel();
     return true;
   }
 
@@ -999,8 +1048,10 @@ export function mountTruss(cfg) {
     cloneLevel(active());
     state.phase = "idle";
     armRetry(false);
+    hideNextLevel();
     save();
     syncTrack();
+    syncBet();
     coach();
     resize();
   }
@@ -1017,6 +1068,7 @@ export function mountTruss(cfg) {
       btn.type = "button";
       btn.className = "isle-card";
       btn.dataset.state = st;
+      btn.dataset.id = level.id;
       btn.disabled = locked;
       const tag = state.cleared[level.id] ? t("done") : locked ? t("locked") : (level.id === state.levelId ? t("now") : t("open"));
       const band = level.free ? t("afterPath") : String(level.n);
@@ -1035,18 +1087,39 @@ export function mountTruss(cfg) {
       grid.appendChild(btn);
     }
   }
-  function openMap() {
+  function openMap(from) {
     const map = document.getElementById("isle-map");
     if (!map) return;
+    const opener = from && from.nodeType === 1
+      ? from
+      : (from && from.currentTarget && from.currentTarget.nodeType === 1 ? from.currentTarget : null);
+    if (opener) mapOpener = opener;
     renderMap();
     map.hidden = false;
     map.removeAttribute("hidden");
+    const grid = document.getElementById("isle-grid");
+    const level = active();
+    let want = level.id;
+    if (state.cleared[level.id]) {
+      const nxt = nextAfter(level);
+      if (nxt) want = nxt.id;
+    }
+    const card = grid && grid.querySelector("[data-id='" + want + "']");
+    if (card && card.scrollIntoView) {
+      try { card.scrollIntoView({ block: "nearest", inline: "nearest" }); } catch (eScroll) {}
+    }
+    const close = document.getElementById("isle-close");
+    if (close) close.focus();
   }
   function closeMap() {
     const map = document.getElementById("isle-map");
     if (!map) return;
+    const wasOpen = !map.hidden;
     map.hidden = true;
     map.setAttribute("hidden", "");
+    const back = mapOpener;
+    mapOpener = null;
+    if (wasOpen && back && typeof back.focus === "function") back.focus();
   }
 
   function failReason(result) {
@@ -1171,12 +1244,14 @@ export function mountTruss(cfg) {
     armRetry(!held);
     paintReadout();
     if (!held) {
+      hideNextLevel();
       const line = failReason(result);
       state.hadMiss = true;
       state.fixLine = line;
       setStatus(t("fix"), line + t("thenTest"), "fail");
       showPlate(t("fix"), line, "✕");
     } else if (!met) {
+      hideNextLevel();
       state.fixLine = "";
       const line = t("budget");
       setStatus(t("testPass"), line + " " + starPhrase(stars) + ".", "pass");
@@ -1198,6 +1273,9 @@ export function mountTruss(cfg) {
       setStatus(fixed ? t("youFixed") : t("clear"), line, "pass");
       showPlate(fixed ? t("youFixed") : t("clear"), line, "✓");
       shipClear(level, stars);
+      paintNextLevel();
+      const nxtBtn = document.getElementById("next-level");
+      if (nxtBtn && !nxtBtn.hidden) nxtBtn.focus();
     }
     if (state.bet) {
       const saidHold = state.bet === "hold";
@@ -1265,6 +1343,7 @@ export function mountTruss(cfg) {
     state.stretch = null;
     state.drag = null;
     armRetry(false);
+    hideNextLevel();
     const go = () => {
       theater = null;
       state.phase = "play";
@@ -1290,6 +1369,7 @@ export function mountTruss(cfg) {
     state.fixLine = "";
     cloneLevel(active());
     armRetry(false);
+    hideNextLevel();
     coach();
     draw();
   }
@@ -1326,6 +1406,7 @@ export function mountTruss(cfg) {
     const scale = len > cap ? cap / len : 1;
     state.joints.push({ x: A.x + dx * scale, y: A.y + dy * scale, fixed: false });
     state.members.push({ a: from, b: state.joints.length - 1 });
+    hideNextLevel();
     return true;
   }
   function finishPointer(ev) {
@@ -1374,9 +1455,13 @@ export function mountTruss(cfg) {
             a: m.a > hit ? m.a - 1 : m.a,
             b: m.b > hit ? m.b - 1 : m.b,
           }));
+        hideNextLevel();
       } else {
         const mi = memberAt(s.x, s.y);
-        if (mi >= 0) state.members.splice(mi, 1);
+        if (mi >= 0) {
+          state.members.splice(mi, 1);
+          hideNextLevel();
+        }
       }
       coach();
       draw();
@@ -1404,6 +1489,7 @@ export function mountTruss(cfg) {
       } else {
         return;
       }
+      hideNextLevel();
       setStatus(t("joint"), state.joints.length < 2 ? t("tapEnd") : t("letGo"), "", true);
       if (!cfg.workshop) coach();
       draw();
@@ -1414,8 +1500,12 @@ export function mountTruss(cfg) {
     const s = eventPoint(ev);
     if (state.drag != null) {
       const m = toModel(s.x, s.y);
-      state.joints[state.drag].x = m.x;
-      state.joints[state.drag].y = m.y;
+      const joint = state.joints[state.drag];
+      if (joint && (joint.x !== m.x || joint.y !== m.y)) hideNextLevel();
+      if (joint) {
+        joint.x = m.x;
+        joint.y = m.y;
+      }
       draw();
       return;
     }
@@ -1562,6 +1652,7 @@ export function mountTruss(cfg) {
     drawer.className = "land-drawer";
     drawer.hidden = true;
     drawer.innerHTML = '<div id="land-drawer-body"><nav id="land-nav">' +
+      '<button type="button" id="land-close"></button>' +
       '<button type="button" data-land="levels"></button>' +
       '<button type="button" data-land="challenge"></button>' +
       '<button type="button" data-land="help"></button>' +
@@ -1579,6 +1670,13 @@ export function mountTruss(cfg) {
     pocket.appendChild(park);
     let landed = false;
     const key = "kulibert-land-drawer";
+    function setDrawer(open, focusMenu) {
+      document.documentElement.classList.toggle("land-open", !!open);
+      drawer.hidden = !open;
+      menu.setAttribute("aria-expanded", open ? "true" : "false");
+      try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
+      if (!open && focusMenu) menu.focus();
+    }
     function syncLand() {
       const want = shortLand() && !classicTheme();
       if (want !== landed) {
@@ -1606,11 +1704,15 @@ export function mountTruss(cfg) {
     menu.addEventListener("click", () => {
       if (classicTheme()) return;
       const open = !document.documentElement.classList.contains("land-open");
-      document.documentElement.classList.toggle("land-open", open);
-      drawer.hidden = !open;
-      menu.setAttribute("aria-expanded", open ? "true" : "false");
-      try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
+      setDrawer(open, false);
     });
+    const landClose = drawer.querySelector("#land-close");
+    if (landClose) {
+      landClose.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        setDrawer(false, true);
+      });
+    }
     if (nav) {
       nav.addEventListener("click", (ev) => {
         const hit = ev.target.closest("[data-land]");
@@ -1624,9 +1726,7 @@ export function mountTruss(cfg) {
         }[kind];
         if (kind === "settings") {
           const sheet = document.getElementById("access-sheet");
-          drawer.hidden = true;
-          document.documentElement.classList.remove("land-open");
-          menu.setAttribute("aria-expanded", "false");
+          setDrawer(false, false);
           if (sheet) {
             sheet.hidden = false;
             paintAccess();
@@ -1634,9 +1734,7 @@ export function mountTruss(cfg) {
           return;
         }
         if (go) go.click();
-        drawer.hidden = true;
-        document.documentElement.classList.remove("land-open");
-        menu.setAttribute("aria-expanded", "false");
+        setDrawer(false, false);
       });
     }
     if (caption) {
@@ -1777,6 +1875,15 @@ export function mountTruss(cfg) {
     if (bigBtn) bigBtn.textContent = t("big");
     const closeBtn = document.getElementById("access-close");
     if (closeBtn) closeBtn.textContent = chrome("close");
+    const closeTop = document.getElementById("access-close-top");
+    if (closeTop) closeTop.textContent = chrome("close");
+    const landClose = document.getElementById("land-close");
+    if (landClose) landClose.textContent = chrome("close");
+    const nextBtn = document.getElementById("next-level");
+    if (nextBtn && !nextBtn.hidden) {
+      const nxt = nextAfter(active());
+      if (nxt) nextBtn.textContent = (nxt.free ? t("challenge") : t("nextLevel")) + " ›";
+    }
     const h1 = document.querySelector(".brand h1");
     if (h1 && !h1.querySelector("bdi")) {
       const name = h1.textContent.trim();
@@ -1809,6 +1916,7 @@ export function mountTruss(cfg) {
     watch.observe(canvas);
   }
   mountLand();
+  ensureNextBtn();
 
   const addBtn = document.getElementById("tool-add");
   const moveBtn = document.getElementById("tool-move");
@@ -1832,7 +1940,11 @@ export function mountTruss(cfg) {
   if (trackLevels) trackLevels.addEventListener("click", () => {
     if (busy()) return;
     const current = active();
-    beginLevel(current.free ? levels[0].id : current.id);
+    if (current.free || state.track === "challenge") {
+      beginLevel(levels[0].id);
+      return;
+    }
+    openMap(trackLevels);
   });
   if (trackChallenge) trackChallenge.addEventListener("click", () => {
     if (busy()) return;
@@ -1863,6 +1975,35 @@ export function mountTruss(cfg) {
     });
   }
   window.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") {
+      const map = document.getElementById("isle-map");
+      if (map && !map.hidden) {
+        ev.preventDefault();
+        closeMap();
+        return;
+      }
+      const sheet = document.getElementById("access-sheet");
+      if (sheet && !sheet.hidden) {
+        ev.preventDefault();
+        sheet.hidden = true;
+        const menu = document.getElementById("land-menu");
+        if (menu) menu.focus();
+        return;
+      }
+      const drawer = document.getElementById("land-drawer");
+      if (drawer && !drawer.hidden) {
+        ev.preventDefault();
+        document.documentElement.classList.remove("land-open");
+        drawer.hidden = true;
+        const menu = document.getElementById("land-menu");
+        if (menu) {
+          menu.setAttribute("aria-expanded", "false");
+          menu.focus();
+        }
+        try { localStorage.setItem("kulibert-land-drawer", "closed"); } catch (eEsc) {}
+      }
+      return;
+    }
     if (ev.key === "Enter") {
       if (ev.target && (ev.target.tagName === "BUTTON" || ev.target.tagName === "A")) return;
       ev.preventDefault();

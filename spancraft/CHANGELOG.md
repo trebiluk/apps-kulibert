@@ -1,5 +1,9 @@
-**Chip: SC 1.3.31** · 2026-10-02 · channel **live**
+**Chip: SC 1.3.32** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.32 — Next level — 2026-10-02
+
+- What’s new: After a clear, Next level takes you to the next job. Levels opens the job list. The Menu has a Close button, and Esc closes it.
 
 ## 1.3.31 — Menu and languages — 2026-10-02
 
