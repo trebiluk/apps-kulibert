@@ -1696,8 +1696,8 @@
   board.setAttribute("dir", "ltr");
   var dock = el("div", "dock");
   dock.setAttribute("dir", "ltr");
-  var menuBtn = btn(""); menuBtn.className = "menu-btn"; menuBtn.dataset.bitsMenu = "1";
-  if (window.BitsI18n) BitsI18n.show(menuBtn, "menuBtn"); else menuBtn.textContent = "\u2630 Menu";
+  var menuBtn = btn(""); menuBtn.id = "bits-menu"; menuBtn.hidden = true; menuBtn.setAttribute("aria-expanded", "false");
+  menuBtn.textContent = "Menu";
   var addBtn = btn(""); addBtn.className = "plus";
   if (window.BitsI18n) {
     BitsI18n.show(addBtn, "plusTools");
@@ -1723,8 +1723,7 @@
   if (window.BitsI18n) BitsI18n.showShared(exitBtn, "exit"); else exitBtn.textContent = "Exit";
   exitBtn.className = "proj-exit";
   exitBtn.addEventListener("click", function () { setProj(false); });
-  document.body.appendChild(menuBtn);
-  app.append(top, board, dock, exitBtn);
+  app.append(menuBtn, top, board, dock, exitBtn);
 
   function applyTheme() {
     document.documentElement.dataset.theme = state.theme || "hud";
@@ -2553,16 +2552,22 @@
     else h.textContent = title;
     var close = btn("");
     if (window.BitsI18n) BitsI18n.showShared(close, "close"); else close.textContent = "Close";
-    close.addEventListener("click", function () { sheet.remove(); });
+    function shut() {
+      var opener = document.getElementById("bits-menu");
+      if (opener) opener.setAttribute("aria-expanded", "false");
+      sheet.remove();
+    }
+    close.addEventListener("click", shut);
     head.append(h, close);
     panel.append(head);
     sheet.append(panel);
     build(panel);
-    sheet.addEventListener("click", function (e) { if (e.target === sheet) sheet.remove(); });
+    sheet.addEventListener("click", function (e) { if (e.target === sheet) shut(); });
     document.body.append(sheet);
   }
   menuBtn.addEventListener("click", function () {
-    openSheet(bb("menuBtn") || "Menu", function (panel) {
+    menuBtn.setAttribute("aria-expanded", "true");
+    openSheet("Menu", function (panel) {
       var sheet = panel.parentNode;
       if (sheet) sheet.classList.add("menu-sheet");
       var plate = el("p", "ver");
@@ -2571,21 +2576,23 @@
       if (window.BitsI18n) BitsI18n.showShared(lab, "whatsNew"); else lab.textContent = "What's new";
       var news = el("p", "note");
       if (window.BitsI18n) BitsI18n.show(news, "whatsBody");
-      else news.textContent = "Every tool has its own options now: units, sounds, lists and more. Menu is top-left.";
+      else news.textContent = "Every tool has its own settings, and the Menu at the top left opens your tools.";
       var toolsB = btn("");
       if (window.BitsI18n) BitsI18n.show(toolsB, "tools"); else toolsB.textContent = "Tools";
       toolsB.addEventListener("click", function () {
         var s = document.querySelector(".sheet"); if (s) s.remove();
+        menuBtn.setAttribute("aria-expanded", "false");
         addBtn.click();
       });
       var setB = btn("");
       if (window.BitsI18n) BitsI18n.showShared(setB, "settings"); else setB.textContent = "Settings";
       setB.addEventListener("click", function () {
         var s = document.querySelector(".sheet"); if (s) s.remove();
+        menuBtn.setAttribute("aria-expanded", "false");
         setBtn.click();
       });
       panel.append(plate, lab, news, toolsB, setB);
-    });
+    }, "menuBtn");
   });
   addBtn.addEventListener("click", function () {
     openSheet("Tools", function (panel) {

@@ -370,11 +370,7 @@ html[dir="rtl"] .proj-exit { left: 12px; right: auto; }
 .tile[data-digits="L"] .num { font-size: 2.6rem; }
 .sheet.tool-settings .panel, .sheet.menu-sheet .panel { inset-inline-start: auto; inset-inline-end: auto; right: auto; left: 12px; }
 .sheet { z-index: 70; }
-.menu-btn { position: fixed; left: 8px; right: auto; top: 56px; z-index: 45; min-height: 44px; padding: 0 12px; }
-html:not([data-kb-bar="1"]) .menu-btn { top: 8px; }
-html[dir="rtl"] .menu-btn { left: 8px; right: auto; }
-html[dir="ltr"] .top .brand, html:not([dir]) .top .brand { margin-left: 112px; }
-html.is-projector .menu-btn { display: none !important; }
+#bits-menu { display: none !important; }
 html.is-projector .tile[data-proj="0"] { display: none !important; }
 .tile-bar { align-items: center; height: auto; }
 .tile-bar h2 { white-space: normal; overflow: hidden; text-overflow: unset; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-height: 1.2; max-height: 2.6em; }
