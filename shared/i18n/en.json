@@ -40,6 +40,7 @@
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
   "whatsNewLine": "Menu opens the app's own menu, with nothing on top of it.",
   "appNames": "App names in the top strip",
+  "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
   "staff": "Staff",
   "signOut": "Sign out",
