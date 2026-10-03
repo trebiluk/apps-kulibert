@@ -1,5 +1,9 @@
-**Chip: HI 1.1.16** · 2026-10-03 · channel **live**
+**Chip: HI 1.1.17** · 2026-10-03 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.17 — Tips stay out of the way — 2026-10-03
+
+- What’s new: Tips stay out of your way on a sideways phone.
 
 ## 1.1.16 — Build tools fit on phones — 2026-10-03
 

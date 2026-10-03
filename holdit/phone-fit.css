@@ -16,3 +16,23 @@
 html:not(.kb-framed) body.kb-on[data-scroll-locked] {
   padding-top: 48px !important;
 }
+
+/* HI 1.1.17 — on a short screen the Studio tip spans the road.
+   Dock a slim card in the sky at the side, away from the deck.
+   Left in ltr, right in rtl. Never wider than 40%. */
+@media (max-height: 480px) {
+  .hi-studio {
+    left: 0.75rem !important;
+    right: auto !important;
+    top: 0.75rem !important;
+    bottom: auto !important;
+    width: min(40%, 13rem) !important;
+    max-width: 40% !important;
+    transform: none !important;
+    translate: none !important;
+  }
+  html[dir="rtl"] .hi-studio {
+    left: auto !important;
+    right: 0.75rem !important;
+  }
+}
