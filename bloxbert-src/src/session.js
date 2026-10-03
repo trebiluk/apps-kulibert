@@ -455,6 +455,8 @@ export function createSession(api) {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
     give: (item, n) => bag.add(item, n || 1),
     spend: (item, n) => bag.take(item, n),
+    setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
+    tryPlace: () => { const k = selectedItem(); const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },

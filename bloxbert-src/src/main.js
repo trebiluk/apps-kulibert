@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.7'
+const VERSION = '2.5.8'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -1129,5 +1129,22 @@ if (!__BLOX_STUDENT__) {
 }
 
 load().catch(() => {}).finally(() => markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved')))
+if (location.search.includes('smoke=1')) {
+  window.__smoke = {
+    seed() {
+      session.setMode('survival')
+      session.give('coal', 2)
+      session.give('sand', 4)
+      session.give('cupcake', 1)
+      session.give('log', 3)
+      session.setHot(0)
+    },
+    notch(n) { session.setHot(session.hot + n) },
+    key(i) { session.setHot(i) },
+    hot: () => session.hot,
+    place: () => session.tryPlace(),
+    counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand') }),
+  }
+}
 repaintBlocks()
 void T0

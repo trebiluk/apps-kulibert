@@ -23,9 +23,23 @@ const pics = await page.evaluate(() => {
   const slots = [...document.querySelectorAll('#hotbar canvas')].map((c) => c.toDataURL())
   return { menu, icons: icons.size, text: document.body.innerText.includes('[object'), slots: new Set(slots).size }
 })
+await page.goto(url + (url.includes('?') ? '&' : '?') + 'smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+await new Promise((r) => setTimeout(r, 1500))
+const food = await page.evaluate(() => {
+  window.__smoke.seed()
+  const bar = document.getElementById('hotbar').innerText
+  const pics = document.querySelectorAll('#hotbar svg, #hotbar canvas').length
+  window.__smoke.notch(5)
+  const hot = window.__smoke.hot()
+  window.__smoke.key(1)
+  const before = window.__smoke.counts()
+  window.__smoke.place()
+  const after = window.__smoke.counts()
+  return { bar, pics, hot, before, after, object: bar.includes('[object'), bare: document.querySelector('#hotbar .sw') && document.querySelector('#hotbar .sw').textContent.trim() === 'cupcake' }
+})
 await browser.close()
-if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5) {
-  console.error(errs.join('\n') || JSON.stringify(pics))
+if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5 || food.object || food.bare || food.pics < 4 || food.hot !== 5 || food.after.sand !== 3 || food.after.coal !== 2) {
+  console.error(errs.join('\n') || JSON.stringify({ pics, food }))
   process.exit(1)
 }
-console.log('smoke ok', url, pics)
+console.log('smoke ok', url, pics, food)
