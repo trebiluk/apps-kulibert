@@ -17,7 +17,11 @@ export function createSession(api) {
   let mode = 'creative'
   let home = null
   let hot = 0
-  let day = new Date().toISOString().slice(0, 10)
+  let day = localDay()
+  function localDay() {
+    const d = new Date()
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
+  }
   let paused = false
   let visitN = 1
   const bagHist = []
@@ -136,10 +140,20 @@ export function createSession(api) {
     }
   }
   function paintShop(g) {
-    g.append(btn(t('sell'), () => paintSell(g)))
-    g.append(btn(t('buy'), () => paintBuy(g)))
-    g.append(btn(t('prices'), () => paintPrices(g)))
+    g.innerHTML = ''
+    g.append(tab('💰', t('sell'), () => paintSell(g)))
+    g.append(tab('🛒', t('buy'), () => paintBuy(g)))
+    g.append(tab('📋', t('prices'), () => paintPrices(g)))
     paintSell(g)
+  }
+  function tab(ic, label, fn) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'gtile tab'
+    b.innerHTML = '<span class="gic">' + ic + '</span><span class="glbl"></span>'
+    b.querySelector('.glbl').textContent = label
+    b.addEventListener('click', fn)
+    return b
   }
   function btn(label, fn) {
     const b = document.createElement('button')
@@ -152,6 +166,7 @@ export function createSession(api) {
   }
   function paintSell(g) {
     today()
+    for (const el of [...g.querySelectorAll('.item')]) el.remove()
     for (const [k, item] of Object.entries(ITEMS)) {
       if (!bag.count(k)) continue
       const sold = wallet.state.soldToday[k] || 0
@@ -162,19 +177,36 @@ export function createSession(api) {
       b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
       b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' ⚙ ' + pay + ' · ' + sold + '/20' : itemName(k) + ' ' + t('cantSell')
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
-      b.addEventListener('click', () => sell(k, 1))
+      b.addEventListener('click', () => { sell(k, 1); paintSell(g) })
       g.append(b)
     }
   }
   function paintBuy(g) {
+    for (const el of [...g.querySelectorAll('.item')]) el.remove()
     for (const k of ECON.storeSells) {
       const item = ITEMS[k]
       const price = quoteBuy(item, wallet.state.dial || 1, ECON)
-      const b = btn(itemName(k) + ' ⚙ ' + price, () => buy(k, 1, price))
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'gtile item'
+      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = itemName(k) + ' ⚙ ' + price
+      b.addEventListener('click', () => buy(k, 1, price))
       g.append(b)
     }
   }
-  function paintPrices(g) { paintSell(g); paintBuy(g) }
+  function paintPrices(g) {
+    for (const el of [...g.querySelectorAll('.item')]) el.remove()
+    for (const k of ECON.storeSells) {
+      const item = ITEMS[k]
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'gtile item'
+      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = itemName(k) + ' · ' + t('sell') + ' ⚙ ' + quoteSell(item, wallet.state.soldToday[k] || 0, wallet.state.dial || 1, ECON) + ' · ' + t('buy') + ' ⚙ ' + quoteBuy(item, wallet.state.dial || 1, ECON)
+      g.append(b)
+    }
+  }
   function paintWallet(g) {
     const p = document.createElement('p')
     p.className = 'gnote balance'
@@ -208,7 +240,8 @@ export function createSession(api) {
     rec.slots.forEach((s, i) => {
       g.append(btn((s ? itemName(s.item) + ' ' + s.n + ' ⚙ ' + s.price : t('stock')) + ' ' + (i + 1), () => stock(key, i)))
     })
-    g.append(btn(t('takeTill') + ' ⚙ ' + rec.till, () => takeTill(key)))
+    g.append(btn(t('takeTill') + ' ⚙ ' + rec.till, () => { takeTill(key); paintCounter(g, key) }))
+    g.append(btn('🧹 ' + t('pickup'), () => { if (confirm(t('pickup'))) { const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() } }))
     const profit = (rec.sales || []).reduce((n, s) => n + s.cogs, 0) - wallet.state.spentToday
     const line = document.createElement('p')
     line.className = 'gnote'
@@ -221,7 +254,8 @@ export function createSession(api) {
     return h
   }
   function paintBunk(g, key) {
-    g.append(btn(t('yes'), () => { home = String(key || '').split(',').map(Number); api.toast(t('poofBunk')); api.close() }))
+    g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); api.toast(t('homeSet')); api.close() }))
+    g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
   function sell(k, n) {

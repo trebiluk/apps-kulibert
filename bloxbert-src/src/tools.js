@@ -104,11 +104,66 @@ export function createTools(api) {
     return api.rewind ? api.rewind(mins) : null
   }
   function snapMake() { const s = { id: 's' + Date.now(), at: Date.now(), kind: 'now' }; snaps.push(s); return s }
+  let pending = null
+  function needBox() {
+    if (!box()) { api.toast(api.t('tapCorner')); return false }
+    return true
+  }
+  function stage(kind, ops, label) {
+    pending = { kind, ops, label, adds: ops.length, removes: 0, inWay: 0 }
+    const chip = document.getElementById('size-chip')
+    if (chip) { chip.hidden = false; chip.textContent = label }
+    return pending
+  }
+  function act(name, opts = {}) {
+    if (name === 'select') return select(opts.a || a || [8, 5, 6], opts.b || b || [12, 6, 8])
+    if (name === 'fill') {
+      if (!needBox()) return null
+      const id = opts.id || api.current()
+      const bx = box()
+      const ops = []
+      for (let x = bx.x0; x <= bx.x1; x++) for (let y = bx.y0; y <= bx.y1; y++) for (let z = bx.z0; z <= bx.z1; z++) {
+        if (api.survival() && api.getVoxel(x, y, z) === 21) continue
+        ops.push([x, y, z, id])
+      }
+      return stage('fill', ops, api.t('filled').replace('{n}', ops.length))
+    }
+    if (name === 'copy') return copy()
+    if (name === 'paste') return stage('paste', [], api.t('paste'))
+    if (name === 'walls') {
+      if (!needBox()) return null
+      const id = opts.id || api.current()
+      const bx = box()
+      const ops = []
+      for (let x = bx.x0; x <= bx.x1; x++) for (let y = bx.y0; y <= bx.y1; y++) for (let z = bx.z0; z <= bx.z1; z++) {
+        if (x !== bx.x0 && x !== bx.x1 && z !== bx.z0 && z !== bx.z1) continue
+        ops.push([x, y, z, id])
+      }
+      return stage('walls', ops, api.t('filled').replace('{n}', ops.length))
+    }
+    return stage(name, [], name)
+  }
+  function confirm() {
+    if (!pending) return null
+    let ops = pending.ops
+    if (pending.kind === 'paste') {
+      const origin = api.aim() || [8, 6, 8]
+      const group = pasteAt(origin, {})
+      pending = null
+      return group
+    }
+    const group = api.apply(ops, pending.label)
+    pending = null
+    return group
+  }
+  function cancel() { pending = null; const chip = document.getElementById('size-chip'); if (chip) chip.hidden = true }
+  function ghost() { return pending }
   function measure(points) {
-    if (!points || points.length < 2) return null
+    if (!points || points.length < 2) return box() ? { len: 0, area: 0, vol: box().w * box().h * box().l } : null
     const dx = points[1][0] - points[0][0], dy = points[1][1] - points[0][1], dz = points[1][2] - points[0][2]
     const len = Math.round(Math.hypot(dx, dy, dz))
-    return { len, area: points.length > 2 ? Math.abs(dx * dz) : 0, vol: box() ? box().w * box().h * box().l : 0 }
+    const area = points.length > 2 ? Math.abs((points[1][0] - points[0][0]) * (points[2][2] - points[0][2])) : 0
+    return { len, area, vol: 0 }
   }
-  return { select, box, fill, copy, pasteAt, schemWrite, schemRead, saveBuild, builds, snaps, cards, rewind, snapMake, measure, tSize, clip: () => clip }
+  return { select, box, fill, copy, pasteAt, schemWrite, schemRead, saveBuild, builds, snaps, cards, rewind, snapMake, measure, tSize, clip: () => clip, act, confirm, cancel, ghost }
 }

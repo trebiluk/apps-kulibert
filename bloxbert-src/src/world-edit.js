@@ -39,7 +39,7 @@ export function createEdits({ getVoxel, setVoxel, invalidate }) {
     const xyz = new Int32Array(n * 3)
     for (let i = 0; i < n; i++) { xyz[i * 3] = xs[i]; xyz[i * 3 + 1] = ys[i]; xyz[i * 3 + 2] = zs[i] }
     const group = { label, source, at: Date.now(), n, xyz, before: Uint16Array.from(before), after: Uint16Array.from(after) }
-    if (source === 'hand' || source === 'test') {
+    if (source === 'hand' || source === 'test' || source === 'tool' || source === 'paste' || source === 'rollback' || source === 'snapshot') {
       undoStack.push(group)
       redoStack.length = 0
       trim()

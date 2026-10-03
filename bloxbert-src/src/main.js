@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.3.0'
+const VERSION = '2.4.0'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -303,7 +303,7 @@ function placeBlock() {
   const aimedBlock = noa.targetedBlock
   if (aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
-    if (aimedBlock.blockID === ID.storeCounter) { panels.open('shop'); return false }
+    if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
     if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
   }
@@ -473,7 +473,7 @@ panels = mountPanels({
   paintSettings: (g) => session.paintSettings(g),
   paintTeacher: (g) => session.paintTeacher(g),
   paintPrices: (g) => session.paintPrices(g),
-  paintCounter: (g) => session.paintCounter(g),
+  paintCounter: (g, key) => session.paintCounter(g, key),
   paintBunk: (g, key) => session.paintBunk(g, key),
   tools: () => { const strip = $('tool-strip'); if (strip) strip.hidden = false },
   leave: async () => { await save(); location.href = '/' },
@@ -485,8 +485,25 @@ const tools = createTools({
   t, toast, getVoxel,
   survival: () => session && session.mode === 'survival',
   names: () => ['air', ...BLOCKS.map((b) => b[1])],
-  apply: (ops, label) => edits.applyEdit(ops, { source: 'tool', label }),
+  current: () => current,
+  aim: () => (noa.targetedBlock ? noa.targetedBlock.adjacent : [8, 6, 8]),
+  apply: (ops, label) => {
+    const g = edits.applyEdit(ops, { source: 'tool', label })
+    if (g) changeLog.note(g, 'you')
+    toast(label)
+    return g
+  },
 })
+for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
+  b.addEventListener('click', () => {
+    const name = b.dataset.tool
+    if (name === 'close') { $('tool-strip').hidden = true; tools.cancel(); return }
+    if (name === 'do') { tools.confirm(); return }
+    if (name === 'cancel') { tools.cancel(); return }
+    const res = tools.act(name)
+    if (!res && name !== 'select') toast(t('tapCorner'))
+  })
+}
 $('game-menu').addEventListener('click', () => openMenu(true))
 $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
 let menuFromLock = false
@@ -764,7 +781,9 @@ document.addEventListener('keydown', (e) => {
   if (e.shiftKey) tableCursor[1] += step[1] || step[0]
   tableCursor[1] = Math.max(1, Math.min(40, tableCursor[1]))
 })
-document.addEventListener('keyup', (e) => { if (e.key === ' ' || e.code === 'Space') jumpUp() })
+let downHeld = false
+document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = true })
+document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
 noa.on('tick', () => {
   const s = noa.inputs.pointerState.scrolly
   if (s && !tableMode) { const i = BLOCKS.findIndex((b) => b[0] === current); pick(BLOCKS[(i + (s > 0 ? 1 : BLOCKS.length - 1)) % BLOCKS.length][0]) }
@@ -775,7 +794,13 @@ noa.on('tick', () => {
     noa.entities.setPosition(noa.playerEntity, [8.5, 12, 8.5])
   } else if (flying) {
     body.gravityMultiplier = 0
-    body.velocity[1] = noa.inputs.state.jump || jumpHeld ? 7 : (noa.inputs.state.sprint ? -7 : 0)
+    if (body.resting) body.resting = [false, false, false]
+    const up = (noa.inputs.state.jump || jumpHeld) ? 7 : (downHeld ? -7 : 0)
+    body.velocity[1] = up
+    if (up) {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      noa.entities.setPosition(noa.playerEntity, [p[0], p[1] + up / 60, p[2]])
+    }
   }
   const follow = noa.ents.getState(noa.camera.cameraTarget, 'followsEntity')
   if (follow) {
@@ -1028,7 +1053,11 @@ if (!__BLOX_STUDENT__) {
     tool: (name) => name === 'fill' ? tools.fill(current) : name === 'copy' ? tools.copy() : null,
     clip: () => tools.clip(),
     pasteAt: (at, opts) => tools.pasteAt(at, opts),
-    confirm: () => true,
+    confirm: () => tools.confirm(),
+    cancel: () => tools.cancel(),
+    ghost: () => tools.ghost(),
+    fly: () => ({ on: flying, y: noa.entities.getPosition(noa.playerEntity)[1] }),
+    strip: () => [...document.querySelectorAll('#tool-strip button')].map((b) => b.dataset.tool),
     schem: { write: () => tools.schemWrite(), read: (obj) => tools.schemRead(obj) },
     builds: { list: () => tools.builds },
     rewind: (mins) => tools.rewind(mins),

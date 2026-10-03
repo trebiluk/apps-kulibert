@@ -1,9 +1,10 @@
 // Extra 2.2.0 strings. Dari is Dari, not Arabic.
 export const EXTRA = {
   en: {
+    tapCorner: 'Tap Corner A first', filled: 'Filled {n} blocks', homeSet: 'Home set', homeCleared: 'Home cleared', pickup: 'Pick up', paste: 'Paste',
     buildTools: 'Build Tools', exitApp: 'Exit', leaveAsk: 'Leave Bloxbert? Your world is saved.', leave: 'Leave', stay: 'Stay', myBuilds: 'My Builds', undoMinutes: 'Undo Minutes', snapshots: 'Snapshots', emptyBag: 'Empty bag: break blocks or buy at Tally\'s', emptySlot: 'Empty slot', tooBig: 'Too big: max 64 × 32 × 64', badBuild: 'That file is not a Bloxbert build', fineLater: 'Fine-scale decor comes later', changedTo: 'Changed:',
     berry: 'Berry', flour: 'Flour', sugar: 'Sugar', cupcake: 'Cupcake', bread: 'Bread', coreplate: 'Coreplate', workbench: 'Workbench', oven: 'Oven', vend: 'Vending Counter', storeCounter: 'Store Counter', bunk: 'Bunk',
-    whatsNewBody: 'Bloxbert 2.3.0: Esc now just opens and closes the menu. Clearer bag, crafting, shop and wallet. New Build Tools: select a box, then Fill, Copy, Paste, Rotate and more with a see-through preview. Save builds to My Builds and undo your last few minutes.',
+    whatsNewBody: 'Bloxbert 2.4.0: Build Tools work: select a box, then Fill, Replace, Walls, Copy, Paste, Rotate, Mirror or Stack with a see-through preview, and Undo any of it. Save builds to My Builds, undo your last few minutes, and measure with the Tape. Your Vending Counter sells now.',
     menuHint: 'Tap ☰ or press Esc for menu', menuHintTouch: 'Tap ☰ for menu', resume: 'Resume', inventory: 'Inventory', crafting: 'Crafting', shop: 'Shop', wallet: 'Wallet',
     practice: 'practice', worth: 'Worth', tallyPays: 'Tally pays', youHave: 'You have', usedIn: 'Used in', make: 'Make', bagFull: 'Bag full', noItem: 'You have no {item}.',
     coreplateToast: 'Coreplate. Nothing gets through.', poofTown: 'Poof! Back at Bertyville.', poofBunk: 'Poof! Back at your Bunk.', alreadyLeft: 'That block already left your bag.',
@@ -18,7 +19,7 @@ export const EXTRA = {
   uk: {
     buildTools: 'Інструменти', exitApp: 'Вихід', leaveAsk: 'Вийти з Bloxbert? Світ збережено.', leave: 'Вийти', stay: 'Лишитись', myBuilds: 'Мої будови', undoMinutes: 'Хвилини назад', snapshots: 'Знімки', emptyBag: 'Сумка порожня: ламай блоки або купи в Таллі', emptySlot: 'Порожня клітинка', tooBig: 'Завелике: макс 64 × 32 × 64', badBuild: 'Це не файл будови Bloxbert', fineLater: 'Дрібний декор буде пізніше', changedTo: 'Змінено:',
     berry: 'Ягода', flour: 'Борошно', sugar: 'Цукор', cupcake: 'Кекс', bread: 'Хліб', coreplate: 'Підлога-ядро', workbench: 'Верстак', oven: 'Піч', vend: 'Прилавок', storeCounter: 'Прилавок крамниці', bunk: 'Ліжко',
-    whatsNewBody: 'Bloxbert 2.3.0: Велике меню ☰ (або Esc). Світ Виживання з сумкою, крафтом і навчальними Шестернями. Продай Таллі, веди свій Прилавок, а Підлога-ядро береже тебе.',
+    whatsNewBody: 'Bloxbert 2.4.0: Інструменти працюють: рамка, потім Заповнити, Замінити, Стіни, Копія, Вставка, Поворот. Скасувати можна все. Збережи будову і міряй стрічкою. Прилавок уже продає.',
     menuHint: 'Торкнись ☰ або Esc для меню', menuHintTouch: 'Торкнись ☰ для меню', resume: 'Далі', inventory: 'Сумка', crafting: 'Крафт', shop: 'Крамниця', wallet: 'Гаманець',
     practice: 'навчання', worth: 'Варто', tallyPays: 'Таллі платить', youHave: 'У тебе', usedIn: 'Входить у', make: 'Зробити', bagFull: 'Сумка повна', noItem: 'Немає: {item}.',
     coreplateToast: 'Підлога-ядро. Нічого не проходить.', poofTown: 'Пуф! Знову в Бертівіллі.', poofBunk: 'Пуф! Знову в ліжку.', alreadyLeft: 'Цей блок уже пішов із сумки.',
@@ -33,7 +34,7 @@ export const EXTRA = {
   ru: {
     buildTools: 'Инструменты', exitApp: 'Выход', leaveAsk: 'Выйти из Bloxbert? Мир сохранён.', leave: 'Выйти', stay: 'Остаться', myBuilds: 'Мои стройки', undoMinutes: 'Минуты назад', snapshots: 'Снимки', emptyBag: 'Сумка пуста: ломай блоки или купи у Талли', emptySlot: 'Пустая ячейка', tooBig: 'Слишком большое: макс 64 × 32 × 64', badBuild: 'Это не файл стройки Bloxbert', fineLater: 'Мелкий декор будет позже', changedTo: 'Изменено:',
     berry: 'Ягода', flour: 'Мука', sugar: 'Сахар', cupcake: 'Кекс', bread: 'Хлеб', coreplate: 'Пол-ядро', workbench: 'Верстак', oven: 'Печь', vend: 'Прилавок', storeCounter: 'Прилавок лавки', bunk: 'Кровать',
-    whatsNewBody: 'Bloxbert 2.3.0: Большое меню ☰ (или Esc). Мир Выживания с сумкой, крафтом и учебными Шестернями. Продай Талли, веди свой Прилавок, а Пол-ядро бережёт тебя.',
+    whatsNewBody: 'Bloxbert 2.4.0: Инструменты работают: рамка, затем Заполнить, Заменить, Стены, Копия, Вставка, Поворот. Всё можно отменить. Сохрани стройку и измерь лентой. Прилавок уже продаёт.',
     menuHint: 'Нажми ☰ или Esc для меню', menuHintTouch: 'Нажми ☰ для меню', resume: 'Дальше', inventory: 'Сумка', crafting: 'Крафт', shop: 'Лавка', wallet: 'Кошелёк',
     practice: 'учёба', worth: 'Цена', tallyPays: 'Талли платит', youHave: 'У тебя', usedIn: 'Нужен в', make: 'Сделать', bagFull: 'Сумка полна', noItem: 'Нет: {item}.',
     coreplateToast: 'Пол-ядро. Ничего не проходит.', poofTown: 'Пуф! Снова в Бертивилле.', poofBunk: 'Пуф! Снова у кровати.', alreadyLeft: 'Этот блок уже ушёл из сумки.',
@@ -48,7 +49,7 @@ export const EXTRA = {
   es: {
     buildTools: 'Herramientas', exitApp: 'Salir', leaveAsk: '¿Salir de Bloxbert? Tu mundo está guardado.', leave: 'Salir', stay: 'Quedarme', myBuilds: 'Mis construcciones', undoMinutes: 'Minutos atrás', snapshots: 'Instantáneas', emptyBag: 'Bolsa vacía: rompe bloques o compra a Tally', emptySlot: 'Casilla vacía', tooBig: 'Demasiado grande: máx 64 × 32 × 64', badBuild: 'Ese archivo no es una construcción Bloxbert', fineLater: 'El decorado fino llega después', changedTo: 'Cambiado:',
     berry: 'Baya', flour: 'Harina', sugar: 'Azúcar', cupcake: 'Cupcake', bread: 'Pan', coreplate: 'Núcleo', workbench: 'Banco', oven: 'Horno', vend: 'Mostrador', storeCounter: 'Mostrador de Tally', bunk: 'Litera',
-    whatsNewBody: 'Bloxbert 2.3.0: Un menú ☰ grande (o Esc). Un mundo Supervivencia con bolsa, fabricación y Engranajes de práctica. Vende a Tally, abre tu Mostrador, y un suelo Núcleo te cuida.',
+    whatsNewBody: 'Bloxbert 2.4.0: Las herramientas funcionan: elige una caja, luego Rellenar, Reemplazar, Muros, Copiar, Pegar y Girar, con vista transparente, y deshazlo. Guarda construcciones y mide con la cinta. Tu mostrador ya vende.',
     menuHint: 'Toca ☰ o pulsa Esc para el menú', menuHintTouch: 'Toca ☰ para el menú', resume: 'Seguir', inventory: 'Bolsa', crafting: 'Fabricar', shop: 'Tienda', wallet: 'Bolsillo',
     practice: 'práctica', worth: 'Vale', tallyPays: 'Tally paga', youHave: 'Tienes', usedIn: 'Se usa en', make: 'Hacer', bagFull: 'Bolsa llena', noItem: 'No tienes {item}.',
     coreplateToast: 'Núcleo. Nada pasa.', poofTown: '¡Puf! De vuelta en Bertyville.', poofBunk: '¡Puf! De vuelta en tu litera.', alreadyLeft: 'Ese bloque ya salió de tu bolsa.',
@@ -63,7 +64,7 @@ export const EXTRA = {
   ar: {
     buildTools: 'أدوات البناء', exitApp: 'خروج', leaveAsk: 'مغادرة بلوكسبيرت؟ عالمك محفوظ.', leave: 'غادر', stay: 'ابق', myBuilds: 'مبانيي', undoMinutes: 'دقائق سابقة', snapshots: 'لقطات', emptyBag: 'الحقيبة فارغة: اكسر مكعبات أو اشتر من تالي', emptySlot: 'خانة فارغة', tooBig: 'كبير جداً: الحد 64 × 32 × 64', badBuild: 'هذا الملف ليس بناء بلوكسبيرت', fineLater: 'الزخرفة الدقيقة لاحقاً', changedTo: 'تغيّر:',
     berry: 'توت', flour: 'دقيق', sugar: 'سكر', cupcake: 'كب كيك', bread: 'خبز', coreplate: 'النواة', workbench: 'منضدة', oven: 'فرن', vend: 'مِنضدة بيع', storeCounter: 'مِنضدة المتجر', bunk: 'سرير',
-    whatsNewBody: 'بلوكسبيرت 2.3.0: قائمة ☰ كبيرة (أو Esc). عالم بقاء بحقيبة وصنع وتروس تدريب. بِع لتالي، أدر مِنضدة البيع، وأرضية النواة تحميك.',
+    whatsNewBody: 'بلوكسبيرت 2.4.0: أدوات البناء تعمل: حدد صندوقاً ثم املأ واستبدل وانسخ والصق ودوّر مع معاينة شفافة، ويمكن التراجع. احفظ البناء وقس بالشريط. مِنضدة البيع تبيع الآن.',
     menuHint: 'اضغط ☰ أو Esc للقائمة', menuHintTouch: 'اضغط ☰ للقائمة', resume: 'متابعة', inventory: 'حقيبة', crafting: 'صنع', shop: 'متجر', wallet: 'محفظة',
     practice: 'تدريب', worth: 'القيمة', tallyPays: 'تالي يدفع', youHave: 'معك', usedIn: 'يُستخدم في', make: 'اصنع', bagFull: 'الحقيبة ممتلئة', noItem: 'ليس معك {item}.',
     coreplateToast: 'النواة. لا شيء يمر.', poofTown: 'بوف! عدت إلى بيرتيفيل.', poofBunk: 'بوف! عدت إلى سريرك.', alreadyLeft: 'هذا المكعب غادر حقيبتك.',
@@ -78,7 +79,7 @@ export const EXTRA = {
   'fa-AF': {
     buildTools: 'ابزار ساخت', exitApp: 'خروج', leaveAsk: 'از بلاکسبرت بیرون می‌روی؟ جهان ذخیره شد.', leave: 'برو', stay: 'بمان', myBuilds: 'ساخت‌های من', undoMinutes: 'دقیقه‌های پیش', snapshots: 'نسخه‌ها', emptyBag: 'بکس خالی است: بلاک بشکن یا از تالی بخر', emptySlot: 'خانه خالی', tooBig: 'خیلی بزرگ: حد ۶۴ × ۳۲ × ۶۴', badBuild: 'این فایل ساخت بلاکسبرت نیست', fineLater: 'آرایش ریز بعداً می‌آید', changedTo: 'عوض شد:',
     berry: 'توت', flour: 'آرد', sugar: 'شکر', cupcake: 'کاپ‌کیک', bread: 'نان', coreplate: 'کف هسته', workbench: 'میز کار', oven: 'تنور', vend: 'پیشخوان فروش', storeCounter: 'پیشخوان دکان', bunk: 'بستر',
-    whatsNewBody: 'بلاکسبرت ۲.۳.۰: Esc حالا فقط فهرست را باز و بسته می‌کند. بکس، ساختن، دکان و کیسه روشن‌ترند. ابزار ساخت نو: یک جعبه برگزین، بعد پر کن، رونویس و بچسبان، با پیش‌نمایش روشن.',
+    whatsNewBody: 'بلاکسبرت ۲.۴.۰: ابزار ساخت کار می‌کند: یک جعبه برگزین، بعد پر کن، عوض کن، رونویس کن و بچسبان، با پیش‌نمایش روشن، و می‌توانی واپس کنی. ساخت را ذخیره کن و با نوار بسنج. پیشخوانت حالا می‌فروشد.',
     menuHint: '☰ یا Esc را برای فهرست بزن', menuHintTouch: '☰ را برای فهرست بزن', resume: 'ادامه', inventory: 'بکس', crafting: 'ساختن', shop: 'دکان', wallet: 'کیسه',
     practice: 'تمرین', worth: 'ارزش', tallyPays: 'تالی می‌پردازد', youHave: 'داری', usedIn: 'در این به کار می‌رود', make: 'بساز', bagFull: 'بکس پر است', noItem: '{item} نداری.',
     coreplateToast: 'کف هسته. چیزی رد نمی‌شود.', poofTown: 'پوف! دوباره در برتی‌ویل.', poofBunk: 'پوف! دوباره کنار بستر.', alreadyLeft: 'این بلاک از بکس رفته است.',
@@ -93,7 +94,7 @@ export const EXTRA = {
   rw: {
     buildTools: 'Ibikoresho', exitApp: 'Sohoka', leaveAsk: 'Sohoka muri Bloxbert? Isi yawe yabitswe.', leave: 'Sohoka', stay: 'Guma', myBuilds: 'Imyubakire yanjye', undoMinutes: 'Iminota ishize', snapshots: 'Amafoto', emptyBag: 'Agasaho karimo ubusa: vuna block cyangwa ugure kwa Tally', emptySlot: 'Akazu ubusa', tooBig: 'Kinini cyane: max 64 × 32 × 64', badBuild: 'Iyi dosiye si iyubakwa rya Bloxbert', fineLater: 'Ibitangaje bito bizaza nyuma', changedTo: 'Byahindutse:',
     berry: 'Imbuto', flour: 'Ifu', sugar: 'Isukari', cupcake: 'Kek', bread: 'Umugati', coreplate: 'Uruhome', workbench: 'Ameza', oven: 'Ibyoto', vend: 'Counter', storeCounter: 'Counter y\'iduka', bunk: 'Buriri',
-    whatsNewBody: 'Bloxbert 2.3.0: Menu ☰ nini (cyangwa Esc). Isi y\'Ubugingo ifite agasaho, gukora, n\'amapine y\'imyitozo. Gurisha Tally, koresha counter yawe, n\'urutare rw\'uruhome rukurinda.',
+    whatsNewBody: 'Bloxbert 2.4.0: Ibikoresho birakora: hitamo agasanduku, uzuze, uhindure, wandukure, ushyire, uzunguruke, hanyuma usubize inyuma. Bika imyubakire, pima umugozi. Counter yawe igurisha ubu.',
     menuHint: 'Kanda ☰ cyangwa Esc ku menu', menuHintTouch: 'Kanda ☰ ku menu', resume: 'Komeza', inventory: 'Agasaho', crafting: 'Kora', shop: 'Iduka', wallet: 'Ikibanza',
     practice: 'imyitozo', worth: 'Agaciro', tallyPays: 'Tally yishyura', youHave: 'Ufite', usedIn: 'Ikoreshwa muri', make: 'Kora', bagFull: 'Agasaho karuzuye', noItem: 'Nta {item} ufite.',
     coreplateToast: 'Uruhome. Ntacyo kirengana.', poofTown: 'Poof! Subira i Bertyville.', poofBunk: 'Poof! Subira ku buriri.', alreadyLeft: 'Iyo block yavuye mu gasaho.',
@@ -108,7 +109,7 @@ export const EXTRA = {
   ti: {
     buildTools: 'መሳርሒ', exitApp: 'ውጻእ', leaveAsk: 'ካብ ብሎክስበርት ትወጽእ? ዓለምካ ተዓቂቡ።', leave: 'ውጻእ', stay: 'ጽናሕ', myBuilds: 'ህንጻታተይ', undoMinutes: 'ደቒቕ ዝሓለፈ', snapshots: 'ስእልታት', emptyBag: 'ቦርሳ ባዶ እዩ፡ ብሎክ ሰብር ወይ ካብ ታሊ ግዛእ', emptySlot: 'ባዶ ቦታ', tooBig: 'ዝያዳ ዓቢ፡ ደረት 64 × 32 × 64', badBuild: 'እዚ ፋይል ህንጻ ብሎክስበርት ኣይኮነን', fineLater: 'ዝርዝር ጌጣ ጌጣ ድሒሩ', changedTo: 'ተቐይሩ:',
     berry: 'ፍረ', flour: 'ዱቄት', sugar: 'ሽኮር', cupcake: 'ኬክ', bread: 'ባኒ', coreplate: 'ኮርፕሌት', workbench: 'ሰደቓ', oven: 'እቶን', vend: 'መደብ መሸጢ', storeCounter: 'መደብ ድኳን', bunk: 'ዓራት',
-    whatsNewBody: 'ብሎክስበርት 2.3.0፡ Esc ሕጂ መእተዊ ጥራይ ይኸፍትን ይዓጽዎን። ቦርሳ፡ ምስራሕ፡ ድኳንን ኪስን ብርሁ ኮይኖም። ሓደሽቲ መሳርሒ፡ ሳጹን ምረጽ፡ ምላእ፡ ቅዳሕ፡ ምጥባቕ ምስ ግልጽ ቅድመ እይታ።',
+    whatsNewBody: 'ብሎክስበርት 2.4.0፡ መሳርሒ ይሰርሕ፡ ሳጹን ምረጽ፡ ምላእ፡ ምትካእ፡ ቅዳሕ፡ ምጥባቕ፡ ምዝዋር፡ ከምኡውን ምለስ። ህንጻ ዓቅብ፡ ብቴፕ ለክፍ። መደብ መሸጢ ሕጂ ይሸይጥ።',
     menuHint: '☰ ወይ Esc ንመእተዊ', menuHintTouch: '☰ ንመእተዊ', resume: 'ቀጽል', inventory: 'ቦርሳ', crafting: 'ምስራሕ', shop: 'ድኳን', wallet: 'ኪስ',
     practice: 'ምልምማድ', worth: 'ዋጋ', tallyPays: 'ታሊ ይከፍል', youHave: 'ኣለካ', usedIn: 'ይውዕል ኣብ', make: 'ግበር', bagFull: 'ቦርሳ መሊኡ', noItem: '{item} የብልካን።',
     coreplateToast: 'ኮርፕሌት። ዝኾነ ኣይሓልፍን።', poofTown: 'ፑፍ! ናብ በርቲቪል ተመሊስካ።', poofBunk: 'ፑፍ! ናብ ዓራትካ ተመሊስካ።', alreadyLeft: 'እዚ ብሎክ ካብ ቦርሳኻ ወጺኡ።',
