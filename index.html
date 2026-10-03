@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-13-tron-default"/>
+<meta name="tech-room-rev" content="2026-10-13-fine-print"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -1647,6 +1647,29 @@
     .hub-drawer .rev{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem;color:#8fb4c9}
     .hub-drawer-news{margin:.35rem 0 .7rem;font-size:.95rem;line-height:1.35}
     .hub-drawer button{display:flex;align-items:center;width:100%;min-height:44px;min-width:44px;margin:.2rem 0;padding:0 .8rem;border-radius:12px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1.2 Outfit,system-ui,sans-serif;cursor:pointer;text-align:left}
+    #fine-print{position:fixed;inset:0;z-index:80;display:flex;background:rgba(5,8,20,.92);color:#e8f7ff}
+    #fine-print[hidden]{display:none !important}
+    .fine-sheet{width:100%;height:100dvh;max-height:100dvh;overflow:auto;box-sizing:border-box;padding:4.25rem 1rem 1.5rem;background:rgba(7,16,24,.92);border:1px solid rgba(34,211,238,.4);box-shadow:0 0 6px rgba(34,211,238,.28)}
+    #fine-print-close{position:fixed;top:8px;right:8px;z-index:81;min-width:44px;min-height:44px;height:44px;padding:0 .85rem;border-radius:999px;border:1px solid rgba(34,211,238,.45);background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
+    .fine-sheet h2{margin:0 0 .4rem;font-size:1.45rem;line-height:1.2;color:#e8f7ff}
+    .fine-kid-intro{margin:0 0 .45rem;font-size:1.05rem;line-height:1.4;color:#e8f7ff}
+    .fine-grown-intro{margin:0 0 .9rem;font-size:.9rem;line-height:1.45;color:#d7eef8}
+    .fine-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+    @media (min-width:1000px){.fine-grid{grid-template-columns:1fr 1fr 1fr}}
+    .fine-tile{display:flex;flex-direction:column;align-items:flex-start;gap:.3rem;min-width:44px;min-height:44px;padding:.7rem;border-radius:12px;border:1px solid rgba(34,211,238,.4);background:rgba(12,23,48,.92);color:#e8f7ff;text-align:left;cursor:pointer;font:650 .95rem/1.35 Outfit,system-ui,sans-serif}
+    .fine-emoji{font-size:1.8rem;line-height:1}
+    .fine-title{font-weight:750;color:#e8f7ff}
+    .fine-kid{color:#e8f7ff}
+    .fine-grown{font-size:.82rem;font-weight:500;line-height:1.45;color:#d7eef8}
+    .fine-grown[hidden]{display:none !important}
+    .fine-grown ul{margin:.35rem 0;padding-left:1.1rem}
+    .fine-grown li{margin:.2rem 0}
+    .fine-updated{margin:1rem 0 .4rem;color:#b7e7f6;font-size:.85rem}
+    #foot-fine-print{min-width:44px;min-height:44px;height:44px;padding:0 .7rem;border-radius:999px;border:1px solid rgba(34,211,238,.45);background:transparent;color:#e8f7ff;font:700 .85rem/1 Outfit,system-ui,sans-serif;cursor:pointer}
+    @media (prefers-reduced-motion:reduce){
+      .fine-sheet,.fine-tile,#fine-print-close{box-shadow:none;border-width:1px}
+    }
+    html[data-kp-contrast="1"] #fine-print,html[data-kp-contrast="1"] .fine-sheet,html[data-kp-contrast="1"] .fine-tile,html[data-kp-contrast="1"] #fine-print-close{background:#000 !important;color:#fff !important;border-color:#ffe14a !important;box-shadow:none !important}
     #hub-drawer-staff a{display:flex;align-items:center;gap:.5rem;min-height:44px;padding:0 .45rem;color:#e8f7ff;text-decoration:none;font-weight:650}
     body.apps-always:not(.is-framed):not(.hub-classic) #shell-footer{display:flex !important;align-items:center;gap:.45rem .7rem;flex-wrap:wrap;min-height:44px;padding:.35rem .7rem;background:#071018;color:#e8f7ff;border-top:1px solid #16324f;font-size:12px;line-height:1.35}
     body.apps-always #shell-footer #shell-lunch,body.apps-always #shell-footer > a[href="/bistro/"]{display:none !important}
@@ -1756,13 +1779,14 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-13-tron-default</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-13-fine-print</span></p>
       <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
       <button type="button" id="drawer-staff" data-i18n="staff" aria-expanded="false" aria-controls="hub-drawer-staff">Staff</button>
       <div id="hub-drawer-staff" hidden></div>
+      <button type="button" id="drawer-fine-print">⚖️ Fine Print</button>
     </div>
     <div class="stickies" id="stickies" hidden>
       <p class="announce" id="announce" hidden></p>
@@ -1829,7 +1853,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-13-tron-default</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-13-fine-print</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.7</strong> — Each music job has its own tab, and your song stays in the player at the bottom.</p>
@@ -2240,9 +2264,152 @@
       </div>
       <iframe id="app-frame" title="App" hidden allowfullscreen allow="accelerometer; gyroscope; magnetometer; fullscreen; orientation-lock"></iframe>
     </div>
+    <div id="fine-print" class="fine-print" hidden role="dialog" aria-modal="true" aria-labelledby="fine-print-title">
+      <div class="fine-sheet">
+        <button type="button" id="fine-print-close" aria-label="Close"><span aria-hidden="true">✕ </span>Close</button>
+        <h2 id="fine-print-title">About This Hub 📜</h2>
+        <p class="fine-kid-intro">Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.</p>
+        <p class="fine-grown-intro">KuliNet is a set of free learning apps made by a teacher for Technology Education students at Solvay Middle School (grades 6–8) in Solvay, New York. This page explains who owns what, credits, student data, and how to reach us.</p>
+        <div id="fine-print-grid" class="fine-grid"></div>
+        <p class="fine-updated" id="fine-print-updated">Last updated October 3, 2026</p>
+      </div>
+    </div>
+    <script>
+      var FINE_PRINT = [
+        { emoji: "🛠️", title: "Made Here", ready: true,
+          kid: "Mr. Kulibert and his helper bots built these apps for our class. They're free, and nobody is selling anything here.",
+          grown: "The KuliNet apps are original educational software that teacher Diego Kulibert created for classroom teaching. There are no ads, no purchases, and nothing for sale, and student information is never sold. Some apps were built with help from AI coding tools and include open-source parts. Like most websites, the apps are hosted by outside services (Cloudflare and Vercel, plus the school's Google Workspace for photos) and may load shared resources such as web fonts." },
+        { emoji: "🏷️", title: "Not Theirs", ready: true,
+          kid: "Bertopia is a block-building game, but it isn't Minecraft or Roblox. We're not connected to those games or the companies that make them. Berty is our own character, not anybody else's.",
+          grown: "KuliNet is not affiliated with, endorsed by, or sponsored by Mojang, Microsoft, Roblox Corporation, Sesame Workshop, or any other company. Minecraft, Roblox, and any other product names mentioned here belong to their owners and are used only for description or comparison. Apps on this hub include Bertopia (with its starter world, Bertyville), HoldIt, TrussTime, ArchWorks, TechWorks, DJ Berty, Berty's Run, Baboo, Bits & Bobs, and the Bulletin Board. These are names for a classroom project. They are not registered trademarks." },
+        { emoji: "⭐", title: "Credits", ready: false,
+          kid: "Some of the code, fonts, sounds, and 3D models came from people who shared their work for free. We say thank you by listing their names.",
+          grown: "Parts of these apps use open-source software and free-licensed assets under their licenses, and the license notices are kept with them. A full list showing each item's name, author, license, and link is on the Credits page. Some textures and images were made in-house to keep licensing simple." },
+        { emoji: "🔒", title: "Your Privacy", ready: true,
+          kid: "You use a code name, not your real name. Don't type your real name, address, phone number, or passwords into any app here. Only Mr. Kulibert knows which code name is yours. Photos you turn in stay private until he checks them.",
+          grown: "Students sign in with a class code and an alias instead of their real names.",
+          points: [
+            "What's saved on the device: Most apps save work only in the browser on the student's device.",
+            "What's saved online: TechWorks and the teacher's control panel save aliases, progress, XP, and marks in a private Cloudflare database.",
+            "Photos: Photos turned in for assignments or posted to the Bulletin Board are uploaded to a private folder in Mr. Kulibert's school Google Drive, which runs on the district's Google Workspace account. Before a photo is stored, the app re-saves it to remove location data. No classmate sees a photo until the teacher approves it.",
+            "Who can see it: Only Mr. Kulibert, through a passkey-protected staff login.",
+            "Matching aliases to students: The list linking aliases to real students is kept offline or in a two-factor-protected place, and never on this site.",
+            "How long it's kept: Data is kept until the student graduates, or deleted sooner.",
+            "Never: Student data is never sold, used for advertising, or shared, except as the law requires."
+          ],
+          after: "The hub is made to follow FERPA, COPPA, New York Education Law §2-d, and Solvay school district rules. For the district's data privacy policies and the Parents' Bill of Rights for Data Privacy and Security, see the Solvay Union Free School District website." },
+        { emoji: "🏫", title: "School Use", ready: true,
+          kid: "These apps are for class and learning. Your teacher decides which ones are open each day. Playing at home is optional and never counts against your grade.",
+          grown: "KuliNet is a teacher-created classroom resource. It was built to follow district and New York State student data rules, but it is not an official product of the Solvay Union Free School District. Using it at home is optional and is never required for a grade." },
+        { emoji: "🚧", title: "Work in Progress", ready: true,
+          kid: "We keep building and fixing these apps, so sometimes things break or change. If something looks weird, tell Mr. Kulibert.",
+          grown: "The apps are provided \"as is,\" without any warranty, and may change, pause, or be removed at any time. Work saved only in a browser can be lost if that browser's data is cleared or the student switches devices, so students should keep a copy of anything important." },
+        { emoji: "🎨", title: "Student Creations", ready: true,
+          kid: "What you make belongs to you. The class gets to see and remix it, and you always get credit by your code name. Nothing goes on the Bulletin Board until your teacher says OK.",
+          grown: "Students keep authorship of what they create. When a student shares a creation on the hub, classmates may view and remix it for class purposes. Remixes keep credit to the original maker's alias. The teacher approves every post before it appears and can remove any content at any time, including when a student or family asks." },
+        { emoji: "🤝", title: "Be Kind", ready: true,
+          kid: "Only share things that are kind, school-appropriate, and made by you or the class.",
+          grown: "Shared content must follow the district's code of conduct and acceptable use policy. Don't upload copyrighted material you don't have permission to use, photos of other people, or personal information. The teacher reviews all shared content." },
+        { emoji: "✉️", title: "Questions?", ready: true,
+          kid: "Questions or worries? Talk to Mr. Kulibert or a grown-up you trust.",
+          grown: "Parents, guardians, and rights holders can email rkulibert@solvayschools.org with questions, privacy requests (such as viewing or deleting a student's data), or takedown requests. Please name the app and describe the issue. We'll look into it and reply promptly, and anything that appears to infringe someone's rights will be taken down while we review it." }
+      ];
+      (function () {
+        var panel = document.getElementById("fine-print");
+        var grid = document.getElementById("fine-print-grid");
+        var opener = null;
+        if (!panel || !grid) return;
+        FINE_PRINT.forEach(function (item, index) {
+          if (!item.ready) return;
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "fine-tile";
+          btn.setAttribute("aria-expanded", "false");
+          var emoji = document.createElement("span");
+          emoji.className = "fine-emoji";
+          emoji.setAttribute("aria-hidden", "true");
+          emoji.textContent = item.emoji;
+          var title = document.createElement("span");
+          title.className = "fine-title";
+          title.textContent = item.title;
+          var kid = document.createElement("span");
+          kid.className = "fine-kid";
+          kid.textContent = item.kid;
+          var grown = document.createElement("div");
+          grown.className = "fine-grown";
+          grown.hidden = true;
+          var lead = document.createElement("p");
+          lead.textContent = item.grown;
+          grown.appendChild(lead);
+          if (item.points) {
+            var list = document.createElement("ul");
+            item.points.forEach(function (line) {
+              var li = document.createElement("li");
+              li.textContent = line;
+              list.appendChild(li);
+            });
+            grown.appendChild(list);
+          }
+          if (item.after) {
+            var after = document.createElement("p");
+            after.textContent = item.after;
+            grown.appendChild(after);
+          }
+          btn.appendChild(emoji);
+          btn.appendChild(title);
+          btn.appendChild(kid);
+          btn.appendChild(grown);
+          btn.addEventListener("click", function () {
+            var open = grown.hidden;
+            grown.hidden = !open;
+            btn.setAttribute("aria-expanded", open ? "true" : "false");
+          });
+          btn.setAttribute("data-fine", String(index));
+          grid.appendChild(btn);
+        });
+        function openFine(from) {
+          opener = from || document.activeElement;
+          panel.hidden = false;
+          document.body.classList.add("fine-print-open");
+          var closeBtn = document.getElementById("fine-print-close");
+          if (closeBtn) closeBtn.focus();
+        }
+        function closeFine() {
+          panel.hidden = true;
+          document.body.classList.remove("fine-print-open");
+          if (opener && opener.focus) opener.focus();
+        }
+        var closeBtn = document.getElementById("fine-print-close");
+        if (closeBtn) closeBtn.addEventListener("click", closeFine);
+        function bindDoor(id) {
+          var btn = document.getElementById(id);
+          if (!btn || btn.getAttribute("data-fine-bound")) return;
+          btn.setAttribute("data-fine-bound", "1");
+          btn.addEventListener("click", function () {
+            var hub = document.getElementById("hub-drawer");
+            if (hub) hub.hidden = true;
+            var back = document.getElementById("hub-drawer-backdrop");
+            if (back) back.hidden = true;
+            var menu = document.getElementById("kb-menu");
+            if (menu) menu.setAttribute("aria-expanded", "false");
+            openFine(btn);
+          });
+        }
+        bindDoor("drawer-fine-print");
+        bindDoor("foot-fine-print");
+        document.addEventListener("DOMContentLoaded", function () { bindDoor("foot-fine-print"); });
+        document.addEventListener("keydown", function (ev) {
+          if (!ev || ev.key !== "Escape" || panel.hidden) return;
+          ev.preventDefault();
+          ev.stopPropagation();
+          closeFine();
+        }, true);
+      })();
+    </script>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-13-tron-default</span>
+      <span class="hub-foot-rev">rev 2026-10-13-fine-print</span>
       <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
+      <button type="button" id="foot-fine-print">⚖️ Fine Print</button>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
     </footer>
