@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.3'
+const VERSION = '2.5.4'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -15,6 +15,7 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
+import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
@@ -49,7 +50,11 @@ const MAX_LEVEL = 2
 let LANG = qs.get('lang') || ''
 if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
 if (!STR[LANG]) LANG = 'en'
-function t(key) { return (EXTRA[LANG] && EXTRA[LANG][key]) || (STR[LANG] && STR[LANG][key]) || (STR.en && STR.en[key]) || key }
+function t(key) {
+  const hit = (EXTRA[LANG] && EXTRA[LANG][key]) || (STR[LANG] && STR[LANG][key]) || (EXTRA.en && EXTRA.en[key]) || (STR.en && STR.en[key])
+  if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
+  return hit
+}
 function applyI18n() {
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
@@ -448,8 +453,9 @@ session = createSession({
   open: (id) => panels && panels.open(id),
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
-  assign: (id) => pick(id),
+  assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
 })
+const stations = createStations({ t, give: () => {} })
 panels = mountPanels({
   t, toast,
   save: () => save(),
@@ -498,13 +504,7 @@ panels = mountPanels({
       g.append(p)
     }
   },
-  paintStation: (g) => {
-    const p = document.createElement('p')
-    p.className = 'gnote'
-    p.textContent = t('addCoal')
-    g.append(p)
-    g.append(Object.assign(document.createElement('button'), { type: 'button', className: 'gtile', textContent: t('bake') }))
-  },
+  paintStation: (g) => stations.paint(g, '0,5,0', 'oven'),
 })
 const learn = createLearn({
   t, toast, close: () => panels.close(),
@@ -565,27 +565,44 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 }
 
 const bar = $('hotbar')
-BLOCKS.forEach(([id, name, , tag, icon]) => {
-  const b = document.createElement('button')
-  b.className = 'slot'; b.type = 'button'; b.dataset.id = id
-  b.setAttribute('aria-label', t(name) + ' ' + tag)
-  const sw = document.createElement('span'); sw.className = 'sw pat-' + (id % 6)
-  if (icon) {
-    sw.style.backgroundPosition = '0 ' + (-ATLAS[icon] * 30) + 'px'
-    sw.style.backgroundSize = '30px ' + (mats.length * 30) + 'px'
-  } else sw.classList.add('glass')
-  const tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = tag
-  const l = document.createElement('span'); l.className = 'lbl'; l.dataset.block = name; l.textContent = t(name)
-  b.append(sw, tg, l)
-  b.addEventListener('click', () => pick(id))
-  bar.append(b)
-})
+const barIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+let selectedSlot = 0
+function paintBar() {
+  bar.innerHTML = ''
+  barIds.forEach((id, i) => {
+    const b = document.createElement('button')
+    b.className = 'slot'
+    b.type = 'button'
+    b.dataset.slot = String(i)
+    b.dataset.id = String(id)
+    const name = (BLOCKS.find((x) => x[0] === id) || [])[1] || 'stone'
+    b.setAttribute('aria-label', t(name))
+    b.setAttribute('aria-pressed', String(i === selectedSlot))
+    const l = document.createElement('span')
+    l.className = 'lbl'
+    l.textContent = t(name)
+    b.append(l)
+    b.addEventListener('click', () => { selectedSlot = i; current = id; paintBar() })
+    bar.append(b)
+  })
+  const bag = document.createElement('button')
+  bag.type = 'button'
+  bag.className = 'slot bag-tile'
+  bag.dataset.bag = '1'
+  bag.textContent = t('bag')
+  bag.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
+  bar.append(bag)
+}
 function pick(id) {
   current = id
-  for (const el of bar.children) el.setAttribute('aria-pressed', String(+el.dataset.id === id))
+  barIds[selectedSlot] = id
+  paintBar()
   $('current').textContent = blockName(id)
-  const slot = bar.querySelector('[data-id="' + id + '"]')
-  if (slot) slot.scrollIntoView({ inline: 'center', block: 'nearest' })
+}
+function bagPick(item, slot) {
+  selectedSlot = slot
+  const id = typeof item === 'number' ? item : (BLOCKS.find((b) => b[1] === item) || [1])[0]
+  pick(id)
 }
 function aimed() {
   if (lastPointer) {
@@ -648,15 +665,8 @@ async function showInspect() {
     list.append(p)
   }
 }
-pick(current)
-function repaintBlocks() {
-  for (const el of bar.children) {
-    const b = BLOCKS.find((x) => x[0] === +el.dataset.id)
-    el.setAttribute('aria-label', t(b[1]) + ' ' + b[3])
-    el.querySelector('.lbl').textContent = t(b[1])
-  }
-  $('current').textContent = blockName(current)
-}
+paintBar()
+function repaintBlocks() { paintBar() }
 
 const drawer = $('drawer'), scrim = $('scrim')
 function openMenu(on) {
