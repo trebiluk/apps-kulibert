@@ -3,6 +3,8 @@
 This folder is the source for Bloxbert. It is not deployed (see `/.vercelignore`).
 The live site serves only the built static folders in the repo root.
 
+Student door is Bloxbert 2.0.0 at `/blocks/` (Bertyville). `/blocks-test/` stays at test 1.2 until Diego says to remove it.
+
 - `/blocks/` is the **student door** (Bloxbert 2.0.0 and later). Build into it with `npm run build`.
 - `/blocks-test/` is **Bloxbert test 1.2**, the test page. It stays up until Diego says to remove it. Don't build 2.x into it.
 

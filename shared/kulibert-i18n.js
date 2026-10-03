@@ -96,6 +96,7 @@
   "blurbSpire": "Build a tall tower",
   "blurbDrift": "Fly a calm glider",
   "blurbHoldit": "Test a bridge design",
+  "blurbBloxbert": "Build in Bertyville",
   "blurbGinger": "Plan a room",
   "blurbPaper": "Build with one sheet",
   "blurbLogo": "Make your own logo",

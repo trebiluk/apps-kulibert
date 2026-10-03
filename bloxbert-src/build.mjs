@@ -15,10 +15,12 @@ const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLO
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
 console.log('out:', OUT)
 mkdirSync(OUT + '/assets', { recursive: true })
+const STUDENT = path.basename(OUT) === 'blocks'
+console.log('student build:', STUDENT, OUT)
 await build({
   entryPoints: ['src/main.js'], bundle: true, minify: true, format: 'iife', target: 'es2020',
   outfile: OUT + '/app.js', loader: { '.json': 'json' }, legalComments: 'eof', metafile: true,
-  define: { 'process.env.NODE_ENV': '"production"' },
+  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false' },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 cpSync('index.html', OUT + '/index.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')

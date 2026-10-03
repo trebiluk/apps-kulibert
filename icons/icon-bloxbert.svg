@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Bloxbert">
+  <rect width="128" height="128" rx="28" fill="#0F766E"/>
+  <rect x="5" y="5" width="118" height="118" rx="24" fill="none" stroke="#ECFEFF" stroke-width="3"/>
+  <rect x="28" y="58" width="28" height="28" rx="4" fill="#22D3EE"/>
+  <rect x="52" y="44" width="28" height="42" rx="4" fill="#5EEAD4"/>
+  <rect x="76" y="62" width="24" height="24" rx="4" fill="#3B82F6"/>
+  <path d="M36 58V40h12v18" fill="none" stroke="#ECFEFF" stroke-width="4"/>
+  <rect x="40" y="34" width="8" height="8" fill="#F8FAFC"/>
+</svg>
