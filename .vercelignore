@@ -1,3 +1,5 @@
 # Vercel: files here are not deployed. Everything else in the repo root deploys as before.
 # Bloxbert source; the built doors are /blocks/ and /blocks-test/.
 /bloxbert-src
+# Alice's Prairie source; the built door is /alice/.
+/alice-src

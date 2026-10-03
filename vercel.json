@@ -946,6 +946,37 @@
       ]
     },
     {
+      "source": "/alice",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/alice/",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/alice/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://kulibert.net https://*.kulibert.net"
+        }
+      ]
+    },
+    {
       "source": "/spancraft/(.*)",
       "headers": [
         {

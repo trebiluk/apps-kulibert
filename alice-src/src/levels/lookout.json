@@ -1,0 +1,12 @@
+{
+  "id": "lookout-L01",
+  "name": "First Watch",
+  "kind": "hawk",
+  "holes": 5,
+  "seconds": 60,
+  "hawks": 8,
+  "goal": "Score 500",
+  "goalScore": 500,
+  "stars": [300, 500, 800],
+  "skill": "pattern-recognition"
+}
