@@ -15,9 +15,17 @@ await new Promise((r) => setTimeout(r, 1500))
 await page.evaluate(() => document.getElementById('game-menu').click())
 await new Promise((r) => setTimeout(r, 300))
 const open = await page.$eval('#sheet', (el) => !el.hidden && el.dataset.panel === 'menu')
+await new Promise((r) => setTimeout(r, 800))
+const pics = await page.evaluate(() => {
+  document.getElementById('game-menu').click()
+  const menu = document.querySelectorAll('#sheet .gtile').length
+  const icons = new Set([...document.querySelectorAll('#sheet .gic')].map((n) => n.textContent))
+  const slots = [...document.querySelectorAll('#hotbar canvas')].map((c) => c.toDataURL())
+  return { menu, icons: icons.size, text: document.body.innerText.includes('[object'), slots: new Set(slots).size }
+})
 await browser.close()
-if (errs.length || !hot || !open) {
-  console.error(errs.join('\n') || 'menu did not open')
+if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5) {
+  console.error(errs.join('\n') || JSON.stringify(pics))
   process.exit(1)
 }
-console.log('smoke ok', url)
+console.log('smoke ok', url, pics)

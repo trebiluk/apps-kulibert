@@ -21,10 +21,15 @@ export function createStations(api) {
       }
     }
   }
-  function addFuel(key) { const r = get(key, 'oven'); r.fuel += 1; r.left += 4 }
+  function addFuel(key) {
+    if (api.spend && !api.spend('coal', 1)) return false
+    const r = get(key, 'oven'); r.fuel += 1; r.left += 4
+    return true
+  }
   function addInput(key, item) {
     const r = get(key, 'oven')
     if (!r.fuel && !r.left) return false
+    if (api.spend && !api.spend(item, item === 'sand' ? 2 : 1)) return false
     const recipe = OVEN.find((x) => x.in[0][0] === item)
     r.input.push(item)
     r.pending = recipe ? recipe.out[0] : 'glass'
@@ -35,7 +40,7 @@ export function createStations(api) {
   function take(key) {
     const r = get(key, 'oven')
     const item = r.output.shift()
-    if (item && api.give) api.give(item)
+    if (item && api.give) api.give(item, 1)
     return item
   }
   function view(key) {

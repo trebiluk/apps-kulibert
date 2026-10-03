@@ -9,7 +9,7 @@ export function mountPanels(api) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile'
-    b.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg></span><span class="glbl"></span>'
+    b.innerHTML = '<span class="gic">' + icon + '</span><span class="glbl"></span>'
     b.querySelector('.glbl').textContent = label
     if (extra) b.title = extra
     b.addEventListener('click', fn)

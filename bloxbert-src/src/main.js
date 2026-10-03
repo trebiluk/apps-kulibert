@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.6'
+const VERSION = '2.5.7'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -15,7 +15,7 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
-import { icon } from './icons.js'
+import { blockIcon } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -455,8 +455,9 @@ session = createSession({
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
+  blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
 })
-const stations = createStations({ t, give: (item) => session && session.give && session.give(item) })
+const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)) })
 panels = mountPanels({
   t, toast,
   save: () => save(),
@@ -576,7 +577,8 @@ function paintBar() {
     b.type = 'button'
     b.dataset.slot = String(i)
     b.dataset.id = String(id)
-    const name = (BLOCKS.find((x) => x[0] === id) || [])[1] || 'stone'
+    const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[2]
+    const name = block[1]
     b.setAttribute('aria-label', t(name))
     b.setAttribute('aria-pressed', String(i === selectedSlot))
     const l = document.createElement('span')
@@ -584,15 +586,15 @@ function paintBar() {
     l.textContent = t(name)
     b.append(l)
     b.addEventListener('click', () => selectSlot(i))
-    const img = icon((ATLAS[name] || id) % 21, t(name))
-    b.prepend(img)
+    b.prepend(blockIcon(block, ATLAS))
     bar.append(b)
   })
   const bag = document.createElement('button')
   bag.type = 'button'
   bag.className = 'slot bag-tile'
   bag.dataset.bag = '1'
-  bag.textContent = t('bag')
+  bag.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
+  bag.querySelector('.lbl').textContent = t('bag')
   bag.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bag)
 }

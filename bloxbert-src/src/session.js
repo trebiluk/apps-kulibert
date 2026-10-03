@@ -8,7 +8,7 @@ import { canMake, make } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
-import { icon } from './icons.js'
+import { blockIcon, itemSvg } from './icons.js'
 
 export function createSession(api) {
   const bag = createBag()
@@ -57,8 +57,9 @@ export function createSession(api) {
       const sw = document.createElement('span')
       sw.className = 'sw'
       const item = s && ITEMS[s.item]
-      if (item && item.svg) sw.innerHTML = icon(item.svg)
-      else if (item) sw.textContent = item.letter
+      if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
+      else if (item && item.block && api.blockIcon) sw.append(api.blockIcon(item.block))
+      else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="currentColor"/></svg>')
       const tag = document.createElement('span')
       tag.className = 'tag'
       tag.textContent = item ? item.letter : ''
@@ -93,9 +94,12 @@ export function createSession(api) {
     g.append(p)
   }
   function itemIcon(item) {
-    if (!item) return ''
-    if (item.svg) return icon(item.svg)
-    return '<span class="sw pat-' + ((item.block || 1) % 6) + '"></span>'
+    if (!item) return document.createElement('span')
+    if (item.svg) { const s = document.createElement('span'); s.innerHTML = itemSvg(item.svg); return s }
+    if (item.block && api.blockIcon) return api.blockIcon(item.block)
+    const s = document.createElement('span')
+    s.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>')
+    return s
   }
   function paintBag(g) {
     if (mode !== 'survival') {
@@ -104,8 +108,14 @@ export function createSession(api) {
         const b = document.createElement('button')
         b.type = 'button'
         b.className = 'gtile'
-        b.innerHTML = '<span class="gic"><img alt="" width="48" height="48" src="assets/atlas.png"></span><span class="glbl"></span>'
-        b.querySelector('.glbl').textContent = itemName(k)
+        const pic = document.createElement('span')
+        pic.className = 'gic'
+        pic.append(api.blockIcon ? api.blockIcon(item.block) : document.createElement('canvas'))
+        b.append(pic)
+        const lbl = document.createElement('span')
+        lbl.className = 'glbl'
+        lbl.textContent = itemName(k)
+        b.append(lbl)
         b.addEventListener('click', () => { if (api.assign) api.assign(item.block, k); api.toast(itemName(k)) })
         g.append(b)
       }
@@ -121,8 +131,14 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile'
-      b.innerHTML = '<span class="gic" aria-hidden="true">' + (s ? itemIcon(ITEMS[s.item]) : '') + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = s ? itemName(s.item) + ' ' + s.n : ''
+      const pic = document.createElement('span')
+      pic.className = 'gic'
+      pic.append(s ? itemIcon(ITEMS[s.item]) : document.createElement('span'))
+      b.append(pic)
+      const lbl = document.createElement('span')
+      lbl.className = 'glbl'
+      lbl.textContent = s ? itemName(s.item) + ' ' + s.n : ''
+      b.append(lbl)
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       if (s) b.addEventListener('click', () => card(g, s.item))
       g.append(b)
@@ -136,7 +152,8 @@ export function createSession(api) {
       b.type = 'button'
       b.className = 'gtile'
       const out = ITEMS[r.out[0]]
-      b.innerHTML = '<span class="gic">' + itemIcon(out) + '</span><span class="glbl"></span><span class="gneed"></span>'
+      b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
+      b.querySelector('.gic').append(itemIcon(out))
       b.querySelector('.glbl').textContent = itemName(r.out[0])
       b.querySelector('.gneed').textContent = r.in.map(([k, n]) => itemName(k) + '×' + n).join(' ')
       if (!gate.ok && gate.why === 'oven') b.querySelector('.glbl').textContent = t('needsOven')
@@ -187,7 +204,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile item'
-      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
+      b.querySelector('.gic').append(itemIcon(item))
       b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' · ' + t('sell') + ' ⚙ ' + pay : itemName(k)
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
       b.addEventListener('click', () => { sell(k, 1); paintSell(g) })
@@ -435,7 +453,8 @@ export function createSession(api) {
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
-    setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
+    give: (item, n) => bag.add(item, n || 1),
+    spend: (item, n) => bag.take(item, n),
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },

@@ -4,7 +4,7 @@ export function createBag() {
   function count(item) {
     return slots.reduce((n, s) => n + (s && s.item === item ? s.n : 0), 0)
   }
-  function add(item, n, stack = 64) {
+  function add(item, n = 1, stack = 64) {
     let left = n
     for (const s of slots) if (s && s.item === item && s.n < stack) {
       const take = Math.min(stack - s.n, left)
