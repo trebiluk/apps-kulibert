@@ -1355,7 +1355,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.4",
+        version: "MU 2.35.5",
         event: "score",
         level: id,
         score: score,
@@ -2006,6 +2006,7 @@
     document.body.classList.toggle("is-drums", mode === "drums");
     document.body.classList.toggle("expert", mode === "notes" && state.expert);
     document.body.classList.toggle("is-lights", mode === "lights");
+    document.body.classList.toggle("is-band", mode === "band");
     document.body.classList.toggle("is-sound", mode === "sound");
     fitViz();
     const split = $("ws-split");
@@ -2712,6 +2713,43 @@
       }
     });
   }
+  (function armTip() {
+    const live = document.getElementById("kp-live");
+    const close = document.getElementById("tip-close");
+    const dock = document.getElementById("tip-dock");
+    if (!live || !dock) return;
+    let timer = 0;
+    const hide = () => {
+      clearTimeout(timer);
+      live.hidden = true;
+      if (close) close.hidden = true;
+      document.body.classList.remove("tip-on");
+    };
+    const arm = () => {
+      if (live.hidden || !String(live.textContent || "").trim()) {
+        if (close) close.hidden = true;
+        document.body.classList.remove("tip-on");
+        return;
+      }
+      document.body.classList.add("tip-on");
+      if (close) close.hidden = false;
+      clearTimeout(timer);
+      timer = setTimeout(hide, 5000);
+    };
+    const watch = new MutationObserver(arm);
+    watch.observe(live, { attributes: true, childList: true, characterData: true, subtree: true, attributeFilter: ["hidden"] });
+    live.addEventListener("click", hide);
+    if (close) close.addEventListener("click", hide);
+  })();
+  document.addEventListener("click", (ev) => {
+    const btn = ev.target && ev.target.closest && ev.target.closest(".shelf-songs > .btn, .inst-list > .btn, #chords > .btn, #melodies > .btn");
+    if (!btn || !btn.parentElement) return;
+    btn.parentElement.querySelectorAll(":scope > .btn").forEach((el) => {
+      const on = el === btn;
+      el.classList.toggle("on", on);
+      el.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  });
   if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
   if ($("my-songs")) $("my-songs").addEventListener("click", () => {
     resetScroll();
@@ -4096,7 +4134,9 @@
           $("swing-read").textContent = String(state.swing);
         }
         document.querySelectorAll("#styles .btn").forEach((btn) => {
-          btn.classList.toggle("on", btn.textContent === name);
+          const on = btn.textContent === name;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
         });
         renderDrums();
         keep();

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.5** · 2026-10-03 · channel **live**
+
+Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.
+
+## Earlier
+
 **Chip: MU 2.35.4** · 2026-10-02 · channel **live**
 
 Menu opens from the left on every screen.

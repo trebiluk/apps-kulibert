@@ -4,13 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>DJ Berty · MU 2.35.4</title>
+  <title>DJ Berty · MU 2.35.5</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=2.35.4"/>
+  <link rel="stylesheet" href="./styles.css?v=2.35.5"/>
 </head>
 <body>
-  <em id="chip" hidden>MU 2.35.4</em>
+  <em id="chip" hidden>MU 2.35.5</em>
   <div class="scrim" id="scrim"></div>
 
   <section id="home" class="home">
@@ -99,7 +99,7 @@
     <button type="button" id="menu-close" class="btn close" data-i18n="close">Close</button>
     <section class="group" id="menu-chrome">
       <h2 data-i18n="whatsNew">What's new</h2>
-      <p id="whats-line" data-mu="menuEvery">Menu opens from the left on every screen.</p>
+      <p id="whats-line" data-mu="listsEasy">Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.</p>
       <h2 data-i18n="settings">Settings</h2>
       <div id="menu-langs" role="group">
         <span data-i18n="language">Language</span>
@@ -201,7 +201,7 @@
       <p class="hint" data-mu="saveHint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
     </section>
     <section class="group">
-      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.4</span></p>
+      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.5</span></p>
       <a class="btn" href="./teacher.html" data-mu="teacher">Teacher</a>
       <a class="btn" href="./privacy.html" data-mu="privacy">Privacy</a>
     </section>
@@ -238,8 +238,10 @@
           </details>
           <details class="more-box">
             <summary>Chords</summary>
+            <div id="chord-row">
             <div id="chords" class="looks" aria-label="Chords"></div>
             <button type="button" id="bass-btn" class="btn" aria-pressed="false">Bass follows the kick</button>
+            </div>
           </details>
           <details class="more-box">
             <summary>Melody ideas</summary>
@@ -348,7 +350,7 @@
         </details>
       </div>
       <div id="sound-pane">
-        <canvas id="wave-view" class="wave-view" width="640" height="160" aria-hidden="true"></canvas>
+        <div class="sound-controls">
         <div id="sound-notes" class="keys" aria-label="Notes"></div>
         <div id="sound-shapes" class="pen" aria-label="Wave shape"></div>
         <div class="pen" aria-label="Chord">
@@ -362,6 +364,8 @@
           <input id="string-len" type="range" min="25" max="100" value="100"/>
         </label>
         <button type="button" id="string-hear" class="btn">Hear the string</button>
+        </div>
+        <canvas id="wave-view" class="wave-view" width="640" height="160" aria-hidden="true"></canvas>
       </div>
     </section>
 
@@ -397,6 +401,11 @@
     </div>
   </div>
 
+  <div class="tip-dock" id="tip-dock">
+    <p id="kp-live" role="status" hidden></p>
+    <button type="button" id="tip-close" class="tip-x" hidden aria-label="Close">×</button>
+  </div>
+
   <div class="transport" id="transport">
     <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word">Play</span></button>
     <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read">96</b>
@@ -413,7 +422,7 @@
     </div>
   </div>
 
-  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.4" data-menu="#menu-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.5" data-menu="#menu-btn" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -422,7 +431,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=2.35.4"></script>
-  <script src="./app.js?v=2.35.4"></script>
+  <script src="./strings.js?v=2.35.5"></script>
+  <script src="./app.js?v=2.35.5"></script>
 </body>
 </html>

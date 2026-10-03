@@ -8,6 +8,7 @@
   var EN = {
     makeBeat: "Make a beat",
     menuEvery: "Menu opens from the left on every screen.",
+    listsEasy: "Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.",
     mySongs: "My songs",
     songsH: "Songs",
     openOne: "Open one song. Score and drums work on that song.",
@@ -238,6 +239,7 @@
     "uk": {
       "makeBeat": "Зроби біт",
       "menuEvery": "Меню відкривається зліва на кожному екрані.",
+      "listsEasy": "Списки легко читати, підказки не закривають кнопки, а телефон боком займає весь екран.",
       "mySongs": "Мої пісні",
       "songsH": "Пісні",
       "openOne": "Відкрий одну пісню. Ноти і барабани для неї.",
@@ -440,6 +442,7 @@
     "ru": {
       "makeBeat": "Сделай бит",
       "menuEvery": "Меню открывается слева на каждом экране.",
+      "listsEasy": "Списки легко читать, подсказки не закрывают кнопки, а телефон боком занимает весь экран.",
       "mySongs": "Мои песни",
       "songsH": "Песни",
       "openOne": "Открой одну песню. Ноты и барабаны для неё.",
@@ -642,6 +645,7 @@
     "es": {
       "makeBeat": "Haz un ritmo",
       "menuEvery": "El menú se abre desde la izquierda en cada pantalla.",
+      "listsEasy": "Las listas se leen bien, los avisos no tapan los botones, y un teléfono de lado usa toda la pantalla.",
       "mySongs": "Mis canciones",
       "songsH": "Canciones",
       "openOne": "Abre una canción. La partitura y la batería van con ella.",
@@ -844,6 +848,7 @@
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
       "menuEvery": "القائمة تفتح من اليسار في كل شاشة.",
+      "listsEasy": "القوائم سهلة القراءة، والتنبيهات لا تغطي الأزرار، والهاتف بالعرض يستخدم الشاشة كلها.",
       "mySongs": "أغنياتي",
       "songsH": "أغانٍ",
       "openOne": "افتح أغنية واحدة. النوتة والطبول لها.",
@@ -1046,6 +1051,7 @@
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
       "menuEvery": "فهرست از چپ در هر صفحه باز می‌شود.",
+      "listsEasy": "فهرست‌ها آسان خوانده می‌شوند، نکته‌ها روی دکمه‌ها نمی‌آیند، و تلفن به پهلو همهٔ صفحه را می‌گیرد.",
       "mySongs": "آهنگ‌های من",
       "songsH": "آهنگ‌ها",
       "openOne": "یک آهنگ را باز کن. نت و درام برای همان آهنگ است.",
@@ -1248,6 +1254,7 @@
     "rw": {
       "makeBeat": "Kora umurya",
       "menuEvery": "Menyu ifunguka ibumoso kuri buri gice.",
+      "listsEasy": "Urutonde rusomeka neza, inama ntizikubita buto, kandi telefoni itwikiriye ikoresha ecran yose.",
       "mySongs": "Indirimbo zanjye",
       "songsH": "Indirimbo",
       "openOne": "Fungura indirimbo imwe. Inota n'ingoma ni iyo ndirimbo.",
@@ -1450,6 +1457,7 @@
     "ti": {
       "makeBeat": "ምት ግበር",
       "menuEvery": "ዝርዝር ካብ ጸጋም ኣብ ነፍሲ ወከፍ ገጽ ይኽፈት።",
+      "listsEasy": "ዝርዝራት ቀሊል እዮም፣ መዘኻኸሪ ኣብ ልዕሊ መጠወቒ ኣይወድቕን፣ ስልኪ ብጎኒ ኩሉ ገጽ ይጥቀም።",
       "mySongs": "ደርፍታተይ",
       "songsH": "ደርፍታት",
       "openOne": "ሓንቲ ደርፊ ክፈት። ነጥቢን ከበሮን ናታ እዩ።",
