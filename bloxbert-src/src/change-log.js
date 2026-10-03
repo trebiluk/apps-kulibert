@@ -3,10 +3,11 @@ const RETAIN_MS = 14 * 24 * 60 * 60 * 1000
 const MAX_BYTES = 5 * 1024 * 1024
 const BUCKET = 10 * 60 * 1000
 
-export function createLog({ dbName, worldId, chunkSize }) {
+export function createLog({ dbName, worldId: initialWorld, chunkSize }) {
   const pending = []
   let dbp = null
   let bytes = 0
+  let worldId = initialWorld
 
   function idb() {
     if (dbp) return dbp
@@ -63,6 +64,7 @@ export function createLog({ dbName, worldId, chunkSize }) {
     const ds = new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))
     return new Uint8Array(await new Response(ds).arrayBuffer())
   }
+  function setWorld(id) { worldId = id }
   function note(group, actor = 'you') {
     if (!group) return
     for (let i = 0; i < group.n; i++) {
@@ -170,5 +172,5 @@ export function createLog({ dbName, worldId, chunkSize }) {
     })
     bytes = 0
   }
-  return { note, flush, history, prune, clearWorld }
+  return { note, flush, history, prune, clearWorld, setWorld }
 }

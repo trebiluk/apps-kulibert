@@ -121,7 +121,7 @@ body.table #table-place{display:inline-flex;align-items:center;justify-content:c
 html[dir=rtl] #table-place{right:auto;left:12px}
 .tsset{grid-template-columns:repeat(3,1fr)}
 .tsset .qbtn{min-height:48px;justify-content:center}
-#inspect-chip{position:fixed;top:calc(var(--top-h) + 8px);left:12px;z-index:6;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--cyan);background:rgba(11,18,32,.88);color:var(--snow)}
+#inspect-chip{position:fixed;top:calc(var(--top-h) + 8px);left:76px;z-index:6;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--cyan);background:rgba(11,18,32,.88);color:var(--snow)}
 html[data-kb-bar]:not(.kb-framed) #inspect-chip{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #inspect-chip{left:auto;right:64px}
 #inspect-card{position:fixed;left:0;right:0;bottom:0;z-index:12;max-height:40vh;background:rgba(11,18,32,.96);border-top:1px solid var(--teal);padding:10px 12px 16px;overflow:auto}
@@ -131,7 +131,29 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
 #pick-ring{position:fixed;z-index:7;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;border:3px solid var(--cyan);pointer-events:none;background:conic-gradient(var(--teal) 0turn, transparent 0turn)}
 #pick-ring.on{animation:pick 500ms linear}
 @keyframes pick{from{background:conic-gradient(var(--teal) 0turn, transparent 0turn)}to{background:conic-gradient(var(--teal) 1turn, transparent 0turn)}}
-@media (prefers-reduced-motion:reduce){#pick-ring{display:none}}
+.tool:disabled{border-color:rgba(148,163,184,.7)}
+.tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#cbd5e1}
+.pad span,.pad .lbl{background:rgba(11,18,32,.86);color:#f8fafc;padding:2px 6px;border-radius:6px}
+#table-place{background:#0f766e;color:#f8fafc}
+#fs-btn{background:rgba(11,18,32,.78);color:#f8fafc;border-color:#e2e8f0}
+#game-menu{position:fixed;top:calc(var(--top-h) + 8px);left:12px;z-index:7;width:56px;height:56px;border-radius:12px;border:1px solid #e2e8f0;background:rgba(11,18,32,.45);color:#f8fafc;font-size:26px}
+#game-menu small{display:block;font-size:12px;margin-top:-6px}
+html[data-kb-bar]:not(.kb-framed) #game-menu{top:calc(48px + var(--top-h) + 8px)}
+#menu-hint{position:fixed;top:calc(var(--top-h) + 72px);left:16px;z-index:6;max-width:180px;background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid var(--cyan);border-radius:10px;padding:8px;font-size:13px}
+#toast{position:fixed;left:50%;top:calc(var(--top-h) + 64px);transform:translateX(-50%);z-index:8;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--teal);border-radius:10px;padding:8px 12px;pointer-events:none}
+#sheet{position:fixed;inset:0;z-index:15;background:rgba(5,8,20,.72);display:flex;flex-direction:column;padding:12px}
+#sheet[hidden]{display:none}
+.sheet-bar{display:flex;gap:8px;align-items:center}
+.sheet-bar button{min-width:44px;min-height:44px}
+.ggrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;overflow:auto;padding-top:8px}
+.gtile{min-height:88px;min-width:88px;border-radius:12px;border:1px solid rgba(34,211,238,.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.gtile:disabled{color:#cbd5e1;border-color:#64748b}
+.gic{font-size:22px}
+.gnote{grid-column:1/-1;color:#e2e8f0;font-size:14px}
+#poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 60%)}
+@media (min-width:700px){.ggrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (orientation:landscape) and (max-height:500px){#inspect-card{left:auto;right:0;top:calc(var(--top-h) + 8px);bottom:8px;width:min(45vw,420px);max-height:none}}
+@media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
 </style>
 </head>
 <body>
@@ -139,15 +161,24 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">Bloxbert 2.1.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
+  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">2.2.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
+  <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
   <button class="tool" id="undo-btn" aria-label="Undo" data-i18n-label="undo" disabled><span class="ti">↶</span><span class="tl" data-i18n="undo">Undo</span></button>
   <button class="tool" id="redo-btn" aria-label="Redo" data-i18n-label="redo" disabled><span class="ti">↷</span><span class="tl" data-i18n="redo">Redo</span></button>
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti">⬇</span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
+<button id="game-menu" type="button" aria-label="Menu">☰<small>⏸</small></button>
 <button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
+<div id="menu-hint" hidden></div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="poof" hidden aria-hidden="true"></div>
+<div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
+  <div class="sheet-bar"><button type="button" id="sheet-back">← <span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><button type="button" id="sheet-x" aria-label="Close">✕</button></div>
+  <div id="sheet-body"></div>
+</div>
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
 <div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
@@ -195,7 +226,7 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
     <p class="help" data-i18n="keysHint">Click the world to aim. WASD move. Space jump (double-tap to fly). Left click break. Right click place.</p>
     <button class="row" id="m-about"><span class="ic">i</span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">Bloxbert 2.1.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
+  <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card" role="dialog" aria-labelledby="about-title">
@@ -230,7 +261,7 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.1.0" data-rtl="1" data-menu="#menu-btn" defer></script>
-<script src="app.js?v=2.1.0" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.2.0" data-rtl="1" data-menu="#menu-btn" defer></script>
+<script src="app.js?v=2.2.0" defer></script>
 </body>
 </html>

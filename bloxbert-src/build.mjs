@@ -13,7 +13,10 @@ process.chdir(HERE)
 const i = process.argv.indexOf('--out')
 const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLOX_OUT || '../blocks')
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
-console.log('out:', OUT)
+import { spawnSync } from 'child_process'
+spawnSync(process.execPath, ['tools/make-tiles.mjs'], { stdio: 'inherit' })
+const check = spawnSync(process.execPath, ['tools/econ-check.mjs'], { stdio: 'inherit' })
+if (check.status) process.exit(check.status)
 mkdirSync(OUT + '/assets', { recursive: true })
 const STUDENT = path.basename(OUT) === 'blocks'
 console.log('student build:', STUDENT, OUT)
@@ -24,7 +27,7 @@ await build({
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 cpSync('index.html', OUT + '/index.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
-for (const f of ['atlas.png', 'glass.png', 'KENNEY-LICENSE.txt']) cpSync('assets/' + f, OUT + '/assets/' + f)
+for (const f of readdirSync('assets').filter((f) => f.endsWith('.png') || f.endsWith('.txt') || f.endsWith('.json'))) cpSync('assets/' + f, OUT + '/assets/' + f)
 let raw = 0, gz = 0
 const walk = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => e.isDirectory() ? walk(d + '/' + e.name) : [d + '/' + e.name])
 for (const f of walk(OUT).filter((f) => !f.endsWith('.txt'))) {

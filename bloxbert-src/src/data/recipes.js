@@ -1,0 +1,13 @@
+export const RECIPES = [
+  { id: 'planks', at: 'hand', in: [['log', 1]], out: ['planks', 4], secs: 0 },
+  { id: 'workbench', at: 'hand', in: [['planks', 4]], out: ['workbench', 1], secs: 2 },
+  { id: 'ice', at: 'hand', in: [['snow', 4]], out: ['ice', 1], secs: 0 },
+  { id: 'oven', at: 'bench', in: [['stone', 8]], out: ['oven', 1], secs: 10 },
+  { id: 'brickGrey', at: 'bench', in: [['stone', 2]], out: ['brickGrey', 2], secs: 2 },
+  { id: 'vend', at: 'bench', in: [['planks', 6], ['glass', 1]], out: ['vend', 1], secs: 10 },
+  { id: 'bunk', at: 'bench', in: [['planks', 3], ['woolBlue', 3]], out: ['bunk', 1], secs: 5 },
+  { id: 'glass', at: 'oven', in: [['sand', 2]], out: ['glass', 1], secs: 5 },
+  { id: 'brickRed', at: 'oven', in: [['redSand', 2]], out: ['brickRed', 1], secs: 5 },
+  { id: 'cupcake', at: 'oven', in: [['flour', 1], ['sugar', 1], ['berry', 2]], out: ['cupcake', 2], secs: 10, label: 'food' },
+  { id: 'bread', at: 'oven', in: [['flour', 2]], out: ['bread', 1], secs: 8, label: 'food' },
+]
