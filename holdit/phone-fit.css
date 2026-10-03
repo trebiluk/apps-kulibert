@@ -1,0 +1,18 @@
+/* HI 1.1.16 — the Hub bar is 48px (body.kb-on). The editor shop is h-dvh,
+   so on a phone the tool dock starts below the screen. Size only the
+   editor (.shop-editor) to the space under the bar. The lobby (.shop
+   without .shop-editor) still scrolls. Inside the Hub frame (kb-framed,
+   padding 0) and on desktop (lg, dock hidden) the shop stays 100dvh.
+   The result dialog's scroll lock sets padding-top: 0, which slides the
+   editor up under the bar. Keep the bar's 48px while it is open. */
+@media (max-width: 1023px) {
+  html:not(.kb-framed) body.kb-on .shop.shop-editor {
+    height: calc(100svh - 48px);
+    height: calc(100dvh - 48px);
+    max-height: calc(100svh - 48px);
+    max-height: calc(100dvh - 48px);
+  }
+}
+html:not(.kb-framed) body.kb-on[data-scroll-locked] {
+  padding-top: 48px !important;
+}

@@ -1,5 +1,9 @@
-**Chip: HI 1.1.10** · 2026-09-24 · channel **live**
+**Chip: HI 1.1.16** · 2026-10-03 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.16 — Build tools fit on phones — 2026-10-03
+
+- What’s new: Build tools fit on phones. Test stays on screen.
 
 ## 1.1.10 — A fir and steel bench — 2026-09-26
 
