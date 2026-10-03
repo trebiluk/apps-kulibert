@@ -55,7 +55,7 @@ export function mountPanels(api) {
           tile('🔀', api.t('mode'), () => open('mode')),
           tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),
           tile('🧰', api.t('buildTools'), () => { close(); api.tools() }),
-          tile('★', api.t('whatsNew'), () => open('news')),
+          tile('📜', api.t('changelog'), () => open('log')),
           tile('🎯', api.t('tryThis'), () => open('goals')),
           tile('♿', api.t('a11y'), () => open('a11y')),
           tile('🚪', api.t('exitApp'), () => open('leave')),
@@ -90,7 +90,7 @@ export function mountPanels(api) {
           tile('▤', api.t('buildTable'), () => api.table()),
         )
       }),
-      news: () => show('news', api.t('whatsNew'), (g) => { const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('whatsNewBody'); g.append(p) }),
+      log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),
       leave: () => show('leave', api.t('exitApp'), (g) => {

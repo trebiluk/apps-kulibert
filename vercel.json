@@ -435,6 +435,11 @@
       "source": "/kidcad/:path*",
       "destination": "/bertycad/:path*",
       "permanent": true
+    },
+    {
+      "source": "/bertopia",
+      "destination": "/bertopia/",
+      "permanent": false
     }
   ],
   "rewrites": [
@@ -872,6 +877,10 @@
     {
       "source": "/bistro/:path*",
       "destination": "https://bearcat-bistro.vercel.app/bistro/:path*"
+    },
+    {
+      "source": "/bertopia/:path*",
+      "destination": "/blocks/:path*"
     }
   ],
   "headers": [
@@ -1120,20 +1129,32 @@
     {
       "source": "/fonts/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/shared/i18n/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/shared/kulibert-(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
       ]
     }
   ]

@@ -25,6 +25,13 @@
   }
   function withDir(p) {
     p.dir = dirOf(p.lang);
+    if (raw && raw.look && typeof raw.look === "object") {
+      p.look = {};
+      Object.keys(raw.look).slice(0, 20).forEach(function (k) {
+        var v = raw.look[k];
+        if (/^[a-z0-9-]{1,24}$/.test(k) && v && typeof v === "object") p.look[k] = { theme: String(v.theme || "").slice(0, 16), wall: String(v.wall || "").slice(0, 16), hc: !!v.hc };
+      });
+    }
     return p;
   }
 
@@ -55,6 +62,8 @@
     return { v: 1, size: "M", contrast: false, motion: less ? "less" : "full", sound: true, captions: true, read: false, lang: "en" };
   }
   function tidy(raw) {
+    var p0 = arguments[0];
+
     var p = blank();
     if (!raw || typeof raw !== "object") return p;
     if (raw.size === "S" || raw.size === "L" || raw.size === "XL" || raw.size === "M") p.size = raw.size;
@@ -395,7 +404,8 @@
     apply(stored());
     announce(prev);
   });
-  root.KulibertPrefs = {
+  function setLook(app, partial) { var p = stored(); p.look = p.look || {}; p.look[app] = Object.assign({}, p.look[app] || {}, partial || {}); p = tidy(p); write(p); return p.look[app]; }
+  root.KulibertPrefs = { setLook: setLook,
     get: get,
     set: set,
     setApp: setApp,

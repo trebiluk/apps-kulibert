@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.0'
+const VERSION = '2.5.1'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -14,6 +14,8 @@ import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
+import { CHANGELOG } from './changelog.js'
+import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
 
@@ -484,6 +486,15 @@ panels = mountPanels({
   paintTour: (g) => learn.paintTour(g),
   paintGoals: (g) => learn.paintGoals(g),
   paintA11y: (g) => learn.paintA11y(g),
+  paintLog: (g) => {
+    for (const row of CHANGELOG) {
+      const p = document.createElement('p')
+      p.className = 'gnote'
+      const lines = (row.lines[LANG] || row.lines.en).join(' ')
+      p.textContent = row.v + (row.v === VERSION ? ' · ' + t('youAreHere') : '') + ' · ' + lines
+      g.append(p)
+    }
+  },
 })
 const learn = createLearn({
   t, toast, close: () => panels.close(),
@@ -513,7 +524,7 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
     if (!res && name !== 'select') toast(t('tapCorner'))
   })
 }
-$('game-menu').addEventListener('click', () => openMenu(true))
+$('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
 $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
 let menuFromLock = false
 document.addEventListener('pointerlockchange', () => {
