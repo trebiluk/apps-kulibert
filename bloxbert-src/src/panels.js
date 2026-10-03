@@ -56,6 +56,8 @@ export function mountPanels(api) {
           tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),
           tile('🧰', api.t('buildTools'), () => { close(); api.tools() }),
           tile('★', api.t('whatsNew'), () => open('news')),
+          tile('🎯', api.t('tryThis'), () => open('goals')),
+          tile('♿', api.t('a11y'), () => open('a11y')),
           tile('🚪', api.t('exitApp'), () => open('leave')),
         )
       }, true),
@@ -65,7 +67,13 @@ export function mountPanels(api) {
       wallet: () => show('wallet', api.t('wallet'), (g) => api.paintWallet(g)),
       settings: () => show('settings', api.t('settings'), (g) => api.paintSettings(g)),
       teacher: () => show('teacher', api.t('teacher'), (g) => api.paintTeacher(g)),
-      help: () => show('help', api.t('help'), (g) => { const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p) }),
+      help: () => show('help', api.t('help'), (g) => {
+        g.append(tile('🎬', api.t('tour'), () => open('tour')))
+        const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p)
+      }),
+      tour: () => show('tour', api.t('tour'), (g) => api.paintTour(g)),
+      goals: () => show('goals', api.t('tryThis'), (g) => api.paintGoals(g)),
+      a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
         g.append(
           tile('📂', api.t('loadSaved'), () => api.load()),

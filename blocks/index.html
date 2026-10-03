@@ -124,8 +124,8 @@ html[dir=rtl] #table-place{right:auto;left:12px}
 #inspect-chip{position:fixed;top:calc(var(--top-h) + 8px);left:76px;z-index:6;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--cyan);background:rgba(11,18,32,.88);color:var(--snow)}
 html[data-kb-bar]:not(.kb-framed) #inspect-chip{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #inspect-chip{left:auto;right:64px}
-#inspect-card{position:fixed;left:12px;right:12px;top:calc(var(--top-h) + 64px);z-index:12;max-height:35vh;background:rgba(11,18,32,.96);border:1px solid var(--teal);border-radius:12px;padding:10px 12px;overflow:auto}
-@media (orientation:landscape) and (max-height:500px){#inspect-card{left:30%;right:30%;top:72px;max-height:40vh;width:auto}}
+#inspect-card{position:fixed;left:12px;right:12px;top:188px;z-index:12;max-height:30vh;background:rgba(11,18,32,.96);border:1px solid var(--teal);border-radius:12px;padding:10px 12px;overflow:auto}
+@media (orientation:landscape) and (max-height:500px){#inspect-card{left:34%;right:34%;top:64px;max-height:60%;width:auto}}
 .tool:disabled{opacity:1}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#a9b4c4}
 #size-chip{position:fixed;top:calc(var(--top-h) + 8px);left:50%;transform:translateX(-50%);z-index:6;background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid var(--cyan);border-radius:999px;padding:6px 10px}
@@ -161,7 +161,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
 .gnote{grid-column:1/-1;color:#e2e8f0;font-size:14px}
 #poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 60%)}
 @media (min-width:700px){.ggrid{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media (orientation:landscape) and (max-height:500px){#inspect-card{left:auto;right:0;top:calc(var(--top-h) + 8px);bottom:8px;width:min(45vw,420px);max-height:none}}
+@media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
 @media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
 </style>
 </head>
@@ -170,7 +170,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">2.4.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
+  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">2.5.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -280,7 +280,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.4.0" data-esc="app" data-rtl="1" data-menu="#menu-btn" defer></script>
-<script src="app.js?v=2.4.0" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.5.0" data-esc="app" data-rtl="1" data-menu="#menu-btn" defer></script>
+<script src="app.js?v=2.5.0" defer></script>
 </body>
 </html>

@@ -212,6 +212,17 @@ export function createSession(api) {
     p.className = 'gnote balance'
     p.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + ' ' + t('practice') + '</bdi>'
     g.append(p)
+    const send = document.createElement('button')
+    send.type = 'button'
+    send.className = 'gtile'
+    send.innerHTML = '<span class="gic">📤</span><span class="glbl">' + t('sendTeacher') + '</span>'
+    send.addEventListener('click', () => {
+      if (wallet.state.cogs < 1) return
+      wallet.post({ kind: 'to-teacher', cogs: -1, perk: 'shout', status: 'waiting', by: 'you' })
+      paintChip()
+      api.toast(t('sentTeacher'))
+    })
+    g.append(send)
     const phrase = { sell: t('sold'), buy: t('bought'), 'till-take': t('takeTill'), 'vend-sale': t('townBought'), start: t('startCogs'), teacher: t('teacher') }
     for (const row of wallet.state.ledger.slice(-10).reverse()) {
       const line = document.createElement('p')
@@ -333,7 +344,7 @@ export function createSession(api) {
         if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
         meta.delete(key)
       }
-      bag.add('vend', 1)
+      if (api.removeBlock) api.removeBlock(x, y, z)
     }
     if (id === 26) { home = null; bag.add('bunk', 1) }
     return true

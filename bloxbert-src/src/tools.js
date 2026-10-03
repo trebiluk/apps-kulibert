@@ -116,17 +116,27 @@ export function createTools(api) {
     return pending
   }
   function act(name, opts = {}) {
-    if (name === 'select') return select(opts.a || a || [8, 5, 6], opts.b || b || [12, 6, 8])
+    if (name === 'select') {
+      const aimed = api.aim && api.aim()
+      if (!opts.a && !aimed) { api.toast(api.t('tapCorner')); return null }
+      if (!a) { a = opts.a || aimed; api.toast(api.t('cornerA')); return { a } }
+      b = opts.b || aimed
+      const bx = box()
+      if (bx && tooBig(bx)) { api.toast(api.t('tooBig')); a = b = null; return null }
+      api.toast(tSize())
+      return { a, b }
+    }
     if (name === 'fill') {
       if (!needBox()) return null
       const id = opts.id || api.current()
       const bx = box()
+      if (!bx || tooBig(bx)) { api.toast(api.t('tooBig')); return null }
       const ops = []
       for (let x = bx.x0; x <= bx.x1; x++) for (let y = bx.y0; y <= bx.y1; y++) for (let z = bx.z0; z <= bx.z1; z++) {
         if (api.survival() && api.getVoxel(x, y, z) === 21) continue
         ops.push([x, y, z, id])
       }
-      return stage('fill', ops, api.t('filled').replace('{n}', ops.length))
+      return stage('fill', ops, 'Fill ' + ops.length + '?')
     }
     if (name === 'copy') return copy()
     if (name === 'paste') return stage('paste', [], api.t('paste'))
@@ -152,7 +162,7 @@ export function createTools(api) {
       pending = null
       return group
     }
-    const group = api.apply(ops, pending.label)
+    const group = api.apply(ops, pending.kind === 'fill' ? api.t('filled').replace('{n}', String(ops.length)) : pending.label)
     pending = null
     return group
   }

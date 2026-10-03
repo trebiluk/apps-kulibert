@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.4.0'
+const VERSION = '2.5.0'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -14,7 +14,7 @@ import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
-import { createTools } from './tools.js'
+import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
 
 const T0 = performance.now()
@@ -443,6 +443,7 @@ session = createSession({
   tableOn: () => tableMode,
   open: (id) => panels && panels.open(id),
   close: () => panels && panels.close(),
+  removeBlock: (x, y, z) => edit(x, y, z, 0),
 })
 panels = mountPanels({
   t, toast,
@@ -480,6 +481,14 @@ panels = mountPanels({
   paintBuilds: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('myBuilds') })),
   paintRewind: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('undoMinutes') })),
   paintSnaps: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('snapshots') })),
+  paintTour: (g) => learn.paintTour(g),
+  paintGoals: (g) => learn.paintGoals(g),
+  paintA11y: (g) => learn.paintA11y(g),
+})
+const learn = createLearn({
+  t, toast, close: () => panels.close(),
+  openTour: () => panels.open('tour'),
+  pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
 })
 const tools = createTools({
   t, toast, getVoxel,
@@ -736,7 +745,7 @@ function jumpUp() {
   if (!tap) return
   const now = performance.now()
   if (now - lastJump < 300) {
-    flying = !flying
+  if (session && session.mode === 'survival') { toast(t('noFly')); return }
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : 2
     if (!flying) body.velocity[1] = 0
