@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.4'
+const VERSION = '2.5.5'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -582,7 +582,13 @@ function paintBar() {
     l.className = 'lbl'
     l.textContent = t(name)
     b.append(l)
-    b.addEventListener('click', () => { selectedSlot = i; current = id; paintBar() })
+    b.addEventListener('click', () => selectSlot(i))
+    const img = document.createElement('img')
+    img.alt = t(name)
+    img.width = 48
+    img.height = 48
+    img.src = 'assets/atlas.png'
+    b.prepend(img)
     bar.append(b)
   })
   const bag = document.createElement('button')
@@ -593,9 +599,15 @@ function paintBar() {
   bag.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bag)
 }
+function selectSlot(i) {
+  selectedSlot = (i + 9) % 9
+  current = barIds[selectedSlot]
+  paintBar()
+  $('current').textContent = blockName(current)
+}
 function pick(id) {
-  current = id
   barIds[selectedSlot] = id
+  current = id
   paintBar()
   $('current').textContent = blockName(id)
 }
@@ -803,7 +815,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '1234567890'.indexOf(e.key)
-  if (n >= 0 && !tableMode) pick(n + 1)
+  if (n >= 0 && !tableMode) selectSlot(n === 9 ? 0 : n)
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
@@ -827,7 +839,8 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = 
 document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
 noa.on('tick', () => {
   const s = noa.inputs.pointerState.scrolly
-  if (s && !tableMode) { const i = BLOCKS.findIndex((b) => b[0] === current); pick(BLOCKS[(i + (s > 0 ? 1 : BLOCKS.length - 1)) % BLOCKS.length][0]) }
+  if (s && !tableMode) selectSlot(selectedSlot + (s > 0 ? 1 : -1))
+  if (stations) stations.tick()
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0

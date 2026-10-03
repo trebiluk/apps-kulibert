@@ -104,7 +104,7 @@ export function createSession(api) {
         const b = document.createElement('button')
         b.type = 'button'
         b.className = 'gtile'
-        b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+        b.innerHTML = '<span class="gic"><img alt="" width="48" height="48" src="assets/atlas.png"></span><span class="glbl"></span>'
         b.querySelector('.glbl').textContent = itemName(k)
         b.addEventListener('click', () => { if (api.assign) api.assign(item.block, k); api.toast(itemName(k)) })
         g.append(b)
