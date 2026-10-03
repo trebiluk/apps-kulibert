@@ -106,7 +106,7 @@ export function createSession(api) {
         b.className = 'gtile'
         b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
         b.querySelector('.glbl').textContent = itemName(k)
-        b.addEventListener('click', () => { hot = 0; api.toast(itemName(k) + ' → 1') })
+        b.addEventListener('click', () => { if (api.assign) api.assign(item.block, k); api.toast(itemName(k)) })
         g.append(b)
       }
       return
@@ -187,6 +187,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile item'
+      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' · ' + t('sell') + ' ⚙ ' + pay : itemName(k)
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
       b.addEventListener('click', () => { sell(k, 1); paintSell(g) })
       g.append(b)

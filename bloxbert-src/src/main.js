@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.2'
+const VERSION = '2.5.3'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -305,8 +305,9 @@ function placeBlock() {
   const aimedBlock = noa.targetedBlock
   if (aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
+    if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
     if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station'); return false }
-    if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('station'); return false }
+    if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench'); return false }
     if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
   }
@@ -447,6 +448,7 @@ session = createSession({
   open: (id) => panels && panels.open(id),
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
+  assign: (id) => pick(id),
 })
 panels = mountPanels({
   t, toast,

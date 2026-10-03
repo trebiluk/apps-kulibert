@@ -92,6 +92,7 @@ export function mountPanels(api) {
         )
       }),
       station: () => show('station', api.t('oven'), (g) => api.paintStation(g)),
+      bench: () => show('bench', api.t('workbench'), (g) => api.paintStation(g)),
       log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),
