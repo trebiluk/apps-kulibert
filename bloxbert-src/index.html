@@ -121,6 +121,17 @@ body.table #table-place{display:inline-flex;align-items:center;justify-content:c
 html[dir=rtl] #table-place{right:auto;left:12px}
 .tsset{grid-template-columns:repeat(3,1fr)}
 .tsset .qbtn{min-height:48px;justify-content:center}
+#inspect-chip{position:fixed;top:calc(var(--top-h) + 8px);left:12px;z-index:6;min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--cyan);background:rgba(11,18,32,.88);color:var(--snow)}
+html[data-kb-bar]:not(.kb-framed) #inspect-chip{top:calc(48px + var(--top-h) + 8px)}
+html[dir=rtl] #inspect-chip{left:auto;right:64px}
+#inspect-card{position:fixed;left:0;right:0;bottom:0;z-index:12;max-height:40vh;background:rgba(11,18,32,.96);border-top:1px solid var(--teal);padding:10px 12px 16px;overflow:auto}
+#inspect-card .card{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+#inspect-list{flex:1 1 100%;color:var(--snow);font-size:14px}
+#inspect-list p{margin:6px 0}
+#pick-ring{position:fixed;z-index:7;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;border:3px solid var(--cyan);pointer-events:none;background:conic-gradient(var(--teal) 0turn, transparent 0turn)}
+#pick-ring.on{animation:pick 500ms linear}
+@keyframes pick{from{background:conic-gradient(var(--teal) 0turn, transparent 0turn)}to{background:conic-gradient(var(--teal) 1turn, transparent 0turn)}}
+@media (prefers-reduced-motion:reduce){#pick-ring{display:none}}
 </style>
 </head>
 <body>
@@ -128,21 +139,24 @@ html[dir=rtl] #table-place{right:auto;left:12px}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">Bloxbert 2.0.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
+  <div class="brand"><b>Bloxbert <span class="ver" id="ver-plate">Bloxbert 2.1.0</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <div class="tools">
   <button class="tool" id="undo-btn" aria-label="Undo" data-i18n-label="undo" disabled><span class="ti">↶</span><span class="tl" data-i18n="undo">Undo</span></button>
+  <button class="tool" id="redo-btn" aria-label="Redo" data-i18n-label="redo" disabled><span class="ti">↷</span><span class="tl" data-i18n="redo">Redo</span></button>
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti">⬇</span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
+<button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
+<div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
 <div class="keys" data-i18n="keysHint">Click the world to aim. WASD move. Space jump (double-tap to fly). Left click break. Right click place.</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bloxbert menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bloxbert 2.0.0: Bertyville is open. Build Table for a calm tap-to-place, Creative fly (double-tap Jump), a block picker with a letter on every block, and full screen.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bloxbert 2.1.0: Undo and Redo now take back a whole step. Inspect shows a block's history. Middle-click or long-press a block to pick it.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -152,6 +166,7 @@ html[dir=rtl] #table-place{right:auto;left:12px}
     <input type="file" id="import-file" accept=".json,application/json" hidden>
     <button class="row" id="m-reset"><span class="ic">✱</span><span data-i18n="freshWorld">Fresh world</span></button>
     <button class="row" id="m-hub"><span class="ic">⌂</span><span data-i18n="hub">Back to the Hub</span></button>
+    <button class="row" id="m-inspect"><span class="ic">🔍</span><span data-i18n="inspect">Inspect</span></button>
   </div>
   <div class="sec"><h3 data-i18n="mode">Mode</h3>
     <button class="row on" id="m-creative" aria-pressed="true"><span class="ic">◆</span><span data-i18n="creative">Creative</span></button>
@@ -180,7 +195,7 @@ html[dir=rtl] #table-place{right:auto;left:12px}
     <p class="help" data-i18n="keysHint">Click the world to aim. WASD move. Space jump (double-tap to fly). Left click break. Right click place.</p>
     <button class="row" id="m-about"><span class="ic">i</span><span data-i18n="about">About</span></button>
   </div>
-  <p class="credit"><span class="plate" id="about-plate">Bloxbert 2.0.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
+  <p class="credit"><span class="plate" id="about-plate">Bloxbert 2.1.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
 </nav>
 <div id="about" hidden>
   <div class="card" role="dialog" aria-labelledby="about-title">
@@ -208,8 +223,14 @@ html[dir=rtl] #table-place{right:auto;left:12px}
 </div>
 <button id="table-place" type="button" data-i18n="place">Place</button>
 <div id="hotbar" role="toolbar" aria-label="Blocks"></div>
-<div id="toast" role="status" aria-live="polite" hidden></div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.0.0" data-rtl="1" data-menu="#menu-btn" defer></script>
-<script src="app.js?v=2.0.0" defer></script>
+<div id="inspect-card" hidden role="dialog" aria-labelledby="inspect-title">
+  <div class="card">
+    <button class="icon-btn" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close">✕</button>
+    <b id="inspect-title" data-i18n="inspect">Inspect</b>
+    <div id="inspect-list"></div>
+  </div>
+</div>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bloxbert" data-version="2.1.0" data-rtl="1" data-menu="#menu-btn" defer></script>
+<script src="app.js?v=2.1.0" defer></script>
 </body>
 </html>

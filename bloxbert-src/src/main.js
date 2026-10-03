@@ -1,13 +1,15 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.0.0'
+const VERSION = '2.1.0'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import ATLAS from '../assets/atlas.json'
 import { STR } from './strings.js'
+import { createEdits } from './world-edit.js'
+import { createLog } from './change-log.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -200,35 +202,50 @@ function getVoxel(x, y, z) {
   if (!s) return cj * S < -S ? ID.stone : cj * S > 24 ? 0 : genVoxel(x, y, z)
   return s[(x - ci * S) * S * S + (y - cj * S) * S + (z - ck * S)]
 }
-const undoStack = []
-function edit(x, y, z, v) {
-  const before = getVoxel(x, y, z)
-  if (before === v) return false
-  undoStack.push([x, y, z, before]); if (undoStack.length > 100) undoStack.shift()
-  setVoxel(x, y, z, v); paintUndo()
-  return true
-}
-function undo() {
-  const u = undoStack.pop(); paintUndo()
-  if (!u) { toast(t('nothingUndo')); return false }
-  setVoxel(u[0], u[1], u[2], u[3]); return true
-}
-function drawVoxel(x, y, z, v) {
-  // Our store is the truth. noa.setBlockID no-ops on an unloaded chunk; never trust it as a save.
-  const ci = Math.floor(x / S), cj = Math.floor(y / S), ck = Math.floor(z / S)
-  const chunk = noa.world._storage && noa.world._storage.getChunkByIndexes(ci, cj, ck)
-  if (chunk) noa.setBlock(v, x, y, z)
-}
-function setVoxel(x, y, z, v) {
+function setVoxel(x, y, z, v, draw = true) {
   const ci = Math.floor(x / S), cj = Math.floor(y / S), ck = Math.floor(z / S)
   const k = key(ci, cj, ck)
   let s = saved.get(k)
   if (!s) { s = new Uint16Array(S * S * S); fillGenerated(s, ci * S, cj * S, ck * S); saved.set(k, s) }
   const i = x - ci * S, j = y - cj * S, kk = z - ck * S
   s[i * S * S + j * S + kk] = v
-  drawVoxel(x, y, z, v)
+  if (draw) drawVoxel(x, y, z, v)
   dirty = true
   markSave(t('notSaved'))
+}
+const edits = createEdits({
+  getVoxel,
+  setVoxel,
+  invalidate: (box) => noa.world.invalidateVoxelsInAABB(box),
+})
+const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
+function edit(x, y, z, v) {
+  const group = edits.applyEdit([[x, y, z, v]], { source: 'hand', label: 'hand' })
+  if (group) changeLog.note(group)
+  return !!group
+}
+function undo() {
+  const group = edits.undo()
+  if (!group) { toast(t('nothingUndo')); return false }
+  changeLog.note(group, 'you')
+  toast(t('undid').replace('{n}', String(group.n)))
+  return true
+}
+function redo() {
+  const group = edits.redo()
+  if (!group) return false
+  changeLog.note(group, 'you')
+  toast(t('redid').replace('{n}', String(group.n)))
+  return true
+}
+setInterval(() => { const run = () => changeLog.flush().catch(() => {}); if (window.requestIdleCallback) requestIdleCallback(run); else run() }, 10000)
+document.addEventListener('visibilitychange', () => { if (document.hidden) changeLog.flush().catch(() => {}) })
+changeLog.prune().catch(() => {})
+function drawVoxel(x, y, z, v) {
+  // Our store is the truth. noa.setBlockID no-ops on an unloaded chunk; never trust it as a save.
+  const ci = Math.floor(x / S), cj = Math.floor(y / S), ck = Math.floor(z / S)
+  const chunk = noa.world._storage && noa.world._storage.getChunkByIndexes(ci, cj, ck)
+  if (chunk) noa.setBlock(v, x, y, z)
 }
 function setLook(h, p) {
   const c = noa.camera, max = Math.PI / 2 - 0.01
@@ -242,6 +259,8 @@ setLook(0, 0.18)
 let current = ID.brickRed
 let tableMode = false
 let flying = false
+let inspectOn = false
+let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 function breakBlock() {
   const tget = tableMode ? tableTarget() : noa.targetedBlock
@@ -262,8 +281,9 @@ function placeBlock() {
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
 }
-noa.inputs.down.on('fire', () => { if (!tableMode && noa.container.hasPointerLock) breakBlock() })
-noa.inputs.down.on('alt-fire', () => { if (!tableMode && noa.container.hasPointerLock) placeBlock() })
+noa.inputs.down.on('fire', () => { if (inspectOn) { showInspect(); return } if (!tableMode && noa.container.hasPointerLock) breakBlock() })
+noa.inputs.down.on('alt-fire', () => { if (inspectOn) { showInspect(); return } if (!tableMode && noa.container.hasPointerLock) placeBlock() })
+noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
 const STORE = 'worlds', WORLD = 'bertyville'
@@ -330,7 +350,7 @@ async function readDoc(doc) {
 async function applyDoc(doc) {
   const chunks = await readDoc(doc)
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
-  undoStack.length = 0; paintUndo()
+  edits.clear(); paintUndo()
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   if (Array.isArray(doc.spawn) && doc.spawn.every(Number.isFinite)) noa.entities.setPosition(noa.playerEntity, doc.spawn)
 }
@@ -343,7 +363,8 @@ async function importFile(file) {
   markSave(t('imported'))
 }
 async function resetWorld() {
-  saved.clear(); dirty = true; undoStack.length = 0; paintUndo()
+  saved.clear(); dirty = true; edits.clear(); paintUndo()
+  changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   setLook(0, 0.18)
@@ -362,7 +383,10 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && dir
 const $ = (id) => document.getElementById(id)
 function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
 function toast(text) { const el = $('toast'); if (!el) return; el.textContent = text; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true }, 2400) }
-function paintUndo() { const b = $('undo-btn'); if (b) b.disabled = !undoStack.length }
+function paintUndo() {
+  const u = $('undo-btn'); if (u) u.disabled = !edits.canUndo
+  const r = $('redo-btn'); if (r) r.disabled = !edits.canRedo
+}
 
 const bar = $('hotbar')
 BLOCKS.forEach(([id, name, , tag, icon]) => {
@@ -384,6 +408,50 @@ function pick(id) {
   current = id
   for (const el of bar.children) el.setAttribute('aria-pressed', String(+el.dataset.id === id))
   $('current').textContent = blockName(id)
+  const slot = bar.querySelector('[data-id="' + id + '"]')
+  if (slot) slot.scrollIntoView({ inline: 'center', block: 'nearest' })
+}
+function aimed() {
+  if (noa.targetedBlock && noa.targetedBlock.blockID) return { id: noa.targetedBlock.blockID, pos: noa.targetedBlock.position }
+  if (tableMode) {
+    const id = getVoxel(tableCursor[0], tableCursor[1], tableCursor[2])
+    if (id) return { id, pos: tableCursor.slice() }
+  }
+  return null
+}
+function pickAimed() {
+  const hit = aimed()
+  if (!hit || !hit.id) return false
+  pick(hit.id)
+  toast(t('picked') + ' ' + blockName(hit.id))
+  return true
+}
+function setInspect(on) {
+  inspectOn = on
+  document.body.classList.toggle('inspect', on)
+  const chip = $('inspect-chip')
+  if (chip) chip.hidden = !on
+  const row = $('m-inspect')
+  if (row) row.classList.toggle('on', on)
+}
+async function showInspect() {
+  const hit = aimed()
+  const card = $('inspect-card')
+  const list = $('inspect-list')
+  if (!card || !list) return
+  card.hidden = false
+  list.innerHTML = ''
+  if (!hit) { list.innerHTML = '<p>' + t('inspectEmpty') + '</p>'; return }
+  const rows = await changeLog.history(hit.pos[0], hit.pos[1], hit.pos[2])
+  if (!rows.length) { list.innerHTML = '<p>' + t('inspectEmpty') + '</p>'; return }
+  for (const row of rows) {
+    const verb = row.before === 0 ? t('placed') : row.after === 0 ? t('broke') : t('changed')
+    const name = blockName(row.after || row.before)
+    const time = new Date(row.t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+    const p = document.createElement('p')
+    p.innerHTML = '<bdi>' + t('you') + ' · ' + verb + ' ' + name + ' · ' + time + '</bdi>'
+    list.append(p)
+  }
 }
 pick(current)
 function repaintBlocks() {
@@ -415,10 +483,15 @@ $('import-file').addEventListener('change', async (e) => {
   try { await importFile(f); toast(t('imported')); openMenu(false) } catch (err) { toast(err.message) }
 })
 $('undo-btn').addEventListener('click', () => undo())
+$('redo-btn').addEventListener('click', () => redo())
+edits.onChange = paintUndo
 $('save-btn').addEventListener('click', async () => { const b = await save(); toast(t('saved') + ' · ' + (b / 1024).toFixed(1) + ' KB') })
 paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
 $('m-about').addEventListener('click', () => { $('about').hidden = false; $('about').querySelector('button').focus() })
+$('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
+$('inspect-chip').addEventListener('click', () => setInspect(false))
+$('inspect-close').addEventListener('click', () => { $('inspect-card').hidden = true })
 $('about-close').addEventListener('click', () => { $('about').hidden = true })
 
 let showSpeed = false
@@ -489,13 +562,16 @@ function onJumpTap() {
 }
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
-  if (e.key === 'Escape') { openMenu(false); return }
+  if (e.key === 'Escape') { const card = $('inspect-card'); if (card) card.hidden = true; openMenu(false); return }
   const n = '1234567890'.indexOf(e.key)
   if (n >= 0 && !tableMode) pick(n + 1)
-  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); undo() }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
+  if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
+  if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
+  if (e.key === 'i' || e.key === 'I') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); setInspect(!inspectOn) } }
   if (e.key === ' ' || e.code === 'Space') onJumpTap()
   if (!tableMode) return
-  if (e.key === 'Enter') { e.preventDefault(); placeBlock(); return }
+  if (e.key === 'Enter') { e.preventDefault(); if (inspectOn) showInspect(); else placeBlock(); return }
   const step = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]
   if (!step) return
   e.preventDefault()
@@ -529,25 +605,46 @@ noa.on('tick', () => {
 
 const canvas = noa.container.canvas
 let look = null
+let pressTimer = 0
 const TURN = 58 * Math.PI / 180 / 120
+canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
+canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 canvas.addEventListener('pointerdown', (e) => {
   if (e.pointerType === 'mouse' && !tableMode && !TOUCH_UI) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp, moved: 0 }
+  if (e.pointerType !== 'mouse') {
+    holdPick = false
+    const ring = $('pick-ring')
+    if (ring && !REDUCE) { ring.hidden = false; ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; ring.classList.add('on') }
+    pressTimer = setTimeout(() => {
+      if (!look || look.moved >= 10) return
+      holdPick = true
+      pickAimed()
+      if (ring) ring.hidden = true
+    }, 500)
+  }
 })
 canvas.addEventListener('pointermove', (e) => {
   if (!look || e.pointerId !== look.id) return
   const dx = e.clientX - look.x, dy = e.clientY - look.y
   look.moved += Math.abs(dx) + Math.abs(dy)
+  if (look.moved >= 10 && pressTimer) { clearTimeout(pressTimer); pressTimer = 0; const ring = $('pick-ring'); if (ring) ring.hidden = true }
+  if (look.moved < 10) return
   look.x = e.clientX; look.y = e.clientY; look.t = e.timeStamp
   setLook(noa.camera.heading + dx * TURN, noa.camera.pitch + dy * TURN * 0.85)
 })
 canvas.addEventListener('pointerup', (e) => {
   if (!look || e.pointerId !== look.id) return
   const tap = look.moved < 10
+  clearTimeout(pressTimer); pressTimer = 0
+  const ring = $('pick-ring'); if (ring) { ring.hidden = true; ring.classList.remove('on') }
   look = null
+  if (holdPick) { holdPick = false; return }
+  if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) placeBlock()
+  holdPick = false
 })
-canvas.addEventListener('pointercancel', () => { look = null })
+canvas.addEventListener('pointercancel', () => { look = null; clearTimeout(pressTimer); const ring = $('pick-ring'); if (ring) ring.hidden = true })
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') onJumpTap() }
@@ -732,7 +829,10 @@ fixHome(); setTimeout(fixHome, 600); setTimeout(fixHome, 1600)
 if (!__BLOX_STUDENT__) {
   window.__blocks = {
     version: VERSION, setQuality, refit, get quality() { return quality }, get lang() { return LANG },
-    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, importFile, exportDoc: snapshot,
+    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, importFile, exportDoc: snapshot,
+    applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
+    history: (x, y, z) => changeLog.history(x, y, z),
+    logPrune: (nowMs) => changeLog.prune(nowMs),
     hold: (st, v) => { noa.inputs.state[st] = v },
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
   }

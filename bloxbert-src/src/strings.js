@@ -2,7 +2,8 @@
 export const STR = {
   en: {
     menu: 'Menu', close: 'Close', settings: 'Settings', whatsNew: "What's new", help: 'Help',
-    whatsNewBody: 'Bloxbert 2.0.0: Bertyville is open. Build Table for a calm tap-to-place, Creative fly (double-tap Jump), a block picker with a letter on every block, and full screen.',
+    whatsNewBody: 'Bloxbert 2.1.0: Undo and Redo now take back a whole step. Inspect shows a block\'s history. Middle-click or long-press a block to pick it.',
+    redo: 'Redo', undid: 'Undid {n} blocks', redid: 'Redid {n} blocks', inspect: 'Inspect', inspectEmpty: 'No changes here yet. The world made this.', you: 'You', placed: 'placed', broke: 'broke', changed: 'changed', picked: 'Picked:',
     world: 'World', saveNow: 'Save now', loadSaved: 'Load my saved world', exportWorld: 'Export world file', importWorld: 'Import world file', freshWorld: 'Fresh world',
     mode: 'Mode', creative: 'Creative', buildTable: 'Build Table', survival: 'Survival', contest: 'Build contest', later: 'later cut',
     auto: 'Auto', lite: 'Lite', full: 'Full',
@@ -29,7 +30,8 @@ export const STR = {
   },
   uk: {
     menu: 'Меню', close: 'Закрити', settings: 'Налаштування', whatsNew: 'Що нового', help: 'Допомога',
-    whatsNewBody: 'Bloxbert 2.0.0: Бертівіль відкрито. Режим Build Table для спокійного ставлення, політ у Creative (подвійний стрибок), вибір блока з літерою на кожному і повний екран.',
+    whatsNewBody: 'Bloxbert 2.1.0: Скасувати і Повторити тепер забирають цілий крок. Огляд показує історію блока. Середній клік або довге натискання вибирає блок.',
+    redo: 'Повторити', undid: 'Скасовано {n} блоків', redid: 'Повторено {n} блоків', inspect: 'Огляд', inspectEmpty: 'Тут ще немає змін. Це зробив світ.', you: 'Ви', placed: 'поставив', broke: 'зламав', changed: 'змінив', picked: 'Обрано:',
     world: 'Світ', saveNow: 'Зберегти зараз', loadSaved: 'Завантажити мій світ', exportWorld: 'Експорт файлу світу', importWorld: 'Імпорт файлу світу', freshWorld: 'Новий світ',
     mode: 'Режим', creative: 'Creative', buildTable: 'Build Table', survival: 'Виживання', contest: 'Конкурс будівель', later: 'пізніше',
     auto: 'Авто', lite: 'Легкий', full: 'Повний',
@@ -56,7 +58,8 @@ export const STR = {
   },
   ru: {
     menu: 'Меню', close: 'Закрыть', settings: 'Настройки', whatsNew: 'Что нового', help: 'Помощь',
-    whatsNewBody: 'Bloxbert 2.0.0: Бертивиль открыт. Режим Build Table для спокойной стройки, полёт в Creative (двойной прыжок), выбор блока с буквой на каждом и полный экран.',
+    whatsNewBody: 'Bloxbert 2.1.0: Отмена и Повтор теперь забирают целый шаг. Осмотр показывает историю блока. Средний клик или долгое нажатие выбирает блок.',
+    redo: 'Повтор', undid: 'Отменено {n} блоков', redid: 'Повторено {n} блоков', inspect: 'Осмотр', inspectEmpty: 'Здесь ещё нет изменений. Это сделал мир.', you: 'Вы', placed: 'поставил', broke: 'сломал', changed: 'изменил', picked: 'Выбрано:',
     world: 'Мир', saveNow: 'Сохранить сейчас', loadSaved: 'Загрузить мой мир', exportWorld: 'Экспорт файла мира', importWorld: 'Импорт файла мира', freshWorld: 'Новый мир',
     mode: 'Режим', creative: 'Creative', buildTable: 'Build Table', survival: 'Выживание', contest: 'Конкурс построек', later: 'позже',
     auto: 'Авто', lite: 'Лёгкий', full: 'Полный',
@@ -83,7 +86,8 @@ export const STR = {
   },
   es: {
     menu: 'Menú', close: 'Cerrar', settings: 'Ajustes', whatsNew: 'Novedades', help: 'Ayuda',
-    whatsNewBody: 'Bloxbert 2.0.0: Bertyville está abierto. Modo Build Table para colocar con calma, vuelo Creative (doble toque en Saltar), un selector con una letra en cada bloque y pantalla completa.',
+    whatsNewBody: 'Bloxbert 2.1.0: Deshacer y Rehacer ahora quitan un paso entero. Inspeccionar muestra la historia de un bloque. Clic central o pulsación larga elige el bloque.',
+    redo: 'Rehacer', undid: 'Deshiciste {n} bloques', redid: 'Rehiciste {n} bloques', inspect: 'Inspeccionar', inspectEmpty: 'Aquí no hay cambios todavía. El mundo hizo esto.', you: 'Tú', placed: 'puso', broke: 'rompió', changed: 'cambió', picked: 'Elegido:',
     world: 'Mundo', saveNow: 'Guardar ahora', loadSaved: 'Cargar mi mundo', exportWorld: 'Exportar archivo', importWorld: 'Importar archivo', freshWorld: 'Mundo nuevo',
     mode: 'Modo', creative: 'Creative', buildTable: 'Build Table', survival: 'Supervivencia', contest: 'Concurso', later: 'más tarde',
     auto: 'Auto', lite: 'Lite', full: 'Full',
@@ -110,7 +114,8 @@ export const STR = {
   },
   ar: {
     menu: 'القائمة', close: 'إغلاق', settings: 'الإعدادات', whatsNew: 'ما الجديد', help: 'مساعدة',
-    whatsNewBody: 'بلوكسبيرت 2.0.0: بيرتيفيل مفتوحة. وضع طاولة البناء للوضع بهدوء، طيران إبداعي (اضغط القفز مرتين)، منتقي مكعبات بحرف على كل مكعب، وملء الشاشة.',
+    whatsNewBody: 'بلوكسبيرت 2.1.0: التراجع والإعادة يأخذان الآن خطوة كاملة. الفحص يعرض تاريخ المكعب. النقر الأوسط أو الضغط المطول يختار المكعب.',
+    redo: 'إعادة', undid: 'تراجعت عن {n} مكعبًا', redid: 'أعدت {n} مكعبًا', inspect: 'فحص', inspectEmpty: 'لا تغييرات هنا بعد. العالم صنع هذا.', you: 'أنت', placed: 'وضع', broke: 'كسر', changed: 'غيّر', picked: 'تم الاختيار:',
     world: 'العالم', saveNow: 'احفظ الآن', loadSaved: 'حمّل عالمي المحفوظ', exportWorld: 'تصدير ملف العالم', importWorld: 'استيراد ملف العالم', freshWorld: 'عالم جديد',
     mode: 'الوضع', creative: 'إبداعي', buildTable: 'طاولة البناء', survival: 'بقاء', contest: 'مسابقة بناء', later: 'لاحقًا',
     auto: 'تلقائي', lite: 'خفيف', full: 'كامل',
@@ -137,7 +142,8 @@ export const STR = {
   },
   'fa-AF': {
     menu: 'فهرست', close: 'بستن', settings: 'تنظیمات', whatsNew: 'تازه‌ها', help: 'کمک',
-    whatsNewBody: 'بلاکسبرت ۲.۰.۰: برتی‌ویل باز است. حالت میز ساخت برای گذاشتن آرام، پرواز خلاق (دو بار پرش)، انتخاب‌گر بلاک با یک حرف روی هر بلاک، و تمام‌صفحه.',
+    whatsNewBody: 'بلاکسبرت ۲.۱.۰: واپس و دوباره حالا یک گام کامل را برمی‌گردانند. بررسی تاریخ یک بلاک را نشان می‌دهد. کلیک وسط یا نگهداشتن طولانی بلاک را برمی‌گزیند.',
+    redo: 'دوباره', undid: '{n} بلاک واپس شد', redid: '{n} بلاک دوباره شد', inspect: 'بررسی', inspectEmpty: 'اینجا هنوز تغییری نیست. جهان این را ساخته.', you: 'تو', placed: 'گذاشت', broke: 'شکست', changed: 'عوض کرد', picked: 'برگزیده:',
     world: 'جهان', saveNow: 'همین حالا ذخیره کن', loadSaved: 'جهان ذخیره‌شده‌ام را باز کن', exportWorld: 'بیرون بردن فایل جهان', importWorld: 'آوردن فایل جهان', freshWorld: 'جهان تازه',
     mode: 'حالت', creative: 'خلاق', buildTable: 'میز ساخت', survival: 'بقا', contest: 'مسابقه ساخت', later: 'بعدتر',
     auto: 'خودکار', lite: 'سبک', full: 'کامل',
@@ -164,7 +170,8 @@ export const STR = {
   },
   rw: {
     menu: 'Ibikubiyemo', close: 'Funga', settings: 'Igenamiterere', whatsNew: 'Ibishya', help: 'Ubufasha',
-    whatsNewBody: 'Bloxbert 2.0.0: Bertyville irafunguye. Uburyo bwa Build Table bwo gushyira utuje, kuguruka muri Creative (kanda Kabiri ku Gusimbuka), guhitamo block n’inyuguti ku buri block, n’ekarani yuzuye.',
+    whatsNewBody: 'Bloxbert 2.1.0: Subiza inyuma na Ongera ubu bifata intambwe yose. Suzuma yerekana amateka ya block. Kanda hagati cyangwa gukanda igihe kirekire bihitamo block.',
+    redo: 'Ongera', undid: 'Wasubije inyuma block {n}', redid: 'Wongereye block {n}', inspect: 'Suzuma', inspectEmpty: 'Nta mpinduka ziri hano. Isi ni yo yabikoze.', you: 'Wowe', placed: 'yashyize', broke: 'yavunaguye', changed: 'yahinduye', picked: 'Byahiswemo:',
     world: 'Isi', saveNow: 'Bika ubu', loadSaved: 'Fungura isi nabitse', exportWorld: 'Sohora dosiye y’isi', importWorld: 'Injiza dosiye y’isi', freshWorld: 'Isi nshya',
     mode: 'Uburyo', creative: 'Creative', buildTable: 'Build Table', survival: 'Kubaho', contest: 'Marushanwa', later: 'nyuma',
     auto: 'Auto', lite: 'Yoroheje', full: 'Yuzuye',
@@ -191,7 +198,8 @@ export const STR = {
   },
   ti: {
     menu: 'ዝርዝር', close: 'ዕጸው', settings: 'ቅጥዕታት', whatsNew: 'ሓድሽ', help: 'ሓገዝ',
-    whatsNewBody: 'ብሎክስበርት 2.0.0፡ በርቲቪል ተኸፊቱ። ናይ Build Table ኩነታት ንስሉጥ ምድርባይ፡ ናይ Creative ምንፋስ (ጅምፕ ክልተ ግዜ ጠውቕ)፡ ኣብ ነፍሲ ወከፍ ብሎክ ፊደል ዘለዎ መምረጺ፡ ምሉእ ስክሪን።',
+    whatsNewBody: 'ብሎክስበርት 2.1.0፡ ምለስን ደጊምን ሕጂ ምሉእ ስጉምቲ ይመልሱ። ምርምር ታሪኽ ብሎክ የርኢ። ማእከላይ ጠውቕ ወይ ነዊሕ ምጽቃጥ ነቲ ብሎክ ይመርጽ።',
+    redo: 'ደጊም', undid: '{n} ብሎክ ተመሊሱ', redid: '{n} ብሎክ ደጊሙ', inspect: 'ምርምር', inspectEmpty: 'ኣብዚ ገና ለውጢ የለን። ዓለም እያ ዝሰርሓቶ።', you: 'ንስኻ', placed: 'ኣቐመጠ', broke: 'ሰበረ', changed: 'ቀየረ', picked: 'ተመሪጹ:',
     world: 'ዓለም', saveNow: 'ሕጂ ዓቅብ', loadSaved: 'ዝዓቀብኩዎ ዓለም ክፈት', exportWorld: 'ፋይል ዓለም ኣውጽእ', importWorld: 'ፋይል ዓለም ኣእቱ', freshWorld: 'ሓድሽ ዓለም',
     mode: 'ኩነታት', creative: 'Creative', buildTable: 'Build Table', survival: 'ምንባር', contest: 'ውድድር ህንጻ', later: 'ድሕሪት',
     auto: 'Auto', lite: 'ቀሊል', full: 'ምሉእ',
