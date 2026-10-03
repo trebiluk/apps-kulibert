@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-12-one-menu"/>
+<meta name="tech-room-rev" content="2026-10-13-tron-default"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -20,14 +20,8 @@
       var colors = { room: "#050814", graph: "#efeae0", miami: "#14061f", spa: "#f3efe8", nature: "#e7f4d8", peaks: "#e8eef4", city: "#12151c", space: "#070b16", berty: "#1a120c" };
       var choice = "";
       try { choice = localStorage.getItem("tech-room-theme") || ""; } catch (e) {}
-      var theme = themes.indexOf(choice) >= 0 ? choice : "";
-      if (!theme) {
-        try { theme = sessionStorage.getItem("tech-room-theme-visit") || ""; } catch (e2) {}
-        if (themes.indexOf(theme) < 0) {
-          theme = themes[Math.floor(Math.random() * themes.length)];
-          try { sessionStorage.setItem("tech-room-theme-visit", theme); } catch (e3) {}
-        }
-      }
+      var theme = themes.indexOf(choice) >= 0 ? choice : "room";
+      try { sessionStorage.removeItem("tech-room-theme-visit"); } catch (e2) {}
       document.documentElement.setAttribute("data-hub-theme", theme);
       var bar = document.getElementById("theme-color");
       if (bar && colors[theme]) bar.setAttribute("content", colors[theme]);
@@ -95,6 +89,10 @@
     html[data-hub-theme="room"] .app-dock{background:#050814}
     html[data-hub-theme="room"] #app-frame{background:#050814}
     html[data-hub-theme="room"] body::before{opacity:.55;mask-image:none;-webkit-mask-image:none}
+    @media (prefers-reduced-motion: reduce){
+      html[data-hub-theme="room"] body::before,
+      html[data-hub-theme="room"] body::after{opacity:.08}
+    }
     html[data-hub-theme="room"] body.apps-always .poster{
       border-color:rgba(34,211,238,.75);
       box-shadow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.22);
@@ -1758,7 +1756,7 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-12-one-menu</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-13-tron-default</span></p>
       <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
@@ -1831,7 +1829,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-12-one-menu</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-13-tron-default</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.7</strong> — Each music job has its own tab, and your song stays in the player at the bottom.</p>
@@ -2243,7 +2241,7 @@
       <iframe id="app-frame" title="App" hidden allowfullscreen allow="accelerometer; gyroscope; magnetometer; fullscreen; orientation-lock"></iframe>
     </div>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-12-one-menu</span>
+      <span class="hub-foot-rev">rev 2026-10-13-tron-default</span>
       <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">One Menu button in every app. It opens that app's menu.</span></span>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
