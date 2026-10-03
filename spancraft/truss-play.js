@@ -368,11 +368,13 @@ export function mountTruss(cfg) {
     document.body.appendChild(sheet);
     const shutSheet = () => {
       sheet.hidden = true;
+      syncModalFlag();
       const menu = document.getElementById("land-menu");
       if (menu) menu.focus();
     };
     gear.addEventListener("click", () => {
       sheet.hidden = !sheet.hidden;
+      syncModalFlag();
       paintAccess();
     });
     sheet.querySelector("#access-close").addEventListener("click", shutSheet);
@@ -450,6 +452,24 @@ export function mountTruss(cfg) {
     if (now) now.hidden = !on;
   }
   let mapOpener = null;
+  let setLandDrawer = function () {};
+  function syncModalFlag() {
+    const map = document.getElementById("isle-map");
+    const sheet = document.getElementById("access-sheet");
+    const open = (map && !map.hidden) || (sheet && !sheet.hidden);
+    if (open) document.documentElement.setAttribute("data-kb-modal-open", "");
+    else document.documentElement.removeAttribute("data-kb-modal-open");
+  }
+  function armModalWatch() {
+    const watch = (el) => {
+      if (!el || el.dataset.kbModalWatch) return;
+      el.dataset.kbModalWatch = "1";
+      new MutationObserver(syncModalFlag).observe(el, { attributes: true, attributeFilter: ["hidden"] });
+    };
+    watch(document.getElementById("isle-map"));
+    watch(document.getElementById("access-sheet"));
+    syncModalFlag();
+  }
   function ensureNextBtn() {
     let btn = document.getElementById("next-level");
     if (btn) return btn;
@@ -1054,6 +1074,7 @@ export function mountTruss(cfg) {
     syncBet();
     coach();
     resize();
+    syncModalFlag();
   }
 
   function renderMap() {
@@ -1090,13 +1111,18 @@ export function mountTruss(cfg) {
   function openMap(from) {
     const map = document.getElementById("isle-map");
     if (!map) return;
-    const opener = from && from.nodeType === 1
-      ? from
-      : (from && from.currentTarget && from.currentTarget.nodeType === 1 ? from.currentTarget : null);
+    const drawerOpen = document.documentElement.classList.contains("land-open");
+    if (drawerOpen) setLandDrawer(false, false);
+    const opener = drawerOpen
+      ? document.getElementById("land-menu")
+      : (from && from.nodeType === 1
+        ? from
+        : (from && from.currentTarget && from.currentTarget.nodeType === 1 ? from.currentTarget : null));
     if (opener) mapOpener = opener;
     renderMap();
     map.hidden = false;
     map.removeAttribute("hidden");
+    syncModalFlag();
     const grid = document.getElementById("isle-grid");
     const level = active();
     let want = level.id;
@@ -1117,6 +1143,7 @@ export function mountTruss(cfg) {
     const wasOpen = !map.hidden;
     map.hidden = true;
     map.setAttribute("hidden", "");
+    syncModalFlag();
     const back = mapOpener;
     mapOpener = null;
     if (wasOpen && back && typeof back.focus === "function") back.focus();
@@ -1377,14 +1404,15 @@ export function mountTruss(cfg) {
   function syncBet() {
     const bar = document.getElementById("bet-bar");
     if (!bar) return;
-    bar.hidden = state.members.length === 0 || state.phase !== "idle";
+    const seedN = (active().seed || []).length;
+    bar.hidden = state.members.length <= seedN || state.phase !== "idle";
     const label = bar.querySelector(".bet-label");
     if (label) {
       label.textContent = cfg.mode === "spire"
-        ? "Will the tower stand?"
+        ? t("betAskSpire")
         : cfg.workshop
-          ? "Will it hold?"
-          : "Will the truss hold?";
+          ? t("betAskWorkshop")
+          : t("betAsk");
     }
     for (const btn of bar.querySelectorAll(".bet-chip")) {
       btn.setAttribute("aria-pressed", btn.dataset.bet === state.bet ? "true" : "false");
@@ -1670,13 +1698,22 @@ export function mountTruss(cfg) {
     pocket.appendChild(park);
     let landed = false;
     const key = "kulibert-land-drawer";
-    function setDrawer(open, focusMenu) {
+    function setDrawer(open, focusMenu, persist) {
       document.documentElement.classList.toggle("land-open", !!open);
       drawer.hidden = !open;
       menu.setAttribute("aria-expanded", open ? "true" : "false");
-      try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
+      menu.setAttribute("data-kb-open", open ? "1" : "0");
+      if (persist !== false) {
+        try { localStorage.setItem(key, open ? "open" : "closed"); } catch (e) {}
+      }
+      try {
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: "kb-menu-state", open: !!open }, "*");
+        }
+      } catch (eMenu) {}
       if (!open && focusMenu) menu.focus();
     }
+    setLandDrawer = setDrawer;
     function syncLand() {
       const want = shortLand() && !classicTheme();
       if (want !== landed) {
@@ -1688,13 +1725,9 @@ export function mountTruss(cfg) {
           });
           let open = false;
           try { open = localStorage.getItem(key) === "open"; } catch (e) {}
-          document.documentElement.classList.toggle("land-open", open);
-          drawer.hidden = !open;
-          menu.setAttribute("aria-expanded", open ? "true" : "false");
+          setDrawer(open, false);
         } else {
-          document.documentElement.classList.remove("land-open");
-          drawer.hidden = true;
-          menu.setAttribute("aria-expanded", "false");
+          setDrawer(false, false, false);
           landPieces().forEach(restoreHome);
         }
         resize();
@@ -1731,6 +1764,7 @@ export function mountTruss(cfg) {
             sheet.hidden = false;
             paintAccess();
           }
+          syncModalFlag();
           return;
         }
         if (go) go.click();
@@ -1823,7 +1857,13 @@ export function mountTruss(cfg) {
     const forClass = document.querySelector("#edge-menu a[href='./changelog.html']");
     if (forClass) forClass.textContent = t("forClass");
     const betLabel = document.querySelector(".bet-label");
-    if (betLabel) betLabel.textContent = cfg.mode === "spire" ? t("betAskSpire") : t("betAsk");
+    if (betLabel) {
+      betLabel.textContent = cfg.mode === "spire"
+        ? t("betAskSpire")
+        : cfg.workshop
+          ? t("betAskWorkshop")
+          : t("betAsk");
+    }
     const hold = document.getElementById("bet-hold");
     const fall = document.getElementById("bet-fall");
     if (hold) hold.textContent = t("hold");
@@ -1894,6 +1934,7 @@ export function mountTruss(cfg) {
     paintReadout();
     syncTrack();
     if (state.phase === "idle") coach();
+    syncModalFlag();
   }
 
   load();
@@ -1904,9 +1945,11 @@ export function mountTruss(cfg) {
   showNext();
   if (readFlag(cfg.calmKey)) document.documentElement.classList.add("calm-clear");
   cloneLevel(active());
+  syncBet();
   syncTools();
   syncTrack();
   mountAccess();
+  armModalWatch();
   coach();
   voiceReady = true;
   resize();
@@ -1986,6 +2029,7 @@ export function mountTruss(cfg) {
       if (sheet && !sheet.hidden) {
         ev.preventDefault();
         sheet.hidden = true;
+        syncModalFlag();
         const menu = document.getElementById("land-menu");
         if (menu) menu.focus();
         return;
@@ -1993,14 +2037,7 @@ export function mountTruss(cfg) {
       const drawer = document.getElementById("land-drawer");
       if (drawer && !drawer.hidden) {
         ev.preventDefault();
-        document.documentElement.classList.remove("land-open");
-        drawer.hidden = true;
-        const menu = document.getElementById("land-menu");
-        if (menu) {
-          menu.setAttribute("aria-expanded", "false");
-          menu.focus();
-        }
-        try { localStorage.setItem("kulibert-land-drawer", "closed"); } catch (eEsc) {}
+        setLandDrawer(false, true);
       }
       return;
     }

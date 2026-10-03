@@ -1,5 +1,9 @@
-**Chip: SC 1.3.32** · 2026-10-02 · channel **live**
+**Chip: SC 1.3.33** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.33 — Esc, Close, sideways — 2026-10-02
+
+- What’s new: In the Hub, Esc closes the job list and keeps you in the game. The Menu's Close is easy to see. On a sideways phone, the job list and the clear message stay out of the way.
 
 ## 1.3.32 — Next level — 2026-10-02
 

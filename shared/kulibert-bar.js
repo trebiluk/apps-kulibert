@@ -1,7 +1,11 @@
 /* One Tech Room bar. Inside the Hub it stays quiet and talks to the strip.
    Standalone, it draws Home, the app plate, the alias, and Help.
    A deferred script has no currentScript, and a cross-origin app
-   (baboo.kulibert.net) cannot load /shared from its own origin. */
+   (baboo.kulibert.net) cannot load /shared from its own origin.
+   data-kb-modal-open: an app may set this attribute on <html> while its own
+   layer is open (a list, a settings sheet, a dialog) and Escape should close
+   that layer. Inside the Hub, Escape then stays in the app. With the
+   attribute absent, Escape behaves exactly as before. */
 (function (root) {
   function barScript() {
     var current = document.currentScript;
@@ -578,6 +582,7 @@
       var el = menuEl();
       var was = !!(el && (readMenuOpen(el, false) || el.getAttribute("data-kb-open") === "1"));
       if (!was) {
+        if (document.documentElement.hasAttribute("data-kb-modal-open")) return;
         var tgt = ev.target;
         var typing = tgt && (tgt.tagName === "INPUT" || tgt.tagName === "TEXTAREA" || tgt.tagName === "SELECT" || tgt.isContentEditable);
         if (typing) return;

@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20261002-sc132";
+import { mountTruss } from "./truss-play.js?v=20261002-sc133";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.32",
+  version: "SC 1.3.33",
   accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: After a clear, Next level takes you to the next job. Levels opens the job list. The Menu has a Close button, and Esc closes it.",
+  note: "What’s new: In the Hub, Esc closes the job list and keeps you in the game. The Menu's Close is easy to see. On a sideways phone, the job list and the clear message stay out of the way.",
   engageKey: "kulibert-spancraft-engage-v2",
   twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",

@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.31** · 2026-10-02 · channel **live**
+**Chip: SL 1.3.32** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.32 — Esc, Close, sideways — 2026-10-02
+
+- What’s new: In the Hub, Esc closes the job list and keeps you in the game. The Menu's Close is easy to see. On a sideways phone, the job list and the clear message stay out of the way.
 
 ## 1.3.31 — Next level — 2026-10-02
 

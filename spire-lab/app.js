@@ -1,14 +1,14 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20261002-sc132";
+import { mountTruss } from "../spancraft/truss-play.js?v=20261002-sc133";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.31",
+  version: "SL 1.3.32",
   accessKey: "sl-access-v1",
   helpTitle: "How to play · Spire Lab",
-  note: "What’s new: After a clear, Next level takes you to the next job. Levels opens the job list. The Menu has a Close button, and Esc closes it.",
+  note: "What’s new: In the Hub, Esc closes the job list and keeps you in the game. The Menu's Close is easy to see. On a sideways phone, the job list and the clear message stay out of the way.",
   engageKey: "kulibert-spire-engage-v2",
   twApp: "spire-lab",
   assistKey: "kulibert-spire-assist-intro-v2",
