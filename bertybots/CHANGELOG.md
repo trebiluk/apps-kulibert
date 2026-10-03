@@ -28,6 +28,12 @@ Rules:
 
 ---
 
+## 0.19.34 — Turn the phone — 2026-10-03
+
+- Turning the phone re-fits the board, the same as opening it sideways. The ground stays on screen.
+- On an upright phone the Shop Floor is big enough to grab. GOAL still points at PARK, and ◀ comes back.
+- What's new: The board fits again when you turn your phone. Wheels are easier to grab on a phone.
+
 ## 0.19.33 — Phone fit — 2026-10-02
 
 - Settings opens from the left. Close sits at the top. Esc closes it and focus returns to Settings.

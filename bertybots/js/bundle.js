@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.33 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.34 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.33";
+const APP_VERSION = "0.19.34";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.33";
-const APP_BUILT = "2026-10-02";
+const APP_CHIP = "BB 0.19.34";
+const APP_BUILT = "2026-10-03";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -705,6 +705,7 @@ function boot() {
   let lastDraw = 0;
   let panning = null;
   let goalCue = null;
+  let homeCue = null;
   let courseId = "open";
   let everTested = false;
   let pinnedStep = null;
@@ -777,10 +778,6 @@ function boot() {
 
   function focusTarget() {
     if (typeof isMeasure === "function" && isMeasure()) return { x: WORLD_W / 2, y: 5.2 };
-    if (narrowBoard()) {
-      const b = jobReach();
-      return { x: (b.x0 + b.x1) / 2, y: (b.y0 + b.y1) / 2 };
-    }
     if (won && sim && sim.cores[0]) {
       const p = sim.cores[0].getPosition();
       return { x: p.x, y: Math.max(2.2, p.y) };
@@ -805,8 +802,9 @@ function boot() {
   function frameSpan() {
     if (typeof isMeasure === "function" && isMeasure()) return { w: WORLD_W, h: 11 };
     if (narrowBoard()) {
-      const b = jobReach();
-      return { w: Math.max(8, b.x1 - b.x0), h: Math.max(4, b.y1 - b.y0) };
+      const s = doc.level && doc.level.shop;
+      const w = (s && s.w ? s.w : 8.2) + 1;
+      return { w: w, h: 4.2 };
     }
     const phone = window.innerHeight < 540 || window.innerWidth < 920;
     if (won) return { w: phone ? 8.5 : 10, h: phone ? 5.2 : 6 };
@@ -850,6 +848,12 @@ function boot() {
     const s = doc.level && doc.level.shop;
     if (!s || !view.scale) return;
     const b = jobReach();
+    let y0 = b.y0;
+    let y1 = b.y1;
+    if (narrowBoard()) {
+      y0 = Math.max(0, s.y - 0.85);
+      y1 = s.y + 2.15;
+    }
     const scale = view.scale;
     const left = -view.ox / scale;
     const right = (canvas.width - view.ox) / scale;
@@ -860,9 +864,9 @@ function boot() {
     if (right - left >= b.x1 - b.x0) shiftX = (b.x0 + b.x1) / 2 - (left + right) / 2;
     else if (left < b.x0) shiftX = b.x0 - left;
     else if (right > b.x1) shiftX = b.x1 - right;
-    if (top - bottom >= b.y1 - b.y0) shiftY = (b.y0 + b.y1) / 2 - (bottom + top) / 2;
-    else if (bottom < b.y0) shiftY = b.y0 - bottom;
-    else if (top > b.y1) shiftY = b.y1 - top;
+    if (top - bottom >= y1 - y0) shiftY = (y0 + y1) / 2 - (bottom + top) / 2;
+    else if (bottom < y0) shiftY = y0 - bottom;
+    else if (top > y1) shiftY = y1 - top;
     if (!shiftX && !shiftY) return;
     view.panx -= shiftX * scale;
     view.pany -= shiftY * scale;
@@ -870,10 +874,29 @@ function boot() {
     view.oy = canvas.height * 0.46 - view.fy * view.scale + view.pany;
   }
 
+  let fitKey = "";
+  let fitRAF = 0;
+  function scheduleFit() {
+    if (fitRAF) return;
+    fitRAF = requestAnimationFrame(() => {
+      fitRAF = 0;
+      fit();
+    });
+  }
+
   function fit() {
     const dpr = Math.min(2, window.devicePixelRatio || 1);
     view.dpr = dpr;
     const rect = canvas.getBoundingClientRect();
+    const cssW = Math.round(rect.width);
+    const cssH = Math.round(rect.height);
+    const key = cssW + "x" + cssH;
+    if (cssW > 0 && cssH > 0 && key !== fitKey) {
+      fitKey = key;
+      view.panx = 0;
+      view.pany = 0;
+      view.zoom = 1;
+    }
     canvas.width = Math.max(1, Math.round(rect.width * dpr));
     canvas.height = Math.max(1, Math.round(rect.height * dpr));
     applyCam(true);
@@ -1926,16 +1949,22 @@ function boot() {
     return best.to;
   }
 
+  function fingerReach(metres) {
+    const scale = view.scale || 1;
+    const dpr = view.dpr || 1;
+    return Math.max(metres, (22 * dpr) / scale);
+  }
+
   function hitPart(pt) {
     for (let i = doc.machine.parts.length - 1; i >= 0; i--) {
       const p = doc.machine.parts[i];
       if (p.type === "driveR" || p.type === "driveL" || p.type === "roller") {
-        if (dist(pt, p) <= WHEEL_R + HIT) return p;
+        if (dist(pt, p) <= fingerReach(WHEEL_R + HIT)) return p;
       } else if (p.type === "core") {
-        if (Math.abs(pt.x - p.x) <= CORE_S / 2 + HIT && Math.abs(pt.y - p.y) <= CORE_S / 2 + HIT) return p;
+        if (Math.abs(pt.x - p.x) <= fingerReach(CORE_S / 2 + HIT) && Math.abs(pt.y - p.y) <= fingerReach(CORE_S / 2 + HIT)) return p;
       } else if (p.type === "steel" || p.type === "ghost") {
         const d = pointSeg(pt, { x: p.x1, y: p.y1 }, { x: p.x2, y: p.y2 });
-        if (d <= BAR_T + HIT) return p;
+        if (d <= fingerReach(BAR_T + HIT)) return p;
       }
     }
     return null;
@@ -2999,6 +3028,7 @@ function boot() {
       ctx.fillText(lastReadout || (playing ? "test" : "shop"), 14, 32);
     }
     drawGoalCue();
+    drawHomeCue();
     drawRaceBoard();
     drawCoach();
     drawBerty(now);
@@ -3068,6 +3098,56 @@ function boot() {
     const x = (ev.clientX - r.left) * (canvas.width / Math.max(1, r.width));
     const y = (ev.clientY - r.top) * (canvas.height / Math.max(1, r.height));
     return x >= goalCue.x && x <= goalCue.x + goalCue.w && y >= goalCue.y && y <= goalCue.y + goalCue.h;
+  }
+
+  function drawHomeCue() {
+    homeCue = null;
+    if (!narrowBoard() || (winEl && winEl.classList.contains("show"))) return;
+    const s = doc.level && doc.level.shop;
+    if (!s) return;
+    const sx = wx(s.x + Math.min(2.2, s.w * 0.35));
+    const sy = wy(s.y + 0.45);
+    const dpr = view.dpr || 1;
+    const pad = 28 * dpr;
+    if (sx >= pad && sx <= canvas.width - pad && sy >= pad && sy <= canvas.height - pad) return;
+    const label = "◀";
+    ctx.font = `800 ${Math.round(18 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.direction = "ltr";
+    const labelW = ctx.measureText(label).width;
+    const w = Math.max(44 * dpr, labelW + 36 * dpr);
+    const h = 44 * dpr;
+    const edge = 12 * dpr;
+    const ax = edge;
+    const ay = Math.max(edge, Math.min(canvas.height - h - edge, canvas.height * 0.42));
+    homeCue = { x: ax, y: ay, w, h };
+    ctx.save();
+    roundBubble(ax, ay, w, h, 12 * dpr);
+    ctx.fillStyle = "#f0c000";
+    ctx.fill();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "#1a1400";
+    ctx.stroke();
+    ctx.fillStyle = "#1a1400";
+    ctx.beginPath();
+    ctx.moveTo(ax + 16 * dpr, ay + h / 2);
+    ctx.lineTo(ax + 28 * dpr, ay + 12 * dpr);
+    ctx.lineTo(ax + 28 * dpr, ay + h - 12 * dpr);
+    ctx.closePath();
+    ctx.fill();
+    ctx.font = `800 ${Math.round(18 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.direction = "ltr";
+    ctx.fillText(label, ax + w / 2 + 8 * dpr, ay + h / 2 + 1);
+    ctx.restore();
+  }
+
+  function hitHomeCue(ev) {
+    if (!homeCue) return false;
+    const r = canvas.getBoundingClientRect();
+    const x = (ev.clientX - r.left) * (canvas.width / Math.max(1, r.width));
+    const y = (ev.clientY - r.top) * (canvas.height / Math.max(1, r.height));
+    return x >= homeCue.x && x <= homeCue.x + homeCue.w && y >= homeCue.y && y <= homeCue.y + homeCue.h;
   }
 
   function lookAtDrop() {
@@ -3561,6 +3641,10 @@ function boot() {
     const pt = worldFromEvent(ev);
     hover = pt;
 
+    if (hitHomeCue(ev)) {
+      resetView();
+      return;
+    }
     if (hitGoalCue(ev)) {
       lookAtDrop();
       return;
@@ -3618,7 +3702,7 @@ function boot() {
     }
 
     const grabbed = hitPart(pt);
-    const onNode = nearestNode(pt, SNAP * 1.2);
+    const onNode = nearestNode(pt, fingerReach(SNAP * 1.2));
     const pullingBar = (tool === "steel" || tool === "ghost") && onNode;
     if (grabbed && !pullingBar) {
       pushHist();
@@ -3661,13 +3745,13 @@ function boot() {
     const pt = over ? worldFromEvent(ev) : hover;
     if (over) {
       hover = pt;
-      if (hitGoalCue(ev)) canvas.style.cursor = "pointer";
+      if (hitGoalCue(ev) || hitHomeCue(ev)) canvas.style.cursor = "pointer";
       else if (canEditSite() && doc.level.drop && inRect(pt.x, pt.y, doc.level.drop) && !playing) canvas.style.cursor = "grab";
       else if (!drag) canvas.style.cursor = "crosshair";
     }
     if (!drag || playing) return;
     if (drag.kind === "bar") {
-      const n = nearestNode(pt, SNAP * 1.55);
+      const n = nearestNode(pt, fingerReach(SNAP * 1.55));
       const end = n && (n.x !== drag.x1 || n.y !== drag.y1) ? { x: n.x, y: n.y } : pt;
       let x2 = end.x, y2 = end.y;
       const d = Math.hypot(x2 - drag.x1, y2 - drag.y1);
@@ -4422,7 +4506,14 @@ function boot() {
     requestAnimationFrame(loop);
   }
 
-  window.addEventListener("resize", fit);
+  window.addEventListener("resize", scheduleFit);
+  window.addEventListener("orientationchange", () => {
+    scheduleFit();
+    requestAnimationFrame(() => scheduleFit());
+  });
+  if (window.visualViewport) window.visualViewport.addEventListener("resize", scheduleFit);
+  const stageEl = canvas.closest(".stage");
+  if (stageEl && typeof ResizeObserver !== "undefined") new ResizeObserver(scheduleFit).observe(stageEl);
   fit();
   bind();
   setTool("driveR");
