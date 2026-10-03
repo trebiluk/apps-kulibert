@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.6** · 2026-10-03 · channel **live**
+
+Every word is easy to read, menus close after you pick, and Perform fits your screen.
+
+## Earlier
+
 **Chip: MU 2.35.5** · 2026-10-03 · channel **live**
 
 Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.

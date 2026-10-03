@@ -654,7 +654,11 @@
     [pen, box].forEach((host) => {
       if (!host) return;
       [...host.children].forEach((btn) => {
-        if (btn.dataset.pen) btn.classList.toggle("on", btn.dataset.pen === state.pen);
+        if (btn.dataset.pen) {
+          const on = btn.dataset.pen === state.pen;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        }
         if (btn.dataset.key) btn.classList.toggle("on", btn.dataset.key === state.song.key);
       });
     });
@@ -1355,7 +1359,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.5",
+        version: "MU 2.35.6",
         event: "score",
         level: id,
         score: score,
@@ -2390,6 +2394,12 @@
     const barMenu = document.querySelector(".kb-menu");
     if (barMenu) barMenu.setAttribute("aria-expanded", "false");
   }
+  function closeMore() {
+    const pop = $("more-pop");
+    const btn = $("more-tools");
+    if (pop) pop.hidden = true;
+    if (btn) btn.setAttribute("aria-expanded", "false");
+  }
   function popConfetti() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (document.documentElement.getAttribute("data-kp-motion") === "less") return;
@@ -2793,7 +2803,10 @@
   $("scrim").addEventListener("click", () => { closeMenu(); });
   $("menu-close").addEventListener("click", () => { closeMenu(); });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeMenu();
+    if (e.key === "Escape") {
+      closeMenu();
+      closeMore();
+    }
   });
   function markLang() {
     const code = (window.KulibertPrefs && window.KulibertPrefs.lang) || "en";
@@ -3162,6 +3175,7 @@
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       closeMenu();
+      closeMore();
       return;
     }
     const tag = e.target && e.target.tagName;
@@ -3689,7 +3703,11 @@
       b.textContent = label;
       b.addEventListener("click", () => {
         libraryFilter = id;
-        $("library-filters").querySelectorAll(".btn").forEach((el) => el.classList.toggle("on", el === b));
+        $("library-filters").querySelectorAll(".btn").forEach((el) => {
+          const on = el === b;
+          el.classList.toggle("on", on);
+          el.setAttribute("aria-pressed", on ? "true" : "false");
+        });
         paintLibrary();
       });
       $("library-filters").appendChild(b);
@@ -3704,6 +3722,12 @@
       const box = $("import-file");
       if (box && box.parentElement) box.parentElement.scrollIntoView({ block: "start" });
     });
+    const dockLeft = $("dock-left");
+    if (dockLeft) dockLeft.addEventListener("click", (ev) => {
+      const hit = ev.target && ev.target.closest ? ev.target.closest("button") : null;
+      if (!hit || hit.id === "menu-btn") return;
+      closeMenu();
+    });
     const moreTools = $("more-tools");
     if (moreTools) moreTools.addEventListener("click", () => {
       const pop = $("more-pop");
@@ -3711,6 +3735,26 @@
       const open = pop.hidden;
       pop.hidden = !open;
       moreTools.setAttribute("aria-expanded", String(open));
+    });
+    let swallowMore = false;
+    document.addEventListener("pointerdown", (ev) => {
+      const pop = $("more-pop");
+      if (!pop || pop.hidden) return;
+      if (ev.target && ev.target.closest && ev.target.closest("#more-pop, #more-tools")) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      swallowMore = true;
+      closeMore();
+    }, true);
+    document.addEventListener("click", (ev) => {
+      if (!swallowMore) return;
+      swallowMore = false;
+      ev.preventDefault();
+      ev.stopPropagation();
+    }, true);
+    ["wav-btn", "midi-out"].forEach((id) => {
+      const btn = $(id);
+      if (btn) btn.addEventListener("click", closeMore);
     });
     $("song-cover").addEventListener("click", showHome);
     $("start-blank").addEventListener("click", () => {
@@ -4728,4 +4772,12 @@
       playhead: state.step,
     }));
   }
+  document.addEventListener("click", (ev) => {
+    const btn = ev.target && ev.target.closest && ev.target.closest(".pen .btn");
+    if (!btn || !btn.parentElement) return;
+    btn.parentElement.querySelectorAll(".btn").forEach((el) => {
+      el.setAttribute("aria-pressed", el.classList.contains("on") ? "true" : "false");
+    });
+  });
+  document.querySelectorAll(".pen .btn.on").forEach((el) => el.setAttribute("aria-pressed", "true"));
 })();
