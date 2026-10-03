@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.5'
+const VERSION = '2.5.6'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -15,6 +15,7 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
+import { icon } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -311,8 +312,8 @@ function placeBlock() {
   if (aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
-    if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station'); return false }
-    if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench'); return false }
+    if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station', aimedBlock.position.join(',')); return false }
+    if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench', aimedBlock.position.join(',')); return false }
     if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
   }
@@ -455,7 +456,7 @@ session = createSession({
   removeBlock: (x, y, z) => edit(x, y, z, 0),
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
 })
-const stations = createStations({ t, give: () => {} })
+const stations = createStations({ t, give: (item) => session && session.give && session.give(item) })
 panels = mountPanels({
   t, toast,
   save: () => save(),
@@ -504,7 +505,7 @@ panels = mountPanels({
       g.append(p)
     }
   },
-  paintStation: (g) => stations.paint(g, '0,5,0', 'oven'),
+  paintStation: (g, key, kind) => stations.paint(g, key || '0,5,0', kind || 'oven'),
 })
 const learn = createLearn({
   t, toast, close: () => panels.close(),
@@ -583,11 +584,7 @@ function paintBar() {
     l.textContent = t(name)
     b.append(l)
     b.addEventListener('click', () => selectSlot(i))
-    const img = document.createElement('img')
-    img.alt = t(name)
-    img.width = 48
-    img.height = 48
-    img.src = 'assets/atlas.png'
+    const img = icon((ATLAS[name] || id) % 21, t(name))
     b.prepend(img)
     bar.append(b)
   })
@@ -815,7 +812,11 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '1234567890'.indexOf(e.key)
-  if (n >= 0 && !tableMode) selectSlot(n === 9 ? 0 : n)
+  if (n >= 0 && !tableMode) {
+    const i = n === 9 ? 0 : n
+    if (session && session.mode === 'survival' && session.setHot) session.setHot(i)
+    else selectSlot(i)
+  }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
@@ -839,7 +840,10 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = 
 document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
 noa.on('tick', () => {
   const s = noa.inputs.pointerState.scrolly
-  if (s && !tableMode) selectSlot(selectedSlot + (s > 0 ? 1 : -1))
+  if (s && !tableMode) {
+    if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (s > 0 ? 1 : -1))
+    else selectSlot(selectedSlot + (s > 0 ? 1 : -1))
+  }
   if (stations) stations.tick()
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {

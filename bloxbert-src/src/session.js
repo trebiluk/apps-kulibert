@@ -259,6 +259,7 @@ export function createSession(api) {
     g.append(btn(t('resetWallet'), () => { if (confirm(t('resetWallet'))) { wallet.state.cogs = wallet.state.start; wallet.state.ledger = []; wallet.post({ kind: 'teacher', cogs: 0, by: 'teacher' }); paintChip() } }))
   }
   function paintCounter(g, key) {
+    g.innerHTML = ''
     const rec = meta.get(key)
     if (!rec) return
     rec.slots.forEach((s, i) => {
@@ -434,6 +435,8 @@ export function createSession(api) {
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
+    setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
+    get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
