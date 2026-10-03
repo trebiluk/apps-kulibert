@@ -1,0 +1,32 @@
+{
+  "name": "bloxbert",
+  "private": true,
+  "version": "1.2.0",
+  "description": "Bloxbert source (block builder). noa-engine pinned to fenomas/noa develop @8a74866 + Babylon 6.49.0. Builds the static door into ../blocks/ (student door) or ../blocks-test/ (test page).",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build": "node build.mjs --out ../blocks",
+    "build:test": "node build.mjs --out ../blocks-test",
+    "build:dist": "node build.mjs --out dist",
+    "serve": "node tools/serve.mjs dist 8870"
+  },
+  "dependencies": {
+    "@babylonjs/core": "6.49.0",
+    "aabb-3d": "github:fenomas/aabb-3d",
+    "box-intersect": "github:fenomas/box-intersect",
+    "ent-comp": "^0.11.0",
+    "esbuild": "^0.24.2",
+    "events": "^3.3.0",
+    "fast-voxel-raycast": "^0.1.1",
+    "game-inputs": "^0.8.0",
+    "gl-vec3": "^1.2.0",
+    "micro-game-shell": "^0.9.0",
+    "ndarray": "^1.1.1",
+    "noa-engine": "github:fenomas/noa#8a74866055ab94ff3cfb332ff4762820e86a1721",
+    "voxel-aabb-sweep": "^0.5.0",
+    "voxel-physics-engine": "^0.13.0"
+  },
+  "devDependencies": {
+    "puppeteer-core": "23.11.1"
+  }
+}
