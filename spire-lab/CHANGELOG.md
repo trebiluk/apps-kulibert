@@ -1,7 +1,11 @@
 # Spire Lab changelog
 
-**Chip: SL 1.3.32** · 2026-10-02 · channel **live**
+**Chip: SL 1.3.33** · 2026-10-02 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.33 — The board stays still — 2026-10-02
+
+- What’s new: The board stays still when the prediction question shows.
 
 ## 1.3.32 — Esc, Close, sideways — 2026-10-02
 

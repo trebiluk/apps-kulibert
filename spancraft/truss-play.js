@@ -2,7 +2,7 @@
 // Stretch a member from joint to joint. Test is a pin-joint check, not a gradebook.
 
 import { proveTruss } from "./truss-prove.js";
-import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js";
+import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js?v=20261002-sc134";
 import {
   quietMode,
   readFlag,

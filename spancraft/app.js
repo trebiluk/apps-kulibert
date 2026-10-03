@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20261002-sc133";
+import { mountTruss } from "./truss-play.js?v=20261002-sc134";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.33",
+  version: "SC 1.3.34",
   accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: In the Hub, Esc closes the job list and keeps you in the game. The Menu's Close is easy to see. On a sideways phone, the job list and the clear message stay out of the way.",
+  note: "What’s new: The board stays still when the prediction question shows.",
   engageKey: "kulibert-spancraft-engage-v2",
   twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",

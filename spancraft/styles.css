@@ -523,7 +523,12 @@ html.calm-clear .flash-spark { display: none !important; }
   border-bottom: 1px solid var(--border);
   background: var(--panel);
 }
-.bet-bar[hidden] { display: none !important; }
+/* SC 1.3.34 — keep this row's space so the board does not jump. */
+.bet-bar[hidden] {
+  display: flex !important;
+  visibility: hidden;
+  pointer-events: none;
+}
 .bet-label {
   margin: 0;
   width: 100%;
@@ -1088,6 +1093,9 @@ html:not([data-theme="classic"]) .top > .tw-app-bar { margin-left: auto; }
     pointer-events: auto;
     min-height: 44px;
     min-width: 44px;
+  }
+  html:not([data-theme="classic"]) .bet-bar[hidden] {
+    display: none !important;
   }
   html:not([data-theme="classic"]) .assist-plate.show {
     left: auto;
