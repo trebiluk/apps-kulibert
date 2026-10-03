@@ -5,33 +5,35 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:,">
-<title>Block Builder · test 1.1</title>
+<title>BitzCraft · test 1.2</title>
 <style>
-:root{--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
+:root{--top-h:60px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);color:var(--snow);font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,sans-serif}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 #stage{position:fixed;inset:0}
 #stage canvas{width:100%;height:100%;display:block;touch-action:none;outline:none}
-.top{position:fixed;left:0;right:0;top:0;height:60px;display:flex;align-items:center;gap:12px;padding:6px 12px;background:rgba(11,18,32,.92);border-bottom:1px solid var(--line);z-index:5}
+.top{position:fixed;left:0;right:0;top:0;min-height:60px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:6px 12px;direction:ltr;background:rgba(11,18,32,.92);border-bottom:1px solid var(--line);z-index:5}
 .icon-btn{width:48px;height:48px;flex:0 0 auto;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:grid;place-items:center;font-size:22px;line-height:1}
 .icon-btn:hover{border-color:var(--teal)}
-.brand{display:flex;flex-direction:column;min-width:0;flex:1 1 auto}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1 1 130px}
+.tools{display:flex;gap:8px;margin-left:auto;flex:0 0 auto}
+.brand b,.brand small{unicode-bidi:plaintext}
 .brand b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tool{min-width:48px;height:48px;flex:0 0 auto;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;font-size:14px;font-weight:600}
 .tool:hover{border-color:var(--teal)}
 .tool[disabled]{opacity:.45;cursor:default}
 .tool .ti{font-size:18px;line-height:1}
 .tool.save{border-color:rgba(20,184,166,.7);background:rgba(20,184,166,.18)}
-#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:12;background:var(--ink2);border:1px solid var(--teal);border-radius:10px;padding:8px 14px;font-size:14px;max-width:90vw}
+#toast{position:fixed;left:50%;top:calc(var(--top-h) + 10px);transform:translateX(-50%);z-index:12;background:var(--ink2);border:1px solid var(--teal);border-radius:10px;padding:8px 14px;font-size:14px;max-width:90vw}
 [hidden]{display:none!important}
 .brand b{font-size:16px;letter-spacing:.2px}
 .brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid rgba(34,211,238,.45);color:var(--cyan);white-space:nowrap}
 .spacer{flex:1}
 #current{color:var(--snow);font-weight:600}
-#perf{position:fixed;top:68px;right:12px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
+#perf{position:fixed;top:calc(var(--top-h) + 8px);right:12px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
 .cross{position:fixed;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:3;pointer-events:none}
 .cross:before,.cross:after{content:"";position:absolute;background:rgba(248,250,252,.92);box-shadow:0 0 0 1px rgba(11,18,32,.6)}
 .cross:before{left:10px;top:0;width:2px;height:22px}.cross:after{top:10px;left:0;height:2px;width:22px}
@@ -74,26 +76,54 @@ body.touch .pad{display:grid}
 .acts .jump{grid-column:1/span 2;width:auto;height:52px}
 .keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px}
 body.touch .keys{display:none}
-.ver{color:var(--muted);font-weight:400;font-size:12px}
-@media (max-width:620px){.chip{display:none}.ver{display:none}}
-@media (max-width:400px){.tool .tl{display:none}.tool{padding:0}.top{gap:8px;padding:6px 8px}}
+.ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
+@media (max-width:620px){.chip{display:none}.top{gap:8px;padding:6px 8px}}
+/* rotate / short screens (sideways phone): smaller bars, pads stay on screen */
+@media (max-height:500px){.top{min-height:56px;padding:4px 8px}.icon-btn,.tool{height:46px}.icon-btn{width:46px}
+  .slot{width:58px;height:54px;gap:2px}.lbl{font-size:10px}
+  .move{bottom:76px}.acts{bottom:76px}.pad button{width:50px;height:50px}.move{grid-template-columns:repeat(3,50px);grid-template-rows:repeat(2,50px)}
+  .acts button{width:70px;height:52px}.acts .jump{height:46px}}
+/* RTL (ar, fa-AF): text flows right-to-left; the ☰ stays top-left and the menu still opens from the left */
+.pad,#hotbar,.keys{direction:ltr}
+html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
+html[dir=rtl] .row{text-align:right}
+html[dir=rtl] .new,html[dir=rtl] .help,html[dir=rtl] .qbtn b,html[dir=rtl] .qbtn small,html[dir=rtl] #q-now{unicode-bidi:plaintext}
+html[dir=rtl] .row .later{margin-left:0;margin-right:auto}
+.qset{display:grid;gap:6px}
+.qbtn{display:flex;align-items:center;gap:10px;width:100%;min-height:52px;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);text-align:start}
+.qbtn svg{flex:0 0 26px;width:26px;height:26px;color:var(--teal)}
+.qbtn b{display:block;font-size:15px}
+.qbtn small{display:block;color:var(--muted);font-size:12px}
+.qbtn:hover{border-color:var(--teal)}
+.qbtn.on{border-color:var(--cyan);box-shadow:inset 3px 0 0 var(--cyan);background:rgba(34,211,238,.10)}
+.qbtn.on svg{color:var(--cyan)}
+html[dir=rtl] .qbtn.on{box-shadow:inset -3px 0 0 var(--cyan)}
+.sec h3 svg{width:14px;height:14px;vertical-align:-2px;margin-inline-end:6px;color:var(--teal)}
+#q-now{color:var(--cyan);font-size:12px;margin:6px 2px 0}
+.new{background:rgba(20,184,166,.10);border:1px solid rgba(20,184,166,.45);border-radius:10px;padding:8px 10px;font-size:13px;margin:4px 0 2px}
+.plate{display:inline-block;margin-top:6px;font-size:12px;color:var(--cyan);border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:2px 9px}
 </style>
 </head>
 <body>
 <div id="stage"></div>
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
-  <button class="icon-btn" id="menu-btn" aria-label="Menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Block Builder <span class="ver">test 1.1</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
+  <button class="icon-btn" id="menu-btn" aria-label="Menu" data-wl="menu" aria-controls="drawer" aria-expanded="false">☰</button>
+  <div class="brand"><b>BitzCraft <span class="ver" id="ver-plate">test 1.2</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
   <span class="chip">Creative</span>
+  <div class="tools">
   <button class="tool" id="undo-btn" aria-label="Undo" disabled><span class="ti">↶</span><span class="tl">Undo</span></button>
   <button class="tool save" id="save-btn" aria-label="Save"><span class="ti">⬇</span><span class="tl">Save</span></button>
+  </div>
 </header>
 <div id="perf" aria-live="off">— fps</div>
 <div class="keys">Click the world to aim · <b>WASD</b> move · <b>Space</b> jump · <b>Left click</b> break · <b>Right click</b> place · <b>1–0</b> / wheel pick · <b>Ctrl+Z</b> undo · <b>Esc</b> mouse</div>
 <div id="scrim" hidden></div>
-<nav id="drawer" aria-label="Block Builder menu">
-  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu">✕</button><b>Menu</b></div>
+<nav id="drawer" aria-label="BitzCraft menu">
+  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-wl="close">✕</button><b data-w="menu">Menu</b></div>
+  <div class="sec"><h3 data-w="whatsNew">What's new</h3>
+    <p class="new"><b>BitzCraft test 1.2:</b> new name. Pick Auto, Lite or Full speed in Settings. On phones the top bar fits, turning is faster, and the world re-fits when you turn your phone.</p>
+  </div>
   <div class="sec"><h3>World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span>Save now</button>
     <button class="row" id="m-load"><span class="ic">↺</span>Load my saved world</button>
@@ -107,12 +137,20 @@ body.touch .keys{display:none}
     <button class="row" disabled><span class="ic">♥</span>Survival<span class="later">later cut</span></button>
     <button class="row" disabled><span class="ic">⏱</span>Build contest<span class="later">later cut</span></button>
   </div>
+  <div class="sec" id="settings"><h3><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-w="settings">Settings</span></h3>
+    <div class="qset" role="radiogroup" aria-label="Quality">
+      <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19a9 9 0 1 1 14.2 0"/><path d="M12 13l4-5"/><circle cx="12" cy="13" r="1.6" fill="currentColor"/></svg><span><b>Auto</b><small>Best for most. Lowers detail if it gets slow.</small></span></button>
+      <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span><b>Lite</b><small>Fastest. For slow Chromebooks and phones.</small></span></button>
+      <button class="qbtn" role="radio" data-q="full" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span><b>Full</b><small>Sharpest look, farther view. Needs a fast device.</small></span></button>
+    </div>
+    <p id="q-now" aria-live="polite"></p>
+  </div>
   <div class="sec"><h3>Test</h3>
     <button class="row" id="m-perf"><span class="ic">∿</span>Show / hide speed</button>
     <p class="help">Keyboard: <kbd>W A S D</kbd> move, <kbd>Space</kbd> jump, left click break, right click place, <kbd>1</kbd>–<kbd>0</kbd> pick a block, <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo. Touch: drag to look, use the pads.</p>
-    <p class="help">Saves stay on this Chromebook (IndexedDB). Export / Import moves a world as a file. Hub sign-in comes in a later cut. Add <kbd>?scale=1</kbd> for full resolution; default picks detail automatically.</p>
+    <p class="help">Saves stay on this device (IndexedDB). Export / Import moves a world as a file. Hub sign-in comes in a later cut.</p>
   </div>
-  <p class="credit">Engine: noa-engine (MIT) + Babylon.js (Apache-2.0) (<a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a>). Block art: Kenney Voxel Pack (<a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0 license</a>).</p>
+  <p class="credit"><span class="plate">BitzCraft test 1.2</span><br>Engine: noa-engine (MIT) + Babylon.js (Apache-2.0) (<a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a>). Block art: Kenney Voxel Pack (<a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0 license</a>).</p>
 </nav>
 <div class="pad move" aria-label="Move">
   <button class="f" data-hold="forward" aria-label="Forward">▲</button>
@@ -127,6 +165,6 @@ body.touch .keys{display:none}
 </div>
 <div id="hotbar" role="toolbar" aria-label="Blocks"></div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
-<script src="app.js?v=1.1" defer></script>
+<script src="app.js?v=1.2" defer></script>
 </body>
 </html>
