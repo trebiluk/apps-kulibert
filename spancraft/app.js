@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20261002-sc134";
+import { mountTruss } from "./truss-play.js?v=20261002-sc135";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.34",
+  version: "SC 1.3.35",
   accessKey: "sc-access-v1",
   helpTitle: "How to play · SpanCraft",
-  note: "What’s new: The board stays still when the prediction question shows.",
+  note: "What’s new: Free build is open from the start. Save your builds and share them with a code.",
   engageKey: "kulibert-spancraft-engage-v2",
   twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",

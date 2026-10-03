@@ -2,7 +2,8 @@
 // Stretch a member from joint to joint. Test is a pin-joint check, not a gradebook.
 
 import { proveTruss } from "./truss-prove.js";
-import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js?v=20261002-sc134";
+import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js?v=20261002-sc135";
+import { encodeBuild, decodeBuild, rollIndex, namePart, pairIndex } from "./truss-codes.js?v=20261002-sc135";
 import {
   quietMode,
   readFlag,
@@ -158,6 +159,14 @@ export function mountTruss(cfg) {
   }
   let cssW = 0;
   let cssH = 0;
+  let testedBuild = null;
+  let nameIx = rollIndex();
+  function freeAlways() {
+    return !cfg.workshop && !classicTheme();
+  }
+  function freeWord() {
+    return freeAlways() ? t("freeBuild") : t("challenge");
+  }
   let plateTimer = 0;
   let theater = null;
 
@@ -204,7 +213,13 @@ export function mountTruss(cfg) {
       const old = readJson(cfg.seedKey, null);
       if (old && old.v === 2) data = old;
     }
-    if (!data || data.v !== 2) return;
+    if (!data || data.v !== 2) {
+      if (freeAlways()) {
+        state.levelId = freeLevel.id;
+        state.track = "challenge";
+      }
+      return;
+    }
     state.cleared = data.cleared && typeof data.cleared === "object" ? data.cleared : {};
     const OLD_LEVEL = {
       span: { across: "stops", long: "endbay", budget: "tight", wide: "arch", fifty: "pier", efficient: "spare" },
@@ -223,8 +238,8 @@ export function mountTruss(cfg) {
     if (!data.stars && data.bestStars && data.levelId && catalog.some((l) => l.id === data.levelId) && !state.stars[data.levelId]) {
       state.stars[data.levelId] = data.bestStars;
     }
-    if (state.track === "challenge" && !pathClear()) state.track = "levels";
-    if (state.track !== "challenge" && active().free) state.levelId = levels[0].id;
+    if (!freeAlways() && state.track === "challenge" && !pathClear()) state.track = "levels";
+    if (!freeAlways() && state.track !== "challenge" && active().free) state.levelId = levels[0].id;
     if (cfg.partFlag && pathClear()) save();
   }
 
@@ -456,7 +471,8 @@ export function mountTruss(cfg) {
   function syncModalFlag() {
     const map = document.getElementById("isle-map");
     const sheet = document.getElementById("access-sheet");
-    const open = (map && !map.hidden) || (sheet && !sheet.hidden);
+    const builds = document.getElementById("builds-sheet");
+    const open = (map && !map.hidden) || (sheet && !sheet.hidden) || (builds && !builds.hidden);
     if (open) document.documentElement.setAttribute("data-kb-modal-open", "");
     else document.documentElement.removeAttribute("data-kb-modal-open");
   }
@@ -506,7 +522,7 @@ export function mountTruss(cfg) {
       btn.hidden = true;
       return;
     }
-    btn.textContent = (nxt.free ? t("challenge") : t("nextLevel")) + " ›";
+    btn.textContent = (nxt.free ? freeWord() : t("nextLevel")) + " ›";
     btn.hidden = false;
     btn.removeAttribute("hidden");
   }
@@ -640,9 +656,13 @@ export function mountTruss(cfg) {
       return;
     }
     if (onFree()) {
+      if (freeAlways() && !state.fixLine && state.members.length === 0 && !state.challengeMet) {
+        setStatus(t("freeBuild"), t("freeLead"), "");
+        return;
+      }
       const pass = cfg.workshop ? t("passBuild") : t("passTruss");
       setStatus(
-        state.challengeMet ? t("clear") : t("challenge"),
+        state.challengeMet ? t("clear") : freeWord(),
         state.challengeMet ? pass + faceJob(level) : faceJob(level),
         state.challengeMet ? "pass" : "",
       );
@@ -1032,14 +1052,15 @@ export function mountTruss(cfg) {
     if (levelsBtn) levelsBtn.setAttribute("aria-pressed", free ? "false" : "true");
     if (chal) {
       chal.setAttribute("aria-pressed", free ? "true" : "false");
-      const open = pathClear();
+      const open = freeAlways() || pathClear();
       chal.classList.toggle("is-locked", !open);
       chal.setAttribute("aria-disabled", open ? "false" : "true");
       if (cfg.workshop) {
         const label = chal.querySelector(".chal-label");
-        if (label) label.textContent = open ? t("challenge") : t("clearLevels");
+        if (label) label.textContent = open ? freeWord() : t("clearLevels");
       }
     }
+    syncSaveBtn();
     if (brief) {
       brief.hidden = !free;
       if (free) brief.textContent = faceJob(freeLevel);
@@ -1058,6 +1079,7 @@ export function mountTruss(cfg) {
   }
 
   function beginLevel(id) {
+    testedBuild = null;
     state.levelId = id;
     if (levelById(id).free) state.track = "challenge";
     else state.track = "levels";
@@ -1082,7 +1104,7 @@ export function mountTruss(cfg) {
     if (!grid) return;
     grid.innerHTML = "";
     for (const level of catalog) {
-      const locked = level.free ? !pathClear() : (level.n > 1 && !state.cleared[levels[level.n - 2].id] && !state.cleared[level.id]);
+      const locked = level.free ? !(freeAlways() || pathClear()) : (level.n > 1 && !state.cleared[levels[level.n - 2].id] && !state.cleared[level.id]);
       const open = !locked;
       const st = state.cleared[level.id] ? "clear" : locked ? "locked" : "active";
       const btn = document.createElement("button");
@@ -1304,6 +1326,13 @@ export function mountTruss(cfg) {
       const nxtBtn = document.getElementById("next-level");
       if (nxtBtn && !nxtBtn.hidden) nxtBtn.focus();
     }
+    if (level.free && freeAlways() && state.members.length > level.budget) {
+      hideNextLevel();
+      const line = t("overBudget")
+        .replace("{n}", String(state.members.length))
+        .replace("{max}", String(level.budget));
+      setStatus(t("freeBuild"), line, held ? "pass" : "fail");
+    }
     if (state.bet) {
       const saidHold = state.bet === "hold";
       const right = saidHold === held;
@@ -1367,6 +1396,7 @@ export function mountTruss(cfg) {
   }
   function startTest() {
     if (busy()) return;
+    if (freeAlways() && onFree()) testedBuild = snapBuild();
     state.stretch = null;
     state.drag = null;
     armRetry(false);
@@ -1394,7 +1424,16 @@ export function mountTruss(cfg) {
     state.hot = null;
     state.hadMiss = false;
     state.fixLine = "";
-    cloneLevel(active());
+    if (freeAlways() && onFree() && testedBuild) {
+      state.joints = testedBuild.joints.map((j) => ({ x: j.x, y: j.y, fixed: !!j.fixed }));
+      state.members = testedBuild.members.map((m) => ({ a: m.a, b: m.b }));
+      state.view = null;
+      state.stretch = null;
+      state.drag = null;
+      state.bet = null;
+    } else {
+      cloneLevel(active());
+    }
     armRetry(false);
     hideNextLevel();
     coach();
@@ -1569,6 +1608,7 @@ export function mountTruss(cfg) {
   }
   function assistLine() {
     const level = active();
+    if (freeAlways() && level.free) return t("freeLead");
     if (!level.free && level.n === 1 && state.members.length < 2) return lineAssist();
     return faceJob(level);
   }
@@ -1661,6 +1701,297 @@ export function mountTruss(cfg) {
     }
     if (bar.parentElement !== document.body) document.body.appendChild(bar);
   }
+  function snapBuild() {
+    return {
+      joints: state.joints.map((j) => ({ x: j.x, y: j.y, fixed: !!j.fixed })),
+      members: state.members.map((m) => ({ a: m.a, b: m.b })),
+    };
+  }
+  function modeName() {
+    return cfg.mode === "spire" ? "spire" : "span";
+  }
+  function maskFromState() {
+    const slots = freeLevel.slots || [];
+    const n = slots.length;
+    let mask = 0n;
+    const slotOf = state.joints.map((j) => {
+      let best = -1;
+      let bestD = 12;
+      for (let i = 0; i < n; i++) {
+        const d = Math.hypot(slots[i].x - j.x, slots[i].y - j.y);
+        if (d < bestD) {
+          bestD = d;
+          best = i;
+        }
+      }
+      return best;
+    });
+    for (const m of state.members) {
+      const a = slotOf[m.a];
+      const b = slotOf[m.b];
+      if (a < 0 || b < 0 || a === b) continue;
+      mask |= 1n << BigInt(pairIndex(n, a, b));
+    }
+    return mask;
+  }
+  function currentCode() {
+    return encodeBuild(modeName(), maskFromState());
+  }
+  function applyMask(mask) {
+    beginLevel(freeLevel.id);
+    const slots = freeLevel.slots || [];
+    const n = slots.length;
+    const indexOf = new Map();
+    state.joints.forEach((j, idx) => {
+      for (let i = 0; i < n; i++) {
+        if (Math.hypot(slots[i].x - j.x, slots[i].y - j.y) < 12) indexOf.set(i, idx);
+      }
+    });
+    const ensure = (i) => {
+      if (indexOf.has(i)) return indexOf.get(i);
+      const s = slots[i];
+      state.joints.push({ x: s.x, y: s.y, fixed: !!s.fixed });
+      const idx = state.joints.length - 1;
+      indexOf.set(i, idx);
+      return idx;
+    };
+    const bits = BigInt(mask);
+    for (let i = 0; i < n; i++) {
+      for (let j = i + 1; j < n; j++) {
+        if ((bits & (1n << BigInt(pairIndex(n, i, j)))) === 0n) continue;
+        const a = ensure(i);
+        const b = ensure(j);
+        if (!state.members.some((m) => (m.a === a && m.b === b) || (m.a === b && m.b === a))) {
+          state.members.push({ a, b });
+        }
+      }
+    }
+    testedBuild = snapBuild();
+    state.phase = "idle";
+    state.bet = null;
+    armRetry(false);
+    hideNextLevel();
+    syncBet();
+    syncSaveBtn();
+    coach();
+    draw();
+    save();
+  }
+  function buildsKey() {
+    return cfg.engageKey + "-builds";
+  }
+  function readBuilds() {
+    const data = readJson(buildsKey(), []);
+    return Array.isArray(data) ? data : [];
+  }
+  function writeBuilds(list) {
+    writeJson(buildsKey(), list.slice(0, 12));
+  }
+  function currentName() {
+    const lang = uiLang();
+    return namePart(lang, "adj", nameIx.a) + " " + namePart(lang, "noun", nameIx.n);
+  }
+  function measureBuild() {
+    if (cfg.mode === "spire") return { height: Math.round(linkedHeight(state.joints, state.members)) };
+    return { span: active().spanM || 0 };
+  }
+  function explainCode(raw) {
+    const res = decodeBuild(raw);
+    if (!res.ok) return { ok: false, text: t("codeBad") };
+    if (res.app !== modeName()) {
+      return { ok: false, text: res.app === "span" ? t("codeForSpan") : t("codeForSpire") };
+    }
+    return { ok: true, mask: res.mask };
+  }
+  function paintPending() {
+    const name = document.getElementById("builds-name");
+    if (name) name.textContent = currentName();
+  }
+  function paintBuilds() {
+    paintPending();
+    const list = document.getElementById("builds-list");
+    if (!list) return;
+    list.innerHTML = "";
+    readBuilds().forEach((item, index) => {
+      const card = document.createElement("article");
+      card.className = "build-card";
+      const title = document.createElement("h3");
+      title.textContent = item.name || "";
+      const code = document.createElement("p");
+      code.className = "build-code";
+      code.dir = "ltr";
+      code.textContent = item.code || "";
+      const meta = document.createElement("p");
+      meta.className = "build-meta";
+      const measure = item.height != null ? (item.height + " m") : item.span != null ? (item.span + " m") : "";
+      meta.textContent = (item.beams || 0) + " · " + measure + (item.stars ? " · ★ " + item.stars : "");
+      const row = document.createElement("div");
+      row.className = "build-actions";
+      const loadBtn = document.createElement("button");
+      loadBtn.type = "button";
+      loadBtn.textContent = t("loadBuild");
+      loadBtn.addEventListener("click", () => {
+        const got = explainCode(item.code);
+        if (!got.ok) return;
+        closeBuilds();
+        applyMask(got.mask);
+      });
+      const copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.textContent = t("copyCode");
+      copyBtn.addEventListener("click", () => copyCode(item.code));
+      const delBtn = document.createElement("button");
+      delBtn.type = "button";
+      delBtn.textContent = t("deleteBuild");
+      delBtn.addEventListener("click", () => {
+        if (delBtn.dataset.armed !== "1") {
+          delBtn.dataset.armed = "1";
+          delBtn.textContent = t("deleteAsk");
+          return;
+        }
+        const next = readBuilds();
+        next.splice(index, 1);
+        writeBuilds(next);
+        paintBuilds();
+      });
+      row.append(loadBtn, copyBtn, delBtn);
+      card.append(title, code, meta, row);
+      list.appendChild(card);
+    });
+  }
+  function copyCode(text) {
+    const value = text || "";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(value).catch(() => {});
+    }
+  }
+  function openBuilds() {
+    const sheet = document.getElementById("builds-sheet");
+    if (!sheet) return;
+    sheet.hidden = false;
+    paintBuilds();
+    syncModalFlag();
+    const close = document.getElementById("builds-close");
+    if (close) close.focus();
+  }
+  function closeBuilds() {
+    const sheet = document.getElementById("builds-sheet");
+    if (!sheet) return;
+    sheet.hidden = true;
+    syncModalFlag();
+  }
+  function saveCurrentBuild() {
+    if (!freeAlways() || !onFree() || busy()) return;
+    const entry = Object.assign({
+      name: currentName(),
+      code: currentCode(),
+      beams: state.members.length,
+      stars: state.stars[freeLevel.id] || 0,
+      saved: new Date().toISOString(),
+    }, measureBuild());
+    const list = readBuilds();
+    list.unshift(entry);
+    writeBuilds(list);
+    nameIx = rollIndex();
+    openBuilds();
+  }
+  function useTypedCode() {
+    const input = document.getElementById("builds-code");
+    const msg = document.getElementById("builds-msg");
+    const raw = input ? input.value : "";
+    const got = explainCode(raw);
+    if (!got.ok) {
+      if (msg) msg.textContent = got.text;
+      setStatus(t("freeBuild"), got.text, "");
+      return;
+    }
+    if (msg) msg.textContent = "";
+    closeBuilds();
+    applyMask(got.mask);
+  }
+  function clearBoard() {
+    testedBuild = null;
+    beginLevel(freeLevel.id);
+  }
+  function syncSaveBtn() {
+    const btn = document.getElementById("tool-save");
+    if (!btn) return;
+    const show = freeAlways() && onFree() && !classicTheme();
+    btn.hidden = !show;
+    if (show) btn.removeAttribute("hidden");
+  }
+  function mountBuilds() {
+    if (!freeAlways()) return;
+    const testBtn = document.getElementById("tool-test");
+    if (testBtn && !document.getElementById("tool-save")) {
+      const saveBtn = document.createElement("button");
+      saveBtn.type = "button";
+      saveBtn.id = "tool-save";
+      saveBtn.textContent = t("saveBuild");
+      saveBtn.hidden = true;
+      testBtn.insertAdjacentElement("afterend", saveBtn);
+      saveBtn.addEventListener("click", saveCurrentBuild);
+    }
+    if (!document.getElementById("builds-sheet")) {
+      const sheet = document.createElement("div");
+      sheet.id = "builds-sheet";
+      sheet.hidden = true;
+      sheet.setAttribute("role", "dialog");
+      sheet.setAttribute("aria-modal", "true");
+      sheet.innerHTML =
+        '<button type="button" id="builds-close"></button>' +
+        '<h2 id="builds-title"></h2>' +
+        '<p class="builds-pending"><span id="builds-name"></span> ' +
+        '<button type="button" id="builds-reroll" aria-label="New name">↺</button></p>' +
+        '<div id="builds-list"></div>' +
+        '<label class="builds-enter" id="builds-code-label"><span id="builds-code-word"></span>' +
+        '<input id="builds-code" dir="ltr" autocomplete="off" spellcheck="false"></label>' +
+        '<button type="button" id="builds-use"></button>' +
+        '<p id="builds-msg"></p>';
+      document.body.appendChild(sheet);
+      sheet.querySelector("#builds-close").addEventListener("click", closeBuilds);
+      sheet.querySelector("#builds-reroll").addEventListener("click", () => {
+        nameIx = rollIndex();
+        paintPending();
+      });
+      sheet.querySelector("#builds-use").addEventListener("click", useTypedCode);
+      new MutationObserver(syncModalFlag).observe(sheet, { attributes: true, attributeFilter: ["hidden"] });
+    }
+    syncSaveBtn();
+    paintBuildChrome();
+  }
+  function paintBuildChrome() {
+    const saveBtn = document.getElementById("tool-save");
+    if (saveBtn) saveBtn.textContent = t("saveBuild");
+    const close = document.getElementById("builds-close");
+    if (close) close.textContent = chrome("close");
+    const title = document.getElementById("builds-title");
+    if (title) title.textContent = t("myBuilds");
+    const word = document.getElementById("builds-code-word");
+    if (word) word.textContent = t("codeWord");
+    const use = document.getElementById("builds-use");
+    if (use) use.textContent = t("loadBuild");
+    const reroll = document.getElementById("builds-reroll");
+    if (reroll) reroll.setAttribute("aria-label", t("reroll"));
+    const code = document.getElementById("builds-code");
+    if (code) code.setAttribute("dir", "ltr");
+    const sheet = document.getElementById("builds-sheet");
+    if (sheet && !sheet.hidden) paintBuilds();
+    else paintPending();
+  }
+  function applyQueryBuild() {
+    if (!freeAlways()) return;
+    let code = "";
+    try { code = new URLSearchParams(location.search).get("build") || ""; } catch (e) {}
+    if (!code) return;
+    const got = explainCode(code);
+    if (!got.ok) {
+      beginLevel(freeLevel.id);
+      setStatus(t("freeBuild"), got.text, "");
+      return;
+    }
+    applyMask(got.mask);
+  }
   function mountLand() {
     if (classicTheme()) return;
     const pocket = document.querySelector(".pocket");
@@ -1683,6 +2014,7 @@ export function mountTruss(cfg) {
       '<button type="button" id="land-close"></button>' +
       '<button type="button" data-land="levels"></button>' +
       '<button type="button" data-land="challenge"></button>' +
+      (freeAlways() ? '<button type="button" data-land="builds"></button><button type="button" data-land="clear"></button>' : "") +
       '<button type="button" data-land="help"></button>' +
       '<button type="button" data-land="settings"></button>' +
       '<button type="button" data-land="retry"></button>' +
@@ -1767,6 +2099,22 @@ export function mountTruss(cfg) {
           syncModalFlag();
           return;
         }
+        if (kind === "builds") {
+          setDrawer(false, false);
+          openBuilds();
+          return;
+        }
+        if (kind === "clear") {
+          if (hit.dataset.armed !== "1") {
+            hit.dataset.armed = "1";
+            hit.textContent = t("clearAsk");
+            return;
+          }
+          hit.dataset.armed = "";
+          clearBoard();
+          setDrawer(false, false);
+          return;
+        }
         if (go) go.click();
         setDrawer(false, false);
       });
@@ -1841,7 +2189,7 @@ export function mountTruss(cfg) {
     const levelsBtn = document.getElementById("track-levels");
     if (levelsBtn && !levelsBtn.querySelector("svg")) levelsBtn.textContent = chrome("levels");
     const chal = document.getElementById("track-challenge");
-    if (chal && !chal.querySelector(".chal-label") && !chal.querySelector("svg")) chal.textContent = t("challenge");
+    if (chal && !chal.querySelector(".chal-label") && !chal.querySelector("svg")) chal.textContent = freeWord();
     document.querySelectorAll(".top-actions a[href='/'], #edge-menu a[href='/']").forEach((a) => {
       a.textContent = chrome("room");
     });
@@ -1881,7 +2229,9 @@ export function mountTruss(cfg) {
     if (menuBtn) menuBtn.setAttribute("aria-label", menuLabel);
     const landWord = {
       levels: chrome("levels"),
-      challenge: t("challenge"),
+      challenge: freeWord(),
+      builds: t("myBuilds"),
+      clear: t("clearBuild"),
       help: chrome("help"),
       settings: chrome("settings"),
       retry: chrome("retry"),
@@ -1922,7 +2272,7 @@ export function mountTruss(cfg) {
     const nextBtn = document.getElementById("next-level");
     if (nextBtn && !nextBtn.hidden) {
       const nxt = nextAfter(active());
-      if (nxt) nextBtn.textContent = (nxt.free ? t("challenge") : t("nextLevel")) + " ›";
+      if (nxt) nextBtn.textContent = (nxt.free ? freeWord() : t("nextLevel")) + " ›";
     }
     const h1 = document.querySelector(".brand h1");
     if (h1 && !h1.querySelector("bdi")) {
@@ -1931,6 +2281,7 @@ export function mountTruss(cfg) {
     }
     paintAccess();
     paintHelp();
+    paintBuildChrome();
     paintReadout();
     syncTrack();
     if (state.phase === "idle") coach();
@@ -1959,6 +2310,7 @@ export function mountTruss(cfg) {
     watch.observe(canvas);
   }
   mountLand();
+  mountBuilds();
   ensureNextBtn();
 
   const addBtn = document.getElementById("tool-add");
@@ -1991,7 +2343,7 @@ export function mountTruss(cfg) {
   });
   if (trackChallenge) trackChallenge.addEventListener("click", () => {
     if (busy()) return;
-    if (!pathClear()) {
+    if (!freeAlways() && !pathClear()) {
       setStatus(t("path"), cfg.workshop ? t("pathFirst") : t("pathTen"), "");
       return;
     }
@@ -2019,6 +2371,12 @@ export function mountTruss(cfg) {
   }
   window.addEventListener("keydown", (ev) => {
     if (ev.key === "Escape") {
+      const builds = document.getElementById("builds-sheet");
+      if (builds && !builds.hidden) {
+        ev.preventDefault();
+        closeBuilds();
+        return;
+      }
       const map = document.getElementById("isle-map");
       if (map && !map.hidden) {
         ev.preventDefault();
@@ -2059,6 +2417,7 @@ export function mountTruss(cfg) {
   paintReadout();
   draw();
   paintLang();
+  applyQueryBuild();
   window.addEventListener("kulibert-lang", (ev) => {
     const lang = (ev && ev.detail && ev.detail.lang) || uiLang();
     const again = () => {

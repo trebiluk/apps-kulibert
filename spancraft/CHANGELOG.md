@@ -1,5 +1,9 @@
-**Chip: SC 1.3.34** · 2026-10-02 · channel **live**
+**Chip: SC 1.3.35** · 2026-10-03 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.35 — Free build — 2026-10-03
+
+- What’s new: Free build is open from the start. Save your builds and share them with a code.
 
 ## 1.3.34 — The board stays still — 2026-10-02
 
