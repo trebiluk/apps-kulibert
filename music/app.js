@@ -165,6 +165,8 @@
     orch: "beep",
     dyn: "mf",
     conducting: false,
+    gesture: "idle",
+    loop: "",
     miss: 0,
     gear: { zoom: 110, spin: 60, glow: 90, thick: 4, count: 24, tint: 10, trail: 22, bounce: 100, scope: 100, smooth: 0, wild: 55 },
     band: "trumpet",
@@ -669,7 +671,8 @@
     if (!host) return;
     host.innerHTML = "";
     let abc = Song.toAbc(state.song);
-    if (window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
+    const both = state.mode === "both" || document.body.classList.contains("tab-score");
+    if (both || window.innerHeight < 520) abc = abc.replace(/^T:.*\n/m, "");
     if (!window.ABCJS || typeof window.ABCJS.renderAbc !== "function") {
       host.textContent = abc;
       nameLooseSvgs();
@@ -697,6 +700,24 @@
       svg.style.maxWidth = "none";
       svg.removeAttribute("height");
       svg.addEventListener("pointerdown", placeNote);
+      if (state.mode === "both") {
+        const wrap = host.parentElement;
+        const desk = document.querySelector(".desk");
+        const cap = Math.max(120, Math.round((desk ? desk.clientHeight : window.innerHeight) * 0.4));
+        window.requestAnimationFrame(() => {
+          const box = svg.getBoundingClientRect();
+          if (box.height > 8) {
+            const h = Math.min(box.height, cap);
+            svg.style.height = h + "px";
+            svg.style.width = "100%";
+            if (wrap) {
+              wrap.style.height = h + "px";
+              wrap.style.maxHeight = cap + "px";
+              wrap.style.overflow = "hidden";
+            }
+          }
+        });
+      }
     }
     nameLooseSvgs();
   }
@@ -1166,6 +1187,8 @@
       const bar = ev ? ev.measure + 1 : 1;
       const beat = ev ? ev.beat + 1 : step + 1;
       $("now-line").textContent = lead + off + "Bar " + bar + ", beat " + beat + ". Now: " + namesAt(drum).join(" and ") + ".";
+      const pos = $("play-pos");
+      if (pos) pos.textContent = (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bar)).replace("{beat}", String(beat));
       if (!state.along) paintFeel(note, note === "Rest" ? "" : "on");
       const teach = $("teach");
       if (teach) {
@@ -1359,7 +1382,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.6",
+        version: "MU 2.35.7",
         event: "score",
         level: id,
         score: score,
@@ -1526,6 +1549,8 @@
     }
     if (state.frame === "none") state.frame = "glow";
     document.body.classList.add("show");
+    const exit = $("perform-exit");
+    if (exit) exit.hidden = false;
     fitViz();
     showCurtain();
     $("now-line").textContent = "One song. The picture follows. Sound can stay off.";
@@ -1548,6 +1573,8 @@
       state.showBackup = null;
     }
     document.body.classList.remove("show");
+    const exit = $("perform-exit");
+    if (exit) exit.hidden = true;
     fitViz();
     if ($("curtain")) $("curtain").hidden = true;
     if ($("bow")) $("bow").hidden = true;
@@ -1785,7 +1812,7 @@
         family = item.family;
         const head = document.createElement("div");
         head.className = "family";
-        head.textContent = family;
+    if (head) head.textContent = mu("fam_" + family) || family;
         picks.appendChild(head);
       }
       const b = document.createElement("button");
@@ -1989,6 +2016,47 @@
     if (split) split.setAttribute("aria-valuenow", String(width));
     return width;
   }
+  const TABS = ["songs", "tap", "remix", "mix", "piano", "score", "band", "viz"];
+  function tabForMode(mode) {
+    if (mode === "beat" || mode === "drums") return "tap";
+    if (mode === "both" || mode === "notes") return "score";
+    if (mode === "lights") return "viz";
+    if (mode === "band") return "band";
+    if (mode === "sound") return "piano";
+    return state.tab || "songs";
+  }
+  function paintTabs(tab) {
+    if (TABS.indexOf(tab) < 0) tab = "songs";
+    state.tab = tab;
+    TABS.forEach((name) => document.body.classList.toggle("tab-" + name, name === tab));
+    TABS.forEach((name) => {
+      const btn = $("tab-" + name);
+      if (!btn) return;
+      const on = name === tab;
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    const exit = $("perform-exit");
+    if (exit) exit.hidden = !document.body.classList.contains("show");
+  }
+  function openTab(tab) {
+    closeMenu();
+    if (document.body.classList.contains("show")) closeShow();
+    state.tabLock = tab;
+    if (tab === "songs") showHome();
+    else if (tab === "tap") chooseWorkspace(state.mode === "drums" ? "drums" : "beat");
+    else if (tab === "remix") chooseWorkspace("notes");
+    else if (tab === "mix") chooseWorkspace("beat");
+    else if (tab === "piano") chooseWorkspace("sound");
+    else if (tab === "score") chooseWorkspace(state.mode === "both" ? "both" : "notes");
+    else if (tab === "band") chooseWorkspace("band");
+    else if (tab === "viz") chooseWorkspace("lights");
+    state.tabLock = null;
+    paintTabs(tab);
+    if (tab === "score" || tab === "piano" || state.mode === "both" || state.mode === "notes") {
+      window.requestAnimationFrame(() => renderStaff());
+    }
+  }
   function setMode(mode) {
     if (WS_MODES.indexOf(mode) < 0) mode = "both";
     state.mode = mode;
@@ -2042,6 +2110,7 @@
       });
     }
     window.requestAnimationFrame(() => { if (stageApi && stageApi.resize) stageApi.resize(); });
+    paintTabs(state.tabLock || tabForMode(mode));
   }
   function chooseWorkspace(mode) {
     const cur = readWorkspace();
@@ -2080,6 +2149,7 @@
   $("curtain-start").addEventListener("click", beginShow);
   $("show-again").addEventListener("click", beginShow);
   $("curtain-exit").addEventListener("click", closeShow);
+  if ($("perform-exit")) $("perform-exit").addEventListener("click", closeShow);
   $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
@@ -2195,64 +2265,57 @@
   }
   $("band-warm").addEventListener("click", () => warmUp());
   const DYN_STEPS = ["pp", "p", "mf", "f", "ff"];
-  function wanted(beat) {
-    const patterns = {
-      "2/4": ["down", "up"],
-      "3/4": ["down", "out", "up"],
-      "4/4": ["down", "in", "out", "up"],
-      "6/8": ["down", "in", "out", "up", "out", "up"],
-    };
-    const pat = patterns[state.song.meter] || patterns["4/4"];
-    return pat[beat % pat.length];
+  function wanted() {
+    const meter = state.song.meter || "4/4";
+    if (meter === "3/4") return "pat3";
+    if (meter === "2/4" || meter === "6/8") return "pat2";
+    return "pat4";
   }
+  const GESTURE_WORD = {
+    pat2: "gPat2", pat3: "gPat3", pat4: "gPat4",
+    cue: "gCue", cresc: "gCresc", cut: "gCut", fade: "gFade", bow: "gBow",
+  };
   function gestureWord(id) {
-    return { down: "Down", in: "In", out: "Out", up: "Up", big: "Bigger", small: "Smaller" }[id] || id;
+    const key = GESTURE_WORD[id];
+    return (key && mu(key)) || id;
   }
   function paintAvatar(gesture) {
     const avatar = $("avatar");
     if (!avatar) return;
-    avatar.className = "avatar " + (gesture || "idle") + " dyn-" + (state.dyn || "mf");
+    avatar.className = "avatar " + (gesture || "idle");
+    const read = $("dyn-read");
+    if (read) read.textContent = (state.dyn || "mf") + " " + (DYN_WORD[state.dyn] || "");
+    document.querySelectorAll("#band-cast .member").forEach((fig) => {
+      fig.classList.toggle("loop-on", fig.dataset.loop === state.loop);
+    });
   }
   function paintOrch() {
     document.querySelectorAll("#orch .btn").forEach((btn) => btn.classList.toggle("on", btn.dataset.orch === state.orch));
-    document.querySelectorAll("#dyn .btn").forEach((btn) => btn.classList.toggle("on", btn.dataset.dyn === state.dyn));
-    paintAvatar(state.conducting ? wanted((markAt(state.cursor) || { beat: 0 }).beat) : "idle");
+    document.querySelectorAll("#dyn .btn").forEach((btn) => {
+      const on = btn.dataset.dyn === state.dyn;
+      btn.classList.toggle("on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    paintAvatar(state.gesture || "idle");
   }
   function askConduct() {
     const ev = markAt(state.cursor);
     const beat = ev ? ev.beat : 0;
     const ask = $("conduct-ask");
-    if (ask) ask.textContent = "Beat " + (beat + 1) + " wants " + gestureWord(wanted(beat)) + ".";
-  }
-  function shiftDyn(dir) {
-    let i = DYN_STEPS.indexOf(state.dyn);
-    if (i < 0) i = 2;
-    i = Math.max(0, Math.min(DYN_STEPS.length - 1, i + dir));
-    state.dyn = DYN_STEPS[i];
-    paintOrch();
-    $("lesson").textContent = dir > 0 ? "A bigger gesture. The band is " + DYN_WORD[state.dyn] + "." : "A smaller gesture. The band is " + DYN_WORD[state.dyn] + ".";
+    if (ask) ask.textContent = (mu("beatWants") || "Beat {n} wants {gesture}.").replace("{n}", String(beat + 1)).replace("{gesture}", gestureWord(wanted()));
   }
   function give(gesture) {
-    if (gesture === "big" || gesture === "small") {
-      shiftDyn(gesture === "big" ? 1 : -1);
-      paintAvatar(gesture === "big" ? "out" : "in");
-      return;
-    }
-    const ev = markAt(state.cursor);
-    const beat = ev ? ev.beat : 0;
-    const want = wanted(beat);
+    state.gesture = gesture;
+    const want = wanted();
+    paintAvatar(gesture);
     if (!state.conducting) {
-      paintAvatar(gesture);
-      $("lesson").textContent = gestureWord(gesture) + " is a beat shape. Conduct the band when you want them to follow.";
+      $("lesson").textContent = gestureWord(gesture);
       return;
     }
-    paintAvatar(want);
     if (gesture !== want) {
       state.miss += 1;
-      $("conduct-ask").textContent = "Not yet. Beat " + (beat + 1) + " wants " + gestureWord(want) + ".";
-      $("lesson").textContent = "The avatar shows " + gestureWord(want) + ". Try that one.";
+      $("conduct-ask").textContent = (mu("beatWants") || "Beat {n} wants {gesture}.").replace("{n}", String((markAt(state.cursor) || { beat: 0 }).beat + 1)).replace("{gesture}", gestureWord(want));
       if (state.miss < 2) return;
-      $("lesson").textContent = gestureWord(want) + ". The band will play this beat.";
     }
     state.miss = 0;
     arm();
@@ -2260,14 +2323,12 @@
     const evs = Song.events(state.song);
     if (state.cursor + 1 >= evs.length) {
       state.conducting = false;
-      $("conduct-btn").textContent = "Conduct the band";
-      $("conduct-ask").textContent = "The band finished your song.";
-      $("lesson").textContent = "That was the last mark. You can conduct it again.";
+      $("conduct-btn").textContent = mu("conduct") || "Conduct the band";
+      $("conduct-ask").textContent = mu("bandDone") || "The band finished your song.";
       return;
     }
     state.cursor += 1;
     askConduct();
-    $("band-finger").textContent = gestureWord(want) + ". The band follows you.";
   }
   function startConduct() {
     if (state.playing) stop();
@@ -2278,7 +2339,7 @@
     setMode("band");
     paintOrch();
     askConduct();
-    $("conduct-btn").textContent = "Stop conducting";
+    $("conduct-btn").textContent = mu("stopConduct") || "Stop conducting";
     $("lesson").textContent = "Give the gesture. The band plays your song one beat at a time.";
   }
   const orchHost = $("orch");
@@ -2317,39 +2378,52 @@
     });
   }
   const gestureHost = $("gestures");
-  if (gestureHost) {
-    ["down", "in", "out", "up", "big", "small"].forEach((id) => {
+  if (gestureHost && !gestureHost.childElementCount) {
+    ["pat2", "pat3", "pat4", "cue", "cresc", "cut", "fade", "bow"].forEach((id) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn";
+      b.dataset.gesture = id;
       b.textContent = gestureWord(id);
-      b.addEventListener("click", () => give(id));
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => {
+        gestureHost.querySelectorAll(".btn").forEach((el) => {
+          const on = el === b;
+          el.classList.toggle("on", on);
+          el.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        give(id);
+      });
       gestureHost.appendChild(b);
     });
   }
-  const baton = $("baton");
-  if (baton) {
-    let start = null;
-    baton.addEventListener("pointerdown", (e) => {
-      start = { x: e.clientX, y: e.clientY };
-      baton.setPointerCapture(e.pointerId);
-    });
-    baton.addEventListener("pointerup", (e) => {
-      if (!start) return;
-      const dx = e.clientX - start.x;
-      const dy = e.clientY - start.y;
-      start = null;
-      if (Math.hypot(dx, dy) < 18) return;
-      if (Math.abs(dx) > Math.abs(dy)) give(dx > 0 ? "out" : "in");
-      else give(dy > 0 ? "down" : "up");
+  const loopHost = $("band-loops");
+  if (loopHost && !loopHost.childElementCount) {
+    [["sticks", "loopSticks"], ["bowing", "loopBowing"], ["keys", "loopKeys"], ["horn", "loopHorn"]].forEach(([id, key]) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn";
+      b.dataset.loop = id;
+      b.textContent = mu(key) || id;
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("click", () => {
+        state.loop = state.loop === id ? "" : id;
+        loopHost.querySelectorAll(".btn").forEach((el) => {
+          const on = el.dataset.loop === state.loop;
+          el.classList.toggle("on", on);
+          el.setAttribute("aria-pressed", on ? "true" : "false");
+        });
+        paintAvatar(state.gesture || "idle");
+      });
+      loopHost.appendChild(b);
     });
   }
   if ($("conduct-btn")) {
     $("conduct-btn").addEventListener("click", () => {
       if (state.conducting) {
         state.conducting = false;
-        $("conduct-btn").textContent = "Conduct the band";
-        $("conduct-ask").textContent = "The band is waiting.";
+        $("conduct-btn").textContent = mu("conduct") || "Conduct the band";
+        $("conduct-ask").textContent = mu("bandWait") || "The band is waiting.";
         paintAvatar("idle");
         return;
       }
@@ -2405,27 +2479,34 @@
     if (document.documentElement.getAttribute("data-kp-motion") === "less") return;
     if (document.body.classList.contains("pref-less-motion")) return;
     const canvas = $("confetti");
-    if (!canvas) return;
+    const wrap = canvas && canvas.parentElement;
+    if (!canvas || !wrap) return;
     canvas.hidden = false;
     const g = canvas.getContext("2d");
     const dpr = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.round(window.innerWidth * dpr);
-    canvas.height = Math.round(window.innerHeight * dpr);
+    const w = Math.max(1, wrap.clientWidth);
+    const h = Math.max(1, wrap.clientHeight);
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    canvas.style.width = w + "px";
+    canvas.style.height = h + "px";
     g.setTransform(dpr, 0, 0, dpr, 0, 0);
     const bits = Array.from({ length: 42 }, () => ({
-      x: window.innerWidth * 0.5,
-      y: window.innerHeight * 0.4,
-      vx: (Math.random() - 0.5) * 14,
-      vy: -6 - Math.random() * 8,
+      x: w * 0.5,
+      y: h * 0.45,
+      vx: (Math.random() - 0.5) * 8,
+      vy: -4 - Math.random() * 5,
       c: ["#22d3ee", "#e8f7ff", "#10203f", "#e24b4b", "#3d7a4a"][Math.floor(Math.random() * 5)],
     }));
     let frame = 0;
     const tick = () => {
-      g.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      g.clearRect(0, 0, w, h);
       bits.forEach((bit) => {
         bit.x += bit.vx;
         bit.y += bit.vy;
-        bit.vy += 0.35;
+        bit.vy += 0.28;
+        if (bit.x < 0 || bit.x > w) bit.vx *= -1;
+        if (bit.y > h) bit.y = h;
         g.fillStyle = bit.c;
         g.fillRect(bit.x, bit.y, 8, 8);
       });
@@ -3470,11 +3551,12 @@
       if (btn) btn.classList.remove("on");
     });
     if ($("home")) $("home").hidden = false;
-    if ($("shelf-extra")) $("shelf-extra").hidden = true;
+    if ($("shelf-extra")) $("shelf-extra").hidden = false;
     if ($("make")) $("make").hidden = true;
     if ($("library")) $("library").hidden = true;
     paintSongBar();
     paintSongShelf();
+    paintTabs("songs");
     resetScroll();
   }
   function showMake() {
@@ -3696,11 +3778,13 @@
       keep();
       renderDrums();
     });
-    [["all", "All"], ["class", "Class"], ["mine", "Mine"]].forEach(([id, label]) => {
+    [["all", "filtAll"], ["class", "filtClass"], ["mine", "filtMine"]].forEach(([id, key]) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (id === "all" ? " on" : "");
-      b.textContent = label;
+      b.dataset.filt = key;
+      b.textContent = mu(key) || id;
+      b.setAttribute("aria-pressed", id === "all" ? "true" : "false");
       b.addEventListener("click", () => {
         libraryFilter = id;
         $("library-filters").querySelectorAll(".btn").forEach((el) => {
@@ -3721,6 +3805,18 @@
       showHome();
       const box = $("import-file");
       if (box && box.parentElement) box.parentElement.scrollIntoView({ block: "start" });
+    });
+    document.querySelectorAll("[data-tab], [data-go-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => openTab(btn.dataset.tab || btn.dataset.goTab));
+    });
+    if ($("both-btn")) $("both-btn").addEventListener("click", () => {
+      closeMenu();
+      if (document.body.classList.contains("show")) closeShow();
+      state.tabLock = "score";
+      chooseWorkspace("both");
+      state.tabLock = null;
+      paintTabs("score");
+      window.requestAnimationFrame(() => renderStaff());
     });
     const dockLeft = $("dock-left");
     if (dockLeft) dockLeft.addEventListener("click", (ev) => {
@@ -4251,13 +4347,14 @@
       const joyTrap = document.createElement("button");
       joyTrap.type = "button";
       joyTrap.className = "btn";
-      joyTrap.textContent = "Ode, but trap";
+      joyTrap.textContent = mu("odeTrap") || "Ode, but trap";
       joyTrap.addEventListener("click", () => {
         if (!odeNotes) return;
         loadTune("Ode to Joy", "Germany", odeNotes, 74);
         trapIt();
       });
-      classics.appendChild(joyTrap);
+      const slot = $("ode-slot") || classics;
+      slot.appendChild(joyTrap);
       const trap = $("styles");
       if (trap && !trap.childElementCount) {
         Object.keys(styles).forEach((name) => {
@@ -4669,33 +4766,47 @@
       });
       notes.appendChild(b);
     });
-    [["smooth", "Smooth"], ["bright", "Bright"], ["buzz", "Buzz"], ["hollow", "Hollow"]].forEach(([id, label]) => {
+    [["smooth", "shapeSmooth"], ["bright", "shapeBright"], ["buzz", "shapeBuzz"], ["hollow", "shapeHollow"]].forEach(([id, key]) => {
       const b = document.createElement("button");
       b.type = "button";
       b.className = "btn" + (id === "smooth" ? " on" : "");
-      b.textContent = label;
+      b.dataset.shape = id;
+      b.textContent = mu(key) || id;
+      b.setAttribute("aria-pressed", id === "smooth" ? "true" : "false");
       b.addEventListener("click", () => {
         lab.shape = id;
         state.wave = SHAPES[id];
-        shapes.querySelectorAll(".btn").forEach((btn) => btn.classList.toggle("on", btn === b));
+        shapes.querySelectorAll(".btn").forEach((btn) => {
+          const on = btn === b;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+        });
         drawTeachWave();
         playLab(lab.freq, 0.4);
       });
       shapes.appendChild(b);
     });
-    [1, 2, 3, 4, 5].forEach((n, i) => {
+    [2, 3, 4, 5].forEach((n, i) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "btn" + (i === 0 ? " on" : "");
+      b.className = "btn";
       b.textContent = String(n);
+      b.setAttribute("aria-pressed", "false");
       b.addEventListener("click", () => {
-        if (i === 0) return;
-        lab.partials[i] = !lab.partials[i];
-        b.classList.toggle("on", lab.partials[i]);
+        const idx = n - 1;
+        lab.partials[idx] = !lab.partials[idx];
+        b.classList.toggle("on", lab.partials[idx]);
+        b.setAttribute("aria-pressed", lab.partials[idx] ? "true" : "false");
         drawTeachWave();
         playLab(lab.freq, 0.55);
       });
       partials.appendChild(b);
+    });
+    ["sound-shapes", "chord-pen", "sound-partials"].forEach((id) => {
+      const el = $(id);
+      if (!el) return;
+      const n = el.querySelectorAll(":scope > .btn").length;
+      el.style.gridTemplateColumns = "repeat(" + Math.max(1, n) + ", minmax(0, 1fr))";
     });
     $("chord-major").addEventListener("click", () => {
       lab.chord = "major";
@@ -4714,13 +4825,27 @@
     const read = $("string-read");
     slider.addEventListener("input", () => {
       lab.len = Number(slider.value);
-      read.textContent = lab.len > 70 ? "Long" : lab.len > 40 ? "Medium" : "Short";
+      read.textContent = lab.len > 70 ? (mu("stringLong") || "Long") : lab.len > 40 ? (mu("stringMedium") || "Medium") : (mu("stringShort") || "Short");
       drawTeachWave();
     });
     $("string-hear").addEventListener("click", () => playLab(261.63 * (100 / lab.len), 0.6));
     drawTeachWave();
   }
   bootSound();
+
+  (function watchDesktopSite() {
+    const card = $("desktop-site");
+    if (!card) return;
+    const paint = () => {
+      const coarse = window.matchMedia("(pointer: coarse)").matches;
+      const tiny = coarse && screen.width <= 600 && window.innerWidth >= 900;
+      if (!card.dataset.closed) card.hidden = !tiny;
+    };
+    paint();
+    window.addEventListener("resize", paint);
+    const x = $("desktop-site-x");
+    if (x) x.addEventListener("click", () => { card.dataset.closed = "1"; card.hidden = true; });
+  })();
 
   window.MuPaintLive = function () {
     paintMute();
@@ -4744,6 +4869,26 @@
       btn.textContent = btn.classList.contains("on") ? label + " ✓" : label;
     });
     paintAlong();
+    document.querySelectorAll("#gestures .btn").forEach((btn) => { if (btn.dataset.gesture) btn.textContent = gestureWord(btn.dataset.gesture); });
+    document.querySelectorAll("#band-loops .btn").forEach((btn) => {
+      const id = btn.dataset.loop || "";
+      const word = mu("loop" + id.charAt(0).toUpperCase() + id.slice(1));
+      if (word) btn.textContent = word;
+    });
+    document.querySelectorAll("#library-filters .btn").forEach((btn) => {
+      const word = btn.dataset.filt && mu(btn.dataset.filt);
+      if (word) btn.textContent = word;
+    });
+    document.querySelectorAll("#sound-shapes .btn").forEach((btn) => {
+      const id = btn.dataset.shape || "";
+      const word = mu("shape" + id.charAt(0).toUpperCase() + id.slice(1));
+      if (word) btn.textContent = word;
+    });
+    if ($("conduct-btn") && !state.conducting) $("conduct-btn").textContent = mu("conduct") || $("conduct-btn").textContent;
+    if (typeof askConduct === "function") askConduct();
+    if (document.body.classList.contains("tab-band") && typeof paintBand === "function") paintBand();
+    const ode = $("ode-slot") && $("ode-slot").querySelector("button");
+    if (ode) ode.textContent = mu("odeTrap") || ode.textContent;
     if ($("looks")) paintLooks();
     if ($("fx")) paintFx();
     if ($("waves")) paintWaves();

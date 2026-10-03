@@ -4,14 +4,19 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>DJ Berty · MU 2.35.6</title>
+  <title>DJ Berty · MU 2.35.7</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=2.35.6"/>
+  <link rel="stylesheet" href="./styles.css?v=2.35.7"/>
 </head>
-<body>
-  <em id="chip" hidden>MU 2.35.6</em>
+<body class="mu237">
+  <em id="chip" hidden>MU 2.35.7</em>
   <div class="scrim" id="scrim"></div>
+  <button type="button" id="perform-exit" class="perform-exit" hidden data-mu="exitShow">✕ Exit</button>
+  <div id="desktop-site" class="desktop-site" hidden>
+    <p data-mu="desktopSite">Words tiny? Turn off Desktop site in Chrome's ⋮ menu.</p>
+    <button type="button" id="desktop-site-x" aria-label="Close">✕</button>
+  </div>
 
   <section id="home" class="home">
     <button type="button" id="make-beat" class="make-beat" data-mu="makeBeat">Make a beat</button>
@@ -52,6 +57,11 @@
       </div>
       <input id="import-file" type="file" hidden/>
     </div>
+    <div class="shelf-block" id="song-library-block">
+      <h2 data-mu="songLibrary">Song library</h2>
+      <p class="hint" data-mu="folkHint">Folk songs from many places. These are simple white-key versions. Change any note.</p>
+      <div id="classics" aria-label="Song library"></div>
+    </div>
     <h2 data-mu="workOn">Work on this song</h2>
     <div class="do-cards" id="do-cards"></div>
     </div>
@@ -81,25 +91,32 @@
   <div class="lab">
     <div class="side" id="side">
       <nav class="dock-left" id="dock-left" aria-label="Workspace">
-        <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-ico="☰" data-i18n-label="menu"><span data-i18n="menu">Menu</span></button>
-        <button type="button" id="mode-beat" data-ico="🥁" aria-pressed="false" data-mu="beat">Beat</button>
-        <button type="button" id="mode-both" class="on" data-ico="♩" aria-pressed="true" data-mu="scoreDrums">Score + drums</button>
-        <button type="button" id="mode-notes" data-ico="𝄞" aria-pressed="false" data-mu="score">Score</button>
-        <button type="button" id="mode-lights" data-ico="✦" aria-pressed="false" data-mu="lights">Lights</button>
-        <button type="button" id="mode-band" data-ico="🎺" aria-pressed="false" data-mu="band">Band</button>
-        <button type="button" id="mode-sound" data-ico="〰" aria-pressed="false" data-i18n="sound">Sound</button>
-        <button type="button" id="dock-songs" data-ico="☰" data-mu="songs">Songs</button>
-        <button type="button" id="show-btn" class="btn show-go" data-ico="★" data-mu="perform">Perform</button>
-        <button type="button" id="turn-btn" class="btn" data-ico="↻" data-mu="listenTurn">Listen, then my turn</button>
-        <button type="button" id="along-btn" class="btn" data-ico="👏" aria-pressed="false" data-mu="playAlong">Play along</button>
-        <button type="button" id="dock-library" data-ico="⌕" data-mu="library">Library</button>
-        <button type="button" id="dock-import" data-ico="↓" data-mu="bringFile">Bring a file in</button>
+        <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-i18n-label="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-i18n="menu">Menu</span></button>
+        <button type="button" id="tab-songs" class="tab on" data-tab="songs" aria-pressed="true" data-mu-label="songs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 4v3h3M8 11h8M8 15h6" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="songs">Songs</span></button>
+        <button type="button" id="tab-tap" class="tab" data-tab="tap" aria-pressed="false" data-mu-label="tabTap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg><span data-mu="tabTap">Tap</span></button>
+        <button type="button" id="tab-remix" class="tab" data-tab="remix" aria-pressed="false" data-mu-label="tabRemix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10M7 12h6M7 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 10l3 2-3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabRemix">Remix</span></button>
+        <button type="button" id="tab-mix" class="tab" data-tab="mix" aria-pressed="false" data-mu-label="tabMix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V8M12 18V6M18 14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabMix">Mix</span></button>
+        <button type="button" id="tab-piano" class="tab" data-tab="piano" aria-pressed="false" data-mu-label="tabPiano"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 5v7M12 5v7M15 5v7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabPiano">Piano</span></button>
+        <button type="button" id="tab-score" class="tab" data-tab="score" aria-pressed="false" data-mu-label="score"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12M6 12h12M6 17h12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="8" r="1.4" fill="currentColor"/><circle cx="10" cy="13" r="1.4" fill="currentColor"/></svg><span data-mu="score">Score</span></button>
+        <button type="button" id="tab-band" class="tab" data-tab="band" aria-pressed="false" data-mu-label="band"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18c1-3 3-4 4-4s3 1 4 4M12 18c1-3 3-4 4-4s3 1 4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="band">Band</span></button>
+        <button type="button" id="tab-viz" class="tab" data-tab="viz" aria-pressed="false" data-mu-label="tabViz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16c2-6 4 2 6-4s4 6 6 0 2 2 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabViz">Viz</span></button>
       </nav>
+      <div id="legacy-modes" hidden>
+        <button type="button" id="mode-beat" data-mu="beat">Beat</button>
+        <button type="button" id="mode-both" data-mu="scoreDrums">Score + drums</button>
+        <button type="button" id="mode-notes" data-mu="score">Score</button>
+        <button type="button" id="mode-lights" data-mu="lights">Lights</button>
+        <button type="button" id="mode-band" data-mu="band">Band</button>
+        <button type="button" id="mode-sound" data-i18n="sound">Sound</button>
+        <button type="button" id="dock-songs" data-mu="songs">Songs</button>
+        <button type="button" id="dock-library" data-mu="library">Library</button>
+        <button type="button" id="dock-import" data-mu="bringFile">Bring a file in</button>
+      </div>
   <aside class="drawer" id="drawer" aria-label="Menu">
     <button type="button" id="menu-close" class="btn close" data-i18n="close">Close</button>
     <section class="group" id="menu-chrome">
       <h2 data-i18n="whatsNew">What's new</h2>
-      <p id="whats-line" data-mu="everyWord">Every word is easy to read, menus close after you pick, and Perform fits your screen.</p>
+      <p id="whats-line" data-mu="ownTab">Each music job has its own tab, and your song stays in the player at the bottom.</p>
       <h2 data-i18n="settings">Settings</h2>
       <div id="menu-langs" role="group">
         <span data-i18n="language">Language</span>
@@ -116,8 +133,17 @@
       <p class="hint" data-i18n="appsFollow">Your apps will use this language.</p>
       <button type="button" id="menu-help" class="btn" data-i18n="help">Help</button>
     </section>
-    <section class="group">
-      <h2 data-mu="go">Go</h2>
+    <section class="group" id="menu-tabs">
+      <h2 data-mu="tabsHead">Tabs</h2>
+      <button type="button" class="btn" data-go-tab="songs" data-mu="songs">Songs</button>
+      <button type="button" class="btn" data-go-tab="tap" data-mu="tabTap">Tap</button>
+      <button type="button" class="btn" data-go-tab="remix" data-mu="tabRemix">Remix</button>
+      <button type="button" class="btn" data-go-tab="mix" data-mu="tabMix">Mix</button>
+      <button type="button" class="btn" data-go-tab="piano" data-mu="tabPiano">Piano</button>
+      <button type="button" class="btn" data-go-tab="score" data-mu="score">Score</button>
+      <button type="button" class="btn" data-go-tab="band" data-mu="band">Band</button>
+      <button type="button" class="btn" data-go-tab="viz" data-mu="tabViz">Viz</button>
+    </section>
       <button type="button" id="menu-songs" class="btn" data-mu="songList">Song list</button>
       <button type="button" id="menu-blank" class="btn" data-mu="blankStaff">Blank staff</button>
       <button type="button" id="menu-key" class="btn" data-mu="tempoKey">Tempo and key</button>
@@ -201,7 +227,7 @@
       <p class="hint" data-mu="saveHint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
     </section>
     <section class="group">
-      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.6</span></p>
+      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.7</span></p>
       <a class="btn" href="./teacher.html" data-mu="teacher">Teacher</a>
       <a class="btn" href="./privacy.html" data-mu="privacy">Privacy</a>
     </section>
@@ -209,12 +235,8 @@
 
     </div>
     <div class="desk">
-    <div id="songbar" class="songbar">
-      <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
-      <div class="songbar-copy">
-        <strong id="songbar-name"><bdi>New song</bdi></strong>
-        <span id="songbar-meta">96 · C · 4/4</span>
-      </div>
+    <div id="songbar" class="songbar" hidden>
+      <span id="songbar-meta">96 · C · 4/4</span>
     </div>
     <section class="work" id="work">
       <div class="kit" id="kit" aria-label="Tap with a finger"></div>
@@ -229,6 +251,7 @@
           <summary data-mu="scoreTools">Score tools</summary>
           <div class="score-tools">
             <div id="meters" class="meters" aria-label="Time signature"></div>
+            <button type="button" id="both-btn" class="btn" data-mu="scoreDrums">Score + drums</button>
             <button type="button" id="add-bar" class="btn" data-mu="addBar">Add a bar</button>
             <button type="button" id="expert-btn" class="btn" aria-pressed="false" data-mu="justStaff">Just the staff</button>
           </div>
@@ -248,17 +271,10 @@
             <div id="melodies" class="looks" aria-label="Melody ideas"></div>
           </details>
           <details class="more-box">
-            <summary>Song library</summary>
-            <p class="hint">Folk songs from many places. These are simple white-key versions. Change any note.</p>
-            <div id="classics" aria-label="Song library"></div>
-            <p class="shelf">Play it as</p>
-            <div id="styles" class="shelf-songs" aria-label="Styles"></div>
-          </details>
-          <details class="more-box">
             <summary>This song's picture</summary>
             <p id="viz-now" class="hint">The picture travels with the song.</p>
             <div id="viz-picks" class="shelf-songs" aria-label="Pictures"></div>
-            <button type="button" id="viz-use" class="btn" data-mu="useThis">Use this picture</button>
+            <button type="button" id="viz-use" class="btn" hidden data-mu="useThis">Use this picture</button>
           </details>
           <details class="more-box">
             <summary>Defend the notes</summary>
@@ -277,8 +293,17 @@
           </details>
         </details>
       </div>
+      <div id="remix-pane" class="applet">
+        <h2 data-mu="playItAs">Play it as</h2>
+        <div id="styles" class="tile-grid" aria-label="Styles"></div>
+        <div id="ode-slot" class="tile-grid"></div>
+      </div>
       <div id="ws-split" class="ws-split" role="separator" aria-orientation="vertical" aria-label="Drag to resize the staff and the drums" aria-valuemin="28" aria-valuemax="72" aria-valuenow="58" tabindex="0" hidden></div>
       <div id="drums-pane">
+        <div class="tap-tiles">
+          <button type="button" id="turn-btn" class="btn" data-mu="listenTurn">Listen, then my turn</button>
+          <button type="button" id="along-btn" class="btn" aria-pressed="false" data-mu="playAlong">Play along</button>
+        </div>
         <div class="style-row" id="style-row" aria-label="Styles"></div>
         <div class="cast" id="cast" aria-label="Layers" hidden></div>
         <p id="sound-banner" class="sound-banner" hidden><span data-mu="soundBanner">Sound is off.</span> <button type="button" id="sound-banner-on" data-mu="turnSoundOn">Turn sound on</button></p>
@@ -290,14 +315,16 @@
           <summary data-mu="extraDrums">Extra drums (Tom, Shaker…)</summary>
           <div id="more-kit" class="kit"></div>
         </details>
-        <details class="more-box">
+        <details class="more-box" id="mix-details">
           <summary data-mu="volSwing">Volume, swing, patterns</summary>
+          <div id="mix-pane">
           <div id="mix" class="mix" aria-label="Loudness"></div>
           <label class="tempo"><span data-mu="swing">Swing</span> <b id="swing-read">0</b>
             <input id="swing" type="range" min="0" max="60" value="0"/>
           </label>
           <button type="button" id="click-btn" class="btn" aria-pressed="false" data-mu="addClick">Add a click</button>
           <div id="patterns" class="looks" aria-label="Add a pattern"></div>
+          </div>
         </details>
       </div>
       <div id="band-pane">
@@ -312,15 +339,23 @@
         <details class="more-box">
           <summary>Play with the band</summary>
           <div class="podium">
-            <div id="avatar" class="avatar idle dyn-mf" aria-hidden="true"><i class="head"></i><i class="body"></i><i class="arm"></i></div>
-            <p id="conduct-ask">Beat 1 wants Down.</p>
+            <div id="avatar" class="avatar idle" data-figure="conductor" aria-hidden="true"><i class="head"></i><i class="body"></i><i class="arm" data-limb="arm"><i class="tip" data-point="baton"></i></i></div>
+            <p id="dyn-read" class="dyn-read">mf</p>
+            <p id="conduct-ask">Beat 1 wants 4-beat.</p>
           </div>
-          <div id="gestures" class="shelf-songs" aria-label="Gestures"></div>
-          <button type="button" id="conduct-btn" class="btn">Conduct the band</button>
-          <p class="shelf">How the band sounds</p>
+          <div id="gestures" class="tile-grid" aria-label="Gestures"></div>
+          <button type="button" id="conduct-btn" class="btn" data-mu="conduct">Conduct the band</button>
+          <p class="shelf" data-mu="bandLoops">How the band moves</p>
+          <div id="band-cast" class="band-cast" aria-hidden="true">
+            <div class="avatar member" data-figure="sticks" data-loop="sticks"><i class="head"></i><i class="body"></i><i class="arm" data-limb="arm"><i class="tip" data-point="stick"></i></i></div>
+            <div class="avatar member" data-figure="bowing" data-loop="bowing"><i class="head"></i><i class="body"></i><i class="arm" data-limb="arm"><i class="tip" data-point="bow"></i></i></div>
+            <div class="avatar member" data-figure="keys" data-loop="keys"><i class="head"></i><i class="body"></i><i class="arm" data-limb="arm"><i class="tip" data-point="keys"></i></i></div>
+            <div class="avatar member" data-figure="horn" data-loop="horn"><i class="head"></i><i class="body"></i><i class="arm" data-limb="arm"><i class="tip" data-point="horn"></i></i></div>
+          </div>
+          <div id="band-loops" class="tile-grid" aria-label="Band moves"></div>
+          <p class="shelf" data-mu="bandSound">How the band sounds</p>
           <div id="orch" class="shelf-songs" aria-label="Orchestra"></div>
           <div id="dyn" class="shelf-songs" aria-label="Dynamics"></div>
-          <div id="baton" class="baton">Draw Down, In, Out, or Up</div>
         </details>
       </div>
       <div id="lights-pane">
@@ -352,20 +387,26 @@
       <div id="sound-pane">
         <div class="sound-controls">
         <div id="sound-notes" class="keys" aria-label="Notes"></div>
+        <details class="more-box" id="wave-explore">
+          <summary data-mu="exploreWave">Explore the wave</summary>
         <div id="sound-shapes" class="pen" aria-label="Wave shape"></div>
-        <div class="pen" aria-label="Chord">
-          <button type="button" id="chord-major" class="btn on" data-mu="major">Major</button>
-          <button type="button" id="chord-minor" class="btn" data-mu="minor">Minor</button>
-          <button type="button" id="chord-arp" class="btn" data-mu="oneByOne">One by one</button>
+        <div id="chord-pen" class="pen" aria-label="Chord">
+          <button type="button" id="chord-major" class="btn on" data-mu="major" aria-pressed="true">Major</button>
+          <button type="button" id="chord-minor" class="btn" data-mu="minor" aria-pressed="false">Minor</button>
+          <button type="button" id="chord-arp" class="btn" data-mu="oneByOne" aria-pressed="false">One by one</button>
         </div>
-        <p class="hint">Overtones. 1 is the note. 2, 3, 4, and 5 sit above it.</p>
-        <div id="sound-partials" class="pen" aria-label="Overtones"></div>
-        <label class="tempo">String length <b id="string-read">Long</b>
+        <p class="hint" id="overtones-line" data-mu="overtones">Overtones. 1 is the note. 2, 3, 4, and 5 sit above it.</p>
+        <div class="partial-row">
+          <span class="note-chip" id="partial-note" data-mu="overtoneNote">Note</span>
+          <div id="sound-partials" class="pen" aria-label="Overtones"></div>
+        </div>
+        <label class="tempo"><span data-mu="stringLength">String length</span> <b id="string-read" data-mu="stringLong">Long</b>
           <input id="string-len" type="range" min="25" max="100" value="100"/>
         </label>
-        <button type="button" id="string-hear" class="btn">Hear the string</button>
-        </div>
+        <button type="button" id="string-hear" class="btn" data-mu="hearString">Hear the string</button>
         <canvas id="wave-view" class="wave-view" width="640" height="160" aria-hidden="true"></canvas>
+        </details>
+        </div>
       </div>
     </section>
 
@@ -407,6 +448,11 @@
   </div>
 
   <div class="transport" id="transport">
+    <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
+    <div class="songbar-copy">
+      <strong id="songbar-name"><bdi>New song</bdi></strong>
+      <span id="play-pos">Bar 1 · Beat 1</span>
+    </div>
     <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word">Play</span></button>
     <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read">96</b>
       <input id="tempo" type="range" min="70" max="160" value="96" aria-label="Tempo"/>
@@ -415,6 +461,7 @@
     <button type="button" id="mute-btn" class="btn" aria-pressed="false" aria-label="Sound on"><span aria-hidden="true">🔊</span> Sound on</button>
     <button type="button" id="rec-btn" class="btn rec" aria-pressed="false" data-mu="record">Record</button>
     <button type="button" id="share-btn" class="btn" data-mu="share">Share</button>
+    <button type="button" id="show-btn" class="btn show-go" data-mu="perform"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 6.2L21 12l-6.8 2.8L12 21l-2.2-6.2L3 12l6.8-2.8z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="perform">Perform</span></button>
     <button type="button" id="more-tools" class="btn" aria-expanded="false" aria-controls="more-pop" data-mu="more">More ▾</button>
     <div id="more-pop" class="more-pop" hidden>
       <button type="button" id="wav-btn" class="btn" data-mu="saveSound">Save as sound</button>
@@ -422,7 +469,7 @@
     </div>
   </div>
 
-  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.6" data-menu="#menu-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.7" data-menu="#menu-btn" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -431,7 +478,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=2.35.6"></script>
-  <script src="./app.js?v=2.35.6"></script>
+  <script src="./strings.js?v=2.35.7"></script>
+  <script src="./app.js?v=2.35.7"></script>
 </body>
 </html>

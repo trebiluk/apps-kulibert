@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.35.7** · 2026-10-03 · channel **live**
+
+Each music job has its own tab, and your song stays in the player at the bottom.
+
+Where things went: Songs (home, my songs, start, open songs, library, song library, bring a file in), Tap (pads, Trap/Lo-fi/Rock/Marching, listen then my turn, play along), Remix (play it as, Ode but trap), Mix (volume, swing, click, patterns), Piano (sound keys), Score (staff, letters, lengths, score tools, more note tools, chords, melody ideas, defend the notes, remixes, score + drums), Band (today's band, fixed conducting gestures), Viz (lights, this song's picture, explore the wave).
+
+## Earlier
+
 **Chip: MU 2.35.6** · 2026-10-03 · channel **live**
 
 Every word is easy to read, menus close after you pick, and Perform fits your screen.

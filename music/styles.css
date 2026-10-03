@@ -192,16 +192,8 @@ body.show .song-title { font-size: clamp(1.6rem, 4vw, 3rem); }
 .avatar .head { position: absolute; left: 48px; top: 6px; width: 44px; height: 44px; border-radius: 50%; background: #f3d2b3; }
 .avatar .body { position: absolute; left: 46px; top: 54px; width: 48px; height: 72px; border-radius: 18px; background: #1d4ed8; }
 .avatar .arm { position: absolute; left: 84px; top: 70px; width: 52px; height: 8px; border-radius: 8px; background: #f3d2b3; transform-origin: left center; transition: transform 0.16s ease; }
-.avatar.down .arm { transform: rotate(72deg); }
-.avatar.in .arm { transform: rotate(168deg); }
-.avatar.out .arm { transform: rotate(8deg); }
-.avatar.up .arm { transform: rotate(-48deg); }
-.avatar.idle .arm { transform: rotate(24deg); }
-.avatar.dyn-pp { transform: scale(0.84); }
-.avatar.dyn-p { transform: scale(0.92); }
-.avatar.dyn-mf { transform: scale(1); }
-.avatar.dyn-f { transform: scale(1.08); }
-.avatar.dyn-ff { transform: scale(1.16); }
+.avatar.idle .arm { transform: rotate(-8deg); }
+.avatar.dyn-pp, .avatar.dyn-p, .avatar.dyn-mf, .avatar.dyn-f, .avatar.dyn-ff { transform: none; }
 .baton { min-height: 112px; margin: 0.4rem 0; border-radius: 16px; border: 1px dashed #67e8f9; display: grid; place-items: center; text-align: center; color: var(--muted); touch-action: none; }
 @media (prefers-reduced-motion: reduce) {
   .avatar, .avatar .arm { transition: none; }
@@ -538,7 +530,7 @@ body.menu-open .drawer { transform: none; }
   body.menu-open .scrim { display: block; }
   body.menu-open #menu-close { display: inline-flex; }
 }
-#mode-both { flex-basis: 7.4rem; }
+#mode-both { flex-basis: auto; }
 .ws-split {
   display: none;
   width: 18px;
@@ -693,7 +685,7 @@ body.is-home .songbar { display: none !important; }
 .berty-bob::before { left: 9px; }
 .berty-bob::after { right: 9px; }
 .berty-bob.on { transform: translateY(-6px); }
-.confetti { position: fixed; inset: 0; z-index: 50; width: 100%; height: 100%; pointer-events: none; }
+.confetti { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; pointer-events: none; }
 .share-line { font-weight: 750; word-break: break-all; margin: 0.35rem 0; }
 #share-line:not([hidden]) {
   position: fixed;
@@ -1796,7 +1788,7 @@ html[dir="rtl"] .kb-bar { direction: ltr; }
 @media (max-width: 420px) {
   .kb-plate { font-size: 0 !important; }
   .kb-plate::after {
-    content: "MU 2.35.6";
+    content: "MU 2.35.7";
     font-size: 0.9rem;
     font-weight: 700;
   }
@@ -2364,3 +2356,249 @@ body.show .transport .tempo {
 
 
 
+
+/* MU 2.35.7 — left tabs and a bottom player */
+body.mu237 {
+  --rail: 168px;
+  --player: 64px;
+  --bar: 52px;
+  --tabs: 0px;
+  height: 100dvh;
+  overflow: hidden;
+}
+body.mu237 .stage-wrap { position: relative; overflow: hidden; }
+body.mu237 .confetti { position: absolute !important; inset: 0 !important; z-index: 1 !important; width: 100% !important; height: 100% !important; }
+body.mu237 .side {
+  position: fixed !important;
+  top: var(--bar);
+  left: 0;
+  bottom: 0;
+  width: var(--rail);
+  z-index: 24;
+  display: flex !important;
+  flex-direction: column;
+  overflow: auto;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+}
+body.mu237.show .side,
+body.mu237.show .menu-btn,
+body.mu237.is-home .lab,
+body.mu237.is-home .side,
+body.mu237.is-library .lab,
+body.mu237.is-make .lab { display: flex !important; }
+body.mu237 .desk {
+  position: fixed !important;
+  top: calc(var(--bar) + var(--tabs));
+  left: var(--rail);
+  right: 0;
+  bottom: var(--player);
+  overflow: auto;
+  min-height: 0;
+  display: flex !important;
+  flex-direction: column;
+  background: var(--bg);
+}
+body.mu237 .transport,
+body.mu237.playing:not(.show) .transport {
+  position: fixed !important;
+  left: var(--rail) !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  z-index: 26;
+  width: auto !important;
+  max-height: var(--player);
+  margin: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
+  background: #07101c;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+body.mu237 #dock-left { display: flex; flex-direction: column; gap: 2px; padding: 4px; }
+body.mu237 #dock-left .tab {
+  display: flex; align-items: center; gap: 0.4rem;
+  min-height: 44px; height: 44px; max-height: 44px; flex: 0 0 44px; width: 100%;
+  padding: 0 0.45rem; border: 0; border-radius: 8px; background: transparent;
+  color: var(--text); font-size: 14px; font-weight: 700; text-align: start;
+}
+body.mu237 #dock-left .tab svg { width: 24px; height: 24px; flex: 0 0 24px; }
+body.mu237 #dock-left .tab.on,
+body.mu237 #dock-left .tab[aria-pressed="true"] { background: #22d3ee; color: #041018; }
+body.mu237 #menu-btn {
+  position: fixed !important; top: 4px; left: 4px; z-index: 28;
+  display: inline-flex !important; align-items: center; justify-content: center;
+  width: 44px; min-width: 44px; height: 44px; min-height: 44px; padding: 0;
+  border-radius: 10px; background: var(--elevated); color: var(--text); border: 1px solid var(--border);
+}
+body.mu237 #menu-btn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+body.mu237 #menu-btn svg { width: 24px; height: 24px; }
+html[dir="rtl"] body.mu237 #menu-btn { left: 4px; right: auto; }
+body.mu237 .home, body.mu237 .make, body.mu237 .library,
+body.mu237 #notes-pane, body.mu237 #drums-pane, body.mu237 #band-pane,
+body.mu237 #lights-pane, body.mu237 #sound-pane, body.mu237 #remix-pane,
+body.mu237 .out { display: none !important; }
+body.mu237.tab-songs .home { display: block !important; }
+body.mu237.tab-songs.is-make .home { display: none !important; }
+body.mu237.tab-songs.is-make .make { display: block !important; }
+body.mu237.tab-songs.is-library .home { display: none !important; }
+body.mu237.tab-songs.is-library .library { display: block !important; }
+body.mu237.tab-songs .home, body.mu237.tab-songs .make, body.mu237.tab-songs .library {
+  position: fixed; z-index: 5;
+  top: calc(var(--bar) + var(--tabs)); left: var(--rail); right: 0; bottom: var(--player);
+  overflow: auto; margin: 0; padding: 0.7rem 0.8rem 1rem; background: var(--bg);
+}
+body.mu237.tab-tap #drums-pane { display: flex !important; flex-direction: column; min-height: 0; }
+body.mu237.tab-tap #mix-details { display: none !important; }
+body.mu237.tab-tap .out { display: block !important; max-height: 110px; overflow: hidden; }
+body.mu237.tab-tap .stage-wrap { height: 96px; max-height: 96px; overflow: hidden; }
+body.mu237.tab-tap #song-title, body.mu237.tab-tap #feel, body.mu237.tab-tap #now-line, body.mu237.tab-tap #lane { display: none !important; }
+body.mu237.tab-remix #remix-pane { display: block !important; }
+body.mu237.tab-mix #drums-pane { display: block !important; }
+body.mu237.tab-mix #drums-pane > :not(#mix-details) { display: none !important; }
+body.mu237.tab-mix #mix-details, body.mu237.tab-mix #mix-details > *, body.mu237.tab-mix #mix-pane { display: block !important; }
+body.mu237.tab-piano #sound-pane { display: block !important; }
+body.mu237.tab-piano #wave-explore { display: none !important; }
+body.mu237.tab-score #notes-pane { display: block !important; }
+body.mu237.tab-score.is-both #drums-pane { display: flex !important; flex-direction: column; min-height: 0; }
+body.mu237.tab-score.is-both #mix-details { display: none !important; }
+body.mu237.tab-score.is-both .work {
+  display: grid !important; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.4rem; align-items: start;
+}
+body.mu237.tab-band #band-pane { display: block !important; }
+body.mu237.tab-viz #lights-pane, body.mu237.tab-viz .out, body.mu237.tab-viz #sound-pane, body.mu237.tab-viz #notes-pane { display: block !important; }
+body.mu237.tab-viz #notes-pane > :not(#song-more) { display: none !important; }
+body.mu237.tab-viz #song-more > details { display: none !important; }
+body.mu237.tab-viz #song-more > details:has(#viz-picks),
+body.mu237.tab-viz #song-more > details:has(#viz-picks) > * { display: block !important; }
+body.mu237.tab-viz #viz-use, body.mu237.tab-viz #sound-notes { display: none !important; }
+body.mu237 .tile-grid, body.mu237 #styles, body.mu237 #ode-slot, body.mu237 #gestures, body.mu237 #band-loops {
+  display: grid; grid-template-columns: repeat(4, minmax(44px, 1fr)); gap: 0.35rem;
+}
+body.mu237 .tile-grid .btn, body.mu237 #styles .btn, body.mu237 #ode-slot .btn { min-height: 44px; min-width: 44px; }
+@media (max-width: 700px) {
+  body.mu237 .tile-grid, body.mu237 #styles { grid-template-columns: repeat(3, minmax(44px, 1fr)); }
+  body.mu237 { --player: 112px; }
+  body.mu237 .transport { max-height: 112px; }
+}
+@media (max-width: 699px) and (orientation: portrait) {
+  body.mu237 { --rail: 0px; --tabs: 52px; --player: 112px; }
+  body.mu237 .side { top: var(--bar); left: 0; right: 0; bottom: auto; width: auto; height: 52px; border-right: 0; border-bottom: 1px solid var(--border); overflow: hidden; }
+  body.mu237 #dock-left { display: grid; grid-template-columns: repeat(8, minmax(44px, 1fr)); width: 100%; }
+  body.mu237 #dock-left .tab { width: auto; padding: 0; justify-content: center; }
+  body.mu237 #dock-left .tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 { --rail: 96px; --player: 64px; --tabs: 0px; }
+  body.mu237 #dock-left { display: grid; grid-template-columns: 1fr 1fr; align-content: start; }
+  body.mu237 #dock-left .tab { padding: 0; justify-content: center; }
+  body.mu237 #dock-left .tab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+}
+body.mu237 .transport .cover { width: 40px; height: 40px; min-width: 40px; }
+body.mu237 .transport .songbar-copy { flex: 1 1 8rem; min-width: 0; max-width: 16rem; }
+body.mu237 .transport .songbar-copy strong, body.mu237 .transport #play-pos,
+body.mu237 .transport .tempo, body.mu237 .transport .tempo b, body.mu237 #tempo-read { font-size: 14px !important; line-height: 1.2; }
+body.mu237 .transport .songbar-copy strong { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; white-space: normal; }
+body.mu237 .transport .play, body.mu237 .transport .btn, body.mu237 .transport .tempo { min-height: 44px; max-height: 48px; }
+body.mu237 .transport .tempo input { min-height: 32px; height: 32px; }
+body.mu237 #show-btn { display: inline-flex !important; align-items: center; gap: 0.25rem; }
+body.mu237 #show-btn svg { width: 18px; height: 18px; }
+body.mu237 .perform-exit {
+  position: fixed; z-index: 60; top: calc(var(--bar) + 6px); inset-inline-start: 8px;
+  min-width: 44px; min-height: 44px; padding: 0 0.7rem; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--elevated); color: var(--text); font-size: 14px; font-weight: 800;
+}
+body.mu237 .perform-exit[hidden] { display: none !important; }
+body.mu237 .desktop-site {
+  position: fixed; z-index: 70; left: 8px; right: 8px; top: 56px; display: flex; gap: 0.5rem; align-items: center;
+  padding: 0.5rem 0.7rem; background: #10203f; color: var(--text); border: 1px solid #22d3ee; border-radius: 10px;
+}
+body.mu237 .desktop-site[hidden] { display: none !important; }
+body.mu237 .desktop-site p { margin: 0; font-size: 14px; }
+body.mu237 .desktop-site button { min-width: 44px; min-height: 44px; }
+body.mu237 .drum-row b, body.mu237 .beat-line, body.mu237 .family, body.mu237 .shelf,
+body.mu237 .hint, body.mu237 .kicker, body.mu237 .drawer h2, body.mu237 .song-row span, body.mu237 .do-card span { font-size: 14px !important; }
+body.mu237 :where(.desk, .home, .library, .make, .drawer, .transport, .side) :where(p, span, b, label, button, summary, h1, h2, a, li, strong, em) { font-size: 14px; }
+body.mu237 .pen { display: grid !important; }
+body.mu237 .pen .btn.on, body.mu237 .pen .btn[aria-pressed="true"] {
+  background: #22d3ee !important; color: #041018 !important; box-shadow: none !important;
+}
+body.mu237 .pen .btn.on::after, body.mu237 .pen .btn[aria-pressed="true"]::after { content: " ✓"; }
+body.mu237 .note-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.7rem; border-radius: 8px; background: var(--panel); color: var(--text); font-size: 14px; font-weight: 700; }
+body.mu237 .partial-row { display: flex; gap: 0.35rem; align-items: center; }
+body.mu237 .partial-row .pen { flex: 1; }
+body.mu237 .avatar { width: 140px; height: 170px; position: relative; transform: none !important; }
+body.mu237 .avatar .head { position: absolute; left: 48px; top: 8px; width: 40px; height: 40px; border-radius: 50%; background: #f3d2b3; }
+body.mu237 .avatar .body { position: absolute; left: 50px; top: 50px; width: 36px; height: 46px; border-radius: 14px; background: #1d4ed8; }
+body.mu237 .avatar .arm { position: absolute; left: 78px; top: 58px; width: 36px; height: 8px; border-radius: 8px; background: #f3d2b3; transform-origin: left center; transform: rotate(-8deg); }
+body.mu237 .avatar .tip { position: absolute; right: -4px; top: -2px; width: 8px; height: 12px; background: #22d3ee; border-radius: 2px; }
+body.mu237 .avatar.pat2 .arm { animation: mu-pat2 1.2s linear infinite; }
+body.mu237 .avatar.pat3 .arm { animation: mu-pat3 1.6s linear infinite; }
+body.mu237 .avatar.pat4 .arm { animation: mu-pat4 2s linear infinite; }
+body.mu237 .avatar.cue .arm { animation: mu-cue 0.6s linear infinite; }
+body.mu237 .avatar.cresc { box-shadow: 0 0 18px #22d3ee; }
+body.mu237 .avatar.cut .arm { transform: rotate(16deg); }
+body.mu237 .avatar.fade { box-shadow: 0 0 6px #16324f; }
+body.mu237 .avatar.bow .arm { transform: rotate(-36deg); }
+body.mu237 .avatar.member .arm { transform: rotate(-6deg); }
+body.mu237 .avatar.member.loop-on[data-loop="sticks"] .arm { animation: mu-pat2 0.5s linear infinite; }
+body.mu237 .avatar.member.loop-on[data-loop="bowing"] .arm { animation: mu-pat4 1.4s linear infinite; }
+body.mu237 .avatar.member.loop-on[data-loop="keys"] .arm { animation: mu-cue 0.4s linear infinite; }
+body.mu237 .avatar.member.loop-on[data-loop="horn"] .arm { transform: rotate(-28deg); }
+body.mu237 .band-cast { display: flex; gap: 0.4rem; justify-content: center; }
+body.mu237 .dyn-read { margin: 0; font-size: 14px; font-weight: 800; color: #22d3ee; }
+@keyframes mu-pat2 { 0% { transform: rotate(16deg); } 50% { transform: rotate(-40deg); } 100% { transform: rotate(16deg); } }
+@keyframes mu-pat3 { 0% { transform: rotate(16deg); } 33% { transform: rotate(-8deg); } 66% { transform: rotate(-40deg); } 100% { transform: rotate(16deg); } }
+@keyframes mu-pat4 { 0% { transform: rotate(16deg); } 25% { transform: rotate(4deg); } 50% { transform: rotate(-16deg); } 75% { transform: rotate(-40deg); } 100% { transform: rotate(16deg); } }
+@keyframes mu-cue { 0% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } 100% { transform: rotate(-12deg); } }
+body.mu237 .tap-tiles { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+body.mu237 .tap-tiles .btn { min-height: 44px; }
+html[data-kp-contrast="1"] body.mu237 .pen .btn.on,
+html[data-kp-contrast="1"] body.mu237 #dock-left .tab.on { background: #ffe14a !important; color: #000 !important; }
+html, body.mu237 { overflow-x: hidden; max-width: 100%; }
+body.mu237 #drums { max-width: 100%; overflow-x: auto; }
+@media (prefers-reduced-motion: reduce) { body.mu237 .avatar .arm { animation: none !important; } }
+body.mu237 .work { flex: 1 1 auto; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+body.mu237.tab-tap #drums-pane { flex: 1 1 auto; min-height: 0; overflow: hidden; max-height: 100%; }
+body.mu237.tab-tap #drums { flex: 1 1 auto; min-height: 0; overflow: auto; max-height: 100%; }
+body.mu237.tab-viz .stage-wrap, body.mu237.tab-tap .stage-wrap { position: relative; overflow: hidden; }
+body.mu237.tab-viz .out { min-height: 160px; }
+body.mu237.tab-viz .stage-wrap { height: 180px; }
+body.mu237.tab-score.is-both #notes-pane,
+body.mu237.tab-score.is-both #drums-pane { min-height: 0; max-height: 100%; overflow: auto; }
+body.mu237.tab-score .staff-wrap { min-height: 0 !important; max-height: 40vh; overflow: hidden; }
+body.mu237.tab-tap #drums-pane { flex: 1 1 auto !important; min-height: 0 !important; overflow: hidden !important; max-height: 100% !important; }
+body.mu237.tab-tap #drums { flex: 1 1 auto !important; min-height: 0 !important; max-height: 100% !important; overflow: auto !important; height: auto !important; }
+body.mu237 .desk > .work { height: 100%; }
+body.mu237 .desk {
+  position: fixed !important;
+  top: calc(var(--bar) + var(--tabs)) !important;
+  bottom: var(--player) !important;
+  left: var(--rail) !important;
+  right: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+}
+body.mu237 .transport,
+body.mu237.playing:not(.show) .transport,
+body.mu237.is-beat:not(.show) .transport {
+  position: fixed !important;
+  left: var(--rail) !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
+  height: var(--player) !important;
+  max-height: var(--player) !important;
+  overflow: hidden !important;
+}
+body.mu237.tab-tap #drums {
+  max-height: calc(100dvh - var(--bar) - var(--tabs) - var(--player) - 150px) !important;
+}
+@media (min-width: 700px) {
+  body.mu237 .transport { flex-wrap: nowrap !important; height: 64px !important; max-height: 64px !important; }
+}
+body.mu237 #dock-left .tab { height: 44px !important; max-height: 44px !important; min-height: 44px !important; flex: 0 0 44px !important; }
