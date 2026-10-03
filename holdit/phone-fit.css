@@ -19,9 +19,11 @@ html:not(.kb-framed) body.kb-on[data-scroll-locked] {
 
 /* HI 1.1.17 — on a short screen the Studio tip spans the road.
    Dock a slim card in the sky at the side, away from the deck.
-   Left in ltr, right in rtl. Never wider than 40%. */
+   Left in ltr, right in rtl. Never wider than 40%.
+   HI 1.1.18 — the plan strip uses the same dock so it leaves the road. */
 @media (max-height: 480px) {
-  .hi-studio {
+  .hi-studio,
+  .hi-plan {
     left: 0.75rem !important;
     right: auto !important;
     top: 0.75rem !important;
@@ -31,8 +33,124 @@ html:not(.kb-framed) body.kb-on[data-scroll-locked] {
     transform: none !important;
     translate: none !important;
   }
-  html[dir="rtl"] .hi-studio {
+  html[dir="rtl"] .hi-studio,
+  html[dir="rtl"] .hi-plan {
     left: auto !important;
     right: 0.75rem !important;
   }
+  .hi-plan {
+    max-height: 2.5rem;
+    overflow: hidden;
+    padding-top: 0.35rem !important;
+    padding-bottom: 0.35rem !important;
+  }
+  .hi-plan p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Tower cards sit under the height line. Keep Next on the same row so it stays tappable. */
+  .shop-editor[data-campaign="tower"] .hi-studio {
+    padding: 0.45rem 0.55rem !important;
+  }
+  .shop-editor[data-campaign="tower"] .hi-studio .mt-2 {
+    flex-wrap: nowrap !important;
+  }
+  .shop-editor[data-campaign="tower"] .hi-studio .mt-2 button {
+    min-height: 44px;
+  }
+  .shop-editor[data-campaign="tower"] .hi-studio .mt-2 button:first-child {
+    min-width: 0;
+    overflow: hidden;
+  }
+}
+
+/* HI 1.1.18 — full screen control and the tower turn card. */
+.hi-fs {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px 0 0;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 230, 223, 0.55);
+  background: rgba(255, 255, 255, 0.14);
+  color: #f4f1ea;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font: 650 13px/1 Outfit, "Noto Sans", "Noto Sans Arabic", system-ui, sans-serif;
+  cursor: pointer;
+}
+.hi-fs[hidden] { display: none !important; }
+.hi-fs-glyph {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+}
+.hi-turn {
+  position: fixed;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: min(46vw, 16rem);
+  min-height: 44px;
+  padding: 4px 4px 4px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 230, 223, 0.45);
+  background: rgba(12, 18, 28, 0.88);
+  color: #f4f1ea;
+  font: 650 13px/1.25 Outfit, "Noto Sans", "Noto Sans Arabic", system-ui, sans-serif;
+  pointer-events: auto;
+}
+.hi-turn[hidden] { display: none !important; }
+.hi-turn button, .hi-fs-hint button, .hi-fs-exit {
+  min-width: 44px;
+  min-height: 44px;
+}
+.hi-turn button, .hi-fs-hint button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: 700 22px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+.hi-fs-hint {
+  position: fixed;
+  z-index: 70;
+  left: 50%;
+  top: 72px;
+  transform: translateX(-50%);
+  width: min(22rem, calc(100vw - 24px));
+  padding: 12px 12px 12px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(232, 230, 223, 0.45);
+  background: rgba(12, 18, 28, 0.94);
+  color: #f4f1ea;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font: 650 14px/1.35 Outfit, "Noto Sans", "Noto Sans Arabic", system-ui, sans-serif;
+}
+.hi-fs-hint[hidden] { display: none !important; }
+.hi-fs-hint p { margin: 8px 0; }
+.hi-fs-exit {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 4px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(232, 230, 223, 0.35);
+  background: transparent;
+  color: inherit;
+  text-align: start;
+  font: 650 14px/1 Outfit, "Noto Sans", "Noto Sans Arabic", system-ui, sans-serif;
+  cursor: pointer;
 }

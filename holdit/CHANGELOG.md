@@ -1,5 +1,9 @@
-**Chip: HI 1.1.17** · 2026-10-03 · channel **live**
+**Chip: HI 1.1.18** · 2026-10-03 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.18 — Towers fit, one tap full screen — 2026-10-03
+
+- What’s new: Towers fit the screen, and one tap goes full screen.
 
 ## 1.1.17 — Tips stay out of the way — 2026-10-03
 
