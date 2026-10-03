@@ -444,6 +444,10 @@
   ],
   "rewrites": [
     {
+      "source": "/bertopia/",
+      "destination": "/blocks/index.html"
+    },
+    {
       "source": "/holdit/play/:levelId",
       "destination": "/holdit/index.html"
     },

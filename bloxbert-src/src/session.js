@@ -98,6 +98,19 @@ export function createSession(api) {
     return '<span class="sw pat-' + ((item.block || 1) % 6) + '"></span>'
   }
   function paintBag(g) {
+    if (mode !== 'survival') {
+      for (const [k, item] of Object.entries(ITEMS)) {
+        if (!item.block) continue
+        const b = document.createElement('button')
+        b.type = 'button'
+        b.className = 'gtile'
+        b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+        b.querySelector('.glbl').textContent = itemName(k)
+        b.addEventListener('click', () => { hot = 0; api.toast(itemName(k) + ' → 1') })
+        g.append(b)
+      }
+      return
+    }
     if (!bag.slots.some(Boolean)) {
       const p = document.createElement('p')
       p.className = 'gnote'
@@ -173,9 +186,7 @@ export function createSession(api) {
       const pay = item.sell ? quoteSell(item, sold, wallet.state.dial || 1, ECON) : 0
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'gtile'
-      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' ⚙ ' + pay + ' · ' + sold + '/20' : itemName(k) + ' ' + t('cantSell')
+      b.className = 'gtile item'
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
       b.addEventListener('click', () => { sell(k, 1); paintSell(g) })
       g.append(b)

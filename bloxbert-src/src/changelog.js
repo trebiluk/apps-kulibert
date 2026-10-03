@@ -1,6 +1,6 @@
 export const CHANGELOG = [
   { v: '2.5.1', date: '2026-10-03', lines: {
-    en: ['New name: Bertopia.', 'Same Bertyville world.', 'See every change here.', 'Worlds are backed up first.'],
+    en: ['New name: Bertopia.', 'Same Bertyville world.', 'See every change here.'],
     uk: ['Нова назва: Бертопія.', 'Той самий Бертивіль.', 'Усі зміни тут.', 'Світ копіюється спершу.'],
     ru: ['Новое имя: Бертопия.', 'Тот же Бертивиль.', 'Все изменения здесь.', 'Мир копируется сначала.'],
     es: ['Nuevo nombre: Bertopia.', 'El mismo Bertyville.', 'Cada cambio está aquí.', 'El mundo se copia antes.'],

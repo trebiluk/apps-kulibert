@@ -43,6 +43,7 @@ export function mountPanels(api) {
       menu: () => show('menu', api.t('menu'), (g) => {
         g.append(
           tile('▶', api.t('resume'), close),
+          tile('📚', api.t('myBuilds'), () => open('builds')),
           tile('🎒', api.t('inventory'), () => open('inventory')),
           tile('🔨', api.t('crafting'), () => open('crafting')),
           tile('🏪', api.t('shop'), () => open('shop')),
@@ -90,6 +91,7 @@ export function mountPanels(api) {
           tile('▤', api.t('buildTable'), () => api.table()),
         )
       }),
+      station: () => show('station', api.t('oven'), (g) => api.paintStation(g)),
       log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),

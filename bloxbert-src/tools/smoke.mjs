@@ -9,9 +9,15 @@ await page.setViewport({ width: 1366, height: 768 })
 await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
 await new Promise((r) => setTimeout(r, 2000))
 const hot = await page.$('#hotbar')
+await page.setViewport({ width: 412, height: 915, hasTouch: true, isMobile: true })
+await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
+await new Promise((r) => setTimeout(r, 1500))
+await page.evaluate(() => document.getElementById('game-menu').click())
+await new Promise((r) => setTimeout(r, 300))
+const open = await page.$eval('#sheet', (el) => !el.hidden && el.dataset.panel === 'menu')
 await browser.close()
-if (errs.length || !hot) {
-  console.error(errs.join('\n') || 'no hotbar')
+if (errs.length || !hot || !open) {
+  console.error(errs.join('\n') || 'menu did not open')
   process.exit(1)
 }
 console.log('smoke ok', url)
