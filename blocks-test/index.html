@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="data:,">
-<title>Block Builder · Cut 1 test</title>
+<title>Block Builder · test 1.1</title>
 <style>
 :root{--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -14,18 +14,24 @@ button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 #stage{position:fixed;inset:0}
 #stage canvas{width:100%;height:100%;display:block;touch-action:none;outline:none}
-.top{position:fixed;left:0;right:0;top:0;height:56px;display:flex;align-items:center;gap:12px;padding:6px 12px;background:rgba(11,18,32,.86);border-bottom:1px solid var(--line);z-index:5;backdrop-filter:blur(4px)}
-.icon-btn{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:grid;place-items:center;font-size:22px;line-height:1}
+.top{position:fixed;left:0;right:0;top:0;height:60px;display:flex;align-items:center;gap:12px;padding:6px 12px;background:rgba(11,18,32,.92);border-bottom:1px solid var(--line);z-index:5}
+.icon-btn{width:48px;height:48px;flex:0 0 auto;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:grid;place-items:center;font-size:22px;line-height:1}
 .icon-btn:hover{border-color:var(--teal)}
-.brand{display:flex;flex-direction:column;min-width:0}
+.brand{display:flex;flex-direction:column;min-width:0;flex:1 1 auto}
+.brand b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tool{min-width:48px;height:48px;flex:0 0 auto;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;font-size:14px;font-weight:600}
+.tool:hover{border-color:var(--teal)}
+.tool[disabled]{opacity:.45;cursor:default}
+.tool .ti{font-size:18px;line-height:1}
+.tool.save{border-color:rgba(20,184,166,.7);background:rgba(20,184,166,.18)}
+#toast{position:fixed;left:50%;top:70px;transform:translateX(-50%);z-index:12;background:var(--ink2);border:1px solid var(--teal);border-radius:10px;padding:8px 14px;font-size:14px;max-width:90vw}
+[hidden]{display:none!important}
 .brand b{font-size:16px;letter-spacing:.2px}
 .brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid rgba(34,211,238,.45);color:var(--cyan);white-space:nowrap}
 .spacer{flex:1}
-.status{display:flex;flex-direction:column;align-items:flex-end;font-size:12px;color:var(--muted);min-width:0}
-.status #current{color:var(--snow);font-size:14px;font-weight:600}
-#save-state{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:42vw}
-#perf{position:fixed;top:64px;right:12px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
+#current{color:var(--snow);font-weight:600}
+#perf{position:fixed;top:68px;right:12px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
 .cross{position:fixed;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:3;pointer-events:none}
 .cross:before,.cross:after{content:"";position:absolute;background:rgba(248,250,252,.92);box-shadow:0 0 0 1px rgba(11,18,32,.6)}
 .cross:before{left:10px;top:0;width:2px;height:22px}.cross:after{top:10px;left:0;height:2px;width:22px}
@@ -37,7 +43,7 @@ button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 .dhead b{font-size:16px}
 .sec{border-top:1px solid var(--line);padding:12px 0 6px}
 .sec h3{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
-.row{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:8px 10px;margin:0 0 6px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);text-align:left}
+.row{display:flex;align-items:center;gap:10px;width:100%;min-height:48px;padding:8px 10px;margin:0 0 6px;border-radius:10px;border:1px solid var(--line);background:var(--ink2);text-align:left}
 .row:hover{border-color:var(--teal)}
 .row .ic{width:24px;text-align:center;color:var(--teal)}
 .row[disabled]{opacity:.55;cursor:not-allowed}
@@ -65,10 +71,12 @@ body.touch .pad{display:grid}
 .acts button{width:76px;height:64px;font-size:14px;font-weight:600}
 .acts .place{border-color:var(--teal);background:rgba(20,184,166,.28)}
 .acts .brk{border-color:var(--blue);background:rgba(59,130,246,.24)}
-.acts .jump{grid-column:1/span 2;width:auto;height:48px}
+.acts .jump{grid-column:1/span 2;width:auto;height:52px}
 .keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px}
 body.touch .keys{display:none}
-@media (max-width:520px){.brand small{display:none}.chip{display:none}}
+.ver{color:var(--muted);font-weight:400;font-size:12px}
+@media (max-width:620px){.chip{display:none}.ver{display:none}}
+@media (max-width:400px){.tool .tl{display:none}.tool{padding:0}.top{gap:8px;padding:6px 8px}}
 </style>
 </head>
 <body>
@@ -76,13 +84,13 @@ body.touch .keys{display:none}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Block Builder</b><small>Cut 1 feasibility test · test page</small></div>
+  <div class="brand"><b>Block Builder <span class="ver">test 1.1</span></b><small><span id="current">Red brick</span> · <span id="save-state">Loading…</span></small></div>
   <span class="chip">Creative</span>
-  <div class="spacer"></div>
-  <div class="status"><span id="current">Red brick</span><span id="save-state">Loading…</span></div>
+  <button class="tool" id="undo-btn" aria-label="Undo" disabled><span class="ti">↶</span><span class="tl">Undo</span></button>
+  <button class="tool save" id="save-btn" aria-label="Save"><span class="ti">⬇</span><span class="tl">Save</span></button>
 </header>
 <div id="perf" aria-live="off">— fps</div>
-<div class="keys">Click the world to aim · <b>WASD</b> move · <b>Space</b> jump · <b>Left click</b> break · <b>Right click</b> place · <b>1–0</b> / wheel pick · <b>Esc</b> mouse</div>
+<div class="keys">Click the world to aim · <b>WASD</b> move · <b>Space</b> jump · <b>Left click</b> break · <b>Right click</b> place · <b>1–0</b> / wheel pick · <b>Ctrl+Z</b> undo · <b>Esc</b> mouse</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Block Builder menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu">✕</button><b>Menu</b></div>
@@ -90,6 +98,8 @@ body.touch .keys{display:none}
     <button class="row" id="m-save"><span class="ic">⬇</span>Save now</button>
     <button class="row" id="m-load"><span class="ic">↺</span>Load my saved world</button>
     <button class="row" id="m-export"><span class="ic">⇪</span>Export world file</button>
+    <button class="row" id="m-import"><span class="ic">⇩</span>Import world file</button>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
     <button class="row" id="m-reset"><span class="ic">✱</span>Fresh world</button>
   </div>
   <div class="sec"><h3>Mode</h3>
@@ -99,8 +109,8 @@ body.touch .keys{display:none}
   </div>
   <div class="sec"><h3>Test</h3>
     <button class="row" id="m-perf"><span class="ic">∿</span>Show / hide speed</button>
-    <p class="help">Keyboard: <kbd>W A S D</kbd> move, <kbd>Space</kbd> jump, left click break, right click place, <kbd>1</kbd>–<kbd>0</kbd> pick a block. Touch: drag to look, use the pads.</p>
-    <p class="help">Saves stay on this Chromebook (IndexedDB). Hub sign-in comes in a later cut.</p>
+    <p class="help">Keyboard: <kbd>W A S D</kbd> move, <kbd>Space</kbd> jump, left click break, right click place, <kbd>1</kbd>–<kbd>0</kbd> pick a block, <kbd>Ctrl</kbd>+<kbd>Z</kbd> undo. Touch: drag to look, use the pads.</p>
+    <p class="help">Saves stay on this Chromebook (IndexedDB). Export / Import moves a world as a file. Hub sign-in comes in a later cut. Add <kbd>?scale=1</kbd> for full resolution; default picks detail automatically.</p>
   </div>
   <p class="credit">Engine: noa-engine (MIT) + Babylon.js (Apache-2.0) (<a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a>). Block art: Kenney Voxel Pack (<a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0 license</a>).</p>
 </nav>
@@ -116,6 +126,7 @@ body.touch .keys{display:none}
   <button class="jump" data-hold="jump">Jump</button>
 </div>
 <div id="hotbar" role="toolbar" aria-label="Blocks"></div>
-<script src="app.js" defer></script>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<script src="app.js?v=1.1" defer></script>
 </body>
 </html>
