@@ -212,7 +212,11 @@
     writePending(rows);
     try { root.dispatchEvent(new CustomEvent("kw-record", { detail: row })); } catch (eEv) {}
     try {
-      if (root.parent && root.parent !== root) root.parent.postMessage({ type: "kw-record", app: row.app, row: row }, "*");
+      var allow = ["https://tw.kulibert.net", "https://kulibert.net", "https://www.kulibert.net", "https://apps.kulibert.net"];
+      var origin = "";
+      try { origin = (location.ancestorOrigins && location.ancestorOrigins[0]) || ""; } catch (eOr) {}
+      if (!origin) { try { origin = document.referrer ? new URL(document.referrer).origin : ""; } catch (eRef) {} }
+      if (root.parent && root.parent !== root && allow.indexOf(origin) >= 0) root.parent.postMessage({ type: "kw-record", app: row.app, row: row }, origin);
     } catch (ePost) {}
     flush();
     return row;
