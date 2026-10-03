@@ -34,11 +34,11 @@ export function mountPanels(api) {
     api.onClose()
   }
   function backOne() {
-    if (stack.length <= 1) { openRoot(); return }
+    if (stack.length <= 1) { close(); return }
     stack.pop()
     open(stack[stack.length - 1] || 'menu')
   }
-  function open(id) {
+  function open(id, key) {
     const map = {
       menu: () => show('menu', api.t('menu'), (g) => {
         g.append(
@@ -54,7 +54,9 @@ export function mountPanels(api) {
           tile('🌍', api.t('world'), () => open('world')),
           tile('🔀', api.t('mode'), () => open('mode')),
           tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),
+          tile('🧰', api.t('buildTools'), () => { close(); api.tools() }),
           tile('★', api.t('whatsNew'), () => open('news')),
+          tile('🚪', api.t('exitApp'), () => open('leave')),
         )
       }, true),
       inventory: () => show('inventory', api.t('inventory'), (g) => api.paintBag(g)),
@@ -81,11 +83,18 @@ export function mountPanels(api) {
         )
       }),
       news: () => show('news', api.t('whatsNew'), (g) => { const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('whatsNewBody'); g.append(p) }),
-      counter: () => show('counter', api.t('myCounter'), (g) => api.paintCounter(g)),
-      bunk: () => show('bunk', api.t('bunk'), (g) => api.paintBunk(g)),
+      counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
+      bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),
+      leave: () => show('leave', api.t('exitApp'), (g) => {
+        const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('leaveAsk'); g.append(p)
+        g.append(tile('✓', api.t('leave'), () => api.leave()), tile('✕', api.t('stay'), () => openRoot()))
+      }),
+      builds: () => show('builds', api.t('myBuilds'), (g) => api.paintBuilds(g)),
+      rewind: () => show('rewind', api.t('undoMinutes'), (g) => api.paintRewind(g)),
+      snaps: () => show('snaps', api.t('snapshots'), (g) => api.paintSnaps(g)),
       prices: () => show('prices', api.t('prices'), (g) => api.paintPrices(g)),
     }
-    ;(map[id] || map.menu)()
+    ;(map[id] || map.menu)(key)
   }
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)

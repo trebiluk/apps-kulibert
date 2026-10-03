@@ -579,6 +579,8 @@
     else document.addEventListener("DOMContentLoaded", armFrameDupes);
     root.addEventListener("keydown", function (ev) {
       if (!ev || ev.key !== "Escape" || ev.repeat) return;
+      var tag = document.querySelector("script[data-app]");
+      if (tag && tag.getAttribute("data-esc") === "app") return;
       var el = menuEl();
       var was = !!(el && (readMenuOpen(el, false) || el.getAttribute("data-kb-open") === "1"));
       if (!was) {

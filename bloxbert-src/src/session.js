@@ -21,6 +21,8 @@ export function createSession(api) {
   let paused = false
   let visitN = 1
   const bagHist = []
+  const redoBag = []
+  const placedLeaves = new Set()
   wallet.state.day = day
   wallet.post({ kind: 'start', cogs: 0, by: 'you' })
 
@@ -86,13 +88,25 @@ export function createSession(api) {
     p.innerHTML = '<bdi>' + t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey) + '</bdi>'
     g.append(p)
   }
+  function itemIcon(item) {
+    if (!item) return ''
+    if (item.svg) return icon(item.svg)
+    return '<span class="sw pat-' + ((item.block || 1) % 6) + '"></span>'
+  }
   function paintBag(g) {
+    if (!bag.slots.some(Boolean)) {
+      const p = document.createElement('p')
+      p.className = 'gnote'
+      p.textContent = t('emptyBag')
+      g.append(p)
+    }
     bag.slots.forEach((s) => {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile'
-      b.innerHTML = '<span class="gic">' + (s ? (ITEMS[s.item].svg ? icon(ITEMS[s.item].svg) : ITEMS[s.item].letter) : '·') + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = s ? itemName(s.item) + ' ' + s.n : '—'
+      b.innerHTML = '<span class="gic" aria-hidden="true">' + (s ? itemIcon(ITEMS[s.item]) : '') + '</span><span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = s ? itemName(s.item) + ' ' + s.n : ''
+      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       if (s) b.addEventListener('click', () => card(g, s.item))
       g.append(b)
     })
@@ -105,8 +119,9 @@ export function createSession(api) {
       b.type = 'button'
       b.className = 'gtile'
       const out = ITEMS[r.out[0]]
-      b.innerHTML = '<span class="gic">' + (out.svg ? icon(out.svg) : out.letter) + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = t('make') + ' ' + itemName(r.out[0])
+      b.innerHTML = '<span class="gic">' + itemIcon(out) + '</span><span class="glbl"></span><span class="gneed"></span>'
+      b.querySelector('.glbl').textContent = itemName(r.out[0])
+      b.querySelector('.gneed').textContent = r.in.map(([k, n]) => itemName(k) + '×' + n).join(' ')
       if (!gate.ok && gate.why === 'oven') b.querySelector('.glbl').textContent = t('needsOven')
       if (!gate.ok && gate.why === 'bench') b.querySelector('.glbl').textContent = t('needsBench')
       b.disabled = !gate.ok
@@ -114,15 +129,10 @@ export function createSession(api) {
         if (!make(r, bag)) { api.toast(t('bagFull')); return }
         paintHotbar()
         api.toast(t('make') + ' ' + itemName(r.out[0]))
-        paintCraft(g.parentElement ? g : g)
+        g.innerHTML = ''
+        paintCraft(g)
       })
       g.append(b)
-      if (r.label === 'food') {
-        const n = document.createElement('p')
-        n.className = 'gnote'
-        n.textContent = r.id === 'bread' ? t('breadLabel') : t('ingredients')
-        g.append(n)
-      }
     }
   }
   function paintShop(g) {
@@ -149,8 +159,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile'
-      b.innerHTML = '<span class="gic">⚙</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' ⚙ ' + pay : itemName(k) + ' ' + t('cantSell')
+      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' ⚙ ' + pay + ' · ' + sold + '/20' : itemName(k) + ' ' + t('cantSell')
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
       b.addEventListener('click', () => sell(k, 1))
       g.append(b)
@@ -167,14 +177,16 @@ export function createSession(api) {
   function paintPrices(g) { paintSell(g); paintBuy(g) }
   function paintWallet(g) {
     const p = document.createElement('p')
-    p.className = 'gnote'
-    p.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + ' · ' + t('practice') + '</bdi>'
+    p.className = 'gnote balance'
+    p.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + ' ' + t('practice') + '</bdi>'
     g.append(p)
-    for (const row of wallet.state.ledger.slice(-20).reverse()) {
+    const phrase = { sell: t('sold'), buy: t('bought'), 'till-take': t('takeTill'), 'vend-sale': t('townBought'), start: t('startCogs'), teacher: t('teacher') }
+    for (const row of wallet.state.ledger.slice(-10).reverse()) {
       const line = document.createElement('p')
       line.className = 'gnote'
       const time = new Date(row.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      line.innerHTML = '<bdi>' + (row.cogs >= 0 ? '＋' : '－') + '⚙ ' + Math.abs(row.cogs) + ' · ' + row.kind + ' · ' + time + '</bdi>'
+      const words = (phrase[row.kind] || row.kind).replace('{n}', row.n || 0).replace('{item}', itemName(row.item || '')).replace('{cogs}', Math.abs(row.cogs))
+      line.innerHTML = '<bdi>' + words + ' ' + (row.cogs ? (row.cogs > 0 ? '+' : '') + '⚙' + row.cogs : '') + ' · ' + time + '</bdi>'
       g.append(line)
     }
   }
@@ -203,8 +215,13 @@ export function createSession(api) {
     line.textContent = t('profit') + ' ⚙ ' + profit
     g.append(line)
   }
+  function hashKey(key) {
+    let h = 0
+    for (const c of key) h = (h * 33 + c.charCodeAt(0)) | 0
+    return h
+  }
   function paintBunk(g, key) {
-    g.append(btn(t('yes'), () => { home = key.split(',').map(Number); api.toast(t('bunk')); api.close() }))
+    g.append(btn(t('yes'), () => { home = String(key || '').split(',').map(Number); api.toast(t('poofBunk')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
   function sell(k, n) {
@@ -247,23 +264,15 @@ export function createSession(api) {
     if (x >= 4 && x <= 13 && z >= 4 && z <= 11 && y >= 4 && y <= 9) { api.toast(t('shopProtected')); return false }
     const drop = dropOf(id)
     if (drop && bag.add(drop, 1)) { api.toast(t('bagFull')); return false }
-    if (id === 12) {
+    if (id === 12 && !placedLeaves.has(x + ',' + y + ',' + z)) {
       const spot = x + ',' + y + ',' + z
-      let h = (x * 374761393 + y * 668265263 + z * 1274126177) >>> 0
+      const h = (x * 374761393 + y * 668265263 + z * 1274126177) >>> 0
       if (!wallet.state.picked.includes(spot) && (h / 4294967296) < 0.33) {
         wallet.state.picked.push(spot)
         bag.add('berry', 1)
       }
     }
-    if (id === 24) {
-      const rec = meta.get(x + ',' + y + ',' + z)
-      if (rec) {
-        for (const s of rec.slots) if (s) bag.add(s.item, s.n)
-        if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
-        meta.delete(x + ',' + y + ',' + z)
-      }
-    }
-    if (id === 26) home = null
+    if (id === 24 || id === 26) return false
     bagHist.push({ type: 'break', item: drop, n: drop ? 1 : 0 })
     return true
   }
@@ -274,9 +283,25 @@ export function createSession(api) {
     const key = need ? need[0] : item
     if (!key || !bag.count(key)) { api.toast(t('noItem').replace('{item}', itemName(key || 'stone'))); return false }
     if (!bag.take(key, 1)) return false
-    if (id === 24) meta.set(x + ',' + y + ',' + z, { kind: 'vend', owner: 'you', slots: [null, null, null, null], till: 0, sales: [], visits: 0 })
+    if (id === 12) placedLeaves.add(x + ',' + y + ',' + z)
+    if (id === 24) meta.set(x + ',' + y + ',' + z, { kind: 'vend', owner: 'you', slots: [null, null, null, null], till: 0, sales: [], salesN: 0 })
     bagHist.push({ type: 'place', item: key, n: 1 })
+    redoBag.length = 0
     paintHotbar()
+    return true
+  }
+  function pickup(x, y, z, id) {
+    const key = x + ',' + y + ',' + z
+    if (id === 24) {
+      const rec = meta.get(key)
+      if (rec) {
+        for (const s of rec.slots) if (s) bag.add(s.item, s.n)
+        if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
+        meta.delete(key)
+      }
+      bag.add('vend', 1)
+    }
+    if (id === 26) { home = null; bag.add('bunk', 1) }
     return true
   }
   function beforeUndo() {
@@ -291,10 +316,22 @@ export function createSession(api) {
     if (!h) return
     if (h.type === 'place') bag.add(h.item, h.n)
     if (h.type === 'break' && h.item) bag.take(h.item, h.n)
+    redoBag.push(h)
     paintHotbar()
+  }
+  function beforeRedo() {
+    if (mode !== 'survival' || !redoBag.length) return true
+    const h = redoBag[redoBag.length - 1]
+    if (h.type === 'place' && h.item && bag.count(h.item) < h.n) { api.toast(t('noItem').replace('{item}', itemName(h.item))); return false }
+    return true
   }
   function afterRedo() {
     if (mode !== 'survival') return
+    const h = redoBag.pop()
+    if (!h) return
+    bagHist.push(h)
+    if (h.type === 'place') bag.take(h.item, h.n)
+    if (h.type === 'break' && h.item) bag.add(h.item, h.n)
     paintHotbar()
   }
   function vendTick(n = 1) {
@@ -303,10 +340,10 @@ export function createSession(api) {
     for (const [key, rec] of meta) {
       if (rec.kind !== 'vend') continue
       for (let i = 0; i < n; i++) {
-        if ((rec.visits || 0) >= (ECON.townsfolk.maxPerCounterPerDay || 20)) break
-        rec.visits = (rec.visits || 0) + 1
-        const hit = visit(rec, 1, day, visitN++, (item) => (ITEMS[item] && ITEMS[item].base) || 1)
+        if ((rec.salesN || 0) >= (ECON.townsfolk.maxPerCounterPerDay || 20)) break
+        const hit = visit(rec, hashKey(key), day, visitN++, (item) => (ITEMS[item] && ITEMS[item].base) || 1)
         if (!hit) continue
+        rec.salesN = (rec.salesN || 0) + 1
         rec.slots[hit.i].n -= hit.n
         if (!rec.slots[hit.i].n) rec.slots[hit.i] = null
         rec.till += hit.cogs
@@ -339,7 +376,7 @@ export function createSession(api) {
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
-    onBreak, onPlace, beforeUndo, afterUndo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem,
+    onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
     give(item, n) { bag.add(item, n); paintHotbar() },

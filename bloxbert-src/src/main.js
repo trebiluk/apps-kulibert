@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.2.0'
+const VERSION = '2.3.0'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -14,6 +14,7 @@ import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
+import { createTools } from './tools.js'
 import { fromDoc } from './save.js'
 
 const T0 = performance.now()
@@ -254,8 +255,10 @@ function undo() {
   return true
 }
 function redo() {
+  if (session && !session.beforeRedo()) return false
   const group = edits.redo()
   if (!group) return false
+  if (session) session.afterRedo()
   changeLog.note(group, 'you')
   toast(t('redid').replace('{n}', String(group.n)))
   return true
@@ -291,17 +294,19 @@ function breakBlock() {
   if (!tget) return false
   const [x, y, z] = tget.position
   const id = getVoxel(x, y, z)
+  if (id === ID.vend || id === ID.bunk) return false
   if (session && !session.onBreak(x, y, z, id)) return false
-  if (id === ID.vend || id === ID.storeCounter) {
-    const k = x + ',' + y + ',' + z
-    if (id === ID.storeCounter) { panels.open('shop'); return false }
-    if (id === ID.vend) { panels.open('counter'); session.paintCounter(document.querySelector('#sheet-body .ggrid') || document.getElementById('sheet-body'), k); return false }
-  }
-  if (id === ID.bunk) { panels.open('bunk'); return false }
   return edit(x, y, z, 0)
 }
 function placeBlock() {
   if (inspectOn) { showInspect(); return false }
+  const aimedBlock = noa.targetedBlock
+  if (aimedBlock && panels) {
+    const [ax, ay, az] = aimedBlock.position
+    if (aimedBlock.blockID === ID.storeCounter) { panels.open('shop'); return false }
+    if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
+    if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
+  }
   let x, y, z
   if (tableMode && !noa.targetedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
@@ -315,9 +320,6 @@ function placeBlock() {
   }
   const id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
   if (session && session.mode === 'survival' && !id) { toast(t('noItem').replace('{item}', t('stone'))); return false }
-  if (getVoxel(x, y, z) === ID.storeCounter) { panels.open('shop'); return false }
-  if (getVoxel(x, y, z) === ID.vend) { panels.open('counter'); return false }
-  if (getVoxel(x, y, z) === ID.bunk) { panels.open('bunk'); return false }
   if (session && !session.onPlace(x, y, z, id)) return false
   return edit(x, y, z, id)
 }
@@ -472,13 +474,26 @@ panels = mountPanels({
   paintTeacher: (g) => session.paintTeacher(g),
   paintPrices: (g) => session.paintPrices(g),
   paintCounter: (g) => session.paintCounter(g),
-  paintBunk: (g) => session.paintBunk(g),
+  paintBunk: (g, key) => session.paintBunk(g, key),
+  tools: () => { const strip = $('tool-strip'); if (strip) strip.hidden = false },
+  leave: async () => { await save(); location.href = '/' },
+  paintBuilds: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('myBuilds') })),
+  paintRewind: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('undoMinutes') })),
+  paintSnaps: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('snapshots') })),
+})
+const tools = createTools({
+  t, toast, getVoxel,
+  survival: () => session && session.mode === 'survival',
+  names: () => ['air', ...BLOCKS.map((b) => b[1])],
+  apply: (ops, label) => edits.applyEdit(ops, { source: 'tool', label }),
 })
 $('game-menu').addEventListener('click', () => openMenu(true))
-$('wallet-chip').addEventListener('click', () => openMenu(true) || panels.open('wallet'))
+$('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
+let menuFromLock = false
 document.addEventListener('pointerlockchange', () => {
-  if (!document.pointerLockElement && !selfUnlock && !tableMode) openMenu(true)
+  if (!document.pointerLockElement && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
   selfUnlock = false
+  if (document.pointerLockElement) menuFromLock = false
 })
 noa.on('tick', () => {
   const p = noa.entities.getPosition(noa.playerEntity)
@@ -688,11 +703,22 @@ $('m-creative').addEventListener('click', () => setMode(false))
 $('m-table').addEventListener('click', () => { setMode(true); openMenu(false) })
 if (qs.get('mode') === 'table') setMode(true)
 
+let lastJumpDown = 0
 let lastJump = 0
-function onJumpTap() {
-  if (tableMode) return
+let jumpHeld = false
+function onJumpTap() {}
+function jumpDown() {
+  if (tableMode || jumpHeld) return
+  jumpHeld = true
+  lastJumpDown = performance.now()
+}
+function jumpUp() {
+  if (!jumpHeld) return
+  jumpHeld = false
+  const tap = performance.now() - lastJumpDown < 250
+  if (!tap) return
   const now = performance.now()
-  if (now - lastJump < 350) {
+  if (now - lastJump < 300) {
     flying = !flying
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : 2
@@ -703,23 +729,28 @@ function onJumpTap() {
   }
   lastJump = now
 }
+window.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return
+  e.preventDefault()
+  e.stopPropagation()
+  if (e.repeat) return
+  const card = $('inspect-card'); if (card) card.hidden = true
+  if ($('sheet') && !$('sheet').hidden) { panels.backOne(); return }
+  openMenu(true)
+}, true)
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
-  if (e.key === 'Escape') {
-    const card = $('inspect-card'); if (card) card.hidden = true
-    if (panels && panels.openPanel) { panels.backOne(); return }
-    openMenu(!$('sheet').hidden ? false : true)
-    return
-  }
+  if (e.key === 'Escape') return
   if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openMenu(true); panels.open('inventory'); return }
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
+  if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '1234567890'.indexOf(e.key)
   if (n >= 0 && !tableMode) pick(n + 1)
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
   if (e.key === 'i' || e.key === 'I') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); setInspect(!inspectOn) } }
-  if (e.key === ' ' || e.code === 'Space') onJumpTap()
+  if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
   if (!tableMode) return
   if (e.key === 'Enter') { e.preventDefault(); if (inspectOn) showInspect(); else placeBlock(); return }
   const step = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]
@@ -733,6 +764,7 @@ document.addEventListener('keydown', (e) => {
   if (e.shiftKey) tableCursor[1] += step[1] || step[0]
   tableCursor[1] = Math.max(1, Math.min(40, tableCursor[1]))
 })
+document.addEventListener('keyup', (e) => { if (e.key === ' ' || e.code === 'Space') jumpUp() })
 noa.on('tick', () => {
   const s = noa.inputs.pointerState.scrolly
   if (s && !tableMode) { const i = BLOCKS.findIndex((b) => b[0] === current); pick(BLOCKS[(i + (s > 0 ? 1 : BLOCKS.length - 1)) % BLOCKS.length][0]) }
@@ -743,7 +775,7 @@ noa.on('tick', () => {
     noa.entities.setPosition(noa.playerEntity, [8.5, 12, 8.5])
   } else if (flying) {
     body.gravityMultiplier = 0
-    body.velocity[1] = noa.inputs.state.jump ? 7 : 0
+    body.velocity[1] = noa.inputs.state.jump || jumpHeld ? 7 : (noa.inputs.state.sprint ? -7 : 0)
   }
   const follow = noa.ents.getState(noa.camera.cameraTarget, 'followsEntity')
   if (follow) {
@@ -992,6 +1024,16 @@ if (!__BLOX_STUDENT__) {
     setDay: (iso) => session.setDay(iso),
     tp: (x, y, z) => noa.entities.setPosition(noa.playerEntity, [x, y, z]),
     mode: (m) => session.setMode(m),
+    select: (a, b) => tools.select(a, b),
+    tool: (name) => name === 'fill' ? tools.fill(current) : name === 'copy' ? tools.copy() : null,
+    clip: () => tools.clip(),
+    pasteAt: (at, opts) => tools.pasteAt(at, opts),
+    confirm: () => true,
+    schem: { write: () => tools.schemWrite(), read: (obj) => tools.schemRead(obj) },
+    builds: { list: () => tools.builds },
+    rewind: (mins) => tools.rewind(mins),
+    snap: { list: () => tools.snaps, make: () => tools.snapMake(), restore: () => null },
+    measure: (points) => tools.measure(points),
     hold: (st, v) => { noa.inputs.state[st] = v },
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
   }
