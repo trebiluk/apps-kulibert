@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.30'
+const VERSION = '2.5.31'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -75,6 +75,8 @@ function applyI18n() {
   if (plate) plate.textContent = VERSION
   const aboutPlate = document.getElementById('about-plate')
   if (aboutPlate) aboutPlate.textContent = VERSION
+  const pick = document.getElementById('pick-chip')
+  if (pick && pick.dataset.ready) pick.textContent = t('pickChip') + (pick.classList.contains('on') ? ' ✓' : '')
 }
 applyI18n()
 
@@ -513,6 +515,7 @@ session = createSession({
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
   flash: (name) => flashHeld(name),
+  paintBar: () => { paintBar(); selectSlot(selectedSlot) },
 })
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -682,12 +685,14 @@ function useSelected() {
 }
 function selectSlot(i) {
   const n = (i + 9) % 9
-  if (n === selectedSlot) { flashHeld(blockName(barIds[n])); return }
+  const same = n === selectedSlot && current === barIds[n]
   selectedSlot = n
-  current = barIds[selectedSlot]
-  paintBar()
-  $('current').textContent = blockName(current)
-  flashHeld(blockName(current))
+  current = barIds[n]
+  if (!same) paintBar()
+  const name = blockName(current)
+  const el = $('current')
+  if (el) el.textContent = name
+  flashHeld(name)
 }
 function pick(id) {
   barIds[selectedSlot] = id
@@ -780,6 +785,7 @@ async function showInspect() {
   }
 }
 paintBar()
+selectSlot(0)
 function repaintBlocks() { paintBar() }
 
 const drawer = $('drawer'), scrim = $('scrim')
@@ -950,16 +956,17 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') return
   if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openMenu(true); panels.open('inventory'); return }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
+    if ($('sheet') && !$('sheet').hidden) return
     e.preventDefault()
     if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
     return
   }
-  if (e.key === 'f' || e.key === 'F') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); useSelected(); return } }
+  if (e.key === 'f' || e.key === 'F') { if (!e.ctrlKey && !e.metaKey && $('sheet') && $('sheet').hidden) { e.preventDefault(); useSelected(); return } }
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '123456789'.indexOf(e.key)
-  if (n >= 0 && !tableMode) {
-    if (session && session.mode === 'survival' && session.setHot) session.setHot(n)
+  if (n >= 0 && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden) {
+    if (session && session.mode === 'survival' && session.pressHot) session.pressHot(n)
     else selectSlot(n)
   }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
@@ -1076,7 +1083,8 @@ function feelTick(dt) {
     if (noa.inputs.state.left && !allow(-rx, -rz)) noa.inputs.state.left = false
     if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
   }
-  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) { placeHoldAt = now; placeBlock() }
+  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI) && noa.container.hasPointerLock && $('sheet').hidden) { placeHoldAt = now; placeBlock() }
+  else if (!noa.container.hasPointerLock || !$('sheet').hidden) mouseRight = false
   if (!tableMode && !flying) {
     const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
     noa.camera.zoomDistance = (TOUCH_UI ? 4 : 0) + up
@@ -1174,6 +1182,7 @@ noa.on('tick', (dt) => {
 })
 
 const canvas = noa.container.canvas
+canvas.addEventListener('contextmenu', (e) => e.preventDefault())
 let look = null
 const LOOK_H = 0.40 * Math.PI / 180
 const LOOK_V = 0.34 * Math.PI / 180
@@ -1297,6 +1306,7 @@ function paintPick() {
   const b = $('pick-chip')
   if (!b) return
   b.textContent = t('pickChip') + (pickArmed ? ' ✓' : '')
+  b.dataset.ready = '1'
   b.classList.toggle('on', pickArmed)
   b.setAttribute('aria-pressed', String(pickArmed))
 }

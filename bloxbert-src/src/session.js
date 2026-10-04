@@ -165,6 +165,9 @@ export function createSession(api) {
       })
       bar.append(b)
     }
+    const held = bag.slots[hot]
+    const label = document.getElementById('current')
+    if (label) label.textContent = held ? itemName(held.item) : t('emptySlot')
   }
   function selectedItem() {
     if (mode !== 'survival') return null
@@ -181,7 +184,6 @@ export function createSession(api) {
       return itemName(item)
     }
     const name = itemName(item)
-    api.toast(name)
     if (api.flash) api.flash(name)
     return name
   }
@@ -684,7 +686,7 @@ export function createSession(api) {
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip(); paintHotbar()
   }
-  function setMode(next) { mode = next; paintChip(); paintHotbar() }
+  function setMode(next) { mode = next; paintChip(); if (mode === 'survival') paintHotbar(); else if (api.paintBar) api.paintBar() }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
@@ -694,6 +696,15 @@ export function createSession(api) {
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
     noteBag: (need) => { for (const [id, n] of Object.entries(need)) { const hit = Object.entries(ITEMS).find(([, v]) => v.block === +id); if (hit) bagHist.push({ type: 'place', item: hit[0], n }) } },
     setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
+    pressHot(i) {
+      const n = ((i % 9) + 9) % 9
+      if (n === hot) return useHeld()
+      hot = n
+      paintHotbar()
+      const s = bag.slots[n]
+      if (s && api.flash) api.flash(itemName(s.item))
+      return ''
+    },
     tryPlace: () => { const k = selectedItem(); const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,

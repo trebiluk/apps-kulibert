@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.31', date: '2026-10-04', lines: {
+    en: ['Press the same number again to use that slot. Holding the key does not eat the stack.', 'A block no longer pops a toast just for being selected.', 'The name under Bertopia matches the lit slot.', 'Right click stops placing when you let go or open a menu.', 'Pick moves to the other side when the stick is on the right.', 'Pick follows the language.'],
+    uk: ['Натисни той самий номер ще раз, щоб використати. Утримання не зʼїдає стос.', 'Блок більше не вигукує назву просто за вибір.', 'Права кнопка перестає ставити, коли відпускаєш або відкриваєш меню.', 'Взяти переходить на інший бік, якщо стик справа.', 'Взяти мовою гри.'],
+    ru: ['Нажми тот же номер ещё раз, чтобы использовать. Удержание не съедает стопку.', 'Блок больше не кричит имя просто за выбор.', 'Правая кнопка перестаёт ставить, когда отпускаешь или открываешь меню.', 'Взять переходит на другую сторону, если стик справа.', 'Взять на языке игры.'],
+    es: ['Pulsa el mismo número otra vez para usarlo. Mantenerlo no se come la pila.', 'Un bloque ya no grita su nombre solo por elegirlo.', 'El clic derecho deja de poner al soltar o al abrir un menú.', 'Tomar pasa al otro lado si el stick está a la derecha.', 'Tomar sigue el idioma.'],
+    ar: ['اضغط الرقم نفسه مرة أخرى للاستخدام. الإمساك لا يأكل الكومة.', 'المكعب لم يعد يصرخ باسمه لمجرد اختياره.', 'الزر الأيمن يتوقف عن الوضع عند الترك أو فتح قائمة.', 'التقط ينتقل للجهة الأخرى إذا كانت العصا يميناً.', 'التقط يتبع اللغة.'],
+    'fa-AF': ['همان شماره را دوباره بزن تا استفاده شود. نگه داشتن پشته را نمی‌خورد.', 'بلاک فقط برای انتخاب نامش را فریاد نمی‌زند.', 'کلیک راست با ول کردن یا باز کردن فهرست می‌ایستد.', 'بردار وقتی اهرم راست است به سمت دیگر می‌رود.', 'بردار زبان را دنبال می‌کند.'],
+    rw: ['Kanda nomero nyayo nanone ukoreshe. Kuyikomeza ntibirya umufuka.', 'Block ntikivuga izina gusa kubera kuyihitamo.', 'Iburyo bihagarara iyo ubisezeraho cyangwa ukinguye ibikubiyemo.', 'Fata yimukira iyindi ruhande iyo agastike kari iburyo.', 'Fata ikurikira ururimi.'],
+    ti: ['ተመሳሳሊ ቁጽሪ ደጊምካ ጠውቕ ንምጥቃም። ምሓዝ እቲ ዕስለ ኣይበልዖን።', 'ብሎክ ስለ ዝተመርጸ ስሙ ኣይጭርን።', 'የማናይ ምቕማጥ የቋርጽ ምስ እትለቕቆ ወይ ዝርዝር ምስ እትኸፍት።', 'ውሰድ እንተ የማናይ ስቲክ ናብ ኻሊእ ገጽ ይኸይድ።', 'ውሰድ ቋንቋ ይስዕብ።'],
+  }},
   { v: '2.5.30', date: '2026-10-04', lines: {
     en: ['Hold right click to keep placing. A touch tap still places one.', 'Tap the selected slot again to use it. Bread, berry, and cupcake get eaten.', 'F does the same.', 'Crouch stops at a ledge.', 'Settings has Auto-climb. Phones start with it on.', 'Pick, then tap a block. Survival only picks a block you have.'],
     uk: ['Тримай праву кнопку, щоб ставити далі. Дотик ставить один.', 'Торкнись вибраного слота ще раз. Хліб, ягода і кекс зʼїдаються.', 'F теж.', 'Присід зупиняється на краю.', 'У налаштуваннях автосхід. На телефоні він увімкнений.', 'Взяти, потім торкнись блока. У Виживанні лише якщо він у сумці.'],
