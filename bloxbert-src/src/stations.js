@@ -47,7 +47,9 @@ export function createStations(api) {
   function view(key) {
     const r = map.get(key)
     if (!r) return { kind: 'oven', fuel: 0, input: [], output: [], ring: 0 }
-    const ring = r.until ? Math.min(1, 1 - (r.until - Date.now()) / 5000) : 0
+    const secs = r.secs || 5
+    const left = r.until ? Math.max(0, Math.ceil((r.until - Date.now()) / 1000)) : 0
+    const ring = r.until ? (secs - left) / secs : 0
     return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left }
   }
   function paint(g, key, kind) {
@@ -81,6 +83,7 @@ export function createStations(api) {
             strip.append(b2)
           }
           g.append(strip)
+          return
         }
         if (label === api.t('output')) take(key || '0,5,0')
         paint(g, key, kind)

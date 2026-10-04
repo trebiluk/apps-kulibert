@@ -146,10 +146,11 @@ export function createTools(api) {
       }
       return stage(name, ops, name + ' ' + ops.length)
     }
+    if (name === 'copy') return copy()
     if (name === 'paste') {
       const origin = api.aim() || [8, 6, 8]
       const ops = []
-      if (clip) for (const [x, y, z, id] of clip.cells) ops.push([origin[0] + x, origin[1] + y, origin[2] + z, id])
+      if (clip) for (const [x, y, z, id] of clip.cells) if (id && !(api.survival() && id === 21)) ops.push([origin[0] + x, origin[1] + y, origin[2] + z, id])
       return stage('paste', ops, api.t('paste'))
     }
     return stage(name, [], name)
@@ -172,6 +173,8 @@ export function createTools(api) {
     }
     const group = api.apply(ops, pending.kind === 'fill' ? api.t('filled').replace('{n}', String(ops.length)) : pending.label)
     pending = null
+    const chip = document.getElementById('size-chip')
+    if (chip) chip.hidden = true
     return group
   }
   function cancel() { pending = null; const chip = document.getElementById('size-chip'); if (chip) chip.hidden = true }

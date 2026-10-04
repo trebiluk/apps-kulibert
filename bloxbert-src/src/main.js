@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.11'
+const VERSION = '2.5.12'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -342,7 +342,7 @@ noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
 const STORE = 'worlds'
-let WORLD = 'bertyville'
+let WORLD = localStorage.getItem('bloxbert-last-world') || 'bertyville'
 function idb() {
   return new Promise((res, rej) => {
     const r = indexedDB.open(DB, 1)
@@ -474,6 +474,7 @@ panels = mountPanels({
   setWorldMode: async (m) => {
     await save()
     WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
+    try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
     changeLog.setWorld(WORLD)
     session.setMode(m)
     const chip = $('mode-chip')
@@ -540,7 +541,7 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
     if (name === 'do') { tools.confirm(); return }
     if (name === 'cancel') { tools.cancel(); return }
     const res = tools.act(name)
-    if (!res && name !== 'select') toast(t('tapCorner'))
+    if (!res && name !== 'select' && !tools.box()) toast(t('tapCorner'))
   })
 }
 $('game-menu').addEventListener('click', () => openMenu(true))
