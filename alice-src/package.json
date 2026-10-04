@@ -6,7 +6,7 @@
   "description": "Alice's Prairie. Phaser 3 door built from phaserjs/template-vite d78f795. npm run build writes ../alice/.",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node tools/sfx.mjs && vite build --config vite/config.prod.mjs"
+    "build": "node tools/sim-check.mjs && node tools/sfx.mjs && vite build --config vite/config.prod.mjs"
   },
   "devDependencies": {
     "terser": "^5.39.0",

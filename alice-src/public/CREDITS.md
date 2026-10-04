@@ -5,4 +5,3 @@
 - phaser3-rex-plugins 1.80.20. MIT. https://github.com/rexrainbow/phaser3-rex-notes. Sizer and GridSizer only. License: licenses/REX-MIT.txt
 - tonnychiulab/ai-bonk 7f80645. MIT. https://github.com/tonnychiulab/ai-bonk/commit/7f80645. Round spawn/expire/combo flow and keyCell guards only. No art. License: licenses/AI-BONK-MIT.txt
 - Atkinson Hyperlegible. OFL. Self-hosted woff2. License: licenses/ATKINSON-OFL.txt
-- Kenney Mobile Controls and Input Prompts. CC0. https://kenney.nl/assets. Pack zip returned 404 at build time, so button frames and key chips are in-house drawings in the same job, not Kenney pixels and not ai-bonk art. License note: licenses/KENNEY-CC0.txt

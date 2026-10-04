@@ -11,53 +11,60 @@ export function mulberry32(seed) {
   };
 }
 
-const STARS = [300, 500, 800];
-const GOAL = 500;
+const ALARM = { hawk: 0, coyote: 1, snake: 2 };
+const REASON = { rabbit: "whyRabbit", cloud: "whyCloud", weed: "whyWeed", wonder: "whyWonder", hawk: "whyHawk", coyote: "whyCoyote", snake: "whySnake" };
 
-/** schedule(seed, level, relaxed) → spawns */
 export function schedule(seed, level, relaxed) {
   const lv = level || {};
   const rng = mulberry32(Number(seed) || 1);
   const holes = lv.holes || 5;
   const seconds = lv.seconds || 60;
   const duration = seconds * 60;
-  const approach = relaxed ? 150 : 100;
-  const gap = relaxed ? 170 : 120;
+  const speed = lv.speed || 1;
+  const kinds = lv.kinds || ["hawk"];
+  const decoys = lv.decoys || [];
+  const pool = kinds.concat(decoys);
   const hawks = lv.hawks || 8;
   const spawns = [];
   let step = 80;
-  while (spawns.length < hawks && step + approach < duration - 30) {
+  while (spawns.length < hawks && step + 80 < duration - 30) {
+    const third = step < duration / 3 ? 1 : step < (2 * duration) / 3 ? 0.85 : 0.7;
+    const approach = Math.max(50, Math.round((relaxed ? 150 : 100) * third / speed));
+    const kind = pool[Math.floor(rng() * pool.length)];
     spawns.push({
       step,
-      kind: "hawk",
+      kind,
       hole: Math.floor(rng() * holes),
       edge: Math.floor(rng() * 3),
       approachSteps: approach,
+      alarm: ALARM[kind] == null ? -1 : ALARM[kind],
     });
-    step += approach + gap + Math.floor(rng() * 30);
+    step += approach + (relaxed ? 170 : 120) + Math.floor(rng() * 30);
   }
   return spawns;
 }
 
-function starsFor(score) {
+function starsFor(score, marks) {
   let stars = 0;
-  for (const n of STARS) if (score >= n) stars += 1;
+  for (const n of marks || [300, 500, 800]) if (score >= n) stars += 1;
   return stars;
 }
 
-/**
- * score(schedule, events) → {score, combo, pupsSafe, stars, cleared}
- * events are [step, alarm] with alarm 0 Sky, 1 Ground, 2 Snake.
- * Hawk is a sky threat. First alarm inside the approach window counts.
- * Score only goes up.
- */
 export function score(spawns, events) {
+  return scoreRound(spawns, events, { goalScore: 500, stars: [300, 500, 800], pupsMin: 0 });
+}
+
+export function scoreRound(spawns, events, level) {
+  const lv = level || {};
   const list = Array.isArray(spawns) ? spawns : [];
   const ev = (events || []).slice().sort((a, b) => a[0] - b[0]);
   const used = new Set();
   let points = 0;
   let combo = 0;
+  let bestCombo = 0;
   let pupsSafe = 6;
+  let falseAlarms = 0;
+  let why = "";
   for (const spawn of list) {
     const end = spawn.step + spawn.approachSteps;
     let hit = null;
@@ -69,41 +76,55 @@ export function score(spawns, events) {
       hit = ev[i][1];
       break;
     }
-    const sky = hit === 0;
-    if (sky && spawn.kind === "hawk") {
+    const decoy = spawn.alarm == null || spawn.alarm < 0;
+    if (decoy) {
+      if (hit != null) { combo = 0; falseAlarms += 1; why = REASON[spawn.kind] || "whyCloud"; }
+      continue;
+    }
+    if (hit === spawn.alarm) {
       combo += 1;
+      bestCombo = Math.max(bestCombo, combo);
       points += 100 * combo;
     } else if (hit != null) {
       combo = 0;
+      why = REASON[spawn.kind] || "whyHawk";
     } else {
       combo = 0;
       pupsSafe = Math.max(0, pupsSafe - 1);
+      why = REASON[spawn.kind] || "whyHawk";
     }
   }
+  const marks = lv.stars || [300, 500, 800];
+  const goalScore = lv.goalScore || 500;
+  const pupsMin = lv.pupsMin || 0;
+  const needCombo = lv.combo || 0;
+  const scoreOk = points >= goalScore;
+  const pupsOk = pupsSafe >= pupsMin;
+  const comboOk = bestCombo >= needCombo;
+  const falseOk = !lv.noFalse || falseAlarms === 0;
+  const cleared = scoreOk && pupsOk && comboOk && falseOk;
   return {
     score: points,
     combo,
+    bestCombo,
     pupsSafe,
-    stars: starsFor(points),
-    cleared: points >= GOAL,
+    falseAlarms,
+    stars: cleared ? starsFor(points, marks) : 0,
+    cleared,
+    why,
+    goal: goalScore,
   };
 }
 
-/** Live read for rendering. Only closed or answered windows affect the bank. */
-export function view(spawns, events, step) {
-  const closed = (spawns || []).filter((s) => {
-    if (step >= s.step + s.approachSteps) return true;
-    return (events || []).some((e) => e[0] >= s.step && e[0] <= s.step + s.approachSteps && e[0] <= step);
-  });
-  const out = score(closed, (events || []).filter((e) => e[0] <= step));
+export function view(spawns, events, step, level) {
+  const closed = (spawns || []).filter((s) => step >= s.step + s.approachSteps || (events || []).some((e) => e[0] >= s.step && e[0] <= s.step + s.approachSteps && e[0] <= step));
+  const out = scoreRound(closed, (events || []).filter((e) => e[0] <= step), level);
   const active = (spawns || []).find((s) => step >= s.step && step <= s.step + s.approachSteps);
-  return Object.assign(out, { active: active || null, goal: GOAL, starMarks: STARS });
+  return Object.assign(out, { active: active || null });
 }
 
 const editable = (target) => target?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName || "");
 const modified = (e) => e.repeat || e.isComposing || e.ctrlKey || e.altKey || e.metaKey;
-
-/** keyCell guard lifted from ai-bonk core.js, mapped to Sky/Ground/Snake. */
 export function keyCell(e) {
   if (!e || modified(e) || editable(e.target)) return -1;
   const code = e.code || "";
@@ -117,26 +138,22 @@ export function keyCell(e) {
   return -1;
 }
 
-/** Round spawn/expire/combo flow on 60 Hz steps. Scoring stays score(). */
 export class Round {
   constructor(seed, level, relaxed) {
+    this.level = level;
     this.spawns = schedule(seed, level, relaxed);
     this.events = [];
     this.step = 0;
     this.state = "running";
-    this.pausedAt = 0;
   }
-  advance() {
-    if (this.state !== "running") return;
-    this.step += 1;
-  }
+  advance() { if (this.state === "running") this.step += 1; }
   alarm(cell) {
     if (this.state !== "running") return null;
     if (!Number.isInteger(cell) || cell < 0 || cell > 2) return null;
     this.events.push([this.step, cell]);
-    return view(this.spawns, this.events, this.step);
+    return this.read();
   }
-  pause() { if (this.state === "running") { this.state = "paused"; this.pausedAt = this.step; } }
+  pause() { if (this.state === "running") this.state = "paused"; }
   resume() { if (this.state === "paused") this.state = "running"; }
-  read() { return view(this.spawns, this.events, this.step); }
+  read() { return view(this.spawns, this.events, this.step, this.level); }
 }
