@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "One Menu button in every app. It opens that app's menu.",
+  "whatsNewLine": "Apps that don't fit on the top row are under More.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
@@ -106,5 +106,6 @@
   "blurbKz": "Code a robot",
   "blurbDebug": "Find the bad step",
   "blurbBloxbert": "Build in Bertyville",
-  "blurbAlice": "Help Alice guard the pups"
+  "blurbAlice": "Help Alice guard the pups",
+  "moreApps": "More apps"
 }

@@ -30,7 +30,7 @@
     "more": "† بیشتر",
     "gotIt": "† فهمیدم",
     "pwaTip": "† راهنما: فهرست کروم، بعد صفحه را نصب کن. نشان Tech Room روی این کروم‌بوک می‌ماند. برنامه‌ها هنوز شبکهٔ مکتب را لازم دارند.",
-    "whatsNewLine": "† در هر برنامه یک دکمهٔ فهرست است. فهرست همان برنامه را باز می‌کند.",
+    "whatsNewLine": "† برنامه‌هایی که در ردیف بالا جا نمی‌شوند، زیر بیشتر هستند.",
     "appNames": "† نام برنامه‌ها در نوار بالا",
     "whatsNewStrip": "† نوار بالا فقط نشان‌های برنامه‌ها را نشان می‌دهد. نام‌ها را در تنظیمات من دوباره روشن کن.",
     "myProgress": "† پیشرفت من",
@@ -96,7 +96,8 @@
     "blurbBeatz": "† مربع‌ها را بزن و آهنگ بساز",
     "blurbTw": "† صنف و امتیازت را ببین",
     "blurbKz": "† یک روبات را پروگرام کن",
-    "blurbDebug": "† گام خراب را پیدا کن"
+    "blurbDebug": "† گام خراب را پیدا کن",
+    "moreApps": "† برنامه‌های بیشتر"
   },
   "rw": {
     "home": "Ahabanza",
@@ -138,7 +139,7 @@
     "more": "† Ibindi",
     "gotIt": "† Nabonye",
     "pwaTip": "† Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-    "whatsNewLine": "† Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
+    "whatsNewLine": "† Porogaramu zidafata umurongo wo hejuru ziri munsi ya Ibindi.",
     "appNames": "† Amazina ya porogaramu ku murongo wo hejuru",
     "whatsNewStrip": "† Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
     "myProgress": "† Intambwe yanjye",
@@ -204,7 +205,8 @@
     "blurbBeatz": "† Kanda ku kare ubone indirimbo",
     "blurbTw": "† Reba icyiciro n'amanota",
     "blurbKz": "† Tegura roboti",
-    "blurbDebug": "† Shaka intambwe mbi"
+    "blurbDebug": "† Shaka intambwe mbi",
+    "moreApps": "† Ibindi porogaramu"
   },
   "ti": {
     "home": "መበገሲ",
@@ -246,7 +248,7 @@
     "more": "† ተወሳኺ",
     "gotIt": "† ተረዲኡኒ",
     "pwaTip": "† ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-    "whatsNewLine": "† ኣብ ነፍሲ ወከፍ መተግበሪ ሓደ መጠወቒ ዝርዝር ኣሎ። ዝርዝር ናይታ መተግበሪ ይኸፍት።",
+    "whatsNewLine": "† መተግበሪታት ኣብ ላዕለዋይ መስርዕ ዘይኣትዋ ኣብ ትሕቲ ተወሳኺ እየን።",
     "appNames": "† ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
     "whatsNewStrip": "† ላዕለዋይ መስመር ምልክታት መተግበሪታት ጥራይ የርኢ። ኣስማት ኣብ ናተይ ቅጥዕታት መሊስካ ኣብርሆ።",
     "myProgress": "† ዕቤተይ",
@@ -312,6 +314,7 @@
     "blurbBeatz": "† ርቡዓት ጠውቕ ደርፊ ሃንጽ",
     "blurbTw": "† ክፍሊኻን ነጥብታትካን ርአ",
     "blurbKz": "† ሮቦት ፕሮግራም ግበር",
-    "blurbDebug": "† ጌጋ ስጉምቲ ርኸብ"
+    "blurbDebug": "† ጌጋ ስጉምቲ ርኸብ",
+    "moreApps": "† ተወሳኺ መተግበሪታት"
   }
 }

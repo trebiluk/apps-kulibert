@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Un solo botón Menú en cada aplicación. Abre el menú de esa aplicación.",
+  "whatsNewLine": "Las aplicaciones que no caben en la fila de arriba están en Más.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -105,5 +105,6 @@
   "blurbTw": "Mira tu clase y tu XP",
   "blurbKz": "Programa un robot",
   "blurbDebug": "Encuentra el paso malo",
-  "blurbAlice": "Ayuda a Alice a cuidar a las crías"
+  "blurbAlice": "Ayuda a Alice a cuidar a las crías",
+  "moreApps": "Más aplicaciones"
 }

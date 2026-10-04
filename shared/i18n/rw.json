@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Buto imwe ya Menyu muri buri porogaramu. Ifungura menyu y'iyo porogaramu.",
+  "whatsNewLine": "Porogaramu zidafata umurongo wo hejuru ziri munsi ya Ibindi.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -105,5 +105,6 @@
   "blurbTw": "Reba icyiciro n'amanota",
   "blurbKz": "Tegura roboti",
   "blurbDebug": "Shaka intambwe mbi",
-  "blurbAlice": "Fasha Alice kurinda abana"
+  "blurbAlice": "Fasha Alice kurinda abana",
+  "moreApps": "Ibindi porogaramu"
 }
