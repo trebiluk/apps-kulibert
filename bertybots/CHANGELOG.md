@@ -28,6 +28,14 @@ Rules:
 
 ---
 
+## 0.19.36 — Helper and floor — 2026-10-03
+
+- The shop-floor arrow stays off during Play, and it is one arrow.
+- An upright phone shows the whole Shop Floor, centered, at the same scale.
+- The helper tail points at the worker's mouth. One arrow goes from the wheel to a wheel-shaped target.
+- Measure and Forces lesson cards use dark text, their own status line, and all 8 languages.
+- What's new: The shop-floor arrow stays off the crate. The whole floor fits an upright phone. The helper points at the wheel. Lesson cards are easier to read.
+
 ## 0.19.35 — Next job — 2026-10-03
 
 - Next job, Skip, a plate, and a lesson or race start at full speed. Slow stays on for the win replay. Step still runs slow, at every frame rate.

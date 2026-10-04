@@ -1215,3 +1215,6 @@ html[dir="rtl"] .brand {
   }
   .menu-btn { min-width: 44px; min-height: 44px; flex: 0 0 auto; }
 }
+
+.lesson .hint { color: #4a5c6a; }
+.lesson-kicker { color: #8a3412; }

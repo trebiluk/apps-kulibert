@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.35 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.36 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.35";
+const APP_VERSION = "0.19.36";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.35";
+const APP_CHIP = "BB 0.19.36";
 const APP_BUILT = "2026-10-03";
 
 const FORMAT = 1;
@@ -826,6 +826,14 @@ function boot() {
     view.ox = canvas.width * 0.45 - view.fx * view.scale + view.panx;
     view.oy = canvas.height * 0.46 - view.fy * view.scale + view.pany;
     clampLook();
+    centerNarrowFloor();
+  }
+
+  function centerNarrowFloor() {
+    if (!narrowBoard() || !view.scale) return;
+    const s = doc.level && doc.level.shop;
+    if (!s) return;
+    view.ox = canvas.width * 0.5 - (s.x + s.w / 2) * view.scale + view.panx;
   }
 
   function jobReach() {
@@ -861,9 +869,11 @@ function boot() {
     const top = (canvas.height - view.oy) / scale;
     let shiftX = 0;
     let shiftY = 0;
-    if (right - left >= b.x1 - b.x0) shiftX = (b.x0 + b.x1) / 2 - (left + right) / 2;
-    else if (left < b.x0) shiftX = b.x0 - left;
-    else if (right > b.x1) shiftX = b.x1 - right;
+    if (!narrowBoard()) {
+      if (right - left >= b.x1 - b.x0) shiftX = (b.x0 + b.x1) / 2 - (left + right) / 2;
+      else if (left < b.x0) shiftX = b.x0 - left;
+      else if (right > b.x1) shiftX = b.x1 - right;
+    }
     if (top - bottom >= y1 - y0) shiftY = (y0 + y1) / 2 - (bottom + top) / 2;
     else if (bottom < y0) shiftY = y0 - bottom;
     else if (top > y1) shiftY = y1 - top;
@@ -1378,7 +1388,21 @@ function boot() {
     return "";
   }
 
+  function lessonTip() {
+    if (isMeasure()) {
+      const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
+      return n >= 3 ? tr("lessonTapeDone") : tr("lessonTape");
+    }
+    if (isForces()) {
+      const n = FORCE_JOBS.filter((j) => forceDone[j.id]).length;
+      return n >= 3 ? tr("lessonForceDone") : tr("lessonForce");
+    }
+    return "";
+  }
+
   function statusLine() {
+    const lesson = lessonTip();
+    if (lesson) return lesson;
     if (winEl && winEl.classList.contains("show")) return tr("parked");
     if (isRace()) {
       const gates = raceGates();
@@ -1658,31 +1682,26 @@ function boot() {
     const on = isMeasure() || isForces();
     card.hidden = !on;
     if (!on) return;
-    if (kicker) kicker.textContent = isForces() ? "Lesson · Forces" : "Lesson · Measure";
+    if (kicker) kicker.textContent = isForces() ? tr("lessonForces") : tr("lessonMeasure");
     if (measureOl) measureOl.hidden = !isMeasure();
     if (forceOl) forceOl.hidden = !isForces();
+    const stepKey = { shop: "lessonShop", drop: "lessonDrop", gap: "lessonGap", gravity: "lessonGravity", torque: "lessonTorque", motion: "lessonMotion" };
+    card.querySelectorAll("[data-job]").forEach((li) => {
+      const key = stepKey[li.getAttribute("data-job")];
+      if (key) li.textContent = tr(key);
+    });
     if (isMeasure()) {
       card.querySelectorAll("#measure-jobs [data-job]").forEach((li) => {
         li.classList.toggle("ok", !!measureDone[li.getAttribute("data-job")]);
       });
       const read = document.getElementById("tape-readout");
-      if (read) {
-        const n = MEASURE_JOBS.filter((j) => measureDone[j.id]).length;
-        read.textContent = n >= 3
-          ? "Three logs in. You can still build."
-          : "Tape: click two corners on a grid line. 1 square = 1 unit.";
-      }
+      if (read) read.textContent = lessonTip();
     } else {
       card.querySelectorAll("#force-jobs [data-job]").forEach((li) => {
         li.classList.toggle("ok", !!forceDone[li.getAttribute("data-job")]);
       });
       const read = document.getElementById("tape-readout");
-      if (read) {
-        const n = FORCE_JOBS.filter((j) => forceDone[j.id]).length;
-        read.textContent = n >= 3
-          ? "Three logs in. Gravity, torque, motion."
-          : "Play a pusher. Watch g, torque, then the crate move.";
-      }
+      if (read) read.textContent = lessonTip();
     }
   }
 
@@ -3104,7 +3123,7 @@ function boot() {
 
   function drawHomeCue() {
     homeCue = null;
-    if (!narrowBoard() || (winEl && winEl.classList.contains("show"))) return;
+    if (playing || !narrowBoard() || (winEl && winEl.classList.contains("show"))) return;
     const s = doc.level && doc.level.shop;
     if (!s) return;
     const sx = wx(s.x + Math.min(2.2, s.w * 0.35));
@@ -3113,10 +3132,10 @@ function boot() {
     const pad = 28 * dpr;
     if (sx >= pad && sx <= canvas.width - pad && sy >= pad && sy <= canvas.height - pad) return;
     const label = "◀";
-    ctx.font = `800 ${Math.round(18 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `800 ${Math.round(22 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.direction = "ltr";
     const labelW = ctx.measureText(label).width;
-    const w = Math.max(44 * dpr, labelW + 36 * dpr);
+    const w = Math.max(44 * dpr, labelW + 20 * dpr);
     const h = 44 * dpr;
     const edge = 12 * dpr;
     const ax = edge;
@@ -3130,22 +3149,16 @@ function boot() {
     ctx.strokeStyle = "#1a1400";
     ctx.stroke();
     ctx.fillStyle = "#1a1400";
-    ctx.beginPath();
-    ctx.moveTo(ax + 16 * dpr, ay + h / 2);
-    ctx.lineTo(ax + 28 * dpr, ay + 12 * dpr);
-    ctx.lineTo(ax + 28 * dpr, ay + h - 12 * dpr);
-    ctx.closePath();
-    ctx.fill();
-    ctx.font = `800 ${Math.round(18 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
+    ctx.font = `800 ${Math.round(22 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
     ctx.direction = "ltr";
-    ctx.fillText(label, ax + w / 2 + 8 * dpr, ay + h / 2 + 1);
+    ctx.fillText(label, ax + w / 2, ay + h / 2 + 1);
     ctx.restore();
   }
 
   function hitHomeCue(ev) {
-    if (!homeCue) return false;
+    if (playing || !homeCue) return false;
     const r = canvas.getBoundingClientRect();
     const x = (ev.clientX - r.left) * (canvas.width / Math.max(1, r.width));
     const y = (ev.clientY - r.top) * (canvas.height / Math.max(1, r.height));
@@ -3459,6 +3472,17 @@ function boot() {
       ctx.lineWidth = Math.max(2, 2 * dpr);
       ctx.strokeStyle = "#1a1400";
       ctx.stroke();
+      const mouthX = x + 28 * u;
+      const mouthY = y + 36 * u;
+      const tailY = Math.max(by + 10 * dpr, Math.min(by + bubbleH - 10 * dpr, mouthY));
+      ctx.beginPath();
+      ctx.moveTo(bx, tailY - 6 * dpr);
+      ctx.lineTo(mouthX, mouthY);
+      ctx.lineTo(bx, tailY + 6 * dpr);
+      ctx.closePath();
+      ctx.fillStyle = "#f7f1e6";
+      ctx.fill();
+      ctx.stroke();
       ctx.fillStyle = "#1a1400";
       ctx.textAlign = textRtl() ? "right" : "left";
       ctx.textBaseline = "top";
@@ -3482,26 +3506,6 @@ function boot() {
     bertyFly.y += (ty - bertyFly.y) * 0.14;
     const x = bertyFly.x;
     const y = bertyFly.y + Math.sin(now / 260) * 6 * u;
-    const handX = x + 54 * u;
-    const handY = y + 62 * u;
-    if (Math.hypot(ax - handX, ay - handY) > 70 * u) {
-      ctx.strokeStyle = "#f0c000";
-      ctx.fillStyle = "#f0c000";
-      ctx.lineWidth = Math.max(4 * dpr, 5 * u);
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ctx.moveTo(handX, handY);
-      ctx.lineTo(ax, ay);
-      ctx.stroke();
-      const ang = Math.atan2(ay - handY, ax - handX);
-      const ah = 16 * u;
-      ctx.beginPath();
-      ctx.moveTo(ax, ay);
-      ctx.lineTo(ax - ah * Math.cos(ang - 0.42), ay - ah * Math.sin(ang - 0.42));
-      ctx.lineTo(ax - ah * Math.cos(ang + 0.42), ay - ah * Math.sin(ang + 0.42));
-      ctx.closePath();
-      ctx.fill();
-    }
     drawCrew(x, y, u);
     const bx = Math.min(x + 64 * u, canvas.width - bubbleW - 8 * dpr);
     const by = Math.max(8 * dpr, y - 6 * u);
@@ -3511,10 +3515,14 @@ function boot() {
     ctx.lineWidth = Math.max(2, 2.5 * dpr);
     ctx.strokeStyle = "#1a1400";
     ctx.stroke();
+    const mouthX = x + 28 * u;
+    const mouthY = y + 36 * u;
+    const tailX = bx;
+    const tailY = Math.max(by + 12 * dpr, Math.min(by + bubbleH - 12 * dpr, mouthY));
     ctx.beginPath();
-    ctx.moveTo(bx + 16 * dpr, by + bubbleH);
-    ctx.lineTo(x + 34 * u, y + 22 * u);
-    ctx.lineTo(bx + 40 * dpr, by + bubbleH);
+    ctx.moveTo(tailX, tailY - 7 * dpr);
+    ctx.lineTo(mouthX, mouthY);
+    ctx.lineTo(tailX, tailY + 7 * dpr);
     ctx.closePath();
     ctx.fillStyle = "#f7f1e6";
     ctx.fill();
@@ -3528,6 +3536,35 @@ function boot() {
     ctx.restore();
   }
 
+  function reducedMotion() {
+    return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  }
+
+  function drawWheelTarget(x, y) {
+    const px = wx(x), py = wy(y);
+    const r = Math.max(18, wr(WHEEL_R + 0.08));
+    const pulse = reducedMotion() ? 1 : 0.86 + 0.14 * Math.sin(performance.now() / 560);
+    ctx.save();
+    ctx.globalAlpha = pulse;
+    ctx.beginPath();
+    ctx.arc(px, py, r, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(26,20,0,0.78)";
+    ctx.fill();
+    const dpr = view.dpr || 1;
+    ctx.lineWidth = Math.max(5, 5 * dpr);
+    ctx.strokeStyle = "#1a1400";
+    ctx.stroke();
+    ctx.lineWidth = Math.max(3, 3 * dpr);
+    ctx.strokeStyle = "#fff6e4";
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(px, py, Math.max(4, r * 0.28), 0, Math.PI * 2);
+    ctx.strokeStyle = "#fff6e4";
+    ctx.lineWidth = Math.max(2, 2 * dpr);
+    ctx.stroke();
+    ctx.restore();
+  }
+
   function drawCoach() {
     const spot = behindSpot();
     if (!spot || playing || levelDone(courseId)) return;
@@ -3536,17 +3573,7 @@ function boot() {
     const pose = wheelPose();
     const needWheel = courseId !== "wall" && pose !== "ready" && !(courseId === "pair" && !pairLinked());
     if (courseId !== "wall" && (pose !== "ready" || courseId === "pair")) {
-      ctx.save();
-      ctx.setLineDash([7, 6]);
-      ctx.strokeStyle = "#f0c000";
-      ctx.lineWidth = 3;
-      if (needWheel || courseId !== "pair") {
-        ctx.beginPath();
-        ctx.arc(wx(spot.x), wy(spot.y), Math.max(18, wr(WHEEL_R + 0.12)), 0, Math.PI * 2);
-        ctx.stroke();
-      }
-      ctx.setLineDash([]);
-      ctx.restore();
+      if (needWheel || courseId !== "pair") drawWheelTarget(spot.x, spot.y);
     }
     if (courseId === "pair" && !pairLinked()) {
       const cores = doc.level.cores || [];
@@ -3563,14 +3590,7 @@ function boot() {
     if (courseId === "wall" && !wallReady()) {
       const right = otherSpot();
       if (right) {
-        ctx.save();
-        ctx.setLineDash([7, 6]);
-        ctx.strokeStyle = "#f0c000";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(wx(right.x), wy(right.y), Math.max(18, wr(WHEEL_R + 0.12)), 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.restore();
+        drawWheelTarget(right.x, right.y);
         drawPointer(right.x, right.y + 1.6, right.x, right.y + 0.5, tr("blue"));
       }
       return;
@@ -4547,6 +4567,7 @@ function boot() {
   onLang = function () {
     refreshPath();
     applyCoach();
+    refreshLesson();
     paintAccess();
     const plate = document.getElementById("menu-chip");
     if (plate) plate.textContent = APP_CHIP;
