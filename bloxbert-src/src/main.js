@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.24'
+const VERSION = '2.5.25'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -1264,7 +1264,7 @@ function dropMat(item) {
   const c = DROP_TINT[item] || [0.15, 0.72, 0.68]
   const m = new StandardMaterial('drop-' + item, scene)
   m.diffuseColor = new Color3(c[0], c[1], c[2])
-  m.emissiveColor = new Color3(c[0] * 0.35, c[1] * 0.35, c[2] * 0.35)
+  m.emissiveColor = new Color3(c[0] * 0.55, c[1] * 0.55, c[2] * 0.55)
   m.specularColor = new Color3(0, 0, 0)
   dropMats.set(item, m)
   return m
@@ -1279,12 +1279,15 @@ function syncDropMeshes() {
     seen.add(d.id)
     let mesh = dropMeshes.get(d.id)
     if (!mesh) {
-      mesh = CreateBox('drop' + d.id, { size: 0.28 }, scene)
+      mesh = CreateBox('drop' + d.id, { size: 0.34 }, scene)
       mesh.material = dropMat(d.item)
       mesh.isPickable = false
+      const lp0 = noa.globalToLocal([d.x, d.y + bob, d.z], null, [])
+      mesh.position.set(lp0[0], lp0[1], lp0[2])
       noa.rendering.addMeshToScene(mesh, false)
       dropMeshes.set(d.id, mesh)
     }
+    if (!REDUCE) mesh.rotation.y = performance.now() / 500
     const lp = noa.globalToLocal([d.x, d.y + bob, d.z], null, [])
     mesh.position.set(lp[0], lp[1], lp[2])
   }

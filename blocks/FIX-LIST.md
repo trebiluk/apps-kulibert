@@ -3,6 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
+- **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
 - **Bertopia 2.5.23** is a visuals plate on top of 2.5.22. Sky, sun, horizon fog, a teal Berty, and a name chip. Feel numbers are unchanged.
 - **Bertopia 2.5.22** is the core-feel plate. 2.5.21 (menu) stays underneath it.

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.25', date: '2026-10-04', lines: {
+    en: ['A drop hops into your bag when you walk up to it.', 'Counters and bunks stay until you pick them up.'],
+    uk: ['Річ стрибає в сумку, коли підходиш.', 'Прилавки й ліжка лишаються, поки їх не забереш.'],
+    ru: ['Вещь прыгает в сумку, когда подходишь.', 'Прилавки и кровати остаются, пока их не заберёшь.'],
+    es: ['Lo que cae entra en la bolsa al acercarte.', 'Los mostradores y las literas se quedan hasta que los recoges.'],
+    ar: ['ما يسقط يدخل الحقيبة حين تقترب.', 'المنضدة والسرير يبقيان حتى تلتقطهما.'],
+    'fa-AF': ['چیز افتاده وقتی نزدیک شوی به بکس می‌آید.', 'پیشخوان و بستر تا وقتی برنداری می‌مانند.'],
+    rw: ['Icyataye kiza mu gasaho niyo uhageze.', 'Counter na buriri bisigara kugeza ubitwaye.'],
+    ti: ['ዝወደቐ ናብ ቦርሳ ይመጽእ ምስ ቀረብካ።', 'መደብን ዓራትን ክሳብ እትልዕሎም ይጸንሑ።'],
+  }},
   { v: '2.5.24', date: '2026-10-04', lines: {
     en: ['A full bag still breaks the block.', 'The piece waits on the ground.', 'Q drops one. Shift+Q drops the stack.'],
     uk: ['Повна сумка все одно ламає блок.', 'Шматок чекає на землі.', 'Q кидає 1. Shift+Q кидає стос.'],

@@ -9,7 +9,7 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearEnough, pullLoose, PICK_R, noteId } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
 
 export function createSession(api) {
   const bag = createBag()
@@ -57,6 +57,15 @@ export function createSession(api) {
     return left
   }
   function heading() { return api.heading ? api.heading() : 0 }
+  function dropSpot() {
+    const p = api.pos()
+    const h = heading()
+    let x = p[0] + Math.sin(h) * 0.9
+    let z = p[2] + Math.cos(h) * 0.9
+    const y = p[1] + 0.35
+    if (api.getVoxel && api.getVoxel(Math.floor(x), Math.floor(y), Math.floor(z))) { x = p[0]; z = p[2] }
+    return [x, y, z]
+  }
   function dropHeld(all) {
     if (mode !== 'survival') return
     const s = bag.slots[hot]
@@ -64,17 +73,16 @@ export function createSession(api) {
     const n = all ? s.n : 1
     const item = s.item
     if (!bag.take(item, n)) return
-    const p = api.pos()
-    const h = heading()
-    spawnDrop(item, n, p[0] + Math.sin(h) * 0.8, p[1] + 0.3, p[2] + Math.cos(h) * 0.8, 'q')
+    const p = dropSpot()
+    spawnDrop(item, n, p[0], p[1], p[2], 'q')
     paintHotbar()
   }
   function dropItem(item, all) {
     if (mode !== 'survival' || !bag.count(item)) return
     const n = all ? bag.count(item) : 1
     if (!bag.take(item, n)) return
-    const p = api.pos()
-    spawnDrop(item, n, p[0], p[1] + 0.3, p[2], 'q')
+    const p = dropSpot()
+    spawnDrop(item, n, p[0], p[1], p[2], 'q')
     paintHotbar()
   }
   function takeLost() {
@@ -93,12 +101,13 @@ export function createSession(api) {
     if (mode !== 'survival' || !ground.length) return false
     const p = api.pos()
     const player = { x: p[0], y: p[1] + 0.9, z: p[2] }
+    const feet = { x: p[0], y: p[1], z: p[2] }
     const now = Date.now()
     const moved = stepMagnet(ground, player, (dt || 16) / 1000, now)
     let got = 0
     for (let i = ground.length - 1; i >= 0; i--) {
       const d = ground[i]
-      if (!canPick(d, now) || !nearEnough(d, player, PICK_R)) continue
+      if (!canPick(d, now) || !nearPlayer(d, feet)) continue
       const left = bag.add(d.item, d.n)
       const took = d.n - left
       if (!took) continue
@@ -456,6 +465,7 @@ export function createSession(api) {
     if (mode !== 'survival') return true
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (x >= 4 && x <= 13 && z >= 4 && z <= 11 && y >= 4 && y <= 9) { api.toast(t('shopProtected')); return false }
+    if (id === 24 || id === 26) return false
     const drop = dropOf(id)
     let got = 0
     let loose = 0
@@ -474,7 +484,6 @@ export function createSession(api) {
         if (berryLeft) spawnDrop('berry', berryLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
       }
     }
-    if (id === 24 || id === 26) return false
     bagHist.push({ type: 'break', item: drop, n: got, loose })
     return true
   }

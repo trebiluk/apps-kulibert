@@ -35,6 +35,13 @@ export function canPick(drop, now) {
   return now - drop.at >= OWN_MS
 }
 
+export function nearPlayer(drop, feet, r = PICK_R) {
+  const dx = drop.x - feet.x
+  const dz = drop.z - feet.z
+  const dy = drop.y - (feet.y + 0.2)
+  return dx * dx + dz * dz <= r * r && Math.abs(dy) <= 2.5
+}
+
 export function stepMagnet(drops, player, dt, now) {
   let moved = false
   const speed = MAGNET_SPEED * dt
