@@ -276,7 +276,7 @@ export function createSession(api) {
     }
     const head = (key) => {
       const p = document.createElement('p')
-      p.className = 'gnote'
+      p.className = 'gnote ghead'
       p.textContent = t(key)
       g.append(p)
     }
@@ -288,7 +288,7 @@ export function createSession(api) {
     if (rest.length) {
       const toggle = document.createElement('button')
       toggle.type = 'button'
-      toggle.className = 'gtile'
+      toggle.className = 'gtile wide'
       toggle.textContent = t('showAll')
       toggle.addEventListener('click', () => { craftOpen = !craftOpen; g.innerHTML = ''; paintCraft(g) })
       g.append(toggle)
@@ -339,7 +339,10 @@ export function createSession(api) {
     }
   }
   function paintBuy(g) {
-    for (const el of [...g.querySelectorAll('.item')]) el.remove()
+    for (const el of [...g.querySelectorAll('.item,.break')]) el.remove()
+    const br = document.createElement('div')
+    br.className = 'break'
+    g.append(br)
     for (const k of ECON.storeSells) {
       const item = ITEMS[k]
       const price = quoteBuy(item, wallet.state.dial || 1, ECON)
@@ -347,9 +350,10 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile item'
-      b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
+      b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
       b.querySelector('.gic').append(itemIcon(item))
-      b.querySelector('.glbl').textContent = known ? itemName(k) + ' ⚙ ' + price : itemName(k) + ' · ' + t('findFirst')
+      b.querySelector('.glbl').textContent = itemName(k)
+      b.querySelector('.gneed').textContent = known ? '⚙ ' + price : t('findFirst')
       b.disabled = !known
       if (known) b.addEventListener('click', () => buy(k, 1, price))
       g.append(b)

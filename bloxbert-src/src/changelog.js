@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.28', date: '2026-10-04', lines: {
+    en: ['Menus are solid, so the world does not show through.', 'Craft names sit above the missing pieces, in gold.', 'Shop locks start on their own row, with a picture.'],
+    uk: ['Меню щільне, світ не просвічує.', 'Назва рецепта над браком, золотим.', 'Замки крамниці з картинкою, окремим рядом.'],
+    ru: ['Меню плотное, мир не просвечивает.', 'Имя рецепта над нехваткой, золотым.', 'Замки лавки с картинкой, отдельным рядом.'],
+    es: ['Los menús son sólidos. El mundo no se ve detrás.', 'El nombre va arriba de lo que falta, en dorado.', 'La tienda pone los candados en su propia fila, con dibujo.'],
+    ar: ['القوائم صلبة، العالم لا يظهر من خلفها.', 'اسم الوصفة فوق الناقص، بالذهبي.', 'أقفال المتجر في صف وحدها، مع صورة.'],
+    'fa-AF': ['فهرست‌ها توپرند و جهان از پشت دیده نمی‌شود.', 'نام دستور بالای کمبود است، طلایی.', 'قفل‌های دکان در ردیف خود، با تصویر.'],
+    rw: ['Ibikubiyemo biruzuye, isi ntigaragara.', 'Izina riri hejuru y’ibibura, mu zahabu.', 'Ibikoba by’iduka biri ku murongo wabyo, n’ishusho.'],
+    ti: ['ዝርዝራት ጽኑዕ እዮም። ዓለም ኣይረአን።', 'ስም ኣብ ላዕሊ እቲ ዝጎደለ፣ ወርቂ።', 'መዕጸዊ ድኳን ኣብ መስመሩ፡ ምስ ስእሊ።'],
+  }},
   { v: '2.5.27', date: '2026-10-04', lines: {
     en: ['Craft rows use the full width.', 'A recipe keeps its name when it needs a bench or an oven.'],
     uk: ['Рядки крафту на всю ширину.', 'Рецепт лишає назву, навіть якщо потрібен верстак чи піч.'],

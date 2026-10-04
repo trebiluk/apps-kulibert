@@ -3,7 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
-- **Bertopia 2.5.27** makes the craft list and the look slider full width, and a recipe keeps its name when it needs a bench or an oven.
+- **Bertopia 2.5.28** polish: menus are solid, craft shows the name above the missing pieces in gold, and shop locks sit on their own row with a picture.
 - **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
 - **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
