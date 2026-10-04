@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.16'
+const VERSION = '2.5.17'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -1165,6 +1165,23 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     place: () => session.tryPlace(),
     counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand'), log: session.bag.count('log'), cupcake: session.bag.count('cupcake'), vend: session.bag.count('vend') }),
     fillSeed(n) { session.setMode('survival'); session.give('log', n); tools.select([0, 5, 0], [2, 6, 1]) },
+    emptyOven() {
+      session.setMode('survival')
+      session.spend('sand', session.bag.count('sand'))
+      session.spend('flour', session.bag.count('flour'))
+      session.spend('sugar', session.bag.count('sugar'))
+      session.spend('berry', session.bag.count('berry'))
+      const g = document.getElementById('sheet-body')
+      stations.paint(g, '8,5,8', 'oven')
+      g.querySelectorAll('.gtile')[1].click()
+      return g.innerText
+    },
+    words() {
+      const chip = document.getElementById('size-chip')
+      chip.hidden = false
+      chip.textContent = t('fillN').replace('{n}', '12')
+      return { fill: chip.textContent, bake: t('nothingBake'), walls: t('wallsN').replace('{n}', '16') }
+    },
     ovenOpen() {
       session.setMode('survival')
       session.give('coal', 1)

@@ -15,7 +15,7 @@ Fix brief: `briefs/fixq/bertopia-2514b.md` → **BT 2.5.15**. It ships before an
 - [x] **Goal 1 (Oven):** `#mode-chip` read "Creative" after reload. Fixed in 2.5.14.
 - [x] **Goal 3 (words):** stray `tourMove` lines and English tour steps. Fixed in 2.5.14.
 - [x] **Goal 1 (Oven):** every recipe tile has the same tan square instead of the input's picture; tiles show only `in[0]`.
-- [ ] **Goal 1 (Oven):** tiles overlap at 1366 (Flour on Sand) and the Bread tile is cut off at 412. No "Nothing to bake yet" line when nothing is payable.
+- [x] **Goal 1 (Oven):** tiles overlap at 1366 (Flour on Sand) and the Bread tile is cut off at 412. No "Nothing to bake yet" line when nothing is payable.
 - [ ] **Goal 1 (Oven, P2):** the Output tile shows the raw key ("Output glass"), and Input reads "Input Input".
 - [x] **Goal 2 (words):** `fillN`/`wallsN` exist only in en, so ru shows "Fill 32" and "Walls 24".
 - [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` runs at 412 only, with `.click()` and `stations.paint`, has 3 checks, and dropped the old gates. Its own "1b sand spent" fails.

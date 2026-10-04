@@ -83,6 +83,13 @@ if (testUrl) {
     note('recipe words', size[0], seen.text.includes('Glass') && seen.text.includes('Bread'), seen.text)
   }
   note('student hook', 412, student === 'undefined', student)
+  const empty = await page.evaluate(() => window.__smoke.emptyOven())
+  note('nothing to bake', 412, empty.includes('Nothing to bake yet'), empty.slice(0, 80))
+  await page.goto(testUrl + '?lang=ru&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await new Promise((r) => setTimeout(r, 1000))
+  const words = await page.evaluate(() => window.__smoke.words())
+  note('ru fill chip', 412, words.fill.includes('Заполни') && !/[A-Za-z]/.test(words.fill), words.fill)
+  note('ru walls', 412, words.walls.includes('Стены') && !/[A-Za-z]/.test(words.walls), words.walls)
   await browser.close()
   if (checks.some((c) => !c[2]) || errs.length) process.exit(1)
   process.exit(0)
