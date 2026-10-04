@@ -3057,6 +3057,9 @@ body.mu237.tab-viz canvas#viz { min-height: 62% !important; }
 body.mu237.show .side,
 body.mu237.show .tabs,
 body.mu237.show .menu-btn { display: none !important; }
+body.mu237.show #home,
+body.mu237.show .home { display: none !important; }
+body.mu237.show .out { z-index: 80 !important; }
 body.mu237.show .out {
   display: flex !important;
   position: fixed !important;
