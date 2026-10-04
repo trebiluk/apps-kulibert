@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.29'
+const VERSION = '2.5.30'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -28,7 +28,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -378,7 +378,13 @@ noa.inputs.down.on('fire', () => {
   if (survivalOn()) beginDig('mouse')
   else { breakBlock(); dig = { kind: 'mouse', creative: true, t0: performance.now() } }
 })
-noa.inputs.down.on('alt-fire', () => { if (inspectOn) { showInspect(); return } if (!tableMode && noa.container.hasPointerLock) placeBlock() })
+noa.inputs.down.on('alt-fire', () => {
+  if (inspectOn) { showInspect(); return }
+  if (!tableMode && noa.container.hasPointerLock) {
+    placeBlock()
+    if (!TOUCH_UI) { mouseRight = true; placeHoldAt = performance.now() }
+  }
+})
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
@@ -506,6 +512,7 @@ session = createSession({
   removeBlock: (x, y, z) => edit(x, y, z, 0),
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
+  flash: (name) => flashHeld(name),
 })
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -669,8 +676,14 @@ function paintBar() {
   bag.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bag)
 }
+function useSelected() {
+  if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
+  flashHeld(blockName(current))
+}
 function selectSlot(i) {
-  selectedSlot = (i + 9) % 9
+  const n = (i + 9) % 9
+  if (n === selectedSlot) { flashHeld(blockName(barIds[n])); return }
+  selectedSlot = n
   current = barIds[selectedSlot]
   paintBar()
   $('current').textContent = blockName(current)
@@ -724,12 +737,20 @@ function rayAt(cx, cy) {
     return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [x + nx, y + ny, z + nz] }
   } catch (e) { return null }
 }
+function tryPickBlock(id) {
+  if (survivalOn() && session && session.selectOwned) {
+    if (session.selectOwned(id)) { toast(t('picked') + ' ' + blockName(id)); return true }
+    toast(t('pickNeed'))
+    return false
+  }
+  pick(id)
+  toast(t('picked') + ' ' + blockName(id))
+  return true
+}
 function pickAimed() {
   const hit = aimed()
   if (!hit || !hit.id) return false
-  pick(hit.id)
-  toast(t('picked') + ' ' + blockName(hit.id))
-  return true
+  return tryPickBlock(hit.id)
 }
 function setInspect(on) {
   inspectOn = on
@@ -880,6 +901,9 @@ let jumpHeld = false
 let crouchKey = false
 let crouchOn = false
 let mouseLeft = false
+let mouseRight = false
+let placeHoldAt = 0
+let pickArmed = false
 let dig = null
 let lastGroundAt = 0
 let jumpBufferAt = 0
@@ -930,6 +954,7 @@ document.addEventListener('keydown', (e) => {
     if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
     return
   }
+  if (e.key === 'f' || e.key === 'F') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); useSelected(); return } }
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '123456789'.indexOf(e.key)
@@ -1034,6 +1059,24 @@ function feelTick(dt) {
   const stickRun = runSince && now - runSince >= 300
   moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
   noa.blockTestDistance = reachFor(survivalOn())
+  playerBody.autoStep = !!(autoClimb && !flying && !tableMode)
+  if ((crouchKey || crouchOn) && grounded && !flying && !tableMode) {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    const hdg = noa.camera.heading
+    const fx = Math.sin(hdg), fz = Math.cos(hdg)
+    const rx = Math.cos(hdg), rz = -Math.sin(hdg)
+    const allow = (dx, dz) => {
+      const x = Math.floor(p[0] + dx * 0.55)
+      const y = Math.floor(p[1])
+      const z = Math.floor(p[2] + dz * 0.55)
+      return keepCrouchStep(!!getVoxel(x, y - 1, z), !!getVoxel(x, y, z))
+    }
+    if (noa.inputs.state.forward && !allow(fx, fz)) noa.inputs.state.forward = false
+    if (noa.inputs.state.backward && !allow(-fx, -fz)) noa.inputs.state.backward = false
+    if (noa.inputs.state.left && !allow(-rx, -rz)) noa.inputs.state.left = false
+    if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
+  }
+  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) { placeHoldAt = now; placeBlock() }
   if (!tableMode && !flying) {
     const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
     noa.camera.zoomDistance = (TOUCH_UI ? 4 : 0) + up
@@ -1137,18 +1180,20 @@ const LOOK_V = 0.34 * Math.PI / 180
 const LOOK_KEY = 'bloxbert-look'
 let lookSens = 1
 let lookInvert = false
+let autoClimb = !!TOUCH_UI
 let wideView = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
   lookInvert = !!savedLook.invert
   wideView = !!savedLook.wide
+  if (typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
 } catch (e) {}
 function applyLook() {
   noa.camera.sensitivityX = 10 * lookSens
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert, wide: wideView })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb })) } catch (e) {}
 }
 function paintLook(g) {
   const label = document.createElement('p')
@@ -1178,7 +1223,13 @@ function paintLook(g) {
   const paintWide = () => { wide.textContent = t('wideView') + (wideView ? ' ✓' : '') }
   paintWide()
   wide.addEventListener('click', () => { wideView = !wideView; applyLook(); paintWide() })
-  g.append(label, range, inv, wide)
+  const climb = document.createElement('button')
+  climb.type = 'button'
+  climb.className = 'gtile wide'
+  const paintClimb = () => { climb.textContent = t('climb') + (autoClimb ? ' ✓' : '') }
+  paintClimb()
+  climb.addEventListener('click', () => { autoClimb = !autoClimb; applyLook(); paintClimb() })
+  g.append(label, range, inv, wide, climb)
 }
 applyLook()
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
@@ -1220,12 +1271,18 @@ canvas.addEventListener('pointerup', (e) => {
     else { dig.draining = true; dig.drainAt = performance.now() }
   }
   look = null
+  if (pickArmed && tap && face) {
+    tryPickBlock(face.id || face.blockID)
+    pickArmed = false
+    paintPick()
+    return
+  }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
   if (tap && held < 500 && !broke && face) placeBlock(face)
 })
 canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
-window.addEventListener('pointerup', (e) => { if (e.button === 0) mouseLeft = false })
+window.addEventListener('pointerup', (e) => { if (e.button === 0) mouseLeft = false; if (e.button === 2) mouseRight = false })
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }
@@ -1236,6 +1293,16 @@ for (const el of document.querySelectorAll('[data-hold]')) {
 $('t-place').addEventListener('click', placeBlock)
 $('t-break').addEventListener('click', breakBlock)
 $('table-place').addEventListener('click', placeBlock)
+function paintPick() {
+  const b = $('pick-chip')
+  if (!b) return
+  b.textContent = t('pickChip') + (pickArmed ? ' ✓' : '')
+  b.classList.toggle('on', pickArmed)
+  b.setAttribute('aria-pressed', String(pickArmed))
+}
+const pickBtn = $('pick-chip')
+if (pickBtn) pickBtn.addEventListener('click', () => { pickArmed = !pickArmed; paintPick() })
+paintPick()
 document.body.classList.toggle('touch', TOUCH_UI)
 const stickPad = document.getElementById('stick-pad')
 const stickKnob = document.getElementById('stick-knob')

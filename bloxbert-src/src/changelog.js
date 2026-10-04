@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.30', date: '2026-10-04', lines: {
+    en: ['Hold right click to keep placing. A touch tap still places one.', 'Tap the selected slot again to use it. Bread, berry, and cupcake get eaten.', 'F does the same.', 'Crouch stops at a ledge.', 'Settings has Auto-climb. Phones start with it on.', 'Pick, then tap a block. Survival only picks a block you have.'],
+    uk: ['Тримай праву кнопку, щоб ставити далі. Дотик ставить один.', 'Торкнись вибраного слота ще раз. Хліб, ягода і кекс зʼїдаються.', 'F теж.', 'Присід зупиняється на краю.', 'У налаштуваннях автосхід. На телефоні він увімкнений.', 'Взяти, потім торкнись блока. У Виживанні лише якщо він у сумці.'],
+    ru: ['Держи правую кнопку, чтобы ставить дальше. Касание ставит один.', 'Нажми выбранный слот ещё раз. Хлеб, ягода и кекс съедаются.', 'F тоже.', 'Присед останавливается на краю.', 'В настройках автоподъём. На телефоне он включён.', 'Взять, потом нажми блок. В Выживании только если он в сумке.'],
+    es: ['Mantén el clic derecho para seguir poniendo. Un toque pone uno.', 'Toca otra vez la casilla elegida. El pan, la baya y el cupcake se comen.', 'F hace lo mismo.', 'Agacharte para en un borde.', 'Ajustes tiene Auto-subir. En el teléfono empieza activo.', 'Tomar, luego toca un bloque. En Supervivencia solo si lo tienes.'],
+    ar: ['اضغط الزر الأيمن مطولاً لتضع أكثر. اللمسة تضع واحداً.', 'اضغط الخانة المختارة مرة أخرى. الخبز والتوت والكعك تُؤكل.', 'F يفعل ذلك.', 'الانحناء يقف عند الحافة.', 'الإعدادات فيها تسلّق تلقائي. الهاتف يبدأ به.', 'التقط ثم المس مكعباً. في البقاء فقط إذا كان في حقيبتك.'],
+    'fa-AF': ['کلیک راست را نگه دار تا بیشتر بگذاری. لمس یکی می‌گذارد.', 'خانهٔ انتخاب‌شده را دوباره بزن. نان، توت و کاپ‌کیک خورده می‌شوند.', 'F همان است.', 'خم شدن لبه‌ را رد نمی‌کند.', 'تنظیمات بالارفتن خودکار دارد. گوشی با آن روشن شروع می‌شود.', 'بردار، بعد بلاک را بزن. در بقا فقط اگر در بکس باشد.'],
+    rw: ['Fata iburyo ushyire byinshi. Gutera gushyira kimwe.', 'Kanda akazu wahisemo nanone. Umugati, imbuto na kek biribwa.', 'F ni ko.', 'Kwicarama bihagarara ku musozi.', 'Igenamiterere ifite Kuzamuka. Telefoni itangira ikaye.', 'Fata, ukande block. Mu Bugingo ni iyo iri mu gasaho.'],
+    ti: ['የማናይ ሓዝ ንዝያዳ ምቕማጥ። ምትንካእ ሓደ የቐምጥ።', 'ዝተመርጸ ቦታ ደጊምካ ጠውቕ። ባኒ፡ ፍረን ኬክን ይበላዕ።', 'F እውን።', 'ምድንጋር ኣብ ወሰን ይቁም።', 'ቅንጅታት ባዕሉ ምውጻእ ኣለዎ። ተሌፎን ብእዚ ይጅምር።', 'ውሰድ፡ ድሕሪኡ ብሎክ ጠውቕ። ኣብ ህይወት እንተ ኣብ ቦርሳ ጥራይ።'],
+  }},
   { v: '2.5.29', date: '2026-10-04', lines: {
     en: ['Cracks grow in four steps.', 'Let go and the cracks fade. Press again and they come back.', 'Leaves break fast. Stone takes a copper tool hint after two seconds.', 'Settings has Wide view.'],
     uk: ['Тріщини ростуть у чотири кроки.', 'Відпусти — гаснуть. Натисни знову — повертаються.', 'Листя ламається швидко. Камінь через дві секунди нагадує про мідь.', 'У налаштуваннях широкий огляд.'],

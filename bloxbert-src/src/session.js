@@ -159,13 +159,45 @@ export function createSession(api) {
       b.append(sw, tag, lbl)
       if (!s) b.classList.add('empty')
       b.setAttribute('aria-pressed', String(i === hot))
-      b.addEventListener('click', () => { hot = i; paintHotbar() })
+      b.addEventListener('click', () => {
+        if (i === hot) useHeld()
+        else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
+      })
       bar.append(b)
     }
   }
   function selectedItem() {
     if (mode !== 'survival') return null
     return bag.slots[hot] && bag.slots[hot].item
+  }
+  const EDIBLE = ['berry', 'bread', 'cupcake']
+  function useHeld() {
+    const item = selectedItem()
+    if (!item) return ''
+    if (EDIBLE.includes(item) && bag.take(item, 1)) {
+      paintHotbar()
+      api.toast(t('ate').replace('{item}', itemName(item)))
+      if (api.markDirty) api.markDirty()
+      return itemName(item)
+    }
+    const name = itemName(item)
+    api.toast(name)
+    if (api.flash) api.flash(name)
+    return name
+  }
+  function selectOwned(blockId) {
+    const key = Object.entries(ITEMS).find(([, v]) => v.block === blockId)
+    if (!key || !bag.count(key[0])) return false
+    const i = bag.slots.findIndex((s) => s && s.item === key[0])
+    if (i < 0) return false
+    if (i > 8) {
+      const tmp = bag.slots[hot]
+      bag.slots[hot] = bag.slots[i]
+      bag.slots[i] = tmp
+    } else hot = i
+    paintHotbar()
+    if (api.flash) api.flash(itemName(key[0]))
+    return true
   }
   function near(kind) {
     const p = api.pos()
@@ -672,5 +704,6 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
+    useHeld, selectOwned,
   }
 }

@@ -62,6 +62,9 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .credit{color:var(--muted);font-size:11px;margin-top:auto;padding-top:10px}
 .credit a{color:var(--cyan)}
 #hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(34,211,238,.4);scrollbar-width:thin}
+#pick-chip{display:none}
+body.touch #pick-chip{display:flex;align-items:center;justify-content:center;position:fixed;right:12px;bottom:108px;z-index:6;min-width:72px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid #22D3EE;background:rgba(11,18,32,.92);color:#f8fafc;font-weight:700}
+#pick-chip.on{border-color:#F6C453;color:#F6C453}
 .slot.empty .sw{background:none;border:1px dashed #8aa}
 .slot{flex:0 0 auto;width:64px;min-height:64px;position:relative;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
 .slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.25),0 0 14px rgba(34,211,238,.45)}
@@ -205,7 +208,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.29</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.30</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -318,6 +321,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   <button class="jump" data-hold="jump" data-i18n="jump">Jump</button>
 </div>
 <button id="table-place" type="button" data-i18n="place">Place</button>
+<button id="pick-chip" type="button">Pick</button>
 <div id="hotbar" role="toolbar" aria-label="Blocks"></div>
 <div id="inspect-card" hidden role="dialog" aria-labelledby="inspect-title">
   <div class="card">
@@ -326,7 +330,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.29" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.29" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.30" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.30" defer></script>
 </body>
 </html>

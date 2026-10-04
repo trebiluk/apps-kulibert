@@ -79,6 +79,15 @@ export function inReach(px, py, pz, bx, by, bz, reach) {
   return dx * dx + dy * dy + dz * dz <= reach * reach
 }
 
+export function keepCrouchStep(floorSolid, bodySolid) {
+  if (bodySolid) return true
+  return !!floorSolid
+}
+
+export function shouldRepeatPlace(held, elapsed, touch) {
+  return !touch && !!held && elapsed >= 250
+}
+
 export function speedFor({ crouch, run, fly }) {
   if (fly) return FLY_H
   if (crouch) return CROUCH

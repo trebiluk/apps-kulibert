@@ -1,4 +1,4 @@
-import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig } from '../src/feel.js'
+import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace } from '../src/feel.js'
 
 let bad = 0
 function ok(cond, msg) {
@@ -34,6 +34,11 @@ ok(speedFor({}) === 4.3, 'walk')
 ok(speedFor({ run: true }) === 5.6, 'run')
 ok(speedFor({ crouch: true, run: true }) === 1.3, 'crouch wins')
 ok(speedFor({ fly: true, run: true }) === 10.9, 'fly wins')
+ok(keepCrouchStep(true, false), 'a floor ahead is safe to crouch')
+ok(!keepCrouchStep(false, false), 'a crouch stops at a ledge')
+ok(keepCrouchStep(false, true), 'a wall is not a ledge')
+ok(shouldRepeatPlace(true, 250, false) && !shouldRepeatPlace(true, 200, false), 'mouse place repeats at 0.25 s')
+ok(!shouldRepeatPlace(true, 500, true), 'a touch tap never repeats')
 
 if (bad) { console.error(bad + ' feel checks failed'); process.exit(1) }
 console.log('feel: 0 problems')
