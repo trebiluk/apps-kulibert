@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.27', date: '2026-10-04', lines: {
+    en: ['Craft rows use the full width.', 'A recipe keeps its name when it needs a bench or an oven.'],
+    uk: ['Рядки крафту на всю ширину.', 'Рецепт лишає назву, навіть якщо потрібен верстак чи піч.'],
+    ru: ['Строки крафта на всю ширину.', 'Рецепт сохраняет имя, даже если нужен верстак или печь.'],
+    es: ['Las recetas usan todo el ancho.', 'La receta conserva su nombre aunque necesite banco u horno.'],
+    ar: ['صفوف الصنع بعرض الشاشة.', 'الوصفة تُبقي اسمها حتى لو احتاجت منضدة أو فرناً.'],
+    'fa-AF': ['ردیف ساختن تمام عرض را می‌گیرد.', 'دستور نامش را نگه می‌دارد حتی اگر میز یا تنور بخواهد.'],
+    rw: ['Imirongo ikoresha ubugari bwose.', 'Isosiyete isigara izina nubwo ikeneye ameza cyangwa ibyoto.'],
+    ti: ['መስመራት ስራሕ ምሉእ ስፍሓት።', 'ዝርዝር ስሙ ይጸንሕ እንተደኣ እቶን ወይ ሰደቓ ዘድልዮ።'],
+  }},
   { v: '2.5.26', date: '2026-10-04', lines: {
     en: ['Craft lists Can make now, Almost, and Show all.', '×Max makes as many as you can.', 'The shop sells a material only after you find it.', 'Settings has Look speed and Invert look.'],
     uk: ['Крафт: Можна зараз, Майже, Показати все.', '×Max робить скільки можеш.', 'Крамниця продає матеріал після того, як знайдеш.', 'У налаштуваннях швидкість і переворот огляду.'],

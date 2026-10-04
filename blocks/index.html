@@ -177,6 +177,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #tool-strip button{min-width:48px;min-height:48px;background:transparent;color:#f8fafc;border:1px solid rgba(34,211,238,.45);border-radius:10px}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
+.ggrid>.gnote,.ggrid>.craft-row,.ggrid>input[type=range]{grid-column:1 / -1}
 .gtile{min-height:88px;min-width:88px;border-radius:12px;border:1px solid rgba(34,211,238,.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
 .craft-row{display:flex;gap:6px;align-items:stretch}
 .craft-row .gtile{flex:1}
@@ -197,7 +198,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.26</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.27</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -317,7 +318,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.26" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.26" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.27" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.27" defer></script>
 </body>
 </html>

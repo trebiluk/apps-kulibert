@@ -255,11 +255,10 @@ export function createSession(api) {
         const out = ITEMS[r.out[0]]
         b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
         b.querySelector('.gic').append(itemIcon(out))
-        let title = itemName(r.out[0])
-        if (st.station === 'oven') title = t('needsOven')
-        if (st.station === 'bench') title = t('needsBench')
-        b.querySelector('.glbl').textContent = title
-        b.querySelector('.gneed').textContent = st.needs.map(([k, have, n]) => itemName(k) + ' ' + have + '/' + n).join(' ')
+        const note = st.needs.map(([k, have, n]) => itemName(k) + ' ' + have + '/' + n).join(' ')
+        const station = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : ''
+        b.querySelector('.glbl').textContent = itemName(r.out[0])
+        b.querySelector('.gneed').textContent = station ? note + ' · ' + station : note
         b.disabled = !st.ok
         b.addEventListener('click', () => { craftMany(r, 1); g.innerHTML = ''; paintCraft(g) })
         row.append(b)
