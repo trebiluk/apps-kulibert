@@ -13,7 +13,7 @@
   "fullScreen": "Full screen",
   "exitFull": "Exit full screen",
   "close": "Close",
-  "news": "Meet Alice and Wonderland! Play Pop-Up Lookout.",
+  "news": "Alice's Prairie is a real game now, with big buttons and Alice alive!",
   "scoreGoal": "Score 500",
   "sky": "Sky",
   "ground": "Ground",
@@ -30,5 +30,6 @@
   "firstWatch": "First Watch",
   "menu": "Menu",
   "alice": "Alice",
-  "wonderland": "Wonderland"
+  "wonderland": "Wonderland",
+  "newsOld": "Meet Alice and Wonderland! Play Pop-Up Lookout."
 }

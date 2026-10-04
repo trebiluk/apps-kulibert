@@ -1,13 +1,18 @@
 {
   "name": "alice-prairie",
   "private": true,
-  "version": "1.0.0",
-  "description": "Alice's Prairie source. Builds the static door into ../alice/.",
+  "version": "1.0.1",
+  "type": "module",
+  "description": "Alice's Prairie. Phaser 3 door built from phaserjs/template-vite d78f795. npm run build writes ../alice/.",
   "license": "UNLICENSED",
   "scripts": {
-    "build": "node build.mjs --out ../alice"
+    "build": "node tools/sfx.mjs && vite build --config vite/config.prod.mjs"
   },
   "devDependencies": {
-    "esbuild": "^0.24.2"
+    "terser": "^5.39.0",
+    "vite": "^6.3.1"
+  },
+  "dependencies": {
+    "phaser3-rex-plugins": "1.80.20"
   }
 }

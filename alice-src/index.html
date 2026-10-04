@@ -4,20 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Alice's Prairie</title>
-  <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="/alice/style.css">
+  <script src="/alice/vendor/phaser-3.90.0-arcade.min.js"></script>
 </head>
 <body>
-  <div id="app"></div>
-  <button id="game-menu" type="button" aria-haspopup="true" aria-expanded="false"></button>
-  <button id="fs-btn" class="fs-btn" type="button"></button>
-  <button id="plate" class="plate" type="button">AP 1.0.0</button>
+  <div id="stage"></div>
+  <button id="game-menu" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Menu">☰</button>
+  <button id="fs-btn" class="fs-btn" type="button" aria-label="Full screen">⛶</button>
+  <button id="plate" class="plate" type="button">AP 1.0.1</button>
+  <p id="live" class="live" aria-live="polite"></p>
   <div id="hint" class="hint" hidden role="dialog">
     <p id="hint-text"></p>
     <button type="button" id="hint-x" aria-label="Close">✕</button>
   </div>
   <script src="/shared/kulibert-prefs.js"></script>
   <script src="/shared/kw-who.js"></script>
-  <script src="app.js"></script>
-  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="alice" data-name="Alice's Prairie" data-version="1.0.0" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+  <script type="module" src="/src/main.js"></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="alice" data-name="Alice's Prairie" data-version="1.0.1" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
 </body>
 </html>

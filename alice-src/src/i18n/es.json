@@ -13,7 +13,7 @@
   "fullScreen": "Pantalla completa",
   "exitFull": "Salir de pantalla",
   "close": "Cerrar",
-  "news": "¡Conoce a Alice y Wonderland! Juega a Vigía.",
+  "news": "¡La pradera de Alice ya es un juego de verdad, con botones grandes y Alice viva!",
   "scoreGoal": "Puntos 500",
   "sky": "Cielo",
   "ground": "Suelo",
@@ -30,5 +30,6 @@
   "firstWatch": "Primera guardia",
   "menu": "Menú",
   "alice": "Alice",
-  "wonderland": "Wonderland"
+  "wonderland": "Wonderland",
+  "newsOld": "¡Conoce a Alice y Wonderland! Juega a Vigía."
 }

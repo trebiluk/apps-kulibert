@@ -1,0 +1,24 @@
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("/alice/fonts/atkinson-hyperlegible-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Atkinson Hyperlegible"; src: url("/alice/fonts/atkinson-hyperlegible-700.woff2") format("woff2"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Noto Sans Arabic"; src: url("/fonts/noto-sans-arabic-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans"; src: url("/fonts/noto-sans-cyrillic-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Noto Sans Ethiopic"; src: url("/fonts/noto-sans-ethiopic-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+html, body { margin: 0; height: 100%; background: #06122b; color: #f8fafc; font-family: "Atkinson Hyperlegible", "Noto Sans Arabic", "Noto Sans Ethiopic", "Noto Sans", sans-serif; overflow: hidden; }
+#stage { position: fixed; inset: 0; top: 0; }
+html[data-kb-bar]:not(.kb-framed) #stage { top: 48px; }
+#game-menu, .fs-btn, .plate { position: fixed; z-index: 30; min-width: 48px; min-height: 48px; }
+#game-menu, .fs-btn { display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; border: 2px solid #67e8f9; background: rgba(6,18,43,.45); color: #f8fafc; font-weight: 700; }
+#game-menu { top: 8px; left: 8px; width: 48px; height: 48px; font-size: 22px; }
+html[data-kb-bar]:not(.kb-framed) #game-menu { top: 56px; }
+html[dir="rtl"] #game-menu { left: 8px; right: auto; }
+.fs-btn { top: 8px; right: 8px; width: 56px; height: 48px; }
+html[data-kb-bar]:not(.kb-framed) .fs-btn { top: 56px; }
+body.in-round .fs-btn { right: 132px; }
+html[dir="rtl"] body.in-round .fs-btn { right: auto; left: 132px; }
+.plate { bottom: 8px; left: 8px; border: 0; background: transparent; color: #e2e8f0; font-size: 14px; font-weight: 700; }
+html[dir="rtl"] .plate { left: auto; right: 8px; }
+.live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.hint { position: fixed; z-index: 40; left: 50%; top: 40%; transform: translate(-50%, -50%); width: min(360px, calc(100% - 32px)); background: #0b1f3a; border: 2px solid #22d3ee; border-radius: 14px; padding: 12px; display: flex; gap: 8px; }
+.hint[hidden] { display: none; }
+.hint button { min-width: 48px; min-height: 48px; }
+:focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
