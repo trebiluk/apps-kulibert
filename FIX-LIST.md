@@ -4,6 +4,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 
 ## 1. Live now
 - Live title: **The Tech Room · apps.kulibert.net** (https://apps.kulibert.net/).
+- Hub rev: **2026-10-13-rename**. Tile, cut line, and version chip say Bertapult. Path stays `/catapult/`.
 - Latest Hub proofs: `proof/hub-swipe/RESULT.md` (PASS with P2s; Arabic 1024x768 cold load 8 px too wide on 3 of 14 loads → brief 12c) and `proof/menu-audit/RESULT.md` (same-menu sweep across apps).
 
 ## 2. Open fixes (FAIL rows from the latest proof)
@@ -11,8 +12,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
 - [ ] `briefs/fixq/12c-hub-ar-refit.md`: Hub fix 12c of the click-test queue (P2, the part of 12b that didn't land). One fix only, please; don't change anything else.
-- [ ] `briefs/fixq/hub-launchpad-rename.md`: Hub rev 2026-10-13-rename: the ThrowIt listing becomes Bertapult. Text only, only these 3 items. No icon art, layout or order change.
-- [ ] `briefs/fixq/hub-tron-default.md`: Hub: Tron glow is the default look again (Room theme)
+- [x] `briefs/fixq/hub-launchpad-rename.md`: Hub rev 2026-10-13-rename: the ThrowIt listing becomes Bertapult. Text only, only these 3 items. No icon art, layout or order change. Shipped in this commit (tile, cut line, version chip).
+- [x] `briefs/fixq/hub-tron-default.md`: Hub: Tron glow is the default look again (Room theme). Shipped 2026-10-13-tron-default (01d103a).
 - [ ] `briefs/fixq/shared-bar-plate-clip.md`: Shared bar: the version plate is clipped on narrow phones (all apps, shared/kulibert-bar.js). Shared note from StyleBot, Sat Oct 3, 2026. Out of scope…
 
 Already shipped (from proofs):
