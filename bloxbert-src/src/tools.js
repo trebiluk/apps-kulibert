@@ -160,12 +160,19 @@ export function createTools(api) {
   }
   function confirm() {
     if (!pending) return null
-    let ops = pending.ops
-    if (pending.kind === 'paste') {
-      const origin = api.aim() || [8, 6, 8]
-      const group = pasteAt(origin, {})
-      pending = null
-      return group
+    const ops = pending.ops || []
+    if (api.survival && api.survival() && ops.length) {
+      const need = {}
+      for (const op of ops) need[op[3]] = (need[op[3]] || 0) + 1
+      for (const [id, n] of Object.entries(need)) {
+        const have = api.have ? api.have(+id) : 0
+        if (have < n) {
+          api.toast((api.t('needBlocks') || 'Need {n} more {item}').replace('{n}', n - have).replace('{item}', api.blockName(+id)))
+          return null
+        }
+      }
+      for (const [id, n] of Object.entries(need)) api.spendBlock(+id, n)
+      if (api.noteBag) api.noteBag(need)
     }
     const group = api.apply(ops, pending.kind === 'fill' ? api.t('filled').replace('{n}', String(ops.length)) : pending.label)
     pending = null

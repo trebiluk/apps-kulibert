@@ -139,7 +139,7 @@ export const EXTRA = {
 }
 
 const FIX = {
-  en: { fuel: 'Fuel', input: 'Input', output: 'Output', bag: 'Bag', left: 'left' },
+  en: { fuel: 'Fuel', input: 'Input', output: 'Output', bag: 'Bag', left: 'left', needBlocks: 'Need {n} more {item}' },
   uk: { tour: 'Тур', a11y: 'Доступність', helpBody: 'Обери плитку', sendTeacher: 'Надіслати вчителю', highContrast: 'Високий контраст', place10: 'Постав 10 блоків', pin: 'Пін', fuel: 'Паливо', input: 'Вхід', output: 'Вихід', bag: 'Сумка' },
   ru: { changelog: 'Журнал', youAreHere: 'Ты здесь', next: 'Дальше', skip: 'Пропустить', tryThis: 'Попробуй', tour: 'Тур', tourMove: 'Двигайся кнопками', a11y: 'Доступность', helpBody: 'Выбери плитку', sendTeacher: 'Отправить учителю', highContrast: 'Высокий контраст', place10: 'Поставь 10 блоков', pin: 'Пин', fuel: 'Топливо', input: 'Вход', output: 'Выход', bag: 'Сумка', addCoal: 'Добавь уголь', bake: 'Пеки', sell: 'Продать', buy: 'Купить' },
   es: { changelog: 'Registro', youAreHere: 'Estás aquí', next: 'Siguiente', skip: 'Saltar', tryThis: 'Prueba esto', tour: 'Recorrido', tourMove: 'Muévete con los botones', a11y: 'Accesibilidad', helpBody: 'Elige una ficha', sendTeacher: 'Enviar al maestro', highContrast: 'Alto contraste', place10: 'Pon 10 bloques', pin: 'Clave', fuel: 'Combustible', input: 'Entrada', output: 'Salida', bag: 'Bolsa' },

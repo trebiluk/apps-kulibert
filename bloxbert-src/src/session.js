@@ -443,7 +443,7 @@ export function createSession(api) {
         if (!rec.slots[hit.i].n) rec.slots[hit.i] = null
         rec.till += hit.cogs
         rec.sales = (rec.sales || []).concat([{ at: Date.now(), item: hit.item, n: hit.n, cogs: hit.cogs }]).slice(-20)
-        wallet.post({ kind: 'vend-sale', item: hit.item, n: hit.n, cogs: hit.cogs, by: 'townsfolk' })
+        wallet.post({ kind: 'vend-sale', item: hit.item, n: hit.n, cogs: 0, price: hit.cogs, by: 'townsfolk' })
         sales++
         api.toast(t('townBought').replace('{n}', hit.n).replace('{item}', itemName(hit.item)).replace('{cogs}', hit.cogs))
       }
@@ -472,8 +472,10 @@ export function createSession(api) {
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
     give: (item, n) => bag.add(item, n || 1),
+    spend: (item, n) => bag.take(item, n),
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.take(hit[0], n) : false },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
+    noteBag: (need) => { for (const [id, n] of Object.entries(need)) { const hit = Object.entries(ITEMS).find(([, v]) => v.block === +id); if (hit) bagHist.push({ type: 'place', item: hit[0], n }) } },
     setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
     tryPlace: () => { const k = selectedItem(); const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },

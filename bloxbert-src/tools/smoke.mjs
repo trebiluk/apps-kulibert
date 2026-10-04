@@ -41,10 +41,17 @@ if (testUrl) {
     const before = window.__smoke.counts()
     window.__smoke.place()
     const after = window.__smoke.counts()
-    const short = window.__smoke.fill(6)
-    const full = window.__smoke.fill(18)
+    window.__smoke.fillSeed(6)
+    document.querySelector('#tool-strip').hidden = false
+    document.querySelector('#tool-strip [data-tool="fill"]').click()
+    document.querySelector('#tool-strip [data-tool="do"]').click()
+    const short = window.__smoke.counts().log === 6
+    window.__smoke.fillSeed(12)
+    document.querySelector('#tool-strip [data-tool="fill"]').click()
+    document.querySelector('#tool-strip [data-tool="do"]').click()
+    const full = window.__smoke.counts().log === 0
     const oven = window.__smoke.oven()
-    return { bar, pics, hot, before, after, short: !short, full: !!full, oven: oven.ring > 0 || oven.left > 0, pickup: window.__smoke.pickup(), sale: window.__smoke.sale(), object: bar.includes('[object') }
+    return { bar, pics, hot, before, after, short, full, oven: oven.ring > 0 || oven.left > 0, pickup: window.__smoke.pickup(), sale: window.__smoke.sale(), object: bar.includes('[object') }
   })
 }
 await browser.close()

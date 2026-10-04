@@ -59,6 +59,7 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .credit{color:var(--muted);font-size:11px;margin-top:auto;padding-top:10px}
 .credit a{color:var(--cyan)}
 #hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(11,18,32,.88);border-top:1px solid var(--line);scrollbar-width:thin}
+.slot.empty .sw{background:none;border:1px dashed #8aa}
 .slot{flex:0 0 auto;width:64px;min-height:64px;position:relative;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
 .slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.18)}
 .sw{width:30px;height:30px;border-radius:4px;background-image:url(assets/atlas.png);image-rendering:pixelated;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
@@ -172,7 +173,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.9</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.10</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -282,7 +283,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.9" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.9" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.10" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.10" defer></script>
 </body>
 </html>
