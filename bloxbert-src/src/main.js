@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.15'
+const VERSION = '2.5.16'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -461,7 +461,17 @@ session = createSession({
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
 })
-const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => blockIcon(BLOCKS.find((b) => b[1] === item) || BLOCKS[2], ATLAS) })
+const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
+  const hit = BLOCKS.find((b) => b[1] === item)
+  if (hit) return blockIcon(hit, ATLAS)
+  const c = document.createElement('canvas')
+  c.width = c.height = 32
+  c.dataset.item = item
+  const g = c.getContext('2d')
+  g.fillStyle = item === 'flour' ? '#f3e2b3' : item === 'sugar' ? '#f7f7f7' : '#c4494a'
+  g.fillRect(0, 0, 32, 32)
+  return c
+} })
 panels = mountPanels({
   t, toast,
   save: () => save(),

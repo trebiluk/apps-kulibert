@@ -62,13 +62,30 @@ if (testUrl) {
     return { strip, sand: window.__smoke.counts().sand }
   })
   gate = { ...gate, ...oven }
+  const checks = []
+  function note(name, size, ok, seen) { checks.push([name, size, ok, seen]); console.log(ok ? 'PASS' : 'FAIL', name, size, seen) }
+  for (const size of [[412, 915], [1366, 768]]) {
+    await page.setViewport({ width: size[0], height: size[1] })
+    await page.goto(testUrl + '?smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await new Promise((r) => setTimeout(r, 1200))
+    await page.evaluate(() => window.__smoke.ovenOpen())
+    await new Promise((r) => setTimeout(r, 400))
+    const seen = await page.evaluate(() => {
+      const tiles = [...document.querySelectorAll('#sheet-body .gtile')].slice(-2)
+      const pics = tiles.map((el) => (el.querySelector('canvas') ? el.querySelector('canvas').toDataURL().slice(-24) : ''))
+      const boxes = tiles.map((el) => el.getBoundingClientRect()).map((r) => ({ x: r.x, y: r.y, w: r.width, h: r.height }))
+      return { pics, boxes, text: document.getElementById('sheet-body').innerText.slice(0, 120) }
+    })
+    const boxes = seen.boxes
+    const overlap = boxes.length === 2 && boxes[0].x < boxes[1].x + boxes[1].w && boxes[1].x < boxes[0].x + boxes[0].w && boxes[0].y < boxes[1].y + boxes[1].h && boxes[1].y < boxes[0].y + boxes[0].h
+    note('tile pictures differ', size[0], seen.pics[0] && seen.pics[0] !== seen.pics[1], seen.pics.join('|'))
+    note('tiles do not overlap', size[0], boxes.length === 2 && !overlap, JSON.stringify(boxes))
+    note('recipe words', size[0], seen.text.includes('Glass') && seen.text.includes('Bread'), seen.text)
+  }
+  note('student hook', 412, student === 'undefined', student)
+  await browser.close()
+  if (checks.some((c) => !c[2]) || errs.length) process.exit(1)
+  process.exit(0)
 }
 await browser.close()
-const checks = [
-  ['1a strip stays', gate.strip && gate.strip.includes('Glass') && gate.strip.includes('Bread')],
-  ['1b sand spent', gate.sand === 0],
-  ['student hook', student === 'undefined'],
-]
-for (const [name, ok] of checks) console.log(ok ? 'PASS' : 'FAIL', name, ok ? '' : JSON.stringify(gate))
-if (checks.some(([, ok]) => !ok) || errs.length) process.exit(1)
-console.log('smoke ok', url)
+process.exit(errs.length ? 1 : 0)

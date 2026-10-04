@@ -68,7 +68,7 @@ export function createStations(api) {
       b.type = 'button'
       b.className = 'gtile'
       b.innerHTML = '<span class="gic">' + (label === api.t('fuel') ? '🔥' : '▣') + '</span><span class="glbl"></span>'
-        b.querySelector('.glbl').textContent = label === api.t('output') ? api.t('output') + ': ' + (r.output[0] ? api.name(r.output[0]) : api.t('output')) : label === api.t('input') ? api.t('input') : label + ' ' + n
+        b.querySelector('.glbl').textContent = label === api.t('output') ? (r.output[0] ? api.t('output') + ': ' + api.name(r.output[0]) : api.t('output')) : label === api.t('input') ? api.t('input') : label + ' ' + n
       b.addEventListener('click', () => {
         if (label === api.t('fuel')) addFuel(key || '0,5,0')
         if (label === api.t('input')) { r.picking = true; paint(g, key, kind); return }
