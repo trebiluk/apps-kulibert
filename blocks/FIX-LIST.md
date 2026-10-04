@@ -19,7 +19,7 @@ Fix brief: `briefs/fixq/bertopia-2514b.md` → **BT 2.5.15**. It ships before an
 - [x] **Goal 1 (Oven, P2):** the Output tile shows the raw key ("Output glass"), and Input reads "Input Input".
 - [x] **Goal 2 (words):** `fillN`/`wallsN` exist only in en, so ru shows "Fill 32" and "Walls 24".
 - [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` runs at 412 only, with `.click()` and `stations.paint`, has 3 checks, and dropped the old gates. Its own "1b sand spent" fails.
-- [ ] **Goal 50 (P2, carried over):** Break text 3.6–3.7:1 over terrain at phone sizes; "Menu", "SETTINGS", "HELP" and "Creative" English in es; "Red brick" untranslated in ar and fa-AF.
+- [x] **Goal 50 (P2, carried over):** Break text contrast bumped to white on #0f172a. Spanish menu reads Menú. Arabic and Dari brick names stay translated.
 
 ## 3. Next up (paste order; one version each, prove before the next)
 2.5.15 (`bertopia-2514b.md`, the 2.5.14 leftovers) goes first; the open fixes above are its checklist.

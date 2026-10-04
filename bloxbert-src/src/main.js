@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.18'
+const VERSION = '2.5.19'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -556,6 +556,7 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
     if (!res && name !== 'select' && !tools.box()) toast(t('tapCorner'))
   })
 }
+$('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
 $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
