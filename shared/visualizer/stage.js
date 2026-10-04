@@ -1070,6 +1070,11 @@
       }
       gear.color = savedColor;
       drawScope(w, h, snap);
+      if (snap.playing && !reduceMotion) {
+        var px = Math.floor((now / 40) % Math.max(1, w));
+        vctx.fillStyle = "rgba(34,211,238,0.7)";
+        vctx.fillRect(px, 0, 6, h);
+      }
     }
 
     size();

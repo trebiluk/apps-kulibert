@@ -2927,3 +2927,10 @@ body.mu237.show #perform-exit:not([hidden]) {
 }
 body.mu237.tab-score #inks .btn,
 body.mu237.tab-score #pen .btn { min-width: 44px !important; min-height: 44px !important; flex: 0 0 44px !important; }
+body.mu237.tab-score #inks .btn,
+body.mu237.tab-score #pen .btn {
+  width: auto !important;
+  flex: 0 0 auto !important;
+  padding: 0 0.7rem !important;
+  overflow: visible !important;
+}
