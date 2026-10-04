@@ -33,7 +33,8 @@ export function createStations(api) {
     const recipe = OVEN.find((x) => x.in[0][0] === item)
     r.input.push(item)
     r.pending = recipe ? recipe.out[0] : 'glass'
-    r.until = Date.now() + ((recipe && recipe.secs) || 5) * 1000
+    r.secs = (recipe && recipe.secs) || 5
+    r.until = Date.now() + r.secs * 1000
     if (!r.left) r.left = r.fuel * 4
     return true
   }
@@ -67,7 +68,20 @@ export function createStations(api) {
       b.querySelector('.glbl').textContent = label + ' ' + n
       b.addEventListener('click', () => {
         if (label === api.t('fuel')) addFuel(key || '0,5,0')
-        if (label === api.t('input')) addInput(key || '0,5,0', 'sand')
+        if (label === api.t('input')) {
+          const strip = document.createElement('div')
+          strip.className = 'ggrid'
+          for (const item of ['sand', 'flour']) {
+            const b2 = document.createElement('button')
+            b2.type = 'button'
+            b2.className = 'gtile'
+            b2.innerHTML = '<span class="gic"><img alt="" src="assets/atlas.png" width="48" height="48"></span><span class="glbl"></span>'
+            b2.querySelector('.glbl').textContent = item
+            b2.addEventListener('click', () => { addInput(key || '0,5,0', item); paint(g, key, kind) })
+            strip.append(b2)
+          }
+          g.append(strip)
+        }
         if (label === api.t('output')) take(key || '0,5,0')
         paint(g, key, kind)
       })
@@ -75,8 +89,9 @@ export function createStations(api) {
     }
     if (r.until) {
       const left = Math.max(0, Math.ceil((r.until - Date.now()) / 1000))
+      const secs = r.secs || 5
       const ring = document.createElement('div')
-      ring.innerHTML = '<svg viewBox="0 0 36 36" width="48" height="48"><circle cx="18" cy="18" r="15" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="' + (left * 10) + ' 100"/></svg><span>' + left + ' s</span>'
+      ring.innerHTML = '<svg viewBox="0 0 36 36" width="48" height="48"><circle cx="18" cy="18" r="15" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="' + Math.round((secs - left) / secs * 100) + ' 100"/></svg><span>' + left + ' s</span>'
       g.append(ring)
     }
     clearTimeout(paint.timer)

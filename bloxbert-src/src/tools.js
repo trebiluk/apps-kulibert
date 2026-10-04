@@ -131,30 +131,26 @@ export function createTools(api) {
       api.toast(tSize())
       return { a, b }
     }
-    if (name === 'fill') {
+    if (name === 'fill' || name === 'walls') {
       if (!needBox()) return null
-      const id = opts.id || api.current()
+      let id = opts.id || api.current()
+      if (api.survival && api.survival() && api.heldBlock) id = api.heldBlock()
+      if (api.survival && api.survival() && !id) { api.toast(api.t('pickBlock') || 'Pick a block in your hotbar first'); return null }
       const bx = box()
       if (!bx || tooBig(bx)) { api.toast(api.t('tooBig')); return null }
       const ops = []
       for (let x = bx.x0; x <= bx.x1; x++) for (let y = bx.y0; y <= bx.y1; y++) for (let z = bx.z0; z <= bx.z1; z++) {
+        if (name === 'walls' && x !== bx.x0 && x !== bx.x1 && z !== bx.z0 && z !== bx.z1) continue
         if (api.survival() && api.getVoxel(x, y, z) === 21) continue
         ops.push([x, y, z, id])
       }
-      return stage('fill', ops, 'Fill ' + ops.length + '?')
+      return stage(name, ops, name + ' ' + ops.length)
     }
-    if (name === 'copy') return copy()
-    if (name === 'paste') return stage('paste', [], api.t('paste'))
-    if (name === 'walls') {
-      if (!needBox()) return null
-      const id = opts.id || api.current()
-      const bx = box()
+    if (name === 'paste') {
+      const origin = api.aim() || [8, 6, 8]
       const ops = []
-      for (let x = bx.x0; x <= bx.x1; x++) for (let y = bx.y0; y <= bx.y1; y++) for (let z = bx.z0; z <= bx.z1; z++) {
-        if (x !== bx.x0 && x !== bx.x1 && z !== bx.z0 && z !== bx.z1) continue
-        ops.push([x, y, z, id])
-      }
-      return stage('walls', ops, api.t('filled').replace('{n}', ops.length))
+      if (clip) for (const [x, y, z, id] of clip.cells) ops.push([origin[0] + x, origin[1] + y, origin[2] + z, id])
+      return stage('paste', ops, api.t('paste'))
     }
     return stage(name, [], name)
   }

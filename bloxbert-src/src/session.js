@@ -259,7 +259,7 @@ export function createSession(api) {
       const line = document.createElement('p')
       line.className = 'gnote'
       const time = new Date(row.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      const words = (phrase[row.kind] || row.kind).replace('{n}', row.n || 0).replace('{item}', itemName(row.item || '')).replace('{cogs}', Math.abs(row.cogs))
+      const words = (phrase[row.kind] || row.kind).replace('{n}', row.n || 0).replace('{item}', itemName(row.item || '')).replace('{cogs}', row.price || Math.abs(row.cogs))
       line.innerHTML = '<bdi>' + words + ' ' + (row.cogs ? (row.cogs > 0 ? '+' : '') + '⚙' + row.cogs : '') + ' · ' + time + '</bdi>'
       g.append(line)
     }

@@ -42,6 +42,7 @@ if (testUrl) {
     window.__smoke.place()
     const after = window.__smoke.counts()
     window.__smoke.fillSeed(6)
+    document.querySelector('#hotbar [data-slot="0"]').click()
     document.querySelector('#tool-strip').hidden = false
     document.querySelector('#tool-strip [data-tool="fill"]').click()
     document.querySelector('#tool-strip [data-tool="do"]').click()
