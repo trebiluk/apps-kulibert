@@ -1,4 +1,3 @@
-import Sizer from "phaser3-rex-plugins/templates/ui/sizer/Sizer.js";
 import { t, rtl, say } from "../i18n.js";
 
 export class UI extends window.Phaser.Scene {
@@ -6,87 +5,102 @@ export class UI extends window.Phaser.Scene {
   create() {
     this.card = null;
     this.blocker = null;
-    window.addEventListener("ap-menu", () => this.open("menu"));
+    this.mode = "";
+    window.addEventListener("ap-menu", () => this.open(this.mode === "menu" ? "" : "menu"));
     window.addEventListener("ap-news", () => this.open("news"));
     window.addEventListener("ap-soon", (ev) => this.open("soon", ev.detail));
     window.addEventListener("ap-pause", () => this.open("pause"));
     window.addEventListener("ap-restart", () => this.open("restart"));
     window.addEventListener("ap-help", () => this.open("help"));
     window.addEventListener("ap-end", (ev) => this.open("end", ev.detail));
-    this.input.keyboard.on("keydown-ESC", () => {
-      if (this.mode === "pause") this.resume();
-      else this.close();
+    this.input.keyboard.on("keydown-ESC", () => { if (this.mode === "pause") this.resume(); else if (this.mode) this.close(); });
+    this.scale.on("resize", () => { if (this.mode) this.open(this.mode, this.detail); });
+    const menu = document.getElementById("game-menu");
+    if (menu) menu.addEventListener("click", () => window.dispatchEvent(new CustomEvent("ap-menu")));
+    document.addEventListener("click", (ev) => {
+      const hit = ev.target.closest && ev.target.closest(".kb-bar .kb-menu");
+      if (!hit) return;
+      window.dispatchEvent(new CustomEvent("ap-menu"));
+      const drawer = document.getElementById("kb-drawer");
+      if (drawer) drawer.hidden = true;
+      const back = document.getElementById("kb-drawer-backdrop");
+      if (back) back.hidden = true;
     });
-    this.scale.on("resize", () => { if (this.card) this.open(this.mode, this.detail); });
+    new MutationObserver(() => {
+      const drawer = document.getElementById("kb-drawer");
+      if (drawer && !drawer.hidden) drawer.hidden = true;
+    }).observe(document.body, { childList: true, subtree: true, attributes: true });
     const obs = new MutationObserver(() => {
-      const html = document.documentElement;
-      html.dir = rtl() ? "rtl" : "ltr";
-      html.lang = html.getAttribute("data-kp-lang") || "en";
+      document.documentElement.dir = rtl() ? "rtl" : "ltr";
       window.dispatchEvent(new CustomEvent("ap-lang"));
     });
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-kp-lang", "data-kp-contrast", "data-kp-motion"] });
-    const menu = document.getElementById("game-menu");
-    if (menu) menu.addEventListener("click", () => this.open(this.mode === "menu" ? "" : "menu"));
-    document.addEventListener("click", (ev) => {
-      const hit = ev.target.closest && ev.target.closest(".kb-menu");
-      if (hit) { ev.preventDefault(); this.open(this.mode === "menu" ? "" : "menu"); const d = document.getElementById("kb-drawer"); if (d) d.hidden = true; }
-    });
   }
   open(mode, detail) {
     if (!mode) { this.close(); return; }
     this.mode = mode;
     this.detail = detail;
-    if (this.card) this.card.destroy();
-    if (this.blocker) this.blocker.destroy();
+    this.clear();
     const w = this.scale.width;
     const h = this.scale.height;
-    this.blocker = this.add.rectangle(w / 2, h / 2, w, h, 0x06122b, 0.55).setInteractive();
+    this.blocker = this.add.rectangle(w / 2, h / 2, w, h, 0x06122b, 0.62).setInteractive();
     const rows = this.rows(mode, detail);
-    const bg = this.add.rectangle(0, 0, 380, 40 + rows.length * 60, 0x0b1f3a).setStrokeStyle(3, 0x14b8a6);
-    this.card = new Sizer(this, w / 2, h / 2, Math.min(380, w - 24), 40 + rows.length * 60, { orientation: 1, space: { item: 8, top: 12, bottom: 12 } });
-    this.card.addBackground(bg);
-    rows.forEach((row) => this.card.add(row));
-    this.card.layout();
+    const cardW = Math.min(360, w - 24);
+    const cardH = 36 + rows.length * 62;
+    this.card = this.add.container(w / 2, h / 2);
+    const bg = this.add.rectangle(0, 0, cardW, cardH, 0x0b1f3a).setStrokeStyle(4, 0xfde68a);
+    this.card.add(bg);
+    rows.forEach((row, i) => {
+      row.setPosition(0, -cardH / 2 + 40 + i * 62);
+      this.card.add(row);
+    });
+    this.card.setDepth(20);
+    this.blocker.setDepth(19);
     const menu = document.getElementById("game-menu");
     if (menu) menu.setAttribute("aria-expanded", mode === "menu" ? "true" : "false");
     if (mode === "end") say(detail && detail.cleared ? t("highFive") : t("nextTime"));
+    document.getElementById("live").textContent = mode === "soon" ? (detail || "soon") : mode;
   }
   rows(mode, detail) {
     if (mode === "menu") return [this.btn(t("home"), () => this.home()), this.btn(t("whatsNew"), () => this.open("news")), this.btn(t("help"), () => this.open("help")), this.btn(t("fullScreen"), () => document.getElementById("fs-btn").click()), this.btn(t("close"), () => this.close())];
-    if (mode === "news") return [this.text(t("whatsNew")), this.text(t("news2")), this.text(t("news")), this.btn(t("close"), () => this.close(), true)];
-    if (mode === "soon") return [this.text(detail || t("comingSoon")), this.text(t("comingBody")), this.btn(t("close"), () => this.close(), true)];
-    if (mode === "help") return [this.text(t("what")), this.text(t("tapSky")), this.text(t("tapGround")), this.text(t("tapSnake")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "news") return [this.line(t("news3")), this.line(t("news2")), this.line(t("news")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "soon") return [this.line(detail || t("comingSoon")), this.line(t("comingBody")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "help") return [this.line(t("tapSky")), this.line(t("tapGround")), this.line(t("tapSnake")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "pause") return [this.btn(t("resume"), () => this.resume(), true), this.btn(t("restart"), () => this.open("restart")), this.btn(t("help"), () => this.open("help")), this.btn(t("home"), () => this.home())];
-    if (mode === "restart") return [this.text(t("restartAsk")), this.btn(t("restart"), () => this.doRestart(), true), this.btn(t("keep"), () => this.resume())];
+    if (mode === "restart") return [this.line(t("restartAsk")), this.btn(t("restart"), () => this.doRestart(), true), this.btn(t("keep"), () => this.resume())];
     const bank = detail || { score: 0, cleared: false, pay: 0, why: "" };
-    return [this.text(String(bank.score)), this.text(bank.cleared ? t("highFive") : t("nextTime")), this.text(bank.why ? t(bank.why) : ""), this.text("+" + (bank.pay || 0) + " " + t("seeds")), this.btn(t("tryAgain"), () => this.again(), true), this.btn(t("home"), () => this.home())];
+    return [this.line(String(bank.score)), this.line(bank.cleared ? t("highFive") : t("nextTime")), this.line(bank.why ? t(bank.why) : t("nextTime")), this.line("+" + (bank.pay || 0) + " " + t("seeds")), this.btn(t("tryAgain"), () => this.again(), true), this.btn(t("home"), () => this.home())];
   }
-  text(str) { return this.add.text(0, 0, str, { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc", wordWrap: { width: 320 } }); }
+  line(str) { return this.add.text(0, 0, str, { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc", wordWrap: { width: 300 }, align: "center" }).setOrigin(0.5); }
   btn(word, fn, big) {
+    const Phaser = window.Phaser;
     const box = this.add.container(0, 0);
     const w = 300;
-    const h = big ? 64 : 48;
-    const bg = this.add.rectangle(0, 0, w, h, big ? 0x14b8a6 : 0x12314d).setStrokeStyle(2, 0x67e8f9);
-    const label = this.add.text(0, 0, word, { fontFamily: "Atkinson Hyperlegible", fontSize: big ? "22px" : "18px", color: big ? "#042f2e" : "#f8fafc" }).setOrigin(0.5);
+    const h = big ? 56 : 48;
+    const bg = this.add.rectangle(0, 0, w, h, big ? 0xfde68a : 0x12314d).setStrokeStyle(3, 0x67e8f9);
+    const label = this.add.text(0, 0, word, { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: big ? "#042f2e" : "#f8fafc" }).setOrigin(0.5);
     box.add([bg, label]);
     box.setSize(w, h);
-    bg.setInteractive({ useHandCursor: true });
+    bg.setInteractive(new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h), Phaser.Geom.Rectangle.Contains);
     bg.on("pointerdown", fn);
     return box;
   }
-  close() {
+  clear() {
     if (this.card) this.card.destroy();
     if (this.blocker) this.blocker.destroy();
     this.card = null;
     this.blocker = null;
+  }
+  close() {
+    this.clear();
     this.mode = "";
     const menu = document.getElementById("game-menu");
-    if (menu) { menu.setAttribute("aria-expanded", "false"); menu.focus(); }
+    if (menu) menu.setAttribute("aria-expanded", "false");
   }
   home() {
     this.close();
     if (this.scene.isActive("Lookout")) this.scene.stop("Lookout");
-    this.scene.start("Burrow");
+    if (!this.scene.isActive("Burrow")) this.scene.start("Burrow");
     window.dispatchEvent(new CustomEvent("ap-home"));
     document.body.classList.remove("in-round");
   }

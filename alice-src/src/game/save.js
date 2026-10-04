@@ -10,12 +10,15 @@ export function loadSave() {
   return current;
 }
 let timer = 0;
+let dirty = false;
 export function saveSave() {
+  dirty = true;
   clearTimeout(timer);
   timer = setTimeout(write, 300);
 }
 export function saveNow() { write(); }
 function write() {
+  if (!dirty) return;
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch (e) {}
 }
 export function seedsFor(score, stars) {

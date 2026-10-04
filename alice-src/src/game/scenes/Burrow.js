@@ -1,4 +1,3 @@
-import GridSizer from "phaser3-rex-plugins/templates/ui/gridsizer/GridSizer.js";
 import levels from "../../levels/lookout.json";
 import { t, rtl } from "../i18n.js";
 import { loadSave } from "../save.js";
@@ -17,32 +16,31 @@ export class Burrow extends window.Phaser.Scene {
   create() {
     this.save = loadSave();
     this.mode = "home";
-    this.cast = this.add.container(0, 0);
     this.alice = this.add.sprite(0, 0, "alice", "alice-idle-0").play("alice-idle");
     this.wonder = this.add.sprite(0, 0, "alice", "wonder-idle-0").play("wonder-idle");
     this.hole = this.add.image(0, 0, "alice", "hole");
-    this.cast.add([this.hole, this.alice, this.wonder]);
-    this.seedText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f5c446" });
-    this.tiles = TILES.map(([id, key, frame, live]) => this.makeTile(id, key, frame, live));
+    this.seedText = this.add.text(16, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "20px", color: "#f5c446" });
+    this.tiles = TILES.map((row) => this.makeTile(...row));
     this.levels = levels.levels.map((lv, i) => this.makeLevel(lv, i));
-    this.grid = null;
-    this.layout(this.scale.width, this.scale.height, rtl());
-    this.scale.on("resize", (s) => this.layout(s.width, s.height, rtl()));
-    window.addEventListener("ap-lang", () => this.layout(this.scale.width, this.scale.height, rtl()));
-    window.addEventListener("ap-home", () => { this.mode = "home"; this.save = loadSave(); this.layout(this.scale.width, this.scale.height, rtl()); });
+    this.onResize = (s) => { if (this.scene.isActive()) this.layout(s.width, s.height); };
+    this.layout(this.scale.width, this.scale.height);
+    this.scale.on("resize", this.onResize);
+    this.events.on("shutdown", () => this.scale.off("resize", this.onResize));
+    window.addEventListener("ap-lang", () => this.layout(this.scale.width, this.scale.height));
+    window.addEventListener("ap-home", () => { this.mode = "home"; this.save = loadSave(); this.layout(this.scale.width, this.scale.height); });
   }
   makeTile(id, key, frame, live) {
     const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 120, 120, 0x0b1f3a).setStrokeStyle(3, live ? 0x14b8a6 : 0x1f4b66);
-    const icon = this.add.image(0, -18, "alice", frame).setDisplaySize(72, 72);
-    const lock = this.add.image(28, -28, "alice", "lock").setDisplaySize(28, 28).setVisible(!live);
-    const label = this.add.text(0, 36, t(key), { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f8fafc" }).setOrigin(0.5);
-    const soon = this.add.text(0, 52, live ? "" : t("soon"), { fontFamily: "Atkinson Hyperlegible", fontSize: "13px", color: "#fde68a" }).setOrigin(0.5);
+    const bg = this.add.rectangle(0, 0, 148, 132, 0x0b1f3a).setStrokeStyle(4, live ? 0xfde68a : 0x67e8f9);
+    const icon = this.add.image(0, -22, "alice", frame).setDisplaySize(72, 72);
+    const lock = this.add.image(48, -40, "alice", "lock").setDisplaySize(28, 28).setVisible(!live);
+    const label = this.add.text(0, 32, t(key), { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc" }).setOrigin(0.5);
+    const soon = this.add.text(0, 52, live ? "" : t("soon"), { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#fde68a" }).setOrigin(0.5);
     box.add([bg, icon, lock, label, soon]);
-    box.setSize(120, 120);
-    bg.setInteractive({ useHandCursor: true });
+    box.setSize(148, 132);
+    bg.setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
     bg.on("pointerdown", () => {
-      if (id === "lookout") { this.mode = "picker"; this.layout(this.scale.width, this.scale.height, rtl()); }
+      if (id === "lookout") { this.mode = "picker"; this.layout(this.scale.width, this.scale.height); }
       else window.dispatchEvent(new CustomEvent("ap-soon"));
     });
     box.setData("label", label);
@@ -52,62 +50,60 @@ export class Burrow extends window.Phaser.Scene {
   }
   makeLevel(lv, i) {
     const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 120, 120, 0x0b1f3a).setStrokeStyle(3, 0xfde68a);
-    const icon = this.add.image(0, -16, "alice", "hawk-glide-0").setDisplaySize(64, 64);
-    const lock = this.add.image(28, -28, "alice", "lock").setDisplaySize(28, 28);
-    const num = this.add.text(0, 28, "L0" + (i + 1), { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f8fafc" }).setOrigin(0.5);
-    const label = this.add.text(0, 46, t("l0" + (i + 1)), { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#f8fafc" }).setOrigin(0.5);
+    const bg = this.add.rectangle(0, 0, 148, 132, 0x0b1f3a).setStrokeStyle(4, 0xfde68a);
+    const icon = this.add.image(0, -24, "alice", "hawk-glide-0").setDisplaySize(72, 72);
+    const lock = this.add.image(48, -40, "alice", "lock").setDisplaySize(28, 28);
+    const num = this.add.text(0, 24, "L0" + (i + 1), { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc" }).setOrigin(0.5);
+    const label = this.add.text(0, 46, t("l0" + (i + 1)), { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setOrigin(0.5);
     box.add([bg, icon, lock, num, label]);
-    box.setSize(120, 120);
-    bg.setInteractive({ useHandCursor: true });
+    box.setSize(148, 132);
+    bg.setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
     bg.on("pointerdown", () => this.pick(i));
     box.setData("label", label);
     box.setData("lock", lock);
     box.setData("i", i);
     return box;
   }
+  open(i) {
+    return i === 0 || !!(this.save.best[levels.levels[i - 1].id] && this.save.best[levels.levels[i - 1].id].cleared);
+  }
   pick(i) {
-    const save = loadSave();
-    const open = i === 0 || (save.best[levels.levels[i - 1].id] && save.best[levels.levels[i - 1].id].cleared);
-    if (!open) { window.dispatchEvent(new CustomEvent("ap-soon", { detail: t("locked").replace("{n}", String(i)) })); return; }
+    this.save = loadSave();
+    if (!this.open(i)) {
+      window.dispatchEvent(new CustomEvent("ap-soon", { detail: t("locked").replace("{n}", String(i)) }));
+      return;
+    }
     this.scene.start("Lookout", { level: levels.levels[i] });
   }
-  layout(w, h, isRtl) {
-    const wide = w > h || w >= 900;
+  layout(w, h) {
     const items = this.mode === "picker" ? this.levels : this.tiles;
     const hide = this.mode === "picker" ? this.tiles : this.levels;
-    hide.forEach((n) => n.setVisible(false));
-    items.forEach((n) => n.setVisible(true));
-    if (this.grid) {
-      items.concat(hide).forEach((n) => { try { this.grid.remove(n, false); } catch (e) {} });
-      this.grid.destroy();
-    }
-    const cols = wide ? 3 : 2;
+    hide.forEach((n) => { n.setVisible(false); if (n.list[0]) n.list[0].disableInteractive(); });
+    const cols = w >= 700 ? 3 : 2;
+    const gapX = 156;
+    const gapY = 140;
     const rows = Math.ceil(items.length / cols);
-    this.grid = new GridSizer(this, {
-      x: w / 2, y: h * 0.62, width: Math.min(w - 16, wide ? 700 : 360), height: Math.min(h * 0.55, rows * 130),
-      column: cols, row: rows, columnProportions: 1, rowProportions: 1, space: { column: 8, row: 8 },
-    });
-    items.forEach((tile) => {
-      tile.setSize(120, 120);
+    const gridW = cols * gapX;
+    const top = Math.max(150, h * 0.28);
+    items.forEach((tile, n) => {
+      tile.setVisible(true);
+      if (tile.list[0]) tile.list[0].setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
+      tile.setPosition(w / 2 - gridW / 2 + gapX / 2 + (n % cols) * gapX, top + Math.floor(n / cols) * gapY);
       if (tile.getData("key")) {
         tile.getData("label").setText(t(tile.getData("key")));
         tile.getData("soon").setText(t("soon"));
       } else {
         const i = tile.getData("i");
         tile.getData("label").setText(t("l0" + (i + 1)));
-        const open = i === 0 || (this.save.best[levels.levels[i - 1].id] && this.save.best[levels.levels[i - 1].id].cleared);
-        tile.getData("lock").setVisible(!open);
+        tile.getData("lock").setVisible(!this.open(i));
       }
-      this.grid.add(tile);
     });
-    this.grid.layout();
-    this.hole.setPosition(w / 2, Math.min(150, h * 0.2));
-    this.alice.setPosition(isRtl ? w * 0.62 : w * 0.32, Math.min(120, h * 0.16)).setVisible(this.mode === "home");
-    this.wonder.setPosition(isRtl ? w * 0.32 : w * 0.68, Math.min(120, h * 0.16)).setVisible(this.mode === "home");
-    this.hole.setVisible(this.mode === "home");
-    this.seedText.setText(t("seeds") + " " + (this.save.seeds || 0));
-    this.seedText.setPosition(12, h - 36);
+    const showCast = this.mode === "home";
+    this.hole.setPosition(w / 2, 108).setVisible(showCast);
+    this.alice.setPosition(rtl() ? w * 0.64 : w * 0.30, 92).setVisible(showCast);
+    this.wonder.setPosition(rtl() ? w * 0.30 : w * 0.68, 96).setVisible(showCast);
+    this.seedText.setText(t("seeds") + " " + (this.save.seeds || 0)).setPosition(16, h - 40);
     document.body.classList.remove("in-round");
+    document.getElementById("live").textContent = this.mode === "picker" ? t("lookout") : t("home");
   }
 }
