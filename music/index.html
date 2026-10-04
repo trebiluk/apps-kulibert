@@ -4,13 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>DJ Berty · MU 2.35.7</title>
+  <title>DJ Berty · MU 2.35.8</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=2.35.7"/>
+  <link rel="stylesheet" href="./styles.css?v=2.35.8"/>
 </head>
 <body class="mu237">
-  <em id="chip" hidden>MU 2.35.7</em>
+  <em id="chip" hidden>MU 2.35.8</em>
   <div class="scrim" id="scrim"></div>
   <button type="button" id="perform-exit" class="perform-exit" hidden data-mu="exitShow">✕ Exit</button>
   <div id="desktop-site" class="desktop-site" hidden>
@@ -29,6 +29,7 @@
       <div class="choice">
         <button type="button" id="start-blank" class="do-card" data-mu="blankStaff">Blank staff</button>
         <button type="button" id="start-key" class="do-card" data-mu="tempoKey">Tempo and key</button>
+        <button type="button" id="new-song" class="do-card" data-mu="newSong">New song</button>
       </div>
       <div id="key-pick" hidden>
         <label class="tempo"><span data-mu="speed">Speed</span> <b id="key-tempo-read">96</b>
@@ -227,7 +228,7 @@
       <p class="hint" data-mu="saveHint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
     </section>
     <section class="group">
-      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.7</span></p>
+      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.8</span></p>
       <a class="btn" href="./teacher.html" data-mu="teacher">Teacher</a>
       <a class="btn" href="./privacy.html" data-mu="privacy">Privacy</a>
     </section>
@@ -447,12 +448,17 @@
     <button type="button" id="tip-close" class="tip-x" hidden aria-label="Close">×</button>
   </div>
 
+    <div id="undo-toast" class="undo-toast" hidden role="status">
+    <span data-mu="clearedSong">Song cleared.</span>
+    <button type="button" id="undo-song" data-mu="bringBack">Bring it back</button>
+  </div>
   <div class="transport" id="transport">
     <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
     <div class="songbar-copy">
       <strong id="songbar-name"><bdi>New song</bdi></strong>
       <span id="play-pos">Bar 1 · Beat 1</span>
     </div>
+    <button type="button" id="clear-song" class="btn" data-mu="clearTile">Clear</button>
     <button type="button" id="play-btn" class="play" aria-label="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word">Play</span></button>
     <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read">96</b>
       <input id="tempo" type="range" min="70" max="160" value="96" aria-label="Tempo"/>
@@ -469,7 +475,7 @@
     </div>
   </div>
 
-  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.7" data-menu="#menu-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.8" data-menu="#menu-btn" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -478,7 +484,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=2.35.7"></script>
-  <script src="./app.js?v=2.35.7"></script>
+  <script src="./strings.js?v=2.35.8"></script>
+  <script src="./app.js?v=2.35.8"></script>
 </body>
 </html>

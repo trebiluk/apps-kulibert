@@ -347,10 +347,29 @@
   function atTime(when) {
     return typeof when === "number" ? when : ctx.currentTime;
   }
+  const liveVoices = [];
+  let playGen = 0;
+  let lastPlayStart = 0;
+  function trackVoice(node) {
+    if (node) liveVoices.push(node);
+    return node;
+  }
+  function silenceOwner() {
+    playGen += 1;
+    window.clearTimeout(state.timer);
+    window.clearTimeout(state.eighthTimer);
+    window.cancelAnimationFrame(state.raf);
+    state.plan = [];
+    const doomed = liveVoices.splice(0, liveVoices.length);
+    doomed.forEach((node) => {
+      try { if (typeof node.stop === "function") node.stop(0); } catch (err) { /* already ended */ }
+      try { node.disconnect(); } catch (err) { /* already gone */ }
+    });
+  }
   function tone(freq, dur, type, level, when) {
     if (!ctx || state.muted || !freq) return;
     const t = atTime(when);
-    const osc = ctx.createOscillator();
+    const osc = trackVoice(ctx.createOscillator());
     const gain = ctx.createGain();
     state.made += 2;
     osc.type = type || state.wave || "triangle";
@@ -396,7 +415,7 @@
     const length = Math.max(0.22, dur || 0.4);
     out.gain.exponentialRampToValueAtTime(0.0001, now + length + 0.18);
     voices.forEach(([f, type, mix]) => {
-      const osc = ctx.createOscillator();
+      const osc = trackVoice(ctx.createOscillator());
       const gain = ctx.createGain();
       state.made += 2;
       osc.type = type;
@@ -414,7 +433,7 @@
     const buffer = ctx.createBuffer(1, Math.max(1, ctx.sampleRate * dur), ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    const src = ctx.createBufferSource();
+    const src = trackVoice(ctx.createBufferSource());
     const gain = ctx.createGain();
     state.made += 2;
     src.buffer = buffer;
@@ -944,7 +963,7 @@
     if (state.muted || !ctx) return;
     const t = atTime(when);
     if (id === "kick") {
-      const osc = ctx.createOscillator();
+      const osc = trackVoice(ctx.createOscillator());
       const gain = ctx.createGain();
       state.made += 2;
       osc.type = "sine";
@@ -1382,7 +1401,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.7",
+        version: "MU 2.35.8",
         event: "score",
         level: id,
         score: score,
@@ -1410,8 +1429,12 @@
     return who && who.prefs ? who.prefs : null;
   }
   function play(opts) {
-    window.clearTimeout(state.timer);
-    window.cancelAnimationFrame(state.raf);
+    const nowMs = Date.now();
+    const force = !!(opts && opts.force);
+    if (!force && nowMs - lastPlayStart < 320) return;
+    lastPlayStart = nowMs;
+    silenceOwner();
+    const gen = playGen;
     arm();
     if (ctx && ctx.state === "suspended") ctx.resume();
     resyncBus();
@@ -1438,7 +1461,7 @@
     const songN = songLen();
     state.plan = [];
     const schedule = () => {
-      if (!state.playing || !ctx) return;
+      if (gen !== playGen || !state.playing || !ctx) return;
       const horizon = ctx.currentTime + 0.12;
       while (next < horizon) {
         const melody = grid % spe === 0;
@@ -1464,7 +1487,7 @@
     };
     schedule();
     const follow = () => {
-      if (!state.playing || !ctx) return;
+      if (gen !== playGen || !state.playing || !ctx) return;
       const now = ctx.currentTime;
       let hit = null;
       state.plan.forEach((item) => { if (item.when <= now) hit = item; });
@@ -1502,6 +1525,7 @@
     state.raf = window.requestAnimationFrame(follow);
   }
   function stop() {
+    silenceOwner();
     state.playing = false;
     document.body.classList.remove("playing");
     sayHow(state.mode);
@@ -2916,7 +2940,7 @@
     state.song.bpm = Number(e.target.value);
     $("tempo-read").textContent = String(state.song.bpm);
     keep();
-    if (state.playing) { stop(); play(); }
+    if (state.playing) { stop(); play({ force: true }); }
     $("lesson").textContent = "Tempo is the speed. The count is still 1, 2, 3, 4.";
   });
   $("blend").addEventListener("input", (e) => {
@@ -3003,6 +3027,9 @@
     paintShelf();
   }
   function loadPack(data) {
+    const wasPlaying = !!state.playing;
+    silenceOwner();
+    state.playing = false;
     const raw = data && data.song ? data.song : data;
     const song = Song.parse(JSON.stringify(raw || {}));
     if (!song) {
@@ -3030,6 +3057,7 @@
     $("lesson").textContent = song.viz
       ? fromLine(song) + " is loaded. The picture came with it. Saved."
       : "This song has no picture yet. Open This song's picture and pick one.";
+    if (wasPlaying) play({ force: true });
   }
   function remixSong() {
     snapshotViz();
@@ -3347,6 +3375,9 @@
   }
   const BIRTHDAY = ["F", "F", "G", "F", "B", "c", "F", "F", "G", "F", "c", "B", "F", "F", "F", "D", "B", "A", "G", "c", "c", "B", "G", "A", "F", null, null];
   function placeSong(opts) {
+    const wasPlaying = !!state.playing;
+    silenceOwner();
+    state.playing = false;
     const meter = opts.meter || "4/4";
     const per = { "2/4": 2, "3/4": 3, "4/4": 4, "6/8": 6 }[meter] || 4;
     const notes = opts.notes || [];
@@ -3387,6 +3418,7 @@
     paintCount();
     paintSongBar();
     keep();
+    if (wasPlaying && !opts.hold) play({ force: true });
   }
   function layTrap() {
     const trap = {
@@ -4186,6 +4218,9 @@
     const classics = $("classics");
     if (classics && !classics.childElementCount) {
       const loadTune = (name, place, notes, bpm) => {
+        const wasPlaying = !!state.playing;
+        silenceOwner();
+        state.playing = false;
         const measures = [];
         const bars = Math.ceil(notes.length / 4);
         for (let i = 0; i < bars; i++) {
@@ -4216,6 +4251,7 @@
         paintCount();
         keep();
         $("lesson").textContent = name + " from " + place + ". White-key version. Change any note. Saved.";
+        if (wasPlaying) play({ force: true });
         const teach = $("teach");
         if (teach && !state.expert) teach.textContent = name + ". Press Play. The line names each note.";
       };
@@ -4243,6 +4279,9 @@
         Claps: { bpm: 100, bass: false, blend: 40, swing: 0, wave: "triangle", len: 0.28, drums: { kick: [1, 0, 0, 0, 1, 0, 0, 0], clap: [1, 0, 1, 0, 1, 0, 1, 0] } },
       };
       const applyStyle = (name) => {
+        const wasPlaying = !!state.playing;
+        silenceOwner();
+        state.playing = false;
         const style = styles[name];
         if (!style) return;
         ROWS.forEach(([id]) => {
@@ -4280,7 +4319,7 @@
         });
         renderDrums();
         keep();
-        if (state.playing) { stop(); play(); }
+        if (wasPlaying) play({ force: true });
         $("lesson").textContent = name + " under the same notes. Saved.";
       };
       const trapIt = () => applyStyle("Trap");
@@ -4344,17 +4383,8 @@
         });
         classics.appendChild(grid);
       });
-      const joyTrap = document.createElement("button");
-      joyTrap.type = "button";
-      joyTrap.className = "btn";
-      joyTrap.textContent = mu("odeTrap") || "Ode, but trap";
-      joyTrap.addEventListener("click", () => {
-        if (!odeNotes) return;
-        loadTune("Ode to Joy", "Germany", odeNotes, 74);
-        trapIt();
-      });
-      const slot = $("ode-slot") || classics;
-      slot.appendChild(joyTrap);
+      const slot = $("ode-slot");
+      if (slot) slot.replaceChildren();
       const trap = $("styles");
       if (trap && !trap.childElementCount) {
         Object.keys(styles).forEach((name) => {
@@ -4887,8 +4917,9 @@
     if ($("conduct-btn") && !state.conducting) $("conduct-btn").textContent = mu("conduct") || $("conduct-btn").textContent;
     if (typeof askConduct === "function") askConduct();
     if (document.body.classList.contains("tab-band") && typeof paintBand === "function") paintBand();
-    const ode = $("ode-slot") && $("ode-slot").querySelector("button");
-    if (ode) ode.textContent = mu("odeTrap") || ode.textContent;
+    const odeSlot = $("ode-slot");
+    if (odeSlot) odeSlot.replaceChildren();
+    stripDevNotes();
     if ($("looks")) paintLooks();
     if ($("fx")) paintFx();
     if ($("waves")) paintWaves();
@@ -4900,6 +4931,77 @@
     const clearBtn = $("clear-btn");
     if (clearBtn && Date.now() > clearArm) clearBtn.textContent = mu("clearDrums") || clearBtn.textContent;
   };
+
+  function stripDevNotes() {
+    const bad = /no names|just codes|privacy reminder|dev only|ode, but trap|ода, але треп|ода, но трэп|oda, pero trap|أنشودة لكن تراب|قصیده ولی ترپ|ode, ariko trap|ኦዴ ግን ትራፕ/i;
+    document.querySelectorAll("p, small, .hint, .fine").forEach((el) => {
+      if (el.id === "who-code" || el.closest("#menu-chrome") || el.closest("#undo-toast")) return;
+      const raw = (el.textContent || "").replace(/\s+/g, " ").trim();
+      if (raw && bad.test(raw) && raw.length < 90) el.remove();
+    });
+  }
+  let takeUndo = null;
+  function emptyDrums() {
+    const drums = {};
+    ROWS.forEach(([id]) => { drums[id] = Array(GRID).fill(false); });
+    return drums;
+  }
+  function showUndo(on) {
+    const toast = $("undo-toast");
+    if (!toast) return;
+    toast.hidden = !on;
+  }
+  function clearTakes() {
+    takeUndo = {
+      song: JSON.parse(Song.serialize(state.song)),
+      drums: JSON.parse(JSON.stringify(state.drums)),
+    };
+    placeSong({
+      notes: [null, null, null, null],
+      bpm: state.song.bpm || 96,
+      meter: state.song.meter || "4/4",
+      key: state.song.key || "C",
+      from: [],
+      alias: mu("newSong") || "New song",
+      drums: emptyDrums(),
+      hold: true,
+    });
+    showUndo(true);
+    const lesson = $("lesson");
+    if (lesson) lesson.textContent = mu("clearedSong") || "Song cleared.";
+  }
+  function undoTakes() {
+    if (!takeUndo) return;
+    const snap = takeUndo;
+    takeUndo = null;
+    showUndo(false);
+    silenceOwner();
+    state.playing = false;
+    state.song = Song.parse(JSON.stringify(snap.song));
+    ROWS.forEach(([id]) => {
+      if (Array.isArray(snap.drums[id])) state.drums[id] = to16(snap.drums[id]);
+    });
+    state.cursor = 0;
+    state.step = 0;
+    if (state.song.viz) applyViz(state.song.viz);
+    if ($("tempo")) {
+      $("tempo").value = String(state.song.bpm || 96);
+      $("tempo-read").textContent = String(state.song.bpm || 96);
+    }
+    renderStaff();
+    renderDrums();
+    paintMeters();
+    paintCount();
+    paintSongBar();
+    keep();
+  }
+
+  const newSongBtn = $("new-song");
+  if (newSongBtn) newSongBtn.addEventListener("click", clearTakes);
+  const clearSongBtn = $("clear-song");
+  if (clearSongBtn) clearSongBtn.addEventListener("click", clearTakes);
+  const undoSongBtn = $("undo-song");
+  if (undoSongBtn) undoSongBtn.addEventListener("click", undoTakes);
   if (window.MuI18n && window.MuI18n.paint) window.MuI18n.paint();
 
   const canvas = $("viz");

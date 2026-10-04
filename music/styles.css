@@ -2602,3 +2602,136 @@ body.mu237.tab-tap #drums {
   body.mu237 .transport { flex-wrap: nowrap !important; height: 64px !important; max-height: 64px !important; }
 }
 body.mu237 #dock-left .tab { height: 44px !important; max-height: 44px !important; min-height: 44px !important; flex: 0 0 44px !important; }
+
+/* MU 2.35.8 — tabs stay on screen. The old drawer slide does not own the rail. */
+body.mu237 .side,
+body.mu237.menu-open .side {
+  transform: none !important;
+}
+body.mu237 #menu-btn {
+  position: fixed !important;
+  top: 4px;
+  left: 4px;
+  right: auto;
+  z-index: 30;
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  min-height: 44px;
+}
+html[dir="rtl"] body.mu237 #menu-btn { left: 4px; right: auto; }
+html[dir="rtl"] body.mu237 .side {
+  left: auto !important;
+  right: 0 !important;
+  border-right: 0 !important;
+  border-left: 1px solid var(--border);
+}
+html[dir="rtl"] body.mu237 .desk,
+html[dir="rtl"] body.mu237 .transport,
+html[dir="rtl"] body.mu237.playing:not(.show) .transport {
+  left: 0 !important;
+  right: var(--rail) !important;
+}
+html[dir="rtl"] body.mu237 .keys,
+html[dir="rtl"] body.mu237 #sound-notes,
+html[dir="rtl"] body.mu237 #drums,
+html[dir="rtl"] body.mu237 .staff-wrap {
+  direction: ltr !important;
+}
+@media (max-width: 699px) and (orientation: portrait) {
+  body.mu237 { --rail: 0px; --tabs: 52px; }
+  body.mu237 .side,
+  body.mu237.menu-open .side {
+    transform: none !important;
+    top: var(--bar) !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: auto !important;
+    width: 100% !important;
+    height: 52px !important;
+    max-height: 52px !important;
+    overflow: hidden !important;
+    padding: 0 !important;
+    border-right: 0 !important;
+  }
+  body.mu237 #dock-left {
+    display: grid !important;
+    grid-template-columns: repeat(8, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    height: 52px !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  body.mu237 #dock-left .tab {
+    min-width: 44px;
+    min-height: 44px;
+    height: 52px !important;
+    max-height: 52px !important;
+    flex: 1 1 auto !important;
+    width: 100% !important;
+    justify-content: center;
+    padding: 0 !important;
+  }
+  html[dir="rtl"] body.mu237 .side { left: 0 !important; right: 0 !important; }
+  html[dir="rtl"] body.mu237 #dock-left { direction: rtl; }
+  html[dir="rtl"] body.mu237 .desk,
+  html[dir="rtl"] body.mu237 .transport { left: 0 !important; right: 0 !important; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 { --rail: 96px; --tabs: 0px; }
+  body.mu237 .side,
+  body.mu237.menu-open .side {
+    transform: none !important;
+    top: var(--bar) !important;
+    left: 0 !important;
+    right: auto !important;
+    bottom: 0 !important;
+    width: 96px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: auto !important;
+    padding: 0 !important;
+  }
+  body.mu237 #dock-left {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-auto-rows: minmax(44px, 1fr);
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    gap: 0 !important;
+  }
+  body.mu237 #dock-left .tab {
+    min-width: 44px;
+    min-height: 44px;
+    height: auto !important;
+    max-height: none !important;
+    flex: 1 1 auto !important;
+  }
+  html[dir="rtl"] body.mu237 .side {
+    left: auto !important;
+    right: 0 !important;
+  }
+}
+body.mu237 #ode-slot:empty { display: none !important; }
+body.mu237 #clear-song,
+body.mu237 #undo-song { min-width: 44px; min-height: 44px; }
+body.mu237 .undo-toast {
+  position: fixed;
+  z-index: 40;
+  left: 8px;
+  right: 8px;
+  bottom: calc(var(--player) + 8px);
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem;
+  background: #10203f;
+  color: var(--text);
+  border: 1px solid #22d3ee;
+  border-radius: 10px;
+  font-size: 14px;
+}
+body.mu237 .undo-toast[hidden] { display: none !important; }
+html, body.mu237 { overflow-x: hidden !important; }

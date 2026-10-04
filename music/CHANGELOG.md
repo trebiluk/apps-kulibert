@@ -1,5 +1,13 @@
 # Music changelog
 
+**Chip: MU 2.35.8** · 2026-10-03 · channel **live**
+
+The trap button is gone. A new song replaces the old one. Phone tabs stay on the screen.
+
+Where things went: Songs (Ode to Joy stays a normal demo; New song / Clear empties the take and can Undo), Tap, Remix (Trap is still a style, not its own button), Mix, Piano, Score, Band, Viz.
+
+## Earlier
+
 **Chip: MU 2.35.7** · 2026-10-03 · channel **live**
 
 Each music job has its own tab, and your song stays in the player at the bottom.
