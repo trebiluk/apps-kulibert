@@ -2934,3 +2934,13 @@ body.mu237.tab-score #pen .btn {
   padding: 0 0.7rem !important;
   overflow: visible !important;
 }
+body.mu237.tab-score.is-both #drums {
+  max-height: calc(100dvh - var(--bar) - var(--tabs) - var(--player) - 180px) !important;
+  overflow: auto !important;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-score.is-both #drums {
+    max-height: 88px !important;
+    overflow: auto !important;
+  }
+}
