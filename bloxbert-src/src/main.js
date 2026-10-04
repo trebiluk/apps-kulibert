@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.28'
+const VERSION = '2.5.29'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -28,7 +28,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -961,22 +961,44 @@ document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = fa
 function showCrack(p, x, y) {
   const ring = $('pick-ring')
   if (!ring) return
-  if (p < 0.02) { ring.hidden = true; return }
+  const stage = crackStage(p)
+  if (stage < 1) { ring.hidden = true; return }
   ring.hidden = false
-  ring.classList.remove('on')
+  if (stage !== showCrack.stage) {
+    showCrack.stage = stage
+    ring.classList.remove('tick')
+    void ring.offsetWidth
+    ring.classList.add('tick')
+  }
+  const shown = stage / 4
   ring.style.left = (x == null ? innerWidth / 2 : x) + 'px'
   ring.style.top = (y == null ? innerHeight / 2 : y) + 'px'
-  if (REDUCE) ring.style.background = p >= 0.25 ? '#14B8A6' : 'transparent'
-  else ring.style.background = 'conic-gradient(#14B8A6 ' + Math.max(0, Math.min(1, p)) + 'turn, transparent 0)'
+  if (REDUCE) ring.style.background = '#14B8A6'
+  else ring.style.background = 'conic-gradient(#14B8A6 ' + shown + 'turn, transparent 0)'
 }
-function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true }
+function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true; showCrack.stage = 0 }
+function puff() {
+  const el = $('poof')
+  if (!el || REDUCE) return
+  el.hidden = false
+  clearTimeout(puff.t)
+  puff.t = setTimeout(() => { el.hidden = true }, 180)
+}
 function beginDig(kind) {
   const tget = noa.targetedBlock
   if (!tget) { dig = null; hideCrack(); return }
   const [x, y, z] = tget.position
   const id = getVoxel(x, y, z)
   const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
-  dig = { kind, x, y, z, id, name, t0: performance.now(), need: mineMs(name, true, false), broke: false }
+  const now = performance.now()
+  if (dig && !dig.broke && dig.x === x && dig.y === y && dig.z === z && dig.p > 0) {
+    dig.kind = kind
+    dig.draining = false
+    dig.need = mineMs(name, survivalOn(), kind === 'touch')
+    dig.t0 = now - dig.p * dig.need
+    return
+  }
+  dig = { kind, x, y, z, id, name, t0: now, need: mineMs(name, survivalOn(), kind === 'touch'), broke: false, p: 0, stage: 0 }
 }
 function feelTick(dt) {
   if (session && session.tickDrops) session.tickDrops(dt)
@@ -1018,7 +1040,7 @@ function feelTick(dt) {
   }
   const cam = noa.rendering.camera
   const portrait = TOUCH_UI && innerHeight > innerWidth
-  cam.fov = (portrait ? 85 : 55) * Math.PI / 180
+  cam.fov = ((portrait ? 85 : 55) + (wideView ? 10 : 0)) * Math.PI / 180
   if (TOUCH_UI && !tableMode && !REDUCE && now - lastLookAt > 500) {
     const v = body.velocity
     const spd = Math.hypot(v[0], v[2])
@@ -1035,25 +1057,45 @@ function feelTick(dt) {
     if (mouseLeft && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!mouseLeft) dig = null
   } else if (dig && dig.kind === 'mouse') {
-    if (!mouseLeft) { dig = null; hideCrack(); return }
     const tget = noa.targetedBlock
-    if (!tget || tget.position[0] !== dig.x || tget.position[1] !== dig.y || tget.position[2] !== dig.z) { beginDig('mouse'); return }
-    const p = (now - dig.t0) / dig.need
-    if (now - dig.t0 >= 250) showCrack(p)
-    if (p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack() }
-  } else if (dig && dig.kind === 'touch' && look && look.moved < 8) {
-    const p = (now - dig.t0) / dig.need
-    if (now - dig.t0 >= 250) showCrack(p, look.x, look.y)
-    if (p >= 1 && !dig.broke) {
-      breakAt(dig.x, dig.y, dig.z)
-      dig.broke = true
-      dig.t0 = now
-      if (!survivalOn()) dig.need = 250
-      else { dig = null; hideCrack() }
-    } else if (dig.broke && !survivalOn() && now - dig.t0 >= dig.need) {
-      const hit = rayAt(look.x, look.y)
-      if (hit) breakAt(hit.position[0], hit.position[1], hit.position[2])
-      dig.t0 = now
+    const same = !!(tget && tget.position[0] === dig.x && tget.position[1] === dig.y && tget.position[2] === dig.z)
+    if (mouseLeft && !same) beginDig('mouse')
+    else if (!mouseLeft && !same) { dig = null; hideCrack() }
+    else {
+      const next = advanceDig(dig, now, mouseLeft, true)
+      if (!next) { dig = null; hideCrack() }
+      else {
+        dig = next
+        const elapsed = now - dig.t0
+        if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
+        else hideCrack()
+        if (!dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted) { dig.hinted = true; toast(t('toolFaster')) }
+        if (!dig.draining && dig.p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
+      }
+    }
+  } else if (dig && dig.kind === 'touch') {
+    const holding = !!(look && look.moved < 8 && !dig.draining)
+    if (holding) {
+      dig.p = Math.min(1, (now - dig.t0) / dig.need)
+      if (crackVisible(now - dig.t0, dig.p)) showCrack(dig.p, look.x, look.y)
+      else hideCrack()
+      if (survivalOn() && now - dig.t0 >= 2000 && !dig.hinted) { dig.hinted = true; toast(t('toolFaster')) }
+      if (dig.p >= 1 && !dig.broke) {
+        breakAt(dig.x, dig.y, dig.z)
+        dig.broke = true
+        puff()
+        dig.t0 = now
+        if (!survivalOn()) dig.need = 250
+        else { dig = null; hideCrack() }
+      } else if (dig.broke && !survivalOn() && now - dig.t0 >= dig.need) {
+        const hit = rayAt(look.x, look.y)
+        if (hit) breakAt(hit.position[0], hit.position[1], hit.position[2])
+        dig.t0 = now
+      }
+    } else if (dig.draining && !dig.broke) {
+      const next = advanceDig(dig, now, false, true)
+      if (!next) { dig = null; hideCrack() }
+      else { dig = next; if (crackVisible(250, dig.p)) showCrack(dig.p); else hideCrack() }
     }
   }
 }
@@ -1095,16 +1137,18 @@ const LOOK_V = 0.34 * Math.PI / 180
 const LOOK_KEY = 'bloxbert-look'
 let lookSens = 1
 let lookInvert = false
+let wideView = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
   lookInvert = !!savedLook.invert
+  wideView = !!savedLook.wide
 } catch (e) {}
 function applyLook() {
   noa.camera.sensitivityX = 10 * lookSens
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert, wide: wideView })) } catch (e) {}
 }
 function paintLook(g) {
   const label = document.createElement('p')
@@ -1128,7 +1172,13 @@ function paintLook(g) {
   const paintInv = () => { inv.textContent = t('invertY') + (lookInvert ? ' ✓' : '') }
   paintInv()
   inv.addEventListener('click', () => { lookInvert = !lookInvert; applyLook(); paintInv() })
-  g.append(label, range, inv)
+  const wide = document.createElement('button')
+  wide.type = 'button'
+  wide.className = 'gtile wide'
+  const paintWide = () => { wide.textContent = t('wideView') + (wideView ? ' ✓' : '') }
+  paintWide()
+  wide.addEventListener('click', () => { wideView = !wideView; applyLook(); paintWide() })
+  g.append(label, range, inv, wide)
 }
 applyLook()
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
@@ -1142,7 +1192,10 @@ canvas.addEventListener('pointerdown', (e) => {
     const hit = rayAt(e.clientX, e.clientY)
     if (hit) {
       const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-      dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now(), need: mineMs(name, survivalOn(), true), broke: false, face: hit }
+      const need = mineMs(name, survivalOn(), true)
+      const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
+      const kept = same ? dig.p : 0
+      dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
     } else dig = null
   }
 })
@@ -1162,7 +1215,10 @@ canvas.addEventListener('pointerup', (e) => {
   const held = e.timeStamp - look.t
   const face = dig && dig.face
   const broke = dig && dig.broke
-  if (dig && dig.kind === 'touch') { dig = null; hideCrack() }
+  if (dig && dig.kind === 'touch') {
+    if (broke || held < 500) { dig = null; hideCrack() }
+    else { dig.draining = true; dig.drainAt = performance.now() }
+  }
   look = null
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }

@@ -192,6 +192,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .gnote.ghead{color:#22D3EE;font-weight:700;font-size:13px;letter-spacing:.04em;margin:10px 0 0}
 #sheet input[type=range]{width:100%;min-height:44px;accent-color:#22D3EE}
 .gtile:disabled{color:#e2e8f0;border-color:#64748b;background:#121826}
+#pick-ring.tick{border-color:#F6C453}
 #poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 60%)}
 @media (min-width:900px){.ggrid{grid-template-columns:repeat(6,minmax(64px,1fr))}}
 @media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
@@ -204,7 +205,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.28</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.29</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -235,6 +236,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 </div>
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
 <div id="pick-ring" hidden aria-hidden="true"></div>
+<div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
 <div class="keys" data-i18n="keysHint">WASD walk. Shift run. Z crouch. Space jumps one block. Hold left click to break. Right click places.</div>
 <div id="scrim" hidden></div>
@@ -324,7 +326,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.28" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.28" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.29" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.29" defer></script>
 </body>
 </html>

@@ -27,10 +27,45 @@ export function overlapsPlayer(bx, by, bz, px, py, pz) {
   return bx < maxx && bx + 1 > minx && by < maxy && by + 1 > miny && bz < maxz && bz + 1 > minz
 }
 
-export function mineMs(name, survival, touch) {
+export const TOOL_X = { hand: 1, wood: 2, stone: 3, copper: 4, steel: 6 }
+export const DRAIN_MS = 500
+
+export function mineMs(name, survival, touch, tool = 'hand') {
   if (!survival) return touch ? 500 : 0
   const s = HAND_S[name]
-  return Math.max(500, (s == null ? 3 : s) * 1000)
+  const hand = (s == null ? 3 : s) * 1000
+  const mult = TOOL_X[tool] || 1
+  return Math.max(150, hand / mult)
+}
+
+export function crackStage(p) {
+  if (p >= 1) return 4
+  if (p >= 0.75) return 3
+  if (p >= 0.5) return 2
+  if (p >= 0.25) return 1
+  return 0
+}
+
+export function crackVisible(elapsed, p) {
+  return elapsed >= 250 && crackStage(p) >= 1
+}
+
+export function drainProgress(p, dt, drainMs = DRAIN_MS) {
+  if (p <= 0) return 0
+  return Math.max(0, p - dt / drainMs)
+}
+
+export function advanceDig(dig, now, holding, same) {
+  if (!dig || dig.broke) return dig && dig.broke ? null : dig
+  if (holding && !same) return null
+  if (!holding) {
+    const p = drainProgress(dig.p || 0, now - (dig.drainAt || now))
+    if (p <= 0) return null
+    return { ...dig, p, draining: true, drainAt: now }
+  }
+  const t0 = dig.draining ? now - (dig.p || 0) * dig.need : dig.t0
+  const p = Math.min(1, dig.need > 0 ? (now - t0) / dig.need : 1)
+  return { ...dig, t0, p, draining: false, drainAt: now }
 }
 
 export function reachFor(survival) {

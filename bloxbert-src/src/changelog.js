@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.29', date: '2026-10-04', lines: {
+    en: ['Cracks grow in four steps.', 'Let go and the cracks fade. Press again and they come back.', 'Leaves break fast. Stone takes a copper tool hint after two seconds.', 'Settings has Wide view.'],
+    uk: ['Тріщини ростуть у чотири кроки.', 'Відпусти — гаснуть. Натисни знову — повертаються.', 'Листя ламається швидко. Камінь через дві секунди нагадує про мідь.', 'У налаштуваннях широкий огляд.'],
+    ru: ['Трещины растут в четыре шага.', 'Отпусти — гаснут. Нажми снова — возвращаются.', 'Листва ломается быстро. Камень через две секунды напоминает про медь.', 'В настройках широкий обзор.'],
+    es: ['Las grietas crecen en cuatro pasos.', 'Suelta y se apagan. Pulsa otra vez y vuelven.', 'Las hojas se rompen rápido. La piedra avisa del cobre a los dos segundos.', 'Ajustes tiene Vista ancha.'],
+    ar: ['الشقوق تكبر في أربع خطوات.', 'اتركها فتخبو. اضغط مرة أخرى فتعود.', 'الأوراق تنكسر بسرعة. الحجر ينبّه للنحاس بعد ثانيتين.', 'الإعدادات فيها عرض واسع.'],
+    'fa-AF': ['ترک‌ها در چهار گام بزرگ می‌شوند.', 'ول کن، کم می‌شوند. دوباره فشار بده، برمی‌گردند.', 'برگ زود می‌شکند. سنگ بعد از دو ثانیه از مس می‌گوید.', 'تنظیمات نمای پهن دارد.'],
+    rw: ['Ibisebe birakura mu ntambwe enye.', 'Reka bigabanuke. Kanda nanone bigaruke.', 'Amababi aravuna vuba. Ibuye nyuma y’amasegonda 2 kivuga copper.', 'Igenamiterere ifite Reba byagutse.'],
+    ti: ['ስንጥቃት ብ4 ስጉምቲ ይዓቢ።', 'ሓድጎ ይጠፍእ። ደጊምካ ጠውቕ ይምለስ።', 'ቆጽሊ ብቕልጡፍ ይስበር። እምኒ ድሕሪ 2 ካልኢት ነሓስ የዘኻኽር።', 'ቅንጅታት ሰፊሕ ምርኣይ ኣለዎ።'],
+  }},
   { v: '2.5.28', date: '2026-10-04', lines: {
     en: ['Menus are solid, so the world does not show through.', 'Craft names sit above the missing pieces, in gold.', 'Shop locks start on their own row, with a picture.'],
     uk: ['Меню щільне, світ не просвічує.', 'Назва рецепта над браком, золотим.', 'Замки крамниці з картинкою, окремим рядом.'],
