@@ -28,6 +28,13 @@ Rules:
 
 ---
 
+## 0.19.35 — Next job — 2026-10-03
+
+- Next job, Skip, a plate, and a lesson or race start at full speed. Slow stays on for the win replay. Step still runs slow, at every frame rate.
+- Stop stays on a phone screen. Play, Fill, Step, and Stop are icon buttons. Settings stays in the menu.
+- Yellow buttons use dark text so they are easy to read.
+- What's new: Next job runs at full speed. Stop stays on the phone screen. Yellow buttons are easier to read.
+
 ## 0.19.34 — Turn the phone — 2026-10-03
 
 - Turning the phone re-fits the board, the same as opening it sideways. The ground stays on screen.

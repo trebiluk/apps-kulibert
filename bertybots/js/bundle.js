@@ -1,10 +1,10 @@
-/* Berty's Botz BB 0.19.34 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.35 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.34";
+const APP_VERSION = "0.19.35";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.34";
+const APP_CHIP = "BB 0.19.35";
 const APP_BUILT = "2026-10-03";
 
 const FORMAT = 1;
@@ -1019,6 +1019,8 @@ function boot() {
 
   function resetLoop(id) {
     if (id) courseId = id;
+    slowMo = false;
+    acc = 0;
     everTested = false;
     pinnedStep = null;
     tapeA = null;
@@ -3972,6 +3974,8 @@ function boot() {
           winT = 0;
           gateN = 0;
           playAge = 0;
+          slowMo = false;
+          acc = 0;
           if (winEl) winEl.classList.remove("show");
           refreshMeta();
           return;
@@ -4492,7 +4496,7 @@ function boot() {
         acc -= stepCost;
         steps++;
       }
-      if (acc >= DT) acc = 0;
+      if (acc >= stepCost) acc = 0;
       if (playing && !won && sim && sim.cores[0]) {
         const p = sim.cores[0].getPosition();
         const ago = trail.length > 45 ? trail[trail.length - 45] : null;
