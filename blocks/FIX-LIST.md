@@ -3,6 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
+- **Bertopia 2.5.23** is a visuals plate on top of 2.5.22. Sky, sun, horizon fog, a teal Berty, and a name chip. Feel numbers are unchanged.
 - **Bertopia 2.5.22** is the core-feel plate. 2.5.21 (menu) stays underneath it.
 - One-thumb stick, Jump, and Crouch. Walk 4.3, run 5.6, crouch 1.3. Jump is one block (no double jump). Creative double-tap Jump flies.
 - A short world tap places. Holding mines (cracks from 250 ms, break at 500 ms or the block's time). A long-press does not pick.

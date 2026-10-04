@@ -35,10 +35,13 @@ html[data-kb-bar]:not(.kb-framed) #toast{top:calc(48px + var(--top-h) + 10px)}
 .brand small{color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .chip{font-size:12px;padding:3px 8px;border-radius:999px;border:1px solid rgba(34,211,238,.45);color:var(--cyan);white-space:nowrap}
 #perf{position:fixed;top:calc(var(--top-h) + 8px);right:68px;z-index:4;font:12px ui-monospace,Menlo,Consolas,monospace;background:rgba(11,18,32,.8);border:1px solid var(--line);border-radius:8px;padding:4px 8px;color:var(--cyan)}
-.cross{position:fixed;left:50%;top:50%;width:22px;height:22px;margin:-11px 0 0 -11px;z-index:3;pointer-events:none}
-.cross:before,.cross:after{content:"";position:absolute;background:rgba(248,250,252,.92);box-shadow:0 0 0 1px rgba(11,18,32,.6)}
-.cross:before{left:10px;top:0;width:2px;height:22px}.cross:after{top:10px;left:0;height:2px;width:22px}
+.cross{position:fixed;left:50%;top:50%;width:20px;height:20px;margin:-10px 0 0 -10px;z-index:3;pointer-events:none}
+.cross:before,.cross:after{content:"";position:absolute;background:transparent;box-shadow:none}
+.cross:before{left:9px;top:0;width:2px;height:20px;background:linear-gradient(#22D3EE 0 6px, transparent 6px 14px, #22D3EE 14px 20px)}
+.cross:after{top:9px;left:0;height:2px;width:20px;background:linear-gradient(90deg,#22D3EE 0 6px, transparent 6px 14px, #22D3EE 14px 20px)}
+body.touch .cross{opacity:.4}
 body.table .cross{opacity:.45}
+#vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center, transparent 62%, rgba(6,14,28,.16) 100%)}
 #scrim{position:fixed;inset:0;background:rgba(5,8,20,.45);z-index:8}
 #drawer{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);background:var(--ink);border-right:1px solid var(--line);z-index:9;transform:translateX(-102%);transition:transform .18s ease;display:flex;flex-direction:column;padding:10px 12px 16px;overflow:auto}
 html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
@@ -58,10 +61,10 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .help kbd{font:12px ui-monospace,monospace;background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--snow)}
 .credit{color:var(--muted);font-size:11px;margin-top:auto;padding-top:10px}
 .credit a{color:var(--cyan)}
-#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(11,18,32,.88);border-top:1px solid var(--line);scrollbar-width:thin}
+#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(34,211,238,.4);scrollbar-width:thin}
 .slot.empty .sw{background:none;border:1px dashed #8aa}
 .slot{flex:0 0 auto;width:64px;min-height:64px;position:relative;border-radius:10px;border:1px solid var(--line);background:var(--ink2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:4px 2px}
-.slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.18)}
+.slot[aria-pressed=true]{border:2px solid var(--cyan);box-shadow:0 0 0 2px rgba(34,211,238,.25),0 0 14px rgba(34,211,238,.45)}
 .sw{width:30px;height:30px;border-radius:4px;background-image:url(assets/atlas.png);image-rendering:pixelated;box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
 .sw.pat-1{box-shadow:inset 0 0 0 2px rgba(248,250,252,.55), inset 0 0 0 1px rgba(0,0,0,.35)}
 .sw.pat-2{background-blend-mode:multiply}
@@ -85,8 +88,8 @@ body.touch:not(.table) .pad{display:grid}
 .acts .jump{grid-column:1/span 2;width:auto;height:52px}
 .stickpad{display:none;position:fixed;z-index:4;left:12px;bottom:92px;width:120px;height:120px;touch-action:none}
 body.touch:not(.table) .stickpad{display:block}
-.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.7);background:rgba(11,18,32,.55)}
-.stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(20,184,166,.85);border:2px solid #f8fafc}
+.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.75);background:radial-gradient(circle at 50% 45%, rgba(20,184,166,.28), rgba(11,18,32,.62));box-shadow:inset 0 0 18px rgba(34,211,238,.25)}
+.stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #5eead4, #0f766e);border:2px solid #f8fafc;box-shadow:0 4px 10px rgba(0,0,0,.35)}
 .jumpcol{display:none;position:fixed;z-index:4;left:28px;bottom:220px;gap:8px}
 body.touch:not(.table) .jumpcol{display:flex;flex-direction:column;align-items:center}
 .jumpcol button{border-radius:12px;border:1px solid rgba(34,211,238,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;touch-action:none}
@@ -142,6 +145,7 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
 @media (orientation:landscape) and (max-height:500px){#inspect-card{left:34%;right:34%;top:64px;max-height:60%;width:auto}}
 .tool:disabled{opacity:1}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#a9b4c4}
+#held-chip{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:6;background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid #22D3EE;border-radius:999px;padding:6px 14px;font-size:14px;pointer-events:none;box-shadow:0 8px 20px rgba(0,0,0,.28)}
 #size-chip{position:fixed;top:calc(var(--top-h) + 8px);left:50%;transform:translateX(-50%);z-index:6;background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid var(--cyan);border-radius:999px;padding:6px 10px}
 #inspect-card .card{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 #inspect-list{flex:1 1 100%;color:var(--snow);font-size:14px}
@@ -185,10 +189,11 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 </head>
 <body>
 <div id="stage"></div>
+<div id="vignette" aria-hidden="true"></div>
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.22</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.23</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -211,6 +216,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   <button type="button" data-tool="cancel">✕ Cancel</button>
   <button type="button" data-tool="close">✕</button>
 </div>
+<div id="held-chip" hidden></div>
 <div id="size-chip" hidden></div>
 <div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
   <div class="sheet-bar"><button type="button" id="sheet-back">← <span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><button type="button" id="sheet-x" aria-label="Close">✕</button></div>
@@ -307,7 +313,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.22" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.22" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.23" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.23" defer></script>
 </body>
 </html>

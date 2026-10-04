@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.23', date: '2026-10-04', lines: {
+    en: ['A brighter sky and a soft horizon.', 'Berty wears a teal suit.', 'The block you hold shows its name.'],
+    uk: ['Яскравіше небо і м’який обрій.', 'Берті в бірюзовому костюмі.', 'Блок у руці показує назву.'],
+    ru: ['Ярче небо и мягкий горизонт.', 'Берти в бирюзовом костюме.', 'Блок в руке показывает имя.'],
+    es: ['Un cielo más claro y un horizonte suave.', 'Berty lleva un traje verde azulado.', 'El bloque en la mano dice su nombre.'],
+    ar: ['سماء أسطع وأفق ناعم.', 'بيرتي ببدلة فيروزية.', 'المكعب في يدك يُظهر اسمه.'],
+    'fa-AF': ['آسمانی روشن‌تر و افق نرم.', 'برتی لباس تیل پوشیده است.', 'بلاک در دست نامش را نشان می‌دهد.'],
+    rw: ['Ijuru rirakeye n’umupaka woroshye.', 'Berty yambaye ikositimu ya teal.', 'Block ufite yerekana izina.'],
+    ti: ['ብርሃን ዝበለ ጠፈርን ልስሉስ ኣድማስን።', 'በርቲ ብቲል ክዳን ኣለዎ።', 'እቲ ብሎክ ስሙ የርኢ።'],
+  }},
   { v: '2.5.22', date: '2026-10-04', lines: {
     en: ['One thumb stick and a one-block jump.', 'Hold to mine. A short tap places.', 'Walk, run, and crouch.'],
     uk: ['Один стік і стрибок на один блок.', 'Тримай щоб ламати. Короткий дотик ставить.', 'Крок, біг і присід.'],

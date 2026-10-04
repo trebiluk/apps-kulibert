@@ -1,11 +1,17 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.22'
+const VERSION = '2.5.23'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
+import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
+import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
+import { Effect } from '@babylonjs/core/Materials/effect'
+import { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import ATLAS from '../assets/atlas.json'
@@ -81,10 +87,11 @@ const noa = new Engine({
   chunkSize: 24,
   chunkAddDistance: QP[quality].add,
   chunkRemoveDistance: QP[quality].rem,
-  clearColor: [0.62, 0.78, 0.86],
-  ambientColor: [0.62, 0.66, 0.7],
-  lightDiffuse: [0.95, 0.95, 0.92],
-  lightVector: [0.6, -1, 0.35],
+  clearColor: [0.64, 0.8, 0.93],
+  ambientColor: [0.78, 0.82, 0.88],
+  lightDiffuse: [1.15, 1.08, 0.98],
+  lightSpecular: [0.16, 0.16, 0.14],
+  lightVector: [0.35, -1, 0.2],
   playerStart: SPAWN,
   playerAutoStep: true,
   stickyPointerLock: !TOUCH_UI,
@@ -662,12 +669,22 @@ function selectSlot(i) {
   current = barIds[selectedSlot]
   paintBar()
   $('current').textContent = blockName(current)
+  flashHeld(blockName(current))
 }
 function pick(id) {
   barIds[selectedSlot] = id
   current = id
   paintBar()
   $('current').textContent = blockName(id)
+  flashHeld(blockName(id))
+}
+function flashHeld(name) {
+  const chip = $('held-chip')
+  if (!chip) return
+  chip.textContent = name
+  chip.hidden = false
+  clearTimeout(flashHeld.t)
+  flashHeld.t = setTimeout(() => { chip.hidden = true }, 1500)
 }
 function bagPick(item, slot) {
   selectedSlot = slot
@@ -983,7 +1000,10 @@ function feelTick(dt) {
   const stickRun = runSince && now - runSince >= 300
   moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
   noa.blockTestDistance = reachFor(survivalOn())
-  if (!tableMode && !flying) noa.camera.zoomDistance = TOUCH_UI ? 4 : 0
+  if (!tableMode && !flying) {
+    const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
+    noa.camera.zoomDistance = (TOUCH_UI ? 4 : 0) + up
+  }
   const cam = noa.rendering.camera
   const portrait = TOUCH_UI && innerHeight > innerWidth
   cam.fov = (portrait ? 85 : 55) * Math.PI / 180
@@ -1110,14 +1130,6 @@ $('t-place').addEventListener('click', placeBlock)
 $('t-break').addEventListener('click', breakBlock)
 $('table-place').addEventListener('click', placeBlock)
 document.body.classList.toggle('touch', TOUCH_UI)
-const berty = CreateBox('berty', { width: 0.6, height: 1.8, depth: 0.6 }, noa.rendering.getScene())
-const bertyMat = new StandardMaterial('berty-mat', noa.rendering.getScene())
-bertyMat.diffuseColor = new Color3(0.08, 0.45, 0.5)
-bertyMat.emissiveColor = new Color3(0.04, 0.28, 0.32)
-bertyMat.specularColor = new Color3(0, 0, 0)
-berty.material = bertyMat
-berty.isPickable = false
-noa.ents.addComponent(noa.playerEntity, noa.ents.names.mesh, { mesh: berty, offset: [0, 0.9, 0] })
 const stickPad = document.getElementById('stick-pad')
 const stickKnob = document.getElementById('stick-knob')
 if (stickPad && stickKnob) {
@@ -1181,6 +1193,50 @@ if (stickRow) stickRow.addEventListener('click', () => {
 })
 
 const scene = noa.rendering.getScene()
+scene.fogMode = Scene.FOGMODE_LINEAR
+scene.fogColor = new Color3(0.64, 0.8, 0.93)
+scene.fogStart = 40
+scene.fogEnd = 78
+Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
+Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);vec3 zenith=vec3(0.13,0.34,0.72);vec3 horizon=vec3(0.64,0.80,0.93);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir));float glow=smoothstep(0.82,1.0,dot(n,sunDir));col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y);col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime'] })
+skyMat.backFaceCulling = false
+skyMat.disableDepthWrite = true
+skyMat.fogEnabled = false
+skyMat.setFloat('uTime', 0)
+const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
+sky.material = skyMat
+sky.isPickable = false
+sky.infiniteDistance = true
+sky.alwaysSelectAsActiveMesh = true
+noa.rendering.addMeshToScene(sky, false)
+let skyTime = 0
+function bertyPart(w, h, d, x, y, z, rgb) {
+  const m = CreateBox('bp', { width: w, height: h, depth: d }, scene)
+  m.position.set(x, y, z)
+  m.computeWorldMatrix(true)
+  const n = m.getTotalVertices()
+  const cols = new Float32Array(n * 4)
+  for (let i = 0; i < n; i++) { cols[i * 4] = rgb[0]; cols[i * 4 + 1] = rgb[1]; cols[i * 4 + 2] = rgb[2]; cols[i * 4 + 3] = 1 }
+  m.setVerticesData(VertexBuffer.ColorKind, cols)
+  m.isPickable = false
+  return m
+}
+const berty = Mesh.MergeMeshes([
+  bertyPart(0.5, 0.03, 0.5, 0, -0.88, 0, [0.08, 0.12, 0.16]),
+  bertyPart(0.2, 0.18, 0.26, -0.11, -0.74, 0, [0.06, 0.42, 0.5]),
+  bertyPart(0.2, 0.18, 0.26, 0.11, -0.74, 0, [0.06, 0.42, 0.5]),
+  bertyPart(0.38, 0.58, 0.24, 0, -0.3, 0, [0.12, 0.82, 0.76]),
+  bertyPart(0.32, 0.3, 0.3, 0, 0.26, 0, [0.45, 0.95, 0.9]),
+  bertyPart(0.24, 0.08, 0.05, 0, 0.28, 0.16, [0.72, 0.4, 1]),
+], true, true)
+berty.isPickable = false
+const bertyMat = new StandardMaterial('berty-mat', scene)
+bertyMat.diffuseColor = new Color3(1, 1, 1)
+bertyMat.specularColor = new Color3(0.04, 0.04, 0.04)
+bertyMat.emissiveColor = new Color3(0.1, 0.28, 0.26)
+berty.material = bertyMat
+noa.ents.addComponent(noa.playerEntity, noa.ents.names.mesh, { mesh: berty, offset: [0, 0.9, 0] })
 const s = 0.52
 const outline = CreateLines('bb-outline', {
   points: [
@@ -1200,7 +1256,11 @@ function paintOutline() {
   const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + 0.5, pos[2] + 0.5], null, [])
   outline.position.copyFromFloats(local[0], local[1], local[2])
 }
-noa.on('beforeRender', paintOutline)
+noa.on('beforeRender', (dt) => {
+  paintOutline()
+  if (!REDUCE) skyTime += (dt || 16) * 0.0004
+  skyMat.setFloat('uTime', REDUCE ? 0 : skyTime)
+})
 
 const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () => level, get auto() { return AUTO }, quality: () => quality, aa: AA }
 { const sh = noa.container._shell, r = sh.onRender; sh.onRender = function (dt, a1, a2) { const a = performance.now(); r(dt, a1, a2); perf.jsMs.push(performance.now() - a); if (perf.jsMs.length > 2000) perf.jsMs.shift() } }
