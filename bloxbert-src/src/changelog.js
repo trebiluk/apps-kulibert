@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.32', date: '2026-10-04', lines: {
+    en: ['The bag is 9 in the hotbar and 6 pockets.', 'Older stacks that do not fit wait in Lost & Found. Nothing is deleted.', 'A new visit starts in Survival.', 'The build world is under Teacher. A student does not see it.'],
+    uk: ['Сумка — 9 на панелі і 6 кишень.', 'Старі стоси, що не вмістились, чекають у Загубленому. Нічого не стерто.', 'Новий візит починається у Виживанні.', 'Світ будівлі під Вчителем. Учень його не бачить.'],
+    ru: ['Сумка — 9 на панели и 6 карманов.', 'Старые стопки, которые не влезли, ждут в Потерянном. Ничего не стёрто.', 'Новый визит начинается в Выживании.', 'Мир стройки у Учителя. Ученик его не видит.'],
+    es: ['La bolsa es 9 en la barra y 6 bolsillos.', 'Lo que no cabe espera en Perdidos. No se borra nada.', 'Una visita nueva empieza en Supervivencia.', 'El mundo de construir está en Profe. Un alumno no lo ve.'],
+    ar: ['الحقيبة 9 في الشريط و6 جيوب.', 'ما لا يتسع ينتظر في المفقودات. لا شيء يُحذف.', 'الزيارة الجديدة تبدأ في البقاء.', 'عالم البناء عند المعلم. التلميذ لا يراه.'],
+    'fa-AF': ['بکس ۹ در نوار و ۶ جیب است.', 'آنچه جا نمی‌شود در گم‌شده‌ها می‌ماند. هیچ چیز پاک نمی‌شود.', 'بازدید تازه در بقا شروع می‌شود.', 'جهان ساختن زیر معلم است. شاگرد آن را نمی‌بیند.'],
+    rw: ['Agasaho ni 9 ku mukandara na 6 majepo.', 'Ibitageze bitegereje mu byabuze. Nta kigisibwaho.', 'Isura nshya itangira mu Bugingo.', 'Isi yo kubaka iri ku mwarimu. Umunyeshuri ntayibona.'],
+    ti: ['ቦርሳ 9 ኣብ መስመርን 6 ጁባን እዩ።', 'ዘይኣቱ ኣብ ዝጠፍአ ይጽንሕ። ዝተደምሰሰ የለን።', 'ሓድሽ ምብጻሕ ኣብ ህይወት ይጅምር።', 'ዓለም ህንጻ ኣብ መምህር እዩ። ተምሃራይ ኣይርእዮን።'],
+  }},
   { v: '2.5.31', date: '2026-10-04', lines: {
     en: ['Press the same number again to use that slot. Holding the key does not eat the stack.', 'A block no longer pops a toast just for being selected.', 'The name under Bertopia matches the lit slot.', 'Right click stops placing when you let go or open a menu.', 'Pick moves to the other side when the stick is on the right.', 'Pick follows the language.'],
     uk: ['Натисни той самий номер ще раз, щоб використати. Утримання не зʼїдає стос.', 'Блок більше не вигукує назву просто за вибір.', 'Права кнопка перестає ставити, коли відпускаєш або відкриваєш меню.', 'Взяти переходить на інший бік, якщо стик справа.', 'Взяти мовою гри.'],

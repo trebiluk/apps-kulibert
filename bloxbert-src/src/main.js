@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.31'
+const VERSION = '2.5.32'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -391,7 +391,31 @@ noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
 const STORE = 'worlds'
-let WORLD = localStorage.getItem('bloxbert-last-world') || 'bertyville'
+function teacherOn() {
+  try { return localStorage.getItem('bloxbert-teacher') === '1' } catch (e) { return false }
+}
+function setTeacher(on) {
+  try { localStorage.setItem('bloxbert-teacher', on ? '1' : '0') } catch (e) {}
+  toast(on ? t('teacherOn') : t('teacherOff'))
+  if (!on && WORLD === 'bertyville') {
+    WORLD = 'bertyville-survival'
+    try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
+    if (session) session.setMode('survival')
+    paintModeChip()
+    load()
+  }
+}
+let sentToSurvival = false
+let WORLD = 'bertyville-survival'
+try {
+  const savedWorld = localStorage.getItem('bloxbert-last-world')
+  if (savedWorld) WORLD = savedWorld
+  if (!teacherOn() && WORLD === 'bertyville') {
+    WORLD = 'bertyville-survival'
+    sentToSurvival = true
+    localStorage.setItem('bloxbert-last-world', WORLD)
+  }
+} catch (e) {}
 function idb() {
   return new Promise((res, rej) => {
     const r = indexedDB.open(DB, 1)
@@ -495,6 +519,12 @@ setInterval(() => { if (dirty) save() }, 20000)
 document.addEventListener('visibilitychange', () => { if (document.hidden && dirty) save() })
 
 const $ = (id) => document.getElementById(id)
+function paintModeChip() {
+  const chip = $('mode-chip')
+  if (!chip) return
+  if (tableMode) { chip.textContent = t('buildTable'); return }
+  chip.textContent = session && session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
+}
 function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
 function toast(text) { const el = $('toast'); if (!el) return; el.textContent = text; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true }, 2400) }
 function paintUndo() {
@@ -516,6 +546,8 @@ session = createSession({
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
   flash: (name) => flashHeld(name),
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
+  teacher: () => teacherOn(),
+  setTeacher: (on) => setTeacher(on),
 })
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -537,10 +569,13 @@ panels = mountPanels({
   importWorld: () => $('import-file').click(),
   fresh: () => resetWorld(),
   hub: () => goHome(),
+  teacher: () => teacherOn(),
+  setTeacher: (on) => setTeacher(on),
   fullScreen: () => $('fs-btn').click(),
   inspect: () => setInspect(true),
   table: () => setMode(true),
   setWorldMode: async (m) => {
+    if (m === 'creative' && !teacherOn()) { toast(t('buildLocked')); return }
     await save()
     WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
     try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
@@ -881,7 +916,7 @@ function setMode(table) {
   $('m-creative').setAttribute('aria-pressed', String(!table))
   $('m-table').classList.toggle('on', table)
   $('m-table').setAttribute('aria-pressed', String(table))
-  $('mode-chip').textContent = table ? t('buildTable') : t('creative')
+  $('mode-chip').textContent = table ? t('buildTable') : (session && session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative'))
   if (table) {
     if (document.pointerLockElement) document.exitPointerLock()
     noa.camera.zoomDistance = 16
@@ -1672,7 +1707,7 @@ if (!__BLOX_STUDENT__) {
   }
 }
 
-load().catch(() => {}).finally(() => markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved')))
+load().catch(() => {}).finally(() => { paintModeChip(); if (sentToSurvival) toast(t('studentWorld')); markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved')) })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   window.__smoke = {
     seed() {

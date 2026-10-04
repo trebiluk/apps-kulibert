@@ -58,6 +58,7 @@ export function mountPanels(api) {
           tile('💾', api.t('save'), () => api.save()),
           tile('🌍', api.t('world'), () => open('world')),
           tile('🔀', api.t('mode'), () => open('mode')),
+          tile('👩‍🏫', api.t('teacher'), () => open('teacher')),
           tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),
           tile('🧰', api.t('buildTools'), () => { close(); api.tools() }),
           tile('📜', api.t('changelog'), () => open('log')),
@@ -89,11 +90,16 @@ export function mountPanels(api) {
         )
       }),
       mode: () => show('mode', api.t('mode'), (g) => {
-        g.append(
-          tile('🎨', api.t('creative'), () => api.setWorldMode('creative')),
-          tile('⚙', api.t('survival'), () => api.setWorldMode('survival')),
-          tile('▤', api.t('buildTable'), () => api.table()),
-        )
+        const teacher = api.teacher && api.teacher()
+        if (!teacher) {
+          const note = document.createElement('p')
+          note.className = 'gnote'
+          note.textContent = api.t('buildLocked')
+          g.append(note)
+        }
+        g.append(tile('⚙', api.t('survival'), () => api.setWorldMode('survival')))
+        if (teacher) g.append(tile('🎨', api.t('creative'), () => api.setWorldMode('creative')))
+        g.append(tile('▤', api.t('buildTable'), () => api.table()))
       }),
       station: (key) => show('station', api.t('oven'), (g) => api.paintStation(g, key, 'oven')),
       bench: (key) => show('bench', api.t('workbench'), (g) => api.paintStation(g, key, 'bench')),

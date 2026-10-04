@@ -1,4 +1,5 @@
 import { createSession } from '../src/session.js'
+import { createBag } from '../src/items.js'
 
 globalThis.document = {
   getElementById() { return null },
@@ -19,7 +20,7 @@ const s = createSession({
 })
 s.setMode('survival')
 
-const packed = s.bag.add('stone', 36 * 64)
+const packed = s.bag.add('stone', 15 * 64)
 if (packed !== 0) throw new Error('bag did not fill, left ' + packed)
 if (s.onBreak(20, 4, 20, 2) !== true) throw new Error('full bag refused the break')
 const pile = s.groundDrops().find((d) => d.item === 'dirt')
@@ -79,5 +80,8 @@ if (s.bag.count('flour') !== flourN) throw new Error('flour should not be eaten'
 if (!s.selectOwned(3)) throw new Error('stone in the bag should be selectable')
 s.bag.take('stone', s.bag.count('stone'))
 if (s.selectOwned(3)) throw new Error('missing stone was selectable')
+const old = createBag()
+const extra = old.load(Array.from({ length: 36 }, () => ({ item: 'dirt', n: 1 })))
+if (old.slots.filter(Boolean).length !== 15 || extra.length !== 21) throw new Error('old slots were not kept aside')
 console.log('session-check ok', toasts.filter((t) => t === 'bagFull').length, 'full toasts')
 process.exit(0)

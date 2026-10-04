@@ -15,7 +15,7 @@ export function createSession(api) {
   const bag = createBag()
   const wallet = createWallet(ECON)
   const meta = new Map()
-  let mode = 'creative'
+  let mode = 'survival'
   let home = null
   let hot = 0
   let day = localDay()
@@ -259,7 +259,7 @@ export function createSession(api) {
       const n = lost.reduce((s, d) => s + d.n, 0)
       g.append(btn(t('lostBtn') + ' · ' + n, () => { takeLost(); g.innerHTML = ''; paintBag(g) }))
     }
-    bag.slots.forEach((s) => {
+    const paintOne = (s) => {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile'
@@ -274,7 +274,17 @@ export function createSession(api) {
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       if (s) b.addEventListener('click', () => card(g, s.item))
       g.append(b)
-    })
+    }
+    const barHead = document.createElement('div')
+    barHead.className = 'gnote ghead'
+    barHead.textContent = t('hotbar')
+    g.append(barHead)
+    bag.slots.slice(0, 9).forEach(paintOne)
+    const pockets = document.createElement('div')
+    pockets.className = 'gnote ghead'
+    pockets.textContent = t('pockets')
+    g.append(pockets)
+    bag.slots.slice(9).forEach(paintOne)
   }
   function paintCraft(g) {
     const stations = { bench: near('bench'), oven: near('oven') }
@@ -443,6 +453,13 @@ export function createSession(api) {
     g.append(n)
   }
   function paintTeacher(g) {
+    const on = api.teacher && api.teacher()
+    g.append(btn(on ? t('teacherOn') : t('teacherOff'), () => {
+      if (!on && !confirm(t('teacherAsk'))) return
+      if (api.setTeacher) api.setTeacher(!on)
+      g.innerHTML = ''
+      paintTeacher(g)
+    }))
     g.append(btn(t('priceDial'), () => { wallet.state.dial = wallet.state.dial === 1 ? 1.5 : 1; api.toast(t('pricesChanged')) }))
     g.append(btn(t('townsfolk'), () => { ECON.townsfolk.on = !ECON.townsfolk.on }))
     g.append(btn(t('resetWallet'), () => { if (confirm(t('resetWallet'))) { wallet.state.cogs = wallet.state.start; wallet.state.ledger = []; wallet.post({ kind: 'teacher', cogs: 0, by: 'teacher' }); paintChip() } }))
@@ -665,8 +682,8 @@ export function createSession(api) {
     return { player: { mode, bag: bag.dump(), hot, home, table: api.tableOn() }, econ: wallet.dump(), meta: m, drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })), lost: lost.map((d) => ({ item: d.item, n: d.n })) }
   }
   function load(doc) {
-    mode = (doc.player && doc.player.mode) || 'creative'
-    bag.load(doc.player && doc.player.bag)
+    mode = (doc.player && doc.player.mode) || 'survival'
+    const extra = bag.load(doc.player && doc.player.bag) || []
     home = doc.player && doc.player.home || null
     hot = (doc.player && doc.player.hot) || 0
     wallet.load(doc.econ)
@@ -682,6 +699,11 @@ export function createSession(api) {
       noteId(d.id || 0)
     }
     for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0 })
+    for (const s of extra) if (s && ITEMS[s.item] && s.n > 0) {
+      const hit = lost.find((d) => d.item === s.item)
+      if (hit) hit.n += s.n
+      else lost.push({ item: s.item, n: s.n })
+    }
     for (const s of bag.slots) if (s) markFound(s.item)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip(); paintHotbar()
