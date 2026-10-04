@@ -1,5 +1,12 @@
 # Music changelog
 
+**Chip: MU 2.35.10** · 2026-10-04 · channel **live**
+
+Mix opens the loudness, swing, click, and patterns. Band shows one instrument list and the five notes.
+
+## Earlier
+
+
 **Chip: MU 2.35.9** · 2026-10-03 · channel **live**
 
 Exit stays in Perform. Viz is a live picture. Score and drums fill the desk.

@@ -2082,6 +2082,14 @@
     if (stageApi && stageApi.kick) stageApi.kick();
     if (stageApi && stageApi.resize) stageApi.resize();
     if (tab === "viz" || document.body.classList.contains("show")) vizPulse();
+    if (tab === "mix") {
+      const mixBox = $("mix-details");
+      if (mixBox) mixBox.open = true;
+    }
+    if (tab === "band") {
+      const picks = $("band-picks");
+      if (picks) picks.hidden = false;
+    }
     if (tab === "score" || tab === "piano" || state.mode === "both" || state.mode === "notes") {
       window.requestAnimationFrame(() => renderStaff());
     }

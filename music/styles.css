@@ -3095,3 +3095,61 @@ body.mu237.show #perform-exit:not([hidden]) {
   align-items: center !important;
   justify-content: center !important;
 }
+
+/* MU 2.35.10 — Mix opens on the desk. Band shows one list and the five notes. */
+body.mu237.tab-mix #mix-details {
+  display: block !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+body.mu237.tab-mix #mix-details > summary { display: none !important; }
+body.mu237.tab-mix #mix-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.45rem !important;
+  content-visibility: visible !important;
+}
+body.mu237.tab-mix #mix {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.35rem !important;
+}
+body.mu237.tab-mix #mix label,
+body.mu237.tab-mix #mix-pane > label.tempo {
+  display: grid !important;
+  grid-template-columns: 92px 1fr 40px !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  min-height: 44px !important;
+}
+body.mu237.tab-mix #click-btn,
+body.mu237.tab-mix #patterns .btn {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+body.mu237.tab-mix #patterns {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+}
+body.mu237.tab-band #band-picks {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 0.4rem !important;
+}
+body.mu237.tab-band #band-picks[hidden] { display: none !important; }
+body.mu237.tab-band #band-picks .btn {
+  min-height: 44px !important;
+  min-width: 44px !important;
+}
+body.mu237.tab-band #band-notes {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.4rem !important;
+}
+body.mu237.tab-band #band-notes .key {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  flex: 1 1 44px !important;
+}
+body.mu237.tab-band #band-pane > details:not([open]) > :not(summary) { display: none !important; }
