@@ -2862,7 +2862,7 @@
         return String(value || "").replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim();
       }
 
-      var BOARD_NAMES = ["SpanCraft","HoldIt","Spire Lab","ThrowIt","Berty Run","Drift","PaperLab","BertyBeatz","Visualizer","Debugzy"];
+      var BOARD_NAMES = ["SpanCraft","HoldIt","Spire Lab","Bertapult","Berty Run","Drift","PaperLab","BertyBeatz","Visualizer","Debugzy"];
 
       function canonBoard(value) {
         var raw = boardNorm(value).slice(0, 24);
@@ -4382,15 +4382,15 @@ document.addEventListener("click", function (event) {
             try { localStorage.removeItem("tech-room-progress"); } catch (eClear) {}
           }
           if (chip) { chip.hidden = true; chip.textContent = ""; }
-          for (var i = 0; i < labels.length; i++) labels[i].textContent = "ThrowIt";
+          for (var i = 0; i < labels.length; i++) labels[i].textContent = "Bertapult";
           var note = document.getElementById("announce");
           if (bar && note && note.hidden) bar.hidden = true;
           return;
         }
         try { localStorage.setItem("tech-room-progress", JSON.stringify({ type: "tech-room-progress", app: "throwit", alias: alias, code: code })); } catch (eSave) {}
         if (bar) bar.hidden = false;
-        if (chip) { chip.hidden = false; chip.textContent = "ThrowIt · " + alias + " · " + code; }
-        for (var j = 0; j < labels.length; j++) labels[j].textContent = "ThrowIt · " + code;
+        if (chip) { chip.hidden = false; chip.textContent = "Bertapult · " + alias + " · " + code; }
+        for (var j = 0; j < labels.length; j++) labels[j].textContent = "Bertapult · " + code;
       }
       try { rememberDesk(JSON.parse(localStorage.getItem("tech-room-progress") || "null")); } catch (eDesk) {}
       window.addEventListener("message", function (ev) {
