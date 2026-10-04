@@ -3,6 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
+- **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
 - **Bertopia 2.5.23** is a visuals plate on top of 2.5.22. Sky, sun, horizon fog, a teal Berty, and a name chip. Feel numbers are unchanged.
 - **Bertopia 2.5.22** is the core-feel plate. 2.5.21 (menu) stays underneath it.
 - One-thumb stick, Jump, and Crouch. Walk 4.3, run 5.6, crouch 1.3. Jump is one block (no double jump). Creative double-tap Jump flies.
@@ -14,7 +15,8 @@ Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 ## 2. Open fixes
 - [x] **Menu (2.5.21):** Arabic and Dari menu taps open the menu.
 - [x] **Core feel (2.5.22):** stick, jump, speeds, hold-to-mine, touch camera, reach, E / 0 / Q.
-- [ ] Bag still has 36 slots. Drops still despawn path is unchanged (a full bag still refuses the break). Craft groups, ×Max, and the Teacher-only Build world are not in this plate.
+- [x] **Drops (2.5.24):** a full bag still breaks. The piece stays on the ground (or in Lost & Found). Q drops one.
+- [ ] Bag still has 36 slots. Craft groups, ×Max, and the Teacher-only Build world are not in this plate.
 - [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` still needs the old gates. Not this plate.
 
 ## 3. Next up

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.23'
+const VERSION = '2.5.24'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -456,6 +456,7 @@ async function applyDoc(doc) {
   if (doc.stations) stations.load(doc.stations)
   const chip = $('mode-chip')
   if (chip && session) chip.textContent = session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
+  syncDropMeshes()
 }
 async function importFile(file) {
   if (file.size > 2 * 1024 * 1024) throw new Error('That file is too big for a world (over 2 MB).')
@@ -469,6 +470,8 @@ async function resetWorld() {
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
+  if (session && session.clearLoose) session.clearLoose()
+  syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   setLook(0, 0.18)
   markSave(t('fresh'))
@@ -495,6 +498,8 @@ let lastPointer = null
 session = createSession({
   t, toast, getVoxel,
   pos: () => noa.entities.getPosition(noa.playerEntity),
+  heading: () => noa.camera.heading,
+  markDirty: () => { dirty = true },
   tableOn: () => tableMode,
   open: (id) => panels && panels.open(id),
   close: () => panels && panels.close(),
@@ -920,6 +925,11 @@ document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
   if (e.key === 'Escape') return
   if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openMenu(true); panels.open('inventory'); return }
+  if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
+    e.preventDefault()
+    if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
+    return
+  }
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '123456789'.indexOf(e.key)
@@ -969,6 +979,8 @@ function beginDig(kind) {
   dig = { kind, x, y, z, id, name, t0: performance.now(), need: mineMs(name, true, false), broke: false }
 }
 function feelTick(dt) {
+  if (session && session.tickDrops) session.tickDrops(dt)
+  syncDropMeshes()
   const body = playerBody
   if (survivalOn()) flying = false
   if (!tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
@@ -1237,6 +1249,48 @@ bertyMat.specularColor = new Color3(0.04, 0.04, 0.04)
 bertyMat.emissiveColor = new Color3(0.1, 0.28, 0.26)
 berty.material = bertyMat
 noa.ents.addComponent(noa.playerEntity, noa.ents.names.mesh, { mesh: berty, offset: [0, 0.9, 0] })
+let dropReady = false
+const dropMeshes = new Map()
+const dropMats = new Map()
+const DROP_TINT = {
+  dirt: [0.55, 0.38, 0.22], log: [0.45, 0.28, 0.14], planks: [0.76, 0.58, 0.3],
+  stone: [0.55, 0.56, 0.6], sand: [0.86, 0.78, 0.48], gravel: [0.5, 0.5, 0.52],
+  brickRed: [0.78, 0.32, 0.22], glass: [0.55, 0.86, 0.92], berry: [0.78, 0.16, 0.28],
+  coal: [0.18, 0.18, 0.2], leaves: [0.28, 0.62, 0.3], grass: [0.32, 0.68, 0.3],
+  bread: [0.82, 0.62, 0.32], cupcake: [0.9, 0.45, 0.6], flour: [0.92, 0.88, 0.75],
+}
+function dropMat(item) {
+  if (dropMats.has(item)) return dropMats.get(item)
+  const c = DROP_TINT[item] || [0.15, 0.72, 0.68]
+  const m = new StandardMaterial('drop-' + item, scene)
+  m.diffuseColor = new Color3(c[0], c[1], c[2])
+  m.emissiveColor = new Color3(c[0] * 0.35, c[1] * 0.35, c[2] * 0.35)
+  m.specularColor = new Color3(0, 0, 0)
+  dropMats.set(item, m)
+  return m
+}
+function syncDropMeshes() {
+  if (!dropReady || !session || !session.groundDrops) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const list = session.groundDrops().filter((d) => Math.hypot(d.x - p[0], d.z - p[2]) < 40).slice(0, 48)
+  const seen = new Set()
+  const bob = REDUCE ? 0.2 : 0.2 + Math.sin(performance.now() / 280) * 0.06
+  for (const d of list) {
+    seen.add(d.id)
+    let mesh = dropMeshes.get(d.id)
+    if (!mesh) {
+      mesh = CreateBox('drop' + d.id, { size: 0.28 }, scene)
+      mesh.material = dropMat(d.item)
+      mesh.isPickable = false
+      noa.rendering.addMeshToScene(mesh, false)
+      dropMeshes.set(d.id, mesh)
+    }
+    const lp = noa.globalToLocal([d.x, d.y + bob, d.z], null, [])
+    mesh.position.set(lp[0], lp[1], lp[2])
+  }
+  for (const [id, mesh] of dropMeshes) if (!seen.has(id)) { mesh.dispose(); dropMeshes.delete(id) }
+}
+dropReady = true
 const s = 0.52
 const outline = CreateLines('bb-outline', {
   points: [

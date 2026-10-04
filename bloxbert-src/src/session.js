@@ -4,11 +4,12 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, make } from './craft.js'
+import { canMake } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
+import { mergeOrAdd, stepMagnet, canPick, nearEnough, pullLoose, PICK_R, noteId } from './drops.js'
 
 export function createSession(api) {
   const bag = createBag()
@@ -27,6 +28,8 @@ export function createSession(api) {
   const bagHist = []
   const redoBag = []
   const placedLeaves = new Set()
+  const ground = []
+  const lost = []
   wallet.state.day = day
   wallet.post({ kind: 'start', cogs: 0, by: 'you' })
 
@@ -35,6 +38,77 @@ export function createSession(api) {
   function today() {
     if (wallet.state.day !== day) { wallet.state.day = day; wallet.state.soldToday = {}; wallet.state.spentToday = 0 }
     return day
+  }
+  function spawnDrop(item, n, x, y, z, why) {
+    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now() })
+    if (where === 'lost') api.toast(t('lostFound'))
+    else if (why === 'q') api.toast(t('dropped'))
+    else if (why === 'full') api.toast(t('bagFull'))
+    if (api.markDirty) api.markDirty()
+    return where
+  }
+  function giveItem(item, n = 1) {
+    const left = bag.add(item, n)
+    if (n - left) paintHotbar()
+    if (left) {
+      const p = api.pos()
+      spawnDrop(item, left, p[0], p[1] + 0.3, p[2], 'full')
+    }
+    return left
+  }
+  function heading() { return api.heading ? api.heading() : 0 }
+  function dropHeld(all) {
+    if (mode !== 'survival') return
+    const s = bag.slots[hot]
+    if (!s) return
+    const n = all ? s.n : 1
+    const item = s.item
+    if (!bag.take(item, n)) return
+    const p = api.pos()
+    const h = heading()
+    spawnDrop(item, n, p[0] + Math.sin(h) * 0.8, p[1] + 0.3, p[2] + Math.cos(h) * 0.8, 'q')
+    paintHotbar()
+  }
+  function dropItem(item, all) {
+    if (mode !== 'survival' || !bag.count(item)) return
+    const n = all ? bag.count(item) : 1
+    if (!bag.take(item, n)) return
+    const p = api.pos()
+    spawnDrop(item, n, p[0], p[1] + 0.3, p[2], 'q')
+    paintHotbar()
+  }
+  function takeLost() {
+    let got = 0
+    for (let i = 0; i < lost.length;) {
+      const d = lost[i]
+      const left = bag.add(d.item, d.n)
+      got += d.n - left
+      if (left) { d.n = left; break }
+      lost.splice(i, 1)
+    }
+    if (got) { paintHotbar(); api.toast(t('pickedUp')); if (api.markDirty) api.markDirty() }
+    return got
+  }
+  function tickDrops(dt) {
+    if (mode !== 'survival' || !ground.length) return false
+    const p = api.pos()
+    const player = { x: p[0], y: p[1] + 0.9, z: p[2] }
+    const now = Date.now()
+    const moved = stepMagnet(ground, player, (dt || 16) / 1000, now)
+    let got = 0
+    for (let i = ground.length - 1; i >= 0; i--) {
+      const d = ground[i]
+      if (!canPick(d, now) || !nearEnough(d, player, PICK_R)) continue
+      const left = bag.add(d.item, d.n)
+      const took = d.n - left
+      if (!took) continue
+      got += took
+      if (left) d.n = left
+      else ground.splice(i, 1)
+    }
+    if (got) { paintHotbar(); api.toast(t('pickedUp')) }
+    if (moved || got) { if (api.markDirty) api.markDirty(); return true }
+    return false
   }
   function paintChip() {
     const el = document.getElementById('wallet-chip')
@@ -92,6 +166,10 @@ export function createSession(api) {
     const pay = quoteSell(item, wallet.state.soldToday[itemKey] || 0, wallet.state.dial || 1, { ...ECON, dial: wallet.state.dial })
     p.innerHTML = '<bdi>' + t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey) + '</bdi>'
     g.append(p)
+    if (mode === 'survival' && bag.count(itemKey)) {
+      g.append(btn(t('drop1'), () => { dropItem(itemKey, false); api.close() }))
+      g.append(btn(t('dropAll'), () => { dropItem(itemKey, true); api.close() }))
+    }
   }
   function itemIcon(item) {
     if (!item) return document.createElement('span')
@@ -127,6 +205,10 @@ export function createSession(api) {
       p.textContent = t('emptyBag')
       g.append(p)
     }
+    if (lost.length) {
+      const n = lost.reduce((s, d) => s + d.n, 0)
+      g.append(btn(t('lostBtn') + ' · ' + n, () => { takeLost(); g.innerHTML = ''; paintBag(g) }))
+    }
     bag.slots.forEach((s) => {
       const b = document.createElement('button')
       b.type = 'button'
@@ -160,9 +242,7 @@ export function createSession(api) {
       if (!gate.ok && gate.why === 'bench') b.querySelector('.glbl').textContent = t('needsBench')
       b.disabled = !gate.ok
       b.addEventListener('click', () => {
-        if (!make(r, bag)) { api.toast(t('bagFull')); return }
-        paintHotbar()
-        api.toast(t('make') + ' ' + itemName(r.out[0]))
+        craftOne(r)
         g.innerHTML = ''
         paintCraft(g)
       })
@@ -326,6 +406,18 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
+  function craftOne(r) {
+    const stations = { bench: near('bench'), oven: near('oven') }
+    if (!canMake(r, bag, stations).ok) return false
+    for (const [item, n] of r.in) bag.take(item, n)
+    const left = bag.add(r.out[0], r.out[1])
+    if (left) {
+      const p = api.pos()
+      spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
+    } else api.toast(t('make') + ' ' + itemName(r.out[0]))
+    paintHotbar()
+    return true
+  }
   function sell(k, n) {
     today()
     const item = ITEMS[k]
@@ -365,17 +457,25 @@ export function createSession(api) {
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (x >= 4 && x <= 13 && z >= 4 && z <= 11 && y >= 4 && y <= 9) { api.toast(t('shopProtected')); return false }
     const drop = dropOf(id)
-    if (drop && bag.add(drop, 1)) { api.toast(t('bagFull')); return false }
+    let got = 0
+    let loose = 0
+    if (drop) {
+      const left = bag.add(drop, 1)
+      got = 1 - left
+      loose = left
+      if (left) spawnDrop(drop, left, x + 0.5, y + 0.4, z + 0.5, 'full')
+    }
     if (id === 12 && !placedLeaves.has(x + ',' + y + ',' + z)) {
       const spot = x + ',' + y + ',' + z
       const h = (x * 374761393 + y * 668265263 + z * 1274126177) >>> 0
       if (!wallet.state.picked.includes(spot) && (h / 4294967296) < 0.33) {
         wallet.state.picked.push(spot)
-        bag.add('berry', 1)
+        const berryLeft = bag.add('berry', 1)
+        if (berryLeft) spawnDrop('berry', berryLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
       }
     }
     if (id === 24 || id === 26) return false
-    bagHist.push({ type: 'break', item: drop, n: drop ? 1 : 0 })
+    bagHist.push({ type: 'break', item: drop, n: got, loose })
     return true
   }
   function onPlace(x, y, z, id) {
@@ -410,7 +510,8 @@ export function createSession(api) {
   function beforeUndo() {
     if (mode !== 'survival' || !bagHist.length) return true
     const h = bagHist[bagHist.length - 1]
-    if (h.type === 'break' && h.item && bag.count(h.item) < h.n) { api.toast(t('alreadyLeft')); return false }
+    if (h.type === 'break' && h.item && h.n && bag.count(h.item) < h.n) { api.toast(t('alreadyLeft')); return false }
+    if (h.type === 'break' && h.loose && !pullLoose(ground, lost, (k) => bag.count(k), (k, n) => bag.take(k, n), h.item, h.loose)) { api.toast(t('alreadyLeft')); return false }
     return true
   }
   function afterUndo() {
@@ -418,7 +519,7 @@ export function createSession(api) {
     const h = bagHist.pop()
     if (!h) return
     if (h.type === 'place') bag.add(h.item, h.n)
-    if (h.type === 'break' && h.item) bag.take(h.item, h.n)
+    if (h.type === 'break' && h.item && h.n) bag.take(h.item, h.n)
     redoBag.push(h)
     paintHotbar()
   }
@@ -434,7 +535,13 @@ export function createSession(api) {
     if (!h) return
     bagHist.push(h)
     if (h.type === 'place') bag.take(h.item, h.n)
-    if (h.type === 'break' && h.item) bag.add(h.item, h.n)
+    if (h.type === 'break' && h.item) {
+      if (h.n) bag.add(h.item, h.n)
+      if (h.loose) {
+        const p = api.pos()
+        spawnDrop(h.item, h.loose, p[0], p[1] + 0.3, p[2], 'full')
+      }
+    }
     paintHotbar()
   }
   function vendTick(n = 1) {
@@ -461,7 +568,7 @@ export function createSession(api) {
   function dump() {
     const m = {}
     for (const [k, v] of meta) m[k] = v
-    return { player: { mode, bag: bag.dump(), hot, home, table: api.tableOn() }, econ: wallet.dump(), meta: m }
+    return { player: { mode, bag: bag.dump(), hot, home, table: api.tableOn() }, econ: wallet.dump(), meta: m, drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })), lost: lost.map((d) => ({ item: d.item, n: d.n })) }
   }
   function load(doc) {
     mode = (doc.player && doc.player.mode) || 'creative'
@@ -473,13 +580,21 @@ export function createSession(api) {
     meta.clear()
     for (const [k, v] of Object.entries(doc.meta || {})) meta.set(k, v)
     day = wallet.state.day || day
+    ground.length = 0
+    lost.length = 0
+    for (const d of doc.drops || []) {
+      if (!d || !ITEMS[d.item] || !(d.n > 0)) continue
+      ground.push({ id: d.id || ground.length + 1, x: +d.x || 0, y: +d.y || 0, z: +d.z || 0, item: d.item, n: d.n | 0, at: d.at || 0 })
+      noteId(d.id || 0)
+    }
+    for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0 })
     paintChip(); paintHotbar()
   }
   function setMode(next) { mode = next; paintChip(); paintHotbar() }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
-    give: (item, n) => bag.add(item, n || 1),
+    give: (item, n) => giveItem(item, n || 1),
     spend: (item, n) => bag.take(item, n),
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
@@ -490,7 +605,8 @@ export function createSession(api) {
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
-    give(item, n) { bag.add(item, n); paintHotbar() },
+    give(item, n) { giveItem(item, n) },
     blockForHot() { const k = selectedItem(); return k && ITEMS[k] && ITEMS[k].block },
+    dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
   }
 }

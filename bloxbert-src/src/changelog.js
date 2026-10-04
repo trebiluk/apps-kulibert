@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.24', date: '2026-10-04', lines: {
+    en: ['A full bag still breaks the block.', 'The piece waits on the ground.', 'Q drops one. Shift+Q drops the stack.'],
+    uk: ['Повна сумка все одно ламає блок.', 'Шматок чекає на землі.', 'Q кидає 1. Shift+Q кидає стос.'],
+    ru: ['Полная сумка всё равно ломает блок.', 'Кусок ждёт на земле.', 'Q бросает 1. Shift+Q бросает стопку.'],
+    es: ['La bolsa llena igual rompe el bloque.', 'La pieza espera en el suelo.', 'Q suelta uno. Mayús+Q suelta la pila.'],
+    ar: ['الحقيبة الممتلئة تكسر المكعب أيضاً.', 'القطعة تنتظر على الأرض.', 'Q يُسقط واحداً. Shift+Q يُسقط الكومة.'],
+    'fa-AF': ['بکس پر هم بلاک را می‌شکند.', 'تکه روی زمین می‌ماند.', 'Q یکی می‌اندازد. Shift+Q همه را.'],
+    rw: ['Agasaho karuzuye karavunagura block.', 'Igice kitera hasi.', 'Q ikubita 1. Shift+Q ikubita byose.'],
+    ti: ['ቦርሳ ምሉእ እኳ ብሎክ ይስብር።', 'እቲ ቁራጽ ኣብ መሬት ይጸንሕ።', 'Q ሓደ የውድቕ። Shift+Q ዓምቦ የውድቕ።'],
+  }},
   { v: '2.5.23', date: '2026-10-04', lines: {
     en: ['A brighter sky and a soft horizon.', 'Berty wears a teal suit.', 'The block you hold shows its name.'],
     uk: ['Яскравіше небо і м’який обрій.', 'Берті в бірюзовому костюмі.', 'Блок у руці показує назву.'],
