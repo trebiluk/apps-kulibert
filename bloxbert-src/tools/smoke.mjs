@@ -108,6 +108,32 @@ if (testUrl) {
   await new Promise((r) => setTimeout(r, 800))
   const dari = await page.evaluate(() => window.__smoke.brick())
   note('dari brick', 412, dari === 'خشت سرخ', dari)
+  const place = await page.evaluate(() => getComputedStyle(document.getElementById('t-place')).backgroundColor)
+  note('place contrast', 412, place === 'rgb(15, 23, 42)', place)
+  for (const [lang, title] of [['ar', 'القائمة'], ['fa-AF', 'فهرست'], ['uk', 'Меню'], ['ru', 'Меню']]) {
+    await page.goto(testUrl + '?lang=' + lang + '&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await new Promise((r) => setTimeout(r, 700))
+    await page.evaluate(() => document.getElementById('game-menu').click())
+    await new Promise((r) => setTimeout(r, 250))
+    const seen = await page.evaluate(() => document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent)
+    note(lang + ' menu', 412, seen === title, seen)
+  }
+  await page.goto(testUrl + '?lang=es&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await new Promise((r) => setTimeout(r, 700))
+  await page.evaluate(() => document.getElementById('game-menu').click())
+  await new Promise((r) => setTimeout(r, 250))
+  const settings = await page.evaluate(() => {
+    const tile = [...document.querySelectorAll('#sheet .gtile')].find((b) => b.textContent.includes('Ajustes'))
+    if (tile) tile.click()
+    return document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent
+  })
+  note('es settings', 412, settings === 'Ajustes', settings)
+  const day = await page.evaluate(() => {
+    const tile = [...document.querySelectorAll('#sheet .gtile')].find((b) => b.textContent.includes('Siempre'))
+    if (tile) tile.click()
+    return document.documentElement.dataset.alwaysDay
+  })
+  note('always day', 412, day === '1', day)
   await browser.close()
   if (checks.some((c) => !c[2]) || errs.length) process.exit(1)
   process.exit(0)

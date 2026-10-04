@@ -265,7 +265,11 @@ export function createSession(api) {
     }
   }
   function paintSettings(g) {
-    g.append(btn(t('teacher'), () => api.open('teacher')))
+    g.append(btn(t('alwaysDay'), () => {
+      const on = document.documentElement.dataset.alwaysDay === '1'
+      document.documentElement.dataset.alwaysDay = on ? '0' : '1'
+      api.toast(t('alwaysDay'))
+    }))
     const n = document.createElement('p')
     n.className = 'gnote'
     n.textContent = t('onDevice')
