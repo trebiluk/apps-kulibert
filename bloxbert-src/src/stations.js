@@ -74,10 +74,13 @@ export function createStations(api) {
       g.append(b)
     }
     if (r.until) {
+      const left = Math.max(0, Math.ceil((r.until - Date.now()) / 1000))
       const ring = document.createElement('div')
-      ring.innerHTML = '<svg viewBox="0 0 36 36" width="48" height="48"><circle cx="18" cy="18" r="15" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="' + Math.round((r.until - Date.now()) / 50) + ' 100"/></svg><span>6 s</span>'
+      ring.innerHTML = '<svg viewBox="0 0 36 36" width="48" height="48"><circle cx="18" cy="18" r="15" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="' + (left * 10) + ' 100"/></svg><span>' + left + ' s</span>'
       g.append(ring)
     }
+    clearTimeout(paint.timer)
+    paint.timer = setTimeout(() => { if (g.isConnected) paint(g, key, kind) }, 1000)
   }
   return { tick, paint, view, addFuel, addInput, take, dump: () => Object.fromEntries(map), load: (obj) => { map.clear(); for (const [k, v] of Object.entries(obj || {})) map.set(k, v) } }
 }

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.8'
+const VERSION = '2.5.9'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -371,6 +371,7 @@ async function snapshot() {
     palette: ['air', ...BLOCKS.map((b) => b[1])],
     chunks, updatedAt: new Date().toISOString(),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
+    stations: stations.dump(),
   }
 }
 async function save() {
@@ -411,6 +412,7 @@ async function applyDoc(doc) {
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   if (Array.isArray(doc.spawn) && doc.spawn.every(Number.isFinite)) noa.entities.setPosition(noa.playerEntity, doc.spawn)
   if (session) session.load(fromDoc(doc))
+  if (doc.stations) stations.load(doc.stations)
 }
 async function importFile(file) {
   if (file.size > 2 * 1024 * 1024) throw new Error('That file is too big for a world (over 2 MB).')
@@ -516,6 +518,9 @@ const learn = createLearn({
 const tools = createTools({
   t, toast, getVoxel,
   survival: () => session && session.mode === 'survival',
+  have: (id) => session && session.haveBlock ? session.haveBlock(id) : 0,
+  spendBlock: (id, n) => session && session.spendBlock && session.spendBlock(id, n),
+  blockName: (id) => blockName(id),
   names: () => ['air', ...BLOCKS.map((b) => b[1])],
   current: () => current,
   aim: () => (noa.targetedBlock ? noa.targetedBlock.adjacent : [8, 6, 8]),
@@ -1129,7 +1134,7 @@ if (!__BLOX_STUDENT__) {
 }
 
 load().catch(() => {}).finally(() => markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved')))
-if (location.search.includes('smoke=1')) {
+if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   window.__smoke = {
     seed() {
       session.setMode('survival')
@@ -1143,7 +1148,11 @@ if (location.search.includes('smoke=1')) {
     key(i) { session.setHot(i) },
     hot: () => session.hot,
     place: () => session.tryPlace(),
-    counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand') }),
+    counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand'), log: session.bag.count('log'), cupcake: session.bag.count('cupcake'), vend: session.bag.count('vend') }),
+    fill(n) { session.setMode('survival'); session.give('log', n); tools.select([0, 5, 0], [2, 6, 1]); return tools.fill(11) },
+    oven() { stations.addFuel('1,2,3'); stations.addInput('1,2,3', 'sand'); return stations.view('1,2,3') },
+    pickup() { session.setMode('survival'); session.meta.set('1,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 12, sales: [] }); session.pickup(1, 2, 3, 24); return session.bag.count('vend') + ':' + session.bag.count('cupcake') },
+    sale() { session.setMode('survival'); session.meta.set('4,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 0, sales: [], salesN: 0 }); session.vendTick(2); const rows = session.wallet.state.ledger.filter((r) => r.kind === 'vend-sale'); return rows.reduce((n, r) => n + r.cogs, 0) },
   }
 }
 repaintBlocks()

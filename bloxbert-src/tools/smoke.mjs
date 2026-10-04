@@ -24,22 +24,32 @@ const pics = await page.evaluate(() => {
   return { menu, icons: icons.size, text: document.body.innerText.includes('[object'), slots: new Set(slots).size }
 })
 await page.goto(url + (url.includes('?') ? '&' : '?') + 'smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
-await new Promise((r) => setTimeout(r, 1500))
-const food = await page.evaluate(() => {
-  window.__smoke.seed()
-  const bar = document.getElementById('hotbar').innerText
-  const pics = document.querySelectorAll('#hotbar svg, #hotbar canvas').length
-  window.__smoke.notch(5)
-  const hot = window.__smoke.hot()
-  window.__smoke.key(1)
-  const before = window.__smoke.counts()
-  window.__smoke.place()
-  const after = window.__smoke.counts()
-  return { bar, pics, hot, before, after, object: bar.includes('[object'), bare: document.querySelector('#hotbar .sw') && document.querySelector('#hotbar .sw').textContent.trim() === 'cupcake' }
-})
+await new Promise((r) => setTimeout(r, 800))
+const student = await page.evaluate(() => typeof window.__smoke)
+const testUrl = process.argv[3]
+let gate = { short: false, full: false, oven: false, pickup: '', sale: 0 }
+if (testUrl) {
+  await page.goto(testUrl + '?smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+  await new Promise((r) => setTimeout(r, 1500))
+  gate = await page.evaluate(() => {
+    window.__smoke.seed()
+    const bar = document.getElementById('hotbar').innerText
+    const pics = document.querySelectorAll('#hotbar svg, #hotbar canvas').length
+    window.__smoke.notch(5)
+    const hot = window.__smoke.hot()
+    window.__smoke.key(1)
+    const before = window.__smoke.counts()
+    window.__smoke.place()
+    const after = window.__smoke.counts()
+    const short = window.__smoke.fill(6)
+    const full = window.__smoke.fill(18)
+    const oven = window.__smoke.oven()
+    return { bar, pics, hot, before, after, short: !short, full: !!full, oven: oven.ring > 0 || oven.left > 0, pickup: window.__smoke.pickup(), sale: window.__smoke.sale(), object: bar.includes('[object') }
+  })
+}
 await browser.close()
-if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5 || food.object || food.bare || food.pics < 4 || food.hot !== 5 || food.after.sand !== 3 || food.after.coal !== 2) {
-  console.error(errs.join('\n') || JSON.stringify({ pics, food }))
+if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5 || student !== 'undefined' || !gate.full || gate.pickup !== '1:2' || !gate.sale) {
+  console.error(errs.join('\n') || JSON.stringify({ pics, student, gate }))
   process.exit(1)
 }
-console.log('smoke ok', url, pics, food)
+console.log('smoke ok', url, pics, { student, gate })

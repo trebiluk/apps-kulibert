@@ -33,6 +33,11 @@ export function createTools(api) {
       if (api.survival() && api.getVoxel(x, y, z) === 21) continue
       ops.push([x, y, z, id])
     }
+    if (api.survival && api.survival()) {
+      const have = api.have ? api.have(id) : 0
+      if (have < ops.length) { api.toast(api.t('needMore').replace('{n}', ops.length - have).replace('{item}', api.blockName(id))); return null }
+      if (api.spendBlock) api.spendBlock(id, ops.length)
+    }
     return api.apply(ops, 'Fill ' + ops.length)
   }
   function copy() {

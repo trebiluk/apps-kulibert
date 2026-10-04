@@ -284,7 +284,24 @@ export function createSession(api) {
       g.append(btn((s ? itemName(s.item) + ' ' + s.n + ' ⚙ ' + s.price : t('stock')) + ' ' + (i + 1), () => stock(key, i)))
     })
     g.append(btn(t('takeTill') + ' ⚙ ' + rec.till, () => { takeTill(key); paintCounter(g, key) }))
-    g.append(btn('🧹 ' + t('pickup'), () => { if (confirm(t('pickup'))) { const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() } }))
+    g.append(btn('🧹 ' + t('pickup'), () => {
+      const ask = document.createElement('div')
+      ask.className = 'ggrid'
+      const yes = document.createElement('button')
+      yes.type = 'button'
+      yes.className = 'gtile'
+      yes.innerHTML = '<span class="gic">✓</span><span class="glbl"></span>'
+      yes.querySelector('.glbl').textContent = t('pickup')
+      yes.addEventListener('click', () => { const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() })
+      const no = document.createElement('button')
+      no.type = 'button'
+      no.className = 'gtile'
+      no.innerHTML = '<span class="gic">✕</span><span class="glbl"></span>'
+      no.querySelector('.glbl').textContent = t('no')
+      no.addEventListener('click', () => ask.remove())
+      ask.append(yes, no)
+      g.append(ask)
+    }))
     const profit = (rec.sales || []).reduce((n, s) => n + s.cogs, 0) - wallet.state.spentToday
     const line = document.createElement('p')
     line.className = 'gnote'
@@ -373,6 +390,7 @@ export function createSession(api) {
       const rec = meta.get(key)
       if (rec) {
         for (const s of rec.slots) if (s) bag.add(s.item, s.n)
+        bag.add('vend', 1)
         if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
         meta.delete(key)
       }
@@ -425,7 +443,7 @@ export function createSession(api) {
         if (!rec.slots[hit.i].n) rec.slots[hit.i] = null
         rec.till += hit.cogs
         rec.sales = (rec.sales || []).concat([{ at: Date.now(), item: hit.item, n: hit.n, cogs: hit.cogs }]).slice(-20)
-        wallet.post({ kind: 'vend-sale', item: hit.item, n: hit.n, cogs: 0, by: 'townsfolk' })
+        wallet.post({ kind: 'vend-sale', item: hit.item, n: hit.n, cogs: hit.cogs, by: 'townsfolk' })
         sales++
         api.toast(t('townBought').replace('{n}', hit.n).replace('{item}', itemName(hit.item)).replace('{cogs}', hit.cogs))
       }
@@ -454,7 +472,8 @@ export function createSession(api) {
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
     give: (item, n) => bag.add(item, n || 1),
-    spend: (item, n) => bag.take(item, n),
+    spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.take(hit[0], n) : false },
+    haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
     setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
     tryPlace: () => { const k = selectedItem(); const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
