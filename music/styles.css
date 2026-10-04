@@ -2912,3 +2912,12 @@ body.mu237.tab-score.is-both #drums-pane {
   overflow: auto !important;
 }
 body.mu237.tab-score.is-both #drums { max-height: none !important; overflow: visible !important; }
+body.mu237.show #perform-exit:not([hidden]) {
+  display: inline-flex !important;
+  position: absolute !important;
+  z-index: 6;
+  top: 8px;
+  inset-inline-start: 8px;
+  min-width: 44px;
+  min-height: 44px;
+}
