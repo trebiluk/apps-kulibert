@@ -422,6 +422,21 @@
       "permanent": false
     },
     {
+      "source": "/bertapult",
+      "destination": "/catapult/",
+      "permanent": false
+    },
+    {
+      "source": "/bertapult/",
+      "destination": "/catapult/",
+      "permanent": false
+    },
+    {
+      "source": "/bertapult/:path*",
+      "destination": "/catapult/:path*",
+      "permanent": false
+    },
+    {
       "source": "/kidcad",
       "destination": "/bertycad/",
       "permanent": true
