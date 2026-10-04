@@ -287,6 +287,10 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => {
       const ask = document.createElement('div')
       ask.className = 'ggrid'
+      const card = document.createElement('p')
+      card.className = 'gnote'
+      card.innerHTML = '<img alt="" src="assets/tile-vend.png" width="48" height="48"> '
+      card.append(document.createTextNode(t('pickup') + '?'))
       const yes = document.createElement('button')
       yes.type = 'button'
       yes.className = 'gtile'
@@ -299,7 +303,7 @@ export function createSession(api) {
       no.innerHTML = '<span class="gic">✕</span><span class="glbl"></span>'
       no.querySelector('.glbl').textContent = t('no')
       no.addEventListener('click', () => ask.remove())
-      ask.append(yes, no)
+      ask.append(card, yes, no)
       g.append(ask)
     }))
     const profit = (rec.sales || []).reduce((n, s) => n + s.cogs, 0) - wallet.state.spentToday
@@ -473,7 +477,7 @@ export function createSession(api) {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
     give: (item, n) => bag.add(item, n || 1),
     spend: (item, n) => bag.take(item, n),
-    spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.take(hit[0], n) : false },
+    spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
     noteBag: (need) => { for (const [id, n] of Object.entries(need)) { const hit = Object.entries(ITEMS).find(([, v]) => v.block === +id); if (hit) bagHist.push({ type: 'place', item: hit[0], n }) } },
     setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
