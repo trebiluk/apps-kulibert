@@ -2981,3 +2981,13 @@ body.mu237.tab-score.is-both #drums { flex: 1 1 auto !important; min-height: 64p
     z-index: 25;
   }
 }
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237.tab-score.is-both #drums-pane { overflow: hidden !important; }
+  body.mu237.tab-score.is-both #drums {
+    position: absolute !important;
+    inset: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: auto !important;
+  }
+}
