@@ -16,6 +16,7 @@ export function mountPanels(api) {
     return b
   }
   function show(id, label, fill, root) {
+    if (id === 'menu' && api.holdTour) api.holdTour()
     if (root) stack = ['menu']
     else if (stack[stack.length - 1] !== id) stack.push(id)
     sheet.hidden = false
@@ -34,7 +35,10 @@ export function mountPanels(api) {
     api.onClose()
   }
   function backOne() {
-    if (stack.length <= 1) { close(); return }
+    if (stack.length <= 1) {
+      if (stack[0] === 'tour') { openRoot(); return }
+      close(); return
+    }
     stack.pop()
     open(stack[stack.length - 1] || 'menu')
   }

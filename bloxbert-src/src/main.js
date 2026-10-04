@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.20'
+const VERSION = '2.5.21'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
@@ -472,6 +472,7 @@ const stations = createStations({ t, give: (item, n) => session && session.give 
   g.fillRect(0, 0, 32, 32)
   return c
 } })
+let holdTour = () => {}
 panels = mountPanels({
   t, toast,
   save: () => save(),
@@ -522,12 +523,15 @@ panels = mountPanels({
     }
   },
   paintStation: (g, key, kind) => stations.paint(g, key || '0,5,0', kind || 'oven'),
+  holdTour: () => holdTour(),
 })
 const learn = createLearn({
   t, toast, close: () => panels.close(),
   openTour: () => panels.open('tour'),
+  panel: () => (panels && panels.openPanel) || '',
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
 })
+holdTour = () => learn.cancelAuto()
 const tools = createTools({
   t, toast, getVoxel,
   survival: () => session && session.mode === 'survival',
@@ -701,7 +705,14 @@ paintBar()
 function repaintBlocks() { paintBar() }
 
 const drawer = $('drawer'), scrim = $('scrim')
+function tuckBarDrawer() {
+  const d = document.getElementById('kb-drawer')
+  if (d) d.hidden = true
+  const back = document.getElementById('kb-drawer-backdrop')
+  if (back) back.hidden = true
+}
 function openMenu(on) {
+  if (on && learn) learn.cancelAuto()
   if (on) {
     selfUnlock = true
     if (document.pointerLockElement) document.exitPointerLock()
@@ -710,6 +721,8 @@ function openMenu(on) {
     panels.openRoot()
     try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
     const hint = $('menu-hint'); if (hint) hint.hidden = true
+    tuckBarDrawer()
+    setTimeout(tuckBarDrawer, 400)
   } else {
     panels.close()
     try { noa.setPaused(false) } catch (e) {}
@@ -717,7 +730,18 @@ function openMenu(on) {
   }
   drawer.classList.remove('open'); scrim.hidden = true
   $('menu-btn').setAttribute('aria-expanded', String(!!on))
+  const gm = $('game-menu')
+  if (gm) gm.setAttribute('aria-expanded', String(!!on))
 }
+function bindBarMenu() {
+  const btn = document.querySelector('.kb-bar .kb-menu')
+  if (!btn || btn.dataset.bertMenu === '1') return
+  btn.dataset.bertMenu = '1'
+  btn.addEventListener('click', () => openMenu(true))
+}
+bindBarMenu()
+setTimeout(bindBarMenu, 300)
+setTimeout(bindBarMenu, 1200)
 $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contains('open')))
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))

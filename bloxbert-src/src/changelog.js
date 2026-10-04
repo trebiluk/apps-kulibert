@@ -1,4 +1,9 @@
 export const CHANGELOG = [
+  { v: '2.5.21', date: '2026-10-04', lines: {
+    en: ['Arabic and Dari menu taps open the menu.', 'The tour does not replace the menu.'],
+    ar: ['نقرة القائمة تفتح القائمة.', 'الجولة لا تحل محل القائمة.'],
+    'fa-AF': ['زدن فهرست، فهرست را باز می‌کند.', 'گشت جای فهرست را نمی‌گیرد.'],
+  }},
   { v: '2.5.1', date: '2026-10-03', lines: {
     en: ['New name: Bertopia.', 'Same Bertyville world.', 'See every change here.'],
     uk: ['Нова назва: Бертопія.', 'Той самий Бертивіль.', 'Усі зміни тут.', 'Світ копіюється спершу.'],

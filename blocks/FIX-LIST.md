@@ -1,9 +1,21 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 4 2026, 7:40 AM ET.
+Updated Sun Oct 4 2026, after the 2.5.21 menu ship.
 
 ## 1. Live now
-- **Bertopia 2.5.14**, commit `d47a8d3` ("the oven strip stays until a tile tap", 7:04 AM ET), at https://apps.kulibert.net/blocks/
+- **Bertopia 2.5.21** ships the open fail from 2.5.20 (`7a261a0`): Arabic and Dari menu taps were opening the picture tour. A menu tap now opens the menu, and the tour cannot replace it.
+- Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
+- Plate on 2.5.20 was already Bertopia 2.5.20 at https://apps.kulibert.net/blocks/ before this ship. Confirm the plate reads Bertopia 2.5.21 after deploy.
+- **Do not start lanterns, doors, or the core-mechanics lock until this menu fix is proven.**
+
+## 2. Open fixes
+- [x] **Menu (2.5.21):** Arabic (`القائمة`) and Dari (`فهرست`) menu taps opened the tour (`جولة` / `گشت`). Spanish, Ukrainian, and Russian already passed. The auto tour now gives way to the menu.
+- [ ] Lanterns, doors, and the core-mechanics lock stay closed until the 2.5.21 menu is proven.
+
+## 3. Next up
+Shipped bugfix plates 2.5.15 through 2.5.21 are not the feature rows below. Those feature rows stay locked until the Arabic and Dari menu is proven.
+
+The rest of this list is the Oct 4 morning queue (it still names 2.5.14 as live). Do not treat that older "Live now" as the plate.
 - **Proof verdict: FAIL** (Oct 4, 7:12–7:35 AM ET; live app.js byte-identical to the d47a8d3 build). Proof: `proof/bertopia-2514/RESULT.md` (Debugzy's box).
 - Now passing: the Oven strip stays past 3 s; a tile spends the whole recipe (Sand 2 → Glass, Flour 2 → Bread, Flour 1 shows no Bread tile); the chip reads Survival after reload; tour steps 1–6 in all 8 languages.
 - Still passing: Copy/Paste (Creative and Survival, half-air), Fill/Walls + Undo/Redo, pickBlock toasts (en, ru), sale ⚙ 6 and Take till once, Pick up card, Save → reload keeps the world, 0 console errors, ☰ by touch, Esc 6/6, no test hooks on live. `#kp-live` isn't on `/blocks/` (prefs not loaded), so hotbar slot 1 is clear.

@@ -118,6 +118,30 @@ if (testUrl) {
     const seen = await page.evaluate(() => document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent)
     note(lang + ' menu', 412, seen === title, seen)
   }
+  for (const [lang, title, tour] of [['ar', 'القائمة', 'جولة'], ['fa-AF', 'فهرست', 'گشت']]) {
+    await page.goto(testUrl + '?lang=' + lang + '&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
+    await page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
+    await new Promise((r) => setTimeout(r, 200))
+    await page.evaluate(() => document.getElementById('game-menu').click())
+    await new Promise((r) => setTimeout(r, 900))
+    const held = await page.evaluate(() => ({
+      panel: document.getElementById('sheet').dataset.panel,
+      title: document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent,
+      hidden: document.getElementById('sheet').hidden,
+    }))
+    note(lang + ' menu holds', 412, !held.hidden && held.panel === 'menu' && held.title === title && held.title !== tour, JSON.stringify(held))
+    await page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
+    await new Promise((r) => setTimeout(r, 900))
+    await page.evaluate(() => document.getElementById('game-menu').click())
+    await new Promise((r) => setTimeout(r, 400))
+    const late = await page.evaluate(() => ({
+      panel: document.getElementById('sheet').dataset.panel,
+      title: document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent,
+    }))
+    note(lang + ' menu after tour', 412, late.panel === 'menu' && late.title === title && late.title !== tour, JSON.stringify(late))
+  }
   await page.goto(testUrl + '?lang=es&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
   await new Promise((r) => setTimeout(r, 700))
   await page.evaluate(() => document.getElementById('game-menu').click())

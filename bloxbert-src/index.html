@@ -153,7 +153,9 @@ html[data-kb-bar]:not(.kb-framed) #game-menu{top:calc(48px + var(--top-h) + 8px)
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
 .sheet-bar button{min-width:48px;min-height:48px;background:rgba(11,18,32,.85);color:#f8fafc;border:1px solid var(--teal);border-radius:10px}
 html[dir=rtl] #fs-btn{right:12px;left:auto}
-html[dir=rtl] #game-menu{left:12px;right:auto}
+html[dir=rtl] .sheet-bar{direction:ltr}
+.kb-bar .kb-menu{position:relative;z-index:3;unicode-bidi:isolate}
+.kb-bar .kb-menu::after{content:"";position:absolute;inset:-8px -32px}
 #tool-strip{position:fixed;left:8px;right:8px;bottom:78px;z-index:6;display:flex;gap:6px;overflow:auto;background:rgba(11,18,32,.85);border:1px solid var(--teal);border-radius:12px;padding:6px}
 #tool-strip button{min-width:48px;min-height:48px;background:transparent;color:#f8fafc;border:1px solid rgba(34,211,238,.45);border-radius:10px}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
@@ -173,7 +175,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.20</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.21</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -182,7 +184,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti">⬇</span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
-<button id="game-menu" type="button" aria-label="Menu">☰<small>⏸</small></button>
+<button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false">☰<small>⏸</small></button>
 <button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
 <div id="menu-hint" hidden></div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
@@ -283,7 +285,7 @@ html[dir=rtl] #game-menu{left:12px;right:auto}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.20" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.20" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.21" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.21" defer></script>
 </body>
 </html>

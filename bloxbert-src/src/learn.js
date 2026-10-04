@@ -79,6 +79,17 @@ export function createLearn(api) {
     gentle.addEventListener('click', () => a11y({ gentle: !a11y().gentle }))
     g.append(b, gentle)
   }
-  if (!state.tourDone) setTimeout(() => api.openTour && api.openTour(), 600)
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, goals: () => goals }
+  let autoToken = 0
+  let menuHolds = false
+  function cancelAuto() { menuHolds = true; autoToken += 1 }
+  function armAuto() {
+    const token = ++autoToken
+    setTimeout(() => {
+      if (token !== autoToken || menuHolds || state.tourDone) return
+      if (api.panel && api.panel()) return
+      api.openTour && api.openTour()
+    }, 600)
+  }
+  if (!state.tourDone) armAuto()
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, goals: () => goals, cancelAuto }
 }
