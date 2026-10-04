@@ -2969,3 +2969,15 @@ body.mu237.tab-score.is-both #drums { flex: 1 1 auto !important; min-height: 64p
   }
   body.mu237.tab-score.is-both #notes-pane { padding-bottom: 80px !important; }
 }
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237.tab-score.is-both #drums-pane {
+    position: fixed !important;
+    left: var(--rail) !important;
+    right: 0 !important;
+    bottom: var(--player) !important;
+    top: auto !important;
+    height: 72px !important;
+    max-height: 72px !important;
+    z-index: 25;
+  }
+}
