@@ -1401,7 +1401,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.8",
+        version: "MU 2.35.9",
         event: "score",
         level: id,
         score: score,
@@ -1616,6 +1616,8 @@
     $("now-line").textContent = mu("thatsSong");
     const bar = $("show-bar");
     if (bar) bar.style.width = "100%";
+    const exit = $("perform-exit");
+    if (exit) exit.hidden = true;
     state.kick = true;
     state.snare = true;
     state.bins[2] = 255;
@@ -2072,11 +2074,13 @@
     else if (tab === "remix") chooseWorkspace("notes");
     else if (tab === "mix") chooseWorkspace("beat");
     else if (tab === "piano") chooseWorkspace("sound");
-    else if (tab === "score") chooseWorkspace(state.mode === "both" ? "both" : "notes");
+    else if (tab === "score") chooseWorkspace("both");
     else if (tab === "band") chooseWorkspace("band");
     else if (tab === "viz") chooseWorkspace("lights");
     state.tabLock = null;
     paintTabs(tab);
+    if (stageApi && stageApi.kick) stageApi.kick();
+    if (stageApi && stageApi.resize) stageApi.resize();
     if (tab === "score" || tab === "piano" || state.mode === "both" || state.mode === "notes") {
       window.requestAnimationFrame(() => renderStaff());
     }
@@ -2174,6 +2178,15 @@
   $("show-again").addEventListener("click", beginShow);
   $("curtain-exit").addEventListener("click", closeShow);
   if ($("perform-exit")) $("perform-exit").addEventListener("click", closeShow);
+  window.addEventListener("pagehide", () => {
+    const exit = $("perform-exit");
+    if (exit) exit.hidden = true;
+    document.body.classList.remove("show");
+  });
+  document.addEventListener("click", (ev) => {
+    const home = ev.target && ev.target.closest && ev.target.closest(".kb-home, .kb-drawer-home");
+    if (home && document.body.classList.contains("show")) closeShow();
+  });
   $("bow-exit").addEventListener("click", closeShow);
   $("mute-btn").addEventListener("click", () => {
     state.muted = !state.muted;
@@ -2911,6 +2924,7 @@
     if (e.key === "Escape") {
       closeMenu();
       closeMore();
+      if (document.body.classList.contains("show")) closeShow();
     }
   });
   function markLang() {
@@ -4430,7 +4444,14 @@
         b.className = "btn";
         b.dataset.scene = name;
         b.dataset.wall = packs[name].wall;
-        b.textContent = mu("scene_" + name.toLowerCase()) || name;
+        b.textContent = "";
+        b.setAttribute("aria-label", mu("scene_" + name.toLowerCase()) || name);
+        const thumb = document.createElement("canvas");
+        thumb.width = 160;
+        thumb.height = 90;
+        thumb.setAttribute("aria-hidden", "true");
+        paintSceneThumb(thumb, packs[name]);
+        b.appendChild(thumb);
         b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", () => {
           const pack = packs[name];
@@ -4466,8 +4487,16 @@
           const on = btn === active;
           btn.classList.toggle("on", on);
           btn.setAttribute("aria-pressed", on ? "true" : "false");
-          const label = mu("scene_" + String(btn.dataset.scene || "").toLowerCase()) || (btn.dataset.scene || "");
-          btn.textContent = on ? label + " ✓" : label;
+          btn.classList.toggle("on", on);
+          btn.setAttribute("aria-pressed", on ? "true" : "false");
+          let mark = btn.querySelector(".tick");
+          if (on && !mark) {
+            mark = document.createElement("span");
+            mark.className = "tick";
+            mark.textContent = "✓";
+            btn.appendChild(mark);
+          }
+          if (!on && mark) mark.remove();
         });
       }
       const look0 = state.layers && state.layers[0] && state.layers[0].look;
@@ -4476,6 +4505,7 @@
         return pack && pack.wall === (state.wall || "night") && pack.layers[0].look === look0;
       }) || scenes.querySelector('[data-wall="' + (state.wall || "night") + '"]') || scenes.querySelector(".btn");
       if (pick) markScene(pick);
+      paintChangeTiles();
     }
     ["zoom", "spin", "glow", "thick", "count", "trail", "bounce", "wild"].forEach((key) => {
       const slider = $("g-" + key);
@@ -4996,6 +5026,118 @@
     keep();
   }
 
+
+
+  function paintChangeTiles() {
+    const host = document.querySelector("#lights-pane details");
+    if (!host || host.querySelector(".change-tiles")) return;
+    const box = document.createElement("div");
+    box.className = "change-tiles";
+    const walls = { night: "#07111f", sea: "#0b3a4a", candy: "#3b1764", dusk: "#3a2458", sunset: "#7a2e12" };
+    const inks = { ice: "#e8f7ff", cyan: "#22d3ee", rose: "#fb7185", lime: "#a3e635", violet: "#a78bfa", amber: "#fbbf24" };
+    function swatch(color) {
+      const c = document.createElement("canvas");
+      c.width = 80; c.height = 48; c.setAttribute("aria-hidden", "true");
+      const g = c.getContext("2d");
+      g.fillStyle = color;
+      g.fillRect(0, 0, 80, 48);
+      return c;
+    }
+    function row(label, ids, colors, apply) {
+      const line = document.createElement("div");
+      line.className = "tile-grid";
+      line.setAttribute("aria-label", label);
+      ids.forEach((id) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "btn";
+        b.dataset.kind = label;
+        b.dataset.id = id;
+        b.setAttribute("aria-label", id);
+        b.appendChild(swatch(colors[id] || "#22d3ee"));
+        b.addEventListener("click", () => {
+          apply(id);
+          line.querySelectorAll(".btn").forEach((el) => {
+            const on = el === b;
+            el.classList.toggle("on", on);
+            el.setAttribute("aria-pressed", on ? "true" : "false");
+            let mark = el.querySelector(".tick");
+            if (on && !mark) { mark = document.createElement("span"); mark.className = "tick"; mark.textContent = "✓"; el.appendChild(mark); }
+            if (!on && mark) mark.remove();
+          });
+          keep();
+          if (stageApi && stageApi.kick) stageApi.kick();
+        });
+        line.appendChild(b);
+      });
+      box.appendChild(line);
+    }
+    [0, 1, 2].forEach((i) => {
+      row("Look " + (i + 1), ["bars", "ribbon", "rings", "rain", "stars", "fireworks"], { bars: "#22d3ee", ribbon: "#a78bfa", rings: "#fb7185", rain: "#38bdf8", stars: "#e8f7ff", fireworks: "#fbbf24" }, (id) => {
+        if (!state.layers[i]) state.layers[i] = { look: id, color: "cyan" };
+        state.layers[i].look = id;
+        if (i === 0) state.look = id;
+        const sel = $("layer-" + i);
+        if (sel) sel.value = id;
+      });
+      row("Colour " + (i + 1), ["ice", "cyan", "rose", "lime", "violet", "amber"], inks, (id) => {
+        if (!state.layers[i]) state.layers[i] = { look: "ribbon", color: id };
+        state.layers[i].color = id;
+        const sel = $("ink-" + i);
+        if (sel) sel.value = id;
+      });
+    });
+    row("Wall", ["night", "sea", "candy", "dusk", "sunset"], walls, (id) => {
+      state.wall = id;
+      const sel = $("wall");
+      if (sel) sel.value = id;
+    });
+    row("Frame", ["none", "glow", "line", "double"], { none: "#0b152c", glow: "#e8f7ff", line: "#94a3b8", double: "#fbbf24" }, (id) => {
+      state.frame = id;
+      const sel = $("frame");
+      if (sel) sel.value = id;
+    });
+    const cycle = document.createElement("button");
+    cycle.type = "button";
+    cycle.className = "btn";
+    cycle.dataset.mu = "colorCycle";
+    cycle.textContent = mu("colorCycle") || "Color cycle";
+    cycle.addEventListener("click", () => {
+      state.rgb = !state.rgb;
+      cycle.classList.toggle("on", state.rgb);
+      cycle.setAttribute("aria-pressed", state.rgb ? "true" : "false");
+      if (state.rgb && !cycle.querySelector(".tick")) {
+        const mark = document.createElement("span");
+        mark.className = "tick";
+        mark.textContent = "✓";
+        cycle.appendChild(mark);
+      }
+      if (!state.rgb) {
+        const mark = cycle.querySelector(".tick");
+        if (mark) mark.remove();
+      }
+      const rgb = $("rgb-btn");
+      if (rgb) rgb.setAttribute("aria-pressed", String(state.rgb));
+      keep();
+    });
+    box.appendChild(cycle);
+    host.appendChild(box);
+  }
+  function paintSceneThumb(canvas, pack) {
+    const ctx2 = canvas.getContext("2d");
+    const walls = { night: "#07111f", sea: "#0b3a4a", candy: "#3b1764", dusk: "#3a2458", sunset: "#7a2e12" };
+    const inks = { ice: "#e8f7ff", cyan: "#22d3ee", rose: "#fb7185", lime: "#a3e635", violet: "#a78bfa", amber: "#fbbf24" };
+    ctx2.fillStyle = walls[pack.wall] || "#10203f";
+    ctx2.fillRect(0, 0, canvas.width, canvas.height);
+    (pack.layers || []).forEach((layer, i) => {
+      ctx2.fillStyle = inks[layer.color] || "#22d3ee";
+      ctx2.globalAlpha = 0.85;
+      ctx2.beginPath();
+      ctx2.arc(40 + i * 42, 48, 16 + i * 4, 0, Math.PI * 2);
+      ctx2.fill();
+    });
+    ctx2.globalAlpha = 1;
+  }
   const newSongBtn = $("new-song");
   if (newSongBtn) newSongBtn.addEventListener("click", clearTakes);
   const clearSongBtn = $("clear-song");
@@ -5006,18 +5148,42 @@
 
   const canvas = $("viz");
   if (window.KulibertStage) {
-    stageApi = window.KulibertStage.mount(canvas, () => ({
-      playing: state.playing,
-      look: state.look,
-      layers: state.layers,
-      rgb: state.rgb,
-      wall: state.wall,
-      gear: Object.assign({}, state.gear),
-      bins: state.bins,
-      kick: state.kick,
-      snare: state.snare,
-      playhead: state.step,
-    }));
+    const lowDevice = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.connection && navigator.connection.saveData);
+    stageApi = window.KulibertStage.mount(canvas, () => {
+      const onViz = document.body.classList.contains("tab-viz") || document.body.classList.contains("show");
+      const gear = Object.assign({}, state.gear);
+      if (lowDevice) gear.count = Math.min(gear.count || 12, 12);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) gear.wild = Math.min(gear.wild || 0, 8);
+      return {
+        pause: !onViz || document.hidden,
+        playing: state.playing && onViz,
+        look: state.look,
+        layers: state.layers,
+        rgb: state.rgb,
+        wall: state.wall,
+        gear: gear,
+        bins: state.bins,
+        kick: state.kick,
+        snare: state.snare,
+        playhead: state.step,
+      };
+    });
+    const wrap = document.querySelector(".stage-wrap");
+    if (wrap && window.ResizeObserver) {
+      const fit = () => {
+        const r = wrap.getBoundingClientRect();
+        const w = Math.max(2, Math.floor(r.width));
+        const h = Math.max(2, Math.floor(r.height));
+        if (w > 2 && h > 2 && (canvas.width !== w || canvas.height !== h)) {
+          canvas.width = w;
+          canvas.height = h;
+        }
+        if (stageApi && stageApi.resize) stageApi.resize();
+        if (stageApi && stageApi.kick) stageApi.kick();
+      };
+      new ResizeObserver(fit).observe(wrap);
+      fit();
+    }
   }
   document.addEventListener("click", (ev) => {
     const btn = ev.target && ev.target.closest && ev.target.closest(".pen .btn");

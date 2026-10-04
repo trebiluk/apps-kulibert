@@ -2784,3 +2784,131 @@ body.mu237 #dock-left .tab { position: relative; z-index: 33; }
   body.mu237.menu-open .drawer { left: 0 !important; top: calc(var(--bar) + 52px) !important; }
 }
 html[dir="rtl"] body.mu237.menu-open .drawer { left: 0 !important; right: var(--rail) !important; }
+
+/* MU 2.35.9 — Exit only in Perform, Viz stage, Score + drums desk */
+#perform-exit,
+body.mu237 .perform-exit { display: none !important; }
+body.mu237.show .perform-exit:not([hidden]) {
+  display: inline-flex !important;
+  position: absolute;
+  z-index: 6;
+  top: 8px;
+  inset-inline-start: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  padding: 0 0.7rem;
+  border-radius: 10px;
+  border: 1px solid #fff8ea;
+  background: #10203f;
+  color: #fff8ea;
+  font-size: 14px;
+  font-weight: 800;
+}
+body.mu237 .perform-exit .mu-exit { width: 18px; height: 18px; }
+body.mu237.show .stage-wrap { position: relative !important; }
+body.mu237.tab-viz .desk { display: flex !important; flex-direction: column !important; }
+body.mu237.tab-viz .out {
+  display: flex !important;
+  flex: 1 1 60% !important;
+  min-height: 60% !important;
+  order: -1;
+  height: auto !important;
+  max-height: none !important;
+}
+body.mu237.tab-viz .stage-wrap,
+body.mu237.tab-viz canvas#viz {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 60% !important;
+  flex: 1 1 auto !important;
+  max-height: none !important;
+}
+body.mu237.tab-viz .work {
+  flex: 0 1 40% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+}
+body.mu237.tab-viz #notes-pane,
+body.mu237.tab-viz #song-more,
+body.mu237.tab-viz #sound-notes { display: none !important; }
+body.mu237.tab-viz #lights-pane,
+body.mu237.tab-viz #wave-explore,
+body.mu237.tab-viz #wave-explore > * { display: block !important; }
+body.mu237 #scenes {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(44px, 1fr));
+  gap: 0.4rem;
+  border: 0 !important;
+}
+body.mu237 #scenes .btn,
+body.mu237 .change-tiles .btn {
+  position: relative;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  overflow: hidden;
+}
+body.mu237 #scenes .btn canvas,
+body.mu237 .change-tiles .btn canvas { width: 100%; height: 64px; display: block; }
+body.mu237 #scenes .tick,
+body.mu237 .change-tiles .tick {
+  position: absolute;
+  top: 4px;
+  inset-inline-end: 6px;
+  font-size: 16px;
+  font-weight: 800;
+  color: #041018;
+  background: #22d3ee;
+  border-radius: 8px;
+  min-width: 22px;
+  text-align: center;
+}
+body.mu237.tab-viz #lights-pane .stack { display: none !important; }
+body.mu237.tab-score .work,
+body.mu237.tab-score.is-both .work {
+  display: flex !important;
+  flex-direction: column !important;
+  grid-template-columns: none !important;
+  min-height: 0;
+  overflow: auto;
+}
+body.mu237.tab-score #notes-pane,
+body.mu237.tab-score.is-both #notes-pane { width: 100% !important; max-width: none !important; overflow: visible !important; }
+body.mu237.tab-score .staff-wrap,
+body.mu237.tab-score.is-both .staff-wrap {
+  width: 100% !important;
+  max-width: none !important;
+  max-height: 40% !important;
+  overflow: hidden !important;
+}
+body.mu237.tab-score .note-row,
+body.mu237.tab-score #inks,
+body.mu237.tab-score #pen {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+body.mu237.tab-score #inks .btn,
+body.mu237.tab-score #pen .btn {
+  min-width: 44px !important;
+  min-height: 44px !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+body.mu237.tab-score.is-both #drums-pane {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow: auto !important;
+}
+body.mu237.tab-score.is-both #drums { max-height: none !important; overflow: visible !important; }

@@ -1017,10 +1017,17 @@
     }
 
     var lastDraw = 0;
+    function kick() {
+      if (!alive || raf) return;
+      raf = requestAnimationFrame(frame);
+    }
     function frame(now) {
       if (!alive) return;
+      if (document.hidden) { raf = 0; return; }
+      var snapPeek = {};
+      try { snapPeek = getSnap() || {}; } catch (err) { snapPeek = {}; }
+      if (snapPeek.pause) { raf = 0; return; }
       raf = requestAnimationFrame(frame);
-      if (document.hidden) return;
       if (typeof now !== "number") now = performance.now();
       var cap = reduceMotion ? 1000 / 15 : 1000 / 30;
       if (now - lastDraw < cap) return;
@@ -1069,8 +1076,10 @@
     window.addEventListener("resize", size);
     frame();
 
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) kick(); });
     return {
       resize: size,
+      kick: kick,
       destroy: function () {
         alive = false;
         cancelAnimationFrame(raf);

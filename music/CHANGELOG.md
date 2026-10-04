@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.9** · 2026-10-03 · channel **live**
+
+Exit stays in Perform. Viz is a live picture. Score and drums fill the desk.
+
+## Earlier
+
 **Chip: MU 2.35.8** · 2026-10-03 · channel **live**
 
 The trap button is gone. A new song replaces the old one. Phone tabs stay on the screen.
