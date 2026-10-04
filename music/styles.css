@@ -2944,3 +2944,10 @@ body.mu237.tab-score.is-both #drums {
     overflow: auto !important;
   }
 }
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237.tab-score.is-both #drums-pane { padding-bottom: 8px !important; }
+  body.mu237.tab-score.is-both #drums {
+    max-height: 64px !important;
+    overflow: auto !important;
+  }
+}
