@@ -26,14 +26,15 @@ export function createStations(api) {
     const r = get(key, 'oven'); r.fuel += 1; r.left += 4
     return true
   }
-  function addInput(key, item) {
+  function addInput(key, recipeId) {
+    const recipe = OVEN.find((x) => x.id === recipeId)
     const r = get(key, 'oven')
-    if (!r.fuel && !r.left) return false
-    if (api.spend && !api.spend(item, item === 'sand' ? 2 : 1)) return false
-    const recipe = OVEN.find((x) => x.in[0][0] === item)
-    r.input.push(item)
-    r.pending = recipe ? recipe.out[0] : 'glass'
-    r.secs = (recipe && recipe.secs) || 5
+    if (!recipe || (!r.fuel && !r.left)) return false
+    for (const [item, n] of recipe.in) if (api.have && api.have(item) < n) return false
+    for (const [item, n] of recipe.in) if (api.spend) api.spend(item, n)
+    r.picking = false
+    r.pending = recipe.out[0]
+    r.secs = recipe.secs || 5
     r.until = Date.now() + r.secs * 1000
     if (!r.left) r.left = r.fuel * 4
     return true
@@ -70,25 +71,29 @@ export function createStations(api) {
       b.querySelector('.glbl').textContent = label + ' ' + n
       b.addEventListener('click', () => {
         if (label === api.t('fuel')) addFuel(key || '0,5,0')
-        if (label === api.t('input')) {
-          const strip = document.createElement('div')
-          strip.className = 'ggrid'
-          for (const item of ['sand', 'flour']) {
-            const b2 = document.createElement('button')
-            b2.type = 'button'
-            b2.className = 'gtile'
-            b2.innerHTML = '<span class="gic"><img alt="" src="assets/atlas.png" width="48" height="48"></span><span class="glbl"></span>'
-            b2.querySelector('.glbl').textContent = item
-            b2.addEventListener('click', () => { addInput(key || '0,5,0', item); paint(g, key, kind) })
-            strip.append(b2)
-          }
-          g.append(strip)
-          return
-        }
+        if (label === api.t('input')) { r.picking = true; paint(g, key, kind); return }
         if (label === api.t('output')) take(key || '0,5,0')
         paint(g, key, kind)
       })
       g.append(b)
+    }
+    if (r.picking) {
+      const strip = document.createElement('div')
+      strip.className = 'ggrid'
+      const creative = api.creative && api.creative()
+      for (const recipe of OVEN) {
+        const can = creative || recipe.in.every(([item, n]) => api.have && api.have(item) >= n)
+        if (!can) continue
+        const b2 = document.createElement('button')
+        b2.type = 'button'
+        b2.className = 'gtile'
+        b2.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="32" height="32"><rect x="4" y="4" width="16" height="16" fill="#e8b86d"/></svg></span><span class="glbl"></span>'
+        const [item, n] = recipe.in[0]
+        b2.querySelector('.glbl').textContent = (api.name ? api.name(item) : item) + ' ×' + n + ' → ' + (api.name ? api.name(recipe.out[0]) : recipe.out[0])
+        b2.addEventListener('click', () => { addInput(key || '0,5,0', recipe.id); paint(g, key, kind) })
+        strip.append(b2)
+      }
+      g.append(strip)
     }
     if (r.until) {
       const left = Math.max(0, Math.ceil((r.until - Date.now()) / 1000))

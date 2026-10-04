@@ -144,7 +144,7 @@ export function createTools(api) {
         if (api.survival() && api.getVoxel(x, y, z) === 21) continue
         ops.push([x, y, z, id])
       }
-      return stage(name, ops, name + ' ' + ops.length)
+      return stage(name, ops, (name === 'walls' ? api.t('wallsN') : api.t('fillN')).replace('{n}', ops.length))
     }
     if (name === 'copy') return copy()
     if (name === 'paste') {

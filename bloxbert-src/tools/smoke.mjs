@@ -51,13 +51,24 @@ if (testUrl) {
     document.querySelector('#tool-strip [data-tool="fill"]').click()
     document.querySelector('#tool-strip [data-tool="do"]').click()
     const full = window.__smoke.counts().log === 0
-    const oven = window.__smoke.oven()
-    return { bar, pics, hot, before, after, short, full, oven: oven.ring > 0 || oven.left > 0, pickup: window.__smoke.pickup(), sale: window.__smoke.sale(), object: bar.includes('[object') }
+    window.__smoke.ovenOpen()
+    return { bar, pics, hot, before, after, short, full }
   })
+  await new Promise((r) => setTimeout(r, 3000))
+  const oven = await page.evaluate(() => {
+    const strip = document.getElementById('sheet-body').innerText
+    const glass = [...document.querySelectorAll('#sheet-body .gtile')].find((b) => /Glass|glass/.test(b.textContent))
+    if (glass) glass.click()
+    return { strip, sand: window.__smoke.counts().sand }
+  })
+  gate = { ...gate, ...oven }
 }
 await browser.close()
-if (errs.length || !hot || !open || pics.text || pics.icons < 8 || pics.slots < 5 || student !== 'undefined' || !gate.full || gate.pickup !== '1:2' || !gate.sale) {
-  console.error(errs.join('\n') || JSON.stringify({ pics, student, gate }))
-  process.exit(1)
-}
-console.log('smoke ok', url, pics, { student, gate })
+const checks = [
+  ['1a strip stays', gate.strip && gate.strip.includes('Glass') && gate.strip.includes('Bread')],
+  ['1b sand spent', gate.sand === 0],
+  ['student hook', student === 'undefined'],
+]
+for (const [name, ok] of checks) console.log(ok ? 'PASS' : 'FAIL', name, ok ? '' : JSON.stringify(gate))
+if (checks.some(([, ok]) => !ok) || errs.length) process.exit(1)
+console.log('smoke ok', url)

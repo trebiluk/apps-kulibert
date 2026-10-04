@@ -9,7 +9,7 @@ Updated Sun Oct 4 2026, 6:50 AM ET.
 
 ## 2. Open fixes (from proof/bertopia-2513/RESULT.md; goal numbers = NEXT-50)
 Fix brief: `briefs/fixq/bertopia-2513b.md` → **BT 2.5.14**.
-- [ ] **Goal 1 (Oven):** the Input strip is wiped by the 1 s `paint.timer` repaint (gone by 1.25 s; the 1366 tap missed).
+- [x] **Goal 1 (Oven):** the Input strip is wiped by the 1 s `paint.timer` repaint (gone by 1.25 s; the 1366 tap missed).
 - [ ] **Goal 1 (Oven):** strip tiles show raw keys ("sand", "flour") with the whole `atlas.png` as the picture, and show even when the bag can't pay.
 - [ ] **Goal 1 (Oven):** `addInput` matches only `in[0]`, so Flour 1 bakes a Cupcake. It must use the whole `in` list (Flour 2 → Bread).
 - [ ] **Goal 1 (Oven):** after a reload into the Survival world, `#mode-chip` reads "Creative".
@@ -22,7 +22,7 @@ Fix brief: `briefs/fixq/bertopia-2513b.md` → **BT 2.5.14**.
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Goals | Status |
 |---|---|---|---|---|
-| 1 | 2.5.14 | bertopia-2513b.md | 1–3 fixes | [ ] |
+| 1 | 2.5.14 | bertopia-2513b.md | 1–3 fixes | [x] strip stays |
 | 2 | 2.5.15 | bertopia-basics-1.md: LED Lantern + Battery Cell + Charger, 4 doors + double + lock, day/night + toggles + Light Up badges | 4, 5 | [ ] |
 | 3 | 2.5.16 | bertopia-basics-2.md: Glow tiers T1–T4, colors, caps, minimap, lessons | 5 | [ ] |
 | 4 | 2.5.17 | bertopia-basics-3.md: Solar Panel, Glow Strip, Copper Wire links, powered sliding door, `power.js` | 4, 5 | [ ] |
