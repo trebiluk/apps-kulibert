@@ -68,7 +68,7 @@ export function createStations(api) {
       b.type = 'button'
       b.className = 'gtile'
       b.innerHTML = '<span class="gic">' + (label === api.t('fuel') ? '🔥' : '▣') + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = label + ' ' + n
+        b.querySelector('.glbl').textContent = label === api.t('output') ? api.t('output') + ': ' + (r.output[0] ? api.name(r.output[0]) : api.t('output')) : label === api.t('input') ? api.t('input') : label + ' ' + n
       b.addEventListener('click', () => {
         if (label === api.t('fuel')) addFuel(key || '0,5,0')
         if (label === api.t('input')) { r.picking = true; paint(g, key, kind); return }
@@ -79,21 +79,32 @@ export function createStations(api) {
     }
     if (r.picking) {
       const strip = document.createElement('div')
-      strip.className = 'ggrid'
+      strip.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;width:100%'
       const creative = api.creative && api.creative()
-      for (const recipe of OVEN) {
-        const can = creative || recipe.in.every(([item, n]) => api.have && api.have(item) >= n)
-        if (!can) continue
+      const ready = OVEN.filter((recipe) => creative || recipe.in.every(([item, n]) => api.have && api.have(item) >= n))
+      if (!ready.length) {
+        const p = document.createElement('p')
+        p.className = 'gnote'
+        p.textContent = api.t('nothingBake')
+        g.append(p)
+      }
+      for (const recipe of ready) {
         const b2 = document.createElement('button')
         b2.type = 'button'
         b2.className = 'gtile'
-        b2.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="32" height="32"><rect x="4" y="4" width="16" height="16" fill="#e8b86d"/></svg></span><span class="glbl"></span>'
-        const [item, n] = recipe.in[0]
-        b2.querySelector('.glbl').textContent = (api.name ? api.name(item) : item) + ' ×' + n + ' → ' + (api.name ? api.name(recipe.out[0]) : recipe.out[0])
+        b2.style.cssText = 'min-width:64px;min-height:64px;position:static'
+        const pic = document.createElement('span')
+        pic.className = 'gic'
+        if (api.icon) pic.append(api.icon(recipe.in[0][0]))
+        b2.append(pic)
+        const lbl = document.createElement('span')
+        lbl.className = 'glbl'
+        lbl.textContent = recipe.in.map(([item, n]) => (api.name ? api.name(item) : item) + ' ×' + n).join(' + ') + ' → ' + (api.name ? api.name(recipe.out[0]) : recipe.out[0])
+        b2.append(lbl)
         b2.addEventListener('click', () => { addInput(key || '0,5,0', recipe.id); paint(g, key, kind) })
         strip.append(b2)
       }
-      g.append(strip)
+      if (ready.length) g.append(strip)
     }
     if (r.until) {
       const left = Math.max(0, Math.ceil((r.until - Date.now()) / 1000))
