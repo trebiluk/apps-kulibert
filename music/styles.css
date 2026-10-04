@@ -2921,3 +2921,9 @@ body.mu237.show #perform-exit:not([hidden]) {
   min-width: 44px;
   min-height: 44px;
 }
+@media (max-height: 520px) {
+  body.mu237.tab-score.is-both #notes-pane,
+  body.mu237.tab-score.is-both .staff-wrap { display: block !important; }
+}
+body.mu237.tab-score #inks .btn,
+body.mu237.tab-score #pen .btn { min-width: 44px !important; min-height: 44px !important; flex: 0 0 44px !important; }

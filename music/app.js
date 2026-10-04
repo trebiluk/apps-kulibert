@@ -2081,6 +2081,7 @@
     paintTabs(tab);
     if (stageApi && stageApi.kick) stageApi.kick();
     if (stageApi && stageApi.resize) stageApi.resize();
+    if (tab === "viz" || document.body.classList.contains("show")) vizPulse();
     if (tab === "score" || tab === "piano" || state.mode === "both" || state.mode === "notes") {
       window.requestAnimationFrame(() => renderStaff());
     }
@@ -4925,8 +4926,7 @@
     });
     document.querySelectorAll("#scenes [data-scene]").forEach((btn) => {
       const label = mu("scene_" + String(btn.dataset.scene || "").toLowerCase());
-      if (!label) return;
-      btn.textContent = btn.classList.contains("on") ? label + " ✓" : label;
+      if (label) btn.setAttribute("aria-label", label);
     });
     paintAlong();
     document.querySelectorAll("#gestures .btn").forEach((btn) => { if (btn.dataset.gesture) btn.textContent = gestureWord(btn.dataset.gesture); });
@@ -5122,6 +5122,22 @@
     });
     box.appendChild(cycle);
     host.appendChild(box);
+  }
+
+  let vizRaf = 0;
+  function vizPulse() {
+    vizRaf = 0;
+    const on = document.body.classList.contains("tab-viz") || document.body.classList.contains("show");
+    if (!on || document.hidden) return;
+    const canvas = $("viz");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (canvas && state.playing && !reduce && canvas.width > 2 && canvas.height > 2) {
+      const g = canvas.getContext("2d");
+      const x = Math.floor(performance.now() / 30) % canvas.width;
+      g.fillStyle = "rgba(34,211,238,0.45)";
+      g.fillRect(x, 6, 8, 10);
+    }
+    vizRaf = window.requestAnimationFrame(vizPulse);
   }
   function paintSceneThumb(canvas, pack) {
     const ctx2 = canvas.getContext("2d");
