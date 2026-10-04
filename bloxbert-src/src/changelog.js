@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.26', date: '2026-10-04', lines: {
+    en: ['Craft lists Can make now, Almost, and Show all.', '×Max makes as many as you can.', 'The shop sells a material only after you find it.', 'Settings has Look speed and Invert look.'],
+    uk: ['Крафт: Можна зараз, Майже, Показати все.', '×Max робить скільки можеш.', 'Крамниця продає матеріал після того, як знайдеш.', 'У налаштуваннях швидкість і переворот огляду.'],
+    ru: ['Крафт: Можно сейчас, Почти, Показать все.', '×Max делает сколько можешь.', 'Лавка продаёт материал после находки.', 'В настройках скорость и переворот взгляда.'],
+    es: ['Fabricar: Puedes hacer, Casi y Ver todo.', '×Max hace todos los que puedas.', 'La tienda vende un material solo si ya lo encontraste.', 'Ajustes: velocidad de mirada e invertir.'],
+    ar: ['الصنع: يمكنك الآن، تقريباً، وأظهر الكل.', '×Max يصنع كل ما تستطيع.', 'المتجر يبيع المادة بعد أن تجدها.', 'الإعدادات: سرعة النظر وعكسه.'],
+    'fa-AF': ['ساختن: حالا، نزدیک، و همه.', '×Max هر چه بتوانی می‌سازد.', 'دکان ماده را بعد از پیدا کردن می‌فروشد.', 'تنظیمات: سرعت نگاه و برگرداندن.'],
+    rw: ['Gukora: Ushobora ubu, Hafi, Erekana byose.', '×Max ikora ibyo ushobora.', 'Iduka rigurisha nyuma yo kubona.', 'Igenamiterere: umuvuduko n\'ihindura.'],
+    ti: ['ስራሕ፡ ሕጂ፣ ዳርጋ፣ ኩሉ ኣርኢ።', '×Max ክንደይ ከም እትኽእል ይሰርሕ።', 'ድኳን ድሕሪ ምርካብ ይሸይጥ።', 'ቅንጅታት፡ ፍጥነትን ግልባጥን ምርኣይ።'],
+  }},
   { v: '2.5.25', date: '2026-10-04', lines: {
     en: ['A drop hops into your bag when you walk up to it.', 'Counters and bunks stay until you pick them up.'],
     uk: ['Річ стрибає в сумку, коли підходиш.', 'Прилавки й ліжка лишаються, поки їх не забереш.'],

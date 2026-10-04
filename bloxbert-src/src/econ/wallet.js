@@ -1,7 +1,7 @@
 // Append-only practice ledger. sum(ledger) + start === cogs. Start row is a 0 marker.
 export function createWallet(cfg) {
   const state = {
-    start: cfg.start, cogs: cfg.start, seq: 0, day: '', soldToday: {}, spentToday: 0, picked: [],
+    start: cfg.start, cogs: cfg.start, seq: 0, day: '', soldToday: {}, spentToday: 0, picked: [], found: [],
     ledger: [], dial: cfg.dial, dailyCap: cfg.dailyCap,
   }
   function check() {
@@ -24,6 +24,7 @@ export function createWallet(cfg) {
     state.soldToday = econ.soldToday || {}
     state.spentToday = econ.spentToday || 0
     state.picked = econ.picked || []
+    state.found = Array.isArray(econ.found) ? econ.found.slice() : []
     state.ledger = econ.ledger || []
     state.dial = econ.dial || cfg.dial
     state.dailyCap = econ.dailyCap || cfg.dailyCap
@@ -33,7 +34,7 @@ export function createWallet(cfg) {
   function dump() {
     return {
       start: state.start, cogs: state.cogs, seq: state.seq, day: state.day, soldToday: { ...state.soldToday },
-      spentToday: state.spentToday, picked: state.picked.slice(), ledger: state.ledger.slice(),
+      spentToday: state.spentToday, picked: state.picked.slice(), found: (state.found || []).slice(), ledger: state.ledger.slice(),
       dial: state.dial, dailyCap: state.dailyCap,
     }
   }

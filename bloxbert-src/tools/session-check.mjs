@@ -58,5 +58,9 @@ const s2 = createSession({
 s2.load(doc)
 if (!s2.groundDrops().some((d) => d.item === held)) throw new Error('reload lost the drop')
 
+if (s.tryBuy('woolBlue') !== false) throw new Error('bought wool before finding it')
+s.give('flour', 1)
+if (!s.known('flour')) throw new Error('flour was not marked found')
+if (s.tryBuy('flour') !== true) throw new Error('found flour did not restock')
 console.log('session-check ok', toasts.filter((t) => t === 'bagFull').length, 'full toasts')
 process.exit(0)

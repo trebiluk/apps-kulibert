@@ -3,6 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
+- **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
 - **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
 - **Bertopia 2.5.23** is a visuals plate on top of 2.5.22. Sky, sun, horizon fog, a teal Berty, and a name chip. Feel numbers are unchanged.
@@ -17,7 +18,8 @@ Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 - [x] **Menu (2.5.21):** Arabic and Dari menu taps open the menu.
 - [x] **Core feel (2.5.22):** stick, jump, speeds, hold-to-mine, touch camera, reach, E / 0 / Q.
 - [x] **Drops (2.5.24):** a full bag still breaks. The piece stays on the ground (or in Lost & Found). Q drops one.
-- [ ] Bag still has 36 slots. Craft groups, ×Max, and the Teacher-only Build world are not in this plate.
+- [ ] Bag still has 36 slots. The Teacher-only Build world is not in this plate.
+- [x] **Craft and shop (2.5.26):** Can make now / Almost / Show all, ×Max, shop restock only after you find the material, Look speed and Invert look.
 - [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` still needs the old gates. Not this plate.
 
 ## 3. Next up

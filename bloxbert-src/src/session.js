@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake } from './craft.js'
+import { canMake, craftStatus, maxTimes } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -39,6 +39,11 @@ export function createSession(api) {
     if (wallet.state.day !== day) { wallet.state.day = day; wallet.state.soldToday = {}; wallet.state.spentToday = 0 }
     return day
   }
+  function markFound(item) {
+    if (!item || !ITEMS[item]) return
+    if (!wallet.state.found) wallet.state.found = []
+    if (!wallet.state.found.includes(item)) wallet.state.found.push(item)
+  }
   function spawnDrop(item, n, x, y, z, why) {
     const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now() })
     if (where === 'lost') api.toast(t('lostFound'))
@@ -48,6 +53,7 @@ export function createSession(api) {
     return where
   }
   function giveItem(item, n = 1) {
+    markFound(item)
     const left = bag.add(item, n)
     if (n - left) paintHotbar()
     if (left) {
@@ -112,6 +118,7 @@ export function createSession(api) {
       const took = d.n - left
       if (!took) continue
       got += took
+      markFound(d.item)
       if (left) d.n = left
       else ground.splice(i, 1)
     }
@@ -237,25 +244,56 @@ export function createSession(api) {
   }
   function paintCraft(g) {
     const stations = { bench: near('bench'), oven: near('oven') }
-    for (const r of RECIPES) {
-      const gate = canMake(r, bag, stations)
-      const b = document.createElement('button')
-      b.type = 'button'
-      b.className = 'gtile'
-      const out = ITEMS[r.out[0]]
-      b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
-      b.querySelector('.gic').append(itemIcon(out))
-      b.querySelector('.glbl').textContent = itemName(r.out[0])
-      b.querySelector('.gneed').textContent = r.in.map(([k, n]) => itemName(k) + '×' + n).join(' ')
-      if (!gate.ok && gate.why === 'oven') b.querySelector('.glbl').textContent = t('needsOven')
-      if (!gate.ok && gate.why === 'bench') b.querySelector('.glbl').textContent = t('needsBench')
-      b.disabled = !gate.ok
-      b.addEventListener('click', () => {
-        craftOne(r)
-        g.innerHTML = ''
-        paintCraft(g)
-      })
-      g.append(b)
+    const rows = RECIPES.map((r) => ({ r, st: craftStatus(r, bag, stations) }))
+    const draw = (list) => {
+      for (const { r, st } of list) {
+        const row = document.createElement('div')
+        row.className = 'craft-row'
+        const b = document.createElement('button')
+        b.type = 'button'
+        b.className = 'gtile'
+        const out = ITEMS[r.out[0]]
+        b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
+        b.querySelector('.gic').append(itemIcon(out))
+        let title = itemName(r.out[0])
+        if (st.station === 'oven') title = t('needsOven')
+        if (st.station === 'bench') title = t('needsBench')
+        b.querySelector('.glbl').textContent = title
+        b.querySelector('.gneed').textContent = st.needs.map(([k, have, n]) => itemName(k) + ' ' + have + '/' + n).join(' ')
+        b.disabled = !st.ok
+        b.addEventListener('click', () => { craftMany(r, 1); g.innerHTML = ''; paintCraft(g) })
+        row.append(b)
+        const times = maxTimes(r, bag)
+        if (st.ok && times > 1) {
+          const max = document.createElement('button')
+          max.type = 'button'
+          max.className = 'gtile xmax'
+          max.textContent = t('timesMax')
+          max.addEventListener('click', () => { craftMany(r, times); g.innerHTML = ''; paintCraft(g) })
+          row.append(max)
+        }
+        g.append(row)
+      }
+    }
+    const head = (key) => {
+      const p = document.createElement('p')
+      p.className = 'gnote'
+      p.textContent = t(key)
+      g.append(p)
+    }
+    const now = rows.filter((x) => x.st.group === 'now')
+    const almost = rows.filter((x) => x.st.group === 'almost')
+    const rest = rows.filter((x) => x.st.group === 'rest')
+    if (now.length) { head('canNow'); draw(now) }
+    if (almost.length) { head('almost'); draw(almost) }
+    if (rest.length) {
+      const toggle = document.createElement('button')
+      toggle.type = 'button'
+      toggle.className = 'gtile'
+      toggle.textContent = t('showAll')
+      toggle.addEventListener('click', () => { craftOpen = !craftOpen; g.innerHTML = ''; paintCraft(g) })
+      g.append(toggle)
+      if (craftOpen) draw(rest)
     }
   }
   function paintShop(g) {
@@ -306,12 +344,15 @@ export function createSession(api) {
     for (const k of ECON.storeSells) {
       const item = ITEMS[k]
       const price = quoteBuy(item, wallet.state.dial || 1, ECON)
+      const known = (wallet.state.found || []).includes(k)
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile item'
-      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
-      b.querySelector('.glbl').textContent = itemName(k) + ' ⚙ ' + price
-      b.addEventListener('click', () => buy(k, 1, price))
+      b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
+      b.querySelector('.gic').append(itemIcon(item))
+      b.querySelector('.glbl').textContent = known ? itemName(k) + ' ⚙ ' + price : itemName(k) + ' · ' + t('findFirst')
+      b.disabled = !known
+      if (known) b.addEventListener('click', () => buy(k, 1, price))
       g.append(b)
     }
   }
@@ -415,15 +456,18 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
-  function craftOne(r) {
+  let craftOpen = false
+  function craftMany(r, times) {
     const stations = { bench: near('bench'), oven: near('oven') }
-    if (!canMake(r, bag, stations).ok) return false
-    for (const [item, n] of r.in) bag.take(item, n)
-    const left = bag.add(r.out[0], r.out[1])
+    const n = Math.min(times, maxTimes(r, bag))
+    if (!n || !canMake(r, bag, stations).ok) return false
+    for (const [item, need] of r.in) bag.take(item, need * n)
+    const left = bag.add(r.out[0], r.out[1] * n)
+    markFound(r.out[0])
     if (left) {
       const p = api.pos()
       spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
-    } else api.toast(t('make') + ' ' + itemName(r.out[0]))
+    } else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
     paintHotbar()
     return true
   }
@@ -440,12 +484,14 @@ export function createSession(api) {
     api.toast(t('sold').replace('{n}', n).replace('{item}', itemName(k)))
   }
   function buy(k, n, price) {
-    if (wallet.state.cogs < price * n) { api.toast(t('needMore').replace('{n}', price * n - wallet.state.cogs)); return }
-    if (bag.add(k, n)) { api.toast(t('bagFull')); return }
+    if (!(wallet.state.found || []).includes(k)) { api.toast(t('findFirst')); return false }
+    if (wallet.state.cogs < price * n) { api.toast(t('needMore').replace('{n}', price * n - wallet.state.cogs)); return false }
+    if (bag.add(k, n)) { api.toast(t('bagFull')); return false }
     wallet.state.spentToday += price * n
     wallet.post({ kind: 'buy', item: k, n, cogs: -price * n, by: 'tally' })
     paintChip(); paintHotbar()
     api.toast(t('bought').replace('{n}', n).replace('{item}', itemName(k)))
+    return true
   }
   function stock(key, i) {
     const rec = meta.get(key)
@@ -470,6 +516,7 @@ export function createSession(api) {
     let got = 0
     let loose = 0
     if (drop) {
+      markFound(drop)
       const left = bag.add(drop, 1)
       got = 1 - left
       loose = left
@@ -480,6 +527,7 @@ export function createSession(api) {
       const h = (x * 374761393 + y * 668265263 + z * 1274126177) >>> 0
       if (!wallet.state.picked.includes(spot) && (h / 4294967296) < 0.33) {
         wallet.state.picked.push(spot)
+        markFound('berry')
         const berryLeft = bag.add('berry', 1)
         if (berryLeft) spawnDrop('berry', berryLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
       }
@@ -597,6 +645,8 @@ export function createSession(api) {
       noteId(d.id || 0)
     }
     for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0 })
+    for (const s of bag.slots) if (s) markFound(s.item)
+    for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip(); paintHotbar()
   }
   function setMode(next) { mode = next; paintChip(); paintHotbar() }
@@ -617,5 +667,7 @@ export function createSession(api) {
     give(item, n) { giveItem(item, n) },
     blockForHot() { const k = selectedItem(); return k && ITEMS[k] && ITEMS[k].block },
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
+    tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
+    known: (k) => (wallet.state.found || []).includes(k),
   }
 }

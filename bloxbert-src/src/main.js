@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.25'
+const VERSION = '2.5.26'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -546,7 +546,7 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => session.paintSettings(g),
+  paintSettings: (g) => { session.paintSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
   paintPrices: (g) => session.paintPrices(g),
   paintCounter: (g, key) => session.paintCounter(g, key),
@@ -1092,6 +1092,45 @@ const canvas = noa.container.canvas
 let look = null
 const LOOK_H = 0.40 * Math.PI / 180
 const LOOK_V = 0.34 * Math.PI / 180
+const LOOK_KEY = 'bloxbert-look'
+let lookSens = 1
+let lookInvert = false
+try {
+  const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
+  if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
+  lookInvert = !!savedLook.invert
+} catch (e) {}
+function applyLook() {
+  noa.camera.sensitivityX = 10 * lookSens
+  noa.camera.sensitivityY = 10 * lookSens
+  noa.camera.inverseY = lookInvert
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert })) } catch (e) {}
+}
+function paintLook(g) {
+  const label = document.createElement('p')
+  label.className = 'gnote'
+  label.textContent = t('lookSens') + ' ' + lookSens.toFixed(1) + '×'
+  const range = document.createElement('input')
+  range.type = 'range'
+  range.min = '0.5'
+  range.max = '2'
+  range.step = '0.1'
+  range.value = String(lookSens)
+  range.setAttribute('aria-label', t('lookSens'))
+  range.addEventListener('input', () => {
+    lookSens = Number(range.value)
+    label.textContent = t('lookSens') + ' ' + lookSens.toFixed(1) + '×'
+    applyLook()
+  })
+  const inv = document.createElement('button')
+  inv.type = 'button'
+  inv.className = 'gtile'
+  const paintInv = () => { inv.textContent = t('invertY') + (lookInvert ? ' ✓' : '') }
+  paintInv()
+  inv.addEventListener('click', () => { lookInvert = !lookInvert; applyLook(); paintInv() })
+  g.append(label, range, inv)
+}
+applyLook()
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 canvas.addEventListener('pointerdown', (e) => {
@@ -1114,7 +1153,7 @@ canvas.addEventListener('pointermove', (e) => {
   if (look.moved >= 8) { lastLookAt = performance.now(); if (dig && dig.kind === 'touch') { dig = null; hideCrack() } }
   if (look.moved < 8) return
   look.x = e.clientX; look.y = e.clientY
-  setLook(noa.camera.heading + dx * LOOK_H, noa.camera.pitch + dy * LOOK_V)
+  setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
 })
 canvas.addEventListener('pointerup', (e) => {
   if (e.button === 0) mouseLeft = false
