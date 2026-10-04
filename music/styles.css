@@ -3052,3 +3052,43 @@ body.mu237.tab-score.is-both #drums {
 body.mu237.tab-viz .out { flex: 1 1 62% !important; min-height: 62% !important; }
 body.mu237.tab-viz .stage-wrap,
 body.mu237.tab-viz canvas#viz { min-height: 62% !important; }
+
+/* MU 2.35.9 — Perform stage is on screen, Exit sits in its header */
+body.mu237.show .side,
+body.mu237.show .tabs,
+body.mu237.show .menu-btn { display: none !important; }
+body.mu237.show .out {
+  display: flex !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 60 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+  padding: calc(0.6rem + env(safe-area-inset-top)) 0.8rem calc(0.55rem + env(safe-area-inset-bottom)) !important;
+  background: #050814 !important;
+  flex-direction: column !important;
+}
+body.mu237.show .stage-wrap {
+  display: flex !important;
+  position: relative !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 180px !important;
+  overflow: hidden !important;
+}
+body.mu237.show #perform-exit:not([hidden]) {
+  display: inline-flex !important;
+  position: absolute !important;
+  z-index: 8 !important;
+  top: 8px !important;
+  inset-inline-start: 8px !important;
+  width: auto !important;
+  height: auto !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
