@@ -1,9 +1,11 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.21'
+const VERSION = '2.5.22'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
+import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import ATLAS from '../assets/atlas.json'
@@ -20,6 +22,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -91,6 +94,21 @@ const noa = new Engine({
 })
 const engine = noa.rendering.engine
 engine.setHardwareScalingLevel(level)
+const moveState = noa.ents.getMovement(noa.playerEntity)
+const playerBody = noa.ents.getPhysicsBody(noa.playerEntity)
+playerBody.gravityMultiplier = GRAV_MULT
+playerBody.airDrag = 0
+playerBody.autoStep = !!TOUCH_UI
+moveState.airJumps = 0
+moveState.jumpImpulse = 0
+moveState.jumpForce = 0
+moveState.jumpTime = 0
+moveState.airMoveMult = 0.6
+moveState.maxSpeed = 4.3
+noa.inputs.unbind('alt-fire')
+noa.inputs.bind('alt-fire', 'Mouse3')
+noa.inputs.unbind('mid-fire')
+noa.inputs.bind('mid-fire', 'Mouse2')
 
 const tile = (n) => ({ textureURL: 'assets/atlas.png', atlasIndex: ATLAS[n] })
 const mats = [
@@ -281,7 +299,7 @@ function drawVoxel(x, y, z, v) {
   if (chunk) noa.setBlock(v, x, y, z)
 }
 function setLook(h, p) {
-  const c = noa.camera, max = Math.PI / 2 - 0.01
+  const c = noa.camera, max = 85 * Math.PI / 180
   c.heading = ((h % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
   c.pitch = Math.max(-max, Math.min(max, p))
   const d = c.getDirection()
@@ -297,18 +315,29 @@ let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
 let panels = null
+function survivalOn() { return !!(session && session.mode === 'survival') }
+function canReach(pos) {
+  if (!pos) return false
+  const p = noa.entities.getPosition(noa.playerEntity)
+  return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], reachFor(survivalOn()))
+}
+function breakAt(x, y, z) {
+  const id = getVoxel(x, y, z)
+  if (!id) return false
+  if (id === ID.vend || id === ID.bunk) return false
+  if (!tableMode && !canReach([x, y, z])) return false
+  if (session && !session.onBreak(x, y, z, id)) return false
+  return edit(x, y, z, 0)
+}
 function breakBlock() {
   const tget = tableMode ? tableTarget() : noa.targetedBlock
   if (!tget) return false
   const [x, y, z] = tget.position
-  const id = getVoxel(x, y, z)
-  if (id === ID.vend || id === ID.bunk) return false
-  if (session && !session.onBreak(x, y, z, id)) return false
-  return edit(x, y, z, 0)
+  return breakAt(x, y, z)
 }
-function placeBlock() {
+function placeBlock(face) {
   if (inspectOn) { showInspect(); return false }
-  const aimedBlock = noa.targetedBlock
+  const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
@@ -318,14 +347,14 @@ function placeBlock() {
     if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
   }
   let x, y, z
-  if (tableMode && !noa.targetedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
+  if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
-    const tget = noa.targetedBlock
-    if (!tget) return false
-    ;[x, y, z] = tget.adjacent
+    if (!aimedBlock) return false
+    ;[x, y, z] = aimedBlock.adjacent
     if (!tableMode) {
+      if (!canReach([x, y, z])) return false
       const p = noa.entities.getPosition(noa.playerEntity)
-      if (Math.floor(p[0]) === x && Math.floor(p[2]) === z && (y === Math.floor(p[1]) || y === Math.floor(p[1] + 1))) return false
+      if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) return false
     }
   }
   const id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
@@ -336,7 +365,12 @@ function placeBlock() {
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
 }
-noa.inputs.down.on('fire', () => { if (inspectOn) { showInspect(); return } if (!tableMode && noa.container.hasPointerLock) breakBlock() })
+noa.inputs.down.on('fire', () => {
+  if (inspectOn) { showInspect(); return }
+  if (tableMode || !noa.container.hasPointerLock) return
+  if (survivalOn()) beginDig('mouse')
+  else { breakBlock(); dig = { kind: 'mouse', creative: true, t0: performance.now() } }
+})
 noa.inputs.down.on('alt-fire', () => { if (inspectOn) { showInspect(); return } if (!tableMode && noa.container.hasPointerLock) placeBlock() })
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
@@ -581,7 +615,7 @@ function poof() {
   flying = false
   document.body.classList.remove('fly')
   const body = noa.entities.getPhysicsBody && noa.entities.getPhysicsBody(noa.playerEntity)
-  if (body) body.gravityMultiplier = 2
+  if (body) body.gravityMultiplier = GRAV_MULT
   const fx = $('poof'); if (fx) { fx.hidden = false; setTimeout(() => { fx.hidden = true }, 240) }
   toast(home ? t('poofBunk') : t('poofTown'))
   if (dirty) save()
@@ -664,7 +698,8 @@ function rayAt(cx, cy) {
     const z = Math.floor(hit.pickedPoint.z - n.z * 0.05)
     const id = getVoxel(x, y, z)
     if (!id) return null
-    return { id, pos: [x, y, z] }
+    const nx = Math.round(n.x), ny = Math.round(n.y), nz = Math.round(n.z)
+    return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [x + nx, y + ny, z + nz] }
   } catch (e) { return null }
 }
 function pickAimed() {
@@ -808,9 +843,9 @@ function setMode(table) {
     noa.entities.setPosition(noa.playerEntity, [8.5, 12, 8.5])
     setLook(0.4, 0.55)
   } else {
-    noa.camera.zoomDistance = 0
+    noa.camera.zoomDistance = TOUCH_UI ? 4 : 0
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
-    body.gravityMultiplier = flying ? 0 : 2
+    body.gravityMultiplier = flying ? 0 : GRAV_MULT
   }
 }
 $('m-creative').addEventListener('click', () => setMode(false))
@@ -820,7 +855,18 @@ if (qs.get('mode') === 'table') setMode(true)
 let lastJumpDown = 0
 let lastJump = 0
 let jumpHeld = false
-function onJumpTap() {}
+let crouchKey = false
+let crouchOn = false
+let mouseLeft = false
+let dig = null
+let lastGroundAt = 0
+let jumpBufferAt = 0
+let prevJumpWant = false
+let lastLookAt = 0
+let runSince = 0
+let lastStickRelease = 0
+let carryOn = false
+let lastMove = null
 function jumpDown() {
   if (tableMode || jumpHeld) return
   jumpHeld = true
@@ -830,13 +876,14 @@ function jumpUp() {
   if (!jumpHeld) return
   jumpHeld = false
   const tap = performance.now() - lastJumpDown < 250
-  if (!tap) return
+  if (!tap || tableMode) return
   const now = performance.now()
   if (now - lastJump < 300) {
-  if (session && session.mode === 'survival') { toast(t('noFly')); return }
+    if (survivalOn()) { toast(t('noFly')); lastJump = 0; return }
+    flying = !flying
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
-    body.gravityMultiplier = flying ? 0 : 2
-    if (!flying) body.velocity[1] = 0
+    body.gravityMultiplier = flying ? 0 : GRAV_MULT
+    body.velocity[1] = 0
     toast(flying ? t('flyOn') : t('flyOff'))
     lastJump = 0
     return
@@ -858,11 +905,10 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openMenu(true); panels.open('inventory'); return }
   if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
-  const n = '1234567890'.indexOf(e.key)
+  const n = '123456789'.indexOf(e.key)
   if (n >= 0 && !tableMode) {
-    const i = n === 9 ? 0 : n
-    if (session && session.mode === 'survival' && session.setHot) session.setHot(i)
-    else selectSlot(i)
+    if (session && session.mode === 'survival' && session.setHot) session.setHot(n)
+    else selectSlot(n)
   }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z') && !e.shiftKey) { e.preventDefault(); undo(); return }
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
@@ -883,9 +929,104 @@ document.addEventListener('keydown', (e) => {
   tableCursor[1] = Math.max(1, Math.min(40, tableCursor[1]))
 })
 let downHeld = false
-document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = true })
-document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
-noa.on('tick', () => {
+document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = true; if (e.code === 'KeyZ') crouchKey = true })
+document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.code === 'KeyZ') crouchKey = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
+function showCrack(p, x, y) {
+  const ring = $('pick-ring')
+  if (!ring) return
+  if (p < 0.02) { ring.hidden = true; return }
+  ring.hidden = false
+  ring.classList.remove('on')
+  ring.style.left = (x == null ? innerWidth / 2 : x) + 'px'
+  ring.style.top = (y == null ? innerHeight / 2 : y) + 'px'
+  if (REDUCE) ring.style.background = p >= 0.25 ? '#14B8A6' : 'transparent'
+  else ring.style.background = 'conic-gradient(#14B8A6 ' + Math.max(0, Math.min(1, p)) + 'turn, transparent 0)'
+}
+function hideCrack() { const ring = $('pick-ring'); if (ring) ring.hidden = true }
+function beginDig(kind) {
+  const tget = noa.targetedBlock
+  if (!tget) { dig = null; hideCrack(); return }
+  const [x, y, z] = tget.position
+  const id = getVoxel(x, y, z)
+  const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
+  dig = { kind, x, y, z, id, name, t0: performance.now(), need: mineMs(name, true, false), broke: false }
+}
+function feelTick(dt) {
+  const body = playerBody
+  if (survivalOn()) flying = false
+  if (!tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+  const grounded = body.atRestY() < 0
+  if (grounded) lastGroundAt = performance.now()
+  const want = !!(noa.inputs.state.jump || jumpHeld)
+  const now = performance.now()
+  if (want && !prevJumpWant && !flying && !tableMode) {
+    if (now - lastStickRelease < 200 && lastMove) carryOn = true
+    if (grounded || now - lastGroundAt < 120) {
+      body.velocity[1] = JUMP_V
+      lastGroundAt = 0
+      jumpBufferAt = 0
+    } else jumpBufferAt = now
+  }
+  prevJumpWant = want
+  if (jumpBufferAt && grounded && now - jumpBufferAt < 150 && !flying && !tableMode) {
+    body.velocity[1] = JUMP_V
+    jumpBufferAt = 0
+    lastGroundAt = 0
+  }
+  if (carryOn && lastMove) {
+    noa.inputs.state.forward = lastMove.forward
+    noa.inputs.state.backward = lastMove.backward
+    noa.inputs.state.left = lastMove.left
+    noa.inputs.state.right = lastMove.right
+    if (grounded && body.velocity[1] <= 0 && !want) carryOn = false
+  }
+  const stickRun = runSince && now - runSince >= 300
+  moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
+  noa.blockTestDistance = reachFor(survivalOn())
+  if (!tableMode && !flying) noa.camera.zoomDistance = TOUCH_UI ? 4 : 0
+  const cam = noa.rendering.camera
+  const portrait = TOUCH_UI && innerHeight > innerWidth
+  cam.fov = (portrait ? 85 : 55) * Math.PI / 180
+  if (TOUCH_UI && !tableMode && !REDUCE && now - lastLookAt > 500) {
+    const v = body.velocity
+    const spd = Math.hypot(v[0], v[2])
+    if (spd > 0.4) {
+      const target = Math.atan2(v[0], v[2])
+      let diff = target - noa.camera.heading
+      while (diff > Math.PI) diff -= Math.PI * 2
+      while (diff < -Math.PI) diff += Math.PI * 2
+      const step = (90 * Math.PI / 180) * (dt / 1000)
+      setLook(noa.camera.heading + Math.max(-step, Math.min(step, diff)), noa.camera.pitch)
+    }
+  }
+  if (dig && dig.kind === 'mouse' && dig.creative) {
+    if (mouseLeft && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    if (!mouseLeft) dig = null
+  } else if (dig && dig.kind === 'mouse') {
+    if (!mouseLeft) { dig = null; hideCrack(); return }
+    const tget = noa.targetedBlock
+    if (!tget || tget.position[0] !== dig.x || tget.position[1] !== dig.y || tget.position[2] !== dig.z) { beginDig('mouse'); return }
+    const p = (now - dig.t0) / dig.need
+    if (now - dig.t0 >= 250) showCrack(p)
+    if (p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack() }
+  } else if (dig && dig.kind === 'touch' && look && look.moved < 8) {
+    const p = (now - dig.t0) / dig.need
+    if (now - dig.t0 >= 250) showCrack(p, look.x, look.y)
+    if (p >= 1 && !dig.broke) {
+      breakAt(dig.x, dig.y, dig.z)
+      dig.broke = true
+      dig.t0 = now
+      if (!survivalOn()) dig.need = 250
+      else { dig = null; hideCrack() }
+    } else if (dig.broke && !survivalOn() && now - dig.t0 >= dig.need) {
+      const hit = rayAt(look.x, look.y)
+      if (hit) breakAt(hit.position[0], hit.position[1], hit.position[2])
+      dig.t0 = now
+    }
+  }
+}
+noa.on('tick', (dt) => {
+  feelTick(dt || 33)
   const s = noa.inputs.pointerState.scrolly
   if (s && !tableMode) {
     if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (s > 0 ? 1 : -1))
@@ -900,7 +1041,7 @@ noa.on('tick', () => {
   } else if (flying) {
     body.gravityMultiplier = 0
     if (body.resting) body.resting = [false, false, false]
-    const up = (noa.inputs.state.jump || jumpHeld) ? 7 : (downHeld ? -7 : 0)
+    const up = (noa.inputs.state.jump || jumpHeld) ? FLY_V : (downHeld ? -FLY_V : 0)
     body.velocity[1] = up
     if (up) {
       const p = noa.entities.getPosition(noa.playerEntity)
@@ -917,51 +1058,51 @@ noa.on('tick', () => {
 
 const canvas = noa.container.canvas
 let look = null
-let pressTimer = 0
-const TURN = 58 * Math.PI / 180 / 120
+const LOOK_H = 0.40 * Math.PI / 180
+const LOOK_V = 0.34 * Math.PI / 180
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 canvas.addEventListener('pointerdown', (e) => {
+  if (e.button === 0) mouseLeft = true
   if (e.pointerType === 'mouse' && !tableMode && !TOUCH_UI) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp, moved: 0 }
   lastPointer = { x: e.clientX, y: e.clientY }
-  if (e.pointerType !== 'mouse') {
-    holdPick = false
-    const ring = $('pick-ring')
-    if (ring && !REDUCE) { ring.hidden = false; ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; ring.classList.add('on') }
-    pressTimer = setTimeout(() => {
-      if (!look || look.moved >= 10) return
-      holdPick = true
-      pickAimed()
-      if (ring) ring.hidden = true
-    }, 500)
+  if ((e.pointerType !== 'mouse' || TOUCH_UI) && !tableMode) {
+    const hit = rayAt(e.clientX, e.clientY)
+    if (hit) {
+      const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
+      dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now(), need: mineMs(name, survivalOn(), true), broke: false, face: hit }
+    } else dig = null
   }
 })
 canvas.addEventListener('pointermove', (e) => {
   if (!look || e.pointerId !== look.id) return
   const dx = e.clientX - look.x, dy = e.clientY - look.y
   look.moved += Math.abs(dx) + Math.abs(dy)
-  if (look.moved >= 10 && pressTimer) { clearTimeout(pressTimer); pressTimer = 0; const ring = $('pick-ring'); if (ring) ring.hidden = true }
-  if (look.moved < 10) return
-  look.x = e.clientX; look.y = e.clientY; look.t = e.timeStamp
-  setLook(noa.camera.heading + dx * TURN, noa.camera.pitch + dy * TURN * 0.85)
+  if (look.moved >= 8) { lastLookAt = performance.now(); if (dig && dig.kind === 'touch') { dig = null; hideCrack() } }
+  if (look.moved < 8) return
+  look.x = e.clientX; look.y = e.clientY
+  setLook(noa.camera.heading + dx * LOOK_H, noa.camera.pitch + dy * LOOK_V)
 })
 canvas.addEventListener('pointerup', (e) => {
+  if (e.button === 0) mouseLeft = false
   if (!look || e.pointerId !== look.id) return
-  const tap = look.moved < 10
-  clearTimeout(pressTimer); pressTimer = 0
-  const ring = $('pick-ring'); if (ring) { ring.hidden = true; ring.classList.remove('on') }
+  const tap = look.moved < 8
+  const held = e.timeStamp - look.t
+  const face = dig && dig.face
+  const broke = dig && dig.broke
+  if (dig && dig.kind === 'touch') { dig = null; hideCrack() }
   look = null
-  if (holdPick) { holdPick = false; return }
   if (inspectOn && tap) { showInspect(); return }
-  if (tableMode && tap) placeBlock()
-  holdPick = false
+  if (tableMode && tap) { placeBlock(); return }
+  if (tap && held < 500 && !broke && face) placeBlock(face)
 })
-canvas.addEventListener('pointercancel', () => { look = null; clearTimeout(pressTimer); const ring = $('pick-ring'); if (ring) ring.hidden = true })
+canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
+window.addEventListener('pointerup', (e) => { if (e.button === 0) mouseLeft = false })
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
-  const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') onJumpTap() }
-  const off = () => { noa.inputs.state[st] = false; el.classList.remove('down') }
+  const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }
+  const off = () => { noa.inputs.state[st] = false; el.classList.remove('down'); if (st === 'jump') jumpUp() }
   el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off)
   el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off)
 }
@@ -969,6 +1110,75 @@ $('t-place').addEventListener('click', placeBlock)
 $('t-break').addEventListener('click', breakBlock)
 $('table-place').addEventListener('click', placeBlock)
 document.body.classList.toggle('touch', TOUCH_UI)
+const berty = CreateBox('berty', { width: 0.6, height: 1.8, depth: 0.6 }, noa.rendering.getScene())
+const bertyMat = new StandardMaterial('berty-mat', noa.rendering.getScene())
+bertyMat.diffuseColor = new Color3(0.08, 0.45, 0.5)
+bertyMat.emissiveColor = new Color3(0.04, 0.28, 0.32)
+bertyMat.specularColor = new Color3(0, 0, 0)
+berty.material = bertyMat
+berty.isPickable = false
+noa.ents.addComponent(noa.playerEntity, noa.ents.names.mesh, { mesh: berty, offset: [0, 0.9, 0] })
+const stickPad = document.getElementById('stick-pad')
+const stickKnob = document.getElementById('stick-knob')
+if (stickPad && stickKnob) {
+  let sid = null
+  let origin = null
+  const setKnob = (x, y) => { stickKnob.style.transform = 'translate(' + x + 'px,' + y + 'px)' }
+  const moveStick = (e) => {
+    const dx = e.clientX - origin.x
+    const dy = e.clientY - origin.y
+    const dist = Math.hypot(dx, dy)
+    if (dist < 12) {
+      noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = false
+      runSince = 0
+      setKnob(0, 0)
+      return
+    }
+    const nudge = Math.min(28, dist)
+    setKnob(dx / dist * nudge, dy / dist * nudge)
+    noa.inputs.state.forward = dy < -12
+    noa.inputs.state.backward = dy > 12
+    noa.inputs.state.left = dx < -12
+    noa.inputs.state.right = dx > 12
+    lastMove = { forward: !!noa.inputs.state.forward, backward: !!noa.inputs.state.backward, left: !!noa.inputs.state.left, right: !!noa.inputs.state.right }
+    if (dist >= 56) { if (!runSince) runSince = performance.now() }
+    else runSince = 0
+  }
+  stickPad.addEventListener('pointerdown', (e) => {
+    e.preventDefault()
+    sid = e.pointerId
+    stickPad.setPointerCapture(e.pointerId)
+    const r = stickPad.getBoundingClientRect()
+    origin = { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+    moveStick(e)
+  })
+  stickPad.addEventListener('pointermove', (e) => { if (e.pointerId === sid) moveStick(e) })
+  const endStick = (e) => {
+    if (e.pointerId !== sid) return
+    sid = null
+    lastStickRelease = performance.now()
+    runSince = 0
+    noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = false
+    setKnob(0, 0)
+  }
+  stickPad.addEventListener('pointerup', endStick)
+  stickPad.addEventListener('pointercancel', endStick)
+}
+const crouchBtn = document.getElementById('t-crouch')
+if (crouchBtn) crouchBtn.addEventListener('click', () => {
+  crouchOn = !crouchOn
+  crouchBtn.classList.toggle('down', crouchOn)
+  crouchBtn.setAttribute('aria-pressed', String(crouchOn))
+})
+let stickSide = 'left'
+try { stickSide = localStorage.getItem('bloxbert-stick') || 'left' } catch (e) {}
+document.body.classList.toggle('stick-right', stickSide === 'right')
+const stickRow = document.getElementById('m-stick')
+if (stickRow) stickRow.addEventListener('click', () => {
+  stickSide = stickSide === 'right' ? 'left' : 'right'
+  try { localStorage.setItem('bloxbert-stick', stickSide) } catch (e) {}
+  document.body.classList.toggle('stick-right', stickSide === 'right')
+})
 
 const scene = noa.rendering.getScene()
 const s = 0.52

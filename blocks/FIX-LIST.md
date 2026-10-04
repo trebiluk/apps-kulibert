@@ -1,19 +1,23 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 4 2026, after the 2.5.21 menu ship.
+Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
-- **Bertopia 2.5.21** ships the open fail from 2.5.20 (`7a261a0`): Arabic and Dari menu taps were opening the picture tour. A menu tap now opens the menu, and the tour cannot replace it.
+- **Bertopia 2.5.22** is the core-feel plate. 2.5.21 (menu) stays underneath it.
+- One-thumb stick, Jump, and Crouch. Walk 4.3, run 5.6, crouch 1.3. Jump is one block (no double jump). Creative double-tap Jump flies.
+- A short world tap places. Holding mines (cracks from 250 ms, break at 500 ms or the block's time). A long-press does not pick.
+- Touch view is 3rd person. Portrait view is wider. Survival reach is 6, Creative reach is 10. Key 0 does nothing. E opens the bag. Q no longer picks.
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
-- Plate on 2.5.20 was already Bertopia 2.5.20 at https://apps.kulibert.net/blocks/ before this ship. Confirm the plate reads Bertopia 2.5.21 after deploy.
-- **Do not start lanterns, doors, or the core-mechanics lock until this menu fix is proven.**
+- **Lanterns and doors stay closed.** Creative is still in the menu for every student (no Teacher-flag gate yet).
 
 ## 2. Open fixes
-- [x] **Menu (2.5.21):** Arabic (`القائمة`) and Dari (`فهرست`) menu taps opened the tour (`جولة` / `گشت`). Spanish, Ukrainian, and Russian already passed. The auto tour now gives way to the menu.
-- [ ] Lanterns, doors, and the core-mechanics lock stay closed until the 2.5.21 menu is proven.
+- [x] **Menu (2.5.21):** Arabic and Dari menu taps open the menu.
+- [x] **Core feel (2.5.22):** stick, jump, speeds, hold-to-mine, touch camera, reach, E / 0 / Q.
+- [ ] Bag still has 36 slots. Drops still despawn path is unchanged (a full bag still refuses the break). Craft groups, ×Max, and the Teacher-only Build world are not in this plate.
+- [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` still needs the old gates. Not this plate.
 
 ## 3. Next up
-Shipped bugfix plates 2.5.15 through 2.5.21 are not the feature rows below. Those feature rows stay locked until the Arabic and Dari menu is proven.
+Lanterns, doors, and the rest of the core-mechanics lock stay behind a proof of 2.5.22. Do not start them in the same breath as this plate.
 
 The rest of this list is the Oct 4 morning queue (it still names 2.5.14 as live). Do not treat that older "Live now" as the plate.
 - **Proof verdict: FAIL** (Oct 4, 7:12–7:35 AM ET; live app.js byte-identical to the d47a8d3 build). Proof: `proof/bertopia-2514/RESULT.md` (Debugzy's box).

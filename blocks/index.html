@@ -83,6 +83,18 @@ body.touch:not(.table) .pad{display:grid}
 .acts .place{border-color:#f8fafc;background:#0f172a;color:#f8fafc}
 .acts .brk{border-color:#f8fafc;background:#0f172a;color:#f8fafc}
 .acts .jump{grid-column:1/span 2;width:auto;height:52px}
+.stickpad{display:none;position:fixed;z-index:4;left:12px;bottom:92px;width:120px;height:120px;touch-action:none}
+body.touch:not(.table) .stickpad{display:block}
+.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.7);background:rgba(11,18,32,.55)}
+.stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(20,184,166,.85);border:2px solid #f8fafc}
+.jumpcol{display:none;position:fixed;z-index:4;left:28px;bottom:220px;gap:8px}
+body.touch:not(.table) .jumpcol{display:flex;flex-direction:column;align-items:center}
+.jumpcol button{border-radius:12px;border:1px solid rgba(34,211,238,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;touch-action:none}
+.jumpcol .crouch{width:48px;height:48px}
+.jumpcol .jump{width:64px;height:64px}
+body.touch .move,body.touch .acts{display:none!important}
+body.stick-right .stickpad{left:auto;right:12px}
+body.stick-right .jumpcol{left:auto;right:28px}
 .keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(520px,70vw)}
 body.touch .keys,body.table .keys{display:none}
 .ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
@@ -90,7 +102,8 @@ body.touch .keys,body.table .keys{display:none}
 @media (max-height:500px){.top{min-height:56px;padding:4px 8px}.icon-btn,.tool{height:48px}.icon-btn{width:48px}
   .slot{width:58px;min-height:52px;gap:2px}.lbl{font-size:10px}
   .move{bottom:76px}.acts{bottom:76px}.pad button{width:48px;height:48px}.move{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}
-  .acts button{width:70px;height:52px}.acts .jump{height:48px}}
+  .acts button{width:70px;height:52px}.acts .jump{height:48px}
+  .stickpad{bottom:76px;width:104px;height:104px}.jumpcol{bottom:188px}}
 .pad,#hotbar,.keys,.top{direction:ltr}
 html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
 html[dir=rtl] .row{text-align:right}
@@ -175,7 +188,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.21</span></b><small><span id="current">Red brick</span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.22</span></b><small><span id="current">Red brick</span></small></div>
   <span class="chip" id="mode-chip">Creative</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -206,7 +219,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
 <div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
-<div class="keys" data-i18n="keysHint">Click the world to aim. WASD move. Space jump (double-tap to fly). Left click break. Right click place.</div>
+<div class="keys" data-i18n="keysHint">WASD walk. Shift run. Z crouch. Space jumps one block. Hold left click to break. Right click places.</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
@@ -244,6 +257,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
       <button class="qbtn" type="button" data-ts="l"><b data-i18n="textL">Large</b></button>
     </div>
     <button class="row" id="m-perf"><span class="ic">∿</span><span data-i18n="showSpeed">Show speed</span></button>
+    <button class="row" id="m-stick" type="button"><span class="ic">◎</span><span data-i18n="stickSide">Stick side</span></button>
     <button class="row" data-fs-exit><span class="ic">⤢</span><span data-i18n="fsExit">Exit full screen</span></button>
   </div>
   <div class="sec"><h3 data-i18n="help">Help</h3>
@@ -265,6 +279,14 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   <p data-i18n="fsIphone">For full screen on iPhone: tap Share, then Add to Home Screen.</p>
   <button class="row" id="fs-hint-close" type="button" data-i18n="close">Close</button>
 </div>
+<div id="stick-pad" class="stickpad" aria-label="Move">
+  <div class="stick-base"></div>
+  <div class="stick-knob" id="stick-knob"></div>
+</div>
+<div class="jumpcol" id="jump-col">
+  <button class="crouch" id="t-crouch" type="button" aria-pressed="false" data-i18n="crouch">Crouch</button>
+  <button class="jump" type="button" data-hold="jump" data-i18n="jump">Jump</button>
+</div>
 <div class="pad move" aria-label="Move">
   <button class="f" data-hold="forward" aria-label="Forward" data-i18n-label="forward">▲</button>
   <button class="l" data-hold="left" aria-label="Left" data-i18n-label="left">◀</button>
@@ -285,7 +307,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.21" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.21" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.22" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.22" defer></script>
 </body>
 </html>

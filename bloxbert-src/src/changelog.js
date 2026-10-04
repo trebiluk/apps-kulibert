@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.22', date: '2026-10-04', lines: {
+    en: ['One thumb stick and a one-block jump.', 'Hold to mine. A short tap places.', 'Walk, run, and crouch.'],
+    uk: ['Один стік і стрибок на один блок.', 'Тримай щоб ламати. Короткий дотик ставить.', 'Крок, біг і присід.'],
+    ru: ['Один стик и прыжок на один блок.', 'Держи чтобы ломать. Короткое касание ставит.', 'Шаг, бег и присед.'],
+    es: ['Un stick y un salto de un bloque.', 'Mantén para romper. Un toque corto pone.', 'Caminar, correr y agacharse.'],
+    ar: ['عصا بإبهام واحد وقفزة بارتفاع مكعب.', 'اضغط مطولاً للكسر. اللمسة القصيرة تضع.', 'مشي وجري وانحناء.'],
+    'fa-AF': ['یک اهرم با یک شست و پرش به اندازه یک بلاک.', 'نگه دار تا بشکند. لمس کوتاه می‌گذارد.', 'راه رفتن، دویدن و خم شدن.'],
+    rw: ['Agastike kamwe n’igisimbu cy’igice kimwe.', 'Fata uvune. Gukora gato gushyira.', 'Kugenda, kwiruka, kwicaramye.'],
+    ti: ['ሓንቲ ስቲክን ሓደ ብሎክ ዝነጥ ጅምፕን።', 'ሓዝ ንምስባር። ሓጺር ምጥዋቕ የቐምጥ።', 'ምኻድ፣ ምጉያይ፣ ምድንጋር።'],
+  }},
   { v: '2.5.21', date: '2026-10-04', lines: {
     en: ['Arabic and Dari menu taps open the menu.', 'The tour does not replace the menu.'],
     ar: ['نقرة القائمة تفتح القائمة.', 'الجولة لا تحل محل القائمة.'],
