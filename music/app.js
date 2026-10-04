@@ -1401,7 +1401,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.9",
+        version: "MU 2.35.10",
         event: "score",
         level: id,
         score: score,
