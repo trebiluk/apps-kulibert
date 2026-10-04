@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-13-rename"/>
+<meta name="tech-room-rev" content="2026-10-13-arfit"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <script src="/shared/kw-who.js?v=2026-10-13-rename"></script>
-  <script src="/shared/tw-session.js?v=2026-10-13-rename"></script>
+  <script src="/shared/kw-who.js?v=2026-10-13-arfit"></script>
+  <script src="/shared/tw-session.js?v=2026-10-13-arfit"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1617,8 +1617,8 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-13-rename"></script>
-  <script src="/shared/kulibert-prefs.js?v=2026-10-13-rename"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-13-arfit"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-13-arfit"></script>
   <style id="hub-polish">
     body.apps-always .lockup-the{color:#f4fdff !important;opacity:1}
     body.apps-always a.tile .tw-on{
@@ -1809,7 +1809,7 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-13-rename</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-13-arfit</span></p>
       <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Apps that don't fit on the top row are under More.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
@@ -1883,7 +1883,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-13-rename</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Apps that don't fit on the top row are under More.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-13-arfit</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Apps that don't fit on the top row are under More.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.35.10</strong> — Mix opens the loudness. Band shows one list and the five notes.</p>
@@ -2443,7 +2443,7 @@
       })();
     </script>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-13-rename</span>
+      <span class="hub-foot-rev">rev 2026-10-13-arfit</span>
       <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Apps that don't fit on the top row are under More.</span></span>
       <button type="button" id="foot-fine-print">⚖️ Fine Print</button>
       <span id="shell-lunch">Lunch</span>
@@ -2489,7 +2489,7 @@
     </form>
   </div>
 
-  <script src="/shared/hub-staff-auth.js?v=2026-10-13-rename"></script>
+  <script src="/shared/hub-staff-auth.js?v=2026-10-13-arfit"></script>
   <script>
     (function () {
       var KEY = "tech-room-opened";
@@ -4230,6 +4230,41 @@
         fitDock();
         if (window.requestAnimationFrame) requestAnimationFrame(function () { fitDock(); });
       }
+      /* 2026-10-13-arfit: a cold Arabic or Dari load paints the menu word after the first fit.
+         That word, and its font, can leave the strip 8px too wide. Refit when they change. */
+      function armDockFit() {
+        if (armDockFit.armed) return;
+        armDockFit.armed = 1;
+        var seen = "";
+        function snap() {
+          var menu = document.getElementById("kb-menu");
+          var more = document.getElementById("edge-pocket-btn");
+          var clip = document.querySelector(".dock-clip");
+          function w(el) { return el ? el.offsetWidth + "x" + el.offsetHeight : ""; }
+          return w(menu) + "|" + w(more) + "|" + (clip ? clip.clientWidth : "");
+        }
+        function kick() {
+          var now = snap();
+          if (now === seen) return;
+          seen = now;
+          fitDockSoon();
+        }
+        if (typeof ResizeObserver === "function") {
+          var obs = new ResizeObserver(function () { kick(); });
+          var menu = document.getElementById("kb-menu");
+          var more = document.getElementById("edge-pocket-btn");
+          var clip = document.querySelector(".dock-clip");
+          if (menu) obs.observe(menu);
+          if (more) obs.observe(more);
+          if (clip) obs.observe(clip);
+        }
+        if (document.fonts && document.fonts.addEventListener) {
+          document.fonts.addEventListener("loadingdone", function () { fitDockSoon(); });
+        }
+        document.addEventListener("DOMContentLoaded", function () {
+          if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(undefined, fitDockSoon);
+        });
+      }
       window.addEventListener("resize", function () { fitDockSoon(); });
       document.addEventListener("kulibert-lang", function () {
         fitDockSoon();
@@ -4238,6 +4273,7 @@
       if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
         document.fonts.ready.then(function () { fitDockSoon(); });
       }
+      armDockFit();
       window.addEventListener("resize", function () {
         if (!plateState || !document.body.classList.contains("is-framed")) return;
         showPlate(plateState.name, plateState.version, plateState.menu, plateState.help, plateState.app);
@@ -4889,10 +4925,12 @@ document.addEventListener("click", function (event) {
         });
         paintSettings();
         syncHubLang();
+        if (typeof fitDockSoon === "function") fitDockSoon();
         window.addEventListener("kulibert-lang", function () {
           syncHubLang();
           paintSettings();
           if (typeof paintCloseLabels === "function") paintCloseLabels();
+          if (typeof fitDockSoon === "function") fitDockSoon();
           var frame = document.getElementById("app-frame");
           if (frame && document.body.classList.contains("is-framed")) postLang(frame);
         });

@@ -4,14 +4,14 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 
 ## 1. Live now
 - Live title: **The Tech Room · apps.kulibert.net** (https://apps.kulibert.net/).
-- Hub rev: **2026-10-13-rename**. Tile, cut line, and version chip say Bertapult. Path stays `/catapult/`.
+- Hub rev: **2026-10-13-arfit**. Arabic and Dari cold loads refit the strip after the menu word paints, so the dock is not wider than the row. Tile still says Bertapult. Path stays `/catapult/`.
 - Latest Hub proofs: `proof/hub-swipe/RESULT.md` (PASS with P2s; Arabic 1024x768 cold load 8 px too wide on 3 of 14 loads → brief 12c) and `proof/menu-audit/RESULT.md` (same-menu sweep across apps).
 
 ## 2. Open fixes (FAIL rows from the latest proof)
-- [ ] Arabic 1024x768 first load is 8 px too wide on 3 of 14 cold loads (hub-swipe item 2, NOT DONE) → `briefs/fixq/12c-hub-ar-refit.md`.
+- [x] Arabic 1024x768 first load is 8 px too wide on 3 of 14 cold loads (hub-swipe item 2, NOT DONE) → `briefs/fixq/12c-hub-ar-refit.md`. Shipped 2026-10-13-arfit. 14 fresh Arabic loads at 1024x768: dock scrollWidth <= clientWidth. Dari at 1024 fits. 1366 still shows the full row. Phones still swipe.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
-- [ ] `briefs/fixq/12c-hub-ar-refit.md`: Hub fix 12c of the click-test queue (P2, the part of 12b that didn't land). One fix only, please; don't change anything else.
+- [x] `briefs/fixq/12c-hub-ar-refit.md`: Hub fix 12c of the click-test queue (P2, the part of 12b that didn't land). One fix only, please; don't change anything else. Shipped 2026-10-13-arfit.
 - [x] `briefs/fixq/hub-launchpad-rename.md`: Hub rev 2026-10-13-rename: the ThrowIt listing becomes Bertapult. Text only, only these 3 items. No icon art, layout or order change. Shipped in this commit (tile, cut line, version chip).
 - [x] `briefs/fixq/hub-tron-default.md`: Hub: Tron glow is the default look again (Room theme). Shipped 2026-10-13-tron-default (01d103a).
 - [ ] `briefs/fixq/shared-bar-plate-clip.md`: Shared bar: the version plate is clipped on narrow phones (all apps, shared/kulibert-bar.js). Shared note from StyleBot, Sat Oct 3, 2026. Out of scope…
@@ -32,6 +32,7 @@ Plans and reference:
 - Commit author: trebiluk <6373031+trebiluk@users.noreply.github.com>. Push to main and reply with the sha.
 
 ## 5. Proof changelog
+- `hub-arfit`: Hub 2026-10-13-arfit. 14 fresh Arabic loads at 1024x768 fit (scrollWidth <= clientWidth, no cut icon). Dari at 1024 fits. 1366 shows the full row in en, ar, and fa-AF. 412x915 and 915x412 still swipe, nothing tucked. Classic still scrolls. Menu stays top-left.
 - `menu-audit`: Same menu sweep — live audit
 - `hub-swipe`: Verdict: PASS with P2s — Hub 2026-10-13-swipe (a09cf0e): the phone ribbon swipes again (P1 fixed), but fix item 2 is NOT DONE: Arabic 1024x768 first load still comes up 8 px too wide on 3 of 14 cold loads (brief acceptan
 - `hub-strip`: Verdict: FAIL (P1) — Hub 2026-10-13-strip (81cea34): the Chromebook strip fix works, but it killed the phone ribbon swipe (acceptance #4 "phone ribbon behaves as today" fails).
