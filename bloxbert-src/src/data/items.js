@@ -27,6 +27,7 @@ export const ITEMS = {
   storeCounter: { block: 25, letter: 'Sc', base: 0, sell: false },
   bunk: { block: 26, letter: 'Bk', base: 16, sell: false },
   box: { block: 27, letter: 'Bx', base: 4, sell: false },
+  door: { block: 30, letter: 'Dr', base: 2, sell: false },
   woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false },
   stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
@@ -38,5 +39,8 @@ export const ITEMS = {
 export const ITEM_BY_BLOCK = Object.fromEntries(Object.entries(ITEMS).filter(([, v]) => v.block).map(([k, v]) => [v.block, k]))
 export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
+  if (blockId === 28) return 'flour'
+  if (blockId === 29) return 'sugar'
+  if (blockId === 31) return 'door'
   return ITEM_BY_BLOCK[blockId] || null
 }

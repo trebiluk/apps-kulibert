@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.42', date: '2026-10-05', lines: {
+    en: ['A gold step shows what to do next.', 'Dig down for coal. Break wheat for flour and reeds for sugar.', 'Craft a door from 6 planks. Right-click opens it. Set home on a bunk.'],
+    uk: ['Золотий крок каже, що далі.', 'Копай униз за вугіллям. Пшениця дає борошно, очерет дає цукор.', 'Двері з 6 дощок. Права кнопка відчиняє. Дім на ліжку.'],
+    ru: ['Золотой шаг говорит, что дальше.', 'Копай вниз за углём. Пшеница даёт муку, камыш даёт сахар.', 'Дверь из 6 досок. Правая кнопка открывает. Дом на кровати.'],
+    es: ['Un paso dorado dice qué sigue.', 'Cava para el carbón. El trigo da harina y la caña da azúcar.', 'Una puerta sale de 6 tablas. El clic derecho la abre. Marca casa en una litera.'],
+    ar: ['خطوة ذهبية تقول ما التالي.', 'احفر للفحم. القمح يعطي دقيقاً والقصب يعطي سكراً.', 'باب من 6 ألواح. الزر الأيمن يفتحه. اجعل البيت على سرير.'],
+    'fa-AF': ['یک گام طلایی می‌گوید بعد چه شود.', 'برای زغال پایین بکن. گندم آرد می‌دهد و نی شکر.', 'در از ۶ تخته. راست‌کلیک بازش می‌کند. خانه را روی بستر بگذار.'],
+    rw: ['Intambwe y\'umuhondo ivuga ikurikira.', 'Tora amakara hasi. Ingano itanga ifu, urubingo itanga isukari.', 'Urugi ruvuye ku mba 6. Iburyo rufungura. Shyira urugo ku buriri.'],
+    ti: ['ወርቃዊ ስጉምቲ ዝቕጽል ይነግር።', 'ከሰል ንታሕቲ እኸድ። ስርናይ ዱቄት ይህብ፣ ቀጸል ሽኮር ይህብ።', 'ማዕጾ ካብ 6 ጣውላ። የማናይ ይኸፍት። ገዛ ኣብ ዓራት ኣቐምጥ።'],
+  }},
   { v: '2.5.41', date: '2026-10-05', lines: {
     en: ['Hold left click to break a tree. Leaves go fast. The trunk takes about 2 seconds by hand.', 'A Wood Tool makes the trunk faster.'],
     uk: ['Тримай ліву кнопку, щоб зрубати дерево. Листя швидко. Стовбур руками близько 2 секунд.', 'Дерев’яне знаряддя робить стовбур швидшим.'],

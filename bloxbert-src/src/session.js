@@ -603,7 +603,7 @@ export function createSession(api) {
     })
   }
   function paintBunk(g, key) {
-    g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); api.toast(t('homeSet')); api.close() }))
+    g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() }))
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
@@ -619,6 +619,7 @@ export function createSession(api) {
       const p = api.pos()
       spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
     } else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
+    if (r.out[0] === 'woodTool') markPath('pathTool')
     paintHotbar()
     return true
   }
@@ -658,6 +659,7 @@ export function createSession(api) {
     rec.till = 0
     paintChip()
   }
+  function markPath(id) { if (api.path) api.path(id) }
   function onBreak(x, y, z, id) {
     if (mode !== 'survival') return true
     if (id === 21) { api.toast(t('coreplateToast')); return false }
@@ -685,6 +687,9 @@ export function createSession(api) {
       }
     }
     bagHist.push({ type: 'break', item: drop, n: got, loose })
+    if (id === 11) markPath('pathTree')
+    if (id === 3) markPath('pathStone')
+    if (id === 5) markPath('pathCoal')
     return true
   }
   function onPlace(x, y, z, id) {
@@ -698,6 +703,7 @@ export function createSession(api) {
     if (id === 12) placedLeaves.add(x + ',' + y + ',' + z)
     if (id === 24) meta.set(x + ',' + y + ',' + z, { kind: 'vend', owner: 'you', slots: [null, null, null, null], till: 0, sales: [], salesN: 0 })
     if (id === 27) meta.set(x + ',' + y + ',' + z, { kind: 'box', slots: emptyBox() })
+    if (id === 30) markPath('pathDoor')
     bagHist.push({ type: 'place', item: key, n: 1 })
     redoBag.length = 0
     paintHotbar()

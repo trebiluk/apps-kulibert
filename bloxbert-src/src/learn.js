@@ -3,12 +3,31 @@ const KEY = 'bloxbert-learn'
 export function createLearn(api) {
   const state = load()
   const goals = [
-    { id: 'place10', need: 10, pay: 5, n: 0 },
-    { id: 'fillBox', need: 1, pay: 5, n: 0 },
-    { id: 'planks', need: 1, pay: 5, n: 0 },
-    { id: 'sell3', need: 3, pay: 5, n: 0 },
-    { id: 'stock', need: 1, pay: 10, n: 0 },
+    { id: 'pathTree', need: 1, pay: 2, n: 0 },
+    { id: 'pathTool', need: 1, pay: 3, n: 0 },
+    { id: 'pathStone', need: 1, pay: 3, n: 0 },
+    { id: 'pathCoal', need: 1, pay: 4, n: 0 },
+    { id: 'pathDoor', need: 1, pay: 4, n: 0 },
+    { id: 'pathHome', need: 1, pay: 5, n: 0 },
   ]
+  for (const g of goals) {
+    const saved = state.goals && state.goals[g.id]
+    if (!saved) continue
+    g.n = saved.n || 0
+    g.done = !!saved.done
+  }
+  function remember() {
+    state.goals = Object.fromEntries(goals.map((g) => [g.id, { n: g.n, done: !!g.done }]))
+    save()
+  }
+  function paintPath() {
+    const el = document.getElementById('path-chip')
+    if (!el) return
+    if (api.survival && !api.survival()) { el.hidden = true; return }
+    const g = goals.find((x) => !x.done)
+    el.hidden = !g
+    if (g) el.textContent = api.t(g.id)
+  }
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) { return {} }
   }
@@ -20,8 +39,14 @@ export function createLearn(api) {
     const g = goals.find((x) => x.id === id)
     if (!g || g.done) return
     g.n += n
-    if (g.n >= g.need) { g.done = true; api.pay(g.pay, id); api.toast(api.t('goalDone')) }
-    save()
+    if (g.n >= g.need) {
+      g.done = true
+      api.pay(g.pay, id)
+      const nxt = goals.find((x) => !x.done)
+      api.toast(nxt ? api.t(nxt.id) : api.t('goalDone'))
+    }
+    remember()
+    paintPath()
   }
   function a11y(patch) {
     state.a11y = Object.assign({ text: 'M', contrast: false, hold: true, gentle: false, robots: false }, state.a11y || {}, patch || {})
@@ -91,5 +116,6 @@ export function createLearn(api) {
     }, 600)
   }
   if (!state.tourDone) armAuto()
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, goals: () => goals, cancelAuto }
+  paintPath()
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, goals: () => goals, cancelAuto }
 }

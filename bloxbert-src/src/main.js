@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.41'
+const VERSION = '2.5.42'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -28,6 +28,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
+import { coalHere, plantHere } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, WALK } from './feel.js'
 
@@ -158,6 +159,10 @@ export const BLOCKS = [
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
   [27, 'box', 'wood', 'Bx', 'wood'],
+  [28, 'wheat', 'cotton_tan', 'Wh', 'cotton_tan'],
+  [29, 'reed', 'leaves', 'Rd', 'leaves'],
+  [30, 'door', 'wood', 'Dr', 'wood'],
+  [31, 'doorOpen', 'wood', 'Do', 'wood'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
@@ -165,8 +170,12 @@ noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven.png' })
 noa.registry.registerMaterial('vend', { textureURL: 'assets/tile-vend.png' })
 noa.registry.registerMaterial('store', { textureURL: 'assets/tile-store.png' })
 noa.registry.registerMaterial('bunk', { textureURL: 'assets/tile-bunk.png' })
-for (const [id, , material] of BLOCKS) noa.registry.registerBlock(id, { material, opaque: id !== 20 })
+for (const [id, name, material] of BLOCKS) {
+  const open = name === 'doorOpen'
+  noa.registry.registerBlock(id, { material, opaque: id !== 20 && !open, solid: !open })
+}
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
+noa.blockTargetIdCheck = (id) => id === ID.doorOpen || noa.registry.getBlockSolidity(id)
 const blockName = (id) => t(BLOCKS.find((b) => b[0] === id)[1])
 
 const S = 24
@@ -182,7 +191,7 @@ function box(x, z, x0, x1, z0, z1) { return x >= x0 && x <= x1 && z >= z0 && z <
 // Hand-made Bertyville on seed 1: workshop, gravel road, ice pond, three empty plots. Not a copied village.
 function townVoxel(x, y, z) {
   const h = TOWN.y
-  if (y < h - 3) return ID.stone
+  if (y < h - 3) return coalHere(x, y, z) ? ID.coal : ID.stone
   if (y < h) return ID.dirt
   const pond = (x + 10) * (x + 10) + (z - 14) * (z - 14)
   const road = z >= -1 && z <= 1 && x >= -18 && x <= 34
@@ -236,10 +245,13 @@ function genVoxel(x, y, z) {
       const dy = y - (th + 4), dx = x - cx, dz = z - cz
       if (dy >= -1 && dy <= 1 && Math.abs(dx) <= 2 && Math.abs(dz) <= 2 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return ID.leaves
     }
+    const plant = plantHere(x, y, z, h, false)
+    if (plant && ID[plant]) return ID[plant]
     return 0
   }
   if (y === h) return h <= 1 ? ID.sand : ID.grass
   if (y > h - 3) return ID.dirt
+  if (y > -64 && coalHere(x, y, z)) return ID.coal
   if (y > -64) return ID.stone
   return 0
 }
@@ -354,6 +366,11 @@ function placeBlock(face) {
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
+    if ((aimedBlock.blockID === ID.door || aimedBlock.blockID === ID.doorOpen) && canReach([ax, ay, az])) {
+      const open = aimedBlock.blockID === ID.door
+      if (edit(ax, ay, az, open ? ID.doorOpen : ID.door)) toast(t(open ? 'doorOpenMsg' : 'doorShut'))
+      return false
+    }
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
     if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station', aimedBlock.position.join(',')); return false }
     if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench', aimedBlock.position.join(',')); return false }
@@ -551,6 +568,7 @@ function paintModeChip() {
   if (!chip) return
   if (tableMode) { chip.textContent = t('buildTable'); return }
   chip.textContent = session && session.mode === 'survival' ? t('survival') : t('creative')
+  paintPath()
   const creative = $('m-creative')
   if (creative) creative.hidden = !teacherOn()
   const surv = $('m-survival')
@@ -567,6 +585,8 @@ function paintUndo() {
   const r = $('redo-btn'); if (r) r.disabled = !edits.canRedo
 }
 let selfUnlock = false
+let markPath = () => {}
+let paintPath = () => {}
 let lastPointer = null
 session = createSession({
   t, toast, getVoxel,
@@ -581,6 +601,7 @@ session = createSession({
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
   flash: (name) => flashHeld(name),
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
+  path: (id) => markPath(id),
   teacher: () => teacherOn(),
   setTeacher: (on) => setTeacher(on),
   townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
@@ -678,8 +699,11 @@ const learn = createLearn({
   t, toast, close: () => panels.close(),
   openTour: () => panels.open('tour'),
   panel: () => (panels && panels.openPanel) || '',
+  survival: () => session && session.mode === 'survival',
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
 })
+markPath = (id) => learn.bump(id)
+paintPath = () => learn.paintPath()
 holdTour = () => learn.cancelAuto()
 const tools = createTools({
   t, toast, getVoxel,
@@ -712,6 +736,8 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
 }
 $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
+const pathChip = $('path-chip')
+if (pathChip) pathChip.addEventListener('click', () => { openMenu(true); panels.open('goals') })
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
 $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
 let menuFromLock = false

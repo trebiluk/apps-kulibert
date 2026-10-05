@@ -9,6 +9,7 @@ export const RECIPES = [
   { id: 'box', at: 'bench', in: [['planks', 8]], out: ['box', 1], secs: 4 },
   { id: 'woodTool', at: 'bench', in: [['planks', 5]], out: ['woodTool', 1], secs: 2 },
   { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['planks', 2]], out: ['stoneTool', 1], secs: 4 },
+  { id: 'door', at: 'bench', in: [['planks', 6]], out: ['door', 1], secs: 3 },
   { id: 'glass', at: 'oven', in: [['sand', 2]], out: ['glass', 1], secs: 5 },
   { id: 'brickRed', at: 'oven', in: [['redSand', 2]], out: ['brickRed', 1], secs: 5 },
   { id: 'cupcake', at: 'oven', in: [['flour', 1], ['sugar', 1], ['berry', 2]], out: ['cupcake', 2], secs: 10, label: 'food' },

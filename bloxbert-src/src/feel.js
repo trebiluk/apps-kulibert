@@ -14,6 +14,7 @@ export const HAND_S = {
   woolBlue: 0.8, woolGreen: 0.8, woolRed: 0.8, woolTan: 0.8,
   planks: 1.5, log: 2, stone: 3, slate: 3.5, coal: 3.5,
   brickRed: 4, brickGrey: 4,
+  wheat: 0.4, reed: 0.4, door: 1.5, doorOpen: 1.5,
 }
 
 export function jumpHeight(v = JUMP_V, g = 32) {
