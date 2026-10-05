@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.40', date: '2026-10-05', lines: {
+    en: ['Right-click a box, oven, or bunk and the mouse stays visible.', 'You can click the menu. Closing it lets you look around again.'],
+    uk: ['Клік правою по скрині, печі чи ліжку, і миша лишається видимою.', 'Можна натискати меню. Закрий його, щоб знову озиратися.'],
+    ru: ['Правый клик по сундуку, печи или кровати, и мышь остаётся видимой.', 'Можно нажимать меню. Закрой его, чтобы снова осматриваться.'],
+    es: ['Clic derecho en una caja, horno o litera y el ratón sigue visible.', 'Puedes pulsar el menú. Al cerrarlo vuelves a mirar.'],
+    ar: ['انقر باليمين على صندوق أو فرن أو سرير ويبقى الماوس ظاهراً.', 'يمكنك ضغط القائمة. إغلاقها يعيد النظر.'],
+    'fa-AF': ['روی صندوق، تنور یا بستر راست‌کلیک کن و موشواره دیده می‌شود.', 'می‌توانی منو را بزنی. بستنش دوباره نگاه را برمی‌گرداند.'],
+    rw: ['Kanda iburyo ku gasanduku, ifuru, cyangwa uburiri, imbeba igumaho.', 'Ushobora gukanda menu. Kuyifunga gusubiza kureba.'],
+    ti: ['ቀጣይ ጠውቕ ኣብ ሳንዱቅ፡ እቶን ወይ ዓራት፡ ማውስ ይረአ።', 'መእተዊ ክትጠውቕ ትኽእል። ምዕጻው ዳግማይ ንምርኣይ የኽእል።'],
+  }},
   { v: '2.5.38', date: '2026-10-05', lines: {
     en: ['A Box holds 18 stacks. Craft it from 8 planks at the workbench.', 'Tap a Box to put in what you are holding, or tap a stack to take it back. A full box says so.', 'A Wood Tool and a Stone Tool speed up mining. Stone by hand is 3 seconds. With a Stone Tool it is 1 second.'],
     uk: ['Скриня тримає 18 стосів. Зроби її з 8 дощок на верстаті.', 'Торкнись скрині, щоб покласти те, що тримаєш, або торкнись стосу, щоб забрати.', 'Дерев’яне і кам’яне знаряддя прискорюють ламання. Камінь руками 3 секунди. Кам’яним знаряддям 1 секунда.'],

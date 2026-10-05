@@ -16,6 +16,7 @@ export function mountPanels(api) {
     return b
   }
   function show(id, label, fill, root) {
+    if (api.onOpen) api.onOpen()
     if (id === 'menu' && api.holdTour) api.holdTour()
     if (root) stack = ['menu']
     else if (stack[stack.length - 1] !== id) stack.push(id)

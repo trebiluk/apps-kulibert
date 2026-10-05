@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.39'
+const VERSION = '2.5.40'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -616,6 +616,13 @@ async function goWorld(m) {
   await load()
   if (panels) panels.close()
 }
+function releaseLook() {
+  selfUnlock = true
+  document.body.classList.add('menu-open')
+  try { noa.container.setPointerLock(false) } catch (e) {}
+  try { noa.setPaused(true) } catch (e) {}
+  if (session) session.paused = true
+}
 let holdTour = () => {}
 panels = mountPanels({
   t, toast,
@@ -631,7 +638,12 @@ panels = mountPanels({
   inspect: () => setInspect(true),
   table: () => setMode(true),
   setWorldMode: (m) => goWorld(m),
-  onClose: () => { try { noa.setPaused(false) } catch (e) {} session.paused = false },
+  onClose: () => {
+    document.body.classList.remove('menu-open')
+    try { noa.setPaused(false) } catch (e) {}
+    if (session) session.paused = false
+  },
+  onOpen: () => releaseLook(),
   paintBag: (g) => session.paintBag(g),
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
@@ -881,10 +893,7 @@ function tuckBarDrawer() {
 function openMenu(on) {
   if (on && learn) learn.cancelAuto()
   if (on) {
-    selfUnlock = true
-    if (document.pointerLockElement) document.exitPointerLock()
-    try { noa.setPaused(true) } catch (e) {}
-    if (session) session.paused = true
+    releaseLook()
     panels.openRoot()
     try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
     const hint = $('menu-hint'); if (hint) hint.hidden = true
