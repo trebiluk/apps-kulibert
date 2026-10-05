@@ -271,6 +271,7 @@ export function createSession(api) {
       }
       return
     }
+    g.classList.add('baggrid')
     if (!bag.slots.some(Boolean)) {
       const p = document.createElement('p')
       p.className = 'gnote'
@@ -293,6 +294,8 @@ export function createSession(api) {
       lbl.className = 'glbl'
       lbl.textContent = s ? itemName(s.item) + ' ' + s.n : ''
       b.append(lbl)
+      if (i < 9 && i === hot) b.classList.add('on')
+      b.setAttribute('aria-pressed', String(i < 9 && i === hot))
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       if (!s) b.disabled = true
       else b.addEventListener('click', () => card(g, s.item, i))

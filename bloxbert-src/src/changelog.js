@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.36', date: '2026-10-05', lines: {
+    en: ['The corner says Survival, not Survival practice.', 'The bag lines up as 3 by 3 and 3 by 2.', 'The lit hotbar slot is marked in the bag.', 'What\'s new describes this game, not an old note.'],
+    uk: ['У куті написано Виживання, без слова про навчання.', 'Сумка рівна: 3 на 3 і 3 на 2.', 'Обране місце панелі позначене в сумці.', 'Що нового описує цю гру, не стару нотатку.'],
+    ru: ['В углу написано Выживание, без слова про учёбу.', 'Сумка ровная: 3 на 3 и 3 на 2.', 'Выбранное место панели отмечено в сумке.', 'Что нового описывает эту игру, не старую заметку.'],
+    es: ['La esquina dice Supervivencia, no práctica.', 'La bolsa queda en 3 por 3 y 3 por 2.', 'El hueco elegido de la barra se marca en la bolsa.', 'Novedades describe este juego, no una nota vieja.'],
+    ar: ['الزاوية تقول البقاء، لا تدريب.', 'الحقيبة تصطف 3 في 3 و3 في 2.', 'خانة الشريط المضاءة معلّمة في الحقيبة.', 'ما الجديد يصف هذه اللعبة، لا ملاحظة قديمة.'],
+    'fa-AF': ['گوشه بقا می‌گوید، نه تمرین.', 'بکس ۳ در ۳ و ۳ در ۲ ردیف می‌شود.', 'خانه روشن نوار در بکس نشان داده می‌شود.', 'تازه‌ها همین بازی را می‌گوید، نه یک یادداشت کهنه.'],
+    rw: ['Ahantu havuga Ubugingo, ntabwo havuga imyitozo.', 'Agasaho gitegeka 3 ku 3 na 3 ku 2.', 'Akanya gatoranyijwe kagaragara mu gasaho.', 'Ibishya bivuga uyu mukino, ntabwo ari inyandiko ishaje.'],
+    ti: ['ኩርናዕ ህይወት ይብል እምበር ምልምማድ ኣይብልን።', 'ቦርሳ 3 ብ 3ን 3 ብ 2ን ትሰለፍ።', 'ዝበርሀ መስመር ኣብ ቦርሳ ይረአ።', 'ሓድሽ ነዚ ጸወታ እዩ ዝገልጽ እምበር ነቲ ናይ ቀደም ጽሑፍ ኣይኮነን።'],
+  }},
   { v: '2.5.35', date: '2026-10-05', lines: {
     en: ['The game stops copying a long list every frame after it has been open a while.', 'Loose items no longer build throwaway lists every frame.', 'The camera updates only when the view actually changes.'],
     uk: ['Гра більше не копіює довгий список щокадру, коли вона довго відкрита.', 'Речі на землі не створюють зайві списки щокадру.', 'Камера оновлюється лише коли вигляд справді змінюється.'],

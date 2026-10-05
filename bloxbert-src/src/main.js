@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.35'
+const VERSION = '2.5.36'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -490,8 +490,7 @@ async function applyDoc(doc) {
   if (Array.isArray(doc.spawn) && doc.spawn.every(Number.isFinite)) noa.entities.setPosition(noa.playerEntity, doc.spawn)
   if (session) session.load(fromDoc(doc))
   if (doc.stations) stations.load(doc.stations)
-  const chip = $('mode-chip')
-  if (chip && session) chip.textContent = session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
+  if (session) paintModeChip()
   syncDropMeshes()
 }
 async function importFile(file) {
@@ -527,7 +526,7 @@ function paintModeChip() {
   const chip = $('mode-chip')
   if (!chip) return
   if (tableMode) { chip.textContent = t('buildTable'); return }
-  chip.textContent = session && session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
+  chip.textContent = session && session.mode === 'survival' ? t('survival') : t('creative')
   const creative = $('m-creative')
   if (creative) creative.hidden = !teacherOn()
   const surv = $('m-survival')
@@ -936,7 +935,7 @@ function setMode(table) {
   $('m-creative').setAttribute('aria-pressed', String(!table))
   $('m-table').classList.toggle('on', table)
   $('m-table').setAttribute('aria-pressed', String(table))
-  $('mode-chip').textContent = table ? t('buildTable') : (session && session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative'))
+  paintModeChip()
   if (table) {
     if (document.pointerLockElement) document.exitPointerLock()
     noa.camera.zoomDistance = 16
@@ -1758,7 +1757,13 @@ if (!__BLOX_STUDENT__) {
   }
 }
 
-load().catch(() => {}).finally(() => { paintModeChip(); if (sentToSurvival) toast(t('studentWorld')); markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved')) })
+load().catch(() => {}).finally(() => {
+  paintModeChip()
+  if (session && session.mode === 'survival' && session.paintHotbar) session.paintHotbar()
+  else paintBar()
+  if (sentToSurvival) toast(t('studentWorld'))
+  markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
+})
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   window.__smoke = {
     seed() {
