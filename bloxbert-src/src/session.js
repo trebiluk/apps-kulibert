@@ -567,19 +567,28 @@ export function createSession(api) {
       const have = bag.count(item)
       const moved = putInSlots(rec.slots, item, have)
       const kept = have - moved.left
-      if (kept && bag.take(item, kept)) rec.slots = moved.slots
-      if (!kept) api.toast(t('bagFull'))
+      if (!kept) { api.toast(t('boxFull')); return }
+      if (!bag.take(item, kept)) return
+      rec.slots = moved.slots
+      if (moved.left) api.toast(t('boxFull'))
       paintHotbar()
       if (api.markDirty) api.markDirty()
       g.innerHTML = ''
       paintBox(g, key)
     }))
+    const put = g.lastChild || g.children[g.children.length - 1]
+    if (put && put.classList) put.classList.add('wide')
     rec.slots.forEach((s, i) => {
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'gtile'
-      b.textContent = s ? itemName(s.item) + ' ' + s.n : ''
-      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
+      b.className = 'gtile slot'
+      const info = s && ITEMS[s.item]
+      if (s && info) {
+        b.innerHTML = '<span class="gic">' + (info.svg ? itemSvg(info.svg) : info.letter) + '</span><span class="glbl"></span>'
+        const name = b.querySelector('.glbl')
+        if (name) name.textContent = String(s.n)
+      }
+      b.setAttribute('aria-label', s ? itemName(s.item) + ' ' + s.n : t('emptySlot'))
       if (!s) b.disabled = true
       else b.addEventListener('click', () => {
         const left = bag.add(s.item, s.n)

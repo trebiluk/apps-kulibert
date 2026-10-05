@@ -1,6 +1,6 @@
 export const CHANGELOG = [
   { v: '2.5.38', date: '2026-10-05', lines: {
-    en: ['A Box holds 18 stacks. Craft it from 8 planks at the workbench.', 'Tap a Box to put in what you are holding, or tap a stack to take it back.', 'A Wood Tool and a Stone Tool speed up mining. Stone by hand is 3 seconds. With a Stone Tool it is 1 second.'],
+    en: ['A Box holds 18 stacks. Craft it from 8 planks at the workbench.', 'Tap a Box to put in what you are holding, or tap a stack to take it back. A full box says so.', 'A Wood Tool and a Stone Tool speed up mining. Stone by hand is 3 seconds. With a Stone Tool it is 1 second.'],
     uk: ['Скриня тримає 18 стосів. Зроби її з 8 дощок на верстаті.', 'Торкнись скрині, щоб покласти те, що тримаєш, або торкнись стосу, щоб забрати.', 'Дерев’яне і кам’яне знаряддя прискорюють ламання. Камінь руками 3 секунди. Кам’яним знаряддям 1 секунда.'],
     ru: ['Сундук держит 18 стопок. Сделай его из 8 досок на верстаке.', 'Нажми сундук, чтобы положить то, что держишь, или нажми стопку, чтобы забрать.', 'Деревянное и каменное орудие ускоряют ломку. Камень руками 3 секунды. Каменным орудием 1 секунда.'],
     es: ['Una caja guarda 18 pilas. Hazla con 8 tablas en el banco.', 'Toca la caja para guardar lo que sostienes, o toca una pila para sacarla.', 'Las herramientas de madera y de piedra pican más rápido. La piedra a mano tarda 3 segundos. Con piedra, 1 segundo.'],

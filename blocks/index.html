@@ -200,6 +200,9 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 60%)}
 @media (min-width:900px){.ggrid{grid-template-columns:repeat(6,minmax(64px,1fr))}.ggrid.baggrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ggrid.baggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.ggrid.baggrid .gtile.wide{grid-column:1 / -1;min-height:52px}
+.ggrid.baggrid .gtile.slot{min-height:64px;overflow:hidden}
+.ggrid.baggrid .gtile.slot .glbl{font-size:13px}
 .ggrid.baggrid .gtile.on{border-color:var(--cyan);box-shadow:inset 0 0 0 2px var(--cyan)}
 @media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
 @media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
@@ -211,7 +214,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.38</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.39</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -333,7 +336,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.38" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.38" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-12-one-menu" data-app="bloxbert" data-name="Bertopia" data-version="2.5.39" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.39" defer></script>
 </body>
 </html>

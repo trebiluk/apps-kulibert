@@ -89,5 +89,66 @@ s.bag.slots[10] = { item: 'stone', n: 3 }
 if (!s.holdItem('stone', 10) || s.bag.slots[0].n !== 3 || s.bag.slots[10].n !== 64) throw new Error('Hold this took the hotbar stack instead of the pocket')
 s.load({ player: { mode: 'survival', bag: Array.from({ length: 20 }, () => ({ item: 'dirt', n: 1 })), hot: 0 } })
 if (s.bag.count('dirt') !== 15 || !toasts.includes('keptAside')) throw new Error('old stacks were not kept aside')
+
+function node() {
+  const n = { className: '', type: '', disabled: false, children: [], fn: null, style: {}, dataset: {} }
+  n.classList = { add(c) { n.className += ' ' + c } }
+  n.append = (ch) => { n.children.push(ch) }
+  n.setAttribute = () => {}
+  n.addEventListener = (ev, fn) => { n.fn = fn }
+  n.querySelector = () => ({ textContent: '' })
+  Object.defineProperty(n, 'innerHTML', { get() { return '' }, set() { n.children.length = 0 } })
+  Object.defineProperty(n, 'lastChild', { get() { return n.children[n.children.length - 1] } })
+  return n
+}
+document.createElement = () => node()
+const boxToasts = []
+const b = createSession({
+  t: (k) => k,
+  toast: (m) => boxToasts.push(m),
+  getVoxel: () => 0,
+  pos: () => [8, 5, 8],
+  heading: () => 0,
+  tableOn: () => false,
+  markDirty() {},
+  townKept: (x) => x === 4,
+})
+b.setMode('survival')
+b.give('box', 1)
+b.holdItem('box')
+if (b.onPlace(4, 5, 4, 27) !== false || b.bag.count('box') !== 1) throw new Error('a box was placed in the shop')
+if (b.onPlace(3, 5, 3, 27) !== true || b.bag.count('box') !== 0) throw new Error('a box did not place on the plot')
+b.give('woodTool', 1)
+b.holdItem('woodTool')
+if (b.toolTier() !== 'wood') throw new Error('the wood tool was not in hand')
+b.give('stone', 10)
+b.holdItem('stone')
+const g = node()
+b.paintBox(g, '3,5,3')
+if (g.children.length !== 19) throw new Error('the box did not show 18 slots, saw ' + g.children.length)
+if (!String(g.children[0].className).includes('wide')) throw new Error('Put in does not span the row')
+g.children[0].fn()
+if (b.bag.count('stone') !== 0) throw new Error('Put in left the stone in the bag')
+const stack = g.children.slice(1).find((c) => c.fn)
+if (!stack) throw new Error('the stored stack had no button')
+stack.fn()
+if (b.bag.count('stone') !== 10) throw new Error('taking the stack did not return 10 stone')
+for (let i = 0; i < 18; i++) {
+  b.bag.take('dirt', b.bag.count('dirt'))
+  b.give('dirt', 64)
+  b.holdItem('dirt')
+  const before = boxToasts.length
+  g.children[0].fn()
+  if (boxToasts.length !== before) throw new Error('slot ' + i + ' said the box was full')
+  if (b.bag.count('dirt') !== 0) throw new Error('slot ' + i + ' left dirt in the bag')
+}
+const stone = b.bag.count('stone')
+b.holdItem('stone')
+g.children[0].fn()
+if (!boxToasts.includes('boxFull') || b.bag.count('stone') !== stone) throw new Error('a full box did not keep the extra stone')
+if (b.onBreak(3, 5, 3, 27) !== true) throw new Error('the box did not break')
+const dirtOut = b.bag.count('dirt') + b.groundDrops().filter((d) => d.item === 'dirt').reduce((n, d) => n + d.n, 0)
+if (dirtOut !== 18 * 64) throw new Error('breaking the box lost dirt, left ' + dirtOut)
+if (!b.bag.count('box') && !b.groundDrops().some((d) => d.item === 'box')) throw new Error('breaking the box lost the box')
 console.log('session-check ok', toasts.filter((t) => t === 'bagFull').length, 'full toasts')
 process.exit(0)
