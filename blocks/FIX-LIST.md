@@ -3,7 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
-- **Bertopia 2.5.36** refines what is already there. The corner says Survival, not Survival practice. The bag is 3 by 3 and 3 by 2, and the lit hotbar slot is marked. What's new describes this game.
+- **Bertopia 2.5.37** puts a workbench, an oven, the store, and a bunk in the shop at spawn. The shop, road, pond, and plot edges stay unless this device is a teacher or the teacher has allowed it to change the town. Students build on the marked plots or outside town.
 - **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
 - **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.

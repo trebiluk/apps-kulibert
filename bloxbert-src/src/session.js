@@ -486,6 +486,11 @@ export function createSession(api) {
       g.innerHTML = ''
       paintTeacher(g)
     }))
+    if (on) g.append(btn(api.townYes && api.townYes() ? t('townYes') : t('townNo'), () => {
+      if (api.setTown) api.setTown(!(api.townYes && api.townYes()))
+      g.innerHTML = ''
+      paintTeacher(g)
+    }))
     g.append(btn(t('priceDial'), () => { wallet.state.dial = wallet.state.dial === 1 ? 1.5 : 1; api.toast(t('pricesChanged')) }))
     g.append(btn(t('townsfolk'), () => { ECON.townsfolk.on = !ECON.townsfolk.on }))
     g.append(btn(t('resetWallet'), () => { if (confirm(t('resetWallet'))) { wallet.state.cogs = wallet.state.start; wallet.state.ledger = []; wallet.post({ kind: 'teacher', cogs: 0, by: 'teacher' }); paintChip() } }))
@@ -590,7 +595,7 @@ export function createSession(api) {
   function onBreak(x, y, z, id) {
     if (mode !== 'survival') return true
     if (id === 21) { api.toast(t('coreplateToast')); return false }
-    if (x >= 4 && x <= 13 && z >= 4 && z <= 11 && y >= 4 && y <= 9) { api.toast(t('shopProtected')); return false }
+    if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     if (id === 24 || id === 26) return false
     const drop = dropOf(id)
     let got = 0
@@ -617,6 +622,7 @@ export function createSession(api) {
   }
   function onPlace(x, y, z, id) {
     if (mode !== 'survival') return true
+    if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     const item = selectedItem()
     const need = Object.entries(ITEMS).find(([, v]) => v.block === id)
     const key = need ? need[0] : item

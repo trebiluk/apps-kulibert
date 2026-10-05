@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.37', date: '2026-10-05', lines: {
+    en: ['The shop has a workbench, an oven, the store, and a bunk.', 'The shop, the road, the pond, and the plot edges stay unless a teacher allows this device to change the town.', 'Students build on the marked plots, or outside town.'],
+    uk: ['У крамниці є верстат, піч, крамниця і ліжко.', 'Крамниця, дорога, ставок і краї ділянок лишаються, доки вчитель не дозволить цьому пристрою змінювати місто.', 'Учні будують на ділянках або за містом.'],
+    ru: ['В лавке есть верстак, печь, прилавок и кровать.', 'Лавка, дорога, пруд и края участков остаются, пока учитель не разрешит этому устройству менять город.', 'Ученики строят на участках или за городом.'],
+    es: ['La tienda tiene mesa, horno, mostrador y litera.', 'La tienda, el camino, el estanque y los bordes se quedan, salvo que el profe deje que este aparato cambie el pueblo.', 'Los alumnos construyen en los solares o fuera del pueblo.'],
+    ar: ['في الدكان طاولة عمل وفرن ومتجر وسرير.', 'الدكان والطريق والبركة وحواف القطع تبقى، إلا إذا سمح المعلم لهذا الجهاز بتغيير البلدة.', 'التلاميذ يبنون على القطع أو خارج البلدة.'],
+    'fa-AF': ['در دکان میز کار، تنور، دکان و بستر است.', 'دکان، راه، حوض و لبه قطعه‌ها می‌مانند، مگر معلم به این دستگاه اجازه تغییر شهر بدهد.', 'شاگردان روی قطعه‌ها یا بیرون شهر می‌سازند.'],
+    rw: ['Iduka rifite akameza, ifuru, iduka n\'uburiri.', 'Iduka, umuhanda, ikiyaga n\'impera z\'ibice biguma, keretse umwarimu yemeye iki gikoresho guhindura umudugudu.', 'Abanyeshuri babaka ku bice cyangwa hanze.'],
+    ti: ['ኣብ ድኳን መደብይ፡ እቶን፡ መደብርን ዓራትን ኣሎ።', 'ድኳን፡ መንገዲ፡ ቀላይን ወሰን መሬትን ይቕጽሉ፡ እንተዘይ ኮይኑ መምህር ነዚ መሳርሒ ከተማ ክቅይር ምስ ፈቐደ።', 'ተምሃሮ ኣብ መሬት ወይ ወጻኢ ይሃንጹ።'],
+  }},
   { v: '2.5.36', date: '2026-10-05', lines: {
     en: ['The corner says Survival, not Survival practice.', 'The bag lines up as 3 by 3 and 3 by 2.', 'The lit hotbar slot is marked in the bag.', 'What\'s new describes this game, not an old note.'],
     uk: ['У куті написано Виживання, без слова про навчання.', 'Сумка рівна: 3 на 3 і 3 на 2.', 'Обране місце панелі позначене в сумці.', 'Що нового описує цю гру, не стару нотатку.'],

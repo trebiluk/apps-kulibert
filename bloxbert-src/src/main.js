@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.36'
+const VERSION = '2.5.37'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -27,6 +27,7 @@ import { blockIcon } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
+import { FLOOR, STATIONS, keptCell } from './town.js'
 import { fromDoc } from './save.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, WALK } from './feel.js'
 
@@ -174,7 +175,7 @@ function hash(x, z) { let h = (x * 374761393 + z * 668265263) | 0; h = (h ^ (h >
 function heightAt(x, z) {
   return Math.round(3 + 2.2 * Math.sin(x / 19) * Math.cos(z / 23) + 1.2 * Math.sin((x + z) / 11))
 }
-const TOWN = { x0: -20, x1: 36, z0: -18, z1: 28, y: 4 }
+const TOWN = { x0: -20, x1: 36, z0: -18, z1: 28, y: FLOOR }
 function inTown(x, z) { return x >= TOWN.x0 && x <= TOWN.x1 && z >= TOWN.z0 && z <= TOWN.z1 }
 function box(x, z, x0, x1, z0, z1) { return x >= x0 && x <= x1 && z >= z0 && z <= z1 }
 // Hand-made Bertyville on seed 1: workshop, gravel road, ice pond, three empty plots. Not a copied village.
@@ -207,7 +208,9 @@ function townVoxel(x, y, z) {
     if (edge && y <= h + 3) return ID.brickRed
     if (y === h + 4) return ID.planks
     if (x === 8 && z === 9 && y === h + 1) return ID.storeCounter
-    if (x === 6 && z === 8 && y === h + 1) return ID.planks
+    if (x === 6 && z === 8 && y === h + 1) return ID.workbench
+    if (x === 11 && z === 8 && y === h + 1) return ID.oven
+    if (x === 10 && z === 6 && y === h + 1) return ID.bunk
     return 0
   }
   if (y === h + 1) {
@@ -276,6 +279,7 @@ const edits = createEdits({
 })
 const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
 function edit(x, y, z, v) {
+  if (keptCell(x, y, z) && !teacherOn() && !townHelper()) { toast(t('shopProtected')); return false }
   const group = edits.applyEdit([[x, y, z, v]], { source: 'hand', label: 'hand' })
   if (group) changeLog.note(group)
   return !!group
@@ -395,6 +399,23 @@ noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
 const STORE = 'worlds'
+function townHelper() {
+  try { return localStorage.getItem('bloxbert-town') === '1' } catch (e) { return false }
+}
+function setTownHelper(on) {
+  try { localStorage.setItem('bloxbert-town', on ? '1' : '0') } catch (e) {}
+  toast(on ? t('townYes') : t('townNo'))
+}
+function ensureHelp() {
+  const y = FLOOR + 1
+  let changed = false
+  for (const s of STATIONS) {
+    if (getVoxel(s.x, y, s.z) === ID[s.id]) continue
+    setVoxel(s.x, y, s.z, ID[s.id], false)
+    changed = true
+  }
+  return changed
+}
 function teacherOn() {
   try { return localStorage.getItem('bloxbert-teacher') === '1' } catch (e) { return false }
 }
@@ -463,9 +484,10 @@ async function save() {
 async function load() {
   const db = await idb()
   const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') return false
+  if (!doc || doc.format !== 'kuliblocks') { ensureHelp(); return false }
   await applyDoc(doc)
-  dirty = false
+  const repaired = ensureHelp()
+  dirty = repaired
   markSave(t('loaded'))
   return true
 }
@@ -559,6 +581,9 @@ session = createSession({
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
   teacher: () => teacherOn(),
   setTeacher: (on) => setTeacher(on),
+  townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
+  townYes: () => townHelper(),
+  setTown: (on) => setTownHelper(on),
 })
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -653,6 +678,7 @@ const tools = createTools({
   current: () => current,
   aim: () => (noa.targetedBlock ? noa.targetedBlock.adjacent : [8, 6, 8]),
   apply: (ops, label) => {
+    if (ops.some(([x, y, z]) => keptCell(x, y, z) && !teacherOn() && !townHelper())) { toast(t('shopProtected')); return null }
     const g = edits.applyEdit(ops, { source: 'tool', label })
     if (g) changeLog.note(g, 'you')
     toast(label)

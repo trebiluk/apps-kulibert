@@ -14,7 +14,7 @@ export const EXTRA = {
     setHome: 'Set home here?', yes: 'Yes', no: 'No', teacher: 'Teacher', pin: 'PIN', priceDial: 'Price dial', dailyCap: 'Daily cap', startCogs: 'Start Cogs',
     townsfolk: 'Townsfolk', resetWallet: 'Reset wallet', onDevice: 'On this device only', pricesChanged: 'Prices changed', fair: 'Fair', yours: 'Yours',
     takeTill: 'Take till', soldOut: 'Sold out: restock', profit: 'Profit', spent: 'Spent', cogsIn: 'In', backMenu: 'Menu', survival: 'Survival',
-    myCounter: 'My Counter', bunk: 'Bunk', prices: 'Prices', stock: 'Stock', needMore: 'Need ⚙ {n} more', shopProtected: 'That building stays.',
+    myCounter: 'My Counter', bunk: 'Bunk', prices: 'Prices', stock: 'Stock', needMore: 'Need ⚙ {n} more', shopProtected: 'The town stays. Build on a marked plot, or outside town.', townYes: 'This device may change the town', townNo: 'This device leaves the town alone',
     ingredients: 'Ingredients: flour, sugar, berries · Bake 10 s', breadLabel: 'Ingredients: flour · Bake 8 s', versionSkew: 'That world uses a different version',
   },
   uk: {
@@ -31,7 +31,7 @@ export const EXTRA = {
     setHome: 'Дім тут?', yes: 'Так', no: 'Ні', teacher: 'Вчитель', pin: 'PIN', priceDial: 'Ціна', dailyCap: 'Ліміт дня', startCogs: 'Старт',
     townsfolk: 'Містяни', resetWallet: 'Скинути гаманець', onDevice: 'Лише на цьому пристрої', pricesChanged: 'Ціни змінено', fair: 'Чесно', yours: 'Твоя',
     takeTill: 'Забрати касу', soldOut: 'Немає: поповни', profit: 'Прибуток', spent: 'Витрачено', cogsIn: 'Надходження', backMenu: 'Меню', survival: 'Виживання',
-    myCounter: 'Мій прилавок', bunk: 'Ліжко', prices: 'Ціни', stock: 'Запас', needMore: 'Ще ⚙ {n}', shopProtected: 'Ця будівля лишається.',
+    myCounter: 'Мій прилавок', bunk: 'Ліжко', prices: 'Ціни', stock: 'Запас', needMore: 'Ще ⚙ {n}', shopProtected: 'Місто лишається. Будуй на ділянці або за містом.', townYes: 'Цей пристрій може змінювати місто', townNo: 'Цей пристрій не чіпає місто',
     ingredients: 'Склад: борошно, цукор, ягоди · Випічка 10 с', breadLabel: 'Склад: борошно · Випічка 8 с', versionSkew: 'Цей світ іншої версії',
   },
   ru: {
@@ -47,7 +47,7 @@ export const EXTRA = {
     setHome: 'Дом здесь?', yes: 'Да', no: 'Нет', teacher: 'Учитель', pin: 'PIN', priceDial: 'Цена', dailyCap: 'Лимит дня', startCogs: 'Старт',
     townsfolk: 'Жители', resetWallet: 'Сбросить кошелёк', onDevice: 'Только на этом устройстве', pricesChanged: 'Цены изменены', fair: 'Честно', yours: 'Твоя',
     takeTill: 'Забрать кассу', soldOut: 'Нет: пополни', profit: 'Прибыль', spent: 'Потрачено', cogsIn: 'Приход', backMenu: 'Меню', survival: 'Выживание',
-    myCounter: 'Мой прилавок', bunk: 'Кровать', prices: 'Цены', stock: 'Запас', needMore: 'Ещё ⚙ {n}', shopProtected: 'Это здание остаётся.',
+    myCounter: 'Мой прилавок', bunk: 'Кровать', prices: 'Цены', stock: 'Запас', needMore: 'Ещё ⚙ {n}', shopProtected: 'Город остаётся. Строй на участке или за городом.', townYes: 'Это устройство может менять город', townNo: 'Это устройство не трогает город',
     ingredients: 'Состав: мука, сахар, ягоды · Выпечка 10 с', breadLabel: 'Состав: мука · Выпечка 8 с', versionSkew: 'Этот мир другой версии',
   },
   es: {
@@ -63,7 +63,7 @@ export const EXTRA = {
     setHome: '¿Casa aquí?', yes: 'Sí', no: 'No', teacher: 'Profe', pin: 'PIN', priceDial: 'Precio', dailyCap: 'Tope del día', startCogs: 'Inicio',
     townsfolk: 'Vecinos', resetWallet: 'Reiniciar bolsillo', onDevice: 'Solo en este aparato', pricesChanged: 'Precios cambiados', fair: 'Justo', yours: 'Tuyo',
     takeTill: 'Cobrar caja', soldOut: 'Agotado: repón', profit: 'Ganancia', spent: 'Gastado', cogsIn: 'Entró', backMenu: 'Menú', survival: 'Supervivencia',
-    myCounter: 'Mi mostrador', bunk: 'Litera', prices: 'Precios', stock: 'Stock', needMore: 'Faltan ⚙ {n}', shopProtected: 'Ese edificio se queda.',
+    myCounter: 'Mi mostrador', bunk: 'Litera', prices: 'Precios', stock: 'Stock', needMore: 'Faltan ⚙ {n}', shopProtected: 'El pueblo se queda. Construye en un solar o fuera del pueblo.', townYes: 'Este aparato puede cambiar el pueblo', townNo: 'Este aparato deja el pueblo quieto',
     ingredients: 'Ingredientes: harina, azúcar, bayas · Hornear 10 s', breadLabel: 'Ingredientes: harina · Hornear 8 s', versionSkew: 'Ese mundo usa otra versión',
   },
   ar: {
@@ -79,7 +79,7 @@ export const EXTRA = {
     setHome: 'البيت هنا؟', yes: 'نعم', no: 'لا', teacher: 'المعلم', pin: 'رمز', priceDial: 'السعر', dailyCap: 'حد اليوم', startCogs: 'البداية',
     townsfolk: 'السكان', resetWallet: 'تصفير المحفظة', onDevice: 'على هذا الجهاز فقط', pricesChanged: 'تغيّرت الأسعار', fair: 'عادل', yours: 'سعرك',
     takeTill: 'خذ الصندوق', soldOut: 'نفد: أعد التعبئة', profit: 'الربح', spent: 'المصروف', cogsIn: 'الداخل', backMenu: 'القائمة', survival: 'بقاء',
-    myCounter: 'مِنضدتي', bunk: 'سرير', prices: 'الأسعار', stock: 'المخزون', needMore: 'يلزم ⚙ {n}', shopProtected: 'هذا المبنى يبقى.',
+    myCounter: 'مِنضدتي', bunk: 'سرير', prices: 'الأسعار', stock: 'المخزون', needMore: 'يلزم ⚙ {n}', shopProtected: 'البلدة تبقى. ابنِ في قطعة أو خارج البلدة.', townYes: 'هذا الجهاز يستطيع تغيير البلدة', townNo: 'هذا الجهاز يترك البلدة',
     ingredients: 'المكونات: دقيق وسكر وتوت · خبز 10 ث', breadLabel: 'المكونات: دقيق · خبز 8 ث', versionSkew: 'هذا العالم نسخة مختلفة',
   },
   'fa-AF': {
@@ -95,7 +95,7 @@ export const EXTRA = {
     setHome: 'خانه اینجا؟', yes: 'بله', no: 'نه', teacher: 'معلم', pin: 'رمز', priceDial: 'نرخ', dailyCap: 'سقف روز', startCogs: 'آغاز',
     townsfolk: 'شهریان', resetWallet: 'کیسه را صفر کن', onDevice: 'فقط روی این دستگاه', pricesChanged: 'نرخ‌ها عوض شد', fair: 'منصفانه', yours: 'مال تو',
     takeTill: 'صندوق را بگیر', soldOut: 'تمام شد: دوباره بگذار', profit: 'سود', spent: 'خرج', cogsIn: 'درآمد', backMenu: 'فهرست', survival: 'بقا',
-    myCounter: 'پیشخوان من', bunk: 'بستر', prices: 'نرخ‌ها', stock: 'ذخیره', needMore: '⚙ {n} دیگر لازم است', shopProtected: 'این ساختمان می‌ماند.',
+    myCounter: 'پیشخوان من', bunk: 'بستر', prices: 'نرخ‌ها', stock: 'ذخیره', needMore: '⚙ {n} دیگر لازم است', shopProtected: 'شهر می‌ماند. روی قطعه یا بیرون شهر بساز.', townYes: 'این دستگاه می‌تواند شهر را عوض کند', townNo: 'این دستگاه شهر را دست نمی‌زند',
     ingredients: 'مواد: آرد، شکر، توت · پخت ۱۰ ث', breadLabel: 'مواد: آرد · پخت ۸ ث', versionSkew: 'این جهان نسخه دیگر است',
   },
   rw: {
@@ -111,7 +111,7 @@ export const EXTRA = {
     setHome: 'Inzu hano?', yes: 'Yego', no: 'Oya', teacher: 'Umwarimu', pin: 'PIN', priceDial: 'Igiciro', dailyCap: 'Umupaka w\'umunsi', startCogs: 'Intangiriro',
     townsfolk: 'Abaturage', resetWallet: 'Subiza ikibanza', onDevice: 'Kuri iki gikoresho gusa', pricesChanged: 'Ibiciro byahindutse', fair: 'Ukuri', yours: 'Iyawe',
     takeTill: 'Fata keshye', soldOut: 'Byarangiye: ongera', profit: 'Inyungu', spent: 'Byakoreshejwe', cogsIn: 'Byinjiye', backMenu: 'Menu', survival: 'Ubugingo',
-    myCounter: 'Counter yanjye', bunk: 'Buriri', prices: 'Ibiciro', stock: 'Ibyo ufite', needMore: 'Ukeneye ⚙ {n}', shopProtected: 'Iyo nyubako isigara.',
+    myCounter: 'Counter yanjye', bunk: 'Buriri', prices: 'Ibiciro', stock: 'Ibyo ufite', needMore: 'Ukeneye ⚙ {n}', shopProtected: 'Umudugudu uguma. Ubake ku gice cyangwa hanze.', townYes: 'Iki gikoresho gishobora guhindura umudugudu', townNo: 'Iki gikoresho gisiga umudugudu',
     ingredients: 'Ibikoresho: ifu, isukari, imbuto · Oteka 10s', breadLabel: 'Ibikoresho: ifu · Oteka 8s', versionSkew: 'Isi ikoresha indi verisiyo',
   },
   ti: {
@@ -127,7 +127,7 @@ export const EXTRA = {
     setHome: 'ገዛ ኣብዚ?', yes: 'እወ', no: 'ኣይፋል', teacher: 'መምህር', pin: 'PIN', priceDial: 'ዋጋ', dailyCap: 'ዕለታዊ ደረት', startCogs: 'መጀመርታ',
     townsfolk: 'ሰባት', resetWallet: 'ኪስ ዳግማይ', onDevice: 'ኣብዚ መሳርሒ ጥራይ', pricesChanged: 'ዋጋ ተቐይሩ', fair: 'ፍትሓዊ', yours: 'ናትካ',
     takeTill: 'ሳንዱቅ ውሰድ', soldOut: 'ተወዲኡ፡ መልእ', profit: 'መእገዲ', spent: 'ዝወጸ', cogsIn: 'ዝኣተወ', backMenu: 'መእተዊ', survival: 'ህይወት',
-    myCounter: 'መደብይ', bunk: 'ዓራት', prices: 'ዋጋታት', stock: 'ኣቕሓ', needMore: '⚙ {n} የድሊ', shopProtected: 'እቲ ህንጻ ይቕጽል።',
+    myCounter: 'መደብይ', bunk: 'ዓራት', prices: 'ዋጋታት', stock: 'ኣቕሓ', needMore: '⚙ {n} የድሊ', shopProtected: 'ከተማ ትቕጽል። ኣብ መሬት ወይ ወጻኢ ሃንጽ።', townYes: 'እዚ መሳርሒ ከተማ ክቅይር ይኽእል', townNo: 'እዚ መሳርሒ ከተማ ኣይትንክፍን',
     ingredients: 'ኣቕሑ፡ ዱቄት፡ ሽኮር፡ ፍረ · ምሕሳስ 10 ሰ', breadLabel: 'ኣቕሑ፡ ዱቄት · ምሕሳስ 8 ሰ', versionSkew: 'እዚ ዓለም ካልእ ስሪት እዩ',
   },
 }
