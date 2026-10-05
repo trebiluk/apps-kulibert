@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.38', date: '2026-10-05', lines: {
+    en: ['A Box holds 18 stacks. Craft it from 8 planks at the workbench.', 'Tap a Box to put in what you are holding, or tap a stack to take it back.', 'A Wood Tool and a Stone Tool speed up mining. Stone by hand is 3 seconds. With a Stone Tool it is 1 second.'],
+    uk: ['Скриня тримає 18 стосів. Зроби її з 8 дощок на верстаті.', 'Торкнись скрині, щоб покласти те, що тримаєш, або торкнись стосу, щоб забрати.', 'Дерев’яне і кам’яне знаряддя прискорюють ламання. Камінь руками 3 секунди. Кам’яним знаряддям 1 секунда.'],
+    ru: ['Сундук держит 18 стопок. Сделай его из 8 досок на верстаке.', 'Нажми сундук, чтобы положить то, что держишь, или нажми стопку, чтобы забрать.', 'Деревянное и каменное орудие ускоряют ломку. Камень руками 3 секунды. Каменным орудием 1 секунда.'],
+    es: ['Una caja guarda 18 pilas. Hazla con 8 tablas en el banco.', 'Toca la caja para guardar lo que sostienes, o toca una pila para sacarla.', 'Las herramientas de madera y de piedra pican más rápido. La piedra a mano tarda 3 segundos. Con piedra, 1 segundo.'],
+    ar: ['الصندوق يحمل 18 كومة. اصنعه من 8 ألواح على المنضدة.', 'المس الصندوق لتضع ما تمسك، أو المس كومة لتأخذها.', 'أداة الخشب وأداة الحجر تسرّعان الكسر. الحجر باليد 3 ثوانٍ. بأداة الحجر ثانية واحدة.'],
+    'fa-AF': ['صندوق ۱۸ پشته می‌گیرد. آن را با ۸ تخته روی میز کار بساز.', 'صندوق را بزن تا آنچه در دست داری بگذاری، یا یک پشته را بزن تا برداری.', 'ابزار چوبی و سنگی کندن را تند می‌کنند. سنگ با دست ۳ ثانیه است. با ابزار سنگی ۱ ثانیه.'],
+    rw: ['Agasanduku gafata imifuka 18. Kagire n\'amabaho 8 ku meza.', 'Kanda agasanduku ushyiremo ibyo ufite, cyangwa ukande umufuka uwukure.', 'Ibikoresho by\'ibiti n\'ibuye birihutisha. Ibuye n\'ikiganza ni amasegonda 3. N\'igikoresho cy\'ibuye ni isegonda 1.'],
+    ti: ['ሳንዱቅ 18 ዕስለ ይሕዝ። ካብ 8 ጣውላ ኣብ ሰደቓ ግበሮ።', 'ሳንዱቅ ጠውቕ ንእትሕዞ ንምእታው፡ ወይ ዕስለ ጠውቕ ንምውጻእ።', 'ናይ ዕንጨይትን እምንን መሳርሒ ምስባር የቀልጥፍ። እምኒ ብኢድ 3 ካልኢት እዩ። ብናይ እምኒ መሳርሒ 1 ካልኢት።'],
+  }},
   { v: '2.5.37', date: '2026-10-05', lines: {
     en: ['The shop has a workbench, an oven, the store, and a bunk.', 'The shop, the road, the pond, and the plot edges stay unless a teacher allows this device to change the town.', 'Students build on the marked plots, or outside town.'],
     uk: ['У крамниці є верстат, піч, крамниця і ліжко.', 'Крамниця, дорога, ставок і краї ділянок лишаються, доки вчитель не дозволить цьому пристрою змінювати місто.', 'Учні будують на ділянках або за містом.'],

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.37'
+const VERSION = '2.5.38'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -157,6 +157,7 @@ export const BLOCKS = [
   [24, 'vend', 'vend', 'Vc', null],
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
+  [27, 'box', 'wood', 'Bx', 'wood'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
@@ -358,6 +359,7 @@ function placeBlock(face) {
     if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench', aimedBlock.position.join(',')); return false }
     if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
+    if (aimedBlock.blockID === ID.box && canReach([ax, ay, az])) { panels.open('box', ax + ',' + ay + ',' + az); return false }
   }
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
@@ -639,6 +641,7 @@ panels = mountPanels({
   paintPrices: (g) => session.paintPrices(g),
   paintCounter: (g, key) => session.paintCounter(g, key),
   paintBunk: (g, key) => session.paintBunk(g, key),
+  paintBox: (g, key) => session.paintBox(g, key),
   tools: () => { const strip = $('tool-strip'); if (strip) strip.hidden = false },
   leave: async () => { await save(); location.href = '/' },
   paintBuilds: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('myBuilds') })),
@@ -1097,6 +1100,7 @@ function puff() {
   clearTimeout(puff.t)
   puff.t = setTimeout(() => { el.hidden = true }, 180)
 }
+function heldTool() { return session && session.toolTier ? session.toolTier() : 'hand' }
 function beginDig(kind) {
   const tget = noa.targetedBlock
   if (!tget) { dig = null; hideCrack(); return }
@@ -1107,11 +1111,11 @@ function beginDig(kind) {
   if (dig && !dig.broke && dig.x === x && dig.y === y && dig.z === z && dig.p > 0) {
     dig.kind = kind
     dig.draining = false
-    dig.need = mineMs(name, survivalOn(), kind === 'touch')
+    dig.need = mineMs(name, survivalOn(), kind === 'touch', heldTool())
     dig.t0 = now - dig.p * dig.need
     return
   }
-  dig = { kind, x, y, z, id, name, t0: now, need: mineMs(name, survivalOn(), kind === 'touch'), broke: false, p: 0, stage: 0 }
+  dig = { kind, x, y, z, id, name, t0: now, need: mineMs(name, survivalOn(), kind === 'touch', heldTool()), broke: false, p: 0, stage: 0 }
 }
 function feelTick(dt) {
   if (session && session.tickDrops) session.tickDrops(dt)
@@ -1215,7 +1219,7 @@ function feelTick(dt) {
         const elapsed = now - dig.t0
         if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
         else hideCrack()
-        if (!dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted) { dig.hinted = true; toast(t('toolFaster')) }
+        if (!dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
         if (!dig.draining && dig.p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
       }
     }
@@ -1225,7 +1229,7 @@ function feelTick(dt) {
       dig.p = Math.min(1, (now - dig.t0) / dig.need)
       if (crackVisible(now - dig.t0, dig.p)) showCrack(dig.p, look.x, look.y)
       else hideCrack()
-      if (survivalOn() && now - dig.t0 >= 2000 && !dig.hinted) { dig.hinted = true; toast(t('toolFaster')) }
+      if (survivalOn() && now - dig.t0 >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
       if (dig.p >= 1 && !dig.broke) {
         breakAt(dig.x, dig.y, dig.z)
         dig.broke = true
@@ -1348,7 +1352,7 @@ canvas.addEventListener('pointerdown', (e) => {
     const hit = rayAt(e.clientX, e.clientY)
     if (hit) {
       const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-      const need = mineMs(name, survivalOn(), true)
+      const need = mineMs(name, survivalOn(), true, heldTool())
       const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
       const kept = same ? dig.p : 0
       dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }

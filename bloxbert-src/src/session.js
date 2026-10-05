@@ -10,6 +10,7 @@ import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
+import { emptyBox, putInSlots } from './box.js'
 
 export function createSession(api) {
   const bag = createBag()
@@ -536,6 +537,62 @@ export function createSession(api) {
     for (const c of key) h = (h * 33 + c.charCodeAt(0)) | 0
     return h
   }
+  function boxRec(key) {
+    let rec = meta.get(key)
+    if (!rec || !Array.isArray(rec.slots)) {
+      rec = { kind: 'box', slots: emptyBox() }
+      meta.set(key, rec)
+    }
+    while (rec.slots.length < 18) rec.slots.push(null)
+    return rec
+  }
+  function spillBox(x, y, z) {
+    const key = x + ',' + y + ',' + z
+    const rec = meta.get(key)
+    if (!rec || !rec.slots) return
+    for (const s of rec.slots) {
+      if (!s || !s.n) continue
+      const left = bag.add(s.item, s.n)
+      if (left) spawnDrop(s.item, left, x + 0.5, y + 0.4, z + 0.5, 'full')
+    }
+    meta.delete(key)
+    paintHotbar()
+  }
+  function paintBox(g, key) {
+    const rec = boxRec(key)
+    g.classList.add('baggrid')
+    g.append(btn(t('putIn'), () => {
+      const item = selectedItem()
+      if (!item) { api.toast(t('emptySlot')); return }
+      const have = bag.count(item)
+      const moved = putInSlots(rec.slots, item, have)
+      const kept = have - moved.left
+      if (kept && bag.take(item, kept)) rec.slots = moved.slots
+      if (!kept) api.toast(t('bagFull'))
+      paintHotbar()
+      if (api.markDirty) api.markDirty()
+      g.innerHTML = ''
+      paintBox(g, key)
+    }))
+    rec.slots.forEach((s, i) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'gtile'
+      b.textContent = s ? itemName(s.item) + ' ' + s.n : ''
+      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
+      if (!s) b.disabled = true
+      else b.addEventListener('click', () => {
+        const left = bag.add(s.item, s.n)
+        if (left === s.n) { api.toast(t('bagFull')); return }
+        rec.slots[i] = left ? { item: s.item, n: left } : null
+        paintHotbar()
+        if (api.markDirty) api.markDirty()
+        g.innerHTML = ''
+        paintBox(g, key)
+      })
+      g.append(b)
+    })
+  }
   function paintBunk(g, key) {
     g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); api.toast(t('homeSet')); api.close() }))
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
@@ -597,6 +654,7 @@ export function createSession(api) {
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     if (id === 24 || id === 26) return false
+    if (id === 27) spillBox(x, y, z)
     const drop = dropOf(id)
     let got = 0
     let loose = 0
@@ -630,6 +688,7 @@ export function createSession(api) {
     if (!bag.take(key, 1)) return false
     if (id === 12) placedLeaves.add(x + ',' + y + ',' + z)
     if (id === 24) meta.set(x + ',' + y + ',' + z, { kind: 'vend', owner: 'you', slots: [null, null, null, null], till: 0, sales: [], salesN: 0 })
+    if (id === 27) meta.set(x + ',' + y + ',' + z, { kind: 'box', slots: emptyBox() })
     bagHist.push({ type: 'place', item: key, n: 1 })
     redoBag.length = 0
     paintHotbar()
@@ -744,7 +803,7 @@ export function createSession(api) {
   function setMode(next) { mode = next; paintChip(); if (mode === 'survival') paintHotbar(); else if (api.paintBar) api.paintBar() }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
-    bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk,
+    bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
     spend: (item, n) => bag.take(item, n),
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
@@ -767,6 +826,7 @@ export function createSession(api) {
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
     give(item, n) { giveItem(item, n) },
     blockForHot() { const k = selectedItem(); return k && ITEMS[k] && ITEMS[k].block },
+    toolTier() { const k = selectedItem(); return (k && ITEMS[k] && ITEMS[k].tool) || 'hand' },
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
