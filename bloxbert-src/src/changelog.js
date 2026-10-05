@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.35', date: '2026-10-05', lines: {
+    en: ['The game stops copying a long list every frame after it has been open a while.', 'Loose items no longer build throwaway lists every frame.', 'The camera updates only when the view actually changes.'],
+    uk: ['Гра більше не копіює довгий список щокадру, коли вона довго відкрита.', 'Речі на землі не створюють зайві списки щокадру.', 'Камера оновлюється лише коли вигляд справді змінюється.'],
+    ru: ['Игра больше не копирует длинный список каждый кадр, когда она долго открыта.', 'Вещи на земле не создают лишние списки каждый кадр.', 'Камера обновляется только когда вид правда меняется.'],
+    es: ['El juego deja de copiar una lista larga cada cuadro cuando lleva un rato abierto.', 'Los objetos en el suelo ya no arman listas de más cada cuadro.', 'La cámara cambia solo cuando la vista cambia de verdad.'],
+    ar: ['اللعبة تتوقف عن نسخ قائمة طويلة كل إطار بعد أن تبقى مفتوحة.', 'الأشياء على الأرض لا تصنع قوائم زائدة كل إطار.', 'المنظر يتحدث فقط عندما يتغير فعلاً.'],
+    'fa-AF': ['بازی بعد از مدتی باز بودن، دیگر هر فریم یک فهرست بلند را کپی نمی‌کند.', 'چیزهای روی زمین دیگر هر فریم فهرست اضافی نمی‌سازند.', 'دوربین فقط وقتی نما واقعاً عوض شود تازه می‌شود.'],
+    rw: ['Umukino uhagaze gukoporora urutonde rurerure buri kadr iyo wamaze igihe ufunguye.', 'Ibintu hasi ntibikora izindi lisiti buri kadr.', 'Kamera ihinduka gusa iyo uko ureba byahindutse.'],
+    ti: ['ጸወታ ድሕሪ ምጽናሕ ነዊሕ ዝርዝር ኣብ ነፍሲ ወከፍ ፍሬም ኣይቅዳሕን።', 'ኣብ መሬት ዘለዉ ነገራት ተወሳኺ ዝርዝር ኣብ ነፍሲ ወከፍ ፍሬም ኣይሰርሑን።', 'ካሜራ ኣብ እዋን እቲ ምርኢት ምስ ተቐየረ ጥራይ ይመሓየሽ።'],
+  }},
   { v: '2.5.34', date: '2026-10-05', lines: {
     en: ['Hold this takes the stack you tapped, not the first one.', 'Tapping Survival again does not reload the world.', 'An empty slot no longer says you are out of stone.', 'A standing jump cannot turn into a sprint in the air.'],
     uk: ['Тримати бере той стос, який ти натиснув.', 'Повторне Виживання не перезавантажує світ.', 'Порожнє місце не каже, що немає каменю.', 'Стрибок з місця не стає бігом у повітрі.'],

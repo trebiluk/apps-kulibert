@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.34'
+const VERSION = '2.5.35'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -702,6 +702,7 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 }
 
 const bar = $('hotbar')
+const sheetEl = $('sheet')
 const barIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 let selectedSlot = 0
 function paintBar() {
@@ -1092,7 +1093,10 @@ function feelTick(dt) {
   syncDropMeshes()
   const body = playerBody
   if (survivalOn()) flying = false
-  if (!tableMode) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+  if (!tableMode) {
+    const g = flying ? 0 : GRAV_MULT
+    if (body.gravityMultiplier !== g) body.gravityMultiplier = g
+  }
   const grounded = body.atRestY() < 0
   if (grounded) lastGroundAt = performance.now()
   const want = !!(noa.inputs.state.jump || jumpHeld)
@@ -1126,8 +1130,10 @@ function feelTick(dt) {
     body.velocity[0] = next[0]
     body.velocity[2] = next[1]
   }
-  noa.blockTestDistance = reachFor(survivalOn())
-  playerBody.autoStep = !!(autoClimb && !flying && !tableMode)
+  const reach = reachFor(survivalOn())
+  if (noa.blockTestDistance !== reach) noa.blockTestDistance = reach
+  const stepOn = !!(autoClimb && !flying && !tableMode)
+  if (playerBody.autoStep !== stepOn) playerBody.autoStep = stepOn
   if ((crouchKey || crouchOn) && grounded && !flying && !tableMode) {
     const p = noa.entities.getPosition(noa.playerEntity)
     const hdg = noa.camera.heading
@@ -1144,15 +1150,18 @@ function feelTick(dt) {
     if (noa.inputs.state.left && !allow(-rx, -rz)) noa.inputs.state.left = false
     if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
   }
-  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI) && noa.container.hasPointerLock && $('sheet').hidden) { placeHoldAt = now; placeBlock() }
-  else if (!noa.container.hasPointerLock || !$('sheet').hidden) mouseRight = false
+  const sheetOpen = !sheetEl.hidden
+  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI) && noa.container.hasPointerLock && !sheetOpen) { placeHoldAt = now; placeBlock() }
+  else if (!noa.container.hasPointerLock || sheetOpen) mouseRight = false
   if (!tableMode && !flying) {
     const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
-    noa.camera.zoomDistance = (TOUCH_UI ? 4 : 0) + up
+    const zoom = (TOUCH_UI ? 4 : 0) + up
+    if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
   }
   const cam = noa.rendering.camera
   const portrait = TOUCH_UI && innerHeight > innerWidth
-  cam.fov = ((portrait ? 85 : 55) + (wideView ? 10 : 0)) * Math.PI / 180
+  const fov = ((portrait ? 85 : 55) + (wideView ? 10 : 0)) * Math.PI / 180
+  if (cam.fov !== fov) cam.fov = fov
   if (TOUCH_UI && !tableMode && !REDUCE && now - lastLookAt > 500) {
     const v = body.velocity
     const spd = Math.hypot(v[0], v[2])
@@ -1503,29 +1512,43 @@ function dropMat(item) {
   dropMats.set(item, m)
   return m
 }
+const dropSeen = new Set()
+const dropLocal = [0, 0, 0]
+const dropWorld = [0, 0, 0]
 function syncDropMeshes() {
   if (!dropReady || !session || !session.groundDrops) return
+  const drops = session.groundDrops()
+  if (!drops.length) {
+    if (!dropMeshes.size) return
+    for (const [id, mesh] of dropMeshes) { mesh.dispose(); dropMeshes.delete(id) }
+    return
+  }
   const p = noa.entities.getPosition(noa.playerEntity)
-  const list = session.groundDrops().filter((d) => Math.hypot(d.x - p[0], d.z - p[2]) < 40).slice(0, 48)
-  const seen = new Set()
+  dropSeen.clear()
   const bob = REDUCE ? 0.2 : 0.2 + Math.sin(performance.now() / 280) * 0.06
-  for (const d of list) {
-    seen.add(d.id)
+  let shown = 0
+  for (const d of drops) {
+    const dx = d.x - p[0]
+    const dz = d.z - p[2]
+    if (dx * dx + dz * dz >= 1600) continue
+    if (++shown > 48) break
+    dropSeen.add(d.id)
     let mesh = dropMeshes.get(d.id)
     if (!mesh) {
       mesh = CreateBox('drop' + d.id, { size: 0.34 }, scene)
       mesh.material = dropMat(d.item)
       mesh.isPickable = false
-      const lp0 = noa.globalToLocal([d.x, d.y + bob, d.z], null, [])
-      mesh.position.set(lp0[0], lp0[1], lp0[2])
       noa.rendering.addMeshToScene(mesh, false)
       dropMeshes.set(d.id, mesh)
     }
     if (!REDUCE) mesh.rotation.y = performance.now() / 500
-    const lp = noa.globalToLocal([d.x, d.y + bob, d.z], null, [])
+    dropWorld[0] = d.x
+    dropWorld[1] = d.y + bob
+    dropWorld[2] = d.z
+    const lp = noa.globalToLocal(dropWorld, null, dropLocal)
     mesh.position.set(lp[0], lp[1], lp[2])
   }
-  for (const [id, mesh] of dropMeshes) if (!seen.has(id)) { mesh.dispose(); dropMeshes.delete(id) }
+  for (const [id, mesh] of dropMeshes) if (!dropSeen.has(id)) { mesh.dispose(); dropMeshes.delete(id) }
 }
 dropReady = true
 const s = 0.52
@@ -1549,16 +1572,17 @@ function paintOutline() {
 }
 noa.on('beforeRender', (dt) => {
   paintOutline()
-  if (!REDUCE) skyTime += (dt || 16) * 0.0004
-  skyMat.setFloat('uTime', REDUCE ? 0 : skyTime)
+  if (REDUCE) return
+  skyTime += (dt || 16) * 0.0004
+  skyMat.setFloat('uTime', skyTime)
 })
 
 const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () => level, get auto() { return AUTO }, quality: () => quality, aa: AA }
-{ const sh = noa.container._shell, r = sh.onRender; sh.onRender = function (dt, a1, a2) { const a = performance.now(); r(dt, a1, a2); perf.jsMs.push(performance.now() - a); if (perf.jsMs.length > 2000) perf.jsMs.shift() } }
+{ const sh = noa.container._shell, r = sh.onRender; sh.onRender = function (dt, a1, a2) { const a = performance.now(); r(dt, a1, a2); perf.jsMs.push(performance.now() - a); if (perf.jsMs.length > 2000) perf.jsMs.splice(0, 1000) } }
 let last = performance.now(), n = 0, acc = 0, lowSecs = 0
 function frame(tnow) {
   if (!perf.first) perf.first = performance.now()
-  n++; acc += tnow - last; perf.deltas.push(tnow - last); if (perf.deltas.length > 4000) perf.deltas.shift(); last = tnow
+  n++; acc += tnow - last; perf.deltas.push(tnow - last); if (perf.deltas.length > 4000) perf.deltas.splice(0, 2000); last = tnow
   if (acc >= 1000) {
     const fps = (n * 1000) / acc; perf.frames.push(fps); n = 0; acc = 0
     if (AUTO && performance.now() - perf.first > 4000) {

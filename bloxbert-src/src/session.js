@@ -104,17 +104,23 @@ export function createSession(api) {
     else if (lost.length) api.toast(t('bagFull'))
     return got
   }
+  const dropPlayer = { x: 0, y: 0, z: 0 }
+  const dropFeet = { x: 0, y: 0, z: 0 }
   function tickDrops(dt) {
     if (mode !== 'survival' || !ground.length) return false
     const p = api.pos()
-    const player = { x: p[0], y: p[1] + 0.9, z: p[2] }
-    const feet = { x: p[0], y: p[1], z: p[2] }
+    dropPlayer.x = p[0]
+    dropPlayer.y = p[1] + 0.9
+    dropPlayer.z = p[2]
+    dropFeet.x = p[0]
+    dropFeet.y = p[1]
+    dropFeet.z = p[2]
     const now = Date.now()
-    const moved = stepMagnet(ground, player, (dt || 16) / 1000, now)
+    const moved = stepMagnet(ground, dropPlayer, (dt || 16) / 1000, now)
     let got = 0
     for (let i = ground.length - 1; i >= 0; i--) {
       const d = ground[i]
-      if (!canPick(d, now) || !nearPlayer(d, feet)) continue
+      if (!canPick(d, now) || !nearPlayer(d, dropFeet)) continue
       const left = bag.add(d.item, d.n)
       const took = d.n - left
       if (!took) continue

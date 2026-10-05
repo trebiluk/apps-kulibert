@@ -50,8 +50,9 @@ export function stepMagnet(drops, player, dt, now) {
     const dx = player.x - d.x
     const dy = player.y - d.y
     const dz = player.z - d.z
-    const dist = Math.hypot(dx, dy, dz)
-    if (dist > MAGNET_R || dist < 0.05) continue
+    const dist2 = dx * dx + dy * dy + dz * dz
+    if (dist2 > MAGNET_R * MAGNET_R || dist2 < 0.0025) continue
+    const dist = Math.sqrt(dist2)
     const step = Math.min(dist, speed)
     d.x += (dx / dist) * step
     d.y += (dy / dist) * step

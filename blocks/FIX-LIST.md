@@ -3,7 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
-- **Bertopia 2.5.34** polish on 2.5.33. Hold this uses the stack you tapped. Survival does not reload if you are already there. An empty hand no longer says you are out of stone. A standing jump cannot sprint in the air.
+- **Bertopia 2.5.35** stays smoother after it has been open. Frame timing no longer copies a 4,000-long list every frame. Loose items reuse one scratch instead of building new lists. The camera writes its view only when it changes.
 - **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
 - **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
