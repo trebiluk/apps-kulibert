@@ -14,7 +14,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - [x] `briefs/fixq/12c-hub-ar-refit.md`: Hub fix 12c of the click-test queue (P2, the part of 12b that didn't land). One fix only, please; don't change anything else. Shipped 2026-10-13-arfit.
 - [x] `briefs/fixq/hub-launchpad-rename.md`: Hub rev 2026-10-13-rename: the ThrowIt listing becomes Bertapult. Text only, only these 3 items. No icon art, layout or order change. Shipped in this commit (tile, cut line, version chip).
 - [x] `briefs/fixq/hub-tron-default.md`: Hub: Tron glow is the default look again (Room theme). Shipped 2026-10-13-tron-default (01d103a).
-- [ ] `briefs/fixq/shared-bar-plate-clip.md`: Shared bar: the version plate is clipped on narrow phones (all apps, shared/kulibert-bar.js). Shared note from StyleBot, Sat Oct 3, 2026. Out of scope…
+- [x] `briefs/fixq/shared-bar-plate-clip.md`: Shared bar: the version plate is clipped on narrow phones (all apps, shared/kulibert-bar.js). Shipped 2026-10-05-plate. The plate refits after the menu word paints. On a narrow phone the version stays whole; the name stays when it fits. Sign in can shrink. Taps stay at least 44px.
 
 Already shipped (from proofs):
 - [x] `briefs/fixq/hub-01-sideways-tiles.md`: Hub fix 1 of the click-test queue (P0). One fix only, please; don't change anything else. (proof hub-sideways PASS)
@@ -32,7 +32,7 @@ Plans and reference:
 - Commit author: trebiluk <6373031+trebiluk@users.noreply.github.com>. Push to main and reply with the sha.
 
 ## 5. Proof changelog
-- `hub-arfit`: Hub 2026-10-13-arfit. 14 fresh Arabic loads at 1024x768 fit (scrollWidth <= clientWidth, no cut icon). Dari at 1024 fits. 1366 shows the full row in en, ar, and fa-AF. 412x915 and 915x412 still swipe, nothing tucked. Classic still scrolls. Menu stays top-left.
+- `hub-plate`: Shared bar 2026-10-05-plate. Arabic at 320 and 412 no longer cuts the version. Eight languages. 1366 still shows the name and the version. Menu stays top-left. Taps stay at least 44px.
 - `menu-audit`: Same menu sweep — live audit
 - `hub-swipe`: Verdict: PASS with P2s — Hub 2026-10-13-swipe (a09cf0e): the phone ribbon swipes again (P1 fixed), but fix item 2 is NOT DONE: Arabic 1024x768 first load still comes up 8 px too wide on 3 of 14 cold loads (brief acceptan
 - `hub-strip`: Verdict: FAIL (P1) — Hub 2026-10-13-strip (81cea34): the Chromebook strip fix works, but it killed the phone ribbon swipe (acceptance #4 "phone ribbon behaves as today" fails).

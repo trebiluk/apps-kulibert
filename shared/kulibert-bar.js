@@ -54,7 +54,7 @@
     if (document.querySelector("link[data-kb-css]")) return;
     var link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = asset("/shared/kulibert-bar.css?v=2026-10-11-close");
+    link.href = asset("/shared/kulibert-bar.css?v=2026-10-05-plate");
     link.setAttribute("data-kb-css", "1");
     (document.head || document.documentElement).appendChild(link);
   }
@@ -93,11 +93,27 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () { el.hidden = true; }, 2800);
   }
-  function plateText() {
-    var narrow = false;
-    try { narrow = window.matchMedia("(max-width: 400px)").matches; } catch (eNarrow) {}
-    if (narrow && version) return version;
+  function plateFull() {
     return [name || app, version].filter(Boolean).join(" \u00b7 ");
+  }
+  function plateClipped(plate) {
+    if (!plate) return false;
+    if (plate.scrollWidth > plate.clientWidth + 1) return true;
+    var bar = plate.closest ? plate.closest(".kb-bar") : null;
+    if (!bar) return false;
+    if (bar.scrollWidth > bar.clientWidth + 1) return true;
+    var pr = plate.getBoundingClientRect();
+    var br = bar.getBoundingClientRect();
+    return pr.right > br.right + 1 || pr.left < br.left - 1;
+  }
+  function fitPlate() {
+    var plate = document.querySelector(".kb-bar .kb-plate");
+    if (!plate) return;
+    var full = plateFull();
+    var short = version || full;
+    plate.textContent = full;
+    if (short !== full && plateClipped(plate)) plate.textContent = short;
+    if (!plate.getAttribute("title")) plate.setAttribute("title", full);
   }
   var whatsAttr = (script && script.getAttribute("data-whats-new")) || "";
   var WHATS = {
@@ -499,6 +515,7 @@
     }
     paintAlias(document.querySelector(".kb-bar .kb-alias"));
     paintDrawer();
+    fitPlate();
   }
   function storedLang() {
     try {
@@ -621,8 +638,7 @@
     ].join("");
     document.body.insertBefore(bar, document.body.firstChild);
     document.body.classList.add("kb-on");
-    var plate = bar.querySelector(".kb-plate");
-    plate.textContent = plateText();
+    fitPlate();
     var menuBtn = bar.querySelector(".kb-menu");
     if (menuBtn) {
       menuBtn.setAttribute("aria-controls", "kb-drawer");
@@ -632,7 +648,10 @@
     if (helpBtn) helpBtn.addEventListener("click", openHelp);
     ensureWho(function () { paintAlias(bar.querySelector(".kb-alias")); paintBar(); });
     root.addEventListener("storage", function () { paintAlias(bar.querySelector(".kb-alias")); });
-    root.addEventListener("resize", function () { plate.textContent = plateText(); });
+    root.addEventListener("resize", function () { fitPlate(); });
+    if (document.fonts && document.fonts.addEventListener) {
+      document.fonts.addEventListener("loadingdone", function () { fitPlate(); });
+    }
     hideDupes();
     watchDupes();
   }

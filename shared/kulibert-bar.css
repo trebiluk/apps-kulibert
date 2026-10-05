@@ -25,14 +25,16 @@
 @media (max-width: 440px){
   .kb-bar{gap:.2rem;padding:0 .2rem}
   .kb-home,.kb-help,.kb-settings,.kb-menu,.kb-alias{padding:0 .35rem}
-  .kb-alias{max-width:6.5rem}
-  .kb-plate{min-width:0}
+  .kb-alias{
+    flex:1 1 auto;max-width:6.5rem;min-width:44px;
+    overflow:hidden;text-overflow:ellipsis;
+  }
+  .kb-plate{flex:0 0 auto;min-width:0;overflow:hidden;text-overflow:ellipsis}
 }
 @media (max-width:400px){
   .kb-home{flex:0 0 auto}
   .kb-menu,.kb-home,.kb-alias{white-space:nowrap}
   .kb-help{display:none}
-  .kb-plate{flex:0 0 auto; min-width:0; max-width:none; overflow:visible; text-overflow:clip}
 }
 .kb-menu-dupe{display:none !important}
 html:not([data-theme="classic"]) .kb-bar .kb-menu{display:inline-flex !important}
