@@ -88,6 +88,11 @@ export function shouldRepeatPlace(held, elapsed, touch) {
   return !touch && !!held && elapsed >= 250
 }
 
+export function airLimit(moving, maxSpeed, walk) {
+  if (moving > 0.5) return Math.min(moving, maxSpeed)
+  return Math.min(walk, maxSpeed)
+}
+
 export function capAir(vx, vz, cap) {
   const s = Math.hypot(vx, vz)
   if (!(cap > 0) || s <= cap) return [vx, vz]

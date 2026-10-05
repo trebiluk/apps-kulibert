@@ -199,6 +199,7 @@ export function createSession(api) {
       bag.slots[i] = tmp
     } else hot = i
     paintHotbar()
+    if (api.markDirty) api.markDirty()
     if (api.flash) api.flash(itemName(key[0]))
     return true
   }
@@ -210,8 +211,9 @@ export function createSession(api) {
     }
     return false
   }
-  function holdItem(itemKey) {
-    const i = bag.slots.findIndex((s) => s && s.item === itemKey)
+  function holdItem(itemKey, index) {
+    let i = Number.isInteger(index) ? index : -1
+    if (!bag.slots[i] || bag.slots[i].item !== itemKey) i = bag.slots.findIndex((s) => s && s.item === itemKey)
     if (i < 0) return false
     if (i > 8) {
       const tmp = bag.slots[hot]
@@ -219,9 +221,10 @@ export function createSession(api) {
       bag.slots[i] = tmp
     } else hot = i
     paintHotbar()
+    if (api.markDirty) api.markDirty()
     return true
   }
-  function card(g, itemKey) {
+  function card(g, itemKey, index) {
     const item = ITEMS[itemKey]
     const p = document.createElement('p')
     p.className = 'gnote'
@@ -229,7 +232,7 @@ export function createSession(api) {
     p.innerHTML = '<bdi>' + t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey) + '</bdi>'
     g.append(p)
     if (mode === 'survival' && bag.count(itemKey)) {
-      g.append(btn(t('holdIt'), () => { holdItem(itemKey); if (api.close) api.close() }))
+      g.append(btn(t('holdIt'), () => { holdItem(itemKey, index); if (api.close) api.close() }))
       g.append(btn(t('drop1'), () => { dropItem(itemKey, false); api.close() }))
       g.append(btn(t('dropAll'), () => { dropItem(itemKey, true); api.close() }))
     }
@@ -272,7 +275,7 @@ export function createSession(api) {
       const n = lost.reduce((s, d) => s + d.n, 0)
       g.append(btn(t('lostBtn') + ' · ' + n, () => { takeLost(); g.innerHTML = ''; paintBag(g) }))
     }
-    const paintOne = (s) => {
+    const paintOne = (s, i) => {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile'
@@ -285,19 +288,20 @@ export function createSession(api) {
       lbl.textContent = s ? itemName(s.item) + ' ' + s.n : ''
       b.append(lbl)
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
-      if (s) b.addEventListener('click', () => card(g, s.item))
+      if (!s) b.disabled = true
+      else b.addEventListener('click', () => card(g, s.item, i))
       g.append(b)
     }
     const barHead = document.createElement('div')
     barHead.className = 'gnote ghead'
     barHead.textContent = t('hotbar')
     g.append(barHead)
-    bag.slots.slice(0, 9).forEach(paintOne)
+    for (let i = 0; i < 9; i++) paintOne(bag.slots[i], i)
     const pockets = document.createElement('div')
     pockets.className = 'gnote ghead'
     pockets.textContent = t('pockets')
     g.append(pockets)
-    bag.slots.slice(9).forEach(paintOne)
+    for (let i = 9; i < bag.slots.length; i++) paintOne(bag.slots[i], i)
   }
   function paintCraft(g) {
     const stations = { bench: near('bench'), oven: near('oven') }

@@ -1,4 +1,4 @@
-import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir } from '../src/feel.js'
+import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit } from '../src/feel.js'
 
 let bad = 0
 function ok(cond, msg) {
@@ -42,6 +42,9 @@ ok(!shouldRepeatPlace(true, 500, true), 'a touch tap never repeats')
 const fast = capAir(3, 4, 4)
 ok(Math.abs(Math.hypot(fast[0], fast[1]) - 4) < 1e-9, 'air speed stays at takeoff')
 ok(capAir(1, 0, 4)[0] === 1, 'a slower air move is left alone')
+ok(airLimit(0, 5.6, 4.3) === 4.3, 'a standing jump does not become a sprint')
+ok(airLimit(0, 1.7, 4.3) === 1.7, 'a crouch jump stays slow')
+ok(airLimit(5.5, 5.6, 4.3) === 5.5, 'a running jump keeps its speed')
 
 if (bad) { console.error(bad + ' feel checks failed'); process.exit(1) }
 console.log('feel: 0 problems')

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.34', date: '2026-10-05', lines: {
+    en: ['Hold this takes the stack you tapped, not the first one.', 'Tapping Survival again does not reload the world.', 'An empty slot no longer says you are out of stone.', 'A standing jump cannot turn into a sprint in the air.'],
+    uk: ['Тримати бере той стос, який ти натиснув.', 'Повторне Виживання не перезавантажує світ.', 'Порожнє місце не каже, що немає каменю.', 'Стрибок з місця не стає бігом у повітрі.'],
+    ru: ['Держать берёт ту стопку, которую ты нажал.', 'Повторное Выживание не перезагружает мир.', 'Пустое место не говорит, что нет камня.', 'Прыжок с места не становится бегом в воздухе.'],
+    es: ['Sostener toma la pila que tocaste, no la primera.', 'Tocar Supervivencia otra vez no recarga el mundo.', 'Un hueco vacío ya no dice que no tienes piedra.', 'Un salto quieto no se vuelve carrera en el aire.'],
+    ar: ['أمسك هذا يأخذ الكومة التي لمستها، لا الأولى.', 'لمس البقاء مرة أخرى لا يعيد تحميل العالم.', 'الخانة الفارغة لا تقول إنك بلا حجر.', 'القفز من الوقوف لا يصير جرياً في الهواء.'],
+    'fa-AF': ['این را بگیر همان پشته‌ای را می‌گیرد که زدی، نه اولی را.', 'زدن دوباره بقا جهان را از نو بار نمی‌کند.', 'خانه خالی دیگر نمی‌گوید سنگ نداری.', 'پریدن از ایستادن در هوا دویدن نمی‌شود.'],
+    rw: ['Fata iki ifata umufuka wagukande, si uwa mbere.', 'Gukanda Ubugingo kandi ntabwo bisubiza isi.', 'Akanya karimo ubusa ntikivuga ko udafite ibuye.', 'Gusimbuka uhagaze ntibiba kwiruka mu kirere.'],
+    ti: ['እዚ ሓዝ ነቲ ዝጠወቕካዮ ዕስለ እዩ ዝወስድ።', 'ህይወት ደጊምካ ምጥዋቕ ዓለም ኣይመልስን።', 'ባዶ ቦታ ድምጺ ከም ዘይብልካ ኣይብልን።', 'ካብ ምጽናሕ ምንጻ ኣብ ኣየር ምጉያይ ኣይኸውንን።'],
+  }},
   { v: '2.5.33', date: '2026-10-05', lines: {
     en: ['Older stacks say they are in Lost & Found.', 'The keys no longer promise flight. A slow block no longer promises a copper tool.', 'You cannot go faster in the air than you were going.', 'Hold this moves a pocket stack onto the hotbar.', 'Survival is the mode. Creative stays hidden unless this device can build.'],
     uk: ['Старі стоси кажуть, що вони в Загубленому.', 'Клавіші більше не обіцяють політ. Повільний блок не обіцяє мідь.', 'У повітрі не швидше, ніж ти йшов.', 'Тримати переносить стос із кишені на панель.', 'Режим — Виживання. Творчий схований, якщо пристрій не для будівлі.'],

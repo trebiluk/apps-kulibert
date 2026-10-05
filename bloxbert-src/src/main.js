@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.33'
+const VERSION = '2.5.34'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -28,7 +28,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, WALK } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, WALK } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -367,7 +367,11 @@ function placeBlock(face) {
     }
   }
   const id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
-  if (session && session.mode === 'survival' && !id) { toast(t('noItem').replace('{item}', t('stone'))); return false }
+  if (session && session.mode === 'survival' && !id) {
+    const held = session.selectedItem && session.selectedItem()
+    toast(held ? t('notABlock') : t('emptySlot'))
+    return false
+  }
   if (session && !session.onPlace(x, y, z, id)) return false
   return edit(x, y, z, id)
 }
@@ -570,6 +574,13 @@ const stations = createStations({ t, give: (item, n) => session && session.give 
 } })
 async function goWorld(m) {
   if (m === 'creative' && !teacherOn()) { toast(t('buildLocked')); return }
+  const next = m === 'survival' ? 'bertyville-survival' : 'bertyville'
+  if (WORLD === next && session && session.mode === m && !tableMode) {
+    toast(t('alreadyHere'))
+    paintModeChip()
+    if (panels) panels.close()
+    return
+  }
   await save()
   WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
   try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
@@ -1109,7 +1120,7 @@ function feelTick(dt) {
   }
   const stickRun = runSince && now - runSince >= 300
   moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
-  if (grounded) airCap = Math.max(WALK, Math.hypot(body.velocity[0], body.velocity[2]))
+  if (grounded) airCap = airLimit(Math.hypot(body.velocity[0], body.velocity[2]), moveState.maxSpeed, WALK)
   else if (!flying && !tableMode) {
     const next = capAir(body.velocity[0], body.velocity[2], airCap)
     body.velocity[0] = next[0]
