@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.40'
+const VERSION = '2.5.41'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -1189,6 +1189,10 @@ function feelTick(dt) {
     if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
   }
   const sheetOpen = !sheetEl.hidden
+  const breaking = !!(noa.inputs.state.fire || mouseLeft)
+  if (!sheetOpen && !tableMode && noa.container.hasPointerLock && breaking && !dig) {
+    if (survivalOn()) beginDig('mouse')
+  }
   if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI) && noa.container.hasPointerLock && !sheetOpen) { placeHoldAt = now; placeBlock() }
   else if (!noa.container.hasPointerLock || sheetOpen) mouseRight = false
   if (!tableMode && !flying) {
@@ -1213,15 +1217,15 @@ function feelTick(dt) {
     }
   }
   if (dig && dig.kind === 'mouse' && dig.creative) {
-    if (mouseLeft && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
-    if (!mouseLeft) dig = null
+    if (breaking && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
     const tget = noa.targetedBlock
     const same = !!(tget && tget.position[0] === dig.x && tget.position[1] === dig.y && tget.position[2] === dig.z)
-    if (mouseLeft && !same) beginDig('mouse')
-    else if (!mouseLeft && !same) { dig = null; hideCrack() }
+    if (breaking && !same) beginDig('mouse')
+    else if (!breaking && !same) { dig = null; hideCrack() }
     else {
-      const next = advanceDig(dig, now, mouseLeft, true)
+      const next = advanceDig(dig, now, breaking, true)
       if (!next) { dig = null; hideCrack() }
       else {
         dig = next

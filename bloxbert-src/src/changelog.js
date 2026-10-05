@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.41', date: '2026-10-05', lines: {
+    en: ['Hold left click to break a tree. Leaves go fast. The trunk takes about 2 seconds by hand.', 'A Wood Tool makes the trunk faster.'],
+    uk: ['Тримай ліву кнопку, щоб зрубати дерево. Листя швидко. Стовбур руками близько 2 секунд.', 'Дерев’яне знаряддя робить стовбур швидшим.'],
+    ru: ['Держи левую кнопку, чтобы срубить дерево. Листва быстро. Ствол руками около 2 секунд.', 'Деревянное орудие делает ствол быстрее.'],
+    es: ['Mantén el clic izquierdo para romper un árbol. Las hojas van rápido. El tronco a mano tarda unos 2 segundos.', 'Una herramienta de madera lo hace más rápido.'],
+    ar: ['اضغط الزر الأيسر مطولاً لكسر شجرة. الأوراق سريعة. الجذع باليد نحو ثانيتين.', 'أداة الخشب تجعل الجذع أسرع.'],
+    'fa-AF': ['کلیک چپ را نگه دار تا درخت بشکند. برگ‌ها تندند. تنه با دست حدود ۲ ثانیه است.', 'ابزار چوبی تنه را تندتر می‌کند.'],
+    rw: ['Fata ibumoso uvunagure igiti. Amababi yihuta. Igiti n\'ikiganza ni amasegonda 2.', 'Igikoresho cy\'ibiti kirihutisha.'],
+    ti: ['ጸጋማይ ሓዝ ንዕንጨይቲ ንምስባር። ቅጠላት ቀልጢፉ። ግንድ ብኢድ ኣስታት 2 ካልኢት።', 'ናይ ዕንጨይቲ መሳርሒ ግንድ የቀልጥፍ።'],
+  }},
   { v: '2.5.40', date: '2026-10-05', lines: {
     en: ['Right-click a box, oven, or bunk and the mouse stays visible.', 'You can click the menu. Closing it lets you look around again.'],
     uk: ['Клік правою по скрині, печі чи ліжку, і миша лишається видимою.', 'Можна натискати меню. Закрий його, щоб знову озиратися.'],
