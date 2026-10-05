@@ -100,8 +100,7 @@ export class UI extends window.Phaser.Scene {
   home() {
     this.close();
     if (this.scene.isActive("Lookout")) this.scene.stop("Lookout");
-    if (!this.scene.isActive("Burrow")) this.scene.start("Burrow");
-    window.dispatchEvent(new CustomEvent("ap-home"));
+    this.scene.start("Burrow");
     document.body.classList.remove("in-round");
   }
   resume() {

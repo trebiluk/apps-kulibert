@@ -90,12 +90,16 @@ export class Burrow extends window.Phaser.Scene {
       if (tile.list[0]) tile.list[0].setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
       tile.setPosition(w / 2 - gridW / 2 + gapX / 2 + (n % cols) * gapX, top + Math.floor(n / cols) * gapY);
       if (tile.getData("key")) {
-        tile.getData("label").setText(t(tile.getData("key")));
-        tile.getData("soon").setText(t("soon"));
+        const label = tile.getData("label");
+        const soon = tile.getData("soon");
+        if (label && label.setText) label.setText(t(tile.getData("key")));
+        if (soon && soon.setText) soon.setText(t("soon"));
       } else {
         const i = tile.getData("i");
-        tile.getData("label").setText(t("l0" + (i + 1)));
-        tile.getData("lock").setVisible(!this.open(i));
+        const label = tile.getData("label");
+        const lock = tile.getData("lock");
+        if (label && label.setText) label.setText(t("l0" + (i + 1)));
+        if (lock && lock.setVisible) lock.setVisible(!this.open(i));
       }
     });
     const showCast = this.mode === "home";
