@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.33', date: '2026-10-05', lines: {
+    en: ['Older stacks say they are in Lost & Found.', 'The keys no longer promise flight. A slow block no longer promises a copper tool.', 'You cannot go faster in the air than you were going.', 'Hold this moves a pocket stack onto the hotbar.', 'Survival is the mode. Creative stays hidden unless this device can build.'],
+    uk: ['Старі стоси кажуть, що вони в Загубленому.', 'Клавіші більше не обіцяють політ. Повільний блок не обіцяє мідь.', 'У повітрі не швидше, ніж ти йшов.', 'Тримати переносить стос із кишені на панель.', 'Режим — Виживання. Творчий схований, якщо пристрій не для будівлі.'],
+    ru: ['Старые стопки говорят, что они в Потерянном.', 'Клавиши больше не обещают полёт. Медленный блок не обещает медь.', 'В воздухе не быстрее, чем ты шёл.', 'Держать переносит стопку из кармана на панель.', 'Режим — Выживание. Творческий спрятан, если устройство не для стройки.'],
+    es: ['Las pilas viejas dicen que están en Perdidos.', 'Las teclas ya no prometen volar. Un bloque lento no promete cobre.', 'En el aire no vas más rápido de lo que ibas.', 'Sostener pasa una pila del bolsillo a la barra.', 'El modo es Supervivencia. Creativo sigue oculto si este aparato no puede construir.'],
+    ar: ['الأكوام القديمة تقول إنها في المفقودات.', 'المفاتيح لم تعد تعد بالطيران. المكعب البطيء لا يعد بالنحاس.', 'في الهواء لست أسرع مما كنت.', 'أمسك هذا ينقل كومة من الجيب إلى الشريط.', 'الوضع هو البقاء. الإبداعي مخفي إلا إذا كان الجهاز يبني.'],
+    'fa-AF': ['پشته‌های قدیمی می‌گویند در گم‌شده‌ها هستند.', 'کلیدها دیگر پرواز را وعده نمی‌دهند. بلاک کند مس را وعده نمی‌دهد.', 'در هوا از سرعتی که داشتی تندتر نمی‌شوی.', 'این را بگیر پشته را از جیب به نوار می‌برد.', 'حالت بقا است. خلاق پنهان است مگر این دستگاه بسازد.'],
+    rw: ['Imifuka ishaje ivuga ko iri mu byabuze.', 'Utubuto ntikivuga kuguruka. Block idatevya ntivuga copper.', 'Mu kirere ntiwiruka kurusha uko wari.', 'Fata iki imura umufuka ku majepo ujye ku mukandara.', 'Uburyo ni Ubugingo. Creative ihishe keretse iki gikoresho gishobora kubaka.'],
+    ti: ['ናይ ቀደም ዕስለ ኣብ ዝጠፍአ ከም ዘሎ ይብል።', 'መጠወቒታት ምንፋስ ኣይቃረጹን። ዝንጋገ ብሎክ ነሓስ ኣይቃረጽን።', 'ኣብ ኣየር ካብቲ ዝነበርካ ፍጥነት ኣይትሓልፍን።', 'እዚ ሓዝ ዕስለ ካብ ጁባ ናብ መስመር የሕልፍ።', 'ኩነታት ህይወት እዩ። ፈጣሪ ተሓቢኡ እዩ እንተ ኣይሃንጽን እዚ መሳርሒ።'],
+  }},
   { v: '2.5.32', date: '2026-10-04', lines: {
     en: ['The bag is 9 in the hotbar and 6 pockets.', 'Older stacks that do not fit wait in Lost & Found. Nothing is deleted.', 'A new visit starts in Survival.', 'The build world is under Teacher. A student does not see it.'],
     uk: ['Сумка — 9 на панелі і 6 кишень.', 'Старі стоси, що не вмістились, чекають у Загубленому. Нічого не стерто.', 'Новий візит починається у Виживанні.', 'Світ будівлі під Вчителем. Учень його не бачить.'],

@@ -88,6 +88,13 @@ export function shouldRepeatPlace(held, elapsed, touch) {
   return !touch && !!held && elapsed >= 250
 }
 
+export function capAir(vx, vz, cap) {
+  const s = Math.hypot(vx, vz)
+  if (!(cap > 0) || s <= cap) return [vx, vz]
+  const k = cap / s
+  return [vx * k, vz * k]
+}
+
 export function speedFor({ crouch, run, fly }) {
   if (fly) return FLY_H
   if (crouch) return CROUCH

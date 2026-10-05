@@ -101,6 +101,7 @@ export function createSession(api) {
       lost.splice(i, 1)
     }
     if (got) { paintHotbar(); api.toast(t('pickedUp')); if (api.markDirty) api.markDirty() }
+    else if (lost.length) api.toast(t('bagFull'))
     return got
   }
   function tickDrops(dt) {
@@ -209,6 +210,17 @@ export function createSession(api) {
     }
     return false
   }
+  function holdItem(itemKey) {
+    const i = bag.slots.findIndex((s) => s && s.item === itemKey)
+    if (i < 0) return false
+    if (i > 8) {
+      const tmp = bag.slots[hot]
+      bag.slots[hot] = bag.slots[i]
+      bag.slots[i] = tmp
+    } else hot = i
+    paintHotbar()
+    return true
+  }
   function card(g, itemKey) {
     const item = ITEMS[itemKey]
     const p = document.createElement('p')
@@ -217,6 +229,7 @@ export function createSession(api) {
     p.innerHTML = '<bdi>' + t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey) + '</bdi>'
     g.append(p)
     if (mode === 'survival' && bag.count(itemKey)) {
+      g.append(btn(t('holdIt'), () => { holdItem(itemKey); if (api.close) api.close() }))
       g.append(btn(t('drop1'), () => { dropItem(itemKey, false); api.close() }))
       g.append(btn(t('dropAll'), () => { dropItem(itemKey, true); api.close() }))
     }
@@ -704,6 +717,7 @@ export function createSession(api) {
       if (hit) hit.n += s.n
       else lost.push({ item: s.item, n: s.n })
     }
+    if (extra.length) api.toast(t('keptAside'))
     for (const s of bag.slots) if (s) markFound(s.item)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip(); paintHotbar()
@@ -737,6 +751,6 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
-    useHeld, selectOwned,
+    useHeld, selectOwned, holdItem,
   }
 }

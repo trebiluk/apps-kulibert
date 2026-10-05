@@ -83,5 +83,11 @@ if (s.selectOwned(3)) throw new Error('missing stone was selectable')
 const old = createBag()
 const extra = old.load(Array.from({ length: 36 }, () => ({ item: 'dirt', n: 1 })))
 if (old.slots.filter(Boolean).length !== 15 || extra.length !== 21) throw new Error('old slots were not kept aside')
+s.setHot(0)
+s.bag.slots[0] = { item: 'stone', n: 1 }
+s.bag.slots[10] = { item: 'planks', n: 3 }
+if (!s.holdItem('planks') || s.bag.slots[0].item !== 'planks' || s.bag.slots[10].item !== 'stone') throw new Error('a pocket stack did not move to the hotbar')
+s.load({ player: { mode: 'survival', bag: Array.from({ length: 20 }, () => ({ item: 'dirt', n: 1 })), hot: 0 } })
+if (s.bag.count('dirt') !== 15 || !toasts.includes('keptAside')) throw new Error('old stacks were not kept aside')
 console.log('session-check ok', toasts.filter((t) => t === 'bagFull').length, 'full toasts')
 process.exit(0)

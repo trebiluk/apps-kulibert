@@ -3,7 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
 
 ## 1. Live now
-- **Bertopia 2.5.32** the bag is 9 + 6. Extra stacks from an old 36-slot bag go to Lost & Found, not the trash. A new visit starts in Survival. The build world sits under Teacher, so a student menu does not show Creative. This is a device switch, not the server teacher flag.
+- **Bertopia 2.5.33** five steps: old stacks announce Lost & Found, the keys stop promising flight, air speed stays at the speed you left the ground, Hold this puts a pocket stack on the hotbar, and the old mode list no longer calls Survival a later cut.
 - **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
 - **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
 - **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.

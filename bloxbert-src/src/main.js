@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.32'
+const VERSION = '2.5.33'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -28,7 +28,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { fromDoc } from './save.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, WALK } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -524,6 +524,14 @@ function paintModeChip() {
   if (!chip) return
   if (tableMode) { chip.textContent = t('buildTable'); return }
   chip.textContent = session && session.mode === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
+  const creative = $('m-creative')
+  if (creative) creative.hidden = !teacherOn()
+  const surv = $('m-survival')
+  if (surv) {
+    const on = !tableMode && session && session.mode === 'survival'
+    surv.classList.toggle('on', on)
+    surv.setAttribute('aria-pressed', String(on))
+  }
 }
 function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
 function toast(text) { const el = $('toast'); if (!el) return; el.textContent = text; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true }, 2400) }
@@ -560,6 +568,17 @@ const stations = createStations({ t, give: (item, n) => session && session.give 
   g.fillRect(0, 0, 32, 32)
   return c
 } })
+async function goWorld(m) {
+  if (m === 'creative' && !teacherOn()) { toast(t('buildLocked')); return }
+  await save()
+  WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
+  try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
+  changeLog.setWorld(WORLD)
+  session.setMode(m)
+  paintModeChip()
+  await load()
+  if (panels) panels.close()
+}
 let holdTour = () => {}
 panels = mountPanels({
   t, toast,
@@ -574,18 +593,7 @@ panels = mountPanels({
   fullScreen: () => $('fs-btn').click(),
   inspect: () => setInspect(true),
   table: () => setMode(true),
-  setWorldMode: async (m) => {
-    if (m === 'creative' && !teacherOn()) { toast(t('buildLocked')); return }
-    await save()
-    WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
-    try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
-    changeLog.setWorld(WORLD)
-    session.setMode(m)
-    const chip = $('mode-chip')
-    if (chip) chip.textContent = m === 'survival' ? t('survival') + ' · ' + t('practice') : t('creative')
-    await load()
-    panels.close()
-  },
+  setWorldMode: (m) => goWorld(m),
   onClose: () => { try { noa.setPaused(false) } catch (e) {} session.paused = false },
   paintBag: (g) => session.paintBag(g),
   paintCraft: (g) => session.paintCraft(g),
@@ -932,7 +940,8 @@ function setMode(table) {
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
   }
 }
-$('m-creative').addEventListener('click', () => setMode(false))
+$('m-creative').addEventListener('click', () => { if (teacherOn()) goWorld('creative') })
+$('m-survival').addEventListener('click', () => { setMode(false); goWorld('survival') })
 $('m-table').addEventListener('click', () => { setMode(true); openMenu(false) })
 if (qs.get('mode') === 'table') setMode(true)
 
@@ -1100,6 +1109,12 @@ function feelTick(dt) {
   }
   const stickRun = runSince && now - runSince >= 300
   moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
+  if (grounded) airCap = Math.max(WALK, Math.hypot(body.velocity[0], body.velocity[2]))
+  else if (!flying && !tableMode) {
+    const next = capAir(body.velocity[0], body.velocity[2], airCap)
+    body.velocity[0] = next[0]
+    body.velocity[2] = next[1]
+  }
   noa.blockTestDistance = reachFor(survivalOn())
   playerBody.autoStep = !!(autoClimb && !flying && !tableMode)
   if ((crouchKey || crouchOn) && grounded && !flying && !tableMode) {
@@ -1225,6 +1240,7 @@ const LOOK_KEY = 'bloxbert-look'
 let lookSens = 1
 let lookInvert = false
 let autoClimb = !!TOUCH_UI
+let airCap = WALK
 let wideView = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
