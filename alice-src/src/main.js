@@ -18,6 +18,7 @@ function wireChrome() {
   document.addEventListener("fullscreenchange", paintFs);
   paintFs();
   remember();
+  oneMenu();
 }
 function paintFs() {
   const fs = document.getElementById("fs-btn");
@@ -39,6 +40,15 @@ function toggleFs() {
 }
 function maybeIphone() {
   if (/iPhone|iPad/.test(navigator.userAgent || "")) document.getElementById("hint").hidden = false;
+}
+function oneMenu() {
+  const menu = document.getElementById("game-menu");
+  if (!menu || !document.body) return;
+  const hide = () => {
+    if (document.querySelector(".kb-bar")) menu.style.setProperty("display", "none", "important");
+  };
+  hide();
+  new MutationObserver(hide).observe(document.body, { childList: true, subtree: true });
 }
 function remember() {
   let want = null;

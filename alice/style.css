@@ -22,3 +22,10 @@ html[dir="rtl"] .plate { left: auto; right: 8px; }
 .hint[hidden] { display: none; }
 .hint button { min-width: 48px; min-height: 48px; }
 :focus-visible { outline: 3px solid #22d3ee; outline-offset: 2px; }
+html[data-ap-theme="teal"], html[data-ap-theme="teal"] body { background: #06122b; }
+html[data-ap-theme="dawn"], html[data-ap-theme="dawn"] body { background: #2a1218; }
+html[data-ap-theme="dusk"], html[data-ap-theme="dusk"] body { background: #140c28; }
+html[data-ap-theme="night"], html[data-ap-theme="night"] body { background: #05070d; }
+html[data-ap-theme="gold"], html[data-ap-theme="gold"] body { background: #241608; }
+html[data-ap-theme="snow"], html[data-ap-theme="snow"] body { background: #162430; }
+
