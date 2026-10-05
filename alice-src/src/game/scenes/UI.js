@@ -59,11 +59,11 @@ export class UI extends window.Phaser.Scene {
     const menu = document.getElementById("game-menu");
     if (menu) menu.setAttribute("aria-expanded", mode === "menu" ? "true" : "false");
     if (mode === "end") say(detail && detail.cleared ? t("highFive") : t("nextTime"));
-    document.getElementById("live").textContent = mode === "soon" ? (detail || "soon") : mode;
+    document.getElementById("live").textContent = mode === "soon" ? (detail || "soon") : mode === "end" ? ((detail && detail.why) ? detail.why : "end") + " +" + ((detail && detail.pay) || 0) : mode === "restart" ? "restartAsk" : mode;
   }
   rows(mode, detail) {
     if (mode === "menu") return [this.btn(t("home"), () => this.home()), this.btn(t("whatsNew"), () => this.open("news")), this.btn(t("help"), () => this.open("help")), this.btn(t("fullScreen"), () => document.getElementById("fs-btn").click()), this.btn(t("close"), () => this.close())];
-    if (mode === "news") return [this.line(t("news3")), this.line(t("news2")), this.line(t("news")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "news") return [this.line(t("news4")), this.line(t("news2")), this.line(t("news")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "soon") return [this.line(detail || t("comingSoon")), this.line(t("comingBody")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "help") return [this.line(t("tapSky")), this.line(t("tapGround")), this.line(t("tapSnake")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "pause") return [this.btn(t("resume"), () => this.resume(), true), this.btn(t("restart"), () => this.open("restart")), this.btn(t("help"), () => this.open("help")), this.btn(t("home"), () => this.home())];

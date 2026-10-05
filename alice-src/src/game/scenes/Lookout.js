@@ -1,6 +1,6 @@
 import { Round, keyCell } from "../../core/lookout-sim.js";
 import { t, rtl, say } from "../i18n.js";
-import { current, loadSave, saveSave, seedsFor } from "../save.js";
+import { current, loadSave, saveSave, saveNow, seedsFor } from "../save.js";
 
 const FRAME = { hawk: "hawk-glide-0", coyote: "coyote", snake: "snake-th", cloud: "cloud", rabbit: "rabbit", weed: "weed", wonder: "wonder-hop-0" };
 
@@ -79,7 +79,9 @@ export class Lookout extends window.Phaser.Scene {
     this.readBtn.setPosition(Math.min(w - 230, 72 + this.goal.width + 40), 30);
     this.helpBtn.setPosition(this.readBtn.x + 70, 30);
     this.pauseBtn.setPosition(w - 58, 30);
-    this.restartBtn.setPosition(w - 160, 30);
+    this.restartBtn.setPosition(w - 58, 88);
+    this.pauseBtn.setDepth(8);
+    this.restartBtn.setDepth(8);
     const dock = 90;
     if (wide) {
       const side = rtl() ? [2, 1, 0] : [0, 1, 2];
@@ -143,7 +145,8 @@ export class Lookout extends window.Phaser.Scene {
     const prev = current.best[this.level.id] || {};
     current.best[this.level.id] = { score: Math.max(bank.score, prev.score || 0), stars: Math.max(bank.stars, prev.stars || 0), cleared: bank.cleared || prev.cleared };
     saveSave();
-    window.dispatchEvent(new CustomEvent("ap-end", { detail: Object.assign({}, bank, { pay }) }));
+    saveNow();
+    window.dispatchEvent(new CustomEvent("ap-end", { detail: Object.assign({}, bank, { pay, why: bank.why }) }));
   }
   update(_t, dt) {
     if (!this.round || this.round.state !== "running" || this.ended) return;
@@ -163,7 +166,7 @@ export class Lookout extends window.Phaser.Scene {
     this.ring.setText(left <= 600 && left > 0 ? t("ten") : "");
     const bank = this.round.read();
     this.scoreT.setText(String(bank.score));
-    document.getElementById("live").textContent = this.level.id + " " + bank.score;
+    document.getElementById("live").textContent = this.level.id + " " + bank.score + " " + Math.max(0, Math.ceil(left / 60));
     if (step >= this.level.seconds * 60) this.finish();
   }
 }

@@ -16,7 +16,7 @@ export function saveSave() {
   clearTimeout(timer);
   timer = setTimeout(write, 300);
 }
-export function saveNow() { write(); }
+export function saveNow() { dirty = true; write(); }
 function write() {
   if (!dirty) return;
   try { localStorage.setItem(KEY, JSON.stringify(current)); } catch (e) {}
