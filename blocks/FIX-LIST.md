@@ -1,10 +1,11 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix inserted, basics-1/2/3 renumbered to 2.5.45-2.5.47).
+Updated Tue Oct 6 2026, 3:35 PM ET (Debugzy: 2.5.44 proof PASS; 2.5.45 polish brief for the 2 P2s inserted; basics-1/2/3 renumbered to 2.5.46-2.5.48; World types and options added to the plan).
 
 ## 1. Live now
-- **Bertopia 2.5.43** (`a34e6af`, Oct 6 11:54 AM ET). The stick, the gold step and the hotbar fit on a phone. Only a teacher who unlocked the device on the Tech Room staff page can open the build world.
-- **Proof verdict: FAIL (P1)**, Oct 6 1:15 PM ET, `proof/bertopia-2.5.43/RESULT.md`. Item 1 (HUD fit, 9 slots + Bag, rotate) PASS. Item 2 (HubStaffAuth gate) PASS. Item 3 words PASS, but the smoke is **65/68, exit 1** on live (not "68 PASS, exit 0"): the 3 desktop place/Box/Oven lines at 1366 send a left click. 0 console errors at 412/915/1366, menu by touch, no test hooks on live.
+- **Bertopia 2.5.44** (`2e9fd8f`, Oct 6 1:03 PM ET). Held right click no longer opens doors, boxes or stations (Use needs a fresh, still press or one tap), and new grass has no loose wool.
+- **Proof verdict: PASS (P2 watches)**, Oct 6 3:30 PM ET, `proof/bertopia-2.5.44/RESULT.md`. Smoke 74/74, exit 0, no `element.click()`. Sweep no use, door flips once, Box opens on a fresh right click, touch drag no use, tap opens on touch, 0 wool tops in a fresh 60x60 patch, a placed wool block survives save + reload. 0 console errors at 412/915/1366, rotate keeps state, teacher gate holds. Watches: Bag label clipped at 412, keys help line 2 lines and never fades, desktop place now happens on release.
+- **Bertopia 2.5.43** (`a34e6af`): proof FAIL (P1, desktop smoke 65/68); 2.5.44 fixed it.
 - **Bertopia 2.5.42** (`a0675ec`, Oct 5 10:49 AM ET). Its Oct 6 proof FAILed (P1) on the HUD, the teacher switch and the words; 2.5.43 fixed those.
 - From Oct 4 7:40 AM to Oct 5 10:49 AM ET the Build chat shipped 28 cuts (2.5.15–2.5.42) with no proof between them. Most of core-1/core-2/core-3 and part of 2.6.0 landed this way:
   - 2.5.15–2.5.19: the 2.5.14 leftovers (Oven tiles, Fill/Walls words, Menú, Break contrast)
@@ -24,11 +25,10 @@ Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix in
   - 2.5.42: coal underground, wheat → flour, reeds → sugar, Wood Door, bunk sets home, gold path step
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
-## 2. Open fixes (from proof/bertopia-2.5.43/RESULT.md) -> brief `briefs/fixq/bertopia-2544.md` = **BT 2.5.44**, before anything in Next up
-- [x] **Desktop smoke (2.5.43 item 3b NOT DONE):** at 1366 the place, Box and Oven lines must press the right mouse button; the first right click after a panel closes must act (Oven still fails after the Box closes); the 26 old lines still call `element.click()`. Exit 0 with >=30 lines.
-- [x] **Held right click opens things (Diego):** place-repeat (2.5.30) calls placeBlock() every 250 ms, which opens doors, Box, Oven, Workbench, Vend, Bunk and the Shop. Use/open only on a fresh press that starts and ends on the same block (<= 6 px), or one tap.
-- [x] **Loose wool on the grass:** worldgen plantHere() grows 4 wool colors at 1% each (2.5.42, unbriefed); about 3% of surface tops on live. Remove from new chunks; ids 13-16, Store wool and the Bunk recipe stay.
-- [ ] P2, next fix slot: keys help line wrap/shorten at 1366 and 915 and fade after the first 3 moves (Diego's photo looked clipped; headless 1366 shows it at x 12, 520x44, so likely the photo crop). Bag tile label "g" clipped at 412.
+## 2. Open fixes (from proof/bertopia-2.5.44/RESULT.md) -> brief `briefs/fixq/bertopia-2545-polish.md` = **BT 2.5.45**, before basics-1
+- [ ] **Bag tile label (P2):** at 360/412 upright the 52 px slot cuts the label ("Bag" reads "Baq"). Fit icon + label in all 8 languages.
+- [ ] **Keys help line (P2):** fits on screen at 1366 and 915 (mouse) without clipping or covering the hotbar/chip/hint; fades after the first 3 movement key presses; no new storage key.
+- [x] **2.5.44 done:** desktop smoke truth (right button, exit 0, no element.click), Use only on a fresh still press (`canUse`), no loose wool in new chunks (ids 13-16, Store wool, Bunk recipe kept).
 - [x] **2.5.43 done:** touch HUD never covers itself (5 sizes), upright 9 slots + Bag, teacher gate via `HubStaffAuth.isUnlocked()`, tour/help/What's new words.
 
 ### Flags: built without a brief (GameMaster calls; leave as shipped, don't extend)
@@ -48,11 +48,12 @@ Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix in
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |
-| 0b | 2.5.44 | **bertopia-2544.md:** desktop smoke truth (right button), Use only on a fresh still press, no loose wool | [x] |
+| 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
+| 0c | 2.5.45 | **bertopia-2545-polish.md:** Bag tile label fits on phones; keys help line fits and fades after 3 moves | [ ] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
-| 1 | 2.5.45 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
-| 2 | 2.5.46 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
-| 3 | 2.5.47 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
+| 1 | 2.5.46 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
+| 2 | 2.5.47 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
+| 3 | 2.5.48 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
 | 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
@@ -71,6 +72,7 @@ Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix in
 | 19 | 2.6.15 | bertopia-music-1.md: Tone Block, instruments, Jukebox + DJ Berty Discs | [ ] |
 | 20 | 2.6.16 | bertopia-holidays-1.md: rest of the one pile (Winter group, 13 culture items ids 172–184, Marigold/Papel Picado), origin lines, Decorator badge |  [ ] |
 | 21 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
+| future | — | **World types and options** (Diego, Oct 6 12:32 PM): New World picker with Classic, Flat, Islands, Caves (more later); options for world size, trees, ores, starter town on/off; a shareable seed so a whole class gets one world. In docs/BERTOPIA-CODING-PLAN.md §S5 (world-2 stage, after world-2a). No brief yet (`bertopia-world-2c.md` when Diego says go). | [ ] |
 
 All briefs were renumbered on Oct 6 (7:10 AM, then 10:04 AM for seasonal-early) to this table. Every brief's proof includes StudentTester's 915×412 sideways run + mid-play rotate; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
 Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the Teacher flag.
@@ -99,6 +101,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| 2.5.44 | 2e9fd8f | PASS (P2 watches): smoke 74/74 exit 0, no element.click; held right-click sweep opens nothing, fresh right click opens Box/flips door, tap opens on touch; 0 wool tops; placed wool kept (Oct 6, 3:30 PM) |
 | 2.5.43 | a34e6af | FAIL (P1): HUD fit, rotate and HubStaffAuth gate PASS; smoke 65/68 exit 1 (desktop place/Box/Oven lines send a left click), old lines still element.click() (Oct 6, 1:15 PM) |
 | docs (Oct 6, 10:30 AM) | (this commit) | Docs only: GM calls applied (Tone Block, Fusion Core nuclear line, teal Bot, Zapper removed), marigoldPatternTile key, US spelling + ×, 54 Machine Panel inside lines (unchecked), 278 entries checked |
 | docs (Oct 6, 10:15 AM) | (this commit) | Docs only, no app change: one Seasonal & Holiday pile (no dates, one teacher switch, culture items ids 172–184 in), Diya cut, Pattern Floor Tile base decor, Fabricator Starter Kit, new seasonal-early at 2.6.2 (versions after it +1, holidays-1 → 2.6.16), rotate proof in every brief |
