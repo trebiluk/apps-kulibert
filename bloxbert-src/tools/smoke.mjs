@@ -246,13 +246,14 @@ function hit(a, b) {
 function inside(r, w, h) {
   return r && r.w > 1 && r.x >= -1 && r.y >= -1 && r.x + r.w <= w + 1 && r.y + r.h <= h + 1
 }
-async function bootHud(browser, href, w, h, touch, prep) {
+async function bootHud(browser, href, w, h, touch, prep, media) {
   const page = await browser.newPage()
   page.__err = []
   page.on('pageerror', (e) => page.__err.push(String(e)))
   page.on('console', (m) => { if (m.type() === 'error') page.__err.push(m.text()) })
   page.on('dialog', (d) => d.accept())
   await page.setViewport({ width: w, height: h, hasTouch: !!touch, isMobile: !!touch, deviceScaleFactor: 1 })
+  if (media) await page.emulateMediaFeatures(media)
   await page.evaluateOnNewDocument(prep || (() => {
     localStorage.clear()
     sessionStorage.clear()
@@ -501,10 +502,18 @@ async function prove2543(browser, testUrl, note, errs) {
       broke = await page.evaluate((aim) => aim ? window.__smoke.voxel(aim.x, aim.y, aim.z) : -1, mined)
     }
     note('hold mine dirt', w + 'x' + h, broke === 0 && mineMs < 1600, 'id ' + broke + ' aim ' + JSON.stringify(mined))
-    await page.evaluate(() => window.__smoke.fillBag('dirt', 1))
+    await page.evaluate((n) => window.__smoke.fillBag('dirt', n), touch ? 1 : 2)
     const stone = await lookSolid(page, 3, spawn)
     const before = await page.evaluate(() => window.__smoke.count('dirt'))
-    await pressAt(page, c.x, c.y, 70, touch, 'right')
+    if (!touch) {
+      await page.mouse.move(c.x, c.y)
+      await page.mouse.down({ button: 'right' })
+      await sleep(40)
+      const mid = await page.evaluate(() => window.__smoke.count('dirt'))
+      note('place on press', w + 'x' + h, !!stone && mid === before - 1, before + '->' + mid)
+      await sleep(30)
+      await page.mouse.up({ button: 'right' })
+    } else await pressAt(page, c.x, c.y, 70, touch, 'right')
     await sleep(200)
     const placed = await page.evaluate(() => window.__smoke.count('dirt'))
     note('tap places', w + 'x' + h, !!stone && placed === before - 1, before + '->' + placed)
@@ -708,5 +717,104 @@ async function prove2543(browser, testUrl, note, errs) {
       await page.close()
     }
   }
+
+  for (const lang of ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']) {
+    const page = await bootHud(browser, testUrl + '?lang=' + encodeURIComponent(lang) + '&smoke=1', 412, 915, true)
+    errs.push(...page.__err.map((e) => 'bag ' + e))
+    for (const [w, h] of [[360, 740], [412, 915]]) {
+      await page.setViewport({ width: w, height: h, hasTouch: true, isMobile: true })
+      await sleep(180)
+      const bag = await page.evaluate(() => {
+        const tile = document.querySelector('#hotbar .slot.bag-tile')
+        const lbl = tile && tile.querySelector('.lbl')
+        if (!tile || !lbl) return null
+        const tr = tile.getBoundingClientRect()
+        const lr = lbl.getBoundingClientRect()
+        const inside = lr.left >= tr.left - 0.5 && lr.right <= tr.right + 0.5 && lr.top >= tr.top - 0.5 && lr.bottom <= tr.bottom + 0.5
+        return { text: lbl.textContent, sh: lbl.scrollHeight, ch: lbl.clientHeight, sw: lbl.scrollWidth, cw: lbl.clientWidth, th: tr.height, inside }
+      })
+      const ok = !!(bag && bag.text && bag.sh <= bag.ch && bag.sw <= bag.cw && bag.inside && bag.th >= 48)
+      note('bag label', lang + ' ' + w, ok, JSON.stringify(bag))
+    }
+    await page.close()
+  }
+
+  for (const lang of ['en', 'ru', 'ar', 'fa-AF']) {
+    for (const [w, h] of [[1366, 768], [915, 412]]) {
+      const page = await bootHud(browser, testUrl + '?lang=' + encodeURIComponent(lang) + '&smoke=1', w, h, false)
+      errs.push(...page.__err.map((e) => 'keys ' + e))
+      const fit = await page.evaluate((w, h) => {
+        const el = document.querySelector('.keys')
+        if (!el) return { missing: true }
+        const r = el.getBoundingClientRect()
+        const s = getComputedStyle(el)
+        const on = r.left >= -0.5 && r.top >= -0.5 && r.right <= w + 0.5 && r.bottom <= h + 0.5 && r.width > 2
+        const clip = el.scrollWidth <= el.clientWidth + 1 && el.scrollHeight <= el.clientHeight + 1
+        function box(node) {
+          if (!node) return null
+          const cs = getComputedStyle(node)
+          if (node.hidden || cs.display === 'none' || cs.visibility === 'hidden') return null
+          const b = node.getBoundingClientRect()
+          if (b.width < 2 || b.height < 2) return null
+          return b
+        }
+        function hit(a, b) {
+          return a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5
+        }
+        let overlap = ''
+        for (const slot of document.querySelectorAll('#hotbar .slot')) {
+          const b = box(slot)
+          if (b && hit(r, b)) overlap += 'slot '
+        }
+        const path = box(document.getElementById('path-chip'))
+        const hint = box(document.getElementById('menu-hint'))
+        if (path && hit(r, path)) overlap += 'path '
+        if (hint && hit(r, hint)) overlap += 'hint '
+        return { on, clip, overlap, sw: el.scrollWidth, cw: el.clientWidth, op: s.opacity, disp: s.display, text: el.textContent.slice(0, 48) }
+      }, w, h)
+      note('keys fit', lang + ' ' + w, !!(fit.on && fit.clip && !fit.overlap && fit.disp !== 'none'), JSON.stringify(fit))
+      await page.close()
+    }
+  }
+
+  const fade = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+  errs.push(...fade.__err.map((e) => 'fade ' + e))
+  await fade.focus('body')
+  await fade.keyboard.press('w')
+  await fade.keyboard.press('a')
+  await sleep(40)
+  const midOp = await fade.evaluate(() => {
+    const el = document.querySelector('.keys')
+    const s = getComputedStyle(el)
+    return { op: s.opacity, disp: s.display, help: document.querySelector('[data-i18n="keysHint"].help').textContent, line: el.textContent, hint: window.__smoke.word('keysHint'), short: window.__smoke.word('keysLine') }
+  })
+  await fade.keyboard.press('s')
+  await sleep(1000)
+  const goneOp = await fade.evaluate(() => getComputedStyle(document.querySelector('.keys')).opacity)
+  note('keys fade', '1366x768', midOp.op === '1' && midOp.disp !== 'none' && Number(goneOp) <= 0.02 && midOp.help === midOp.hint && midOp.line === midOp.short && midOp.line !== midOp.hint, midOp.op + '->' + goneOp)
+  await fade.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
+  await fade.waitForFunction(() => document.querySelector('.keys'), { timeout: 20000 }).catch(() => {})
+  await sleep(400)
+  const back = await fade.evaluate(() => {
+    const el = document.querySelector('.keys')
+    return el ? getComputedStyle(el).opacity + ' ' + getComputedStyle(el).display : 'missing'
+  })
+  note('keys back', '1366x768', back.startsWith('1 ') && !back.includes('none'), back)
+  await fade.close()
+
+  const red = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false, null, [{ name: 'prefers-reduced-motion', value: 'reduce' }])
+  errs.push(...red.__err.map((e) => 'reduce ' + e))
+  await red.focus('body')
+  await red.keyboard.press('w')
+  await red.keyboard.press('a')
+  await red.keyboard.press('s')
+  await sleep(40)
+  const hid = await red.evaluate(() => {
+    const el = document.querySelector('.keys')
+    const s = getComputedStyle(el)
+    return { disp: s.display, op: s.opacity, trans: el.style.transition || '' }
+  })
+  note('keys reduce', '1366x768', hid.disp === 'none' && !hid.trans, JSON.stringify(hid))
+  await red.close()
 }
 

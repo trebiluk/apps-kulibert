@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.44'
+const VERSION = '2.5.45'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -82,6 +82,23 @@ function applyI18n() {
   if (pick && pick.dataset.ready) pick.textContent = t('pickChip') + (pick.classList.contains('on') ? ' ✓' : '')
 }
 applyI18n()
+
+let walkPresses = 0
+function fadeKeys() {
+  const el = document.querySelector('.keys')
+  if (!el || el.dataset.gone === '1') return
+  el.dataset.gone = '1'
+  if (REDUCE || TOUCH_UI) { el.style.display = 'none'; return }
+  el.style.transition = 'opacity .5s linear'
+  el.style.opacity = '0'
+}
+document.addEventListener('keydown', (e) => {
+  if (TOUCH_UI || e.repeat) return
+  const code = e.code
+  if (code !== 'KeyW' && code !== 'KeyA' && code !== 'KeyS' && code !== 'KeyD' && code !== 'ArrowUp' && code !== 'ArrowDown' && code !== 'ArrowLeft' && code !== 'ArrowRight') return
+  walkPresses += 1
+  if (walkPresses >= 3) fadeKeys()
+}, true)
 
 const SPAWN = [8.5, 8, 1.5]
 const noa = new Engine({
@@ -1470,10 +1487,13 @@ window.addEventListener('pointerdown', (e) => {
     y: snap ? snap.position[1] : 0,
     z: snap ? snap.position[2] : 0,
     px: e.clientX, py: e.clientY, moved: 0, t: e.timeStamp, pid: e.pointerId,
-    interactive, repeated: false,
+    interactive, repeated: false, placed: false,
   }
-  if (!TOUCH_UI && snap && !interactive) { mouseRight = true; placeHoldAt = performance.now() }
-  else mouseRight = false
+  if (!TOUCH_UI && snap && !interactive) {
+    mouseRight = true
+    placeHoldAt = performance.now()
+    rightPress.placed = !!placeBlock(snap)
+  } else mouseRight = false
 }, true)
 window.addEventListener('pointermove', (e) => {
   if (!rightPress) return
@@ -1497,8 +1517,9 @@ function finishRight(e) {
   const press = rightPress
   rightPress = null
   mouseRight = false
-  if (press.repeated || inspectOn) return
+  if (press.placed || press.repeated || inspectOn) return
   if (e && e.pointerType === 'touch' && e.timeStamp - press.t >= 500) return
+  if (!press.interactive) return
   const upHit = targetHit()
   const down = press.id == null ? null : { id: press.id, x: press.x, y: press.y, z: press.z }
   const up = upHit ? { id: upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null

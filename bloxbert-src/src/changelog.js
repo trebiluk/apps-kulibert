@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.45', date: '2026-10-06', lines: {
+    en: ['The Bag tile label fits on a phone, the keys help line fits and fades after your first steps, and right-click places right away again.'],
+    uk: ['Підпис сумки вміщається на телефоні, рядок клавіш вміщається і зникає після перших кроків, і права кнопка знову ставить одразу.'],
+    ru: ['Подпись сумки помещается на телефоне, строка клавиш помещается и гаснет после первых шагов, и правая кнопка снова ставит сразу.'],
+    es: ['La etiqueta de la bolsa cabe en el teléfono, la línea de teclas cabe y se desvanece tras los primeros pasos, y el clic derecho pone otra vez al instante.'],
+    ar: ['تسمية الحقيبة تناسب الهاتف، وسطر المفاتيح يناسب ويختفي بعد خطواتك الأولى، والزر الأيمن يضع من جديد فور الضغط.'],
+    'fa-AF': ['برچسب بکس روی گوشی جا می‌شود، خط راهنمای کلیدها جا می‌شود و پس از نخستین گام‌ها محو می‌شود، و دکمه راست دوباره همان لحظه می‌گذارد.'],
+    rw: ['Ijambo ry\'agasaho rigeraho kuri telefoni, umurongo w\'imfunguzo uragera hanyuma ukayoyoka nyuma y\'intambwe za mbere, kandi iburyo rishyira ako kanya.'],
+    ti: ['ጽሑፍ ቦርሳ ኣብ ስልኪ ይኣቱ፡ መምርሒ መፍትሕ ይኣቱ እሞ ድሕሪ ናይ መጀመርታ ስጉምትታት ይጠፍእ፡ የማናይ ድማ ብኡንብኡ የቐምጥ።'],
+  }},
   { v: '2.5.44', date: '2026-10-06', lines: {
     en: ['Holding right click no longer opens doors and boxes, and the grass is clear of loose wool.'],
     uk: ['Утримання правої кнопки більше не відчиняє двері й скрині, і трава чиста від вовни.'],

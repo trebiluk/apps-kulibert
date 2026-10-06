@@ -102,8 +102,9 @@ body.touch:not(.table) .jumpcol{display:flex;flex-direction:column;align-items:c
 body.touch .move,body.touch .acts{display:none!important}
 body.stick-right .stickpad{left:auto;right:12px}
 body.stick-right .jumpcol{left:auto;right:148px}
-.keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(520px,70vw)}
+.keys{position:fixed;inset-inline-start:12px;bottom:96px;z-index:3;font-size:12px;line-height:1.35;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(880px,calc(100vw - 24px));box-sizing:border-box;overflow:visible;white-space:normal;overflow-wrap:anywhere}
 body.touch .keys,body.table .keys{display:none}
+html[dir=rtl] .keys{direction:rtl;text-align:start}
 .ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
 @media (max-width:620px){.chip{display:none}.top{gap:8px;padding:6px 8px}}
 @media (max-height:500px){.top{min-height:56px;padding:4px 8px}.icon-btn,.tool{height:48px}.icon-btn{width:48px}
@@ -115,6 +116,9 @@ body.touch .keys,body.table .keys{display:none}
   :root{--hud-lift:140px}
   #hotbar{display:grid;grid-template-columns:repeat(5,62px);justify-content:center;gap:6px;overflow:hidden}
   #hotbar .slot{width:62px;min-width:62px;min-height:48px;height:52px}
+  #hotbar .slot.bag-tile{height:auto;min-height:52px;padding:2px 1px 3px;gap:1px;overflow:visible;justify-content:center}
+  #hotbar .slot.bag-tile .gic,#hotbar .slot.bag-tile .gic svg{width:16px;height:16px;flex:0 0 auto}
+  #hotbar .slot.bag-tile .lbl{flex:0 0 auto;min-width:0;font-size:10px;line-height:12px;max-width:100%;overflow:visible;text-overflow:clip}
   .slot.bag-tile{position:static}
 }
 @media (max-height:500px) and (min-width:480px){
@@ -123,7 +127,7 @@ body.touch .keys,body.table .keys{display:none}
   .jumpcol{left:128px}
   body.stick-right .jumpcol{left:auto;right:128px}
 }
-.pad,#hotbar,.keys,.top{direction:ltr}
+.pad,#hotbar,.top{direction:ltr}
 html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
 html[dir=rtl] .row{text-align:right}
 html[dir=rtl] .new,html[dir=rtl] .help,html[dir=rtl] .qbtn b,html[dir=rtl] .qbtn small,html[dir=rtl] #q-now{unicode-bidi:plaintext}
@@ -235,7 +239,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.44</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.45</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -269,12 +273,12 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
-<div class="keys" data-i18n="keysHint">WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one.</div>
+<div class="keys" data-i18n="keysLine">WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bertopia 2.5.44: holding right click no longer opens doors and boxes, and the grass is clear of loose wool.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bertopia 2.5.45: the Bag tile label fits on a phone, and the keys help line fits and fades after your first steps, and right-click places right away again.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -359,7 +363,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.44" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.44" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.45" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.45" defer></script>
 </body>
 </html>

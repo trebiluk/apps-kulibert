@@ -26,8 +26,9 @@ Updated Tue Oct 6 2026, 3:35 PM ET (Debugzy: 2.5.44 proof PASS; 2.5.45 polish br
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
 ## 2. Open fixes (from proof/bertopia-2.5.44/RESULT.md) -> brief `briefs/fixq/bertopia-2545-polish.md` = **BT 2.5.45**, before basics-1
-- [ ] **Bag tile label (P2):** at 360/412 upright the 52 px slot cuts the label ("Bag" reads "Baq"). Fit icon + label in all 8 languages.
-- [ ] **Keys help line (P2):** fits on screen at 1366 and 915 (mouse) without clipping or covering the hotbar/chip/hint; fades after the first 3 movement key presses; no new storage key.
+- [x] **Bag tile label (P2):** at 360/412 upright the 52 px slot cuts the label ("Bag" reads "Baq"). Fit icon + label in all 8 languages.
+- [x] **Keys help line (P2):** fits on screen at 1366 and 915 (mouse) without clipping or covering the hotbar/chip/hint; fades after the first 3 movement key presses; no new storage key.
+- [x] **Right-click place:** a non-interactive block places on pointerdown again. Doors, Box, Oven, Workbench, Vend, Bunk and Shop still open only on a fresh release. Held repeat still never opens them.
 - [x] **2.5.44 done:** desktop smoke truth (right button, exit 0, no element.click), Use only on a fresh still press (`canUse`), no loose wool in new chunks (ids 13-16, Store wool, Bunk recipe kept).
 - [x] **2.5.43 done:** touch HUD never covers itself (5 sizes), upright 9 slots + Bag, teacher gate via `HubStaffAuth.isUnlocked()`, tour/help/What's new words.
 
@@ -49,7 +50,7 @@ Updated Tue Oct 6 2026, 3:35 PM ET (Debugzy: 2.5.44 proof PASS; 2.5.45 polish br
 |---|---|---|---|
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
-| 0c | 2.5.45 | **bertopia-2545-polish.md:** Bag tile label fits on phones; keys help line fits and fades after 3 moves | [ ] |
+| 0c | 2.5.45 | **bertopia-2545-polish.md:** Bag tile label fits on phones; keys help line fits and fades after 3 moves; right-click places on press | [x] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
 | 1 | 2.5.46 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
 | 2 | 2.5.47 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
