@@ -96,5 +96,5 @@
 | – | **Platinum Cog** `cogPlatinum` | A very rare coin. | Move-item | – | ladder-1 | – | dex:cogPlatinum | cogPlatinum |
 | – | **Iridium Cog** `cogIridium` | The legendary coin. | Move-item | – | world-3 | – | dex:cogIridium | cogIridium |
 | – | **Flower** `flower` | 1 Flower makes 2 Paint dabs. | Move-item | – | world-2 | Bees carry pollen from flower to flower. | dex:flower | flower |
-| – | **Apple** `apple` | A harvest fruit. | Move-item | – | holidays-1 | – | dex:apple | apple |
+| – | **Apple** `apple` | An autumn fruit. | Move-item | – | holidays-1 | – | dex:apple | apple |
 | – | **Carving Scoop** `carvingTool` | A safe scoop, not a knife. Use it on a Pumpkin to carve a face. | Use (on a Pumpkin) | 2 Stick + 1 Stone → 1 Carving Scoop (workbench) | holidays-1 | – | dex:carvingTool | carvingTool |

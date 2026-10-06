@@ -2606,7 +2606,7 @@
    "name": {
     "en": "Apple Crate"
    },
-   "desc": "A wooden crate of harvest apples.",
+   "desc": "A wooden crate of autumn apples.",
    "verbs": [
     "Mine",
     "Place"
@@ -2714,9 +2714,9 @@
    "key": "skullPatternTile",
    "type": "block",
    "name": {
-    "en": "Sugar-Skull Pattern Tile"
+    "en": "Marigold Pattern Tile"
    },
-   "desc": "A tile with a colorful sugar-skull pattern.",
+   "desc": "A tile with a bright marigold flower pattern.",
    "verbs": [
     "Mine",
     "Place"
@@ -3684,7 +3684,7 @@
    "key": "harvestLantern",
    "type": "block",
    "name": {
-    "en": "Harvest Lantern"
+    "en": "Autumn Lantern"
    },
    "desc": "A hanging lantern with an LED glow, never a flame.",
    "verbs": [
@@ -5850,7 +5850,7 @@
    "name": {
     "en": "Apple"
    },
-   "desc": "A harvest fruit.",
+   "desc": "An autumn fruit.",
    "verbs": [
     "Move-item"
    ],

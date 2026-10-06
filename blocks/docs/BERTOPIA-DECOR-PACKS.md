@@ -3,9 +3,9 @@ Diego (Oct 6): spooky seats, custom jack-o'-lantern carving (maybe built on Logo
 Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly-spooky). Curriculum's check (`CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md`) is adopted in full; it changes `fixq/bertopia-holidays-1.md` as below.
 
 ## Pack model (Curriculum's recommendation, adopted 7:10 AM)
-- **Default packs are seasonal, never holiday-themed:** **Autumn** (hay, gourds, pumpkins, scarecrow, leaf piles, carving) and **Winter** (snow décor + Winter Lights, also called String Lights).
+- **Default packs are seasonal, never holiday-themed:** **Autumn** (hay, gourds, pumpkins, scarecrow, leaf piles, carving) and **Winter** (snow décor + String lights, shown as "Winter lights" in the Winter pack).
 - **Spooky** is its own pack. The teacher can turn it on or off; on Auto it is live only **Oct 15 – Nov 1**. Friendly props only, no gore, no Day of the Dead skulls.
-- **Lights and lanterns are normal building parts all year** (String Lights, Jack-o'-Lantern once carved, Moon Lantern), so kids light a build for whatever they celebrate.
+- **Lights and lanterns are normal building parts all year** (String Lights, Jack-o'-Lantern once carved, Moon Lantern as a full moon), so kids light a build for whatever they celebrate.
 - No religious symbols in any pack. No contest themed on one holiday.
 - Hub Master Control: one row per pack, **On / Off / Auto by date**. Turning a pack off removes it from the palette and craft list only; **placed builds never disappear** and unlocks are kept.
 - The 14 culture packs in holidays-1 stay as teacher-optional extras (off by default) with their "About" cards; Debugzy updates holidays-1 to this model.
@@ -39,21 +39,21 @@ Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly
 | Hay Bale | Autumn | 4 Corn | **seat**; stacks like a block; halves fall damage like Leaves |
 | Pumpkin | Autumn | grows from Pumpkin Seeds | **carvable** (§3); seeds: 4 in the Autumn unlock gift, and 2 back from every carving |
 | Pumpkin Stool | Spooky | 1 Pumpkin + 2 Sticks | **seat**, carved face shows |
-| Spooky Bench | Spooky | 3 Planks + 2 Iron Nugget (or 2 Sticks before ores) | **seat** (2), bat cut-outs in the backrest |
+| Spooky Bench | Spooky | 3 Planks + 2 Sticks | **seat** (2), bat cut-outs in the backrest |
 | Gourd Pile, Corn Stalks, Apple Crate | Autumn | 1–2 basic items each | decor |
 | Leaf Pile | Autumn | 4 Leaves | soft landing (halves fall damage); jump in = small leaf puff, none with Motion off |
 | Scarecrow | Autumn | 2 Hay Bale + 1 Cloth + 1 Pumpkin | decor in Autumn; after Hawkbots ship, the powered **Robo-Scarecrow** is the working version (WORLD-PLAN §M) |
 | Friendly Ghost Light | Spooky | 1 Cloth + 1 Glow Pebble | soft light r4, gently bobs only with Motion on |
-| Cobweb Deco, Bat Bunting, Black Cat Statue, Moon Lantern | Spooky | 1–2 basics each | decor; cobweb never slows players (decor only) |
+| Cobweb Deco, Bat Bunting, Black Cat Statue, Moon Lantern (full round moon) | Spooky | 1–2 basics each | decor; cobweb never slows players (decor only) |
 
 ## 3. Pumpkin carving (my rules for the carve panel)
-**Tool:** the **Carving Scoop** (2 Sticks + 1 Iron Nugget; before ores 2 Sticks + 1 Stone). Part of Autumn, so carving is an autumn craft, not a Halloween one; kids carve any face they like. A scoop, not a knife: safe-tool rule.
+**Tool:** the **Carving Scoop** (2 Sticks + 1 Stone). Part of Autumn, so carving is an autumn craft, not a Halloween one; kids carve any face they like. A scoop, not a knife: safe-tool rule.
 **Start:** hold the Scoop and Use a Pumpkin (placed or in the Bag). The face you tapped is the one you carve. Opens the Carve panel (one step back to close).
 
 **Panel (built on LogoLab's Mark Builder grid + stamps; reuse its code, our art):**
 - **Grid:** 12×12 cells on the pumpkin face. Drag or tap to carve; tap a carved cell to fill it back. At 412 upright the grid fills the width (~30 px cells); drawing canvases are exempt from the 44 px rule, but every button is ≥48 px. **Big Cells** toggle switches to 8×8 for motor access.
 - **Mirror** (on by default): left half copies to the right, so a first-try face looks good. One tap turns it off.
-- **Stamps** (from Mark Builder, picked from a 6-tile row): round eye, triangle eye, smile, toothy grin, star, moon. No letter stamps (keeps carvings as pictures; freehand still allowed).
+- **Stamps** (from Mark Builder, picked from a 6-tile row): round eye, triangle eye, smile, wide grin (an open smile, no teeth), star, full moon (round, never a crescent). No letter stamps (keeps carvings as pictures; freehand still allowed).
 - **Undo** (20 steps), **Clear**, **Done ✓**. Done is the only way to save; ✕ asks "Keep your carving?" Keep / Throw away.
 - **My Carvings:** the last 12 faces are saved; "Use saved" puts one on a new pumpkin in 1 tap.
 - **Data:** a 144-bit mask (18 bytes) per carved face, saved with the block and inside Blueprints. Up to 4 faces per pumpkin (one per side).
@@ -63,7 +63,7 @@ Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly
 - **Mastery hook:** none. Art isn't scored, and no holiday-themed contests.
 
 ## 4. String lights
-**Winter Lights** (also called String Lights): a normal building part all year; the Winter pack only adds snow-tipped and icicle bulb styles. Colours: warm white, amber, red, green, blue, teal; plus a Rainbow string.
+**String lights** (shown as "Winter lights" in the Winter pack): a normal building part all year; the Winter pack only adds snow-tipped and icicle bulb styles. Colours: warm white, amber, red, green, blue, teal; plus a Rainbow string.
 - **Place (2 taps, no drag):** hold String Lights, Use a block face = start; Use a second face within 12 blocks = the string drapes between with a gentle sag. ✕ chip cancels after the first tap. Use on a string = Options (colour, pattern, Pick up).
 - **Power (the tech lesson, phased):**
   - Before circuits ship: every string has a built-in battery and lights at night automatically.
@@ -73,10 +73,10 @@ Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly
 - Count as lit blocks under the basics-1 light rule.
 
 ## 5. Recipe sanity
-Everything here costs Planks, Sticks, Corn, Leaves, Cloth, Glow Pebble or 1–2 Iron Nuggets, so a kid can furnish a café on day one. No Cogs ever. Before ores ship, every Iron Nugget input has a wood/stone stand-in (listed above).
+Everything here costs Planks, Sticks, Stone, Corn, Leaves, Cloth or Glow Pebble, so a kid can furnish a café on day one and nothing waits on ores. No Iron Nugget item (decided 7:12 AM, answer to G-Q19). No Cogs ever.
 
 ## 6. Assets
-- **Models (box-primitive style):** Chair, Stool, Bench, Table, Long Table; Hay Bale, Pumpkin (uncarved + 4 face-mask overlay), Pumpkin Stool, Spooky Bench, Gourd Pile, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow, Ghost Light, Cobweb, Bat Bunting, Black Cat Statue, Moon Lantern, String Lights bulb + wire.
+- **Models (box-primitive style):** Chair, Stool, Bench, Table, Long Table; Hay Bale, Pumpkin (uncarved + 4 face-mask overlay), Pumpkin Stool, Spooky Bench, Gourd Pile, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow, Ghost Light, Cobweb, Bat Bunting, Black Cat Statue, Moon Lantern (full moon), String lights bulb + wire.
 - **Icons:** each item above + Carving Scoop, Pumpkin Seeds, Pumpkin Mush, Pumpkin Pie.
 - **Carve panel:** Mark Builder grid reskinned in Bertopia teal, 6 stamp icons, Mirror / Big Cells / Undo / Clear / Done icons.
 - **Sounds (each with a visual):** sit creak, scoop scrape, lantern "on" chime, light click.
@@ -93,3 +93,5 @@ Everything here costs Planks, Sticks, Corn, Leaves, Cloth, Glow Pebble or 1–2 
 9. Every new name shows in the chosen language; ar and fa-AF RTL in the carve panel.
 10. 1366 at CPU 4× throttle: a plot with 64 strings and 20 lit pumpkins holds ≥30 fps.
 DONE only when every test passes on the live site. Never fake a DONE.
+
+GameMaster 2026-10-06 7:20 AM: per StyleBot's look rules (`STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md`) and Curriculum's names: pack names are Autumn, Spooky, Winter and String lights only (no Harvest, Spooky-Cute, Diwali or Winter Lights packs); the Toothy grin stamp is now Wide grin (open smile, no teeth); the Moon stamp and Moon Lantern are full moons.

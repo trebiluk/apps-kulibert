@@ -57,17 +57,16 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
 - Starter calendar (draft, for Diego's review before ship):
   | Window | Pack | Sample items |
   |---|---|---|
-  | Sept–Nov | Harvest | pumpkins, corn, leaf piles, apple crates |
-  | late Oct | Spooky-Cute | jack-o'-lantern, friendly ghost lights, cobweb deco |
-  | Oct 31–Nov 2 | Día de los Muertos | marigolds, papel picado banners, sugar-skull pattern tiles |
-  | Oct/Nov (dates vary) | Diwali | diya lights, rangoli floor tiles, string lights |
-  | Dec | Winter Lights | snow, string lights, evergreen tree, snowman |
+  | Sept–Nov | Autumn | pumpkins, corn, leaf piles, apple crates |
+  | Oct 15–Nov 1 (Auto) | Spooky | jack-o'-lantern, friendly ghost lights, cobweb deco, full-moon lantern |
+  | Oct 31–Nov 2 | Día de los Muertos | marigolds, papel picado banners |
+  | Dec | Winter | snow, evergreen tree, snowman, Winter lights bulb styles (String lights are a normal part all year) |
   | Dec (dates vary) | Hanukkah | dreidels, blue-and-white lights, gelt coins deco |
   | Dec 26–Jan 1 | Kwanzaa | red/black/green banners, woven mat, harvest basket |
   | Jan/Feb (dates vary) | Lunar New Year | red lanterns, paper dragon, gold coin deco, firework lights |
   | Feb | Kindness Week | hearts, cards, flowers |
   | Mar (dates vary) | Holi | color-splash paint blocks (ties to Paint) |
-  | Mar (dates vary) | Ramadan / Eid | crescent and star lanterns, fanous lights, date-palm planters |
+  | Mar (dates vary) | Ramadan / Eid | fanous lights, date-palm planters |
   | Mar 20 | Nowruz | spring flowers, sprouting greens, goldfish bowl, painted eggs |
   | Apr 22 | Earth Day | trees, solar flowers, recycle bins |
   | Jun | Summer | beach umbrella, sandcastle, ice-cream cart |
@@ -75,3 +74,5 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
 
 
 GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.
+
+GameMaster 2026-10-06 7:20 AM: §7 calendar renamed to Curriculum's packs (Autumn, Spooky, Winter; String lights are a year-round part). Removed: the Diwali row, "crescent and star lanterns" (no-religious-symbols rule) and "sugar-skull pattern tiles" (Curriculum: no Day of the Dead skulls). Pack model and Hub toggles: `BERTOPIA-DECOR-PACKS.md`.

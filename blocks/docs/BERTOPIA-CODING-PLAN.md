@@ -11,7 +11,7 @@ Debugzy (owner), 2026-10-06, written 6:45–7:30 AM ET. It starts from the **tru
 > Diego, 6:55 AM: "Robust everything eventually, might as well prepare for the dream with details." The near-term queue (§E) is **unchanged** by the long-range detail (§S). The detail only tells Build where today's code has to leave room.
 
 **Companion files:**
-- Asset pack: `/workspace/shared/bertopia-assets/`, committed to **apps-kulibert branch `bertopia-assets`** at `bloxbert-src/assets/pack/`. Not deployed.
+- Asset pack: `/workspace/shared/bertopia-assets/`, committed to **apps-kulibert branch `bertopia-assets`** at `bloxbert-src/assets/pack/`. Not deployed. Branch commits: a5891408 (v1) → 6283b9a5 (REGISTRY + builders) → **9e252042** (decor aligned to DECOR-PACKS). Docs on main: **0706ecb6**.
 - Single source of truth for names, recipes and facts: `blocks/docs/wiki/REGISTRY.json`, plus the wiki (§0).
 - Tech-machine starter list and crazy goals: [`BERTOPIA-TEKKIT-FEATURES.md`](BERTOPIA-TEKKIT-FEATURES.md). It's a starter for GameMaster, who owns the final ranking and goals.
 - Specs (newest wins; **GM-ANSWERS-2026-10-06 wins over all older lines**): CORE-MECHANICS, WORLDS, WORLD-1, WORLD-2, ORE-TABLE, ELEMENT-ECONOMY, STORAGE-SPEC, EFFECTS-SPEC, FUN-ITEMS-SPEC, PROGRESSION-PLAN, and HIGHSCORE-CHASE-PLAN.
@@ -383,20 +383,24 @@ Each stage lists:
 - **Slots:** music-1 → music-2.
 
 ### S13 Holiday and seasonal packs (holidays-1, holidays-2, holidays-3…)
-**Now specified by GameMaster in [BERTOPIA-DECOR-PACKS.md](BERTOPIA-DECOR-PACKS.md) (7:05 AM) and checked by Curriculum ([CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md](CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md)). StyleBot still sets the look.** Those files win over this section.
+**Now specified by GameMaster in [BERTOPIA-DECOR-PACKS.md](BERTOPIA-DECOR-PACKS.md) (7:05 AM) and checked by Curriculum ([CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md](CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md)); look set by StyleBot ([STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md](STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md)).** Those files win over this section.
+**Packs (resolved 7:20 AM, G-Q12/D7 naming → season names):** Autumn, Spooky, Winter and String lights (strings show as "Winter lights" in the Winter pack). Dropped: Harvest/Spooky-Cute names, Diwali, crescent-and-star lanterns, sugar-skull tiles.
+- **Look rules (StyleBot):** every light capped at `#FFF1D6`, never `#FFFFFF`; halos use normal alpha blend, never additive; lit pumpkins steady (no flicker); twinkle = 70–100% brightness over a 4–7 s cycle, no flash; Motion off = all lights steady. **Caps within 32 blocks:** 48 animated bulbs, 6 ghost lights, 160 halos (beyond the cap, render steady / no halo).
+- **Stamps:** round eye, triangle eye, smile, **Wide grin** (open smile, no teeth), star, **full moon**; Moon Lantern is a full round moon.
+
 Defaults: every pack is optional with a teacher toggle (Hub row per pack: On / Off / Auto by date); lights are named "String lights" / **"Winter lights"**, never "Christmas lights"; no religious symbols; placed items never vanish when a pack turns off.
-- **Skill:** light and energy (LED strings wired in parallel on the power rules); design and pattern (carving, rangoli tiles); cultural awareness (About cards). **Sandbox:** decorate any time once unlocked (packs are kept forever). **Mastery:** none on boards (art isn't scored); teacher Carve-off through the contest module, off by default.
-- **Autumn set** (DECOR-PACKS §2), all placed with Place: Hay Bale (seat), Pumpkin, Gourd Pile, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow; Spooky-Cute: Friendly Ghost Light, Cobweb, Bat Bunting, Black Cat Statue, Moon Lantern, Pumpkin Stool and Spooky Bench (seats). **No skeletons or tombstones**, so the Spooky Sign (id 166) was redrawn as a wooden sign with a bat cut-out.
-- **Pumpkin carving** (DECOR-PACKS §3): hold the **Carving Scoop** and Use a Pumpkin → Carve panel. 12×12 grid (Big Cells 8×8), Mirror on by default, 6 stamps, Undo 20, Clear, Done; My Carvings keeps the last 12. Face = 144-bit mask (18 bytes) per side, up to 4 sides, in `blockState[pos].faces[side]` and inside Blueprints. Lit = Jack-o'-Lantern, radius 6, warm amber, no flicker.
+- **Skill:** light and energy (LED strings wired in parallel on the power rules); design and pattern (carving, pattern tiles); cultural awareness (About cards). **Sandbox:** decorate any time once unlocked (packs are kept forever). **Mastery:** none on boards (art isn't scored); teacher Carve-off through the contest module, off by default.
+- **Autumn set** (DECOR-PACKS §2), all placed with Place: Hay Bale (seat), Pumpkin, Gourd Pile, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow; Spooky: Friendly Ghost Light, Cobweb, Bat Bunting, Black Cat Statue, Moon Lantern, Pumpkin Stool and Spooky Bench (seats). **No skeletons or tombstones**, so the Spooky Sign (id 166) was redrawn as a wooden sign with a bat cut-out.
+- **Pumpkin carving** (DECOR-PACKS §3): hold the **Carving Scoop** and Use a Pumpkin → Carve panel. 12×12 grid (Big Cells 8×8), Mirror on by default, 6 stamps, Undo 20, Clear, Done; My Carvings keeps the last 12. Face = 144-bit mask (18 bytes) per side, up to 4 sides, in `blockState[pos].faces[side]` and inside Blueprints. Lit = Jack-o'-Lantern, radius 6, warm amber, steady (no flicker).
   - It reuses **LogoLab's Mark Builder grid and stamps**. LogoLab is a separate repo, `trebiluk/logolab` (React + `fabric` ^7.4.0, MIT per its NOTICE; LogoLab itself is "classroom software, Copyright Solvay MS Tech Ed"). Bertopia is vanilla JS, so port the grid/stamp logic (same owner, same school) and keep fabric's MIT notice if any fabric code is lazy-loaded; a 12×12 grid needs no fabric at all.
-- **String lights** (DECOR-PACKS §4): 2-tap place with sag; built-in battery until circuits, then Connect; Steady / Slow Fade 4 s / Slow Chase 0.5 s with fade (Motion off = Steady); one glow per string, no per-bulb lights; cap 64 strings × 12 bulbs per plot.
+- **String lights** (DECOR-PACKS §4): 2-tap place with sag; built-in battery until circuits, then Connect; Steady / Twinkle (70–100%, 4–7 s) / Slow Chase with fade, all per StyleBot (Motion off = Steady); one glow per string, no per-bulb lights; cap 64 strings × 12 bulbs per plot.
 - **Furniture seats** are base game (S1, storage-2b): Chair, Stool, Bench, Table, Long Table; sit = Use, Move or Jump stands; "Taken" chip; Table displays 1 item.
 - **Data:** `calendar.json [{pack, window, items}]` (school-editable); `season = {pack: {unlockedAt, teacherOn}}`.
 - **Save:** `bertopia-season-v1` and the server teacher toggle later; `blockState[pos].faces/mode`; `carvings.recent[12]`.
 - **Engine:** `seasonal/packs.js` (unlock on date, kept forever), `carve.js`; lights through `lights.js` (twinkle = brightness ramp, Motion-aware).
-- **Assets:** ✅ pumpkin, jackOLantern, carvedPumpkin, cornStalks, leafPile, appleCrate, ghostLight, cobweb, marigold, papelPicado, skullPatternTile, diyaLight, rangoliTile, stringLights, hayBale, gourds, scarecrow, batsDeco, spookySign, harvestLantern, carvingTool, winterLights, wreath, giftBox, snowPal, ornamentTile, stripeBlock, `carve`, `lights_on`, `sting_holiday`, `ui:pumpkin`, `ui:carve`, `ui:string_lights`, `ui:gift`. ◻ winterLightsPattern, icicleDeco, snowGlobe, lanternFestival, springBlossom, heartGarland, newYearBanner, carvePanelStencils.
+- **Assets:** ✅ pumpkin, jackOLantern, carvedPumpkin, cornStalks, leafPile, appleCrate, ghostLight, cobweb, marigold, papelPicado, skullPatternTile (now Marigold Pattern Tile), diyaLight/rangoliTile (Diwali dropped; unassigned), stringLights, hayBale, gourds, scarecrow, batsDeco, spookySign, harvestLantern (now "Autumn Lantern"), carvingTool, winterLights, wreath, giftBox, snowPal, ornamentTile, stripeBlock, `carve`, `lights_on`, `sting_holiday`, `ui:pumpkin`, `ui:carve`, `ui:string_lights`, `ui:gift`. ◻ winterLightsPattern, icicleDeco, snowGlobe, lanternFestival, springBlossom, heartGarland, newYearBanner, carvePanelStencils.
 - **Verbs:** Place, Use (carve; light mode), Open (carve panel), Connect (lights), Paint.
-- **Accepts:** a pack is off when the teacher toggle is off; a carved face survives reload and shows lit at night; twinkle has no flash and is steady with Motion off; no pure #FFFFFF pixel; About cards exist for every pack.
+- **Accepts:** a pack is off when the teacher toggle is off; a carved face survives reload and shows lit at night; twinkle has no flash and is steady with Motion off; no pixel above #FFF1D6 and 0 #FFFFFF; halo/bulb/ghost caps hold within 32 blocks; About cards exist for every pack.
 - **Slots:** holidays-1 (autumn packs + carving) → holidays-2 (Winter Lights, Dec) → holidays-3+ (the rest of the FUN-ITEMS §7 calendar).
 
 ### S14 Bertodex (first-find chip in world-1a; full dex in world-3b)
@@ -469,7 +473,7 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 | World-1 regeneration of unedited chunks | A kid's "found" ore spot changes | Only unedited, unclaimed chunks; ore only in natural stone; announced in What's new |
 | Sims on Chromebooks | Heat and battery drain | 10 Hz, catch-up math, loaded chunks only |
 | Concurrent edits to briefs and specs (GameMaster, audit executor) | Lost edits | Check mtime before patching; `.bak` copies; docs commits rebase on origin/main |
-| Holiday timing | holidays-1 at 2.6.15 likely lands after Oct 31 (and Diwali, Nov 8) | G-Q12 |
+| Holiday timing | holidays-1 at 2.6.15 likely lands after Oct 31 | G-Q12 |
 | Build chats faking DONE / shrinking smoke | False passes | §F baseline guard + the audit executor's live re-run |
 
 ### Open questions for GameMaster
@@ -489,7 +493,7 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 11. **G-Q11** New-action checks:
     - Carving, seats and String-lights placing are answered by DECOR-PACKS (Use with the Scoop; Use = sit; 2-tap place). Remaining: the String-lights 2-tap place needs a "pending first point" state in Use; confirm it's not a new verb.
     - Exo-Suit glide (hold Jump in air) and Mining Beam reach 6: see TEKKIT §3.
-12. **G-Q12 Holiday timing:** holidays-1 (autumn and carving) is #19, so it probably misses Oct 31. Options: (a) keep the queue (Diego said the near-term order stays); (b) a tiny "autumn decor only" brief after 260b. Diego decides, because it changes the queue.
+12. **G-Q12 Holiday timing:** (pack naming part RESOLVED 2026-10-06: season names.) Timing still open: holidays-1 (autumn and carving) is #19, so it probably misses Oct 31. Options: (a) keep the queue (Diego said the near-term order stays); (b) a tiny "autumn decor only" brief after 260b. Diego decides, because it changes the queue.
 13. **G-Q13** Doors break by hold today (`HAND_S` 1.5). CORE-MECHANICS says interactive blocks don't break on hold. Is removal through long-press Options → "Pick up" (like the Charger)?
 14. **G-Q14** Glow Moss gift before the Overflow Box exists (basics-2 ships before 260): basics-2 puts it in Lost & Found. OK?
 15. **G-Q15** Lights: 4 real lights (2 in Lite) instead of 8 (basics-1 3d, basics-2 1c).
@@ -505,7 +509,7 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 4. **D4** The Teacher flag from TechWorks (WORLDS): the server wiring waits for his OK. HubStaffAuth is the stopgap.
 5. **D5** Review the holiday calendar before holidays-1 ships (FUN-ITEMS §7 says "for Diego's review"), plus the culture check by Curriculum.
 6. **D6** `wallet.showCountries` default (ELEMENT-ECONOMY §8).
-7. **D7 Holiday policy:** Curriculum recommends seasons first (Autumn, Spooky, Winter) with no holiday-named default packs; holidays-1 still lists the Oct 4 packs (Harvest, Spooky-Cute, Día de los Muertos, Diwali). Pick one before holidays-1 is pasted; renaming is JSON-only. Curriculum also suggests checking the district's holiday-observance policy.
+7. **D7 Holiday policy: RESOLVED 2026-10-06 → season names (Autumn, Spooky, Winter, String lights), per GameMaster's change notes.** History: Curriculum recommends seasons first (Autumn, Spooky, Winter) with no holiday-named default packs; holidays-1 still lists the Oct 4 packs (Harvest, Spooky-Cute, Día de los Muertos, Diwali). Pick one before holidays-1 is pasted; renaming is JSON-only. Curriculum also suggests checking the district's holiday-observance policy.
 
 ---
 

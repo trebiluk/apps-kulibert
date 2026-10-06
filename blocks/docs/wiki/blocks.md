@@ -52,12 +52,12 @@
 | 109 | **Jack-o'-Lantern** `jackOLantern` | A carved pumpkin with an LED inside, never a flame. | Mine, Place | – | holidays-1 | – | dex:jackOLantern | jack_front |
 | 110 | **Corn Stalks** `cornStalks` | Dried corn stalks tied in a bundle. | Mine, Place | – | holidays-1 | – | dex:cornStalks | corn_stalks |
 | 111 | **Leaf Pile** `leafPile` | Autumn leaves raked into a pile. | Mine, Place | – | holidays-1 | – | dex:leafPile | leaf_pile |
-| 112 | **Apple Crate** `appleCrate` | A wooden crate of harvest apples. | Mine, Place | – | holidays-1 | – | dex:appleCrate | apple_crate_top |
+| 112 | **Apple Crate** `appleCrate` | A wooden crate of autumn apples. | Mine, Place | – | holidays-1 | – | dex:appleCrate | apple_crate_top |
 | 113 | **Friendly Ghost Light** `ghostLight` | A soft smiling ghost-shaped light. | Mine, Place | – | holidays-1 | – | dex:ghostLight | block:ghostLight |
 | 114 | **Cobweb Deco** `cobweb` | A fake cobweb for decoration. | Mine, Place | – | holidays-1 | – | dex:cobweb | cobweb |
 | 115 | **Marigolds** `marigold` | Bright orange flowers used for Dia de los Muertos. | Mine, Place | – | holidays-1 | – | dex:marigold | marigold |
 | 116 | **Papel Picado Banner** `papelPicado` | Cut-paper banners in bright colors. | Mine, Place | – | holidays-1 | – | dex:papelPicado | papel_picado |
-| 117 | **Sugar-Skull Pattern Tile** `skullPatternTile` | A tile with a colorful sugar-skull pattern. | Mine, Place | – | holidays-1 | – | dex:skullPatternTile | tile_skull_pattern |
+| 117 | **Marigold Pattern Tile** `skullPatternTile` | A tile with a bright marigold flower pattern. | Mine, Place | – | holidays-1 | – | dex:skullPatternTile | tile_skull_pattern |
 | 118 | **Diya Light** `diyaLight` | A small clay lamp shape with an LED glow, never a flame. | Mine, Place | – | holidays-1 | – | dex:diyaLight | block:diyaLight |
 | 119 | **Rangoli Floor Tile** `rangoliTile` | A floor tile with a colorful rangoli pattern. | Mine, Place | – | holidays-1 | – | dex:rangoliTile | tile_rangoli |
 | 120 | **String Lights** `stringLights` | A strand of small LED lights. | Place, Connect | – | holidays-1 | – | dex:stringLights | string_lights |
@@ -94,7 +94,7 @@
 | 158 | **Bat Garland** `batsDeco` | Paper bats. Real bats eat lots of insects at night. | Mine, Place | – | holidays-1 | One bat can eat hundreds of insects in one night. | dex:batsDeco | bats_deco |
 | 159 | **Carved Pumpkin** `carvedPumpkin` | A pumpkin with a face you carved yourself. An LED inside makes it glow. | Place, Use | – | holidays-1 | – | dex:carvedPumpkin | carved_front_blank |
 | 166 | **Spooky Sign** `spookySign` | A wooden sign with a bat cut-out. Write a friendly message on it. | Mine, Place | – | holidays-1 | – | dex:spookySign | block:spookySign |
-| 167 | **Harvest Lantern** `harvestLantern` | A hanging lantern with an LED glow, never a flame. | Mine, Place | – | holidays-1 | – | dex:harvestLantern | block:harvestLantern |
+| 167 | **Autumn Lantern** `harvestLantern` | A hanging lantern with an LED glow, never a flame. | Mine, Place | – | holidays-1 | – | dex:harvestLantern | block:harvestLantern |
 | 168 | **Chair** `chair` | A seat for a table. Use it to sit; move to get up. | Place, Use (sit; Move = stand) | – | storage-2 | – | dex:chair | block:chair |
 | 169 | **Stool** `stool` | A seat with no back. Use it to sit; move to get up. | Place, Use (sit; Move = stand) | – | storage-2 | – | dex:stool | block:stool |
 | 170 | **Bench** `bench` | A long seat for 2. Use it to sit; move to get up. | Place, Use (sit; Move = stand) | – | storage-2 | – | dex:bench | block:bench |
