@@ -1,13 +1,13 @@
 # Alice's Prairie FIX-LIST
 Read this first on every Alice's Prairie ship. In the same commit, tick `[x]` on each item you finished, and put your version and sha next to it. Proof updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 8:00 PM ET from the AP 1.0.6 live proof (Debugzy). AP 1.0.7 is now a fix cut, so the overhaul queue moves up one version.
+Updated Tue Oct 6 2026, 7:45 PM ET from the AP 1.0.6 live proof (Debugzy). AP 1.0.7 is now a fix cut, so the overhaul queue moves up one version.
 
 ## 1. Live now
 - Live title: **Alice's Prairie** (`/alice/` on apps.kulibert.net).
 - Chip: **AP 1.0.6**. Every screen fits. Pixel lookout art. Less motion, Lite, Sound, and Music in Settings. Steady round clock. Six looks, captions, Relaxed speed, Class / Daily / Endless, desk high scores, and class time.
 - 1.0.5 was settings and the six looks. 1.0.4 was the seed and Home-card bugfix.
 - Live = main: commit `42404d9`, and all 22 `alice/` files are byte-identical live. Hub chip AP 1.0.6.
-- **Proof verdict: FAIL (P1)**, Oct 6 2026, 7:55 PM ET, `proof/alice-1.0.6/RESULT.md` on Debugzy's box. The fit holds on home, picker and Lookout at 5 sizes in en and ar, with 0 errors. Rotate, Less motion, Lite, the clock and the pixels all pass. Cards fail: they don't cover the controls or pause the round. The repo's `proof/alice-1.0.6/RESULT.md` is the builder's self-check, and it never opened a card.
+- **Proof verdict: FAIL (P1)**, Oct 6 2026, 7:40 PM ET, `proof/alice-1.0.6/RESULT.md` on Debugzy's box. The fit holds on home, picker and Lookout at 5 sizes in en and ar, with 0 errors. Rotate, Less motion, Lite, the clock and the pixels all pass. Cards fail: they don't cover the controls or pause the round. The repo's `proof/alice-1.0.6/RESULT.md` is the builder's self-check, and it never opened a card.
 
 ## 2. Open fixes (FAIL rows from the latest proof)
 - [ ] **P1 A card doesn't own the screen.** The DOM tiles and alarms stay live and visible around Menu, Settings and results. At home, a tap on the Dig edge opens "Coming soon". At 915x412 and 844x390 the alarm rails poke through the results card, and a tap with Settings open fires an alarm. Plain lines are click-through. → 1.0.7 item 1.
@@ -54,7 +54,7 @@ Plans and reference:
 - Commit author: trebiluk <6373031+trebiluk@users.noreply.github.com>. Push to main and reply with the sha.
 
 ## 5. Proof changelog
-- `alice-1.0.6`: **FAIL (P1)**, Oct 6, 7:55 PM ET (Debugzy, live, real taps). Cards don't cover the controls behind them or pause the round. Pass: the fit on home, picker and Lookout (5 sizes, en and ar, 0 errors), rotating 915 → 412 → 915 mid-round, Less motion, Lite → Canvas, the hidden-tab clock, the pixel rebuild, bands-check, and sim-check `0f5b63db7039`. All of 1.0.5's fit P1s are fixed.
+- `alice-1.0.6`: **FAIL (P1)**, Oct 6, 7:40 PM ET (Debugzy, live, real taps). Cards don't cover the controls behind them or pause the round. Pass: the fit on home, picker and Lookout (5 sizes, en and ar, 0 errors), rotating 915 → 412 → 915 mid-round, Less motion, Lite → Canvas, the hidden-tab clock, the pixel rebuild, bands-check, and sim-check `0f5b63db7039`. All of 1.0.5's fit P1s are fixed.
 - `alice-1.0.6` (ship note): every screen fits (en and ar, five sizes), Less motion and Lite, steady clock, pixel cast. Plate AP 1.0.6.
 - `alice-1.0.5`: shipped, local smoke only. One ☰ when the Tech Room bar is up. Settings: six looks, Normal/Relaxed, captions, class time 10/20/40. Lookout picker: Class, Daily, Endless. Results name the round and this desk's best.
 - `alice-1.0.2`: FAIL
