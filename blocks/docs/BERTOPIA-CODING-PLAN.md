@@ -109,7 +109,7 @@ Rule (World Plan §H1): each module has **one interface**, and features plug in 
 | **worlds** | `src/worlds.js` | Game world (Survival) vs Build world (Workshop), the Teacher gate, Publish (later, server) | `worlds.current()`, `worlds.rules()` (energy, limits, instant break) |
 | **dex and progression** | `src/dex/bertodex.js`, `src/progress/{ladder.js, badges.js, stamps.js}`, `src/dailies/{board.js, chasm.js, circuit.js}` | first finds, categories, T1–T7, badges, Dailies, boards client | `dex.find(key)`, `progress.award(id)`, `daily.submit(run)` |
 | **music** | `src/music/{noteblock.js, instruments.js, jukebox.js}` | the note sampler (C4 samples, pitch shift), discs, volume, teacher mute | `music.play(inst, pitch)` |
-| **seasonal** | `src/seasonal/{packs.js, calendar.json, carve.js}` | pack windows, the teacher toggle per pack, carve faces | `season.enabled(pack)` |
+| **seasonal** | `src/seasonal/{pile.js, carve.js}`, `src/data/seasonal.json` | one pile, one teacher switch, carve faces | `season.enabled()` |
 | **furniture** | `src/furniture/{seat.js, table.js}` | sit = Use, stand = Move, palettes via Paint | `seat.sit(player, pos)` |
 | **settings** | `src/settings/prefs.js` | `kulibert-prefs-v1` (lang), Motion (reduced motion), **Slow taps** (`worldPress` 800 ms), **More time to connect** (link 10 s → 20 s), Always day, Brighter nights, quality | `prefs.get(k)`, `prefs.on(k, fn)`. Every feature asks Motion before animating. |
 | **save** | `src/save.js` → `src/save/{schema.js, migrate.js, local-idb.js, server-sync.js}` | doc format, versioned migrations, palette remap, server copy | `save.load(worldId)`, `save.write(doc)`, `save.migrate(doc)` |
@@ -178,7 +178,7 @@ Each migration is pure: `(doc) => doc`. They run in order when loading, are test
 | `bloxlog` | IDB | change log (14 days, 5 MB) |
 | `kulibert-prefs-v1` | localStorage (shared module) | lang and shared prefs (Motion, Slow taps, More time to connect via kw-interact) |
 | `bloxbert-*` | localStorage | quality, fps, look, stick, text, learn, menu-hint, last-world. They're folded into `prefs.js`, keeping old keys as read fallbacks. |
-| `bertopia-season-v1` | localStorage | pack toggles seen (the teacher toggle is server-side later) |
+| `bertopia-season-v1` | localStorage | pile switch seen (the teacher switch is server-side later) |
 
 ---
 
@@ -204,7 +204,7 @@ Reference devices: a low Chromebook (Celeron N4500 class, 4 GB, 1366×768) and a
 ## §E Near-term milestones: the paste order (unchanged by §S)
 **Order** (Flo's approval 6:48 AM; GM-ANSWERS "queue order"):
 - 2.5.43 → basics-1/2/3 → 260 → 260b
-- **world-1 right after 260b, then world-2**
+- **seasonal-early right after 260b** (10:04 AM Oct 6: Autumn/Spooky props, carving, String lights, the one switch, before Oct 31), **then world-1, then world-2**
 - then storage-1 → storage-2 → bot-cargo → storage-4 → storage-5 → storage-3 → storage-6 → fun-1 → music-1 → holidays-1
 
 **Storage-1:** GM-ANSWERS says it "doesn't need ores and can stay where it is". Debugzy reads that as staying directly before storage-2 (its old neighbour). The other reading, storage-1 at 2.6.2 before world-1, is open question G-Q1. If GM picks it, swap the two version numbers; nothing else changes.
@@ -217,7 +217,7 @@ Reference devices: a low Chromebook (Celeron N4500 class, 4 GB, 1366×768) and a
 
 **Proof for every milestone:**
 1. `npm run build:test` → `node tools/smoke.mjs <test url>` (the full Accept map, §F) must PASS.
-2. Screenshots at **phone 412×915 upright, phone 915×412 sideways, Chromebook 1366×768** go in `/workspace/proof/bertopia-<ver>/` with a `RESULT.md`.
+2. StudentTester: sideways phone run at 915×412 + mid-play rotate (portrait→landscape→portrait, no lost state, no covered controls), in every brief. Screenshots at **phone 412×915 upright, phone 915×412 sideways, Chromebook 1366×768** go in `/workspace/proof/bertopia-<ver>/` with a `RESULT.md`.
 3. Live check: `curl -s https://apps.kulibert.net/blocks/ | grep app.js?v=<ver>`, then the audit executor re-runs smoke against the live URL.
 4. Build replies with the commit sha. Debugzy checks that the commit author is trebiluk.
 
@@ -229,22 +229,23 @@ Reference devices: a low Chromebook (Celeron N4500 class, 4 GB, 1366×768) and a
 | 3 | **2.5.46** | `bertopia-basics-3.md` | 1. Solar Panel + LED Glow Strip. 2. Copper Wire you can see. 3. Powered sliding door + lesson. **Patched:** Silicon at the Smelter (1 Quartz + 1 Coal, T5). | `power/grid.js` (new), `lights/lights.js`, `data/*`, `main.js` | A panel, wire and 2 strips stay r3 all night; a broken wire turns the far side gray; a lever opens a metal door through wire. |
 | 4 | **2.6.0** | `bertopia-260.md` | 1. kw-interact in; one Bag panel in 3 shapes. 2. 15 slots and tabs Hotbar / Pockets / Backpack / Bot. 3. Drag plus press, link and timing rules. **Patched:** Flo GO; Build fills es/uk/ru/rw/ti labels (Curriculum checks later), ar and fa-AF from INTERACTION-STYLE §7; overflow keeps using Lost & Found (the Overflow Box block, id 144, is a later rename). | `input/gestures.js` (new, `KWI.GESTURE.worldPress` 500 / Slow taps 800), `panels.js` → kw-interact, `items.js`, `inventory/*` | 20 mixed moves with Bag totals unchanged; tap-to-slot works one-thumb at 412; Slow taps lengthens the world press to 800 ms. |
 | 5 | **2.6.1** | `bertopia-260b.md` | 1. Search, tabs, Recent and Saved, keys. 2. Move stacks without losing a block. 3. Save the arrangement; rotation and RTL. | `panels.js`, `inventory/*`, `strings*.js` | Search finds by name in all 8 languages; the arrangement survives reload and rotation; RTL mirrors correctly. |
-| 6 | **2.6.2** | **`bertopia-world-1a.md`** (new) | 1. Registry rows + v3 save + ore bands (S, B1–B4) with natural-only placement. 2. Glow Moss clumps + first-find chip (Clay moves to world-1b with water). 3. Locked-tile rule `availableFrom`. | `world/gen/{bands,ores}.js` (new), `worldgen.js`, `save/migrate.js` (v3), `data/registry.js`, `dex/bertodex.js` (first-find chip only), `tools/ore-check.mjs` (new, headless) | Headless 20-chunk ore counts within ±25% of WORLD-1; no ore in the town box; edited chunks unchanged; "Not in this world yet" tiles. |
-| 7 | **2.6.3** | **`bertopia-world-1b.md`** (new) | 1. Still water: lakes, one river, a lake within 48 of spawn, carving rules. 2. Swim, breath, safe landings. 3. Pan + Bucket (+ Panned Gravel, Flakes → Nugget). | `world/gen/water.js` (new), `feel.js` (swim 2.2 b/s), `main.js`, `data/*`, `tools/water-check.mjs` | Water never spreads after 10 min of placing and breaking; a lake within 48 blocks in 5/5 seeds; pan odds within ±25% over 1,200 pans (headless). |
-| 8 | **2.6.4** | **`bertopia-world-2a.md`** (new) | 1. Six biomes + blend + old-save safety. 2. Biome name chip + minimap patterns. 3. Snow, Ice (no slip), glare-safe colours, snowfall (Motion off = none). | `world/gen/biomes.js` (new), `worldgen.js`, `save/migrate.js` (v3.1), `ui` chip, minimap, `lights` (snow) | All six biomes within 12 chunks in 5/5 seeds; an old world-1 save near town is unchanged; no #FFFFFF pixel; minimap readable in greyscale. |
-| 9 | **2.6.5** | **`bertopia-world-2b.md`** (new) | 1. The sea (`sea` tag, still water, edge wall). 2. Salt Crust + Salt Pan + unlocks (Cold Glow Vial, Frost Vial). 3. Biome ore rules + crops in biomes + Boundary Clay. | `world/gen/{water,ores,plants}.js`, `stations` (Salt Pan), `data/*`, `tools/ore-check.mjs` | Salt Pan makes 1 Salt per 4 daylight minutes beside the sea and shows "Needs seawater" elsewhere; platinum only in Emberdeep B4; Boundary Clay at y −24 under Tidewell, not under Frostspire. |
-| 10 | 2.6.6 | `bertopia-storage-1.md` | Backpacks; shelves, Box, Double Box, Locker; furniture. | `inventory/*`, `data/*` | as in the brief |
-| 11 | 2.6.7 | `bertopia-storage-2.md` | Paint Brush and palette; Blueprint colours; Interior Designer. **Plus (noted, not yet in brief text): seats and tables** (Chair, Stool, Bench, Table; sit = Use, stand = Move; furniture palette). This lands as **storage-2b** if it doesn't fit 6.5k. Pending GameMaster's furniture brief. | `furniture/*` (new) | as in the brief |
-| 12 | 2.6.8 | `bertopia-bot-cargo.md` | Bot, fob, pairing; Cargo Bay; battery, terrain, badge. **Patched:** steady amber Low battery ring; water now exists (world-1); lava Accepts removed. | `bot/*` (new) | as in the brief |
-| 13 | 2.6.9 | `bertopia-storage-4.md` | Item Tube, Extractor; Filter Tube, Sorter; jams, lessons, badges. | `logistics/{tubes,filters}.js`, `sim` | as in the brief |
-| 14 | 2.6.10 | `bertopia-storage-5.md` | Cable, Core, Drive Bays, Drives; Storage Link, Terminal; no power, access. | `logistics/{network,terminal}.js` | as in the brief |
-| 15 | 2.6.11 | `bertopia-storage-3.md` | Teleport Pads (items only); Delivery Drone + Dock; lessons. | `logistics/{pads,drone}.js` | as in the brief |
-| 16 | 2.6.12 | `bertopia-storage-6.md` | Battery Box + shared charge unit; Network Pad + "Deliver to me"; badges. | `power/grid.js`, `logistics/*` | as in the brief |
-| 17 | 2.6.13 | `bertopia-fun-1.md` | Pet Rock; Gravity Hat + Bounce Block; Disco Floor. **Patched:** no lava or Chasm Accepts. | `fun/*` | as in the brief |
-| 18 | 2.6.14 | `bertopia-music-1.md` | Note Block; instruments + Jukebox (DJ Berty discs); volume, class mode, teacher mute. **Patched:** Teacher = HubStaffAuth gate, not a PIN. | `music/*` | as in the brief |
-| 19 | 2.6.15 | `bertopia-holidays-1.md` | Calendar + teacher toggles; first 4 autumn packs; About cards + badge. **Patched:** Teacher = HubStaffAuth; autumn decor set; Jack-o'-lantern carving draft. Pending GameMaster, StyleBot and Curriculum specs. | `seasonal/*` (new) | as in the brief. **Timing risk:** at 2.6.15 it probably ships **after Oct 31** (G-Q12). |
+| 6 | **2.6.2** | **`bertopia-seasonal-early.md`** (new, 10:04 AM Oct 6) | 1. One Seasonal & Holiday pile + one teacher switch (no dates). 2. Autumn/Spooky props + String lights (StyleBot look, caps). 3. Pumpkin carving (12×12, steady amber). | `seasonal/{pile,carve}.js`, `data/seasonal.json`, `lights.js` | any date → same items; switch off keeps placed items; ≤48 animated bulbs; carved face survives reload and rotate |
+| 7 | **2.6.3** | **`bertopia-world-1a.md`** (new) | 1. Registry rows + v3 save + ore bands (S, B1–B4) with natural-only placement. 2. Glow Moss clumps + first-find chip (Clay moves to world-1b with water). 3. Locked-tile rule `availableFrom`. | `world/gen/{bands,ores}.js` (new), `worldgen.js`, `save/migrate.js` (v3), `data/registry.js`, `dex/bertodex.js` (first-find chip only), `tools/ore-check.mjs` (new, headless) | Headless 20-chunk ore counts within ±25% of WORLD-1; no ore in the town box; edited chunks unchanged; "Not in this world yet" tiles. |
+| 8 | **2.6.4** | **`bertopia-world-1b.md`** (new) | 1. Still water: lakes, one river, a lake within 48 of spawn, carving rules. 2. Swim, breath, safe landings. 3. Pan + Bucket (+ Panned Gravel, Flakes → Nugget). | `world/gen/water.js` (new), `feel.js` (swim 2.2 b/s), `main.js`, `data/*`, `tools/water-check.mjs` | Water never spreads after 10 min of placing and breaking; a lake within 48 blocks in 5/5 seeds; pan odds within ±25% over 1,200 pans (headless). |
+| 9 | **2.6.5** | **`bertopia-world-2a.md`** (new) | 1. Six biomes + blend + old-save safety. 2. Biome name chip + minimap patterns. 3. Snow, Ice (no slip), glare-safe colours, snowfall (Motion off = none). | `world/gen/biomes.js` (new), `worldgen.js`, `save/migrate.js` (v3.1), `ui` chip, minimap, `lights` (snow) | All six biomes within 12 chunks in 5/5 seeds; an old world-1 save near town is unchanged; no #FFFFFF pixel; minimap readable in greyscale. |
+| 10 | **2.6.6** | **`bertopia-world-2b.md`** (new) | 1. The sea (`sea` tag, still water, edge wall). 2. Salt Crust + Salt Pan + unlocks (Cold Glow Vial, Frost Vial). 3. Biome ore rules + crops in biomes + Boundary Clay. | `world/gen/{water,ores,plants}.js`, `stations` (Salt Pan), `data/*`, `tools/ore-check.mjs` | Salt Pan makes 1 Salt per 4 daylight minutes beside the sea and shows "Needs seawater" elsewhere; platinum only in Emberdeep B4; Boundary Clay at y −24 under Tidewell, not under Frostspire. |
+| 11 | 2.6.7 | `bertopia-storage-1.md` | Backpacks; shelves, Box, Double Box, Locker; furniture. | `inventory/*`, `data/*` | as in the brief |
+| 12 | 2.6.8 | `bertopia-storage-2.md` | Paint Brush and palette; Blueprint colours; Interior Designer. **Plus (noted, not yet in brief text): seats and tables** (Chair, Stool, Bench, Table; sit = Use, stand = Move; furniture palette). This lands as **storage-2b** if it doesn't fit 6.5k. Pending GameMaster's furniture brief. | `furniture/*` (new) | as in the brief |
+| 13 | 2.6.9 | `bertopia-bot-cargo.md` | Bot, fob, pairing; Cargo Bay; battery, terrain, badge. **Patched:** steady amber Low battery ring; water now exists (world-1); lava Accepts removed. | `bot/*` (new) | as in the brief |
+| 14 | 2.6.10 | `bertopia-storage-4.md` | Item Tube, Extractor; Filter Tube, Sorter; jams, lessons, badges. | `logistics/{tubes,filters}.js`, `sim` | as in the brief |
+| 15 | 2.6.11 | `bertopia-storage-5.md` | Cable, Core, Drive Bays, Drives; Storage Link, Terminal; no power, access. | `logistics/{network,terminal}.js` | as in the brief |
+| 16 | 2.6.12 | `bertopia-storage-3.md` | Teleport Pads (items only); Delivery Drone + Dock; lessons. | `logistics/{pads,drone}.js` | as in the brief |
+| 17 | 2.6.13 | `bertopia-storage-6.md` | Battery Box + shared charge unit; Network Pad + "Deliver to me"; badges. | `power/grid.js`, `logistics/*` | as in the brief |
+| 18 | 2.6.14 | `bertopia-fun-1.md` | Pet Rock; Gravity Hat + Bounce Block; Disco Floor. **Patched:** no lava or Chasm Accepts. | `fun/*` | as in the brief |
+| 19 | 2.6.15 | `bertopia-music-1.md` | Note Block; instruments + Jukebox (DJ Berty discs); volume, class mode, teacher mute. **Patched:** Teacher = HubStaffAuth gate, not a PIN. | `music/*` | as in the brief |
+| 20 | 2.6.16 | `bertopia-holidays-1.md` | Rest of the pile: Winter group, culture items (ids 172–184), Marigold/Papel Picado; origin lines; Decorator badge. **Patched 10:00 AM Oct 6:** one pile per Diego; HubStaffAuth switch; StyleBot look + caps. | `seasonal/*` (new) | as in the brief. **Timing risk:** at 2.6.15 it probably ships **after Oct 31** (G-Q12). |
 
-## §S Whole-vision stage map (after 2.6.15; order proposed, GameMaster owns it)
+## §S Whole-vision stage map (after 2.6.16; order proposed, GameMaster owns it)
 Each stage lists:
 - **Skill:** the real tech skill
 - **Sandbox:** the no-pressure path
@@ -382,26 +383,26 @@ Each stage lists:
 - **Accepts:** the music-1 Accepts; nothing autoplays above the class-mode volume.
 - **Slots:** music-1 → music-2.
 
-### S13 Holiday and seasonal packs (holidays-1, holidays-2, holidays-3…)
+### S13 Seasonal & Holiday pile (holidays-1; later items join the same pile)
 **Now specified by GameMaster in [BERTOPIA-DECOR-PACKS.md](BERTOPIA-DECOR-PACKS.md) (7:05 AM) and checked by Curriculum ([CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md](CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md)); look set by StyleBot ([STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md](STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md)).** Those files win over this section.
-**Packs (resolved 7:20 AM, G-Q12/D7 naming → season names):** Autumn, Spooky, Winter and String lights (strings show as "Winter lights" in the Winter pack). Dropped: Harvest/Spooky-Cute names, Diwali, crescent-and-star lanterns, sugar-skull tiles.
+**ONE PILE (Diego, 10:00 AM Oct 6: "Just offer holiday items in one big pile so we are not favoring any"):** one **Seasonal & Holiday** tab in the build menu and one Bertodex section (REGISTRY `dexCat: "Seasonal & Holiday"`, `pile: "seasonal"`). Every item is available all at once, the same for everyone, all year: **no calendar, no dates, no featured holiday, no per-holiday packs.** The old Autumn / Spooky / Winter / String-lights packs and any date rotation are retired. Diya Light (id 118) is removed (id left unused); id 119 is now **Pattern Floor Tile**, all-year base decor with Paint (storage-2), plain geometric art; Marigold Pattern Tile is in the pile with art marked **redraw: marigold flowers only, no skull shapes**.
 - **Look rules (StyleBot):** every light capped at `#FFF1D6`, never `#FFFFFF`; halos use normal alpha blend, never additive; lit pumpkins steady (no flicker); twinkle = 70–100% brightness over a 4–7 s cycle, no flash; Motion off = all lights steady. **Caps within 32 blocks:** 48 animated bulbs, 6 ghost lights, 160 halos (beyond the cap, render steady / no halo).
 - **Stamps:** round eye, triangle eye, smile, **Wide grin** (open smile, no teeth), star, **full moon**; Moon Lantern is a full round moon.
 
-Defaults: every pack is optional with a teacher toggle (Hub row per pack: On / Off / Auto by date); lights are named "String lights" / **"Winter lights"**, never "Christmas lights"; no religious symbols; placed items never vanish when a pack turns off.
-- **Skill:** light and energy (LED strings wired in parallel on the power rules); design and pattern (carving, pattern tiles); cultural awareness (About cards). **Sandbox:** decorate any time once unlocked (packs are kept forever). **Mastery:** none on boards (art isn't scored); teacher Carve-off through the contest module, off by default.
-- **Autumn set** (DECOR-PACKS §2), all placed with Place: Hay Bale (seat), Pumpkin, Gourd Pile, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow; Spooky: Friendly Ghost Light, Cobweb, Bat Bunting, Black Cat Statue, Moon Lantern, Pumpkin Stool and Spooky Bench (seats). **No skeletons or tombstones**, so the Spooky Sign (id 166) was redrawn as a wooden sign with a bat cut-out.
+Defaults: **one** teacher on/off switch for the whole pile (HubStaffAuth gate), no per-holiday switch; neutral names ("String lights" / "Winter lights", never "Christmas lights"); no skulls or tombstones, no religious symbols, no flames (steady LED only); placed items never vanish when the switch is off.
+- **Skill:** light and energy (LED strings wired in parallel on the power rules); design and pattern (carving, pattern tiles); neutral item cards in the Bertodex (culture items carry one neutral origin line). **Sandbox:** decorate any time; the whole pile is open from the start. **Mastery:** none on boards (art isn't scored); teacher Carve-off through the contest module, off by default.
+- **The pile** (DECOR-PACKS §2 items, one list), all placed with Place: Pumpkin, Jack-o'-Lantern, Carved Pumpkin, Hay Bale (seat), Gourds, Corn Stalks, Apple Crate, Leaf Pile, Scarecrow, Friendly Ghost Light, Cobweb, Bat Garland, Black Cat Statue, Moon Lantern, Autumn Lantern, Spooky Sign, Marigolds, Papel Picado Banner, Marigold Pattern Tile, String Lights, Winter Lights, Wreath, Gift Box, Snow Pal, Ornament Tile, Peppermint Stripe Block; seats Pumpkin Stool and **Spooky Bench = 3 Planks + 2 Sticks** (furniture brief). **Culture items (ids 172–184):** Blue & White Lights (#60A5FA + soft white #DCE6F0), Woven Mat, Harvest Basket, Red Lantern, Paper Dragon, Fanous Lantern, Colour Splash Block, Spring Greens, Kindness Heart, Solar Flower, Imigongo Zigzag Tile, Petrykivka Flower Tile, Mesob Basket; recipes swap missing basics (Paper → Cloth, String → Cotton, Dye → Paint Dab, LED → Glow Strip, Grass Fiber/Seeds → Wheat, Clay Dish → Clay, Solar Cell → Solar Panel). Lanterns follow the pumpkin rule; high contrast = 2 px #FFE14A outline, no glow (StyleBot §9). Sort groups Autumn/Spooky/Winter/Spring are headers only. **Carving Scoop = 2 Sticks + 1 Stone** (no Iron Nugget, GM final). **No skeletons or tombstones**: the Spooky Sign (id 166) is a wooden sign with a bat cut-out (**approved, G-Q18 closed**).
 - **Pumpkin carving** (DECOR-PACKS §3): hold the **Carving Scoop** and Use a Pumpkin → Carve panel. 12×12 grid (Big Cells 8×8), Mirror on by default, 6 stamps, Undo 20, Clear, Done; My Carvings keeps the last 12. Face = 144-bit mask (18 bytes) per side, up to 4 sides, in `blockState[pos].faces[side]` and inside Blueprints. Lit = Jack-o'-Lantern, radius 6, warm amber, steady (no flicker).
   - It reuses **LogoLab's Mark Builder grid and stamps**. LogoLab is a separate repo, `trebiluk/logolab` (React + `fabric` ^7.4.0, MIT per its NOTICE; LogoLab itself is "classroom software, Copyright Solvay MS Tech Ed"). Bertopia is vanilla JS, so port the grid/stamp logic (same owner, same school) and keep fabric's MIT notice if any fabric code is lazy-loaded; a 12×12 grid needs no fabric at all.
 - **String lights** (DECOR-PACKS §4): 2-tap place with sag; built-in battery until circuits, then Connect; Steady / Twinkle (70–100%, 4–7 s) / Slow Chase with fade, all per StyleBot (Motion off = Steady); one glow per string, no per-bulb lights; cap 64 strings × 12 bulbs per plot.
 - **Furniture seats** are base game (S1, storage-2b): Chair, Stool, Bench, Table, Long Table; sit = Use, Move or Jump stands; "Taken" chip; Table displays 1 item.
-- **Data:** `calendar.json [{pack, window, items}]` (school-editable); `season = {pack: {unlockedAt, teacherOn}}`.
-- **Save:** `bertopia-season-v1` and the server teacher toggle later; `blockState[pos].faces/mode`; `carvings.recent[12]`.
-- **Engine:** `seasonal/packs.js` (unlock on date, kept forever), `carve.js`; lights through `lights.js` (twinkle = brightness ramp, Motion-aware).
-- **Assets:** ✅ pumpkin, jackOLantern, carvedPumpkin, cornStalks, leafPile, appleCrate, ghostLight, cobweb, marigold, papelPicado, skullPatternTile (now Marigold Pattern Tile), diyaLight/rangoliTile (Diwali dropped; unassigned), stringLights, hayBale, gourds, scarecrow, batsDeco, spookySign, harvestLantern (now "Autumn Lantern"), carvingTool, winterLights, wreath, giftBox, snowPal, ornamentTile, stripeBlock, `carve`, `lights_on`, `sting_holiday`, `ui:pumpkin`, `ui:carve`, `ui:string_lights`, `ui:gift`. ◻ winterLightsPattern, icicleDeco, snowGlobe, lanternFestival, springBlossom, heartGarland, newYearBanner, carvePanelStencils.
+- **Data:** `seasonal.json {pile, enabled, items[]}` (adding an item = one row); `season = {teacherOn}`. No dates.
+- **Save:** `bertopia-season-v1` (switch state seen) and the server teacher switch later; `blockState[pos].faces/mode`; `carvings.recent[12]`.
+- **Engine:** `seasonal/pile.js` (one list, one switch, no date code), `carve.js`; lights through `lights.js` (twinkle = brightness ramp, Motion-aware).
+- **Assets:** ✅ pumpkin, jackOLantern, carvedPumpkin, cornStalks, leafPile, appleCrate, ghostLight, cobweb, marigold, papelPicado, skullPatternTile (Marigold Pattern Tile; art **redraw: marigold flowers only, no skull shapes**), rangoliTile (now Pattern Floor Tile, base decor, geometric art); diyaLight removed, stringLights, hayBale, gourds, scarecrow, batsDeco, spookySign, harvestLantern (now "Autumn Lantern"), carvingTool, winterLights, wreath, giftBox, snowPal, ornamentTile, stripeBlock, `carve`, `lights_on`, `sting_holiday`, `ui:pumpkin`, `ui:carve`, `ui:string_lights`, `ui:gift`. ◻ winterLightsPattern, icicleDeco, snowGlobe, lanternFestival, springBlossom, heartGarland, newYearBanner, carvePanelStencils (future pile rows; lanternFestival/newYearBanner need the culture OK below).
 - **Verbs:** Place, Use (carve; light mode), Open (carve panel), Connect (lights), Paint.
-- **Accepts:** a pack is off when the teacher toggle is off; a carved face survives reload and shows lit at night; twinkle has no flash and is steady with Motion off; no pixel above #FFF1D6 and 0 #FFFFFF; halo/bulb/ghost caps hold within 32 blocks; About cards exist for every pack.
-- **Slots:** holidays-1 (autumn packs + carving) → holidays-2 (Winter Lights, Dec) → holidays-3+ (the rest of the FUN-ITEMS §7 calendar).
+- **Accepts:** every pile item shows at once on any date, nothing featured; the one switch off hides the tab and keeps placed items; a carved face survives reload and shows lit at night; twinkle has no flash and is steady with Motion off; no pixel above #FFF1D6 and 0 #FFFFFF; halo/bulb/ghost caps hold within 32 blocks; every item has a neutral Bertodex card.
+- **Slots:** **seasonal-early at 2.6.2** (right after 260b): pile + switch, Autumn/Spooky props, carving, String lights. **holidays-1 at 2.6.16**: Winter group, culture items, pattern tiles, origin lines, Decorator badge. Later briefs only add rows to the same pile.
 
 ### S14 Bertodex (first-find chip in world-1a; full dex in world-3b)
 - **Skill:** classification, real science facts, the periodic table. **Sandbox:** read freely; the Workshop shows the full Dex. **Mastery:** Dex completion; Dex Shelf trophy at half.
@@ -473,15 +474,12 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 | World-1 regeneration of unedited chunks | A kid's "found" ore spot changes | Only unedited, unclaimed chunks; ore only in natural stone; announced in What's new |
 | Sims on Chromebooks | Heat and battery drain | 10 Hz, catch-up math, loaded chunks only |
 | Concurrent edits to briefs and specs (GameMaster, audit executor) | Lost edits | Check mtime before patching; `.bak` copies; docs commits rebase on origin/main |
-| Holiday timing | holidays-1 at 2.6.15 likely lands after Oct 31 | G-Q12 |
+| Holiday timing | solved by seasonal-early (2.6.2) right after 260b | G-Q12 closed |
 | Build chats faking DONE / shrinking smoke | False passes | §F baseline guard + the audit executor's live re-run |
 
 ### Open questions for GameMaster
 1. **G-Q1 Storage-1 slot:** directly before storage-2 (Debugzy's reading, 2.6.6) or at 2.6.2 before world-1 ("stays where it is")?
-2. **G-Q2 Fabricator bootstrap loops:**
-   - The Fabricator needs a Battery Cell, which is made only at the Fabricator.
-   - It needs charge from a Charger, which is also made only at the Fabricator.
-   - Proposal: allow **one** Battery Cell and **one** Charger at the Forge tab (slower, T4), or have the first Fabricator come with 1 charge-pack.
+2. **G-Q2 Fabricator bootstrap: CLOSED (GameMaster, Oct 6).** One-time **Starter Kit**: the first time a player places a Fabricator, 1 Battery Cell + 1 Charger go to their Overflow Box with the card "Maker parts to get you started. Now the Fabricator can make more." Once per player per world, like the Glow Moss gift; the Fabricator stays the only place that makes either. In bertopia-basics-1 TIER GATES/MATERIALS.
 3. **G-Q3** Smelter "8 Brick": red, grey or either? The registry uses "either" for now.
 4. **G-Q4 Kid sandbox path:** the Build world is Teacher-flag only. Should kids get a no-pressure creative plot, or does "sandbox" mean free play on their Survival plot plus teacher-run Build sessions?
 5. **G-Q5** Wood and Stone Pick recipes change from live (5 Planks; 3 Stone + 2 Planks) to 3 + 2 Sticks. Owned picks are kept; OK?
@@ -493,23 +491,23 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 11. **G-Q11** New-action checks:
     - Carving, seats and String-lights placing are answered by DECOR-PACKS (Use with the Scoop; Use = sit; 2-tap place). Remaining: the String-lights 2-tap place needs a "pending first point" state in Use; confirm it's not a new verb.
     - Exo-Suit glide (hold Jump in air) and Mining Beam reach 6: see TEKKIT §3.
-12. **G-Q12 Holiday timing:** (pack naming part RESOLVED 2026-10-06: season names.) Timing still open: holidays-1 (autumn and carving) is #19, so it probably misses Oct 31. Options: (a) keep the queue (Diego said the near-term order stays); (b) a tiny "autumn decor only" brief after 260b. Diego decides, because it changes the queue.
+12. **G-Q12 CLOSED:** one pile, no dates; seasonal-early (2.6.2) right after 260b lands pumpkins before Oct 31; holidays-1 moves to 2.6.16.
 13. **G-Q13** Doors break by hold today (`HAND_S` 1.5). CORE-MECHANICS says interactive blocks don't break on hold. Is removal through long-press Options → "Pick up" (like the Charger)?
 14. **G-Q14** Glow Moss gift before the Overflow Box exists (basics-2 ships before 260): basics-2 puts it in Lost & Found. OK?
 15. **G-Q15** Lights: 4 real lights (2 in Lite) instead of 8 (basics-1 3d, basics-2 1c).
 16. **G-Q16** Water Wheel (Tekkit #9) needs flow, but water never flows. Use the world-1 river's direction tag instead?
 17. **G-Q17** The FIX-LIST audit says coyote time is missing. It's implemented (`feelTick`: coyote 120 ms, buffer 150 ms). Ask the audit to recheck rather than brief it.
-18. **G-Q18** Diego asked for a "gravestone-style sign" (6:54); DECOR-PACKS bans tombstones. The pack now has a wooden bat sign; confirm with Diego.
-19. **G-Q19** Iron Nugget (Carving Scoop, Spooky Bench) isn't in the registry or GM-ANSWERS. Add it (9 per Ingot?) or use the stand-ins?
+18. **G-Q18 CLOSED:** the wooden sign with the bat cut-out is approved (GameMaster + Diego's one-pile turn); no gravestone.
+19. **G-Q19 CLOSED:** no Iron Nugget. Carving Scoop = 2 Sticks + 1 Stone; Spooky Bench = 3 Planks + 2 Sticks.
 
 ### Needs Diego (money, safety, policy)
 1. **D1 Server world save** (§C.4): a new TechWorks endpoint and D1 table, plus the FERPA / NY Ed Law 2-d check by Curriculum Bot.
 2. **D2** Cross-class or school-wide boards for L-tier goals (aliases only).
 3. **D3** Looks shop: confirm it's Cogs only, never TechCash or real money.
 4. **D4** The Teacher flag from TechWorks (WORLDS): the server wiring waits for his OK. HubStaffAuth is the stopgap.
-5. **D5** Review the holiday calendar before holidays-1 ships (FUN-ITEMS §7 says "for Diego's review"), plus the culture check by Curriculum.
+5. **D5** (calendar retired by the one-pile decision.) Curriculum checks the pile's item names and cards before holidays-1 ships.
 6. **D6** `wallet.showCountries` default (ELEMENT-ECONOMY §8).
-7. **D7 Holiday policy: RESOLVED 2026-10-06 → season names (Autumn, Spooky, Winter, String lights), per GameMaster's change notes.** History: Curriculum recommends seasons first (Autumn, Spooky, Winter) with no holiday-named default packs; holidays-1 still lists the Oct 4 packs (Harvest, Spooky-Cute, Día de los Muertos, Diwali). Pick one before holidays-1 is pasted; renaming is JSON-only. Curriculum also suggests checking the district's holiday-observance policy.
+7. **D7 Holiday policy: RESOLVED 10:00 AM Oct 6 → ONE Seasonal & Holiday pile, all items at once, no dates, no featured holiday, one teacher switch.** **Culture items are IN the pile (10:04 AM Oct 6):** Diego approved the holiday set on Oct 4; Curriculum cleared all 9 culture items plus Imigongo Zigzag Tile, Petrykivka Flower Tile and Mesob Basket (REGISTRY ids 172–184, object names, never a holiday; art limits in CURRICULUM-PILE-CULTURE-ITEMS-CHECK-2026-10-06.md). Diya stays cut. Any further culture item needs Curriculum's check against the pile rules before it joins.
 
 ---
 
@@ -525,7 +523,7 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 | bot-cargo | water and lava Accepts impossible before world-1/2; lava isn't in world-1 | water Accepts kept (world-1 ships first), lava removed; steady amber Low battery ring |
 | fun-1 | lava and Chasm Accepts impossible | replaced with flat-ground and still-water versions |
 | music-1, holidays-1 | "Teacher panel (PIN)" | HubStaffAuth Teacher gate |
-| holidays-1 | timing; Diego's autumn decor and carving ideas | autumn decor set + carving draft (pending GameMaster/StyleBot/Curriculum); the timing question is G-Q12 |
+| holidays-1 | per-holiday packs + calendar | one Seasonal & Holiday pile, one switch, carving (Diego 10:00 AM Oct 6); timing is G-Q12 |
 | FIX-LIST "Next up" | old order | renumbered in the docs commit |
 
 ## §T Tech machines

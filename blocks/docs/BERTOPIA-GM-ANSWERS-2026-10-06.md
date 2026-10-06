@@ -124,3 +124,8 @@ Recommended order (Debugzy and Flo set the version numbers):
 - The Cold Glow Vial and the Frost Vial show as locked tiles reading "Needs Ice (snow biome)".
 - Salt Pan items are hidden.
 - Nothing is missing silently.
+
+
+## Added 7:12 AM (Debugzy's coding-plan questions)
+- **G-Q19 Iron Nugget:** don't add it. Carving Scoop = 2 Sticks + 1 Stone; Spooky Bench = 3 Planks + 2 Sticks. Decor never waits on ores (DECOR-PACKS §5 updated).
+- **G-Q2 Fabricator bootstrap:** the first time a player places a Fabricator, Berty puts a one-time **Starter Kit** in their Overflow Box: 1 Battery Cell + 1 Charger, with a card: "Maker parts to get you started. Now the Fabricator can make more." One per player per world (same pattern as the Glow Moss gift). Build world: both are free in the palette anyway. No Forge recipe for either, so the Fabricator stays the only maker.

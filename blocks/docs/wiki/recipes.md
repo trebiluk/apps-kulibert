@@ -26,8 +26,22 @@ The rule of thumb (GM-ANSWERS §5): wood, cloth, glass and food at the Workbench
 | 3 Planks + 2 Stick → 1 Wood Pick (workbench) | 2 | – | GM-ANSWERS §5 (live 2.5.42 = 5 Planks; migration keeps owned picks) |
 | 3 Stone + 2 Stick → 1 Stone Pick (workbench) | 4 | – | GM-ANSWERS §5 (live = 3 Stone + 2 Planks) |
 | 3 Planks → 1 Pan (workbench) | 2 | – | GM-ANSWERS §5 / ORE-TABLE |
-| 2 Stick + 1 Stone → 1 Carving Scoop (workbench) | 2 | – | DECOR-PACKS §3 stand-in (2 Sticks + 1 Iron Nugget once an Iron Nugget item exists) |
+| 2 Stick + 1 Stone → 1 Carving Scoop (workbench) | 2 | – | GM-ANSWERS 2026-10-06 (final: no Iron Nugget) |
 | 8 Red Brick or Grey Brick + 1 Iron Ore + 1 Coal Ore → 1 Smelter (workbench, T4) | 10 | T4 | GM-ANSWERS §5 (brick colour: open question) |
+| 1 String Lights + 1 Paint dab → 1 Blue & White Lights (workbench) | 2 | – | FUN-ITEMS §7 (Blue Dye → Paint Dab) |
+| 3 Wheat → 1 Woven Mat (workbench) | 2 | – | FUN-ITEMS §7 (Grass Fiber → Wheat) |
+| 2 Wheat + 1 Corn → 1 Harvest Basket (workbench) | 2 | – | FUN-ITEMS §7 (Grass Fiber → Wheat) |
+| 1 Cloth + 1 Paint dab + 1 LED Glow Strip → 1 Red Lantern (workbench) | 2 | – | FUN-ITEMS §7 (Paper → Cloth, Red Dye → Paint Dab, LED → Glow Strip) |
+| 3 Cloth + 1 Paint dab → 1 Paper Dragon (workbench) | 2 | – | FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab) |
+| 1 Glass + 1 Copper Wire + 1 LED Glow Strip → 1 Fanous Lantern (workbench) | 2 | – | FUN-ITEMS §7 (LED → Glow Strip) |
+| 1 Stone or Planks + 1 Paint dab → 1 Colour Splash Block (workbench) | 1 | – | FUN-ITEMS §7 (Dye → Paint Dab) |
+| 1 Clay + 1 Wheat → 1 Spring Greens (workbench) | 2 | – | FUN-ITEMS §7 (Clay Dish → Clay, Seeds → Wheat) |
+| 1 Cloth + 1 Paint dab → 1 Kindness Heart (workbench) | 1 | – | FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab) |
+| 1 Flower + 1 Solar Panel → 1 Solar Flower (workbench) | 2 | – | FUN-ITEMS §7 (Solar Cell → Solar Panel) |
+| 1 Clay + 1 Paint dab → 1 Imigongo Zigzag Tile (workbench) | 2 | – | FUN-ITEMS §7 (Dye → Paint Dab) |
+| 1 Planks + 1 Paint dab → 1 Petrykivka Flower Tile (workbench) | 2 | – | FUN-ITEMS §7 (Dye → Paint Dab) |
+| 3 Wheat → 1 Mesob Basket (workbench) | 2 | – | FUN-ITEMS §7 (Grass Fiber → Wheat) |
+| 2 Cloth + 1 Cotton → 1 Papel Picado Banner (workbench) | 2 | – | FUN-ITEMS §7 (Paper → Cloth, String → Cotton) |
 | 4 Glass + 2 Planks → 1 Glass Door (workbench) | 3 | – | basics-1 1a |
 | 1 Stick + 1 Stone → 1 Lever (workbench, T2) | 1 | T2 | basics-1 1b |
 | 1 Planks → 1 Push Button (workbench, T1) | 1 | T1 | basics-1 1b |
@@ -95,7 +109,7 @@ The rule of thumb (GM-ANSWERS §5): wood, cloth, glass and food at the Workbench
 | 3 Copper Ingot + 2 Stick → 1 Copper Pick (forge, T4) | 4 | T4 | GM-ANSWERS §5 |
 | 3 Steel + 2 Stick → 1 Steel Pick (forge, T4) | 4 | T4 | GM-ANSWERS §5 |
 | 3 Iron Ingot → 1 Bucket (forge, T4) | 4 | T4 | GM-ANSWERS §5 |
-| 4 Steel + 2 Copper Wire + 1 Glass + 1 Battery Cell → 1 Fabricator (forge, T5) | 10 | T5 | GM-ANSWERS §5 (bootstrap: open question) |
+| 4 Steel + 2 Copper Wire + 1 Glass + 1 Battery Cell → 1 Fabricator (forge, T5) | 10 | T5 | GM-ANSWERS §5; bootstrap = one-time Starter Kit (1 Battery Cell + 1 Charger to Overflow Box on first Fabricator placed, once per player per world) |
 | 1 Iron Ingot + 1 Coal Ore → 1 Steel (forge, T4) | 4 | T4 | GM §5 |
 | 8 Copper Ingot + 1 Tin Ingot → 9 Bronze Ingot (forge, T4) | 4 | T4 | GM §5 |
 | 1 Copper Ingot → 4 Copper Wire (forge, T4) | 2 | T4 | GM §5 |

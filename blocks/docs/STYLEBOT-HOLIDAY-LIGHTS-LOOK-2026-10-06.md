@@ -1,4 +1,4 @@
-Verdict: READY (look rules; no open calls; 3 small fixes for GameMaster at the end)
+Verdict: READY (look rules incl. one-pile §9; no open calls; 3 small fixes for GameMaster at the end)
 # Bertopia holiday lights: look rules (StyleBot, 2026-10-06)
 Scope: the **look** of lit pumpkins, String lights / Winter lights, lanterns, and friendly Spooky props. GameMaster's `BERTOPIA-DECOR-PACKS.md` owns the mechanics: light radius, power, the carve panel and recipes. Debugzy builds it. Nothing here is live. Pack names follow Curriculum (2026-10-06): **Autumn**, **Winter**, **String lights** (shown as "Winter lights" in the Winter pack; normal parts all year), and **Spooky** (optional).
 Mock: `holiday-look-mocks/00-sheet.png` (source `sheet.html`, renderer `render-sheet.js`).
@@ -158,3 +158,10 @@ function holidayMotionOn() {                 // same order as kw-interact
 1. **Flicker: resolved.** Lit pumpkins are steady with no flicker, matching DECOR-PACKS §3. Nothing to change on GameMaster's side.
 2. **"Toothy grin" stamp** (§3 stamps) conflicts with "no teeth". Proposal: rename it **"Wide grin"**, drawn as an open smile with no teeth. Freehand stays open and teachers can hide a carving.
 3. **Names and symbols:** DECOR-PACKS still says "Harvest", "Spooky-Cute", "Diwali" and "Winter Lights packs". Curriculum's names are Autumn, Spooky, Winter and String lights. The Moon stamp and Moon Lantern must be a full moon, not a crescent. FUN-ITEMS' "crescent and star lanterns" also conflict with Curriculum rule 5.
+
+## 9. Pile update (2026-10-06, 10 AM): one Seasonal & Holiday pile
+Diego's "one big pile" replaces the packs. Autumn, Spooky and Winter are only sorting groups now, so these look rules apply to every glowing item in the pile, with no dates.
+- **"White" bulbs** (for example the "Blue & White Lights" tile): use soft white **#DCE6F0** (luminance 0.78, under the #FFF1D6 cap). Never #FFFFFF. The blue bulb stays #60A5FA. These follow the same twinkle, halo and unpowered rules as the other string lights.
+- **Lanterns** (Red Lantern, Fanous, the dragon, Moon Lantern and the like): these follow the lit-pumpkin rule. The glow is steady LED, the core uses the item's own colour with brightness capped at #FFF1D6, and the halo has radius 1.5 blocks and alpha ≤0.30. Nothing flickers or moves, and there's no flame sprite. Red Lantern core is #FF8A80 with rim #B4443A.
+- **Caps:** every lantern halo counts toward the 160-halo cap, and halos only draw within 32 blocks. Lanterns don't animate, so they don't count toward the 48 animated-bulb cap.
+- **High contrast:** no halo, just the 2px #FFE14A outline, the same as everything else.

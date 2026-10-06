@@ -56,23 +56,24 @@ Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/worl
 | 3 | 2.5.46 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
-| 6 | 2.6.2 | bertopia-world-1a.md: ores by depth (natural stone only), Glow Moss clumps + first-find chip, locked tiles | [ ] |
-| 7 | 2.6.3 | bertopia-world-1b.md: still water (lakes, river, Clay), one-thumb swimming, Pan + Bucket | [ ] |
-| 8 | 2.6.4 | bertopia-world-2a.md: six biomes + old-save safety, Snow/Ice in Frostspire, biome chip + patterned minimap | [ ] |
-| 9 | 2.6.5 | bertopia-world-2b.md: the sea, Salt + Salt Pan, biome ores/panning/crops, Boundary Clay | [ ] |
-| 10 | 2.6.6 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack, shelves, Box/Double Box, Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | [ ] |
-| 11 | 2.6.7 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | [ ] |
-| 12 | 2.6.8 | bertopia-bot-cargo.md: Bot H1 Cargo Bay (T5; steady amber low-battery ring, no blink) | [ ] |
-| 13 | 2.6.9 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter | [ ] |
-| 14 | 2.6.10 | bertopia-storage-5.md: Storage Network | [ ] |
-| 15 | 2.6.11 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
-| 16 | 2.6.12 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
-| 17 | 2.6.13 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
-| 18 | 2.6.14 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
-| 19 | 2.6.15 | bertopia-holidays-1.md: holidays.json calendar, first 4 packs, autumn set + pumpkin carving (per DECOR-PACKS; pack names pending Diego/Curriculum) | [ ] |
-| 20 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
+| 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
+| 7 | 2.6.3 | bertopia-world-1a.md: ores by depth (natural stone only), Glow Moss clumps + first-find chip, locked tiles | [ ] |
+| 8 | 2.6.4 | bertopia-world-1b.md: still water (lakes, river, Clay), one-thumb swimming, Pan + Bucket | [ ] |
+| 9 | 2.6.5 | bertopia-world-2a.md: six biomes + old-save safety, Snow/Ice in Frostspire, biome chip + patterned minimap | [ ] |
+| 10 | 2.6.6 | bertopia-world-2b.md: the sea, Salt + Salt Pan, biome ores/panning/crops, Boundary Clay | [ ] |
+| 11 | 2.6.7 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack, shelves, Box/Double Box, Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | [ ] |
+| 12 | 2.6.8 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | [ ] |
+| 13 | 2.6.9 | bertopia-bot-cargo.md: Bot H1 Cargo Bay (T5; steady amber low-battery ring, no blink) | [ ] |
+| 14 | 2.6.10 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter | [ ] |
+| 15 | 2.6.11 | bertopia-storage-5.md: Storage Network | [ ] |
+| 16 | 2.6.12 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
+| 17 | 2.6.13 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
+| 18 | 2.6.14 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
+| 19 | 2.6.15 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
+| 20 | 2.6.16 | bertopia-holidays-1.md: rest of the one pile (Winter group, 13 culture items ids 172–184, Marigold/Papel Picado), origin lines, Decorator badge |  [ ] |
+| 21 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
 
-All briefs were renumbered on Oct 6 (7:10 AM) to this table; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
+All briefs were renumbered on Oct 6 (7:10 AM, then 10:04 AM for seasonal-early) to this table. Every brief's proof includes StudentTester's 915×412 sideways run + mid-play rotate; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
 Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the Teacher flag.
 
 ## 4. Locked rules (read before building; use the numbers exactly)
@@ -98,6 +99,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| docs (Oct 6, 10:15 AM) | (this commit) | Docs only, no app change: one Seasonal & Holiday pile (no dates, one teacher switch, culture items ids 172–184 in), Diya cut, Pattern Floor Tile base decor, Fabricator Starter Kit, new seasonal-early at 2.6.2 (versions after it +1, holidays-1 → 2.6.16), rotate proof in every brief |
 | 2.5.42 | a0675ec | FAIL (P1): HUD overlaps (path chip on the stick, hint on Crouch), any kid can flip the teacher switch, upright hotbar 4/9 off screen, stale tour/help/What's new, smoke has no gates (Oct 6, 6:30 AM) |
 | 2.5.15–2.5.41 | 689aea9 … 417deb0 | not proven one at a time (27 Build cuts, Oct 4 7:40 AM – Oct 5 10:35 AM); covered by the 2.5.42 proof |
 | 2.5.14 | d47a8d3 | FAIL: strip, recipe and chip fixed; tile pictures/fit, fillN/wallsN in 7 languages and smoke.mjs still open (Oct 4, 7:35 AM) |

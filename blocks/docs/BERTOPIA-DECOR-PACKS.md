@@ -2,18 +2,18 @@
 Diego (Oct 6): spooky seats, custom jack-o'-lantern carving (maybe built on LogoLab), Christmas lights; "Sitting = seasonal autumn"; "Seats also needed for tables yes."
 Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly-spooky). Curriculum's check (`CURRICULUM-HOLIDAY-AND-TEKKIT-CHECK-2026-10-06.md`) is adopted in full; it changes `fixq/bertopia-holidays-1.md` as below.
 
-## Pack model (Curriculum's recommendation, adopted 7:10 AM)
-- **Default packs are seasonal, never holiday-themed:** **Autumn** (hay, gourds, pumpkins, scarecrow, leaf piles, carving) and **Winter** (snow décor + String lights, shown as "Winter lights" in the Winter pack).
-- **Spooky** is its own pack. The teacher can turn it on or off; on Auto it is live only **Oct 15 – Nov 1**. Friendly props only, no gore, no Day of the Dead skulls.
-- **Lights and lanterns are normal building parts all year** (String Lights, Jack-o'-Lantern once carved, Moon Lantern as a full moon), so kids light a build for whatever they celebrate.
-- No religious symbols in any pack. No contest themed on one holiday.
-- Hub Master Control: one row per pack, **On / Off / Auto by date**. Turning a pack off removes it from the palette and craft list only; **placed builds never disappear** and unlocks are kept.
-- The 14 culture packs in holidays-1 stay as teacher-optional extras (off by default) with their "About" cards; Debugzy updates holidays-1 to this model.
+## Pile model (Diego, Oct 6 ~10 AM: "one big pile so we are not favoring any")
+- Every seasonal and holiday item sits in ONE palette and craft-list section, **Seasonal & Holiday**, open to everyone **all year**. There are no dates, no Auto windows, no featured holiday and no separate packs. "Autumn", "Spooky" and "Winter" below are only group labels inside the pile for sorting.
+- **One teacher switch** (Hub Master Control): Seasonal & Holiday **On/Off**, default On. Off removes the section from the palette and craft list only; **placed builds never disappear**.
+- Lights and lanterns (String lights, Jack-o'-Lantern, Moon Lantern as a full moon) are in the pile like everything else; String lights also sit with normal building parts.
+- Content rules still hold: friendly props only, no skulls or tombstones, no religious symbols, LED-style lights only (no flame), no contest themed on one holiday.
+- Culture-specific items join the pile only after Curriculum checks each one against those rules (Diego approved the holiday set as a start on Oct 4). Until then they stay out.
+- First ship: a small cut right after 260b (Autumn and Spooky props, pumpkin carving, String lights) so pumpkins land before Oct 31; the rest stays in holidays-1 at 2.6.15 (Flo, Oct 6).
 
 ## 0. Rules for every item here
 - No new controls. Place, Use, Options (long-press / right-click), Rotate ⟳, Pick up — all existing (CORE-MECHANICS).
-- Game world: crafted at the Workbench from cheap basics (§5). Build world: free in the palette once its pack is unlocked.
-- Autumn/Winter items unlock by the season, Spooky by its window or teacher toggle, and all are **kept forever**; furniture and lights are base game, never seasonal.
+- Game world: crafted at the Workbench from cheap basics (§5). Build world: free in the palette whenever the Seasonal & Holiday switch is On.
+- Every pile item is available all year while the switch is On; furniture and String lights are base game and never switch off.
 - Friendly-spooky only: pumpkins, cute ghosts, bats, black cats, moon, cobwebs, hay. **No** skeletons, tombstones, blood, monsters, witches, or weapons (Día de los Muertos and ED kids).
 - Lights: steady by default, no flame (LED-style), never faster than 1 change per 2 s, no pure white (warm white = #FFE8B0), no strobe ever (stays under WCAG 2.3.1 three-flash rule). Motion off = always steady.
 - Everything has a name in 8 languages and an icon+word tile; meaning never by colour only.
@@ -32,12 +32,12 @@ Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly
 - **Table display:** Use on a table while holding any item puts **1 copy on display** (food, a Pet Rock, a lit pumpkin). Use again with an empty hand takes it back. Teaches nothing heavy; it powers café / shop role-play (WORLD-PLAN §N Shops).
 - Seats auto-face the player; Rotate ⟳ turns 90°. Pick up via Options, contents (display item) returned.
 
-## 2. Autumn set (Autumn pack) + Spooky pack
+## 2. Autumn and Spooky groups (Seasonal & Holiday pile)
 "Spooky sitting things" = autumn seats. They sit like furniture (§1).
 | Item | Pack | Recipe | Notes |
 |---|---|---|---|
 | Hay Bale | Autumn | 4 Corn | **seat**; stacks like a block; halves fall damage like Leaves |
-| Pumpkin | Autumn | grows from Pumpkin Seeds | **carvable** (§3); seeds: 4 in the Autumn unlock gift, and 2 back from every carving |
+| Pumpkin | Autumn | grows from Pumpkin Seeds | **carvable** (§3); seeds: 4 in a one-time gift the first time a player opens Seasonal & Holiday, and 2 back from every carving |
 | Pumpkin Stool | Spooky | 1 Pumpkin + 2 Sticks | **seat**, carved face shows |
 | Spooky Bench | Spooky | 3 Planks + 2 Sticks | **seat** (2), bat cut-outs in the backrest |
 | Gourd Pile, Corn Stalks, Apple Crate | Autumn | 1–2 basic items each | decor |
@@ -63,7 +63,7 @@ Source of truth for these items. StyleBot sets the look (glow, twinkle, friendly
 - **Mastery hook:** none. Art isn't scored, and no holiday-themed contests.
 
 ## 4. String lights
-**String lights** (shown as "Winter lights" in the Winter pack): a normal building part all year; the Winter pack only adds snow-tipped and icicle bulb styles. Colours: warm white, amber, red, green, blue, teal; plus a Rainbow string.
+**String lights** (the snow and icicle styles are labelled "Winter lights"): a normal building part all year; the pile adds snow-tipped and icicle bulb styles (labelled Winter lights). Colours: warm white, amber, red, green, blue, teal; plus a Rainbow string.
 - **Place (2 taps, no drag):** hold String Lights, Use a block face = start; Use a second face within 12 blocks = the string drapes between with a gentle sag. ✕ chip cancels after the first tap. Use on a string = Options (colour, pattern, Pick up).
 - **Power (the tech lesson, phased):**
   - Before circuits ship: every string has a built-in battery and lights at night automatically.
@@ -89,9 +89,11 @@ Everything here costs Planks, Sticks, Stone, Corn, Leaves, Cloth or Glow Pebble,
 5. "Use saved" puts the last face on a new pumpkin in 1 tap.
 6. Place String Lights with 2 taps 10 blocks apart; they sag and light at night. Motion off: steady, no pattern runs.
 7. No light in this brief changes brightness faster than 1 step per 0.5 s with fade; no pure-white pixels in any glow (StyleBot check).
-8. Teacher sets Spooky to Off: its items leave the palette and craft list; placed ones stay, unlocks kept. On Auto it shows only Oct 15 – Nov 1. String Lights stay available all year.
+8. Teacher sets Seasonal & Holiday to Off: every pile item leaves the palette and craft list; placed ones stay. With it On, every item is there on any date. String lights stay available either way.
 9. Every new name shows in the chosen language; ar and fa-AF RTL in the carve panel.
 10. 1366 at CPU 4× throttle: a plot with 64 strings and 20 lit pumpkins holds ≥30 fps.
 DONE only when every test passes on the live site. Never fake a DONE.
 
 GameMaster 2026-10-06 7:20 AM: per StyleBot's look rules (`STYLEBOT-HOLIDAY-LIGHTS-LOOK-2026-10-06.md`) and Curriculum's names: pack names are Autumn, Spooky, Winter and String lights only (no Harvest, Spooky-Cute, Diwali or Winter Lights packs); the Toothy grin stamp is now Wide grin (open smile, no teeth); the Moon stamp and Moon Lantern are full moons.
+
+GameMaster 2026-10-06 10:05 AM: switched from seasonal packs to Diego's one big Seasonal & Holiday pile (all year, one teacher On/Off). Pack names no longer apply.

@@ -50,29 +50,39 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
 - Sound controls: every player has Music on/off and volume; class mode starts at low volume; teachers can mute all music for the class.
 - Badges: First Tune (play 8 note blocks in a row), Mixmaster (play your own DJ Berty song on a Jukebox).
 
-## 7. Holiday Decoration Packs
-- Free, auto-unlock on their dates (school-year calendar config), and once unlocked they're kept forever and usable year-round. Using them is always optional.
-- Decorations only: lights, lanterns, plants, foods, patterns, colors, nature. No deity figures, sacred texts, or worship objects. Each pack has a short respectful "About this celebration" card.
-- Teacher toggle per pack; the calendar is a config file so the school can add or swap.
-- Starter calendar (draft, for Diego's review before ship):
-  | Window | Pack | Sample items |
+## 7. Seasonal & Holiday pile
+- Diego (Oct 6): one big pile, so no holiday is favored. Every item is in one **Seasonal & Holiday** section for everyone, all year, with one teacher On/Off switch (default On). No dates, no featured holiday, no packs. Full rules in `BERTOPIA-DECOR-PACKS.md` (Pile model).
+- Decorations only: lights, lanterns, plants, foods, patterns, colours, nature. No skulls or tombstones, no religious symbols, no deity figures or worship objects, LED-style lights only.
+- **In the pile now** (grouped for sorting only): Autumn (pumpkins, corn, leaf piles, apple crates, hay, scarecrow, Marigold Pattern Tile as marigold flowers), Spooky (jack-o'-lantern, friendly ghost lights, cobweb deco, bat bunting, black cat, full-moon lantern), Winter (snow, evergreen tree, snowman, Winter lights bulb styles), Summer (beach umbrella, sandcastle, ice-cream cart), plus String lights and Pattern Floor Tile (was rangoliTile 119, plain geometric art).
+- **Culture items, cleared by Curriculum (Oct 6, `CURRICULUM-PILE-CULTURE-ITEMS-CHECK-2026-10-06.md`), now in the same pile.** Tiles are named for the object, never a holiday. Shape limits are part of the art spec:
+  | Tile name | Art limits | Recipe (Workbench) |
   |---|---|---|
-  | Sept–Nov | Autumn | pumpkins, corn, leaf piles, apple crates |
-  | Oct 15–Nov 1 (Auto) | Spooky | jack-o'-lantern, friendly ghost lights, cobweb deco, full-moon lantern |
-  | Oct 31–Nov 2 | Día de los Muertos | marigolds, papel picado banners |
-  | Dec | Winter | snow, evergreen tree, snowman, Winter lights bulb styles (String lights are a normal part all year) |
-  | Dec (dates vary) | Hanukkah | dreidels, blue-and-white lights, gelt coins deco |
-  | Dec 26–Jan 1 | Kwanzaa | red/black/green banners, woven mat, harvest basket |
-  | Jan/Feb (dates vary) | Lunar New Year | red lanterns, paper dragon, gold coin deco, firework lights |
-  | Feb | Kindness Week | hearts, cards, flowers |
-  | Mar (dates vary) | Holi | color-splash paint blocks (ties to Paint) |
-  | Mar (dates vary) | Ramadan / Eid | fanous lights, date-palm planters |
-  | Mar 20 | Nowruz | spring flowers, sprouting greens, goldfish bowl, painted eggs |
-  | Apr 22 | Earth Day | trees, solar flowers, recycle bins |
-  | Jun | Summer | beach umbrella, sandcastle, ice-cream cart |
-- Badge: World Celebrations (place an item from 5 different packs).
+  | Papel Picado Banner | flowers, birds and geometric cuts only; no skulls or crosses | 2 Paper + 1 String |
+  | Blue & White Lights | plain bulb string, soft white `#DCE6F0`; no menorah shape, no star | String lights + 1 Blue Dye |
+  | Woven Mat | plain weave, red/black/green; no kinara or candles | 3 Grass Fiber |
+  | Harvest Basket | fruit and corn in a basket | 2 Grass Fiber + 1 Corn |
+  | Red Lantern | steady LED glow; no god figures, no incense | 1 Paper + 1 Red Dye + 1 LED |
+  | Paper Dragon | steady LED glow; no god figures | 3 Paper + 1 Red Dye |
+  | Fanous | steady LED glow; no crescent on top | 1 Glass + 1 Copper Wire + 1 LED |
+  | Colour Splash Block | paint splats; ties to Paint | 1 Block + any Dye |
+  | Sprouted Grass Dish | a dish of grass only | 1 Clay Dish + 1 Seeds |
+  | Heart Card | hearts, flowers | 1 Paper + 1 Red Dye |
+  | Solar Flower | ties to Circuits (glows by day's charge) | 1 Flower + 1 Solar Cell |
+  | Imigongo Zigzag Tile | black/white/red zigzag geometry | 1 Clay + 1 Dye |
+  | Petrykivka Flower Tile | painted flower sprays, no figures | 1 Planks + 1 Dye |
+  | Mesob Basket | woven basket with lid | 3 Grass Fiber |
+- Evergreen tree: no star or angel on top. Marigold Pattern Tile: flowers only.
+- Wiki: one neutral "where it comes from" line per tile, checked by Curriculum. No "About this holiday" card in game.
+- diyaLight (118) is removed (flame lamp). Recipes use basics only; if a basic named here (Grass Fiber, Clay Dish, Dye) isn't in REGISTRY.json, Debugzy swaps in the nearest existing basic.
+- Badge: Decorator (place 10 different Seasonal & Holiday items), not tied to any holiday.
 
 
-GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.
+GameMaster 2026-10-06: open questions answered in /workspace/briefs/bertopia/BERTOPIA-GM-ANSWERS-2026-10-06.md (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.
 
 GameMaster 2026-10-06 7:20 AM: §7 calendar renamed to Curriculum's packs (Autumn, Spooky, Winter; String lights are a year-round part). Removed: the Diwali row, "crescent and star lanterns" (no-religious-symbols rule) and "sugar-skull pattern tiles" (Curriculum: no Day of the Dead skulls). Pack model and Hub toggles: `BERTOPIA-DECOR-PACKS.md`.
+
+GameMaster 2026-10-06 7:38 AM: §7 calls for Debugzy: Día row parked with the culture extras; marigold tile moves to Autumn; rangoliTile becomes generic Pattern Floor Tile (base decor); diyaLight removed.
+
+GameMaster 2026-10-06 10:05 AM: §7 rewritten to Diego's one-pile model; it replaces the 7:20 and 7:38 notes above about packs.
+
+GameMaster 2026-10-06 10:10 AM: culture items added to the pile with Curriculum's shape limits and object names, plus Curriculum's 3 new tiles (Imigongo, Petrykivka, Mesob).

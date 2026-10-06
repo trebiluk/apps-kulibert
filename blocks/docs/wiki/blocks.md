@@ -1,7 +1,7 @@
 <!-- GENERATED from REGISTRY.json by tools/build_wiki.py. Do not edit by hand: change the registry, then rebuild. -->
 # Blocks
 
-100 entries. Text is a **draft** until Curriculum Bot checks it. Verbs are the locked ten (see verbs.md).
+112 entries. Text is a **draft** until Curriculum Bot checks it. Verbs are the locked ten (see verbs.md).
 
 | id | Name | What it is | Verbs | Recipe | Stage | Fact chip | Bertodex | Asset |
 |---|---|---|---|---|---|---|---|---|
@@ -55,11 +55,10 @@
 | 112 | **Apple Crate** `appleCrate` | A wooden crate of autumn apples. | Mine, Place | – | holidays-1 | – | dex:appleCrate | apple_crate_top |
 | 113 | **Friendly Ghost Light** `ghostLight` | A soft smiling ghost-shaped light. | Mine, Place | – | holidays-1 | – | dex:ghostLight | block:ghostLight |
 | 114 | **Cobweb Deco** `cobweb` | A fake cobweb for decoration. | Mine, Place | – | holidays-1 | – | dex:cobweb | cobweb |
-| 115 | **Marigolds** `marigold` | Bright orange flowers used for Dia de los Muertos. | Mine, Place | – | holidays-1 | – | dex:marigold | marigold |
-| 116 | **Papel Picado Banner** `papelPicado` | Cut-paper banners in bright colors. | Mine, Place | – | holidays-1 | – | dex:papelPicado | papel_picado |
+| 115 | **Marigolds** `marigold` | Bright orange flowers that bloom from summer into autumn. | Mine, Place | – | holidays-1 | – | dex:marigold | marigold |
+| 116 | **Papel Picado Banner** `papelPicado` | Cut-paper banners in bright colors. | Mine, Place | 2 Cloth + 1 Cotton → 1 Papel Picado Banner (workbench) | holidays-1 | – | dex:papelPicado | papel_picado |
 | 117 | **Marigold Pattern Tile** `skullPatternTile` | A tile with a bright marigold flower pattern. | Mine, Place | – | holidays-1 | – | dex:skullPatternTile | tile_skull_pattern |
-| 118 | **Diya Light** `diyaLight` | A small clay lamp shape with an LED glow, never a flame. | Mine, Place | – | holidays-1 | – | dex:diyaLight | block:diyaLight |
-| 119 | **Rangoli Floor Tile** `rangoliTile` | A floor tile with a colorful rangoli pattern. | Mine, Place | – | holidays-1 | – | dex:rangoliTile | tile_rangoli |
+| 119 | **Pattern Floor Tile** `rangoliTile` | A floor tile with a simple geometric pattern. Paint it any colour. | Mine, Place | – | storage-2 | – | dex:rangoliTile | tile_rangoli |
 | 120 | **String Lights** `stringLights` | A strand of small LED lights. | Place, Connect | – | holidays-1 | – | dex:stringLights | string_lights |
 | 126 | **Workshop Door** `workshopDoor` | Teacher-flag door to the Build world. | Open | – | worlds-1 | – | dex:workshopDoor | door_workshop_top |
 | 129 | **Copper Block** `copperBlock` | A solid block of copper. | Mine, Place | – | ladder-1 | – | dex:copperBlock | copper_block |
@@ -99,9 +98,22 @@
 | 169 | **Stool** `stool` | A seat with no back. Use it to sit; move to get up. | Place, Use (sit; Move = stand) | – | storage-2 | – | dex:stool | block:stool |
 | 170 | **Bench** `bench` | A long seat for 2. Use it to sit; move to get up. | Place, Use (sit; Move = stand) | – | storage-2 | – | dex:bench | block:bench |
 | 171 | **Table** `table` | A table. Put chairs, stools or a bench next to it. | Place, Paint | – | storage-2 | – | dex:table | block:table |
-| 160 | **Winter Lights** `winterLights` | LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes. | Place, Connect, Open (Steady/Slow twinkle) | – | holidays-2 | LED string lights use far less power than old bulbs. | dex:winterLights | winter_lights |
-| 161 | **Wreath** `wreath` | A ring of evergreen branches. | Mine, Place | – | holidays-2 | – | dex:wreath | wreath |
-| 162 | **Gift Box Deco** `giftBox` | A wrapped box for decoration. It holds nothing. | Mine, Place | – | holidays-2 | – | dex:giftBox | gift_top |
-| 163 | **Snow Pal** `snowPal` | A friendly snow figure. It never melts here. | Mine, Place | – | holidays-2 | – | dex:snowPal | block:snowPal |
-| 164 | **Ornament Tile** `ornamentTile` | A tile with shiny round ornaments. | Mine, Place | – | holidays-2 | – | dex:ornamentTile | tile_ornament |
-| 165 | **Peppermint Stripe Block** `stripeBlock` | A red and white striped block. | Mine, Place | – | holidays-2 | – | dex:stripeBlock | stripe_red |
+| 160 | **Winter Lights** `winterLights` | LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes. | Place, Connect, Open (Steady/Slow twinkle) | – | holidays-1 | LED string lights use far less power than old bulbs. | dex:winterLights | winter_lights |
+| 161 | **Wreath** `wreath` | A ring of evergreen branches. | Mine, Place | – | holidays-1 | – | dex:wreath | wreath |
+| 162 | **Gift Box Deco** `giftBox` | A wrapped box for decoration. It holds nothing. | Mine, Place | – | holidays-1 | – | dex:giftBox | gift_top |
+| 163 | **Snow Pal** `snowPal` | A friendly snow figure. It never melts here. | Mine, Place | – | holidays-1 | – | dex:snowPal | block:snowPal |
+| 164 | **Ornament Tile** `ornamentTile` | A tile with shiny round ornaments. | Mine, Place | – | holidays-1 | – | dex:ornamentTile | tile_ornament |
+| 165 | **Peppermint Stripe Block** `stripeBlock` | A red and white striped block. | Mine, Place | – | holidays-1 | – | dex:stripeBlock | stripe_red |
+| 172 | **Blue & White Lights** `blueWhiteLights` | A plain string of blue and soft-white LED bulbs. | Place, Mine | 1 String Lights + 1 Paint dab → 1 Blue & White Lights (workbench) | holidays-1 | – | dex:blueWhiteLights | block:blueWhiteLights |
+| 173 | **Woven Mat** `wovenMat` | A flat mat woven in red, black and green. | Place, Mine | 3 Wheat → 1 Woven Mat (workbench) | holidays-1 | – | dex:wovenMat | block:wovenMat |
+| 174 | **Harvest Basket** `harvestBasket` | A basket of fruit and corn. | Place, Mine | 2 Wheat + 1 Corn → 1 Harvest Basket (workbench) | holidays-1 | – | dex:harvestBasket | block:harvestBasket |
+| 175 | **Red Lantern** `redLantern` | A round red paper lantern with a steady LED glow. | Place, Mine | 1 Cloth + 1 Paint dab + 1 LED Glow Strip → 1 Red Lantern (workbench) | holidays-1 | – | dex:redLantern | block:redLantern |
+| 176 | **Paper Dragon** `paperDragon` | A long, friendly paper dragon with a steady LED glow. | Place, Mine | 3 Cloth + 1 Paint dab → 1 Paper Dragon (workbench) | holidays-1 | – | dex:paperDragon | block:paperDragon |
+| 177 | **Fanous Lantern** `fanousLantern` | A metal-and-glass lantern with geometric windows and an LED glow. | Place, Mine | 1 Glass + 1 Copper Wire + 1 LED Glow Strip → 1 Fanous Lantern (workbench) | holidays-1 | – | dex:fanousLantern | block:fanousLantern |
+| 178 | **Colour Splash Block** `colourSplash` | A block covered in bright paint splats. | Place, Mine | 1 Stone or Planks + 1 Paint dab → 1 Colour Splash Block (workbench) | holidays-1 | – | dex:colourSplash | block:colourSplash |
+| 179 | **Spring Greens** `springGreens` | A dish of sprouted green grass. | Place, Mine | 1 Clay + 1 Wheat → 1 Spring Greens (workbench) | holidays-1 | – | dex:springGreens | block:springGreens |
+| 180 | **Kindness Heart** `kindnessHeart` | A paper heart with flowers on it. | Place, Mine | 1 Cloth + 1 Paint dab → 1 Kindness Heart (workbench) | holidays-1 | – | dex:kindnessHeart | block:kindnessHeart |
+| 181 | **Solar Flower** `solarFlower` | A flower that charges by day and glows softly at night. | Place, Mine | 1 Flower + 1 Solar Panel → 1 Solar Flower (workbench) | holidays-1 | – | dex:solarFlower | block:solarFlower |
+| 182 | **Imigongo Zigzag Tile** `imigongoTile` | A tile with black, white and red zigzags. | Place, Mine | 1 Clay + 1 Paint dab → 1 Imigongo Zigzag Tile (workbench) | holidays-1 | – | dex:imigongoTile | block:imigongoTile |
+| 183 | **Petrykivka Flower Tile** `petrykivkaTile` | A tile painted with bright flower sprays. | Place, Mine | 1 Planks + 1 Paint dab → 1 Petrykivka Flower Tile (workbench) | holidays-1 | – | dex:petrykivkaTile | block:petrykivkaTile |
+| 184 | **Mesob Basket** `mesobBasket` | A tall woven basket with a lid. | Place, Mine | 3 Wheat → 1 Mesob Basket (workbench) | holidays-1 | – | dex:mesobBasket | block:mesobBasket |
