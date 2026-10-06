@@ -2094,7 +2094,7 @@
    "breakable": true,
    "drop": "cottonBush",
    "stack": 64,
-   "milestone": "storage-1",
+   "milestone": "world-2",
    "availableFrom": "live",
    "natural": null,
    "dex": {

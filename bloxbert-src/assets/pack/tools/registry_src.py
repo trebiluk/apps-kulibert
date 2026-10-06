@@ -87,7 +87,7 @@ BLOCKS = [
  (73,'platinumOre','Platinum Ore','cube','ore_platinum',9.0,'world-2','world-2','Ores & Rocks','One of the rarest metals in the crust. Only deep under Emberdeep.'),
  (74,'basalt','Basalt','cube','basalt',3.0,'world-2','world-2','Ores & Rocks','Dark rock made when lava cools.'),
  (75,'snowGrass','Snowy Grass','cube',dict(top='snow',side='dirt_snow',bottom='dirt'),0.6,'world-2','world-2','Blocks','Soil with a cap of snow.'),
- (76,'cottonBush','Cotton Bush','cross','cotton_bush',0.2,'storage-1',L,'Plants & Critters','Cotton fluff is plant fiber. 3 Cotton spin into 1 Cloth.'),
+ (76,'cottonBush','Cotton Bush','cross','cotton_bush',0.2,'world-2',L,'Plants & Critters','Cotton fluff is plant fiber. 3 Cotton spin into 1 Cloth.'),
  (77,'flowerBush','Flowers','cross','flower_teal',0.2,'world-2','world-2','Plants & Critters','Flowers feed bees and butterflies. 1 Flower makes 2 Paint dabs.'),
  (78,'saltPan','Salt Pan','model','salt_pan',None,'world-2','world-2','Items & Machines','Sun dries seawater. The salt stays behind.'),
  # storage-1

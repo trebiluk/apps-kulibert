@@ -585,7 +585,8 @@ items.png,atlas,atlas/items.png,,,Contains Kenney CC0 tiles + project-original c
 terrain.json,atlas-map,atlas/terrain.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,8faa5629b574
 alpha.json,atlas-map,atlas/alpha.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,4a2f46feabf1
 items.json,atlas-map,atlas/items.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,8cf62c9b888b
-registry.json,registry,registry.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,43137feac7c5
+registry.json,registry,registry.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,a6b586c80eb4
+REGISTRY.json,registry-wiki,REGISTRY.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,f72d1cb4a546
 bertodex-en.json,dex-text,dex/bertodex-en.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,e18fca43904d
 lavaBlock,block-texture,,,,"n/a (planned, not drawn)",,planned,"world-3: Molten rock look; contact = bounce to safety, never death (EFFECTS/WORLDS)",
 magmaPool,block-texture,,,,"n/a (planned, not drawn)",,planned,"world-3: glow edge, Motion-off = no shimmer",
