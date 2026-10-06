@@ -1,78 +1,75 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 4 2026, after the 2.5.22 core-feel ship.
+Updated Tue Oct 6 2026, 6:45 AM ET (Debugzy audit of 2.5.15–2.5.42; full report: proof/AUDIT-2026-10-06.md on Debugzy's box).
 
 ## 1. Live now
-- **Bertopia 2.5.42** is a path a kid can finish. The gold step says what is next. Coal is underground. Wheat breaks into flour. Reeds break into sugar. A door is 6 planks, and right-click opens it. A bunk sets home.
-- **Bertopia 2.5.26** groups crafting into Can make now, Almost, and Show all, adds ×Max, sells a shop material only after you have found it, and adds Look speed plus Invert look in Settings.
-- **Bertopia 2.5.25** is a polish on 2.5.24. A drop beside your feet hops into the bag. Breaking a counter or a bunk no longer pays a free copy.
-- **Bertopia 2.5.24** drops stay. A full bag still breaks the block. The piece waits on the ground, or in Lost & Found if the ground is full. Q drops one. Shift+Q drops the stack. Feel and sky from 2.5.22 and 2.5.23 stay.
-- **Bertopia 2.5.23** is a visuals plate on top of 2.5.22. Sky, sun, horizon fog, a teal Berty, and a name chip. Feel numbers are unchanged.
-- **Bertopia 2.5.22** is the core-feel plate. 2.5.21 (menu) stays underneath it.
-- One-thumb stick, Jump, and Crouch. Walk 4.3, run 5.6, crouch 1.3. Jump is one block (no double jump). Creative double-tap Jump flies.
-- A short world tap places. Holding mines (cracks from 250 ms, break at 500 ms or the block's time). A long-press does not pick.
-- Touch view is 3rd person. Portrait view is wider. Survival reach is 6, Creative reach is 10. Key 0 does nothing. E opens the bag. Q no longer picks.
+- **Bertopia 2.5.42** (`a0675ec`, Oct 5 10:49 AM ET). Live = main; `npm run build` reproduces `blocks/app.js` byte for byte.
+- **Proof verdict: FAIL (P1)**, Oct 6 6:30 AM ET, `proof/bertopia-2.5.42/RESULT.md`. 0 console errors at 412/915/1366, ☰ by touch, the 26 repo-smoke lines and every `tools/*-check.mjs` pass. The failures are below.
+- From Oct 4 7:40 AM to Oct 5 10:49 AM ET the Build chat shipped 28 cuts (2.5.15–2.5.42) with no proof between them. Most of core-1/core-2/core-3 and part of 2.6.0 landed this way:
+  - 2.5.15–2.5.19: the 2.5.14 leftovers (Oven tiles, Fill/Walls words, Menú, Break contrast)
+  - 2.5.20: Always day
+  - 2.5.21: Arabic and Dari menu tap
+  - 2.5.22: stick, walk/run/crouch, 1-block jump, hold to mine, 3rd person
+  - 2.5.23: sky and a teal Berty
+  - 2.5.24–2.5.25: drops never lost, Lost & Found
+  - 2.5.26–2.5.28: craft groups, ×Max, shop only after you find it, Look speed
+  - 2.5.29: cracks drain, Wide view
+  - 2.5.30–2.5.31: place repeat, Use/F, crouch edge, Auto-climb, Pick chip
+  - 2.5.32: Bag 9 + 6, Survival first, a device-only teacher switch
+  - 2.5.33–2.5.36: bag and Survival polish, per-frame copies cut
+  - 2.5.37: spawn town protected
+  - 2.5.38–2.5.39: Box 18 and Wood/Stone Tools
+  - 2.5.40–2.5.41: pointer fixes
+  - 2.5.42: coal underground, wheat → flour, reeds → sugar, Wood Door, bunk sets home, gold path step
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
-- **Lanterns and doors stay closed.** Creative is a teacher-device switch in 2.5.32, not the server teacher flag.
 
-## 2. Open fixes
-- [x] **Menu (2.5.21):** Arabic and Dari menu taps open the menu.
-- [x] **Core feel (2.5.22):** stick, jump, speeds, hold-to-mine, touch camera, reach, E / 0 / Q.
-- [x] **Drops (2.5.24):** a full bag still breaks. The piece stays on the ground (or in Lost & Found). Q drops one.
-- [x] Bag is 9 + 6 in 2.5.32. Older stacks past 15 wait in Lost & Found. The server Teacher flag is still not this plate.
-- [x] **Craft and shop (2.5.26):** Can make now / Almost / Show all, ×Max, shop restock only after you find the material, Look speed and Invert look.
-- [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` still needs the old gates. Not this plate.
+## 2. Open fixes (from proof/bertopia-2.5.42/RESULT.md) → brief `briefs/fixq/bertopia-2543.md` = **BT 2.5.43**, before anything in Next up
+- [ ] **Touch HUD:**
+  - The gold `#path-chip` covers the stick at 412 and 915, and the keys line at 1366. It's 35 px tall.
+  - "Tap ☰ for menu" covers Crouch at 915x412, and Crouch sits under the header.
+  - Upright, 4 of 9 hotbar slots are off screen and there's no Bag tile.
+- [ ] **Teacher gate:** any student can flip ☰ → Teacher → "This device can build", which unlocks Creative, the town helper, the price dial and Reset wallet. Gate it with the existing `HubStaffAuth.isUnlocked()`.
+- [ ] **Words:** tour step 1 still says "Move with the pads". The Settings help says "double-tap to fly". What's new still shows the 2.5.32 line.
+- [ ] **Smoke (carried over from 2.5.15 item 3):** `tools/smoke.mjs` still uses `element.click()` and has no 2.5.22–2.5.42 gates. It needs ≥30 real-input lines at 412 and 1366.
+- [x] 2.5.14 leftovers: Oven tile pictures and fit, Nothing to bake yet, Output: Glass, fillN/wallsN in 8 languages, Menú, Break contrast (2.5.15–2.5.19; smoke lines pass).
 
-## 3. Next up
-Lanterns, doors, and the rest of the core-mechanics lock stay behind a proof of 2.5.22. Do not start them in the same breath as this plate.
-
-The rest of this list is the Oct 4 morning queue (it still names 2.5.14 as live). Do not treat that older "Live now" as the plate.
-- **Proof verdict: FAIL** (Oct 4, 7:12–7:35 AM ET; live app.js byte-identical to the d47a8d3 build). Proof: `proof/bertopia-2514/RESULT.md` (Debugzy's box).
-- Now passing: the Oven strip stays past 3 s; a tile spends the whole recipe (Sand 2 → Glass, Flour 2 → Bread, Flour 1 shows no Bread tile); the chip reads Survival after reload; tour steps 1–6 in all 8 languages.
-- Still passing: Copy/Paste (Creative and Survival, half-air), Fill/Walls + Undo/Redo, pickBlock toasts (en, ru), sale ⚙ 6 and Take till once, Pick up card, Save → reload keeps the world, 0 console errors, ☰ by touch, Esc 6/6, no test hooks on live. `#kp-live` isn't on `/blocks/` (prefs not loaded), so hotbar slot 1 is clear.
-
-## 2. Open fixes (from proof/bertopia-2514/RESULT.md; goal numbers = NEXT-50)
-Fix brief: `briefs/fixq/bertopia-2514b.md` → **BT 2.5.15**. It ships before anything in Next up.
-- [x] **Goal 1 (Oven):** strip wiped by the 1 s repaint. Fixed in 2.5.14.
-- [x] **Goal 1 (Oven):** `addInput` matched only `in[0]`. Fixed in 2.5.14 (Flour 2 → Bread).
-- [x] **Goal 1 (Oven):** `#mode-chip` read "Creative" after reload. Fixed in 2.5.14.
-- [x] **Goal 3 (words):** stray `tourMove` lines and English tour steps. Fixed in 2.5.14.
-- [x] **Goal 1 (Oven):** every recipe tile has the same tan square instead of the input's picture; tiles show only `in[0]`.
-- [x] **Goal 1 (Oven):** tiles overlap at 1366 (Flour on Sand) and the Bread tile is cut off at 412. No "Nothing to bake yet" line when nothing is payable.
-- [x] **Goal 1 (Oven, P2):** the Output tile shows the raw key ("Output glass"), and Input reads "Input Input".
-- [x] **Goal 2 (words):** `fillN`/`wallsN` exist only in en, so ru shows "Fill 32" and "Walls 24".
-- [ ] **Goals 1–3 (DONE rule):** `tools/smoke.mjs` runs at 412 only, with `.click()` and `stations.paint`, has 3 checks, and dropped the old gates. Its own "1b sand spent" fails.
-- [x] **Goal 50 (P2, carried over):** Break text contrast bumped to white on #0f172a. Spanish menu reads Menú. Arabic and Dari brick names stay translated.
+### Flags: built without a brief (GameMaster calls; leave as shipped, don't extend)
+- **Wood Tool (5 Planks) and Stone Tool (3 Stone + 2 Planks) recipes.** core-1 said "Tool recipes are [PENDING GM]. Don't invent recipes." The hint says "A Wood/Stone Tool is faster", where the spec says "A Copper Tool is faster".
+- **New world content:** wheat and reed plants (break into flour and sugar), wool blocks on the surface (1% per color), coal at y −3 to −28 (ORE-TABLE: most in B1, −1 to −16).
+- **Spawn-town protection** (shop, road, pond, plot rings).
+- **Matches the specs, though not briefed:** Box 8 Planks / 18 stacks (STORAGE-SPEC), Wood Door 6 Planks (BASICS-GM), Bag 9 + 6 (2.6.0).
+- **Still missing from core-1/core-2/2.6.0:**
+  - coyote 120 ms and jump buffer 150 ms
+  - R rotate
+  - Slow taps (800 ms) and "More time to connect"
+  - the Overflow Box (Lost & Found stands in)
+  - `/shared/kw-interact.*`
+  - Build-world touch mine is 500 ms; the spec says instant tap
 
 ## 3. Next up (paste order; one version each, prove before the next)
-2.5.15 (`bertopia-2514b.md`, the 2.5.14 leftovers) goes first; the open fixes above are its checklist.
+| # | Version | Brief (`briefs/fixq/`) | Status |
+|---|---|---|---|
+| 0 | 2.5.43 | **bertopia-2543.md:** HUD fit + hotbar, teacher gate, words + real smoke | [ ] |
+| — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
+| 1 | 2.5.44 | bertopia-basics-1.md: Lever, Push Button, the other doors + double + lock, day/night + toggles, Light Up badges, ores per ORE-TABLE (the Wood Door from 2.5.42 stays) | [ ] |
+| 2 | 2.5.45 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (Tube + 2 Glow Mix + 1 Booster Dye, no Salt), Cold Vial, colors, caps, minimap, lessons | [ ] |
+| 3 | 2.5.46 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5) | [ ] |
+| 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer, Overflow Box (the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
+| 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
+| 6 | 2.6.2 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack, shelves, Box/Double Box (Box exists), Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | [ ] |
+| 7 | 2.6.3 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | [ ] |
+| 8 | 2.6.4 | bertopia-bot-cargo.md: Bot H1 Cargo Bay (T5; steady amber low-battery ring, no blink) | [ ] |
+| 9 | 2.6.5 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter | [ ] |
+| 10 | 2.6.6 | bertopia-storage-5.md: Storage Network | [ ] |
+| 11 | 2.6.7 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
+| 12 | 2.6.8 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
+| 13 | 2.6.9 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
+| 14 | 2.6.10 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
+| 15 | 2.6.11 | bertopia-holidays-1.md: holidays.json calendar, first 4 packs | [ ] |
+| 16 | — | Worlds/Workshop, Effects, Bertodex + ores (Tin → Bronze 8:1), NEXT-50 goals 28–50: briefs not written yet | [ ] |
 
-| # | Version | Brief (`briefs/fixq/`) | Goals | Status |
-|---|---|---|---|---|
-| 1 | 2.5.16 | **Core mechanics lock:** bertopia-core-1.md: one-thumb stick + Jump, FOV + touch 3rd person, walk/run/crouch + fixed 1.25 jump (no double jump), press < 500 ms = Place/Use, ≥ 500 ms = Mine (cracks from 250 ms) + tool multipliers, long-press never picks | 4 | [ ] |
-| 2 | 2.5.17 | **Core mechanics lock:** bertopia-core-2.md: Creative/Build world for the Teacher flag only (UI-side), reach, drops never despawn + Lost & Found, E/Q/0 keys, never place inside a player, R rotate | 5 | [ ] |
-| 3 | 2.5.18 | **Core mechanics lock:** bertopia-core-3.md: crafting groups (Can make now / Almost / Show all) + ×Max, store sells only found materials, Controls settings | 6 | [ ] |
-| 4 | 2.5.19 | bertopia-basics-1.md: wood Phase 1, tier gates (T4/T5 gated), Stick/Lever/Button, 4 doors + double + lock, day/night + toggles + Light Up badges (lit-block rule), ores per ORE-TABLE (Iron, Copper, Zinc, Coal) | 7, 8 | [ ] |
-| 5 | 2.5.20 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (Tube + 2 Glow Mix + 1 Booster Dye, no Salt), Cold Vial, colors, caps, minimap, lessons | 8 | [ ] |
-| 6 | 2.5.21 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire placement, powered sliding door, `power.js` (T5) | 7, 8 | [ ] |
-| 7 | 2.6.0 | bertopia-260.md: shared **kw-interact** module + small Bag (Hotbar 9 + Pockets 6 = 15), 3 shapes, tap first, Overflow Box, Slow taps, keyboard-friendly link timer, `#kp-live` clear of slot 1 | 9–11 | [ ] |
-| 8 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | 12–14 | [ ] |
-| 9 | 2.6.2 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack (6 Cloth + 2 Planks), shelves, Box/Double Box, Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | 15 | [ ] |
-| 10 | 2.6.3 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | 16 | [ ] |
-| 11 | 2.6.4 | bertopia-bot-cargo.md: Berty's Bot H1 Cargo Bay (T5; Bays II/III need a Box; low battery = steady amber ring, no blink) | 17 | [ ] |
-| 12 | 2.6.5 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter (Copper tier = T5 Fabricator) | 18 | [ ] |
-| 13 | 2.6.6 | bertopia-storage-5.md: Storage Network (T5 complete; Silicon at Logic Gates; Drive L needs the Clean Bench, T7) | 19 | [ ] |
-| 14 | 2.6.7 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock (T5; after a Network Core) | 20 | [ ] |
-| 15 | 2.6.8 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock "Deliver to me" (T5) | 21 | [ ] |
-| 16 | 2.6.9 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad (T4; Boing! at a 6 bounce), Disco Floor | 22 | [ ] |
-| 17 | 2.6.10 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs, class mode 25%, teacher mute | 23 | [ ] |
-| 18 | 2.6.11 | bertopia-holidays-1.md: holidays.json calendar (14 approved packs), first 4 packs, culture cards | 24 | [ ] |
-| 19 | — | Worlds/Workshop (BERTOPIA-WORLDS.md): Workshop Door, Publish + Undo Publish; needs TechWorks Teacher-flag wiring (Diego). Brief not written yet. | 25 | [ ] |
-| 20 | — | Effects (BERTOPIA-EFFECTS-SPEC.md): Lab Bench, Levels I–III, chips, max 3, off zones. Brief not written yet. | 26 | [ ] |
-| 21 | — | Bertodex + ores (BERTOPIA-ORE-TABLE.md + ELEMENT-ECONOMY.md): Tin → Bronze (8 Cu + 1 Sn → 9), mass-ppm columns only. Brief not written yet. | 27 | [ ] |
-| 22 | — | NEXT-50 goals 28–50: Progress Core, Molten Chasm, Circuit Daily, Daily Board, Cross-app, Bot Blockly, Polish | 28–50 | [ ] |
-
-Out of scope until Diego decides: Bobbleheads (inert until PvP arenas open; default nobody); the TechWorks server side of the Teacher flag. Holiday packs 5–14 come in holidays-2/3.
+The basics/storage/fun briefs still name older "keep passing" versions in their bodies. The START line is what counts: each one starts from the version in the row above.
+Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the Teacher flag.
 
 ## 4. Locked rules (read before building; use the numbers exactly)
 - [BERTOPIA-CORE-MECHANICS.md](docs/BERTOPIA-CORE-MECHANICS.md): **read first.** The 10 verbs, movement/camera/mining numbers, the §0.3 gesture thresholds and the 23 live mismatches. It wins over any older brief.
@@ -93,6 +90,8 @@ Out of scope until Diego decides: Bobbleheads (inert until PvP arenas open; defa
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| 2.5.42 | a0675ec | FAIL (P1): HUD overlaps (path chip on the stick, hint on Crouch), any kid can flip the teacher switch, upright hotbar 4/9 off screen, stale tour/help/What's new, smoke has no gates (Oct 6, 6:30 AM) |
+| 2.5.15–2.5.41 | 689aea9 … 417deb0 | not proven one at a time (27 Build cuts, Oct 4 7:40 AM – Oct 5 10:35 AM); covered by the 2.5.42 proof |
 | 2.5.14 | d47a8d3 | FAIL: strip, recipe and chip fixed; tile pictures/fit, fillN/wallsN in 7 languages and smoke.mjs still open (Oct 4, 7:35 AM) |
 | 2.5.13 | 6e2110b | FAIL: Oven strip wiped by the repaint, Flour → Cupcake, mode chip after reload, tour/tool words, smoke not updated (Oct 4, 6:45 AM) |
 | 2.5.12 | 2cc31a5 | not proven alone (superseded by 2.5.13 within 33 min) |
