@@ -35,7 +35,7 @@ Tone: friendly, curious, a little funny, never scary, no villains to fight. Rogu
 *lore content: GameMaster.* Fireflies, butterflies, songbirds, frogs, prairie dogs, the cat, and the Pet Rock joke.
 
 ## 9. Holidays and seasons
-*lore content: GameMaster* (culture check: Curriculum Bot). Every pack is optional and the teacher can turn it on or off. The default winter name is "Winter Lights". Decorations only: no deity figures and no worship objects (FUN-ITEMS §7).
+*lore content: GameMaster* (culture check: Curriculum Bot). Bertyville keeps **one big Seasonal & Holiday pile**, so no holiday is favored: every decoration is there for everyone, all year, with no dates and no featured holiday. Autumn, Spooky, Winter and Spring are only sort headers inside it. The teacher has **one** On/Off switch for the whole pile; turning it off never removes what kids already placed. Items are named for the object, never a holiday (for example "String Lights", "Red Lantern"); the Bertodex may add one neutral line on where an item comes from. Decorations only: no deity figures, worship objects, skulls or tombstones, and steady LED light, never flame (FUN-ITEMS §7, DECOR-PACKS "Pile model").
 
 ## 10. The Workshop (Build world)
 *lore content: GameMaster.* Where the teacher-builders make the official map, and the Workshop Door.

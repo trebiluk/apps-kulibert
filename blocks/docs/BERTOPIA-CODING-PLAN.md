@@ -157,7 +157,8 @@ Each migration is pure: `(doc) => doc`. They run in order when loading, are test
 
 `schema.js` exports `CURRENT_V` and a `validate(doc)` used by Import (2 MB cap stays), by the server sync, and by `migrate-check`.
 
-### C.4 Server copy (Chromebooks wipe local data). **NEEDS DIEGO + Curriculum compliance check**
+### C.4 Server copy (Chromebooks wipe local data). **ON HOLD until Diego has the district's written OK** ([CURRICULUM-SERVER-SAVE-PRIVACY-2026-10-06.md](CURRICULUM-SERVER-SAVE-PRIVACY-2026-10-06.md): NY Ed Law 2-d / Part 121 and FERPA HIGH, COPPA MEDIUM; Diego sends the ask himself, no bot contacts the district; also needs a retention rule and a parent-notice line).
+- **Bridge now (no server, no new student data on our side):** Export (world and Blueprint) opens the Chromebook save picker with a "Save to Google Drive" tip; Import reads it back. Placed in `bertopia-storage-2.md` (2.6.8) item 2c. Keep the tip in What's new.
 - **Today there is none.** TechWorks (`trebiluk/TechWorks`: Cloudflare Pages, KV `TW_DESK`, D1 `KN_DB`) has only `/api/prefs` (one KV key `tw-prefs-v1`, an 8 KB per-app cap, read-modify-write), plus who, marks, desk and door-links. A world doc is 50 KB to 2 MB, so it **can't** go in prefs.
 - **Proposal:**
   - New `POST/GET /api/bertopia/world` on TechWorks with D1 table `bt_worlds(alias_ref TEXT, world TEXT, rev INT, doc BLOB gzip, updated_at TEXT, PRIMARY KEY(alias_ref, world))`.
@@ -422,7 +423,7 @@ Defaults: **one** teacher on/off switch for the whole pile (HubStaffAuth gate), 
 
 Every brief's Accepts include one Motion-off check and one Slow-taps check where it adds gestures.
 
-### S16 Server save (save-1). NEEDS DIEGO + Curriculum (§C.4)
+### S16 Server save (save-1). ON HOLD until the district's written OK (§C.4)
 - **Skill:** none for kids. It's trust: your work is never lost.
 - **Slot:** as soon as approved; it can jump the queue (it touches TechWorks, not game content).
 
@@ -499,6 +500,12 @@ export const tap = (page, x, y) => hold(page, x, y, 60)   // < 250 ms and < 8 px
 17. **G-Q17** The FIX-LIST audit says coyote time is missing. It's implemented (`feelTick`: coyote 120 ms, buffer 150 ms). Ask the audit to recheck rather than brief it.
 18. **G-Q18 CLOSED:** the wooden sign with the bat cut-out is approved (GameMaster + Diego's one-pile turn); no gravestone.
 19. **G-Q19 CLOSED:** no Iron Nugget. Carving Scoop = 2 Sticks + 1 Stone; Spooky Bench = 3 Planks + 2 Sticks.
+
+### Open GameMaster calls (Curriculum fact-check 2026-10-06; text left as is until GM decides)
+- **Note Block name** (Curriculum name flag): keep or rename.
+- **Fusion Core** (lore L2): real fusion IS nuclear, so kid text can't say "not nuclear". A: keep it with the line "Real fusion is how the Sun makes its light and heat." B: rename (e.g. "Maker Engine") under the no-nuclear rule. Diego only if it's a safety-policy call.
+- **Berty's Bot colour:** LORE.md §7 "orange crate" vs BERTOPIA-LORE §3 "teal with a blue accent" (Diego earlier: Botz orange).
+- **"Zapper"** (glossary): reads like a weapon and has no definition; rename or define.
 
 ### Needs Diego (money, safety, policy)
 1. **D1 Server world save** (§C.4): a new TechWorks endpoint and D1 table, plus the FERPA / NY Ed Law 2-d check by Curriculum Bot.

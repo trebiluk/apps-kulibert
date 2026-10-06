@@ -9,21 +9,21 @@
 | 2 | **Dirt** `dirt` | Soil: tiny bits of rock mixed with old plant matter. | Mine, Place | – | live | – | dex:dirt | dirt |
 | 3 | **Stone** `stone` | Plain rock. Most of the underground is stone. | Mine, Place | – | live | – | dex:stone | stone |
 | 4 | **Slate** `slate` | A dark rock that splits into flat sheets. | Mine, Place | – | live | – | dex:slate | greystone |
-| 6 | **Sand** `sand` | Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass. | Mine, Place | – | live | Glass is made by melting sand at about 1,700 C. | dex:sand | sand |
+| 6 | **Sand** `sand` | Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass. | Mine, Place | – | live | Glass makers melt sand with soda ash and limestone at about 1,500 °C. | dex:sand | sand |
 | 7 | **Gravel** `gravel` | Small rounded stones, often found in river beds. | Mine, Place | – | live | – | dex:gravel | gravel_stone |
 | 8 | **Red Brick** `brickRed` | Baked clay bricks. Strong when you push on them. | Mine, Place | 2 Red Sand → 1 Red Brick (oven) | live | – | dex:brickRed | brick_red |
 | 9 | **Grey Brick** `brickGrey` | Stone cut into bricks. | Mine, Place | 2 Stone → 2 Grey Brick (workbench) | live | – | dex:brickGrey | brick_grey |
 | 10 | **Planks** `planks` | Boards sawn from a log. 1 Log makes 4. | Mine, Place | 1 Log → 4 Planks (hand) | live | – | dex:planks | wood |
-| 11 | **Log** `log` | A piece of tree trunk. The rings show its age. | Mine, Place | – | live | You can count a tree's age from its rings. | dex:log | trunk_top |
+| 11 | **Log** `log` | A piece of tree trunk. The rings show its age. | Mine, Place | – | live | Where winters are cold, a tree adds one ring each year. Count the rings to find its age. | dex:log | trunk_top |
 | 12 | **Leaves** `leaves` | Leaves make food for the tree from sunlight. Sometimes a Berry falls out. | Mine, Place | – | live | Leaves use sunlight, water and carbon dioxide to make sugar (photosynthesis). | dex:leaves | leaves |
 | 13 | **Blue Cloth Block** `woolBlue` | A soft block of dyed cloth. | Mine, Place | – | live | – | dex:woolBlue | cotton_blue |
 | 14 | **Green Cloth Block** `woolGreen` | A soft block of dyed cloth. | Mine, Place | – | live | – | dex:woolGreen | cotton_green |
 | 15 | **Red Cloth Block** `woolRed` | A soft block of dyed cloth. | Mine, Place | – | live | – | dex:woolRed | cotton_red |
 | 16 | **Tan Cloth Block** `woolTan` | A soft block of undyed cloth. | Mine, Place | – | live | – | dex:woolTan | cotton_tan |
-| 17 | **Snow** `snow` | Frozen water crystals. Lands soft. | Mine, Place | – | live | Every snowflake has six sides because of how water molecules link up. | dex:snow | snow |
+| 17 | **Snow** `snow` | Frozen water crystals. Lands soft. | Mine, Place | – | live | Snow crystals have six sides or six arms. That comes from how water molecules link up. Most real snowflakes are lopsided. | dex:snow | snow |
 | 18 | **Ice** `ice` | Frozen water. In Bertopia it does not slide. | Mine, Place | 4 Snow → 1 Ice (hand) | live | Ice floats because water expands when it freezes. | dex:ice | ice |
 | 19 | **Red Sand** `redSand` | Sand stained red by iron. Bake it for Red Brick. | Mine, Place | – | live | – | dex:redSand | redsand |
-| 20 | **Glass** `glass` | Sand melted and cooled until you can see through it. | Mine, Place | 2 Sand → 1 Glass (oven) | live | Glass looks solid, but it has no crystal pattern inside. | dex:glass | glass |
+| 20 | **Glass** `glass` | Sand melted and cooled until you can see through it. | Mine, Place | 2 Sand → 1 Glass (oven) | live | Glass is a solid, but its atoms are jumbled. They are not lined up in a neat crystal pattern. | dex:glass | glass |
 | 21 | **Coreplate** `coreplate` | The floor of the world at y -64. It never breaks. | (none) | – | live | – | dex:coreplate | coreplate |
 | 25 | **Store Counter** `storeCounter` | The town store. Restock things you have already found. | Open | – | live | – | dex:storeCounter | store_front |
 | 28 | **Wheat** `wheat` | A grass whose seeds are ground into flour. | Mine, Place | – | live | – | dex:wheat | wheat_stage4 |
@@ -53,12 +53,12 @@
 | 110 | **Corn Stalks** `cornStalks` | Dried corn stalks tied in a bundle. | Mine, Place | – | holidays-1 | – | dex:cornStalks | corn_stalks |
 | 111 | **Leaf Pile** `leafPile` | Autumn leaves raked into a pile. | Mine, Place | – | holidays-1 | – | dex:leafPile | leaf_pile |
 | 112 | **Apple Crate** `appleCrate` | A wooden crate of autumn apples. | Mine, Place | – | holidays-1 | – | dex:appleCrate | apple_crate_top |
-| 113 | **Friendly Ghost Light** `ghostLight` | A soft smiling ghost-shaped light. | Mine, Place | – | holidays-1 | – | dex:ghostLight | block:ghostLight |
-| 114 | **Cobweb Deco** `cobweb` | A fake cobweb for decoration. | Mine, Place | – | holidays-1 | – | dex:cobweb | cobweb |
+| 113 | **Friendly Ghost Light** `ghostLight` | A soft, smiling ghost-shaped LED light. | Mine, Place | – | holidays-1 | – | dex:ghostLight | block:ghostLight |
+| 114 | **Cobweb Deco** `cobweb` | A fake cobweb. It is just for looks. | Mine, Place | – | holidays-1 | – | dex:cobweb | cobweb |
 | 115 | **Marigolds** `marigold` | Bright orange flowers that bloom from summer into autumn. | Mine, Place | – | holidays-1 | – | dex:marigold | marigold |
-| 116 | **Papel Picado Banner** `papelPicado` | Cut-paper banners in bright colors. | Mine, Place | 2 Cloth + 1 Cotton → 1 Papel Picado Banner (workbench) | holidays-1 | – | dex:papelPicado | papel_picado |
+| 116 | **Papel Picado Banner** `papelPicado` | Bright paper banners with cut-out shapes. | Mine, Place | 2 Cloth + 1 Cotton → 1 Papel Picado Banner (workbench) | holidays-1 | – | dex:papelPicado | papel_picado |
 | 117 | **Marigold Pattern Tile** `skullPatternTile` | A tile with a bright marigold flower pattern. | Mine, Place | – | holidays-1 | – | dex:skullPatternTile | tile_skull_pattern |
-| 119 | **Pattern Floor Tile** `rangoliTile` | A floor tile with a simple geometric pattern. Paint it any colour. | Mine, Place | – | storage-2 | – | dex:rangoliTile | tile_rangoli |
+| 119 | **Pattern Floor Tile** `rangoliTile` | A floor tile with a simple geometric pattern. Paint it any color. | Mine, Place | – | storage-2 | – | dex:rangoliTile | tile_rangoli |
 | 120 | **String Lights** `stringLights` | A strand of small LED lights. | Place, Connect | – | holidays-1 | – | dex:stringLights | string_lights |
 | 126 | **Workshop Door** `workshopDoor` | Teacher-flag door to the Build world. | Open | – | worlds-1 | – | dex:workshopDoor | door_workshop_top |
 | 129 | **Copper Block** `copperBlock` | A solid block of copper. | Mine, Place | – | ladder-1 | – | dex:copperBlock | copper_block |
@@ -72,7 +72,7 @@
 | 137 | **Cinder Block** `cinderBlock` | A hollow concrete block, like real building blocks. | Mine, Place | – | ladder-1 | – | dex:cinderBlock | cinder_top |
 | 138 | **Concrete** `concrete` | Strong when pushed, cracks when pulled. | Mine, Place | – | ladder-1 | – | dex:concrete | concrete |
 | 139 | **Roof Tile** `roofTile` | Overlapping tiles shed rain. | Mine, Place | – | ladder-1 | – | dex:roofTile | roof_tile |
-| 140 | **Tinted Glass** `tintedGlass` | Translucent: lets some light through. | Mine, Place | – | ladder-1 | – | dex:tintedGlass | glass_tinted |
+| 140 | **Tinted Glass** `tintedGlass` | Darker glass. It lets less light through, but you can still see through it. | Mine, Place | – | ladder-1 | – | dex:tintedGlass | glass_tinted |
 | 141 | **Frosted Glass** `frostedGlass` | Lets light through but blurs what is behind it. | Mine, Place | – | ladder-1 | – | dex:frostedGlass | glass_frosted |
 | 142 | **Glass Pane** `glassPane` | A thin sheet of glass. | Mine, Place | – | ladder-1 | – | dex:glassPane | glass_pane |
 | 143 | **Quartz Crystal** `quartzCrystal` | A cluster of quartz crystals. | Mine, Place | – | world-2 | – | dex:quartzCrystal | quartz_cluster |
@@ -89,7 +89,7 @@
 | 154 | **Sea Water** `seaWater` | Still seawater. A Salt Pan beside it makes salt. | Move (swim), Use (Bucket) | – | world-2 | – | dex:seaWater | water |
 | 155 | **Hay Bale** `hayBale` | Dried grass pressed into a bale, used to feed animals. | Mine, Place | – | holidays-1 | Hay is grass that is cut and dried so animals can eat it in winter. | dex:hayBale | hay_top |
 | 156 | **Gourds** `gourds` | Gourds are cousins of pumpkins and squash, in many shapes. | Mine, Place | – | holidays-1 | Gourds have hard shells and were used as bowls and bottles long ago. | dex:gourds | gourds |
-| 157 | **Scarecrow** `scarecrow` | A straw figure farmers use to keep birds off crops. | Mine, Place | – | holidays-1 | Farmers have used scarecrows for thousands of years. | dex:scarecrow | block:scarecrow |
+| 157 | **Scarecrow** `scarecrow` | A straw figure farmers use to keep birds off crops. | Mine, Place | – | holidays-1 | – | dex:scarecrow | block:scarecrow |
 | 158 | **Bat Garland** `batsDeco` | Paper bats. Real bats eat lots of insects at night. | Mine, Place | – | holidays-1 | One bat can eat hundreds of insects in one night. | dex:batsDeco | bats_deco |
 | 159 | **Carved Pumpkin** `carvedPumpkin` | A pumpkin with a face you carved yourself. An LED inside makes it glow. | Place, Use | – | holidays-1 | – | dex:carvedPumpkin | carved_front_blank |
 | 166 | **Spooky Sign** `spookySign` | A wooden sign with a bat cut-out. Write a friendly message on it. | Mine, Place | – | holidays-1 | – | dex:spookySign | block:spookySign |

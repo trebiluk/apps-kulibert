@@ -54,7 +54,7 @@
    "dexId": "dex:grass",
    "dexCat": "Blocks",
    "handS": 0.6,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 2,
@@ -76,7 +76,7 @@
    "dexId": "dex:dirt",
    "dexCat": "Ores & Rocks",
    "handS": 0.6,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 3,
@@ -98,7 +98,7 @@
    "dexId": "dex:stone",
    "dexCat": "Ores & Rocks",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 4,
@@ -120,7 +120,7 @@
    "dexId": "dex:slate",
    "dexCat": "Ores & Rocks",
    "handS": 3.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 5,
@@ -129,7 +129,7 @@
    "name": {
     "en": "Coal Ore"
    },
-   "desc": "Coal formed from plants buried and squeezed for millions of years. It is fuel.",
+   "desc": "Coal formed from plants in ancient forests and marshes. They were buried and squeezed for millions of years.",
    "verbs": [
     "Mine",
     "Place"
@@ -138,7 +138,7 @@
    "stage": "live",
    "availableFrom": "live",
    "assetId": "stone_coal",
-   "fact": "Coal is mostly carbon from plants that lived over 300 million years ago.",
+   "fact": "Coal is a rock rich in carbon. Some coal is over 300 million years old. Some is much younger.",
    "dexId": "dex:coal",
    "dexCat": "Ores & Rocks",
    "handS": 3.5,
@@ -160,7 +160,7 @@
    "stage": "live",
    "availableFrom": "live",
    "assetId": "sand",
-   "fact": "Glass is made by melting sand at about 1,700 C.",
+   "fact": "Glass makers melt sand with soda ash and limestone at about 1,500 °C.",
    "dexId": "dex:sand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
@@ -186,7 +186,7 @@
    "dexId": "dex:gravel",
    "dexCat": "Ores & Rocks",
    "handS": 0.7,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 8,
@@ -210,7 +210,7 @@
    "dexId": "dex:brickRed",
    "dexCat": "Blocks",
    "handS": 4.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 9,
@@ -234,7 +234,7 @@
    "dexId": "dex:brickGrey",
    "dexCat": "Blocks",
    "handS": 4.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 10,
@@ -258,7 +258,7 @@
    "dexId": "dex:planks",
    "dexCat": "Materials",
    "handS": 1.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 11,
@@ -276,7 +276,7 @@
    "stage": "live",
    "availableFrom": "live",
    "assetId": "trunk_top",
-   "fact": "You can count a tree's age from its rings.",
+   "fact": "Where winters are cold, a tree adds one ring each year. Count the rings to find its age.",
    "dexId": "dex:log",
    "dexCat": "Plants & Critters",
    "handS": 2.0,
@@ -302,7 +302,7 @@
    "dexId": "dex:leaves",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 13,
@@ -324,7 +324,7 @@
    "dexId": "dex:woolBlue",
    "dexCat": "Blocks",
    "handS": 0.8,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 14,
@@ -346,7 +346,7 @@
    "dexId": "dex:woolGreen",
    "dexCat": "Blocks",
    "handS": 0.8,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 15,
@@ -368,7 +368,7 @@
    "dexId": "dex:woolRed",
    "dexCat": "Blocks",
    "handS": 0.8,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 16,
@@ -390,7 +390,7 @@
    "dexId": "dex:woolTan",
    "dexCat": "Blocks",
    "handS": 0.8,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 17,
@@ -408,7 +408,7 @@
    "stage": "live",
    "availableFrom": "live",
    "assetId": "snow",
-   "fact": "Every snowflake has six sides because of how water molecules link up.",
+   "fact": "Snow crystals have six sides or six arms. That comes from how water molecules link up. Most real snowflakes are lopsided.",
    "dexId": "dex:snow",
    "dexCat": "Ores & Rocks",
    "handS": 0.3,
@@ -436,7 +436,7 @@
    "dexId": "dex:ice",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 19,
@@ -458,7 +458,7 @@
    "dexId": "dex:redSand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 20,
@@ -478,7 +478,7 @@
    "stage": "live",
    "availableFrom": "live",
    "assetId": "glass",
-   "fact": "Glass looks solid, but it has no crystal pattern inside.",
+   "fact": "Glass is a solid, but its atoms are jumbled. They are not lined up in a neat crystal pattern.",
    "dexId": "dex:glass",
    "dexCat": "Materials",
    "handS": 0.4,
@@ -503,7 +503,7 @@
    "dexId": "dex:coreplate",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 22,
@@ -528,7 +528,7 @@
    "dexId": "dex:workbench",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 23,
@@ -553,7 +553,7 @@
    "dexId": "dex:oven",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 24,
@@ -578,7 +578,7 @@
    "dexId": "dex:vend",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 25,
@@ -599,7 +599,7 @@
    "dexId": "dex:storeCounter",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 26,
@@ -623,7 +623,7 @@
    "dexId": "dex:bunk",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 27,
@@ -647,7 +647,7 @@
    "dexId": "dex:box",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 28,
@@ -669,7 +669,7 @@
    "dexId": "dex:wheat",
    "dexCat": "Plants & Critters",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 29,
@@ -691,7 +691,7 @@
    "dexId": "dex:reed",
    "dexCat": "Plants & Critters",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 30,
@@ -715,7 +715,7 @@
    "dexId": "dex:door",
    "dexCat": "Blocks",
    "handS": 1.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 31,
@@ -737,7 +737,7 @@
    "dexId": "dex:doorOpen",
    "dexCat": "Blocks",
    "handS": 1.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 32,
@@ -761,7 +761,7 @@
    "dexId": "dex:doorGlass",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 33,
@@ -783,7 +783,7 @@
    "dexId": "dex:doorGlassOpen",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 34,
@@ -807,7 +807,7 @@
    "dexId": "dex:doorMetal",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 35,
@@ -829,7 +829,7 @@
    "dexId": "dex:doorMetalOpen",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 36,
@@ -854,7 +854,7 @@
    "dexId": "dex:doorSliding",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 37,
@@ -876,7 +876,7 @@
    "dexId": "dex:doorSlidingOpen",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 38,
@@ -901,7 +901,7 @@
    "dexId": "dex:lever",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 39,
@@ -923,7 +923,7 @@
    "dexId": "dex:leverOn",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 40,
@@ -948,7 +948,7 @@
    "dexId": "dex:pushButton",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 41,
@@ -970,7 +970,7 @@
    "dexId": "dex:pushButtonOn",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 42,
@@ -996,7 +996,7 @@
    "dexId": "dex:smelter",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 43,
@@ -1022,7 +1022,7 @@
    "dexId": "dex:fabricator",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 44,
@@ -1044,7 +1044,7 @@
    "dexId": "dex:ironOre",
    "dexCat": "Ores & Rocks",
    "handS": 5.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 45,
@@ -1062,7 +1062,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "ore_copper",
-   "fact": "Copper is used in wires because electricity flows through it easily.",
+   "fact": "Electricity flows through copper easily. That is why wires use it.",
    "dexId": "dex:copperOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
@@ -1088,7 +1088,7 @@
    "dexId": "dex:zincOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 47,
@@ -1112,7 +1112,7 @@
    "dexId": "dex:lantern",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 48,
@@ -1137,7 +1137,7 @@
    "dexId": "dex:charger",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 49,
@@ -1162,7 +1162,7 @@
    "dexId": "dex:glowPebble",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 50,
@@ -1187,7 +1187,7 @@
    "dexId": "dex:glowStick",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 51,
@@ -1212,7 +1212,7 @@
    "dexId": "dex:jumboGlow",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 52,
@@ -1237,7 +1237,7 @@
    "dexId": "dex:coldGlowVial",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 53,
@@ -1246,7 +1246,7 @@
    "name": {
     "en": "Glow Moss"
    },
-   "desc": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea.",
+   "desc": "A cave moss that glows. Glowing fungi are real. No real moss makes its own light, so this is a Bertopia idea.",
    "verbs": [
     "Mine",
     "Place"
@@ -1255,7 +1255,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "glow_moss",
-   "fact": "Real glowing fungi (foxfire) make light with a chemical reaction called bioluminescence.",
+   "fact": "Some real fungi make their own light. People call it foxfire. Scientists call it bioluminescence (living light).",
    "dexId": "dex:glowMoss",
    "dexCat": "Plants & Critters",
    "handS": 0.3,
@@ -1281,7 +1281,7 @@
    "dexId": "dex:cornPlant",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 55,
@@ -1302,7 +1302,7 @@
    "stage": "basics-3",
    "availableFrom": "live",
    "assetId": "solar_top",
-   "fact": "Solar cells are made from silicon.",
+   "fact": "Most solar cells are made from silicon.",
    "dexId": "dex:solarPanel",
    "dexCat": "Items & Machines",
    "handS": null,
@@ -1331,7 +1331,7 @@
    "dexId": "dex:glowStrip",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 57,
@@ -1353,7 +1353,7 @@
    "dexId": "dex:copperWireBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 58,
@@ -1375,7 +1375,7 @@
    "dexId": "dex:water",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 59,
@@ -1384,7 +1384,7 @@
    "name": {
     "en": "Tin Ore"
    },
-   "desc": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze.",
+   "desc": "Dark crystals of cassiterite, the main tin ore. About 9 parts copper to 1 part tin makes bronze.",
    "verbs": [
     "Mine",
     "Place"
@@ -1393,7 +1393,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "ore_tin",
-   "fact": "Bronze (copper + tin) was so important that a whole age of history is named after it.",
+   "fact": "Bronze is copper plus tin. A whole time in history is named after it: the Bronze Age.",
    "dexId": "dex:tinOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
@@ -1419,7 +1419,7 @@
    "dexId": "dex:quartzOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 61,
@@ -1441,7 +1441,7 @@
    "dexId": "dex:quartzSand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 62,
@@ -1463,7 +1463,7 @@
    "dexId": "dex:clay",
    "dexCat": "Ores & Rocks",
    "handS": 0.7,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 63,
@@ -1472,7 +1472,7 @@
    "name": {
     "en": "Boundary Clay"
    },
-   "desc": "A thin layer laid down all over Earth after a giant asteroid hit.",
+   "desc": "A thin grey stripe of clay. It is left from a space rock that hit long ago.",
    "verbs": [
     "Mine",
     "Place"
@@ -1481,7 +1481,7 @@
    "stage": "world-2",
    "availableFrom": "world-2",
    "assetId": "clay_boundary",
-   "fact": "A thin clay layer found worldwide is rich in iridium, a clue that a giant asteroid hit Earth 66 million years ago.",
+   "fact": "Earth has a thin clay layer found all over the world. It is rich in iridium. That is a clue that a giant asteroid hit Earth about 66 million years ago.",
    "dexId": "dex:boundaryClay",
    "dexCat": "Places",
    "handS": 0.7,
@@ -1494,7 +1494,7 @@
    "name": {
     "en": "Silver Ore"
    },
-   "desc": "Silver reflects light better than any other metal.",
+   "desc": "No metal reflects light better than silver.",
    "verbs": [
     "Mine",
     "Place"
@@ -1503,7 +1503,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "ore_silver",
-   "fact": "Silver conducts electricity better than any other metal.",
+   "fact": "Silver carries electricity best of all metals. Copper is close, and it costs much less.",
    "dexId": "dex:silverOre",
    "dexCat": "Ores & Rocks",
    "handS": 6.0,
@@ -1516,7 +1516,7 @@
    "name": {
     "en": "Gold Ore"
    },
-   "desc": "Gold hides in quartz veins deep in hard rock.",
+   "desc": "Gold is found in quartz veins in hard rock, and as flakes in river gravel.",
    "verbs": [
     "Mine",
     "Place"
@@ -1538,7 +1538,7 @@
    "name": {
     "en": "Graphite"
    },
-   "desc": "Soft, shiny carbon made when heat and pressure changed old rock.",
+   "desc": "Soft, shiny carbon. It formed when heat and pressure changed rocks that held old plant and animal remains.",
    "verbs": [
     "Mine",
     "Place"
@@ -1573,7 +1573,7 @@
    "dexId": "dex:pannedGravel",
    "dexCat": "Ores & Rocks",
    "handS": 0.7,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 68,
@@ -1594,7 +1594,7 @@
    "dexId": "dex:molten",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 69,
@@ -1616,7 +1616,7 @@
    "dexId": "dex:saltCrust",
    "dexCat": "Ores & Rocks",
    "handS": 0.8,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 70,
@@ -1625,7 +1625,7 @@
    "name": {
     "en": "Black Sand"
    },
-   "desc": "Beach sand full of heavy titanium minerals.",
+   "desc": "Beach sand rich in heavy, dark minerals. Some of them hold titanium.",
    "verbs": [
     "Mine",
     "Place"
@@ -1634,7 +1634,7 @@
    "stage": "world-2",
    "availableFrom": "world-2",
    "assetId": "sand_black",
-   "fact": "Black sand gets its colour from heavy minerals like magnetite and ilmenite.",
+   "fact": "Many black sands get their color from heavy minerals like magnetite and ilmenite.",
    "dexId": "dex:blackSand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
@@ -1660,7 +1660,7 @@
    "dexId": "dex:bauxite",
    "dexCat": "Ores & Rocks",
    "handS": 1.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 72,
@@ -1669,7 +1669,7 @@
    "name": {
     "en": "Ilmenite Ore"
    },
-   "desc": "A heavy black mineral that holds titanium.",
+   "desc": "A heavy black mineral. It holds titanium.",
    "verbs": [
     "Mine",
     "Place"
@@ -1704,7 +1704,7 @@
    "dexId": "dex:platinumOre",
    "dexCat": "Ores & Rocks",
    "handS": 9.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 74,
@@ -1726,7 +1726,7 @@
    "dexId": "dex:basalt",
    "dexCat": "Ores & Rocks",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 75,
@@ -1748,7 +1748,7 @@
    "dexId": "dex:snowGrass",
    "dexCat": "Blocks",
    "handS": 0.6,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 76,
@@ -1770,7 +1770,7 @@
    "dexId": "dex:cottonBush",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 77,
@@ -1792,7 +1792,7 @@
    "dexId": "dex:flowerBush",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 78,
@@ -1816,7 +1816,7 @@
    "dexId": "dex:saltPan",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 79,
@@ -1840,7 +1840,7 @@
    "dexId": "dex:wallShelf",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 80,
@@ -1864,7 +1864,7 @@
    "dexId": "dex:shelf",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 81,
@@ -1888,7 +1888,7 @@
    "dexId": "dex:sideTable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 82,
@@ -1912,7 +1912,7 @@
    "dexId": "dex:desk",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 83,
@@ -1936,7 +1936,7 @@
    "dexId": "dex:cabinet",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 84,
@@ -1960,7 +1960,7 @@
    "dexId": "dex:glassCabinet",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 85,
@@ -1984,7 +1984,7 @@
    "dexId": "dex:steelLocker",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 86,
@@ -2006,7 +2006,7 @@
    "dexId": "dex:sign",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 87,
@@ -2030,7 +2030,7 @@
    "dexId": "dex:itemTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 88,
@@ -2054,7 +2054,7 @@
    "dexId": "dex:poweredTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 89,
@@ -2079,7 +2079,7 @@
    "dexId": "dex:filterTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 90,
@@ -2103,7 +2103,7 @@
    "dexId": "dex:extractor",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 91,
@@ -2123,7 +2123,7 @@
    "stage": "storage-4",
    "availableFrom": "live",
    "assetId": "sorter_front",
-   "fact": "Recycling centres sort materials by type.",
+   "fact": "Recycling centers sort materials by type.",
    "dexId": "dex:sorter",
    "dexCat": "Items & Machines",
    "handS": null,
@@ -2151,7 +2151,7 @@
    "dexId": "dex:networkCable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 93,
@@ -2175,7 +2175,7 @@
    "dexId": "dex:networkCore",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 94,
@@ -2200,7 +2200,7 @@
    "dexId": "dex:driveBay",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 95,
@@ -2225,7 +2225,7 @@
    "dexId": "dex:terminal",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 96,
@@ -2249,7 +2249,7 @@
    "dexId": "dex:storageLink",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 97,
@@ -2271,7 +2271,7 @@
    "stage": "storage-3",
    "availableFrom": "live",
    "assetId": "block:teleportPad",
-   "fact": "Real teleporting of objects is not possible. Scientists can only \"teleport\" information between particles.",
+   "fact": "Real teleporting is not possible. Scientists can only send tiny bits of data from one particle to another.",
    "dexId": "dex:teleportPad",
    "dexCat": "Items & Machines",
    "handS": null,
@@ -2284,7 +2284,7 @@
    "name": {
     "en": "Drone Dock"
    },
-   "desc": "Charges and launches your Delivery Drone.",
+   "desc": "Charges your Delivery Drone and sends it off.",
    "verbs": [
     "Place",
     "Pair",
@@ -2326,7 +2326,7 @@
    "dexId": "dex:batteryBox",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 100,
@@ -2349,7 +2349,7 @@
    "dexId": "dex:networkPad",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 101,
@@ -2373,7 +2373,7 @@
    "dexId": "dex:bounceBlock",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 102,
@@ -2397,7 +2397,7 @@
    "dexId": "dex:discoFloor",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 103,
@@ -2420,7 +2420,7 @@
    "dexId": "dex:noteBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 104,
@@ -2442,7 +2442,7 @@
    "dexId": "dex:keyboardBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 105,
@@ -2464,7 +2464,7 @@
    "dexId": "dex:drumKit",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 106,
@@ -2486,7 +2486,7 @@
    "dexId": "dex:guitar",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 107,
@@ -2509,7 +2509,7 @@
    "dexId": "dex:jukebox",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 108,
@@ -2531,7 +2531,7 @@
    "dexId": "dex:pumpkin",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -2555,7 +2555,7 @@
    "dexId": "dex:jackOLantern",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -2579,7 +2579,7 @@
    "dexId": "dex:cornStalks",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -2603,7 +2603,7 @@
    "dexId": "dex:leafPile",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -2627,7 +2627,7 @@
    "dexId": "dex:appleCrate",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -2638,7 +2638,7 @@
    "name": {
     "en": "Friendly Ghost Light"
    },
-   "desc": "A soft smiling ghost-shaped light.",
+   "desc": "A soft, smiling ghost-shaped LED light.",
    "verbs": [
     "Mine",
     "Place"
@@ -2662,7 +2662,7 @@
    "name": {
     "en": "Cobweb Deco"
    },
-   "desc": "A fake cobweb for decoration.",
+   "desc": "A fake cobweb. It is just for looks.",
    "verbs": [
     "Mine",
     "Place"
@@ -2710,7 +2710,7 @@
    "name": {
     "en": "Papel Picado Banner"
    },
-   "desc": "Cut-paper banners in bright colors.",
+   "desc": "Bright paper banners with cut-out shapes.",
    "verbs": [
     "Mine",
     "Place"
@@ -2749,7 +2749,7 @@
    "dexId": "dex:skullPatternTile",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn",
    "artStatus": "redraw: marigold flowers only, no skull shapes"
@@ -2761,7 +2761,7 @@
    "name": {
     "en": "Pattern Floor Tile"
    },
-   "desc": "A floor tile with a simple geometric pattern. Paint it any colour.",
+   "desc": "A floor tile with a simple geometric pattern. Paint it any color.",
    "verbs": [
     "Mine",
     "Place"
@@ -2796,7 +2796,7 @@
    "dexId": "dex:stringLights",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -2821,7 +2821,7 @@
    "dexId": "dex:labBench",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 122,
@@ -2843,7 +2843,7 @@
    "dexId": "dex:warpPad",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 123,
@@ -2865,7 +2865,7 @@
    "dexId": "dex:sleepingBag",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 124,
@@ -2887,7 +2887,7 @@
    "dexId": "dex:crewBanner",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 125,
@@ -2910,7 +2910,7 @@
    "dexId": "dex:gameZoneFlag",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 126,
@@ -2931,7 +2931,7 @@
    "dexId": "dex:workshopDoor",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 127,
@@ -2953,7 +2953,7 @@
    "dexId": "dex:draftingTable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 128,
@@ -2962,7 +2962,7 @@
    "name": {
     "en": "Clean Bench"
    },
-   "desc": "A dust-free bench for the finest materials.",
+   "desc": "A bench with no dust. You make the finest parts here.",
    "verbs": [
     "Place",
     "Open",
@@ -2998,7 +2998,7 @@
    "dexId": "dex:copperBlock",
    "dexCat": "Blocks",
    "handS": 5.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 130,
@@ -3020,7 +3020,7 @@
    "dexId": "dex:steelBlock",
    "dexCat": "Blocks",
    "handS": 7.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 131,
@@ -3042,7 +3042,7 @@
    "dexId": "dex:mirror",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 132,
@@ -3064,7 +3064,7 @@
    "dexId": "dex:dexShelf",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 133,
@@ -3086,7 +3086,7 @@
    "dexId": "dex:trophyShelf",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 134,
@@ -3108,7 +3108,7 @@
    "dexId": "dex:bamboo",
    "dexCat": "Materials",
    "handS": 1.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 135,
@@ -3130,7 +3130,7 @@
    "dexId": "dex:plywood",
    "dexCat": "Materials",
    "handS": 1.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 136,
@@ -3152,7 +3152,7 @@
    "dexId": "dex:cutStone",
    "dexCat": "Materials",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 137,
@@ -3174,7 +3174,7 @@
    "dexId": "dex:cinderBlock",
    "dexCat": "Materials",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 138,
@@ -3196,7 +3196,7 @@
    "dexId": "dex:concrete",
    "dexCat": "Materials",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 139,
@@ -3218,7 +3218,7 @@
    "dexId": "dex:roofTile",
    "dexCat": "Materials",
    "handS": 2.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 140,
@@ -3227,7 +3227,7 @@
    "name": {
     "en": "Tinted Glass"
    },
-   "desc": "Translucent: lets some light through.",
+   "desc": "Darker glass. It lets less light through, but you can still see through it.",
    "verbs": [
     "Mine",
     "Place"
@@ -3262,7 +3262,7 @@
    "dexId": "dex:frostedGlass",
    "dexCat": "Materials",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 142,
@@ -3284,7 +3284,7 @@
    "dexId": "dex:glassPane",
    "dexCat": "Materials",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 143,
@@ -3306,7 +3306,7 @@
    "dexId": "dex:quartzCrystal",
    "dexCat": "Blocks",
    "handS": 1.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 144,
@@ -3328,7 +3328,7 @@
    "dexId": "dex:overflowBox",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 145,
@@ -3350,7 +3350,7 @@
    "dexId": "dex:bronzePlaque",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 146,
@@ -3372,7 +3372,7 @@
    "dexId": "dex:granite",
    "dexCat": "Ores & Rocks",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 147,
@@ -3394,7 +3394,7 @@
    "dexId": "dex:redSoil",
    "dexCat": "Ores & Rocks",
    "handS": 0.6,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 148,
@@ -3416,7 +3416,7 @@
    "dexId": "dex:birchLog",
    "dexCat": "Plants & Critters",
    "handS": 2.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 149,
@@ -3438,7 +3438,7 @@
    "dexId": "dex:birchLeaves",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 150,
@@ -3460,7 +3460,7 @@
    "dexId": "dex:spruceLog",
    "dexCat": "Plants & Critters",
    "handS": 2.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 151,
@@ -3482,7 +3482,7 @@
    "dexId": "dex:spruceLeaves",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 152,
@@ -3504,7 +3504,7 @@
    "dexId": "dex:flowerBushPink",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 153,
@@ -3526,7 +3526,7 @@
    "dexId": "dex:flowerBushYellow",
    "dexCat": "Plants & Critters",
    "handS": 0.2,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 154,
@@ -3548,7 +3548,7 @@
    "dexId": "dex:seaWater",
    "dexCat": "Places",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 155,
@@ -3570,7 +3570,7 @@
    "dexId": "dex:hayBale",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -3594,7 +3594,7 @@
    "dexId": "dex:gourds",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -3614,7 +3614,7 @@
    "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "block:scarecrow",
-   "fact": "Farmers have used scarecrows for thousands of years.",
+   "fact": null,
    "dexId": "dex:scarecrow",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
@@ -3642,7 +3642,7 @@
    "dexId": "dex:batsDeco",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -3666,7 +3666,7 @@
    "dexId": "dex:carvedPumpkin",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -3690,7 +3690,7 @@
    "dexId": "dex:spookySign",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -3714,7 +3714,7 @@
    "dexId": "dex:harvestLantern",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -3738,7 +3738,7 @@
    "dexId": "dex:chair",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 169,
@@ -3760,7 +3760,7 @@
    "dexId": "dex:stool",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 170,
@@ -3782,7 +3782,7 @@
    "dexId": "dex:bench",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 171,
@@ -3804,7 +3804,7 @@
    "dexId": "dex:table",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 160,
@@ -3827,7 +3827,7 @@
    "dexId": "dex:winterLights",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3851,7 +3851,7 @@
    "dexId": "dex:wreath",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3875,7 +3875,7 @@
    "dexId": "dex:giftBox",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3899,7 +3899,7 @@
    "dexId": "dex:snowPal",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3923,7 +3923,7 @@
    "dexId": "dex:ornamentTile",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3947,7 +3947,7 @@
    "dexId": "dex:stripeBlock",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Winter"
   },
@@ -3976,7 +3976,8 @@
    "pile": "seasonal",
    "sortGroup": "Winter",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 173,
@@ -4003,7 +4004,8 @@
    "pile": "seasonal",
    "sortGroup": "Autumn",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 174,
@@ -4024,13 +4026,14 @@
    "availableFrom": null,
    "assetId": "block:harvestBasket",
    "fact": null,
-   "origin": "Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals.",
+   "origin": "Fruit and corn are set out for Kwanzaa and at many harvest festivals.",
    "dexId": "dex:harvestBasket",
    "dexCat": "Seasonal & Holiday",
    "pile": "seasonal",
    "sortGroup": "Autumn",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "draft-curriculum-check"
   },
   {
    "id": 175,
@@ -4057,7 +4060,8 @@
    "pile": "seasonal",
    "sortGroup": "Winter",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 176,
@@ -4084,7 +4088,8 @@
    "pile": "seasonal",
    "sortGroup": "Winter",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 177,
@@ -4111,7 +4116,8 @@
    "pile": "seasonal",
    "sortGroup": "Winter",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 178,
@@ -4138,7 +4144,8 @@
    "pile": "seasonal",
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 179,
@@ -4159,13 +4166,14 @@
    "availableFrom": null,
    "assetId": "block:springGreens",
    "fact": null,
-   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year.",
+   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the new year in Afghanistan, Iran and nearby countries.",
    "dexId": "dex:springGreens",
    "dexCat": "Seasonal & Holiday",
    "pile": "seasonal",
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "draft-curriculum-check"
   },
   {
    "id": 180,
@@ -4192,7 +4200,8 @@
    "pile": "seasonal",
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 181,
@@ -4219,7 +4228,8 @@
    "pile": "seasonal",
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 182,
@@ -4246,7 +4256,8 @@
    "pile": "seasonal",
    "sortGroup": "Autumn",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 183,
@@ -4273,7 +4284,8 @@
    "pile": "seasonal",
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": 184,
@@ -4300,7 +4312,8 @@
    "pile": "seasonal",
    "sortGroup": "Autumn",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "originStatus": "checked"
   },
   {
    "id": null,
@@ -4322,7 +4335,7 @@
    "fact": null,
    "dexId": "dex:woodTool",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4344,7 +4357,7 @@
    "fact": null,
    "dexId": "dex:stoneTool",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4366,7 +4379,7 @@
    "fact": null,
    "dexId": "dex:copperPick",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4388,7 +4401,7 @@
    "fact": null,
    "dexId": "dex:steelPick",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4410,7 +4423,7 @@
    "fact": null,
    "dexId": "dex:stick",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4429,7 +4442,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "pan",
-   "fact": "Panning works because heavier things sink faster in moving water.",
+   "fact": "Gold is much heavier than sand of the same size. In a swirling pan, gold sinks and water washes the sand away.",
    "dexId": "dex:pan",
    "dexCat": "Items & Machines",
    "textStatus": "draft-curriculum-check"
@@ -4454,7 +4467,7 @@
    "fact": null,
    "dexId": "dex:bucket",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4474,7 +4487,7 @@
    "fact": null,
    "dexId": "dex:waterBucket",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4494,7 +4507,7 @@
    "fact": null,
    "dexId": "dex:berry",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4514,7 +4527,7 @@
    "fact": null,
    "dexId": "dex:flour",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4534,7 +4547,7 @@
    "fact": null,
    "dexId": "dex:sugar",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4556,7 +4569,7 @@
    "fact": null,
    "dexId": "dex:cupcake",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4578,7 +4591,7 @@
    "fact": null,
    "dexId": "dex:bread",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4587,7 +4600,7 @@
    "name": {
     "en": "Paint dab"
    },
-   "desc": "People made the first paints from plants and berries. The color comes from pigments.",
+   "desc": "The first paints were made from colored earth called ochre. The color comes from pigments.",
    "verbs": [
     "Move-item"
    ],
@@ -4597,7 +4610,7 @@
    "stage": "basics-2",
    "availableFrom": "live",
    "assetId": "paintDab",
-   "fact": "Pigments give paint its colour. Early paints came from plants, berries and minerals.",
+   "fact": "Pigments give paint its color. Early paints used colored earth, charcoal and plants.",
    "dexId": "dex:paintDab",
    "dexCat": "Materials",
    "textStatus": "draft-curriculum-check"
@@ -4620,7 +4633,7 @@
    "fact": "Corn is a grass. Each kernel is a seed.",
    "dexId": "dex:corn",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4640,7 +4653,7 @@
    "fact": null,
    "dexId": "dex:cornSeed",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4662,7 +4675,7 @@
    "fact": "Some plastics are made from corn starch instead of oil.",
    "dexId": "dex:bioplastic",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4684,7 +4697,7 @@
    "fact": null,
    "dexId": "dex:plasticTube",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4706,7 +4719,7 @@
    "fact": null,
    "dexId": "dex:glowMix",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4728,7 +4741,7 @@
    "fact": null,
    "dexId": "dex:boosterDye",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4750,7 +4763,7 @@
    "fact": null,
    "dexId": "dex:glassVial",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4770,7 +4783,7 @@
    "fact": null,
    "dexId": "dex:rawCopper",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4792,7 +4805,7 @@
    "fact": null,
    "dexId": "dex:copperDust",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4814,7 +4827,7 @@
    "fact": null,
    "dexId": "dex:copperIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4823,7 +4836,7 @@
    "name": {
     "en": "Copper Wire"
    },
-   "desc": "Thin copper that carries electricity.",
+   "desc": "Thin copper wire. It carries power.",
    "verbs": [
     "Move-item"
    ],
@@ -4833,7 +4846,7 @@
    "stage": "basics-1",
    "availableFrom": "live",
    "assetId": "copperWire",
-   "fact": "Copper wire carries electricity in almost every building.",
+   "fact": "Almost every building has copper wires inside. They carry power to lights and plugs.",
    "dexId": "dex:copperWire",
    "dexCat": "Materials",
    "textStatus": "draft-curriculum-check"
@@ -4858,7 +4871,7 @@
    "fact": null,
    "dexId": "dex:ironIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4880,7 +4893,7 @@
    "fact": "Steel is iron with a small amount of carbon, which makes it much stronger.",
    "dexId": "dex:steel",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4902,7 +4915,7 @@
    "fact": null,
    "dexId": "dex:zincIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4924,7 +4937,7 @@
    "fact": null,
    "dexId": "dex:tinIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4946,7 +4959,7 @@
    "fact": "Bronze is about 90% copper and 10% tin.",
    "dexId": "dex:bronzeIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4955,7 +4968,7 @@
    "name": {
     "en": "Silver Ingot"
    },
-   "desc": "Smelted silver.",
+   "desc": "Silver, smelted and ready to use.",
    "verbs": [
     "Move-item"
    ],
@@ -4985,7 +4998,7 @@
    "stage": "world-1",
    "availableFrom": "world-1",
    "assetId": "goldFlake",
-   "fact": "Gold is heavy, so it sinks to the bottom of a pan.",
+   "fact": "Gold is very heavy for its size. So it sinks to the bottom of a pan.",
    "dexId": "dex:goldFlake",
    "dexCat": "Ores & Rocks",
    "textStatus": "draft-curriculum-check"
@@ -5010,7 +5023,7 @@
    "fact": null,
    "dexId": "dex:goldNugget",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5032,7 +5045,7 @@
    "fact": null,
    "dexId": "dex:goldIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5052,7 +5065,7 @@
    "fact": null,
    "dexId": "dex:goldLeaf",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5061,7 +5074,7 @@
    "name": {
     "en": "Quartz"
    },
-   "desc": "A silica crystal.",
+   "desc": "A clear crystal made of silicon and oxygen.",
    "verbs": [
     "Move-item"
    ],
@@ -5094,7 +5107,7 @@
    "fact": "Computer chips are made from silicon.",
    "dexId": "dex:silicon",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5116,7 +5129,7 @@
    "fact": "A chip holds millions or billions of tiny switches called transistors.",
    "dexId": "dex:logicChip",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5125,7 +5138,7 @@
    "name": {
     "en": "Battery Cell"
    },
-   "desc": "Copper and zinc make a battery cell.",
+   "desc": "Put copper and zinc in a sour or salty liquid. That makes a simple battery.",
    "verbs": [
     "Move-item"
    ],
@@ -5135,7 +5148,7 @@
    "stage": "basics-1",
    "availableFrom": "live",
    "assetId": "batteryCell",
-   "fact": "A battery turns stored chemical energy into electricity.",
+   "fact": "A battery stores energy in chemicals. When you use it, the chemicals make power.",
    "dexId": "dex:batteryCell",
    "dexCat": "Materials",
    "textStatus": "draft-curriculum-check"
@@ -5160,7 +5173,7 @@
    "fact": null,
    "dexId": "dex:spring",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5169,7 +5182,7 @@
    "name": {
     "en": "Wire Rope"
    },
-   "desc": "Steel wires twisted together. Pull-only, very strong.",
+   "desc": "Steel wires twisted together. Very strong when pulled, but floppy when pushed.",
    "verbs": [
     "Move-item"
    ],
@@ -5202,7 +5215,7 @@
    "fact": null,
    "dexId": "dex:steelBeam",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5222,7 +5235,7 @@
    "fact": null,
    "dexId": "dex:timberBeam",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5242,7 +5255,7 @@
    "fact": "Cotton fibers grow around the seeds of the cotton plant.",
    "dexId": "dex:cotton",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5262,7 +5275,7 @@
    "fact": null,
    "dexId": "dex:cottonSeed",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5271,7 +5284,7 @@
    "name": {
     "en": "Cloth"
    },
-   "desc": "Woven cotton.",
+   "desc": "Cloth woven from cotton.",
    "verbs": [
     "Move-item"
    ],
@@ -5304,7 +5317,7 @@
    "fact": null,
    "dexId": "dex:salt",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5324,7 +5337,7 @@
    "fact": null,
    "dexId": "dex:platinumGrain",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5344,7 +5357,7 @@
    "fact": null,
    "dexId": "dex:platinumNugget",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5353,7 +5366,7 @@
    "name": {
     "en": "Platinum Ingot"
    },
-   "desc": "Platinum melts at 1,768 C, so it needs the Embercore upgrade.",
+   "desc": "Platinum melts at 1,768 °C, so it needs the Embercore upgrade.",
    "verbs": [
     "Move-item"
    ],
@@ -5375,7 +5388,7 @@
    "name": {
     "en": "Alumina"
    },
-   "desc": "White powder from bauxite. It needs lots of electricity to become aluminum.",
+   "desc": "White powder made from bauxite. It takes a lot of power to make it into aluminum.",
    "verbs": [
     "Move-item"
    ],
@@ -5397,7 +5410,7 @@
    "name": {
     "en": "Aluminum Ingot"
    },
-   "desc": "Light metal. Common, but it costs lots of electricity.",
+   "desc": "A light metal. It is common, but making it takes lots of electricity.",
    "verbs": [
     "Move-item"
    ],
@@ -5419,7 +5432,7 @@
    "name": {
     "en": "Aluminum Beam"
    },
-   "desc": "About the same job as steel at about a third of the weight.",
+   "desc": "In Bertopia it does a Steel Beam's job. Real aluminum is about a third as heavy as steel, but it bends more.",
    "verbs": [
     "Move-item"
    ],
@@ -5452,7 +5465,7 @@
    "fact": null,
    "dexId": "dex:titaniumDioxide",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5472,7 +5485,7 @@
    "fact": null,
    "dexId": "dex:titaniumIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5492,7 +5505,7 @@
    "fact": null,
    "dexId": "dex:graphite",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5501,7 +5514,7 @@
    "name": {
     "en": "Rhodium Speck"
    },
-   "desc": "A very rare metal. It never tarnishes.",
+   "desc": "One of the rarest metals. It stays shiny because air and water barely change it.",
    "verbs": [
     "Move-item"
    ],
@@ -5521,7 +5534,7 @@
    "name": {
     "en": "Iridium Speck"
    },
-   "desc": "The legendary find. Iridium is one of the two densest elements.",
+   "desc": "The rarest find of all. For its size, iridium is one of the two heaviest elements.",
    "verbs": [
     "Move-item"
    ],
@@ -5554,7 +5567,7 @@
    "fact": null,
    "dexId": "dex:paintBrush",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5576,7 +5589,7 @@
    "fact": null,
    "dexId": "dex:satchel",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5598,7 +5611,7 @@
    "fact": null,
    "dexId": "dex:backpack",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5620,7 +5633,7 @@
    "fact": null,
    "dexId": "dex:expeditionPack",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5640,7 +5653,7 @@
    "fact": null,
    "dexId": "dex:fob",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5663,7 +5676,7 @@
    "fact": null,
    "dexId": "dex:botH1",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5686,7 +5699,7 @@
    "fact": null,
    "dexId": "dex:driveS",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5709,7 +5722,7 @@
    "fact": null,
    "dexId": "dex:driveM",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5732,7 +5745,7 @@
    "fact": null,
    "dexId": "dex:driveL",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5756,7 +5769,7 @@
    "fact": "Delivery drones balance speed, battery life and how much they carry.",
    "dexId": "dex:deliveryDrone",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5778,7 +5791,7 @@
    "fact": null,
    "dexId": "dex:petRock",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5799,7 +5812,7 @@
    "fact": null,
    "dexId": "dex:gravityHat",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5819,7 +5832,7 @@
    "fact": null,
    "dexId": "dex:musicDisc",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5839,7 +5852,7 @@
    "fact": null,
    "dexId": "dex:warpKey",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5859,7 +5872,7 @@
    "fact": null,
    "dexId": "dex:bandage",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5879,7 +5892,7 @@
    "fact": null,
    "dexId": "dex:herbTonic",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5899,7 +5912,7 @@
    "fact": null,
    "dexId": "dex:medKit",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5919,7 +5932,7 @@
    "fact": null,
    "dexId": "dex:whistleBell",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5939,7 +5952,7 @@
    "fact": null,
    "dexId": "dex:critterJar",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5959,7 +5972,7 @@
    "fact": null,
    "dexId": "dex:morphVial",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5979,7 +5992,7 @@
    "fact": null,
    "dexId": "dex:camoCloak",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5999,7 +6012,7 @@
    "fact": null,
    "dexId": "dex:magnetWand",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6019,7 +6032,7 @@
    "fact": null,
    "dexId": "dex:lightWand",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6039,7 +6052,7 @@
    "fact": null,
    "dexId": "dex:fizzVial",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6061,7 +6074,7 @@
    "fact": null,
    "dexId": "dex:frostVial",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6081,7 +6094,7 @@
    "fact": null,
    "dexId": "dex:sparkRod",
    "dexCat": "Effects",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6090,7 +6103,7 @@
    "name": {
     "en": "Blueprint Scroll"
    },
-   "desc": "Read it at the Drafting Table to unlock a material.",
+   "desc": "Read it at the Drafting Table. It unlocks a new material.",
    "verbs": [
     "Move-item"
    ],
@@ -6121,7 +6134,7 @@
    "fact": null,
    "dexId": "dex:cogCopper",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6141,7 +6154,7 @@
    "fact": null,
    "dexId": "dex:cogSilver",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6161,7 +6174,7 @@
    "fact": null,
    "dexId": "dex:cogGold",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6181,7 +6194,7 @@
    "fact": null,
    "dexId": "dex:cogPlatinum",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6190,7 +6203,7 @@
    "name": {
     "en": "Iridium Cog"
    },
-   "desc": "The legendary coin.",
+   "desc": "The rarest coin of all.",
    "verbs": [
     "Move-item"
    ],
@@ -6221,7 +6234,7 @@
    "fact": "Bees carry pollen from flower to flower.",
    "dexId": "dex:flower",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6241,7 +6254,7 @@
    "fact": null,
    "dexId": "dex:apple",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6263,7 +6276,7 @@
    "fact": null,
    "dexId": "dex:carvingTool",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6283,7 +6296,7 @@
    "fact": null,
    "dexId": "dex:mob:bot",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6302,7 +6315,7 @@
    "fact": null,
    "dexId": "dex:mob:drone",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6322,7 +6335,7 @@
    "fact": null,
    "dexId": "dex:mob:petrock",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6341,7 +6354,7 @@
    "fact": null,
    "dexId": "dex:mob:firefly",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6360,7 +6373,7 @@
    "fact": null,
    "dexId": "dex:mob:butterfly",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6379,7 +6392,7 @@
    "fact": null,
    "dexId": "dex:mob:songbird",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6398,7 +6411,7 @@
    "fact": null,
    "dexId": "dex:mob:frog",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6417,7 +6430,7 @@
    "fact": null,
    "dexId": "dex:mob:prairiedog",
    "dexCat": "Plants & Critters",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6426,7 +6439,7 @@
    "name": {
     "en": "Cat"
    },
-   "desc": "Lands on its feet.",
+   "desc": "Can twist in the air to land on its feet.",
    "verbs": [
     "(watch)"
    ],
@@ -6949,7 +6962,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6974,7 +6987,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6999,7 +7012,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -7024,7 +7037,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -7049,7 +7062,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -7074,7 +7087,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -7099,7 +7112,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -7124,7 +7137,7 @@
     "II",
     "III"
    ],
-   "textStatus": "draft"
+   "textStatus": "checked"
   }
  ],
  "recipes": [

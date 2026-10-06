@@ -13,4 +13,4 @@
 | – | **Songbird** `mob:songbird` | Sings to talk to other birds. | (watch) | – | effects-1 | – | dex:mob:songbird | songbird |
 | – | **Frog** `mob:frog` | Jumps far with long back legs. | (watch) | – | effects-1 | – | dex:mob:frog | frog |
 | – | **Prairie Dog** `mob:prairiedog` | Digs burrows with many rooms. | (watch) | – | effects-1 | – | dex:mob:prairiedog | prairiedog |
-| – | **Cat** `mob:cat` | Lands on its feet. | (watch) | – | effects-1 | – | dex:mob:cat | cat |
+| – | **Cat** `mob:cat` | Can twist in the air to land on its feet. | (watch) | – | effects-1 | – | dex:mob:cat | cat |
