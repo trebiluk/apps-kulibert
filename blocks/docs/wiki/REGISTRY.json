@@ -142,7 +142,7 @@
    "dexId": "dex:coal",
    "dexCat": "Ores & Rocks",
    "handS": 3.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 6,
@@ -164,7 +164,7 @@
    "dexId": "dex:sand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 7,
@@ -217,7 +217,7 @@
    "key": "brickGrey",
    "type": "block",
    "name": {
-    "en": "Grey Brick"
+    "en": "Gray Brick"
    },
    "desc": "Stone cut into bricks.",
    "verbs": [
@@ -280,7 +280,7 @@
    "dexId": "dex:log",
    "dexCat": "Plants & Critters",
    "handS": 2.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 12,
@@ -412,7 +412,7 @@
    "dexId": "dex:snow",
    "dexCat": "Ores & Rocks",
    "handS": 0.3,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 18,
@@ -482,7 +482,7 @@
    "dexId": "dex:glass",
    "dexCat": "Materials",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 21,
@@ -528,7 +528,10 @@
    "dexId": "dex:workbench",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A lever arm and a firm table let your hands push harder and cut straighter.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 23,
@@ -553,7 +556,10 @@
    "dexId": "dex:oven",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Heat makes dough rise and bake. Much hotter heat melts sand into glass.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 24,
@@ -578,7 +584,10 @@
    "dexId": "dex:vend",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A coin slot checks size and weight to tell coins apart.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 25,
@@ -623,7 +632,10 @@
    "dexId": "dex:bunk",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Sleep lets your body and brain rest and repair.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 27,
@@ -647,7 +659,10 @@
    "dexId": "dex:box",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A box is a frame that spreads weight into its corners.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 28,
@@ -901,7 +916,10 @@
    "dexId": "dex:lever",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A switch closes a gap in a circuit so power can flow.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 39,
@@ -923,7 +941,10 @@
    "dexId": "dex:leverOn",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A switch closes a gap in a circuit so power can flow.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 40,
@@ -948,7 +969,10 @@
    "dexId": "dex:pushButton",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A spring pushes the button back, so the circuit opens again.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 41,
@@ -970,7 +994,10 @@
    "dexId": "dex:pushButtonOn",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A spring pushes the button back, so the circuit opens again.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 42,
@@ -996,7 +1023,10 @@
    "dexId": "dex:smelter",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Heat melts metal from rock. Carbon from coal pulls oxygen away from the metal.",
+   "insideStatus": "unchecked",
+   "insideSource": "GM CRAFTING-AND-MACHINE-UI"
   },
   {
    "id": 43,
@@ -1022,7 +1052,10 @@
    "dexId": "dex:fabricator",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Small motors move a tool along three directions to build a part step by step.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 44,
@@ -1066,7 +1099,7 @@
    "dexId": "dex:copperOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 46,
@@ -1112,7 +1145,10 @@
    "dexId": "dex:lantern",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "An LED turns electricity into light. It wastes much less energy as heat than an old bulb.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 48,
@@ -1137,7 +1173,10 @@
    "dexId": "dex:charger",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A charger pushes electricity back into a battery to refill its stored energy.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 49,
@@ -1162,7 +1201,10 @@
    "dexId": "dex:glowPebble",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Two chemicals react and give off energy as light, with almost no heat.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 50,
@@ -1187,7 +1229,10 @@
    "dexId": "dex:glowStick",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Bending the stick breaks a glass tube inside, so two chemicals mix and glow.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 51,
@@ -1212,7 +1257,10 @@
    "dexId": "dex:jumboGlow",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "The dye takes the energy from the reaction and gives it off as its own color.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 52,
@@ -1237,7 +1285,10 @@
    "dexId": "dex:coldGlowVial",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Cold makes molecules move slower, so the reaction is slower and lasts longer.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 53,
@@ -1259,7 +1310,7 @@
    "dexId": "dex:glowMoss",
    "dexCat": "Plants & Critters",
    "handS": 0.3,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 54,
@@ -1306,7 +1357,10 @@
    "dexId": "dex:solarPanel",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked",
+   "inside": "Sunlight knocks electrons loose in silicon. The loose electrons flow as electricity.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 56,
@@ -1331,7 +1385,10 @@
    "dexId": "dex:glowStrip",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Many small LEDs in a row share one wire, so one strip lights a long line.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 57,
@@ -1353,7 +1410,10 @@
    "dexId": "dex:copperWireBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Electrons move easily through copper, so it carries power with little loss.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 58,
@@ -1397,7 +1457,7 @@
    "dexId": "dex:tinOre",
    "dexCat": "Ores & Rocks",
    "handS": 4.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 60,
@@ -1472,7 +1532,7 @@
    "name": {
     "en": "Boundary Clay"
    },
-   "desc": "A thin grey stripe of clay. It is left from a space rock that hit long ago.",
+   "desc": "A thin gray stripe of clay. It is left from a space rock that hit long ago.",
    "verbs": [
     "Mine",
     "Place"
@@ -1485,7 +1545,7 @@
    "dexId": "dex:boundaryClay",
    "dexCat": "Places",
    "handS": 0.7,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 64,
@@ -1507,7 +1567,7 @@
    "dexId": "dex:silverOre",
    "dexCat": "Ores & Rocks",
    "handS": 6.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 65,
@@ -1529,7 +1589,7 @@
    "dexId": "dex:goldOre",
    "dexCat": "Ores & Rocks",
    "handS": 7.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 66,
@@ -1551,7 +1611,7 @@
    "dexId": "dex:graphiteOre",
    "dexCat": "Ores & Rocks",
    "handS": 3.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 67,
@@ -1638,7 +1698,7 @@
    "dexId": "dex:blackSand",
    "dexCat": "Ores & Rocks",
    "handS": 0.5,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 71,
@@ -1682,7 +1742,7 @@
    "dexId": "dex:ilmeniteOre",
    "dexCat": "Ores & Rocks",
    "handS": 6.0,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 73,
@@ -1816,7 +1876,10 @@
    "dexId": "dex:saltPan",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "The Sun heats the water until it evaporates. The salt cannot evaporate, so it stays.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 79,
@@ -1840,7 +1903,10 @@
    "dexId": "dex:wallShelf",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Brackets carry the shelf weight into the wall.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 80,
@@ -1864,7 +1930,10 @@
    "dexId": "dex:shelf",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Each board holds weight across its supports, like a small bridge.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 81,
@@ -1888,7 +1957,10 @@
    "dexId": "dex:sideTable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A drawer slides on rails, so it moves smoothly in and out.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 82,
@@ -1912,7 +1984,10 @@
    "dexId": "dex:desk",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Drawers slide on rails, so they move smoothly in and out.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 83,
@@ -1936,7 +2011,10 @@
    "dexId": "dex:cabinet",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A lock uses pins that only line up with the right key.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 84,
@@ -1960,7 +2038,10 @@
    "dexId": "dex:glassCabinet",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Glass lets light through, so you can see inside without opening it.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 85,
@@ -1984,7 +2065,10 @@
    "dexId": "dex:steelLocker",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Steel is strong and hard to bend, which protects what is inside.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 86,
@@ -2030,7 +2114,10 @@
    "dexId": "dex:itemTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A gentle push of air moves light things along a tube.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 88,
@@ -2054,7 +2141,10 @@
    "dexId": "dex:poweredTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Copper coils make a magnetic push that speeds items along.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 89,
@@ -2079,7 +2169,10 @@
    "dexId": "dex:filterTube",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A sensor reads each item and opens a gate only for a match.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 90,
@@ -2103,7 +2196,10 @@
    "dexId": "dex:extractor",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A small motor and arm pull one stack at a time on a timer.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 91,
@@ -2127,7 +2223,10 @@
    "dexId": "dex:sorter",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked",
+   "inside": "A sensor reads each item and flips a gate to send it the right way.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 92,
@@ -2151,7 +2250,10 @@
    "dexId": "dex:networkCable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A cable carries signals as tiny changes in electricity.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 93,
@@ -2175,7 +2277,10 @@
    "dexId": "dex:networkCore",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A computer keeps a list of where every item is stored.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 94,
@@ -2200,7 +2305,10 @@
    "dexId": "dex:driveBay",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A drive stores information as tiny switches set to on or off.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 95,
@@ -2225,7 +2333,10 @@
    "dexId": "dex:terminal",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A search looks through an index, like the index at the back of a book.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 96,
@@ -2249,7 +2360,10 @@
    "dexId": "dex:storageLink",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A sensor counts what is in the box and reports it to the network.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 97,
@@ -2275,7 +2389,10 @@
    "dexId": "dex:teleportPad",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked",
+   "inside": "In Bertopia items jump between pads. Real teleporting of objects is not possible.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 98,
@@ -2301,7 +2418,10 @@
    "dexId": "dex:droneDock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked",
+   "inside": "Contacts on the pad touch the drone and refill its battery.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 99,
@@ -2326,7 +2446,10 @@
    "dexId": "dex:batteryBox",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Batteries store energy as chemicals and give it back as electricity.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 100,
@@ -2349,7 +2472,10 @@
    "dexId": "dex:networkPad",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "In Bertopia it links the pads to your network. Real teleporting of objects is not possible.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 101,
@@ -2404,7 +2530,7 @@
    "key": "noteBlock",
    "type": "machine",
    "name": {
-    "en": "Note Block"
+    "en": "Tone Block"
    },
    "desc": "Tap to raise the pitch. The block under it picks the instrument.",
    "verbs": [
@@ -2420,7 +2546,10 @@
    "dexId": "dex:noteBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Tapping makes the block vibrate. Faster vibrations make a higher pitch.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 104,
@@ -2442,7 +2571,10 @@
    "dexId": "dex:keyboardBlock",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Each pad plays a different pitch. Higher pads vibrate faster.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 105,
@@ -2464,7 +2596,10 @@
    "dexId": "dex:drumKit",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A drum skin vibrates when hit. A tighter skin makes a higher sound.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 106,
@@ -2486,7 +2621,10 @@
    "dexId": "dex:guitar",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A string vibrates when plucked. A shorter or tighter string sounds higher.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 107,
@@ -2509,7 +2647,10 @@
    "dexId": "dex:jukebox",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A speaker cone moves back and forth to push air and make sound waves.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 108,
@@ -2651,7 +2792,7 @@
    "dexId": "dex:ghostLight",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -2675,7 +2816,7 @@
    "dexId": "dex:cobweb",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Spooky"
   },
@@ -2699,7 +2840,7 @@
    "dexId": "dex:marigold",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
@@ -2725,13 +2866,13 @@
    "dexId": "dex:papelPicado",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check",
+   "textStatus": "checked",
    "pile": "seasonal",
    "sortGroup": "Autumn"
   },
   {
    "id": 117,
-   "key": "skullPatternTile",
+   "key": "marigoldPatternTile",
    "type": "block",
    "name": {
     "en": "Marigold Pattern Tile"
@@ -2744,9 +2885,9 @@
    "recipes": [],
    "stage": "holidays-1",
    "availableFrom": "live",
-   "assetId": "tile_skull_pattern",
+   "assetId": "tile_marigold_pattern",
    "fact": null,
-   "dexId": "dex:skullPatternTile",
+   "dexId": "dex:marigoldPatternTile",
    "dexCat": "Seasonal & Holiday",
    "handS": null,
    "textStatus": "checked",
@@ -2774,7 +2915,7 @@
    "dexId": "dex:rangoliTile",
    "dexCat": "Blocks",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 120,
@@ -2821,7 +2962,10 @@
    "dexId": "dex:labBench",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Scientists test one change at a time so they know what caused a result.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 122,
@@ -2843,7 +2987,10 @@
    "dexId": "dex:warpPad",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "In Bertopia a Warp Key brings you here. Real teleporting of people is not possible.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 123,
@@ -2865,7 +3012,10 @@
    "dexId": "dex:sleepingBag",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "Trapped air inside the bag slows heat loss and keeps you warm.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 124,
@@ -2887,7 +3037,10 @@
    "dexId": "dex:crewBanner",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A banner is a flag that helps a team find its meeting spot.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 125,
@@ -2910,7 +3063,10 @@
    "dexId": "dex:gameZoneFlag",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A boundary marks the edges so everyone knows where the game is.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 126,
@@ -2953,7 +3109,10 @@
    "dexId": "dex:draftingTable",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "checked"
+   "textStatus": "checked",
+   "inside": "A drawing with exact measurements lets anyone build the same thing.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 128,
@@ -2976,7 +3135,10 @@
    "dexId": "dex:cleanBench",
    "dexCat": "Items & Machines",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked",
+   "inside": "Filters take dust out of the air. Dust can ruin tiny electronic parts.",
+   "insideStatus": "unchecked",
+   "insideSource": "Debugzy draft"
   },
   {
    "id": 129,
@@ -3240,7 +3402,7 @@
    "dexId": "dex:tintedGlass",
    "dexCat": "Materials",
    "handS": 0.4,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": 141,
@@ -4033,7 +4195,7 @@
    "sortGroup": "Autumn",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
    "textStatus": "draft-curriculum-check",
-   "originStatus": "draft-curriculum-check"
+   "originStatus": "checked"
   },
   {
    "id": 175,
@@ -4124,7 +4286,7 @@
    "key": "colourSplash",
    "type": "block",
    "name": {
-    "en": "Colour Splash Block"
+    "en": "Color Splash Block"
    },
    "desc": "A block covered in bright paint splats.",
    "verbs": [
@@ -4138,7 +4300,7 @@
    "availableFrom": null,
    "assetId": "block:colourSplash",
    "fact": null,
-   "origin": "People throw coloured powder at Holi, a spring festival from India.",
+   "origin": "People throw colored powder at Holi, a spring festival from India.",
    "dexId": "dex:colourSplash",
    "dexCat": "Seasonal & Holiday",
    "pile": "seasonal",
@@ -4173,7 +4335,7 @@
    "sortGroup": "Spring",
    "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
    "textStatus": "draft-curriculum-check",
-   "originStatus": "draft-curriculum-check"
+   "originStatus": "checked"
   },
   {
    "id": 180,
@@ -4322,7 +4484,7 @@
    "name": {
     "en": "Wood Pick"
    },
-   "desc": "Mines every block 2x faster than a hand. Never wears out.",
+   "desc": "Mines every block 2× faster than a hand. Never wears out.",
    "verbs": [
     "Mine (held)"
    ],
@@ -4344,7 +4506,7 @@
    "name": {
     "en": "Stone Pick"
    },
-   "desc": "Mines 3x faster than a hand.",
+   "desc": "Mines 3× faster than a hand.",
    "verbs": [
     "Mine (held)"
    ],
@@ -4366,7 +4528,7 @@
    "name": {
     "en": "Copper Pick"
    },
-   "desc": "Mines 4x faster than a hand.",
+   "desc": "Mines 4× faster than a hand.",
    "verbs": [
     "Mine (held)"
    ],
@@ -4388,7 +4550,7 @@
    "name": {
     "en": "Steel Pick"
    },
-   "desc": "Mines 6x faster than a hand.",
+   "desc": "Mines 6× faster than a hand.",
    "verbs": [
     "Mine (held)"
    ],
@@ -4445,7 +4607,7 @@
    "fact": "Gold is much heavier than sand of the same size. In a swirling pan, gold sinks and water washes the sand away.",
    "dexId": "dex:pan",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4613,7 +4775,7 @@
    "fact": "Pigments give paint its color. Early paints used colored earth, charcoal and plants.",
    "dexId": "dex:paintDab",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4849,7 +5011,7 @@
    "fact": "Almost every building has copper wires inside. They carry power to lights and plugs.",
    "dexId": "dex:copperWire",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -4981,7 +5143,7 @@
    "fact": null,
    "dexId": "dex:silverIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5001,7 +5163,7 @@
    "fact": "Gold is very heavy for its size. So it sinks to the bottom of a pan.",
    "dexId": "dex:goldFlake",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5085,7 +5247,7 @@
    "fact": null,
    "dexId": "dex:quartz",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5151,7 +5313,7 @@
    "fact": "A battery stores energy in chemicals. When you use it, the chemicals make power.",
    "dexId": "dex:batteryCell",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5195,7 +5357,7 @@
    "fact": null,
    "dexId": "dex:wireRope",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5297,7 +5459,7 @@
    "fact": null,
    "dexId": "dex:cloth",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5379,7 +5541,7 @@
    "fact": null,
    "dexId": "dex:platinumIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5401,7 +5563,7 @@
    "fact": null,
    "dexId": "dex:alumina",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5423,7 +5585,7 @@
    "fact": null,
    "dexId": "dex:aluminumIngot",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5443,7 +5605,7 @@
    "fact": null,
    "dexId": "dex:aluminumBeam",
    "dexCat": "Materials",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5525,7 +5687,7 @@
    "fact": null,
    "dexId": "dex:rhodiumSpeck",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -5545,7 +5707,7 @@
    "fact": null,
    "dexId": "dex:iridiumSpeck",
    "dexCat": "Ores & Rocks",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6114,7 +6276,7 @@
    "fact": null,
    "dexId": "dex:blueprintScroll",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,
@@ -6214,7 +6376,7 @@
    "fact": null,
    "dexId": "dex:cogIridium",
    "dexCat": "Items & Machines",
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "checked"
   },
   {
    "id": null,

@@ -17,7 +17,7 @@ The rule of thumb (GM-ANSWERS §5): wood, cloth, glass and food at the Workbench
 | Recipe | Seconds | Gate | Source |
 |---|---|---|---|
 | 8 Stone → 1 Oven (workbench) | 10 | – | live |
-| 2 Stone → 2 Grey Brick (workbench) | 2 | – | live |
+| 2 Stone → 2 Gray Brick (workbench) | 2 | – | live |
 | 6 Planks + 1 Glass → 1 Vending Counter (workbench) | 10 | – | live |
 | 3 Planks + 3 Blue Cloth Block → 1 Bunk (workbench) | 5 | – | live |
 | 8 Planks → 1 Box (workbench) | 4 | – | live |
@@ -27,14 +27,14 @@ The rule of thumb (GM-ANSWERS §5): wood, cloth, glass and food at the Workbench
 | 3 Stone + 2 Stick → 1 Stone Pick (workbench) | 4 | – | GM-ANSWERS §5 (live = 3 Stone + 2 Planks) |
 | 3 Planks → 1 Pan (workbench) | 2 | – | GM-ANSWERS §5 / ORE-TABLE |
 | 2 Stick + 1 Stone → 1 Carving Scoop (workbench) | 2 | – | GM-ANSWERS 2026-10-06 (final: no Iron Nugget) |
-| 8 Red Brick or Grey Brick + 1 Iron Ore + 1 Coal Ore → 1 Smelter (workbench, T4) | 10 | T4 | GM-ANSWERS §5 (brick colour: open question) |
+| 8 Red Brick or Gray Brick + 1 Iron Ore + 1 Coal Ore → 1 Smelter (workbench, T4) | 10 | T4 | GM-ANSWERS §5 (brick colour: open question) |
 | 1 String Lights + 1 Paint dab → 1 Blue & White Lights (workbench) | 2 | – | FUN-ITEMS §7 (Blue Dye → Paint Dab) |
 | 3 Wheat → 1 Woven Mat (workbench) | 2 | – | FUN-ITEMS §7 (Grass Fiber → Wheat) |
 | 2 Wheat + 1 Corn → 1 Harvest Basket (workbench) | 2 | – | FUN-ITEMS §7 (Grass Fiber → Wheat) |
 | 1 Cloth + 1 Paint dab + 1 LED Glow Strip → 1 Red Lantern (workbench) | 2 | – | FUN-ITEMS §7 (Paper → Cloth, Red Dye → Paint Dab, LED → Glow Strip) |
 | 3 Cloth + 1 Paint dab → 1 Paper Dragon (workbench) | 2 | – | FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab) |
 | 1 Glass + 1 Copper Wire + 1 LED Glow Strip → 1 Fanous Lantern (workbench) | 2 | – | FUN-ITEMS §7 (LED → Glow Strip) |
-| 1 Stone or Planks + 1 Paint dab → 1 Colour Splash Block (workbench) | 1 | – | FUN-ITEMS §7 (Dye → Paint Dab) |
+| 1 Stone or Planks + 1 Paint dab → 1 Color Splash Block (workbench) | 1 | – | FUN-ITEMS §7 (Dye → Paint Dab) |
 | 1 Clay + 1 Wheat → 1 Spring Greens (workbench) | 2 | – | FUN-ITEMS §7 (Clay Dish → Clay, Seeds → Wheat) |
 | 1 Cloth + 1 Paint dab → 1 Kindness Heart (workbench) | 1 | – | FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab) |
 | 1 Flower + 1 Solar Panel → 1 Solar Flower (workbench) | 2 | – | FUN-ITEMS §7 (Solar Cell → Solar Panel) |

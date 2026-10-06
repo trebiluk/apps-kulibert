@@ -69,7 +69,7 @@ Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/worl
 | 16 | 2.6.12 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
 | 17 | 2.6.13 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
 | 18 | 2.6.14 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
-| 19 | 2.6.15 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
+| 19 | 2.6.15 | bertopia-music-1.md: Tone Block, instruments, Jukebox + DJ Berty Discs | [ ] |
 | 20 | 2.6.16 | bertopia-holidays-1.md: rest of the one pile (Winter group, 13 culture items ids 172–184, Marigold/Papel Picado), origin lines, Decorator badge |  [ ] |
 | 21 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
 
@@ -81,6 +81,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 - [wiki/REGISTRY.json](docs/wiki/REGISTRY.json): the one list of every block, item, machine, ore, biome, recipe and effect (ids, names, verbs, recipes, stage, asset id, fact chip, Bertodex id). [wiki/README.md](docs/wiki/README.md) explains it.
 - [BERTOPIA-CODING-PLAN.md](docs/BERTOPIA-CODING-PLAN.md): architecture, save versions, perf budgets, milestones, smoke harness, open questions.
 - [BERTOPIA-WORLD-1.md](docs/BERTOPIA-WORLD-1.md), [BERTOPIA-WORLD-2.md](docs/BERTOPIA-WORLD-2.md), [BERTOPIA-DECOR-PACKS.md](docs/BERTOPIA-DECOR-PACKS.md): world-1/2 and decor (furniture, autumn, carving, string lights) source of truth.
+- [BERTOPIA-CRAFTING-AND-MACHINE-UI.md](docs/BERTOPIA-CRAFTING-AND-MACHINE-UI.md): Build Tray + the one shared Machine Panel (`ui.machinePanel(spec)`, Run/Wires/Inside/Stats; built once in mach-1, reused by every machine).
 - [BERTOPIA-CORE-MECHANICS.md](docs/BERTOPIA-CORE-MECHANICS.md): **read first.** The 10 verbs, movement/camera/mining numbers, the §0.3 gesture thresholds and the 23 live mismatches. It wins over any older brief.
 - [BERTOPIA-WORLDS.md](docs/BERTOPIA-WORLDS.md): Game world (Bertyville) = Survival for everyone; Build world (the Workshop) = Creative, Teacher flag only. Separate Bags.
 - [BERTOPIA-EFFECTS-SPEC.md](docs/BERTOPIA-EFFECTS-SPEC.md): Lab Bench effects, Levels I–III, cooldowns, chips, off zones.
@@ -99,6 +100,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| docs (Oct 6, 10:30 AM) | (this commit) | Docs only: GM calls applied (Tone Block, Fusion Core nuclear line, teal Bot, Zapper removed), marigoldPatternTile key, US spelling + ×, 54 Machine Panel inside lines (unchecked), 278 entries checked |
 | docs (Oct 6, 10:15 AM) | (this commit) | Docs only, no app change: one Seasonal & Holiday pile (no dates, one teacher switch, culture items ids 172–184 in), Diya cut, Pattern Floor Tile base decor, Fabricator Starter Kit, new seasonal-early at 2.6.2 (versions after it +1, holidays-1 → 2.6.16), rotate proof in every brief |
 | 2.5.42 | a0675ec | FAIL (P1): HUD overlaps (path chip on the stick, hint on Crouch), any kid can flip the teacher switch, upright hotbar 4/9 off screen, stale tour/help/What's new, smoke has no gates (Oct 6, 6:30 AM) |
 | 2.5.15–2.5.41 | 689aea9 … 417deb0 | not proven one at a time (27 Build cuts, Oct 4 7:40 AM – Oct 5 10:35 AM); covered by the 2.5.42 proof |

@@ -55,7 +55,7 @@ Gestures are the kw-interact names in §0.3. A long-press "Options" sheet is par
 | Disco Floor | Place; step = automatic; Options on a tile = pattern (Rainbow/One Color/Chase/Follow the Music) |
 | Bounce Block | Place; Move (land on it); Crouch held = land without bouncing |
 | Bobbleheads + Trophy Shelf | earned; Place shelf; Move-item bobblehead onto shelf (only valid spot); removal via Settings (Use) |
-| Note Block | Place; Use = tap raises pitch + plays; Connect = circuit trigger |
+| Tone Block | Place; Use = tap raises pitch + plays; Connect = circuit trigger |
 | Keyboard · Drum Kit · Guitar | Place; Open = 8-pad player; tap pads (inside the panel) |
 | Jukebox | Place; Open = disc list; Move-item disc in; volume slider in panel |
 | Holiday deco packs | Place; Paint where allowed |
@@ -199,7 +199,7 @@ Feel test: a Teacher steps through the Workshop Door, builds, Publishes, and ste
 | Search (Terminal, Bag) | **Fold into Open.** It's a text box inside an opened panel (Bag already has search in 2.6.1). |
 | Ride / Sit | **Fold into Use** (tap a seat/pod = sit; Move/Jump = stand). Nothing locked needs it yet; revisit with the Glideway. |
 | Float (Gravity Hat) | **Fold into Use** (worn button) + Move (hold Jump to rise). |
-| Play an instrument | **Fold into Open** (8-pad panel) + Use (Note Block tap). |
+| Play an instrument | **Fold into Open** (8-pad panel) + Use (Tone Block tap). |
 | Tag (Arena + Hide-and-Seek only) | **Scoped form of Use** ("Use on a player within 2 b"), active only inside an Arena or Game Zone; outside, tapping a player shows their alias card. Not a new verb. |
 | Pair vs Connect | Kept separate on purpose (wired vs wireless lesson). If Diego wants 9 verbs, merge as "Link." |
 
@@ -234,4 +234,4 @@ Matches (keep): player 0.6×1.8 (noa defaults), eye ≈0.9×height, hotbar 9 + k
 Outside this spec, flagged: the Tally store sells Blue/Red wool, flour, sugar for Cogs (L2433 `storeSells:[…]`); check against A1 "materials never bought except stock refills."
 
 
-GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.
+GameMaster 2026-10-06: open questions answered in /workspace/briefs/bertopia/BERTOPIA-GM-ANSWERS-2026-10-06.md (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

@@ -5,10 +5,10 @@
 
 | id | Name | What it is | Verbs | Recipe | Stage | Fact chip | Bertodex | Asset |
 |---|---|---|---|---|---|---|---|---|
-| – | **Wood Pick** `woodTool` | Mines every block 2x faster than a hand. Never wears out. | Mine (held) | 3 Planks + 2 Stick → 1 Wood Pick (workbench) | live | – | dex:woodTool | woodTool |
-| – | **Stone Pick** `stoneTool` | Mines 3x faster than a hand. | Mine (held) | 3 Stone + 2 Stick → 1 Stone Pick (workbench) | live | – | dex:stoneTool | stoneTool |
-| – | **Copper Pick** `copperPick` | Mines 4x faster than a hand. | Mine (held) | 3 Copper Ingot + 2 Stick → 1 Copper Pick (forge, T4) | basics-1 | – | dex:copperPick | copperPick |
-| – | **Steel Pick** `steelPick` | Mines 6x faster than a hand. | Mine (held) | 3 Steel + 2 Stick → 1 Steel Pick (forge, T4) | basics-1 | – | dex:steelPick | steelPick |
+| – | **Wood Pick** `woodTool` | Mines every block 2× faster than a hand. Never wears out. | Mine (held) | 3 Planks + 2 Stick → 1 Wood Pick (workbench) | live | – | dex:woodTool | woodTool |
+| – | **Stone Pick** `stoneTool` | Mines 3× faster than a hand. | Mine (held) | 3 Stone + 2 Stick → 1 Stone Pick (workbench) | live | – | dex:stoneTool | stoneTool |
+| – | **Copper Pick** `copperPick` | Mines 4× faster than a hand. | Mine (held) | 3 Copper Ingot + 2 Stick → 1 Copper Pick (forge, T4) | basics-1 | – | dex:copperPick | copperPick |
+| – | **Steel Pick** `steelPick` | Mines 6× faster than a hand. | Mine (held) | 3 Steel + 2 Stick → 1 Steel Pick (forge, T4) | basics-1 | – | dex:steelPick | steelPick |
 | – | **Stick** `stick` | 2 Planks make 4 Sticks. | Move-item | 2 Planks → 4 Stick (workbench) | basics-1 | – | dex:stick | stick |
 | – | **Pan** `pan` | A wooden pan. Swirl river gravel to find heavy gold flakes. | Use (on river gravel) | 3 Planks → 1 Pan (workbench) | world-1 | Gold is much heavier than sand of the same size. In a swirling pan, gold sinks and water washes the sand away. | dex:pan | pan |
 | – | **Bucket** `bucket` | Scoops 1 block of still water. | Use (on water) | 3 Iron Ingot → 1 Bucket (forge, T4) | world-1 | – | dex:bucket | bucket |

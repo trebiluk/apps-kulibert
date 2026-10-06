@@ -6,7 +6,7 @@ Debugzy, 2026-10-06, 7:0x AM ET. Asked for by Diego at 6:56 AM ("features list o
 
 **House rules (they apply to every row):**
 - No weapons and no gun shapes.
-- No nuclear: the **Fusion Core** is the late-game plant.
+- The **Fusion Core** is the late-game plant. Fusion is how the Sun makes energy: tiny atoms squeeze together and join. It is a kind of nuclear energy. Engineers on Earth are still learning to make it work.
 - No real money.
 - No explosives. A blast is always a timed, marked Quarry dig.
 - Nothing hurts another player or their build without their accept.
@@ -52,7 +52,7 @@ Rank = how much kids loved it in the original × what it teaches × how cheap it
 | 27 | **Exo-Suit** | IC2 jetpack, nano and quantum armor | A worn suit with a battery: jump boost, safe fall, short glide. | Move-item (wear), Use (worn button), Move (hold Jump = glide) | Battery life, efficiency, mechanics | `gear-1` | ✅ §N · ⚠ glide = "hold Jump in air" uses the Gravity Hat pattern; confirm it's not a new action |
 | 28 | **Autocraft requests from the Terminal** | AE crafting CPU | Ask the network for 16 Beams and it schedules Assemblers. | Open (Terminal), Use (Request) | Scheduling, dependency trees | `storage-7` | 🆕 |
 | 29 | **Tunnel Bore bot** | Railcraft tunnel bore | A slow bot that bores a 3×3 tunnel and lays Glideway track. Big, costly, crew-sized. | Place, Pair, Use | Civil engineering, logistics | `rail-3` | 🆕 |
-| 30 | **Fusion Core** | (replaces IC2/BigReactors reactors; **no nuclear**) | A multi-block village power plant. It needs coolant loops, magnets (copper coils), upkeep, and a crew. If cooling fails, it **shuts down the grid safely**, with no explosion. | Place, Connect, Open (control panel), Move-item | Systems engineering, feedback control, teamwork | `fusion-1` | ✅ §N |
+| 30 | **Fusion Core** | (Fusion is how the Sun makes energy: tiny atoms squeeze together and join. It is a kind of nuclear energy. Engineers on Earth are still learning to make it work.) | A multi-block village power plant. It needs coolant loops, magnets (copper coils), upkeep, and a crew. If cooling fails, it **shuts down the grid safely**, with no explosion. | Place, Connect, Open (control panel), Move-item | Systems engineering, feedback control, teamwork | `fusion-1` | ✅ §N |
 | 31 | **Wonder Lab effects** | Thaumcraft research and wands (idea only) | Science-looks-like-magic effects I–III, made at the Lab Bench. | Craft, Use | Chemistry and physics ideas | `effects-1..3` | ✅ EFFECTS-SPEC |
 | 32 | **Drafting Table research** | Thaumcraft research notes | Read Blueprint Scrolls to unlock materials (the T1–T7 ladder). | Open, Move-item | Research, documentation | `ladder-1` | ✅ PROGRESSION |
 | 33 | **Teleport Pads (items) and Delivery Drone** | EnderStorage/AE P2P idea | Item transport over distance. Pads are instant but hungry, the drone is slow but cheap. | Place, Pair, Move-item, Use | Speed vs cost vs capacity | `storage-3` | ✅ STORAGE-SPEC §4 |

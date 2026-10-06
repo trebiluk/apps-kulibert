@@ -14,7 +14,7 @@
 | 39 | **Lever (on)** `leverOn` | A lever switched on. | Mine, Place | – | basics-1 | – | dex:leverOn | block:leverOn |
 | 40 | **Push Button** `pushButton` | Press it for 1.5 seconds of power. | Place, Use, Connect | 1 Planks → 1 Push Button (workbench, T1) | basics-1 | – | dex:pushButton | block:pushButton |
 | 41 | **Push Button (on)** `pushButtonOn` | A pressed button. | Mine, Place | – | basics-1 | – | dex:pushButtonOn | block:pushButtonOn |
-| 42 | **Smelter** `smelter` | Melts ore into metal. Its Forge tab shapes the metal. | Place, Open, Craft, Move-item | 8 Red Brick or Grey Brick + 1 Iron Ore + 1 Coal Ore → 1 Smelter (workbench, T4) | basics-1 | – | dex:smelter | smelter_front |
+| 42 | **Smelter** `smelter` | Melts ore into metal. Its Forge tab shapes the metal. | Place, Open, Craft, Move-item | 8 Red Brick or Gray Brick + 1 Iron Ore + 1 Coal Ore → 1 Smelter (workbench, T4) | basics-1 | – | dex:smelter | smelter_front |
 | 43 | **Fabricator** `fabricator` | Builds anything with a battery, silicon or a chip. Runs on charge. | Place, Open, Craft, Connect | 4 Steel + 2 Copper Wire + 1 Glass + 1 Battery Cell → 1 Fabricator (forge, T5) | basics-1 | – | dex:fabricator | fabricator_front |
 | 47 | **LED Lantern** `lantern` | A battery light. Tap for Low, Medium or High. | Place, Use | 1 Glass + 1 Steel + 1 Battery Cell → 1 LED Lantern (fabricator, T5) | basics-1 | LEDs use much less energy than old light bulbs. | dex:lantern | block:lantern |
 | 48 | **Charger** `charger` | Like a wall outlet: it always gives power. | Place, Connect, Open | 1 Steel + 1 Copper Wire → 1 Charger (fabricator, T5) | basics-1 | A wall outlet in the U.S. gives about 120 volts. | dex:charger | block:charger |
@@ -47,7 +47,7 @@
 | 98 | **Drone Dock** `droneDock` | Charges your Delivery Drone and sends it off. | Place, Pair, Use, Open | 1 Charger + 2 Planks → 1 Drone Dock (workbench, T5) | storage-3 | – | dex:droneDock | block:droneDock |
 | 99 | **Battery Box** `batteryBox` | Stores 40 charges for the night. | Place, Connect, Open | 4 Battery Cell + 1 Steel → 1 Battery Box (fabricator, T5) | storage-6 | – | dex:batteryBox | batterybox_front |
 | 100 | **Network Pad** `networkPad` | A teleport pad that talks to your network. | Place, Pair, Move-item | – | storage-6 | – | dex:networkPad | block:networkPad |
-| 103 | **Note Block** `noteBlock` | Tap to raise the pitch. The block under it picks the instrument. | Place, Use, Connect | – | music-1 | A higher pitch means the sound wave vibrates faster. | dex:noteBlock | note_top |
+| 103 | **Tone Block** `noteBlock` | Tap to raise the pitch. The block under it picks the instrument. | Place, Use, Connect | – | music-1 | A higher pitch means the sound wave vibrates faster. | dex:noteBlock | note_top |
 | 104 | **Keyboard** `keyboardBlock` | An 8-pad keyboard you can play. | Place, Open | – | music-1 | – | dex:keyboardBlock | block:keyboardBlock |
 | 105 | **Drum Kit** `drumKit` | An 8-pad drum kit. | Place, Open | – | music-1 | – | dex:drumKit | block:drumKit |
 | 106 | **Guitar** `guitar` | An 8-pad guitar. | Place, Open | – | music-1 | – | dex:guitar | block:guitar |

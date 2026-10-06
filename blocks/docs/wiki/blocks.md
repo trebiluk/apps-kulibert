@@ -12,7 +12,7 @@
 | 6 | **Sand** `sand` | Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass. | Mine, Place | – | live | Glass makers melt sand with soda ash and limestone at about 1,500 °C. | dex:sand | sand |
 | 7 | **Gravel** `gravel` | Small rounded stones, often found in river beds. | Mine, Place | – | live | – | dex:gravel | gravel_stone |
 | 8 | **Red Brick** `brickRed` | Baked clay bricks. Strong when you push on them. | Mine, Place | 2 Red Sand → 1 Red Brick (oven) | live | – | dex:brickRed | brick_red |
-| 9 | **Grey Brick** `brickGrey` | Stone cut into bricks. | Mine, Place | 2 Stone → 2 Grey Brick (workbench) | live | – | dex:brickGrey | brick_grey |
+| 9 | **Gray Brick** `brickGrey` | Stone cut into bricks. | Mine, Place | 2 Stone → 2 Gray Brick (workbench) | live | – | dex:brickGrey | brick_grey |
 | 10 | **Planks** `planks` | Boards sawn from a log. 1 Log makes 4. | Mine, Place | 1 Log → 4 Planks (hand) | live | – | dex:planks | wood |
 | 11 | **Log** `log` | A piece of tree trunk. The rings show its age. | Mine, Place | – | live | Where winters are cold, a tree adds one ring each year. Count the rings to find its age. | dex:log | trunk_top |
 | 12 | **Leaves** `leaves` | Leaves make food for the tree from sunlight. Sometimes a Berry falls out. | Mine, Place | – | live | Leaves use sunlight, water and carbon dioxide to make sugar (photosynthesis). | dex:leaves | leaves |
@@ -57,7 +57,7 @@
 | 114 | **Cobweb Deco** `cobweb` | A fake cobweb. It is just for looks. | Mine, Place | – | holidays-1 | – | dex:cobweb | cobweb |
 | 115 | **Marigolds** `marigold` | Bright orange flowers that bloom from summer into autumn. | Mine, Place | – | holidays-1 | – | dex:marigold | marigold |
 | 116 | **Papel Picado Banner** `papelPicado` | Bright paper banners with cut-out shapes. | Mine, Place | 2 Cloth + 1 Cotton → 1 Papel Picado Banner (workbench) | holidays-1 | – | dex:papelPicado | papel_picado |
-| 117 | **Marigold Pattern Tile** `skullPatternTile` | A tile with a bright marigold flower pattern. | Mine, Place | – | holidays-1 | – | dex:skullPatternTile | tile_skull_pattern |
+| 117 | **Marigold Pattern Tile** `marigoldPatternTile` | A tile with a bright marigold flower pattern. | Mine, Place | – | holidays-1 | – | dex:marigoldPatternTile | tile_marigold_pattern |
 | 119 | **Pattern Floor Tile** `rangoliTile` | A floor tile with a simple geometric pattern. Paint it any color. | Mine, Place | – | storage-2 | – | dex:rangoliTile | tile_rangoli |
 | 120 | **String Lights** `stringLights` | A strand of small LED lights. | Place, Connect | – | holidays-1 | – | dex:stringLights | string_lights |
 | 126 | **Workshop Door** `workshopDoor` | Teacher-flag door to the Build world. | Open | – | worlds-1 | – | dex:workshopDoor | door_workshop_top |
@@ -110,7 +110,7 @@
 | 175 | **Red Lantern** `redLantern` | A round red paper lantern with a steady LED glow. | Place, Mine | 1 Cloth + 1 Paint dab + 1 LED Glow Strip → 1 Red Lantern (workbench) | holidays-1 | – | dex:redLantern | block:redLantern |
 | 176 | **Paper Dragon** `paperDragon` | A long, friendly paper dragon with a steady LED glow. | Place, Mine | 3 Cloth + 1 Paint dab → 1 Paper Dragon (workbench) | holidays-1 | – | dex:paperDragon | block:paperDragon |
 | 177 | **Fanous Lantern** `fanousLantern` | A metal-and-glass lantern with geometric windows and an LED glow. | Place, Mine | 1 Glass + 1 Copper Wire + 1 LED Glow Strip → 1 Fanous Lantern (workbench) | holidays-1 | – | dex:fanousLantern | block:fanousLantern |
-| 178 | **Colour Splash Block** `colourSplash` | A block covered in bright paint splats. | Place, Mine | 1 Stone or Planks + 1 Paint dab → 1 Colour Splash Block (workbench) | holidays-1 | – | dex:colourSplash | block:colourSplash |
+| 178 | **Color Splash Block** `colourSplash` | A block covered in bright paint splats. | Place, Mine | 1 Stone or Planks + 1 Paint dab → 1 Color Splash Block (workbench) | holidays-1 | – | dex:colourSplash | block:colourSplash |
 | 179 | **Spring Greens** `springGreens` | A dish of sprouted green grass. | Place, Mine | 1 Clay + 1 Wheat → 1 Spring Greens (workbench) | holidays-1 | – | dex:springGreens | block:springGreens |
 | 180 | **Kindness Heart** `kindnessHeart` | A paper heart with flowers on it. | Place, Mine | 1 Cloth + 1 Paint dab → 1 Kindness Heart (workbench) | holidays-1 | – | dex:kindnessHeart | block:kindnessHeart |
 | 181 | **Solar Flower** `solarFlower` | A flower that charges by day and glows softly at night. | Place, Mine | 1 Flower + 1 Solar Panel → 1 Solar Flower (workbench) | holidays-1 | – | dex:solarFlower | block:solarFlower |

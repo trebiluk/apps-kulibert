@@ -44,11 +44,11 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
 - Blocked players can never earn yours. Teachers can remove any bobblehead and see them all.
 
 ## 6. Music (tied to DJ Berty; no joke-noise instruments)
-- **Note Block:** 2 Planks + 1 Copper Wire. Tap to raise pitch (2 octaves, C major by default; Chromatic toggle). Instrument set by the block underneath: Wood = marimba, Stone = drum, Glass = chime, Steel = steel drum, Cloth = soft bass. Plays when tapped, stepped on, or triggered by a circuit (Circuit Daily tie-in: wire a song). Max 8 notes per second per area.
+- **Tone Block:** 2 Planks + 1 Copper Wire. Tap to raise pitch (2 octaves, C major by default; Chromatic toggle). Instrument set by the block underneath: Wood = marimba, Stone = drum, Glass = chime, Steel = steel drum, Cloth = soft bass. Plays when tapped, stepped on, or triggered by a circuit (Circuit Daily tie-in: wire a song). Max 8 notes per second per area.
 - **Instrument Blocks** (playable furniture; tap opens an 8-pad mini player): Keyboard (3 Planks + 1 Steel + 1 Copper Wire), Drum Kit (2 Cloth + 2 Steel + 1 Planks), Guitar (3 Planks + 1 Copper Wire). Audible 12 blocks.
 - **Jukebox:** 4 Planks + 1 Glass + 1 Copper Wire + 1 Battery Cell. Plays Music Discs: Berty's starter mixes, plus every song the kid saved in DJ Berty (signed-in, same account) appears as a Disc automatically. Audible 16 blocks, volume slider, one Jukebox playing per 32-block area.
 - Sound controls: every player has Music on/off and volume; class mode starts at low volume; teachers can mute all music for the class.
-- Badges: First Tune (play 8 note blocks in a row), Mixmaster (play your own DJ Berty song on a Jukebox).
+- Badges: First Tune (play 8 Tone Blocks in a row), Mixmaster (play your own DJ Berty song on a Jukebox).
 
 ## 7. Seasonal & Holiday pile
 - Diego (Oct 6): one big pile, so no holiday is favored. Every item is in one **Seasonal & Holiday** section for everyone, all year, with one teacher On/Off switch (default On). No dates, no featured holiday, no packs. Full rules in `BERTOPIA-DECOR-PACKS.md` (Pile model).
@@ -64,7 +64,7 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
   | Red Lantern | steady LED glow; no god figures, no incense | 1 Paper + 1 Red Dye + 1 LED |
   | Paper Dragon | steady LED glow; no god figures | 3 Paper + 1 Red Dye |
   | Fanous | steady LED glow; no crescent on top | 1 Glass + 1 Copper Wire + 1 LED |
-  | Colour Splash Block | paint splats; ties to Paint | 1 Block + any Dye |
+  | Color Splash Block | paint splats; ties to Paint | 1 Block + any Dye |
   | Sprouted Grass Dish | a dish of grass only | 1 Clay Dish + 1 Seeds |
   | Heart Card | hearts, flowers | 1 Paper + 1 Red Dye |
   | Solar Flower | ties to Circuits (glows by day's charge) | 1 Flower + 1 Solar Cell |
