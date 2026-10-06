@@ -23,14 +23,14 @@
  ],
  "counts": {
   "biome": 8,
-  "block": 100,
+  "block": 112,
   "effect": 8,
   "element": 16,
   "item": 93,
   "machine": 54,
   "mob": 9,
   "ore": 17,
-  "recipe": 97
+  "recipe": 111
  },
  "unknownKeysInRecipes": [],
  "entries": [
@@ -2529,9 +2529,11 @@
    "assetId": "pumpkin_top",
    "fact": "Pumpkins are fruit, because they hold seeds.",
    "dexId": "dex:pumpkin",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 109,
@@ -2551,9 +2553,11 @@
    "assetId": "jack_front",
    "fact": null,
    "dexId": "dex:jackOLantern",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 110,
@@ -2573,9 +2577,11 @@
    "assetId": "corn_stalks",
    "fact": null,
    "dexId": "dex:cornStalks",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 111,
@@ -2595,9 +2601,11 @@
    "assetId": "leaf_pile",
    "fact": null,
    "dexId": "dex:leafPile",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 112,
@@ -2617,9 +2625,11 @@
    "assetId": "apple_crate_top",
    "fact": null,
    "dexId": "dex:appleCrate",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 113,
@@ -2639,9 +2649,11 @@
    "assetId": "block:ghostLight",
    "fact": null,
    "dexId": "dex:ghostLight",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 114,
@@ -2661,9 +2673,11 @@
    "assetId": "cobweb",
    "fact": null,
    "dexId": "dex:cobweb",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 115,
@@ -2672,7 +2686,7 @@
    "name": {
     "en": "Marigolds"
    },
-   "desc": "Bright orange flowers used for Dia de los Muertos.",
+   "desc": "Bright orange flowers that bloom from summer into autumn.",
    "verbs": [
     "Mine",
     "Place"
@@ -2683,9 +2697,11 @@
    "assetId": "marigold",
    "fact": null,
    "dexId": "dex:marigold",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 116,
@@ -2699,15 +2715,19 @@
     "Mine",
     "Place"
    ],
-   "recipes": [],
+   "recipes": [
+    "r:papelPicado"
+   ],
    "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "papel_picado",
    "fact": null,
    "dexId": "dex:papelPicado",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 117,
@@ -2727,46 +2747,27 @@
    "assetId": "tile_skull_pattern",
    "fact": null,
    "dexId": "dex:skullPatternTile",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
-  },
-  {
-   "id": 118,
-   "key": "diyaLight",
-   "type": "block",
-   "name": {
-    "en": "Diya Light"
-   },
-   "desc": "A small clay lamp shape with an LED glow, never a flame.",
-   "verbs": [
-    "Mine",
-    "Place"
-   ],
-   "recipes": [],
-   "stage": "holidays-1",
-   "availableFrom": "live",
-   "assetId": "block:diyaLight",
-   "fact": null,
-   "dexId": "dex:diyaLight",
-   "dexCat": "Blocks",
-   "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn",
+   "artStatus": "redraw: marigold flowers only, no skull shapes"
   },
   {
    "id": 119,
    "key": "rangoliTile",
    "type": "block",
    "name": {
-    "en": "Rangoli Floor Tile"
+    "en": "Pattern Floor Tile"
    },
-   "desc": "A floor tile with a colorful rangoli pattern.",
+   "desc": "A floor tile with a simple geometric pattern. Paint it any colour.",
    "verbs": [
     "Mine",
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-1",
+   "stage": "storage-2",
    "availableFrom": "live",
    "assetId": "tile_rangoli",
    "fact": null,
@@ -2793,9 +2794,11 @@
    "assetId": "string_lights",
    "fact": null,
    "dexId": "dex:stringLights",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 121,
@@ -3565,9 +3568,11 @@
    "assetId": "hay_top",
    "fact": "Hay is grass that is cut and dried so animals can eat it in winter.",
    "dexId": "dex:hayBale",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 156,
@@ -3587,9 +3592,11 @@
    "assetId": "gourds",
    "fact": "Gourds have hard shells and were used as bowls and bottles long ago.",
    "dexId": "dex:gourds",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 157,
@@ -3609,9 +3616,11 @@
    "assetId": "block:scarecrow",
    "fact": "Farmers have used scarecrows for thousands of years.",
    "dexId": "dex:scarecrow",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 158,
@@ -3631,9 +3640,11 @@
    "assetId": "bats_deco",
    "fact": "One bat can eat hundreds of insects in one night.",
    "dexId": "dex:batsDeco",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 159,
@@ -3653,9 +3664,11 @@
    "assetId": "carved_front_blank",
    "fact": null,
    "dexId": "dex:carvedPumpkin",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 166,
@@ -3675,9 +3688,11 @@
    "assetId": "block:spookySign",
    "fact": null,
    "dexId": "dex:spookySign",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Spooky"
   },
   {
    "id": 167,
@@ -3697,9 +3712,11 @@
    "assetId": "block:harvestLantern",
    "fact": null,
    "dexId": "dex:harvestLantern",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Autumn"
   },
   {
    "id": 168,
@@ -3803,14 +3820,16 @@
     "Open (Steady/Slow twinkle)"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "winter_lights",
    "fact": "LED string lights use far less power than old bulbs.",
    "dexId": "dex:winterLights",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 161,
@@ -3825,14 +3844,16 @@
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "wreath",
    "fact": null,
    "dexId": "dex:wreath",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 162,
@@ -3847,14 +3868,16 @@
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "gift_top",
    "fact": null,
    "dexId": "dex:giftBox",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 163,
@@ -3869,14 +3892,16 @@
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "block:snowPal",
    "fact": null,
    "dexId": "dex:snowPal",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 164,
@@ -3891,14 +3916,16 @@
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "tile_ornament",
    "fact": null,
    "dexId": "dex:ornamentTile",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
-   "textStatus": "draft-curriculum-check"
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
   },
   {
    "id": 165,
@@ -3913,13 +3940,366 @@
     "Place"
    ],
    "recipes": [],
-   "stage": "holidays-2",
+   "stage": "holidays-1",
    "availableFrom": "live",
    "assetId": "stripe_red",
    "fact": null,
    "dexId": "dex:stripeBlock",
-   "dexCat": "Blocks",
+   "dexCat": "Seasonal & Holiday",
    "handS": null,
+   "textStatus": "draft-curriculum-check",
+   "pile": "seasonal",
+   "sortGroup": "Winter"
+  },
+  {
+   "id": 172,
+   "key": "blueWhiteLights",
+   "type": "block",
+   "name": {
+    "en": "Blue & White Lights"
+   },
+   "desc": "A plain string of blue and soft-white LED bulbs.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:blueWhiteLights"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:blueWhiteLights",
+   "fact": null,
+   "origin": "Blue and white lights are hung for Hanukkah in many Jewish homes.",
+   "dexId": "dex:blueWhiteLights",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Winter",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 173,
+   "key": "wovenMat",
+   "type": "block",
+   "name": {
+    "en": "Woven Mat"
+   },
+   "desc": "A flat mat woven in red, black and green.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:wovenMat"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:wovenMat",
+   "fact": null,
+   "origin": "Woven mats (mkeka) are laid out for Kwanzaa in many African American homes.",
+   "dexId": "dex:wovenMat",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Autumn",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 174,
+   "key": "harvestBasket",
+   "type": "block",
+   "name": {
+    "en": "Harvest Basket"
+   },
+   "desc": "A basket of fruit and corn.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:harvestBasket"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:harvestBasket",
+   "fact": null,
+   "origin": "Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals.",
+   "dexId": "dex:harvestBasket",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Autumn",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 175,
+   "key": "redLantern",
+   "type": "block",
+   "name": {
+    "en": "Red Lantern"
+   },
+   "desc": "A round red paper lantern with a steady LED glow.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:redLantern"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:redLantern",
+   "fact": null,
+   "origin": "Red paper lanterns are hung for Lunar New Year in many East Asian homes.",
+   "dexId": "dex:redLantern",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Winter",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 176,
+   "key": "paperDragon",
+   "type": "block",
+   "name": {
+    "en": "Paper Dragon"
+   },
+   "desc": "A long, friendly paper dragon with a steady LED glow.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:paperDragon"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:paperDragon",
+   "fact": null,
+   "origin": "Paper dragons are carried in Lunar New Year parades.",
+   "dexId": "dex:paperDragon",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Winter",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 177,
+   "key": "fanousLantern",
+   "type": "block",
+   "name": {
+    "en": "Fanous Lantern"
+   },
+   "desc": "A metal-and-glass lantern with geometric windows and an LED glow.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:fanousLantern"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:fanousLantern",
+   "fact": null,
+   "origin": "Fanous lanterns light streets during Ramadan in Egypt and nearby countries.",
+   "dexId": "dex:fanousLantern",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Winter",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 178,
+   "key": "colourSplash",
+   "type": "block",
+   "name": {
+    "en": "Colour Splash Block"
+   },
+   "desc": "A block covered in bright paint splats.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:colourSplash"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:colourSplash",
+   "fact": null,
+   "origin": "People throw coloured powder at Holi, a spring festival from India.",
+   "dexId": "dex:colourSplash",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Spring",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 179,
+   "key": "springGreens",
+   "type": "block",
+   "name": {
+    "en": "Spring Greens"
+   },
+   "desc": "A dish of sprouted green grass.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:springGreens"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:springGreens",
+   "fact": null,
+   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year.",
+   "dexId": "dex:springGreens",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Spring",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 180,
+   "key": "kindnessHeart",
+   "type": "block",
+   "name": {
+    "en": "Kindness Heart"
+   },
+   "desc": "A paper heart with flowers on it.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:kindnessHeart"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:kindnessHeart",
+   "fact": null,
+   "origin": "Hearts are shared during Kindness Week.",
+   "dexId": "dex:kindnessHeart",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Spring",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 181,
+   "key": "solarFlower",
+   "type": "block",
+   "name": {
+    "en": "Solar Flower"
+   },
+   "desc": "A flower that charges by day and glows softly at night.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:solarFlower"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:solarFlower",
+   "fact": null,
+   "origin": "Solar Flowers celebrate Earth Day and clean energy.",
+   "dexId": "dex:solarFlower",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Spring",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 182,
+   "key": "imigongoTile",
+   "type": "block",
+   "name": {
+    "en": "Imigongo Zigzag Tile"
+   },
+   "desc": "A tile with black, white and red zigzags.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:imigongoTile"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:imigongoTile",
+   "fact": null,
+   "origin": "Imigongo is zigzag art from eastern Rwanda.",
+   "dexId": "dex:imigongoTile",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Autumn",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 183,
+   "key": "petrykivkaTile",
+   "type": "block",
+   "name": {
+    "en": "Petrykivka Flower Tile"
+   },
+   "desc": "A tile painted with bright flower sprays.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:petrykivkaTile"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:petrykivkaTile",
+   "fact": null,
+   "origin": "Petrykivka is a Ukrainian folk style of flower painting.",
+   "dexId": "dex:petrykivkaTile",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Spring",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 184,
+   "key": "mesobBasket",
+   "type": "block",
+   "name": {
+    "en": "Mesob Basket"
+   },
+   "desc": "A tall woven basket with a lid.",
+   "verbs": [
+    "Place",
+    "Mine"
+   ],
+   "recipes": [
+    "r:mesobBasket"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": null,
+   "assetId": "block:mesobBasket",
+   "fact": null,
+   "origin": "A mesob is a woven table-basket from Eritrea and Ethiopia.",
+   "dexId": "dex:mesobBasket",
+   "dexCat": "Seasonal & Holiday",
+   "pile": "seasonal",
+   "sortGroup": "Autumn",
+   "artStatus": "planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)",
    "textStatus": "draft-curriculum-check"
   },
   {
@@ -7142,7 +7522,7 @@
    ],
    "secs": 2,
    "gate": null,
-   "source": "DECOR-PACKS §3 stand-in (2 Sticks + 1 Iron Nugget once an Iron Nugget item exists)"
+   "source": "GM-ANSWERS 2026-10-06 (final: no Iron Nugget)"
   },
   {
    "id": "r:bucket",
@@ -7216,7 +7596,315 @@
    ],
    "secs": 10,
    "gate": "T5",
-   "source": "GM-ANSWERS §5 (bootstrap: open question)"
+   "source": "GM-ANSWERS §5; bootstrap = one-time Starter Kit (1 Battery Cell + 1 Charger to Overflow Box on first Fabricator placed, once per player per world)"
+  },
+  {
+   "id": "r:blueWhiteLights",
+   "type": "recipe",
+   "out": [
+    "blueWhiteLights",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stringLights",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Blue Dye → Paint Dab)"
+  },
+  {
+   "id": "r:wovenMat",
+   "type": "recipe",
+   "out": [
+    "wovenMat",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "wheat",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Grass Fiber → Wheat)"
+  },
+  {
+   "id": "r:harvestBasket",
+   "type": "recipe",
+   "out": [
+    "harvestBasket",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "wheat",
+     2
+    ],
+    [
+     "corn",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Grass Fiber → Wheat)"
+  },
+  {
+   "id": "r:redLantern",
+   "type": "recipe",
+   "out": [
+    "redLantern",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ],
+    [
+     "glowStrip",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Paper → Cloth, Red Dye → Paint Dab, LED → Glow Strip)"
+  },
+  {
+   "id": "r:paperDragon",
+   "type": "recipe",
+   "out": [
+    "paperDragon",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     3
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab)"
+  },
+  {
+   "id": "r:fanousLantern",
+   "type": "recipe",
+   "out": [
+    "fanousLantern",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glass",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "glowStrip",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (LED → Glow Strip)"
+  },
+  {
+   "id": "r:colourSplash",
+   "type": "recipe",
+   "out": [
+    "colourSplash",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stone|planks",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Dye → Paint Dab)"
+  },
+  {
+   "id": "r:springGreens",
+   "type": "recipe",
+   "out": [
+    "springGreens",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "clay",
+     1
+    ],
+    [
+     "wheat",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Clay Dish → Clay, Seeds → Wheat)"
+  },
+  {
+   "id": "r:kindnessHeart",
+   "type": "recipe",
+   "out": [
+    "kindnessHeart",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab)"
+  },
+  {
+   "id": "r:solarFlower",
+   "type": "recipe",
+   "out": [
+    "solarFlower",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "flower",
+     1
+    ],
+    [
+     "solarPanel",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Solar Cell → Solar Panel)"
+  },
+  {
+   "id": "r:imigongoTile",
+   "type": "recipe",
+   "out": [
+    "imigongoTile",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "clay",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Dye → Paint Dab)"
+  },
+  {
+   "id": "r:petrykivkaTile",
+   "type": "recipe",
+   "out": [
+    "petrykivkaTile",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Dye → Paint Dab)"
+  },
+  {
+   "id": "r:mesobBasket",
+   "type": "recipe",
+   "out": [
+    "mesobBasket",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "wheat",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Grass Fiber → Wheat)"
+  },
+  {
+   "id": "r:papelPicado",
+   "type": "recipe",
+   "out": [
+    "papelPicado",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     2
+    ],
+    [
+     "cotton",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "FUN-ITEMS §7 (Paper → Cloth, String → Cotton)"
   },
   {
    "id": "r:ironIngot",

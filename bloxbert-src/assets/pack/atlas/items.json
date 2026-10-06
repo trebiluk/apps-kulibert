@@ -490,192 +490,188 @@
    "x": 288,
    "y": 224
   },
-  "block:diyaLight": {
-   "x": 320,
-   "y": 224
-  },
   "block:warpPad": {
-   "x": 352,
+   "x": 320,
    "y": 224
   },
   "block:sleepingBag": {
-   "x": 384,
+   "x": 352,
    "y": 224
   },
   "block:crewBanner": {
-   "x": 416,
+   "x": 384,
    "y": 224
   },
   "block:gameZoneFlag": {
-   "x": 448,
+   "x": 416,
    "y": 224
   },
   "block:dexShelf": {
-   "x": 480,
+   "x": 448,
    "y": 224
   },
   "block:trophyShelf": {
-   "x": 0,
-   "y": 256
+   "x": 480,
+   "y": 224
   },
   "block:scarecrow": {
-   "x": 32,
+   "x": 0,
    "y": 256
   },
   "block:spookySign": {
-   "x": 64,
+   "x": 32,
    "y": 256
   },
   "block:harvestLantern": {
-   "x": 96,
+   "x": 64,
    "y": 256
   },
   "block:chair": {
-   "x": 128,
+   "x": 96,
    "y": 256
   },
   "block:stool": {
-   "x": 160,
+   "x": 128,
    "y": 256
   },
   "block:bench": {
-   "x": 192,
+   "x": 160,
    "y": 256
   },
   "block:table": {
-   "x": 224,
+   "x": 192,
    "y": 256
   },
   "block:snowPal": {
-   "x": 256,
+   "x": 224,
    "y": 256
   },
   "block:chair@oak": {
-   "x": 288,
+   "x": 256,
    "y": 256
   },
   "block:stool@oak": {
-   "x": 320,
+   "x": 288,
    "y": 256
   },
   "block:bench@oak": {
-   "x": 352,
+   "x": 320,
    "y": 256
   },
   "block:table@oak": {
-   "x": 384,
+   "x": 352,
    "y": 256
   },
   "block:chair@walnut": {
-   "x": 416,
+   "x": 384,
    "y": 256
   },
   "block:stool@walnut": {
-   "x": 448,
+   "x": 416,
    "y": 256
   },
   "block:bench@walnut": {
-   "x": 480,
+   "x": 448,
    "y": 256
   },
   "block:table@walnut": {
-   "x": 0,
-   "y": 288
+   "x": 480,
+   "y": 256
   },
   "block:chair@birch": {
-   "x": 32,
+   "x": 0,
    "y": 288
   },
   "block:stool@birch": {
-   "x": 64,
+   "x": 32,
    "y": 288
   },
   "block:bench@birch": {
-   "x": 96,
+   "x": 64,
    "y": 288
   },
   "block:table@birch": {
-   "x": 128,
+   "x": 96,
    "y": 288
   },
   "block:chair@teal": {
-   "x": 160,
+   "x": 128,
    "y": 288
   },
   "block:stool@teal": {
-   "x": 192,
+   "x": 160,
    "y": 288
   },
   "block:bench@teal": {
-   "x": 224,
+   "x": 192,
    "y": 288
   },
   "block:table@teal": {
-   "x": 256,
+   "x": 224,
    "y": 288
   },
   "block:chair@berty": {
-   "x": 288,
+   "x": 256,
    "y": 288
   },
   "block:stool@berty": {
-   "x": 320,
+   "x": 288,
    "y": 288
   },
   "block:bench@berty": {
-   "x": 352,
+   "x": 320,
    "y": 288
   },
   "block:table@berty": {
-   "x": 384,
+   "x": 352,
    "y": 288
   },
   "block:chair@sunny": {
-   "x": 416,
+   "x": 384,
    "y": 288
   },
   "block:stool@sunny": {
-   "x": 448,
+   "x": 416,
    "y": 288
   },
   "block:bench@sunny": {
-   "x": 480,
+   "x": 448,
    "y": 288
   },
   "block:table@sunny": {
+   "x": 480,
+   "y": 288
+  },
+  "block:chair@coral": {
    "x": 0,
    "y": 320
   },
-  "block:chair@coral": {
+  "block:stool@coral": {
    "x": 32,
    "y": 320
   },
-  "block:stool@coral": {
+  "block:bench@coral": {
    "x": 64,
    "y": 320
   },
-  "block:bench@coral": {
+  "block:table@coral": {
    "x": 96,
    "y": 320
   },
-  "block:table@coral": {
+  "block:chair@slate": {
    "x": 128,
    "y": 320
   },
-  "block:chair@slate": {
+  "block:stool@slate": {
    "x": 160,
    "y": 320
   },
-  "block:stool@slate": {
+  "block:bench@slate": {
    "x": 192,
    "y": 320
   },
-  "block:bench@slate": {
-   "x": 224,
-   "y": 320
-  },
   "block:table@slate": {
-   "x": 256,
+   "x": 224,
    "y": 320
   }
  }

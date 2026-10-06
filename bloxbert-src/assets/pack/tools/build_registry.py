@@ -19,9 +19,16 @@ RECIPES = [
  ('stick', 4, W, [('planks', 2)], 1, None, 'GM-ANSWERS §5'), ('woodTool', 1, W, [('planks', 3), ('stick', 2)], 2, None, 'GM-ANSWERS §5 (live 2.5.42 = 5 Planks; migration keeps owned picks)'),
  ('stoneTool', 1, W, [('stone', 3), ('stick', 2)], 4, None, 'GM-ANSWERS §5 (live = 3 Stone + 2 Planks)'),
  ('copperPick', 1, F, [('copperIngot', 3), ('stick', 2)], 4, 'T4', 'GM-ANSWERS §5'), ('steelPick', 1, F, [('steel', 3), ('stick', 2)], 4, 'T4', 'GM-ANSWERS §5'),
- ('pan', 1, W, [('planks', 3)], 2, None, 'GM-ANSWERS §5 / ORE-TABLE'), ('carvingTool', 1, W, [('stick', 2), ('stone', 1)], 2, None, 'DECOR-PACKS §3 stand-in (2 Sticks + 1 Iron Nugget once an Iron Nugget item exists)'), ('bucket', 1, F, [('ironIngot', 3)], 4, 'T4', 'GM-ANSWERS §5'),
+ ('pan', 1, W, [('planks', 3)], 2, None, 'GM-ANSWERS §5 / ORE-TABLE'), ('carvingTool', 1, W, [('stick', 2), ('stone', 1)], 2, None, 'GM-ANSWERS 2026-10-06 (final: no Iron Nugget)'), ('bucket', 1, F, [('ironIngot', 3)], 4, 'T4', 'GM-ANSWERS §5'),
  ('smelter', 1, W, [('brickRed|brickGrey', 8), ('ironOre', 1), ('coal', 1)], 10, 'T4', 'GM-ANSWERS §5 (brick colour: open question)'),
- ('fabricator', 1, F, [('steel', 4), ('copperWire', 2), ('glass', 1), ('batteryCell', 1)], 10, 'T5', 'GM-ANSWERS §5 (bootstrap: open question)'),
+ ('fabricator', 1, F, [('steel', 4), ('copperWire', 2), ('glass', 1), ('batteryCell', 1)], 10, 'T5', 'GM-ANSWERS §5; bootstrap = one-time Starter Kit (1 Battery Cell + 1 Charger to Overflow Box on first Fabricator placed, once per player per world)'),
+ ('blueWhiteLights', 1, W, [('stringLights', 1), ('paintDab', 1)], 2, None, 'FUN-ITEMS §7 (Blue Dye → Paint Dab)'), ('wovenMat', 1, W, [('wheat', 3)], 2, None, 'FUN-ITEMS §7 (Grass Fiber → Wheat)'),
+ ('harvestBasket', 1, W, [('wheat', 2), ('corn', 1)], 2, None, 'FUN-ITEMS §7 (Grass Fiber → Wheat)'), ('redLantern', 1, W, [('cloth', 1), ('paintDab', 1), ('glowStrip', 1)], 2, None, 'FUN-ITEMS §7 (Paper → Cloth, Red Dye → Paint Dab, LED → Glow Strip)'),
+ ('paperDragon', 1, W, [('cloth', 3), ('paintDab', 1)], 2, None, 'FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab)'), ('fanousLantern', 1, W, [('glass', 1), ('copperWire', 1), ('glowStrip', 1)], 2, None, 'FUN-ITEMS §7 (LED → Glow Strip)'),
+ ('colourSplash', 1, W, [('stone|planks', 1), ('paintDab', 1)], 1, None, 'FUN-ITEMS §7 (Dye → Paint Dab)'), ('springGreens', 1, W, [('clay', 1), ('wheat', 1)], 2, None, 'FUN-ITEMS §7 (Clay Dish → Clay, Seeds → Wheat)'),
+ ('kindnessHeart', 1, W, [('cloth', 1), ('paintDab', 1)], 1, None, 'FUN-ITEMS §7 (Paper → Cloth, Dye → Paint Dab)'), ('solarFlower', 1, W, [('flower', 1), ('solarPanel', 1)], 2, None, 'FUN-ITEMS §7 (Solar Cell → Solar Panel)'),
+ ('imigongoTile', 1, W, [('clay', 1), ('paintDab', 1)], 2, None, 'FUN-ITEMS §7 (Dye → Paint Dab)'), ('petrykivkaTile', 1, W, [('planks', 1), ('paintDab', 1)], 2, None, 'FUN-ITEMS §7 (Dye → Paint Dab)'),
+ ('mesobBasket', 1, W, [('wheat', 3)], 2, None, 'FUN-ITEMS §7 (Grass Fiber → Wheat)'), ('papelPicado', 1, W, [('cloth', 2), ('cotton', 1)], 2, None, 'FUN-ITEMS §7 (Paper → Cloth, String → Cotton)'),
  ('ironIngot', 1, S, [('ironOre', 1)], 4, 'T4', 'GM §5'), ('copperIngot', 1, S, [('rawCopper', 1)], 4, 'T4', 'GM §5'), ('zincIngot', 1, S, [('zincOre', 1)], 4, 'T4', 'GM §5'),
  ('tinIngot', 1, S, [('tinOre', 1)], 4, 'T4', 'GM §5'), ('silverIngot', 1, S, [('silverOre', 1)], 4, 'T4', 'GM §5'), ('goldIngot', 1, S, [('goldNugget', 1)], 4, 'T4', 'GM §5'),
  ('alumina', 1, S, [('bauxite', 1)], 4, 'T4', 'GM §5'), ('titaniumDioxide', 1, S, [('blackSand|ilmeniteOre', 1)], 4, 'T4', 'GM §5'),
@@ -119,6 +126,23 @@ BIOME_DESC = {'commons': 'Grass, oak trees and the town. Coal, clay, iron and a 
  'rustflats': 'A flat dry lake bed with white salt crust. Iron, silver and zinc in the hills.', 'tidewell': 'Beaches, cliffs and the sea. Black sand and the Salt Pan.',
  'frostspire': 'Snowy mountains and frozen lakes. Look for ice and tin.', 'emberdeep': 'Dark basalt hills. Copper at the edges, platinum deep down.',
  'sea': 'Still seawater at the edge of Tidewell.', 'town': 'Bertyville: the store, the stations and everyone\'s plots.'}
+PILE_CULTURE = [  # FUN-ITEMS §7 + CURRICULUM-PILE-CULTURE-ITEMS-CHECK: object names, never a holiday; art PLANNED (planned.py)
+ (172,'blueWhiteLights','Blue & White Lights','A plain string of blue and soft-white LED bulbs.','Winter','Blue and white lights are hung for Hanukkah in many Jewish homes.'),
+ (173,'wovenMat','Woven Mat','A flat mat woven in red, black and green.','Autumn','Woven mats (mkeka) are laid out for Kwanzaa in many African American homes.'),
+ (174,'harvestBasket','Harvest Basket','A basket of fruit and corn.','Autumn','Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals.'),
+ (175,'redLantern','Red Lantern','A round red paper lantern with a steady LED glow.','Winter','Red paper lanterns are hung for Lunar New Year in many East Asian homes.'),
+ (176,'paperDragon','Paper Dragon','A long, friendly paper dragon with a steady LED glow.','Winter','Paper dragons are carried in Lunar New Year parades.'),
+ (177,'fanousLantern','Fanous Lantern','A metal-and-glass lantern with geometric windows and an LED glow.','Winter','Fanous lanterns light streets during Ramadan in Egypt and nearby countries.'),
+ (178,'colourSplash','Colour Splash Block','A block covered in bright paint splats.','Spring','People throw coloured powder at Holi, a spring festival from India.'),
+ (179,'springGreens','Spring Greens','A dish of sprouted green grass.','Spring','Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year.'),
+ (180,'kindnessHeart','Kindness Heart','A paper heart with flowers on it.','Spring','Hearts are shared during Kindness Week.'),
+ (181,'solarFlower','Solar Flower','A flower that charges by day and glows softly at night.','Spring','Solar Flowers celebrate Earth Day and clean energy.'),
+ (182,'imigongoTile','Imigongo Zigzag Tile','A tile with black, white and red zigzags.','Autumn','Imigongo is zigzag art from eastern Rwanda.'),
+ (183,'petrykivkaTile','Petrykivka Flower Tile','A tile painted with bright flower sprays.','Spring','Petrykivka is a Ukrainian folk style of flower painting.'),
+ (184,'mesobBasket','Mesob Basket','A tall woven basket with a lid.','Autumn','A mesob is a woven table-basket from Eritrea and Ethiopia.'),
+]
+SORT = {'pumpkin': 'Autumn', 'cornStalks': 'Autumn', 'leafPile': 'Autumn', 'appleCrate': 'Autumn', 'hayBale': 'Autumn', 'gourds': 'Autumn', 'scarecrow': 'Autumn', 'marigold': 'Autumn', 'skullPatternTile': 'Autumn', 'harvestLantern': 'Autumn', 'papelPicado': 'Autumn',
+        'jackOLantern': 'Spooky', 'carvedPumpkin': 'Spooky', 'ghostLight': 'Spooky', 'cobweb': 'Spooky', 'batsDeco': 'Spooky', 'spookySign': 'Spooky', 'stringLights': 'Winter'}
 def dex(k): return f'dex:{k}'
 def asset(kind, k):
     for cand in ([f'block:{k}', k] if kind != 'item' else [k]):
@@ -133,6 +157,12 @@ def main():
         ents.append({'id': b[0], 'key': b[1], 'type': kind, 'name': {'en': b[2]}, 'desc': b[9], 'verbs': VERBS_BY.get(b[1], 'Mine,Place').split(','),
                      'recipes': [f'r:{b[1]}'] if any(r[0] == b[1] for r in RECIPES) else [], 'stage': b[6], 'availableFrom': b[7], 'assetId': aid,
                      'fact': FACTS.get(b[1]), 'dexId': dex(b[1]), 'dexCat': b[8], 'handS': b[5], 'textStatus': 'draft-curriculum-check'})
+        if b[8] == 'Seasonal & Holiday': ents[-1]['pile'] = 'seasonal'; ents[-1]['sortGroup'] = SORT.get(b[1], 'Winter')
+        if b[1] == 'skullPatternTile': ents[-1]['artStatus'] = 'redraw: marigold flowers only, no skull shapes'
+    for i, k, nm, d, grp, origin in PILE_CULTURE:
+        ents.append({'id': i, 'key': k, 'type': 'block', 'name': {'en': nm}, 'desc': d, 'verbs': ['Place', 'Mine'], 'recipes': [f'r:{k}'], 'stage': 'holidays-1', 'availableFrom': None,
+                     'assetId': asset('block', k), 'fact': None, 'origin': origin, 'dexId': dex(k), 'dexCat': 'Seasonal & Holiday', 'pile': 'seasonal', 'sortGroup': grp,
+                     'artStatus': 'planned (Curriculum shape limits, CURRICULUM-PILE-CULTURE-ITEMS-CHECK)', 'textStatus': 'draft-curriculum-check'})
     for it in R.ITEMS:
         ents.append({'id': None, 'key': it[0], 'type': 'item', 'name': {'en': it[1]}, 'desc': it[6], 'verbs': VERBS_BY.get(it[0], 'Move-item').split(','),
                      'recipes': [f'r:{it[0]}'] if any(r[0] == it[0] for r in RECIPES) else [], 'stage': it[3], 'availableFrom': it[4], 'assetId': asset('item', it[0]),
@@ -153,6 +183,9 @@ def main():
     for out, n, at, ins, secs, gate, src in RECIPES:
         rid = f'r:{out}' if out not in seen else f'r:{out}#{seen[out] + 1}'; seen[out] = seen.get(out, 0) + 1
         recs.append({'id': rid, 'type': 'recipe', 'out': [out, n], 'at': at, 'in': [[a, b] for a, b in ins], 'secs': secs, 'gate': gate, 'source': src})
+    dp = f'{ROOT}/dex/bertodex-en.json'; dx = json.load(open(dp))
+    for i, k, nm, d, grp, origin in PILE_CULTURE: dx['entries'][k] = {'name': nm, 'cat': 'Seasonal & Holiday', 'what': d, 'origin': origin}
+    json.dump(dx, open(dp, 'w'), indent=1, ensure_ascii=False)
     keys = {e['key'] for e in ents}
     missing = sorted({a.split('|')[0] for r in recs for a, _ in r['in'] if a.split('|')[0] not in keys} | {r['out'][0] for r in recs if r['out'][0] not in keys})
     doc = {'format': 'bertopia-registry', 'v': 1, 'generated': 'tools/build_registry.py (bertopia-assets pack); do not hand-edit, edit registry_src.py / build_registry.py',

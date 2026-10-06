@@ -3034,7 +3034,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A squash that ripens in autumn.",
     "status": "draft-curriculum-check"
    }
@@ -3068,7 +3068,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A carved pumpkin with an LED inside, never a flame.",
     "status": "draft-curriculum-check"
    }
@@ -3094,7 +3094,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Dried corn stalks tied in a bundle.",
     "status": "draft-curriculum-check"
    }
@@ -3120,7 +3120,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Autumn leaves raked into a pile.",
     "status": "draft-curriculum-check"
    }
@@ -3154,7 +3154,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A wooden crate of autumn apples.",
     "status": "draft-curriculum-check"
    }
@@ -3180,7 +3180,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A soft smiling ghost-shaped light.",
     "status": "draft-curriculum-check"
    }
@@ -3206,7 +3206,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A fake cobweb for decoration.",
     "status": "draft-curriculum-check"
    }
@@ -3232,8 +3232,8 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
-    "what": "Bright orange flowers used for Dia de los Muertos.",
+    "cat": "Seasonal & Holiday",
+    "what": "Bright orange flowers that bloom from summer into autumn.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3258,7 +3258,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Cut-paper banners in bright colors.",
     "status": "draft-curriculum-check"
    }
@@ -3284,34 +3284,8 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A tile with a bright marigold flower pattern.",
-    "status": "draft-curriculum-check"
-   }
-  },
-  {
-   "id": 118,
-   "key": "diyaLight",
-   "name": {
-    "en": "Diya Light"
-   },
-   "kind": "model",
-   "faces": {
-    "icon": {
-     "atlas": "items",
-     "key": "block:diyaLight"
-    }
-   },
-   "handS": null,
-   "breakable": false,
-   "drop": "diyaLight",
-   "stack": 64,
-   "milestone": "holidays-1",
-   "availableFrom": "live",
-   "natural": null,
-   "dex": {
-    "cat": "Blocks",
-    "what": "A small clay lamp shape with an LED glow, never a flame.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3319,7 +3293,7 @@
    "id": 119,
    "key": "rangoliTile",
    "name": {
-    "en": "Rangoli Floor Tile"
+    "en": "Pattern Floor Tile"
    },
    "kind": "cube",
    "faces": {
@@ -3332,12 +3306,12 @@
    "breakable": false,
    "drop": "rangoliTile",
    "stack": 64,
-   "milestone": "holidays-1",
+   "milestone": "storage-2",
    "availableFrom": "live",
    "natural": null,
    "dex": {
     "cat": "Blocks",
-    "what": "A floor tile with a colorful rangoli pattern.",
+    "what": "A floor tile with a simple geometric pattern. Paint it any colour.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3362,7 +3336,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A strand of small LED lights.",
     "status": "draft-curriculum-check"
    }
@@ -4348,7 +4322,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Dried grass pressed into a bale, used to feed animals.",
     "status": "draft-curriculum-check"
    }
@@ -4374,7 +4348,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Gourds are cousins of pumpkins and squash, in many shapes.",
     "status": "draft-curriculum-check"
    }
@@ -4400,7 +4374,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A straw figure farmers use to keep birds off crops.",
     "status": "draft-curriculum-check"
    }
@@ -4426,7 +4400,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "Paper bats. Real bats eat lots of insects at night.",
     "status": "draft-curriculum-check"
    }
@@ -4460,7 +4434,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A pumpkin with a face you carved yourself. An LED inside makes it glow.",
     "status": "draft-curriculum-check"
    }
@@ -4486,7 +4460,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A wooden sign with a bat cut-out. Write a friendly message on it.",
     "status": "draft-curriculum-check"
    }
@@ -4512,7 +4486,7 @@
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A hanging lantern with an LED glow, never a flame.",
     "status": "draft-curriculum-check"
    }
@@ -4638,11 +4612,11 @@
    "breakable": false,
    "drop": "winterLights",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes.",
     "status": "draft-curriculum-check"
    }
@@ -4664,11 +4638,11 @@
    "breakable": false,
    "drop": "wreath",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A ring of evergreen branches.",
     "status": "draft-curriculum-check"
    }
@@ -4698,11 +4672,11 @@
    "breakable": false,
    "drop": "giftBox",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A wrapped box for decoration. It holds nothing.",
     "status": "draft-curriculum-check"
    }
@@ -4724,11 +4698,11 @@
    "breakable": false,
    "drop": "snowPal",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A friendly snow figure. It never melts here.",
     "status": "draft-curriculum-check"
    }
@@ -4750,11 +4724,11 @@
    "breakable": false,
    "drop": "ornamentTile",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A tile with shiny round ornaments.",
     "status": "draft-curriculum-check"
    }
@@ -4776,11 +4750,11 @@
    "breakable": false,
    "drop": "stripeBlock",
    "stack": 64,
-   "milestone": "holidays-2",
+   "milestone": "holidays-1",
    "availableFrom": "live",
    "natural": null,
    "dex": {
-    "cat": "Blocks",
+    "cat": "Seasonal & Holiday",
     "what": "A red and white striped block.",
     "status": "draft-curriculum-check"
    }

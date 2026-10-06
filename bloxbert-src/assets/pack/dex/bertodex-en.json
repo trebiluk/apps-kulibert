@@ -539,67 +539,62 @@
   },
   "pumpkin": {
    "name": "Pumpkin",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A squash that ripens in autumn."
   },
   "jackOLantern": {
    "name": "Jack-o'-Lantern",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A carved pumpkin with an LED inside, never a flame."
   },
   "cornStalks": {
    "name": "Corn Stalks",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Dried corn stalks tied in a bundle."
   },
   "leafPile": {
    "name": "Leaf Pile",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Autumn leaves raked into a pile."
   },
   "appleCrate": {
    "name": "Apple Crate",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A wooden crate of autumn apples."
   },
   "ghostLight": {
    "name": "Friendly Ghost Light",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A soft smiling ghost-shaped light."
   },
   "cobweb": {
    "name": "Cobweb Deco",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A fake cobweb for decoration."
   },
   "marigold": {
    "name": "Marigolds",
-   "cat": "Blocks",
-   "what": "Bright orange flowers used for Dia de los Muertos."
+   "cat": "Seasonal & Holiday",
+   "what": "Bright orange flowers that bloom from summer into autumn."
   },
   "papelPicado": {
    "name": "Papel Picado Banner",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Cut-paper banners in bright colors."
   },
   "skullPatternTile": {
    "name": "Marigold Pattern Tile",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A tile with a bright marigold flower pattern."
   },
-  "diyaLight": {
-   "name": "Diya Light",
-   "cat": "Blocks",
-   "what": "A small clay lamp shape with an LED glow, never a flame."
-  },
   "rangoliTile": {
-   "name": "Rangoli Floor Tile",
+   "name": "Pattern Floor Tile",
    "cat": "Blocks",
-   "what": "A floor tile with a colorful rangoli pattern."
+   "what": "A floor tile with a simple geometric pattern. Paint it any colour."
   },
   "stringLights": {
    "name": "String Lights",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A strand of small LED lights."
   },
   "labBench": {
@@ -774,37 +769,37 @@
   },
   "hayBale": {
    "name": "Hay Bale",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Dried grass pressed into a bale, used to feed animals."
   },
   "gourds": {
    "name": "Gourds",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Gourds are cousins of pumpkins and squash, in many shapes."
   },
   "scarecrow": {
    "name": "Scarecrow",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A straw figure farmers use to keep birds off crops."
   },
   "batsDeco": {
    "name": "Bat Garland",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "Paper bats. Real bats eat lots of insects at night."
   },
   "carvedPumpkin": {
    "name": "Carved Pumpkin",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A pumpkin with a face you carved yourself. An LED inside makes it glow."
   },
   "spookySign": {
    "name": "Spooky Sign",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A wooden sign with a bat cut-out. Write a friendly message on it."
   },
   "harvestLantern": {
    "name": "Autumn Lantern",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A hanging lantern with an LED glow, never a flame."
   },
   "chair": {
@@ -829,32 +824,32 @@
   },
   "winterLights": {
    "name": "Winter Lights",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes."
   },
   "wreath": {
    "name": "Wreath",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A ring of evergreen branches."
   },
   "giftBox": {
    "name": "Gift Box Deco",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A wrapped box for decoration. It holds nothing."
   },
   "snowPal": {
    "name": "Snow Pal",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A friendly snow figure. It never melts here."
   },
   "ornamentTile": {
    "name": "Ornament Tile",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A tile with shiny round ornaments."
   },
   "stripeBlock": {
    "name": "Peppermint Stripe Block",
-   "cat": "Blocks",
+   "cat": "Seasonal & Holiday",
    "what": "A red and white striped block."
   },
   "woodTool": {
@@ -1321,6 +1316,84 @@
    "name": "Carving Scoop",
    "cat": "Items & Machines",
    "what": "A safe scoop, not a knife. Use it on a Pumpkin to carve a face."
+  },
+  "blueWhiteLights": {
+   "name": "Blue & White Lights",
+   "cat": "Seasonal & Holiday",
+   "what": "A plain string of blue and soft-white LED bulbs.",
+   "origin": "Blue and white lights are hung for Hanukkah in many Jewish homes."
+  },
+  "wovenMat": {
+   "name": "Woven Mat",
+   "cat": "Seasonal & Holiday",
+   "what": "A flat mat woven in red, black and green.",
+   "origin": "Woven mats (mkeka) are laid out for Kwanzaa in many African American homes."
+  },
+  "harvestBasket": {
+   "name": "Harvest Basket",
+   "cat": "Seasonal & Holiday",
+   "what": "A basket of fruit and corn.",
+   "origin": "Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals."
+  },
+  "redLantern": {
+   "name": "Red Lantern",
+   "cat": "Seasonal & Holiday",
+   "what": "A round red paper lantern with a steady LED glow.",
+   "origin": "Red paper lanterns are hung for Lunar New Year in many East Asian homes."
+  },
+  "paperDragon": {
+   "name": "Paper Dragon",
+   "cat": "Seasonal & Holiday",
+   "what": "A long, friendly paper dragon with a steady LED glow.",
+   "origin": "Paper dragons are carried in Lunar New Year parades."
+  },
+  "fanousLantern": {
+   "name": "Fanous Lantern",
+   "cat": "Seasonal & Holiday",
+   "what": "A metal-and-glass lantern with geometric windows and an LED glow.",
+   "origin": "Fanous lanterns light streets during Ramadan in Egypt and nearby countries."
+  },
+  "colourSplash": {
+   "name": "Colour Splash Block",
+   "cat": "Seasonal & Holiday",
+   "what": "A block covered in bright paint splats.",
+   "origin": "People throw coloured powder at Holi, a spring festival from India."
+  },
+  "springGreens": {
+   "name": "Spring Greens",
+   "cat": "Seasonal & Holiday",
+   "what": "A dish of sprouted green grass.",
+   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year."
+  },
+  "kindnessHeart": {
+   "name": "Kindness Heart",
+   "cat": "Seasonal & Holiday",
+   "what": "A paper heart with flowers on it.",
+   "origin": "Hearts are shared during Kindness Week."
+  },
+  "solarFlower": {
+   "name": "Solar Flower",
+   "cat": "Seasonal & Holiday",
+   "what": "A flower that charges by day and glows softly at night.",
+   "origin": "Solar Flowers celebrate Earth Day and clean energy."
+  },
+  "imigongoTile": {
+   "name": "Imigongo Zigzag Tile",
+   "cat": "Seasonal & Holiday",
+   "what": "A tile with black, white and red zigzags.",
+   "origin": "Imigongo is zigzag art from eastern Rwanda."
+  },
+  "petrykivkaTile": {
+   "name": "Petrykivka Flower Tile",
+   "cat": "Seasonal & Holiday",
+   "what": "A tile painted with bright flower sprays.",
+   "origin": "Petrykivka is a Ukrainian folk style of flower painting."
+  },
+  "mesobBasket": {
+   "name": "Mesob Basket",
+   "cat": "Seasonal & Holiday",
+   "what": "A tall woven basket with a lid.",
+   "origin": "A mesob is a woven table-basket from Eritrea and Ethiopia."
   }
  }
 }

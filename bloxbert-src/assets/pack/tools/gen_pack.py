@@ -302,7 +302,7 @@ def T(name):  # texture recipes (block faces)
     if k in ('tile_skull_pattern', 'tile_rangoli'):
         a = noise_tile('#3a2f4f' if k == 'tile_skull_pattern' else '#f2e6d0', 3, k); im = img(a); d = ImageDraw.Draw(im)
         if k == 'tile_rangoli':
-            for r_, c in [(14, (224, 90, 138)), (10, (63, 167, 194)), (6, (227, 179, 65))]: d.ellipse([16-r_, 16-r_, 16+r_, 16+r_], outline=c, width=2)
+            d.rectangle([3, 3, 28, 28], outline=(120, 110, 96), width=2); d.polygon([(16, 6), (26, 16), (16, 26), (6, 16)], outline=(120, 110, 96), width=2); d.rectangle([13, 13, 19, 19], fill=(150, 140, 124))
         else:
             d.ellipse([9, 7, 23, 20], fill=(232, 226, 214)); d.ellipse([11, 11, 14, 14], fill=(224, 90, 138)); d.ellipse([18, 11, 21, 14], fill=(63, 167, 194)); d.rectangle([12, 20, 20, 24], fill=(232, 226, 214))
             for x in (4, 27): d.ellipse([x-2, 26, x+2, 30], fill=(227, 179, 65))
@@ -520,7 +520,7 @@ def main():
         'shelf_wall': 'beam:wood', 'shelf': 'beam:wood', 'side_table': 'pack:1', 'desk': 'pack:1', 'sign': 'scroll', 'tube_glass': 'plastic_tube',
         'tube_powered': 'coil:copper', 'tube_filter': 'plastic_tube', 'extractor': 'cog:steel', 'cable_network': 'coil:morph', 'storage_link': 'chip',
         'pad_teleport': 'cog:fizz', 'dock_drone': 'sprite:drone', 'pad_network': 'cog:morph', 'keyboard': 'chip', 'drumkit': 'disc', 'guitar': 'brush',
-        'ghost_light': 'bell', 'diya': 'nugget:copper', 'pad_warp': 'key', 'sleeping_bag': 'cloth', 'crew_banner': 'scroll', 'game_flag': 'scroll',
+        'ghost_light': 'bell', 'pad_warp': 'key', 'sleeping_bag': 'cloth', 'crew_banner': 'scroll', 'game_flag': 'scroll',
         'dex_shelf': 'beam:wood', 'trophy_shelf': 'beam:wood', 'chair': 'chair:wood', 'bench': 'bench:wood', 'chair_spooky': 'chair:spooky',
         'snow_pal': 'snowpal', 'stool': 'stool:wood', 'table': 'table:wood', 'scarecrow': 'scarecrow', 'sign_spooky': 'spookysign', 'lantern_harvest': 'jar',
     }
