@@ -1,0 +1,27 @@
+# One palette for the Lookout pixel cast. Dot is empty.
+. transparent
+K #1c140f
+W #fff8ee
+F #e6b57a
+D #a56a32
+P #C04BD8
+B #7DD3FC
+E #1b1b22
+N #e25b78
+G #3e9a45
+H #1d6a30
+M #8d5a32
+S #d7a15a
+Y #f5c446
+A #fde68a
+C #e7eef5
+U #f472b6
+I #9ccc3a
+V #1f9d62
+O #c47b28
+Q #f7f1e6
+R #7a3e22
+T #d7b58a
+L #6ec8f5
+Z #5c4632
+X #e23d3d

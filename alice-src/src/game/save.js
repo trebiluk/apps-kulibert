@@ -1,5 +1,5 @@
 const KEY = "alice.save.v1";
-const baseSettings = () => ({ look: "teal", speed: "normal", captions: true, classMin: 0, classStart: 0, classRang: 0 });
+const baseSettings = () => ({ look: "teal", speed: "normal", captions: true, classMin: 0, classStart: 0, classRang: 0, motion: "full", lite: "auto", liteAuto: false, sound: true, music: false });
 const baseBoards = () => ({ class: [], daily: [], endless: [] });
 const fresh = () => ({ v: 1, seeds: 0, owned: [], worn: { alice: "", wonderland: "" }, burrow: { decor: [] }, best: {}, daily: {}, settings: baseSettings(), seen: {}, boards: baseBoards() });
 export let current = fresh();

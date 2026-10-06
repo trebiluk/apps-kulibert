@@ -3,12 +3,15 @@ import { t, rtl } from "../i18n.js";
 import { loadSave, classLeft, topScore, saveNow } from "../save.js";
 import { skyOf } from "../looks.js";
 import { dailyLevel, dailySeed, endlessLevel } from "../modes.js";
+import { bands, poseNow } from "../ui/bands.js";
+import { fitButton, hideButton, intScale, makeButton } from "../ui/widgets.js";
+import { lite, motionOff } from "../fx.js";
 
 const TILES = [
-  ["lookout", "lookout", "alice-idle-0", true],
-  ["dress", "dressUp", "wonder-idle-0", false],
+  ["lookout", "lookout", "alice-wave-0", true],
+  ["dress", "dressUp", "wonder-wave-0", false],
   ["burrow", "burrow", "mound", false],
-  ["signals", "signals", "key-j", false],
+  ["signals", "signals", "alarm-sky", false],
   ["dash", "dash", "wonder-hop-0", false],
   ["dig", "dig", "hole", false],
 ];
@@ -19,13 +22,19 @@ export class Burrow extends window.Phaser.Scene {
     this.save = loadSave();
     this.mode = "home";
     this.playMode = "class";
+    this.cameras.main.roundPixels = true;
     this.cameras.main.setBackgroundColor(skyOf(this.save.settings.look));
-    this.alice = this.add.sprite(0, 0, "alice", "alice-idle-0").play("alice-idle");
-    this.wonder = this.add.sprite(0, 0, "alice", "wonder-idle-0").play("wonder-idle");
-    this.hole = this.add.image(0, 0, "alice", "hole");
-    this.seedText = this.add.text(16, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "20px", color: "#f5c446" });
-    this.classText = this.add.text(16, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#fde68a" });
-    this.tiles = TILES.map((row) => this.makeTile(...row));
+    this.ground = this.add.tileSprite(0, 0, 32, 32, "lookout", "ground-0").setDepth(0);
+    this.far = lite() ? null : this.add.tileSprite(0, 0, 32, 32, "lookout", "cloud").setAlpha(0.45).setDepth(0);
+    this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(1);
+    this.alice = this.add.sprite(0, 0, "lookout", "alice-look-0").play("alice-look").setDepth(2);
+    this.wonder = this.add.sprite(0, 0, "lookout", "wonder-idle-0").play("wonder-idle").setDepth(2);
+    this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(2));
+    this.butter = this.add.sprite(0, 0, "lookout", "butterfly-0").play("butterfly").setDepth(3);
+    this.hopper = this.add.sprite(0, 0, "lookout", "hopper-0").play("hopper").setDepth(3);
+    this.seedText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f5c446" }).setDepth(4);
+    this.classText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setDepth(4);
+    this.tiles = TILES.map((row, i) => this.makeTile(row[0], row[1], row[2], row[3], i));
     this.levels = levels.levels.map((lv, i) => this.makeLevel(lv, i));
     this.modeBtns = ["class", "daily", "endless"].map((id) => this.makeChip(id));
     this.dailyGo = this.makeGo("daily");
@@ -47,64 +56,32 @@ export class Burrow extends window.Phaser.Scene {
       window.removeEventListener("ap-look", this.onLook);
       window.clearInterval(this.clock);
     });
+    if (motionOff()) this.anims.pauseAll();
   }
-  makeTile(id, key, frame, live) {
-    const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 148, 132, 0x0b1f3a).setStrokeStyle(4, live ? 0xfde68a : 0x67e8f9);
-    const icon = this.add.image(0, -22, "alice", frame).setDisplaySize(72, 72);
-    const lock = this.add.image(48, -40, "alice", "lock").setDisplaySize(28, 28).setVisible(!live);
-    const label = this.add.text(0, 32, t(key), { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc" }).setOrigin(0.5);
-    const soon = this.add.text(0, 52, live ? "" : t("soon"), { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#fde68a" }).setOrigin(0.5);
-    box.add([bg, icon, lock, label, soon]);
-    box.setSize(148, 132);
-    bg.setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
-    bg.on("pointerdown", () => {
+  makeTile(id, key, frame, live, index) {
+    const box = makeButton(this, "tile-" + id, () => {
       if (id === "lookout") { this.mode = "picker"; this.playMode = "class"; this.layout(this.scale.width, this.scale.height); }
       else window.dispatchEvent(new CustomEvent("ap-soon"));
     });
-    box.setData("label", label);
-    box.setData("soon", soon);
     box.setData("key", key);
+    box.setData("frame", frame);
+    box.setData("live", live);
+    box.setData("index", index);
     return box;
   }
   makeLevel(lv, i) {
-    const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 148, 132, 0x0b1f3a).setStrokeStyle(4, 0xfde68a);
-    const icon = this.add.image(0, -24, "alice", "hawk-glide-0").setDisplaySize(72, 72);
-    const lock = this.add.image(48, -40, "alice", "lock").setDisplaySize(28, 28);
-    const num = this.add.text(0, 24, "L0" + (i + 1), { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc" }).setOrigin(0.5);
-    const label = this.add.text(0, 46, t("l0" + (i + 1)), { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setOrigin(0.5);
-    box.add([bg, icon, lock, num, label]);
-    box.setSize(148, 132);
-    bg.setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
-    bg.on("pointerdown", () => this.pick(i));
-    box.setData("label", label);
-    box.setData("lock", lock);
+    const box = makeButton(this, "L0" + (i + 1), () => this.pick(i));
     box.setData("i", i);
     return box;
   }
   makeChip(id) {
-    const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 96, 48, 0x0b1f3a).setStrokeStyle(3, 0x67e8f9);
-    const label = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#f8fafc", align: "center", wordWrap: { width: 88 } }).setOrigin(0.5);
-    box.add([bg, label]);
-    box.setSize(96, 48);
-    bg.setInteractive(new window.Phaser.Geom.Rectangle(-48, -24, 96, 48), window.Phaser.Geom.Rectangle.Contains);
-    bg.on("pointerdown", () => { this.playMode = id; this.layout(this.scale.width, this.scale.height); });
-    box.setData("label", label);
-    box.setData("bg", bg);
+    const box = makeButton(this, "mode-" + id, () => { this.playMode = id; this.layout(this.scale.width, this.scale.height); });
     box.setData("id", id);
     return box;
   }
   makeGo(kind) {
-    const box = this.add.container(0, 0);
-    const bg = this.add.rectangle(0, 0, 280, 72, 0xfde68a).setStrokeStyle(4, 0x67e8f9);
-    const label = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "22px", color: "#042f2e", align: "center", wordWrap: { width: 250 } }).setOrigin(0.5);
-    box.add([bg, label]);
-    box.setSize(280, 72);
-    bg.setInteractive(new window.Phaser.Geom.Rectangle(-140, -36, 280, 72), window.Phaser.Geom.Rectangle.Contains);
-    bg.on("pointerdown", () => { if (kind === "daily") this.startDaily(); else this.startEndless(); });
-    box.setData("label", label);
+    const box = makeButton(this, "go-" + kind, () => { if (kind === "daily") this.startDaily(); else this.startEndless(); });
+    box.setData("kind", kind);
     return box;
   }
   open(i) {
@@ -118,17 +95,13 @@ export class Burrow extends window.Phaser.Scene {
     }
     this.scene.start("Lookout", { level: levels.levels[i], mode: "class" });
   }
-  startDaily() {
-    this.scene.start("Lookout", { level: dailyLevel(), mode: "daily", seed: dailySeed() });
-  }
-  startEndless() {
-    this.scene.start("Lookout", { level: endlessLevel(1), mode: "endless", seed: (Date.now() ^ 3) >>> 0 });
-  }
+  startDaily() { this.scene.start("Lookout", { level: dailyLevel(), mode: "daily", seed: dailySeed() }); }
+  startEndless() { this.scene.start("Lookout", { level: endlessLevel(1), mode: "endless", seed: (Date.now() ^ 3) >>> 0 }); }
   tickClass() {
-    if (!this.scene.isActive()) return;
-    if (this.mode !== "home") { this.classText.setText(""); return; }
+    if (!this.scene.isActive() || this.mode !== "home") { this.classText.setText(""); this.classText.setVisible(false); return; }
     const left = classLeft();
-    if (left == null) { this.classText.setText(""); return; }
+    if (left == null) { this.classText.setText(""); this.classText.setVisible(false); return; }
+    this.classText.setVisible(true);
     if (left <= 0) {
       this.classText.setText(t("classUp"));
       const s = loadSave().settings;
@@ -143,82 +116,90 @@ export class Burrow extends window.Phaser.Scene {
     const sec = Math.floor((left % 60000) / 1000);
     this.classText.setText(t("classTime") + " " + m + ":" + String(sec).padStart(2, "0"));
   }
-  chipWord(id) {
-    if (id === "class") return t("classMode");
-    return t(id);
-  }
+  chipWord(id) { return id === "class" ? t("classMode") : t(id); }
   goWord(kind) {
     const best = topScore(kind);
     const name = kind === "daily" ? t("today") : t("endless");
     return best ? name + " · " + best : name;
   }
+  place(box, rect, word, frame) {
+    if (!rect) { hideButton(box); return; }
+    fitButton(box, rect, word, frame);
+    const bg = box.getData("bg");
+    if (bg) bg.setStrokeStyle(3, 0xfde68a);
+  }
   layout(w, h) {
     this.save = loadSave();
-    const items = this.mode === "picker" && this.playMode === "class" ? this.levels : this.mode === "home" ? this.tiles : [];
-    const hide = this.mode === "home" ? this.levels : this.tiles;
-    hide.forEach((n) => { n.setVisible(false); if (n.list[0]) n.list[0].disableInteractive(); });
-    if (this.mode !== "picker" || this.playMode !== "class") {
-      this.levels.forEach((n) => { n.setVisible(false); if (n.list[0]) n.list[0].disableInteractive(); });
-    }
-    const cols = w >= 700 ? 3 : 2;
-    const gapX = 156;
-    const gapY = 140;
-    const gridW = cols * gapX;
-    const top = this.mode === "picker" ? 176 : Math.max(150, h * 0.28);
-    items.forEach((tile, n) => {
-      tile.setVisible(true);
-      if (tile.list[0]) tile.list[0].setInteractive(new window.Phaser.Geom.Rectangle(-74, -66, 148, 132), window.Phaser.Geom.Rectangle.Contains);
-      tile.setPosition(w / 2 - gridW / 2 + gapX / 2 + (n % cols) * gapX, top + Math.floor(n / cols) * gapY);
-      if (tile.getData("key")) {
-        const label = tile.getData("label");
-        const soon = tile.getData("soon");
-        if (label && label.setText) label.setText(t(tile.getData("key")));
-        if (soon && soon.setText) soon.setText(tile.getData("key") === "lookout" ? "" : t("soon"));
-      } else {
-        const i = tile.getData("i");
-        const label = tile.getData("label");
-        const lock = tile.getData("lock");
-        if (label && label.setText) label.setText(t("l0" + (i + 1)));
-        if (lock && lock.setVisible) lock.setVisible(!this.open(i));
-      }
-    });
+    const pose = poseNow(window.innerWidth || w, window.innerHeight || h);
+    const b = bands(w, h, { rtl: rtl(), pose, viewW: window.innerWidth || w, viewH: window.innerHeight || h });
+    const home = this.mode === "home";
     const picking = this.mode === "picker";
-    const order = rtl() ? ["endless", "daily", "class"] : ["class", "daily", "endless"];
-    this.modeBtns.forEach((btn) => {
+    const showCards = picking && this.playMode === "class";
+    this.ground.setPosition(w / 2, h / 2).setSize(w, h);
+    if (this.far) {
+      this.far.setVisible(home && !lite());
+      this.far.setPosition(b.cast.x + b.cast.w / 2, b.cast.y + 20).setSize(b.cast.w, Math.max(32, Math.floor(b.cast.h * 0.6)));
+    }
+    const showCast = home;
+    this.hole.setVisible(showCast);
+    this.alice.setVisible(showCast);
+    this.wonder.setVisible(showCast);
+    this.butter.setVisible(showCast);
+    this.hopper.setVisible(showCast && !lite());
+    this.cast.forEach((spr) => spr.setVisible(showCast));
+    if (showCast) {
+      intScale(this.hole, 36);
+      intScale(this.alice, Math.min(64, b.cast.h - 8));
+      intScale(this.wonder, Math.min(64, b.cast.h - 8));
+      const mid = b.cast.y + b.cast.h * 0.62;
+      this.hole.setPosition(b.cast.x + b.cast.w * 0.5, mid + 8);
+      this.alice.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.62 : 0.28), mid - 8);
+      this.wonder.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.28 : 0.62), mid - 4);
+      const step = Math.max(28, Math.floor(b.cast.w / (this.cast.length + 1)));
+      this.cast.forEach((spr, i) => {
+        intScale(spr, 28);
+        spr.setPosition(b.cast.x + 16 + step * i, b.cast.y + 18);
+      });
+      intScale(this.butter, 24);
+      intScale(this.hopper, 24);
+      this.butter.setPosition(b.cast.x + b.cast.w - 24, b.cast.y + 16);
+      this.hopper.setPosition(b.cast.x + 20, b.cast.y + b.cast.h - 16);
+      const seeds = t("seeds") + " " + (this.save.seeds || 0);
+      this.seedText.setText(seeds).setVisible(true);
+      this.seedText.setPosition(rtl() ? b.cast.x + b.cast.w - this.seedText.width - 8 : b.cast.x + 8, b.cast.y + b.cast.h - 22);
+      this.classText.setPosition(rtl() ? b.cast.x + 8 : b.cast.x + b.cast.w - 160, b.cast.y + b.cast.h - 22);
+    } else {
+      this.seedText.setVisible(false);
+      this.classText.setVisible(false);
+    }
+    this.tiles.forEach((tile, n) => {
+      if (!home) { hideButton(tile); return; }
+      const row = TILES[n];
+      const word = t(row[1]) + (row[3] ? "" : "\n" + t("soon"));
+      this.place(tile, b.tiles[n], word, row[3] ? row[2] : "lock");
+    });
+    this.levels.forEach((tile, n) => {
+      if (!showCards) { hideButton(tile); return; }
+      const rect = b.cards[n];
+      const locked = !this.open(n);
+      this.place(tile, rect, "L0" + (n + 1) + "\n" + t("l0" + (n + 1)), locked ? "lock" : "hawk-flap-0");
+    });
+    this.modeBtns.forEach((btn, i) => {
+      if (!picking) { hideButton(btn); return; }
       const id = btn.getData("id");
-      const show = picking;
-      btn.setVisible(show);
+      this.place(btn, b.chips[i], this.chipWord(id), null);
       const bg = btn.getData("bg");
-      if (bg) bg.setStrokeStyle(3, id === this.playMode ? 0xfde68a : 0x67e8f9);
-      if (show) bg.setInteractive(new window.Phaser.Geom.Rectangle(-48, -24, 96, 48), window.Phaser.Geom.Rectangle.Contains);
-      else bg.disableInteractive();
-      const label = btn.getData("label");
-      if (label) label.setText(this.chipWord(id));
-      const slot = order.indexOf(id);
-      const gap = w < 380 ? 100 : 124;
-      btn.setPosition(w / 2 - gap + slot * gap, 52);
+      if (bg) bg.setStrokeStyle(4, id === this.playMode ? 0xfde68a : 0x67e8f9);
     });
     const showDaily = picking && this.playMode === "daily";
     const showEndless = picking && this.playMode === "endless";
-    this.dailyGo.setVisible(showDaily).setPosition(w / 2, Math.max(240, h * 0.42));
-    this.endlessGo.setVisible(showEndless).setPosition(w / 2, Math.max(240, h * 0.42));
-    this.dailyGo.getData("label").setText(this.goWord("daily"));
-    this.endlessGo.getData("label").setText(this.goWord("endless"));
-    const dailyBg = this.dailyGo.list[0];
-    const endlessBg = this.endlessGo.list[0];
-    if (showDaily) dailyBg.setInteractive(new window.Phaser.Geom.Rectangle(-140, -36, 280, 72), window.Phaser.Geom.Rectangle.Contains);
-    else dailyBg.disableInteractive();
-    if (showEndless) endlessBg.setInteractive(new window.Phaser.Geom.Rectangle(-140, -36, 280, 72), window.Phaser.Geom.Rectangle.Contains);
-    else endlessBg.disableInteractive();
-    const showCast = this.mode === "home";
-    this.hole.setPosition(w / 2, 108).setVisible(showCast);
-    this.alice.setPosition(rtl() ? w * 0.64 : w * 0.30, 92).setVisible(showCast);
-    this.wonder.setPosition(rtl() ? w * 0.30 : w * 0.68, 96).setVisible(showCast);
-    this.seedText.setText(t("seeds") + " " + (this.save.seeds || 0)).setPosition(rtl() ? w - 200 : 120, h - 36);
-    this.classText.setPosition(rtl() ? 16 : w - 240, h - 36);
+    if (showDaily) this.place(this.dailyGo, b.go, this.goWord("daily"), null);
+    else hideButton(this.dailyGo);
+    if (showEndless) this.place(this.endlessGo, b.go, this.goWord("endless"), null);
+    else hideButton(this.endlessGo);
     this.tickClass();
     document.body.classList.remove("in-round");
-    const live = this.mode === "picker" ? (this.playMode === "class" ? t("classMode") : t(this.playMode)) : t("home");
+    const live = picking ? (this.playMode === "class" ? t("classMode") : t(this.playMode)) : t("home");
     document.getElementById("live").textContent = live;
   }
 }

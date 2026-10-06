@@ -1,6 +1,9 @@
 import { t, rtl, say } from "../i18n.js";
 import { saveNow, settings } from "../save.js";
 import { LOOK_IDS, applyLook } from "../looks.js";
+import { bands, poseNow } from "../ui/bands.js";
+import { fitButton, makeButton } from "../ui/widgets.js";
+import { lite, motionOff, syncMusic, wantsCanvas } from "../fx.js";
 
 const LOOK_KEY = { teal: "lookTeal", dawn: "lookDawn", dusk: "lookDusk", night: "lookNight", gold: "lookGold", snow: "lookSnow" };
 
@@ -43,6 +46,9 @@ export class UI extends window.Phaser.Scene {
       window.dispatchEvent(new CustomEvent("ap-lang"));
     });
     obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-kp-lang", "data-kp-contrast", "data-kp-motion"] });
+    document.documentElement.dir = rtl() ? "rtl" : "ltr";
+    motionOff();
+    lite();
   }
   open(mode, detail) {
     if (!mode) { this.close(); return; }
@@ -51,19 +57,42 @@ export class UI extends window.Phaser.Scene {
     this.clear();
     const w = this.scale.width;
     const h = this.scale.height;
-    this.blocker = this.add.rectangle(w / 2, h / 2, w, h, 0x06122b, 0.62).setInteractive();
+    const pose = poseNow(window.innerWidth || w, window.innerHeight || h);
+    const b = bands(w, h, { rtl: rtl(), pose, viewW: window.innerWidth || w, viewH: window.innerHeight || h });
+    this.blocker = this.add.rectangle(w / 2, h / 2, w, h, 0x06122b, 0.62).setInteractive().setDepth(19);
     const rows = this.rows(mode, detail);
-    const cardW = Math.min(360, w - 24);
-    const cardH = Math.min(h - 24, 36 + rows.length * 62);
-    this.card = this.add.container(w / 2, h / 2);
-    const bg = this.add.rectangle(0, 0, cardW, cardH, 0x0b1f3a).setStrokeStyle(4, 0xfde68a);
+    const area = b.below;
+    const gap = 6;
+    const rowh = 48;
+    const need = (cols) => {
+      const nRows = Math.ceil(rows.length / cols);
+      return nRows * rowh + Math.max(0, nRows - 1) * gap;
+    };
+    let cols = 1;
+    if (need(1) > area.h) cols = 2;
+    if (need(cols) > area.h) cols = 3;
+    const nRows = Math.ceil(rows.length / cols);
+    const gridH = need(cols);
+    const gridW = Math.min(area.w, cols === 1 ? Math.min(420, area.w) : area.w);
+    const colW = Math.floor((gridW - gap * (cols - 1)) / cols);
+    const ox = area.x + Math.floor((area.w - (cols * colW + (cols - 1) * gap)) / 2);
+    const oy = area.y + Math.max(0, Math.min(area.h - gridH, Math.floor((area.h - gridH) / 2)));
+    this.card = this.add.container(0, 0).setDepth(20);
+    this.domRows = rows;
+    const bg = this.add.rectangle(ox + (cols * colW + (cols - 1) * gap) / 2, oy + gridH / 2, gridW + 8, Math.min(area.h, gridH + 8), 0x0b1f3a).setStrokeStyle(4, 0xfde68a);
     this.card.add(bg);
     rows.forEach((row, i) => {
-      row.setPosition(0, -cardH / 2 + 40 + i * 62);
-      this.card.add(row);
+      const c = i % cols;
+      const r = Math.floor(i / cols);
+      const rect = { x: ox + c * (colW + gap), y: oy + r * (rowh + gap), w: colW, h: rowh };
+      fitButton(row, rect, row.getData("word"), row.getData("frame"));
+      if (row.getData("plain")) {
+        const plate = row.getData("bg");
+        plate.setFillStyle();
+        plate.setStrokeStyle(0, 0);
+        plate.disableInteractive();
+      }
     });
-    this.card.setDepth(20);
-    this.blocker.setDepth(19);
     const menu = document.getElementById("game-menu");
     if (menu) menu.setAttribute("aria-expanded", mode === "menu" ? "true" : "false");
     if (mode === "end") say(detail && detail.cleared ? t("highFive") : t("nextTime"));
@@ -72,8 +101,18 @@ export class UI extends window.Phaser.Scene {
   }
   rows(mode, detail) {
     if (mode === "menu") return [this.btn(t("home"), () => this.home()), this.btn(t("settings"), () => this.open("settings")), this.btn(t("whatsNew"), () => this.open("news")), this.btn(t("help"), () => this.open("help")), this.btn(t("fullScreen"), () => document.getElementById("fs-btn").click()), this.btn(t("close"), () => this.close())];
-    if (mode === "settings") return [this.btn(t("look") + ": " + t(LOOK_KEY[settings().look] || "lookTeal"), () => this.cycleLook()), this.btn(t("speed") + ": " + t(settings().speed === "relaxed" ? "relaxed" : "normal"), () => this.cycleSpeed()), this.btn(t("captions") + ": " + t(settings().captions === false ? "off" : "on"), () => this.cycleCaps()), this.btn(t("classTime") + ": " + this.classLabel(), () => this.cycleClass()), this.btn(t("close"), () => this.close(), true)];
-    if (mode === "news") return [this.line(t("news5")), this.line(t("news4")), this.line(t("news2")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "settings") return [
+      this.btn(t("look") + ": " + t(LOOK_KEY[settings().look] || "lookTeal"), () => this.cycleLook()),
+      this.btn(t("speed") + ": " + t(settings().speed === "relaxed" ? "relaxed" : "normal"), () => this.cycleSpeed()),
+      this.btn(t("captions") + ": " + t(settings().captions === false ? "off" : "on"), () => this.cycleCaps()),
+      this.btn(t("classTime") + ": " + this.classLabel(), () => this.cycleClass()),
+      this.btn(t("lessMotion") + ": " + t(motionOff() ? "on" : "off"), () => this.cycleMotion(), false, "butterfly-0"),
+      this.btn(t("lite") + ": " + this.liteLabel(), () => this.cycleLite(), false, "cloud"),
+      this.btn(t("sound") + ": " + t(settings().sound === false ? "off" : "on"), () => this.cycleSound(), false, "speaker"),
+      this.btn(t("music") + ": " + t(settings().music === true ? "on" : "off"), () => this.cycleMusic(), false, "star"),
+      this.btn(t("close"), () => this.close(), true),
+    ];
+    if (mode === "news") return [this.line(t("news6")), this.line(t("news5")), this.line(t("news4")), this.line(t("news2")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "soon") return [this.line(detail || t("comingSoon")), this.line(t("comingBody")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "help") return [this.line(t("tapSky")), this.line(t("tapGround")), this.line(t("tapSnake")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "pause") return [this.btn(t("resume"), () => this.resume(), true), this.btn(t("restart"), () => this.open("restart")), this.btn(t("help"), () => this.open("help")), this.btn(t("home"), () => this.home())];
@@ -82,6 +121,12 @@ export class UI extends window.Phaser.Scene {
     const bank = detail || { score: 0, cleared: false, pay: 0, why: "", title: "lookout", desk: 0 };
     const name = t(bank.title || "lookout");
     return [this.line(name + " · " + bank.score), this.line(bank.cleared ? t("highFive") : t("nextTime")), this.line(bank.why ? t(bank.why) : t("nextTime")), this.line("+" + (bank.pay || 0) + " " + t("seeds") + " · " + t("thisDesk") + " " + (bank.desk || 0)), this.btn(t("tryAgain"), () => this.again(), true), this.btn(t("home"), () => this.home())];
+  }
+  liteLabel() {
+    const mode = settings().lite || "auto";
+    if (mode === "on") return t("on");
+    if (mode === "off") return t("off");
+    return t("auto");
   }
   classLabel() {
     const n = settings().classMin || 0;
@@ -119,21 +164,55 @@ export class UI extends window.Phaser.Scene {
     window.dispatchEvent(new CustomEvent("ap-home"));
     this.open("settings");
   }
-  line(str) { return this.add.text(0, 0, str, { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#f8fafc", wordWrap: { width: 300 }, align: "center" }).setOrigin(0.5); }
-  btn(word, fn, big) {
-    const Phaser = window.Phaser;
-    const box = this.add.container(0, 0);
-    const w = 300;
-    const h = big ? 56 : 48;
-    const bg = this.add.rectangle(0, 0, w, h, big ? 0xfde68a : 0x12314d).setStrokeStyle(3, 0x67e8f9);
-    const label = this.add.text(0, 0, word, { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: big ? "#042f2e" : "#f8fafc", align: "center", wordWrap: { width: 280 } }).setOrigin(0.5);
-    box.add([bg, label]);
-    box.setSize(w, h);
-    bg.setInteractive(new Phaser.Geom.Rectangle(-w / 2, -h / 2, w, h), Phaser.Geom.Rectangle.Contains);
-    bg.on("pointerdown", fn);
+  cycleMotion() {
+    const s = settings();
+    s.motion = s.motion === "less" ? "full" : "less";
+    saveNow();
+    motionOff();
+    this.open("settings");
+  }
+  cycleLite() {
+    const before = wantsCanvas(settings());
+    const s = settings();
+    const order = ["auto", "on", "off"];
+    const i = Math.max(0, order.indexOf(s.lite || "auto"));
+    s.lite = order[(i + 1) % order.length];
+    if (s.lite !== "auto") s.liteAuto = false;
+    saveNow();
+    const after = wantsCanvas(settings());
+    if (after !== before || s.lite === "on" || s.lite === "off") { location.reload(); return; }
+    this.open("settings");
+  }
+  cycleSound() {
+    const s = settings();
+    s.sound = s.sound === false;
+    saveNow();
+    this.open("settings");
+  }
+  cycleMusic() {
+    const s = settings();
+    s.music = s.music !== true;
+    saveNow();
+    syncMusic();
+    this.open("settings");
+  }
+  line(str) {
+    const box = makeButton(this, "line", () => {});
+    box.setData("word", str);
+    box.setData("frame", null);
+    box.setData("plain", true);
+    return box;
+  }
+  btn(word, fn, big, frame) {
+    const box = makeButton(this, "ui-" + word, fn);
+    box.setData("word", word);
+    box.setData("frame", frame || null);
+    box.setData("big", !!big);
     return box;
   }
   clear() {
+    if (this.domRows) this.domRows.forEach((row) => row.destroy());
+    this.domRows = null;
     if (this.card) this.card.destroy();
     if (this.blocker) this.blocker.destroy();
     this.card = null;

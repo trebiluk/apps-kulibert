@@ -1,12 +1,18 @@
 import { startGame } from "./game/main.js";
-import { t } from "./game/i18n.js";
+import { rtl, t } from "./game/i18n.js";
+import { bands, poseNow } from "./game/ui/bands.js";
 
 function boot() {
   if (!window.Phaser) { setTimeout(boot, 30); return; }
-  startGame();
-  wireChrome();
+  const go = () => {
+    document.documentElement.dir = rtl() ? "rtl" : "ltr";
+    const game = startGame();
+    wireChrome(game);
+  };
+  if (document.readyState === "complete") go();
+  else window.addEventListener("load", go, { once: true });
 }
-function wireChrome() {
+function wireChrome(game) {
   const menu = document.getElementById("game-menu");
   const fs = document.getElementById("fs-btn");
   const plate = document.getElementById("plate");
@@ -19,6 +25,43 @@ function wireChrome() {
   paintFs();
   remember();
   oneMenu();
+  const fit = () => {
+    const stage = document.getElementById("stage");
+    if (stage && game) {
+      const w = Math.round(stage.clientWidth);
+      const h = Math.round(stage.clientHeight);
+      if (w > 40 && h > 40 && (Math.round(game.scale.width) !== w || Math.round(game.scale.height) !== h)) game.scale.resize(w, h);
+    }
+    placeChrome();
+  };
+  fit();
+  window.addEventListener("resize", fit);
+  const stage = document.getElementById("stage");
+  if (stage && window.ResizeObserver) new ResizeObserver(fit).observe(stage);
+  window.addEventListener("ap-lang", () => { document.documentElement.dir = rtl() ? "rtl" : "ltr"; fit(); });
+  new MutationObserver(fit).observe(document.documentElement, { attributes: true, attributeFilter: ["data-kb-bar", "dir", "class"] });
+}
+function placeChrome() {
+  const stage = document.getElementById("stage");
+  const fs = document.getElementById("fs-btn");
+  const plate = document.getElementById("plate");
+  if (!stage || !fs || !plate) return;
+  const rec = stage.getBoundingClientRect();
+  if (rec.width < 40 || rec.height < 40) return;
+  const pose = poseNow(window.innerWidth, window.innerHeight);
+  const b = bands(Math.round(rec.width), Math.round(rec.height), { rtl: rtl(), pose, viewW: window.innerWidth, viewH: window.innerHeight });
+  fs.style.left = Math.round(rec.left + b.fs.x) + "px";
+  fs.style.top = Math.round(rec.top + b.fs.y) + "px";
+  fs.style.width = b.fs.w + "px";
+  fs.style.height = b.fs.h + "px";
+  fs.style.right = "auto";
+  fs.style.bottom = "auto";
+  plate.style.left = Math.round(rec.left + b.plate.x) + "px";
+  plate.style.top = Math.round(rec.top + b.plate.y) + "px";
+  plate.style.width = b.plate.w + "px";
+  plate.style.height = b.plate.h + "px";
+  plate.style.right = "auto";
+  plate.style.bottom = "auto";
 }
 function paintFs() {
   const fs = document.getElementById("fs-btn");
