@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.42'
+const VERSION = '2.5.43'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -418,7 +418,11 @@ noa.inputs.down.on('mid-fire', () => pickAimed())
 
 const DB = __BLOX_STUDENT__ ? 'kuliblocks' : 'kuliblocks-test'
 const STORE = 'worlds'
+function staffOn() {
+  try { return !!(window.HubStaffAuth && window.HubStaffAuth.isUnlocked()) } catch (e) { return false }
+}
 function townHelper() {
+  if (!staffOn()) return false
   try { return localStorage.getItem('bloxbert-town') === '1' } catch (e) { return false }
 }
 function setTownHelper(on) {
@@ -436,6 +440,7 @@ function ensureHelp() {
   return changed
 }
 function teacherOn() {
+  if (!staffOn()) return false
   try { return localStorage.getItem('bloxbert-teacher') === '1' } catch (e) { return false }
 }
 function setTeacher(on) {
@@ -604,6 +609,7 @@ session = createSession({
   path: (id) => markPath(id),
   teacher: () => teacherOn(),
   setTeacher: (on) => setTeacher(on),
+  staff: () => staffOn(),
   townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
   townYes: () => townHelper(),
   setTown: (on) => setTownHelper(on),
@@ -700,6 +706,7 @@ const learn = createLearn({
   openTour: () => panels.open('tour'),
   panel: () => (panels && panels.openPanel) || '',
   survival: () => session && session.mode === 'survival',
+  touch: () => TOUCH_UI,
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
 })
 markPath = (id) => learn.bump(id)
@@ -741,10 +748,13 @@ if (pathChip) pathChip.addEventListener('click', () => { openMenu(true); panels.
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
 $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
 let menuFromLock = false
+let hadLock = false
 document.addEventListener('pointerlockchange', () => {
-  if (!document.pointerLockElement && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
+  if (document.pointerLockElement) { hadLock = true; menuFromLock = false; return }
+  const wasLocked = hadLock
+  hadLock = false
+  if (wasLocked && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
   selfUnlock = false
-  if (document.pointerLockElement) menuFromLock = false
 })
 noa.on('tick', () => {
   const p = noa.entities.getPosition(noa.playerEntity)
@@ -1382,21 +1392,24 @@ function paintLook(g) {
 applyLook()
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
+function targetHit() {
+  const t = noa.targetedBlock
+  if (!t || !t.position) return null
+  return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), face: t }
+}
 canvas.addEventListener('pointerdown', (e) => {
-  if (e.button === 0) mouseLeft = true
-  if (e.pointerType === 'mouse' && !tableMode && !TOUCH_UI) return
+  if (e.button === 0 || e.button < 0) mouseLeft = true
+  if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, t: e.timeStamp, moved: 0 }
   lastPointer = { x: e.clientX, y: e.clientY }
-  if ((e.pointerType !== 'mouse' || TOUCH_UI) && !tableMode) {
-    const hit = rayAt(e.clientX, e.clientY)
-    if (hit) {
-      const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-      const need = mineMs(name, survivalOn(), true, heldTool())
-      const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
-      const kept = same ? dig.p : 0
-      dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
-    } else dig = null
-  }
+  const hit = rayAt(e.clientX, e.clientY) || targetHit()
+  if (hit) {
+    const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
+    const need = mineMs(name, survivalOn(), true, heldTool())
+    const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
+    const kept = same ? dig.p : 0
+    dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
+  } else dig = null
 })
 canvas.addEventListener('pointermove', (e) => {
   if (!look || e.pointerId !== look.id) return
@@ -1408,7 +1421,7 @@ canvas.addEventListener('pointermove', (e) => {
   setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
 })
 canvas.addEventListener('pointerup', (e) => {
-  if (e.button === 0) mouseLeft = false
+  if (e.button === 0 || e.button < 0) mouseLeft = false
   if (!look || e.pointerId !== look.id) return
   const tap = look.moved < 8
   const held = e.timeStamp - look.t
@@ -1885,6 +1898,29 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     pickup() { session.setMode('survival'); session.meta.set('1,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 12, sales: [] }); session.pickup(1, 2, 3, 24); return session.bag.count('vend') + ':' + session.bag.count('cupcake') },
     sale() { session.setMode('survival'); session.meta.set('4,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 0, sales: [], salesN: 0 }); session.vendTick(2); const rows = session.wallet.state.ledger.filter((r) => r.kind === 'vend-sale'); return rows.reduce((n, r) => n + r.cogs, 0) },
+    stand(x, y, z, h, p) { noa.entities.setPosition(noa.playerEntity, [x, y, z]); setLook(h || 0, p || 0) },
+    plant(x, y, z, id) { setVoxel(x, y, z, id, true); return getVoxel(x, y, z) },
+    aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
+    voxel(x, y, z) { return getVoxel(x, y, z) },
+    fillBag(item, n) { session.setMode('survival'); session.give(item, n); session.clearLoose() },
+    emptyBag() {
+      session.setMode('survival')
+      for (let i = 0; i < session.bag.slots.length; i++) session.bag.slots[i] = null
+    },
+    grounded() {
+      const b = noa.ents.getPhysicsBody(noa.playerEntity)
+      return !!(b && b.atRestY() < 0)
+    },
+    drops() { return session.groundDrops().map((d) => d.item + ':' + d.n) },
+    count(item) { return session.bag.count(item) },
+    toast() { const el = document.getElementById('toast'); return el && !el.hidden ? el.textContent : '' },
+    reach() { return noa.blockTestDistance },
+    pos() { const p = noa.entities.getPosition(noa.playerEntity); return [p[0], p[1], p[2]] },
+    flying() { return document.body.classList.contains('fly') },
+    seedBox(x, y, z) { session.meta.set(x + ',' + y + ',' + z, { kind: 'box', slots: Array.from({ length: 18 }, () => ({ item: 'dirt', n: 1 })) }) },
+    word(k) { return t(k) },
+    kept(x, y, z) { return keptCell(x, y, z) },
+    hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2] } : null },
   }
 }
 repaintBlocks()

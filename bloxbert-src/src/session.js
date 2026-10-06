@@ -173,6 +173,14 @@ export function createSession(api) {
       })
       bar.append(b)
     }
+    const bagBtn = document.createElement('button')
+    bagBtn.type = 'button'
+    bagBtn.className = 'slot bag-tile'
+    bagBtn.dataset.bag = '1'
+    bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
+    bagBtn.querySelector('.lbl').textContent = t('bag')
+    bagBtn.addEventListener('click', () => { if (api.open) api.open('inventory') })
+    bar.append(bagBtn)
     const held = bag.slots[hot]
     const label = document.getElementById('current')
     if (label) label.textContent = held ? itemName(held.item) : t('emptySlot')
@@ -480,6 +488,13 @@ export function createSession(api) {
     g.append(n)
   }
   function paintTeacher(g) {
+    if (!(api.staff && api.staff())) {
+      const note = document.createElement('p')
+      note.className = 'gnote'
+      note.textContent = t('askStaff')
+      g.append(note)
+      return
+    }
     const on = api.teacher && api.teacher()
     g.append(btn(on ? t('teacherOn') : t('teacherOff'), () => {
       if (!on && !confirm(t('teacherAsk'))) return

@@ -6,7 +6,7 @@
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
 <style>
-:root{--top-h:60px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
+:root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);color:var(--snow);font:15px/1.35 system-ui,-apple-system,"Segoe UI",Roboto,Ubuntu,"Noto Sans","Noto Sans Arabic","Noto Sans Ethiopic",sans-serif}
 html[data-ts="s"]{font-size:13px}
@@ -63,7 +63,7 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .credit a{color:var(--cyan)}
 #hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(34,211,238,.4);scrollbar-width:thin}
 #pick-chip{display:none}
-body.touch #pick-chip{display:flex;align-items:center;justify-content:center;position:fixed;right:12px;bottom:108px;z-index:6;min-width:72px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid #22D3EE;background:rgba(11,18,32,.92);color:#f8fafc;font-weight:700}
+body.touch #pick-chip{display:flex;align-items:center;justify-content:center;position:fixed;right:12px;bottom:calc(var(--hud-lift) + 16px);z-index:6;min-width:72px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid #22D3EE;background:rgba(11,18,32,.92);color:#f8fafc;font-weight:700}
 body.touch.stick-right #pick-chip{right:auto;left:12px}
 #pick-chip.on{border-color:#F6C453;color:#F6C453}
 .slot.empty .sw{background:none;border:1px dashed #8aa}
@@ -90,18 +90,18 @@ body.touch:not(.table) .pad{display:grid}
 .acts .place{border-color:#f8fafc;background:#0f172a;color:#f8fafc}
 .acts .brk{border-color:#f8fafc;background:#0f172a;color:#f8fafc}
 .acts .jump{grid-column:1/span 2;width:auto;height:52px}
-.stickpad{display:none;position:fixed;z-index:4;left:12px;bottom:92px;width:120px;height:120px;touch-action:none}
+.stickpad{display:none;position:fixed;z-index:4;left:12px;bottom:var(--hud-lift);width:120px;height:120px;touch-action:none}
 body.touch:not(.table) .stickpad{display:block}
-.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.75);background:radial-gradient(circle at 50% 45%, rgba(20,184,166,.28), rgba(11,18,32,.62));box-shadow:inset 0 0 18px rgba(34,211,238,.25)}
-.stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #5eead4, #0f766e);border:2px solid #f8fafc;box-shadow:0 4px 10px rgba(0,0,0,.35)}
-.jumpcol{display:none;position:fixed;z-index:4;left:28px;bottom:220px;gap:8px}
+.stick-base{position:absolute;inset:0;border-radius:50%;border:2px solid rgba(34,211,238,.75);background:radial-gradient(circle at 50% 45%, rgba(20,184,166,.28), rgba(11,18,32,.62));box-shadow:inset 0 0 18px rgba(34,211,238,.25);pointer-events:none}
+.stick-knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:radial-gradient(circle at 40% 35%, #5eead4, #0f766e);border:2px solid #f8fafc;box-shadow:0 4px 10px rgba(0,0,0,.35);pointer-events:none}
+.jumpcol{display:none;position:fixed;z-index:4;left:148px;bottom:var(--hud-lift);gap:8px}
 body.touch:not(.table) .jumpcol{display:flex;flex-direction:column;align-items:center}
 .jumpcol button{border-radius:12px;border:1px solid rgba(34,211,238,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;touch-action:none}
 .jumpcol .crouch{width:48px;height:48px}
 .jumpcol .jump{width:64px;height:64px}
 body.touch .move,body.touch .acts{display:none!important}
 body.stick-right .stickpad{left:auto;right:12px}
-body.stick-right .jumpcol{left:auto;right:28px}
+body.stick-right .jumpcol{left:auto;right:148px}
 .keys{position:fixed;left:12px;bottom:88px;z-index:3;font-size:12px;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(520px,70vw)}
 body.touch .keys,body.table .keys{display:none}
 .ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
@@ -110,7 +110,19 @@ body.touch .keys,body.table .keys{display:none}
   .slot{width:58px;min-height:52px;gap:2px}.lbl{font-size:10px}
   .move{bottom:76px}.acts{bottom:76px}.pad button{width:48px;height:48px}.move{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}
   .acts button{width:70px;height:52px}.acts .jump{height:48px}
-  .stickpad{bottom:76px;width:104px;height:104px}.jumpcol{bottom:188px}}
+  .stickpad{width:104px;height:104px}}
+@media (max-width:479px){
+  :root{--hud-lift:140px}
+  #hotbar{display:grid;grid-template-columns:repeat(5,62px);justify-content:center;gap:6px;overflow:hidden}
+  #hotbar .slot{width:62px;min-width:62px;min-height:48px;height:52px}
+  .slot.bag-tile{position:static}
+}
+@media (max-height:500px) and (min-width:480px){
+  :root{--hud-lift:76px}
+  .stickpad{width:104px;height:104px}
+  .jumpcol{left:128px}
+  body.stick-right .jumpcol{left:auto;right:128px}
+}
 .pad,#hotbar,.keys,.top{direction:ltr}
 html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
 html[dir=rtl] .row{text-align:right}
@@ -165,14 +177,21 @@ html[dir=rtl] #inspect-chip{left:auto;right:64px}
 #game-menu{position:fixed;top:calc(var(--top-h) + 8px);left:12px;z-index:7;width:56px;height:56px;border-radius:12px;border:1px solid #e2e8f0;background:rgba(11,18,32,.45);color:#f8fafc;font-size:26px}
 #game-menu small{display:block;font-size:12px;margin-top:-6px}
 html[data-kb-bar]:not(.kb-framed) #game-menu{top:calc(48px + var(--top-h) + 8px)}
-#menu-hint{position:fixed;top:calc(var(--top-h) + 72px);left:16px;z-index:6;max-width:180px;background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid var(--cyan);border-radius:10px;padding:8px;font-size:13px}
+#menu-hint{position:fixed;top:calc(var(--top-h) + 80px);left:76px;z-index:6;max-width:min(200px,calc(100vw - 160px));background:rgba(11,18,32,.9);color:#f8fafc;border:1px solid var(--cyan);border-radius:10px;padding:8px;font-size:13px}
+html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 80px)}
+@media (max-height:500px) and (min-width:480px){
+  #menu-hint{left:auto;right:16px;top:calc(var(--top-h) + 72px)}
+  html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 72px)}
+}
 #toast{position:fixed;left:50%;top:calc(var(--top-h) + 64px);transform:translateX(-50%);z-index:8;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--teal);border-radius:10px;padding:8px 12px;pointer-events:none}
-#path-chip{position:fixed;left:12px;bottom:88px;z-index:6;max-width:240px;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--gold);border-radius:12px;padding:8px 12px;font-size:14px;text-align:start}
+#path-chip{position:fixed;left:76px;top:calc(var(--top-h) + 8px);z-index:6;min-height:44px;max-height:64px;max-width:min(200px,calc(100vw - 160px));overflow:hidden;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--gold);border-radius:12px;padding:10px 12px;font-size:15px;line-height:1.2;text-align:start}
+html[data-kb-bar]:not(.kb-framed) #path-chip{top:calc(48px + var(--top-h) + 8px)}
 #sheet{position:fixed;left:0;right:0;bottom:0;top:var(--kb-bar-h, 48px);z-index:40;background:#070b16;display:flex;flex-direction:column;padding:12px;overflow:hidden;cursor:auto}
 body.menu-open canvas{pointer-events:none;cursor:auto}
 #sheet:not([hidden]) ~ .keys{display:none}
 #sheet-body{overflow-y:auto;overscroll-behavior:contain;flex:1}
 .slot.bag-tile{position:sticky;right:0}
+@media (max-width:479px){.slot.bag-tile{position:static;right:auto}}
 #sheet[hidden]{display:none}
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
 .sheet-bar button{min-width:48px;min-height:48px;background:rgba(11,18,32,.85);color:#f8fafc;border:1px solid var(--teal);border-radius:10px}
@@ -216,7 +235,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.42</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.43</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -250,12 +269,12 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
-<div class="keys" data-i18n="keysHint">WASD walk. Shift run. Z crouch. Space jumps one block. Hold left click to break. Right click places.</div>
+<div class="keys" data-i18n="keysHint">WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one.</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Survival is the class world. The bag is 9 on the hotbar and 6 pockets. The build world is for a teacher.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bertopia 2.5.43: the stick, the gold step and the hotbar fit on a phone, and only a teacher can open the build world.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -292,7 +311,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <button class="row" data-fs-exit><span class="ic">⤢</span><span data-i18n="fsExit">Exit full screen</span></button>
   </div>
   <div class="sec"><h3 data-i18n="help">Help</h3>
-    <p class="help" data-i18n="keysHint">Click the world to aim. WASD move. Space jump (double-tap to fly). Left click break. Right click place.</p>
+    <p class="help" data-i18n="keysHint">WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one.</p>
     <button class="row" id="m-about"><span class="ic">i</span><span data-i18n="about">About</span></button>
   </div>
   <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
@@ -339,7 +358,8 @@ html[dir=rtl] .sheet-bar{direction:ltr}
     <div id="inspect-list"></div>
   </div>
 </div>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.42" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.42" defer></script>
+<script src="/shared/hub-staff-auth.js"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.43" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.43" defer></script>
 </body>
 </html>

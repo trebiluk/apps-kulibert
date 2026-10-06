@@ -68,7 +68,7 @@ export function createLearn(api) {
       g.innerHTML = ''
       const p = document.createElement('p')
       p.className = 'gnote'
-      p.textContent = api.t(steps[i])
+      p.textContent = api.t(steps[i] === 'tourMove' && api.touch && api.touch() ? 'tourMoveTouch' : steps[i])
       g.append(p)
       const next = document.createElement('button')
       next.type = 'button'

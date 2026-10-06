@@ -3,7 +3,8 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/world-2; audit of 2.5.15–2.5.42 at 6:45 AM, full report proof/AUDIT-2026-10-06.md on Debugzy's box).
 
 ## 1. Live now
-- **Bertopia 2.5.42** (`a0675ec`, Oct 5 10:49 AM ET). Live = main; `npm run build` reproduces `blocks/app.js` byte for byte.
+- **Bertopia 2.5.43** (this commit). The stick, the gold step and the hotbar fit on a phone. Only a teacher who unlocked the device on the Tech Room staff page can open the build world. Smoke: 68 named lines, 0 FAIL, exit 0.
+- **Bertopia 2.5.42** (`a0675ec`, Oct 5 10:49 AM ET). Its Oct 6 proof FAILed on the HUD, the teacher switch and the words. 2.5.43 is that fix. `npm run build` reproduces `blocks/app.js`.
 - **Proof verdict: FAIL (P1)**, Oct 6 6:30 AM ET, `proof/bertopia-2.5.42/RESULT.md`. 0 console errors at 412/915/1366, ☰ by touch, the 26 repo-smoke lines and every `tools/*-check.mjs` pass. The failures are below.
 - From Oct 4 7:40 AM to Oct 5 10:49 AM ET the Build chat shipped 28 cuts (2.5.15–2.5.42) with no proof between them. Most of core-1/core-2/core-3 and part of 2.6.0 landed this way:
   - 2.5.15–2.5.19: the 2.5.14 leftovers (Oven tiles, Fill/Walls words, Menú, Break contrast)
@@ -24,13 +25,10 @@ Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/worl
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
 ## 2. Open fixes (from proof/bertopia-2.5.42/RESULT.md) → brief `briefs/fixq/bertopia-2543.md` = **BT 2.5.43**, before anything in Next up
-- [ ] **Touch HUD:**
-  - The gold `#path-chip` covers the stick at 412 and 915, and the keys line at 1366. It's 35 px tall.
-  - "Tap ☰ for menu" covers Crouch at 915x412, and Crouch sits under the header.
-  - Upright, 4 of 9 hotbar slots are off screen and there's no Bag tile.
-- [ ] **Teacher gate:** any student can flip ☰ → Teacher → "This device can build", which unlocks Creative, the town helper, the price dial and Reset wallet. Gate it with the existing `HubStaffAuth.isUnlocked()`.
-- [ ] **Words:** tour step 1 still says "Move with the pads". The Settings help says "double-tap to fly". What's new still shows the 2.5.32 line.
-- [ ] **Smoke (carried over from 2.5.15 item 3):** `tools/smoke.mjs` still uses `element.click()` and has no 2.5.22–2.5.42 gates. It needs ≥30 real-input lines at 412 and 1366.
+- [x] **Touch HUD (2.5.43):** the gold step, the hint, Crouch and Jump stay off the stick and off each other. Upright phones show 9 slots and a Bag tile. Sideways keeps one row.
+- [x] **Teacher gate (2.5.43):** Creative, the town helper, the price dial and Reset wallet need `HubStaffAuth.isUnlocked()`. A saved `bloxbert-teacher=1` with no staff unlock stays Survival.
+- [x] **Words (2.5.43):** tour step 1 is "Move with the stick" on touch and "Walk with WASD" on a Chromebook. The Settings help line matches the keys. What's new is the 2.5.43 line.
+- [x] **Smoke (2.5.43):** new lines use real taps at 412x915, 915x412 and 1366x768. 68 PASS, exit 0. The older 26 lines still pass.
 - [x] 2.5.14 leftovers: Oven tile pictures and fit, Nothing to bake yet, Output: Glass, fillN/wallsN in 8 languages, Menú, Break contrast (2.5.15–2.5.19; smoke lines pass).
 
 ### Flags: built without a brief (GameMaster calls; leave as shipped, don't extend)
@@ -49,7 +47,7 @@ Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/worl
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
-| 0 | 2.5.43 | **bertopia-2543.md:** HUD fit + hotbar, teacher gate, words + real smoke | [ ] |
+| 0 | 2.5.43 | **bertopia-2543.md:** HUD fit + hotbar, teacher gate, words + real smoke | [x] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
 | 1 | 2.5.44 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
 | 2 | 2.5.45 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
@@ -100,6 +98,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| 2.5.43 | (this commit) | PASS: phone HUD, staff teacher gate, tour words, real-input smoke exit 0 (Oct 6) |
 | docs (Oct 6, 10:30 AM) | (this commit) | Docs only: GM calls applied (Tone Block, Fusion Core nuclear line, teal Bot, Zapper removed), marigoldPatternTile key, US spelling + ×, 54 Machine Panel inside lines (unchecked), 278 entries checked |
 | docs (Oct 6, 10:15 AM) | (this commit) | Docs only, no app change: one Seasonal & Holiday pile (no dates, one teacher switch, culture items ids 172–184 in), Diya cut, Pattern Floor Tile base decor, Fabricator Starter Kit, new seasonal-early at 2.6.2 (versions after it +1, holidays-1 → 2.6.16), rotate proof in every brief |
 | 2.5.42 | a0675ec | FAIL (P1): HUD overlaps (path chip on the stick, hint on Crouch), any kid can flip the teacher switch, upright hotbar 4/9 off screen, stale tour/help/What's new, smoke has no gates (Oct 6, 6:30 AM) |

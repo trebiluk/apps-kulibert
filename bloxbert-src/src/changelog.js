@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.43', date: '2026-10-06', lines: {
+    en: ['The stick, the gold step and the hotbar fit on a phone.', 'Only a teacher can open the build world.'],
+    uk: ['Стик, золотий крок і панель вміщаються на телефоні.', 'Лише вчитель відкриває світ будівлі.'],
+    ru: ['Стик, золотой шаг и панель помещаются на телефоне.', 'Только учитель открывает мир стройки.'],
+    es: ['El palo, el paso dorado y la barra caben en un teléfono.', 'Solo el profe abre el mundo de construir.'],
+    ar: ['العصا والخطوة الذهبية والشريط تناسب الهاتف.', 'المعلم فقط يفتح عالم البناء.'],
+    'fa-AF': ['اهرم، گام طلایی و نوار روی گوشی جا می‌شوند.', 'فقط معلم جهان ساختن را باز می‌کند.'],
+    rw: ['Agastike, intambwe y\'umuhondo n\'umukandara bigera kuri telefoni.', 'Umwarimu wenyine afungura isi yo kubaka.'],
+    ti: ['ስቲክ፡ ወርቃዊ ስጉምትን መስመርን ኣብ ስልኪ ይኣቱ።', 'መምህር ጥራይ ዓለም ህንጻ ይኸፍት።'],
+  }},
   { v: '2.5.42', date: '2026-10-05', lines: {
     en: ['A gold step shows what to do next.', 'Dig down for coal. Break wheat for flour and reeds for sugar.', 'Craft a door from 6 planks. Right-click opens it. Set home on a bunk.'],
     uk: ['Золотий крок каже, що далі.', 'Копай униз за вугіллям. Пшениця дає борошно, очерет дає цукор.', 'Двері з 6 дощок. Права кнопка відчиняє. Дім на ліжку.'],
