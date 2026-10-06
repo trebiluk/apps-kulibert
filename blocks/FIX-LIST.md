@@ -1,8 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 6:35 PM ET (Debugzy: 2.5.45 proof PASS with 2 P2 smoke-truth watches, carried; 2.5.46 touchbreak in Build since ~6:19 PM).
+Updated Tue Oct 6 2026, 7:30 PM ET (Debugzy: 2.5.46 proof FAIL (P1): a finger on a log still digs the aim-outline block, not the log, and the hotbar does not repaint after a break; 2.5.47 fix brief written, basics renumbered 2.5.48-2.5.50).
 
 ## 1. Live now
+- **Bertopia 2.5.46** (`a10199e`, Oct 6 6:53 PM ET). Holding your finger on a block breaks it even if your finger wiggles a little, a tip shows you how, and the Pick button is now Copy.
+- **Proof verdict: FAIL (P1)**, Oct 6 7:24 PM ET, `proof/bertopia-2.5.46/RESULT.md`. Drift fix, ring at ~205 ms, holdToBreak toast once, pathTreeTouch line (touch only, gone after the first log, never at 1366), Copy button (87x48 + eyedropper at 915 and 360) and Copy-armed hold all work. But on live a finger held on the starter log digs the block under the aim outline instead (town road -> "The town stays", log stays): `rayAt()` uses `scene.pick`, noa terrain is not pickable, so it is always null and falls back to `targetHit()`. Only when the outline is already on the log does the hold chop it. Also the HUD hotbar stays "Empty slot" after the chop (Bag shows Log 1) until a slot tap. Smoke 96/17 and 97/16 (16 = bag label 1 px, +1 hold toast once flaky). 0 console errors at 360/412/915/1366, rotate keeps state, teacher gate holds.
 - **Bertopia 2.5.45** (`73a477b`, Oct 6 6:12 PM ET). The Bag tile label fits on a phone, the keys help line fits on one line and fades after your first steps, and right click places right away again.
 - **Proof verdict: PASS (P2 watches)**, Oct 6 6:35 PM ET, `proof/bertopia-2.5.45/RESULT.md`. "Bag" reads right at 412 (g shows); keys fit en/ru/ar/fa-AF at 1366/915, fade 1->0; place on press 64->63; sweep no use, Box/Oven open on a fresh press, touch drag no use. 0 console errors at 412/915/1366, rotate keeps state, teacher gate holds. Watches: smoke "bag label" fails 16/16 by 1 px on other fonts (scrollHeight 13 > 12, not visible), "door flips once" flaky (1 of 2 runs).
 - **Bertopia 2.5.44** (`2e9fd8f`, Oct 6 1:03 PM ET). Held right click no longer opens doors, boxes or stations (Use needs a fresh, still press or one tap), and new grass has no loose wool.
@@ -27,9 +29,11 @@ Updated Tue Oct 6 2026, 6:35 PM ET (Debugzy: 2.5.45 proof PASS with 2 P2 smoke-t
   - 2.5.42: coal underground, wheat → flour, reeds → sugar, Wood Door, bunk sets home, gold path step
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
-## 2. Open fixes (from proof/bertopia-2.5.45/RESULT.md + Diego's phone) -> brief `briefs/fixq/bertopia-2546-touchbreak.md` = **BT 2.5.46**, before basics-1
-- [x] **Touch hold-to-break (P1, Diego 6:13 PM):** a steady finger cancels the dig (summed jitter); no hint to hold; Pick looks like a pickaxe. Items 1-3 of the brief.
-- [ ] **Smoke truth (P2, carried, not in the 2.5.46 brief):** bag label line needs 1-2 px line-height headroom so smoke passes on any font set (scrollHeight 13 > 12 on Debugzy's headless Chrome); "door flips once 1366x768" flaky 1 of 2 runs, wait for aim on the door before the press. Fold into the next small brief.
+## 2. Open fixes (from proof/bertopia-2.5.46/RESULT.md + Diego's phone) -> brief `briefs/fixq/bertopia-2547-fix.md` = **BT 2.5.47**, before basics-1
+- [ ] **Touch target (P1, 2.5.46 proof):** touch hold and tap act on the aim-outline block, not the block under the finger. `rayAt()` (main.js ~883) uses `scene.pick` on non-pickable noa terrain, so it is always null and falls back to `targetHit()`. Raycast voxels from the camera through the touch point instead.
+- [ ] **Hotbar repaint (P1, 2.5.46 proof):** `session.onBreak` adds the drop to the bag but never repaints the hotbar or the chip; the slot shows the log only after a slot tap.
+- [x] **2.5.46 done:** straight drift under 24 px, ring at 150 ms, holdToBreak tip once, pathTreeTouch line, Pick -> Copy (eyedropper), hold breaks while Copy is armed.
+- [ ] **Smoke truth (P2, carried into the 2.5.47 brief):** bag label line needs 1-2 px line-height headroom so smoke passes on any font set (scrollHeight 13 > 12 on Debugzy's headless Chrome); "door flips once 1366x768" flaky (passed 2 of 2 on 2.5.46), wait for aim on the door before the press; new: "hold toast once 915x412" flaky 1 of 2 runs (first sample empty), wait for the toast before reading it. Smoke chop lines plant the log at the aim and hold at screen centre, so they can't see the touch-target bug: add an off-aim finger line.
 - [x] **2.5.45 done:** Bag label fits, keys help line fits + fades, right click places on press.
 - [x] **2.5.44 done:** desktop smoke truth (right button, exit 0, no element.click), Use only on a fresh still press (`canUse`), no loose wool in new chunks (ids 13-16, Store wool, Bunk recipe kept).
 - [x] **2.5.43 done:** touch HUD never covers itself (5 sizes), upright 9 slots + Bag, teacher gate via `HubStaffAuth.isUnlocked()`, tour/help/What's new words.
@@ -54,10 +58,11 @@ Updated Tue Oct 6 2026, 6:35 PM ET (Debugzy: 2.5.45 proof PASS with 2 P2 smoke-t
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
 | 0c | 2.5.45 | bertopia-2545-polish.md: Bag tile label fits on phones; keys help line fits and fades after 3 moves; right-click places on press | shipped, PASS |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
-| 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | [x] |
-| 1 | 2.5.47 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
-| 2 | 2.5.48 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
-| 3 | 2.5.49 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
+| 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | shipped, FAIL (P1) |
+| 0e | 2.5.47 | **bertopia-2547-fix.md (P1, 2.5.46 proof):** touch hold/tap act on the block under the finger (voxel raycast through the touch point, reach 6); hotbar + chip repaint after every break/pickup; smoke off-aim finger chop + HUD slot line; smoke truth (bag label headroom, toast wait) | [ ] |
+| 1 | 2.5.48 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
+| 2 | 2.5.49 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
+| 3 | 2.5.50 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
 | 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
@@ -105,6 +110,7 @@ Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the 
 ## 5. Proof changelog
 | Version | Commit | Proof verdict (ET) |
 |---|---|---|
+| 2.5.46 | a10199e | FAIL (P1): drift, ring 150 ms, hold tip, pathTreeTouch, Copy all PASS; a finger on an off-aim log digs the aim block instead (rayAt always null, falls back to targetHit), hotbar not repainted after a break; smoke 96 PASS / 17 FAIL and 97 / 16 (bag label 1 px + hold toast flaky), all checks ok, 0 console errors, rotate OK (Oct 6, 7:24 PM) |
 | 2.5.45 | 73a477b | PASS (P2 watches): Bag label reads right at 412, keys line fits + fades, place on press; smoke 86 PASS / 16 FAIL (all = bag label 1 px scrollHeight on box fonts; door flip flaky 1 of 2 runs), all checks ok, 0 console errors, rotate OK (Oct 6, 6:35 PM) |
 | 2.5.44 | 2e9fd8f | PASS (P2 watches): smoke 74/74 exit 0, no element.click; held right-click sweep opens nothing, fresh right click opens Box/flips door, tap opens on touch; 0 wool tops; placed wool kept (Oct 6, 3:30 PM) |
 | 2.5.43 | a34e6af | FAIL (P1): HUD fit, rotate and HubStaffAuth gate PASS; smoke 65/68 exit 1 (desktop place/Box/Oven lines send a left click), old lines still element.click() (Oct 6, 1:15 PM) |
