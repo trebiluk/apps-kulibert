@@ -1,0 +1,1326 @@
+{
+ "lang": "en",
+ "status": "DRAFT: Curriculum Bot checks facts + reading level before ship; other 7 languages filled by Build per brief",
+ "entries": {
+  "grass": {
+   "name": "Grass",
+   "cat": "Blocks",
+   "what": "Grass on top of soil. Break it and you get Dirt."
+  },
+  "dirt": {
+   "name": "Dirt",
+   "cat": "Ores & Rocks",
+   "what": "Soil: tiny bits of rock mixed with old plant matter."
+  },
+  "stone": {
+   "name": "Stone",
+   "cat": "Ores & Rocks",
+   "what": "Plain rock. Most of the underground is stone."
+  },
+  "slate": {
+   "name": "Slate",
+   "cat": "Ores & Rocks",
+   "what": "A dark rock that splits into flat sheets."
+  },
+  "coal": {
+   "name": "Coal Ore",
+   "cat": "Ores & Rocks",
+   "what": "Coal formed from plants buried and squeezed for millions of years. It is fuel."
+  },
+  "sand": {
+   "name": "Sand",
+   "cat": "Ores & Rocks",
+   "what": "Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass."
+  },
+  "gravel": {
+   "name": "Gravel",
+   "cat": "Ores & Rocks",
+   "what": "Small rounded stones, often found in river beds."
+  },
+  "brickRed": {
+   "name": "Red Brick",
+   "cat": "Blocks",
+   "what": "Baked clay bricks. Strong when you push on them."
+  },
+  "brickGrey": {
+   "name": "Grey Brick",
+   "cat": "Blocks",
+   "what": "Stone cut into bricks."
+  },
+  "planks": {
+   "name": "Planks",
+   "cat": "Materials",
+   "what": "Boards sawn from a log. 1 Log makes 4."
+  },
+  "log": {
+   "name": "Log",
+   "cat": "Plants & Critters",
+   "what": "A piece of tree trunk. The rings show its age."
+  },
+  "leaves": {
+   "name": "Leaves",
+   "cat": "Plants & Critters",
+   "what": "Leaves make food for the tree from sunlight. Sometimes a Berry falls out."
+  },
+  "woolBlue": {
+   "name": "Blue Cloth Block",
+   "cat": "Blocks",
+   "what": "A soft block of dyed cloth."
+  },
+  "woolGreen": {
+   "name": "Green Cloth Block",
+   "cat": "Blocks",
+   "what": "A soft block of dyed cloth."
+  },
+  "woolRed": {
+   "name": "Red Cloth Block",
+   "cat": "Blocks",
+   "what": "A soft block of dyed cloth."
+  },
+  "woolTan": {
+   "name": "Tan Cloth Block",
+   "cat": "Blocks",
+   "what": "A soft block of undyed cloth."
+  },
+  "snow": {
+   "name": "Snow",
+   "cat": "Ores & Rocks",
+   "what": "Frozen water crystals. Lands soft."
+  },
+  "ice": {
+   "name": "Ice",
+   "cat": "Ores & Rocks",
+   "what": "Frozen water. In Bertopia it does not slide."
+  },
+  "redSand": {
+   "name": "Red Sand",
+   "cat": "Ores & Rocks",
+   "what": "Sand stained red by iron. Bake it for Red Brick."
+  },
+  "glass": {
+   "name": "Glass",
+   "cat": "Materials",
+   "what": "Sand melted and cooled until you can see through it."
+  },
+  "coreplate": {
+   "name": "Coreplate",
+   "cat": "Places",
+   "what": "The floor of the world at y -64. It never breaks."
+  },
+  "workbench": {
+   "name": "Workbench",
+   "cat": "Items & Machines",
+   "what": "A table for making things from wood, cloth and stone."
+  },
+  "oven": {
+   "name": "Oven",
+   "cat": "Items & Machines",
+   "what": "Bakes food and turns sand into glass."
+  },
+  "vend": {
+   "name": "Vending Counter",
+   "cat": "Items & Machines",
+   "what": "Sells your goods to townsfolk while you play."
+  },
+  "storeCounter": {
+   "name": "Store Counter",
+   "cat": "Places",
+   "what": "The town store. Restock things you have already found."
+  },
+  "bunk": {
+   "name": "Bunk",
+   "cat": "Items & Machines",
+   "what": "Tap it to set your home spot."
+  },
+  "box": {
+   "name": "Box",
+   "cat": "Items & Machines",
+   "what": "Holds 18 stacks. Two side by side make a Double Box."
+  },
+  "wheat": {
+   "name": "Wheat",
+   "cat": "Plants & Critters",
+   "what": "A grass whose seeds are ground into flour."
+  },
+  "reed": {
+   "name": "Reed",
+   "cat": "Plants & Critters",
+   "what": "A tall plant that grows by water. Here it gives sugar."
+  },
+  "door": {
+   "name": "Wood Door",
+   "cat": "Blocks",
+   "what": "A door made from 6 Planks. Tap to open."
+  },
+  "doorOpen": {
+   "name": "Wood Door (open)",
+   "cat": "Blocks",
+   "what": "An open wood door."
+  },
+  "doorGlass": {
+   "name": "Glass Door",
+   "cat": "Blocks",
+   "what": "A door with glass panes. Tap to open."
+  },
+  "doorGlassOpen": {
+   "name": "Glass Door (open)",
+   "cat": "Blocks",
+   "what": "An open glass door."
+  },
+  "doorMetal": {
+   "name": "Metal Door",
+   "cat": "Blocks",
+   "what": "A steel door. Only a button, lever or power opens it."
+  },
+  "doorMetalOpen": {
+   "name": "Metal Door (open)",
+   "cat": "Blocks",
+   "what": "An open metal door."
+  },
+  "doorSliding": {
+   "name": "Sliding Lab Door",
+   "cat": "Blocks",
+   "what": "Slides open when powered and someone walks up."
+  },
+  "doorSlidingOpen": {
+   "name": "Sliding Lab Door (open)",
+   "cat": "Blocks",
+   "what": "An open sliding door."
+  },
+  "lever": {
+   "name": "Lever",
+   "cat": "Items & Machines",
+   "what": "Flip it to turn a circuit on or off."
+  },
+  "leverOn": {
+   "name": "Lever (on)",
+   "cat": "Items & Machines",
+   "what": "A lever switched on."
+  },
+  "pushButton": {
+   "name": "Push Button",
+   "cat": "Items & Machines",
+   "what": "Press it for 1.5 seconds of power."
+  },
+  "pushButtonOn": {
+   "name": "Push Button (on)",
+   "cat": "Items & Machines",
+   "what": "A pressed button."
+  },
+  "smelter": {
+   "name": "Smelter",
+   "cat": "Items & Machines",
+   "what": "Melts ore into metal. Its Forge tab shapes the metal."
+  },
+  "fabricator": {
+   "name": "Fabricator",
+   "cat": "Items & Machines",
+   "what": "Builds anything with a battery, silicon or a chip. Runs on charge."
+  },
+  "ironOre": {
+   "name": "Iron Ore",
+   "cat": "Ores & Rocks",
+   "what": "Rusty rock full of iron. Most metal people use is iron."
+  },
+  "copperOre": {
+   "name": "Copper Ore",
+   "cat": "Ores & Rocks",
+   "what": "Rock with copper in it. Copper carries electricity, so wires use it."
+  },
+  "zincOre": {
+   "name": "Zinc Ore",
+   "cat": "Ores & Rocks",
+   "what": "Rock with zinc. Zinc coats steel so it does not rust."
+  },
+  "lantern": {
+   "name": "LED Lantern",
+   "cat": "Items & Machines",
+   "what": "A battery light. Tap for Low, Medium or High."
+  },
+  "charger": {
+   "name": "Charger",
+   "cat": "Items & Machines",
+   "what": "Like a wall outlet: it always gives power."
+  },
+  "glowPebble": {
+   "name": "Glow Pebble",
+   "cat": "Items & Machines",
+   "what": "A tiny glow. A little chemical makes a short light."
+  },
+  "glowStick": {
+   "name": "Glow Stick",
+   "cat": "Items & Machines",
+   "what": "A chemical light. Once it is used up, it is done."
+  },
+  "jumboGlow": {
+   "name": "Jumbo Glow",
+   "cat": "Items & Machines",
+   "what": "A big glow stick. A dye takes the energy and picks the color."
+  },
+  "coldGlowVial": {
+   "name": "Cold Glow Vial",
+   "cat": "Items & Machines",
+   "what": "Cold slows the reaction, so it glows longer."
+  },
+  "glowMoss": {
+   "name": "Glow Moss",
+   "cat": "Plants & Critters",
+   "what": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea."
+  },
+  "cornPlant": {
+   "name": "Corn Bush",
+   "cat": "Plants & Critters",
+   "what": "Corn is a grain. Some plastics are made from corn."
+  },
+  "solarPanel": {
+   "name": "Solar Panel",
+   "cat": "Items & Machines",
+   "what": "Turns sunlight into power. Its cell runs 2 strips through the night."
+  },
+  "glowStrip": {
+   "name": "LED Glow Strip",
+   "cat": "Items & Machines",
+   "what": "A thin light that uses 1 charge a minute."
+  },
+  "copperWireBlock": {
+   "name": "Copper Wire",
+   "cat": "Items & Machines",
+   "what": "Carries power from makers to users. Glows teal when powered."
+  },
+  "water": {
+   "name": "Water",
+   "cat": "Places",
+   "what": "In Bertopia water stays still and never floods a build."
+  },
+  "tinOre": {
+   "name": "Tin Ore",
+   "cat": "Ores & Rocks",
+   "what": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze."
+  },
+  "quartzOre": {
+   "name": "Quartz Vein",
+   "cat": "Ores & Rocks",
+   "what": "White crystals of silica, the same stuff as most sand."
+  },
+  "quartzSand": {
+   "name": "Quartz Sand",
+   "cat": "Ores & Rocks",
+   "what": "Dune sand with quartz grains you can collect."
+  },
+  "clay": {
+   "name": "Clay",
+   "cat": "Ores & Rocks",
+   "what": "Soft, sticky earth found by water. Bake it into Brick."
+  },
+  "boundaryClay": {
+   "name": "Boundary Clay",
+   "cat": "Places",
+   "what": "A thin layer laid down all over Earth after a giant asteroid hit."
+  },
+  "silverOre": {
+   "name": "Silver Ore",
+   "cat": "Ores & Rocks",
+   "what": "Silver reflects light better than any other metal."
+  },
+  "goldOre": {
+   "name": "Gold Ore",
+   "cat": "Ores & Rocks",
+   "what": "Gold hides in quartz veins deep in hard rock."
+  },
+  "graphiteOre": {
+   "name": "Graphite",
+   "cat": "Ores & Rocks",
+   "what": "Soft, shiny carbon made when heat and pressure changed old rock."
+  },
+  "pannedGravel": {
+   "name": "Panned Gravel",
+   "cat": "Ores & Rocks",
+   "what": "Gravel you already panned. It has nothing left to find."
+  },
+  "molten": {
+   "name": "Molten Metal",
+   "cat": "Places",
+   "what": "Metal so hot it flows. Here it bounces you back to safety."
+  },
+  "saltCrust": {
+   "name": "Salt Crust",
+   "cat": "Ores & Rocks",
+   "what": "Salt left behind where an old lake dried up."
+  },
+  "blackSand": {
+   "name": "Black Sand",
+   "cat": "Ores & Rocks",
+   "what": "Beach sand full of heavy titanium minerals."
+  },
+  "bauxite": {
+   "name": "Bauxite",
+   "cat": "Ores & Rocks",
+   "what": "Red-brown earth rich in aluminum. It forms where rock weathers in warm, wet places."
+  },
+  "ilmeniteOre": {
+   "name": "Ilmenite Ore",
+   "cat": "Ores & Rocks",
+   "what": "A heavy black mineral that holds titanium."
+  },
+  "platinumOre": {
+   "name": "Platinum Ore",
+   "cat": "Ores & Rocks",
+   "what": "One of the rarest metals in the crust. Only deep under Emberdeep."
+  },
+  "basalt": {
+   "name": "Basalt",
+   "cat": "Ores & Rocks",
+   "what": "Dark rock made when lava cools."
+  },
+  "snowGrass": {
+   "name": "Snowy Grass",
+   "cat": "Blocks",
+   "what": "Soil with a cap of snow."
+  },
+  "cottonBush": {
+   "name": "Cotton Bush",
+   "cat": "Plants & Critters",
+   "what": "Cotton fluff is plant fiber. 3 Cotton spin into 1 Cloth."
+  },
+  "flowerBush": {
+   "name": "Flowers",
+   "cat": "Plants & Critters",
+   "what": "Flowers feed bees and butterflies. 1 Flower makes 2 Paint dabs."
+  },
+  "saltPan": {
+   "name": "Salt Pan",
+   "cat": "Items & Machines",
+   "what": "Sun dries seawater. The salt stays behind."
+  },
+  "wallShelf": {
+   "name": "Wall Shelf",
+   "cat": "Items & Machines",
+   "what": "Holds 3 things and shows all 3."
+  },
+  "shelf": {
+   "name": "Shelf",
+   "cat": "Items & Machines",
+   "what": "Holds 4 things and shows all 4."
+  },
+  "sideTable": {
+   "name": "Side Table",
+   "cat": "Items & Machines",
+   "what": "A table with 1 drawer: 6 slots."
+  },
+  "desk": {
+   "name": "Desk",
+   "cat": "Items & Machines",
+   "what": "2 drawers, 12 slots, 1 thing on top."
+  },
+  "cabinet": {
+   "name": "Cabinet",
+   "cat": "Items & Machines",
+   "what": "24 slots behind a door you can lock."
+  },
+  "glassCabinet": {
+   "name": "Glass Cabinet",
+   "cat": "Items & Machines",
+   "what": "24 slots, lockable, shows its top 4 things."
+  },
+  "steelLocker": {
+   "name": "Steel Locker",
+   "cat": "Items & Machines",
+   "what": "36 slots in steel, lockable."
+  },
+  "sign": {
+   "name": "Sign",
+   "cat": "Blocks",
+   "what": "A label for a Box or a path."
+  },
+  "itemTube": {
+   "name": "Item Tube",
+   "cat": "Items & Machines",
+   "what": "A clear tube that moves items 2 blocks a second."
+  },
+  "poweredTube": {
+   "name": "Powered Tube",
+   "cat": "Items & Machines",
+   "what": "A tube with copper rings: 6 blocks a second."
+  },
+  "filterTube": {
+   "name": "Filter Tube",
+   "cat": "Items & Machines",
+   "what": "Only lets in items that match its rule."
+  },
+  "extractor": {
+   "name": "Extractor",
+   "cat": "Items & Machines",
+   "what": "Pulls a stack out of storage every 2 seconds."
+  },
+  "sorter": {
+   "name": "Sorter",
+   "cat": "Items & Machines",
+   "what": "Sends items down up to 4 outputs by rule."
+  },
+  "networkCable": {
+   "name": "Network Cable",
+   "cat": "Items & Machines",
+   "what": "Links storage into one network."
+  },
+  "networkCore": {
+   "name": "Network Core",
+   "cat": "Items & Machines",
+   "what": "The brain of a storage network. 1 per player."
+  },
+  "driveBay": {
+   "name": "Drive Bay",
+   "cat": "Items & Machines",
+   "what": "Holds 4 Drives."
+  },
+  "terminal": {
+   "name": "Terminal",
+   "cat": "Items & Machines",
+   "what": "A search engine for your stuff."
+  },
+  "storageLink": {
+   "name": "Storage Link",
+   "cat": "Items & Machines",
+   "what": "Snaps onto a Box so the network can see inside."
+  },
+  "teleportPad": {
+   "name": "Teleport Pad",
+   "cat": "Items & Machines",
+   "what": "Sends items (never people) to its partner pad."
+  },
+  "droneDock": {
+   "name": "Drone Dock",
+   "cat": "Items & Machines",
+   "what": "Charges and launches your Delivery Drone."
+  },
+  "batteryBox": {
+   "name": "Battery Box",
+   "cat": "Items & Machines",
+   "what": "Stores 40 charges for the night."
+  },
+  "networkPad": {
+   "name": "Network Pad",
+   "cat": "Items & Machines",
+   "what": "A teleport pad that talks to your network."
+  },
+  "bounceBlock": {
+   "name": "Bounce Block",
+   "cat": "Blocks",
+   "what": "A spring pad. It stores energy when you land and gives it back."
+  },
+  "discoFloor": {
+   "name": "Disco Floor",
+   "cat": "Blocks",
+   "what": "Lights up where you step. Smooth fades, never strobe."
+  },
+  "noteBlock": {
+   "name": "Note Block",
+   "cat": "Items & Machines",
+   "what": "Tap to raise the pitch. The block under it picks the instrument."
+  },
+  "keyboardBlock": {
+   "name": "Keyboard",
+   "cat": "Items & Machines",
+   "what": "An 8-pad keyboard you can play."
+  },
+  "drumKit": {
+   "name": "Drum Kit",
+   "cat": "Items & Machines",
+   "what": "An 8-pad drum kit."
+  },
+  "guitar": {
+   "name": "Guitar",
+   "cat": "Items & Machines",
+   "what": "An 8-pad guitar."
+  },
+  "jukebox": {
+   "name": "Jukebox",
+   "cat": "Items & Machines",
+   "what": "Plays Music Discs, including your own DJ Berty songs."
+  },
+  "pumpkin": {
+   "name": "Pumpkin",
+   "cat": "Blocks",
+   "what": "A squash that ripens in autumn."
+  },
+  "jackOLantern": {
+   "name": "Jack-o'-Lantern",
+   "cat": "Blocks",
+   "what": "A carved pumpkin with an LED inside, never a flame."
+  },
+  "cornStalks": {
+   "name": "Corn Stalks",
+   "cat": "Blocks",
+   "what": "Dried corn stalks tied in a bundle."
+  },
+  "leafPile": {
+   "name": "Leaf Pile",
+   "cat": "Blocks",
+   "what": "Autumn leaves raked into a pile."
+  },
+  "appleCrate": {
+   "name": "Apple Crate",
+   "cat": "Blocks",
+   "what": "A wooden crate of harvest apples."
+  },
+  "ghostLight": {
+   "name": "Friendly Ghost Light",
+   "cat": "Blocks",
+   "what": "A soft smiling ghost-shaped light."
+  },
+  "cobweb": {
+   "name": "Cobweb Deco",
+   "cat": "Blocks",
+   "what": "A fake cobweb for decoration."
+  },
+  "marigold": {
+   "name": "Marigolds",
+   "cat": "Blocks",
+   "what": "Bright orange flowers used for Dia de los Muertos."
+  },
+  "papelPicado": {
+   "name": "Papel Picado Banner",
+   "cat": "Blocks",
+   "what": "Cut-paper banners in bright colors."
+  },
+  "skullPatternTile": {
+   "name": "Sugar-Skull Pattern Tile",
+   "cat": "Blocks",
+   "what": "A tile with a colorful sugar-skull pattern."
+  },
+  "diyaLight": {
+   "name": "Diya Light",
+   "cat": "Blocks",
+   "what": "A small clay lamp shape with an LED glow, never a flame."
+  },
+  "rangoliTile": {
+   "name": "Rangoli Floor Tile",
+   "cat": "Blocks",
+   "what": "A floor tile with a colorful rangoli pattern."
+  },
+  "stringLights": {
+   "name": "String Lights",
+   "cat": "Blocks",
+   "what": "A strand of small LED lights."
+  },
+  "labBench": {
+   "name": "Lab Bench",
+   "cat": "Items & Machines",
+   "what": "Where Wonder Lab gadgets and effects are made."
+  },
+  "warpPad": {
+   "name": "Warp Pad",
+   "cat": "Items & Machines",
+   "what": "A player-size pad you can warp to with a Warp Key."
+  },
+  "sleepingBag": {
+   "name": "Sleeping Bag",
+   "cat": "Items & Machines",
+   "what": "Tap to set where you come back."
+  },
+  "crewBanner": {
+   "name": "Crew Banner",
+   "cat": "Items & Machines",
+   "what": "A shared spawn spot for your crew."
+  },
+  "gameZoneFlag": {
+   "name": "Game Zone Flag",
+   "cat": "Items & Machines",
+   "what": "Marks a play zone for Hide-and-Seek and mini-games."
+  },
+  "workshopDoor": {
+   "name": "Workshop Door",
+   "cat": "Places",
+   "what": "Teacher-flag door to the Build world."
+  },
+  "draftingTable": {
+   "name": "Drafting Table",
+   "cat": "Items & Machines",
+   "what": "Read Blueprint Scrolls here to unlock new materials."
+  },
+  "cleanBench": {
+   "name": "Clean Bench",
+   "cat": "Items & Machines",
+   "what": "A dust-free bench for the finest materials."
+  },
+  "copperBlock": {
+   "name": "Copper Block",
+   "cat": "Blocks",
+   "what": "A solid block of copper."
+  },
+  "steelBlock": {
+   "name": "Steel Block",
+   "cat": "Blocks",
+   "what": "A solid block of steel."
+  },
+  "mirror": {
+   "name": "Mirror",
+   "cat": "Blocks",
+   "what": "Polished silver behind glass reflects light."
+  },
+  "dexShelf": {
+   "name": "Dex Shelf",
+   "cat": "Blocks",
+   "what": "A trophy for filling half the Bertodex."
+  },
+  "trophyShelf": {
+   "name": "Trophy Shelf",
+   "cat": "Blocks",
+   "what": "Shows the trophies you earned."
+  },
+  "bamboo": {
+   "name": "Bamboo Pole",
+   "cat": "Materials",
+   "what": "A light, hollow grass stem. Strong for its weight."
+  },
+  "plywood": {
+   "name": "Plywood",
+   "cat": "Materials",
+   "what": "Thin wood layers glued with the grain crossing."
+  },
+  "cutStone": {
+   "name": "Cut Stone",
+   "cat": "Materials",
+   "what": "Stone cut into neat blocks."
+  },
+  "cinderBlock": {
+   "name": "Cinder Block",
+   "cat": "Materials",
+   "what": "A hollow concrete block, like real building blocks."
+  },
+  "concrete": {
+   "name": "Concrete",
+   "cat": "Materials",
+   "what": "Strong when pushed, cracks when pulled."
+  },
+  "roofTile": {
+   "name": "Roof Tile",
+   "cat": "Materials",
+   "what": "Overlapping tiles shed rain."
+  },
+  "tintedGlass": {
+   "name": "Tinted Glass",
+   "cat": "Materials",
+   "what": "Translucent: lets some light through."
+  },
+  "frostedGlass": {
+   "name": "Frosted Glass",
+   "cat": "Materials",
+   "what": "Lets light through but blurs what is behind it."
+  },
+  "glassPane": {
+   "name": "Glass Pane",
+   "cat": "Materials",
+   "what": "A thin sheet of glass."
+  },
+  "quartzCrystal": {
+   "name": "Quartz Crystal",
+   "cat": "Blocks",
+   "what": "A cluster of quartz crystals."
+  },
+  "overflowBox": {
+   "name": "Overflow Box",
+   "cat": "Places",
+   "what": "Holds what did not fit. Take-only, never deleted."
+  },
+  "bronzePlaque": {
+   "name": "Bronze Plaque",
+   "cat": "Blocks",
+   "what": "A plaque cast in bronze."
+  },
+  "granite": {
+   "name": "Granite",
+   "cat": "Ores & Rocks",
+   "what": "Speckled rock made from slowly cooled magma."
+  },
+  "redSoil": {
+   "name": "Red Soil",
+   "cat": "Ores & Rocks",
+   "what": "Soil weathered for a long time in a warm, wet climate."
+  },
+  "birchLog": {
+   "name": "Birch-like Log",
+   "cat": "Plants & Critters",
+   "what": "A tree with pale bark."
+  },
+  "birchLeaves": {
+   "name": "Birch-like Leaves",
+   "cat": "Plants & Critters",
+   "what": "Light green leaves."
+  },
+  "spruceLog": {
+   "name": "Spruce-like Log",
+   "cat": "Plants & Critters",
+   "what": "A tree that keeps its needles all winter."
+  },
+  "spruceLeaves": {
+   "name": "Spruce-like Needles",
+   "cat": "Plants & Critters",
+   "what": "Needle leaves that shed snow."
+  },
+  "flowerBushPink": {
+   "name": "Flowers (pink)",
+   "cat": "Plants & Critters",
+   "what": "Flowers feed bees and butterflies."
+  },
+  "flowerBushYellow": {
+   "name": "Flowers (yellow)",
+   "cat": "Plants & Critters",
+   "what": "Flowers feed bees and butterflies."
+  },
+  "seaWater": {
+   "name": "Sea Water",
+   "cat": "Places",
+   "what": "Still seawater. A Salt Pan beside it makes salt."
+  },
+  "hayBale": {
+   "name": "Hay Bale",
+   "cat": "Blocks",
+   "what": "Dried grass pressed into a bale, used to feed animals."
+  },
+  "gourds": {
+   "name": "Gourds",
+   "cat": "Blocks",
+   "what": "Gourds are cousins of pumpkins and squash, in many shapes."
+  },
+  "scarecrow": {
+   "name": "Scarecrow",
+   "cat": "Blocks",
+   "what": "A straw figure farmers use to keep birds off crops."
+  },
+  "batsDeco": {
+   "name": "Bat Garland",
+   "cat": "Blocks",
+   "what": "Paper bats. Real bats eat lots of insects at night."
+  },
+  "carvedPumpkin": {
+   "name": "Carved Pumpkin",
+   "cat": "Blocks",
+   "what": "A pumpkin with a face you carved yourself. An LED inside makes it glow."
+  },
+  "spookySign": {
+   "name": "Spooky Sign",
+   "cat": "Blocks",
+   "what": "A friendly gravestone-style sign. Write a silly message on it."
+  },
+  "harvestLantern": {
+   "name": "Harvest Lantern",
+   "cat": "Blocks",
+   "what": "A hanging lantern with an LED glow, never a flame."
+  },
+  "chair": {
+   "name": "Chair",
+   "cat": "Blocks",
+   "what": "A seat for a table. Use it to sit; move to get up."
+  },
+  "stool": {
+   "name": "Stool",
+   "cat": "Blocks",
+   "what": "A seat with no back. Use it to sit; move to get up."
+  },
+  "bench": {
+   "name": "Bench",
+   "cat": "Blocks",
+   "what": "A long seat for 2. Use it to sit; move to get up."
+  },
+  "table": {
+   "name": "Table",
+   "cat": "Blocks",
+   "what": "A table. Put chairs, stools or a bench next to it."
+  },
+  "winterLights": {
+   "name": "Winter Lights",
+   "cat": "Blocks",
+   "what": "LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes."
+  },
+  "wreath": {
+   "name": "Wreath",
+   "cat": "Blocks",
+   "what": "A ring of evergreen branches."
+  },
+  "giftBox": {
+   "name": "Gift Box Deco",
+   "cat": "Blocks",
+   "what": "A wrapped box for decoration. It holds nothing."
+  },
+  "snowPal": {
+   "name": "Snow Pal",
+   "cat": "Blocks",
+   "what": "A friendly snow figure. It never melts here."
+  },
+  "ornamentTile": {
+   "name": "Ornament Tile",
+   "cat": "Blocks",
+   "what": "A tile with shiny round ornaments."
+  },
+  "stripeBlock": {
+   "name": "Peppermint Stripe Block",
+   "cat": "Blocks",
+   "what": "A red and white striped block."
+  },
+  "woodTool": {
+   "name": "Wood Pick",
+   "cat": "Items & Machines",
+   "what": "Mines every block 2x faster than a hand. Never wears out."
+  },
+  "stoneTool": {
+   "name": "Stone Pick",
+   "cat": "Items & Machines",
+   "what": "Mines 3x faster than a hand."
+  },
+  "copperPick": {
+   "name": "Copper Pick",
+   "cat": "Items & Machines",
+   "what": "Mines 4x faster than a hand."
+  },
+  "steelPick": {
+   "name": "Steel Pick",
+   "cat": "Items & Machines",
+   "what": "Mines 6x faster than a hand."
+  },
+  "stick": {
+   "name": "Stick",
+   "cat": "Materials",
+   "what": "2 Planks make 4 Sticks."
+  },
+  "pan": {
+   "name": "Pan",
+   "cat": "Items & Machines",
+   "what": "A wooden pan. Swirl river gravel to find heavy gold flakes."
+  },
+  "bucket": {
+   "name": "Bucket",
+   "cat": "Items & Machines",
+   "what": "Scoops 1 block of still water."
+  },
+  "waterBucket": {
+   "name": "Water Bucket",
+   "cat": "Items & Machines",
+   "what": "Places 1 block of still water."
+  },
+  "berry": {
+   "name": "Berry",
+   "cat": "Plants & Critters",
+   "what": "A small fruit. Leaves sometimes drop one."
+  },
+  "flour": {
+   "name": "Flour",
+   "cat": "Materials",
+   "what": "Ground wheat seeds."
+  },
+  "sugar": {
+   "name": "Sugar",
+   "cat": "Materials",
+   "what": "Sweet crystals from plant juice."
+  },
+  "cupcake": {
+   "name": "Cupcake",
+   "cat": "Materials",
+   "what": "Flour, sugar and berries, baked."
+  },
+  "bread": {
+   "name": "Bread",
+   "cat": "Materials",
+   "what": "Baked flour."
+  },
+  "paintDab": {
+   "name": "Paint dab",
+   "cat": "Materials",
+   "what": "People made the first paints from plants and berries. The color comes from pigments."
+  },
+  "corn": {
+   "name": "Corn",
+   "cat": "Plants & Critters",
+   "what": "Corn kernels. Cook 2 in the Oven for Bioplastic."
+  },
+  "cornSeed": {
+   "name": "Corn Seed",
+   "cat": "Plants & Critters",
+   "what": "Plant it on Dirt or Grass."
+  },
+  "bioplastic": {
+   "name": "Bioplastic",
+   "cat": "Materials",
+   "what": "Some plastics are made from plants, like corn."
+  },
+  "plasticTube": {
+   "name": "Plastic Tube",
+   "cat": "Materials",
+   "what": "A clear tube for glow sticks and machines."
+  },
+  "glowMix": {
+   "name": "Glow Mix",
+   "cat": "Materials",
+   "what": "The two chemicals of a glow stick, ready to react."
+  },
+  "boosterDye": {
+   "name": "Booster Dye",
+   "cat": "Materials",
+   "what": "Takes the reaction energy and glows. The dye picks the color."
+  },
+  "glassVial": {
+   "name": "Glass Vial",
+   "cat": "Materials",
+   "what": "A small glass bottle. 1 Glass makes 2."
+  },
+  "rawCopper": {
+   "name": "Raw Copper",
+   "cat": "Ores & Rocks",
+   "what": "Copper straight from the rock. Smelt it into an ingot."
+  },
+  "copperDust": {
+   "name": "Copper dust",
+   "cat": "Materials",
+   "what": "Crushed copper. 1 Raw Copper makes 2."
+  },
+  "copperIngot": {
+   "name": "Copper Ingot",
+   "cat": "Materials",
+   "what": "Smelted copper. 1 makes 4 Copper Wire."
+  },
+  "copperWire": {
+   "name": "Copper Wire",
+   "cat": "Materials",
+   "what": "Thin copper that carries electricity."
+  },
+  "ironIngot": {
+   "name": "Iron Ingot",
+   "cat": "Materials",
+   "what": "Smelted iron, ready to become steel."
+  },
+  "steel": {
+   "name": "Steel",
+   "cat": "Materials",
+   "what": "Iron with a little carbon. Springs back until pushed too far."
+  },
+  "zincIngot": {
+   "name": "Zinc Ingot",
+   "cat": "Materials",
+   "what": "Smelted zinc."
+  },
+  "tinIngot": {
+   "name": "Tin Ingot",
+   "cat": "Materials",
+   "what": "Smelted tin."
+  },
+  "bronzeIngot": {
+   "name": "Bronze Ingot",
+   "cat": "Materials",
+   "what": "About 9 parts copper to 1 part tin, like real tin bronze."
+  },
+  "silverIngot": {
+   "name": "Silver Ingot",
+   "cat": "Materials",
+   "what": "Smelted silver."
+  },
+  "goldFlake": {
+   "name": "Gold Flake",
+   "cat": "Ores & Rocks",
+   "what": "A tiny flake from a river. 9 make a Gold Nugget."
+  },
+  "goldNugget": {
+   "name": "Gold Nugget",
+   "cat": "Ores & Rocks",
+   "what": "A lump of gold."
+  },
+  "goldIngot": {
+   "name": "Gold Ingot",
+   "cat": "Materials",
+   "what": "Smelted gold."
+  },
+  "goldLeaf": {
+   "name": "Gold Leaf",
+   "cat": "Materials",
+   "what": "Gold beaten very thin. 1 Ingot makes 16."
+  },
+  "quartz": {
+   "name": "Quartz",
+   "cat": "Ores & Rocks",
+   "what": "A silica crystal."
+  },
+  "silicon": {
+   "name": "Silicon",
+   "cat": "Materials",
+   "what": "Sand and quartz are silica. Heating them with carbon pulls out silicon."
+  },
+  "logicChip": {
+   "name": "Logic Chip",
+   "cat": "Materials",
+   "what": "A tiny silicon circuit."
+  },
+  "batteryCell": {
+   "name": "Battery Cell",
+   "cat": "Materials",
+   "what": "Copper and zinc make a battery cell."
+  },
+  "spring": {
+   "name": "Spring",
+   "cat": "Materials",
+   "what": "Steel coiled so it springs back."
+  },
+  "wireRope": {
+   "name": "Wire Rope",
+   "cat": "Materials",
+   "what": "Steel wires twisted together. Pull-only, very strong."
+  },
+  "steelBeam": {
+   "name": "Steel Beam",
+   "cat": "Materials",
+   "what": "An I-shaped steel beam."
+  },
+  "timberBeam": {
+   "name": "Timber Beam",
+   "cat": "Materials",
+   "what": "A wooden beam. 2 Planks make 1."
+  },
+  "cotton": {
+   "name": "Cotton",
+   "cat": "Plants & Critters",
+   "what": "Plant fiber. 3 make 1 Cloth."
+  },
+  "cottonSeed": {
+   "name": "Cotton Seed",
+   "cat": "Plants & Critters",
+   "what": "Plant it on Dirt or Grass."
+  },
+  "cloth": {
+   "name": "Cloth",
+   "cat": "Materials",
+   "what": "Woven cotton."
+  },
+  "salt": {
+   "name": "Salt",
+   "cat": "Materials",
+   "what": "Sodium chloride: the salt on food."
+  },
+  "platinumGrain": {
+   "name": "Platinum Grain",
+   "cat": "Ores & Rocks",
+   "what": "A grain of platinum from an Emberdeep river."
+  },
+  "platinumNugget": {
+   "name": "Platinum Nugget",
+   "cat": "Ores & Rocks",
+   "what": "A lump of platinum."
+  },
+  "platinumIngot": {
+   "name": "Platinum Ingot",
+   "cat": "Materials",
+   "what": "Platinum melts at 1,768 C, so it needs the Embercore upgrade."
+  },
+  "alumina": {
+   "name": "Alumina",
+   "cat": "Materials",
+   "what": "White powder from bauxite. It needs lots of electricity to become aluminum."
+  },
+  "aluminumIngot": {
+   "name": "Aluminum Ingot",
+   "cat": "Materials",
+   "what": "Light metal. Common, but it costs lots of electricity."
+  },
+  "aluminumBeam": {
+   "name": "Aluminum Beam",
+   "cat": "Materials",
+   "what": "About the same job as steel at about a third of the weight."
+  },
+  "titaniumDioxide": {
+   "name": "Titanium Dioxide",
+   "cat": "Materials",
+   "what": "White powder refined from black sand."
+  },
+  "titaniumIngot": {
+   "name": "Titanium Ingot",
+   "cat": "Materials",
+   "what": "Titanium is not rare. It is hard to refine."
+  },
+  "graphite": {
+   "name": "Graphite",
+   "cat": "Ores & Rocks",
+   "what": "Soft carbon flakes."
+  },
+  "rhodiumSpeck": {
+   "name": "Rhodium Speck",
+   "cat": "Ores & Rocks",
+   "what": "A very rare metal. It never tarnishes."
+  },
+  "iridiumSpeck": {
+   "name": "Iridium Speck",
+   "cat": "Ores & Rocks",
+   "what": "The legendary find. Iridium is one of the two densest elements."
+  },
+  "paintBrush": {
+   "name": "Paint Brush",
+   "cat": "Items & Machines",
+   "what": "Free colors, looks only."
+  },
+  "satchel": {
+   "name": "Satchel",
+   "cat": "Items & Machines",
+   "what": "+6 slots."
+  },
+  "backpack": {
+   "name": "Backpack",
+   "cat": "Items & Machines",
+   "what": "+12 slots."
+  },
+  "expeditionPack": {
+   "name": "Expedition Pack",
+   "cat": "Items & Machines",
+   "what": "+18 slots. Max carry 33."
+  },
+  "fob": {
+   "name": "Fob",
+   "cat": "Items & Machines",
+   "what": "The fob sends a radio signal; the bot follows the strongest signal."
+  },
+  "botH1": {
+   "name": "Berty's Bot H1",
+   "cat": "Items & Machines",
+   "what": "A little bot that follows you and carries your stuff."
+  },
+  "driveS": {
+   "name": "Drive S",
+   "cat": "Items & Machines",
+   "what": "8 kinds, 512 items."
+  },
+  "driveM": {
+   "name": "Drive M",
+   "cat": "Items & Machines",
+   "what": "32 kinds, 2,048 items."
+  },
+  "driveL": {
+   "name": "Drive L",
+   "cat": "Items & Machines",
+   "what": "64 kinds, 8,192 items."
+  },
+  "deliveryDrone": {
+   "name": "Delivery Drone",
+   "cat": "Items & Machines",
+   "what": "Slow, cheap and visible. Carries 4 stacks."
+  },
+  "petRock": {
+   "name": "Pet Rock",
+   "cat": "Plants & Critters",
+   "what": "A rock has no motor. That is why it is so slow."
+  },
+  "gravityHat": {
+   "name": "Gravity Hat",
+   "cat": "Items & Machines",
+   "what": "Gravity pulls everything down. The hat pushes back a little, for a little while."
+  },
+  "musicDisc": {
+   "name": "Music Disc",
+   "cat": "Items & Machines",
+   "what": "Plays a song in a Jukebox."
+  },
+  "warpKey": {
+   "name": "Warp Key",
+   "cat": "Effects",
+   "what": "Warps you to your own Warp Pad."
+  },
+  "bandage": {
+   "name": "Bandage",
+   "cat": "Effects",
+   "what": "Basic first aid."
+  },
+  "herbTonic": {
+   "name": "Herb Tonic",
+   "cat": "Effects",
+   "what": "A plant drink for resting up."
+  },
+  "medKit": {
+   "name": "Med Kit",
+   "cat": "Effects",
+   "what": "First aid for you and your crew."
+  },
+  "whistleBell": {
+   "name": "Whistle Bell",
+   "cat": "Effects",
+   "what": "Calls your Pet Rock and Bot."
+  },
+  "critterJar": {
+   "name": "Critter Jar",
+   "cat": "Effects",
+   "what": "Releases friendly critters for a while."
+  },
+  "morphVial": {
+   "name": "Morph Vial",
+   "cat": "Effects",
+   "what": "Mimicry: copy the look of a block or critter."
+  },
+  "camoCloak": {
+   "name": "Camo Cloak",
+   "cat": "Effects",
+   "what": "Camouflage: match the background."
+  },
+  "magnetWand": {
+   "name": "Magnet Wand",
+   "cat": "Effects",
+   "what": "Magnets pull iron and steel."
+  },
+  "lightWand": {
+   "name": "Light Wand",
+   "cat": "Effects",
+   "what": "A floating light orb."
+  },
+  "fizzVial": {
+   "name": "Fizz Vial",
+   "cat": "Effects",
+   "what": "A gas plus a liquid makes foam."
+  },
+  "frostVial": {
+   "name": "Frost Vial",
+   "cat": "Effects",
+   "what": "Freezes still water so you can walk on it."
+  },
+  "sparkRod": {
+   "name": "Spark Rod",
+   "cat": "Effects",
+   "what": "Remote-powers your own circuit for a few seconds."
+  },
+  "blueprintScroll": {
+   "name": "Blueprint Scroll",
+   "cat": "Items & Machines",
+   "what": "Read it at the Drafting Table to unlock a material."
+  },
+  "cogCopper": {
+   "name": "Copper Cog",
+   "cat": "Items & Machines",
+   "what": "The everyday coin."
+  },
+  "cogSilver": {
+   "name": "Silver Cog",
+   "cat": "Items & Machines",
+   "what": "A rarer coin."
+  },
+  "cogGold": {
+   "name": "Gold Cog",
+   "cat": "Items & Machines",
+   "what": "A rare coin."
+  },
+  "cogPlatinum": {
+   "name": "Platinum Cog",
+   "cat": "Items & Machines",
+   "what": "A very rare coin."
+  },
+  "cogIridium": {
+   "name": "Iridium Cog",
+   "cat": "Items & Machines",
+   "what": "The legendary coin."
+  },
+  "flower": {
+   "name": "Flower",
+   "cat": "Plants & Critters",
+   "what": "1 Flower makes 2 Paint dabs."
+  },
+  "apple": {
+   "name": "Apple",
+   "cat": "Plants & Critters",
+   "what": "A harvest fruit."
+  },
+  "carvingTool": {
+   "name": "Carving Tool",
+   "cat": "Items & Machines",
+   "what": "A safe scoop-and-saw for pumpkins. Use it on a Pumpkin to carve a face."
+  }
+ }
+}

@@ -1,0 +1,6804 @@
+{
+ "format": "bertopia-registry",
+ "v": 1,
+ "liveIds": "1-31 frozen (2.5.42)",
+ "blocks": [
+  {
+   "id": 1,
+   "key": "grass",
+   "name": {
+    "en": "Grass"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 0
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 1
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 2
+    }
+   },
+   "handS": 0.6,
+   "breakable": true,
+   "drop": "grass",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Grass on top of soil. Break it and you get Dirt.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 2,
+   "key": "dirt",
+   "name": {
+    "en": "Dirt"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 2
+    }
+   },
+   "handS": 0.6,
+   "breakable": true,
+   "drop": "dirt",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Soil: tiny bits of rock mixed with old plant matter.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 3,
+   "key": "stone",
+   "name": {
+    "en": "Stone"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 3
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "stone",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Plain rock. Most of the underground is stone.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 4,
+   "key": "slate",
+   "name": {
+    "en": "Slate"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 4
+    }
+   },
+   "handS": 3.5,
+   "breakable": true,
+   "drop": "slate",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A dark rock that splits into flat sheets.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 5,
+   "key": "coal",
+   "name": {
+    "en": "Coal Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 5
+    }
+   },
+   "handS": 3.5,
+   "breakable": true,
+   "drop": "coal",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Coal formed from plants buried and squeezed for millions of years. It is fuel.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 6,
+   "key": "sand",
+   "name": {
+    "en": "Sand"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 6
+    }
+   },
+   "handS": 0.5,
+   "breakable": true,
+   "drop": "sand",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 7,
+   "key": "gravel",
+   "name": {
+    "en": "Gravel"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 7
+    }
+   },
+   "handS": 0.7,
+   "breakable": true,
+   "drop": "gravel",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Small rounded stones, often found in river beds.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 8,
+   "key": "brickRed",
+   "name": {
+    "en": "Red Brick"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 8
+    }
+   },
+   "handS": 4.0,
+   "breakable": true,
+   "drop": "brickRed",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Baked clay bricks. Strong when you push on them.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 9,
+   "key": "brickGrey",
+   "name": {
+    "en": "Grey Brick"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 9
+    }
+   },
+   "handS": 4.0,
+   "breakable": true,
+   "drop": "brickGrey",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Stone cut into bricks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 10,
+   "key": "planks",
+   "name": {
+    "en": "Planks"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": 1.5,
+   "breakable": true,
+   "drop": "planks",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Boards sawn from a log. 1 Log makes 4.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 11,
+   "key": "log",
+   "name": {
+    "en": "Log"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 11
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 12
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 11
+    }
+   },
+   "handS": 2.0,
+   "breakable": true,
+   "drop": "log",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A piece of tree trunk. The rings show its age.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 12,
+   "key": "leaves",
+   "name": {
+    "en": "Leaves"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 13
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "leaves",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Leaves make food for the tree from sunlight. Sometimes a Berry falls out.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 13,
+   "key": "woolBlue",
+   "name": {
+    "en": "Blue Cloth Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 14
+    }
+   },
+   "handS": 0.8,
+   "breakable": true,
+   "drop": "woolBlue",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A soft block of dyed cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 14,
+   "key": "woolGreen",
+   "name": {
+    "en": "Green Cloth Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 15
+    }
+   },
+   "handS": 0.8,
+   "breakable": true,
+   "drop": "woolGreen",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A soft block of dyed cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 15,
+   "key": "woolRed",
+   "name": {
+    "en": "Red Cloth Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 16
+    }
+   },
+   "handS": 0.8,
+   "breakable": true,
+   "drop": "woolRed",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A soft block of dyed cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 16,
+   "key": "woolTan",
+   "name": {
+    "en": "Tan Cloth Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 17
+    }
+   },
+   "handS": 0.8,
+   "breakable": true,
+   "drop": "woolTan",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A soft block of undyed cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 17,
+   "key": "snow",
+   "name": {
+    "en": "Snow"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 18
+    }
+   },
+   "handS": 0.3,
+   "breakable": true,
+   "drop": "snow",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Frozen water crystals. Lands soft.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 18,
+   "key": "ice",
+   "name": {
+    "en": "Ice"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 19
+    }
+   },
+   "handS": 0.5,
+   "breakable": true,
+   "drop": "ice",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Frozen water. In Bertopia it does not slide.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 19,
+   "key": "redSand",
+   "name": {
+    "en": "Red Sand"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 20
+    }
+   },
+   "handS": 0.5,
+   "breakable": true,
+   "drop": "redSand",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Sand stained red by iron. Bake it for Red Brick.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 20,
+   "key": "glass",
+   "name": {
+    "en": "Glass"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 1
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "glass",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Sand melted and cooled until you can see through it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 21,
+   "key": "coreplate",
+   "name": {
+    "en": "Coreplate"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 21
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "coreplate",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "The floor of the world at y -64. It never breaks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 22,
+   "key": "workbench",
+   "name": {
+    "en": "Workbench"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 22
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 23
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "workbench",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A table for making things from wood, cloth and stone.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 23,
+   "key": "oven",
+   "name": {
+    "en": "Oven"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 24
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 25
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 26
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "oven",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Bakes food and turns sand into glass.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 24,
+   "key": "vend",
+   "name": {
+    "en": "Vending Counter"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 27
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "vend",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Sells your goods to townsfolk while you play.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 25,
+   "key": "storeCounter",
+   "name": {
+    "en": "Store Counter"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 30
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 10
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 31
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "storeCounter",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "The town store. Restock things you have already found.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 26,
+   "key": "bunk",
+   "name": {
+    "en": "Bunk"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 32
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 33
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "bunk",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Tap it to set your home spot.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 27,
+   "key": "box",
+   "name": {
+    "en": "Box"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 34
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 35
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 36
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "box",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Holds 18 stacks. Two side by side make a Double Box.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 28,
+   "key": "wheat",
+   "name": {
+    "en": "Wheat"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 2
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "wheat",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A grass whose seeds are ground into flour.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 29,
+   "key": "reed",
+   "name": {
+    "en": "Reed"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 3
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "reed",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A tall plant that grows by water. Here it gives sugar.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 30,
+   "key": "door",
+   "name": {
+    "en": "Wood Door"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 4
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 5
+    }
+   },
+   "handS": 1.5,
+   "breakable": true,
+   "drop": "door",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A door made from 6 Planks. Tap to open.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 31,
+   "key": "doorOpen",
+   "name": {
+    "en": "Wood Door (open)"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 4
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 5
+    }
+   },
+   "handS": 1.5,
+   "breakable": true,
+   "drop": "doorOpen",
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "An open wood door.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 32,
+   "key": "doorGlass",
+   "name": {
+    "en": "Glass Door"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 6
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 7
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorGlass",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A door with glass panes. Tap to open.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 33,
+   "key": "doorGlassOpen",
+   "name": {
+    "en": "Glass Door (open)"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 6
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 7
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorGlassOpen",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "An open glass door.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 34,
+   "key": "doorMetal",
+   "name": {
+    "en": "Metal Door"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 8
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 9
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorMetal",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A steel door. Only a button, lever or power opens it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 35,
+   "key": "doorMetalOpen",
+   "name": {
+    "en": "Metal Door (open)"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 8
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 9
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorMetalOpen",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "An open metal door.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 36,
+   "key": "doorSliding",
+   "name": {
+    "en": "Sliding Lab Door"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 10
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 11
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorSliding",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Slides open when powered and someone walks up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 37,
+   "key": "doorSlidingOpen",
+   "name": {
+    "en": "Sliding Lab Door (open)"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 10
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 11
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "doorSlidingOpen",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "An open sliding door.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 38,
+   "key": "lever",
+   "name": {
+    "en": "Lever"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:lever"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "lever",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Flip it to turn a circuit on or off.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 39,
+   "key": "leverOn",
+   "name": {
+    "en": "Lever (on)"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:leverOn"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "leverOn",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A lever switched on.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 40,
+   "key": "pushButton",
+   "name": {
+    "en": "Push Button"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:pushButton"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "pushButton",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Press it for 1.5 seconds of power.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 41,
+   "key": "pushButtonOn",
+   "name": {
+    "en": "Push Button (on)"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:pushButtonOn"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "pushButtonOn",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A pressed button.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 42,
+   "key": "smelter",
+   "name": {
+    "en": "Smelter"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 37
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 38
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 39
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "smelter",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Melts ore into metal. Its Forge tab shapes the metal.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 43,
+   "key": "fabricator",
+   "name": {
+    "en": "Fabricator"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 40
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "fabricator",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Builds anything with a battery, silicon or a chip. Runs on charge.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 44,
+   "key": "ironOre",
+   "name": {
+    "en": "Iron Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 41
+    }
+   },
+   "handS": 5.0,
+   "breakable": true,
+   "drop": "ironOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Rusty rock full of iron. Most metal people use is iron.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 45,
+   "key": "copperOre",
+   "name": {
+    "en": "Copper Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 42
+    }
+   },
+   "handS": 4.5,
+   "breakable": true,
+   "drop": "copperOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Rock with copper in it. Copper carries electricity, so wires use it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 46,
+   "key": "zincOre",
+   "name": {
+    "en": "Zinc Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 43
+    }
+   },
+   "handS": 4.5,
+   "breakable": true,
+   "drop": "zincOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Rock with zinc. Zinc coats steel so it does not rust.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 47,
+   "key": "lantern",
+   "name": {
+    "en": "LED Lantern"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:lantern"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "lantern",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A battery light. Tap for Low, Medium or High.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 48,
+   "key": "charger",
+   "name": {
+    "en": "Charger"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:charger"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "charger",
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Like a wall outlet: it always gives power.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 49,
+   "key": "glowPebble",
+   "name": {
+    "en": "Glow Pebble"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:glowPebble"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "glowPebble",
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A tiny glow. A little chemical makes a short light.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 50,
+   "key": "glowStick",
+   "name": {
+    "en": "Glow Stick"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:glowStick"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "glowStick",
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A chemical light. Once it is used up, it is done.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 51,
+   "key": "jumboGlow",
+   "name": {
+    "en": "Jumbo Glow"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:jumboGlow"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "jumboGlow",
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A big glow stick. A dye takes the energy and picks the color.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 52,
+   "key": "coldGlowVial",
+   "name": {
+    "en": "Cold Glow Vial"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:coldGlowVial"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "coldGlowVial",
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Cold slows the reaction, so it glows longer.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 53,
+   "key": "glowMoss",
+   "name": {
+    "en": "Glow Moss"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 44
+    }
+   },
+   "handS": 0.3,
+   "breakable": true,
+   "drop": "glowMoss",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 54,
+   "key": "cornPlant",
+   "name": {
+    "en": "Corn Bush"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 12
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "cornPlant",
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Corn is a grain. Some plastics are made from corn.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 55,
+   "key": "solarPanel",
+   "name": {
+    "en": "Solar Panel"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 13
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "solarPanel",
+   "stack": 64,
+   "milestone": "basics-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Turns sunlight into power. Its cell runs 2 strips through the night.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 56,
+   "key": "glowStrip",
+   "name": {
+    "en": "LED Glow Strip"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 15
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "glowStrip",
+   "stack": 64,
+   "milestone": "basics-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A thin light that uses 1 charge a minute.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 57,
+   "key": "copperWireBlock",
+   "name": {
+    "en": "Copper Wire"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 16
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "copperWireBlock",
+   "stack": 64,
+   "milestone": "basics-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Carries power from makers to users. Glows teal when powered.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 58,
+   "key": "water",
+   "name": {
+    "en": "Water"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 17
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "water",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "In Bertopia water stays still and never floods a build.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 59,
+   "key": "tinOre",
+   "name": {
+    "en": "Tin Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 45
+    }
+   },
+   "handS": 4.5,
+   "breakable": true,
+   "drop": "tinOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 60,
+   "key": "quartzOre",
+   "name": {
+    "en": "Quartz Vein"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 46
+    }
+   },
+   "handS": 4.5,
+   "breakable": true,
+   "drop": "quartzOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "White crystals of silica, the same stuff as most sand.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 61,
+   "key": "quartzSand",
+   "name": {
+    "en": "Quartz Sand"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 47
+    }
+   },
+   "handS": 0.5,
+   "breakable": true,
+   "drop": "quartzSand",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Dune sand with quartz grains you can collect.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 62,
+   "key": "clay",
+   "name": {
+    "en": "Clay"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 48
+    }
+   },
+   "handS": 0.7,
+   "breakable": true,
+   "drop": "clay",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Soft, sticky earth found by water. Bake it into Brick.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 63,
+   "key": "boundaryClay",
+   "name": {
+    "en": "Boundary Clay"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 49
+    }
+   },
+   "handS": 0.7,
+   "breakable": true,
+   "drop": "boundaryClay",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "A thin layer laid down all over Earth after a giant asteroid hit.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 64,
+   "key": "silverOre",
+   "name": {
+    "en": "Silver Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 50
+    }
+   },
+   "handS": 6.0,
+   "breakable": true,
+   "drop": "silverOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Silver reflects light better than any other metal.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 65,
+   "key": "goldOre",
+   "name": {
+    "en": "Gold Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 51
+    }
+   },
+   "handS": 7.0,
+   "breakable": true,
+   "drop": "goldOre",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Gold hides in quartz veins deep in hard rock.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 66,
+   "key": "graphiteOre",
+   "name": {
+    "en": "Graphite"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 52
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "graphiteOre",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Soft, shiny carbon made when heat and pressure changed old rock.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 67,
+   "key": "pannedGravel",
+   "name": {
+    "en": "Panned Gravel"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 53
+    }
+   },
+   "handS": 0.7,
+   "breakable": true,
+   "drop": "pannedGravel",
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Gravel you already panned. It has nothing left to find.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 68,
+   "key": "molten",
+   "name": {
+    "en": "Molten Metal"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 18
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "molten",
+   "stack": 64,
+   "milestone": "later",
+   "availableFrom": "later",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "Metal so hot it flows. Here it bounces you back to safety.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 69,
+   "key": "saltCrust",
+   "name": {
+    "en": "Salt Crust"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 54
+    }
+   },
+   "handS": 0.8,
+   "breakable": true,
+   "drop": "saltCrust",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Salt left behind where an old lake dried up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 70,
+   "key": "blackSand",
+   "name": {
+    "en": "Black Sand"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 55
+    }
+   },
+   "handS": 0.5,
+   "breakable": true,
+   "drop": "blackSand",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Beach sand full of heavy titanium minerals.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 71,
+   "key": "bauxite",
+   "name": {
+    "en": "Bauxite"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 56
+    }
+   },
+   "handS": 1.0,
+   "breakable": true,
+   "drop": "bauxite",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Red-brown earth rich in aluminum. It forms where rock weathers in warm, wet places.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 72,
+   "key": "ilmeniteOre",
+   "name": {
+    "en": "Ilmenite Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 57
+    }
+   },
+   "handS": 6.0,
+   "breakable": true,
+   "drop": "ilmeniteOre",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A heavy black mineral that holds titanium.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 73,
+   "key": "platinumOre",
+   "name": {
+    "en": "Platinum Ore"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 58
+    }
+   },
+   "handS": 9.0,
+   "breakable": true,
+   "drop": "platinumOre",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "One of the rarest metals in the crust. Only deep under Emberdeep.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 74,
+   "key": "basalt",
+   "name": {
+    "en": "Basalt"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 59
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "basalt",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Dark rock made when lava cools.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 75,
+   "key": "snowGrass",
+   "name": {
+    "en": "Snowy Grass"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 18
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 60
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 2
+    }
+   },
+   "handS": 0.6,
+   "breakable": true,
+   "drop": "snowGrass",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Soil with a cap of snow.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 76,
+   "key": "cottonBush",
+   "name": {
+    "en": "Cotton Bush"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 19
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "cottonBush",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Cotton fluff is plant fiber. 3 Cotton spin into 1 Cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 77,
+   "key": "flowerBush",
+   "name": {
+    "en": "Flowers"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 20
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "flowerBush",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Flowers feed bees and butterflies. 1 Flower makes 2 Paint dabs.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 78,
+   "key": "saltPan",
+   "name": {
+    "en": "Salt Pan"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:saltPan"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "saltPan",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Sun dries seawater. The salt stays behind.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 79,
+   "key": "wallShelf",
+   "name": {
+    "en": "Wall Shelf"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:wallShelf"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "wallShelf",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Holds 3 things and shows all 3.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 80,
+   "key": "shelf",
+   "name": {
+    "en": "Shelf"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:shelf"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "shelf",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Holds 4 things and shows all 4.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 81,
+   "key": "sideTable",
+   "name": {
+    "en": "Side Table"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:sideTable"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "sideTable",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A table with 1 drawer: 6 slots.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 82,
+   "key": "desk",
+   "name": {
+    "en": "Desk"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:desk"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "desk",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "2 drawers, 12 slots, 1 thing on top.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 83,
+   "key": "cabinet",
+   "name": {
+    "en": "Cabinet"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 61
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 10
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "cabinet",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "24 slots behind a door you can lock.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 84,
+   "key": "glassCabinet",
+   "name": {
+    "en": "Glass Cabinet"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 62
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 10
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "glassCabinet",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "24 slots, lockable, shows its top 4 things.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 85,
+   "key": "steelLocker",
+   "name": {
+    "en": "Steel Locker"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 63
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 64
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 64
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "steelLocker",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "36 slots in steel, lockable.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 86,
+   "key": "sign",
+   "name": {
+    "en": "Sign"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:sign"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "sign",
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A label for a Box or a path.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 87,
+   "key": "itemTube",
+   "name": {
+    "en": "Item Tube"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:itemTube"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "itemTube",
+   "stack": 64,
+   "milestone": "storage-4",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A clear tube that moves items 2 blocks a second.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 88,
+   "key": "poweredTube",
+   "name": {
+    "en": "Powered Tube"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:poweredTube"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "poweredTube",
+   "stack": 64,
+   "milestone": "storage-4",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A tube with copper rings: 6 blocks a second.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 89,
+   "key": "filterTube",
+   "name": {
+    "en": "Filter Tube"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:filterTube"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "filterTube",
+   "stack": 64,
+   "milestone": "storage-4",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Only lets in items that match its rule.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 90,
+   "key": "extractor",
+   "name": {
+    "en": "Extractor"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:extractor"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "extractor",
+   "stack": 64,
+   "milestone": "storage-4",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Pulls a stack out of storage every 2 seconds.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 91,
+   "key": "sorter",
+   "name": {
+    "en": "Sorter"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 65
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 66
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 66
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "sorter",
+   "stack": 64,
+   "milestone": "storage-4",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Sends items down up to 4 outputs by rule.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 92,
+   "key": "networkCable",
+   "name": {
+    "en": "Network Cable"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:networkCable"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "networkCable",
+   "stack": 64,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Links storage into one network.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 93,
+   "key": "networkCore",
+   "name": {
+    "en": "Network Core"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 67
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "networkCore",
+   "stack": 64,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "The brain of a storage network. 1 per player.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 94,
+   "key": "driveBay",
+   "name": {
+    "en": "Drive Bay"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 68
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "driveBay",
+   "stack": 64,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Holds 4 Drives.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 95,
+   "key": "terminal",
+   "name": {
+    "en": "Terminal"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 69
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "terminal",
+   "stack": 64,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A search engine for your stuff.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 96,
+   "key": "storageLink",
+   "name": {
+    "en": "Storage Link"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:storageLink"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "storageLink",
+   "stack": 64,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Snaps onto a Box so the network can see inside.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 97,
+   "key": "teleportPad",
+   "name": {
+    "en": "Teleport Pad"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:teleportPad"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "teleportPad",
+   "stack": 64,
+   "milestone": "storage-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Sends items (never people) to its partner pad.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 98,
+   "key": "droneDock",
+   "name": {
+    "en": "Drone Dock"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:droneDock"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "droneDock",
+   "stack": 64,
+   "milestone": "storage-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Charges and launches your Delivery Drone.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 99,
+   "key": "batteryBox",
+   "name": {
+    "en": "Battery Box"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 70
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "batteryBox",
+   "stack": 64,
+   "milestone": "storage-6",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Stores 40 charges for the night.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 100,
+   "key": "networkPad",
+   "name": {
+    "en": "Network Pad"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:networkPad"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "networkPad",
+   "stack": 64,
+   "milestone": "storage-6",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A teleport pad that talks to your network.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 101,
+   "key": "bounceBlock",
+   "name": {
+    "en": "Bounce Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 71
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 72
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "bounceBlock",
+   "stack": 64,
+   "milestone": "fun-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A spring pad. It stores energy when you land and gives it back.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 102,
+   "key": "discoFloor",
+   "name": {
+    "en": "Disco Floor"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 73
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 28
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "discoFloor",
+   "stack": 64,
+   "milestone": "fun-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Lights up where you step. Smooth fades, never strobe.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 103,
+   "key": "noteBlock",
+   "name": {
+    "en": "Note Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 74
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 75
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "noteBlock",
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Tap to raise the pitch. The block under it picks the instrument.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 104,
+   "key": "keyboardBlock",
+   "name": {
+    "en": "Keyboard"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:keyboardBlock"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "keyboardBlock",
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "An 8-pad keyboard you can play.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 105,
+   "key": "drumKit",
+   "name": {
+    "en": "Drum Kit"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:drumKit"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "drumKit",
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "An 8-pad drum kit.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 106,
+   "key": "guitar",
+   "name": {
+    "en": "Guitar"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:guitar"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "guitar",
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "An 8-pad guitar.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 107,
+   "key": "jukebox",
+   "name": {
+    "en": "Jukebox"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 76
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 77
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 78
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "jukebox",
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Plays Music Discs, including your own DJ Berty songs.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 108,
+   "key": "pumpkin",
+   "name": {
+    "en": "Pumpkin"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 79
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 80
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 79
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "pumpkin",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A squash that ripens in autumn.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 109,
+   "key": "jackOLantern",
+   "name": {
+    "en": "Jack-o'-Lantern"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 81
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 80
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 79
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "jackOLantern",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A carved pumpkin with an LED inside, never a flame.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 110,
+   "key": "cornStalks",
+   "name": {
+    "en": "Corn Stalks"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 21
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "cornStalks",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Dried corn stalks tied in a bundle.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 111,
+   "key": "leafPile",
+   "name": {
+    "en": "Leaf Pile"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 82
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "leafPile",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Autumn leaves raked into a pile.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 112,
+   "key": "appleCrate",
+   "name": {
+    "en": "Apple Crate"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 83
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 84
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "appleCrate",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A wooden crate of harvest apples.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 113,
+   "key": "ghostLight",
+   "name": {
+    "en": "Friendly Ghost Light"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:ghostLight"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "ghostLight",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A soft smiling ghost-shaped light.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 114,
+   "key": "cobweb",
+   "name": {
+    "en": "Cobweb Deco"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 22
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "cobweb",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A fake cobweb for decoration.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 115,
+   "key": "marigold",
+   "name": {
+    "en": "Marigolds"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 23
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "marigold",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Bright orange flowers used for Dia de los Muertos.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 116,
+   "key": "papelPicado",
+   "name": {
+    "en": "Papel Picado Banner"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 24
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "papelPicado",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Cut-paper banners in bright colors.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 117,
+   "key": "skullPatternTile",
+   "name": {
+    "en": "Sugar-Skull Pattern Tile"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 85
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "skullPatternTile",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A tile with a colorful sugar-skull pattern.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 118,
+   "key": "diyaLight",
+   "name": {
+    "en": "Diya Light"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:diyaLight"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "diyaLight",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A small clay lamp shape with an LED glow, never a flame.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 119,
+   "key": "rangoliTile",
+   "name": {
+    "en": "Rangoli Floor Tile"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 86
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "rangoliTile",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A floor tile with a colorful rangoli pattern.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 120,
+   "key": "stringLights",
+   "name": {
+    "en": "String Lights"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 25
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "stringLights",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A strand of small LED lights.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 121,
+   "key": "labBench",
+   "name": {
+    "en": "Lab Bench"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 87
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 88
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "labBench",
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Where Wonder Lab gadgets and effects are made.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 122,
+   "key": "warpPad",
+   "name": {
+    "en": "Warp Pad"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:warpPad"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "warpPad",
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A player-size pad you can warp to with a Warp Key.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 123,
+   "key": "sleepingBag",
+   "name": {
+    "en": "Sleeping Bag"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:sleepingBag"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "sleepingBag",
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Tap to set where you come back.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 124,
+   "key": "crewBanner",
+   "name": {
+    "en": "Crew Banner"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:crewBanner"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "crewBanner",
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A shared spawn spot for your crew.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 125,
+   "key": "gameZoneFlag",
+   "name": {
+    "en": "Game Zone Flag"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:gameZoneFlag"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "gameZoneFlag",
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Marks a play zone for Hide-and-Seek and mini-games.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 126,
+   "key": "workshopDoor",
+   "name": {
+    "en": "Workshop Door"
+   },
+   "kind": "model",
+   "faces": {
+    "top": {
+     "atlas": "alpha",
+     "i": 26
+    },
+    "bottom": {
+     "atlas": "alpha",
+     "i": 27
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "workshopDoor",
+   "stack": 64,
+   "milestone": "worlds-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "Teacher-flag door to the Build world.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 127,
+   "key": "draftingTable",
+   "name": {
+    "en": "Drafting Table"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 89
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 10
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 10
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "draftingTable",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Read Blueprint Scrolls here to unlock new materials.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 128,
+   "key": "cleanBench",
+   "name": {
+    "en": "Clean Bench"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 90
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 28
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 29
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "cleanBench",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A dust-free bench for the finest materials.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 129,
+   "key": "copperBlock",
+   "name": {
+    "en": "Copper Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 91
+    }
+   },
+   "handS": 5.0,
+   "breakable": true,
+   "drop": "copperBlock",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A solid block of copper.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 130,
+   "key": "steelBlock",
+   "name": {
+    "en": "Steel Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 92
+    }
+   },
+   "handS": 7.5,
+   "breakable": true,
+   "drop": "steelBlock",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A solid block of steel.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 131,
+   "key": "mirror",
+   "name": {
+    "en": "Mirror"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 28
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "mirror",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Polished silver behind glass reflects light.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 132,
+   "key": "dexShelf",
+   "name": {
+    "en": "Dex Shelf"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:dexShelf"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "dexShelf",
+   "stack": 64,
+   "milestone": "world-3",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A trophy for filling half the Bertodex.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 133,
+   "key": "trophyShelf",
+   "name": {
+    "en": "Trophy Shelf"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:trophyShelf"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "trophyShelf",
+   "stack": 64,
+   "milestone": "later",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Shows the trophies you earned.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 134,
+   "key": "bamboo",
+   "name": {
+    "en": "Bamboo Pole"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 93
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 94
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 93
+    }
+   },
+   "handS": 1.0,
+   "breakable": true,
+   "drop": "bamboo",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "A light, hollow grass stem. Strong for its weight.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 135,
+   "key": "plywood",
+   "name": {
+    "en": "Plywood"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 95
+    }
+   },
+   "handS": 1.5,
+   "breakable": true,
+   "drop": "plywood",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Thin wood layers glued with the grain crossing.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 136,
+   "key": "cutStone",
+   "name": {
+    "en": "Cut Stone"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 96
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "cutStone",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Stone cut into neat blocks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 137,
+   "key": "cinderBlock",
+   "name": {
+    "en": "Cinder Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 97
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 98
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 97
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "cinderBlock",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "A hollow concrete block, like real building blocks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 138,
+   "key": "concrete",
+   "name": {
+    "en": "Concrete"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 99
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "concrete",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Strong when pushed, cracks when pulled.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 139,
+   "key": "roofTile",
+   "name": {
+    "en": "Roof Tile"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 100
+    }
+   },
+   "handS": 2.0,
+   "breakable": true,
+   "drop": "roofTile",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Overlapping tiles shed rain.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 140,
+   "key": "tintedGlass",
+   "name": {
+    "en": "Tinted Glass"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 29
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "tintedGlass",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Translucent: lets some light through.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 141,
+   "key": "frostedGlass",
+   "name": {
+    "en": "Frosted Glass"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 30
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "frostedGlass",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "Lets light through but blurs what is behind it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 142,
+   "key": "glassPane",
+   "name": {
+    "en": "Glass Pane"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 31
+    }
+   },
+   "handS": 0.4,
+   "breakable": true,
+   "drop": "glassPane",
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Materials",
+    "what": "A thin sheet of glass.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 143,
+   "key": "quartzCrystal",
+   "name": {
+    "en": "Quartz Crystal"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 32
+    }
+   },
+   "handS": 1.0,
+   "breakable": true,
+   "drop": "quartzCrystal",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A cluster of quartz crystals.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 144,
+   "key": "overflowBox",
+   "name": {
+    "en": "Overflow Box"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 101
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 35
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 36
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "overflowBox",
+   "stack": 64,
+   "milestone": "2.6.0",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "Holds what did not fit. Take-only, never deleted.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 145,
+   "key": "bronzePlaque",
+   "name": {
+    "en": "Bronze Plaque"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 33
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "bronzePlaque",
+   "stack": 64,
+   "milestone": "later",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A plaque cast in bronze.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 146,
+   "key": "granite",
+   "name": {
+    "en": "Granite"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 102
+    }
+   },
+   "handS": 3.0,
+   "breakable": true,
+   "drop": "granite",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Speckled rock made from slowly cooled magma.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 147,
+   "key": "redSoil",
+   "name": {
+    "en": "Red Soil"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 103
+    }
+   },
+   "handS": 0.6,
+   "breakable": true,
+   "drop": "redSoil",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Soil weathered for a long time in a warm, wet climate.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 148,
+   "key": "birchLog",
+   "name": {
+    "en": "Birch-like Log"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 104
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 105
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 104
+    }
+   },
+   "handS": 2.0,
+   "breakable": true,
+   "drop": "birchLog",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A tree with pale bark.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 149,
+   "key": "birchLeaves",
+   "name": {
+    "en": "Birch-like Leaves"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 34
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "birchLeaves",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Light green leaves.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 150,
+   "key": "spruceLog",
+   "name": {
+    "en": "Spruce-like Log"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 106
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 107
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 106
+    }
+   },
+   "handS": 2.0,
+   "breakable": true,
+   "drop": "spruceLog",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A tree that keeps its needles all winter.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 151,
+   "key": "spruceLeaves",
+   "name": {
+    "en": "Spruce-like Needles"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 35
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "spruceLeaves",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Needle leaves that shed snow.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 152,
+   "key": "flowerBushPink",
+   "name": {
+    "en": "Flowers (pink)"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 36
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "flowerBushPink",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Flowers feed bees and butterflies.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 153,
+   "key": "flowerBushYellow",
+   "name": {
+    "en": "Flowers (yellow)"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 37
+    }
+   },
+   "handS": 0.2,
+   "breakable": true,
+   "drop": "flowerBushYellow",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Flowers feed bees and butterflies.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 154,
+   "key": "seaWater",
+   "name": {
+    "en": "Sea Water"
+   },
+   "kind": "alpha",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 17
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "seaWater",
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "natural": null,
+   "dex": {
+    "cat": "Places",
+    "what": "Still seawater. A Salt Pan beside it makes salt.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 155,
+   "key": "hayBale",
+   "name": {
+    "en": "Hay Bale"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 108
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 109
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 108
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "hayBale",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Dried grass pressed into a bale, used to feed animals.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 156,
+   "key": "gourds",
+   "name": {
+    "en": "Gourds"
+   },
+   "kind": "cross",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 38
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "gourds",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Gourds are cousins of pumpkins and squash, in many shapes.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 157,
+   "key": "scarecrow",
+   "name": {
+    "en": "Scarecrow"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:scarecrow"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "scarecrow",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A straw figure farmers use to keep birds off crops.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 158,
+   "key": "batsDeco",
+   "name": {
+    "en": "Bat Garland"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 39
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "batsDeco",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "Paper bats. Real bats eat lots of insects at night.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 159,
+   "key": "carvedPumpkin",
+   "name": {
+    "en": "Carved Pumpkin"
+   },
+   "kind": "cube",
+   "faces": {
+    "front": {
+     "atlas": "terrain",
+     "i": 110
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 80
+    },
+    "top": {
+     "atlas": "terrain",
+     "i": 79
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "carvedPumpkin",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A pumpkin with a face you carved yourself. An LED inside makes it glow.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 166,
+   "key": "spookySign",
+   "name": {
+    "en": "Spooky Sign"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:spookySign"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "spookySign",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A friendly gravestone-style sign. Write a silly message on it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 167,
+   "key": "harvestLantern",
+   "name": {
+    "en": "Harvest Lantern"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:harvestLantern"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "harvestLantern",
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A hanging lantern with an LED glow, never a flame.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 168,
+   "key": "chair",
+   "name": {
+    "en": "Chair"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:chair"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "chair",
+   "stack": 64,
+   "milestone": "storage-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A seat for a table. Use it to sit; move to get up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 169,
+   "key": "stool",
+   "name": {
+    "en": "Stool"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:stool"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "stool",
+   "stack": 64,
+   "milestone": "storage-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A seat with no back. Use it to sit; move to get up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 170,
+   "key": "bench",
+   "name": {
+    "en": "Bench"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:bench"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "bench",
+   "stack": 64,
+   "milestone": "storage-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A long seat for 2. Use it to sit; move to get up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 171,
+   "key": "table",
+   "name": {
+    "en": "Table"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:table"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "table",
+   "stack": 64,
+   "milestone": "storage-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A table. Put chairs, stools or a bench next to it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 160,
+   "key": "winterLights",
+   "name": {
+    "en": "Winter Lights"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 40
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "winterLights",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 161,
+   "key": "wreath",
+   "name": {
+    "en": "Wreath"
+   },
+   "kind": "flat",
+   "faces": {
+    "all": {
+     "atlas": "alpha",
+     "i": 41
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "wreath",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A ring of evergreen branches.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 162,
+   "key": "giftBox",
+   "name": {
+    "en": "Gift Box Deco"
+   },
+   "kind": "cube",
+   "faces": {
+    "top": {
+     "atlas": "terrain",
+     "i": 111
+    },
+    "side": {
+     "atlas": "terrain",
+     "i": 112
+    },
+    "bottom": {
+     "atlas": "terrain",
+     "i": 112
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "giftBox",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A wrapped box for decoration. It holds nothing.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 163,
+   "key": "snowPal",
+   "name": {
+    "en": "Snow Pal"
+   },
+   "kind": "model",
+   "faces": {
+    "icon": {
+     "atlas": "items",
+     "key": "block:snowPal"
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "snowPal",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A friendly snow figure. It never melts here.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 164,
+   "key": "ornamentTile",
+   "name": {
+    "en": "Ornament Tile"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 113
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "ornamentTile",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A tile with shiny round ornaments.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "id": 165,
+   "key": "stripeBlock",
+   "name": {
+    "en": "Peppermint Stripe Block"
+   },
+   "kind": "cube",
+   "faces": {
+    "all": {
+     "atlas": "terrain",
+     "i": 114
+    }
+   },
+   "handS": null,
+   "breakable": false,
+   "drop": "stripeBlock",
+   "stack": 64,
+   "milestone": "holidays-2",
+   "availableFrom": "live",
+   "natural": null,
+   "dex": {
+    "cat": "Blocks",
+    "what": "A red and white striped block.",
+    "status": "draft-curriculum-check"
+   }
+  }
+ ],
+ "items": [
+  {
+   "key": "woodTool",
+   "name": {
+    "en": "Wood Pick"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "woodTool"
+   },
+   "stack": 1,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Mines every block 2x faster than a hand. Never wears out.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "stoneTool",
+   "name": {
+    "en": "Stone Pick"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "stoneTool"
+   },
+   "stack": 1,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Mines 3x faster than a hand.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "copperPick",
+   "name": {
+    "en": "Copper Pick"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "copperPick"
+   },
+   "stack": 1,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Mines 4x faster than a hand.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "steelPick",
+   "name": {
+    "en": "Steel Pick"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "steelPick"
+   },
+   "stack": 1,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Mines 6x faster than a hand.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "stick",
+   "name": {
+    "en": "Stick"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "stick"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "2 Planks make 4 Sticks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "pan",
+   "name": {
+    "en": "Pan"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "pan"
+   },
+   "stack": 1,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A wooden pan. Swirl river gravel to find heavy gold flakes.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "bucket",
+   "name": {
+    "en": "Bucket"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "bucket"
+   },
+   "stack": 1,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Scoops 1 block of still water.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "waterBucket",
+   "name": {
+    "en": "Water Bucket"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "waterBucket"
+   },
+   "stack": 1,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Places 1 block of still water.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "berry",
+   "name": {
+    "en": "Berry"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "berry"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A small fruit. Leaves sometimes drop one.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "flour",
+   "name": {
+    "en": "Flour"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "flour"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Ground wheat seeds.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "sugar",
+   "name": {
+    "en": "Sugar"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "sugar"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Sweet crystals from plant juice.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cupcake",
+   "name": {
+    "en": "Cupcake"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cupcake"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Flour, sugar and berries, baked.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "bread",
+   "name": {
+    "en": "Bread"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "bread"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Baked flour.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "paintDab",
+   "name": {
+    "en": "Paint dab"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "paintDab"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "People made the first paints from plants and berries. The color comes from pigments.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "corn",
+   "name": {
+    "en": "Corn"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "corn"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Corn kernels. Cook 2 in the Oven for Bioplastic.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cornSeed",
+   "name": {
+    "en": "Corn Seed"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cornSeed"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Plant it on Dirt or Grass.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "bioplastic",
+   "name": {
+    "en": "Bioplastic"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "bioplastic"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Some plastics are made from plants, like corn.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "plasticTube",
+   "name": {
+    "en": "Plastic Tube"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "plasticTube"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "A clear tube for glow sticks and machines.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "glowMix",
+   "name": {
+    "en": "Glow Mix"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "glowMix"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "The two chemicals of a glow stick, ready to react.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "boosterDye",
+   "name": {
+    "en": "Booster Dye"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "boosterDye"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Takes the reaction energy and glows. The dye picks the color.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "glassVial",
+   "name": {
+    "en": "Glass Vial"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "glassVial"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "A small glass bottle. 1 Glass makes 2.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "rawCopper",
+   "name": {
+    "en": "Raw Copper"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "rawCopper"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Copper straight from the rock. Smelt it into an ingot.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "copperDust",
+   "name": {
+    "en": "Copper dust"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "copperDust"
+   },
+   "stack": 64,
+   "milestone": "basics-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Crushed copper. 1 Raw Copper makes 2.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "copperIngot",
+   "name": {
+    "en": "Copper Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "copperIngot"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted copper. 1 makes 4 Copper Wire.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "copperWire",
+   "name": {
+    "en": "Copper Wire"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "copperWire"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Thin copper that carries electricity.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "ironIngot",
+   "name": {
+    "en": "Iron Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "ironIngot"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted iron, ready to become steel.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "steel",
+   "name": {
+    "en": "Steel"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "steel"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Iron with a little carbon. Springs back until pushed too far.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "zincIngot",
+   "name": {
+    "en": "Zinc Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "zincIngot"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted zinc.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "tinIngot",
+   "name": {
+    "en": "Tin Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "tinIngot"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted tin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "bronzeIngot",
+   "name": {
+    "en": "Bronze Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "bronzeIngot"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Materials",
+    "what": "About 9 parts copper to 1 part tin, like real tin bronze.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "silverIngot",
+   "name": {
+    "en": "Silver Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "silverIngot"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted silver.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "goldFlake",
+   "name": {
+    "en": "Gold Flake"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "goldFlake"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A tiny flake from a river. 9 make a Gold Nugget.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "goldNugget",
+   "name": {
+    "en": "Gold Nugget"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "goldNugget"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A lump of gold.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "goldIngot",
+   "name": {
+    "en": "Gold Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "goldIngot"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Materials",
+    "what": "Smelted gold.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "goldLeaf",
+   "name": {
+    "en": "Gold Leaf"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "goldLeaf"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Materials",
+    "what": "Gold beaten very thin. 1 Ingot makes 16.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "quartz",
+   "name": {
+    "en": "Quartz"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "quartz"
+   },
+   "stack": 64,
+   "milestone": "world-1",
+   "availableFrom": "world-1",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A silica crystal.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "silicon",
+   "name": {
+    "en": "Silicon"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "silicon"
+   },
+   "stack": 64,
+   "milestone": "basics-3",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Sand and quartz are silica. Heating them with carbon pulls out silicon.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "logicChip",
+   "name": {
+    "en": "Logic Chip"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "logicChip"
+   },
+   "stack": 64,
+   "milestone": "basics-3",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "A tiny silicon circuit.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "batteryCell",
+   "name": {
+    "en": "Battery Cell"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "batteryCell"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Copper and zinc make a battery cell.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "spring",
+   "name": {
+    "en": "Spring"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "spring"
+   },
+   "stack": 64,
+   "milestone": "basics-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Steel coiled so it springs back.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "wireRope",
+   "name": {
+    "en": "Wire Rope"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "wireRope"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Steel wires twisted together. Pull-only, very strong.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "steelBeam",
+   "name": {
+    "en": "Steel Beam"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "steelBeam"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "An I-shaped steel beam.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "timberBeam",
+   "name": {
+    "en": "Timber Beam"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "timberBeam"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "A wooden beam. 2 Planks make 1.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cotton",
+   "name": {
+    "en": "Cotton"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cotton"
+   },
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Plant fiber. 3 make 1 Cloth.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cottonSeed",
+   "name": {
+    "en": "Cotton Seed"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cottonSeed"
+   },
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "Plant it on Dirt or Grass.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cloth",
+   "name": {
+    "en": "Cloth"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cloth"
+   },
+   "stack": 64,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "Woven cotton.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "salt",
+   "name": {
+    "en": "Salt"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "salt"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Materials",
+    "what": "Sodium chloride: the salt on food.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "platinumGrain",
+   "name": {
+    "en": "Platinum Grain"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "platinumGrain"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A grain of platinum from an Emberdeep river.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "platinumNugget",
+   "name": {
+    "en": "Platinum Nugget"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "platinumNugget"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A lump of platinum.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "platinumIngot",
+   "name": {
+    "en": "Platinum Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "platinumIngot"
+   },
+   "stack": 64,
+   "milestone": "later",
+   "availableFrom": "later",
+   "dex": {
+    "cat": "Materials",
+    "what": "Platinum melts at 1,768 C, so it needs the Embercore upgrade.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "alumina",
+   "name": {
+    "en": "Alumina"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "alumina"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Materials",
+    "what": "White powder from bauxite. It needs lots of electricity to become aluminum.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "aluminumIngot",
+   "name": {
+    "en": "Aluminum Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "aluminumIngot"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Materials",
+    "what": "Light metal. Common, but it costs lots of electricity.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "aluminumBeam",
+   "name": {
+    "en": "Aluminum Beam"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "aluminumBeam"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Materials",
+    "what": "About the same job as steel at about a third of the weight.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "titaniumDioxide",
+   "name": {
+    "en": "Titanium Dioxide"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "titaniumDioxide"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Materials",
+    "what": "White powder refined from black sand.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "titaniumIngot",
+   "name": {
+    "en": "Titanium Ingot"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "titaniumIngot"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Materials",
+    "what": "Titanium is not rare. It is hard to refine.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "graphite",
+   "name": {
+    "en": "Graphite"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "graphite"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "Soft carbon flakes.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "rhodiumSpeck",
+   "name": {
+    "en": "Rhodium Speck"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "rhodiumSpeck"
+   },
+   "stack": 64,
+   "milestone": "world-3",
+   "availableFrom": "world-3",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "A very rare metal. It never tarnishes.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "iridiumSpeck",
+   "name": {
+    "en": "Iridium Speck"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "iridiumSpeck"
+   },
+   "stack": 64,
+   "milestone": "world-3",
+   "availableFrom": "world-3",
+   "dex": {
+    "cat": "Ores & Rocks",
+    "what": "The legendary find. Iridium is one of the two densest elements.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "paintBrush",
+   "name": {
+    "en": "Paint Brush"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "paintBrush"
+   },
+   "stack": 1,
+   "milestone": "storage-2",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Free colors, looks only.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "satchel",
+   "name": {
+    "en": "Satchel"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "satchel"
+   },
+   "stack": 1,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "+6 slots.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "backpack",
+   "name": {
+    "en": "Backpack"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "backpack"
+   },
+   "stack": 1,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "+12 slots.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "expeditionPack",
+   "name": {
+    "en": "Expedition Pack"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "expeditionPack"
+   },
+   "stack": 1,
+   "milestone": "storage-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "+18 slots. Max carry 33.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "fob",
+   "name": {
+    "en": "Fob"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "fob"
+   },
+   "stack": 1,
+   "milestone": "bot-cargo",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "The fob sends a radio signal; the bot follows the strongest signal.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "botH1",
+   "name": {
+    "en": "Berty's Bot H1"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "botH1"
+   },
+   "stack": 1,
+   "milestone": "bot-cargo",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A little bot that follows you and carries your stuff.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "driveS",
+   "name": {
+    "en": "Drive S"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "driveS"
+   },
+   "stack": 1,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "8 kinds, 512 items.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "driveM",
+   "name": {
+    "en": "Drive M"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "driveM"
+   },
+   "stack": 1,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "32 kinds, 2,048 items.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "driveL",
+   "name": {
+    "en": "Drive L"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "driveL"
+   },
+   "stack": 1,
+   "milestone": "storage-5",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "64 kinds, 8,192 items.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "deliveryDrone",
+   "name": {
+    "en": "Delivery Drone"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "deliveryDrone"
+   },
+   "stack": 1,
+   "milestone": "storage-3",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Slow, cheap and visible. Carries 4 stacks.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "petRock",
+   "name": {
+    "en": "Pet Rock"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "petRock"
+   },
+   "stack": 1,
+   "milestone": "fun-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A rock has no motor. That is why it is so slow.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "gravityHat",
+   "name": {
+    "en": "Gravity Hat"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "gravityHat"
+   },
+   "stack": 1,
+   "milestone": "fun-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Gravity pulls everything down. The hat pushes back a little, for a little while.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "musicDisc",
+   "name": {
+    "en": "Music Disc"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "musicDisc"
+   },
+   "stack": 64,
+   "milestone": "music-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Plays a song in a Jukebox.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "warpKey",
+   "name": {
+    "en": "Warp Key"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "warpKey"
+   },
+   "stack": 1,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Warps you to your own Warp Pad.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "bandage",
+   "name": {
+    "en": "Bandage"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "bandage"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Basic first aid.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "herbTonic",
+   "name": {
+    "en": "Herb Tonic"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "herbTonic"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "A plant drink for resting up.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "medKit",
+   "name": {
+    "en": "Med Kit"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "medKit"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "First aid for you and your crew.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "whistleBell",
+   "name": {
+    "en": "Whistle Bell"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "whistleBell"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Calls your Pet Rock and Bot.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "critterJar",
+   "name": {
+    "en": "Critter Jar"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "critterJar"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Releases friendly critters for a while.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "morphVial",
+   "name": {
+    "en": "Morph Vial"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "morphVial"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Mimicry: copy the look of a block or critter.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "camoCloak",
+   "name": {
+    "en": "Camo Cloak"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "camoCloak"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Camouflage: match the background.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "magnetWand",
+   "name": {
+    "en": "Magnet Wand"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "magnetWand"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Magnets pull iron and steel.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "lightWand",
+   "name": {
+    "en": "Light Wand"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "lightWand"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "A floating light orb.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "fizzVial",
+   "name": {
+    "en": "Fizz Vial"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "fizzVial"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "A gas plus a liquid makes foam.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "frostVial",
+   "name": {
+    "en": "Frost Vial"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "frostVial"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Effects",
+    "what": "Freezes still water so you can walk on it.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "sparkRod",
+   "name": {
+    "en": "Spark Rod"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "sparkRod"
+   },
+   "stack": 64,
+   "milestone": "effects-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Effects",
+    "what": "Remote-powers your own circuit for a few seconds.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "blueprintScroll",
+   "name": {
+    "en": "Blueprint Scroll"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "blueprintScroll"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "Read it at the Drafting Table to unlock a material.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cogCopper",
+   "name": {
+    "en": "Copper Cog"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cogCopper"
+   },
+   "stack": 64,
+   "milestone": "live",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "The everyday coin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cogSilver",
+   "name": {
+    "en": "Silver Cog"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cogSilver"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A rarer coin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cogGold",
+   "name": {
+    "en": "Gold Cog"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cogGold"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A rare coin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cogPlatinum",
+   "name": {
+    "en": "Platinum Cog"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cogPlatinum"
+   },
+   "stack": 64,
+   "milestone": "ladder-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A very rare coin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "cogIridium",
+   "name": {
+    "en": "Iridium Cog"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "cogIridium"
+   },
+   "stack": 64,
+   "milestone": "world-3",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "The legendary coin.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "flower",
+   "name": {
+    "en": "Flower"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "flower"
+   },
+   "stack": 64,
+   "milestone": "world-2",
+   "availableFrom": "world-2",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "1 Flower makes 2 Paint dabs.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "apple",
+   "name": {
+    "en": "Apple"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "apple"
+   },
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Plants & Critters",
+    "what": "A harvest fruit.",
+    "status": "draft-curriculum-check"
+   }
+  },
+  {
+   "key": "carvingTool",
+   "name": {
+    "en": "Carving Tool"
+   },
+   "icon": {
+    "atlas": "items",
+    "key": "carvingTool"
+   },
+   "stack": 64,
+   "milestone": "holidays-1",
+   "availableFrom": "live",
+   "dex": {
+    "cat": "Items & Machines",
+    "what": "A safe scoop-and-saw for pumpkins. Use it on a Pumpkin to carve a face.",
+    "status": "draft-curriculum-check"
+   }
+  }
+ ],
+ "sprites": [
+  {
+   "key": "bot",
+   "name": {
+    "en": "Berty's Bot H1"
+   },
+   "file": "textures/sprites/bot.png",
+   "milestone": "bot-cargo",
+   "dex": {
+    "what": "A little bot that follows you and carries your stuff."
+   }
+  },
+  {
+   "key": "drone",
+   "name": {
+    "en": "Delivery Drone"
+   },
+   "file": "textures/sprites/drone.png",
+   "milestone": "storage-3",
+   "dex": {
+    "what": "Flies 3 blocks above the tallest block on its route."
+   }
+  },
+  {
+   "key": "petrock",
+   "name": {
+    "en": "Pet Rock"
+   },
+   "file": "textures/sprites/petrock.png",
+   "milestone": "fun-1",
+   "dex": {
+    "what": "A rock has no motor. That is why it is so slow."
+   }
+  },
+  {
+   "key": "firefly",
+   "name": {
+    "en": "Firefly"
+   },
+   "file": "textures/sprites/firefly.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "A beetle that makes its own light."
+   }
+  },
+  {
+   "key": "butterfly",
+   "name": {
+    "en": "Butterfly"
+   },
+   "file": "textures/sprites/butterfly.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "Visits flowers for nectar."
+   }
+  },
+  {
+   "key": "songbird",
+   "name": {
+    "en": "Songbird"
+   },
+   "file": "textures/sprites/songbird.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "Sings to talk to other birds."
+   }
+  },
+  {
+   "key": "frog",
+   "name": {
+    "en": "Frog"
+   },
+   "file": "textures/sprites/frog.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "Jumps far with long back legs."
+   }
+  },
+  {
+   "key": "prairiedog",
+   "name": {
+    "en": "Prairie Dog"
+   },
+   "file": "textures/sprites/prairiedog.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "Digs burrows with many rooms."
+   }
+  },
+  {
+   "key": "cat",
+   "name": {
+    "en": "Cat"
+   },
+   "file": "textures/sprites/cat.png",
+   "milestone": "effects-1",
+   "dex": {
+    "what": "Lands on its feet."
+   }
+  }
+ ],
+ "biomes": [
+  {
+   "key": "commons",
+   "name": {
+    "en": "Bertyville Commons"
+   },
+   "minimap": {
+    "color": "#5fbf6a",
+    "pattern": "dots",
+    "file": "textures/minimap/commons.png"
+   }
+  },
+  {
+   "key": "glasswood",
+   "name": {
+    "en": "Glasswood"
+   },
+   "minimap": {
+    "color": "#9fb7a8",
+    "pattern": "crosshatch",
+    "file": "textures/minimap/glasswood.png"
+   }
+  },
+  {
+   "key": "rustflats",
+   "name": {
+    "en": "Rustflats"
+   },
+   "minimap": {
+    "color": "#d9a36a",
+    "pattern": "stripes",
+    "file": "textures/minimap/rustflats.png"
+   }
+  },
+  {
+   "key": "tidewell",
+   "name": {
+    "en": "Tidewell Cliffs"
+   },
+   "minimap": {
+    "color": "#e3cf8f",
+    "pattern": "waves",
+    "file": "textures/minimap/tidewell.png"
+   }
+  },
+  {
+   "key": "frostspire",
+   "name": {
+    "en": "Frostspire Highlands"
+   },
+   "minimap": {
+    "color": "#cfe3ee",
+    "pattern": "zigzag",
+    "file": "textures/minimap/frostspire.png"
+   }
+  },
+  {
+   "key": "emberdeep",
+   "name": {
+    "en": "Emberdeep"
+   },
+   "minimap": {
+    "color": "#5a4f5c",
+    "pattern": "checker",
+    "file": "textures/minimap/emberdeep.png"
+   }
+  },
+  {
+   "key": "sea",
+   "name": {
+    "en": "Sea"
+   },
+   "minimap": {
+    "color": "#3fa7c2",
+    "pattern": "waves2",
+    "file": "textures/minimap/sea.png"
+   }
+  },
+  {
+   "key": "town",
+   "name": {
+    "en": "Bertyville town"
+   },
+   "minimap": {
+    "color": "#b78a5a",
+    "pattern": "bricks",
+    "file": "textures/minimap/town.png"
+   }
+  }
+ ],
+ "elements": [
+  {
+   "symbol": "C",
+   "z": 6,
+   "name": {
+    "en": "Carbon"
+   }
+  },
+  {
+   "symbol": "O",
+   "z": 8,
+   "name": {
+    "en": "Oxygen"
+   }
+  },
+  {
+   "symbol": "Na",
+   "z": 11,
+   "name": {
+    "en": "Sodium"
+   }
+  },
+  {
+   "symbol": "Al",
+   "z": 13,
+   "name": {
+    "en": "Aluminum"
+   }
+  },
+  {
+   "symbol": "Si",
+   "z": 14,
+   "name": {
+    "en": "Silicon"
+   }
+  },
+  {
+   "symbol": "Cl",
+   "z": 17,
+   "name": {
+    "en": "Chlorine"
+   }
+  },
+  {
+   "symbol": "Ti",
+   "z": 22,
+   "name": {
+    "en": "Titanium"
+   }
+  },
+  {
+   "symbol": "Fe",
+   "z": 26,
+   "name": {
+    "en": "Iron"
+   }
+  },
+  {
+   "symbol": "Cu",
+   "z": 29,
+   "name": {
+    "en": "Copper"
+   }
+  },
+  {
+   "symbol": "Zn",
+   "z": 30,
+   "name": {
+    "en": "Zinc"
+   }
+  },
+  {
+   "symbol": "Rh",
+   "z": 45,
+   "name": {
+    "en": "Rhodium"
+   }
+  },
+  {
+   "symbol": "Ag",
+   "z": 47,
+   "name": {
+    "en": "Silver"
+   }
+  },
+  {
+   "symbol": "Sn",
+   "z": 50,
+   "name": {
+    "en": "Tin"
+   }
+  },
+  {
+   "symbol": "Ir",
+   "z": 77,
+   "name": {
+    "en": "Iridium"
+   }
+  },
+  {
+   "symbol": "Pt",
+   "z": 78,
+   "name": {
+    "en": "Platinum"
+   }
+  },
+  {
+   "symbol": "Au",
+   "z": 79,
+   "name": {
+    "en": "Gold"
+   }
+  }
+ ],
+ "furniturePalette": [
+  {
+   "key": "oak",
+   "hex": "#a8743f"
+  },
+  {
+   "key": "walnut",
+   "hex": "#6b4a2b"
+  },
+  {
+   "key": "birch",
+   "hex": "#d9c49a"
+  },
+  {
+   "key": "teal",
+   "hex": "#2f9e9a"
+  },
+  {
+   "key": "berty",
+   "hex": "#7a5cc7"
+  },
+  {
+   "key": "sunny",
+   "hex": "#e3b341"
+  },
+  {
+   "key": "coral",
+   "hex": "#e0705a"
+  },
+  {
+   "key": "slate",
+   "hex": "#5d6b7a"
+  }
+ ]
+}
