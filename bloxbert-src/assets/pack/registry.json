@@ -137,7 +137,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Coal formed from plants buried and squeezed for millions of years. It is fuel.",
+    "what": "Coal formed from plants in ancient forests and marshes. They were buried and squeezed for millions of years.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1489,7 +1489,7 @@
    "natural": null,
    "dex": {
     "cat": "Plants & Critters",
-    "what": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea.",
+    "what": "A cave moss that glows. Glowing fungi are real. No real moss makes its own light, so this is a Bertopia idea.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1649,7 +1649,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze.",
+    "what": "Dark crystals of cassiterite, the main tin ore. About 9 parts copper to 1 part tin makes bronze.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1753,7 +1753,7 @@
    "natural": null,
    "dex": {
     "cat": "Places",
-    "what": "A thin layer laid down all over Earth after a giant asteroid hit.",
+    "what": "A thin grey stripe of clay. It is left from a space rock that hit long ago.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1779,7 +1779,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Silver reflects light better than any other metal.",
+    "what": "No metal reflects light better than silver.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1805,7 +1805,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Gold hides in quartz veins deep in hard rock.",
+    "what": "Gold is found in quartz veins in hard rock, and as flakes in river gravel.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1831,7 +1831,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Soft, shiny carbon made when heat and pressure changed old rock.",
+    "what": "Soft, shiny carbon. It formed when heat and pressure changed rocks that held old plant and animal remains.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1935,7 +1935,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "Beach sand full of heavy titanium minerals.",
+    "what": "Beach sand rich in heavy, dark minerals. Some of them hold titanium.",
     "status": "draft-curriculum-check"
    }
   },
@@ -1987,7 +1987,7 @@
    "natural": null,
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "A heavy black mineral that holds titanium.",
+    "what": "A heavy black mineral. It holds titanium.",
     "status": "draft-curriculum-check"
    }
   },
@@ -2727,7 +2727,7 @@
    "natural": null,
    "dex": {
     "cat": "Items & Machines",
-    "what": "Charges and launches your Delivery Drone.",
+    "what": "Charges your Delivery Drone and sends it off.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3181,7 +3181,7 @@
    "natural": null,
    "dex": {
     "cat": "Seasonal & Holiday",
-    "what": "A soft smiling ghost-shaped light.",
+    "what": "A soft, smiling ghost-shaped LED light.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3207,7 +3207,7 @@
    "natural": null,
    "dex": {
     "cat": "Seasonal & Holiday",
-    "what": "A fake cobweb for decoration.",
+    "what": "A fake cobweb. It is just for looks.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3259,7 +3259,7 @@
    "natural": null,
    "dex": {
     "cat": "Seasonal & Holiday",
-    "what": "Cut-paper banners in bright colors.",
+    "what": "Bright paper banners with cut-out shapes.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3311,7 +3311,7 @@
    "natural": null,
    "dex": {
     "cat": "Blocks",
-    "what": "A floor tile with a simple geometric pattern. Paint it any colour.",
+    "what": "A floor tile with a simple geometric pattern. Paint it any color.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3573,7 +3573,7 @@
    "natural": null,
    "dex": {
     "cat": "Items & Machines",
-    "what": "A dust-free bench for the finest materials.",
+    "what": "A bench with no dust. You make the finest parts here.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3901,7 +3901,7 @@
    "natural": null,
    "dex": {
     "cat": "Materials",
-    "what": "Translucent: lets some light through.",
+    "what": "Darker glass. It lets less light through, but you can still see through it.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5009,7 +5009,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "People made the first paints from plants and berries. The color comes from pigments.",
+    "what": "The first paints were made from colored earth called ochre. The color comes from pigments.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5207,7 +5207,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "Thin copper that carries electricity.",
+    "what": "Thin copper wire. It carries power.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5315,7 +5315,7 @@
    "availableFrom": "world-1",
    "dex": {
     "cat": "Materials",
-    "what": "Smelted silver.",
+    "what": "Silver, smelted and ready to use.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5405,7 +5405,7 @@
    "availableFrom": "world-1",
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "A silica crystal.",
+    "what": "A clear crystal made of silicon and oxygen.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5459,7 +5459,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "Copper and zinc make a battery cell.",
+    "what": "Put copper and zinc in a sour or salty liquid. That makes a simple battery.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5495,7 +5495,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "Steel wires twisted together. Pull-only, very strong.",
+    "what": "Steel wires twisted together. Very strong when pulled, but floppy when pushed.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5585,7 +5585,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "Woven cotton.",
+    "what": "Cloth woven from cotton.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5657,7 +5657,7 @@
    "availableFrom": "later",
    "dex": {
     "cat": "Materials",
-    "what": "Platinum melts at 1,768 C, so it needs the Embercore upgrade.",
+    "what": "Platinum melts at 1,768 °C, so it needs the Embercore upgrade.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5675,7 +5675,7 @@
    "availableFrom": "world-2",
    "dex": {
     "cat": "Materials",
-    "what": "White powder from bauxite. It needs lots of electricity to become aluminum.",
+    "what": "White powder made from bauxite. It takes a lot of power to make it into aluminum.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5693,7 +5693,7 @@
    "availableFrom": "world-2",
    "dex": {
     "cat": "Materials",
-    "what": "Light metal. Common, but it costs lots of electricity.",
+    "what": "A light metal. It is common, but making it takes lots of electricity.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5711,7 +5711,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Materials",
-    "what": "About the same job as steel at about a third of the weight.",
+    "what": "In Bertopia it does a Steel Beam's job. Real aluminum is about a third as heavy as steel, but it bends more.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5783,7 +5783,7 @@
    "availableFrom": "world-3",
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "A very rare metal. It never tarnishes.",
+    "what": "One of the rarest metals. It stays shiny because air and water barely change it.",
     "status": "draft-curriculum-check"
    }
   },
@@ -5801,7 +5801,7 @@
    "availableFrom": "world-3",
    "dex": {
     "cat": "Ores & Rocks",
-    "what": "The legendary find. Iridium is one of the two densest elements.",
+    "what": "The rarest find of all. For its size, iridium is one of the two heaviest elements.",
     "status": "draft-curriculum-check"
    }
   },
@@ -6287,7 +6287,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "Read it at the Drafting Table to unlock a material.",
+    "what": "Read it at the Drafting Table. It unlocks a new material.",
     "status": "draft-curriculum-check"
    }
   },
@@ -6377,7 +6377,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "The legendary coin.",
+    "what": "The rarest coin of all.",
     "status": "draft-curriculum-check"
    }
   },
@@ -6533,7 +6533,7 @@
    "file": "textures/sprites/cat.png",
    "milestone": "effects-1",
    "dex": {
-    "what": "Lands on its feet."
+    "what": "Can twist in the air to land on its feet."
    }
   }
  ],

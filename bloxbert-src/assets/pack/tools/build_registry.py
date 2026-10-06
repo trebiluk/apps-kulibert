@@ -89,31 +89,32 @@ VERBS_BY = {  # CORE-MECHANICS §0.2; default for plain cubes = Mine, Place
  'driveS': 'Move-item,Open', 'driveM': 'Move-item,Open', 'driveL': 'Move-item,Open', 'deliveryDrone': 'Pair,Use,Open', 'musicDisc': 'Move-item',
 }
 FACTS = {  # real-science fact chips (DRAFT: Curriculum Bot checks before ship)
- 'coal': 'Coal is mostly carbon from plants that lived over 300 million years ago.', 'ironOre': 'Iron is the most-used metal on Earth. Steel is mostly iron.',
- 'copperOre': 'Copper is used in wires because electricity flows through it easily.', 'zincOre': 'Zinc coating (galvanizing) keeps steel from rusting.',
- 'tinOre': 'Bronze (copper + tin) was so important that a whole age of history is named after it.', 'quartzOre': 'Quartz is silicon + oxygen (SiO2). Most sand is quartz.',
- 'silverOre': 'Silver conducts electricity better than any other metal.', 'goldOre': 'Gold never rusts, so very old gold objects still shine.',
- 'glowMoss': 'Real glowing fungi (foxfire) make light with a chemical reaction called bioluminescence.', 'clay': 'Clay is made of tiny flat mineral grains. Fired clay becomes brick.',
- 'water': 'Water is H2O: two hydrogen atoms and one oxygen atom.', 'sand': 'Glass is made by melting sand at about 1,700 C.',
- 'glass': 'Glass looks solid, but it has no crystal pattern inside.', 'snow': 'Every snowflake has six sides because of how water molecules link up.',
- 'ice': 'Ice floats because water expands when it freezes.', 'saltCrust': 'Table salt is sodium chloride (NaCl).', 'blackSand': 'Black sand gets its colour from heavy minerals like magnetite and ilmenite.',
+ 'coal': 'Coal is a rock rich in carbon. Some coal is over 300 million years old. Some is much younger.', 'ironOre': 'Iron is the most-used metal on Earth. Steel is mostly iron.',
+ 'copperOre': 'Electricity flows through copper easily. That is why wires use it.', 'zincOre': 'Zinc coating (galvanizing) keeps steel from rusting.',
+ 'tinOre': 'Bronze is copper plus tin. A whole time in history is named after it: the Bronze Age.', 'quartzOre': 'Quartz is silicon + oxygen (SiO2). Most sand is quartz.',
+ 'silverOre': 'Silver carries electricity best of all metals. Copper is close, and it costs much less.', 'goldOre': 'Gold never rusts, so very old gold objects still shine.',
+ 'glowMoss': 'Some real fungi make their own light. People call it foxfire. Scientists call it bioluminescence (living light).', 'clay': 'Clay is made of tiny flat mineral grains. Fired clay becomes brick.',
+ 'water': 'Water is H2O: two hydrogen atoms and one oxygen atom.', 'sand': 'Glass makers melt sand with soda ash and limestone at about 1,500 °C.',
+ 'glass': 'Glass is a solid, but its atoms are jumbled. They are not lined up in a neat crystal pattern.', 'snow': 'Snow crystals have six sides or six arms. That comes from how water molecules link up. Most real snowflakes are lopsided.',
+ 'ice': 'Ice floats because water expands when it freezes.', 'saltCrust': 'Table salt is sodium chloride (NaCl).', 'blackSand': 'Many black sands get their color from heavy minerals like magnetite and ilmenite.',
  'bauxite': 'Almost all aluminum comes from bauxite.', 'ilmeniteOre': 'Ilmenite is the main ore of titanium.', 'platinumOre': 'Platinum is used in car parts that clean exhaust.',
  'basalt': 'Most of the ocean floor is basalt.', 'granite': 'Granite cooled slowly underground, so its crystals grew big enough to see.', 'graphiteOre': 'Pencil "lead" is really graphite mixed with clay.',
- 'boundaryClay': 'A thin clay layer found worldwide is rich in iridium, a clue that a giant asteroid hit Earth 66 million years ago.',
+ 'boundaryClay': 'Earth has a thin clay layer found all over the world. It is rich in iridium. That is a clue that a giant asteroid hit Earth about 66 million years ago.',
  'steel': 'Steel is iron with a small amount of carbon, which makes it much stronger.', 'bronzeIngot': 'Bronze is about 90% copper and 10% tin.',
- 'batteryCell': 'A battery turns stored chemical energy into electricity.', 'solarPanel': 'Solar cells are made from silicon.', 'silicon': 'Computer chips are made from silicon.',
- 'logicChip': 'A chip holds millions or billions of tiny switches called transistors.', 'copperWire': 'Copper wire carries electricity in almost every building.',
- 'bioplastic': 'Some plastics are made from corn starch instead of oil.', 'paintDab': 'Pigments give paint its colour. Early paints came from plants, berries and minerals.',
+ 'batteryCell': 'A battery stores energy in chemicals. When you use it, the chemicals make power.', 'solarPanel': 'Most solar cells are made from silicon.', 'silicon': 'Computer chips are made from silicon.',
+ 'logicChip': 'A chip holds millions or billions of tiny switches called transistors.', 'copperWire': 'Almost every building has copper wires inside. They carry power to lights and plugs.',
+ 'bioplastic': 'Some plastics are made from corn starch instead of oil.', 'paintDab': 'Pigments give paint its color. Early paints used colored earth, charcoal and plants.',
  'glowStick': 'A glow stick glows when two chemicals mix: chemiluminescence.', 'coldGlowVial': 'Cold slows chemical reactions, so a cold glow stick lasts longer.',
- 'leaves': 'Leaves use sunlight, water and carbon dioxide to make sugar (photosynthesis).', 'log': 'You can count a tree\'s age from its rings.',
- 'itemTube': 'Factories use conveyors to move goods from step to step.', 'terminal': 'A search engine finds things by looking through an index.', 'sorter': 'Recycling centres sort materials by type.',
+ 'leaves': 'Leaves use sunlight, water and carbon dioxide to make sugar (photosynthesis).', 'log': 'Where winters are cold, a tree adds one ring each year. Count the rings to find its age.',
+ 'itemTube': 'Factories use conveyors to move goods from step to step.', 'terminal': 'A search engine finds things by looking through an index.', 'sorter': 'Recycling centers sort materials by type.',
  'charger': 'A wall outlet in the U.S. gives about 120 volts.', 'lantern': 'LEDs use much less energy than old light bulbs.',
- 'teleportPad': 'Real teleporting of objects is not possible. Scientists can only "teleport" information between particles.',
+ 'teleportPad': 'Real teleporting is not possible. Scientists can only send tiny bits of data from one particle to another.',
  'deliveryDrone': 'Delivery drones balance speed, battery life and how much they carry.', 'bounceBlock': 'A spring stores energy when squashed and gives it back.',
  'noteBlock': 'A higher pitch means the sound wave vibrates faster.', 'pumpkin': 'Pumpkins are fruit, because they hold seeds.', 'flower': 'Bees carry pollen from flower to flower.',
- 'corn': 'Corn is a grass. Each kernel is a seed.', 'cotton': 'Cotton fibers grow around the seeds of the cotton plant.', 'goldFlake': 'Gold is heavy, so it sinks to the bottom of a pan.',
- 'pan': 'Panning works because heavier things sink faster in moving water.', 'hayBale': 'Hay is grass that is cut and dried so animals can eat it in winter.',
- 'gourds': 'Gourds have hard shells and were used as bowls and bottles long ago.', 'scarecrow': 'Farmers have used scarecrows for thousands of years.',
+ 'corn': 'Corn is a grass. Each kernel is a seed.', 'cotton': 'Cotton fibers grow around the seeds of the cotton plant.', 'goldFlake': 'Gold is very heavy for its size. So it sinks to the bottom of a pan.',
+ 'pan': 'Gold is much heavier than sand of the same size. In a swirling pan, gold sinks and water washes the sand away.', 'hayBale': 'Hay is grass that is cut and dried so animals can eat it in winter.',
+ 'gourds': 'Gourds have hard shells and were used as bowls and bottles long ago.', 'scarecrow': None,  # Curriculum 2026-10-06: UNSURE, dropped until sourced
+
  'batsDeco': 'One bat can eat hundreds of insects in one night.', 'winterLights': 'LED string lights use far less power than old bulbs.',
 }
 EFFECTS = [  # EFFECTS-SPEC
@@ -129,12 +130,12 @@ BIOME_DESC = {'commons': 'Grass, oak trees and the town. Coal, clay, iron and a 
 PILE_CULTURE = [  # FUN-ITEMS §7 + CURRICULUM-PILE-CULTURE-ITEMS-CHECK: object names, never a holiday; art PLANNED (planned.py)
  (172,'blueWhiteLights','Blue & White Lights','A plain string of blue and soft-white LED bulbs.','Winter','Blue and white lights are hung for Hanukkah in many Jewish homes.'),
  (173,'wovenMat','Woven Mat','A flat mat woven in red, black and green.','Autumn','Woven mats (mkeka) are laid out for Kwanzaa in many African American homes.'),
- (174,'harvestBasket','Harvest Basket','A basket of fruit and corn.','Autumn','Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals.'),
+ (174,'harvestBasket','Harvest Basket','A basket of fruit and corn.','Autumn','Fruit and corn are set out for Kwanzaa and at many harvest festivals.'),
  (175,'redLantern','Red Lantern','A round red paper lantern with a steady LED glow.','Winter','Red paper lanterns are hung for Lunar New Year in many East Asian homes.'),
  (176,'paperDragon','Paper Dragon','A long, friendly paper dragon with a steady LED glow.','Winter','Paper dragons are carried in Lunar New Year parades.'),
  (177,'fanousLantern','Fanous Lantern','A metal-and-glass lantern with geometric windows and an LED glow.','Winter','Fanous lanterns light streets during Ramadan in Egypt and nearby countries.'),
  (178,'colourSplash','Colour Splash Block','A block covered in bright paint splats.','Spring','People throw coloured powder at Holi, a spring festival from India.'),
- (179,'springGreens','Spring Greens','A dish of sprouted green grass.','Spring','Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year.'),
+ (179,'springGreens','Spring Greens','A dish of sprouted green grass.','Spring','Sprouted greens (sabzeh) are grown for Nowruz, the new year in Afghanistan, Iran and nearby countries.'),
  (180,'kindnessHeart','Kindness Heart','A paper heart with flowers on it.','Spring','Hearts are shared during Kindness Week.'),
  (181,'solarFlower','Solar Flower','A flower that charges by day and glows softly at night.','Spring','Solar Flowers celebrate Earth Day and clean energy.'),
  (182,'imigongoTile','Imigongo Zigzag Tile','A tile with black, white and red zigzags.','Autumn','Imigongo is zigzag art from eastern Rwanda.'),
@@ -143,6 +144,8 @@ PILE_CULTURE = [  # FUN-ITEMS §7 + CURRICULUM-PILE-CULTURE-ITEMS-CHECK: object 
 ]
 SORT = {'pumpkin': 'Autumn', 'cornStalks': 'Autumn', 'leafPile': 'Autumn', 'appleCrate': 'Autumn', 'hayBale': 'Autumn', 'gourds': 'Autumn', 'scarecrow': 'Autumn', 'marigold': 'Autumn', 'skullPatternTile': 'Autumn', 'harvestLantern': 'Autumn', 'papelPicado': 'Autumn',
         'jackOLantern': 'Spooky', 'carvedPumpkin': 'Spooky', 'ghostLight': 'Spooky', 'cobweb': 'Spooky', 'batsDeco': 'Spooky', 'spookySign': 'Spooky', 'stringLights': 'Winter'}
+CHECKED = set(['grass', 'dirt', 'stone', 'slate', 'gravel', 'brickRed', 'brickGrey', 'planks', 'leaves', 'woolBlue', 'woolGreen', 'woolRed', 'woolTan', 'ice', 'redSand', 'coreplate', 'workbench', 'oven', 'vend', 'storeCounter', 'bunk', 'box', 'wheat', 'reed', 'door', 'doorOpen', 'doorGlass', 'doorGlassOpen', 'doorMetal', 'doorMetalOpen', 'doorSliding', 'doorSlidingOpen', 'lever', 'leverOn', 'pushButton', 'pushButtonOn', 'smelter', 'fabricator', 'ironOre', 'zincOre', 'lantern', 'charger', 'glowPebble', 'glowStick', 'jumboGlow', 'coldGlowVial', 'cornPlant', 'glowStrip', 'copperWireBlock', 'water', 'quartzOre', 'quartzSand', 'clay', 'pannedGravel', 'molten', 'saltCrust', 'bauxite', 'platinumOre', 'basalt', 'snowGrass', 'cottonBush', 'flowerBush', 'saltPan', 'wallShelf', 'shelf', 'sideTable', 'desk', 'cabinet', 'glassCabinet', 'steelLocker', 'sign', 'itemTube', 'poweredTube', 'filterTube', 'extractor', 'networkCable', 'networkCore', 'driveBay', 'terminal', 'storageLink', 'batteryBox', 'networkPad', 'bounceBlock', 'discoFloor', 'noteBlock', 'keyboardBlock', 'drumKit', 'guitar', 'jukebox', 'pumpkin', 'jackOLantern', 'cornStalks', 'leafPile', 'appleCrate', 'skullPatternTile', 'stringLights', 'labBench', 'warpPad', 'sleepingBag', 'crewBanner', 'gameZoneFlag', 'workshopDoor', 'draftingTable', 'copperBlock', 'steelBlock', 'mirror', 'dexShelf', 'trophyShelf', 'bamboo', 'plywood', 'cutStone', 'cinderBlock', 'concrete', 'roofTile', 'frostedGlass', 'glassPane', 'quartzCrystal', 'overflowBox', 'bronzePlaque', 'granite', 'redSoil', 'birchLog', 'birchLeaves', 'spruceLog', 'spruceLeaves', 'flowerBushPink', 'flowerBushYellow', 'seaWater', 'hayBale', 'gourds', 'batsDeco', 'carvedPumpkin', 'spookySign', 'harvestLantern', 'chair', 'stool', 'bench', 'table', 'winterLights', 'wreath', 'giftBox', 'snowPal', 'ornamentTile', 'stripeBlock', 'woodTool', 'stoneTool', 'copperPick', 'steelPick', 'stick', 'bucket', 'waterBucket', 'berry', 'flour', 'sugar', 'cupcake', 'bread', 'corn', 'cornSeed', 'bioplastic', 'plasticTube', 'glowMix', 'boosterDye', 'glassVial', 'rawCopper', 'copperDust', 'copperIngot', 'ironIngot', 'steel', 'zincIngot', 'tinIngot', 'bronzeIngot', 'goldNugget', 'goldIngot', 'goldLeaf', 'silicon', 'logicChip', 'spring', 'steelBeam', 'timberBeam', 'cotton', 'cottonSeed', 'salt', 'platinumGrain', 'platinumNugget', 'titaniumDioxide', 'titaniumIngot', 'graphite', 'paintBrush', 'satchel', 'backpack', 'expeditionPack', 'fob', 'botH1', 'driveS', 'driveM', 'driveL', 'deliveryDrone', 'petRock', 'gravityHat', 'musicDisc', 'warpKey', 'bandage', 'herbTonic', 'medKit', 'whistleBell', 'critterJar', 'morphVial', 'camoCloak', 'magnetWand', 'lightWand', 'fizzVial', 'frostVial', 'sparkRod', 'cogCopper', 'cogSilver', 'cogGold', 'cogPlatinum', 'flower', 'apple', 'carvingTool', 'mob:bot', 'mob:drone', 'mob:petrock', 'mob:firefly', 'mob:butterfly', 'mob:songbird', 'mob:frog', 'mob:prairiedog', 'fx:warp', 'fx:heal', 'fx:summon', 'fx:morph', 'fx:camo', 'fx:hideSeek', 'fx:wonderLab', 'fx:float'])  # CURRICULUM-WIKI-LORE-FACTCHECK-2026-10-06 §8
+ORIGIN_DRAFT = {'harvestBasket', 'springGreens'}  # rewritten 10:12 AM; others checked
 def dex(k): return f'dex:{k}'
 def asset(kind, k):
     for cand in ([f'block:{k}', k] if kind != 'item' else [k]):
@@ -186,6 +189,9 @@ def main():
     dp = f'{ROOT}/dex/bertodex-en.json'; dx = json.load(open(dp))
     for i, k, nm, d, grp, origin in PILE_CULTURE: dx['entries'][k] = {'name': nm, 'cat': 'Seasonal & Holiday', 'what': d, 'origin': origin}
     json.dump(dx, open(dp, 'w'), indent=1, ensure_ascii=False)
+    for e in ents:
+        if e['key'] in CHECKED: e['textStatus'] = 'checked'
+        if 'origin' in e: e['originStatus'] = 'draft-curriculum-check' if e['key'] in ORIGIN_DRAFT else 'checked'
     keys = {e['key'] for e in ents}
     missing = sorted({a.split('|')[0] for r in recs for a, _ in r['in'] if a.split('|')[0] not in keys} | {r['out'][0] for r in recs if r['out'][0] not in keys})
     doc = {'format': 'bertopia-registry', 'v': 1, 'generated': 'tools/build_registry.py (bertopia-assets pack); do not hand-edit, edit registry_src.py / build_registry.py',

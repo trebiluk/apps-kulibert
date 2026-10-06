@@ -25,7 +25,7 @@
   "coal": {
    "name": "Coal Ore",
    "cat": "Ores & Rocks",
-   "what": "Coal formed from plants buried and squeezed for millions of years. It is fuel."
+   "what": "Coal formed from plants in ancient forests and marshes. They were buried and squeezed for millions of years."
   },
   "sand": {
    "name": "Sand",
@@ -265,7 +265,7 @@
   "glowMoss": {
    "name": "Glow Moss",
    "cat": "Plants & Critters",
-   "what": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea."
+   "what": "A cave moss that glows. Glowing fungi are real. No real moss makes its own light, so this is a Bertopia idea."
   },
   "cornPlant": {
    "name": "Corn Bush",
@@ -295,7 +295,7 @@
   "tinOre": {
    "name": "Tin Ore",
    "cat": "Ores & Rocks",
-   "what": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze."
+   "what": "Dark crystals of cassiterite, the main tin ore. About 9 parts copper to 1 part tin makes bronze."
   },
   "quartzOre": {
    "name": "Quartz Vein",
@@ -315,22 +315,22 @@
   "boundaryClay": {
    "name": "Boundary Clay",
    "cat": "Places",
-   "what": "A thin layer laid down all over Earth after a giant asteroid hit."
+   "what": "A thin grey stripe of clay. It is left from a space rock that hit long ago."
   },
   "silverOre": {
    "name": "Silver Ore",
    "cat": "Ores & Rocks",
-   "what": "Silver reflects light better than any other metal."
+   "what": "No metal reflects light better than silver."
   },
   "goldOre": {
    "name": "Gold Ore",
    "cat": "Ores & Rocks",
-   "what": "Gold hides in quartz veins deep in hard rock."
+   "what": "Gold is found in quartz veins in hard rock, and as flakes in river gravel."
   },
   "graphiteOre": {
    "name": "Graphite",
    "cat": "Ores & Rocks",
-   "what": "Soft, shiny carbon made when heat and pressure changed old rock."
+   "what": "Soft, shiny carbon. It formed when heat and pressure changed rocks that held old plant and animal remains."
   },
   "pannedGravel": {
    "name": "Panned Gravel",
@@ -350,7 +350,7 @@
   "blackSand": {
    "name": "Black Sand",
    "cat": "Ores & Rocks",
-   "what": "Beach sand full of heavy titanium minerals."
+   "what": "Beach sand rich in heavy, dark minerals. Some of them hold titanium."
   },
   "bauxite": {
    "name": "Bauxite",
@@ -360,7 +360,7 @@
   "ilmeniteOre": {
    "name": "Ilmenite Ore",
    "cat": "Ores & Rocks",
-   "what": "A heavy black mineral that holds titanium."
+   "what": "A heavy black mineral. It holds titanium."
   },
   "platinumOre": {
    "name": "Platinum Ore",
@@ -490,7 +490,7 @@
   "droneDock": {
    "name": "Drone Dock",
    "cat": "Items & Machines",
-   "what": "Charges and launches your Delivery Drone."
+   "what": "Charges your Delivery Drone and sends it off."
   },
   "batteryBox": {
    "name": "Battery Box",
@@ -565,12 +565,12 @@
   "ghostLight": {
    "name": "Friendly Ghost Light",
    "cat": "Seasonal & Holiday",
-   "what": "A soft smiling ghost-shaped light."
+   "what": "A soft, smiling ghost-shaped LED light."
   },
   "cobweb": {
    "name": "Cobweb Deco",
    "cat": "Seasonal & Holiday",
-   "what": "A fake cobweb for decoration."
+   "what": "A fake cobweb. It is just for looks."
   },
   "marigold": {
    "name": "Marigolds",
@@ -580,7 +580,7 @@
   "papelPicado": {
    "name": "Papel Picado Banner",
    "cat": "Seasonal & Holiday",
-   "what": "Cut-paper banners in bright colors."
+   "what": "Bright paper banners with cut-out shapes."
   },
   "skullPatternTile": {
    "name": "Marigold Pattern Tile",
@@ -590,7 +590,7 @@
   "rangoliTile": {
    "name": "Pattern Floor Tile",
    "cat": "Blocks",
-   "what": "A floor tile with a simple geometric pattern. Paint it any colour."
+   "what": "A floor tile with a simple geometric pattern. Paint it any color."
   },
   "stringLights": {
    "name": "String Lights",
@@ -635,7 +635,7 @@
   "cleanBench": {
    "name": "Clean Bench",
    "cat": "Items & Machines",
-   "what": "A dust-free bench for the finest materials."
+   "what": "A bench with no dust. You make the finest parts here."
   },
   "copperBlock": {
    "name": "Copper Block",
@@ -695,7 +695,7 @@
   "tintedGlass": {
    "name": "Tinted Glass",
    "cat": "Materials",
-   "what": "Translucent: lets some light through."
+   "what": "Darker glass. It lets less light through, but you can still see through it."
   },
   "frostedGlass": {
    "name": "Frosted Glass",
@@ -920,7 +920,7 @@
   "paintDab": {
    "name": "Paint dab",
    "cat": "Materials",
-   "what": "People made the first paints from plants and berries. The color comes from pigments."
+   "what": "The first paints were made from colored earth called ochre. The color comes from pigments."
   },
   "corn": {
    "name": "Corn",
@@ -975,7 +975,7 @@
   "copperWire": {
    "name": "Copper Wire",
    "cat": "Materials",
-   "what": "Thin copper that carries electricity."
+   "what": "Thin copper wire. It carries power."
   },
   "ironIngot": {
    "name": "Iron Ingot",
@@ -1005,7 +1005,7 @@
   "silverIngot": {
    "name": "Silver Ingot",
    "cat": "Materials",
-   "what": "Smelted silver."
+   "what": "Silver, smelted and ready to use."
   },
   "goldFlake": {
    "name": "Gold Flake",
@@ -1030,7 +1030,7 @@
   "quartz": {
    "name": "Quartz",
    "cat": "Ores & Rocks",
-   "what": "A silica crystal."
+   "what": "A clear crystal made of silicon and oxygen."
   },
   "silicon": {
    "name": "Silicon",
@@ -1045,7 +1045,7 @@
   "batteryCell": {
    "name": "Battery Cell",
    "cat": "Materials",
-   "what": "Copper and zinc make a battery cell."
+   "what": "Put copper and zinc in a sour or salty liquid. That makes a simple battery."
   },
   "spring": {
    "name": "Spring",
@@ -1055,7 +1055,7 @@
   "wireRope": {
    "name": "Wire Rope",
    "cat": "Materials",
-   "what": "Steel wires twisted together. Pull-only, very strong."
+   "what": "Steel wires twisted together. Very strong when pulled, but floppy when pushed."
   },
   "steelBeam": {
    "name": "Steel Beam",
@@ -1080,7 +1080,7 @@
   "cloth": {
    "name": "Cloth",
    "cat": "Materials",
-   "what": "Woven cotton."
+   "what": "Cloth woven from cotton."
   },
   "salt": {
    "name": "Salt",
@@ -1100,22 +1100,22 @@
   "platinumIngot": {
    "name": "Platinum Ingot",
    "cat": "Materials",
-   "what": "Platinum melts at 1,768 C, so it needs the Embercore upgrade."
+   "what": "Platinum melts at 1,768 °C, so it needs the Embercore upgrade."
   },
   "alumina": {
    "name": "Alumina",
    "cat": "Materials",
-   "what": "White powder from bauxite. It needs lots of electricity to become aluminum."
+   "what": "White powder made from bauxite. It takes a lot of power to make it into aluminum."
   },
   "aluminumIngot": {
    "name": "Aluminum Ingot",
    "cat": "Materials",
-   "what": "Light metal. Common, but it costs lots of electricity."
+   "what": "A light metal. It is common, but making it takes lots of electricity."
   },
   "aluminumBeam": {
    "name": "Aluminum Beam",
    "cat": "Materials",
-   "what": "About the same job as steel at about a third of the weight."
+   "what": "In Bertopia it does a Steel Beam's job. Real aluminum is about a third as heavy as steel, but it bends more."
   },
   "titaniumDioxide": {
    "name": "Titanium Dioxide",
@@ -1135,12 +1135,12 @@
   "rhodiumSpeck": {
    "name": "Rhodium Speck",
    "cat": "Ores & Rocks",
-   "what": "A very rare metal. It never tarnishes."
+   "what": "One of the rarest metals. It stays shiny because air and water barely change it."
   },
   "iridiumSpeck": {
    "name": "Iridium Speck",
    "cat": "Ores & Rocks",
-   "what": "The legendary find. Iridium is one of the two densest elements."
+   "what": "The rarest find of all. For its size, iridium is one of the two heaviest elements."
   },
   "paintBrush": {
    "name": "Paint Brush",
@@ -1275,7 +1275,7 @@
   "blueprintScroll": {
    "name": "Blueprint Scroll",
    "cat": "Items & Machines",
-   "what": "Read it at the Drafting Table to unlock a material."
+   "what": "Read it at the Drafting Table. It unlocks a new material."
   },
   "cogCopper": {
    "name": "Copper Cog",
@@ -1300,7 +1300,7 @@
   "cogIridium": {
    "name": "Iridium Cog",
    "cat": "Items & Machines",
-   "what": "The legendary coin."
+   "what": "The rarest coin of all."
   },
   "flower": {
    "name": "Flower",
@@ -1333,7 +1333,7 @@
    "name": "Harvest Basket",
    "cat": "Seasonal & Holiday",
    "what": "A basket of fruit and corn.",
-   "origin": "Baskets of fruit and corn are shared at Kwanzaa and many harvest festivals."
+   "origin": "Fruit and corn are set out for Kwanzaa and at many harvest festivals."
   },
   "redLantern": {
    "name": "Red Lantern",
@@ -1363,7 +1363,7 @@
    "name": "Spring Greens",
    "cat": "Seasonal & Holiday",
    "what": "A dish of sprouted green grass.",
-   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the Persian New Year."
+   "origin": "Sprouted greens (sabzeh) are grown for Nowruz, the new year in Afghanistan, Iran and nearby countries."
   },
   "kindnessHeart": {
    "name": "Kindness Heart",

@@ -584,9 +584,9 @@ items.png,atlas,atlas/items.png,,,Contains Kenney CC0 tiles + project-original c
 terrain.json,atlas-map,atlas/terrain.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,8faa5629b574
 alpha.json,atlas-map,atlas/alpha.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,4a2f46feabf1
 items.json,atlas-map,atlas/items.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,543f76b93c95
-registry.json,registry,registry.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,53b9a15d4a50
-REGISTRY.json,registry-wiki,REGISTRY.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,6c19e156d765
-bertodex-en.json,dex-text,dex/bertodex-en.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,149208c2c51c
+registry.json,registry,registry.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,b470e1b45e8b
+REGISTRY.json,registry-wiki,REGISTRY.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,5ac844f4664a
+bertodex-en.json,dex-text,dex/bertodex-en.json,,,Contains Kenney CC0 tiles + project-original content (see per-tile rows),Kenney + trebiluk project,built,game,7f7e27c8caf7
 block:blueWhiteLights,block-texture,,,,"n/a (planned, not drawn)",,planned,"holidays-1: plain bulb string, blue #60A5FA + soft white #DCE6F0; no menorah shape, no star",
 block:wovenMat,block-texture,,,,"n/a (planned, not drawn)",,planned,"holidays-1: plain weave red/black/green; no kinara, no candles",
 block:harvestBasket,block-texture,,,,"n/a (planned, not drawn)",,planned,holidays-1: fruit and corn in a basket,
