@@ -223,7 +223,7 @@
    "id": 9,
    "key": "brickGrey",
    "name": {
-    "en": "Grey Brick"
+    "en": "Gray Brick"
    },
    "kind": "cube",
    "faces": {
@@ -1753,7 +1753,7 @@
    "natural": null,
    "dex": {
     "cat": "Places",
-    "what": "A thin grey stripe of clay. It is left from a space rock that hit long ago.",
+    "what": "A thin gray stripe of clay. It is left from a space rock that hit long ago.",
     "status": "draft-curriculum-check"
    }
   },
@@ -2863,7 +2863,7 @@
    "id": 103,
    "key": "noteBlock",
    "name": {
-    "en": "Note Block"
+    "en": "Tone Block"
    },
    "kind": "cube",
    "faces": {
@@ -3265,7 +3265,7 @@
   },
   {
    "id": 117,
-   "key": "skullPatternTile",
+   "key": "marigoldPatternTile",
    "name": {
     "en": "Marigold Pattern Tile"
    },
@@ -3278,7 +3278,7 @@
    },
    "handS": null,
    "breakable": false,
-   "drop": "skullPatternTile",
+   "drop": "marigoldPatternTile",
    "stack": 64,
    "milestone": "holidays-1",
    "availableFrom": "live",
@@ -4775,7 +4775,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "Mines every block 2x faster than a hand. Never wears out.",
+    "what": "Mines every block 2× faster than a hand. Never wears out.",
     "status": "draft-curriculum-check"
    }
   },
@@ -4793,7 +4793,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "Mines 3x faster than a hand.",
+    "what": "Mines 3× faster than a hand.",
     "status": "draft-curriculum-check"
    }
   },
@@ -4811,7 +4811,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "Mines 4x faster than a hand.",
+    "what": "Mines 4× faster than a hand.",
     "status": "draft-curriculum-check"
    }
   },
@@ -4829,7 +4829,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "Mines 6x faster than a hand.",
+    "what": "Mines 6× faster than a hand.",
     "status": "draft-curriculum-check"
    }
   },

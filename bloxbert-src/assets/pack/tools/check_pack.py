@@ -17,7 +17,7 @@ def main():
     rows = []
     for f in ('_manifest_tex.csv', '_manifest_sfx.csv', '_manifest_icons.csv'):
         for r in csv.reader(open(f'{HERE}/{f}')):
-            if r[0] == 'tile_skull_pattern': r[7] = 'planned/redraw'; r[8] = 'redraw: marigold flowers only, no skull shapes'
+            if r[0] == 'tile_marigold_pattern': r[7] = 'planned/redraw'; r[8] = 'redraw: marigold flowers only, no skull shapes'
             rows.append(r + [sha(f'{ROOT}/{r[2]}')])
     gen = [('atlas/terrain.png', 'atlas'), ('atlas/alpha.png', 'atlas'), ('atlas/items.png', 'atlas'), ('atlas/terrain.json', 'atlas-map'), ('atlas/alpha.json', 'atlas-map'),
            ('atlas/items.json', 'atlas-map'), ('registry.json', 'registry'), ('REGISTRY.json', 'registry-wiki'), ('dex/bertodex-en.json', 'dex-text')]

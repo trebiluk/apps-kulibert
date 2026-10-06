@@ -299,8 +299,8 @@ def T(name):  # texture recipes (block faces)
             d.polygon([(7, 13), (11, 9), (13, 13)], fill=(255, 214, 102)); d.polygon([(19, 13), (21, 9), (25, 13)], fill=(255, 214, 102))
             d.arc([8, 14, 24, 26], 10, 170, fill=(255, 214, 102), width=3); a = arr(im)
         return a, 'generated'
-    if k in ('tile_skull_pattern', 'tile_rangoli'):
-        a = noise_tile('#3a2f4f' if k == 'tile_skull_pattern' else '#f2e6d0', 3, k); im = img(a); d = ImageDraw.Draw(im)
+    if k in ('tile_marigold_pattern', 'tile_rangoli'):
+        a = noise_tile('#3a2f4f' if k == 'tile_marigold_pattern' else '#f2e6d0', 3, k); im = img(a); d = ImageDraw.Draw(im)
         if k == 'tile_rangoli':
             d.rectangle([3, 3, 28, 28], outline=(120, 110, 96), width=2); d.polygon([(16, 6), (26, 16), (16, 26), (6, 16)], outline=(120, 110, 96), width=2); d.rectangle([13, 13, 19, 19], fill=(150, 140, 124))
         else:

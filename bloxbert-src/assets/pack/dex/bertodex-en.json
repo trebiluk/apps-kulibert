@@ -43,7 +43,7 @@
    "what": "Baked clay bricks. Strong when you push on them."
   },
   "brickGrey": {
-   "name": "Grey Brick",
+   "name": "Gray Brick",
    "cat": "Blocks",
    "what": "Stone cut into bricks."
   },
@@ -315,7 +315,7 @@
   "boundaryClay": {
    "name": "Boundary Clay",
    "cat": "Places",
-   "what": "A thin grey stripe of clay. It is left from a space rock that hit long ago."
+   "what": "A thin gray stripe of clay. It is left from a space rock that hit long ago."
   },
   "silverOre": {
    "name": "Silver Ore",
@@ -513,7 +513,7 @@
    "what": "Lights up where you step. Smooth fades, never strobe."
   },
   "noteBlock": {
-   "name": "Note Block",
+   "name": "Tone Block",
    "cat": "Items & Machines",
    "what": "Tap to raise the pitch. The block under it picks the instrument."
   },
@@ -582,7 +582,7 @@
    "cat": "Seasonal & Holiday",
    "what": "Bright paper banners with cut-out shapes."
   },
-  "skullPatternTile": {
+  "marigoldPatternTile": {
    "name": "Marigold Pattern Tile",
    "cat": "Seasonal & Holiday",
    "what": "A tile with a bright marigold flower pattern."
@@ -855,22 +855,22 @@
   "woodTool": {
    "name": "Wood Pick",
    "cat": "Items & Machines",
-   "what": "Mines every block 2x faster than a hand. Never wears out."
+   "what": "Mines every block 2× faster than a hand. Never wears out."
   },
   "stoneTool": {
    "name": "Stone Pick",
    "cat": "Items & Machines",
-   "what": "Mines 3x faster than a hand."
+   "what": "Mines 3× faster than a hand."
   },
   "copperPick": {
    "name": "Copper Pick",
    "cat": "Items & Machines",
-   "what": "Mines 4x faster than a hand."
+   "what": "Mines 4× faster than a hand."
   },
   "steelPick": {
    "name": "Steel Pick",
    "cat": "Items & Machines",
-   "what": "Mines 6x faster than a hand."
+   "what": "Mines 6× faster than a hand."
   },
   "stick": {
    "name": "Stick",
@@ -1354,10 +1354,10 @@
    "origin": "Fanous lanterns light streets during Ramadan in Egypt and nearby countries."
   },
   "colourSplash": {
-   "name": "Colour Splash Block",
+   "name": "Color Splash Block",
    "cat": "Seasonal & Holiday",
    "what": "A block covered in bright paint splats.",
-   "origin": "People throw coloured powder at Holi, a spring festival from India."
+   "origin": "People throw colored powder at Holi, a spring festival from India."
   },
   "springGreens": {
    "name": "Spring Greens",

@@ -15,7 +15,7 @@ BLOCKS = [
  (6,'sand','Sand','cube','sand',0.5,L,L,'Ores & Rocks','Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass.'),
  (7,'gravel','Gravel','cube','gravel_stone',0.7,L,L,'Ores & Rocks','Small rounded stones, often found in river beds.'),
  (8,'brickRed','Red Brick','cube','brick_red',4.0,L,L,'Blocks','Baked clay bricks. Strong when you push on them.'),
- (9,'brickGrey','Grey Brick','cube','brick_grey',4.0,L,L,'Blocks','Stone cut into bricks.'),
+ (9,'brickGrey','Gray Brick','cube','brick_grey',4.0,L,L,'Blocks','Stone cut into bricks.'),
  (10,'planks','Planks','cube','wood',1.5,L,L,'Materials','Boards sawn from a log. 1 Log makes 4.'),
  (11,'log','Log','cube',dict(top='trunk_top',side='trunk_side',bottom='trunk_top'),2.0,L,L,'Plants & Critters','A piece of tree trunk. The rings show its age.'),
  (12,'leaves','Leaves','alpha','leaves',0.2,L,L,'Plants & Critters','Leaves make food for the tree from sunlight. Sometimes a Berry falls out.'),
@@ -73,7 +73,7 @@ BLOCKS = [
  (60,'quartzOre','Quartz Vein','cube','ore_quartz',4.5,'world-1','world-1','Ores & Rocks','White crystals of silica, the same stuff as most sand.'),
  (61,'quartzSand','Quartz Sand','cube','sand_quartz',0.5,'world-2','world-2','Ores & Rocks','Dune sand with quartz grains you can collect.'),
  (62,'clay','Clay','cube','clay',0.7,'world-1','world-1','Ores & Rocks','Soft, sticky earth found by water. Bake it into Brick.'),
- (63,'boundaryClay','Boundary Clay','cube','clay_boundary',0.7,'world-2','world-2','Places','A thin grey stripe of clay. It is left from a space rock that hit long ago.'),
+ (63,'boundaryClay','Boundary Clay','cube','clay_boundary',0.7,'world-2','world-2','Places','A thin gray stripe of clay. It is left from a space rock that hit long ago.'),
  (64,'silverOre','Silver Ore','cube','ore_silver',6.0,'world-1','world-1','Ores & Rocks','No metal reflects light better than silver.'),
  (65,'goldOre','Gold Ore','cube','ore_gold',7.0,'world-1','world-1','Ores & Rocks','Gold is found in quartz veins in hard rock, and as flakes in river gravel.'),
  (66,'graphiteOre','Graphite','cube','ore_graphite',3.0,'world-2','world-2','Ores & Rocks','Soft, shiny carbon. It formed when heat and pressure changed rocks that held old plant and animal remains.'),
@@ -119,7 +119,7 @@ BLOCKS = [
  # fun-1, music-1
  (101,'bounceBlock','Bounce Block','cube',dict(top='bounce_top',side='bounce_side',bottom='wood'),None,'fun-1',L,'Blocks','A spring pad. It stores energy when you land and gives it back.'),
  (102,'discoFloor','Disco Floor','cube',dict(top='disco_top',side='machine_side',bottom='machine_side'),None,'fun-1',L,'Blocks','Lights up where you step. Smooth fades, never strobe.'),
- (103,'noteBlock','Note Block','cube',dict(top='note_top',side='note_side',bottom='wood'),None,'music-1',L,'Items & Machines','Tap to raise the pitch. The block under it picks the instrument.'),
+ (103,'noteBlock','Tone Block','cube',dict(top='note_top',side='note_side',bottom='wood'),None,'music-1',L,'Items & Machines','Tap to raise the pitch. The block under it picks the instrument.'),
  (104,'keyboardBlock','Keyboard','model','keyboard',None,'music-1',L,'Items & Machines','An 8-pad keyboard you can play.'),
  (105,'drumKit','Drum Kit','model','drumkit',None,'music-1',L,'Items & Machines','An 8-pad drum kit.'),
  (106,'guitar','Guitar','model','guitar',None,'music-1',L,'Items & Machines','An 8-pad guitar.'),
@@ -134,7 +134,7 @@ BLOCKS = [
  (114,'cobweb','Cobweb Deco','cross','cobweb',None,'holidays-1',L,'Seasonal & Holiday','A fake cobweb. It is just for looks.'),
  (115,'marigold','Marigolds','cross','marigold',None,'holidays-1',L,'Seasonal & Holiday','Bright orange flowers that bloom from summer into autumn.'),
  (116,'papelPicado','Papel Picado Banner','flat','papel_picado',None,'holidays-1',L,'Seasonal & Holiday','Bright paper banners with cut-out shapes.'),
- (117,'skullPatternTile','Marigold Pattern Tile','cube','tile_skull_pattern',None,'holidays-1',L,'Seasonal & Holiday','A tile with a bright marigold flower pattern.'),
+ (117,'marigoldPatternTile','Marigold Pattern Tile','cube','tile_marigold_pattern',None,'holidays-1',L,'Seasonal & Holiday','A tile with a bright marigold flower pattern.'),
  (119,'rangoliTile','Pattern Floor Tile','cube','tile_rangoli',None,'storage-2',L,'Blocks','A floor tile with a simple geometric pattern. Paint it any color.'),
  (120,'stringLights','String Lights','flat','string_lights',None,'holidays-1',L,'Seasonal & Holiday','A strand of small LED lights.'),
  # near-term stations, effects, progression (briefs not written yet)
@@ -192,10 +192,10 @@ BLOCKS = [
 ]
 # Items without a block. key, en name, icon generator, milestone, from, dexCat, what
 ITEMS = [
- ('woodTool','Wood Pick','pick:wood','live',L,'Items & Machines','Mines every block 2x faster than a hand. Never wears out.'),
- ('stoneTool','Stone Pick','pick:stone','live',L,'Items & Machines','Mines 3x faster than a hand.'),
- ('copperPick','Copper Pick','pick:copper','basics-1',L,'Items & Machines','Mines 4x faster than a hand.'),
- ('steelPick','Steel Pick','pick:steel','basics-1',L,'Items & Machines','Mines 6x faster than a hand.'),
+ ('woodTool','Wood Pick','pick:wood','live',L,'Items & Machines','Mines every block 2× faster than a hand. Never wears out.'),
+ ('stoneTool','Stone Pick','pick:stone','live',L,'Items & Machines','Mines 3× faster than a hand.'),
+ ('copperPick','Copper Pick','pick:copper','basics-1',L,'Items & Machines','Mines 4× faster than a hand.'),
+ ('steelPick','Steel Pick','pick:steel','basics-1',L,'Items & Machines','Mines 6× faster than a hand.'),
  ('stick','Stick','stick','basics-1',L,'Materials','2 Planks make 4 Sticks.'),
  ('pan','Pan','pan','world-1','world-1','Items & Machines','A wooden pan. Swirl river gravel to find heavy gold flakes.'),
  ('bucket','Bucket','bucket','world-1','world-1','Items & Machines','Scoops 1 block of still water.'),
