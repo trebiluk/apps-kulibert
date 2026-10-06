@@ -4487,7 +4487,7 @@
    "natural": null,
    "dex": {
     "cat": "Blocks",
-    "what": "A friendly gravestone-style sign. Write a silly message on it.",
+    "what": "A wooden sign with a bat cut-out. Write a friendly message on it.",
     "status": "draft-curriculum-check"
    }
   },
@@ -6446,7 +6446,7 @@
   {
    "key": "carvingTool",
    "name": {
-    "en": "Carving Tool"
+    "en": "Carving Scoop"
    },
    "icon": {
     "atlas": "items",
@@ -6457,7 +6457,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Items & Machines",
-    "what": "A safe scoop-and-saw for pumpkins. Use it on a Pumpkin to carve a face.",
+    "what": "A safe scoop, not a knife. Use it on a Pumpkin to carve a face.",
     "status": "draft-curriculum-check"
    }
   }

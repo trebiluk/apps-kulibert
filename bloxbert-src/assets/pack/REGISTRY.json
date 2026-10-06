@@ -2521,7 +2521,7 @@
    "desc": "A squash that ripens in autumn.",
    "verbs": [
     "Place",
-    "Use (with Carving Tool → carve panel)"
+    "Use (with Carving Scoop → carve panel)"
    ],
    "recipes": [],
    "stage": "holidays-1",
@@ -3664,7 +3664,7 @@
    "name": {
     "en": "Spooky Sign"
    },
-   "desc": "A friendly gravestone-style sign. Write a silly message on it.",
+   "desc": "A wooden sign with a bat cut-out. Write a friendly message on it.",
    "verbs": [
     "Mine",
     "Place"
@@ -5868,9 +5868,9 @@
    "key": "carvingTool",
    "type": "item",
    "name": {
-    "en": "Carving Tool"
+    "en": "Carving Scoop"
    },
-   "desc": "A safe scoop-and-saw for pumpkins. Use it on a Pumpkin to carve a face.",
+   "desc": "A safe scoop, not a knife. Use it on a Pumpkin to carve a face.",
    "verbs": [
     "Use (on a Pumpkin)"
    ],
@@ -7133,16 +7133,16 @@
    "in": [
     [
      "stick",
-     1
+     2
     ],
     [
-     "ironIngot",
+     "stone",
      1
     ]
    ],
    "secs": 2,
    "gate": null,
-   "source": "PENDING GM (holidays-1 carving draft)"
+   "source": "DECOR-PACKS §3 stand-in (2 Sticks + 1 Iron Nugget once an Iron Nugget item exists)"
   },
   {
    "id": "r:bucket",

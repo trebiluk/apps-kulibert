@@ -178,7 +178,7 @@ BLOCKS = [
  (157,'scarecrow','Scarecrow','model','scarecrow',None,'holidays-1',L,'Blocks','A straw figure farmers use to keep birds off crops.'),
  (158,'batsDeco','Bat Garland','flat','bats_deco',None,'holidays-1',L,'Blocks','Paper bats. Real bats eat lots of insects at night.'),
  (159,'carvedPumpkin','Carved Pumpkin','cube',dict(front='carved_front_blank',side='pumpkin_side',top='pumpkin_top'),None,'holidays-1',L,'Blocks','A pumpkin with a face you carved yourself. An LED inside makes it glow.'),
- (166,'spookySign','Spooky Sign','model','sign_spooky',None,'holidays-1',L,'Blocks','A friendly gravestone-style sign. Write a silly message on it.'),
+ (166,'spookySign','Spooky Sign','model','sign_spooky',None,'holidays-1',L,'Blocks','A wooden sign with a bat cut-out. Write a friendly message on it.'),
  (167,'harvestLantern','Harvest Lantern','model','lantern_harvest',None,'holidays-1',L,'Blocks','A hanging lantern with an LED glow, never a flame.'),
  (168,'chair','Chair','model','chair',None,'storage-2',L,'Blocks','A seat for a table. Use it to sit; move to get up.'),
  (169,'stool','Stool','model','stool',None,'storage-2',L,'Blocks','A seat with no back. Use it to sit; move to get up.'),
@@ -285,7 +285,7 @@ ITEMS = [
  ('cogIridium','Iridium Cog','cog:iridium','world-3',L,'Items & Machines','The legendary coin.'),
  ('flower','Flower','flower','world-2','world-2','Plants & Critters','1 Flower makes 2 Paint dabs.'),
  ('apple','Apple','apple','holidays-1',L,'Plants & Critters','A harvest fruit.'),
- ('carvingTool','Carving Tool','carver','holidays-1',L,'Items & Machines','A safe scoop-and-saw for pumpkins. Use it on a Pumpkin to carve a face.'),
+ ('carvingTool','Carving Scoop','carver','holidays-1',L,'Items & Machines','A safe scoop, not a knife. Use it on a Pumpkin to carve a face.'),
 ]
 SPRITES = [  # mobs, bots, critters: key, en name, milestone, what
  ('bot','Berty\'s Bot H1','bot-cargo','A little bot that follows you and carries your stuff.'),
