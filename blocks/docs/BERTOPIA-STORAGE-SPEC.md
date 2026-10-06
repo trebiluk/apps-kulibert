@@ -1,4 +1,6 @@
 # Bertopia Storage & Logistics Spec (GameMaster, Oct 4 2026 6:38 AM ET)
+> **Roles and worlds (6:56 AM):** "Teacher" means anyone Diego gives the TechWorks Teacher flag (staff, club officers, kid helpers), not a fixed staff list. "Creative" = the Build world (Teacher flag only) and "Survival" = the Game world (everyone). See BERTOPIA-WORLDS.md.
+
 Single source of truth. Supersedes the 6:35 / 6:36 / 6:37 chat replies.
 Rules for everything: crafted only, never bought with Cogs, items are NEVER lost. Kid-readable, tap-first, works on phone portrait/landscape and Chromebook.
 New materials: Cloth (3 Cotton, grown). Uses existing Steel, Glass, Planks, Copper Wire, Battery Cell (Copper+Zinc), Plastic Tube, Silicon, Charger, Solar Panel.
@@ -75,3 +77,6 @@ Creative: all blocks in the palette, no energy costs, Bag shows the palette. Sur
 
 ## Badges
 Pack Rat (first Backpack) · Interior Designer (paint 50 blocks) · Tube Tycoon (first tube delivery) · Sort It Out (sort 100 items) · Network Admin (4 storage blocks on one network) · Night Shift (network runs through a night on a Battery Box) · Beam It (first pad send) · Air Mail (first drone delivery) · Supply Chain (move items by Bot, tube, pad and drone in one day)
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

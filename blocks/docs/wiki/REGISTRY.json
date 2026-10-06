@@ -1,0 +1,8814 @@
+{
+ "format": "bertopia-registry",
+ "v": 1,
+ "generated": "tools/build_registry.py (bertopia-assets pack); do not hand-edit, edit registry_src.py / build_registry.py",
+ "rules": [
+  "ids 1-31 are live 2.5.42 and frozen",
+  "every new brief adds its rows here FIRST (CODING-PLAN phase 0)",
+  "game + Bertodex read this file; names/facts never live anywhere else",
+  "text = grade 5-6 reading level, our own names only; draft until Curriculum Bot checks",
+  "GM-ANSWERS-2026-10-06 wins over older specs"
+ ],
+ "verbs": [
+  "Move",
+  "Mine",
+  "Place",
+  "Use",
+  "Open",
+  "Connect",
+  "Pair",
+  "Move-item",
+  "Craft",
+  "Paint"
+ ],
+ "counts": {
+  "biome": 8,
+  "block": 100,
+  "effect": 8,
+  "element": 16,
+  "item": 93,
+  "machine": 54,
+  "mob": 9,
+  "ore": 17,
+  "recipe": 97
+ },
+ "unknownKeysInRecipes": [],
+ "entries": [
+  {
+   "id": 1,
+   "key": "grass",
+   "type": "block",
+   "name": {
+    "en": "Grass"
+   },
+   "desc": "Grass on top of soil. Break it and you get Dirt.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "grass_top",
+   "fact": null,
+   "dexId": "dex:grass",
+   "dexCat": "Blocks",
+   "handS": 0.6,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 2,
+   "key": "dirt",
+   "type": "block",
+   "name": {
+    "en": "Dirt"
+   },
+   "desc": "Soil: tiny bits of rock mixed with old plant matter.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "dirt",
+   "fact": null,
+   "dexId": "dex:dirt",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.6,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 3,
+   "key": "stone",
+   "type": "block",
+   "name": {
+    "en": "Stone"
+   },
+   "desc": "Plain rock. Most of the underground is stone.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "stone",
+   "fact": null,
+   "dexId": "dex:stone",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 4,
+   "key": "slate",
+   "type": "block",
+   "name": {
+    "en": "Slate"
+   },
+   "desc": "A dark rock that splits into flat sheets.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "greystone",
+   "fact": null,
+   "dexId": "dex:slate",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 5,
+   "key": "coal",
+   "type": "ore",
+   "name": {
+    "en": "Coal Ore"
+   },
+   "desc": "Coal formed from plants buried and squeezed for millions of years. It is fuel.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "stone_coal",
+   "fact": "Coal is mostly carbon from plants that lived over 300 million years ago.",
+   "dexId": "dex:coal",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 6,
+   "key": "sand",
+   "type": "block",
+   "name": {
+    "en": "Sand"
+   },
+   "desc": "Sand is mostly tiny grains of quartz. Bake 2 in the Oven for Glass.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "sand",
+   "fact": "Glass is made by melting sand at about 1,700 C.",
+   "dexId": "dex:sand",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 7,
+   "key": "gravel",
+   "type": "block",
+   "name": {
+    "en": "Gravel"
+   },
+   "desc": "Small rounded stones, often found in river beds.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "gravel_stone",
+   "fact": null,
+   "dexId": "dex:gravel",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.7,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 8,
+   "key": "brickRed",
+   "type": "block",
+   "name": {
+    "en": "Red Brick"
+   },
+   "desc": "Baked clay bricks. Strong when you push on them.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:brickRed"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "brick_red",
+   "fact": null,
+   "dexId": "dex:brickRed",
+   "dexCat": "Blocks",
+   "handS": 4.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 9,
+   "key": "brickGrey",
+   "type": "block",
+   "name": {
+    "en": "Grey Brick"
+   },
+   "desc": "Stone cut into bricks.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:brickGrey"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "brick_grey",
+   "fact": null,
+   "dexId": "dex:brickGrey",
+   "dexCat": "Blocks",
+   "handS": 4.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 10,
+   "key": "planks",
+   "type": "block",
+   "name": {
+    "en": "Planks"
+   },
+   "desc": "Boards sawn from a log. 1 Log makes 4.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:planks"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "wood",
+   "fact": null,
+   "dexId": "dex:planks",
+   "dexCat": "Materials",
+   "handS": 1.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 11,
+   "key": "log",
+   "type": "block",
+   "name": {
+    "en": "Log"
+   },
+   "desc": "A piece of tree trunk. The rings show its age.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "trunk_top",
+   "fact": "You can count a tree's age from its rings.",
+   "dexId": "dex:log",
+   "dexCat": "Plants & Critters",
+   "handS": 2.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 12,
+   "key": "leaves",
+   "type": "block",
+   "name": {
+    "en": "Leaves"
+   },
+   "desc": "Leaves make food for the tree from sunlight. Sometimes a Berry falls out.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "leaves",
+   "fact": "Leaves use sunlight, water and carbon dioxide to make sugar (photosynthesis).",
+   "dexId": "dex:leaves",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 13,
+   "key": "woolBlue",
+   "type": "block",
+   "name": {
+    "en": "Blue Cloth Block"
+   },
+   "desc": "A soft block of dyed cloth.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cotton_blue",
+   "fact": null,
+   "dexId": "dex:woolBlue",
+   "dexCat": "Blocks",
+   "handS": 0.8,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 14,
+   "key": "woolGreen",
+   "type": "block",
+   "name": {
+    "en": "Green Cloth Block"
+   },
+   "desc": "A soft block of dyed cloth.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cotton_green",
+   "fact": null,
+   "dexId": "dex:woolGreen",
+   "dexCat": "Blocks",
+   "handS": 0.8,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 15,
+   "key": "woolRed",
+   "type": "block",
+   "name": {
+    "en": "Red Cloth Block"
+   },
+   "desc": "A soft block of dyed cloth.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cotton_red",
+   "fact": null,
+   "dexId": "dex:woolRed",
+   "dexCat": "Blocks",
+   "handS": 0.8,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 16,
+   "key": "woolTan",
+   "type": "block",
+   "name": {
+    "en": "Tan Cloth Block"
+   },
+   "desc": "A soft block of undyed cloth.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cotton_tan",
+   "fact": null,
+   "dexId": "dex:woolTan",
+   "dexCat": "Blocks",
+   "handS": 0.8,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 17,
+   "key": "snow",
+   "type": "block",
+   "name": {
+    "en": "Snow"
+   },
+   "desc": "Frozen water crystals. Lands soft.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "snow",
+   "fact": "Every snowflake has six sides because of how water molecules link up.",
+   "dexId": "dex:snow",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.3,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 18,
+   "key": "ice",
+   "type": "block",
+   "name": {
+    "en": "Ice"
+   },
+   "desc": "Frozen water. In Bertopia it does not slide.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:ice"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "ice",
+   "fact": "Ice floats because water expands when it freezes.",
+   "dexId": "dex:ice",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 19,
+   "key": "redSand",
+   "type": "block",
+   "name": {
+    "en": "Red Sand"
+   },
+   "desc": "Sand stained red by iron. Bake it for Red Brick.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "redsand",
+   "fact": null,
+   "dexId": "dex:redSand",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 20,
+   "key": "glass",
+   "type": "block",
+   "name": {
+    "en": "Glass"
+   },
+   "desc": "Sand melted and cooled until you can see through it.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:glass"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "glass",
+   "fact": "Glass looks solid, but it has no crystal pattern inside.",
+   "dexId": "dex:glass",
+   "dexCat": "Materials",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 21,
+   "key": "coreplate",
+   "type": "block",
+   "name": {
+    "en": "Coreplate"
+   },
+   "desc": "The floor of the world at y -64. It never breaks.",
+   "verbs": [
+    "(none)"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "coreplate",
+   "fact": null,
+   "dexId": "dex:coreplate",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 22,
+   "key": "workbench",
+   "type": "machine",
+   "name": {
+    "en": "Workbench"
+   },
+   "desc": "A table for making things from wood, cloth and stone.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft"
+   ],
+   "recipes": [
+    "r:workbench"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "workbench_top",
+   "fact": null,
+   "dexId": "dex:workbench",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 23,
+   "key": "oven",
+   "type": "machine",
+   "name": {
+    "en": "Oven"
+   },
+   "desc": "Bakes food and turns sand into glass.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft"
+   ],
+   "recipes": [
+    "r:oven"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "oven_front",
+   "fact": null,
+   "dexId": "dex:oven",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 24,
+   "key": "vend",
+   "type": "machine",
+   "name": {
+    "en": "Vending Counter"
+   },
+   "desc": "Sells your goods to townsfolk while you play.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Move-item"
+   ],
+   "recipes": [
+    "r:vend"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "vend_front",
+   "fact": null,
+   "dexId": "dex:vend",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 25,
+   "key": "storeCounter",
+   "type": "block",
+   "name": {
+    "en": "Store Counter"
+   },
+   "desc": "The town store. Restock things you have already found.",
+   "verbs": [
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "store_front",
+   "fact": null,
+   "dexId": "dex:storeCounter",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 26,
+   "key": "bunk",
+   "type": "machine",
+   "name": {
+    "en": "Bunk"
+   },
+   "desc": "Tap it to set your home spot.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:bunk"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "bunk_top",
+   "fact": null,
+   "dexId": "dex:bunk",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 27,
+   "key": "box",
+   "type": "machine",
+   "name": {
+    "en": "Box"
+   },
+   "desc": "Holds 18 stacks. Two side by side make a Double Box.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:box"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "box_front",
+   "fact": null,
+   "dexId": "dex:box",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 28,
+   "key": "wheat",
+   "type": "block",
+   "name": {
+    "en": "Wheat"
+   },
+   "desc": "A grass whose seeds are ground into flour.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "wheat_stage4",
+   "fact": null,
+   "dexId": "dex:wheat",
+   "dexCat": "Plants & Critters",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 29,
+   "key": "reed",
+   "type": "block",
+   "name": {
+    "en": "Reed"
+   },
+   "desc": "A tall plant that grows by water. Here it gives sugar.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "reed",
+   "fact": null,
+   "dexId": "dex:reed",
+   "dexCat": "Plants & Critters",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 30,
+   "key": "door",
+   "type": "block",
+   "name": {
+    "en": "Wood Door"
+   },
+   "desc": "A door made from 6 Planks. Tap to open.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:door"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "door_wood_top",
+   "fact": null,
+   "dexId": "dex:door",
+   "dexCat": "Blocks",
+   "handS": 1.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 31,
+   "key": "doorOpen",
+   "type": "block",
+   "name": {
+    "en": "Wood Door (open)"
+   },
+   "desc": "An open wood door.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "door_wood_top",
+   "fact": null,
+   "dexId": "dex:doorOpen",
+   "dexCat": "Blocks",
+   "handS": 1.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 32,
+   "key": "doorGlass",
+   "type": "block",
+   "name": {
+    "en": "Glass Door"
+   },
+   "desc": "A door with glass panes. Tap to open.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:doorGlass"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_glass_top",
+   "fact": null,
+   "dexId": "dex:doorGlass",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 33,
+   "key": "doorGlassOpen",
+   "type": "block",
+   "name": {
+    "en": "Glass Door (open)"
+   },
+   "desc": "An open glass door.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_glass_top",
+   "fact": null,
+   "dexId": "dex:doorGlassOpen",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 34,
+   "key": "doorMetal",
+   "type": "block",
+   "name": {
+    "en": "Metal Door"
+   },
+   "desc": "A steel door. Only a button, lever or power opens it.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [
+    "r:doorMetal"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_metal_top",
+   "fact": null,
+   "dexId": "dex:doorMetal",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 35,
+   "key": "doorMetalOpen",
+   "type": "block",
+   "name": {
+    "en": "Metal Door (open)"
+   },
+   "desc": "An open metal door.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_metal_top",
+   "fact": null,
+   "dexId": "dex:doorMetalOpen",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 36,
+   "key": "doorSliding",
+   "type": "block",
+   "name": {
+    "en": "Sliding Lab Door"
+   },
+   "desc": "Slides open when powered and someone walks up.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Connect"
+   ],
+   "recipes": [
+    "r:doorSliding"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_slide_top",
+   "fact": null,
+   "dexId": "dex:doorSliding",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 37,
+   "key": "doorSlidingOpen",
+   "type": "block",
+   "name": {
+    "en": "Sliding Lab Door (open)"
+   },
+   "desc": "An open sliding door.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "door_slide_top",
+   "fact": null,
+   "dexId": "dex:doorSlidingOpen",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 38,
+   "key": "lever",
+   "type": "machine",
+   "name": {
+    "en": "Lever"
+   },
+   "desc": "Flip it to turn a circuit on or off.",
+   "verbs": [
+    "Place",
+    "Use",
+    "Connect"
+   ],
+   "recipes": [
+    "r:lever"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:lever",
+   "fact": null,
+   "dexId": "dex:lever",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 39,
+   "key": "leverOn",
+   "type": "machine",
+   "name": {
+    "en": "Lever (on)"
+   },
+   "desc": "A lever switched on.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:leverOn",
+   "fact": null,
+   "dexId": "dex:leverOn",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 40,
+   "key": "pushButton",
+   "type": "machine",
+   "name": {
+    "en": "Push Button"
+   },
+   "desc": "Press it for 1.5 seconds of power.",
+   "verbs": [
+    "Place",
+    "Use",
+    "Connect"
+   ],
+   "recipes": [
+    "r:pushButton"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:pushButton",
+   "fact": null,
+   "dexId": "dex:pushButton",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 41,
+   "key": "pushButtonOn",
+   "type": "machine",
+   "name": {
+    "en": "Push Button (on)"
+   },
+   "desc": "A pressed button.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:pushButtonOn",
+   "fact": null,
+   "dexId": "dex:pushButtonOn",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 42,
+   "key": "smelter",
+   "type": "machine",
+   "name": {
+    "en": "Smelter"
+   },
+   "desc": "Melts ore into metal. Its Forge tab shapes the metal.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft",
+    "Move-item"
+   ],
+   "recipes": [
+    "r:smelter"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "smelter_front",
+   "fact": null,
+   "dexId": "dex:smelter",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 43,
+   "key": "fabricator",
+   "type": "machine",
+   "name": {
+    "en": "Fabricator"
+   },
+   "desc": "Builds anything with a battery, silicon or a chip. Runs on charge.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft",
+    "Connect"
+   ],
+   "recipes": [
+    "r:fabricator"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "fabricator_front",
+   "fact": null,
+   "dexId": "dex:fabricator",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 44,
+   "key": "ironOre",
+   "type": "ore",
+   "name": {
+    "en": "Iron Ore"
+   },
+   "desc": "Rusty rock full of iron. Most metal people use is iron.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_iron",
+   "fact": "Iron is the most-used metal on Earth. Steel is mostly iron.",
+   "dexId": "dex:ironOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 5.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 45,
+   "key": "copperOre",
+   "type": "ore",
+   "name": {
+    "en": "Copper Ore"
+   },
+   "desc": "Rock with copper in it. Copper carries electricity, so wires use it.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_copper",
+   "fact": "Copper is used in wires because electricity flows through it easily.",
+   "dexId": "dex:copperOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 4.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 46,
+   "key": "zincOre",
+   "type": "ore",
+   "name": {
+    "en": "Zinc Ore"
+   },
+   "desc": "Rock with zinc. Zinc coats steel so it does not rust.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_zinc",
+   "fact": "Zinc coating (galvanizing) keeps steel from rusting.",
+   "dexId": "dex:zincOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 4.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 47,
+   "key": "lantern",
+   "type": "machine",
+   "name": {
+    "en": "LED Lantern"
+   },
+   "desc": "A battery light. Tap for Low, Medium or High.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:lantern"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:lantern",
+   "fact": "LEDs use much less energy than old light bulbs.",
+   "dexId": "dex:lantern",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 48,
+   "key": "charger",
+   "type": "machine",
+   "name": {
+    "en": "Charger"
+   },
+   "desc": "Like a wall outlet: it always gives power.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open"
+   ],
+   "recipes": [
+    "r:charger"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "block:charger",
+   "fact": "A wall outlet in the U.S. gives about 120 volts.",
+   "dexId": "dex:charger",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 49,
+   "key": "glowPebble",
+   "type": "machine",
+   "name": {
+    "en": "Glow Pebble"
+   },
+   "desc": "A tiny glow. A little chemical makes a short light.",
+   "verbs": [
+    "Craft",
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:glowPebble"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "block:glowPebble",
+   "fact": null,
+   "dexId": "dex:glowPebble",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 50,
+   "key": "glowStick",
+   "type": "machine",
+   "name": {
+    "en": "Glow Stick"
+   },
+   "desc": "A chemical light. Once it is used up, it is done.",
+   "verbs": [
+    "Craft",
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:glowStick"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "block:glowStick",
+   "fact": "A glow stick glows when two chemicals mix: chemiluminescence.",
+   "dexId": "dex:glowStick",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 51,
+   "key": "jumboGlow",
+   "type": "machine",
+   "name": {
+    "en": "Jumbo Glow"
+   },
+   "desc": "A big glow stick. A dye takes the energy and picks the color.",
+   "verbs": [
+    "Craft",
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:jumboGlow"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "block:jumboGlow",
+   "fact": null,
+   "dexId": "dex:jumboGlow",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 52,
+   "key": "coldGlowVial",
+   "type": "machine",
+   "name": {
+    "en": "Cold Glow Vial"
+   },
+   "desc": "Cold slows the reaction, so it glows longer.",
+   "verbs": [
+    "Craft",
+    "Place",
+    "Use"
+   ],
+   "recipes": [
+    "r:coldGlowVial"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "world-2",
+   "assetId": "block:coldGlowVial",
+   "fact": "Cold slows chemical reactions, so a cold glow stick lasts longer.",
+   "dexId": "dex:coldGlowVial",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 53,
+   "key": "glowMoss",
+   "type": "ore",
+   "name": {
+    "en": "Glow Moss"
+   },
+   "desc": "A cave moss that glows. Glowing fungi are real; glowing moss is a Bertopia idea.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "glow_moss",
+   "fact": "Real glowing fungi (foxfire) make light with a chemical reaction called bioluminescence.",
+   "dexId": "dex:glowMoss",
+   "dexCat": "Plants & Critters",
+   "handS": 0.3,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 54,
+   "key": "cornPlant",
+   "type": "block",
+   "name": {
+    "en": "Corn Bush"
+   },
+   "desc": "Corn is a grain. Some plastics are made from corn.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "corn_bush",
+   "fact": null,
+   "dexId": "dex:cornPlant",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 55,
+   "key": "solarPanel",
+   "type": "machine",
+   "name": {
+    "en": "Solar Panel"
+   },
+   "desc": "Turns sunlight into power. Its cell runs 2 strips through the night.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open"
+   ],
+   "recipes": [
+    "r:solarPanel"
+   ],
+   "stage": "basics-3",
+   "availableFrom": "live",
+   "assetId": "solar_top",
+   "fact": "Solar cells are made from silicon.",
+   "dexId": "dex:solarPanel",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 56,
+   "key": "glowStrip",
+   "type": "machine",
+   "name": {
+    "en": "LED Glow Strip"
+   },
+   "desc": "A thin light that uses 1 charge a minute.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open"
+   ],
+   "recipes": [
+    "r:glowStrip"
+   ],
+   "stage": "basics-3",
+   "availableFrom": "live",
+   "assetId": "glow_strip",
+   "fact": null,
+   "dexId": "dex:glowStrip",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 57,
+   "key": "copperWireBlock",
+   "type": "machine",
+   "name": {
+    "en": "Copper Wire"
+   },
+   "desc": "Carries power from makers to users. Glows teal when powered.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [],
+   "stage": "basics-3",
+   "availableFrom": "live",
+   "assetId": "wire_copper",
+   "fact": null,
+   "dexId": "dex:copperWireBlock",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 58,
+   "key": "water",
+   "type": "block",
+   "name": {
+    "en": "Water"
+   },
+   "desc": "In Bertopia water stays still and never floods a build.",
+   "verbs": [
+    "Move (swim)",
+    "Use (Bucket)"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "water",
+   "fact": "Water is H2O: two hydrogen atoms and one oxygen atom.",
+   "dexId": "dex:water",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 59,
+   "key": "tinOre",
+   "type": "ore",
+   "name": {
+    "en": "Tin Ore"
+   },
+   "desc": "Dark crystals of cassiterite. About 9 parts copper to 1 part tin makes bronze.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_tin",
+   "fact": "Bronze (copper + tin) was so important that a whole age of history is named after it.",
+   "dexId": "dex:tinOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 4.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 60,
+   "key": "quartzOre",
+   "type": "ore",
+   "name": {
+    "en": "Quartz Vein"
+   },
+   "desc": "White crystals of silica, the same stuff as most sand.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_quartz",
+   "fact": "Quartz is silicon + oxygen (SiO2). Most sand is quartz.",
+   "dexId": "dex:quartzOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 4.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 61,
+   "key": "quartzSand",
+   "type": "block",
+   "name": {
+    "en": "Quartz Sand"
+   },
+   "desc": "Dune sand with quartz grains you can collect.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "sand_quartz",
+   "fact": null,
+   "dexId": "dex:quartzSand",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 62,
+   "key": "clay",
+   "type": "ore",
+   "name": {
+    "en": "Clay"
+   },
+   "desc": "Soft, sticky earth found by water. Bake it into Brick.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "clay",
+   "fact": "Clay is made of tiny flat mineral grains. Fired clay becomes brick.",
+   "dexId": "dex:clay",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.7,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 63,
+   "key": "boundaryClay",
+   "type": "ore",
+   "name": {
+    "en": "Boundary Clay"
+   },
+   "desc": "A thin layer laid down all over Earth after a giant asteroid hit.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "clay_boundary",
+   "fact": "A thin clay layer found worldwide is rich in iridium, a clue that a giant asteroid hit Earth 66 million years ago.",
+   "dexId": "dex:boundaryClay",
+   "dexCat": "Places",
+   "handS": 0.7,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 64,
+   "key": "silverOre",
+   "type": "ore",
+   "name": {
+    "en": "Silver Ore"
+   },
+   "desc": "Silver reflects light better than any other metal.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_silver",
+   "fact": "Silver conducts electricity better than any other metal.",
+   "dexId": "dex:silverOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 6.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 65,
+   "key": "goldOre",
+   "type": "ore",
+   "name": {
+    "en": "Gold Ore"
+   },
+   "desc": "Gold hides in quartz veins deep in hard rock.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "ore_gold",
+   "fact": "Gold never rusts, so very old gold objects still shine.",
+   "dexId": "dex:goldOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 7.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 66,
+   "key": "graphiteOre",
+   "type": "ore",
+   "name": {
+    "en": "Graphite"
+   },
+   "desc": "Soft, shiny carbon made when heat and pressure changed old rock.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "ore_graphite",
+   "fact": "Pencil \"lead\" is really graphite mixed with clay.",
+   "dexId": "dex:graphiteOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 67,
+   "key": "pannedGravel",
+   "type": "block",
+   "name": {
+    "en": "Panned Gravel"
+   },
+   "desc": "Gravel you already panned. It has nothing left to find.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "gravel_panned",
+   "fact": null,
+   "dexId": "dex:pannedGravel",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.7,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 68,
+   "key": "molten",
+   "type": "block",
+   "name": {
+    "en": "Molten Metal"
+   },
+   "desc": "Metal so hot it flows. Here it bounces you back to safety.",
+   "verbs": [
+    "Move (bounce back)"
+   ],
+   "recipes": [],
+   "stage": "later",
+   "availableFrom": "later",
+   "assetId": "molten",
+   "fact": null,
+   "dexId": "dex:molten",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 69,
+   "key": "saltCrust",
+   "type": "ore",
+   "name": {
+    "en": "Salt Crust"
+   },
+   "desc": "Salt left behind where an old lake dried up.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "salt_crust",
+   "fact": "Table salt is sodium chloride (NaCl).",
+   "dexId": "dex:saltCrust",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.8,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 70,
+   "key": "blackSand",
+   "type": "ore",
+   "name": {
+    "en": "Black Sand"
+   },
+   "desc": "Beach sand full of heavy titanium minerals.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "sand_black",
+   "fact": "Black sand gets its colour from heavy minerals like magnetite and ilmenite.",
+   "dexId": "dex:blackSand",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 71,
+   "key": "bauxite",
+   "type": "ore",
+   "name": {
+    "en": "Bauxite"
+   },
+   "desc": "Red-brown earth rich in aluminum. It forms where rock weathers in warm, wet places.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "bauxite",
+   "fact": "Almost all aluminum comes from bauxite.",
+   "dexId": "dex:bauxite",
+   "dexCat": "Ores & Rocks",
+   "handS": 1.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 72,
+   "key": "ilmeniteOre",
+   "type": "ore",
+   "name": {
+    "en": "Ilmenite Ore"
+   },
+   "desc": "A heavy black mineral that holds titanium.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "ore_ilmenite",
+   "fact": "Ilmenite is the main ore of titanium.",
+   "dexId": "dex:ilmeniteOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 6.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 73,
+   "key": "platinumOre",
+   "type": "ore",
+   "name": {
+    "en": "Platinum Ore"
+   },
+   "desc": "One of the rarest metals in the crust. Only deep under Emberdeep.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "ore_platinum",
+   "fact": "Platinum is used in car parts that clean exhaust.",
+   "dexId": "dex:platinumOre",
+   "dexCat": "Ores & Rocks",
+   "handS": 9.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 74,
+   "key": "basalt",
+   "type": "block",
+   "name": {
+    "en": "Basalt"
+   },
+   "desc": "Dark rock made when lava cools.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "basalt",
+   "fact": "Most of the ocean floor is basalt.",
+   "dexId": "dex:basalt",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 75,
+   "key": "snowGrass",
+   "type": "block",
+   "name": {
+    "en": "Snowy Grass"
+   },
+   "desc": "Soil with a cap of snow.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "snow",
+   "fact": null,
+   "dexId": "dex:snowGrass",
+   "dexCat": "Blocks",
+   "handS": 0.6,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 76,
+   "key": "cottonBush",
+   "type": "block",
+   "name": {
+    "en": "Cotton Bush"
+   },
+   "desc": "Cotton fluff is plant fiber. 3 Cotton spin into 1 Cloth.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "live",
+   "assetId": "cotton_bush",
+   "fact": null,
+   "dexId": "dex:cottonBush",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 77,
+   "key": "flowerBush",
+   "type": "block",
+   "name": {
+    "en": "Flowers"
+   },
+   "desc": "Flowers feed bees and butterflies. 1 Flower makes 2 Paint dabs.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "flower_teal",
+   "fact": null,
+   "dexId": "dex:flowerBush",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 78,
+   "key": "saltPan",
+   "type": "machine",
+   "name": {
+    "en": "Salt Pan"
+   },
+   "desc": "Sun dries seawater. The salt stays behind.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:saltPan"
+   ],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "block:saltPan",
+   "fact": null,
+   "dexId": "dex:saltPan",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 79,
+   "key": "wallShelf",
+   "type": "machine",
+   "name": {
+    "en": "Wall Shelf"
+   },
+   "desc": "Holds 3 things and shows all 3.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:wallShelf"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "block:wallShelf",
+   "fact": null,
+   "dexId": "dex:wallShelf",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 80,
+   "key": "shelf",
+   "type": "machine",
+   "name": {
+    "en": "Shelf"
+   },
+   "desc": "Holds 4 things and shows all 4.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:shelf"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "block:shelf",
+   "fact": null,
+   "dexId": "dex:shelf",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 81,
+   "key": "sideTable",
+   "type": "machine",
+   "name": {
+    "en": "Side Table"
+   },
+   "desc": "A table with 1 drawer: 6 slots.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:sideTable"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "block:sideTable",
+   "fact": null,
+   "dexId": "dex:sideTable",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 82,
+   "key": "desk",
+   "type": "machine",
+   "name": {
+    "en": "Desk"
+   },
+   "desc": "2 drawers, 12 slots, 1 thing on top.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:desk"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "block:desk",
+   "fact": null,
+   "dexId": "dex:desk",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 83,
+   "key": "cabinet",
+   "type": "machine",
+   "name": {
+    "en": "Cabinet"
+   },
+   "desc": "24 slots behind a door you can lock.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:cabinet"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "cabinet_front",
+   "fact": null,
+   "dexId": "dex:cabinet",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 84,
+   "key": "glassCabinet",
+   "type": "machine",
+   "name": {
+    "en": "Glass Cabinet"
+   },
+   "desc": "24 slots, lockable, shows its top 4 things.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:glassCabinet"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "cabinet_glass_front",
+   "fact": null,
+   "dexId": "dex:glassCabinet",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 85,
+   "key": "steelLocker",
+   "type": "machine",
+   "name": {
+    "en": "Steel Locker"
+   },
+   "desc": "36 slots in steel, lockable.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [
+    "r:steelLocker"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "locker_front",
+   "fact": null,
+   "dexId": "dex:steelLocker",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 86,
+   "key": "sign",
+   "type": "block",
+   "name": {
+    "en": "Sign"
+   },
+   "desc": "A label for a Box or a path.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "block:sign",
+   "fact": null,
+   "dexId": "dex:sign",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 87,
+   "key": "itemTube",
+   "type": "machine",
+   "name": {
+    "en": "Item Tube"
+   },
+   "desc": "A clear tube that moves items 2 blocks a second.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [
+    "r:itemTube"
+   ],
+   "stage": "storage-4",
+   "availableFrom": "live",
+   "assetId": "block:itemTube",
+   "fact": "Factories use conveyors to move goods from step to step.",
+   "dexId": "dex:itemTube",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 88,
+   "key": "poweredTube",
+   "type": "machine",
+   "name": {
+    "en": "Powered Tube"
+   },
+   "desc": "A tube with copper rings: 6 blocks a second.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [
+    "r:poweredTube"
+   ],
+   "stage": "storage-4",
+   "availableFrom": "live",
+   "assetId": "block:poweredTube",
+   "fact": null,
+   "dexId": "dex:poweredTube",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 89,
+   "key": "filterTube",
+   "type": "machine",
+   "name": {
+    "en": "Filter Tube"
+   },
+   "desc": "Only lets in items that match its rule.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open"
+   ],
+   "recipes": [
+    "r:filterTube"
+   ],
+   "stage": "storage-4",
+   "availableFrom": "live",
+   "assetId": "block:filterTube",
+   "fact": null,
+   "dexId": "dex:filterTube",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 90,
+   "key": "extractor",
+   "type": "machine",
+   "name": {
+    "en": "Extractor"
+   },
+   "desc": "Pulls a stack out of storage every 2 seconds.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:extractor"
+   ],
+   "stage": "storage-4",
+   "availableFrom": "live",
+   "assetId": "block:extractor",
+   "fact": null,
+   "dexId": "dex:extractor",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 91,
+   "key": "sorter",
+   "type": "machine",
+   "name": {
+    "en": "Sorter"
+   },
+   "desc": "Sends items down up to 4 outputs by rule.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:sorter"
+   ],
+   "stage": "storage-4",
+   "availableFrom": "live",
+   "assetId": "sorter_front",
+   "fact": "Recycling centres sort materials by type.",
+   "dexId": "dex:sorter",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 92,
+   "key": "networkCable",
+   "type": "machine",
+   "name": {
+    "en": "Network Cable"
+   },
+   "desc": "Links storage into one network.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [
+    "r:networkCable"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "block:networkCable",
+   "fact": null,
+   "dexId": "dex:networkCable",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 93,
+   "key": "networkCore",
+   "type": "machine",
+   "name": {
+    "en": "Network Core"
+   },
+   "desc": "The brain of a storage network. 1 per player.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:networkCore"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "core_front",
+   "fact": null,
+   "dexId": "dex:networkCore",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 94,
+   "key": "driveBay",
+   "type": "machine",
+   "name": {
+    "en": "Drive Bay"
+   },
+   "desc": "Holds 4 Drives.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Move-item"
+   ],
+   "recipes": [
+    "r:driveBay"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "drivebay_front",
+   "fact": null,
+   "dexId": "dex:driveBay",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 95,
+   "key": "terminal",
+   "type": "machine",
+   "name": {
+    "en": "Terminal"
+   },
+   "desc": "A search engine for your stuff.",
+   "verbs": [
+    "Open",
+    "Move-item",
+    "Use"
+   ],
+   "recipes": [
+    "r:terminal"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "terminal_front",
+   "fact": "A search engine finds things by looking through an index.",
+   "dexId": "dex:terminal",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 96,
+   "key": "storageLink",
+   "type": "machine",
+   "name": {
+    "en": "Storage Link"
+   },
+   "desc": "Snaps onto a Box so the network can see inside.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [
+    "r:storageLink"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "block:storageLink",
+   "fact": null,
+   "dexId": "dex:storageLink",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 97,
+   "key": "teleportPad",
+   "type": "machine",
+   "name": {
+    "en": "Teleport Pad"
+   },
+   "desc": "Sends items (never people) to its partner pad.",
+   "verbs": [
+    "Place",
+    "Pair",
+    "Move-item",
+    "Open"
+   ],
+   "recipes": [
+    "r:teleportPad"
+   ],
+   "stage": "storage-3",
+   "availableFrom": "live",
+   "assetId": "block:teleportPad",
+   "fact": "Real teleporting of objects is not possible. Scientists can only \"teleport\" information between particles.",
+   "dexId": "dex:teleportPad",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 98,
+   "key": "droneDock",
+   "type": "machine",
+   "name": {
+    "en": "Drone Dock"
+   },
+   "desc": "Charges and launches your Delivery Drone.",
+   "verbs": [
+    "Place",
+    "Pair",
+    "Use",
+    "Open"
+   ],
+   "recipes": [
+    "r:droneDock"
+   ],
+   "stage": "storage-3",
+   "availableFrom": "live",
+   "assetId": "block:droneDock",
+   "fact": null,
+   "dexId": "dex:droneDock",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 99,
+   "key": "batteryBox",
+   "type": "machine",
+   "name": {
+    "en": "Battery Box"
+   },
+   "desc": "Stores 40 charges for the night.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open"
+   ],
+   "recipes": [
+    "r:batteryBox"
+   ],
+   "stage": "storage-6",
+   "availableFrom": "live",
+   "assetId": "batterybox_front",
+   "fact": null,
+   "dexId": "dex:batteryBox",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 100,
+   "key": "networkPad",
+   "type": "machine",
+   "name": {
+    "en": "Network Pad"
+   },
+   "desc": "A teleport pad that talks to your network.",
+   "verbs": [
+    "Place",
+    "Pair",
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "storage-6",
+   "availableFrom": "live",
+   "assetId": "block:networkPad",
+   "fact": null,
+   "dexId": "dex:networkPad",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 101,
+   "key": "bounceBlock",
+   "type": "block",
+   "name": {
+    "en": "Bounce Block"
+   },
+   "desc": "A spring pad. It stores energy when you land and gives it back.",
+   "verbs": [
+    "Place",
+    "Move"
+   ],
+   "recipes": [
+    "r:bounceBlock"
+   ],
+   "stage": "fun-1",
+   "availableFrom": "live",
+   "assetId": "bounce_top",
+   "fact": "A spring stores energy when squashed and gives it back.",
+   "dexId": "dex:bounceBlock",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 102,
+   "key": "discoFloor",
+   "type": "block",
+   "name": {
+    "en": "Disco Floor"
+   },
+   "desc": "Lights up where you step. Smooth fades, never strobe.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [
+    "r:discoFloor"
+   ],
+   "stage": "fun-1",
+   "availableFrom": "live",
+   "assetId": "disco_top",
+   "fact": null,
+   "dexId": "dex:discoFloor",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 103,
+   "key": "noteBlock",
+   "type": "machine",
+   "name": {
+    "en": "Note Block"
+   },
+   "desc": "Tap to raise the pitch. The block under it picks the instrument.",
+   "verbs": [
+    "Place",
+    "Use",
+    "Connect"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "note_top",
+   "fact": "A higher pitch means the sound wave vibrates faster.",
+   "dexId": "dex:noteBlock",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 104,
+   "key": "keyboardBlock",
+   "type": "machine",
+   "name": {
+    "en": "Keyboard"
+   },
+   "desc": "An 8-pad keyboard you can play.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "block:keyboardBlock",
+   "fact": null,
+   "dexId": "dex:keyboardBlock",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 105,
+   "key": "drumKit",
+   "type": "machine",
+   "name": {
+    "en": "Drum Kit"
+   },
+   "desc": "An 8-pad drum kit.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "block:drumKit",
+   "fact": null,
+   "dexId": "dex:drumKit",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 106,
+   "key": "guitar",
+   "type": "machine",
+   "name": {
+    "en": "Guitar"
+   },
+   "desc": "An 8-pad guitar.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "block:guitar",
+   "fact": null,
+   "dexId": "dex:guitar",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 107,
+   "key": "jukebox",
+   "type": "machine",
+   "name": {
+    "en": "Jukebox"
+   },
+   "desc": "Plays Music Discs, including your own DJ Berty songs.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "jukebox_front",
+   "fact": null,
+   "dexId": "dex:jukebox",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 108,
+   "key": "pumpkin",
+   "type": "block",
+   "name": {
+    "en": "Pumpkin"
+   },
+   "desc": "A squash that ripens in autumn.",
+   "verbs": [
+    "Place",
+    "Use (with Carving Scoop → carve panel)"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "pumpkin_top",
+   "fact": "Pumpkins are fruit, because they hold seeds.",
+   "dexId": "dex:pumpkin",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 109,
+   "key": "jackOLantern",
+   "type": "block",
+   "name": {
+    "en": "Jack-o'-Lantern"
+   },
+   "desc": "A carved pumpkin with an LED inside, never a flame.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "jack_front",
+   "fact": null,
+   "dexId": "dex:jackOLantern",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 110,
+   "key": "cornStalks",
+   "type": "block",
+   "name": {
+    "en": "Corn Stalks"
+   },
+   "desc": "Dried corn stalks tied in a bundle.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "corn_stalks",
+   "fact": null,
+   "dexId": "dex:cornStalks",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 111,
+   "key": "leafPile",
+   "type": "block",
+   "name": {
+    "en": "Leaf Pile"
+   },
+   "desc": "Autumn leaves raked into a pile.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "leaf_pile",
+   "fact": null,
+   "dexId": "dex:leafPile",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 112,
+   "key": "appleCrate",
+   "type": "block",
+   "name": {
+    "en": "Apple Crate"
+   },
+   "desc": "A wooden crate of harvest apples.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "apple_crate_top",
+   "fact": null,
+   "dexId": "dex:appleCrate",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 113,
+   "key": "ghostLight",
+   "type": "block",
+   "name": {
+    "en": "Friendly Ghost Light"
+   },
+   "desc": "A soft smiling ghost-shaped light.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "block:ghostLight",
+   "fact": null,
+   "dexId": "dex:ghostLight",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 114,
+   "key": "cobweb",
+   "type": "block",
+   "name": {
+    "en": "Cobweb Deco"
+   },
+   "desc": "A fake cobweb for decoration.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "cobweb",
+   "fact": null,
+   "dexId": "dex:cobweb",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 115,
+   "key": "marigold",
+   "type": "block",
+   "name": {
+    "en": "Marigolds"
+   },
+   "desc": "Bright orange flowers used for Dia de los Muertos.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "marigold",
+   "fact": null,
+   "dexId": "dex:marigold",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 116,
+   "key": "papelPicado",
+   "type": "block",
+   "name": {
+    "en": "Papel Picado Banner"
+   },
+   "desc": "Cut-paper banners in bright colors.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "papel_picado",
+   "fact": null,
+   "dexId": "dex:papelPicado",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 117,
+   "key": "skullPatternTile",
+   "type": "block",
+   "name": {
+    "en": "Sugar-Skull Pattern Tile"
+   },
+   "desc": "A tile with a colorful sugar-skull pattern.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "tile_skull_pattern",
+   "fact": null,
+   "dexId": "dex:skullPatternTile",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 118,
+   "key": "diyaLight",
+   "type": "block",
+   "name": {
+    "en": "Diya Light"
+   },
+   "desc": "A small clay lamp shape with an LED glow, never a flame.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "block:diyaLight",
+   "fact": null,
+   "dexId": "dex:diyaLight",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 119,
+   "key": "rangoliTile",
+   "type": "block",
+   "name": {
+    "en": "Rangoli Floor Tile"
+   },
+   "desc": "A floor tile with a colorful rangoli pattern.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "tile_rangoli",
+   "fact": null,
+   "dexId": "dex:rangoliTile",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 120,
+   "key": "stringLights",
+   "type": "block",
+   "name": {
+    "en": "String Lights"
+   },
+   "desc": "A strand of small LED lights.",
+   "verbs": [
+    "Place",
+    "Connect"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "string_lights",
+   "fact": null,
+   "dexId": "dex:stringLights",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 121,
+   "key": "labBench",
+   "type": "machine",
+   "name": {
+    "en": "Lab Bench"
+   },
+   "desc": "Where Wonder Lab gadgets and effects are made.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "labbench_top",
+   "fact": null,
+   "dexId": "dex:labBench",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 122,
+   "key": "warpPad",
+   "type": "machine",
+   "name": {
+    "en": "Warp Pad"
+   },
+   "desc": "A player-size pad you can warp to with a Warp Key.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "block:warpPad",
+   "fact": null,
+   "dexId": "dex:warpPad",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 123,
+   "key": "sleepingBag",
+   "type": "machine",
+   "name": {
+    "en": "Sleeping Bag"
+   },
+   "desc": "Tap to set where you come back.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "block:sleepingBag",
+   "fact": null,
+   "dexId": "dex:sleepingBag",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 124,
+   "key": "crewBanner",
+   "type": "machine",
+   "name": {
+    "en": "Crew Banner"
+   },
+   "desc": "A shared spawn spot for your crew.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "block:crewBanner",
+   "fact": null,
+   "dexId": "dex:crewBanner",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 125,
+   "key": "gameZoneFlag",
+   "type": "machine",
+   "name": {
+    "en": "Game Zone Flag"
+   },
+   "desc": "Marks a play zone for Hide-and-Seek and mini-games.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "block:gameZoneFlag",
+   "fact": null,
+   "dexId": "dex:gameZoneFlag",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 126,
+   "key": "workshopDoor",
+   "type": "block",
+   "name": {
+    "en": "Workshop Door"
+   },
+   "desc": "Teacher-flag door to the Build world.",
+   "verbs": [
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "worlds-1",
+   "availableFrom": "live",
+   "assetId": "door_workshop_top",
+   "fact": null,
+   "dexId": "dex:workshopDoor",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 127,
+   "key": "draftingTable",
+   "type": "machine",
+   "name": {
+    "en": "Drafting Table"
+   },
+   "desc": "Read Blueprint Scrolls here to unlock new materials.",
+   "verbs": [
+    "Place",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "drafting_top",
+   "fact": null,
+   "dexId": "dex:draftingTable",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 128,
+   "key": "cleanBench",
+   "type": "machine",
+   "name": {
+    "en": "Clean Bench"
+   },
+   "desc": "A dust-free bench for the finest materials.",
+   "verbs": [
+    "Place",
+    "Open",
+    "Craft"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cleanbench_front",
+   "fact": null,
+   "dexId": "dex:cleanBench",
+   "dexCat": "Items & Machines",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 129,
+   "key": "copperBlock",
+   "type": "block",
+   "name": {
+    "en": "Copper Block"
+   },
+   "desc": "A solid block of copper.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "copper_block",
+   "fact": null,
+   "dexId": "dex:copperBlock",
+   "dexCat": "Blocks",
+   "handS": 5.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 130,
+   "key": "steelBlock",
+   "type": "block",
+   "name": {
+    "en": "Steel Block"
+   },
+   "desc": "A solid block of steel.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "steel_block",
+   "fact": null,
+   "dexId": "dex:steelBlock",
+   "dexCat": "Blocks",
+   "handS": 7.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 131,
+   "key": "mirror",
+   "type": "block",
+   "name": {
+    "en": "Mirror"
+   },
+   "desc": "Polished silver behind glass reflects light.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "mirror",
+   "fact": null,
+   "dexId": "dex:mirror",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 132,
+   "key": "dexShelf",
+   "type": "block",
+   "name": {
+    "en": "Dex Shelf"
+   },
+   "desc": "A trophy for filling half the Bertodex.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "availableFrom": "live",
+   "assetId": "block:dexShelf",
+   "fact": null,
+   "dexId": "dex:dexShelf",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 133,
+   "key": "trophyShelf",
+   "type": "block",
+   "name": {
+    "en": "Trophy Shelf"
+   },
+   "desc": "Shows the trophies you earned.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "later",
+   "availableFrom": "live",
+   "assetId": "block:trophyShelf",
+   "fact": null,
+   "dexId": "dex:trophyShelf",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 134,
+   "key": "bamboo",
+   "type": "block",
+   "name": {
+    "en": "Bamboo Pole"
+   },
+   "desc": "A light, hollow grass stem. Strong for its weight.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "bamboo_top",
+   "fact": null,
+   "dexId": "dex:bamboo",
+   "dexCat": "Materials",
+   "handS": 1.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 135,
+   "key": "plywood",
+   "type": "block",
+   "name": {
+    "en": "Plywood"
+   },
+   "desc": "Thin wood layers glued with the grain crossing.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "plywood",
+   "fact": null,
+   "dexId": "dex:plywood",
+   "dexCat": "Materials",
+   "handS": 1.5,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 136,
+   "key": "cutStone",
+   "type": "block",
+   "name": {
+    "en": "Cut Stone"
+   },
+   "desc": "Stone cut into neat blocks.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cut_stone",
+   "fact": null,
+   "dexId": "dex:cutStone",
+   "dexCat": "Materials",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 137,
+   "key": "cinderBlock",
+   "type": "block",
+   "name": {
+    "en": "Cinder Block"
+   },
+   "desc": "A hollow concrete block, like real building blocks.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cinder_top",
+   "fact": null,
+   "dexId": "dex:cinderBlock",
+   "dexCat": "Materials",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 138,
+   "key": "concrete",
+   "type": "block",
+   "name": {
+    "en": "Concrete"
+   },
+   "desc": "Strong when pushed, cracks when pulled.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "concrete",
+   "fact": null,
+   "dexId": "dex:concrete",
+   "dexCat": "Materials",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 139,
+   "key": "roofTile",
+   "type": "block",
+   "name": {
+    "en": "Roof Tile"
+   },
+   "desc": "Overlapping tiles shed rain.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "roof_tile",
+   "fact": null,
+   "dexId": "dex:roofTile",
+   "dexCat": "Materials",
+   "handS": 2.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 140,
+   "key": "tintedGlass",
+   "type": "block",
+   "name": {
+    "en": "Tinted Glass"
+   },
+   "desc": "Translucent: lets some light through.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "glass_tinted",
+   "fact": null,
+   "dexId": "dex:tintedGlass",
+   "dexCat": "Materials",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 141,
+   "key": "frostedGlass",
+   "type": "block",
+   "name": {
+    "en": "Frosted Glass"
+   },
+   "desc": "Lets light through but blurs what is behind it.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "glass_frosted",
+   "fact": null,
+   "dexId": "dex:frostedGlass",
+   "dexCat": "Materials",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 142,
+   "key": "glassPane",
+   "type": "block",
+   "name": {
+    "en": "Glass Pane"
+   },
+   "desc": "A thin sheet of glass.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "glass_pane",
+   "fact": null,
+   "dexId": "dex:glassPane",
+   "dexCat": "Materials",
+   "handS": 0.4,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 143,
+   "key": "quartzCrystal",
+   "type": "block",
+   "name": {
+    "en": "Quartz Crystal"
+   },
+   "desc": "A cluster of quartz crystals.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "quartz_cluster",
+   "fact": null,
+   "dexId": "dex:quartzCrystal",
+   "dexCat": "Blocks",
+   "handS": 1.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 144,
+   "key": "overflowBox",
+   "type": "block",
+   "name": {
+    "en": "Overflow Box"
+   },
+   "desc": "Holds what did not fit. Take-only, never deleted.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "2.6.0",
+   "availableFrom": "live",
+   "assetId": "overflow_front",
+   "fact": null,
+   "dexId": "dex:overflowBox",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 145,
+   "key": "bronzePlaque",
+   "type": "block",
+   "name": {
+    "en": "Bronze Plaque"
+   },
+   "desc": "A plaque cast in bronze.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "later",
+   "availableFrom": "live",
+   "assetId": "bronze_plaque",
+   "fact": null,
+   "dexId": "dex:bronzePlaque",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 146,
+   "key": "granite",
+   "type": "block",
+   "name": {
+    "en": "Granite"
+   },
+   "desc": "Speckled rock made from slowly cooled magma.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "granite",
+   "fact": "Granite cooled slowly underground, so its crystals grew big enough to see.",
+   "dexId": "dex:granite",
+   "dexCat": "Ores & Rocks",
+   "handS": 3.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 147,
+   "key": "redSoil",
+   "type": "block",
+   "name": {
+    "en": "Red Soil"
+   },
+   "desc": "Soil weathered for a long time in a warm, wet climate.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "red_soil",
+   "fact": null,
+   "dexId": "dex:redSoil",
+   "dexCat": "Ores & Rocks",
+   "handS": 0.6,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 148,
+   "key": "birchLog",
+   "type": "block",
+   "name": {
+    "en": "Birch-like Log"
+   },
+   "desc": "A tree with pale bark.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "trunk_white_top",
+   "fact": null,
+   "dexId": "dex:birchLog",
+   "dexCat": "Plants & Critters",
+   "handS": 2.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 149,
+   "key": "birchLeaves",
+   "type": "block",
+   "name": {
+    "en": "Birch-like Leaves"
+   },
+   "desc": "Light green leaves.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "leaves_birch",
+   "fact": null,
+   "dexId": "dex:birchLeaves",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 150,
+   "key": "spruceLog",
+   "type": "block",
+   "name": {
+    "en": "Spruce-like Log"
+   },
+   "desc": "A tree that keeps its needles all winter.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "trunk_spruce_top",
+   "fact": null,
+   "dexId": "dex:spruceLog",
+   "dexCat": "Plants & Critters",
+   "handS": 2.0,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 151,
+   "key": "spruceLeaves",
+   "type": "block",
+   "name": {
+    "en": "Spruce-like Needles"
+   },
+   "desc": "Needle leaves that shed snow.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "leaves_spruce",
+   "fact": null,
+   "dexId": "dex:spruceLeaves",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 152,
+   "key": "flowerBushPink",
+   "type": "block",
+   "name": {
+    "en": "Flowers (pink)"
+   },
+   "desc": "Flowers feed bees and butterflies.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "flower_pink",
+   "fact": null,
+   "dexId": "dex:flowerBushPink",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 153,
+   "key": "flowerBushYellow",
+   "type": "block",
+   "name": {
+    "en": "Flowers (yellow)"
+   },
+   "desc": "Flowers feed bees and butterflies.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "flower_yellow",
+   "fact": null,
+   "dexId": "dex:flowerBushYellow",
+   "dexCat": "Plants & Critters",
+   "handS": 0.2,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 154,
+   "key": "seaWater",
+   "type": "block",
+   "name": {
+    "en": "Sea Water"
+   },
+   "desc": "Still seawater. A Salt Pan beside it makes salt.",
+   "verbs": [
+    "Move (swim)",
+    "Use (Bucket)"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "water",
+   "fact": null,
+   "dexId": "dex:seaWater",
+   "dexCat": "Places",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 155,
+   "key": "hayBale",
+   "type": "block",
+   "name": {
+    "en": "Hay Bale"
+   },
+   "desc": "Dried grass pressed into a bale, used to feed animals.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "hay_top",
+   "fact": "Hay is grass that is cut and dried so animals can eat it in winter.",
+   "dexId": "dex:hayBale",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 156,
+   "key": "gourds",
+   "type": "block",
+   "name": {
+    "en": "Gourds"
+   },
+   "desc": "Gourds are cousins of pumpkins and squash, in many shapes.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "gourds",
+   "fact": "Gourds have hard shells and were used as bowls and bottles long ago.",
+   "dexId": "dex:gourds",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 157,
+   "key": "scarecrow",
+   "type": "block",
+   "name": {
+    "en": "Scarecrow"
+   },
+   "desc": "A straw figure farmers use to keep birds off crops.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "block:scarecrow",
+   "fact": "Farmers have used scarecrows for thousands of years.",
+   "dexId": "dex:scarecrow",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 158,
+   "key": "batsDeco",
+   "type": "block",
+   "name": {
+    "en": "Bat Garland"
+   },
+   "desc": "Paper bats. Real bats eat lots of insects at night.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "bats_deco",
+   "fact": "One bat can eat hundreds of insects in one night.",
+   "dexId": "dex:batsDeco",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 159,
+   "key": "carvedPumpkin",
+   "type": "block",
+   "name": {
+    "en": "Carved Pumpkin"
+   },
+   "desc": "A pumpkin with a face you carved yourself. An LED inside makes it glow.",
+   "verbs": [
+    "Place",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "carved_front_blank",
+   "fact": null,
+   "dexId": "dex:carvedPumpkin",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 166,
+   "key": "spookySign",
+   "type": "block",
+   "name": {
+    "en": "Spooky Sign"
+   },
+   "desc": "A wooden sign with a bat cut-out. Write a friendly message on it.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "block:spookySign",
+   "fact": null,
+   "dexId": "dex:spookySign",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 167,
+   "key": "harvestLantern",
+   "type": "block",
+   "name": {
+    "en": "Harvest Lantern"
+   },
+   "desc": "A hanging lantern with an LED glow, never a flame.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "block:harvestLantern",
+   "fact": null,
+   "dexId": "dex:harvestLantern",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 168,
+   "key": "chair",
+   "type": "block",
+   "name": {
+    "en": "Chair"
+   },
+   "desc": "A seat for a table. Use it to sit; move to get up.",
+   "verbs": [
+    "Place",
+    "Use (sit; Move = stand)"
+   ],
+   "recipes": [],
+   "stage": "storage-2",
+   "availableFrom": "live",
+   "assetId": "block:chair",
+   "fact": null,
+   "dexId": "dex:chair",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 169,
+   "key": "stool",
+   "type": "block",
+   "name": {
+    "en": "Stool"
+   },
+   "desc": "A seat with no back. Use it to sit; move to get up.",
+   "verbs": [
+    "Place",
+    "Use (sit; Move = stand)"
+   ],
+   "recipes": [],
+   "stage": "storage-2",
+   "availableFrom": "live",
+   "assetId": "block:stool",
+   "fact": null,
+   "dexId": "dex:stool",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 170,
+   "key": "bench",
+   "type": "block",
+   "name": {
+    "en": "Bench"
+   },
+   "desc": "A long seat for 2. Use it to sit; move to get up.",
+   "verbs": [
+    "Place",
+    "Use (sit; Move = stand)"
+   ],
+   "recipes": [],
+   "stage": "storage-2",
+   "availableFrom": "live",
+   "assetId": "block:bench",
+   "fact": null,
+   "dexId": "dex:bench",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 171,
+   "key": "table",
+   "type": "block",
+   "name": {
+    "en": "Table"
+   },
+   "desc": "A table. Put chairs, stools or a bench next to it.",
+   "verbs": [
+    "Place",
+    "Paint"
+   ],
+   "recipes": [],
+   "stage": "storage-2",
+   "availableFrom": "live",
+   "assetId": "block:table",
+   "fact": null,
+   "dexId": "dex:table",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 160,
+   "key": "winterLights",
+   "type": "block",
+   "name": {
+    "en": "Winter Lights"
+   },
+   "desc": "LED string lights. Steady, or a slow twinkle when Motion is on. Never flashes.",
+   "verbs": [
+    "Place",
+    "Connect",
+    "Open (Steady/Slow twinkle)"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "winter_lights",
+   "fact": "LED string lights use far less power than old bulbs.",
+   "dexId": "dex:winterLights",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 161,
+   "key": "wreath",
+   "type": "block",
+   "name": {
+    "en": "Wreath"
+   },
+   "desc": "A ring of evergreen branches.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "wreath",
+   "fact": null,
+   "dexId": "dex:wreath",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 162,
+   "key": "giftBox",
+   "type": "block",
+   "name": {
+    "en": "Gift Box Deco"
+   },
+   "desc": "A wrapped box for decoration. It holds nothing.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "gift_top",
+   "fact": null,
+   "dexId": "dex:giftBox",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 163,
+   "key": "snowPal",
+   "type": "block",
+   "name": {
+    "en": "Snow Pal"
+   },
+   "desc": "A friendly snow figure. It never melts here.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "block:snowPal",
+   "fact": null,
+   "dexId": "dex:snowPal",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 164,
+   "key": "ornamentTile",
+   "type": "block",
+   "name": {
+    "en": "Ornament Tile"
+   },
+   "desc": "A tile with shiny round ornaments.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "tile_ornament",
+   "fact": null,
+   "dexId": "dex:ornamentTile",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": 165,
+   "key": "stripeBlock",
+   "type": "block",
+   "name": {
+    "en": "Peppermint Stripe Block"
+   },
+   "desc": "A red and white striped block.",
+   "verbs": [
+    "Mine",
+    "Place"
+   ],
+   "recipes": [],
+   "stage": "holidays-2",
+   "availableFrom": "live",
+   "assetId": "stripe_red",
+   "fact": null,
+   "dexId": "dex:stripeBlock",
+   "dexCat": "Blocks",
+   "handS": null,
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "woodTool",
+   "type": "item",
+   "name": {
+    "en": "Wood Pick"
+   },
+   "desc": "Mines every block 2x faster than a hand. Never wears out.",
+   "verbs": [
+    "Mine (held)"
+   ],
+   "recipes": [
+    "r:woodTool"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "woodTool",
+   "fact": null,
+   "dexId": "dex:woodTool",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "stoneTool",
+   "type": "item",
+   "name": {
+    "en": "Stone Pick"
+   },
+   "desc": "Mines 3x faster than a hand.",
+   "verbs": [
+    "Mine (held)"
+   ],
+   "recipes": [
+    "r:stoneTool"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "stoneTool",
+   "fact": null,
+   "dexId": "dex:stoneTool",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "copperPick",
+   "type": "item",
+   "name": {
+    "en": "Copper Pick"
+   },
+   "desc": "Mines 4x faster than a hand.",
+   "verbs": [
+    "Mine (held)"
+   ],
+   "recipes": [
+    "r:copperPick"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "copperPick",
+   "fact": null,
+   "dexId": "dex:copperPick",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "steelPick",
+   "type": "item",
+   "name": {
+    "en": "Steel Pick"
+   },
+   "desc": "Mines 6x faster than a hand.",
+   "verbs": [
+    "Mine (held)"
+   ],
+   "recipes": [
+    "r:steelPick"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "steelPick",
+   "fact": null,
+   "dexId": "dex:steelPick",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "stick",
+   "type": "item",
+   "name": {
+    "en": "Stick"
+   },
+   "desc": "2 Planks make 4 Sticks.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:stick"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "stick",
+   "fact": null,
+   "dexId": "dex:stick",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "pan",
+   "type": "item",
+   "name": {
+    "en": "Pan"
+   },
+   "desc": "A wooden pan. Swirl river gravel to find heavy gold flakes.",
+   "verbs": [
+    "Use (on river gravel)"
+   ],
+   "recipes": [
+    "r:pan"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "pan",
+   "fact": "Panning works because heavier things sink faster in moving water.",
+   "dexId": "dex:pan",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "bucket",
+   "type": "item",
+   "name": {
+    "en": "Bucket"
+   },
+   "desc": "Scoops 1 block of still water.",
+   "verbs": [
+    "Use (on water)"
+   ],
+   "recipes": [
+    "r:bucket"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "bucket",
+   "fact": null,
+   "dexId": "dex:bucket",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "waterBucket",
+   "type": "item",
+   "name": {
+    "en": "Water Bucket"
+   },
+   "desc": "Places 1 block of still water.",
+   "verbs": [
+    "Use (place water)"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "waterBucket",
+   "fact": null,
+   "dexId": "dex:waterBucket",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "berry",
+   "type": "item",
+   "name": {
+    "en": "Berry"
+   },
+   "desc": "A small fruit. Leaves sometimes drop one.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "berry",
+   "fact": null,
+   "dexId": "dex:berry",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "flour",
+   "type": "item",
+   "name": {
+    "en": "Flour"
+   },
+   "desc": "Ground wheat seeds.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "flour",
+   "fact": null,
+   "dexId": "dex:flour",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "sugar",
+   "type": "item",
+   "name": {
+    "en": "Sugar"
+   },
+   "desc": "Sweet crystals from plant juice.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "sugar",
+   "fact": null,
+   "dexId": "dex:sugar",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cupcake",
+   "type": "item",
+   "name": {
+    "en": "Cupcake"
+   },
+   "desc": "Flour, sugar and berries, baked.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:cupcake"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cupcake",
+   "fact": null,
+   "dexId": "dex:cupcake",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "bread",
+   "type": "item",
+   "name": {
+    "en": "Bread"
+   },
+   "desc": "Baked flour.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:bread"
+   ],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "bread",
+   "fact": null,
+   "dexId": "dex:bread",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "paintDab",
+   "type": "item",
+   "name": {
+    "en": "Paint dab"
+   },
+   "desc": "People made the first paints from plants and berries. The color comes from pigments.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:paintDab"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "paintDab",
+   "fact": "Pigments give paint its colour. Early paints came from plants, berries and minerals.",
+   "dexId": "dex:paintDab",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "corn",
+   "type": "item",
+   "name": {
+    "en": "Corn"
+   },
+   "desc": "Corn kernels. Cook 2 in the Oven for Bioplastic.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "corn",
+   "fact": "Corn is a grass. Each kernel is a seed.",
+   "dexId": "dex:corn",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cornSeed",
+   "type": "item",
+   "name": {
+    "en": "Corn Seed"
+   },
+   "desc": "Plant it on Dirt or Grass.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "cornSeed",
+   "fact": null,
+   "dexId": "dex:cornSeed",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "bioplastic",
+   "type": "item",
+   "name": {
+    "en": "Bioplastic"
+   },
+   "desc": "Some plastics are made from plants, like corn.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:bioplastic"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "bioplastic",
+   "fact": "Some plastics are made from corn starch instead of oil.",
+   "dexId": "dex:bioplastic",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "plasticTube",
+   "type": "item",
+   "name": {
+    "en": "Plastic Tube"
+   },
+   "desc": "A clear tube for glow sticks and machines.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:plasticTube"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "plasticTube",
+   "fact": null,
+   "dexId": "dex:plasticTube",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "glowMix",
+   "type": "item",
+   "name": {
+    "en": "Glow Mix"
+   },
+   "desc": "The two chemicals of a glow stick, ready to react.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:glowMix"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "glowMix",
+   "fact": null,
+   "dexId": "dex:glowMix",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "boosterDye",
+   "type": "item",
+   "name": {
+    "en": "Booster Dye"
+   },
+   "desc": "Takes the reaction energy and glows. The dye picks the color.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:boosterDye"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "boosterDye",
+   "fact": null,
+   "dexId": "dex:boosterDye",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "glassVial",
+   "type": "item",
+   "name": {
+    "en": "Glass Vial"
+   },
+   "desc": "A small glass bottle. 1 Glass makes 2.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:glassVial"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "glassVial",
+   "fact": null,
+   "dexId": "dex:glassVial",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "rawCopper",
+   "type": "item",
+   "name": {
+    "en": "Raw Copper"
+   },
+   "desc": "Copper straight from the rock. Smelt it into an ingot.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "rawCopper",
+   "fact": null,
+   "dexId": "dex:rawCopper",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "copperDust",
+   "type": "item",
+   "name": {
+    "en": "Copper dust"
+   },
+   "desc": "Crushed copper. 1 Raw Copper makes 2.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:copperDust"
+   ],
+   "stage": "basics-2",
+   "availableFrom": "live",
+   "assetId": "copperDust",
+   "fact": null,
+   "dexId": "dex:copperDust",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "copperIngot",
+   "type": "item",
+   "name": {
+    "en": "Copper Ingot"
+   },
+   "desc": "Smelted copper. 1 makes 4 Copper Wire.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:copperIngot"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "copperIngot",
+   "fact": null,
+   "dexId": "dex:copperIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "copperWire",
+   "type": "item",
+   "name": {
+    "en": "Copper Wire"
+   },
+   "desc": "Thin copper that carries electricity.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:copperWire"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "copperWire",
+   "fact": "Copper wire carries electricity in almost every building.",
+   "dexId": "dex:copperWire",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "ironIngot",
+   "type": "item",
+   "name": {
+    "en": "Iron Ingot"
+   },
+   "desc": "Smelted iron, ready to become steel.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:ironIngot"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "ironIngot",
+   "fact": null,
+   "dexId": "dex:ironIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "steel",
+   "type": "item",
+   "name": {
+    "en": "Steel"
+   },
+   "desc": "Iron with a little carbon. Springs back until pushed too far.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:steel"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "steel",
+   "fact": "Steel is iron with a small amount of carbon, which makes it much stronger.",
+   "dexId": "dex:steel",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "zincIngot",
+   "type": "item",
+   "name": {
+    "en": "Zinc Ingot"
+   },
+   "desc": "Smelted zinc.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:zincIngot"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "zincIngot",
+   "fact": null,
+   "dexId": "dex:zincIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "tinIngot",
+   "type": "item",
+   "name": {
+    "en": "Tin Ingot"
+   },
+   "desc": "Smelted tin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:tinIngot"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "tinIngot",
+   "fact": null,
+   "dexId": "dex:tinIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "bronzeIngot",
+   "type": "item",
+   "name": {
+    "en": "Bronze Ingot"
+   },
+   "desc": "About 9 parts copper to 1 part tin, like real tin bronze.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:bronzeIngot"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "bronzeIngot",
+   "fact": "Bronze is about 90% copper and 10% tin.",
+   "dexId": "dex:bronzeIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "silverIngot",
+   "type": "item",
+   "name": {
+    "en": "Silver Ingot"
+   },
+   "desc": "Smelted silver.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:silverIngot"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "silverIngot",
+   "fact": null,
+   "dexId": "dex:silverIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "goldFlake",
+   "type": "item",
+   "name": {
+    "en": "Gold Flake"
+   },
+   "desc": "A tiny flake from a river. 9 make a Gold Nugget.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "goldFlake",
+   "fact": "Gold is heavy, so it sinks to the bottom of a pan.",
+   "dexId": "dex:goldFlake",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "goldNugget",
+   "type": "item",
+   "name": {
+    "en": "Gold Nugget"
+   },
+   "desc": "A lump of gold.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:goldNugget"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "goldNugget",
+   "fact": null,
+   "dexId": "dex:goldNugget",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "goldIngot",
+   "type": "item",
+   "name": {
+    "en": "Gold Ingot"
+   },
+   "desc": "Smelted gold.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:goldIngot"
+   ],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "goldIngot",
+   "fact": null,
+   "dexId": "dex:goldIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "goldLeaf",
+   "type": "item",
+   "name": {
+    "en": "Gold Leaf"
+   },
+   "desc": "Gold beaten very thin. 1 Ingot makes 16.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "goldLeaf",
+   "fact": null,
+   "dexId": "dex:goldLeaf",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "quartz",
+   "type": "item",
+   "name": {
+    "en": "Quartz"
+   },
+   "desc": "A silica crystal.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-1",
+   "availableFrom": "world-1",
+   "assetId": "quartz",
+   "fact": null,
+   "dexId": "dex:quartz",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "silicon",
+   "type": "item",
+   "name": {
+    "en": "Silicon"
+   },
+   "desc": "Sand and quartz are silica. Heating them with carbon pulls out silicon.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:silicon"
+   ],
+   "stage": "basics-3",
+   "availableFrom": "live",
+   "assetId": "silicon",
+   "fact": "Computer chips are made from silicon.",
+   "dexId": "dex:silicon",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "logicChip",
+   "type": "item",
+   "name": {
+    "en": "Logic Chip"
+   },
+   "desc": "A tiny silicon circuit.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:logicChip"
+   ],
+   "stage": "basics-3",
+   "availableFrom": "live",
+   "assetId": "logicChip",
+   "fact": "A chip holds millions or billions of tiny switches called transistors.",
+   "dexId": "dex:logicChip",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "batteryCell",
+   "type": "item",
+   "name": {
+    "en": "Battery Cell"
+   },
+   "desc": "Copper and zinc make a battery cell.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:batteryCell"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "batteryCell",
+   "fact": "A battery turns stored chemical energy into electricity.",
+   "dexId": "dex:batteryCell",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "spring",
+   "type": "item",
+   "name": {
+    "en": "Spring"
+   },
+   "desc": "Steel coiled so it springs back.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:spring"
+   ],
+   "stage": "basics-1",
+   "availableFrom": "live",
+   "assetId": "spring",
+   "fact": null,
+   "dexId": "dex:spring",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "wireRope",
+   "type": "item",
+   "name": {
+    "en": "Wire Rope"
+   },
+   "desc": "Steel wires twisted together. Pull-only, very strong.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:wireRope"
+   ],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "wireRope",
+   "fact": null,
+   "dexId": "dex:wireRope",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "steelBeam",
+   "type": "item",
+   "name": {
+    "en": "Steel Beam"
+   },
+   "desc": "An I-shaped steel beam.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "steelBeam",
+   "fact": null,
+   "dexId": "dex:steelBeam",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "timberBeam",
+   "type": "item",
+   "name": {
+    "en": "Timber Beam"
+   },
+   "desc": "A wooden beam. 2 Planks make 1.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "timberBeam",
+   "fact": null,
+   "dexId": "dex:timberBeam",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cotton",
+   "type": "item",
+   "name": {
+    "en": "Cotton"
+   },
+   "desc": "Plant fiber. 3 make 1 Cloth.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "cotton",
+   "fact": "Cotton fibers grow around the seeds of the cotton plant.",
+   "dexId": "dex:cotton",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cottonSeed",
+   "type": "item",
+   "name": {
+    "en": "Cotton Seed"
+   },
+   "desc": "Plant it on Dirt or Grass.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "cottonSeed",
+   "fact": null,
+   "dexId": "dex:cottonSeed",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cloth",
+   "type": "item",
+   "name": {
+    "en": "Cloth"
+   },
+   "desc": "Woven cotton.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:cloth"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "cloth",
+   "fact": null,
+   "dexId": "dex:cloth",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "salt",
+   "type": "item",
+   "name": {
+    "en": "Salt"
+   },
+   "desc": "Sodium chloride: the salt on food.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "salt",
+   "fact": null,
+   "dexId": "dex:salt",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "platinumGrain",
+   "type": "item",
+   "name": {
+    "en": "Platinum Grain"
+   },
+   "desc": "A grain of platinum from an Emberdeep river.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "platinumGrain",
+   "fact": null,
+   "dexId": "dex:platinumGrain",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "platinumNugget",
+   "type": "item",
+   "name": {
+    "en": "Platinum Nugget"
+   },
+   "desc": "A lump of platinum.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "platinumNugget",
+   "fact": null,
+   "dexId": "dex:platinumNugget",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "platinumIngot",
+   "type": "item",
+   "name": {
+    "en": "Platinum Ingot"
+   },
+   "desc": "Platinum melts at 1,768 C, so it needs the Embercore upgrade.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:platinumIngot"
+   ],
+   "stage": "later",
+   "availableFrom": "later",
+   "assetId": "platinumIngot",
+   "fact": null,
+   "dexId": "dex:platinumIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "alumina",
+   "type": "item",
+   "name": {
+    "en": "Alumina"
+   },
+   "desc": "White powder from bauxite. It needs lots of electricity to become aluminum.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:alumina"
+   ],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "alumina",
+   "fact": null,
+   "dexId": "dex:alumina",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "aluminumIngot",
+   "type": "item",
+   "name": {
+    "en": "Aluminum Ingot"
+   },
+   "desc": "Light metal. Common, but it costs lots of electricity.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:aluminumIngot"
+   ],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "aluminumIngot",
+   "fact": null,
+   "dexId": "dex:aluminumIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "aluminumBeam",
+   "type": "item",
+   "name": {
+    "en": "Aluminum Beam"
+   },
+   "desc": "About the same job as steel at about a third of the weight.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "aluminumBeam",
+   "fact": null,
+   "dexId": "dex:aluminumBeam",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "titaniumDioxide",
+   "type": "item",
+   "name": {
+    "en": "Titanium Dioxide"
+   },
+   "desc": "White powder refined from black sand.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:titaniumDioxide"
+   ],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "titaniumDioxide",
+   "fact": null,
+   "dexId": "dex:titaniumDioxide",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "titaniumIngot",
+   "type": "item",
+   "name": {
+    "en": "Titanium Ingot"
+   },
+   "desc": "Titanium is not rare. It is hard to refine.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "titaniumIngot",
+   "fact": null,
+   "dexId": "dex:titaniumIngot",
+   "dexCat": "Materials",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "graphite",
+   "type": "item",
+   "name": {
+    "en": "Graphite"
+   },
+   "desc": "Soft carbon flakes.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "graphite",
+   "fact": null,
+   "dexId": "dex:graphite",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "rhodiumSpeck",
+   "type": "item",
+   "name": {
+    "en": "Rhodium Speck"
+   },
+   "desc": "A very rare metal. It never tarnishes.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "availableFrom": "world-3",
+   "assetId": "rhodiumSpeck",
+   "fact": null,
+   "dexId": "dex:rhodiumSpeck",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "iridiumSpeck",
+   "type": "item",
+   "name": {
+    "en": "Iridium Speck"
+   },
+   "desc": "The legendary find. Iridium is one of the two densest elements.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "availableFrom": "world-3",
+   "assetId": "iridiumSpeck",
+   "fact": null,
+   "dexId": "dex:iridiumSpeck",
+   "dexCat": "Ores & Rocks",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "paintBrush",
+   "type": "item",
+   "name": {
+    "en": "Paint Brush"
+   },
+   "desc": "Free colors, looks only.",
+   "verbs": [
+    "Paint"
+   ],
+   "recipes": [
+    "r:paintBrush"
+   ],
+   "stage": "storage-2",
+   "availableFrom": "live",
+   "assetId": "paintBrush",
+   "fact": null,
+   "dexId": "dex:paintBrush",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "satchel",
+   "type": "item",
+   "name": {
+    "en": "Satchel"
+   },
+   "desc": "+6 slots.",
+   "verbs": [
+    "Move-item (wear)"
+   ],
+   "recipes": [
+    "r:satchel"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "satchel",
+   "fact": null,
+   "dexId": "dex:satchel",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "backpack",
+   "type": "item",
+   "name": {
+    "en": "Backpack"
+   },
+   "desc": "+12 slots.",
+   "verbs": [
+    "Move-item (wear)"
+   ],
+   "recipes": [
+    "r:backpack"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "backpack",
+   "fact": null,
+   "dexId": "dex:backpack",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "expeditionPack",
+   "type": "item",
+   "name": {
+    "en": "Expedition Pack"
+   },
+   "desc": "+18 slots. Max carry 33.",
+   "verbs": [
+    "Move-item (wear)"
+   ],
+   "recipes": [
+    "r:expeditionPack"
+   ],
+   "stage": "storage-1",
+   "availableFrom": "live",
+   "assetId": "expeditionPack",
+   "fact": null,
+   "dexId": "dex:expeditionPack",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "fob",
+   "type": "item",
+   "name": {
+    "en": "Fob"
+   },
+   "desc": "The fob sends a radio signal; the bot follows the strongest signal.",
+   "verbs": [
+    "Pair"
+   ],
+   "recipes": [],
+   "stage": "bot-cargo",
+   "availableFrom": "live",
+   "assetId": "fob",
+   "fact": null,
+   "dexId": "dex:fob",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "botH1",
+   "type": "item",
+   "name": {
+    "en": "Berty's Bot H1"
+   },
+   "desc": "A little bot that follows you and carries your stuff.",
+   "verbs": [
+    "Craft",
+    "Place",
+    "Pair",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "bot-cargo",
+   "availableFrom": "live",
+   "assetId": "botH1",
+   "fact": null,
+   "dexId": "dex:botH1",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "driveS",
+   "type": "item",
+   "name": {
+    "en": "Drive S"
+   },
+   "desc": "8 kinds, 512 items.",
+   "verbs": [
+    "Move-item",
+    "Open"
+   ],
+   "recipes": [
+    "r:driveS"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "driveS",
+   "fact": null,
+   "dexId": "dex:driveS",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "driveM",
+   "type": "item",
+   "name": {
+    "en": "Drive M"
+   },
+   "desc": "32 kinds, 2,048 items.",
+   "verbs": [
+    "Move-item",
+    "Open"
+   ],
+   "recipes": [
+    "r:driveM"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "driveM",
+   "fact": null,
+   "dexId": "dex:driveM",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "driveL",
+   "type": "item",
+   "name": {
+    "en": "Drive L"
+   },
+   "desc": "64 kinds, 8,192 items.",
+   "verbs": [
+    "Move-item",
+    "Open"
+   ],
+   "recipes": [
+    "r:driveL"
+   ],
+   "stage": "storage-5",
+   "availableFrom": "live",
+   "assetId": "driveL",
+   "fact": null,
+   "dexId": "dex:driveL",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "deliveryDrone",
+   "type": "item",
+   "name": {
+    "en": "Delivery Drone"
+   },
+   "desc": "Slow, cheap and visible. Carries 4 stacks.",
+   "verbs": [
+    "Pair",
+    "Use",
+    "Open"
+   ],
+   "recipes": [
+    "r:deliveryDrone"
+   ],
+   "stage": "storage-3",
+   "availableFrom": "live",
+   "assetId": "deliveryDrone",
+   "fact": "Delivery drones balance speed, battery life and how much they carry.",
+   "dexId": "dex:deliveryDrone",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "petRock",
+   "type": "item",
+   "name": {
+    "en": "Pet Rock"
+   },
+   "desc": "A rock has no motor. That is why it is so slow.",
+   "verbs": [
+    "Place",
+    "Use",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "fun-1",
+   "availableFrom": "live",
+   "assetId": "petRock",
+   "fact": null,
+   "dexId": "dex:petRock",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "gravityHat",
+   "type": "item",
+   "name": {
+    "en": "Gravity Hat"
+   },
+   "desc": "Gravity pulls everything down. The hat pushes back a little, for a little while.",
+   "verbs": [
+    "Move-item (wear)",
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "fun-1",
+   "availableFrom": "live",
+   "assetId": "gravityHat",
+   "fact": null,
+   "dexId": "dex:gravityHat",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "musicDisc",
+   "type": "item",
+   "name": {
+    "en": "Music Disc"
+   },
+   "desc": "Plays a song in a Jukebox.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "music-1",
+   "availableFrom": "live",
+   "assetId": "musicDisc",
+   "fact": null,
+   "dexId": "dex:musicDisc",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "warpKey",
+   "type": "item",
+   "name": {
+    "en": "Warp Key"
+   },
+   "desc": "Warps you to your own Warp Pad.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "warpKey",
+   "fact": null,
+   "dexId": "dex:warpKey",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "bandage",
+   "type": "item",
+   "name": {
+    "en": "Bandage"
+   },
+   "desc": "Basic first aid.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "bandage",
+   "fact": null,
+   "dexId": "dex:bandage",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "herbTonic",
+   "type": "item",
+   "name": {
+    "en": "Herb Tonic"
+   },
+   "desc": "A plant drink for resting up.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "herbTonic",
+   "fact": null,
+   "dexId": "dex:herbTonic",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "medKit",
+   "type": "item",
+   "name": {
+    "en": "Med Kit"
+   },
+   "desc": "First aid for you and your crew.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "medKit",
+   "fact": null,
+   "dexId": "dex:medKit",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "whistleBell",
+   "type": "item",
+   "name": {
+    "en": "Whistle Bell"
+   },
+   "desc": "Calls your Pet Rock and Bot.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "whistleBell",
+   "fact": null,
+   "dexId": "dex:whistleBell",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "critterJar",
+   "type": "item",
+   "name": {
+    "en": "Critter Jar"
+   },
+   "desc": "Releases friendly critters for a while.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "critterJar",
+   "fact": null,
+   "dexId": "dex:critterJar",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "morphVial",
+   "type": "item",
+   "name": {
+    "en": "Morph Vial"
+   },
+   "desc": "Mimicry: copy the look of a block or critter.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "morphVial",
+   "fact": null,
+   "dexId": "dex:morphVial",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "camoCloak",
+   "type": "item",
+   "name": {
+    "en": "Camo Cloak"
+   },
+   "desc": "Camouflage: match the background.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "camoCloak",
+   "fact": null,
+   "dexId": "dex:camoCloak",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "magnetWand",
+   "type": "item",
+   "name": {
+    "en": "Magnet Wand"
+   },
+   "desc": "Magnets pull iron and steel.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "magnetWand",
+   "fact": null,
+   "dexId": "dex:magnetWand",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "lightWand",
+   "type": "item",
+   "name": {
+    "en": "Light Wand"
+   },
+   "desc": "A floating light orb.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "lightWand",
+   "fact": null,
+   "dexId": "dex:lightWand",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "fizzVial",
+   "type": "item",
+   "name": {
+    "en": "Fizz Vial"
+   },
+   "desc": "A gas plus a liquid makes foam.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "fizzVial",
+   "fact": null,
+   "dexId": "dex:fizzVial",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "frostVial",
+   "type": "item",
+   "name": {
+    "en": "Frost Vial"
+   },
+   "desc": "Freezes still water so you can walk on it.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [
+    "r:frostVial"
+   ],
+   "stage": "effects-1",
+   "availableFrom": "world-2",
+   "assetId": "frostVial",
+   "fact": null,
+   "dexId": "dex:frostVial",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "sparkRod",
+   "type": "item",
+   "name": {
+    "en": "Spark Rod"
+   },
+   "desc": "Remote-powers your own circuit for a few seconds.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "availableFrom": "live",
+   "assetId": "sparkRod",
+   "fact": null,
+   "dexId": "dex:sparkRod",
+   "dexCat": "Effects",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "blueprintScroll",
+   "type": "item",
+   "name": {
+    "en": "Blueprint Scroll"
+   },
+   "desc": "Read it at the Drafting Table to unlock a material.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "blueprintScroll",
+   "fact": null,
+   "dexId": "dex:blueprintScroll",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cogCopper",
+   "type": "item",
+   "name": {
+    "en": "Copper Cog"
+   },
+   "desc": "The everyday coin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "live",
+   "availableFrom": "live",
+   "assetId": "cogCopper",
+   "fact": null,
+   "dexId": "dex:cogCopper",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cogSilver",
+   "type": "item",
+   "name": {
+    "en": "Silver Cog"
+   },
+   "desc": "A rarer coin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cogSilver",
+   "fact": null,
+   "dexId": "dex:cogSilver",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cogGold",
+   "type": "item",
+   "name": {
+    "en": "Gold Cog"
+   },
+   "desc": "A rare coin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cogGold",
+   "fact": null,
+   "dexId": "dex:cogGold",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cogPlatinum",
+   "type": "item",
+   "name": {
+    "en": "Platinum Cog"
+   },
+   "desc": "A very rare coin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "ladder-1",
+   "availableFrom": "live",
+   "assetId": "cogPlatinum",
+   "fact": null,
+   "dexId": "dex:cogPlatinum",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "cogIridium",
+   "type": "item",
+   "name": {
+    "en": "Iridium Cog"
+   },
+   "desc": "The legendary coin.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "availableFrom": "live",
+   "assetId": "cogIridium",
+   "fact": null,
+   "dexId": "dex:cogIridium",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "flower",
+   "type": "item",
+   "name": {
+    "en": "Flower"
+   },
+   "desc": "1 Flower makes 2 Paint dabs.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "world-2",
+   "availableFrom": "world-2",
+   "assetId": "flower",
+   "fact": "Bees carry pollen from flower to flower.",
+   "dexId": "dex:flower",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "apple",
+   "type": "item",
+   "name": {
+    "en": "Apple"
+   },
+   "desc": "A harvest fruit.",
+   "verbs": [
+    "Move-item"
+   ],
+   "recipes": [],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "apple",
+   "fact": null,
+   "dexId": "dex:apple",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "carvingTool",
+   "type": "item",
+   "name": {
+    "en": "Carving Scoop"
+   },
+   "desc": "A safe scoop, not a knife. Use it on a Pumpkin to carve a face.",
+   "verbs": [
+    "Use (on a Pumpkin)"
+   ],
+   "recipes": [
+    "r:carvingTool"
+   ],
+   "stage": "holidays-1",
+   "availableFrom": "live",
+   "assetId": "carvingTool",
+   "fact": null,
+   "dexId": "dex:carvingTool",
+   "dexCat": "Items & Machines",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:bot",
+   "type": "mob",
+   "name": {
+    "en": "Berty's Bot H1"
+   },
+   "desc": "A little bot that follows you and carries your stuff.",
+   "verbs": [
+    "Use",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "bot-cargo",
+   "assetId": "bot",
+   "fact": null,
+   "dexId": "dex:mob:bot",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:drone",
+   "type": "mob",
+   "name": {
+    "en": "Delivery Drone"
+   },
+   "desc": "Flies 3 blocks above the tallest block on its route.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "storage-3",
+   "assetId": "drone",
+   "fact": null,
+   "dexId": "dex:mob:drone",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:petrock",
+   "type": "mob",
+   "name": {
+    "en": "Pet Rock"
+   },
+   "desc": "A rock has no motor. That is why it is so slow.",
+   "verbs": [
+    "Use",
+    "Open"
+   ],
+   "recipes": [],
+   "stage": "fun-1",
+   "assetId": "petrock",
+   "fact": null,
+   "dexId": "dex:mob:petrock",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:firefly",
+   "type": "mob",
+   "name": {
+    "en": "Firefly"
+   },
+   "desc": "A beetle that makes its own light.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "firefly",
+   "fact": null,
+   "dexId": "dex:mob:firefly",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:butterfly",
+   "type": "mob",
+   "name": {
+    "en": "Butterfly"
+   },
+   "desc": "Visits flowers for nectar.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "butterfly",
+   "fact": null,
+   "dexId": "dex:mob:butterfly",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:songbird",
+   "type": "mob",
+   "name": {
+    "en": "Songbird"
+   },
+   "desc": "Sings to talk to other birds.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "songbird",
+   "fact": null,
+   "dexId": "dex:mob:songbird",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:frog",
+   "type": "mob",
+   "name": {
+    "en": "Frog"
+   },
+   "desc": "Jumps far with long back legs.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "frog",
+   "fact": null,
+   "dexId": "dex:mob:frog",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:prairiedog",
+   "type": "mob",
+   "name": {
+    "en": "Prairie Dog"
+   },
+   "desc": "Digs burrows with many rooms.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "prairiedog",
+   "fact": null,
+   "dexId": "dex:mob:prairiedog",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "mob:cat",
+   "type": "mob",
+   "name": {
+    "en": "Cat"
+   },
+   "desc": "Lands on its feet.",
+   "verbs": [
+    "(watch)"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "assetId": "cat",
+   "fact": null,
+   "dexId": "dex:mob:cat",
+   "dexCat": "Plants & Critters",
+   "textStatus": "draft-curriculum-check"
+  },
+  {
+   "id": null,
+   "key": "biome:commons",
+   "type": "biome",
+   "name": {
+    "en": "Bertyville Commons"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Grass, oak trees and the town. Coal, clay, iron and a little copper.",
+   "stage": "live",
+   "assetId": "biome:commons",
+   "fact": null,
+   "dexId": "dex:biome:commons",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:glasswood",
+   "type": "biome",
+   "name": {
+    "en": "Glasswood"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Pale granite hills with quartz crystals. Look for tin and gold veins.",
+   "stage": "world-2",
+   "assetId": "biome:glasswood",
+   "fact": null,
+   "dexId": "dex:biome:glasswood",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:rustflats",
+   "type": "biome",
+   "name": {
+    "en": "Rustflats"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "A flat dry lake bed with white salt crust. Iron, silver and zinc in the hills.",
+   "stage": "world-2",
+   "assetId": "biome:rustflats",
+   "fact": null,
+   "dexId": "dex:biome:rustflats",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:tidewell",
+   "type": "biome",
+   "name": {
+    "en": "Tidewell Cliffs"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Beaches, cliffs and the sea. Black sand and the Salt Pan.",
+   "stage": "world-2",
+   "assetId": "biome:tidewell",
+   "fact": null,
+   "dexId": "dex:biome:tidewell",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:frostspire",
+   "type": "biome",
+   "name": {
+    "en": "Frostspire Highlands"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Snowy mountains and frozen lakes. Look for ice and tin.",
+   "stage": "world-2",
+   "assetId": "biome:frostspire",
+   "fact": null,
+   "dexId": "dex:biome:frostspire",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:emberdeep",
+   "type": "biome",
+   "name": {
+    "en": "Emberdeep"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Dark basalt hills. Copper at the edges, platinum deep down.",
+   "stage": "world-2",
+   "assetId": "biome:emberdeep",
+   "fact": null,
+   "dexId": "dex:biome:emberdeep",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:sea",
+   "type": "biome",
+   "name": {
+    "en": "Sea"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Still seawater at the edge of Tidewell.",
+   "stage": "world-2",
+   "assetId": "biome:sea",
+   "fact": null,
+   "dexId": "dex:biome:sea",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "biome:town",
+   "type": "biome",
+   "name": {
+    "en": "Bertyville town"
+   },
+   "verbs": [
+    "Move"
+   ],
+   "recipes": [],
+   "desc": "Bertyville: the store, the stations and everyone's plots.",
+   "stage": "live",
+   "assetId": "biome:town",
+   "fact": null,
+   "dexId": "dex:biome:town",
+   "dexCat": "Places",
+   "textStatus": "TODO GameMaster lore line"
+  },
+  {
+   "id": null,
+   "key": "el:C",
+   "type": "element",
+   "name": {
+    "en": "Carbon"
+   },
+   "symbol": "C",
+   "z": 6,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:C",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:O",
+   "type": "element",
+   "name": {
+    "en": "Oxygen"
+   },
+   "symbol": "O",
+   "z": 8,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:O",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Na",
+   "type": "element",
+   "name": {
+    "en": "Sodium"
+   },
+   "symbol": "Na",
+   "z": 11,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Na",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Al",
+   "type": "element",
+   "name": {
+    "en": "Aluminum"
+   },
+   "symbol": "Al",
+   "z": 13,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Al",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Si",
+   "type": "element",
+   "name": {
+    "en": "Silicon"
+   },
+   "symbol": "Si",
+   "z": 14,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Si",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Cl",
+   "type": "element",
+   "name": {
+    "en": "Chlorine"
+   },
+   "symbol": "Cl",
+   "z": 17,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Cl",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Ti",
+   "type": "element",
+   "name": {
+    "en": "Titanium"
+   },
+   "symbol": "Ti",
+   "z": 22,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Ti",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Fe",
+   "type": "element",
+   "name": {
+    "en": "Iron"
+   },
+   "symbol": "Fe",
+   "z": 26,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Fe",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Cu",
+   "type": "element",
+   "name": {
+    "en": "Copper"
+   },
+   "symbol": "Cu",
+   "z": 29,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Cu",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Zn",
+   "type": "element",
+   "name": {
+    "en": "Zinc"
+   },
+   "symbol": "Zn",
+   "z": 30,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Zn",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Rh",
+   "type": "element",
+   "name": {
+    "en": "Rhodium"
+   },
+   "symbol": "Rh",
+   "z": 45,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Rh",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Ag",
+   "type": "element",
+   "name": {
+    "en": "Silver"
+   },
+   "symbol": "Ag",
+   "z": 47,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Ag",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Sn",
+   "type": "element",
+   "name": {
+    "en": "Tin"
+   },
+   "symbol": "Sn",
+   "z": 50,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Sn",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Ir",
+   "type": "element",
+   "name": {
+    "en": "Iridium"
+   },
+   "symbol": "Ir",
+   "z": 77,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Ir",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Pt",
+   "type": "element",
+   "name": {
+    "en": "Platinum"
+   },
+   "symbol": "Pt",
+   "z": 78,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Pt",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "el:Au",
+   "type": "element",
+   "name": {
+    "en": "Gold"
+   },
+   "symbol": "Au",
+   "z": 79,
+   "desc": null,
+   "verbs": [
+    "Open (Wallet card)"
+   ],
+   "recipes": [],
+   "stage": "world-3",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:el:Au",
+   "dexCat": "Elements",
+   "textStatus": "card text in ELEMENT-ECONOMY §4"
+  },
+  {
+   "id": null,
+   "key": "fx:warp",
+   "type": "effect",
+   "name": {
+    "en": "Warp"
+   },
+   "desc": "Takes you to your own Warp Pad.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "warpKey",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:warp",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:heal",
+   "type": "effect",
+   "name": {
+    "en": "Heal"
+   },
+   "desc": "Fixes hearts when Damage is on.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "bandage",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:heal",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:summon",
+   "type": "effect",
+   "name": {
+    "en": "Spawn and Summon"
+   },
+   "desc": "Calls your Pet Rock or Bot, or lets friendly critters out.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "whistleBell",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:summon",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:morph",
+   "type": "effect",
+   "name": {
+    "en": "Morph"
+   },
+   "desc": "Look like a block or critter for a while.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "morphVial",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:morph",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:camo",
+   "type": "effect",
+   "name": {
+    "en": "Camo"
+   },
+   "desc": "Blend into the background.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "camoCloak",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:camo",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:hideSeek",
+   "type": "effect",
+   "name": {
+    "en": "Hide-and-Seek"
+   },
+   "desc": "A game mode that uses Morph, Camo and Tag.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": null,
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:hideSeek",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:wonderLab",
+   "type": "effect",
+   "name": {
+    "en": "Wonder Lab"
+   },
+   "desc": "Science that looks like magic: magnets, light, foam, frost and sparks.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "effects-1",
+   "item": "magnetWand",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:wonderLab",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  },
+  {
+   "id": null,
+   "key": "fx:float",
+   "type": "effect",
+   "name": {
+    "en": "Float"
+   },
+   "desc": "Float gently for 10 seconds.",
+   "verbs": [
+    "Use"
+   ],
+   "recipes": [],
+   "stage": "fun-1",
+   "item": "gravityHat",
+   "assetId": null,
+   "fact": null,
+   "dexId": "dex:fx:float",
+   "dexCat": "Effects",
+   "levels": [
+    "I",
+    "II",
+    "III"
+   ],
+   "textStatus": "draft"
+  }
+ ],
+ "recipes": [
+  {
+   "id": "r:planks",
+   "type": "recipe",
+   "out": [
+    "planks",
+    4
+   ],
+   "at": "hand",
+   "in": [
+    [
+     "log",
+     1
+    ]
+   ],
+   "secs": 0,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:workbench",
+   "type": "recipe",
+   "out": [
+    "workbench",
+    1
+   ],
+   "at": "hand",
+   "in": [
+    [
+     "planks",
+     4
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:ice",
+   "type": "recipe",
+   "out": [
+    "ice",
+    1
+   ],
+   "at": "hand",
+   "in": [
+    [
+     "snow",
+     4
+    ]
+   ],
+   "secs": 0,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:oven",
+   "type": "recipe",
+   "out": [
+    "oven",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stone",
+     8
+    ]
+   ],
+   "secs": 10,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:brickGrey",
+   "type": "recipe",
+   "out": [
+    "brickGrey",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stone",
+     2
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:vend",
+   "type": "recipe",
+   "out": [
+    "vend",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     6
+    ],
+    [
+     "glass",
+     1
+    ]
+   ],
+   "secs": 10,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:bunk",
+   "type": "recipe",
+   "out": [
+    "bunk",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     3
+    ],
+    [
+     "woolBlue",
+     3
+    ]
+   ],
+   "secs": 5,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:box",
+   "type": "recipe",
+   "out": [
+    "box",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     8
+    ]
+   ],
+   "secs": 4,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:door",
+   "type": "recipe",
+   "out": [
+    "door",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     6
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:glass",
+   "type": "recipe",
+   "out": [
+    "glass",
+    1
+   ],
+   "at": "oven",
+   "in": [
+    [
+     "sand",
+     2
+    ]
+   ],
+   "secs": 5,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:brickRed",
+   "type": "recipe",
+   "out": [
+    "brickRed",
+    1
+   ],
+   "at": "oven",
+   "in": [
+    [
+     "redSand",
+     2
+    ]
+   ],
+   "secs": 5,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:cupcake",
+   "type": "recipe",
+   "out": [
+    "cupcake",
+    2
+   ],
+   "at": "oven",
+   "in": [
+    [
+     "flour",
+     1
+    ],
+    [
+     "sugar",
+     1
+    ],
+    [
+     "berry",
+     2
+    ]
+   ],
+   "secs": 10,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:bread",
+   "type": "recipe",
+   "out": [
+    "bread",
+    1
+   ],
+   "at": "oven",
+   "in": [
+    [
+     "flour",
+     2
+    ]
+   ],
+   "secs": 8,
+   "gate": null,
+   "source": "live"
+  },
+  {
+   "id": "r:stick",
+   "type": "recipe",
+   "out": [
+    "stick",
+    4
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     2
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "GM-ANSWERS §5"
+  },
+  {
+   "id": "r:woodTool",
+   "type": "recipe",
+   "out": [
+    "woodTool",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     3
+    ],
+    [
+     "stick",
+     2
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "GM-ANSWERS §5 (live 2.5.42 = 5 Planks; migration keeps owned picks)"
+  },
+  {
+   "id": "r:stoneTool",
+   "type": "recipe",
+   "out": [
+    "stoneTool",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stone",
+     3
+    ],
+    [
+     "stick",
+     2
+    ]
+   ],
+   "secs": 4,
+   "gate": null,
+   "source": "GM-ANSWERS §5 (live = 3 Stone + 2 Planks)"
+  },
+  {
+   "id": "r:copperPick",
+   "type": "recipe",
+   "out": [
+    "copperPick",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "copperIngot",
+     3
+    ],
+    [
+     "stick",
+     2
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM-ANSWERS §5"
+  },
+  {
+   "id": "r:steelPick",
+   "type": "recipe",
+   "out": [
+    "steelPick",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "steel",
+     3
+    ],
+    [
+     "stick",
+     2
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM-ANSWERS §5"
+  },
+  {
+   "id": "r:pan",
+   "type": "recipe",
+   "out": [
+    "pan",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "GM-ANSWERS §5 / ORE-TABLE"
+  },
+  {
+   "id": "r:carvingTool",
+   "type": "recipe",
+   "out": [
+    "carvingTool",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stick",
+     2
+    ],
+    [
+     "stone",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "DECOR-PACKS §3 stand-in (2 Sticks + 1 Iron Nugget once an Iron Nugget item exists)"
+  },
+  {
+   "id": "r:bucket",
+   "type": "recipe",
+   "out": [
+    "bucket",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "ironIngot",
+     3
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM-ANSWERS §5"
+  },
+  {
+   "id": "r:smelter",
+   "type": "recipe",
+   "out": [
+    "smelter",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "brickRed|brickGrey",
+     8
+    ],
+    [
+     "ironOre",
+     1
+    ],
+    [
+     "coal",
+     1
+    ]
+   ],
+   "secs": 10,
+   "gate": "T4",
+   "source": "GM-ANSWERS §5 (brick colour: open question)"
+  },
+  {
+   "id": "r:fabricator",
+   "type": "recipe",
+   "out": [
+    "fabricator",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "steel",
+     4
+    ],
+    [
+     "copperWire",
+     2
+    ],
+    [
+     "glass",
+     1
+    ],
+    [
+     "batteryCell",
+     1
+    ]
+   ],
+   "secs": 10,
+   "gate": "T5",
+   "source": "GM-ANSWERS §5 (bootstrap: open question)"
+  },
+  {
+   "id": "r:ironIngot",
+   "type": "recipe",
+   "out": [
+    "ironIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "ironOre",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:copperIngot",
+   "type": "recipe",
+   "out": [
+    "copperIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "rawCopper",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:zincIngot",
+   "type": "recipe",
+   "out": [
+    "zincIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "zincOre",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:tinIngot",
+   "type": "recipe",
+   "out": [
+    "tinIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "tinOre",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:silverIngot",
+   "type": "recipe",
+   "out": [
+    "silverIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "silverOre",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:goldIngot",
+   "type": "recipe",
+   "out": [
+    "goldIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "goldNugget",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:alumina",
+   "type": "recipe",
+   "out": [
+    "alumina",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "bauxite",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:titaniumDioxide",
+   "type": "recipe",
+   "out": [
+    "titaniumDioxide",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "blackSand|ilmeniteOre",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:silicon",
+   "type": "recipe",
+   "out": [
+    "silicon",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "quartz",
+     1
+    ],
+    [
+     "coal",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T5",
+   "source": "GM §4"
+  },
+  {
+   "id": "r:platinumIngot",
+   "type": "recipe",
+   "out": [
+    "platinumIngot",
+    1
+   ],
+   "at": "smelter",
+   "in": [
+    [
+     "platinumNugget",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "embercore",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:steel",
+   "type": "recipe",
+   "out": [
+    "steel",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "ironIngot",
+     1
+    ],
+    [
+     "coal",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:bronzeIngot",
+   "type": "recipe",
+   "out": [
+    "bronzeIngot",
+    9
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "copperIngot",
+     8
+    ],
+    [
+     "tinIngot",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:copperWire",
+   "type": "recipe",
+   "out": [
+    "copperWire",
+    4
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "copperIngot",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:glassVial",
+   "type": "recipe",
+   "out": [
+    "glassVial",
+    2
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "glass",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:wireRope",
+   "type": "recipe",
+   "out": [
+    "wireRope",
+    2
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "ironIngot",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:spring",
+   "type": "recipe",
+   "out": [
+    "spring",
+    2
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T4",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:batteryCell",
+   "type": "recipe",
+   "out": [
+    "batteryCell",
+    2
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "copperIngot",
+     1
+    ],
+    [
+     "zincIngot",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "GM §5 (1 charge)"
+  },
+  {
+   "id": "r:logicChip",
+   "type": "recipe",
+   "out": [
+    "logicChip",
+    2
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "silicon",
+     1
+    ],
+    [
+     "copperWire",
+     2
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:solarPanel",
+   "type": "recipe",
+   "out": [
+    "solarPanel",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     2
+    ],
+    [
+     "silicon",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T5",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:charger",
+   "type": "recipe",
+   "out": [
+    "charger",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:glowStrip",
+   "type": "recipe",
+   "out": [
+    "glowStrip",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T5",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:lantern",
+   "type": "recipe",
+   "out": [
+    "lantern",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     1
+    ],
+    [
+     "steel",
+     1
+    ],
+    [
+     "batteryCell",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "GM §5"
+  },
+  {
+   "id": "r:doorSliding",
+   "type": "recipe",
+   "out": [
+    "doorSliding",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     4
+    ],
+    [
+     "steel",
+     2
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T5",
+   "source": "basics-1 1d + GM §5"
+  },
+  {
+   "id": "r:aluminumIngot",
+   "type": "recipe",
+   "out": [
+    "aluminumIngot",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "alumina",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T5",
+   "source": "GM §5 (+4 charge)"
+  },
+  {
+   "id": "r:doorGlass",
+   "type": "recipe",
+   "out": [
+    "doorGlass",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glass",
+     4
+    ],
+    [
+     "planks",
+     2
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "basics-1 1a"
+  },
+  {
+   "id": "r:lever",
+   "type": "recipe",
+   "out": [
+    "lever",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "stick",
+     1
+    ],
+    [
+     "stone",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": "T2",
+   "source": "basics-1 1b"
+  },
+  {
+   "id": "r:pushButton",
+   "type": "recipe",
+   "out": [
+    "pushButton",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": "T1",
+   "source": "basics-1 1b"
+  },
+  {
+   "id": "r:doorMetal",
+   "type": "recipe",
+   "out": [
+    "doorMetal",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "steel",
+     6
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "basics-1 brief 1c (6 Steel, T4); GM to confirm"
+  },
+  {
+   "id": "r:paintDab",
+   "type": "recipe",
+   "out": [
+    "paintDab",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "berry",
+     1
+    ]
+   ],
+   "secs": 0,
+   "gate": null,
+   "source": "GM §1"
+  },
+  {
+   "id": "r:paintDab#2",
+   "type": "recipe",
+   "out": [
+    "paintDab",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "flower",
+     1
+    ]
+   ],
+   "secs": 0,
+   "gate": null,
+   "source": "GM §1 (world-2)"
+  },
+  {
+   "id": "r:bioplastic",
+   "type": "recipe",
+   "out": [
+    "bioplastic",
+    1
+   ],
+   "at": "oven",
+   "in": [
+    [
+     "corn",
+     2
+    ]
+   ],
+   "secs": 5,
+   "gate": null,
+   "source": "GM §3"
+  },
+  {
+   "id": "r:plasticTube",
+   "type": "recipe",
+   "out": [
+    "plasticTube",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "bioplastic",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "GM §3"
+  },
+  {
+   "id": "r:copperDust",
+   "type": "recipe",
+   "out": [
+    "copperDust",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "rawCopper",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "basics-2"
+  },
+  {
+   "id": "r:glowMix",
+   "type": "recipe",
+   "out": [
+    "glowMix",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glowMoss",
+     1
+    ],
+    [
+     "copperDust",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "basics-2 / GM §3"
+  },
+  {
+   "id": "r:glowMix#2",
+   "type": "recipe",
+   "out": [
+    "glowMix",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glowMoss",
+     2
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "GM §3 (works with zero ores)"
+  },
+  {
+   "id": "r:boosterDye",
+   "type": "recipe",
+   "out": [
+    "boosterDye",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glowMoss",
+     1
+    ],
+    [
+     "paintDab",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "basics-2 + GM §1"
+  },
+  {
+   "id": "r:glowPebble",
+   "type": "recipe",
+   "out": [
+    "glowPebble",
+    8
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glowMoss",
+     1
+    ]
+   ],
+   "secs": 0,
+   "gate": null,
+   "source": "basics-2"
+  },
+  {
+   "id": "r:glowStick",
+   "type": "recipe",
+   "out": [
+    "glowStick",
+    4
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "plasticTube",
+     1
+    ],
+    [
+     "glowMix",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "basics-2"
+  },
+  {
+   "id": "r:jumboGlow",
+   "type": "recipe",
+   "out": [
+    "jumboGlow",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "plasticTube",
+     1
+    ],
+    [
+     "glowMix",
+     2
+    ],
+    [
+     "boosterDye",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "GM §2"
+  },
+  {
+   "id": "r:coldGlowVial",
+   "type": "recipe",
+   "out": [
+    "coldGlowVial",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glassVial",
+     1
+    ],
+    [
+     "glowMix",
+     3
+    ],
+    [
+     "ice",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "world-2",
+   "source": "basics-2 + WORLD-2 §4"
+  },
+  {
+   "id": "r:frostVial",
+   "type": "recipe",
+   "out": [
+    "frostVial",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glassVial",
+     1
+    ],
+    [
+     "ice",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": "world-2",
+   "source": "WORLD-2 §4"
+  },
+  {
+   "id": "r:saltPan",
+   "type": "recipe",
+   "out": [
+    "saltPan",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     4
+    ],
+    [
+     "glass",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "world-2",
+   "source": "WORLD-2 §5"
+  },
+  {
+   "id": "r:goldNugget",
+   "type": "recipe",
+   "out": [
+    "goldNugget",
+    1
+   ],
+   "at": "hand",
+   "in": [
+    [
+     "goldFlake",
+     9
+    ]
+   ],
+   "secs": 0,
+   "gate": "world-1",
+   "source": "WORLD-1 (9 Flakes → Nugget)"
+  },
+  {
+   "id": "r:wallShelf",
+   "type": "recipe",
+   "out": [
+    "wallShelf",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     2
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:shelf",
+   "type": "recipe",
+   "out": [
+    "shelf",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:sideTable",
+   "type": "recipe",
+   "out": [
+    "sideTable",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:desk",
+   "type": "recipe",
+   "out": [
+    "desk",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     5
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:cabinet",
+   "type": "recipe",
+   "out": [
+    "cabinet",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     6
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:glassCabinet",
+   "type": "recipe",
+   "out": [
+    "glassCabinet",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cabinet",
+     1
+    ],
+    [
+     "glass",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:steelLocker",
+   "type": "recipe",
+   "out": [
+    "steelLocker",
+    1
+   ],
+   "at": "forge",
+   "in": [
+    [
+     "steel",
+     6
+    ],
+    [
+     "box",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T4",
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:satchel",
+   "type": "recipe",
+   "out": [
+    "satchel",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     3
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:backpack",
+   "type": "recipe",
+   "out": [
+    "backpack",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     6
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:expeditionPack",
+   "type": "recipe",
+   "out": [
+    "expeditionPack",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cloth",
+     8
+    ],
+    [
+     "steel",
+     2
+    ],
+    [
+     "box",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:paintBrush",
+   "type": "recipe",
+   "out": [
+    "paintBrush",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "planks",
+     1
+    ],
+    [
+     "cloth",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "STORAGE-SPEC §1"
+  },
+  {
+   "id": "r:cloth",
+   "type": "recipe",
+   "out": [
+    "cloth",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "cotton",
+     3
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "storage-1"
+  },
+  {
+   "id": "r:itemTube",
+   "type": "recipe",
+   "out": [
+    "itemTube",
+    4
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "glass",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §2"
+  },
+  {
+   "id": "r:extractor",
+   "type": "recipe",
+   "out": [
+    "extractor",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "steel",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "plasticTube",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §2"
+  },
+  {
+   "id": "r:poweredTube",
+   "type": "recipe",
+   "out": [
+    "poweredTube",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "itemTube",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "STORAGE-SPEC §2"
+  },
+  {
+   "id": "r:filterTube",
+   "type": "recipe",
+   "out": [
+    "filterTube",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "itemTube",
+     1
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 1,
+   "gate": null,
+   "source": "STORAGE-SPEC §2"
+  },
+  {
+   "id": "r:sorter",
+   "type": "recipe",
+   "out": [
+    "sorter",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "steel",
+     2
+    ],
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "glass",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "STORAGE-SPEC §2"
+  },
+  {
+   "id": "r:batteryBox",
+   "type": "recipe",
+   "out": [
+    "batteryBox",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "batteryCell",
+     4
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "STORAGE-SPEC energy"
+  },
+  {
+   "id": "r:networkCable",
+   "type": "recipe",
+   "out": [
+    "networkCable",
+    8
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "plasticTube",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:networkCore",
+   "type": "recipe",
+   "out": [
+    "networkCore",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     4
+    ],
+    [
+     "glass",
+     2
+    ],
+    [
+     "copperWire",
+     2
+    ],
+    [
+     "batteryCell",
+     2
+    ]
+   ],
+   "secs": 5,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:driveBay",
+   "type": "recipe",
+   "out": [
+    "driveBay",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     4
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:driveS",
+   "type": "recipe",
+   "out": [
+    "driveS",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     1
+    ],
+    [
+     "glass",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:driveM",
+   "type": "recipe",
+   "out": [
+    "driveM",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "driveS",
+     2
+    ],
+    [
+     "silicon",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:driveL",
+   "type": "recipe",
+   "out": [
+    "driveL",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "driveM",
+     2
+    ],
+    [
+     "silicon",
+     2
+    ],
+    [
+     "batteryCell",
+     1
+    ]
+   ],
+   "secs": 4,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:storageLink",
+   "type": "recipe",
+   "out": [
+    "storageLink",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "steel",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:terminal",
+   "type": "recipe",
+   "out": [
+    "terminal",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     2
+    ],
+    [
+     "steel",
+     1
+    ],
+    [
+     "copperWire",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §3"
+  },
+  {
+   "id": "r:teleportPad",
+   "type": "recipe",
+   "out": [
+    "teleportPad",
+    2
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     2
+    ],
+    [
+     "copperWire",
+     2
+    ],
+    [
+     "glass",
+     1
+    ],
+    [
+     "batteryCell",
+     1
+    ]
+   ],
+   "secs": 5,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §4 (pre-paired pair)"
+  },
+  {
+   "id": "r:deliveryDrone",
+   "type": "recipe",
+   "out": [
+    "deliveryDrone",
+    1
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "steel",
+     2
+    ],
+    [
+     "copperWire",
+     4
+    ],
+    [
+     "batteryCell",
+     2
+    ],
+    [
+     "glass",
+     1
+    ],
+    [
+     "plasticTube",
+     4
+    ]
+   ],
+   "secs": 6,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §4"
+  },
+  {
+   "id": "r:droneDock",
+   "type": "recipe",
+   "out": [
+    "droneDock",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "charger",
+     1
+    ],
+    [
+     "planks",
+     2
+    ]
+   ],
+   "secs": 2,
+   "gate": "T5",
+   "source": "STORAGE-SPEC §4"
+  },
+  {
+   "id": "r:bounceBlock",
+   "type": "recipe",
+   "out": [
+    "bounceBlock",
+    2
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "steel",
+     1
+    ],
+    [
+     "planks",
+     2
+    ],
+    [
+     "cloth",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "fun-1"
+  },
+  {
+   "id": "r:discoFloor",
+   "type": "recipe",
+   "out": [
+    "discoFloor",
+    4
+   ],
+   "at": "fabricator",
+   "in": [
+    [
+     "glass",
+     2
+    ],
+    [
+     "copperWire",
+     1
+    ],
+    [
+     "glowMix",
+     1
+    ]
+   ],
+   "secs": 3,
+   "gate": null,
+   "source": "fun-1"
+  }
+ ]
+}

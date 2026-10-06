@@ -1,4 +1,6 @@
 # Bertopia Progression Plan v2: Metal Cogs, the Materials Ladder, Badges, and Two Cross-App Dailies
+> **Roles and worlds (6:56 AM):** "Teacher" means anyone Diego gives the TechWorks Teacher flag (staff, club officers, kid helpers), not a fixed staff list. "Creative" = the Build world (Teacher flag only) and "Survival" = the Game world (everyone). See BERTOPIA-WORLDS.md.
+
 
 **For:** Diego Kulibert (Solvay Middle School Tech Ed, grades 6–8). **Builder:** Debugzy. **Author:** GameMaster.
 **Date:** Sat Oct 3, 2026, about 11 PM ET. **App:** Bertopia BT 2.5.10 (https://apps.kulibert.net/blocks/, starter world Bertyville, saved builds are Blueprints).
@@ -679,3 +681,6 @@ These come after the Bertopia 2.6.x bag line that's already queued, and they're 
 5. **Home play:** should Dailies and Cogs count the same at home on phones, with the same daily caps? Default: **yes.**
 
 *Money note (no decision needed):* everything here runs on the existing `kulinet` D1 and Pages routes for **$0**, and there's no real-money purchase anywhere.
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

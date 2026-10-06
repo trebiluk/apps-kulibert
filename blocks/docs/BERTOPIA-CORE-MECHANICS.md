@@ -1,4 +1,5 @@
 # Bertopia Core Mechanics — LOCKED (GameMaster, Oct 4 2026 ~7:00 AM ET)
+GameMaster calls 2026-10-04 7:2x AM ET
 Source: Diego 6:46 AM ("firm up the basics before more features"; "the game can only do a certain number of things").
 Respects: NEXT-50, STORAGE-SPEC, FUN-ITEMS-SPEC, EFFECTS-SPEC, WORLDS, gamemaster/BERTOPIA-BASICS-GM (Lantern, doors, day/night, glow, Bot), fixq/bertopia-WORLD-PLAN (Damage Off/Gentle/Real, Suit 0–100).
 Global locks: 20-min day/night (14/2/3/1), nights ≥40% (Brighter nights 60%), no monsters, Damage Off by default, kid-safe, aliases only, teal/cyan/blue first + Berty purple accents, Reduced motion respected (no bob, no particles, no shake), taps ≥44 px, phone = Chromebook, 8 languages, RTL mirrors panels but NOT the move stick.
@@ -64,14 +65,14 @@ Gestures are the kw-interact names in §0.3. A long-press "Options" sheet is par
 | Hide-and-Seek / Arena Tag | Use on a player within 2 blocks, only inside an Arena or Game Zone (priority 1 in §0.1) |
 
 ### 0.3 kw-interact alignment (StyleBot's module not found on the box — FLAG FOR STYLEBOT)
-`rg -i kw-interact /workspace /home/box` found no draft at 7:00 AM. Proposed shared names/thresholds (match NEXT-50 #6 "drag after 250 ms hold or 8 px"):
+`rg -i kw-interact /workspace /home/box` found no draft at 7:00 AM. World gesture decisions below are separate from panel timing (panels keep their 250 ms hold/drag behavior):
 | Name | Rule |
 |---|---|
-| `tap` | down→up < 250 ms and < 8 px travel |
-| `hold` | still (< 8 px) ≥ 250 ms; continuous until release (Mine, panel drag start) |
+| `tap` | **World:** down→up before 500 ms and < 8 px travel; Settings → **Slow taps** stretches this to 800 ms. **Panels:** keep the panel tap/drag timing. |
+| `hold` | **World:** still (< 8 px) reaches 500 ms = Mine; crack progress starts at 250 ms. **Panels:** still (< 8 px) ≥ 250 ms; continuous until release (panel drag start). |
 | `long-press` | still ≥ 500 ms; cyan ring fills over 500 ms (static ring w/ Reduced motion); fires Options only where an Options sheet exists |
 | `drag` | ≥ 8 px travel (world: camera look; panels: move item; ghost: nudge); cancels cleanly on rotate |
-| `link` | tap source (or select item) → tap target within 10 s; cyan preview line; tap empty / ✕ cancels |
+| `link` | tap source (or select item) → tap target within 10 s by default; keyboard focus moves and key presses restart the timer; Esc cancels like ✕. Settings → **More time to connect** turns the timer off; then only Esc, ✕ or a tap on empty space cancels. Touch keeps the 10 s default. |
 | `stick` | floating joystick: dead zone 12 px, full speed at 48 px, run beyond 56 px for ≥ 300 ms |
 StyleBot: please adopt these names in kw-interact (open/connect/link/move) or send back your values; GameMaster will re-align this file, not the other way round on thresholds already locked in NEXT-50.
 
@@ -95,7 +96,7 @@ StyleBot: please adopt these names in kw-interact (open/connect/link/move) or se
 Feel test: one thumb only, a kid jumps a 1-block gap in one tap, climbs a 1-block step without a jump, and can NOT jump onto a 2-block wall.
 
 ## 2. Mine / break
-Hold-to-break; ≤ 0.25 s blocks break on a `tap`. One multi-tool per tier (no tool-type memorizing). No tier gates: every block breaks by hand, just slower; after 2 s by hand a hint chip says "A Copper Tool is faster."
+Hold-to-break in the world; a press that moves < 8 px and releases before 500 ms is Place/Use if no block has broken. Mining crack progress starts at 250 ms. A hold of 500 ms or more is Mine, and a block that breaks before release stays a Mine. Settings → **Slow taps** stretches the tap window to 800 ms. Panels are unchanged. One multi-tool per tier (no tool-type memorizing). No tier gates: every block breaks by hand, just slower; after 2 s by hand a hint chip says "A Copper Tool is faster."
 Tool multipliers: Hand ×1 · Wood ×2 · Stone ×3 · Copper ×4 · Steel ×6. Time = hand ÷ multiplier, floor 0.15 s.
 
 | Material (hand s) | | | |
@@ -105,7 +106,7 @@ Tool multipliers: Hand ×1 · Wood ×2 · Stone ×3 · Copper ×4 · Steel ×6. 
 | Planks 1.5 | Log 2.0 | Stone 3.0 | Slate / Coal ore 3.5 |
 | Red / Grey brick 4.0 | Copper / Zinc / Silicon ore 4.5 | Copper block 5.0 | Steel block 7.5 |
 | Coreplate (y −64 floor): never breaks | | | |
-- Feedback: 4 crack stages at 25/50/75/100%, soft tick each stage, small puff at 100% (crack overlay only with Reduced motion). Releasing early: progress drains to 0 over 0.5 s; aiming at another block resets.
+- Feedback: 4 crack stages at 25/50/75/100%, soft tick each stage, small puff at 100% (crack overlay only with Reduced motion). Releasing before 500 ms without breaking a block resets crack progress with no loss; aiming at another block resets.
 - Result goes straight into the Bag (Game world). Bag full → the block still breaks and drops as a persistent item (§6). Grass drops Dirt; Leaves 33% Berry (live rule kept).
 - Build world: instant break on `tap`; `hold` repeats every 0.25 s. Morph Prairie Dog dirt ×2 = EFFECTS-SPEC.
 Feel test: a kid breaks Dirt by hand in under 1 s and Stone with a Stone Tool in 1 s.
@@ -231,3 +232,6 @@ Engine: noa-engine + Babylon.js. Local repo clone (/workspace/repos/apps-kuliber
 | 23 | No health, hearts, water, lava or fall damage exist; no dropped-item entities; no day/night | no fluid blocks registered (L2433 `registerBlock(r,{material:e,opaque:…})`), no damage code | Damage Off default matches; rest is new work | build per §6–8 |
 Matches (keep): player 0.6×1.8 (noa defaults), eye ≈0.9×height, hotbar 9 + key/wheel select, Undo 200 groups / 5 MB (L2433 `i.length>200`), station range ±4/±2, void y<−72 respawn keeps the Bag, head bob off with prefers-reduced-motion (`Cp`), cyan target outline 0.52.
 Outside this spec, flagged: the Tally store sells Blue/Red wool, flour, sugar for Cogs (L2433 `storeSells:[…]`); check against A1 "materials never bought except stock refills."
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

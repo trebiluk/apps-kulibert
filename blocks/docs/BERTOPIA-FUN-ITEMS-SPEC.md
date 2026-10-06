@@ -1,4 +1,6 @@
 # Bertopia Fun Items + Holiday Packs (GameMaster, Oct 4 2026 6:44 AM ET)
+> **Roles and worlds (6:56 AM):** "Teacher" means anyone Diego gives the TechWorks Teacher flag (staff, club officers, kid helpers), not a fixed staff list. "Creative" = the Build world (Teacher flag only) and "Survival" = the Game world (everyone). See BERTOPIA-WORLDS.md.
+
 Rules for all: crafted or earned only, never bought with Cogs; never lost (parks/returns); alias-only; respects the player's Sound and Reduced-motion settings; works one-thumb on phone + Chromebook.
 
 ## 1. Pet Rock
@@ -70,3 +72,6 @@ Rules for all: crafted or earned only, never bought with Cogs; never lost (parks
   | Apr 22 | Earth Day | trees, solar flowers, recycle bins |
   | Jun | Summer | beach umbrella, sandcastle, ice-cream cart |
 - Badge: World Celebrations (place an item from 5 different packs).
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

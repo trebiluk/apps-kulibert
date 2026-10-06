@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 6:45 AM ET (Debugzy audit of 2.5.15–2.5.42; full report: proof/AUDIT-2026-10-06.md on Debugzy's box).
+Updated Tue Oct 6 2026, 7:15 AM ET (Debugzy: Next up renumbered for world-1/world-2; audit of 2.5.15–2.5.42 at 6:45 AM, full report proof/AUDIT-2026-10-06.md on Debugzy's box).
 
 ## 1. Live now
 - **Bertopia 2.5.42** (`a0675ec`, Oct 5 10:49 AM ET). Live = main; `npm run build` reproduces `blocks/app.js` byte for byte.
@@ -51,27 +51,35 @@ Updated Tue Oct 6 2026, 6:45 AM ET (Debugzy audit of 2.5.15–2.5.42; full repor
 |---|---|---|---|
 | 0 | 2.5.43 | **bertopia-2543.md:** HUD fit + hotbar, teacher gate, words + real smoke | [ ] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
-| 1 | 2.5.44 | bertopia-basics-1.md: Lever, Push Button, the other doors + double + lock, day/night + toggles, Light Up badges, ores per ORE-TABLE (the Wood Door from 2.5.42 stays) | [ ] |
-| 2 | 2.5.45 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (Tube + 2 Glow Mix + 1 Booster Dye, no Salt), Cold Vial, colors, caps, minimap, lessons | [ ] |
-| 3 | 2.5.46 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5) | [ ] |
-| 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer, Overflow Box (the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
+| 1 | 2.5.44 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
+| 2 | 2.5.45 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
+| 3 | 2.5.46 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
+| 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
-| 6 | 2.6.2 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack, shelves, Box/Double Box (Box exists), Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | [ ] |
-| 7 | 2.6.3 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | [ ] |
-| 8 | 2.6.4 | bertopia-bot-cargo.md: Bot H1 Cargo Bay (T5; steady amber low-battery ring, no blink) | [ ] |
-| 9 | 2.6.5 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter | [ ] |
-| 10 | 2.6.6 | bertopia-storage-5.md: Storage Network | [ ] |
-| 11 | 2.6.7 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
-| 12 | 2.6.8 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
-| 13 | 2.6.9 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
-| 14 | 2.6.10 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
-| 15 | 2.6.11 | bertopia-holidays-1.md: holidays.json calendar, first 4 packs | [ ] |
-| 16 | — | Worlds/Workshop, Effects, Bertodex + ores (Tin → Bronze 8:1), NEXT-50 goals 28–50: briefs not written yet | [ ] |
+| 6 | 2.6.2 | bertopia-world-1a.md: ores by depth (natural stone only), Glow Moss clumps + first-find chip, locked tiles | [ ] |
+| 7 | 2.6.3 | bertopia-world-1b.md: still water (lakes, river, Clay), one-thumb swimming, Pan + Bucket | [ ] |
+| 8 | 2.6.4 | bertopia-world-2a.md: six biomes + old-save safety, Snow/Ice in Frostspire, biome chip + patterned minimap | [ ] |
+| 9 | 2.6.5 | bertopia-world-2b.md: the sea, Salt + Salt Pan, biome ores/panning/crops, Boundary Clay | [ ] |
+| 10 | 2.6.6 | bertopia-storage-1.md: Cotton + Cloth, wood Backpack, shelves, Box/Double Box, Desk/Cabinet, Glass Cabinet T3; Steel Locker + Expedition Pack T4 | [ ] |
+| 11 | 2.6.7 | bertopia-storage-2.md: Paint Brush, palette, Blueprint colors, Interior Designer | [ ] |
+| 12 | 2.6.8 | bertopia-bot-cargo.md: Bot H1 Cargo Bay (T5; steady amber low-battery ring, no blink) | [ ] |
+| 13 | 2.6.9 | bertopia-storage-4.md: Item Tubes, Extractor, Powered/Filter Tube, Sorter | [ ] |
+| 14 | 2.6.10 | bertopia-storage-5.md: Storage Network | [ ] |
+| 15 | 2.6.11 | bertopia-storage-3.md: Teleport Pads + Delivery Drone/Dock | [ ] |
+| 16 | 2.6.12 | bertopia-storage-6.md: Battery Box, Network Pad, Networked Dock | [ ] |
+| 17 | 2.6.13 | bertopia-fun-1.md: Pet Rock, Gravity Hat + Spring Pad, Disco Floor | [ ] |
+| 18 | 2.6.14 | bertopia-music-1.md: Note Block, instruments, Jukebox + DJ Berty Discs | [ ] |
+| 19 | 2.6.15 | bertopia-holidays-1.md: holidays.json calendar, first 4 packs, autumn set + pumpkin carving (per DECOR-PACKS; pack names pending Diego/Curriculum) | [ ] |
+| 20 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
 
-The basics/storage/fun briefs still name older "keep passing" versions in their bodies. The START line is what counts: each one starts from the version in the row above.
+All briefs were renumbered on Oct 6 (7:10 AM) to this table; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
 Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the Teacher flag.
 
 ## 4. Locked rules (read before building; use the numbers exactly)
+- [BERTOPIA-GM-ANSWERS-2026-10-06.md](docs/BERTOPIA-GM-ANSWERS-2026-10-06.md): GameMaster's final answers (recipes, no tier gates, Silicon at the Smelter). **It wins over every older line.**
+- [wiki/REGISTRY.json](docs/wiki/REGISTRY.json): the one list of every block, item, machine, ore, biome, recipe and effect (ids, names, verbs, recipes, stage, asset id, fact chip, Bertodex id). [wiki/README.md](docs/wiki/README.md) explains it.
+- [BERTOPIA-CODING-PLAN.md](docs/BERTOPIA-CODING-PLAN.md): architecture, save versions, perf budgets, milestones, smoke harness, open questions.
+- [BERTOPIA-WORLD-1.md](docs/BERTOPIA-WORLD-1.md), [BERTOPIA-WORLD-2.md](docs/BERTOPIA-WORLD-2.md), [BERTOPIA-DECOR-PACKS.md](docs/BERTOPIA-DECOR-PACKS.md): world-1/2 and decor (furniture, autumn, carving, string lights) source of truth.
 - [BERTOPIA-CORE-MECHANICS.md](docs/BERTOPIA-CORE-MECHANICS.md): **read first.** The 10 verbs, movement/camera/mining numbers, the §0.3 gesture thresholds and the 23 live mismatches. It wins over any older brief.
 - [BERTOPIA-WORLDS.md](docs/BERTOPIA-WORLDS.md): Game world (Bertyville) = Survival for everyone; Build world (the Workshop) = Creative, Teacher flag only. Separate Bags.
 - [BERTOPIA-EFFECTS-SPEC.md](docs/BERTOPIA-EFFECTS-SPEC.md): Lab Bench effects, Levels I–III, cooldowns, chips, off zones.

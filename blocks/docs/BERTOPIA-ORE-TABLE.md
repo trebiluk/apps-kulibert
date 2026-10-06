@@ -89,7 +89,7 @@ Copper Ore ─mine─► Raw Copper ─Smelter─► Copper Ingot ─► 4 Coppe
                    Raw Copper ─Workbench─► 2 Copper dust ─(+Glow Moss)─► Glow Mix
 Zinc Ore ─Smelter─► Zinc Ingot ─(+Copper)─► Battery Cell
 Tin Ore ─Smelter─► Tin Ingot ─(8 Cu + 1 Sn, Forge)─► 9 Bronze Ingot
-Quartz ─Smelter + Coal─► Silicon (Fabricator line, T5)
+Quartz ─Smelter + Coal─► Silicon (made at Smelter, unlocked by T5; used by Fabricator)
 Bauxite ─Smelter─► Alumina ─Fabricator + 4 charge─► Aluminum Ingot ─2─► Aluminum Beam
 Black Sand / Ilmenite ─Smelter─► TiO₂ ─Clean Bench + Coal + Salt + 8 charge─► Titanium Ingot ─3─► Titanium Frame
 Silver Ore ─Smelter─► Silver Ingot ─► Mirror
@@ -97,7 +97,7 @@ Gold Ore / 9 Flakes ─► Gold Nugget ─Smelter─► Gold Ingot ─► 16 Gol
 Platinum Ore / 9 Grains ─► Platinum Nugget ─Smelter+ (Embercore)─► Platinum Ingot ─► Catalyst Plate
                                          └─Clean Bench refine─► (1 in 5 Rhodium Speck, 1 in 20 Iridium Speck)
 10 Iridium Specks ─► Iridium Nugget ─► Iridium Spark Tip (skin) / Meteorite Display
-Corn ─► Bioplastic ─► Plastic Tube        Cotton ─3─► Cloth        Clay ─Oven─► Brick
+Corn ─Oven (2→1)─► Bioplastic ─Workbench (1→2)─► Plastic Tube        Cotton ─3─► Cloth        Clay ─Oven─► Brick
 ```
 
 ## 5. Verge rares (made-up; the Bertodex labels them)
@@ -262,3 +262,6 @@ Curriculum Bot, about 7:15 AM ET. I read every source below today. Quotes are tr
 3. **Jumbo Glow recipe — decided by GameMaster.** Remove Salt. Use 1 Glow Moss + 1 Paint dab → 1 Booster Dye (Workbench), then Tube + 2 Glow Mix + 1 Booster Dye for Jumbo Glow. Radius 5 and about 40 min stay. Lesson: "A glow stick mixes two chemicals. The reaction gives its energy to a dye, and the dye glows. The dye picks the color." Nothing calls salt a catalyst.
 4. **Abundance-number rule — decided by GameMaster.** Ranked or compared abundance columns use mass ppm only (CRC, Rudnick & Gao). RSC values are atoms per million atoms, so they appear only in a footnote labeled that way; never mix them with mass-ppm columns.
 5. **Iridium "one of the two densest elements" (economy §1.1).** It's verified on the RSC iridium page (podcast transcript: "with osmium it's one of the two densest of all the elements"). No change.
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.

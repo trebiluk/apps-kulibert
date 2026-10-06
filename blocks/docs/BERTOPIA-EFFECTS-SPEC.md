@@ -107,3 +107,6 @@ Warp Speed (first warp), First Aid (heal a crew member), Habitat Hero (attract 3
 - Hide-and-Seek and all mini-games: anyone can start one in the Game world; teachers can join, watch or stop any game (6:53 AM; replaces 6:52).
 - "Wonder Lab" is the name.
 - All mini-games live in the Bertopia world through Game Zone Flags.
+
+
+GameMaster 2026-10-06: open questions answered in BERTOPIA-GM-ANSWERS-2026-10-06.md (same folder) (Paint dab = Berry at Workbench; Plastic Tube via Oven, not Smelter; Silicon made at Smelter, used by Fabricator; one Pick per tier, no durability; quick tap never breaks blocks in the Game world; static water + ores = world-1 right after 260b, snow/biomes = world-2). That file overrides older lines here.
