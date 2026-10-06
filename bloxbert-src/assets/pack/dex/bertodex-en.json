@@ -560,7 +560,7 @@
   "appleCrate": {
    "name": "Apple Crate",
    "cat": "Blocks",
-   "what": "A wooden crate of harvest apples."
+   "what": "A wooden crate of autumn apples."
   },
   "ghostLight": {
    "name": "Friendly Ghost Light",
@@ -583,9 +583,9 @@
    "what": "Cut-paper banners in bright colors."
   },
   "skullPatternTile": {
-   "name": "Sugar-Skull Pattern Tile",
+   "name": "Marigold Pattern Tile",
    "cat": "Blocks",
-   "what": "A tile with a colorful sugar-skull pattern."
+   "what": "A tile with a bright marigold flower pattern."
   },
   "diyaLight": {
    "name": "Diya Light",
@@ -803,7 +803,7 @@
    "what": "A wooden sign with a bat cut-out. Write a friendly message on it."
   },
   "harvestLantern": {
-   "name": "Harvest Lantern",
+   "name": "Autumn Lantern",
    "cat": "Blocks",
    "what": "A hanging lantern with an LED glow, never a flame."
   },
@@ -1315,7 +1315,7 @@
   "apple": {
    "name": "Apple",
    "cat": "Plants & Critters",
-   "what": "A harvest fruit."
+   "what": "An autumn fruit."
   },
   "carvingTool": {
    "name": "Carving Scoop",

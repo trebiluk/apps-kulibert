@@ -3155,7 +3155,7 @@
    "natural": null,
    "dex": {
     "cat": "Blocks",
-    "what": "A wooden crate of harvest apples.",
+    "what": "A wooden crate of autumn apples.",
     "status": "draft-curriculum-check"
    }
   },
@@ -3267,7 +3267,7 @@
    "id": 117,
    "key": "skullPatternTile",
    "name": {
-    "en": "Sugar-Skull Pattern Tile"
+    "en": "Marigold Pattern Tile"
    },
    "kind": "cube",
    "faces": {
@@ -3285,7 +3285,7 @@
    "natural": null,
    "dex": {
     "cat": "Blocks",
-    "what": "A tile with a colorful sugar-skull pattern.",
+    "what": "A tile with a bright marigold flower pattern.",
     "status": "draft-curriculum-check"
    }
   },
@@ -4495,7 +4495,7 @@
    "id": 167,
    "key": "harvestLantern",
    "name": {
-    "en": "Harvest Lantern"
+    "en": "Autumn Lantern"
    },
    "kind": "model",
    "faces": {
@@ -6439,7 +6439,7 @@
    "availableFrom": "live",
    "dex": {
     "cat": "Plants & Critters",
-    "what": "A harvest fruit.",
+    "what": "An autumn fruit.",
     "status": "draft-curriculum-check"
    }
   },
