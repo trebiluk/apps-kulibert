@@ -1,4 +1,4 @@
-import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit } from '../src/feel.js'
+import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, canUse } from '../src/feel.js'
 
 let bad = 0
 function ok(cond, msg) {
@@ -39,6 +39,17 @@ ok(!keepCrouchStep(false, false), 'a crouch stops at a ledge')
 ok(keepCrouchStep(false, true), 'a wall is not a ledge')
 ok(shouldRepeatPlace(true, 250, false) && !shouldRepeatPlace(true, 200, false), 'mouse place repeats at 0.25 s')
 ok(!shouldRepeatPlace(true, 500, true), 'a touch tap never repeats')
+const box = { id: 27, x: 1, y: 2, z: 3 }
+const other = { id: 27, x: 1, y: 2, z: 4 }
+const door = { id: 30, x: 1, y: 2, z: 3 }
+ok(canUse(box, box, 0, false), 'a still press uses')
+ok(canUse(box, box, 6, false), '6 px still uses')
+ok(!canUse(box, box, 7, false), 'past 6 px does not use')
+ok(!canUse(box, other, 0, false), 'a different block does not use')
+ok(!canUse(box, door, 0, false), 'a changed block does not use')
+ok(!canUse(box, box, 0, true), 'a repeat never uses')
+ok(!canUse(null, box, 0, false), 'air down does not use')
+ok(!canUse(box, null, 0, false), 'air up does not use')
 const fast = capAir(3, 4, 4)
 ok(Math.abs(Math.hypot(fast[0], fast[1]) - 4) < 1e-9, 'air speed stays at takeoff')
 ok(capAir(1, 0, 4)[0] === 1, 'a slower air move is left alone')

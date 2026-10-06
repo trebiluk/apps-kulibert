@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.43'
+const VERSION = '2.5.44'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -30,7 +30,8 @@ import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
 import { coalHere, plantHere } from './worldgen.js'
 import { fromDoc } from './save.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, WALK } from './feel.js'
+import { RECIPES } from './data/recipes.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK } from './feel.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -361,10 +362,14 @@ function breakBlock() {
   const [x, y, z] = tget.position
   return breakAt(x, y, z)
 }
-function placeBlock(face) {
+function isUseBlock(id) {
+  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.bench || id === ID.vend || id === ID.bunk || id === ID.box
+}
+function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
+  const repeat = !!(opts && opts.repeat)
   const aimedBlock = face && face.position ? face : noa.targetedBlock
-  if (aimedBlock && panels) {
+  if (!repeat && aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
     if ((aimedBlock.blockID === ID.door || aimedBlock.blockID === ID.doorOpen) && canReach([ax, ay, az])) {
       const open = aimedBlock.blockID === ID.door
@@ -409,10 +414,11 @@ noa.inputs.down.on('fire', () => {
 })
 noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
-  if (!tableMode && noa.container.hasPointerLock) {
-    placeBlock()
-    if (!TOUCH_UI) { mouseRight = true; placeHoldAt = performance.now() }
-  }
+  if (tableMode || rightPress || !noa.container.hasPointerLock) return
+  const t = noa.targetedBlock
+  const interactive = !!(t && isUseBlock(t.blockID))
+  placeBlock()
+  if (!TOUCH_UI && !interactive) { mouseRight = true; placeHoldAt = performance.now() }
 })
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
@@ -1037,6 +1043,7 @@ let crouchKey = false
 let crouchOn = false
 let mouseLeft = false
 let mouseRight = false
+let rightPress = null
 let placeHoldAt = 0
 let pickArmed = false
 let dig = null
@@ -1229,8 +1236,12 @@ function feelTick(dt) {
   if (!sheetOpen && !tableMode && noa.container.hasPointerLock && breaking && !dig) {
     if (survivalOn()) beginDig('mouse')
   }
-  if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI) && noa.container.hasPointerLock && !sheetOpen) { placeHoldAt = now; placeBlock() }
-  else if (!noa.container.hasPointerLock || sheetOpen) mouseRight = false
+  if (sheetOpen) mouseRight = false
+  else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
+    placeHoldAt = now
+    if (rightPress) rightPress.repeated = true
+    placeBlock(null, { repeat: true })
+  }
   if (!tableMode && !flying) {
     const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
     const zoom = (TOUCH_UI ? 4 : 0) + up
@@ -1423,10 +1434,12 @@ canvas.addEventListener('pointermove', (e) => {
 canvas.addEventListener('pointerup', (e) => {
   if (e.button === 0 || e.button < 0) mouseLeft = false
   if (!look || e.pointerId !== look.id) return
-  const tap = look.moved < 8
+  const moved = look.moved
+  const tap = moved < 8
   const held = e.timeStamp - look.t
   const face = dig && dig.face
   const broke = dig && dig.broke
+  const down = face && face.position ? { id: face.id || face.blockID, x: face.position[0], y: face.position[1], z: face.position[2] } : null
   if (dig && dig.kind === 'touch') {
     if (broke || held < 500) { dig = null; hideCrack() }
     else { dig.draining = true; dig.drainAt = performance.now() }
@@ -1440,10 +1453,62 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
-  if (tap && held < 500 && !broke && face) placeBlock(face)
+  const upHit = rayAt(e.clientX, e.clientY) || targetHit()
+  const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
+  if (held < 500 && !broke && canUse(down, up, moved, false)) placeBlock(upHit || face)
 })
 canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
-window.addEventListener('pointerup', (e) => { if (e.button === 0) mouseLeft = false; if (e.button === 2) mouseRight = false })
+window.addEventListener('pointerdown', (e) => {
+  if (e.button !== 2 || tableMode || !sheetEl.hidden) return
+  const world = noa.container.element
+  if (!world || (e.target !== canvas && e.target !== world && !world.contains(e.target))) return
+  const snap = targetHit()
+  const interactive = !!(snap && isUseBlock(snap.blockID))
+  rightPress = {
+    id: snap ? snap.blockID : null,
+    x: snap ? snap.position[0] : 0,
+    y: snap ? snap.position[1] : 0,
+    z: snap ? snap.position[2] : 0,
+    px: e.clientX, py: e.clientY, moved: 0, t: e.timeStamp, pid: e.pointerId,
+    interactive, repeated: false,
+  }
+  if (!TOUCH_UI && snap && !interactive) { mouseRight = true; placeHoldAt = performance.now() }
+  else mouseRight = false
+}, true)
+window.addEventListener('pointermove', (e) => {
+  if (!rightPress) return
+  if (e.pointerId != null && rightPress.pid != null && e.pointerId !== rightPress.pid) return
+  const cdx = e.clientX - rightPress.px
+  const cdy = e.clientY - rightPress.py
+  const mdx = e.movementX || 0
+  const mdy = e.movementY || 0
+  const dx = Math.abs(cdx) >= Math.abs(mdx) ? cdx : mdx
+  const dy = Math.abs(cdy) >= Math.abs(mdy) ? cdy : mdy
+  rightPress.moved += Math.abs(dx) + Math.abs(dy)
+  if (!noa.container.hasPointerLock && rightPress.moved > 6 && (dx || dy)) {
+    setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
+  }
+  rightPress.px = e.clientX
+  rightPress.py = e.clientY
+}, true)
+function finishRight(e) {
+  if (!rightPress) return
+  if (e && e.pointerId != null && rightPress.pid != null && e.pointerId !== rightPress.pid) return
+  const press = rightPress
+  rightPress = null
+  mouseRight = false
+  if (press.repeated || inspectOn) return
+  if (e && e.pointerType === 'touch' && e.timeStamp - press.t >= 500) return
+  const upHit = targetHit()
+  const down = press.id == null ? null : { id: press.id, x: press.x, y: press.y, z: press.z }
+  const up = upHit ? { id: upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
+  if (canUse(down, up, press.moved, false)) placeBlock(upHit)
+}
+window.addEventListener('pointerup', (e) => {
+  if (e.button === 0) mouseLeft = false
+  if (e.button === 2) finishRight(e)
+}, true)
+window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false })
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }
@@ -1921,6 +1986,11 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     word(k) { return t(k) },
     kept(x, y, z) { return keptCell(x, y, z) },
     hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2] } : null },
+    bunk() {
+      const r = RECIPES.find((x) => x.id === 'bunk')
+      return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
+    },
+    persist: () => save(),
   }
 }
 repaintBlocks()

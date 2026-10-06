@@ -89,6 +89,13 @@ export function shouldRepeatPlace(held, elapsed, touch) {
   return !touch && !!held && elapsed >= 250
 }
 
+export function canUse(downBlock, upBlock, movedPx, isRepeat) {
+  if (isRepeat) return false
+  if (!downBlock || !upBlock) return false
+  if (movedPx > 6) return false
+  return downBlock.id === upBlock.id && downBlock.x === upBlock.x && downBlock.y === upBlock.y && downBlock.z === upBlock.z
+}
+
 export function airLimit(moving, maxSpeed, walk) {
   if (moving > 0.5) return Math.min(moving, maxSpeed)
   return Math.min(walk, maxSpeed)

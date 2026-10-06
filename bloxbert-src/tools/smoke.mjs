@@ -5,7 +5,23 @@ const url = process.argv[2] || 'http://127.0.0.1:8875/blocks/'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 async function tapAt(page, x, y, touch) {
   if (touch) await page.touchscreen.tap(x, y)
-  else await page.mouse.click(x, y)
+  else {
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    await page.mouse.up()
+  }
+}
+async function pressAt(page, x, y, ms, touch, button) {
+  if (touch) {
+    await page.touchscreen.touchStart(x, y)
+    await sleep(ms)
+    await page.touchscreen.touchEnd()
+    return
+  }
+  await page.mouse.move(x, y)
+  await page.mouse.down({ button: button || 'left' })
+  await sleep(ms)
+  await page.mouse.up({ button: button || 'left' })
 }
 async function holdAt(page, x, y, ms, touch) {
   if (touch) {
@@ -61,12 +77,12 @@ const hot = await page.$('#hotbar')
 await page.setViewport({ width: 412, height: 915, hasTouch: true, isMobile: true })
 await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 })
 await new Promise((r) => setTimeout(r, 1500))
-await page.evaluate(() => document.getElementById('game-menu').click())
+await tapSel(page, '.kb-bar .kb-menu', true)
 await new Promise((r) => setTimeout(r, 300))
 const open = await page.$eval('#sheet', (el) => !el.hidden && el.dataset.panel === 'menu')
 await new Promise((r) => setTimeout(r, 800))
+await tapSel(page, '.kb-bar .kb-menu', true)
 const pics = await page.evaluate(() => {
-  document.getElementById('game-menu').click()
   const menu = document.querySelectorAll('#sheet .gtile').length
   const icons = new Set([...document.querySelectorAll('#sheet .gic')].map((n) => n.textContent))
   const slots = [...document.querySelectorAll('#hotbar canvas')].map((c) => c.toDataURL())
@@ -90,26 +106,38 @@ if (testUrl) {
     const before = window.__smoke.counts()
     window.__smoke.place()
     const after = window.__smoke.counts()
-    window.__smoke.fillSeed(6)
-    document.querySelector('#hotbar [data-slot="0"]').click()
-    document.querySelector('#tool-strip').hidden = false
-    document.querySelector('#tool-strip [data-tool="fill"]').click()
-    document.querySelector('#tool-strip [data-tool="do"]').click()
-    const short = window.__smoke.counts().log === 6
-    window.__smoke.fillSeed(12)
-    document.querySelector('#tool-strip [data-tool="fill"]').click()
-    document.querySelector('#tool-strip [data-tool="do"]').click()
-    const full = window.__smoke.counts().log === 0
-    window.__smoke.ovenOpen()
-    return { bar, pics, hot, before, after, short, full }
+    return { bar, pics, hot, before, after }
   })
+  await page.evaluate(() => window.__smoke.fillSeed(6))
+  await tapSel(page, '#hotbar [data-slot="0"]', true)
+  await page.evaluate(() => { document.querySelector('#tool-strip').hidden = false })
+  await sleep(100)
+  await tapSel(page, '#tool-strip [data-tool="fill"]', true)
+  await sleep(80)
+  await tapSel(page, '#tool-strip [data-tool="do"]', true)
+  await sleep(80)
+  const short = await page.evaluate(() => window.__smoke.counts().log === 6)
+  await page.evaluate(() => window.__smoke.fillSeed(12))
+  await tapSel(page, '#tool-strip [data-tool="fill"]', true)
+  await sleep(80)
+  await tapSel(page, '#tool-strip [data-tool="do"]', true)
+  await sleep(80)
+  const full = await page.evaluate(() => window.__smoke.counts().log === 0)
+  await page.evaluate(() => window.__smoke.ovenOpen())
+  gate = { ...gate, short, full }
   await new Promise((r) => setTimeout(r, 3000))
-  const oven = await page.evaluate(() => {
-    const strip = document.getElementById('sheet-body').innerText
+  const glassAt = await page.evaluate(() => {
     const glass = [...document.querySelectorAll('#sheet-body .gtile')].find((b) => /Glass|glass/.test(b.textContent))
-    if (glass) glass.click()
-    return { strip, sand: window.__smoke.counts().sand }
+    if (!glass) return null
+    glass.scrollIntoView({ block: 'center', inline: 'center' })
+    const r = glass.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width, h: r.height }
   })
+  if (glassAt && glassAt.w > 8) await tapAt(page, glassAt.x, glassAt.y, true)
+  const oven = await page.evaluate(() => ({
+    strip: document.getElementById('sheet-body').innerText,
+    sand: window.__smoke.counts().sand,
+  }))
   gate = { ...gate, ...oven }
   const checks = []
   function note(name, size, ok, seen) { checks.push([name, size, ok, seen]); console.log(ok ? 'PASS' : 'FAIL', name, size, seen) }
@@ -143,7 +171,7 @@ if (testUrl) {
   note('ru output glass', 412, glass.includes('Стекло') && !glass.includes('glass'), glass.slice(0, 60))
   await page.goto(testUrl + '?lang=es&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
   await new Promise((r) => setTimeout(r, 800))
-  await page.evaluate(() => document.getElementById('game-menu').click())
+  await tapSel(page, '.kb-bar .kb-menu', false)
   await new Promise((r) => setTimeout(r, 400))
   const menu = await page.evaluate(() => document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent)
   note('es menu', 412, menu === 'Menú', menu)
@@ -162,7 +190,7 @@ if (testUrl) {
   for (const [lang, title] of [['ar', 'القائمة'], ['fa-AF', 'فهرست'], ['uk', 'Меню'], ['ru', 'Меню']]) {
     await page.goto(testUrl + '?lang=' + lang + '&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
     await new Promise((r) => setTimeout(r, 700))
-    await page.evaluate(() => document.getElementById('game-menu').click())
+    await tapSel(page, '.kb-bar .kb-menu', false)
     await new Promise((r) => setTimeout(r, 250))
     const seen = await page.evaluate(() => document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent)
     note(lang + ' menu', 412, seen === title, seen)
@@ -172,7 +200,7 @@ if (testUrl) {
     await page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
     await new Promise((r) => setTimeout(r, 200))
-    await page.evaluate(() => document.getElementById('game-menu').click())
+    await tapSel(page, '.kb-bar .kb-menu', false)
     await new Promise((r) => setTimeout(r, 900))
     const held = await page.evaluate(() => ({
       panel: document.getElementById('sheet').dataset.panel,
@@ -183,7 +211,7 @@ if (testUrl) {
     await page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
     await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
     await new Promise((r) => setTimeout(r, 900))
-    await page.evaluate(() => document.getElementById('game-menu').click())
+    await tapSel(page, '.kb-bar .kb-menu', false)
     await new Promise((r) => setTimeout(r, 400))
     const late = await page.evaluate(() => ({
       panel: document.getElementById('sheet').dataset.panel,
@@ -193,22 +221,19 @@ if (testUrl) {
   }
   await page.goto(testUrl + '?lang=es&smoke=1', { waitUntil: 'domcontentloaded', timeout: 30000 })
   await new Promise((r) => setTimeout(r, 700))
-  await page.evaluate(() => document.getElementById('game-menu').click())
+  await tapSel(page, '.kb-bar .kb-menu', false)
   await new Promise((r) => setTimeout(r, 250))
-  const settings = await page.evaluate(() => {
-    const tile = [...document.querySelectorAll('#sheet .gtile')].find((b) => b.textContent.includes('Ajustes'))
-    if (tile) tile.click()
-    return document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent
-  })
+  await tapLabel(page, 'Ajustes', false)
+  await sleep(250)
+  const settings = await page.evaluate(() => document.getElementById('sheet-title') && document.getElementById('sheet-title').textContent)
   note('es settings', 412, settings === 'Ajustes', settings)
-  const day = await page.evaluate(() => {
-    const tile = [...document.querySelectorAll('#sheet .gtile')].find((b) => b.textContent.includes('Siempre'))
-    if (tile) tile.click()
-    return document.documentElement.dataset.alwaysDay
-  })
+  await tapLabel(page, 'Siempre', false)
+  await sleep(200)
+  const day = await page.evaluate(() => document.documentElement.dataset.alwaysDay)
   note('always day', 412, day === '1', day)
   await prove2543(browser, testUrl, note, errs)
   await browser.close()
+  if (errs.length) console.error('CONSOLE ' + errs.join(' | '))
   if (checks.some((c) => !c[2]) || errs.length) process.exit(1)
   process.exit(0)
 }
@@ -479,7 +504,7 @@ async function prove2543(browser, testUrl, note, errs) {
     await page.evaluate(() => window.__smoke.fillBag('dirt', 1))
     const stone = await lookSolid(page, 3, spawn)
     const before = await page.evaluate(() => window.__smoke.count('dirt'))
-    await holdAt(page, c.x, c.y, 90, touch)
+    await pressAt(page, c.x, c.y, 70, touch, 'right')
     await sleep(200)
     const placed = await page.evaluate(() => window.__smoke.count('dirt'))
     note('tap places', w + 'x' + h, !!stone && placed === before - 1, before + '->' + placed)
@@ -526,7 +551,7 @@ async function prove2543(browser, testUrl, note, errs) {
     if (boxAt) await page.evaluate((a) => window.__smoke.seedBox(a.x, a.y, a.z), boxAt)
     await sleep(150)
     const cBox = await centerOf(page)
-    await holdAt(page, cBox.x, cBox.y, 90, touch)
+    await pressAt(page, cBox.x, cBox.y, 70, touch, 'right')
     await sleep(300)
     const box = await page.evaluate(() => ({
       panel: document.getElementById('sheet').dataset.panel,
@@ -540,7 +565,7 @@ async function prove2543(browser, testUrl, note, errs) {
     const ovenAt = await lookSolid(page, 23, spawn)
     await sleep(150)
     const cOven = await centerOf(page)
-    await holdAt(page, cOven.x, cOven.y, 90, touch)
+    await pressAt(page, cOven.x, cOven.y, 70, touch, 'right')
     await sleep(300)
     const oven = await page.evaluate(() => ({
       panel: document.getElementById('sheet').dataset.panel,
@@ -573,10 +598,88 @@ async function prove2543(browser, testUrl, note, errs) {
     const shop = await page.evaluate(() => window.__smoke.toast())
     const want = await page.evaluate(() => window.__smoke.word('shopProtected'))
     note('shop protected', w + 'x' + h, shop === want, (shop || '').slice(0, 60) + ' aim ' + JSON.stringify(shopAim))
+    if (touch) {
+      await shut(page, true)
+      const dragBox = await lookSolid(page, 27, spawn)
+      const drag = await page.evaluate((b) => {
+        if (!b) return null
+        window.__smoke.plant(b.x, b.y, b.z + 1, 30)
+        return { x: b.x, y: b.y, z: b.z }
+      }, dragBox)
+      const cDrag = await centerOf(page)
+      await page.touchscreen.touchStart(cDrag.x, cDrag.y)
+      await sleep(40)
+      await page.touchscreen.touchMove(cDrag.x + 70, cDrag.y + 8)
+      await sleep(40)
+      await page.touchscreen.touchMove(cDrag.x + 140, cDrag.y)
+      await sleep(80)
+      await page.touchscreen.touchEnd()
+      await sleep(250)
+      const dragged = await page.evaluate((d) => ({
+        hidden: document.getElementById('sheet').hidden,
+        box: d ? window.__smoke.voxel(d.x, d.y, d.z) : -1,
+        door: d ? window.__smoke.voxel(d.x, d.y, d.z + 1) : -1,
+      }), drag)
+      note('touch drag no use', w + 'x' + h, !!drag && dragged.hidden && dragged.box === 27 && dragged.door === 30, JSON.stringify(dragged))
+    } else {
+      const wool = await page.evaluate(() => {
+        let n = 0
+        for (let x = 40; x < 100; x++) for (let z = 40; z < 100; z++) {
+          for (let y = 20; y >= 1; y--) {
+            const id = window.__smoke.voxel(x, y, z)
+            if (id) { if (id >= 13 && id <= 16) n++; break }
+          }
+        }
+        return n
+      })
+      note('wool tops', '1366x768', wool === 0, String(wool))
+      const bunk = await page.evaluate(() => window.__smoke.bunk())
+      note('bunk still wool', '1366x768', bunk === 'planks:3+woolBlue:3', bunk)
+      await shut(page, false)
+      const doorAt = await lookSolid(page, 30, spawn)
+      if (doorAt) await page.evaluate((d) => window.__smoke.plant(d.x + 1, d.y, d.z, 27), doorAt)
+      await sleep(120)
+      const beforeDoor = await page.evaluate((d) => d ? window.__smoke.voxel(d.x, d.y, d.z) : -1, doorAt)
+      const cSweep = await centerOf(page)
+      await page.mouse.move(cSweep.x, cSweep.y)
+      await page.mouse.down({ button: 'right' })
+      const tSweep = Date.now()
+      for (let i = 1; i <= 12; i++) {
+        await page.mouse.move(cSweep.x + i * 16, cSweep.y + (i % 2))
+        await sleep(90)
+      }
+      const left = 1500 - (Date.now() - tSweep)
+      if (left > 0) await sleep(left)
+      await page.mouse.up({ button: 'right' })
+      await sleep(250)
+      const swept = await page.evaluate((d) => ({
+        door: d ? window.__smoke.voxel(d.x, d.y, d.z) : -1,
+        hidden: document.getElementById('sheet').hidden,
+      }), doorAt)
+      note('sweep no use', '1366x768', !!doorAt && beforeDoor === 30 && swept.door === 30 && swept.hidden, beforeDoor + ' ' + JSON.stringify(swept))
+      const flipAt = await lookSolid(page, 30, spawn)
+      const cFlip = await centerOf(page)
+      await pressAt(page, cFlip.x, cFlip.y, 50, false, 'right')
+      await sleep(200)
+      const flipped = await page.evaluate((d) => d ? window.__smoke.voxel(d.x, d.y, d.z) : -1, flipAt)
+      note('door flips once', '1366x768', flipped === 31, String(flipped))
+    }
     await page.close()
   }
   await play(412, 915, true)
   await play(1366, 768, false)
+  const woolPage = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+  await woolPage.evaluate(() => window.__smoke.plant(120, 10, 120, 13))
+  await woolPage.evaluate(() => window.__smoke.persist())
+  await woolPage.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
+  let keptWool = -1
+  for (let i = 0; i < 25; i++) {
+    keptWool = await woolPage.evaluate(() => (window.__smoke ? window.__smoke.voxel(120, 10, 120) : -1)).catch(() => -1)
+    if (keptWool === 13) break
+    await sleep(200)
+  }
+  note('wool save', '1366x768', keptWool === 13, String(keptWool))
+  await woolPage.close()
 
   for (const [lang, touchWord, keyWord] of [
     ['en', 'Move with the stick', 'Walk with WASD'],

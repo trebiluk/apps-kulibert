@@ -25,9 +25,9 @@ Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix in
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
 ## 2. Open fixes (from proof/bertopia-2.5.43/RESULT.md) -> brief `briefs/fixq/bertopia-2544.md` = **BT 2.5.44**, before anything in Next up
-- [ ] **Desktop smoke (2.5.43 item 3b NOT DONE):** at 1366 the place, Box and Oven lines must press the right mouse button; the first right click after a panel closes must act (Oven still fails after the Box closes); the 26 old lines still call `element.click()`. Exit 0 with >=30 lines.
-- [ ] **Held right click opens things (Diego):** place-repeat (2.5.30) calls placeBlock() every 250 ms, which opens doors, Box, Oven, Workbench, Vend, Bunk and the Shop. Use/open only on a fresh press that starts and ends on the same block (<= 6 px), or one tap.
-- [ ] **Loose wool on the grass:** worldgen plantHere() grows 4 wool colors at 1% each (2.5.42, unbriefed); about 3% of surface tops on live. Remove from new chunks; ids 13-16, Store wool and the Bunk recipe stay.
+- [x] **Desktop smoke (2.5.43 item 3b NOT DONE):** at 1366 the place, Box and Oven lines must press the right mouse button; the first right click after a panel closes must act (Oven still fails after the Box closes); the 26 old lines still call `element.click()`. Exit 0 with >=30 lines.
+- [x] **Held right click opens things (Diego):** place-repeat (2.5.30) calls placeBlock() every 250 ms, which opens doors, Box, Oven, Workbench, Vend, Bunk and the Shop. Use/open only on a fresh press that starts and ends on the same block (<= 6 px), or one tap.
+- [x] **Loose wool on the grass:** worldgen plantHere() grows 4 wool colors at 1% each (2.5.42, unbriefed); about 3% of surface tops on live. Remove from new chunks; ids 13-16, Store wool and the Bunk recipe stay.
 - [ ] P2, next fix slot: keys help line wrap/shorten at 1366 and 915 and fade after the first 3 moves (Diego's photo looked clipped; headless 1366 shows it at x 12, 520x44, so likely the photo crop). Bag tile label "g" clipped at 412.
 - [x] **2.5.43 done:** touch HUD never covers itself (5 sizes), upright 9 slots + Bag, teacher gate via `HubStaffAuth.isUnlocked()`, tour/help/What's new words.
 
@@ -48,7 +48,7 @@ Updated Tue Oct 6 2026, 1:15 PM ET (Debugzy: 2.5.43 proof FAIL P1, 2.5.44 fix in
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |
-| 0b | 2.5.44 | **bertopia-2544.md:** desktop smoke truth (right button), Use only on a fresh still press, no loose wool | [ ] |
+| 0b | 2.5.44 | **bertopia-2544.md:** desktop smoke truth (right button), Use only on a fresh still press, no loose wool | [x] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
 | 1 | 2.5.45 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
 | 2 | 2.5.46 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |

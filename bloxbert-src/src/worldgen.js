@@ -16,10 +16,6 @@ export function plantHere(x, y, z, surface, inTown) {
   if (inTown || y !== surface + 1) return ''
   if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
   const n = hash(x, z)
-  if (n < 0.01) return 'woolBlue'
-  if (n < 0.02) return 'woolRed'
-  if (n < 0.03) return 'woolGreen'
-  if (n < 0.04) return 'woolTan'
-  if (n < 0.07) return 'wheat'
+  if (n >= 0.04 && n < 0.07) return 'wheat'
   return ''
 }

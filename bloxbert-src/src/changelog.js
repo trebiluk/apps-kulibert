@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.44', date: '2026-10-06', lines: {
+    en: ['Holding right click no longer opens doors and boxes, and the grass is clear of loose wool.'],
+    uk: ['Утримання правої кнопки більше не відчиняє двері й скрині, і трава чиста від вовни.'],
+    ru: ['Удержание правой кнопки больше не открывает двери и сундуки, и трава чистая от рыхлой шерсти.'],
+    es: ['Mantener el clic derecho ya no abre puertas ni cajas, y el pasto está libre de lana suelta.'],
+    ar: ['الضغط المطول باليمين لم يعد يفتح الأبواب والصناديق، والعشب خالٍ من الصوف السائب.'],
+    'fa-AF': ['نگه داشتن دکمه راست دیگر در و صندوق را باز نمی‌کند، و چمن از پشم پراکنده پاک است.'],
+    rw: ['Gufata iburyo ntibikongera gufungura inzugi n\'agasanduku, kandi ivyatsi ntibikigira ubwoya busa.'],
+    ti: ['የማናይ ምሓዝ ደገም ማዕጾን ሳንዱቅን ኣይኸፍትን፡ ሳዕሪ ካብ ዝበተነ ጉንዲ ንጹህ እዩ።'],
+  }},
   { v: '2.5.43', date: '2026-10-06', lines: {
     en: ['The stick, the gold step and the hotbar fit on a phone.', 'Only a teacher can open the build world.'],
     uk: ['Стик, золотий крок і панель вміщаються на телефоні.', 'Лише вчитель відкриває світ будівлі.'],

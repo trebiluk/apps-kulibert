@@ -22,9 +22,11 @@ let reed = 0
 for (let x = 40; x < 80; x++) for (let z = 40; z < 80; z++) {
   if (plantHere(x, 2, z, 1, false) === 'reed') reed++
 }
-if (!wheat || !wool || !reed) throw new Error('plants missing wheat ' + wheat + ' wool ' + wool + ' reed ' + reed)
+if (wheat !== 227 || wool !== 0 || reed !== 282) throw new Error('plants wheat ' + wheat + ' wool ' + wool + ' reed ' + reed)
 if (plantHere(2, 6, 2, 5, true)) throw new Error('the town grew a plant')
 if (dropOf(28) !== 'flour' || dropOf(29) !== 'sugar' || dropOf(31) !== 'door' || dropOf(5) !== 'coal') throw new Error('drops')
 const door = RECIPES.find((r) => r.id === 'door')
 if (!door || door.at !== 'bench' || door.in[0][0] !== 'planks' || door.in[0][1] !== 6) throw new Error('door recipe')
+const bunk = RECIPES.find((r) => r.id === 'bunk')
+if (!bunk || bunk.at !== 'bench' || bunk.in.length !== 2 || bunk.in[0][0] !== 'planks' || bunk.in[0][1] !== 3 || bunk.in[1][0] !== 'woolBlue' || bunk.in[1][1] !== 3) throw new Error('bunk recipe')
 console.log('path-check ok', coal, 'coal', wheat, 'wheat', wool, 'wool', reed, 'reed')
