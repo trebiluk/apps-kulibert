@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 3:35 PM ET (Debugzy: 2.5.44 proof PASS; 2.5.45 polish brief for the 2 P2s inserted; basics-1/2/3 renumbered to 2.5.46-2.5.48; World types and options added to the plan).
+Updated Tue Oct 6 2026, 6:16 PM ET (Debugzy: 2.5.45 polish in Build; P1 touch-break fix inserted as 2.5.46 from Diego's phone; basics-1/2/3 renumbered to 2.5.47-2.5.49).
 
 ## 1. Live now
 - **Bertopia 2.5.44** (`2e9fd8f`, Oct 6 1:03 PM ET). Held right click no longer opens doors, boxes or stations (Use needs a fresh, still press or one tap), and new grass has no loose wool.
@@ -52,9 +52,10 @@ Updated Tue Oct 6 2026, 3:35 PM ET (Debugzy: 2.5.44 proof PASS; 2.5.45 polish br
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
 | 0c | 2.5.45 | **bertopia-2545-polish.md:** Bag tile label fits on phones; keys help line fits and fades after 3 moves; right-click places on press | [x] |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
-| 1 | 2.5.46 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
-| 2 | 2.5.47 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
-| 3 | 2.5.48 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
+| 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed | [ ] |
+| 1 | 2.5.47 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
+| 2 | 2.5.48 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
+| 3 | 2.5.49 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
 | 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
