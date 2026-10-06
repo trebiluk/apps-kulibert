@@ -28,12 +28,9 @@ Updated Tue Oct 6 2026, 6:35 PM ET (Debugzy: 2.5.45 proof PASS with 2 P2 smoke-t
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
 ## 2. Open fixes (from proof/bertopia-2.5.45/RESULT.md + Diego's phone) -> brief `briefs/fixq/bertopia-2546-touchbreak.md` = **BT 2.5.46**, before basics-1
-- [ ] **Touch hold-to-break (P1, Diego 6:13 PM):** a steady finger cancels the dig (summed jitter); no hint to hold; Pick looks like a pickaxe. Items 1-3 of the brief.
+- [x] **Touch hold-to-break (P1, Diego 6:13 PM):** a steady finger cancels the dig (summed jitter); no hint to hold; Pick looks like a pickaxe. Items 1-3 of the brief.
 - [ ] **Smoke truth (P2, carried, not in the 2.5.46 brief):** bag label line needs 1-2 px line-height headroom so smoke passes on any font set (scrollHeight 13 > 12 on Debugzy's headless Chrome); "door flips once 1366x768" flaky 1 of 2 runs, wait for aim on the door before the press. Fold into the next small brief.
 - [x] **2.5.45 done:** Bag label fits, keys help line fits + fades, right click places on press.
-- [x] **Bag tile label (P2):** at 360/412 upright the 52 px slot cuts the label ("Bag" reads "Baq"). Fit icon + label in all 8 languages.
-- [x] **Keys help line (P2):** fits on screen at 1366 and 915 (mouse) without clipping or covering the hotbar/chip/hint; fades after the first 3 movement key presses; no new storage key.
-- [x] **Right-click place:** a non-interactive block places on pointerdown again. Doors, Box, Oven, Workbench, Vend, Bunk and Shop still open only on a fresh release. Held repeat still never opens them.
 - [x] **2.5.44 done:** desktop smoke truth (right button, exit 0, no element.click), Use only on a fresh still press (`canUse`), no loose wool in new chunks (ids 13-16, Store wool, Bunk recipe kept).
 - [x] **2.5.43 done:** touch HUD never covers itself (5 sizes), upright 9 slots + Bag, teacher gate via `HubStaffAuth.isUnlocked()`, tour/help/What's new words.
 
@@ -57,7 +54,7 @@ Updated Tue Oct 6 2026, 6:35 PM ET (Debugzy: 2.5.45 proof PASS with 2 P2 smoke-t
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
 | 0c | 2.5.45 | bertopia-2545-polish.md: Bag tile label fits on phones; keys help line fits and fades after 3 moves; right-click places on press | shipped, PASS |
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
-| 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | [ ] |
+| 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | [x] |
 | 1 | 2.5.47 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
 | 2 | 2.5.48 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
 | 3 | 2.5.49 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |

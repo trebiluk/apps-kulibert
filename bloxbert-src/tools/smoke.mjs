@@ -23,6 +23,15 @@ async function pressAt(page, x, y, ms, touch, button) {
   await sleep(ms)
   await page.mouse.up({ button: button || 'left' })
 }
+async function jitterHold(page, x, y, ms) {
+  await page.touchscreen.touchStart(x, y)
+  const n = Math.max(1, Math.round(ms / 16))
+  for (let i = 0; i < n; i++) {
+    await page.touchscreen.touchMove(x + (Math.random() * 4 - 2), y + (Math.random() * 4 - 2))
+    await sleep(16)
+  }
+  await page.touchscreen.touchEnd()
+}
 async function holdAt(page, x, y, ms, touch) {
   if (touch) {
     await page.touchscreen.touchStart(x, y)
@@ -816,5 +825,125 @@ async function prove2543(browser, testUrl, note, errs) {
   })
   note('keys reduce', '1366x768', hid.disp === 'none' && !hid.trans, JSON.stringify(hid))
   await red.close()
+
+  async function chopPage(w, h) {
+    const page = await bootHud(browser, testUrl + '?smoke=1', w, h, true)
+    errs.push(...page.__err.map((e) => 'chop ' + e))
+    await page.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+    const spawn = [8.5, 6.2, 16, Math.PI, 0.7]
+    await page.evaluate(() => window.__smoke.emptyBag())
+    await page.evaluate((s) => window.__smoke.stand(s[0], s[1], s[2], s[3], s[4]), spawn)
+    await sleep(250)
+    const log = await lookSolid(page, 11, spawn)
+    const c = await centerOf(page)
+    return { page, log, c, spawn }
+  }
+  const tip = await bootHud(browser, testUrl + '?smoke=1&q=lite', 915, 412, true)
+  errs.push(...tip.__err.map((e) => 'tip ' + e))
+  const pathTouch = await tip.evaluate(() => {
+    const el = document.getElementById('path-chip')
+    return { text: el.textContent, tree: window.__smoke.word('pathTree'), sub: window.__smoke.word('pathTreeTouch'), hidden: el.hidden }
+  })
+  note('path hold line', '915x412', !pathTouch.hidden && pathTouch.text.includes(pathTouch.tree) && pathTouch.text.includes(pathTouch.sub), pathTouch.text)
+  const mousePath = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+  const pathMouse = await mousePath.evaluate(() => {
+    const el = document.getElementById('path-chip')
+    return { text: el.textContent, sub: window.__smoke.word('pathTreeTouch'), tree: window.__smoke.word('pathTree') }
+  })
+  note('path hold line mouse', '1366x768', pathMouse.text.includes(pathMouse.tree) && !pathMouse.text.includes(pathMouse.sub), pathMouse.text)
+  await mousePath.close()
+  const ringAt = await lookSolid(tip, 11, [8.5, 6.2, 16, Math.PI, 0.7])
+  const ringC = await centerOf(tip)
+  await tip.touchscreen.touchStart(ringC.x, ringC.y)
+  await sleep(200)
+  const ring = await tip.evaluate(() => {
+    const el = document.getElementById('pick-ring')
+    if (!el || el.hidden) return { on: false }
+    const r = el.getBoundingClientRect()
+    return { on: r.width >= 20 && r.height >= 20 }
+  })
+  await tip.touchscreen.touchEnd()
+  note('crack ring early', '915x412', !!ringAt && ring.on, JSON.stringify(ring))
+  await tip.evaluate(() => window.__smoke.emptyBag())
+  const toastLog = await lookSolid(tip, 11, [8.5, 6.2, 16, Math.PI, 0.7])
+  const toastC = await centerOf(tip)
+  await tip.touchscreen.tap(toastC.x, toastC.y)
+  await sleep(150)
+  const toast1 = await tip.evaluate(() => ({ toast: window.__smoke.toast(), want: window.__smoke.word('holdToBreak') }))
+  await sleep(2600)
+  await tip.touchscreen.tap(toastC.x, toastC.y)
+  await sleep(150)
+  const toast2 = await tip.evaluate(() => window.__smoke.toast())
+  note('hold toast once', '915x412', !!toastLog && toast1.toast === toast1.want && toast2 === '', toast1.toast + ' / ' + toast2)
+  await tip.close()
+  const broke = await chopPage(915, 412)
+  const live = await broke.page.evaluate(() => window.__smoke.aim())
+  await jitterHold(broke.page, broke.c.x, broke.c.y, 2300)
+  await sleep(250)
+  const chopped = await broke.page.evaluate((b) => ({
+    id: b ? window.__smoke.voxel(b.x, b.y, b.z) : -1,
+    n: window.__smoke.count('log'),
+    aim: b,
+  }), live)
+  note('jitter chop', '915x412', !!live && live.id === 11 && chopped.id === 0 && chopped.n === 1, JSON.stringify(chopped))
+  const pathAfter = await broke.page.evaluate(() => document.getElementById('path-chip').textContent)
+  const subWord = await broke.page.evaluate(() => window.__smoke.word('pathTreeTouch'))
+  note('path hold gone', '915x412', !pathAfter.includes(subWord), pathAfter)
+  const drag = await lookSolid(broke.page, 11, broke.spawn)
+  const dragC = await centerOf(broke.page)
+  const head0 = await broke.page.evaluate(() => window.__smoke.heading())
+  await broke.page.touchscreen.touchStart(dragC.x, dragC.y)
+  await broke.page.touchscreen.touchMove(dragC.x + 40, dragC.y)
+  await sleep(60)
+  const head1 = await broke.page.evaluate(() => window.__smoke.heading())
+  await broke.page.touchscreen.touchEnd()
+  await sleep(80)
+  const stayed = await broke.page.evaluate((b) => b ? window.__smoke.voxel(b.x, b.y, b.z) : -1, drag)
+  note('drag keeps log', '915x412', !!drag && stayed === 11 && Math.abs(head1 - head0) > 0.02, stayed + ' h ' + head0.toFixed(3) + '->' + head1.toFixed(3))
+  const copyBtn = await broke.page.evaluate(() => {
+    const el = document.getElementById('pick-chip')
+    const r = el.getBoundingClientRect()
+    const slots = [...document.querySelectorAll('#hotbar .slot')].map((s) => s.getBoundingClientRect())
+    const hitSlot = slots.some((b) => r.left < b.right && r.right > b.left && r.top < b.bottom && r.bottom > b.top)
+    return { text: el.textContent, svg: !!el.querySelector('svg'), w: r.width, h: r.height, x: r.x, y: r.y, hitSlot, vw: innerWidth, vh: innerHeight, tip: el.getAttribute('aria-label'), want: window.__smoke.word('copyTip') }
+  })
+  const copyOn = copyBtn.svg && copyBtn.text.includes('Copy') && copyBtn.w >= 44 && copyBtn.h >= 44 && copyBtn.x >= -1 && copyBtn.y >= -1 && copyBtn.x + copyBtn.w <= copyBtn.vw + 1 && copyBtn.y + copyBtn.h <= copyBtn.vh + 1 && !copyBtn.hitSlot && copyBtn.tip === copyBtn.want
+  note('copy button', '915x412', copyOn, JSON.stringify(copyBtn))
+  await broke.page.evaluate(() => window.__smoke.fillBag('planks', 8))
+  await tapSel(broke.page, '#pick-chip', true)
+  await sleep(100)
+  const plank = await lookSolid(broke.page, 10, broke.spawn)
+  const plankC = await centerOf(broke.page)
+  await broke.page.touchscreen.tap(plankC.x, plankC.y)
+  await sleep(200)
+  const copied = await broke.page.evaluate(() => ({
+    held: document.getElementById('current').textContent,
+    name: window.__smoke.word('planks'),
+    armed: document.getElementById('pick-chip').getAttribute('aria-pressed'),
+    n: window.__smoke.count('planks'),
+  }))
+  note('copy tap planks', '915x412', !!plank && copied.held === copied.name && copied.armed === 'false' && copied.n === 8, JSON.stringify(copied))
+  await tapSel(broke.page, '#pick-chip', true)
+  await sleep(80)
+  const armedLog = await lookSolid(broke.page, 11, broke.spawn)
+  const armedC = await centerOf(broke.page)
+  await jitterHold(broke.page, armedC.x, armedC.y, 2300)
+  await sleep(200)
+  const armedChop = await broke.page.evaluate((b) => ({ id: b ? window.__smoke.voxel(b.x, b.y, b.z) : -1, n: window.__smoke.count('log') }), armedLog)
+  note('copy hold still breaks', '915x412', !!armedLog && armedChop.id === 0 && armedChop.n >= 1, JSON.stringify(armedChop))
+  await broke.page.close()
+  const small = await chopPage(360, 740)
+  const smallLive = await small.page.evaluate(() => window.__smoke.aim())
+  await jitterHold(small.page, small.c.x, small.c.y, 2300)
+  await sleep(200)
+  const smallChop = await small.page.evaluate((b) => ({ id: b ? window.__smoke.voxel(b.x, b.y, b.z) : -1, n: window.__smoke.count('log'), aim: b }), smallLive)
+  const fit360 = await small.page.evaluate(() => {
+    const el = document.getElementById('pick-chip')
+    const r = el.getBoundingClientRect()
+    return { text: el.textContent, w: r.width, h: r.height, x: r.x, y: r.y, vw: innerWidth, vh: innerHeight }
+  })
+  const fitOk = fit360.text.includes('Copy') && fit360.w >= 44 && fit360.h >= 44 && fit360.x >= -1 && fit360.y >= -1 && fit360.x + fit360.w <= fit360.vw + 1 && fit360.y + fit360.h <= fit360.vh + 1
+  note('jitter chop', '360x740', !!smallLive && smallLive.id === 11 && smallChop.id === 0 && smallChop.n === 1 && fitOk, JSON.stringify(smallChop) + ' ' + JSON.stringify(fit360))
+  await small.page.close()
 }
 

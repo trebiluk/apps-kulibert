@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.46', date: '2026-10-06', lines: {
+    en: ['Holding your finger on a block breaks it even if your finger wiggles a little, a tip shows you how, and the Pick button is now Copy.'],
+    uk: ['Утримання пальця на блоці ламає його, навіть якщо палець трохи ворушиться, підказка показує як, і кнопка вибору тепер Копія.'],
+    ru: ['Удержание пальца на блоке ломает его, даже если палец чуть дрожит, подсказка показывает как, и кнопка выбора теперь Копия.'],
+    es: ['Mantener el dedo en un bloque lo rompe aunque el dedo tiemble un poco, un aviso muestra cómo, y el botón Elegir ahora es Copiar.'],
+    ar: ['إبقاء الإصبع على المكعب يكسره حتى إن اهتز الإصبع قليلاً، وتظهر نصيحة كيف، وزر الاختيار صار نسخاً.'],
+    'fa-AF': ['نگه داشتن انگشت روی بلاک آن را می‌شکند حتی اگر انگشت کمی بلرزد، یک راهنما نشان می‌دهد چگونه، و دکمه برداشتن حالا کپی است.'],
+    rw: ['Gufata urutoki ku block kubivuna n\'ubwo urutoki rutegeranya gato, inama yerekana uko, kandi buto ubu ni Kopa.'],
+    ti: ['ኣጻብዕቲ ምሓዝ ኣብ ብሎክ ይስብሮ እንተድኣ ቁሩብ ተንቀሳቒሱ፡ መዘኻኸሪ ከመይ ከም ዝግበር የርኢ፡ መምረጺ ድማ ሕጂ ቅዳሕ እዩ።'],
+  }},
   { v: '2.5.45', date: '2026-10-06', lines: {
     en: ['The Bag tile label fits on a phone, the keys help line fits and fades after your first steps, and right-click places right away again.'],
     uk: ['Підпис сумки вміщається на телефоні, рядок клавіш вміщається і зникає після перших кроків, і права кнопка знову ставить одразу.'],

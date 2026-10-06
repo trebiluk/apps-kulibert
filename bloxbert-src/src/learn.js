@@ -26,7 +26,17 @@ export function createLearn(api) {
     if (api.survival && !api.survival()) { el.hidden = true; return }
     const g = goals.find((x) => !x.done)
     el.hidden = !g
-    if (g) el.textContent = api.t(g.id)
+    el.replaceChildren()
+    if (!g) return
+    const title = document.createElement('span')
+    title.textContent = api.t(g.id)
+    el.append(title)
+    if (g.id === 'pathTree' && api.touch && api.touch()) {
+      const sub = document.createElement('span')
+      sub.className = 'path-sub'
+      sub.textContent = api.t('pathTreeTouch')
+      el.append(sub)
+    }
   }
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) { return {} }

@@ -32,3 +32,6 @@ export function itemSvg(svg) {
   if (String(svg).includes('<svg')) return svg
   return FOOD[svg] || '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#f6c453"/></svg>'
 }
+export function dropperIcon() {
+  return '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.2 3.3l6.5 6.5-1.4 1.4-1.1-1.1-6.7 6.7a3.2 3.2 0 0 1-4.5 0l-.6.6-1.5-1.5.6-.6a3.2 3.2 0 0 1 0-4.5l6.7-6.7-1.1-1.1z"/></svg>'
+}
