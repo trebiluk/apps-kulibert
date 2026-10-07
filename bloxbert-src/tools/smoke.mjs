@@ -24,6 +24,39 @@ async function pressAt(page, x, y, ms, touch, button) {
   await sleep(ms)
   await page.mouse.up({ button: button || 'left' })
 }
+async function stillHold(page, ms, touch) {
+  if (touch) {
+    const c = await page.evaluate(() => {
+      const r = document.querySelector('#stage canvas').getBoundingClientRect()
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+    })
+    await page.touchscreen.touchStart(c.x, c.y)
+    await sleep(ms)
+    await page.touchscreen.touchEnd()
+    return
+  }
+  await page.evaluate(() => {
+    const canvas = document.querySelector('#stage canvas')
+    const r = canvas.getBoundingClientRect()
+    const x = r.left + r.width / 2
+    const y = r.top + r.height / 2
+    canvas.dispatchEvent(new PointerEvent('pointerdown', {
+      bubbles: true, cancelable: true, view: window, clientX: x, clientY: y,
+      button: 0, buttons: 1, pointerId: 1, pointerType: 'mouse', isPrimary: true,
+    }))
+  })
+  await sleep(ms)
+  await page.evaluate(() => {
+    const canvas = document.querySelector('#stage canvas')
+    const r = canvas.getBoundingClientRect()
+    const x = r.left + r.width / 2
+    const y = r.top + r.height / 2
+    canvas.dispatchEvent(new PointerEvent('pointerup', {
+      bubbles: true, cancelable: true, view: window, clientX: x, clientY: y,
+      button: 0, buttons: 0, pointerId: 1, pointerType: 'mouse', isPrimary: true,
+    }))
+  })
+}
 async function jitterHold(page, x, y, ms) {
   await page.touchscreen.touchStart(x, y)
   const n = Math.max(1, Math.round(ms / 16))
@@ -1242,6 +1275,7 @@ async function prove2543(browser, testUrl, note, errs) {
   let dirt = null
   let mouseGone = -1
   for (let attempt = 0; attempt < 3 && mouseGone !== 0; attempt++) {
+    await mouse.evaluate(() => { window.__smoke.emptyBag(); window.__smoke.key(0) })
     dirt = await lookSolid(mouse, 2, mouseSpawn)
     if (!dirt) continue
     const still = await mouse.evaluate((b) => {
@@ -1249,8 +1283,7 @@ async function prove2543(browser, testUrl, note, errs) {
       return !!(a && a.id === 2 && a.x === b.x && a.y === b.y && a.z === b.z)
     }, dirt)
     if (!still) { dirt = null; continue }
-    const mc = await centerOf(mouse)
-    await holdAt(mouse, mc.x, mc.y, 1100, false)
+    await stillHold(mouse, 1000, false)
     await sleep(200)
     mouseGone = await mouse.evaluate((b) => window.__smoke.voxel(b.x, b.y, b.z), dirt)
   }
@@ -1610,15 +1643,17 @@ async function prove2543(browser, testUrl, note, errs) {
       errs.push(...page.__err.map((e) => 'b250 ' + w + ' ' + e))
       await page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 20000 }).catch(() => {})
       await page.evaluate(() => window.__smoke.emptyBag())
+      const beforeHand = await page.evaluate(() => window.__smoke.count('stone'))
       const stone = await readyAim(page, 3)
       const c = await centerOf(page)
       const hand = await sampleHold(page, c.x, c.y, 6000, touch)
-      const handLeft = await page.evaluate((a) => ({
+      const handLeft = await page.evaluate((a, was) => ({
         id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1,
+        n: window.__smoke.count('stone'),
+        was,
         wood: window.__smoke.word('needsWood'),
-        faster: window.__smoke.word('toolFaster'),
-      }), stone)
-      note('hand stone', w + 'x' + h, !!stone && handLeft.id === 3 && hand.early === handLeft.wood && hand.mid !== handLeft.faster, hand.early + ' | ' + hand.mid + ' id ' + handLeft.id)
+      }), stone, beforeHand)
+      note('hand stone', w + 'x' + h, !!stone && handLeft.id === 0 && handLeft.n === handLeft.was + 1 && hand.early !== handLeft.wood && hand.mid !== handLeft.wood, hand.early + ' | ' + hand.mid + ' id ' + handLeft.id)
       await page.evaluate(() => {
         window.__smoke.emptyBag()
         window.__smoke.fillBag('woodTool', 1)
@@ -1628,26 +1663,67 @@ async function prove2543(browser, testUrl, note, errs) {
       await sleep(350)
       const bagLine = await page.evaluate(() => {
         const text = [...document.querySelectorAll('#sheet-body .glbl')].map((el) => el.textContent)
-        const wear = document.querySelector('#hotbar .slot .wear .fill')
-        return { text, wear: wear ? wear.style.width : '', want: window.__smoke.word('woodToolLine') }
+        const wear = document.querySelector('#hotbar .slot .wear')
+        return { text, wear: wear ? 'bar' : '', want: window.__smoke.word('woodToolLine') }
       })
-      note('wood tool line', w + 'x' + h, bagLine.text.includes(bagLine.want) && bagLine.wear === '100%', JSON.stringify(bagLine).slice(0, 180))
+      note('wood tool line', w + 'x' + h, bagLine.text.includes(bagLine.want) && bagLine.wear === '', JSON.stringify(bagLine).slice(0, 180))
       await shut(page, touch)
-      const broke = await readyAim(page, 3)
-      const c2 = await centerOf(page)
+      await page.evaluate(() => window.__smoke.close())
+      await waitGround(page)
+      let broke = null
+      for (let i = 0; i < 4 && !broke; i++) {
+        const aim = await readyAim(page, 3)
+        const steady = await waitSteady(page)
+        if (aim && steady && steady.id === 3 && steady.x === aim.x && steady.y === aim.y && steady.z === aim.z) broke = aim
+      }
       const beforeStone = await page.evaluate(() => window.__smoke.count('stone'))
-      await holdAt(page, c2.x, c2.y, 2000, touch)
+      await stillHold(page, 2500, touch)
       await sleep(200)
       const stoneGone = await page.evaluate((a, n) => ({ id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1, n: window.__smoke.count('stone'), was: n }), broke, beforeStone)
       note('wood breaks stone', w + 'x' + h, !!broke && stoneGone.id === 0 && stoneGone.n === stoneGone.was + 1, JSON.stringify(stoneGone))
-      const ore = await readyAim(page, 44)
-      const c3 = await centerOf(page)
-      const oreHold = await sampleHold(page, c3.x, c3.y, 6000, touch)
-      const oreLeft = await page.evaluate((a) => ({
+      await waitGround(page)
+      const beforeOre = await page.evaluate(() => window.__smoke.count('ironOre'))
+      let ore = null
+      for (let i = 0; i < 4 && !ore; i++) {
+        const aim = await readyAim(page, 44)
+        const steady = await waitSteady(page)
+        if (aim && steady && steady.id === 44 && steady.x === aim.x && steady.y === aim.y && steady.z === aim.z) ore = aim
+      }
+      await page.evaluate((touch) => {
+        if (touch) return
+        const canvas = document.querySelector('#stage canvas')
+        const r = canvas.getBoundingClientRect()
+        canvas.dispatchEvent(new PointerEvent('pointerdown', {
+          bubbles: true, cancelable: true, view: window, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2,
+          button: 0, buttons: 1, pointerId: 1, pointerType: 'mouse', isPrimary: true,
+        }))
+      }, touch)
+      if (touch) {
+        const c3 = await centerOf(page)
+        await page.touchscreen.touchStart(c3.x, c3.y)
+      }
+      await sleep(1400)
+      const oreEarly = await page.evaluate(() => window.__smoke.toast())
+      await sleep(1600)
+      const oreMid = await page.evaluate(() => window.__smoke.toast())
+      await sleep(3000)
+      if (touch) await page.touchscreen.touchEnd()
+      else await page.evaluate(() => {
+        const canvas = document.querySelector('#stage canvas')
+        const r = canvas.getBoundingClientRect()
+        canvas.dispatchEvent(new PointerEvent('pointerup', {
+          bubbles: true, cancelable: true, view: window, clientX: r.left + r.width / 2, clientY: r.top + r.height / 2,
+          button: 0, buttons: 0, pointerId: 1, pointerType: 'mouse', isPrimary: true,
+        }))
+      })
+      const oreHold = { early: oreEarly, mid: oreMid }
+      const oreLeft = await page.evaluate((a, was) => ({
         id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1,
+        n: window.__smoke.count('ironOre'),
+        was,
         need: window.__smoke.word('needsStone'),
-      }), ore)
-      note('wood ore', w + 'x' + h, !!ore && oreLeft.id === 44 && oreHold.early === oreLeft.need, oreHold.early + ' id ' + oreLeft.id)
+      }), ore, beforeOre)
+      note('wood ore', w + 'x' + h, !!ore && oreLeft.id === 0 && oreLeft.n === oreLeft.was + 1 && oreHold.early !== oreLeft.need && oreHold.mid !== oreLeft.need, oreHold.early + ' | ' + oreHold.mid + ' id ' + oreLeft.id)
       await page.evaluate(() => {
         window.__smoke.emptyBag()
         window.__smoke.fillBag('woodTool', 1)
@@ -1656,9 +1732,7 @@ async function prove2543(browser, testUrl, note, errs) {
       const leaf = await readyAim(page, 12)
       const c4 = await centerOf(page)
       let chops = 0
-      while (chops < 90) {
-        const left = await page.evaluate(() => window.__smoke.count('woodTool'))
-        if (!left) break
+      while (chops < 8) {
         await page.evaluate((a) => {
           if (!a) return
           window.__smoke.plant(a.x, a.y, a.z, 12)
@@ -1682,10 +1756,10 @@ async function prove2543(browser, testUrl, note, errs) {
       const worn = await page.evaluate(() => ({
         stick: window.__smoke.count('stick'),
         tool: window.__smoke.count('woodTool'),
+        bar: !!document.querySelector('#hotbar .wear'),
         toast: window.__smoke.toast(),
-        want: window.__smoke.word('toolStick'),
       }))
-      note('tool wears', w + 'x' + h, worn.tool === 0 && worn.stick === 1 && worn.toast === worn.want && chops >= 60 && chops <= 90, JSON.stringify({ ...worn, chops }))
+      note('tool stays', w + 'x' + h, worn.tool === 1 && worn.stick === 0 && !worn.bar && chops === 8, JSON.stringify({ ...worn, chops }))
       const spot = await page.evaluate((at) => {
         const x = at.x
         const z = at.z

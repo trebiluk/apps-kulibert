@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.51', date: '2026-10-07', lines: {
+    en: ['Tools never wear out. Bare hands still break stone and ore, and a pick only mines faster.'],
+    uk: ['Знаряддя не зношуються. Голі руки й далі ламають камінь і руду, а кайло лише прискорює.'],
+    ru: ['Орудия не изнашиваются. Голые руки всё ещё ломают камень и руду, а кирка только ускоряет.'],
+    es: ['Las herramientas no se gastan. Las manos siguen rompiendo piedra y mineral, y un pico solo mina más rápido.'],
+    ar: ['الأدوات لا تبلى. اليدان ما زالتا تكسران الحجر والخام، والمعول فقط يسرّع.'],
+    'fa-AF': ['ابزارها فرسوده نمی‌شوند. دست خالی هنوز سنگ و سنگ معدن را می‌شکند، و کلنگ فقط تندتر می‌کند.'],
+    rw: ['Ibikoresho ntibishira. Amaboko akomeza kuvuna ibuye n\'amabuye, n\'agakoni gusa gukora vuba.'],
+    ti: ['መሳርሒታት ኣይበላሽዩን። ኢድ እምንን እምኒ ብረትን ትስብር፡ መቐልሒ ጥራይ ይቕልጥፍ።'],
+  }},
   { v: '2.5.50', date: '2026-10-07', lines: {
     en: ['Tools now matter, and trees grow back from saplings.'],
     uk: ['Знаряддя тепер важливі, і дерева знову виростають із саджанців.'],

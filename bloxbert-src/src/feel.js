@@ -30,7 +30,7 @@ export function overlapsPlayer(bx, by, bz, px, py, pz) {
 
 export const TOOL_X = { hand: 1, wood: 2, stone: 3, copper: 4, steel: 6 }
 export const TOOL_RANK = { hand: 0, wood: 1, stone: 2, copper: 3, steel: 4 }
-export const TOOL_LIFE = { wood: 60, stone: 150 }
+export const TOOL_LIFE = {}
 export const DRAIN_MS = 500
 
 export function toolNeed(name) {
@@ -40,22 +40,16 @@ export function toolNeed(name) {
   return ''
 }
 
-export function toolEnough(name, tool) {
-  const need = toolNeed(name)
-  if (!need) return true
-  return (TOOL_RANK[tool] || 0) >= (TOOL_RANK[need] || 1)
+export function toolEnough() {
+  return true
 }
 
-export function toolToast(name) {
-  const need = toolNeed(name)
-  if (need === 'stone') return 'needsStone'
-  if (need === 'wood') return 'needsWood'
+export function toolToast() {
   return ''
 }
 
-export function gateDig(p, name, tool, survival) {
-  if (!survival || toolEnough(name, tool)) return { p, blocked: false }
-  return { p: p > 0.82 ? 0.82 : p, blocked: true }
+export function gateDig(p) {
+  return { p, blocked: false }
 }
 
 export function mineMs(name, survival, touch, tool = 'hand') {

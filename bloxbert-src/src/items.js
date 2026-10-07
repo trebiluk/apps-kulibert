@@ -1,18 +1,13 @@
 // Hotbar 9 + pockets 6. Older saves can be longer; load() returns what no longer fits.
-import { TOOL_LIFE } from './feel.js'
+const SOLO = { woodTool: 1, stoneTool: 1 }
 export const BAG_N = 15
-const TOOL_ITEM = { woodTool: 'wood', stoneTool: 'stone' }
-function lifeOf(item) {
-  const tier = TOOL_ITEM[item]
-  return tier ? TOOL_LIFE[tier] : 0
-}
 export function createBag() {
   const slots = Array.from({ length: BAG_N }, () => null)
   function count(item) {
     return slots.reduce((n, s) => n + (s && s.item === item ? s.n : 0), 0)
   }
   function add(item, n = 1, stack) {
-    const cap = stack || (lifeOf(item) ? 1 : 64)
+    const cap = stack || SOLO[item] || 64
     let left = n
     for (const s of slots) if (s && s.item === item && s.n < cap) {
       const take = Math.min(cap - s.n, left)
@@ -22,10 +17,7 @@ export function createBag() {
     }
     for (let i = 0; i < slots.length && left; i++) if (!slots[i]) {
       const take = Math.min(cap, left)
-      const made = { item, n: take }
-      const life = lifeOf(item)
-      if (life) made.uses = life
-      slots[i] = made
+      slots[i] = { item, n: take }
       left -= take
     }
     return left
@@ -48,9 +40,6 @@ export function createBag() {
       const raw = src[i]
       if (!raw || !raw.item) { slots[i] = null; continue }
       const s = { item: raw.item, n: raw.n }
-      const life = lifeOf(raw.item)
-      if (raw.uses != null) s.uses = raw.uses | 0
-      else if (life) s.uses = life
       slots[i] = s
     }
     for (let i = BAG_N; i < src.length; i++) if (src[i] && src[i].item && src[i].n > 0) extra.push({ item: src[i].item, n: src[i].n })
@@ -60,7 +49,6 @@ export function createBag() {
     return slots.map((s) => {
       if (!s) return null
       const o = { item: s.item, n: s.n }
-      if (s.uses != null) o.uses = s.uses
       return o
     })
   }
