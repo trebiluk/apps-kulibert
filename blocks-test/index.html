@@ -149,9 +149,9 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   #hotbar{display:grid;grid-template-columns:repeat(5,62px);justify-content:center;gap:6px;overflow:hidden}
   #hotbar .item-strip{display:contents}
   #hotbar .slot{width:62px;min-width:62px;min-height:48px;height:52px}
-  #hotbar .slot.bag-tile{height:auto;min-height:52px;padding:2px 1px 3px;gap:1px;overflow:hidden;justify-content:center}
+  #hotbar .slot.bag-tile{height:auto;min-height:52px;padding:2px 1px 4px;gap:1px;overflow:visible;justify-content:center}
   #hotbar .slot.bag-tile .gic,#hotbar .slot.bag-tile .gic svg{width:16px;height:16px;flex:0 0 auto}
-  #hotbar .slot.bag-tile .lbl{flex:0 0 auto;min-width:0;font-size:10px;line-height:14px;max-width:56px;overflow:hidden;text-overflow:ellipsis}
+  #hotbar .slot.bag-tile .lbl{flex:0 0 auto;min-width:0;font-size:11px;line-height:1.25;max-width:none;overflow:visible;height:auto}
 }
 @media (max-height:500px) and (min-width:480px){
   :root{--hud-lift:76px}
@@ -371,7 +371,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
 #hotbar .bag-tile:active,#sheet[data-panel=inventory] .keycap:active,#sheet[data-panel=inventory] #sheet-x:active,#sheet[data-panel=inventory] #sheet-back:active{transform:translateY(2px);border-bottom-width:2px}
 #hotbar .bag-tile{width:56px;min-width:56px;height:56px;min-height:56px;flex:0 0 56px;padding:2px 2px 4px;gap:0;position:relative}
 #hotbar .bag-tile .gic,#hotbar .bag-tile .gic svg{width:22px;height:22px}
-#hotbar .bag-tile .lbl{display:block;font-size:11px;line-height:13px;color:#E6EEF2;max-width:52px}
+#hotbar .bag-tile .lbl{display:block;font-size:11px;line-height:1.25;color:#E6EEF2;max-width:none;overflow:visible;height:auto}
 #held-chip{left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:transparent;color:#E6EEF2;border:0;border-radius:0;box-shadow:none;padding:0 8px;font-weight:700;pointer-events:none}
 #held-chip.on{animation:stripname 1.2s ease forwards}
 @keyframes stripname{0%{opacity:0;transform:translateX(-50%) translateY(4px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0}}
@@ -386,18 +386,48 @@ body.mode-creative #hotbar .slot:not(.bag-tile){flex:0 0 56px}
 #sheet[data-panel=inventory] .sheet-bar,#sheet[data-panel=inventory] #sheet-body{width:min(760px,100%);background-color:#0E1A22;color:#E6EEF2}
 #sheet[data-panel=inventory] .sheet-bar{border:3px solid #1F8A8A;border-bottom:0;border-radius:10px 10px 0 0;box-shadow:inset 3px 0 0 #0B2A30,inset -3px 0 0 #0B2A30,inset 0 3px 0 #0B2A30;background-image:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px);position:relative}
 #sheet[data-panel=inventory] #sheet-body{border:3px solid #1F8A8A;border-top:0;border-radius:0 0 10px 10px;box-shadow:inset 3px 0 0 #0B2A30,inset -3px 0 0 #0B2A30,inset 0 -3px 0 #0B2A30;background-image:radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px);max-height:calc(100% - 72px);flex:0 1 auto;position:relative}
-#sheet[data-panel=inventory] #sheet-title{color:#E6EEF2;font-size:16px}
+#sheet[data-panel=inventory] #sheet-title{color:#E6EEF2;font-size:16px;line-height:1.35;overflow:visible;height:auto;max-height:none}
 #sheet[data-panel=inventory] .ggrid.baggrid{display:flex;flex-direction:column;align-items:center;grid-template-columns:none;gap:0;overflow:visible;padding-top:0}
-#sheet[data-panel=inventory] .crate-tab{align-self:flex-start;margin:10px 0 0 18px;background:#13303A;color:#E6EEF2;border:1px solid #1F8A8A;border-bottom:0;border-radius:8px 8px 0 0;padding:2px 10px;font-size:12px;font-weight:700}
+#sheet[data-panel=inventory] .crate-tab{align-self:flex-start;margin:10px 0 0 18px;background:#13303A;color:#E6EEF2;border:1px solid #1F8A8A;border-bottom:0;border-radius:8px 8px 0 0;padding:2px 10px;font-size:12px;font-weight:700;line-height:1.25;overflow:visible;height:auto}
 #sheet[data-panel=inventory] .wells{display:grid;grid-template-columns:repeat(9,64px);gap:8px;justify-content:center;width:100%;padding:16px 12px 18px}
-#sheet[data-panel=inventory] .well{width:64px;height:64px;min-width:64px;min-height:64px;padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;color:#E6EEF2;position:relative;display:flex;align-items:center;justify-content:center}
+#sheet[data-panel=inventory] .well{width:64px;height:64px;min-width:64px;min-height:64px;padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;color:#E6EEF2;position:relative;display:flex;align-items:center;justify-content:center;overflow:visible;touch-action:none}
 #sheet[data-panel=inventory] .well.empty{opacity:.4}
 #sheet[data-panel=inventory] .well .gic{width:70%;height:70%;display:grid;place-items:center}
 #sheet[data-panel=inventory] .well .gic svg,#sheet[data-panel=inventory] .well .gic canvas,#sheet[data-panel=inventory] .well canvas{width:100%;height:100%}
 #sheet[data-panel=inventory] .well .glbl{display:none}
-#sheet[data-panel=inventory] .well.on .glbl{display:block;position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap;color:#E6EEF2;background:#0E1A22;padding:0 4px;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+#sheet[data-panel=inventory] .well .glbl,#sheet[data-panel=inventory] .bag-name{line-height:1.25;overflow:visible;height:auto;max-height:none}
+#sheet[data-panel=inventory] .well.on .glbl{display:block;position:absolute;left:50%;bottom:calc(100% + 4px);transform:translateX(-50%);font-size:12px;font-weight:700;line-height:1.25;white-space:nowrap;color:#E6EEF2;background:#0E1A22;padding:1px 4px;overflow:visible;max-width:none;height:auto}
 #sheet[data-panel=inventory] .well.on{box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55,0 0 0 3px #22D3EE}
 #sheet[data-panel=inventory] .lost-row{width:calc(100% - 24px);min-height:44px;margin:10px 12px 0;font-weight:700}
+#sheet[data-panel=inventory] .bag-layout{display:flex;flex-direction:column;width:100%;align-items:stretch}
+#sheet[data-panel=inventory] .bag-main{min-width:0;width:100%}
+#sheet[data-panel=inventory] .bag-card{background:#0E1A22;color:#E6EEF2;border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px}
+#sheet[data-panel=inventory] .bag-head{display:flex;align-items:center;gap:8px}
+#sheet[data-panel=inventory] .bag-head .gic{width:36px;height:36px;flex:0 0 36px;display:grid;place-items:center}
+#sheet[data-panel=inventory] .bag-head .gic svg,#sheet[data-panel=inventory] .bag-head .gic canvas{width:32px;height:32px}
+#sheet[data-panel=inventory] .bag-name{font-size:15px;font-weight:800}
+#sheet[data-panel=inventory] .bag-keys{display:flex;flex-wrap:wrap;gap:8px}
+#sheet[data-panel=inventory] .bag-card .keycap{flex:1 1 72px;min-width:72px;min-height:44px;padding:4px 8px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:800;line-height:1.25}
+#sheet[data-panel=inventory] .bag-card .keycap::before{content:"";width:18px;height:18px;display:block;background:center/18px 18px no-repeat}
+#sheet[data-panel=inventory] .bag-card .keycap[data-act=hold]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 11V6.5a1.5 1.5 0 0 1 3 0V11M11 10V5.5a1.5 1.5 0 0 1 3 0V11M14 10.5V7a1.5 1.5 0 0 1 3 0v7.5c0 3-2 5.5-5 5.5h-1c-2.5 0-4-1.2-5-3L4.5 13a1.5 1.5 0 0 1 2.2-2L8 12' fill='none' stroke='%23E6EEF2' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#sheet[data-panel=inventory] .bag-card .keycap[data-act=drop1]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v11' fill='none' stroke='%2322D3EE' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M7 11l5 7 5-7' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#sheet[data-panel=inventory] .bag-card .keycap[data-act=dropall]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M8 3v7M5 7l3 4 3-4' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M16 9v7M13 13l3 4 3-4' fill='none' stroke='%2322D3EE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#sheet[data-panel=inventory] .bag-card .keycap[data-act=worth]::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='8' fill='none' stroke='%23E6B15A' stroke-width='2'/%3E%3Cpath d='M12 7.5v9M9.6 9.4c.6-.7 1.4-1 2.4-1 1.5 0 2.4.7 2.4 1.8s-.9 1.6-2.4 1.8-2.4.8-2.4 1.8.9 1.8 2.4 1.8c1 0 1.8-.3 2.4-1' fill='none' stroke='%23E6EEF2' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E")}
+.bag-ghost{position:fixed;z-index:80;width:48px;height:48px;margin:-24px 0 0 -24px;pointer-events:none;display:grid;place-items:center;background:#13303A;border:3px solid #22D3EE;border-radius:8px}
+.bag-ghost svg,.bag-ghost canvas{width:32px;height:32px}
+@media (min-width:700px){
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card){flex-direction:row;align-items:flex-start;gap:8px}
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .bag-main{flex:1 1 auto}
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .wells{grid-template-columns:repeat(5,48px);justify-content:start;gap:6px;padding:20px 8px 10px}
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .well{width:48px;height:48px;min-width:48px;min-height:48px}
+  #sheet[data-panel=inventory] .bag-card{flex:0 0 210px;position:sticky;top:0}
+}
+@media (max-width:699px){
+  #sheet[data-panel=inventory] #sheet-body{flex:1 1 auto;display:flex;flex-direction:column;max-height:none}
+  #sheet[data-panel=inventory] .ggrid.baggrid{flex:1 1 auto;width:100%}
+  #sheet[data-panel=inventory] .bag-layout{flex:1 1 auto}
+  #sheet[data-panel=inventory] .bag-card{margin-top:auto;position:sticky;bottom:0;z-index:4;width:100%;border-radius:12px 12px 0 0}
+}
 #sheet[data-panel=inventory] .ggrid>.gtile:not(.well),#sheet[data-panel=inventory] .gnote{width:calc(100% - 24px);margin:6px 12px;color:#E6EEF2}
 @media (max-width:760px){
   #sheet[data-panel=inventory] .wells{grid-template-columns:repeat(6,56px)}
@@ -408,7 +438,7 @@ body.mode-creative #hotbar .slot:not(.bag-tile){flex:0 0 56px}
   #hotbar{left:2px;right:2px;width:auto;transform:none;bottom:0;padding:58px 2px 12px;gap:0;overflow:visible}
   #hotbar .item-strip{display:flex;width:100%;gap:0;flex:1 1 auto;align-items:flex-end}
   #hotbar .slot:not(.bag-tile){flex:1 1 0;width:auto;min-width:0;max-width:none;height:auto;aspect-ratio:1;min-height:44px}
-  #hotbar .slot.bag-tile{position:absolute;top:6px;right:8px;width:48px;min-width:48px;height:44px;min-height:44px;max-height:44px;flex:none;padding:1px 2px 2px;overflow:hidden}
+  #hotbar .slot.bag-tile{position:absolute;top:6px;right:8px;width:48px;min-width:48px;height:auto;min-height:52px;max-height:none;flex:none;padding:3px 2px 4px;overflow:visible}
   #hotbar .digit{display:none}
   #held-chip{bottom:calc(140px + env(safe-area-inset-bottom))}
   .keys{bottom:156px;max-width:calc(100vw - 16px)}
@@ -420,7 +450,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:18px;z-inde
   #hotbar .slot:not(.bag-tile),#hotbar .bag-tile{width:48px;height:48px;min-width:48px;min-height:48px;flex-basis:48px}
 }
 html[data-kp-contrast="1"] #hotbar,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .sheet-bar,html[data-kp-contrast="1"] #sheet[data-panel=inventory] #sheet-body{background-image:none !important;outline:3px solid #E6EEF2}
-html[data-kp-contrast="1"] #hotbar .slot,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .well{outline:2px solid #E6EEF2 !important}
+html[data-kp-contrast="1"] #hotbar .slot,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .well,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .bag-card .keycap{outline:2px solid #E6EEF2 !important}
 html[data-kp-motion="less"] #hotbar .slot.bump,html[data-kp-motion="less"] #held-chip.on{animation:none}
 html[data-kp-motion="less"] #held-chip.on{opacity:1}
 @media (prefers-reduced-motion:reduce){
@@ -440,7 +470,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.59</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.61</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -479,7 +509,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Door options are easy to read, and a lever turned on now opens its door.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">The Bag is easier to read, and you can tap or drag to move things around.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -579,7 +609,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.59" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.59" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.61" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.61" defer></script>
 </body>
 </html>

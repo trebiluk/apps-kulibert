@@ -24,6 +24,8 @@ export function createSession(api) {
   let home = null
   const hotSlot = { survival: 0, creative: 0 }
   let hot = 0
+  let bagSel = -1
+  let bagSkip = 0
   let day = localDay()
   function localDay() {
     const d = new Date()
@@ -399,18 +401,84 @@ export function createSession(api) {
     if (api.markDirty) api.markDirty()
     return true
   }
-  function card(g, itemKey, index) {
-    const item = ITEMS[itemKey]
-    const p = document.createElement('p')
-    p.className = 'gnote'
-    const pay = quoteSell(item, wallet.state.soldToday[itemKey] || 0, wallet.state.dial || 1, { ...ECON, dial: wallet.state.dial })
-    p.innerHTML = '<bdi>' + t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey) + '</bdi>'
-    g.append(p)
-    if (mode === 'survival' && bag.count(itemKey)) {
-      g.append(btn(t('holdIt'), () => { holdItem(itemKey, index); if (api.close) api.close() }))
-      g.append(btn(t('drop1'), () => { dropItem(itemKey, false); api.close() }))
-      g.append(btn(t('dropAll'), () => { dropItem(itemKey, true); api.close() }))
+  function relocate(from, to) {
+    if (from === to || from < 0 || to < 0 || to >= bag.slots.length) return false
+    const a = bag.slots[from]
+    if (!a) return false
+    const b = bag.slots[to]
+    bag.slots[from] = b || null
+    bag.slots[to] = a
+    if (hot === from) hot = to
+    else if (hot === to) hot = from
+    if (bagSel === from) bagSel = to
+    else if (bagSel === to) bagSel = from
+    paintHotbar()
+    if (api.markDirty) api.markDirty()
+    return true
+  }
+  function tapSlot(i) {
+    const s = bag.slots[i]
+    if (bagSel < 0) { if (s) bagSel = i; return }
+    if (bagSel === i) { bagSel = -1; return }
+    relocate(bagSel, i)
+  }
+  function dropStack(index, all) {
+    const s = bag.slots[index]
+    if (!s) return
+    const n = all ? s.n : 1
+    const item = s.item
+    s.n -= n
+    if (s.n <= 0) {
+      bag.slots[index] = null
+      if (bagSel === index) bagSel = -1
     }
+    const p = dropSpot()
+    spawnDrop(item, n, p[0], p[1], p[2], 'q')
+    paintHotbar()
+    if (api.markDirty) api.markDirty()
+  }
+  function refreshBag() {
+    const g = document.querySelector('#sheet[data-panel="inventory"] .ggrid')
+    if (!g || mode !== 'survival') return
+    g.innerHTML = ''
+    paintBag(g)
+  }
+  function card(itemKey, index) {
+    const item = ITEMS[itemKey]
+    const s = bag.slots[index]
+    const n = s && s.item === itemKey ? s.n : 0
+    const panel = document.createElement('div')
+    panel.className = 'bag-card'
+    const head = document.createElement('div')
+    head.className = 'bag-head'
+    const ic = document.createElement('span')
+    ic.className = 'gic'
+    ic.append(itemIcon(item))
+    const name = document.createElement('span')
+    name.className = 'bag-name'
+    name.textContent = itemName(itemKey) + ' x' + n
+    head.append(ic, name)
+    panel.append(head)
+    const keys = document.createElement('div')
+    keys.className = 'bag-keys'
+    const addKey = (act, label, fn) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'keycap'
+      b.dataset.act = act
+      b.textContent = label
+      b.addEventListener('click', (e) => { e.stopPropagation(); fn() })
+      keys.append(b)
+    }
+    addKey('hold', t('holdIt'), () => { holdItem(itemKey, index); if (api.close) api.close() })
+    addKey('drop1', t('drop1'), () => { dropStack(index, false); refreshBag() })
+    addKey('dropall', t('dropAll'), () => { dropStack(index, true); refreshBag() })
+    addKey('worth', t('worth'), () => {
+      const pay = quoteSell(item, wallet.state.soldToday[itemKey] || 0, wallet.state.dial || 1, { ...ECON, dial: wallet.state.dial })
+      api.toast(t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey))
+    })
+    panel.append(keys)
+    return panel
   }
   function itemIcon(item) {
     if (!item) return document.createElement('span')
@@ -459,6 +527,7 @@ export function createSession(api) {
     }
     const used = bag.slots.filter(Boolean).length
     if (title) title.textContent = t('bag') + ' · ' + used + '/' + bag.slots.length
+    if (bagSel >= bag.slots.length || (bagSel >= 0 && !bag.slots[bagSel])) bagSel = -1
     if (lost.length) {
       const n = lost.reduce((sum, d) => sum + d.n, 0)
       const lostBtn = document.createElement('button')
@@ -480,11 +549,19 @@ export function createSession(api) {
       for (let i = from; i < to; i++) w.append(one(bag.slots[i], i))
       return w
     }
-    g.append(tab(t('hotbar')), row(0, 9), tab(t('pockets')), row(9, bag.slots.length))
+    const layout = document.createElement('div')
+    layout.className = 'bag-layout'
+    const main = document.createElement('div')
+    main.className = 'bag-main'
+    main.append(tab(t('hotbar')), row(0, 9), tab(t('pockets')), row(9, bag.slots.length))
+    layout.append(main)
+    if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
+    g.append(layout)
     function one(s, i) {
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'well gtile' + (s ? '' : ' empty') + (i < 9 && i === hot ? ' on' : '')
+      b.className = 'well gtile' + (s ? '' : ' empty') + (i === bagSel ? ' on' : '')
+      b.dataset.slot = String(i)
       const pic = document.createElement('span')
       pic.className = 'gic'
       if (s) pic.append(itemIcon(ITEMS[s.item]))
@@ -494,7 +571,7 @@ export function createSession(api) {
         count.className = 'count'
         count.textContent = String(s.n)
         b.append(count)
-        if (i < 9 && i === hot) {
+        if (i === bagSel) {
           const lbl = document.createElement('span')
           lbl.className = 'glbl'
           lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : itemName(s.item)
@@ -503,11 +580,61 @@ export function createSession(api) {
       }
       const wear = s && wearBar(ITEMS[s.item], s.uses)
       if (wear) b.append(wear)
-      b.setAttribute('aria-pressed', String(i < 9 && i === hot))
+      b.setAttribute('aria-pressed', String(i === bagSel))
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       b.title = s ? itemName(s.item) : t('emptySlot')
-      if (!s) b.disabled = true
-      else b.addEventListener('click', () => card(g, s.item, i))
+      let drag = false
+      b.addEventListener('pointerdown', (e) => {
+        if (e.button != null && e.button !== 0) return
+        bagSkip = 0
+        const pid = e.pointerId
+        const sx = e.clientX
+        const sy = e.clientY
+        drag = false
+        let ghost = null
+        try { b.setPointerCapture(pid) } catch (err) {}
+        const move = (ev) => {
+          if (ev.pointerId !== pid) return
+          const dx = ev.clientX - sx
+          const dy = ev.clientY - sy
+          if (!drag && s && dx * dx + dy * dy >= 36) {
+            drag = true
+            ghost = document.createElement('div')
+            ghost.className = 'bag-ghost'
+            ghost.append(itemIcon(ITEMS[s.item]))
+            document.body.append(ghost)
+          }
+          if (ghost) {
+            ghost.style.left = ev.clientX + 'px'
+            ghost.style.top = ev.clientY + 'px'
+          }
+        }
+        const up = (ev) => {
+          if (ev.pointerId !== pid) return
+          b.removeEventListener('pointermove', move)
+          b.removeEventListener('pointerup', up)
+          b.removeEventListener('pointercancel', up)
+          try { b.releasePointerCapture(pid) } catch (err) {}
+          if (ghost) ghost.remove()
+          if (!drag) return
+          bagSkip = performance.now()
+          const under = document.elementFromPoint(ev.clientX, ev.clientY)
+          const well = under && under.closest ? under.closest('.well[data-slot]') : null
+          if (well) {
+            const to = Number(well.dataset.slot)
+            if (to !== i) relocate(i, to)
+          }
+          refreshBag()
+        }
+        b.addEventListener('pointermove', move)
+        b.addEventListener('pointerup', up)
+        b.addEventListener('pointercancel', up)
+      })
+      b.addEventListener('click', (e) => {
+        if (bagSkip && performance.now() - bagSkip < 700) { e.preventDefault(); e.stopPropagation(); return }
+        tapSlot(i)
+        refreshBag()
+      })
       return b
     }
   }

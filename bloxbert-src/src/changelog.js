@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.61', date: '2026-10-07', lines: {
+    en: ['The Bag is easier to read, and you can tap or drag to move things around.'],
+    uk: ['Сумку легше читати, і речі можна переносити дотиком або перетягуванням.'],
+    ru: ['Сумку легче читать, и вещи можно переносить нажатием или перетаскиванием.'],
+    es: ['La bolsa se lee mejor, y puedes tocar o arrastrar para mover las cosas.'],
+    ar: ['الحقيبة صارت أوضح، ويمكنك النقر أو السحب لنقل الأشياء.'],
+    'fa-AF': ['بکس خواناتر شد، و می‌توانی با لمس یا کشیدن چیزها را جابه‌جا کنی.'],
+    rw: ['Agasaho karasomeka, kandi ushobora gukanda cyangwa gukurura kugira ngo wimure ibintu.'],
+    ti: ['ቦርሳ ብቐሊሉ ይንበብ፡ ነገራት ድማ ብምጥዋቕ ወይ ብምጉታት ትንቀሳቐስ።'],
+  }},
   { v: '2.5.59', date: '2026-10-07', lines: {
     en: ['Door options are easy to read, and a lever turned on now opens its door.'],
     uk: ['Налаштування дверей легко читати, і ввімкнений важіль тепер відчиняє двері.'],

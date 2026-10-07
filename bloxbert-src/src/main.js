@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.59'
+const VERSION = '2.5.61'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -780,6 +780,7 @@ function paintUndo() {
   const r = $('redo-btn'); if (r) r.disabled = !edits.canRedo
 }
 let selfUnlock = false
+let armResume = 0
 let markPath = () => {}
 let paintPath = () => {}
 let lastPointer = null
@@ -996,6 +997,7 @@ panels = mountPanels({
     document.body.classList.remove('menu-open')
     try { noa.setPaused(false) } catch (e) {}
     if (session) session.paused = false
+    armResume = performance.now()
   },
   onOpen: () => releaseLook(),
   paintBag: (g) => session.paintBag(g),
@@ -1810,6 +1812,11 @@ function targetHit() {
   return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), face: t }
 }
 canvas.addEventListener('pointerdown', (e) => {
+  if (armResume && (e.button === 0 || e.button < 0)) {
+    armResume = 0
+    try { noa.container.setPointerLock(true) } catch (err) {}
+    return
+  }
   if (e.button === 0 || e.button < 0) mouseLeft = true
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
@@ -1894,6 +1901,11 @@ canvas.addEventListener('pointerup', (e) => {
 canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
+  if (armResume) {
+    armResume = 0
+    try { noa.container.setPointerLock(true) } catch (err) {}
+    return
+  }
   const world = noa.container.element
   if (!world || (e.target !== canvas && e.target !== world && !world.contains(e.target))) return
   const snap = targetHit()
