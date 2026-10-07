@@ -3592,3 +3592,31 @@ body.mu237 .transport .tempo {
   body.mu237 #clear-song::before,
   body.mu237 #more-tools::before { margin-inline-end: 0 !important; }
 }
+
+/* MU 2.35.14 — a closed Arabic or Dari menu is fully off the screen */
+html[dir="rtl"] body.mu237:not(.menu-open) .drawer {
+  display: block !important;
+  position: fixed !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  left: auto !important;
+  right: 0 !important;
+  width: min(22rem, 88vw) !important;
+  max-width: 88vw !important;
+  height: auto !important;
+  margin: 0 !important;
+  transform: translateX(105%) !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+}
+html[dir="rtl"] body.mu237.menu-open .drawer {
+  display: block !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  transform: none !important;
+  left: 0 !important;
+  right: var(--rail) !important;
+  width: auto !important;
+  overflow: auto !important;
+}

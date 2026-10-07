@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.14** · 2026-10-07 · channel **live**
+
+The closed menu stays off the screen in Arabic and Dari.
+
+## Earlier
+
 **Chip: MU 2.35.13** · 2026-10-07 · channel **live**
 
 Drum rows stay above the player, and the player fits a phone.
