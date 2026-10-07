@@ -14,11 +14,13 @@ import { emptyBox, putInSlots } from './box.js'
 import { TOOL_LIFE } from './feel.js'
 
 export function createSession(api) {
-  const bag = createBag()
+  const bags = { survival: createBag(), creative: createBag() }
+  let bag = bags.survival
   const wallet = createWallet(ECON)
   const meta = new Map()
   let mode = 'survival'
   let home = null
+  const hotSlot = { survival: 0, creative: 0 }
   let hot = 0
   let day = localDay()
   function localDay() {
@@ -154,6 +156,7 @@ export function createSession(api) {
     const bar = document.getElementById('hotbar')
     if (!bar) return
     bar.classList.toggle('bagbar', mode === 'survival')
+    if (bar.classList.remove) bar.classList.remove('palette')
     if (mode !== 'survival') return
     bar.innerHTML = ''
     for (let i = 0; i < 9; i++) {
@@ -707,7 +710,16 @@ export function createSession(api) {
   }
   function markPath(id) { if (api.path) api.path(id) }
   function onBreak(x, y, z, id) {
-    if (mode !== 'survival') return true
+    if (mode !== 'survival') {
+      if (mode === 'creative') {
+        const drop = dropOf(id)
+        if (drop) {
+          const left = bag.add(drop, 1)
+          if (left) spawnDrop(drop, left, x + 0.5, y + 0.4, z + 0.5, 'full')
+        }
+      }
+      return true
+    }
     if (id === 21) { api.toast(t('coreplateToast')); return false }
     if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     if (id === 24 || id === 26) return false
@@ -911,13 +923,34 @@ export function createSession(api) {
   function dump() {
     const m = {}
     for (const [k, v] of meta) m[k] = v
-    return { player: { mode, bag: bag.dump(), hot, home, table: api.tableOn() }, econ: wallet.dump(), meta: m, drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })), lost: lost.map((d) => ({ item: d.item, n: d.n })) }
+    if (mode === 'survival') hotSlot.survival = hot
+    return {
+      player: {
+        mode,
+        bag: bags.survival.dump(),
+        bagCreative: bags.creative.dump(),
+        hot: hotSlot.survival,
+        hotCreative: api.creativeHot ? api.creativeHot() : hotSlot.creative,
+        home,
+        table: api.tableOn(),
+      },
+      econ: wallet.dump(),
+      meta: m,
+      drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })),
+      lost: lost.map((d) => ({ item: d.item, n: d.n })),
+    }
   }
   function load(doc) {
-    mode = (doc.player && doc.player.mode) || 'survival'
-    const extra = bag.load(doc.player && doc.player.bag) || []
-    home = doc.player && doc.player.home || null
-    hot = (doc.player && doc.player.hot) || 0
+    const p = doc.player || {}
+    mode = p.mode === 'creative' ? 'creative' : 'survival'
+    const extra = bags.survival.load(p.bag) || []
+    bags.creative.load(Array.isArray(p.bagCreative) ? p.bagCreative : [])
+    hotSlot.survival = p.hot || 0
+    hotSlot.creative = p.hotCreative || 0
+    bag = bags[mode]
+    hot = mode === 'survival' ? hotSlot.survival : 0
+    if (api.setCreativeHot) api.setCreativeHot(hotSlot.creative)
+    home = p.home || null
     wallet.load(doc.econ)
     if (!wallet.state.ledger.length) wallet.post({ kind: 'start', cogs: 0, by: 'you' })
     meta.clear()
@@ -937,14 +970,29 @@ export function createSession(api) {
       else lost.push({ item: s.item, n: s.n })
     }
     if (extra.length) api.toast(t('keptAside'))
-    for (const s of bag.slots) if (s) markFound(s.item)
+    for (const s of bags.survival.slots) if (s) markFound(s.item)
+    for (const s of bags.creative.slots) if (s) markFound(s.item)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
-    paintChip(); paintHotbar()
+    paintChip()
+    if (mode === 'survival') paintHotbar()
+    else if (api.paintBar) api.paintBar()
   }
-  function setMode(next) { mode = next; paintChip(); if (mode === 'survival') paintHotbar(); else if (api.paintBar) api.paintBar() }
+  function setMode(next) {
+    const n = next === 'creative' ? 'creative' : 'survival'
+    if (n !== mode) {
+      if (mode === 'survival') hotSlot.survival = hot
+      mode = n
+      bag = bags[mode]
+      hot = mode === 'survival' ? hotSlot.survival : 0
+    }
+    paintChip()
+    if (mode === 'survival') paintHotbar()
+    else if (api.paintBar) api.paintBar()
+  }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
-    bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
+    get bag() { return bag },
+    bags: () => ({ survival: bags.survival.dump(), creative: bags.creative.dump() }), wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
     lostAdd,
     tryCraft,

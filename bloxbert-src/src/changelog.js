@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.52', date: '2026-10-07', lines: {
+    en: ['Switch between Survival and Creative any time with the button on screen.'],
+    uk: ['Перемикайся між Виживанням і Творчістю будь-коли кнопкою на екрані.'],
+    ru: ['Переключайся между Выживанием и Творчеством в любой момент кнопкой на экране.'],
+    es: ['Cambia entre Supervivencia y Creativo cuando quieras con el botón en la pantalla.'],
+    ar: ['بدّل بين البقاء والإبداع في أي وقت بالزر على الشاشة.'],
+    'fa-AF': ['هر وقت با دکمه روی صفحه میان بقا و خلاق عوض کن.'],
+    rw: ['Hindura hagati ya Kubaho na Guhimba igihe icyo ari cyo cyose ukoresheje buto ku gikirere.'],
+    ti: ['ኣብ ዝኾነ እዋን ብመጠወቒ ኣብ ስክሪን ካብ ምንባር ናብ ምፍጣር ቀይር።'],
+  }},
   { v: '2.5.51', date: '2026-10-07', lines: {
     en: ['Tools never wear out. Bare hands still break stone and ore, and a pick only mines faster.'],
     uk: ['Знаряддя не зношуються. Голі руки й далі ламають камінь і руду, а кайло лише прискорює.'],

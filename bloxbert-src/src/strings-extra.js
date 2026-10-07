@@ -196,42 +196,42 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Bertopia 2.5.51: tools never wear out, bare hands still break stone and ore, and a pick only mines faster.',
+    whatsNewBody: 'Bertopia: switch between Survival and Creative any time with the button on screen.',
     needsWood: 'Needs a Wood Tool', needsStone: 'Needs a Stone Tool', toolStick: 'Your tool wore out. You got a Stick.',
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'Bertopia 2.5.51: знаряддя не зношуються, голі руки й далі ламають камінь і руду, а кайло лише прискорює.',
+    whatsNewBody: 'Bertopia: перемикайся між Виживанням і Творчістю будь-коли кнопкою на екрані.',
     needsWood: 'Потрібне дерев’яне знаряддя', needsStone: 'Потрібне кам’яне знаряддя', toolStick: 'Знаряддя зносилось. Ти отримав палицю.',
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: '2.5.51: орудия не изнашиваются, голые руки всё ещё ломают камень и руду, а кирка только ускоряет.',
+    whatsNewBody: 'Переключайся между Выживанием и Творчеством в любой момент кнопкой на экране.',
     needsWood: 'Нужно деревянное орудие', needsStone: 'Нужно каменное орудие', toolStick: 'Орудие износилось. Ты получил палку.',
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'Bertopia 2.5.51: las herramientas no se gastan, las manos siguen rompiendo piedra y mineral, y un pico solo mina más rápido.',
+    whatsNewBody: 'Bertopia: cambia entre Supervivencia y Creativo cuando quieras con el botón en la pantalla.',
     needsWood: 'Necesitas una herramienta de madera', needsStone: 'Necesitas una herramienta de piedra', toolStick: 'Tu herramienta se gastó. Recibiste un palo.',
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: '2.5.51: الأدوات لا تبلى، واليدان ما زالتا تكسران الحجر والخام، والمعول فقط يسرّع.',
+    whatsNewBody: 'بدّل بين البقاء والإبداع في أي وقت بالزر على الشاشة.',
     needsWood: 'تحتاج أداة خشب', needsStone: 'تحتاج أداة حجر', toolStick: 'أداتك بليت. حصلت على عصا.',
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: '2.5.51: ابزارها فرسوده نمی‌شوند، دست خالی هنوز سنگ و سنگ معدن را می‌شکند، و کلنگ فقط تندتر می‌کند.',
+    whatsNewBody: 'هر وقت با دکمه روی صفحه میان بقا و خلاق عوض کن.',
     needsWood: 'ابزار چوبی لازم است', needsStone: 'ابزار سنگی لازم است', toolStick: 'ابزارت تمام شد. یک چوب گرفتی.',
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Bertopia 2.5.51: ibikoresho ntibishira, amaboko akomeza kuvuna ibuye n\'amabuye, n\'agakoni gusa gukora vuba.',
+    whatsNewBody: 'Bertopia: hindura hagati ya Kubaho na Guhimba igihe icyo ari cyo cyose ukoresheje buto ku gikirere.',
     needsWood: 'Ukeneye igikoresho cy\'ibiti', needsStone: 'Ukeneye igikoresho cy\'ibuye', toolStick: 'Igikoresho cyawe cyarashize. Wakiriye inkoni.',
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: '2.5.51፡ መሳርሒታት ኣይበላሽዩን፡ ኢድ እምንን እምኒ ብረትን ትስብር፡ መቐልሒ ጥራይ ይቕልጥፍ።',
+    whatsNewBody: 'Bertopia: ኣብ ዝኾነ እዋን ብመጠወቒ ኣብ ስክሪን ካብ ምንባር ናብ ምፍጣር ቀይር።',
     needsWood: 'ናይ ዕንጨይቲ መሳርሒ የድሊ', needsStone: 'ናይ እምኒ መሳርሒ የድሊ', toolStick: 'መሳርሒኻ ተበላሽዩ። በትሪ ረኺብካ።',
     woodToolLine: 'ናይ ዕንጨይቲ መሳርሒ። ብቐልጢፍ ይኮፍ።', stoneToolLine: 'ናይ እምኒ መሳርሒ። ብዝያዳ ይቕልጥፍ።', sapling: 'ቡቕሊ', saplingSoil: 'ቡቕሊ ኣብ ሳዕሪ ወይ መሬት ተኽል።',
   },

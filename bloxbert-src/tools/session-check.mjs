@@ -4,7 +4,7 @@ import { createBasics } from '../src/basics.js'
 
 globalThis.document = {
   getElementById() { return null },
-  createElement() { return { className: '', style: {}, dataset: {}, classList: { add() {}, toggle() {} }, append() {}, setAttribute() {}, addEventListener() {}, querySelector: () => ({ textContent: '' }) } },
+  createElement() { return { className: '', style: {}, dataset: {}, classList: { add() {}, toggle() {}, remove() {} }, append() {}, setAttribute() {}, addEventListener() {}, querySelector: () => ({ textContent: '' }) } },
   documentElement: { dataset: {} },
 }
 

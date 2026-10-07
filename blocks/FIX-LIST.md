@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 10:40 PM ET (Debugzy: 2.5.48 proof FAIL (P1): doors, lever, button, lock, save and the lantern work, but night only darkens the sky and 20 lit lanterns halve the frame rate; fix brief bertopia-2549-fix.md ready as BT 2.5.49, basics-2a moves to 2.5.50).
+Updated Wed Oct 7 2026 (Build: 2.5.52 live Survival/Creative switch on one world, separate bags, MODE_SWITCH_ALL).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -46,6 +46,7 @@ Updated Tue Oct 6 2026, 10:40 PM ET (Debugzy: 2.5.48 proof FAIL (P1): doors, lev
 - [ ] **"Make a Wood Tool" twice (P2, cosmetic):** after the first log the path chip and a toast show the same words at once for ~2.4 s.
 - [x] **Night darkens the blocks (P1, 2.5.48 proof):** the day light now scales world ambient and the sun, so grass follows the night. Always day and the Build world stay fully lit. Lantern glow stays bright.
 - [x] **Lantern lights stay cheap (P1, 2.5.48 proof):** the 4 nearest lanterns (2 on Lite) light a ground pool and do not light every chunk. They are off by day. Smoke times 20 High lanterns in view against none on the same page.
+- [x] **2.5.52 Survival / Creative switch (Diego Oct 7, 6:16 AM):** one on-screen Survival | Creative pill for everyone (`MODE_SWITCH_ALL`), live in the same world (no load, same blocks, place and look), separate bags that both survive reload, old bag stays the Survival bag, creative reach 10 / instant break / no tool wear / gates open.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -83,6 +84,7 @@ Updated Tue Oct 6 2026, 10:40 PM ET (Debugzy: 2.5.48 proof FAIL (P1): doors, lev
 | 1b | 2.5.49 | **bertopia-2549-fix.md (P1, 2.5.48 proof):** night darkens the world (ambient + noa light follow `lum()`), lantern lights cost under 10% at 1366 with 20 in view, smoke lantern fps in view | shipped |
 | 1c | 2.5.50 | tools gate hard blocks, and saplings grow back (Diego Oct 7; not the glow brief) | shipped |
 | 1d | 2.5.51 | design rule: drop tool wear and the stone gate; bare hands still break stone and ore, slower; a pick only mines faster; saplings stay | shipped |
+| 1e | 2.5.52 | on-screen Survival / Creative switch, live in one world, separate bags (Diego Oct 7 6:16 AM) | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |

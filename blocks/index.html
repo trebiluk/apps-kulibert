@@ -240,6 +240,24 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .ggrid.baggrid .gtile.on{border-color:var(--cyan);box-shadow:inset 0 0 0 2px var(--cyan)}
 @media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
 @media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
+#mode-pill{position:fixed;z-index:8;display:flex;min-height:48px;top:calc(var(--top-h) + 168px);left:50%;transform:translateX(-50%);border-radius:999px;overflow:hidden;border:1px solid rgba(34,211,238,.75);background:rgba(11,18,32,.94);box-shadow:0 8px 18px rgba(0,0,0,.28);pointer-events:auto}
+html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 168px)}
+#mode-pill button{flex:0 0 auto;min-width:44px;min-height:48px;padding:0 14px;border:0;background:transparent;color:#f8fafc;font-weight:700;white-space:nowrap;touch-action:manipulation}
+#mode-pill button + button{border-inline-start:1px solid rgba(34,211,238,.5)}
+#mode-pill button[aria-pressed="true"]{background:#14B8A6;color:#04221e}
+html[dir=rtl] #mode-pill{flex-direction:row}
+body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start}
+@media (max-height:500px) and (min-width:480px){
+  #mode-pill{top:calc(var(--top-h) + 8px);left:auto;right:16px;transform:none}
+  html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 8px)}
+}
+@media (max-width:479px){
+  body.mode-creative #hotbar{display:flex;overflow-x:auto;grid-template-columns:none}
+}
+@media (max-width:479px) and (max-height:780px){
+  #mode-pill{top:calc(var(--top-h) + 128px)}
+  html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 128px)}
+}
 </style>
 </head>
 <body>
@@ -248,7 +266,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.51</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.52</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -257,6 +275,10 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti">⬇</span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
+<div id="mode-pill" role="group" aria-label="Mode">
+  <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
+  <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
+</div>
 <button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false">☰<small>⏸</small></button>
 <button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
 <div id="menu-hint" hidden></div>
@@ -287,7 +309,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bertopia 2.5.51: tools never wear out, bare hands still break stone and ore, and a pick only mines faster.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Bertopia: switch between Survival and Creative any time with the button on screen.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -380,7 +402,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.51" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.51" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.52" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.52" defer></script>
 </body>
 </html>

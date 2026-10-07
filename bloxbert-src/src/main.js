@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.51'
+const VERSION = '2.5.52'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -511,9 +511,11 @@ function teacherOn() {
   if (!staffOn()) return false
   try { return localStorage.getItem('bloxbert-teacher') === '1' } catch (e) { return false }
 }
+const MODE_SWITCH_ALL = true
 function setTeacher(on) {
   try { localStorage.setItem('bloxbert-teacher', on ? '1' : '0') } catch (e) {}
   toast(on ? t('teacherOn') : t('teacherOff'))
+  if (MODE_SWITCH_ALL) { paintModeChip(); return }
   if (!on && WORLD === 'bertyville') {
     WORLD = 'bertyville-survival'
     try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
@@ -649,18 +651,35 @@ document.addEventListener('visibilitychange', () => { if (document.hidden && dir
 const $ = (id) => document.getElementById(id)
 function paintModeChip() {
   const chip = $('mode-chip')
-  if (!chip) return
-  if (tableMode) { chip.textContent = t('buildTable'); return }
-  chip.textContent = session && session.mode === 'survival' ? t('survival') : t('creative')
+  const creativeMode = !!(session && session.mode === 'creative' && !tableMode)
+  const survivalMode = !tableMode && !!(session && session.mode === 'survival')
+  if (chip) {
+    if (tableMode) chip.textContent = t('buildTable')
+    else chip.textContent = creativeMode ? t('creative') : t('survival')
+  }
   paintPath()
   const creative = $('m-creative')
   if (creative) creative.hidden = !teacherOn()
   const surv = $('m-survival')
   if (surv) {
-    const on = !tableMode && session && session.mode === 'survival'
-    surv.classList.toggle('on', on)
-    surv.setAttribute('aria-pressed', String(on))
+    surv.classList.toggle('on', survivalMode)
+    surv.setAttribute('aria-pressed', String(survivalMode))
   }
+  const pill = $('mode-pill')
+  if (pill) pill.hidden = !MODE_SWITCH_ALL
+  const ps = $('mode-survival')
+  const pc = $('mode-creative')
+  if (ps) {
+    ps.classList.toggle('on', survivalMode)
+    ps.setAttribute('aria-pressed', String(survivalMode))
+    ps.textContent = t('survival')
+  }
+  if (pc) {
+    pc.classList.toggle('on', creativeMode)
+    pc.setAttribute('aria-pressed', String(creativeMode))
+    pc.textContent = t('creative')
+  }
+  document.body.classList.toggle('mode-creative', creativeMode)
 }
 function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
 function toast(text) { const el = $('toast'); if (!el) return; el.textContent = text; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true }, 2400) }
@@ -685,6 +704,13 @@ session = createSession({
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
   flash: (name) => flashHeld(name),
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
+  creativeHot: () => selectedSlot,
+  setCreativeHot: (i) => {
+    const n = Math.max(0, i | 0)
+    if (!paletteIds.length) return
+    selectedSlot = n % paletteIds.length
+    current = paletteIds[selectedSlot]
+  },
   path: (id) => markPath(id),
   teacher: () => teacherOn(),
   setTeacher: (on) => setTeacher(on),
@@ -788,6 +814,13 @@ const stations = createStations({ t, give: (item, n) => session && session.give 
   return c
 } })
 async function goWorld(m) {
+  if (MODE_SWITCH_ALL && (m === 'survival' || m === 'creative')) {
+    if (tableMode) setMode(false)
+    if (session) session.setMode(m)
+    paintModeChip()
+    if (panels) panels.close()
+    return
+  }
   if (m === 'creative' && !teacherOn()) { toast(t('buildLocked')); return }
   const next = m === 'survival' ? 'bertyville-survival' : 'bertyville'
   if (WORLD === next && session && session.mode === m && !tableMode) {
@@ -943,17 +976,20 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const barIds = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+const paletteIds = BLOCKS.map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
   bar.innerHTML = ''
-  barIds.forEach((id, i) => {
+  bar.classList.add('palette')
+  bar.classList.remove('bagbar')
+  bar.dataset.n = String(paletteIds.length)
+  paletteIds.forEach((id, i) => {
     const b = document.createElement('button')
     b.className = 'slot'
     b.type = 'button'
     b.dataset.slot = String(i)
     b.dataset.id = String(id)
-    const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[2]
+    const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[0]
     const name = block[1]
     b.setAttribute('aria-label', t(name))
     b.setAttribute('aria-pressed', String(i === selectedSlot))
@@ -965,24 +1001,26 @@ function paintBar() {
     b.prepend(blockIcon(block, ATLAS))
     bar.append(b)
   })
-  const bag = document.createElement('button')
-  bag.type = 'button'
-  bag.className = 'slot bag-tile'
-  bag.dataset.bag = '1'
-  bag.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
-  bag.querySelector('.lbl').textContent = t('bag')
-  bag.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
-  bar.append(bag)
+  const bagBtn = document.createElement('button')
+  bagBtn.type = 'button'
+  bagBtn.className = 'slot bag-tile'
+  bagBtn.dataset.bag = '1'
+  bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
+  bagBtn.querySelector('.lbl').textContent = t('bag')
+  bagBtn.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
+  bar.append(bagBtn)
+  const on = bar.querySelector('[aria-pressed="true"]')
+  if (on) bar.scrollLeft = Math.max(0, on.offsetLeft - bar.clientWidth / 2 + on.offsetWidth / 2)
 }
 function useSelected() {
   if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
   flashHeld(blockName(current))
 }
 function selectSlot(i) {
-  const n = (i + 9) % 9
-  const same = n === selectedSlot && current === barIds[n]
+  const n = ((i % paletteIds.length) + paletteIds.length) % paletteIds.length
+  const same = n === selectedSlot && current === paletteIds[n]
   selectedSlot = n
-  current = barIds[n]
+  current = paletteIds[n]
   if (!same) paintBar()
   const name = blockName(current)
   const el = $('current')
@@ -990,11 +1028,8 @@ function selectSlot(i) {
   flashHeld(name)
 }
 function pick(id) {
-  barIds[selectedSlot] = id
-  current = id
-  paintBar()
-  $('current').textContent = blockName(id)
-  flashHeld(blockName(id))
+  const i = paletteIds.indexOf(id)
+  if (i >= 0) selectSlot(i)
 }
 function flashHeld(name) {
   const chip = $('held-chip')
@@ -1098,8 +1133,9 @@ async function showInspect() {
     list.append(p)
   }
 }
-paintBar()
-selectSlot(0)
+selectedSlot = 0
+current = paletteIds[0]
+if (session && session.paintHotbar) session.paintHotbar()
 function repaintBlocks() { paintBar() }
 
 const drawer = $('drawer'), scrim = $('scrim')
@@ -1208,6 +1244,25 @@ function setMode(table) {
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
   }
 }
+function armLive(m) {
+  if (!MODE_SWITCH_ALL) return
+  if (tableMode) setMode(false)
+  goWorld(m)
+}
+function quietUnlock() {
+  selfUnlock = true
+  try { if (document.pointerLockElement) document.exitPointerLock() } catch (e) {}
+  try { noa.container.setPointerLock(false) } catch (e) {}
+}
+if (typeof window !== 'undefined') window.__quietUnlock = quietUnlock
+const liveS = $('mode-survival')
+const liveC = $('mode-creative')
+function armFrom(el, m) {
+  el.addEventListener('pointerdown', () => { quietUnlock() }, true)
+  el.addEventListener('click', () => armLive(m))
+}
+if (liveS) armFrom(liveS, 'survival')
+if (liveC) armFrom(liveC, 'creative')
 $('m-creative').addEventListener('click', () => { if (teacherOn()) goWorld('creative') })
 $('m-survival').addEventListener('click', () => { setMode(false); goWorld('survival') })
 $('m-table').addEventListener('click', () => { setMode(true); openMenu(false) })
@@ -2408,7 +2463,12 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     pickup() { session.setMode('survival'); session.meta.set('1,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 12, sales: [] }); session.pickup(1, 2, 3, 24); return session.bag.count('vend') + ':' + session.bag.count('cupcake') },
     sale() { session.setMode('survival'); session.meta.set('4,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 0, sales: [], salesN: 0 }); session.vendTick(2); const rows = session.wallet.state.ledger.filter((r) => r.kind === 'vend-sale'); return rows.reduce((n, r) => n + r.cogs, 0) },
-    stand(x, y, z, h, p) { noa.entities.setPosition(noa.playerEntity, [x, y, z]); setLook(h || 0, p || 0) },
+    stand(x, y, z, h, p) {
+      noa.entities.setPosition(noa.playerEntity, [x, y, z])
+      const b = noa.ents.getPhysicsBody(noa.playerEntity)
+      if (b) b.velocity[0] = b.velocity[1] = b.velocity[2] = 0
+      setLook(h || 0, p || 0)
+    },
     close() { if (panels) panels.close() },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
     aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
@@ -2425,6 +2485,13 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     drops() { return session.groundDrops().map((d) => d.item + ':' + d.n) },
     count(item) { return session.bag.count(item) },
+    bags() { return session.bags() },
+    wipeCreative() {
+      const back = session.mode
+      session.setMode('creative')
+      for (let i = 0; i < session.bag.slots.length; i++) session.bag.slots[i] = null
+      session.setMode(back)
+    },
     heading() { return noa.camera.heading },
     toast() { const el = document.getElementById('toast'); return el && !el.hidden ? el.textContent : '' },
     reach() { return noa.blockTestDistance },
