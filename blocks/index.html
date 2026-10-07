@@ -66,7 +66,8 @@ html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
 .help kbd{font:12px ui-monospace,monospace;background:var(--ink2);border:1px solid var(--line);border-radius:4px;padding:0 4px;color:var(--snow)}
 .credit{color:var(--muted);font-size:11px;margin-top:auto;padding-top:10px}
 .credit a{color:var(--cyan)}
-#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow-x:auto;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(34,211,238,.4);scrollbar-width:thin}
+#hotbar{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;gap:6px;overflow:hidden;align-items:flex-end;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:linear-gradient(180deg,rgba(17,26,46,.72),rgba(8,14,26,.92));border-top:1px solid rgba(34,211,238,.4);scrollbar-width:thin}
+#hotbar .item-strip{display:flex;gap:6px;overflow-x:auto;flex:1 1 auto;min-width:0;position:relative;scrollbar-width:thin}
 #pick-chip{display:none}
 body.touch #pick-chip{display:flex;align-items:center;justify-content:center;gap:6px;position:fixed;right:12px;bottom:calc(var(--hud-lift) + 16px);z-index:6;min-width:72px;min-height:48px;padding:8px 12px;border-radius:12px;border:1px solid #22D3EE;background:rgba(11,18,32,.92);color:#f8fafc;font-weight:700}
 body.touch #pick-chip svg{width:18px;height:18px;flex:0 0 auto}
@@ -123,11 +124,11 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
 @media (max-width:479px){
   :root{--hud-lift:140px}
   #hotbar{display:grid;grid-template-columns:repeat(5,62px);justify-content:center;gap:6px;overflow:hidden}
+  #hotbar .item-strip{display:contents}
   #hotbar .slot{width:62px;min-width:62px;min-height:48px;height:52px}
-  #hotbar .slot.bag-tile{height:auto;min-height:52px;padding:2px 1px 3px;gap:1px;overflow:visible;justify-content:center}
+  #hotbar .slot.bag-tile{height:auto;min-height:52px;padding:2px 1px 3px;gap:1px;overflow:hidden;justify-content:center}
   #hotbar .slot.bag-tile .gic,#hotbar .slot.bag-tile .gic svg{width:16px;height:16px;flex:0 0 auto}
-  #hotbar .slot.bag-tile .lbl{flex:0 0 auto;min-width:0;font-size:10px;line-height:14px;max-width:100%;overflow:visible;text-overflow:clip}
-  .slot.bag-tile{position:static}
+  #hotbar .slot.bag-tile .lbl{flex:0 0 auto;min-width:0;font-size:10px;line-height:14px;max-width:56px;overflow:hidden;text-overflow:ellipsis}
 }
 @media (max-height:500px) and (min-width:480px){
   :root{--hud-lift:76px}
@@ -203,8 +204,7 @@ html[data-kb-bar]:not(.kb-framed) #path-chip{top:calc(48px + var(--top-h) + 8px)
 body.menu-open canvas{pointer-events:none;cursor:auto}
 #sheet:not([hidden]) ~ .keys{display:none}
 #sheet-body{overflow-y:auto;overscroll-behavior:contain;flex:1}
-.slot.bag-tile{position:sticky;right:0}
-@media (max-width:479px){.slot.bag-tile{position:static;right:auto}}
+.slot.bag-tile{position:static;flex:0 0 auto;right:auto}
 #sheet[hidden]{display:none}
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
 .sheet-bar button{min-width:48px;min-height:48px;background:rgba(11,18,32,.85);color:#f8fafc;border:1px solid var(--teal);border-radius:10px}
@@ -240,23 +240,15 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .ggrid.baggrid .gtile.on{border-color:var(--cyan);box-shadow:inset 0 0 0 2px var(--cyan)}
 @media (orientation:landscape) and (max-height:500px){#pads{bottom:8px}}
 @media (prefers-reduced-motion:reduce){#poof{background:rgba(15,118,110,.35)}}
-#mode-pill{position:fixed;z-index:8;display:flex;min-height:48px;top:calc(var(--top-h) + 168px);left:50%;transform:translateX(-50%);border-radius:999px;overflow:hidden;border:1px solid rgba(34,211,238,.75);background:rgba(11,18,32,.94);box-shadow:0 8px 18px rgba(0,0,0,.28);pointer-events:auto}
-html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 168px)}
-#mode-pill button{flex:0 0 auto;min-width:44px;min-height:48px;padding:0 14px;border:0;background:transparent;color:#f8fafc;font-weight:700;white-space:nowrap;touch-action:manipulation}
+#mode-pill{position:relative;z-index:6;display:flex;flex:0 0 auto;min-height:48px;border-radius:999px;overflow:hidden;border:1px solid rgba(34,211,238,.75);background:rgba(11,18,32,.94);pointer-events:auto}
+#mode-pill button{flex:0 0 auto;min-width:44px;min-height:48px;padding:0 12px;border:0;background:transparent;color:#f8fafc;font-weight:700;white-space:nowrap;touch-action:manipulation}
 #mode-pill button + button{border-inline-start:1px solid rgba(34,211,238,.5)}
 #mode-pill button[aria-pressed="true"]{background:#14B8A6;color:#04221e}
 html[dir=rtl] #mode-pill{flex-direction:row}
-body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify-content:flex-start}
-@media (max-height:500px) and (min-width:480px){
-  #mode-pill{top:calc(var(--top-h) + 8px);left:auto;right:16px;transform:none}
-  html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 8px)}
-}
+body.mode-creative #hotbar{display:flex;overflow:hidden;flex-wrap:nowrap;justify-content:flex-start}
+body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 auto;min-width:0}
 @media (max-width:479px){
-  body.mode-creative #hotbar{display:flex;overflow-x:auto;grid-template-columns:none}
-}
-@media (max-width:479px) and (max-height:780px){
-  #mode-pill{top:calc(var(--top-h) + 128px)}
-  html[data-kb-bar]:not(.kb-framed) #mode-pill{top:calc(48px + var(--top-h) + 128px)}
+  #mode-pill button{padding:0 8px}
 }
 </style>
 </head>
@@ -266,7 +258,11 @@ body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
   <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.52</span></b><small><span id="current"></span></small></div>
+  <div id="mode-pill" role="group" aria-label="Mode">
+    <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
+    <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
+  </div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.53</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -275,10 +271,6 @@ body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti">⬇</span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
-<div id="mode-pill" role="group" aria-label="Mode">
-  <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
-  <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
-</div>
 <button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false">☰<small>⏸</small></button>
 <button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
 <div id="menu-hint" hidden></div>
@@ -391,7 +383,7 @@ body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify
   <button type="button" id="door-lock" data-i18n="padlock">Padlock</button>
   <button type="button" id="door-pick" data-i18n="pickup">Pick up</button>
 </div>
-<div id="lamp-card" hidden><b id="lamp-level"></b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
+<div id="lamp-card" hidden><b id="lamp-level">Light</b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
 <div id="maker-card" hidden></div>
 <div id="hotbar" role="toolbar" aria-label="Blocks"></div>
 <div id="inspect-card" hidden role="dialog" aria-labelledby="inspect-title">
@@ -402,7 +394,7 @@ body.mode-creative #hotbar{display:flex;overflow-x:auto;flex-wrap:nowrap;justify
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.52" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.52" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.53" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.53" defer></script>
 </body>
 </html>
