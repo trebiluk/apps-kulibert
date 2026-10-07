@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.58', date: '2026-10-07', lines: {
+    en: ['Berry tufts drop berries again.'],
+    uk: ['Пшеничні кущики знову дають ягоди.'],
+    ru: ['Пшеничные кустики снова дают ягоды.'],
+    es: ['Los mechones de trigo vuelven a soltar bayas.'],
+    ar: ['خصل القمح تُسقط التوت من جديد.'],
+    'fa-AF': ['خوشه‌های گندم دوباره توت می‌ریزند.'],
+    rw: ['Ibishishwa by\'ingano bisubiza imbuto.'],
+    ti: ['ስርናይ ደጊሙ ፍረ የውድቕ።'],
+  }},
   { v: '2.5.57', date: '2026-10-07', lines: {
     en: ['The Bag and the item strip look like a real game: square slots with counts, and items fly into your strip.'],
     uk: ['Сумка й смужка речей виглядають як у справжній грі: квадратні комірки з лічильником, і речі летять у смужку.'],

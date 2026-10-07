@@ -13,6 +13,7 @@ import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from '
 import { emptyBox, putInSlots } from './box.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
+import { berryTuft } from './worldgen.js'
 
 export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
