@@ -320,6 +320,26 @@ function glowDot() {
   return g;
 }
 
+function cloudShadow() {
+  const g = blank(18, 8);
+  fill(g, 3, 2, 12, 4, "C");
+  fill(g, 5, 1, 8, 1, "W");
+  fill(g, 5, 6, 8, 1, "W");
+  fill(g, 2, 3, 1, 2, "W");
+  fill(g, 15, 3, 1, 2, "W");
+  return g;
+}
+
+function dustPuff() {
+  const g = blank(8, 8);
+  fill(g, 2, 2, 4, 4, "S");
+  put(g, 3, 1, "T"); put(g, 4, 1, "T");
+  put(g, 1, 3, "T"); put(g, 6, 3, "T");
+  put(g, 3, 6, "T"); put(g, 4, 5, "T");
+  put(g, 3, 3, "Y");
+  return g;
+}
+
 frame("lock", lock());
 for (let i = 0; i < 7; i++) frame("tile-" + i, tile(i));
 frame("hill-far", hill(false));
@@ -331,6 +351,8 @@ frame("flake", flake());
 frame("mote", mote());
 frame("puddle", puddle());
 frame("glow", glowDot());
+frame("cloud-shadow", cloudShadow());
+frame("dust", dustPuff());
 
 const file = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../art/sprites.txt");
 writeFileSync(file, out.join("\n"));

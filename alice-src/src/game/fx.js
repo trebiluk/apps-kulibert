@@ -331,3 +331,93 @@ export function tickGlow(lights, on, webgl) {
   });
 }
 
+export function puff(scene, x, y, n) {
+  if (!scene || !decorOn()) return 0;
+  const pool = scene.dust || [];
+  const want = Math.max(1, n || 1);
+  let spawned = 0;
+  for (let i = 0; i < pool.length; i++) {
+    const bit = pool[i];
+    if (!bit || bit.visible) continue;
+    bit.setVisible(true);
+    bit.setPosition(x + (spawned - 1) * 5, y);
+    bit.setData("vx", (spawned - (want - 1) / 2) * 28);
+    bit.setData("vy", -36 - spawned * 10);
+    bit.setData("life", 16);
+    bit.setAlpha(1);
+    spawned += 1;
+    if (spawned >= want) break;
+  }
+  return spawned;
+}
+
+export function tickDust(scene) {
+  const pool = scene.dust || [];
+  if (!decorOn()) {
+    pool.forEach((bit) => { if (bit) bit.setVisible(false); });
+    return 0;
+  }
+  let n = 0;
+  pool.forEach((bit) => {
+    if (!bit || !bit.visible) return;
+    const life = (bit.getData("life") || 0) - 1;
+    if (life <= 0) { bit.setVisible(false); bit.setAlpha(1); return; }
+    bit.setData("life", life);
+    bit.x += (bit.getData("vx") || 0) / 60;
+    bit.y += (bit.getData("vy") || 0) / 60;
+    bit.setData("vy", (bit.getData("vy") || 0) + 70 / 60);
+    bit.setAlpha(Math.max(0.2, life / 16));
+    n += 1;
+  });
+  return n;
+}
+
+export function alicePop(elapsedMs, off) {
+  const ms = Number(elapsedMs) || 0;
+  if (off || ms >= 220) return { sx: 1, sy: 1, phase: "look", rise: 1 };
+  const rise = Math.min(1, ms / 220);
+  if (ms < 80) return { sx: 1.2, sy: 0.8, phase: "squash", rise };
+  if (ms < 150) return { sx: 0.9, sy: 1.15, phase: "stretch", rise };
+  const u = (ms - 150) / 70;
+  return { sx: 0.9 + 0.1 * u, sy: 1.15 - 0.15 * u, phase: "settle", rise };
+}
+
+export function aliceDuck(elapsedMs, off) {
+  if (off) return { sx: 1, sy: 1, phase: "hide", frame: "alice-duck-2", drop: 1 };
+  const u = Math.min(1, Math.max(0, Number(elapsedMs) || 0) / 220);
+  const frame = u < 0.34 ? "alice-duck-0" : u < 0.67 ? "alice-duck-1" : "alice-duck-2";
+  return { sx: 1, sy: 1, phase: u >= 1 ? "hide" : "duck", frame, drop: u };
+}
+
+export function rideWeed(sprite, pose, on) {
+  const body = sprite && sprite.body;
+  if (!body || !pose) return;
+  if (!on) {
+    body.enable = false;
+    body.allowGravity = false;
+    body.setVelocity(0, 0);
+    if (body.setAngularVelocity) body.setAngularVelocity(0);
+    sprite.setRotation(0);
+    sprite.setPosition(Math.round(pose.x), Math.round(pose.y));
+    return;
+  }
+  body.enable = true;
+  body.allowGravity = false;
+  body.setBounce(0.72);
+  const w = Math.max(8, sprite.displayWidth || 8);
+  const h = Math.max(8, sprite.displayHeight || 8);
+  if (body.setSize) body.setSize(w, h, true);
+  const hw = body.halfWidth || w / 2;
+  const hh = body.halfHeight || h / 2;
+  body.x = pose.x - hw;
+  body.y = pose.y - hh;
+  const prev = sprite.getData("weedPrev");
+  if (prev) body.setVelocity((pose.x - prev.x) * 60, (pose.y - prev.y) * 60);
+  else body.setVelocity(0, 0);
+  sprite.setData("weedPrev", { x: pose.x, y: pose.y });
+  if (body.setAngularVelocity) body.setAngularVelocity((pose.rot || 0) >= 0 ? 200 : -200);
+  sprite.setPosition(Math.round(pose.x), Math.round(pose.y));
+  sprite.setRotation(pose.rot || 0);
+}
+
+

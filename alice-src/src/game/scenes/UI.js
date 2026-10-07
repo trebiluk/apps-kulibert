@@ -110,7 +110,7 @@ export class UI extends window.Phaser.Scene {
       this.btn(t("music") + ": " + t(settings().music === true ? "on" : "off"), () => this.cycleMusic(), false, "star"),
       this.btn(t("close"), () => this.close(), true),
     ];
-    if (mode === "news") return [this.line(t("news8")), this.line(t("news7")), this.line(t("news6")), this.line(t("news5")), this.line(t("news4")), this.line(t("news2")), this.btn(t("close"), () => this.close(), true)];
+    if (mode === "news") return [this.line(t("news9")), this.line(t("news8")), this.line(t("news7")), this.line(t("news6")), this.line(t("news5")), this.line(t("news4")), this.line(t("news2")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "soon") return [this.line(detail || t("comingSoon")), this.line(t("comingBody")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "help") return [this.line(t("tapSky")), this.line(t("tapGround")), this.line(t("tapSnake")), this.btn(t("close"), () => this.close(), true)];
     if (mode === "pause") return [this.btn(t("resume"), () => this.resume(), true), this.btn(t("restart"), () => this.open("restart")), this.btn(t("help"), () => this.open("help")), this.btn(t("home"), () => this.home())];

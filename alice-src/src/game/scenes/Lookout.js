@@ -4,11 +4,11 @@ import { current, loadSave, saveSave, saveNow, seedsFor, settings, pushBoard } f
 import { skyOf } from "../looks.js";
 import { endlessLevel, titleKey } from "../modes.js";
 import { createPrairie, weatherFor } from "../world.js";
+import { poseOf, frameOf } from "../actors.js";
 import { bands, poseNow } from "../ui/bands.js";
 import { fitButton, intScale, makeButton } from "../ui/widgets.js";
-import { burst, lite, markGesture, motionOff, noteFrame, punch, shake, sound, takeSteps, tickBits } from "../fx.js";
+import { aliceDuck, alicePop, burst, lite, markGesture, motionOff, noteFrame, puff, punch, rideWeed, shake, sound, takeSteps, tickBits, tickDust } from "../fx.js";
 
-const ANIM = { hawk: "hawk-fly", coyote: "coyote-trot", snake: "snake-slither", rabbit: "rabbit-hop", weed: "weed-roll", wonder: "wonder-hop" };
 const STILL = { hawk: "hawk-flap-0", coyote: "coyote-trot-0", snake: "snake-slither-0", cloud: "cloud", rabbit: "rabbit-hop-0", weed: "weed-0", wonder: "wonder-hop-0" };
 const CAP = { hawk: "capHawk", coyote: "capCoyote", snake: "capSnake", cloud: "capCloud", rabbit: "capRabbit", weed: "capWeed", wonder: "capWonder" };
 
@@ -38,9 +38,41 @@ export class Lookout extends window.Phaser.Scene {
     this.threat = this.add.sprite(-200, -200, "lookout", "hawk-flap-0").setVisible(false).setDepth(6).setScrollFactor(1);
     this.shadow = this.add.image(-200, -200, "lookout", "hawk-shadow").setVisible(false).setDepth(1).setScrollFactor(1);
     this.bits = [];
-    const bitN = lite() ? 12 : 24;
+    const bitN = lite() ? 12 : 18;
     for (let i = 0; i < bitN; i++) this.bits.push(this.add.image(0, 0, "lookout", "star").setVisible(false).setDepth(7).setScrollFactor(1));
+    this.dust = [];
+    for (let i = 0; i < 6; i++) this.dust.push(this.add.image(0, 0, "lookout", "dust").setVisible(false).setDepth(6).setScrollFactor(1));
+    this.capIcon = this.add.image(-200, -200, "lookout", "hawk-flap-0").setVisible(false).setDepth(9).setScrollFactor(1);
     this.prairie = createPrairie(this);
+    this.physics.add.existing(this.threat);
+    this.threat.body.setAllowGravity(false);
+    this.threat.body.enable = false;
+    this.threat.body.setBounce(0.72);
+    this.weedGround = this.prairie.groundLine;
+    if (!this.weedGround) {
+      this.weedGround = this.add.rectangle(0, 0, 8, 8, 0x000000, 0).setVisible(false).setDepth(1);
+      this.physics.add.existing(this.weedGround, true);
+    }
+    this.physics.add.collider(this.threat, this.weedGround);
+    if (this.physics.world) this.physics.world.gravity.y = 860;
+    this.actorStat = { kind: "", p: "", cap: "", icon: "", pop: "hide", tx: "", ty: "", sh: "" };
+    this.dustLive = 0;
+    this.weedPose = null;
+    this.spawnId = "";
+    this.duckFrom = 0;
+    this.duckHole = null;
+    this.puffed = false;
+    this.sys.events.on("postupdate", () => {
+      const pose = this.weedPose;
+      if (!pose || !this.threat) return;
+      this.threat.setPosition(Math.round(pose.x), Math.round(pose.y));
+      this.threat.setRotation(motionOff() ? 0 : (pose.rot || 0));
+      const body = this.threat.body;
+      if (body && body.enable) {
+        body.x = pose.x - (body.halfWidth || 1);
+        body.y = pose.y - (body.halfHeight || 1);
+      }
+    });
     this.goal = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#042f2e", align: "left" }).setDepth(8).setVisible(false).setScrollFactor(0);
     this.cap = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#042f2e", align: "center" }).setOrigin(0.5, 1).setDepth(8).setVisible(false);
     this.scoreT = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#f8fafc" }).setDepth(8).setVisible(false);
@@ -218,6 +250,12 @@ export class Lookout extends window.Phaser.Scene {
       pup.setPosition(start + i * (dw + gap) + dw / 2, this.nest.y - dw * 0.35);
     });
     if (this.prairie) this.prairie.layout(w, h, b.field, this.holes, this.weather, this.salt());
+    const groundY = (this.prairie && this.prairie.groundY) || Math.round(b.field.y + b.field.h * 0.82);
+    if (this.weedGround && (!this.prairie || this.weedGround !== this.prairie.groundLine)) {
+      this.weedGround.setPosition(b.field.x + b.field.w / 2, groundY);
+      this.weedGround.setSize(Math.max(8, b.field.w), 14);
+      if (this.weedGround.refreshBody) this.weedGround.refreshBody();
+    }
     this.ring.setScrollFactor(0);
     this.digits.forEach((d) => intScale(d, 22));
     this.paintScore((this.carry || 0) + (this.round ? this.round.read().score : 0));
@@ -236,12 +274,24 @@ export class Lookout extends window.Phaser.Scene {
     if (!node) return;
     let parts = this.prairie ? this.prairie.parts() : 0;
     (this.bits || []).forEach((bit) => { if (bit.visible) parts += 1; });
+    (this.dust || []).forEach((bit) => { if (bit.visible) parts += 1; });
+    const stat = this.actorStat || {};
     node.dataset.weather = this.weather || "";
     node.dataset.objs = String(this.children.list.length);
     node.dataset.parts = String(parts);
     node.dataset.layers = String(this.prairie ? this.prairie.layers() : 0);
     node.dataset.renderer = this.game && this.game.renderer && this.game.renderer.type === 2 ? "webgl" : "canvas";
     node.dataset.mask = [this.boxOf(this.threat), this.boxOf(this.alice), this.boxOf(this.shadow), this.boxOf(this.cap)].filter(Boolean).join(";");
+    node.dataset.kind = stat.kind || "";
+    node.dataset.p = stat.p || "";
+    node.dataset.cap = stat.cap || "";
+    node.dataset.icon = stat.icon || "";
+    node.dataset.pop = stat.pop || "";
+    node.dataset.tx = stat.tx || "";
+    node.dataset.ty = stat.ty || "";
+    node.dataset.sh = stat.sh || "";
+    node.dataset.sid = stat.sid || "";
+    node.dataset.seed = String(this.seed == null ? "" : this.seed);
     const now = typeof performance !== "undefined" ? performance.now() : 0;
     if (!this.fpsClock) this.fpsClock = { n: 0, t: now };
     this.fpsClock.n += 1;
@@ -326,17 +376,117 @@ export class Lookout extends window.Phaser.Scene {
     saveNow();
     window.dispatchEvent(new CustomEvent("ap-end", { detail: { score: total, cleared: this.endless ? false : bank.cleared, pay, why: bank.why, title: titleKey(this.playMode, this.level), desk } }));
   }
-  showActor(sprite, name, x, y, target) {
-    const still = STILL[name] || "hawk-flap-0";
-    const anim = ANIM[name];
-    if (!sprite.visible || sprite.getData("kind") !== name) {
-      sprite.setVisible(true);
-      sprite.setData("kind", name);
-      if (anim && !motionOff()) sprite.play(anim);
-      else { sprite.anims.stop(); sprite.setFrame(still); }
+  parkThreat() {
+    this.weedPose = null;
+    this.threat.setVisible(false);
+    this.threat.setRotation(0);
+    this.shadow.setVisible(false);
+    const body = this.threat.body;
+    if (body) {
+      body.enable = false;
+      body.allowGravity = false;
+      body.setVelocity(0, 0);
+      if (body.setAngularVelocity) body.setAngularVelocity(0);
     }
+  }
+  applyThreat(pose, kind, locked) {
+    const sprite = this.threat;
+    const frame = frameOf(pose, locked);
+    if (frame) {
+      if (sprite.anims && sprite.anims.isPlaying) sprite.anims.stop();
+      sprite.setFrame(frame);
+    }
+    const target = kind === "snake" ? 72 : kind === "cloud" ? 56 : kind === "wonder" ? 52 : 64;
     intScale(sprite, target);
-    sprite.setPosition(Math.round(x), Math.round(y));
+    sprite.setVisible(!!pose.show);
+    sprite.setDepth(pose.depth || 6);
+    sprite.setFlipX(!!pose.flip);
+    sprite.setAlpha(1);
+    if (pose.crop && sprite.frame) {
+      const fr = sprite.frame;
+      sprite.setCrop(0, 0, fr.width, Math.max(1, Math.floor(fr.height * pose.crop)));
+    } else if (sprite.setCrop) sprite.setCrop();
+    if (pose.weed) {
+      this.weedPose = pose;
+      rideWeed(sprite, pose, !locked);
+    } else {
+      this.weedPose = null;
+      sprite.setData("weedPrev", null);
+      if (sprite.body) {
+        sprite.body.enable = false;
+        sprite.body.allowGravity = false;
+        sprite.body.setVelocity(0, 0);
+        if (sprite.body.setAngularVelocity) sprite.body.setAngularVelocity(0);
+      }
+      sprite.setRotation(locked ? 0 : (pose.rot || 0));
+      sprite.setPosition(Math.round(pose.x), Math.round(pose.y));
+    }
+    if (pose.shadow) {
+      this.shadow.setVisible(true);
+      this.shadow.setFrame(pose.shadowFrame || "hawk-shadow");
+      intScale(this.shadow, pose.shadowPx || 48);
+      this.shadow.setPosition(Math.round(pose.shadowX), Math.round(pose.shadowY));
+      this.shadow.setAlpha(pose.shadowAlpha == null ? 0.9 : pose.shadowAlpha);
+      this.shadow.setDepth(1);
+    } else this.shadow.setVisible(false);
+    if (pose.dust && !locked) puff(this, pose.x, pose.y + 6, 1);
+  }
+  placeAlice(hole, pose, step, active) {
+    const off = motionOff();
+    const elapsed = (step - active.step) * (1000 / 60);
+    const pop = alicePop(elapsed, off);
+    const base = intScale(this.alice, 48);
+    this.alice.setVisible(true);
+    this.alice.setDepth(5);
+    this.alice.setScale(base * pop.sx, base * pop.sy);
+    this.alice.setPosition(Math.round(hole.x), Math.round(hole.y - 28 * pop.rise));
+    this.alice.setFlipX(pose.x < hole.x);
+    let frame = "alice-look-0";
+    if (!off && pop.phase === "squash") frame = "alice-pop-0";
+    else if (!off && pop.phase === "stretch") frame = "alice-pop-1";
+    else if (!off && pop.phase === "settle") frame = "alice-pop-2";
+    if (this.alice.anims && this.alice.anims.isPlaying) this.alice.anims.stop();
+    this.alice.setFrame(frame);
+    if (!this.puffed && !off && pop.phase === "squash") {
+      puff(this, hole.x, hole.y - 4, 4);
+      this.puffed = true;
+    }
+    this.actorStat.pop = off ? "settle" : pop.phase;
+    this.duckHole = hole;
+  }
+  duckAlice(step) {
+    const off = motionOff();
+    if (!this.duckFrom) this.duckFrom = step;
+    const duck = aliceDuck((step - this.duckFrom) * (1000 / 60), off);
+    if (duck.phase === "hide") {
+      this.alice.setVisible(false);
+      this.actorStat.pop = "hide";
+      return;
+    }
+    const hole = this.duckHole || { x: this.alice.x, y: this.alice.y + 28 };
+    const base = intScale(this.alice, 48);
+    this.alice.setVisible(true);
+    this.alice.setScale(base * duck.sx, base * duck.sy);
+    this.alice.setPosition(Math.round(hole.x), Math.round(hole.y - 28 * (1 - duck.drop)));
+    if (this.alice.anims && this.alice.anims.isPlaying) this.alice.anims.stop();
+    this.alice.setFrame(duck.frame);
+    this.actorStat.pop = "duck";
+  }
+  placeCaption(kind) {
+    const cap = settings().captions ? t(CAP[kind] || "capHawk") : "";
+    const b = this.band;
+    this.banner(this.cap, cap, b.field.x + 8, b.field.y + b.field.h - 8, Math.max(80, b.field.w - 16));
+    this.cap.setOrigin(0.5, 1);
+    this.cap.setPosition(b.field.x + b.field.w / 2, b.field.y + b.field.h - 6);
+    const icon = STILL[kind] || "hawk-flap-0";
+    if (cap) {
+      intScale(this.capIcon, 32);
+      this.capIcon.setFrame(icon);
+      this.capIcon.setVisible(true);
+      this.capIcon.setPosition(Math.round(this.cap.x), Math.round(this.cap.y - (this.cap.height || 18) - 16));
+    } else this.capIcon.setVisible(false);
+    this.actorStat.cap = cap;
+    this.actorStat.icon = cap ? icon : "";
   }
   update() {
     tickBits(this);
@@ -345,6 +495,7 @@ export class Lookout extends window.Phaser.Scene {
     const liveNow = document.getElementById("live");
     if (liveNow) liveNow.dataset.step = String(this.round.step);
     if (this.hideHeld || this.round.state !== "running") return;
+    this.dustLive = tickDust(this);
     const raw = this.game && this.game.loop ? this.game.loop.rawDelta : 16;
     noteFrame(raw);
     const taken = takeSteps(raw, this.acc);
@@ -362,38 +513,40 @@ export class Lookout extends window.Phaser.Scene {
         if (held) pup.setFrame(held);
       });
     }
-    if (active) {
-      const p = (step - active.step) / active.approachSteps;
-      const hole = holeNow;
-      const fresh = !this.alice.visible || this.alice.getData("kind") !== "alice";
-      this.alice.setVisible(true);
-      if (fresh) {
-        this.alice.setData("kind", "alice");
-        if (!motionOff()) this.alice.play("alice-pop");
-        else { this.alice.anims.stop(); this.alice.setFrame("alice-pop-0"); }
-      } else if (motionOff()) {
-        this.alice.anims.stop();
-        this.alice.setFrame("alice-pop-0");
+    if (active && holeNow) {
+      const p = (step - active.step) / Math.max(1, active.approachSteps);
+      const groundY = (this.prairie && this.prairie.groundY) || Math.round(b.field.y + b.field.h * 0.82);
+      const pose = poseOf(active.kind, p, { field: b.field, nest: this.nest, hole: holeNow, groundY, edge: active.edge });
+      const id = active.step + ":" + active.kind;
+      if (this.spawnId !== id) {
+        this.spawnId = id;
+        this.puffed = false;
+        this.duckFrom = 0;
+        this.threat.setData("weedPrev", null);
       }
-      intScale(this.alice, 48);
-      this.alice.setPosition(Math.round(hole.x), Math.round(hole.y - 28));
-      const sx = b.field.x + 24 + active.edge * (b.field.w / 2);
-      this.showActor(this.threat, active.kind, sx + (this.nest.x - sx) * p, b.field.y + 28 + (this.nest.y - b.field.y - 28) * p, active.kind === "snake" ? 72 : 64);
-      if (active.kind === "hawk") {
-        this.shadow.setVisible(true);
-        intScale(this.shadow, 48);
-        this.shadow.setPosition(this.threat.x, this.nest.y + 8);
-      } else this.shadow.setVisible(false);
-      const cap = settings().captions ? t(CAP[active.kind] || "capHawk") : "";
-      this.banner(this.cap, cap, b.field.x + 8, b.field.y + b.field.h - 8, Math.max(80, b.field.w - 16));
-      this.cap.setOrigin(0.5, 1);
-      this.cap.setPosition(b.field.x + b.field.w / 2, b.field.y + b.field.h - 6);
+      this.placeAlice(holeNow, pose, step, active);
+      this.applyThreat(pose, active.kind, motionOff());
+      this.placeCaption(active.kind);
+      this.actorStat.kind = active.kind;
+      this.actorStat.p = p.toFixed(3);
+      this.actorStat.tx = String(Math.round(pose.x));
+      this.actorStat.ty = String(Math.round(pose.y));
+      this.actorStat.sh = pose.shadow ? (pose.shadowFrame || "hawk-shadow") : "";
+      this.actorStat.sid = String(active.step);
     } else {
-      this.alice.setVisible(false);
-      this.threat.setVisible(false);
-      this.shadow.setVisible(false);
+      this.parkThreat();
+      this.duckAlice(step);
       this.cap.setText("");
       this.cap.setVisible(false);
+      this.capIcon.setVisible(false);
+      this.actorStat.kind = "";
+      this.actorStat.p = "";
+      this.actorStat.cap = "";
+      this.actorStat.icon = "";
+      this.actorStat.tx = "";
+      this.actorStat.ty = "";
+      this.actorStat.sh = "";
+      this.actorStat.sid = "";
     }
     const left = this.level.seconds * 60 - step;
     const warn = left <= 600 && left > 0 ? t("ten") : "";
