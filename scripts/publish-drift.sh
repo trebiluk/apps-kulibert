@@ -46,23 +46,44 @@ env -u VERCEL -u VERCEL_URL -u VERCEL_PROJECT_PRODUCTION_URL \
   node scripts/with-app-env.mjs ./node_modules/.bin/vite build
 
 # Render /drift (no slash — router trailingSlash is never) for the real door HTML.
+# DRIFT_PORT=0 (the default) picks a free port so a busy 8791 cannot
+# serve some other app as the Drift door.
+PORT="${DRIFT_PORT:-0}"
+if [[ -z "$PORT" || "$PORT" == "0" ]]; then
+  PORT="$(python3 -c 'import socket; s=socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1]); s.close()')"
+fi
+if [[ -z "$PORT" || "$PORT" == "0" ]]; then
+  echo "Could not pick a free port for the Drift door. Set DRIFT_PORT to an open port." >&2
+  exit 1
+fi
+echo "Drift door port ${PORT}"
 (
   cd "$SRC/.output"
-  PORT=8791 node ./server/index.mjs
+  PORT="$PORT" node ./server/index.mjs
 ) &
 NITRO_PID=$!
 cleanup_nitro() { kill "$NITRO_PID" 2>/dev/null || true; }
 trap cleanup_nitro EXIT
+DOOR_OK=0
 for _ in $(seq 1 40); do
-  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift/; then
+  if curl -sf -o /tmp/drift-door.html "http://127.0.0.1:${PORT}/drift/"; then
+    DOOR_OK=1
     break
   fi
-  if curl -sf -o /tmp/drift-door.html http://127.0.0.1:8791/drift; then
+  if curl -sf -o /tmp/drift-door.html "http://127.0.0.1:${PORT}/drift"; then
+    DOOR_OK=1
     break
   fi
   sleep 0.15
 done
-test -s /tmp/drift-door.html
+if [[ "$DOOR_OK" != "1" || ! -s /tmp/drift-door.html ]]; then
+  echo "Drift door server on port ${PORT} never answered. Another program may own that port. Set DRIFT_PORT to a free port and run again." >&2
+  exit 1
+fi
+if ! grep -q '<title>Drift</title>' /tmp/drift-door.html || ! grep -q 'data-version=' /tmp/drift-door.html; then
+  echo "Port ${PORT} answered, but the HTML is not the Drift door. Another app is on that port. Set DRIFT_PORT to a free port and run again." >&2
+  exit 1
+fi
 cleanup_nitro
 trap - EXIT
 
