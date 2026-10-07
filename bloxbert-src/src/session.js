@@ -12,7 +12,7 @@ import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
 import { emptyBox, putInSlots } from './box.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
-import { berryTuft } from './worldgen.js'
+import { fx } from './fx.js'
 
 export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
@@ -364,60 +364,169 @@ export function createSession(api) {
     g.append(pockets)
     for (let i = 9; i < bag.slots.length; i++) paintOne(bag.slots[i], i)
   }
+  let craftOpen = false
+  let craftId = ''
+  let craftFx = ''
   function paintCraft(g) {
+    g.innerHTML = ''
+    g.classList.add('crate')
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const rows = RECIPES.map((r) => ({ r, st: craftStatus(r, bag, stations, mode !== 'survival') }))
-    const draw = (list) => {
+    if (!rows.some((x) => x.r.id === craftId)) {
+      const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
+      craftId = pick ? pick.r.id : ''
+    }
+    const fxKind = craftFx
+    craftFx = ''
+    const tray = document.createElement('div')
+    tray.className = 'build-tray'
+    const book = document.createElement('div')
+    book.className = 'book'
+    const side = document.createElement('div')
+    side.className = 'tray'
+    const ingWells = []
+    const missWells = []
+    let resultEl = null
+    const drawWells = (list) => {
+      if (!list.length) return
+      const row = document.createElement('div')
+      row.className = 'book-row'
       for (const { r, st } of list) {
-        const row = document.createElement('div')
-        row.className = 'craft-row'
         const b = document.createElement('button')
         b.type = 'button'
-        b.className = 'gtile'
-        const out = ITEMS[r.out[0]]
-        b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
-        b.querySelector('.gic').append(itemIcon(out))
-        const note = st.needs.map(([k, have, n]) => itemName(k) + ' ' + have + '/' + n).join(' ')
-        const station = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' ? t('needsT4') : st.station === 'forge' ? t('needsT4') : st.station === 'fabricator' ? t('needsT5') : ''
-        const gateLine = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : ''
-        b.querySelector('.glbl').textContent = itemName(r.out[0])
-        b.querySelector('.gneed').textContent = gateLine || (station ? note + ' · ' + station : note)
-        b.disabled = !st.ok
-        b.addEventListener('click', () => { craftMany(r, 1); g.innerHTML = ''; paintCraft(g) })
-        row.append(b)
-        const times = maxTimes(r, bag)
-        if (st.ok && times > 1) {
-          const max = document.createElement('button')
-          max.type = 'button'
-          max.className = 'gtile xmax'
-          max.textContent = t('timesMax')
-          max.addEventListener('click', () => { craftMany(r, times); g.innerHTML = ''; paintCraft(g) })
-          row.append(max)
+        b.className = 'well' + (r.id === craftId ? ' on' : '') + (st.ok ? '' : ' dim')
+        b.setAttribute('aria-pressed', String(r.id === craftId))
+        const art = document.createElement('span')
+        art.className = 'art'
+        art.append(itemIcon(ITEMS[r.out[0]]))
+        b.append(art)
+        const name = document.createElement('span')
+        name.className = 'wlab'
+        name.textContent = itemName(r.out[0])
+        b.append(name)
+        if (!st.ok) {
+          const lock = document.createElement('span')
+          lock.className = 'lock'
+          lock.setAttribute('aria-hidden', 'true')
+          lock.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="11" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+          b.append(lock)
+          const miss = st.needs.find(([, have, n]) => have < n)
+          const line = document.createElement('span')
+          line.className = 'need'
+          if (miss) line.textContent = t('needN').replace('{n}', String(miss[2])).replace('{item}', itemName(miss[0]))
+          else line.textContent = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll')
+          b.append(line)
         }
-        g.append(row)
+        b.addEventListener('click', () => { craftId = r.id; craftFx = 'slide'; paintCraft(g) })
+        row.append(b)
       }
+      book.append(row)
     }
     const head = (key) => {
       const p = document.createElement('p')
       p.className = 'gnote ghead'
       p.textContent = t(key)
-      g.append(p)
+      book.append(p)
     }
     const now = rows.filter((x) => x.st.group === 'now')
     const almost = rows.filter((x) => x.st.group === 'almost')
     const gated = rows.filter((x) => x.st.group === 'gated')
     const rest = rows.filter((x) => x.st.group === 'rest')
-    if (now.length) { head('canNow'); draw(now) }
-    if (almost.length) { head('almost'); draw(almost) }
+    if (now.length) { head('canNow'); drawWells(now) }
+    if (almost.length) { head('almost'); drawWells(almost) }
     if (rest.length || gated.length) {
       const toggle = document.createElement('button')
       toggle.type = 'button'
-      toggle.className = 'gtile wide'
+      toggle.className = 'keycap showall'
       toggle.textContent = t('showAll')
-      toggle.addEventListener('click', () => { craftOpen = !craftOpen; g.innerHTML = ''; paintCraft(g) })
-      g.append(toggle)
-      if (craftOpen) draw(gated.concat(rest))
+      toggle.addEventListener('click', () => { craftOpen = !craftOpen; paintCraft(g) })
+      book.append(toggle)
+      if (craftOpen) drawWells(gated.concat(rest))
     }
+    const chosen = rows.find((x) => x.r.id === craftId) || rows[0]
+    if (chosen) {
+      const { r, st } = chosen
+      const line = document.createElement('div')
+      line.className = 'tray-line'
+      r.in.forEach(([item, n], i) => {
+        const have = bag.count(item)
+        const well = document.createElement('div')
+        well.className = 'well ing' + (have < n ? ' short' : '')
+        const art = document.createElement('span')
+        art.className = 'art'
+        art.append(itemIcon(ITEMS[item]))
+        well.append(art)
+        const badge = document.createElement('span')
+        badge.className = 'badge'
+        badge.textContent = have + '/' + n
+        well.append(badge)
+        const lab = document.createElement('span')
+        lab.className = 'wlab'
+        lab.textContent = have < n ? t('shortN').replace('{n}', String(n - have)) : itemName(item)
+        well.append(lab)
+        line.append(well)
+        ingWells.push(well)
+        if (have < n) missWells.push(well)
+      })
+      const arrow = document.createElement('div')
+      arrow.className = 'chunk-arrow'
+      arrow.setAttribute('aria-hidden', 'true')
+      line.append(arrow)
+      resultEl = document.createElement('div')
+      resultEl.className = 'well result'
+      const art = document.createElement('span')
+      art.className = 'art'
+      art.append(itemIcon(ITEMS[r.out[0]]))
+      resultEl.append(art)
+      const lab = document.createElement('span')
+      lab.className = 'wlab'
+      lab.textContent = itemName(r.out[0]) + (r.out[1] > 1 ? ' ×' + r.out[1] : '')
+      resultEl.append(lab)
+      line.append(resultEl)
+      side.append(line)
+      if (st.station || st.gate) {
+        const chip = document.createElement('span')
+        chip.className = 'gate-chip'
+        const which = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.station === 'fabricator' || st.gate === 'T5' ? t('needsT5') : ''
+        chip.textContent = which
+        side.append(chip)
+      }
+      const keys = document.createElement('div')
+      keys.className = 'keys'
+      const makeBtn = document.createElement('button')
+      makeBtn.type = 'button'
+      makeBtn.className = 'keycap'
+      makeBtn.textContent = t('make')
+      makeBtn.addEventListener('click', () => {
+        const ok = craftMany(r, 1)
+        craftFx = ok ? 'make' : 'miss'
+        paintCraft(g)
+      })
+      keys.append(makeBtn)
+      const times = maxTimes(r, bag)
+      const max = document.createElement('button')
+      max.type = 'button'
+      max.className = 'keycap'
+      max.textContent = t('timesMax')
+      max.disabled = !(st.ok && times > 1)
+      max.addEventListener('click', () => {
+        if (!st.ok || times < 2) return
+        craftMany(r, times)
+        craftFx = 'make'
+        paintCraft(g)
+      })
+      keys.append(max)
+      side.append(keys)
+    }
+    tray.append(book, side)
+    g.append(tray)
+    if (fxKind === 'slide') ingWells.forEach((el, i) => fx(el, 'in', i * 60))
+    if (fxKind === 'make') {
+      const makeBtn = side.querySelector('.keycap')
+      fx(makeBtn, 'squash')
+      if (resultEl) fx(resultEl, 'pop')
+    }
+    if (fxKind === 'miss') missWells.forEach((el) => fx(el, 'shake'))
   }
   function paintShop(g) {
     g.innerHTML = ''
@@ -683,7 +792,6 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
-  let craftOpen = false
   function craftMany(r, times) {
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))

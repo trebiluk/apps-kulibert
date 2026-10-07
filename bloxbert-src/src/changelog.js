@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.56', date: '2026-10-07', lines: {
+    en: ['Crafting is a Build Tray where the parts slide in, and the oven shows its fire and progress.'],
+    uk: ['Крафт — лотік збірки: деталі заїжджають, а піч показує вогонь і хід.'],
+    ru: ['Крафт — лоток сборки: детали заезжают, а печь показывает огонь и ход.'],
+    es: ['El crafteo es una bandeja: las piezas entran, y el horno muestra su fuego y el avance.'],
+    ar: ['الصنع صار صينية بناء: الأجزاء تنزلق، والفرن يُظهر ناره وتقدّمه.'],
+    'fa-AF': ['ساختن یک سینی ساخت است: تکه‌ها می‌لغزند، و تنور آتش و پیشرفتش را نشان می‌دهد.'],
+    rw: ['Gukora ni agatebe: ibice birinjira, kandi ifuru yerekana umuriro n\'aho bigeze.'],
+    ti: ['ምስራሕ ትሪ ህንጻ እዩ፡ ክፋላት ይኣትዉ፡ ቦታ ምብሳል ድማ ሓዊን ምዕባለን የርኢ።'],
+  }},
   { v: '2.5.54', date: '2026-10-07', lines: {
     en: ['An Energy bar, and eating fills it back up.'],
     uk: ['Смужка енергії, і їжа знову її наповнює.'],

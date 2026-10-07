@@ -1,25 +1,27 @@
 // Station panels. State is per block, keyed x,y,z, and saved with the world.
 import { RECIPES } from './data/recipes.js'
+import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
-const BENCH = RECIPES.filter((r) => r.at === 'bench')
+const FLAME = '<svg class="flame" viewBox="0 0 32 40" width="28" height="34" aria-hidden="true"><path d="M16 2c2 8 8 10 8 18a8 8 0 1 1-16 0c0-5 3-8 4-12 1 3 2 4 4 6z"/><path class="core" d="M16 18c1 4 4 5 4 9a4 4 0 1 1-8 0c0-3 2-4 4-9z"/></svg>'
+const GHOST = '<svg class="ghost-ico" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="6" y="6" width="20" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
 export function createStations(api) {
   const map = new Map()
+  const seen = new Map()
   function get(key, kind) {
     if (!map.has(key)) map.set(key, { kind, fuel: 0, input: [], output: [], until: 0, left: 0 })
     return map.get(key)
   }
+  function finish(rec) {
+    if (!rec || rec.kind !== 'oven' || !rec.until) return
+    if (Date.now() < rec.until) return
+    rec.output.push(rec.pending || 'glass')
+    rec.pending = null
+    rec.until = 0
+    rec.left = Math.max(0, rec.left - 1)
+    rec.fuel = Math.ceil(rec.left / 4)
+  }
   function tick() {
-    const now = Date.now()
-    for (const rec of map.values()) {
-      if (rec.kind !== 'oven' || !rec.until) continue
-      if (now >= rec.until) {
-        rec.output.push(rec.pending || 'glass')
-        rec.pending = null
-        rec.until = 0
-        rec.left = Math.max(0, rec.left - 1)
-        rec.fuel = Math.ceil(rec.left / 4)
-      }
-    }
+    for (const rec of map.values()) finish(rec)
   }
   function addFuel(key) {
     if (api.spend && !api.spend('coal', 1)) return false
@@ -54,45 +56,90 @@ export function createStations(api) {
     return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left }
   }
   function paint(g, key, kind) {
-    const r = get(key || '0,5,0', kind || 'oven')
+    const k = key || '0,5,0'
+    const isBench = kind === 'bench'
+    const r = get(k, kind || 'oven')
+    finish(r)
+    const id = k + ':' + (kind || 'oven')
+    const prev = seen.get(id)
+    const fuelNow = r.left || 0
+    const outNow = (r.output && r.output.length) || 0
+    const grew = !!(prev && fuelNow > prev.fuel)
+    const done = !!(prev && outNow > prev.out)
+    seen.set(id, { fuel: fuelNow, out: outNow })
     g.innerHTML = ''
-    if (kind === 'bench') {
-      const p = document.createElement('p')
-      p.className = 'gnote'
-      p.textContent = api.t('input')
-      g.append(p)
-      return
+    g.classList.add('crate')
+    const crate = document.createElement('div')
+    crate.className = 'station-crate'
+    const secs = r.secs || 5
+    const timeLeft = r.until ? Math.max(0, (r.until - Date.now()) / 1000) : 0
+    const pct = r.until ? Math.max(0, Math.min(1, (secs - timeLeft) / secs)) : 0
+    const fuelWord = fuelNow > 0 ? String(fuelNow) : api.t('fuel')
+    const pending = r.pending
+    const outItem = r.output && r.output[0]
+    const inWord = pending ? (api.name ? api.name(pending) : pending) : api.t('input')
+    const outWord = outItem ? (api.name ? api.name(outItem) : outItem) : api.t('output')
+    function well(role, word, item, ghost) {
+      const b = document.createElement(isBench ? 'div' : 'button')
+      if (!isBench) b.type = 'button'
+      b.className = 'gtile slot-' + role + (ghost ? ' ghost' : '')
+      const pic = document.createElement('span')
+      pic.className = 'gic'
+      if (role === 'fuel') pic.innerHTML = FLAME
+      else if (item && api.icon) pic.append(api.icon(item))
+      else pic.innerHTML = GHOST
+      b.append(pic)
+      const lab = document.createElement('span')
+      lab.className = 'glbl'
+      lab.textContent = word
+      b.append(lab)
+      if (role === 'fuel' && !isBench) {
+        const flame = pic.querySelector('.flame')
+        if (grew && flame) fx(flame, 'flame')
+        if (!fuelNow && flame) flame.classList.add('ghost')
+      }
+      if (ghost) pic.classList.add('ghost')
+      return b
     }
-    for (const [label, n] of [[api.t('fuel'), r.left ? r.left + ' ' + api.t('left') : api.t('addCoal')], [api.t('input'), r.input[0] || api.t('input')], [api.t('output'), r.output[0] || api.t('output')]]) {
-      const b = document.createElement('button')
-      b.type = 'button'
-      b.className = 'gtile'
-      b.innerHTML = '<span class="gic">' + (label === api.t('fuel') ? '🔥' : '▣') + '</span><span class="glbl"></span>'
-        b.querySelector('.glbl').textContent = label === api.t('output') ? (r.output[0] ? api.t('output') + ': ' + api.name(r.output[0]) : api.t('output')) : label === api.t('input') ? api.t('input') : label + ' ' + n
-      b.addEventListener('click', () => {
-        if (label === api.t('fuel')) addFuel(key || '0,5,0')
-        if (label === api.t('input')) { r.picking = true; paint(g, key, kind); return }
-        if (label === api.t('output')) take(key || '0,5,0')
-        paint(g, key, kind)
-      })
-      g.append(b)
+    const fuelEl = well('fuel', fuelWord, '', !fuelNow)
+    const inEl = well('in', inWord, pending || '', !pending)
+    const arrow = document.createElement('div')
+    arrow.className = 'arrow-bar'
+    arrow.setAttribute('aria-hidden', 'true')
+    const fill = document.createElement('div')
+    fill.className = 'arrow-fill'
+    fill.style.width = Math.round(pct * 100) + '%'
+    arrow.append(fill)
+    const outEl = well('out', outWord, outItem || '', !outItem)
+    if (done && outItem) {
+      const badge = document.createElement('span')
+      badge.className = 'check'
+      badge.textContent = '✓'
+      outEl.append(badge)
+      fx(outEl, 'bump')
+      fx(outEl.querySelector('.gic'), 'in')
     }
-    if (r.picking) {
+    if (!isBench) {
+      fuelEl.addEventListener('click', () => { addFuel(k); paint(g, key, kind) })
+      inEl.addEventListener('click', () => { r.picking = true; paint(g, key, kind) })
+      outEl.addEventListener('click', () => { take(k); paint(g, key, kind) })
+    }
+    crate.append(fuelEl, inEl, arrow, outEl)
+    if (!isBench && r.picking) {
       const strip = document.createElement('div')
-      strip.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;width:100%'
+      strip.className = 'oven-picks'
       const creative = api.creative && api.creative()
       const ready = OVEN.filter((recipe) => creative || recipe.in.every(([item, n]) => api.have && api.have(item) >= n))
       if (!ready.length) {
         const p = document.createElement('p')
         p.className = 'gnote'
         p.textContent = api.t('nothingBake')
-        g.append(p)
+        strip.append(p)
       }
       for (const recipe of ready) {
         const b2 = document.createElement('button')
         b2.type = 'button'
         b2.className = 'gtile'
-        b2.style.cssText = 'min-width:64px;min-height:64px;position:static'
         const pic = document.createElement('span')
         pic.className = 'gic'
         if (api.icon) pic.append(api.icon(recipe.in[0][0]))
@@ -101,20 +148,14 @@ export function createStations(api) {
         lbl.className = 'glbl'
         lbl.textContent = recipe.in.map(([item, n]) => (api.name ? api.name(item) : item) + ' ×' + n).join(' + ') + ' → ' + (api.name ? api.name(recipe.out[0]) : recipe.out[0])
         b2.append(lbl)
-        b2.addEventListener('click', () => { addInput(key || '0,5,0', recipe.id); paint(g, key, kind) })
+        b2.addEventListener('click', () => { addInput(k, recipe.id); paint(g, key, kind) })
         strip.append(b2)
       }
-      if (ready.length) g.append(strip)
+      crate.append(strip)
     }
-    if (r.until) {
-      const left = Math.max(0, Math.ceil((r.until - Date.now()) / 1000))
-      const secs = r.secs || 5
-      const ring = document.createElement('div')
-      ring.innerHTML = '<svg viewBox="0 0 36 36" width="48" height="48"><circle cx="18" cy="18" r="15" fill="none" stroke="#22d3ee" stroke-width="3" stroke-dasharray="' + Math.round((secs - left) / secs * 100) + ' 100"/></svg><span>' + left + ' s</span>'
-      g.append(ring)
-    }
+    g.append(crate)
     clearTimeout(paint.timer)
-    paint.timer = setTimeout(() => { if (g.isConnected) paint(g, key, kind) }, 1000)
+    if (!isBench) paint.timer = setTimeout(() => { if (g.isConnected) paint(g, key, kind) }, 1000)
   }
   return { tick, paint, view, addFuel, addInput, take, dump: () => Object.fromEntries(map), load: (obj) => { map.clear(); for (const [k, v] of Object.entries(obj || {})) map.set(k, v) } }
 }
