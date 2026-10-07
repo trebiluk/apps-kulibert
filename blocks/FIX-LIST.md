@@ -1,8 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 6 2026, 9:15 PM ET (Debugzy: 2.5.47 proof PASS (P2 watches): a finger now breaks the block it is on and the hotbar shows the log right away; basics-1 ready as BT 2.5.48).
+Updated Tue Oct 6 2026, 10:40 PM ET (Debugzy: 2.5.48 proof FAIL (P1): doors, lever, button, lock, save and the lantern work, but night only darkens the sky and 20 lit lanterns halve the frame rate; fix brief bertopia-2549-fix.md ready as BT 2.5.49, basics-2a moves to 2.5.50).
 
 ## 1. Live now
+- **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
+- **Proof verdict: FAIL (P1)**, Oct 6 10:38 PM ET, `proof/bertopia-2.5.48/RESULT.md`. Works by real input: double wood door opens with 1 tap, 3 s auto-close, a tap on a Metal door says "Needs a button or lever", a Lever opens it, a Button opens it 1.5 s, a locked door refuses another player and the Teacher stub opens it, a 3 s hold doesn't break a door, all survives Save + reload, the 2.5.42 save loads with every block. Lantern shows "Needs T5 - Fabricator" with gates closed, crafts with T5 open, 3 taps -> High (r10), +2.5 min -> r1, Charger +2 min / daylight +4 min -> full, Light Up badge once at 3 b and none at 2 b. P1: night only darkens the sky and fog (ambient and noa light never change, grass at night = 100% of day), and 20 High lanterns in view drop 1366 from ~58 to ~28 FPS (smoke "lantern fps" plants them out of view). Smoke 148/1 (door flips once) and 149/0 (exit 0), 0 console errors at 412/915/1366, rotate keeps state, teacher gate holds, live = main byte for byte.
 - **Bertopia 2.5.47** (`416ee4b`, Oct 6 8:29 PM ET). Your finger breaks the block it is on, and the hotbar shows what you picked up right away.
 - **Proof verdict: PASS (P2 watches)**, Oct 6 9:10 PM ET, `proof/bertopia-2.5.47/RESULT.md`. Off-aim finger chop works on live: aim on the road (1,4,0), finger on the starter log (2,5,2), 2300 ms jitter hold -> log 0, bag log 1 at 915x412 and 360x740. First slot L / 1 and "Log" 2-3 ms after the chop with no slot tap. Finger on a town road -> "The town stays", nothing breaks. Tap on grass places the log on that face. 1366 mouse hold breaks the crosshair block (D / Dirt). Bag label 16/16 now pass, door flips once pass. Smoke 119/1 and 117/3 (exit 1), instrumented run 3 120/0 (exit 0); 0 console errors at 360/412/915/1366, rotate keeps state, teacher gate holds, live = main byte for byte. Watches: smoke "hold toast once" fails 2 of 3 (the ring press before it is a short tap that can use up the one-time tip, or tap 1 comes while Berty is still settling after stand()); old centre "jitter chop 915x412" 1 of 3 (8/8 alone); "Make a Wood Tool" shows twice at once (path chip + toast).
 - **Bertopia 2.5.46** (`a10199e`, Oct 6 6:53 PM ET). Holding your finger on a block breaks it even if your finger wiggles a little, a tip shows you how, and the Pick button is now Copy.
@@ -31,7 +33,14 @@ Updated Tue Oct 6 2026, 9:15 PM ET (Debugzy: 2.5.47 proof PASS (P2 watches): a f
   - 2.5.42: coal underground, wheat → flour, reeds → sugar, Wood Door, bunk sets home, gold path step
 - Doors stay `/blocks/` and `/bertopia/`. Storage keys stay. Bertyville stays the starter world.
 
-## 2. Open fixes (from proof/bertopia-2.5.47/RESULT.md) -> P2 watches ride in `briefs/fixq/bertopia-basics-1.md` = **BT 2.5.48** (Keep passing)
+## 2. Open fixes (from proof/bertopia-2.5.48/RESULT.md) -> `briefs/fixq/bertopia-2549-fix.md` = **BT 2.5.49**
+- [ ] **Night darkens the world (P1, 2.5.48 proof):** syncGlow (main.js ~1858) sets only the sky `uLum` and fog. Scale `scene.ambientColor` and `noa.rendering.light` by `basics.lum()`; grass at night 40-70% of day, Brighter nights >= 60%, Always day / Build world unchanged.
+- [ ] **Lantern lights are cheap (P1, 2.5.48 proof):** 1366 with 20 High lanterns in view 28 FPS vs 58 on 2.5.47 (1 High 45, 4 High 33). Limit the 4 PointLights' cost; smoke "lantern fps" must put the lanterns in view and want >= 90% of no lanterns.
+- [ ] **"door flips once 1366x768" (P2):** failed 1 of 2 runs again (30).
+- [ ] **"Needs T5 - Fabricator" after T5 opens (P2, cosmetic):** the station line still says it; it means "make it at a Fabricator".
+- [x] **2.5.48 done (basics-1):** doors (wood/glass/metal/sliding, double, auto-close, lock, hold-safe), Lever, Push Button, palette-remap save safety, day/night + Always day + Brighter nights, Light Up badges, LED Lantern / Battery Cell / Charger behind T5, Starter Kit. Smoke "hold toast once" and "jitter chop 915x412" now pass (own page, steady aim).
+
+### Earlier open fixes (from proof/bertopia-2.5.47/RESULT.md)
 - [x] **Smoke "hold toast once 915x412" (P2, 2.5.47 proof):** fails 2 of 3 runs, the game is right. The "crack ring early" press just before it (touchStart 200 ms touchEnd, smoke.mjs ~870) is a short tap and can use up the one-time holdToBreak tip; other times tap 1 lands while Berty settles after `__smoke.stand()` and `canUse` refuses it. Move it to its own fresh page, wait for grounded + steady aim, make the ring press a > 500 ms hold.
 - [x] **Smoke "jitter chop 915x412" (P2, 2.5.47 proof):** the old centre-hold line failed 1 of 3 runs (8/8 alone). Wait for grounded + steady aim before the press.
 - [ ] **"Make a Wood Tool" twice (P2, cosmetic):** after the first log the path chip and a toast show the same words at once for ~2.4 s.
@@ -66,12 +75,13 @@ Updated Tue Oct 6 2026, 9:15 PM ET (Debugzy: 2.5.47 proof PASS (P2 watches): a f
 | — | — | ~~bertopia-core-1/2/3.md (were 2.5.16–2.5.18)~~: mostly shipped by Build in 2.5.22–2.5.32. Don't paste. Leftovers are listed under Flags above. | superseded |
 | 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | shipped, FAIL (P1) |
 | 0e | 2.5.47 | **bertopia-2547-fix.md (P1, 2.5.46 proof):** touch hold/tap act on the block under the finger (voxel raycast through the touch point, reach 6); hotbar + chip repaint after every break/pickup; smoke off-aim finger chop + HUD slot line; smoke truth (bag label headroom, toast wait) | shipped, PASS |
-| 1 | 2.5.48 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | shipped |
-| 2a | 2.5.49 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
-| 2b | 2.5.50 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
-| 3a | 2.5.51 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |
-| 3b | 2.5.52 | bertopia-basics-3b.md: Copper Wire rings, tap to connect, Show power, 512 limit | [ ] |
-| 3c | 2.5.53 | bertopia-basics-3c.md: powered sliding door, wired Lever/Button opens a Metal door, power lesson card | [ ] |
+| 1 | 2.5.48 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | shipped, FAIL (P1) |
+| 1b | 2.5.49 | **bertopia-2549-fix.md (P1, 2.5.48 proof):** night darkens the world (ambient + noa light follow `lum()`), lantern lights cost under 10% at 1366 with 20 in view, smoke lantern fps in view. Paste next | [ ] |
+| 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
+| 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
+| 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |
+| 3b | 2.5.53 | bertopia-basics-3b.md: Copper Wire rings, tap to connect, Show power, 512 limit | [ ] |
+| 3c | 2.5.54 | bertopia-basics-3c.md: powered sliding door, wired Lever/Button opens a Metal door, power lesson card | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
 | 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
