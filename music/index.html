@@ -130,6 +130,7 @@
       <p class="hint" data-i18n="appsFollow">Your apps will use this language.</p>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23516">{ver} DJ Berty: a real piano with black keys, and a band stage you fill with chairs.</span></li>
         <li><span data-mu="news23515">{ver} DJ Berty: the version tag is right on phones, and changing the window size keeps your screen.</span></li>
         <li><span data-mu="news23514">MU 2.35.14 DJ Berty: the closed menu stays off the screen in Arabic and Dari.</span></li>
         <li><span data-mu="news23513">MU 2.35.13 DJ Berty: drum rows stay above the player, and the player fits a phone.</span></li>
@@ -467,6 +468,15 @@
     <div id="undo-toast" class="undo-toast" hidden role="status">
     <span data-mu="clearedSong">Song cleared.</span>
     <button type="button" id="undo-song" data-mu="bringBack">Bring it back</button>
+  </div>
+  <div id="piano-dock" class="piano-dock" hidden>
+    <button type="button" id="piano-dock-toggle" class="btn" aria-pressed="false" aria-label="Piano" title="Piano">Piano</button>
+    <div id="dock-oct" class="piano-octaves">
+      <button type="button" id="dock-oct-down" class="btn" aria-label="Octave down">−</button>
+      <b id="dock-oct-read">4</b>
+      <button type="button" id="dock-oct-up" class="btn" aria-label="Octave up">+</button>
+    </div>
+    <div id="dock-keys" class="piano-board" aria-label="Piano"></div>
   </div>
   <div class="transport" id="transport">
     <button type="button" id="song-cover" class="cover" aria-label="This song"></button>

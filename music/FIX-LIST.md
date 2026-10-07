@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] Lane B: a real piano with black keys, and a band stage of chairs.
 - [x] Lane B: one version source for every plate, and a resize keeps the open view.
 - [x] Lane B MU 2.35.14: the closed menu stays off the screen in Arabic and Dari.
 - [x] Lane B MU 2.35.13: drum rows stay above the player, and the player fits at 412 px.

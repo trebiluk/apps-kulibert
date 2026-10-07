@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.16** · 2026-10-07 · channel **live**
+
+A real piano with black keys, and a band stage you fill with chairs.
+
+## Earlier
+
 **Chip: MU 2.35.15** · 2026-10-07 · channel **live**
 
 The version tag is right on phones, and changing the window size keeps your screen.

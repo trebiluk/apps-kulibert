@@ -3593,6 +3593,175 @@ body.mu237 .transport .tempo {
   body.mu237 #more-tools::before { margin-inline-end: 0 !important; }
 }
 
+/* One piano, and a band of chairs */
+body.mu237 { --dock: 0px; }
+body.mu237.piano-dock-on { --dock: 48px; }
+body.mu237.piano-dock-on.piano-dock-open { --dock: 176px; }
+body.mu237 .desk,
+html[dir="rtl"] body.mu237 .desk {
+  bottom: calc(var(--player) + var(--dock)) !important;
+}
+.piano-dock {
+  position: fixed;
+  z-index: 25;
+  left: var(--rail);
+  right: 0;
+  bottom: var(--player);
+  height: var(--dock);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+  background: #07101c;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+  direction: ltr;
+}
+.piano-dock[hidden] { display: none !important; }
+html[dir="rtl"] body.mu237 .piano-dock { left: 0; right: var(--rail); }
+#piano-dock-toggle {
+  flex: 0 0 44px;
+  min-width: 44px;
+  min-height: 44px;
+  height: 44px;
+  align-self: flex-start;
+  font-size: 14px;
+}
+body.mu237:not(.piano-dock-open) #dock-oct,
+body.mu237:not(.piano-dock-open) #dock-keys { display: none !important; }
+.piano-board {
+  position: relative;
+  display: block !important;
+  height: 120px !important;
+  min-height: 120px !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  direction: ltr !important;
+  touch-action: none;
+  background: #1a140c;
+  border-radius: 10px;
+}
+.piano-whites {
+  display: flex;
+  height: 100%;
+  min-width: 100%;
+  gap: 2px;
+  direction: ltr;
+}
+.pkey {
+  border: 0;
+  font: 800 14px/1 var(--kp-font), Outfit, system-ui, sans-serif;
+  touch-action: none;
+  box-sizing: border-box;
+}
+.pkey.white {
+  flex: 1 1 44px;
+  min-width: 44px;
+  height: 100%;
+  min-height: 64px;
+  background: #fff8ea;
+  color: #1a140c;
+  border-radius: 0 0 8px 8px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 6px;
+}
+.pkey.white.hit { background: #22d3ee; }
+.piano-blacks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 58%;
+  pointer-events: none;
+}
+.pkey.black {
+  position: absolute;
+  top: 0;
+  width: 44px;
+  height: 100%;
+  min-height: 44px;
+  margin-left: -22px;
+  pointer-events: auto;
+  background: #141820;
+  color: #fff;
+  border-radius: 0 0 6px 6px;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.pkey.black.hit { background: #0e7490; }
+.chair-stage {
+  display: flex !important;
+  flex-direction: row !important;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
+  min-height: 120px;
+  padding: 8px 4px 4px;
+  border: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+.chair {
+  flex: 1 1 44px;
+  min-width: 44px;
+  max-width: 92px;
+  min-height: 72px;
+  border: 2px solid #1a140c;
+  border-radius: 12px 12px 8px 8px;
+  background: #10203f;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  padding: 4px;
+}
+.chair:nth-child(1), .chair:nth-child(8) { transform: translateY(18px); }
+.chair:nth-child(2), .chair:nth-child(7) { transform: translateY(8px); }
+.chair svg { width: 28px; height: 28px; }
+.chair-card {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0;
+}
+.pic-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.pic-row .btn { min-width: 44px; min-height: 44px; font-size: 14px; }
+.pic-row .btn.on { outline: 3px solid #22d3ee; }
+@media (max-width: 699px) and (orientation: portrait) {
+  .chair-stage {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(44px, 1fr));
+    align-items: stretch;
+  }
+  .chair { transform: none !important; max-width: none; min-height: 64px; }
+}
+@media (max-height: 520px) {
+  .chair { min-height: 44px; height: 48px; }
+  .chair svg { width: 18px; height: 18px; }
+  .chair-stage { min-height: 0; }
+}
+body.mu237.tab-piano #sound-notes,
+body.mu237.is-sound #sound-notes {
+  display: block !important;
+  height: 128px !important;
+  min-height: 128px !important;
+  grid-template-columns: none !important;
+}
+body.mu237 #band-picks.chair-stage { display: flex !important; }
+body.mu237 #band-picks.chair-stage[hidden] { display: none !important; }
+
+
 /* MU 2.35.14 — a closed Arabic or Dari menu is fully off the screen */
 html[dir="rtl"] body.mu237:not(.menu-open) .drawer {
   display: block !important;
@@ -3619,4 +3788,13 @@ html[dir="rtl"] body.mu237.menu-open .drawer {
   right: var(--rail) !important;
   width: auto !important;
   overflow: auto !important;
+}
+@media (max-width: 699px) and (orientation: portrait) {
+  body.mu237 #band-picks.chair-stage {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(44px, 1fr));
+  }
+}
+@media (max-width: 699px) and (orientation: portrait) {
+  html[dir="rtl"] body.mu237 .piano-dock { left: 0; right: 0; }
 }

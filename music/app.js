@@ -235,6 +235,8 @@
     if (typeof saved.hip === "number") state.hip = saved.hip;
     if (typeof saved.delay === "number") state.delay = saved.delay;
     if (typeof saved.feedback === "number") state.feedback = saved.feedback;
+    if (saved.band) state.band = saved.band;
+    if (Array.isArray(saved.chairs) && saved.chairs.length === 8) state.chairs = saved.chairs;
     if (saved.bpm) state.song.bpm = saved.bpm;
     return true;
   }
@@ -483,6 +485,7 @@
       blend: state.blend,
       expert: state.expert,
       bass: state.bass,
+      chairs: state.chairs || null,
       gear: state.gear,
     });
     let ok = false;
@@ -1839,38 +1842,27 @@
   }
   let warmTimer = [];
   function paintBand() {
+    if (!Array.isArray(state.chairs) || state.chairs.length !== 8) state.chairs = seatToday();
+    const picks = $("band-picks");
+    if (!picks) return;
+    picks.hidden = false;
+    picks.className = "chair-stage";
+    picks.innerHTML = "";
     const inst = bandNow();
     const now = $("inst-now");
     if (now) now.textContent = inst.name;
-    const picks = $("band-picks");
-    picks.innerHTML = "";
-    let family = "";
-    BAND.forEach((item) => {
-      if (item.family !== family) {
-        family = item.family;
-        const head = document.createElement("div");
-        head.className = "family";
-    if (head) head.textContent = mu("fam_" + family) || family;
-        picks.appendChild(head);
-      }
+    state.chairs.forEach((seat, i) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "btn" + (item.id === inst.id ? " on" : "");
-      b.textContent = item.name;
-      b.addEventListener("click", () => {
-        state.band = item.id;
-        const sound = { Woodwind: "winds", Brass: "brass", Strings: "strings", Keyboard: "winds", Percussion: "beep" }[item.family];
-        if (sound) state.orch = sound;
-        keep();
-        picks.hidden = true;
-        paintBand();
-        $("lesson").textContent = item.name + ". " + item.start;
-      });
+      b.className = "chair" + (seat && seat.inst === inst.id ? " on" : "");
+      b.innerHTML = chairGlyph(seat);
+      b.setAttribute("aria-label", seat ? (BAND.find((item) => item.id === seat.inst) || inst).name : (mu("chairEmpty") || "Empty chair"));
+      b.addEventListener("click", () => openChair(i));
       picks.appendChild(b);
     });
-    $("band-start").textContent = inst.start;
-    $("band-concert").textContent = inst.concert;
+    paintChairCard();
     const notes = $("band-notes");
+    if (!notes) return;
     notes.innerHTML = "";
     inst.notes.forEach((note) => {
       const b = document.createElement("button");
@@ -1884,11 +1876,141 @@
       });
       notes.appendChild(b);
     });
+    if ($("band-start")) $("band-start").textContent = inst.start;
+    if ($("band-concert")) $("band-concert").textContent = inst.concert;
+  }
+  function seatToday() {
+    const chairs = [null, null, null, null, null, null, null, null];
+    const inst = bandNow();
+    const low = { tuba: 1, trombone: 1, baritone: 1, bassoon: 1, cello: 1, basscl: 1, bari: 1 };
+    const part = inst.family === "Percussion" && inst.id !== "bells" ? "drums" : low[inst.id] ? "bass" : inst.family === "Keyboard" ? "chords" : "melody";
+    const slot = { Woodwind: 0, Brass: 2, Strings: 5, Keyboard: 6, Percussion: 7 }[inst.family] || 0;
+    chairs[slot] = { inst: inst.id, color: "cyan", part: part };
+    if (state.parts.drums && !chairs.some((c) => c && c.part === "drums")) chairs[7] = { inst: "percussion", color: "amber", part: "drums" };
+    if (state.parts.bass && !chairs.some((c) => c && c.part === "bass")) chairs[3] = { inst: "trombone", color: "rose", part: "bass" };
+    if (state.parts.chords && !chairs.some((c) => c && c.part === "chords")) chairs[6] = { inst: "piano", color: "violet", part: "chords" };
+    if (state.parts.melody && !chairs.some((c) => c && c.part === "melody") && part !== "melody") chairs[0] = chairs[0] || { inst: "flute", color: "lime", part: "melody" };
+    return chairs;
+  }
+  function chairGlyph(seat) {
+    if (!seat) return "<span>" + (mu("sitHere") || "Sit") + "</span>";
+    const found = BAND.find((item) => item.id === seat.inst);
+    const fam = found ? found.family : "";
+    const icon = fam === "Brass" ? "🎺" : fam === "Strings" ? "🎻" : fam === "Keyboard" ? "🎹" : fam === "Percussion" ? "🥁" : "🪈";
+    return "<span aria-hidden='true'>" + icon + "</span><span>" + (mu("part" + (seat.part === "drums" ? "Drums" : seat.part === "melody" ? "Melody" : seat.part === "chords" ? "Chords" : "Bass")) || seat.part) + "</span>";
+  }
+  let chairAt = -1;
+  function openChair(i) {
+    chairAt = i;
+    const seat = state.chairs[i];
+    if (seat) {
+      state.band = seat.inst;
+      const found = BAND.find((item) => item.id === seat.inst);
+      if (found) {
+        const sound = { Woodwind: "winds", Brass: "brass", Strings: "strings", Keyboard: "winds", Percussion: "beep" }[found.family];
+        if (sound) state.orch = sound;
+      }
+    }
+    paintBand();
+  }
+  function paintChairCard() {
+    let card = $("chair-card");
+    const picks = $("band-picks");
+    if (!picks) return;
+    if (!card) {
+      card = document.createElement("div");
+      card.id = "chair-card";
+      card.className = "chair-card";
+      picks.insertAdjacentElement("afterend", card);
+    }
+    card.innerHTML = "";
+    if (chairAt < 0) { card.hidden = true; return; }
+    card.hidden = false;
+    const seat = state.chairs[chairAt];
+    const families = ["Woodwind", "Brass", "Strings", "Keyboard", "Percussion"];
+    const famRow = document.createElement("div");
+    famRow.className = "pic-row";
+    families.forEach((fam) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (seat && BAND.find((item) => item.id === seat.inst && item.family === fam) ? " on" : "");
+      b.textContent = (fam === "Woodwind" ? "🪈 " : fam === "Brass" ? "🎺 " : fam === "Strings" ? "🎻 " : fam === "Keyboard" ? "🎹 " : "🥁 ") + (mu("fam_" + fam) || fam);
+      b.addEventListener("click", () => {
+        const first = BAND.find((item) => item.family === fam);
+        const part = fam === "Percussion" ? "drums" : fam === "Keyboard" ? "chords" : fam === "Brass" && first && first.id === "tuba" ? "bass" : "melody";
+        state.chairs[chairAt] = { inst: first.id, color: (seat && seat.color) || "cyan", part: (seat && seat.part) || part };
+        state.band = first.id;
+        syncParts();
+        keep();
+        paintBand();
+      });
+      famRow.appendChild(b);
+    });
+    card.appendChild(famRow);
+    if (!seat) return;
+    const colors = ["cyan", "amber", "violet", "rose", "lime", "ice"];
+    const colorRow = document.createElement("div");
+    colorRow.className = "pic-row";
+    colors.forEach((color) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (seat.color === color ? " on" : "");
+      b.textContent = color;
+      b.style.background = { cyan: "#22d3ee", amber: "#f59e0b", violet: "#a78bfa", rose: "#fb7185", lime: "#84cc16", ice: "#e0f2fe" }[color];
+      b.style.color = "#041018";
+      b.addEventListener("click", () => {
+        state.chairs[chairAt].color = color;
+        syncParts();
+        keep();
+        paintBand();
+      });
+      colorRow.appendChild(b);
+    });
+    card.appendChild(colorRow);
+    const partRow = document.createElement("div");
+    partRow.className = "pic-row";
+    ["drums", "melody", "chords", "bass"].forEach((part) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn" + (seat.part === part ? " on" : "");
+      const key = "part" + part.charAt(0).toUpperCase() + part.slice(1);
+      b.textContent = mu(key) || part;
+      b.addEventListener("click", () => {
+        state.chairs[chairAt].part = part;
+        syncParts();
+        keep();
+        paintBand();
+      });
+      partRow.appendChild(b);
+    });
+    card.appendChild(partRow);
+    const clear = document.createElement("button");
+    clear.type = "button";
+    clear.className = "btn";
+    clear.textContent = mu("clearChair") || "Empty this chair";
+    clear.addEventListener("click", () => {
+      state.chairs[chairAt] = null;
+      chairAt = -1;
+      syncParts();
+      keep();
+      paintBand();
+    });
+    card.appendChild(clear);
+  }
+  function syncParts() {
+    const on = { drums: false, melody: false, chords: false, bass: false };
+    (state.chairs || []).forEach((c) => { if (c && Object.prototype.hasOwnProperty.call(on, c.part)) on[c.part] = true; });
+    if (!state.chairs || !state.chairs.some(Boolean)) return;
+    state.parts.drums = on.drums;
+    state.parts.melody = on.melody;
+    state.parts.chords = on.chords;
+    state.parts.bass = on.bass;
+    state.bass = on.bass;
   }
   const instNow = $("inst-now");
   if (instNow) instNow.addEventListener("click", () => {
-    const picks = $("band-picks");
-    picks.hidden = !picks.hidden;
+    const stage = $("band-picks");
+    if (stage && stage.scrollIntoView) stage.scrollIntoView({ block: "nearest" });
   });
   function warmUp() {
     warmTimer.forEach((id) => window.clearTimeout(id));
@@ -2106,6 +2228,7 @@
       window.requestAnimationFrame(() => renderStaff());
     }
     requestAnimationFrame(fitTapRows);
+    syncPianoDock();
   }
   function setMode(mode) {
     if (WS_MODES.indexOf(mode) < 0) mode = "both";
@@ -4892,72 +5015,202 @@
     }
   }
   let pianoOct = 4;
-  let pianoNarrow = false;
-  const PIANO_BASE = { C: 261.63, D: 293.66, E: 329.63, F: 349.23, G: 392.0, A: 440, B: 493.88, "Hi C": 523.25 };
-  function pianoFreq(name, oct) {
-    const base = PIANO_BASE[name];
-    const from = name === "Hi C" ? 5 : 4;
-    return base * Math.pow(2, oct - from);
+  let pianoWide = false;
+  const PIANO_HELD = new Map();
+  const KEY_MAP = {
+    KeyA: [0, "C"], KeyW: [0, "C#"], KeyS: [0, "D"], KeyE: [0, "D#"], KeyD: [0, "E"],
+    KeyF: [0, "F"], KeyT: [0, "F#"], KeyG: [0, "G"], KeyY: [0, "G#"], KeyH: [0, "A"],
+    KeyU: [0, "A#"], KeyJ: [0, "B"], KeyK: [1, "C"]
+  };
+  function pianoSpan() {
+    return window.innerWidth >= 700 ? 2 : 1;
   }
-  function paintPianoKeys() {
-    const notes = $("sound-notes");
-    if (!notes) return;
-    const narrow = window.matchMedia("(max-width: 480px)").matches;
-    const specs = ["C", "D", "E", "F", "G", "A", "B"].map((name) => ({
-      label: name,
-      freq: pianoFreq(name, pianoOct),
-      said: name + pianoOct
-    }));
-    if (!narrow) {
-      specs.push({ label: "Hi C", freq: pianoFreq("Hi C", pianoOct + 1), said: "C" + (pianoOct + 1) });
+  function noteFreq(name, oct) {
+    const semi = { C: 0, "C#": 1, D: 2, "D#": 3, E: 4, F: 5, "F#": 6, G: 7, "G#": 8, A: 9, "A#": 10, B: 11 };
+    return 440 * Math.pow(2, ((oct - 4) * 12 + semi[name] - 9) / 12);
+  }
+  function holdTone(freq) {
+    arm();
+    if (!ctx || state.muted || !freq) return function () {};
+    const osc = trackVoice(ctx.createOscillator());
+    const gain = ctx.createGain();
+    const now = ctx.currentTime;
+    osc.type = state.wave || "triangle";
+    osc.frequency.setValueAtTime(freq, now);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.2, now + 0.02);
+    osc.connect(gain);
+    gain.connect(bus);
+    osc.start(now);
+    let stopped = false;
+    return function release() {
+      if (stopped) return;
+      stopped = true;
+      const t = ctx.currentTime;
+      try {
+        gain.gain.cancelScheduledValues(t);
+        gain.gain.setValueAtTime(0.2, t);
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.06);
+        osc.stop(t + 0.08);
+      } catch (err) { /* already stopped */ }
+    };
+  }
+  function scorePitch(name, oct) {
+    const key = (state.song && state.song.key) || "C";
+    const alt = { C: {}, G: { F: 1 }, D: { F: 1, C: 1 }, F: { B: -1 }, Bb: { B: -1, E: -1 } }[key] || {};
+    if (name === "C#") return alt.C === 1 ? "C" : null;
+    if (name === "D#") return alt.E === -1 ? "E" : null;
+    if (name === "F#") return alt.F === 1 ? "F" : null;
+    if (name === "G#") return null;
+    if (name === "A#") return alt.B === -1 ? "B" : null;
+    if (alt[name]) return null;
+    if (name === "C" && oct > pianoOct) return "c";
+    return name;
+  }
+  function stampPiano(name, oct) {
+    const scoring = document.body.classList.contains("tab-score") || state.mode === "both" || state.mode === "notes";
+    if (!scoring || !window.Song || !Song.pitchById) return;
+    const pitch = scorePitch(name, oct);
+    if (!pitch || !Song.pitchById(pitch)) return;
+    const at = placeStep();
+    const ev = at >= 0 ? Song.events(state.song)[at] : null;
+    if (!ev) return;
+    Song.setBeat(state.song, ev.measure, ev.beat, pitch);
+    renderStaff();
+    keep();
+  }
+  function releasePiano(id) {
+    const held = PIANO_HELD.get(id);
+    if (!held) return;
+    PIANO_HELD.delete(id);
+    held.release();
+    if (held.el) {
+      const still = [...PIANO_HELD.values()].some((item) => item.el === held.el);
+      if (!still) {
+        held.el.classList.remove("hit");
+        held.el.setAttribute("aria-pressed", "false");
+      }
     }
-    notes.replaceChildren();
-    specs.forEach((spec) => {
+  }
+  function pressPiano(el, id) {
+    if (!el || PIANO_HELD.has(id)) return;
+    const name = el.dataset.note;
+    const oct = Number(el.dataset.oct);
+    el.classList.add("hit");
+    el.setAttribute("aria-pressed", "true");
+    const host = el.closest(".piano-board");
+    if (host) host.dataset.last = el.getAttribute("aria-label") || "";
+    const release = holdTone(noteFreq(name, oct));
+    PIANO_HELD.set(id, { el: el, release: release });
+    stampPiano(name, oct);
+  }
+  function fillPiano(host) {
+    if (!host) return;
+    host.classList.add("piano-board");
+    host.replaceChildren();
+    const octaves = pianoSpan();
+    const whites = document.createElement("div");
+    whites.className = "piano-whites";
+    const keys = [];
+    for (let o = 0; o < octaves; o += 1) {
+      ["C", "D", "E", "F", "G", "A", "B"].forEach((name) => keys.push({ name: name, oct: pianoOct + o, black: false }));
+    }
+    keys.forEach((spec) => {
       const b = document.createElement("button");
       b.type = "button";
-      b.className = "key";
-      b.textContent = spec.label;
-      b.dataset.freq = String(Math.round(spec.freq * 100) / 100);
-      b.setAttribute("aria-label", spec.said);
+      b.className = "pkey white";
+      b.textContent = spec.name;
+      b.dataset.note = spec.name;
+      b.dataset.oct = String(spec.oct);
+      b.setAttribute("aria-label", spec.name + spec.oct);
       b.setAttribute("aria-pressed", "false");
-      b.addEventListener("pointerdown", (e) => {
+      whites.appendChild(b);
+    });
+    const blacks = document.createElement("div");
+    blacks.className = "piano-blacks";
+    const spots = ["C#", "D#", null, "F#", "G#", "A#", null];
+    const count = keys.length;
+    spots.forEach((name, i) => {
+      if (!name) return;
+      for (let o = 0; o < octaves; o += 1) {
+        const index = o * 7 + i;
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "pkey black";
+        b.textContent = name;
+        b.dataset.note = name;
+        b.dataset.oct = String(pianoOct + o);
+        b.style.left = ((index + 1) / count * 100) + "%";
+        b.setAttribute("aria-label", name.replace("#", " sharp ") + (pianoOct + o));
+        b.setAttribute("aria-pressed", "false");
+        blacks.appendChild(b);
+      }
+    });
+    host.append(whites, blacks);
+    host.querySelectorAll(".pkey").forEach((key) => {
+      key.addEventListener("pointerdown", (e) => {
         e.preventDefault();
-        notes.querySelectorAll(".key").forEach((k) => {
-          k.classList.remove("hit");
-          k.setAttribute("aria-pressed", "false");
-        });
-        b.classList.add("hit");
-        b.setAttribute("aria-pressed", "true");
-        notes.dataset.last = spec.said;
-        playLab(spec.freq, 0.5);
-        window.setTimeout(() => {
-          if (b.getAttribute("aria-pressed") === "true") {
-            b.classList.remove("hit");
-            b.setAttribute("aria-pressed", "false");
-          }
-        }, 450);
+        key.setPointerCapture(e.pointerId);
+        pressPiano(key, e.pointerId);
       });
-      notes.appendChild(b);
+      key.addEventListener("pointerup", (e) => releasePiano(e.pointerId));
+      key.addEventListener("pointercancel", (e) => releasePiano(e.pointerId));
+      key.addEventListener("lostpointercapture", (e) => releasePiano(e.pointerId));
+    });
+  }
+  function paintPianoKeys() {
+    fillPiano($("sound-notes"));
+    fillPiano($("dock-keys"));
+    ["oct-read", "dock-oct-read"].forEach((id) => {
+      const read = $(id);
+      if (read) read.textContent = String(pianoOct);
     });
     const down = $("oct-down");
     const up = $("oct-up");
-    const read = $("oct-read");
     if (down) down.disabled = pianoOct <= 2;
     if (up) up.disabled = pianoOct >= 6;
-    if (read) read.textContent = String(pianoOct);
+    const dockDown = $("dock-oct-down");
+    const dockUp = $("dock-oct-up");
+    if (dockDown) dockDown.disabled = pianoOct <= 2;
+    if (dockUp) dockUp.disabled = pianoOct >= 6;
   }
   function shiftPiano(dir) {
     const next = pianoOct + dir;
     if (next < 2 || next > 6) return;
+    [...PIANO_HELD.keys()].forEach(releasePiano);
     pianoOct = next;
     paintPianoKeys();
+  }
+  function dockWanted() {
+    let saved = "";
+    try { saved = localStorage.getItem("kulibert.piano.dock") || ""; } catch (err) { saved = ""; }
+    if (saved === "show") return true;
+    if (saved === "hide") return false;
+    return window.innerHeight >= 500;
+  }
+  function syncPianoDock() {
+    const dock = $("piano-dock");
+    if (!dock) return;
+    const tab = state.tab;
+    const on = tab === "tap" || tab === "score" || tab === "remix";
+    dock.hidden = !on;
+    document.body.classList.toggle("piano-dock-on", on);
+    const open = on && dockWanted();
+    document.body.classList.toggle("piano-dock-open", open);
+    const toggle = $("piano-dock-toggle");
+    if (toggle) {
+      const word = open ? (mu("hidePiano") || "Hide piano") : (mu("showPiano") || "Piano");
+      toggle.textContent = word;
+      toggle.setAttribute("aria-pressed", open ? "true" : "false");
+      toggle.setAttribute("aria-label", word);
+    }
   }
   function bootSound() {
     const notes = $("sound-notes");
     const shapes = $("sound-shapes");
     const partials = $("sound-partials");
     if (!notes || !shapes || !partials) return;
-    pianoNarrow = window.matchMedia("(max-width: 480px)").matches;
+    pianoWide = window.innerWidth >= 700;
     paintPianoKeys();
     const down = $("oct-down");
     const up = $("oct-up");
@@ -4969,21 +5222,61 @@
       up.dataset.wired = "1";
       up.addEventListener("click", () => shiftPiano(1));
     }
+    const dockDown = $("dock-oct-down");
+    const dockUp = $("dock-oct-up");
+    const dockToggle = $("piano-dock-toggle");
+    if (dockDown && !dockDown.dataset.wired) {
+      dockDown.dataset.wired = "1";
+      dockDown.addEventListener("click", () => shiftPiano(-1));
+    }
+    if (dockUp && !dockUp.dataset.wired) {
+      dockUp.dataset.wired = "1";
+      dockUp.addEventListener("click", () => shiftPiano(1));
+    }
+    if (dockToggle && !dockToggle.dataset.wired) {
+      dockToggle.dataset.wired = "1";
+      dockToggle.addEventListener("click", () => {
+        const next = !document.body.classList.contains("piano-dock-open");
+        try { localStorage.setItem("kulibert.piano.dock", next ? "show" : "hide"); } catch (err) { /* the button still folds */ }
+        syncPianoDock();
+      });
+    }
     if (!window.__djPianoResize) {
       window.__djPianoResize = 1;
       window.addEventListener("resize", () => {
-        const now = window.matchMedia("(max-width: 480px)").matches;
-        if (now !== pianoNarrow) {
-          pianoNarrow = now;
+        [...PIANO_HELD.keys()].forEach(releasePiano);
+        const now = window.innerWidth >= 700;
+        if (now !== pianoWide) {
+          pianoWide = now;
           paintPianoKeys();
         }
+        syncPianoDock();
       });
+      window.addEventListener("keydown", (e) => {
+        if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+        const tag = e.target && e.target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        const spec = KEY_MAP[e.code];
+        if (!spec) return;
+        const oct = pianoOct + spec[0];
+        const boards = [...document.querySelectorAll(".piano-board")].filter((el) => el.getClientRects().length);
+        const host = boards[boards.length - 1] || document.querySelector(".piano-board");
+        const el = host && host.querySelector(".pkey[data-note='" + spec[1] + "'][data-oct='" + oct + "']");
+        if (el) pressPiano(el, "key:" + e.code);
+        else if (!PIANO_HELD.has("key:" + e.code)) {
+          const release = holdTone(noteFreq(spec[1], oct));
+          PIANO_HELD.set("key:" + e.code, { el: null, release: release });
+        }
+        e.preventDefault();
+      });
+      window.addEventListener("keyup", (e) => releasePiano("key:" + e.code));
+      window.addEventListener("blur", () => [...PIANO_HELD.keys()].forEach(releasePiano));
     }
     if (window.__dj) {
       window.__dj.piano = () => ({
         oct: pianoOct,
-        last: notes.dataset.last || "",
-        keys: Array.from(notes.querySelectorAll(".key")).map((k) => k.getAttribute("aria-label"))
+        last: ($("sound-notes") && $("sound-notes").dataset.last) || "",
+        keys: Array.from(document.querySelectorAll("#sound-notes .pkey")).map((k) => k.getAttribute("aria-label"))
       });
     }
     if (shapes.childElementCount) return;
