@@ -1,13 +1,13 @@
 # Alice's Prairie FIX-LIST
 Read this first on every Alice's Prairie ship. In the same commit, tick `[x]` on each item you finished, and put your version and sha next to it. Proof updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 7 2026 from the AP 1.0.9 animal cut. The hawk, coyote and snake really move, and Alice pops up to look.
+Updated Wed Oct 7 2026 from the AP 1.0.10 burrow home. Home is Alice's burrow, and a little Alice runs across the loading bar.
 
 
 ## 1. Live now
 - Live title: **Alice's Prairie** (`/alice/` on apps.kulibert.net).
-- Chip: **AP 1.0.9**. The hawk, coyote and snake really move, and Alice pops up to look. The prairie is alive: clouds drift, grass sways, and the weather changes. Menus and cards cover the game and pause the round. Help and the speaker are light ink. A cleared round says High five only. Pixel lookout art. Less motion, Lite, Sound, and Music. Steady round clock. Six looks, captions, Relaxed speed, Class / Daily / Endless, desk high scores, and class time.
+- Chip: **AP 1.0.10**. Home is Alice's burrow, and a little Alice runs across the loading bar. The hawk, coyote and snake really move, and Alice pops up to look. The prairie is alive: clouds drift, grass sways, and the weather changes. Menus and cards cover the game and pause the round. Help and the speaker are light ink. A cleared round says High five only. Pixel lookout art. Less motion, Lite, Sound, and Music. Steady round clock. Six looks, captions, Relaxed speed, Class / Daily / Endless, desk high scores, and class time.
 - 1.0.8 was the living prairie. 1.0.6 was the fit and the pixel look. Its live proof failed on cards. 1.0.5 was settings and the six looks.
-- Hub chip AP 1.0.9. Builder accept: `proof/alice-1.0.9/RESULT.md`.
+- Hub chip AP 1.0.10. Builder accept: `proof/alice-1.0.10/RESULT.md`.
 
 - **Proof verdict: FAIL (P1)**, Oct 6 2026, 7:40 PM ET, `proof/alice-1.0.6/RESULT.md` on Debugzy's box. The fit holds on home, picker and Lookout at 5 sizes in en and ar, with 0 errors. Rotate, Less motion, Lite, the clock and the pixels all pass. Cards fail: they don't cover the controls or pause the round. The repo's `proof/alice-1.0.6/RESULT.md` is the builder's self-check, and it never opened a card.
 
@@ -16,10 +16,10 @@ Updated Wed Oct 7 2026 from the AP 1.0.9 animal cut. The hawk, coyote and snake 
 - [x] **P1 A card doesn't pause the round.** Fixed in AP 1.0.7. Help, Menu, Settings and Restart hold the step, and Close or Keep starts it again.
 - [x] P2 Help "?" and the speaker were dark ink. A cleared round also said "We'll get it next time!". Alice's pop was stuck on frame 0. Goal, prompt and caption were not RTL. Fixed in AP 1.0.7.
 - Watch (not Alice's lane): in ar at 412, the shared bar's "Sign in" is cut off at the right edge. The rebuild re-encodes `sfx.m4a`/`.ogg` with different bytes. The build copies `alice-src/public/FIX-LIST.md` over this file, so keep the two in sync.
-- Still open for ov4 (AP 1.0.10): L05 can't be cleared (0% of 2,000 seeds), and half of each round is empty.
+- Still open for the sim loop (on hold): L05 can't be cleared (0% of 2,000 seeds), and half of each round is empty.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
-- **PAUSED (Diego, Oct 6 2026, 9:59 PM ET: "Just Topia after this one").** ov4 and everything below stay ON HOLD. AP 1.0.9 was asked for in this build chat, so the animal motion shipped.
+- **PAUSED (Diego, Oct 6 2026, 9:59 PM ET: "Just Topia after this one").** The sim loop and everything below stay ON HOLD. AP 1.0.10 was asked for in this build chat, so the burrow home and the loading bar shipped.
 - [x] `briefs/fixq/alice-100b3.md`: Alice's Prairie AP 1.0.3: rotate, cards, one menu, Pause/Esc, strip, levels. Shipped 9b69a82. Home-card and seed pay followed as AP 1.0.4 (9d42dc2, 9ffe8eb).
 - [x] `briefs/fixq/alice-100c.md`: Settings and six looks, arcade Lookout (captions, Relaxed), Daily, Endless, desk high scores, class time. Shipped as **AP 1.0.5**.
 - [x] `briefs/fixq/alice-ov1-stage.md`: AP 1.0.6 overhaul, `42404d9`. Proof FAIL on cards only.
@@ -29,7 +29,8 @@ Updated Wed Oct 7 2026 from the AP 1.0.9 animal cut. The hawk, coyote and snake 
 - [x] `briefs/fixq/alice-107-fix.md`: **AP 1.0.7**. A card owns the screen, a card pauses the round, icon contrast, results words, Alice's pop, and RTL text.
 - [x] `briefs/fixq/alice-ov2-world.md`: **AP 1.0.8**. Parallax layers, life, and weather. Home uses the same prairie.
 - [x] `briefs/fixq/alice-ov3-juice.md`: **AP 1.0.9**. Animals that move like animals. Alice pops from her hole and looks. The hawk's shadow grows, then it swoops. Each kind has its own path from progress p. Sound twins and the results payoff were not this cut.
-- [ ] ON HOLD: `briefs/fixq/alice-ov4-loop.md`: AP 1.0.10. Sim lookout-2 (a full round, every level clearable), badges, fields and hats, and the first 30 seconds.
+- [x] Home breathes, and a loading bar. **AP 1.0.10**. The home screen is Alice's burrow: the same sky, hills, and grass. Alice grooms, Wonderland's ears twitch, and a butterfly crosses. Tiles bounce in. Pixel Alice runs along the loading bar. Soon tiles keep the lock.
+- [ ] ON HOLD: `briefs/fixq/alice-ov4-loop.md`: sim lookout-2 (a full round, every level clearable), badges, fields and hats, and the first 30 seconds. This was listed as AP 1.0.10 before the burrow cut took that number.
 - [ ] `briefs/fixq/alice-100d.md`: Alice Dress Up: the wardrobe, the photo booth, and outfit codes. AP 1.0.11, after the overhaul.
 - [ ] `briefs/fixq/alice-100e.md`: TechWorks marks, offline, launch safety. AP 1.0.12.
 - [ ] `briefs/fixq/alice-110a.md`: Prairie Dash: the run, the 16-bit look, and six class levels.
@@ -57,6 +58,7 @@ Plans and reference:
 - Commit author: trebiluk <6373031+trebiluk@users.noreply.github.com>. Push to main and reply with the sha.
 
 ## 5. Proof changelog
+- `alice-1.0.10`: Home is the burrow entrance, with the same sky, hills, and grass. Alice grooms, Wonderland's ears twitch, and a butterfly crosses. Tiles bounce in with a stagger. The loading bar has pixel Alice running along it. Soon tiles keep the lock. Sim hash stays `0f5b63db7039`.
 - `alice-1.0.9`: Alice pops up with a dust puff, looks toward the threat, and ducks when it is over. The hawk's shadow grows, then the hawk flaps in on a curve. The coyote trots, the snake slithers in the grass, a cloud shadow drifts, the rabbit hops, the tumbleweed rolls, and Wonderland waves. The same seed and taps score the same upright and sideways. Sim hash stays `0f5b63db7039`.
 - `alice-1.0.8`: sky, far hills, near hills, a tilemap field, and foreground grass. Tufts sway, butterflies fly, grasshoppers hop, and a bird line passes. Sunny, Breezy, Drizzle, Snowy, and Night. Motion-off holds still outside the threat. Sim hash stays `0f5b63db7039`.
 - `alice-1.0.7`: cards cover the controls and pause the round. Help and the speaker measure 15.79:1 and 14.12:1 on the navy button. A cleared round says High five, not both. Alice's pop plays three frames. Arabic goal text is RTL. The 1.0.6 fit, rotate, Less motion, Lite, clock, and pixel hash still pass.

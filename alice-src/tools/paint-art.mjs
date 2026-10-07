@@ -1,5 +1,6 @@
 /* Author the text grids in art/sprites.txt. pixels.mjs is what the build runs. */
 import { writeFileSync } from "fs";
+import { RUN } from "../src/game/home-art.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -227,6 +228,30 @@ for (const pose of ["idle", "hop", "wave"]) {
     frame("wonder-" + pose + "-" + i, g);
   }
 }
+function aliceGroom(step) {
+  const g = dog("P", "look");
+  const pawX = step === 1 ? 7 : 6;
+  const pawY = step === 0 ? 7 : step === 1 ? 6 : 8;
+  put(g, pawX, pawY, "F");
+  put(g, pawX + 1, pawY, "K");
+  if (step === 1) put(g, 8, 8, "U");
+  if (step === 2) put(g, 7, 9, "F");
+  return g;
+}
+
+function wonderEar(step) {
+  const g = dog("B", "look");
+  put(g, 5, 1, "K");
+  put(g, 5, 2, "B");
+  if (step === 0) { put(g, 10, 1, "K"); put(g, 10, 2, "B"); }
+  if (step === 1) { put(g, 11, 2, "K"); put(g, 11, 3, "B"); }
+  if (step === 2) { put(g, 10, 0, "K"); put(g, 10, 1, "B"); put(g, 10, 2, "B"); }
+  return g;
+}
+
+for (let i = 0; i < 3; i++) frame("alice-groom-" + i, aliceGroom(i));
+for (let i = 0; i < 3; i++) frame("wonder-ear-" + i, wonderEar(i));
+RUN.forEach((rows, i) => frame("alice-run-" + i, rows));
 frame("hawk-flap-0", hawk("down"));
 frame("hawk-flap-1", hawk("up"));
 frame("hawk-swoop", hawk("swoop"));

@@ -6,7 +6,7 @@ import { dailyLevel, dailySeed, endlessLevel } from "../modes.js";
 import { createPrairie, dailyWeather } from "../world.js";
 import { bands, poseNow } from "../ui/bands.js";
 import { fitButton, hideButton, intScale, makeButton } from "../ui/widgets.js";
-import { flyPath, lite, motionOff } from "../fx.js";
+import { bounceIn, crossBug, decorOn, lite, motionOff } from "../fx.js";
 
 const TILES = [
   ["lookout", "lookout", "alice-wave-0", true],
@@ -27,12 +27,12 @@ export class Burrow extends window.Phaser.Scene {
     this.cameras.main.setBackgroundColor(skyOf(this.save.settings.look));
     this.cameras.main.setScroll(0, 0);
     this.prairie = createPrairie(this);
-    this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(2);
-    this.alice = this.add.sprite(0, 0, "lookout", "alice-look-0").play("alice-look").setDepth(2);
-    this.wonder = this.add.sprite(0, 0, "lookout", "wonder-idle-0").play("wonder-idle").setDepth(2);
-    this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(2));
-    this.butter = this.add.sprite(0, 0, "lookout", "butterfly-0").play("butterfly").setDepth(3);
-    this.hopper = this.add.sprite(0, 0, "lookout", "hopper-0").play("hopper").setDepth(3);
+    this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(5);
+    this.alice = this.add.sprite(0, 0, "lookout", "alice-groom-0").play("alice-groom").setDepth(8);
+    this.wonder = this.add.sprite(0, 0, "lookout", "wonder-ear-0").play("wonder-ear").setDepth(8);
+    this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(6));
+    this.butter = this.add.sprite(0, 0, "lookout", "butterfly-0").play("butterfly").setDepth(9).setVisible(false);
+    this.hopper = this.add.sprite(0, 0, "lookout", "hopper-0").play("hopper").setDepth(8);
     this.seedText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f5c446" }).setDepth(4);
     this.classText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setDepth(4);
     this.tiles = TILES.map((row, i) => this.makeTile(row[0], row[1], row[2], row[3], i));
@@ -42,11 +42,13 @@ export class Burrow extends window.Phaser.Scene {
     this.endlessGo = this.makeGo("endless");
     this.onResize = (s) => { if (this.scene.isActive()) this.layout(s.width, s.height); };
     this.onLang = () => this.layout(this.scale.width, this.scale.height);
-    this.onHome = () => { this.mode = "home"; this.save = loadSave(); this.layout(this.scale.width, this.scale.height); };
+    this.onHome = () => { this.mode = "home"; this.wantBounce = true; this.save = loadSave(); this.layout(this.scale.width, this.scale.height); };
     this.onLook = () => {
       this.cameras.main.setBackgroundColor(skyOf(loadSave().settings.look));
       if (this.scene.isActive()) this.layout(this.scale.width, this.scale.height);
     };
+    this.wantBounce = true;
+    this.bugNext = 400;
     this.layout(this.scale.width, this.scale.height);
     this.scale.on("resize", this.onResize);
     window.addEventListener("ap-lang", this.onLang);
@@ -60,10 +62,53 @@ export class Burrow extends window.Phaser.Scene {
       window.removeEventListener("ap-look", this.onLook);
       window.clearInterval(this.clock);
     });
+    this.alice.play("alice-groom");
+    this.wonder.play("wonder-ear");
     if (motionOff()) this.anims.pauseAll();
   }
-  update() {
+  update(time) {
     if (this.prairie && this.mode === "home") this.prairie.tick(this.hole);
+    this.tickBug(time || 0);
+    this.publish();
+  }
+  tickBug(time) {
+    if (!this.butter) return;
+    if (this.mode !== "home" || !decorOn()) {
+      const prev = this.butter.getData("cross");
+      if (prev) {
+        try { prev.remove(); } catch (e) {}
+        this.butter.setData("cross", null);
+      }
+      this.butter.setVisible(false);
+      return;
+    }
+    if (this.butter.getData("cross")) return;
+    if (time < (this.bugNext || 0)) return;
+    const w = this.scale.width;
+    const y = Math.round((this.prairie && this.prairie.field ? this.prairie.field.y : 40) + Math.min(36, (this.prairie.field.h || 80) * 0.28));
+    const flip = rtl();
+    this.butter.setFlipX(flip);
+    crossBug(this, this.butter, flip ? w + 18 : -18, flip ? -18 : w + 18, y, 3600);
+    this.bugNext = time + 5200;
+  }
+  publish() {
+    const now = (this.time && this.time.now) || 0;
+    if (now < (this.pubAt || 0)) return;
+    this.pubAt = now + 250;
+    const live = document.getElementById("live");
+    if (!live || !this.alice) return;
+    const name = (spr) => (spr && spr.frame && spr.frame.name) || "";
+    live.dataset.loader = "0";
+    live.dataset.groom = name(this.alice);
+    live.dataset.ear = name(this.wonder);
+    live.dataset.bug = this.butter && this.butter.visible ? String(Math.round(this.butter.x)) : "";
+    live.dataset.layers = this.prairie ? String(this.prairie.layers()) : "0";
+    live.dataset.parts = this.prairie ? String(this.prairie.parts()) : "0";
+    live.dataset.objs = String(this.children && this.children.list ? this.children.list.length : 0);
+    const loop = this.game && this.game.loop;
+    live.dataset.fps = String(Math.round((loop && loop.actualFps) || 0));
+    const renderer = this.game && this.game.renderer;
+    live.dataset.renderer = renderer && renderer.type === 1 ? "canvas" : "webgl";
   }
   makeTile(id, key, frame, live, index) {
     const box = makeButton(this, "tile-" + id, () => {
@@ -146,27 +191,26 @@ export class Burrow extends window.Phaser.Scene {
     this.hole.setVisible(showCast);
     this.alice.setVisible(showCast);
     this.wonder.setVisible(showCast);
-    this.butter.setVisible(showCast);
+    if (!(showCast && this.butter.getData("cross"))) this.butter.setVisible(false);
     this.hopper.setVisible(showCast && !lite());
     this.cast.forEach((spr) => spr.setVisible(showCast));
     if (showCast) {
-      intScale(this.hole, 36);
-      intScale(this.alice, Math.min(64, b.cast.h - 8));
-      intScale(this.wonder, Math.min(64, b.cast.h - 8));
-      const mid = b.cast.y + b.cast.h * 0.62;
-      this.hole.setPosition(b.cast.x + b.cast.w * 0.5, mid + 8);
-      this.alice.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.62 : 0.28), mid - 8);
-      this.wonder.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.28 : 0.62), mid - 4);
+      intScale(this.hole, Math.min(44, Math.max(28, b.cast.h - 28)));
+      const body = Math.min(48, Math.max(32, b.cast.h - 36));
+      intScale(this.alice, body);
+      intScale(this.wonder, body);
+      const foot = b.cast.y + b.cast.h - 2;
+      this.hole.setPosition(b.cast.x + b.cast.w * 0.5, foot - 6);
+      this.alice.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.64 : 0.34), foot - this.alice.displayHeight * 0.42);
+      this.wonder.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.34 : 0.66), foot - this.wonder.displayHeight * 0.42);
       const step = Math.max(28, Math.floor(b.cast.w / (this.cast.length + 1)));
       this.cast.forEach((spr, i) => {
-        intScale(spr, 28);
-        spr.setPosition(b.cast.x + 16 + step * i, b.cast.y + 18);
+        intScale(spr, 16);
+        spr.setPosition(b.cast.x + 12 + step * i, b.cast.y + 10);
       });
-      intScale(this.butter, 24);
-      intScale(this.hopper, 24);
-      this.butter.setPosition(b.cast.x + b.cast.w - 24, b.cast.y + 16);
-      this.hopper.setPosition(b.cast.x + 20, b.cast.y + b.cast.h - 16);
-      flyPath(this, this.butter, this.butter.x, this.butter.y - 6, 22, 2100);
+      intScale(this.butter, 22);
+      intScale(this.hopper, 22);
+      this.hopper.setPosition(b.cast.x + 22, b.cast.y + b.cast.h - 14);
       const seeds = t("seeds") + " " + (this.save.seeds || 0);
       this.seedText.setText(seeds).setVisible(true);
       this.seedText.setPosition(rtl() ? b.cast.x + b.cast.w - this.seedText.width - 8 : b.cast.x + 8, b.cast.y + b.cast.h - 22);
@@ -175,7 +219,9 @@ export class Burrow extends window.Phaser.Scene {
       this.seedText.setVisible(false);
       this.classText.setVisible(false);
     }
-    const field = { x: 0, y: Math.round(h * 0.22), w: w, h: Math.max(80, h - Math.round(h * 0.22)) };
+    const field = home
+      ? { x: 0, y: b.cast.y, w: w, h: Math.max(64, b.cast.h) }
+      : { x: 0, y: Math.round(h * 0.22), w: w, h: Math.max(80, h - Math.round(h * 0.22)) };
     const mound = showCast ? { x: this.hole.x, y: this.hole.y } : { x: w * 0.5, y: field.y + field.h * 0.62 };
     if (this.prairie) this.prairie.layout(w, h, field, [mound], dailyWeather(), 11);
     this.tiles.forEach((tile, n) => {
@@ -184,6 +230,14 @@ export class Burrow extends window.Phaser.Scene {
       const word = t(row[1]) + (row[3] ? "" : "\n" + t("soon"));
       this.place(tile, b.tiles[n], word, row[3] ? row[2] : "lock");
     });
+    if (home && this.wantBounce) {
+      this.wantBounce = false;
+      const gen = (this.bounceGen = (this.bounceGen || 0) + 1);
+      window.setTimeout(() => {
+        if (gen !== this.bounceGen || this.mode !== "home") return;
+        this.tiles.forEach((tile, n) => bounceIn(tile.btn, n * 40));
+      }, 50);
+    }
     this.levels.forEach((tile, n) => {
       if (!showCards) { hideButton(tile); return; }
       const rect = b.cards[n];

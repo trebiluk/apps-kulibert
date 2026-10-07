@@ -420,4 +420,72 @@ export function rideWeed(sprite, pose, on) {
   sprite.setRotation(pose.rot || 0);
 }
 
+export function backOut(t) {
+  const v = Math.max(0, Math.min(1, Number(t) || 0)) - 1;
+  const s = 1.70158;
+  return v * v * ((s + 1) * v + s) + 1;
+}
+
+export function bounceIn(el, delayMs) {
+  if (!el) return "still";
+  el.style.transform = "";
+  if (motionOff() || typeof el.animate !== "function") {
+    el.dataset.bounce = "still";
+    el.dataset.bounceDelay = "0";
+    return "still";
+  }
+  const frames = [];
+  const steps = 10;
+  for (let i = 0; i <= steps; i++) {
+    const s = 0.2 + 0.8 * backOut(i / steps);
+    frames.push({ transform: "scale(" + s.toFixed(4) + ")", offset: i / steps });
+  }
+  try {
+    el.animate(frames, { duration: 420, delay: Math.max(0, delayMs || 0), easing: "linear", fill: "none" });
+  } catch (e) {
+    el.dataset.bounce = "still";
+    el.dataset.bounceDelay = "0";
+    return "still";
+  }
+  el.dataset.bounce = "go";
+  el.dataset.bounceDelay = String(delayMs || 0);
+  return "go";
+}
+
+export function loaderX(p, x0, x1, rtlOn) {
+  const u = Math.max(0, Math.min(1, Number(p) || 0));
+  const along = rtlOn ? 1 - u : u;
+  return Math.round(x0 + (x1 - x0) * along);
+}
+
+export function crossBug(scene, sprite, x0, x1, y, dur) {
+  if (!sprite || !scene) return;
+  const prev = sprite.getData("cross");
+  if (prev) {
+    try { prev.remove(); } catch (e) {}
+    sprite.setData("cross", null);
+  }
+  sprite.setPosition(Math.round(x0), Math.round(y));
+  if (!decorOn()) {
+    sprite.setVisible(false);
+    return;
+  }
+  sprite.setVisible(true);
+  try {
+    const tw = scene.tweens.add({
+      targets: sprite,
+      x: Math.round(x1),
+      duration: dur || 3200,
+      ease: "Sine.easeInOut",
+      onComplete: () => {
+        sprite.setData("cross", null);
+        sprite.setVisible(false);
+      },
+    });
+    sprite.setData("cross", tw);
+  } catch (e) {
+    sprite.setVisible(false);
+  }
+}
+
 

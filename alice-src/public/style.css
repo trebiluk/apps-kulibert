@@ -35,6 +35,7 @@ body.ap-card .ap-hit.ap-scene { display: none !important; }
   min-width: 48px; min-height: 48px; padding: 2px 4px;
   border-radius: 12px; border: 3px solid #fde68a; background: #0b1f3a; color: #f8fafc;
   font-weight: 700; font-size: 15px; line-height: 1.1; text-align: center;
+  transform-origin: center center;
 }
 .ap-hit[hidden] { display: none !important; }
 .ap-hit .ap-lab, .ap-hit .ap-ico { pointer-events: none; max-width: 100%; }

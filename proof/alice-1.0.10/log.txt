@@ -1,0 +1,14 @@
+LOADER {"loader":"1","p":"0.75","rx":"270","run":"1","plate":"AP 1.0.10"} then {"p":"0.75","rx":"270","run":"0","loader":"1"}
+HOME412 {"plate":"AP 1.0.10","text":"Home","groom":"alice-groom-2","ear":"wonder-ear-2","bug":"62","layers":"4","parts":"36","objs":"82","fps":"59","renderer":"webgl","loader":"0"}
+TILES412 tile-lookout alice-wave-0 bounce go@0 196x205 | tile-dress lock bounce go@40 196x205 | tile-burrow lock bounce go@80 196x205 | tile-signals lock bounce go@120 196x205 | tile-dash lock bounce go@160 196x205 | tile-dig lock bounce go@200 196x205
+PICKER {"text":"Class","l01":true,"lookoutHidden":true}
+HOME915 {"plate":"AP 1.0.10","text":"Home","groom":"alice-groom-1","ear":"wonder-ear-1","bug":"18","layers":"4","parts":"36","objs":"82","fps":"60","renderer":"webgl","loader":"0"}
+ROTATE alice-groom-1 -> alice-groom-0 layers 4 tiles 6
+ROTATE PICKER ok
+HOME1366 {"plate":"AP 1.0.10","text":"Home","groom":"alice-groom-1","ear":"wonder-ear-0","bug":"217","layers":"4","parts":"36","objs":"82","fps":"50","renderer":"webgl","loader":"0"}
+FPS4x 34 renderer webgl objs 82 parts 36 layers 4
+FIT360 n 6 bad []
+MOTION {"plate":"AP 1.0.10","text":"Home","groom":"alice-groom-0","ear":"wonder-ear-0","bug":"","layers":"4","parts":"0","objs":"82","fps":"60","renderer":"webgl","loader":"0"} later {"groom":"alice-groom-0","ear":"wonder-ear-0","bug":""} bounce still,still,still,still,still,still
+LITE {"plate":"AP 1.0.10","text":"Home","groom":"alice-groom-0","ear":"wonder-ear-2","bug":"","layers":"1","parts":"0","objs":"15","fps":"60","renderer":"canvas","loader":"0"}
+GZ 522263 /alice/vendor/phaser-3.90.0-arcade.min.js 285337 | /fonts/noto-sans-ethiopic-400.woff2 75131 | /fonts/noto-sans-arabic-400.woff2 48638 | /alice/assets/index-BD4HaEkW.js 39333 | /alice/fonts/atkinson-hyperlegible-700.woff2 17644 | /alice/fonts/atkinson-hyperlegible-400.woff2 17212 | /shared/kulibert-bar.js 7625 | /fonts/noto-sans-cyrillic-400.woff2 7119 | /shared/kulibert-prefs.js 5061 | /alice/assets/sfx.ogg 4002 | /alice/assets/sprites/lookout-pixel.png 3904 | /shared/kw-who.js 3613
+ERRORS 0 
