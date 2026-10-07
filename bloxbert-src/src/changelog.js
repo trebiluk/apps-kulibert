@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.62', date: '2026-10-07', lines: {
+    en: ['In the Build Tray you can drag or tap each part into its slot, or tap Fill.'],
+    uk: ['У лотку збірки можна перетягнути або торкнути кожну деталь у її комірку, або натиснути Наповни.'],
+    ru: ['В лотке сборки можно перетащить или нажать каждую деталь в её ячейку, или нажать Заполни.'],
+    es: ['En la bandeja puedes arrastrar o tocar cada pieza a su casilla, o tocar Llenar.'],
+    ar: ['في صينية البناء يمكنك سحب كل جزء أو نقره في خانته، أو نقر املأ.'],
+    'fa-AF': ['در سینی ساخت می‌توانی هر تکه را بکشی یا بزنی در خانه‌اش، یا پر کن را بزنی.'],
+    rw: ['Mu gatebe ushobora gukurura cyangwa gukanda buri gice mu kigice cyacyo, cyangwa gukanda Uzuza.'],
+    ti: ['ኣብ ትሪ ህንጻ ነፍሲ ወከፍ ክፋል ናብ ቦታኡ ስሓብ ወይ ጠውቕ፡ ወይ መልእ ጠውቕ።'],
+  }},
   { v: '2.5.61', date: '2026-10-07', lines: {
     en: ['The Bag is easier to read, and you can tap or drag to move things around.'],
     uk: ['Сумку легше читати, і речі можна переносити дотиком або перетягуванням.'],

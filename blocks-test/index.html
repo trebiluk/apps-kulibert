@@ -309,6 +309,30 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .gate-chip{display:inline-flex;align-items:center;min-height:28px;margin-top:6px;padding:4px 8px;border-radius:999px;background:#08131A;color:#E6EEF2;border:2px solid #1F8A8A;font-size:13px;font-weight:700}
 #sheet[data-panel="crafting"] .keycap{min-width:44px;min-height:44px;padding:8px 14px;border:0;border-radius:8px;background:#13303A;color:#E6EEF2;box-shadow:0 4px 0 #0B2A30;font-weight:800}
 #sheet[data-panel="crafting"] .keycap:disabled{color:#E6EEF2;opacity:1}
+#sheet[data-panel="crafting"] .keys{position:static;inset:auto;z-index:auto;max-width:none;background:none;border:0;padding:0;color:inherit;font-size:inherit;line-height:inherit;white-space:normal}
+#sheet[data-panel="crafting"] .tray{display:flex;flex-direction:column;gap:8px;min-width:0}
+#sheet[data-panel="crafting"] .bag-strip{display:flex;flex-wrap:wrap;gap:6px;max-width:100%}
+#sheet[data-panel="crafting"] .bag-strip .well{width:56px;min-width:56px;height:56px;min-height:56px;padding:2px;touch-action:none}
+#sheet[data-panel="crafting"] .bag-strip .well.pick{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
+#sheet[data-panel="crafting"] .well.ing.ghost .art{opacity:.35}
+#sheet[data-panel="crafting"] .well.ing.bad{outline:3px solid #F6C453;border-color:#F6C453}
+#sheet[data-panel="crafting"] .well.ing .check{position:absolute;top:2px;inset-inline-end:2px;min-width:18px;height:18px;border-radius:9px;background:#22D3EE;color:#08131A;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center}
+#sheet[data-panel="crafting"] .slot-chip{margin:0;display:inline-flex;align-items:center;min-height:28px;padding:4px 8px;border-radius:999px;background:#08131A;color:#E6EEF2;border:2px solid #F6C453;font-size:13px;font-weight:700}
+#sheet[data-panel="crafting"] .keycap.make:disabled{opacity:.45}
+#sheet[data-panel="crafting"] .keycap.make.lit{background:#1F8A8A;box-shadow:0 0 0 3px #22D3EE,0 4px 0 #0B2A30}
+.tray-ghost{position:fixed;z-index:80;width:40px;height:40px;margin:-20px 0 0 -20px;pointer-events:none;display:grid;place-items:center}
+.tray-ghost canvas,.tray-ghost svg{width:36px;height:36px}
+@media (max-width:520px){
+  #sheet[data-panel="crafting"] .bag-strip{display:grid;grid-template-rows:repeat(2,56px);grid-auto-flow:column;grid-auto-columns:56px;overflow-x:auto;max-width:100%}
+}
+@media (max-height:480px) and (min-width:700px){
+  #sheet[data-panel="crafting"] .tray{display:grid;grid-template-columns:auto auto;grid-template-areas:"line strip" "gate strip" "chip strip" "keys strip";align-items:start;justify-content:start}
+  #sheet[data-panel="crafting"] .tray-line{grid-area:line}
+  #sheet[data-panel="crafting"] .gate-chip{grid-area:gate}
+  #sheet[data-panel="crafting"] .slot-chip{grid-area:chip}
+  #sheet[data-panel="crafting"] .keys{grid-area:keys}
+  #sheet[data-panel="crafting"] .bag-strip{grid-area:strip;display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;align-content:start;max-height:calc(5 * 56px + 4 * 6px);overflow:auto}
+}
 #sheet[data-panel="station"] .station-crate,
 #sheet[data-panel="bench"] .station-crate{display:grid;grid-template-columns:88px minmax(56px,1fr) 96px;grid-template-areas:"in arrow out" "fuel arrow out" "picks picks picks";gap:8px}
 #sheet[data-panel="station"] .slot-in,#sheet[data-panel="bench"] .slot-in{grid-area:in}
@@ -470,7 +494,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.61</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.62</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -509,7 +533,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">The Bag is easier to read, and you can tap or drag to move things around.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">In the Build Tray you can drag or tap each part into its slot, or tap Fill.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -609,7 +633,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.61" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.61" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.62" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.62" defer></script>
 </body>
 </html>

@@ -641,15 +641,71 @@ export function createSession(api) {
   let craftOpen = false
   let craftId = ''
   let craftFx = ''
+  let trayPick = ''
+  let trayPickSlot = -1
+  let trayId = ''
+  let trayPlaced = []
+  let trayWatch = false
+  let trayGesture = 0
+  function trayGiveBack(item, n) {
+    if (!item || !(n > 0)) return
+    const left = bag.add(item, n)
+    if (left) lostAdd(item, left)
+  }
+  function returnTray() {
+    const r = RECIPES.find((x) => x.id === trayId)
+    let moved = false
+    if (r) r.in.forEach((pair, i) => {
+      const n = trayPlaced[i] || 0
+      if (!n) return
+      trayGiveBack(pair[0], n)
+      trayPlaced[i] = 0
+      moved = true
+    })
+    if (moved) paintHotbar()
+  }
+  function armTrayWatch() {
+    if (trayWatch) return
+    const sheet = document.getElementById('sheet')
+    if (!sheet) return
+    trayWatch = true
+    const obs = new MutationObserver(() => {
+      if (sheet.hidden || sheet.dataset.panel !== 'crafting') returnTray()
+    })
+    obs.observe(sheet, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
+  }
+  function heldCount(r, item) {
+    let n = bag.count(item)
+    if (r && r.id === trayId) r.in.forEach((pair, i) => { if (pair[0] === item) n += trayPlaced[i] || 0 })
+    return n
+  }
+  function syncTray(id) {
+    if (trayId === id) return
+    returnTray()
+    trayId = id
+    const rr = RECIPES.find((x) => x.id === id)
+    trayPlaced = rr ? rr.in.map(() => 0) : []
+  }
+  function seenBag(id) {
+    const r = id ? RECIPES.find((x) => x.id === id) : null
+    return { count: (item) => heldCount(r, item) }
+  }
   function paintCraft(g) {
+    armTrayWatch()
     g.innerHTML = ''
     g.classList.add('crate')
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
-    const rows = RECIPES.map((r) => ({ r, st: craftStatus(r, bag, stations, mode !== 'survival') }))
+    let rows = RECIPES.map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
     if (!rows.some((x) => x.r.id === craftId)) {
       const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
       craftId = pick ? pick.r.id : ''
     }
+    syncTray(craftId)
+    rows = RECIPES.map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
+    if (trayPickSlot >= 0) {
+      const held = bag.slots[trayPickSlot]
+      if (!held || held.item !== trayPick) { trayPick = ''; trayPickSlot = -1 }
+    } else if (trayPick && !bag.count(trayPick)) trayPick = ''
     const fxKind = craftFx
     craftFx = ''
     const tray = document.createElement('div')
@@ -659,7 +715,6 @@ export function createSession(api) {
     const side = document.createElement('div')
     side.className = 'tray'
     const ingWells = []
-    const missWells = []
     let resultEl = null
     const drawWells = (list) => {
       if (!list.length) return
@@ -691,7 +746,12 @@ export function createSession(api) {
           else line.textContent = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll')
           b.append(line)
         }
-        b.addEventListener('click', () => { craftId = r.id; craftFx = 'slide'; paintCraft(g) })
+        b.addEventListener('click', () => {
+          if (r.id !== craftId) returnTray()
+          craftId = r.id
+          craftFx = 'slide'
+          paintCraft(g)
+        })
         row.append(b)
       }
       book.append(row)
@@ -720,27 +780,82 @@ export function createSession(api) {
     const chosen = rows.find((x) => x.r.id === craftId) || rows[0]
     if (chosen) {
       const { r, st } = chosen
+      if (trayPlaced.length !== r.in.length) trayPlaced = r.in.map((_, i) => trayPlaced[i] || 0)
+      const placePart = (item, index) => {
+        const needItem = r.in[index][0]
+        const needN = r.in[index][1]
+        if (item !== needItem) {
+          const well = side.querySelector('.ing[data-i="' + index + '"]')
+          if (well) {
+            well.classList.add('bad')
+            fx(well, 'shake')
+          }
+          const chip = side.querySelector('.slot-chip')
+          if (chip) {
+            chip.hidden = false
+            chip.textContent = t('slotNeeds').replace('{item}', itemName(needItem))
+          }
+          return false
+        }
+        const room = needN - (trayPlaced[index] || 0)
+        const takeN = Math.min(bag.count(item), room)
+        if (takeN <= 0) return false
+        if (!bag.take(item, takeN)) return false
+        trayPlaced[index] = (trayPlaced[index] || 0) + takeN
+        paintHotbar()
+        paintCraft(g)
+        return true
+      }
+      const returnSlot = (index) => {
+        const n = trayPlaced[index] || 0
+        if (!n) return
+        trayGiveBack(r.in[index][0], n)
+        trayPlaced[index] = 0
+        paintHotbar()
+        paintCraft(g)
+      }
       const line = document.createElement('div')
       line.className = 'tray-line'
       r.in.forEach(([item, n], i) => {
-        const have = bag.count(item)
-        const well = document.createElement('div')
-        well.className = 'well ing' + (have < n ? ' short' : '')
+        const placed = trayPlaced[i] || 0
+        const well = document.createElement('button')
+        well.type = 'button'
+        well.className = 'well ing' + (placed ? '' : ' ghost') + (placed >= n ? ' done' : '')
+        well.dataset.i = String(i)
+        well.dataset.placed = String(placed)
+        well.dataset.need = item
+        well.setAttribute('aria-label', itemName(item) + ' ' + placed + '/' + n)
         const art = document.createElement('span')
         art.className = 'art'
         art.append(itemIcon(ITEMS[item]))
         well.append(art)
         const badge = document.createElement('span')
         badge.className = 'badge'
-        badge.textContent = have + '/' + n
+        badge.textContent = placed + '/' + n
         well.append(badge)
         const lab = document.createElement('span')
         lab.className = 'wlab'
-        lab.textContent = have < n ? t('shortN').replace('{n}', String(n - have)) : itemName(item)
+        lab.textContent = itemName(item)
         well.append(lab)
+        if (placed >= n) {
+          const check = document.createElement('span')
+          check.className = 'check'
+          check.textContent = '✓'
+          check.setAttribute('aria-hidden', 'true')
+          well.append(check)
+        }
+        well.addEventListener('click', () => {
+          if (performance.now() - trayGesture < 450) return
+          const have = trayPlaced[i] || 0
+          if (trayPick) {
+            if (have >= n && trayPick === item) { returnSlot(i); return }
+            placePart(trayPick, i)
+            return
+          }
+          if (have > 0) returnSlot(i)
+        })
         line.append(well)
         ingWells.push(well)
-        if (have < n) missWells.push(well)
       })
       const arrow = document.createElement('div')
       arrow.className = 'chunk-arrow'
@@ -758,6 +873,70 @@ export function createSession(api) {
       resultEl.append(lab)
       line.append(resultEl)
       side.append(line)
+      const bagRow = document.createElement('div')
+      bagRow.className = 'bag-strip'
+      bag.slots.forEach((s, si) => {
+        if (!s) return
+        const b = document.createElement('button')
+        b.type = 'button'
+        const picked = trayPickSlot === si
+        b.className = 'well bag-bit' + (picked ? ' pick' : '')
+        b.dataset.item = s.item
+        b.dataset.slot = String(si)
+        b.setAttribute('aria-pressed', String(picked))
+        b.setAttribute('aria-label', itemName(s.item) + ' ' + bag.count(s.item))
+        const pic = document.createElement('span')
+        pic.className = 'art'
+        pic.append(itemIcon(ITEMS[s.item]))
+        b.append(pic)
+        const badge = document.createElement('span')
+        badge.className = 'badge'
+        badge.textContent = String(s.n)
+        b.append(badge)
+        b.addEventListener('pointerdown', (e) => {
+          if (e.button && e.button !== 0) return
+          const item = s.item
+          const x0 = e.clientX
+          const y0 = e.clientY
+          let dragged = false
+          let ghost = null
+          const move = (ev) => {
+            if (!dragged && Math.hypot(ev.clientX - x0, ev.clientY - y0) > 8) {
+              dragged = true
+              ghost = document.createElement('div')
+              ghost.className = 'tray-ghost'
+              ghost.append(itemIcon(ITEMS[item]))
+              document.body.append(ghost)
+            }
+            if (ghost) {
+              ghost.style.left = ev.clientX + 'px'
+              ghost.style.top = ev.clientY + 'px'
+            }
+          }
+          const up = (ev) => {
+            document.removeEventListener('pointermove', move)
+            document.removeEventListener('pointerup', up)
+            document.removeEventListener('pointercancel', up)
+            if (ghost) ghost.remove()
+            if (!dragged) return
+            trayGesture = performance.now()
+            const hit = document.elementFromPoint(ev.clientX, ev.clientY)
+            const well = hit && hit.closest && hit.closest('#sheet .ing')
+            if (well && well.dataset.i != null) placePart(item, +well.dataset.i)
+          }
+          document.addEventListener('pointermove', move)
+          document.addEventListener('pointerup', up)
+          document.addEventListener('pointercancel', up)
+        })
+        b.addEventListener('click', () => {
+          if (performance.now() - trayGesture < 450) return
+          trayPick = s.item
+          trayPickSlot = si
+          paintCraft(g)
+        })
+        bagRow.append(b)
+      })
+      side.append(bagRow)
       if (st.station || st.gate) {
         const chip = document.createElement('span')
         chip.className = 'gate-chip'
@@ -765,19 +944,61 @@ export function createSession(api) {
         chip.textContent = which
         side.append(chip)
       }
+      const slotChip = document.createElement('p')
+      slotChip.className = 'slot-chip'
+      slotChip.hidden = true
+      slotChip.setAttribute('role', 'status')
+      side.append(slotChip)
       const keys = document.createElement('div')
       keys.className = 'keys'
+      const fillBtn = document.createElement('button')
+      fillBtn.type = 'button'
+      fillBtn.className = 'keycap fill'
+      fillBtn.textContent = t('fillTray')
+      fillBtn.addEventListener('click', () => {
+        let any = false
+        r.in.forEach(([item, n], i) => {
+          const room = n - (trayPlaced[i] || 0)
+          const takeN = Math.min(bag.count(item), room)
+          if (takeN > 0 && bag.take(item, takeN)) {
+            trayPlaced[i] = (trayPlaced[i] || 0) + takeN
+            any = true
+          }
+        })
+        if (any) paintHotbar()
+        paintCraft(g)
+      })
+      keys.append(fillBtn)
+      const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
+      const ready = full && !st.station && !st.gate
       const makeBtn = document.createElement('button')
       makeBtn.type = 'button'
-      makeBtn.className = 'keycap'
+      makeBtn.className = 'keycap make' + (ready ? ' lit' : '')
       makeBtn.textContent = t('make')
+      makeBtn.disabled = !ready
       makeBtn.addEventListener('click', () => {
-        const ok = craftMany(r, 1)
-        craftFx = ok ? 'make' : 'miss'
+        if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
+        if (st.station || st.gate) return
+        const outN = r.out[1]
+        const left = bag.add(r.out[0], outN)
+        if (left) {
+          if (outN - left) bag.take(r.out[0], outN - left)
+          api.toast(t('bagFull'))
+          paintCraft(g)
+          return
+        }
+        r.in.forEach((_, i) => { trayPlaced[i] = 0 })
+        markFound(r.out[0])
+        if (r.out[0] === 'woodTool') markPath('pathTool')
+        api.toast(t('make') + ' ' + itemName(r.out[0]))
+        craftFx = 'make'
+        paintHotbar()
         paintCraft(g)
       })
       keys.append(makeBtn)
-      const times = maxTimes(r, bag)
+      let times = 64
+      for (const [item, need] of r.in) times = Math.min(times, Math.floor(heldCount(r, item) / need))
+      if (!(times > 0)) times = 0
       const max = document.createElement('button')
       max.type = 'button'
       max.className = 'keycap'
@@ -785,8 +1006,12 @@ export function createSession(api) {
       max.disabled = !(st.ok && times > 1)
       max.addEventListener('click', () => {
         if (!st.ok || times < 2) return
-        craftMany(r, times)
-        craftFx = 'make'
+        returnTray()
+        const n = maxTimes(r, bag)
+        if (n > 1) {
+          craftMany(r, n)
+          craftFx = 'make'
+        }
         paintCraft(g)
       })
       keys.append(max)
@@ -796,11 +1021,10 @@ export function createSession(api) {
     g.append(tray)
     if (fxKind === 'slide') ingWells.forEach((el, i) => fx(el, 'in', i * 60))
     if (fxKind === 'make') {
-      const makeBtn = side.querySelector('.keycap')
+      const makeBtn = side.querySelector('.keycap.make')
       fx(makeBtn, 'squash')
       if (resultEl) fx(resultEl, 'pop')
     }
-    if (fxKind === 'miss') missWells.forEach((el) => fx(el, 'shake'))
   }
   function paintShop(g) {
     g.innerHTML = ''
