@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.47', date: '2026-10-06', lines: {
+    en: ['Your finger breaks the block it is on, and the hotbar shows what you picked up right away.'],
+    uk: ['Палець ламає блок, на якому він стоїть, і панель одразу показує, що ти підняв.'],
+    ru: ['Палец ломает блок, на котором он стоит, и панель сразу показывает, что ты поднял.'],
+    es: ['El dedo rompe el bloque donde está, y la barra muestra al momento lo que recogiste.'],
+    ar: ['إصبعك يكسر المكعب الذي عليه، والشريط يظهر ما التقطته فورًا.'],
+    'fa-AF': ['انگشتت بلاکی را که روی آن است می‌شکند، و نوار همان لحظه آنچه را برداشتی نشان می‌دهد.'],
+    rw: ['Urutoki ruvuna block ruriho, kandi umurongo werekana ako kanya icyo wakuye.'],
+    ti: ['ኣጻብዕቲ ብሎክ ኣብ ዘሎ ይስብሮ፡ መስመር ድማ ነቲ ዝለዓልካ ብኡንብኡ የርኢ።'],
+  }},
   { v: '2.5.46', date: '2026-10-06', lines: {
     en: ['Holding your finger on a block breaks it even if your finger wiggles a little, a tip shows you how, and the Pick button is now Copy.'],
     uk: ['Утримання пальця на блоці ламає його, навіть якщо палець трохи ворушиться, підказка показує як, і кнопка вибору тепер Копія.'],

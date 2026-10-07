@@ -94,14 +94,19 @@ export function createSession(api) {
   }
   function takeLost() {
     let got = 0
+    let first = ''
+    const wasEmpty = !bag.slots[hot]
     for (let i = 0; i < lost.length;) {
       const d = lost[i]
       const left = bag.add(d.item, d.n)
-      got += d.n - left
+      const took = d.n - left
+      got += took
+      if (took && !first) first = d.item
       if (left) { d.n = left; break }
       lost.splice(i, 1)
     }
-    if (got) { paintHotbar(); api.toast(t('pickedUp')); if (api.markDirty) api.markDirty() }
+    takeHand(first, wasEmpty)
+    if (got) { paintHotbar(); paintChip(); api.toast(t('pickedUp')); if (api.markDirty) api.markDirty() }
     else if (lost.length) api.toast(t('bagFull'))
     return got
   }
@@ -119,6 +124,8 @@ export function createSession(api) {
     const now = Date.now()
     const moved = stepMagnet(ground, dropPlayer, (dt || 16) / 1000, now)
     let got = 0
+    let first = ''
+    const wasEmpty = !bag.slots[hot]
     for (let i = ground.length - 1; i >= 0; i--) {
       const d = ground[i]
       if (!canPick(d, now) || !nearPlayer(d, dropFeet)) continue
@@ -126,11 +133,13 @@ export function createSession(api) {
       const took = d.n - left
       if (!took) continue
       got += took
+      if (!first) first = d.item
       markFound(d.item)
       if (left) d.n = left
       else ground.splice(i, 1)
     }
-    if (got) { paintHotbar(); api.toast(t('pickedUp')) }
+    takeHand(first, wasEmpty)
+    if (got) { paintHotbar(); paintChip(); api.toast(t('pickedUp')) }
     if (moved || got) { if (api.markDirty) api.markDirty(); return true }
     return false
   }
@@ -565,13 +574,19 @@ export function createSession(api) {
     const key = x + ',' + y + ',' + z
     const rec = meta.get(key)
     if (!rec || !rec.slots) return
+    let first = ''
+    const wasEmpty = !bag.slots[hot]
     for (const s of rec.slots) {
       if (!s || !s.n) continue
+      const before = bag.count(s.item)
       const left = bag.add(s.item, s.n)
+      if (!first && bag.count(s.item) > before) first = s.item
       if (left) spawnDrop(s.item, left, x + 0.5, y + 0.4, z + 0.5, 'full')
     }
     meta.delete(key)
+    takeHand(first, wasEmpty)
     paintHotbar()
+    paintChip()
   }
   function paintBox(g, key) {
     const rec = boxRec(key)
@@ -674,6 +689,12 @@ export function createSession(api) {
     rec.till = 0
     paintChip()
   }
+  function takeHand(item, wasEmpty) {
+    if (!wasEmpty || !item) return
+    if (bag.slots[hot] && bag.slots[hot].item === item) return
+    const i = bag.slots.findIndex((s) => s && s.item === item)
+    if (i >= 0 && i < 9) hot = i
+  }
   function markPath(id) { if (api.path) api.path(id) }
   function onBreak(x, y, z, id) {
     if (mode !== 'survival') return true
@@ -684,12 +705,14 @@ export function createSession(api) {
     const drop = dropOf(id)
     let got = 0
     let loose = 0
+    const wasEmpty = !bag.slots[hot]
     if (drop) {
       markFound(drop)
       const left = bag.add(drop, 1)
       got = 1 - left
       loose = left
       if (left) spawnDrop(drop, left, x + 0.5, y + 0.4, z + 0.5, 'full')
+      else takeHand(drop, wasEmpty)
     }
     if (id === 12 && !placedLeaves.has(x + ',' + y + ',' + z)) {
       const spot = x + ',' + y + ',' + z
@@ -705,6 +728,8 @@ export function createSession(api) {
     if (id === 11) markPath('pathTree')
     if (id === 3) markPath('pathStone')
     if (id === 5) markPath('pathCoal')
+    paintHotbar()
+    paintChip()
     return true
   }
   function onPlace(x, y, z, id) {
@@ -726,17 +751,33 @@ export function createSession(api) {
   }
   function pickup(x, y, z, id) {
     const key = x + ',' + y + ',' + z
+    const wasEmpty = !bag.slots[hot]
+    let first = ''
     if (id === 24) {
       const rec = meta.get(key)
       if (rec) {
-        for (const s of rec.slots) if (s) bag.add(s.item, s.n)
+        for (const s of rec.slots) if (s) {
+          const before = bag.count(s.item)
+          bag.add(s.item, s.n)
+          if (!first && bag.count(s.item) > before) first = s.item
+        }
+        const beforeVend = bag.count('vend')
         bag.add('vend', 1)
+        if (!first && bag.count('vend') > beforeVend) first = 'vend'
         if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
         meta.delete(key)
       }
       if (api.removeBlock) api.removeBlock(x, y, z)
     }
-    if (id === 26) { home = null; bag.add('bunk', 1) }
+    if (id === 26) {
+      home = null
+      const before = bag.count('bunk')
+      bag.add('bunk', 1)
+      if (!first && bag.count('bunk') > before) first = 'bunk'
+    }
+    takeHand(first, wasEmpty)
+    paintHotbar()
+    paintChip()
     return true
   }
   function beforeUndo() {

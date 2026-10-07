@@ -565,20 +565,27 @@ async function prove2543(browser, testUrl, note, errs) {
     }
     note('full bag drops', w + 'x' + h, drop.id === 0 && drop.drops.length > 0, JSON.stringify(drop).slice(0, 140))
     await shut(page, touch)
-    const boxAt = await lookSolid(page, 27, spawn)
-    if (boxAt) await page.evaluate((a) => window.__smoke.seedBox(a.x, a.y, a.z), boxAt)
-    await sleep(150)
-    const cBox = await centerOf(page)
-    await pressAt(page, cBox.x, cBox.y, 70, touch, 'right')
-    await sleep(300)
-    const box = await page.evaluate(() => ({
-      panel: document.getElementById('sheet').dataset.panel,
-      slots: document.querySelectorAll('#sheet-body .gtile.slot').length,
-      lock: document.pointerLockElement ? 'locked' : 'free',
-      menu: document.body.classList.contains('menu-open'),
-      canvas: getComputedStyle(document.querySelector('#stage canvas')).pointerEvents,
-    }))
-    note('box 18 pointer', w + 'x' + h, box.panel === 'box' && box.slots === 18 && box.lock === 'free' && box.menu && box.canvas === 'none', JSON.stringify(box))
+    let box = null
+    for (let attempt = 0; attempt < 3; attempt++) {
+      const boxAt = await lookSolid(page, 27, spawn)
+      if (boxAt) await page.evaluate((a) => window.__smoke.seedBox(a.x, a.y, a.z), boxAt)
+      await sleep(150)
+      const aimed = await page.evaluate(() => window.__smoke.aim())
+      if (!aimed || aimed.id !== 27) continue
+      const cBox = await centerOf(page)
+      await pressAt(page, cBox.x, cBox.y, 70, touch, 'right')
+      await sleep(300)
+      box = await page.evaluate(() => ({
+        panel: document.getElementById('sheet').dataset.panel,
+        slots: document.querySelectorAll('#sheet-body .gtile.slot').length,
+        lock: document.pointerLockElement ? 'locked' : 'free',
+        menu: document.body.classList.contains('menu-open'),
+        canvas: getComputedStyle(document.querySelector('#stage canvas')).pointerEvents,
+      }))
+      if (box.panel === 'box' && box.slots === 18) break
+      await shut(page, touch)
+    }
+    note('box 18 pointer', w + 'x' + h, !!(box && box.panel === 'box' && box.slots === 18 && box.lock === 'free' && box.menu && box.canvas === 'none'), JSON.stringify(box))
     await shut(page, touch)
     const ovenAt = await lookSolid(page, 23, spawn)
     await sleep(150)
@@ -676,11 +683,17 @@ async function prove2543(browser, testUrl, note, errs) {
       }), doorAt)
       note('sweep no use', '1366x768', !!doorAt && beforeDoor === 30 && swept.door === 30 && swept.hidden, beforeDoor + ' ' + JSON.stringify(swept))
       const flipAt = await lookSolid(page, 30, spawn)
+      let onDoor = false
+      for (let i = 0; i < 16 && flipAt; i++) {
+        const aimed = await page.evaluate(() => window.__smoke.aim())
+        if (aimed && aimed.id === 30 && aimed.x === flipAt.x && aimed.y === flipAt.y && aimed.z === flipAt.z) { onDoor = true; break }
+        await sleep(50)
+      }
       const cFlip = await centerOf(page)
       await pressAt(page, cFlip.x, cFlip.y, 50, false, 'right')
       await sleep(200)
       const flipped = await page.evaluate((d) => d ? window.__smoke.voxel(d.x, d.y, d.z) : -1, flipAt)
-      note('door flips once', '1366x768', flipped === 31, String(flipped))
+      note('door flips once', '1366x768', onDoor && flipped === 31, String(flipped))
     }
     await page.close()
   }
@@ -868,8 +881,13 @@ async function prove2543(browser, testUrl, note, errs) {
   const toastLog = await lookSolid(tip, 11, [8.5, 6.2, 16, Math.PI, 0.7])
   const toastC = await centerOf(tip)
   await tip.touchscreen.tap(toastC.x, toastC.y)
-  await sleep(150)
-  const toast1 = await tip.evaluate(() => ({ toast: window.__smoke.toast(), want: window.__smoke.word('holdToBreak') }))
+  let toast1 = { toast: '', want: '' }
+  const toastWait = Date.now()
+  while (Date.now() - toastWait < 600) {
+    toast1 = await tip.evaluate(() => ({ toast: window.__smoke.toast(), want: window.__smoke.word('holdToBreak') }))
+    if (toast1.toast === toast1.want) break
+    await sleep(40)
+  }
   await sleep(2600)
   await tip.touchscreen.tap(toastC.x, toastC.y)
   await sleep(150)
@@ -945,5 +963,170 @@ async function prove2543(browser, testUrl, note, errs) {
   const fitOk = fit360.text.includes('Copy') && fit360.w >= 44 && fit360.h >= 44 && fit360.x >= -1 && fit360.y >= -1 && fit360.x + fit360.w <= fit360.vw + 1 && fit360.y + fit360.h <= fit360.vh + 1
   note('jitter chop', '360x740', !!smallLive && smallLive.id === 11 && smallChop.id === 0 && smallChop.n === 1 && fitOk, JSON.stringify(smallChop) + ' ' + JSON.stringify(fit360))
   await small.page.close()
+
+  async function dragLook(page, dx, dy) {
+    const c = await centerOf(page)
+    const len = Math.hypot(dx, dy) || 1
+    const tx = dx + (24 * dx) / len
+    const ty = dy + (24 * dy) / len
+    await page.touchscreen.touchStart(c.x, c.y)
+    for (let i = 1; i <= 8; i++) {
+      await page.touchscreen.touchMove(c.x + (tx * i) / 8, c.y + (ty * i) / 8)
+      await sleep(16)
+    }
+    await page.touchscreen.touchEnd()
+    await sleep(50)
+  }
+  async function walkStick(page, ms) {
+    const pad = await page.evaluate(() => {
+      const r = document.getElementById('stick-pad').getBoundingClientRect()
+      return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+    })
+    await page.touchscreen.touchStart(pad.x, pad.y)
+    await page.touchscreen.touchMove(pad.x, pad.y - 40)
+    await sleep(ms)
+    await page.touchscreen.touchEnd()
+    await sleep(60)
+  }
+  async function findHit(page, kind) {
+    return page.evaluate((kind) => {
+      const c = document.querySelector('canvas').getBoundingClientRect()
+      const aim = window.__smoke.aim()
+      const cx = c.left + c.width / 2
+      const cy = c.top + c.height / 2
+      let best = null
+      for (let y = c.top + 16; y < c.bottom - 56; y += 14) {
+        for (let x = c.left + 10; x < c.right - 10; x += 14) {
+          const h = window.__smoke.hit(x, y)
+          if (!h) continue
+          const cd = Math.hypot(x - cx, y - cy)
+          let ok = false
+          if (kind === 'log') ok = h.x === 2 && h.y === 5 && h.z === 2 && cd > 30
+          else if (kind === 'road') ok = h.id === 7 && window.__smoke.kept(h.x, h.y, h.z)
+          else if (kind === 'grass') {
+            const p = window.__smoke.pos()
+            const ax = h.ax, ay = h.ay, az = h.az
+            const overlap = ax < p[0] + 0.3 && ax + 1 > p[0] - 0.3 && ay < p[1] + 1.8 && ay + 1 > p[1] && az < p[2] + 0.3 && az + 1 > p[2] - 0.3
+            ok = h.id === 1 && !window.__smoke.kept(h.x, h.y, h.z) && window.__smoke.voxel(ax, ay, az) === 0 && !overlap
+          }
+          if (!ok) continue
+          if (!best || cd < best.cd) best = { x, y, cd, h, aim }
+        }
+      }
+      return best
+    }, kind)
+  }
+  async function approachLog(page) {
+    await page.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+    await page.evaluate(() => { window.__smoke.fresh(); window.__smoke.emptyBag(); window.__smoke.key(0) })
+    for (let i = 0; i < 40; i++) {
+      const id = await page.evaluate(() => window.__smoke.world(2, 5, 2))
+      if (id === 11) break
+      await sleep(100)
+    }
+    await page.waitForFunction(() => window.__smoke.grounded(), { timeout: 8000 }).catch(() => {})
+    for (let step = 0; step < 12; step++) {
+      const st = await page.evaluate(() => {
+        const p = window.__smoke.pos()
+        const h = window.__smoke.heading()
+        const want = Math.atan2(2.5 - p[0], 2.5 - p[2])
+        let d = want - h
+        while (d > Math.PI) d -= Math.PI * 2
+        while (d < -Math.PI) d += Math.PI * 2
+        return { d, dist: Math.hypot(p[0] - 2.5, p[2] - 2.5) }
+      })
+      if (st.dist < 3.05) break
+      const px = st.d / (0.40 * Math.PI / 180)
+      if (Math.abs(px) > 10) await dragLook(page, Math.max(-150, Math.min(150, px)), 0)
+      await walkStick(page, 320)
+    }
+    for (const yaw of [0, 48, -48, 72, -72]) {
+      if (yaw) await dragLook(page, yaw, 8)
+      const spot = await findHit(page, 'log')
+      const aim = await page.evaluate(() => window.__smoke.aim())
+      const aimLog = !!(aim && aim.x === 2 && aim.y === 5 && aim.z === 2)
+      if (spot && !aimLog) return { spot, aim }
+    }
+    const spot = await findHit(page, 'log')
+    const aim = await page.evaluate(() => window.__smoke.aim())
+    return { spot, aim }
+  }
+  async function hudNow(page) {
+    return page.evaluate(() => {
+      const slot = document.querySelector('#hotbar .slot:not(.bag-tile)')
+      return {
+        tag: slot && slot.querySelector('.tag') ? slot.querySelector('.tag').textContent : '',
+        n: slot && slot.querySelector('.lbl') ? slot.querySelector('.lbl').textContent : '',
+        cur: document.getElementById('current').textContent,
+        log: window.__smoke.word('log'),
+        dirt: window.__smoke.word('dirt'),
+      }
+    })
+  }
+  for (const [w, h] of [[915, 412], [360, 740]]) {
+    const page = await bootHud(browser, testUrl + '?smoke=1&q=lite', w, h, true)
+    errs.push(...page.__err.map((e) => 'finger ' + e))
+    const got = await approachLog(page)
+    await page.evaluate(() => window.__smoke.key(0))
+    const aimLog = !!(got.aim && got.aim.x === 2 && got.aim.y === 5 && got.aim.z === 2)
+    const spot = got.spot
+    if (spot) await jitterHold(page, spot.x, spot.y, 2300)
+    await sleep(200)
+    const chopped = await page.evaluate(() => ({ id: window.__smoke.voxel(2, 5, 2), n: window.__smoke.count('log') }))
+    note('finger chop', w + 'x' + h, !!spot && !aimLog && chopped.id === 0 && chopped.n === 1, JSON.stringify({ aim: got.aim, spot: spot && { x: Math.round(spot.x), y: Math.round(spot.y) }, chopped }))
+    const hud = await hudNow(page)
+    note('hotbar after chop', w + 'x' + h, hud.tag === 'L' && hud.n === '1' && hud.cur === hud.log, JSON.stringify(hud))
+    if (w === 915) {
+      const road = await findHit(page, 'road')
+      let roadToast = ''
+      let roadId = -1
+      if (road) {
+        const before = road.h.id
+        await page.touchscreen.touchStart(road.x, road.y)
+        await sleep(1000)
+        roadToast = await page.evaluate(() => window.__smoke.toast())
+        await page.touchscreen.touchEnd()
+        await sleep(80)
+        roadId = await page.evaluate((b) => window.__smoke.voxel(b.x, b.y, b.z), road.h)
+        const want = await page.evaluate(() => window.__smoke.word('shopProtected'))
+        note('road finger', '915x412', roadId === before && roadToast === want, roadToast + ' id ' + roadId)
+      } else note('road finger', '915x412', false, 'no road')
+      const grass = await findHit(page, 'grass')
+      if (grass) {
+        await page.touchscreen.tap(grass.x, grass.y)
+        await sleep(200)
+        const placed = await page.evaluate((b) => ({
+          face: window.__smoke.voxel(b.ax, b.ay, b.az),
+          grass: window.__smoke.voxel(b.x, b.y, b.z),
+          n: window.__smoke.count('log'),
+        }), grass.h)
+        note('finger places', '915x412', placed.grass === 1 && placed.face === 11 && placed.n === 0, JSON.stringify(placed))
+      } else note('finger places', '915x412', false, 'no grass')
+    }
+    await page.close()
+  }
+  const mouse = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+  errs.push(...mouse.__err.map((e) => 'mousechop ' + e))
+  await mouse.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+  await mouse.evaluate(() => { window.__smoke.emptyBag(); window.__smoke.key(0) })
+  const mouseSpawn = [8.5, 6.2, 16, Math.PI, 0.7]
+  let dirt = null
+  let mouseGone = -1
+  for (let attempt = 0; attempt < 3 && mouseGone !== 0; attempt++) {
+    dirt = await lookSolid(mouse, 2, mouseSpawn)
+    if (!dirt) continue
+    const still = await mouse.evaluate((b) => {
+      const a = window.__smoke.aim()
+      return !!(a && a.id === 2 && a.x === b.x && a.y === b.y && a.z === b.z)
+    }, dirt)
+    if (!still) { dirt = null; continue }
+    const mc = await centerOf(mouse)
+    await holdAt(mouse, mc.x, mc.y, 1100, false)
+    await sleep(200)
+    mouseGone = await mouse.evaluate((b) => window.__smoke.voxel(b.x, b.y, b.z), dirt)
+  }
+  const mouseHud = await hudNow(mouse)
+  note('mouse crosshair', '1366x768', !!dirt && mouseGone === 0 && mouseHud.tag === 'D' && mouseHud.n === '1' && mouseHud.cur === mouseHud.dirt, mouseGone + ' ' + JSON.stringify(mouseHud))
+  await mouse.close()
 }
 

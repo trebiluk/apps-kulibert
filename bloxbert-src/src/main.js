@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.46'
+const VERSION = '2.5.47'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -13,6 +13,7 @@ import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import ATLAS from '../assets/atlas.json'
 import { STR } from './strings.js'
@@ -869,10 +870,6 @@ function bagPick(item, slot) {
   pick(id)
 }
 function aimed() {
-  if (lastPointer) {
-    const hit = rayAt(lastPointer.x, lastPointer.y)
-    if (hit) return hit
-  }
   if (noa.targetedBlock && noa.targetedBlock.blockID) return { id: noa.targetedBlock.blockID, pos: noa.targetedBlock.position }
   if (tableMode) {
     const id = getVoxel(tableCursor[0], tableCursor[1], tableCursor[2])
@@ -882,18 +879,41 @@ function aimed() {
 }
 function rayAt(cx, cy) {
   try {
+    if (!Ray) return null
     const scene = noa.rendering.getScene()
     const rect = canvas.getBoundingClientRect()
-    const hit = scene.pick(cx - rect.left, cy - rect.top)
-    if (!hit || !hit.hit || !hit.pickedPoint) return null
-    const n = hit.getNormal ? hit.getNormal() : { x: 0, y: 1, z: 0 }
-    const x = Math.floor(hit.pickedPoint.x - n.x * 0.05)
-    const y = Math.floor(hit.pickedPoint.y - n.y * 0.05)
-    const z = Math.floor(hit.pickedPoint.z - n.z * 0.05)
-    const id = getVoxel(x, y, z)
-    if (!id) return null
-    const nx = Math.round(n.x), ny = Math.round(n.y), nz = Math.round(n.z)
-    return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [x + nx, y + ny, z + nz] }
+    const ray = scene.createPickingRay(cx - rect.left, cy - rect.top, null, noa.rendering.camera)
+    if (!ray || !ray.direction) return null
+    let ox = ray.origin.x, oy = ray.origin.y, oz = ray.origin.z
+    const dx = ray.direction.x, dy = ray.direction.y, dz = ray.direction.z
+    const len = Math.hypot(dx, dy, dz) || 1
+    const dir = [dx / len, dy / len, dz / len]
+    let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 1
+    for (let i = 0; i < 8 && left > 0.2; i++) {
+      const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0)
+      if (!hit || !hit.position || !hit.normal) return null
+      const nx = Math.round(hit.normal[0])
+      const ny = Math.round(hit.normal[1])
+      const nz = Math.round(hit.normal[2])
+      if (nx || ny || nz) {
+        const ax = Math.floor(hit.position[0])
+        const ay = Math.floor(hit.position[1])
+        const az = Math.floor(hit.position[2])
+        const x = ax - nx
+        const y = ay - ny
+        const z = az - nz
+        const id = getVoxel(x, y, z)
+        if (!id) return null
+        if (!tableMode && !canReach([x, y, z])) return null
+        return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [ax, ay, az] }
+      }
+      const step = 0.51
+      ox += dir[0] * step
+      oy += dir[1] * step
+      oz += dir[2] * step
+      left -= step
+    }
+    return null
   } catch (e) { return null }
 }
 function tryPickBlock(id) {
@@ -1251,7 +1271,8 @@ function feelTick(dt) {
   }
   const sheetOpen = !sheetEl.hidden
   const breaking = !!(noa.inputs.state.fire || mouseLeft)
-  if (!sheetOpen && !tableMode && noa.container.hasPointerLock && breaking && !dig) {
+  const touchLook = !!(look && look.pt === 'touch')
+  if (!sheetOpen && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) {
     if (survivalOn()) beginDig('mouse')
   }
   if (sheetOpen) mouseRight = false
@@ -1287,7 +1308,7 @@ function feelTick(dt) {
   } else if (dig && dig.kind === 'mouse') {
     const tget = noa.targetedBlock
     const same = !!(tget && tget.position[0] === dig.x && tget.position[1] === dig.y && tget.position[2] === dig.z)
-    if (breaking && !same) beginDig('mouse')
+    if (breaking && tget && !same) beginDig('mouse')
     else if (!breaking && !same) { dig = null; hideCrack() }
     else {
       const next = advanceDig(dig, now, breaking, true)
@@ -1433,13 +1454,14 @@ canvas.addEventListener('pointerdown', (e) => {
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
   lastPointer = { x: e.clientX, y: e.clientY }
-  const hit = rayAt(e.clientX, e.clientY) || targetHit()
+  const finger = look.pt === 'touch'
+  const hit = finger ? rayAt(e.clientX, e.clientY) : targetHit()
   if (hit) {
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-    const need = mineMs(name, survivalOn(), true, heldTool())
+    const need = mineMs(name, survivalOn(), finger, heldTool())
     const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
     const kept = same ? dig.p : 0
-    dig = { kind: 'touch', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
+    dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
   } else dig = null
 })
 canvas.addEventListener('pointermove', (e) => {
@@ -1501,7 +1523,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
-  const upHit = rayAt(e.clientX, e.clientY) || targetHit()
+  const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
   if (held < 500 && !broke && canUse(down, up, moved, false) && !breakTap) placeBlock(upHit || face)
   if (breakTap && canUse(down, up, moved, false) && !holdHinted) {
@@ -2044,6 +2066,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     emptyBag() {
       session.setMode('survival')
       for (let i = 0; i < session.bag.slots.length; i++) session.bag.slots[i] = null
+      session.setHot(0)
     },
     grounded() {
       const b = noa.ents.getPhysicsBody(noa.playerEntity)
@@ -2059,7 +2082,9 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     seedBox(x, y, z) { session.meta.set(x + ',' + y + ',' + z, { kind: 'box', slots: Array.from({ length: 18 }, () => ({ item: 'dirt', n: 1 })) }) },
     word(k) { return t(k) },
     kept(x, y, z) { return keptCell(x, y, z) },
-    hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2] } : null },
+    world(x, y, z) { return noa.world.getBlockID(x, y, z) },
+    fresh() { resetWorld() },
+    hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2] } : null },
     bunk() {
       const r = RECIPES.find((x) => x.id === 'bunk')
       return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
