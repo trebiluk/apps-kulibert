@@ -196,7 +196,8 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'In the Build Tray you can drag or tap each part into its slot, or tap Fill.',
+    whatsNewBody: 'Every card lets go of the mouse so you can click its buttons, and a quick double tap no longer breaks doors.',
+    gotItem: '{item} picked up',
     fillTray: 'Fill', slotNeeds: 'This slot needs {item}',
     needN: 'need {n} {item}', shortN: 'x{n} short',
     energyLow: 'Low energy - eat something', energyFull: "You're full", energyOn: 'Energy on', energyOff: 'Energy off',
@@ -205,7 +206,8 @@ const NEXT = {
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'У лотку збірки можна перетягнути або торкнути кожну деталь у її комірку, або натиснути Наповни.',
+    whatsNewBody: 'Кожна картка відпускає мишу, щоб можна було натиснути її кнопки, і швидке подвійне торкання більше не ламає двері.',
+    gotItem: '{item} підібрано',
     fillTray: 'Наповни', slotNeeds: 'Цій комірці треба {item}',
     needN: 'треба {n} {item}', shortN: 'бракує {n}',
     energyLow: 'Мало енергії — з’їж щось', energyFull: 'Ти ситий', energyOn: 'Енергія увімкнена', energyOff: 'Енергія вимкнена',
@@ -214,7 +216,8 @@ const NEXT = {
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: 'В лотке сборки можно перетащить или нажать каждую деталь в её ячейку, или нажать Заполни.',
+    whatsNewBody: 'Каждая карточка отпускает мышь, чтобы можно было нажать её кнопки, и быстрое двойное нажатие больше не ломает двери.',
+    gotItem: '{item} подобрано',
     fillTray: 'Заполни', slotNeeds: 'Этой ячейке нужно {item}',
     needN: 'нужно {n} {item}', shortN: 'не хватает {n}',
     energyLow: 'Мало энергии — съешь что-нибудь', energyFull: 'Ты сыт', energyOn: 'Энергия включена', energyOff: 'Энергия выключена',
@@ -223,7 +226,8 @@ const NEXT = {
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'En la bandeja puedes arrastrar o tocar cada pieza a su casilla, o tocar Llenar.',
+    whatsNewBody: 'Cada tarjeta suelta el ratón para pulsar sus botones, y un doble toque rápido ya no rompe las puertas.',
+    gotItem: '{item} recogido',
     fillTray: 'Llenar', slotNeeds: 'Esta casilla necesita {item}',
     needN: 'faltan {n} {item}', shortN: 'falta {n}',
     energyLow: 'Poca energía: come algo', energyFull: 'Estás lleno', energyOn: 'Energía activada', energyOff: 'Energía apagada',
@@ -232,7 +236,8 @@ const NEXT = {
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: 'في صينية البناء يمكنك سحب كل جزء أو نقره في خانته، أو نقر املأ.',
+    whatsNewBody: 'كل بطاقة تترك الفأرة لتضغط أزرارها، والنقر المزدوج السريع لم يعد يكسر الأبواب.',
+    gotItem: 'تم التقاط {item}',
     fillTray: 'املأ', slotNeeds: 'هذه الخانة تحتاج {item}',
     needN: 'يلزم {n} {item}', shortN: 'ناقص {n}',
     energyLow: 'طاقة قليلة — كُل شيئاً', energyFull: 'أنت شبعان', energyOn: 'الطاقة مفتوحة', energyOff: 'الطاقة مغلقة',
@@ -241,7 +246,8 @@ const NEXT = {
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: 'در سینی ساخت می‌توانی هر تکه را بکشی یا بزنی در خانه‌اش، یا پر کن را بزنی.',
+    whatsNewBody: 'هر کارت ماوس را رها می‌کند تا دکمه‌هایش را بزنی، و دو ضربهٔ سریع دیگر در را نمی‌شکند.',
+    gotItem: '{item} برداشته شد',
     fillTray: 'پر کن', slotNeeds: 'این خانه به {item} نیاز دارد',
     needN: 'لازم {n} {item}', shortN: 'کم است {n}',
     energyLow: 'انرژی کم است — چیزی بخور', energyFull: 'سیر شدی', energyOn: 'انرژی روشن', energyOff: 'انرژی خاموش',
@@ -250,7 +256,8 @@ const NEXT = {
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Mu gatebe ushobora gukurura cyangwa gukanda buri gice mu kigice cyacyo, cyangwa gukanda Uzuza.',
+    whatsNewBody: 'Buri karita irekura imbeba kugira ngo ukande amabuto yayo, kandi gukanda kabiri vuba ntigikongesha inzugi.',
+    gotItem: '{item} yatoranywe',
     fillTray: 'Uzuza', slotNeeds: 'Iki gice gikeneye {item}',
     needN: 'ukeneye {n} {item}', shortN: 'kubura {n}',
     energyLow: 'Ingufu nke — rya ikintu', energyFull: 'Wuzuye', energyOn: 'Ingufu ziriho', energyOff: 'Ingufu zizimye',
@@ -259,7 +266,8 @@ const NEXT = {
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: 'ኣብ ትሪ ህንጻ ነፍሲ ወከፍ ክፋል ናብ ቦታኡ ስሓብ ወይ ጠውቕ፡ ወይ መልእ ጠውቕ።',
+    whatsNewBody: 'ነፍሲ ወከፍ ካርድ ኣንጭዋ ትለቕቖ ንኽትጎተ፡ ቅልጡፍ ድርብ ጠውቃ ድማ ማዕጾ ኣይትስብርን።',
+    gotItem: '{item} ተለቂሙ',
     fillTray: 'መልእ', slotNeeds: 'እዚ ቦታ {item} የድልዮ',
     needN: 'የድሊ {n} {item}', shortN: 'ጎዲሉ {n}',
     energyLow: 'ጉልበት ውሑድ — ገለ ብላዕ', energyFull: 'ጽጉዕካ', energyOn: 'ጉልበት ወሊዑ', energyOff: 'ጉልበት ጠፊኡ',

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.64', date: '2026-10-07', lines: {
+    en: ['Every card lets go of the mouse so you can click its buttons, and a quick double tap no longer breaks doors.'],
+    uk: ['Кожна картка відпускає мишу, щоб можна було натиснути її кнопки, і швидке подвійне торкання більше не ламає двері.'],
+    ru: ['Каждая карточка отпускает мышь, чтобы можно было нажать её кнопки, и быстрое двойное нажатие больше не ломает двери.'],
+    es: ['Cada tarjeta suelta el ratón para pulsar sus botones, y un doble toque rápido ya no rompe las puertas.'],
+    ar: ['كل بطاقة تترك الفأرة لتضغط أزرارها، والنقر المزدوج السريع لم يعد يكسر الأبواب.'],
+    'fa-AF': ['هر کارت ماوس را رها می‌کند تا دکمه‌هایش را بزنی، و دو ضربهٔ سریع دیگر در را نمی‌شکند.'],
+    rw: ['Buri karita irekura imbeba kugira ngo ukande amabuto yayo, kandi gukanda kabiri vuba ntigikongesha inzugi.'],
+    ti: ['ነፍሲ ወከፍ ካርድ ኣንጭዋ ትለቕቖ ንኽትጎተ፡ ቅልጡፍ ድርብ ጠውቃ ድማ ማዕጾ ኣይትስብርን።'],
+  }},
   { v: '2.5.62', date: '2026-10-07', lines: {
     en: ['In the Build Tray you can drag or tap each part into its slot, or tap Fill.'],
     uk: ['У лотку збірки можна перетягнути або торкнути кожну деталь у її комірку, або натиснути Наповни.'],

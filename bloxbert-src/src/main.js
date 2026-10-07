@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.62'
+const VERSION = '2.5.64'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -40,7 +40,7 @@ import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, re
 import { createBasics } from './basics.js'
 import { isDoor, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
-import { setGate, gates } from './data/gates.js'
+import { dropOf } from './data/items.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -483,7 +483,12 @@ function breakAt(x, y, z) {
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
   if (session && !session.onBreak(x, y, z, id)) return false
-  return edit(x, y, z, 0)
+  const gone = edit(x, y, z, 0)
+  if (gone && isUseBlock(id)) {
+    const key = dropOf(id)
+    toast(t('gotItem').replace('{item}', key ? t(key) : blockName(id)))
+  }
+  return gone
 }
 function breakBlock() {
   const tget = tableMode ? tableTarget() : noa.targetedBlock
@@ -497,6 +502,11 @@ function isUseBlock(id) {
 }
 function isGear(id) {
   return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN
+}
+function useHoldReady(dig, now) {
+  if (!dig || !isUseBlock(dig.id)) return true
+  if (isDoor(dig.id)) return false
+  return now - (dig.t0 || now) >= 500
 }
 function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
@@ -563,6 +573,8 @@ function tableTarget() {
 noa.inputs.down.on('fire', () => {
   if (inspectOn) { showInspect(); return }
   if (tableMode || !noa.container.hasPointerLock) return
+  const aimed = noa.targetedBlock
+  if (aimed && isUseBlock(aimed.blockID)) return
   if (survivalOn()) beginDig('mouse')
   else { breakBlock(); dig = { kind: 'mouse', creative: true, t0: performance.now() } }
 })
@@ -874,11 +886,16 @@ function showDoorOpt(x, y, z) {
   window.addEventListener('pointerup', arm, true)
   window.addEventListener('pointercancel', arm, true)
   el.hidden = false
+  releaseLook()
+  focusBtn($('door-auto'))
 }
 function hideDoorOpt() {
   doorOptAt = null
   const el = $('door-opt')
   if (el) el.hidden = true
+  const focused = document.activeElement
+  if (focused && focused.blur && el && el.contains(focused)) focused.blur()
+  resumePlay()
 }
 function dropGifts() {
   if (!pendingGifts.length) return
@@ -972,11 +989,31 @@ async function goWorld(m) {
   if (panels) panels.close()
 }
 function releaseLook() {
-  selfUnlock = true
+  selfUnlock = !!document.pointerLockElement
   document.body.classList.add('menu-open')
   try { noa.container.setPointerLock(false) } catch (e) {}
   try { noa.setPaused(true) } catch (e) {}
   if (session) session.paused = true
+}
+function anyCard() {
+  const door = $('door-opt')
+  const inspect = $('inspect-card')
+  const about = $('about')
+  const sheet = $('sheet')
+  return !!((door && !door.hidden) || (inspect && !inspect.hidden) || (about && !about.hidden) || (sheet && !sheet.hidden))
+}
+function focusBtn(btn) {
+  if (!btn) return
+  try { btn.focus({ focusVisible: true }) } catch (e) { try { btn.focus() } catch (err) {} }
+  btn.style.outline = '3px solid #22D3EE'
+  btn.style.outlineOffset = '2px'
+}
+function resumePlay() {
+  if (anyCard()) return
+  document.body.classList.remove('menu-open')
+  try { noa.setPaused(false) } catch (e) {}
+  if (session) session.paused = false
+  armResume = performance.now()
 }
 let holdTour = () => {}
 panels = mountPanels({
@@ -993,13 +1030,11 @@ panels = mountPanels({
   inspect: () => setInspect(true),
   table: () => setMode(true),
   setWorldMode: (m) => goWorld(m),
-  onClose: () => {
-    document.body.classList.remove('menu-open')
-    try { noa.setPaused(false) } catch (e) {}
-    if (session) session.paused = false
-    armResume = performance.now()
+  onClose: () => resumePlay(),
+  onOpen: () => {
+    releaseLook()
+    requestAnimationFrame(() => focusBtn(document.querySelector('#sheet button')))
   },
-  onOpen: () => releaseLook(),
   paintBag: (g) => session.paintBag(g),
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
@@ -1084,6 +1119,7 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement) { hadLock = true; menuFromLock = false; return }
   const wasLocked = hadLock
   hadLock = false
+  if (anyCard()) { selfUnlock = false; return }
   if (wasLocked && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
   selfUnlock = false
 })
@@ -1261,6 +1297,8 @@ async function showInspect() {
   if (!card || !list) return
   card.hidden = false
   list.innerHTML = ''
+  releaseLook()
+  focusBtn($('inspect-close'))
   if (!hit) { list.innerHTML = '<p>' + t('inspectEmpty') + '</p>'; return }
   const rows = await changeLog.history(hit.pos[0], hit.pos[1], hit.pos[2])
   if (!rows.length) { list.innerHTML = '<p>' + t('inspectEmpty') + '</p>'; return }
@@ -1334,8 +1372,8 @@ $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) r
 $('m-about').addEventListener('click', () => { $('about').hidden = false; $('about').querySelector('button').focus() })
 $('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
 $('inspect-chip').addEventListener('click', () => setInspect(false))
-$('inspect-close').addEventListener('click', () => { $('inspect-card').hidden = true })
-$('about-close').addEventListener('click', () => { $('about').hidden = true })
+$('inspect-close').addEventListener('click', () => { $('inspect-card').hidden = true; resumePlay() })
+$('about-close').addEventListener('click', () => { $('about').hidden = true; resumePlay() })
 
 let showSpeed = false
 try { showSpeed = localStorage.getItem('bloxbert-fps') === 'on' } catch (e) {}
@@ -1456,11 +1494,15 @@ window.addEventListener('keydown', (e) => {
   e.preventDefault()
   e.stopPropagation()
   if (e.repeat) return
-  const card = $('inspect-card'); if (card) card.hidden = true
+  if (!anyCard()) { openMenu(true); return }
+  selfUnlock = true
   const doorCard = $('door-opt')
   if (doorCard && !doorCard.hidden) { hideDoorOpt(); return }
+  const about = $('about')
+  if (about && !about.hidden) { about.hidden = true; resumePlay(); return }
+  const inspect = $('inspect-card')
+  if (inspect && !inspect.hidden) { inspect.hidden = true; resumePlay(); return }
   if ($('sheet') && !$('sheet').hidden) { panels.backOne(); return }
-  openMenu(true)
 }, true)
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
@@ -1663,7 +1705,9 @@ function feelTick(dt) {
     dig = null
   }
   if (dig && dig.kind === 'mouse' && dig.creative) {
-    if (breaking && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    const aimedNow = noa.targetedBlock
+    const useAimed = aimedNow && isUseBlock(aimedNow.blockID)
+    if (breaking && !useAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
     const tget = noa.targetedBlock
@@ -1680,7 +1724,7 @@ function feelTick(dt) {
         if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
         else hideCrack()
         if (!blocked && !dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
-        if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
+        if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
       }
     }
   } else if (dig && dig.kind === 'touch') {
@@ -1693,7 +1737,7 @@ function feelTick(dt) {
       else if (crackVisible(elapsed, dig.p)) showCrack(dig.p, look.x, look.y)
       else hideCrack()
       if (!blocked && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
-      if (!blocked && dig.p >= 1 && !dig.broke) {
+      if (!blocked && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) {
         breakAt(dig.x, dig.y, dig.z)
         dig.broke = true
         puff()
@@ -1890,6 +1934,12 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
+  const touchTap = lookWasTouch && held < 500 && moved < 24 && !broke
+  const mouseTap = !lookWasTouch && held < 500 && moved < 8 && !broke
+  if ((touchTap || mouseTap) && down && isUseBlock(down.id)) { placeBlock(face); return }
+  const creativeBlock = !survivalOn() && !!current
+  const survivalBlock = survivalOn() && !!handId && !tapUse
+  if (touchTap && down && (creativeBlock || survivalBlock)) { placeBlock(face); return }
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
   if (held < 500 && !broke && canUse(down, up, moved, false) && !breakTap) placeBlock(upHit || face)
