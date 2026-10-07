@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer-core'
 import { existsSync } from 'fs'
+import { inflateSync } from 'zlib'
 const chrome = ['/usr/bin/chromium', '/usr/bin/chromium-browser', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome'].find((p) => existsSync(p))
 const url = process.argv[2] || 'http://127.0.0.1:8875/blocks/'
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
@@ -254,6 +255,78 @@ function hit(a, b) {
 }
 function inside(r, w, h) {
   return r && r.w > 1 && r.x >= -1 && r.y >= -1 && r.x + r.w <= w + 1 && r.y + r.h <= h + 1
+}
+function paeth(a, b, c) {
+  const p = a + b - c
+  const pa = Math.abs(p - a), pb = Math.abs(p - b), pc = Math.abs(p - c)
+  return pa <= pb && pa <= pc ? a : pb <= pc ? b : c
+}
+function pngMean(buf) {
+  buf = Buffer.isBuffer(buf) ? buf : Buffer.from(buf)
+  let o = 8
+  let w = 0, h = 0, ctype = 6
+  const idats = []
+  while (o + 8 <= buf.length) {
+    const len = buf.readUInt32BE(o); o += 4
+    const type = buf.toString('ascii', o, o + 4); o += 4
+    const data = buf.subarray(o, o + len); o += len + 4
+    if (type === 'IHDR') { w = data.readUInt32BE(0); h = data.readUInt32BE(4); ctype = data[9] }
+    else if (type === 'IDAT') idats.push(data)
+    else if (type === 'IEND') break
+  }
+  const raw = inflateSync(Buffer.concat(idats))
+  const ch = ctype === 6 ? 4 : ctype === 2 ? 3 : ctype === 4 ? 2 : 1
+  const stride = w * ch
+  let p = 0
+  let prev = Buffer.alloc(stride)
+  let sum = 0, n = 0
+  for (let y = 0; y < h; y++) {
+    const filter = raw[p++]
+    const row = Buffer.from(raw.subarray(p, p + stride))
+    p += stride
+    for (let i = 0; i < stride; i++) {
+      const a = i >= ch ? row[i - ch] : 0
+      const b = prev[i]
+      const c = i >= ch ? prev[i - ch] : 0
+      if (filter === 1) row[i] = (row[i] + a) & 255
+      else if (filter === 2) row[i] = (row[i] + b) & 255
+      else if (filter === 3) row[i] = (row[i] + ((a + b) >> 1)) & 255
+      else if (filter === 4) row[i] = (row[i] + paeth(a, b, c)) & 255
+    }
+    prev = row
+    for (let x = 0; x < w; x++) {
+      const r = row[x * ch]
+      const g = ch > 1 ? row[x * ch + 1] : r
+      const b = ch > 2 ? row[x * ch + 2] : r
+      sum += 0.2126 * r + 0.7152 * g + 0.0722 * b
+      n++
+    }
+  }
+  return n ? sum / n : 0
+}
+function clampClip(clip, w, h) {
+  const x = Math.max(0, Math.min(w - 2, Math.round(clip.x)))
+  const y = Math.max(0, Math.min(h - 2, Math.round(clip.y)))
+  return { x, y, width: Math.max(2, Math.min(w - x, Math.round(clip.width))), height: Math.max(2, Math.min(h - y, Math.round(clip.height))) }
+}
+async function regionMean(page, frac) {
+  const box = await page.evaluate(() => {
+    const c = document.querySelector('#stage canvas')
+    const r = c.getBoundingClientRect()
+    return { x: r.x, y: r.y, w: r.width, h: r.height, vw: window.innerWidth, vh: window.innerHeight }
+  })
+  const clip = clampClip({
+    x: box.x + box.w * frac.x0,
+    y: box.y + box.h * frac.y0,
+    width: box.w * (frac.x1 - frac.x0),
+    height: box.h * (frac.y1 - frac.y0),
+  }, box.vw, box.vh)
+  return pngMean(await page.screenshot({ clip, type: 'png' }))
+}
+async function patchMean(page, x, y) {
+  const view = await page.evaluate(() => ({ w: window.innerWidth, h: window.innerHeight }))
+  const clip = clampClip({ x: x - 14, y: y - 14, width: 28, height: 28 }, view.w, view.h)
+  return pngMean(await page.screenshot({ clip, type: 'png' }))
 }
 async function bootHud(browser, href, w, h, touch, prep, media) {
   const page = await browser.newPage()
@@ -1053,7 +1126,14 @@ async function prove2543(browser, testUrl, note, errs) {
             ok = h.id === 1 && !window.__smoke.kept(h.x, h.y, h.z) && window.__smoke.voxel(ax, ay, az) === 0 && !overlap
           }
           if (!ok) continue
-          if (!best || cd < best.cd) best = { x, y, cd, h, aim }
+          let solid = 0
+          if (kind === 'log') {
+            for (const [dx, dy] of [[0, 10], [0, -10], [10, 0], [-10, 0]]) {
+              const n = window.__smoke.hit(x + dx, y + dy)
+              if (n && n.x === 2 && n.y === 5 && n.z === 2) solid++
+            }
+          }
+          if (!best || solid > best.solid || (solid === best.solid && cd < best.cd)) best = { x, y, cd, h, aim, solid }
         }
       }
       return best
@@ -1350,19 +1430,150 @@ async function prove2543(browser, testUrl, note, errs) {
       return { close, once, twice }
     })
     note('light up spaced', '1366x768', badges.close === 0 && badges.once === 1 && badges.twice === 1, JSON.stringify(badges))
-    const before = await lamp.evaluate(() => window.__smoke.fps())
-    await sleep(1200)
-    const base = await lamp.evaluate(() => window.__smoke.fps()) || before
     await lamp.evaluate(() => {
-      for (let i = 0; i < 20; i++) {
-        window.__smoke.plant(120 + (i % 5) * 4, 8, 120 + ((i / 5) | 0) * 4, 47)
-        window.__smoke.use(120 + (i % 5) * 4, 8, 120 + ((i / 5) | 0) * 4)
-      }
+      window.__smoke.close()
+      window.__smoke.clearLights()
+      window.__smoke.bright(false)
+      window.__smoke.always(false)
+      window.__smoke.seek(window.__smoke.nightAt())
+      window.__smoke.stand(48.5, 12, 36, 0, 0.35)
     })
-    await sleep(1500)
-    const after = await lamp.evaluate(() => window.__smoke.fps())
-    note('lantern fps', '1366x768', after >= 8 && (base < 12 || after >= base * 0.45), base + ' -> ' + after)
+    await sleep(400)
+    let gy = -1
+    for (let i = 0; i < 25 && gy < 0; i++) {
+      gy = await lamp.evaluate(() => {
+        for (let y = 40; y >= 1; y--) if (window.__smoke.voxel(48, y, 48)) return y
+        return -1
+      })
+      if (gy < 0) await sleep(200)
+    }
+    await lamp.evaluate((y) => window.__smoke.stand(48.5, y + 1.2, 36, 0, 0.35), gy)
+    await sleep(1600)
+    await sleep(4200)
+    const base = await lamp.evaluate(() => window.__smoke.fpsSpan(4000))
+    await lamp.evaluate((y) => {
+      for (let i = 0; i < 20; i++) {
+        const x = 46 + (i % 5) * 3
+        const z = 46 + ((i / 5) | 0) * 3
+        window.__smoke.plant(x, y + 1, z, 47)
+        window.__smoke.use(x, y + 1, z)
+        window.__smoke.use(x, y + 1, z)
+        window.__smoke.use(x, y + 1, z)
+      }
+    }, gy)
+    await sleep(1800)
+    let onScreen = 0
+    let sample = null
+    const pitches = [0.35, 0.22, 0.48, 0.15, 0.08, 0.55]
+    const stands = [[48.5, 36], [52.5, 40]]
+    for (const [sx, sz] of stands) {
+      for (const pitch of pitches) {
+        await lamp.evaluate((pitch, y, sx, sz) => window.__smoke.stand(sx, y + 1.2, sz, 0, pitch), pitch, gy, sx, sz)
+        await sleep(400)
+        const seen = await lamp.evaluate((y) => {
+          let n = 0
+          let first = null
+          const w = window.innerWidth
+          const h = window.innerHeight
+          for (let i = 0; i < 20; i++) {
+            const x = 46 + (i % 5) * 3
+            const z = 46 + ((i / 5) | 0) * 3
+            const p = window.__smoke.project(x, y, z)
+            if (!first) first = p
+            const q = window.__smoke.project(x, y + 1, z)
+            const on = (p) => p && !p.behind && p.x >= 8 && p.y >= 8 && p.x <= w - 8 && p.y <= h - 8
+            if (on(p) || on(q)) n++
+          }
+          return { n, first }
+        }, gy)
+        onScreen = seen.n
+        sample = seen.first
+        if (onScreen >= 12) break
+      }
+      if (onScreen >= 12) break
+    }
+    await sleep(4200)
+    const after = await lamp.evaluate(() => window.__smoke.fpsSpan(4000))
+    note('lantern fps', '1366x768', gy >= 0 && onScreen >= 12 && after >= base * 0.9, base.toFixed(1) + ' -> ' + after.toFixed(1) + ' on ' + onScreen + ' y ' + gy + ' ' + JSON.stringify(sample))
     await lamp.close()
+  }
+  await prove2549()
+
+  async function prove2549() {
+    const band = { x0: 0.72, y0: 0.45, x1: 0.92, y1: 0.62 }
+    for (const [w, h, touch] of [[412, 915, true], [915, 412, true], [1366, 768, false]]) {
+      const page = await bootHud(browser, testUrl + '?smoke=1', w, h, touch)
+      errs.push(...page.__err.map((e) => 'b249 ' + w + ' ' + e))
+      await page.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+      await page.evaluate(() => {
+        window.__smoke.always(false)
+        window.__smoke.bright(false)
+        window.__smoke.seek(0)
+        window.__smoke.stand(8.5, 6.2, 16, 0, 0.6)
+      })
+      await sleep(900)
+      const day = await regionMean(page, band)
+      await page.evaluate(() => window.__smoke.seek(window.__smoke.nightAt()))
+      await sleep(500)
+      const night = await regionMean(page, band)
+      const nr = day > 1 ? night / day : 0
+      note('night grass', w + 'x' + h, nr >= 0.4 && nr <= 0.7, day.toFixed(1) + ' -> ' + night.toFixed(1) + ' ' + nr.toFixed(2))
+      await page.evaluate(() => window.__smoke.bright(true))
+      await sleep(400)
+      const bright = await regionMean(page, band)
+      const br = day > 1 ? bright / day : 0
+      note('brighter grass', w + 'x' + h, br >= 0.6, bright.toFixed(1) + ' ' + br.toFixed(2))
+      await page.evaluate(() => { window.__smoke.bright(false); window.__smoke.always(true); window.__smoke.seek(window.__smoke.nightAt()) })
+      await sleep(400)
+      const always = await regionMean(page, band)
+      const ar = day > 1 ? always / day : 0
+      note('always day grass', w + 'x' + h, ar >= 0.95 && ar <= 1.001, always.toFixed(1) + ' ' + ar.toFixed(3))
+      await page.evaluate(() => {
+        window.__smoke.always(false)
+        window.__smoke.bright(false)
+        window.__smoke.seek(window.__smoke.nightAt())
+        window.__smoke.stand(30.5, 12, 32, 0, 0.35)
+      })
+      let gy = -1
+      for (let i = 0; i < 25 && gy < 0; i++) {
+        gy = await page.evaluate(() => {
+          for (let y = 40; y >= 1; y--) if (window.__smoke.voxel(30, y, 40)) return y
+          return -1
+        })
+        if (gy < 0) await sleep(200)
+      }
+      const lit = await page.evaluate((y) => {
+        const lx = 30
+        const ly = y + 1
+        const lz = 40
+        window.__smoke.plant(lx, ly, lz, 47)
+        window.__smoke.use(lx, ly, lz)
+        window.__smoke.use(lx, ly, lz)
+        window.__smoke.use(lx, ly, lz)
+        window.__smoke.stand(lx + 0.5, y + 2.3, lz - 6, 0, 0.42)
+        return { lx, ly, lz, y, light: window.__smoke.light(lx, ly, lz) }
+      }, gy)
+      await sleep(500)
+      let nearP = null
+      let farP = null
+      let nearOk = false
+      let farOk = false
+      for (const pitch of [0.35, 0.22, 0.48, 0.15]) {
+        await page.evaluate((pitch, s) => window.__smoke.stand(s.lx + 0.5, s.y + 1.2, s.lz - 6, 0, pitch), pitch, lit)
+        await sleep(280)
+        nearP = await page.evaluate((s) => window.__smoke.project(s.lx + 2, s.y, s.lz), lit)
+        farP = await page.evaluate((s) => window.__smoke.project(s.lx, s.y, s.lz + 12), lit)
+        nearOk = !!(nearP && !nearP.behind && nearP.x > 10 && nearP.y > 10 && nearP.x < w - 10 && nearP.y < h - 10)
+        farOk = !!(farP && !farP.behind && farP.x > 10 && farP.y > 10 && farP.x < w - 10 && farP.y < h - 10)
+        if (nearOk && farOk) break
+      }
+      const nearM = nearOk ? await patchMean(page, nearP.x, nearP.y) : 0
+      const farM = farOk ? await patchMean(page, farP.x, farP.y) : 0
+      const high = lit.light && lit.light.level === 'high' && lit.light.radius === 10
+      note('lantern patch', w + 'x' + h, !!high && nearOk && farOk && farM > 1 && nearM >= farM * 1.15, JSON.stringify({ high, nearM: Math.round(nearM), farM: Math.round(farM), nearP, farP, gy }))
+      await page.evaluate(() => { window.__smoke.always(false); window.__smoke.bright(false) })
+      await page.close()
+    }
   }
 }
 

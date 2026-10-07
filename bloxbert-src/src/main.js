@@ -1,21 +1,24 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.48'
+const VERSION = '2.5.49'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder'
+import { CreateGround } from '@babylonjs/core/Meshes/Builders/groundBuilder'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { Scene } from '@babylonjs/core/scene'
-import { Vector3 } from '@babylonjs/core/Maths/math.vector'
+import { Vector3, Matrix } from '@babylonjs/core/Maths/math.vector'
 import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { Light } from '@babylonjs/core/Lights/light'
 import { PointLight } from '@babylonjs/core/Lights/pointLight'
+import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import ATLAS from '../assets/atlas.json'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
@@ -1836,6 +1839,7 @@ for (let i = 0; i < 4; i++) {
   const L = new PointLight('lamp' + i, new Vector3(0, -40, 0), scene)
   L.intensity = 0
   L.range = 8
+  L.falloffType = Light.FALLOFF_GLTF
   L.diffuse = new Color3(1, 0.93, 0.72)
   L.specular = new Color3(0, 0, 0)
   L.setEnabled(false)
@@ -1855,23 +1859,129 @@ for (let i = 0; i < 6; i++) {
 }
 const glowMeshes = new Map()
 const glowLocal = [0, 0, 0]
+const poolTex = new DynamicTexture('lamp-pool', 64, scene, false)
+poolTex.hasAlpha = true
+{
+  const ctx = poolTex.getContext()
+  const g = ctx.createRadialGradient(32, 32, 0, 32, 32, 32)
+  g.addColorStop(0, 'rgba(255,210,130,255)')
+  g.addColorStop(0.5, 'rgba(255,188,96,180)')
+  g.addColorStop(1, 'rgba(255,170,70,0)')
+  ctx.clearRect(0, 0, 64, 64)
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 64, 64)
+  poolTex.update()
+}
+const poolMat = new StandardMaterial('lamp-pool-mat', scene)
+poolMat.emissiveTexture = poolTex
+poolMat.opacityTexture = poolTex
+poolMat.emissiveColor = new Color3(1, 0.86, 0.5)
+poolMat.diffuseColor = new Color3(0, 0, 0)
+poolMat.specularColor = new Color3(0, 0, 0)
+poolMat.disableLighting = true
+poolMat.backFaceCulling = false
+const pools = []
+for (let i = 0; i < 4; i++) {
+  const m = CreateGround('pool' + i, { width: 9, height: 9, subdivisions: 1 }, scene)
+  m.material = poolMat
+  m.isPickable = false
+  m.setEnabled(false)
+  noa.rendering.addMeshToScene(m, false)
+  pools.push(m)
+  lampLights[i].includedOnlyMeshes = [m]
+}
+const DAY_AMB = [0.78, 0.82, 0.88]
+const sunLight = noa.rendering.light
+const DAY_DIFF = sunLight.diffuse.clone()
+const DAY_SPEC = sunLight.specular.clone()
+// Noon sun+ambient already exceeds 1, and StandardMaterial clamps that sum,
+// so a raw k scale leaves night grass near 73%. Pull terrain ambient down
+// until a flat top face lands in the night / brighter-night bands.
+const TOP_NDL = 1 / Math.hypot(0.35, 1, 0.2)
+function litLum(k, a) {
+  const r = Math.min(1, DAY_DIFF.r * k * TOP_NDL + DAY_AMB[0] * k * a)
+  const g = Math.min(1, DAY_DIFF.g * k * TOP_NDL + DAY_AMB[1] * k * a)
+  const b = Math.min(1, DAY_DIFF.b * k * TOP_NDL + DAY_AMB[2] * k * a)
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b
+}
+function ambScale(k) {
+  const target = k >= 0.92 ? 1 : k >= 0.6 ? 0.75 + (k - 0.6) * (0.25 / 0.32) : 0.55 + (k - 0.4) * (0.2 / 0.2)
+  if (litLum(k, 1) <= target + 0.001) return 1
+  let lo = 0
+  let hi = 1
+  for (let i = 0; i < 16; i++) {
+    const mid = (lo + hi) / 2
+    if (litLum(k, mid) > target) hi = mid
+    else lo = mid
+  }
+  return (lo + hi) / 2
+}
+let bertEm = null
+function paintTerrain(k) {
+  const a = ambScale(k)
+  const mats = scene.materials
+  for (let i = 0; i < mats.length; i++) {
+    const m = mats[i]
+    if (!m || !m.name || m.name.indexOf('terrain') === -1) continue
+    m._checkScenePerformancePriority = function () {}
+    m.checkReadyOnlyOnce = false
+    m.ambientColor.set(a, a, a)
+  }
+  const meshes = scene.meshes
+  for (let i = 0; i < meshes.length; i++) {
+    const mat = meshes[i].material
+    if (!mat || !mat.name || mat.name.indexOf('terrain') === -1) continue
+    const subs = meshes[i].subMeshes
+    if (!subs) continue
+    for (let s = 0; s < subs.length; s++) {
+      const dw = subs[s]._drawWrapper
+      if (dw) dw._forceRebindOnNextCall = true
+    }
+  }
+}
 function syncGlow() {
   if (!basics) return
   const k = basics.lum()
   skyMat.setFloat('uLum', k)
+  scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
+  sunLight.diffuse.set(DAY_DIFF.r * k, DAY_DIFF.g * k, DAY_DIFF.b * k)
+  sunLight.specular.set(DAY_SPEC.r * k, DAY_SPEC.g * k, DAY_SPEC.b * k)
+  paintTerrain(k)
+
   scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
-  const list = basics.lights().filter((l) => l.step > 0 || l.radius <= 1)
+  if (!bertEm && typeof bertyMat !== 'undefined' && bertyMat) bertEm = bertyMat.emissiveColor.clone()
+  if (bertEm) bertyMat.emissiveColor.set(bertEm.r * k, bertEm.g * k, bertEm.b * k)
+  if (typeof dropMats !== 'undefined') {
+    for (const m of dropMats.values()) {
+      const e = m.metadata
+      if (e && e.er != null) m.emissiveColor.set(e.er * k, e.eg * k, e.eb * k)
+    }
+  }
+  const dark = k < 0.92
+  const ppos = noa.entities.getPosition(noa.playerEntity)
+  const list = basics.lights().filter((l) => l.radius > 1 && l.step > 0)
+  list.sort((a, b) => {
+    const da = (a.x + 0.5 - ppos[0]) ** 2 + (a.z + 0.5 - ppos[2]) ** 2
+    const db = (b.x + 0.5 - ppos[0]) ** 2 + (b.z + 0.5 - ppos[2]) ** 2
+    return da - db || b.radius - a.radius
+  })
   const cap = quality === 'lite' ? 2 : 4
   for (let i = 0; i < lampLights.length; i++) {
-    const src = i < cap ? list.find((l) => l.radius > 1) : null
     const L = lampLights[i]
-    if (!src) { L.setEnabled(false); continue }
-    list.splice(list.indexOf(src), 1)
-    const lp = noa.globalToLocal([src.x + 0.5, src.y + 0.8, src.z + 0.5], null, glowLocal)
+    const pool = pools[i]
+    const src = dark && i < cap ? list[i] : null
+    if (!src) { L.setEnabled(false); pool.setEnabled(false); continue }
+    if (L.includedOnlyMeshes[0] !== pool) L.includedOnlyMeshes = [pool]
+    const lp = noa.globalToLocal([src.x + 0.5, src.y + 1.25, src.z + 0.5], null, glowLocal)
     L.position.set(lp[0], lp[1], lp[2])
-    L.range = Math.max(2, src.radius)
-    L.intensity = 0.4 + Math.min(1.2, src.radius * 0.06)
+    L.range = Math.max(4, src.radius)
+    L.intensity = 1.4
     L.setEnabled(true)
+    const d = Math.min(9, Math.max(6, src.radius))
+    const gp = noa.globalToLocal([src.x + 0.5, src.y + 0.08, src.z + 0.5], null, glowLocal)
+    pool.position.set(gp[0], gp[1], gp[2])
+    pool.scaling.set(d / 9, 1, d / 9)
+    pool.setEnabled(true)
   }
   const seen = new Set()
   const glowList = basics.lights()
@@ -1949,6 +2059,7 @@ function dropMat(item) {
   m.diffuseColor = new Color3(c[0], c[1], c[2])
   m.emissiveColor = new Color3(c[0] * 0.55, c[1] * 0.55, c[2] * 0.55)
   m.specularColor = new Color3(0, 0, 0)
+  m.metadata = { er: c[0] * 0.55, eg: c[1] * 0.55, eb: c[2] * 0.55 }
   dropMats.set(item, m)
   return m
 }
@@ -2261,6 +2372,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     pickup() { session.setMode('survival'); session.meta.set('1,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 12, sales: [] }); session.pickup(1, 2, 3, 24); return session.bag.count('vend') + ':' + session.bag.count('cupcake') },
     sale() { session.setMode('survival'); session.meta.set('4,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 0, sales: [], salesN: 0 }); session.vendTick(2); const rows = session.wallet.state.ledger.filter((r) => r.kind === 'vend-sale'); return rows.reduce((n, r) => n + r.cogs, 0) },
     stand(x, y, z, h, p) { noa.entities.setPosition(noa.playerEntity, [x, y, z]); setLook(h || 0, p || 0) },
+    close() { if (panels) panels.close() },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
     aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
     voxel(x, y, z) { return getVoxel(x, y, z) },
@@ -2297,7 +2409,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     nightAt: () => basics ? basics.nightAt() : 0,
     lum: () => basics ? basics.lum() : 1,
     phase: () => basics ? basics.phase() : 'day',
-    always: () => !!(basics && basics.always),
+    always(on) { if (arguments.length && basics) basics.setAlways(on); return !!(basics && basics.always) },
     bright: (on) => { if (basics) basics.setBright(on); return !!(basics && basics.bright) },
     gate: (tier) => { setGate(tier, true); return gates() },
     actor: (id) => basics && basics.actor(id),
@@ -2342,6 +2454,25 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return { ids, unknown: getVoxel(0, 2, 3), gift: gift && gift.slots ? gift.slots.filter(Boolean).map((s) => s.item) : [] }
     },
     fps: () => perf.lastFps || 0,
+    fpsSpan(ms = 4000) {
+      const d = perf.deltas
+      let acc = 0, n = 0
+      for (let i = d.length - 1; i >= 0 && acc < ms; i--) { acc += d[i]; n++ }
+      return acc > 400 ? (n * 1000) / acc : (perf.lastFps || 0)
+    },
+    project(x, y, z) {
+      const lp = noa.globalToLocal([x + 0.5, y + 1.02, z + 0.5], null, [0, 0, 0])
+      const sc = noa.rendering.getScene()
+      const engine = sc.getEngine()
+      const cam = sc.activeCamera
+      const vw = engine.getRenderWidth()
+      const vh = engine.getRenderHeight()
+      const viewport = cam.viewport.toGlobal(vw, vh)
+      const p = Vector3.Project(new Vector3(lp[0], lp[1], lp[2]), Matrix.Identity(), sc.getTransformMatrix(), viewport)
+      const canvas = document.querySelector('#stage canvas')
+      const r = canvas.getBoundingClientRect()
+      return { x: r.left + (p.x / vw) * r.width, y: r.top + (p.y / vh) * r.height, behind: p.z < 0 || p.z > 1 }
+    },
   }
 }
 repaintBlocks()

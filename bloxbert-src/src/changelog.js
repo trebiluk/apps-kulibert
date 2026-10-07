@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.49', date: '2026-10-06', lines: {
+    en: ['Nights get darker, and lanterns light the way without slowing the game.'],
+    uk: ['Ночі темніші, і ліхтарі освітлюють шлях, не сповільнюючи гру.'],
+    ru: ['Ночи темнее, и фонари светят путь, не замедляя игру.'],
+    es: ['Las noches se oscurecen, y los faroles alumbran el camino sin frenar el juego.'],
+    ar: ['الليل أظلم، والفوانيس تضيء الطريق دون أن تبطئ اللعب.'],
+    'fa-AF': ['شب‌ها تاریک‌تر می‌شوند، و فانوس‌ها راه را روشن می‌کنند بدون کند کردن بازی.'],
+    rw: ['Ijoro rirakaba, kandi amatarara araka inzira itindewe.'],
+    ti: ['ለይቲ ይጸልም፡ መብራህቲ ድማ ጸወታ ከይዘሓየወ መንገዲ የብርሁ።'],
+  }},
   { v: '2.5.48', date: '2026-10-06', lines: {
     en: ['Doors with levers and buttons, day and night, and the LED Lantern.'],
     uk: ['Двері з важелями й кнопками, день і ніч, і ліхтар.'],
