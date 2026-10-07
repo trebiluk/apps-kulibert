@@ -3,18 +3,19 @@ Read this first on every DJ Berty ship. In the same commit, tick `[x]` on each i
 Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; it may lag anything shipped after them.
 
 ## 1. Live now
-- Live title: **DJ Berty · MU 2.35.11** (`/music/` on apps.kulibert.net).
+- Live title: **DJ Berty · MU 2.35.12** (`/music/` on apps.kulibert.net).
 - Latest proof on file: `proof/djb-2358a/RESULT.md`: Verdict: PASS (with P2s) — DJ Berty MU 2.35.8 (8cc6b80 + 473d454): all 3 FIX FIRST items work live; the leftover issues are P2 and already sit in later cuts or are new P2 notes.
 
 ## 2. Open fixes (FAIL rows from the latest proof)
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] Lane B MU 2.35.12: language menu above the scrim (8 languages), and sideways piano keys at least 64 tall.
 - [x] Lane B MU 2.35.11: What's new list (newest first, 8 languages, including 2.35.10) and piano keys at least 44×64 on a phone 480 wide or less.
 - [ ] `briefs/fixq/djberty-2359b.md`: DJ Berty MU 2.35.10: show the whole Score staff, make Viz walls and sideways Viz controls work, and open ☰ above its backdrop
-- [ ] `briefs/fixq/djberty-2358c.md`: DJ Berty MU 2.35.12: keep drum rows above the player, fit the player, and fix RTL side-panel placement
-- [ ] `briefs/fixq/djberty-2358d.md`: DJ Berty MU 2.35.13: replace the flat piano, instrument list, and giant Songs blocks with picture-first controls
-- [ ] `briefs/fixq/djberty-2358e.md`: DJ Berty MU 2.35.14: finish the icon, waveform, language, contrast, version, and responsive integration sweep
+- [ ] `briefs/fixq/djberty-2358c.md`: DJ Berty MU 2.35.13: keep drum rows above the player, fit the player, and fix RTL side-panel placement
+- [ ] `briefs/fixq/djberty-2358d.md`: DJ Berty MU 2.35.14: replace the flat piano, instrument list, and giant Songs blocks with picture-first controls
+- [ ] `briefs/fixq/djberty-2358e.md`: DJ Berty MU 2.35.15: finish the icon, waveform, language, contrast, version, and responsive integration sweep
 - [ ] `briefs/fixq/djberty-3.0-cut2.md`: DJ Berty MU 2.36.0: Remix in one tap and a real mixing desk (DJ Berty 3.0 cut 2 of 5, one pass).
 - [ ] `briefs/fixq/djberty-3.0-cut3.md`: DJ Berty MU 2.37.0: a real piano, play along on keys or drums, held notes, a pipe organ, and notes that light up as they play (DJ Berty 3.0 cut 3 of 5…
 - [ ] `briefs/fixq/djberty-3.0-cut4.md`: DJ Berty MU 2.38.0: a band you can set up yourself, and live picture tiles that stay inside the stage (DJ Berty 3.0 cut 4 of 5, one pass).

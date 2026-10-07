@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.12** · 2026-10-07 · channel **live**
+
+The language menu works again, and sideways piano keys are bigger.
+
+## Earlier
+
 **Chip: MU 2.35.11** · 2026-10-07 · channel **live**
 
 DJ Berty: a What's new list you can read, and piano keys big enough for a finger.

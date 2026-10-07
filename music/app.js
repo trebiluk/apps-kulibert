@@ -1401,7 +1401,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.11",
+        version: "MU 2.35.12",
         event: "score",
         level: id,
         score: score,
@@ -2949,6 +2949,12 @@
       const code = btn.getAttribute("data-set-lang");
       if (window.KulibertPrefs && window.KulibertPrefs.acceptLang) window.KulibertPrefs.acceptLang(code);
       markLang();
+      closeMenu();
+    });
+    btn.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      e.preventDefault();
+      btn.click();
     });
   });
   markLang();

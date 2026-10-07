@@ -3274,3 +3274,59 @@ body.mu237.tab-piano #sound-pane {
     min-height: 44px !important;
   }
 }
+
+/* MU 2.35.12 — menu sits above #scrim; sideways piano keys use the free space */
+body.mu237.menu-open .side,
+body.mu237.is-home.menu-open .side,
+body.mu237.is-make.menu-open .side,
+body.mu237.is-library.menu-open .side {
+  z-index: 85 !important;
+  overflow: visible !important;
+}
+body.mu237.menu-open .drawer {
+  z-index: 2 !important;
+  pointer-events: auto !important;
+}
+body.mu237.menu-open .scrim,
+body.mu237.is-home.menu-open .scrim,
+body.mu237.is-make.menu-open .scrim,
+body.mu237.is-library.menu-open .scrim {
+  z-index: 40 !important;
+}
+#menu-langs .btn {
+  min-width: 44px;
+  min-height: 44px;
+  width: 100%;
+}
+@media (orientation: landscape) and (max-height: 520px) and (min-width: 700px) {
+  body.mu237.tab-piano .work {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-piano #sound-pane,
+  body.mu237.is-sound #sound-pane {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-piano #sound-notes,
+  body.mu237.is-sound #sound-notes {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: stretch !important;
+    min-height: 64px !important;
+  }
+  body.mu237.tab-piano #sound-notes .key,
+  body.mu237.is-sound #sound-notes .key {
+    flex: 1 1 0 !important;
+    min-width: 44px !important;
+    width: auto !important;
+    min-height: 64px !important;
+    height: auto !important;
+    align-self: stretch !important;
+  }
+}
