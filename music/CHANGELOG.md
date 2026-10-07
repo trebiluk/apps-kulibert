@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.13** · 2026-10-07 · channel **live**
+
+Drum rows stay above the player, and the player fits a phone.
+
+## Earlier
+
 **Chip: MU 2.35.12** · 2026-10-07 · channel **live**
 
 The language menu works again, and sideways piano keys are bigger.

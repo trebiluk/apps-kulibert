@@ -900,7 +900,12 @@
     const btn = $("rec-btn");
     if (!btn) return;
     btn.classList.toggle("on", state.recording);
-    btn.textContent = state.recording ? (mu("recording") || "Recording") : (mu("record") || "Record");
+    const word = document.createElement("span");
+    word.className = "ctl-word";
+    word.textContent = state.recording ? (mu("recording") || "Recording") : (mu("record") || "Record");
+    btn.replaceChildren(word);
+    btn.setAttribute("aria-label", word.textContent);
+    btn.setAttribute("title", word.textContent);
     btn.setAttribute("aria-pressed", String(state.recording));
   }
   function canStamp() {
@@ -1328,9 +1333,14 @@
     const ico = document.createElement("span");
     ico.setAttribute("aria-hidden", "true");
     ico.textContent = state.muted ? "🔇" : "🔊";
-    btn.append(ico, document.createTextNode(" " + (state.muted ? (mu("soundOff") || "Sound off") : (mu("soundOn") || "Sound on"))));
+    const word = document.createElement("span");
+    word.className = "ctl-word";
+    word.textContent = mu("soundWord") || "Sound";
+    btn.append(ico, word);
     btn.setAttribute("aria-pressed", String(!!state.muted));
-    btn.setAttribute("aria-label", state.muted ? (mu("soundOff") || "Sound off") : (mu("soundOn") || "Sound on"));
+    const full = state.muted ? (mu("soundOff") || "Sound off") : (mu("soundOn") || "Sound on");
+    btn.setAttribute("aria-label", full);
+    btn.setAttribute("title", full);
     const banner = $("sound-banner");
     if (banner) banner.hidden = !state.muted;
   }
@@ -1401,7 +1411,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.12",
+        version: "MU 2.35.13",
         event: "score",
         level: id,
         score: score,
@@ -1449,6 +1459,7 @@
     state.counting = false;
     $("play-btn").classList.add("on");
     $("play-btn").setAttribute("aria-label", playWordText(true));
+    $("play-btn").setAttribute("title", playWordText(true));
     const playWord = $("play-word");
     if (playWord) playWord.textContent = playWordText(true);
     if (!ctx) return;
@@ -1534,6 +1545,7 @@
     window.cancelAnimationFrame(state.raf);
     $("play-btn").classList.remove("on");
     $("play-btn").setAttribute("aria-label", playWordText(false));
+    $("play-btn").setAttribute("title", playWordText(false));
     const playWord = $("play-word");
     if (playWord) playWord.textContent = playWordText(false);
     state.recording = false;
@@ -2093,6 +2105,7 @@
     if (tab === "score" || tab === "piano" || state.mode === "both" || state.mode === "notes") {
       window.requestAnimationFrame(() => renderStaff());
     }
+    requestAnimationFrame(fitTapRows);
   }
   function setMode(mode) {
     if (WS_MODES.indexOf(mode) < 0) mode = "both";
@@ -4046,6 +4059,53 @@
   if (startBoard) setMode(startBoard);
   else showHome();
   buildKit();
+  const tapTiles = document.querySelector(".tap-tiles");
+  if (tapTiles && $("kit")) tapTiles.appendChild($("kit"));
+  const moreDrums = $("more-drums");
+  if (moreDrums) {
+    moreDrums.addEventListener("click", () => {
+      const box = $("drums");
+      const on = box.classList.toggle("is-open");
+      moreDrums.setAttribute("aria-expanded", on ? "true" : "false");
+      requestAnimationFrame(fitTapRows);
+    });
+  }
+  const stageToggle = $("stage-toggle");
+  if (stageToggle) {
+    stageToggle.addEventListener("click", () => {
+      const on = document.body.classList.toggle("stage-on");
+      stageToggle.setAttribute("aria-pressed", on ? "true" : "false");
+      requestAnimationFrame(fitTapRows);
+    });
+  }
+  function fitTapRows() {
+    if (!document.body.classList.contains("tab-tap")) return;
+    const box = $("drums");
+    const pane = $("drums-pane");
+    if (!box || !pane) return;
+    const row = box.querySelector(".drum-row:not(.is-extra)") || box.querySelector(".drum-row");
+    if (!row) return;
+    box.style.setProperty("flex", "0 0 auto", "important");
+    box.style.setProperty("height", "auto", "important");
+    box.style.setProperty("max-height", "none", "important");
+    const gap = 2;
+    const rowH = row.getBoundingClientRect().height + gap;
+    if (rowH < 20) return;
+    const rows = [...box.querySelectorAll(".drum-row")].filter((node) => node.getBoundingClientRect().height > 0);
+    const more = $("more-drums");
+    const tools = document.querySelector(".tap-tiles");
+    const moreH = more ? more.getBoundingClientRect().height : 44;
+    const toolsH = tools ? tools.getBoundingClientRect().height : 0;
+    const avail = pane.getBoundingClientRect().height - moreH - toolsH;
+    if (avail < 20) return;
+    const fit = Math.max(1, Math.floor((avail + gap) / rowH));
+    const need = Math.max(1, rows.length) * rowH - gap;
+    const next = Math.round(Math.min(need, fit * rowH - gap));
+    box.style.setProperty("flex", "0 0 auto", "important");
+    box.style.setProperty("height", next + "px", "important");
+    box.style.setProperty("max-height", next + "px", "important");
+  }
+  window.addEventListener("resize", () => requestAnimationFrame(fitTapRows));
   renderStaff();
   nameLooseSvgs();
   window.addEventListener("resize", () => {
@@ -5008,7 +5068,10 @@
     const playWord = $("play-word");
     if (playWord) playWord.textContent = playWordText(!!state.playing);
     const playBtn = $("play-btn");
-    if (playBtn) playBtn.setAttribute("aria-label", playWordText(!!state.playing));
+    if (playBtn) {
+      playBtn.setAttribute("aria-label", playWordText(!!state.playing));
+      playBtn.setAttribute("title", playWordText(!!state.playing));
+    }
     if ($("drums")) renderDrums();
     paintKeypad();
     document.querySelectorAll("#style-row [data-pack]").forEach((btn) => {
