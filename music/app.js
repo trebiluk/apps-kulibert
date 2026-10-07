@@ -1401,7 +1401,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.10",
+        version: "MU 2.35.11",
         event: "score",
         level: id,
         score: score,
@@ -4819,22 +4819,102 @@
         : (lab.chord === "minor" ? "Minor. The middle note is one step lower." : "Major. Three notes at once.");
     }
   }
+  let pianoOct = 4;
+  let pianoNarrow = false;
+  const PIANO_BASE = { C: 261.63, D: 293.66, E: 329.63, F: 349.23, G: 392.0, A: 440, B: 493.88, "Hi C": 523.25 };
+  function pianoFreq(name, oct) {
+    const base = PIANO_BASE[name];
+    const from = name === "Hi C" ? 5 : 4;
+    return base * Math.pow(2, oct - from);
+  }
+  function paintPianoKeys() {
+    const notes = $("sound-notes");
+    if (!notes) return;
+    const narrow = window.matchMedia("(max-width: 480px)").matches;
+    const specs = ["C", "D", "E", "F", "G", "A", "B"].map((name) => ({
+      label: name,
+      freq: pianoFreq(name, pianoOct),
+      said: name + pianoOct
+    }));
+    if (!narrow) {
+      specs.push({ label: "Hi C", freq: pianoFreq("Hi C", pianoOct + 1), said: "C" + (pianoOct + 1) });
+    }
+    notes.replaceChildren();
+    specs.forEach((spec) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "key";
+      b.textContent = spec.label;
+      b.dataset.freq = String(Math.round(spec.freq * 100) / 100);
+      b.setAttribute("aria-label", spec.said);
+      b.setAttribute("aria-pressed", "false");
+      b.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        notes.querySelectorAll(".key").forEach((k) => {
+          k.classList.remove("hit");
+          k.setAttribute("aria-pressed", "false");
+        });
+        b.classList.add("hit");
+        b.setAttribute("aria-pressed", "true");
+        notes.dataset.last = spec.said;
+        playLab(spec.freq, 0.5);
+        window.setTimeout(() => {
+          if (b.getAttribute("aria-pressed") === "true") {
+            b.classList.remove("hit");
+            b.setAttribute("aria-pressed", "false");
+          }
+        }, 450);
+      });
+      notes.appendChild(b);
+    });
+    const down = $("oct-down");
+    const up = $("oct-up");
+    const read = $("oct-read");
+    if (down) down.disabled = pianoOct <= 2;
+    if (up) up.disabled = pianoOct >= 6;
+    if (read) read.textContent = String(pianoOct);
+  }
+  function shiftPiano(dir) {
+    const next = pianoOct + dir;
+    if (next < 2 || next > 6) return;
+    pianoOct = next;
+    paintPianoKeys();
+  }
   function bootSound() {
     const notes = $("sound-notes");
     const shapes = $("sound-shapes");
     const partials = $("sound-partials");
-    if (!notes || notes.childElementCount) return;
-    [["C", 261.63], ["D", 293.66], ["E", 329.63], ["F", 349.23], ["G", 392.0], ["A", 440], ["B", 493.88], ["Hi C", 523.25]].forEach(([name, freq]) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.className = "key";
-      b.textContent = name;
-      b.addEventListener("pointerdown", (e) => {
-        e.preventDefault();
-        playLab(freq, 0.5);
+    if (!notes || !shapes || !partials) return;
+    pianoNarrow = window.matchMedia("(max-width: 480px)").matches;
+    paintPianoKeys();
+    const down = $("oct-down");
+    const up = $("oct-up");
+    if (down && !down.dataset.wired) {
+      down.dataset.wired = "1";
+      down.addEventListener("click", () => shiftPiano(-1));
+    }
+    if (up && !up.dataset.wired) {
+      up.dataset.wired = "1";
+      up.addEventListener("click", () => shiftPiano(1));
+    }
+    if (!window.__djPianoResize) {
+      window.__djPianoResize = 1;
+      window.addEventListener("resize", () => {
+        const now = window.matchMedia("(max-width: 480px)").matches;
+        if (now !== pianoNarrow) {
+          pianoNarrow = now;
+          paintPianoKeys();
+        }
       });
-      notes.appendChild(b);
-    });
+    }
+    if (window.__dj) {
+      window.__dj.piano = () => ({
+        oct: pianoOct,
+        last: notes.dataset.last || "",
+        keys: Array.from(notes.querySelectorAll(".key")).map((k) => k.getAttribute("aria-label"))
+      });
+    }
+    if (shapes.childElementCount) return;
     [["smooth", "shapeSmooth"], ["bright", "shapeBright"], ["buzz", "shapeBuzz"], ["hollow", "shapeHollow"]].forEach(([id, key]) => {
       const b = document.createElement("button");
       b.type = "button";

@@ -3153,3 +3153,124 @@ body.mu237.tab-band #band-notes .key {
   flex: 1 1 44px !important;
 }
 body.mu237.tab-band #band-pane > details:not([open]) > :not(summary) { display: none !important; }
+
+/* MU 2.35.11 — What's new list, and piano keys a finger can hit */
+body.mu237.menu-open .drawer {
+  z-index: 80 !important;
+}
+body.mu237.menu-open .scrim {
+  z-index: 40 !important;
+}
+.whats-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  max-width: 100%;
+}
+.whats-list li {
+  margin: 0 0 0.5rem;
+  padding: 0 0 0.5rem;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  line-height: 1.35;
+  max-width: 100%;
+}
+.whats-list .news-ver {
+  font-weight: 800;
+  unicode-bidi: isolate;
+}
+html[dir="rtl"] .whats-list,
+html[dir="rtl"] .whats-list li {
+  direction: rtl;
+  text-align: right;
+  overflow-x: hidden;
+}
+.piano-octaves {
+  display: flex;
+  direction: ltr;
+  align-items: stretch;
+  gap: 8px;
+  margin: 0 0 8px;
+  max-width: 100%;
+}
+.piano-octaves .btn,
+.piano-octaves #oct-read {
+  min-width: 44px;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+.piano-octaves .btn {
+  flex: 1 1 44px;
+  white-space: normal;
+}
+.piano-octaves #oct-read {
+  flex: 0 0 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: var(--panel);
+}
+#sound-notes .key.hit {
+  background: #22d3ee !important;
+  color: #041018 !important;
+  filter: none !important;
+}
+body.mu237.tab-piano .work {
+  overflow: auto !important;
+  min-height: 0 !important;
+}
+body.mu237.tab-piano #sound-pane {
+  display: block !important;
+  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 8px !important;
+}
+@media (max-width: 480px) {
+  body.mu237 #sound-notes,
+  body.mu237.is-sound #sound-notes,
+  body.mu237.tab-piano #sound-notes {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    grid-template-columns: none !important;
+  }
+  body.mu237 #sound-notes .key,
+  body.mu237.is-sound #sound-notes .key,
+  body.mu237.tab-piano #sound-notes .key {
+    flex: 1 1 44px !important;
+    min-width: 44px !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 64px !important;
+    height: 64px !important;
+    box-sizing: border-box !important;
+    padding: 0 4px !important;
+  }
+  body.mu237 .piano-octaves .btn,
+  body.mu237 .piano-octaves #oct-read {
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}
+@media (min-width: 481px) {
+  body.mu237.tab-piano #sound-notes,
+  body.mu237.is-sound #sound-notes {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    width: 100% !important;
+  }
+  body.mu237.tab-piano #sound-notes .key,
+  body.mu237.is-sound #sound-notes .key {
+    flex: 1 1 0 !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+}

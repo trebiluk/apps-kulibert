@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.11** · 2026-10-07 · channel **live**
+
+DJ Berty: a What's new list you can read, and piano keys big enough for a finger.
+
+## Earlier
+
 **Chip: MU 2.35.10** · 2026-10-04 · channel **live**
 
 Mix opens the loudness, swing, click, and patterns. Band shows one instrument list and the five notes.

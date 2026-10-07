@@ -4,13 +4,13 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" content="#050814"/>
-  <title>DJ Berty · MU 2.35.10</title>
+  <title>DJ Berty · MU 2.35.11</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=2.35.10-mix"/>
+  <link rel="stylesheet" href="./styles.css?v=2.35.11"/>
 </head>
 <body class="mu237">
-  <em id="chip" hidden>MU 2.35.10</em>
+  <em id="chip" hidden>MU 2.35.11</em>
   <div class="scrim" id="scrim"></div>
   <div id="desktop-site" class="desktop-site" hidden>
     <p data-mu="desktopSite">Words tiny? Turn off Desktop site in Chrome's ⋮ menu.</p>
@@ -116,7 +116,13 @@
     <button type="button" id="menu-close" class="btn close" data-i18n="close">Close</button>
     <section class="group" id="menu-chrome">
       <h2 data-i18n="whatsNew">What's new</h2>
-      <p id="whats-line" data-mu="ownTab">Each music job has its own tab, and your song stays in the player at the bottom.</p>
+      <ul id="whats-list" class="whats-list">
+        <li><bdi class="news-ver">MU 2.35.11</bdi> <span data-mu="newsNow">DJ Berty: a What's new list you can read, and piano keys big enough for a finger.</span></li>
+        <li><bdi class="news-ver">MU 2.35.10</bdi> <span data-mu="news23510">Mix opens the loudness, swing, click, and patterns. Band shows one instrument list and the five notes.</span></li>
+        <li><bdi class="news-ver">MU 2.35.6</bdi> <span data-mu="everyWord">Every word is easy to read, menus close after you pick, and Perform fits your screen.</span></li>
+        <li><bdi class="news-ver">MU 2.35.5</bdi> <span data-mu="listsEasy">Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.</span></li>
+        <li><bdi class="news-ver">MU 2.35.4</bdi> <span data-mu="menuEvery">Menu opens from the left on every screen.</span></li>
+      </ul>
       <h2 data-i18n="settings">Settings</h2>
       <div id="menu-langs" role="group">
         <span data-i18n="language">Language</span>
@@ -227,7 +233,7 @@
       <p class="hint" data-mu="saveHint">This Chromebook keeps the song. After Sign in, a finished beat sends the score.</p>
     </section>
     <section class="group">
-      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.10</span></p>
+      <p><bdi>Kulibert Tech Ed</bdi> · <span id="foot-chip">MU 2.35.11</span></p>
       <a class="btn" href="./teacher.html" data-mu="teacher">Teacher</a>
       <a class="btn" href="./privacy.html" data-mu="privacy">Privacy</a>
     </section>
@@ -386,6 +392,11 @@
       </div>
       <div id="sound-pane">
         <div class="sound-controls">
+        <div id="piano-octaves" class="piano-octaves">
+          <button type="button" id="oct-down" class="btn" data-mu="octDown">Octave down</button>
+          <b id="oct-read">4</b>
+          <button type="button" id="oct-up" class="btn" data-mu="octUp">Octave up</button>
+        </div>
         <div id="sound-notes" class="keys" aria-label="Notes"></div>
         <details class="more-box" id="wave-explore">
           <summary data-mu="exploreWave">Explore the wave</summary>
@@ -475,7 +486,7 @@
     </div>
   </div>
 
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.10" data-menu="#menu-btn" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-version="MU 2.35.11" data-menu="#menu-btn" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -484,7 +495,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=2.35.10"></script>
-  <script src="./app.js?v=2.35.10-mix"></script>
+  <script src="./strings.js?v=2.35.11"></script>
+  <script src="./app.js?v=2.35.11"></script>
 </body>
 </html>
