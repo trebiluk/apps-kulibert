@@ -67,8 +67,11 @@ Updated Tue Oct 6 2026, 9:15 PM ET (Debugzy: 2.5.47 proof PASS (P2 watches): a f
 | 0d | 2.5.46 | **bertopia-2546-touchbreak.md (P1, Diego's phone 6:13 PM "Couldn't break the tree"):** touch hold-to-break uses straight drift under 24 px instead of summed jitter; ring at 150 ms + one-time holdToBreak tip + pathTreeTouch line; Pick renamed Copy (eyedropper), a hold still breaks while armed Pasted Oct 6 ~6:19 PM | shipped, FAIL (P1) |
 | 0e | 2.5.47 | **bertopia-2547-fix.md (P1, 2.5.46 proof):** touch hold/tap act on the block under the finger (voxel raycast through the touch point, reach 6); hotbar + chip repaint after every break/pickup; smoke off-aim finger chop + HUD slot line; smoke truth (bag label headroom, toast wait) | shipped, PASS |
 | 1 | 2.5.48 | bertopia-basics-1.md: registry rows first, Lever, Push Button, the other doors + double + lock (doors never break from a hold), day/night + toggles, LED Lantern, palette-remap save safety (ores moved to world-1a) | [ ] |
-| 2 | 2.5.49 | bertopia-basics-2.md: Glow Pebble T1, Glow Stick T2, Jumbo (makes 2), Cold Vial locked tile, Corn → Bioplastic → Tube, Paint dab from Berry, one-time gift of 8 Glow Moss | [ ] |
-| 3 | 2.5.50 | bertopia-basics-3.md: Solar Panel (6-charge cell), Glow Strip, Copper Wire, powered sliding door, `power.js` (T5); Silicon at the Smelter | [ ] |
+| 2a | 2.5.49 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
+| 2b | 2.5.50 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
+| 3a | 2.5.51 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |
+| 3b | 2.5.52 | bertopia-basics-3b.md: Copper Wire rings, tap to connect, Show power, 512 limit | [ ] |
+| 3c | 2.5.53 | bertopia-basics-3c.md: powered sliding door, wired Lever/Button opens a Metal door, power lesson card | [ ] |
 | 4 | 2.6.0 | bertopia-260.md: shared **kw-interact** module, 3 panel shapes, Slow taps, link timer (Flo GO; the Bag 9 + 6 itself is live since 2.5.32) | [ ] |
 | 5 | 2.6.1 | bertopia-260b.md: search/tabs/keys, stacks + Oven/Stash/Market/Trash, saved arrangement | [ ] |
 | 6 | 2.6.2 | bertopia-seasonal-early.md: one Seasonal & Holiday pile + one teacher switch (no dates), Autumn/Spooky props, String lights, pumpkin carving (12×12, steady amber); before Oct 31 | [ ] |
@@ -89,7 +92,7 @@ Updated Tue Oct 6 2026, 9:15 PM ET (Debugzy: 2.5.47 proof PASS (P2 watches): a f
 | 21 | — | Furniture (storage-2b), Effects, Bertodex, mastery, machines: staged in docs/BERTOPIA-CODING-PLAN.md §S; briefs not written yet | [ ] |
 | future | — | **World types and options** (Diego, Oct 6 12:32 PM): New World picker with Classic, Flat, Islands, Caves (more later); options for world size, trees, ores, starter town on/off; a shareable seed so a whole class gets one world. In docs/BERTOPIA-CODING-PLAN.md §S5 (world-2 stage, after world-2a). No brief yet (`bertopia-world-2c.md` when Diego says go). | [ ] |
 
-All briefs were renumbered on Oct 6 (7:10 AM, then 10:04 AM for seasonal-early) to this table. Every brief's proof includes StudentTester's 915×412 sideways run + mid-play rotate; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
+All briefs were renumbered on Oct 6 (7:10 AM, then 10:04 AM for seasonal-early) to this table. Oct 6 10:05 PM (Diego 9:56 PM "Smaller chunks"): basics-2 and basics-3 split into five one- or two-item briefs, 2.5.49-2.5.53 (originals in `briefs/fixq/_bak-split-1006/`); 2.6.0 and later keep their numbers. Every brief's proof includes StudentTester's 915×412 sideways run + mid-play rotate; each one starts from the version in the row above. **Registry first:** every brief adds its rows to `docs/wiki/REGISTRY.json` before any code (CODING-PLAN §0).
 Out of scope until Diego decides: Bobbleheads; the TechWorks server side of the Teacher flag.
 
 ## 4. Locked rules (read before building; use the numbers exactly)
