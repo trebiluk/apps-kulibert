@@ -194,4 +194,47 @@ const BASICS = {
 }
 for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
+const NEXT = {
+  en: {
+    whatsNewBody: 'Bertopia 2.5.50: tools now matter, and trees grow back from saplings.',
+    needsWood: 'Needs a Wood Tool', needsStone: 'Needs a Stone Tool', toolStick: 'Your tool wore out. You got a Stick.',
+    woodToolLine: 'Wood tool - breaks stone', stoneToolLine: 'Stone tool - breaks ore', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
+  },
+  uk: {
+    whatsNewBody: 'Bertopia 2.5.50: знаряддя тепер важливі, і дерева знову виростають із саджанців.',
+    needsWood: 'Потрібне дерев’яне знаряддя', needsStone: 'Потрібне кам’яне знаряддя', toolStick: 'Знаряддя зносилось. Ти отримав палицю.',
+    woodToolLine: 'Дерев’яне знаряддя — ламає камінь', stoneToolLine: 'Кам’яне знаряддя — ламає руду', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
+  },
+  ru: {
+    whatsNewBody: '2.5.50: орудия теперь важны, и деревья снова растут из саженцев.',
+    needsWood: 'Нужно деревянное орудие', needsStone: 'Нужно каменное орудие', toolStick: 'Орудие износилось. Ты получил палку.',
+    woodToolLine: 'Деревянное орудие — ломает камень', stoneToolLine: 'Каменное орудие — ломает руду', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
+  },
+  es: {
+    whatsNewBody: 'Bertopia 2.5.50: las herramientas importan, y los árboles vuelven a crecer desde plantones.',
+    needsWood: 'Necesitas una herramienta de madera', needsStone: 'Necesitas una herramienta de piedra', toolStick: 'Tu herramienta se gastó. Recibiste un palo.',
+    woodToolLine: 'Herramienta de madera - rompe piedra', stoneToolLine: 'Herramienta de piedra - rompe mineral', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
+  },
+  ar: {
+    whatsNewBody: '2.5.50: الأدوات صارت مهمة، والأشجار تنمو من جديد من الشتلات.',
+    needsWood: 'تحتاج أداة خشب', needsStone: 'تحتاج أداة حجر', toolStick: 'أداتك بليت. حصلت على عصا.',
+    woodToolLine: 'أداة خشب — تكسر الحجر', stoneToolLine: 'أداة حجر — تكسر الخام', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.50: ابزارها حالا مهم اند، و درخت‌ها از نهال دوباره می‌رویند.',
+    needsWood: 'ابزار چوبی لازم است', needsStone: 'ابزار سنگی لازم است', toolStick: 'ابزارت تمام شد. یک چوب گرفتی.',
+    woodToolLine: 'ابزار چوبی — سنگ را می‌شکند', stoneToolLine: 'ابزار سنگی — سنگ معدن را می‌شکند', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
+  },
+  rw: {
+    whatsNewBody: 'Bertopia 2.5.50: ibikoresho birakenewe, kandi ibiti birakura ukundi bivuye ku ngemwe.',
+    needsWood: 'Ukeneye igikoresho cy\'ibiti', needsStone: 'Ukeneye igikoresho cy\'ibuye', toolStick: 'Igikoresho cyawe cyarashize. Wakiriye inkoni.',
+    woodToolLine: 'Igikoresho cy\'ibiti - kivuna ibuye', stoneToolLine: 'Igikoresho cy\'ibuye - kivuna amabuye', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
+  },
+  ti: {
+    whatsNewBody: '2.5.50፡ መሳርሒታት ሕጂ የድልዩ፡ ዕንጨይቲ ድማ ካብ ቡቕሊ ዳግም ይበቍል።',
+    needsWood: 'ናይ ዕንጨይቲ መሳርሒ የድሊ', needsStone: 'ናይ እምኒ መሳርሒ የድሊ', toolStick: 'መሳርሒኻ ተበላሽዩ። በትሪ ረኺብካ።',
+    woodToolLine: 'ናይ ዕንጨይቲ መሳርሒ — እምኒ ይስብር', stoneToolLine: 'ናይ እምኒ መሳርሒ — እምኒ ብረት ይስብር', sapling: 'ቡቕሊ', saplingSoil: 'ቡቕሊ ኣብ ሳዕሪ ወይ መሬት ተኽል።',
+  },
+}
+for (const [lang, row] of Object.entries(NEXT)) Object.assign(EXTRA[lang], row)
 

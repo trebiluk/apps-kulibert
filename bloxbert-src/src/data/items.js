@@ -47,8 +47,9 @@ export const ITEMS = {
   steel: { letter: 'Se', base: 0, sell: false },
   copperWire: { letter: 'Cw', base: 0, sell: false },
   batteryCell: { letter: 'Bc', base: 0, sell: false },
-  woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false },
-  stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false },
+  woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false, stack: 1 },
+  stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false, stack: 1 },
+  sapling: { block: 185, letter: 'Sp', base: 0, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
   flour: { svg: 'flour', letter: 'Fl', cat: 'Food', base: 3, sell: true },
   sugar: { svg: 'sugar', letter: 'Su', cat: 'Food', base: 2, sell: true },
@@ -67,4 +68,8 @@ export function dropOf(blockId) {
   if (blockId === 39) return 'lever'
   if (blockId === 41) return 'pushButton'
   return ITEM_BY_BLOCK[blockId] || null
+}
+export function saplingRoll(x, y, z) {
+  const h = (Math.imul(x | 0, 2246822519) + Math.imul(y | 0, 3266489917) + Math.imul(z | 0, 668265263)) >>> 0
+  return h % 6 === 0
 }

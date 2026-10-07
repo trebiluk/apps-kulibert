@@ -17,6 +17,7 @@ export function createBasics(api) {
   const autos = new Set()
   const timers = []
   const lights = new Map()
+  const saplings = new Map()
   const badges = new Set()
   let card = ''
   let cardN = 0
@@ -116,6 +117,7 @@ export function createBasics(api) {
   }
   function noteBlock(x, y, z, id) {
     if (id === LANTERN && !lights.has(key(x, y, z))) lights.set(key(x, y, z), { step: 0, charge: 1 })
+    if (id === 185) saplings.set(key(x, y, z), { at: now() })
     if (id === FABRICATOR && api.survival() && !starter) {
       starter = true
       api.gift('batteryCell', 1)
@@ -143,7 +145,37 @@ export function createBasics(api) {
       if (st.charge > 1) st.charge = 1
     }
   }
+  function spaceClear(x, y, z) {
+    for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) for (let dy = 0; dy <= 6; dy++) {
+      const id = api.get(x + dx, y + dy, z + dz)
+      if (!id) continue
+      if (dx === 0 && dy === 0 && dz === 0 && id === 185) continue
+      return false
+    }
+    return true
+  }
+  function growTree(x, y, z) {
+    for (let dy = 0; dy <= 3; dy++) api.set(x, y + dy, z, 11)
+    const top = y + 3
+    for (let dy = -1; dy <= 1; dy++) for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) {
+      if (Math.abs(dx) + Math.abs(dz) + Math.abs(dy) > 3) continue
+      if (dx === 0 && dz === 0 && dy <= 0) continue
+      api.set(x + dx, top + dy, z + dz, 12)
+    }
+  }
+  function growSaplings() {
+    const t = now()
+    for (const [k, st] of saplings) {
+      const [x, y, z] = k.split(',').map(Number)
+      if (api.get(x, y, z) !== 185) { saplings.delete(k); continue }
+      if (t < (st.at || 0) + 8 * 60 * 1000) continue
+      if (!spaceClear(x, y, z)) continue
+      growTree(x, y, z)
+      saplings.delete(k)
+    }
+  }
   function flush() {
+    growSaplings()
     const t = now()
     for (let i = timers.length - 1; i >= 0; i--) {
       const job = timers[i]
@@ -260,7 +292,7 @@ export function createBasics(api) {
       return {
         ms: now(), always, bright, starter, actor,
         locks: [...locks], autos: [...autos],
-        lights: [...lights], badges: [...badges],
+        lights: [...lights], badges: [...badges], saplings: [...saplings],
       }
     },
     load(doc) {
@@ -275,6 +307,7 @@ export function createBasics(api) {
       locks.clear(); for (const [k, v] of doc.locks || []) locks.set(k, v)
       autos.clear(); for (const k of doc.autos || []) autos.add(k)
       lights.clear(); for (const [k, v] of doc.lights || []) lights.set(k, v)
+      saplings.clear(); for (const [k, v] of doc.saplings || []) if (v && typeof v.at === 'number') saplings.set(k, { at: v.at })
       badges.clear(); for (const n of doc.badges || []) badges.add(n)
       cardN = badges.size
       api.flagDay(always)

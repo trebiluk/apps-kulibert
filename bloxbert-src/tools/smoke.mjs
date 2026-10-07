@@ -241,6 +241,11 @@ if (testUrl) {
   await sleep(200)
   const day = await page.evaluate(() => document.documentElement.dataset.alwaysDay)
   note('always day', 412, day === '1', day)
+  await page.evaluate(() => {
+    if (window.__smoke && window.__smoke.always) window.__smoke.always(false)
+    return window.__smoke && window.__smoke.persist ? window.__smoke.persist() : null
+  })
+  await page.close()
   await prove2543(browser, testUrl, note, errs)
   await browser.close()
   if (errs.length) console.error('CONSOLE ' + errs.join(' | '))
@@ -646,10 +651,11 @@ async function prove2543(browser, testUrl, note, errs) {
     })
     let full = null
     let drop = { id: -1, drops: [] }
-    for (let attempt = 0; attempt < 2 && !(drop.id === 0 && drop.drops.length > 0); attempt++) {
+    for (let attempt = 0; attempt < 4 && !(drop.id === 0 && drop.drops.length > 0); attempt++) {
       full = await lookSolid(page, 2, spawn)
+      await waitSteady(page)
       const cFull = await centerOf(page)
-      await holdAt(page, cFull.x, cFull.y, 1100, false)
+      await holdAt(page, cFull.x, cFull.y, 1500, false)
       await sleep(200)
       drop = await page.evaluate((aim) => ({ id: aim ? window.__smoke.voxel(aim.x, aim.y, aim.z) : -1, drops: window.__smoke.drops(), toast: window.__smoke.toast() }), full)
     }
@@ -974,7 +980,7 @@ async function prove2543(browser, testUrl, note, errs) {
   const toastPage = await bootHud(browser, testUrl + '?smoke=1&q=lite', 915, 412, true)
   errs.push(...toastPage.__err.map((e) => 'toast ' + e))
   await toastPage.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
-  await toastPage.evaluate(() => window.__smoke.emptyBag())
+  await toastPage.evaluate(() => { window.__smoke.fillBag('stick', 1); window.__smoke.emptyBag() })
   await toastPage.evaluate((s) => window.__smoke.stand(s[0], s[1], s[2], s[3], s[4]), [8.5, 6.2, 16, Math.PI, 0.7])
   await waitSteady(toastPage)
   const toastLog = await lookSolid(toastPage, 11, [8.5, 6.2, 16, Math.PI, 0.7])
@@ -1498,6 +1504,7 @@ async function prove2543(browser, testUrl, note, errs) {
     await lamp.close()
   }
   await prove2549()
+  await prove2550()
 
   async function prove2549() {
     const band = { x0: 0.72, y0: 0.45, x1: 0.92, y1: 0.62 }
@@ -1572,6 +1579,203 @@ async function prove2543(browser, testUrl, note, errs) {
       const high = lit.light && lit.light.level === 'high' && lit.light.radius === 10
       note('lantern patch', w + 'x' + h, !!high && nearOk && farOk && farM > 1 && nearM >= farM * 1.15, JSON.stringify({ high, nearM: Math.round(nearM), farM: Math.round(farM), nearP, farP, gy }))
       await page.evaluate(() => { window.__smoke.always(false); window.__smoke.bright(false) })
+      await page.close()
+    }
+  }
+
+  async function prove2550() {
+    const spawn = [8.5, 6.2, 16, Math.PI, 0.7]
+    async function sampleHold(page, x, y, total, touch) {
+      if (touch) await page.touchscreen.touchStart(x, y)
+      else {
+        await page.mouse.move(x, y)
+        await page.mouse.down()
+      }
+      await sleep(1400)
+      const early = await page.evaluate(() => window.__smoke.toast())
+      await sleep(1600)
+      const mid = await page.evaluate(() => window.__smoke.toast())
+      await sleep(Math.max(0, total - 3000))
+      if (touch) await page.touchscreen.touchEnd()
+      else await page.mouse.up()
+      return { early, mid }
+    }
+    async function readyAim(page, id) {
+      let aim = null
+      for (let i = 0; i < 4 && !(aim && aim.id === id); i++) aim = await lookSolid(page, id, spawn)
+      return aim
+    }
+    for (const [w, h, touch] of [[412, 915, true], [915, 412, true], [1366, 768, false]]) {
+      const page = await bootHud(browser, testUrl + '?smoke=1', w, h, touch)
+      errs.push(...page.__err.map((e) => 'b250 ' + w + ' ' + e))
+      await page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 20000 }).catch(() => {})
+      await page.evaluate(() => window.__smoke.emptyBag())
+      const stone = await readyAim(page, 3)
+      const c = await centerOf(page)
+      const hand = await sampleHold(page, c.x, c.y, 6000, touch)
+      const handLeft = await page.evaluate((a) => ({
+        id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1,
+        wood: window.__smoke.word('needsWood'),
+        faster: window.__smoke.word('toolFaster'),
+      }), stone)
+      note('hand stone', w + 'x' + h, !!stone && handLeft.id === 3 && hand.early === handLeft.wood && hand.mid !== handLeft.faster, hand.early + ' | ' + hand.mid + ' id ' + handLeft.id)
+      await page.evaluate(() => {
+        window.__smoke.emptyBag()
+        window.__smoke.fillBag('woodTool', 1)
+        window.__smoke.key(0)
+      })
+      await tapSel(page, '#hotbar .bag-tile', touch)
+      await sleep(350)
+      const bagLine = await page.evaluate(() => {
+        const text = [...document.querySelectorAll('#sheet-body .glbl')].map((el) => el.textContent)
+        const wear = document.querySelector('#hotbar .slot .wear .fill')
+        return { text, wear: wear ? wear.style.width : '', want: window.__smoke.word('woodToolLine') }
+      })
+      note('wood tool line', w + 'x' + h, bagLine.text.includes(bagLine.want) && bagLine.wear === '100%', JSON.stringify(bagLine).slice(0, 180))
+      await shut(page, touch)
+      const broke = await readyAim(page, 3)
+      const c2 = await centerOf(page)
+      const beforeStone = await page.evaluate(() => window.__smoke.count('stone'))
+      await holdAt(page, c2.x, c2.y, 2000, touch)
+      await sleep(200)
+      const stoneGone = await page.evaluate((a, n) => ({ id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1, n: window.__smoke.count('stone'), was: n }), broke, beforeStone)
+      note('wood breaks stone', w + 'x' + h, !!broke && stoneGone.id === 0 && stoneGone.n === stoneGone.was + 1, JSON.stringify(stoneGone))
+      const ore = await readyAim(page, 44)
+      const c3 = await centerOf(page)
+      const oreHold = await sampleHold(page, c3.x, c3.y, 6000, touch)
+      const oreLeft = await page.evaluate((a) => ({
+        id: a ? window.__smoke.voxel(a.x, a.y, a.z) : -1,
+        need: window.__smoke.word('needsStone'),
+      }), ore)
+      note('wood ore', w + 'x' + h, !!ore && oreLeft.id === 44 && oreHold.early === oreLeft.need, oreHold.early + ' id ' + oreLeft.id)
+      await page.evaluate(() => {
+        window.__smoke.emptyBag()
+        window.__smoke.fillBag('woodTool', 1)
+        window.__smoke.key(0)
+      })
+      const leaf = await readyAim(page, 12)
+      const c4 = await centerOf(page)
+      let chops = 0
+      while (chops < 90) {
+        const left = await page.evaluate(() => window.__smoke.count('woodTool'))
+        if (!left) break
+        await page.evaluate((a) => {
+          if (!a) return
+          window.__smoke.plant(a.x, a.y, a.z, 12)
+          const p = window.__smoke.pos()
+          const dx = a.x + 0.5 - p[0]
+          const dy = a.y + 0.5 - (p[1] + 1.62)
+          const dz = a.z + 0.5 - p[2]
+          const len = Math.hypot(dx, dy, dz) || 1
+          for (const step of [0.9, 1.6]) {
+            const bx = Math.floor(a.x + 0.5 + (dx / len) * step)
+            const by = Math.floor(a.y + 0.5 + (dy / len) * step)
+            const bz = Math.floor(a.z + 0.5 + (dz / len) * step)
+            if (bx !== a.x || by !== a.y || bz !== a.z) window.__smoke.plant(bx, by, bz, 3)
+          }
+        }, leaf)
+        await sleep(30)
+        await holdAt(page, c4.x, c4.y, 360, touch)
+        chops++
+      }
+      await sleep(150)
+      const worn = await page.evaluate(() => ({
+        stick: window.__smoke.count('stick'),
+        tool: window.__smoke.count('woodTool'),
+        toast: window.__smoke.toast(),
+        want: window.__smoke.word('toolStick'),
+      }))
+      note('tool wears', w + 'x' + h, worn.tool === 0 && worn.stick === 1 && worn.toast === worn.want && chops >= 60 && chops <= 90, JSON.stringify({ ...worn, chops }))
+      const spot = await page.evaluate((at) => {
+        const x = at.x
+        const z = at.z
+        let gy = 2
+        for (let y = 48; y >= 1; y--) if (window.__smoke.voxel(x, y, z)) { gy = y; break }
+        for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) for (let dy = 1; dy <= 7; dy++) window.__smoke.plant(x + dx, gy + dy, z + dz, 0)
+        window.__smoke.plant(x, gy, z, 1)
+        window.__smoke.emptyBag()
+        window.__smoke.fillBag('sapling', 1)
+        window.__smoke.key(0)
+        window.__smoke.stand(x + 0.5, gy + 1.7, z - 4.2, 0, 0.42)
+        return { x, y: gy, z }
+      }, { x: w === 412 ? 140 : w === 915 ? 180 : 220, z: 150 })
+      await sleep(500)
+      for (let i = 0; i < 6; i++) {
+        const aimed = await page.evaluate(() => window.__smoke.aim())
+        if (aimed && aimed.x === spot.x && aimed.z === spot.z && aimed.y === spot.y) break
+        await page.evaluate((s, i) => window.__smoke.stand(s.x + 0.5, s.y + 1.6, s.z - 3.6, 0, 0.28 + i * 0.06), spot, i)
+        await sleep(250)
+      }
+      const c5 = await centerOf(page)
+      if (touch) await pressAt(page, c5.x, c5.y, 90, true)
+      else await pressAt(page, c5.x, c5.y, 90, false, 'right')
+      await sleep(250)
+      const planted = await page.evaluate((s) => ({
+        id: window.__smoke.voxel(s.x, s.y + 1, s.z),
+        n: window.__smoke.count('sapling'),
+        aim: window.__smoke.aim(),
+      }), spot)
+      note('plant sapling', w + 'x' + h, planted.id === 185 && planted.n === 0, JSON.stringify(planted))
+      await page.evaluate((s) => window.__smoke.plant(s.x + 2, s.y + 2, s.z, 3), spot)
+      await page.evaluate(() => window.__smoke.clock(8 * 60 * 1000))
+      const blocked = await page.evaluate((s) => window.__smoke.voxel(s.x, s.y + 1, s.z), spot)
+      note('sapling waits', w + 'x' + h, blocked === 185, String(blocked))
+      await page.evaluate((s) => {
+        window.__smoke.plant(s.x + 2, s.y + 2, s.z, 0)
+        window.__smoke.clock(1)
+      }, spot)
+      const grew = await page.evaluate((s) => ({
+        trunk: window.__smoke.voxel(s.x, s.y + 1, s.z),
+        top: window.__smoke.voxel(s.x, s.y + 4, s.z),
+        cap: window.__smoke.voxel(s.x, s.y + 5, s.z),
+        leaf: window.__smoke.voxel(s.x + 2, s.y + 3, s.z),
+      }), spot)
+      note('sapling grows', w + 'x' + h, grew.trunk === 11 && grew.top === 11 && grew.cap === 12 && grew.leaf === 12, JSON.stringify(grew))
+      const again = await page.evaluate((at) => {
+        const x = at.x
+        const z = at.z
+        let gy = 2
+        for (let y = 48; y >= 1; y--) if (window.__smoke.voxel(x, y, z)) { gy = y; break }
+        for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) for (let dy = 1; dy <= 7; dy++) window.__smoke.plant(x + dx, gy + dy, z + dz, 0)
+        window.__smoke.plant(x, gy, z, 1)
+        window.__smoke.emptyBag()
+        window.__smoke.fillBag('sapling', 1)
+        window.__smoke.key(0)
+        window.__smoke.stand(x + 0.5, gy + 1.6, z - 3.6, 0, 0.36)
+        return { x, y: gy, z }
+      }, { x: w === 412 ? 140 : w === 915 ? 180 : 220, z: 158 })
+      await sleep(500)
+      for (let i = 0; i < 8; i++) {
+        const aimed = await page.evaluate(() => window.__smoke.aim())
+        if (aimed && aimed.x === again.x && aimed.z === again.z && aimed.y === again.y) break
+        await page.evaluate((s, i) => window.__smoke.stand(s.x + 0.5, s.y + 1.6, s.z - 3.6, 0, 0.28 + i * 0.05), again, i)
+        await sleep(250)
+      }
+      const c6 = await centerOf(page)
+      if (touch) await pressAt(page, c6.x, c6.y, 90, true)
+      else await pressAt(page, c6.x, c6.y, 90, false, 'right')
+      await sleep(200)
+      await page.evaluate(() => window.__smoke.clock(4 * 60 * 1000))
+      const mid = await page.evaluate((s) => window.__smoke.voxel(s.x, s.y + 1, s.z), again)
+      await page.evaluate(() => window.__smoke.persist())
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 45000 })
+      await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__smoke.voxel, { timeout: 25000 }).catch(() => {})
+      await sleep(400)
+      const kept = await page.evaluate((s) => window.__smoke.voxel(s.x, s.y + 1, s.z), again)
+      await page.evaluate(() => window.__smoke.clock(4 * 60 * 1000))
+      const after = await page.evaluate((s) => window.__smoke.voxel(s.x, s.y + 1, s.z), again)
+      note('sapling timer', w + 'x' + h, mid === 185 && kept === 185 && after === 11, mid + ' -> ' + kept + ' -> ' + after)
+      const gift = await page.evaluate(async () => {
+        const doc = await window.__blocks.exportDoc()
+        doc.gifts = {}
+        doc.lost = []
+        await window.__smoke.apply(doc)
+        const once = window.__smoke.lost().slice()
+        const doc2 = await window.__blocks.exportDoc()
+        await window.__smoke.apply(doc2)
+        return { once, twice: window.__smoke.lost().slice(), flag: !!window.__smoke.gifts().sapling2 }
+      })
+      note('sapling gift', w + 'x' + h, gift.flag && gift.once.join(',') === 'sapling:2' && gift.twice.join(',') === 'sapling:2', JSON.stringify(gift))
       await page.close()
     }
   }

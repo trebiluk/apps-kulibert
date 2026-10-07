@@ -1,5 +1,6 @@
 import { createSession } from '../src/session.js'
 import { createBag } from '../src/items.js'
+import { createBasics } from '../src/basics.js'
 
 globalThis.document = {
   getElementById() { return null },
@@ -150,5 +151,97 @@ if (b.onBreak(3, 5, 3, 27) !== true) throw new Error('the box did not break')
 const dirtOut = b.bag.count('dirt') + b.groundDrops().filter((d) => d.item === 'dirt').reduce((n, d) => n + d.n, 0)
 if (dirtOut !== 18 * 64) throw new Error('breaking the box lost dirt, left ' + dirtOut)
 if (!b.bag.count('box') && !b.groundDrops().some((d) => d.item === 'box')) throw new Error('breaking the box lost the box')
+
+const wearToasts = []
+const wear = createSession({
+  t: (k) => k,
+  toast: (m) => wearToasts.push(m),
+  getVoxel: (x, y) => (y === 4 ? 1 : 0),
+  pos: () => [8, 5, 8],
+  heading: () => 0,
+  tableOn: () => false,
+  markDirty() {},
+})
+wear.setMode('survival')
+wear.give('woodTool', 2)
+if (wear.bag.slots.filter((s) => s && s.item === 'woodTool').length !== 2) throw new Error('wood tools stacked')
+wear.holdItem('woodTool')
+if (!wear.bag.slots[wear.hot] || wear.bag.slots[wear.hot].uses !== 60) throw new Error('a wood tool did not start at 60')
+for (let i = 0; i < 59; i++) if (wear.onBreak(2, 3, 2, 2) !== true) throw new Error('a dirt break failed')
+if (!wear.bag.slots[wear.hot] || wear.bag.slots[wear.hot].item !== 'woodTool' || wear.bag.slots[wear.hot].uses !== 1) throw new Error('wear did not count down')
+const worn = wear.dump()
+const wornToasts = []
+const worn2 = createSession({
+  t: (k) => k, toast: (m) => wornToasts.push(m), getVoxel: () => 0, pos: () => [8, 5, 8], heading: () => 0, tableOn: () => false, markDirty() {},
+})
+worn2.load(worn)
+worn2.holdItem('woodTool')
+if (!worn2.bag.slots[worn2.hot] || worn2.bag.slots[worn2.hot].uses !== 1) throw new Error('reload lost how worn the tool is')
+worn2.onBreak(2, 3, 2, 2)
+if (worn2.bag.count('woodTool') !== 1) throw new Error('the spare wood tool was lost')
+if (worn2.bag.count('stick') !== 1) throw new Error('a worn-out tool did not become a stick')
+if (!wornToasts.includes('toolStick')) throw new Error('the stick arrived with no toast')
+wear.give('sapling', 1)
+wear.holdItem('sapling')
+if (wear.onPlace(3, 6, 3, 185) !== false || wear.bag.count('sapling') !== 1) throw new Error('a sapling planted off grass')
+if (wear.onPlace(3, 5, 3, 185) !== true || wear.bag.count('sapling') !== 0) throw new Error('a sapling did not plant on grass')
+let sapDrops = 0
+for (let x = 0; x < 48; x++) {
+  const before = wear.bag.count('sapling')
+  wear.onBreak(x, 4, 9, 12)
+  if (wear.bag.count('sapling') > before) sapDrops++
+}
+if (!sapDrops) throw new Error('leaves dropped no sapling')
+const stoneToasts = []
+const stoneTool = createSession({
+  t: (k) => k, toast: (m) => stoneToasts.push(m), getVoxel: () => 0, pos: () => [8, 5, 8], heading: () => 0, tableOn: () => false, markDirty() {},
+})
+stoneTool.setMode('survival')
+stoneTool.give('stoneTool', 1)
+stoneTool.holdItem('stoneTool')
+for (let i = 0; i < 150; i++) stoneTool.onBreak(1, 2, 8, 6)
+if (stoneTool.bag.count('stoneTool') !== 0 || stoneTool.bag.count('stick') !== 1) throw new Error('a stone tool did not become a stick after 150')
+
+const cells = new Map()
+const ck = (x, y, z) => x + ',' + y + ',' + z
+function worldApi(map) {
+  return {
+    now: () => 0, t: (k) => k, toast() {}, survival: () => true, teacher: () => false, give() {}, gift() {}, card() {}, badge() {}, flagDay() {},
+    get: (x, y, z) => map.get(ck(x, y, z)) || 0,
+    set: (x, y, z, id) => map.set(ck(x, y, z), id),
+  }
+}
+const grow = createBasics(worldApi(cells))
+grow.boot(true)
+cells.set(ck(0, 5, 0), 1)
+cells.set(ck(0, 6, 0), 185)
+grow.saw(0, 6, 0, 185)
+grow.clock(8 * 60 * 1000 - 1)
+if (cells.get(ck(0, 6, 0)) !== 185) throw new Error('the sapling grew early')
+grow.clock(1)
+if (cells.get(ck(0, 6, 0)) !== 11 || cells.get(ck(0, 9, 0)) !== 11 || cells.get(ck(0, 10, 0)) !== 12 || cells.get(ck(2, 8, 0)) !== 12) throw new Error('the grown tree does not match a starter tree')
+cells.set(ck(5, 6, 0), 185)
+cells.set(ck(7, 7, 0), 3)
+grow.saw(5, 6, 0, 185)
+grow.clock(8 * 60 * 1000)
+if (cells.get(ck(5, 6, 0)) !== 185) throw new Error('a blocked sapling grew')
+cells.set(ck(7, 7, 0), 0)
+grow.clock(0)
+if (cells.get(ck(5, 6, 0)) !== 11) throw new Error('the sapling did not grow once the space was clear')
+const mid = new Map()
+mid.set(ck(10, 6, 0), 185)
+const midApi = createBasics(worldApi(mid))
+midApi.boot(true)
+midApi.saw(10, 6, 0, 185)
+midApi.clock(4 * 60 * 1000)
+const savedGrow = midApi.dump()
+const mid2 = new Map()
+mid2.set(ck(10, 6, 0), 185)
+const midLoad = createBasics(worldApi(mid2))
+midLoad.load(savedGrow)
+if (mid2.get(ck(10, 6, 0)) !== 185) throw new Error('reload grew the sapling too soon')
+midLoad.clock(4 * 60 * 1000)
+if (mid2.get(ck(10, 6, 0)) !== 11) throw new Error('reload lost the grow timer')
+
 console.log('session-check ok', toasts.filter((t) => t === 'bagFull').length, 'full toasts')
 process.exit(0)

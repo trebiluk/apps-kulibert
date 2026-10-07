@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.49'
+const VERSION = '2.5.50'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -36,7 +36,7 @@ import { FLOOR, STATIONS, keptCell } from './town.js'
 import { coalHere, plantHere } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
 import { isDoor, doorKind, isOpenDoor, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
@@ -207,6 +207,7 @@ export const BLOCKS = [
   [46, 'zincOre', 'greystone', 'Zo', 'greystone'],
   [47, 'lantern', 'glass', 'Ln', null],
   [48, 'charger', 'stone', 'Ch', 'stone'],
+  [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
@@ -218,6 +219,11 @@ for (const [id, name, material] of BLOCKS) {
   const open = typeof name === 'string' && name.endsWith('Open')
   const glass = material === 'glass'
   noa.registry.registerBlock(id, { material, opaque: !open && !glass, solid: !open })
+}
+function blockPalette() {
+  const p = ['air']
+  for (const b of BLOCKS) p[b[0]] = b[1]
+  return p
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
@@ -552,11 +558,12 @@ async function snapshot() {
   return {
     format: 'kuliblocks', v: 2, appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: [p[0], p[1], p[2]], chunkSize: S,
-    palette: ['air', ...BLOCKS.map((b) => b[1])],
+    palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     stations: stations.dump(),
     basics: basics ? basics.dump() : null,
+    gifts,
   }
 }
 async function save() {
@@ -571,7 +578,7 @@ async function save() {
 async function load() {
   const db = await idb()
   const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') { ensureHelp(); return false }
+  if (!doc || doc.format !== 'kuliblocks') { ensureHelp(); grantSaplings(); return false }
   await applyDoc(doc)
   const repaired = ensureHelp()
   dirty = repaired
@@ -604,6 +611,8 @@ async function applyDoc(doc) {
   if (doc.basics && basics) basics.load(doc.basics)
   dropGifts()
   if (doc.stations) stations.load(doc.stations)
+  gifts = Object.assign({}, doc && doc.gifts)
+  grantSaplings()
   if (session) paintModeChip()
   syncDropMeshes()
 }
@@ -616,10 +625,12 @@ async function importFile(file) {
   markSave(t('imported'))
 }
 async function resetWorld() {
+  gifts = {}
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   if (session && session.clearLoose) session.clearLoose()
+  grantSaplings()
   syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   setLook(0, 0.18)
@@ -685,6 +696,14 @@ session = createSession({
   setBright: (on) => basics && basics.setBright(on),
 })
 let pendingGifts = []
+let gifts = {}
+function grantSaplings() {
+  if (!session || !session.lostAdd) return
+  if (gifts.sapling2) return
+  session.lostAdd('sapling', 2)
+  gifts.sapling2 = true
+  dirty = true
+}
 let doorOptAt = null
 function showCard(text) {
   const el = $('maker-card')
@@ -1312,6 +1331,22 @@ function puff() {
   puff.t = setTimeout(() => { el.hidden = true }, 180)
 }
 function heldTool() { return session && session.toolTier ? session.toolTier() : 'hand' }
+const toolTold = {}
+function clampGate(dig, now) {
+  if (!dig) return false
+  const g = gateDig(dig.p || 0, dig.name, heldTool(), survivalOn())
+  dig.p = g.p
+  if (!g.blocked) return false
+  const elapsed = now - (dig.t0 || now)
+  if (!dig.draining && elapsed >= 250) {
+    const key = toolToast(dig.name)
+    if (key && (!toolTold[key] || now - toolTold[key] >= 10000)) {
+      toolTold[key] = now
+      toast(t(key))
+    }
+  }
+  return true
+}
 function beginDig(kind) {
   const tget = noa.targetedBlock
   if (!tget) { dig = null; hideCrack(); return }
@@ -1443,23 +1478,25 @@ function feelTick(dt) {
       if (!next) { dig = null; hideCrack() }
       else {
         dig = next
+        const blocked = clampGate(dig, now)
         const elapsed = now - dig.t0
         if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
         else hideCrack()
-        if (!dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
-        if (!dig.draining && dig.p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
+        if (!blocked && !dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
+        if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
       }
     }
   } else if (dig && dig.kind === 'touch') {
     const holding = !!(look && !look.looking && look.moved < (look.pt === 'touch' ? 24 : 8) && !dig.draining)
     if (holding) {
       dig.p = Math.min(1, (now - dig.t0) / dig.need)
+      const blocked = clampGate(dig, now)
       const elapsed = now - dig.t0
       if (look.pt === 'touch' && elapsed >= 150) showCrack(dig.p, look.x, look.y, true)
       else if (crackVisible(elapsed, dig.p)) showCrack(dig.p, look.x, look.y)
       else hideCrack()
-      if (survivalOn() && now - dig.t0 >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
-      if (dig.p >= 1 && !dig.broke) {
+      if (!blocked && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
+      if (!blocked && dig.p >= 1 && !dig.broke) {
         breakAt(dig.x, dig.y, dig.z)
         dig.broke = true
         puff()
@@ -2138,7 +2175,7 @@ function frame(tnow) {
   if (acc >= 1000) {
     const fps = (n * 1000) / acc; perf.frames.push(fps); n = 0; acc = 0
     if (AUTO && performance.now() - perf.first > 4000) {
-      if (fps < 30) { if (++lowSecs >= 3 && level < MAX_LEVEL) { level = Math.min(MAX_LEVEL, level + 0.25); engine.setHardwareScalingLevel(level); lowSecs = 0; perf.steps.push({ at: Math.round(performance.now()), level }); toast(t('lowerDetail')) } }
+      if (fps < 30) { if (++lowSecs >= 3 && level < MAX_LEVEL) { level = Math.min(MAX_LEVEL, level + 0.25); engine.setHardwareScalingLevel(level); lowSecs = 0; perf.steps.push({ at: Math.round(performance.now()), level }); if (!location.search.includes('smoke=1')) toast(t('lowerDetail')) } }
       else lowSecs = 0
     }
     perf.lastFps = fps
@@ -2429,6 +2466,12 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
     lost: () => session.lostItems ? session.lostItems() : [],
+    gifts: () => ({ ...gifts }),
+    apply: (doc) => applyDoc(doc),
+    uses: () => {
+      const s = session.bag.slots[session.hot]
+      return s ? { item: s.item, uses: s.uses == null ? null : s.uses, n: s.n } : null
+    },
     craft: (id) => session.tryCraft(id),
     needs(id) {
       session.setCraftOpen(true)

@@ -1,4 +1,4 @@
-import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, canUse } from '../src/feel.js'
+import { jumpHeight, overlapsPlayer, mineMs, reachFor, inReach, speedFor, JUMP_V, crackStage, crackVisible, drainProgress, advanceDig, keepCrouchStep, shouldRepeatPlace, capAir, airLimit, canUse, toolNeed, toolEnough, gateDig, TOOL_LIFE } from '../src/feel.js'
 
 let bad = 0
 function ok(cond, msg) {
@@ -27,6 +27,12 @@ ok(advanceDig({ p: 0.5, drainAt: 1000, need: 1000 }, 1500, false, true) === null
 ok(mineMs('brickRed', true, true) === 4000, 'red brick is 4 s')
 ok(mineMs('dirt', false, true) === 500, 'creative touch mine starts at 500 ms')
 ok(mineMs('dirt', false, false) === 0, 'creative mouse mine is instant')
+ok(toolNeed('stone') === 'wood' && toolNeed('slate') === 'wood' && toolNeed('coal') === 'wood' && toolNeed('brickRed') === 'wood' && toolNeed('ironOre') === 'stone' && toolNeed('dirt') === '' && toolNeed('log') === '', 'hard blocks name the tool they need')
+ok(!toolEnough('stone', 'hand') && toolEnough('stone', 'wood') && toolEnough('coal', 'stone') && !toolEnough('ironOre', 'wood') && toolEnough('copperOre', 'stone') && toolEnough('zincOre', 'steel'), 'a hand cannot mine stone and wood cannot mine ore')
+const heldOut = gateDig(1, 'stone', 'hand', true)
+ok(heldOut.blocked && heldOut.p === 0.82, 'a bare hand never finishes stone')
+ok(!gateDig(1, 'dirt', 'hand', true).blocked && gateDig(1, 'stone', 'hand', false).p === 1 && !gateDig(1, 'stone', 'hand', false).blocked, 'dirt and creative stay open')
+ok(TOOL_LIFE.wood === 60 && TOOL_LIFE.stone === 150, 'wood lasts 60 breaks and stone lasts 150')
 ok(reachFor(true) === 6 && reachFor(false) === 10, 'reach 6 / 10')
 ok(inReach(0, 10, 0, 0, 10, 5, 6), '5 blocks is inside reach 6')
 ok(!inReach(0, 10, 0, 0, 10, 8, 6), '8 blocks is outside reach 6')

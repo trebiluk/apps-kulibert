@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.50', date: '2026-10-07', lines: {
+    en: ['Tools now matter, and trees grow back from saplings.'],
+    uk: ['Знаряддя тепер важливі, і дерева знову виростають із саджанців.'],
+    ru: ['Орудия теперь важны, и деревья снова растут из саженцев.'],
+    es: ['Las herramientas importan, y los árboles vuelven a crecer desde plantones.'],
+    ar: ['الأدوات صارت مهمة، والأشجار تنمو من جديد من الشتلات.'],
+    'fa-AF': ['ابزارها حالا مهم اند، و درخت‌ها از نهال دوباره می‌رویند.'],
+    rw: ['Ibikoresho birakenewe, kandi ibiti birakura ukundi bivuye ku ngemwe.'],
+    ti: ['መሳርሒታት ሕጂ የድልዩ፡ ዕንጨይቲ ድማ ካብ ቡቕሊ ዳግም ይበቍል።'],
+  }},
   { v: '2.5.49', date: '2026-10-06', lines: {
     en: ['Nights get darker, and lanterns light the way without slowing the game.'],
     uk: ['Ночі темніші, і ліхтарі освітлюють шлях, не сповільнюючи гру.'],

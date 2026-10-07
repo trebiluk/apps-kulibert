@@ -4478,13 +4478,30 @@
    "originStatus": "checked"
   },
   {
+   "id": 185,
+   "key": "sapling",
+   "type": "block",
+   "name": { "en": "Sapling" },
+   "desc": "Plant it on grass or dirt. It grows into a tree.",
+   "verbs": ["Place", "Mine"],
+   "recipes": [],
+   "stage": "2.5.50",
+   "availableFrom": "live",
+   "assetId": "block:sapling",
+   "fact": "A sapling is a young tree.",
+   "dexId": "dex:sapling",
+   "dexCat": "Blocks",
+   "handS": 0.4,
+   "textStatus": "checked"
+  },
+  {
    "id": null,
    "key": "woodTool",
    "type": "item",
    "name": {
     "en": "Wood Pick"
    },
-   "desc": "Mines every block 2× faster than a hand. Never wears out.",
+   "desc": "Breaks stone. Wears out after 60 breaks and leaves a stick.",
    "verbs": [
     "Mine (held)"
    ],

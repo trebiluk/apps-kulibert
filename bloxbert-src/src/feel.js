@@ -14,7 +14,7 @@ export const HAND_S = {
   woolBlue: 0.8, woolGreen: 0.8, woolRed: 0.8, woolTan: 0.8,
   planks: 1.5, log: 2, stone: 3, slate: 3.5, coal: 3.5,
   brickRed: 4, brickGrey: 4,
-  wheat: 0.4, reed: 0.4, door: 1.5, doorOpen: 1.5,
+  wheat: 0.4, reed: 0.4, sapling: 0.4, door: 1.5, doorOpen: 1.5,
 }
 
 export function jumpHeight(v = JUMP_V, g = 32) {
@@ -29,7 +29,34 @@ export function overlapsPlayer(bx, by, bz, px, py, pz) {
 }
 
 export const TOOL_X = { hand: 1, wood: 2, stone: 3, copper: 4, steel: 6 }
+export const TOOL_RANK = { hand: 0, wood: 1, stone: 2, copper: 3, steel: 4 }
+export const TOOL_LIFE = { wood: 60, stone: 150 }
 export const DRAIN_MS = 500
+
+export function toolNeed(name) {
+  if (!name) return ''
+  if (/Ore$/.test(name)) return 'stone'
+  if (name === 'stone' || name === 'slate' || name === 'coal' || name === 'brickRed' || name === 'brickGrey') return 'wood'
+  return ''
+}
+
+export function toolEnough(name, tool) {
+  const need = toolNeed(name)
+  if (!need) return true
+  return (TOOL_RANK[tool] || 0) >= (TOOL_RANK[need] || 1)
+}
+
+export function toolToast(name) {
+  const need = toolNeed(name)
+  if (need === 'stone') return 'needsStone'
+  if (need === 'wood') return 'needsWood'
+  return ''
+}
+
+export function gateDig(p, name, tool, survival) {
+  if (!survival || toolEnough(name, tool)) return { p, blocked: false }
+  return { p: p > 0.82 ? 0.82 : p, blocked: true }
+}
 
 export function mineMs(name, survival, touch, tool = 'hand') {
   if (!survival) return touch ? 500 : 0

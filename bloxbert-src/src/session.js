@@ -1,5 +1,5 @@
 // Survival session: bag, Cogs, shop, counters, bunk. Creative never touches this bag.
-import { ITEMS, dropOf } from './data/items.js'
+import { ITEMS, dropOf, saplingRoll } from './data/items.js'
 import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
@@ -11,6 +11,7 @@ import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
 import { emptyBox, putInSlots } from './box.js'
+import { TOOL_LIFE } from './feel.js'
 
 export function createSession(api) {
   const bag = createBag()
@@ -174,6 +175,8 @@ export function createSession(api) {
       lbl.className = 'lbl'
       lbl.textContent = s ? String(s.n) : ''
       b.append(sw, tag, lbl)
+      const wear = s && wearBar(item, s.uses)
+      if (wear) b.append(wear)
       if (!s) b.classList.add('empty')
       b.setAttribute('aria-pressed', String(i === hot))
       b.addEventListener('click', () => {
@@ -311,8 +314,10 @@ export function createSession(api) {
       b.append(pic)
       const lbl = document.createElement('span')
       lbl.className = 'glbl'
-      lbl.textContent = s ? itemName(s.item) + ' ' + s.n : ''
+      lbl.textContent = s ? bagLine(s) : ''
       b.append(lbl)
+      const bar = s && wearBar(ITEMS[s.item], s.uses)
+      if (bar) b.append(bar)
       if (i < 9 && i === hot) b.classList.add('on')
       b.setAttribute('aria-pressed', String(i < 9 && i === hot))
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
@@ -730,15 +735,58 @@ export function createSession(api) {
       }
     }
     bagHist.push({ type: 'break', item: drop, n: got, loose })
+    if (id === 12 && saplingRoll(x, y, z)) {
+      markFound('sapling')
+      const sapLeft = bag.add('sapling', 1)
+      if (sapLeft) spawnDrop('sapling', sapLeft, x + 0.5, y + 0.55, z + 0.5, 'full')
+    }
     if (id === 11) markPath('pathTree')
     if (id === 3) markPath('pathStone')
     if (id === 5) markPath('pathCoal')
+    wearHeld()
     paintHotbar()
     paintChip()
     return true
   }
+  function wearBar(item, uses) {
+    const life = item && TOOL_LIFE[item.tool]
+    if (!life) return null
+    const bar = document.createElement('span')
+    bar.className = 'wear'
+    const fill = document.createElement('span')
+    fill.className = 'fill'
+    const left = uses == null ? life : uses
+    fill.style.width = Math.max(0, Math.min(100, Math.round((left / life) * 100))) + '%'
+    bar.append(fill)
+    return bar
+  }
+  function bagLine(s) {
+    if (s.item === 'woodTool') return t('woodToolLine')
+    if (s.item === 'stoneTool') return t('stoneToolLine')
+    return itemName(s.item) + ' ' + s.n
+  }
+  function wearHeld() {
+    const s = bag.slots[hot]
+    if (!s || !ITEMS[s.item] || !ITEMS[s.item].tool) return
+    const life = TOOL_LIFE[ITEMS[s.item].tool]
+    if (!life) return
+    if (s.uses == null) s.uses = life
+    s.uses -= 1
+    if (s.uses > 0) return
+    bag.slots[hot] = null
+    const left = bag.add('stick', 1)
+    if (left) {
+      const p = api.pos()
+      spawnDrop('stick', left, p[0], p[1] + 0.3, p[2], 'full')
+    }
+    api.toast(t('toolStick'))
+  }
   function onPlace(x, y, z, id) {
     if (mode !== 'survival') return true
+    if (id === 185) {
+      const below = api.getVoxel ? api.getVoxel(x, y - 1, z) : 0
+      if (below !== 1 && below !== 2) { api.toast(t('saplingSoil')); return false }
+    }
     if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     const item = selectedItem()
     const need = Object.entries(ITEMS).find(([, v]) => v.block === id)
