@@ -142,6 +142,50 @@ function layoutSide(w, h) {
   return { ...c, plate, goal, field, alarms, below, cast, tiles, chips, cards, go };
 }
 
+function fitHome(layout, w, h, pose) {
+  const wide = pose === "sideways" || w >= 1366;
+  const frac = wide ? 0.45 : 0.40;
+  const cols = wide ? 3 : 2;
+  const rows = Math.ceil(6 / cols);
+  const gap = 6;
+  const bandGap = 6;
+  const minTiles = rows * TAP + gap * (rows - 1);
+  const plateTop = layout.plate.y - 4;
+  const want = Math.ceil(h * frac);
+  const underChip = 4 + TAP + 4;
+  let top = underChip;
+  let maxCast = plateTop - top - bandGap - minTiles;
+  if (maxCast < want) {
+    top = 4;
+    maxCast = plateTop - top - bandGap - minTiles;
+  }
+  const castH = Math.max(1, Math.min(want, maxCast));
+  const area = layout.below;
+  const cast = box(area.x, top, area.w, castH);
+  const tileTop = cast.y + cast.h + bandGap;
+  const tileArea = box(area.x, tileTop, area.w, Math.max(minTiles, plateTop - tileTop));
+  layout.cast = cast;
+  layout.tiles = grid(tileArea, 6, cols, gap);
+}
+
+function seedChip(layout, w) {
+  const chipH = TAP;
+  let chipW = Math.min(188, Math.max(128, Math.floor(w * 0.36)));
+  if (chipW > w - 88) chipW = Math.max(96, w - 88);
+  const y = 4;
+  const leftGuard = { x: 0, y: 0, w: 72, h: 60 };
+  const avoid = [leftGuard, layout.fs, layout.plate, ...layout.tiles];
+  const spots = [w - 8 - chipW, Math.floor((w - chipW) / 2), 80];
+  for (let i = 0; i < spots.length; i++) {
+    const x = Math.max(0, Math.min(w - chipW, spots[i]));
+    const chip = box(x, y, chipW, chipH);
+    let hit = false;
+    for (let j = 0; j < avoid.length; j++) if (overlaps(chip, avoid[j])) hit = true;
+    if (!hit) return chip;
+  }
+  return box(Math.max(0, w - 8 - chipW), y, chipW, chipH);
+}
+
 function mirrorLayout(layout, w) {
   const out = { pose: layout.pose, w: layout.w, h: layout.h };
   for (const [key, value] of Object.entries(layout)) {
@@ -156,17 +200,20 @@ function mirrorLayout(layout, w) {
 export function bands(w, h, opts = {}) {
   const pose = opts.pose || decidePose(opts.viewW || w, opts.viewH || h, opts.prev);
   const layout = pose === "sideways" ? layoutSide(w, h) : layoutUp(w, h);
+  fitHome(layout, w, h, pose);
   layout.pose = pose;
   layout.w = w;
   layout.h = h;
-  return opts.rtl ? mirrorLayout(layout, w) : layout;
+  const out = opts.rtl ? mirrorLayout(layout, w) : layout;
+  out.seeds = seedChip(out, w);
+  return out;
 }
 
 export function lookoutControls(b) {
   return [b.fs, b.pause, b.read, b.help, b.restart, b.plate, b.goal, ...b.alarms];
 }
 export function homeControls(b) {
-  return [b.fs, b.plate, ...b.tiles];
+  return [b.fs, b.plate, b.seeds, ...b.tiles];
 }
 export function pickerControls(b) {
   return [b.fs, b.plate, ...b.chips, ...b.cards];

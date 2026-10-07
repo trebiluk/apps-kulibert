@@ -27,14 +27,17 @@ export class Burrow extends window.Phaser.Scene {
     this.cameras.main.setBackgroundColor(skyOf(this.save.settings.look));
     this.cameras.main.setScroll(0, 0);
     this.prairie = createPrairie(this);
+    this.mound = this.add.image(0, 0, "lookout", "mound").setDepth(4);
     this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(5);
     this.alice = this.add.sprite(0, 0, "lookout", "alice-groom-0").play("alice-groom").setDepth(8);
     this.wonder = this.add.sprite(0, 0, "lookout", "wonder-ear-0").play("wonder-ear").setDepth(8);
-    this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(6));
+    this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(6).setVisible(false));
     this.butter = this.add.sprite(0, 0, "lookout", "butterfly-0").play("butterfly").setDepth(9).setVisible(false);
-    this.hopper = this.add.sprite(0, 0, "lookout", "hopper-0").play("hopper").setDepth(8);
-    this.seedText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f5c446" }).setDepth(4);
-    this.classText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setDepth(4);
+    this.hopper = this.add.sprite(0, 0, "lookout", "hopper-0").play("hopper").setDepth(3);
+    this.seedText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#f5c446" }).setDepth(4).setVisible(false);
+    this.classText = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#fde68a" }).setDepth(12);
+    this.seedChip = makeButton(this, "seeds", () => {});
+    this.seedChip.btn.classList.add("ap-seed");
     this.tiles = TILES.map((row, i) => this.makeTile(row[0], row[1], row[2], row[3], i));
     this.levels = levels.levels.map((lv, i) => this.makeLevel(lv, i));
     this.modeBtns = ["class", "daily", "endless"].map((id) => this.makeChip(id));
@@ -109,6 +112,16 @@ export class Burrow extends window.Phaser.Scene {
     live.dataset.fps = String(Math.round((loop && loop.actualFps) || 0));
     const renderer = this.game && this.game.renderer;
     live.dataset.renderer = renderer && renderer.type === 1 ? "canvas" : "webgl";
+    const band = this.homeBand;
+    if (band && band.cast) {
+      live.dataset.cast = [band.cast.x, band.cast.y, band.cast.w, band.cast.h].join(",");
+      live.dataset.castPct = ((band.cast.h / Math.max(1, band.h)) * 100).toFixed(1);
+      live.dataset.tileRects = (band.tiles || []).map((r) => [r.x, r.y, r.w, r.h].join(",")).join(";");
+      live.dataset.seedRect = band.seeds ? [band.seeds.x, band.seeds.y, band.seeds.w, band.seeds.h].join(",") : "";
+    }
+    live.dataset.door = this.hole && this.hole.visible ? String(Math.round(this.hole.displayWidth)) : "0";
+    live.dataset.icons = String((this.cast || []).filter((spr) => spr.visible).length);
+    live.dataset.home = this.mode === "home" ? "1" : "0";
   }
   makeTile(id, key, frame, live, index) {
     const box = makeButton(this, "tile-" + id, () => {
@@ -188,35 +201,40 @@ export class Burrow extends window.Phaser.Scene {
     const picking = this.mode === "picker";
     const showCards = picking && this.playMode === "class";
     const showCast = home;
+    this.homeBand = home ? b : this.homeBand;
+    this.mound.setVisible(showCast);
     this.hole.setVisible(showCast);
     this.alice.setVisible(showCast);
     this.wonder.setVisible(showCast);
     if (!(showCast && this.butter.getData("cross"))) this.butter.setVisible(false);
     this.hopper.setVisible(showCast && !lite());
-    this.cast.forEach((spr) => spr.setVisible(showCast));
+    this.cast.forEach((spr) => spr.setVisible(false));
+    this.seedText.setVisible(false);
     if (showCast) {
-      intScale(this.hole, Math.min(44, Math.max(28, b.cast.h - 28)));
-      const body = Math.min(48, Math.max(32, b.cast.h - 36));
+      const holePx = Math.max(64, Math.min(Math.floor(b.cast.h * 0.42), Math.floor(b.cast.w * 0.28)));
+      intScale(this.hole, holePx);
+      intScale(this.mound, Math.round(this.hole.displayWidth * 1.75));
+      const body = Math.max(48, Math.min(Math.floor(b.cast.h * 0.34), this.hole.displayHeight + 8));
       intScale(this.alice, body);
-      intScale(this.wonder, body);
-      const foot = b.cast.y + b.cast.h - 2;
-      this.hole.setPosition(b.cast.x + b.cast.w * 0.5, foot - 6);
-      this.alice.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.64 : 0.34), foot - this.alice.displayHeight * 0.42);
-      this.wonder.setPosition(b.cast.x + b.cast.w * (rtl() ? 0.34 : 0.66), foot - this.wonder.displayHeight * 0.42);
-      const step = Math.max(28, Math.floor(b.cast.w / (this.cast.length + 1)));
-      this.cast.forEach((spr, i) => {
-        intScale(spr, 16);
-        spr.setPosition(b.cast.x + 12 + step * i, b.cast.y + 10);
-      });
+      intScale(this.wonder, Math.max(48, body - 8));
+      const doorX = Math.round(b.cast.x + b.cast.w * 0.5);
+      const doorY = Math.round(b.cast.y + b.cast.h * 0.72);
+      this.mound.setPosition(doorX, doorY);
+      this.hole.setPosition(doorX, doorY - Math.round(this.mound.displayHeight * 0.04));
+      const lip = this.hole.y + Math.round(this.hole.displayHeight * 0.18);
+      const aliceSide = rtl() ? 1 : -1;
+      this.alice.setPosition(doorX + aliceSide * Math.round(this.hole.displayWidth * 0.42), lip - Math.round(this.alice.displayHeight * 0.36));
+      this.wonder.setPosition(doorX - aliceSide * Math.round(this.hole.displayWidth * 0.7), lip - Math.round(this.wonder.displayHeight * 0.36));
+      this.alice.setFlipX(!!rtl());
+      this.wonder.setFlipX(!rtl());
       intScale(this.butter, 22);
       intScale(this.hopper, 22);
-      this.hopper.setPosition(b.cast.x + 22, b.cast.y + b.cast.h - 14);
-      const seeds = t("seeds") + " " + (this.save.seeds || 0);
-      this.seedText.setText(seeds).setVisible(true);
-      this.seedText.setPosition(rtl() ? b.cast.x + b.cast.w - this.seedText.width - 8 : b.cast.x + 8, b.cast.y + b.cast.h - 22);
-      this.classText.setPosition(rtl() ? b.cast.x + 8 : b.cast.x + b.cast.w - 160, b.cast.y + b.cast.h - 22);
+      const edge = rtl() ? b.cast.x + 28 : b.cast.x + b.cast.w - 28;
+      this.hopper.setPosition(edge, Math.round(b.cast.y + b.cast.h - 16));
+      this.classText.setPosition(rtl() ? b.cast.x + b.cast.w - 168 : b.cast.x + 8, b.cast.y + 8);
+      fitButton(this.seedChip, b.seeds, t("seeds") + " " + (this.save.seeds || 0), "seed");
     } else {
-      this.seedText.setVisible(false);
+      hideButton(this.seedChip);
       this.classText.setVisible(false);
     }
     const field = home

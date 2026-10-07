@@ -41,6 +41,9 @@ body.ap-card .ap-hit.ap-scene { display: none !important; }
 .ap-hit .ap-lab, .ap-hit .ap-ico { pointer-events: none; max-width: 100%; }
 .ap-hit .ap-lab { white-space: pre-line; }
 .ap-hit .ap-ico { display: block; flex: 0 0 auto; }
+.ap-hit.ap-seed { flex-direction: row; gap: 8px; font-size: 16px; line-height: 1; padding: 0 10px; }
+html[dir="rtl"] .ap-hit.ap-seed { flex-direction: row-reverse; }
+.ap-hit.ap-seed .ap-lab { white-space: nowrap; font-size: 16px; }
 .live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 .hint { position: fixed; z-index: 40; left: 50%; top: 40%; transform: translate(-50%, -50%); width: min(360px, calc(100% - 32px)); background: #0b1f3a; border: 2px solid #22d3ee; border-radius: 14px; padding: 12px; display: flex; gap: 8px; }
 .hint[hidden] { display: none; }

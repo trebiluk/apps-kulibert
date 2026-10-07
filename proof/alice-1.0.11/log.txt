@@ -1,0 +1,38 @@
+HOME
+home-412 en canvas {"w":412,"h":867} cast 6,56,400,347 pct 40.0 door 96 icons 0 hit seeds font 16px flex row dir ltr chip Seeds 4 seed 256,4,148,48 fs {"x":120,"y":4,"w":48,"h":48}
+home-412 en tiles 6,409,197,129;209,409,197,129;6,544,197,129;209,544,197,129;6,679,197,129;209,679,197,129
+home-412 en domTiles 6,409,197,129:go | 209,409,197,129:go | 6,544,197,129:go | 209,544,197,129:go | 6,679,197,129:go | 209,679,197,129:go
+home-412 en overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-1 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+home-915 en canvas {"w":915,"h":364} cast 6,4,903,164 pct 45.1 door 64 icons 0 hit seeds font 16px flex row dir ltr chip Seeds 4 seed 719,4,188,48 fs {"x":120,"y":0,"w":48,"h":48}
+home-915 en tiles 6,174,297,63;309,174,297,63;612,174,297,63;6,243,297,63;309,243,297,63;612,243,297,63
+home-915 en domTiles 6,174,297,63:go | 309,174,297,63:go | 612,174,297,63:go | 6,243,297,63:go | 309,243,297,63:go | 612,243,297,63:go
+home-915 en overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-0 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+home-1366 en canvas {"w":1366,"h":720} cast 6,56,1354,324 pct 45.0 door 128 icons 0 hit seeds font 16px flex row dir ltr chip Seeds 4 seed 1170,4,188,48 fs {"x":120,"y":4,"w":48,"h":48}
+home-1366 en tiles 6,386,447,135;459,386,447,135;912,386,447,135;6,527,447,135;459,527,447,135;912,527,447,135
+home-1366 en domTiles 6,386,447,135:go | 459,386,447,135:go | 912,386,447,135:go | 6,527,447,135:go | 459,527,447,135:go | 912,527,447,135:go
+home-1366 en overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-2 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+home-412 ar canvas {"w":412,"h":867} cast 6,56,400,347 pct 40.0 door 96 icons 0 hit seeds font 16px flex row-reverse dir rtl chip بذور 4 seed 80,4,148,48 fs {"x":244,"y":4,"w":48,"h":48}
+home-412 ar tiles 209,409,197,129;6,409,197,129;209,544,197,129;6,544,197,129;209,679,197,129;6,679,197,129
+home-412 ar domTiles 209,409,197,129:go | 6,409,197,129:go | 209,544,197,129:go | 6,544,197,129:go | 209,679,197,129:go | 6,679,197,129:go
+home-412 ar overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-0 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+home-915 ar canvas {"w":915,"h":364} cast 6,4,903,164 pct 45.1 door 64 icons 0 hit seeds font 16px flex row-reverse dir rtl chip بذور 4 seed 363,4,188,48 fs {"x":747,"y":0,"w":48,"h":48}
+home-915 ar tiles 612,174,297,63;309,174,297,63;6,174,297,63;612,243,297,63;309,243,297,63;6,243,297,63
+home-915 ar domTiles 612,174,297,63:go | 309,174,297,63:go | 6,174,297,63:go | 612,243,297,63:go | 309,243,297,63:go | 6,243,297,63:go
+home-915 ar overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-0 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+home-1366 ar canvas {"w":1366,"h":720} cast 6,56,1354,324 pct 45.0 door 128 icons 0 hit seeds font 16px flex row-reverse dir rtl chip بذور 4 seed 589,4,188,48 fs {"x":1198,"y":4,"w":48,"h":48}
+home-1366 ar tiles 913,386,447,135;460,386,447,135;7,386,447,135;913,527,447,135;460,527,447,135;7,527,447,135
+home-1366 ar domTiles 913,386,447,135:go | 460,386,447,135:go | 7,386,447,135:go | 913,527,447,135:go | 460,527,447,135:go | 7,527,447,135:go
+home-1366 ar overlap none domOverlap none seedFs none plate AP 1.0.11 AP 1.0.11 groom alice-groom-1 layers 4 objs 83 color rgb(248, 250, 252) bg rgb(11, 31, 58)
+PLAY
+picker L01
+First Watch
+hawk seen true
+after sky {"score":"100","step":"94","kind":"hawk"}
+upright {"score":"100","step":"119","kind":"hawk"}
+sideways again {"score":"100","step":"156","kind":"hawk"}
+back home 1 cast 6,4,903,164
+MOTION
+motion match true bytes 22538 22538 bounce still,still,still,still,still,still {"groom":"alice-groom-0","bug":"","parts":"0","icons":"0"}
+SOON
+soon ""
+ERRORS 0
