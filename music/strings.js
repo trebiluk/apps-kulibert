@@ -11,6 +11,7 @@
     listsEasy: "Lists are easy to read, tips stay off the buttons, and a sideways phone uses the whole screen.",
     everyWord: "Every word is easy to read, menus close after you pick, and Perform fits your screen.",
     ownTab: "Mix opens the loudness and the patterns. Band shows one list and the five notes.",
+    news23515: "{ver} DJ Berty: the version tag is right on phones, and changing the window size keeps your screen.",
     news23514: "MU 2.35.14 DJ Berty: the closed menu stays off the screen in Arabic and Dari.",
     news23513: "MU 2.35.13 DJ Berty: drum rows stay above the player, and the player fits a phone.",
     news23512: "MU 2.35.12 DJ Berty: the language menu works again, and sideways piano keys are bigger.",
@@ -309,6 +310,7 @@
       "listsEasy": "Списки легко читати, підказки не закривають кнопки, а телефон боком займає весь екран.",
       "everyWord": "Кожне слово легко читати, меню закривається після вибору, і Виступ вміщається на екран.",
       "ownTab": "Мікс відкриває гучність і візерунки. Бенд показує один список і п’ять нот.",
+      "news23515": "{ver} DJ Berty: на телефоні позначка версії правильна, і зміна розміру вікна лишає ваш екран.",
       "news23514": "MU 2.35.14 DJ Berty: закрите меню лишається за екраном арабською і дарі.",
       "news23513": "MU 2.35.13 DJ Berty: рядки барабанів лишаються над плеєром, і плеєр вміщується на телефоні.",
       "news23512": "MU 2.35.12 DJ Berty: меню мови знову працює, а бічні клавіші піаніно більші.",
@@ -580,6 +582,7 @@
       "listsEasy": "Списки легко читать, подсказки не закрывают кнопки, а телефон боком занимает весь экран.",
       "everyWord": "Каждое слово легко читать, меню закрывается после выбора, и Выступление помещается на экран.",
       "ownTab": "Микс открывает громкость и рисунки. Бэнд показывает один список и пять нот.",
+      "news23515": "{ver} DJ Berty: на телефоне метка версии верная, и смена размера окна оставляет ваш экран.",
       "news23514": "MU 2.35.14 DJ Berty: закрытое меню остаётся за экраном на арабском и дари.",
       "news23513": "MU 2.35.13 DJ Berty: ряды барабанов остаются над плеером, и плеер помещается на телефоне.",
       "news23512": "MU 2.35.12 DJ Berty: меню языка снова работает, а боковые клавиши пианино больше.",
@@ -851,6 +854,7 @@
       "listsEasy": "Las listas se leen bien, los avisos no tapan los botones, y un teléfono de lado usa toda la pantalla.",
       "everyWord": "Cada palabra se lee bien, los menús se cierran al elegir, y Actuar cabe en tu pantalla.",
       "ownTab": "Mezcla abre el volumen y los patrones. Banda muestra una lista y las cinco notas.",
+      "news23515": "{ver} DJ Berty: la etiqueta de versión es correcta en el teléfono, y cambiar el tamaño de la ventana deja tu pantalla.",
       "news23514": "MU 2.35.14 DJ Berty: el menú cerrado queda fuera de la pantalla en árabe y darí.",
       "news23513": "MU 2.35.13 DJ Berty: las filas de la batería quedan sobre el reproductor, y el reproductor cabe en un teléfono.",
       "news23512": "MU 2.35.12 DJ Berty: el menú de idioma vuelve a funcionar, y las teclas de piano de lado son más grandes.",
@@ -1122,6 +1126,7 @@
       "listsEasy": "القوائم سهلة القراءة، والتنبيهات لا تغطي الأزرار، والهاتف بالعرض يستخدم الشاشة كلها.",
       "everyWord": "كل كلمة سهلة القراءة، والقوائم تُغلق بعد الاختيار، والعرض يناسب شاشتك.",
       "ownTab": "المكساج يفتح الصوت والأنماط. الفرقة تعرض قائمة واحدة وخمس نغمات.",
+      "news23515": "{ver} دي جي بيرتي: علامة الإصدار صحيحة على الهاتف، وتغيير حجم النافذة يُبقي شاشتك.",
       "news23514": "MU 2.35.14 دي جي بيرتي: القائمة المغلقة تبقى خارج الشاشة بالعربية والدارية.",
       "news23513": "MU 2.35.13 دي جي بيرتي: صفوف الطبل تبقى فوق المشغّل، والمشغّل يناسب الهاتف.",
       "news23512": "MU 2.35.12 دي جي بيرتي: قائمة اللغة تعمل من جديد، ومفاتيح البيانو بالعرض أكبر.",
@@ -1393,6 +1398,7 @@
       "listsEasy": "فهرست‌ها آسان خوانده می‌شوند، نکته‌ها روی دکمه‌ها نمی‌آیند، و تلفن به پهلو همهٔ صفحه را می‌گیرد.",
       "everyWord": "هر واژه آسان خوانده می‌شود، فهرست‌ها پس از انتخاب بسته می‌شوند، و اجرا در صفحه جا می‌شود.",
       "ownTab": "میکس صدا و الگوها را باز می‌کند. گروه یک فهرست و پنج نت نشان می‌دهد.",
+      "news23515": "{ver} دی جی برتی: نشان نسخه روی تلفن درست است، و تغییر اندازهٔ پنجره صفحهٔ شما را نگه می‌دارد.",
       "news23514": "MU 2.35.14 دی جی برتی: فهرست بسته در عربی و دری بیرون از صفحه می‌ماند.",
       "news23513": "MU 2.35.13 دی جی برتی: ردیف‌های درام بالای پخش‌کننده می‌مانند، و پخش‌کننده در تلفن جا می‌شود.",
       "news23512": "MU 2.35.12 دی جی برتی: فهرست زبان دوباره کار می‌کند، و کلیدهای پیانو در حالت افقی بزرگ‌تر اند.",
@@ -1664,6 +1670,7 @@
       "listsEasy": "Urutonde rusomeka neza, inama ntizikubita buto, kandi telefoni itwikiriye ikoresha ecran yose.",
       "everyWord": "Ijambo ryose risomeka neza, menu ifunga nyuma yo guhitamo, kandi Perform yinjira kuri ecran yawe.",
       "ownTab": "Mix yafungura ijwi n'imiterere. Itsinda ryerekana urutonde rumwe n'inota eshanu.",
+      "news23515": "{ver} DJ Berty: ikimenyetso cy'iverisiyo kiri neza kuri terefone, kandi guhindura ingano y'idirishya bigumya ikibaho cyawe.",
       "news23514": "MU 2.35.14 DJ Berty: menyu ifunze iguma hanze y'ikirere mu Cyarabu no mu Dari.",
       "news23513": "MU 2.35.13 DJ Berty: imirongo y'ingoma iguma hejuru y'umusoma, kandi umusoma winjira kuri terefone.",
       "news23512": "MU 2.35.12 DJ Berty: menyu y'ururimi ikora nanone, kandi utubuto twa piyano tw'uruhande turuta ubunini.",
@@ -1935,6 +1942,7 @@
       "listsEasy": "ዝርዝራት ቀሊል እዮም፣ መዘኻኸሪ ኣብ ልዕሊ መጠወቒ ኣይወድቕን፣ ስልኪ ብጎኒ ኩሉ ገጽ ይጥቀም።",
       "everyWord": "ነፍሲ ወከፍ ቃል ቀሊል እዩ፣ ዝርዝር ምስ መረጽካ ይዕጾ፣ ምርኢት ኣብ ገጽካ ይኣቱ።",
       "ownTab": "ምትሕውዋስ ድምጺን ሳዕቤናትን ይኸፍት። ባንድ ሓደ ዝርዝርን ሓሙሽተ ነጥብታትን የርኢ።",
+      "news23515": "{ver} ዲጀይ በርቲ: ናይ ሕታም ምልክት ኣብ ተሌፎን ቅኑዕ እዩ፡ መጠን መስኮት ምቕያር ድማ ገጽኻ የዕቅቦ።",
       "news23514": "MU 2.35.14 ዲጀይ በርቲ: ዝተዓጽወ ዝርዝር ብዓረብኛን ዳሪን ካብ ገጽ ወጻኢ ይጸንሕ።",
       "news23513": "MU 2.35.13 ዲጀይ በርቲ: ናይ ከበሮ መስርዕ ኣብ ልዕሊ መጻወቲ ይጸንሕ፡ ከምኡውን መጻወቲ ኣብ ተሌፎን ይኣቱ።",
       "news23512": "MU 2.35.12 ዲጀይ በርቲ: ናይ ቋንቋ ዝርዝር ዳግማይ ይሰርሕ፡ ከምኡውን ናይ ፒያኖ መበገሲታት ኣብ ጎድናዊ ዓቢ ይኾኑ።",
@@ -2272,7 +2280,7 @@
       html.dir = code === "ar" || code === "fa-AF" ? "rtl" : "ltr";
     }
     document.querySelectorAll("[data-mu]").forEach(function (node) {
-      var v = t(node.getAttribute("data-mu"));
+      var v = t(node.getAttribute("data-mu"), { ver: root.MU_VERSION || "" });
       if (v) node.textContent = v;
     });
     document.querySelectorAll("button .ctl-word[data-mu]").forEach(function (node) {

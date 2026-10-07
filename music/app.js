@@ -1411,7 +1411,7 @@
     if (typeof api.record === "function") {
       api.record({
         app: "musiclab",
-        version: "MU 2.35.14",
+        version: window.MU_VERSION || "",
         event: "score",
         level: id,
         score: score,
@@ -4106,6 +4106,12 @@
     box.style.setProperty("max-height", next + "px", "important");
   }
   window.addEventListener("resize", () => requestAnimationFrame(fitTapRows));
+  window.addEventListener("resize", () => {
+    const tab = state.tab;
+    if (!tab) return;
+    if (tab !== "songs") document.body.classList.remove("is-home", "is-make", "is-library");
+    if (!document.body.classList.contains("tab-" + tab)) paintTabs(tab);
+  });
   renderStaff();
   nameLooseSvgs();
   window.addEventListener("resize", () => {

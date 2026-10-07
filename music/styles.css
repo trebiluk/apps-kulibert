@@ -1788,7 +1788,7 @@ html[dir="rtl"] .kb-bar { direction: ltr; }
 @media (max-width: 420px) {
   .kb-plate { font-size: 0 !important; }
   .kb-plate::after {
-    content: "MU 2.35.7";
+    content: attr(data-ver);
     font-size: 0.9rem;
     font-weight: 700;
   }
