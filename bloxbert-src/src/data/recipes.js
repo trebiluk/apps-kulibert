@@ -30,4 +30,5 @@ export const RECIPES = [
   { id: 'brickRed', at: 'oven', in: [['redSand', 2]], out: ['brickRed', 1], secs: 5 },
   { id: 'cupcake', at: 'oven', in: [['flour', 1], ['sugar', 1], ['berry', 2]], out: ['cupcake', 2], secs: 10, label: 'food' },
   { id: 'bread', at: 'oven', in: [['flour', 2]], out: ['bread', 1], secs: 8, label: 'food' },
+  { id: 'flour', at: 'bench', in: [['wheat', 1]], out: ['flour', 1], secs: 2, label: 'food' },
 ]

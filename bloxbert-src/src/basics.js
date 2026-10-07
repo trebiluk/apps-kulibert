@@ -91,16 +91,38 @@ export function createBasics(api) {
     api.set(x, y, z, id)
     if (!api.get(x, y + 1, z)) api.set(x, y + 1, z, id)
   }
+  function click() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext
+      if (!AC) return
+      if (!click.ctx) click.ctx = new AC()
+      const ctx = click.ctx
+      if (ctx.state === 'suspended') ctx.resume()
+      const o = ctx.createOscillator()
+      const g = ctx.createGain()
+      o.type = 'square'
+      o.frequency.value = 740
+      const t0 = ctx.currentTime
+      g.gain.setValueAtTime(0.06, t0)
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05)
+      o.connect(g)
+      g.connect(ctx.destination)
+      o.start(t0)
+      o.stop(t0 + 0.06)
+    } catch (e) {}
+  }
   function use(x, y, z) {
     const id = api.get(x, y, z)
-    if (isDoor(id)) return toggleDoor(x, y, z, 'tap')
+    if (isDoor(id)) { click(); return toggleDoor(x, y, z, 'tap') }
     if (id === LEVER.off || id === LEVER.on) {
+      click()
       const on = id === LEVER.off
       api.set(x, y, z, on ? LEVER.on : LEVER.off)
       powerDoors(x, y, z, on, 0)
       return true
     }
     if (id === BUTTON.off || id === BUTTON.on) {
+      click()
       api.set(x, y, z, BUTTON.on)
       powerDoors(x, y, z, true, 1500)
       timers.push({ at: now() + 1500, cells: [[x, y, z]], button: true })

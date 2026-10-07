@@ -11,7 +11,8 @@ import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
 import { emptyBox, putInSlots } from './box.js'
-import { TOOL_LIFE } from './feel.js'
+import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
+import { berryTuft } from './worldgen.js'
 
 export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
@@ -28,6 +29,12 @@ export function createSession(api) {
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0')
   }
   let paused = false
+  const BOLT_MS = 4 * 60 * 1000
+  const FEED = { berry: 1, bread: 4, cupcake: 3 }
+  let energy = { bolts: 10, acc: 0, toasted: false }
+  let lowN = 0
+  let energyOn = true
+  try { if (localStorage.getItem('bloxbert-energy') === '0') energyOn = false } catch (e) {}
   let visitN = 1
   const bagHist = []
   const redoBag = []
@@ -159,6 +166,8 @@ export function createSession(api) {
     if (bar.classList.remove) bar.classList.remove('palette')
     if (mode !== 'survival') return
     bar.innerHTML = ''
+    const strip = document.createElement('div')
+    strip.className = 'item-strip'
     for (let i = 0; i < 9; i++) {
       const s = bag.slots[i]
       const b = document.createElement('button')
@@ -186,8 +195,9 @@ export function createSession(api) {
         if (i === hot) useHeld()
         else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
       })
-      bar.append(b)
+      strip.append(b)
     }
+    bar.append(strip)
     const bagBtn = document.createElement('button')
     bagBtn.type = 'button'
     bagBtn.className = 'slot bag-tile'
@@ -208,6 +218,21 @@ export function createSession(api) {
   function useHeld() {
     const item = selectedItem()
     if (!item) return ''
+    if (energyOn && mode === 'survival' && FEED[item]) {
+      if (energy.bolts >= 10) {
+        api.toast(t('energyFull'))
+        return itemName(item)
+      }
+      if (!bag.take(item, 1)) return ''
+      energy.bolts = Math.min(10, energy.bolts + FEED[item])
+      if (energy.bolts > 0) energy.toasted = false
+      paintHotbar()
+      paintEnergy()
+      syncDig()
+      api.toast(t('ate').replace('{item}', itemName(item)))
+      if (api.markDirty) api.markDirty()
+      return itemName(item)
+    }
     if (EDIBLE.includes(item) && bag.take(item, 1)) {
       paintHotbar()
       api.toast(t('ate').replace('{item}', itemName(item)))
@@ -524,6 +549,14 @@ export function createSession(api) {
       g.innerHTML = ''
       paintTeacher(g)
     }))
+    g.append(btn(energyOn ? t('energyOn') : t('energyOff'), () => {
+      energyOn = !energyOn
+      try { localStorage.setItem('bloxbert-energy', energyOn ? '1' : '0') } catch (e) {}
+      syncDig()
+      paintEnergy()
+      g.innerHTML = ''
+      paintTeacher(g)
+    }))
     if (on) g.append(btn(api.townYes && api.townYes() ? t('townYes') : t('townNo'), () => {
       if (api.setTown) api.setTown(!(api.townYes && api.townYes()))
       g.innerHTML = ''
@@ -752,6 +785,11 @@ export function createSession(api) {
       const sapLeft = bag.add('sapling', 1)
       if (sapLeft) spawnDrop('sapling', sapLeft, x + 0.5, y + 0.55, z + 0.5, 'full')
     }
+    if (id === 28 && berryTuft(x, y, z)) {
+      markFound('berry')
+      const tuftLeft = bag.add('berry', 1)
+      if (tuftLeft) spawnDrop('berry', tuftLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
+    }
     if (id === 11) markPath('pathTree')
     if (id === 3) markPath('pathStone')
     if (id === 5) markPath('pathCoal')
@@ -933,6 +971,7 @@ export function createSession(api) {
         hotCreative: api.creativeHot ? api.creativeHot() : hotSlot.creative,
         home,
         table: api.tableOn(),
+        energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
       },
       econ: wallet.dump(),
       meta: m,
@@ -951,6 +990,14 @@ export function createSession(api) {
     hot = mode === 'survival' ? hotSlot.survival : 0
     if (api.setCreativeHot) api.setCreativeHot(hotSlot.creative)
     home = p.home || null
+    const savedEnergy = p.energy
+    if (savedEnergy && Number.isFinite(+savedEnergy.bolts)) {
+      energy = {
+        bolts: Math.max(0, Math.min(10, savedEnergy.bolts | 0)),
+        acc: Number.isFinite(+savedEnergy.acc) ? Math.max(0, +savedEnergy.acc) : 0,
+        toasted: !!savedEnergy.toasted && (savedEnergy.bolts | 0) === 0,
+      }
+    } else energy = { bolts: 10, acc: 0, toasted: false }
     wallet.load(doc.econ)
     if (!wallet.state.ledger.length) wallet.post({ kind: 'start', cogs: 0, by: 'you' })
     meta.clear()
@@ -974,6 +1021,8 @@ export function createSession(api) {
     for (const s of bags.creative.slots) if (s) markFound(s.item)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip()
+    syncDig()
+    paintEnergy()
     if (mode === 'survival') paintHotbar()
     else if (api.paintBar) api.paintBar()
   }
@@ -986,8 +1035,90 @@ export function createSession(api) {
       hot = mode === 'survival' ? hotSlot.survival : 0
     }
     paintChip()
+    syncDig()
+    paintEnergy()
     if (mode === 'survival') paintHotbar()
     else if (api.paintBar) api.paintBar()
+  }
+  function pace() {
+    if (!energyOn || mode !== 'survival' || energy.bolts > 0) return 1
+    return 0.7
+  }
+  function syncDig() { setDigSlow(pace() < 1 ? 1.5 : 1) }
+  function paintEnergy() {
+    const el = document.getElementById('energy-bar')
+    if (!el) return
+    const show = !!(energyOn && mode === 'survival')
+    el.hidden = !show
+    el.setAttribute('aria-label', 'Energy ' + energy.bolts)
+    el.querySelectorAll('span').forEach((bit, i) => bit.classList.toggle('on', i < energy.bolts))
+  }
+  function play(ms, force) {
+    syncDig()
+    if (!energyOn || mode !== 'survival') { paintEnergy(); return }
+    if (!force && (paused || (typeof document !== 'undefined' && document.hidden))) return
+    if (!(ms > 0) || energy.bolts <= 0) { paintEnergy(); return }
+    const before = energy.bolts
+    energy.acc += ms
+    while (energy.acc >= BOLT_MS && energy.bolts > 0) {
+      energy.acc -= BOLT_MS
+      energy.bolts -= 1
+    }
+    if (energy.bolts === 0) energy.acc = 0
+    if (energy.bolts === 0 && !energy.toasted) {
+      energy.toasted = true
+      lowN += 1
+      api.toast(t('energyLow'))
+    }
+    if (energy.bolts !== before && api.markDirty) api.markDirty()
+    paintEnergy()
+    syncDig()
+  }
+  function mountEnergy(noa) {
+    let el = document.getElementById('energy-bar')
+    if (!el) {
+      el = document.createElement('div')
+      el.id = 'energy-bar'
+      el.setAttribute('role', 'img')
+      const top = document.querySelector('header.top')
+      if (top) top.append(el)
+      else document.body.append(el)
+    }
+    if (!el.querySelector('span')) for (let n = 0; n < 10; n++) el.append(document.createElement('span'))
+    paintEnergy()
+    syncDig()
+    const hook = () => {
+      const smoke = window.__smoke
+      if (!smoke || smoke.__energyHooked) return
+      if (smoke.clock) {
+        const orig = smoke.clock
+        smoke.clock = (n) => { const r = orig(n); play(Number(n) || 0, true); return r }
+      }
+      smoke.energy = () => ({
+        bolts: energy.bolts, acc: energy.acc, pace: pace(), dig: getDigSlow(), on: energyOn, lowN,
+        shown: !!(document.getElementById('energy-bar') && !document.getElementById('energy-bar').hidden),
+      })
+      smoke.charge = (n) => {
+        energy.bolts = Math.max(0, Math.min(10, n | 0))
+        energy.acc = 0
+        energy.toasted = energy.bolts === 0
+        lowN = 0
+        syncDig()
+        paintEnergy()
+      }
+      smoke.__energyHooked = true
+    }
+    hook()
+    setTimeout(hook, 0)
+    if (noa && noa.on) setTimeout(() => {
+      noa.on('tick', (dt) => {
+        play(dt || 33, false)
+        if (pace() < 1) {
+          const ms = noa.ents.getMovement(noa.playerEntity)
+          if (ms) ms.maxSpeed *= 0.7
+        }
+      })
+    }, 0)
   }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
@@ -1023,6 +1154,6 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
-    useHeld, selectOwned, holdItem,
+    useHeld, selectOwned, holdItem, mountEnergy,
   }
 }

@@ -51,6 +51,7 @@ export const ITEMS = {
   stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false, stack: 1 },
   sapling: { block: 185, letter: 'Sp', base: 0, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
+  wheat: { block: 28, letter: 'Wh', cat: 'Food', base: 2, sell: false },
   flour: { svg: 'flour', letter: 'Fl', cat: 'Food', base: 3, sell: true },
   sugar: { svg: 'sugar', letter: 'Su', cat: 'Food', base: 2, sell: true },
   cupcake: { svg: 'cupcake', letter: 'Cu', cat: 'Food', base: 6, sell: true },
@@ -59,7 +60,7 @@ export const ITEMS = {
 export const ITEM_BY_BLOCK = Object.fromEntries(Object.entries(ITEMS).filter(([, v]) => v.block).map(([k, v]) => [v.block, k]))
 export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
-  if (blockId === 28) return 'flour'
+  if (blockId === 28) return 'wheat'
   if (blockId === 29) return 'sugar'
   if (blockId === 31) return 'door'
   if (blockId === 33) return 'doorGlass'

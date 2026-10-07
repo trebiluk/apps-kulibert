@@ -19,3 +19,20 @@ export function plantHere(x, y, z, surface, inTown) {
   if (n >= 0.04 && n < 0.07) return 'wheat'
   return ''
 }
+
+function townTrunk(x, z) { return x >= -20 && x <= 36 && z >= -18 && z <= 28 }
+
+// 1 in 4 wheat tufts within 4 blocks of a real tree column also drop a berry.
+export function berryTuft(x, y, z) {
+  const bx = Math.floor(x / 9) * 9 + 4
+  const bz = Math.floor(z / 9) * 9 + 4
+  let near = false
+  for (let ox = -9; ox <= 9 && !near; ox += 9) for (let oz = -9; oz <= 9; oz += 9) {
+    const tx = bx + ox, tz = bz + oz
+    if (townTrunk(tx, tz) || hash(tx, tz) >= 0.18) continue
+    if (Math.abs(x - tx) <= 4 && Math.abs(z - tz) <= 4) near = true
+  }
+  if (!near) return false
+  const h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) + Math.imul(z | 0, 1274126177)) >>> 0
+  return h % 4 === 0
+}

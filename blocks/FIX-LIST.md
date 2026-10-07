@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 7 2026 (Build: 2.5.53 doors, levers, buttons, small lanterns, mode switch in the top bar).
+Updated Wed Oct 7 2026 (Build: 2.5.54 Energy bar and food).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -48,6 +48,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.53 doors, levers, buttons, small lanterns, mo
 - [x] **Lantern lights stay cheap (P1, 2.5.48 proof):** the 4 nearest lanterns (2 on Lite) light a ground pool and do not light every chunk. They are off by day. Smoke times 20 High lanterns in view against none on the same page.
 - [x] **2.5.52 Survival / Creative switch (Diego Oct 7, 6:16 AM):** one on-screen Survival | Creative pill for everyone (`MODE_SWITCH_ALL`), live in the same world (no load, same blocks, place and look), separate bags that both survive reload, old bag stays the Survival bag, creative reach 10 / instant break / no tool wear / gates open.
 - [x] **2.5.53 StudentTester proof of 2.5.52:** a lever or button touching a door, including diagonal-below, toggles it. A lever stays. A button opens for 1.5 s then closes. A fresh tap on touch uses a lever, button, or door, with a click and a flipped handle or a pressed button. An open door is a thin panel swung aside and you can walk through it. A shut door is a full solid panel. Lanterns are about half a block, you can walk through them, and a click on one does not stack another on top. The Survival/Creative switch sits in the top bar next to the menu. The Bag tile does not cover the item strip. The lantern bar says Light.
+- [x] **2.5.54 Energy and food (Diego Oct 7):** 10 bolts in the Game world, one bolt every 4 minutes of play (paused when the tab is hidden or a panel is open). At 0, walk is 70% and mining is 1.5× slower, one toast, nobody faints. Creative has no bar. Teacher switch Energy on/off, default on. Berry +1, Bread +4, Cupcake +3. A full bar keeps the food and says "You're full". 1 in 4 grass tufts near trees also drop a Berry. Wheat becomes Flour at the Workbench (1 → 1). Bread stays at the Oven.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -87,6 +88,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.53 doors, levers, buttons, small lanterns, mo
 | 1d | 2.5.51 | design rule: drop tool wear and the stone gate; bare hands still break stone and ore, slower; a pick only mines faster; saplings stay | shipped |
 | 1e | 2.5.52 | on-screen Survival / Creative switch, live in one world, separate bags (Diego Oct 7 6:16 AM) | shipped |
 | 1f | 2.5.53 | StudentTester proof of 2.5.52: doors with levers and buttons, small see-through lanterns, mode switch in the top bar | shipped |
+| 1g | 2.5.54 | Energy bar and food that fills it (Berry +1, Bread +4, Cupcake +3); wheat → flour at the workbench | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |

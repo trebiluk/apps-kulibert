@@ -41,7 +41,8 @@ export function group(x, y, z, get) {
 }
 export function touchingDoors(x, y, z, get) {
   const out = []
-  for (const [dx, dy, dz] of STEPS) {
+  for (let dy = -1; dy <= 1; dy++) for (let dz = -1; dz <= 1; dz++) for (let dx = -1; dx <= 1; dx++) {
+    if (!dx && !dy && !dz) continue
     const id = get(x + dx, y + dy, z + dz)
     if (isDoor(id)) out.push([x + dx, y + dy, z + dz, id])
   }

@@ -1546,6 +1546,7 @@ async function prove2543(browser, testUrl, note, errs) {
   await prove2549()
   await prove2550()
   await proveModeSwitch()
+  await proveEnergy()
 
   async function prove2549() {
     const band = { x0: 0.72, y0: 0.45, x1: 0.92, y1: 0.62 }
@@ -1989,14 +1990,14 @@ async function prove2543(browser, testUrl, note, errs) {
       })
     }
     const langs = {
-      en: 'Bertopia: switch between Survival and Creative any time with the button on screen.',
-      uk: 'Bertopia: перемикайся між Виживанням і Творчістю будь-коли кнопкою на екрані.',
-      ru: 'Переключайся между Выживанием и Творчеством в любой момент кнопкой на экране.',
-      es: 'Bertopia: cambia entre Supervivencia y Creativo cuando quieras con el botón en la pantalla.',
-      ar: 'بدّل بين البقاء والإبداع في أي وقت بالزر على الشاشة.',
-      'fa-AF': 'هر وقت با دکمه روی صفحه میان بقا و خلاق عوض کن.',
-      rw: 'Bertopia: hindura hagati ya Kubaho na Guhimba igihe icyo ari cyo cyose ukoresheje buto ku gikirere.',
-      ti: 'Bertopia: ኣብ ዝኾነ እዋን ብመጠወቒ ኣብ ስክሪን ካብ ምንባር ናብ ምፍጣር ቀይር።',
+      en: 'Bertopia 2.5.54: an Energy bar, and eating fills it back up.',
+      uk: 'Bertopia 2.5.54: смужка енергії, і їжа знову її наповнює.',
+      ru: 'Полоска энергии, и еда снова её наполняет.',
+      es: 'Bertopia 2.5.54: una barra de Energía, y comer la vuelve a llenar.',
+      ar: 'شريط طاقة، والأكل يملؤه من جديد.',
+      'fa-AF': 'یک نوار انرژی، و خوردن آن را دوباره پر می‌کند.',
+      rw: 'Bertopia 2.5.54: umurongo w\'ingufu, kandi kurya kubisubiza.',
+      ti: '2.5.54፡ መስመር ጉልበት፡ ምብላዕ ድማ ደጊሙ ይመልኦ።',
     }
     for (const [lang, line] of Object.entries(langs)) {
       const page = await bootHud(browser, testUrl + '?smoke=1&lang=' + encodeURIComponent(lang), 412, 915, true)
@@ -2013,7 +2014,7 @@ async function prove2543(browser, testUrl, note, errs) {
       }[lang]
       const rtl = lang === 'ar' || lang === 'fa-AF'
       const box = await pillBox(page)
-      const orderOk = rtl ? box.halves[0].x > box.halves[1].x : box.halves[0].x < box.halves[1].x
+      const orderOk = box.halves[0].x < box.halves[1].x
       note('mode words ' + lang, '412x915', seen.body === line && seen.surv === words[0] && seen.crea === words[1] && seen.dir === (rtl ? 'rtl' : 'ltr') && orderOk, seen.surv + ' | ' + seen.crea + ' ' + seen.dir)
       await page.close()
     }
@@ -2186,6 +2187,136 @@ async function prove2543(browser, testUrl, note, errs) {
       note('mode console', w + 'x' + h, page.__err.length === 0, page.__err.slice(0, 2).join(' | ') || '0')
       await page.close()
     }
+  }
+
+  async function proveEnergy() {
+    function overlaps(a, b) {
+      return a && b && a.w > 1 && b.w > 1 && a.x < b.x + b.w - 0.5 && b.x < a.x + a.w - 0.5 && a.y < b.y + b.h - 0.5 && b.y < a.y + a.h - 0.5
+    }
+    async function hud(page) {
+      return page.evaluate(() => {
+        function box(el) {
+          if (!el || el.hidden) return null
+          const s = getComputedStyle(el)
+          if (s.display === 'none' || s.visibility === 'hidden') return null
+          const r = el.getBoundingClientRect()
+          if (r.width < 2 || r.height < 2) return null
+          return { x: r.x, y: r.y, w: r.width, h: r.height }
+        }
+        const bar = document.getElementById('energy-bar')
+        const e = window.__smoke.energy ? window.__smoke.energy() : null
+        return {
+          e,
+          bar: box(bar),
+          plate: (document.getElementById('ver-plate') || {}).textContent || '',
+          toast: window.__smoke.toast(),
+          controls: ['#mode-pill', '#menu-btn', '.kb-bar .kb-menu', '#hotbar', '#hotbar .bag-tile', '#stick-pad', '#jump-col .jump', '#game-menu'].map((sel) => box(document.querySelector(sel))).filter(Boolean),
+        }
+      })
+    }
+    function fit(box, w, h, controls) {
+      if (!box) return 'missing '
+      let bad = ''
+      if (box.x < -1 || box.y < -1 || box.x + box.w > w + 1 || box.y + box.h > h + 1) bad += 'off '
+      for (const c of controls) if (overlaps(box, c)) bad += 'cover '
+      return bad
+    }
+    for (const [w, h, touch] of [[412, 915, true], [915, 412, true], [1366, 768, false]]) {
+      const page = await bootHud(browser, testUrl + '?smoke=1', w, h, touch)
+      errs.push(...page.__err.map((e) => 'energy ' + w + ' ' + e))
+      await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__smoke.energy, { timeout: 20000 }).catch(() => {})
+      await page.evaluate(() => { window.__blocks.noa.setPaused(false); if (window.__smoke.close) window.__smoke.close(); window.__smoke.charge(10) })
+      const start = await hud(page)
+      note('energy full', w + 'x' + h, !!(start.e && start.e.bolts === 10 && start.e.shown && start.e.on && start.plate === '2.5.54'), JSON.stringify(start.e) + ' ' + start.plate)
+      const lay0 = fit(start.bar, w, h, start.controls)
+      note('energy fits', w + 'x' + h, !lay0, lay0 || 'ok')
+      if (w === 1366) {
+        await tapSel(page, '#mode-creative', false)
+        await sleep(200)
+        const crea = await page.evaluate(() => window.__smoke.energy())
+        await page.evaluate(() => window.__smoke.clock(4 * 60 * 1000))
+        const crea2 = await page.evaluate(() => window.__smoke.energy())
+        note('creative no bar', w + 'x' + h, crea.bolts === 10 && !crea.shown && crea.pace === 1 && crea2.bolts === 10 && crea2.dig === 1, JSON.stringify(crea2))
+        await tapSel(page, '#mode-survival', false)
+        await sleep(200)
+      }
+      await page.evaluate(() => window.__smoke.clock(40 * 60 * 1000))
+      const low = await hud(page)
+      await page.evaluate(() => window.__smoke.clock(4 * 60 * 1000))
+      const low2 = await page.evaluate(() => window.__smoke.energy())
+      await sleep(180)
+      const slow = await page.evaluate(() => {
+        const noa = window.__blocks.noa
+        const ms = noa.ents.getMovement(noa.playerEntity)
+        return ms.maxSpeed
+      })
+      note('energy empty', w + 'x' + h, low.e && low.e.bolts === 0 && low.e.lowN === 1 && low.toast === 'Low energy - eat something' && low2.bolts === 0 && low2.lowN === 1 && low2.pace === 0.7 && low2.dig === 1.5 && Math.abs(slow - 4.3 * 0.7) < 0.08, JSON.stringify({ toast: low.toast, e: low2, slow }))
+      await page.evaluate(() => { window.__smoke.emptyBag(); window.__smoke.fillBag('bread', 1); window.__smoke.key(0) })
+      await sleep(80)
+      const beforeEat = await page.evaluate(() => window.__smoke.count('bread'))
+      await tapSel(page, '#hotbar .slot[data-slot="0"]', touch)
+      await sleep(120)
+      const ate = await page.evaluate(() => ({ bolts: window.__smoke.energy().bolts, bread: window.__smoke.count('bread') }))
+      note('eat bread', w + 'x' + h, beforeEat === 1 && ate.bread === 0 && ate.bolts === 4, JSON.stringify(ate))
+      if (w === 412) {
+        await page.setViewport({ width: 915, height: 412, hasTouch: true, isMobile: true })
+        await sleep(300)
+        const land = await hud(page)
+        const landBad = fit(land.bar, 915, 412, land.controls)
+        await page.setViewport({ width: 412, height: 915, hasTouch: true, isMobile: true })
+        await sleep(300)
+        const back = await hud(page)
+        const backBad = fit(back.bar, 412, 915, back.controls)
+        note('energy rotate', '915x412', !landBad && !backBad && land.e.bolts === 4 && back.e.bolts === 4 && land.e.shown && back.e.shown, (landBad || backBad || 'bolts ' + back.e.bolts))
+      }
+      await page.evaluate(() => window.__smoke.persist())
+      await page.reload({ waitUntil: 'domcontentloaded', timeout: 45000 })
+      await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__smoke.energy, { timeout: 25000 }).catch(() => {})
+      await sleep(300)
+      const kept = await page.evaluate(() => window.__smoke.energy())
+      note('energy reload', w + 'x' + h, kept.bolts === 4 && kept.shown, JSON.stringify(kept))
+      await page.evaluate(() => { window.__smoke.fillBag('bread', 2); window.__smoke.key(0) })
+      await sleep(80)
+      await tapSel(page, '#hotbar .slot[data-slot="0"]', touch)
+      await sleep(100)
+      await tapSel(page, '#hotbar .slot[data-slot="0"]', touch)
+      await sleep(100)
+      const filled = await page.evaluate(() => window.__smoke.energy().bolts)
+      await page.evaluate(() => { window.__smoke.fillBag('berry', 1); window.__smoke.key(0) })
+      await sleep(80)
+      const berryBefore = await page.evaluate(() => window.__smoke.count('berry'))
+      await tapSel(page, '#hotbar .slot[data-slot="0"]', touch)
+      await sleep(120)
+      const full = await page.evaluate(() => ({ bolts: window.__smoke.energy().bolts, berry: window.__smoke.count('berry'), toast: window.__smoke.toast() }))
+      note('energy full food', w + 'x' + h, filled === 10 && berryBefore === 1 && full.berry === 1 && full.bolts === 10 && full.toast === "You're full", JSON.stringify({ filled, full }))
+      if (page.__err.length) errs.push(...page.__err.map((e) => 'energy-late ' + w + ' ' + e))
+      note('energy console', w + 'x' + h, page.__err.length === 0, page.__err.slice(0, 2).join(' | ') || '0')
+      await page.close()
+    }
+    const staff = await bootHud(browser, testUrl + '?smoke=1', 412, 915, true, () => {
+      localStorage.clear()
+      sessionStorage.clear()
+      localStorage.setItem('bloxbert-learn', JSON.stringify({ tourDone: true }))
+      localStorage.setItem('tech-room-hub-staff', '1')
+    })
+    errs.push(...staff.__err.map((e) => 'energy staff ' + e))
+    await staff.waitForFunction(() => window.__bloxReady && window.__smoke && window.__smoke.energy, { timeout: 20000 }).catch(() => {})
+    await staff.evaluate(() => window.__smoke.charge(10))
+    await tapSel(staff, '.kb-bar .kb-menu', true)
+    await sleep(250)
+    await tapLabel(staff, 'Teacher', true)
+    await sleep(200)
+    const had = await staff.evaluate(() => window.__smoke.energy().bolts)
+    await tapLabel(staff, 'Energy on', true)
+    await sleep(200)
+    await staff.evaluate(() => window.__smoke.clock(40 * 60 * 1000))
+    const off = await staff.evaluate(() => window.__smoke.energy())
+    await tapLabel(staff, 'Energy off', true)
+    await sleep(200)
+    await staff.evaluate(() => window.__smoke.clock(40 * 60 * 1000))
+    const onAgain = await staff.evaluate(() => ({ e: window.__smoke.energy(), store: localStorage.getItem('bloxbert-energy') }))
+    note('energy switch', '412x915', off.bolts === had && !off.shown && !off.on && onAgain.e.on && onAgain.e.bolts === 0 && onAgain.e.lowN === 1 && onAgain.store === '1', JSON.stringify({ had, off, onAgain }))
+    await staff.close()
   }
 }
 

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.52'
+const VERSION = '2.5.54'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -215,10 +215,86 @@ noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven.png' })
 noa.registry.registerMaterial('vend', { textureURL: 'assets/tile-vend.png' })
 noa.registry.registerMaterial('store', { textureURL: 'assets/tile-store.png' })
 noa.registry.registerMaterial('bunk', { textureURL: 'assets/tile-bunk.png' })
+const shapeScene = noa.rendering.scene
+function dye(name, r, g, b, a) {
+  const mat = noa.rendering.makeStandardMaterial(name)
+  mat.diffuseColor = new Color3(r, g, b)
+  mat.ambientColor = new Color3(r * 0.45, g * 0.45, b * 0.45)
+  mat.specularColor = new Color3(0, 0, 0)
+  mat.backFaceCulling = false
+  if (a != null && a < 1) { mat.alpha = a; mat.transparencyMode = 2 }
+  return mat
+}
+function part(name, w, h, d, x, y, z, rx, mat) {
+  const mesh = CreateBox(name, { width: w, height: h, depth: d }, shapeScene)
+  mesh.material = mat
+  mesh.position.set(x, y, z)
+  if (rx) mesh.rotation.x = rx
+  mesh.bakeCurrentTransformIntoVertices()
+  mesh.position.set(0, 0, 0)
+  mesh.rotation.set(0, 0, 0)
+  mesh.isPickable = false
+  return mesh
+}
+function shape(name, parts, mat) {
+  const mesh = parts.length === 1 ? parts[0] : Mesh.MergeMeshes(parts, true, true)
+  mesh.name = name
+  mesh.material = mat
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
+const woodD = dye('shape-wood', 0.72, 0.48, 0.24)
+const glassD = dye('shape-glass', 0.55, 0.86, 0.95, 0.45)
+const metalD = dye('shape-metal', 0.55, 0.6, 0.66)
+const slideD = dye('shape-slide', 0.25, 0.72, 0.7, 0.5)
+const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
+const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
+const lampD = dye('shape-lamp', 1, 0.84, 0.32)
+lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+function doorMesh(kind, open, mat) {
+  if (!open) return shape('door-' + kind + '-shut', [part('p', 0.96, 0.98, 0.18, 0, 0.5, 0, 0, mat)], mat)
+  return shape('door-' + kind + '-open', [part('p', 0.14, 0.98, 0.9, 0.4, 0.5, 0, 0, mat)], mat)
+}
+function leverMesh(on) {
+  const base = part('b', 0.5, 0.14, 0.5, 0, 0.07, 0, 0, woodD)
+  const handle = part('h', 0.1, 0.56, 0.1, 0, 0.46, on ? 0.16 : -0.16, on ? 1 : -1, handleD)
+  return shape(on ? 'lever-on' : 'lever-off', [base, handle], on ? handleD : woodD)
+}
+function buttonMesh(on) {
+  const plate = part('p', 0.7, 0.7, 0.1, 0, 0.5, -0.18, 0, buttonD)
+  const cap = part('c', 0.34, 0.34, on ? 0.08 : 0.28, 0, 0.5, on ? -0.1 : 0.06, 0, buttonD)
+  return shape(on ? 'button-in' : 'button-out', [plate, cap], buttonD)
+}
+function lanternMesh() {
+  const body = part('b', 0.46, 0.46, 0.46, 0, 0.48, 0, 0, lampD)
+  const cap = part('c', 0.18, 0.08, 0.18, 0, 0.76, 0, 0, woodD)
+  return shape('lantern', [body, cap], lampD)
+}
+const SHAPES = {
+  30: doorMesh('wood', false, woodD),
+  31: doorMesh('wood', true, woodD),
+  32: doorMesh('glass', false, glassD),
+  33: doorMesh('glass', true, glassD),
+  34: doorMesh('metal', false, metalD),
+  35: doorMesh('metal', true, metalD),
+  36: doorMesh('slide', false, slideD),
+  37: doorMesh('slide', true, slideD),
+  38: leverMesh(false),
+  39: leverMesh(true),
+  40: buttonMesh(false),
+  41: buttonMesh(true),
+  47: lanternMesh(),
+}
 for (const [id, name, material] of BLOCKS) {
   const open = typeof name === 'string' && name.endsWith('Open')
   const glass = material === 'glass'
-  noa.registry.registerBlock(id, { material, opaque: !open && !glass, solid: !open })
+  const mesh = SHAPES[id]
+  const lantern = id === LANTERN
+  const opts = { material: mesh ? null : material, opaque: !mesh && !open && !glass, solid: !open && !lantern }
+  if (mesh) opts.blockMesh = mesh
+  noa.registry.registerBlock(id, opts)
 }
 function blockPalette() {
   const p = ['air']
@@ -227,7 +303,7 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || noa.registry.getBlockSolidity(id)
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || noa.registry.getBlockSolidity(id)
 const blockName = (id) => t(BLOCKS.find((b) => b[0] === id)[1])
 
 const S = 24
@@ -419,6 +495,9 @@ function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
   return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.bench || id === ID.vend || id === ID.bunk || id === ID.box
 }
+function isGear(id) {
+  return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN
+}
 function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
   const repeat = !!(opts && opts.repeat)
@@ -431,6 +510,7 @@ function placeBlock(face, opts) {
       if (aimedBlock.blockID === LANTERN) showLamp(ax, ay, az)
       return false
     }
+    if (aimedBlock.blockID === LANTERN) return false
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
     if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station', aimedBlock.position.join(',')); return false }
     if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench', aimedBlock.position.join(',')); return false }
@@ -721,6 +801,7 @@ session = createSession({
   setAlways: (on) => basics && basics.setAlways(on),
   setBright: (on) => basics && basics.setBright(on),
 })
+session.mountEnergy(noa)
 let pendingGifts = []
 let gifts = {}
 function grantSaplings() {
@@ -745,7 +826,7 @@ function showLamp(x, y, z) {
   if (!card || !st) return
   card.hidden = false
   const level = $('lamp-level')
-  if (level) level.textContent = t(st.step === 1 ? 'lanternLow' : st.step === 2 ? 'lanternMed' : 'lanternHigh')
+  if (level) level.textContent = t('lightLabel')
   const fill = $('lamp-fill')
   if (fill) fill.style.width = Math.round((st.charge || 0) * 100) + '%'
   clearTimeout(showLamp.t)
@@ -983,6 +1064,8 @@ function paintBar() {
   bar.classList.add('palette')
   bar.classList.remove('bagbar')
   bar.dataset.n = String(paletteIds.length)
+  const strip = document.createElement('div')
+  strip.className = 'item-strip'
   paletteIds.forEach((id, i) => {
     const b = document.createElement('button')
     b.className = 'slot'
@@ -999,8 +1082,9 @@ function paintBar() {
     b.append(l)
     b.addEventListener('click', () => selectSlot(i))
     b.prepend(blockIcon(block, ATLAS))
-    bar.append(b)
+    strip.append(b)
   })
+  bar.append(strip)
   const bagBtn = document.createElement('button')
   bagBtn.type = 'button'
   bagBtn.className = 'slot bag-tile'
@@ -1009,8 +1093,8 @@ function paintBar() {
   bagBtn.querySelector('.lbl').textContent = t('bag')
   bagBtn.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bagBtn)
-  const on = bar.querySelector('[aria-pressed="true"]')
-  if (on) bar.scrollLeft = Math.max(0, on.offsetLeft - bar.clientWidth / 2 + on.offsetWidth / 2)
+  const on = strip.querySelector('[aria-pressed="true"]')
+  if (on) strip.scrollLeft = Math.max(0, on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2)
 }
 function useSelected() {
   if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
@@ -1678,7 +1762,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const hit = finger ? rayAt(e.clientX, e.clientY) : targetHit()
   if (hit) {
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-    const need = mineMs(name, survivalOn(), finger, heldTool())
+    const need = isGear(hit.id) ? 1e9 : mineMs(name, survivalOn(), finger, heldTool())
     const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
     const kept = same ? dig.p : 0
     dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }

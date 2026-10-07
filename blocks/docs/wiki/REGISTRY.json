@@ -9689,6 +9689,24 @@
    "secs": 3,
    "gate": null,
    "source": "fun-1"
+  },
+  {
+   "id": "r:flour",
+   "type": "recipe",
+   "out": [
+    "flour",
+    1
+   ],
+   "at": "workbench",
+   "in": [
+    [
+     "wheat",
+     1
+    ]
+   ],
+   "secs": 2,
+   "gate": null,
+   "source": "BT 2.5.54"
   }
  ]
 }

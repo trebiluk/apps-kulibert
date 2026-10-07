@@ -1,4 +1,24 @@
 export const CHANGELOG = [
+  { v: '2.5.54', date: '2026-10-07', lines: {
+    en: ['An Energy bar, and eating fills it back up.'],
+    uk: ['Смужка енергії, і їжа знову її наповнює.'],
+    ru: ['Полоска энергии, и еда снова её наполняет.'],
+    es: ['Una barra de Energía, y comer la vuelve a llenar.'],
+    ar: ['شريط طاقة، والأكل يملؤه من جديد.'],
+    'fa-AF': ['یک نوار انرژی، و خوردن آن را دوباره پر می‌کند.'],
+    rw: ['Umurongo w\'ingufu, kandi kurya kubisubiza.'],
+    ti: ['መስመር ጉልበት፡ ምብላዕ ድማ ደጊሙ ይመልኦ።'],
+  }},
+  { v: '2.5.53', date: '2026-10-07', lines: {
+    en: ['Doors work with levers and buttons, lanterns are small and see-through, mode switch moved.'],
+    uk: ['Двері працюють з важелями й кнопками, ліхтарі малі й прозорі, перемикач режиму перенесено.'],
+    ru: ['Двери работают с рычагами и кнопками, фонари маленькие и прозрачные, переключатель режима перенесён.'],
+    es: ['Las puertas funcionan con palancas y botones, los faroles son pequeños y se ven a través, y el cambio de modo se movió.'],
+    ar: ['الأبواب تعمل مع الروافع والأزرار، والفوانيس صغيرة وشفافة، ونُقل زر تبديل الوضع.'],
+    'fa-AF': ['درها با اهرم و دکمه کار می‌کنند، فانوس‌ها کوچک و شفاف اند، و دکمه حالت جابه‌جا شد.'],
+    rw: ['Amarembo akora n\'inyego n\'amabuto, amatarara ni mato kandi arabonerwa, kandi guhindura uburyo byimuriwe.'],
+    ti: ['ማዕጾታት ምስ መቐለሊን መጠወቒን ይሰርሑ፡ መብራህቲ ንኣሽቱን ድሕሪኦም ትርኢን፡ መቐየሪ ኩነታት ድማ ተንቀሳቒሱ።'],
+  }},
   { v: '2.5.52', date: '2026-10-07', lines: {
     en: ['Switch between Survival and Creative any time with the button on screen.'],
     uk: ['Перемикайся між Виживанням і Творчістю будь-коли кнопкою на екрані.'],

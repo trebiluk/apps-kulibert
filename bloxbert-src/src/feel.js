@@ -52,12 +52,16 @@ export function gateDig(p) {
   return { p, blocked: false }
 }
 
+let digSlow = 1
+export function setDigSlow(n) { digSlow = n > 1 ? n : 1 }
+export function getDigSlow() { return digSlow }
+
 export function mineMs(name, survival, touch, tool = 'hand') {
   if (!survival) return touch ? 500 : 0
   const s = HAND_S[name]
   const hand = (s == null ? 3 : s) * 1000
   const mult = TOOL_X[tool] || 1
-  return Math.max(150, hand / mult)
+  return Math.max(150, (hand / mult) * digSlow)
 }
 
 export function crackStage(p) {
