@@ -3,9 +3,10 @@ import { t, rtl } from "../i18n.js";
 import { loadSave, classLeft, topScore, saveNow } from "../save.js";
 import { skyOf } from "../looks.js";
 import { dailyLevel, dailySeed, endlessLevel } from "../modes.js";
+import { createPrairie, dailyWeather } from "../world.js";
 import { bands, poseNow } from "../ui/bands.js";
 import { fitButton, hideButton, intScale, makeButton } from "../ui/widgets.js";
-import { lite, motionOff } from "../fx.js";
+import { flyPath, lite, motionOff } from "../fx.js";
 
 const TILES = [
   ["lookout", "lookout", "alice-wave-0", true],
@@ -24,9 +25,9 @@ export class Burrow extends window.Phaser.Scene {
     this.playMode = "class";
     this.cameras.main.roundPixels = true;
     this.cameras.main.setBackgroundColor(skyOf(this.save.settings.look));
-    this.ground = this.add.tileSprite(0, 0, 32, 32, "lookout", "ground-0").setDepth(0);
-    this.far = lite() ? null : this.add.tileSprite(0, 0, 32, 32, "lookout", "cloud").setAlpha(0.45).setDepth(0);
-    this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(1);
+    this.cameras.main.setScroll(0, 0);
+    this.prairie = createPrairie(this);
+    this.hole = this.add.image(0, 0, "lookout", "hole").setDepth(2);
     this.alice = this.add.sprite(0, 0, "lookout", "alice-look-0").play("alice-look").setDepth(2);
     this.wonder = this.add.sprite(0, 0, "lookout", "wonder-idle-0").play("wonder-idle").setDepth(2);
     this.cast = ["hawk-flap-0", "coyote-trot-0", "snake-slither-0", "rabbit-hop-0", "cloud", "weed-0"].map((frame) => this.add.image(0, 0, "lookout", frame).setDepth(2));
@@ -42,7 +43,10 @@ export class Burrow extends window.Phaser.Scene {
     this.onResize = (s) => { if (this.scene.isActive()) this.layout(s.width, s.height); };
     this.onLang = () => this.layout(this.scale.width, this.scale.height);
     this.onHome = () => { this.mode = "home"; this.save = loadSave(); this.layout(this.scale.width, this.scale.height); };
-    this.onLook = () => { this.cameras.main.setBackgroundColor(skyOf(loadSave().settings.look)); };
+    this.onLook = () => {
+      this.cameras.main.setBackgroundColor(skyOf(loadSave().settings.look));
+      if (this.scene.isActive()) this.layout(this.scale.width, this.scale.height);
+    };
     this.layout(this.scale.width, this.scale.height);
     this.scale.on("resize", this.onResize);
     window.addEventListener("ap-lang", this.onLang);
@@ -57,6 +61,9 @@ export class Burrow extends window.Phaser.Scene {
       window.clearInterval(this.clock);
     });
     if (motionOff()) this.anims.pauseAll();
+  }
+  update() {
+    if (this.prairie && this.mode === "home") this.prairie.tick(this.hole);
   }
   makeTile(id, key, frame, live, index) {
     const box = makeButton(this, "tile-" + id, () => {
@@ -135,11 +142,6 @@ export class Burrow extends window.Phaser.Scene {
     const home = this.mode === "home";
     const picking = this.mode === "picker";
     const showCards = picking && this.playMode === "class";
-    this.ground.setPosition(w / 2, h / 2).setSize(w, h);
-    if (this.far) {
-      this.far.setVisible(home && !lite());
-      this.far.setPosition(b.cast.x + b.cast.w / 2, b.cast.y + 20).setSize(b.cast.w, Math.max(32, Math.floor(b.cast.h * 0.6)));
-    }
     const showCast = home;
     this.hole.setVisible(showCast);
     this.alice.setVisible(showCast);
@@ -164,6 +166,7 @@ export class Burrow extends window.Phaser.Scene {
       intScale(this.hopper, 24);
       this.butter.setPosition(b.cast.x + b.cast.w - 24, b.cast.y + 16);
       this.hopper.setPosition(b.cast.x + 20, b.cast.y + b.cast.h - 16);
+      flyPath(this, this.butter, this.butter.x, this.butter.y - 6, 22, 2100);
       const seeds = t("seeds") + " " + (this.save.seeds || 0);
       this.seedText.setText(seeds).setVisible(true);
       this.seedText.setPosition(rtl() ? b.cast.x + b.cast.w - this.seedText.width - 8 : b.cast.x + 8, b.cast.y + b.cast.h - 22);
@@ -172,6 +175,9 @@ export class Burrow extends window.Phaser.Scene {
       this.seedText.setVisible(false);
       this.classText.setVisible(false);
     }
+    const field = { x: 0, y: Math.round(h * 0.22), w: w, h: Math.max(80, h - Math.round(h * 0.22)) };
+    const mound = showCast ? { x: this.hole.x, y: this.hole.y } : { x: w * 0.5, y: field.y + field.h * 0.62 };
+    if (this.prairie) this.prairie.layout(w, h, field, [mound], dailyWeather(), 11);
     this.tiles.forEach((tile, n) => {
       if (!home) { hideButton(tile); return; }
       const row = TILES[n];

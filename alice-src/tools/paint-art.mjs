@@ -251,7 +251,86 @@ frame("alarm-ground", alarm("ground"));
 frame("alarm-snake", alarm("snake"));
 frame("speaker", speaker());
 frame("help-q", helpQ());
+function tile(kind) {
+  const g = blank(16, 16);
+  if (kind >= 5) {
+    fill(g, 0, 0, 16, 16, "W");
+    fill(g, 0, 0, 16, 1, "C");
+    fill(g, 0, 15, 16, 1, "C");
+    if (kind === 6) { put(g, 5, 4, "H"); put(g, 11, 7, "G"); put(g, 7, 10, "H"); }
+    else { put(g, 3, 5, "C"); put(g, 12, 8, "C"); put(g, 8, 12, "C"); }
+    return g;
+  }
+  fill(g, 0, 0, 16, 8, "G");
+  fill(g, 0, 0, 16, 1, "H");
+  fill(g, 0, 8, 16, 8, "M");
+  if (kind === 0) { put(g, 5, 4, "Y"); put(g, 10, 6, "H"); put(g, 4, 11, "S"); }
+  if (kind === 1) { put(g, 8, 2, "H"); put(g, 3, 5, "Y"); put(g, 12, 10, "S"); }
+  if (kind === 2) { put(g, 6, 3, "Y"); put(g, 13, 6, "Y"); put(g, 2, 12, "S"); }
+  if (kind === 3) { fill(g, 3, 2, 10, 6, "M"); put(g, 5, 4, "S"); put(g, 10, 4, "S"); }
+  if (kind === 4) fill(g, 5, 2, 6, 5, "K");
+  return g;
+}
+
+function hill(near) {
+  const g = blank(32, 16);
+  const ch = near ? "H" : "L";
+  for (let x = 0; x < 32; x++) {
+    const wave = Math.round(Math.sin(x / (near ? 4.5 : 6.5)) * (near ? 3 : 2));
+    const top = (near ? 5 : 7) + wave;
+    for (let y = top; y < 15; y++) put(g, x, y, y === top && near && x % 5 === 0 ? "G" : ch);
+  }
+  return g;
+}
+
+function bird(up) {
+  const g = blank(16, 8);
+  if (up) stamp(g, 1, 0, ["K..........K", ".KK......KK.", "..KKKKKKKK..", "...KKKKKK...", "....K..K...."]);
+  else stamp(g, 1, 1, ["..K......K..", ".KK......KK.", "KKKKKKKKKKKK", "..KKKKKKKK..", "....K..K...."]);
+  return g;
+}
+
+function drop() {
+  const g = blank(4, 10);
+  ["L", "L", "W", "L", "C", "L"].forEach((ch, i) => put(g, 1, i, ch));
+  return g;
+}
+
+function flake() {
+  const g = blank(7, 7);
+  stamp(g, 0, 0, ["...W...", "..WWW..", ".WWWWW.", "WWWWWWW", ".WWWWW.", "..WWW..", "...W..."]);
+  return g;
+}
+
+function mote() {
+  const g = blank(5, 5);
+  stamp(g, 0, 0, ["..Y..", ".YYY.", "YYYYY", ".YYY.", "..Y.."]);
+  return g;
+}
+
+function puddle() {
+  const g = blank(16, 8);
+  stamp(g, 0, 1, ["..CCCCCCCCCC..", ".CC........CC.", ".C..........C.", ".CC........CC.", "..CCCCCCCCCC.."]);
+  return g;
+}
+
+function glowDot() {
+  const g = blank(5, 5);
+  stamp(g, 0, 0, ["..A..", ".AYA.", "AYYYA", ".AYA.", "..A.."]);
+  return g;
+}
+
 frame("lock", lock());
+for (let i = 0; i < 7; i++) frame("tile-" + i, tile(i));
+frame("hill-far", hill(false));
+frame("hill-near", hill(true));
+frame("bird-0", bird(false));
+frame("bird-1", bird(true));
+frame("drop", drop());
+frame("flake", flake());
+frame("mote", mote());
+frame("puddle", puddle());
+frame("glow", glowDot());
 
 const file = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../art/sprites.txt");
 writeFileSync(file, out.join("\n"));

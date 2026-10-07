@@ -184,3 +184,150 @@ export function syncMusic() {
     music = { ctx, osc, gain };
   } catch (e) { music = null; }
 }
+
+export function decorOn() {
+  if (motionOff()) return false;
+  const mode = (settings().lite || "auto");
+  if (mode === "on") return false;
+  return true;
+}
+
+export function driftTile(sprite, speed) {
+  if (!sprite || !decorOn()) return;
+  sprite.tilePositionX = (sprite.tilePositionX || 0) + speed;
+}
+
+export function easeScroll(cam, target) {
+  if (!cam || motionOff()) return;
+  const next = cam.scrollX + ((target || 0) - cam.scrollX) * 0.04;
+  if (Math.abs(next - cam.scrollX) < 0.02) return;
+  cam.setScroll(next, 0);
+}
+
+export function flyPath(scene, sprite, x, y, reach, dur) {
+  if (!sprite || !scene) return;
+  const prev = sprite.getData("tw");
+  if (prev) {
+    try { prev.remove(); } catch (e) {}
+    sprite.setData("tw", null);
+  }
+  sprite.setPosition(Math.round(x), Math.round(y));
+  if (!decorOn()) return;
+  try {
+    const tw = scene.tweens.add({
+      targets: sprite,
+      x: x + reach,
+      y: y - 16,
+      duration: dur || 2400,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+    sprite.setData("tw", tw);
+  } catch (e) {}
+}
+
+export function tickHoppers(hoppers, groundY) {
+  if (!hoppers) return;
+  const off = !decorOn();
+  const now = typeof performance !== "undefined" ? performance.now() : 0;
+  hoppers.forEach((h, i) => {
+    if (!h || !h.body) return;
+    if (off || !h.visible) {
+      h.body.setVelocity(0, 0);
+      h.body.allowGravity = false;
+      h.body.enable = false;
+      return;
+    }
+    h.body.enable = true;
+    h.body.allowGravity = true;
+    const down = !!(h.body.blocked && h.body.blocked.down) || !!(h.body.touching && h.body.touching.down) || h.y >= groundY - 2;
+    if (down && now >= (h.getData("next") || 0)) {
+      h.body.setVelocity(i % 2 ? 26 : -26, -140 - (i % 3) * 16);
+      h.setData("next", now + 1700 + i * 380);
+    }
+  });
+}
+
+export function tickMotes(motes, kind, rect) {
+  if (!motes) return 0;
+  if (!decorOn() || !kind || kind === "Breezy") {
+    motes.forEach((m) => m.setVisible(false));
+    return 0;
+  }
+  const cap = kind === "Night" ? 6 : Math.min(36, motes.length);
+  let n = 0;
+  motes.forEach((m, i) => {
+    if (i >= cap) { m.setVisible(false); return; }
+    if (!m.visible) m.setVisible(true);
+    n += 1;
+    const phase = (m.getData("p") || 0) + (kind === "Snowy" ? 0.02 : 0.012);
+    m.setData("p", phase);
+    let vx = 0.15;
+    let vy = -0.3;
+    if (kind === "Drizzle") { vx = 1.15; vy = 6.4; }
+    else if (kind === "Snowy") { vx = Math.sin(phase + i) * 0.45; vy = 0.65; }
+    else if (kind === "Night") { vx = Math.sin(phase + i) * 0.22; vy = -0.12; }
+    m.x += vx;
+    m.y += vy;
+    if (m.y > rect.y + rect.h + 4) m.y = rect.y - 2;
+    if (m.y < rect.y - 8) m.y = rect.y + rect.h;
+    if (m.x > rect.x + rect.w + 4) m.x = rect.x - 2;
+    if (m.x < rect.x - 8) m.x = rect.x + rect.w;
+  });
+  return n;
+}
+
+export function tickPuddles(puddles, on) {
+  if (!puddles) return;
+  puddles.forEach((p) => {
+    if (!on) { p.setVisible(false); return; }
+    p.setVisible(true);
+    if (!decorOn()) { p.setScale(p.getData("base") || 1); return; }
+    const phase = (p.getData("p") || 0) + 0.02;
+    p.setData("p", phase);
+    const base = p.getData("base") || 1;
+    p.setScale(base * (1 + Math.sin(phase) * 0.06));
+  });
+}
+
+export function tickBirds(birds, rect, clock) {
+  if (!birds) return;
+  if (!decorOn()) {
+    birds.forEach((b) => b.setVisible(false));
+    if (clock) clock.on = false;
+    return;
+  }
+  const now = typeof performance !== "undefined" ? performance.now() : 0;
+  if (!clock.on && now - (clock.last || 0) > 8000) {
+    clock.on = true;
+    clock.last = now;
+    birds.forEach((b, i) => {
+      b.setVisible(true);
+      b.setPosition(rect.x - 30 - i * 16, rect.y + 14 + (i % 2) * 8);
+    });
+  }
+  if (!clock.on) return;
+  let any = false;
+  birds.forEach((b) => {
+    if (!b.visible) return;
+    b.x += 0.9;
+    if (b.x < rect.x + rect.w + 24) any = true;
+    else b.setVisible(false);
+  });
+  if (!any) clock.on = false;
+}
+
+export function tickGlow(lights, on, webgl) {
+  if (!lights) return;
+  lights.forEach((lamp, i) => {
+    lamp.setVisible(!!on && !!webgl);
+    if (!lamp.visible || !decorOn()) return;
+    const phase = (lamp.getData("p") || (i * 0.7)) + 0.02;
+    lamp.setData("p", phase);
+    const pulse = 0.28 + (Math.sin(phase) * 0.5 + 0.5) * 0.22;
+    if (lamp.intensity != null) lamp.intensity = pulse;
+    else lamp.setAlpha(0.45 + pulse);
+  });
+}
+

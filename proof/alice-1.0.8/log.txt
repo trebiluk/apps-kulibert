@@ -1,0 +1,17 @@
+DATES {"Breezy":"2026-01-01","Drizzle":"2026-01-02","Snowy":"2026-01-03","Night":"2026-01-04","Sunny":"2026-01-05"}
+OK Sunny 412x915 {"weather":"Sunny","objs":119,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"50","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Sunny 1366x768 {"weather":"Sunny","objs":119,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"63","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Breezy 412x915 {"weather":"Breezy","objs":119,"parts":0,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"52","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Breezy 1366x768 {"weather":"Breezy","objs":107,"parts":0,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"64","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Drizzle 412x915 {"weather":"Drizzle","objs":119,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"52","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Drizzle 1366x768 {"weather":"Drizzle","objs":107,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"64","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Snowy 412x915 {"weather":"Snowy","objs":119,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"50","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Snowy 1366x768 {"weather":"Snowy","objs":107,"parts":36,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"62","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Night 412x915 {"weather":"Night","objs":119,"parts":0,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"52","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK Night 1366x768 {"weather":"Night","objs":119,"parts":0,"layers":4,"fps":"","renderer":"webgl","mask":"","step":"64","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK motion-off diff 0 of 317588 weather Sunny step 198 layers 4
+FPS webgl4x 9 renderer webgl objs 107 parts 36 layers 4
+FPS webgl 13 renderer webgl objs 119 parts 36 layers 4
+LITE {"weather":"Sunny","objs":40,"parts":0,"layers":1,"fps":"58","renderer":"canvas","mask":"311,229,48,28;853,365,32,32;311,524,48,28;621,632,124,24","step":"115","plate":"AP 1.0.8","plateText":"AP 1.0.8"}
+OK rotate 29 -> 82 origin true layers 4
+OK fit360 [] n 7

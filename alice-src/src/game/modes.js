@@ -1,3 +1,5 @@
+import { dailyWeather } from "./world.js";
+
 export function dayKey(now = new Date()) {
   return now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0") + "-" + String(now.getDate()).padStart(2, "0");
 }
@@ -23,6 +25,7 @@ export function dailyLevel() {
     combo: 0,
     stars: [400, 700, 1100],
     speed: 1,
+    field: dailyWeather(),
   };
 }
 

@@ -35,6 +35,7 @@ export class Preloader extends window.Phaser.Scene {
     add("butterfly", frames("butterfly-", 3), 6);
     add("hopper", frames("hopper-", 3), 6);
     add("grass-sway", frames("grass-", 3), 2);
+    add("bird", [{ key: TEX, frame: "bird-0" }, { key: TEX, frame: "bird-1" }], 2);
     this.scene.start("Burrow");
     this.scene.launch("UI");
   }

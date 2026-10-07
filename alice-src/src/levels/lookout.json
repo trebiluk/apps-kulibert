@@ -1,10 +1,10 @@
 {
   "levels": [
-    {"id":"lookout-L01","name":"First Watch","kinds":["hawk"],"decoys":[],"holes":5,"seconds":60,"hawks":8,"goalScore":500,"pupsMin":0,"noFalse":false,"combo":0,"stars":[300,500,800],"speed":1,"hints":true},
-    {"id":"lookout-L02","name":"Two Kinds","kinds":["hawk","coyote"],"decoys":[],"holes":5,"seconds":60,"hawks":8,"goalScore":600,"pupsMin":4,"noFalse":false,"combo":0,"stars":[400,600,900],"speed":1,"hints":true},
-    {"id":"lookout-L03","name":"All Three","kinds":["hawk","coyote","snake"],"decoys":[],"holes":5,"seconds":60,"hawks":9,"goalScore":800,"pupsMin":6,"noFalse":false,"combo":0,"stars":[500,800,1200],"speed":1,"hints":true},
-    {"id":"lookout-L04","name":"Not a Hawk","kinds":["hawk","coyote","snake"],"decoys":["cloud"],"holes":5,"seconds":60,"hawks":9,"goalScore":800,"pupsMin":0,"noFalse":true,"combo":0,"stars":[500,800,1200],"speed":1,"hints":true},
-    {"id":"lookout-L05","name":"Friends","kinds":["hawk","coyote","snake"],"decoys":["rabbit","wonder"],"holes":5,"seconds":60,"hawks":10,"goalScore":0,"pupsMin":0,"noFalse":false,"combo":15,"stars":[600,900,1300],"speed":1,"hints":true},
-    {"id":"lookout-L06","name":"Fast Field","kinds":["hawk","coyote","snake"],"decoys":["cloud","rabbit","weed","wonder"],"holes":7,"seconds":60,"hawks":10,"goalScore":1000,"pupsMin":5,"noFalse":false,"combo":0,"stars":[700,1000,1500],"speed":1.3,"hints":true}
+    {"id":"lookout-L01","name":"First Watch","kinds":["hawk"],"decoys":[],"holes":5,"seconds":60,"hawks":8,"goalScore":500,"pupsMin":0,"noFalse":false,"combo":0,"stars":[300,500,800],"speed":1,"hints":true,"field":"Sunny"},
+    {"id":"lookout-L02","name":"Two Kinds","kinds":["hawk","coyote"],"decoys":[],"holes":5,"seconds":60,"hawks":8,"goalScore":600,"pupsMin":4,"noFalse":false,"combo":0,"stars":[400,600,900],"speed":1,"hints":true,"field":"Sunny"},
+    {"id":"lookout-L03","name":"All Three","kinds":["hawk","coyote","snake"],"decoys":[],"holes":5,"seconds":60,"hawks":9,"goalScore":800,"pupsMin":6,"noFalse":false,"combo":0,"stars":[500,800,1200],"speed":1,"hints":true,"field":"Sunny"},
+    {"id":"lookout-L04","name":"Not a Hawk","kinds":["hawk","coyote","snake"],"decoys":["cloud"],"holes":5,"seconds":60,"hawks":9,"goalScore":800,"pupsMin":0,"noFalse":true,"combo":0,"stars":[500,800,1200],"speed":1,"hints":true,"field":"Breezy"},
+    {"id":"lookout-L05","name":"Friends","kinds":["hawk","coyote","snake"],"decoys":["rabbit","wonder"],"holes":5,"seconds":60,"hawks":10,"goalScore":0,"pupsMin":0,"noFalse":false,"combo":15,"stars":[600,900,1300],"speed":1,"hints":true,"field":"Drizzle"},
+    {"id":"lookout-L06","name":"Fast Field","kinds":["hawk","coyote","snake"],"decoys":["cloud","rabbit","weed","wonder"],"holes":7,"seconds":60,"hawks":10,"goalScore":1000,"pupsMin":5,"noFalse":false,"combo":0,"stars":[700,1000,1500],"speed":1.3,"hints":true,"field":"Breezy"}
   ]
 }

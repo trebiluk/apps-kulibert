@@ -3,6 +3,7 @@ import { t, rtl, say } from "../i18n.js";
 import { current, loadSave, saveSave, saveNow, seedsFor, settings, pushBoard } from "../save.js";
 import { skyOf } from "../looks.js";
 import { endlessLevel, titleKey } from "../modes.js";
+import { createPrairie, weatherFor } from "../world.js";
 import { bands, poseNow } from "../ui/bands.js";
 import { fitButton, intScale, makeButton } from "../ui/widgets.js";
 import { burst, lite, markGesture, motionOff, noteFrame, punch, shake, sound, takeSteps, tickBits } from "../fx.js";
@@ -25,22 +26,22 @@ export class Lookout extends window.Phaser.Scene {
     loadSave();
     this.cameras.main.roundPixels = true;
     this.cameras.main.setBackgroundColor(skyOf(settings().look));
+    this.cameras.main.setScroll(0, 0);
     this.bootRound();
-    this.ground = this.add.tileSprite(0, 0, 32, 32, "lookout", "ground-0").setDepth(0);
-    this.far = lite() ? null : this.add.tileSprite(0, 0, 32, 32, "lookout", "cloud").setDepth(0).setAlpha(0.4);
-    this.tufts = [0, 1, 2].map((i) => this.add.sprite(0, 0, "lookout", "grass-" + i).play("grass-sway").setDepth(1));
+    this.weather = weatherFor(this.level);
     this.holes = [];
-    for (let i = 0; i < (this.level.holes || 5); i++) this.holes.push(this.add.image(0, 0, "lookout", "hole").setDepth(1));
-    this.nest = this.add.image(0, 0, "lookout", "mound").setDepth(2);
+    for (let i = 0; i < (this.level.holes || 5); i++) this.holes.push(this.add.image(0, 0, "lookout", "hole").setDepth(2).setScrollFactor(1));
+    this.nest = this.add.image(0, 0, "lookout", "mound").setDepth(2).setScrollFactor(1);
     this.pups = [];
-    for (let i = 0; i < 6; i++) this.pups.push(this.add.sprite(0, 0, "lookout", "pup-idle-0").play("pup-idle").setDepth(3));
-    this.alice = this.add.sprite(-200, -200, "lookout", "alice-pop-0").setVisible(false).setDepth(5);
-    this.threat = this.add.sprite(-200, -200, "lookout", "hawk-flap-0").setVisible(false).setDepth(6);
-    this.shadow = this.add.image(-200, -200, "lookout", "hawk-shadow").setVisible(false).setDepth(1);
+    for (let i = 0; i < 6; i++) this.pups.push(this.add.sprite(0, 0, "lookout", "pup-idle-0").play("pup-idle").setDepth(3).setScrollFactor(1));
+    this.alice = this.add.sprite(-200, -200, "lookout", "alice-pop-0").setVisible(false).setDepth(5).setScrollFactor(1);
+    this.threat = this.add.sprite(-200, -200, "lookout", "hawk-flap-0").setVisible(false).setDepth(6).setScrollFactor(1);
+    this.shadow = this.add.image(-200, -200, "lookout", "hawk-shadow").setVisible(false).setDepth(1).setScrollFactor(1);
     this.bits = [];
-    const bitN = lite() ? 20 : 36;
-    for (let i = 0; i < bitN; i++) this.bits.push(this.add.image(0, 0, "lookout", "star").setVisible(false).setDepth(7));
-    this.goal = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#042f2e", align: "left" }).setDepth(8).setVisible(false);
+    const bitN = lite() ? 12 : 24;
+    for (let i = 0; i < bitN; i++) this.bits.push(this.add.image(0, 0, "lookout", "star").setVisible(false).setDepth(7).setScrollFactor(1));
+    this.prairie = createPrairie(this);
+    this.goal = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "16px", color: "#042f2e", align: "left" }).setDepth(8).setVisible(false).setScrollFactor(0);
     this.cap = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#042f2e", align: "center" }).setOrigin(0.5, 1).setDepth(8).setVisible(false);
     this.scoreT = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "14px", color: "#f8fafc" }).setDepth(8).setVisible(false);
     this.ring = this.add.text(0, 0, "", { fontFamily: "Atkinson Hyperlegible", fontSize: "18px", color: "#042f2e" }).setDepth(8).setVisible(false);
@@ -77,7 +78,11 @@ export class Lookout extends window.Phaser.Scene {
     this.cardHeld = false;
     this.teach = this.playMode === "class" && this.level && this.level.id === "lookout-L01" && !current.seen.teach;
     this.onResize = (s) => { if (this.scene.isActive()) this.layout(s.width, s.height); };
-    this.onLook = () => { if (this.scene.isActive()) this.cameras.main.setBackgroundColor(skyOf(settings().look)); };
+    this.onLook = () => {
+      if (!this.scene.isActive()) return;
+      this.cameras.main.setBackgroundColor(skyOf(settings().look));
+      if (this.prairie && this.band) this.prairie.layout(this.scale.width, this.scale.height, this.band.field, this.holes, this.weather, this.salt());
+    };
     this.onVis = () => { if (document.visibilityState !== "visible") this.holdHide(); };
     this.onBlur = () => this.holdHide();
     this.onPointer = () => this.releaseHide();
@@ -138,8 +143,15 @@ export class Lookout extends window.Phaser.Scene {
     }
     if (this.round && this.round.state === "paused") this.round.resume();
   }
+  salt() {
+    const id = (this.level && this.level.id) || "lookout";
+    let h = 2166136261;
+    for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+    return h >>> 0;
+  }
   bootRound() {
     this.round = new Round((this.seed ^ this.wave) >>> 0, this.level, settings().speed === "relaxed");
+    this.weather = weatherFor(this.level);
   }
   goalLine() {
     const extra = settings().speed === "relaxed" ? " · " + t("relaxed") : "";
@@ -189,11 +201,6 @@ export class Lookout extends window.Phaser.Scene {
     const icons = ["alarm-sky", "alarm-ground", "alarm-snake"];
     this.alarms.forEach((btn, i) => fitButton(btn, b.alarms[i], words[i], icons[i]));
     this.banner(this.goal, this.goalLine(), b.goal.x, b.goal.y, Math.max(40, b.goal.w - 8));
-    this.ground.setPosition(b.field.x + b.field.w / 2, b.field.y + b.field.h / 2).setSize(Math.max(32, b.field.w), Math.max(32, b.field.h));
-    if (this.far) {
-      const farH = Math.max(32, Math.floor(b.field.h * 0.45));
-      this.far.setPosition(b.field.x + b.field.w / 2, b.field.y + farH / 2).setSize(Math.max(32, b.field.w), farH).setVisible(!lite());
-    }
     this.holes.forEach((hole, i) => {
       intScale(hole, 40);
       hole.setPosition(b.field.x + (b.field.w * (i + 1)) / (this.holes.length + 1), b.field.y + b.field.h * 0.58);
@@ -210,14 +217,39 @@ export class Lookout extends window.Phaser.Scene {
       pup.setScale(pupScale);
       pup.setPosition(start + i * (dw + gap) + dw / 2, this.nest.y - dw * 0.35);
     });
-    this.tufts.forEach((tuft, i) => {
-      intScale(tuft, 32);
-      tuft.setPosition(b.field.x + 24 + i * Math.max(36, (b.field.w - 48) / 3), b.field.y + b.field.h - 20);
-    });
+    if (this.prairie) this.prairie.layout(w, h, b.field, this.holes, this.weather, this.salt());
+    this.ring.setScrollFactor(0);
     this.digits.forEach((d) => intScale(d, 22));
     this.paintScore((this.carry || 0) + (this.round ? this.round.read().score : 0));
     if (this.prompt.visible) this.banner(this.prompt, this.prompt.text, b.field.x + 8, b.field.y + 28, Math.max(80, b.field.w - 16));
     this.banner(this.cap, this.cap.visible ? this.cap.text : "", b.field.x + b.field.w / 2 - 80, b.field.y + b.field.h - 36, Math.max(80, b.field.w - 24));
+    this.publish();
+  }
+  boxOf(sprite) {
+    if (!sprite || !sprite.visible || !sprite.getBounds) return "";
+    const b = sprite.getBounds();
+    const cam = this.cameras.main;
+    return [Math.round(b.x - cam.scrollX), Math.round(b.y - cam.scrollY), Math.round(b.width), Math.round(b.height)].join(",");
+  }
+  publish(live) {
+    const node = live || document.getElementById("live");
+    if (!node) return;
+    let parts = this.prairie ? this.prairie.parts() : 0;
+    (this.bits || []).forEach((bit) => { if (bit.visible) parts += 1; });
+    node.dataset.weather = this.weather || "";
+    node.dataset.objs = String(this.children.list.length);
+    node.dataset.parts = String(parts);
+    node.dataset.layers = String(this.prairie ? this.prairie.layers() : 0);
+    node.dataset.renderer = this.game && this.game.renderer && this.game.renderer.type === 2 ? "webgl" : "canvas";
+    node.dataset.mask = [this.boxOf(this.threat), this.boxOf(this.alice), this.boxOf(this.shadow), this.boxOf(this.cap)].filter(Boolean).join(";");
+    const now = typeof performance !== "undefined" ? performance.now() : 0;
+    if (!this.fpsClock) this.fpsClock = { n: 0, t: now };
+    this.fpsClock.n += 1;
+    if (now - this.fpsClock.t >= 1000) {
+      node.dataset.fps = String(Math.round(this.fpsClock.n * 1000 / (now - this.fpsClock.t)));
+      this.fpsClock.n = 0;
+      this.fpsClock.t = now;
+    }
   }
   paintScore(n) {
     const b = this.band;
@@ -318,17 +350,21 @@ export class Lookout extends window.Phaser.Scene {
     const taken = takeSteps(raw, this.acc);
     this.acc = taken.acc;
     for (let i = 0; i < taken.steps; i++) this.round.advance();
-    if (!motionOff()) {
-      this.ground.tilePositionX += lite() ? 0 : 0.2;
-      if (this.far && !lite()) this.far.tilePositionX += 0.45;
-    }
-    if (this.far) this.far.setVisible(!lite());
     const step = this.round.step;
     const active = this.round.spawns.find((s) => step >= s.step && step <= s.step + s.approachSteps);
     const b = this.band;
+    const holeNow = active ? (this.holes[active.hole] || this.holes[0]) : null;
+    if (this.prairie) this.prairie.tick(holeNow);
+    if (motionOff()) {
+      this.pups.forEach((pup) => {
+        if (!pup.getData("held") && pup.frame) pup.setData("held", pup.frame.name);
+        const held = pup.getData("held");
+        if (held) pup.setFrame(held);
+      });
+    }
     if (active) {
       const p = (step - active.step) / active.approachSteps;
-      const hole = this.holes[active.hole] || this.holes[0];
+      const hole = holeNow;
       const fresh = !this.alice.visible || this.alice.getData("kind") !== "alice";
       this.alice.setVisible(true);
       if (fresh) {
@@ -372,6 +408,7 @@ export class Lookout extends window.Phaser.Scene {
       live.dataset.score = String((this.carry || 0) + bank.score);
       live.dataset.pups = String(bank.pupsSafe);
       if (this.alice.visible && this.alice.frame) live.dataset.frame = this.alice.frame.name;
+      this.publish(live);
       if (!document.body.classList.contains("ap-card")) {
         live.textContent = (this.level.id || "lookout") + " " + ((this.carry || 0) + bank.score) + " " + Math.max(0, Math.ceil(left / 60)) + (capShown ? " " + capShown : "");
       }
