@@ -63,13 +63,118 @@ export function createSession(api) {
     if (api.markDirty) api.markDirty()
     return where
   }
+  function motionLess() {
+    if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
+    try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) { return false }
+  }
+  function slotSnap() {
+    return bag.slots.map((s) => (s ? { item: s.item, n: s.n } : null))
+  }
+  function changedIndex(before) {
+    for (let i = 0; i < bag.slots.length; i++) {
+      const a = before[i]
+      const b = bag.slots[i]
+      if ((a && a.item) !== (b && b.item) || (a ? a.n : 0) !== (b ? b.n : 0)) return i
+    }
+    return -1
+  }
+  function rollCount(el, from, to) {
+    const t0 = performance.now()
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / 220)
+      el.textContent = String(Math.round(from + (to - from) * t))
+      if (t < 1) requestAnimationFrame(step)
+    }
+    el.textContent = String(from)
+    requestAnimationFrame(step)
+  }
+  function crateFx(node, from, to, kind, done) {
+    const x0 = from[0], y0 = from[1], x1 = to[0], y1 = to[1]
+    const less = motionLess()
+    const place = (x, y, op) => {
+      node.style.transform = 'translate(' + x + 'px,' + y + 'px) translate(-50%,-50%)'
+      node.style.opacity = String(op)
+    }
+    const finish = () => { if (node.parentNode) node.remove(); if (done) done() }
+    if (less || kind === 'fade') {
+      const t0 = performance.now()
+      const step = (now) => {
+        const t = Math.min(1, (now - t0) / 120)
+        place(x1, y1, t)
+        if (t < 1) requestAnimationFrame(step)
+        else finish()
+      }
+      place(x1, y1, 0)
+      requestAnimationFrame(step)
+      return
+    }
+    const dur = 350
+    const t0 = performance.now()
+    const step = (now) => {
+      const t = Math.min(1, (now - t0) / dur)
+      let ax, ay, bx, by, u
+      if (kind === 'back') {
+        if (t < 0.42) {
+          u = t / 0.42
+          ax = x0; ay = y0
+          bx = x0 + (x1 - x0) * 0.62
+          by = y0 + (y1 - y0) * 0.62
+        } else {
+          u = (t - 0.42) / 0.58
+          ax = x0 + (x1 - x0) * 0.62
+          ay = y0 + (y1 - y0) * 0.62
+          bx = x0; by = y0
+        }
+      } else {
+        u = t
+        ax = x0; ay = y0; bx = x1; by = y1
+      }
+      const mx = (ax + bx) / 2
+      const my = Math.min(ay, by) - 64
+      const x = (1 - u) * (1 - u) * ax + 2 * (1 - u) * u * mx + u * u * bx
+      const y = (1 - u) * (1 - u) * ay + 2 * (1 - u) * u * my + u * u * by
+      const op = kind === 'back' && t > 0.82 ? 1 - (t - 0.82) / 0.18 : 1
+      place(x, y, op)
+      if (t < 1) requestAnimationFrame(step)
+      else finish()
+    }
+    place(x0, y0, 1)
+    requestAnimationFrame(step)
+  }
+  function landItem(item, before, kind) {
+    if (mode !== 'survival' || !ITEMS[item]) return
+    const idx = changedIndex(before)
+    const well = idx >= 0 && idx < 9
+      ? document.querySelector('#hotbar [data-slot="' + idx + '"]')
+      : document.querySelector('#hotbar [data-bag="1"]')
+    if (!well) return
+    const rect = well.getBoundingClientRect()
+    const node = document.createElement('div')
+    node.className = 'fly-icon'
+    node.append(itemIcon(ITEMS[item]))
+    document.body.append(node)
+    const oldN = idx >= 0 && before[idx] && before[idx].item === item ? before[idx].n : 0
+    const newN = idx >= 0 && bag.slots[idx] ? bag.slots[idx].n : oldN
+    crateFx(node, [window.innerWidth / 2, window.innerHeight / 2], [rect.left + rect.width / 2, rect.top + rect.height / 2], kind, () => {
+      if (kind !== 'fly' || motionLess()) return
+      well.classList.remove('bump')
+      void well.offsetWidth
+      well.classList.add('bump')
+      const badge = well.querySelector('.count')
+      if (badge) rollCount(badge, oldN, newN)
+    })
+  }
   function giveItem(item, n = 1) {
     markFound(item)
+    const before = slotSnap()
     const left = bag.add(item, n)
-    if (n - left) paintHotbar()
+    const got = n - left
+    if (got) paintHotbar()
+    if (got) landItem(item, before, 'fly')
     if (left) {
       const p = api.pos()
       spawnDrop(item, left, p[0], p[1] + 0.3, p[2], 'full')
+      landItem(item, before, 'back')
     }
     return left
   }
@@ -161,10 +266,9 @@ export function createSession(api) {
   }
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
-    if (!bar) return
-    bar.classList.toggle('bagbar', mode === 'survival')
-    if (bar.classList.remove) bar.classList.remove('palette')
-    if (mode !== 'survival') return
+    if (!bar || mode !== 'survival') return
+    bar.classList.add('bagbar')
+    bar.classList.remove('palette')
     bar.innerHTML = ''
     const strip = document.createElement('div')
     strip.className = 'item-strip'
@@ -172,25 +276,29 @@ export function createSession(api) {
       const s = bag.slots[i]
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'slot'
+      b.className = 'slot' + (s ? '' : ' empty')
       b.dataset.slot = String(i)
+      const item = s && ITEMS[s.item]
+      const digit = document.createElement('span')
+      digit.className = 'digit'
+      digit.textContent = String(i + 1)
       const sw = document.createElement('span')
       sw.className = 'sw'
-      const item = s && ITEMS[s.item]
       if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
       else if (item && item.block && api.blockIcon) sw.append(api.blockIcon(item.block))
-      else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="currentColor"/></svg>')
-      const tag = document.createElement('span')
-      tag.className = 'tag'
-      tag.textContent = item ? item.letter : ''
-      const lbl = document.createElement('span')
-      lbl.className = 'lbl'
-      lbl.textContent = s ? String(s.n) : ''
-      b.append(sw, tag, lbl)
+      else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#E6B15A"/></svg>')
+      b.append(digit, sw)
+      if (s) {
+        const count = document.createElement('span')
+        count.className = 'count'
+        count.textContent = String(s.n)
+        b.append(count)
+      }
       const wear = s && wearBar(item, s.uses)
       if (wear) b.append(wear)
-      if (!s) b.classList.add('empty')
       b.setAttribute('aria-pressed', String(i === hot))
+      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
+      if (s) b.title = itemName(s.item)
       b.addEventListener('click', () => {
         if (i === hot) useHeld()
         else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
@@ -202,13 +310,23 @@ export function createSession(api) {
     bagBtn.type = 'button'
     bagBtn.className = 'slot bag-tile'
     bagBtn.dataset.bag = '1'
-    bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
+    bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
     bagBtn.querySelector('.lbl').textContent = t('bag')
+    bagBtn.setAttribute('aria-label', t('bag'))
     bagBtn.addEventListener('click', () => { if (api.open) api.open('inventory') })
     bar.append(bagBtn)
     const held = bag.slots[hot]
     const label = document.getElementById('current')
     if (label) label.textContent = held ? itemName(held.item) : t('emptySlot')
+    const nameKey = held ? held.item : ''
+    if (nameKey !== paintHotbar.nameKey) {
+      paintHotbar.nameKey = nameKey
+      if (nameKey && api.flash) api.flash(itemName(nameKey))
+      else {
+        const chip = document.getElementById('held-chip')
+        if (chip) chip.hidden = true
+      }
+    }
   }
   function selectedItem() {
     if (mode !== 'survival') return null
@@ -302,67 +420,95 @@ export function createSession(api) {
     return s
   }
   function paintBag(g) {
+    const title = document.getElementById('sheet-title')
+    g.classList.add('baggrid')
     if (mode !== 'survival') {
+      if (title) title.textContent = t('bag')
+      const wells = document.createElement('div')
+      wells.className = 'wells'
       for (const [k, item] of Object.entries(ITEMS)) {
         if (!item.block) continue
         const b = document.createElement('button')
         b.type = 'button'
-        b.className = 'gtile'
+        b.className = 'well gtile'
         const pic = document.createElement('span')
         pic.className = 'gic'
-        pic.append(api.blockIcon ? api.blockIcon(item.block) : document.createElement('canvas'))
+        pic.append(api.blockIcon ? api.blockIcon(item.block) : document.createElement('span'))
         b.append(pic)
         const lbl = document.createElement('span')
         lbl.className = 'glbl'
         lbl.textContent = itemName(k)
         b.append(lbl)
-        b.addEventListener('click', () => { if (api.assign) api.assign(item.block, k); api.toast(itemName(k)) })
-        g.append(b)
+        b.setAttribute('aria-label', itemName(k))
+        b.title = itemName(k)
+        b.addEventListener('click', () => {
+          if (api.assign) api.assign(item.block, k)
+          api.toast(itemName(k))
+          for (const el of wells.querySelectorAll('.well.on')) {
+            el.classList.remove('on')
+            el.setAttribute('aria-pressed', 'false')
+          }
+          b.classList.add('on')
+          b.setAttribute('aria-pressed', 'true')
+        })
+        wells.append(b)
       }
+      g.append(wells)
       return
     }
-    g.classList.add('baggrid')
-    if (!bag.slots.some(Boolean)) {
-      const p = document.createElement('p')
-      p.className = 'gnote'
-      p.textContent = t('emptyBag')
-      g.append(p)
-    }
+    const used = bag.slots.filter(Boolean).length
+    if (title) title.textContent = t('bag') + ' · ' + used + '/' + bag.slots.length
     if (lost.length) {
-      const n = lost.reduce((s, d) => s + d.n, 0)
-      g.append(btn(t('lostBtn') + ' · ' + n, () => { takeLost(); g.innerHTML = ''; paintBag(g) }))
+      const n = lost.reduce((sum, d) => sum + d.n, 0)
+      const lostBtn = document.createElement('button')
+      lostBtn.type = 'button'
+      lostBtn.className = 'keycap lost-row'
+      lostBtn.textContent = t('lostBtn') + ' · ' + n
+      lostBtn.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
+      g.append(lostBtn)
     }
-    const paintOne = (s, i) => {
+    const tab = (text) => {
+      const d = document.createElement('div')
+      d.className = 'crate-tab'
+      d.textContent = text
+      return d
+    }
+    const row = (from, to) => {
+      const w = document.createElement('div')
+      w.className = 'wells'
+      for (let i = from; i < to; i++) w.append(one(bag.slots[i], i))
+      return w
+    }
+    g.append(tab(t('hotbar')), row(0, 9), tab(t('pockets')), row(9, bag.slots.length))
+    function one(s, i) {
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'gtile'
+      b.className = 'well gtile' + (s ? '' : ' empty') + (i < 9 && i === hot ? ' on' : '')
       const pic = document.createElement('span')
       pic.className = 'gic'
-      pic.append(s ? itemIcon(ITEMS[s.item]) : document.createElement('span'))
+      if (s) pic.append(itemIcon(ITEMS[s.item]))
       b.append(pic)
-      const lbl = document.createElement('span')
-      lbl.className = 'glbl'
-      lbl.textContent = s ? bagLine(s) : ''
-      b.append(lbl)
-      const bar = s && wearBar(ITEMS[s.item], s.uses)
-      if (bar) b.append(bar)
-      if (i < 9 && i === hot) b.classList.add('on')
+      if (s) {
+        const count = document.createElement('span')
+        count.className = 'count'
+        count.textContent = String(s.n)
+        b.append(count)
+        if (i < 9 && i === hot) {
+          const lbl = document.createElement('span')
+          lbl.className = 'glbl'
+          lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : itemName(s.item)
+          b.append(lbl)
+        }
+      }
+      const wear = s && wearBar(ITEMS[s.item], s.uses)
+      if (wear) b.append(wear)
       b.setAttribute('aria-pressed', String(i < 9 && i === hot))
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
+      b.title = s ? itemName(s.item) : t('emptySlot')
       if (!s) b.disabled = true
       else b.addEventListener('click', () => card(g, s.item, i))
-      g.append(b)
+      return b
     }
-    const barHead = document.createElement('div')
-    barHead.className = 'gnote ghead'
-    barHead.textContent = t('hotbar')
-    g.append(barHead)
-    for (let i = 0; i < 9; i++) paintOne(bag.slots[i], i)
-    const pockets = document.createElement('div')
-    pockets.className = 'gnote ghead'
-    pockets.textContent = t('pockets')
-    g.append(pockets)
-    for (let i = 9; i < bag.slots.length; i++) paintOne(bag.slots[i], i)
   }
   let craftOpen = false
   let craftId = ''
@@ -869,6 +1015,7 @@ export function createSession(api) {
     let got = 0
     let loose = 0
     const wasEmpty = !bag.slots[hot]
+    const beforeSlots = slotSnap()
     if (drop) {
       markFound(drop)
       const left = bag.add(drop, 1)
@@ -904,6 +1051,8 @@ export function createSession(api) {
     wearHeld()
     paintHotbar()
     paintChip()
+    if (drop && got) landItem(drop, beforeSlots, 'fly')
+    else if (drop && loose) landItem(drop, beforeSlots, 'back')
     return true
   }
   function wearBar(item, uses) {

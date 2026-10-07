@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.56'
+const VERSION = '2.5.57'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -1089,7 +1089,7 @@ function paintBar() {
   bagBtn.type = 'button'
   bagBtn.className = 'slot bag-tile'
   bagBtn.dataset.bag = '1'
-  bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M6 8h12v12H6z" fill="none" stroke="currentColor"/></svg></span><span class="lbl"></span>'
+  bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
   bagBtn.querySelector('.lbl').textContent = t('bag')
   bagBtn.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bagBtn)
@@ -1120,8 +1120,11 @@ function flashHeld(name) {
   if (!chip) return
   chip.textContent = name
   chip.hidden = false
+  chip.classList.remove('on')
+  void chip.offsetWidth
+  chip.classList.add('on')
   clearTimeout(flashHeld.t)
-  flashHeld.t = setTimeout(() => { chip.hidden = true }, 1500)
+  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on') }, 1200)
 }
 function bagPick(item, slot) {
   selectedSlot = slot

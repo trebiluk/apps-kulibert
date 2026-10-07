@@ -331,6 +331,80 @@ html[data-kp-contrast="1"] #sheet[data-panel="station"] .gtile,
 html[data-kp-contrast="1"] #sheet[data-panel="bench"] .gtile,
 html[data-kp-contrast="1"] #sheet[data-panel="station"] .arrow-bar,
 html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px solid #E6EEF2;border-style:solid}
+#hotbar{left:50%;right:auto;bottom:0;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 8px);display:flex;align-items:flex-end;gap:6px;overflow:visible;padding:8px 8px 14px;background-color:#0E1A22;background-image:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px);border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:10px;color:#E6EEF2}
+#hotbar .item-strip{display:flex;gap:6px;overflow:visible;flex:0 1 auto;min-width:0;align-items:flex-end}
+#hotbar .slot:not(.bag-tile){width:56px;height:56px;min-width:56px;min-height:56px;flex:0 0 56px;padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;position:relative;gap:0}
+#hotbar .slot.empty{opacity:.42}
+#hotbar .slot.empty .sw{background:none;border:0;box-shadow:none}
+#hotbar .sw{width:70%;height:70%;background:none;box-shadow:none;border:0;border-radius:0;display:grid;place-items:center}
+#hotbar .sw canvas,#hotbar .sw svg{width:100%;height:100%;max-width:none;max-height:none}
+#hotbar .slot:not(.bag-tile)>canvas,#hotbar .slot:not(.bag-tile)>svg{width:70%;height:70%;max-width:70%;max-height:70%}
+#hotbar .tag,#hotbar .slot:not(.bag-tile) .lbl{display:none}
+#hotbar .digit{position:absolute;top:2px;left:3px;font-size:10px;line-height:1;color:#E6EEF2;opacity:.8;pointer-events:none}
+#hotbar .count,#sheet[data-panel=inventory] .count{position:absolute;right:2px;bottom:2px;min-width:14px;padding:0 3px;border-radius:4px;background:#000A;color:#E6EEF2;font-size:11px;font-weight:700;line-height:14px;pointer-events:none}
+#hotbar .slot[aria-pressed=true]{border:0;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55,0 0 0 3px #22D3EE}
+#hotbar .slot[aria-pressed=true]::after,#sheet[data-panel=inventory] .well.on::after{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #22D3EE;pointer-events:none}
+#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap,#sheet[data-panel=inventory] #sheet-x,#sheet[data-panel=inventory] #sheet-back{background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;box-shadow:none;transition:transform 80ms linear,border-bottom-width 80ms linear}
+#hotbar .bag-tile:active,#sheet[data-panel=inventory] .keycap:active,#sheet[data-panel=inventory] #sheet-x:active,#sheet[data-panel=inventory] #sheet-back:active{transform:translateY(2px);border-bottom-width:2px}
+#hotbar .bag-tile{width:56px;min-width:56px;height:56px;min-height:56px;flex:0 0 56px;padding:2px 2px 4px;gap:0;position:relative}
+#hotbar .bag-tile .gic,#hotbar .bag-tile .gic svg{width:22px;height:22px}
+#hotbar .bag-tile .lbl{display:block;font-size:11px;line-height:13px;color:#E6EEF2;max-width:52px}
+#held-chip{left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:transparent;color:#E6EEF2;border:0;border-radius:0;box-shadow:none;padding:0 8px;font-weight:700;pointer-events:none}
+#held-chip.on{animation:stripname 1.2s ease forwards}
+@keyframes stripname{0%{opacity:0;transform:translateX(-50%) translateY(4px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0}}
+#hotbar .slot.bump{animation:wellbump 180ms ease}
+@keyframes wellbump{from{transform:scale(1.15)}to{transform:scale(1)}}
+.fly-icon{position:fixed;left:0;top:0;z-index:30;width:36px;height:36px;pointer-events:none;display:grid;place-items:center}
+.fly-icon svg,.fly-icon canvas{width:32px;height:32px}
+body.mode-creative #hotbar{width:min(860px,calc(100vw - 12px));max-width:calc(100vw - 12px);justify-content:flex-start}
+body.mode-creative #hotbar .item-strip{overflow-x:auto;overflow-y:hidden;flex:1 1 auto}
+body.mode-creative #hotbar .slot:not(.bag-tile){flex:0 0 56px}
+#sheet[data-panel=inventory]{background:rgba(6,12,16,.82);align-items:center;justify-content:flex-start;padding:16px 8px 12px}
+#sheet[data-panel=inventory] .sheet-bar,#sheet[data-panel=inventory] #sheet-body{width:min(760px,100%);background-color:#0E1A22;color:#E6EEF2}
+#sheet[data-panel=inventory] .sheet-bar{border:3px solid #1F8A8A;border-bottom:0;border-radius:10px 10px 0 0;box-shadow:inset 3px 0 0 #0B2A30,inset -3px 0 0 #0B2A30,inset 0 3px 0 #0B2A30;background-image:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px);position:relative}
+#sheet[data-panel=inventory] #sheet-body{border:3px solid #1F8A8A;border-top:0;border-radius:0 0 10px 10px;box-shadow:inset 3px 0 0 #0B2A30,inset -3px 0 0 #0B2A30,inset 0 -3px 0 #0B2A30;background-image:radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px);max-height:calc(100% - 72px);flex:0 1 auto;position:relative}
+#sheet[data-panel=inventory] #sheet-title{color:#E6EEF2;font-size:16px}
+#sheet[data-panel=inventory] .ggrid.baggrid{display:flex;flex-direction:column;align-items:center;grid-template-columns:none;gap:0;overflow:visible;padding-top:0}
+#sheet[data-panel=inventory] .crate-tab{align-self:flex-start;margin:10px 0 0 18px;background:#13303A;color:#E6EEF2;border:1px solid #1F8A8A;border-bottom:0;border-radius:8px 8px 0 0;padding:2px 10px;font-size:12px;font-weight:700}
+#sheet[data-panel=inventory] .wells{display:grid;grid-template-columns:repeat(9,64px);gap:8px;justify-content:center;width:100%;padding:16px 12px 18px}
+#sheet[data-panel=inventory] .well{width:64px;height:64px;min-width:64px;min-height:64px;padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;color:#E6EEF2;position:relative;display:flex;align-items:center;justify-content:center}
+#sheet[data-panel=inventory] .well.empty{opacity:.4}
+#sheet[data-panel=inventory] .well .gic{width:70%;height:70%;display:grid;place-items:center}
+#sheet[data-panel=inventory] .well .gic svg,#sheet[data-panel=inventory] .well .gic canvas,#sheet[data-panel=inventory] .well canvas{width:100%;height:100%}
+#sheet[data-panel=inventory] .well .glbl{display:none}
+#sheet[data-panel=inventory] .well.on .glbl{display:block;position:absolute;left:50%;bottom:calc(100% + 2px);transform:translateX(-50%);font-size:11px;font-weight:700;white-space:nowrap;color:#E6EEF2;background:#0E1A22;padding:0 4px;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+#sheet[data-panel=inventory] .well.on{box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55,0 0 0 3px #22D3EE}
+#sheet[data-panel=inventory] .lost-row{width:calc(100% - 24px);min-height:44px;margin:10px 12px 0;font-weight:700}
+#sheet[data-panel=inventory] .ggrid>.gtile:not(.well),#sheet[data-panel=inventory] .gnote{width:calc(100% - 24px);margin:6px 12px;color:#E6EEF2}
+@media (max-width:760px){
+  #sheet[data-panel=inventory] .wells{grid-template-columns:repeat(6,56px)}
+  #sheet[data-panel=inventory] .well{width:56px;height:56px;min-width:56px;min-height:56px}
+}
+@media (max-width:480px){
+  :root{--hud-lift:140px}
+  #hotbar{left:2px;right:2px;width:auto;transform:none;bottom:0;padding:58px 2px 12px;gap:0;overflow:visible}
+  #hotbar .item-strip{display:flex;width:100%;gap:0;flex:1 1 auto;align-items:flex-end}
+  #hotbar .slot:not(.bag-tile){flex:1 1 0;width:auto;min-width:0;max-width:none;height:auto;aspect-ratio:1;min-height:44px}
+  #hotbar .slot.bag-tile{position:absolute;top:6px;right:8px;width:48px;min-width:48px;height:44px;min-height:44px;max-height:44px;flex:none;padding:1px 2px 2px;overflow:hidden}
+  #hotbar .digit{display:none}
+  #held-chip{bottom:calc(140px + env(safe-area-inset-bottom))}
+  .keys{bottom:156px;max-width:calc(100vw - 16px)}
+  #sheet[data-panel=inventory]{padding:0}
+  #sheet[data-panel=inventory] .sheet-bar,#sheet[data-panel=inventory] #sheet-body{width:100%}
+}
+body::after{content:"";position:fixed;left:0;right:0;bottom:0;height:18px;z-index:4;pointer-events:none;background:linear-gradient(to top,rgba(8,14,22,.82),rgba(8,14,22,0))}
+@media (min-width:481px) and (max-width:720px){
+  #hotbar .slot:not(.bag-tile),#hotbar .bag-tile{width:48px;height:48px;min-width:48px;min-height:48px;flex-basis:48px}
+}
+html[data-kp-contrast="1"] #hotbar,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .sheet-bar,html[data-kp-contrast="1"] #sheet[data-panel=inventory] #sheet-body{background-image:none !important;outline:3px solid #E6EEF2}
+html[data-kp-contrast="1"] #hotbar .slot,html[data-kp-contrast="1"] #sheet[data-panel=inventory] .well{outline:2px solid #E6EEF2 !important}
+html[data-kp-motion="less"] #hotbar .slot.bump,html[data-kp-motion="less"] #held-chip.on{animation:none}
+html[data-kp-motion="less"] #held-chip.on{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  #hotbar .slot.bump,#held-chip.on,#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap{animation:none;transition:none}
+  #held-chip.on{opacity:1}
+}
+
 </style>
 </head>
 <body>
@@ -343,7 +417,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.56</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.57</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -475,7 +549,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.56" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.56" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.57" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.57" defer></script>
 </body>
 </html>

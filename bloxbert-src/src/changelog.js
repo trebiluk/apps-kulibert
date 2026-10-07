@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.57', date: '2026-10-07', lines: {
+    en: ['The Bag and the item strip look like a real game: square slots with counts, and items fly into your strip.'],
+    uk: ['Сумка й смужка речей виглядають як у справжній грі: квадратні комірки з лічильником, і речі летять у смужку.'],
+    ru: ['Сумка и полоска вещей выглядят как в настоящей игре: квадратные ячейки со счётом, и вещи летят в полоску.'],
+    es: ['La bolsa y la barra parecen un juego de verdad: casillas cuadradas con cantidades, y los objetos vuelan a la barra.'],
+    ar: ['الحقيبة والشريط يبدوان كلعبة حقيقية: خانات مربعة مع العدد، والأشياء تطير إلى الشريط.'],
+    'fa-AF': ['بکس و نوار مثل یک بازی واقعی اند: خانه‌های مربع با شمارش، و چیزها به نوار پرواز می‌کنند.'],
+    rw: ['Agasaho n\'umurongo bisa nk\'umukino w\'ukuri: uduce dufite ingano, kandi ibintu biruruka mu murongo.'],
+    ti: ['ቦርሳን መስመርን ከም ሓቀኛ ጸወታ ይመስሉ: ስኲር ቦታታት ምስ ቑጽሪ፡ ነገራት ድማ ናብ መስመር ይበርሩ።'],
+  }},
   { v: '2.5.56', date: '2026-10-07', lines: {
     en: ['Crafting is a Build Tray where the parts slide in, and the oven shows its fire and progress.'],
     uk: ['Крафт — лотік збірки: деталі заїжджають, а піч показує вогонь і хід.'],

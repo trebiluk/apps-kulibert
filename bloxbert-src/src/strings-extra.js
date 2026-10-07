@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Crafting is a Build Tray where the parts slide in, and the oven shows its fire and progress.',
+    whatsNewBody: 'The Bag and the item strip look like a real game: square slots with counts, and items fly into your strip.',
     needN: 'need {n} {item}', shortN: 'x{n} short',
     energyLow: 'Low energy - eat something', energyFull: "You're full", energyOn: 'Energy on', energyOff: 'Energy off',
     lightLabel: 'Light',
@@ -204,7 +204,7 @@ const NEXT = {
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'Крафт — лотік збірки: деталі заїжджають, а піч показує вогонь і хід.',
+    whatsNewBody: 'Сумка й смужка речей виглядають як у справжній грі: квадратні комірки з лічильником, і речі летять у смужку.',
     needN: 'треба {n} {item}', shortN: 'бракує {n}',
     energyLow: 'Мало енергії — з’їж щось', energyFull: 'Ти ситий', energyOn: 'Енергія увімкнена', energyOff: 'Енергія вимкнена',
     lightLabel: 'Світло',
@@ -212,7 +212,7 @@ const NEXT = {
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: 'Крафт — лоток сборки: детали заезжают, а печь показывает огонь и ход.',
+    whatsNewBody: 'Сумка и полоска вещей выглядят как в настоящей игре: квадратные ячейки со счётом, и вещи летят в полоску.',
     needN: 'нужно {n} {item}', shortN: 'не хватает {n}',
     energyLow: 'Мало энергии — съешь что-нибудь', energyFull: 'Ты сыт', energyOn: 'Энергия включена', energyOff: 'Энергия выключена',
     lightLabel: 'Свет',
@@ -220,7 +220,7 @@ const NEXT = {
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'El crafteo es una bandeja: las piezas entran, y el horno muestra su fuego y el avance.',
+    whatsNewBody: 'La bolsa y la barra parecen un juego de verdad: casillas cuadradas con cantidades, y los objetos vuelan a la barra.',
     needN: 'faltan {n} {item}', shortN: 'falta {n}',
     energyLow: 'Poca energía: come algo', energyFull: 'Estás lleno', energyOn: 'Energía activada', energyOff: 'Energía apagada',
     lightLabel: 'Luz',
@@ -228,7 +228,7 @@ const NEXT = {
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: 'الصنع صار صينية بناء: الأجزاء تنزلق، والفرن يُظهر ناره وتقدّمه.',
+    whatsNewBody: 'الحقيبة والشريط يبدوان كلعبة حقيقية: خانات مربعة مع العدد، والأشياء تطير إلى الشريط.',
     needN: 'يلزم {n} {item}', shortN: 'ناقص {n}',
     energyLow: 'طاقة قليلة — كُل شيئاً', energyFull: 'أنت شبعان', energyOn: 'الطاقة مفتوحة', energyOff: 'الطاقة مغلقة',
     lightLabel: 'ضوء',
@@ -236,7 +236,7 @@ const NEXT = {
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: 'ساختن یک سینی ساخت است: تکه‌ها می‌لغزند، و تنور آتش و پیشرفتش را نشان می‌دهد.',
+    whatsNewBody: 'بکس و نوار مثل یک بازی واقعی اند: خانه‌های مربع با شمارش، و چیزها به نوار پرواز می‌کنند.',
     needN: 'لازم {n} {item}', shortN: 'کم است {n}',
     energyLow: 'انرژی کم است — چیزی بخور', energyFull: 'سیر شدی', energyOn: 'انرژی روشن', energyOff: 'انرژی خاموش',
     lightLabel: 'روشنایی',
@@ -244,7 +244,7 @@ const NEXT = {
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Gukora ni agatebe: ibice birinjira, kandi ifuru yerekana umuriro n\'aho bigeze.',
+    whatsNewBody: 'Agasaho n\'umurongo bisa nk\'umukino w\'ukuri: uduce dufite ingano, kandi ibintu biruruka mu murongo.',
     needN: 'ukeneye {n} {item}', shortN: 'kubura {n}',
     energyLow: 'Ingufu nke — rya ikintu', energyFull: 'Wuzuye', energyOn: 'Ingufu ziriho', energyOff: 'Ingufu zizimye',
     lightLabel: 'Urumuri',
@@ -252,7 +252,7 @@ const NEXT = {
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: 'ምስራሕ ትሪ ህንጻ እዩ፡ ክፋላት ይኣትዉ፡ ቦታ ምብሳል ድማ ሓዊን ምዕባለን የርኢ።',
+    whatsNewBody: 'ቦርሳን መስመርን ከም ሓቀኛ ጸወታ ይመስሉ: ስኲር ቦታታት ምስ ቑጽሪ፡ ነገራት ድማ ናብ መስመር ይበርሩ።',
     needN: 'የድሊ {n} {item}', shortN: 'ጎዲሉ {n}',
     energyLow: 'ጉልበት ውሑድ — ገለ ብላዕ', energyFull: 'ጽጉዕካ', energyOn: 'ጉልበት ወሊዑ', energyOff: 'ጉልበት ጠፊኡ',
     lightLabel: 'ብርሃን',
