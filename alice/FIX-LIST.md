@@ -19,6 +19,7 @@ Updated Tue Oct 6 2026 from the AP 1.0.7 fix cut. Cards cover the game and pause
 - Still open for ov4 (AP 1.0.10): L05 can't be cleared (0% of 2,000 seeds), and half of each round is empty.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- **PAUSED (Diego, Oct 6 2026, 9:59 PM ET: "Just Topia after this one").** The Alice overhaul stops after AP 1.0.7. ov2, ov3, ov4, 100d, 100e and everything below are ON HOLD; don't paste them until Diego restarts Alice.
 - [x] `briefs/fixq/alice-100b3.md`: Alice's Prairie AP 1.0.3: rotate, cards, one menu, Pause/Esc, strip, levels. Shipped 9b69a82. Home-card and seed pay followed as AP 1.0.4 (9d42dc2, 9ffe8eb).
 - [x] `briefs/fixq/alice-100c.md`: Settings and six looks, arcade Lookout (captions, Relaxed), Daily, Endless, desk high scores, class time. Shipped as **AP 1.0.5**.
 - [x] `briefs/fixq/alice-ov1-stage.md`: AP 1.0.6 overhaul, `42404d9`. Proof FAIL on cards only.
@@ -26,9 +27,9 @@ Updated Tue Oct 6 2026 from the AP 1.0.7 fix cut. Cards cover the game and pause
   - [x] 2 Motion, Lite, Sound, Music, and the 60 Hz clock. Proven: reduced motion → Less motion: On; Lite On + reload = Canvas; a hidden tab for 5 s holds the clock.
   - [x] 3 Pixel atlas from `tools/pixels.mjs`. Proven: the PNG rebuilds byte for byte, 83 frames, every silhouette is different, 7 captions.
 - [x] `briefs/fixq/alice-107-fix.md`: **AP 1.0.7**. A card owns the screen, a card pauses the round, icon contrast, results words, Alice's pop, and RTL text.
-- [ ] `briefs/fixq/alice-ov2-world.md`: AP 1.0.8 (was 1.0.7). Parallax layers and weather, animals that move, a living home.
-- [ ] `briefs/fixq/alice-ov3-juice.md`: AP 1.0.9. Squash, particles and shake (off with Less motion), sound with picture twins, and results that pay off.
-- [ ] `briefs/fixq/alice-ov4-loop.md`: AP 1.0.10. Sim lookout-2 (a full round, every level clearable), badges, fields and hats, and the first 30 seconds.
+- [ ] ON HOLD: `briefs/fixq/alice-ov2-world.md`: AP 1.0.8 (was 1.0.7). Parallax layers and weather, animals that move, a living home.
+- [ ] ON HOLD: `briefs/fixq/alice-ov3-juice.md`: AP 1.0.9. Squash, particles and shake (off with Less motion), sound with picture twins, and results that pay off.
+- [ ] ON HOLD: `briefs/fixq/alice-ov4-loop.md`: AP 1.0.10. Sim lookout-2 (a full round, every level clearable), badges, fields and hats, and the first 30 seconds.
 - [ ] `briefs/fixq/alice-100d.md`: Alice Dress Up: the wardrobe, the photo booth, and outfit codes. AP 1.0.11, after the overhaul.
 - [ ] `briefs/fixq/alice-100e.md`: TechWorks marks, offline, launch safety. AP 1.0.12.
 - [ ] `briefs/fixq/alice-110a.md`: Prairie Dash: the run, the 16-bit look, and six class levels.
