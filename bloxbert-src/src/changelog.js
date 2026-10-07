@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.59', date: '2026-10-07', lines: {
+    en: ['Door options are easy to read, and a lever turned on now opens its door.'],
+    uk: ['Налаштування дверей легко читати, і ввімкнений важіль тепер відчиняє двері.'],
+    ru: ['Настройки двери легко читать, и включённый рычаг теперь открывает дверь.'],
+    es: ['Las opciones de la puerta se leen bien, y una palanca encendida ahora abre su puerta.'],
+    ar: ['خيارات الباب صارت واضحة، والرافعة المفتوحة الآن تفتح الباب.'],
+    'fa-AF': ['گزینه‌های در خوانا شدند، و اهرم روشن حالا در را باز می‌کند.'],
+    rw: ['Amahitamo y\'urugi arasomeka, kandi inyego iriho ifungura urugi.'],
+    ti: ['ኣማራጺ ማዕጾ ብቐሊሉ ይንበብ፡ ዝተወለዐ መቐለሊ ድማ ማዕጾ ይኸፍት።'],
+  }},
   { v: '2.5.58', date: '2026-10-07', lines: {
     en: ['Berry tufts drop berries again.'],
     uk: ['Пшеничні кущики знову дають ягоди.'],

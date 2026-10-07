@@ -1,5 +1,5 @@
 // Doors, levers, buttons, day clock, lanterns. World field `basics` on the save.
-import { isDoor, doorKind, group, touchingDoors, closedId, openId, isOpenDoor, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
+import { isDoor, doorKind, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
 import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK } from './day.js'
 
 const PREF = 'bloxbert-day'
@@ -81,7 +81,7 @@ export function createBasics(api) {
       seen.add(stamp)
       if (!canOpen(cells)) continue
       const id = cells[0][3]
-      if (on) {
+      if (leverOpens(on)) {
         setAll(cells, openId(id))
         if (holdMs) arm(cells, holdMs, true)
       } else setAll(cells, closedId(id))

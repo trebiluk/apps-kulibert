@@ -29,11 +29,34 @@ html[data-kb-bar]:not(.kb-framed) .top{top:48px}
 .tool .ti{font-size:18px;line-height:1}
 .tool.save{border-color:rgba(20,184,166,.7);background:rgba(20,184,166,.18)}
 #toast{position:fixed;left:50%;top:calc(var(--top-h) + 10px);transform:translateX(-50%);z-index:12;background:var(--ink2);border:1px solid var(--teal);border-radius:10px;padding:8px 14px;font-size:14px;max-width:90vw}
-#door-opt,#lamp-card,#maker-card{position:fixed;left:50%;bottom:108px;transform:translateX(-50%);z-index:14;display:flex;gap:8px;background:rgba(11,18,32,.94);border:1px solid var(--teal);border-radius:12px;padding:8px}
-#door-opt[hidden],#lamp-card[hidden],#maker-card[hidden]{display:none}
-#door-opt button,#lamp-card{min-width:44px;min-height:44px}
+#lamp-card,#maker-card{position:fixed;left:50%;bottom:108px;transform:translateX(-50%);z-index:14;display:flex;gap:8px;background:rgba(11,18,32,.94);border:1px solid var(--teal);border-radius:12px;padding:8px}
+#lamp-card[hidden],#maker-card[hidden]{display:none}
+#lamp-card{min-width:44px;min-height:44px}
 #lamp-bar{width:120px;height:10px;margin-top:8px;background:#1f2b44;border-radius:6px;overflow:hidden}
 #lamp-bar i{display:block;height:100%;width:0;background:#22D3EE}
+#door-opt{position:fixed;inset:0;z-index:20;display:flex;align-items:flex-end;justify-content:center;padding:12px 8px calc(var(--hud-lift) + 16px);color:#E6EEF2}
+#door-opt[hidden]{display:none!important}
+#door-scrim{position:absolute;inset:0;z-index:0;width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0;border:0;border-radius:0;background:rgba(8,14,22,.28);box-shadow:none}
+#door-opt .door-panel{position:relative;z-index:1;display:flex;align-items:center;gap:10px;max-width:min(720px,100%);padding:12px;background-color:#0E1A22;background-image:radial-gradient(circle at 10px 10px,#3FB8C4 2.5px,transparent 3px),radial-gradient(circle at calc(100% - 10px) 10px,#3FB8C4 2.5px,transparent 3px),radial-gradient(circle at 10px calc(100% - 10px),#3FB8C4 2.5px,transparent 3px),radial-gradient(circle at calc(100% - 10px) calc(100% - 10px),#3FB8C4 2.5px,transparent 3px);border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:12px;color:#E6EEF2}
+#door-pic{width:44px;height:68px;flex:0 0 44px;position:relative;background:#08131A;border:2px solid #1F8A8A;border-radius:6px;box-shadow:inset 0 2px 0 #0B2A30}
+#door-pic::before{content:"";position:absolute;background:#C4A574;border-radius:2px;box-shadow:inset 0 0 0 2px #8A6A3E}
+#door-pic[data-open="0"]::before{left:6px;right:6px;top:6px;bottom:6px}
+#door-pic[data-open="1"]::before{left:6px;width:10px;top:6px;bottom:6px}
+#door-pic::after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:#E6EEF2;top:50%;margin-top:-3px}
+#door-pic[data-open="0"]::after{right:10px}
+#door-pic[data-open="1"]::after{left:10px}
+#door-opt .door-keys{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+#door-opt .keycap{min-width:44px;min-height:44px;padding:6px 10px;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;background:#13303A;color:#E6EEF2;box-shadow:none;font-weight:800;font-size:13px;line-height:1.15;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+#door-opt .keycap::before{content:"";width:18px;height:18px;display:block;background:center/18px 18px no-repeat}
+#door-auto::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 5a7 7 0 1 1-6.2 3.7' fill='none' stroke='%2322D3EE' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M5.2 4.2v5h5' fill='none' stroke='%2322D3EE' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")}
+#door-lock::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='6' y='11' width='12' height='9' rx='2' fill='none' stroke='%23E6EEF2' stroke-width='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3' fill='none' stroke='%23E6EEF2' stroke-width='2'/%3E%3C/svg%3E")}
+#door-pick::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v9' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 8l4-4 4 4' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 15h12v5H6z' fill='none' stroke='%2322D3EE' stroke-width='2'/%3E%3C/svg%3E")}
+#door-x{width:44px;min-width:44px;padding:0;font-size:22px;line-height:1}
+#door-opt #door-x::before{display:none}
+#door-opt .keycap:active{transform:translateY(2px);border-bottom-width:2px}
+html[data-kp-contrast="1"] #door-opt .door-panel{background-image:none;outline:3px solid #E6EEF2}
+html[data-kp-contrast="1"] #door-opt .keycap,html[data-kp-contrast="1"] #door-pic{outline:2px solid #E6EEF2}
+html[data-kp-motion="less"] #door-opt .keycap{transition:none}
 html[data-kb-bar]:not(.kb-framed) #toast{top:calc(48px + var(--top-h) + 10px)}
 [hidden]{display:none!important}
 .brand b{font-size:16px;letter-spacing:.2px}
@@ -417,7 +440,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.58</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.59</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -456,7 +479,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Crafting is a Build Tray where the parts slide in, and the oven shows its fire and progress.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Door options are easy to read, and a lever turned on now opens its door.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -534,9 +557,16 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <button id="table-place" type="button" data-i18n="place">Place</button>
 <button id="pick-chip" type="button">Copy</button>
 <div id="door-opt" hidden>
-  <button type="button" id="door-auto" data-i18n="autoClose">Auto-close</button>
-  <button type="button" id="door-lock" data-i18n="padlock">Padlock</button>
-  <button type="button" id="door-pick" data-i18n="pickup">Pick up</button>
+  <button type="button" id="door-scrim" aria-label="Close" data-i18n-label="close"></button>
+  <div class="door-panel" role="dialog" aria-label="Door">
+    <div id="door-pic" class="door-pic" data-open="0" aria-hidden="true"></div>
+    <div class="door-keys">
+      <button type="button" id="door-auto" class="keycap" data-i18n="autoClose">Auto-close</button>
+      <button type="button" id="door-lock" class="keycap" data-i18n="padlock">Padlock</button>
+      <button type="button" id="door-pick" class="keycap" data-i18n="pickup">Pick up</button>
+      <button type="button" id="door-x" class="keycap" aria-label="Close" data-i18n-label="close">✕</button>
+    </div>
+  </div>
 </div>
 <div id="lamp-card" hidden><b id="lamp-level">Light</b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
 <div id="maker-card" hidden></div>
@@ -549,7 +579,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.58" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.58" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.59" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.59" defer></script>
 </body>
 </html>

@@ -20,6 +20,12 @@ export function doorKind(id) { return DOOR[id] ? DOOR[id].kind : '' }
 export function isOpenDoor(id) { return !!(DOOR[id] && DOOR[id].open) }
 export function closedId(id) { return DOOR[id] ? (DOOR[id].open ? DOOR[id].other : id) : 0 }
 export function openId(id) { return DOOR[id] ? (DOOR[id].open ? id : DOOR[id].other) : 0 }
+export const DOOR_HOLD_MS = 1200
+export function placedDoorId(id) {
+  const shut = closedId(id)
+  return shut || (isDoor(id) ? id : 0)
+}
+export function leverOpens(turningOn) { return !!turningOn }
 export function group(x, y, z, get) {
   const id = get(x, y, z)
   const kind = doorKind(id)

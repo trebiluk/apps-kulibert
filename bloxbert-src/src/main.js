@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.58'
+const VERSION = '2.5.59'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -38,7 +38,7 @@ import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
-import { isDoor, doorKind, isOpenDoor, LEVER, BUTTON, LANTERN } from './doors.js'
+import { isDoor, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
 import { setGate, gates } from './data/gates.js'
 
@@ -504,6 +504,11 @@ function placeBlock(face, opts) {
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (!repeat && aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
+    if (isDoor(aimedBlock.blockID) && freshPlacedDoor()) {
+      forceShut(ax, ay, az)
+      toast(t('doorShut'))
+      return false
+    }
     if (basics && canReach([ax, ay, az]) && basics.use(ax, ay, az)) {
       const nowId = getVoxel(ax, ay, az)
       if (isDoor(aimedBlock.blockID) && doorKind(aimedBlock.blockID) !== 'metal') toast(t(isOpenDoor(nowId) ? 'doorOpenMsg' : 'doorShut'))
@@ -529,7 +534,10 @@ function placeBlock(face, opts) {
       if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) return false
     }
   }
-  const id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
+  let id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
+  if (isDoor(id)) id = placedDoorId(id)
+  else if (id === LEVER.on) id = LEVER.off
+  else if (id === BUTTON.on) id = BUTTON.off
   if (session && session.mode === 'survival' && !id) {
     const held = session.selectedItem && session.selectedItem()
     toast(held ? t('notABlock') : t('emptySlot'))
@@ -539,8 +547,12 @@ function placeBlock(face, opts) {
   const placed = edit(x, y, z, id)
   if (placed && basics) {
     basics.saw(x, y, z, id)
-    if (isDoor(id) && !getVoxel(x, y + 1, z)) {
-      if (edit(x, y + 1, z, id)) basics.saw(x, y + 1, z, id)
+    if (isDoor(id)) {
+      doorPlacedAt = performance.now()
+      toast(t('doorShut'))
+      if (!getVoxel(x, y + 1, z)) {
+        if (edit(x, y + 1, z, id)) basics.saw(x, y + 1, z, id)
+      }
     }
   }
   return placed
@@ -812,6 +824,18 @@ function grantSaplings() {
   dirty = true
 }
 let doorOptAt = null
+let doorPlacedAt = 0
+let doorShownAt = 0
+function freshPlacedDoor() { return doorPlacedAt && performance.now() - doorPlacedAt < 280 }
+function forceShut(x, y, z) {
+  const id = getVoxel(x, y, z)
+  const shut = placedDoorId(id)
+  if (!shut || id === shut) return shut || id
+  edit(x, y, z, shut)
+  const up = getVoxel(x, y + 1, z)
+  if (up === id) edit(x, y + 1, z, shut)
+  return shut
+}
 function showCard(text) {
   const el = $('maker-card')
   if (!el) return
@@ -834,8 +858,21 @@ function showLamp(x, y, z) {
 }
 function showDoorOpt(x, y, z) {
   doorOptAt = [x, y, z]
+  doorShownAt = performance.now()
   const el = $('door-opt')
-  if (el) el.hidden = false
+  if (!el) return
+  const pic = $('door-pic')
+  if (pic) pic.dataset.open = isOpenDoor(getVoxel(x, y, z)) ? '1' : '0'
+  const scrim = $('door-scrim')
+  if (scrim) scrim.style.pointerEvents = 'none'
+  const arm = () => {
+    if (scrim) scrim.style.pointerEvents = ''
+    window.removeEventListener('pointerup', arm, true)
+    window.removeEventListener('pointercancel', arm, true)
+  }
+  window.addEventListener('pointerup', arm, true)
+  window.addEventListener('pointercancel', arm, true)
+  el.hidden = false
 }
 function hideDoorOpt() {
   doorOptAt = null
@@ -883,6 +920,20 @@ if ($('door-pick')) $('door-pick').addEventListener('click', () => {
   toast(t('pickup'))
   hideDoorOpt()
 })
+if ($('door-x')) $('door-x').addEventListener('click', () => hideDoorOpt())
+if ($('door-scrim')) $('door-scrim').addEventListener('click', () => {
+  if (performance.now() - doorShownAt < 700) return
+  hideDoorOpt()
+})
+window.addEventListener('pointerdown', (e) => {
+  const el = $('door-opt')
+  if (!el || el.hidden) return
+  if (e.target && e.target.closest && e.target.closest('.door-panel')) return
+  if (performance.now() - doorShownAt < 700) return
+  e.preventDefault()
+  e.stopPropagation()
+  hideDoorOpt()
+}, true)
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
@@ -1404,6 +1455,8 @@ window.addEventListener('keydown', (e) => {
   e.stopPropagation()
   if (e.repeat) return
   const card = $('inspect-card'); if (card) card.hidden = true
+  const doorCard = $('door-opt')
+  if (doorCard && !doorCard.hidden) { hideDoorOpt(); return }
   if ($('sheet') && !$('sheet').hidden) { panels.backOne(); return }
   openMenu(true)
 }, true)
@@ -1601,7 +1654,7 @@ function feelTick(dt) {
       setLook(noa.camera.heading + Math.max(-step, Math.min(step, diff)), noa.camera.pitch)
     }
   }
-  if (dig && basics && isDoor(dig.id) && now - dig.t0 >= 500 && !dig.opt) {
+  if (dig && basics && isDoor(dig.id) && now - dig.t0 >= DOOR_HOLD_MS && !dig.opt) {
     dig.opt = true
     showDoorOpt(dig.x, dig.y, dig.z)
     hideCrack()

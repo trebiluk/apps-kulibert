@@ -1389,7 +1389,7 @@ async function prove2543(browser, testUrl, note, errs) {
     const hd = await lookSolid(hold, 30, [8.5, 6.2, 16, Math.PI, 0.7])
     const hc = await centerOf(hold)
     await hold.touchscreen.touchStart(hc.x, hc.y)
-    await sleep(700)
+    await sleep(1500)
     const opt = await hold.evaluate(() => {
       const el = document.getElementById('door-auto')
       const box = document.getElementById('door-opt')

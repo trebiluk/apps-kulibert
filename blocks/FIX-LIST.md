@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 7 2026 (Build: 2.5.58 Berry tufts drop berries again).
+Updated Wed Oct 7 2026 (Build: 2.5.59 Door card and lever).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -52,6 +52,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.58 Berry tufts drop berries again).
 - [x] **2.5.56 Build Tray and oven crate:** Crafting is one crate with a recipe book and a tray. Parts slide into the wells, Make squashes, the result pops, and a missing part shakes with a dashed “short” label. The oven and workbench use the same crate: input, an arrow that fills while it cooks, output, and a fuel flame under the input.
 - [x] **2.5.58 Berry tufts:** breaking a wheat tuft near a tree drops a berry again. The 2.5.56 import swap had dropped `berryTuft`.
 - [x] **2.5.57 Bag and item strip (lane A2):** the Bag is a centred workshop crate of square wells (9 across on a wide screen, 6 on a phone) with counts, and the item strip is the same crate: 9 wells, a Bag keycap, and a pickup that flies into its well.
+- [x] **2.5.59 Door card and lever:** door options are a readable crate (Auto-close, Padlock, Pick up, and an X). Escape and a tap outside close it. A new door starts shut and says so. A lever turned on opens its door; a button opens, then shuts after 1.5 s.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -95,6 +96,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.58 Berry tufts drop berries again).
 | 1h | 2.5.56 | Build Tray crafting and the oven crate (parts slide in, flame and progress) | shipped |
 | 1i | 2.5.57 | Bag and item strip as a workshop crate: square wells, counts, pickup flies into the strip | shipped |
 | 1j | 2.5.58 | Berry tufts drop berries again (restore the berryTuft import lost in 2.5.56) | shipped |
+| 1k | 2.5.59 | Door options are easy to read, and a lever turned on now opens its door | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |
