@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.48', date: '2026-10-06', lines: {
+    en: ['Doors with levers and buttons, day and night, and the LED Lantern.'],
+    uk: ['Двері з важелями й кнопками, день і ніч, і ліхтар.'],
+    ru: ['Двери с рычагами и кнопками, день и ночь, и фонарь.'],
+    es: ['Puertas con palancas y botones, día y noche, y el farol.'],
+    ar: ['أبواب برافعات وأزرار، ليل ونهار، وفانوس.'],
+    'fa-AF': ['درها با اهرم و دکمه، روز و شب، و فانوس.'],
+    rw: ['Inzugi ninyego nibuto, umunsi nijoro, nitarara.'],
+    ti: ['ማዕጾታት ብመቐለሊን መጠወቒን፡ መዓልትን ለይትን፡ መብራህትን።'],
+  }},
   { v: '2.5.47', date: '2026-10-06', lines: {
     en: ['Your finger breaks the block it is on, and the hotbar shows what you picked up right away.'],
     uk: ['Палець ламає блок, на якому він стоїть, і панель одразу показує, що ти підняв.'],

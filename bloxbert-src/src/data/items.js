@@ -28,6 +28,25 @@ export const ITEMS = {
   bunk: { block: 26, letter: 'Bk', base: 16, sell: false },
   box: { block: 27, letter: 'Bx', base: 4, sell: false },
   door: { block: 30, letter: 'Dr', base: 2, sell: false },
+  stick: { letter: 'Sk', base: 0, sell: false },
+  doorGlass: { block: 32, letter: 'Gd', base: 0, sell: false },
+  doorMetal: { block: 34, letter: 'Md', base: 0, sell: false },
+  doorSliding: { block: 36, letter: 'Sg', base: 0, sell: false },
+  lever: { block: 38, letter: 'Le', base: 0, sell: false },
+  pushButton: { block: 40, letter: 'Pb', base: 0, sell: false },
+  smelter: { block: 42, letter: 'Sm', base: 0, sell: false },
+  fabricator: { block: 43, letter: 'Fb', base: 0, sell: false },
+  ironOre: { block: 44, letter: 'Io', base: 0, sell: false },
+  copperOre: { block: 45, letter: 'Oc', base: 0, sell: false },
+  zincOre: { block: 46, letter: 'Zo', base: 0, sell: false },
+  lantern: { block: 47, letter: 'Ln', base: 0, sell: false },
+  charger: { block: 48, letter: 'Ch', base: 0, sell: false },
+  ironIngot: { letter: 'Ii', base: 0, sell: false },
+  copperIngot: { letter: 'Ci', base: 0, sell: false },
+  zincIngot: { letter: 'Zi', base: 0, sell: false },
+  steel: { letter: 'Se', base: 0, sell: false },
+  copperWire: { letter: 'Cw', base: 0, sell: false },
+  batteryCell: { letter: 'Bc', base: 0, sell: false },
   woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false },
   stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
@@ -42,5 +61,10 @@ export function dropOf(blockId) {
   if (blockId === 28) return 'flour'
   if (blockId === 29) return 'sugar'
   if (blockId === 31) return 'door'
+  if (blockId === 33) return 'doorGlass'
+  if (blockId === 35) return 'doorMetal'
+  if (blockId === 37) return 'doorSliding'
+  if (blockId === 39) return 'lever'
+  if (blockId === 41) return 'pushButton'
   return ITEM_BY_BLOCK[blockId] || null
 }

@@ -465,6 +465,22 @@ async function prove2543(browser, testUrl, note, errs) {
     }
     return page.evaluate(() => window.__smoke.pos()[1])
   }
+  async function waitSteady(page) {
+    await waitGround(page)
+    let prev = ''
+    let same = 0
+    for (let i = 0; i < 24; i++) {
+      const a = await page.evaluate(() => window.__smoke.aim())
+      const key = a ? a.id + ':' + a.x + ':' + a.y + ':' + a.z : ''
+      if (key && key === prev) {
+        same++
+        if (same >= 2) return a
+      } else same = 0
+      prev = key
+      await sleep(70)
+    }
+    return page.evaluate(() => window.__smoke.aim())
+  }
   async function lookSolid(page, id, spawn) {
     const spot = spawn.slice()
     for (let i = 0; i < 16; i++) {
@@ -502,9 +518,10 @@ async function prove2543(browser, testUrl, note, errs) {
     let mined = aim
     let broke = -1
     let mineMs = 0
-    const c = await centerOf(page)
-    for (let attempt = 0; attempt < 2 && broke !== 0; attempt++) {
+    let c = await centerOf(page)
+    for (let attempt = 0; attempt < 3 && broke !== 0; attempt++) {
       if (attempt) mined = await lookSolid(page, 2, spawn)
+      c = await centerOf(page)
       const t0 = Date.now()
       await holdAt(page, c.x, c.y, 1100, false)
       mineMs = Date.now() - t0
@@ -847,7 +864,9 @@ async function prove2543(browser, testUrl, note, errs) {
     await page.evaluate(() => window.__smoke.emptyBag())
     await page.evaluate((s) => window.__smoke.stand(s[0], s[1], s[2], s[3], s[4]), spawn)
     await sleep(250)
+    await waitSteady(page)
     const log = await lookSolid(page, 11, spawn)
+    await waitSteady(page)
     const c = await centerOf(page)
     return { page, log, c, spawn }
   }
@@ -875,34 +894,58 @@ async function prove2543(browser, testUrl, note, errs) {
     const r = el.getBoundingClientRect()
     return { on: r.width >= 20 && r.height >= 20 }
   })
+  await sleep(450)
   await tip.touchscreen.touchEnd()
   note('crack ring early', '915x412', !!ringAt && ring.on, JSON.stringify(ring))
-  await tip.evaluate(() => window.__smoke.emptyBag())
-  const toastLog = await lookSolid(tip, 11, [8.5, 6.2, 16, Math.PI, 0.7])
-  const toastC = await centerOf(tip)
-  await tip.touchscreen.tap(toastC.x, toastC.y)
+  await tip.close()
+  const toastPage = await bootHud(browser, testUrl + '?smoke=1&q=lite', 915, 412, true)
+  errs.push(...toastPage.__err.map((e) => 'toast ' + e))
+  await toastPage.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+  await toastPage.evaluate(() => window.__smoke.emptyBag())
+  await toastPage.evaluate((s) => window.__smoke.stand(s[0], s[1], s[2], s[3], s[4]), [8.5, 6.2, 16, Math.PI, 0.7])
+  await waitSteady(toastPage)
+  const toastLog = await lookSolid(toastPage, 11, [8.5, 6.2, 16, Math.PI, 0.7])
+  await waitSteady(toastPage)
+  const toastC = await centerOf(toastPage)
+  await toastPage.touchscreen.tap(toastC.x, toastC.y)
   let toast1 = { toast: '', want: '' }
   const toastWait = Date.now()
   while (Date.now() - toastWait < 600) {
-    toast1 = await tip.evaluate(() => ({ toast: window.__smoke.toast(), want: window.__smoke.word('holdToBreak') }))
+    toast1 = await toastPage.evaluate(() => ({ toast: window.__smoke.toast(), want: window.__smoke.word('holdToBreak') }))
     if (toast1.toast === toast1.want) break
     await sleep(40)
   }
   await sleep(2600)
-  await tip.touchscreen.tap(toastC.x, toastC.y)
+  await toastPage.touchscreen.tap(toastC.x, toastC.y)
   await sleep(150)
-  const toast2 = await tip.evaluate(() => window.__smoke.toast())
+  const toast2 = await toastPage.evaluate(() => window.__smoke.toast())
   note('hold toast once', '915x412', !!toastLog && toast1.toast === toast1.want && toast2 === '', toast1.toast + ' / ' + toast2)
-  await tip.close()
+  await toastPage.close()
   const broke = await chopPage(915, 412)
-  const live = await broke.page.evaluate(() => window.__smoke.aim())
-  await jitterHold(broke.page, broke.c.x, broke.c.y, 2300)
-  await sleep(250)
-  const chopped = await broke.page.evaluate((b) => ({
-    id: b ? window.__smoke.voxel(b.x, b.y, b.z) : -1,
-    n: window.__smoke.count('log'),
-    aim: b,
-  }), live)
+  await waitSteady(broke.page)
+  let live = null
+  let chopped = { id: -1, n: 0, aim: null }
+  for (let attempt = 0; attempt < 3 && !(live && chopped.id === 0 && chopped.n === 1); attempt++) {
+    const holdC = await centerOf(broke.page)
+    live = await broke.page.evaluate((x, y) => {
+      let h = window.__smoke.hit(x, y)
+      if (!h || window.__smoke.kept(h.x, h.y, h.z)) return null
+      if (h.id !== 11) window.__smoke.plant(h.x, h.y, h.z, 11)
+      h = window.__smoke.hit(x, y)
+      return h && h.id === 11 ? h : null
+    }, holdC.x, holdC.y)
+    if (!live) {
+      live = await lookSolid(broke.page, 11, broke.spawn)
+      continue
+    }
+    await jitterHold(broke.page, holdC.x, holdC.y, 2500)
+    await sleep(250)
+    chopped = await broke.page.evaluate((b) => ({
+      id: b ? window.__smoke.voxel(b.x, b.y, b.z) : -1,
+      n: window.__smoke.count('log'),
+      aim: b,
+    }), live)
+  }
   note('jitter chop', '915x412', !!live && live.id === 11 && chopped.id === 0 && chopped.n === 1, JSON.stringify(chopped))
   const pathAfter = await broke.page.evaluate(() => document.getElementById('path-chip').textContent)
   const subWord = await broke.page.evaluate(() => window.__smoke.word('pathTreeTouch'))
@@ -1128,5 +1171,198 @@ async function prove2543(browser, testUrl, note, errs) {
   const mouseHud = await hudNow(mouse)
   note('mouse crosshair', '1366x768', !!dirt && mouseGone === 0 && mouseHud.tag === 'D' && mouseHud.n === '1' && mouseHud.cur === mouseHud.dirt, mouseGone + ' ' + JSON.stringify(mouseHud))
   await mouse.close()
+  await prove2548()
+
+  async function prove2548() {
+    for (const [w, h, touch] of [[412, 915, true], [915, 412, true], [1366, 768, false]]) {
+      const page = await bootHud(browser, testUrl + '?smoke=1', w, h, touch)
+      errs.push(...page.__err.map((e) => 'b248 ' + w + ' ' + e))
+      await page.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+      const boot = await page.evaluate(() => ({ always: window.__smoke.always(), phase: window.__smoke.phase(), day: document.documentElement.dataset.alwaysDay || '0' }))
+      note('cycle on', w + 'x' + h, boot.always === false && boot.phase === 'day' && boot.day !== '1', JSON.stringify(boot))
+      const dayL = await page.evaluate(() => window.__smoke.lum())
+      await page.evaluate(() => window.__smoke.seek(window.__smoke.nightAt()))
+      const nightL = await page.evaluate(() => window.__smoke.lum())
+      note('night lum', w + 'x' + h, dayL > 0 && nightL + 1e-6 >= dayL * 0.4, dayL.toFixed(3) + ' -> ' + nightL.toFixed(3))
+      await page.evaluate(() => window.__smoke.bright(true))
+      const brightL = await page.evaluate(() => window.__smoke.lum())
+      note('brighter nights', w + 'x' + h, brightL + 1e-6 >= dayL * 0.6, brightL.toFixed(3))
+      await page.evaluate(() => { window.__smoke.bright(false); window.__smoke.seek(0) })
+      await page.evaluate(() => window.__smoke.emptyBag())
+      const spawn = [8.5, 6.2, 16, Math.PI, 0.7]
+      const door = await lookSolid(page, 30, spawn)
+      if (door) await page.evaluate((d) => window.__smoke.plant(d.x + 1, d.y, d.z, 30), door)
+      await waitSteady(page)
+      const c = await centerOf(page)
+      if (touch) await page.touchscreen.tap(c.x, c.y)
+      else await pressAt(page, c.x, c.y, 80, false, 'right')
+      await sleep(250)
+      const opened = await page.evaluate((d) => d ? { a: window.__smoke.voxel(d.x, d.y, d.z), b: window.__smoke.voxel(d.x + 1, d.y, d.z) } : null, door)
+      note('double door tap', w + 'x' + h, !!opened && opened.a === 31 && opened.b === 31, JSON.stringify(opened))
+      if (door) {
+        await page.evaluate((d) => { window.__smoke.auto(d.x, d.y, d.z, true); window.__smoke.use(d.x, d.y, d.z); window.__smoke.use(d.x, d.y, d.z) }, door)
+        await page.evaluate(() => window.__smoke.clock(3000))
+        const shut = await page.evaluate((d) => ({ a: window.__smoke.voxel(d.x, d.y, d.z), b: window.__smoke.voxel(d.x + 1, d.y, d.z) }), door)
+        note('auto close', w + 'x' + h, shut.a === 30 && shut.b === 30, JSON.stringify(shut))
+      } else note('auto close', w + 'x' + h, false, 'no door')
+      await page.close()
+    }
+
+    const page = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+    errs.push(...page.__err.map((e) => 'b248b ' + e))
+    await page.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+    await page.evaluate(() => window.__smoke.emptyBag())
+    const metal = await lookSolid(page, 34, [8.5, 6.2, 16, Math.PI, 0.7])
+    const mc = await centerOf(page)
+    await pressAt(page, mc.x, mc.y, 80, false, 'right')
+    await sleep(200)
+    const metalTap = await page.evaluate((d) => d ? { id: window.__smoke.voxel(d.x, d.y, d.z), toast: window.__smoke.toast(), want: window.__smoke.word('needsButton') } : null, metal)
+    note('metal tap', '1366x768', !!metalTap && metalTap.id === 34 && metalTap.toast === metalTap.want, JSON.stringify(metalTap))
+    if (metal) {
+      await page.evaluate((d) => { window.__smoke.plant(d.x + 1, d.y, d.z, 38); window.__smoke.use(d.x + 1, d.y, d.z) }, metal)
+      const levered = await page.evaluate((d) => window.__smoke.voxel(d.x, d.y, d.z), metal)
+      note('lever opens metal', '1366x768', levered === 35, String(levered))
+      await page.evaluate((d) => { window.__smoke.use(d.x + 1, d.y, d.z); window.__smoke.plant(d.x, d.y, d.z + 1, 40); window.__smoke.use(d.x, d.y, d.z + 1) }, metal)
+      const pushed = await page.evaluate((d) => window.__smoke.voxel(d.x, d.y, d.z), metal)
+      await page.evaluate(() => window.__smoke.clock(1500))
+      const released = await page.evaluate((d) => ({ door: window.__smoke.voxel(d.x, d.y, d.z), button: window.__smoke.voxel(d.x, d.y, d.z + 1) }), metal)
+      note('button 1.5s', '1366x768', pushed === 35 && released.door === 34 && released.button === 40, pushed + ' ' + JSON.stringify(released))
+    } else note('lever opens metal', '1366x768', false, 'no metal')
+    const slide = await page.evaluate(() => { window.__smoke.plant(70, 6, 70, 36); window.__smoke.use(70, 6, 70); return window.__smoke.voxel(70, 6, 70) })
+    await page.evaluate(() => window.__smoke.clock(3000))
+    const slideShut = await page.evaluate(() => window.__smoke.voxel(70, 6, 70))
+    note('sliding auto', '1366x768', slide === 37 && slideShut === 36, slide + ' -> ' + slideShut)
+    await page.evaluate(() => {
+      window.__smoke.plant(80, 6, 80, 30)
+      window.__smoke.lock(80, 6, 80, 'you')
+      window.__smoke.actor('other')
+    })
+    const refused = await page.evaluate(() => { window.__smoke.use(80, 6, 80); return window.__smoke.voxel(80, 6, 80) })
+    await page.evaluate(() => window.__smoke.teacher(true))
+    const taught = await page.evaluate(() => { window.__smoke.use(80, 6, 80); return window.__smoke.voxel(80, 6, 80) })
+    note('lock and teacher', '1366x768', refused === 30 && taught === 31, refused + ' ' + taught)
+    await page.evaluate(() => window.__smoke.persist())
+    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30000 })
+    let keptDoor = -1
+    for (let i = 0; i < 25; i++) {
+      keptDoor = await page.evaluate(() => (window.__smoke ? window.__smoke.voxel(80, 6, 80) : -1)).catch(() => -1)
+      if (keptDoor === 31) break
+      await sleep(200)
+    }
+    const again = await page.evaluate(() => { window.__smoke.actor('other'); window.__smoke.use(80, 6, 80); return window.__smoke.voxel(80, 6, 80) })
+    note('door save', '1366x768', keptDoor === 31 && again === 31, keptDoor + ' ' + again)
+    const old = await page.evaluate(() => window.__smoke.loadOld())
+    const oldOk = old && old.ids.length === 31 && old.ids.every((id, i) => id === i + 1) && old.unknown === 0 && old.gift.includes('glowPebble')
+    note('old save', '1366x768', oldOk, JSON.stringify({ unknown: old && old.unknown, gift: old && old.gift, bad: old && old.ids.filter((id, i) => id !== i + 1).length }))
+    await page.close()
+
+    const hold = await bootHud(browser, testUrl + '?smoke=1', 412, 915, true)
+    errs.push(...hold.__err.map((e) => 'holddoor ' + e))
+    await hold.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+    await hold.evaluate(() => window.__smoke.emptyBag())
+    const hd = await lookSolid(hold, 30, [8.5, 6.2, 16, Math.PI, 0.7])
+    const hc = await centerOf(hold)
+    await hold.touchscreen.touchStart(hc.x, hc.y)
+    await sleep(700)
+    const opt = await hold.evaluate(() => {
+      const el = document.getElementById('door-auto')
+      const box = document.getElementById('door-opt')
+      const r = el.getBoundingClientRect()
+      return { h: r.height, w: r.width, hidden: !box || box.hidden }
+    })
+    await sleep(2500)
+    await hold.touchscreen.touchEnd()
+    await sleep(150)
+    const stayed = await hold.evaluate((d) => d ? window.__smoke.voxel(d.x, d.y, d.z) : -1, hd)
+    note('door hold', '412x915', !!hd && stayed === 30 && !opt.hidden && opt.h >= 44 && opt.w >= 44, stayed + ' ' + JSON.stringify(opt))
+    await hold.close()
+
+    const lamp = await bootHud(browser, testUrl + '?smoke=1', 1366, 768, false)
+    errs.push(...lamp.__err.map((e) => 'lamp ' + e))
+    await lamp.waitForFunction(() => window.__bloxReady, { timeout: 20000 }).catch(() => {})
+    await lamp.evaluate(() => window.__smoke.emptyBag())
+    const need = await lamp.evaluate(() => window.__smoke.needs('lantern'))
+    const wantT5 = await lamp.evaluate(() => window.__smoke.word('needsT5'))
+    note('needs T5', '1366x768', need.includes(wantT5), need.slice(0, 180))
+    const made = await lamp.evaluate(() => {
+      window.__smoke.gate('T5')
+      const p = window.__smoke.pos()
+      const x = Math.floor(p[0]) + 2
+      const y = Math.floor(p[1])
+      const z = Math.floor(p[2])
+      window.__smoke.plant(x, y, z, 43)
+      const card = window.__smoke.card()
+      const lost = window.__smoke.lost()
+      window.__smoke.plant(x + 1, y, z, 43)
+      const lost2 = window.__smoke.lost()
+      window.__smoke.fillBag('glass', 1)
+      window.__smoke.fillBag('steel', 1)
+      window.__smoke.fillBag('batteryCell', 1)
+      const craft = window.__smoke.craft('lantern')
+      return { card, lost, lost2, craft, n: window.__smoke.count('lantern'), want: window.__smoke.word('starterKit') }
+    })
+    note('starter kit', '1366x768', made.card === made.want && made.lost.includes('batteryCell:1') && made.lost.includes('charger:1') && made.lost2.filter((s) => s.startsWith('batteryCell')).length === 1, JSON.stringify(made))
+    note('craft lantern', '1366x768', !!(made.craft && made.craft.ok) && made.n >= 1, JSON.stringify(made.craft) + ' n ' + made.n)
+    const drained = await lamp.evaluate(() => {
+      window.__smoke.plant(60, 6, 60, 47)
+      window.__smoke.use(60, 6, 60)
+      window.__smoke.use(60, 6, 60)
+      window.__smoke.use(60, 6, 60)
+      const high = window.__smoke.light(60, 6, 60)
+      window.__smoke.seek(window.__smoke.nightAt())
+      window.__smoke.clock(2.5 * 60 * 1000)
+      const empty = window.__smoke.light(60, 6, 60)
+      window.__smoke.plant(61, 6, 60, 48)
+      window.__smoke.clock(2 * 60 * 1000)
+      const plugged = window.__smoke.light(60, 6, 60)
+      window.__smoke.plant(61, 6, 60, 0)
+      window.__smoke.charge(60, 6, 60, 0)
+      window.__smoke.seek(0)
+      window.__smoke.clock(4 * 60 * 1000)
+      const sun = window.__smoke.light(60, 6, 60)
+      return { high, empty, plugged, sun }
+    })
+    const highOk = drained.high && drained.high.level === 'high' && drained.high.radius === 10
+    const emptyOk = drained.empty && drained.empty.radius === 1
+    const plugOk = drained.plugged && drained.plugged.charge >= 0.99 && drained.plugged.radius === 10
+    const sunOk = drained.sun && drained.sun.charge >= 0.99
+    note('lantern taps', '1366x768', highOk && emptyOk && plugOk && sunOk, JSON.stringify(drained))
+    const badges = await lamp.evaluate(() => {
+      window.__smoke.clearLights()
+      window.__smoke.resetBadges()
+      window.__smoke.seek(window.__smoke.nightAt())
+      for (let i = 0; i < 10; i++) {
+        window.__smoke.plant(200 + i * 2, 4, 200, 47)
+        window.__smoke.use(200 + i * 2, 4, 200)
+      }
+      window.__smoke.clock(0)
+      const close = window.__smoke.badge()
+      window.__smoke.clearLights()
+      window.__smoke.resetBadges()
+      for (let i = 0; i < 10; i++) {
+        window.__smoke.plant(200 + i * 3, 4, 220, 47)
+        window.__smoke.use(200 + i * 3, 4, 220)
+      }
+      window.__smoke.clock(0)
+      const once = window.__smoke.badge()
+      window.__smoke.clock(0)
+      const twice = window.__smoke.badge()
+      return { close, once, twice }
+    })
+    note('light up spaced', '1366x768', badges.close === 0 && badges.once === 1 && badges.twice === 1, JSON.stringify(badges))
+    const before = await lamp.evaluate(() => window.__smoke.fps())
+    await sleep(1200)
+    const base = await lamp.evaluate(() => window.__smoke.fps()) || before
+    await lamp.evaluate(() => {
+      for (let i = 0; i < 20; i++) {
+        window.__smoke.plant(120 + (i % 5) * 4, 8, 120 + ((i / 5) | 0) * 4, 47)
+        window.__smoke.use(120 + (i % 5) * 4, 8, 120 + ((i / 5) | 0) * 4)
+      }
+    })
+    await sleep(1500)
+    const after = await lamp.evaluate(() => window.__smoke.fps())
+    note('lantern fps', '1366x768', after >= 8 && (base < 12 || after >= base * 0.45), base + ' -> ' + after)
+    await lamp.close()
+  }
 }
 

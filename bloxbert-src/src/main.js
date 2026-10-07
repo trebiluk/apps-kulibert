@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.47'
+const VERSION = '2.5.48'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -15,6 +15,7 @@ import { Scene } from '@babylonjs/core/scene'
 import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { PointLight } from '@babylonjs/core/Lights/pointLight'
 import ATLAS from '../assets/atlas.json'
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
@@ -33,6 +34,10 @@ import { coalHere, plantHere } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK } from './feel.js'
+import { createBasics } from './basics.js'
+import { isDoor, doorKind, isOpenDoor, LEVER, BUTTON, LANTERN } from './doors.js'
+import { migrateVoxels } from './save/migrate.js'
+import { setGate, gates } from './data/gates.js'
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -182,6 +187,23 @@ export const BLOCKS = [
   [29, 'reed', 'leaves', 'Rd', 'leaves'],
   [30, 'door', 'wood', 'Dr', 'wood'],
   [31, 'doorOpen', 'wood', 'Do', 'wood'],
+  [32, 'doorGlass', 'glass', 'Gd', null],
+  [33, 'doorGlassOpen', 'glass', 'Go', null],
+  [34, 'doorMetal', 'greystone', 'Md', 'greystone'],
+  [35, 'doorMetalOpen', 'greystone', 'Mo', 'greystone'],
+  [36, 'doorSliding', 'glass', 'Sg', null],
+  [37, 'doorSlidingOpen', 'glass', 'So', null],
+  [38, 'lever', 'wood', 'Le', 'wood'],
+  [39, 'leverOn', 'wood', 'Lo', 'wood'],
+  [40, 'pushButton', 'brick_red', 'Pb', 'brick_red'],
+  [41, 'pushButtonOn', 'brick_red', 'Pn', 'brick_red'],
+  [42, 'smelter', 'brick_red', 'Sm', 'brick_red'],
+  [43, 'fabricator', 'greystone', 'Fb', 'greystone'],
+  [44, 'ironOre', 'brick_grey', 'Io', 'brick_grey'],
+  [45, 'copperOre', 'stone_coal', 'Oc', 'stone_coal'],
+  [46, 'zincOre', 'greystone', 'Zo', 'greystone'],
+  [47, 'lantern', 'glass', 'Ln', null],
+  [48, 'charger', 'stone', 'Ch', 'stone'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
@@ -190,11 +212,13 @@ noa.registry.registerMaterial('vend', { textureURL: 'assets/tile-vend.png' })
 noa.registry.registerMaterial('store', { textureURL: 'assets/tile-store.png' })
 noa.registry.registerMaterial('bunk', { textureURL: 'assets/tile-bunk.png' })
 for (const [id, name, material] of BLOCKS) {
-  const open = name === 'doorOpen'
-  noa.registry.registerBlock(id, { material, opaque: id !== 20 && !open, solid: !open })
+  const open = typeof name === 'string' && name.endsWith('Open')
+  const glass = material === 'glass'
+  noa.registry.registerBlock(id, { material, opaque: !open && !glass, solid: !open })
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
-noa.blockTargetIdCheck = (id) => id === ID.doorOpen || noa.registry.getBlockSolidity(id)
+const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || noa.registry.getBlockSolidity(id)
 const blockName = (id) => t(BLOCKS.find((b) => b[0] === id)[1])
 
 const S = 24
@@ -359,6 +383,7 @@ let inspectOn = false
 let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
+let basics = null
 let panels = null
 function survivalOn() { return !!(session && session.mode === 'survival') }
 function canReach(pos) {
@@ -369,6 +394,7 @@ function canReach(pos) {
 function breakAt(x, y, z) {
   const id = getVoxel(x, y, z)
   if (!id) return false
+  if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
   if (session && !session.onBreak(x, y, z, id)) return false
@@ -381,6 +407,7 @@ function breakBlock() {
   return breakAt(x, y, z)
 }
 function isUseBlock(id) {
+  if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
   return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.bench || id === ID.vend || id === ID.bunk || id === ID.box
 }
 function placeBlock(face, opts) {
@@ -389,9 +416,10 @@ function placeBlock(face, opts) {
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (!repeat && aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
-    if ((aimedBlock.blockID === ID.door || aimedBlock.blockID === ID.doorOpen) && canReach([ax, ay, az])) {
-      const open = aimedBlock.blockID === ID.door
-      if (edit(ax, ay, az, open ? ID.doorOpen : ID.door)) toast(t(open ? 'doorOpenMsg' : 'doorShut'))
+    if (basics && canReach([ax, ay, az]) && basics.use(ax, ay, az)) {
+      const nowId = getVoxel(ax, ay, az)
+      if (isDoor(aimedBlock.blockID) && doorKind(aimedBlock.blockID) !== 'metal') toast(t(isOpenDoor(nowId) ? 'doorOpenMsg' : 'doorShut'))
+      if (aimedBlock.blockID === LANTERN) showLamp(ax, ay, az)
       return false
     }
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
@@ -419,7 +447,14 @@ function placeBlock(face, opts) {
     return false
   }
   if (session && !session.onPlace(x, y, z, id)) return false
-  return edit(x, y, z, id)
+  const placed = edit(x, y, z, id)
+  if (placed && basics) {
+    basics.saw(x, y, z, id)
+    if (isDoor(id) && !getVoxel(x, y + 1, z)) {
+      if (edit(x, y + 1, z, id)) basics.saw(x, y + 1, z, id)
+    }
+  }
+  return placed
 }
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
@@ -518,6 +553,7 @@ async function snapshot() {
     chunks, updatedAt: new Date().toISOString(),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     stations: stations.dump(),
+    basics: basics ? basics.dump() : null,
   }
 }
 async function save() {
@@ -542,13 +578,16 @@ async function load() {
 async function readDoc(doc) {
   if (!doc || doc.format !== 'kuliblocks' || (doc.v !== 1 && doc.v !== 2)) throw new Error(t('versionSkew'))
   if (doc.chunkSize !== S || !doc.chunks || typeof doc.chunks !== 'object') throw new Error('That world uses a different chunk size.')
-  const out = new Map(), max = BLOCKS.length
+  const out = new Map()
+  const nameToId = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
+  pendingGifts = []
   for (const k of Object.keys(doc.chunks)) {
     if (!/^-?\d+,-?\d+,-?\d+$/.test(k)) throw new Error('That world file is damaged.')
     const a = await ungz(doc.chunks[k])
     if (a.length !== S * S * S) throw new Error('That world file is damaged.')
-    for (let i = 0; i < a.length; i++) if (a[i] > max) throw new Error('That world has blocks this version does not know.')
-    out.set(k, a)
+    const migrated = migrateVoxels(doc.palette, a, nameToId)
+    pendingGifts.push(...migrated.gifts)
+    out.set(k, migrated.data)
   }
   return out
 }
@@ -559,6 +598,8 @@ async function applyDoc(doc) {
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   if (Array.isArray(doc.spawn) && doc.spawn.every(Number.isFinite)) noa.entities.setPosition(noa.playerEntity, doc.spawn)
   if (session) session.load(fromDoc(doc))
+  if (doc.basics && basics) basics.load(doc.basics)
+  dropGifts()
   if (doc.stations) stations.load(doc.stations)
   if (session) paintModeChip()
   syncDropMeshes()
@@ -637,6 +678,81 @@ session = createSession({
   townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
   townYes: () => townHelper(),
   setTown: (on) => setTownHelper(on),
+  setAlways: (on) => basics && basics.setAlways(on),
+  setBright: (on) => basics && basics.setBright(on),
+})
+let pendingGifts = []
+let doorOptAt = null
+function showCard(text) {
+  const el = $('maker-card')
+  if (!el) return
+  el.hidden = false
+  el.textContent = text
+  clearTimeout(showCard.t)
+  showCard.t = setTimeout(() => { el.hidden = true }, 4200)
+}
+function showLamp(x, y, z) {
+  const st = basics && basics.light(x, y, z)
+  const card = $('lamp-card')
+  if (!card || !st) return
+  card.hidden = false
+  const level = $('lamp-level')
+  if (level) level.textContent = t(st.step === 1 ? 'lanternLow' : st.step === 2 ? 'lanternMed' : 'lanternHigh')
+  const fill = $('lamp-fill')
+  if (fill) fill.style.width = Math.round((st.charge || 0) * 100) + '%'
+  clearTimeout(showLamp.t)
+  showLamp.t = setTimeout(() => { card.hidden = true }, 2200)
+}
+function showDoorOpt(x, y, z) {
+  doorOptAt = [x, y, z]
+  const el = $('door-opt')
+  if (el) el.hidden = false
+}
+function hideDoorOpt() {
+  doorOptAt = null
+  const el = $('door-opt')
+  if (el) el.hidden = true
+}
+function dropGifts() {
+  if (!pendingGifts.length) return
+  const names = pendingGifts.slice()
+  pendingGifts = []
+  const spot = [2, 5, 40]
+  setVoxel(spot[0], spot[1], spot[2], ID.box, true)
+  const slots = Array.from({ length: 18 }, () => null)
+  names.slice(0, 18).forEach((name, i) => { slots[i] = { item: name, n: 1 } })
+  if (session) session.meta.set(spot.join(','), { kind: 'box', slots })
+}
+basics = createBasics({
+  now: () => performance.now(),
+  t, toast,
+  get: (x, y, z) => getVoxel(x, y, z),
+  set: (x, y, z, id) => { edit(x, y, z, id) },
+  survival: () => survivalOn(),
+  teacher: () => teacherOn(),
+  give: (item, n) => session && session.give(item, n),
+  gift: (item, n) => session && session.lostAdd && session.lostAdd(item, n),
+  card: (text) => showCard(text),
+  badge: (text) => showCard(text),
+  flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0' },
+})
+if ($('door-auto')) $('door-auto').addEventListener('click', () => {
+  if (!doorOptAt || !basics) return
+  basics.auto(doorOptAt[0], doorOptAt[1], doorOptAt[2], true)
+  toast(t('autoClose'))
+  hideDoorOpt()
+})
+if ($('door-lock')) $('door-lock').addEventListener('click', () => {
+  if (!doorOptAt || !basics) return
+  basics.lock(doorOptAt[0], doorOptAt[1], doorOptAt[2], 'you')
+  toast(t('padlock'))
+  hideDoorOpt()
+})
+if ($('door-pick')) $('door-pick').addEventListener('click', () => {
+  if (!doorOptAt || !basics) return
+  basics.pickup(doorOptAt[0], doorOptAt[1], doorOptAt[2])
+  toast(t('pickup'))
+  hideDoorOpt()
 })
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -731,6 +847,8 @@ const learn = createLearn({
   panel: () => (panels && panels.openPanel) || '',
   survival: () => session && session.mode === 'survival',
   touch: () => TOUCH_UI,
+  setBright: (on) => basics && basics.setBright(on),
+  bright: () => !!(basics && basics.bright),
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
 })
 markPath = (id) => learn.bump(id)
@@ -1208,6 +1326,7 @@ function beginDig(kind) {
   dig = { kind, x, y, z, id, name, t0: now, need: mineMs(name, survivalOn(), kind === 'touch', heldTool()), broke: false, p: 0, stage: 0 }
 }
 function feelTick(dt) {
+  if (basics) basics.tick()
   if (session && session.tickDrops) session.tickDrops(dt)
   syncDropMeshes()
   const body = playerBody
@@ -1301,6 +1420,12 @@ function feelTick(dt) {
       const step = (90 * Math.PI / 180) * (dt / 1000)
       setLook(noa.camera.heading + Math.max(-step, Math.min(step, diff)), noa.camera.pitch)
     }
+  }
+  if (dig && basics && isDoor(dig.id) && now - dig.t0 >= 500 && !dig.opt) {
+    dig.opt = true
+    showDoorOpt(dig.x, dig.y, dig.z)
+    hideCrack()
+    dig = null
   }
   if (dig && dig.kind === 'mouse' && dig.creative) {
     if (breaking && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
@@ -1693,18 +1818,93 @@ scene.fogColor = new Color3(0.64, 0.8, 0.93)
 scene.fogStart = 40
 scene.fogEnd = 78
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);vec3 zenith=vec3(0.13,0.34,0.72);vec3 horizon=vec3(0.64,0.80,0.93);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir));float glow=smoothstep(0.82,1.0,dot(n,sunDir));col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y);col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
-const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime'] })
+Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uLum;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);float lum=clamp(uLum,0.4,1.0);vec3 zenith=mix(vec3(0.03,0.05,0.12),vec3(0.13,0.34,0.72),lum);vec3 horizon=mix(vec3(0.16,0.18,0.30),vec3(0.64,0.80,0.93),lum);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir))*lum;float glow=smoothstep(0.82,1.0,dot(n,sunDir))*lum;col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);vec3 moonDir=normalize(vec3(0.25,0.72,0.45));float moon=smoothstep(0.986,0.998,dot(n,moonDir))*(1.0-lum);col=mix(col,vec3(0.86,0.9,0.98),moon);float star=step(0.992,fract(sin(dot(floor(n.xy*90.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(star)*(1.0-lum)*smoothstep(0.15,0.55,n.y);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y)*lum;col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uLum'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
 skyMat.fogEnabled = false
 skyMat.setFloat('uTime', 0)
+skyMat.setFloat('uLum', 1)
 const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
 sky.material = skyMat
 sky.isPickable = false
 sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
+const lampLights = []
+for (let i = 0; i < 4; i++) {
+  const L = new PointLight('lamp' + i, new Vector3(0, -40, 0), scene)
+  L.intensity = 0
+  L.range = 8
+  L.diffuse = new Color3(1, 0.93, 0.72)
+  L.specular = new Color3(0, 0, 0)
+  L.setEnabled(false)
+  lampLights.push(L)
+}
+const flies = []
+for (let i = 0; i < 6; i++) {
+  const m = CreateSphere('fly' + i, { diameter: 0.1, segments: 3 }, scene)
+  const mat = new StandardMaterial('flym' + i, scene)
+  mat.emissiveColor = new Color3(0.75, 0.95, 0.35)
+  mat.disableLighting = true
+  m.material = mat
+  m.isPickable = false
+  m.setEnabled(false)
+  noa.rendering.addMeshToScene(m, false)
+  flies.push(m)
+}
+const glowMeshes = new Map()
+const glowLocal = [0, 0, 0]
+function syncGlow() {
+  if (!basics) return
+  const k = basics.lum()
+  skyMat.setFloat('uLum', k)
+  scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
+  const list = basics.lights().filter((l) => l.step > 0 || l.radius <= 1)
+  const cap = quality === 'lite' ? 2 : 4
+  for (let i = 0; i < lampLights.length; i++) {
+    const src = i < cap ? list.find((l) => l.radius > 1) : null
+    const L = lampLights[i]
+    if (!src) { L.setEnabled(false); continue }
+    list.splice(list.indexOf(src), 1)
+    const lp = noa.globalToLocal([src.x + 0.5, src.y + 0.8, src.z + 0.5], null, glowLocal)
+    L.position.set(lp[0], lp[1], lp[2])
+    L.range = Math.max(2, src.radius)
+    L.intensity = 0.4 + Math.min(1.2, src.radius * 0.06)
+    L.setEnabled(true)
+  }
+  const seen = new Set()
+  const glowList = basics.lights()
+  for (const src of glowList) {
+    if (!(src.step > 0) && src.charge > 0.2) continue
+    const id = src.x + ',' + src.y + ',' + src.z
+    seen.add(id)
+    let mesh = glowMeshes.get(id)
+    if (!mesh) {
+      mesh = CreateSphere('gl' + seen.size, { diameter: 0.26, segments: 4 }, scene)
+      const mat = new StandardMaterial('glm' + seen.size, scene)
+      mat.emissiveColor = new Color3(1, 0.88, 0.4)
+      mat.disableLighting = true
+      mesh.material = mat
+      mesh.isPickable = false
+      noa.rendering.addMeshToScene(mesh, false)
+      glowMeshes.set(id, mesh)
+    }
+    const lp = noa.globalToLocal([src.x + 0.5, src.y + 0.55, src.z + 0.5], null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+    mesh.setEnabled(true)
+  }
+  for (const [id, mesh] of glowMeshes) if (!seen.has(id)) mesh.setEnabled(false)
+  const night = basics.phase() === 'night' || basics.phase() === 'dusk'
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const ft = performance.now() / 1000
+  for (let i = 0; i < flies.length; i++) {
+    flies[i].setEnabled(night)
+    if (!night) continue
+    const lp = noa.globalToLocal([p[0] + Math.sin(ft + i) * 3, p[1] + 1.2 + Math.sin(ft * 2 + i) * 0.4, p[2] + Math.cos(ft * 0.8 + i) * 3], null, glowLocal)
+    flies[i].position.set(lp[0], lp[1], lp[2])
+  }
+}
 let skyTime = 0
 function bertyPart(w, h, d, x, y, z, rgb) {
   const m = CreateBox('bp', { width: w, height: h, depth: d }, scene)
@@ -1812,6 +2012,7 @@ function paintOutline() {
 }
 noa.on('beforeRender', (dt) => {
   paintOutline()
+  if (basics) syncGlow()
   if (REDUCE) return
   skyTime += (dt || 16) * 0.0004
   skyMat.setFloat('uTime', skyTime)
@@ -1998,6 +2199,7 @@ if (!__BLOX_STUDENT__) {
   }
 }
 
+basics.boot(WORLD !== 'bertyville')
 load().catch(() => {}).finally(() => {
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()
@@ -2059,7 +2261,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     pickup() { session.setMode('survival'); session.meta.set('1,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 12, sales: [] }); session.pickup(1, 2, 3, 24); return session.bag.count('vend') + ':' + session.bag.count('cupcake') },
     sale() { session.setMode('survival'); session.meta.set('4,2,3', { kind: 'vend', slots: [{ item: 'cupcake', n: 2, price: 12 }], till: 0, sales: [], salesN: 0 }); session.vendTick(2); const rows = session.wallet.state.ledger.filter((r) => r.kind === 'vend-sale'); return rows.reduce((n, r) => n + r.cogs, 0) },
     stand(x, y, z, h, p) { noa.entities.setPosition(noa.playerEntity, [x, y, z]); setLook(h || 0, p || 0) },
-    plant(x, y, z, id) { setVoxel(x, y, z, id, true); return getVoxel(x, y, z) },
+    plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
     aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
     voxel(x, y, z) { return getVoxel(x, y, z) },
     fillBag(item, n) { session.setMode('survival'); session.give(item, n); session.clearLoose() },
@@ -2090,6 +2292,56 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
     },
     persist: () => save(),
+    clock: (n) => basics && basics.clock(n),
+    seek: (n) => basics && basics.seek(n),
+    nightAt: () => basics ? basics.nightAt() : 0,
+    lum: () => basics ? basics.lum() : 1,
+    phase: () => basics ? basics.phase() : 'day',
+    always: () => !!(basics && basics.always),
+    bright: (on) => { if (basics) basics.setBright(on); return !!(basics && basics.bright) },
+    gate: (tier) => { setGate(tier, true); return gates() },
+    actor: (id) => basics && basics.actor(id),
+    teacher: (on) => basics && basics.teacherStub(on),
+    lock: (x, y, z, owner) => basics && basics.lock(x, y, z, owner),
+    auto: (x, y, z, on) => basics && basics.auto(x, y, z, on),
+    use: (x, y, z) => basics ? basics.use(x, y, z) : false,
+    light: (x, y, z) => basics ? basics.light(x, y, z) : null,
+    charge: (x, y, z, c) => basics && basics.setCharge(x, y, z, c),
+    badge: () => basics ? basics.badgeCount() : 0,
+    badgeText: () => basics ? basics.badgeText() : '',
+    resetBadges: () => basics && basics.resetBadges(),
+    clearLights() {
+      if (!basics) return
+      for (const l of basics.lights()) setVoxel(l.x, l.y, l.z, 0, true)
+      basics.tick()
+    },
+    card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
+    lost: () => session.lostItems ? session.lostItems() : [],
+    craft: (id) => session.tryCraft(id),
+    needs(id) {
+      session.setCraftOpen(true)
+      if (panels) panels.open('crafting')
+      const g = document.getElementById('sheet-body')
+      return g ? g.innerText : ''
+    },
+    async loadOld() {
+      const data = new Uint16Array(S * S * S)
+      const at = []
+      for (let id = 1; id <= 31; id++) {
+        const x = (id - 1) % 16
+        const z = 4 + ((id - 1) / 16 | 0)
+        data[x * S * S + 2 * S + z] = id
+        at.push([x, 2, z])
+      }
+      data[2 * S + 3] = 32
+      const palette = ['air', 'grass', 'dirt', 'stone', 'slate', 'coal', 'sand', 'gravel', 'brickRed', 'brickGrey', 'planks', 'log', 'leaves', 'woolBlue', 'woolGreen', 'woolRed', 'woolTan', 'snow', 'ice', 'redSand', 'glass', 'coreplate', 'workbench', 'oven', 'vend', 'storeCounter', 'bunk', 'box', 'wheat', 'reed', 'door', 'doorOpen', 'glowPebble']
+      const doc = { format: 'kuliblocks', v: 2, chunkSize: S, palette, chunks: { '0,0,0': await gz(data) }, spawn: [8.5, 8, 40], player: { mode: 'survival', bag: [], hot: 0 } }
+      await applyDoc(doc)
+      const ids = at.map(([x, y, z]) => getVoxel(x, y, z))
+      const gift = session.meta.get('2,5,40')
+      return { ids, unknown: getVoxel(0, 2, 3), gift: gift && gift.slots ? gift.slots.filter(Boolean).map((s) => s.item) : [] }
+    },
+    fps: () => perf.lastFps || 0,
   }
 }
 repaintBlocks()

@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes } from './craft.js'
+import { canMake, craftStatus, maxTimes, make } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -228,10 +228,11 @@ export function createSession(api) {
     return true
   }
   function near(kind) {
+    const ids = kind === 'bench' ? [22] : kind === 'oven' ? [23] : kind === 'smelter' || kind === 'forge' ? [42] : kind === 'fabricator' ? [43] : []
     const p = api.pos()
-    const id = kind === 'bench' ? 22 : 23
     for (let dx = -4; dx <= 4; dx++) for (let dy = -2; dy <= 2; dy++) for (let dz = -4; dz <= 4; dz++) {
-      if (api.getVoxel(Math.floor(p[0]) + dx, Math.floor(p[1]) + dy, Math.floor(p[2]) + dz) === id) return true
+      const id = api.getVoxel(Math.floor(p[0]) + dx, Math.floor(p[1]) + dy, Math.floor(p[2]) + dz)
+      if (ids.includes(id)) return true
     }
     return false
   }
@@ -331,8 +332,8 @@ export function createSession(api) {
     for (let i = 9; i < bag.slots.length; i++) paintOne(bag.slots[i], i)
   }
   function paintCraft(g) {
-    const stations = { bench: near('bench'), oven: near('oven') }
-    const rows = RECIPES.map((r) => ({ r, st: craftStatus(r, bag, stations) }))
+    const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
+    const rows = RECIPES.map((r) => ({ r, st: craftStatus(r, bag, stations, mode !== 'survival') }))
     const draw = (list) => {
       for (const { r, st } of list) {
         const row = document.createElement('div')
@@ -344,9 +345,10 @@ export function createSession(api) {
         b.innerHTML = '<span class="gic"></span><span class="glbl"></span><span class="gneed"></span>'
         b.querySelector('.gic').append(itemIcon(out))
         const note = st.needs.map(([k, have, n]) => itemName(k) + ' ' + have + '/' + n).join(' ')
-        const station = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : ''
+        const station = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' ? t('needsT4') : st.station === 'forge' ? t('needsT4') : st.station === 'fabricator' ? t('needsT5') : ''
+        const gateLine = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : ''
         b.querySelector('.glbl').textContent = itemName(r.out[0])
-        b.querySelector('.gneed').textContent = station ? note + ' · ' + station : note
+        b.querySelector('.gneed').textContent = gateLine || (station ? note + ' · ' + station : note)
         b.disabled = !st.ok
         b.addEventListener('click', () => { craftMany(r, 1); g.innerHTML = ''; paintCraft(g) })
         row.append(b)
@@ -370,17 +372,18 @@ export function createSession(api) {
     }
     const now = rows.filter((x) => x.st.group === 'now')
     const almost = rows.filter((x) => x.st.group === 'almost')
+    const gated = rows.filter((x) => x.st.group === 'gated')
     const rest = rows.filter((x) => x.st.group === 'rest')
     if (now.length) { head('canNow'); draw(now) }
     if (almost.length) { head('almost'); draw(almost) }
-    if (rest.length) {
+    if (rest.length || gated.length) {
       const toggle = document.createElement('button')
       toggle.type = 'button'
       toggle.className = 'gtile wide'
       toggle.textContent = t('showAll')
       toggle.addEventListener('click', () => { craftOpen = !craftOpen; g.innerHTML = ''; paintCraft(g) })
       g.append(toggle)
-      if (craftOpen) draw(rest)
+      if (craftOpen) draw(gated.concat(rest))
     }
   }
   function paintShop(g) {
@@ -488,7 +491,9 @@ export function createSession(api) {
   function paintSettings(g) {
     g.append(btn(t('alwaysDay'), () => {
       const on = document.documentElement.dataset.alwaysDay === '1'
-      document.documentElement.dataset.alwaysDay = on ? '0' : '1'
+      const next = !on
+      document.documentElement.dataset.alwaysDay = next ? '1' : '0'
+      if (api.setAlways) api.setAlways(next)
       api.toast(t('alwaysDay'))
     }))
     const n = document.createElement('p')
@@ -817,6 +822,23 @@ export function createSession(api) {
     }
     paintHotbar()
   }
+  function lostAdd(item, n) {
+    if (!item || !(n > 0)) return
+    const hit = lost.find((d) => d.item === item)
+    if (hit) hit.n += n
+    else lost.push({ item, n })
+    if (api.markDirty) api.markDirty()
+  }
+  function tryCraft(name) {
+    const r = RECIPES.find((x) => x.id === name || x.out[0] === name)
+    if (!r) return { ok: false, why: 'missing' }
+    const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
+    const st = craftStatus(r, bag, stations, mode !== 'survival')
+    if (!st.ok) return { ok: false, why: st.gate || st.station || 'count', gate: st.gate || '' }
+    if (!make(r, bag)) return { ok: false, why: 'full' }
+    paintHotbar()
+    return { ok: true, n: bag.count(r.out[0]) }
+  }
   function vendTick(n = 1) {
     today()
     let sales = 0
@@ -876,6 +898,10 @@ export function createSession(api) {
   return {
     bag, wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
+    lostAdd,
+    tryCraft,
+    setCraftOpen(v) { craftOpen = !!v },
+    lostItems: () => lost.map((d) => d.item + ':' + d.n),
     spend: (item, n) => bag.take(item, n),
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },

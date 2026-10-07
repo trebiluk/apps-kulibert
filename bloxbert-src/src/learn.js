@@ -112,7 +112,13 @@ export function createLearn(api) {
     gentle.className = 'gtile'
     gentle.innerHTML = '<span class="gic">✿</span><span class="glbl">' + api.t('gentle') + '</span>'
     gentle.addEventListener('click', () => a11y({ gentle: !a11y().gentle }))
-    g.append(b, gentle)
+    const bright = document.createElement('button')
+    bright.type = 'button'
+    bright.className = 'gtile'
+    const paintBright = () => { bright.innerHTML = '<span class="gic">☾</span><span class="glbl">' + api.t('brighterNights') + (api.bright && api.bright() ? ' ✓' : '') + '</span>' }
+    paintBright()
+    bright.addEventListener('click', () => { if (api.setBright) api.setBright(!(api.bright && api.bright())); paintBright() })
+    g.append(b, gentle, bright)
   }
   let autoToken = 0
   let menuHolds = false

@@ -1,4 +1,5 @@
-export function craftStatus(recipe, bag, near) {
+import { gateOpen } from './data/gates.js'
+export function craftStatus(recipe, bag, near, creative) {
   const needs = []
   let missing = 0
   for (const [item, n] of recipe.in) {
@@ -6,10 +7,15 @@ export function craftStatus(recipe, bag, near) {
     if (have < n) missing++
     needs.push([item, have, n])
   }
-  const station = recipe.at === 'bench' && !near.bench ? 'bench' : recipe.at === 'oven' && !near.oven ? 'oven' : ''
-  const ok = !station && missing === 0
-  const group = ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
-  return { ok, missing, station, needs, group }
+  const station = recipe.at === 'bench' && !near.bench ? 'bench'
+    : recipe.at === 'oven' && !near.oven ? 'oven'
+    : recipe.at === 'smelter' && !near.smelter ? 'smelter'
+    : recipe.at === 'forge' && !near.forge ? 'forge'
+    : recipe.at === 'fabricator' && !near.fabricator ? 'fabricator' : ''
+  const gate = recipe.tier && !gateOpen(recipe.tier, !!creative) ? recipe.tier : ''
+  const ok = !station && missing === 0 && !gate
+  const group = gate ? 'gated' : ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
+  return { ok, missing, station, needs, group, gate }
 }
 export function canMake(recipe, bag, near) {
   const st = craftStatus(recipe, bag, near)
