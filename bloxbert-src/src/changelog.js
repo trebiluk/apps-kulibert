@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.65', date: '2026-10-07', lines: {
+    en: ['Recipes are never hidden under the Make bar, and you bake bread in the oven using wood or coal.'],
+    uk: ['Рецепти не ховаються під кнопкою Зробити, і хліб печеться в печі на дереві чи вугіллі.'],
+    ru: ['Рецепты больше не прячутся под кнопкой Сделать, и хлеб печётся в печи на дереве или угле.'],
+    es: ['Las recetas ya no quedan bajo la barra Hacer, y el pan se hornea en el horno con madera o carbón.'],
+    ar: ['الوصفات لا تختفي تحت زر اصنع، وتخبز الخبز في الفرن بالخشب أو الفحم.'],
+    'fa-AF': ['دستورها دیگر زیر دکمه بساز پنهان نمی‌شوند، و نان را در تنور با چوب یا زغال می‌پزی.'],
+    rw: ['Ingano ntizihisha munsi ya Kora, kandi uteka umugati mu byoto ukoresheje ibiti cyangwa amakara.'],
+    ti: ['ምግባር ኣብ ትሕቲ መጠወቒ ኣይሕባእን፡ ባኒ ድማ ኣብ እቶን ብዕንጨይቲ ወይ ከሰል ትኸውሶ።'],
+  }},
   { v: '2.5.64', date: '2026-10-07', lines: {
     en: ['Every card lets go of the mouse so you can click its buttons, and a quick double tap no longer breaks doors.'],
     uk: ['Кожна картка відпускає мишу, щоб можна було натиснути її кнопки, і швидке подвійне торкання більше не ламає двері.'],

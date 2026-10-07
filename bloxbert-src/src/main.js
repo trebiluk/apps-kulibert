@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.64'
+const VERSION = '2.5.65'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -802,7 +802,8 @@ session = createSession({
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
   tableOn: () => tableMode,
-  open: (id) => panels && panels.open(id),
+  open: (id, key) => panels && panels.open(id, key),
+  armOven: (key, id) => stations.arm(key, id),
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
@@ -952,7 +953,7 @@ window.addEventListener('pointerdown', (e) => {
   e.stopPropagation()
   hideDoorOpt()
 }, true)
-const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
+const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   const c = document.createElement('canvas')

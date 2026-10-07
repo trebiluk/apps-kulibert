@@ -13,23 +13,27 @@ export function craftStatus(recipe, bag, near, creative) {
     : recipe.at === 'forge' && !near.forge ? 'forge'
     : recipe.at === 'fabricator' && !near.fabricator ? 'fabricator' : ''
   const gate = recipe.tier && !gateOpen(recipe.tier, !!creative) ? recipe.tier : ''
-  const ok = !station && missing === 0 && !gate
+  const bakeOnly = recipe.id === 'bread'
+  const ok = !station && missing === 0 && !gate && !bakeOnly
   const group = gate ? 'gated' : ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
-  return { ok, missing, station, needs, group, gate }
+  return { ok, missing, station, needs, group, gate, bakeOnly }
 }
 export function canMake(recipe, bag, near) {
   const st = craftStatus(recipe, bag, near)
+  if (st.bakeOnly) return { ok: false, why: 'oven' }
   if (st.ok) return { ok: true }
   if (st.station) return { ok: false, why: st.station }
   const miss = st.needs.find(([, have, n]) => have < n)
   return { ok: false, why: 'count', item: miss && miss[0], need: miss && miss[2] }
 }
 export function maxTimes(recipe, bag) {
+  if (recipe.id === 'bread') return 0
   let n = 64
   for (const [item, need] of recipe.in) n = Math.min(n, Math.floor(bag.count(item) / need))
   return n > 0 ? n : 0
 }
 export function make(recipe, bag) {
+  if (recipe.id === 'bread') return false
   for (const [item, n] of recipe.in) if (!bag.take(item, n)) return false
   const left = bag.add(recipe.out[0], recipe.out[1])
   if (left) {

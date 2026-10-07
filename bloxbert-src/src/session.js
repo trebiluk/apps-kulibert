@@ -690,6 +690,32 @@ export function createSession(api) {
     const r = id ? RECIPES.find((x) => x.id === id) : null
     return { count: (item) => heldCount(r, item) }
   }
+  let trayNote = ''
+  function nearestOvenKey() {
+    const p = api.pos()
+    const px = Math.floor(p[0]), py = Math.floor(p[1]), pz = Math.floor(p[2])
+    let best = null
+    let bestD = 1e9
+    for (let dx = -4; dx <= 4; dx++) for (let dy = -2; dy <= 2; dy++) for (let dz = -4; dz <= 4; dz++) {
+      const x = px + dx, y = py + dy, z = pz + dz
+      if (api.getVoxel(x, y, z) !== 23) continue
+      const d = dx * dx + dy * dy + dz * dz
+      if (d < bestD) { bestD = d; best = x + ',' + y + ',' + z }
+    }
+    return best
+  }
+  function openBreadOven() {
+    craftId = 'bread'
+    if (!near('oven')) {
+      trayNote = t('needsOven')
+      return false
+    }
+    returnTray()
+    const key = nearestOvenKey()
+    if (api.armOven && key) api.armOven(key, 'bread')
+    if (api.open) api.open('station', key)
+    return true
+  }
   function paintCraft(g) {
     armTrayWatch()
     g.innerHTML = ''
@@ -708,6 +734,8 @@ export function createSession(api) {
     } else if (trayPick && !bag.count(trayPick)) trayPick = ''
     const fxKind = craftFx
     craftFx = ''
+    const note = trayNote
+    trayNote = ''
     const tray = document.createElement('div')
     tray.className = 'build-tray'
     const book = document.createElement('div')
@@ -723,7 +751,7 @@ export function createSession(api) {
       for (const { r, st } of list) {
         const b = document.createElement('button')
         b.type = 'button'
-        b.className = 'well' + (r.id === craftId ? ' on' : '') + (st.ok ? '' : ' dim')
+        b.className = 'well' + (r.id === craftId ? ' on' : '') + (st.ok || r.id === 'bread' ? '' : ' dim')
         b.setAttribute('aria-pressed', String(r.id === craftId))
         const art = document.createElement('span')
         art.className = 'art'
@@ -733,7 +761,15 @@ export function createSession(api) {
         name.className = 'wlab'
         name.textContent = itemName(r.out[0])
         b.append(name)
-        if (!st.ok) {
+        if (r.id === 'bread') {
+          const line = document.createElement('span')
+          line.className = 'need bake-in'
+          const mark = document.createElement('span')
+          mark.className = 'art oven-mark'
+          mark.append(itemIcon(ITEMS.oven))
+          line.append(mark, document.createTextNode(t('bakeInOven')))
+          b.append(line)
+        } else if (!st.ok) {
           const lock = document.createElement('span')
           lock.className = 'lock'
           lock.setAttribute('aria-hidden', 'true')
@@ -747,6 +783,10 @@ export function createSession(api) {
           b.append(line)
         }
         b.addEventListener('click', () => {
+          if (r.id === 'bread') {
+            if (!openBreadOven()) paintCraft(g)
+            return
+          }
           if (r.id !== craftId) returnTray()
           craftId = r.id
           craftFx = 'slide'
@@ -946,7 +986,8 @@ export function createSession(api) {
       }
       const slotChip = document.createElement('p')
       slotChip.className = 'slot-chip'
-      slotChip.hidden = true
+      slotChip.hidden = !note
+      if (note) slotChip.textContent = note
       slotChip.setAttribute('role', 'status')
       side.append(slotChip)
       const keys = document.createElement('div')
@@ -969,32 +1010,44 @@ export function createSession(api) {
         paintCraft(g)
       })
       keys.append(fillBtn)
+      const isBread = r.id === 'bread'
       const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
-      const ready = full && !st.station && !st.gate
+      const ready = !isBread && full && !st.station && !st.gate
       const makeBtn = document.createElement('button')
       makeBtn.type = 'button'
-      makeBtn.className = 'keycap make' + (ready ? ' lit' : '')
-      makeBtn.textContent = t('make')
-      makeBtn.disabled = !ready
-      makeBtn.addEventListener('click', () => {
-        if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
-        if (st.station || st.gate) return
-        const outN = r.out[1]
-        const left = bag.add(r.out[0], outN)
-        if (left) {
-          if (outN - left) bag.take(r.out[0], outN - left)
-          api.toast(t('bagFull'))
+      makeBtn.className = 'keycap make' + (isBread ? ' bake' : '') + (!isBread && ready ? ' lit' : '')
+      if (isBread) {
+        const ic = document.createElement('span')
+        ic.className = 'art'
+        ic.append(itemIcon(ITEMS.oven))
+        makeBtn.append(ic)
+        const lab = document.createElement('span')
+        lab.textContent = t('bakeInOven')
+        makeBtn.append(lab)
+        makeBtn.addEventListener('click', () => { if (!openBreadOven()) paintCraft(g) })
+      } else {
+        makeBtn.textContent = t('make')
+        makeBtn.disabled = !ready
+        makeBtn.addEventListener('click', () => {
+          if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
+          if (st.station || st.gate) return
+          const outN = r.out[1]
+          const left = bag.add(r.out[0], outN)
+          if (left) {
+            if (outN - left) bag.take(r.out[0], outN - left)
+            api.toast(t('bagFull'))
+            paintCraft(g)
+            return
+          }
+          r.in.forEach((_, i) => { trayPlaced[i] = 0 })
+          markFound(r.out[0])
+          if (r.out[0] === 'woodTool') markPath('pathTool')
+          api.toast(t('make') + ' ' + itemName(r.out[0]))
+          craftFx = 'make'
+          paintHotbar()
           paintCraft(g)
-          return
-        }
-        r.in.forEach((_, i) => { trayPlaced[i] = 0 })
-        markFound(r.out[0])
-        if (r.out[0] === 'woodTool') markPath('pathTool')
-        api.toast(t('make') + ' ' + itemName(r.out[0]))
-        craftFx = 'make'
-        paintHotbar()
-        paintCraft(g)
-      })
+        })
+      }
       keys.append(makeBtn)
       let times = 64
       for (const [item, need] of r.in) times = Math.min(times, Math.floor(heldCount(r, item) / need))
