@@ -58,6 +58,12 @@ export class Lookout extends window.Phaser.Scene {
     ];
     [this.readBtn, this.helpBtn, this.pauseBtn, this.restartBtn, ...this.alarms].forEach((b) => b.setDepth(10));
     this.input.keyboard.on("keydown", (e) => {
+      if (document.body.classList.contains("ap-card")) {
+        if (e.key === "Escape") return;
+        if (e.key === "p" || e.key === "P") { this.togglePause(); return; }
+        if (e.key === "r" || e.key === "R") { window.dispatchEvent(new CustomEvent("ap-restart")); return; }
+        return;
+      }
       if (this.hideHeld) { this.releaseHide(); return; }
       if (e.key === "Escape" || e.key === "p" || e.key === "P") { this.togglePause(); return; }
       if (e.key === "r" || e.key === "R") { window.dispatchEvent(new CustomEvent("ap-restart")); return; }
@@ -68,6 +74,7 @@ export class Lookout extends window.Phaser.Scene {
     this.ended = false;
     this.hideHeld = false;
     this.hidePaused = false;
+    this.cardHeld = false;
     this.teach = this.playMode === "class" && this.level && this.level.id === "lookout-L01" && !current.seen.teach;
     this.onResize = (s) => { if (this.scene.isActive()) this.layout(s.width, s.height); };
     this.onLook = () => { if (this.scene.isActive()) this.cameras.main.setBackgroundColor(skyOf(settings().look)); };
@@ -111,8 +118,25 @@ export class Lookout extends window.Phaser.Scene {
     this.hideHeld = false;
     this.acc = 0;
     markGesture();
+    if (this.cardHeld) return;
     if (this.hidePaused && this.round && this.round.state === "paused") this.round.resume();
     this.hidePaused = false;
+  }
+  holdForCard() {
+    if (this.cardHeld || !this.round || this.round.state !== "running") return;
+    this.round.pause();
+    this.cardHeld = true;
+    this.acc = 0;
+  }
+  releaseForCard() {
+    if (!this.cardHeld) return;
+    this.cardHeld = false;
+    this.acc = 0;
+    if (this.hideHeld) {
+      this.hidePaused = !!(this.round && this.round.state === "paused");
+      return;
+    }
+    if (this.round && this.round.state === "paused") this.round.resume();
   }
   bootRound() {
     this.round = new Round((this.seed ^ this.wave) >>> 0, this.level, settings().speed === "relaxed");
@@ -131,13 +155,27 @@ export class Lookout extends window.Phaser.Scene {
   }
   banner(node, str, x, y, wrap) {
     if (!str) { node.setText(""); node.setVisible(false); return; }
+    const flip = rtl();
+    const centered = node === this.cap;
     node.setVisible(true);
     node.setBackgroundColor("#fde68a");
     node.setColor("#042f2e");
     node.setPadding(4, 2, 4, 2);
-    node.setPosition(x, y);
+    node.setStyle({
+      fontFamily: "Atkinson Hyperlegible",
+      fontSize: centered || node === this.ring ? "18px" : "16px",
+      color: "#042f2e",
+      align: centered ? "center" : (flip ? "right" : "left"),
+      rtl: flip,
+    });
     if (wrap) node.setWordWrapWidth(wrap);
     node.setText(str);
+    if (!centered) {
+      node.setOrigin(0, 0);
+      node.setPosition(x, y);
+    }
+    const live = document.getElementById("live");
+    if (live) live.dataset.rtl = flip ? "1" : "0";
   }
   layout(w, h) {
     const pose = poseNow(window.innerWidth || w, window.innerHeight || h);
@@ -272,6 +310,8 @@ export class Lookout extends window.Phaser.Scene {
     tickBits(this);
     if (typeof document !== "undefined" && document.visibilityState === "hidden") this.holdHide();
     if (!this.round || this.ended) return;
+    const liveNow = document.getElementById("live");
+    if (liveNow) liveNow.dataset.step = String(this.round.step);
     if (this.hideHeld || this.round.state !== "running") return;
     const raw = this.game && this.game.loop ? this.game.loop.rawDelta : 16;
     noteFrame(raw);
@@ -289,11 +329,18 @@ export class Lookout extends window.Phaser.Scene {
     if (active) {
       const p = (step - active.step) / active.approachSteps;
       const hole = this.holes[active.hole] || this.holes[0];
-      this.showActor(this.alice, "hawk", hole.x, hole.y - 28, 48);
-      this.alice.anims.stop();
-      if (!motionOff()) this.alice.play("alice-pop", true);
-      else this.alice.setFrame("alice-pop-0");
+      const fresh = !this.alice.visible || this.alice.getData("kind") !== "alice";
       this.alice.setVisible(true);
+      if (fresh) {
+        this.alice.setData("kind", "alice");
+        if (!motionOff()) this.alice.play("alice-pop");
+        else { this.alice.anims.stop(); this.alice.setFrame("alice-pop-0"); }
+      } else if (motionOff()) {
+        this.alice.anims.stop();
+        this.alice.setFrame("alice-pop-0");
+      }
+      intScale(this.alice, 48);
+      this.alice.setPosition(Math.round(hole.x), Math.round(hole.y - 28));
       const sx = b.field.x + 24 + active.edge * (b.field.w / 2);
       this.showActor(this.threat, active.kind, sx + (this.nest.x - sx) * p, b.field.y + 28 + (this.nest.y - b.field.y - 28) * p, active.kind === "snake" ? 72 : 64);
       if (active.kind === "hawk") {
@@ -318,7 +365,17 @@ export class Lookout extends window.Phaser.Scene {
     const bank = this.round.read();
     this.paintScore((this.carry || 0) + bank.score);
     const capShown = this.cap.visible ? this.cap.text : "";
-    document.getElementById("live").textContent = (this.level.id || "lookout") + " " + ((this.carry || 0) + bank.score) + " " + Math.max(0, Math.ceil(left / 60)) + (capShown ? " " + capShown : "");
+    const live = document.getElementById("live");
+    if (live) {
+      live.dataset.step = String(this.round.step);
+      live.dataset.why = bank.why || "";
+      live.dataset.score = String((this.carry || 0) + bank.score);
+      live.dataset.pups = String(bank.pupsSafe);
+      if (this.alice.visible && this.alice.frame) live.dataset.frame = this.alice.frame.name;
+      if (!document.body.classList.contains("ap-card")) {
+        live.textContent = (this.level.id || "lookout") + " " + ((this.carry || 0) + bank.score) + " " + Math.max(0, Math.ceil(left / 60)) + (capShown ? " " + capShown : "");
+      }
+    }
     if (this.endless && bank.pupsSafe < 6) { this.finish(); return; }
     if (step >= this.level.seconds * 60) {
       if (this.endless && bank.pupsSafe >= 6) this.nextWave();

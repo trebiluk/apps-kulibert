@@ -17,7 +17,18 @@ body.in-round .fs-btn { right: auto; }
 html[dir="rtl"] body.in-round .fs-btn { right: auto; left: 8px; }
 .plate { top: auto; bottom: 8px; left: 8px; width: auto; min-width: 96px; height: 48px; border: 0; background: transparent; color: #e2e8f0; font-size: 14px; font-weight: 700; }
 html[dir="rtl"] .plate { left: auto; right: 8px; }
-#ap-hud { position: fixed; inset: 0; z-index: 28; pointer-events: none; }
+#ap-scrim {
+  position: fixed; z-index: 26; pointer-events: auto; background: rgba(6, 18, 43, .62);
+}
+#ap-scrim[hidden] { display: none !important; }
+#ap-card {
+  position: fixed; z-index: 27; pointer-events: auto; box-sizing: border-box;
+  background: #0b1f3a; border: 4px solid #fde68a; border-radius: 16px;
+}
+#ap-card[hidden] { display: none !important; }
+body.ap-card .ap-hit.ap-scene { display: none !important; }
+.ap-hit.ap-cardrow { z-index: 32; }
+
 .ap-hit {
   position: fixed; z-index: 28; pointer-events: auto; box-sizing: border-box; overflow: hidden;
   display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
