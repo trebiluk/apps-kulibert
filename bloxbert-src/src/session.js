@@ -608,12 +608,16 @@ export function createSession(api) {
           const sy = e.clientY
           const pid = e.pointerId
           const thresh = e.pointerType === 'touch' ? 10 : 6
+          let dropped = false
           const raise = (ev) => {
             if (ev.pointerId !== pid) return
             const dx = ev.clientX - sx
             const dy = ev.clientY - sy
             if (dx * dx + dy * dy < thresh * thresh) return
-            if (bar) bar.style.zIndex = '70'
+            if (bar) {
+              bar.style.zIndex = '70'
+              bar.dataset.drag = '1'
+            }
             window.removeEventListener('pointermove', raise, true)
           }
           const paintMark = () => {
@@ -632,7 +636,9 @@ export function createSession(api) {
             window.removeEventListener('pointermove', paintMark, true)
             window.removeEventListener('pointerup', end, true)
             window.removeEventListener('pointercancel', end, true)
+            if (bar) delete bar.dataset.drag
             setTimeout(() => {
+              if (dropped) return
               if (bar) bar.style.zIndex = ''
               for (const n of document.querySelectorAll('#hotbar .slot')) {
                 n.style.outline = ''
@@ -648,7 +654,24 @@ export function createSession(api) {
             canDrop: () => true,
             onDrop: (slot) => {
               const i = Number(slot.dataset.slot)
+              if (bar) delete bar.dataset.drag
               if (api.putPalette) api.putPalette(i, blockId)
+              dropped = true
+              const landed = document.querySelector('#hotbar .slot[data-slot="' + i + '"]')
+              if (landed) {
+                landed.style.outline = '3px solid #22D3EE'
+                landed.style.outlineOffset = '2px'
+                setTimeout(() => {
+                  if (landed.isConnected) {
+                    landed.style.outline = ''
+                    landed.style.outlineOffset = ''
+                  }
+                }, 600)
+              }
+              if (bar) {
+                bar.style.zIndex = '70'
+                setTimeout(() => { bar.style.zIndex = '' }, 1000)
+              }
             },
           })
           window.addEventListener('pointermove', paintMark, true)

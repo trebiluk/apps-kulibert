@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.69'
+const VERSION = '2.5.70'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -477,12 +477,26 @@ function canReach(pos) {
   return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], reachFor(survivalOn()))
 }
 let farPress = 0
+let farHit = null
+let farKeyAt = 0
 function toastFar() {
   if (farPress) return
   farPress = 1
   toast(t('tooFar'))
 }
 function releaseFar() { setTimeout(() => { farPress = 0 }, 0) }
+function toastFarKey() {
+  const now = performance.now()
+  if (now - farKeyAt < 600) return
+  farKeyAt = now
+  toast(t('tooFar'))
+}
+function placeableHeld() {
+  if (!survivalOn()) return !!current
+  const held = session && session.selectedItem ? session.selectedItem() : ''
+  if (held === 'berry' || held === 'bread' || held === 'cupcake') return false
+  return !!(session && session.blockForHot && session.blockForHot())
+}
 function viewFar() {
   try {
     const dist = reachFor(survivalOn()) + 6
@@ -503,8 +517,12 @@ function viewFar() {
   } catch (e) { return null }
 }
 function noteFar() {
+  if (tableMode || anyCard()) return
+  const aimed = noa.targetedBlock
+  if (aimed && aimed.position && canReach(aimed.position)) return
   const far = viewFar()
-  if (far && !canReach(far.position)) toastFar()
+  if (far && canReach(far.position)) return
+  toastFar()
 }
 function reachOpen(pos, repeat) {
   if (tableMode || canReach(pos)) return true
@@ -546,6 +564,8 @@ function useHoldReady(dig, now) {
 function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
   const repeat = !!(opts && opts.repeat)
+  const fromKey = !!(opts && opts.key)
+  const sayFar = () => { if (repeat) return; if (fromKey) toastFarKey(); else toastFar() }
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (!repeat && aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
@@ -572,12 +592,12 @@ function placeBlock(face, opts) {
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
     if (!aimedBlock) {
-      if (!repeat) noteFar()
+      if (!repeat) { if (fromKey) toastFarKey(); else noteFar() }
       return false
     }
     ;[x, y, z] = aimedBlock.adjacent
     if (!tableMode) {
-      if (!canReach([x, y, z])) { if (!repeat) toastFar(); return false }
+      if (!canReach([x, y, z])) { sayFar(); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
       if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) { if (!repeat) toast(t('standing')); return false }
     }
@@ -1073,13 +1093,10 @@ function heldCard() {
 function armLift(root) {
   if (!root) return
   const token = String(performance.now())
-  const t0 = performance.now()
   root.dataset.lift = token
   let ended = false
   const clear = () => {
     if (root.dataset.lift !== token) return
-    const wait = 250 - (performance.now() - t0)
-    if (wait > 0) { setTimeout(clear, wait); return }
     delete root.dataset.lift
   }
   const onUp = () => {
@@ -1087,7 +1104,7 @@ function armLift(root) {
     ended = true
     window.removeEventListener('pointerup', onUp, true)
     window.removeEventListener('pointercancel', onUp, true)
-    setTimeout(clear, 0)
+    setTimeout(clear, 250)
   }
   window.addEventListener('pointerup', onUp, true)
   window.addEventListener('pointercancel', onUp, true)
@@ -1256,6 +1273,7 @@ const sheetEl = $('sheet')
 const paletteIds = BLOCKS.map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
+  const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
   bar.innerHTML = ''
   bar.classList.add('palette')
   bar.classList.remove('bagbar')
@@ -1290,7 +1308,10 @@ function paintBar() {
   bagBtn.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
   bar.append(bagBtn)
   const on = strip.querySelector('[aria-pressed="true"]')
-  if (on) strip.scrollLeft = Math.max(0, on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2)
+  if (on) {
+    if (heldScroll != null) strip.scrollLeft = heldScroll
+    else strip.scrollLeft = Math.max(0, on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2)
+  }
 }
 function useSelected() {
   if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
@@ -1650,8 +1671,17 @@ document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
   if (e.key === 'i' || e.key === 'I') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); setInspect(!inspectOn) } }
   if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    if (inspectOn) { if (!e.repeat) showInspect(); return }
+    if (tableMode) { placeBlock(null, { key: true }); return }
+    if (!anyCard() && placeableHeld()) {
+      const aimed = noa.targetedBlock
+      if (!aimed || !aimed.position || !canReach(aimed.position)) toastFarKey()
+    }
+    return
+  }
   if (!tableMode) return
-  if (e.key === 'Enter') { e.preventDefault(); if (inspectOn) showInspect(); else placeBlock(); return }
   const step = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key]
   if (!step) return
   e.preventDefault()
@@ -1824,6 +1854,13 @@ function feelTick(dt) {
       setLook(noa.camera.heading + Math.max(-step, Math.min(step, diff)), noa.camera.pitch)
     }
   }
+  if (farHit) {
+    if (!look || look.pt !== 'touch' || look.moved >= 24) farHit = null
+    else if (!farHit.shown && now - farHit.t0 >= 250) {
+      farHit.shown = true
+      toastFar()
+    }
+  }
   if (dig && basics && isDoor(dig.id) && now - dig.t0 >= DOOR_HOLD_MS && !dig.opt) {
     dig.opt = true
     showDoorOpt(dig.x, dig.y, dig.z)
@@ -1990,7 +2027,7 @@ canvas.addEventListener('pointerdown', (e) => {
   const finger = look.pt === 'touch'
   const hit = finger ? rayAt(e.clientX, e.clientY) : targetHit()
   if (hit && finger && !tableMode && !canReach(hit.position)) {
-    toastFar()
+    farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
     dig = null
     hideCrack()
   } else if (hit) {
@@ -2009,6 +2046,7 @@ canvas.addEventListener('pointermove', (e) => {
   if (look.pt === 'touch') {
     const drift = Math.hypot(e.clientX - look.sx, e.clientY - look.sy)
     look.moved = drift
+    if (drift >= 24) farHit = null
     if (drift < 24) { look.x = e.clientX; look.y = e.clientY; return }
     lastLookAt = performance.now()
     if (dig && dig.kind === 'touch') { dig = null; hideCrack() }
@@ -2044,6 +2082,7 @@ canvas.addEventListener('pointerup', (e) => {
   const tap = moved < 8
   const held = e.timeStamp - look.t
   const lookWasTouch = look.pt === 'touch'
+  const wasFar = farHit
   const face = dig && dig.face
   const broke = dig && dig.broke
   const down = face && face.position
@@ -2054,6 +2093,11 @@ canvas.addEventListener('pointerup', (e) => {
     else { dig.draining = true; dig.drainAt = performance.now() }
   }
   look = null
+  if (lookWasTouch && wasFar) {
+    farHit = null
+    if (moved < 24 && !wasFar.shown && held < 500) toastFar()
+    return
+  }
   const handId = session && session.blockForHot ? session.blockForHot() : 0
   const heldKey = session && session.selectedItem ? session.selectedItem() : ''
   const tapUse = heldKey === 'berry' || heldKey === 'bread' || heldKey === 'cupcake'
@@ -2089,7 +2133,7 @@ canvas.addEventListener('pointerup', (e) => {
     toast(t('holdToBreak'))
   }
 })
-canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack(); releaseFar() })
+canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack(); farHit = null; releaseFar() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (eatResume(e)) return
@@ -2106,12 +2150,13 @@ window.addEventListener('pointerdown', (e) => {
     interactive, repeated: false, placed: false,
     locked: !!(document.pointerLockElement || noa.container.hasPointerLock),
   }
-  if (!TOUCH_UI && snap && !interactive) {
+  const reachable = !!(snap && canReach(snap.position))
+  if (!TOUCH_UI && reachable && !interactive) {
     mouseRight = true
     placeHoldAt = performance.now()
     rightPress.placed = !!placeBlock(snap)
   } else mouseRight = false
-  if (!snap && !tableMode && !anyCard()) noteFar()
+  if (!reachable && !tableMode && !anyCard() && placeableHeld()) toastFarKey()
 }, true)
 window.addEventListener('pointermove', (e) => {
   if (!rightPress) return

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.70', date: '2026-10-08', lines: {
+    en: ['Looking around never says Too far away by mistake, and door card buttons wait for your finger to lift.'],
+    uk: ['Огляд навколо ніколи помилково не каже «Занадто далеко», і кнопки картки дверей чекають, доки підніметься палець.'],
+    ru: ['Огляд вокруг никогда по ошибке не говорит «Слишком далеко», и кнопки карточки двери ждут, пока палец поднимется.'],
+    es: ['Mirar alrededor nunca dice Demasiado lejos por error, y los botones de la tarjeta de la puerta esperan a que levantes el dedo.'],
+    ar: ['النظر حولك لا يقول بعيد جداً بالخطأ، وأزرار بطاقة الباب تنتظر أن ترفع إصبعك.'],
+    'fa-AF': ['نگاه به اطراف هرگز به اشتباه «خیلی دور است» نمی‌گوید، و دکمه‌های کارت در منتظر بلند شدن انگشت می‌مانند.'],
+    rw: ['Kureba hirya no hino ntibivuga Kiri kure cyane ku buryo bw\'ikosa, kandi buto z\'ikarita y\'urugi zirategereza urutoki kuzamuka.'],
+    ti: ['ኣብ ዙርያ ምርኣይ ብጌጋ ኣዝዩ ርሑቕ እዩ ኣይብልን፡ ቁልፊታት ካርድ ማዕጾ ድማ ኣጻብዕቲ ክትልዕል ይጽበዩ።'],
+  }},
   { v: '2.5.69', date: '2026-10-08', lines: {
     en: ['The Workbench opens with a tap, far blocks say Too far away, and you can drag Creative blocks into your hotbar.'],
     uk: ['Верстак відкривається дотиком, далекі блоки кажуть «Занадто далеко», і блоки Творчості можна перетягнути на панель.'],
