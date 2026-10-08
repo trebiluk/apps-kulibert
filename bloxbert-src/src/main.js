@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.72'
+const VERSION = '2.5.73'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -516,12 +516,18 @@ function viewFar() {
     return { id, blockID: id, position: [x, y, z], adjacent: [ax, ay, az] }
   } catch (e) { return null }
 }
-function noteFar() {
-  if (tableMode || anyCard()) return
+function placeMiss() {
+  if (tableMode || anyCard() || !placeableHeld()) return
+  const aimed = noa.targetedBlock
+  if (aimed && aimed.position && canReach(aimed.position)) return
+  toastFarKey()
+}
+function breakMiss() {
+  if (tableMode || anyCard() || !placeableHeld()) return
   const aimed = noa.targetedBlock
   if (aimed && aimed.position && canReach(aimed.position)) return
   const far = viewFar()
-  if (far && canReach(far.position)) return
+  if (!far || canReach(far.position)) return
   toastFar()
 }
 function reachOpen(pos, repeat) {
@@ -564,8 +570,7 @@ function useHoldReady(dig, now) {
 function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
   const repeat = !!(opts && opts.repeat)
-  const fromKey = !!(opts && opts.key)
-  const sayFar = () => { if (repeat) return; if (fromKey) toastFarKey(); else toastFar() }
+  const sayFar = () => { if (repeat || !placeableHeld()) return; toastFarKey() }
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (!repeat && aimedBlock && panels) {
     const [ax, ay, az] = aimedBlock.position
@@ -583,7 +588,7 @@ function placeBlock(face, opts) {
     if (aimedBlock.blockID === LANTERN) return false
     if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('shop'); return false }
     if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('station', aimedBlock.position.join(',')); return false }
-    if (aimedBlock.blockID === ID.workbench || aimedBlock.blockID === 22) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('bench', aimedBlock.position.join(',')); return false }
+    if (aimedBlock.blockID === ID.workbench || aimedBlock.blockID === 22) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('crafting'); return false }
     if (aimedBlock.blockID === ID.vend) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('counter', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.bunk) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('bunk', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.box && canReach([ax, ay, az])) { panels.open('box', ax + ',' + ay + ',' + az); return false }
@@ -592,7 +597,7 @@ function placeBlock(face, opts) {
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
     if (!aimedBlock) {
-      if (!repeat) { if (fromKey) toastFarKey(); else noteFar() }
+      if (!repeat) placeMiss()
       return false
     }
     ;[x, y, z] = aimedBlock.adjacent
@@ -951,7 +956,24 @@ function showDoorOpt(x, y, z) {
   window.addEventListener('pointercancel', arm, true)
   el.hidden = false
   releaseLook()
+  paintDoorOpt()
   focusBtn($('door-auto'))
+}
+function paintDoorOpt() {
+  if (!doorOptAt || !basics) return
+  const [x, y, z] = doorOptAt
+  const autoOn = basics.autoOn(x, y, z)
+  const locked = basics.locked(x, y, z)
+  const autoBtn = $('door-auto')
+  const lockBtn = $('door-lock')
+  if (autoBtn) {
+    autoBtn.textContent = t(autoOn ? 'autoCloseOn' : 'autoCloseOff')
+    autoBtn.setAttribute('aria-pressed', autoOn ? 'true' : 'false')
+  }
+  if (lockBtn) {
+    lockBtn.textContent = t(locked ? 'padlockOn' : 'padlockOff')
+    lockBtn.setAttribute('aria-pressed', locked ? 'true' : 'false')
+  }
 }
 function hideDoorOpt() {
   doorOptAt = null
@@ -986,15 +1008,20 @@ basics = createBasics({
 })
 if ($('door-auto')) $('door-auto').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
-  basics.auto(doorOptAt[0], doorOptAt[1], doorOptAt[2], true)
-  toast(t('autoClose'))
-  hideDoorOpt()
+  const [x, y, z] = doorOptAt
+  const on = !basics.autoOn(x, y, z)
+  basics.auto(x, y, z, on)
+  toast(t(on ? 'autoCloseOn' : 'autoCloseOff'))
+  paintDoorOpt()
 })
 if ($('door-lock')) $('door-lock').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
-  basics.lock(doorOptAt[0], doorOptAt[1], doorOptAt[2], 'you')
-  toast(t('padlock'))
-  hideDoorOpt()
+  const [x, y, z] = doorOptAt
+  const on = !basics.locked(x, y, z)
+  if (on) basics.lock(x, y, z, 'you')
+  else basics.unlock(x, y, z)
+  toast(t(on ? 'padlockOn' : 'padlockOff'))
+  paintDoorOpt()
 })
 if ($('door-pick')) $('door-pick').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
@@ -1744,7 +1771,7 @@ function beginDig(kind) {
   if (!tget) {
     dig = null
     hideCrack()
-    if (survivalOn() && !tableMode) noteFar()
+    if (survivalOn() && !tableMode) breakMiss()
     return
   }
   const [x, y, z] = tget.position
@@ -2038,7 +2065,7 @@ canvas.addEventListener('pointerdown', (e) => {
     dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
   } else {
     dig = null
-    if (!finger && survivalOn()) noteFar()
+    if (!finger && survivalOn()) breakMiss()
   }
 })
 canvas.addEventListener('pointermove', (e) => {

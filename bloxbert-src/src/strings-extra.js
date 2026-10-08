@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.',
+    whatsNewBody: 'Too far away only shows when you hold a block, door Options can turn off, and the Workbench opens Crafting.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -207,9 +207,10 @@ const NEXT = {
     lightLabel: 'Light',
     needsWood: 'Needs a Wood Tool', needsStone: 'Needs a Stone Tool', toolStick: 'Your tool wore out. You got a Stick.',
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
+    autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Піч, Верстак і Скриня мають одну панель машини, куди можна натиснути або перетягнути, і Крафт лишається на екрані.',
+    whatsNewBody: '«Занадто далеко» лише коли тримаєш блок, опції дверей вимикаються, і верстак відкриває майстрування.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -220,9 +221,10 @@ const NEXT = {
     lightLabel: 'Світло',
     needsWood: 'Потрібне дерев’яне знаряддя', needsStone: 'Потрібне кам’яне знаряддя', toolStick: 'Знаряддя зносилось. Ти отримав палицю.',
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
+    autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Печь, Верстак и Сундук делят одну панель машины, куда можно нажать или перетащить, и Крафт остаётся на экране.',
+    whatsNewBody: '«Слишком далеко» только когда держишь блок, опции двери выключаются, и верстак открывает крафт.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -233,9 +235,10 @@ const NEXT = {
     lightLabel: 'Свет',
     needsWood: 'Нужно деревянное орудие', needsStone: 'Нужно каменное орудие', toolStick: 'Орудие износилось. Ты получил палку.',
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
+    autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'El horno, el banco y la caja comparten un panel de máquina donde puedes pulsar o arrastrar, y fabricar se queda en pantalla.',
+    whatsNewBody: 'Demasiado lejos solo aparece si sostienes un bloque, las opciones de la puerta se apagan, y el banco abre Fabricar.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -246,9 +249,10 @@ const NEXT = {
     lightLabel: 'Luz',
     needsWood: 'Necesitas una herramienta de madera', needsStone: 'Necesitas una herramienta de piedra', toolStick: 'Tu herramienta se gastó. Recibiste un palo.',
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
+    autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الفرن والمنضدة والصندوق يتشاركون لوحة آلة يمكنك النقر أو السحب إليها، والتصنيع يبقى على الشاشة.',
+    whatsNewBody: 'بعيد جداً يظهر فقط وأنت تمسك مكعباً، وخيارات الباب تنطفئ، والمنضدة تفتح الصنع.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -259,9 +263,10 @@ const NEXT = {
     lightLabel: 'ضوء',
     needsWood: 'تحتاج أداة خشب', needsStone: 'تحتاج أداة حجر', toolStick: 'أداتك بليت. حصلت على عصا.',
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
+    autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'تنور، میز کار و صندوق یک صفحهٔ ماشین دارند که می‌توانی در آن بزنی یا بکشی، و ساخت روی صفحه می‌ماند.',
+    whatsNewBody: 'خیلی دور است فقط وقتی بلاک در دست است، گزینه‌های در خاموش می‌شوند، و میز کار ساخت را باز می‌کند.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -272,9 +277,10 @@ const NEXT = {
     lightLabel: 'روشنایی',
     needsWood: 'ابزار چوبی لازم است', needsStone: 'ابزار سنگی لازم است', toolStick: 'ابزارت تمام شد. یک چوب گرفتی.',
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
+    autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ibyoto, ameza n\'agasanduku bifite ikarita imwe ya mashini ushobora gukanda cyangwa gukururira, kandi gukora biguma ku rubuga.',
+    whatsNewBody: 'Kiri kure cyane kiboneka gusa ufite block, amahitamo y\'urugi ashobora kuzimwa, kandi ameza afungura gukora.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -285,9 +291,10 @@ const NEXT = {
     lightLabel: 'Urumuri',
     needsWood: 'Ukeneye igikoresho cy\'ibiti', needsStone: 'Ukeneye igikoresho cy\'ibuye', toolStick: 'Igikoresho cyawe cyarashize. Wakiriye inkoni.',
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
+    autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'እቶን፡ ሰደቓን ሳንዱቅን ሓደ ፓነል ማሽን ኣለዎም ክትጎትእ ወይ ክትስሕብ ትኽእል፡ ምስራሕ ድማ ኣብ ስክሪን ይቕጽል።',
+    whatsNewBody: 'ኣዝዩ ርሑቕ እዩ ብሎክ ምስ ትሕዝ ጥራይ ይረአ፡ ኣማራጺ ማዕጾ ይጠፍእ፡ ሰደቓ ድማ ስራሕ ይኸፍት።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',
@@ -298,6 +305,7 @@ const NEXT = {
     lightLabel: 'ብርሃን',
     needsWood: 'ናይ ዕንጨይቲ መሳርሒ የድሊ', needsStone: 'ናይ እምኒ መሳርሒ የድሊ', toolStick: 'መሳርሒኻ ተበላሽዩ። በትሪ ረኺብካ።',
     woodToolLine: 'ናይ ዕንጨይቲ መሳርሒ። ብቐልጢፍ ይኮፍ።', stoneToolLine: 'ናይ እምኒ መሳርሒ። ብዝያዳ ይቕልጥፍ።', sapling: 'ቡቕሊ', saplingSoil: 'ቡቕሊ ኣብ ሳዕሪ ወይ መሬት ተኽል።',
+    autoCloseOn: 'ባዕሉ ምዕጻው ወሊዑ', autoCloseOff: 'ባዕሉ ምዕጻው ጠፊኡ', padlockOn: 'መቆለፊ ተዓጽዩ', padlockOff: 'መቆለፊ ተኸፊቱ',
   },
 }
 for (const [lang, row] of Object.entries(NEXT)) Object.assign(EXTRA[lang], row)

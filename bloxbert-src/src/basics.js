@@ -261,7 +261,15 @@ export function createBasics(api) {
     arena(on) { arena = !!on },
     use, placeColumn, noteBlock, tick, isDoor,
     blocksBreak(id) { return api.survival() && isDoor(id) },
-    lock(x, y, z, owner) { locks.set(key(x, y, z), { owner: owner || actor || 'you' }) },
+    lock(x, y, z, owner) {
+      const who = owner || actor || 'you'
+      for (const c of group(x, y, z, api.get)) locks.set(key(c[0], c[1], c[2]), { owner: who })
+    },
+    unlock(x, y, z) {
+      for (const c of group(x, y, z, api.get)) locks.delete(key(c[0], c[1], c[2]))
+    },
+    locked(x, y, z) { return !!lockOf(group(x, y, z, api.get)) },
+    autoOn(x, y, z) { return group(x, y, z, api.get).some((c) => autos.has(key(c[0], c[1], c[2]))) },
     auto(x, y, z, on) {
       const cells = group(x, y, z, api.get)
       for (const c of cells) {

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.73', date: '2026-10-08', lines: {
+    en: ['Too far away only shows when you hold a block, door Options can turn off, and the Workbench opens Crafting.'],
+    uk: ['«Занадто далеко» лише коли тримаєш блок, опції дверей вимикаються, і верстак відкриває майстрування.'],
+    ru: ['«Слишком далеко» только когда держишь блок, опции двери выключаются, и верстак открывает крафт.'],
+    es: ['Demasiado lejos solo aparece si sostienes un bloque, las opciones de la puerta se apagan, y el banco abre Fabricar.'],
+    ar: ['بعيد جداً يظهر فقط وأنت تمسك مكعباً، وخيارات الباب تنطفئ، والمنضدة تفتح الصنع.'],
+    'fa-AF': ['خیلی دور است فقط وقتی بلاک در دست است، گزینه‌های در خاموش می‌شوند، و میز کار ساخت را باز می‌کند.'],
+    rw: ['Kiri kure cyane kiboneka gusa ufite block, amahitamo y\'urugi ashobora kuzimwa, kandi ameza afungura gukora.'],
+    ti: ['ኣዝዩ ርሑቕ እዩ ብሎክ ምስ ትሕዝ ጥራይ ይረአ፡ ኣማራጺ ማዕጾ ይጠፍእ፡ ሰደቓ ድማ ስራሕ ይኸፍት።'],
+  }},
   { v: '2.5.72', date: '2026-10-08', lines: {
     en: ['Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.'],
     uk: ['Піч, Верстак і Скриня мають одну панель машини, куди можна натиснути або перетягнути, і Крафт лишається на екрані.'],
