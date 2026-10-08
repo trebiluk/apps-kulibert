@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.67'
+const VERSION = '2.5.68'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -539,9 +539,9 @@ function placeBlock(face, opts) {
     if (!aimedBlock) return false
     ;[x, y, z] = aimedBlock.adjacent
     if (!tableMode) {
-      if (!canReach([x, y, z])) return false
+      if (!canReach([x, y, z])) { if (!repeat) toast(t('tooFar')); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
-      if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) return false
+      if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) { if (!repeat) toast(t('standing')); return false }
     }
   }
   let id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
@@ -572,19 +572,22 @@ function tableTarget() {
 }
 noa.inputs.down.on('fire', () => {
   if (inspectOn) { showInspect(); return }
-  if (tableMode || !noa.container.hasPointerLock) return
+  if (anyCard() || tableMode || !noa.container.hasPointerLock) return
   const aimed = noa.targetedBlock
-  if (aimed && isUseBlock(aimed.blockID)) return
+  if (aimed && isDoor(aimed.blockID)) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
-  else { breakBlock(); dig = { kind: 'mouse', creative: true, t0: performance.now() } }
+  else {
+    breakBlock()
+    dig = { kind: 'mouse', creative: true, t0: performance.now(), id: aimed ? aimed.blockID : 0, x: aimed ? aimed.position[0] : 0, y: aimed ? aimed.position[1] : 0, z: aimed ? aimed.position[2] : 0 }
+  }
 })
 noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
-  if (tableMode || rightPress || !noa.container.hasPointerLock) return
-  const t = noa.targetedBlock
-  const interactive = !!(t && isUseBlock(t.blockID))
+  if (anyCard() || tableMode || rightPress || !noa.container.hasPointerLock) return
+  const tget = noa.targetedBlock
+  if (tget && isUseBlock(tget.blockID)) return
   placeBlock()
-  if (!TOUCH_UI && !interactive) { mouseRight = true; placeHoldAt = performance.now() }
+  if (!TOUCH_UI) { mouseRight = true; placeHoldAt = performance.now() }
 })
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
@@ -793,6 +796,7 @@ function paintUndo() {
 }
 let selfUnlock = false
 let armResume = 0
+let cardClosedAt = 0
 let markPath = () => {}
 let paintPath = () => {}
 let lastPointer = null
@@ -935,8 +939,12 @@ if ($('door-lock')) $('door-lock').addEventListener('click', () => {
 })
 if ($('door-pick')) $('door-pick').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
-  basics.pickup(doorOptAt[0], doorOptAt[1], doorOptAt[2])
-  toast(t('pickup'))
+  const id = getVoxel(doorOptAt[0], doorOptAt[1], doorOptAt[2])
+  const n = basics.pickup(doorOptAt[0], doorOptAt[1], doorOptAt[2])
+  if (n) {
+    const key = dropOf(id)
+    toast(t('gotItem').replace('{item}', key ? t(key) : blockName(id)))
+  }
   hideDoorOpt()
 })
 if ($('door-x')) $('door-x').addEventListener('click', () => hideDoorOpt())
@@ -948,6 +956,15 @@ window.addEventListener('pointerdown', (e) => {
   const el = $('door-opt')
   if (!el || el.hidden) return
   if (e.target && e.target.closest && e.target.closest('.door-panel')) return
+  if (document.pointerLockElement || noa.container.hasPointerLock) {
+    e.preventDefault()
+    e.stopPropagation()
+    selfUnlock = true
+    try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (err) {}
+    try { if (document.pointerLockElement) document.exitPointerLock() } catch (err) {}
+    try { noa.container.setPointerLock(false) } catch (err) {}
+    return
+  }
   if (performance.now() - doorShownAt < 700) return
   e.preventDefault()
   e.stopPropagation()
@@ -992,6 +1009,8 @@ async function goWorld(m) {
 function releaseLook() {
   selfUnlock = !!document.pointerLockElement
   document.body.classList.add('menu-open')
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
+  try { if (document.pointerLockElement) document.exitPointerLock() } catch (e) {}
   try { noa.container.setPointerLock(false) } catch (e) {}
   try { noa.setPaused(true) } catch (e) {}
   if (session) session.paused = true
@@ -1011,10 +1030,20 @@ function focusBtn(btn) {
 }
 function resumePlay() {
   if (anyCard()) return
+  cardClosedAt = performance.now()
   document.body.classList.remove('menu-open')
   try { noa.setPaused(false) } catch (e) {}
   if (session) session.paused = false
-  armResume = performance.now()
+  if (!TOUCH_UI) armResume = performance.now()
+}
+function eatResume(e) {
+  if (!armResume) return false
+  if (TOUCH_UI || (e && e.pointerType === 'touch')) { armResume = 0; return false }
+  if (document.pointerLockElement || noa.container.hasPointerLock) { armResume = 0; return false }
+  armResume = 0
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = true } catch (err) {}
+  try { noa.container.setPointerLock(true) } catch (err) {}
+  return true
 }
 let holdTour = () => {}
 panels = mountPanels({
@@ -1120,7 +1149,7 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement) { hadLock = true; menuFromLock = false; return }
   const wasLocked = hadLock
   hadLock = false
-  if (anyCard()) { selfUnlock = false; return }
+  if (anyCard() || (cardClosedAt && performance.now() - cardClosedAt < 600)) { selfUnlock = false; return }
   if (wasLocked && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
   selfUnlock = false
 })
@@ -1256,7 +1285,6 @@ function rayAt(cx, cy) {
         const z = az - nz
         const id = getVoxel(x, y, z)
         if (!id) return null
-        if (!tableMode && !canReach([x, y, z])) return null
         return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [ax, ay, az] }
       }
       const step = 0.51
@@ -1370,7 +1398,7 @@ edits.onChange = paintUndo
 $('save-btn').addEventListener('click', async () => { const b = await save(); toast(t('saved') + ' · ' + (b / 1024).toFixed(1) + ' KB') })
 paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
-$('m-about').addEventListener('click', () => { $('about').hidden = false; $('about').querySelector('button').focus() })
+$('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
 $('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
 $('inspect-chip').addEventListener('click', () => setInspect(false))
 $('inspect-close').addEventListener('click', () => { $('inspect-card').hidden = true; resumePlay() })
@@ -1669,9 +1697,7 @@ function feelTick(dt) {
   const sheetOpen = !sheetEl.hidden
   const breaking = !!(noa.inputs.state.fire || mouseLeft)
   const touchLook = !!(look && look.pt === 'touch')
-  if (!sheetOpen && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) {
-    if (survivalOn()) beginDig('mouse')
-  }
+  if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) beginDig('mouse')
   if (sheetOpen) mouseRight = false
   else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
     placeHoldAt = now
@@ -1707,8 +1733,8 @@ function feelTick(dt) {
   }
   if (dig && dig.kind === 'mouse' && dig.creative) {
     const aimedNow = noa.targetedBlock
-    const useAimed = aimedNow && isUseBlock(aimedNow.blockID)
-    if (breaking && !useAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    const doorAimed = aimedNow && isDoor(aimedNow.blockID)
+    if (breaking && !doorAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
     const tget = noa.targetedBlock
@@ -1857,11 +1883,7 @@ function targetHit() {
   return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), face: t }
 }
 canvas.addEventListener('pointerdown', (e) => {
-  if (armResume && (e.button === 0 || e.button < 0)) {
-    armResume = 0
-    try { noa.container.setPointerLock(true) } catch (err) {}
-    return
-  }
+  if ((e.button === 0 || e.button < 0) && eatResume(e)) return
   if (e.button === 0 || e.button < 0) mouseLeft = true
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
@@ -1917,7 +1939,9 @@ canvas.addEventListener('pointerup', (e) => {
   const lookWasTouch = look.pt === 'touch'
   const face = dig && dig.face
   const broke = dig && dig.broke
-  const down = face && face.position ? { id: face.id || face.blockID, x: face.position[0], y: face.position[1], z: face.position[2] } : null
+  const down = face && face.position
+    ? { id: face.id || face.blockID, x: face.position[0], y: face.position[1], z: face.position[2] }
+    : (dig && dig.x != null ? { id: dig.id, x: dig.x, y: dig.y, z: dig.z } : null)
   if (dig && dig.kind === 'touch') {
     if (broke || held < 500) { dig = null; hideCrack() }
     else { dig.draining = true; dig.drainAt = performance.now() }
@@ -1935,14 +1959,23 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
+  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke) {
+    breakAt(down.x, down.y, down.z)
+    dig = null
+    hideCrack()
+    return
+  }
   const touchTap = lookWasTouch && held < 500 && moved < 24 && !broke
   const mouseTap = !lookWasTouch && held < 500 && moved < 8 && !broke
-  if ((touchTap || mouseTap) && down && isUseBlock(down.id)) { placeBlock(face); return }
-  const creativeBlock = !survivalOn() && !!current
-  const survivalBlock = survivalOn() && !!handId && !tapUse
-  if (touchTap && down && (creativeBlock || survivalBlock)) { placeBlock(face); return }
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
+  if ((touchTap || (mouseTap && survivalOn())) && down && isUseBlock(down.id)) { placeBlock(face || upHit); return }
+  const creativeBlock = !survivalOn() && !!current
+  const survivalBlock = survivalOn() && !!handId && !tapUse
+  if (touchTap && (creativeBlock || survivalBlock)) {
+    const spot = (upHit && upHit.position) ? upHit : face
+    if (spot) { placeBlock(spot); return }
+  }
   if (held < 500 && !broke && canUse(down, up, moved, false) && !breakTap) placeBlock(upHit || face)
   if (breakTap && canUse(down, up, moved, false) && !holdHinted) {
     holdHinted = true
@@ -1952,11 +1985,7 @@ canvas.addEventListener('pointerup', (e) => {
 canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
-  if (armResume) {
-    armResume = 0
-    try { noa.container.setPointerLock(true) } catch (err) {}
-    return
-  }
+  if (eatResume(e)) return
   const world = noa.container.element
   if (!world || (e.target !== canvas && e.target !== world && !world.contains(e.target))) return
   const snap = targetHit()
@@ -1968,6 +1997,7 @@ window.addEventListener('pointerdown', (e) => {
     z: snap ? snap.position[2] : 0,
     px: e.clientX, py: e.clientY, moved: 0, t: e.timeStamp, pid: e.pointerId,
     interactive, repeated: false, placed: false,
+    locked: !!(document.pointerLockElement || noa.container.hasPointerLock),
   }
   if (!TOUCH_UI && snap && !interactive) {
     mouseRight = true
@@ -1997,12 +2027,17 @@ function finishRight(e) {
   const press = rightPress
   rightPress = null
   mouseRight = false
+  if (anyCard()) return
   if (press.placed || press.repeated || inspectOn) return
   if (e && e.pointerType === 'touch' && e.timeStamp - press.t >= 500) return
   if (!press.interactive) return
   const upHit = targetHit()
   const down = press.id == null ? null : { id: press.id, x: press.x, y: press.y, z: press.z }
   const up = upHit ? { id: upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
+  if (press.locked) {
+    if (down && up && down.x === up.x && down.y === up.y && down.z === up.z) placeBlock(upHit)
+    return
+  }
   if (canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
 window.addEventListener('pointerup', (e) => {

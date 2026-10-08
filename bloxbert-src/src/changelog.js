@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.68', date: '2026-10-08', lines: {
+    en: ['Cards let go of the mouse, Esc closes just the card, and using, breaking and placing work every time.'],
+    uk: ['Картки відпускають мишу, Esc закриває лише картку, і користування, ламання та ставлення працюють щоразу.'],
+    ru: ['Карточки отпускают мышь, Esc закрывает только карточку, и использование, ломание и установка работают каждый раз.'],
+    es: ['Las tarjetas sueltan el ratón, Esc cierra solo la tarjeta, y usar, romper y colocar funcionan siempre.'],
+    ar: ['البطاقات تترك الفأرة، وزر Esc يغلق البطاقة فقط، والاستخدام والكسر والوضع يعملون في كل مرة.'],
+    'fa-AF': ['کارت‌ها ماوس را رها می‌کنند، Esc فقط کارت را می‌بندد، و استفاده، شکستن و گذاشتن هر بار کار می‌کند.'],
+    rw: ['Amakarita arekura imbeba, Esc ifunga gusa ikarita, kandi gukoresha, kuvuna no gushyira bikora buri gihe.'],
+    ti: ['ካርድታት ኣንጭዋ ይለቕቓ፡ Esc ነቲ ካርድ ጥራይ ይዕጽዎ፡ ምጥቃምን ምስባርን ምቕማጥን ድማ ኩሉ ግዜ ይሰርሑ።'],
+  }},
   { v: '2.5.67', date: '2026-10-08', lines: {
     en: ['Drag things in your Bag and Build Tray by mouse or finger; the same items stack together.'],
     uk: ['Перетягуй речі в Сумці та Лотоку збірки мишею або пальцем; однакові речі складаються разом.'],
