@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Looking around never says Too far away by mistake, and door card buttons wait for your finger to lift.',
+    whatsNewBody: 'Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -209,7 +209,7 @@ const NEXT = {
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'Огляд навколо ніколи помилково не каже «Занадто далеко», і кнопки картки дверей чекають, доки підніметься палець.',
+    whatsNewBody: 'Піч, Верстак і Скриня мають одну панель машини, куди можна натиснути або перетягнути, і Крафт лишається на екрані.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -222,7 +222,7 @@ const NEXT = {
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: 'Огляд вокруг никогда по ошибке не говорит «Слишком далеко», и кнопки карточки двери ждут, пока палец поднимется.',
+    whatsNewBody: 'Печь, Верстак и Сундук делят одну панель машины, куда можно нажать или перетащить, и Крафт остаётся на экране.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -235,7 +235,7 @@ const NEXT = {
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'Mirar alrededor nunca dice Demasiado lejos por error, y los botones de la tarjeta de la puerta esperan a que levantes el dedo.',
+    whatsNewBody: 'El horno, el banco y la caja comparten un panel de máquina donde puedes pulsar o arrastrar, y fabricar se queda en pantalla.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -248,7 +248,7 @@ const NEXT = {
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: 'النظر حولك لا يقول بعيد جداً بالخطأ، وأزرار بطاقة الباب تنتظر أن ترفع إصبعك.',
+    whatsNewBody: 'الفرن والمنضدة والصندوق يتشاركون لوحة آلة يمكنك النقر أو السحب إليها، والتصنيع يبقى على الشاشة.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -261,7 +261,7 @@ const NEXT = {
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: 'نگاه به اطراف هرگز به اشتباه «خیلی دور است» نمی‌گوید، و دکمه‌های کارت در منتظر بلند شدن انگشت می‌مانند.',
+    whatsNewBody: 'تنور، میز کار و صندوق یک صفحهٔ ماشین دارند که می‌توانی در آن بزنی یا بکشی، و ساخت روی صفحه می‌ماند.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -274,7 +274,7 @@ const NEXT = {
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Kureba hirya no hino ntibivuga Kiri kure cyane ku buryo bw\'ikosa, kandi buto z\'ikarita y\'urugi zirategereza urutoki kuzamuka.',
+    whatsNewBody: 'Ibyoto, ameza n\'agasanduku bifite ikarita imwe ya mashini ushobora gukanda cyangwa gukururira, kandi gukora biguma ku rubuga.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -287,7 +287,7 @@ const NEXT = {
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: 'ኣብ ዙርያ ምርኣይ ብጌጋ ኣዝዩ ርሑቕ እዩ ኣይብልን፡ ቁልፊታት ካርድ ማዕጾ ድማ ኣጻብዕቲ ክትልዕል ይጽበዩ።',
+    whatsNewBody: 'እቶን፡ ሰደቓን ሳንዱቅን ሓደ ፓነል ማሽን ኣለዎም ክትጎትእ ወይ ክትስሕብ ትኽእል፡ ምስራሕ ድማ ኣብ ስክሪን ይቕጽል።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',

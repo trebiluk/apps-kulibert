@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.72', date: '2026-10-08', lines: {
+    en: ['Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.'],
+    uk: ['Піч, Верстак і Скриня мають одну панель машини, куди можна натиснути або перетягнути, і Крафт лишається на екрані.'],
+    ru: ['Печь, Верстак и Сундук делят одну панель машины, куда можно нажать или перетащить, и Крафт остаётся на экране.'],
+    es: ['El horno, el banco y la caja comparten un panel de máquina donde puedes pulsar o arrastrar, y fabricar se queda en pantalla.'],
+    ar: ['الفرن والمنضدة والصندوق يتشاركون لوحة آلة يمكنك النقر أو السحب إليها، والتصنيع يبقى على الشاشة.'],
+    'fa-AF': ['تنور، میز کار و صندوق یک صفحهٔ ماشین دارند که می‌توانی در آن بزنی یا بکشی، و ساخت روی صفحه می‌ماند.'],
+    rw: ['Ibyoto, ameza n\'agasanduku bifite ikarita imwe ya mashini ushobora gukanda cyangwa gukururira, kandi gukora biguma ku rubuga.'],
+    ti: ['እቶን፡ ሰደቓን ሳንዱቅን ሓደ ፓነል ማሽን ኣለዎም ክትጎትእ ወይ ክትስሕብ ትኽእል፡ ምስራሕ ድማ ኣብ ስክሪን ይቕጽል።'],
+  }},
   { v: '2.5.70', date: '2026-10-08', lines: {
     en: ['Looking around never says Too far away by mistake, and door card buttons wait for your finger to lift.'],
     uk: ['Огляд навколо ніколи помилково не каже «Занадто далеко», і кнопки картки дверей чекають, доки підніметься палець.'],

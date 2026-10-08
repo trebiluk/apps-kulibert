@@ -334,7 +334,7 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
   #sheet[data-panel="crafting"] .bag-strip{display:grid;grid-template-rows:repeat(2,56px);grid-auto-flow:column;grid-auto-columns:56px;overflow-x:auto;max-width:100%}
 }
 @media (max-height:480px) and (min-width:700px){
-  #sheet[data-panel="crafting"] .book{overflow:auto;max-height:calc(100vh - 120px);padding-bottom:56px}
+  #sheet[data-panel="crafting"] .book{overflow:auto;max-height:100%;padding-bottom:8px}
   #sheet[data-panel="crafting"] .book-row{max-width:100%}
   #sheet[data-panel="crafting"] .tray{display:grid;grid-template-columns:auto auto;grid-template-areas:"line strip" "gate strip" "chip strip" "keys strip";align-items:start;justify-content:start}
   #sheet[data-panel="crafting"] .tray-line{grid-area:line}
@@ -344,13 +344,51 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
   #sheet[data-panel="crafting"] .bag-strip{grid-area:strip;display:grid;grid-template-columns:repeat(3,56px);grid-auto-rows:56px;align-content:start;max-height:calc(5 * 56px + 4 * 6px);overflow:auto}
 }
 #sheet[data-panel="station"] .station-crate,
-#sheet[data-panel="bench"] .station-crate{display:grid;grid-template-columns:88px minmax(56px,1fr) 96px;grid-template-areas:"in arrow out" "fuel arrow out" "picks picks picks";gap:8px}
-#sheet[data-panel="station"] .slot-in,#sheet[data-panel="bench"] .slot-in{grid-area:in}
-#sheet[data-panel="station"] .slot-fuel,#sheet[data-panel="bench"] .slot-fuel{grid-area:fuel}
-#sheet[data-panel="station"] .arrow-bar,#sheet[data-panel="bench"] .arrow-bar{grid-area:arrow;align-self:center}
-#sheet[data-panel="station"] .slot-out,#sheet[data-panel="bench"] .slot-out{grid-area:out;min-width:80px;min-height:80px;border:2px solid #22D3EE}
-#sheet[data-panel="station"] .oven-picks{grid-area:picks;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+#sheet[data-panel="bench"] .station-crate,
+#sheet[data-panel="box"] .machine{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+#sheet .machine-head{display:flex;align-items:center;gap:8px}
+#sheet .machine-head .gic{width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center}
+#sheet .machine-head .gic canvas,#sheet .machine-head .gic svg{width:36px;height:36px}
+#sheet .machine-name{display:block;font-size:16px;line-height:1.2;font-weight:800}
+#sheet .machine-status{margin:2px 0 0;font-weight:700;line-height:1.3}
+#sheet .machine-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+#sheet .machine-row .well{width:56px;min-width:56px;height:56px;min-height:56px}
+#sheet[data-panel="station"] .bag-strip,
+#sheet[data-panel="box"] .bag-strip{display:flex;flex-wrap:wrap;gap:6px;max-width:100%;min-height:56px;align-self:stretch}
+#sheet[data-panel="station"] .bag-strip .well,
+#sheet[data-panel="box"] .bag-strip .well{position:relative;box-sizing:border-box;width:56px;min-width:56px;height:56px;min-height:56px;padding:2px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;color:#E6EEF2;touch-action:none}
+#sheet[data-panel="station"] .bag-strip .well.pick,
+#sheet[data-panel="box"] .bag-strip .well.pick{box-shadow:0 0 0 3px #22D3EE}
+#sheet[data-panel="station"] .badge,
+#sheet[data-panel="box"] .badge{position:absolute;top:2px;inset-inline-start:2px;background:#0E1A22;border-radius:4px;padding:0 3px;font-size:12px;font-weight:700}
+#sheet .machine-wells{display:grid;grid-template-columns:repeat(6,56px);gap:6px}
+#sheet .machine-wells .well{position:relative;width:56px;min-width:56px;height:56px;min-height:56px;padding:2px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;color:#E6EEF2;display:flex;align-items:center;justify-content:center}
+#sheet .machine-wells .well.empty{opacity:.45}
+#sheet .machine-wells .glbl{display:none}
+#sheet[data-panel="station"] .slot-in,#sheet[data-panel="bench"] .slot-in{grid-area:auto}
+#sheet[data-panel="station"] .slot-fuel,#sheet[data-panel="bench"] .slot-fuel{grid-area:auto}
+#sheet[data-panel="station"] .arrow-bar,#sheet[data-panel="bench"] .arrow-bar{grid-area:auto;align-self:center;width:72px}
+#sheet[data-panel="station"] .slot-out,#sheet[data-panel="bench"] .slot-out{grid-area:auto;min-width:56px;min-height:56px;border:2px solid #22D3EE}
+html[dir=rtl] #sheet .machine-row{direction:rtl}
+html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
+#sheet[data-panel="crafting"],
+#sheet[data-panel="station"],
+#sheet[data-panel="bench"],
+#sheet[data-panel="box"]{align-items:center;background:rgba(6,12,16,.82)}
+#sheet[data-panel="crafting"] .sheet-bar,
+#sheet[data-panel="station"] .sheet-bar,
+#sheet[data-panel="bench"] .sheet-bar,
+#sheet[data-panel="box"] .sheet-bar,
+#sheet[data-panel="crafting"] #sheet-body,
+#sheet[data-panel="station"] #sheet-body,
+#sheet[data-panel="bench"] #sheet-body,
+#sheet[data-panel="box"] #sheet-body{width:min(760px,100%)}
+@media (max-height:500px){
+  #sheet[data-panel="box"] .machine-wells{grid-template-columns:repeat(9,44px);gap:4px}
+  #sheet[data-panel="box"] .machine-wells .well{width:44px;height:44px;min-width:44px;min-height:44px}
+}
 #sheet[data-panel="station"] .gtile,#sheet[data-panel="bench"] .gtile{position:relative;min-width:64px;min-height:64px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;box-shadow:inset 0 3px 0 #0B2A30;color:#E6EEF2}
+#sheet .machine-row .slot-fuel,#sheet .machine-row .slot-in,#sheet .machine-row .slot-out{width:56px;min-width:56px;height:56px;min-height:56px}
 #sheet[data-panel="station"] .oven-picks .gtile{flex:0 0 auto;width:auto;max-width:100%}
 #sheet[data-panel="station"] .arrow-bar,#sheet[data-panel="bench"] .arrow-bar{position:relative;height:36px;background:#08131A;clip-path:polygon(0 22%,72% 22%,72% 0,100% 50%,72% 100%,72% 78%,0 78%)}
 #sheet[data-panel="station"] .arrow-fill,#sheet[data-panel="bench"] .arrow-fill{position:absolute;left:0;top:0;bottom:0;background:#22D3EE;max-width:100%}
@@ -373,6 +411,13 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 @media (min-width:700px){
   #sheet[data-panel="crafting"] .build-tray{flex-direction:row;align-items:flex-start}
   #sheet[data-panel="crafting"] .book,#sheet[data-panel="crafting"] .tray{flex:1 1 0;min-width:0}
+}
+@media (max-height:500px) and (min-width:700px){
+  #sheet[data-panel="crafting"] #sheet-body{overflow:hidden;display:flex;flex-direction:column;min-height:0}
+  #sheet[data-panel="crafting"] .ggrid{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;height:100%;overflow:hidden}
+  #sheet[data-panel="crafting"] .build-tray{flex:1 1 auto;min-height:0;height:100%;overflow:hidden;align-items:stretch}
+  #sheet[data-panel="crafting"] .book{overflow:auto;min-height:0;max-height:100%;padding-bottom:4px}
+  #sheet[data-panel="crafting"] .tray{min-height:0;max-height:100%;overflow:auto}
 }
 @keyframes bt-in{from{transform:translateX(-12px);opacity:.35}to{transform:none;opacity:1}}
 @keyframes bt-squash{0%{transform:scale(1,1)}35%{transform:scale(1.12,.82)}100%{transform:scale(1,1)}}
@@ -463,6 +508,12 @@ body.mode-creative #hotbar .slot:not(.bag-tile){flex:0 0 56px}
   #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .well{width:48px;height:48px;min-width:48px;min-height:48px}
   #sheet[data-panel=inventory] .bag-card{flex:0 0 210px;position:sticky;top:0}
 }
+@media (min-width:700px) and (max-height:500px){
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .wells{grid-template-columns:repeat(9,44px);gap:4px;padding:4px 4px 6px}
+  #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .well{width:44px;height:44px;min-width:44px;min-height:44px}
+  #sheet[data-panel=inventory] .bag-card{flex-basis:180px}
+  #sheet[data-panel=inventory] .crate-tab{margin-top:4px}
+}
 @media (max-width:699px){
   #sheet[data-panel=inventory] #sheet-body{flex:1 1 auto;display:flex;flex-direction:column;max-height:none}
   #sheet[data-panel=inventory] .ggrid.baggrid{flex:1 1 auto;width:100%}
@@ -511,7 +562,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.70</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.72</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -550,7 +601,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Looking around never says Too far away by mistake, and door card buttons wait for your finger to lift.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -650,7 +701,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.70" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.70" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.72" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.72" defer></script>
 </body>
 </html>

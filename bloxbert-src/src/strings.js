@@ -27,6 +27,7 @@ export const STR = {
     grass: 'Grass', dirt: 'Dirt', stone: 'Stone', slate: 'Slate', coal: 'Coal stone', sand: 'Sand', gravel: 'Gravel',
     brickRed: 'Red brick', brickGrey: 'Grey brick', planks: 'Planks', log: 'Log', leaves: 'Leaves',
     woolBlue: 'Blue wool', woolGreen: 'Green wool', woolRed: 'Red wool', woolTan: 'Tan wool', snow: 'Snow', ice: 'Ice', redSand: 'Red sand', glass: 'Glass',
+    needsFuel: 'Needs fuel', bakingNow: 'Baking...', takeYour: 'Take your {item}',
   },
   uk: {
     menu: 'Меню', close: 'Закрити', settings: 'Налаштування', whatsNew: 'Що нового', help: 'Допомога',
@@ -55,6 +56,7 @@ export const STR = {
     grass: 'Трава', dirt: 'Земля', stone: 'Камінь', slate: 'Сланець', coal: 'Вугілля', sand: 'Пісок', gravel: 'Гравій',
     brickRed: 'Червона цегла', brickGrey: 'Сіра цегла', planks: 'Дошки', log: 'Колода', leaves: 'Листя',
     woolBlue: 'Синя вовна', woolGreen: 'Зелена вовна', woolRed: 'Червона вовна', woolTan: 'Пісочна вовна', snow: 'Сніг', ice: 'Лід', redSand: 'Рудий пісок', glass: 'Скло',
+    needsFuel: 'Потрібне паливо', bakingNow: 'Печеться...', takeYour: 'Забери свій {item}',
   },
   ru: {
     menu: 'Меню', close: 'Закрыть', settings: 'Настройки', whatsNew: 'Что нового', help: 'Помощь',
@@ -83,6 +85,7 @@ export const STR = {
     grass: 'Трава', dirt: 'Земля', stone: 'Камень', slate: 'Сланец', coal: 'Уголь', sand: 'Песок', gravel: 'Гравий',
     brickRed: 'Красный кирпич', brickGrey: 'Серый кирпич', planks: 'Доски', log: 'Бревно', leaves: 'Листва',
     woolBlue: 'Синяя шерсть', woolGreen: 'Зелёная шерсть', woolRed: 'Красная шерсть', woolTan: 'Песочная шерсть', snow: 'Снег', ice: 'Лёд', redSand: 'Рыжий песок', glass: 'Стекло',
+    needsFuel: 'Нужно топливо', bakingNow: 'Печётся...', takeYour: 'Забери свой {item}',
   },
   es: {
     menu: 'Menú', close: 'Cerrar', settings: 'Ajustes', whatsNew: 'Novedades', help: 'Ayuda',
@@ -111,6 +114,7 @@ export const STR = {
     grass: 'Césped', dirt: 'Tierra', stone: 'Piedra', slate: 'Pizarra', coal: 'Piedra con carbón', sand: 'Arena', gravel: 'Grava',
     brickRed: 'Ladrillo rojo', brickGrey: 'Ladrillo gris', planks: 'Tablas', log: 'Tronco', leaves: 'Hojas',
     woolBlue: 'Lana azul', woolGreen: 'Lana verde', woolRed: 'Lana roja', woolTan: 'Lana arena', snow: 'Nieve', ice: 'Hielo', redSand: 'Arena roja', glass: 'Vidrio',
+    needsFuel: 'Necesita combustible', bakingNow: 'Horneando...', takeYour: 'Toma tu {item}',
   },
   ar: {
     menu: 'القائمة', close: 'إغلاق', settings: 'الإعدادات', whatsNew: 'ما الجديد', help: 'مساعدة',
@@ -139,6 +143,7 @@ export const STR = {
     grass: 'عشب', dirt: 'تراب', stone: 'حجر', slate: 'أردواز', coal: 'حجر فحم', sand: 'رمل', gravel: 'حصى',
     brickRed: 'طوب أحمر', brickGrey: 'طوب رمادي', planks: 'ألواح', log: 'جذع', leaves: 'أوراق',
     woolBlue: 'صوف أزرق', woolGreen: 'صوف أخضر', woolRed: 'صوف أحمر', woolTan: 'صوف ترابي', snow: 'ثلج', ice: 'جليد', redSand: 'رمل أحمر', glass: 'زجاج',
+    needsFuel: 'يحتاج وقوداً', bakingNow: 'يُخبز...', takeYour: 'خذ {item}',
   },
   'fa-AF': {
     menu: 'فهرست', close: 'بستن', settings: 'تنظیمات', whatsNew: 'تازه‌ها', help: 'کمک',
@@ -167,6 +172,7 @@ export const STR = {
     grass: 'چمن', dirt: 'خاک', stone: 'سنگ', slate: 'تخته‌سنگ', coal: 'سنگ زغال', sand: 'ریگ', gravel: 'جغل',
     brickRed: 'خشت سرخ', brickGrey: 'خشت خاکستری', planks: 'تخته', log: 'تنه', leaves: 'برگ',
     woolBlue: 'پشم آبی', woolGreen: 'پشم سبز', woolRed: 'پشم سرخ', woolTan: 'پشم نخودی', snow: 'برف', ice: 'یخ', redSand: 'ریگ سرخ', glass: 'شیشه',
+    needsFuel: 'سوخت لازم است', bakingNow: 'در حال پختن...', takeYour: '{item} را بردار',
   },
   rw: {
     menu: 'Ibikubiyemo', close: 'Funga', settings: 'Igenamiterere', whatsNew: 'Ibishya', help: 'Ubufasha',
@@ -195,6 +201,7 @@ export const STR = {
     grass: 'Ibyatsi', dirt: 'Ubutaka', stone: 'Ibuye', slate: 'Ikibuye cyijimye', coal: 'Amakara', sand: 'Umucanga', gravel: 'Amabuye mato',
     brickRed: 'Itarafuri itukura', brickGrey: 'Itarafuri y’ikigina', planks: 'Imbaho', log: 'Igiti', leaves: 'Amababi',
     woolBlue: 'Ubwoya bw’ubururu', woolGreen: 'Ubwoya bw’icyatsi', woolRed: 'Ubwoya bw’umutuku', woolTan: 'Ubwoya bw’umuhondo', snow: 'Urubura', ice: 'Urubura rukomeye', redSand: 'Umucanga utukura', glass: 'Ikirahure',
+    needsFuel: 'Ikeneye amakara', bakingNow: 'Birateka...', takeYour: 'Fata {item} yawe',
   },
   ti: {
     menu: 'ዝርዝር', close: 'ዕጸው', settings: 'ቅጥዕታት', whatsNew: 'ሓድሽ', help: 'ሓገዝ',
@@ -223,5 +230,6 @@ export const STR = {
     grass: 'ሳዕሪ', dirt: 'ሓመድ', stone: 'እምኒ', slate: 'ጽላት', coal: 'እምኒ ከሰል', sand: 'ሑጻ', gravel: 'ጸርኒ',
     brickRed: 'ቀይሕ ሽቡክ', brickGrey: 'ሃሞሽ ሽቡክ', planks: 'ጣውላ', log: 'ጉንዲ', leaves: 'ቆጽሊ',
     woolBlue: 'ሰማያዊ ጸምሪ', woolGreen: 'ቀጠልያ ጸምሪ', woolRed: 'ቀያሕ ጸምሪ', woolTan: 'ቡናዊ ጸምሪ', snow: 'በረድ', ice: 'በረድ ዕሩይ', redSand: 'ቀያሕ ሑጻ', glass: 'መስታወት',
+    needsFuel: 'ነዳዲ የድሊ', bakingNow: 'ይጥበስ ኣሎ...', takeYour: '{item} ኣውጽእ',
   },
 }

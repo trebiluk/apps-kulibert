@@ -29,6 +29,8 @@ export function mountPanels(api) {
     fill(grid)
     body.append(grid)
     sheet.dataset.panel = id
+    body.scrollTop = 0
+    requestAnimationFrame(() => { body.scrollTop = 0 })
   }
   function close() {
     sheet.hidden = true
@@ -122,5 +124,6 @@ export function mountPanels(api) {
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)
   document.getElementById('sheet-x').addEventListener('click', close)
+  if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
   return { openRoot, open, close, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }

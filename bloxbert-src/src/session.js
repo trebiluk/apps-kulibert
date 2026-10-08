@@ -10,14 +10,16 @@ import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
-import { emptyBox, putInSlots } from './box.js'
+import { emptyBox } from './box.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
+import { bindStationBag } from './stations.js'
 import { berryTuft } from './worldgen.js'
 
 export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
   let bag = bags.survival
+  bindStationBag(() => bag.slots)
   const wallet = createWallet(ECON)
   const meta = new Map()
   let mode = 'survival'
@@ -25,6 +27,7 @@ export function createSession(api) {
   const hotSlot = { survival: 0, creative: 0 }
   let hot = 0
   let bagSel = -1
+  let boxPick = -1
   let bagSkip = 0
   let day = localDay()
   function localDay() {
@@ -466,7 +469,7 @@ export function createSession(api) {
     trayGesture = 0
     if (opts.canStart && !opts.canStart()) return
     const pid = e.pointerId
-    const start = e.pointerType === 'touch' ? 10 : 6
+    const start = opts.distance != null ? opts.distance : (e.pointerType === 'touch' ? 10 : 6)
     const sx = e.clientX
     const sy = e.clientY
     let dragged = false
@@ -497,9 +500,11 @@ export function createSession(api) {
       clearMarks()
       if (ghost) ghost.remove()
       ghost = null
+      if (dragged) {
+        bagSkip = performance.now()
+        trayGesture = performance.now()
+      }
       if (!dragged || cancel) return
-      bagSkip = performance.now()
-      trayGesture = performance.now()
       const t = ev ? targetAt(ev.clientX, ev.clientY) : null
       if (t && opts.canDrop(t)) opts.onDrop(t)
     }
@@ -520,7 +525,7 @@ export function createSession(api) {
       paint(ev.clientX, ev.clientY)
     }
     const up = (ev) => finish(ev, ev.type === 'pointercancel')
-    const onResize = () => { if (!el.isConnected) finish(null, true) }
+    const onResize = () => finish(null, true)
     try { el.setPointerCapture(pid) } catch (err) {}
     window.addEventListener('pointermove', move, true)
     window.addEventListener('pointerup', up, true)
@@ -861,6 +866,11 @@ export function createSession(api) {
   }
   function paintCraft(g) {
     armTrayWatch()
+    const sheetBody = document.getElementById('sheet-body')
+    if (sheetBody) {
+      sheetBody.scrollTop = 0
+      requestAnimationFrame(() => { if (sheetBody.isConnected) sheetBody.scrollTop = 0 })
+    }
     g.innerHTML = ''
     g.classList.add('crate')
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
@@ -1421,47 +1431,148 @@ export function createSession(api) {
   }
   function paintBox(g, key) {
     const rec = boxRec(key)
-    g.classList.add('baggrid')
-    g.append(btn(t('putIn'), () => {
-      const item = selectedItem()
-      if (!item) { api.toast(t('emptySlot')); return }
-      const have = bag.count(item)
-      const moved = putInSlots(rec.slots, item, have)
-      const kept = have - moved.left
-      if (!kept) { api.toast(t('boxFull')); return }
-      if (!bag.take(item, kept)) return
-      rec.slots = moved.slots
-      if (moved.left) api.toast(t('boxFull'))
+    if (paintBox.key !== key) { boxPick = -1; paintBox.key = key }
+    g.innerHTML = ''
+    g.classList.add('crate')
+    const panel = document.createElement('div')
+    panel.className = 'machine station-crate'
+    const head = document.createElement('div')
+    head.className = 'machine-head'
+    const ic = document.createElement('span')
+    ic.className = 'gic'
+    ic.append(itemIcon(ITEMS.box))
+    const words = document.createElement('div')
+    const title = document.createElement('span')
+    title.className = 'machine-name'
+    title.textContent = t('box')
+    const used = rec.slots.filter((s) => s && s.n).length
+    const line = document.createElement('p')
+    line.className = 'machine-status'
+    line.setAttribute('role', 'status')
+    line.textContent = t('filled').replace('{n}', String(used))
+    words.append(title, line)
+    head.append(ic, words)
+    const wells = document.createElement('div')
+    wells.className = 'machine-wells'
+    const repaint = () => { g.innerHTML = ''; paintBox(g, key) }
+    const moveBagSlotToWell = (si, wi) => {
+      const s = bag.slots[si]
+      if (!s || wi < 0) return false
+      const dest = rec.slots[wi]
+      if (!dest) rec.slots[wi] = { item: s.item, n: s.n }
+      else if (dest.item === s.item) {
+        const room = 64 - dest.n
+        if (room <= 0) return false
+        const move = Math.min(room, s.n)
+        dest.n += move
+        s.n -= move
+        if (s.n <= 0) bag.slots[si] = null
+        else { paintHotbar(); if (api.markDirty) api.markDirty(); return true }
+      } else {
+        rec.slots[wi] = { item: s.item, n: s.n }
+        bag.slots[si] = { item: dest.item, n: dest.n }
+      }
+      if (!dest) bag.slots[si] = null
       paintHotbar()
       if (api.markDirty) api.markDirty()
-      g.innerHTML = ''
-      paintBox(g, key)
-    }))
-    const put = g.lastChild || g.children[g.children.length - 1]
-    if (put && put.classList) put.classList.add('wide')
+      return true
+    }
+    const takeWell = (i) => {
+      const s = rec.slots[i]
+      if (!s) return false
+      const left = bag.add(s.item, s.n)
+      if (left === s.n) { api.toast(t('bagFull')); return false }
+      rec.slots[i] = left ? { item: s.item, n: left } : null
+      paintHotbar()
+      if (api.markDirty) api.markDirty()
+      return true
+    }
     rec.slots.forEach((s, i) => {
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'gtile slot'
-      const info = s && ITEMS[s.item]
-      if (s && info) {
-        b.innerHTML = '<span class="gic">' + (info.svg ? itemSvg(info.svg) : info.letter) + '</span><span class="glbl"></span>'
-        const name = b.querySelector('.glbl')
-        if (name) name.textContent = String(s.n)
+      b.className = 'well gtile box-well' + (s ? '' : ' empty')
+      b.dataset.i = String(i)
+      const pic = document.createElement('span')
+      pic.className = 'gic art'
+      if (s) pic.append(itemIcon(ITEMS[s.item]))
+      b.append(pic)
+      if (s) {
+        const count = document.createElement('span')
+        count.className = 'badge'
+        count.textContent = String(s.n)
+        b.append(count)
       }
+      const lab = document.createElement('span')
+      lab.className = 'glbl'
+      lab.textContent = s ? itemName(s.item) : t('emptySlot')
+      b.append(lab)
       b.setAttribute('aria-label', s ? itemName(s.item) + ' ' + s.n : t('emptySlot'))
-      if (!s) b.disabled = true
-      else b.addEventListener('click', () => {
-        const left = bag.add(s.item, s.n)
-        if (left === s.n) { api.toast(t('bagFull')); return }
-        rec.slots[i] = left ? { item: s.item, n: left } : null
-        paintHotbar()
-        if (api.markDirty) api.markDirty()
-        g.innerHTML = ''
-        paintBox(g, key)
+      if (s) {
+        const item = s.item
+        b.addEventListener('pointerdown', (e) => {
+          startDrag(b, e, {
+            distance: 10,
+            ghostClass: 'bag-ghost',
+            targets: '#sheet .bag-strip, #sheet .bag-bit',
+            icon: () => itemIcon(ITEMS[item]),
+            canDrop: () => true,
+            onDrop: () => { takeWell(i); repaint() },
+          })
+        })
+      }
+      b.addEventListener('click', () => {
+        if (bagSkip && performance.now() - bagSkip < 700) return
+        if (boxPick >= 0) {
+          if (moveBagSlotToWell(boxPick, i)) { boxPick = -1; repaint() }
+          return
+        }
+        if (s && takeWell(i)) repaint()
       })
-      g.append(b)
+      wells.append(b)
     })
+    const strip = document.createElement('div')
+    strip.className = 'bag-strip'
+    bag.slots.forEach((s, si) => {
+      if (!s) return
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'well bag-bit' + (boxPick === si ? ' pick' : '')
+      b.dataset.item = s.item
+      b.dataset.slot = String(si)
+      b.setAttribute('aria-pressed', String(boxPick === si))
+      b.setAttribute('aria-label', itemName(s.item) + ' ' + s.n)
+      const pic = document.createElement('span')
+      pic.className = 'art'
+      pic.append(itemIcon(ITEMS[s.item]))
+      b.append(pic)
+      const badge = document.createElement('span')
+      badge.className = 'badge'
+      badge.textContent = String(s.n)
+      b.append(badge)
+      const item = s.item
+      b.addEventListener('pointerdown', (e) => {
+        startDrag(b, e, {
+          distance: 10,
+          ghostClass: 'bag-ghost',
+          targets: '#sheet .box-well',
+          icon: () => itemIcon(ITEMS[item]),
+          canDrop: (well) => {
+            const dest = rec.slots[+well.dataset.i]
+            if (!dest || dest.item === item) return !dest || dest.n < 64
+            return true
+          },
+          onDrop: (well) => { if (moveBagSlotToWell(si, +well.dataset.i)) { boxPick = -1; repaint() } },
+        })
+      })
+      b.addEventListener('click', () => {
+        if (bagSkip && performance.now() - bagSkip < 700) return
+        boxPick = boxPick === si ? -1 : si
+        repaint()
+      })
+      strip.append(b)
+    })
+    panel.append(head, wells, strip)
+    g.append(panel)
   }
   function paintBunk(g, key) {
     g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() }))
