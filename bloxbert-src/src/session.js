@@ -600,7 +600,63 @@ export function createSession(api) {
         b.append(lbl)
         b.setAttribute('aria-label', itemName(k))
         b.title = itemName(k)
+        b.addEventListener('pointerdown', (e) => {
+          if (e.button != null && e.button !== 0) return
+          const blockId = item.block
+          const bar = document.getElementById('hotbar')
+          const sx = e.clientX
+          const sy = e.clientY
+          const pid = e.pointerId
+          const thresh = e.pointerType === 'touch' ? 10 : 6
+          const raise = (ev) => {
+            if (ev.pointerId !== pid) return
+            const dx = ev.clientX - sx
+            const dy = ev.clientY - sy
+            if (dx * dx + dy * dy < thresh * thresh) return
+            if (bar) bar.style.zIndex = '70'
+            window.removeEventListener('pointermove', raise, true)
+          }
+          const paintMark = () => {
+            for (const n of document.querySelectorAll('#hotbar .slot')) {
+              if (n.classList.contains('drop-ok')) {
+                n.style.outline = '3px solid #22D3EE'
+                n.style.outlineOffset = '1px'
+              } else if (n.style.outline) {
+                n.style.outline = ''
+                n.style.outlineOffset = ''
+              }
+            }
+          }
+          const end = () => {
+            window.removeEventListener('pointermove', raise, true)
+            window.removeEventListener('pointermove', paintMark, true)
+            window.removeEventListener('pointerup', end, true)
+            window.removeEventListener('pointercancel', end, true)
+            setTimeout(() => {
+              if (bar) bar.style.zIndex = ''
+              for (const n of document.querySelectorAll('#hotbar .slot')) {
+                n.style.outline = ''
+                n.style.outlineOffset = ''
+              }
+            }, 0)
+          }
+          window.addEventListener('pointermove', raise, true)
+          startDrag(b, e, {
+            ghostClass: 'bag-ghost',
+            targets: '#hotbar .slot[data-slot]',
+            icon: () => (api.blockIcon ? api.blockIcon(blockId) : document.createElement('span')),
+            canDrop: () => true,
+            onDrop: (slot) => {
+              const i = Number(slot.dataset.slot)
+              if (api.putPalette) api.putPalette(i, blockId)
+            },
+          })
+          window.addEventListener('pointermove', paintMark, true)
+          window.addEventListener('pointerup', end, true)
+          window.addEventListener('pointercancel', end, true)
+        })
         b.addEventListener('click', () => {
+          if (bagSkip && performance.now() - bagSkip < 700) return
           if (api.assign) api.assign(item.block, k)
           api.toast(itemName(k))
           for (const el of wells.querySelectorAll('.well.on')) {

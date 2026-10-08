@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.69', date: '2026-10-08', lines: {
+    en: ['The Workbench opens with a tap, far blocks say Too far away, and you can drag Creative blocks into your hotbar.'],
+    uk: ['Верстак відкривається дотиком, далекі блоки кажуть «Занадто далеко», і блоки Творчості можна перетягнути на панель.'],
+    ru: ['Верстак открывается нажатием, дальние блоки говорят «Слишком далеко», и блоки Творчества можно перетащить на панель.'],
+    es: ['El banco se abre con un toque, los bloques lejanos dicen Demasiado lejos, y puedes arrastrar bloques de Creativo a tu barra.'],
+    ar: ['المنضدة تفتح بلمسة، والمكعبات البعيدة تقول بعيد جداً، ويمكنك سحب مكعبات الإبداع إلى الشريط.'],
+    'fa-AF': ['میز کار با یک ضربه باز می‌شود، بلاک‌های دور می‌گویند خیلی دور است، و بلاک‌های خلاق را می‌توانی به نوار بکشی.'],
+    rw: ['Ameza afunguka ukanda, ibice biri kure bivuga Kiri kure cyane, kandi ushobora gukurura ibice bya Creative mu murongo.'],
+    ti: ['ሰደቓ ብጠውቂ ይኽፈት፡ ርሑቕ ብሎካት ኣዝዩ ርሑቕ እዩ ይብሉ፡ ናይ ፈጠራ ብሎካት ድማ ናብ መስመር ትስሕቦም።'],
+  }},
   { v: '2.5.68', date: '2026-10-08', lines: {
     en: ['Cards let go of the mouse, Esc closes just the card, and using, breaking and placing work every time.'],
     uk: ['Картки відпускають мишу, Esc закриває лише картку, і користування, ламання та ставлення працюють щоразу.'],

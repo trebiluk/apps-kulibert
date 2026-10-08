@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Cards let go of the mouse, Esc closes just the card, and using, breaking and placing work every time.',
+    whatsNewBody: 'The Workbench opens with a tap, far blocks say Too far away, and you can drag Creative blocks into your hotbar.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -209,7 +209,7 @@ const NEXT = {
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'Картки відпускають мишу, Esc закриває лише картку, і користування, ламання та ставлення працюють щоразу.',
+    whatsNewBody: 'Верстак відкривається дотиком, далекі блоки кажуть «Занадто далеко», і блоки Творчості можна перетягнути на панель.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -222,7 +222,7 @@ const NEXT = {
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: 'Карточки отпускают мышь, Esc закрывает только карточку, и использование, ломание и установка работают каждый раз.',
+    whatsNewBody: 'Верстак открывается нажатием, дальние блоки говорят «Слишком далеко», и блоки Творчества можно перетащить на панель.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -235,7 +235,7 @@ const NEXT = {
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'Las tarjetas sueltan el ratón, Esc cierra solo la tarjeta, y usar, romper y colocar funcionan siempre.',
+    whatsNewBody: 'El banco se abre con un toque, los bloques lejanos dicen Demasiado lejos, y puedes arrastrar bloques de Creativo a tu barra.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -248,7 +248,7 @@ const NEXT = {
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: 'البطاقات تترك الفأرة، وزر Esc يغلق البطاقة فقط، والاستخدام والكسر والوضع يعملون في كل مرة.',
+    whatsNewBody: 'المنضدة تفتح بلمسة، والمكعبات البعيدة تقول بعيد جداً، ويمكنك سحب مكعبات الإبداع إلى الشريط.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -261,7 +261,7 @@ const NEXT = {
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: 'کارت‌ها ماوس را رها می‌کنند، Esc فقط کارت را می‌بندد، و استفاده، شکستن و گذاشتن هر بار کار می‌کند.',
+    whatsNewBody: 'میز کار با یک ضربه باز می‌شود، بلاک‌های دور می‌گویند خیلی دور است، و بلاک‌های خلاق را می‌توانی به نوار بکشی.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -274,7 +274,7 @@ const NEXT = {
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Amakarita arekura imbeba, Esc ifunga gusa ikarita, kandi gukoresha, kuvuna no gushyira bikora buri gihe.',
+    whatsNewBody: 'Ameza afunguka ukanda, ibice biri kure bivuga Kiri kure cyane, kandi ushobora gukurura ibice bya Creative mu murongo.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -287,7 +287,7 @@ const NEXT = {
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: 'ካርድታት ኣንጭዋ ይለቕቓ፡ Esc ነቲ ካርድ ጥራይ ይዕጽዎ፡ ምጥቃምን ምስባርን ምቕማጥን ድማ ኩሉ ግዜ ይሰርሑ።',
+    whatsNewBody: 'ሰደቓ ብጠውቂ ይኽፈት፡ ርሑቕ ብሎካት ኣዝዩ ርሑቕ እዩ ይብሉ፡ ናይ ፈጠራ ብሎካት ድማ ናብ መስመር ትስሕቦም።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',

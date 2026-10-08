@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.68'
+const VERSION = '2.5.69'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -476,6 +476,41 @@ function canReach(pos) {
   const p = noa.entities.getPosition(noa.playerEntity)
   return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], reachFor(survivalOn()))
 }
+let farPress = 0
+function toastFar() {
+  if (farPress) return
+  farPress = 1
+  toast(t('tooFar'))
+}
+function releaseFar() { setTimeout(() => { farPress = 0 }, 0) }
+function viewFar() {
+  try {
+    const dist = reachFor(survivalOn()) + 6
+    const hit = noa.pick(null, null, dist, (id) => id !== 0)
+    if (!hit || !hit.position || !hit.normal) return null
+    const nx = Math.round(hit.normal[0]) || 0
+    const ny = Math.round(hit.normal[1]) || 0
+    const nz = Math.round(hit.normal[2]) || 0
+    const ax = Math.floor(hit.position[0])
+    const ay = Math.floor(hit.position[1])
+    const az = Math.floor(hit.position[2])
+    const x = ax - nx
+    const y = ay - ny
+    const z = az - nz
+    const id = getVoxel(x, y, z)
+    if (!id) return null
+    return { id, blockID: id, position: [x, y, z], adjacent: [ax, ay, az] }
+  } catch (e) { return null }
+}
+function noteFar() {
+  const far = viewFar()
+  if (far && !canReach(far.position)) toastFar()
+}
+function reachOpen(pos, repeat) {
+  if (tableMode || canReach(pos)) return true
+  if (!repeat) toastFar()
+  return false
+}
 function breakAt(x, y, z) {
   const id = getVoxel(x, y, z)
   if (!id) return false
@@ -498,7 +533,7 @@ function breakBlock() {
 }
 function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
-  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.bench || id === ID.vend || id === ID.bunk || id === ID.box
+  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box
 }
 function isGear(id) {
   return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN
@@ -526,20 +561,23 @@ function placeBlock(face, opts) {
       return false
     }
     if (aimedBlock.blockID === LANTERN) return false
-    if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { panels.open('shop'); return false }
-    if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { panels.open('station', aimedBlock.position.join(',')); return false }
-    if (aimedBlock.blockID === ID.bench || aimedBlock.blockID === 22) { panels.open('bench', aimedBlock.position.join(',')); return false }
-    if (aimedBlock.blockID === ID.vend) { panels.open('counter', ax + ',' + ay + ',' + az); return false }
-    if (aimedBlock.blockID === ID.bunk) { panels.open('bunk', ax + ',' + ay + ',' + az); return false }
+    if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('shop'); return false }
+    if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('station', aimedBlock.position.join(',')); return false }
+    if (aimedBlock.blockID === ID.workbench || aimedBlock.blockID === 22) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('bench', aimedBlock.position.join(',')); return false }
+    if (aimedBlock.blockID === ID.vend) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('counter', ax + ',' + ay + ',' + az); return false }
+    if (aimedBlock.blockID === ID.bunk) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('bunk', ax + ',' + ay + ',' + az); return false }
     if (aimedBlock.blockID === ID.box && canReach([ax, ay, az])) { panels.open('box', ax + ',' + ay + ',' + az); return false }
   }
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
-    if (!aimedBlock) return false
+    if (!aimedBlock) {
+      if (!repeat) noteFar()
+      return false
+    }
     ;[x, y, z] = aimedBlock.adjacent
     if (!tableMode) {
-      if (!canReach([x, y, z])) { if (!repeat) toast(t('tooFar')); return false }
+      if (!canReach([x, y, z])) { if (!repeat) toastFar(); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
       if (overlapsPlayer(x, y, z, p[0], p[1], p[2])) { if (!repeat) toast(t('standing')); return false }
     }
@@ -811,6 +849,7 @@ session = createSession({
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
+  putPalette: (i, id) => putPalette(i, id),
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
   flash: (name) => flashHeld(name),
   paintBar: () => { paintBar(); selectSlot(selectedSlot) },
@@ -952,6 +991,11 @@ if ($('door-scrim')) $('door-scrim').addEventListener('click', () => {
   if (performance.now() - doorShownAt < 700) return
   hideDoorOpt()
 })
+window.addEventListener('click', (e) => {
+  if (!e.target || !e.target.closest || !e.target.closest('[data-lift]')) return
+  e.preventDefault()
+  e.stopPropagation()
+}, true)
 window.addEventListener('pointerdown', (e) => {
   const el = $('door-opt')
   if (!el || el.hidden) return
@@ -1014,6 +1058,39 @@ function releaseLook() {
   try { noa.container.setPointerLock(false) } catch (e) {}
   try { noa.setPaused(true) } catch (e) {}
   if (session) session.paused = true
+  if (look || mouseLeft) {
+    const card = heldCard()
+    if (card) armLift(card)
+  }
+}
+function heldCard() {
+  for (const id of ['door-opt', 'inspect-card', 'about', 'sheet']) {
+    const el = $(id)
+    if (el && !el.hidden) return el
+  }
+  return null
+}
+function armLift(root) {
+  if (!root) return
+  const token = String(performance.now())
+  const t0 = performance.now()
+  root.dataset.lift = token
+  let ended = false
+  const clear = () => {
+    if (root.dataset.lift !== token) return
+    const wait = 250 - (performance.now() - t0)
+    if (wait > 0) { setTimeout(clear, wait); return }
+    delete root.dataset.lift
+  }
+  const onUp = () => {
+    if (ended) return
+    ended = true
+    window.removeEventListener('pointerup', onUp, true)
+    window.removeEventListener('pointercancel', onUp, true)
+    setTimeout(clear, 0)
+  }
+  window.addEventListener('pointerup', onUp, true)
+  window.addEventListener('pointercancel', onUp, true)
 }
 function anyCard() {
   const door = $('door-opt')
@@ -1230,6 +1307,23 @@ function selectSlot(i) {
   if (el) el.textContent = name
   flashHeld(name)
 }
+function putPalette(i, id) {
+  if (!paletteIds.length) return
+  const n = ((Number(i) % paletteIds.length) + paletteIds.length) % paletteIds.length
+  const j = paletteIds.indexOf(Number(id))
+  if (j >= 0 && j !== n) {
+    const prev = paletteIds[n]
+    paletteIds[n] = paletteIds[j]
+    paletteIds[j] = prev
+  }
+  selectedSlot = n
+  current = paletteIds[n]
+  paintBar()
+  const name = blockName(current)
+  const label = $('current')
+  if (label) label.textContent = name
+  flashHeld(name)
+}
 function pick(id) {
   const i = paletteIds.indexOf(id)
   if (i >= 0) selectSlot(i)
@@ -1269,7 +1363,7 @@ function rayAt(cx, cy) {
     const dx = ray.direction.x, dy = ray.direction.y, dz = ray.direction.z
     const len = Math.hypot(dx, dy, dz) || 1
     const dir = [dx / len, dy / len, dz / len]
-    let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 1
+    let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 6
     for (let i = 0; i < 8 && left > 0.2; i++) {
       const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0)
       if (!hit || !hit.position || !hit.normal) return null
@@ -1617,7 +1711,12 @@ function clampGate(dig, now) {
 }
 function beginDig(kind) {
   const tget = noa.targetedBlock
-  if (!tget) { dig = null; hideCrack(); return }
+  if (!tget) {
+    dig = null
+    hideCrack()
+    if (survivalOn() && !tableMode) noteFar()
+    return
+  }
   const [x, y, z] = tget.position
   const id = getVoxel(x, y, z)
   const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
@@ -1890,13 +1989,20 @@ canvas.addEventListener('pointerdown', (e) => {
   lastPointer = { x: e.clientX, y: e.clientY }
   const finger = look.pt === 'touch'
   const hit = finger ? rayAt(e.clientX, e.clientY) : targetHit()
-  if (hit) {
+  if (hit && finger && !tableMode && !canReach(hit.position)) {
+    toastFar()
+    dig = null
+    hideCrack()
+  } else if (hit) {
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
     const need = isGear(hit.id) ? 1e9 : mineMs(name, survivalOn(), finger, heldTool())
     const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
     const kept = same ? dig.p : 0
     dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
-  } else dig = null
+  } else {
+    dig = null
+    if (!finger && survivalOn()) noteFar()
+  }
 })
 canvas.addEventListener('pointermove', (e) => {
   if (!look || e.pointerId !== look.id) return
@@ -1931,6 +2037,7 @@ canvas.addEventListener('pointermove', (e) => {
   setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
 })
 canvas.addEventListener('pointerup', (e) => {
+  releaseFar()
   if (e.button === 0 || e.button < 0) mouseLeft = false
   if (!look || e.pointerId !== look.id) return
   const moved = look.moved
@@ -1982,7 +2089,7 @@ canvas.addEventListener('pointerup', (e) => {
     toast(t('holdToBreak'))
   }
 })
-canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack() })
+canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack(); releaseFar() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (eatResume(e)) return
@@ -2004,6 +2111,7 @@ window.addEventListener('pointerdown', (e) => {
     placeHoldAt = performance.now()
     rightPress.placed = !!placeBlock(snap)
   } else mouseRight = false
+  if (!snap && !tableMode && !anyCard()) noteFar()
 }, true)
 window.addEventListener('pointermove', (e) => {
   if (!rightPress) return
@@ -2041,10 +2149,11 @@ function finishRight(e) {
   if (canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
 window.addEventListener('pointerup', (e) => {
+  releaseFar()
   if (e.button === 0) mouseLeft = false
   if (e.button === 2) finishRight(e)
 }, true)
-window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false })
+window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false; releaseFar() })
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }
