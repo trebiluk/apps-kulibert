@@ -53,6 +53,10 @@ html[data-kb-bar]:not(.kb-framed) .top{top:48px}
 #door-pick::before{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 4v9' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M8 8l4-4 4 4' fill='none' stroke='%23E6EEF2' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M6 15h12v5H6z' fill='none' stroke='%2322D3EE' stroke-width='2'/%3E%3C/svg%3E")}
 #door-x{width:44px;min-width:44px;padding:0;font-size:22px;line-height:1}
 #door-opt #door-x::before{display:none}
+#door-opt #door-auto,#door-opt #door-lock{flex-direction:row;gap:8px;min-width:168px;justify-content:flex-start}
+#door-opt #door-auto::after,#door-opt #door-lock::after{content:"";width:36px;height:18px;margin-inline-start:auto;border-radius:999px;background:#08131A;border:2px solid #E6EEF2;box-shadow:inset 16px 0 0 #08131A;flex:0 0 36px}
+#door-opt #door-auto[aria-pressed="true"],#door-opt #door-lock[aria-pressed="true"]{background:#1F8A8A}
+#door-opt #door-auto[aria-pressed="true"]::after,#door-opt #door-lock[aria-pressed="true"]::after{background:#22D3EE;border-color:#08131A;box-shadow:inset -16px 0 0 #08131A}
 #door-opt .keycap:active{transform:translateY(2px);border-bottom-width:2px}
 html[data-kp-contrast="1"] #door-opt .door-panel{background-image:none;outline:3px solid #E6EEF2}
 html[data-kp-contrast="1"] #door-opt .keycap,html[data-kp-contrast="1"] #door-pic{outline:2px solid #E6EEF2}
@@ -459,7 +463,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
 #hotbar .bag-tile .gic,#hotbar .bag-tile .gic svg{width:22px;height:22px}
 #hotbar .bag-tile .lbl{display:block;font-size:11px;line-height:1.25;color:#E6EEF2;max-width:none;overflow:visible;height:auto}
 #held-chip{left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%);background:transparent;color:#E6EEF2;border:0;border-radius:0;box-shadow:none;padding:0 8px;font-weight:700;pointer-events:none}
-#held-chip.on{animation:stripname 1.2s ease forwards}
+#held-chip.on{animation:stripname 1.5s ease forwards}
 @keyframes stripname{0%{opacity:0;transform:translateX(-50%) translateY(4px)}15%{opacity:1;transform:translateX(-50%) translateY(0)}75%{opacity:1}100%{opacity:0}}
 #hotbar .slot.bump{animation:wellbump 180ms ease}
 @keyframes wellbump{from{transform:scale(1.15)}to{transform:scale(1)}}
@@ -562,7 +566,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.74</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.75</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -601,7 +605,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Trees grow near where you start, recipes say where to find things, and leftover planks stay in your bag.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Items look like what they are and show their names, and doors tell you how to open their options.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -701,7 +705,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.74" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.74" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.75" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.75" defer></script>
 </body>
 </html>

@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Trees grow near where you start, recipes say where to find things, and leftover planks stay in your bag.',
+    whatsNewBody: 'Items look like what they are and show their names, and doors tell you how to open their options.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -211,7 +211,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Дерева ростуть біля старту, рецепти кажуть де шукати, і зайві дошки лишаються в сумці.',
+    whatsNewBody: 'Речі виглядають як те, чим вони є, і показують назви, а двері підказують, як відкрити опції.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -226,7 +226,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Деревья растут рядом со стартом, рецепты говорят где искать, и лишние доски остаются в сумке.',
+    whatsNewBody: 'Вещи выглядят как то, чем они являются, и показывают имена, а двери подсказывают, как открыть опции.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -241,7 +241,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Los árboles crecen cerca de donde empiezas, las recetas dicen dónde buscar, y las tablas que sobran se quedan en la bolsa.',
+    whatsNewBody: 'Los objetos se ven como lo que son y muestran su nombre, y las puertas dicen cómo abrir sus opciones.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -256,7 +256,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الأشجار تنمو قرب حيث تبدأ، والوصفات تقول أين تجد الأشياء، والألواح الزائدة تبقى في الحقيبة.',
+    whatsNewBody: 'الأشياء تبدو كما هي وتُظهر أسماءها، والأبواب تخبرك كيف تفتح خياراتها.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -271,7 +271,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'درخت‌ها نزدیک جایی که شروع می‌کنی می‌رویند، دستورها می‌گویند چیزها کجا هستند، و تخته‌های اضافی در بکس می‌مانند.',
+    whatsNewBody: 'چیزها مثل خودشان دیده می‌شوند و نام‌شان را نشان می‌دهند، و درها می‌گویند گزینه‌ها چگونه باز می‌شوند.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -286,7 +286,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ibiti birakura hafi aho utangira, amaresipe avuga aho kubona ibintu, kandi imbaho zisigaye ziguma mu gasaho.',
+    whatsNewBody: 'Ibintu bisa uko ari kandi byerekana amazina, kandi inzugi zikubwira uko ufungura amahitamo.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -301,7 +301,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ኣግራብ ኣብ ዝጅምረሉ ይበቁሉ፡ ኣሰራርሓ ኣበይ ከም ዝርከቡ ይብል፡ ተሪፉ ጣውላ ድማ ኣብ ቦርሳ ይቕጽል።',
+    whatsNewBody: 'ነገራት ከም ዝኾኑ ይረኣዩ ስማቶም ድማ የርእዩ፡ ማዕጾታት ድማ ኣማራጺ ከመይ ከም ትኸፍት ይነግሩ።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',

@@ -238,7 +238,9 @@ export function createStations(api) {
         if (!fuelNow && flame) flame.classList.add('ghost')
       }
       if (ghost) pic.classList.add('ghost')
-      b.setAttribute('aria-label', word)
+      const named = item && api.name ? api.name(item) : ''
+      b.setAttribute('aria-label', named ? word + ' ' + named : word)
+      b.title = named || word
       return b
     }
     const fuelEl = well('fuel', api.t('fuel'), '', !fuelNow)
@@ -301,7 +303,9 @@ export function createStations(api) {
       b.className = 'well bag-bit' + (pickSlot === si ? ' pick' : '')
       b.dataset.item = s.item
       b.dataset.slot = String(si)
-      b.setAttribute('aria-label', (api.name ? api.name(s.item) : s.item) + ' ' + s.n)
+      const label = (api.name ? api.name(s.item) : s.item) + ' ' + s.n
+      b.setAttribute('aria-label', label)
+      b.title = api.name ? api.name(s.item) : s.item
       const pic = document.createElement('span')
       pic.className = 'art'
       if (api.icon) pic.append(api.icon(s.item))

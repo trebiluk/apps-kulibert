@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.74'
+const VERSION = '2.5.75'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -908,6 +908,9 @@ function grantSaplings() {
 let doorOptAt = null
 let doorPlacedAt = 0
 let doorShownAt = 0
+let doorHintN = 0
+let doorLookKey = ''
+let doorLookAt = 0
 function freshPlacedDoor() { return doorPlacedAt && performance.now() - doorPlacedAt < 280 }
 function forceShut(x, y, z) {
   const id = getVoxel(x, y, z)
@@ -937,6 +940,20 @@ function showLamp(x, y, z) {
   if (fill) fill.style.width = Math.round((st.charge || 0) * 100) + '%'
   clearTimeout(showLamp.t)
   showLamp.t = setTimeout(() => { card.hidden = true }, 2200)
+}
+function noteDoorLook(now) {
+  if (doorHintN >= 3) return
+  const card = $('door-opt')
+  if (card && !card.hidden) return
+  const aimed = noa.targetedBlock
+  if (!aimed || !isDoor(aimed.blockID)) { doorLookKey = ''; return }
+  const key = aimed.position[0] + ',' + aimed.position[1] + ',' + aimed.position[2]
+  if (doorLookKey === key + ':shown') return
+  if (key !== doorLookKey) { doorLookKey = key; doorLookAt = now; return }
+  if (now - doorLookAt < 600) return
+  doorHintN += 1
+  doorLookKey = key + ':shown'
+  toast(t(TOUCH_UI ? 'doorHintTouch' : 'doorHint'))
 }
 function showDoorOpt(x, y, z) {
   doorOptAt = [x, y, z]
@@ -1385,7 +1402,7 @@ function flashHeld(name) {
   void chip.offsetWidth
   chip.classList.add('on')
   clearTimeout(flashHeld.t)
-  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on') }, 1200)
+  flashHeld.t = setTimeout(() => { chip.hidden = true; chip.classList.remove('on') }, 1500)
 }
 function bagPick(item, slot) {
   selectedSlot = slot
@@ -1888,6 +1905,7 @@ function feelTick(dt) {
       toastFar()
     }
   }
+  noteDoorLook(now)
   if (dig && basics && isDoor(dig.id) && now - dig.t0 >= DOOR_HOLD_MS && !dig.opt) {
     dig.opt = true
     showDoorOpt(dig.x, dig.y, dig.z)

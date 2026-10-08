@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.75', date: '2026-10-08', lines: {
+    en: ['Items look like what they are and show their names, and doors tell you how to open their options.'],
+    uk: ['Речі виглядають як те, чим вони є, і показують назви, а двері підказують, як відкрити опції.'],
+    ru: ['Вещи выглядят как то, чем они являются, и показывают имена, а двери подсказывают, как открыть опции.'],
+    es: ['Los objetos se ven como lo que son y muestran su nombre, y las puertas dicen cómo abrir sus opciones.'],
+    ar: ['الأشياء تبدو كما هي وتُظهر أسماءها، والأبواب تخبرك كيف تفتح خياراتها.'],
+    'fa-AF': ['چیزها مثل خودشان دیده می‌شوند و نام‌شان را نشان می‌دهند، و درها می‌گویند گزینه‌ها چگونه باز می‌شوند.'],
+    rw: ['Ibintu bisa uko ari kandi byerekana amazina, kandi inzugi zikubwira uko ufungura amahitamo.'],
+    ti: ['ነገራት ከም ዝኾኑ ይረኣዩ ስማቶም ድማ የርእዩ፡ ማዕጾታት ድማ ኣማራጺ ከመይ ከም ትኸፍት ይነግሩ።'],
+  }},
   { v: '2.5.74', date: '2026-10-08', lines: {
     en: ['Trees grow near where you start, recipes say where to find things, and leftover planks stay in your bag.'],
     uk: ['Дерева ростуть біля старту, рецепти кажуть де шукати, і зайві дошки лишаються в сумці.'],
