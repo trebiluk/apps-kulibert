@@ -1,5 +1,6 @@
-// Loose drops. They never despawn. Past 256 piles, the rest wait in Lost & Found.
+// Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
 export const DROP_CAP = 256
+export function lostLabelKey() { return 'groundFull' }
 export const PICK_R = 1.5
 export const MAGNET_R = 2.5
 export const MERGE_R = 2

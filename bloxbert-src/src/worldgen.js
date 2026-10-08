@@ -12,17 +12,41 @@ export function coalHere(x, y, z) {
   return hash(x + y * 13, z) < 0.7
 }
 
+function townTrunk(x, z) { return x >= -20 && x <= 36 && z >= -18 && z <= 28 }
+
+function groundY(x, z) {
+  return Math.round(3 + 2.2 * Math.sin(x / 19) * Math.cos(z / 23) + 1.2 * Math.sin((x + z) / 11))
+}
+
+// Three trees just south of the road, each about 20 blocks from spawn [8.5, 1.5]. Same shape every new world.
+const STARTER = [[8, -19], [2, -19], [14, -19]]
+
+function starterWood(x, y, z) {
+  for (let i = 0; i < STARTER.length; i++) {
+    const tx = STARTER[i][0]
+    const tz = STARTER[i][1]
+    const dx = x - tx
+    const dz = z - tz
+    if (dx > 2 || dx < -2 || dz > 2 || dz < -2) continue
+    const base = groundY(tx, tz)
+    const top = base + 4
+    if (dx === 0 && dz === 0 && y > base && y <= top) return 'log'
+    const dy = y - top
+    if (dy >= -1 && dy <= 1 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return 'leaves'
+  }
+  return ''
+}
+
 export function plantHere(x, y, z, surface, inTown) {
-  if (inTown || y !== surface + 1) return ''
+  if (inTown) return ''
+  const wood = starterWood(x, y, z)
+  if (wood && y > surface) return wood
+  if (y !== surface + 1) return ''
   if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
   const n = hash(x, z)
   if (n >= 0.04 && n < 0.07) return 'wheat'
   return ''
 }
-
-function townTrunk(x, z) { return x >= -20 && x <= 36 && z >= -18 && z <= 28 }
-
-// 1 in 4 wheat tufts within 4 blocks of a real tree column also drop a berry.
 export function berryTuft(x, y, z) {
   const bx = Math.floor(x / 9) * 9 + 4
   const bz = Math.floor(z / 9) * 9 + 4

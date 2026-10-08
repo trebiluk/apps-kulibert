@@ -9,7 +9,7 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostLabelKey } from './drops.js'
 import { emptyBox } from './box.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
@@ -707,7 +707,7 @@ export function createSession(api) {
       const lostBtn = document.createElement('button')
       lostBtn.type = 'button'
       lostBtn.className = 'keycap lost-row'
-      lostBtn.textContent = t('lostBtn') + ' · ' + n
+      lostBtn.textContent = t('lostBtn') + ' · ' + t(lostLabelKey()) + ' · ' + n
       lostBtn.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
       g.append(lostBtn)
     }
@@ -798,7 +798,9 @@ export function createSession(api) {
   function trayGiveBack(item, n) {
     if (!item || !(n > 0)) return
     const left = bag.add(item, n)
-    if (left) lostAdd(item, left)
+    if (!left) return
+    const p = api.pos()
+    spawnDrop(item, left, p[0], p[1] + 0.3, p[2], 'full')
   }
   function returnTray() {
     const r = RECIPES.find((x) => x.id === trayId)
@@ -863,6 +865,12 @@ export function createSession(api) {
     if (api.armOven && key) api.armOven(key, 'bread')
     if (api.open) api.open('station', key)
     return true
+  }
+  function sourceHint(item) {
+    if (item === 'log' || item === 'planks') return t('srcChop')
+    if (item === 'stone' || item === 'slate') return t('srcStone')
+    if (item === 'coal') return t('srcCoal')
+    return ''
   }
   function paintCraft(g) {
     armTrayWatch()
@@ -931,8 +939,10 @@ export function createSession(api) {
           const miss = st.needs.find(([, have, n]) => have < n)
           const line = document.createElement('span')
           line.className = 'need'
-          if (miss) line.textContent = t('needN').replace('{n}', String(miss[2])).replace('{item}', itemName(miss[0]))
-          else line.textContent = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll')
+          if (miss) {
+            const hint = sourceHint(miss[0])
+            line.textContent = t('needN').replace('{n}', String(miss[2])).replace('{item}', itemName(miss[0])) + (hint ? ' · ' + hint : '')
+          } else line.textContent = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll')
           b.append(line)
         }
         b.addEventListener('click', () => {
@@ -1168,11 +1178,15 @@ export function createSession(api) {
           if (st.station || st.gate) return
           const outN = r.out[1]
           const left = bag.add(r.out[0], outN)
-          if (left) {
-            if (outN - left) bag.take(r.out[0], outN - left)
+          const got = outN - left
+          if (!got) {
             api.toast(t('bagFull'))
             paintCraft(g)
             return
+          }
+          if (left) {
+            const p = api.pos()
+            spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
           }
           r.in.forEach((_, i) => { trayPlaced[i] = 0 })
           markFound(r.out[0])

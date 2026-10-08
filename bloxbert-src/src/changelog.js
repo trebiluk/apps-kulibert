@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.74', date: '2026-10-08', lines: {
+    en: ['Trees grow near where you start, recipes say where to find things, and leftover planks stay in your bag.'],
+    uk: ['Дерева ростуть біля старту, рецепти кажуть де шукати, і зайві дошки лишаються в сумці.'],
+    ru: ['Деревья растут рядом со стартом, рецепты говорят где искать, и лишние доски остаются в сумке.'],
+    es: ['Los árboles crecen cerca de donde empiezas, las recetas dicen dónde buscar, y las tablas que sobran se quedan en la bolsa.'],
+    ar: ['الأشجار تنمو قرب حيث تبدأ، والوصفات تقول أين تجد الأشياء، والألواح الزائدة تبقى في الحقيبة.'],
+    'fa-AF': ['درخت‌ها نزدیک جایی که شروع می‌کنی می‌رویند، دستورها می‌گویند چیزها کجا هستند، و تخته‌های اضافی در بکس می‌مانند.'],
+    rw: ['Ibiti birakura hafi aho utangira, amaresipe avuga aho kubona ibintu, kandi imbaho zisigaye ziguma mu gasaho.'],
+    ti: ['ኣግራብ ኣብ ዝጅምረሉ ይበቁሉ፡ ኣሰራርሓ ኣበይ ከም ዝርከቡ ይብል፡ ተሪፉ ጣውላ ድማ ኣብ ቦርሳ ይቕጽል።'],
+  }},
   { v: '2.5.73', date: '2026-10-08', lines: {
     en: ['Too far away only shows when you hold a block, door Options can turn off, and the Workbench opens Crafting.'],
     uk: ['«Занадто далеко» лише коли тримаєш блок, опції дверей вимикаються, і верстак відкриває майстрування.'],
