@@ -401,17 +401,40 @@ export function createSession(api) {
     if (api.markDirty) api.markDirty()
     return true
   }
+  function stackCap(item) {
+    return item === 'woodTool' || item === 'stoneTool' ? 1 : 64
+  }
   function relocate(from, to) {
     if (from === to || from < 0 || to < 0 || to >= bag.slots.length) return false
     const a = bag.slots[from]
     if (!a) return false
     const b = bag.slots[to]
-    bag.slots[from] = b || null
-    bag.slots[to] = a
-    if (hot === from) hot = to
-    else if (hot === to) hot = from
-    if (bagSel === from) bagSel = to
-    else if (bagSel === to) bagSel = from
+    const follow = () => {
+      if (hot === from) hot = to
+      else if (hot === to) hot = from
+      if (bagSel === from) bagSel = to
+      else if (bagSel === to) bagSel = from
+    }
+    if (!b) {
+      bag.slots[to] = a
+      bag.slots[from] = null
+      follow()
+    } else if (b.item === a.item) {
+      const room = stackCap(a.item) - b.n
+      if (room <= 0) return false
+      const moveN = Math.min(room, a.n)
+      b.n += moveN
+      a.n -= moveN
+      if (a.n <= 0) {
+        bag.slots[from] = null
+        if (hot === from) hot = to
+        if (bagSel === from) bagSel = to
+      }
+    } else {
+      bag.slots[from] = b
+      bag.slots[to] = a
+      follow()
+    }
     paintHotbar()
     if (api.markDirty) api.markDirty()
     return true
@@ -436,6 +459,73 @@ export function createSession(api) {
     spawnDrop(item, n, p[0], p[1], p[2], 'q')
     paintHotbar()
     if (api.markDirty) api.markDirty()
+  }
+  function startDrag(el, e, opts) {
+    if (!e || (e.button != null && e.button !== 0)) return
+    bagSkip = 0
+    trayGesture = 0
+    if (opts.canStart && !opts.canStart()) return
+    const pid = e.pointerId
+    const start = e.pointerType === 'touch' ? 10 : 6
+    const sx = e.clientX
+    const sy = e.clientY
+    let dragged = false
+    let ghost = null
+    let done = false
+    const clearMarks = () => {
+      document.querySelectorAll('.drop-ok,.drop-bad').forEach((n) => n.classList.remove('drop-ok', 'drop-bad'))
+    }
+    const targetAt = (x, y) => {
+      const under = document.elementFromPoint(x, y)
+      return under && under.closest ? under.closest(opts.targets) : null
+    }
+    const paint = (x, y) => {
+      clearMarks()
+      const t = targetAt(x, y)
+      if (!t) return
+      t.classList.add(opts.canDrop(t) ? 'drop-ok' : 'drop-bad')
+    }
+    const finish = (ev, cancel) => {
+      if (done) return
+      if (ev && ev.pointerId !== pid) return
+      done = true
+      window.removeEventListener('pointermove', move, true)
+      window.removeEventListener('pointerup', up, true)
+      window.removeEventListener('pointercancel', up, true)
+      window.removeEventListener('resize', onResize)
+      try { el.releasePointerCapture(pid) } catch (err) {}
+      clearMarks()
+      if (ghost) ghost.remove()
+      ghost = null
+      if (!dragged || cancel) return
+      bagSkip = performance.now()
+      trayGesture = performance.now()
+      const t = ev ? targetAt(ev.clientX, ev.clientY) : null
+      if (t && opts.canDrop(t)) opts.onDrop(t)
+    }
+    const move = (ev) => {
+      if (ev.pointerId !== pid) return
+      const dx = ev.clientX - sx
+      const dy = ev.clientY - sy
+      if (!dragged && dx * dx + dy * dy >= start * start) {
+        dragged = true
+        ghost = document.createElement('div')
+        ghost.className = opts.ghostClass
+        if (opts.icon) ghost.append(opts.icon())
+        document.body.append(ghost)
+      }
+      if (!ghost) return
+      ghost.style.left = ev.clientX + 'px'
+      ghost.style.top = ev.clientY + 'px'
+      paint(ev.clientX, ev.clientY)
+    }
+    const up = (ev) => finish(ev, ev.type === 'pointercancel')
+    const onResize = () => { if (!el.isConnected) finish(null, true) }
+    try { el.setPointerCapture(pid) } catch (err) {}
+    window.addEventListener('pointermove', move, true)
+    window.addEventListener('pointerup', up, true)
+    window.addEventListener('pointercancel', up, true)
+    window.addEventListener('resize', onResize)
   }
   function refreshBag() {
     const g = document.querySelector('#sheet[data-panel="inventory"] .ggrid')
@@ -583,52 +673,26 @@ export function createSession(api) {
       b.setAttribute('aria-pressed', String(i === bagSel))
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       b.title = s ? itemName(s.item) : t('emptySlot')
-      let drag = false
       b.addEventListener('pointerdown', (e) => {
-        if (e.button != null && e.button !== 0) return
-        bagSkip = 0
-        const pid = e.pointerId
-        const sx = e.clientX
-        const sy = e.clientY
-        drag = false
-        let ghost = null
-        try { b.setPointerCapture(pid) } catch (err) {}
-        const move = (ev) => {
-          if (ev.pointerId !== pid) return
-          const dx = ev.clientX - sx
-          const dy = ev.clientY - sy
-          if (!drag && s && dx * dx + dy * dy >= 36) {
-            drag = true
-            ghost = document.createElement('div')
-            ghost.className = 'bag-ghost'
-            ghost.append(itemIcon(ITEMS[s.item]))
-            document.body.append(ghost)
-          }
-          if (ghost) {
-            ghost.style.left = ev.clientX + 'px'
-            ghost.style.top = ev.clientY + 'px'
-          }
-        }
-        const up = (ev) => {
-          if (ev.pointerId !== pid) return
-          b.removeEventListener('pointermove', move)
-          b.removeEventListener('pointerup', up)
-          b.removeEventListener('pointercancel', up)
-          try { b.releasePointerCapture(pid) } catch (err) {}
-          if (ghost) ghost.remove()
-          if (!drag) return
-          bagSkip = performance.now()
-          const under = document.elementFromPoint(ev.clientX, ev.clientY)
-          const well = under && under.closest ? under.closest('.well[data-slot]') : null
-          if (well) {
+        startDrag(b, e, {
+          ghostClass: 'bag-ghost',
+          targets: '.well[data-slot]',
+          canStart: () => !!(s && bag.slots[i]),
+          icon: () => itemIcon(ITEMS[s.item]),
+          canDrop: (well) => {
+            const to = Number(well.dataset.slot)
+            const src = bag.slots[i]
+            if (!src || to === i) return false
+            const dest = bag.slots[to]
+            if (!dest || dest.item !== src.item) return true
+            return dest.n < stackCap(src.item)
+          },
+          onDrop: (well) => {
             const to = Number(well.dataset.slot)
             if (to !== i) relocate(i, to)
-          }
-          refreshBag()
-        }
-        b.addEventListener('pointermove', move)
-        b.addEventListener('pointerup', up)
-        b.addEventListener('pointercancel', up)
+            refreshBag()
+          },
+        })
       })
       b.addEventListener('click', (e) => {
         if (bagSkip && performance.now() - bagSkip < 700) { e.preventDefault(); e.stopPropagation(); return }
@@ -884,6 +948,7 @@ export function createSession(api) {
           check.setAttribute('aria-hidden', 'true')
           well.append(check)
         }
+        well.addEventListener('pointerdown', () => { trayGesture = 0; bagSkip = 0 })
         well.addEventListener('click', () => {
           if (performance.now() - trayGesture < 450) return
           const have = trayPlaced[i] || 0
@@ -934,39 +999,20 @@ export function createSession(api) {
         badge.textContent = String(s.n)
         b.append(badge)
         b.addEventListener('pointerdown', (e) => {
-          if (e.button && e.button !== 0) return
           const item = s.item
-          const x0 = e.clientX
-          const y0 = e.clientY
-          let dragged = false
-          let ghost = null
-          const move = (ev) => {
-            if (!dragged && Math.hypot(ev.clientX - x0, ev.clientY - y0) > 8) {
-              dragged = true
-              ghost = document.createElement('div')
-              ghost.className = 'tray-ghost'
-              ghost.append(itemIcon(ITEMS[item]))
-              document.body.append(ghost)
-            }
-            if (ghost) {
-              ghost.style.left = ev.clientX + 'px'
-              ghost.style.top = ev.clientY + 'px'
-            }
-          }
-          const up = (ev) => {
-            document.removeEventListener('pointermove', move)
-            document.removeEventListener('pointerup', up)
-            document.removeEventListener('pointercancel', up)
-            if (ghost) ghost.remove()
-            if (!dragged) return
-            trayGesture = performance.now()
-            const hit = document.elementFromPoint(ev.clientX, ev.clientY)
-            const well = hit && hit.closest && hit.closest('#sheet .ing')
-            if (well && well.dataset.i != null) placePart(item, +well.dataset.i)
-          }
-          document.addEventListener('pointermove', move)
-          document.addEventListener('pointerup', up)
-          document.addEventListener('pointercancel', up)
+          startDrag(b, e, {
+            ghostClass: 'tray-ghost',
+            targets: '#sheet .ing',
+            icon: () => itemIcon(ITEMS[item]),
+            canDrop: (well) => {
+              const idx = +well.dataset.i
+              const need = r.in[idx]
+              if (!need || need[0] !== item) return false
+              if ((trayPlaced[idx] || 0) >= need[1]) return false
+              return bag.count(item) > 0
+            },
+            onDrop: (well) => { if (well.dataset.i != null) placePart(item, +well.dataset.i) },
+          })
         })
         b.addEventListener('click', () => {
           if (performance.now() - trayGesture < 450) return

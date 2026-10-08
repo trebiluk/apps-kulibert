@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.67', date: '2026-10-08', lines: {
+    en: ['Drag things in your Bag and Build Tray by mouse or finger; the same items stack together.'],
+    uk: ['Перетягуй речі в Сумці та Лотоку збірки мишею або пальцем; однакові речі складаються разом.'],
+    ru: ['Перетаскивай вещи в Сумке и Лотке сборки мышью или пальцем; одинаковые вещи складываются вместе.'],
+    es: ['Arrastra cosas en tu Bolsa y en la Bandeja con el ratón o el dedo; los mismos objetos se apilan.'],
+    ar: ['اسحب الأشياء في حقيبتك وصينية البناء بالفأرة أو الإصبع؛ الأشياء المتشابهة تتكدس معاً.'],
+    'fa-AF': ['چیزها را در بکس و سینی ساخت با ماوس یا انگشت بکش؛ چیزهای یکسان روی هم جمع می‌شوند.'],
+    rw: ['Kurura ibintu mu Gasaho no mu Gatebe ukoresheje imbeba cyangwa urutoki; ibintu bimwe birakomatanya.'],
+    ti: ['ነገራት ኣብ ቦርሳኻን ኣብ ትሪ ህንጻ ብኣንጭዋ ወይ ብኣጻብዕቲ ስሓብ፡ ተመሳሳሊ ነገራት ብሓባር ይደርበዩ።'],
+  }},
   { v: '2.5.65', date: '2026-10-07', lines: {
     en: ['Recipes are never hidden under the Make bar, and you bake bread in the oven using wood or coal.'],
     uk: ['Рецепти не ховаються під кнопкою Зробити, і хліб печеться в печі на дереві чи вугіллі.'],

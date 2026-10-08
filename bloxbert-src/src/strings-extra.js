@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Recipes are never hidden under the Make bar, and you bake bread in the oven using wood or coal.',
+    whatsNewBody: 'Drag things in your Bag and Build Tray by mouse or finger; the same items stack together.',
     gotItem: '{item} picked up',
     fillTray: 'Fill', slotNeeds: 'This slot needs {item}',
     bakeInOven: 'Bake in Oven', addFuelWood: 'Add planks, a log or coal',
@@ -207,7 +207,7 @@ const NEXT = {
     woodToolLine: 'Wood tool. Mines faster.', stoneToolLine: 'Stone tool. Mines faster still.', sapling: 'Sapling', saplingSoil: 'Plant a sapling on grass or dirt.',
   },
   uk: {
-    whatsNewBody: 'Рецепти не ховаються під кнопкою Зробити, і хліб печеться в печі на дереві чи вугіллі.',
+    whatsNewBody: 'Перетягуй речі в Сумці та Лотоку збірки мишею або пальцем; однакові речі складаються разом.',
     gotItem: '{item} підібрано',
     fillTray: 'Наповни', slotNeeds: 'Цій комірці треба {item}',
     bakeInOven: 'Печи в печі', addFuelWood: 'Додай дошки, колоду або вугілля',
@@ -218,7 +218,7 @@ const NEXT = {
     woodToolLine: 'Дерев’яне знаряддя. Копає швидше.', stoneToolLine: 'Кам’яне знаряддя. Копає ще швидше.', sapling: 'Саджанець', saplingSoil: 'Сади саджанець на траву або землю.',
   },
   ru: {
-    whatsNewBody: 'Рецепты больше не прячутся под кнопкой Сделать, и хлеб печётся в печи на дереве или угле.',
+    whatsNewBody: 'Перетаскивай вещи в Сумке и Лотке сборки мышью или пальцем; одинаковые вещи складываются вместе.',
     gotItem: '{item} подобрано',
     fillTray: 'Заполни', slotNeeds: 'Этой ячейке нужно {item}',
     bakeInOven: 'Пеки в печи', addFuelWood: 'Добавь доски, бревно или уголь',
@@ -229,7 +229,7 @@ const NEXT = {
     woodToolLine: 'Деревянное орудие. Копает быстрее.', stoneToolLine: 'Каменное орудие. Копает ещё быстрее.', sapling: 'Саженец', saplingSoil: 'Сажай саженец на траву или землю.',
   },
   es: {
-    whatsNewBody: 'Las recetas ya no quedan bajo la barra Hacer, y el pan se hornea en el horno con madera o carbón.',
+    whatsNewBody: 'Arrastra cosas en tu Bolsa y en la Bandeja con el ratón o el dedo; los mismos objetos se apilan.',
     gotItem: '{item} recogido',
     fillTray: 'Llenar', slotNeeds: 'Esta casilla necesita {item}',
     bakeInOven: 'Hornea en el horno', addFuelWood: 'Añade tablas, un tronco o carbón',
@@ -240,7 +240,7 @@ const NEXT = {
     woodToolLine: 'Herramienta de madera. Mina más rápido.', stoneToolLine: 'Herramienta de piedra. Mina aún más rápido.', sapling: 'Plantón', saplingSoil: 'Planta un plantón en hierba o tierra.',
   },
   ar: {
-    whatsNewBody: 'الوصفات لا تختفي تحت زر اصنع، وتخبز الخبز في الفرن بالخشب أو الفحم.',
+    whatsNewBody: 'اسحب الأشياء في حقيبتك وصينية البناء بالفأرة أو الإصبع؛ الأشياء المتشابهة تتكدس معاً.',
     gotItem: 'تم التقاط {item}',
     fillTray: 'املأ', slotNeeds: 'هذه الخانة تحتاج {item}',
     bakeInOven: 'اخبز في الفرن', addFuelWood: 'أضف ألواحاً أو جذعاً أو فحماً',
@@ -251,7 +251,7 @@ const NEXT = {
     woodToolLine: 'أداة خشب. تحفر أسرع.', stoneToolLine: 'أداة حجر. تحفر أسرع أكثر.', sapling: 'شتلة', saplingSoil: 'ازرع شتلة على عشب أو تراب.',
   },
   'fa-AF': {
-    whatsNewBody: 'دستورها دیگر زیر دکمه بساز پنهان نمی‌شوند، و نان را در تنور با چوب یا زغال می‌پزی.',
+    whatsNewBody: 'چیزها را در بکس و سینی ساخت با ماوس یا انگشت بکش؛ چیزهای یکسان روی هم جمع می‌شوند.',
     gotItem: '{item} برداشته شد',
     fillTray: 'پر کن', slotNeeds: 'این خانه به {item} نیاز دارد',
     bakeInOven: 'در تنور بپز', addFuelWood: 'تخته، کنده یا زغال بیفزای',
@@ -262,7 +262,7 @@ const NEXT = {
     woodToolLine: 'ابزار چوبی. تندتر می‌کند.', stoneToolLine: 'ابزار سنگی. باز هم تندتر می‌کند.', sapling: 'نهال', saplingSoil: 'نهال را روی چمن یا خاک بکار.',
   },
   rw: {
-    whatsNewBody: 'Ingano ntizihisha munsi ya Kora, kandi uteka umugati mu byoto ukoresheje ibiti cyangwa amakara.',
+    whatsNewBody: 'Kurura ibintu mu Gasaho no mu Gatebe ukoresheje imbeba cyangwa urutoki; ibintu bimwe birakomatanya.',
     gotItem: '{item} yatoranywe',
     fillTray: 'Uzuza', slotNeeds: 'Iki gice gikeneye {item}',
     bakeInOven: 'Teka mu byoto', addFuelWood: 'Ongeraho amabaho, igiti cyangwa amakara',
@@ -273,7 +273,7 @@ const NEXT = {
     woodToolLine: 'Igikoresho cy\'ibiti. Ivuna vuba.', stoneToolLine: 'Igikoresho cy\'ibuye. Ivuna vuba kurushaho.', sapling: 'Ingemwe', saplingSoil: 'Shyira ingemwe ku byatsi cyangwa ku butaka.',
   },
   ti: {
-    whatsNewBody: 'ምግባር ኣብ ትሕቲ መጠወቒ ኣይሕባእን፡ ባኒ ድማ ኣብ እቶን ብዕንጨይቲ ወይ ከሰል ትኸውሶ።',
+    whatsNewBody: 'ነገራት ኣብ ቦርሳኻን ኣብ ትሪ ህንጻ ብኣንጭዋ ወይ ብኣጻብዕቲ ስሓብ፡ ተመሳሳሊ ነገራት ብሓባር ይደርበዩ።',
     gotItem: '{item} ተለቂሙ',
     fillTray: 'መልእ', slotNeeds: 'እዚ ቦታ {item} የድልዮ',
     bakeInOven: 'ኣብ እቶን ኣብስል', addFuelWood: 'ጣውላ፡ ግንድ ወይ ከሰል ወስኽ',

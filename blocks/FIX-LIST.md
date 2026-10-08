@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 7 2026 (Build: 2.5.65 Make bar and oven bread).
+Updated Wed Oct 8 2026 (Build: 2.5.67 Bag and tray drag).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -56,6 +56,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.65 Make bar and oven bread).
 - [x] **2.5.61 Bag:** the Bag is easier to read, and you can tap or drag to move things around.
 - [x] **2.5.62 Build Tray hand place:** ingredient wells start empty (ghost plus 0/need). Drag or tap a Bag stack into a slot, or tap Fill. Make lights only when every slot is full. X, Escape, and a recipe change put the parts back.
 - [x] **2.5.65 Make bar and oven bread:** the Make bar does not cover recipe cards. Bread shows Bake in Oven and bakes in the oven. Planks, a log, or coal feed the oven.
+- [x] **2.5.67 Bag and tray drag:** one drag for the Bag and the Build Tray. Same items stack together. A tap right after a drop selects at once.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -103,6 +104,7 @@ Updated Wed Oct 7 2026 (Build: 2.5.65 Make bar and oven bread).
 | 1l | 2.5.61 | Bag is easier to read; tap or drag to move things | shipped |
 | 1m | 2.5.62 | Build Tray: drag or tap each part into its slot, or tap Fill | shipped |
 | 1n | 2.5.65 | Make bar stays clear of recipes; bread bakes in the oven on wood or coal | shipped |
+| 1o | 2.5.67 | Bag and Build Tray share one drag; same items stack together | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |
