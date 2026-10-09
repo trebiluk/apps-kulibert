@@ -66,6 +66,15 @@ html:not(.kb-framed) body.kb-on[data-scroll-locked] {
   }
 }
 
+/* HI 1.1.19 — a turn must not keep the board's old pixel height.
+   The stage fills its flex cell. An inline width/height from the draw
+   loop cannot pin a squeezed size after the phone rotates. */
+.shop.shop-editor canvas.hi-stage {
+  width: 100% !important;
+  height: 100% !important;
+  max-height: none !important;
+}
+
 /* HI 1.1.18 — full screen control and the tower turn card. */
 .hi-fs {
   position: fixed;

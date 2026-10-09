@@ -1,5 +1,9 @@
-**Chip: HI 1.1.18** · 2026-10-03 · channel **live**
+**Chip: HI 1.1.19** · 2026-10-09 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.19 — The tower stays in view — 2026-10-09
+
+- What’s new: HoldIt: your tower stays in full view when you turn the phone, and the turn tip stays out of the way.
 
 ## 1.1.18 — Towers fit, one tap full screen — 2026-10-03
 

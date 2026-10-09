@@ -1,4 +1,4 @@
-/* HI 1.1.18 — one-tap full screen, remembered, and a portrait nudge for towers. */
+/* HI 1.1.19 — the tower refits after a turn, and the turn tip stays off the controls. */
 (function () {
   var KEY = "kulibert-fullscreen";
   var TURN = "kulibert-tower-turn-hide";
@@ -184,6 +184,44 @@
       if (o && o.unlock) o.unlock();
     } catch (e) {}
   }
+  function rectOf(el) {
+    if (!el) return null;
+    var cs = getComputedStyle(el);
+    if (cs.display === "none" || cs.visibility === "hidden" || cs.visibility === "collapse") return null;
+    var r = el.getBoundingClientRect();
+    if (r.width < 8 || r.height < 8) return null;
+    return r;
+  }
+  function hit(a, b) {
+    if (!a || !b) return false;
+    return a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1;
+  }
+  function resultOpen() {
+    var nodes = document.querySelectorAll("[role='dialog'], [role='alertdialog']");
+    for (var i = 0; i < nodes.length; i++) {
+      var r = rectOf(nodes[i]);
+      if (r && r.width > 40 && r.height > 40) return nodes[i];
+    }
+    return null;
+  }
+  function controlRects() {
+    var out = [];
+    var nodes = document.querySelectorAll("button, a, [role='button']");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.closest && el.closest("#hi-turn")) continue;
+      var r = rectOf(el);
+      if (!r) continue;
+      if (r.bottom < 0 || r.right < 0 || r.top > window.innerHeight || r.left > window.innerWidth) continue;
+      out.push(r);
+    }
+    var dlg = resultOpen();
+    if (dlg) {
+      var dr = rectOf(dlg);
+      if (dr) out.push(dr);
+    }
+    return out;
+  }
   function placeTurn() {
     var canvas = document.querySelector(".shop-editor canvas.hi-stage");
     var dismissed = false;
@@ -194,11 +232,43 @@
     try { locked = screen.orientation && screen.orientation.type && screen.orientation.type.indexOf("portrait") === 0 && isFS(); } catch (e) {}
     if (locked) { turn.hidden = true; return; }
     var r = canvas.getBoundingClientRect();
+    if (r.width < 40 || r.height < 40) { turn.hidden = true; return; }
+    /* A result card owns the controls. Hide the tip instead of covering them. */
+    if (resultOpen()) { turn.hidden = true; return; }
     turn.hidden = false;
     var rtl = document.documentElement.dir === "rtl";
-    turn.style.top = Math.round(r.top + r.height * 0.42) + "px";
-    if (rtl) { turn.style.left = Math.round(r.left + 8) + "px"; turn.style.right = "auto"; }
-    else { turn.style.right = Math.round(window.innerWidth - r.right + 8) + "px"; turn.style.left = "auto"; }
+    var box = turn.getBoundingClientRect();
+    var tw = Math.max(box.width, 160);
+    var th = Math.max(box.height, 44);
+    var spots = rtl
+      ? [
+          { left: r.right - tw - 8, top: r.bottom - th - 8 },
+          { left: r.left + 8, top: r.bottom - th - 8 },
+          { left: r.right - tw - 8, top: r.top + 8 }
+        ]
+      : [
+          { left: r.left + 8, top: r.bottom - th - 8 },
+          { left: r.right - tw - 8, top: r.bottom - th - 8 },
+          { left: r.left + 8, top: r.top + Math.max(8, r.height * 0.55) }
+        ];
+    var controls = controlRects();
+    var placed = false;
+    for (var s = 0; s < spots.length; s++) {
+      var left = Math.round(Math.max(r.left + 4, Math.min(spots[s].left, r.right - tw - 4)));
+      var top = Math.round(Math.max(4, Math.min(spots[s].top, r.bottom - th - 4)));
+      var candidate = { left: left, top: top, right: left + tw, bottom: top + th, width: tw, height: th };
+      var blocked = false;
+      for (var c = 0; c < controls.length; c++) {
+        if (hit(candidate, controls[c])) { blocked = true; break; }
+      }
+      if (blocked) continue;
+      turn.style.left = left + "px";
+      turn.style.right = "auto";
+      turn.style.top = top + "px";
+      placed = true;
+      break;
+    }
+    if (!placed) turn.hidden = true;
   }
   turn.querySelector("button").addEventListener("click", function () {
     try { sessionStorage.setItem(TURN, "1"); } catch (e) {}
@@ -210,28 +280,72 @@
     if (!shop) return;
     var cards = shop.querySelectorAll(".hi-plan, .hi-studio");
     var tower = shop.getAttribute("data-campaign") === "tower";
-    var short = window.innerHeight <= 480;
+    var short = window.innerHeight <= 500;
     for (var i = 0; i < cards.length; i++) {
       if (!(tower && short)) {
         cards[i].style.removeProperty("top");
         cards[i].style.removeProperty("max-height");
         cards[i].style.removeProperty("overflow");
+        cards[i].style.removeProperty("position");
         continue;
       }
+      /* Side cards overlay the board. They must not join the flex column and steal its height. */
+      cards[i].style.setProperty("position", "absolute", "important");
       var canvas = shop.querySelector("canvas.hi-stage");
       if (!canvas) continue;
       var parent = cards[i].offsetParent || shop;
       var c = canvas.getBoundingClientRect();
       var p = parent.getBoundingClientRect();
-      var top = c.top - p.top + 76;
+      var top = c.top - p.top + 8;
       cards[i].style.setProperty("top", Math.round(top) + "px", "important");
-      /* Stop above the ground band so the scale bar and base joints stay clear. */
-      var max = c.height * 0.84 - 76;
-      if (max >= 72) {
-        cards[i].style.setProperty("max-height", Math.round(max) + "px", "important");
-        cards[i].style.setProperty("overflow", "auto", "important");
-      }
+      var max = Math.max(72, Math.min(c.height * 0.42, 120));
+      cards[i].style.setProperty("max-height", Math.round(max) + "px", "important");
+      cards[i].style.setProperty("overflow", "auto", "important");
     }
+  }
+  function stageCanvas() {
+    return document.querySelector(".shop-editor canvas.hi-stage");
+  }
+  /* Drop a pinned pixel size so the board can fill its flex cell again. */
+  function releaseStage(canvas) {
+    if (!canvas) return;
+    canvas.style.removeProperty("width");
+    canvas.style.removeProperty("height");
+    canvas.style.removeProperty("max-height");
+    var parent = canvas.parentElement;
+    if (!parent) return;
+    parent.style.minHeight = "0px";
+    parent.style.removeProperty("height");
+  }
+  function refitBoard() {
+    var canvas = stageCanvas();
+    if (!canvas) return;
+    releaseStage(canvas);
+    var parent = canvas.parentElement;
+    if (!parent) return;
+    var w = parent.clientWidth;
+    var h = parent.clientHeight;
+    if (w < 40 || h < 40) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var bw = Math.max(1, Math.floor(w * dpr));
+    var bh = Math.max(1, Math.floor(h * dpr));
+    if (canvas.width !== bw) canvas.width = bw;
+    if (canvas.height !== bh) canvas.height = bh;
+    /* The draw loop frames the tower only while this flag is clear. */
+    try { window.dispatchEvent(new Event("lp-fit")); } catch (e) {}
+  }
+  var refitGen = 0;
+  function settleRefit() {
+    var token = ++refitGen;
+    var pass = function () {
+      if (token !== refitGen) return;
+      refitBoard();
+      dockCards();
+      showBtn();
+      placeTurn();
+    };
+    requestAnimationFrame(function () { requestAnimationFrame(pass); });
+    setTimeout(pass, 250);
   }
   var wasTower = false;
   function onRoute() {
@@ -243,10 +357,16 @@
     dockCards();
     showBtn();
   }
-  document.addEventListener("fullscreenchange", function () { lockTower(); showBtn(); placeTurn(); });
-  document.addEventListener("webkitfullscreenchange", function () { lockTower(); showBtn(); placeTurn(); });
-  addEventListener("resize", function () { dockCards(); showBtn(); placeTurn(); });
-  addEventListener("orientationchange", function () { setTimeout(function () { showBtn(); placeTurn(); lockTower(); }, 60); });
+  document.addEventListener("fullscreenchange", function () { lockTower(); showBtn(); placeTurn(); settleRefit(); });
+  document.addEventListener("webkitfullscreenchange", function () { lockTower(); showBtn(); placeTurn(); settleRefit(); });
+  addEventListener("resize", function () { dockCards(); showBtn(); placeTurn(); settleRefit(); });
+  addEventListener("orientationchange", function () {
+    setTimeout(function () { showBtn(); placeTurn(); lockTower(); }, 60);
+    settleRefit();
+  });
+  if (window.visualViewport) {
+    visualViewport.addEventListener("resize", function () { settleRefit(); });
+  }
   setInterval(onRoute, 400);
 
   function ensureExit(panel) {
