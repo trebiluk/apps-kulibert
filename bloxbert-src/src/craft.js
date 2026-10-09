@@ -32,6 +32,21 @@ export function maxTimes(recipe, bag) {
   for (const [item, need] of recipe.in) n = Math.min(n, Math.floor(bag.count(item) / need))
   return n > 0 ? n : 0
 }
+// How many of each ingredient Fill moves into the tray. Never a craft.
+export function fillTakes(recipe, count, placed) {
+  return recipe.in.map(([item, n], i) => {
+    const room = n - (placed[i] || 0)
+    if (room <= 0) return 0
+    const have = count(item) || 0
+    return have > 0 ? Math.min(have, room) : 0
+  })
+}
+// What ×Max would make, counted before anything is spent.
+export function maxPlan(recipe, count) {
+  const n = maxTimes(recipe, { count: (item) => count(item) || 0 })
+  const uses = recipe.in.map(([item, need]) => [item, need * n])
+  return { n, uses }
+}
 export function make(recipe, bag) {
   if (recipe.id === 'bread') return false
   for (const [item, n] of recipe.in) if (!bag.take(item, n)) return false

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.82', date: '2026-10-09', lines: {
+    en: ['Fill only fills and Make makes one, and there is sand near the start for your first bake.'],
+    uk: ['Наповнення лише наповнює, а Зробити робить одне, і пісок близько для першого випікання.'],
+    ru: ['Заполнение только заполняет, а Сделать делает одно, и песок рядом для первой выпечки.'],
+    es: ['Llenar solo llena y Hacer hace uno, y hay arena cerca del inicio para tu primer horneado.'],
+    ar: ['الملء يملأ فقط والصنع يصنع واحداً، وهناك رمل قرب البداية لأول خبز.'],
+    'fa-AF': ['پر کردن فقط پر می‌کند و ساختن یکی می‌سازد، و ریگ برای پخت اول نزدیک شروع است.'],
+    rw: ['Uzuza kuzuzamo gusa kandi Kora ikora kimwe, kandi hari umucanga hafi utangira mu guteka kwawe kwa mbere.'],
+    ti: ['ምምላእ ጥራይ ይምልእ፡ ምግባር ድማ ሓደ ይገብር፡ ሑጻ ድማ ንመጀመርታ ምብሳል ቀረባ ኣሎ።'],
+  }},
   { v: '2.5.81', date: '2026-10-09', lines: {
     en: ['Every item has a real picture, machines tell you how to place next to them, and you can see where a block will land.'],
     uk: ['Кожен предмет має справжню картинку, машини кажуть, як поставити поруч, і видно, куди ляже блок.'],

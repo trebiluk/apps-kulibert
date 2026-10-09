@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes, make } from './craft.js'
+import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -839,6 +839,8 @@ export function createSession(api) {
     if (trayId === id) return
     returnTray()
     trayId = id
+    xmaxAsk = ''
+    leftFor = ''
     const rr = RECIPES.find((x) => x.id === id)
     trayPlaced = rr ? rr.in.map(() => 0) : []
   }
@@ -847,6 +849,10 @@ export function createSession(api) {
     return { count: (item) => heldCount(r, item) }
   }
   let trayNote = ''
+  let xmaxAsk = ''
+  let leftFor = ''
+  let fillAt = 0
+  let askAt = 0
   function nearestOvenKey() {
     const p = api.pos()
     const px = Math.floor(p[0]), py = Math.floor(p[1]), pz = Math.floor(p[2])
@@ -1083,6 +1089,12 @@ export function createSession(api) {
       resultEl.append(lab)
       line.append(resultEl)
       side.append(line)
+      if (leftFor === r.id) {
+        const left = document.createElement('p')
+        left.className = 'gnote left-line'
+        left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', itemName(item)).replace('{n}', String(bag.count(item)))).join(' · ')
+        side.append(left)
+      }
       const bagRow = document.createElement('div')
       bagRow.className = 'bag-strip'
       bag.slots.forEach((s, si) => {
@@ -1147,12 +1159,14 @@ export function createSession(api) {
       fillBtn.type = 'button'
       fillBtn.className = 'keycap fill'
       fillBtn.textContent = t('fillTray')
-      fillBtn.addEventListener('click', () => {
+      fillBtn.addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        fillAt = performance.now()
+        const takes = fillTakes(r, (item) => bag.count(item), trayPlaced)
         let any = false
-        r.in.forEach(([item, n], i) => {
-          const room = n - (trayPlaced[i] || 0)
-          const takeN = Math.min(bag.count(item), room)
-          if (takeN > 0 && bag.take(item, takeN)) {
+        takes.forEach((takeN, i) => {
+          if (takeN > 0 && bag.take(r.in[i][0], takeN)) {
             trayPlaced[i] = (trayPlaced[i] || 0) + takeN
             any = true
           }
@@ -1179,7 +1193,10 @@ export function createSession(api) {
       } else {
         makeBtn.textContent = t('make')
         makeBtn.disabled = !ready
-        makeBtn.addEventListener('click', () => {
+        makeBtn.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          if (performance.now() - fillAt < 500) return
           if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
           if (st.station || st.gate) return
           const outN = r.out[1]
@@ -1199,6 +1216,7 @@ export function createSession(api) {
           if (r.out[0] === 'woodTool') markPath('pathTool')
           api.toast(t('make') + ' ' + itemName(r.out[0]))
           craftFx = 'make'
+          leftFor = r.id
           paintHotbar()
           paintCraft(g)
         })
@@ -1209,21 +1227,59 @@ export function createSession(api) {
       if (!(times > 0)) times = 0
       const max = document.createElement('button')
       max.type = 'button'
-      max.className = 'keycap'
+      max.className = 'keycap xmax'
       max.textContent = t('timesMax')
       max.disabled = !(st.ok && times > 1)
-      max.addEventListener('click', () => {
+      max.addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (performance.now() - fillAt < 500) return
         if (!st.ok || times < 2) return
-        returnTray()
-        const n = maxTimes(r, bag)
-        if (n > 1) {
-          craftMany(r, n)
-          craftFx = 'make'
-        }
+        xmaxAsk = r.id
+        askAt = performance.now()
         paintCraft(g)
       })
       keys.append(max)
       side.append(keys)
+      if (xmaxAsk === r.id) {
+        const plan = maxPlan(r, (item) => heldCount(r, item))
+        const ask = document.createElement('div')
+        ask.className = 'xmax-ask keys'
+        const q = document.createElement('p')
+        q.className = 'gnote'
+        const uses = plan.uses.map(([item, m]) => m + ' ' + itemName(item)).join(', ')
+        q.textContent = t('makeAsk').replace('{n}', String(plan.n)).replace('{uses}', uses)
+        const yes = document.createElement('button')
+        yes.type = 'button'
+        yes.className = 'keycap xmax-yes'
+        yes.textContent = t('make')
+        yes.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          if (performance.now() - askAt < 400) return
+          returnTray()
+          const n = maxTimes(r, bag)
+          if (n > 0) {
+            craftMany(r, n)
+            craftFx = 'make'
+            leftFor = r.id
+          }
+          xmaxAsk = ''
+          paintCraft(g)
+        })
+        const no = document.createElement('button')
+        no.type = 'button'
+        no.className = 'keycap xmax-no'
+        no.textContent = t('cancel')
+        no.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          xmaxAsk = ''
+          paintCraft(g)
+        })
+        ask.append(q, yes, no)
+        side.append(ask)
+      }
     }
     tray.append(book, side)
     g.append(tray)

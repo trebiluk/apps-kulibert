@@ -196,7 +196,8 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Every item has a real picture, machines tell you how to place next to them, and you can see where a block will land.',
+    whatsNewBody: 'Fill only fills and Make makes one, and there is sand near the start for your first bake.',
+    makeAsk: 'Make {n}? Uses {uses}', leftLine: '{item} left: {n}', cancel: 'Cancel',
     bakesHint: 'Bakes: {list}', rawFood: 'Raw food', bakedFood: 'Food',
     ovenNoBake: 'The Oven cannot bake {item}.', ovenNoBurn: '{item} will not burn.',
     gotItem: '{item} picked up',
@@ -213,7 +214,8 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Кожен предмет має справжню картинку, машини кажуть, як поставити поруч, і видно, куди ляже блок.',
+    whatsNewBody: 'Наповнення лише наповнює, а Зробити робить одне, і пісок близько для першого випікання.',
+    makeAsk: 'Зробити {n}? Піде {uses}', leftLine: '{item} лишилось: {n}', cancel: 'Скасувати',
     bakesHint: 'Пече: {list}', rawFood: 'Сира їжа', bakedFood: 'Їжа',
     ovenNoBake: 'Піч не може спекти {item}.', ovenNoBurn: '{item} не горить.',
     gotItem: '{item} підібрано',
@@ -230,7 +232,8 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'У каждого предмета настоящая картинка, машины говорят, как поставить рядом, и видно, куда встанет блок.',
+    whatsNewBody: 'Заполнение только заполняет, а Сделать делает одно, и песок рядом для первой выпечки.',
+    makeAsk: 'Сделать {n}? Уйдёт {uses}', leftLine: '{item} осталось: {n}', cancel: 'Отмена',
     bakesHint: 'Печёт: {list}', rawFood: 'Сырая еда', bakedFood: 'Еда',
     ovenNoBake: 'Печь не может испечь {item}.', ovenNoBurn: '{item} не горит.',
     gotItem: '{item} подобрано',
@@ -247,7 +250,8 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Cada objeto tiene un dibujo de verdad, las máquinas dicen cómo poner al lado, y ves dónde caerá un bloque.',
+    whatsNewBody: 'Llenar solo llena y Hacer hace uno, y hay arena cerca del inicio para tu primer horneado.',
+    makeAsk: '¿Hacer {n}? Usa {uses}', leftLine: '{item} quedan: {n}', cancel: 'Cancelar',
     bakesHint: 'Hornea: {list}', rawFood: 'Comida cruda', bakedFood: 'Comida',
     ovenNoBake: 'El horno no puede hornear {item}.', ovenNoBurn: '{item} no arde.',
     gotItem: '{item} recogido',
@@ -264,7 +268,8 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'لكل غرض صورة حقيقية، والآلات تخبرك كيف تضع بجانبها، وترى أين سيقع المكعب.',
+    whatsNewBody: 'الملء يملأ فقط والصنع يصنع واحداً، وهناك رمل قرب البداية لأول خبز.',
+    makeAsk: 'تصنع {n}؟ يستخدم {uses}', leftLine: 'يبقى {item}: {n}', cancel: 'إلغاء',
     bakesHint: 'يخبز: {list}', rawFood: 'طعام نيء', bakedFood: 'طعام',
     ovenNoBake: 'الفرن لا يخبز {item}.', ovenNoBurn: '{item} لا يحترق.',
     gotItem: 'تم التقاط {item}',
@@ -281,7 +286,8 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'هر چیز یک تصویر واقعی دارد، دستگاه‌ها می‌گویند چطور کنارشان بگذاری، و می‌بینی بلاک کجا می‌نشیند.',
+    whatsNewBody: 'پر کردن فقط پر می‌کند و ساختن یکی می‌سازد، و ریگ برای پخت اول نزدیک شروع است.',
+    makeAsk: '{n} بسازی؟ مصرف {uses}', leftLine: '{item} مانده: {n}', cancel: 'لغو',
     bakesHint: 'می‌پزد: {list}', rawFood: 'غذای خام', bakedFood: 'غذا',
     ovenNoBake: 'تنور {item} را نمی‌پزد.', ovenNoBurn: '{item} نمی‌سوزد.',
     gotItem: '{item} برداشته شد',
@@ -298,7 +304,8 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ikintu cyose gifite ishusho nyayo, imashini zikubwira uko ushyira iruhande, kandi ureba aho block izicara.',
+    whatsNewBody: 'Uzuza kuzuzamo gusa kandi Kora ikora kimwe, kandi hari umucanga hafi utangira mu guteka kwawe kwa mbere.',
+    makeAsk: 'Ukore {n}? Ikoresha {uses}', leftLine: '{item} yasigaye: {n}', cancel: 'Hagarika',
     bakesHint: 'Iteka: {list}', rawFood: 'Ibiryo bitoze', bakedFood: 'Ibiryo',
     ovenNoBake: 'Icyoto ntigishobora guteka {item}.', ovenNoBurn: '{item} ntizishya.',
     gotItem: '{item} yatoranywe',
@@ -315,7 +322,8 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ነፍሲ ወከፍ ነገር ናይ ብሓቂ ስእሊ ኣለዎ፡ መሳርሒታት ከመይ ኣብ ጥቓኦም ከም ትቐምጥ ይነግሩ፡ ብሎክ ኣበይ ከም ዝወድቕ ትርኢ።',
+    whatsNewBody: 'ምምላእ ጥራይ ይምልእ፡ ምግባር ድማ ሓደ ይገብር፡ ሑጻ ድማ ንመጀመርታ ምብሳል ቀረባ ኣሎ።',
+    makeAsk: 'ግበር {n}? ይጥቀም {uses}', leftLine: '{item} ተሪፉ: {n}', cancel: 'ሰርዝ',
     bakesHint: 'የብስል፡ {list}', rawFood: 'ጥሬ መግቢ', bakedFood: 'መግቢ',
     ovenNoBake: 'እቶን {item} ኣይብስልን።', ovenNoBurn: '{item} ኣይነድድን።',
     gotItem: '{item} ተለቂሙ',

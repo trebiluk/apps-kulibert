@@ -68,11 +68,21 @@ function starterStone(x, y, z) {
   return y > base && y <= base + tall
 }
 
+// Nine sand blocks on the grass, just west of that mound and still inside a short walk. Same spot every new world.
+const SAND = { x0: 4, x1: 6, z0: -22, z1: -20 }
+
+function starterSand(x, y, z) {
+  if (x < SAND.x0 || x > SAND.x1 || z < SAND.z0 || z > SAND.z1) return false
+  const base = groundY(x, z)
+  return y > base && y <= base + 1
+}
+
 export function plantHere(x, y, z, surface, inTown) {
   if (inTown) return ''
   const wood = starterWood(x, y, z)
   if (wood && y > surface) return wood
   if (starterStone(x, y, z) && y > surface) return 'stone'
+  if (starterSand(x, y, z) && y > surface) return 'sand'
   if (y !== surface + 1) return ''
   if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
   const n = hash(x, z)
