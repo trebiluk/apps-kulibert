@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.89', date: '2026-10-09', lines: {
+    en: ['Doors look like one door, the practice chip is there from the start, and the phone top bar has room to breathe.'],
+    uk: ['Двері виглядають як одні двері, значок практики є від самого початку, і верхня смуга на телефоні має простір.'],
+    ru: ['Двери выглядят как одна дверь, значок практики есть с самого начала, и верхняя полоса телефона может дышать.'],
+    es: ['Las puertas se ven como una sola puerta, la ficha de práctica está desde el principio, y la barra de arriba del teléfono tiene espacio para respirar.'],
+    ar: ['الأبواب تبدو كباب واحد، وشريحة التدريب موجودة من البداية، وشريط الهاتف العلوي فيه متسع.'],
+    'fa-AF': ['درها مثل یک در دیده می‌شوند، نشان تمرین از اول هست، و نوار بالای گوشی جا برای نفس کشیدن دارد.'],
+    rw: ['Amarembo asa nk\'urugi rumwe, ikimenyetso cy\'imyitozo kirahari kuva mu ntangiriro, kandi umurongo wo hejuru ku telefoni ufite umwanya.'],
+    ti: ['ማዕጾታት ከም ሓደ ማዕጾ ይረኣዩ፡ ምልክት ምልምማድ ካብ መጀመርታ ኣሎ፡ ናይ ስልኪ ላዕለዋይ መስመር ድማ ክትንፍስ ቦታ ኣለዎ።'],
+  }},
   { v: '2.5.88', date: '2026-10-09', lines: {
     en: ['Your practice count is the same everywhere, and xMax works on the first click.'],
     uk: ['Рахунок практики однаковий скрізь, і xMax працює з першого кліку.'],

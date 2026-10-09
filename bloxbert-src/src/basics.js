@@ -1,5 +1,5 @@
 // Doors, levers, buttons, day clock, lanterns. World field `basics` on the save.
-import { isDoor, doorKind, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
+import { isDoor, doorKind, doorTopId, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
 import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK } from './day.js'
 
 const PREF = 'bloxbert-day'
@@ -58,6 +58,9 @@ export function createBasics(api) {
     api.toast(api.t('doorLocked'))
     return false
   }
+  function setDoorState(cells, opening) {
+    for (const [x, y, z, cid] of cells) api.set(x, y, z, opening ? openId(cid) : closedId(cid))
+  }
   function toggleDoor(x, y, z, how) {
     const id = api.get(x, y, z)
     if (!isDoor(id)) return false
@@ -66,8 +69,7 @@ export function createBasics(api) {
     if (!canOpen(cells)) return true
     if (kind === 'metal' && how === 'tap') { api.toast(api.t('needsButton')); return true }
     const opening = cells.some((c) => !isOpenDoor(c[3]))
-    const next = opening ? openId(id) : closedId(id)
-    setAll(cells, next)
+    setDoorState(cells, opening)
     const auto = cells.some((c) => autos.has(key(c[0], c[1], c[2])))
     if (opening && (kind === 'slide' || auto)) arm(cells, 3000, true)
     return true
@@ -80,16 +82,16 @@ export function createBasics(api) {
       if (seen.has(stamp)) continue
       seen.add(stamp)
       if (!canOpen(cells)) continue
-      const id = cells[0][3]
       if (leverOpens(on)) {
-        setAll(cells, openId(id))
+        setDoorState(cells, true)
         if (holdMs) arm(cells, holdMs, true)
-      } else setAll(cells, closedId(id))
+      } else setDoorState(cells, false)
     }
   }
   function placeColumn(x, y, z, id) {
-    api.set(x, y, z, id)
-    if (!api.get(x, y + 1, z)) api.set(x, y + 1, z, id)
+    const base = isDoor(id) ? (doorTopId(id) === id ? id - 20 : id) : id
+    api.set(x, y, z, base)
+    if (!api.get(x, y + 1, z)) api.set(x, y + 1, z, isDoor(base) ? doorTopId(base) : base)
   }
   function click() {
     try {
@@ -288,7 +290,8 @@ export function createBasics(api) {
         locks.delete(key(c[0], c[1], c[2]))
         autos.delete(key(c[0], c[1], c[2]))
       }
-      const item = id === 30 || id === 31 ? 'door' : id === 32 || id === 33 ? 'doorGlass' : id === 34 || id === 35 ? 'doorMetal' : 'doorSliding'
+      const kind = doorKind(id)
+      const item = kind === 'glass' ? 'doorGlass' : kind === 'metal' ? 'doorMetal' : kind === 'slide' ? 'doorSliding' : 'door'
       api.give(item, cols.size)
       return cols.size
     },

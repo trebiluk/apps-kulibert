@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.88'
+const VERSION = '2.5.89'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -40,7 +40,7 @@ import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
-import { isDoor, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
+import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
 import { dropOf } from './data/items.js'
 
@@ -198,6 +198,14 @@ export const BLOCKS = [
   [35, 'doorMetalOpen', 'greystone', 'Mo', 'greystone'],
   [36, 'doorSliding', 'glass', 'Sg', null],
   [37, 'doorSlidingOpen', 'glass', 'So', null],
+  [50, 'doorTop', 'wood', 'Dr', 'wood'],
+  [51, 'doorTopOpen', 'wood', 'Do', 'wood'],
+  [52, 'doorGlassTop', 'glass', 'Gd', null],
+  [53, 'doorGlassTopOpen', 'glass', 'Go', null],
+  [54, 'doorMetalTop', 'greystone', 'Md', 'greystone'],
+  [55, 'doorMetalTopOpen', 'greystone', 'Mo', 'greystone'],
+  [56, 'doorSlidingTop', 'glass', 'Sg', null],
+  [57, 'doorSlidingTopOpen', 'glass', 'So', null],
   [38, 'lever', 'wood', 'Le', 'wood'],
   [39, 'leverOn', 'wood', 'Lo', 'wood'],
   [40, 'pushButton', 'brick_red', 'Pb', 'brick_red'],
@@ -269,30 +277,99 @@ wheatHead.diffuseColor = new Color3(0.95, 0.76, 0.18)
 wheatHead.ambientColor = new Color3(0.95, 0.9, 0.7)
 wheatHead.specularColor = new Color3(0, 0, 0)
 wheatHead.backFaceCulling = false
-const doorTex = new DynamicTexture('door-wood-tex', { width: 64, height: 96 }, shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
-doorTex.hasAlpha = false
-{
-  const ctx = doorTex.getContext()
-  ctx.fillStyle = '#5C3317'
-  ctx.fillRect(0, 0, 64, 96)
-  const bands = ['#E8C27A', '#C9954C', '#E0B56A', '#D7A45A', '#E4B56A']
-  bands.forEach((fill, i) => { ctx.fillStyle = fill; ctx.fillRect(7, 8 + i * 16, 50, 14) })
-  ctx.strokeStyle = '#3A2415'
-  ctx.lineWidth = 6
-  ctx.strokeRect(3, 3, 58, 90)
-  ctx.strokeStyle = '#6B3E26'
-  ctx.lineWidth = 2
-  ctx.strokeRect(10, 10, 44, 76)
-  ctx.fillStyle = '#F6C453'
-  ctx.beginPath(); ctx.arc(46, 52, 5, 0, Math.PI * 2); ctx.fill()
-  ctx.fillStyle = '#8A5A20'
-  ctx.beginPath(); ctx.arc(46, 52, 2.2, 0, Math.PI * 2); ctx.fill()
-  doorTex.update()
+function paintTallDoor(kind) {
+  const c = document.createElement('canvas')
+  c.width = 64
+  c.height = 128
+  const g = c.getContext('2d')
+  const wood = kind === 'wood'
+  const glass = kind === 'glass'
+  const metal = kind === 'metal'
+  if (wood) {
+    g.fillStyle = '#5C3317'
+    g.fillRect(0, 0, 64, 128)
+    const bands = ['#E8C27A', '#C9954C', '#E0B56A', '#D7A45A', '#E4B56A', '#C9954C', '#E8C27A', '#D7A45A']
+    bands.forEach((fill, i) => { g.fillStyle = fill; g.fillRect(8, 4 + i * 15, 48, 13) })
+  } else if (metal) {
+    g.fillStyle = '#5E6770'
+    g.fillRect(0, 0, 64, 128)
+    const bands = ['#9AA3AB', '#7D868E', '#B0B8BF', '#8A939B']
+    for (let i = 0; i < 8; i++) { g.fillStyle = bands[i % 4]; g.fillRect(8, 4 + i * 15, 48, 13) }
+  } else {
+    g.clearRect(0, 0, 64, 128)
+    g.fillStyle = glass ? 'rgba(186, 228, 244, 0.62)' : 'rgba(46, 168, 162, 0.55)'
+    g.fillRect(7, 7, 50, 114)
+  }
+  g.strokeStyle = wood ? '#3A2415' : metal ? '#2A3138' : glass ? '#F4FBFE' : '#08332F'
+  g.lineWidth = 6
+  g.beginPath()
+  g.moveTo(4, 4); g.lineTo(60, 4)
+  g.moveTo(4, 124); g.lineTo(60, 124)
+  g.moveTo(4, 4); g.lineTo(4, 124)
+  g.moveTo(60, 4); g.lineTo(60, 124)
+  g.stroke()
+  g.strokeStyle = wood ? '#6B3E26' : metal ? '#3E474F' : glass ? '#D7F3FA' : '#146964'
+  g.lineWidth = 2
+  g.beginPath()
+  g.moveTo(11, 11); g.lineTo(53, 11)
+  g.moveTo(11, 117); g.lineTo(53, 117)
+  g.moveTo(11, 11); g.lineTo(11, 117)
+  g.moveTo(53, 11); g.lineTo(53, 117)
+  g.stroke()
+  g.fillStyle = metal ? '#E6EEF2' : '#F6C453'
+  g.beginPath(); g.arc(46, 78, 5, 0, Math.PI * 2); g.fill()
+  g.fillStyle = metal ? '#2A3138' : '#8A5A20'
+  g.beginPath(); g.arc(46, 78, 2.2, 0, Math.PI * 2); g.fill()
+  return c
 }
-const doorWoodMat = noa.rendering.makeStandardMaterial('terrain-door-wood')
-doorWoodMat.diffuseTexture = doorTex
-doorWoodMat.specularColor = new Color3(0.06, 0.05, 0.04)
-doorWoodMat.backFaceCulling = false
+function doorHalfTex(name, src, top, alpha) {
+  const tex = new DynamicTexture(name, { width: 64, height: 64 }, shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
+  tex.hasAlpha = !!alpha
+  const ctx = tex.getContext()
+  ctx.clearRect(0, 0, 64, 64)
+  ctx.drawImage(src, 0, top ? 0 : 64, 64, 64, 0, 0, 64, 64)
+  tex.update()
+  return tex
+}
+function doorHalfMat(name, tex, alpha) {
+  const mat = noa.rendering.makeStandardMaterial(name)
+  mat.diffuseTexture = tex
+  mat.specularColor = new Color3(0.06, 0.05, 0.04)
+  mat.ambientColor = new Color3(0.62, 0.6, 0.56)
+  mat.backFaceCulling = false
+  if (alpha) {
+    tex.hasAlpha = true
+    mat.useAlphaFromDiffuseTexture = true
+    mat.transparencyMode = 2
+  }
+  return mat
+}
+const DOOR_ART = {}
+for (const kind of ['wood', 'glass', 'metal', 'slide']) {
+  const src = paintTallDoor(kind)
+  const alpha = kind === 'glass' || kind === 'slide'
+  DOOR_ART[kind] = {
+    top: doorHalfMat('door-' + kind + '-top', doorHalfTex('door-' + kind + '-top-tex', src, true, alpha), alpha),
+    bot: doorHalfMat('door-' + kind + '-bot', doorHalfTex('door-' + kind + '-bot-tex', src, false, alpha), alpha),
+  }
+}
+function doorPanel(kind, open, half) {
+  const mesh = CreateBox('door-' + kind + '-' + half + (open ? '-o' : '-c'), { width: 0.9, height: 1, depth: 0.12 }, shapeScene)
+  mesh.material = DOOR_ART[kind][half]
+  mesh.position.set(0, 0.5, 0)
+  if (open) {
+    mesh.setPivotPoint(new Vector3(-0.45, 0, 0))
+    mesh.rotation.y = 1.25
+  }
+  mesh.bakeCurrentTransformIntoVertices()
+  mesh.setPivotPoint(new Vector3(0, 0, 0))
+  mesh.position.set(0, 0, 0)
+  mesh.rotation.set(0, 0, 0)
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
 const ovenHotTex = new Texture('assets/tile-oven-hot.png', shapeScene, false, true, Texture.NEAREST_SAMPLINGMODE)
 ovenHotTex.hasAlpha = false
 const ovenHotMat = new StandardMaterial('oven-hot-face', shapeScene)
@@ -332,27 +409,6 @@ function crateFaceURL() {
 }
 const boxFaceMat = flatFace('box-front-face', crateFaceURL())
 const ovenGlows = new Map()
-function doorMesh(kind, open, mat) {
-  if (!open) return shape('door-' + kind + '-shut', [part('p', 0.96, 0.98, 0.18, 0, 0.5, 0, 0, mat)], mat)
-  return shape('door-' + kind + '-open', [part('p', 0.14, 0.98, 0.9, 0.4, 0.5, 0, 0, mat)], mat)
-}
-function woodDoorMesh(open) {
-  const mesh = CreateBox(open ? 'door-wood-open' : 'door-wood-shut', { width: 0.9, height: 0.96, depth: 0.12 }, shapeScene)
-  mesh.material = doorWoodMat
-  mesh.position.set(0, 0.48, 0)
-  if (open) {
-    mesh.setPivotPoint(new Vector3(-0.45, 0, 0))
-    mesh.rotation.y = 1.25
-  }
-  mesh.bakeCurrentTransformIntoVertices()
-  mesh.setPivotPoint(new Vector3(0, 0, 0))
-  mesh.position.set(0, 0, 0)
-  mesh.rotation.set(0, 0, 0)
-  mesh.isPickable = false
-  mesh.isVisible = false
-  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
-  return mesh
-}
 function crossed(mat, w, h, d, y, yaw) {
   const mesh = CreateBox('wx', { width: w, height: h, depth: d }, shapeScene)
   mesh.material = mat
@@ -394,14 +450,22 @@ function lanternMesh() {
 }
 const SHAPES = {
   28: wheatMesh(),
-  30: woodDoorMesh(false),
-  31: woodDoorMesh(true),
-  32: doorMesh('glass', false, glassD),
-  33: doorMesh('glass', true, glassD),
-  34: doorMesh('metal', false, metalD),
-  35: doorMesh('metal', true, metalD),
-  36: doorMesh('slide', false, slideD),
-  37: doorMesh('slide', true, slideD),
+  30: doorPanel('wood', false, 'bot'),
+  31: doorPanel('wood', true, 'bot'),
+  32: doorPanel('glass', false, 'bot'),
+  33: doorPanel('glass', true, 'bot'),
+  34: doorPanel('metal', false, 'bot'),
+  35: doorPanel('metal', true, 'bot'),
+  36: doorPanel('slide', false, 'bot'),
+  37: doorPanel('slide', true, 'bot'),
+  50: doorPanel('wood', false, 'top'),
+  51: doorPanel('wood', true, 'top'),
+  52: doorPanel('glass', false, 'top'),
+  53: doorPanel('glass', true, 'top'),
+  54: doorPanel('metal', false, 'top'),
+  55: doorPanel('metal', true, 'top'),
+  56: doorPanel('slide', false, 'top'),
+  57: doorPanel('slide', true, 'top'),
   38: leverMesh(false),
   39: leverMesh(true),
   40: buttonMesh(false),
@@ -416,6 +480,11 @@ for (const [id, name, material] of BLOCKS) {
   const wheat = id === 28
   const opts = { material: mesh ? null : material, opaque: !mesh && !open && !glass, solid: !open && !lantern && !wheat }
   if (mesh) opts.blockMesh = mesh
+  if (isDoor(id)) {
+    const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
+    opts.onSet = fix
+    opts.onLoad = fix
+  }
   noa.registry.registerBlock(id, opts)
 }
 function blockPalette() {
@@ -426,7 +495,10 @@ function blockPalette() {
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
 noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || noa.registry.getBlockSolidity(id)
-const blockName = (id) => t(BLOCKS.find((b) => b[0] === id)[1])
+const blockName = (id) => {
+  const row = BLOCKS.find((b) => b[0] === id)
+  return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')
+}
 
 const S = 24
 const saved = new Map()
@@ -530,6 +602,13 @@ function setVoxel(x, y, z, v, draw = true) {
   if (draw) drawVoxel(x, y, z, v)
   dirty = true
   markSave(t('notSaved'))
+}
+function normalizeDoorTop(x, y, z) {
+  const id = getVoxel(x, y, z)
+  if (!isDoor(id) || isDoorTop(id)) return
+  const below = getVoxel(x, y - 1, z)
+  if (!isDoor(below) || isDoorTop(below) || doorKind(below) !== doorKind(id)) return
+  setVoxel(x, y, z, doorTopId(id))
 }
 const edits = createEdits({
   getVoxel,
@@ -1097,6 +1176,7 @@ session = createSession({
   setBright: (on) => basics && basics.setBright(on),
 })
 session.mountEnergy(noa)
+session.paintChip()
 let pendingGifts = []
 let gifts = {}
 function grantSaplings() {
@@ -1739,7 +1819,7 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const paletteIds = BLOCKS.map((b) => b[0])
+const paletteIds = BLOCKS.filter((b) => !isDoorTop(b[0])).map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
@@ -1756,12 +1836,12 @@ function paintBar() {
     b.dataset.slot = String(i)
     b.dataset.id = String(id)
     const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[0]
-    const name = block[1]
-    b.setAttribute('aria-label', t(name))
+    const name = blockName(id)
+    b.setAttribute('aria-label', name)
     b.setAttribute('aria-pressed', String(i === selectedSlot))
     const l = document.createElement('span')
     l.className = 'lbl'
-    l.textContent = t(name)
+    l.textContent = name
     b.append(l)
     b.addEventListener('click', () => selectSlot(i))
     b.prepend(blockIcon(block, ATLAS))

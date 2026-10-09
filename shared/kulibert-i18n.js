@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Your practice count is the same everywhere, and xMax works on the first click.",
+  "whatsNewBody": "Doors look like one door, the practice chip is there from the start, and the phone top bar has room to breathe.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

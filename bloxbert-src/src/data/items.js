@@ -62,6 +62,7 @@ export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
   if (blockId === 28) return 'wheat'
   if (blockId === 29) return 'sugar'
+  if (blockId >= 50 && blockId <= 57) return dropOf(blockId - 20)
   if (blockId === 31) return 'door'
   if (blockId === 33) return 'doorGlass'
   if (blockId === 35) return 'doorMetal'

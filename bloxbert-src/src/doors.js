@@ -8,6 +8,14 @@ export const DOOR = {
   35: { kind: 'metal', open: true, other: 34 },
   36: { kind: 'slide', open: false, other: 37 },
   37: { kind: 'slide', open: true, other: 36 },
+  50: { kind: 'wood', open: false, other: 51, top: true },
+  51: { kind: 'wood', open: true, other: 50, top: true },
+  52: { kind: 'glass', open: false, other: 53, top: true },
+  53: { kind: 'glass', open: true, other: 52, top: true },
+  54: { kind: 'metal', open: false, other: 55, top: true },
+  55: { kind: 'metal', open: true, other: 54, top: true },
+  56: { kind: 'slide', open: false, other: 57, top: true },
+  57: { kind: 'slide', open: true, other: 56, top: true },
 }
 export const LEVER = { off: 38, on: 39 }
 export const BUTTON = { off: 40, on: 41 }
@@ -16,6 +24,12 @@ export const CHARGER = 48
 export const FABRICATOR = 43
 const STEPS = [[1, 0, 0], [-1, 0, 0], [0, 0, 1], [0, 0, -1], [0, 1, 0], [0, -1, 0]]
 export function isDoor(id) { return !!DOOR[id] }
+export function isDoorTop(id) { return !!(DOOR[id] && DOOR[id].top) }
+export function doorTopId(id) {
+  const row = DOOR[id]
+  if (!row) return 0
+  return row.top ? id : id + 20
+}
 export function doorKind(id) { return DOOR[id] ? DOOR[id].kind : '' }
 export function isOpenDoor(id) { return !!(DOOR[id] && DOOR[id].open) }
 export function closedId(id) { return DOOR[id] ? (DOOR[id].open ? DOOR[id].other : id) : 0 }
