@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.93'
+const VERSION = '2.5.95'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -1122,7 +1122,28 @@ function paintModeChip() {
   document.body.classList.toggle('mode-creative', creativeMode)
 }
 function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
-function toast(text) { const el = $('toast'); if (!el) return; el.textContent = text; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { el.hidden = true }, 2400) }
+function toast(text, act) {
+  const el = $('toast')
+  if (!el) return
+  el.replaceChildren()
+  el.append(document.createTextNode(text))
+  if (act && act.label && act.run) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'toast-hold'
+    b.textContent = act.label
+    b.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      act.run()
+      el.hidden = true
+    })
+    el.append(b)
+  }
+  el.hidden = false
+  clearTimeout(toast.t)
+  toast.t = setTimeout(() => { el.hidden = true }, act ? 8000 : 2400)
+}
 function paintUndo() {
   const u = $('undo-btn'); if (u) u.disabled = !edits.canUndo
   const r = $('redo-btn'); if (r) r.disabled = !edits.canRedo

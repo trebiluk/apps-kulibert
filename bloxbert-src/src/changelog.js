@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.95', date: '2026-10-09', lines: {
+    en: ['The Oven fire is big and lively, and new things you craft go where you can find them.'],
+    uk: ['Вогонь печі великий і живий, і нові речі, які ти робиш, лягають туди, де їх знайти.'],
+    ru: ['Огонь печи большой и живой, и новые вещи, которые ты делаешь, ложатся туда, где их найти.'],
+    es: ['El fuego del horno es grande y vivo, y lo nuevo que fabricas va donde puedes encontrarlo.'],
+    ar: ['نار الفرن كبيرة وحية، والأشياء الجديدة التي تصنعها تذهب حيث تجدها.'],
+    'fa-AF': ['آتش تنور بزرگ و زنده است، و چیزهای تازه‌ای که می‌سازی جایی می‌روند که پیدایشان کنی.'],
+    rw: ['Umuriro w\'icyoto ni munini kandi urimo ubuzima, kandi ibishya ukora bijya aho ushobora kubibona.'],
+    ti: ['ሓዊ እቶን ዓቢን ህያውን እዩ፡ ሓደሽቲ እተሰርሖም ድማ ናብ እተረኽቦም ቦታ ይኸዱ።'],
+  }},
   { v: '2.5.93', date: '2026-10-09', lines: {
     en: ['The practice chip matches your Wallet again, and doors have no line across the middle.'],
     uk: ['Значок практики знову збігається з Гаманцем, і на дверях немає лінії посередині.'],

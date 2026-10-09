@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'The practice chip matches your Wallet again, and doors have no line across the middle.',
+    whatsNewBody: 'The Oven fire is big and lively, and new things you craft go where you can find them.',
     boxClick: 'Click an item, then a slot. Or drag.',
     pickFuel: 'Pick a fuel',
     pickBake: 'Pick something to bake',
@@ -221,7 +221,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Значок практики знову збігається з Гаманцем, і на дверях немає лінії посередині.',
+    whatsNewBody: 'Вогонь печі великий і живий, і нові речі, які ти робиш, лягають туди, де їх знайти.',
     boxClick: 'Натисни предмет, потім комірку. Або перетягни.',
     pickFuel: 'Обери паливо',
     pickBake: 'Обери, що спекти',
@@ -246,7 +246,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Значок практики снова совпадает с Кошельком, и на двери нет линии посередине.',
+    whatsNewBody: 'Огонь печи большой и живой, и новые вещи, которые ты делаешь, ложатся туда, где их найти.',
     boxClick: 'Нажми предмет, потом ячейку. Или перетащи.',
     pickFuel: 'Выбери топливо',
     pickBake: 'Выбери, что испечь',
@@ -271,7 +271,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'La ficha de práctica vuelve a coincidir con la Cartera, y las puertas no tienen línea por el medio.',
+    whatsNewBody: 'El fuego del horno es grande y vivo, y lo nuevo que fabricas va donde puedes encontrarlo.',
     boxClick: 'Haz clic en un objeto y luego en una casilla. O arrastra.',
     pickFuel: 'Elige un combustible',
     pickBake: 'Elige qué hornear',
@@ -296,7 +296,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'شريحة التدريب تطابق محفظتك من جديد، والأبواب بلا خط في الوسط.',
+    whatsNewBody: 'نار الفرن كبيرة وحية، والأشياء الجديدة التي تصنعها تذهب حيث تجدها.',
     boxClick: 'انقر عنصراً ثم خانة. أو اسحب.',
     pickFuel: 'اختر وقوداً',
     pickBake: 'اختر شيئاً لتخبزه',
@@ -321,7 +321,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'نشان تمرین دوباره با کیف پول یکی است، و درها خطی در وسط ندارند.',
+    whatsNewBody: 'آتش تنور بزرگ و زنده است، و چیزهای تازه‌ای که می‌سازی جایی می‌روند که پیدایشان کنی.',
     boxClick: 'یک چیز را بزن، بعد یک خانه. یا بکش.',
     pickFuel: 'یک سوخت برگزین',
     pickBake: 'چیزی برای پختن برگزین',
@@ -346,7 +346,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ikimenyetso cy\'imyitozo gihuye n\'ikofi nanone, kandi amarembo nta murongo ufite hagati.',
+    whatsNewBody: 'Umuriro w\'icyoto ni munini kandi urimo ubuzima, kandi ibishya ukora bijya aho ushobora kubibona.',
     boxClick: 'Kanda ikintu, hanyuma akazu. Cyangwa kurura.',
     pickFuel: 'Hitamo ibishya',
     pickBake: 'Hitamo icyo uteka',
@@ -371,7 +371,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ምልክት ምልምማድ እንደገና ምስ ዋሌት ይሰማማዕ፡ ማዕጾታት ድማ መስመር ኣብ ማእከል የብሎምን።',
+    whatsNewBody: 'ሓዊ እቶን ዓቢን ህያውን እዩ፡ ሓደሽቲ እተሰርሖም ድማ ናብ እተረኽቦም ቦታ ይኸዱ።',
     boxClick: 'ነገር ጠውቕ ድሕሪኡ ቦታ። ወይ ጎተት።',
     pickFuel: 'ነዳዲ ምረጽ',
     pickBake: 'ንምጥባስ ምረጽ',

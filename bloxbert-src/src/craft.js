@@ -47,14 +47,46 @@ export function maxPlan(recipe, count) {
   const uses = recipe.in.map(([item, need]) => [item, need * n])
   return { n, uses }
 }
-export function make(recipe, bag) {
+export function placeResult(bag, item, n, hot) {
+  const cap = item === 'woodTool' || item === 'stoneTool' ? 1 : 64
+  let left = n
+  let pocket = -1
+  const note = (i) => { if (i >= 9 && pocket < 0) pocket = i }
+  const stackAt = (i) => {
+    const s = bag.slots[i]
+    if (!s || s.item !== item || s.n >= cap || left <= 0) return
+    const take = Math.min(cap - s.n, left)
+    s.n += take
+    left -= take
+    note(i)
+  }
+  const emptyAt = (i) => {
+    if (i < 0 || bag.slots[i] || left <= 0) return
+    const take = Math.min(cap, left)
+    bag.slots[i] = { item, n: take }
+    left -= take
+    note(i)
+  }
+  const h = Number.isInteger(hot) ? hot : -1
+  if (h >= 0 && h < 9) {
+    if (!bag.slots[h]) emptyAt(h)
+    else stackAt(h)
+  }
+  for (let i = 0; i < 9; i++) if (i !== h) stackAt(i)
+  for (let i = 0; i < 9; i++) emptyAt(i)
+  for (let i = 9; i < bag.slots.length; i++) stackAt(i)
+  for (let i = 9; i < bag.slots.length; i++) emptyAt(i)
+  return { left, pocket }
+}
+export function make(recipe, bag, hot) {
   if (recipe.id === 'bread') return false
   for (const [item, n] of recipe.in) if (!bag.take(item, n)) return false
-  const left = bag.add(recipe.out[0], recipe.out[1])
-  if (left) {
+  const spot = placeResult(bag, recipe.out[0], recipe.out[1], hot)
+  if (spot.left) {
     for (const [item, n] of recipe.in) bag.add(item, n)
-    bag.take(recipe.out[0], recipe.out[1] - left)
+    const placed = recipe.out[1] - spot.left
+    if (placed > 0) bag.take(recipe.out[0], placed)
     return false
   }
-  return true
+  return { ok: true, pocket: spot.pocket }
 }

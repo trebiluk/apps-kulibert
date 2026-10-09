@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "The practice chip matches your Wallet again, and doors have no line across the middle.",
+  "whatsNewBody": "The Oven fire is big and lively, and new things you craft go where you can find them.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

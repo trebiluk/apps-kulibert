@@ -5,7 +5,7 @@ import { slotArt } from './icons.js'
 import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8 }
-const FLAME = '<svg class="flame" viewBox="0 0 32 40" width="28" height="34" aria-hidden="true"><path d="M16 2c2 8 8 10 8 18a8 8 0 1 1-16 0c0-5 3-8 4-12 1 3 2 4 4 6z"/><path class="core" d="M16 18c1 4 4 5 4 9a4 4 0 1 1-8 0c0-3 2-4 4-9z"/></svg>'
+const FLAME = '<svg class="flame" viewBox="0 0 32 40" aria-hidden="true"><path d="M16 2c2 8 8 10 8 18a8 8 0 1 1-16 0c0-5 3-8 4-12 1 3 2 4 4 6z"/><path class="core" d="M16 18c1 4 4 5 4 9a4 4 0 1 1-8 0c0-3 2-4 4-9z"/></svg>'
 const GHOST = '<svg class="ghost-ico" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="6" y="6" width="20" height="20" rx="3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
 let slotsOf = () => []
 let pickItem = ''
@@ -382,6 +382,7 @@ export function createStations(api) {
     else if (fuelNow > 0) burnPct = Math.round(Math.min(1, fuelNow / 8) * 100)
     const side = document.createElement('span')
     side.className = 'flame-side' + (fuelNow > 0 ? ' lit' : ' out') + (burning ? ' burn' : '')
+    side.style.setProperty('--burn', String(burnPct / 100))
     side.innerHTML = FLAME + '<i class="burn-bar" style="width:' + burnPct + '%"></i>'
     const flame = side.querySelector('.flame')
     if (grew && flame && fuelNow > 0) fx(flame, 'flame')

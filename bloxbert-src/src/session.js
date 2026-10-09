@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan } from './craft.js'
+import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -1747,17 +1747,25 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
+  function sayPocket(item, index) {
+    api.toast(t('inPockets').replace('{item}', itemName(item)), {
+      label: t('holdIt'),
+      run: () => holdItem(item, index),
+    })
+  }
   function craftMany(r, times) {
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))
     if (!n || !canMake(r, bag, stations).ok) return false
     for (const [item, need] of r.in) bag.take(item, need * n)
-    const left = bag.add(r.out[0], r.out[1] * n)
+    const spot = placeResult(bag, r.out[0], r.out[1] * n, hot)
     markFound(r.out[0])
-    if (left) {
+    if (spot.left) {
       const p = api.pos()
-      spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
-    } else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
+      spawnDrop(r.out[0], spot.left, p[0], p[1] + 0.3, p[2], 'full')
+    }
+    if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
+    else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
     if (r.out[0] === 'woodTool') markPath('pathTool')
     paintHotbar()
     return true
@@ -2004,7 +2012,10 @@ export function createSession(api) {
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const st = craftStatus(r, bag, stations, mode !== 'survival')
     if (!st.ok) return { ok: false, why: st.gate || st.station || 'count', gate: st.gate || '' }
-    if (!make(r, bag)) return { ok: false, why: 'full' }
+    const made = make(r, bag, hot)
+    if (!made) return { ok: false, why: 'full' }
+    markFound(r.out[0])
+    if (made.pocket >= 0) sayPocket(r.out[0], made.pocket)
     paintHotbar()
     return { ok: true, n: bag.count(r.out[0]) }
   }
