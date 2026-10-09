@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.101', date: '2026-10-09', lines: {
+    en: ['Slots, buttons and text are the same size everywhere and fit every screen.'],
+    uk: ['Комірки, кнопки і текст скрізь одного розміру і вміщаються на кожен екран.'],
+    ru: ['Ячейки, кнопки и текст везде одного размера и помещаются на любой экран.'],
+    es: ['Las casillas, los botones y el texto tienen el mismo tamaño en todas partes y caben en cada pantalla.'],
+    ar: ['الخانات والأزرار والنص بالحجم نفسه في كل مكان وتناسب كل شاشة.'],
+    'fa-AF': ['خانه‌ها، دکمه‌ها و متن همه‌جا یک اندازه اند و در هر صفحه جا می‌شوند.'],
+    rw: ['Uduce, buto, n\'amagambo bifite ubunini bumwe hose kandi binjira kuri buri ecran.'],
+    ti: ['ቦታታት፡ መጠወቒታትን ጽሑፍን ኣብ ኩሉ ቦታ ሓደ መጠን እዮም፡ ኣብ ነፍሲ ወከፍ መስኮት ድማ ይኣትዉ።'],
+  }},
   { v: '2.5.100', date: '2026-10-09', lines: {
     en: ['Ponds near the start make wet soil easy, and growing wheat now looks green until it is really ripe.'],
     uk: ['Ставки біля старту роблять мокрий ґрунт легким, і пшениця лишається зеленою, поки справді не дозріє.'],

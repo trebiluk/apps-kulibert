@@ -1,0 +1,392 @@
+{
+  "steps": [
+    {
+      "name": "version",
+      "ok": true,
+      "detail": "2.5.101"
+    },
+    {
+      "name": "1366 bag slot",
+      "ok": true,
+      "detail": "slot 56 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "1366 panel",
+      "ok": true,
+      "detail": "panel 896 want ~896 css min(calc(100vw - 16px), calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 16))"
+    },
+    {
+      "name": "1366 fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 noscroll bag",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 craft slot",
+      "ok": true,
+      "detail": "slot 56"
+    },
+    {
+      "name": "1366 craft fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 craft press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 wood",
+      "ok": true,
+      "detail": "{\"wood\":{\"top\":252,\"bottom\":308,\"h\":56,\"w\":56},\"ih\":768,\"iw\":1366,\"keys\":[{\"t\":\"Show all\",\"top\":582,\"bottom\":626,\"h\":44,\"w\":99},{\"t\":\"Fill\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":75}],\"bodyScroll\":false,\"bookScroll\":false}"
+    },
+    {
+      "name": "1366 fill",
+      "ok": true,
+      "detail": "[{\"t\":\"Fill\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":687,\"bottom\":731,\"h\":44,\"w\":75}]"
+    },
+    {
+      "name": "1366 box slot",
+      "ok": true,
+      "detail": "slot 56 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "1366 box fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 box press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1366 hotbar",
+      "ok": true,
+      "detail": "hot {\"w\":56,\"h\":56,\"x\":381,\"y\":701} bar {\"w\":613,\"h\":74,\"x\":377,\"y\":694}"
+    },
+    {
+      "name": "1366 noscroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 bag slot",
+      "ok": true,
+      "detail": "slot 64 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "1920 panel",
+      "ok": true,
+      "detail": "panel 1024 want ~1024 css min(calc(100vw - 16px), calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 16))"
+    },
+    {
+      "name": "1920 fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 noscroll bag",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 craft slot",
+      "ok": true,
+      "detail": "slot 64"
+    },
+    {
+      "name": "1920 craft fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 craft press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 wood",
+      "ok": true,
+      "detail": "{\"wood\":{\"top\":260,\"bottom\":324,\"h\":64,\"w\":64},\"ih\":1080,\"iw\":1920,\"keys\":[{\"t\":\"Show all\",\"top\":626,\"bottom\":670,\"h\":44,\"w\":99},{\"t\":\"Fill\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":75}],\"bodyScroll\":false,\"bookScroll\":false}"
+    },
+    {
+      "name": "1920 fill",
+      "ok": true,
+      "detail": "[{\"t\":\"Fill\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":999,\"bottom\":1043,\"h\":44,\"w\":75}]"
+    },
+    {
+      "name": "1920 box slot",
+      "ok": true,
+      "detail": "slot 64 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "1920 box fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 box press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "1920 hotbar",
+      "ok": true,
+      "detail": "hot {\"w\":64,\"h\":64,\"x\":613,\"y\":1005} bar {\"w\":702,\"h\":82,\"x\":609,\"y\":998}"
+    },
+    {
+      "name": "1920 noscroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 bag slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "915 panel",
+      "ok": true,
+      "detail": "panel 768 want ~768 css min(calc(100vw - 16px), calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 16))"
+    },
+    {
+      "name": "915 fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 noscroll bag",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 craft slot",
+      "ok": true,
+      "detail": "slot 48"
+    },
+    {
+      "name": "915 craft fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 craft press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 wood",
+      "ok": true,
+      "detail": "{\"wood\":{\"top\":335,\"bottom\":383,\"h\":48,\"w\":48},\"ih\":412,\"iw\":915,\"keys\":[{\"t\":\"Show all\",\"top\":986,\"bottom\":1030,\"h\":44,\"w\":99},{\"t\":\"Fill\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":75}],\"bodyScroll\":false,\"bookScroll\":true}"
+    },
+    {
+      "name": "915 fill",
+      "ok": true,
+      "detail": "[{\"t\":\"Fill\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":331,\"bottom\":375,\"h\":44,\"w\":75}]"
+    },
+    {
+      "name": "915 box slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "915 box fonts",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 box press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "915 hotbar",
+      "ok": true,
+      "detail": "hot {\"w\":48,\"h\":48,\"x\":200,\"y\":353} bar {\"w\":524,\"h\":66,\"x\":196,\"y\":346}"
+    },
+    {
+      "name": "915 hotbar width",
+      "ok": true,
+      "detail": "{\"w\":524,\"h\":66,\"x\":196,\"y\":346}"
+    },
+    {
+      "name": "915 noscroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "412 bag slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "412 panel",
+      "ok": true,
+      "detail": "panel 396 want ~396 css min(calc(100vw - 16px), calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 16))"
+    },
+    {
+      "name": "412 fonts",
+      "ok": false,
+      "detail": "[{\"tag\":\"SPAN\",\"cls\":\"kb-plate\",\"px\":0,\"t\":\"Bertopia · 2.5.101\"}]"
+    },
+    {
+      "name": "412 press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "412 noscroll bag",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "412 craft slot",
+      "ok": true,
+      "detail": "slot 48"
+    },
+    {
+      "name": "412 craft fonts",
+      "ok": false,
+      "detail": "[{\"tag\":\"SPAN\",\"cls\":\"kb-plate\",\"px\":0,\"t\":\"Bertopia · 2.5.101\"}]"
+    },
+    {
+      "name": "412 craft press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "412 wood",
+      "ok": true,
+      "detail": "{\"wood\":{\"top\":373,\"bottom\":421,\"h\":48,\"w\":48},\"ih\":915,\"iw\":412,\"keys\":[{\"t\":\"Show all\",\"top\":1024,\"bottom\":1068,\"h\":44,\"w\":99},{\"t\":\"Fill\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":75}],\"bodyScroll\":false,\"bookScroll\":true}"
+    },
+    {
+      "name": "412 fill",
+      "ok": true,
+      "detail": "[{\"t\":\"Fill\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":834,\"bottom\":878,\"h\":44,\"w\":75}]"
+    },
+    {
+      "name": "412 box slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "412 box fonts",
+      "ok": false,
+      "detail": "[{\"tag\":\"SPAN\",\"cls\":\"kb-plate\",\"px\":0,\"t\":\"Bertopia · 2.5.101\"}]"
+    },
+    {
+      "name": "412 box press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "412 hotbar",
+      "ok": true,
+      "detail": "hot {\"w\":44,\"h\":44,\"x\":16,\"y\":860} bar {\"w\":390,\"h\":62,\"x\":11,\"y\":853}"
+    },
+    {
+      "name": "412 phone slots",
+      "ok": false,
+      "detail": "{\"vis\":[{\"i\":0,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":1,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":2,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":3,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":4,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":5,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":6,\"on\":true,\"w\":44,\"h\":44,\"hit\":false},{\"i\":7,\"on\":true,\"w\":44,\"h\":44,\"hit\":false}],\"bag\":{\"w\":44,\"h\":44,\"hit\":false}}"
+    },
+    {
+      "name": "412 noscroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "zoom125 bag slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "zoom125 panel",
+      "ok": true,
+      "detail": "panel 768 want ~768 css min(calc(100vw - 16px), calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 16))"
+    },
+    {
+      "name": "zoom125 press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "zoom125 noscroll bag",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "zoom125 craft slot",
+      "ok": true,
+      "detail": "slot 48"
+    },
+    {
+      "name": "zoom125 craft press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "zoom125 wood",
+      "ok": true,
+      "detail": "{\"wood\":{\"top\":373,\"bottom\":421,\"h\":48,\"w\":48},\"ih\":614,\"iw\":1093,\"keys\":[{\"t\":\"Show all\",\"top\":1024,\"bottom\":1068,\"h\":44,\"w\":99},{\"t\":\"Fill\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":75}],\"bodyScroll\":false,\"bookScroll\":true}"
+    },
+    {
+      "name": "zoom125 fill",
+      "ok": true,
+      "detail": "[{\"t\":\"Fill\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":54},{\"t\":\"Make\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":73},{\"t\":\"×Max\",\"top\":533,\"bottom\":577,\"h\":44,\"w\":75}]"
+    },
+    {
+      "name": "zoom125 box slot",
+      "ok": true,
+      "detail": "slot 48 token round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)"
+    },
+    {
+      "name": "zoom125 box press",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "zoom125 hotbar",
+      "ok": true,
+      "detail": "hot {\"w\":48,\"h\":48,\"x\":289,\"y\":555} bar {\"w\":524,\"h\":66,\"x\":285,\"y\":548}"
+    },
+    {
+      "name": "zoom125 noscroll",
+      "ok": true,
+      "detail": "0"
+    },
+    {
+      "name": "console",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": [],
+  "shots": [
+    "/tmp/apps-kulibert/proof/bertopia-2.5.101/1366.png",
+    "/tmp/apps-kulibert/proof/bertopia-2.5.101/1920.png",
+    "/tmp/apps-kulibert/proof/bertopia-2.5.101/915.png",
+    "/tmp/apps-kulibert/proof/bertopia-2.5.101/412.png",
+    "/tmp/apps-kulibert/proof/bertopia-2.5.101/zoom125.png"
+  ]
+}

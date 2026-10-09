@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.100 Ponds near the start, and wheat stays green until it is really ripe).
+Updated Fri Oct 9 2026 (Build: 2.5.101 Slots, buttons and text are the same size everywhere and fit every screen).
 
+- [x] **2.5.101 GUI scale:** one size token for slots, buttons and text. Hotbar, Bag and Crafting use it, and the panel scrolls instead of clipping.
 - [x] **2.5.100 Farming fix:** 2–3 still-water ponds a short walk from Survival spawn, one pond added once to an old save that has none, water you can walk out of and cannot break, wheat stays green until the card says Ripe, and Seeds or a Hoe aim through a crop.
 - [x] **2.5.99 Shared slots on the Box:** Boxes use one shared slot contract. Click, Shift-click and drag move, merge and swap the same way between the Box and the Bag.
 - [x] **2.5.98 Farming F2:** plant wheat seeds on farmland (a sweep plants up to 5), four growth stages, wet soil within 4 of still water grows twice as fast, crops keep growing while the game is closed and never past ripe.

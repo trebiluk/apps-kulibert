@@ -307,7 +307,7 @@ export function createSession(api) {
       const sw = document.createElement('span')
       sw.className = 'sw'
       if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
-      else if (item && item.block && api.blockIcon) sw.append(api.blockIcon(item.block))
+      else if (item && item.block && api.blockIcon) sw.append(fitIcon(api.blockIcon(item.block)))
       else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#E6B15A"/></svg>')
       b.append(digit, sw)
       if (s) {
@@ -602,10 +602,69 @@ export function createSession(api) {
     panel.append(keys)
     return panel
   }
+  function slotPx() {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--ks-slot')
+    const n = parseFloat(raw)
+    return n > 0 ? n : 56
+  }
+  function canvasHasInk(canvas) {
+    try {
+      const ctx = canvas.getContext('2d')
+      if (!ctx || canvas.width < 2 || canvas.height < 2) return false
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
+      for (let i = 3; i < data.length; i += 16) if (data[i] > 8) return true
+      return false
+    } catch (e) { return false }
+  }
+  function fitIcon(node) {
+    if (!node) return node
+    const canvas = node.tagName === 'CANVAS' ? node : (node.querySelector ? node.querySelector('canvas') : null)
+    const show = (c) => {
+      c.style.width = '100%'
+      c.style.height = '100%'
+      c.style.imageRendering = 'pixelated'
+    }
+    const upscale = (c) => {
+      const px = slotPx()
+      const dpr = Math.min(window.devicePixelRatio || 1, 3)
+      const side = Math.max(1, Math.round(px * dpr))
+      if (c.width === side && c.height === side) { show(c); return c }
+      const next = document.createElement('canvas')
+      next.width = side
+      next.height = side
+      if (c.dataset && c.dataset.block) next.dataset.block = c.dataset.block
+      const g = next.getContext('2d')
+      g.imageSmoothingEnabled = false
+      g.drawImage(c, 0, 0, side, side)
+      show(next)
+      return next
+    }
+    const apply = (c) => {
+      if (!c) return node
+      if (!canvasHasInk(c)) { show(c); return node }
+      const next = upscale(c)
+      if (next === c) return node
+      if (node === c) return next
+      if (c.parentNode) c.replaceWith(next)
+      return node
+    }
+    const out = apply(canvas)
+    if (canvas && !canvasHasInk(canvas)) {
+      const later = () => {
+        if (!canvas.isConnected && node !== canvas) return
+        if (!canvasHasInk(canvas)) return
+        const next = upscale(canvas)
+        if (next !== canvas && canvas.parentNode) canvas.replaceWith(next)
+      }
+      requestAnimationFrame(later)
+      setTimeout(later, 80)
+    }
+    return out
+  }
   function itemIcon(item) {
     if (!item) return document.createElement('span')
     if (item.svg) { const s = document.createElement('span'); s.innerHTML = itemSvg(item.svg); return s }
-    if (item.block && api.blockIcon) return api.blockIcon(item.block)
+    if (item.block && api.blockIcon) return fitIcon(api.blockIcon(item.block))
     const s = document.createElement('span')
     s.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>')
     return s
@@ -624,7 +683,7 @@ export function createSession(api) {
         b.className = 'well gtile'
         const pic = document.createElement('span')
         pic.className = 'gic'
-        pic.append(api.blockIcon ? api.blockIcon(item.block) : document.createElement('span'))
+        pic.append(api.blockIcon ? fitIcon(api.blockIcon(item.block)) : document.createElement('span'))
         b.append(pic)
         const lbl = document.createElement('span')
         lbl.className = 'glbl'
