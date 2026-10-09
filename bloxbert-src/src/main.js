@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.76'
+const VERSION = '2.5.77'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -860,6 +860,9 @@ function paintUndo() {
 let selfUnlock = false
 let armResume = 0
 let cardClosedAt = 0
+let closeHow = ''
+let dropLockLook = false
+let lockSwallowUntil = 0
 let markPath = () => {}
 let paintPath = () => {}
 let lastPointer = null
@@ -1050,7 +1053,12 @@ if ($('door-pick')) $('door-pick').addEventListener('click', () => {
   }
   hideDoorOpt()
 })
-if ($('door-x')) $('door-x').addEventListener('click', () => hideDoorOpt())
+if ($('door-x')) $('door-x').addEventListener('pointerdown', (e) => e.stopPropagation())
+if ($('door-x')) $('door-x').addEventListener('click', (e) => {
+  e.preventDefault()
+  e.stopPropagation()
+  hideDoorOpt()
+})
 if ($('door-scrim')) $('door-scrim').addEventListener('click', () => {
   if (performance.now() - doorShownAt < 700) return
   hideDoorOpt()
@@ -1166,21 +1174,65 @@ function focusBtn(btn) {
   btn.style.outline = '3px solid #22D3EE'
   btn.style.outlineOffset = '2px'
 }
+function hidePlayChip() {
+  const el = $('play-chip')
+  if (el) el.hidden = true
+}
+function showPlayChip() {
+  const el = $('play-chip')
+  if (!el) return
+  el.textContent = t('clickToPlay')
+  el.hidden = false
+}
+function clearLookAccum() {
+  try { noa.inputs.pointerState.dx = 0; noa.inputs.pointerState.dy = 0 } catch (e) {}
+}
+function swallowing() { return !TOUCH_UI && performance.now() < lockSwallowUntil }
+function grabLock() {
+  if (TOUCH_UI || tableMode) return
+  clearLookAccum()
+  dropLockLook = true
+  lockSwallowUntil = performance.now() + 150
+  mouseLeft = false
+  mouseRight = false
+  try { noa.inputs.state.fire = false } catch (e) {}
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = true } catch (e) {}
+  const el = noa.container && noa.container.element
+  try {
+    const res = el && el.requestPointerLock && el.requestPointerLock()
+    if (res && res.catch) res.catch(() => {
+      if (anyCard() || TOUCH_UI || document.pointerLockElement) return
+      armResume = performance.now()
+      showPlayChip()
+    })
+  } catch (e) {}
+}
 function resumePlay() {
+  const how = closeHow || 'gesture'
+  closeHow = ''
   if (anyCard()) return
   cardClosedAt = performance.now()
   document.body.classList.remove('menu-open')
   try { noa.setPaused(false) } catch (e) {}
   if (session) session.paused = false
-  if (!TOUCH_UI) armResume = performance.now()
+  if (TOUCH_UI) { hidePlayChip(); return }
+  if (how === 'esc') {
+    armResume = performance.now()
+    showPlayChip()
+    return
+  }
+  armResume = 0
+  hidePlayChip()
+  grabLock()
 }
 function eatResume(e) {
+  if (swallowing()) return true
   if (!armResume) return false
   if (TOUCH_UI || (e && e.pointerType === 'touch')) { armResume = 0; return false }
-  if (document.pointerLockElement || noa.container.hasPointerLock) { armResume = 0; return false }
+  if (document.pointerLockElement || noa.container.hasPointerLock) { armResume = 0; hidePlayChip(); return false }
   armResume = 0
-  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = true } catch (err) {}
-  try { noa.container.setPointerLock(true) } catch (err) {}
+  hidePlayChip()
+  grabLock()
   return true
 }
 let holdTour = () => {}
@@ -1284,7 +1336,18 @@ $('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('
 let menuFromLock = false
 let hadLock = false
 document.addEventListener('pointerlockchange', () => {
-  if (document.pointerLockElement) { hadLock = true; menuFromLock = false; return }
+  if (document.pointerLockElement) {
+    hadLock = true
+    menuFromLock = false
+    dropLockLook = true
+    lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
+    clearLookAccum()
+    hidePlayChip()
+    armResume = 0
+    mouseLeft = false
+    try { noa.inputs.state.fire = false } catch (e) {}
+    return
+  }
   const wasLocked = hadLock
   hadLock = false
   if (anyCard() || (cardClosedAt && performance.now() - cardClosedAt < 600)) { selfUnlock = false; return }
@@ -1684,18 +1747,36 @@ window.addEventListener('keydown', (e) => {
   if (e.repeat) return
   if (!anyCard()) { openMenu(true); return }
   selfUnlock = true
+  closeHow = 'esc'
   const doorCard = $('door-opt')
-  if (doorCard && !doorCard.hidden) { hideDoorOpt(); return }
+  if (doorCard && !doorCard.hidden) { hideDoorOpt(); if (anyCard()) closeHow = ''; return }
   const about = $('about')
   if (about && !about.hidden) { about.hidden = true; resumePlay(); return }
   const inspect = $('inspect-card')
   if (inspect && !inspect.hidden) { inspect.hidden = true; resumePlay(); return }
-  if ($('sheet') && !$('sheet').hidden) { panels.backOne(); return }
+  if ($('sheet') && !$('sheet').hidden) { panels.close(); return }
 }, true)
+function shutByKey() {
+  closeHow = 'gesture'
+  const doorCard = $('door-opt')
+  if (doorCard && !doorCard.hidden) { hideDoorOpt(); return true }
+  const about = $('about')
+  if (about && !about.hidden) { about.hidden = true; resumePlay(); return true }
+  const inspect = $('inspect-card')
+  if (inspect && !inspect.hidden) { inspect.hidden = true; resumePlay(); return true }
+  if ($('sheet') && !$('sheet').hidden && panels) { panels.close(); return true }
+  return false
+}
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
   if (e.key === 'Escape') return
-  if (e.key === 'e' || e.key === 'E') { e.preventDefault(); openMenu(true); panels.open('inventory'); return }
+  if (e.key === 'Tab' && anyCard()) { e.preventDefault(); shutByKey(); return }
+  if (e.key === 'e' || e.key === 'E') {
+    if (e.ctrlKey || e.metaKey) return
+    e.preventDefault()
+    if (shutByKey()) return
+    openMenu(true); panels.open('inventory'); return
+  }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
     if ($('sheet') && !$('sheet').hidden) return
     e.preventDefault()
@@ -1703,7 +1784,13 @@ document.addEventListener('keydown', (e) => {
     return
   }
   if (e.key === 'f' || e.key === 'F') { if (!e.ctrlKey && !e.metaKey && $('sheet') && $('sheet').hidden) { e.preventDefault(); useSelected(); return } }
-  if (e.key === 'c' || e.key === 'C') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); openMenu(true); panels.open('crafting'); return } }
+  if (e.key === 'c' || e.key === 'C') {
+    if (e.ctrlKey || e.metaKey) return
+    e.preventDefault()
+    const sheet = $('sheet')
+    if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { panels.close(); return }
+    openMenu(true); panels.open('crafting'); return
+  }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '123456789'.indexOf(e.key)
   if (n >= 0 && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden) {
@@ -1868,6 +1955,11 @@ function feelTick(dt) {
     if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
   }
   const sheetOpen = !sheetEl.hidden
+  if (swallowing()) {
+    mouseLeft = false
+    mouseRight = false
+    try { noa.inputs.state.fire = false } catch (e) {}
+  }
   const breaking = !!(noa.inputs.state.fire || mouseLeft)
   const touchLook = !!(look && look.pt === 'touch')
   if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) beginDig('mouse')
@@ -2016,6 +2108,7 @@ try {
 function applyLook() {
   noa.camera.sensitivityX = 10 * lookSens
   noa.camera.sensitivityY = 10 * lookSens
+  noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
   try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb })) } catch (e) {}
 }
@@ -2056,6 +2149,23 @@ function paintLook(g) {
   g.append(label, range, inv, wide, climb)
 }
 applyLook()
+function applyLockedLook(dx, dy) {
+  if (!dx && !dy) return
+  const conv = 0.0066 * Math.PI / 180
+  const sx = 10 * lookSens * conv
+  const sy = 10 * lookSens * conv
+  setLook(noa.camera.heading + dx * sx, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * sy)
+}
+document.addEventListener('mousemove', (e) => {
+  if (TOUCH_UI) return
+  if (!document.pointerLockElement && !(noa.container && noa.container.hasPointerLock)) return
+  if (anyCard() || tableMode) return
+  const dx = e.movementX || 0
+  const dy = e.movementY || 0
+  if (dropLockLook) { dropLockLook = false; return }
+  if (performance.now() < lockSwallowUntil) return
+  applyLockedLook(dx, dy)
+}, true)
 canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 function targetHit() {
@@ -2112,6 +2222,7 @@ canvas.addEventListener('pointermove', (e) => {
     setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
     return
   }
+  if (document.pointerLockElement || noa.container.hasPointerLock) return
   const dx = e.clientX - look.x, dy = e.clientY - look.y
   look.moved += Math.abs(dx) + Math.abs(dy)
   if (look.moved >= 8) { lastLookAt = performance.now(); if (dig && dig.kind === 'touch') { dig = null; hideCrack() } }
@@ -2122,6 +2233,7 @@ canvas.addEventListener('pointermove', (e) => {
 canvas.addEventListener('pointerup', (e) => {
   releaseFar()
   if (e.button === 0 || e.button < 0) mouseLeft = false
+  if (swallowing()) { look = null; dig = null; hideCrack(); return }
   if (!look || e.pointerId !== look.id) return
   const moved = look.moved
   const tap = moved < 8
@@ -2220,6 +2332,7 @@ window.addEventListener('pointermove', (e) => {
   rightPress.py = e.clientY
 }, true)
 function finishRight(e) {
+  if (swallowing()) { rightPress = null; mouseRight = false; return }
   if (!rightPress) return
   if (e && e.pointerId != null && rightPress.pid != null && e.pointerId !== rightPress.pid) return
   const press = rightPress

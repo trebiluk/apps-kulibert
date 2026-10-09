@@ -319,7 +319,12 @@ export function createSession(api) {
     bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
     bagBtn.querySelector('.lbl').textContent = t('bag')
     bagBtn.setAttribute('aria-label', t('bag'))
-    bagBtn.addEventListener('click', () => { if (api.open) api.open('inventory') })
+    bagBtn.addEventListener('pointerdown', (e) => e.stopPropagation())
+    bagBtn.addEventListener('click', () => {
+      const sheet = document.getElementById('sheet')
+      if (sheet && !sheet.hidden && sheet.dataset.panel === 'inventory') { if (api.close) api.close(); return }
+      if (api.open) api.open('inventory')
+    })
     bar.append(bagBtn)
     const held = bag.slots[hot]
     const label = document.getElementById('current')
@@ -562,10 +567,11 @@ export function createSession(api) {
       b.className = 'keycap'
       b.dataset.act = act
       b.textContent = label
-      b.addEventListener('click', (e) => { e.stopPropagation(); fn() })
+      b.addEventListener('pointerdown', (e) => e.stopPropagation())
+      b.addEventListener('click', (e) => { e.stopPropagation(); fn(e) })
       keys.append(b)
     }
-    addKey('hold', t('holdIt'), () => { holdItem(itemKey, index); if (api.close) api.close() })
+    addKey('hold', t('holdIt'), (e) => { if (e && e.stopPropagation) e.stopPropagation(); holdItem(itemKey, index); if (api.close) api.close() })
     addKey('drop1', t('drop1'), () => { dropStack(index, false); refreshBag() })
     addKey('dropall', t('dropAll'), () => { dropStack(index, true); refreshBag() })
     addKey('worth', t('worth'), () => {
@@ -1250,7 +1256,8 @@ export function createSession(api) {
     b.className = 'gtile'
     b.innerHTML = '<span class="gic">⚙</span><span class="glbl"></span>'
     b.querySelector('.glbl').textContent = label
-    b.addEventListener('click', fn)
+    b.addEventListener('pointerdown', (e) => e.stopPropagation())
+    b.addEventListener('click', (e) => { e.stopPropagation(); fn(e) })
     return b
   }
   function paintSell(g) {
@@ -1395,7 +1402,8 @@ export function createSession(api) {
       yes.className = 'gtile'
       yes.innerHTML = '<span class="gic">✓</span><span class="glbl"></span>'
       yes.querySelector('.glbl').textContent = t('pickup')
-      yes.addEventListener('click', () => { const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() })
+      yes.addEventListener('pointerdown', (e) => e.stopPropagation())
+      yes.addEventListener('click', (e) => { e.stopPropagation(); const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() })
       const no = document.createElement('button')
       no.type = 'button'
       no.className = 'gtile'

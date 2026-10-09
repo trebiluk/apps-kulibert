@@ -123,7 +123,9 @@ export function mountPanels(api) {
   }
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)
-  document.getElementById('sheet-x').addEventListener('click', close)
+  const sheetX = document.getElementById('sheet-x')
+  sheetX.addEventListener('pointerdown', (e) => e.stopPropagation())
+  sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
   if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
   return { openRoot, open, close, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }

@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Trees near your start are full size, and there is stone close by for your first Oven.',
+    whatsNewBody: 'Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -211,7 +211,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Дерева біля старту повного розміру, і камінь близько для першої печі.',
+    whatsNewBody: 'Закриття Сумки чи панелі одразу повертає в гру, і огляд більше не залипає.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -226,7 +226,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Деревья у старта полного размера, и камень рядом для первой печи.',
+    whatsNewBody: 'Закрытие Сумки или панели сразу возвращает в игру, и обзор больше не залипает.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -241,7 +241,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Los árboles cerca de tu inicio son de tamaño completo, y hay piedra cerca para tu primer horno.',
+    whatsNewBody: 'Cerrar la Bolsa o un panel te devuelve al juego, y mirar alrededor ya no se traba.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -256,7 +256,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الأشجار قرب بدايتك بالحجم الكامل، وهناك حجر قريب لفرنك الأول.',
+    whatsNewBody: 'إغلاق الحقيبة أو اللوحة يعيدك مباشرة إلى اللعب، والنظر حوله لا يتوقف.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -271,7 +271,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'درخت‌های نزدیک شروع تو کامل‌اند، و سنگ برای تنور اول نزدیک است.',
+    whatsNewBody: 'بستن بکس یا یک صفحه تو را مستقیم به بازی برمی‌گرداند، و نگاه کردن دیگر گیر نمی‌کند.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -286,7 +286,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ibiti hafi aho utangira aruzuye, kandi hari ibuye hafi y’icyoto cyawe cya mbere.',
+    whatsNewBody: 'Gufunga Agasaho cyangwa ipaji bigusubiza mu mukino ako kanya, kandi kureba ntikiguma.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -301,7 +301,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ኣግራብ ኣብ ጥቓ መጀመርታኻ ምሉእ ዓቐን እዮም፡ እምኒ ድማ ንመጀመርታ እቶንካ ቀረባ ኣሎ።',
+    whatsNewBody: 'ምዕጻው ቦርሳ ወይ ፓነል ብቐጥታ ናብ ጸወታ ይመልስ፡ ምርኣይ ድማ ኣይጣበቕን።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.77', date: '2026-10-08', lines: {
+    en: ['Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.'],
+    uk: ['Закриття Сумки чи панелі одразу повертає в гру, і огляд більше не залипає.'],
+    ru: ['Закрытие Сумки или панели сразу возвращает в игру, и обзор больше не залипает.'],
+    es: ['Cerrar la Bolsa o un panel te devuelve al juego, y mirar alrededor ya no se traba.'],
+    ar: ['إغلاق الحقيبة أو اللوحة يعيدك مباشرة إلى اللعب، والنظر حوله لا يتوقف.'],
+    'fa-AF': ['بستن بکس یا یک صفحه تو را مستقیم به بازی برمی‌گرداند، و نگاه کردن دیگر گیر نمی‌کند.'],
+    rw: ['Gufunga Agasaho cyangwa ipaji bigusubiza mu mukino ako kanya, kandi kureba ntikiguma.'],
+    ti: ['ምዕጻው ቦርሳ ወይ ፓነል ብቐጥታ ናብ ጸወታ ይመልስ፡ ምርኣይ ድማ ኣይጣበቕን።'],
+  }},
   { v: '2.5.76', date: '2026-10-08', lines: {
     en: ['Trees near your start are full size, and there is stone close by for your first Oven.'],
     uk: ['Дерева біля старту повного розміру, і камінь близько для першої печі.'],
