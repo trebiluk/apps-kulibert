@@ -973,6 +973,7 @@ export function createSession(api) {
     if (item === 'log' || item === 'planks') return t('srcChop')
     if (item === 'stone' || item === 'slate') return t('srcStone')
     if (item === 'coal') return t('srcCoal')
+    if (item === 'wheat') return t('srcFarm')
     return ''
   }
   function paintCraft(g) {
@@ -1031,7 +1032,7 @@ export function createSession(api) {
           const mark = document.createElement('span')
           mark.className = 'art oven-mark'
           mark.append(itemIcon(ITEMS.oven))
-          line.append(mark, document.createTextNode(t('bakeInOven')))
+          line.append(mark, document.createTextNode(t('bakeInOven') + ' · ' + t('wheat') + ' (' + t('srcFarm') + ')'))
           b.append(line)
         } else if (!st.ok) {
           const lock = document.createElement('span')

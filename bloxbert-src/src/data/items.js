@@ -86,6 +86,10 @@ function mix(x, y, z, salt) {
 export function wheatSeedCount(x, y, z) {
   return 1 + (mix(x, y, z, 28) % 2)
 }
+export function harvestCounts(x, y, z) {
+  const h = mix(x, y, z, 62)
+  return { wheat: 1 + (h % 2), seeds: 1 + ((h >>> 3) % 2) }
+}
 export function tuftSeedCount(x, y, z) {
   return mix(x, y, z, 58) % 8 === 0 ? 1 : 0
 }

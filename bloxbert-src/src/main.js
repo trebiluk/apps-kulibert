@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.101'
+const VERSION = '2.5.102'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -42,7 +42,7 @@ import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, re
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
-import { dropOf } from './data/items.js'
+import { dropOf, harvestCounts } from './data/items.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, CROP, DRY, WET, WATER, RIPE_MS } from './farm.js'
 const farm = createFarm()
 
@@ -1099,13 +1099,58 @@ function showCropCard(x, y, z) {
   if (!row) return
   showCard(cropText(row))
 }
+let harvestStroke = null
+function harvestCrop(x, y, z) {
+  const hadSeed = session.bag.count('wheatSeeds') > 0
+  const got = harvestCounts(x, y, z)
+  const wheat0 = session.bag.count('wheat')
+  const seed0 = session.bag.count('wheatSeeds')
+  session.give('wheat', got.wheat)
+  session.give('wheatSeeds', got.seeds)
+  const overflow = session.bag.count('wheat') - wheat0 < got.wheat || session.bag.count('wheatSeeds') - seed0 < got.seeds
+  let replanted = false
+  if (hadSeed && session.spend('wheatSeeds', 1)) {
+    const now = Date.now()
+    const soil = getVoxel(x, y - 1, z)
+    const wet = soil === WET || nearWater(getVoxel, x, y - 1, z)
+    let row = farm.get(x, y, z)
+    if (!row) row = farm.add(x, y, z, now, wet)
+    row.grown = 0
+    row.plantedAt = now
+    row.lastSeen = now
+    row.wet = !!wet
+    setVoxel(x, y, z, CROP[0])
+    replanted = true
+  } else setVoxel(x, y, z, 0)
+  if (!overflow) toast(t(replanted ? 'replanted' : 'harvestedBare'))
+  if (replanted && learn && learn.addNote('farmReplant')) showCard(t('farmReplant'))
+  if (learn && learn.addNote('farmHarvest')) showCard(t('farmHarvest'))
+}
 function tryCrop(aimed) {
   if (!aimed || !aimed.position) return false
   const x = Math.round(aimed.position[0])
   const y = Math.round(aimed.position[1])
   const z = Math.round(aimed.position[2])
   if (!isCropId(getVoxel(x, y, z))) return false
-  showCropCard(x, y, z)
+  if (!tableMode && !canReach([x, y, z])) {
+    showCropCard(x, y, z)
+    return true
+  }
+  const row = farm.get(x, y, z)
+  const ripe = getVoxel(x, y, z) === CROP[3] || !!(row && preview(row, Date.now()).stage === 3)
+  if (!ripe || !session || session.mode !== 'survival') {
+    showCropCard(x, y, z)
+    return true
+  }
+  const press = rightPress
+  if (press) {
+    if (!harvestStroke || harvestStroke.press !== press) harvestStroke = { press, seen: new Set(), n: 0 }
+  } else harvestStroke = { press: null, seen: new Set(), n: 0 }
+  const cell = x + ',' + y + ',' + z
+  if (harvestStroke.seen.has(cell) || harvestStroke.n >= 5) return true
+  harvestCrop(x, y, z)
+  harvestStroke.seen.add(cell)
+  harvestStroke.n += 1
   return true
 }
 let plantStroke = null
@@ -4052,7 +4097,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     stroke(on) {
       if (on) rightPress = { test: true, planted: false, repeated: false, placed: false, interactive: false, id: null, x: 0, y: 0, z: 0, moved: 0, t: 0 }
-      else { rightPress = null; plantStroke = null }
+      else { rightPress = null; plantStroke = null; harvestStroke = null }
     },
     notes: () => learn.notes(),
     clockBack(x, y, z) {
@@ -4073,6 +4118,20 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return s ? { item: s.item, uses: s.uses == null ? null : s.uses, n: s.n } : null
     },
     craft: (id) => session.tryCraft(id),
+    bakeBread() {
+      const key = '11,5,8'
+      if (!session.bag.count('planks') && !session.bag.count('coal') && !session.bag.count('log')) session.give('planks', 1)
+      const fuel = session.bag.count('coal') ? 'coal' : session.bag.count('log') ? 'log' : 'planks'
+      const fueled = stations.addFuel(key, fuel)
+      const armed = stations.arm(key, 'bread')
+      return { fueled, armed, flour: session.bag.count('flour'), bread: session.bag.count('bread'), view: stations.view(key) }
+    },
+    takeBread() {
+      const key = '11,5,8'
+      stations.tick()
+      const item = stations.take(key)
+      return { item, bread: session.bag.count('bread'), view: stations.view(key) }
+    },
     needs(id) {
       session.setCraftOpen(true)
       if (panels) panels.open('crafting')

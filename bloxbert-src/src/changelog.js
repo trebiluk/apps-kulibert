@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.102', date: '2026-10-09', lines: {
+    en: ['Harvest ripe wheat with a click. It replants itself if you have a seed, and your wheat turns into flour and bread.'],
+    uk: ['Збирай стиглу пшеницю кліком. Вона сіється знову, якщо є насіння, і з пшениці виходять борошно й хліб.'],
+    ru: ['Собирай спелую пшеницу кликом. Она сажается снова, если есть семя, и из пшеницы выходят мука и хлеб.'],
+    es: ['Cosecha el trigo maduro con un clic. Se vuelve a plantar si tienes una semilla, y tu trigo se vuelve harina y pan.'],
+    ar: ['احصد القمح الناضج بنقرة. يُزرع من جديد إن كان لديك بذرة، وقمحك يصير دقيقاً وخبزاً.'],
+    'fa-AF': ['گندم رسیده را با یک کلیک بردار. اگر دانه داشته باشی دوباره کاشته می‌شود، و گندمت آرد و نان می‌شود.'],
+    rw: ['Sarura ingano yuzuye ukande. Isimbuka niba ufite imbuto, kandi ingano yawe iba ifu n\'umugati.'],
+    ti: ['ዝበስለ ስርናይ ብጠውቕ ሓጽቦ። ዘርኢ እንተሃልዩ ዳግማይ ይዝራእ፡ ስርናይካ ድማ ዱቄትን ባኒን ይኸውን።'],
+  }},
   { v: '2.5.101', date: '2026-10-09', lines: {
     en: ['Slots, buttons and text are the same size everywhere and fit every screen.'],
     uk: ['Комірки, кнопки і текст скрізь одного розміру і вміщаються на кожен екран.'],

@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Slots, buttons and text are the same size everywhere and fit every screen.",
+  "whatsNewBody": "Harvest ripe wheat with a click. It replants itself if you have a seed, and your wheat turns into flour and bread.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
