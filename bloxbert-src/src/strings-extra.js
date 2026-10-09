@@ -196,7 +196,8 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'The Oven and Workbench use the same slots as the Box: click, Shift-click or drag.',
+    whatsNewBody: 'Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.',
+    bagHint: 'Press E (or Esc, then click Bag) to open your Bag.',
     replanted: 'Replanted',
     harvestedBare: 'Harvested - no seed to replant',
     farmHarvest: 'Wheat makes Flour at the Workbench. 2 Flour bakes Bread in the Oven.',
@@ -240,7 +241,8 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Піч і верстак використовують ті самі комірки, що й скриня: клік, Shift-клік або перетягування.',
+    whatsNewBody: 'Назви рецептів вміщаються, сенсорні кнопки легше натиснути, і кнопка Сумки працює мишею.',
+    bagHint: 'Натисни E (або Esc, потім клік Сумка), щоб відкрити сумку.',
     replanted: 'Посіяно знову',
     harvestedBare: 'Зібрано — немає насіння, щоб посіяти знову',
     farmHarvest: 'Пшениця стає борошном на верстаку. 2 борошна печуть хліб у печі.',
@@ -284,7 +286,8 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Печь и верстак используют те же ячейки, что и сундук: клик, Shift-клик или перетаскивание.',
+    whatsNewBody: 'Названия рецептов помещаются, сенсорные кнопки легче нажать, и кнопка Сумки работает мышью.',
+    bagHint: 'Нажми E (или Esc, потом клик Сумка), чтобы открыть сумку.',
     replanted: 'Посажено снова',
     harvestedBare: 'Собрано — нет семени, чтобы посадить снова',
     farmHarvest: 'Пшеница становится мукой на верстаке. 2 муки пекут хлеб в печи.',
@@ -328,7 +331,8 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'El horno y el banco usan las mismas casillas que la caja: clic, Mayús-clic o arrastrar.',
+    whatsNewBody: 'Los nombres de las recetas caben, los botones táctiles son más fáciles de tocar, y el botón Bolsa funciona con el ratón.',
+    bagHint: 'Pulsa E (o Esc y luego Bolsa) para abrir tu Bolsa.',
     replanted: 'Replantado',
     harvestedBare: 'Cosechado: no hay semilla para replantar',
     farmHarvest: 'El trigo se hace harina en el banco. 2 harinas hornean pan en el horno.',
@@ -372,7 +376,8 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الفرن ومنضدة العمل يستخدمان الخانات نفسها كالصندوق: النقر أو نقر Shift أو السحب.',
+    whatsNewBody: 'أسماء الوصفات تظهر كاملة، وأزرار اللمس أسهل، وزر الحقيبة يعمل بالفأرة.',
+    bagHint: 'اضغط E (أو Esc ثم الحقيبة) لفتح حقيبتك.',
     replanted: 'زُرع من جديد',
     harvestedBare: 'حُصد — لا بذرة لإعادة الزرع',
     farmHarvest: 'القمح يصير دقيقاً على المنضدة. 2 من الدقيق يخبز خبزاً في الفرن.',
@@ -416,7 +421,8 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'تنور و میز کار از همان خانه‌های صندوق استفاده می‌کنند: کلیک، Shift-کلیک یا کشیدن.',
+    whatsNewBody: 'نام دستورها جا می‌شود، دکمه‌های لمسی آسان‌تر زده می‌شوند، و دکمه بکس با موس کار می‌کند.',
+    bagHint: 'E را بزن (یا Esc، بعد بکس) تا بکس باز شود.',
     replanted: 'دوباره کاشته شد',
     harvestedBare: 'برداشته شد — دانه‌ای برای کاشتن دوباره نیست',
     farmHarvest: 'گندم روی میز کار آرد می‌شود. ۲ آرد در تنور نان می‌شود.',
@@ -460,7 +466,8 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Icyoto n\'ameza bikoresha uduce amasanduku akoresha: kanda, Shift-kanda, cyangwa kurura.',
+    whatsNewBody: 'Amazina ya recepti agenda, buto zo gukoraho zoroheje, kandi buto ya agasaho ikora n\'imbeba.',
+    bagHint: 'Kanda E (cyangwa Esc, hanyuma Agasaho) ufungure agasaho.',
     replanted: 'Yongeye gutera',
     harvestedBare: 'Yasaruriwe — nta mbuto yo kongera gutera',
     farmHarvest: 'Ingano iba ifu ku meza. Ifu 2 iteka umugati mu byoto.',
@@ -504,7 +511,8 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'እቶንን ሰደቓን ከም ሳንዱቕ ዝኣመሰሉ ቦታታት ይጥቀሙ፡ ጠውቕ፡ Shift-ጠውቕ ወይ ጎተት።',
+    whatsNewBody: 'ስማት መድሃኒት ይኣትዉ፡ መጠወቒ ምትንኻፍ ይቐልል፡ መጠወቒ ቦርሳ ድማ ብማውስ ይሰርሕ።',
+    bagHint: 'E ጠውቕ (ወይ Esc፡ ድሕሪኡ ቦርሳ) ቦርሳኻ ንምኽፋት።',
     replanted: 'ዳግማይ ተዘሪኡ',
     harvestedBare: 'ተኣኪቡ — ዘርኢ ንዳግማይ ምዝራእ የለን',
     farmHarvest: 'ስርናይ ኣብ ሰደቓ ዱቄት ይኸውን። 2 ዱቄት ኣብ እቶን ባኒ ይብስል።',

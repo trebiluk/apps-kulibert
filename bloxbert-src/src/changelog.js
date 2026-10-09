@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.104', date: '2026-10-09', lines: {
+    en: ['Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.'],
+    uk: ['Назви рецептів вміщаються, сенсорні кнопки легше натиснути, і кнопка Сумки працює мишею.'],
+    ru: ['Названия рецептов помещаются, сенсорные кнопки легче нажать, и кнопка Сумки работает мышью.'],
+    es: ['Los nombres de las recetas caben, los botones táctiles son más fáciles de tocar, y el botón Bolsa funciona con el ratón.'],
+    ar: ['أسماء الوصفات تظهر كاملة، وأزرار اللمس أسهل، وزر الحقيبة يعمل بالفأرة.'],
+    'fa-AF': ['نام دستورها جا می‌شود، دکمه‌های لمسی آسان‌تر زده می‌شوند، و دکمه بکس با موس کار می‌کند.'],
+    rw: ['Amazina ya recepti agenda, buto zo gukoraho zoroheje, kandi buto ya agasaho ikora n\'imbeba.'],
+    ti: ['ስማት መድሃኒት ይኣትዉ፡ መጠወቒ ምትንኻፍ ይቐልል፡ መጠወቒ ቦርሳ ድማ ብማውስ ይሰርሕ።'],
+  }},
   { v: '2.5.103', date: '2026-10-09', lines: {
     en: ['The Oven and Workbench use the same slots as the Box: click, Shift-click or drag.'],
     uk: ['Піч і верстак використовують ті самі комірки, що й скриня: клік, Shift-клік або перетягування.'],

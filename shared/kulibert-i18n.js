@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "The Oven and Workbench use the same slots as the Box: click, Shift-click or drag.",
+  "whatsNewBody": "Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

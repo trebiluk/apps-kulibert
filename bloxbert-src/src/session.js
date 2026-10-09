@@ -1044,13 +1044,6 @@ export function createSession(api) {
             : (st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll'))
           const shown = r.id === 'cupcake' && bits.length ? full + ' · ' + t('oven') : full
           line.textContent = shown
-          if (r.id === 'cupcake' && bits.length) {
-            line.style.display = 'block'
-            line.style.webkitLineClamp = 'unset'
-            line.style.overflow = 'visible'
-            b.style.width = 'min(440px, 100%)'
-            b.style.height = 'auto'
-          }
           if (bits.length > 1) b.classList.add('wide')
           b.title = name.textContent + '. ' + shown
           b.setAttribute('aria-label', name.textContent + '. ' + shown)

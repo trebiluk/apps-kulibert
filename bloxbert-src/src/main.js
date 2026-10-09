@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.103'
+const VERSION = '2.5.104'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -2260,6 +2260,7 @@ document.addEventListener('pointerlockchange', () => {
     lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
     clearLookAccum()
     hidePlayChip()
+    showBagHint()
     armResume = 0
     mouseLeft = false
     try { noa.inputs.state.fire = false } catch (e) {}
@@ -2335,7 +2336,17 @@ function paintBar() {
   bagBtn.dataset.bag = '1'
   bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
   bagBtn.querySelector('.lbl').textContent = t('bag')
-  bagBtn.addEventListener('click', () => { openMenu(true); panels.open('inventory') })
+  bagBtn.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') return
+    e.preventDefault()
+    e.stopPropagation()
+  })
+  bagBtn.addEventListener('click', (e) => {
+    if (e.pointerType === 'touch') { openBagFromHud(); return }
+    e.preventDefault()
+    e.stopPropagation()
+    openBagFromHud()
+  })
   bar.append(bagBtn)
   const on = strip.querySelector('[aria-pressed="true"]')
   if (on) {
@@ -2607,6 +2618,59 @@ function quietUnlock() {
   try { noa.container.setPointerLock(false) } catch (e) {}
 }
 if (typeof window !== 'undefined') window.__quietUnlock = quietUnlock
+let bagOpenedAt = 0
+let bagDown = false
+function showBagHint() {
+  if (TOUCH_UI) return
+  try { if (localStorage.getItem('bloxbert-bag-hint') === '1') return } catch (e) {}
+  const hint = $('menu-hint')
+  if (!hint) return
+  hint.hidden = false
+  hint.textContent = t('bagHint')
+  try { localStorage.setItem('bloxbert-bag-hint', '1') } catch (e) {}
+}
+function bagUnderPointer(e) {
+  if (!e || TOUCH_UI || e.pointerType === 'touch') return false
+  if (e.button != null && e.button !== 0) return false
+  const bag = document.querySelector('#hotbar [data-bag="1"]')
+  if (!bag) return false
+  const r = bag.getBoundingClientRect()
+  if (r.width < 2 || r.height < 2) return false
+  return e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom
+}
+function openBagFromHud() {
+  const now = performance.now()
+  if (now - bagOpenedAt < 40) return
+  bagOpenedAt = now
+  menuFromLock = true
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
+  quietUnlock()
+  mouseLeft = false
+  look = null
+  dig = null
+  try { hideCrack() } catch (e) {}
+  try { noa.inputs.state.fire = false } catch (e) {}
+  const sheet = $('sheet')
+  if (sheet && !sheet.hidden && sheet.dataset.panel === 'inventory') {
+    closePlay('gesture')
+    return
+  }
+  if (panels) panels.open('inventory')
+}
+window.addEventListener('pointerdown', (e) => {
+  if (!bagUnderPointer(e)) { bagDown = false; return }
+  e.preventDefault()
+  e.stopPropagation()
+  bagDown = true
+  openBagFromHud()
+}, true)
+window.addEventListener('click', (e) => {
+  if (!bagUnderPointer(e)) return
+  e.preventDefault()
+  e.stopPropagation()
+  if (bagDown) { bagDown = false; return }
+  openBagFromHud()
+}, true)
 const liveS = $('mode-survival')
 const liveC = $('mode-creative')
 function armFrom(el, m) {
