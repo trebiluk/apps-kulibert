@@ -32,10 +32,15 @@ export function mountPanels(api) {
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
   }
-  function close() {
+  function dismiss() {
     sheet.hidden = true
     stack = []
-    api.onClose()
+    sheet.dataset.panel = ''
+  }
+  function close() {
+    if (api.closePlay) { api.closePlay(); return }
+    dismiss()
+    if (api.onClose) api.onClose()
   }
   function backOne() {
     if (stack.length <= 1) {
@@ -127,5 +132,5 @@ export function mountPanels(api) {
   sheetX.addEventListener('pointerdown', (e) => e.stopPropagation())
   sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
   if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
-  return { openRoot, open, close, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
+  return { openRoot, open, close, dismiss, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }

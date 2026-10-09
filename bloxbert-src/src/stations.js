@@ -411,5 +411,12 @@ export function createStations(api) {
     clearTimeout(paint.timer)
     paint.timer = setTimeout(() => { if (g.isConnected) paint(g, key, kind) }, 1000)
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, dump: () => Object.fromEntries(map), load: (obj) => { map.clear(); for (const [k, v] of Object.entries(obj || {})) map.set(k, v) } }
+  function baking() {
+    const out = []
+    for (const [key, rec] of map) {
+      if (rec && rec.until && Date.now() < rec.until) out.push(key)
+    }
+    return out
+  }
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, dump: () => Object.fromEntries(map), load: (obj) => { map.clear(); for (const [k, v] of Object.entries(obj || {})) map.set(k, v) } }
 }

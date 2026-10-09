@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.78'
+const VERSION = '2.5.79'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -18,6 +18,7 @@ import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { Light } from '@babylonjs/core/Lights/light'
 import { PointLight } from '@babylonjs/core/Lights/pointLight'
+import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import ATLAS from '../assets/atlas.json'
 import { STR } from './strings.js'
@@ -181,7 +182,7 @@ export const BLOCKS = [
   [20, 'glass', 'glass', 'Gl', null],
   [21, 'coreplate', 'coreplate', 'Cp', null],
   [22, 'workbench', 'workbench', 'Wk', null],
-  [23, 'oven', 'oven', 'Ov', null],
+  [23, 'oven', ['ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenFront'], 'Ov', null],
   [24, 'vend', 'vend', 'Vc', null],
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
@@ -211,7 +212,9 @@ export const BLOCKS = [
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
-noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven.png' })
+noa.registry.registerMaterial('ovenBrick', { textureURL: 'assets/tile-oven-brick.png' })
+noa.registry.registerMaterial('ovenFront', { textureURL: 'assets/tile-oven-front.png' })
+noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven-front.png' })
 noa.registry.registerMaterial('vend', { textureURL: 'assets/tile-vend.png' })
 noa.registry.registerMaterial('store', { textureURL: 'assets/tile-store.png' })
 noa.registry.registerMaterial('bunk', { textureURL: 'assets/tile-bunk.png' })
@@ -253,6 +256,16 @@ const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
 lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+const ovenHotTex = new Texture('assets/tile-oven-hot.png', shapeScene, false, true, Texture.NEAREST_SAMPLINGMODE)
+ovenHotTex.hasAlpha = false
+const ovenHotMat = new StandardMaterial('oven-hot-face', shapeScene)
+ovenHotMat.diffuseTexture = ovenHotTex
+ovenHotMat.emissiveTexture = ovenHotTex
+ovenHotMat.emissiveColor = new Color3(1, 0.85, 0.55)
+ovenHotMat.specularColor = new Color3(0, 0, 0)
+ovenHotMat.disableLighting = true
+ovenHotMat.backFaceCulling = false
+const ovenGlows = new Map()
 function doorMesh(kind, open, mat) {
   if (!open) return shape('door-' + kind + '-shut', [part('p', 0.96, 0.98, 0.18, 0, 0.5, 0, 0, mat)], mat)
   return shape('door-' + kind + '-open', [part('p', 0.14, 0.98, 0.9, 0.4, 0.5, 0, 0, mat)], mat)
@@ -493,6 +506,31 @@ function placeableHeld() {
   if (held === 'berry' || held === 'bread' || held === 'cupcake') return false
   return !!(session && session.blockForHot && session.blockForHot())
 }
+function machineKind(id) {
+  if (id === ID.oven || id === 23) return 'oven'
+  if (id === ID.workbench || id === 22) return 'bench'
+  if (id === ID.vend) return 'vend'
+  if (id === ID.bunk) return 'bunk'
+  if (id === ID.box) return 'box'
+  if (id === ID.storeCounter) return 'shop'
+  return ''
+}
+function crouching() { return !!(crouchKey || crouchOn) }
+function mutedUse(block) {
+  if (!block || !block.position || !muteUseKey) return false
+  if (performance.now() > muteUseUntil) return false
+  return block.position.join(',') === muteUseKey
+}
+function againstMachine(block) {
+  if (!block || !machineKind(block.blockID) || !placeableHeld()) return false
+  if (crouching()) return true
+  return mutedUse(block)
+}
+function noteCrouchHint() {
+  if (crouchHintN >= 3) return
+  crouchHintN += 1
+  toast(t('crouchPlace'))
+}
 function viewFar() {
   try {
     const dist = reachFor(survivalOn()) + 6
@@ -582,12 +620,26 @@ function placeBlock(face, opts) {
       return false
     }
     if (aimedBlock.blockID === LANTERN) return false
-    if (aimedBlock.blockID === ID.storeCounter && session && session.mode === 'survival') { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('shop'); return false }
-    if (aimedBlock.blockID === ID.oven || aimedBlock.blockID === 23) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('station', aimedBlock.position.join(',')); return false }
-    if (aimedBlock.blockID === ID.workbench || aimedBlock.blockID === 22) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('crafting'); return false }
-    if (aimedBlock.blockID === ID.vend) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('counter', ax + ',' + ay + ',' + az); return false }
-    if (aimedBlock.blockID === ID.bunk) { if (!reachOpen([ax, ay, az], repeat)) return false; panels.open('bunk', ax + ',' + ay + ',' + az); return false }
-    if (aimedBlock.blockID === ID.box && canReach([ax, ay, az])) { panels.open('box', ax + ',' + ay + ',' + az); return false }
+    const kind = machineKind(aimedBlock.blockID)
+    if (kind) {
+      const beside = againstMachine(aimedBlock)
+      const shopOk = kind !== 'shop' || (session && session.mode === 'survival')
+      if (!beside && mutedUse(aimedBlock)) return false
+      if (!beside && shopOk) {
+        if (placeableHeld()) noteCrouchHint()
+        const key = aimedBlock.position.join(',')
+        if (kind === 'box') { if (!canReach([ax, ay, az])) return false }
+        else if (!reachOpen([ax, ay, az], repeat)) return false
+        if (kind === 'oven') panels.open('station', key)
+        else if (kind === 'bench') panels.open('crafting')
+        else if (kind === 'vend') panels.open('counter', key)
+        else if (kind === 'bunk') panels.open('bunk', key)
+        else if (kind === 'box') panels.open('box', key)
+        else panels.open('shop')
+        openMachineKey = key
+        return false
+      }
+    }
   }
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
@@ -859,6 +911,14 @@ let cardClosedAt = 0
 let closeHow = ''
 let dropLockLook = false
 let lockSwallowUntil = 0
+let openMachineKey = ''
+let muteUseKey = ''
+let muteUseUntil = 0
+let crouchHintN = 0
+let playLockWanted = false
+let lockAskedAt = 0
+let lockTries = 0
+let closingPlay = false
 let markPath = () => {}
 let paintPath = () => {}
 let lastPointer = null
@@ -991,13 +1051,16 @@ function paintDoorOpt() {
     lockBtn.setAttribute('aria-pressed', locked ? 'true' : 'false')
   }
 }
-function hideDoorOpt() {
+function hideDoorCard() {
   doorOptAt = null
   const el = $('door-opt')
   if (el) el.hidden = true
   const focused = document.activeElement
   if (focused && focused.blur && el && el.contains(focused)) focused.blur()
-  resumePlay()
+}
+function hideDoorOpt() {
+  hideDoorCard()
+  if (!closingPlay) closePlay('gesture')
 }
 function dropGifts() {
   if (!pendingGifts.length) return
@@ -1093,6 +1156,34 @@ const stations = createStations({ t, give: (item, n) => session && session.give 
   g.fillRect(0, 0, 32, 32)
   return c
 } })
+function syncOvenGlow() {
+  const hot = new Set()
+  const keys = stations && stations.baking ? stations.baking() : []
+  for (const key of keys) {
+    const parts = String(key).split(',')
+    const x = Number(parts[0]), y = Number(parts[1]), z = Number(parts[2])
+    if (getVoxel(x, y, z) !== ID.oven) continue
+    hot.add(key)
+    if (ovenGlows.has(key)) continue
+    const mesh = CreateBox('oven-hot-' + key, { width: 1.02, height: 1.02, depth: 0.045 }, shapeScene)
+    mesh.material = ovenHotMat
+    mesh.isPickable = false
+    noa.rendering.addMeshToScene(mesh, false)
+    ovenGlows.set(key, mesh)
+  }
+  for (const key of [...ovenGlows.keys()]) {
+    const mesh = ovenGlows.get(key)
+    if (!hot.has(key)) {
+      mesh.dispose()
+      ovenGlows.delete(key)
+      continue
+    }
+    const parts = String(key).split(',')
+    const x = Number(parts[0]), y = Number(parts[1]), z = Number(parts[2])
+    const lp = noa.globalToLocal([x + 0.5, y + 0.5, z - 0.02], null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+  }
+}
 async function goWorld(m) {
   if (MODE_SWITCH_ALL && (m === 'survival' || m === 'creative')) {
     if (tableMode) setMode(false)
@@ -1188,16 +1279,36 @@ function grabLock() {
   if (TOUCH_UI || tableMode) return
   clearLookAccum()
   dropLockLook = true
-  lockSwallowUntil = performance.now() + 150
+  lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
   mouseLeft = false
   mouseRight = false
   try { noa.inputs.state.fire = false } catch (e) {}
   try { if (noa.container._shell) noa.container._shell.stickyPointerLock = true } catch (e) {}
+  if (document.pointerLockElement) {
+    playLockWanted = false
+    lockTries = 0
+    hidePlayChip()
+    return
+  }
+  const now = performance.now()
+  if (playLockWanted && now - lockAskedAt < 200) return
+  playLockWanted = true
+  lockAskedAt = now
   const el = noa.container && noa.container.element
+  if (!el || !el.requestPointerLock) { playLockWanted = false; armResume = now; showPlayChip(); return }
   try {
-    const res = el && el.requestPointerLock && el.requestPointerLock()
-    if (res && res.catch) res.catch(() => {
-      if (anyCard() || TOUCH_UI || document.pointerLockElement) return
+    const res = el.requestPointerLock()
+    if (res && res.catch) res.catch((err) => {
+      if (document.pointerLockElement || !playLockWanted || anyCard()) return
+      const msg = String(err && err.message || err || '')
+      const live = !!(navigator.userActivation && navigator.userActivation.isActive)
+      if (!/too many/i.test(msg) && live && lockTries < 2) {
+        lockTries += 1
+        lockAskedAt = 0
+        requestAnimationFrame(() => { if (playLockWanted && !anyCard()) grabLock() })
+        return
+      }
+      playLockWanted = false
       armResume = performance.now()
       showPlayChip()
     })
@@ -1213,13 +1324,37 @@ function resumePlay() {
   if (session) session.paused = false
   if (TOUCH_UI) { hidePlayChip(); return }
   if (how === 'esc') {
+    playLockWanted = false
     armResume = performance.now()
     showPlayChip()
     return
   }
   armResume = 0
   hidePlayChip()
+  lockTries = 0
   grabLock()
+}
+function closePlay(how) {
+  if (closingPlay) return
+  closingPlay = true
+  try {
+    if (how) closeHow = how
+    if (!closeHow) closeHow = 'gesture'
+    if (openMachineKey) {
+      muteUseKey = openMachineKey
+      muteUseUntil = performance.now() + 300
+    }
+    openMachineKey = ''
+    hideDoorCard()
+    const about = $('about')
+    if (about) about.hidden = true
+    const inspect = $('inspect-card')
+    if (inspect) inspect.hidden = true
+    if (panels && panels.dismiss) panels.dismiss()
+    const sheet = $('sheet')
+    if (sheet) sheet.hidden = true
+    resumePlay()
+  } finally { closingPlay = false }
 }
 function eatResume(e) {
   if (swallowing()) return true
@@ -1246,8 +1381,10 @@ panels = mountPanels({
   inspect: () => setInspect(true),
   table: () => setMode(true),
   setWorldMode: (m) => goWorld(m),
+  closePlay: (how) => closePlay(how),
   onClose: () => resumePlay(),
   onOpen: () => {
+    openMachineKey = ''
     releaseLook()
     requestAnimationFrame(() => focusBtn(document.querySelector('#sheet button')))
   },
@@ -1335,6 +1472,8 @@ document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement) {
     hadLock = true
     menuFromLock = false
+    playLockWanted = false
+    lockTries = 0
     dropLockLook = true
     lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
     clearLookAccum()
@@ -1346,6 +1485,12 @@ document.addEventListener('pointerlockchange', () => {
   }
   const wasLocked = hadLock
   hadLock = false
+  if (playLockWanted && !anyCard() && !TOUCH_UI && lockTries < 2 && navigator.userActivation && navigator.userActivation.isActive) {
+    lockTries += 1
+    lockAskedAt = 0
+    grabLock()
+    return
+  }
   if (anyCard() || (cardClosedAt && performance.now() - cardClosedAt < 600)) { selfUnlock = false; return }
   if (wasLocked && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
   selfUnlock = false
@@ -1619,8 +1764,8 @@ $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) r
 $('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
 $('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
 $('inspect-chip').addEventListener('click', () => setInspect(false))
-$('inspect-close').addEventListener('click', () => { $('inspect-card').hidden = true; resumePlay() })
-$('about-close').addEventListener('click', () => { $('about').hidden = true; resumePlay() })
+$('inspect-close').addEventListener('click', () => closePlay('gesture'))
+$('about-close').addEventListener('click', () => closePlay('gesture'))
 
 let showSpeed = false
 try { showSpeed = localStorage.getItem('bloxbert-fps') === 'on' } catch (e) {}
@@ -1742,26 +1887,12 @@ window.addEventListener('keydown', (e) => {
   e.stopPropagation()
   if (e.repeat) return
   if (!anyCard()) { openMenu(true); return }
-  selfUnlock = true
-  closeHow = 'esc'
-  const doorCard = $('door-opt')
-  if (doorCard && !doorCard.hidden) { hideDoorOpt(); if (anyCard()) closeHow = ''; return }
-  const about = $('about')
-  if (about && !about.hidden) { about.hidden = true; resumePlay(); return }
-  const inspect = $('inspect-card')
-  if (inspect && !inspect.hidden) { inspect.hidden = true; resumePlay(); return }
-  if ($('sheet') && !$('sheet').hidden) { panels.close(); return }
+  closePlay('esc')
 }, true)
 function shutByKey() {
-  closeHow = 'gesture'
-  const doorCard = $('door-opt')
-  if (doorCard && !doorCard.hidden) { hideDoorOpt(); return true }
-  const about = $('about')
-  if (about && !about.hidden) { about.hidden = true; resumePlay(); return true }
-  const inspect = $('inspect-card')
-  if (inspect && !inspect.hidden) { inspect.hidden = true; resumePlay(); return true }
-  if ($('sheet') && !$('sheet').hidden && panels) { panels.close(); return true }
-  return false
+  if (!anyCard()) return false
+  closePlay('gesture')
+  return true
 }
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
@@ -1784,7 +1915,7 @@ document.addEventListener('keydown', (e) => {
     if (e.ctrlKey || e.metaKey) return
     e.preventDefault()
     const sheet = $('sheet')
-    if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { panels.close(); return }
+    if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { closePlay('gesture'); return }
     openMenu(true); panels.open('crafting'); return
   }
   if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
@@ -2059,7 +2190,7 @@ noa.on('tick', (dt) => {
     if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (s > 0 ? 1 : -1))
     else selectSlot(selectedSlot + (s > 0 ? 1 : -1))
   }
-  if (stations) stations.tick()
+  if (stations) { stations.tick(); syncOvenGlow() }
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
@@ -2996,6 +3127,13 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       chip.hidden = false
       chip.textContent = t('fillN').replace('{n}', '12')
       return { fill: chip.textContent, bake: t('nothingBake'), walls: t('wallsN').replace('{n}', '16') }
+    },
+    lightOven(key) {
+      session.give('planks', 1)
+      session.give('sand', 2)
+      stations.addFuel(key, 'planks')
+      const ok = stations.arm(key, 'glass')
+      return { ok, hot: stations.baking() }
     },
     ovenOpen() {
       session.setMode('survival')

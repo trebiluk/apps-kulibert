@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.79', date: '2026-10-09', lines: {
+    en: ['The Oven looks like an oven, closing a panel always puts you back in the game, and you can crouch to place next to a machine.'],
+    uk: ['Піч виглядає як піч, закриття панелі завжди повертає в гру, і можна присісти, щоб поставити поруч із машиною.'],
+    ru: ['Печь выглядит как печь, закрытие панели всегда возвращает в игру, и можно присесть, чтобы поставить рядом с машиной.'],
+    es: ['El horno parece un horno, cerrar un panel siempre te devuelve al juego, y puedes agacharte para poner junto a una máquina.'],
+    ar: ['الفرن يبدو كفرن، وإغلاق اللوحة يعيدك دائماً إلى اللعب، ويمكنك الانحناء لتضع بجانب آلة.'],
+    'fa-AF': ['تنور مثل تنور دیده می‌شود، بستن صفحه همیشه تو را به بازی برمی‌گرداند، و می‌توانی خم شوی تا کنار دستگاه بگذاری.'],
+    rw: ['Icyoto kisa icyoto, gufunga ipaji bigusubiza mu mukino iteka, kandi ushobora kwicaramye ushyire iruhande y\'imashini.'],
+    ti: ['እቶን ከም እቶን ይረአ፡ ምዕጻው ፓነል ኩሉ ግዜ ናብ ጸወታ ይመልስ፡ ምድንጋር ድማ ኣብ ጥቓ መሳርሒ ንምቕማጥ ትኽእል።'],
+  }},
   { v: '2.5.78', date: '2026-10-09', lines: {
     en: ['Every tree is full size, and the Oven tells you what it can bake.'],
     uk: ['Кожне дерево повного розміру, і піч каже, що вона може спекти.'],

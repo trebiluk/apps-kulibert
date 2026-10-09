@@ -95,21 +95,19 @@ const FACE = {
     g.stroke()
   },
   oven(g) {
-    g.fillStyle = '#1A2330'
-    boxPath(g, 4, 4, 40, 40, 5)
-    g.fill()
-    g.strokeStyle = '#0B2A30'
-    g.lineWidth = 2
-    g.stroke()
-    g.fillStyle = '#3A2415'
-    boxPath(g, 10, 10, 28, 18, 3)
-    g.fill()
-    g.fillStyle = '#F6C453'
-    g.beginPath(); g.ellipse(24, 20, 7, 8, 0, 0, Math.PI * 2); g.fill()
-    g.fillStyle = '#E35D2A'
-    g.beginPath(); g.ellipse(24, 22, 3.5, 5, 0, 0, Math.PI * 2); g.fill()
-    g.fillStyle = '#22D3EE'
-    g.fillRect(12, 34, 24, 3)
+    g.fillStyle = '#5A6874'
+    g.fillRect(2, 2, 44, 44)
+    g.fillStyle = '#9AA6B0'
+    g.fillRect(4, 4, 18, 16)
+    g.fillRect(26, 4, 18, 16)
+    g.fillRect(4, 28, 18, 16)
+    g.fillRect(26, 28, 18, 16)
+    g.fillStyle = '#12161C'
+    g.fillRect(10, 10, 28, 20)
+    g.fillStyle = '#FFB030'
+    g.fillRect(14, 14, 20, 10)
+    g.fillStyle = '#FF6A10'
+    g.fillRect(18, 16, 12, 6)
   },
   doorGlass(g) {
     g.fillStyle = '#13303A'
