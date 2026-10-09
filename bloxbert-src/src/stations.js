@@ -265,6 +265,8 @@ export function createStations(api) {
     else if (r.until) status = api.t('bakingNow')
     else if (r.ask === 'fuel') status = api.t('pickFuel')
     else if (r.ask === 'input' || r.picking) status = api.t('pickBake')
+    else if (inItem && !(r.left > 0)) status = api.t('ovenAddFuel')
+    else if (r.left > 0 && !inItem) status = api.t('addToBake')
     else if (!(r.left > 0)) status = api.t('needsFuel')
     else status = api.t('input')
     head(crate, 'oven', api.t('oven'), status)
@@ -362,16 +364,35 @@ export function createStations(api) {
       pickSlot = -1
       paint(g, key, kind)
     }
-    fuelEl.addEventListener('pointerdown', () => { gestureAt = 0 })
-    fuelEl.addEventListener('click', () => {
-      if (performance.now() - gestureAt < 450) return
-      if (!fuelItem) askSlot('fuel')
-    })
-    inEl.addEventListener('pointerdown', () => { gestureAt = 0 })
-    inEl.addEventListener('click', () => {
-      if (performance.now() - gestureAt < 450) return
-      if (!inItem && !r.until) askSlot('input')
-    })
+    const rejectPick = (role, item) => {
+      flash((role === 'fuel' ? api.t('ovenNoBurn') : api.t('ovenNoBake')).replace('{item}', itemName(item)))
+      paint(g, key, kind)
+      const well = g.querySelector(role === 'fuel' ? '.slot-fuel' : '.slot-in')
+      if (well) fx(well, 'bump')
+    }
+    const commitSlot = (role) => {
+      if (role === 'fuel' && fuelItem) return
+      if (role === 'input' && (inItem || r.until)) return
+      const item = pickItem
+      if (!item) { askSlot(role); return }
+      if (role === 'fuel') {
+        if (!BAKES[item]) { rejectPick('fuel', item); return }
+        useFuel(item)
+        return
+      }
+      const recipe = recipeYouCan(item)
+      if (!recipe) { rejectPick('input', item); return }
+      r.ask = ''
+      const ok = fueled() ? addInput(k, recipe.id) : arm(k, recipe.id)
+      if (!ok) { rejectPick('input', item); return }
+      r.flash = ''
+      r.fuelNote = ''
+      pickItem = ''
+      pickSlot = -1
+      paint(g, key, kind)
+    }
+    fuelEl.addEventListener('click', () => commitSlot('fuel'))
+    inEl.addEventListener('click', () => commitSlot('input'))
     outEl.addEventListener('click', () => { take(k); paint(g, key, kind) })
     const fuelHold = document.createElement('div')
     fuelHold.className = 'fuel-slot'
@@ -404,10 +425,13 @@ export function createStations(api) {
     row.append(fuelHold, inEl, arrow)
     if (preview) row.append(preview)
     row.append(outEl)
+    const clickHint = document.createElement('p')
+    clickHint.className = 'gnote oven-click'
+    clickHint.textContent = api.t('ovenClick')
     const hint = document.createElement('p')
     hint.className = 'gnote oven-bakes'
     hint.textContent = bakeHint()
-    crate.append(row, hint)
+    crate.append(row, clickHint, hint)
     const strip = document.createElement('div')
     strip.className = 'bag-strip'
     const slots = slotsOf() || []
@@ -445,7 +469,7 @@ export function createStations(api) {
         })
       })
       b.addEventListener('click', () => {
-        if (performance.now() - gestureAt < 450) return
+        if (gestureAt > 0 && performance.now() - gestureAt < 450) return
         if (pickSlot === si) { pickItem = ''; pickSlot = -1 } else { pickItem = item; pickSlot = si }
         paint(g, key, kind)
       })

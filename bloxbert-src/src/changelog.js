@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.96', date: '2026-10-09', lines: {
+    en: ['The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe.'],
+    uk: ['Піч працює як скриня, перше натискання завжди рахується, і рецепт кекса можна знайти.'],
+    ru: ['Печь работает как сундук, первый клик всегда считается, и рецепт кекса можно найти.'],
+    es: ['El horno funciona como la caja, el primer clic siempre cuenta, y puedes encontrar la receta del cupcake.'],
+    ar: ['الفرن يعمل مثل الصندوق، والنقرة الأولى تُحسب دائماً، ويمكنك أن تجد وصفة الكب كيك.'],
+    'fa-AF': ['تنور مثل صندوق کار می‌کند، اولین کلیک همیشه حساب می‌شود، و دستور کاپ‌کیک را پیدا می‌کنی.'],
+    rw: ['Icyoto gikora nk\'agasanduku, ukanda kwa mbere kubarwa buri gihe, kandi ushobora kubona recepti ya kek.'],
+    ti: ['እቶን ከም ሳንዱቅ ይሰርሕ፡ ቀዳማይ ጠውቃይ ኩሉ ግዜ ይቑጸር፡ መድሃኒት ኬክ ድማ ትረኽቦ።'],
+  }},
   { v: '2.5.95', date: '2026-10-09', lines: {
     en: ['The Oven fire is big and lively, and new things you craft go where you can find them.'],
     uk: ['Вогонь печі великий і живий, і нові речі, які ти робиш, лягають туди, де їх знайти.'],

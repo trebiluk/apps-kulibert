@@ -15,7 +15,9 @@ export function craftStatus(recipe, bag, near, creative) {
   const gate = recipe.tier && !gateOpen(recipe.tier, !!creative) ? recipe.tier : ''
   const bakeOnly = recipe.id === 'bread'
   const ok = !station && missing === 0 && !gate && !bakeOnly
-  const group = gate ? 'gated' : ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
+  let group = gate ? 'gated' : ok ? 'now' : missing <= 2 ? 'almost' : 'rest'
+  // Cupcake is the only ungated recipe with 3 inputs, so missing > 2 hid it in Show all.
+  if (recipe.id === 'cupcake' && !gate && group === 'rest') group = 'almost'
   return { ok, missing, station, needs, group, gate, bakeOnly }
 }
 export function canMake(recipe, bag, near) {

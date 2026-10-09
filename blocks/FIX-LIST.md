@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.95 Big Oven fire, crafted items land where you can find them).
+Updated Fri Oct 9 2026 (Build: 2.5.96 Oven works like the Box, Cupcake is in Crafting).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -70,6 +70,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.95 Big Oven fire, crafted items land where yo
 - [x] **2.5.86 Hunger tip:** The tip names berries from leaves and bread from flour in the oven. It shows again after you eat, at most once every 5 minutes of play. The first berry from leaves says how to eat it.
 - [x] **2.5.87 Icons and machine slots:** Glass is a light pane, a sapling is a stem with two leaves, and the Workbench top is a grid with a saw and hammer. Oven Fuel and Input show the real items. The Box sits on the machine card and says how many slots are used.
 - [x] **2.5.88 Practice count and xMax:** The chip, the Wallet and the shop read one practice total, and the chip updates on every earn and spend. xMax opens its confirm on the first click after Fill.
+- [x] **2.5.96 Oven slots and Cupcake:** Fuel and Input take a picked item on the first click, or open the fitting picker when nothing is picked. A bad pick says it will not burn or cannot bake. Crafting lists Cupcake with its need line and the Oven.
 - [x] **2.5.95 Big Oven fire, find crafts:** The Oven fire beside Fuel is at least 32 px, flickers while it burns, turns grey when it is out, and shrinks as the burn bar empties. A craft goes to the selected hotbar slot if it is empty, else the first empty hotbar slot, else a pocket with a Hold button.
 - [x] **2.5.93 Practice chip and door:** The chip shows the same gear and full total as the Wallet, including the starting 20. A door has no rail where the two halves meet, on either face, open or closed.
 - [x] **2.5.92 Click to move, Oven asks:** Click an item, then a slot, to move it into the Box or back. Shift-click moves the whole stack. The Oven asks you to pick a fuel or something to bake before it burns.
@@ -136,6 +137,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.95 Big Oven fire, crafted items land where yo
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.96 | The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe | shipped |
 | 1p | 2.5.95 | The Oven fire is big and lively, and new things you craft go where you can find them | shipped |
 | 1p | 2.5.93 | The practice chip matches your Wallet again, and doors have no line across the middle | shipped |
 | 1p | 2.5.92 | Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake | shipped |
