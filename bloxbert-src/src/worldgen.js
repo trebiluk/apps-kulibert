@@ -18,8 +18,10 @@ function groundY(x, z) {
   return Math.round(3 + 2.2 * Math.sin(x / 19) * Math.cos(z / 23) + 1.2 * Math.sin((x + z) / 11))
 }
 
-// Three trees just south of the road, each about 20 blocks from spawn [8.5, 1.5]. Same shape every new world.
-const STARTER = [[8, -19], [2, -19], [14, -19]]
+// Four full trees just south of Bertyville, each about 20 blocks from spawn [8.5, 1.5].
+// Trunks are 6 logs (the normal crown covers the top two). Same spots every new world.
+const STARTER = [[-1, -19], [5, -19], [11, -19], [17, -19]]
+const TRUNK = 6
 
 function starterWood(x, y, z) {
   for (let i = 0; i < STARTER.length; i++) {
@@ -29,18 +31,31 @@ function starterWood(x, y, z) {
     const dz = z - tz
     if (dx > 2 || dx < -2 || dz > 2 || dz < -2) continue
     const base = groundY(tx, tz)
-    const top = base + 4
+    const top = base + TRUNK
     if (dx === 0 && dz === 0 && y > base && y <= top) return 'log'
     const dy = y - top
-    if (dy >= -1 && dy <= 1 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return 'leaves'
+    if (dy >= -1 && dy <= 1 && Math.abs(dx) <= 2 && Math.abs(dz) <= 2 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return 'leaves'
   }
   return ''
+}
+
+// A small stone mound the kid can walk up to, just past the trees. About 24 blocks from spawn.
+const ROCK = [8, -23]
+
+function starterStone(x, y, z) {
+  const dx = x - ROCK[0]
+  const dz = z - ROCK[1]
+  if (dx > 1 || dx < -1 || dz > 1 || dz < -1) return false
+  const base = groundY(x, z)
+  const tall = dx === 0 && dz === 0 ? 3 : 2
+  return y > base && y <= base + tall
 }
 
 export function plantHere(x, y, z, surface, inTown) {
   if (inTown) return ''
   const wood = starterWood(x, y, z)
   if (wood && y > surface) return wood
+  if (starterStone(x, y, z) && y > surface) return 'stone'
   if (y !== surface + 1) return ''
   if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
   const n = hash(x, z)

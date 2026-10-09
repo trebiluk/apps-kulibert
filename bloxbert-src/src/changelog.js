@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.76', date: '2026-10-08', lines: {
+    en: ['Trees near your start are full size, and there is stone close by for your first Oven.'],
+    uk: ['Дерева біля старту повного розміру, і камінь близько для першої печі.'],
+    ru: ['Деревья у старта полного размера, и камень рядом для первой печи.'],
+    es: ['Los árboles cerca de tu inicio son de tamaño completo, y hay piedra cerca para tu primer horno.'],
+    ar: ['الأشجار قرب بدايتك بالحجم الكامل، وهناك حجر قريب لفرنك الأول.'],
+    'fa-AF': ['درخت‌های نزدیک شروع تو کامل‌اند، و سنگ برای تنور اول نزدیک است.'],
+    rw: ['Ibiti hafi aho utangira aruzuye, kandi hari ibuye hafi y’icyoto cyawe cya mbere.'],
+    ti: ['ኣግራብ ኣብ ጥቓ መጀመርታኻ ምሉእ ዓቐን እዮም፡ እምኒ ድማ ንመጀመርታ እቶንካ ቀረባ ኣሎ።'],
+  }},
   { v: '2.5.75', date: '2026-10-08', lines: {
     en: ['Items look like what they are and show their names, and doors tell you how to open their options.'],
     uk: ['Речі виглядають як те, чим вони є, і показують назви, а двері підказують, як відкрити опції.'],
