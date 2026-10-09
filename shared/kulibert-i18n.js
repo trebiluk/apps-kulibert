@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Harvest ripe wheat with a click. It replants itself if you have a seed, and your wheat turns into flour and bread.",
+  "whatsNewBody": "The Oven and Workbench use the same slots as the Box: click, Shift-click or drag.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

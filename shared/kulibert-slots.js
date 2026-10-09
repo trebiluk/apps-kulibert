@@ -464,6 +464,808 @@
     }
   }, true)
 
+  function bounce(slot, message) {
+    if (!slot) return
+    slot.classList.add('ks-bounce')
+    var host = slot.closest ? slot.closest('.ks-machine, .ks-craft') : null
+    var line = host ? host.querySelector('[data-ks-bounce]') : null
+    var lineStamp = 0
+    if (line && message) {
+      line.hidden = false
+      line.textContent = message
+      lineStamp = (line._ksBounce = (line._ksBounce || 0) + 1)
+    }
+    var stamp = (slot._ksBounce = (slot._ksBounce || 0) + 1)
+    root.setTimeout(function () {
+      if (slot._ksBounce === stamp) slot.classList.remove('ks-bounce')
+      if (line && lineStamp && line._ksBounce === lineStamp) {
+        line.hidden = true
+        line.textContent = ''
+      }
+    }, 1500)
+  }
+
+  function bindName(opts) {
+    if (opts && opts.name) return opts.name
+    return cfg.name
+  }
+  function bindIcon(opts) {
+    if (opts && opts.icon) return opts.icon
+    return cfg.icon
+  }
+  function bindT(opts) {
+    if (opts && opts.t) return opts.t
+    return cfg.t
+  }
+
+  function fillArt(el, item, iconOf) {
+    var art = el.querySelector('.ks-art')
+    if (!art) return
+    var next = item || ''
+    if ((art.dataset.item || '') === next) return
+    art.dataset.item = next
+    art.innerHTML = ''
+    if (!next) return
+    try {
+      var node = iconOf(next)
+      if (node) art.append(node)
+    } catch (e) {}
+  }
+
+  function armPointer(el, handlers, guardBox) {
+    el.addEventListener('pointerdown', function (e) {
+      if (!e || (e.button != null && e.button !== 0)) return
+      var pid = e.pointerId
+      var thresh = e.pointerType === 'touch' ? 10 : 8
+      var sx = e.clientX
+      var sy = e.clientY
+      var dragged = false
+      var ghost = null
+      var done = false
+      function clearMarks() {
+        var nodes = document.querySelectorAll('.drop-ok,.drop-bad')
+        for (var n = 0; n < nodes.length; n++) nodes[n].classList.remove('drop-ok', 'drop-bad')
+      }
+      function targetAt(x, y) {
+        var under = document.elementFromPoint(x, y)
+        if (!under || !under.closest) return null
+        var well = under.closest('.ks-slot')
+        if (well && handlers.root && !handlers.root.contains(well)) return null
+        return well
+      }
+      function finish(ev, cancel) {
+        if (done) return
+        if (ev && ev.pointerId != null && ev.pointerId !== pid) return
+        done = true
+        root.removeEventListener('pointermove', moveEv, true)
+        root.removeEventListener('pointerup', upEv, true)
+        root.removeEventListener('pointercancel', upEv, true)
+        try { el.releasePointerCapture(pid) } catch (err) {}
+        clearMarks()
+        if (ghost) ghost.remove()
+        guardBox.guard = { el: el, until: root.performance.now() + 300 }
+        if (dragged && !cancel && ev) {
+          if (handlers.onDrop) handlers.onDrop(targetAt(ev.clientX, ev.clientY), ev)
+          return
+        }
+        if (!dragged && !cancel && handlers.onActivate) handlers.onActivate(ev || e)
+      }
+      function moveEv(ev) {
+        if (ev.pointerId !== pid) return
+        if (handlers.canDrag && !handlers.canDrag()) return
+        var dx = ev.clientX - sx
+        var dy = ev.clientY - sy
+        if (!dragged && dx * dx + dy * dy >= thresh * thresh) {
+          dragged = true
+          ghost = document.createElement('div')
+          ghost.className = 'ks-ghost'
+          if (cfg.reducedMotion && cfg.reducedMotion()) ghost.classList.add('ks-still')
+          var item = handlers.item ? handlers.item() : ''
+          if (item && handlers.icon) {
+            try {
+              var node = handlers.icon(item)
+              if (node) ghost.append(node)
+            } catch (err) {}
+          }
+          document.body.append(ghost)
+        }
+        if (!ghost) return
+        ghost.style.left = ev.clientX + 'px'
+        ghost.style.top = ev.clientY + 'px'
+        clearMarks()
+        var well = targetAt(ev.clientX, ev.clientY)
+        if (well && well !== el) well.classList.add(handlers.accept && handlers.accept(well) ? 'drop-ok' : 'drop-bad')
+      }
+      function upEv(ev) { finish(ev, ev.type === 'pointercancel') }
+      try { el.setPointerCapture(pid) } catch (err) {}
+      root.addEventListener('pointermove', moveEv, true)
+      root.addEventListener('pointerup', upEv, true)
+      root.addEventListener('pointercancel', upEv, true)
+    })
+    el.addEventListener('click', function (e) {
+      if (guardBox.guard && root.performance.now() < guardBox.guard.until && guardBox.guard.el === el) {
+        e.preventDefault()
+        e.stopPropagation()
+        return
+      }
+      if (handlers.onActivate) handlers.onActivate(e)
+    })
+  }
+
+  var FLAME = '<svg class="flame" viewBox="0 0 32 40" aria-hidden="true"><path d="M16 2c2 8 8 10 8 18a8 8 0 1 1-16 0c0-5 3-8 4-12 1 3 2 4 4 6z"/><path class="core" d="M16 18c1 4 4 5 4 9a4 4 0 1 1-8 0c0-3 2-4 4-9z"/></svg>'
+
+  function sideBySide() {
+    return root.innerHeight <= 500 && root.innerWidth >= 700
+  }
+
+  function machinePanel(el, opts) {
+    opts = opts || {}
+    var nameOf = bindName(opts)
+    var iconOf = bindIcon(opts)
+    var tr = bindT(opts)
+    var pick = null
+    var pickerRole = ''
+    var pickSig = ''
+    var guardBox = { guard: null }
+    var alive = true
+    var buttons = {}
+
+    el.innerHTML = ''
+    el.classList.add('ks-root')
+    var card = document.createElement('div')
+    card.className = 'ks-machine station-crate machine'
+    var main = document.createElement('div')
+    main.className = 'ks-main'
+    var head = document.createElement('div')
+    head.className = 'machine-head'
+    var ic = document.createElement('span')
+    ic.className = 'gic'
+    if (opts.headerIcon || opts.icon) {
+      try {
+        var glyph = typeof opts.headerIcon === 'function' ? opts.headerIcon() : opts.headerIcon
+        if (!glyph && typeof opts.icon === 'function') glyph = opts.icon('oven')
+        if (glyph) ic.append(glyph)
+      } catch (e) {}
+    }
+    var words = document.createElement('div')
+    var title = document.createElement('span')
+    title.className = 'machine-name'
+    title.textContent = opts.title || ''
+    var status = document.createElement('p')
+    status.className = 'machine-status'
+    status.setAttribute('role', 'status')
+    words.append(title, status)
+    head.append(ic, words)
+
+    function slotButton(role, label) {
+      var b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'ks-slot ks-empty slot-' + (role === 'input' ? 'in' : role)
+      b.dataset.ksRole = role
+      b.dataset.role = role === 'input' ? 'input' : role
+      var art = document.createElement('span')
+      art.className = 'ks-art'
+      var badge = document.createElement('span')
+      badge.className = 'ks-badge'
+      badge.hidden = true
+      var lab = document.createElement('span')
+      lab.className = 'ks-lab'
+      lab.textContent = label || role
+      b.append(art, badge, lab)
+      buttons[role] = b
+      armPointer(b, {
+        root: card,
+        item: function () { return '' },
+        canDrag: function () { return false },
+        icon: iconOf,
+        onActivate: function (ev) { activateMachine(role, ev) },
+      }, guardBox)
+      return b
+    }
+
+    var inputs = document.createElement('div')
+    inputs.className = 'ks-inputs'
+    var fuelLabel = tr('fuel') || 'Fuel'
+    var inputLabel = tr('input') || 'Input'
+    var outputLabel = tr('output') || 'Output'
+    inputs.append(slotButton('fuel', fuelLabel), slotButton('input', inputLabel))
+
+    var process = document.createElement('div')
+    process.className = 'ks-process'
+    var flame = document.createElement('span')
+    flame.className = 'flame-side out'
+    flame.innerHTML = FLAME + '<i class="burn-bar"></i>'
+    var arrow = document.createElement('div')
+    arrow.className = 'arrow-bar'
+    arrow.setAttribute('aria-hidden', 'true')
+    var arrowFill = document.createElement('div')
+    arrowFill.className = 'arrow-fill'
+    arrow.append(arrowFill)
+    var time = document.createElement('span')
+    time.className = 'ks-time'
+    var preview = document.createElement('div')
+    preview.className = 'will-make'
+    preview.hidden = true
+    var previewArt = document.createElement('span')
+    previewArt.className = 'gic ks-art'
+    var previewLab = document.createElement('span')
+    previewLab.className = 'glbl'
+    preview.append(previewArt, previewLab)
+    process.append(flame, arrow, time, preview)
+
+    var outputs = document.createElement('div')
+    outputs.className = 'ks-outputs'
+    outputs.append(slotButton('output', outputLabel))
+
+    var picks = document.createElement('div')
+    picks.className = 'oven-picks oven-ask ks-picks'
+    picks.hidden = true
+    var note = document.createElement('p')
+    note.className = 'fuel-chip'
+    note.dataset.ksBounce = '1'
+    note.setAttribute('role', 'status')
+    note.hidden = true
+    var hintClick = document.createElement('p')
+    hintClick.className = 'gnote oven-click'
+    var hintBake = document.createElement('p')
+    hintBake.className = 'gnote oven-bakes'
+    var bag = document.createElement('div')
+    bag.className = 'ks-bag ks-bag-rows'
+    main.append(head, inputs, process, outputs, picks, note, hintClick, hintBake)
+    card.append(main, bag)
+    el.append(card)
+
+    function slotsNow() {
+      var list = typeof opts.slots === 'function' ? opts.slots() : (opts.slots || [])
+      return list || []
+    }
+    function slotByRole(role) {
+      var list = slotsNow()
+      for (var i = 0; i < list.length; i++) if (list[i] && list[i].role === role) return list[i]
+      return null
+    }
+    function bagSlots() {
+      var list = typeof opts.bag === 'function' ? opts.bag() : (opts.bag || [])
+      return list || []
+    }
+    function paintOne(btn, desc) {
+      if (!btn) return
+      var item = desc && desc.item
+      var n = desc && desc.n
+      btn.classList.toggle('ks-empty', !item)
+      fillArt(btn, item, iconOf)
+      var badge = btn.querySelector('.ks-badge')
+      if (item && n > 0) { badge.hidden = false; badge.textContent = String(n) }
+      else badge.hidden = true
+      var named = item ? (nameOf(item) || item) : ''
+      var word = (desc && desc.label) || btn.querySelector('.ks-lab').textContent
+      btn.setAttribute('aria-label', named ? word + ' ' + named + (n > 0 ? ' ' + n : '') : word)
+      btn.title = named || word
+    }
+    function layoutBag() {
+      var wide = sideBySide()
+      card.classList.toggle('ks-side', wide)
+      bag.className = 'ks-bag ' + (wide ? 'ks-bag-col' : 'ks-bag-rows')
+    }
+    function ensureBag() {
+      var list = bagSlots()
+      if (bag.children.length !== list.length) {
+        bag.innerHTML = ''
+        for (var i = 0; i < list.length; i++) bag.append(makeBag(i))
+      }
+      var nodes = bag.children
+      for (var j = 0; j < list.length; j++) {
+        var s = list[j]
+        var b = nodes[j]
+        var item = s && s.n > 0 ? s.item : ''
+        b.dataset.item = item || ''
+        b.dataset.i = String(j)
+        b.classList.toggle('ks-empty', !item)
+        b.classList.toggle('ks-pick', !!(pick && pick.i === j && item))
+        fillArt(b, item, iconOf)
+        var badge = b.querySelector('.ks-badge')
+        if (item) { badge.hidden = false; badge.textContent = String(s.n) }
+        else badge.hidden = true
+        b.setAttribute('aria-label', item ? (nameOf(item) || item) + ' ' + s.n : (tr('emptySlot') || 'Empty'))
+        b.setAttribute('aria-pressed', pick && pick.i === j ? 'true' : 'false')
+      }
+    }
+    function makeBag(i) {
+      var b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'ks-slot ks-empty'
+      b.dataset.ksBag = '1'
+      var art = document.createElement('span')
+      art.className = 'ks-art'
+      var badge = document.createElement('span')
+      badge.className = 'ks-badge'
+      badge.hidden = true
+      b.append(art, badge)
+      armPointer(b, {
+        root: card,
+        item: function () {
+          var s = bagSlots()[i]
+          return s && s.n > 0 ? s.item : ''
+        },
+        canDrag: function () {
+          var s = bagSlots()[i]
+          return !!(s && s.n > 0)
+        },
+        icon: iconOf,
+        accept: function (well) {
+          var s = bagSlots()[i]
+          return !!(s && well && acceptWell(well, s.item))
+        },
+        onActivate: function (ev) {
+          var s = bagSlots()[i]
+          if (!s || !(s.n > 0)) return
+          activateBag(i, s.item, ev)
+        },
+        onDrop: function (well) {
+          var s = bagSlots()[i]
+          if (!s || !well) return
+          dropOn(well, s.item)
+        },
+      }, guardBox)
+      return b
+    }
+    function acceptWell(well, item) {
+      if (!well || !item || well.dataset.ksBag) return false
+      var desc = slotByRole(well.dataset.ksRole)
+      if (!desc || desc.takeOnly) return false
+      return desc.filter ? !!desc.filter(item) : false
+    }
+    function tryLoad(role, item, well) {
+      var desc = slotByRole(role)
+      var msg = opts.refuse ? opts.refuse(role, item) : ''
+      if (!desc || desc.takeOnly || (desc.filter && !desc.filter(item))) {
+        bounce(well || buttons[role], msg)
+        pick = null
+        update()
+        return
+      }
+      var res = opts.onLoad ? opts.onLoad(role, item) : { ok: false }
+      if (!res || res.ok === false) {
+        if (res && res.message) bounce(well || buttons[role], res.message)
+        else if (msg && desc.filter && !desc.filter(item)) bounce(well || buttons[role], msg)
+        pick = null
+        update()
+        return
+      }
+      pick = null
+      pickerRole = ''
+      pickSig = ''
+      update()
+    }
+    function activateMachine(role, ev) {
+      if (role === 'output') {
+        if (opts.onTake) opts.onTake()
+        pick = null
+        pickerRole = ''
+        update()
+        return
+      }
+      if (pick && pick.item) {
+        tryLoad(role, pick.item, buttons[role])
+        return
+      }
+      var desc = slotByRole(role)
+      if (!desc || !desc.item) {
+        pickerRole = pickerRole === role ? '' : role
+        pickSig = ''
+        renderPicker()
+        return
+      }
+    }
+    function activateBag(i, item, ev) {
+      if (ev && ev.shiftKey) {
+        var list = slotsNow()
+        for (var n = 0; n < list.length; n++) {
+          var desc = list[n]
+          if (!desc || desc.takeOnly) continue
+          if (desc.filter && desc.filter(item)) {
+            tryLoad(desc.role, item, buttons[desc.role])
+            return
+          }
+        }
+        return
+      }
+      if (pick && pick.i === i) pick = null
+      else pick = { i: i, item: item }
+      pickerRole = ''
+      update()
+    }
+    function dropOn(well, item) {
+      var role = well.dataset.ksRole
+      if (!role) return
+      tryLoad(role, item, well)
+    }
+    function renderPicker() {
+      if (!pickerRole) {
+        picks.hidden = true
+        picks.innerHTML = ''
+        pickSig = ''
+        return
+      }
+      var desc = slotByRole(pickerRole)
+      var list = bagSlots()
+      var fit = []
+      var seen = {}
+      for (var i = 0; i < list.length; i++) {
+        var s = list[i]
+        if (!s || !(s.n > 0)) continue
+        if (desc && desc.filter && !desc.filter(s.item)) continue
+        if (!seen[s.item]) { seen[s.item] = fit.length; fit.push({ item: s.item, n: 0 }) }
+        fit[seen[s.item]].n += s.n
+      }
+      var sig = pickerRole + '|' + fit.map(function (row) { return row.item + ':' + row.n }).join(',')
+      picks.hidden = false
+      picks.dataset.ask = pickerRole
+      if (sig === pickSig && picks.childElementCount) return
+      pickSig = sig
+      picks.innerHTML = ''
+      if (!fit.length) {
+        var empty = document.createElement('p')
+        empty.className = 'gnote'
+        empty.textContent = pickerRole === 'fuel' ? (tr('addFuelWood') || '') : (tr('nothingBake') || '')
+        picks.append(empty)
+        return
+      }
+      for (var f = 0; f < fit.length; f++) {
+        (function (row) {
+          var b = document.createElement('button')
+          b.type = 'button'
+          b.className = 'gtile oven-choice ks-choice'
+          b.dataset.item = row.item
+          b.dataset.fit = pickerRole
+          var art = document.createElement('span')
+          art.className = 'ks-art gic'
+          try {
+            var node = iconOf(row.item)
+            if (node) art.append(node)
+          } catch (err) {}
+          var lab = document.createElement('span')
+          lab.className = 'glbl'
+          var named = nameOf(row.item) || row.item
+          lab.textContent = named + ' ×' + row.n
+          b.append(art, lab)
+          b.setAttribute('aria-label', named)
+          armPointer(b, {
+            root: card,
+            canDrag: function () { return false },
+            onActivate: function () {
+              var role = pickerRole
+              pickerRole = ''
+              pickSig = ''
+              tryLoad(role, row.item, buttons[role])
+            },
+          }, guardBox)
+          picks.append(b)
+        })(fit[f])
+      }
+    }
+    function update() {
+      if (!alive) return
+      if (!card.isConnected) {
+        if (update.seen) destroy()
+        return
+      }
+      update.seen = true
+      layoutBag()
+      var text = ''
+      try { text = typeof opts.status === 'function' ? opts.status() : (opts.status || '') } catch (e) {}
+      status.textContent = text || ''
+      paintOne(buttons.fuel, slotByRole('fuel'))
+      paintOne(buttons.input, slotByRole('input'))
+      paintOne(buttons.output, slotByRole('output'))
+      var proc = {}
+      try { proc = typeof opts.process === 'function' ? opts.process() : (opts.process || {}) } catch (e2) { proc = {} }
+      arrowFill.style.width = Math.round((proc.pct || 0) * 100) + '%'
+      var burning = !!proc.burning
+      var lit = !!proc.lit
+      flame.className = 'flame-side' + (lit ? ' lit' : ' out') + (burning ? ' burn' : '')
+      flame.style.setProperty('--burn', String(proc.burn || 0))
+      var bar = flame.querySelector('.burn-bar')
+      if (bar) bar.style.width = Math.round((proc.burn || 0) * 100) + '%'
+      time.textContent = proc.label || ''
+      if (proc.previewItem) {
+        preview.hidden = false
+        fillArt(preview, proc.previewItem, iconOf)
+        previewLab.textContent = proc.previewText || ''
+        preview.title = proc.previewText || ''
+      } else preview.hidden = true
+      var notes = []
+      try { notes = typeof opts.notes === 'function' ? opts.notes() : (opts.notes || []) } catch (e3) { notes = [] }
+      hintClick.textContent = notes[0] || ''
+      hintBake.textContent = notes[1] || ''
+      ensureBag()
+      if (pickerRole) {
+        var open = slotByRole(pickerRole)
+        if (open && open.item) { pickerRole = ''; pickSig = '' }
+      }
+      renderPicker()
+    }
+    function onResize() { if (alive) update() }
+    function destroy() {
+      if (!alive) return
+      alive = false
+      root.clearInterval(timer)
+      root.removeEventListener('resize', onResize)
+    }
+    var timer = root.setInterval(update, 250)
+    root.addEventListener('resize', onResize)
+    root.requestAnimationFrame(update)
+    update()
+    return { update: update, destroy: destroy }
+  }
+
+  function craftPanel(el, opts) {
+    opts = opts || {}
+    var nameOf = bindName(opts)
+    var iconOf = bindIcon(opts)
+    var tr = bindT(opts)
+    var recipe = opts.recipe || { in: [], out: ['', 1] }
+    var pick = null
+    var guardBox = { guard: null }
+    el.innerHTML = ''
+    el.classList.add('ks-root')
+    var card = document.createElement('div')
+    card.className = 'ks-craft'
+    var line = document.createElement('div')
+    line.className = 'tray-line'
+    var wells = []
+    function placedNow() {
+      var list = typeof opts.placed === 'function' ? opts.placed() : (opts.placed || [])
+      return list || []
+    }
+    function bagSlots() {
+      var list = typeof opts.bag === 'function' ? opts.bag() : (opts.bag || [])
+      return list || []
+    }
+    function needText(item) {
+      var raw = tr('slotNeeds') || 'This slot needs {item}'
+      return raw.replace('{item}', nameOf(item) || item)
+    }
+    recipe.in.forEach(function (pair, index) {
+      var item = pair[0]
+      var n = pair[1]
+      var b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'ks-slot ing'
+      b.dataset.i = String(index)
+      b.dataset.need = item
+      b.dataset.ksRole = 'ing'
+      var art = document.createElement('span')
+      art.className = 'ks-art'
+      var badge = document.createElement('span')
+      badge.className = 'ks-badge'
+      var lab = document.createElement('span')
+      lab.className = 'ks-lab'
+      lab.textContent = nameOf(item) || item
+      b.append(art, badge, lab)
+      armPointer(b, {
+        root: card,
+        canDrag: function () { return false },
+        icon: iconOf,
+        onActivate: function () { activateIng(index, b) },
+      }, guardBox)
+      line.append(b)
+      wells.push(b)
+    })
+    var arrow = document.createElement('div')
+    arrow.className = 'chunk-arrow'
+    arrow.setAttribute('aria-hidden', 'true')
+    line.append(arrow)
+    var result = document.createElement('div')
+    result.className = 'well result'
+    var resultArt = document.createElement('span')
+    resultArt.className = 'art ks-art'
+    try {
+      var outNode = iconOf(recipe.out[0])
+      if (outNode) resultArt.append(outNode)
+    } catch (e) {}
+    var resultLab = document.createElement('span')
+    resultLab.className = 'wlab'
+    resultLab.textContent = opts.resultName || (nameOf(recipe.out[0]) || '')
+    result.append(resultArt, resultLab)
+    line.append(result)
+
+    var bag = document.createElement('div')
+    bag.className = 'ks-bag ks-bag-rows'
+    var list = bagSlots()
+    for (var i = 0; i < list.length; i++) bag.append(makeBag(i))
+    var note = document.createElement('p')
+    note.className = 'slot-chip fuel-chip'
+    note.dataset.ksBounce = '1'
+    note.setAttribute('role', 'status')
+    note.hidden = true
+    var keys = document.createElement('div')
+    keys.className = 'keys'
+    var fillBtn = document.createElement('button')
+    fillBtn.type = 'button'
+    fillBtn.className = 'keycap fill'
+    fillBtn.textContent = opts.fillLabel || tr('fillTray') || 'Fill'
+    fillBtn.addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (opts.onFill) opts.onFill()
+    })
+    var makeBtn = document.createElement('button')
+    makeBtn.type = 'button'
+    makeBtn.className = 'keycap make' + (opts.bake ? ' bake' : '') + (!opts.makeDisabled && !opts.bake ? ' lit' : '')
+    makeBtn.disabled = !!opts.makeDisabled
+    if (opts.bake && opts.ovenIcon) {
+      var mic = document.createElement('span')
+      mic.className = 'art'
+      try { var mn = opts.ovenIcon(); if (mn) mic.append(mn) } catch (err) {}
+      var mlab = document.createElement('span')
+      mlab.textContent = opts.makeLabel || ''
+      makeBtn.append(mic, mlab)
+    } else makeBtn.textContent = opts.makeLabel || tr('make') || 'Make'
+    makeBtn.addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (makeBtn.disabled) return
+      if (opts.onMake) opts.onMake()
+    })
+    var maxBtn = document.createElement('button')
+    maxBtn.type = 'button'
+    maxBtn.className = 'keycap xmax'
+    maxBtn.textContent = opts.maxLabel || tr('timesMax') || '×Max'
+    maxBtn.disabled = !!opts.maxDisabled
+    maxBtn.addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      if (maxBtn.disabled) return
+      if (opts.onMax) opts.onMax()
+    })
+    keys.append(fillBtn, makeBtn, maxBtn)
+    card.append(line, bag, note, keys)
+    el.append(card)
+    paintWells()
+    paintBag()
+
+    function paintWells() {
+      var placed = placedNow()
+      for (var w = 0; w < wells.length; w++) {
+        var pair = recipe.in[w]
+        var have = placed[w] || 0
+        var b = wells[w]
+        b.dataset.placed = String(have)
+        b.classList.toggle('ks-empty', have <= 0)
+        b.classList.toggle('ghost', have <= 0)
+        b.classList.toggle('done', have >= pair[1])
+        fillArt(b, pair[0], iconOf)
+        var badge = b.querySelector('.ks-badge')
+        badge.hidden = false
+        badge.textContent = have + '/' + pair[1]
+        var check = b.querySelector('.check')
+        if (have >= pair[1] && !check) {
+          check = document.createElement('span')
+          check.className = 'check'
+          check.textContent = '✓'
+          check.setAttribute('aria-hidden', 'true')
+          b.append(check)
+        } else if (have < pair[1] && check) check.remove()
+        b.setAttribute('aria-label', (nameOf(pair[0]) || pair[0]) + ' ' + have + '/' + pair[1])
+      }
+    }
+    function paintBag() {
+      var slots = bagSlots()
+      var nodes = bag.children
+      for (var j = 0; j < nodes.length; j++) {
+        var s = slots[j]
+        var b = nodes[j]
+        var item = s && s.n > 0 ? s.item : ''
+        b.dataset.item = item || ''
+        b.dataset.slot = String(j)
+        b.classList.toggle('ks-empty', !item)
+        b.classList.toggle('ks-pick', !!(pick && pick.i === j && item))
+        b.setAttribute('aria-pressed', pick && pick.i === j ? 'true' : 'false')
+        fillArt(b, item, iconOf)
+        var badge = b.querySelector('.ks-badge')
+        if (item) { badge.hidden = false; badge.textContent = String(s.n) }
+        else badge.hidden = true
+        b.setAttribute('aria-label', item ? (nameOf(item) || item) + ' ' + s.n : (tr('emptySlot') || 'Empty'))
+      }
+    }
+    function makeBag(i) {
+      var b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'ks-slot ks-empty'
+      b.dataset.ksBag = '1'
+      var art = document.createElement('span')
+      art.className = 'ks-art'
+      var badge = document.createElement('span')
+      badge.className = 'ks-badge'
+      badge.hidden = true
+      b.append(art, badge)
+      armPointer(b, {
+        root: card,
+        item: function () {
+          var s = bagSlots()[i]
+          return s && s.n > 0 ? s.item : ''
+        },
+        canDrag: function () {
+          var s = bagSlots()[i]
+          return !!(s && s.n > 0)
+        },
+        icon: iconOf,
+        accept: function (well) {
+          var s = bagSlots()[i]
+          return !!(s && accepts(well, s.item))
+        },
+        onActivate: function (ev) {
+          var s = bagSlots()[i]
+          if (!s || !(s.n > 0)) return
+          activateBag(i, s.item, ev)
+        },
+        onDrop: function (well) {
+          var s = bagSlots()[i]
+          if (!s || !well) return
+          dropOn(well, s.item)
+        },
+      }, guardBox)
+      return b
+    }
+    function accepts(well, item) {
+      if (!well || well.dataset.ksRole !== 'ing') return false
+      var index = +well.dataset.i
+      var pair = recipe.in[index]
+      if (!pair || pair[0] !== item) return false
+      return (placedNow()[index] || 0) < pair[1]
+    }
+    function dropOn(well, item) {
+      var index = +well.dataset.i
+      var pair = recipe.in[index]
+      if (!pair || pair[0] !== item) {
+        bounce(well, pair ? needText(pair[0]) : '')
+        return
+      }
+      if (opts.onPlace) opts.onPlace(index, item)
+    }
+    function activateIng(index, well) {
+      var pair = recipe.in[index]
+      var have = placedNow()[index] || 0
+      if (pick && pick.item) {
+        if (have >= pair[1] && pick.item === pair[0]) {
+          pick = null
+          if (opts.onReturn) opts.onReturn(index)
+          return
+        }
+        if (pick.item !== pair[0]) {
+          bounce(well, needText(pair[0]))
+          pick = null
+          paintBag()
+          return
+        }
+        if (opts.onPlace) opts.onPlace(index, pick.item)
+        return
+      }
+      if (have > 0 && opts.onReturn) opts.onReturn(index)
+    }
+    function activateBag(i, item, ev) {
+      if (ev && ev.shiftKey) {
+        var placed = placedNow()
+        for (var n = 0; n < recipe.in.length; n++) {
+          var pair = recipe.in[n]
+          if (pair[0] === item && (placed[n] || 0) < pair[1]) {
+            if (opts.onPlace) opts.onPlace(n, item)
+            return
+          }
+        }
+        var wrong = wells[0]
+        for (var w = 0; w < recipe.in.length; w++) if (recipe.in[w][0] !== item) { wrong = wells[w]; break }
+        if (wrong) bounce(wrong, needText(recipe.in[+wrong.dataset.i][0]))
+        return
+      }
+      if (pick && pick.i === i) pick = null
+      else pick = { i: i, item: item }
+      paintBag()
+    }
+    return { root: card }
+  }
+
   root.KulibertSlots = {
     config: config,
     createInventory: createInventory,
@@ -471,5 +1273,6 @@
     quickMove: quickMove,
     createSession: createSession,
     util: { putInSlots: putInSlots },
+    ui: { machinePanel: machinePanel, craftPanel: craftPanel, bounce: bounce },
   }
 })(typeof window !== 'undefined' ? window : globalThis)

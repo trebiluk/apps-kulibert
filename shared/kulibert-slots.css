@@ -59,6 +59,73 @@
   filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .45));
 }
 .ks-ghost svg, .ks-ghost canvas { width: 40px; height: 40px }
+.ks-bounce { outline: 3px solid var(--ks-warn, #F6C453); outline-offset: 1px }
+.ks-lab { pointer-events: none; font-size: var(--ks-fs-xs, 12px); font-weight: 700; line-height: 1 }
+.ks-machine {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ks-gap, 6px);
+  max-width: 100%;
+}
+.ks-machine.ks-side { flex-direction: row; align-items: flex-start }
+html[dir=rtl] .ks-machine.ks-side { flex-direction: row-reverse }
+.ks-main { display: flex; flex-direction: column; gap: var(--ks-gap, 6px); min-width: 0 }
+.ks-inputs, .ks-process, .ks-outputs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ks-gap, 6px);
+}
+.ks-bag-col {
+  display: grid;
+  grid-template-columns: repeat(3, var(--ks-slot, 56px));
+  gap: var(--ks-gap, 6px);
+}
+.ks-bag-rows {
+  display: grid;
+  grid-template-rows: repeat(2, var(--ks-slot, 56px));
+  grid-auto-flow: column;
+  grid-auto-columns: var(--ks-slot, 56px);
+  gap: var(--ks-gap, 6px);
+  overflow-x: auto;
+  max-width: 100%;
+}
+.ks-time { font-weight: 700; font-size: var(--ks-fs-s, .875rem); min-width: 2ch }
+.ks-picks { display: flex; flex-wrap: wrap; gap: var(--ks-gap, 6px); max-width: 100% }
+.ks-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--ks-touch, 44px);
+  padding: 4px 8px;
+  border: 2px solid var(--ks-line, #1F8A8A);
+  border-radius: 8px;
+  background: var(--ks-card, #0E1A22);
+  color: var(--ks-text, #E6EEF2);
+  font-weight: 700;
+  touch-action: none;
+}
+.ks-choice .ks-art { width: 28px; height: 28px; display: grid; place-items: center; pointer-events: none }
+.ks-choice .ks-art svg, .ks-choice .ks-art canvas { width: 28px; height: 28px }
+.ks-craft { display: flex; flex-direction: column; gap: var(--ks-gap, 6px); min-width: 0; max-width: 100% }
+.ks-craft .ks-slot.ing.ghost .ks-art { opacity: .35 }
+.ks-slot.ing .check {
+  position: absolute;
+  top: 2px;
+  inset-inline-end: 2px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--ks-pick, #22D3EE);
+  color: #08131A;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
 @media (prefers-reduced-motion: reduce) {
   .ks-slot, .ks-ghost { transition: none; animation: none }
 }

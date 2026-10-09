@@ -1,0 +1,185 @@
+{
+  "steps": [
+    {
+      "name": "version 2.5.103",
+      "ok": true,
+      "detail": "2.5.103"
+    },
+    {
+      "name": "status needs fuel",
+      "ok": true,
+      "detail": "Needs fuel"
+    },
+    {
+      "name": "mouse first click loads fuel",
+      "ok": true,
+      "detail": "{\"planks\":1,\"fuel\":\"Fuel Planks 1\"}"
+    },
+    {
+      "name": "sand fuel bounce sentence",
+      "ok": true,
+      "detail": "Sand can't burn. Fuel takes Planks or Logs."
+    },
+    {
+      "name": "sand fuel uses nothing",
+      "ok": true,
+      "detail": "{\"sand\":1,\"planks\":1}"
+    },
+    {
+      "name": "sand fuel amber outline",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "fuel picker lists planks",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "picker is planks",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "picker loads fuel",
+      "ok": true,
+      "detail": "Fuel Planks 1"
+    },
+    {
+      "name": "drag sand loads input",
+      "ok": true,
+      "detail": "Input Sand 2 sand=0"
+    },
+    {
+      "name": "status baking",
+      "ok": true,
+      "detail": "Baking..."
+    },
+    {
+      "name": "rotate mid-bake still baking",
+      "ok": true,
+      "detail": "Baking... side=true w=48"
+    },
+    {
+      "name": "landscape bag is 3 col",
+      "ok": true,
+      "detail": "ks-bag ks-bag-col"
+    },
+    {
+      "name": "landscape slot 48",
+      "ok": true,
+      "detail": "48"
+    },
+    {
+      "name": "rtl mirrors row",
+      "ok": true,
+      "detail": "row-reverse"
+    },
+    {
+      "name": "status take glass",
+      "ok": true,
+      "detail": "Take your Glass"
+    },
+    {
+      "name": "glass in bag",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "shift-click sand loads input",
+      "ok": true,
+      "detail": "Input Sand 2 sand=0"
+    },
+    {
+      "name": "input cannot bake",
+      "ok": true,
+      "detail": "The Oven cannot bake Dirt."
+    },
+    {
+      "name": "bench planted",
+      "ok": true,
+      "detail": "{\"x\":8,\"y\":5,\"z\":1,\"id\":22}"
+    },
+    {
+      "name": "door recipe opens",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "door by drag",
+      "ok": true,
+      "detail": "6"
+    },
+    {
+      "name": "close returns dragged parts",
+      "ok": true,
+      "detail": "6"
+    },
+    {
+      "name": "door by tap-tap",
+      "ok": true,
+      "detail": "6"
+    },
+    {
+      "name": "slot needs planks",
+      "ok": true,
+      "detail": "This slot needs Planks"
+    },
+    {
+      "name": "fill door",
+      "ok": true,
+      "detail": "6 disabled=false"
+    },
+    {
+      "name": "make first click",
+      "ok": true,
+      "detail": "{\"door\":1,\"planks\":0}"
+    },
+    {
+      "name": "box click bag to box",
+      "ok": true,
+      "detail": "{\"box\":[\"stone\"],\"bagStone\":0}"
+    },
+    {
+      "name": "box click box to bag",
+      "ok": true,
+      "detail": "{\"box\":[],\"bagStone\":2}"
+    },
+    {
+      "name": "box drag bag to box",
+      "ok": true,
+      "detail": "{\"box\":[\"dirt\"],\"bagDirt\":0}"
+    },
+    {
+      "name": "box drag box to bag",
+      "ok": true,
+      "detail": "{\"box\":[],\"bagDirt\":2}"
+    },
+    {
+      "name": "touch 915 first click fuel",
+      "ok": true,
+      "detail": "Fuel Planks 1 n=1 w=48"
+    },
+    {
+      "name": "portrait bag is 2 rows",
+      "ok": true,
+      "detail": "ks-bag ks-bag-rows w=48"
+    },
+    {
+      "name": "portrait slot 48",
+      "ok": true,
+      "detail": "48"
+    },
+    {
+      "name": "touch portrait fuel bounce",
+      "ok": true,
+      "detail": "Sand can't burn. Fuel takes Planks or Logs."
+    },
+    {
+      "name": "console 0",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "errors": []
+}

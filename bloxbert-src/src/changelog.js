@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.103', date: '2026-10-09', lines: {
+    en: ['The Oven and Workbench use the same slots as the Box: click, Shift-click or drag.'],
+    uk: ['Піч і верстак використовують ті самі комірки, що й скриня: клік, Shift-клік або перетягування.'],
+    ru: ['Печь и верстак используют те же ячейки, что и сундук: клик, Shift-клик или перетаскивание.'],
+    es: ['El horno y el banco usan las mismas casillas que la caja: clic, Mayús-clic o arrastrar.'],
+    ar: ['الفرن ومنضدة العمل يستخدمان الخانات نفسها كالصندوق: النقر أو نقر Shift أو السحب.'],
+    'fa-AF': ['تنور و میز کار از همان خانه‌های صندوق استفاده می‌کنند: کلیک، Shift-کلیک یا کشیدن.'],
+    rw: ['Icyoto n\'ameza bikoresha uduce amasanduku akoresha: kanda, Shift-kanda, cyangwa kurura.'],
+    ti: ['እቶንን ሰደቓን ከም ሳንዱቕ ዝኣመሰሉ ቦታታት ይጥቀሙ፡ ጠውቕ፡ Shift-ጠውቕ ወይ ጎተት።'],
+  }},
   { v: '2.5.102', date: '2026-10-09', lines: {
     en: ['Harvest ripe wheat with a click. It replants itself if you have a seed, and your wheat turns into flour and bread.'],
     uk: ['Збирай стиглу пшеницю кліком. Вона сіється знову, якщо є насіння, і з пшениці виходять борошно й хліб.'],
