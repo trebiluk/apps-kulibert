@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.78', date: '2026-10-09', lines: {
+    en: ['Every tree is full size, and the Oven tells you what it can bake.'],
+    uk: ['Кожне дерево повного розміру, і піч каже, що вона може спекти.'],
+    ru: ['Каждое дерево полного размера, и печь говорит, что она может испечь.'],
+    es: ['Cada árbol es de tamaño completo, y el horno dice qué puede hornear.'],
+    ar: ['كل شجرة بالحجم الكامل، والفرن يخبرك ماذا يمكنه أن يخبز.'],
+    'fa-AF': ['هر درخت کامل است، و تنور می‌گوید چه چیزی می‌تواند بپزد.'],
+    rw: ['Igiti cyose kiruzuye, kandi icyoto kikubwira icyo gishobora guteka.'],
+    ti: ['ኩሉ ዕንጨይቲ ምሉእ ዓቐን እዩ፡ እቶን ድማ እንታይ ከም ዝኽእል ክብስል ይነግረካ።'],
+  }},
   { v: '2.5.77', date: '2026-10-08', lines: {
     en: ['Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.'],
     uk: ['Закриття Сумки чи панелі одразу повертає в гру, і огляд більше не залипає.'],

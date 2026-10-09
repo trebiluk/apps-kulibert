@@ -65,6 +65,7 @@ function machineDrag(el, e, opts) {
     if (!dragged || cancel) return
     const t = ev ? targetAt(ev.clientX, ev.clientY) : null
     if (t && opts.canDrop(t)) opts.onDrop(t)
+    else if (t && opts.onReject) opts.onReject(t)
   }
   const move = (ev) => {
     if (ev.pointerId !== pid) return
@@ -164,6 +165,18 @@ export function createStations(api) {
     const ring = r.until ? (secs - left) / secs : 0
     return { kind: r.kind, fuel: r.fuel, input: r.input.slice(), output: r.output.slice(), ring, left: r.left }
   }
+  function itemName(item) { return api.name ? api.name(item) : item }
+  function bakesItem(item) { return OVEN.some((recipe) => recipe.in.some(([it]) => it === item)) }
+  function bakeHint() {
+    const bits = []
+    let food = false
+    for (const recipe of OVEN) {
+      if (recipe.label === 'food') { food = true; continue }
+      bits.push(recipe.in.map(([it]) => itemName(it)).join(' + ') + ' → ' + itemName(recipe.out[0]))
+    }
+    if (food) bits.push(api.t('rawFood') + ' → ' + api.t('bakedFood'))
+    return api.t('bakesHint').replace('{list}', bits.join(', '))
+  }
   function head(crate, iconKey, name, status) {
     const row = document.createElement('div')
     row.className = 'machine-head'
@@ -187,6 +200,13 @@ export function createStations(api) {
     const isBench = kind === 'bench'
     const r = get(k, kind || 'oven')
     finish(r)
+    if (r.flashUntil && Date.now() >= r.flashUntil) { r.flash = ''; r.flashUntil = 0 }
+    const flash = (text) => {
+      r.flash = text
+      r.flashUntil = Date.now() + 1500
+      clearTimeout(flash.hide)
+      flash.hide = setTimeout(() => { if (g.isConnected) paint(g, key, kind) }, 1500)
+    }
     const id = k + ':' + (kind || 'oven')
     const prev = seen.get(id)
     const fuelNow = r.left || 0
@@ -262,16 +282,31 @@ export function createStations(api) {
     }
     const fueled = () => (get(k, 'oven').left || 0) > 0
     const useFuel = (item) => {
-      if (item && !BAKES[item]) return false
+      if (item && !BAKES[item]) {
+        flash(api.t('ovenNoBurn').replace('{item}', itemName(item)))
+        pickItem = ''
+        pickSlot = -1
+        paint(g, key, kind)
+        return false
+      }
       if (!addFuel(k, item)) r.fuelNote = api.t('addFuelWood')
+      else { r.fuelNote = ''; r.flash = '' }
       pickItem = ''
       pickSlot = -1
       paint(g, key, kind)
       return true
     }
     const useInput = (item) => {
+      if (item && !bakesItem(item)) {
+        flash(api.t('ovenNoBake').replace('{item}', itemName(item)))
+        pickItem = ''
+        pickSlot = -1
+        paint(g, key, kind)
+        return false
+      }
       const recipe = recipeFor(api, item, fueled())
       if (!recipe || !addInput(k, recipe.id)) return false
+      r.flash = ''
       pickItem = ''
       pickSlot = -1
       paint(g, key, kind)
@@ -292,7 +327,10 @@ export function createStations(api) {
     })
     outEl.addEventListener('click', () => { take(k); paint(g, key, kind) })
     row.append(fuelEl, inEl, arrow, outEl)
-    crate.append(row)
+    const hint = document.createElement('p')
+    hint.className = 'gnote oven-bakes'
+    hint.textContent = bakeHint()
+    crate.append(row, hint)
     const strip = document.createElement('div')
     strip.className = 'bag-strip'
     const slots = slotsOf() || []
@@ -321,6 +359,12 @@ export function createStations(api) {
           icon: () => api.icon ? api.icon(item) : document.createElement('span'),
           canDrop: (well) => well.dataset.role === 'fuel' ? !!BAKES[item] : !!recipeFor(api, item, fueled()),
           onDrop: (well) => { if (well.dataset.role === 'fuel') useFuel(item); else useInput(item) },
+          onReject: (well) => {
+            if (well.dataset.role === 'fuel') {
+              if (!BAKES[item]) flash(api.t('ovenNoBurn').replace('{item}', itemName(item)))
+            } else if (!bakesItem(item)) flash(api.t('ovenNoBake').replace('{item}', itemName(item)))
+            paint(g, key, kind)
+          },
         })
       })
       b.addEventListener('click', () => {
@@ -355,11 +399,12 @@ export function createStations(api) {
       }
       crate.append(picks)
     }
-    if (r.fuelNote) {
+    const note = r.flashUntil > Date.now() && r.flash ? r.flash : (r.fuelNote || '')
+    if (note) {
       const chip = document.createElement('p')
       chip.className = 'fuel-chip'
       chip.setAttribute('role', 'status')
-      chip.textContent = r.fuelNote
+      chip.textContent = note
       crate.append(chip)
     }
     g.append(crate)

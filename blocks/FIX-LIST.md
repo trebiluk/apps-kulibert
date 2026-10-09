@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 8 2026 (Build: 2.5.77 Closing a panel returns you to the game).
+Updated Fri Oct 9 2026 (Build: 2.5.78 Every tree is full size, and the Oven tells you what it can bake).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -59,6 +59,7 @@ Updated Wed Oct 8 2026 (Build: 2.5.77 Closing a panel returns you to the game).
 - [x] **2.5.67 Bag and tray drag:** one drag for the Bag and the Build Tray. Same items stack together. A tap right after a drop selects at once.
 - [x] **2.5.72 Machine panel:** Oven, Workbench and Box share a machine panel you can click or drag into, and Crafting stays on screen.
 - [x] **2.5.75 Item faces:** Items look like what they are and show their names, and doors tell you how to open their options.
+- [x] **2.5.78 Full trees and Oven hint:** Every wilderness trunk is 4–6 logs. The first Survival step says trees grow just south of town. The Oven lists what it bakes, and a bad drop says it cannot bake or will not burn.
 - [x] **2.5.77 Pointer lock:** Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
@@ -110,6 +111,7 @@ Updated Wed Oct 8 2026 (Build: 2.5.77 Closing a panel returns you to the game).
 | 1o | 2.5.67 | Bag and Build Tray share one drag; same items stack together | shipped |
 | 1p | 2.5.72 | Oven, Workbench and Box share a machine panel; Crafting and Pockets stay on screen | shipped |
 | 1p | 2.5.75 | Items look like what they are and show their names; doors tell you how to open options | shipped |
+| 1p | 2.5.78 | Every tree is full size, and the Oven tells you what it can bake | shipped |
 | 1p | 2.5.77 | Closing the Bag or a panel puts you straight back in the game; looking around never sticks | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |

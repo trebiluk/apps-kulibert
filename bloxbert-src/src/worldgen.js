@@ -18,6 +18,23 @@ function groundY(x, z) {
   return Math.round(3 + 2.2 * Math.sin(x / 19) * Math.cos(z / 23) + 1.2 * Math.sin((x + z) / 11))
 }
 
+// Wilderness trees. Same grid and density as before. Each trunk is 4, 5 or 6 logs
+// for that spot (the crown still covers the top two). Never inside town.
+export function wildWood(x, y, z) {
+  const cx = Math.floor(x / 9) * 9 + 4
+  const cz = Math.floor(z / 9) * 9 + 4
+  if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) return ''
+  const th = groundY(cx, cz)
+  const tall = 4 + Math.floor(hash(cx + 91, cz - 17) * 3)
+  const top = th + tall
+  if (x === cx && z === cz && y > th && y <= top) return 'log'
+  const dy = y - top
+  const dx = x - cx
+  const dz = z - cz
+  if (dy >= -1 && dy <= 1 && Math.abs(dx) <= 2 && Math.abs(dz) <= 2 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return 'leaves'
+  return ''
+}
+
 // Four full trees just south of Bertyville, each about 20 blocks from spawn [8.5, 1.5].
 // Trunks are 6 logs (the normal crown covers the top two). Same spots every new world.
 const STARTER = [[-1, -19], [5, -19], [11, -19], [17, -19]]

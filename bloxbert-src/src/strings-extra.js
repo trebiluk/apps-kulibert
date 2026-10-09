@@ -4,7 +4,7 @@ export const EXTRA = {
     changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try This', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
     filled: 'Filled {n} blocks', homeSet: 'Home set', homeCleared: 'Home cleared', pickup: 'Pick up', paste: 'Paste',
     buildTools: 'Build Tools', exitApp: 'Exit', leaveAsk: 'Leave Bertopia? Your world is saved.', leave: 'Leave', stay: 'Stay', myBuilds: 'My Builds', undoMinutes: 'Undo Minutes', snapshots: 'Snapshots', emptyBag: 'Empty bag: break blocks or buy at Tally\'s', emptySlot: 'Empty slot', tooBig: 'Too big: max 64 × 32 × 64', badBuild: 'That file is not a Bertopia build', fineLater: 'Fine-scale decor comes later', changedTo: 'Changed:',
-    berry: 'Berry', flour: 'Flour', sugar: 'Sugar', cupcake: 'Cupcake', bread: 'Bread', coreplate: 'Coreplate', workbench: 'Workbench', oven: 'Oven', vend: 'Vending Counter', storeCounter: 'Store Counter', bunk: 'Bunk', box: 'Box', woodTool: 'Wood Tool', stoneTool: 'Stone Tool', putIn: 'Put in', boxFull: 'The box is full.', door: 'Door', doorOpen: 'Open door', wheat: 'Wheat', reed: 'Reed', doorOpenMsg: 'The door is open.', doorShut: 'The door is shut.', pathTree: 'Chop a tree', pathTool: 'Make a Wood Tool', pathStone: 'Mine stone', pathCoal: 'Dig up coal', pathDoor: 'Place a door', pathHome: 'Set a home on a bunk',
+    berry: 'Berry', flour: 'Flour', sugar: 'Sugar', cupcake: 'Cupcake', bread: 'Bread', coreplate: 'Coreplate', workbench: 'Workbench', oven: 'Oven', vend: 'Vending Counter', storeCounter: 'Store Counter', bunk: 'Bunk', box: 'Box', woodTool: 'Wood Tool', stoneTool: 'Stone Tool', putIn: 'Put in', boxFull: 'The box is full.', door: 'Door', doorOpen: 'Open door', wheat: 'Wheat', reed: 'Reed', doorOpenMsg: 'The door is open.', doorShut: 'The door is shut.', pathTree: 'Chop a tree. Trees grow just south of town.', pathTool: 'Make a Wood Tool', pathStone: 'Mine stone', pathCoal: 'Dig up coal', pathDoor: 'Place a door', pathHome: 'Set a home on a bunk',
     whatsNewBody: 'Follow the gold step. Chop, make a tool, mine stone, dig coal, place a door, then set a home.',
     menuHint: 'Tap ☰ or press Esc for menu', menuHintTouch: 'Tap ☰ for menu', resume: 'Resume', inventory: 'Inventory', crafting: 'Crafting', shop: 'Shop', wallet: 'Wallet',
     practice: 'practice', worth: 'Worth', tallyPays: 'Tally pays', youHave: 'You have', usedIn: 'Used in', make: 'Make', bagFull: 'Bag full', noItem: 'You have no {item}.',
@@ -21,7 +21,7 @@ export const EXTRA = {
     tour: 'Тур', tourMove: 'Йди з WASD', tourLook: 'Тягни щоб дивитись', tourPlace: 'Став і ламай', tourBar: 'Відкрий сумку', tourShop: 'Продай Таллі', tourTools: 'Заповни рамку', place10: 'Постав 10 блоків', fillBox: 'Заповни рамку', sell3: 'Продай 3 колоди', helpBody: 'Обери плитку', a11y: 'Доступність', goalDone: 'Ціль виконано', highContrast: 'Високий контраст', gentle: 'Мʼякий режим', sendTeacher: 'Надіслати вчителю', sentTeacher: 'Надіслано вчителю', noFly: 'У Виживанні без польоту', tapCorner: 'Спершу кут А', cornerA: 'Кут А задано', addCoal: 'Додай вугілля', bake: 'Печи', sell: 'Продати', buy: 'Купити', filled: 'Заповнено {n}', homeSet: 'Дім задано', homeCleared: 'Дім знято', pickup: 'Забрати', paste: 'Вставити', fuel: 'Паливо', input: 'Вхід', output: 'Вихід', left: 'лишилось', bag: 'Сумка', slotN: 'слот {n}',
     changelog: 'Журнал', youAreHere: 'Ти тут', next: 'Далі', skip: 'Пропустити', tryThis: 'Спробуй', sell: 'Продати', buy: 'Купити', addCoal: 'Додай вугілля', bake: 'Печи',
     buildTools: 'Інструменти', exitApp: 'Вихід', leaveAsk: 'Вийти з Bertopia? Світ збережено.', leave: 'Вийти', stay: 'Лишитись', myBuilds: 'Мої будови', undoMinutes: 'Хвилини назад', snapshots: 'Знімки', emptyBag: 'Сумка порожня: ламай блоки або купи в Таллі', emptySlot: 'Порожня клітинка', tooBig: 'Завелике: макс 64 × 32 × 64', badBuild: 'Це не файл будови Bertopia', fineLater: 'Дрібний декор буде пізніше', changedTo: 'Змінено:',
-    berry: 'Ягода', flour: 'Борошно', sugar: 'Цукор', cupcake: 'Кекс', bread: 'Хліб', coreplate: 'Підлога-ядро', workbench: 'Верстак', oven: 'Піч', vend: 'Прилавок', storeCounter: 'Прилавок крамниці', bunk: 'Ліжко', box: 'Скриня', woodTool: 'Дерев’яне знаряддя', stoneTool: 'Кам’яне знаряддя', putIn: 'Покласти', boxFull: 'Скриня повна.', door: 'Двері', doorOpen: 'Відчинені двері', wheat: 'Пшениця', reed: 'Очерет', doorOpenMsg: 'Двері відчинено.', doorShut: 'Двері зачинено.', pathTree: 'Зрубай дерево', pathTool: 'Зроби дерев’яне знаряддя', pathStone: 'Добудь камінь', pathCoal: 'Викопай вугілля', pathDoor: 'Постав двері', pathHome: 'Задай дім на ліжку',
+    berry: 'Ягода', flour: 'Борошно', sugar: 'Цукор', cupcake: 'Кекс', bread: 'Хліб', coreplate: 'Підлога-ядро', workbench: 'Верстак', oven: 'Піч', vend: 'Прилавок', storeCounter: 'Прилавок крамниці', bunk: 'Ліжко', box: 'Скриня', woodTool: 'Дерев’яне знаряддя', stoneTool: 'Кам’яне знаряддя', putIn: 'Покласти', boxFull: 'Скриня повна.', door: 'Двері', doorOpen: 'Відчинені двері', wheat: 'Пшениця', reed: 'Очерет', doorOpenMsg: 'Двері відчинено.', doorShut: 'Двері зачинено.', pathTree: 'Зрубай дерево. Дерева ростуть якраз на південь від міста.', pathTool: 'Зроби дерев’яне знаряддя', pathStone: 'Добудь камінь', pathCoal: 'Викопай вугілля', pathDoor: 'Постав двері', pathHome: 'Задай дім на ліжку',
     whatsNewBody: 'Bertopia 2.5.0: Картинний тур і цілі «Спробуй» показують, як грати. Обери свою панель будови. У Виживанні немає польоту. Є Допомога і Доступність, і можна надіслати Шестерні вчителю.',
     menuHint: 'Торкнись ☰ або Esc для меню', menuHintTouch: 'Торкнись ☰ для меню', resume: 'Далі', inventory: 'Сумка', crafting: 'Крафт', shop: 'Крамниця', wallet: 'Гаманець',
     practice: 'навчання', worth: 'Варто', tallyPays: 'Таллі платить', youHave: 'У тебе', usedIn: 'Входить у', make: 'Зробити', bagFull: 'Сумка повна', noItem: 'Немає: {item}.',
@@ -37,7 +37,7 @@ export const EXTRA = {
   ru: {
     changelog: 'Журнал', youAreHere: 'Ты здесь', next: 'Дальше', skip: 'Пропустить', tryThis: 'Попробуй', tour: 'Тур', tourMove: 'Иди с WASD', tourLook: 'Тяни чтобы смотреть', tourPlace: 'Ставь и ломай', tourBar: 'Открой сумку', tourShop: 'Продай Талли', tourTools: 'Заполни рамку', place10: 'Поставь 10 блоков', fillBox: 'Заполни рамку', sell3: 'Продай 3 бревна', helpBody: 'Выбери плитку', a11y: 'Доступность', goalDone: 'Цель готова', highContrast: 'Высокий контраст', gentle: 'Мягкий режим', sendTeacher: 'Отправить учителю', sentTeacher: 'Отправлено учителю', noFly: 'В Выживании без полёта', tapCorner: 'Сначала угол А', cornerA: 'Угол А задан', addCoal: 'Добавь уголь', bake: 'Пеки', sell: 'Продать', buy: 'Купить', filled: 'Заполнено {n}', homeSet: 'Дом задан', homeCleared: 'Дом снят', pickup: 'Забрать', paste: 'Вставить', fuel: 'Топливо', input: 'Вход', output: 'Выход', left: 'осталось', bag: 'Сумка', slotN: 'слот {n}', needBlocks: 'Нужно ещё {n} {item}', pickBlock: 'Сначала выбери блок на панели',
     buildTools: 'Инструменты', exitApp: 'Выход', leaveAsk: 'Выйти из Bertopia? Мир сохранён.', leave: 'Выйти', stay: 'Остаться', myBuilds: 'Мои стройки', undoMinutes: 'Минуты назад', snapshots: 'Снимки', emptyBag: 'Сумка пуста: ломай блоки или купи у Талли', emptySlot: 'Пустая ячейка', tooBig: 'Слишком большое: макс 64 × 32 × 64', badBuild: 'Это не файл стройки Bertopia', fineLater: 'Мелкий декор будет позже', changedTo: 'Изменено:',
-    berry: 'Ягода', flour: 'Мука', sugar: 'Сахар', cupcake: 'Кекс', bread: 'Хлеб', coreplate: 'Пол-ядро', workbench: 'Верстак', oven: 'Печь', vend: 'Прилавок', storeCounter: 'Прилавок лавки', bunk: 'Кровать', box: 'Сундук', woodTool: 'Деревянное орудие', stoneTool: 'Каменное орудие', putIn: 'Положить', boxFull: 'Сундук полон.', door: 'Дверь', doorOpen: 'Открытая дверь', wheat: 'Пшеница', reed: 'Камыш', doorOpenMsg: 'Дверь открыта.', doorShut: 'Дверь закрыта.', pathTree: 'Сруби дерево', pathTool: 'Сделай деревянное орудие', pathStone: 'Добудь камень', pathCoal: 'Выкопай уголь', pathDoor: 'Поставь дверь', pathHome: 'Задай дом на кровати',
+    berry: 'Ягода', flour: 'Мука', sugar: 'Сахар', cupcake: 'Кекс', bread: 'Хлеб', coreplate: 'Пол-ядро', workbench: 'Верстак', oven: 'Печь', vend: 'Прилавок', storeCounter: 'Прилавок лавки', bunk: 'Кровать', box: 'Сундук', woodTool: 'Деревянное орудие', stoneTool: 'Каменное орудие', putIn: 'Положить', boxFull: 'Сундук полон.', door: 'Дверь', doorOpen: 'Открытая дверь', wheat: 'Пшеница', reed: 'Камыш', doorOpenMsg: 'Дверь открыта.', doorShut: 'Дверь закрыта.', pathTree: 'Сруби дерево. Деревья растут сразу к югу от города.', pathTool: 'Сделай деревянное орудие', pathStone: 'Добудь камень', pathCoal: 'Выкопай уголь', pathDoor: 'Поставь дверь', pathHome: 'Задай дом на кровати',
     whatsNewBody: 'Bertopia 2.5.0: Картинный тур и цели «Попробуй» показывают, как играть. Выбери свою панель стройки. В Выживании нет полёта. Есть Помощь и Доступность, и можно отправить Шестерни учителю.',
     menuHint: 'Нажми ☰ или Esc для меню', menuHintTouch: 'Нажми ☰ для меню', resume: 'Дальше', inventory: 'Сумка', crafting: 'Крафт', shop: 'Лавка', wallet: 'Кошелёк',
     practice: 'учёба', worth: 'Цена', tallyPays: 'Талли платит', youHave: 'У тебя', usedIn: 'Нужен в', make: 'Сделать', bagFull: 'Сумка полна', noItem: 'Нет: {item}.',
@@ -53,7 +53,7 @@ export const EXTRA = {
   es: {
     changelog: 'Registro', youAreHere: 'Estás aquí', next: 'Siguiente', skip: 'Saltar', tryThis: 'Prueba esto', tour: 'Recorrido', tourMove: 'Camina con WASD', tourLook: 'Arrastra para mirar', tourPlace: 'Pon y rompe', tourBar: 'Abre la bolsa', tourShop: 'Vende a Tally', tourTools: 'Rellena una caja', place10: 'Pon 10 bloques', fillBox: 'Rellena una caja', sell3: 'Vende 3 troncos', helpBody: 'Elige una ficha', a11y: 'Accesibilidad', goalDone: 'Meta lista', highContrast: 'Alto contraste', gentle: 'Modo suave', sendTeacher: 'Enviar al maestro', sentTeacher: 'Enviado al maestro', noFly: 'Sin volar en Supervivencia', tapCorner: 'Toca la esquina A', cornerA: 'Esquina A lista', addCoal: 'Añade carbón', bake: 'Hornea', sell: 'Vender', buy: 'Comprar', filled: 'Rellenados {n}', homeSet: 'Casa lista', homeCleared: 'Casa quitada', pickup: 'Recoger', paste: 'Pegar', fuel: 'Combustible', input: 'Entrada', output: 'Salida', left: 'quedan', bag: 'Bolsa', slotN: 'casilla {n}',
     buildTools: 'Herramientas', exitApp: 'Salir', leaveAsk: '¿Salir de Bertopia? Tu mundo está guardado.', leave: 'Salir', stay: 'Quedarme', myBuilds: 'Mis construcciones', undoMinutes: 'Minutos atrás', snapshots: 'Instantáneas', emptyBag: 'Bolsa vacía: rompe bloques o compra a Tally', emptySlot: 'Casilla vacía', tooBig: 'Demasiado grande: máx 64 × 32 × 64', badBuild: 'Ese archivo no es una construcción Bertopia', fineLater: 'El decorado fino llega después', changedTo: 'Cambiado:',
-    berry: 'Baya', flour: 'Harina', sugar: 'Azúcar', cupcake: 'Cupcake', bread: 'Pan', coreplate: 'Núcleo', workbench: 'Banco', oven: 'Horno', vend: 'Mostrador', storeCounter: 'Mostrador de Tally', bunk: 'Litera', box: 'Caja', woodTool: 'Herramienta de madera', stoneTool: 'Herramienta de piedra', putIn: 'Guardar', boxFull: 'La caja está llena.', door: 'Puerta', doorOpen: 'Puerta abierta', wheat: 'Trigo', reed: 'Caña', doorOpenMsg: 'La puerta está abierta.', doorShut: 'La puerta está cerrada.', pathTree: 'Tala un árbol', pathTool: 'Haz una herramienta de madera', pathStone: 'Mina piedra', pathCoal: 'Cava carbón', pathDoor: 'Pon una puerta', pathHome: 'Marca casa en una litera',
+    berry: 'Baya', flour: 'Harina', sugar: 'Azúcar', cupcake: 'Cupcake', bread: 'Pan', coreplate: 'Núcleo', workbench: 'Banco', oven: 'Horno', vend: 'Mostrador', storeCounter: 'Mostrador de Tally', bunk: 'Litera', box: 'Caja', woodTool: 'Herramienta de madera', stoneTool: 'Herramienta de piedra', putIn: 'Guardar', boxFull: 'La caja está llena.', door: 'Puerta', doorOpen: 'Puerta abierta', wheat: 'Trigo', reed: 'Caña', doorOpenMsg: 'La puerta está abierta.', doorShut: 'La puerta está cerrada.', pathTree: 'Tala un árbol. Los árboles crecen justo al sur del pueblo.', pathTool: 'Haz una herramienta de madera', pathStone: 'Mina piedra', pathCoal: 'Cava carbón', pathDoor: 'Pon una puerta', pathHome: 'Marca casa en una litera',
     whatsNewBody: 'Bertopia 2.5.0: Un recorrido con dibujos y metas Prueba esto muestran cómo jugar. Elige tu barra de construcción. Supervivencia no vuela. Ayuda y Accesibilidad son nuevas, y puedes enviar Engranajes a tu maestro.',
     menuHint: 'Toca ☰ o pulsa Esc para el menú', menuHintTouch: 'Toca ☰ para el menú', resume: 'Seguir', inventory: 'Bolsa', crafting: 'Fabricar', shop: 'Tienda', wallet: 'Bolsillo',
     practice: 'práctica', worth: 'Vale', tallyPays: 'Tally paga', youHave: 'Tienes', usedIn: 'Se usa en', make: 'Hacer', bagFull: 'Bolsa llena', noItem: 'No tienes {item}.',
@@ -69,7 +69,7 @@ export const EXTRA = {
   ar: {
     changelog: 'السجل', youAreHere: 'أنت هنا', next: 'التالي', skip: 'تخطَّ', tryThis: 'جرّب هذا', tour: 'جولة', tourMove: 'امش مع WASD', tourLook: 'اسحب لتنظر', tourPlace: 'ضع واكسر', tourBar: 'افتح الحقيبة', tourShop: 'بع لتالي', tourTools: 'املأ صندوقاً', place10: 'ضع 10 مكعبات', fillBox: 'املأ صندوقاً', sell3: 'بع 3 جذوع', helpBody: 'اختر بلاطة', a11y: 'سهولة الوصول', goalDone: 'تم الهدف', highContrast: 'تباين عال', gentle: 'وضع لطيف', sendTeacher: 'أرسل للمعلم', sentTeacher: 'أُرسل للمعلم', noFly: 'لا طيران في البقاء', tapCorner: 'المس الزاوية أ', cornerA: 'الزاوية أ جاهزة', addCoal: 'أضف فحماً', bake: 'اخبز', sell: 'بيع', buy: 'شراء', filled: 'مُلئ {n}', homeSet: 'البيت جاهز', homeCleared: 'أُزيل البيت', pickup: 'التقط', paste: 'الصق', fuel: 'وقود', input: 'مدخل', output: 'مخرج', left: 'متبق', bag: 'حقيبة', slotN: 'خانة {n}',
     buildTools: 'أدوات البناء', exitApp: 'خروج', leaveAsk: 'مغادرة بيرتوبيا؟ عالمك محفوظ.', leave: 'غادر', stay: 'ابق', myBuilds: 'مبانيي', undoMinutes: 'دقائق سابقة', snapshots: 'لقطات', emptyBag: 'الحقيبة فارغة: اكسر مكعبات أو اشتر من تالي', emptySlot: 'خانة فارغة', tooBig: 'كبير جداً: الحد 64 × 32 × 64', badBuild: 'هذا الملف ليس بناء بيرتوبيا', fineLater: 'الزخرفة الدقيقة لاحقاً', changedTo: 'تغيّر:',
-    berry: 'توت', flour: 'دقيق', sugar: 'سكر', cupcake: 'كب كيك', bread: 'خبز', coreplate: 'النواة', workbench: 'منضدة', oven: 'فرن', vend: 'مِنضدة بيع', storeCounter: 'مِنضدة المتجر', bunk: 'سرير', box: 'صندوق', woodTool: 'أداة خشب', stoneTool: 'أداة حجر', putIn: 'ضع', boxFull: 'الصندوق ممتلئ.', door: 'باب', doorOpen: 'باب مفتوح', wheat: 'قمح', reed: 'قصب', doorOpenMsg: 'الباب مفتوح.', doorShut: 'الباب مغلق.', pathTree: 'اقطع شجرة', pathTool: 'اصنع أداة خشب', pathStone: 'استخرج حجراً', pathCoal: 'احفر فحماً', pathDoor: 'ضع باباً', pathHome: 'اجعل البيت على سرير',
+    berry: 'توت', flour: 'دقيق', sugar: 'سكر', cupcake: 'كب كيك', bread: 'خبز', coreplate: 'النواة', workbench: 'منضدة', oven: 'فرن', vend: 'مِنضدة بيع', storeCounter: 'مِنضدة المتجر', bunk: 'سرير', box: 'صندوق', woodTool: 'أداة خشب', stoneTool: 'أداة حجر', putIn: 'ضع', boxFull: 'الصندوق ممتلئ.', door: 'باب', doorOpen: 'باب مفتوح', wheat: 'قمح', reed: 'قصب', doorOpenMsg: 'الباب مفتوح.', doorShut: 'الباب مغلق.', pathTree: 'اقطع شجرة. الأشجار تنمو جنوب البلدة مباشرة.', pathTool: 'اصنع أداة خشب', pathStone: 'استخرج حجراً', pathCoal: 'احفر فحماً', pathDoor: 'ضع باباً', pathHome: 'اجعل البيت على سرير',
     whatsNewBody: 'بيرتوبيا 2.5.0: جولة بالصور وأهداف جرّب هذا تعلّمك اللعب. اختر شريط البناء من الحقيبة. البقاء بلا طيران. المساعدة وسهولة الوصول جديدتان، ويمكنك إرسال التروس إلى معلمك.',
     menuHint: 'اضغط ☰ أو Esc للقائمة', menuHintTouch: 'اضغط ☰ للقائمة', resume: 'متابعة', inventory: 'حقيبة', crafting: 'صنع', shop: 'متجر', wallet: 'محفظة',
     practice: 'تدريب', worth: 'القيمة', tallyPays: 'تالي يدفع', youHave: 'معك', usedIn: 'يُستخدم في', make: 'اصنع', bagFull: 'الحقيبة ممتلئة', noItem: 'ليس معك {item}.',
@@ -85,7 +85,7 @@ export const EXTRA = {
   'fa-AF': {
     changelog: 'فهرست تغییر', youAreHere: 'اینجا هستی', next: 'بعدی', skip: 'بگذر', tryThis: 'این را بیازما', tour: 'گشت', tourMove: 'با WASD برو', tourLook: 'بکش تا ببینی', tourPlace: 'بگذار و بشکن', tourBar: 'بکس را باز کن', tourShop: 'به تالی بفروش', tourTools: 'یک جعبه را پر کن', place10: '۱۰ بلاک بگذار', fillBox: 'یک جعبه را پر کن', sell3: '۳ کُنده بفروش', helpBody: 'یک خانه برگزین', a11y: 'دسترسی', goalDone: 'هدف شد', highContrast: 'کنتراست بلند', gentle: 'حالت نرم', sendTeacher: 'به معلم بفرست', sentTeacher: 'به معلم رفت', noFly: 'در بقا پرواز نیست', tapCorner: 'اول گوشه الف', cornerA: 'گوشه الف آماده است', addCoal: 'زغال بیفزای', bake: 'بپز', sell: 'فروش', buy: 'خرید', filled: 'پر شد {n}', homeSet: 'خانه آماده است', homeCleared: 'خانه برداشته شد', pickup: 'بردار', paste: 'بچسبان', fuel: 'سوخت', input: 'ورود', output: 'خروج', left: 'مانده', bag: 'بکس', slotN: 'خانه {n}',
     buildTools: 'ابزار ساخت', exitApp: 'خروج', leaveAsk: 'از برتوپیا بیرون می‌روی؟ جهان ذخیره شد.', leave: 'برو', stay: 'بمان', myBuilds: 'ساخت‌های من', undoMinutes: 'دقیقه‌های پیش', snapshots: 'نسخه‌ها', emptyBag: 'بکس خالی است: بلاک بشکن یا از تالی بخر', emptySlot: 'خانه خالی', tooBig: 'خیلی بزرگ: حد ۶۴ × ۳۲ × ۶۴', badBuild: 'این فایل ساخت برتوپیا نیست', fineLater: 'آرایش ریز بعداً می‌آید', changedTo: 'عوض شد:',
-    berry: 'توت', flour: 'آرد', sugar: 'شکر', cupcake: 'کاپ‌کیک', bread: 'نان', coreplate: 'کف هسته', workbench: 'میز کار', oven: 'تنور', vend: 'پیشخوان فروش', storeCounter: 'پیشخوان دکان', bunk: 'بستر', box: 'صندوق', woodTool: 'ابزار چوبی', stoneTool: 'ابزار سنگی', putIn: 'بگذار', boxFull: 'صندوق پر است.', door: 'در', doorOpen: 'در باز', wheat: 'گندم', reed: 'نی', doorOpenMsg: 'در باز است.', doorShut: 'در بسته است.', pathTree: 'یک درخت ببر', pathTool: 'ابزار چوبی بساز', pathStone: 'سنگ بیرون بیاور', pathCoal: 'زغال بکن', pathDoor: 'یک در بگذار', pathHome: 'خانه را روی بستر بگذار',
+    berry: 'توت', flour: 'آرد', sugar: 'شکر', cupcake: 'کاپ‌کیک', bread: 'نان', coreplate: 'کف هسته', workbench: 'میز کار', oven: 'تنور', vend: 'پیشخوان فروش', storeCounter: 'پیشخوان دکان', bunk: 'بستر', box: 'صندوق', woodTool: 'ابزار چوبی', stoneTool: 'ابزار سنگی', putIn: 'بگذار', boxFull: 'صندوق پر است.', door: 'در', doorOpen: 'در باز', wheat: 'گندم', reed: 'نی', doorOpenMsg: 'در باز است.', doorShut: 'در بسته است.', pathTree: 'یک درخت ببر. درخت‌ها درست جنوب شهر می‌رویند.', pathTool: 'ابزار چوبی بساز', pathStone: 'سنگ بیرون بیاور', pathCoal: 'زغال بکن', pathDoor: 'یک در بگذار', pathHome: 'خانه را روی بستر بگذار',
     whatsNewBody: 'برتوپیا ۲.۵.۰: یک گشت تصویری و هدف‌های «این را بیازما» بازی را نشان می‌دهند. نوار ساخت را خود برگزین. بقا پرواز ندارد. رهنما و دسترسی نو اند، و می‌توانی چرخ‌دنده به معلم بفرستی.',
     menuHint: '☰ یا Esc را برای فهرست بزن', menuHintTouch: '☰ را برای فهرست بزن', resume: 'ادامه', inventory: 'بکس', crafting: 'ساختن', shop: 'دکان', wallet: 'کیسه',
     practice: 'تمرین', worth: 'ارزش', tallyPays: 'تالی می‌پردازد', youHave: 'داری', usedIn: 'در این به کار می‌رود', make: 'بساز', bagFull: 'بکس پر است', noItem: '{item} نداری.',
@@ -101,7 +101,7 @@ export const EXTRA = {
   rw: {
     changelog: 'Inkururagamba', youAreHere: 'Uri hano', next: 'Ikurikira', skip: 'Simbuka', tryThis: 'Gerageza', tour: 'Urugendo', tourMove: 'Genda na WASD', tourLook: 'Kurura urebe', tourPlace: 'Shyira uvune', tourBar: 'Fungura agasaho', tourShop: 'Gurisha Tally', tourTools: 'Uzuza agasanduku', place10: 'Shyira block 10', fillBox: 'Uzuza agasanduku', sell3: 'Gurisha ibiti 3', helpBody: 'Hitamo agakaro', a11y: 'Ubushobozi', goalDone: 'Intego yarangiye', highContrast: 'Itandukaniro rinini', gentle: 'Uburyo bworoshye', sendTeacher: 'Ohereza mwarimu', sentTeacher: 'Byohererejwe mwarimu', noFly: 'Nta kuguruka mu Bugingo', tapCorner: 'Kanda igisigisigi A', cornerA: 'Igisigisigi A cyateguwe', addCoal: 'Ongeraho amakara', bake: 'Teka', sell: 'Gurisha', buy: 'Gura', filled: 'Byuzuye {n}', homeSet: 'Urugo rwateguwe', homeCleared: 'Urugo ruvanyweho', pickup: 'Tora', paste: 'Shyira', fuel: 'Amakara', input: 'Iwinjira', output: 'Ibisohoka', left: 'bisigaye', bag: 'Agasaho', slotN: 'akazu {n}',
     buildTools: 'Ibikoresho', exitApp: 'Sohoka', leaveAsk: 'Sohoka muri Bertopia? Isi yawe yabitswe.', leave: 'Sohoka', stay: 'Guma', myBuilds: 'Imyubakire yanjye', undoMinutes: 'Iminota ishize', snapshots: 'Amafoto', emptyBag: 'Agasaho karimo ubusa: vuna block cyangwa ugure kwa Tally', emptySlot: 'Akazu ubusa', tooBig: 'Kinini cyane: max 64 × 32 × 64', badBuild: 'Iyi dosiye si iyubakwa rya Bertopia', fineLater: 'Ibitangaje bito bizaza nyuma', changedTo: 'Byahindutse:',
-    berry: 'Imbuto', flour: 'Ifu', sugar: 'Isukari', cupcake: 'Kek', bread: 'Umugati', coreplate: 'Uruhome', workbench: 'Ameza', oven: 'Ibyoto', vend: 'Counter', storeCounter: 'Counter y\'iduka', bunk: 'Buriri', box: 'Agasanduku', woodTool: 'Igikoresho cy\'ibiti', stoneTool: 'Igikoresho cy\'ibuye', putIn: 'Shyiramo', boxFull: 'Agasanduku karuzuye.', door: 'Urugi', doorOpen: 'Urugi rufunguye', wheat: 'Ingano', reed: 'Urubingo', doorOpenMsg: 'Urugi rufunguye.', doorShut: 'Urugi rufunze.', pathTree: 'Tema igiti', pathTool: 'Kora igikoresho cy\'ibiti', pathStone: 'Tora ibuye', pathCoal: 'Tora amakara', pathDoor: 'Shyira urugi', pathHome: 'Shyira urugo ku buriri',
+    berry: 'Imbuto', flour: 'Ifu', sugar: 'Isukari', cupcake: 'Kek', bread: 'Umugati', coreplate: 'Uruhome', workbench: 'Ameza', oven: 'Ibyoto', vend: 'Counter', storeCounter: 'Counter y\'iduka', bunk: 'Buriri', box: 'Agasanduku', woodTool: 'Igikoresho cy\'ibiti', stoneTool: 'Igikoresho cy\'ibuye', putIn: 'Shyiramo', boxFull: 'Agasanduku karuzuye.', door: 'Urugi', doorOpen: 'Urugi rufunguye', wheat: 'Ingano', reed: 'Urubingo', doorOpenMsg: 'Urugi rufunguye.', doorShut: 'Urugi rufunze.', pathTree: 'Tema igiti. Ibiti bikura mu majyepfo y’umujyi.', pathTool: 'Kora igikoresho cy\'ibiti', pathStone: 'Tora ibuye', pathCoal: 'Tora amakara', pathDoor: 'Shyira urugi', pathHome: 'Shyira urugo ku buriri',
     whatsNewBody: 'Bertopia 2.5.0: Urugendo rwamashusho nintego Gerageza bigaragaza uko ukina. Hitamo umurongo wawe. Ubugingo ntibura kuguruka. Ubufasha nUbushobozi bishya, kandi wohereza amapine ku mwarimu.',
     menuHint: 'Kanda ☰ cyangwa Esc ku menu', menuHintTouch: 'Kanda ☰ ku menu', resume: 'Komeza', inventory: 'Agasaho', crafting: 'Kora', shop: 'Iduka', wallet: 'Ikibanza',
     practice: 'imyitozo', worth: 'Agaciro', tallyPays: 'Tally yishyura', youHave: 'Ufite', usedIn: 'Ikoreshwa muri', make: 'Kora', bagFull: 'Agasaho karuzuye', noItem: 'Nta {item} ufite.',
@@ -117,7 +117,7 @@ export const EXTRA = {
   ti: {
     changelog: 'ዝርዝር', youAreHere: 'ኣብዚ ኢኻ', next: 'ዝቕጽል', skip: 'ዝለል', tryThis: 'ፈትን እዚ', tour: 'ዙር', tourMove: 'ብ WASD ኪድ', tourLook: 'ጎተት ርአ', tourPlace: 'ኣቐምጥ ሰብር', tourBar: 'ቦርሳ ክፈት', tourShop: 'ንታሊ ሸይጥ', tourTools: 'ሳጹን ምላእ', place10: '10 ብሎክ ኣቐምጥ', fillBox: 'ሳጹን ምላእ', sell3: '3 ገመድ ሸይጥ', helpBody: 'ንጣፍ ምረጽ', a11y: 'ተበጻሕነት', goalDone: 'ዕላማ ተዛዚሙ', highContrast: 'ልዑል ፍልልይ', gentle: 'ለውሃት ኩነት', sendTeacher: 'ናብ መምህር ስደድ', sentTeacher: 'ናብ መምህር ተላኢኹ', noFly: 'ኣብ ህይወት ኣይነፍርን', tapCorner: 'መጀመርታ ኩርናዕ ሀ', cornerA: 'ኩርናዕ ሀ ተዳሊዩ', addCoal: 'ከሰል ወስኽ', bake: 'ኣብስል', sell: 'ሽያጥ', buy: 'ግዢ', filled: 'ተመልኢ {n}', homeSet: 'ገዛ ተዳሊዩ', homeCleared: 'ገዛ ተቐንጢጡ', pickup: 'ውሰድ', paste: 'ለጥፍ', fuel: 'ነዳዲ', input: 'እታው', output: 'ውጻኢ', left: 'ተሪፉ', bag: 'ቦርሳ', slotN: 'ቦታ {n}',
     buildTools: 'መሳርሒ', exitApp: 'ውጻእ', leaveAsk: 'ካብ በርቶፕያ ትወጽእ? ዓለምካ ተዓቂቡ።', leave: 'ውጻእ', stay: 'ጽናሕ', myBuilds: 'ህንጻታተይ', undoMinutes: 'ደቒቕ ዝሓለፈ', snapshots: 'ስእልታት', emptyBag: 'ቦርሳ ባዶ እዩ፡ ብሎክ ሰብር ወይ ካብ ታሊ ግዛእ', emptySlot: 'ባዶ ቦታ', tooBig: 'ዝያዳ ዓቢ፡ ደረት 64 × 32 × 64', badBuild: 'እዚ ፋይል ህንጻ በርቶፕያ ኣይኮነን', fineLater: 'ዝርዝር ጌጣ ጌጣ ድሒሩ', changedTo: 'ተቐይሩ:',
-    berry: 'ፍረ', flour: 'ዱቄት', sugar: 'ሽኮር', cupcake: 'ኬክ', bread: 'ባኒ', coreplate: 'ኮርፕሌት', workbench: 'ሰደቓ', oven: 'እቶን', vend: 'መደብ መሸጢ', storeCounter: 'መደብ ድኳን', bunk: 'ዓራት', box: 'ሳንዱቅ', woodTool: 'ናይ ዕንጨይቲ መሳርሒ', stoneTool: 'ናይ እምኒ መሳርሒ', putIn: 'ኣእቱ', boxFull: 'ሳንዱቅ መሊኡ።', door: 'ማዕጾ', doorOpen: 'እተኸፈተ ማዕጾ', wheat: 'ስርናይ', reed: 'ቀጸል', doorOpenMsg: 'ማዕጾ ተኸፊቱ።', doorShut: 'ማዕጾ ተዓጺጉ።', pathTree: 'ዕንጨይቲ ቍረጽ', pathTool: 'ናይ ዕንጨይቲ መሳርሒ ግበር', pathStone: 'እምኒ እውጽእ', pathCoal: 'ከሰል እኸድ', pathDoor: 'ማዕጾ ኣቐምጥ', pathHome: 'ገዛ ኣብ ዓራት ኣቐምጥ',
+    berry: 'ፍረ', flour: 'ዱቄት', sugar: 'ሽኮር', cupcake: 'ኬክ', bread: 'ባኒ', coreplate: 'ኮርፕሌት', workbench: 'ሰደቓ', oven: 'እቶን', vend: 'መደብ መሸጢ', storeCounter: 'መደብ ድኳን', bunk: 'ዓራት', box: 'ሳንዱቅ', woodTool: 'ናይ ዕንጨይቲ መሳርሒ', stoneTool: 'ናይ እምኒ መሳርሒ', putIn: 'ኣእቱ', boxFull: 'ሳንዱቅ መሊኡ።', door: 'ማዕጾ', doorOpen: 'እተኸፈተ ማዕጾ', wheat: 'ስርናይ', reed: 'ቀጸል', doorOpenMsg: 'ማዕጾ ተኸፊቱ።', doorShut: 'ማዕጾ ተዓጺጉ።', pathTree: 'ዕንጨይቲ ቍረጽ። ኣግራብ ብቐጥታ ኣብ ደቡብ ከተማ ይበቅሉ።', pathTool: 'ናይ ዕንጨይቲ መሳርሒ ግበር', pathStone: 'እምኒ እውጽእ', pathCoal: 'ከሰል እኸድ', pathDoor: 'ማዕጾ ኣቐምጥ', pathHome: 'ገዛ ኣብ ዓራት ኣቐምጥ',
     whatsNewBody: 'በርቶፕያ 2.5.0፡ ስእላዊ ዙርን ንቕሓት ፈትን እዚን ከመይ ከም ትጻወት የርእዩ። ናይ ህንጻ መስመር ምረጽ። ህይወት ኣይነፍርን። ሓገዝን ተበጻሕነትን ሓደሽቲ እዮም፡ ኮግ ናብ መምህርካ ስደድ።',
     menuHint: '☰ ወይ Esc ንመእተዊ', menuHintTouch: '☰ ንመእተዊ', resume: 'ቀጽል', inventory: 'ቦርሳ', crafting: 'ምስራሕ', shop: 'ድኳን', wallet: 'ኪስ',
     practice: 'ምልምማድ', worth: 'ዋጋ', tallyPays: 'ታሊ ይከፍል', youHave: 'ኣለካ', usedIn: 'ይውዕል ኣብ', make: 'ግበር', bagFull: 'ቦርሳ መሊኡ', noItem: '{item} የብልካን።',
@@ -196,7 +196,9 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.',
+    whatsNewBody: 'Every tree is full size, and the Oven tells you what it can bake.',
+    bakesHint: 'Bakes: {list}', rawFood: 'Raw food', bakedFood: 'Food',
+    ovenNoBake: 'The Oven cannot bake {item}.', ovenNoBurn: '{item} will not burn.',
     gotItem: '{item} picked up',
     tooFar: 'Too far away',
     standing: 'You are standing there',
@@ -211,7 +213,9 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Закриття Сумки чи панелі одразу повертає в гру, і огляд більше не залипає.',
+    whatsNewBody: 'Кожне дерево повного розміру, і піч каже, що вона може спекти.',
+    bakesHint: 'Пече: {list}', rawFood: 'Сира їжа', bakedFood: 'Їжа',
+    ovenNoBake: 'Піч не може спекти {item}.', ovenNoBurn: '{item} не горить.',
     gotItem: '{item} підібрано',
     tooFar: 'Занадто далеко',
     standing: 'Ти стоїш там',
@@ -226,7 +230,9 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Закрытие Сумки или панели сразу возвращает в игру, и обзор больше не залипает.',
+    whatsNewBody: 'Каждое дерево полного размера, и печь говорит, что она может испечь.',
+    bakesHint: 'Печёт: {list}', rawFood: 'Сырая еда', bakedFood: 'Еда',
+    ovenNoBake: 'Печь не может испечь {item}.', ovenNoBurn: '{item} не горит.',
     gotItem: '{item} подобрано',
     tooFar: 'Слишком далеко',
     standing: 'Ты стоишь там',
@@ -241,7 +247,9 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Cerrar la Bolsa o un panel te devuelve al juego, y mirar alrededor ya no se traba.',
+    whatsNewBody: 'Cada árbol es de tamaño completo, y el horno dice qué puede hornear.',
+    bakesHint: 'Hornea: {list}', rawFood: 'Comida cruda', bakedFood: 'Comida',
+    ovenNoBake: 'El horno no puede hornear {item}.', ovenNoBurn: '{item} no arde.',
     gotItem: '{item} recogido',
     tooFar: 'Demasiado lejos',
     standing: 'Estás parado ahí',
@@ -256,7 +264,9 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'إغلاق الحقيبة أو اللوحة يعيدك مباشرة إلى اللعب، والنظر حوله لا يتوقف.',
+    whatsNewBody: 'كل شجرة بالحجم الكامل، والفرن يخبرك ماذا يمكنه أن يخبز.',
+    bakesHint: 'يخبز: {list}', rawFood: 'طعام نيء', bakedFood: 'طعام',
+    ovenNoBake: 'الفرن لا يخبز {item}.', ovenNoBurn: '{item} لا يحترق.',
     gotItem: 'تم التقاط {item}',
     tooFar: 'بعيد جداً',
     standing: 'أنت واقف هناك',
@@ -271,7 +281,9 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'بستن بکس یا یک صفحه تو را مستقیم به بازی برمی‌گرداند، و نگاه کردن دیگر گیر نمی‌کند.',
+    whatsNewBody: 'هر درخت کامل است، و تنور می‌گوید چه چیزی می‌تواند بپزد.',
+    bakesHint: 'می‌پزد: {list}', rawFood: 'غذای خام', bakedFood: 'غذا',
+    ovenNoBake: 'تنور {item} را نمی‌پزد.', ovenNoBurn: '{item} نمی‌سوزد.',
     gotItem: '{item} برداشته شد',
     tooFar: 'خیلی دور است',
     standing: 'آنجا ایستاده‌ای',
@@ -286,7 +298,9 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Gufunga Agasaho cyangwa ipaji bigusubiza mu mukino ako kanya, kandi kureba ntikiguma.',
+    whatsNewBody: 'Igiti cyose kiruzuye, kandi icyoto kikubwira icyo gishobora guteka.',
+    bakesHint: 'Iteka: {list}', rawFood: 'Ibiryo bitoze', bakedFood: 'Ibiryo',
+    ovenNoBake: 'Icyoto ntigishobora guteka {item}.', ovenNoBurn: '{item} ntizishya.',
     gotItem: '{item} yatoranywe',
     tooFar: 'Kiri kure cyane',
     standing: 'Uri hahandi',
@@ -301,7 +315,9 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ምዕጻው ቦርሳ ወይ ፓነል ብቐጥታ ናብ ጸወታ ይመልስ፡ ምርኣይ ድማ ኣይጣበቕን።',
+    whatsNewBody: 'ኩሉ ዕንጨይቲ ምሉእ ዓቐን እዩ፡ እቶን ድማ እንታይ ከም ዝኽእል ክብስል ይነግረካ።',
+    bakesHint: 'የብስል፡ {list}', rawFood: 'ጥሬ መግቢ', bakedFood: 'መግቢ',
+    ovenNoBake: 'እቶን {item} ኣይብስልን።', ovenNoBurn: '{item} ኣይነድድን።',
     gotItem: '{item} ተለቂሙ',
     tooFar: 'ኣዝዩ ርሑቕ እዩ',
     standing: 'ኣብኡ ትቐውም ኣለኻ',

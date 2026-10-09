@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.77'
+const VERSION = '2.5.78'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -33,7 +33,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
-import { coalHere, plantHere } from './worldgen.js'
+import { coalHere, plantHere, wildWood } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
@@ -366,13 +366,9 @@ function genVoxel(x, y, z) {
   if (inTown(x, z)) return townVoxel(x, y, z)
   const h = heightAt(x, z)
   if (y > h) {
-    const cx = Math.floor(x / 9) * 9 + 4, cz = Math.floor(z / 9) * 9 + 4
-    if (hash(cx, cz) < 0.18 && !inTown(cx, cz)) {
-      const th = heightAt(cx, cz)
-      if (x === cx && z === cz && y <= th + 4) return ID.log
-      const dy = y - (th + 4), dx = x - cx, dz = z - cz
-      if (dy >= -1 && dy <= 1 && Math.abs(dx) <= 2 && Math.abs(dz) <= 2 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return ID.leaves
-    }
+    const grew = wildWood(x, y, z)
+    if (grew === 'log') return ID.log
+    if (grew === 'leaves') return ID.leaves
     const plant = plantHere(x, y, z, h, false)
     if (plant && ID[plant]) return ID[plant]
     return 0
