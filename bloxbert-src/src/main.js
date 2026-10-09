@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.97'
+const VERSION = '2.5.98'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -43,6 +43,8 @@ import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
 import { dropOf } from './data/items.js'
+import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, CROP, DRY, WET, WATER, RIPE_MS } from './farm.js'
+const farm = createFarm()
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -219,6 +221,12 @@ export const BLOCKS = [
   [48, 'charger', 'stone', 'Ch', 'stone'],
   [49, 'farmland', 'dirt', 'Fm', null],
   [58, 'tuft', 'leaves', 'Tf', null],
+  [59, 'cropSprout', 'leaves', 'Cs', null],
+  [60, 'cropLeafy', 'leaves', 'Cl', null],
+  [61, 'cropTall', 'leaves', 'Ct', null],
+  [62, 'cropRipe', 'cotton_tan', 'Cr', null],
+  [63, 'farmlandWet', 'dirt', 'Fw', null],
+  [64, 'water', 'ice', 'Wa', null],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
@@ -446,6 +454,51 @@ function farmlandMesh(wet) {
   if (wet) bits.push(part('drop', 0.1, 0.08, 0.1, 0.28, 0.99, -0.28, 0, dropD))
   return shape(wet ? 'farmland-wet' : 'farmland', bits, wet ? furrowD : soilD)
 }
+function farmlandWetMesh() {
+  const body = part('soil', 1, 0.94, 1, 0, 0.47, 0, 0, furrowD)
+  const bits = [body]
+  for (let i = 0; i < 4; i++) bits.push(part('fur' + i, 0.9, 0.05, 0.08, 0, 0.96, -0.33 + i * 0.22, 0, furrowD))
+  bits.push(part('drop', 0.18, 0.16, 0.18, 0.28, 1.02, -0.28, 0, dropD))
+  const mesh = Mesh.MergeMeshes(bits, true, true, undefined, false, true)
+  mesh.name = 'farmland-wet'
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
+const waterMat = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
+function waterMesh() {
+  return shape('water', [part('w', 0.98, 0.98, 0.98, 0, 0.5, 0, 0, waterMat)], waterMat)
+}
+const leafMat = dye('crop-leaf', 0.15, 0.52, 0.14)
+const ripeStalk = dye('crop-ripe-stalk', 0.76, 0.58, 0.12)
+const ripeHead = dye('crop-ripe-head', 0.98, 0.82, 0.2)
+ripeHead.emissiveColor = new Color3(0.45, 0.32, 0.05)
+const sparkMat = dye('crop-spark', 1, 0.95, 0.55)
+sparkMat.emissiveColor = new Color3(1, 0.92, 0.35)
+function cropMesh(n) {
+  const stalk = n === 3 ? ripeStalk : wheatStalk
+  const head = n === 3 ? ripeHead : wheatHead
+  const h = [0.18, 0.34, 0.5, 0.58][n]
+  const y = [0.1, 0.18, 0.26, 0.3][n]
+  const w = [0.24, 0.46, 0.56, 0.58][n]
+  const parts = []
+  for (const yaw of [0.55, -0.55]) {
+    parts.push(crossed(stalk, w, h, 0.035, y, yaw))
+    if (n === 1) parts.push(crossed(leafMat, 0.36, 0.12, 0.03, y + 0.04, yaw + 0.5))
+    if (n >= 2) parts.push(crossed(head, n === 3 ? 0.34 : 0.26, 0.16, 0.05, y + h * 0.46, yaw))
+  }
+  if (n === 3) {
+    parts.push(part('sp1', 0.07, 0.07, 0.07, 0.16, 0.74, 0.08, 0, sparkMat))
+    parts.push(part('sp2', 0.05, 0.05, 0.05, -0.12, 0.6, -0.08, 0, sparkMat))
+  }
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = 'crop-' + n
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
 function tuftMesh() {
   const parts = []
   for (const yaw of [0.35, 1.15]) parts.push(crossed(wheatStalk, 0.36, 0.4, 0.03, 0.14, yaw))
@@ -475,6 +528,12 @@ const SHAPES = {
   28: wheatMesh(),
   49: farmlandMesh(false),
   58: tuftMesh(),
+  59: cropMesh(0),
+  60: cropMesh(1),
+  61: cropMesh(2),
+  62: cropMesh(3),
+  63: farmlandWetMesh(),
+  64: waterMesh(),
   30: doorPanel('wood', false, 'bot'),
   31: doorPanel('wood', true, 'bot'),
   32: doorPanel('glass', false, 'bot'),
@@ -502,8 +561,8 @@ for (const [id, name, material] of BLOCKS) {
   const glass = material === 'glass'
   const mesh = SHAPES[id]
   const lantern = id === LANTERN
-  const plant = id === 28 || id === 58
-  const tilled = id === 49
+  const plant = id === 28 || id === 58 || isCropId(id)
+  const tilled = id === DRY || id === WET
   const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass), solid: tilled || (!open && !lantern && !plant) }
   if (mesh) opts.blockMesh = mesh
   if (isDoor(id)) {
@@ -520,7 +579,7 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || noa.registry.getBlockSolidity(id)
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || isCropId(id) || noa.registry.getBlockSolidity(id)
 const blockName = (id) => {
   const row = BLOCKS.find((b) => b[0] === id)
   return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')
@@ -624,10 +683,52 @@ function setVoxel(x, y, z, v, draw = true) {
   let s = saved.get(k)
   if (!s) { s = new Uint16Array(S * S * S); fillGenerated(s, ci * S, cj * S, ck * S); saved.set(k, s) }
   const i = x - ci * S, j = y - cj * S, kk = z - ck * S
+  const prev = s[i * S * S + j * S + kk]
   s[i * S * S + j * S + kk] = v
   if (draw) drawVoxel(x, y, z, v)
   dirty = true
   markSave(t('notSaved'))
+  if (prev !== v) afterVoxel(x, y, z, prev, v)
+}
+let soilBusy = false
+function afterVoxel(x, y, z, prev, next) {
+  if (soilBusy) return
+  if (isCropId(prev) && !isCropId(next)) farm.remove(x, y, z)
+  const soil = prev === DRY || prev === WET || next === DRY || next === WET
+  const water = prev === WATER || next === WATER
+  if (!soil && !water) return
+  soilBusy = true
+  try {
+    if (water) {
+      for (let dx = -4; dx <= 4; dx++) for (let dz = -4; dz <= 4; dz++) {
+        syncSoil(x + dx, y, z + dz)
+        syncSoil(x + dx, y + 1, z + dz)
+      }
+    }
+    if (soil) {
+      syncSoil(x, y, z)
+      if (next !== DRY && next !== WET) {
+        const crop = farm.get(x, y + 1, z)
+        if (crop) {
+          advance(crop, Date.now())
+          crop.wet = false
+        }
+      }
+    }
+  } finally { soilBusy = false }
+}
+function syncSoil(x, y, z) {
+  const id = getVoxel(x, y, z)
+  if (id !== DRY && id !== WET) return
+  const wet = nearWater(getVoxel, x, y, z)
+  const want = wet ? WET : DRY
+  if (id !== want) setVoxel(x, y, z, want)
+  if (wet && learn && learn.addNote('farmWet')) showCard(t('farmWet'))
+  const crop = farm.get(x, y + 1, z)
+  if (crop && !!crop.wet !== wet) {
+    advance(crop, Date.now())
+    crop.wet = wet
+  }
 }
 function normalizeDoorTop(x, y, z) {
   const id = getVoxel(x, y, z)
@@ -880,6 +981,8 @@ function placeBlock(face, opts) {
       }
     }
   }
+  if (tryCrop(aimedBlock)) return false
+  if (tryPlant(aimedBlock, repeat)) return false
   if (tryTill(aimedBlock, repeat)) return false
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
@@ -955,9 +1058,123 @@ function tryTill(aimed, repeat) {
     tillCount.delete(key)
   } else tillCount.delete(key)
   hideCrack()
-  if (!edit(x, y, z, ID.farmland)) return true
+  const wet = nearWater(getVoxel, x, y, z)
+  if (!edit(x, y, z, wet ? WET : DRY)) return true
   if (learn.addNote('farmNote')) showCard(t('farmNote'))
   return true
+}
+const STAGE_KEY = ['stageSprout', 'stageLeafy', 'stageTall', 'stageRipe']
+function cropText(row) {
+  const p = preview(row, Date.now())
+  let text = p.left <= 0
+    ? t('wheat') + ' - ' + t('stageRipe')
+    : t('wheat') + ' - ' + t(STAGE_KEY[p.stage]) + ' - ' + t('ripeIn').replace('{time}', formatLeft(p.left))
+  if (!p.wet) text += ' ' + t('drySoil')
+  return text
+}
+function showCropCard(x, y, z) {
+  const row = farm.get(x, y, z)
+  if (!row) return
+  showCard(cropText(row))
+}
+function tryCrop(aimed) {
+  if (!aimed || !aimed.position) return false
+  const x = Math.round(aimed.position[0])
+  const y = Math.round(aimed.position[1])
+  const z = Math.round(aimed.position[2])
+  if (!isCropId(getVoxel(x, y, z))) return false
+  showCropCard(x, y, z)
+  return true
+}
+let plantStroke = null
+function tryPlant(aimed, repeat) {
+  if (!aimed || !session || session.mode !== 'survival') return false
+  if (!aimed.position || !aimed.adjacent) return false
+  const held = (session.selectedItem && session.selectedItem()) || ''
+  if (held !== 'wheatSeeds') return false
+  const x = Math.round(aimed.position[0])
+  const y = Math.round(aimed.position[1])
+  const z = Math.round(aimed.position[2])
+  const ax = Math.round(aimed.adjacent[0])
+  const ay = Math.round(aimed.adjacent[1])
+  const az = Math.round(aimed.adjacent[2])
+  if (ax !== x || az !== z || ay !== y + 1) return false
+  const soil = getVoxel(x, y, z)
+  if (soil !== DRY && soil !== WET) return false
+  if (!tableMode && !canReach([x, y, z])) return false
+  const above = getVoxel(ax, ay, az)
+  if (above) return true
+  const press = rightPress
+  if (press) {
+    if (!plantStroke || plantStroke.press !== press) plantStroke = { press, seen: new Set(), n: 0 }
+  } else plantStroke = { press: null, seen: new Set(), n: 0 }
+  const cell = ax + ',' + ay + ',' + az
+  if (plantStroke.seen.has(cell) || plantStroke.n >= 5) return true
+  if (!session.spend('wheatSeeds', 1)) return true
+  const now = Date.now()
+  const wet = soil === WET || nearWater(getVoxel, x, y, z)
+  farm.add(ax, ay, az, now, wet)
+  setVoxel(ax, ay, az, CROP[0])
+  plantStroke.seen.add(cell)
+  plantStroke.n += 1
+  if (learn.addNote('farmSeed')) showCard(t('farmSeed'))
+  if (wet && learn.addNote('farmWet')) showCard(t('farmWet'))
+  return true
+}
+function paintCrop(row) {
+  const id = CROP[stage(row.grown)]
+  if (getVoxel(row.x, row.y, row.z) !== id) setVoxel(row.x, row.y, row.z, id)
+  if (stage(row.grown) === 3 && learn && learn.addNote('farmRipe')) showCard(t('farmRipe'))
+}
+function growAll(now) {
+  let moved = false
+  for (const r of farm.rows()) {
+    const before = r.grown
+    const prev = stage(before)
+    advance(r, now)
+    if (r.grown !== before) moved = true
+    if (stage(r.grown) !== prev) paintCrop(r)
+  }
+  if (moved) dirty = true
+}
+function syncCrops(now) {
+  for (const r of farm.rows()) advance(r, now)
+  for (const r of farm.rows()) {
+    const soilId = getVoxel(r.x, r.y - 1, r.z)
+    let wet = false
+    if (soilId === DRY || soilId === WET) wet = nearWater(getVoxel, r.x, r.y - 1, r.z)
+    r.wet = wet
+    if (soilId === DRY && wet) setVoxel(r.x, r.y - 1, r.z, WET)
+    if (soilId === WET && !wet) setVoxel(r.x, r.y - 1, r.z, DRY)
+    paintCrop(r)
+  }
+}
+let cropTickAt = 0
+let cropFreeze = false
+let cropHoverAt = 0
+function tickCrops() {
+  if (cropFreeze) return
+  const wall = Date.now()
+  if (!cropTickAt) { cropTickAt = wall; return }
+  if (wall - cropTickAt < 1000) return
+  cropTickAt = wall
+  growAll(wall)
+}
+function hoverCrop() {
+  if (cropFreeze || tableMode || anyCard()) return
+  const aimed = noa.targetedBlock
+  if (!aimed || !aimed.position || !isCropId(aimed.blockID)) return
+  const x = Math.round(aimed.position[0])
+  const y = Math.round(aimed.position[1])
+  const z = Math.round(aimed.position[2])
+  const row = farm.get(x, y, z)
+  if (!row) return
+  const p = preview(row, Date.now())
+  if (p.left <= 0) return
+  const wall = Date.now()
+  if (wall - cropHoverAt < 500) return
+  cropHoverAt = wall
+  showCard(cropText(row))
 }
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
@@ -1065,6 +1282,7 @@ async function snapshot() {
     stations: stations.dump(),
     basics: basics ? basics.dump() : null,
     gifts,
+    crops: farm.dump(),
   }
 }
 async function save() {
@@ -1079,7 +1297,7 @@ async function save() {
 async function load() {
   const db = await idb()
   const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') { ensureHelp(); grantSaplings(); return false }
+  if (!doc || doc.format !== 'kuliblocks') { farm.clear(); ensureHelp(); grantSaplings(); return false }
   await applyDoc(doc)
   const repaired = ensureHelp()
   dirty = repaired
@@ -1114,6 +1332,8 @@ async function applyDoc(doc) {
   if (doc.stations) stations.load(doc.stations)
   gifts = Object.assign({}, doc && doc.gifts)
   grantSaplings()
+  farm.load(doc && doc.crops)
+  syncCrops(Date.now())
   if (session) paintModeChip()
   syncDropMeshes()
 }
@@ -1127,6 +1347,7 @@ async function importFile(file) {
 }
 async function resetWorld() {
   gifts = {}
+  farm.clear()
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
@@ -1145,7 +1366,10 @@ async function exportJSON() {
   setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }
 setInterval(() => { if (dirty) save() }, 20000)
-document.addEventListener('visibilitychange', () => { if (document.hidden && dirty) save() })
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { if (dirty) save() }
+  else syncCrops(Date.now())
+})
 
 const $ = (id) => document.getElementById(id)
 function paintModeChip() {
@@ -1901,7 +2125,7 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const paletteIds = BLOCKS.filter((b) => !isDoorTop(b[0])).map((b) => b[0])
+const paletteIds = BLOCKS.filter((b) => !isDoorTop(b[0]) && !isCropId(b[0]) && b[0] !== WET).map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
@@ -2565,6 +2789,8 @@ function feelTick(dt) {
       else { dig = next; if (crackVisible(250, dig.p)) showCrack(dig.p); else hideCrack() }
     }
   }
+  tickCrops()
+  hoverCrop()
 }
 noa.on('tick', (dt) => {
   feelTick(dt || 33)
@@ -3666,6 +3892,41 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       basics.tick()
     },
     card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
+    crops: () => farm.dump(),
+    ripeMs: () => RIPE_MS,
+    freeze(on) { cropFreeze = !!on },
+    seekCrops(ms) {
+      const now = Date.now()
+      for (const r of farm.rows()) r.lastSeen = now - ms
+      growAll(now)
+      return farm.dump()
+    },
+    setGrown(x, y, z, grown) {
+      const r = farm.get(x, y, z)
+      if (!r) return null
+      r.grown = Math.max(0, Math.min(RIPE_MS, grown))
+      r.lastSeen = Date.now()
+      paintCrop(r)
+      return { ...r }
+    },
+    zeroCrops() {
+      const now = Date.now()
+      for (const r of farm.rows()) { r.grown = 0; r.lastSeen = now; r.plantedAt = now }
+      return farm.dump()
+    },
+    stroke(on) {
+      if (on) rightPress = { test: true, planted: false, repeated: false, placed: false, interactive: false, id: null, x: 0, y: 0, z: 0, moved: 0, t: 0 }
+      else { rightPress = null; plantStroke = null }
+    },
+    notes: () => learn.notes(),
+    clockBack(x, y, z) {
+      const r = farm.get(x, y, z)
+      if (!r) return null
+      const g = r.grown
+      r.lastSeen = Date.now() + 60000
+      advance(r, Date.now())
+      return { grown: r.grown, same: r.grown === g, lastSeen: r.lastSeen }
+    },
     crack: () => { const ring = document.getElementById('pick-ring'); return ring && !ring.hidden ? ring.style.background : '' },
     rolls(kind, x, y, z) { return session.seedCount(kind, x, y, z) },
     lost: () => session.lostItems ? session.lostItems() : [],

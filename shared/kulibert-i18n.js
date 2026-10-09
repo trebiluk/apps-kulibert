@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries).",
+  "whatsNewBody": "Plant your seeds on farmland and watch wheat grow. Soil near water grows twice as fast, and crops keep growing while you are away.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

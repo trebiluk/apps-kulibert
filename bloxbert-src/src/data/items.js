@@ -62,8 +62,9 @@ export const ITEMS = {
 export const ITEM_BY_BLOCK = Object.fromEntries(Object.entries(ITEMS).filter(([, v]) => v.block).map(([k, v]) => [v.block, k]))
 export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
-  if (blockId === 49) return 'dirt'
-  if (blockId === 58) return null
+  if (blockId === 49 || blockId === 63) return 'dirt'
+  if (blockId === 58 || blockId === 64) return null
+  if (blockId >= 59 && blockId <= 62) return 'wheatSeeds'
   if (blockId === 28) return 'wheat'
   if (blockId === 29) return 'sugar'
   if (blockId >= 50 && blockId <= 57) return dropOf(blockId - 20)

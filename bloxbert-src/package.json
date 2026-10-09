@@ -1,7 +1,7 @@
 {
   "name": "bloxbert",
   "private": true,
-  "version": "2.5.97",
+  "version": "2.5.98",
   "description": "Bloxbert source (block builder). noa-engine pinned to fenomas/noa develop @8a74866 + Babylon 6.49.0. Builds the static door into ../blocks/ (student door) or ../blocks-test/ (test page).",
   "license": "UNLICENSED",
   "scripts": {

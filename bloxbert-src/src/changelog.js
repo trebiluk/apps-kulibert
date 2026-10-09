@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.98', date: '2026-10-09', lines: {
+    en: ['Plant your seeds on farmland and watch wheat grow. Soil near water grows twice as fast, and crops keep growing while you are away.'],
+    uk: ['Посади насіння на ріллю і дивись, як росте пшениця. Ґрунт біля води росте вдвічі швидше, і посіви ростуть, поки тебе немає.'],
+    ru: ['Посади семена на грядку и смотри, как растёт пшеница. Почва у воды растёт вдвое быстрее, и посевы растут, пока тебя нет.'],
+    es: ['Planta tus semillas en la tierra de cultivo y mira crecer el trigo. La tierra cerca del agua crece el doble de rápido, y los cultivos siguen creciendo mientras no estás.'],
+    ar: ['ازرع بذورك في أرض الزراعة وشاهد القمح ينمو. التربة قرب الماء تنمو أسرع بمرتين، والمحاصيل تتابع النمو وأنت بعيد.'],
+    'fa-AF': ['دانه‌هایت را روی زمین کشاورزی بکار و رشد گندم را ببین. خاک نزدیک آب دو برابر تندتر رشد می‌کند، و کشت‌ها وقتی نیستی هم رشد می‌کنند.'],
+    rw: ['Tera imbuto zawe ku butaka bw\'imirima urebe ingano ikura. Ubutaka hafi y\'amazi ikura inshuro ebyiri, kandi ibihingwa bikomeza gukura igihe utariho.'],
+    ti: ['ዘርኢኻ ኣብ ሓረስቲ ምድሪ ተኽል ስርናይ እናዓበየ ርአ። ኣብ ጥቓ ማይ ዘሎ ሓመድ ዕጽፍ ግዜ ይዓቢ፡ ምህርትን ኣብ ዘይሃለኻ ግዜ ይቕጽል።'],
+  }},
   { v: '2.5.97', date: '2026-10-09', lines: {
     en: ['Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries).'],
     uk: ['Пшениця і трава дають насіння, і ти можеш зробити мотику та скопати ріллю (руками це 3 спроби).'],

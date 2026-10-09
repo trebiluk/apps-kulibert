@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.97 Wheat and grass drop seeds, Hoe, and farmland).
+Updated Fri Oct 9 2026 (Build: 2.5.98 Plant wheat, wet soil grows twice as fast, crops keep growing while you are away).
 
+- [x] **2.5.98 Farming F2:** plant wheat seeds on farmland (a sweep plants up to 5), four growth stages, wet soil within 4 of still water grows twice as fast, crops keep growing while the game is closed and never past ripe.
 - [x] **2.5.97 Farming F1:** wheat drops 1–2 seeds, grass tufts drop a seed 1 time in 8, Hoe (2 sticks + 1 planks) tills grass or dirt in 1 use, empty hand takes 3 with the dig crack, farmland breaks into dirt.
 
 ## 1. Live now
@@ -139,6 +140,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.97 Wheat and grass drop seeds, Hoe, and farml
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.98 | Plant your seeds on farmland and watch wheat grow. Soil near water grows twice as fast, and crops keep growing while you are away | shipped |
 | 1p | 2.5.97 | Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries) | shipped |
 | 1p | 2.5.96 | The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe | shipped |
 | 1p | 2.5.95 | The Oven fire is big and lively, and new things you craft go where you can find them | shipped |

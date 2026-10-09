@@ -19,6 +19,28 @@ function boxPath(g, x, y, w, h, r) {
   g.arcTo(x, y, x + w, y, r)
   g.closePath()
 }
+function paintCrop(g, stage) {
+  const gold = stage === 3
+  g.strokeStyle = gold ? '#e6b422' : '#3D8C32'
+  g.lineWidth = 3
+  g.beginPath()
+  const top = 40 - (16 + stage * 6)
+  g.moveTo(24, 42)
+  g.lineTo(24, top)
+  if (stage >= 1) { g.moveTo(24, 32); g.lineTo(14, 24) }
+  if (stage >= 2) { g.moveTo(24, 28); g.lineTo(34, 18) }
+  g.stroke()
+  if (stage >= 2) {
+    g.fillStyle = gold ? '#f6c453' : '#d6b25e'
+    g.beginPath()
+    g.ellipse(24, top, 6, 4, 0, 0, Math.PI * 2)
+    g.fill()
+  }
+  if (gold) {
+    g.fillStyle = '#fff4b0'
+    g.fillRect(34, 8, 4, 4)
+  }
+}
 const FACE = {
   log(g) {
     g.fillStyle = '#6B3A1F'
@@ -204,6 +226,31 @@ const FACE = {
     for (let y = 12; y <= 40; y += 8) { g.moveTo(6, y); g.lineTo(42, y) }
     g.stroke()
   },
+  farmlandWet(g) {
+    g.fillStyle = '#5a3516'
+    g.fillRect(4, 4, 40, 40)
+    g.strokeStyle = '#2a160c'
+    g.lineWidth = 3
+    g.beginPath()
+    for (let y = 12; y <= 40; y += 8) { g.moveTo(6, y); g.lineTo(42, y) }
+    g.stroke()
+    g.fillStyle = '#3b82f6'
+    g.beginPath()
+    g.arc(36, 12, 4, 0, Math.PI * 2)
+    g.fill()
+  },
+  water(g) {
+    g.fillStyle = '#3b82f6'
+    g.globalAlpha = 0.85
+    g.fillRect(4, 4, 40, 40)
+    g.globalAlpha = 1
+    g.fillStyle = '#dbeafe'
+    g.fillRect(12, 12, 8, 6)
+  },
+  cropSprout(g) { paintCrop(g, 0) },
+  cropLeafy(g) { paintCrop(g, 1) },
+  cropTall(g) { paintCrop(g, 2) },
+  cropRipe(g) { paintCrop(g, 3) },
   tuft(g) {
     g.strokeStyle = '#3D8C32'
     g.lineWidth = 3
