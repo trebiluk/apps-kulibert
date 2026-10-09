@@ -286,16 +286,19 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 }
 #sheet[data-panel="crafting"] .ggrid,
 #sheet[data-panel="station"] .ggrid,
-#sheet[data-panel="bench"] .ggrid{display:block;overflow:visible}
+#sheet[data-panel="bench"] .ggrid,
+#sheet[data-panel="box"] .ggrid{display:block;overflow:visible}
 #sheet[data-panel="crafting"] #sheet-body,
 #sheet[data-panel="station"] #sheet-body,
 #sheet[data-panel="bench"] #sheet-body{overflow-x:hidden}
 #sheet[data-panel="crafting"] .build-tray,
 #sheet[data-panel="station"] .station-crate,
-#sheet[data-panel="bench"] .station-crate{position:relative;background:#0E1A22;color:#E6EEF2;border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:14px;padding:14px 12px}
+#sheet[data-panel="bench"] .station-crate,
+#sheet[data-panel="box"] .station-crate{position:relative;background:#0E1A22;color:#E6EEF2;border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:14px;padding:14px 12px}
 #sheet[data-panel="crafting"] .build-tray::after,
 #sheet[data-panel="station"] .station-crate::after,
-#sheet[data-panel="bench"] .station-crate::after{content:"";position:absolute;inset:5px;pointer-events:none;background:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px)}
+#sheet[data-panel="bench"] .station-crate::after,
+#sheet[data-panel="box"] .station-crate::after{content:"";position:absolute;inset:5px;pointer-events:none;background:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px)}
 #sheet[data-panel="crafting"] .build-tray{display:flex;flex-direction:column;gap:12px}
 #sheet[data-panel="crafting"] .book{min-width:0;padding-bottom:56px}
 #sheet[data-panel="crafting"] .need.bake-in{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -402,6 +405,14 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="station"] .flame path,#sheet[data-panel="bench"] .flame path{fill:#3FB8C4}
 #sheet[data-panel="station"] .flame .core,#sheet[data-panel="bench"] .flame .core{fill:#F6C453}
 #sheet[data-panel="station"] .flame.ghost path,#sheet[data-panel="bench"] .flame.ghost path{fill:none;stroke:#3FB8C4}
+#sheet[data-panel="station"] .fuel-slot{display:flex;align-items:flex-end;gap:2px}
+#sheet[data-panel="station"] .flame-side{width:16px;height:36px;display:flex;align-items:flex-end;pointer-events:none}
+#sheet[data-panel="station"] .flame-side .flame{width:16px;height:28px}
+#sheet[data-panel="station"] .will-make{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;max-width:84px;opacity:.45;pointer-events:none;text-align:center}
+#sheet[data-panel="station"] .will-make .gic{width:28px;height:28px;display:grid;place-items:center}
+#sheet[data-panel="station"] .will-make canvas,#sheet[data-panel="station"] .will-make svg{width:28px;height:28px}
+#sheet[data-panel="station"] .machine-row .gic canvas,#sheet[data-panel="station"] .machine-row .gic svg{width:32px;height:32px}
+#sheet[data-panel="station"] .machine-row .slot-fuel,#sheet[data-panel="station"] .machine-row .slot-in,#sheet[data-panel="station"] .machine-row .slot-out{position:relative}
 #sheet[data-panel="station"] .gic.ghost,#sheet[data-panel="bench"] .gic.ghost{opacity:.45}
 #sheet[data-panel="station"] .glbl,#sheet[data-panel="bench"] .glbl{color:#E6EEF2;font-weight:700}
 #sheet[data-panel="station"] .gtile.on{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
@@ -440,7 +451,8 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="station"] .fx-bump{animation:bt-bump 250ms ease-out}
 html[data-kp-contrast="1"] #sheet[data-panel="crafting"] .build-tray::after,
 html[data-kp-contrast="1"] #sheet[data-panel="station"] .station-crate::after,
-html[data-kp-contrast="1"] #sheet[data-panel="bench"] .station-crate::after{content:none}
+html[data-kp-contrast="1"] #sheet[data-panel="bench"] .station-crate::after,
+html[data-kp-contrast="1"] #sheet[data-panel="box"] .station-crate::after{content:none}
 html[data-kp-contrast="1"] #sheet[data-panel="crafting"] .well,
 html[data-kp-contrast="1"] #sheet[data-panel="crafting"] .keycap,
 html[data-kp-contrast="1"] #sheet[data-panel="station"] .gtile,
@@ -570,7 +582,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.86</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.87</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden title="Practice points: you earn them by doing new things."><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -610,7 +622,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">The hunger tip tells you real food to find, and it comes back when you get hungry again.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -710,7 +722,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.86" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.86" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.87" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.87" defer></script>
 </body>
 </html>

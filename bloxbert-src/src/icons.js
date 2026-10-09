@@ -48,20 +48,33 @@ const FACE = {
   },
   workbench(g) {
     g.fillStyle = '#8A5A32'
-    g.fillRect(6, 34, 6, 10)
-    g.fillRect(36, 34, 6, 10)
-    g.fillStyle = '#D7A45A'
-    boxPath(g, 3, 6, 42, 28, 3)
+    g.fillRect(6, 36, 7, 10)
+    g.fillRect(35, 36, 7, 10)
+    g.fillStyle = '#E8C27A'
+    boxPath(g, 3, 6, 42, 30, 3)
     g.fill()
-    g.strokeStyle = '#3A2415'
+    g.strokeStyle = '#5C3317'
     g.lineWidth = 2.5
     g.stroke()
+    g.strokeStyle = '#5C3317'
+    g.lineWidth = 1.6
     g.beginPath()
-    g.moveTo(24, 8); g.lineTo(24, 32)
-    g.moveTo(5, 20); g.lineTo(43, 20)
-    g.strokeStyle = '#6B3E26'
-    g.lineWidth = 2
+    g.moveTo(17, 8); g.lineTo(17, 34)
+    g.moveTo(31, 8); g.lineTo(31, 34)
+    g.moveTo(5, 16); g.lineTo(43, 16)
+    g.moveTo(5, 26); g.lineTo(43, 26)
     g.stroke()
+    g.strokeStyle = '#C5CCD1'
+    g.lineWidth = 2.4
+    g.beginPath(); g.moveTo(8, 12); g.lineTo(18, 12); g.stroke()
+    g.fillStyle = '#9AA3AA'
+    for (let i = 0; i < 5; i++) g.fillRect(8 + i * 2, 13, 1.4, 2)
+    g.fillStyle = '#6B3A1F'
+    g.fillRect(16, 10, 5, 4)
+    g.fillStyle = '#B7BFC6'
+    g.fillRect(28, 28, 12, 4)
+    g.fillStyle = '#6B3A1F'
+    g.fillRect(32, 22, 3, 10)
   },
   wheat(g) {
     g.strokeStyle = '#3D8C32'
@@ -134,6 +147,53 @@ const FACE = {
     g.stroke()
     g.fillStyle = '#F4F7F8'
     g.beginPath(); g.arc(30, 34, 2.2, 0, Math.PI * 2); g.fill()
+  },
+  glass(g) {
+    g.fillStyle = 'rgba(214, 240, 255, 0.88)'
+    g.fillRect(6, 6, 36, 36)
+    g.strokeStyle = '#F7FCFF'
+    g.lineWidth = 3
+    g.strokeRect(7, 7, 34, 34)
+    g.strokeStyle = '#FFFFFF'
+    g.lineWidth = 2
+    g.beginPath()
+    g.moveTo(12, 16); g.lineTo(22, 10)
+    g.moveTo(14, 30); g.lineTo(28, 18)
+    g.stroke()
+  },
+  leaves(g) {
+    g.fillStyle = '#1F6B28'
+    g.fillRect(4, 4, 40, 40)
+    const blobs = [[14, 14, '#3FAE46'], [30, 12, '#57C45A'], [22, 24, '#2F8F38'], [34, 26, '#3FAE46'], [14, 32, '#57C45A'], [28, 34, '#1B5E24']]
+    blobs.forEach(([x, y, fill]) => {
+      g.fillStyle = fill
+      g.beginPath()
+      g.arc(x, y, 8, 0, Math.PI * 2)
+      g.fill()
+    })
+    g.strokeStyle = '#14521C'
+    g.lineWidth = 2
+    g.strokeRect(4, 4, 40, 40)
+  },
+  sapling(g) {
+    g.strokeStyle = '#6B3A1F'
+    g.lineWidth = 3
+    g.beginPath()
+    g.moveTo(24, 42)
+    g.lineTo(24, 22)
+    g.stroke()
+    g.fillStyle = '#3FAE46'
+    g.beginPath()
+    g.ellipse(15, 18, 9, 5, -0.7, 0, Math.PI * 2)
+    g.fill()
+    g.fillStyle = '#2F8F38'
+    g.beginPath()
+    g.ellipse(33, 16, 9, 5, 0.6, 0, Math.PI * 2)
+    g.fill()
+    g.fillStyle = '#14521C'
+    g.beginPath()
+    g.arc(24, 20, 2.2, 0, Math.PI * 2)
+    g.fill()
   },
 }
 FACE.doorOpen = FACE.door

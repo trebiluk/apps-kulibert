@@ -108,6 +108,15 @@ export function createStations(api) {
     rec.until = 0
     rec.left = Math.max(0, rec.left - 1)
     rec.fuel = rec.left
+    rec.input = []
+    rec.inputN = 0
+    const burn = BAKES[rec.fuelItem] || 1
+    rec.fuelSpent = (rec.fuelSpent || 0) + 1
+    if (rec.fuelSpent >= burn) {
+      rec.fuelSpent -= burn
+      rec.fuelN = Math.max(0, (rec.fuelN || 1) - 1)
+    }
+    if (!(rec.left > 0) || !(rec.fuelN > 0)) { rec.fuelItem = ''; rec.fuelN = 0; rec.fuelSpent = 0 }
   }
   function tick() {
     for (const rec of map.values()) finish(rec)
@@ -117,6 +126,9 @@ export function createStations(api) {
     if (!kind) return false
     if (api.spend && !api.spend(kind, 1)) return false
     const r = get(key, 'oven')
+    if (r.fuelItem && r.fuelItem !== kind) r.fuelN = 0
+    r.fuelItem = kind
+    r.fuelN = (r.fuelN || 0) + 1
     r.left = (r.left || 0) + BAKES[kind]
     r.fuel = r.left
     r.fuelNote = ''
@@ -134,6 +146,7 @@ export function createStations(api) {
       for (const [item, n] of recipe.in) if (api.spend) api.spend(item, n)
       r.staged = recipe.id
       r.input = recipe.in.map(([item]) => item)
+      r.inputN = recipe.in[0][1]
     }
     r.picking = !r.staged
     beginBake(r, r.staged ? recipe : null)
@@ -147,6 +160,8 @@ export function createStations(api) {
     for (const [item, n] of recipe.in) if (api.spend) api.spend(item, n)
     r.picking = false
     r.pick = recipe.id
+    r.input = recipe.in.map(([item]) => item)
+    r.inputN = recipe.in[0][1]
     r.pending = recipe.out[0]
     r.secs = recipe.secs || 5
     r.until = Date.now() + r.secs * 1000
@@ -239,7 +254,10 @@ export function createStations(api) {
     const pct = r.until ? Math.max(0, Math.min(1, (secs - timeLeft) / secs)) : 0
     const pending = r.pending
     const outItem = r.output && r.output[0]
-    const inShow = pending || ''
+    const fuelItem = r.fuelItem || ''
+    const fuelCount = fuelItem ? (r.fuelN || 0) : 0
+    const inItem = (r.input && r.input[0]) || ''
+    const inCount = inItem ? (r.inputN || 1) : 0
     let status = api.t('needsFuel')
     if (outItem && !r.until) status = api.t('takeYour').replace('{item}', api.name ? api.name(outItem) : outItem)
     else if (r.until) status = api.t('bakingNow')
@@ -248,34 +266,33 @@ export function createStations(api) {
     head(crate, 'oven', api.t('oven'), status)
     const row = document.createElement('div')
     row.className = 'machine-row'
-    function well(role, word, item, ghost) {
+    function well(role, word, item, count, ghost) {
       const b = document.createElement('button')
       b.type = 'button'
-      b.className = 'well gtile slot-' + role + (ghost ? ' ghost' : '') + (role === pickItem ? '' : '')
+      b.className = 'well gtile slot-' + role + (ghost ? ' ghost' : '')
       b.dataset.role = role
       const pic = document.createElement('span')
       pic.className = 'gic art'
-      if (role === 'fuel') pic.innerHTML = FLAME
-      else if (item && api.icon) pic.append(face(item))
+      if (item) pic.append(face(item))
       else pic.innerHTML = GHOST
       b.append(pic)
       const lab = document.createElement('span')
-      lab.className = 'glbl wlab'
-      lab.textContent = role === 'fuel' && fuelNow > 0 ? String(fuelNow) : word
-      b.append(lab)
-      if (role === 'fuel') {
-        const flame = pic.querySelector('.flame')
-        if (grew && flame) fx(flame, 'flame')
-        if (!fuelNow && flame) flame.classList.add('ghost')
+      if ((role === 'fuel' || role === 'in') && count > 0) {
+        lab.className = 'badge'
+        lab.textContent = String(count)
+      } else {
+        lab.className = 'glbl wlab'
+        lab.textContent = word
       }
+      b.append(lab)
       if (ghost) pic.classList.add('ghost')
       const named = item && api.name ? api.name(item) : ''
-      b.setAttribute('aria-label', named ? word + ' ' + named : word)
+      b.setAttribute('aria-label', named ? word + ' ' + named + (count > 0 ? ' ' + count : '') : word)
       b.title = named || word
       return b
     }
-    const fuelEl = well('fuel', api.t('fuel'), '', !fuelNow)
-    const inEl = well('in', api.t('input'), inShow, !inShow)
+    const fuelEl = well('fuel', api.t('fuel'), fuelItem, fuelCount, !fuelItem)
+    const inEl = well('in', api.t('input'), inItem, inCount, !inItem)
     const arrow = document.createElement('div')
     arrow.className = 'arrow-bar'
     arrow.setAttribute('aria-hidden', 'true')
@@ -283,7 +300,7 @@ export function createStations(api) {
     fill.className = 'arrow-fill'
     fill.style.width = Math.round(pct * 100) + '%'
     arrow.append(fill)
-    const outEl = well('out', api.t('output'), outItem || '', !outItem)
+    const outEl = well('out', api.t('output'), outItem || '', outItem ? 1 : 0, !outItem)
     if (done && outItem) {
       const badge = document.createElement('span')
       badge.className = 'check'
@@ -337,7 +354,34 @@ export function createStations(api) {
       if (!pickItem || r.picking) paint(g, key, kind)
     })
     outEl.addEventListener('click', () => { take(k); paint(g, key, kind) })
-    row.append(fuelEl, inEl, arrow, outEl)
+    const fuelHold = document.createElement('div')
+    fuelHold.className = 'fuel-slot'
+    fuelHold.append(fuelEl)
+    if (fuelNow > 0) {
+      const side = document.createElement('span')
+      side.className = 'flame-side'
+      side.innerHTML = FLAME
+      const flame = side.querySelector('.flame')
+      if (grew && flame) fx(flame, 'flame')
+      fuelHold.append(side)
+    }
+    let preview = null
+    if (pending) {
+      preview = document.createElement('div')
+      preview.className = 'will-make'
+      const pic = document.createElement('span')
+      pic.className = 'gic'
+      pic.append(face(pending))
+      const lab = document.createElement('span')
+      lab.className = 'glbl'
+      const made = api.name ? api.name(pending) : pending
+      lab.textContent = api.t('willMake').replace('{item}', made)
+      preview.append(pic, lab)
+      preview.title = lab.textContent
+    }
+    row.append(fuelHold, inEl, arrow)
+    if (preview) row.append(preview)
+    row.append(outEl)
     const hint = document.createElement('p')
     hint.className = 'gnote oven-bakes'
     hint.textContent = bakeHint()

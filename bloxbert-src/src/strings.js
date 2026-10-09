@@ -252,3 +252,26 @@ const PRACTICE_TIP = {
   ti: 'ነጥቢ ምልምማድ፡ ሓድሽ ነገር ብምግባር ትረኽቦ።',
 }
 for (const lang of Object.keys(STR)) STR[lang].practiceTip = PRACTICE_TIP[lang] || PRACTICE_TIP.en
+const SLOT_COPY = {
+  willMake: {
+    en: 'will make {item}',
+    uk: 'буде {item}',
+    ru: 'будет {item}',
+    es: 'hará {item}',
+    ar: 'سيصنع {item}',
+    'fa-AF': 'خواهد ساخت {item}',
+    rw: 'bizakora {item}',
+    ti: 'ክገብር {item}',
+  },
+  boxSlots: {
+    en: '{n} of {max} slots used',
+    uk: '{n} з {max} слотів зайнято',
+    ru: '{n} из {max} слотов занято',
+    es: '{n} de {max} huecos usados',
+    ar: '{n} من {max} خانات مستخدمة',
+    'fa-AF': '{n} از {max} خانه پر است',
+    rw: '{n} muri {max} byuzuye',
+    ti: '{n} ካብ {max} ቦታታት ተቐሚጡ',
+  },
+}
+for (const key of Object.keys(SLOT_COPY)) for (const lang of Object.keys(STR)) STR[lang][key] = SLOT_COPY[key][lang] || SLOT_COPY[key].en

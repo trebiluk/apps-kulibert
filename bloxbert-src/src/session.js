@@ -1542,7 +1542,7 @@ export function createSession(api) {
     const line = document.createElement('p')
     line.className = 'machine-status'
     line.setAttribute('role', 'status')
-    line.textContent = t('filled').replace('{n}', String(used))
+    line.textContent = t('boxSlots').replace('{n}', String(used)).replace('{max}', String(rec.slots.length))
     words.append(title, line)
     head.append(ic, words)
     const wells = document.createElement('div')

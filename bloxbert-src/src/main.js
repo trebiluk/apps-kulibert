@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.86'
+const VERSION = '2.5.87'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -182,7 +182,7 @@ export const BLOCKS = [
   [19, 'redSand', 'redsand', 'Rs', 'redsand'],
   [20, 'glass', 'glass', 'Gl', null],
   [21, 'coreplate', 'coreplate', 'Cp', null],
-  [22, 'workbench', ['wood', 'wood', 'workbench', 'wood', 'wood', 'wood'], 'Wk', null],
+  [22, 'workbench', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Wk', null],
   [23, 'oven', 'ovenBrick', 'Ov', null],
   [24, 'vend', 'vend', 'Vc', null],
   [25, 'storeCounter', 'store', 'Sc', null],
@@ -213,6 +213,8 @@ export const BLOCKS = [
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
 noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
+noa.registry.registerMaterial('benchTop', { textureURL: 'assets/tile-workbench.png' })
+noa.registry.registerMaterial('benchSide', { textureURL: 'assets/tile-workbench-side.png' })
 noa.registry.registerMaterial('ovenBrick', { textureURL: 'assets/tile-oven-brick.png' })
 noa.registry.registerMaterial('ovenFront', { textureURL: 'assets/tile-oven-front.png' })
 noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven-front.png' })
@@ -313,7 +315,7 @@ function flatFace(name, url) {
   return mat
 }
 const ovenFaceMat = flatFace('oven-front-face', 'assets/tile-oven-front.png')
-const benchFaceMat = flatFace('bench-front-face', 'assets/tile-workbench.png')
+const benchFaceMat = flatFace('bench-front-face', 'assets/tile-workbench-side.png')
 function crateFaceURL() {
   const c = document.createElement('canvas')
   c.width = 32

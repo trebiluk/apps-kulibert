@@ -114,7 +114,7 @@ export function mountPanels(api) {
       log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),
-      box: (key) => show('box', api.t('box'), (g) => api.paintBox(g, key)),
+      box: (key) => show('box', api.t('box'), (g) => { api.paintBox(g, key); title.textContent = api.t('box') }),
       leave: () => show('leave', api.t('exitApp'), (g) => {
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('leaveAsk'); g.append(p)
         g.append(tile('✓', api.t('leave'), () => api.leave()), tile('✕', api.t('stay'), () => openRoot()))

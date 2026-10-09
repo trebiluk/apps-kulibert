@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Wheat looks like wheat, closed doors look closed, and the helper cards explain themselves.",
+  "whatsNewBody": "Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

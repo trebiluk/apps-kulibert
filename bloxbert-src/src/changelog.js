@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.87', date: '2026-10-09', lines: {
+    en: ['Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside.'],
+    uk: ['Скло, саджанці й верстак виглядають як вони є, а піч і скриня показують саме те, що всередині.'],
+    ru: ['Стекло, саженцы и верстак выглядят как они сами, а печь и сундук показывают ровно то, что внутри.'],
+    es: ['El vidrio, los brotes y el banco se ven como son, y el horno y la caja muestran justo lo que hay dentro.'],
+    ar: ['الزجاج والشتلات ومنضدة العمل تبدو كما هي، والفرن والصندوق يُريان ما بداخلهما بالضبط.'],
+    'fa-AF': ['شیشه، نهال و میز کار مثل خودشان دیده می‌شوند، و تنور و صندوق دقیقاً آنچه داخل است را نشان می‌دهند.'],
+    rw: ['Ikirahure, ingemwe n\'ameza bisa nk\'uko ari, kandi icyoto n\'agasanduku byerekana neza ibiri muri byo.'],
+    ti: ['መስታወትን ንእስቲ ገረብን ሰደቓን ከም ነብሶም ይረኣዩ፡ እቶንን ሳንዱቅን ድማ ኣብ ውሽጦም ዘሎ ብትኽክል የርእዩ።'],
+  }},
   { v: '2.5.86', date: '2026-10-09', lines: {
     en: ['The hunger tip tells you real food to find, and it comes back when you get hungry again.'],
     uk: ['Підказка про голод каже, яку їжу шукати, і повертається, коли зголоднієш знову.'],
