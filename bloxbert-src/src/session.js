@@ -271,6 +271,8 @@ export function createSession(api) {
     if (!el) return
     el.hidden = mode !== 'survival'
     el.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + '</bdi> <small>' + t('practice') + '</small>'
+    el.title = t('practiceTip')
+    el.setAttribute('aria-label', t('practiceTip'))
   }
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
@@ -1390,7 +1392,7 @@ export function createSession(api) {
       const line = document.createElement('p')
       line.className = 'gnote'
       const time = new Date(row.at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-      const words = (phrase[row.kind] || row.kind).replace('{n}', row.n || 0).replace('{item}', itemName(row.item || '')).replace('{cogs}', row.price || Math.abs(row.cogs))
+      const words = (phrase[row.kind] || row.kind).replace('{n}', row.n || 0).replace('{item}', row.item ? itemName(row.item) : '').replace('{cogs}', row.price || Math.abs(row.cogs))
       line.innerHTML = '<bdi>' + words + ' ' + (row.cogs ? (row.cogs > 0 ? '+' : '') + '⚙' + row.cogs : '') + ' · ' + time + '</bdi>'
       g.append(line)
     }

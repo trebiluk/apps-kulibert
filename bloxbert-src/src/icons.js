@@ -63,6 +63,15 @@ const FACE = {
     g.lineWidth = 2
     g.stroke()
   },
+  wheat(g) {
+    g.strokeStyle = '#3D8C32'
+    g.lineWidth = 3
+    g.beginPath(); g.moveTo(10, 40); g.lineTo(38, 10); g.stroke()
+    g.beginPath(); g.moveTo(38, 40); g.lineTo(10, 10); g.stroke()
+    g.fillStyle = '#E6B422'
+    g.beginPath(); g.ellipse(38, 10, 6, 4, 0.4, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.ellipse(10, 10, 6, 4, -0.4, 0, Math.PI * 2); g.fill()
+  },
   door(g) {
     g.fillStyle = '#C9893E'
     boxPath(g, 12, 2, 24, 44, 3)

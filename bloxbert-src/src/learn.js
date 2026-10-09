@@ -20,17 +20,48 @@ export function createLearn(api) {
     state.goals = Object.fromEntries(goals.map((g) => [g.id, { n: g.n, done: !!g.done }]))
     save()
   }
+  let cardHidden = false
+  let cardArmed = false
+  let hideTimer = 0
+  function armCard() {
+    if (cardArmed) return
+    cardArmed = true
+    clearTimeout(hideTimer)
+    hideTimer = setTimeout(() => {
+      cardHidden = true
+      cardArmed = false
+      paintPath()
+    }, 60000)
+  }
+  function dismissPath() {
+    cardHidden = true
+    cardArmed = false
+    clearTimeout(hideTimer)
+    paintPath()
+  }
+  function showPath() {
+    cardHidden = false
+    cardArmed = false
+    paintPath()
+  }
   function paintPath() {
     const el = document.getElementById('path-chip')
     if (!el) return
     if (api.survival && !api.survival()) { el.hidden = true; return }
     const g = goals.find((x) => !x.done)
-    el.hidden = !g
+    if (!g || cardHidden) { el.hidden = true; el.replaceChildren(); return }
+    armCard()
+    el.hidden = false
     el.replaceChildren()
-    if (!g) return
     const title = document.createElement('span')
+    title.className = 'path-title'
     title.textContent = api.t(g.id)
-    el.append(title)
+    const x = document.createElement('span')
+    x.className = 'path-x'
+    x.textContent = '✕'
+    x.setAttribute('role', 'button')
+    x.setAttribute('aria-label', api.t('close'))
+    el.append(title, x)
     if (g.id === 'pathTree' && api.touch && api.touch()) {
       const sub = document.createElement('span')
       sub.className = 'path-sub'
@@ -51,6 +82,9 @@ export function createLearn(api) {
     g.n += n
     if (g.n >= g.need) {
       g.done = true
+      cardHidden = true
+      cardArmed = false
+      clearTimeout(hideTimer)
       api.pay(g.pay, id)
       const nxt = goals.find((x) => !x.done)
       api.toast(nxt ? api.t(nxt.id) : api.t('goalDone'))
@@ -95,6 +129,7 @@ export function createLearn(api) {
     draw()
   }
   function paintGoals(g) {
+    showPath()
     const g0 = goals.find((x) => !x.done) || goals[goals.length - 1]
     const p = document.createElement('p')
     p.className = 'gnote'
@@ -133,5 +168,5 @@ export function createLearn(api) {
   }
   if (!state.tourDone) armAuto()
   paintPath()
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, goals: () => goals, cancelAuto }
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, goals: () => goals, cancelAuto }
 }

@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.83 Ovens face you, wood for a roof, eat when hungry).
+Updated Fri Oct 9 2026 (Build: 2.5.84 Wheat looks like wheat, closed doors look closed).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -65,6 +65,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.83 Ovens face you, wood for a roof, eat when 
 - [x] **2.5.81 Icons, hint and ghost:** Every item has a real picture. Machines tell you how to place next to them. A faint ghost shows where a block will land.
 - [x] **2.5.82 Fill and sand:** Fill only fills the tray. Make crafts one. ×Max asks before it spends the rest, and a sand patch sits next to the starter stone.
 - [x] **2.5.83 Face, roof, eat:** Placed ovens, workbenches and boxes face you. Six starter trees give wood for a roof. Hunger at 6 says to bake or eat, once.
+- [x] **2.5.84 Wheat, doors, cards:** Wild wheat is a short cross you can walk through. A closed wood door shows planks, a frame, and a knob. Goal cards close, and the practice chip explains itself.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -121,6 +122,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.83 Ovens face you, wood for a roof, eat when 
 | 1p | 2.5.81 | Every item has a real picture; machines tell you how to place next to them; you can see where a block will land | shipped |
 | 1p | 2.5.82 | Fill only fills and Make makes one, and there is sand near the start for your first bake | shipped |
 | 1p | 2.5.83 | Ovens and boxes face you when you place them, there is wood for a roof, and the game tells you when to eat | shipped |
+| 1p | 2.5.84 | Wheat looks like wheat, closed doors look closed, and the helper cards explain themselves | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |

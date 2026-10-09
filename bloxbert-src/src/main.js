@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.83'
+const VERSION = '2.5.84'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -256,6 +256,40 @@ const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
 lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+const wheatStalk = noa.rendering.makeStandardMaterial('wheat-stalk')
+wheatStalk.diffuseColor = new Color3(0.22, 0.62, 0.18)
+wheatStalk.ambientColor = new Color3(0.82, 0.9, 0.78)
+wheatStalk.specularColor = new Color3(0, 0, 0)
+wheatStalk.backFaceCulling = false
+const wheatHead = noa.rendering.makeStandardMaterial('wheat-head')
+wheatHead.diffuseColor = new Color3(0.95, 0.76, 0.18)
+wheatHead.ambientColor = new Color3(0.95, 0.9, 0.7)
+wheatHead.specularColor = new Color3(0, 0, 0)
+wheatHead.backFaceCulling = false
+const doorTex = new DynamicTexture('door-wood-tex', { width: 64, height: 96 }, shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
+doorTex.hasAlpha = false
+{
+  const ctx = doorTex.getContext()
+  ctx.fillStyle = '#5C3317'
+  ctx.fillRect(0, 0, 64, 96)
+  const bands = ['#E8C27A', '#C9954C', '#E0B56A', '#D7A45A', '#E4B56A']
+  bands.forEach((fill, i) => { ctx.fillStyle = fill; ctx.fillRect(7, 8 + i * 16, 50, 14) })
+  ctx.strokeStyle = '#3A2415'
+  ctx.lineWidth = 6
+  ctx.strokeRect(3, 3, 58, 90)
+  ctx.strokeStyle = '#6B3E26'
+  ctx.lineWidth = 2
+  ctx.strokeRect(10, 10, 44, 76)
+  ctx.fillStyle = '#F6C453'
+  ctx.beginPath(); ctx.arc(46, 52, 5, 0, Math.PI * 2); ctx.fill()
+  ctx.fillStyle = '#8A5A20'
+  ctx.beginPath(); ctx.arc(46, 52, 2.2, 0, Math.PI * 2); ctx.fill()
+  doorTex.update()
+}
+const doorWoodMat = noa.rendering.makeStandardMaterial('terrain-door-wood')
+doorWoodMat.diffuseTexture = doorTex
+doorWoodMat.specularColor = new Color3(0.06, 0.05, 0.04)
+doorWoodMat.backFaceCulling = false
 const ovenHotTex = new Texture('assets/tile-oven-hot.png', shapeScene, false, true, Texture.NEAREST_SAMPLINGMODE)
 ovenHotTex.hasAlpha = false
 const ovenHotMat = new StandardMaterial('oven-hot-face', shapeScene)
@@ -299,6 +333,47 @@ function doorMesh(kind, open, mat) {
   if (!open) return shape('door-' + kind + '-shut', [part('p', 0.96, 0.98, 0.18, 0, 0.5, 0, 0, mat)], mat)
   return shape('door-' + kind + '-open', [part('p', 0.14, 0.98, 0.9, 0.4, 0.5, 0, 0, mat)], mat)
 }
+function woodDoorMesh(open) {
+  const mesh = CreateBox(open ? 'door-wood-open' : 'door-wood-shut', { width: 0.9, height: 0.96, depth: 0.12 }, shapeScene)
+  mesh.material = doorWoodMat
+  mesh.position.set(0, 0.48, 0)
+  if (open) {
+    mesh.setPivotPoint(new Vector3(-0.45, 0, 0))
+    mesh.rotation.y = 1.25
+  }
+  mesh.bakeCurrentTransformIntoVertices()
+  mesh.setPivotPoint(new Vector3(0, 0, 0))
+  mesh.position.set(0, 0, 0)
+  mesh.rotation.set(0, 0, 0)
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
+function crossed(mat, w, h, d, y, yaw) {
+  const mesh = CreateBox('wx', { width: w, height: h, depth: d }, shapeScene)
+  mesh.material = mat
+  mesh.position.set(0, y, 0)
+  mesh.rotation.y = yaw
+  mesh.bakeCurrentTransformIntoVertices()
+  mesh.position.set(0, 0, 0)
+  mesh.rotation.set(0, 0, 0)
+  mesh.isPickable = false
+  return mesh
+}
+function wheatMesh() {
+  const parts = []
+  for (const yaw of [0.55, -0.55]) {
+    parts.push(crossed(wheatStalk, 0.62, 0.34, 0.04, 0.2, yaw))
+    parts.push(crossed(wheatHead, 0.36, 0.2, 0.055, 0.44, yaw))
+  }
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = 'wheat'
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
 function leverMesh(on) {
   const base = part('b', 0.5, 0.14, 0.5, 0, 0.07, 0, 0, woodD)
   const handle = part('h', 0.1, 0.56, 0.1, 0, 0.46, on ? 0.16 : -0.16, on ? 1 : -1, handleD)
@@ -315,8 +390,9 @@ function lanternMesh() {
   return shape('lantern', [body, cap], lampD)
 }
 const SHAPES = {
-  30: doorMesh('wood', false, woodD),
-  31: doorMesh('wood', true, woodD),
+  28: wheatMesh(),
+  30: woodDoorMesh(false),
+  31: woodDoorMesh(true),
   32: doorMesh('glass', false, glassD),
   33: doorMesh('glass', true, glassD),
   34: doorMesh('metal', false, metalD),
@@ -334,7 +410,8 @@ for (const [id, name, material] of BLOCKS) {
   const glass = material === 'glass'
   const mesh = SHAPES[id]
   const lantern = id === LANTERN
-  const opts = { material: mesh ? null : material, opaque: !mesh && !open && !glass, solid: !open && !lantern }
+  const wheat = id === 28
+  const opts = { material: mesh ? null : material, opaque: !mesh && !open && !glass, solid: !open && !lantern && !wheat }
   if (mesh) opts.blockMesh = mesh
   noa.registry.registerBlock(id, opts)
 }
@@ -345,7 +422,7 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || noa.registry.getBlockSolidity(id)
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || noa.registry.getBlockSolidity(id)
 const blockName = (id) => t(BLOCKS.find((b) => b[0] === id)[1])
 
 const S = 24
@@ -569,6 +646,7 @@ function noteCrouchHint() {
 }
 function landingCell(aimed) {
   if (!aimed || !aimed.position) return null
+  if (aimed.blockID === ID.wheat) return { x: Math.round(aimed.position[0]), y: Math.round(aimed.position[1]), z: Math.round(aimed.position[2]) }
   const sx = Math.round(aimed.position[0])
   const sy = Math.round(aimed.position[1])
   const sz = Math.round(aimed.position[2])
@@ -1599,9 +1677,12 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
 $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
 const pathChip = $('path-chip')
-if (pathChip) pathChip.addEventListener('click', () => { openMenu(true); panels.open('goals') })
+if (pathChip) pathChip.addEventListener('click', (e) => {
+  if (e.target.closest && e.target.closest('.path-x')) { learn.dismissPath(); return }
+  openMenu(true); panels.open('goals')
+})
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
-$('wallet-chip').addEventListener('click', () => { openMenu(true); panels.open('wallet') })
+$('wallet-chip').addEventListener('click', () => { toast(t('practiceTip')); openMenu(true); panels.open('wallet') })
 let menuFromLock = false
 let hadLock = false
 document.addEventListener('pointerlockchange', () => {

@@ -241,3 +241,14 @@ export const STR = {
     doorHint: 'ንኣማራጺ ማዕጾ ጸጋማይ ጠውቕ ሓዝ', doorHintTouch: 'ንኣማራጺ ኣብ ማዕጾ ሓዝ', clickToPlay: 'ጠውቕ ንምጻወት', crouchPlace: 'ድንጋርን የማናይ ጠውቕ ኣብ ጥቓኡ ንምቕማጥ.', signIn: 'እቶ', code: 'ኮድ', signNote: 'ኮድን ፒንን መምህር እዩ ዝህብ። ስምካ ምስ ዝሰማማዑ ይረአ።',
   },
 }
+const PRACTICE_TIP = {
+  en: 'Practice points: you earn them by doing new things.',
+  uk: 'Очки практики: ти отримуєш їх, роблячи нове.',
+  ru: 'Очки учёбы: ты получаешь их, делая новое.',
+  es: 'Puntos de práctica: los ganas haciendo cosas nuevas.',
+  ar: 'نقاط التدريب: تكسبها حين تفعل أشياء جديدة.',
+  'fa-AF': 'امتیاز تمرین: با کار تازه به دست می‌آید.',
+  rw: 'Amanota y\'imyitozo: uyabonera ukora ibishya.',
+  ti: 'ነጥቢ ምልምማድ፡ ሓድሽ ነገር ብምግባር ትረኽቦ።',
+}
+for (const lang of Object.keys(STR)) STR[lang].practiceTip = PRACTICE_TIP[lang] || PRACTICE_TIP.en

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.84', date: '2026-10-09', lines: {
+    en: ['Wheat looks like wheat, closed doors look closed, and the helper cards explain themselves.'],
+    uk: ['Пшениця виглядає як пшениця, зачинені двері виглядають зачиненими, і картки-підказки пояснюють себе.'],
+    ru: ['Пшеница выглядит как пшеница, закрытые двери выглядят закрытыми, и карточки-подсказки объясняют себя.'],
+    es: ['El trigo parece trigo, las puertas cerradas se ven cerradas, y las tarjetas de ayuda se explican solas.'],
+    ar: ['القمح يبدو قمحاً، والأبواب المغلقة تبدو مغلقة، وبطاقات المساعدة تشرح نفسها.'],
+    'fa-AF': ['گندم مثل گندم دیده می‌شود، درهای بسته بسته دیده می‌شوند، و کارت‌های راهنما خود را توضیح می‌دهند.'],
+    rw: ['Ingano isa ingano, urugi rufunze rusa rufunze, kandi amakarita y\'ubufasha yisobanura.'],
+    ti: ['ስርናይ ከም ስርናይ ይረአ፡ ዝተዓጽወ ማዕጾ ድማ ከም ዝተዓጽወ ይረአ፡ ናይ ሓገዝ ካርድታት ድማ ነብሰን ይገልጻ።'],
+  }},
   { v: '2.5.83', date: '2026-10-09', lines: {
     en: ['Ovens and boxes face you when you place them, there is wood for a roof, and the game tells you when to eat.'],
     uk: ['Печі й скрині дивляться на тебе, коли ставиш їх, дерева вистачить на дах, і гра каже, коли їсти.'],
