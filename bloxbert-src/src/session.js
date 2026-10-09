@@ -36,10 +36,18 @@ export function createSession(api) {
   }
   let paused = false
   const BOLT_MS = 4 * 60 * 1000
+  const HUNGRY_GAP = 5 * 60 * 1000
   const FEED = { berry: 1, bread: 4, cupcake: 3 }
+  const LEAF_FOOD = 'berry'
   let energy = { bolts: 10, acc: 0, toasted: false }
   let hungrySaid = false
   let hungryN = 0
+  let berryN = 0
+  let berryTold = false
+  let ateSinceTip = false
+  let hungryWait = false
+  let hungryAt = 0
+  let playedMs = 0
   let lowN = 0
   let energyOn = true
   try { if (localStorage.getItem('bloxbert-energy') === '0') energyOn = false } catch (e) {}
@@ -357,6 +365,7 @@ export function createSession(api) {
         return itemName(item)
       }
       if (!bag.take(item, 1)) return ''
+      ateSinceTip = true
       energy.bolts = Math.min(10, energy.bolts + FEED[item])
       if (energy.bolts > 0) energy.toasted = false
       paintHotbar()
@@ -367,6 +376,7 @@ export function createSession(api) {
       return itemName(item)
     }
     if (EDIBLE.includes(item) && bag.take(item, 1)) {
+      ateSinceTip = true
       paintHotbar()
       api.toast(t('ate').replace('{item}', itemName(item)))
       if (api.markDirty) api.markDirty()
@@ -1753,9 +1763,14 @@ export function createSession(api) {
       const h = (x * 374761393 + y * 668265263 + z * 1274126177) >>> 0
       if (!wallet.state.picked.includes(spot) && (h / 4294967296) < 0.33) {
         wallet.state.picked.push(spot)
-        markFound('berry')
-        const berryLeft = bag.add('berry', 1)
-        if (berryLeft) spawnDrop('berry', berryLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
+        markFound(LEAF_FOOD)
+        const berryLeft = bag.add(LEAF_FOOD, 1)
+        if (berryLeft) spawnDrop(LEAF_FOOD, berryLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
+        if (!berryTold) {
+          berryTold = true
+          berryN += 1
+          api.toast(berryTip())
+        }
       }
     }
     bagHist.push({ type: 'break', item: drop, n: got, loose })
@@ -2034,23 +2049,60 @@ export function createSession(api) {
     el.setAttribute('aria-label', 'Energy ' + energy.bolts)
     el.querySelectorAll('span').forEach((bit, i) => bit.classList.toggle('on', i < energy.bolts))
   }
+  function many(key) {
+    const named = t(key + 'Many')
+    if (named && named !== key + 'Many') return named
+    const one = itemName(key)
+    if (/[^aeiou]y$/i.test(one)) return one.slice(0, -1) + 'ies'
+    if (/(s|sh|ch|x|z)$/i.test(one)) return one + 'es'
+    return one + 's'
+  }
+  function lowerName(key) {
+    const name = itemName(key)
+    return name ? name.charAt(0).toLowerCase() + name.slice(1) : key
+  }
+  function hungerTip() {
+    const meal = RECIPES.find((r) => r.at === 'oven' && r.out[0] === 'bread')
+      || RECIPES.find((r) => r.at === 'oven' && FEED[r.out[0]])
+    const from = meal && (meal.in.find(([k]) => k === 'flour') || meal.in[0])
+    const bake = meal ? meal.out[0] : 'bread'
+    const dough = from ? from[0] : 'flour'
+    return t('hungryEat')
+      .replace('{leaves}', lowerName('leaves'))
+      .replace('{berries}', many(LEAF_FOOD))
+      .replace('{bread}', itemName(bake))
+      .replace('{flour}', itemName(dough))
+      .replace('{oven}', itemName('oven'))
+  }
+  function sayHungry() {
+    hungrySaid = true
+    hungryWait = false
+    ateSinceTip = false
+    hungryAt = playedMs
+    hungryN += 1
+    api.toast(hungerTip())
+  }
+  function berryTip() {
+    const how = document.body.classList.contains('touch') ? t('berryEatTouch') : t('berryEat')
+    return t('berryDrop').replace('{berries}', many(LEAF_FOOD)).replace('{leaves}', lowerName('leaves')).replace('{how}', how)
+  }
   function play(ms, force) {
     syncDig()
     if (!energyOn || mode !== 'survival') { paintEnergy(); return }
     if (!force && (paused || (typeof document !== 'undefined' && document.hidden))) return
     if (!(ms > 0) || energy.bolts <= 0) { paintEnergy(); return }
     const before = energy.bolts
+    playedMs += ms
     energy.acc += ms
     while (energy.acc >= BOLT_MS && energy.bolts > 0) {
       energy.acc -= BOLT_MS
       energy.bolts -= 1
     }
     if (energy.bolts === 0) energy.acc = 0
-    if (before > 6 && energy.bolts <= 6 && !hungrySaid) {
-      hungrySaid = true
-      hungryN += 1
-      api.toast(t('hungryEat').replace('{bake}', t('flour')).replace('{eat}', t('berry')))
-    }
+    const crossed = before > 6 && energy.bolts <= 6
+    if (crossed && !hungrySaid) sayHungry()
+    else if (crossed && ateSinceTip) hungryWait = true
+    if (hungryWait && energy.bolts <= 6 && playedMs - hungryAt >= HUNGRY_GAP) sayHungry()
     if (energy.bolts === 0 && !energy.toasted) {
       energy.toasted = true
       lowN += 1
@@ -2081,7 +2133,7 @@ export function createSession(api) {
         smoke.clock = (n) => { const r = orig(n); play(Number(n) || 0, true); return r }
       }
       smoke.energy = () => ({
-        bolts: energy.bolts, acc: energy.acc, pace: pace(), dig: getDigSlow(), on: energyOn, lowN, hungryN,
+        bolts: energy.bolts, acc: energy.acc, pace: pace(), dig: getDigSlow(), on: energyOn, lowN, hungryN, berryN,
         shown: !!(document.getElementById('energy-bar') && !document.getElementById('energy-bar').hidden),
       })
       smoke.charge = (n) => {

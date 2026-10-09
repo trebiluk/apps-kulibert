@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.86', date: '2026-10-09', lines: {
+    en: ['The hunger tip tells you real food to find, and it comes back when you get hungry again.'],
+    uk: ['Підказка про голод каже, яку їжу шукати, і повертається, коли зголоднієш знову.'],
+    ru: ['Подсказка о голоде говорит, какую еду искать, и возвращается, когда снова проголодаешься.'],
+    es: ['El aviso de hambre dice qué comida buscar, y vuelve cuando tienes hambre otra vez.'],
+    ar: ['تنبيه الجوع يقول أي طعام تجد، ويعود عندما تجوع مرة أخرى.'],
+    'fa-AF': ['راهنمای گرسنگی می‌گوید چه غذایی پیدا کنی، و وقتی دوباره گرسنه شوی برمی‌گردد.'],
+    rw: ['Inama y\'inzara ivuga ibyo kurya ushakisha, kandi igaruka iyo ushonje nanone.'],
+    ti: ['ናይ ጥምየት ሓበሬታ እቲ ትርከቦ መግቢ ይነግረካ፡ እንደገና ምስ ጥምኻ ድማ ይምለስ።'],
+  }},
   { v: '2.5.85', date: '2026-10-09', lines: {
     en: ['Make works on the first click every time, and a new world starts with an empty Lost & Found.'],
     uk: ['Зробити працює з першого кліку щоразу, і новий світ починається без Загубленого.'],
