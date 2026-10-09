@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.17** · 2026-10-09 · channel **live**
+
+Save puts your beat in My songs, and phone drum pads are big enough to tap.
+
+## Earlier
+
 **Chip: MU 2.35.16** · 2026-10-07 · channel **live**
 
 A real piano with black keys, and a band stage you fill with chairs.

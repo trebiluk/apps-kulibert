@@ -70,7 +70,7 @@ body.is-library .tabs, body.is-library .lab, body.is-library #how { display: non
 .shelf-block { margin: 0 0 1rem; }
 .shelf-block h2, .home > h2 { margin: 0.2rem 0 0.45rem; font-size: 0.95rem; color: var(--muted); font-weight: 700; }
 .song-row {
-  display: grid; grid-template-columns: 1fr auto auto; gap: 0.35rem; align-items: center;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto; gap: 0.35rem; align-items: center;
   margin: 0 0 0.35rem;
 }
 .song-row strong { font-weight: 750; }
@@ -3463,7 +3463,7 @@ body.mu237.tab-tap #more-drums {
   body.mu237.tab-tap.stage-on canvas#viz { height: 56px !important; max-height: 56px !important; }
   body.mu237.tab-tap #stage-toggle { display: inline-flex !important; }
 }
-body.mu237 #save-dock::before { content: "↓"; margin-inline-end: 4px; }
+body.mu237 #save-dock::before { content: "▣"; margin-inline-end: 4px; }
 body.mu237 #rec-btn::before { content: "●"; margin-inline-end: 4px; color: #f43f5e; }
 body.mu237 #share-btn::before { content: "↗"; margin-inline-end: 4px; }
 body.mu237 #clear-song::before { content: "⌫"; margin-inline-end: 4px; }
@@ -3797,4 +3797,55 @@ html[dir="rtl"] body.mu237.menu-open .drawer {
 }
 @media (max-width: 699px) and (orientation: portrait) {
   html[dir="rtl"] body.mu237 .piano-dock { left: 0; right: 0; }
+}
+
+/* MU 2.35.17 — under 500px the 16 steps are two bars of 8, each pad at least 40. */
+@media (max-width: 499px) {
+  body.mu237.tab-tap #drums.is-stacked {
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  body.mu237.tab-tap #drums.is-stacked .bar-label {
+    flex: 0 0 auto;
+    height: 16px;
+    min-height: 16px;
+    margin: 0;
+    padding: 0 2px;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 16px;
+    color: #9fb3c8;
+  }
+  body.mu237.tab-tap #drums.is-stacked .drum-row {
+    grid-template-columns: minmax(0, 1.5rem) repeat(8, minmax(40px, 1fr)) !important;
+    gap: 4px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  body.mu237.tab-tap #drums.is-stacked .cell {
+    min-width: 40px !important;
+    width: auto !important;
+    height: 44px !important;
+    min-height: 40px !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+  body.mu237 #saved-line.bad {
+    display: block !important;
+    position: fixed;
+    z-index: 46;
+    left: 8px;
+    right: 8px;
+    bottom: calc(var(--player) + 8px);
+  }
+}
+/* The player clips overflow so the beat grid stays put. More opens upward, so let that card out. */
+body.mu237 .transport:has(#more-pop:not([hidden])) {
+  overflow: visible !important;
+  z-index: 28 !important;
 }

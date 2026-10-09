@@ -1,5 +1,5 @@
 /* One live version. Title, plates, and chips read this. Do not copy it elsewhere. */
-window.MU_VERSION = "MU 2.35.16";
+window.MU_VERSION = "MU 2.35.17";
 (function () {
   var v = window.MU_VERSION;
   document.title = document.title.indexOf("Teacher") >= 0

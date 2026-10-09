@@ -7,7 +7,7 @@
   <title>DJ Berty</title>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=mu15"/>
+  <link rel="stylesheet" href="./styles.css?v=mu17"/>
 </head>
 <body class="mu237">
   <em id="chip" hidden></em>
@@ -130,6 +130,7 @@
       <p class="hint" data-i18n="appsFollow">Your apps will use this language.</p>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23517">{ver} DJ Berty: Save puts your beat in My songs, and phone drum pads are big enough to tap.</span></li>
         <li><span data-mu="news23516">{ver} DJ Berty: a real piano with black keys, and a band stage you fill with chairs.</span></li>
         <li><span data-mu="news23515">{ver} DJ Berty: the version tag is right on phones, and changing the window size keeps your screen.</span></li>
         <li><span data-mu="news23514">MU 2.35.14 DJ Berty: the closed menu stays off the screen in Arabic and Dari.</span></li>
@@ -465,6 +466,10 @@
     <button type="button" id="tip-close" class="tip-x" hidden aria-label="Close">×</button>
   </div>
 
+  <div id="save-toast" class="undo-toast" hidden role="status">
+    <span data-mu="savedSongs">Saved to My songs</span>
+    <button type="button" id="save-open" data-mu="openBtn">Open</button>
+  </div>
     <div id="undo-toast" class="undo-toast" hidden role="status">
     <span data-mu="clearedSong">Song cleared.</span>
     <button type="button" id="undo-song" data-mu="bringBack">Bring it back</button>
@@ -497,12 +502,13 @@
     <button type="button" id="more-tools" class="btn" aria-expanded="false" aria-controls="more-pop" aria-label="More" title="More"><span class="ctl-word" data-mu="more">More ▾</span></button>
     <div id="more-pop" class="more-pop" hidden>
       <button type="button" id="wav-btn" class="btn" data-mu="saveSound">Save as sound</button>
+      <button type="button" id="save-file-more" class="btn" data-mu="saveFile">Save a file</button>
       <button type="button" id="midi-out" class="btn" data-mu="midi">MIDI</button>
     </div>
   </div>
 
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-menu="#menu-btn" defer></script>
-  <script src="./version.js?v=mu15"></script>
+  <script src="./version.js?v=mu17"></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -511,7 +517,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu15"></script>
-  <script src="./app.js?v=mu15"></script>
+  <script src="./strings.js?v=mu17"></script>
+  <script src="./app.js?v=mu17"></script>
 </body>
 </html>

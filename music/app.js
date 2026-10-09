@@ -783,39 +783,50 @@
   function renderDrums() {
     const box = $("drums");
     box.innerHTML = "";
+    const stacked = window.innerWidth < 500;
+    box.classList.toggle("is-stacked", stacked);
     const icons = {
       kick: '<svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
       snare: '<svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="3"/><path d="M6 12h12" stroke="currentColor" stroke-width="2"/></svg>',
       hat: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M3 9h18M4 15h16" fill="none" stroke="currentColor" stroke-width="3"/></svg>',
       clap: '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 16c2 3 6 3 8 0M7 12V7M12 12V5M17 12V7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>',
     };
-    ROWS.forEach(([id], index) => {
-      const label = mu("drum_" + id) || id;
-      const row = document.createElement("div");
-      row.className = "drum-row" + (index > 3 ? " is-extra" : "");
-      const name = document.createElement("b");
-      name.innerHTML = (icons[id] || "") + "<span>" + label + "</span>";
-      row.appendChild(name);
-      for (let i = 0; i < GRID; i++) {
-        const on = !!state.drums[id][i];
-        const cell = document.createElement("button");
-        cell.type = "button";
-        cell.className = "cell" + (on ? " on" : "") + (state.grid === i ? " now" : "");
-        cell.setAttribute("aria-pressed", on ? "true" : "false");
-        cell.setAttribute("aria-label", label + " beat " + (i + 1) + (on ? ", on" : ", off"));
-        cell.dataset.track = id;
-        cell.dataset.step = String(i);
-        cell.addEventListener("click", () => {
-          state.drums[id][i] = !state.drums[id][i];
-          keep();
-          renderDrums();
-          if (id === "kick" && i === 0 && state.drums.kick[0]) {
-            $("lesson").textContent = mu("kickPulse");
-          }
-        });
-        row.appendChild(cell);
+    const spans = stacked ? [[0, 8], [8, GRID]] : [[0, GRID]];
+    spans.forEach(([from, to], barIndex) => {
+      if (stacked) {
+        const lab = document.createElement("div");
+        lab.className = "bar-label";
+        lab.textContent = barIndex === 0 ? (mu("barOne") || "Bar 1") : (mu("barTwo") || "Bar 2");
+        box.appendChild(lab);
       }
-      box.appendChild(row);
+      ROWS.forEach(([id], index) => {
+        const label = mu("drum_" + id) || id;
+        const row = document.createElement("div");
+        row.className = "drum-row" + (index > 3 ? " is-extra" : "");
+        const name = document.createElement("b");
+        name.innerHTML = (icons[id] || "") + "<span>" + label + "</span>";
+        row.appendChild(name);
+        for (let i = from; i < to; i++) {
+          const on = !!state.drums[id][i];
+          const cell = document.createElement("button");
+          cell.type = "button";
+          cell.className = "cell" + (on ? " on" : "") + (state.grid === i ? " now" : "");
+          cell.setAttribute("aria-pressed", on ? "true" : "false");
+          cell.setAttribute("aria-label", label + " beat " + (i + 1) + (on ? ", on" : ", off"));
+          cell.dataset.track = id;
+          cell.dataset.step = String(i);
+          cell.addEventListener("click", () => {
+            state.drums[id][i] = !state.drums[id][i];
+            keep();
+            renderDrums();
+            if (id === "kick" && i === 0 && state.drums.kick[0]) {
+              $("lesson").textContent = mu("kickPulse");
+            }
+          });
+          row.appendChild(cell);
+        }
+        box.appendChild(row);
+      });
     });
   }
 
@@ -1231,10 +1242,8 @@
     const marks = document.querySelectorAll("#staff .abcjs-note, #staff .abcjs-rest");
     const evNow = evs[step];
     marks.forEach((node, i) => node.classList.toggle("now", !!(evNow && i === evNow.glyph)));
-    document.querySelectorAll(".cell").forEach((cell) => cell.classList.remove("now"));
-    document.querySelectorAll(".drum-row").forEach((row) => {
-      const cells = row.querySelectorAll(".cell");
-      if (cells[drum]) cells[drum].classList.add("now");
+    document.querySelectorAll(".cell").forEach((cell) => {
+      cell.classList.toggle("now", Number(cell.dataset.step) === drum);
     });
     const when = typeof opts.when === "number" ? opts.when : (ctx ? ctx.currentTime : 0);
     if (opts.visualOnly) return;
@@ -1365,7 +1374,20 @@
       if ($("lesson")) $("lesson").textContent = mu("hearAgain");
     }
   }
+  function paintPlayPos() {
+    const pos = $("play-pos");
+    if (!pos) return;
+    const evs = Song.events(state.song);
+    const n = evs.length || 1;
+    const idx = state.step < 0 ? 0 : ((state.step % n) + n) % n;
+    const ev = evs[idx];
+    const bar = ev ? ev.measure + 1 : Math.floor(Math.max(0, state.grid) / 8) + 1;
+    const beat = ev ? ev.beat + 1 : (Math.max(0, state.grid) % 8) + 1;
+    const tpl = mu("playPos") || "Bar {bar} · Beat {beat}";
+    pos.textContent = tpl.replace("{bar}", String(bar)).replace("{beat}", String(beat));
+  }
   function paintBeat(grid) {
+    paintPlayPos();
     const names = [];
     document.querySelectorAll(".drum-row").forEach((row) => {
       row.querySelectorAll(".cell").forEach((cell) => {
@@ -2760,6 +2782,7 @@
     closeMenu();
     resetScroll();
     state.parts = { drums: true, bass: true, chords: true, melody: true };
+    state.shelfId = "";
     applyPack("Rock");
     state.song.bpm = 104;
     state.song.tempo = 104;
@@ -3032,7 +3055,10 @@
     const box = $("my-saves");
     if (box) box.scrollIntoView({ block: "start" });
   });
-  if ($("save-dock")) $("save-dock").addEventListener("click", () => { if ($("save-btn")) $("save-btn").click(); });
+  if ($("save-dock")) $("save-dock").addEventListener("click", () => {
+    if (rememberPack()) showSaveToast(true);
+    else showSaveToast(false);
+  });
   if ($("share-btn")) $("share-btn").addEventListener("click", shareSong);
   if ($("wav-btn")) $("wav-btn").addEventListener("click", () => { saveWav().catch(() => { $("lesson").textContent = mu("wavFail"); }); });
   if ($("midi-out")) $("midi-out").addEventListener("click", saveMidi);
@@ -3141,7 +3167,7 @@
     $("n-wob").textContent = $("s-wob").value;
     $("lesson").textContent = "Wobble moves the sound up and down.";
   }));
-  $("save-btn").addEventListener("click", () => {
+  function downloadSongFile() {
     snapshotViz();
     const blob = new Blob([JSON.stringify({ family: "kulibert.music", song: JSON.parse(Song.serialize(state.song)), drums: state.drums }, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -3152,7 +3178,9 @@
     URL.revokeObjectURL(url);
     finishSong("save");
     $("lesson").textContent = "The file has the notes, the picture, and the reasons.";
-  });
+  }
+  $("save-btn").addEventListener("click", downloadSongFile);
+  if ($("save-file-more")) $("save-file-more").addEventListener("click", () => { downloadSongFile(); closeMore(); });
   const SHELF = "kulibert.music.shelf";
   function readShelf() {
     try {
@@ -3175,21 +3203,85 @@
       box.appendChild(b);
     });
   }
+  function saveName() {
+    const bar = $("songbar-name");
+    const shown = bar ? (bar.textContent || "").replace(/\s+/g, " ").trim() : "";
+    const fresh = mu("newSong") || "New song";
+    if (shown && shown !== fresh && shown !== "New song") return shown;
+    const titled = songTitle(state.song || {});
+    if (titled && titled !== "New song") return titled;
+    return shown || titled || fresh;
+  }
+  function saveLabel(item) {
+    if (!item) return "";
+    if (item.name) return String(item.name);
+    const titled = songTitle(item.song || {});
+    return titled === "New song" ? "" : titled;
+  }
+  function sameSave(item, pack) {
+    const id = item && (item.id || (item.song && item.song.id));
+    if (id && pack && pack.id && String(id) === String(pack.id)) return true;
+    const a = saveLabel(item);
+    const b = pack && pack.name ? String(pack.name) : "";
+    return !!(a && b && a === b);
+  }
+  function showSaveToast(ok) {
+    const toast = $("save-toast");
+    if (!toast) return;
+    const span = toast.querySelector("span");
+    const open = $("save-open");
+    const notSaved = "Not saved. Open the menu and tap Save a file.";
+    if (span) span.textContent = ok ? (mu("savedSongs") || "Saved to My songs") : notSaved;
+    if (open) open.hidden = !ok;
+    toast.hidden = false;
+    clearTimeout(showSaveToast.timer);
+    showSaveToast.timer = setTimeout(() => { toast.hidden = true; }, 3000);
+  }
+  function openMySongs() {
+    const toast = $("save-toast");
+    if (toast) toast.hidden = true;
+    showHome();
+    const box = $("my-saves");
+    if (box && box.scrollIntoView) box.scrollIntoView({ block: "start" });
+  }
   function rememberPack() {
-    const list = readShelf();
-    list.unshift({
-      song: JSON.parse(Song.serialize(state.song)),
-      drums: state.drums,
+    const name = saveName();
+    if (state.song && name && state.song.alias !== name) state.song.alias = name;
+    if (!state.shelfId) state.shelfId = Math.random().toString(36).slice(2, 10);
+    const song = JSON.parse(Song.serialize(state.song));
+    const pack = {
+      id: state.shelfId,
+      name: name,
+      song: song,
+      drums: JSON.parse(JSON.stringify(state.drums)),
       pub: false,
       maker: (window.KulibertWho && window.KulibertWho.read() && window.KulibertWho.read().alias) || "You",
       instrument: state.band || "",
+    };
+    const list = readShelf();
+    let replaced = false;
+    const next = [];
+    list.forEach((item) => {
+      if (sameSave(item, pack)) {
+        if (!replaced) next.push(pack);
+        replaced = true;
+        return;
+      }
+      next.push(item);
     });
+    if (!replaced) next.unshift(pack);
+    const capped = next.slice(0, 12);
     try {
-      localStorage.setItem(SHELF, JSON.stringify(list.slice(0, 12)));
+      const body = JSON.stringify(capped);
+      localStorage.setItem(SHELF, body);
+      if (localStorage.getItem(SHELF) !== body) throw new Error("short");
     } catch (err) {
       paintSaved(false);
+      return false;
     }
     paintShelf();
+    paintSongShelf();
+    return true;
   }
   function loadPack(data) {
     const wasPlaying = !!state.playing;
@@ -3682,7 +3774,7 @@
         row.className = "song-row";
         const text = document.createElement("div");
         const strong = document.createElement("strong");
-        setBdi(strong, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
+        setBdi(strong, item.name || (songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song)));
         const span = document.createElement("span");
         span.textContent = item.pub ? (mu("classWord") || "Class") : (mu("onlyHere") || "Only this Chromebook");
         text.append(strong, span);
@@ -3691,7 +3783,9 @@
         open.className = "btn";
         open.textContent = mu("openBtn") || "Open";
         open.addEventListener("click", () => {
+          state.shelfId = item.id || state.shelfId || "";
           loadPack(item);
+          stop();
           paintSongBar();
           document.body.classList.remove("is-home");
           $("home").hidden = true;
@@ -3702,6 +3796,7 @@
         remix.className = "btn";
         remix.textContent = mu("remix") || "Remix";
         remix.addEventListener("click", () => {
+          state.shelfId = "";
           loadPack(item);
           const TitlesNow = window.KulibertTitles;
           if (TitlesNow) state.song.alias = TitlesNow.pickTitle();
@@ -3717,7 +3812,12 @@
           $("how").textContent = "A copy of your save. Change it.";
           rememberPack();
         });
-        row.append(text, open, remix);
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "btn";
+        del.textContent = mu("del") || "Delete";
+        del.addEventListener("click", () => deleteSave(item));
+        row.append(text, open, remix, del);
         saveBox.appendChild(row);
       });
       readClass().forEach((item) => {
@@ -4228,7 +4328,11 @@
     box.style.setProperty("height", next + "px", "important");
     box.style.setProperty("max-height", next + "px", "important");
   }
-  window.addEventListener("resize", () => requestAnimationFrame(fitTapRows));
+  window.addEventListener("resize", () => {
+    const box = $("drums");
+    if (box && box.classList.contains("is-stacked") !== (window.innerWidth < 500)) renderDrums();
+    requestAnimationFrame(fitTapRows);
+  });
   window.addEventListener("resize", () => {
     const tab = state.tab;
     if (!tab) return;
@@ -5432,10 +5536,44 @@
     ROWS.forEach(([id]) => { drums[id] = Array(GRID).fill(false); });
     return drums;
   }
-  function showUndo(on) {
+  let shelfUndo = null;
+  let undoKind = "";
+  let undoTimer = 0;
+  function hideUndo() {
+    clearTimeout(undoTimer);
+    undoTimer = 0;
+    undoKind = "";
+    shelfUndo = null;
+    const toast = $("undo-toast");
+    if (toast) toast.hidden = true;
+    const span = document.querySelector("#undo-toast span");
+    if (span) span.textContent = mu("clearedSong") || "Song cleared.";
+  }
+  function armUndo(kind, ms) {
+    undoKind = kind;
     const toast = $("undo-toast");
     if (!toast) return;
-    toast.hidden = !on;
+    toast.hidden = false;
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(hideUndo, ms);
+  }
+  function deleteSave(item) {
+    const list = readShelf();
+    const index = list.findIndex((row) => sameSave(row, { id: item.id, name: item.name || saveLabel(item) }));
+    if (index < 0) return;
+    const removed = list[index];
+    list.splice(index, 1);
+    try { localStorage.setItem(SHELF, JSON.stringify(list)); } catch (err) { return; }
+    paintShelf();
+    paintSongShelf();
+    shelfUndo = { item: removed, index: index };
+    const span = document.querySelector("#undo-toast span");
+    if (span) span.textContent = mu("deletedSong") || "Deleted.";
+    armUndo("shelf", 5000);
+  }
+  function showUndo(on) {
+    if (!on) { hideUndo(); return; }
+    armUndo("clear", 5900);
   }
   function clearTakes() {
     takeUndo = {
@@ -5452,6 +5590,9 @@
       drums: emptyDrums(),
       hold: true,
     });
+    shelfUndo = null;
+    const cleared = document.querySelector("#undo-toast span");
+    if (cleared) cleared.textContent = mu("clearedSong") || "Song cleared.";
     showUndo(true);
     const lesson = $("lesson");
     if (lesson) lesson.textContent = mu("clearedSong") || "Song cleared.";
@@ -5615,7 +5756,28 @@
   const clearSongBtn = $("clear-song");
   if (clearSongBtn) clearSongBtn.addEventListener("click", clearTakes);
   const undoSongBtn = $("undo-song");
-  if (undoSongBtn) undoSongBtn.addEventListener("click", undoTakes);
+  if (undoSongBtn) undoSongBtn.addEventListener("click", () => {
+    if (undoKind === "shelf" && shelfUndo) {
+      const snap = shelfUndo;
+      shelfUndo = null;
+      hideUndo();
+      const list = readShelf();
+      list.splice(Math.max(0, Math.min(snap.index, list.length)), 0, snap.item);
+      try { localStorage.setItem(SHELF, JSON.stringify(list.slice(0, 12))); } catch (err) {}
+      paintShelf();
+      paintSongShelf();
+      return;
+    }
+    undoTakes();
+  });
+  if ($("save-open")) $("save-open").addEventListener("click", openMySongs);
+  document.addEventListener("pointerdown", (ev) => {
+    if (undoKind !== "clear") return;
+    const toast = $("undo-toast");
+    if (!toast || toast.hidden) return;
+    if (toast.contains(ev.target)) return;
+    hideUndo();
+  }, true);
   if (window.MuI18n && window.MuI18n.paint) window.MuI18n.paint();
 
   const canvas = $("viz");
