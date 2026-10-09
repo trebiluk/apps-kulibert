@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.88', date: '2026-10-09', lines: {
+    en: ['Your practice count is the same everywhere, and xMax works on the first click.'],
+    uk: ['Рахунок практики однаковий скрізь, і xMax працює з першого кліку.'],
+    ru: ['Счёт практики один и тот же везде, и xMax срабатывает с первого щелчка.'],
+    es: ['Tu cuenta de práctica es la misma en todas partes, y xMax funciona al primer clic.'],
+    ar: ['عدد التدريب واحد في كل مكان، وxMax يعمل من أول نقرة.'],
+    'fa-AF': ['شمار تمرینت همه‌جا یکی است، و xMax با کلیک اول کار می‌کند.'],
+    rw: ['Umubare w\'imyitozo ni umwe ahantu hose, kandi xMax ikora ku gukanda kwa mbere.'],
+    ti: ['ናይ ምልምማድ ቑጽሪ ኩሉ ቦታ ሓደ እዩ፡ xMax ድማ ካብ ቀዳማይ ጠውቂ ይሰርሕ።'],
+  }},
   { v: '2.5.87', date: '2026-10-09', lines: {
     en: ['Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside.'],
     uk: ['Скло, саджанці й верстак виглядають як вони є, а піч і скриня показують саме те, що всередині.'],

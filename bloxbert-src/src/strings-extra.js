@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside.',
+    whatsNewBody: 'Your practice count is the same everywhere, and xMax works on the first click.',
     makeAsk: 'Make {n}? Uses {uses}', leftLine: '{item} left: {n}', cancel: 'Cancel',
     doorTall: 'Door (2 blocks tall)', hungryEat: 'You are hungry. Break {leaves} for {berries}, or bake {bread} from {flour} in the {oven}.',
     lostWhyBag: 'The bag was full', lostWhyAside: 'From an older save',
@@ -218,7 +218,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Скло, саджанці й верстак виглядають як вони є, а піч і скриня показують саме те, що всередині.',
+    whatsNewBody: 'Рахунок практики однаковий скрізь, і xMax працює з першого кліку.',
     makeAsk: 'Зробити {n}? Піде {uses}', leftLine: '{item} лишилось: {n}', cancel: 'Скасувати',
     doorTall: 'Двері (2 блоки заввишки)', hungryEat: 'Ти голодний. Ламай {leaves} заради {berries}, або спечи {bread} з {flour} в {oven}.',
     lostWhyBag: 'Сумка була повна', lostWhyAside: 'Зі старого збереження',
@@ -240,7 +240,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Стекло, саженцы и верстак выглядят как они сами, а печь и сундук показывают ровно то, что внутри.',
+    whatsNewBody: 'Счёт практики один и тот же везде, и xMax срабатывает с первого щелчка.',
     makeAsk: 'Сделать {n}? Уйдёт {uses}', leftLine: '{item} осталось: {n}', cancel: 'Отмена',
     doorTall: 'Дверь (2 блока в высоту)', hungryEat: 'Ты голоден. Ломай {leaves} ради {berries}, или испеки {bread} из {flour} в {oven}.',
     lostWhyBag: 'Сумка была полна', lostWhyAside: 'Из старого сохранения',
@@ -262,7 +262,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'El vidrio, los brotes y el banco se ven como son, y el horno y la caja muestran justo lo que hay dentro.',
+    whatsNewBody: 'Tu cuenta de práctica es la misma en todas partes, y xMax funciona al primer clic.',
     makeAsk: '¿Hacer {n}? Usa {uses}', leftLine: '{item} quedan: {n}', cancel: 'Cancelar',
     doorTall: 'Puerta (2 bloques de alto)', hungryEat: 'Tienes hambre. Rompe {leaves} para {berries}, o hornea {bread} con {flour} en el {oven}.',
     lostWhyBag: 'La bolsa estaba llena', lostWhyAside: 'De un guardado viejo',
@@ -284,7 +284,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الزجاج والشتلات ومنضدة العمل تبدو كما هي، والفرن والصندوق يُريان ما بداخلهما بالضبط.',
+    whatsNewBody: 'عدد التدريب واحد في كل مكان، وxMax يعمل من أول نقرة.',
     makeAsk: 'تصنع {n}؟ يستخدم {uses}', leftLine: 'يبقى {item}: {n}', cancel: 'إلغاء',
     doorTall: 'باب (بارتفاع مكعبين)', hungryEat: 'أنت جائع. اكسر {leaves} من أجل {berries}، أو اخبز {bread} من {flour} في {oven}.',
     lostWhyBag: 'الحقيبة كانت ممتلئة', lostWhyAside: 'من حفظ أقدم',
@@ -306,7 +306,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'شیشه، نهال و میز کار مثل خودشان دیده می‌شوند، و تنور و صندوق دقیقاً آنچه داخل است را نشان می‌دهند.',
+    whatsNewBody: 'شمار تمرینت همه‌جا یکی است، و xMax با کلیک اول کار می‌کند.',
     makeAsk: '{n} بسازی؟ مصرف {uses}', leftLine: '{item} مانده: {n}', cancel: 'لغو',
     doorTall: 'در (۲ بلاک بلند)', hungryEat: 'گرسنه‌ای. {leaves} را بشکن تا {berries} بیابی، یا {bread} را از {flour} در {oven} بپز.',
     lostWhyBag: 'بکس پر بود', lostWhyAside: 'از ذخیره کهنه‌تر',
@@ -328,7 +328,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ikirahure, ingemwe n\'ameza bisa nk\'uko ari, kandi icyoto n\'agasanduku byerekana neza ibiri muri byo.',
+    whatsNewBody: 'Umubare w\'imyitozo ni umwe ahantu hose, kandi xMax ikora ku gukanda kwa mbere.',
     makeAsk: 'Ukore {n}? Ikoresha {uses}', leftLine: '{item} yasigaye: {n}', cancel: 'Hagarika',
     doorTall: 'Urugi (uburebure bwa block 2)', hungryEat: 'Urashonje. Vuna {leaves} ubone {berries}, cyangwa teka {bread} ukoreshe {flour} mu {oven}.',
     lostWhyBag: 'Agasaho kari karuzuye', lostWhyAside: 'Bivuye mu kubika gushaje',
@@ -350,7 +350,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'መስታወትን ንእስቲ ገረብን ሰደቓን ከም ነብሶም ይረኣዩ፡ እቶንን ሳንዱቅን ድማ ኣብ ውሽጦም ዘሎ ብትኽክል የርእዩ።',
+    whatsNewBody: 'ናይ ምልምማድ ቑጽሪ ኩሉ ቦታ ሓደ እዩ፡ xMax ድማ ካብ ቀዳማይ ጠውቂ ይሰርሕ።',
     makeAsk: 'ግበር {n}? ይጥቀም {uses}', leftLine: '{item} ተሪፉ: {n}', cancel: 'ሰርዝ',
     doorTall: 'ማዕጾ (2 ብሎክ ቁመት)', hungryEat: 'ጥሙኻ። {leaves} ሰብር {berries} ንምርካብ፡ ወይ {bread} ካብ {flour} ኣብ {oven} ኣብስል።',
     lostWhyBag: 'ቦርሳ መሊኡ ነበረ', lostWhyAside: 'ካብ ዝነበረ ዓቐብ',

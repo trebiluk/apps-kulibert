@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.87 Glass, saplings, Workbench, Oven and Box).
+Updated Fri Oct 9 2026 (Build: 2.5.88 Practice count and xMax).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -69,6 +69,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.87 Glass, saplings, Workbench, Oven and Box).
 - [x] **2.5.85 First Make, empty Lost & Found:** Make crafts on the first click after Fill, for every recipe. A new world does not park 2 saplings in Lost & Found. The line says why anything waiting there got there.
 - [x] **2.5.86 Hunger tip:** The tip names berries from leaves and bread from flour in the oven. It shows again after you eat, at most once every 5 minutes of play. The first berry from leaves says how to eat it.
 - [x] **2.5.87 Icons and machine slots:** Glass is a light pane, a sapling is a stem with two leaves, and the Workbench top is a grid with a saw and hammer. Oven Fuel and Input show the real items. The Box sits on the machine card and says how many slots are used.
+- [x] **2.5.88 Practice count and xMax:** The chip, the Wallet and the shop read one practice total, and the chip updates on every earn and spend. xMax opens its confirm on the first click after Fill.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -129,6 +130,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.87 Glass, saplings, Workbench, Oven and Box).
 | 1p | 2.5.85 | Make works on the first click every time, and a new world starts with an empty Lost & Found | shipped |
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
+| 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |

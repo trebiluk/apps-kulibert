@@ -20,7 +20,7 @@ export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
   let bag = bags.survival
   bindStationBag(() => bag.slots)
-  const wallet = createWallet(ECON)
+  const wallet = createWallet(ECON, () => paintChip())
   const meta = new Map()
   let mode = 'survival'
   let home = null
@@ -275,12 +275,16 @@ export function createSession(api) {
     return false
   }
   function paintChip() {
+    const n = wallet.balance()
     const el = document.getElementById('wallet-chip')
-    if (!el) return
-    el.hidden = mode !== 'survival'
-    el.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + '</bdi> <small>' + t('practice') + '</small>'
-    el.title = t('practiceTip')
-    el.setAttribute('aria-label', t('practiceTip'))
+    if (el) {
+      el.hidden = mode !== 'survival'
+      el.innerHTML = '<bdi>⚙ ' + n + '</bdi> <small>' + t('practice') + '</small>'
+      el.title = t('practiceTip')
+      el.setAttribute('aria-label', t('practiceTip'))
+    }
+    const live = document.querySelector('#sheet[data-panel="wallet"] .balance')
+    if (live) live.innerHTML = '<bdi>⚙ ' + n + ' ' + t('practice') + '</bdi>'
   }
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
@@ -865,8 +869,6 @@ export function createSession(api) {
   let trayNote = ''
   let xmaxAsk = ''
   let leftFor = ''
-  let fillAt = 0
-  let askAt = 0
   function nearestOvenKey() {
     const p = api.pos()
     const px = Math.floor(p[0]), py = Math.floor(p[1]), pz = Math.floor(p[2])
@@ -1176,7 +1178,6 @@ export function createSession(api) {
       fillBtn.addEventListener('click', (e) => {
         e.preventDefault()
         e.stopPropagation()
-        fillAt = performance.now()
         const takes = fillTakes(r, (item) => bag.count(item), trayPlaced)
         let any = false
         takes.forEach((takeN, i) => {
@@ -1246,10 +1247,8 @@ export function createSession(api) {
       max.addEventListener('click', (e) => {
         e.preventDefault()
         e.stopPropagation()
-        if (performance.now() - fillAt < 500) return
         if (!st.ok || times < 2) return
         xmaxAsk = r.id
-        askAt = performance.now()
         paintCraft(g)
       })
       keys.append(max)
@@ -1269,7 +1268,6 @@ export function createSession(api) {
         yes.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
-          if (performance.now() - askAt < 400) return
           returnTray()
           const n = maxTimes(r, bag)
           if (n > 0) {
@@ -1383,14 +1381,14 @@ export function createSession(api) {
   function paintWallet(g) {
     const p = document.createElement('p')
     p.className = 'gnote balance'
-    p.innerHTML = '<bdi>⚙ ' + wallet.state.cogs + ' ' + t('practice') + '</bdi>'
+    p.innerHTML = '<bdi>⚙ ' + wallet.balance() + ' ' + t('practice') + '</bdi>'
     g.append(p)
     const send = document.createElement('button')
     send.type = 'button'
     send.className = 'gtile'
     send.innerHTML = '<span class="gic">📤</span><span class="glbl">' + t('sendTeacher') + '</span>'
     send.addEventListener('click', () => {
-      if (wallet.state.cogs < 1) return
+      if (wallet.balance() < 1) return
       wallet.post({ kind: 'to-teacher', cogs: -1, perk: 'shout', status: 'waiting', by: 'you' })
       paintChip()
       api.toast(t('sentTeacher'))
@@ -1701,7 +1699,7 @@ export function createSession(api) {
   }
   function buy(k, n, price) {
     if (!(wallet.state.found || []).includes(k)) { api.toast(t('findFirst')); return false }
-    if (wallet.state.cogs < price * n) { api.toast(t('needMore').replace('{n}', price * n - wallet.state.cogs)); return false }
+    if (wallet.balance() < price * n) { api.toast(t('needMore').replace('{n}', price * n - wallet.balance())); return false }
     if (bag.add(k, n)) { api.toast(t('bagFull')); return false }
     wallet.state.spentToday += price * n
     wallet.post({ kind: 'buy', item: k, n, cogs: -price * n, by: 'tally' })

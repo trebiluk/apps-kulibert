@@ -1,19 +1,28 @@
 // Append-only practice ledger. sum(ledger) + start === cogs. Start row is a 0 marker.
-export function createWallet(cfg) {
+// onChange fires after every earn or spend so the chip, Wallet and shop stay on this total.
+export function createWallet(cfg, onChange) {
   const state = {
     start: cfg.start, cogs: cfg.start, seq: 0, day: '', soldToday: {}, spentToday: 0, picked: [], found: [],
     ledger: [], dial: cfg.dial, dailyCap: cfg.dailyCap,
   }
   function check() {
-    const sum = state.ledger.reduce((n, r) => n + r.cogs, 0)
+    const sum = state.ledger.reduce((n, r) => n + (r.cogs || 0), 0)
     if (sum + state.start !== state.cogs) state.cogs = sum + state.start
+  }
+  function changed() {
+    check()
+    if (typeof onChange === 'function') onChange(state.cogs)
+  }
+  function balance() {
+    check()
+    return state.cogs
   }
   function post(row) {
     state.seq += 1
     state.ledger.push({ tx: 's-' + state.seq, at: Date.now(), by: 'you', ...row })
     if (state.ledger.length > 500) state.ledger.splice(0, state.ledger.length - 500)
-    state.cogs += row.cogs
-    check()
+    state.cogs += row.cogs || 0
+    changed()
     return state.ledger[state.ledger.length - 1]
   }
   function load(econ) {
@@ -29,7 +38,7 @@ export function createWallet(cfg) {
     state.dial = econ.dial || cfg.dial
     state.dailyCap = econ.dailyCap || cfg.dailyCap
     state.cogs = econ.cogs ?? state.start
-    check()
+    changed()
   }
   function dump() {
     return {
@@ -38,5 +47,5 @@ export function createWallet(cfg) {
       dial: state.dial, dailyCap: state.dailyCap,
     }
   }
-  return { state, post, load, dump, check }
+  return { state, post, load, dump, check, balance }
 }
