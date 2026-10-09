@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.85', date: '2026-10-09', lines: {
+    en: ['Make works on the first click every time, and a new world starts with an empty Lost & Found.'],
+    uk: ['Зробити працює з першого кліку щоразу, і новий світ починається без Загубленого.'],
+    ru: ['Сделать срабатывает с первого щелчка каждый раз, и новый мир начинается без Потерянного.'],
+    es: ['Hacer funciona al primer clic cada vez, y un mundo nuevo empieza sin Perdidos.'],
+    ar: ['الصنع يعمل من أول نقرة كل مرة، والعالم الجديد يبدأ بلا مفقودات.'],
+    'fa-AF': ['ساختن هر بار با کلیک اول کار می‌کند، و دنیای تازه بدون گم‌شده‌ها شروع می‌شود.'],
+    rw: ['Kora ikora ku gukanda kwa mbere buri gihe, kandi isi nshya itangira nta Ibyabuze.'],
+    ti: ['ምግባር ካብ ቀዳማይ ጠውቂ ኩሉ ግዜ ይሰርሕ፡ ሓድሽ ዓለም ድማ ብዘይ ዝጠፍአ ይጅምር።'],
+  }},
   { v: '2.5.84', date: '2026-10-09', lines: {
     en: ['Wheat looks like wheat, closed doors look closed, and the helper cards explain themselves.'],
     uk: ['Пшениця виглядає як пшениця, зачинені двері виглядають зачиненими, і картки-підказки пояснюють себе.'],

@@ -1,6 +1,18 @@
 // Loose drops. They never despawn. Past 256 piles the ground is full, so the rest wait in Lost & Found.
 export const DROP_CAP = 256
-export function lostLabelKey() { return 'groundFull' }
+export function lostWhyKey(why) {
+  if (why === 'bag') return 'lostWhyBag'
+  if (why === 'aside') return 'lostWhyAside'
+  return 'groundFull'
+}
+export function lostWhyKeys(piles) {
+  const keys = []
+  for (const d of piles || []) {
+    const k = lostWhyKey(d && d.why)
+    if (!keys.includes(k)) keys.push(k)
+  }
+  return keys
+}
 export const PICK_R = 1.5
 export const MAGNET_R = 2.5
 export const MERGE_R = 2
@@ -24,8 +36,10 @@ export function mergeOrAdd(drops, lost, drop) {
   if (near) { near.n += n; return 'merged' }
   if (drops.length >= DROP_CAP) {
     const pile = lost.find((d) => d.item === drop.item)
-    if (pile) pile.n += n
-    else lost.push({ item: drop.item, n })
+    if (pile) {
+      pile.n += n
+      if (!pile.why) pile.why = drop.why || 'ground'
+    } else lost.push({ item: drop.item, n, why: drop.why || 'ground' })
     return 'lost'
   }
   drops.push({ id: seq++, x: drop.x, y: drop.y, z: drop.z, item: drop.item, n, at: drop.at || 0 })

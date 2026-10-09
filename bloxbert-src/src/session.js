@@ -9,7 +9,7 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostLabelKey } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys } from './drops.js'
 import { emptyBox } from './box.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
@@ -64,7 +64,7 @@ export function createSession(api) {
     if (!wallet.state.found.includes(item)) wallet.state.found.push(item)
   }
   function spawnDrop(item, n, x, y, z, why) {
-    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now() })
+    const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground' })
     if (where === 'lost') api.toast(t('lostFound'))
     else if (why === 'q') api.toast(t('dropped'))
     else if (why === 'full') api.toast(t('bagFull'))
@@ -717,7 +717,7 @@ export function createSession(api) {
       const lostBtn = document.createElement('button')
       lostBtn.type = 'button'
       lostBtn.className = 'keycap lost-row'
-      lostBtn.textContent = t('lostBtn') + ' · ' + t(lostLabelKey()) + ' · ' + n
+      lostBtn.textContent = t('lostBtn') + ' · ' + lostWhyKeys(lost).map((k) => t(k)).join(', ') + ' · ' + n
       lostBtn.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
       g.append(lostBtn)
     }
@@ -1200,7 +1200,6 @@ export function createSession(api) {
         makeBtn.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
-          if (performance.now() - fillAt < 500) return
           if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
           if (st.station || st.gate) return
           const outN = r.out[1]
@@ -1902,11 +1901,11 @@ export function createSession(api) {
     }
     paintHotbar()
   }
-  function lostAdd(item, n) {
+  function lostAdd(item, n, why) {
     if (!item || !(n > 0)) return
     const hit = lost.find((d) => d.item === item)
     if (hit) hit.n += n
-    else lost.push({ item, n })
+    else lost.push({ item, n, why: why || 'aside' })
     if (api.markDirty) api.markDirty()
   }
   function tryCraft(name) {
@@ -1958,7 +1957,7 @@ export function createSession(api) {
       econ: wallet.dump(),
       meta: m,
       drops: ground.map((d) => ({ id: d.id, x: +d.x.toFixed(2), y: +d.y.toFixed(2), z: +d.z.toFixed(2), item: d.item, n: d.n, at: d.at })),
-      lost: lost.map((d) => ({ item: d.item, n: d.n })),
+      lost: lost.map((d) => ({ item: d.item, n: d.n, why: d.why || 'ground' })),
     }
   }
   function load(doc) {
@@ -1992,11 +1991,11 @@ export function createSession(api) {
       ground.push({ id: d.id || ground.length + 1, x: +d.x || 0, y: +d.y || 0, z: +d.z || 0, item: d.item, n: d.n | 0, at: d.at || 0 })
       noteId(d.id || 0)
     }
-    for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0 })
+    for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0, why: d.why === 'ground' || d.why === 'bag' || d.why === 'aside' ? d.why : 'aside' })
     for (const s of extra) if (s && ITEMS[s.item] && s.n > 0) {
-      const hit = lost.find((d) => d.item === s.item)
+      const hit = lost.find((d) => d.item === s.item && d.why === 'aside')
       if (hit) hit.n += s.n
-      else lost.push({ item: s.item, n: s.n })
+      else lost.push({ item: s.item, n: s.n, why: 'aside' })
     }
     if (extra.length) api.toast(t('keptAside'))
     for (const s of bags.survival.slots) if (s) markFound(s.item)

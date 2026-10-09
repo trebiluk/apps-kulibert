@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.84'
+const VERSION = '2.5.85'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -37,6 +37,7 @@ import { FLOOR, STATIONS, keptCell } from './town.js'
 import { coalHere, plantHere, wildWood } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
+import { setGate, gates } from './data/gates.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
 import { isDoor, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
@@ -1097,9 +1098,10 @@ session.mountEnergy(noa)
 let pendingGifts = []
 let gifts = {}
 function grantSaplings() {
-  if (!session || !session.lostAdd) return
+  if (!session || !session.give) return
   if (gifts.sapling2) return
-  session.lostAdd('sapling', 2)
+  const have = session.bag && session.bag.count ? session.bag.count('sapling') : 0
+  if (have < 2) session.give('sapling', 2 - have)
   gifts.sapling2 = true
   dirty = true
 }
@@ -1219,7 +1221,7 @@ basics = createBasics({
   survival: () => survivalOn(),
   teacher: () => teacherOn(),
   give: (item, n) => session && session.give(item, n),
-  gift: (item, n) => session && session.lostAdd && session.lostAdd(item, n),
+  gift: (item, n) => session && session.give && session.give(item, n || 1),
   card: (text) => showCard(text),
   badge: (text) => showCard(text),
   flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0' },
@@ -3463,6 +3465,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     kept(x, y, z) { return keptCell(x, y, z) },
     world(x, y, z) { return noa.world.getBlockID(x, y, z) },
     fresh() { resetWorld() },
+    parkLost(item, n, why) { session.lostAdd(item, n, why) },
     hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2] } : null },
     bunk() {
       const r = RECIPES.find((x) => x.id === 'bunk')
