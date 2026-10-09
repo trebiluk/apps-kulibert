@@ -20,9 +20,10 @@ function boxPath(g, x, y, w, h, r) {
   g.closePath()
 }
 function paintCrop(g, stage) {
+  const greens = ['#9BE86A', '#3CB043', '#146B18']
   const gold = stage === 3
-  g.strokeStyle = gold ? '#e6b422' : '#3D8C32'
-  g.lineWidth = 3
+  g.strokeStyle = gold ? '#e6b422' : greens[stage]
+  g.lineWidth = 4
   g.beginPath()
   const top = 40 - (16 + stage * 6)
   g.moveTo(24, 42)
@@ -31,7 +32,7 @@ function paintCrop(g, stage) {
   if (stage >= 2) { g.moveTo(24, 28); g.lineTo(34, 18) }
   g.stroke()
   if (stage >= 2) {
-    g.fillStyle = gold ? '#f6c453' : '#d6b25e'
+    g.fillStyle = gold ? '#f6c453' : '#146B18'
     g.beginPath()
     g.ellipse(24, top, 6, 4, 0, 0, Math.PI * 2)
     g.fill()

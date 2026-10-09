@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.100', date: '2026-10-09', lines: {
+    en: ['Ponds near the start make wet soil easy, and growing wheat now looks green until it is really ripe.'],
+    uk: ['Ставки біля старту роблять мокрий ґрунт легким, і пшениця лишається зеленою, поки справді не дозріє.'],
+    ru: ['Пруды у старта делают мокрую почву лёгкой, и пшеница остаётся зелёной, пока правда не поспеет.'],
+    es: ['Los estanques cerca del inicio hacen fácil la tierra húmeda, y el trigo se ve verde hasta que está de verdad maduro.'],
+    ar: ['برك قرب البداية تجعل التربة الرطبة سهلة، والقمح يبقى أخضر حتى ينضج حقاً.'],
+    'fa-AF': ['آبگیرهای نزدیک آغاز، خاک خیس را آسان می‌کنند، و گندم سبز می‌ماند تا وقتی واقعاً برسد.'],
+    rw: ['Ibiyaga hafi y\'intangiriro bituma ubutaka bumeze bworoshye, kandi ingano iguma y\'icyatsi kugeza yuzuye.'],
+    ti: ['ኣብ ጥቓ መጀመርታ ዘለዉ ቑልቀላት ርጥብ ሓመድ የቐልልዎ፡ ስርናይ ድማ ክሳብ ዝበስል ሓምላይ ይቕጽል።'],
+  }},
   { v: '2.5.99', date: '2026-10-09', lines: {
     en: ['Boxes use the new shared slots: click, Shift-click and drag all work the same way.'],
     uk: ['Скрині використовують нові спільні комірки: клік, Shift-клік і перетягування працюють однаково.'],

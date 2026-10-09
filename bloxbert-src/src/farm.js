@@ -12,8 +12,10 @@ export function isCropId(id) {
 
 export function stage(grown) {
   const g = +grown || 0
-  if (g <= 0) return 0
-  return Math.min(3, Math.floor(g / (RIPE_MS / 4)))
+  if (g * 100 < RIPE_MS * 33) return 0
+  if (g * 100 < RIPE_MS * 66) return 1
+  if (g < RIPE_MS) return 2
+  return 3
 }
 
 export function advance(crop, now) {

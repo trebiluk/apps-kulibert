@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Boxes use the new shared slots: click, Shift-click and drag all work the same way.",
+  "whatsNewBody": "Ponds near the start make wet soil easy, and growing wheat now looks green until it is really ripe.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

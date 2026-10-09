@@ -103,3 +103,131 @@ export function berryTuft(x, y, z) {
   const h = (Math.imul(x | 0, 374761393) + Math.imul(y | 0, 668265263) + Math.imul(z | 0, 1274126177)) >>> 0
   return h % 4 === 0
 }
+
+// Still-water ponds a new Survival kid can walk to. Spawn is the feet spot [8.5, _, 1.5].
+export const POND_SPAWN = [8.5, 1.5]
+const TOWN_Y = 4
+const PLOTS = [[18, 25, 4, 11], [18, 25, 15, 22], [4, 11, 16, 23]]
+
+export function surfaceY(x, z) {
+  if (x >= -20 && x <= 36 && z >= -18 && z <= 28) return TOWN_Y
+  return groundY(x, z)
+}
+
+function townGrass(x, z) {
+  if (x < -20 || x > 36 || z < -18 || z > 28) return false
+  const ice = (x + 10) * (x + 10) + (z - 14) * (z - 14)
+  if (ice <= 36) return false
+  if (z >= -1 && z <= 1 && x >= -18 && x <= 34) return false
+  if (x >= 4 && x <= 13 && z >= 4 && z <= 11) return false
+  for (const [x0, x1, z0, z1] of PLOTS) {
+    if (x >= x0 && x <= x1 && z >= z0 && z <= z1) return false
+  }
+  return true
+}
+
+function wildBlocked(x, z) {
+  const h = groundY(x, z)
+  if (h <= 1) return true
+  for (let y = h; y <= h + 8; y++) {
+    if (wildWood(x, y, z)) return true
+    const p = plantHere(x, y, z, h, false)
+    if (p === 'log' || p === 'leaves' || p === 'stone' || p === 'sand') return true
+  }
+  return false
+}
+
+function clearGrass(x, z) {
+  if (townTrunk(x, z)) return townGrass(x, z)
+  return !wildBlocked(x, z)
+}
+
+function pondFits(x, z, w) {
+  const h = surfaceY(x, z)
+  for (let dx = -1; dx <= w; dx++) for (let dz = -1; dz <= w; dz++) {
+    const cx = x + dx
+    const cz = z + dz
+    if (surfaceY(cx, cz) !== h) return false
+    if (!clearGrass(cx, cz)) return false
+  }
+  return true
+}
+
+function distSpawn(x, z) {
+  const dx = x + 0.5 - POND_SPAWN[0]
+  const dz = z + 0.5 - POND_SPAWN[1]
+  return Math.hypot(dx, dz)
+}
+
+let pondCache = null
+export function starterPonds(seed = 1) {
+  const s = seed | 0
+  if (pondCache && pondCache.seed === s) return pondCache.list
+  const want = 2 + (Math.floor(hash(s + 19, 3) * 2) % 2)
+  const sx = Math.round(POND_SPAWN[0])
+  const sz = Math.round(POND_SPAWN[1])
+  const cands = []
+  for (let x = sx - 30; x <= sx + 30; x++) {
+    for (let z = sz - 30; z <= sz + 30; z++) {
+      const sizes = [3, 4, 5]
+      const spin = Math.floor(hash(x + s, z + 7) * 3)
+      for (let n = 0; n < 3; n++) {
+        const size = sizes[(spin + n) % 3]
+        let near = 99
+        let far = 0
+        for (let dx = 0; dx < size; dx++) for (let dz = 0; dz < size; dz++) {
+          const d = distSpawn(x + dx, z + dz)
+          if (d < near) near = d
+          if (d > far) far = d
+        }
+        if (near < 8 || far > 30) continue
+        if (!pondFits(x, z, size)) continue
+        cands.push({ x, z, w: size, near })
+        break
+      }
+    }
+  }
+  cands.sort((a, b) => a.near - b.near || a.x - b.x || a.z - b.z)
+  const found = []
+  for (const c of cands) {
+    if (found.length >= want) break
+    if (found.some((p) => c.x < p.x + p.w + 6 && c.x + c.w + 6 > p.x && c.z < p.z + p.w + 6 && c.z + c.w + 6 > p.z)) continue
+    const depth = found.length === 0 || c.w < 4 ? 1 : 2
+    found.push({ x: c.x, z: c.z, w: c.w, d: depth })
+  }
+  pondCache = { seed: s, list: found }
+  return found
+}
+
+export function pondHere(x, y, z, seed = 1) {
+  const ponds = starterPonds(seed)
+  for (let i = 0; i < ponds.length; i++) {
+    const p = ponds[i]
+    if (x < p.x || x >= p.x + p.w || z < p.z || z >= p.z + p.w) continue
+    const h = surfaceY(x, z)
+    const inset = x > p.x && x < p.x + p.w - 1 && z > p.z && z < p.z + p.w - 1
+    if (y === h) return true
+    if (p.d === 2 && inset && y === h - 1) return true
+  }
+  return false
+}
+
+// 4x4 rescue spots for an old save that has no water yet. Same seed, same order.
+export function rescueSpots(seed = 1) {
+  const s = seed | 0
+  const out = []
+  const sx = Math.round(POND_SPAWN[0])
+  const sz = Math.round(POND_SPAWN[1])
+  for (let x = sx - 25; x <= sx + 25; x++) {
+    for (let z = sz - 25; z <= sz + 25; z++) {
+      const cx = x + 1.5
+      const cz = z + 1.5
+      const d = Math.hypot(cx - POND_SPAWN[0], cz - POND_SPAWN[1])
+      if (d < 10 || d > 25) continue
+      if (!pondFits(x, z, 4)) continue
+      if (hash(x + s * 3, z + 11) < 0.35) continue
+      out.push({ x, z, w: 4, d: 1 })
+    }
+  }
+  return out
+}

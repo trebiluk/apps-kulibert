@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Boxes use the new shared slots: click, Shift-click and drag all work the same way.',
+    whatsNewBody: 'Ponds near the start make wet soil easy, and growing wheat now looks green until it is really ripe.',
     wheatSeeds: 'Wheat Seeds', hoe: 'Hoe', farmland: 'Farmland', tuft: 'Grass', digSoil: 'Dig soil',
     farmNote: 'Farmers loosen soil so roots and water can get in.',
     stageSprout: 'Sprout', stageLeafy: 'Leafy', stageTall: 'Tall', stageRipe: 'Ripe',
@@ -235,7 +235,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Скрині використовують нові спільні комірки: клік, Shift-клік і перетягування працюють однаково.',
+    whatsNewBody: 'Ставки біля старту роблять мокрий ґрунт легким, і пшениця лишається зеленою, поки справді не дозріє.',
     wheatSeeds: 'Насіння пшениці', hoe: 'Мотика', farmland: 'Рілля', tuft: 'Трава', digSoil: 'Копай ґрунт',
     farmNote: 'Фермери розпушують ґрунт, щоб коріння і вода могли пройти.',
     stageSprout: 'Паросток', stageLeafy: 'Листя', stageTall: 'Висока', stageRipe: 'Стигла',
@@ -274,7 +274,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Сундуки используют новые общие ячейки: клик, Shift-клик и перетаскивание работают одинаково.',
+    whatsNewBody: 'Пруды у старта делают мокрую почву лёгкой, и пшеница остаётся зелёной, пока правда не поспеет.',
     wheatSeeds: 'Семена пшеницы', hoe: 'Мотыга', farmland: 'Грядка', tuft: 'Трава', digSoil: 'Копай почву',
     farmNote: 'Фермеры рыхлят почву, чтобы корни и вода могли пройти.',
     stageSprout: 'Росток', stageLeafy: 'Листья', stageTall: 'Высокая', stageRipe: 'Спелая',
@@ -313,7 +313,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Las cajas usan las casillas compartidas nuevas: clic, Mayús-clic y arrastrar funcionan igual.',
+    whatsNewBody: 'Los estanques cerca del inicio hacen fácil la tierra húmeda, y el trigo se ve verde hasta que está de verdad maduro.',
     wheatSeeds: 'Semillas de trigo', hoe: 'Azada', farmland: 'Tierra de cultivo', tuft: 'Hierba', digSoil: 'Cava la tierra',
     farmNote: 'Los agricultores aflojan la tierra para que entren las raíces y el agua.',
     stageSprout: 'Brote', stageLeafy: 'Hojas', stageTall: 'Alto', stageRipe: 'Maduro',
@@ -352,7 +352,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الصناديق تستخدم الخانات المشتركة الجديدة: النقر ونقر Shift والسحب تعمل بالطريقة نفسها.',
+    whatsNewBody: 'برك قرب البداية تجعل التربة الرطبة سهلة، والقمح يبقى أخضر حتى ينضج حقاً.',
     wheatSeeds: 'بذور القمح', hoe: 'مجرفة', farmland: 'أرض زراعة', tuft: 'عشب', digSoil: 'احفر التربة',
     farmNote: 'المزارعون يفكّون التربة حتى تصل الجذور والماء.',
     stageSprout: 'برعم', stageLeafy: 'أوراق', stageTall: 'طويل', stageRipe: 'ناضج',
@@ -391,7 +391,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'صندوق‌ها از خانه‌های مشترک تازه استفاده می‌کنند: کلیک، Shift-کلیک و کشیدن یک‌جور کار می‌کنند.',
+    whatsNewBody: 'آبگیرهای نزدیک آغاز، خاک خیس را آسان می‌کنند، و گندم سبز می‌ماند تا وقتی واقعاً برسد.',
     wheatSeeds: 'دانه‌های گندم', hoe: 'بیلچه', farmland: 'زمین کشاورزی', tuft: 'چمن', digSoil: 'خاک را بکن',
     farmNote: 'کشاورزان خاک را شل می‌کنند تا ریشه و آب داخل شوند.',
     stageSprout: 'جوانه', stageLeafy: 'برگ‌دار', stageTall: 'بلند', stageRipe: 'رسیده',
@@ -430,7 +430,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Amasanduku akoresha uduce rusange rushya: kanda, Shift-kanda, no kurura bikora kimwe.',
+    whatsNewBody: 'Ibiyaga hafi y\'intangiriro bituma ubutaka bumeze bworoshye, kandi ingano iguma y\'icyatsi kugeza yuzuye.',
     wheatSeeds: 'Imbuto z\'ingano', hoe: 'Isuka', farmland: 'Ubutaka bw\'imirima', tuft: 'Ibyatsi', digSoil: 'Kanda ubutaka',
     farmNote: 'Abahinzi baratoha ubutaka kugira ngo imizi n\'amazi binjire.',
     stageSprout: 'Ikime', stageLeafy: 'Amababi', stageTall: 'Ndeya', stageRipe: 'Yakuze',
@@ -469,7 +469,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ሳንዱቃት ሓደሽቲ ሓባራዊ ቦታታት ይጥቀሙ፡ ጠውቕ፡ Shift-ጠውቕን ጎተትን ብሓደ መንገዲ ይሰርሑ።',
+    whatsNewBody: 'ኣብ ጥቓ መጀመርታ ዘለዉ ቑልቀላት ርጥብ ሓመድ የቐልልዎ፡ ስርናይ ድማ ክሳብ ዝበስል ሓምላይ ይቕጽል።',
     wheatSeeds: 'ዘርኢ ስርናይ', hoe: 'መንኮስ', farmland: 'ሓረስቲ ምድሪ', tuft: 'ሳዕሪ', digSoil: 'ሓመድ እኸድ',
     farmNote: 'ሓረስቶት ሓመድ የላላውዩ እሞ ሱርን ማይን ይኣትዉ።',
     stageSprout: 'ቡቕሊ', stageLeafy: 'ቆጽሊ', stageTall: 'ነዊሕ', stageRipe: 'በሲሉ',

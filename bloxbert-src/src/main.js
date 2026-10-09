@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.99'
+const VERSION = '2.5.100'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -34,7 +34,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
-import { coalHere, plantHere, wildWood } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, rescueSpots, starterPonds, surfaceY } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -470,27 +470,36 @@ const waterMat = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
 function waterMesh() {
   return shape('water', [part('w', 0.98, 0.98, 0.98, 0, 0.5, 0, 0, waterMat)], waterMat)
 }
-const leafMat = dye('crop-leaf', 0.15, 0.52, 0.14)
+function cropGreen(name, r, g, b, er, eg, eb) {
+  const mat = noa.rendering.makeStandardMaterial(name)
+  mat.diffuseColor = new Color3(r, g, b)
+  mat.ambientColor = new Color3(r * 0.25, g * 0.25, b * 0.25)
+  mat.emissiveColor = new Color3(er, eg, eb)
+  mat.specularColor = new Color3(0, 0, 0)
+  mat.backFaceCulling = false
+  return mat
+}
+const sproutMat = cropGreen('crop-sprout', 0.55, 0.95, 0.28, 0.16, 0.42, 0.06)
+const leafyMat = cropGreen('crop-leafy', 0.18, 0.7, 0.12, 0.04, 0.22, 0.02)
+const tallMat = cropGreen('crop-tall', 0.05, 0.38, 0.07, 0.015, 0.12, 0.015)
 const ripeStalk = dye('crop-ripe-stalk', 0.76, 0.58, 0.12)
 const ripeHead = dye('crop-ripe-head', 0.98, 0.82, 0.2)
 ripeHead.emissiveColor = new Color3(0.45, 0.32, 0.05)
 const sparkMat = dye('crop-spark', 1, 0.95, 0.55)
 sparkMat.emissiveColor = new Color3(1, 0.92, 0.35)
 function cropMesh(n) {
-  const stalk = n === 3 ? ripeStalk : wheatStalk
-  const head = n === 3 ? ripeHead : wheatHead
-  const h = [0.18, 0.34, 0.5, 0.58][n]
-  const y = [0.1, 0.18, 0.26, 0.3][n]
-  const w = [0.24, 0.46, 0.56, 0.58][n]
+  const body = [sproutMat, leafyMat, tallMat, ripeStalk][n]
+  const h = [0.32, 0.52, 0.74, 0.8][n]
+  const y = [0.18, 0.28, 0.4, 0.42][n]
+  const w = [0.36, 0.56, 0.68, 0.7][n]
   const parts = []
   for (const yaw of [0.55, -0.55]) {
-    parts.push(crossed(stalk, w, h, 0.035, y, yaw))
-    if (n === 1) parts.push(crossed(leafMat, 0.36, 0.12, 0.03, y + 0.04, yaw + 0.5))
-    if (n >= 2) parts.push(crossed(head, n === 3 ? 0.34 : 0.26, 0.16, 0.05, y + h * 0.46, yaw))
+    parts.push(crossed(body, w, h, 0.045, y, yaw))
+    if (n === 3) parts.push(crossed(ripeHead, 0.42, 0.22, 0.06, y + h * 0.4, yaw))
   }
   if (n === 3) {
-    parts.push(part('sp1', 0.07, 0.07, 0.07, 0.16, 0.74, 0.08, 0, sparkMat))
-    parts.push(part('sp2', 0.05, 0.05, 0.05, -0.12, 0.6, -0.08, 0, sparkMat))
+    parts.push(part('sp1', 0.08, 0.08, 0.08, 0.18, 0.92, 0.1, 0, sparkMat))
+    parts.push(part('sp2', 0.06, 0.06, 0.06, -0.14, 0.72, -0.1, 0, sparkMat))
   }
   const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
   mesh.name = 'crop-' + n
@@ -563,7 +572,8 @@ for (const [id, name, material] of BLOCKS) {
   const lantern = id === LANTERN
   const plant = id === 28 || id === 58 || isCropId(id)
   const tilled = id === DRY || id === WET
-  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass), solid: tilled || (!open && !lantern && !plant) }
+  const fluid = id === WATER
+  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid) }
   if (mesh) opts.blockMesh = mesh
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
@@ -642,6 +652,8 @@ function townVoxel(x, y, z) {
 function genVoxel(x, y, z) {
   if (y === -64) return ID.coreplate
   if (y < -64) return 0
+  if (pondHere(x, y, z)) return ID.water
+  if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return 0
   if (inTown(x, z)) return townVoxel(x, y, z)
   const h = heightAt(x, z)
   if (y > h) {
@@ -792,6 +804,15 @@ let inspectOn = false
 let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
+function passCropAim(id) {
+  if (!session || !session.selectedItem || !isCropId(id)) return false
+  const held = session.selectedItem() || ''
+  return held === 'wheatSeeds' || held === 'hoe'
+}
+function passThrough(id) {
+  return id === WATER || passCropAim(id)
+}
+noa.blockTargetIdCheck = (id) => !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || isCropId(id) || noa.registry.getBlockSolidity(id))
 let basics = null
 let panels = null
 function survivalOn() { return !!(session && session.mode === 'survival') }
@@ -912,6 +933,7 @@ function reachOpen(pos, repeat) {
 function breakAt(x, y, z) {
   const id = getVoxel(x, y, z)
   if (!id) return false
+  if (id === WATER) return false
   if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
@@ -1269,6 +1291,110 @@ async function ungz(b64) {
   const ds = new Blob([u8]).stream().pipeThrough(new DecompressionStream('gzip'))
   return new Uint16Array(await new Response(ds).arrayBuffer())
 }
+let pondAid = false
+function waterWithin(r) {
+  const sx = 8.5
+  const sz = 1.5
+  const x0 = Math.floor(sx - r)
+  const x1 = Math.ceil(sx + r)
+  const z0 = Math.floor(sz - r)
+  const z1 = Math.ceil(sz + r)
+  const rr = r * r
+  for (let x = x0; x <= x1; x++) {
+    for (let z = z0; z <= z1; z++) {
+      const dx = x + 0.5 - sx
+      const dz = z + 0.5 - sz
+      if (dx * dx + dz * dz > rr) continue
+      const y = surfaceY(x, z)
+      if (getVoxel(x, y, z) === WATER || getVoxel(x, y - 1, z) === WATER) return true
+    }
+  }
+  return false
+}
+function rescueClear(x, y, z) {
+  if (keptCell(x, y, z)) return false
+  const cur = getVoxel(x, y, z)
+  if (isCropId(cur)) return false
+  const gen = genVoxel(x, y, z)
+  if (cur === gen) return true
+  if (gen === WATER && (cur === ID.grass || cur === ID.dirt || cur === 0)) return true
+  return false
+}
+function canRescue(spot) {
+  for (let dx = 0; dx < spot.w; dx++) {
+    for (let dz = 0; dz < spot.w; dz++) {
+      const x = spot.x + dx
+      const z = spot.z + dz
+      const y = surfaceY(x, z)
+      if (!rescueClear(x, y, z)) return false
+      const up = getVoxel(x, y + 1, z)
+      if (isCropId(up) || keptCell(x, y + 1, z)) return false
+      if (up && up !== genVoxel(x, y + 1, z)) return false
+    }
+  }
+  return true
+}
+function placeRescue(spot) {
+  for (let dx = 0; dx < spot.w; dx++) {
+    for (let dz = 0; dz < spot.w; dz++) {
+      const x = spot.x + dx
+      const z = spot.z + dz
+      setVoxel(x, surfaceY(x, z), z, WATER)
+    }
+  }
+}
+function ensureStarterPond(doc) {
+  if (doc && doc.pondAid) { pondAid = true; return null }
+  if (waterWithin(40)) { pondAid = true; return null }
+  const spots = rescueSpots(1)
+  for (let i = 0; i < spots.length; i++) {
+    if (!canRescue(spots[i])) continue
+    placeRescue(spots[i])
+    pondAid = true
+    dirty = true
+    return spots[i]
+  }
+  return null
+}
+function bakeBox(x0, x1, y0, y1, z0, z1) {
+  for (let y = y0; y <= y1; y += S) {
+    for (let x = x0; x <= x1; x += S) {
+      for (let z = z0; z <= z1; z += S) {
+        const ci = Math.floor(x / S), cj = Math.floor(y / S), ck = Math.floor(z / S)
+        const k = key(ci, cj, ck)
+        if (saved.has(k)) continue
+        const data = new Uint16Array(S * S * S)
+        fillGenerated(data, ci * S, cj * S, ck * S)
+        saved.set(k, data)
+      }
+    }
+  }
+}
+function dryNear(r) {
+  const sx = 8.5
+  const sz = 1.5
+  const x0 = Math.floor(sx - r)
+  const x1 = Math.ceil(sx + r)
+  const z0 = Math.floor(sz - r)
+  const z1 = Math.ceil(sz + r)
+  bakeBox(x0, x1, -2, 16, z0, z1)
+  let n = 0
+  const rr = r * r
+  for (let x = x0; x <= x1; x++) {
+    for (let z = z0; z <= z1; z++) {
+      const dx = x + 0.5 - sx
+      const dz = z + 0.5 - sz
+      if (dx * dx + dz * dz > rr) continue
+      for (let y = -2; y <= 16; y++) {
+        if (getVoxel(x, y, z) !== WATER) continue
+        setVoxel(x, y, z, y >= surfaceY(x, z) ? ID.grass : ID.dirt)
+        n++
+      }
+    }
+  }
+  pondAid = false
+  return n
+}
 async function snapshot() {
   const chunks = {}
   for (const [k, v] of saved) chunks[k] = await gz(v)
@@ -1283,6 +1409,7 @@ async function snapshot() {
     basics: basics ? basics.dump() : null,
     gifts,
     crops: farm.dump(),
+    pondAid: !!pondAid,
   }
 }
 async function save() {
@@ -1297,10 +1424,10 @@ async function save() {
 async function load() {
   const db = await idb()
   const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') { farm.clear(); ensureHelp(); grantSaplings(); return false }
+  if (!doc || doc.format !== 'kuliblocks') { farm.clear(); pondAid = true; ensureHelp(); grantSaplings(); return false }
   await applyDoc(doc)
   const repaired = ensureHelp()
-  dirty = repaired
+  dirty = !!(repaired || dirty)
   markSave(t('loaded'))
   return true
 }
@@ -1334,6 +1461,8 @@ async function applyDoc(doc) {
   grantSaplings()
   farm.load(doc && doc.crops)
   syncCrops(Date.now())
+  pondAid = false
+  ensureStarterPond(doc)
   if (session) paintModeChip()
   syncDropMeshes()
 }
@@ -1348,6 +1477,7 @@ async function importFile(file) {
 async function resetWorld() {
   gifts = {}
   farm.clear()
+  pondAid = true
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
@@ -2241,7 +2371,7 @@ function rayAt(cx, cy) {
     const dir = [dx / len, dy / len, dz / len]
     let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 6
     for (let i = 0; i < 8 && left > 0.2; i++) {
-      const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0)
+    const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0 && !passThrough(id))
       if (!hit || !hit.position || !hit.normal) return null
       const nx = Math.round(hit.normal[0])
       const ny = Math.round(hit.normal[1])
@@ -3893,6 +4023,12 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
     crops: () => farm.dump(),
+    ponds: () => starterPonds(1),
+    rescue: () => rescueSpots(1).slice(0, 8),
+    pondFlag: () => pondAid,
+    aimSolid: (id) => !!noa.blockTargetIdCheck(id),
+    dryNear: (r) => dryNear(r || 40),
+    ensurePond: () => { pondAid = false; return ensureStarterPond({ pondAid: false }) },
     ripeMs: () => RIPE_MS,
     freeze(on) { cropFreeze = !!on },
     seekCrops(ms) {

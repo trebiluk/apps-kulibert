@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.99 Boxes use the new shared slots).
+Updated Fri Oct 9 2026 (Build: 2.5.100 Ponds near the start, and wheat stays green until it is really ripe).
 
+- [x] **2.5.100 Farming fix:** 2–3 still-water ponds a short walk from Survival spawn, one pond added once to an old save that has none, water you can walk out of and cannot break, wheat stays green until the card says Ripe, and Seeds or a Hoe aim through a crop.
 - [x] **2.5.99 Shared slots on the Box:** Boxes use one shared slot contract. Click, Shift-click and drag move, merge and swap the same way between the Box and the Bag.
 - [x] **2.5.98 Farming F2:** plant wheat seeds on farmland (a sweep plants up to 5), four growth stages, wet soil within 4 of still water grows twice as fast, crops keep growing while the game is closed and never past ripe.
 - [x] **2.5.97 Farming F1:** wheat drops 1–2 seeds, grass tufts drop a seed 1 time in 8, Hoe (2 sticks + 1 planks) tills grass or dirt in 1 use, empty hand takes 3 with the dig crack, farmland breaks into dirt.
@@ -141,6 +142,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.99 Boxes use the new shared slots).
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.100 | Ponds near the start make wet soil easy, and growing wheat now looks green until it is really ripe | shipped |
 | 1p | 2.5.99 | Boxes use the new shared slots: click, Shift-click and drag all work the same way | shipped |
 | 1p | 2.5.98 | Plant your seeds on farmland and watch wheat grow. Soil near water grows twice as fast, and crops keep growing while you are away | shipped |
 | 1p | 2.5.97 | Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries) | shipped |
