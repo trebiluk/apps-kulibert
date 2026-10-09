@@ -1,5 +1,7 @@
 // Station panels. State is per block, keyed x,y,z, and saved with the world.
 import { RECIPES } from './data/recipes.js'
+import { ITEMS } from './data/items.js'
+import { slotArt } from './icons.js'
 import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8 }
@@ -177,12 +179,21 @@ export function createStations(api) {
     if (food) bits.push(api.t('rawFood') + ' → ' + api.t('bakedFood'))
     return api.t('bakesHint').replace('{list}', bits.join(', '))
   }
+  function face(item) {
+    const def = item && ITEMS[item]
+    if (def && def.svg) return slotArt(item, null)
+    if (api.icon && ((def && def.block) || !def)) {
+      const node = api.icon(item)
+      if (node && node.dataset && node.dataset.block) return node
+    }
+    return slotArt(item, null)
+  }
   function head(crate, iconKey, name, status) {
     const row = document.createElement('div')
     row.className = 'machine-head'
     const ic = document.createElement('span')
     ic.className = 'gic'
-    if (api.icon) ic.append(api.icon(iconKey))
+    if (api.icon) ic.append(face(iconKey))
     const words = document.createElement('div')
     const title = document.createElement('span')
     title.className = 'machine-name'
@@ -245,7 +256,7 @@ export function createStations(api) {
       const pic = document.createElement('span')
       pic.className = 'gic art'
       if (role === 'fuel') pic.innerHTML = FLAME
-      else if (item && api.icon) pic.append(api.icon(item))
+      else if (item && api.icon) pic.append(face(item))
       else pic.innerHTML = GHOST
       b.append(pic)
       const lab = document.createElement('span')
@@ -346,7 +357,7 @@ export function createStations(api) {
       b.title = api.name ? api.name(s.item) : s.item
       const pic = document.createElement('span')
       pic.className = 'art'
-      if (api.icon) pic.append(api.icon(s.item))
+      if (api.icon) pic.append(face(s.item))
       b.append(pic)
       const badge = document.createElement('span')
       badge.className = 'badge'
@@ -356,7 +367,7 @@ export function createStations(api) {
       b.addEventListener('pointerdown', (e) => {
         machineDrag(b, e, {
           targets: '#sheet .slot-fuel, #sheet .slot-in',
-          icon: () => api.icon ? api.icon(item) : document.createElement('span'),
+          icon: () => face(item),
           canDrop: (well) => well.dataset.role === 'fuel' ? !!BAKES[item] : !!recipeFor(api, item, fueled()),
           onDrop: (well) => { if (well.dataset.role === 'fuel') useFuel(item); else useInput(item) },
           onReject: (well) => {

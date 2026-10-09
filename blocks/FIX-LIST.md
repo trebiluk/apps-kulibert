@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.79 The Oven looks like an oven).
+Updated Fri Oct 9 2026 (Build: 2.5.81 Every item has a real picture).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -62,6 +62,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.79 The Oven looks like an oven).
 - [x] **2.5.78 Full trees and Oven hint:** Every wilderness trunk is 4–6 logs. The first Survival step says trees grow just south of town. The Oven lists what it bakes, and a bad drop says it cannot bake or will not burn.
 - [x] **2.5.77 Pointer lock:** Closing the Bag or a panel puts you straight back in the game, and looking around never sticks.
 - [x] **2.5.79 Oven and place:** The Oven looks like an oven, closing a panel always puts you back in the game, and you can crouch to place next to a machine.
+- [x] **2.5.81 Icons, hint and ghost:** Every item has a real picture. Machines tell you how to place next to them. A faint ghost shows where a block will land.
 - [x] **2.5.50 tools and saplings (Diego Oct 7):** Stone, Slate, Coal, Brick and every Ore need a Wood Tool. Ores need a Stone Tool. A bare hand shows a crack that never finishes and one toast. A Wood Tool lasts 60 breaks, a Stone Tool 150, then it becomes 1 Stick. Leaves drop a Sapling 1 in 6. A sapling on grass or dirt grows the starter tree after 8 minutes if the space is clear. 2 Saplings wait in Lost & Found once.
 - [x] **2.5.51 design rule:** tools never wear out and show no wear bar. Bare hands still break stone and ore on the timed mine. A pick only mines faster. Saplings still grow the starter tree.
 - [x] **2.5.47 done:** touch hold/tap/Copy use a voxel raycast through the finger (reach 6, no aim fallback on touch), hotbar + chip repaint after break/pickup/Box spill/Lost & Found, smoke off-aim finger/road/places/HUD lines, bag label headroom, door wait, toast wait.
@@ -115,6 +116,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.79 The Oven looks like an oven).
 | 1p | 2.5.78 | Every tree is full size, and the Oven tells you what it can bake | shipped |
 | 1p | 2.5.77 | Closing the Bag or a panel puts you straight back in the game; looking around never sticks | shipped |
 | 1p | 2.5.79 | The Oven looks like an oven; closing a panel always returns you to the game; crouch to place next to a machine | shipped |
+| 1p | 2.5.81 | Every item has a real picture; machines tell you how to place next to them; you can see where a block will land | shipped |
 | 2a | 2.5.50 | bertopia-basics-2a.md: glow tiers T1-T4 (Pebble, Stick, Jumbo, Cold Vial locked tile), recipes and timers, Corn -> Bioplastic -> Tube, Paint dab, one-time gift of 8 Glow Moss | [ ] |
 | 2b | 2.5.51 | bertopia-basics-2b.md: glow colors, caps (128 / 64), minimap breadcrumbs, Notebook "Glow" page | [ ] |
 | 3a | 2.5.52 | bertopia-basics-3a.md: `power.js`, Solar Panel (6-charge cell), LED Glow Strip, plain Copper Wire that connects (T5); Silicon at the Smelter | [ ] |

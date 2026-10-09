@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.79'
+const VERSION = '2.5.81'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -29,7 +29,7 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
-import { blockIcon, dropperIcon } from './icons.js'
+import { blockIcon, dropperIcon, slotArt } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -500,12 +500,16 @@ function toastFarKey() {
   farKeyAt = now
   toast(t('tooFar'))
 }
-function placeableHeld() {
-  if (!survivalOn()) return !!current
-  const held = session && session.selectedItem ? session.selectedItem() : ''
-  if (held === 'berry' || held === 'bread' || held === 'cupcake') return false
-  return !!(session && session.blockForHot && session.blockForHot())
+function heldPlaceKey() {
+  if (survivalOn()) {
+    const held = session && session.selectedItem ? session.selectedItem() || '' : ''
+    if (!held || held === 'berry' || held === 'bread' || held === 'cupcake') return ''
+    if (!(session && session.blockForHot && session.blockForHot())) return ''
+    return held
+  }
+  return current ? 'block' : ''
 }
+function placeableHeld() { return !!heldPlaceKey() }
 function machineKind(id) {
   if (id === ID.oven || id === 23) return 'oven'
   if (id === ID.workbench || id === 22) return 'bench'
@@ -528,8 +532,28 @@ function againstMachine(block) {
 }
 function noteCrouchHint() {
   if (crouchHintN >= 3) return
+  if (!heldPlaceKey()) return
   crouchHintN += 1
   toast(t('crouchPlace'))
+  const el = $('toast')
+  if (el) el.style.zIndex = '60'
+}
+function landingCell(aimed) {
+  if (!aimed || !aimed.position) return null
+  const sx = Math.round(aimed.position[0])
+  const sy = Math.round(aimed.position[1])
+  const sz = Math.round(aimed.position[2])
+  const n = aimed.normal
+  let nx = 0, ny = 0, nz = 0
+  if (n) {
+    const ax = Math.abs(n[0]), ay = Math.abs(n[1]), az = Math.abs(n[2])
+    if (ax >= ay && ax >= az && ax > 0.45) nx = n[0] > 0 ? 1 : -1
+    else if (ay >= az && ay > 0.45) ny = n[1] > 0 ? 1 : -1
+    else if (az > 0.45) nz = n[2] > 0 ? 1 : -1
+  }
+  if (nx || ny || nz) return { x: sx + nx, y: sy + ny, z: sz + nz }
+  if (aimed.adjacent) return { x: Math.round(aimed.adjacent[0]), y: Math.round(aimed.adjacent[1]), z: Math.round(aimed.adjacent[2]) }
+  return null
 }
 function viewFar() {
   try {
@@ -622,11 +646,11 @@ function placeBlock(face, opts) {
     if (aimedBlock.blockID === LANTERN) return false
     const kind = machineKind(aimedBlock.blockID)
     if (kind) {
+      if (heldPlaceKey()) noteCrouchHint()
       const beside = againstMachine(aimedBlock)
       const shopOk = kind !== 'shop' || (session && session.mode === 'survival')
       if (!beside && mutedUse(aimedBlock)) return false
       if (!beside && shopOk) {
-        if (placeableHeld()) noteCrouchHint()
         const key = aimedBlock.position.join(',')
         if (kind === 'box') { if (!canReach([ax, ay, az])) return false }
         else if (!reachOpen([ax, ay, az], repeat)) return false
@@ -648,7 +672,14 @@ function placeBlock(face, opts) {
       if (!repeat) placeMiss()
       return false
     }
-    ;[x, y, z] = aimedBlock.adjacent
+    const spot = landingCell(aimedBlock)
+    if (!spot) {
+      if (!repeat) placeMiss()
+      return false
+    }
+    x = spot.x
+    y = spot.y
+    z = spot.z
     if (!tableMode) {
       if (!canReach([x, y, z])) { sayFar(); return false }
       const p = noa.entities.getPosition(noa.playerEntity)
@@ -1148,13 +1179,7 @@ window.addEventListener('pointerdown', (e) => {
 const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
-  const c = document.createElement('canvas')
-  c.width = c.height = 32
-  c.dataset.item = item
-  const g = c.getContext('2d')
-  g.fillStyle = item === 'flour' ? '#f3e2b3' : item === 'sugar' ? '#f7f7f7' : '#c4494a'
-  g.fillRect(0, 0, 32, 32)
-  return c
+  return slotArt(item)
 } })
 function syncOvenGlow() {
   const hot = new Set()
@@ -1648,7 +1673,7 @@ function rayAt(cx, cy) {
         const z = az - nz
         const id = getVoxel(x, y, z)
         if (!id) return null
-        return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [ax, ay, az] }
+        return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [ax, ay, az], normal: [nx, ny, nz] }
       }
       const step = 0.51
       ox += dir[0] * step
@@ -2298,7 +2323,8 @@ canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefa
 function targetHit() {
   const t = noa.targetedBlock
   if (!t || !t.position) return null
-  return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), face: t }
+  const n = t.normal
+  return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), normal: n ? [n[0], n[1], n[2]] : null, face: t }
 }
 canvas.addEventListener('pointerdown', (e) => {
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
@@ -2882,13 +2908,66 @@ outline.color = new Color3(0.13, 0.83, 0.93)
 outline.isPickable = false
 outline.setEnabled(false)
 noa.rendering.addMeshToScene(outline)
+const ghostMat = new StandardMaterial('place-ghost', scene)
+ghostMat.diffuseColor = new Color3(0.75, 0.82, 0.78)
+ghostMat.emissiveColor = new Color3(0.28, 0.34, 0.3)
+ghostMat.specularColor = new Color3(0, 0, 0)
+ghostMat.alpha = 0.42
+ghostMat.transparencyMode = 2
+ghostMat.backFaceCulling = false
+const placeGhost = CreateBox('place-ghost', { size: 0.98 }, scene)
+placeGhost.material = ghostMat
+placeGhost.isPickable = false
+placeGhost.setEnabled(false)
+noa.rendering.addMeshToScene(placeGhost, false)
+const ghostLocal = [0, 0, 0]
+function heldBlockId() {
+  if (survivalOn()) return (session && session.blockForHot && session.blockForHot()) || 0
+  return current || 0
+}
+function ghostTint(id) {
+  const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
+  if (name === 'planks' || name === 'log' || name === 'box' || name === 'workbench' || name === 'door') return [0.86, 0.66, 0.34]
+  if (name === 'leaves' || name === 'grass' || name === 'woolGreen') return [0.28, 0.62, 0.32]
+  if (name === 'brickRed' || name === 'woolRed') return [0.72, 0.28, 0.22]
+  if (name === 'glass' || name === 'ice' || name === 'woolBlue') return [0.45, 0.72, 0.86]
+  if (name === 'sand' || name === 'woolTan') return [0.82, 0.74, 0.45]
+  return [0.62, 0.68, 0.72]
+}
+function ghostCell() {
+  if (anyCard() || !placeableHeld()) return null
+  const aimed = tableMode ? tableTarget() : noa.targetedBlock
+  if (!aimed || !aimed.position) return null
+  const id = aimed.blockID || 0
+  if (!tableMode && id && isUseBlock(id) && !againstMachine(aimed)) return null
+  const spot = landingCell(aimed)
+  if (!spot) return null
+  if (!tableMode) {
+    if (!canReach([spot.x, spot.y, spot.z])) return null
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (overlapsPlayer(spot.x, spot.y, spot.z, p[0], p[1], p[2])) return null
+  }
+  if (getVoxel(spot.x, spot.y, spot.z)) return null
+  return spot
+}
+function syncPlaceGhost() {
+  const spot = ghostCell()
+  if (!spot) { placeGhost.setEnabled(false); return }
+  const tint = ghostTint(heldBlockId())
+  ghostMat.diffuseColor.set(tint[0], tint[1], tint[2])
+  ghostMat.emissiveColor.set(tint[0] * 0.55, tint[1] * 0.55, tint[2] * 0.55)
+  const lp = noa.globalToLocal([spot.x + 0.5, spot.y + 0.5, spot.z + 0.5], null, ghostLocal)
+  placeGhost.position.set(lp[0], lp[1], lp[2])
+  placeGhost.setEnabled(true)
+}
 function paintOutline() {
   const tgt = noa.targetedBlock
   const pos = tgt ? tgt.position : (tableMode ? tableCursor : null)
-  if (!pos) { outline.setEnabled(false); return }
+  if (!pos) { outline.setEnabled(false); syncPlaceGhost(); return }
   outline.setEnabled(true)
   const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + 0.5, pos[2] + 0.5], null, [])
   outline.position.copyFromFloats(local[0], local[1], local[2])
+  syncPlaceGhost()
 }
 noa.on('beforeRender', (dt) => {
   paintOutline()
@@ -3156,6 +3235,11 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     close() { if (panels) panels.close() },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
     aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
+    land() {
+      const t = noa.targetedBlock
+      const spot = ghostCell()
+      return { aim: t ? { id: t.blockID, x: Math.round(t.position[0]), y: Math.round(t.position[1]), z: Math.round(t.position[2]) } : null, spot, on: !!(placeGhost && placeGhost.isEnabled()) }
+    },
     voxel(x, y, z) { return getVoxel(x, y, z) },
     fillBag(item, n) { session.setMode('survival'); session.give(item, n); session.clearLoose() },
     emptyBag() {

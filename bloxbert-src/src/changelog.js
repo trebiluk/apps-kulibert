@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.81', date: '2026-10-09', lines: {
+    en: ['Every item has a real picture, machines tell you how to place next to them, and you can see where a block will land.'],
+    uk: ['Кожен предмет має справжню картинку, машини кажуть, як поставити поруч, і видно, куди ляже блок.'],
+    ru: ['У каждого предмета настоящая картинка, машины говорят, как поставить рядом, и видно, куда встанет блок.'],
+    es: ['Cada objeto tiene un dibujo de verdad, las máquinas dicen cómo poner al lado, y ves dónde caerá un bloque.'],
+    ar: ['لكل غرض صورة حقيقية، والآلات تخبرك كيف تضع بجانبها، وترى أين سيقع المكعب.'],
+    'fa-AF': ['هر چیز یک تصویر واقعی دارد، دستگاه‌ها می‌گویند چطور کنارشان بگذاری، و می‌بینی بلاک کجا می‌نشیند.'],
+    rw: ['Ikintu cyose gifite ishusho nyayo, imashini zikubwira uko ushyira iruhande, kandi ureba aho block izicara.'],
+    ti: ['ነፍሲ ወከፍ ነገር ናይ ብሓቂ ስእሊ ኣለዎ፡ መሳርሒታት ከመይ ኣብ ጥቓኦም ከም ትቐምጥ ይነግሩ፡ ብሎክ ኣበይ ከም ዝወድቕ ትርኢ።'],
+  }},
   { v: '2.5.79', date: '2026-10-09', lines: {
     en: ['The Oven looks like an oven, closing a panel always puts you back in the game, and you can crouch to place next to a machine.'],
     uk: ['Піч виглядає як піч, закриття панелі завжди повертає в гру, і можна присісти, щоб поставити поруч із машиною.'],

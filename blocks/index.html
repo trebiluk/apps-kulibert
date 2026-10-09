@@ -223,7 +223,7 @@ html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 80px
   #menu-hint{left:auto;right:16px;top:calc(var(--top-h) + 72px)}
   html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 72px)}
 }
-#toast{position:fixed;left:50%;top:calc(var(--top-h) + 64px);transform:translateX(-50%);z-index:8;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--teal);border-radius:10px;padding:8px 12px;pointer-events:none}
+#toast{position:fixed;left:50%;top:calc(var(--top-h) + 64px);transform:translateX(-50%);z-index:60;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--teal);border-radius:10px;padding:8px 12px;pointer-events:none}
 #path-chip{position:fixed;left:76px;top:calc(var(--top-h) + 8px);z-index:6;min-height:44px;max-height:64px;max-width:min(220px,calc(100vw - 160px));overflow:hidden;background:rgba(11,18,32,.92);color:#f8fafc;border:1px solid var(--gold);border-radius:12px;padding:8px 12px;font-size:15px;line-height:1.15;text-align:start}
 #path-chip .path-sub{display:block;margin-top:2px;font-size:12px;line-height:1.15;font-weight:650;color:#F6C453}
 html[data-kb-bar]:not(.kb-framed) #path-chip{top:calc(48px + var(--top-h) + 8px)}
@@ -567,7 +567,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.79</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.81</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" hidden><bdi>⚙ 20</bdi> <small>practice</small></button>
   <div class="tools">
@@ -607,7 +607,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">The Oven looks like an oven, closing a panel always puts you back in the game, and you can crouch to place next to a machine.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Every item has a real picture, machines tell you how to place next to them, and you can see where a block will land.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -707,7 +707,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.79" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.79" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.81" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.81" defer></script>
 </body>
 </html>

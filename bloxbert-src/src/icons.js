@@ -1,4 +1,5 @@
 // One picture per block. A few items draw their own face so they don't share one wood tile.
+import { ITEMS } from './data/items.js'
 const PNG = { glass: 'assets/glass.png', coreplate: 'assets/tile-coreplate.png', workbench: 'assets/tile-workbench.png', oven: 'assets/tile-oven.png', vend: 'assets/tile-vend.png', store: 'assets/tile-store.png', bunk: 'assets/tile-bunk.png' }
 function glyph(paint) {
   const c = document.createElement('canvas')
@@ -168,4 +169,37 @@ export function itemSvg(svg) {
 }
 export function dropperIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.2 3.3l6.5 6.5-1.4 1.4-1.1-1.1-6.7 6.7a3.2 3.2 0 0 1-4.5 0l-.6.6-1.5-1.5.6-.6a3.2 3.2 0 0 1 0-4.5l6.7-6.7-1.1-1.1z"/></svg>'
+}
+function letterTile(letter) {
+  const c = document.createElement('canvas')
+  c.width = c.height = 48
+  c.className = 'letter-tile'
+  c.dataset.letter = String(letter || '?').slice(0, 2)
+  const g = c.getContext('2d')
+  g.fillStyle = '#3A4450'
+  g.fillRect(6, 6, 36, 36)
+  g.strokeStyle = '#C5D0D6'
+  g.lineWidth = 2
+  g.strokeRect(7, 7, 34, 34)
+  g.fillStyle = '#E8EEF2'
+  g.font = '700 16px sans-serif'
+  g.textAlign = 'center'
+  g.textBaseline = 'middle'
+  g.fillText(c.dataset.letter, 24, 25)
+  return c
+}
+// Same picture the hotbar uses. A missing picture is a letter on a neutral tile, never a red square.
+export function slotArt(key, blockNode) {
+  const item = key && ITEMS[key]
+  if (item && item.svg) {
+    const s = document.createElement('span')
+    s.className = 'real-icon'
+    s.dataset.item = key
+    s.dataset.kind = 'svg'
+    s.innerHTML = itemSvg(item.svg)
+    return s
+  }
+  if (blockNode) return blockNode
+  const letter = (item && item.letter) || (key ? String(key).slice(0, 1).toUpperCase() : '?')
+  return letterTile(letter)
 }
