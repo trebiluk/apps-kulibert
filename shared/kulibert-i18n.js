@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Doors look like one door, the practice chip is there from the start, and the phone top bar has room to breathe.",
+  "whatsNewBody": "Recipes list everything you still need, counts update while a panel is open, and the Oven fire is easy to see.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

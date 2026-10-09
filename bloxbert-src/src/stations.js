@@ -357,14 +357,16 @@ export function createStations(api) {
     const fuelHold = document.createElement('div')
     fuelHold.className = 'fuel-slot'
     fuelHold.append(fuelEl)
-    if (fuelNow > 0) {
-      const side = document.createElement('span')
-      side.className = 'flame-side'
-      side.innerHTML = FLAME
-      const flame = side.querySelector('.flame')
-      if (grew && flame) fx(flame, 'flame')
-      fuelHold.append(side)
-    }
+    const burning = !!(r.until && timeLeft > 0 && fuelNow > 0)
+    let burnPct = 0
+    if (burning && secs > 0) burnPct = Math.round((timeLeft / secs) * 100)
+    else if (fuelNow > 0) burnPct = Math.round(Math.min(1, fuelNow / 8) * 100)
+    const side = document.createElement('span')
+    side.className = 'flame-side' + (fuelNow > 0 ? ' lit' : ' out') + (burning ? ' burn' : '')
+    side.innerHTML = FLAME + '<i class="burn-bar" style="width:' + burnPct + '%"></i>'
+    const flame = side.querySelector('.flame')
+    if (grew && flame && fuelNow > 0) fx(flame, 'flame')
+    fuelHold.append(side)
     let preview = null
     if (pending) {
       preview = document.createElement('div')

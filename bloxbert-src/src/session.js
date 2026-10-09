@@ -896,6 +896,19 @@ export function createSession(api) {
     return true
   }
   function sourceHint(item) {
+    const made = RECIPES.find((r) => r.out[0] === item && r.at && r.at !== 'hand')
+    if (made) {
+      const key = made.at === 'bench' ? 'workbench' : made.at === 'forge' ? 'smelter' : made.at
+      if (key === 'workbench' || key === 'oven' || key === 'smelter' || key === 'fabricator') return t(key)
+    }
+    if (item === LEAF_FOOD) return t('leaves')
+    const own = ITEMS[item] && ITEMS[item].block
+    for (let id = 1; id <= 48; id++) {
+      if (dropOf(id) !== item || id === own) continue
+      if (id === 29) return t('reed')
+      const key = Object.keys(ITEMS).find((k) => ITEMS[k].block === id)
+      if (key && key !== item) return t(key)
+    }
     if (item === 'log' || item === 'planks') return t('srcChop')
     if (item === 'stone' || item === 'slate') return t('srcStone')
     if (item === 'coal') return t('srcCoal')
@@ -965,13 +978,23 @@ export function createSession(api) {
           lock.setAttribute('aria-hidden', 'true')
           lock.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="11" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
           b.append(lock)
-          const miss = st.needs.find(([, have, n]) => have < n)
           const line = document.createElement('span')
           line.className = 'need'
-          if (miss) {
-            const hint = sourceHint(miss[0])
-            line.textContent = t('needN').replace('{n}', String(miss[2])).replace('{item}', itemName(miss[0])) + (hint ? ' · ' + hint : '')
-          } else line.textContent = st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll')
+          const bits = []
+          for (const [item, have, n] of st.needs) {
+            if (have >= n) continue
+            const left = n - have
+            const label = left === 1 ? itemName(item) : (item === LEAF_FOOD ? t('berryMany') : itemName(item))
+            const hint = sourceHint(item)
+            bits.push(String(left) + ' ' + label + (hint ? ' (' + hint + ')' : ''))
+          }
+          const full = bits.length
+            ? t('needN').replace('{n} {item}', bits.join(', '))
+            : (st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll'))
+          line.textContent = full
+          if (bits.length > 1) b.classList.add('wide')
+          b.title = name.textContent + '. ' + full
+          b.setAttribute('aria-label', name.textContent + '. ' + full)
           b.append(line)
         }
         b.addEventListener('click', () => {
@@ -2166,7 +2189,7 @@ export function createSession(api) {
     tryCraft,
     setCraftOpen(v) { craftOpen = !!v },
     lostItems: () => lost.map((d) => d.item + ':' + d.n),
-    spend: (item, n) => bag.take(item, n),
+    spend: (item, n) => { const ok = bag.take(item, n); if (ok) paintHotbar(); return ok },
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
     noteBag: (need) => { for (const [id, n] of Object.entries(need)) { const hit = Object.entries(ITEMS).find(([, v]) => v.block === +id); if (hit) bagHist.push({ type: 'place', item: hit[0], n }) } },

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.91', date: '2026-10-09', lines: {
+    en: ['Recipes list everything you still need, counts update while a panel is open, and the Oven fire is easy to see.'],
+    uk: ['Рецепти показують усе, чого ще бракує, лічильники оновлюються, поки панель відкрита, і вогонь печі легко побачити.'],
+    ru: ['Рецепты показывают всё, чего ещё не хватает, счётчики обновляются, пока панель открыта, и огонь печи легко увидеть.'],
+    es: ['Las recetas listan todo lo que aún falta, las cantidades se actualizan con el panel abierto, y el fuego del horno se ve fácil.'],
+    ar: ['الوصفات تسرد كل ما زلت تحتاجه، والأعداد تتحدث واللوحة مفتوحة، ونار الفرن سهلة الرؤية.'],
+    'fa-AF': ['دستورها همه آنچه هنوز لازم داری را می‌نویسند، شمارش‌ها وقتی صفحه باز است تازه می‌شوند، و آتش تنور راحت دیده می‌شود.'],
+    rw: ['Recepti zerekana ibyo ukeneye byose, imibare ihinduka n\'ipaneli ifunguye, kandi umuriro w\'icyoto uraboneka neza.'],
+    ti: ['ዝርዝር ምድላው ኩሉ እቲ ገና ዘድልየካ የርኢ፡ ቑጽሪታት ፓነል ክፉት ኣብሉ ይሓድሱ፡ ሓዊ እቶን ድማ ብቐሊሉ ይረአ።'],
+  }},
   { v: '2.5.89', date: '2026-10-09', lines: {
     en: ['Doors look like one door, the practice chip is there from the start, and the phone top bar has room to breathe.'],
     uk: ['Двері виглядають як одні двері, значок практики є від самого початку, і верхня смуга на телефоні має простір.'],
