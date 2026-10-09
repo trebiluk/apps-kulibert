@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake.',
+    whatsNewBody: 'The practice chip matches your Wallet again, and doors have no line across the middle.',
     boxClick: 'Click an item, then a slot. Or drag.',
     pickFuel: 'Pick a fuel',
     pickBake: 'Pick something to bake',
@@ -221,7 +221,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Натисни предмет, потім комірку, щоб покласти його в скриню, і піч дає обрати, що спалити й спекти.',
+    whatsNewBody: 'Значок практики знову збігається з Гаманцем, і на дверях немає лінії посередині.',
     boxClick: 'Натисни предмет, потім комірку. Або перетягни.',
     pickFuel: 'Обери паливо',
     pickBake: 'Обери, що спекти',
@@ -246,7 +246,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Нажми предмет, потом ячейку, чтобы положить его в сундук, и печь даёт выбрать, что сжечь и испечь.',
+    whatsNewBody: 'Значок практики снова совпадает с Кошельком, и на двери нет линии посередине.',
     boxClick: 'Нажми предмет, потом ячейку. Или перетащи.',
     pickFuel: 'Выбери топливо',
     pickBake: 'Выбери, что испечь',
@@ -271,7 +271,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Haz clic en un objeto y luego en una casilla para meterlo en la caja, y el horno te deja elegir qué quemar y hornear.',
+    whatsNewBody: 'La ficha de práctica vuelve a coincidir con la Cartera, y las puertas no tienen línea por el medio.',
     boxClick: 'Haz clic en un objeto y luego en una casilla. O arrastra.',
     pickFuel: 'Elige un combustible',
     pickBake: 'Elige qué hornear',
@@ -296,7 +296,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'انقر عنصراً ثم خانة لتنقله إلى الصندوق، والفرن يدعك تختار ما تحرق وما تخبز.',
+    whatsNewBody: 'شريحة التدريب تطابق محفظتك من جديد، والأبواب بلا خط في الوسط.',
     boxClick: 'انقر عنصراً ثم خانة. أو اسحب.',
     pickFuel: 'اختر وقوداً',
     pickBake: 'اختر شيئاً لتخبزه',
@@ -321,7 +321,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'یک چیز را بزن، بعد یک خانه، تا به صندوق برود، و تنور می‌گذارد انتخاب کنی چه بسوزد و چه بپزد.',
+    whatsNewBody: 'نشان تمرین دوباره با کیف پول یکی است، و درها خطی در وسط ندارند.',
     boxClick: 'یک چیز را بزن، بعد یک خانه. یا بکش.',
     pickFuel: 'یک سوخت برگزین',
     pickBake: 'چیزی برای پختن برگزین',
@@ -346,7 +346,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Kanda ikintu, hanyuma akazu, ukigire mu gasanduku, kandi icyoto kiguha guhitamo icyo ushya n\'icyo uteka.',
+    whatsNewBody: 'Ikimenyetso cy\'imyitozo gihuye n\'ikofi nanone, kandi amarembo nta murongo ufite hagati.',
     boxClick: 'Kanda ikintu, hanyuma akazu. Cyangwa kurura.',
     pickFuel: 'Hitamo ibishya',
     pickBake: 'Hitamo icyo uteka',
@@ -371,7 +371,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ነገር ጠውቕ ድሕሪኡ ቦታ፡ ናብ ሳንዱቅ ንምውሳድ፡ እቶን ድማ እንታይ ከተንድድን ከተብስልን ትመርጽ ይገብረካ።',
+    whatsNewBody: 'ምልክት ምልምማድ እንደገና ምስ ዋሌት ይሰማማዕ፡ ማዕጾታት ድማ መስመር ኣብ ማእከል የብሎምን።',
     boxClick: 'ነገር ጠውቕ ድሕሪኡ ቦታ። ወይ ጎተት።',
     pickFuel: 'ነዳዲ ምረጽ',
     pickBake: 'ንምጥባስ ምረጽ',

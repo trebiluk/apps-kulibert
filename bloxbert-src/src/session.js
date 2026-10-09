@@ -276,11 +276,10 @@ export function createSession(api) {
   }
   function paintChip() {
     const n = wallet.balance()
-    const earned = Math.max(0, n - (wallet.state.start | 0))
     const el = document.getElementById('wallet-chip')
     if (el) {
       el.hidden = mode !== 'survival'
-      el.innerHTML = '<bdi>' + earned + ' ' + t('practice') + '</bdi>'
+      el.innerHTML = '<bdi>⚙ ' + n + ' ' + t('practice') + '</bdi>'
       el.title = t('practiceTip')
       el.setAttribute('aria-label', t('practiceTip'))
     }

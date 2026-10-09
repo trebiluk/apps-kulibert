@@ -1,6 +1,6 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.92 Click to move, Oven asks).
+Updated Fri Oct 9 2026 (Build: 2.5.93 Practice chip matches Wallet, door has no middle line).
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -70,6 +70,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.92 Click to move, Oven asks).
 - [x] **2.5.86 Hunger tip:** The tip names berries from leaves and bread from flour in the oven. It shows again after you eat, at most once every 5 minutes of play. The first berry from leaves says how to eat it.
 - [x] **2.5.87 Icons and machine slots:** Glass is a light pane, a sapling is a stem with two leaves, and the Workbench top is a grid with a saw and hammer. Oven Fuel and Input show the real items. The Box sits on the machine card and says how many slots are used.
 - [x] **2.5.88 Practice count and xMax:** The chip, the Wallet and the shop read one practice total, and the chip updates on every earn and spend. xMax opens its confirm on the first click after Fill.
+- [x] **2.5.93 Practice chip and door:** The chip shows the same gear and full total as the Wallet, including the starting 20. A door has no rail where the two halves meet, on either face, open or closed.
 - [x] **2.5.92 Click to move, Oven asks:** Click an item, then a slot, to move it into the Box or back. Shift-click moves the whole stack. The Oven asks you to pick a fuel or something to bake before it burns.
 - [x] **2.5.91 Recipes, counts, and fire:** A recipe tile lists every ingredient you still need, with where it comes from. Hotbar counts update while a panel is open. The Oven flame is big, moves while it burns, turns grey when it is out, and a thin bar shows the burn time left.
 - [x] **2.5.89 One door and phone bar:** A closed door is one door with one knob and no seam. The practice chip shows from the start. On a phone the title has room before Sign in, and Bag sits on the hotbar row.
@@ -134,6 +135,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.92 Click to move, Oven asks).
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.93 | The practice chip matches your Wallet again, and doors have no line across the middle | shipped |
 | 1p | 2.5.92 | Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake | shipped |
 | 1p | 2.5.91 | Recipes list everything you still need, counts update while a panel is open, and the Oven fire is easy to see | shipped |
 | 1p | 2.5.89 | Doors look like one door, the practice chip is there from the start, and the phone top bar has room to breathe | shipped |

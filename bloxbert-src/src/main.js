@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.92'
+const VERSION = '2.5.93'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -13,7 +13,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { Scene } from '@babylonjs/core/scene'
-import { Vector3, Matrix } from '@babylonjs/core/Maths/math.vector'
+import { Vector3, Vector4, Matrix } from '@babylonjs/core/Maths/math.vector'
 import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { Light } from '@babylonjs/core/Lights/light'
@@ -285,37 +285,36 @@ function paintTallDoor(kind) {
   const wood = kind === 'wood'
   const glass = kind === 'glass'
   const metal = kind === 'metal'
-  if (wood) {
-    g.fillStyle = '#5C3317'
-    g.fillRect(0, 0, 64, 128)
-    const bands = ['#E8C27A', '#C9954C', '#E0B56A', '#D7A45A', '#E4B56A', '#C9954C', '#E8C27A', '#D7A45A']
-    bands.forEach((fill, i) => { g.fillStyle = fill; g.fillRect(8, 4 + i * 15, 48, 13) })
-  } else if (metal) {
-    g.fillStyle = '#5E6770'
-    g.fillRect(0, 0, 64, 128)
-    const bands = ['#9AA3AB', '#7D868E', '#B0B8BF', '#8A939B']
-    for (let i = 0; i < 8; i++) { g.fillStyle = bands[i % 4]; g.fillRect(8, 4 + i * 15, 48, 13) }
+  const frame = wood ? '#3A2415' : metal ? '#2A3138' : glass ? '#F4FBFE' : '#08332F'
+  const frameIn = wood ? '#6B3E26' : metal ? '#3E474F' : glass ? '#D7F3FA' : '#146964'
+  if (wood || metal) {
+    const bands = wood
+      ? ['#E8C27A', '#C9954C', '#E0B56A', '#D7A45A', '#E4B56A', '#C9954C', '#E8C27A']
+      : ['#9AA3AB', '#7D868E', '#B0B8BF', '#8A939B', '#9AA3AB', '#7D868E', '#B0B8BF']
+    const top = 8
+    const bot = 120
+    const n = bands.length
+    for (let i = 0; i < n; i++) {
+      const y0 = top + Math.round((bot - top) * i / n)
+      const y1 = top + Math.round((bot - top) * (i + 1) / n)
+      g.fillStyle = bands[i]
+      g.fillRect(8, y0, 48, y1 - y0)
+    }
   } else {
     g.clearRect(0, 0, 64, 128)
     g.fillStyle = glass ? 'rgba(186, 228, 244, 0.62)' : 'rgba(46, 168, 162, 0.55)'
-    g.fillRect(7, 7, 50, 114)
+    g.fillRect(8, 8, 48, 112)
   }
-  g.strokeStyle = wood ? '#3A2415' : metal ? '#2A3138' : glass ? '#F4FBFE' : '#08332F'
-  g.lineWidth = 6
-  g.beginPath()
-  g.moveTo(4, 4); g.lineTo(60, 4)
-  g.moveTo(4, 124); g.lineTo(60, 124)
-  g.moveTo(4, 4); g.lineTo(4, 124)
-  g.moveTo(60, 4); g.lineTo(60, 124)
-  g.stroke()
-  g.strokeStyle = wood ? '#6B3E26' : metal ? '#3E474F' : glass ? '#D7F3FA' : '#146964'
-  g.lineWidth = 2
-  g.beginPath()
-  g.moveTo(11, 11); g.lineTo(53, 11)
-  g.moveTo(11, 117); g.lineTo(53, 117)
-  g.moveTo(11, 11); g.lineTo(11, 117)
-  g.moveTo(53, 11); g.lineTo(53, 117)
-  g.stroke()
+  g.fillStyle = frame
+  g.fillRect(0, 0, 8, 128)
+  g.fillRect(56, 0, 8, 128)
+  g.fillRect(0, 0, 64, 8)
+  g.fillRect(0, 120, 64, 8)
+  g.fillStyle = frameIn
+  g.fillRect(8, 8, 3, 112)
+  g.fillRect(53, 8, 3, 112)
+  g.fillRect(8, 8, 48, 3)
+  g.fillRect(8, 117, 48, 3)
   g.fillStyle = metal ? '#E6EEF2' : '#F6C453'
   g.beginPath(); g.arc(46, 78, 5, 0, Math.PI * 2); g.fill()
   g.fillStyle = metal ? '#2A3138' : '#8A5A20'
@@ -354,7 +353,9 @@ for (const kind of ['wood', 'glass', 'metal', 'slide']) {
   }
 }
 function doorPanel(kind, open, half) {
-  const mesh = CreateBox('door-' + kind + '-' + half + (open ? '-o' : '-c'), { width: 0.9, height: 1, depth: 0.12 }, shapeScene)
+  const faceUV = []
+  faceUV[0] = new Vector4(0, 1, 1, 0)
+  const mesh = CreateBox('door-' + kind + '-' + half + (open ? '-o' : '-c'), { width: 0.9, height: 1, depth: 0.12, faceUV }, shapeScene)
   mesh.material = DOOR_ART[kind][half]
   mesh.position.set(0, 0.5, 0)
   if (open) {

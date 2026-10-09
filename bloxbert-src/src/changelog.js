@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.93', date: '2026-10-09', lines: {
+    en: ['The practice chip matches your Wallet again, and doors have no line across the middle.'],
+    uk: ['Значок практики знову збігається з Гаманцем, і на дверях немає лінії посередині.'],
+    ru: ['Значок практики снова совпадает с Кошельком, и на двери нет линии посередине.'],
+    es: ['La ficha de práctica vuelve a coincidir con la Cartera, y las puertas no tienen línea por el medio.'],
+    ar: ['شريحة التدريب تطابق محفظتك من جديد، والأبواب بلا خط في الوسط.'],
+    'fa-AF': ['نشان تمرین دوباره با کیف پول یکی است، و درها خطی در وسط ندارند.'],
+    rw: ['Ikimenyetso cy\'imyitozo gihuye n\'ikofi nanone, kandi amarembo nta murongo ufite hagati.'],
+    ti: ['ምልክት ምልምማድ እንደገና ምስ ዋሌት ይሰማማዕ፡ ማዕጾታት ድማ መስመር ኣብ ማእከል የብሎምን።'],
+  }},
   { v: '2.5.92', date: '2026-10-09', lines: {
     en: ['Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake.'],
     uk: ['Натисни предмет, потім комірку, щоб покласти його в скриню, і піч дає обрати, що спалити й спекти.'],
