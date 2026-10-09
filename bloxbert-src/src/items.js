@@ -1,5 +1,5 @@
 // Hotbar 9 + pockets 6. Older saves can be longer; load() returns what no longer fits.
-const SOLO = { woodTool: 1, stoneTool: 1 }
+const SOLO = { woodTool: 1, stoneTool: 1, hoe: 1 }
 export const BAG_N = 15
 export function createBag() {
   const slots = Array.from({ length: BAG_N }, () => null)

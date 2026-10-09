@@ -10,11 +10,11 @@ export const FLY_V = 7
 export const HAND_S = {
   leaves: 0.2, snow: 0.3, glass: 0.4,
   sand: 0.5, redSand: 0.5, ice: 0.5,
-  dirt: 0.6, grass: 0.6, gravel: 0.7,
+  dirt: 0.6, grass: 0.6, gravel: 0.7, farmland: 0.6,
   woolBlue: 0.8, woolGreen: 0.8, woolRed: 0.8, woolTan: 0.8,
   planks: 1.5, log: 2, stone: 3, slate: 3.5, coal: 3.5,
   brickRed: 4, brickGrey: 4,
-  wheat: 0.4, reed: 0.4, sapling: 0.4, door: 1.5, doorOpen: 1.5,
+  wheat: 0.4, reed: 0.4, sapling: 0.4, tuft: 0.3, door: 1.5, doorOpen: 1.5,
 }
 
 export function jumpHeight(v = JUMP_V, g = 32) {

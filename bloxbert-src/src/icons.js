@@ -195,6 +195,24 @@ const FACE = {
     g.arc(24, 20, 2.2, 0, Math.PI * 2)
     g.fill()
   },
+  farmland(g) {
+    g.fillStyle = '#8d5a2b'
+    g.fillRect(4, 4, 40, 40)
+    g.strokeStyle = '#3f2412'
+    g.lineWidth = 3
+    g.beginPath()
+    for (let y = 12; y <= 40; y += 8) { g.moveTo(6, y); g.lineTo(42, y) }
+    g.stroke()
+  },
+  tuft(g) {
+    g.strokeStyle = '#3D8C32'
+    g.lineWidth = 3
+    g.beginPath()
+    g.moveTo(16, 42); g.lineTo(12, 8)
+    g.moveTo(24, 42); g.lineTo(24, 6)
+    g.moveTo(32, 42); g.lineTo(36, 10)
+    g.stroke()
+  },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
@@ -230,6 +248,8 @@ const FOOD = {
   bread: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="14" rx="8" ry="5" fill="#e8b86d"/></svg>',
   woodTool: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20 L13 8" fill="none" stroke="#C4A574" stroke-width="3" stroke-linecap="round"/><path d="M9 9c2-5 8-7 11-4-3 1-5 4-5 7-2 0-4-1-6-3z" fill="#8B5A2B" stroke="#3A2415" stroke-width="1"/></svg>',
   stoneTool: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22 V9" fill="none" stroke="#78716c" stroke-width="3" stroke-linecap="round"/><path d="M3 10 L12 3 L21 10 L12 8 Z" fill="#57534e" stroke="#1c1917" stroke-width="1.2"/></svg>',
+  hoe: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21 V10" fill="none" stroke="#C4A574" stroke-width="2.6" stroke-linecap="round"/><path d="M4 7 H19 V11 H4 Z" fill="#6b7280" stroke="#1c1917" stroke-width="1.3"/></svg>',
+  wheatSeeds: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C12 14 9 12 8 6" fill="none" stroke="#3D8C32" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="8" cy="16" rx="2.2" ry="1.3" fill="#d6b483"/><ellipse cx="13" cy="15" rx="2.2" ry="1.3" fill="#c4a36a"/><ellipse cx="11" cy="18.5" rx="2" ry="1.2" fill="#e6c99a"/><ellipse cx="16" cy="18" rx="1.8" ry="1.1" fill="#b08958"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.96'
+const VERSION = '2.5.97'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -217,6 +217,8 @@ export const BLOCKS = [
   [46, 'zincOre', 'greystone', 'Zo', 'greystone'],
   [47, 'lantern', 'glass', 'Ln', null],
   [48, 'charger', 'stone', 'Ch', 'stone'],
+  [49, 'farmland', 'dirt', 'Fm', null],
+  [58, 'tuft', 'leaves', 'Tf', null],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
@@ -434,6 +436,26 @@ function wheatMesh() {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
+const soilD = dye('shape-soil', 0.55, 0.36, 0.16)
+const furrowD = dye('shape-furrow', 0.25, 0.14, 0.07)
+const dropD = dye('shape-waterdrop', 0.23, 0.51, 0.96)
+function farmlandMesh(wet) {
+  const body = part('soil', 1, 0.94, 1, 0, 0.47, 0, 0, wet ? furrowD : soilD)
+  const bits = [body]
+  for (let i = 0; i < 4; i++) bits.push(part('fur' + i, 0.9, 0.05, 0.08, 0, 0.96, -0.33 + i * 0.22, 0, furrowD))
+  if (wet) bits.push(part('drop', 0.1, 0.08, 0.1, 0.28, 0.99, -0.28, 0, dropD))
+  return shape(wet ? 'farmland-wet' : 'farmland', bits, wet ? furrowD : soilD)
+}
+function tuftMesh() {
+  const parts = []
+  for (const yaw of [0.35, 1.15]) parts.push(crossed(wheatStalk, 0.36, 0.4, 0.03, 0.14, yaw))
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = 'tuft'
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
 function leverMesh(on) {
   const base = part('b', 0.5, 0.14, 0.5, 0, 0.07, 0, 0, woodD)
   const handle = part('h', 0.1, 0.56, 0.1, 0, 0.46, on ? 0.16 : -0.16, on ? 1 : -1, handleD)
@@ -451,6 +473,8 @@ function lanternMesh() {
 }
 const SHAPES = {
   28: wheatMesh(),
+  49: farmlandMesh(false),
+  58: tuftMesh(),
   30: doorPanel('wood', false, 'bot'),
   31: doorPanel('wood', true, 'bot'),
   32: doorPanel('glass', false, 'bot'),
@@ -478,8 +502,9 @@ for (const [id, name, material] of BLOCKS) {
   const glass = material === 'glass'
   const mesh = SHAPES[id]
   const lantern = id === LANTERN
-  const wheat = id === 28
-  const opts = { material: mesh ? null : material, opaque: !mesh && !open && !glass, solid: !open && !lantern && !wheat }
+  const plant = id === 28 || id === 58
+  const tilled = id === 49
+  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass), solid: tilled || (!open && !lantern && !plant) }
   if (mesh) opts.blockMesh = mesh
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
@@ -495,7 +520,7 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || noa.registry.getBlockSolidity(id)
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || noa.registry.getBlockSolidity(id)
 const blockName = (id) => {
   const row = BLOCKS.find((b) => b[0] === id)
   return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')
@@ -729,7 +754,7 @@ function noteCrouchHint() {
 }
 function landingCell(aimed) {
   if (!aimed || !aimed.position) return null
-  if (aimed.blockID === ID.wheat) return { x: Math.round(aimed.position[0]), y: Math.round(aimed.position[1]), z: Math.round(aimed.position[2]) }
+  if (aimed.blockID === ID.wheat || aimed.blockID === ID.tuft) return { x: Math.round(aimed.position[0]), y: Math.round(aimed.position[1]), z: Math.round(aimed.position[2]) }
   const sx = Math.round(aimed.position[0])
   const sy = Math.round(aimed.position[1])
   const sz = Math.round(aimed.position[2])
@@ -855,6 +880,7 @@ function placeBlock(face, opts) {
       }
     }
   }
+  if (tryTill(aimedBlock, repeat)) return false
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
@@ -899,6 +925,39 @@ function placeBlock(face, opts) {
   }
   if (placed) rememberFace(x, y, z, id)
   return placed
+}
+const tillCount = new Map()
+function tryTill(aimed, repeat) {
+  if (!aimed || !session || session.mode !== 'survival') return false
+  if (!aimed.position || !aimed.adjacent) return false
+  const x = Math.round(aimed.position[0])
+  const y = Math.round(aimed.position[1])
+  const z = Math.round(aimed.position[2])
+  const ax = Math.round(aimed.adjacent[0])
+  const ay = Math.round(aimed.adjacent[1])
+  const az = Math.round(aimed.adjacent[2])
+  if (ax !== x || az !== z || ay !== y + 1) return false
+  const id = getVoxel(x, y, z)
+  if (id !== ID.grass && id !== ID.dirt) return false
+  const held = (session.selectedItem && session.selectedItem()) || ''
+  if (held && held !== 'hoe') return false
+  if (repeat) return true
+  if (!tableMode && !canReach([x, y, z])) return false
+  if (keptCell(x, y, z) && !teacherOn() && !townHelper()) { toast(t('shopProtected')); return true }
+  const key = x + ',' + y + ',' + z
+  const hoe = held === 'hoe'
+  if (!hoe) {
+    const n = (tillCount.get(key) || 0) + 1
+    tillCount.set(key, n)
+    showCard(t('digSoil'))
+    showCrack((n / 3) * 0.9)
+    if (n < 3) return true
+    tillCount.delete(key)
+  } else tillCount.delete(key)
+  hideCrack()
+  if (!edit(x, y, z, ID.farmland)) return true
+  if (learn.addNote('farmNote')) showCard(t('farmNote'))
+  return true
 }
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
@@ -1736,6 +1795,7 @@ panels = mountPanels({
     }
   },
   paintStation: (g, key, kind) => stations.paint(g, key || '0,5,0', kind || 'oven'),
+  notes: () => learn.notes(),
   holdTour: () => holdTour(),
 })
 const learn = createLearn({
@@ -3536,7 +3596,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       const id = getVoxel(x, y, z)
       const ok = session.onBreak(x, y, z, id)
       if (ok) setVoxel(x, y, z, 0, true)
-      return { ok, id, berry: session.bag.count('berry') }
+      return { ok, id, berry: session.bag.count('berry'), seeds: session.bag.count('wheatSeeds'), wheat: session.bag.count('wheat'), dirt: session.bag.count('dirt') }
     },
     aim() { const t = noa.targetedBlock; return t ? { id: t.blockID, x: t.position[0], y: t.position[1], z: t.position[2] } : null },
     land() {
@@ -3606,6 +3666,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       basics.tick()
     },
     card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
+    crack: () => { const ring = document.getElementById('pick-ring'); return ring && !ring.hidden ? ring.style.background : '' },
+    rolls(kind, x, y, z) { return session.seedCount(kind, x, y, z) },
     lost: () => session.lostItems ? session.lostItems() : [],
     gifts: () => ({ ...gifts }),
     apply: (doc) => applyDoc(doc),

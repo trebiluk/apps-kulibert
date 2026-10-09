@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.96 Oven works like the Box, Cupcake is in Crafting).
+Updated Fri Oct 9 2026 (Build: 2.5.97 Wheat and grass drop seeds, Hoe, and farmland).
+
+- [x] **2.5.97 Farming F1:** wheat drops 1–2 seeds, grass tufts drop a seed 1 time in 8, Hoe (2 sticks + 1 planks) tills grass or dirt in 1 use, empty hand takes 3 with the dig crack, farmland breaks into dirt.
 
 ## 1. Live now
 - **Bertopia 2.5.48** (`a88f823`, Oct 6 10:11 PM ET). Doors with levers and buttons, day and night, and the LED Lantern.
@@ -137,6 +139,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.96 Oven works like the Box, Cupcake is in Cra
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.97 | Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries) | shipped |
 | 1p | 2.5.96 | The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe | shipped |
 | 1p | 2.5.95 | The Oven fire is big and lively, and new things you craft go where you can find them | shipped |
 | 1p | 2.5.93 | The practice chip matches your Wallet again, and doors have no line across the middle | shipped |

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.97', date: '2026-10-09', lines: {
+    en: ['Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries).'],
+    uk: ['Пшениця і трава дають насіння, і ти можеш зробити мотику та скопати ріллю (руками це 3 спроби).'],
+    ru: ['Пшеница и трава дают семена, и ты можешь сделать мотыгу и вскопать грядку (руками это 3 попытки).'],
+    es: ['El trigo y la hierba sueltan semillas, y puedes hacer una azada y cavar tierra de cultivo (a mano lleva 3 intentos).'],
+    ar: ['القمح والعشب يعطيان بذوراً، ويمكنك صنع مجرفة وحفر أرض الزراعة (باليد تحتاج 3 محاولات).'],
+    'fa-AF': ['گندم و چمن دانه می‌دهند، و می‌توانی بیلچه بسازی و زمین کشاورزی بکنی (با دست ۳ بار طول می‌کشد).'],
+    rw: ['Ingano n\'ibyatsi bitanga imbuto, kandi ushobora gukora isuka no guhinga ubutaka (n\'intoki bisaba inshuro 3).'],
+    ti: ['ስርናይን ሳዕሪን ዘርኢ ይህቡ፡ መንኮስን ትሰርሕን ሓረስቲ ምድሪ ትኸድ (ብኢድ 3 ፈተነ ይውስድ)።'],
+  }},
   { v: '2.5.96', date: '2026-10-09', lines: {
     en: ['The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe.'],
     uk: ['Піч працює як скриня, перше натискання завжди рахується, і рецепт кекса можна знайти.'],

@@ -50,7 +50,7 @@ export function maxPlan(recipe, count) {
   return { n, uses }
 }
 export function placeResult(bag, item, n, hot) {
-  const cap = item === 'woodTool' || item === 'stoneTool' ? 1 : 64
+  const cap = item === 'woodTool' || item === 'stoneTool' || item === 'hoe' ? 1 : 64
   let left = n
   let pocket = -1
   const note = (i) => { if (i >= 9 && pocket < 0) pocket = i }

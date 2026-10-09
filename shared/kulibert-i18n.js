@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "The Oven works like the Box, its first click always counts, and you can find the Cupcake recipe.",
+  "whatsNewBody": "Wheat and grass drop seeds, and you can make a Hoe and dig farmland (by hand it takes 3 tries).",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

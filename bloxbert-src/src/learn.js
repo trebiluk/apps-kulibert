@@ -168,5 +168,14 @@ export function createLearn(api) {
   }
   if (!state.tourDone) armAuto()
   paintPath()
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, goals: () => goals, cancelAuto }
+  function notes() { return (state.notes || []).slice() }
+  function addNote(id) {
+    if (!id) return false
+    if (!state.notes) state.notes = []
+    if (state.notes.includes(id)) return false
+    state.notes.push(id)
+    save()
+    return true
+  }
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, goals: () => goals, cancelAuto, notes, addNote }
 }

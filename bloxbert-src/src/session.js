@@ -1,5 +1,5 @@
 // Survival session: bag, Cogs, shop, counters, bunk. Creative never touches this bag.
-import { ITEMS, dropOf, saplingRoll } from './data/items.js'
+import { ITEMS, dropOf, saplingRoll, wheatSeedCount, tuftSeedCount } from './data/items.js'
 import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
@@ -428,7 +428,7 @@ export function createSession(api) {
     return true
   }
   function stackCap(item) {
-    return item === 'woodTool' || item === 'stoneTool' ? 1 : 64
+    return item === 'woodTool' || item === 'stoneTool' || item === 'hoe' ? 1 : 64
   }
   function relocate(from, to) {
     if (from === to || from < 0 || to < 0 || to >= bag.slots.length) return false
@@ -1875,6 +1875,8 @@ export function createSession(api) {
       const tuftLeft = bag.add('berry', 1)
       if (tuftLeft) spawnDrop('berry', tuftLeft, x + 0.5, y + 0.7, z + 0.5, 'full')
     }
+    if (id === 28) giveLoose('wheatSeeds', wheatSeedCount(x, y, z), x, y, z)
+    if (id === 58) giveLoose('wheatSeeds', tuftSeedCount(x, y, z), x, y, z)
     if (id === 11) markPath('pathTree')
     if (id === 3) markPath('pathStone')
     if (id === 5) markPath('pathCoal')
@@ -1884,6 +1886,12 @@ export function createSession(api) {
     if (drop && got) landItem(drop, beforeSlots, 'fly')
     else if (drop && loose) landItem(drop, beforeSlots, 'back')
     return true
+  }
+  function giveLoose(item, n, x, y, z) {
+    if (!n || !ITEMS[item]) return
+    markFound(item)
+    const left = bag.add(item, n)
+    if (left) spawnDrop(item, left, x + 0.5, y + 0.55, z + 0.5, 'full')
   }
   function wearBar(item, uses) {
     const life = item && TOOL_LIFE[item.tool]
@@ -2281,6 +2289,7 @@ export function createSession(api) {
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
     give(item, n) { giveItem(item, n) },
+    seedCount(kind, x, y, z) { return kind === 'tuft' ? tuftSeedCount(x, y, z) : wheatSeedCount(x, y, z) },
     blockForHot() { const k = selectedItem(); return k && ITEMS[k] && ITEMS[k].block },
     toolTier() { const k = selectedItem(); return (k && ITEMS[k] && ITEMS[k].tool) || 'hand' },
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,

@@ -87,6 +87,7 @@ export function plantHere(x, y, z, surface, inTown) {
   if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
   const n = hash(x, z)
   if (n >= 0.04 && n < 0.07) return 'wheat'
+  if (n >= 0.12 && n < 0.28) return 'tuft'
   return ''
 }
 export function berryTuft(x, y, z) {

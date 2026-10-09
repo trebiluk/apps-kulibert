@@ -49,9 +49,11 @@ export const ITEMS = {
   batteryCell: { letter: 'Bc', base: 0, sell: false },
   woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false, stack: 1 },
   stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false, stack: 1 },
+  hoe: { svg: 'hoe', letter: 'Ho', base: 2, sell: false, stack: 1 },
   sapling: { block: 185, letter: 'Sp', base: 0, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
   wheat: { block: 28, letter: 'Wh', cat: 'Food', base: 2, sell: false },
+  wheatSeeds: { svg: 'wheatSeeds', letter: 'Ws', base: 0, sell: false },
   flour: { svg: 'flour', letter: 'Fl', cat: 'Food', base: 3, sell: true },
   sugar: { svg: 'sugar', letter: 'Su', cat: 'Food', base: 2, sell: true },
   cupcake: { svg: 'cupcake', letter: 'Cu', cat: 'Food', base: 6, sell: true },
@@ -60,6 +62,8 @@ export const ITEMS = {
 export const ITEM_BY_BLOCK = Object.fromEntries(Object.entries(ITEMS).filter(([, v]) => v.block).map(([k, v]) => [v.block, k]))
 export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
+  if (blockId === 49) return 'dirt'
+  if (blockId === 58) return null
   if (blockId === 28) return 'wheat'
   if (blockId === 29) return 'sugar'
   if (blockId >= 50 && blockId <= 57) return dropOf(blockId - 20)
@@ -74,4 +78,13 @@ export function dropOf(blockId) {
 export function saplingRoll(x, y, z) {
   const h = (Math.imul(x | 0, 2246822519) + Math.imul(y | 0, 3266489917) + Math.imul(z | 0, 668265263)) >>> 0
   return h % 6 === 0
+}
+function mix(x, y, z, salt) {
+  return (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263) ^ Math.imul(salt, 374761393)) >>> 0
+}
+export function wheatSeedCount(x, y, z) {
+  return 1 + (mix(x, y, z, 28) % 2)
+}
+export function tuftSeedCount(x, y, z) {
+  return mix(x, y, z, 58) % 8 === 0 ? 1 : 0
 }
