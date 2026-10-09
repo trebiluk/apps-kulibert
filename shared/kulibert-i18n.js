@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Recipes list everything you still need, counts update while a panel is open, and the Oven fire is easy to see.",
+  "whatsNewBody": "Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

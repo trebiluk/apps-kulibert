@@ -258,9 +258,13 @@ export function createStations(api) {
     const fuelCount = fuelItem ? (r.fuelN || 0) : 0
     const inItem = (r.input && r.input[0]) || ''
     const inCount = inItem ? (r.inputN || 1) : 0
+    if (r.ask === 'fuel' && fuelItem) r.ask = ''
+    if (r.ask === 'input' && (inItem || r.until)) r.ask = ''
     let status = api.t('needsFuel')
     if (outItem && !r.until) status = api.t('takeYour').replace('{item}', api.name ? api.name(outItem) : outItem)
     else if (r.until) status = api.t('bakingNow')
+    else if (r.ask === 'fuel') status = api.t('pickFuel')
+    else if (r.ask === 'input' || r.picking) status = api.t('pickBake')
     else if (!(r.left > 0)) status = api.t('needsFuel')
     else status = api.t('input')
     head(crate, 'oven', api.t('oven'), status)
@@ -309,6 +313,13 @@ export function createStations(api) {
       fx(outEl, 'bump')
     }
     const fueled = () => (get(k, 'oven').left || 0) > 0
+    const recipeYouCan = (item) => {
+      if (!item) return null
+      const creative = api.creative && api.creative()
+      const ready = OVEN.filter((recipe) => recipe.in.some(([it]) => it === item) && (creative || recipe.in.every(([it, n]) => api.have && api.have(it) >= n)))
+      if (!ready.length) return null
+      return ready.find((recipe) => recipe.in.length === 1 && recipe.in[0][0] === item) || ready.find((recipe) => recipe.in[0][0] === item) || ready[0]
+    }
     const useFuel = (item) => {
       if (item && !BAKES[item]) {
         flash(api.t('ovenNoBurn').replace('{item}', itemName(item)))
@@ -340,18 +351,26 @@ export function createStations(api) {
       paint(g, key, kind)
       return true
     }
+    const askSlot = (role) => {
+      if (role === 'fuel' && fuelItem) return
+      if (role === 'input' && (inItem || r.until)) return
+      r.ask = r.ask === role ? '' : role
+      r.picking = false
+      r.flash = ''
+      r.fuelNote = ''
+      pickItem = ''
+      pickSlot = -1
+      paint(g, key, kind)
+    }
     fuelEl.addEventListener('pointerdown', () => { gestureAt = 0 })
     fuelEl.addEventListener('click', () => {
       if (performance.now() - gestureAt < 450) return
-      if (pickItem) useFuel(pickItem)
-      else useFuel('')
+      if (!fuelItem) askSlot('fuel')
     })
     inEl.addEventListener('pointerdown', () => { gestureAt = 0 })
     inEl.addEventListener('click', () => {
       if (performance.now() - gestureAt < 450) return
-      if (pickItem) { if (!useInput(pickItem)) r.picking = true }
-      else r.picking = !r.picking
-      if (!pickItem || r.picking) paint(g, key, kind)
+      if (!inItem && !r.until) askSlot('input')
     })
     outEl.addEventListener('click', () => { take(k); paint(g, key, kind) })
     const fuelHold = document.createElement('div')
@@ -432,7 +451,63 @@ export function createStations(api) {
       strip.append(b)
     })
     crate.append(strip)
-    if (r.picking) {
+    if (r.ask === 'fuel' || r.ask === 'input') {
+      const picks = document.createElement('div')
+      picks.className = 'oven-picks oven-ask'
+      picks.dataset.ask = r.ask
+      const fit = new Map()
+      for (const s of slots) {
+        if (!s || !(s.n > 0)) continue
+        const ok = r.ask === 'fuel' ? !!BAKES[s.item] : bakesItem(s.item)
+        if (!ok) continue
+        fit.set(s.item, (fit.get(s.item) || 0) + s.n)
+      }
+      if (!fit.size) {
+        const p = document.createElement('p')
+        p.className = 'gnote'
+        p.textContent = r.ask === 'fuel' ? api.t('addFuelWood') : api.t('nothingBake')
+        picks.append(p)
+      }
+      for (const [item, n] of fit) {
+        const b2 = document.createElement('button')
+        b2.type = 'button'
+        b2.className = 'gtile oven-choice'
+        b2.dataset.item = item
+        b2.dataset.fit = r.ask
+        const pic = document.createElement('span')
+        pic.className = 'gic'
+        pic.append(face(item))
+        const lbl = document.createElement('span')
+        lbl.className = 'glbl'
+        const named = api.name ? api.name(item) : item
+        lbl.textContent = named + ' ×' + n
+        b2.append(pic, lbl)
+        b2.setAttribute('aria-label', named)
+        b2.addEventListener('click', () => {
+          if (r.ask === 'fuel') {
+            r.ask = ''
+            useFuel(item)
+            return
+          }
+          const recipe = recipeYouCan(item)
+          r.ask = ''
+          r.flash = ''
+          if (!recipe) {
+            r.fuelNote = api.t('nothingBake')
+            paint(g, key, kind)
+            return
+          }
+          const ok = fueled() ? addInput(k, recipe.id) : arm(k, recipe.id)
+          if (!ok) r.fuelNote = api.t('nothingBake')
+          else { r.fuelNote = ''; r.flash = '' }
+          pickItem = ''
+          pickSlot = -1
+          paint(g, key, kind)
+        })
+        picks.append(b2)
+      }
+      crate.append(picks)
+    } else if (r.picking) {
       const picks = document.createElement('div')
       picks.className = 'oven-picks'
       const creative = api.creative && api.creative()

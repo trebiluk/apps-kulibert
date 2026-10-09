@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.92', date: '2026-10-09', lines: {
+    en: ['Click an item, then a slot, to move it into the Box, and the Oven lets you pick what to burn and bake.'],
+    uk: ['Натисни предмет, потім комірку, щоб покласти його в скриню, і піч дає обрати, що спалити й спекти.'],
+    ru: ['Нажми предмет, потом ячейку, чтобы положить его в сундук, и печь даёт выбрать, что сжечь и испечь.'],
+    es: ['Haz clic en un objeto y luego en una casilla para meterlo en la caja, y el horno te deja elegir qué quemar y hornear.'],
+    ar: ['انقر عنصراً ثم خانة لتنقله إلى الصندوق، والفرن يدعك تختار ما تحرق وما تخبز.'],
+    'fa-AF': ['یک چیز را بزن، بعد یک خانه، تا به صندوق برود، و تنور می‌گذارد انتخاب کنی چه بسوزد و چه بپزد.'],
+    rw: ['Kanda ikintu, hanyuma akazu, ukigire mu gasanduku, kandi icyoto kiguha guhitamo icyo ushya n\'icyo uteka.'],
+    ti: ['ነገር ጠውቕ ድሕሪኡ ቦታ፡ ናብ ሳንዱቅ ንምውሳድ፡ እቶን ድማ እንታይ ከተንድድን ከተብስልን ትመርጽ ይገብረካ።'],
+  }},
   { v: '2.5.91', date: '2026-10-09', lines: {
     en: ['Recipes list everything you still need, counts update while a panel is open, and the Oven fire is easy to see.'],
     uk: ['Рецепти показують усе, чого ще бракує, лічильники оновлюються, поки панель відкрита, і вогонь печі легко побачити.'],
