@@ -1,5 +1,9 @@
-**Chip: HI 1.1.19** · 2026-10-09 · channel **live**
+**Chip: HI 1.1.20** · 2026-10-09 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.20 — The stage fits, and the card stays off the tower — 2026-10-09
+
+- What’s new: HoldIt HI 1.1.20: the stage fits the screen, and the It held card stays off the tower.
 
 ## 1.1.19 — The tower stays in view — 2026-10-09
 

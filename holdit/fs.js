@@ -1,4 +1,4 @@
-/* HI 1.1.19 — the tower refits after a turn, and the turn tip stays off the controls. */
+/* HI 1.1.20 — the stage fits under the Hub bar, and the It held card stays off the tower. */
 (function () {
   var KEY = "kulibert-fullscreen";
   var TURN = "kulibert-tower-turn-hide";
@@ -347,27 +347,119 @@
     requestAnimationFrame(function () { requestAnimationFrame(pass); });
     setTimeout(pass, 250);
   }
-  var wasTower = false;
-  function onRoute() {
-    var now = isTower();
-    if (wasTower && !now) unlockTower();
-    if (now) lockTower();
-    wasTower = now;
-    placeTurn();
-    dockCards();
-    showBtn();
+
+  var MORE = {
+    en: ["More", "Less"], es: ["Más", "Menos"], uk: ["Ще", "Менше"], ru: ["Ещё", "Меньше"],
+    ar: ["المزيد", "أقل"], "fa-AF": ["بیشتر", "کمتر"], rw: ["Ibindi", "Hinga"], ti: ["ተወሳኺ", "ውሕድ"]
+  };
+  function moreLabel(open) {
+    var pair = MORE[lang()] || MORE.en;
+    return open ? pair[1] : pair[0];
   }
-  document.addEventListener("fullscreenchange", function () { lockTower(); showBtn(); placeTurn(); settleRefit(); });
-  document.addEventListener("webkitfullscreenchange", function () { lockTower(); showBtn(); placeTurn(); settleRefit(); });
-  addEventListener("resize", function () { dockCards(); showBtn(); placeTurn(); settleRefit(); });
-  addEventListener("orientationchange", function () {
-    setTimeout(function () { showBtn(); placeTurn(); lockTower(); }, 60);
-    settleRefit();
-  });
-  if (window.visualViewport) {
-    visualViewport.addEventListener("resize", function () { settleRefit(); });
+  function findResult() {
+    var nodes = document.querySelectorAll(".lp-dialog");
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (el.getAttribute("data-state") === "closed") continue;
+      if (el.querySelector("table")) continue;
+      var r = rectOf(el);
+      if (r && r.width > 40 && r.height > 40) return el;
+    }
+    return null;
   }
-  setInterval(onRoute, 400);
+  function resultMode() {
+    var w = window.innerWidth;
+    var h = window.innerHeight;
+    if (w < 720 && h > w) return "sheet";
+    if (h <= 500 && w > h) return "side";
+    return "desk";
+  }
+  function shopMetrics() {
+    var shop = document.querySelector(".shop.shop-editor");
+    var head = 104;
+    var dockH = 0;
+    if (!shop || !shop.children.length) return { head: head, dockH: dockH };
+    var header = shop.children[0].getBoundingClientRect();
+    if (header.height > 20) head = Math.round(header.bottom);
+    var dock = shop.children[shop.children.length - 1].getBoundingClientRect();
+    if (dock.height > 20 && dock.bottom > head) dockH = Math.round(dock.height);
+    return { head: head, dockH: dockH };
+  }
+  function ensureMore(dlg, sheet) {
+    var btn = dlg.querySelector(":scope > .hi-more-btn");
+    if (!sheet) {
+      if (btn) btn.remove();
+      return;
+    }
+    var row = dlg.querySelector(".mt-2.flex");
+    if (!row) return;
+    if (!btn) {
+      btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "hi-more-btn";
+      btn.addEventListener("click", function () {
+        var open = document.documentElement.classList.toggle("hi-more");
+        btn.textContent = moreLabel(open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        requestAnimationFrame(function () { syncResult(); });
+      });
+      row.insertAdjacentElement("afterend", btn);
+    }
+    var open = document.documentElement.classList.contains("hi-more");
+    var label = moreLabel(open);
+    if (btn.textContent !== label) btn.textContent = label;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  var resultSig = "";
+  function focusTest() {
+    var buttons = document.querySelectorAll(".shop-editor button");
+    for (var i = 0; i < buttons.length; i++) {
+      var label = (buttons[i].innerText || "").replace(/\s+/g, " ").trim();
+      if (label === "Test" || /Test$/.test(label)) {
+        try { buttons[i].focus(); } catch (e) {}
+        return;
+      }
+    }
+  }
+  function syncResult() {
+    var root = document.documentElement;
+    var dlg = findResult();
+    if (!dlg) {
+      if (resultSig !== "off") {
+        var wasOpen = resultSig !== "";
+        resultSig = "off";
+        root.classList.remove("hi-result", "hi-result-sheet", "hi-result-side", "hi-result-desk", "hi-more");
+        root.style.removeProperty("--hi-sheet-h");
+        root.style.removeProperty("--hi-side-w");
+        settleRefit();
+        if (wasOpen) {
+          setTimeout(focusTest, 80);
+          setTimeout(focusTest, 240);
+        }
+      }
+      return;
+    }
+    var mode = resultMode();
+    var metrics = shopMetrics();
+    root.classList.add("hi-result");
+    root.classList.toggle("hi-result-sheet", mode === "sheet");
+    root.classList.toggle("hi-result-side", mode === "side");
+    root.classList.toggle("hi-result-desk", mode === "desk");
+    if (mode !== "sheet") root.classList.remove("hi-more");
+    root.style.setProperty("--hi-dock-h", metrics.dockH + "px");
+    root.style.setProperty("--hi-head", metrics.head + "px");
+    ensureMore(dlg, mode === "sheet");
+    var box = dlg.getBoundingClientRect();
+    var sh = Math.round(box.height);
+    var sw = Math.round(box.width);
+    if (mode === "sheet" && sh > 40) root.style.setProperty("--hi-sheet-h", sh + "px");
+    if (mode === "side" && sw > 40) root.style.setProperty("--hi-side-w", sw + "px");
+    var sig = mode + ":" + sh + "x" + sw + ":" + metrics.dockH + ":" + (root.classList.contains("hi-more") ? "1" : "0");
+    if (sig !== resultSig) {
+      resultSig = sig;
+      settleRefit();
+    }
+  }
 
   function ensureExit(panel) {
     if (!panel || panel.querySelector("[data-fs-exit-label]")) return;
@@ -387,11 +479,35 @@
     });
     panel.appendChild(b);
   }
+  var wasTower = false;
+  function onRoute() {
+    var now = isTower();
+    if (wasTower && !now) unlockTower();
+    if (now) lockTower();
+    wasTower = now;
+    placeTurn();
+    dockCards();
+    showBtn();
+    syncResult();
+  }
+  document.addEventListener("fullscreenchange", function () { lockTower(); showBtn(); placeTurn(); syncResult(); settleRefit(); });
+  document.addEventListener("webkitfullscreenchange", function () { lockTower(); showBtn(); placeTurn(); syncResult(); settleRefit(); });
+  addEventListener("resize", function () { syncResult(); dockCards(); showBtn(); placeTurn(); settleRefit(); });
+  addEventListener("orientationchange", function () {
+    setTimeout(function () { showBtn(); placeTurn(); lockTower(); syncResult(); }, 60);
+    settleRefit();
+  });
+  if (window.visualViewport) {
+    visualViewport.addEventListener("resize", function () { syncResult(); settleRefit(); });
+  }
+  setInterval(onRoute, 400);
+
   var obs = new MutationObserver(function () {
     obs.disconnect();
     try {
       ensureExit(document.getElementById("hi-settings-panel"));
       paint();
+      syncResult();
     } finally {
       if (document.body) obs.observe(document.body, { childList: true, subtree: true });
     }
@@ -400,6 +516,7 @@
     obs.observe(document.body, { childList: true, subtree: true });
     paint();
     onRoute();
+    settleRefit();
   }
   if (document.body) arm();
   else document.addEventListener("DOMContentLoaded", arm);
