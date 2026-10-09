@@ -196,8 +196,9 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Fill only fills and Make makes one, and there is sand near the start for your first bake.',
+    whatsNewBody: 'Ovens and boxes face you when you place them, there is wood for a roof, and the game tells you when to eat.',
     makeAsk: 'Make {n}? Uses {uses}', leftLine: '{item} left: {n}', cancel: 'Cancel',
+    doorTall: 'Door (2 blocks tall)', hungryEat: 'You are hungry. Bake {bake} in the Oven, or eat {eat}.',
     bakesHint: 'Bakes: {list}', rawFood: 'Raw food', bakedFood: 'Food',
     ovenNoBake: 'The Oven cannot bake {item}.', ovenNoBurn: '{item} will not burn.',
     gotItem: '{item} picked up',
@@ -214,8 +215,9 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Наповнення лише наповнює, а Зробити робить одне, і пісок близько для першого випікання.',
+    whatsNewBody: 'Печі й скрині дивляться на тебе, коли ставиш їх, дерева вистачить на дах, і гра каже, коли їсти.',
     makeAsk: 'Зробити {n}? Піде {uses}', leftLine: '{item} лишилось: {n}', cancel: 'Скасувати',
+    doorTall: 'Двері (2 блоки заввишки)', hungryEat: 'Ти голодний. Спечи {bake} в печі або з’їж {eat}.',
     bakesHint: 'Пече: {list}', rawFood: 'Сира їжа', bakedFood: 'Їжа',
     ovenNoBake: 'Піч не може спекти {item}.', ovenNoBurn: '{item} не горить.',
     gotItem: '{item} підібрано',
@@ -232,8 +234,9 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Заполнение только заполняет, а Сделать делает одно, и песок рядом для первой выпечки.',
+    whatsNewBody: 'Печи и сундуки смотрят на тебя, когда ставишь их, дерева хватит на крышу, и игра говорит, когда есть.',
     makeAsk: 'Сделать {n}? Уйдёт {uses}', leftLine: '{item} осталось: {n}', cancel: 'Отмена',
+    doorTall: 'Дверь (2 блока в высоту)', hungryEat: 'Ты голоден. Испеки {bake} в печи или съешь {eat}.',
     bakesHint: 'Печёт: {list}', rawFood: 'Сырая еда', bakedFood: 'Еда',
     ovenNoBake: 'Печь не может испечь {item}.', ovenNoBurn: '{item} не горит.',
     gotItem: '{item} подобрано',
@@ -250,8 +253,9 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Llenar solo llena y Hacer hace uno, y hay arena cerca del inicio para tu primer horneado.',
+    whatsNewBody: 'Los hornos y las cajas te miran al ponerlos, hay madera para un techo, y el juego te dice cuándo comer.',
     makeAsk: '¿Hacer {n}? Usa {uses}', leftLine: '{item} quedan: {n}', cancel: 'Cancelar',
+    doorTall: 'Puerta (2 bloques de alto)', hungryEat: 'Tienes hambre. Hornea {bake} en el horno, o come {eat}.',
     bakesHint: 'Hornea: {list}', rawFood: 'Comida cruda', bakedFood: 'Comida',
     ovenNoBake: 'El horno no puede hornear {item}.', ovenNoBurn: '{item} no arde.',
     gotItem: '{item} recogido',
@@ -268,8 +272,9 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الملء يملأ فقط والصنع يصنع واحداً، وهناك رمل قرب البداية لأول خبز.',
+    whatsNewBody: 'الأفران والصناديق تواجهك عند وضعها، وهناك خشب لسقف، واللعبة تخبرك متى تأكل.',
     makeAsk: 'تصنع {n}؟ يستخدم {uses}', leftLine: 'يبقى {item}: {n}', cancel: 'إلغاء',
+    doorTall: 'باب (بارتفاع مكعبين)', hungryEat: 'أنت جائع. اخبز {bake} في الفرن، أو كُل {eat}.',
     bakesHint: 'يخبز: {list}', rawFood: 'طعام نيء', bakedFood: 'طعام',
     ovenNoBake: 'الفرن لا يخبز {item}.', ovenNoBurn: '{item} لا يحترق.',
     gotItem: 'تم التقاط {item}',
@@ -286,8 +291,9 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'پر کردن فقط پر می‌کند و ساختن یکی می‌سازد، و ریگ برای پخت اول نزدیک شروع است.',
+    whatsNewBody: 'تنورها و صندوق‌ها هنگام گذاشتن رو به تو هستند، چوب برای سقف هست، و بازی می‌گوید کی بخوری.',
     makeAsk: '{n} بسازی؟ مصرف {uses}', leftLine: '{item} مانده: {n}', cancel: 'لغو',
+    doorTall: 'در (۲ بلاک بلند)', hungryEat: 'گرسنه‌ای. {bake} را در تنور بپز، یا {eat} بخور.',
     bakesHint: 'می‌پزد: {list}', rawFood: 'غذای خام', bakedFood: 'غذا',
     ovenNoBake: 'تنور {item} را نمی‌پزد.', ovenNoBurn: '{item} نمی‌سوزد.',
     gotItem: '{item} برداشته شد',
@@ -304,8 +310,9 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Uzuza kuzuzamo gusa kandi Kora ikora kimwe, kandi hari umucanga hafi utangira mu guteka kwawe kwa mbere.',
+    whatsNewBody: 'Ibyoto n\'agasanduku biraba wowe ubishyira, hari ibiti byo gupfuka, kandi umukino ukubwira igihe urya.',
     makeAsk: 'Ukore {n}? Ikoresha {uses}', leftLine: '{item} yasigaye: {n}', cancel: 'Hagarika',
+    doorTall: 'Urugi (uburebure bwa block 2)', hungryEat: 'Urashonje. Teka {bake} mu cyoto, cyangwa rya {eat}.',
     bakesHint: 'Iteka: {list}', rawFood: 'Ibiryo bitoze', bakedFood: 'Ibiryo',
     ovenNoBake: 'Icyoto ntigishobora guteka {item}.', ovenNoBurn: '{item} ntizishya.',
     gotItem: '{item} yatoranywe',
@@ -322,8 +329,9 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ምምላእ ጥራይ ይምልእ፡ ምግባር ድማ ሓደ ይገብር፡ ሑጻ ድማ ንመጀመርታ ምብሳል ቀረባ ኣሎ።',
+    whatsNewBody: 'እቶንን ሳንዱቅን ምስ ትቐምጥ የዓልኻ ይርእዩ፡ ንዓራት ዕንጨይቲ ኣሎ፡ ጸወታ ድማ መዓስ ከም ትብላዕ ይነግረካ።',
     makeAsk: 'ግበር {n}? ይጥቀም {uses}', leftLine: '{item} ተሪፉ: {n}', cancel: 'ሰርዝ',
+    doorTall: 'ማዕጾ (2 ብሎክ ቁመት)', hungryEat: 'ጥሙኻ። {bake} ኣብ እቶን ኣብስል፡ ወይ {eat} ብላዕ።',
     bakesHint: 'የብስል፡ {list}', rawFood: 'ጥሬ መግቢ', bakedFood: 'መግቢ',
     ovenNoBake: 'እቶን {item} ኣይብስልን።', ovenNoBurn: '{item} ኣይነድድን።',
     gotItem: '{item} ተለቂሙ',

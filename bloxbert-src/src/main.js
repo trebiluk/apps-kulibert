@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.82'
+const VERSION = '2.5.83'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -181,8 +181,8 @@ export const BLOCKS = [
   [19, 'redSand', 'redsand', 'Rs', 'redsand'],
   [20, 'glass', 'glass', 'Gl', null],
   [21, 'coreplate', 'coreplate', 'Cp', null],
-  [22, 'workbench', 'workbench', 'Wk', null],
-  [23, 'oven', ['ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenBrick', 'ovenFront'], 'Ov', null],
+  [22, 'workbench', ['wood', 'wood', 'workbench', 'wood', 'wood', 'wood'], 'Wk', null],
+  [23, 'oven', 'ovenBrick', 'Ov', null],
   [24, 'vend', 'vend', 'Vc', null],
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
@@ -265,6 +265,35 @@ ovenHotMat.emissiveColor = new Color3(1, 0.85, 0.55)
 ovenHotMat.specularColor = new Color3(0, 0, 0)
 ovenHotMat.disableLighting = true
 ovenHotMat.backFaceCulling = false
+function flatFace(name, url) {
+  const tex = new Texture(url, shapeScene, false, true, Texture.NEAREST_SAMPLINGMODE)
+  tex.hasAlpha = false
+  const mat = new StandardMaterial(name, shapeScene)
+  mat.diffuseTexture = tex
+  mat.emissiveTexture = tex
+  mat.emissiveColor = new Color3(0.62, 0.62, 0.62)
+  mat.specularColor = new Color3(0, 0, 0)
+  mat.disableLighting = true
+  mat.backFaceCulling = false
+  return mat
+}
+const ovenFaceMat = flatFace('oven-front-face', 'assets/tile-oven-front.png')
+const benchFaceMat = flatFace('bench-front-face', 'assets/tile-workbench.png')
+function crateFaceURL() {
+  const c = document.createElement('canvas')
+  c.width = 32
+  c.height = 32
+  const g = c.getContext('2d')
+  g.fillStyle = '#d2b48c'
+  g.fillRect(0, 0, 32, 32)
+  g.strokeStyle = '#5c3a1e'
+  g.lineWidth = 4
+  g.strokeRect(3, 3, 26, 26)
+  g.fillStyle = '#6b4423'
+  g.fillRect(14, 13, 4, 7)
+  return c.toDataURL()
+}
+const boxFaceMat = flatFace('box-front-face', crateFaceURL())
 const ovenGlows = new Map()
 function doorMesh(kind, open, mat) {
   if (!open) return shape('door-' + kind + '-shut', [part('p', 0.96, 0.98, 0.18, 0, 0.5, 0, 0, mat)], mat)
@@ -707,6 +736,7 @@ function placeBlock(face, opts) {
       }
     }
   }
+  if (placed) rememberFace(x, y, z, id)
   return placed
 }
 function tableTarget() {
@@ -1189,24 +1219,105 @@ function syncOvenGlow() {
     const x = Number(parts[0]), y = Number(parts[1]), z = Number(parts[2])
     if (getVoxel(x, y, z) !== ID.oven) continue
     hot.add(key)
-    if (ovenGlows.has(key)) continue
-    const mesh = CreateBox('oven-hot-' + key, { width: 1.02, height: 1.02, depth: 0.045 }, shapeScene)
-    mesh.material = ovenHotMat
-    mesh.isPickable = false
-    noa.rendering.addMeshToScene(mesh, false)
-    ovenGlows.set(key, mesh)
+    const face = readFace(x, y, z)
+    let rec = ovenGlows.get(key)
+    if (rec && rec.face !== face) { rec.mesh.dispose(); ovenGlows.delete(key); rec = null }
+    if (!rec) {
+      const thin = face === 'E' || face === 'W'
+      const mesh = CreateBox('oven-hot-' + key, thin ? { width: 0.045, height: 1.02, depth: 1.02 } : { width: 1.02, height: 1.02, depth: 0.045 }, shapeScene)
+      mesh.material = ovenHotMat
+      mesh.isPickable = false
+      noa.rendering.addMeshToScene(mesh, false)
+      rec = { mesh, face }
+      ovenGlows.set(key, rec)
+    }
+    const spot = faceSpot(x, y, z, face, 0.03)
+    const lp = noa.globalToLocal(spot, null, glowLocal)
+    rec.mesh.position.set(lp[0], lp[1], lp[2])
   }
   for (const key of [...ovenGlows.keys()]) {
-    const mesh = ovenGlows.get(key)
-    if (!hot.has(key)) {
-      mesh.dispose()
-      ovenGlows.delete(key)
-      continue
+    if (hot.has(key)) continue
+    ovenGlows.get(key).mesh.dispose()
+    ovenGlows.delete(key)
+  }
+}
+function faceTowardPlayer(x, z) {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const dx = p[0] - (x + 0.5)
+  const dz = p[2] - (z + 0.5)
+  if (Math.abs(dx) >= Math.abs(dz)) return dx >= 0 ? 'E' : 'W'
+  return dz >= 0 ? 'N' : 'S'
+}
+function readFace(x, y, z) {
+  const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+  const face = rec && rec.face
+  return face === 'N' || face === 'E' || face === 'W' || face === 'S' ? face : 'S'
+}
+function faceSpot(x, y, z, face, out) {
+  const o = out == null ? 0.02 : out
+  if (face === 'N') return [x + 0.5, y + 0.5, z + 1 + o]
+  if (face === 'E') return [x + 1 + o, y + 0.5, z + 0.5]
+  if (face === 'W') return [x - o, y + 0.5, z + 0.5]
+  return [x + 0.5, y + 0.5, z - o]
+}
+function rememberFace(x, y, z, id) {
+  if (!session || !session.meta) return
+  const kind = id === ID.oven ? 'oven' : id === ID.workbench ? 'workbench' : id === ID.box ? 'box' : ''
+  if (!kind) return
+  const key = x + ',' + y + ',' + z
+  const face = faceTowardPlayer(x, z)
+  const prev = session.meta.get(key)
+  if (prev && typeof prev === 'object') prev.face = face
+  else session.meta.set(key, { kind, face })
+  ensureFront(x, y, z)
+}
+const frontMeshes = new Map()
+let faceScanAt = 0
+function ensureFront(x, y, z) {
+  const id = getVoxel(x, y, z)
+  const kind = id === ID.oven ? 'oven' : id === ID.workbench ? 'bench' : id === ID.box ? 'box' : ''
+  const key = x + ',' + y + ',' + z
+  if (!kind) {
+    const old = frontMeshes.get(key)
+    if (old) { old.mesh.dispose(); frontMeshes.delete(key) }
+    return
+  }
+  const face = readFace(x, y, z)
+  let rec = frontMeshes.get(key)
+  if (rec && (rec.face !== face || rec.kind !== kind)) { rec.mesh.dispose(); frontMeshes.delete(key); rec = null }
+  if (!rec) {
+    const thin = face === 'E' || face === 'W'
+    const mesh = CreateBox('front-' + kind + '-' + key, thin ? { width: 0.05, height: 1.01, depth: 1.01 } : { width: 1.01, height: 1.01, depth: 0.05 }, shapeScene)
+    mesh.material = kind === 'oven' ? ovenFaceMat : kind === 'bench' ? benchFaceMat : boxFaceMat
+    mesh.isPickable = false
+    noa.rendering.addMeshToScene(mesh, false)
+    rec = { mesh, face, kind, x, y, z }
+    frontMeshes.set(key, rec)
+  }
+  const lp = noa.globalToLocal(faceSpot(x, y, z, face, 0.02), null, glowLocal)
+  rec.mesh.position.set(lp[0], lp[1], lp[2])
+}
+function syncFronts(force) {
+  const now = performance.now()
+  if (force || now - faceScanAt > 400) {
+    faceScanAt = now
+    const p = noa.entities.getPosition(noa.playerEntity)
+    const px = Math.floor(p[0]), py = Math.floor(p[1]), pz = Math.floor(p[2])
+    const seen = new Set()
+    for (let x = px - 16; x <= px + 16; x++) for (let y = py - 5; y <= py + 5; y++) for (let z = pz - 16; z <= pz + 16; z++) {
+      const id = getVoxel(x, y, z)
+      if (id !== ID.oven && id !== ID.workbench && id !== ID.box) continue
+      seen.add(x + ',' + y + ',' + z)
+      ensureFront(x, y, z)
     }
-    const parts = String(key).split(',')
-    const x = Number(parts[0]), y = Number(parts[1]), z = Number(parts[2])
-    const lp = noa.globalToLocal([x + 0.5, y + 0.5, z - 0.02], null, glowLocal)
-    mesh.position.set(lp[0], lp[1], lp[2])
+    for (const key of [...frontMeshes.keys()]) if (!seen.has(key)) {
+      frontMeshes.get(key).mesh.dispose()
+      frontMeshes.delete(key)
+    }
+  }
+  for (const rec of frontMeshes.values()) {
+    const lp = noa.globalToLocal(faceSpot(rec.x, rec.y, rec.z, rec.face, 0.02), null, glowLocal)
+    rec.mesh.position.set(lp[0], lp[1], lp[2])
   }
 }
 async function goWorld(m) {
@@ -2215,7 +2326,7 @@ noa.on('tick', (dt) => {
     if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (s > 0 ? 1 : -1))
     else selectSlot(selectedSlot + (s > 0 ? 1 : -1))
   }
-  if (stations) { stations.tick(); syncOvenGlow() }
+  if (stations) { stations.tick(); syncOvenGlow(); syncFronts(false) }
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
@@ -3241,6 +3352,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return { aim: t ? { id: t.blockID, x: Math.round(t.position[0]), y: Math.round(t.position[1]), z: Math.round(t.position[2]) } : null, spot, on: !!(placeGhost && placeGhost.isEnabled()) }
     },
     voxel(x, y, z) { return getVoxel(x, y, z) },
+    facing(x, y, z) { return readFace(x, y, z) },
     fillBag(item, n) { session.setMode('survival'); session.give(item, n); session.clearLoose() },
     emptyBag() {
       session.setMode('survival')

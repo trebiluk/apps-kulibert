@@ -35,9 +35,9 @@ export function wildWood(x, y, z) {
   return ''
 }
 
-// Four full trees just south of Bertyville, each about 20 blocks from spawn [8.5, 1.5].
+// Six full trees just south of Bertyville, each a short walk from spawn [8.5, 1.5].
 // Trunks are 6 logs (the normal crown covers the top two). Same spots every new world.
-const STARTER = [[-1, -19], [5, -19], [11, -19], [17, -19]]
+const STARTER = [[-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
 const TRUNK = 6
 
 function starterWood(x, y, z) {

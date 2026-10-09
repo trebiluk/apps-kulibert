@@ -38,6 +38,8 @@ export function createSession(api) {
   const BOLT_MS = 4 * 60 * 1000
   const FEED = { berry: 1, bread: 4, cupcake: 3 }
   let energy = { bolts: 10, acc: 0, toasted: false }
+  let hungrySaid = false
+  let hungryN = 0
   let lowN = 0
   let energyOn = true
   try { if (localStorage.getItem('bloxbert-energy') === '0') energyOn = false } catch (e) {}
@@ -932,7 +934,7 @@ export function createSession(api) {
         b.append(art)
         const name = document.createElement('span')
         name.className = 'wlab'
-        name.textContent = itemName(r.out[0])
+        name.textContent = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
         b.append(name)
         if (r.id === 'bread') {
           const line = document.createElement('span')
@@ -1085,7 +1087,7 @@ export function createSession(api) {
       resultEl.append(art)
       const lab = document.createElement('span')
       lab.className = 'wlab'
-      lab.textContent = itemName(r.out[0]) + (r.out[1] > 1 ? ' ×' + r.out[1] : '')
+      lab.textContent = (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : '')
       resultEl.append(lab)
       line.append(resultEl)
       side.append(line)
@@ -1483,7 +1485,9 @@ export function createSession(api) {
   function boxRec(key) {
     let rec = meta.get(key)
     if (!rec || !Array.isArray(rec.slots)) {
+      const face = rec && rec.face
       rec = { kind: 'box', slots: emptyBox() }
+      if (face) rec.face = face
       meta.set(key, rec)
     }
     while (rec.slots.length < 18) rec.slots.push(null)
@@ -2041,6 +2045,11 @@ export function createSession(api) {
       energy.bolts -= 1
     }
     if (energy.bolts === 0) energy.acc = 0
+    if (before > 6 && energy.bolts <= 6 && !hungrySaid) {
+      hungrySaid = true
+      hungryN += 1
+      api.toast(t('hungryEat').replace('{bake}', t('flour')).replace('{eat}', t('berry')))
+    }
     if (energy.bolts === 0 && !energy.toasted) {
       energy.toasted = true
       lowN += 1
@@ -2071,7 +2080,7 @@ export function createSession(api) {
         smoke.clock = (n) => { const r = orig(n); play(Number(n) || 0, true); return r }
       }
       smoke.energy = () => ({
-        bolts: energy.bolts, acc: energy.acc, pace: pace(), dig: getDigSlow(), on: energyOn, lowN,
+        bolts: energy.bolts, acc: energy.acc, pace: pace(), dig: getDigSlow(), on: energyOn, lowN, hungryN,
         shown: !!(document.getElementById('energy-bar') && !document.getElementById('energy-bar').hidden),
       })
       smoke.charge = (n) => {

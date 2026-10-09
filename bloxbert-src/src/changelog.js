@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.83', date: '2026-10-09', lines: {
+    en: ['Ovens and boxes face you when you place them, there is wood for a roof, and the game tells you when to eat.'],
+    uk: ['Печі й скрині дивляться на тебе, коли ставиш їх, дерева вистачить на дах, і гра каже, коли їсти.'],
+    ru: ['Печи и сундуки смотрят на тебя, когда ставишь их, дерева хватит на крышу, и игра говорит, когда есть.'],
+    es: ['Los hornos y las cajas te miran al ponerlos, hay madera para un techo, y el juego te dice cuándo comer.'],
+    ar: ['الأفران والصناديق تواجهك عند وضعها، وهناك خشب لسقف، واللعبة تخبرك متى تأكل.'],
+    'fa-AF': ['تنورها و صندوق‌ها هنگام گذاشتن رو به تو هستند، چوب برای سقف هست، و بازی می‌گوید کی بخوری.'],
+    rw: ['Ibyoto n\'agasanduku biraba wowe ubishyira, hari ibiti byo gupfuka, kandi umukino ukubwira igihe urya.'],
+    ti: ['እቶንን ሳንዱቅን ምስ ትቐምጥ የዓልኻ ይርእዩ፡ ንዓራት ዕንጨይቲ ኣሎ፡ ጸወታ ድማ መዓስ ከም ትብላዕ ይነግረካ።'],
+  }},
   { v: '2.5.82', date: '2026-10-09', lines: {
     en: ['Fill only fills and Make makes one, and there is sand near the start for your first bake.'],
     uk: ['Наповнення лише наповнює, а Зробити робить одне, і пісок близько для першого випікання.'],
