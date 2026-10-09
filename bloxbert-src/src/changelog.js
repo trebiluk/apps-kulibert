@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.99', date: '2026-10-09', lines: {
+    en: ['Boxes use the new shared slots: click, Shift-click and drag all work the same way.'],
+    uk: ['Скрині використовують нові спільні комірки: клік, Shift-клік і перетягування працюють однаково.'],
+    ru: ['Сундуки используют новые общие ячейки: клик, Shift-клик и перетаскивание работают одинаково.'],
+    es: ['Las cajas usan las casillas compartidas nuevas: clic, Mayús-clic y arrastrar funcionan igual.'],
+    ar: ['الصناديق تستخدم الخانات المشتركة الجديدة: النقر ونقر Shift والسحب تعمل بالطريقة نفسها.'],
+    'fa-AF': ['صندوق‌ها از خانه‌های مشترک تازه استفاده می‌کنند: کلیک، Shift-کلیک و کشیدن یک‌جور کار می‌کنند.'],
+    rw: ['Amasanduku akoresha uduce rusange rushya: kanda, Shift-kanda, no kurura bikora kimwe.'],
+    ti: ['ሳንዱቃት ሓደሽቲ ሓባራዊ ቦታታት ይጥቀሙ፡ ጠውቕ፡ Shift-ጠውቕን ጎተትን ብሓደ መንገዲ ይሰርሑ።'],
+  }},
   { v: '2.5.98', date: '2026-10-09', lines: {
     en: ['Plant your seeds on farmland and watch wheat grow. Soil near water grows twice as fast, and crops keep growing while you are away.'],
     uk: ['Посади насіння на ріллю і дивись, як росте пшениця. Ґрунт біля води росте вдвічі швидше, і посіви ростуть, поки тебе немає.'],

@@ -1,0 +1,106 @@
+{
+  "steps": [
+    {
+      "name": "version",
+      "ok": true,
+      "detail": "2.5.99"
+    },
+    {
+      "name": "pick ring",
+      "ok": true,
+      "detail": "{\"pick\":1,\"pressed\":\"true\",\"label\":\"Planks 40\",\"w\":56,\"display\":\"grid\"}"
+    },
+    {
+      "name": "slot 56",
+      "ok": true,
+      "detail": "56"
+    },
+    {
+      "name": "bag strip grid",
+      "ok": true,
+      "detail": "grid"
+    },
+    {
+      "name": "merge to 64",
+      "ok": true,
+      "detail": "{\"box\":[\"planks:64\"],\"bag\":[\"planks:6\"],\"pick\":0}"
+    },
+    {
+      "name": "shift bag to box",
+      "ok": true,
+      "detail": "{\"box\":[\"coal:4\",\"log:5\"],\"bag\":[\"sand:2\"]}"
+    },
+    {
+      "name": "shift box to bag",
+      "ok": true,
+      "detail": "{\"box\":[\"log:5\"],\"bag\":[\"coal:4\",\"sand:2\"]}"
+    },
+    {
+      "name": "drag bag to box",
+      "ok": true,
+      "detail": "{\"box\":[\"dirt:3\",\"sand:7\"],\"bag\":[]}"
+    },
+    {
+      "name": "drag box to bag",
+      "ok": true,
+      "detail": "{\"box\":[\"sand:7\"],\"bag\":[\"dirt:3\"]}"
+    },
+    {
+      "name": "swap",
+      "ok": true,
+      "detail": "{\"box\":[\"woolRed:2\"],\"bag\":[\"woolBlue:3\"]}"
+    },
+    {
+      "name": "esc unpicks",
+      "ok": true,
+      "detail": "{\"before\":1,\"after\":0,\"panel\":\"box\",\"hidden\":false,\"bag\":[\"planks:9\"]}"
+    },
+    {
+      "name": "close keeps counts",
+      "ok": true,
+      "detail": "{\"before\":{\"box\":[],\"bag\":[\"planks:9\"],\"pick\":1,\"pickLabel\":\"Planks 9\",\"pressed\":\"true\",\"panel\":\"box\",\"hidden\":false,\"ver\":\"2.5.99\",\"whats\":\"Boxes use the new shared slots: click, Shift-click and drag all work the same way.\",\"slotW\":56,\"display\":\"grid\",\"ks\":true},\"closedHidden\":true,\"after\":{\"bag\":[\"planks:9\"],\"box\":[],\"pick\":0}}"
+    },
+    {
+      "name": "save reload",
+      "ok": true,
+      "detail": "{\"saved\":{\"bag\":[\"wheat:11\"],\"box\":[\"glass:8\"]},\"loaded\":{\"bag\":[\"wheat:11\"],\"box\":[\"glass:8\"],\"ver\":\"2.5.99\"}}"
+    },
+    {
+      "name": "break full box",
+      "ok": true,
+      "detail": "{\"bag\":960,\"boxItem\":0,\"newDrops\":[\"stone:192\",\"box:1\"],\"chop\":{\"ok\":true,\"id\":27,\"berry\":0,\"seeds\":0,\"wheat\":0,\"dirt\":0}}"
+    },
+    {
+      "name": "rotate mid-pick",
+      "ok": true,
+      "detail": "{\"mid\":1,\"a\":1,\"b\":1,\"w\":56,\"panel\":\"box\"}"
+    },
+    {
+      "name": "touch tap 915x412",
+      "ok": true,
+      "detail": "{\"hit\":\"ks-slot:gravel\",\"pick\":1,\"box\":[\"gravel:6\"],\"bag\":[],\"w\":56}"
+    },
+    {
+      "name": "touch drag 915x412",
+      "ok": true,
+      "detail": "{\"box\":[\"snow:4\"],\"bag\":[],\"w\":56}"
+    },
+    {
+      "name": "touch tap 412x915",
+      "ok": true,
+      "detail": "{\"hit\":\"ks-slot:slate\",\"pick\":1,\"box\":[\"slate:3\"],\"bag\":[],\"w\":56}"
+    },
+    {
+      "name": "touch drag 412x915",
+      "ok": true,
+      "detail": "{\"box\":[\"coal:5\"],\"bag\":[],\"w\":56}"
+    },
+    {
+      "name": "console",
+      "ok": true,
+      "detail": "{\"errors\":[],\"warns\":[]}"
+    }
+  ],
+  "errors": [],
+  "warns": []
+}

@@ -11,6 +11,7 @@ import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys } from './drops.js'
 import { emptyBox } from './box.js'
+import { bindBertopiaSlots } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
 import { bindStationBag } from './stations.js'
@@ -27,7 +28,6 @@ export function createSession(api) {
   const hotSlot = { survival: 0, creative: 0 }
   let hot = 0
   let bagSel = -1
-  let boxPick = null
   let bagSkip = 0
   let day = localDay()
   function localDay() {
@@ -1554,13 +1554,31 @@ export function createSession(api) {
     paintHotbar()
     paintChip()
   }
+  function slotsUi() {
+    if (paintBox.ui) return paintBox.ui
+    const KS = bindBertopiaSlots({
+      icon: (item) => itemIcon(ITEMS[item] || null),
+      name: itemName,
+      t,
+      cap: stackCap,
+      onChange: () => { paintHotbar(); if (api.markDirty) api.markDirty() },
+      toast: (msg) => { if (msg) api.toast(msg) },
+    })
+    if (!KS) return null
+    paintBox.ui = KS.createSession(document.body)
+    return paintBox.ui
+  }
   function paintBox(g, key) {
     const rec = boxRec(key)
-    if (paintBox.key !== key) { boxPick = null; paintBox.key = key }
+    const ui = slotsUi()
+    if (paintBox.key !== key) {
+      if (ui) { ui.setRefresh(() => {}); ui.unpick() }
+      paintBox.key = key
+    }
     g.innerHTML = ''
     g.classList.add('crate')
     const panel = document.createElement('div')
-    panel.className = 'machine station-crate'
+    panel.className = 'machine station-crate ks-root'
     const head = document.createElement('div')
     head.className = 'machine-head'
     const ic = document.createElement('span')
@@ -1579,157 +1597,25 @@ export function createSession(api) {
     head.append(ic, words)
     const wells = document.createElement('div')
     wells.className = 'machine-wells'
-    const repaint = () => { g.innerHTML = ''; paintBox(g, key) }
-    const sideSlots = (side) => side === 'bag' ? bag.slots : rec.slots
-    const moveAcross = (fromSide, fromI, toSide, toI) => {
-      if (fromSide === toSide) return false
-      const srcSlots = sideSlots(fromSide)
-      const dstSlots = sideSlots(toSide)
-      const src = srcSlots[fromI]
-      if (!src || !(src.n > 0) || toI < 0 || toI >= dstSlots.length) return false
-      const dest = dstSlots[toI]
-      const cap = stackCap(src.item)
-      if (!dest) {
-        dstSlots[toI] = { item: src.item, n: src.n }
-        srcSlots[fromI] = null
-      } else if (dest.item === src.item && dest.n < cap) {
-        const move = Math.min(cap - dest.n, src.n)
-        dest.n += move
-        src.n -= move
-        if (src.n <= 0) srcSlots[fromI] = null
-      } else {
-        const item = src.item
-        const n = src.n
-        srcSlots[fromI] = { item: dest.item, n: dest.n }
-        dstSlots[toI] = { item, n }
-      }
-      paintHotbar()
-      if (api.markDirty) api.markDirty()
-      return true
-    }
-    const quickMove = (side, i) => {
-      const src = sideSlots(side)[i]
-      if (!src || !(src.n > 0)) return false
-      const other = side === 'bag' ? 'box' : 'bag'
-      const dst = sideSlots(other)
-      const cap = stackCap(src.item)
-      let destI = dst.findIndex((d) => d && d.item === src.item && d.n + src.n <= cap)
-      if (destI < 0) destI = dst.findIndex((d) => !d)
-      if (destI < 0) {
-        api.toast(other === 'bag' ? t('bagFull') : t('boxFull'))
-        return false
-      }
-      return moveAcross(side, i, other, destI)
-    }
-    let acted = 0
-    let boxDown = false
-    const onSlot = (side, i, ev) => {
-      if (bagSkip && performance.now() - bagSkip < 700) return
-      if (performance.now() - acted < 50) return
-      acted = performance.now()
-      const src = sideSlots(side)[i]
-      if (ev && ev.shiftKey && src) {
-        if (quickMove(side, i)) { boxPick = null; repaint() }
-        return
-      }
-      if (boxPick && boxPick.side !== side) {
-        if (moveAcross(boxPick.side, boxPick.i, side, i)) { boxPick = null; repaint() }
-        return
-      }
-      if (!src) return
-      boxPick = boxPick && boxPick.side === side && boxPick.i === i ? null : { side, i }
-      repaint()
-    }
-    rec.slots.forEach((s, i) => {
-      const b = document.createElement('button')
-      b.type = 'button'
-      const picked = !!(boxPick && boxPick.side === 'box' && boxPick.i === i)
-      b.className = 'well gtile box-well' + (s ? '' : ' empty') + (picked ? ' pick' : '')
-      if (picked) b.style.boxShadow = '0 0 0 3px #22D3EE'
-      b.dataset.i = String(i)
-      const pic = document.createElement('span')
-      pic.className = 'gic art'
-      if (s) pic.append(itemIcon(ITEMS[s.item]))
-      b.append(pic)
-      if (s) {
-        const count = document.createElement('span')
-        count.className = 'badge'
-        count.textContent = String(s.n)
-        b.append(count)
-      }
-      const lab = document.createElement('span')
-      lab.className = 'glbl'
-      lab.textContent = s ? itemName(s.item) : t('emptySlot')
-      b.append(lab)
-      b.setAttribute('aria-label', s ? itemName(s.item) + ' ' + s.n : t('emptySlot'))
-      b.setAttribute('aria-pressed', String(picked))
-      b.addEventListener('pointerdown', (e) => {
-        boxDown = true
-        if (!s) return
-        const item = s.item
-        startDrag(b, e, {
-          distance: 10,
-          ghostClass: 'bag-ghost',
-          targets: '#sheet .bag-bit',
-          icon: () => itemIcon(ITEMS[item]),
-          canDrop: () => true,
-          onDrop: (well) => {
-            const slot = well.dataset.slot
-            if (slot != null && slot !== '' && moveAcross('box', i, 'bag', +slot)) { boxPick = null; repaint() }
-          },
-          onTap: (ev) => { boxDown = false; onSlot('box', i, ev) },
-        })
-      })
-      b.addEventListener('click', (ev) => { if (!boxDown) return; boxDown = false; onSlot('box', i, ev) })
-      wells.append(b)
-    })
     const strip = document.createElement('div')
     strip.className = 'bag-strip'
-    bag.slots.forEach((s, si) => {
-      const b = document.createElement('button')
-      b.type = 'button'
-      const picked = !!(boxPick && boxPick.side === 'bag' && boxPick.i === si)
-      b.className = 'well bag-bit' + (s ? '' : ' empty') + (picked ? ' pick' : '')
-      if (picked) b.style.boxShadow = '0 0 0 3px #22D3EE'
-      b.dataset.slot = String(si)
-      if (si < 9) b.dataset.hot = '1'
-      if (s) b.dataset.item = s.item
-      b.setAttribute('aria-pressed', String(picked))
-      b.setAttribute('aria-label', s ? itemName(s.item) + ' ' + s.n : t('emptySlot'))
-      const pic = document.createElement('span')
-      pic.className = 'art'
-      if (s) pic.append(itemIcon(ITEMS[s.item]))
-      b.append(pic)
-      if (s) {
-        const badge = document.createElement('span')
-        badge.className = 'badge'
-        badge.textContent = String(s.n)
-        b.append(badge)
-      }
-      const item = s && s.item
-      b.addEventListener('pointerdown', (e) => {
-        boxDown = true
-        if (!item) return
-        startDrag(b, e, {
-          distance: 10,
-          ghostClass: 'bag-ghost',
-          targets: '#sheet .box-well',
-          icon: () => itemIcon(ITEMS[item]),
-          canDrop: (well) => {
-            const dest = rec.slots[+well.dataset.i]
-            const limit = stackCap(item)
-            if (!dest || dest.item === item) return !dest || dest.n < limit
-            return true
-          },
-          onDrop: (well) => {
-            if (well.dataset.i != null && moveAcross('bag', si, 'box', +well.dataset.i)) { boxPick = null; repaint() }
-          },
-          onTap: (ev) => { boxDown = false; onSlot('bag', si, ev) },
-        })
-      })
-      b.addEventListener('click', (ev) => { if (!boxDown) return; boxDown = false; onSlot('bag', si, ev) })
-      strip.append(b)
-    })
+    const hint = document.createElement('p')
+    hint.className = 'gnote box-hint'
+    hint.textContent = t('boxClick')
+    panel.append(head, wells, strip, hint)
+    g.append(panel)
+    if (!ui) return
+    const repaint = () => { if (g.isConnected) paintBox(g, key) }
+    ui.setRefresh(repaint)
+    const KS = window.KulibertSlots
+    const bagWrap = KS.createInventory({ id: 'bag', slots: bag.slots, cap: stackCap })
+    const boxWrap = KS.createInventory({ id: 'box:' + key, slots: rec.slots, cap: stackCap })
+    const short = window.innerHeight <= 500
+    const wide = window.innerWidth >= 700
+    const boxCols = short && wide ? 9 : 6
+    const bagCols = short && wide ? bag.slots.length : (window.innerWidth < 700 ? 5 : 9)
+    ui.grid(wells, boxWrap, { cols: boxCols, quick: [bagWrap] })
+    ui.grid(strip, bagWrap, { cols: bagCols, quick: [boxWrap] })
     const bar = document.getElementById('hotbar')
     if (bar) {
       if (paintBox.hotHook) bar.removeEventListener('click', paintBox.hotHook, true)
@@ -1740,15 +1626,10 @@ export function createSession(api) {
         if (!slot || slot.dataset.slot == null || slot.dataset.slot === '') return
         ev.preventDefault()
         ev.stopPropagation()
-        onSlot('bag', +slot.dataset.slot, ev)
+        ui.activate(bagWrap, +slot.dataset.slot, ev)
       }
       bar.addEventListener('click', paintBox.hotHook, true)
     }
-    const hint = document.createElement('p')
-    hint.className = 'gnote box-hint'
-    hint.textContent = t('boxClick')
-    panel.append(head, wells, strip, hint)
-    g.append(panel)
   }
   function paintBunk(g, key) {
     g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() }))

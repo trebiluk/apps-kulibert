@@ -1,0 +1,66 @@
+.ks-root {
+  --ks-card: #0E1A22;
+  --ks-line: #1F8A8A;
+  --ks-pick: #22D3EE;
+  --ks-warn: #F6C453;
+  --ks-text: #E6EEF2;
+  --ks-slot: 56px;
+}
+.ks-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--ks-cols, 6), var(--ks-slot, 56px));
+  gap: 6px;
+  max-width: 100%;
+}
+.ks-slot {
+  box-sizing: border-box;
+  width: var(--ks-slot, 56px);
+  height: var(--ks-slot, 56px);
+  min-width: var(--ks-slot, 56px);
+  min-height: var(--ks-slot, 56px);
+  padding: 2px;
+  border: 2px solid var(--ks-line, #1F8A8A);
+  border-radius: 8px;
+  background: var(--ks-card, #0E1A22);
+  color: var(--ks-text, #E6EEF2);
+  position: relative;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+}
+.ks-slot.ks-empty { opacity: .45 }
+.ks-slot.ks-pick { box-shadow: 0 0 0 3px var(--ks-pick, #22D3EE) }
+.ks-slot .ks-art { width: 70%; height: 70%; display: grid; place-items: center; pointer-events: none }
+.ks-slot .ks-art svg, .ks-slot .ks-art canvas { width: 100%; height: 100% }
+.ks-badge {
+  position: absolute;
+  top: 2px;
+  inset-inline-start: 2px;
+  background: var(--ks-card, #0E1A22);
+  color: var(--ks-text, #E6EEF2);
+  border-radius: 4px;
+  padding: 0 3px;
+  font-size: 12px;
+  font-weight: 700;
+  pointer-events: none;
+}
+.ks-slot.drop-ok { outline: 3px solid var(--ks-pick, #22D3EE); outline-offset: 1px }
+.ks-slot.drop-bad { outline: 3px dashed var(--ks-warn, #F6C453); outline-offset: 1px }
+.ks-ghost {
+  position: fixed;
+  z-index: 80;
+  width: var(--ks-slot, 56px);
+  height: var(--ks-slot, 56px);
+  margin: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .45));
+}
+.ks-ghost svg, .ks-ghost canvas { width: 40px; height: 40px }
+@media (prefers-reduced-motion: reduce) {
+  .ks-slot, .ks-ghost { transition: none; animation: none }
+}
+html[data-kp-motion="less"] .ks-slot,
+html[data-kp-motion="less"] .ks-ghost { transition: none; animation: none }
