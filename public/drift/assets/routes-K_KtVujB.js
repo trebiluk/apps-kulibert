@@ -1,1 +1,0 @@
-import{t as e}from"./DriftExperience-DBsK_Sd-.js";import{i as t,n,p as r}from"./index-BdmYqwNr.js";var i=r();function a(){let r=n.useSearch(),a=t(r);return(0,i.jsx)(e,{boot:a.lang,classic:a.classic})}export{a as component};

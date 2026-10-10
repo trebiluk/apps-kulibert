@@ -1,0 +1,1 @@
+import{t as e}from"./DriftExperience-BIcgkH3_.js";import{i as t,n,p as r}from"./index-qUtKE9qg.js";var i=r();function a(){let r=n.useSearch(),a=t(r);return(0,i.jsx)(e,{boot:a.lang,classic:a.classic})}export{a as component};
