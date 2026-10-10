@@ -7,7 +7,7 @@ import * as migrateMod from '../src/save/migrate.js'
 import { fromDoc } from '../src/save.js'
 import { stage } from '../src/farm.js'
 import { createHash } from 'crypto'
-import { genBlock, exploredSeen, spawnGround } from '../src/worldgen.js'
+import { genBlock, exploredSeen, spawnGround, groundAt } from '../src/worldgen.js'
 
 const S = 24
 const FIX = new URL('../tests/fixtures/', import.meta.url)
@@ -279,6 +279,7 @@ const GEN2_FRESH = {
   'w-2.5.120.json': GEN2_FRESH_HASH,
   'w-2.5.121.json': GEN2_FRESH_HASH,
   'w-2.5.123.json': GEN2_FRESH_HASH,
+  'w-2.5.131.json': GEN2_FRESH_HASH,
   'w-unknown.json': GEN2_FRESH_HASH,
   'w-v1.json': GEN2_FRESH_HASH,
 }
@@ -429,6 +430,80 @@ function townKeptReport() {
   return []
 }
 
+const GEN3_SAMPLE = '2c06555d8307d1cd8ab3842cfef4d8060212a2ba43e223cea02d31beb214694a'
+
+function genSampleHash(gen, x0, z0, x1, z1) {
+  const h = createHash('sha256')
+  let n = 0
+  for (let x = x0; x < x1; x++) {
+    for (let z = z0; z < z1; z++) {
+      const y = spawnGround(x, z)
+      for (let dy = -2; dy <= 6; dy++) {
+        h.update(genBlock(x, y + dy, z, gen) || '-')
+        n++
+      }
+    }
+  }
+  h.update(String(n))
+  return h.digest('hex')
+}
+
+function borderFade(x, z) {
+  const nx0 = 96
+  const nx1 = 119
+  const nz0 = 120
+  const nz1 = 143
+  const dx = x < nx0 ? nx0 - x : x > nx1 ? x - nx1 : 0
+  const dz = z < nz0 ? nz0 - z : z > nz1 ? z - nz1 : 0
+  const d = Math.max(dx, dz) - 1
+  return d > 0 ? d : 0
+}
+
+function terrainReport() {
+  const lines = []
+  const g3 = genSampleHash(3, 96, 48, 144, 96)
+  if (g3 !== GEN3_SAMPLE) lines.push('gen3 hash ' + g3)
+  if (genSampleHash(3, 96, 48, 144, 96) !== g3) lines.push('gen3 drift')
+  let minH = 99
+  let maxH = -99
+  let sand = 0
+  let gravel = 0
+  let above = 0
+  let floatLog = 0
+  for (let x = -96; x < -48; x++) {
+    for (let z = -96; z < -48; z++) {
+      const h = groundAt(x, z, 4)
+      if (h < minH) minH = h
+      if (h > maxH) maxH = h
+      const top = genBlock(x, h, z, 4) || ''
+      if (top === 'sand') sand++
+      if (top === 'gravel') gravel++
+      for (let y = 0; y <= 30; y++) {
+        const name = genBlock(x, y, z, 4) || ''
+        if (y > 23 && name) above++
+        if (name === 'log' && !(genBlock(x, y - 1, z, 4) || '')) floatLog++
+      }
+    }
+  }
+  if (maxH - minH < 6) lines.push('hill range ' + (maxH - minH))
+  if (!sand || !gravel) lines.push('beach sand ' + sand + ' gravel ' + gravel)
+  if (above) lines.push('above y23 ' + above)
+  if (floatLog) lines.push('floating logs ' + floatLog)
+  if (groundAt(8, 1, 4) !== 4) lines.push('spawn not flat')
+  let edge = 0
+  for (let z = 120; z < 144; z++) {
+    const left = groundAt(119, z, 3)
+    const right = groundAt(120, z, 4, borderFade)
+    const step = Math.abs(right - left)
+    if (step > edge) edge = step
+    if (right !== spawnGround(120, z)) lines.push('border lifted ' + z)
+  }
+  const corner = Math.abs(groundAt(119, 119, 3) - groundAt(120, 119, 4, borderFade))
+  if (corner > edge) edge = corner
+  if (edge > 1) lines.push('border step ' + edge)
+  return lines
+}
+
 async function main() {
   const rows = await loadBlockRows()
   const near = surface64(2)
@@ -454,6 +529,9 @@ async function main() {
   const keptLines = townKeptReport()
   if (keptLines.length) { fail++; console.log('FAIL town-kept ' + keptLines.join('; ')) }
   else console.log('PASS town-kept')
+  const terrainLines = terrainReport()
+  if (terrainLines.length) { fail++; console.log('FAIL terrain ' + terrainLines.join('; ')) }
+  else console.log('PASS terrain gen3 ' + GEN3_SAMPLE.slice(0, 12) + ' hills+beach')
   process.exit(fail ? 1 : 0)
 }
 

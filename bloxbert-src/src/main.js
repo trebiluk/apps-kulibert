@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.130'
+const VERSION = '2.5.131'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -35,7 +35,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, spawnGround, genBlock, GEN } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, GEN } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -795,7 +795,11 @@ let machineTimer = 0
 const machineCells = new Map()
 function hash(x, z) { let h = (x * 374761393 + z * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296 }
 function heightAt(x, z) {
-  return spawnGround(x, z)
+  const i = Math.floor(x / S)
+  const k = Math.floor(z / S)
+  const stamped = genSeen[key(i, 0, k)]
+  const g = stamped == null ? genVersion : (stamped | 0)
+  return groundAt(x, z, g, (qx, qz) => fadeDist(qx, 0, qz))
 }
 const TOWN = { x0: -20, x1: 36, z0: -18, z1: 28, y: FLOOR }
 function inTown(x, z) { return x >= TOWN.x0 && x <= TOWN.x1 && z >= TOWN.z0 && z <= TOWN.z1 }
@@ -845,7 +849,8 @@ function townVoxel(x, y, z) {
   return 0
 }
 function genVoxel(x, y, z) {
-  const name = genBlock(x, y, z, seenGen(x, y, z))
+  const g = seenGen(x, y, z)
+  const name = genBlock(x, y, z, g, (qx, qz) => fadeDist(qx, y, qz))
   return name ? (ID[name] || 0) : 0
 }
 const key = (i, j, k) => i + ',' + j + ',' + k
@@ -854,10 +859,28 @@ let genSeen = {}
 function seenGen(x, y, z) {
   const k = key(Math.floor(x / S), Math.floor(y / S), Math.floor(z / S))
   if (genSeen[k] == null) {
-    genSeen[k] = genVersion
+    genSeen[k] = GEN
     dirty = true
   }
   return genSeen[k]
+}
+function fadeDist(x, y, z) {
+  const i = Math.floor(x / S)
+  const j = Math.floor(y / S)
+  const k = Math.floor(z / S)
+  let best = 12
+  for (let di = -1; di <= 1; di++) for (let dk = -1; dk <= 1; dk++) {
+    if (!di && !dk) continue
+    const g = genSeen[key(i + di, j, k + dk)]
+    if (g == null || (g | 0) >= 4) continue
+    const nx0 = (i + di) * S
+    const nz0 = (k + dk) * S
+    const dx = x < nx0 ? nx0 - x : x > nx0 + S - 1 ? x - (nx0 + S - 1) : 0
+    const dz = z < nz0 ? nz0 - z : z > nz0 + S - 1 ? z - (nz0 + S - 1) : 0
+    const d = Math.max(dx, dz) - 1
+    if (d < best) best = d
+  }
+  return best > 0 ? best : 0
 }
 function compactSeen() {
   const out = {}
@@ -866,8 +889,9 @@ function compactSeen() {
 }
 function fillGenerated(data, x0, y0, z0) {
   const g = seenGen(x0, y0, z0)
+  const fade = (qx, qz) => fadeDist(qx, y0, qz)
   for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
-    const name = genBlock(x0 + i, y0 + j, z0 + k, g)
+    const name = genBlock(x0 + i, y0 + j, z0 + k, g, fade)
     data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
   }
 }

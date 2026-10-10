@@ -22,11 +22,11 @@ function groundY(x, z) {
 
 // Wilderness trees. Same grid and density as before. Each trunk is 4, 5 or 6 logs
 // for that spot (the crown still covers the top two). Never inside town.
-export function wildWood(x, y, z) {
+export function wildWood(x, y, z, gen, fade) {
   const cx = Math.floor(x / 9) * 9 + 4
   const cz = Math.floor(z / 9) * 9 + 4
   if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) return ''
-  const th = groundY(cx, cz)
+  const th = (gen | 0) >= 4 ? groundAt(cx, cz, gen, fade) : groundY(cx, cz)
   const tall = 4 + Math.floor(hash(cx + 91, cz - 17) * 3)
   const top = th + tall
   if (x === cx && z === cz && y > th && y <= top) return 'log'
@@ -491,8 +491,10 @@ export function spawnGround(x, z) {
   return v == null ? groundY(x, z) : v
 }
 
-// Today's generator is gen 2. Gen 3 is the first one that adds banks. Old chunks stay on 2.
-export const GEN = 3
+// Gen 2 is the original ground. Gen 3 adds the sand and clay banks.
+// Gen 4 adds hills and beaches, and only on chunks that stamp 4.
+// Gen 2 and gen 3 stay byte-identical.
+export const GEN = 4
 export const CHUNK = 24
 export const GEN_MARGIN = 4
 const TOWN_BOX = { x0: -20, x1: 36, y0: -64, y1: 8, z0: -18, z1: 28 }
@@ -641,9 +643,165 @@ function gen3(x, y, z, base) {
   return base
 }
 
-export function genBlock(x, y, z, gen) {
-  const base = genCore(x | 0, y | 0, z | 0)
-  if ((gen | 0) >= GEN) return gen3(x | 0, y | 0, z | 0, base)
+function lerp(a, b, t) { return a + (b - a) * t }
+function smoothStep(t) { return t * t * (3 - 2 * t) }
+
+function vnoise(x, z, period) {
+  const x0 = Math.floor(x / period)
+  const z0 = Math.floor(z / period)
+  const fx = x / period - x0
+  const fz = z / period - z0
+  const sx = smoothStep(fx)
+  const sz = smoothStep(fz)
+  return lerp(lerp(hash(x0, z0), hash(x0 + 1, z0), sx), lerp(hash(x0, z0 + 1), hash(x0 + 1, z0 + 1), sx), sz)
+}
+
+function distTown(x, z) {
+  let dx = 0
+  let dz = 0
+  if (x < TOWN_BOX.x0) dx = TOWN_BOX.x0 - x
+  else if (x > TOWN_BOX.x1) dx = x - TOWN_BOX.x1
+  if (z < TOWN_BOX.z0) dz = TOWN_BOX.z0 - z
+  else if (z > TOWN_BOX.z1) dz = z - TOWN_BOX.z1
+  return Math.hypot(dx, dz)
+}
+
+function flatFactor(x, z) {
+  const spawnD = Math.hypot(x + 0.5 - POND_SPAWN[0], z + 0.5 - POND_SPAWN[1])
+  const d = Math.min(spawnD, distTown(x, z))
+  if (d <= 48) return 0
+  if (d >= 60) return 1
+  return (d - 48) / 12
+}
+
+function pondFoot(x, z) {
+  if (Math.hypot(x + 0.5 - POND_SPAWN[0], z + 0.5 - POND_SPAWN[1]) > 36) return false
+  const ponds = starterPonds(1)
+  for (let i = 0; i < ponds.length; i++) {
+    const p = ponds[i]
+    if (x >= p.x && x < p.x + p.w && z >= p.z && z < p.z + p.w) return true
+  }
+  return false
+}
+
+const hillCache = new Map()
+const coastCache = new Map()
+const gyCache = new Map()
+
+function cachedGround(x, z) {
+  const k = x + ',' + z
+  const v = gyCache.get(k)
+  if (v != null) return v
+  if (gyCache.size > 40000) gyCache.clear()
+  const h = spawnGround(x, z)
+  gyCache.set(k, h)
+  return h
+}
+
+function coastDist(x, z) {
+  const k = x + ',' + z
+  const hit = coastCache.get(k)
+  if (hit != null) return hit
+  if (coastCache.size > 20000) coastCache.clear()
+  let best = 19
+  if (cachedGround(x, z) <= 1) best = 0
+  else {
+    for (let r = 1; r <= 18; r++) {
+      let found = false
+      for (let dx = -r; dx <= r && !found; dx++) {
+        if (cachedGround(x + dx, z - r) <= 1 || cachedGround(x + dx, z + r) <= 1) found = true
+        else if (Math.abs(dx) !== r && (cachedGround(x - r, z + dx) <= 1 || cachedGround(x + r, z + dx) <= 1)) found = true
+      }
+      if (found) { best = r; break }
+    }
+  }
+  coastCache.set(k, best)
+  return best
+}
+
+// Two octaves of the existing hash. Hills add at most 12. They scale to 0
+// within 48 of spawn and the town, and they stay 0 on a pond footprint and
+// on the low beach (so the sand band keeps the gen-3 shore).
+function hillsAt(x, z) {
+  const k = x + ',' + z
+  const hit = hillCache.get(k)
+  if (hit != null) return hit
+  if (hillCache.size > 20000) hillCache.clear()
+  let v = 0
+  const f = flatFactor(x, z)
+  if (f > 0 && !pondFoot(x, z)) {
+    const c = coastDist(x, z)
+    if (c > 6) {
+      const ramp = c >= 18 ? 1 : (c - 6) / 12
+      const n = vnoise(x, z, 48) * 0.62 + vnoise(x + 17, z - 9, 18) * 0.38
+      v = Math.round(Math.min(12, n * 12) * f * ramp)
+      if (v > 12) v = 12
+      if (v < 0) v = 0
+    }
+  }
+  hillCache.set(k, v)
+  return v
+}
+
+function fadeNum(fade, x, z) {
+  const n = typeof fade === 'function' ? fade(x, z) : fade
+  if (n == null || n >= 12) return 12
+  return n > 0 ? n : 0
+}
+
+export function groundAt(x, z, gen, fade) {
+  const xi = x | 0
+  const zi = z | 0
+  const base = spawnGround(xi, zi)
+  if ((gen | 0) < 4) return base
+  let add = hillsAt(xi, zi)
+  const f = fadeNum(fade, xi, zi)
+  if (f < 12) add = Math.round(add * f / 12)
+  const h = base + add
+  return h > 23 ? 23 : h
+}
+
+function genCore4(x, y, z, fade) {
+  if (y === -64) return 'coreplate'
+  if (y < -64) return ''
+  if (pondHere(x, y, z)) return 'water'
+  if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return ''
+  if (shoreLow(x, y, z)) return ''
+  if (inTownXZ(x, z)) return townName(x, y, z)
+  const h = groundAt(x, z, 4, fade)
+  if (y > h) {
+    const grew = wildWood(x, y, z, 4, fade)
+    if (grew === 'log' || grew === 'leaves') return grew
+    const plant = plantHere(x, y, z, h, false)
+    if (plant) return plant
+    return ''
+  }
+  if (y === h) return h <= 1 ? 'sand' : 'grass'
+  if (y > h - 3) return 'dirt'
+  if (y > -64 && coalHere(x, y, z)) return 'coal'
+  if (y > -64) return 'stone'
+  return ''
+}
+
+function gen4(x, y, z, fade) {
+  if (y > 23) return ''
+  const base = genCore4(x, y, z, fade)
+  if (inTownXZ(x, z) || pondHere(x, y, z) || shoreLow(x, y, z)) return base
+  const h = groundAt(x, z, 4, fade)
+  // The beach and the pond banks use the gen-3 painter on any column the
+  // hill did not lift. A lifted column keeps the new grass surface.
+  if (h === spawnGround(x, z)) return gen3(x, y, z, base)
+  return base
+}
+
+export function genBlock(x, y, z, gen, fade) {
+  const g = gen | 0
+  const xi = x | 0
+  const yi = y | 0
+  const zi = z | 0
+  if (g >= 4) return gen4(xi, yi, zi, fade)
+  const base = genCore(xi, yi, zi)
+  if (g >= 3) return gen3(xi, yi, zi, base)
   return base
 }
 

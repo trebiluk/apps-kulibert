@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.131', date: '2026-10-10', lines: {
+    en: ['New land rolls into hills and beaches. The town and the ground you already saved stay the same.'],
+    uk: ['Нова земля стає горбами й пляжами. Місто і вже збережена земля лишаються тими самими.'],
+    ru: ['Новая земля становится холмами и пляжами. Город и уже сохранённая земля остаются прежними.'],
+    es: ['La tierra nueva tiene colinas y playas. El pueblo y el suelo que ya guardaste siguen igual.'],
+    ar: ['الأرض الجديدة تصير تلالًا وشواطئ. البلدة والأرض التي حفظتها تبقى كما هي.'],
+    'fa-AF': ['زمین جدید تپه و ساحل می‌شود. شهر و زمینی که قبلا ذخیره شده همان می‌ماند.'],
+    rw: ['Isi nshya iba udusozi n\'inkombe. Umujyi n\'ubutaka usanzwe ubitse biguma uko byari.'],
+    ti: ['ሓድሽ መሬት ኮረብታታትን ገማግምን ይኸውን። ከተማን እቲ ዝተዓቀበ መሬትን ከም ዝነበረ ይቕጽል።'],
+  }},
   { v: '2.5.130', date: '2026-10-10', lines: {
     en: ['A world can turn off breaking, placing, crafting, or opening a station, and the game tells you.'],
     uk: ['Світ може вимкнути ламання, ставлення, крафт або відкриття станка, і гра про це каже.'],
