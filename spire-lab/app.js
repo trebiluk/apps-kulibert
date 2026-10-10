@@ -1,14 +1,14 @@
-import { mountTruss } from "../spancraft/truss-play.js?v=20261002-sc135";
+import { mountTruss } from "../spancraft/truss-play.js?v=20261009-sc136";
 import { SPIRE_LEVELS, SPIRE_FREE } from "./levels.js";
 
 mountTruss({
   mode: "spire",
   levels: SPIRE_LEVELS,
   freeLevel: SPIRE_FREE,
-  version: "SL 1.3.34",
+  version: "SL 1.3.35",
   accessKey: "sl-access-v1",
-  helpTitle: "How to play · Spire Lab",
-  note: "What’s new: Free build is open from the start. Save your builds and share them with a code.",
+  helpTitle: "How to play - Spire",
+  note: "Spire Lab is now Spire, inside HoldIt. Your jobs and builds are still here.",
   engageKey: "kulibert-spire-engage-v2",
   twApp: "spire-lab",
   assistKey: "kulibert-spire-assist-intro-v2",

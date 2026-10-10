@@ -1,5 +1,9 @@
-**Chip: SC 1.3.35** · 2026-10-03 · channel **live**
+**Chip: SC 1.3.36** · 2026-10-09 · channel **live**
 Door: https://apps.kulibert.net/spancraft/
+
+## 1.3.36 — Span — 2026-10-09
+
+- What’s new: SpanCraft is now Span, inside HoldIt. Your jobs and builds are still here.
 
 ## 1.3.35 — Free build — 2026-10-03
 

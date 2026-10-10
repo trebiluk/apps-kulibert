@@ -1,7 +1,11 @@
-# Spire Lab changelog
+# Spire changelog
 
-**Chip: SL 1.3.34** · 2026-10-03 · channel **live**
+**Chip: SL 1.3.35** · 2026-10-09 · channel **live**
 Door: https://apps.kulibert.net/spire-lab/
+
+## 1.3.35 — Spire — 2026-10-09
+
+- What’s new: Spire Lab is now Spire, inside HoldIt. Your jobs and builds are still here.
 
 ## 1.3.34 — Free build — 2026-10-03
 

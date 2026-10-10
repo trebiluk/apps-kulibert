@@ -40,8 +40,8 @@ export const EXTRA = {
     deleteAsk: "Delete this build?",
     reroll: "New name",
     codeBad: "That code doesn't look right",
-    codeForSpan: "This code is for SpanCraft",
-    codeForSpire: "This code is for Spire Lab",
+    codeForSpan: "This code is for Span",
+    codeForSpire: "This code is for Spire",
     codeWord: "Code",
   },
   simple: {
@@ -83,7 +83,7 @@ export const EXTRA = {
     saveBuild: "Save", loadBuild: "Load", copyCode: "Copy code",
     deleteBuild: "Delete", deleteAsk: "Delete this build?", reroll: "New name",
     codeBad: "That code doesn't look right",
-    codeForSpan: "This code is for SpanCraft", codeForSpire: "This code is for Spire Lab",
+    codeForSpan: "This code is for Span", codeForSpire: "This code is for Spire",
     codeWord: "Code",
   },
   es: {
@@ -127,7 +127,7 @@ export const EXTRA = {
     saveBuild: "Guardar", loadBuild: "Cargar", copyCode: "Copiar código",
     deleteBuild: "Borrar", deleteAsk: "¿Borrar esta construcción?", reroll: "Otro nombre",
     codeBad: "Ese código no parece correcto",
-    codeForSpan: "Este código es de SpanCraft", codeForSpire: "Este código es de Spire Lab",
+    codeForSpan: "Este código es de Span", codeForSpire: "Este código es de Spire",
     codeWord: "Código",
   },
   uk: {
@@ -171,7 +171,7 @@ export const EXTRA = {
     saveBuild: "Зберегти", loadBuild: "Відкрити", copyCode: "Копіювати код",
     deleteBuild: "Видалити", deleteAsk: "Видалити цю будову?", reroll: "Інше ім’я",
     codeBad: "Цей код не схожий на правильний",
-    codeForSpan: "Цей код для SpanCraft", codeForSpire: "Цей код для Spire Lab",
+    codeForSpan: "Цей код для Span", codeForSpire: "Цей код для Spire",
     codeWord: "Код",
   },
   ru: {
@@ -215,7 +215,7 @@ export const EXTRA = {
     saveBuild: "Сохранить", loadBuild: "Открыть", copyCode: "Копировать код",
     deleteBuild: "Удалить", deleteAsk: "Удалить эту стройку?", reroll: "Другое имя",
     codeBad: "Этот код не похож на верный",
-    codeForSpan: "Этот код для SpanCraft", codeForSpire: "Этот код для Spire Lab",
+    codeForSpan: "Этот код для Span", codeForSpire: "Этот код для Spire",
     codeWord: "Код",
   },
   ar: {
@@ -259,7 +259,7 @@ export const EXTRA = {
     saveBuild: "حفظ", loadBuild: "فتح", copyCode: "نسخ الرمز",
     deleteBuild: "حذف", deleteAsk: "حذف هذا البناء؟", reroll: "اسم آخر",
     codeBad: "هذا الرمز لا يبدو صحيحًا",
-    codeForSpan: "هذا الرمز لـ SpanCraft", codeForSpire: "هذا الرمز لـ Spire Lab",
+    codeForSpan: "هذا الرمز لـ Span", codeForSpire: "هذا الرمز لـ Spire",
     codeWord: "الرمز",
   },
   "fa-AF": {
@@ -303,7 +303,7 @@ export const EXTRA = {
     saveBuild: "ذخیره", loadBuild: "باز کردن", copyCode: "کاپی رمز",
     deleteBuild: "حذف", deleteAsk: "این ساخت حذف شود؟", reroll: "نام دیگر",
     codeBad: "این رمز درست به نظر نمی‌رسد",
-    codeForSpan: "این رمز برای SpanCraft است", codeForSpire: "این رمز برای Spire Lab است",
+    codeForSpan: "این رمز برای Span است", codeForSpire: "این رمز برای Spire است",
     codeWord: "رمز",
   },
   rw: {
@@ -347,7 +347,7 @@ export const EXTRA = {
     saveBuild: "Bika", loadBuild: "Fungura", copyCode: "Kopi ya kode",
     deleteBuild: "Siba", deleteAsk: "Siba iki kibaho?", reroll: "Irindi zina",
     codeBad: "Iyi kode ntiyisa neza",
-    codeForSpan: "Iyi kode ni iya SpanCraft", codeForSpire: "Iyi kode ni iya Spire Lab",
+    codeForSpan: "Iyi kode ni iya Span", codeForSpire: "Iyi kode ni iya Spire",
     codeWord: "Kode",
   },
   ti: {
@@ -391,7 +391,7 @@ export const EXTRA = {
     saveBuild: "ዓቅብ", loadBuild: "ክፈት", copyCode: "ኮድ ቅዳሕ",
     deleteBuild: "ደምስስ", deleteAsk: "እዚ ህንጻ ይደምሰስ?", reroll: "ካልእ ስም",
     codeBad: "እዚ ኮድ ጽቡቕ ኣይመስልን",
-    codeForSpan: "እዚ ኮድ ናይ SpanCraft እዩ", codeForSpire: "እዚ ኮድ ናይ Spire Lab እዩ",
+    codeForSpan: "እዚ ኮድ ናይ Span እዩ", codeForSpire: "እዚ ኮድ ናይ Spire እዩ",
     codeWord: "ኮድ",
   },
 };

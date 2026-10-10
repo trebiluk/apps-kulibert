@@ -1,8 +1,8 @@
-// Shared truss board for SpanCraft and Spire Lab.
+// Shared truss board for Span and Spire.
 // Stretch a member from joint to joint. Test is a pin-joint check, not a gradebook.
 
 import { proveTruss } from "./truss-prove.js";
-import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js?v=20261002-sc135";
+import { t, chrome, applyDir, noVoiceLine, uiLang } from "./truss-i18n.js?v=20261009-sc136";
 import { encodeBuild, decodeBuild, rollIndex, namePart, pairIndex } from "./truss-codes.js?v=20261002-sc135";
 import {
   quietMode,
@@ -2200,7 +2200,7 @@ export function mountTruss(cfg) {
     }
     const howto = document.querySelector("[data-edge=howto]");
     if (howto) howto.textContent = t("howTo");
-    const design = document.querySelector("#edge-menu a[href='/holdit/']");
+    const design = document.querySelector("#edge-menu a[href^='/holdit/']");
     if (design) design.textContent = t("design");
     const forClass = document.querySelector("#edge-menu a[href='./changelog.html']");
     if (forClass) forClass.textContent = t("forClass");
@@ -2244,7 +2244,7 @@ export function mountTruss(cfg) {
     const landRev = document.getElementById("land-rev");
     if (landRev) landRev.textContent = cfg.version || "";
     const landWhats = document.getElementById("land-whats");
-    if (landWhats) landWhats.textContent = t("whatsNewLead");
+    if (landWhats) landWhats.textContent = cfg.mode === "spire" ? t("noteSpire") : t("noteSpan");
     const brandRev = document.querySelector(".brand p");
     if (brandRev && cfg.version) brandRev.textContent = cfg.version;
     const got = document.getElementById("assist-gotit");

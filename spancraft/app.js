@@ -1,14 +1,14 @@
-import { mountTruss } from "./truss-play.js?v=20261002-sc135";
+import { mountTruss } from "./truss-play.js?v=20261009-sc136";
 import { SPAN_LEVELS, SPAN_FREE } from "./levels.js";
 
 mountTruss({
   mode: "span",
   levels: SPAN_LEVELS,
   freeLevel: SPAN_FREE,
-  version: "SC 1.3.35",
+  version: "SC 1.3.36",
   accessKey: "sc-access-v1",
-  helpTitle: "How to play · SpanCraft",
-  note: "What’s new: Free build is open from the start. Save your builds and share them with a code.",
+  helpTitle: "How to play - Span",
+  note: "SpanCraft is now Span, inside HoldIt. Your jobs and builds are still here.",
   engageKey: "kulibert-spancraft-engage-v2",
   twApp: "spancraft",
   assistKey: "kulibert-spancraft-assist-intro-v2",
