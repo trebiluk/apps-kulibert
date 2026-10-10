@@ -3,7 +3,7 @@ Read this first on every HoldIt ship. In the same commit, tick `[x]` on each ite
 Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; it may lag anything shipped after them.
 
 ## 1. Live now
-- Live title: **HoldIt · HI 1.1.21** (`/holdit/` on apps.kulibert.net).
+- Live title: **HoldIt · HI 1.1.22** (`/holdit/` on apps.kulibert.net).
 - Latest proof on file: `proof/holdit-1.1.18/RESULT.md`: Verdict: FAIL (P1). The 1.1.18 tower/full-screen items pass on first load; turning the phone, the Report table, drawer contrast and editor taps fail.
 
 ## 2. Open fixes (FAIL rows from the latest proof)

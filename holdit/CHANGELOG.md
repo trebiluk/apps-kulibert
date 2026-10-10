@@ -1,5 +1,9 @@
-**Chip: HI 1.1.21** · 2026-10-10 · channel **live**
+**Chip: HI 1.1.22** · 2026-10-10 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.22 — The language stays — 2026-10-10
+
+- What’s new: The language you pick stays when you come back.
 
 ## 1.1.21 — Span and Spire — 2026-10-10
 
