@@ -1,0 +1,12 @@
+{
+  "name": "open-ground",
+  "origin": [72, 12, 72],
+  "floor": 12,
+  "pieces": [
+    { "kind": "bunk", "x": 72, "y": 16, "z": 72, "stars": 3, "restAt": 1893456000000, "tone": "warm", "fabric": "woolRed", "pattern": "stripe" },
+    { "kind": "oven", "x": 80, "y": 16, "z": 72 },
+    { "kind": "box", "x": 72, "y": 16, "z": 80 },
+    { "kind": "vend", "x": 80, "y": 16, "z": 80 },
+    { "kind": "woodshop", "x": 72, "y": 16, "z": 88 }
+  ]
+}

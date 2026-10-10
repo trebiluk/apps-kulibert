@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.127'
+const VERSION = '2.5.128'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -964,6 +964,10 @@ const edits = createEdits({
 const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
 function edit(x, y, z, v) {
   if (zoneLocked(x, y, z)) return false
+  if (v) {
+    const was = getVoxel(x, y, z)
+    if (was === ID.bunk || was === ID.vend || was === ID.box || was === ID.woodshop || was === ID.woodshopSide) return false
+  }
   const group = edits.applyEdit([[x, y, z, v]], { source: 'hand', label: 'hand' })
   if (group) changeLog.note(group)
   return !!group
@@ -1077,9 +1081,8 @@ function mutedUse(block) {
   return block.position.join(',') === muteUseKey
 }
 function againstMachine(block) {
-  if (!block || !machineKind(block.blockID) || !placeableHeld()) return false
-  if (crouching()) return true
-  return mutedUse(block)
+  if (!block || !machineKind(block.blockID || block.id) || !placeableHeld()) return false
+  return crouching()
 }
 function noteCrouchHint() {
   if (crouchHintN >= 3) return
@@ -1091,7 +1094,8 @@ function noteCrouchHint() {
 }
 function landingCell(aimed) {
   if (!aimed || !aimed.position) return null
-  if (aimed.blockID === ID.wheat || aimed.blockID === ID.tuft) return { x: Math.round(aimed.position[0]), y: Math.round(aimed.position[1]), z: Math.round(aimed.position[2]) }
+  const id = aimed.blockID != null ? aimed.blockID : aimed.id
+  if (id === ID.wheat || id === ID.tuft) return { x: Math.round(aimed.position[0]), y: Math.round(aimed.position[1]), z: Math.round(aimed.position[2]) }
   const sx = Math.round(aimed.position[0])
   const sy = Math.round(aimed.position[1])
   const sz = Math.round(aimed.position[2])
@@ -1103,9 +1107,27 @@ function landingCell(aimed) {
     else if (ay >= az && ay > 0.45) ny = n[1] > 0 ? 1 : -1
     else if (az > 0.45) nz = n[2] > 0 ? 1 : -1
   }
-  if (nx || ny || nz) return { x: sx + nx, y: sy + ny, z: sz + nz }
-  if (aimed.adjacent) return { x: Math.round(aimed.adjacent[0]), y: Math.round(aimed.adjacent[1]), z: Math.round(aimed.adjacent[2]) }
-  return null
+  const stepped = (nx || ny || nz) ? { x: sx + nx, y: sy + ny, z: sz + nz } : null
+  const adj = aimed.adjacent ? { x: Math.round(aimed.adjacent[0]), y: Math.round(aimed.adjacent[1]), z: Math.round(aimed.adjacent[2]) } : null
+  const open = (c) => {
+    if (!c) return false
+    const v = getVoxel(c.x, c.y, c.z)
+    return !v || v === WATER || v === ID.tuft || v === ID.wheat
+  }
+  let spot = null
+  if (open(stepped)) spot = stepped
+  else if (open(adj)) spot = adj
+  else spot = stepped || adj
+  if (location.search.includes('smoke=1')) {
+    if (!window.__lands) window.__lands = []
+    window.__lands.push({
+      face: aimed.position.slice(),
+      n: n ? [n[0], n[1], n[2]] : null,
+      cell: spot ? [spot.x, spot.y, spot.z] : null,
+    })
+    console.info('land face ' + aimed.position.join(',') + ' n ' + (n ? n.join(',') : '') + ' cell ' + (spot ? spot.x + ',' + spot.y + ',' + spot.z : ''))
+  }
+  return spot
 }
 function viewFar() {
   try {
@@ -1262,24 +1284,28 @@ function liftShop(x, y, z) {
   if (!tableMode && !canReach([x, y, z])) return false
   const pair = shopPair(x, y, z)
   const anchor = pair.ax + ',' + pair.ay + ',' + pair.az
+  const sideKey = pair.sx + ',' + pair.sy + ',' + pair.sz
   const tools = stations && stations.wallItems ? stations.wallItems(anchor).slice() : []
+  if (session && session.park) {
+    for (let i = 0; i < tools.length; i++) session.park(tools[i], 1)
+    session.park('woodshop', 1)
+  } else if (session) {
+    for (let i = 0; i < tools.length; i++) session.give(tools[i], 1)
+    session.give('woodshop', 1)
+  }
+  if (session && session.meta) {
+    session.meta.delete(anchor)
+    session.meta.delete(sideKey)
+  }
+  if (stations && stations.clearShop) stations.clearShop(anchor)
   const clear = (cx, cy, cz) => {
     const id = getVoxel(cx, cy, cz)
     if (id === ID.woodshop || id === ID.woodshopSide) edit(cx, cy, cz, 0)
   }
   clear(pair.ax, pair.ay, pair.az)
   if (pair.sx !== pair.ax || pair.sz !== pair.az) clear(pair.sx, pair.sy, pair.sz)
-  if (session && session.meta) {
-    session.meta.delete(anchor)
-    session.meta.delete(pair.sx + ',' + pair.sy + ',' + pair.sz)
-  }
-  if (stations && stations.clearShop) stations.clearShop(anchor)
   ensureFront(pair.ax, pair.ay, pair.az)
   ensureFront(pair.sx, pair.sy, pair.sz)
-  if (session) {
-    for (let i = 0; i < tools.length; i++) session.give(tools[i], 1)
-    session.give('woodshop', 1)
-  }
   noteMachine()
   toast(t('gotItem').replace('{item}', t('woodshop')))
   return true
@@ -1333,6 +1359,11 @@ function breakAt(x, y, z, hold) {
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
   if (isShopBlock(id)) return liftShop(x, y, z)
+  if (id === ID.box) {
+    if (session && session.pickup) session.pickup(x, y, z, id)
+    if (getVoxel(x, y, z) === ID.box) edit(x, y, z, 0)
+    return true
+  }
   const wild = isBushId(id) && !farm.get(x, y, z)
   const wheatBack = id === WILD_WHEAT && session && session.mode === 'survival' && wildWheatCell(x, y, z)
   if (session && !session.onBreak(x, y, z, id)) return false
@@ -1371,45 +1402,58 @@ function useHoldReady(dig, now) {
   if (isDoor(dig.id)) return false
   return now - (dig.t0 || now) >= 500
 }
+function useAt(hit) {
+  if (!hit || !hit.position) return false
+  const id = hit.blockID != null ? hit.blockID : hit.id
+  const ax = hit.position[0]
+  const ay = hit.position[1]
+  const az = hit.position[2]
+  if (isDoor(id) && freshPlacedDoor()) {
+    forceShut(ax, ay, az)
+    toast(t('doorShut'))
+    return true
+  }
+  if (basics && canReach([ax, ay, az]) && basics.use(ax, ay, az)) {
+    const nowId = getVoxel(ax, ay, az)
+    if (isDoor(id) && doorKind(id) !== 'metal') toast(t(isOpenDoor(nowId) ? 'doorOpenMsg' : 'doorShut'))
+    if (id === LANTERN) showLamp(ax, ay, az)
+    return true
+  }
+  if (id === LANTERN) return true
+  const kind = machineKind(id)
+  if (location.search.includes('smoke=1') && kind) console.info('use face ' + ax + ',' + ay + ',' + az + ' id ' + id)
+  if (!kind) return !!isUseBlock(id)
+  if (mutedUse({ position: [ax, ay, az] })) return true
+  if (heldPlaceKey() && !crouching()) noteCrouchHint()
+  const shopOk = kind !== 'shop' || (session && session.mode === 'survival')
+  if (!shopOk || !panels) return true
+  const key = ax + ',' + ay + ',' + az
+  if (kind === 'box') { if (!canReach([ax, ay, az])) return true }
+  else if (!reachOpen([ax, ay, az], false)) return true
+  if (kind === 'oven') panels.open('station', key)
+  else if (kind === 'bench') panels.open('crafting')
+  else if (kind === 'vend') panels.open('counter', key)
+  else if (kind === 'bunk') panels.open('bunk', key)
+  else if (kind === 'box') panels.open('box', key)
+  else if (kind === 'woodshop') panels.open('woodshop', shopAnchorKey(ax, ay, az))
+  else panels.open('shop')
+  openMachineKey = key
+  return true
+}
+function placeableCell(id) {
+  return !id || id === WATER || id === ID.tuft || id === ID.wheat
+}
 function placeBlock(face, opts) {
   if (inspectOn) { showInspect(); return false }
   const repeat = !!(opts && opts.repeat)
   const sayFar = () => { if (repeat || !placeableHeld()) return; toastFarKey() }
   const aimedBlock = face && face.position ? face : noa.targetedBlock
   if (!repeat && aimedBlock && panels) {
-    const [ax, ay, az] = aimedBlock.position
-    if (isDoor(aimedBlock.blockID) && freshPlacedDoor()) {
-      forceShut(ax, ay, az)
-      toast(t('doorShut'))
+    const aimId = aimedBlock.blockID != null ? aimedBlock.blockID : aimedBlock.id
+    const beside = machineKind(aimId) && againstMachine(aimedBlock)
+    if ((isUseBlock(aimId) || machineKind(aimId)) && !beside) {
+      useAt(aimedBlock)
       return false
-    }
-    if (basics && canReach([ax, ay, az]) && basics.use(ax, ay, az)) {
-      const nowId = getVoxel(ax, ay, az)
-      if (isDoor(aimedBlock.blockID) && doorKind(aimedBlock.blockID) !== 'metal') toast(t(isOpenDoor(nowId) ? 'doorOpenMsg' : 'doorShut'))
-      if (aimedBlock.blockID === LANTERN) showLamp(ax, ay, az)
-      return false
-    }
-    if (aimedBlock.blockID === LANTERN) return false
-    const kind = machineKind(aimedBlock.blockID)
-    if (kind) {
-      if (heldPlaceKey()) noteCrouchHint()
-      const beside = againstMachine(aimedBlock)
-      const shopOk = kind !== 'shop' || (session && session.mode === 'survival')
-      if (!beside && mutedUse(aimedBlock)) return false
-      if (!beside && shopOk) {
-        const key = aimedBlock.position.join(',')
-        if (kind === 'box') { if (!canReach([ax, ay, az])) return false }
-        else if (!reachOpen([ax, ay, az], repeat)) return false
-        if (kind === 'oven') panels.open('station', key)
-        else if (kind === 'bench') panels.open('crafting')
-        else if (kind === 'vend') panels.open('counter', key)
-        else if (kind === 'bunk') panels.open('bunk', key)
-        else if (kind === 'box') panels.open('box', key)
-        else if (kind === 'woodshop') panels.open('woodshop', shopAnchorKey(ax, ay, az))
-        else panels.open('shop')
-        openMachineKey = key
-        return false
-      }
     }
   }
   if (tryBush(aimedBlock)) return false
@@ -1448,6 +1492,7 @@ function placeBlock(face, opts) {
     return false
   }
   if (id === ID.woodshop) return placeShop(x, y, z)
+  if (!placeableCell(getVoxel(x, y, z))) return false
   if (session && !session.onPlace(x, y, z, id)) return false
   const placed = edit(x, y, z, id)
   if (placed && basics) {
@@ -2442,10 +2487,15 @@ async function applyDoc(doc) {
   worldSpawn = finiteTriple(src.spawn) || SPAWN.slice()
   spawnSet = !!src.spawnSet
   protect = normProtect(src.protect)
-  if (session) session.load(fromDoc(src))
+  if (session) {
+    shopsLive = false
+    session.load(fromDoc(src))
+    shopsLive = true
+  }
   if (src.basics && basics) basics.load(src.basics)
   dropGifts()
   if (src.stations) stations.load(src.stations)
+  if (session && session.recoverOrphans) session.recoverOrphans('')
   gifts = Object.assign({}, src && src.gifts)
   syncGlasses()
   grantSaplings()
@@ -2574,6 +2624,7 @@ let cardClosedAt = 0
 let closeHow = ''
 let dropLockLook = false
 let lockSwallowUntil = 0
+let shopsLive = false
 let openMachineKey = ''
 let muteUseKey = ''
 let muteUseUntil = 0
@@ -2596,6 +2647,9 @@ session = createSession({
   armOven: (key, id) => stations.arm(key, id),
   close: () => panels && panels.close(),
   removeBlock: (x, y, z) => edit(x, y, z, 0),
+  shopWall: (key) => (stations && stations.wallItems ? stations.wallItems(key) : []),
+  shopClear: (key) => { if (stations && stations.clearShop) stations.clearShop(key) },
+  shopsReady: () => shopsLive,
   assign: (id) => bagPick(typeof id === 'number' ? BLOCKS.find((b) => b[0] === id)?.[1] || 'stone' : id, selectedSlot),
   putPalette: (i, id) => putPalette(i, id),
   blockIcon: (id) => blockIcon(BLOCKS.find((b) => b[0] === id) || BLOCKS[2], ATLAS),
@@ -3417,15 +3471,11 @@ function rayAt(cx, cy, forBreak) {
       const ny = Math.round(hit.normal[1])
       const nz = Math.round(hit.normal[2])
       if (nx || ny || nz) {
-        const ax = Math.floor(hit.position[0])
-        const ay = Math.floor(hit.position[1])
-        const az = Math.floor(hit.position[2])
-        const x = ax - nx
-        const y = ay - ny
-        const z = az - nz
+        const x = Math.floor(hit.position[0] - nx * 0.08)
+        const y = Math.floor(hit.position[1] - ny * 0.08)
+        const z = Math.floor(hit.position[2] - nz * 0.08)
         const id = getVoxel(x, y, z)
-        if (!id) return null
-        return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [ax, ay, az], normal: [nx, ny, nz] }
+        if (id) return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [x + nx, y + ny, z + nz], normal: [nx, ny, nz] }
       }
       const step = 0.51
       ox += dir[0] * step
@@ -4323,20 +4373,25 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
-  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && (isShopBlock(down.id) || down.id === ID.bunk))) {
-    breakAt(down.x, down.y, down.z)
-    dig = null
-    hideCrack()
-    return
-  }
   const touchTap = lookWasTouch && held < 500 && moved < 24 && !broke
   const mouseTap = !lookWasTouch && held < 500 && moved < 8 && !broke
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
-  if ((touchTap || (mouseTap && (survivalOn() || (down && (isShopBlock(down.id) || down.id === ID.bunk))))) && down && isUseBlock(down.id)) {
+  const downUse = down && (isUseBlock(down.id) || machineKind(down.id))
+  const upUse = up && (isUseBlock(up.id) || machineKind(up.id))
+  if ((touchTap || mouseTap) && (downUse || upUse)) {
     dig = null
     hideCrack()
-    placeBlock(face || upHit)
+    const target = (downUse ? face : null) || upHit || face
+    const tid = target ? (target.blockID != null ? target.blockID : target.id) : 0
+    if (machineKind(tid) && crouching() && placeableHeld()) placeBlock(target)
+    else useAt(target)
+    return
+  }
+  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && (isShopBlock(down.id) || down.id === ID.bunk))) {
+    breakAt(down.x, down.y, down.z)
+    dig = null
+    hideCrack()
     return
   }
   const creativeBlock = !survivalOn() && !!current
@@ -5282,6 +5337,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       setLook(h || 0, p || 0)
     },
     close() { if (panels) panels.close() },
+    arm() { armResume = 0; playLockWanted = false; lockSwallowUntil = 0 },
     plant(x, y, z, id) { setVoxel(x, y, z, id, true); if (basics) basics.saw(x, y, z, id); return getVoxel(x, y, z) },
     chop(x, y, z) {
       const id = getVoxel(x, y, z)
@@ -5327,7 +5383,17 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     world(x, y, z) { return noa.world.getBlockID(x, y, z) },
     fresh() { resetWorld() },
     parkLost(item, n, why) { session.lostAdd(item, n, why) },
-    hit(x, y) { const r = rayAt(x, y); return r ? { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2] } : null },
+    hit(x, y) {
+      const r = rayAt(x, y)
+      if (!r) return null
+      const n = r.normal || [0, 0, 0]
+      return { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2], nx: n[0] | 0, ny: n[1] | 0, nz: n[2] | 0 }
+    },
+    setMeta(key, rec) {
+      if (!session || !session.meta) return false
+      session.meta.set(String(key), rec)
+      return true
+    },
     bunk() {
       const r = RECIPES.find((x) => x.id === 'bunk')
       return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
@@ -5452,6 +5518,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     home: () => session && session.home,
     shopRules: (next) => session && session.shopRules ? session.shopRules(next) : null,
     bed: (key) => session && session.meta ? (session.meta.get(key) || null) : null,
+    beds: () => session && session.bedDesigns ? session.bedDesigns() : [],
+    recover: () => session && session.recoverOrphans ? session.recoverOrphans('') : 0,
     placeBunk: (x, y, z) => {
       if (!session) return null
       session.holdItem && session.holdItem('bunk')
@@ -5511,6 +5579,19 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     project(x, y, z) {
       const lp = noa.globalToLocal([x + 0.5, y + 1.02, z + 0.5], null, [0, 0, 0])
+      const sc = noa.rendering.getScene()
+      const engine = sc.getEngine()
+      const cam = sc.activeCamera
+      const vw = engine.getRenderWidth()
+      const vh = engine.getRenderHeight()
+      const viewport = cam.viewport.toGlobal(vw, vh)
+      const p = Vector3.Project(new Vector3(lp[0], lp[1], lp[2]), Matrix.Identity(), sc.getTransformMatrix(), viewport)
+      const canvas = document.querySelector('#stage canvas')
+      const r = canvas.getBoundingClientRect()
+      return { x: r.left + (p.x / vw) * r.width, y: r.top + (p.y / vh) * r.height, behind: p.z < 0 || p.z > 1 }
+    },
+    projectAt(x, y, z) {
+      const lp = noa.globalToLocal([x, y, z], null, [0, 0, 0])
       const sc = noa.rendering.getScene()
       const engine = sc.getEngine()
       const cam = sc.activeCamera

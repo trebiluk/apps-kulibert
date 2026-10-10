@@ -2128,25 +2128,39 @@ export function createSession(api) {
     paintHotbar()
     return true
   }
+  function keep(item, n) {
+    if (!item || !(n > 0) || !ITEMS[item]) return 0
+    markFound(item)
+    const left = bag.add(item, n)
+    if (left) lostAdd(item, left, 'bag')
+    return left
+  }
   function pickup(x, y, z, id) {
     const key = x + ',' + y + ',' + z
     const wasEmpty = !bag.slots[hot]
     let first = ''
+    let parked = 0
+    const take = (item, n) => {
+      const left = keep(item, n)
+      const got = n - left
+      if (got && !first) first = item
+      if (left) parked += left
+    }
     if (id === 24) {
       const rec = meta.get(key)
       if (rec) {
-        for (const s of rec.slots) if (s) {
-          const before = bag.count(s.item)
-          bag.add(s.item, s.n)
-          if (!first && bag.count(s.item) > before) first = s.item
-        }
-        const beforeVend = bag.count('vend')
-        bag.add('vend', 1)
-        if (!first && bag.count('vend') > beforeVend) first = 'vend'
+        for (const s of rec.slots || []) if (s && s.n) take(s.item, s.n)
         if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
+        take('vend', 1)
         meta.delete(key)
       }
       if (api.removeBlock) api.removeBlock(x, y, z)
+    }
+    if (id === 27) {
+      const rec = meta.get(key)
+      if (rec && rec.slots) for (const s of rec.slots) if (s && s.n) take(s.item, s.n)
+      take('box', 1)
+      meta.delete(key)
     }
     if (id === 26) {
       const rec = meta.get(key)
@@ -2155,14 +2169,80 @@ export function createSession(api) {
       bedQueue.unshift(d)
       meta.delete(key)
       home = null
-      const before = bag.count('bunk')
-      bag.add('bunk', 1)
-      if (!first && bag.count('bunk') > before) first = 'bunk'
+      take('bunk', 1)
     }
     takeHand(first, wasEmpty)
     paintHotbar()
     paintChip()
+    if (parked) api.toast(t('bagFull'))
     return true
+  }
+  function blockAt(key) {
+    const parts = String(key).split(',').map(Number)
+    if (!api.getVoxel || parts.length < 3) return -1
+    return api.getVoxel(parts[0], parts[1], parts[2]) | 0
+  }
+  function recoverOrphans(skipItem) {
+    const skip = skipItem || ''
+    const doomed = []
+    for (const [key, rec] of meta) {
+      if (!rec) continue
+      if (rec.kind === 'bunk' && blockAt(key) !== 26) doomed.push([key, rec])
+      else if (rec.kind === 'vend' && blockAt(key) !== 24) doomed.push([key, rec])
+      else if (rec.kind === 'box' && blockAt(key) !== 27) doomed.push([key, rec])
+      else if (rec.kind === 'woodshop' && blockAt(key) !== 69 && blockAt(key) !== 70) doomed.push([key, rec])
+    }
+    const shops = new Set()
+    let n = 0
+    let parked = 0
+    let first = ''
+    const take = (item, count) => {
+      if (item === skip) return
+      const left = keep(item, count)
+      if (count - left && !first) first = item
+      if (left) parked += left
+    }
+    for (const [key, rec] of doomed) {
+      if (!meta.has(key)) continue
+      if (rec.kind === 'bunk') {
+        const d = normalizeBed(rec)
+        if (rec.restAt > 0) d.restAt = rec.restAt
+        bedQueue.unshift(d)
+        take('bunk', 1)
+        meta.delete(key)
+        n++
+      } else if (rec.kind === 'vend') {
+        for (const s of rec.slots || []) if (s && s.n) take(s.item, s.n)
+        if (rec.till) wallet.post({ kind: 'till-take', cogs: rec.till, by: 'you' })
+        take('vend', 1)
+        meta.delete(key)
+        n++
+      } else if (rec.kind === 'box') {
+        for (const s of rec.slots || []) if (s && s.n) take(s.item, s.n)
+        take('box', 1)
+        meta.delete(key)
+        n++
+      } else if (rec.kind === 'woodshop') {
+        if (api.shopsReady && !api.shopsReady()) continue
+        const anchor = rec.anchor || key
+        if (shops.has(anchor)) { meta.delete(key); continue }
+        if (blockAt(anchor) === 69 || blockAt(anchor) === 70) continue
+        shops.add(anchor)
+        const tools = api.shopWall ? api.shopWall(anchor) : []
+        for (let i = 0; i < tools.length; i++) take(tools[i], 1)
+        take('woodshop', 1)
+        if (api.shopClear) api.shopClear(anchor)
+        meta.delete(anchor)
+        if (rec.pair) meta.delete(rec.pair)
+        meta.delete(key)
+        n++
+      }
+    }
+    if (!n) return 0
+    paintHotbar()
+    paintChip()
+    if (first || parked) api.toast(parked ? t('bagFull') : t('gotItem').replace('{item}', itemName(first)))
+    return n
   }
   function beforeUndo() {
     if (mode !== 'survival' || !bagHist.length) return true
@@ -2179,6 +2259,7 @@ export function createSession(api) {
     if (h.type === 'break' && h.item && h.n) bag.take(h.item, h.n)
     redoBag.push(h)
     paintHotbar()
+    recoverOrphans(h && h.type === 'place' ? h.item : '')
   }
   function beforeRedo() {
     if (mode !== 'survival' || !redoBag.length) return true
@@ -2200,6 +2281,7 @@ export function createSession(api) {
       }
     }
     paintHotbar()
+    recoverOrphans('')
   }
   function lostAdd(item, n, why) {
     if (!item || !(n > 0)) return
@@ -2316,6 +2398,7 @@ export function createSession(api) {
     paintChip()
     syncDig()
     paintEnergy()
+    recoverOrphans('')
     if (mode === 'survival') paintHotbar()
     else if (api.paintBar) api.paintBar()
   }
@@ -2497,6 +2580,7 @@ export function createSession(api) {
     tryPlace: () => { const k = selectedItem(); if (slotMuted(k)) return false; const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
+    recoverOrphans, bedDesigns: () => bedQueue.map((d) => normalizeBed(d)), park: (item, n) => keep(item, n || 1),
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     shopRules, giveBed, bestBed: () => bestBed ? { ...bestBed } : null, setEnergy, energyState,
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },

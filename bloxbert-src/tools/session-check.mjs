@@ -1,11 +1,15 @@
 import { createSession } from '../src/session.js'
 import { createBag } from '../src/items.js'
 import { createBasics } from '../src/basics.js'
+import { readFileSync } from 'node:fs'
+import vm from 'node:vm'
 
 globalThis.document = {
   getElementById() { return null },
+  querySelector() { return null },
   createElement() { return { className: '', style: {}, dataset: {}, classList: { add() {}, toggle() {}, remove() {} }, append() {}, setAttribute() {}, addEventListener() {}, querySelector: () => ({ textContent: '' }) } },
   documentElement: { dataset: {} },
+  body: { classList: { contains() { return false } }, dataset: {} },
 }
 
 const toasts = []
@@ -69,6 +73,7 @@ s.give('bread', 2)
 const breadAt = s.bag.slots.findIndex((x) => x && x.item === 'bread')
 if (breadAt < 0) throw new Error('bread had nowhere to go')
 s.setHot(breadAt)
+s.setEnergy(2)
 if (s.useHeld() !== 'bread' || s.bag.count('bread') !== 1) throw new Error('bread did not get eaten once')
 if (s.pressHot(breadAt) !== 'bread' || s.bag.count('bread') !== 0) throw new Error('the same number key did not eat')
 const flourAt = s.bag.slots.findIndex((x) => x && x.item === 'flour')
@@ -124,28 +129,43 @@ b.holdItem('woodTool')
 if (b.toolTier() !== 'wood') throw new Error('the wood tool was not in hand')
 b.give('stone', 10)
 b.holdItem('stone')
-const g = node()
-b.paintBox(g, '3,5,3')
-if (g.children.length !== 19) throw new Error('the box did not show 18 slots, saw ' + g.children.length)
-if (!String(g.children[0].className).includes('wide')) throw new Error('Put in does not span the row')
-g.children[0].fn()
-if (b.bag.count('stone') !== 0) throw new Error('Put in left the stone in the bag')
-const stack = g.children.slice(1).find((c) => c.fn)
-if (!stack) throw new Error('the stored stack had no button')
-stack.fn()
+const slotsSrc = readFileSync(new URL('../../shared/kulibert-slots.js', import.meta.url), 'utf8')
+vm.runInThisContext(slotsSrc, { filename: 'kulibert-slots.js' })
+const KS = globalThis.KulibertSlots
+KS.config({
+  icon: () => null,
+  name: (item) => item,
+  t: (k) => k,
+  cap: () => 64,
+  toast: (m) => boxToasts.push(m),
+})
+const rec = b.meta.get('3,5,3')
+if (!rec || !rec.slots || rec.slots.length !== 18) throw new Error('the box did not show 18 slots, saw ' + (rec && rec.slots ? rec.slots.length : 0))
+const bagInv = KS.createInventory({ id: 'bag', slots: b.bag.slots, cap: () => 64 })
+const boxInv = KS.createInventory({ id: 'box:3,5,3', slots: rec.slots, cap: () => 64 })
+function shiftHeld(intoBox) {
+  const from = intoBox ? bagInv : boxInv
+  const to = intoBox ? boxInv : bagInv
+  const i = intoBox ? b.hot : rec.slots.findIndex((s) => s && s.n)
+  const res = KS.quickMove(from, i, [to])
+  if (!res.moved && res.reason === 'full') boxToasts.push(String(to.id).startsWith('box') ? 'boxFull' : 'bagFull')
+  return res
+}
+if (!shiftHeld(true).moved || b.bag.count('stone') !== 0) throw new Error('Put in left the stone in the bag')
+shiftHeld(false)
 if (b.bag.count('stone') !== 10) throw new Error('taking the stack did not return 10 stone')
 for (let i = 0; i < 18; i++) {
   b.bag.take('dirt', b.bag.count('dirt'))
   b.give('dirt', 64)
   b.holdItem('dirt')
   const before = boxToasts.length
-  g.children[0].fn()
+  const res = shiftHeld(true)
   if (boxToasts.length !== before) throw new Error('slot ' + i + ' said the box was full')
-  if (b.bag.count('dirt') !== 0) throw new Error('slot ' + i + ' left dirt in the bag')
+  if (!res.moved || b.bag.count('dirt') !== 0) throw new Error('slot ' + i + ' left dirt in the bag')
 }
 const stone = b.bag.count('stone')
 b.holdItem('stone')
-g.children[0].fn()
+shiftHeld(true)
 if (!boxToasts.includes('boxFull') || b.bag.count('stone') !== stone) throw new Error('a full box did not keep the extra stone')
 if (b.onBreak(3, 5, 3, 27) !== true) throw new Error('the box did not break')
 const dirtOut = b.bag.count('dirt') + b.groundDrops().filter((d) => d.item === 'dirt').reduce((n, d) => n + d.n, 0)

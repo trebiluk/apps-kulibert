@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.128', date: '2026-10-10', lines: {
+    en: ['A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.'],
+    uk: ['Дотик до ліжка, печі, скрині, прилавка чи майстерні відкриває їх. Присядь, щоб будувати поруч, і ліжко на 3 зірки зберігає свій вигляд.'],
+    ru: ['Нажатие на кровать, печь, сундук, прилавок или мастерскую открывает их. Присядь, чтобы строить рядом, и кровать на 3 звезды хранит свой вид.'],
+    es: ['Un toque en la cama, el horno, la caja, el mostrador o el taller los abre. Agáchate para construir al lado, y una cama de 3 estrellas guarda su diseño.'],
+    ar: ['لمسة على السرير أو الفرن أو الصندوق أو المنضدة أو الورشة تفتحها. انحنِ لتبني بجانبها، وسرير 3 نجوم يحفظ تصميمه.'],
+    'fa-AF': ['زدن روی تخت، تنور، صندوق، پیشخوان یا کارگاه آن را باز می‌کند. خم شو تا کنارش بسازی، و تخت ۳ ستاره طرحش را نگه می‌دارد.'],
+    rw: ['Gukanda ikiriri, icyoto, agasanduku, counter cyangwa ikigo birafunguka. Icaramye ushyire iruhande, kandi ikiriri cy\'inyenyeri 3 kigumana isura.'],
+    ti: ['ዓራት፡ እቶን፡ ሳንዱቕ፡ መደብን ዕድጊን ምጥዋቕ ይኸፍቶም። ብድንጋር ኣብ ጥቓኦም ሃንጽ፡ ዓራት 3 ኮኾብ ድማ ንድፊኡ ይሕልው።'],
+  }},
   { v: '2.5.127', date: '2026-10-10', lines: {
     en: ['The game loads faster the first time, and a return visit does not download it again.'],
     uk: ['Гра швидше вантажиться вперше, і повторний візит не завантажує її знову.'],

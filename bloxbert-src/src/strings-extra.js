@@ -983,13 +983,13 @@ const BED = {
 for (const [lang, row] of Object.entries(BED)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(packStrings())) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 const FARM_NEWS = {
-  en: { whatsNewBody: 'The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back.' },
-  uk: { whatsNewBody: 'Ферма — це пак. Пшениця, очерет, кущі й насіння виходять з ядра, а зниклий пак Ферми показується знаком питання, поки не повернеться.' },
-  ru: { whatsNewBody: 'Ферма — это пак. Пшеница, камыш, кусты и семена уходят из ядра, а пропавший пак Фермы показывается знаком вопроса, пока не вернётся.' },
-  es: { whatsNewBody: 'La granja es un paquete. El trigo, las cañas, los arbustos y las semillas salen del núcleo, y un paquete Granja que falta se ve como un signo de pregunta hasta que vuelve.' },
-  ar: { whatsNewBody: 'المزرعة حزمة. القمح والقصب والشجيرات والبذور تخرج من النواة، والحزمة المفقودة تظهر كعلامة سؤال حتى تعود.' },
-  'fa-AF': { whatsNewBody: 'مزرعه یک بسته است. گندم، نی، بوته و دانه از هسته بیرون می‌روند، و بسته گم‌شده مزرعه تا وقتی برگردد علامت سوال نشان می‌دهد.' },
-  rw: { whatsNewBody: 'Isarura ni umupaki. Ingano, urubingo, ibihuru n\'imbuto biva mu mutima, kandi umupaki wa Farm wabuze ugaragara nk\'akabazo kugeza usubira.' },
-  ti: { whatsNewBody: 'እቲ ሕርሻ ጥቕሊ እዩ። ስርናይ፡ ቀጸል፡ ቁጥቋጥን ዘርእን ካብ ማእከል ይወጹ፡ ዝጠፍአ ጥቕሊ ሕርሻ ድማ ክሳብ ዝምለስ ምልክት ሕቶ ይረአ።' },
+  en: { whatsNewBody: 'A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.' },
+  uk: { whatsNewBody: 'Дотик до ліжка, печі, скрині, прилавка чи майстерні відкриває їх. Присядь, щоб будувати поруч, і ліжко на 3 зірки зберігає свій вигляд.' },
+  ru: { whatsNewBody: 'Нажатие на кровать, печь, сундук, прилавок или мастерскую открывает их. Присядь, чтобы строить рядом, и кровать на 3 звезды хранит свой вид.' },
+  es: { whatsNewBody: 'Un toque en la cama, el horno, la caja, el mostrador o el taller los abre. Agáchate para construir al lado, y una cama de 3 estrellas guarda su diseño.' },
+  ar: { whatsNewBody: 'لمسة على السرير أو الفرن أو الصندوق أو المنضدة أو الورشة تفتحها. انحنِ لتبني بجانبها، وسرير 3 نجوم يحفظ تصميمه.' },
+  'fa-AF': { whatsNewBody: 'زدن روی تخت، تنور، صندوق، پیشخوان یا کارگاه آن را باز می‌کند. خم شو تا کنارش بسازی، و تخت ۳ ستاره طرحش را نگه می‌دارد.' },
+  rw: { whatsNewBody: 'Gukanda ikiriri, icyoto, agasanduku, counter cyangwa ikigo birafunguka. Icaramye ushyire iruhande, kandi ikiriri cy\'inyenyeri 3 kigumana isura.' },
+  ti: { whatsNewBody: 'ዓራት፡ እቶን፡ ሳንዱቕ፡ መደብን ዕድጊን ምጥዋቕ ይኸፍቶም። ብድንጋር ኣብ ጥቓኦም ሃንጽ፡ ዓራት 3 ኮኾብ ድማ ንድፊኡ ይሕልው።' },
 }
 for (const [lang, row] of Object.entries(FARM_NEWS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
