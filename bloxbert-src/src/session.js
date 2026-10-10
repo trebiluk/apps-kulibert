@@ -1412,6 +1412,7 @@ export function createSession(api) {
           onPlace: (index, item) => placePart(item, index),
           onReturn: (index) => returnSlot(index),
           onFill: () => {
+            if (!craftOk(r.id)) return
             const takes = fillTakes(r, (item) => countOf(bag, item), trayPlaced)
             let any = false
             takes.forEach((takeN, i) => {
@@ -1438,6 +1439,7 @@ export function createSession(api) {
             paintCraft(g)
           },
           onMake: () => {
+            if (!craftOk(r.id)) return
             if (isBread) {
               if (!openBreadOven()) paintCraft(g)
               return
@@ -1468,6 +1470,7 @@ export function createSession(api) {
             paintCraft(g)
           },
           onMax: () => {
+            if (!craftOk(r.id)) return
             if (!st.ok || times < 2) return
             xmaxAsk = r.id
             paintCraft(g)
@@ -1509,6 +1512,7 @@ export function createSession(api) {
         yes.addEventListener('click', (e) => {
           e.preventDefault()
           e.stopPropagation()
+          if (!craftOk(r.id)) return
           returnTray()
           const n = maxTimes(r, bag)
           if (n > 0) {
@@ -1932,7 +1936,8 @@ export function createSession(api) {
     return left === 0
   }
   function craftMany(r, times) {
-    if (r && r.id === 'bunk' && r.at === 'bench' && shopRules().required) return false
+    if (!r || !craftOk(r.id)) return false
+    if (r.id === 'bunk' && r.at === 'bench' && shopRules().required) return false
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))
     if (!n || !canMake(r, bag, stations).ok) return false
@@ -2291,6 +2296,12 @@ export function createSession(api) {
     else lost.push({ item, n, why: why || 'aside' })
     if (api.markDirty) api.markDirty()
   }
+  function craftOk(id) {
+    if (Rules.allow(null, 'core.craft', { id }).ok) return true
+    if (api.blocked) api.blocked('core.craft')
+    else api.toast(Rules.why('core.craft'))
+    return false
+  }
   function tryCraft(name) {
     const r = RECIPES.find((x) => x.id === name || x.out[0] === name)
     if (!r) return { ok: false, why: 'missing' }
@@ -2298,11 +2309,7 @@ export function createSession(api) {
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const st = craftStatus(r, bag, stations, mode !== 'survival')
     if (!st.ok) return { ok: false, why: st.gate || st.station || 'count', gate: st.gate || '' }
-    if (!Rules.allow(null, 'core.craft', { id: r.id }).ok) {
-      if (api.blocked) api.blocked('core.craft')
-      else api.toast(Rules.why('core.craft'))
-      return { ok: false, why: 'rule', ruleId: 'core.craft' }
-    }
+    if (!craftOk(r.id)) return { ok: false, why: 'rule', ruleId: 'core.craft' }
     const made = make(r, bag, hot)
     if (!made) return { ok: false, why: 'full' }
     markFound(r.out[0])
@@ -2566,6 +2573,8 @@ export function createSession(api) {
     },
     lostAdd,
     tryCraft,
+    craftOk,
+    craftMany,
     setCraftOpen(v) { craftOpen = !!v },
     focusCraft(id) { craftId = id || ''; craftOpen = true },
     lostItems: () => lost.map((d) => d.item + ':' + d.n),

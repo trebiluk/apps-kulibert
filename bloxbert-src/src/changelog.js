@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.132', date: '2026-10-10', lines: {
+    en: ['Crafting off really means off, and the Update chip sits above the menu.'],
+    uk: ['Вимкнений крафт справді вимкнений, і чип оновлення стоїть над меню.'],
+    ru: ['Выключенный крафт действительно выключен, и чип обновления стоит над меню.'],
+    es: ['Fabricar apagado de verdad está apagado, y el aviso de actualización queda sobre el menú.'],
+    ar: ['إيقاف الصنع يعني الإيقاف فعلاً، وشريحة التحديث فوق القائمة.'],
+    'fa-AF': ['ساختن خاموش واقعاً خاموش است، و چیپ به‌روزرسانی بالای منو است.'],
+    rw: ['Gukora bifunze bivuga ko bifunze, kandi ikimenyetso cyo kuvugurura kiri hejuru y’imenyu.'],
+    ti: ['ምስራሕ ምጥፋእ ብሓቂ ማለት ተዓጽዩ፡ ምልክት ምዕራፍ ድማ ኣብ ልዕሊ ምናሌ እዩ።'],
+  }},
   { v: '2.5.131', date: '2026-10-10', lines: {
     en: ['New land rolls into hills and beaches. The town and the ground you already saved stay the same.'],
     uk: ['Нова земля стає горбами й пляжами. Місто і вже збережена земля лишаються тими самими.'],

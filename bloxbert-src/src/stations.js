@@ -377,6 +377,7 @@ export function createStations(api) {
       row.className = 'bed-paths'
       if (rule.path !== 'design') {
         const b = capBtn('bed-just', api.t('justBuild'), () => {
+          if (api.craftOk && !api.craftOk('bunk')) return
           if (!toolsReady(key) || !matsOk()) return
           const spent = spendMats()
           if (!spent) return
@@ -393,6 +394,7 @@ export function createStations(api) {
       }
       if (rule.path !== 'build') {
         const b = capBtn('bed-design', api.t('designIt'), () => {
+          if (api.craftOk && !api.craftOk('bunk')) return
           if (!toolsReady(key) || !matsOk()) return
           if (api.glasses) api.glasses(true)
           rec.bed = freshJob(woolPick())
@@ -407,6 +409,7 @@ export function createStations(api) {
       const best = api.best && api.best()
       if (best && best.stars >= 3) {
         const b = capBtn('bed-remake', api.t('remakeBest'), () => {
+          if (api.craftOk && !api.craftOk('bunk')) return
           if (!toolsReady(key) || !matsOk(best.fabric)) return
           const spent = spendMats(best.fabric)
           if (!spent) return
@@ -614,6 +617,7 @@ export function createStations(api) {
           go('measure')
         }))
         step.append(capBtn('bed-keep', api.t('keepIt'), () => {
+          if (api.craftOk && !api.craftOk('bunk')) return
           if (api.giveBed) api.giveBed({ stars: rated.stars, tone: job.tone, fabric: job.fabric, pattern: job.pattern })
           rec.bed = null
           bedFlash = true
@@ -624,6 +628,7 @@ export function createStations(api) {
         }))
         if (rated.stars >= 3) {
           step.append(capBtn('bed-remake', api.t('remakeBest'), () => {
+            if (api.craftOk && !api.craftOk('bunk')) return
             if (!matsOk(job.fabric)) return
             const spent = spendMats(job.fabric)
             if (!spent) return
