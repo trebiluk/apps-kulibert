@@ -29,6 +29,15 @@ export function createSession(api) {
   let hot = 0
   let bagSel = -1
   let bagSkip = 0
+  function slotsHeld() {
+    const sheet = document.getElementById('sheet')
+    return !!(sheet && sheet.dataset.slotsReady === '0')
+  }
+  function blockSlot(e) {
+    if (!slotsHeld()) return false
+    if (e) { e.preventDefault(); e.stopPropagation() }
+    return true
+  }
   let day = localDay()
   function localDay() {
     const d = new Date()
@@ -507,6 +516,7 @@ export function createSession(api) {
   }
   function startDrag(el, e, opts) {
     if (!e || (e.button != null && e.button !== 0)) return
+    if (slotsHeld()) return
     bagSkip = 0
     if (opts.canStart && !opts.canStart()) return
     const pid = e.pointerId
@@ -710,6 +720,7 @@ export function createSession(api) {
         b.setAttribute('aria-label', itemName(k))
         b.title = itemName(k)
         b.addEventListener('pointerdown', (e) => {
+          if (blockSlot(e)) return
           if (e.button != null && e.button !== 0) return
           const blockId = item.block
           const bar = document.getElementById('hotbar')
@@ -788,6 +799,7 @@ export function createSession(api) {
           window.addEventListener('pointercancel', end, true)
         })
         b.addEventListener('click', () => {
+          if (blockSlot()) return
           if (bagSkip && performance.now() - bagSkip < 700) return
           if (api.assign) api.assign(item.block, k)
           api.toast(itemName(k))
@@ -862,6 +874,7 @@ export function createSession(api) {
       b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
       b.title = s ? itemName(s.item) : t('emptySlot')
       b.addEventListener('pointerdown', (e) => {
+        if (blockSlot(e)) return
         startDrag(b, e, {
           ghostClass: 'bag-ghost',
           targets: '.well[data-slot]',
@@ -883,6 +896,7 @@ export function createSession(api) {
         })
       })
       b.addEventListener('click', (e) => {
+        if (blockSlot(e)) return
         if (bagSkip && performance.now() - bagSkip < 700) { e.preventDefault(); e.stopPropagation(); return }
         tapSlot(i)
         refreshBag()
@@ -990,6 +1004,21 @@ export function createSession(api) {
     if (item === 'coal') return t('srcCoal')
     if (item === 'wheat') return t('srcFarm')
     return ''
+  }
+  function madeFrom(item) {
+    const made = RECIPES.find((r) => r.out[0] === item && r.at && r.at !== 'hand' && r.at !== 'oven')
+    if (!made) return ''
+    const whereKey = made.at === 'bench' ? 'workbench' : made.at === 'forge' ? 'smelter' : made.at
+    const from = made.in.map(([it]) => itemName(it)).join(', ')
+    return t(whereKey) + ', ' + t('fromSrc').replace('{item}', from)
+  }
+  function ovenTileLine(r) {
+    const bits = r.in.map(([item, n]) => {
+      const via = madeFrom(item) || sourceHint(item)
+      const name = n + ' ' + itemName(item)
+      return via ? name + ' (' + via + ')' : name
+    })
+    return bits.join(', ') + ' - ' + t('oven')
   }
   function craftProbe() {
     if (!craftProbe.el) {
@@ -1163,7 +1192,7 @@ export function createSession(api) {
         name.textContent = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
         name.title = name.textContent
         b.append(name)
-        if (r.id === 'bread') {
+        if (r.at === 'oven') {
           const line = document.createElement('span')
           line.className = 'need bake-in'
           const mark = document.createElement('span')
@@ -1171,7 +1200,7 @@ export function createSession(api) {
           mark.append(itemIcon(ITEMS.oven))
           const words = document.createElement('span')
           words.className = 'need-line'
-          words.textContent = t('bakeInOven') + ' · ' + t('wheat') + ' (' + t('srcFarm') + ')'
+          words.textContent = ovenTileLine(r)
           line.append(mark, words)
           b.title = name.textContent + '. ' + words.textContent
           b.setAttribute('aria-label', b.title)

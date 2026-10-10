@@ -117,6 +117,59 @@ export function createStations(api) {
   }
   function itemName(item) { return api.name ? api.name(item) : item }
   function bakesItem(item) { return OVEN.some((recipe) => recipe.in.some(([it]) => it === item)) }
+  function haveN(item) { return api.have ? api.have(item) || 0 : 0 }
+  function precursorStep(item) {
+    if (!item || bakesItem(item)) return null
+    const ovenIn = new Set()
+    for (const recipe of OVEN) for (const [it] of recipe.in) ovenIn.add(it)
+    let hop = null
+    for (const recipe of RECIPES) {
+      if (recipe.at === 'oven' || !recipe.in.some(([it]) => it === item)) continue
+      const out = recipe.out[0]
+      if (ovenIn.has(out)) return { out, at: recipe.at }
+      if (!hop && RECIPES.some((next) => next.at !== 'oven' && next.in.some(([it]) => it === out) && ovenIn.has(next.out[0]))) hop = { out, at: recipe.at }
+    }
+    return hop
+  }
+  function needLine(item) {
+    const ranked = []
+    for (const recipe of OVEN) {
+      if (!recipe.in.some(([it]) => it === item)) continue
+      const miss = []
+      for (const [it, n] of recipe.in) {
+        const have = haveN(it)
+        if (have < n) miss.push({ it, n, more: n - have })
+      }
+      if (miss.length) ranked.push({ recipe, miss })
+    }
+    if (!ranked.length) return ''
+    ranked.sort((a, b) => {
+      const aSelf = a.miss.some((m) => m.it === item) ? 0 : 1
+      const bSelf = b.miss.some((m) => m.it === item) ? 0 : 1
+      if (aSelf !== bSelf) return aSelf - bSelf
+      const aOne = a.recipe.in.length === 1 ? 0 : 1
+      const bOne = b.recipe.in.length === 1 ? 0 : 1
+      if (aOne !== bOne) return aOne - bOne
+      return a.miss.length - b.miss.length
+    })
+    const best = ranked[0]
+    const gap = best.miss.find((m) => m.it === item) || best.miss[0]
+    return api.t('ovenNeed')
+      .replace('{out}', itemName(best.recipe.out[0]))
+      .replace('{n}', String(gap.n))
+      .replace('{item}', itemName(gap.it))
+      .replace('{more}', String(gap.more))
+  }
+  function inputNote(item) {
+    const named = itemName(item)
+    const pre = precursorStep(item)
+    if (pre) {
+      const whereKey = pre.at === 'bench' ? 'workbench' : pre.at === 'forge' ? 'smelter' : pre.at
+      return api.t('ovenFirst').replace('{item}', named).replace('{out}', itemName(pre.out)).replace('{where}', api.t(whereKey))
+    }
+    if (!bakesItem(item)) return api.t('ovenNoBake').replace('{item}', named)
+    return needLine(item)
+  }
   function bakeHint() {
     const bits = []
     let food = false
@@ -183,6 +236,7 @@ export function createStations(api) {
       return { r, secs, timeLeft, pct, fuelItem, fuelCount, inItem, inCount, outItem }
     }
     const fueled = () => (get(k, 'oven').left || 0) > 0
+    let ovenNote = ''
     const recipeYouCan = (item) => {
       if (!item) return null
       const creative = api.creative && api.creative()
@@ -193,8 +247,10 @@ export function createStations(api) {
     const refuse = (role, item) => {
       const named = itemName(item)
       if (role === 'fuel') return api.t('fuelBounce').replace('{item}', named)
-      if (role === 'input' && !bakesItem(item)) return api.t('ovenNoBake').replace('{item}', named)
-      return ''
+      if (role !== 'input') return ''
+      const message = inputNote(item)
+      if (message) ovenNote = message
+      return message
     }
     const onLoad = (role, item) => {
       if (role === 'fuel') {
@@ -207,9 +263,10 @@ export function createStations(api) {
         const cur = get(k, 'oven')
         if (cur.until || (cur.input && cur.input.length)) return { ok: false }
         const recipe = recipeYouCan(item)
-        if (!recipe) return { ok: false, message: api.t('ovenNoBake').replace('{item}', itemName(item)) }
+        if (!recipe) return { ok: false, message: refuse('input', item) }
         const ok = fueled() ? addInput(k, recipe.id) : arm(k, recipe.id)
         if (!ok) return { ok: false, message: api.t('nothingBake') }
+        ovenNote = ''
         return { ok: true }
       }
       return { ok: false }
@@ -222,6 +279,7 @@ export function createStations(api) {
         const s = read()
         if (s.outItem && !s.r.until) return api.t('takeYour').replace('{item}', itemName(s.outItem))
         if (s.r.until) return api.t('bakingNow')
+        if (ovenNote) return ovenNote
         if (s.inItem && !(s.r.left > 0)) return api.t('ovenAddFuel')
         if (s.r.left > 0 && !s.inItem) return api.t('addToBake')
         return api.t('needsFuel')

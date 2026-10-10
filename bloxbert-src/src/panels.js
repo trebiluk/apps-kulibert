@@ -31,6 +31,54 @@ export function mountPanels(api) {
     sheet.dataset.panel = id
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
+    armSlide(id)
+  }
+  const SLOT_PANELS = { inventory: 1, crafting: 1, station: 1, bench: 1, box: 1 }
+  let slideGen = 0
+  function motionOff() {
+    try {
+      if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    } catch (e) { return false }
+  }
+  function armSlide(id) {
+    slideGen += 1
+    const gen = slideGen
+    const ready = () => {
+      if (gen !== slideGen || sheet.dataset.slotsReady === '1') return
+      sheet.classList.remove('slots-slide')
+      sheet.dataset.slotsReady = '1'
+      sheet.style.transition = ''
+      sheet.style.transform = ''
+    }
+    if (!SLOT_PANELS[id] || motionOff()) {
+      sheet.classList.remove('slots-slide')
+      sheet.dataset.slotsReady = '1'
+      sheet.style.transition = ''
+      sheet.style.transform = ''
+      return
+    }
+    sheet.dataset.slotsReady = '0'
+    sheet.classList.add('slots-slide')
+    sheet.style.transition = 'none'
+    sheet.style.transform = 'translateY(40px)'
+    const started = performance.now()
+    const onEnd = (e) => {
+      if (e.target !== sheet || e.propertyName !== 'transform') return
+      sheet.removeEventListener('transitionend', onEnd)
+      ready()
+    }
+    sheet.addEventListener('transitionend', onEnd)
+    setTimeout(() => {
+      sheet.removeEventListener('transitionend', onEnd)
+      ready()
+    }, 250)
+    requestAnimationFrame(() => {
+      if (gen !== slideGen) return
+      const left = Math.max(0, 250 - (performance.now() - started))
+      sheet.style.transition = 'transform ' + left + 'ms linear'
+      sheet.style.transform = 'translateY(0)'
+    })
   }
   function dismiss() {
     sheet.hidden = true

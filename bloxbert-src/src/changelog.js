@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.108', date: '2026-10-09', lines: {
+    en: ['The Oven tells you exactly what a recipe needs, and the Bag is ready the moment it opens.'],
+    uk: ['Піч каже точно, чого бракує рецепту, і сумка готова відразу, щойно відкриється.'],
+    ru: ['Печь говорит точно, чего не хватает рецепту, и сумка готова сразу, как откроется.'],
+    es: ['El horno dice exactamente qué necesita la receta, y la bolsa está lista en cuanto se abre.'],
+    ar: ['الفرن يقول بالضبط ما تحتاجه الوصفة، والحقيبة جاهزة لحظة فتحها.'],
+    'fa-AF': ['تنور دقیقاً می‌گوید دستور چه می‌خواهد، و بکس همان لحظه که باز می‌شود آماده است.'],
+    rw: ['Icyoto kivuga neza ibyo recepti ikeneye, kandi agasaho kaboneka ako kanya gafunguka.'],
+    ti: ['እቶን ነቲ መድሃኒት እንታይ ከም ዘድሊ ብልክዕ ይነግር፡ ቦርሳ ድማ ምስ ተኸፍተት ብኡንብኡ ትጽንሕ።'],
+  }},
   { v: '2.5.106', date: '2026-10-09', lines: {
     en: ['The game tells you where crafted things go, right-click eats food, harvests pop, and ponds are easy to reach.'],
     uk: ['Гра каже, куди лягла річ, правий клік їсть їжу, урожай вискакує, і до ставка легко дійти.'],

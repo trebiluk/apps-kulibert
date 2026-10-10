@@ -274,12 +274,13 @@
         badge.textContent = String(s.n)
         b.append(badge)
       }
-      b.addEventListener('pointerdown', function (e) { beginDrag(b, inv, i, view, e) })
-      b.addEventListener('click', function (e) { onSlot(inv, i, b, view, e) })
+      b.addEventListener('pointerdown', function (e) { if (blockSlot(e)) return; beginDrag(b, inv, i, view, e) })
+      b.addEventListener('click', function (e) { if (blockSlot(e)) return; onSlot(inv, i, b, view, e) })
       return b
     }
 
     function onSlot(inv, i, el, view, ev) {
+      if (slotsHeld()) return
       if (guard && root.performance.now() < guard.until && ((el && guard.el === el) || (guard.id === inv.id && guard.i === i))) return
       var src = inv.slots[i]
       if (ev && ev.shiftKey && src) {
@@ -307,6 +308,7 @@
     }
 
     function beginDrag(el, inv, i, view, e) {
+      if (slotsHeld()) return
       if (!e || (e.button != null && e.button !== 0)) return
       if (!inv.slots[i]) return
       var pid = e.pointerId
@@ -512,8 +514,19 @@
     } catch (e) {}
   }
 
+  function slotsHeld() {
+    var sheet = document.getElementById('sheet')
+    return !!(sheet && !sheet.hidden && sheet.dataset.slotsReady === '0')
+  }
+  function blockSlot(e) {
+    if (!slotsHeld()) return false
+    if (e) { e.preventDefault(); e.stopPropagation() }
+    return true
+  }
+
   function armPointer(el, handlers, guardBox) {
     el.addEventListener('pointerdown', function (e) {
+      if (blockSlot(e)) return
       if (!e || (e.button != null && e.button !== 0)) return
       var pid = e.pointerId
       var thresh = e.pointerType === 'touch' ? 10 : 8
@@ -583,6 +596,7 @@
       root.addEventListener('pointercancel', upEv, true)
     })
     el.addEventListener('click', function (e) {
+      if (blockSlot(e)) return
       if (guardBox.guard && root.performance.now() < guardBox.guard.until && guardBox.guard.el === el) {
         e.preventDefault()
         e.stopPropagation()
