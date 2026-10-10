@@ -56,6 +56,11 @@ export function preview(crop, now) {
   return { grown, wet, stage: stage(grown, crop), left }
 }
 
+export function isRipe(crop, now) {
+  if (!crop) return false
+  return preview(crop, now).stage === 3
+}
+
 export function formatLeft(ms) {
   const s = Math.max(0, Math.ceil((+ms || 0) / 1000))
   const m = Math.floor(s / 60)

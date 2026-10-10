@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.110'
+const VERSION = '2.5.111'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -34,7 +34,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, spawnGround } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -44,7 +44,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels } from './save/migrate.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
-import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
+import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 const farm = createFarm()
 const forage = createForage()
@@ -655,7 +655,7 @@ const saved = new Map()
 let dirty = false
 function hash(x, z) { let h = (x * 374761393 + z * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296 }
 function heightAt(x, z) {
-  return Math.round(3 + 2.2 * Math.sin(x / 19) * Math.cos(z / 23) + 1.2 * Math.sin((x + z) / 11))
+  return spawnGround(x, z)
 }
 const TOWN = { x0: -20, x1: 36, z0: -18, z1: 28, y: FLOOR }
 function inTown(x, z) { return x >= TOWN.x0 && x <= TOWN.x1 && z >= TOWN.z0 && z <= TOWN.z1 }
@@ -1003,10 +1003,21 @@ function reachOpen(pos, repeat) {
   if (!repeat) toastFar()
   return false
 }
-function breakAt(x, y, z) {
+function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
   if (id === WATER) return false
+  if ((isCropId(id) || isBushId(id)) && survivalOn() && !tableMode) {
+    if (!canReach([x, y, z])) return false
+    if (fruitingAt(x, y, z, id)) {
+      leftHarvest(x, y, z, id)
+      return true
+    }
+    if (!hold) {
+      showGrowCard(x, y, z)
+      return true
+    }
+  }
   if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
@@ -1197,6 +1208,68 @@ function showCropCard(x, y, z) {
   const row = farm.get(x, y, z)
   if (!row) return
   showCard(cropText(row))
+}
+let sweep = null
+function armSweep() {
+  if (!sweep) sweep = { seen: new Set(), n: 0 }
+  return sweep
+}
+function fruitingAt(x, y, z, id) {
+  const row = farm.get(x, y, z)
+  if (isCropId(id)) return id === CROP[3] || isRipe(row, Date.now())
+  if (isBushId(id)) return id === BUSH[3] || isRipe(row, Date.now())
+  return false
+}
+let growToldAt = 0
+function showGrowCard(x, y, z) {
+  const row = farm.get(x, y, z)
+  const id = getVoxel(x, y, z)
+  const base = isBushId(id) && !row ? wildBushText(x, y, z) : (row ? cropText(row) : (isBushId(id) ? t('berryBush') : t('wheat')))
+  growToldAt = performance.now()
+  showCard(base + '\n' + t('notRipeHold'))
+}
+function leftHarvest(x, y, z, id) {
+  const stroke = armSweep()
+  const cell = x + ',' + y + ',' + z
+  if (stroke.seen.has(cell) || stroke.n >= 5) return false
+  if (isBushId(id) && !farm.get(x, y, z)) {
+    if (id === FRUIT_BUSH) {
+      const n = wildPickCount(x, y, z)
+      session.give('berry', n)
+      popBerry(x, y, z, n)
+      setVoxel(x, y, z, BARE_BUSH)
+      forage.add(x, y, z, 'bush', Date.now())
+      showCard(wildBushText(x, y, z))
+      dirty = true
+    }
+  } else if (isCropId(id)) harvestCrop(x, y, z)
+  else {
+    let row = farm.get(x, y, z)
+    if (!row) {
+      row = farm.add(x, y, z, Date.now(), false, { kind: 'bush' })
+      row.grown = capOf(row)
+    }
+    pickBush(x, y, z, row)
+  }
+  stroke.seen.add(cell)
+  stroke.n += 1
+  hideCrack()
+  return true
+}
+function cropDig(kind, x, y, z, id, now) {
+  if (!survivalOn() || tableMode) return null
+  if (!isCropId(id) && !isBushId(id)) return null
+  if (!canReach([x, y, z])) return null
+  const cell = x + ',' + y + ',' + z
+  if (sweep && sweep.seen.has(cell)) {
+    return { kind, x, y, z, id, name: '', t0: now, need: 1e9, broke: true, skipBreak: true, p: 0 }
+  }
+  if (fruitingAt(x, y, z, id)) {
+    leftHarvest(x, y, z, id)
+    return { kind, x, y, z, id, name: '', t0: now, need: 1e9, broke: true, skipBreak: true, p: 0 }
+  }
+  showGrowCard(x, y, z)
+  return null
 }
 let harvestStroke = null
 function cropScreen(x, y, z) {
@@ -1551,7 +1624,8 @@ function tickCrops() {
   growAll(wall)
 }
 function hoverCrop() {
-  if (tableMode || anyCard()) return
+  if (cropFreeze || tableMode || anyCard()) return
+  if (performance.now() - growToldAt < 1600) return
   const aimed = noa.targetedBlock
   if (!aimed || !aimed.position) return
   const x = Math.round(aimed.position[0])
@@ -2810,7 +2884,7 @@ function aimed() {
   }
   return null
 }
-function rayAt(cx, cy) {
+function rayAt(cx, cy, forBreak) {
   try {
     if (!Ray) return null
     const scene = noa.rendering.getScene()
@@ -2823,7 +2897,7 @@ function rayAt(cx, cy) {
     const dir = [dx / len, dy / len, dz / len]
     let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 6
     for (let i = 0; i < 8 && left > 0.2; i++) {
-    const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0 && !passThrough(id))
+    const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0 && ((forBreak && (isCropId(id) || isBushId(id))) || !passThrough(id)))
       if (!hit || !hit.position || !hit.normal) return null
       const nx = Math.round(hit.normal[0])
       const ny = Math.round(hit.normal[1])
@@ -3044,6 +3118,7 @@ function openBagFromHud() {
   mouseLeft = false
   look = null
   dig = null
+  leftDown = false
   try { hideCrack() } catch (e) {}
   try { noa.inputs.state.fire = false } catch (e) {}
   const sheet = $('sheet')
@@ -3086,6 +3161,7 @@ let jumpHeld = false
 let crouchKey = false
 let crouchOn = false
 let mouseLeft = false
+let leftDown = false
 let mouseRight = false
 let rightPress = null
 let placeHoldAt = 0
@@ -3240,17 +3316,22 @@ function clampGate(dig, now) {
   return true
 }
 function beginDig(kind) {
+  const seen = cropOnLook()
   const tget = noa.targetedBlock
-  if (!tget) {
+  if (!seen && !tget) {
     dig = null
     hideCrack()
     if (survivalOn() && !tableMode) breakMiss()
     return
   }
-  const [x, y, z] = tget.position
+  const x = seen ? seen.x : tget.position[0]
+  const y = seen ? seen.y : tget.position[1]
+  const z = seen ? seen.z : tget.position[2]
   const id = getVoxel(x, y, z)
-  const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
   const now = performance.now()
+  const grown = cropDig(kind, x, y, z, id, now)
+  if (grown) { dig = grown; return }
+  const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
   if (dig && !dig.broke && dig.x === x && dig.y === y && dig.z === z && dig.p > 0) {
     dig.kind = kind
     dig.draining = false
@@ -3259,6 +3340,56 @@ function beginDig(kind) {
     return
   }
   dig = { kind, x, y, z, id, name, t0: now, need: mineMs(name, survivalOn(), kind === 'touch', heldTool()), broke: false, p: 0, stage: 0 }
+}
+function cropOnLook() {
+  if (!survivalOn() || tableMode || !noa.camera) return null
+  const pos = noa.entities.getPosition(noa.playerEntity)
+  const h = noa.camera.heading
+  const pitch = noa.camera.pitch
+  const cp = Math.cos(pitch)
+  const dir = [cp * Math.sin(h), -Math.sin(pitch), cp * Math.cos(h)]
+  const reach = reachFor(true)
+  let prev = ''
+  for (let t = 0.2; t <= reach; t += 0.2) {
+    const x = Math.floor(pos[0] + dir[0] * t)
+    const y = Math.floor(pos[1] + 1.62 + dir[1] * t)
+    const z = Math.floor(pos[2] + dir[2] * t)
+    const key = x + ',' + y + ',' + z
+    if (key === prev) continue
+    prev = key
+    const id = getVoxel(x, y, z)
+    if (!id || id === WATER) continue
+    if (isCropId(id) || isBushId(id)) {
+      if (!canReach([x, y, z])) return null
+      return { x, y, z, id }
+    }
+    if (noa.registry.getBlockSolidity(id)) return null
+  }
+  return null
+}
+let stuckSince = 0
+let stuckTold = false
+let stuckClear = 0
+function airish(id) {
+  if (!id || id === WATER) return true
+  if (isCropId(id) || isBushId(id)) return true
+  if (id === ID.wheat || id === ID.tuft || id === ID.reed || id === ID.sapling) return true
+  return false
+}
+function boxedIn() {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const x = Math.floor(p[0])
+  const y = Math.floor(p[1])
+  const z = Math.floor(p[2])
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  for (let i = 0; i < dirs.length; i++) {
+    const nx = x + dirs[i][0]
+    const nz = z + dirs[i][1]
+    if (airish(getVoxel(nx, y, nz)) && airish(getVoxel(nx, y + 1, nz)) && !airish(getVoxel(nx, y - 1, nz))) return false
+    if (airish(getVoxel(nx, y, nz)) && airish(getVoxel(nx, y + 1, nz)) && airish(getVoxel(nx, y - 1, nz)) && !airish(getVoxel(nx, y - 2, nz))) return false
+    if (!airish(getVoxel(nx, y, nz)) && airish(getVoxel(nx, y + 1, nz)) && airish(getVoxel(nx, y + 2, nz))) return false
+  }
+  return true
 }
 function feelTick(dt) {
   if (basics) basics.tick()
@@ -3272,6 +3403,17 @@ function feelTick(dt) {
   }
   const grounded = body.atRestY() < 0
   if (grounded) lastGroundAt = performance.now()
+  if (survivalOn() && !flying && !tableMode && grounded && Math.abs(body.velocity[1]) < 1 && boxedIn()) {
+    stuckClear = 0
+    if (!stuckSince) stuckSince = performance.now()
+    else if (!stuckTold && performance.now() - stuckSince >= 5000) {
+      stuckTold = true
+      toast(t('stuckStep'))
+    }
+  } else if (!stuckTold) {
+    if (!stuckClear) stuckClear = performance.now()
+    else if (performance.now() - stuckClear > 400) stuckSince = 0
+  }
   const want = !!(noa.inputs.state.jump || jumpHeld)
   const now = performance.now()
   if (want && !prevJumpWant && !flying && !tableMode) {
@@ -3329,7 +3471,8 @@ function feelTick(dt) {
     mouseRight = false
     try { noa.inputs.state.fire = false } catch (e) {}
   }
-  const breaking = !!(noa.inputs.state.fire || mouseLeft)
+  const breaking = !!(noa.inputs.state.fire || mouseLeft || leftDown)
+  if (!breaking) sweep = null
   const touchLook = !!(look && look.pt === 'touch')
   if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) beginDig('mouse')
   if (sheetOpen) mouseRight = false
@@ -3379,9 +3522,14 @@ function feelTick(dt) {
     if (breaking && !doorAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
+    const seen = breaking ? cropOnLook() : null
     const tget = noa.targetedBlock
-    const same = !!(tget && tget.position[0] === dig.x && tget.position[1] === dig.y && tget.position[2] === dig.z)
-    if (breaking && tget && !same) beginDig('mouse')
+    const ax = seen ? seen.x : tget && tget.position[0]
+    const ay = seen ? seen.y : tget && tget.position[1]
+    const az = seen ? seen.z : tget && tget.position[2]
+    const aimed = !!(seen || tget)
+    const same = !!(aimed && ax === dig.x && ay === dig.y && az === dig.z)
+    if (breaking && aimed && !same) beginDig('mouse')
     else if (!breaking && !same) { dig = null; hideCrack() }
     else {
       const next = advanceDig(dig, now, breaking, true)
@@ -3393,7 +3541,7 @@ function feelTick(dt) {
         if (crackVisible(dig.draining ? 250 : elapsed, dig.p)) showCrack(dig.p)
         else hideCrack()
         if (!blocked && !dig.draining && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
-        if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) { dig.broke = true; breakAt(dig.x, dig.y, dig.z); hideCrack(); puff() }
+        if (!blocked && !dig.draining && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) { dig.broke = true; breakAt(dig.x, dig.y, dig.z, true); hideCrack(); puff() }
       }
     }
   } else if (dig && dig.kind === 'touch') {
@@ -3407,7 +3555,7 @@ function feelTick(dt) {
       else hideCrack()
       if (!blocked && survivalOn() && elapsed >= 2000 && !dig.hinted && heldTool() !== 'stone') { dig.hinted = true; toast(t(heldTool() === 'wood' ? 'stoneFaster' : 'toolFaster')) }
       if (!blocked && dig.p >= 1 && !dig.broke && useHoldReady(dig, now)) {
-        breakAt(dig.x, dig.y, dig.z)
+        breakAt(dig.x, dig.y, dig.z, true)
         dig.broke = true
         puff()
         dig.t0 = now
@@ -3548,22 +3696,29 @@ function targetHit() {
 }
 canvas.addEventListener('pointerdown', (e) => {
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
-  if (e.button === 0 || e.button < 0) mouseLeft = true
+  if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
   lastPointer = { x: e.clientX, y: e.clientY }
   const finger = look.pt === 'touch'
-  const hit = finger ? rayAt(e.clientX, e.clientY) : targetHit()
+  const seen = finger ? null : cropOnLook()
+  const hit = seen
+    ? { id: seen.id, blockID: seen.id, position: [seen.x, seen.y, seen.z], adjacent: [seen.x, seen.y + 1, seen.z] }
+    : (finger ? rayAt(e.clientX, e.clientY, true) : targetHit())
   if (hit && finger && !tableMode && !canReach(hit.position)) {
     farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
     dig = null
     hideCrack()
   } else if (hit) {
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
-    const need = isGear(hit.id) ? 1e9 : mineMs(name, survivalOn(), finger, heldTool())
-    const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
-    const kept = same ? dig.p : 0
-    dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
+    const grown = cropDig(finger ? 'touch' : 'mouse', hit.position[0], hit.position[1], hit.position[2], hit.id, performance.now())
+    if (grown) dig = grown
+    else {
+      const need = isGear(hit.id) ? 1e9 : mineMs(name, survivalOn(), finger, heldTool())
+      const same = dig && !dig.broke && dig.x === hit.position[0] && dig.y === hit.position[1] && dig.z === hit.position[2] && dig.p > 0
+      const kept = same ? dig.p : 0
+      dig = { kind: finger ? 'touch' : 'mouse', x: hit.position[0], y: hit.position[1], z: hit.position[2], id: hit.id, name, t0: performance.now() - kept * need, need, broke: false, face: hit, p: kept }
+    }
   } else {
     dig = null
     if (!finger && survivalOn()) breakMiss()
@@ -3605,7 +3760,11 @@ canvas.addEventListener('pointermove', (e) => {
 })
 canvas.addEventListener('pointerup', (e) => {
   releaseFar()
-  if (e.button === 0 || e.button < 0) mouseLeft = false
+  if (e.button === 0 || e.button < 0) { mouseLeft = false; leftDown = false }
+  if ((e.button === 0 || e.button < 0) && dig && !dig.broke && (isCropId(dig.id) || isBushId(dig.id)) && !fruitingAt(dig.x, dig.y, dig.z, getVoxel(dig.x, dig.y, dig.z))) {
+    dig = null
+    hideCrack()
+  }
   if (swallowing()) { look = null; dig = null; hideCrack(); return }
   if (!look || e.pointerId !== look.id) return
   const moved = look.moved
@@ -3657,13 +3816,14 @@ canvas.addEventListener('pointerup', (e) => {
     const spot = (upHit && upHit.position) ? upHit : face
     if (spot) { placeBlock(spot); return }
   }
-  if (held < 500 && !broke && canUse(down, up, moved, false) && !breakTap) placeBlock(upHit || face)
+  const cropAim = down && (isCropId(down.id) || isBushId(down.id))
+  if (held < 500 && !broke && canUse(down, up, moved, false) && !breakTap && !cropAim) placeBlock(upHit || face)
   if (breakTap && canUse(down, up, moved, false) && !holdHinted) {
     holdHinted = true
     toast(t('holdToBreak'))
   }
 })
-canvas.addEventListener('pointercancel', () => { look = null; dig = null; hideCrack(); farHit = null; releaseFar() })
+canvas.addEventListener('pointercancel', () => { look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (eatResume(e)) return
@@ -3731,7 +3891,7 @@ function finishRight(e) {
 }
 window.addEventListener('pointerup', (e) => {
   releaseFar()
-  if (e.button === 0) mouseLeft = false
+  if (e.button === 0) { mouseLeft = false; leftDown = false }
   if (e.button === 2) finishRight(e)
 }, true)
 window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false; releaseFar() })

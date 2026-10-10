@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.111', date: '2026-10-09', lines: {
+    en: ['Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start.'],
+    uk: ['Лівий клік теж збирає стиглі культури, і біля старту більше не застрягнеш у ямі.'],
+    ru: ['Левый клик тоже собирает спелые культуры, и у старта больше не застрянешь в яме.'],
+    es: ['El clic izquierdo también cosecha lo maduro, y ya no te quedas atrapado en hoyos cerca del inicio.'],
+    ar: ['النقر الأيسر يحصد الزرع الناضج أيضاً، ولن تعلق في حفرة قرب البداية.'],
+    'fa-AF': ['کلیک چپ کشت رسیده را هم برمی‌دارد، و دیگر نزدیک آغاز در چاله گیر نمی‌کنی.'],
+    rw: ['Ikikubitswe ibumoso naso gisarura ibyibye, kandi ntukibura mu mwobo hafi y\'intangiriro.'],
+    ti: ['ጸጋማይ ጠውቕ ዝበስለ እኽሊ እውን ይእክብ፡ ኣብ መጀመርታ ድማ ኣብ ጉድጓድ ኣይትሕጸን።'],
+  }},
   { v: '2.5.110', date: '2026-10-09', lines: {
     en: ['Wild berry bushes grow back after you pick them, and wild wheat returns.'],
     uk: ['Дикі ягідні кущі виростають знову після збору, і дика пшениця повертається.'],

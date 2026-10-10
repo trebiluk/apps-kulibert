@@ -357,3 +357,134 @@ export function rescueSpots(seed = 1) {
   }
   return out
 }
+
+// Spawn smoothing. New worlds only: the generator asks spawnGround.
+// Saved chunks never call it. Within 40 of Survival spawn, a pit 2 or more
+// deep with no 1-block step within a short walk gets one stair on its lowest
+// side. Town, ponds, and trunks stay where they are.
+const SMOOTH_R = 40
+const STEP_NEAR = 4
+let smoothCache = null
+
+function rawColumn(x, z) {
+  if (x >= -20 && x <= 36 && z >= -18 && z <= 28) return 4
+  return groundY(x, z)
+}
+
+function columnWet(x, z) {
+  const h = rawColumn(x, z)
+  return pondHere(x, h, z) || pondHere(x, h - 1, z) || shoreLow(x, h, z)
+}
+
+function columnTrunk(x, z) {
+  const h = groundY(x, z)
+  const plant = plantHere(x, h + 1, z, h, false)
+  if (plant === 'log' || plant === 'stone' || plant === 'sand') return true
+  return wildWood(x, h + 1, z) === 'log'
+}
+
+function buildSmooth() {
+  const map = new Map()
+  const skip = new Set()
+  const H = (x, z) => {
+    const k = x + ',' + z
+    return map.has(k) ? map.get(k) : rawColumn(x, z)
+  }
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  const sx = 8.5
+  const sz = 1.5
+  const near = (x, z) => {
+    const dx = x + 0.5 - sx
+    const dz = z + 0.5 - sz
+    return dx * dx + dz * dz <= SMOOTH_R * SMOOTH_R
+  }
+  function climbDist(x, z) {
+    const start = H(x, z)
+    const seen = new Set([x + ',' + z])
+    const q = [[x, z, 0]]
+    while (q.length) {
+      const [cx, cz, dist] = q.shift()
+      const ch = H(cx, cz)
+      for (let i = 0; i < dirs.length; i++) {
+        const nx = cx + dirs[i][0]
+        const nz = cz + dirs[i][1]
+        const nh = H(nx, nz)
+        if (nh > start && nh <= ch + 1) return dist + 1
+        if (dist >= 12 || nh > ch + 1) continue
+        const k = nx + ',' + nz
+        if (seen.has(k)) continue
+        seen.add(k)
+        q.push([nx, nz, dist + 1])
+      }
+    }
+    return 99
+  }
+  function lowestRim(x, z) {
+    const h = H(x, z)
+    let best = null
+    for (let i = 0; i < dirs.length; i++) {
+      const nx = x + dirs[i][0]
+      const nz = z + dirs[i][1]
+      const nh = H(nx, nz)
+      if (nh < h + 2) continue
+      const d = Math.hypot(nx + 0.5 - sx, nz + 0.5 - sz)
+      if (!best || nh < best.nh || (nh === best.nh && d < best.d)) best = { nh, dx: dirs[i][0], dz: dirs[i][1], d }
+    }
+    return best
+  }
+  function layStair(x, z) {
+    const rim = lowestRim(x, z)
+    if (!rim) return false
+    let cx = x
+    let cz = z
+    let want = rim.nh - 1
+    let laid = false
+    for (let n = 0; n < 6 && want >= 0; n++) {
+      const inTown = cx >= -20 && cx <= 36 && cz >= -18 && cz <= 28
+      if (inTown || columnWet(cx, cz)) {
+        if (n === 0) return false
+        break
+      }
+      if (columnTrunk(cx, cz)) {
+        if (n === 0) return false
+        break
+      }
+      const cur = H(cx, cz)
+      if (cur > want) break
+      if (cur < want) {
+        map.set(cx + ',' + cz, want)
+        laid = true
+      } else break
+      cx -= rim.dx
+      cz -= rim.dz
+      want -= 1
+    }
+    return laid
+  }
+  for (let guard = 0; guard < 24; guard++) {
+    let pick = null
+    for (let x = Math.floor(sx - SMOOTH_R); x <= Math.ceil(sx + SMOOTH_R); x++) {
+      for (let z = Math.floor(sz - SMOOTH_R); z <= Math.ceil(sz + SMOOTH_R); z++) {
+        if (!near(x, z) || skip.has(x + ',' + z)) continue
+        if (x >= -20 && x <= 36 && z >= -18 && z <= 28) continue
+        if (!lowestRim(x, z)) continue
+        const dist = climbDist(x, z)
+        if (dist <= STEP_NEAR) continue
+        const rim = lowestRim(x, z)
+        const spawnD = Math.hypot(x + 0.5 - sx, z + 0.5 - sz)
+        const cand = { x, z, dist, rim: rim.nh, spawnD }
+        if (!pick || cand.dist > pick.dist || (cand.dist === pick.dist && (cand.rim < pick.rim || (cand.rim === pick.rim && cand.spawnD < pick.spawnD)))) pick = cand
+      }
+    }
+    if (!pick) break
+    if (!layStair(pick.x, pick.z)) skip.add(pick.x + ',' + pick.z)
+  }
+  return map
+}
+
+export function spawnGround(x, z) {
+  if (x >= -20 && x <= 36 && z >= -18 && z <= 28) return 4
+  if (!smoothCache) smoothCache = buildSmooth()
+  const v = smoothCache.get((x | 0) + ',' + (z | 0))
+  return v == null ? groundY(x, z) : v
+}

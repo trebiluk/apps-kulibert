@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.110 Wild berry bushes grow back after you pick them, and wild wheat returns).
+Updated Fri Oct 9 2026 (Build: 2.5.111 Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start).
 
+- [x] **2.5.111 Left-click harvest and spawn steps:** Left-click on ripe wheat harvests, pops, and replants. A quick tap on a growing crop only shows "Not ripe yet - hold to break it". Holding break drops 1 seed. A fruiting Berry Bush picks on left-click and stays. Dips near spawn have a 1-block step.
 - [x] **2.5.110 Foraging:** Wild berry bushes in plains and forest. Pick a ripe one for 1 or 2 Berries, it shows bare branches and fruits again in 3 minutes. Breaking it gives 1 or 2 Berries and sometimes a Bush Sprout. Wild wheat still drops wheat and seeds, then grows back on that grass after 10 minutes unless you build there.
 - [x] **2.5.109 Berry Bush:** Hold a Bush Sprout and tap grass or dirt. The bush grows, a ripe one gives 2 or 3 Berries and stays, and breaking it gives the Sprout back. Farmland, water and stone say why they will not take it.
 - [x] **2.5.108 True Oven and Bag clicks:** A short stack says what is missing ("Bread needs 2 Flour. Add 1 more."). Wheat says it becomes Flour at the Workbench first and bounces, unused. Dirt still cannot be baked. Oven tiles name the real ingredient. The Bag ignores item clicks until its slide finishes.

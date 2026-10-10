@@ -196,7 +196,9 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Wild berry bushes grow back after you pick them, and wild wheat returns.',
+    whatsNewBody: 'Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start.',
+    notRipeHold: 'Not ripe yet - hold to break it',
+    stuckStep: 'Stuck? Dig a step or place a block to climb out.',
     bagHint: 'Press E (or Esc, then click Bag) to open your Bag.',
     inPockets: '{item} went to your Bag pockets.',
     eatTip: 'Right-click or press F to eat.',
@@ -251,7 +253,9 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Дикі ягідні кущі виростають знову після збору, і дика пшениця повертається.',
+    whatsNewBody: 'Лівий клік теж збирає стиглі культури, і біля старту більше не застрягнеш у ямі.',
+    notRipeHold: 'Ще не стигле — тримай, щоб зламати.',
+    stuckStep: 'Застряг? Прокопай сходинку або постав блок, щоб вилізти.',
     bagHint: 'Натисни E (або Esc, потім клік Сумка), щоб відкрити сумку.',
     inPockets: '{item} пішов у кишені сумки.',
     eatTip: 'Правий клік або клавіша F — зʼїсти.',
@@ -306,7 +310,9 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Дикие ягодные кусты вырастают снова после сбора, и дикая пшеница возвращается.',
+    whatsNewBody: 'Левый клик тоже собирает спелые культуры, и у старта больше не застрянешь в яме.',
+    notRipeHold: 'Ещё не спелое — держи, чтобы сломать.',
+    stuckStep: 'Застрял? Прокопай ступеньку или поставь блок, чтобы вылезти.',
     bagHint: 'Нажми E (или Esc, потом клик Сумка), чтобы открыть сумку.',
     inPockets: '{item} ушёл в карманы сумки.',
     eatTip: 'Правый клик или клавиша F — съесть.',
@@ -361,7 +367,9 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Los arbustos de bayas silvestres vuelven a crecer al recogerlos, y el trigo silvestre regresa.',
+    whatsNewBody: 'El clic izquierdo también cosecha lo maduro, y ya no te quedas atrapado en hoyos cerca del inicio.',
+    notRipeHold: 'Aún no está maduro: mantén para romperlo.',
+    stuckStep: '¿Atrapado? Cava un escalón o pon un bloque para salir.',
     bagHint: 'Pulsa E (o Esc y luego Bolsa) para abrir tu Bolsa.',
     inPockets: '{item} fue a los bolsillos de la bolsa.',
     eatTip: 'Clic derecho o F para comer.',
@@ -416,7 +424,9 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'شجيرات التوت البرية تنمو من جديد بعد قطفها، والقمح البري يعود.',
+    whatsNewBody: 'النقر الأيسر يحصد الزرع الناضج أيضاً، ولن تعلق في حفرة قرب البداية.',
+    notRipeHold: 'لم ينضج بعد — اضغط مطولاً لكسره.',
+    stuckStep: 'عالِق؟ احفر درجة أو ضع مكعباً لتتسلق للخارج.',
     bagHint: 'اضغط E (أو Esc ثم الحقيبة) لفتح حقيبتك.',
     inPockets: '{item} ذهب إلى جيوب الحقيبة.',
     eatTip: 'انقر باليمين أو اضغط F لتأكل.',
@@ -471,7 +481,9 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'بوته‌های توت وحشی پس از چیدن دوباره می‌رویند، و گندم وحشی برمی‌گردد.',
+    whatsNewBody: 'کلیک چپ کشت رسیده را هم برمی‌دارد، و دیگر نزدیک آغاز در چاله گیر نمی‌کنی.',
+    notRipeHold: 'هنوز نرسیده — برای شکستن نگه دار.',
+    stuckStep: 'گیر کردی؟ یک پله بکن یا بلاک بگذار تا بالا بیایی.',
     bagHint: 'E را بزن (یا Esc، بعد بکس) تا بکس باز شود.',
     inPockets: '{item} به جیب‌های بکس رفت.',
     eatTip: 'کلیک راست یا F را بزن تا بخوری.',
@@ -526,7 +538,9 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ibiti by\'imbuto by\'ahantu bikura nanone nyuma yo gusarura, n\'ingano y\'ahantu igaruka.',
+    whatsNewBody: 'Ikikubitswe ibumoso naso gisarura ibyibye, kandi ntukibura mu mwobo hafi y\'intangiriro.',
+    notRipeHold: 'Ntirikwira — fata kugira ngo uvunagure.',
+    stuckStep: 'Wafashwe? Yimba urutambike cyangwa shyira block winjire hejuru.',
     bagHint: 'Kanda E (cyangwa Esc, hanyuma Agasaho) ufungure agasaho.',
     inPockets: '{item} yagiye mu mifuka y\'agasaho.',
     eatTip: 'Kanda iburyo cyangwa F urye.',
@@ -581,7 +595,9 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ናይ ዱር ቁጽሪ ፍረ ምስ ተለቐቐ ዳግማይ ይበቕል፡ ናይ ዱር ስርናይ ድማ ይምለስ።',
+    whatsNewBody: 'ጸጋማይ ጠውቕ ዝበስለ እኽሊ እውን ይእክብ፡ ኣብ መጀመርታ ድማ ኣብ ጉድጓድ ኣይትሕጸን።',
+    notRipeHold: 'ገና ኣይበስለን — ሓዝ ንምስባር።',
+    stuckStep: 'ተሓጺንካ? ስጉምቲ ጉድጓድ ወይ ብሎክ ኣቐምጥ ንምውጻእ።',
     bagHint: 'E ጠውቕ (ወይ Esc፡ ድሕሪኡ ቦርሳ) ቦርሳኻ ንምኽፋት።',
     inPockets: '{item} ናብ ጁባ ቦርሳኻ ከይዱ።',
     eatTip: 'የማናይ ጠውቕ ወይ F ጠውቕ ንምብላዕ።',
