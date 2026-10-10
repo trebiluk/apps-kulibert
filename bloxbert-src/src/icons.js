@@ -1,10 +1,11 @@
 // One picture per block. A few items draw their own face so they don't share one wood tile.
 import { ITEMS } from './data/items.js'
 const PNG = { glass: 'assets/glass.png', coreplate: 'assets/tile-coreplate.png', workbench: 'assets/tile-workbench.png', oven: 'assets/tile-oven.png', vend: 'assets/tile-vend.png', store: 'assets/tile-store.png', bunk: 'assets/tile-bunk.png' }
+const READ2D = { willReadFrequently: true }
 function glyph(paint) {
   const c = document.createElement('canvas')
   c.width = c.height = 48
-  const g = c.getContext('2d')
+  const g = c.getContext('2d', READ2D)
   g.lineJoin = 'round'
   g.lineCap = 'round'
   paint(g)
@@ -275,11 +276,12 @@ export function blockIcon(block, atlas) {
   c.width = 48
   c.height = 48
   c.dataset.block = String(block[0])
+  c.getContext('2d', READ2D)
   const tex = block[4] || (Array.isArray(block[2]) ? block[2][2] : block[2])
   const img = new Image()
   img.src = PNG[tex] || 'assets/atlas.png'
   img.onload = () => {
-    const ctx = c.getContext('2d')
+    const ctx = c.getContext('2d', READ2D)
     if (PNG[tex]) ctx.drawImage(img, 8, 8, 32, 32)
     else {
       const y = (atlas[tex] || 0) * 32
@@ -312,7 +314,7 @@ function letterTile(letter) {
   c.width = c.height = 48
   c.className = 'letter-tile'
   c.dataset.letter = String(letter || '?').slice(0, 2)
-  const g = c.getContext('2d')
+  const g = c.getContext('2d', READ2D)
   g.fillStyle = '#3A4450'
   g.fillRect(6, 6, 36, 36)
   g.strokeStyle = '#C5D0D6'

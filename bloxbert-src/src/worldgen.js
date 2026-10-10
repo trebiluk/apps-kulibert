@@ -212,6 +212,31 @@ export function pondHere(x, y, z, seed = 1) {
   return false
 }
 
+// The side of a new pond that faces spawn. One grass row steps down 1 block
+// so a kid walks to the water instead of meeting a 2-high bank. Old saves
+// never call this: their chunks are already stored, and rescue ponds stay flat.
+function beachColumn(p, x, z) {
+  const cx = p.x + (p.w - 1) / 2
+  const cz = p.z + (p.w - 1) / 2
+  const dx = POND_SPAWN[0] - cx
+  const dz = POND_SPAWN[1] - cz
+  if (Math.abs(dx) >= Math.abs(dz)) {
+    const sx = dx >= 0 ? p.x + p.w : p.x - 1
+    return x === sx && z >= p.z && z < p.z + p.w
+  }
+  const sz = dz >= 0 ? p.z + p.w : p.z - 1
+  return z === sz && x >= p.x && x < p.x + p.w
+}
+
+export function shoreLow(x, y, z, seed = 1) {
+  const ponds = starterPonds(seed)
+  let on = false
+  for (let i = 0; i < ponds.length && !on; i++) on = beachColumn(ponds[i], x, z)
+  if (!on) return false
+  const h = surfaceY(x, z)
+  return y === h || y === h + 1 || y === h + 2
+}
+
 // 4x4 rescue spots for an old save that has no water yet. Same seed, same order.
 export function rescueSpots(seed = 1) {
   const s = seed | 0

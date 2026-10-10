@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.105'
+const VERSION = '2.5.106'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -29,12 +29,12 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
-import { blockIcon, dropperIcon, slotArt } from './icons.js'
+import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, rescueSpots, starterPonds, surfaceY } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -291,7 +291,7 @@ function paintTallDoor(kind) {
   const c = document.createElement('canvas')
   c.width = 64
   c.height = 128
-  const g = c.getContext('2d')
+  const g = c.getContext('2d', { willReadFrequently: true })
   const wood = kind === 'wood'
   const glass = kind === 'glass'
   const metal = kind === 'metal'
@@ -331,8 +331,15 @@ function paintTallDoor(kind) {
   g.beginPath(); g.arc(46, 78, 2.2, 0, Math.PI * 2); g.fill()
   return c
 }
+function readCanvas(w, h) {
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+  c.getContext('2d', { willReadFrequently: true })
+  return c
+}
 function doorHalfTex(name, src, top, alpha) {
-  const tex = new DynamicTexture(name, { width: 64, height: 64 }, shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
+  const tex = new DynamicTexture(name, readCanvas(64, 64), shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
   tex.hasAlpha = !!alpha
   const ctx = tex.getContext()
   ctx.clearRect(0, 0, 64, 64)
@@ -408,7 +415,7 @@ function crateFaceURL() {
   const c = document.createElement('canvas')
   c.width = 32
   c.height = 32
-  const g = c.getContext('2d')
+  const g = c.getContext('2d', { willReadFrequently: true })
   g.fillStyle = '#d2b48c'
   g.fillRect(0, 0, 32, 32)
   g.strokeStyle = '#5c3a1e'
@@ -654,6 +661,7 @@ function genVoxel(x, y, z) {
   if (y < -64) return 0
   if (pondHere(x, y, z)) return ID.water
   if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return 0
+  if (shoreLow(x, y, z)) return 0
   if (inTown(x, z)) return townVoxel(x, y, z)
   const h = heightAt(x, z)
   if (y > h) {
@@ -1100,6 +1108,50 @@ function showCropCard(x, y, z) {
   showCard(cropText(row))
 }
 let harvestStroke = null
+function cropScreen(x, y, z) {
+  try {
+    const lp = noa.globalToLocal([x + 0.5, y + 1.15, z + 0.5], null, [0, 0, 0])
+    const sc = noa.rendering.getScene()
+    const eng = sc.getEngine()
+    const cam = sc.activeCamera
+    const vw = eng.getRenderWidth()
+    const vh = eng.getRenderHeight()
+    const viewport = cam.viewport.toGlobal(vw, vh)
+    const p = Vector3.Project(new Vector3(lp[0], lp[1], lp[2]), Matrix.Identity(), sc.getTransformMatrix(), viewport)
+    const canvas = document.querySelector('#stage canvas')
+    const r = canvas.getBoundingClientRect()
+    if (p.z < 0 || p.z > 1) return null
+    return { x: r.left + (p.x / vw) * r.width, y: r.top + (p.y / vh) * r.height }
+  } catch (e) { return null }
+}
+function popHarvest(x, y, z, got) {
+  const at = cropScreen(x, y, z) || { x: window.innerWidth / 2, y: window.innerHeight * 0.45 }
+  const node = document.createElement('div')
+  node.dataset.harvestPop = '1'
+  node.style.cssText = 'position:fixed;z-index:70;left:0;top:0;pointer-events:none;display:flex;align-items:center;gap:6px;font:700 18px/1.2 sans-serif;color:#fffdf6;text-shadow:0 1px 2px #142033;white-space:nowrap'
+  const icon = (svg) => {
+    const s = document.createElement('span')
+    s.style.cssText = 'width:28px;height:28px;display:inline-flex'
+    s.innerHTML = svg
+    const el = s.querySelector('svg')
+    if (el) { el.setAttribute('width', '28'); el.setAttribute('height', '28') }
+    return s
+  }
+  const wheatSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22 V9" stroke="#c9922a" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="12" cy="7" rx="2.4" ry="3.2" fill="#f6c453"/><ellipse cx="8.2" cy="11" rx="2" ry="2.8" fill="#e6b422"/><ellipse cx="15.8" cy="11" rx="2" ry="2.8" fill="#e6b422"/></svg>'
+  const counts = '+' + got.wheat + ' ' + t('wheat') + ' +' + got.seeds + ' ' + t('wheatSeeds')
+  const label = document.createElement('span')
+  label.dataset.harvestCounts = counts
+  label.textContent = counts
+  node.append(icon(wheatSvg), icon(itemSvg('wheatSeeds')), label)
+  node.style.left = at.x + 'px'
+  node.style.top = at.y + 'px'
+  document.body.append(node)
+  node.animate([
+    { transform: 'translate(-50%, -8px)', opacity: 1 },
+    { transform: 'translate(-50%, -76px)', opacity: 0 },
+  ], { duration: 600, easing: 'ease-out', fill: 'forwards' })
+  setTimeout(() => node.remove(), 650)
+}
 function harvestCrop(x, y, z) {
   const hadSeed = session.bag.count('wheatSeeds') > 0
   const got = harvestCounts(x, y, z)
@@ -1107,6 +1159,7 @@ function harvestCrop(x, y, z) {
   const seed0 = session.bag.count('wheatSeeds')
   session.give('wheat', got.wheat)
   session.give('wheatSeeds', got.seeds)
+  popHarvest(x, y, z, got)
   const overflow = session.bag.count('wheat') - wheat0 < got.wheat || session.bag.count('wheatSeeds') - seed0 < got.seeds
   let replanted = false
   if (hadSeed && session.spend('wheatSeeds', 1)) {
@@ -1257,10 +1310,24 @@ noa.inputs.down.on('fire', () => {
     dig = { kind: 'mouse', creative: true, t0: performance.now(), id: aimed ? aimed.blockID : 0, x: aimed ? aimed.position[0] : 0, y: aimed ? aimed.position[1] : 0, z: aimed ? aimed.position[2] : 0 }
   }
 })
+let ateClickAt = 0
+function tryEatClick(aimed) {
+  if (!survivalOn() || !session || !session.isFood || !session.selectedItem) return false
+  const item = session.selectedItem()
+  if (!session.isFood(item)) return false
+  const id = aimed ? (aimed.blockID != null ? aimed.blockID : aimed.id) : 0
+  if (id && (isUseBlock(id) || isCropId(id))) return false
+  const now = performance.now()
+  if (now - ateClickAt < 140) return true
+  ateClickAt = now
+  useSelected()
+  return true
+}
 noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
   if (anyCard() || tableMode || rightPress || !noa.container.hasPointerLock) return
   const tget = noa.targetedBlock
+  if (tryEatClick(tget)) return
   if (tget && isUseBlock(tget.blockID)) return
   placeBlock()
   if (!TOUCH_UI) { mouseRight = true; placeHoldAt = performance.now() }
@@ -3273,6 +3340,11 @@ window.addEventListener('pointerdown', (e) => {
   const world = noa.container.element
   if (!world || (e.target !== canvas && e.target !== world && !world.contains(e.target))) return
   const snap = targetHit()
+  if (tryEatClick(snap)) {
+    mouseRight = false
+    rightPress = null
+    return
+  }
   const interactive = !!(snap && isUseBlock(snap.blockID))
   rightPress = {
     id: snap ? snap.blockID : null,
@@ -3340,7 +3412,11 @@ for (const el of document.querySelectorAll('[data-hold]')) {
   el.addEventListener('pointerdown', on); el.addEventListener('pointerup', off)
   el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off)
 }
-$('t-place').addEventListener('click', placeBlock)
+$('t-place').addEventListener('click', () => {
+  const aimed = noa.targetedBlock || targetHit()
+  if (tryEatClick(aimed)) return
+  placeBlock()
+})
 $('t-break').addEventListener('click', breakBlock)
 $('table-place').addEventListener('click', placeBlock)
 function paintPick() {
@@ -3477,7 +3553,7 @@ for (let i = 0; i < 6; i++) {
 }
 const glowMeshes = new Map()
 const glowLocal = [0, 0, 0]
-const poolTex = new DynamicTexture('lamp-pool', 64, scene, false)
+const poolTex = new DynamicTexture('lamp-pool', readCanvas(64, 64), scene, false)
 poolTex.hasAlpha = true
 {
   const ctx = poolTex.getContext()

@@ -335,6 +335,14 @@ export function createSession(api) {
     bagBtn.innerHTML = '<span class="gic"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M8 9.2V8a4 4 0 0 1 8 0v1.2" fill="none" stroke="#E6EEF2" stroke-width="1.6" stroke-linecap="round"/><path d="M6.2 9.2h11.6l-1 11.2H7.2z" fill="#1F8A8A" stroke="#E6EEF2" stroke-width="1.4"/><path d="M9 13.2h6" stroke="#E6EEF2" stroke-width="1.3" stroke-linecap="round"/></svg></span><span class="lbl"></span>'
     bagBtn.querySelector('.lbl').textContent = t('bag')
     bagBtn.setAttribute('aria-label', t('bag'))
+    if (pocketDot) {
+      const dot = document.createElement('span')
+      dot.dataset.bagDot = '1'
+      dot.setAttribute('aria-hidden', 'true')
+      dot.style.cssText = 'position:absolute;top:4px;right:4px;width:10px;height:10px;border-radius:50%;background:#f6c453;box-shadow:0 0 0 2px #1a1206;pointer-events:none'
+      bagBtn.style.position = 'relative'
+      bagBtn.append(dot)
+    }
     bagBtn.addEventListener('pointerdown', (e) => e.stopPropagation())
     bagBtn.addEventListener('click', () => {
       const sheet = document.getElementById('sheet')
@@ -345,9 +353,12 @@ export function createSession(api) {
     const held = bag.slots[hot]
     const label = document.getElementById('current')
     if (label) label.textContent = held ? itemName(held.item) : t('emptySlot')
+    const useBtn = document.getElementById('t-place')
+    if (useBtn) useBtn.textContent = held && isFoodItem(held.item) ? t('useFood') : t('place')
     const nameKey = held ? held.item : ''
     if (nameKey !== paintHotbar.nameKey) {
       paintHotbar.nameKey = nameKey
+      if (nameKey && isFoodItem(nameKey)) sayEatTip()
       if (nameKey && api.flash) api.flash(itemName(nameKey))
       else {
         const chip = document.getElementById('held-chip')
@@ -360,6 +371,14 @@ export function createSession(api) {
     return bag.slots[hot] && bag.slots[hot].item
   }
   const EDIBLE = ['berry', 'bread', 'cupcake']
+  function isFoodItem(item) {
+    return !!(item && (FEED[item] || EDIBLE.includes(item)))
+  }
+  function sayEatTip() {
+    try { if (localStorage.getItem('bloxbert-eat-tip') === '1') return } catch (e) { return }
+    try { localStorage.setItem('bloxbert-eat-tip', '1') } catch (e) {}
+    api.toast(t('eatTip'))
+  }
   function useHeld() {
     const item = selectedItem()
     if (!item) return ''
@@ -607,7 +626,7 @@ export function createSession(api) {
   }
   function canvasHasInk(canvas) {
     try {
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })
       if (!ctx || canvas.width < 2 || canvas.height < 2) return false
       const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data
       for (let i = 3; i < data.length; i += 16) if (data[i] > 8) return true
@@ -631,7 +650,7 @@ export function createSession(api) {
       next.width = side
       next.height = side
       if (c.dataset && c.dataset.block) next.dataset.block = c.dataset.block
-      const g = next.getContext('2d')
+      const g = next.getContext('2d', { willReadFrequently: true })
       g.imageSmoothingEnabled = false
       g.drawImage(c, 0, 0, side, side)
       show(next)
@@ -668,6 +687,7 @@ export function createSession(api) {
     return s
   }
   function paintBag(g) {
+    clearPocketDot()
     const title = document.getElementById('sheet-title')
     g.classList.add('baggrid')
     if (mode !== 'survival') {
@@ -1289,21 +1309,22 @@ export function createSession(api) {
             if (!r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])) return
             if (st.station || st.gate) return
             const outN = r.out[1]
-            const left = bag.add(r.out[0], outN)
-            const got = outN - left
+            const spot = placeResult(bag, r.out[0], outN, hot)
+            const got = outN - spot.left
             if (!got) {
               api.toast(t('bagFull'))
               paintCraft(g)
               return
             }
-            if (left) {
+            if (spot.left) {
               const p = api.pos()
-              spawnDrop(r.out[0], left, p[0], p[1] + 0.3, p[2], 'full')
+              spawnDrop(r.out[0], spot.left, p[0], p[1] + 0.3, p[2], 'full')
             }
             r.in.forEach((_, i) => { trayPlaced[i] = 0 })
             markFound(r.out[0])
             if (r.out[0] === 'woodTool') markPath('pathTool')
-            api.toast(t('make') + ' ' + itemName(r.out[0]))
+            if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
+            else api.toast(t('make') + ' ' + itemName(r.out[0]))
             craftFx = 'make'
             leftFor = r.id
             paintHotbar()
@@ -1695,7 +1716,14 @@ export function createSession(api) {
     g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
     g.append(btn(t('no'), () => api.close()))
   }
+  let pocketDot = false
+  function clearPocketDot() {
+    pocketDot = false
+    const dot = document.querySelector('#hotbar [data-bag-dot]')
+    if (dot) dot.remove()
+  }
   function sayPocket(item, index) {
+    pocketDot = true
     api.toast(t('inPockets').replace('{item}', itemName(item)), {
       label: t('holdIt'),
       run: () => holdItem(item, index),
@@ -2235,6 +2263,6 @@ export function createSession(api) {
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
-    useHeld, selectOwned, holdItem, mountEnergy,
+    useHeld, selectOwned, holdItem, mountEnergy, isFood: isFoodItem,
   }
 }

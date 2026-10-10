@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.106', date: '2026-10-09', lines: {
+    en: ['The game tells you where crafted things go, right-click eats food, harvests pop, and ponds are easy to reach.'],
+    uk: ['Гра каже, куди лягла річ, правий клік їсть їжу, урожай вискакує, і до ставка легко дійти.'],
+    ru: ['Игра говорит, куда легла вещь, правый клик ест еду, урожай выскакивает, и до пруда легко дойти.'],
+    es: ['El juego dice a dónde va lo fabricado, el clic derecho come, la cosecha salta, y los estanques son fáciles de alcanzar.'],
+    ar: ['اللعبة تقول أين تذهب الأشياء المصنوعة، والنقر باليمين يأكل الطعام، والحصاد يظهر، والبرك سهلة الوصول.'],
+    'fa-AF': ['بازی می‌گوید چیز ساخته‌شده کجا رفت، کلیک راست غذا را می‌خورد، برداشت بالا می‌پرد، و آبگیرها آسان در دسترس اند.'],
+    rw: ['Umukino ubwira aho ikintu cyagiye, iburyo birya ibiryo, gusarura biratumbuka, kandi ibiyaga byoroshye kugera.'],
+    ti: ['ጸወታ ነገር ናበይ ከም ዝኸደ ይነግር፡ የማናይ ጠውቕ መግቢ ይበልዕ፡ ምእካብ ይወጽእ፡ ቑልቀል ድማ ቀሊል እዩ።'],
+  }},
   { v: '2.5.105', date: '2026-10-09', lines: {
     en: ['Recipe names fit, and the Oven shows what it made in a big slot.'],
     uk: ['Назви рецептів вміщаються, і піч показує готове у великій комірці.'],

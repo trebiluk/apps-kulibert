@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Recipe names fit, and the Oven shows what it made in a big slot.",
+  "whatsNewBody": "The game tells you where crafted things go, right-click eats food, harvests pop, and ponds are easy to reach.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
