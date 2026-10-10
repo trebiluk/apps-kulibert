@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bloxbert Icon Test</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #1a1a1a; color: #eee; margin: 16px; }
+  h1 { font-size: 1.2rem; }
+  .count { font-weight: bold; margin: 8px 0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .card { background: #2a2a2a; border: 1px solid #444; padding: 8px; text-align: center; border-radius: 6px; }
+  .card.fallback { border: 2px solid #f44; }
+  .icons { display: flex; gap: 8px; justify-content: center; margin: 6px 0; }
+  canvas, img, span.real-icon { image-rendering: pixelated; }
+  .name { font-size: 0.85rem; font-weight: 600; }
+  .id { font-size: 0.7rem; color: #aaa; }
+</style>
+</head>
+<body>
+<h1>Bloxbert Icon Contact Sheet</h1>
+<div class="count" id="count">Loading...</div>
+<div class="grid" id="grid"></div>
+<script type="module">
+import { ITEMS } from './src/data/items.js';
+import { slotArt, blockIcon } from './src/icons.js';
+import { BLOCKS } from './src/main.js';
+
+const grid = document.getElementById('grid');
+const countEl = document.getElementById('count');
+let wraps = 0, fallbacks = 0;
+
+function isFallback(el) {
+  if (!el) return true;
+  if (el.dataset && el.dataset.kind === 'wrap') return false;
+  if (el.dataset && el.dataset.letter) return true;
+  if (el.tagName === 'SPAN' && el.classList.contains('real-icon') && !el.innerHTML.includes('svg')) return true;
+  return el.dataset && !el.dataset.wrap && !el.dataset.item;
+}
+
+function addCard(key, el, kind) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  const icons = document.createElement('div');
+  icons.className = 'icons';
+  // 48px
+  const a = el.cloneNode(true);
+  a.style.width = a.style.height = '48px';
+  icons.appendChild(a);
+  // 96px
+  const b = el.cloneNode(true);
+  b.style.width = b.style.height = '96px';
+  icons.appendChild(b);
+  card.appendChild(icons);
+  const name = document.createElement('div');
+  name.className = 'name';
+  name.textContent = key;
+  card.appendChild(name);
+  const id = document.createElement('div');
+  id.className = 'id';
+  id.textContent = kind + ' ' + (el.dataset?.item || el.dataset?.block || '');
+  card.appendChild(id);
+  if (isFallback(el)) {
+    card.classList.add('fallback');
+    fallbacks++;
+  } else wraps++;
+  grid.appendChild(card);
+}
+
+// Items
+for (const key of Object.keys(ITEMS)) {
+  const el = slotArt(key);
+  addCard(key, el, 'item');
+}
+
+// Blocks (unique names)
+const seen = new Set();
+for (const b of BLOCKS) {
+  const name = b[1];
+  if (seen.has(name)) continue;
+  seen.add(name);
+  const el = blockIcon(b);
+  addCard(name, el, 'block');
+}
+
+countEl.textContent = `${wraps} wraps / ${fallbacks} fallbacks`;
+</script>
+</body>
+</html>

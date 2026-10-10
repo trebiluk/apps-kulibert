@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.140', date: '2026-10-10', lines: {
+    en: ['Pixel-art wraps for batch 1 items and blocks (ores, doors, tools, machines).'],
+    uk: ['Піксель-арт обгортки для партії 1 предметів і блоків (руди, двері, інструменти, машини).'],
+    ru: ['Пиксель-арт обёртки для партии 1 предметов и блоков (руды, двери, инструменты, машины).'],
+    es: ['Envolturas de pixel-art para lote 1 de objetos y bloques (minerales, puertas, herramientas, máquinas).'],
+    ar: ['أغلفة فن البكسل للدفعة 1 من العناصر والكتل (الخامات، الأبواب، الأدوات، الآلات).'],
+    'fa-AF': ['بسته‌بندی هنر پیکسل برای دسته 1 اقلام و بلوک‌ها (سنگ‌ها، درها، ابزارها، ماشین‌ها).'],
+    rw: ['Ibipapuro bya pixel-art kuri batch 1 yibintu nibikoresho (ibuye, amarembo, ibikoresho, imashini).'],
+    ti: ['ናይ ፒክሰል ኣርት ኣሸጋጊ ንባትች 1 ናይ ነገራትን ብሎክስን (ኦር፣ ኣፍደገታት፣ መሳርሕታት፣ ማሽናት).'],
+  }},
   { v: '2.5.139', date: '2026-10-10', lines: {
     en: ['Woodshop opens again. Lamps place on a wall, toggle, and show.'],
     uk: ['Столярня знову відкривається. Лампи ставляться на стіну, перемикаються і світять.'],

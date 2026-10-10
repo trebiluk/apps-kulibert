@@ -21,6 +21,7 @@ import { PointLight } from '@babylonjs/core/Lights/pointLight'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
 import ATLAS from '../assets/atlas.json'
+import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
 import { createEdits } from './world-edit.js'
@@ -320,13 +321,13 @@ export const BLOCKS = [
   [24, 'vend', 'vend', 'Vc', null],
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
-  [27, 'box', 'wood', 'Bx', 'wood'],
-  [30, 'door', 'wood', 'Dr', 'wood'],
-  [31, 'doorOpen', 'wood', 'Do', 'wood'],
+  [27, 'box', 'wrap_box', 'Bx', 'wood'],
+  [30, 'door', 'wrap_door', 'Dr', 'wood'],
+  [31, 'doorOpen', 'wrap_doorOpen', 'Do', 'wood'],
   [32, 'doorGlass', 'glass', 'Gd', null],
   [33, 'doorGlassOpen', 'glass', 'Go', null],
-  [34, 'doorMetal', 'greystone', 'Md', 'greystone'],
-  [35, 'doorMetalOpen', 'greystone', 'Mo', 'greystone'],
+  [34, 'doorMetal', 'wrap_doorMetal', 'Md', 'greystone'],
+  [35, 'doorMetalOpen', 'wrap_doorMetalOpen', 'Mo', 'greystone'],
   [36, 'doorSliding', 'glass', 'Sg', null],
   [37, 'doorSlidingOpen', 'glass', 'So', null],
   [50, 'doorTop', 'wood', 'Dr', 'wood'],
@@ -337,21 +338,21 @@ export const BLOCKS = [
   [55, 'doorMetalTopOpen', 'greystone', 'Mo', 'greystone'],
   [56, 'doorSlidingTop', 'glass', 'Sg', null],
   [57, 'doorSlidingTopOpen', 'glass', 'So', null],
-  [38, 'lever', 'wood', 'Le', 'wood'],
+  [38, 'lever', 'wrap_lever', 'Le', 'wood'],
   [39, 'leverOn', 'wood', 'Lo', 'wood'],
-  [40, 'pushButton', 'brick_red', 'Pb', 'brick_red'],
+  [40, 'pushButton', 'wrap_pushButton', 'Pb', 'brick_red'],
   [41, 'pushButtonOn', 'brick_red', 'Pn', 'brick_red'],
-  [42, 'smelter', 'brick_red', 'Sm', 'brick_red'],
-  [43, 'fabricator', 'greystone', 'Fb', 'greystone'],
-  [44, 'ironOre', 'brick_grey', 'Io', 'brick_grey'],
-  [45, 'copperOre', 'stone_coal', 'Oc', 'stone_coal'],
-  [46, 'zincOre', 'greystone', 'Zo', 'greystone'],
-  [47, 'lantern', 'glass', 'Ln', null],
-  [48, 'charger', 'stone', 'Ch', 'stone'],
+  [42, 'smelter', 'wrap_smelter', 'Sm', 'brick_red'],
+  [43, 'fabricator', 'wrap_fabricator', 'Fb', 'greystone'],
+  [44, 'ironOre', 'wrap_ironOre', 'Io', 'brick_grey'],
+  [45, 'copperOre', 'wrap_copperOre', 'Oc', 'stone_coal'],
+  [46, 'zincOre', 'wrap_zincOre', 'Zo', 'greystone'],
+  [47, 'lantern', 'wrap_lantern', 'Ln', null],
+  [48, 'charger', 'wrap_charger', 'Ch', 'stone'],
   [64, 'water', 'ice', 'Wa', null],
   [69, 'woodshop', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [70, 'woodshopSide', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
-  [71, 'clay', 'clay', 'Cy', 'dirt'],
+  [71, 'clay', 'wrap_clay', 'Cy', 'dirt'],
 ]
 function insertAfter(rows, key, extra) {
   if (!extra.length) return
@@ -382,6 +383,8 @@ noa.registry.registerMaterial('oven', tile('ovenFront'))
 noa.registry.registerMaterial('vend', tile('vend'))
 noa.registry.registerMaterial('store', tile('store'))
 noa.registry.registerMaterial('bunk', tile('bunk'))
+// Pixel-art wrap materials for batch 1
+registerWrapMaterials(noa);
 const shapeScene = noa.rendering.scene
 function dye(name, r, g, b, a) {
   const mat = noa.rendering.makeStandardMaterial(name)

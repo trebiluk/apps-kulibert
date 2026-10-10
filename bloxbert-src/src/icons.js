@@ -1,4 +1,5 @@
 // One picture per block. A few items draw their own face so they don't share one wood tile.
+import { getWrap } from "./gfx/pixel-art.js";
 import { ITEMS } from './data/items.js'
 const PNG = { glass: 'assets/glass.png', coreplate: 'assets/tile-coreplate.png', workbench: 'assets/tile-workbench.png', oven: 'assets/tile-oven.png', vend: 'assets/tile-vend.png', store: 'assets/tile-store.png', bunk: 'assets/tile-bunk.png' }
 const READ2D = { willReadFrequently: true }
@@ -316,7 +317,12 @@ const FACE = {
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
 export function blockIcon(block, atlas) {
-  const name = block && block[1]
+  const name = block && block[1];
+  const wrap = name && getWrap(name);
+  if (wrap) {
+    wrap.dataset.block = String(block[0]);
+    return wrap;
+  }
   if (FACE[name]) {
     const c = glyph(FACE[name])
     c.dataset.block = String(block[0])
@@ -399,6 +405,12 @@ function letterTile(letter) {
 }
 // Same picture the hotbar uses. A missing picture is a letter on a neutral tile, never a red square.
 export function slotArt(key, blockNode) {
+  const wrap = key && getWrap(key);
+  if (wrap) {
+    wrap.dataset.item = key;
+    wrap.dataset.kind = "wrap";
+    return wrap;
+  }
   const item = key && ITEMS[key]
   if (item && item.svg) {
     const s = document.createElement('span')
