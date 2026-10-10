@@ -673,6 +673,7 @@ const SHOP = {
   en: {
     whatsNewBody: 'A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.',
     woodshop: 'Woodshop Bench', woodshopSide: 'Woodshop Bench',
+    clay: 'Clay', clayGuide: 'Clay is very fine soil. Fired in a kiln it turns hard.',
     safetyGlasses: 'Safety Glasses', measuringTape: 'Measuring Tape', handSaw: 'Hand Saw', hammer: 'Hammer',
     noRoom: 'No room', woolAny: 'Wool',
     needsGlasses: 'Needs Glasses', needsTape: 'Needs Tape', needsSaw: 'Needs Saw', needsHammer: 'Needs Hammer',
@@ -688,6 +689,7 @@ const SHOP = {
   uk: {
     whatsNewBody: 'Верстат тримає окуляри, рулетку, пилку й молоток, а правила майстерні з’являються вперше.',
     woodshop: 'Верстат', woodshopSide: 'Верстат',
+    clay: 'Глина', clayGuide: 'Глина — дуже дрібний ґрунт. У печі вона стає твердою.',
     safetyGlasses: 'Захисні окуляри', measuringTape: 'Рулетка', handSaw: 'Ножівка', hammer: 'Молоток',
     noRoom: 'Немає місця', woolAny: 'Вовна',
     needsGlasses: 'Потрібні окуляри', needsTape: 'Потрібна рулетка', needsSaw: 'Потрібна пилка', needsHammer: 'Потрібен молоток',
@@ -703,6 +705,7 @@ const SHOP = {
   ru: {
     whatsNewBody: 'Верстак хранит очки, рулетку, пилу и молоток, а правила мастерской показываются в первый раз.',
     woodshop: 'Верстак', woodshopSide: 'Верстак',
+    clay: 'Глина', clayGuide: 'Глина — очень мелкая почва. В печи она становится твёрдой.',
     safetyGlasses: 'Защитные очки', measuringTape: 'Рулетка', handSaw: 'Ножовка', hammer: 'Молоток',
     noRoom: 'Нет места', woolAny: 'Шерсть',
     needsGlasses: 'Нужны очки', needsTape: 'Нужна рулетка', needsSaw: 'Нужна пила', needsHammer: 'Нужен молоток',
@@ -718,6 +721,7 @@ const SHOP = {
   es: {
     whatsNewBody: 'El banco de madera guarda las gafas, la cinta, el serrucho y el martillo, y las reglas del taller salen la primera vez.',
     woodshop: 'Banco de madera', woodshopSide: 'Banco de madera',
+    clay: 'Arcilla', clayGuide: 'La arcilla es un suelo muy fino. Cocida en un horno se vuelve dura.',
     safetyGlasses: 'Gafas de seguridad', measuringTape: 'Cinta métrica', handSaw: 'Serrucho', hammer: 'Martillo',
     noRoom: 'No hay sitio', woolAny: 'Lana',
     needsGlasses: 'Necesita las gafas', needsTape: 'Necesita la cinta', needsSaw: 'Necesita el serrucho', needsHammer: 'Necesita el martillo',
@@ -733,6 +737,7 @@ const SHOP = {
   ar: {
     whatsNewBody: 'منضدة الخشب تحفظ النظارة والشريط والمنشار والمطرقة، وقواعد الورشة تظهر أول مرة.',
     woodshop: 'منضدة الخشب', woodshopSide: 'منضدة الخشب',
+    clay: 'طين', clayGuide: 'الطين تربة ناعمة جداً. إذا أُحرق في الفرن يصير صلباً.',
     safetyGlasses: 'نظارة أمان', measuringTape: 'شريط قياس', handSaw: 'منشار يد', hammer: 'مطرقة',
     noRoom: 'لا مكان', woolAny: 'صوف',
     needsGlasses: 'يحتاج النظارة', needsTape: 'يحتاج الشريط', needsSaw: 'يحتاج المنشار', needsHammer: 'يحتاج المطرقة',
@@ -748,6 +753,7 @@ const SHOP = {
   'fa-AF': {
     whatsNewBody: 'میز نجاری عینک، متر، اره و چکش را نگه می‌دارد، و قانون کارگاه بار اول نشان داده می‌شود.',
     woodshop: 'میز نجاری', woodshopSide: 'میز نجاری',
+    clay: 'گل رس', clayGuide: 'گل رس خاک بسیار نرم است. در کوره که پخته شود سخت می‌شود.',
     safetyGlasses: 'عینک ایمنی', measuringTape: 'متر', handSaw: 'اره دستی', hammer: 'چکش',
     noRoom: 'جا نیست', woolAny: 'پشم',
     needsGlasses: 'عینک لازم است', needsTape: 'متر لازم است', needsSaw: 'اره لازم است', needsHammer: 'چکش لازم است',
@@ -763,6 +769,7 @@ const SHOP = {
   rw: {
     whatsNewBody: 'Intebe y\'ububaji ibika amararo, umugozi, urubanza n\'inyundo, kandi amategeko y\'ikigo agaragara ubwa mbere.',
     woodshop: 'Intebe y\'ububaji', woodshopSide: 'Intebe y\'ububaji',
+    clay: 'Ibumba', clayGuide: 'Ibumba ni ubutaka bworoshye cyane. Iyo bwashyushye mu ziko buba inkome.',
     safetyGlasses: 'Amararo y\'umutekano', measuringTape: 'Umugozi wo gupima', handSaw: 'Urubanza', hammer: 'Inyundo',
     noRoom: 'Nta mwanya', woolAny: 'Ubwoya',
     needsGlasses: 'Ikeneye amararo', needsTape: 'Ikeneye umugozi', needsSaw: 'Ikeneye urubanza', needsHammer: 'Ikeneye inyundo',
@@ -778,6 +785,7 @@ const SHOP = {
   ti: {
     whatsNewBody: 'ናይ ዕንጨይቲ መደብ መነጽር፡ መለክዒ፡ መጋዝን መጥሓንን ይሕዝ፡ ሕግታት ዕድጊ ድማ መጀመርታ ይረኣዩ።',
     woodshop: 'መደብ ዕንጨይቲ', woodshopSide: 'መደብ ዕንጨይቲ',
+    clay: 'ሸክላ', clayGuide: 'ሸክላ ብጣዕሚ ደቂቕ ሓመድ እዩ። ኣብ እቶን ምስ ተነድደ ይደርቕ።',
     safetyGlasses: 'መነጽር ድሕንነት', measuringTape: 'መለክዒ', handSaw: 'መጋዝ ኢድ', hammer: 'መጥሓን',
     noRoom: 'ቦታ የለን', woolAny: 'ጥምጢ',
     needsGlasses: 'መነጽር የድሊ', needsTape: 'መለክዒ የድሊ', needsSaw: 'መጋዝ የድሊ', needsHammer: 'መጥሓን የድሊ',

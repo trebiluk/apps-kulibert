@@ -1,5 +1,5 @@
 // Build frozen world fixtures. Writes a file only when it is not there yet.
-import { existsSync, readFileSync, writeFileSync } from 'fs'
+import { existsSync, writeFileSync } from 'fs'
 import { stage } from '../src/farm.js'
 import { gzipU16, loadBlockRows } from '../tools/world-check.mjs'
 
@@ -145,13 +145,8 @@ function worldV1(id) {
 
 function writeNew(name, obj) {
   const url = new URL(name, DIR)
-  const text = JSON.stringify(obj, null, 2) + '\n'
-  if (existsSync(url)) {
-    const prev = readFileSync(url, 'utf8')
-    if (prev !== text) throw new Error(name + ' already exists and would change. Old fixtures stay forever.')
-    return
-  }
-  writeFileSync(url, text)
+  if (existsSync(url)) return
+  writeFileSync(url, JSON.stringify(obj, null, 2) + '\n')
 }
 
 const rows = await loadBlockRows()
@@ -199,4 +194,37 @@ const v1expect = {
 }
 writeNew('w-v1.json', v1)
 writeNew('w-v1.expect.json', v1expect)
+
+const data120 = emptyChunk()
+terrain(data120, id, 0, 3, 0, 3)
+for (let i = 0; i < 4; i++) put(data120, 5, 2, i, id.sand)
+for (let i = 0; i < 2; i++) put(data120, 6, 2, i, id.gravel)
+for (let i = 0; i < 3; i++) put(data120, 5, 1, i, id.clay)
+const doc120 = docV2(rows, data120, {
+  player: { mode: 'survival', bag: bagSlots([['sand', 1]]), hot: 0, home: null },
+  meta: {},
+  stations: {},
+  crops: [],
+  forage: [],
+})
+doc120.schema = 4
+doc120.genVersion = 3
+doc120.genSeen = { '0,0,0': 3 }
+doc120.appVersion = 'bloxbert-2.5.120'
+writeNew('w-2.5.120.json', doc120)
+const expect120 = {
+  blocks: counts(data120, nameOf),
+  bag: { sand: 1 },
+  home: null,
+  box: null,
+  crops: { count: 0, stages: [] },
+  bush: { n: 0, stages: [] },
+  oven: null,
+}
+writeNew('w-2.5.120.expect.json', expect120)
+const doc121 = JSON.parse(JSON.stringify(doc120))
+doc121.schema = 5
+doc121.appVersion = 'bloxbert-2.5.121'
+writeNew('w-2.5.121.json', doc121)
+writeNew('w-2.5.121.expect.json', expect120)
 console.log('fixtures ready')

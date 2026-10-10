@@ -1,7 +1,8 @@
 // Save schema. A doc with no schema counts as 2. Newer than SCHEMA is read-only.
 import { FROZEN } from '../data/ids.js'
+import { exploredSeen } from '../worldgen.js'
 
-export const SCHEMA = 4
+export const SCHEMA = 5
 const MISSING = FROZEN.missing
 const RUNTIME_LO = 1001
 const RUNTIME_HI = 1099
@@ -50,6 +51,11 @@ export const MIGRATIONS = [
       spawnSet: false,
       protect: { size: 'medium', center: null },
     }
+  } },
+  { from: 4, to: 5, run(doc) {
+    const next = { ...doc, schema: 5 }
+    if (doc && doc.genVersion != null) return next
+    return { ...next, genVersion: 3, genSeen: exploredSeen(doc && doc.chunks, doc && doc.chunkSize) }
   } },
 ]
 

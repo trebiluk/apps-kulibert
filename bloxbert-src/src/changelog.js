@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.121', date: '2026-10-10', lines: {
+    en: ['Old ground stays as it was. New land has sand banks, gravel, and clay you can dig by hand.'],
+    uk: ['Стара земля лишається як була. На новій є піщані береги, гравій і глина, яку копаєш рукою.'],
+    ru: ['Старая земля остаётся как была. На новой есть песчаные берега, гравий и глина, которую копаешь рукой.'],
+    es: ['El suelo viejo se queda igual. La tierra nueva tiene bancos de arena, grava y arcilla que cavas a mano.'],
+    ar: ['الأرض القديمة تبقى كما كانت. الأرض الجديدة فيها ضفاف رمل وحصى وطين تحفره بيدك.'],
+    'fa-AF': ['زمین کهنه همان می‌ماند. زمین تازه ساحل ریگ، جغل و گل رس دارد که با دست می‌کنی.'],
+    rw: ['Ubutaka bw\'umwanya busigara uko bwari. Ubushya bufite umucanga, amabuye mato n\'ibumba ukomba n\'intoki.'],
+    ti: ['ናይ ቀደም መሬት ከምዝነበረ ይቕጽል። ሓድሽ መሬት ገማግም ሑጻ፡ ጸርንን ሸክላን ኣለዎ ብኢድካ ትኸፍሮ።'],
+  }},
   { v: '2.5.120', date: '2026-10-10', lines: {
     en: ['A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.'],
     uk: ['Ліжко роблять на верстаті. Спроектуй його або просто збери, тоді відпочинь, щоб набрати енергію.'],

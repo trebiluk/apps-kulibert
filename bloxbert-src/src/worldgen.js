@@ -488,3 +488,195 @@ export function spawnGround(x, z) {
   const v = smoothCache.get((x | 0) + ',' + (z | 0))
   return v == null ? groundY(x, z) : v
 }
+
+// Today's generator is gen 2. Gen 3 is the first one that adds banks. Old chunks stay on 2.
+export const GEN = 3
+export const CHUNK = 24
+export const GEN_MARGIN = 4
+const TOWN_BOX = { x0: -20, x1: 36, y0: -64, y1: 8, z0: -18, z1: 28 }
+
+function inTownXZ(x, z) {
+  return x >= TOWN_BOX.x0 && x <= TOWN_BOX.x1 && z >= TOWN_BOX.z0 && z <= TOWN_BOX.z1
+}
+
+function townName(x, y, z) {
+  const h = TOWN_Y
+  if (y < h - 3) return coalHere(x, y, z) ? 'coal' : 'stone'
+  if (y < h) return 'dirt'
+  const pond = (x + 10) * (x + 10) + (z - 14) * (z - 14)
+  const road = z >= -1 && z <= 1 && x >= -18 && x <= 34
+  const shop = x >= 4 && x <= 13 && z >= 4 && z <= 11
+  const plotA = x >= 18 && x <= 25 && z >= 4 && z <= 11
+  const plotB = x >= 18 && x <= 25 && z >= 15 && z <= 22
+  const plotC = x >= 4 && x <= 11 && z >= 16 && z <= 23
+  if (y === h) {
+    if (pond <= 16) return 'ice'
+    if (pond <= 36) return 'sand'
+    if (road) return 'gravel'
+    if (shop) return 'planks'
+    if (plotA || plotB || plotC) {
+      const edge = x === 18 || x === 25 || z === 4 || z === 11 || z === 15 || z === 22 || z === 16 || z === 23
+      return edge ? 'gravel' : 'grass'
+    }
+    return 'grass'
+  }
+  if (y > h && y <= h + 4 && shop) {
+    const edge = x === 4 || x === 13 || z === 4 || z === 11
+    const door = z === 4 && x >= 7 && x <= 10 && y <= h + 2
+    const window = x === 13 && z === 7 && y === h + 2
+    const post = (x === 4 || x === 13) && (z === 4 || z === 11)
+    if (door) return ''
+    if (window) return 'glass'
+    if (post) return 'log'
+    if (edge && y <= h + 3) return 'brickRed'
+    if (y === h + 4) return 'planks'
+    if (x === 8 && z === 9 && y === h + 1) return 'storeCounter'
+    if (x === 6 && z === 8 && y === h + 1) return 'workbench'
+    if (x === 11 && z === 8 && y === h + 1) return 'oven'
+    if (x === 10 && z === 6 && y === h + 1) return 'bunk'
+    return ''
+  }
+  if (y === h + 1) {
+    if ((plotA && ((x === 18 && z === 4) || (x === 25 && z === 4) || (x === 18 && z === 11) || (x === 25 && z === 11)))
+      || (plotB && ((x === 18 && z === 15) || (x === 25 && z === 15) || (x === 18 && z === 22) || (x === 25 && z === 22)))
+      || (plotC && ((x === 4 && z === 16) || (x === 11 && z === 16) || (x === 4 && z === 23) || (x === 11 && z === 23)))) return 'brickGrey'
+    if (x === 2 && z === 2) return 'log'
+  }
+  if (y === h + 2 && x === 2 && z === 2) return 'woolBlue'
+  return ''
+}
+
+function genCore(x, y, z) {
+  if (y === -64) return 'coreplate'
+  if (y < -64) return ''
+  if (pondHere(x, y, z)) return 'water'
+  if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return ''
+  if (shoreLow(x, y, z)) return ''
+  if (inTownXZ(x, z)) return townName(x, y, z)
+  const h = spawnGround(x, z)
+  if (y > h) {
+    const grew = wildWood(x, y, z)
+    if (grew === 'log' || grew === 'leaves') return grew
+    const plant = plantHere(x, y, z, h, false)
+    if (plant) return plant
+    return ''
+  }
+  if (y === h) return h <= 1 ? 'sand' : 'grass'
+  if (y > h - 3) return 'dirt'
+  if (y > -64 && coalHere(x, y, z)) return 'coal'
+  if (y > -64) return 'stone'
+  return ''
+}
+
+function bandWidth(x, z) {
+  return 3 + Math.floor(hash(x, z) * 4)
+}
+
+function pondBand(x, z) {
+  const ponds = starterPonds(1)
+  let best = null
+  for (let i = 0; i < ponds.length; i++) {
+    const p = ponds[i]
+    const dx = x < p.x ? p.x - x : x > p.x + p.w - 1 ? x - (p.x + p.w - 1) : 0
+    const dz = z < p.z ? p.z - z : z > p.z + p.w - 1 ? z - (p.z + p.w - 1) : 0
+    const d = Math.max(Math.abs(dx), Math.abs(dz))
+    if (best && d >= best.d) continue
+    best = { d, x: p.x, z: p.z, kind: p.w >= 5 || p.d === 2 ? 'lake' : 'pond' }
+  }
+  if (!best || best.d === 0) return null
+  const w = bandWidth(best.x, best.z)
+  if (best.d > w) return null
+  return { d: best.d, w, kind: best.kind, x: best.x, z: best.z }
+}
+
+function lowBand(x, z) {
+  let best = null
+  for (let dx = -6; dx <= 6; dx++) {
+    for (let dz = -6; dz <= 6; dz++) {
+      const cx = x + dx
+      const cz = z + dz
+      if (spawnGround(cx, cz) > 1) continue
+      let rim = false
+      if (spawnGround(cx + 1, cz) >= 2 || spawnGround(cx - 1, cz) >= 2 || spawnGround(cx, cz + 1) >= 2 || spawnGround(cx, cz - 1) >= 2) rim = true
+      if (!rim) continue
+      const d = Math.max(Math.abs(dx), Math.abs(dz))
+      if (best && d >= best.d) continue
+      best = { d, x: cx, z: cz }
+    }
+  }
+  if (!best) return null
+  const w = bandWidth(best.x + 13, best.z - 7)
+  if (best.d > w) return null
+  return { d: best.d, w, kind: 'low', x: best.x, z: best.z }
+}
+
+const bandCache = new Map()
+function bandAt(x, z) {
+  const k = (x | 0) + ',' + (z | 0)
+  if (bandCache.has(k)) return bandCache.get(k)
+  if (bandCache.size > 12000) bandCache.clear()
+  const pond = pondBand(x, z)
+  const low = lowBand(x, z)
+  const hit = pond || low
+  bandCache.set(k, hit)
+  return hit
+}
+
+function soilName(name) {
+  return !name || name === 'grass' || name === 'sand' || name === 'dirt' || name === 'gravel'
+}
+
+function gen3(x, y, z, base) {
+  if (inTownXZ(x, z)) return base
+  if (pondHere(x, y, z) || shoreLow(x, y, z)) return base
+  const h = spawnGround(x, z)
+  const band = bandAt(x, z)
+  if (!band) return base
+  const edge = band.d === band.w && hash(x + 4, z - 2) < 0.45
+  if (y === h && soilName(base)) return edge ? 'gravel' : 'sand'
+  if (y === h - 1 && band.kind !== 'low' && band.d <= 2 && !edge && (base === 'dirt' || base === 'sand')) return 'clay'
+  if (y === h - 1 && band.kind === 'low' && band.d <= 1 && !edge && (base === 'dirt' || base === 'sand')) return 'clay'
+  return base
+}
+
+export function genBlock(x, y, z, gen) {
+  const base = genCore(x | 0, y | 0, z | 0)
+  if ((gen | 0) >= GEN) return gen3(x | 0, y | 0, z | 0, base)
+  return base
+}
+
+export function exploredSeen(chunks, chunkSize = CHUNK) {
+  const S = chunkSize | 0 || CHUNK
+  let i0 = Math.floor(TOWN_BOX.x0 / S)
+  let i1 = Math.floor(TOWN_BOX.x1 / S)
+  let j0 = Math.floor(TOWN_BOX.y0 / S)
+  let j1 = Math.floor(TOWN_BOX.y1 / S)
+  let k0 = Math.floor(TOWN_BOX.z0 / S)
+  let k1 = Math.floor(TOWN_BOX.z1 / S)
+  for (const key of Object.keys(chunks || {})) {
+    const m = /^(-?\d+),(-?\d+),(-?\d+)$/.exec(key)
+    if (!m) continue
+    const i = +m[1]
+    const j = +m[2]
+    const k = +m[3]
+    if (i < i0) i0 = i
+    if (i > i1) i1 = i
+    if (j < j0) j0 = j
+    if (j > j1) j1 = j
+    if (k < k0) k0 = k
+    if (k > k1) k1 = k
+  }
+  i0 -= GEN_MARGIN
+  i1 += GEN_MARGIN
+  j0 -= GEN_MARGIN
+  j1 += GEN_MARGIN
+  k0 -= GEN_MARGIN
+  k1 += GEN_MARGIN
+  const seen = {}
+  for (let i = i0; i <= i1; i++) {
+    for (let j = j0; j <= j1; j++) {
+      for (let k = k0; k <= k1; k++) seen[i + ',' + j + ',' + k] = 2
+    }
+  }
+  return seen
+}

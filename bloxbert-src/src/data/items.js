@@ -1,4 +1,4 @@
-// Item keys. Block ids match the registry. Commons have base 0 and cannot be sold.
+import { intoBag } from '../drops.js'
 export const ITEMS = {
   log: { block: 11, letter: 'L', cat: 'Materials', base: 4, stack: 64, sell: true },
   planks: { block: 10, letter: 'P', base: 1, sell: true },
@@ -55,6 +55,7 @@ export const ITEMS = {
   handSaw: { svg: 'handSaw', letter: 'Hs', base: 0, sell: false, stack: 1 },
   hammer: { svg: 'hammer', letter: 'Hr', base: 0, sell: false, stack: 1 },
   woodshop: { block: 69, letter: 'Ws', base: 8, sell: false },
+  clay: { block: 71, letter: 'Cy', base: 0, sell: false },
   sapling: { block: 185, letter: 'Sp', base: 0, sell: false },
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
   wheat: { block: 28, letter: 'Wh', cat: 'Food', base: 2, sell: false },
@@ -81,7 +82,10 @@ export function dropOf(blockId) {
   if (blockId === 37) return 'doorSliding'
   if (blockId === 39) return 'lever'
   if (blockId === 41) return 'pushButton'
-  return ITEM_BY_BLOCK[blockId] || null
+  const named = ITEM_BY_BLOCK[blockId]
+  if (!named) return null
+  const hand = intoBag(named)
+  return hand ? hand.item : named
 }
 export function saplingRoll(x, y, z) {
   const h = (Math.imul(x | 0, 2246822519) + Math.imul(y | 0, 3266489917) + Math.imul(z | 0, 668265263)) >>> 0

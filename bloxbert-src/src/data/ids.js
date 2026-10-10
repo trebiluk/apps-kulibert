@@ -71,6 +71,7 @@ export const FROZEN = {
   bushFruit: 68,
   woodshop: 69,
   woodshopSide: 70,
+  clay: 71,
   sapling: 185,
   missing: 1000,
   woodshopBench: 1300,

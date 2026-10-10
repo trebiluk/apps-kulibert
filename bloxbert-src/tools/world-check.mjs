@@ -6,6 +6,8 @@ import { migrateVoxels } from '../src/save/migrate.js'
 import * as migrateMod from '../src/save/migrate.js'
 import { fromDoc } from '../src/save.js'
 import { stage } from '../src/farm.js'
+import { createHash } from 'crypto'
+import { genBlock, exploredSeen, spawnGround } from '../src/worldgen.js'
 
 const S = 24
 const FIX = new URL('../tests/fixtures/', import.meta.url)
@@ -248,6 +250,8 @@ async function checkFile(name, rows) {
   }
   const diff = diffCounts(hardExpect, hardGot)
   if (!roundOk) diff.push('round trip changed')
+  const fresh = uneditedGen2(doc)
+  if (GEN2_FRESH[name] && fresh !== GEN2_FRESH[name]) diff.push('unedited gen2 changed')
   if (diff.length) return { status: 'FAIL', diff }
   if (soft.length) return { status: 'EXPECTED-FAIL', diff: ['turns green when P1 placeholder lands'] }
   return { status: 'PASS', diff: [] }
@@ -262,10 +266,73 @@ function concat(parts) {
   return out
 }
 
+const GEN2_FRESH_HASH = '79db2f1e4be5153bc9c286e48341c1a4bad03d63aa9016e99ce9d4d05ed51cd9'
+const GEN2_FRESH = {
+  'w-2.5.113.json': GEN2_FRESH_HASH,
+  'w-2.5.119.json': GEN2_FRESH_HASH,
+  'w-2.5.120.json': GEN2_FRESH_HASH,
+  'w-2.5.121.json': GEN2_FRESH_HASH,
+  'w-unknown.json': GEN2_FRESH_HASH,
+  'w-v1.json': GEN2_FRESH_HASH,
+}
+const GEN2_SURFACE = '85bd820c6e16decde16f9a995aa0393473748a96b3fd35241d0dfbf936198d53'
+
+function uneditedGen2(doc) {
+  const seen = exploredSeen(doc.chunks || {}, doc.chunkSize || S)
+  const saved = new Set(Object.keys(doc.chunks || {}))
+  const pick = Object.keys(seen).filter((k) => !saved.has(k) && k.split(',')[1] === '0').sort()
+  const h = createHash('sha256')
+  const step = Math.max(1, Math.floor(pick.length / 8))
+  let n = 0
+  for (let i = 0; i < pick.length; i += step) {
+    const [ci, , ck] = pick[i].split(',').map(Number)
+    for (let x = ci * S; x < ci * S + S; x += 4) {
+      for (let z = ck * S; z < ck * S + S; z += 4) {
+        const y = spawnGround(x, z)
+        h.update(genBlock(x, y, z, 2) || '-')
+        h.update(genBlock(x, y - 1, z, 2) || '-')
+        n++
+      }
+    }
+  }
+  h.update(String(n))
+  return h.digest('hex')
+}
+
+function surface64(gen) {
+  const h = createHash('sha256')
+  let clay = 0
+  for (let x = -32; x < 32; x++) {
+    for (let z = -32; z < 32; z++) {
+      const y = spawnGround(x, z)
+      const top = genBlock(x, y, z, gen) || ''
+      const under = genBlock(x, y - 1, z, gen) || ''
+      if (top === 'clay' || under === 'clay') clay++
+      h.update(top + '/' + under + ';')
+    }
+  }
+  return { hash: h.digest('hex'), clay }
+}
+
+function countFarClay(gen) {
+  let n = 0
+  for (let x = 144; x <= 180; x++) {
+    for (let z = -48; z <= 48; z++) {
+      const y = spawnGround(x, z)
+      if (genBlock(x, y, z, gen) === 'clay' || genBlock(x, y - 1, z, gen) === 'clay') n++
+    }
+  }
+  return n
+}
+
 async function main() {
   const rows = await loadBlockRows()
+  const near = surface64(2)
+  const farClay = countFarClay(3)
+  let fail = near.clay !== 0 || near.hash !== GEN2_SURFACE || farClay < 1 ? 1 : 0
+  if (fail) console.log('FAIL gen2-surface clay ' + near.clay + ' far ' + farClay + ' hash ' + near.hash)
+  else console.log('PASS gen2-surface ' + near.hash + ' far-clay ' + farClay)
   const names = readdirSync(FIX).filter((f) => f.endsWith('.json') && !f.endsWith('.expect.json')).sort()
-  let fail = 0
   for (const name of names) {
     let result
     try { result = await checkFile(name, rows) }

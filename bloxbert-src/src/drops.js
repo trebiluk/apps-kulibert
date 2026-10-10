@@ -77,6 +77,11 @@ export function stepMagnet(drops, player, dt, now) {
   return moved
 }
 
+export function intoBag(name) {
+  if (name === 'sand' || name === 'gravel' || name === 'clay') return { item: name, n: 1 }
+  return null
+}
+
 // Wild berry bush break. 1-2 Berries every time, and a Bush Sprout 1 time in 4.
 // Planted bushes do not use this. Leaf berries stay on their own roll.
 export function wildBushLoot(x, y, z) {

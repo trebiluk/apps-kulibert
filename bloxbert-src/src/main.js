@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.120'
+const VERSION = '2.5.121'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -34,7 +34,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, spawnGround } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, spawnGround, genBlock, GEN } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -323,6 +323,7 @@ export const BLOCKS = [
   [68, 'bushFruit', 'leaves', 'Bu', null],
   [69, 'woodshop', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [70, 'woodshopSide', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
+  [71, 'clay', 'clay', 'Cy', 'dirt'],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
@@ -709,6 +710,8 @@ const SHAPES = {
   41: buttonMesh(true),
   47: lanternMesh(),
 }
+const clayMat = dye('clay-soil', 0.64, 0.5, 0.38)
+noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
 for (const [id, name, material] of BLOCKS) {
   const open = typeof name === 'string' && name.endsWith('Open')
   const glass = material === 'glass'
@@ -813,37 +816,36 @@ function townVoxel(x, y, z) {
   return 0
 }
 function genVoxel(x, y, z) {
-  if (y === -64) return ID.coreplate
-  if (y < -64) return 0
-  if (pondHere(x, y, z)) return ID.water
-  if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return 0
-  if (shoreLow(x, y, z)) return 0
-  if (inTown(x, z)) return townVoxel(x, y, z)
-  const h = heightAt(x, z)
-  if (y > h) {
-    const grew = wildWood(x, y, z)
-    if (grew === 'log') return ID.log
-    if (grew === 'leaves') return ID.leaves
-    const plant = plantHere(x, y, z, h, false)
-    if (plant && ID[plant]) return ID[plant]
-    return 0
-  }
-  if (y === h) return h <= 1 ? ID.sand : ID.grass
-  if (y > h - 3) return ID.dirt
-  if (y > -64 && coalHere(x, y, z)) return ID.coal
-  if (y > -64) return ID.stone
-  return 0
+  const name = genBlock(x, y, z, seenGen(x, y, z))
+  return name ? (ID[name] || 0) : 0
 }
 const key = (i, j, k) => i + ',' + j + ',' + k
+let genVersion = GEN
+let genSeen = {}
+function seenGen(x, y, z) {
+  const k = key(Math.floor(x / S), Math.floor(y / S), Math.floor(z / S))
+  if (genSeen[k] == null) {
+    genSeen[k] = genVersion
+    dirty = true
+  }
+  return genSeen[k]
+}
+function compactSeen() {
+  const out = {}
+  for (const k of Object.keys(genSeen)) out[k] = genSeen[k] | 0
+  return out
+}
 function fillGenerated(data, x0, y0, z0) {
+  const g = seenGen(x0, y0, z0)
   for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
-    data[i * S * S + j * S + k] = genVoxel(x0 + i, y0 + j, z0 + k)
+    const name = genBlock(x0 + i, y0 + j, z0 + k, g)
+    data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
   }
 }
 noa.world.on('worldDataNeeded', (id, arr, x, y, z) => {
   const s = saved.get(key(x / S, y / S, z / S))
   if (s) arr.data.set(s)
-  else if (y > 24) arr.data.fill(0)
+  else if (y > 24) { seenGen(x, y, z); arr.data.fill(0) }
   else fillGenerated(arr.data, x, y, z)
   noa.world.setChunkData(id, arr)
 })
@@ -2261,6 +2263,7 @@ async function snapshot() {
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
+    genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
@@ -2372,6 +2375,8 @@ async function readDoc(doc) {
   const moved = migrate(doc)
   readOnlySave = !!moved.readOnly
   const src = moved.doc || doc
+  genVersion = src.genVersion == null ? GEN : (src.genVersion | 0)
+  genSeen = src.genSeen && typeof src.genSeen === 'object' ? { ...src.genSeen } : {}
   if (src.chunkSize !== S || !src.chunks || typeof src.chunks !== 'object') throw new Error('That world uses a different chunk size.')
   const out = new Map()
   const nameToId = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
@@ -2431,6 +2436,8 @@ async function resetWorld() {
   farm.clear()
   forage.clear()
   pondAid = true
+  genVersion = GEN
+  genSeen = {}
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
