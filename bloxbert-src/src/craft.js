@@ -1,21 +1,28 @@
 import { gateOpen } from './data/gates.js'
 import { ITEMS } from './data/items.js'
 const WOOL = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+const STONE = ['stone', 'slate', 'coal']
 export function isWool(item) { return WOOL.indexOf(item) >= 0 }
+export function isStone(item) { return STONE.indexOf(item) >= 0 }
+function anyList(item) {
+  if (item === 'woolAny') return WOOL
+  if (item === 'stoneAny') return STONE
+  return null
+}
 export function countOf(bag, item) {
   if (!bag || !bag.count) return 0
-  if (item === 'woolAny') {
-    let n = 0
-    for (const k of WOOL) n += bag.count(k) || 0
-    return n
-  }
-  return bag.count(item) || 0
+  const list = anyList(item)
+  if (!list) return bag.count(item) || 0
+  let n = 0
+  for (const k of list) n += bag.count(k) || 0
+  return n
 }
 function takeOf(bag, item, n) {
-  if (item !== 'woolAny') return bag.take(item, n) ? [[item, n]] : null
+  const list = anyList(item)
+  if (!list) return bag.take(item, n) ? [[item, n]] : null
   let left = n
   const spent = []
-  for (const k of WOOL) {
+  for (const k of list) {
     const have = bag.count(k) || 0
     if (!have || left <= 0) continue
     const d = Math.min(have, left)

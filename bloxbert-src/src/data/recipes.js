@@ -4,7 +4,7 @@ export const RECIPES = [
   { id: 'planks', at: 'hand', in: [['log', 1]], out: ['planks', 4], secs: 0 },
   { id: 'workbench', at: 'hand', in: [['planks', 4]], out: ['workbench', 1], secs: 2 },
   { id: 'ice', at: 'hand', in: [['snow', 4]], out: ['ice', 1], secs: 0 },
-  { id: 'oven', at: 'bench', in: [['stone', 8]], out: ['oven', 1], secs: 10 },
+  { id: 'oven', at: 'bench', in: [['stoneAny', 8]], out: ['oven', 1], secs: 10 },
   { id: 'brickGrey', at: 'bench', in: [['stone', 2]], out: ['brickGrey', 2], secs: 2 },
   { id: 'vend', at: 'bench', in: [['planks', 6], ['glass', 1]], out: ['vend', 1], secs: 10 },
   { id: 'bunk', at: 'bench', in: [['planks', 3], ['woolBlue', 3]], out: ['bunk', 1], secs: 5 },

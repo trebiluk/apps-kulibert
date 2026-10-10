@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, countOf, isWool } from './craft.js'
+import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, countOf, isWool, isStone } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -1001,14 +1001,39 @@ export function createSession(api) {
     const p = api.pos()
     spawnDrop(item, left, p[0], p[1] + 0.3, p[2], 'full')
   }
+  function mixAdd(tag, item, n) {
+    const map = []
+    for (const part of String(tag || '').split('+')) {
+      if (!part) continue
+      const cut = part.indexOf('*')
+      if (cut < 0) continue
+      map.push([part.slice(0, cut), +part.slice(cut + 1) || 0])
+    }
+    const hit = map.find((row) => row[0] === item)
+    if (hit) hit[1] += n
+    else map.push([item, n])
+    return map.filter((row) => row[1] > 0).map((row) => row[0] + '*' + row[1]).join('+')
+  }
+  function giveTray(needItem, index, n) {
+    const tag = trayWool[index]
+    if ((needItem === 'woolAny' || needItem === 'stoneAny') && tag && tag.indexOf('*') >= 0) {
+      for (const part of tag.split('+')) {
+        const cut = part.indexOf('*')
+        if (cut < 0) continue
+        trayGiveBack(part.slice(0, cut), +part.slice(cut + 1) || 0)
+      }
+      return
+    }
+    const back = (needItem === 'woolAny' || needItem === 'stoneAny') && tag ? tag : needItem
+    trayGiveBack(back, n)
+  }
   function returnTray() {
     const r = RECIPES.find((x) => x.id === trayId)
     let moved = false
     if (r) r.in.forEach((pair, i) => {
       const n = trayPlaced[i] || 0
       if (!n) return
-      const back = pair[0] === 'woolAny' && trayWool[i] ? trayWool[i] : pair[0]
-      trayGiveBack(back, n)
+      giveTray(pair[0], i, n)
       trayPlaced[i] = 0
       trayWool[i] = ''
       moved = true
@@ -1362,7 +1387,7 @@ export function createSession(api) {
       const placePart = (item, index) => {
         const needItem = r.in[index][0]
         const needN = r.in[index][1]
-        const ok = needItem === 'woolAny' ? isWool(item) : item === needItem
+        const ok = needItem === 'woolAny' ? isWool(item) : needItem === 'stoneAny' ? isStone(item) : item === needItem
         if (!ok) return false
         const room = needN - (trayPlaced[index] || 0)
         const takeN = Math.min(bag.count(item), room)
@@ -1370,6 +1395,7 @@ export function createSession(api) {
         if (!bag.take(item, takeN)) return false
         trayPlaced[index] = (trayPlaced[index] || 0) + takeN
         if (needItem === 'woolAny') trayWool[index] = item
+        if (needItem === 'stoneAny') trayWool[index] = mixAdd(trayWool[index], item, takeN)
         paintHotbar()
         paintCraft(g)
         noteTray()
@@ -1378,8 +1404,7 @@ export function createSession(api) {
       const returnSlot = (index) => {
         const n = trayPlaced[index] || 0
         if (!n) return
-        const back = r.in[index][0] === 'woolAny' && trayWool[index] ? trayWool[index] : r.in[index][0]
-        trayGiveBack(back, n)
+        giveTray(r.in[index][0], index, n)
         trayPlaced[index] = 0
         trayWool[index] = ''
         paintHotbar()
@@ -1398,8 +1423,8 @@ export function createSession(api) {
           recipe: r,
           placed: () => trayPlaced,
           bag: () => bag.slots,
-          name: (item) => item === 'woolAny' ? t('woolAny') : itemName(item),
-          icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : ITEMS[item]),
+          name: (item) => item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : itemName(item),
+          icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : item === 'stoneAny' ? ITEMS.stone : ITEMS[item]),
           t,
           resultName: (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : ''),
           fillLabel: t('fillTray'),
@@ -1424,6 +1449,18 @@ export function createSession(api) {
                   const d = Math.min(bag.count(c), left)
                   if (d > 0 && bag.take(c, d)) {
                     trayWool[i] = c
+                    left -= d
+                    any = true
+                  }
+                  if (!left) break
+                }
+                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+              } else if (need === 'stoneAny') {
+                let left = takeN
+                for (const c of ['stone', 'slate', 'coal']) {
+                  const d = Math.min(bag.count(c), left)
+                  if (d > 0 && bag.take(c, d)) {
+                    trayWool[i] = mixAdd(trayWool[i], c, d)
                     left -= d
                     any = true
                   }
@@ -1461,8 +1498,10 @@ export function createSession(api) {
             r.in.forEach((_, i) => { trayPlaced[i] = 0 })
             noteTray()
             markFound(r.out[0])
-            if (r.out[0] === 'woodTool') markPath('pathTool')
-            if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
+            if (r.out[0] === 'woodTool') {
+              markPath('pathTool')
+              api.toast(t('woodPickToast'))
+            } else if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
             else api.toast(t('make') + ' ' + itemName(r.out[0]))
             craftFx = 'make'
             leftFor = r.id
@@ -1477,10 +1516,21 @@ export function createSession(api) {
           },
         })
       }
+      for (const [item] of r.in) {
+        const bagNote = document.createElement('p')
+        bagNote.className = 'gnote in-bag'
+        bagNote.dataset.need = item
+        bagNote.textContent = t('inBag').replace('{n}', String(countOf(bag, item)))
+        side.append(bagNote)
+      }
+      const fillBtn = side.querySelector('.keycap.fill')
+      const trayEmpty = r.in.every((_, i) => !(trayPlaced[i] > 0))
+      const bagEnough = !isBread && r.in.every(([item, n]) => countOf(bag, item) >= n)
+      if (fillBtn && trayEmpty && bagEnough) fillBtn.classList.add('lit')
       if (leftFor === r.id) {
         const left = document.createElement('p')
         left.className = 'gnote left-line'
-        left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', itemName(item)).replace('{n}', String(bag.count(item)))).join(' · ')
+        left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', itemName(item)).replace('{n}', String(countOf(bag, item)))).join(' · ')
         side.append(left)
       }
       if (st.station || st.gate) {
@@ -1926,14 +1976,17 @@ export function createSession(api) {
     })
   }
   function takeNamed(item, n) {
-    if (item !== 'woolAny') return bag.take(item, n)
+    if (item !== 'woolAny' && item !== 'stoneAny') return bag.take(item, n)
+    const order = item === 'stoneAny' ? ['stone', 'slate', 'coal'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
     let left = n
-    for (const c of ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']) {
+    const spent = []
+    for (const c of order) {
       const d = Math.min(bag.count(c), left)
-      if (d > 0 && bag.take(c, d)) left -= d
+      if (d > 0 && bag.take(c, d)) { spent.push([c, d]); left -= d }
       if (!left) return true
     }
-    return left === 0
+    for (const [c, d] of spent) bag.add(c, d)
+    return false
   }
   function craftMany(r, times) {
     if (!r || !craftOk(r.id)) return false
@@ -1948,9 +2001,11 @@ export function createSession(api) {
       const p = api.pos()
       spawnDrop(r.out[0], spot.left, p[0], p[1] + 0.3, p[2], 'full')
     }
-    if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
+    if (r.out[0] === 'woodTool') {
+      markPath('pathTool')
+      api.toast(t('woodPickToast'))
+    } else if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
     else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
-    if (r.out[0] === 'woodTool') markPath('pathTool')
     paintHotbar()
     return true
   }
@@ -2313,7 +2368,10 @@ export function createSession(api) {
     const made = make(r, bag, hot)
     if (!made) return { ok: false, why: 'full' }
     markFound(r.out[0])
-    if (made.pocket >= 0) sayPocket(r.out[0], made.pocket)
+    if (r.out[0] === 'woodTool') {
+      markPath('pathTool')
+      api.toast(t('woodPickToast'))
+    } else if (made.pocket >= 0) sayPocket(r.out[0], made.pocket)
     paintHotbar()
     return { ok: true, n: bag.count(r.out[0]) }
   }
@@ -2363,6 +2421,7 @@ export function createSession(api) {
     }
   }
   function load(doc) {
+    if (!doc || typeof doc !== 'object') doc = {}
     const p = doc.player || {}
     mode = p.mode === 'creative' ? 'creative' : 'survival'
     const extra = bags.survival.load(p.bag) || []
@@ -2414,6 +2473,22 @@ export function createSession(api) {
     recoverOrphans('')
     if (mode === 'survival') paintHotbar()
     else if (api.paintBar) api.paintBar()
+  }
+  function freshStart() {
+    bagHist.length = 0
+    redoBag.length = 0
+    placedLeaves.clear()
+    load({
+      player: { mode: 'survival', bag: [], hot: 0, home: null, bedQueue: [], table: false },
+      econ: {
+        start: ECON.start, cogs: ECON.start, seq: 0, day: '', soldToday: {}, spentToday: 0,
+        picked: [], found: [], ledger: [], dial: ECON.dial, dailyCap: ECON.dailyCap,
+      },
+      meta: {},
+      drops: [],
+      lost: [],
+    })
+    shopRules({ path: 'choose', help: false, required: false })
   }
   function setMode(next) {
     const n = next === 'creative' ? 'creative' : 'survival'
@@ -2594,7 +2669,7 @@ export function createSession(api) {
     },
     tryPlace: () => { const k = selectedItem(); if (slotMuted(k)) return false; const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
-    onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
+    onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, freshStart, setMode, paintChip, paintHotbar, selectedItem, pickup,
     recoverOrphans, bedDesigns: () => bedQueue.map((d) => normalizeBed(d)), park: (item, n) => keep(item, n || 1),
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
     shopRules, giveBed, bestBed: () => bestBed ? { ...bestBed } : null, setEnergy, energyState,

@@ -139,12 +139,96 @@ function normProtect(p) {
 function roundPos(p) {
   return [Math.round(p[0]), Math.round(p[1]), Math.round(p[2])]
 }
+let digCache = { at: 0, spot: null }
+function peekId(x, y, z) {
+  const ci = Math.floor(x / S)
+  const cj = Math.floor(y / S)
+  const ck = Math.floor(z / S)
+  const s = saved.get(key(ci, cj, ck))
+  if (s) return s[(x - ci * S) * S * S + (y - cj * S) * S + (z - ck * S)] | 0
+  const stamped = genSeen[key(ci, cj, ck)]
+  const g = stamped == null ? genVersion : (stamped | 0)
+  const name = genBlock(x, y, z, g, (qx, qz) => fadeDist(qx, y, qz))
+  return name ? (ID[name] || 0) : 0
+}
+function nearestDig() {
+  const pos = noa.entities.getPosition(noa.playerEntity)
+  const px = Math.round(pos[0])
+  const pz = Math.round(pos[2])
+  const c = protect.center
+  const rad = c ? protectRadius(protect.size) : 0
+  const stone = ID.stone
+  const sand = ID.sand
+  for (let ring = 1; ring <= 64; ring++) {
+    let best = null
+    let bestD = 1e9
+    for (let dx = -ring; dx <= ring; dx++) {
+      for (let dz = -ring; dz <= ring; dz++) {
+        if (Math.max(Math.abs(dx), Math.abs(dz)) !== ring) continue
+        const x = px + dx
+        const z = pz + dz
+        if (c && rad) {
+          const ddx = x - c[0]
+          const ddz = z - c[2]
+          if (ddx * ddx + ddz * ddz <= rad * rad) continue
+        }
+        const h = heightAt(x, z)
+        for (let y = h; y >= h - 4 && y > -64; y--) {
+          if (protectedCell(x, y, z, protect)) continue
+          const id = peekId(x, y, z)
+          if (id !== stone && id !== sand) continue
+          const d = dx * dx + dz * dz + (y - h) * (y - h)
+          if (d < bestD) { bestD = d; best = [x, y, z] }
+        }
+      }
+    }
+    if (best) return best
+  }
+  return null
+}
+function paintDigChip(spot) {
+  let chip = document.getElementById('dig-chip')
+  if (!spot) {
+    if (chip) chip.hidden = true
+    return
+  }
+  if (!chip) {
+    chip = document.createElement('button')
+    chip.type = 'button'
+    chip.id = 'dig-chip'
+    chip.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:42;min-height:44px;min-width:44px;padding:8px 14px;border-radius:999px;border:1px solid #d7e2f2;background:#132033;color:#f4f7fb;font:600 14px/1.2 system-ui,sans-serif;cursor:pointer;'
+    chip.addEventListener('pointerdown', (e) => e.stopPropagation())
+    chip.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (!digCache.spot) return
+      const here = noa.entities.getPosition(noa.playerEntity)
+      setLook(Math.atan2(digCache.spot[0] + 0.5 - here[0], digCache.spot[2] + 0.5 - here[2]), noa.camera.pitch)
+    })
+    document.body.appendChild(chip)
+  }
+  const here = noa.entities.getPosition(noa.playerEntity)
+  const dx = spot[0] + 0.5 - here[0]
+  const dz = spot[2] + 0.5 - here[2]
+  let rel = Math.atan2(dx, dz) - (noa.camera ? noa.camera.heading : 0)
+  rel = Math.atan2(Math.sin(rel), Math.cos(rel))
+  const arrows = ['↑', '↗', '→', '↘', '↓', '↙', '←', '↖']
+  const arrow = arrows[(Math.round(rel / (Math.PI / 4)) + 8) % 8]
+  chip.textContent = arrow + ' ' + t('digOutside')
+  chip.hidden = false
+}
 function noteProtected() {
   const now = performance.now()
   if (now - protectTold < 3000) return
   protectTold = now
-  toast(t('protectedArea'))
+  toast(t('protectedArea') + ' — ' + t('digOutside'))
   ringUntil = now + 2000
+  if (now - digCache.at >= 10000) {
+    let spot = null
+    try { spot = nearestDig() } catch (e) { spot = null }
+    digCache = { at: now, spot }
+  }
+  paintDigChip(digCache.spot)
 }
 function zoneLocked(x, y, z) {
   if (teacherOn() || townHelper()) return false
@@ -2712,6 +2796,8 @@ async function importFile(file) {
   markSave(t('imported'))
 }
 async function resetWorld() {
+  try { await save() } catch (e) {}
+  try { await keepClassic() } catch (e) {}
   Rules.load({})
   gifts = {}
   syncGlasses()
@@ -2723,7 +2809,8 @@ async function resetWorld() {
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
-  if (session && session.clearLoose) session.clearLoose()
+  if (session && session.freshStart) session.freshStart()
+  else if (session && session.clearLoose) session.clearLoose()
   grantSaplings()
   syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
@@ -2733,7 +2820,96 @@ async function resetWorld() {
   setLook(0, 0.18)
   seedOldBushes()
   markSave(t('fresh'))
+  try { await save() } catch (e) {}
+  try { await paintOldWorlds() } catch (e) {}
 }
+function ymd(d) {
+  const x = d || new Date()
+  return String(x.getFullYear()) + String(x.getMonth() + 1).padStart(2, '0') + String(x.getDate()).padStart(2, '0')
+}
+function classicPrefix() { return WORLD + '-classic-' }
+function idbReq(req) {
+  return new Promise((res, rej) => {
+    req.onsuccess = () => res(req.result)
+    req.onerror = () => rej(req.error || new Error('idb'))
+  })
+}
+async function idbGet(k) {
+  const db = await idb()
+  return idbReq(db.transaction(STORE).objectStore(STORE).get(k))
+}
+async function idbPut(k, doc) {
+  const db = await idb()
+  const tx = db.transaction(STORE, 'readwrite')
+  tx.objectStore(STORE).put(doc, k)
+  await new Promise((res, rej) => { tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error || new Error('idb')); tx.onabort = () => rej(tx.error || new Error('idb')) })
+}
+async function idbDel(k) {
+  const db = await idb()
+  const tx = db.transaction(STORE, 'readwrite')
+  tx.objectStore(STORE).delete(k)
+  await new Promise((res, rej) => { tx.oncomplete = () => res(); tx.onerror = () => rej(tx.error || new Error('idb')); tx.onabort = () => rej(tx.error || new Error('idb')) })
+}
+async function classicKeys() {
+  const db = await idb()
+  const keys = await idbReq(db.transaction(STORE).objectStore(STORE).getAllKeys())
+  const pre = classicPrefix()
+  return (keys || []).filter((k) => typeof k === 'string' && k.indexOf(pre) === 0).sort((a, b) => b.slice(pre.length).localeCompare(a.slice(pre.length)))
+}
+async function trimClassic(keys) {
+  const list = keys || await classicKeys()
+  for (const k of list.slice(3)) await idbDel(k)
+}
+async function keepClassic() {
+  const doc = await idbGet(WORLD)
+  if (!doc) return
+  await idbPut(classicPrefix() + ymd(), doc)
+  await trimClassic()
+}
+async function openClassic(keyName) {
+  const doc = await idbGet(keyName)
+  if (!doc) return
+  try { await save() } catch (e) {}
+  const cur = await idbGet(WORLD)
+  if (cur) {
+    await idbPut(classicPrefix() + ymd(), cur)
+    await trimClassic()
+  }
+  await applyDoc(doc)
+  try { await save() } catch (e) {}
+  await paintOldWorlds()
+  toast(t('archiveOpen'))
+}
+async function paintOldWorlds() {
+  const btn = document.getElementById('m-old')
+  const list = document.getElementById('m-old-list')
+  if (!btn || !list) return
+  if (!btn.dataset.bound) {
+    btn.dataset.bound = '1'
+    btn.addEventListener('click', async () => {
+      const keys = await classicKeys()
+      list.innerHTML = ''
+      if (!keys.length) { list.hidden = true; btn.hidden = true; return }
+      const pre = classicPrefix()
+      for (const k of keys) {
+        const day = String(k).slice(pre.length)
+        const label = day.length === 8 ? (day.slice(0, 4) + '-' + day.slice(4, 6) + '-' + day.slice(6)) : day
+        const row = document.createElement('button')
+        row.type = 'button'
+        row.className = 'row'
+        row.style.minHeight = '44px'
+        row.textContent = t('openDated').replace('{date}', label)
+        row.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openClassic(k) })
+        list.append(row)
+      }
+      list.hidden = false
+    })
+  }
+  const keys = await classicKeys()
+  btn.hidden = !keys.length
+  if (!keys.length) { list.hidden = true; list.innerHTML = '' }
+}
+paintOldWorlds().catch(() => {})
 async function exportJSON() {
   const doc = await snapshot()
   const a = document.createElement('a')

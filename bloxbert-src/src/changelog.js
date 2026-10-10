@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.149', date: '2026-10-10', lines: {
+    en: ['A fresh world starts clean, and your old world stays in the menu. A Wood Pickaxe is a Wood Pickaxe.'],
+    uk: ['Новий світ починається чистий, а старий лишається в меню. Дерев’яне кайло — це дерев’яне кайло.'],
+    ru: ['Новый мир начинается чистым, а старый остаётся в меню. Деревянная кирка — это деревянная кирка.'],
+    es: ['Un mundo nuevo empieza limpio, y el viejo se queda en el menú. Un pico de madera es un pico de madera.'],
+    ar: ['العالم الجديد يبدأ نظيفاً، والعالم القديم يبقى في القائمة. معول الخشب هو معول خشب.'],
+    'fa-AF': ['جهان تازه پاک شروع می‌شود، و جهان کهنه در منو می‌ماند. کلنگ چوبی همان کلنگ چوبی است.'],
+    rw: ['Isi nshya itangira isukuye, kandi isi ya kera iguma mu menyu. Icyuma cy\'ibiti ni icyuma cy\'ibiti.'],
+    ti: ['ሓድሽ ዓለም ጽሩይ ትጅምር፡ እቲ ናይ ቀደም ድማ ኣብ ምናሌ ይጸንሕ። ናይ ዕንጨይቲ መኮፍ ናይ ዕንጨይቲ መኮፍ እዩ።'],
+  }},
   { v: '2.5.147', date: '2026-10-10', lines: {
     en: ['Water no longer shows seams. A bad clock is ignored.'],
     uk: ['Вода більше не показує шви. Поганий годинник ігнорується.'],
