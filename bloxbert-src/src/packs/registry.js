@@ -1,15 +1,42 @@
-// Pack registry. No packs ship yet. Merge order is pack id, A to Z.
+// Pack registry. Merge order is pack id, A to Z.
+// Farm blocks keep their frozen core ids. Every other pack id is 1100+.
 import { FROZEN } from '../data/ids.js'
 
 const PACKS = []
+const MOVABLE = new Set([
+  'wheat', 'reed', 'farmland', 'tuft', 'cropSprout', 'cropLeafy', 'cropTall', 'cropRipe',
+  'farmlandWet', 'bushYoung', 'bushLeaf', 'bushFull', 'bushFruit', 'sapling',
+])
 
 function blockOf(raw) {
-  if (Array.isArray(raw)) return { id: raw[0], key: raw[1] }
-  return raw || {}
+  if (Array.isArray(raw)) return { id: raw[0], key: raw[1], row: raw.slice() }
+  const row = raw && raw.row ? raw.row.slice() : [raw && raw.id, raw && raw.key]
+  return { id: row[0], key: row[1], row }
 }
 
 function ordered() {
   return [...PACKS].sort((a, b) => String(a.id).localeCompare(String(b.id)))
+}
+
+function packsOffFromLocation() {
+  try {
+    const search = typeof location !== 'undefined' && location && location.search ? location.search : ''
+    const q = new URLSearchParams(search).get('nopack') || ''
+    return q.split(',').map((s) => s.trim()).filter(Boolean)
+  } catch (e) {
+    return []
+  }
+}
+
+const OFF = new Set(packsOffFromLocation())
+
+export function setPacksOff(ids) {
+  OFF.clear()
+  for (const id of ids || []) if (id) OFF.add(String(id))
+}
+
+export function packOn(id) {
+  return !OFF.has(id)
 }
 
 export function registerPack(pack) {
@@ -22,7 +49,8 @@ export function registerPack(pack) {
   for (const b of blocks) {
     const id = b.id | 0
     const key = b.key
-    if (!key || id < 1100) throw new Error('pack id range ' + id)
+    const movable = MOVABLE.has(key) && FROZEN[key] === id
+    if (!key || (id < 1100 && !movable)) throw new Error('pack id range ' + id)
     if (FROZEN[key] !== id) throw new Error('frozen ' + key)
     const owner = Object.keys(FROZEN).find((k) => FROZEN[k] === id)
     if (owner !== key) throw new Error('frozen id ' + id)
@@ -34,7 +62,10 @@ export function registerPack(pack) {
     }
     seenId.add(id)
     seenKey.add(key)
+    b.id = id
   }
+  const drops = new Map()
+  if (Array.isArray(pack.drops)) for (const pair of pack.drops) drops.set(pair[0] | 0, pair[1])
   PACKS.push({
     id: pack.id,
     v: pack.v,
@@ -42,7 +73,7 @@ export function registerPack(pack) {
     items: pack.items || [],
     recipes: pack.recipes || [],
     strings: pack.strings || {},
-    drops: pack.drops || {},
+    drops,
     migrate: typeof pack.migrate === 'function' ? pack.migrate : null,
   })
   return pack.id
@@ -53,13 +84,61 @@ export function packIds() {
 }
 
 export function packVersions() {
-  const out = {}
-  for (const p of ordered()) out[p.id] = p.v
-  return out
+  return Object.fromEntries(ordered().map((p) => [p.id, p.v]))
 }
 
 export function packBlocks() {
   const out = []
   for (const p of ordered()) for (const b of p.blocks) out.push(b)
   return out
+}
+
+export function blockByKey(key) {
+  for (const p of ordered()) {
+    if (!packOn(p.id)) continue
+    for (const b of p.blocks) if (b.key === key) return b.id
+  }
+  return 0
+}
+
+export function packItems() {
+  const out = []
+  for (const p of ordered()) for (const it of p.items) out.push({ pack: p.id, ...it })
+  return out
+}
+
+export function packRecipes() {
+  const out = []
+  for (const p of ordered()) {
+    if (!packOn(p.id)) continue
+    for (const r of p.recipes) out.push(r)
+  }
+  return out
+}
+
+export function packDrop(blockId) {
+  for (const p of ordered()) {
+    if (!packOn(p.id)) continue
+    if (p.drops.has(blockId)) return p.drops.get(blockId)
+  }
+  return undefined
+}
+
+export function packStrings() {
+  const out = {}
+  for (const p of ordered()) {
+    for (const [lang, row] of Object.entries(p.strings || {})) {
+      out[lang] = Object.assign(out[lang] || {}, row)
+    }
+  }
+  return out
+}
+
+export function itemMuted(key) {
+  if (!key) return false
+  for (const p of PACKS) {
+    if (packOn(p.id)) continue
+    if ((p.items || []).some((it) => it.key === key)) return true
+  }
+  return false
 }

@@ -1,5 +1,10 @@
 // A Box holds 18 stacks. Nothing is deleted: what does not fit is returned.
+import { itemMuted } from './packs/registry.js'
 export const BOX_SLOTS = 18
+
+export function slotMuted(item) {
+  return itemMuted(item)
+}
 
 export function emptyBox() {
   return Array.from({ length: BOX_SLOTS }, () => null)

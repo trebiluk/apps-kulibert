@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.122'
+const VERSION = '2.5.123'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -42,7 +42,8 @@ import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, re
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
-import { packVersions } from './packs/registry.js'
+import { packVersions, packBlocks, packOn } from './packs/registry.js'
+import './packs/farm/pack.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -318,8 +319,6 @@ export const BLOCKS = [
   [25, 'storeCounter', 'store', 'Sc', null],
   [26, 'bunk', 'bunk', 'Bk', null],
   [27, 'box', 'wood', 'Bx', 'wood'],
-  [28, 'wheat', 'cotton_tan', 'Wh', 'cotton_tan'],
-  [29, 'reed', 'leaves', 'Rd', 'leaves'],
   [30, 'door', 'wood', 'Dr', 'wood'],
   [31, 'doorOpen', 'wood', 'Do', 'wood'],
   [32, 'doorGlass', 'glass', 'Gd', null],
@@ -347,23 +346,25 @@ export const BLOCKS = [
   [46, 'zincOre', 'greystone', 'Zo', 'greystone'],
   [47, 'lantern', 'glass', 'Ln', null],
   [48, 'charger', 'stone', 'Ch', 'stone'],
-  [49, 'farmland', 'dirt', 'Fm', null],
-  [58, 'tuft', 'leaves', 'Tf', null],
-  [59, 'cropSprout', 'leaves', 'Cs', null],
-  [60, 'cropLeafy', 'leaves', 'Cl', null],
-  [61, 'cropTall', 'leaves', 'Ct', null],
-  [62, 'cropRipe', 'cotton_tan', 'Cr', null],
-  [63, 'farmlandWet', 'dirt', 'Fw', null],
   [64, 'water', 'ice', 'Wa', null],
-  [65, 'bushYoung', 'leaves', 'By', null],
-  [66, 'bushLeaf', 'leaves', 'Bl', null],
-  [67, 'bushFull', 'leaves', 'Bf', null],
-  [68, 'bushFruit', 'leaves', 'Bu', null],
   [69, 'woodshop', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [70, 'woodshopSide', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [71, 'clay', 'clay', 'Cy', 'dirt'],
-  [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
+function insertAfter(rows, key, extra) {
+  if (!extra.length) return
+  const i = rows.findIndex((r) => r[1] === key)
+  if (i < 0) rows.push(...extra)
+  else rows.splice(i + 1, 0, ...extra)
+}
+if (packOn('farm')) {
+  const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
+  const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
+  insertAfter(BLOCKS, 'box', take('wheat', 'reed'))
+  insertAfter(BLOCKS, 'charger', take('farmland', 'tuft', 'cropSprout', 'cropLeafy', 'cropTall', 'cropRipe', 'farmlandWet'))
+  insertAfter(BLOCKS, 'water', take('bushYoung', 'bushLeaf', 'bushFull', 'bushFruit'))
+  insertAfter(BLOCKS, 'clay', take('sapling'))
+}
 noa.registry.registerMaterial('coreplate', tile('coreplate'))
 noa.registry.registerMaterial('workbench', tile('workbench'))
 noa.registry.registerMaterial('benchTop', tile('workbench'))
@@ -1471,6 +1472,7 @@ function placeBlock(face, opts) {
 }
 const tillCount = new Map()
 function tryTill(aimed, repeat) {
+  if (!packOn('farm')) return false
   if (!aimed || !session || session.mode !== 'survival') return false
   if (!aimed.position || !aimed.adjacent) return false
   const x = Math.round(aimed.position[0])
@@ -1793,6 +1795,7 @@ function tryCrop(aimed) {
 }
 let plantStroke = null
 function tryPlant(aimed, repeat) {
+  if (!packOn('farm')) return false
   if (!aimed || !session || session.mode !== 'survival') return false
   if (!aimed.position || !aimed.adjacent) return false
   const held = (session.selectedItem && session.selectedItem()) || ''
@@ -1835,6 +1838,7 @@ function sproutWhy(soil) {
   return ''
 }
 function trySprout(aimed, repeat) {
+  if (!packOn('farm')) return false
   if (!aimed || !session || session.mode !== 'survival') return false
   if (!aimed.position || !aimed.adjacent) return false
   const held = (session.selectedItem && session.selectedItem()) || ''
@@ -1870,6 +1874,7 @@ function trySprout(aimed, repeat) {
   return true
 }
 function paintCrop(row) {
+  if (!packOn('farm')) return
   const ids = row.kind === 'bush' ? BUSH : CROP
   const st = stage(row.grown, row)
   const id = ids[st]
@@ -1888,6 +1893,7 @@ function growAll(now) {
   if (moved) dirty = true
 }
 function syncCrops(now) {
+  if (!packOn('farm')) return
   for (const r of farm.rows()) advance(r, now)
   for (const r of farm.rows()) {
     const soilId = getVoxel(r.x, r.y - 1, r.z)
@@ -1906,6 +1912,7 @@ let cropTickAt = 0
 let cropFreeze = false
 let cropHoverAt = 0
 function syncForage(now) {
+  if (!packOn('farm')) return
   const list = [...forage.rows()]
   let moved = false
   for (const r of list) {
@@ -1920,7 +1927,7 @@ function syncForage(now) {
       continue
     }
     const id = getVoxel(r.x, r.y, r.z)
-    const bare = (id === BARE_BUSH || id === 66 || id === 67) && !farm.get(r.x, r.y, r.z)
+    const bare = isBushId(id) && id !== FRUIT_BUSH && !farm.get(r.x, r.y, r.z)
     if (!bare) { forage.remove(r.x, r.y, r.z); moved = true; continue }
     if (p.ready) { setVoxel(r.x, r.y, r.z, FRUIT_BUSH); forage.remove(r.x, r.y, r.z); moved = true }
   }

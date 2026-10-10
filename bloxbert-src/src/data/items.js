@@ -1,4 +1,6 @@
 import { intoBag } from '../drops.js'
+import '../packs/farm/pack.js'
+import { packItems, packDrop, itemMuted } from '../packs/registry.js'
 export const ITEMS = {
   log: { block: 11, letter: 'L', cat: 'Materials', base: 4, stack: 64, sell: true },
   planks: { block: 10, letter: 'P', base: 1, sell: true },
@@ -49,32 +51,35 @@ export const ITEMS = {
   batteryCell: { letter: 'Bc', base: 0, sell: false },
   woodTool: { svg: 'woodTool', letter: 'Wd', tool: 'wood', base: 2, sell: false, stack: 1 },
   stoneTool: { svg: 'stoneTool', letter: 'So', tool: 'stone', base: 3, sell: false, stack: 1 },
-  hoe: { svg: 'hoe', letter: 'Ho', base: 2, sell: false, stack: 1 },
   safetyGlasses: { svg: 'safetyGlasses', letter: 'Gz', base: 0, sell: false, stack: 1 },
   measuringTape: { svg: 'measuringTape', letter: 'Mt', base: 0, sell: false, stack: 1 },
   handSaw: { svg: 'handSaw', letter: 'Hs', base: 0, sell: false, stack: 1 },
   hammer: { svg: 'hammer', letter: 'Hr', base: 0, sell: false, stack: 1 },
   woodshop: { block: 69, letter: 'Ws', base: 8, sell: false },
   clay: { block: 71, letter: 'Cy', base: 0, sell: false },
-  sapling: { block: 185, letter: 'Sp', base: 0, sell: false },
-  berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
-  wheat: { block: 28, letter: 'Wh', cat: 'Food', base: 2, sell: false },
-  wheatSeeds: { svg: 'wheatSeeds', letter: 'Ws', base: 0, sell: false },
-  bushSprout: { svg: 'bushSprout', letter: 'Bs', base: 0, sell: false },
-  flour: { svg: 'flour', letter: 'Fl', cat: 'Food', base: 3, sell: true },
-  sugar: { svg: 'sugar', letter: 'Su', cat: 'Food', base: 2, sell: true },
-  cupcake: { svg: 'cupcake', letter: 'Cu', cat: 'Food', base: 6, sell: true },
-  bread: { svg: 'bread', letter: 'Bd', cat: 'Food', base: 8, sell: true },
 }
-export const ITEM_BY_BLOCK = Object.fromEntries(Object.entries(ITEMS).filter(([, v]) => v.block).map(([k, v]) => [v.block, k]))
+function mountFarmItems() {
+  const farm = packItems().filter((it) => it.pack === 'farm')
+  const byKey = new Map(farm.map((it) => [it.key, it]))
+  const order = []
+  for (const k of Object.keys(ITEMS)) {
+    order.push(k)
+    for (const it of farm) if (it.after === k && !order.includes(it.key)) order.push(it.key)
+  }
+  for (const it of farm) if (!it.after && !order.includes(it.key)) order.push(it.key)
+  const next = {}
+  for (const k of order) next[k] = byKey.has(k) ? byKey.get(k).def : ITEMS[k]
+  for (const k of Object.keys(ITEMS)) delete ITEMS[k]
+  Object.assign(ITEMS, next)
+}
+mountFarmItems()
+export const ITEM_BY_BLOCK = {}
+for (const [k, v] of Object.entries(ITEMS)) if (v.block) ITEM_BY_BLOCK[v.block] = k
 export function dropOf(blockId) {
   if (blockId === 1) return 'dirt'
-  if (blockId === 49 || blockId === 63) return 'dirt'
-  if (blockId === 58 || blockId === 64) return null
-  if (blockId >= 59 && blockId <= 62) return 'wheatSeeds'
-  if (blockId >= 65 && blockId <= 68) return 'bushSprout'
-  if (blockId === 28) return 'wheat'
-  if (blockId === 29) return 'sugar'
+  const packed = packDrop(blockId)
+  if (packed !== undefined) return packed
+  if (blockId === 64) return null
   if (blockId >= 50 && blockId <= 57) return dropOf(blockId - 20)
   if (blockId === 31) return 'door'
   if (blockId === 33) return 'doorGlass'
@@ -83,7 +88,7 @@ export function dropOf(blockId) {
   if (blockId === 39) return 'lever'
   if (blockId === 41) return 'pushButton'
   const named = ITEM_BY_BLOCK[blockId]
-  if (!named) return null
+  if (!named || itemMuted(named)) return null
   const hand = intoBag(named)
   return hand ? hand.item : named
 }

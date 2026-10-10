@@ -1,4 +1,6 @@
 // What a fresh Survival world grows. Pure, so a node check can prove a kid can find it.
+import { blockByKey } from './packs/registry.js'
+import './packs/farm/pack.js'
 export function hash(x, z) {
   let h = (x * 374761393 + z * 668265263) | 0
   h = (h ^ (h >>> 13)) * 1274126177
@@ -84,11 +86,11 @@ export function plantHere(x, y, z, surface, inTown) {
   if (starterStone(x, y, z) && y > surface) return 'stone'
   if (starterSand(x, y, z) && y > surface) return 'sand'
   if (y !== surface + 1) return ''
-  if (surface <= 1) return hash(x, z + 5) < 0.18 ? 'reed' : ''
+  if (surface <= 1) return hash(x, z + 5) < 0.18 && blockByKey('reed') ? 'reed' : ''
   const n = hash(x, z)
-  if (n >= 0.04 && n < 0.07) return 'wheat'
-  if (n >= 0.12 && n < 0.28) return 'tuft'
-  if (wildBushCell(x, z)) return 'bushFruit'
+  if (n >= 0.04 && n < 0.07) return blockByKey('wheat') ? 'wheat' : ''
+  if (n >= 0.12 && n < 0.28) return blockByKey('tuft') ? 'tuft' : ''
+  if (wildBushCell(x, z)) return blockByKey('bushFruit') ? 'bushFruit' : ''
   return ''
 }
 

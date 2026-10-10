@@ -10,7 +10,7 @@ import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
-import { emptyBox, cloneRec } from './box.js'
+import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
@@ -381,7 +381,8 @@ export function createSession(api) {
       digit.textContent = String(i + 1)
       const sw = document.createElement('span')
       sw.className = 'sw'
-      if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
+      if (s && slotMuted(s.item)) sw.textContent = '?'
+      else if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
       else if (item && item.block && api.blockIcon) sw.append(fitIcon(api.blockIcon(item.block)))
       else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#E6B15A"/></svg>')
       b.append(digit, sw)
@@ -394,8 +395,8 @@ export function createSession(api) {
       const wear = s && wearBar(item, s.uses)
       if (wear) b.append(wear)
       b.setAttribute('aria-pressed', String(i === hot))
-      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
-      if (s) b.title = itemName(s.item)
+      b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
+      if (s) b.title = faceName(s.item)
       b.addEventListener('click', () => {
         if (i === hot) useHeld()
         else { hot = i; paintHotbar(); if (s) api.flash && api.flash(itemName(s.item)) }
@@ -447,6 +448,7 @@ export function createSession(api) {
   }
   const EDIBLE = ['berry', 'bread', 'cupcake']
   function isFoodItem(item) {
+    if (slotMuted(item)) return false
     return !!(item && (FEED[item] || EDIBLE.includes(item)))
   }
   function sayEatTip() {
@@ -456,7 +458,7 @@ export function createSession(api) {
   }
   function useHeld() {
     const item = selectedItem()
-    if (!item) return ''
+    if (!item || slotMuted(item)) return ''
     if (energyOn && mode === 'survival' && FEED[item]) {
       if (energy.bolts >= 10) {
         api.toast(t('energyFull'))
@@ -668,10 +670,10 @@ export function createSession(api) {
     head.className = 'bag-head'
     const ic = document.createElement('span')
     ic.className = 'gic'
-    ic.append(itemIcon(item))
+    ic.append(faceIcon(itemKey))
     const name = document.createElement('span')
     name.className = 'bag-name'
-    name.textContent = itemName(itemKey) + ' x' + n
+    name.textContent = faceName(itemKey) + ' x' + n
     head.append(ic, name)
     panel.append(head)
     const keys = document.createElement('div')
@@ -689,7 +691,7 @@ export function createSession(api) {
     addKey('hold', t('holdIt'), (e) => { if (e && e.stopPropagation) e.stopPropagation(); holdItem(itemKey, index); if (api.close) api.close() })
     addKey('drop1', t('drop1'), () => { dropStack(index, false); refreshBag() })
     addKey('dropall', t('dropAll'), () => { dropStack(index, true); refreshBag() })
-    addKey('worth', t('worth'), () => {
+    if (!slotMuted(itemKey)) addKey('worth', t('worth'), () => {
       const pay = quoteSell(item, wallet.state.soldToday[itemKey] || 0, wallet.state.dial || 1, { ...ECON, dial: wallet.state.dial })
       api.toast(t('worth') + ' ⚙ ' + (item.base || 0) + ' · ' + t('tallyPays') + ' ⚙ ' + pay + ' · ' + t('youHave') + ' ' + bag.count(itemKey))
     })
@@ -755,6 +757,18 @@ export function createSession(api) {
     }
     return out
   }
+  function qMark() {
+    const s = document.createElement('span')
+    s.textContent = '?'
+    return s
+  }
+  function faceIcon(key) {
+    if (slotMuted(key)) return qMark()
+    return itemIcon(ITEMS[key])
+  }
+  function faceName(key) {
+    return slotMuted(key) ? '?' : itemName(key)
+  }
   function itemIcon(item) {
     if (!item) return document.createElement('span')
     if (item.svg) { const s = document.createElement('span'); s.innerHTML = itemSvg(item.svg); return s }
@@ -772,7 +786,7 @@ export function createSession(api) {
       const wells = document.createElement('div')
       wells.className = 'wells'
       for (const [k, item] of Object.entries(ITEMS)) {
-        if (!item.block) continue
+        if (!item.block || slotMuted(k)) continue
         const b = document.createElement('button')
         b.type = 'button'
         b.className = 'well gtile'
@@ -921,7 +935,7 @@ export function createSession(api) {
       b.dataset.slot = String(i)
       const pic = document.createElement('span')
       pic.className = 'gic'
-      if (s) pic.append(itemIcon(ITEMS[s.item]))
+      if (s) pic.append(faceIcon(s.item))
       b.append(pic)
       if (s) {
         const count = document.createElement('span')
@@ -931,22 +945,22 @@ export function createSession(api) {
         if (i === bagSel) {
           const lbl = document.createElement('span')
           lbl.className = 'glbl'
-          lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : itemName(s.item)
+          lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : faceName(s.item)
           b.append(lbl)
         }
       }
       const wear = s && wearBar(ITEMS[s.item], s.uses)
       if (wear) b.append(wear)
       b.setAttribute('aria-pressed', String(i === bagSel))
-      b.setAttribute('aria-label', s ? itemName(s.item) : t('emptySlot'))
-      b.title = s ? itemName(s.item) : t('emptySlot')
+      b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
+      b.title = s ? faceName(s.item) : t('emptySlot')
       b.addEventListener('pointerdown', (e) => {
         if (blockSlot(e)) return
         startDrag(b, e, {
           ghostClass: 'bag-ghost',
           targets: '.well[data-slot]',
           canStart: () => !!(s && bag.slots[i]),
-          icon: () => itemIcon(ITEMS[s.item]),
+          icon: () => faceIcon(s.item),
           canDrop: (well) => {
             const to = Number(well.dataset.slot)
             const src = bag.slots[i]
@@ -1567,7 +1581,7 @@ export function createSession(api) {
     today()
     for (const el of [...g.querySelectorAll('.item')]) el.remove()
     for (const [k, item] of Object.entries(ITEMS)) {
-      if (!bag.count(k)) continue
+      if (!bag.count(k) || slotMuted(k)) continue
       const sold = wallet.state.soldToday[k] || 0
       const pay = item.sell ? quoteSell(item, sold, wallet.state.dial || 1, ECON) : 0
       const b = document.createElement('button')
@@ -1762,7 +1776,7 @@ export function createSession(api) {
   function slotsUi() {
     if (paintBox.ui) return paintBox.ui
     const KS = bindBertopiaSlots({
-      icon: (item) => itemIcon(ITEMS[item] || null),
+      icon: (item) => slotMuted(item) ? qMark() : itemIcon(ITEMS[item] || null),
       name: itemName,
       t,
       cap: stackCap,
@@ -1935,6 +1949,7 @@ export function createSession(api) {
     return true
   }
   function sell(k, n) {
+    if (slotMuted(k)) return
     today()
     const item = ITEMS[k]
     const sold = wallet.state.soldToday[k] || 0
@@ -2476,10 +2491,10 @@ export function createSession(api) {
       hot = n
       paintHotbar()
       const s = bag.slots[n]
-      if (s && api.flash) api.flash(itemName(s.item))
+      if (s && api.flash) api.flash(faceName(s.item))
       return ''
     },
-    tryPlace: () => { const k = selectedItem(); const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
+    tryPlace: () => { const k = selectedItem(); if (slotMuted(k)) return false; const id = k && ITEMS[k] && ITEMS[k].block; return onPlace(1, 5, 1, id) },
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
@@ -2487,7 +2502,7 @@ export function createSession(api) {
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
     give(item, n) { giveItem(item, n) },
     seedCount(kind, x, y, z) { return kind === 'tuft' ? tuftSeedCount(x, y, z) : wheatSeedCount(x, y, z) },
-    blockForHot() { const k = selectedItem(); return k && ITEMS[k] && ITEMS[k].block },
+    blockForHot() { const k = selectedItem(); if (!k || slotMuted(k)) return 0; return ITEMS[k] && ITEMS[k].block },
     toolTier() { const k = selectedItem(); return (k && ITEMS[k] && ITEMS[k].tool) || 'hand' },
     dropHeld, groundDrops: () => ground, clearLoose() { ground.length = 0; lost.length = 0 }, tickDrops,
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },

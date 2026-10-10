@@ -2,6 +2,7 @@
 import { readFileSync } from 'fs'
 import { FROZEN } from '../src/data/ids.js'
 import { packBlocks, registerPack, packIds, packVersions } from '../src/packs/registry.js'
+import '../src/packs/farm/pack.js'
 
 const fail = []
 const text = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8')
@@ -22,8 +23,9 @@ for (const b of blocks) {
   else if (FROZEN[b.key] !== b.id) fail.push('frozen ' + b.key + ' is ' + FROZEN[b.key] + ' not ' + b.id)
   if (idToKey.get(b.id) !== b.key) fail.push('frozen id ' + b.id + ' has a different key')
 }
+const packed = new Set(packBlocks().map((b) => b.key))
 for (const [key, id] of Object.entries(FROZEN)) {
-  if (have.has(key)) continue
+  if (have.has(key) || packed.has(key)) continue
   if (id >= 1100) continue
   fail.push('frozen key disappeared ' + key)
 }
@@ -45,7 +47,7 @@ registerPack({ id: 'alpha', v: 2, blocks: [] })
 threw = false
 try { registerPack({ id: 'alpha', v: 1, blocks: [] }) } catch (e) { threw = true }
 if (!threw) fail.push('duplicate pack')
-if (packIds().join(',') !== 'alpha,woodshop') fail.push('merge order ' + packIds().join(','))
+if (packIds().join(',') !== 'alpha,farm,woodshop') fail.push('merge order ' + packIds().join(','))
 if (packVersions().alpha !== 2 || packVersions().woodshop !== 1) fail.push('pack versions')
 if (fail.length) { console.error(fail.join('\n')); process.exit(1) }
 console.log('ids-check ok', blocks.length, 'blocks', Object.keys(FROZEN).length, 'frozen')

@@ -27,21 +27,27 @@ export function parseBlocks(text) {
 
 export async function loadBlockRows() {
   const idsUrl = new URL('../src/data/ids.js', import.meta.url)
+  let rows = null
   if (existsSync(idsUrl)) {
     const mod = await import(idsUrl.href)
-    const rows = mod.BLOCKS || mod.default
-    if (Array.isArray(rows) && rows.length && Array.isArray(rows[0])) return rows.map((r) => [r[0], r[1]])
+    const listed = mod.BLOCKS || mod.default
+    if (Array.isArray(listed) && listed.length && Array.isArray(listed[0])) rows = listed.map((r) => [r[0], r[1]])
     const ids = mod.IDS || mod.ids
-    if (ids && typeof ids === 'object') {
+    if (!rows && ids && typeof ids === 'object') {
       const out = []
       for (const [k, v] of Object.entries(ids)) {
         if (typeof v === 'number') out.push([v, k])
         else if (/^\d+$/.test(k) && typeof v === 'string') out.push([Number(k), v])
       }
-      if (out.length) return out
+      if (out.length) rows = out
     }
   }
-  return parseBlocks(readFileSync(new URL('../src/main.js', import.meta.url), 'utf8'))
+  if (!rows) rows = parseBlocks(readFileSync(new URL('../src/main.js', import.meta.url), 'utf8'))
+  const { packBlocks } = await import('../src/packs/registry.js')
+  await import('../src/packs/farm/pack.js')
+  const have = new Set(rows.map((r) => r[1]))
+  for (const b of packBlocks()) if (!have.has(b.key)) rows.push([b.id, b.key])
+  return rows
 }
 
 export function gzipU16(u16) {
@@ -272,6 +278,7 @@ const GEN2_FRESH = {
   'w-2.5.119.json': GEN2_FRESH_HASH,
   'w-2.5.120.json': GEN2_FRESH_HASH,
   'w-2.5.121.json': GEN2_FRESH_HASH,
+  'w-2.5.123.json': GEN2_FRESH_HASH,
   'w-unknown.json': GEN2_FRESH_HASH,
   'w-v1.json': GEN2_FRESH_HASH,
 }

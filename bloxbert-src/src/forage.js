@@ -1,10 +1,16 @@
 // Wild forage timers. Real clock, local save only. A back jump never goes negative.
 // A forward jump fills at most once. Nothing dies.
+import { blockByKey } from './packs/registry.js'
+import './packs/farm/pack.js'
+function live(key) {
+  const id = blockByKey(key)
+  return id > 0 ? id : -1
+}
 export const BUSH_REFILL_MS = 3 * 60 * 1000
 export const WHEAT_REFILL_MS = 10 * 60 * 1000
-export const BARE_BUSH = 65
-export const FRUIT_BUSH = 68
-export const WILD_WHEAT = 28
+export const BARE_BUSH = live('bushYoung')
+export const FRUIT_BUSH = live('bushFruit')
+export const WILD_WHEAT = live('wheat')
 
 function mix(x, y, z, salt) {
   return (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263) ^ Math.imul(salt | 0, 374761393)) >>> 0

@@ -1,3 +1,5 @@
+import '../packs/farm/pack.js'
+import { packRecipes } from '../packs/registry.js'
 export const RECIPES = [
   { id: 'planks', at: 'hand', in: [['log', 1]], out: ['planks', 4], secs: 0 },
   { id: 'workbench', at: 'hand', in: [['planks', 4]], out: ['workbench', 1], secs: 2 },
@@ -11,7 +13,6 @@ export const RECIPES = [
   { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['planks', 2]], out: ['stoneTool', 1], secs: 4 },
   { id: 'door', at: 'bench', in: [['planks', 6]], out: ['door', 1], secs: 3 },
   { id: 'stick', at: 'bench', in: [['planks', 2]], out: ['stick', 4], secs: 1 },
-  { id: 'hoe', at: 'bench', in: [['stick', 2], ['planks', 1]], out: ['hoe', 1], secs: 2 },
   { id: 'safetyGlasses', at: 'bench', in: [['glass', 2], ['stick', 1]], out: ['safetyGlasses', 1], secs: 2 },
   { id: 'measuringTape', at: 'bench', in: [['ironIngot', 1], ['woolAny', 1]], out: ['measuringTape', 1], secs: 2 },
   { id: 'handSaw', at: 'bench', in: [['ironIngot', 1], ['stick', 1]], out: ['handSaw', 1], secs: 2 },
@@ -34,10 +35,23 @@ export const RECIPES = [
   { id: 'charger', at: 'fabricator', tier: 'T5', in: [['steel', 1], ['copperWire', 1]], out: ['charger', 1], secs: 3 },
   { id: 'glass', at: 'oven', in: [['sand', 2]], out: ['glass', 1], secs: 5 },
   { id: 'brickRed', at: 'oven', in: [['redSand', 2]], out: ['brickRed', 1], secs: 5 },
-  { id: 'cupcake', at: 'oven', in: [['flour', 1], ['sugar', 1], ['berry', 2]], out: ['cupcake', 2], secs: 10, label: 'food' },
-  { id: 'bread', at: 'oven', in: [['flour', 2]], out: ['bread', 1], secs: 8, label: 'food' },
-  { id: 'flour', at: 'bench', in: [['wheat', 1]], out: ['flour', 1], secs: 2, label: 'food' },
 ]
+function mountFarmRecipes() {
+  const farm = packRecipes()
+  const hoe = farm.find((r) => r.id === 'hoe')
+  if (hoe) {
+    const { after, ...row } = hoe
+    const i = RECIPES.findIndex((r) => r.id === (after || 'stick'))
+    RECIPES.splice(i < 0 ? RECIPES.length : i + 1, 0, row)
+  }
+  for (const id of ['cupcake', 'bread', 'flour']) {
+    const row = farm.find((r) => r.id === id)
+    if (!row) continue
+    const { after, ...rest } = row
+    RECIPES.push(rest)
+  }
+}
+mountFarmRecipes()
 
 // Woodshop Bed. Planks plus 3 wool of one colour. The bench bunk above stays when Woodshop required is off.
 export const BED_SHOP = { planks: 3, wool: 3, boards: [4, 7, 5] }

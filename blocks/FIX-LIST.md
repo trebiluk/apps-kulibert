@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sat Oct 10 2026 (Build: 2.5.120 A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy).
+Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.123 Farm pack:** Wheat, reeds, bushes, seeds, the hoe and their recipes live in the Farm pack. Ids stay frozen. Water stays in the core. With ?nopack=farm those blocks load as question-mark crates and bag slots show as ?, and turning the pack back on restores the crops, bushes, items and grow timers.
 - [x] **2.5.120 Bed:** The Bunk is now a Bed. Just build or Design it at the Woodshop (3 planks and 3 wool of one colour, with Glasses, Tape, Saw and Hammer). Design it measures, cuts, assembles and tests. Fix it refunds a board and can reach 3 stars. Rest gives energy. Set home stays. Old bunks load as 1 star.
 - [x] **2.5.119 Spawn:** A teacher can set the spawn, and choose how wide the protected ground is.
 
@@ -159,6 +160,7 @@ Updated Sat Oct 10 2026 (Build: 2.5.120 A Bed is built at the Woodshop. Design i
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.123 | The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back | shipped |
 | 1p | 2.5.120 | A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy | shipped |
 | 1p | 2.5.119 | A teacher can set the spawn, and choose how wide the protected ground is | shipped |
 | 1p | 2.5.118 | A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time | shipped |

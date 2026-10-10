@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.123', date: '2026-10-10', lines: {
+    en: ['The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back.'],
+    uk: ['Ферма — це пак. Пшениця, очерет, кущі й насіння виходять з ядра, а зниклий пак Ферми показується знаком питання, поки не повернеться.'],
+    ru: ['Ферма — это пак. Пшеница, камыш, кусты и семена уходят из ядра, а пропавший пак Фермы показывается знаком вопроса, пока не вернётся.'],
+    es: ['La granja es un paquete. El trigo, las cañas, los arbustos y las semillas salen del núcleo, y un paquete Granja que falta se ve como un signo de pregunta hasta que vuelve.'],
+    ar: ['المزرعة حزمة. القمح والقصب والشجيرات والبذور تخرج من النواة، والحزمة المفقودة تظهر كعلامة سؤال حتى تعود.'],
+    'fa-AF': ['مزرعه یک بسته است. گندم، نی، بوته و دانه از هسته بیرون می‌روند، و بسته گم‌شده مزرعه تا وقتی برگردد علامت سوال نشان می‌دهد.'],
+    rw: ['Isarura ni umupaki. Ingano, urubingo, ibihuru n\'imbuto biva mu mutima, kandi umupaki wa Farm wabuze ugaragara nk\'akabazo kugeza usubira.'],
+    ti: ['እቲ ሕርሻ ጥቕሊ እዩ። ስርናይ፡ ቀጸል፡ ቁጥቋጥን ዘርእን ካብ ማእከል ይወጹ፡ ዝጠፍአ ጥቕሊ ሕርሻ ድማ ክሳብ ዝምለስ ምልክት ሕቶ ይረአ።'],
+  }},
   { v: '2.5.122', date: '2026-10-10', lines: {
     en: ['Block edges stay crisp. The pale lines between them are gone.'],
     uk: ['Краї блоків лишаються чіткими. Блідих ліній між ними більше немає.'],

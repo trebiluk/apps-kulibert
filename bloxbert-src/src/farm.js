@@ -1,21 +1,27 @@
 // Wheat growth. Fixed times, no random ticks. Dry-equivalent 8 min to full; wet soil is 2x.
 // Berry bushes share this clock: first fruit 10 min dry, regrow 6 min dry. Wet is 2x. They never die.
+import { blockByKey } from './packs/registry.js'
+import './packs/farm/pack.js'
+function live(key) {
+  const id = blockByKey(key)
+  return id > 0 ? id : -1
+}
 export const RIPE_MS = 8 * 60 * 1000
 export const BUSH_RIPE_MS = 10 * 60 * 1000
 export const BUSH_REGROW_MS = 6 * 60 * 1000
 export const WET_R = 4
-export const DRY = 49
-export const WET = 63
+export const DRY = live('farmland')
+export const WET = live('farmlandWet')
 export const WATER = 64
-export const CROP = [59, 60, 61, 62]
-export const BUSH = [65, 66, 67, 68]
+export const CROP = [live('cropSprout'), live('cropLeafy'), live('cropTall'), live('cropRipe')]
+export const BUSH = [live('bushYoung'), live('bushLeaf'), live('bushFull'), live('bushFruit')]
 
 export function isCropId(id) {
-  return id >= 59 && id <= 62
+  return id > 0 && CROP.includes(id)
 }
 
 export function isBushId(id) {
-  return id >= 65 && id <= 68
+  return id > 0 && BUSH.includes(id)
 }
 
 export function capOf(crop) {
