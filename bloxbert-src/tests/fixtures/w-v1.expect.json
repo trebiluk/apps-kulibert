@@ -1,0 +1,19 @@
+{
+  "blocks": {
+    "stone": 16,
+    "dirt": 16,
+    "grass": 16
+  },
+  "bag": {},
+  "home": null,
+  "box": null,
+  "crops": {
+    "count": 0,
+    "stages": []
+  },
+  "bush": {
+    "n": 0,
+    "stages": []
+  },
+  "oven": null
+}
