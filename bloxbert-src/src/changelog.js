@@ -18,6 +18,7 @@ export const CHANGELOG = [
     'fa-AF': ['دست برتبوت چیزی را که برگزیدی نگه می‌دارد، راست یا چپ.'],
     rw: ['Ukuboko kwa Bertbot gufata icyo wahisemo, iburyo cyangwa ibumoso.'],
     ti: ['ኢድ በርትቦት ዝመረጽካዮ ይሕዝ፡ የማን ወይ ጸጋም።'],
+  }},
   { v: '2.5.148', date: '2026-10-10', lines: {
     en: ['Icon test page loads from a bundled script. Rug can be aimed at and picked up.'],
     uk: ['Сторінка іконок завантажується з зібраного скрипта. Килим можна навести і підняти.'],
