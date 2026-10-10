@@ -33,7 +33,7 @@ import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
 import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
-import { showRulesCard, mountRulesMenu } from './rules-card.js'
+import { showRulesCard } from './rules-card.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -3651,6 +3651,7 @@ panels = mountPanels({
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
+  worldRules: () => showRulesCard({ force: true, lang: LANG, world: WORLD }),
   paintPrices: (g) => session.paintPrices(g),
   paintCounter: (g, key) => session.paintCounter(g, key),
   paintBunk: (g, key) => session.paintBunk(g, key),
@@ -4048,7 +4049,6 @@ paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
 $('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
 $('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
-mountRulesMenu($('drawer'), { lang: () => LANG, close: () => openMenu(false), world: WORLD })
 $('inspect-chip').addEventListener('click', () => setInspect(false))
 $('inspect-close').addEventListener('click', () => closePlay('gesture'))
 $('about-close').addEventListener('click', () => closePlay('gesture'))

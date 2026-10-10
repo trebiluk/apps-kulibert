@@ -138,6 +138,7 @@ export function mountPanels(api) {
           tile('⛶', api.t('fs'), () => api.fullScreen()),
           tile('💾', api.t('save'), () => api.save()),
           tile('🌍', api.t('world'), () => open('world')),
+          tile('\u2691', api.t('worldRules'), () => { close(); api.worldRules() }),
           tile('🔀', api.t('mode'), () => open('mode')),
           tile('👩‍🏫', api.t('teacher'), () => open('teacher')),
           tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),

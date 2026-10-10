@@ -352,6 +352,14 @@ function valueWord(def, v, lang) {
   return typeof v === 'string' ? v : ''
 }
 
+function iconFor(def, value) {
+  if (def && def.id === 'survival.daynight') {
+    if (value === 'night') return '\u{1F319}'
+    if (value === 'day') return '\u2600'
+  }
+  return (def && def.icon) || '•'
+}
+
 function diffs(lang) {
   const out = []
   for (const def of registry.values()) {
@@ -362,9 +370,9 @@ function diffs(lang) {
     const label = text(def.label, lang)
     const word = valueWord(def, v, lang)
     const phrase = def.id === 'survival.daynight' ? word : (label ? label + ' ' + word : word)
-    out.push({ id: def.id, icon: def.icon || '•', label, value: v, word, text: phrase })
+    out.push({ id: def.id, icon: iconFor(def, v), label, value: v, word, text: phrase })
   }
   return out
 }
 
-export const Rules = { register, registerPack, load, dump, set, allow, why, icon, useLang, value, rows, unknown, diffs, templateName, langs: LANGS }
+export const Rules = { register, registerPack, load, dump, set, allow, why, icon, iconFor, useLang, value, rows, unknown, diffs, templateName, langs: LANGS }

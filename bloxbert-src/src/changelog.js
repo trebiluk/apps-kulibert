@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.150', date: '2026-10-10', lines: {
+    en: ['World Rules is a menu tile you can tap. Got it stays readable. Night shows a moon.'],
+    uk: ['Правила світу — плитка в меню, яку можна натиснути. «Зрозуміло» читається. Ніч показує місяць.'],
+    ru: ['Правила мира — плитка в меню, которую можно нажать. «Понятно» читается. Ночь показывает луну.'],
+    es: ['Reglas del mundo es una ficha del menú que puedes tocar. Entendido se lee. La noche muestra una luna.'],
+    ar: ['قواعد العالم بلاطة في القائمة يمكن لمسها. زر فهمت يبقى واضحاً. الليل يظهر قمراً.'],
+    'fa-AF': ['قانون دنیا یک خانه در فهرست است که می‌توانی بزنی. فهمیدم خوانا می‌ماند. شب ماه نشان می‌دهد.'],
+    rw: ['Amategeko y\'isi ni akazu ka menyu ushobora gukanda. Ndabyumvise irasomwa. Ijoro ryerekana ukwezi.'],
+    ti: ['ሕግታት ዓለም ኣብ ዝርዝር እትጥዕቶ እያ። ተረዲኡ ይንበብ። ለይቲ ወርሒ የርኢ።'],
+  }},
   { v: '2.5.149', date: '2026-10-10', lines: {
     en: ['A fresh world starts clean, and your old world stays in the menu. A Wood Pickaxe is a Wood Pickaxe.'],
     uk: ['Новий світ починається чистий, а старий лишається в меню. Дерев’яне кайло — це дерев’яне кайло.'],

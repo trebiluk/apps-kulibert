@@ -79,13 +79,22 @@ function node(tag) {
   const n = {
     tag, className: '', id: '', textContent: '', title: '', type: '', value: '', disabled: false, hidden: false,
     style: {}, dataset: {}, children: [], attrs: {}, listeners: {}, isConnected: true, clientWidth: 0,
-    append(...xs) { for (const x of xs) if (x && typeof x === 'object') n.children.push(x) },
+    append(...xs) { for (const x of xs) if (x && typeof x === 'object') { x.parent = n; n.children.push(x) } },
     setAttribute(k, v) { n.attrs[k] = String(v); if (k === 'id') n.id = String(v) },
     getAttribute(k) { return Object.prototype.hasOwnProperty.call(n.attrs, k) ? n.attrs[k] : null },
     addEventListener(ev, fn) { (n.listeners[ev] || (n.listeners[ev] = [])).push(fn) },
     removeEventListener() {},
     remove() {},
     click() { for (const fn of n.listeners.click || []) fn({ preventDefault() {}, stopPropagation() {} }) },
+    focus() { if (globalThis.document) globalThis.document.activeElement = n },
+    getBoundingClientRect() {
+      let p = n
+      while (p) {
+        if (p.hidden) return { x: -314, y: 0, left: -314, top: 0, width: 200, height: 48, right: -114, bottom: 48 }
+        p = p.parent
+      }
+      return { x: 16, y: 80, left: 16, top: 80, width: 96, height: 72, right: 112, bottom: 152 }
+    },
     closest() { return null },
     querySelector(sel) { return n.querySelectorAll(sel)[0] || null },
     querySelectorAll(sel) {
@@ -381,15 +390,26 @@ eq(!!packShown && allNodes(packShown).some((n) => n.textContent === 'Pack not in
 Rules.load({})
 
 globalThis.location = { search: '' }
+const sheetNodes = {}
 for (const id of ['sheet', 'sheet-body', 'sheet-title', 'sheet-back', 'sheet-x']) {
   const n = node(id === 'sheet-title' ? 'b' : id === 'sheet' || id === 'sheet-body' ? 'div' : 'button')
   n.id = id
+  sheetNodes[id] = n
 }
+sheetNodes.sheet.hidden = true
+sheetNodes.sheet.append(sheetNodes['sheet-title'], sheetNodes['sheet-back'], sheetNodes['sheet-x'], sheetNodes['sheet-body'])
+document.body.append(sheetNodes.sheet)
+document.documentElement.clientWidth = 412
+document.documentElement.clientHeight = 800
+const menuBtn = node('button')
+menuBtn.id = 'game-menu'
+menuBtn.textContent = 'Menu'
+document.body.append(menuBtn)
 const { mountPanels } = await import('../src/panels.js')
 let who = { teacher: false, staff: false }
 let painted = 0
 const panels = mountPanels({
-  t: (k) => k,
+  t: (k) => (k === 'worldRules' ? 'World Rules' : k),
   teacher: () => who.teacher,
   staff: () => who.staff,
   paintTeacher(g) {
@@ -400,7 +420,10 @@ const panels = mountPanels({
   },
   paintRules() { painted += 1 },
   rulesWord: () => 'Rules',
+  worldRules() { showRulesCard({ force: true, lang: 'en', world: 'town' }) },
+  closePlay() { sheetNodes.sheet.hidden = true },
 })
+menuBtn.addEventListener('click', () => panels.openRoot())
 const sheetBody = document.getElementById('sheet-body')
 panels.open('teacher')
 eq(!allNodes(sheetBody).some((n) => n.dataset && n.dataset.rulesTile), 'student has no Rules tile')
@@ -502,6 +525,8 @@ const surv = node('div')
 paintRules(surv, { lang: 'en', save() {} })
 allNodes(surv).find((n) => n.dataset && n.dataset.group === 'survival').click()
 eq(rowIds(surv).slice().sort().join(',') === 'survival.daynight,survival.energy', 'survival rows ' + rowIds(surv).join(','))
+const skyRow = allNodes(surv).find((n) => n.dataset && n.dataset.id === 'survival.daynight' && hasClass(n, 're-row'))
+eq(!!skyRow && textOf(skyRow).includes('\u2600') && !textOf(skyRow).includes('\u{1F319}'), 'editor row keeps the sun')
 const energy = allNodes(surv).find((n) => n.dataset && n.dataset.id === 'survival.energy')
 eq(!!energy && allNodes(energy).some((n) => n.textContent === 'Coming soon'), 'energy soon tag')
 const fast = allNodes(energy).find((n) => n.dataset && n.dataset.opt === 'fast')
@@ -542,7 +567,8 @@ allNodes(packCraft).find((n) => n.dataset && n.dataset.group === 'crafting').cli
 eq(rowIds(packCraft).includes('demo.lamp'), 'pack row under crafting ' + rowIds(packCraft).join(','))
 Rules.load({})
 
-const { showRulesCard, diffs, mountRulesMenu } = await import('../src/rules-card.js')
+const { showRulesCard, diffs } = await import('../src/rules-card.js')
+const { STR } = await import('../src/strings.js')
 const keyFns = []
 document.addEventListener = (ev, fn) => { keyFns.push({ ev, fn }) }
 function cardEl() { return document.getElementById('rules-card') }
@@ -556,6 +582,71 @@ function textOf(n) {
   for (const c of n.children || []) s += textOf(c)
   return s
 }
+function parseHex(s) {
+  const m = String(s || '').trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i)
+  if (!m) return null
+  let h = m[1]
+  if (h.length === 3) h = h.split('').map((c) => c + c).join('')
+  const n = parseInt(h, 16)
+  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
+}
+function contrast(a, b) {
+  const lin = (v) => { v /= 255; return v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4 }
+  const L = (c) => 0.2126 * lin(c.r) + 0.7152 * lin(c.g) + 0.0722 * lin(c.b)
+  const hi = Math.max(L(a), L(b))
+  const lo = Math.min(L(a), L(b))
+  return (hi + 0.05) / (lo + 0.05)
+}
+function cssBlocks() {
+  const s = document.getElementById('rules-card-css')
+  if (!s || !s.textContent) return []
+  const out = []
+  for (const block of s.textContent.split('}')) {
+    const i = block.indexOf('{')
+    if (i < 0) continue
+    const sels = block.slice(0, i).split(',').map((x) => x.trim()).filter(Boolean)
+    const decl = {}
+    for (const part of block.slice(i + 1).split(';')) {
+      const c = part.indexOf(':')
+      if (c < 0) continue
+      decl[part.slice(0, c).trim()] = part.slice(c + 1).trim()
+    }
+    out.push({ sels, decl })
+  }
+  return out
+}
+function selMatches(el, sel) {
+  const focus = document.activeElement === el
+  if (sel.includes(':focus-visible') && !focus) return false
+  if (/(?<![\w-]):focus(?![\w-])/.test(sel) && !sel.includes(':focus-visible') && !focus) return false
+  const base = sel.replace(/:focus-visible|:focus/g, '')
+  if (base.includes('.rc-got') && !hasClass(el, 'rc-got')) return false
+  if (base.includes('#rules-card')) {
+    let p = el
+    let ok = false
+    while (p) { if (p.id === 'rules-card') ok = true; p = p.parent }
+    if (!ok) return false
+  }
+  return base.includes('.rc-got')
+}
+globalThis.getComputedStyle = (el) => {
+  const style = { color: '', backgroundColor: '' }
+  for (const rule of cssBlocks()) {
+    if (!rule.sels.some((s) => selMatches(el, s))) continue
+    if (rule.decl.color) style.color = rule.decl.color
+    if (rule.decl['background-color']) style.backgroundColor = rule.decl['background-color']
+    else if (rule.decl.background) style.backgroundColor = rule.decl.background
+  }
+  return style
+}
+document.documentElement.clientWidth = 412
+document.documentElement.clientHeight = 800
+function worldRulesTile() {
+  menuBtn.click()
+  const host = document.getElementById('sheet')
+  const tiles = host.querySelectorAll('.gtile')
+  return tiles.find((n) => textOf(n).includes('World Rules'))
+}
 
 showRulesCard({ lang: 'en', world: 'town' })
 eq(!cardEl() || cardEl().hidden, 'zero rules no card')
@@ -567,7 +658,7 @@ eq(!cardEl() || cardEl().hidden, 'teacher skips the card on join')
 eq(showRulesCard({ lang: 'en', world: 'town' }) === true, 'reload shows the card')
 eq(tilesOf().length === 2, 'two tiles ' + tilesOf().length)
 eq(tilesOf().some((n) => textOf(n).includes('Oven off') && textOf(n).includes('🔥')), 'oven off tile ' + tilesOf().map((n) => textOf(n)).join('|'))
-eq(tilesOf().some((n) => textOf(n).includes('Always night')), 'always night tile')
+eq(tilesOf().some((n) => textOf(n).includes('Always night') && textOf(n).includes('\u{1F319}') && !textOf(n).includes('\u2600')), 'always night moon ' + tilesOf().map((n) => textOf(n)).join('|'))
 eq(showRulesCard({ lang: 'en', world: 'town' }) === false && !cardEl().hidden, 'once per session while it is open')
 cardEl().querySelector('.rc-got').click()
 eq(cardEl().hidden === true, 'got it closes')
@@ -577,10 +668,23 @@ const menuHost = node('nav')
 const inspect = node('button')
 inspect.id = 'm-inspect'
 menuHost.append(inspect)
-const menuBtn = mountRulesMenu(menuHost, { lang: () => 'en', close() {} })
-eq(!!menuBtn && menuBtn.id === 'm-rules' && textOf(menuBtn).includes('World Rules'), 'menu row ' + textOf(menuBtn))
-menuBtn.click()
+eq(!menuHost.querySelector('#m-rules'), 'drawer row is gone')
+const tile = worldRulesTile()
+const box = tile && tile.getBoundingClientRect()
+const vw = document.documentElement.clientWidth
+const vh = document.documentElement.clientHeight
+eq(!!tile && hasClass(tile, 'gtile') && textOf(tile).includes('\u2691'), 'menu tile ' + textOf(tile))
+eq(!!box && box.left >= 0 && box.top >= 0 && box.right <= vw && box.bottom <= vh && box.width >= 44 && box.height >= 44, 'tile in view ' + JSON.stringify(box))
+tile.click()
 eq(cardEl().hidden === false && tilesOf().length === 2, 'menu reopens the card')
+const gotFocus = cardEl().querySelector('.rc-got')
+const focusStyle = getComputedStyle(gotFocus)
+const focusContrast = contrast(parseHex(focusStyle.color), parseHex(focusStyle.backgroundColor))
+eq(focusContrast >= 4.5, 'focused got it contrast ' + focusContrast + ' ' + focusStyle.color + ' on ' + focusStyle.backgroundColor)
+document.activeElement = null
+const idleStyle = getComputedStyle(gotFocus)
+const idleContrast = contrast(parseHex(idleStyle.color), parseHex(idleStyle.backgroundColor))
+eq(idleContrast >= 4.5, 'idle got it contrast ' + idleContrast)
 const esc = keyFns.find((k) => k.ev === 'keydown')
 eq(!!esc, 'esc is armed')
 if (esc) esc.fn({ key: 'Escape', preventDefault() {} })
@@ -606,7 +710,7 @@ eq(tilesOf().length === 1 && !tilesOf().some((n) => textOf(n).includes('Quiet ni
 
 Rules.load({})
 eq(showRulesCard({ lang: 'en', world: 'town' }) === false && cardEl().hidden === true, 'reset next load has no card')
-menuBtn.click()
+worldRulesTile().click()
 eq(cardEl().hidden === false && cardEl().querySelector('.rc-title').textContent === 'Normal rules' && tilesOf().length === 0, 'menu says normal rules')
 cardEl().querySelector('.rc-got').click()
 eq(cardEl().hidden === true, 'normal got it closes')
@@ -620,9 +724,7 @@ for (const lang of langs) {
   const title = cardEl().querySelector('.rc-title').textContent
   const got = cardEl().querySelector('.rc-got').textContent
   eq(scripts[lang].test(title) && scripts[lang].test(got), 'card words ' + lang + ' ' + title + ' / ' + got)
-  const host = node('div')
-  const word = textOf(mountRulesMenu(host, { lang }))
-  eq(scripts[lang].test(word), 'menu word ' + lang + ' ' + word)
+  eq(scripts[lang].test(STR[lang].worldRules), 'menu word ' + lang + ' ' + STR[lang].worldRules)
 }
 showRulesCard({ force: true, lang: 'ar' })
 eq(cardEl().querySelector('.rc-card').getAttribute('dir') === 'rtl', 'arabic card rtl')

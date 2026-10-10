@@ -9,7 +9,6 @@ const UI = {
   got: L('Got it', 'Зрозуміло', 'Понятно', 'Entendido', 'فهمت', 'فهمیدم', 'Ndabyumvise', 'ተረዲኡ'),
   normal: L('Normal rules', 'Звичні правила', 'Обычные правила', 'Reglas normales', 'قواعد عادية', 'قانون عادی', 'Amategeko asanzwe', 'ልሙድ ሕግታት'),
   more: L('+{n} more', '+{n} ще', '+{n} ещё', '+{n} más', '+{n} أكثر', '+{n} بیشتر', '+{n} ibindi', '+{n} ተወሳኺ'),
-  menu: L('World Rules', 'Правила світу', 'Правила мира', 'Reglas del mundo', 'قواعد العالم', 'قانون دنیا', "Amategeko y'isi", 'ሕግታት ዓለም'),
 }
 
 const CSS = `#rules-card{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;background:rgba(5,8,20,.55);padding:12px;box-sizing:border-box}
@@ -20,7 +19,7 @@ const CSS = `#rules-card{position:fixed;inset:0;z-index:70;display:flex;align-it
 #rules-card .rc-tiles{display:flex;flex-wrap:wrap;gap:8px}
 #rules-card .rc-tile{display:flex;align-items:center;gap:8px;min-height:44px;min-width:44px;box-sizing:border-box;padding:6px 10px;border-radius:12px;border:1px solid #1F8A8A;background:#13303A}
 #rules-card .rc-more{margin:0;font-weight:700}
-#rules-card .rc-got{min-width:44px;min-height:44px;padding:8px 16px;font:inherit;font-weight:800;border-radius:12px}
+#rules-card .rc-got,#rules-card .rc-got:focus,#rules-card .rc-got:focus-visible{min-width:44px;min-height:44px;padding:8px 16px;font:inherit;font-weight:800;border-radius:12px;background-color:#E6EEF2;color:#0B1220;outline:3px solid #22D3EE;outline-offset:2px}
 `
 
 const seen = new Set()
@@ -139,31 +138,4 @@ export function showRulesCard(opts) {
     try { got.focus() } catch (e) {}
   }
   return true
-}
-
-export function mountRulesMenu(root, api) {
-  if (!root || !document.createElement) return null
-  if (root.querySelector && root.querySelector('#m-rules')) return root.querySelector('#m-rules')
-  api = api || {}
-  const lang = () => (typeof api.lang === 'function' ? api.lang() : (api.lang || 'en'))
-  const b = document.createElement('button')
-  b.type = 'button'
-  b.className = 'row'
-  b.id = 'm-rules'
-  const ic = document.createElement('span')
-  ic.className = 'ic'
-  ic.textContent = '⚑'
-  const lab = document.createElement('span')
-  lab.className = 'rc-menu-lab'
-  lab.textContent = pick(UI.menu, lang())
-  b.append(ic, lab)
-  b.addEventListener('click', (e) => {
-    if (e && e.preventDefault) e.preventDefault()
-    if (api.close) api.close()
-    showRulesCard({ force: true, lang: lang(), world: api.world })
-  })
-  const after = root.querySelector && root.querySelector('#m-inspect')
-  if (after && after.after) after.after(b)
-  else if (root.append) root.append(b)
-  return b
 }
