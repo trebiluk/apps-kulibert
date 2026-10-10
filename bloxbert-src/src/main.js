@@ -1553,13 +1553,18 @@ function breakAt(x, y, z, hold) {
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105) {
     const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
     const item = (id === 1100 || id === 1101) ? 'floorLamp' : (id === 1102 || id === 1103) ? 'wallLamp' : 'rug'
+    const cells = (id === 1104 || id === 1105) ? rugSpan(x, y, z) : [[x, y, z]]
     if (session && session.give) session.give(item, 1)
     if (rec && rec.design && session && session.bag) {
       const slot = session.bag.slots.find((s) => s && s.item === item)
       if (slot) slot.design = rec.design
     }
-    if (session && session.meta) session.meta.delete(x + ',' + y + ',' + z)
-    edit(x, y, z, 0)
+    for (const [cx, cy, cz] of cells) {
+      if (session && session.meta) session.meta.delete(cx + ',' + cy + ',' + cz)
+      edit(cx, cy, cz, 0)
+    }
+    dirty = true
+    if (typeof noteMachine === 'function') noteMachine()
     if (typeof syncGlow === 'function') syncGlow._dirty = true
     return true
   }
@@ -1597,6 +1602,7 @@ function breakBlock() {
 }
 function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
+  if (id === 1100 || id === 1101 || id === 1102 || id === 1103) return true
   return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box || isShopBlock(id)
 }
 function isGear(id) {
@@ -3172,7 +3178,7 @@ window.addEventListener('pointerdown', (e) => {
   e.stopPropagation()
   hideDoorOpt()
 }, true)
-const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
+const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
@@ -5067,8 +5073,8 @@ function syncGlow() {
     const seen = new Set()
     for (const l of list) seen.add(l.x + ',' + l.y + ',' + l.z)
     const px = Math.floor(ppos[0]), py = Math.floor(ppos[1]), pz = Math.floor(ppos[2])
-    const key = px + ',' + py + ',' + pz
-    if (!syncGlow._cache || syncGlow._cache.key !== key || syncGlow._dirty) {
+    const chunk = (px >> 4) + ',' + (pz >> 4)
+    if (!syncGlow._cache || syncGlow._cache.chunk !== chunk || syncGlow._dirty) {
       const found = []
       const r = 16
       for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
@@ -5078,7 +5084,7 @@ function syncGlow() {
           if (id === 1101 || id === 1103) found.push({ x, y, z, radius: 6, step: 1 })
         }
       }
-      syncGlow._cache = { key, found }
+      syncGlow._cache = { chunk, found }
       syncGlow._dirty = false
     }
     for (const src of syncGlow._cache.found) {

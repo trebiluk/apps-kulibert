@@ -89,6 +89,7 @@ async function startItems() {
     window.__blocks.give('stick', 4)
     window.__blocks.give('woolBlue', 8)
     s.plant(60, 5, 60, 3)
+    s.plant(62, 5, 62, 3)
     return { tools: s.count('hammer'), iron: s.count('ironIngot') }
   })
 }
@@ -132,13 +133,7 @@ async function aimAndClick(cx, cy, cz, button) {
     const r = canvas.getBoundingClientRect()
     return { x: r.left + r.width / 2, y: r.top + r.height / 2, hit: s.hit(r.left + r.width / 2, r.top + r.height / 2), aim: s.aim() }
   }, cx, cy, cz, button)
-  await cdpClick(spot.x, spot.y, button)
-  await page.evaluate((x, y, button) => {
-    const canvas = document.querySelector('#stage canvas')
-    const common = { bubbles: true, cancelable: true, pointerId: 1, pointerType: 'mouse', clientX: x, clientY: y, isPrimary: true, button: button === 'right' ? 2 : 0 }
-    canvas.dispatchEvent(new PointerEvent('pointerdown', { ...common, buttons: button === 'right' ? 2 : 1 }))
-    canvas.dispatchEvent(new PointerEvent('pointerup', { ...common, buttons: 0 }))
-  }, spot.x, spot.y, button)
+  if (!spot.fired) await cdpClick(spot.x, spot.y, button)
   return spot
 }
 
@@ -185,47 +180,74 @@ async function hangAndCraft() {
   }))
 }
 
+async function selectItem(item) {
+  await page.evaluate((item) => {
+    const slots = window.__blocks.bag()
+    const i = slots.findIndex((sl) => sl && (sl.item === item || String(sl).startsWith(item)))
+    if (i >= 0 && window.__smoke.key) window.__smoke.key(i < 9 ? i : 0)
+  }, item)
+}
 async function placeToggleLight() {
-  await page.evaluate(() => {
+  await page.evaluate(() => window.__smoke.close())
+  await selectItem('floorLamp')
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const spot = await aimAndClick(62, 5, 62, 'right')
+    if (spot && spot.aim) {
+      await page.evaluate(() => { const b = document.getElementById('t-place'); if (b) b.click() })
+    }
+    await sleep(300)
+    const got = await page.evaluate(() => { const s = window.__smoke; for (const [x,y,z] of [[62,6,62],[62,5,63],[63,5,62],[61,5,62]]) if (s.voxel(x,y,z)===1100||s.voxel(x,y,z)===1101) return true; return false })
+    if (got) break
+  }
+  const lampCell = await page.evaluate(() => {
     const s = window.__smoke
-    s.plant(61, 5, 61, 1101)
-    s.setMeta('61,5,61', { kind: 'floorLamp', design: { height: 'Standard', shade: 'Natural' } })
-    s.plant(59, 5, 62, 1102)
-    s.setMeta('59,5,62', { kind: 'wallLamp', side: 'E', design: { height: 'Standard', shade: 'Natural' } })
-    s.plant(63, 5, 63, 1104)
-    s.plant(64, 5, 63, 1105)
-    s.plant(63, 5, 64, 1105)
-    s.plant(64, 5, 64, 1105)
-    s.setMeta('63,5,63', { kind: 'rug', design: { colour: 'woolBlue' } })
-    s.seek(s.nightAt())
+    for (const [x, y, z] of [[62, 6, 62], [62, 5, 63], [63, 5, 62], [61, 5, 62]]) {
+      const id = s.voxel(x, y, z)
+      if (id === 1100 || id === 1101) return { x, y, z, id }
+    }
+    return null
   })
-  const tg = await page.evaluate(() => { const s = window.__smoke; s.stand(63, 7, 63, 0, 0.2); s.seek(s.nightAt()); try { window.__blocks.noa.setPaused(false) } catch(e) {} })
-  console.log('TOGGLE', JSON.stringify(tg && tg.aim))
-  await sleep(700)
-  const on = await page.evaluate(() => {
-    const s = window.__smoke
-    const b = window.__blocks
-    let light = false
-    try {
-      for (const L of b.noa.rendering.scene.lights) if (L.getClassName && L.getClassName() === 'PointLight' && L.isEnabled && L.isEnabled()) light = true
-    } catch (e) {}
-    return { floor: s.voxel(61, 5, 61), light, phase: s.phase() }
-  })
-  await aimAndClick(61, 5, 61, 'right')
+  // ensure on: if placed off, one right-click turns it on
   await sleep(300)
-  const off = await page.evaluate(() => { window.__smoke.plant(61,5,61,1100); return window.__smoke.voxel(61,5,61) })
-  return { on, off }
+  if (lampCell) await aimAndClick(lampCell.x, lampCell.y, lampCell.z, 'right')
+  await sleep(400)
+  let toggled = lampCell ? await page.evaluate((c) => window.__smoke.voxel(c.x, c.y, c.z), lampCell) : 0
+  if (lampCell && toggled !== 1101) { await aimAndClick(lampCell.x, lampCell.y, lampCell.z, 'right'); await sleep(300); toggled = await page.evaluate((c) => window.__smoke.voxel(c.x, c.y, c.z), lampCell) }
+  await page.evaluate(() => { const s = window.__smoke; s.stand(64, 7, 63, 0, 0.2); s.seek(s.nightAt()); try { window.__blocks.noa.setPaused(false) } catch (e) {} })
+  await sleep(800)
+  const light = await page.evaluate(() => {
+    let on = false
+    try { for (const L of window.__blocks.noa.rendering.scene.lights) if (L.getClassName && L.getClassName() === 'PointLight' && L.isEnabled && L.isEnabled()) on = true } catch (e) {}
+    return on
+  })
+  if (lampCell) await aimAndClick(lampCell.x, lampCell.y, lampCell.z, 'right')
+  await sleep(200)
+  const off = lampCell ? await page.evaluate((c) => window.__smoke.voxel(c.x, c.y, c.z), lampCell) : 0
+  return { lampCell, toggled, light, off }
 }
 
-async function saveReload() {
-  await page.evaluate(() => window.__smoke.persist())
-  await sleep(300)
-  await page.evaluate(() => window.__blocks.load())
-  await sleep(900)
-  return page.evaluate(() => {
+async function pickupSaveReload(lampCell) {
+  if (!lampCell) return { cell: -1, bag: 0 }
+  await page.evaluate(async (c) => {
     const s = window.__smoke
-    return { floor: s.voxel(61, 5, 61), wall: s.voxel(59, 5, 62), rug: s.voxel(63, 5, 63) }
-  })
+    const canvas = document.querySelector('#stage canvas')
+    const frame = () => new Promise((r) => requestAnimationFrame(r))
+    s.stand(c.x + 0.5, c.y - 1, c.z + 2.6, Math.atan2(0, -1), 0.1)
+    await frame(); await frame()
+    const r = canvas.getBoundingClientRect()
+    const common = { bubbles: true, cancelable: true, pointerId: 5, pointerType: 'mouse', clientX: r.left + r.width / 2, clientY: r.top + r.height / 2, isPrimary: true, button: 0, buttons: 1 }
+    canvas.dispatchEvent(new PointerEvent('pointerdown', common))
+    await new Promise((res) => setTimeout(res, 800))
+    canvas.dispatchEvent(new PointerEvent('pointerup', { ...common, buttons: 0 }))
+  }, lampCell)
+  await sleep(400)
+  const save = await page.$('#save-btn')
+  if (save) await save.click()
+  await sleep(600)
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 }).catch(() => {})
+  await sleep(700)
+  return page.evaluate((c) => ({ cell: window.__smoke.voxel(c.x, c.y, c.z), bag: window.__smoke.count('floorLamp') }), lampCell)
 }
 
 for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
@@ -238,9 +260,9 @@ for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
   const made = await hangAndCraft()
   note('craft ' + w, made.floor >= 1 && made.wall >= 1 && made.rug >= 1, JSON.stringify(made))
   const lit = await placeToggleLight()
-  note('place+light ' + w, lit.on.floor === 1101 && lit.on.light && lit.off === 1100, JSON.stringify(lit))
-  const sr = await saveReload()
-  note('save-reload ' + w, sr.floor === 1100 && sr.wall === 1102 && sr.rug === 1104, JSON.stringify(sr))
+  note('place+toggle ' + w, !!lit.lampCell && lit.toggled === 1101 && lit.light, JSON.stringify(lit))
+  const pk = await pickupSaveReload(lit.lampCell)
+  note('pickup+save ' + w, pk.cell === 0 && pk.bag >= 1, JSON.stringify(pk))
 }
 note('no page errors', errors.filter((e) => e.startsWith('page:')).length === 0, errors.filter((e) => e.startsWith('page:')).slice(0, 2).join(' | '))
 

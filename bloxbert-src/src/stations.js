@@ -351,7 +351,11 @@ export function createStations(api) {
     b.type = 'button'
     b.className = 'keycap ' + cls
     b.textContent = label
-    b.addEventListener('click', fn)
+    if (cls.indexOf('bed-next') >= 0) {
+      b.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation(); fn() })
+    } else {
+      b.addEventListener('click', fn)
+    }
     return b
   }
   function skillLine(key) {
@@ -389,7 +393,8 @@ export function createStations(api) {
           shopTone(740, b)
           paintWoodshop(g, key)
         })
-        if (!ready || !haveMats) b.disabled = true
+        if (!ready) { b.textContent = 'Hang 4 tools first'; b.title = 'Hang 4 tools first' }
+        else if (!haveMats) b.disabled = true
         row.append(b)
       }
       if (rule.path !== 'build') {
@@ -454,14 +459,14 @@ export function createStations(api) {
         const toneRow = document.createElement('div')
         toneRow.className = 'choice-row'
         tones.forEach(([id, label]) => {
-          const b = capBtn('tone-pick' + (job.tone === id ? ' on' : ''), api.t(label), () => { job.tone = id; touch(); paintWoodshop(g, key) })
+          const b = capBtn('tone-pick' + (job.tone === id ? ' on' : ''), api.t(label), () => { job.tone = id; touch(); toneRow.querySelectorAll('button').forEach((n) => n.classList.toggle('on', n.dataset.tone === id)) })
           b.dataset.tone = id
           toneRow.append(b)
         })
         const fabRow = document.createElement('div')
         fabRow.className = 'choice-row'
         WOOLS.forEach((id) => {
-          const b = capBtn('wool-pick' + (job.fabric === id ? ' on' : ''), api.t(id), () => { job.fabric = id; touch(); paintWoodshop(g, key) })
+          const b = capBtn('wool-pick' + (job.fabric === id ? ' on' : ''), api.t(id), () => { job.fabric = id; touch(); fabRow.querySelectorAll('button').forEach((n) => n.classList.toggle('on', n.dataset.fabric === id)) })
           b.dataset.fabric = id
           if (!woolHave(id)) b.disabled = true
           fabRow.append(b)
@@ -469,7 +474,7 @@ export function createStations(api) {
         const patRow = document.createElement('div')
         patRow.className = 'choice-row'
         ;[['plain', 'patternPlain'], ['stripes', 'patternStripes'], ['checks', 'patternChecks']].forEach(([id, label]) => {
-          const b = capBtn('pat-pick' + (job.pattern === id ? ' on' : ''), api.t(label), () => { job.pattern = id; touch(); paintWoodshop(g, key) })
+          const b = capBtn('pat-pick' + (job.pattern === id ? ' on' : ''), api.t(label), () => { job.pattern = id; touch(); patRow.querySelectorAll('button').forEach((n) => n.classList.toggle('on', n.dataset.pattern === id)) })
           b.dataset.pattern = id
           patRow.append(b)
         })
@@ -749,15 +754,18 @@ export function createStations(api) {
       card.append(title, need)
       const row = document.createElement('div')
       row.className = 'bed-paths'
-      const just = capBtn('decor-just-' + d.id, api.t('decorJust'), () => {
+      const sayNeed = () => { if (api.toast) api.toast('Hang 4 tools first') }
+      const just = capBtn('decor-just-' + d.id, reason ? 'Hang 4 tools first' : api.t('decorJust'), () => {
+        if (reason) { sayNeed(); return }
         if (api.craft) api.craft(d.id)
         paintWoodshop(g, key)
       })
-      const design = capBtn('decor-design-' + d.id, api.t('decorDesign'), () => {
+      const design = capBtn('decor-design-' + d.id, reason ? 'Hang 4 tools first' : api.t('decorDesign'), () => {
+        if (reason) { sayNeed(); return }
         if (api.craft) api.craft(d.id)
         paintWoodshop(g, key)
       })
-      if (reason) { just.disabled = true; design.disabled = true; just.title = reason; design.title = reason }
+      if (reason) { just.title = 'Hang 4 tools first'; design.title = 'Hang 4 tools first' }
       row.append(just, design)
       card.append(row)
       crate.append(card)

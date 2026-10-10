@@ -476,7 +476,23 @@ try {
       decor: document.querySelectorAll('.decor-card').length,
     }
   })
-  if (!note('woodshop open', shop.open && shop.wall >= 4 && shop.bed && shop.decor >= 3 && errors.filter((e) => e.startsWith('page:')).length === 0, JSON.stringify(shop))) failed = true
+  // real click on Bed Next
+  const nextBox = await page.evaluate(() => {
+    const b = document.querySelector('.bed-next')
+    if (!b) return null
+    const r = b.getBoundingClientRect()
+    return { x: r.x + r.width / 2, y: r.y + r.height / 2 }
+  })
+  if (nextBox) {
+    await page.mouse.click(nextBox.x, nextBox.y)
+    await new Promise((r) => setTimeout(r, 300))
+  }
+  const stepped = await page.evaluate(() => {
+    const s = document.querySelector('.bed-step')
+    return s ? s.dataset.step : ''
+  })
+  if (!note('bed next', stepped === 'plan' || stepped === 'measure', stepped || 'no step')) failed = true
+  if (!note('woodshop open, shop.open && shop.wall >= 4 && shop.bed && shop.decor >= 3 && errors.filter((e) => e.startsWith('page:')).length === 0, JSON.stringify(shop))) failed = true
   const noise = errors.filter((e) => !/favicon|net::ERR_FILE|Download the React DevTools/i.test(e))
   report.errors = noise
   if (!note('console', noise.length === 0, noise.slice(0, 6).join(' | '))) failed = true

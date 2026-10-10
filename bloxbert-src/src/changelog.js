@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.141', date: '2026-10-10', lines: {
+    en: ['Right-click switches a lamp. Picking one up stays saved.'],
+    uk: ['Правий клік перемикає лампу. Піднята лампа лишається збереженою.'],
+    ru: ['Правый клик переключает лампу. Поднятая лампа остаётся сохранённой.'],
+    es: ['El clic derecho enciende la lámpara. Recogerla queda guardado.'],
+    ar: ['النقرة اليمنى تبدّل المصباح. التقاطه يبقى محفوظًا.'],
+    'fa-AF': ['کلیک راست چراغ را عوض می‌کند. برداشتن آن ذخیره می‌ماند.'],
+    rw: ['Kanda iburyo ihindura itara. Kurikura biraguma byabitswe.'],
+    ti: ['የማን ቅኒት መብራህቲ ይቀይር። ምልዓል ንሱ ዝተዓቀበ ይጸንሕ።'],
+  }},
   { v: '2.5.140', date: '2026-10-10', lines: {
     en: ['Pixel-art wraps for batch 1 items and blocks (ores, doors, tools, machines).'],
     uk: ['Піксель-арт обгортки для партії 1 предметів і блоків (руди, двері, інструменти, машини).'],
