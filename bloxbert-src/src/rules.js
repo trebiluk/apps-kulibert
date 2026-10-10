@@ -162,33 +162,56 @@ function useLang(code) {
   return currentLang
 }
 
+function value(id) {
+  const key = canon(id)
+  if (saved.has(key)) return saved.get(key)
+  const def = registry.get(key)
+  return def ? def.def : undefined
+}
+
+function rows() {
+  return [...registry.values()]
+}
+
+function unknown() {
+  const out = []
+  for (const [id, v] of saved) if (!registry.has(id)) out.push({ id, value: v })
+  return out
+}
+
 const L = (en, uk, ru, es, ar, fa, rw, ti) => ({ en, uk, ru, es, ar, 'fa-AF': fa, rw, ti })
 
+export const GROUPS = {
+  building: L('Building', 'Будування', 'Строительство', 'Construcción', 'البناء', 'ساختمان', 'Kubaka', 'ምህናጽ'),
+  crafting: L('Crafting', 'Крафт', 'Крафт', 'Fabricar', 'الصنع', 'ساختن', 'Gukora', 'ምስራሕ'),
+  movement: L('Movement', 'Рух', 'Движение', 'Movimiento', 'الحركة', 'حرکت', 'Kugenda', 'ምንቅስቓስ'),
+}
+
 register({
-  id: 'core.break', type: 'bool', def: true, group: 'core', icon: '⛏',
+  id: 'core.break', type: 'bool', def: true, group: 'core', display: 'building', icon: '⛏',
   label: L('Breaking', 'Ламання', 'Ломание', 'Romper', 'الكسر', 'شکستن', 'Gukata', 'ምስባር'),
   desc: L('Players can break blocks.', 'Гравці можуть ламати блоки.', 'Игроки могут ломать блоки.', 'Los jugadores pueden romper bloques.', 'اللاعبون يستطيعون كسر المكعبات.', 'بازیکن‌ها می‌توانند بلاک بشکنند.', 'Abakinnyi bashobora gukata ibibumbe.', 'ተጻወቲ ብሎክ ክስብሩ ይኽእሉ።'),
 })
 register({
-  id: 'core.place', type: 'bool', def: true, group: 'core', icon: '▣',
+  id: 'core.place', type: 'bool', def: true, group: 'core', display: 'building', icon: '▣',
   label: L('Placing', 'Ставлення', 'Установка', 'Poner', 'الوضع', 'گذاشتن', 'Gushyira', 'ምቕማጥ'),
   desc: L('Players can place blocks.', 'Гравці можуть ставити блоки.', 'Игроки могут ставить блоки.', 'Los jugadores pueden poner bloques.', 'اللاعبون يستطيعون وضع المكعبات.', 'بازیکن‌ها می‌توانند بلاک بگذارند.', 'Abakinnyi bashobora gushyira ibibumbe.', 'ተጻወቲ ብሎክ ክቐምጡ ይኽእሉ።'),
 })
 register({
-  id: 'core.craft', type: 'bool', def: true, group: 'core', icon: '⚒',
+  id: 'core.craft', type: 'bool', def: true, group: 'core', display: 'crafting', icon: '⚒',
   label: L('Crafting', 'Крафт', 'Крафт', 'Fabricar', 'الصنع', 'ساختن', 'Gukora', 'ምስራሕ'),
   desc: L('Players can craft.', 'Гравці можуть крафтити.', 'Игроки могут крафтить.', 'Los jugadores pueden fabricar.', 'اللاعبون يستطيعون الصنع.', 'بازیکن‌ها می‌توانند بسازند.', 'Abakinnyi bashobora gukora.', 'ተጻወቲ ክሰርሑ ይኽእሉ።'),
 })
 register({
-  id: 'core.station.open', type: 'bool', def: true, group: 'core', icon: '⚙',
+  id: 'core.station.open', type: 'bool', def: true, group: 'core', display: 'crafting', icon: '⚙',
   label: L('Stations', 'Станки', 'Станки', 'Estaciones', 'المحطات', 'ایستگاه‌ها', 'Sitasiyo', 'ጣብያታት'),
   desc: L('Players can open a station.', 'Гравці можуть відкрити станок.', 'Игроки могут открыть станок.', 'Los jugadores pueden abrir una estación.', 'اللاعبون يستطيعون فتح محطة.', 'بازیکن‌ها می‌توانند ایستگاه را باز کنند.', 'Abakinnyi bashobora gufungura sitasiyo.', 'ተጻወቲ ጣብያ ክኸፍቱ ይኽእሉ።'),
 })
 // Today's behaviour: double-jump fly in Creative still works. Not checked yet.
 register({
-  id: 'core.fly', type: 'bool', def: true, group: 'core', icon: '✈',
+  id: 'core.fly', type: 'bool', def: true, group: 'core', display: 'movement', soon: true, icon: '✈',
   label: L('Flying', 'Політ', 'Полёт', 'Volar', 'الطيران', 'پرواز', 'Kuguruka', 'ምንፋር'),
   desc: L('Players can fly in Creative.', 'Гравці можуть літати у Творчому.', 'Игроки могут летать в Творческом.', 'Los jugadores pueden volar en Creativo.', 'اللاعبون يستطيعون الطيران في الوضع الإبداعي.', 'بازیکن‌ها می‌توانند در ساختن پرواز کنند.', 'Abakinnyi bashobora kuguruka muri Creative.', 'ተጻወቲ ኣብ ፈጠራ ክነፍሩ ይኽእሉ።'),
 })
 
-export const Rules = { register, load, dump, set, allow, why, icon, useLang, langs: LANGS }
+export const Rules = { register, load, dump, set, allow, why, icon, useLang, value, rows, unknown, langs: LANGS }

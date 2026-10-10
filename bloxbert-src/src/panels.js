@@ -9,8 +9,13 @@ export function mountPanels(api) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile'
-    b.innerHTML = '<span class="gic">' + icon + '</span><span class="glbl"></span>'
-    b.querySelector('.glbl').textContent = label
+    const ico = document.createElement('span')
+    ico.className = 'gic'
+    ico.textContent = icon
+    const lab = document.createElement('span')
+    lab.className = 'glbl'
+    lab.textContent = label
+    b.append(ico, lab)
     if (extra) b.title = extra
     b.addEventListener('click', fn)
     return b
@@ -114,6 +119,9 @@ export function mountPanels(api) {
     stack.pop()
     open(stack[stack.length - 1] || 'menu')
   }
+  function rulesOk() {
+    return !!((api.teacher && api.teacher()) || (api.staff && api.staff()))
+  }
   function open(id, key) {
     const map = {
       menu: () => show('menu', api.t('menu'), (g) => {
@@ -145,7 +153,17 @@ export function mountPanels(api) {
       shop: () => show('shop', api.t('shop'), (g) => api.paintShop(g)),
       wallet: () => show('wallet', api.t('wallet'), (g) => api.paintWallet(g)),
       settings: () => show('settings', api.t('settings'), (g) => api.paintSettings(g)),
-      teacher: () => show('teacher', api.t('teacher'), (g) => api.paintTeacher(g)),
+      teacher: () => show('teacher', api.t('teacher'), (g) => {
+        const host = document.createElement('div')
+        host.className = 'ggrid wide'
+        g.append(host)
+        if (api.paintTeacher) api.paintTeacher(host)
+        if (!rulesOk()) return
+        const b = tile('⚖', api.rulesWord ? api.rulesWord() : 'Rules', () => open('rules'))
+        b.classList.add('wide')
+        b.dataset.rulesTile = '1'
+        g.append(b)
+      }),
       help: () => show('help', api.t('help'), (g) => {
         g.append(tile('🎬', api.t('tour'), () => open('tour')))
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p)
@@ -206,6 +224,10 @@ export function mountPanels(api) {
       rewind: () => show('rewind', api.t('undoMinutes'), (g) => api.paintRewind(g)),
       snaps: () => show('snaps', api.t('snapshots'), (g) => api.paintSnaps(g)),
       prices: () => show('prices', api.t('prices'), (g) => api.paintPrices(g)),
+      rules: () => show('rules', api.rulesWord ? api.rulesWord() : 'Rules', (g) => {
+        if (!rulesOk()) return
+        if (api.paintRules) api.paintRules(g)
+      }),
     }
     ;(map[id] || map.menu)(key)
   }
@@ -220,6 +242,6 @@ export function mountPanels(api) {
     if (!t || t.closest('button, a, input, textarea, select, label, .well, .ks-slot, .keycap, .bag-card, .ks-picks, .oven-picks, .ks-choice, .oven-choice, .bed-card, .tape-track, .bed-step')) return
     if (t === sheet || t.id === 'sheet-body' || (t.classList && t.classList.contains('ggrid'))) close()
   })
-  if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
+  if (globalThis.location && String(globalThis.location.search || '').includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
   return { openRoot, open, close, dismiss, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }

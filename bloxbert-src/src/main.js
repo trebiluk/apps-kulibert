@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.133'
+const VERSION = '2.5.136'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -30,6 +30,7 @@ import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
 import { Rules } from './rules.js'
+import { paintRules, rulesWord } from './rules-editor.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -3445,6 +3446,8 @@ panels = mountPanels({
   paintWallet: (g) => session.paintWallet(g),
   paintSettings: (g) => { session.paintSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
+  paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
+  rulesWord: () => rulesWord(LANG),
   paintPrices: (g) => session.paintPrices(g),
   paintCounter: (g, key) => session.paintCounter(g, key),
   paintBunk: (g, key) => session.paintBunk(g, key),
@@ -4096,6 +4099,16 @@ document.addEventListener('keydown', (e) => {
 })
 let downHeld = false
 document.addEventListener('keydown', (e) => { if (e.key === 'Shift') downHeld = true; if (e.code === 'KeyZ') crouchKey = true })
+document.addEventListener('keydown', (e) => {
+  if (e.code !== 'KeyT' || e.repeat || e.ctrlKey || e.metaKey || e.altKey) return
+  if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
+  const sheet = $('sheet')
+  if (sheet && !sheet.hidden) return
+  if (!(teacherOn() || staffOn())) return
+  e.preventDefault()
+  releaseLook()
+  if (panels) panels.open('rules')
+})
 document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.code === 'KeyZ') crouchKey = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
 function showCrack(p, x, y, early) {
   const ring = $('pick-ring')

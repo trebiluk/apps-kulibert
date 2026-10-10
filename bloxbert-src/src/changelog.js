@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.136', date: '2026-10-10', lines: {
+    en: ['Teachers can open Rules, turn a rule off, and reset the world to normal.'],
+    uk: ['Учитель може відкрити Правила, вимкнути правило і скинути світ до звичного.'],
+    ru: ['Учитель может открыть Правила, выключить правило и сбросить мир к обычному.'],
+    es: ['El maestro puede abrir Reglas, apagar una regla y volver el mundo a lo normal.'],
+    ar: ['يمكن للمعلم فتح القواعد، وإيقاف قاعدة، وإرجاع العالم إلى الطبيعي.'],
+    'fa-AF': ['معلم می‌تواند قانون‌ها را باز کند، یک قانون را خاموش کند، و دنیا را به عادی برگرداند.'],
+    rw: ['Umwarimu ashobora gufungura Amategeko, gufunga itegeko, no gusubiza isi ku bisanzwe.'],
+    ti: ['መምህር ሕግታት ክኸፍት፡ ሕጊ ክዓጽዎ፡ ዓለም ድማ ናብ ልሙድ ክመልስ ይኽእል።'],
+  }},
   { v: '2.5.133', date: '2026-10-10', lines: {
     en: ['Hills appear as you walk, and the game does not stop to build them.'],
     uk: ['Горби з’являються, поки ти йдеш, і гра не зупиняється, щоб їх збудувати.'],

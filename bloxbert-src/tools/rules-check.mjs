@@ -1,5 +1,6 @@
 // World rules R1. Pure, no browser.
-import { Rules, ALIASES } from '../src/rules.js'
+import { Rules, ALIASES, GROUPS } from '../src/rules.js'
+import { paintRules, rulesWord } from '../src/rules-editor.js'
 
 const fail = []
 function eq(ok, msg) { if (!ok) fail.push(msg) }
@@ -75,7 +76,7 @@ function matchSel(n, sel) {
 const made = []
 function node(tag) {
   const n = {
-    tag, className: '', id: '', textContent: '', title: '', type: '', disabled: false, hidden: false,
+    tag, className: '', id: '', textContent: '', title: '', type: '', value: '', disabled: false, hidden: false,
     style: {}, dataset: {}, children: [], attrs: {}, listeners: {}, isConnected: true, clientWidth: 0,
     append(...xs) { for (const x of xs) if (x && typeof x === 'object') n.children.push(x) },
     setAttribute(k, v) { n.attrs[k] = String(v); if (k === 'id') n.id = String(v) },
@@ -299,6 +300,112 @@ for (const kind of ['bed-just', 'bed-design', 'bed-remake']) {
   eq(s.bag.count('bunk') === 1 && s.bag.count('planks') === 3 && blocked.length === 0, 'remake on ' + snap(s))
 }
 Rules.load({})
+
+const scriptsUi = {
+  en: /[A-Za-z]/, es: /[A-Za-zÁÉÍÓÚáéíóúñ¿]/, rw: /[A-Za-z]/,
+  uk: /[А-Яа-яІіЇїЄєҐґ]/, ru: /[А-Яа-яЁё]/,
+  ar: /[\u0600-\u06FF]/, 'fa-AF': /[\u0600-\u06FF]/, ti: /[\u1200-\u137F]/,
+}
+for (const lang of langs) eq(scriptsUi[lang].test(rulesWord(lang)), 'rules title ' + lang + ' ' + rulesWord(lang))
+const byId = Object.fromEntries(Rules.rows().map((d) => [d.id, d]))
+eq(byId['core.break'].display === 'building' && byId['core.place'].display === 'building', 'building group')
+eq(byId['core.craft'].display === 'crafting' && byId['core.station.open'].display === 'crafting', 'crafting group')
+eq(byId['core.fly'].display === 'movement' && byId['core.fly'].soon === true, 'movement group')
+eq(Rules.rows().every((d) => d.group === 'core') && GROUPS.building.en === 'Building', 'ids stay core')
+
+function allNodes(root) {
+  const out = []
+  walk(root, out)
+  return out
+}
+function rowIds(root) {
+  return allNodes(root).filter((n) => n.dataset && n.dataset.id && hasClass(n, 're-row')).map((n) => n.dataset.id)
+}
+function fireInput(input, text) {
+  input.value = text
+  for (const fn of input.listeners.input || []) fn({ target: input })
+}
+
+const saves = []
+const dirties = []
+const editor = node('div')
+paintRules(editor, {
+  lang: 'en',
+  markDirty: () => dirties.push(1),
+  save: () => { saves.push(JSON.parse(JSON.stringify(Rules.dump()))) },
+})
+eq(rowIds(editor).slice().sort().join(',') === 'core.break,core.place', 'building rows ' + rowIds(editor).join(','))
+allNodes(editor).find((n) => n.dataset && n.dataset.group === 'crafting').click()
+eq(rowIds(editor).slice().sort().join(',') === 'core.craft,core.station.open', 'crafting rows ' + rowIds(editor).join(','))
+allNodes(editor).find((n) => n.dataset && n.dataset.group === 'movement').click()
+eq(rowIds(editor).join(',') === 'core.fly', 'movement row')
+const flyToggle = allNodes(editor).find((n) => hasClass(n, 're-toggle') && n.disabled && n.textContent === 'Coming soon')
+eq(!!flyToggle, 'fly is read-only')
+if (flyToggle) flyToggle.click()
+eq(Rules.dump()['core.fly'] == null, 'fly click does not save')
+allNodes(editor).find((n) => n.dataset && n.dataset.group === 'building').click()
+
+fireInput(editor.querySelector('.re-search'), 'craft')
+eq(rowIds(editor).join(',') === 'core.craft', 'search craft ' + rowIds(editor).join(','))
+fireInput(editor.querySelector('.re-search'), '')
+const breakRow = allNodes(editor).find((n) => n.dataset && n.dataset.id === 'core.break' && hasClass(n, 're-row'))
+const breakToggle = breakRow.querySelector('.re-toggle')
+breakToggle.click()
+eq(Rules.allow(null, 'core.break').ok === false && saves.length === 1 && saves[0]['core.break'] === false && dirties.length === 1, 'toggle break saves ' + JSON.stringify(saves))
+eq(allNodes(editor).some((n) => hasClass(n, 're-note') && n.textContent === 'Rules changed'), 'rules changed note')
+editor.querySelector('.re-changed').click()
+eq(rowIds(editor).join(',') === 'core.break', 'changed only ' + rowIds(editor).join(','))
+editor.querySelector('.re-reset').click()
+eq(Rules.allow(null, 'core.break').ok === false && !!editor.querySelector('.re-yes') && !!editor.querySelector('.re-ask'), 'reset waits for confirm')
+editor.querySelector('.re-yes').click()
+eq(Object.keys(Rules.dump()).length === 0 && saves[saves.length - 1] && Object.keys(saves[saves.length - 1]).length === 0, 'reset clears dump')
+
+Rules.set('pack.future.glow', 3)
+const packHost = node('div')
+paintRules(packHost, { lang: 'en' })
+const packRow = allNodes(packHost).find((n) => n.dataset && n.dataset.id === 'pack.future.glow')
+eq(!packRow, 'pack row hidden until its group')
+const packBtn = allNodes(packHost).find((n) => n.dataset && n.dataset.group === 'pack')
+eq(!!packBtn, 'pack group shows')
+if (packBtn) packBtn.click()
+const packShown = allNodes(packHost).find((n) => n.dataset && n.dataset.id === 'pack.future.glow' && hasClass(n, 're-pack'))
+eq(!!packShown && allNodes(packShown).some((n) => n.textContent === 'Pack not installed'), 'pack row is greyed')
+Rules.load({})
+
+globalThis.location = { search: '' }
+for (const id of ['sheet', 'sheet-body', 'sheet-title', 'sheet-back', 'sheet-x']) {
+  const n = node(id === 'sheet-title' ? 'b' : id === 'sheet' || id === 'sheet-body' ? 'div' : 'button')
+  n.id = id
+}
+const { mountPanels } = await import('../src/panels.js')
+let who = { teacher: false, staff: false }
+let painted = 0
+const panels = mountPanels({
+  t: (k) => k,
+  teacher: () => who.teacher,
+  staff: () => who.staff,
+  paintTeacher(g) {
+    const p = node('p')
+    p.className = 'gnote'
+    p.textContent = 'teacher-body'
+    g.append(p)
+  },
+  paintRules() { painted += 1 },
+  rulesWord: () => 'Rules',
+})
+const sheetBody = document.getElementById('sheet-body')
+panels.open('teacher')
+eq(!allNodes(sheetBody).some((n) => n.dataset && n.dataset.rulesTile), 'student has no Rules tile')
+who = { teacher: true, staff: true }
+panels.open('teacher')
+eq(allNodes(sheetBody).some((n) => n.dataset && n.dataset.rulesTile), 'teacher has Rules tile')
+painted = 0
+panels.open('rules')
+eq(painted === 1 && document.getElementById('sheet').dataset.panel === 'rules', 'rules sheet paints')
+who = { teacher: false, staff: false }
+const before = painted
+panels.open('rules')
+eq(painted === before, 'student rules sheet does not paint')
 
 if (fail.length) { console.error(fail.join('\n')); process.exit(1) }
 console.log('rules-check ok')
