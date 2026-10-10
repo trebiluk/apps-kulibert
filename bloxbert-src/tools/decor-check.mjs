@@ -250,6 +250,65 @@ async function pickupSaveReload(lampCell) {
   return page.evaluate((c) => ({ cell: window.__smoke.voxel(c.x, c.y, c.z), bag: window.__smoke.count('floorLamp') }), lampCell)
 }
 
+
+async function rugPickupWalk() {
+  await page.evaluate(() => window.__smoke.close())
+  await selectItem('rug')
+  // place via real aim+right-click
+  let placed = null
+  for (let attempt = 0; attempt < 3; attempt++) {
+    await aimAndClick(64, 5, 64, 'right')
+    await page.evaluate(() => { const b = document.getElementById('t-place'); if (b) b.click() })
+    await sleep(400)
+    placed = await page.evaluate(() => {
+      const s = window.__smoke
+      for (const [x, y, z] of [[64,5,64],[64,6,64],[65,5,64],[64,5,65]]) {
+        const id = s.voxel(x, y, z)
+        if (id === 1104 || id === 1105) return { x, y, z, id }
+      }
+      return null
+    })
+    if (placed) break
+  }
+  if (!placed) return { placed: false, voxels: -1, bag: 0, walked: false }
+  // aim and hold left (real CDP) to pick up whole rug
+  const canvasBox = await page.evaluate(() => {
+    const c = document.querySelector('#stage canvas')
+    const r = c.getBoundingClientRect()
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }
+  })
+  await aimAndClick(placed.x, placed.y, placed.z, 'left')
+  // hold left via CDP
+  await cdp.send('Input.dispatchMouseEvent', { type: 'mousePressed', x: canvasBox.x, y: canvasBox.y, button: 'left', clickCount: 1 })
+  await sleep(900)
+  await cdp.send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: canvasBox.x, y: canvasBox.y, button: 'left', clickCount: 1 })
+  await sleep(400)
+  const after = await page.evaluate((p) => {
+    const s = window.__smoke
+    const cells = [[p.x, p.y, p.z], [p.x+1, p.y, p.z], [p.x, p.y, p.z+1], [p.x+1, p.y, p.z+1]]
+    const zeros = cells.filter(([x,y,z]) => s.voxel(x,y,z) === 0).length
+    return { zeros, bag: s.count('rug') }
+  }, placed)
+  // place again and walk over with keys
+  await selectItem('rug')
+  await aimAndClick(placed.x, placed.y, placed.z, 'right')
+  await page.evaluate(() => { const b = document.getElementById('t-place'); if (b) b.click() })
+  await sleep(400)
+  const beforeY = await page.evaluate(() => {
+    try { return window.__blocks.noa.ents.getPositionData(window.__blocks.noa.playerEntity).position[1] } catch (e) { return null }
+  })
+  // walk forward with keys
+  await page.keyboard.down('KeyW')
+  await sleep(600)
+  await page.keyboard.up('KeyW')
+  await sleep(200)
+  const afterY = await page.evaluate(() => {
+    try { return window.__blocks.noa.ents.getPositionData(window.__blocks.noa.playerEntity).position[1] } catch (e) { return null }
+  })
+  const walked = beforeY != null && afterY != null && Math.abs(afterY - beforeY) < 0.15
+  return { placed: true, voxels: after.zeros, bag: after.bag, walked, beforeY, afterY }
+}
+
 for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
   await boot(w, h, touch)
   const items = await startItems()
@@ -263,6 +322,8 @@ for (const [w, h, touch] of [[1366, 768, false], [915, 412, true]]) {
   note('place+toggle ' + w, !!lit.lampCell && lit.toggled === 1101 && lit.light, JSON.stringify(lit))
   const pk = await pickupSaveReload(lit.lampCell)
   note('pickup+save ' + w, pk.cell === 0 && pk.bag >= 1, JSON.stringify(pk))
+  const rug = await rugPickupWalk()
+  note('rug pickup+walk ' + w, rug.placed && rug.voxels === 4 && rug.bag >= 1 && rug.walked, JSON.stringify(rug))
 }
 note('no page errors', errors.filter((e) => e.startsWith('page:')).length === 0, errors.filter((e) => e.startsWith('page:')).slice(0, 2).join(' | '))
 

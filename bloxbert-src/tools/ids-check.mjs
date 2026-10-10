@@ -5,8 +5,8 @@ import { packBlocks, registerPack, packIds, packVersions } from '../src/packs/re
 import '../src/packs/farm/pack.js'
 
 const fail = []
-const text = readFileSync(new URL('../src/main.js', import.meta.url), 'utf8')
-const start = text.indexOf('export const BLOCKS = [')
+const text = readFileSync(new URL('../src/data/blocks-list.js', import.meta.url), 'utf8')
+const start = text.indexOf('export const BASE_BLOCKS = [')
 const end = text.indexOf('\n]', start)
 const body = start >= 0 && end > start ? text.slice(start, end) : ''
 const blocks = [...body.matchAll(/\[(\d+),\s*'([^']+)'/g)].map((m) => ({ id: +m[1], key: m[2] }))

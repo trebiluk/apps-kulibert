@@ -50,7 +50,18 @@ await build({
   plugins: [trimUnusedShaders],
   define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
-cpSync('index.html', OUT + '/index.html')
+// Icon test entry — no main.js, just the contact sheet
+await build({
+  entryPoints: ['src/icons-test-entry.js'], bundle: true, minify: true, format: 'iife', target: 'es2020',
+  outfile: OUT + '/icons-test.js', loader: { '.json': 'json' }, legalComments: 'eof',
+})
+let indexSrc = readFileSync('index.html', 'utf8')
+const ver = JSON.parse(readFileSync('package.json', 'utf8')).version
+// Replace version plate, chip data-version, and app.js query
+indexSrc = indexSrc.replace(/id="ver-plate">[^<]+</, 'id="ver-plate">' + ver + '<')
+indexSrc = indexSrc.replace(/data-version="[^"]+"/, 'data-version="' + ver + '"')
+indexSrc = indexSrc.replace(/app\.js\?v=[^"]+/, 'app.js?v=' + ver)
+writeFileSync(OUT + '/index.html', indexSrc)
 cpSync('icons-test.html', OUT + '/icons-test.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
 const version = JSON.parse(readFileSync('package.json', 'utf8')).version

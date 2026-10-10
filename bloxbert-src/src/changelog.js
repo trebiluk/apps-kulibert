@@ -18,6 +18,15 @@ export const CHANGELOG = [
     'fa-AF': ['دست برتبوت چیزی را که برگزیدی نگه می‌دارد، راست یا چپ.'],
     rw: ['Ukuboko kwa Bertbot gufata icyo wahisemo, iburyo cyangwa ibumoso.'],
     ti: ['ኢድ በርትቦት ዝመረጽካዮ ይሕዝ፡ የማን ወይ ጸጋም።'],
+  { v: '2.5.148', date: '2026-10-10', lines: {
+    en: ['Icon test page loads from a bundled script. Rug can be aimed at and picked up.'],
+    uk: ['Сторінка іконок завантажується з зібраного скрипта. Килим можна навести і підняти.'],
+    ru: ['Страница иконок загружается из собранного скрипта. Ковёр можно навести и поднять.'],
+    es: ['La página de iconos carga desde un script empaquetado. La alfombra se puede apuntar y recoger.'],
+    ar: ['صفحة الأيقونات تُحمّل من سكربت مجمع. يمكن التصويب على السجادة ورفعها.'],
+    'fa-AF': ['صفحه آیکون از اسکریپت بسته‌شده بار می‌شود. فرش را می‌توان نشانه گرفت و برداشت.'],
+    rw: ['Urupapuro rwibishushanyo ruzana mu script yubatswe. Umusambi ushobora kugaragazwa no gufatwa.'],
+    ti: ['ናይ ኣይኮን ፈተና ገጽ ካብ ዝተኣካከበ ስክሪፕት ይጽዕን። መንጸፍ ክትድለይን ክትልዓልን ትኽእል።'],
   }},
   { v: '2.5.145', date: '2026-10-10', lines: {
     en: ['A card shows this world\'s rules when you join, and Menu has World Rules.'],

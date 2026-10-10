@@ -20,87 +20,8 @@
 <body>
 <h1>Bloxbert Icon Contact Sheet</h1>
 <div class="count" id="count">Loading...</div>
+<div class="count" id="blank">blank: ?</div>
 <div class="grid" id="grid"></div>
-<script type="module">
-import { ITEMS } from './src/data/items.js';
-import { slotArt, blockIcon } from './src/icons.js';
-import { BLOCKS } from './src/main.js';
-
-const grid = document.getElementById('grid');
-const countEl = document.getElementById('count');
-let wraps = 0, fallbacks = 0;
-
-function isFallback(el) {
-  if (!el) return true;
-  if (el.dataset && (el.dataset.kind === 'wrap' || el.dataset.wrap)) return false;
-  if (el.dataset && el.dataset.letter) return true;
-  if (el.tagName === 'CANVAS' && el.dataset && el.dataset.kind !== 'wrap') return true;
-  return true;
-}
-
-function drawScaled(src, size) {
-  const c = document.createElement('canvas');
-  c.width = c.height = size;
-  const g = c.getContext('2d');
-  g.imageSmoothingEnabled = false;
-  if (src.tagName === 'CANVAS') {
-    g.drawImage(src, 0, 0, size, size);
-  } else if (src.tagName === 'SPAN' && src.querySelector('svg')) {
-    // leave svg as-is; size via style
-    c.style.width = c.style.height = size + 'px';
-    // can't easily draw svg without foreignObject; just append a clone styled
-    return src.cloneNode(true);
-  } else {
-    g.fillStyle = '#444';
-    g.fillRect(0, 0, size, size);
-  }
-  return c;
-}
-
-function addCard(key, el, kind) {
-  const card = document.createElement('div');
-  card.className = 'card';
-  const icons = document.createElement('div');
-  icons.className = 'icons';
-  // 48px
-  const a = drawScaled(el, 48);
-  icons.appendChild(a);
-  // 96px
-  const b = drawScaled(el, 96);
-  icons.appendChild(b);
-  card.appendChild(icons);
-  const name = document.createElement('div');
-  name.className = 'name';
-  name.textContent = key;
-  card.appendChild(name);
-  const id = document.createElement('div');
-  id.className = 'id';
-  id.textContent = kind + ' ' + (el.dataset?.item || el.dataset?.block || el.dataset?.wrap || '');
-  card.appendChild(id);
-  if (isFallback(el)) {
-    card.classList.add('fallback');
-    fallbacks++;
-  } else wraps++;
-  grid.appendChild(card);
-}
-
-// Items
-for (const key of Object.keys(ITEMS)) {
-  const el = slotArt(key);
-  addCard(key, el, 'item');
-}
-
-// Blocks (unique names)
-const seen = new Set();
-for (const b of BLOCKS) {
-  const name = b[1];
-  if (seen.has(name)) continue;
-  seen.add(name);
-  const el = blockIcon(b);
-  addCard(name, el, 'block');
-}
-
-countEl.textContent = `${wraps} wraps / ${fallbacks} fallbacks`;
-</script>
+<script src="icons-test.js"></script>
 </body>
 </html>
