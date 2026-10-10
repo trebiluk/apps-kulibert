@@ -233,7 +233,19 @@ const moveState = noa.ents.getMovement(noa.playerEntity)
 const playerBody = noa.ents.getPhysicsBody(noa.playerEntity)
 playerBody.gravityMultiplier = GRAV_MULT
 playerBody.airDrag = 0
-playerBody.autoStep = !!TOUCH_UI
+const LOOK_KEY = 'bloxbert-look'
+let lookSens = 1
+let lookInvert = false
+let autoClimb = true
+let wideView = false
+try {
+  const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
+  if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
+  lookInvert = !!savedLook.invert
+  wideView = !!savedLook.wide
+  if (savedLook.cv === 2 && typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
+} catch (e) {}
+playerBody.autoStep = !!autoClimb
 moveState.airJumps = 0
 moveState.jumpImpulse = 0
 moveState.jumpForce = 0
@@ -620,6 +632,7 @@ function farmlandWetMesh() {
   return mesh
 }
 const waterMat = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
+waterMat.backFaceCulling = true
 function waterMesh() {
   return shape('water', [part('w', 0.98, 0.98, 0.98, 0, 0.5, 0, 0, waterMat)], waterMat)
 }
@@ -4492,6 +4505,8 @@ function feelTick(dt) {
   hoverCrop()
 }
 noa.on('tick', (dt) => {
+  const maxP = 85 * Math.PI / 180
+  if (noa.camera.pitch > maxP || noa.camera.pitch < -maxP) setLook(noa.camera.heading, noa.camera.pitch)
   feelTick(dt || 33)
   const s = noa.inputs.pointerState.scrolly
   if (s && !tableMode) {
@@ -4527,25 +4542,13 @@ canvas.addEventListener('contextmenu', (e) => e.preventDefault())
 let look = null
 const LOOK_H = 0.40 * Math.PI / 180
 const LOOK_V = 0.34 * Math.PI / 180
-const LOOK_KEY = 'bloxbert-look'
-let lookSens = 1
-let lookInvert = false
-let autoClimb = !!TOUCH_UI
 let airCap = WALK
-let wideView = false
-try {
-  const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
-  if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
-  lookInvert = !!savedLook.invert
-  wideView = !!savedLook.wide
-  if (typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
-} catch (e) {}
 function applyLook() {
   noa.camera.sensitivityX = 10 * lookSens
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb })) } catch (e) {}
 }
 function paintLook(g) {
   const label = document.createElement('p')
@@ -4928,6 +4931,21 @@ const scene = noa.rendering.getScene()
 scene.fogMode = Scene.FOGMODE_LINEAR
 scene.fogColor = new Color3(0.64, 0.8, 0.93)
 gfx.applyFog(scene)
+const uwEl = document.createElement('div')
+uwEl.id = 'uw'
+uwEl.hidden = true
+uwEl.style.cssText = 'position:fixed;inset:0;z-index:4;background:rgba(20,70,140,.35);pointer-events:none'
+document.body.append(uwEl)
+let underWater = false
+const plainFog = gfx.applyFog.bind(gfx)
+gfx.applyFog = (next) => {
+  plainFog(next)
+  if (!underWater) return
+  const k = basics && basics.lum ? basics.lum() : 1
+  scene.fogColor.set(0.10 * k, 0.25 * k, 0.45 * k)
+  scene.fogStart = 0
+  scene.fogEnd = 12
+}
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
 Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uLum;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);float lum=clamp(uLum,0.4,1.0);vec3 zenith=mix(vec3(0.03,0.05,0.12),vec3(0.13,0.34,0.72),lum);vec3 horizon=mix(vec3(0.16,0.18,0.30),vec3(0.64,0.80,0.93),lum);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir))*lum;float glow=smoothstep(0.82,1.0,dot(n,sunDir))*lum;col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);vec3 moonDir=normalize(vec3(0.25,0.72,0.45));float moon=smoothstep(0.986,0.998,dot(n,moonDir))*(1.0-lum);col=mix(col,vec3(0.86,0.9,0.98),moon);float star=step(0.992,fract(sin(dot(floor(n.xy*90.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(star)*(1.0-lum)*smoothstep(0.15,0.55,n.y);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y)*lum;col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
 const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uLum'] })
@@ -5056,7 +5074,7 @@ function syncGlow() {
   sunLight.specular.set(DAY_SPEC.r * k, DAY_SPEC.g * k, DAY_SPEC.b * k)
   paintTerrain(k)
 
-  scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
+  if (!underWater) scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
   if (!bertEm && typeof bertyMat !== 'undefined' && bertyMat) bertEm = bertyMat.emissiveColor.clone()
   if (bertEm) bertyMat.emissiveColor.set(bertEm.r * k, bertEm.g * k, bertEm.b * k)
   if (typeof dropMats !== 'undefined') {
@@ -5389,10 +5407,32 @@ function paintOutline() {
   outline.position.copyFromFloats(local[0], local[1], local[2])
   syncPlaceGhost()
 }
+function eyeVoxel() {
+  const eye = noa.camera.getPosition()
+  return getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2]))
+}
+function underwaterTick() {
+  const wet = eyeVoxel() === WATER
+  if (wet !== underWater) {
+    underWater = wet
+    uwEl.hidden = !wet
+    if (!wet) {
+      const k = basics && basics.lum ? basics.lum() : 1
+      scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
+      plainFog()
+    }
+  }
+  if (!underWater) return
+  const k = basics && basics.lum ? basics.lum() : 1
+  scene.fogColor.set(0.10 * k, 0.25 * k, 0.45 * k)
+  scene.fogStart = 0
+  scene.fogEnd = 12
+}
 noa.on('beforeRender', (dt) => {
   paintOutline()
   paintProtectRing()
   if (basics) syncGlow()
+  underwaterTick()
   if (REDUCE) return
   skyTime += (dt || 16) * 0.0004
   skyMat.setFloat('uTime', skyTime)
@@ -5582,6 +5622,7 @@ if (!__BLOX_STUDENT__) {
     snap: { list: () => tools.snaps, make: () => tools.snapMake(), restore: () => null },
     measure: (points) => tools.measure(points),
     hold: (st, v) => { noa.inputs.state[st] = v },
+    get climb() { return autoClimb },
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
   }
 }

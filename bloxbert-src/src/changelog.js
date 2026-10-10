@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.143', date: '2026-10-10', lines: {
+    en: ['You step up a one-block ledge, and underwater looks like water.'],
+    uk: ['Ти ступаєш на уступ в один блок, а під водою видно воду.'],
+    ru: ['Ты шагаешь на уступ в один блок, а под водой видна вода.'],
+    es: ['Subes un escalón de un bloque, y bajo el agua se ve agua.'],
+    ar: ['تصعد حافة بمكعب واحد، وتحت الماء ترى ماء.'],
+    'fa-AF': ['یک پله یک بلاکی را بالا می‌روی، و زیر آب آب دیده می‌شود.'],
+    rw: ['Uzuzamuka urwego rw\'igice kimwe, kandi munsi y\'amazi urabona amazi.'],
+    ti: ['ሓደ ብሎክ ትደይብ፡ ኣብ ትሕቲ ማይ ድማ ማይ ይረአ።'],
+  }},
   { v: '2.5.142', date: '2026-10-10', lines: {
     en: ['Teachers can turn a station off, and set the sky to day, night, or the normal cycle.'],
     uk: ['Учитель може вимкнути станок і поставити небо на день, ніч або звичайний цикл.'],
