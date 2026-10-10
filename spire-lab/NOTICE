@@ -1,4 +1,5 @@
-Spire Lab reads height from a timing stack. This folder does not ship
+The Spire jobs in HoldIt (folder spire-lab/).
+This folder reads height from a timing stack. This folder does not ship
 stock tower_game art, audio, fonts, hearts, score UI, or WeChat screens.
 
 The overlap-cut drop is an original Kulibert Tech Ed reimplementation.

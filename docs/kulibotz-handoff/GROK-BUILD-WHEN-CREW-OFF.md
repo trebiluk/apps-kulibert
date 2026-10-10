@@ -19,7 +19,7 @@ Crew may be busy or quiet. This file is enough to ship.
 | Berty Run | https://apps.kulibert.net/berty-run/ | apps-kulibert | Hub | First Trace playable |
 | BertyBeatz | https://apps.kulibert.net/bertybeatz/ | apps-kulibert | Hub | BZ **1.2.0** |
 | PaperLab | https://apps.kulibert.net/paperlab/ | apps-kulibert | Hub | envelope **PASS** (diagrams+steps, rev **2026-09-22-paperlab-envelope-diagrams**); remaining plans still need the same bar |
-| SpanCraft / Spire Lab | `/spancraft/` · `/spire-lab/` | apps-kulibert | Hub | MVP Load / Stand playable |
+| HoldIt Span / Spire (was SpanCraft / Spire Lab) | `/holdit/?mode=span` · `/holdit/?mode=spire` | apps-kulibert | Hub | MVP Load / Stand playable |
 | Den / Bistro / Drift / LogoLab / Sprocket | hub paths | apps-kulibert | Hub | Live doors; Sprocket hub is lite 1.4.0 |
 | Ginger | — | — | — | **PARKED** (no kid door) |
 

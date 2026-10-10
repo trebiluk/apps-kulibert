@@ -422,6 +422,50 @@
       "permanent": false
     },
     {
+      "source": "/spancraft",
+      "has": [{ "type": "query", "key": "build" }],
+      "destination": "/spancraft/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/spancraft/",
+      "has": [{ "type": "query", "key": "build" }],
+      "destination": "/spancraft/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/spancraft",
+      "destination": "/holdit/?mode=span",
+      "permanent": false
+    },
+    {
+      "source": "/spancraft/",
+      "destination": "/holdit/?mode=span",
+      "permanent": false
+    },
+    {
+      "source": "/spire-lab",
+      "has": [{ "type": "query", "key": "build" }],
+      "destination": "/spire-lab/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/spire-lab/",
+      "has": [{ "type": "query", "key": "build" }],
+      "destination": "/spire-lab/index.html",
+      "permanent": false
+    },
+    {
+      "source": "/spire-lab",
+      "destination": "/holdit/?mode=spire",
+      "permanent": false
+    },
+    {
+      "source": "/spire-lab/",
+      "destination": "/holdit/?mode=spire",
+      "permanent": false
+    },
+    {
       "source": "/bertapult",
       "destination": "/catapult/",
       "permanent": false

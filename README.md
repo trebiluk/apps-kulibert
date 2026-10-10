@@ -11,6 +11,8 @@ Static `index.html` + `vercel.json`. Production domain `apps.kulibert.net` (Clou
 
 **Bertapult** (was ThrowIt) lives at [`/catapult/`](https://apps.kulibert.net/catapult/), and `/bertapult/` redirects there. The path, the app id `throwit` and the storage keys `catapult-shop-v1` / `throwit-style-v1` stay, so links and saves keep working.
 
+HoldIt has two modes: Span (bridges) and Spire (towers). They were SpanCraft and Spire Lab. `/spancraft/` and `/spire-lab/` redirect to `/holdit/?mode=span` / `?mode=spire`; the job pages stay at `/spancraft/index.html` and `/spire-lab/index.html`. Folders, app ids and storage keys stay, so links and saves keep working.
+
 **Drift** (Tech 6–8 calm-break) is a same-origin snapshot at [`/drift/`](https://apps.kulibert.net/drift/) (`public/drift/` in this repo, rewritten to `/drift/`). Conceptual Grok home = **Tech 6–8** lane (with Coderized / Koderized). Source edits: GitHub `trebiluk/drift`. Do not rewrite classroom traffic to `https://drift-psi-two.vercel.app` — Solvay blocks that host. `public/drift/index.html` uses relative `./assets/…` only. Prove: `curl -sS https://apps.kulibert.net/drift/ | grep vercel.app` must be empty. Rebuild: `bash scripts/publish-drift.sh`.
 
 Hub tile label: **Drift · Tech 6–8** → `/drift/`.
