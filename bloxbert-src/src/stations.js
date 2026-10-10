@@ -365,7 +365,7 @@ export function createStations(api) {
     box.className = 'bed-card'
     const job = rec.bed
     const rule = rules()
-    const ready = toolsReady(key)
+    const decorReady = toolsReady(key)
     const wool = woolPick(job && job.fabric)
     const haveMats = matsOk(wool)
     if (!job) {
@@ -376,17 +376,6 @@ export function createStations(api) {
       const row = document.createElement('div')
       row.className = 'bed-paths'
       if (rule.path !== 'design') {
-
-        const decor = document.createElement('div')
-        decor.className = 'bed-paths'
-        const just = capBtn('decor-just', api.t('decorJust'), () => {
-          if (api.craftOk && api.craftOk('floorLamp')) api.craft && api.craft('floorLamp')
-        })
-        const design = capBtn('decor-design', api.t('decorDesign'), () => {
-          if (api.craftOk && api.craftOk('floorLamp')) api.craft && api.craft('floorLamp')
-        })
-        decor.append(just, design)
-        box.append(decor)
         const b = capBtn('bed-just', api.t('justBuild'), () => {
           if (api.craftOk && !api.craftOk('bunk')) return
           if (!toolsReady(key) || !matsOk()) return
@@ -731,6 +720,48 @@ export function createStations(api) {
       return
     }
     paintBed(crate, g, key, rec)
+    const decorReady = toolsReady(key)
+    const DECOR = [
+      { id: 'floorLamp', need: '1 Iron + 1 Glass + 1 Stick', ins: [['ironIngot', 1], ['glass', 1], ['stick', 1]] },
+      { id: 'wallLamp', need: '1 Iron + 1 Glass', ins: [['ironIngot', 1], ['glass', 1]] },
+      { id: 'rug', need: '4 Wool', ins: [['woolBlue', 4], ['woolGreen', 4], ['woolRed', 4], ['woolTan', 4]] },
+    ]
+    for (const d of DECOR) {
+      const card = document.createElement('div')
+      card.className = 'bed-card decor-card'
+      card.dataset.item = d.id
+      const title = document.createElement('p')
+      title.className = 'gnote'
+      title.textContent = api.t(d.id)
+      const need = document.createElement('p')
+      need.className = 'gnote'
+      const short = !decorReady
+      let reason = ''
+      if (!decorReady) reason = 'Hang the 4 tools'
+      else if (d.id === 'rug') {
+        const have = d.ins.some(([k]) => api.have && api.have(k) >= 4)
+        if (!have) reason = 'Need 4 of one wool'
+      } else {
+        const miss = d.ins.find(([k, n]) => !(api.have && api.have(k) >= n))
+        if (miss) reason = 'Need ' + miss[0]
+      }
+      need.textContent = reason || d.need
+      card.append(title, need)
+      const row = document.createElement('div')
+      row.className = 'bed-paths'
+      const just = capBtn('decor-just-' + d.id, api.t('decorJust'), () => {
+        if (api.craft) api.craft(d.id)
+        paintWoodshop(g, key)
+      })
+      const design = capBtn('decor-design-' + d.id, api.t('decorDesign'), () => {
+        if (api.craft) api.craft(d.id)
+        paintWoodshop(g, key)
+      })
+      if (reason) { just.disabled = true; design.disabled = true; just.title = reason; design.title = reason }
+      row.append(just, design)
+      card.append(row)
+      crate.append(card)
+    }
     const wall = document.createElement('div')
     wall.className = 'tool-wall'
     const hang = (index, item) => {

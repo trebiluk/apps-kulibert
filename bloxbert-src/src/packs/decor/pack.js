@@ -17,9 +17,9 @@ const items = [
 ]
 
 const recipes = [
-  { id: 'floorLamp', at: 'woodshop', in: [['iron', 1], ['glass', 1], ['stick', 1]], out: ['floorLamp', 1], secs: 4 },
-  { id: 'wallLamp', at: 'woodshop', in: [['iron', 1], ['glass', 1]], out: ['wallLamp', 1], secs: 3 },
-  { id: 'rug', at: 'woodshop', in: [['wool', 4]], out: ['rug', 1], secs: 5, dye: true },
+  { id: 'floorLamp', at: 'woodshop', in: [['ironIngot', 1], ['glass', 1], ['stick', 1]], out: ['floorLamp', 1], secs: 4 },
+  { id: 'wallLamp', at: 'woodshop', in: [['ironIngot', 1], ['glass', 1]], out: ['wallLamp', 1], secs: 3 },
+  { id: 'rug', at: 'woodshop', in: [['woolBlue', 4]], out: ['rug', 1], secs: 5, wool: true },
 ]
 
 registerPack({

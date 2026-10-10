@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.138', date: '2026-10-10', lines: {
+    en: ['Floor Lamp, Wall Lamp and Rug can be made, placed and lit at the Woodshop.'],
+    uk: ['Підлогову лампу, настінну лампу і килим можна зробити, поставити і запалити у столярні.'],
+    ru: ['Напольную лампу, настенную лампу и ковёр можно сделать, поставить и зажечь в столярке.'],
+    es: ['La lámpara de pie, la de pared y la alfombra se hacen, se colocan y se encienden en la carpintería.'],
+    ar: ['المصباح الأرضي والجداري والسجادة تُصنع وتُوضع وتُضاء في ورشة النجارة.'],
+    'fa-AF': ['چراغ زمینی، چراغ دیواری و فرش در نجاری ساخته، گذاشته و روشن می‌شوند.'],
+    rw: ['Itara ryo hasi, itara ryo ku rukuta n\'umusambi birakorwa, bishyirwa kandi bikanurwa mu mucuruzi.'],
+    ti: ['ናይ መሬት መብራህቲ፡ ናይ ግድሚ መብራህቲን መንጸፍን ኣብ ናይ ዕንጨይቲ ዓውዲ ይስራሕ፡ ይቕመጥን ይበርህን።'],
+  }},
+
   { v: '2.5.136', date: '2026-10-10', lines: {
     en: ['Teachers can open Rules, turn a rule off, and reset the world to normal.'],
     uk: ['Учитель може відкрити Правила, вимкнути правило і скинути світ до звичного.'],

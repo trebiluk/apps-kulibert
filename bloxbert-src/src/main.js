@@ -47,6 +47,13 @@ import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissing
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
+import { packRecipes, packItems } from './packs/registry.js'
+import { ITEMS } from './data/items.js'
+{
+  const have = new Set(RECIPES.map((r) => r.id))
+  for (const r of packRecipes()) if ((r.id === 'floorLamp' || r.id === 'wallLamp' || r.id === 'rug') && !have.has(r.id)) RECIPES.push(r)
+  for (const it of packItems()) if (it.pack === 'decor' && !ITEMS[it.key]) ITEMS[it.key] = it.def
+}
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -716,15 +723,23 @@ function lanternMesh() {
 function floorLampMesh(on) {
   const base = part('base', 0.22, 0.06, 0.22, 0, 0.03, 0, 0, woodD)
   const stem = part('stem', 0.06, 0.72, 0.06, 0, 0.42, 0, 0, woodD)
-  const shade = part('shade', 0.28, 0.18, 0.28, 0, 0.84, 0, 0, on ? lampD : dye('shade-off', 0.85, 0.82, 0.72))
-  if (on) shade.material.emissiveColor = new Color3(1, 0.9, 0.5)
-  return shape('floorLamp' + (on ? 'On' : 'Off'), [base, stem, shade], on ? lampD : woodD)
+  const shadeMat = on ? lampD : dye('shade-off', 0.85, 0.82, 0.72)
+  const shade = part('shade', 0.28, 0.18, 0.28, 0, 0.84, 0, 0, shadeMat)
+  const mesh = Mesh.MergeMeshes([base, stem, shade], true, true, undefined, false, true)
+  mesh.name = 'floorLamp' + (on ? 'On' : 'Off')
+  mesh.isPickable = false
+  mesh.isVisible = false
+  return mesh
 }
 function wallLampMesh(on) {
   const arm = part('arm', 0.08, 0.08, 0.22, 0, 0.5, 0.12, 0, woodD)
-  const shade = part('shade', 0.18, 0.14, 0.18, 0, 0.58, 0.28, 0, on ? lampD : dye('wshade-off', 0.85, 0.82, 0.72))
-  if (on) shade.material.emissiveColor = new Color3(1, 0.9, 0.5)
-  return shape('wallLamp' + (on ? 'On' : 'Off'), [arm, shade], on ? lampD : woodD)
+  const shadeMat = on ? lampD : dye('wshade-off', 0.85, 0.82, 0.72)
+  const shade = part('shade', 0.18, 0.14, 0.18, 0, 0.58, 0.28, 0, shadeMat)
+  const mesh = Mesh.MergeMeshes([arm, shade], true, true, undefined, false, true)
+  mesh.name = 'wallLamp' + (on ? 'On' : 'Off')
+  mesh.isPickable = false
+  mesh.isVisible = false
+  return mesh
 }
 function rugMesh() {
   const rug = part('rug', 0.92, 0.04, 0.92, 0, 0.02, 0, 0, dye('rug', 0.72, 0.58, 0.42))
@@ -1308,7 +1323,8 @@ function placeWallLamp(face) {
   if (getVoxel(x, y, z)) { toast(t('noRoom')); return false }
   if (session && !session.onPlace(x, y, z, 1102)) return false
   if (!edit(x, y, z, 1102)) return false
-  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', design: session.heldDesign && session.heldDesign() || null })
+  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', design: (session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null })
+  if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
 }
 function placeRug(x, y, z) {
@@ -1329,10 +1345,12 @@ function placeRug(x, y, z) {
   }
   const anchor = x + ',' + y + ',' + z
   if (session && session.meta) {
+    const design = (session.bag && session.bag.slots.find(s => s && s.item === 'rug') || {}).design || null
     for (const [cx, cy, cz] of cells) {
-      session.meta.set(cx + ',' + cy + ',' + cz, { kind: 'rug', anchor, design: session.heldDesign && session.heldDesign() || null })
+      session.meta.set(cx + ',' + cy + ',' + cz, { kind: 'rug', anchor, design })
     }
   }
+  if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
 }
 function shopSpan(x, y, z, face) {
@@ -1528,6 +1546,19 @@ function breakAt(x, y, z, hold) {
   if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
+  if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105) {
+    const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+    const item = (id === 1100 || id === 1101) ? 'floorLamp' : (id === 1102 || id === 1103) ? 'wallLamp' : 'rug'
+    if (session && session.give) session.give(item, 1)
+    if (rec && rec.design && session && session.bag) {
+      const slot = session.bag.slots.find((s) => s && s.item === item)
+      if (slot) slot.design = rec.design
+    }
+    if (session && session.meta) session.meta.delete(x + ',' + y + ',' + z)
+    edit(x, y, z, 0)
+    if (typeof syncGlow === 'function') syncGlow._dirty = true
+    return true
+  }
   if (isShopBlock(id)) return liftShop(x, y, z)
   if (id === ID.box) {
     if (session && session.pickup) session.pickup(x, y, z, id)
@@ -1593,6 +1624,7 @@ function useAt(hit) {
     const next = id === 1100 ? 1101 : id === 1101 ? 1100 : id === 1102 ? 1103 : 1102
     edit(ax, ay, az, next)
     if (basics) basics.saw(ax, ay, az, next)
+    if (typeof syncGlow === 'function') syncGlow._dirty = true
     return true
   }
   if (id === LANTERN) return true
@@ -1667,6 +1699,10 @@ function placeBlock(face, opts) {
     }
   }
   let id = session && session.mode === 'survival' ? (session.blockForHot() || 0) : current
+  const heldKey = session && session.selectedItem ? session.selectedItem() || '' : ''
+  if (heldKey === 'floorLamp') id = 1100
+  else if (heldKey === 'wallLamp') id = 1102
+  else if (heldKey === 'rug') id = 1104
   if (isDoor(id)) id = placedDoorId(id)
   else if (id === LEVER.on) id = LEVER.off
   else if (id === BUTTON.on) id = BUTTON.off
@@ -1674,6 +1710,17 @@ function placeBlock(face, opts) {
     const held = session.selectedItem && session.selectedItem()
     toast(held ? t('notABlock') : t('emptySlot'))
     return false
+  }
+  if (id === 1100) {
+    if (session && !session.onPlace(x, y, z, 1100)) return false
+    if (!edit(x, y, z, 1100)) return false
+    if (session && session.meta) {
+      const design = (session.bag && session.bag.slots.find(s => s && s.item === 'floorLamp') || {}).design || { height: 'Standard', shade: 'Natural' }
+      session.meta.set(x + ',' + y + ',' + z, { kind: 'floorLamp', design })
+    }
+    if (typeof syncGlow === 'function') syncGlow._dirty = true
+    if (basics) basics.saw(x, y, z, 1100)
+    return true
   }
   if (id === 1102) return placeWallLamp(face)
   if (id === 1104) return placeRug(x, y, z)
@@ -3125,7 +3172,26 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
-}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on), giveBed: (design) => session && session.giveBed ? session.giveBed(design) : null, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn() })
+}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on), giveBed: (design) => session && session.giveBed ? session.giveBed(design) : null, craft: (id) => {
+  if (!session || session.mode !== 'survival') return false
+  const open = openMachineKey && getVoxel(...openMachineKey.split(',').map(Number)) === ID.woodshop
+  if (!open) return false
+  const rec = stations && stations.ensureShop ? stations.ensureShop(openMachineKey) : null
+  const hung = rec && Array.isArray(rec.wall) ? rec.wall.filter(Boolean) : []
+  const tools = ['safetyGlasses', 'measuringTape', 'handSaw', 'hammer']
+  if (!tools.every((t) => hung.includes(t))) return false
+  const r = RECIPES.find((x) => x.id === id)
+  if (!r) return false
+  if (session.craftOk && !session.craftOk(id)) return false
+  for (const [k, n] of r.in) if (!(session.bag && session.bag.count(k) >= n)) return false
+  for (const [k, n] of r.in) if (session.spend && !session.spend(k, n)) return false
+  const design = id === 'rug' ? { colour: r.in[0][0] } : { height: 'Standard', shade: 'Natural' }
+  if (session.give) session.give(id, 1)
+  const slot = session.bag && session.bag.slots && session.bag.slots.find((s) => s && s.item === id)
+  if (slot) slot.design = design
+  toast('Made ' + t(id))
+  return true
+}, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn() })
 function syncOvenGlow() {
   const hot = new Set()
   const keys = stations && stations.baking ? stations.baking() : []
@@ -4992,22 +5058,28 @@ function syncGlow() {
   const dark = k < 0.92
   const ppos = noa.entities.getPosition(noa.playerEntity)
   const list = basics.lights().filter((l) => l.radius > 1 && l.step > 0)
-  // pack light provider: on lamps
+  // pack light provider: on lamps (cached, full cell scan)
   if (typeof noa !== 'undefined' && noa.world) {
     const seen = new Set()
     for (const l of list) seen.add(l.x + ',' + l.y + ',' + l.z)
-    // scan nearby for on lamps (simple bounded scan for Chromebook)
-    const ppos = noa.entities.getPosition(noa.playerEntity)
-    const r = 16
-    for (let dx = -r; dx <= r; dx += 2) for (let dz = -r; dz <= r; dz += 2) {
-      const x = Math.floor(ppos[0] + dx), z = Math.floor(ppos[2] + dz)
-      for (let y = Math.floor(ppos[1]) - 2; y <= Math.floor(ppos[1]) + 4; y++) {
-        const id = getVoxel(x, y, z)
-        if (id === 1101 || id === 1103) {
-          const k = x + ',' + y + ',' + z
-          if (!seen.has(k)) { list.push({ x, y, z, radius: 6, step: 1 }); seen.add(k) }
+    const px = Math.floor(ppos[0]), py = Math.floor(ppos[1]), pz = Math.floor(ppos[2])
+    const key = px + ',' + py + ',' + pz
+    if (!syncGlow._cache || syncGlow._cache.key !== key || syncGlow._dirty) {
+      const found = []
+      const r = 16
+      for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
+        const x = px + dx, z = pz + dz
+        for (let y = py - 2; y <= py + 4; y++) {
+          const id = getVoxel(x, y, z)
+          if (id === 1101 || id === 1103) found.push({ x, y, z, radius: 6, step: 1 })
         }
       }
+      syncGlow._cache = { key, found }
+      syncGlow._dirty = false
+    }
+    for (const src of syncGlow._cache.found) {
+      const k = src.x + ',' + src.y + ',' + src.z
+      if (!seen.has(k)) { list.push(src); seen.add(k) }
     }
   }
   list.sort((a, b) => {

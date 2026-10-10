@@ -357,6 +357,9 @@ const FOOD = {
   hammer: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>',
   bertyLie: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="28" width="40" height="10" fill="#c9954c" stroke="#5c3317" stroke-width="2"/><rect x="6" y="26" width="36" height="6" fill="#d64545"/><rect x="8" y="16" width="16" height="8" fill="#3ec6c6" stroke="#0b3a3a" stroke-width="2"/><rect x="24" y="12" width="10" height="10" fill="#f0c9a0" stroke="#5c3317" stroke-width="2"/></svg>',
   goldTrim: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" fill="none" stroke="#e6b15a" stroke-width="4"/><rect x="12" y="16" width="24" height="16" fill="#f6e3a8"/></svg>',
+  floorLamp: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="10" y="4" width="4" height="3" fill="#f6c453"/><rect x="11" y="7" width="2" height="12" fill="#8B5A2B"/><ellipse cx="12" cy="20" rx="4" ry="1.5" fill="#6B3E26"/></svg>',
+  wallLamp: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="8" height="2" fill="#8B5A2B"/><rect x="12" y="8" width="6" height="6" fill="#f6c453" stroke="#8B5A2B"/></svg>',
+  rug: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="1" fill="#c4a36a" stroke="#8B5A2B"/><rect x="5" y="8" width="14" height="8" fill="#e6c99a"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''
