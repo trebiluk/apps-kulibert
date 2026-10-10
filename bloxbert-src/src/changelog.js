@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.139', date: '2026-10-10', lines: {
+    en: ['Woodshop opens again. Lamps place on a wall, toggle, and show.'],
+    uk: ['Столярня знову відкривається. Лампи ставляться на стіну, перемикаються і світять.'],
+    ru: ['Столярка снова открывается. Лампы ставятся на стену, переключаются и светят.'],
+    es: ['La carpintería vuelve a abrir. Las lámparas se ponen en la pared, se encienden y se ven.'],
+    ar: ['ورشة النجارة تفتح من جديد. المصابيح توضع على الحائط وتتبدّل وتظهر.'],
+    'fa-AF': ['نجاری دوباره باز می‌شود. چراغ‌ها روی دیوار گذاشته، روشن و دیده می‌شوند.'],
+    rw: ['Ububiko bwa imbawo bugaruka. Amatara ashira ku rukuta, ahinduka kandi agaragara.'],
+    ti: ['ናይ ዕንጨይቲ ዓውዲ ዳግማይ ይኸፍት። መብራህቲ ኣብ ግድሚ ይቕመጥ፡ ይቀያየርን ይረአን።'],
+  }},
+
   { v: '2.5.138', date: '2026-10-10', lines: {
     en: ['Floor Lamp, Wall Lamp and Rug can be made, placed and lit at the Woodshop.'],
     uk: ['Підлогову лампу, настінну лампу і килим можна зробити, поставити і запалити у столярні.'],

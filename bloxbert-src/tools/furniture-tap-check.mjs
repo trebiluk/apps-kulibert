@@ -457,6 +457,26 @@ try {
     report.fps[view.name] = fps
     note(view.name + ' fps', fps > 0, String(fps))
   }
+  // smoke step: open a real Woodshop and assert tool wall + Bed + decor cards
+  await page.evaluate(() => {
+    const s = window.__smoke
+    s.plant(70, 5, 70, 69)
+    s.plant(71, 5, 70, 70)
+    s.setMeta('70,5,70', { kind: 'woodshop', face: 'N', role: 'anchor', anchor: '70,5,70', pair: '71,5,70' })
+    s.stand(72, 7, 70, Math.atan2(-1, 0), 0.2)
+  })
+  await page.mouse.click(683, 384, { button: 'right' })
+  await new Promise((r) => setTimeout(r, 600))
+  const shop = await page.evaluate(() => {
+    const sheet = document.getElementById('sheet')
+    return {
+      open: !!(sheet && !sheet.hidden),
+      wall: document.querySelectorAll('.wall-slot').length,
+      bed: !!document.querySelector('.bed-card'),
+      decor: document.querySelectorAll('.decor-card').length,
+    }
+  })
+  if (!note('woodshop open', shop.open && shop.wall >= 4 && shop.bed && shop.decor >= 3 && errors.filter((e) => e.startsWith('page:')).length === 0, JSON.stringify(shop))) failed = true
   const noise = errors.filter((e) => !/favicon|net::ERR_FILE|Download the React DevTools/i.test(e))
   report.errors = noise
   if (!note('console', noise.length === 0, noise.slice(0, 6).join(' | '))) failed = true

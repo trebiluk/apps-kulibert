@@ -365,7 +365,7 @@ export function createStations(api) {
     box.className = 'bed-card'
     const job = rec.bed
     const rule = rules()
-    const decorReady = toolsReady(key)
+    const ready = toolsReady(key)
     const wool = woolPick(job && job.fabric)
     const haveMats = matsOk(wool)
     if (!job) {

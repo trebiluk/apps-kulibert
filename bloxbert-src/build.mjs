@@ -14,6 +14,7 @@ const i = process.argv.indexOf('--out')
 const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLOX_OUT || '../blocks')
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
 import { spawnSync } from 'child_process'
+const PKG = JSON.parse(readFileSync(path.join(HERE, 'package.json'), 'utf8'))
 spawnSync(process.execPath, ['tools/make-tiles.mjs'], { stdio: 'inherit' })
 const strings = spawnSync(process.execPath, ['tools/check-strings.mjs'], { stdio: 'inherit' })
 if (strings.status) process.exit(strings.status)
@@ -47,7 +48,7 @@ await build({
   drop: ['debugger'],
   pure: ['console.debug'],
   plugins: [trimUnusedShaders],
-  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false' },
+  define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 cpSync('index.html', OUT + '/index.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')

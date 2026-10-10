@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.136'
+const VERSION = PKG_VERSION
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -720,26 +720,27 @@ function lanternMesh() {
   const cap = part('c', 0.18, 0.08, 0.18, 0, 0.76, 0, 0, woodD)
   return shape('lantern', [body, cap], lampD)
 }
+function lampShape(name, parts, shadeMat) {
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = name
+  mesh.material = shadeMat
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
+}
 function floorLampMesh(on) {
   const base = part('base', 0.22, 0.06, 0.22, 0, 0.03, 0, 0, woodD)
   const stem = part('stem', 0.06, 0.72, 0.06, 0, 0.42, 0, 0, woodD)
-  const shadeMat = on ? lampD : dye('shade-off', 0.85, 0.82, 0.72)
+  const shadeMat = on ? lampD : woodD
   const shade = part('shade', 0.28, 0.18, 0.28, 0, 0.84, 0, 0, shadeMat)
-  const mesh = Mesh.MergeMeshes([base, stem, shade], true, true, undefined, false, true)
-  mesh.name = 'floorLamp' + (on ? 'On' : 'Off')
-  mesh.isPickable = false
-  mesh.isVisible = false
-  return mesh
+  return lampShape('floorLamp' + (on ? 'On' : 'Off'), [base, stem, shade], shadeMat)
 }
 function wallLampMesh(on) {
   const arm = part('arm', 0.08, 0.08, 0.22, 0, 0.5, 0.12, 0, woodD)
-  const shadeMat = on ? lampD : dye('wshade-off', 0.85, 0.82, 0.72)
+  const shadeMat = on ? lampD : woodD
   const shade = part('shade', 0.18, 0.14, 0.18, 0, 0.58, 0.28, 0, shadeMat)
-  const mesh = Mesh.MergeMeshes([arm, shade], true, true, undefined, false, true)
-  mesh.name = 'wallLamp' + (on ? 'On' : 'Off')
-  mesh.isPickable = false
-  mesh.isVisible = false
-  return mesh
+  return lampShape('wallLamp' + (on ? 'On' : 'Off'), [arm, shade], shadeMat)
 }
 function rugMesh() {
   const rug = part('rug', 0.92, 0.04, 0.92, 0, 0.02, 0, 0, dye('rug', 0.72, 0.58, 0.42))
@@ -826,7 +827,7 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id)
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id)
 const blockName = (id) => {
   const row = BLOCKS.find((b) => b[0] === id)
   return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')
@@ -1160,7 +1161,7 @@ function passThrough(id) {
 }
 noa.blockTargetIdCheck = (id) => {
   if (id === WATER && session && session.selectedItem && session.selectedItem() === 'bushSprout') return true
-  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id))
+  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id))
 }
 let basics = null
 let panels = null
@@ -1317,13 +1318,13 @@ function placeWallLamp(face) {
     showShopAmber(face.position[0], face.position[1], face.position[2], face.position[0], face.position[1], face.position[2])
     return false
   }
-  const x = Math.floor(face.position[0])
-  const y = Math.floor(face.position[1])
-  const z = Math.floor(face.position[2])
+  const x = Math.floor(face.position[0] + (normal[0] || 0))
+  const y = Math.floor(face.position[1] + (normal[1] || 0))
+  const z = Math.floor(face.position[2] + (normal[2] || 0))
   if (getVoxel(x, y, z)) { toast(t('noRoom')); return false }
   if (session && !session.onPlace(x, y, z, 1102)) return false
   if (!edit(x, y, z, 1102)) return false
-  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', design: (session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null })
+  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', side: (normal[0] > 0 ? 'E' : normal[0] < 0 ? 'W' : normal[2] > 0 ? 'S' : 'N'), design: (session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null })
   if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
 }
