@@ -1,5 +1,9 @@
-**Chip: HI 1.1.20** · 2026-10-09 · channel **live**
+**Chip: HI 1.1.21** · 2026-10-10 · channel **live**
 Door: https://apps.kulibert.net/holdit/
+
+## 1.1.21 — Span and Spire — 2026-10-10
+
+- What’s new: SpanCraft is now Span and Spire Lab is now Spire. Both are modes in HoldIt. Your saves are still here.
 
 ## 1.1.20 — The stage fits, and the card stays off the tower — 2026-10-09
 

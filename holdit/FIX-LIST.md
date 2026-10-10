@@ -3,7 +3,7 @@ Read this first on every HoldIt ship. In the same commit, tick `[x]` on each ite
 Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; it may lag anything shipped after them.
 
 ## 1. Live now
-- Live title: **HoldIt · HI 1.1.18** (`/holdit/` on apps.kulibert.net).
+- Live title: **HoldIt · HI 1.1.21** (`/holdit/` on apps.kulibert.net).
 - Latest proof on file: `proof/holdit-1.1.18/RESULT.md`: Verdict: FAIL (P1). The 1.1.18 tower/full-screen items pass on first load; turning the phone, the Report table, drawer contrast and editor taps fail.
 
 ## 2. Open fixes (FAIL rows from the latest proof)
@@ -17,7 +17,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - [ ] `briefs/fixq/holdit-1119-envelope-chips.md`: HoldIt HI 1.1.19: a Member report a kid can read (colour chips, not a table), towers stay in view after a turn, readable menus, and editor taps ≥44 (P…
 - [ ] `briefs/fixq/hiscore-holdit.md`: HoldIt HI [NEXT] · hiscore-holdit: Crown Chase in HoldIt, Span and Spire: the Cost Crown and two more crowns per problem, the reveal rule instead of a…
 - [ ] `briefs/fixq/menu-holdit.md`: HoldIt — same Hub menu
-- [ ] `briefs/fixq/spanspire-2-holdit.md`: HoldIt HI [NEXT]: Bridges becomes Span and Towers becomes Spire, the address picks the mode, and each mode opens its jobs. Only these 3 items. Diego 9…
+- [x] `briefs/fixq/spanspire-2-holdit.md`: HoldIt HI 1.1.21: Bridges becomes Span and Towers becomes Spire, the address picks the mode, and each mode opens its jobs.
 
 Already shipped (version at or below live):
 - [x] `briefs/fixq/holdit-1118-towers-fullscreen.md`: HoldIt HI 1.1.18: towers fit a sideways phone, a one-tap Full screen button that remembers the choice, a portrait lock for towers, and the Dari word f… (version ≤ live/proven 1.1.18)
