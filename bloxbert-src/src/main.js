@@ -58,6 +58,7 @@ import { ITEMS } from './data/items.js'
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
+import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { createQuality } from './gfx/quality.js'
@@ -239,12 +240,16 @@ let lookSens = 1
 let lookInvert = false
 let autoClimb = true
 let wideView = false
+let showHand = true
+let mainHand = 'right'
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
   lookInvert = !!savedLook.invert
   wideView = !!savedLook.wide
   if (savedLook.cv === 2 && typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
+  if (savedLook.hand === false) showHand = false
+  if (savedLook.mainHand === 'left') mainHand = 'left'
 } catch (e) {}
 playerBody.autoStep = !!autoClimb
 moveState.airJumps = 0
@@ -1542,6 +1547,8 @@ function syncGlasses() {
   if (document.body) document.body.dataset.glasses = on ? '1' : ''
   if (glassesMesh) glassesMesh.setEnabled(on)
 }
+let hands = null
+function pokeHand(kind) { if (hands) hands.swing(kind) }
 function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
@@ -1580,12 +1587,14 @@ function breakAt(x, y, z, hold) {
     dirty = true
     if (typeof noteMachine === 'function') noteMachine()
     if (typeof syncGlow === 'function') syncGlow._dirty = true
+    pokeHand('break')
     return true
   }
   if (isShopBlock(id)) return liftShop(x, y, z)
   if (id === ID.box) {
     if (session && session.pickup) session.pickup(x, y, z, id)
     if (getVoxel(x, y, z) === ID.box) edit(x, y, z, 0)
+    pokeHand('break')
     return true
   }
   const wild = isBushId(id) && !farm.get(x, y, z)
@@ -1602,6 +1611,7 @@ function breakAt(x, y, z, hold) {
     const key = dropOf(id)
     toast(t('gotItem').replace('{item}', key ? t(key) : blockName(id)))
   }
+  if (gone) pokeHand('break')
   return gone
 }
 function wildWheatCell(x, y, z) {
@@ -1744,6 +1754,7 @@ function placeBlock(face, opts) {
     }
     if (typeof syncGlow === 'function') syncGlow._dirty = true
     if (basics) basics.saw(x, y, z, 1100)
+    pokeHand('place')
     return true
   }
   if (id === 1102) return placeWallLamp(face)
@@ -1763,6 +1774,7 @@ function placeBlock(face, opts) {
     }
   }
   if (placed) rememberFace(x, y, z, id)
+  if (placed) pokeHand('place')
   return placed
 }
 const tillCount = new Map()
@@ -3358,6 +3370,10 @@ function releaseLook() {
   try { noa.container.setPointerLock(false) } catch (e) {}
   try { noa.setPaused(true) } catch (e) {}
   if (session) session.paused = true
+  if (hands) {
+    hands.update(16)
+    try { noa.rendering.getScene().render() } catch (e) {}
+  }
   if (look || mouseLeft) {
     const card = heldCard()
     if (card) armLift(card)
@@ -4557,7 +4573,7 @@ function applyLook() {
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null })) } catch (e) {}
 }
 function paintLook(g) {
   const label = document.createElement('p')
@@ -4593,7 +4609,19 @@ function paintLook(g) {
   const paintClimb = () => { climb.textContent = t('climb') + (autoClimb ? ' ✓' : '') }
   paintClimb()
   climb.addEventListener('click', () => { autoClimb = !autoClimb; applyLook(); paintClimb() })
-  g.append(label, range, inv, wide, climb)
+  const hand = document.createElement('button')
+  hand.type = 'button'
+  hand.className = 'gtile wide'
+  const paintHand = () => { hand.textContent = t('showHand') + (showHand ? ' ✓' : '') }
+  paintHand()
+  hand.addEventListener('click', () => { showHand = !showHand; applyLook(); paintHand() })
+  const side = document.createElement('button')
+  side.type = 'button'
+  side.className = 'gtile wide'
+  const paintSide = () => { side.textContent = t('mainHand') + ': ' + (mainHand === 'left' ? t('left') : t('right')) }
+  paintSide()
+  side.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
+  g.append(label, range, inv, wide, climb, hand, side)
 }
 applyLook()
 function applyLockedLook(dx, dy) {
@@ -5437,11 +5465,53 @@ function underwaterTick() {
   scene.fogStart = 0
   scene.fogEnd = 12
 }
+const heldScratch = { kind: 'empty', key: '', id: 0 }
+function fillHeld() {
+  heldScratch.kind = 'empty'
+  heldScratch.key = ''
+  heldScratch.id = 0
+  if (survivalOn() && session && session.selectedItem) {
+    const key = session.selectedItem() || ''
+    if (!key) return heldScratch
+    const def = ITEMS[key]
+    if (def && def.block && !def.svg && !def.tool) {
+      heldScratch.kind = 'block'
+      heldScratch.key = key
+      heldScratch.id = def.block
+    } else {
+      heldScratch.kind = 'flat'
+      heldScratch.key = key
+    }
+    return heldScratch
+  }
+  if (current) {
+    heldScratch.kind = 'block'
+    heldScratch.key = String(current)
+    heldScratch.id = current
+  }
+  return heldScratch
+}
+hands = createHands({
+  scene,
+  camera: noa.rendering.camera,
+  noa,
+  held: fillHeld,
+  side: () => mainHand,
+  show: () => showHand,
+  hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open'),
+  wet: () => underWater,
+  lite: () => quality === 'lite' || REDUCE,
+  speed: () => {
+    const b = noa.ents.getPhysicsBody(noa.playerEntity)
+    return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
+  },
+})
 noa.on('beforeRender', (dt) => {
   paintOutline()
   paintProtectRing()
   if (basics) syncGlow()
   underwaterTick()
+  if (hands) hands.update(dt || 16)
   if (REDUCE) return
   skyTime += (dt || 16) * 0.0004
   skyMat.setFloat('uTime', skyTime)
@@ -5632,6 +5702,28 @@ if (!__BLOX_STUDENT__) {
     measure: (points) => tools.measure(points),
     hold: (st, v) => { noa.inputs.state[st] = v },
     get climb() { return autoClimb },
+    hand() {
+      return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging() } : null
+    },
+    handSwing(kind) { pokeHand(kind) },
+    lookHand(patch) {
+      if (patch) {
+        if (patch.show != null) showHand = !!patch.show
+        if (patch.side === 'left' || patch.side === 'right') mainHand = patch.side
+        applyLook()
+      }
+      let saved = null
+      try { saved = JSON.parse(localStorage.getItem(LOOK_KEY) || 'null') } catch (e) {}
+      return { show: showHand, side: mainHand, saved }
+    },
+    panel(id) {
+      if (!panels) return ''
+      if (!id) { panels.close(); return '' }
+      panels.open(id)
+      const sheet = document.getElementById('sheet')
+      return (sheet && !sheet.hidden && sheet.dataset.panel) || ''
+    },
+    table(on) { setMode(!!on); return tableMode },
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
   }
 }

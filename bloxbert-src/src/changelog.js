@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.146', date: '2026-10-10', lines: {
+    en: ['A Bertbot hand holds what you picked, on the right or the left.'],
+    uk: ['Рука Бертбота тримає те, що ти обрав, справа або зліва.'],
+    ru: ['Рука Бертбота держит то, что ты выбрал, справа или слева.'],
+    es: ['Una mano de Bertbot sostiene lo que elegiste, a la derecha o a la izquierda.'],
+    ar: ['يد بيرتبوت تمسك ما اخترته، يميناً أو يساراً.'],
+    'fa-AF': ['دست برتبوت چیزی را که برگزیدی نگه می‌دارد، راست یا چپ.'],
+    rw: ['Ukuboko kwa Bertbot gufata icyo wahisemo, iburyo cyangwa ibumoso.'],
+    ti: ['ኢድ በርትቦት ዝመረጽካዮ ይሕዝ፡ የማን ወይ ጸጋም።'],
+  }},
   { v: '2.5.145', date: '2026-10-10', lines: {
     en: ['A card shows this world\'s rules when you join, and Menu has World Rules.'],
     uk: ['Картка показує правила цього світу, коли ти заходиш, а в Меню є Правила світу.'],
@@ -8,6 +18,16 @@ export const CHANGELOG = [
     'fa-AF': ['یک کارت قانون‌های این دنیا را هنگام ورود نشان می‌دهد، و فهرست قانون دنیا دارد.'],
     rw: ['Ikarita yerekana amategeko y\'iyi si iyo winjiye, kandi Menu ifite Amategeko y\'isi.'],
     ti: ['ካርድ ሕግታት ናይዚ ዓለም ኣብ ምእታው የርኢ፡ ዝርዝር ድማ ሕግታት ዓለም ኣለዎ።'],
+  }},
+  { v: '2.5.144', date: '2026-10-10', lines: {
+    en: ['Pixel-art wraps batch 2: food, lamps, rug, woodshop tools, glass doors, crop and bush stages. Contact sheet fixed.'],
+    uk: ['Піксель-арт обгортки партії 2: їжа, лампи, килим, інструменти столярні, скляні двері, стадії культур і кущів. Контактний аркуш виправлено.'],
+    ru: ['Пиксель-арт обёртки партии 2: еда, лампы, ковёр, столярные инструменты, стеклянные двери, стадии культур и кустов. Контактный лист исправлен.'],
+    es: ['Envolturas de pixel-art lote 2: comida, lámparas, alfombra, herramientas de carpintería, puertas de vidrio, etapas de cultivos y arbustos. Hoja de contacto corregida.'],
+    ar: ['أغلفة فن البكسل الدفعة 2: طعام، مصابيح، سجادة، أدوات نجارة، أبواب زجاجية، مراحل المحاصيل والشجيرات. تم إصلاح ورقة الاتصال.'],
+    'fa-AF': ['بسته‌بندی هنر پیکسل دسته 2: غذا، لامپ‌ها، فرش، ابزار نجاری، درهای شیشه‌ای، مراحل محصولات و بوته‌ها. برگه تماس اصلاح شد.'],
+    rw: ['Ibipapuro bya pixel-art batch 2: ibiryo, amashanyarazi, umusambi, ibikoresho bya ububatsi, amarembo yubwatsi, ibyiciro byibihingwa nubushishi. Urupapuro rwibikoresho rwakosowe.'],
+    ti: ['ናይ ፒክሰል ኣርት ኣሸጋጊ ባትች 2፡ መግቢ፡ መብራህቲ፡ መንጸፍ፡ መሳርሕታት ሓጸጺ፡ ናይ መስታወት ኣፍደገታት፡ ደረጃታት ኣሕምልቲን ጉጉምን። ናይ ርክብ ወረቐት ተኣሪሙ።'],
   }},
   { v: '2.5.143', date: '2026-10-10', lines: {
     en: ['You step up a one-block ledge, and underwater looks like water.'],
@@ -38,16 +58,6 @@ export const CHANGELOG = [
     'fa-AF': ['کلیک راست چراغ را عوض می‌کند. برداشتن آن ذخیره می‌ماند.'],
     rw: ['Kanda iburyo ihindura itara. Kurikura biraguma byabitswe.'],
     ti: ['የማን ቅኒት መብራህቲ ይቀይር። ምልዓል ንሱ ዝተዓቀበ ይጸንሕ።'],
-  }},
-  { v: '2.5.144', date: '2026-10-10', lines: {
-    en: ['Pixel-art wraps batch 2: food, lamps, rug, woodshop tools, glass doors, crop and bush stages. Contact sheet fixed.'],
-    uk: ['Піксель-арт обгортки партії 2: їжа, лампи, килим, інструменти столярні, скляні двері, стадії культур і кущів. Контактний аркуш виправлено.'],
-    ru: ['Пиксель-арт обёртки партии 2: еда, лампы, ковёр, столярные инструменты, стеклянные двери, стадии культур и кустов. Контактный лист исправлен.'],
-    es: ['Envolturas de pixel-art lote 2: comida, lámparas, alfombra, herramientas de carpintería, puertas de vidrio, etapas de cultivos y arbustos. Hoja de contacto corregida.'],
-    ar: ['أغلفة فن البكسل الدفعة 2: طعام، مصابيح، سجادة، أدوات نجارة، أبواب زجاجية، مراحل المحاصيل والشجيرات. تم إصلاح ورقة الاتصال.'],
-    'fa-AF': ['بسته‌بندی هنر پیکسل دسته 2: غذا، لامپ‌ها، فرش، ابزار نجاری، درهای شیشه‌ای، مراحل محصولات و بوته‌ها. برگه تماس اصلاح شد.'],
-    rw: ['Ibipapuro bya pixel-art batch 2: ibiryo, amashanyarazi, umusambi, ibikoresho bya ububatsi, amarembo yubwatsi, ibyiciro byibihingwa nubushishi. Urupapuro rwibikoresho rwakosowe.'],
-    ti: ['ናይ ፒክሰል ኣርት ኣሸጋጊ ባትች 2፡ መግቢ፡ መብራህቲ፡ መንጸፍ፡ መሳርሕታት ሓጸጺ፡ ናይ መስታወት ኣፍደገታት፡ ደረጃታት ኣሕምልቲን ጉጉምን። ናይ ርክብ ወረቐት ተኣሪሙ።'],
   }},
   { v: '2.5.140', date: '2026-10-10', lines: {
     en: ['Pixel-art wraps for batch 1 items and blocks (ores, doors, tools, machines).'],
