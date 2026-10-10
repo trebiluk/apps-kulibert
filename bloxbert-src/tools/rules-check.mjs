@@ -106,7 +106,13 @@ function node(tag) {
     contains(c) { return hasClass(n, c) },
   }
   Object.defineProperty(n, 'innerHTML', { get() { return '' }, set() { n.children.length = 0 } })
-  if (tag === 'canvas') n.getContext = () => new Proxy({}, { get: () => () => {} })
+  if (tag === 'canvas') n.getContext = () => new Proxy({
+    createImageData(w, h) {
+      const width = w && typeof w === 'object' ? (w.width || 16) : (w || 16)
+      const height = w && typeof w === 'object' ? (w.height || 16) : (h || width)
+      return { data: new Uint8ClampedArray(width * height * 4), width, height }
+    },
+  }, { get(t, p) { return p in t ? t[p] : () => {} } })
   made.push(n)
   return n
 }
@@ -534,6 +540,98 @@ const packCraft = node('div')
 paintRules(packCraft, { lang: 'en' })
 allNodes(packCraft).find((n) => n.dataset && n.dataset.group === 'crafting').click()
 eq(rowIds(packCraft).includes('demo.lamp'), 'pack row under crafting ' + rowIds(packCraft).join(','))
+Rules.load({})
+
+const { showRulesCard, diffs, mountRulesMenu } = await import('../src/rules-card.js')
+const keyFns = []
+document.addEventListener = (ev, fn) => { keyFns.push({ ev, fn }) }
+function cardEl() { return document.getElementById('rules-card') }
+function tilesOf() {
+  const card = cardEl()
+  return card ? card.querySelectorAll('.rc-tile') : []
+}
+function textOf(n) {
+  if (!n) return ''
+  let s = n.textContent || ''
+  for (const c of n.children || []) s += textOf(c)
+  return s
+}
+
+showRulesCard({ lang: 'en', world: 'town' })
+eq(!cardEl() || cardEl().hidden, 'zero rules no card')
+
+Rules.set('station.oven', false)
+Rules.set('survival.daynight', 'night')
+showRulesCard({ lang: 'en', world: 'town', teacher: true })
+eq(!cardEl() || cardEl().hidden, 'teacher skips the card on join')
+eq(showRulesCard({ lang: 'en', world: 'town' }) === true, 'reload shows the card')
+eq(tilesOf().length === 2, 'two tiles ' + tilesOf().length)
+eq(tilesOf().some((n) => textOf(n).includes('Oven off') && textOf(n).includes('🔥')), 'oven off tile ' + tilesOf().map((n) => textOf(n)).join('|'))
+eq(tilesOf().some((n) => textOf(n).includes('Always night')), 'always night tile')
+eq(showRulesCard({ lang: 'en', world: 'town' }) === false && !cardEl().hidden, 'once per session while it is open')
+cardEl().querySelector('.rc-got').click()
+eq(cardEl().hidden === true, 'got it closes')
+eq(showRulesCard({ lang: 'en', world: 'town' }) === false && cardEl().hidden === true, 'got it stays closed')
+
+const menuHost = node('nav')
+const inspect = node('button')
+inspect.id = 'm-inspect'
+menuHost.append(inspect)
+const menuBtn = mountRulesMenu(menuHost, { lang: () => 'en', close() {} })
+eq(!!menuBtn && menuBtn.id === 'm-rules' && textOf(menuBtn).includes('World Rules'), 'menu row ' + textOf(menuBtn))
+menuBtn.click()
+eq(cardEl().hidden === false && tilesOf().length === 2, 'menu reopens the card')
+const esc = keyFns.find((k) => k.ev === 'keydown')
+eq(!!esc, 'esc is armed')
+if (esc) esc.fn({ key: 'Escape', preventDefault() {} })
+eq(cardEl().hidden === true, 'esc closes')
+
+Rules.set('core.break', false)
+Rules.set('core.place', false)
+Rules.set('core.craft', false)
+Rules.set('core.station.open', false)
+Rules.set('station.bench', false)
+Rules.set('station.woodshop', false)
+Rules.set('survival.energy', 'fast')
+Rules.set('pack.missing.loom', false)
+eq(showRulesCard({ lang: 'en', world: 'town' }) === true, 'changed rules show again')
+eq(tilesOf().length === 6, 'six tiles ' + tilesOf().length)
+eq(!!cardEl().querySelector('.rc-more') && cardEl().querySelector('.rc-more').textContent === '+2 more', 'more ' + (cardEl().querySelector('.rc-more') && cardEl().querySelector('.rc-more').textContent))
+eq(!tilesOf().some((n) => n.dataset && (n.dataset.id === 'survival.energy' || n.dataset.id === 'pack.missing.loom' || n.dataset.id === 'core.fly')), 'soon and missing pack stay off the card')
+
+Rules.load({ name: 'Quiet night', 'station.oven': false })
+showRulesCard({ force: true, lang: 'en', world: 'town' })
+eq(!!cardEl().querySelector('.rc-name') && cardEl().querySelector('.rc-name').textContent === 'Quiet night', 'template name line')
+eq(tilesOf().length === 1 && !tilesOf().some((n) => textOf(n).includes('Quiet night')), 'name is not a tile')
+
+Rules.load({})
+eq(showRulesCard({ lang: 'en', world: 'town' }) === false && cardEl().hidden === true, 'reset next load has no card')
+menuBtn.click()
+eq(cardEl().hidden === false && cardEl().querySelector('.rc-title').textContent === 'Normal rules' && tilesOf().length === 0, 'menu says normal rules')
+cardEl().querySelector('.rc-got').click()
+eq(cardEl().hidden === true, 'normal got it closes')
+
+for (const lang of langs) {
+  Rules.load({ 'station.oven': false, 'core.break': false, 'survival.daynight': 'night' })
+  const rows = diffs(lang)
+  eq(rows.length === 3, 'diffs ' + lang + ' ' + rows.length)
+  for (const row of rows) eq(!!row.icon && scripts[lang].test(row.text), lang + ' ' + row.id + ' ' + row.text)
+  showRulesCard({ force: true, lang })
+  const title = cardEl().querySelector('.rc-title').textContent
+  const got = cardEl().querySelector('.rc-got').textContent
+  eq(scripts[lang].test(title) && scripts[lang].test(got), 'card words ' + lang + ' ' + title + ' / ' + got)
+  const host = node('div')
+  const word = textOf(mountRulesMenu(host, { lang }))
+  eq(scripts[lang].test(word), 'menu word ' + lang + ' ' + word)
+}
+showRulesCard({ force: true, lang: 'ar' })
+eq(cardEl().querySelector('.rc-card').getAttribute('dir') === 'rtl', 'arabic card rtl')
+showRulesCard({ force: true, lang: 'fa-AF' })
+eq(cardEl().querySelector('.rc-card').getAttribute('dir') === 'rtl', 'dari card rtl')
+showRulesCard({ force: true, lang: 'en' })
+eq(cardEl().querySelector('.rc-card').getAttribute('dir') === 'ltr', 'english card ltr')
+const gotBox = cardEl().querySelector('.rc-got')
+eq(gotBox, 'got it button')
 Rules.load({})
 
 if (fail.length) { console.error(fail.join('\n')); process.exit(1) }

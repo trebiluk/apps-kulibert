@@ -32,6 +32,7 @@ import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
 import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
+import { showRulesCard, mountRulesMenu } from './rules-card.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -3934,6 +3935,7 @@ paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
 $('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
 $('m-inspect').addEventListener('click', () => { setInspect(!inspectOn); openMenu(false) })
+mountRulesMenu($('drawer'), { lang: () => LANG, close: () => openMenu(false), world: WORLD })
 $('inspect-chip').addEventListener('click', () => setInspect(false))
 $('inspect-close').addEventListener('click', () => closePlay('gesture'))
 $('about-close').addEventListener('click', () => closePlay('gesture'))
@@ -4109,6 +4111,13 @@ function jumpUp() {
 }
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
+  const rulesCard = document.getElementById('rules-card')
+  if (rulesCard && !rulesCard.hidden) {
+    e.preventDefault()
+    e.stopPropagation()
+    rulesCard.hidden = true
+    return
+  }
   const safe = document.getElementById('shop-safe')
   if (safe) {
     e.preventDefault()
@@ -5636,6 +5645,7 @@ load().catch(() => {}).finally(() => {
   else paintBar()
   if (sentToSurvival) toast(t('studentWorld'))
   markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
+  showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   window.__smoke = {

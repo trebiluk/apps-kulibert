@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.145', date: '2026-10-10', lines: {
+    en: ['A card shows this world\'s rules when you join, and Menu has World Rules.'],
+    uk: ['Картка показує правила цього світу, коли ти заходиш, а в Меню є Правила світу.'],
+    ru: ['Карточка показывает правила этого мира при входе, а в Меню есть Правила мира.'],
+    es: ['Una tarjeta muestra las reglas de este mundo al entrar, y el Menú tiene Reglas del mundo.'],
+    ar: ['بطاقة تعرض قواعد هذا العالم عند الدخول، والقائمة فيها قواعد العالم.'],
+    'fa-AF': ['یک کارت قانون‌های این دنیا را هنگام ورود نشان می‌دهد، و فهرست قانون دنیا دارد.'],
+    rw: ['Ikarita yerekana amategeko y\'iyi si iyo winjiye, kandi Menu ifite Amategeko y\'isi.'],
+    ti: ['ካርድ ሕግታት ናይዚ ዓለም ኣብ ምእታው የርኢ፡ ዝርዝር ድማ ሕግታት ዓለም ኣለዎ።'],
+  }},
   { v: '2.5.143', date: '2026-10-10', lines: {
     en: ['You step up a one-block ledge, and underwater looks like water.'],
     uk: ['Ти ступаєш на уступ в один блок, а під водою видно воду.'],

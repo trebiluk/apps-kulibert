@@ -325,4 +325,46 @@ register({
   desc: L('How fast energy drops. Not in this build.', 'Як швидко спадає енергія. Ще не в цій збірці.', 'Как быстро падает энергия. Ещё не в этой сборке.', 'Qué tan rápido baja la energía. Aún no en esta versión.', 'سرعة نزول الطاقة. ليست في هذه النسخة.', 'انرژی چقدر تند کم می‌شود. در این نسخه نیست.', 'Uko ingufu zigabanuka. Ntiri muri iyi verisiyo.', 'ጉልበት ብኽንደይ ይወርድ። ኣብዚ ሕንጻ የለን።'),
 })
 
-export const Rules = { register, registerPack, load, dump, set, allow, why, icon, useLang, value, rows, unknown, langs: LANGS }
+const WORD = {
+  off: L('off', 'вимкнено', 'выкл', 'apagado', 'متوقف', 'خاموش', 'bifunze', 'ጠፊኡ'),
+  on: L('on', 'увімкнено', 'вкл', 'encendido', 'يعمل', 'روشن', 'gifunguye', 'ወሊዑ'),
+  alwaysDay: L('Always day', 'Завжди день', 'Всегда день', 'Siempre de día', 'نهار دائم', 'همیشه روز', 'Umunsi iteka', 'ኩሉ ግዜ መዓልቲ'),
+  alwaysNight: L('Always night', 'Завжди ніч', 'Всегда ночь', 'Siempre de noche', 'ليل دائم', 'همیشه شب', 'Ijoro iteka', 'ኩሉ ግዜ ለይቲ'),
+}
+
+function templateName() {
+  for (const id of ['name', 'meta.name', 'rules.name']) {
+    if (!saved.has(id)) continue
+    const v = saved.get(id)
+    if (typeof v === 'string' && v.trim()) return v.trim()
+  }
+  return ''
+}
+
+function valueWord(def, v, lang) {
+  if (def.type === 'bool') return text(v === false ? WORD.off : WORD.on, lang)
+  if (def.id === 'survival.daynight') {
+    if (v === 'day') return text(WORD.alwaysDay, lang)
+    if (v === 'night') return text(WORD.alwaysNight, lang)
+  }
+  const opt = (def.options || []).find((o) => (typeof o === 'string' ? o : o && o.id) === v)
+  if (opt && typeof opt === 'object' && opt.label) return text(opt.label, lang)
+  return typeof v === 'string' ? v : ''
+}
+
+function diffs(lang) {
+  const out = []
+  for (const def of registry.values()) {
+    if (!def || def.soon) continue
+    if (def.missing) continue
+    const v = saved.has(def.id) ? saved.get(def.id) : def.def
+    if (same(def.def, v)) continue
+    const label = text(def.label, lang)
+    const word = valueWord(def, v, lang)
+    const phrase = def.id === 'survival.daynight' ? word : (label ? label + ' ' + word : word)
+    out.push({ id: def.id, icon: def.icon || '•', label, value: v, word, text: phrase })
+  }
+  return out
+}
+
+export const Rules = { register, registerPack, load, dump, set, allow, why, icon, useLang, value, rows, unknown, diffs, templateName, langs: LANGS }
