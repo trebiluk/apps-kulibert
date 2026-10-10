@@ -7,7 +7,7 @@ import * as migrateMod from '../src/save/migrate.js'
 import { fromDoc } from '../src/save.js'
 import { stage } from '../src/farm.js'
 import { createHash } from 'crypto'
-import { genBlock, exploredSeen, spawnGround, groundAt } from '../src/worldgen.js'
+import { genBlock, exploredSeen, spawnGround, groundAt, genColumns, underAll, solidUnder } from '../src/worldgen.js'
 
 const S = 24
 const FIX = new URL('../tests/fixtures/', import.meta.url)
@@ -430,6 +430,77 @@ function townKeptReport() {
   return []
 }
 
+function gen4Sample() {
+  const h = createHash('sha256')
+  let n = 0
+  for (let x = 96; x < 144; x++) {
+    for (let z = 96; z < 144; z++) {
+      const y = groundAt(x, z, 4)
+      for (let dy = -2; dy <= 6; dy++) {
+        h.update((genBlock(x, y + dy, z, 4) || '-') + '\n')
+        n++
+      }
+    }
+  }
+  h.update(String(n))
+  return h.digest('hex')
+}
+
+function mix(n) {
+  let h = Math.imul(n | 0, 374761393)
+  h = Math.imul(h ^ (h >>> 13), 1274126177)
+  return (h ^ (h >>> 16)) >>> 0
+}
+
+function colsMatch() {
+  let bad = 0
+  let first = ''
+  for (let n = 0; n < 50; n++) {
+    const x0 = ((mix(n + 3) % 21) - 10) * S
+    const z0 = ((mix(n + 50) % 21) - 10) * S
+    const y0 = ((mix(n + 90) % 4) - 2) * S
+    const gen = 2 + (mix(n + 7) % 3)
+    const arr = new Int8Array(S * S)
+    const fade = (x, z) => {
+      const d = Math.max(Math.abs((x | 0) - (x0 + 11)), Math.abs((z | 0) - (z0 + 7))) - 6
+      return d > 0 ? Math.min(12, d) : 0
+    }
+    for (let i = 0; i < S; i++) for (let k = 0; k < S; k++) arr[i * S + k] = fade(x0 + i, z0 + k)
+    const cols = genColumns(x0, z0, gen, arr)
+    const deep = underAll(x0, y0, z0, cols)
+    for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
+      const x = x0 + i
+      const y = y0 + j
+      const z = z0 + k
+      const a = genBlock(x, y, z, gen, fade) || ''
+      const b = deep ? (solidUnder(x, y, z) || '') : (genBlock(x, y, z, gen, fade, cols) || '')
+      if (a !== b) {
+        bad++
+        if (!first) first = x + ',' + y + ',' + z + ' g' + gen + ' ' + a + '→' + b
+      }
+    }
+  }
+  return { bad, first }
+}
+
+function benchSurface() {
+  const fill = (x0, z0) => {
+    const arr = new Int8Array(S * S)
+    arr.fill(12)
+    const fade = () => 12
+    const t = performance.now()
+    const cols = genColumns(x0, z0, 4, arr)
+    if (underAll(x0, 0, z0, cols)) {
+      for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) solidUnder(x0 + i, j, z0 + k)
+    } else {
+      for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) genBlock(x0 + i, j, z0 + k, 4, fade, cols)
+    }
+    return performance.now() - t
+  }
+  fill(48, 48)
+  return fill(960, -720)
+}
+const GEN4_SAMPLE = '9f88619597f29a3d8f45bef88f678bf64735ce90947d4460a356da2a239a4d60'
 const GEN3_SAMPLE = '2c06555d8307d1cd8ab3842cfef4d8060212a2ba43e223cea02d31beb214694a'
 
 function genSampleHash(gen, x0, z0, x1, z1) {
@@ -461,6 +532,13 @@ function borderFade(x, z) {
 
 function terrainReport() {
   const lines = []
+  const g4 = gen4Sample()
+  if (g4 !== GEN4_SAMPLE) lines.push('gen4 hash ' + g4)
+  const cols = colsMatch()
+  if (cols.bad) lines.push('cols ' + cols.bad + ' ' + cols.first)
+  const ms = benchSurface()
+  console.log('surface chunk ' + ms.toFixed(1) + 'ms')
+  if (ms > 12) lines.push('surface ' + ms.toFixed(1) + 'ms')
   const g3 = genSampleHash(3, 96, 48, 144, 96)
   if (g3 !== GEN3_SAMPLE) lines.push('gen3 hash ' + g3)
   if (genSampleHash(3, 96, 48, 144, 96) !== g3) lines.push('gen3 drift')
@@ -531,7 +609,7 @@ async function main() {
   else console.log('PASS town-kept')
   const terrainLines = terrainReport()
   if (terrainLines.length) { fail++; console.log('FAIL terrain ' + terrainLines.join('; ')) }
-  else console.log('PASS terrain gen3 ' + GEN3_SAMPLE.slice(0, 12) + ' hills+beach')
+  else console.log('PASS terrain gen3 ' + GEN3_SAMPLE.slice(0, 12) + ' gen4 ' + GEN4_SAMPLE.slice(0, 12) + ' hills+beach')
   process.exit(fail ? 1 : 0)
 }
 

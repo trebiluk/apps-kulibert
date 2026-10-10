@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.133', date: '2026-10-10', lines: {
+    en: ['Hills appear as you walk, and the game does not stop to build them.'],
+    uk: ['Горби з’являються, поки ти йдеш, і гра не зупиняється, щоб їх збудувати.'],
+    ru: ['Холмы появляются, пока ты идёшь, и игра не останавливается, чтобы их построить.'],
+    es: ['Las colinas aparecen mientras caminas, y el juego no se detiene para construirlas.'],
+    ar: ['التلال تظهر وأنت تمشي، واللعبة لا تتوقف لتبنيها.'],
+    'fa-AF': ['تپه‌ها هنگام راه رفتن پیدا می‌شوند، و بازی برای ساختن‌شان نمی‌ایستد.'],
+    rw: ['Udusozi bigaragara ukigenda, kandi umukino ntuhagarara kuyubaka.'],
+    ti: ['ኮረብታታት ክትኸይድ ከለኻ ይረኣዩ፡ ጸወታ ድማ ንምህናጽ ኣይዕንቅፍን።'],
+  }},
   { v: '2.5.132', date: '2026-10-10', lines: {
     en: ['Crafting off really means off, and the Update chip sits above the menu.'],
     uk: ['Вимкнений крафт справді вимкнений, і чип оновлення стоїть над меню.'],

@@ -594,6 +594,33 @@ function pondBand(x, z) {
 }
 
 function lowBand(x, z) {
+  const tile = tileLRU.get(tileKey(Math.floor(x / TILE) * TILE, Math.floor(z / TILE) * TILE))
+  if (tile) {
+    const i0 = x - tile.ox
+    const k0 = z - tile.oz
+    if (i0 >= 7 && k0 >= 7 && i0 < WIDE - 7 && k0 < WIDE - 7) {
+      if (tile.coast[i0 * WIDE + k0] > 6) return null
+      let best = null
+      for (let dx = -6; dx <= 6; dx++) {
+        for (let dz = -6; dz <= 6; dz++) {
+          const ii = i0 + dx
+          const kk = k0 + dz
+          if (tile.base[ii * WIDE + kk] > 1) continue
+          const rim = tile.base[(ii + 1) * WIDE + kk] >= 2 || tile.base[(ii - 1) * WIDE + kk] >= 2 || tile.base[ii * WIDE + kk + 1] >= 2 || tile.base[ii * WIDE + kk - 1] >= 2
+          if (!rim) continue
+          const d = dx < 0 ? -dx : dx
+          const adz = dz < 0 ? -dz : dz
+          const dist = d > adz ? d : adz
+          if (best && dist >= best.d) continue
+          best = { d: dist, x: x + dx, z: z + dz }
+        }
+      }
+      if (!best) return null
+      const w = bandWidth(best.x + 13, best.z - 7)
+      if (best.d > w) return null
+      return { d: best.d, w, kind: 'low', x: best.x, z: best.z }
+    }
+  }
   let best = null
   for (let dx = -6; dx <= 6; dx++) {
     for (let dz = -6; dz <= 6; dz++) {
@@ -620,7 +647,9 @@ function bandAt(x, z) {
   if (bandCache.has(k)) return bandCache.get(k)
   if (bandCache.size > 12000) bandCache.clear()
   const pond = pondBand(x, z)
-  const low = lowBand(x, z)
+  let low = null
+  const known = wideAt(x, z)
+  if (!(known && known.coast > 6)) low = lowBand(x, z)
   const hit = pond || low
   bandCache.set(k, hit)
   return hit
@@ -687,9 +716,64 @@ function pondFoot(x, z) {
 const hillCache = new Map()
 const coastCache = new Map()
 const gyCache = new Map()
+const TILE = 24
+const SEARCH = 18
+const COAST_PAD = SEARCH + 4
+const COAST_CAP = 19
+const WIDE = TILE + COAST_PAD * 2
+const TILE_MAX = 64
+const tileLRU = new Map()
+
+function numKey(x, z) {
+  return (x + 32768) * 65536 + z
+}
+
+function tileKey(x0, z0) {
+  return (x0 + 32768) * 65536 + z0
+}
+
+function rememberTile(tile) {
+  const k = tileKey(tile.x0, tile.z0)
+  if (tileLRU.has(k)) tileLRU.delete(k)
+  tileLRU.set(k, tile)
+  while (tileLRU.size > TILE_MAX) tileLRU.delete(tileLRU.keys().next().value)
+}
+
+// A wide-tile sample is exact when the whole Chebyshev search fits in the
+// tile, or when the nearest low cell is closer than the tile edge.
+function wideAt(x, z) {
+  const x0 = Math.floor(x / TILE) * TILE
+  const z0 = Math.floor(z / TILE) * TILE
+  const home = tileLRU.get(tileKey(x0, z0))
+  const hit = readWide(home, x, z)
+  if (hit) return hit
+  for (let dz = -1; dz <= 1; dz++) {
+    for (let dx = -1; dx <= 1; dx++) {
+      if (!dx && !dz) continue
+      const tile = tileLRU.get(tileKey(x0 + dx * TILE, z0 + dz * TILE))
+      const near = readWide(tile, x, z)
+      if (near) return near
+    }
+  }
+  return null
+}
+
+function readWide(tile, x, z) {
+  if (!tile) return null
+  const i = x - tile.ox
+  const k = z - tile.oz
+  if (i < 0 || k < 0 || i >= WIDE || k >= WIDE) return null
+  const p = i * WIDE + k
+  const coast = tile.coast[p]
+  const inset = Math.min(i, k, WIDE - 1 - i, WIDE - 1 - k)
+  if (inset < SEARCH && coast > inset) return null
+  return { base: tile.base[p], hills: tile.hills[p], coast }
+}
 
 function cachedGround(x, z) {
-  const k = x + ',' + z
+  const w = wideAt(x, z)
+  if (w) return w.base
+  const k = numKey(x, z)
   const v = gyCache.get(k)
   if (v != null) return v
   if (gyCache.size > 40000) gyCache.clear()
@@ -699,14 +783,16 @@ function cachedGround(x, z) {
 }
 
 function coastDist(x, z) {
-  const k = x + ',' + z
+  const w = wideAt(x, z)
+  if (w) return w.coast
+  const k = numKey(x, z)
   const hit = coastCache.get(k)
   if (hit != null) return hit
   if (coastCache.size > 20000) coastCache.clear()
-  let best = 19
+  let best = COAST_CAP
   if (cachedGround(x, z) <= 1) best = 0
   else {
-    for (let r = 1; r <= 18; r++) {
+    for (let r = 1; r <= SEARCH; r++) {
       let found = false
       for (let dx = -r; dx <= r && !found; dx++) {
         if (cachedGround(x + dx, z - r) <= 1 || cachedGround(x + dx, z + r) <= 1) found = true
@@ -719,28 +805,180 @@ function coastDist(x, z) {
   return best
 }
 
-// Two octaves of the existing hash. Hills add at most 12. They scale to 0
-// within 48 of spawn and the town, and they stay 0 on a pond footprint and
-// on the low beach (so the sand band keeps the gen-3 shore).
-function hillsAt(x, z) {
-  const k = x + ',' + z
-  const hit = hillCache.get(k)
-  if (hit != null) return hit
-  if (hillCache.size > 20000) hillCache.clear()
+function hillsFrom(x, z, coast) {
   let v = 0
   const f = flatFactor(x, z)
   if (f > 0 && !pondFoot(x, z)) {
-    const c = coastDist(x, z)
-    if (c > 6) {
-      const ramp = c >= 18 ? 1 : (c - 6) / 12
+    if (coast > 6) {
+      const ramp = coast >= 18 ? 1 : (coast - 6) / 12
       const n = vnoise(x, z, 48) * 0.62 + vnoise(x + 17, z - 9, 18) * 0.38
       v = Math.round(Math.min(12, n * 12) * f * ramp)
       if (v > 12) v = 12
       if (v < 0) v = 0
     }
   }
+  return v
+}
+
+// Two octaves of the existing hash. Hills add at most 12. They scale to 0
+// within 48 of spawn and the town, and they stay 0 on a pond footprint and
+// on the low beach (so the sand band keeps the gen-3 shore).
+function hillsAt(x, z) {
+  const w = wideAt(x, z)
+  if (w) return w.hills
+  const k = numKey(x, z)
+  const hit = hillCache.get(k)
+  if (hit != null) return hit
+  if (hillCache.size > 20000) hillCache.clear()
+  const v = hillsFrom(x, z, coastDist(x, z))
   hillCache.set(k, v)
   return v
+}
+
+function buildTile(x0, z0) {
+  const ox = x0 - COAST_PAD
+  const oz = z0 - COAST_PAD
+  const coast = new Int16Array(WIDE * WIDE)
+  const base = new Int16Array(WIDE * WIDE)
+  const hills = new Int16Array(WIDE * WIDE)
+  for (let i = 0; i < WIDE; i++) {
+    for (let k = 0; k < WIDE; k++) {
+      const p = i * WIDE + k
+      const b = spawnGround(ox + i, oz + k)
+      base[p] = b
+      coast[p] = b <= 1 ? 0 : COAST_CAP
+    }
+  }
+  for (let i = 0; i < WIDE; i++) {
+    for (let k = 0; k < WIDE; k++) {
+      const p = i * WIDE + k
+      let d = coast[p]
+      if (i > 0) {
+        const a = coast[p - WIDE] + 1
+        if (a < d) d = a
+      }
+      if (k > 0) {
+        const a = coast[p - 1] + 1
+        if (a < d) d = a
+      }
+      if (i > 0 && k > 0) {
+        const a = coast[p - WIDE - 1] + 1
+        if (a < d) d = a
+      }
+      if (i > 0 && k + 1 < WIDE) {
+        const a = coast[(i - 1) * WIDE + (k + 1)] + 1
+        if (a < d) d = a
+      }
+      coast[p] = d < COAST_CAP ? d : COAST_CAP
+    }
+  }
+  for (let i = WIDE - 1; i >= 0; i--) {
+    for (let k = WIDE - 1; k >= 0; k--) {
+      const p = i * WIDE + k
+      let d = coast[p]
+      if (i + 1 < WIDE) {
+        const a = coast[p + WIDE] + 1
+        if (a < d) d = a
+      }
+      if (k + 1 < WIDE) {
+        const a = coast[p + 1] + 1
+        if (a < d) d = a
+      }
+      if (i + 1 < WIDE && k + 1 < WIDE) {
+        const a = coast[p + WIDE + 1] + 1
+        if (a < d) d = a
+      }
+      if (i + 1 < WIDE && k > 0) {
+        const a = coast[p + WIDE - 1] + 1
+        if (a < d) d = a
+      }
+      coast[p] = d < COAST_CAP ? d : COAST_CAP
+    }
+  }
+  for (let i = 0; i < WIDE; i++) {
+    for (let k = 0; k < WIDE; k++) {
+      const p = i * WIDE + k
+      hills[p] = hillsFrom(ox + i, oz + k, coast[p])
+    }
+  }
+  return { x0, z0, ox, oz, base, hills, coast }
+}
+
+function fadeOf(fadeArr, idx) {
+  if (!fadeArr) return 12
+  let f = fadeArr[idx]
+  if (f == null || f >= 12) return 12
+  return f > 0 ? f : 0
+}
+
+// One 24x24 column tile. h is the faded ground. base, hills and coast do
+// not depend on fade. coast is an exact capped Chebyshev distance.
+export function genColumns(x0, z0, gen, fadeArr) {
+  const x0i = Math.floor(x0 / TILE) * TILE
+  const z0i = Math.floor(z0 / TILE) * TILE
+  let tile = tileLRU.get(tileKey(x0i, z0i))
+  if (!tile) {
+    tile = buildTile(x0i, z0i)
+    rememberTile(tile)
+  }
+  const h = new Int16Array(TILE * TILE)
+  const base = new Int16Array(TILE * TILE)
+  const hills = new Int16Array(TILE * TILE)
+  const coast = new Int16Array(TILE * TILE)
+  const g = gen | 0
+  let minH = 32767
+  for (let i = 0; i < TILE; i++) {
+    for (let k = 0; k < TILE; k++) {
+      const p = (i + COAST_PAD) * WIDE + (k + COAST_PAD)
+      const idx = i * TILE + k
+      const b = tile.base[p]
+      const hi = tile.hills[p]
+      base[idx] = b
+      hills[idx] = hi
+      coast[idx] = tile.coast[p]
+      let add = g >= 4 ? hi : 0
+      if (g >= 4) {
+        const f = fadeOf(fadeArr, idx)
+        if (f < 12) add = Math.round(add * f / 12)
+      }
+      let hh = b + add
+      if (hh > 23) hh = 23
+      h[idx] = hh
+      if (hh < minH) minH = hh
+    }
+  }
+  return { x0: x0i, z0: z0i, h, base, hills, coast, minH }
+}
+
+export function peekColumn(x, z) {
+  return wideAt(x | 0, z | 0)
+}
+
+export function solidUnder(x, y, z) {
+  if (y === -64) return 'coreplate'
+  if (y < -64 || y > 23) return ''
+  return coalHere(x, y, z) ? 'coal' : 'stone'
+}
+
+// True when every voxel of the chunk is stone, coal or the core plate.
+// Pond, shore and town decorations stay on the real generator.
+export function underAll(x0, y0, z0, cols) {
+  const yTop = y0 + TILE - 1
+  if (!(yTop < cols.minH - 3)) return false
+  let minSurf = 999
+  let town = false
+  for (let i = 0; i < TILE; i++) {
+    for (let k = 0; k < TILE; k++) {
+      const x = x0 + i
+      const z = z0 + k
+      const s = surfaceY(x, z)
+      if (s < minSurf) minSurf = s
+      if (!town && x >= -20 && x <= 36 && z >= -18 && z <= 28) town = true
+    }
+  }
+  if (yTop >= minSurf - 1) return false
+  if (town && yTop >= 1) return false
+  return true
 }
 
 function fadeNum(fade, x, z) {
@@ -749,26 +987,49 @@ function fadeNum(fade, x, z) {
   return n > 0 ? n : 0
 }
 
-export function groundAt(x, z, gen, fade) {
+function colsIndex(cols, x, z) {
+  if (!cols) return -1
+  const i = x - cols.x0
+  const k = z - cols.z0
+  if (i < 0 || k < 0 || i >= TILE || k >= TILE) return -1
+  return i * TILE + k
+}
+
+export function groundAt(x, z, gen, fade, cols) {
   const xi = x | 0
   const zi = z | 0
-  const base = spawnGround(xi, zi)
-  if ((gen | 0) < 4) return base
-  let add = hillsAt(xi, zi)
+  const idx = colsIndex(cols, xi, zi)
+  if ((gen | 0) < 4) {
+    if (idx >= 0) return cols.base[idx]
+    const w = wideAt(xi, zi)
+    if (w) return w.base
+    return spawnGround(xi, zi)
+  }
+  if (idx >= 0) return cols.h[idx]
+  const w = wideAt(xi, zi)
+  let base
+  let add
+  if (w) {
+    base = w.base
+    add = w.hills
+  } else {
+    base = spawnGround(xi, zi)
+    add = hillsAt(xi, zi)
+  }
   const f = fadeNum(fade, xi, zi)
   if (f < 12) add = Math.round(add * f / 12)
   const h = base + add
   return h > 23 ? 23 : h
 }
 
-function genCore4(x, y, z, fade) {
+function genCore4(x, y, z, fade, cols) {
   if (y === -64) return 'coreplate'
   if (y < -64) return ''
   if (pondHere(x, y, z)) return 'water'
   if (y > surfaceY(x, z) && pondHere(x, y - 1, z)) return ''
   if (shoreLow(x, y, z)) return ''
   if (inTownXZ(x, z)) return townName(x, y, z)
-  const h = groundAt(x, z, 4, fade)
+  const h = groundAt(x, z, 4, fade, cols)
   if (y > h) {
     const grew = wildWood(x, y, z, 4, fade)
     if (grew === 'log' || grew === 'leaves') return grew
@@ -783,23 +1044,31 @@ function genCore4(x, y, z, fade) {
   return ''
 }
 
-function gen4(x, y, z, fade) {
+function columnBase(x, z, cols) {
+  const idx = colsIndex(cols, x, z)
+  if (idx >= 0) return cols.base[idx]
+  const w = wideAt(x, z)
+  if (w) return w.base
+  return spawnGround(x, z)
+}
+
+function gen4(x, y, z, fade, cols) {
   if (y > 23) return ''
-  const base = genCore4(x, y, z, fade)
+  const base = genCore4(x, y, z, fade, cols)
   if (inTownXZ(x, z) || pondHere(x, y, z) || shoreLow(x, y, z)) return base
-  const h = groundAt(x, z, 4, fade)
+  const h = groundAt(x, z, 4, fade, cols)
   // The beach and the pond banks use the gen-3 painter on any column the
   // hill did not lift. A lifted column keeps the new grass surface.
-  if (h === spawnGround(x, z)) return gen3(x, y, z, base)
+  if (h === columnBase(x, z, cols)) return gen3(x, y, z, base)
   return base
 }
 
-export function genBlock(x, y, z, gen, fade) {
+export function genBlock(x, y, z, gen, fade, cols) {
   const g = gen | 0
   const xi = x | 0
   const yi = y | 0
   const zi = z | 0
-  if (g >= 4) return gen4(xi, yi, zi, fade)
+  if (g >= 4) return gen4(xi, yi, zi, fade, cols)
   const base = genCore(xi, yi, zi)
   if (g >= 3) return gen3(xi, yi, zi, base)
   return base

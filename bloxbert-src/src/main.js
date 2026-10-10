@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.132'
+const VERSION = '2.5.133'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -35,7 +35,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, GEN } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -215,6 +215,8 @@ const noa = new Engine({
   blockTestDistance: 10,
   texturePath: '',
 })
+noa.world.maxProcessingPerTick = 5
+noa.world.maxProcessingPerRender = 3
 const engine = noa.rendering.engine
 engine.setHardwareScalingLevel(level)
 const moveState = noa.ents.getMovement(noa.playerEntity)
@@ -795,11 +797,22 @@ let machineTimer = 0
 const machineCells = new Map()
 function hash(x, z) { let h = (x * 374761393 + z * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296 }
 function heightAt(x, z) {
-  const i = Math.floor(x / S)
-  const k = Math.floor(z / S)
+  const xi = x | 0
+  const zi = z | 0
+  const i = Math.floor(xi / S)
+  const k = Math.floor(zi / S)
   const stamped = genSeen[key(i, 0, k)]
   const g = stamped == null ? genVersion : (stamped | 0)
-  return groundAt(x, z, g, (qx, qz) => fadeDist(qx, 0, qz))
+  const col = peekColumn(xi, zi)
+  if (col) {
+    if (g < 4) return col.base
+    let add = col.hills
+    const f = fadeDist(xi, 0, zi)
+    if (f < 12) add = Math.round(add * f / 12)
+    const h = col.base + add
+    return h > 23 ? 23 : h
+  }
+  return groundAt(xi, zi, g, (qx, qz) => fadeDist(qx, 0, qz))
 }
 const TOWN = { x0: -20, x1: 36, z0: -18, z1: 28, y: FLOOR }
 function inTown(x, z) { return x >= TOWN.x0 && x <= TOWN.x1 && z >= TOWN.z0 && z <= TOWN.z1 }
@@ -889,18 +902,65 @@ function compactSeen() {
 }
 function fillGenerated(data, x0, y0, z0) {
   const g = seenGen(x0, y0, z0)
-  const fade = (qx, qz) => fadeDist(qx, y0, qz)
+  const fadeArr = new Int8Array(S * S)
+  for (let i = 0; i < S; i++) for (let k = 0; k < S; k++) fadeArr[i * S + k] = fadeDist(x0 + i, y0, z0 + k)
+  const cols = genColumns(x0, z0, g, fadeArr)
+  if (underAll(x0, y0, z0, cols)) {
+    for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
+      const name = solidUnder(x0 + i, y0 + j, z0 + k)
+      data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
+    }
+    return
+  }
+  const fade = (qx, qz) => {
+    const i = (qx | 0) - x0
+    const k = (qz | 0) - z0
+    if (i >= 0 && i < S && k >= 0 && k < S) return fadeArr[i * S + k]
+    return fadeDist(qx, y0, qz)
+  }
   for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
-    const name = genBlock(x0 + i, y0 + j, z0 + k, g, fade)
+    const name = genBlock(x0 + i, y0 + j, z0 + k, g, fade, cols)
     data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
   }
 }
+const genQueue = []
+function chunkPending(id) {
+  const parts = id.split('|')
+  return noa.world._chunksPending.includes(+parts[0], +parts[1], +parts[2])
+}
+function drainGen() {
+  if (!genQueue.length) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const px = p[0]
+  const py = p[1]
+  const pz = p[2]
+  for (let n = 0; n < genQueue.length; n++) {
+    const job = genQueue[n]
+    const dx = job.x + 12 - px
+    const dy = job.y + 12 - py
+    const dz = job.z + 12 - pz
+    job.d = dx * dx + dy * dy + dz * dz
+  }
+  genQueue.sort((a, b) => a.d - b.d)
+  const t0 = performance.now()
+  let added = 0
+  while (genQueue.length && added < 2 && performance.now() - t0 < 6) {
+    const job = genQueue.shift()
+    if (!chunkPending(job.id)) continue
+    const s = saved.get(key(job.x / S, job.y / S, job.z / S))
+    if (s) job.arr.data.set(s)
+    else if (job.y > 24) { seenGen(job.x, job.y, job.z); job.arr.data.fill(0) }
+    else fillGenerated(job.arr.data, job.x, job.y, job.z)
+    noa.world.setChunkData(job.id, job.arr)
+    added++
+  }
+}
+noa.on('beforeRender', drainGen)
 noa.world.on('worldDataNeeded', (id, arr, x, y, z) => {
   const s = saved.get(key(x / S, y / S, z / S))
-  if (s) arr.data.set(s)
-  else if (y > 24) { seenGen(x, y, z); arr.data.fill(0) }
-  else fillGenerated(arr.data, x, y, z)
-  noa.world.setChunkData(id, arr)
+  if (s) { arr.data.set(s); noa.world.setChunkData(id, arr); return }
+  if (y > 24) { seenGen(x, y, z); arr.data.fill(0); noa.world.setChunkData(id, arr); return }
+  genQueue.push({ id, arr, x, y, z, d: 0 })
 })
 function getVoxel(x, y, z) {
   const ci = Math.floor(x / S), cj = Math.floor(y / S), ck = Math.floor(z / S)
