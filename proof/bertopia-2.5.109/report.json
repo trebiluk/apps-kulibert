@@ -1,0 +1,359 @@
+{
+  "steps": [
+    {
+      "name": "fresh survival sprout",
+      "ok": true,
+      "detail": {
+        "sprout": 1,
+        "mode": "survival"
+      }
+    },
+    {
+      "name": "world has wet and dry grass",
+      "ok": true,
+      "detail": {
+        "wet": {
+          "x": -6,
+          "y": 4,
+          "z": 2,
+          "id": 1
+        },
+        "dry": {
+          "x": -6,
+          "y": 4,
+          "z": -14,
+          "id": 1
+        },
+        "stone": null,
+        "water": {
+          "x": -2,
+          "y": 4,
+          "z": 5
+        },
+        "nGrass": 1025,
+        "nWater": 65
+      }
+    },
+    {
+      "name": "plant on wet grass",
+      "ok": true,
+      "detail": {
+        "tap": {
+          "id": 1,
+          "x": -6,
+          "y": 4,
+          "z": 2
+        },
+        "planted": {
+          "id": 65,
+          "sprout": 0,
+          "row": {
+            "x": -6,
+            "y": 5,
+            "z": 2,
+            "plantedAt": 1791596990306,
+            "grown": 0,
+            "wet": true,
+            "lastSeen": 1791596990306,
+            "kind": "bush",
+            "regrow": false
+          },
+          "soil": 1
+        }
+      }
+    },
+    {
+      "name": "unripe tap is card only",
+      "ok": true,
+      "detail": {
+        "unripe": {
+          "id": 65,
+          "x": -6,
+          "y": 5,
+          "z": 2
+        },
+        "stayed": {
+          "id": 65,
+          "berry": 0,
+          "card": "Berry Bush - Sprout - ripe in 5:00"
+        }
+      }
+    },
+    {
+      "name": "dry bush ripe in 10 min",
+      "ok": true,
+      "detail": {
+        "tap": {
+          "id": 65,
+          "x": -6,
+          "y": 5,
+          "z": -14
+        },
+        "planted": {
+          "id": 65,
+          "row": {
+            "x": -6,
+            "y": 5,
+            "z": -14,
+            "plantedAt": 1791596990819,
+            "grown": 0,
+            "wet": false,
+            "lastSeen": 1791596990819,
+            "kind": "bush",
+            "regrow": false
+          },
+          "card": "Berry Bush - Sprout - ripe in 10:00 Dry soil: grows slowly. Water nearby = 2x."
+        },
+        "again": {
+          "id": 65,
+          "x": -6,
+          "y": 5,
+          "z": -14
+        },
+        "card": "Berry Bush - Sprout - ripe in 10:00 Dry soil: grows slowly. Water nearby = 2x."
+      }
+    },
+    {
+      "name": "farmland says why",
+      "ok": true,
+      "detail": {
+        "aim": {
+          "id": 49,
+          "x": -4,
+          "y": 4,
+          "z": -12
+        },
+        "farmCard": {
+          "card": "Bushes grow on grass, not farmland.",
+          "above": 0,
+          "sprout": 1
+        }
+      }
+    },
+    {
+      "name": "water says why",
+      "ok": true,
+      "detail": {
+        "aim": {
+          "id": 64,
+          "x": -2,
+          "y": 4,
+          "z": 5
+        },
+        "waterCard": {
+          "card": "Bushes cannot grow in water.",
+          "sprout": 1,
+          "id": 64
+        }
+      }
+    },
+    {
+      "name": "stone says why",
+      "ok": true,
+      "detail": {
+        "aim": {
+          "id": 3,
+          "x": -3,
+          "y": 4,
+          "z": -12
+        },
+        "stoneCard": {
+          "card": "Bushes cannot grow on stone.",
+          "above": 0,
+          "sprout": 1
+        }
+      }
+    },
+    {
+      "name": "ripe tap gives berries and stays",
+      "ok": true,
+      "detail": {
+        "ripeLook": {
+          "id": 67,
+          "x": -6,
+          "y": 5,
+          "z": 2
+        },
+        "picked": {
+          "id": 67,
+          "berry": 2,
+          "card": "Berry Bush - Tall - Regrows in 3:00",
+          "pops": [
+            "+2 Berry"
+          ],
+          "row": {
+            "x": -6,
+            "y": 5,
+            "z": 2,
+            "plantedAt": 1791596990306,
+            "grown": 0,
+            "wet": true,
+            "lastSeen": 1791596992314,
+            "kind": "bush",
+            "regrow": true
+          }
+        }
+      }
+    },
+    {
+      "name": "second tap on regrowing bush adds no berries",
+      "ok": true,
+      "detail": {
+        "id": 67,
+        "berry": 2,
+        "card": "Berry Bush - Tall - Regrows in 3:00"
+      }
+    },
+    {
+      "name": "offline jump ripens once",
+      "ok": true,
+      "detail": {
+        "id": 68,
+        "grown": 600000
+      }
+    },
+    {
+      "name": "clock back does not go negative",
+      "ok": true,
+      "detail": {
+        "grown": 600000,
+        "same": true,
+        "lastSeen": 1791597052554
+      }
+    },
+    {
+      "name": "forward jump stays one ripe",
+      "ok": true,
+      "detail": 600000
+    },
+    {
+      "name": "regrow jump caps at 6 min",
+      "ok": true,
+      "detail": {
+        "grown": 360000,
+        "regrow": true
+      }
+    },
+    {
+      "name": "break returns 1 sprout",
+      "ok": true,
+      "detail": {
+        "broke": {
+          "id": 65,
+          "x": -6,
+          "y": 5,
+          "z": -14
+        },
+        "after": {
+          "id": 0,
+          "sprout": 1,
+          "crops": [],
+          "toast": ""
+        }
+      }
+    },
+    {
+      "name": "wheat still plants and harvests",
+      "ok": true,
+      "detail": {
+        "wheatTap": {
+          "id": 49,
+          "x": -6,
+          "y": 4,
+          "z": -14
+        },
+        "wheat": {
+          "id": 62
+        },
+        "wheatPick": {
+          "id": 62,
+          "x": -6,
+          "y": 5,
+          "z": -14
+        },
+        "wheatGot": {
+          "wheat": 2,
+          "seeds": 1,
+          "pops": [
+            "+2 Wheat +1 Wheat Seeds"
+          ]
+        }
+      }
+    },
+    {
+      "name": "full bag berries go to lost and found",
+      "ok": true,
+      "detail": {
+        "full": {
+          "dirt": 960,
+          "berry": 0,
+          "drops": 256
+        },
+        "fullTap": {
+          "id": 68,
+          "x": -6,
+          "y": 5,
+          "z": 2
+        },
+        "lost": {
+          "berry": 0,
+          "lost": [
+            "berry:2"
+          ],
+          "pops": [
+            "+2 Berry"
+          ]
+        }
+      }
+    },
+    {
+      "name": "box and oven still open",
+      "ok": true,
+      "detail": {
+        "box": true,
+        "oven": true
+      }
+    },
+    {
+      "name": "card 915x412",
+      "ok": true,
+      "detail": {
+        "text": "Berry Bush - Tall - Regrows in 2:59",
+        "w": 282.953125,
+        "h": 44,
+        "left": 316.0234375,
+        "top": 260,
+        "right": 598.9765625,
+        "bottom": 304,
+        "vw": 915,
+        "vh": 412,
+        "font": "15px",
+        "minH": "44px"
+      }
+    },
+    {
+      "name": "card rotate 412x915",
+      "ok": true,
+      "detail": {
+        "text": "Berry Bush - Tall - Regrows in 2:59",
+        "w": 206,
+        "h": 58.5,
+        "left": 103,
+        "top": 748.5,
+        "right": 309,
+        "bottom": 807,
+        "vw": 412,
+        "vh": 915,
+        "font": "15px",
+        "minH": "44px"
+      }
+    },
+    {
+      "name": "console errors",
+      "ok": true,
+      "detail": []
+    }
+  ],
+  "pass": true,
+  "errors": []
+}

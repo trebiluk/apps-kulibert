@@ -54,6 +54,7 @@ export const ITEMS = {
   berry: { svg: 'berry', letter: 'Be', cat: 'Food', base: 1, sell: true },
   wheat: { block: 28, letter: 'Wh', cat: 'Food', base: 2, sell: false },
   wheatSeeds: { svg: 'wheatSeeds', letter: 'Ws', base: 0, sell: false },
+  bushSprout: { svg: 'bushSprout', letter: 'Bs', base: 0, sell: false },
   flour: { svg: 'flour', letter: 'Fl', cat: 'Food', base: 3, sell: true },
   sugar: { svg: 'sugar', letter: 'Su', cat: 'Food', base: 2, sell: true },
   cupcake: { svg: 'cupcake', letter: 'Cu', cat: 'Food', base: 6, sell: true },
@@ -65,6 +66,7 @@ export function dropOf(blockId) {
   if (blockId === 49 || blockId === 63) return 'dirt'
   if (blockId === 58 || blockId === 64) return null
   if (blockId >= 59 && blockId <= 62) return 'wheatSeeds'
+  if (blockId >= 65 && blockId <= 68) return 'bushSprout'
   if (blockId === 28) return 'wheat'
   if (blockId === 29) return 'sugar'
   if (blockId >= 50 && blockId <= 57) return dropOf(blockId - 20)
@@ -89,6 +91,9 @@ export function wheatSeedCount(x, y, z) {
 export function harvestCounts(x, y, z) {
   const h = mix(x, y, z, 62)
   return { wheat: 1 + (h % 2), seeds: 1 + ((h >>> 3) % 2) }
+}
+export function berryPickCount(x, y, z) {
+  return 2 + (mix(x, y, z, 65) % 2)
 }
 export function tuftSeedCount(x, y, z) {
   return mix(x, y, z, 58) % 8 === 0 ? 1 : 0

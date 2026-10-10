@@ -43,6 +43,33 @@ function paintCrop(g, stage) {
     g.fillRect(34, 8, 4, 4)
   }
 }
+function paintBush(g, stage) {
+  g.fillStyle = '#8B5A2B'
+  g.beginPath()
+  g.ellipse(24, 40, 11, 4.5, 0, 0, Math.PI * 2)
+  g.fill()
+  const greens = ['#86efac', '#22c55e', '#15803d', '#166534']
+  const radius = [7, 10, 14, 14][stage]
+  const cy = [30, 26, 22, 21][stage]
+  g.fillStyle = greens[stage]
+  g.beginPath()
+  g.arc(24, cy, radius, 0, Math.PI * 2)
+  g.fill()
+  if (stage >= 1) {
+    g.beginPath()
+    g.arc(13, cy + 2, radius * 0.5, 0, Math.PI * 2)
+    g.arc(35, cy + 1, radius * 0.48, 0, Math.PI * 2)
+    g.fill()
+  }
+  if (stage === 3) {
+    g.fillStyle = '#ef4444'
+    g.beginPath(); g.arc(17, 18, 3.2, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.arc(29, 16, 3.2, 0, Math.PI * 2); g.fill()
+    g.beginPath(); g.arc(23, 26, 2.8, 0, Math.PI * 2); g.fill()
+    g.fillStyle = '#fde68a'
+    g.fillRect(34, 8, 4, 4)
+  }
+}
 const FACE = {
   log(g) {
     g.fillStyle = '#6B3A1F'
@@ -253,6 +280,10 @@ const FACE = {
   cropLeafy(g) { paintCrop(g, 1) },
   cropTall(g) { paintCrop(g, 2) },
   cropRipe(g) { paintCrop(g, 3) },
+  bushYoung(g) { paintBush(g, 0) },
+  bushLeaf(g) { paintBush(g, 1) },
+  bushFull(g) { paintBush(g, 2) },
+  bushFruit(g) { paintBush(g, 3) },
   tuft(g) {
     g.strokeStyle = '#3D8C32'
     g.lineWidth = 3
@@ -300,6 +331,7 @@ const FOOD = {
   stoneTool: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22 V9" fill="none" stroke="#78716c" stroke-width="3" stroke-linecap="round"/><path d="M3 10 L12 3 L21 10 L12 8 Z" fill="#57534e" stroke="#1c1917" stroke-width="1.2"/></svg>',
   hoe: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21 V10" fill="none" stroke="#C4A574" stroke-width="2.6" stroke-linecap="round"/><path d="M4 7 H19 V11 H4 Z" fill="#6b7280" stroke="#1c1917" stroke-width="1.3"/></svg>',
   wheatSeeds: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C12 14 9 12 8 6" fill="none" stroke="#3D8C32" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="8" cy="16" rx="2.2" ry="1.3" fill="#d6b483"/><ellipse cx="13" cy="15" rx="2.2" ry="1.3" fill="#c4a36a"/><ellipse cx="11" cy="18.5" rx="2" ry="1.2" fill="#e6c99a"/><ellipse cx="16" cy="18" rx="1.8" ry="1.1" fill="#b08958"/></svg>',
+  bushSprout: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="19" rx="4" ry="2.2" fill="#8B5A2B"/><path d="M12 18 V9" stroke="#166534" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="8.2" cy="11.2" rx="3.2" ry="1.8" fill="#22c55e" transform="rotate(-28 8.2 11.2)"/><ellipse cx="15.8" cy="9.6" rx="3.2" ry="1.8" fill="#4ade80" transform="rotate(26 15.8 9.6)"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''

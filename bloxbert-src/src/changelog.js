@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.109', date: '2026-10-09', lines: {
+    en: ['Plant a Berry Bush on grass. Pick the berries and it grows back.'],
+    uk: ['Посади ягідний кущ на траву. Збери ягоди, і він виросте знову.'],
+    ru: ['Посади ягодный куст на траву. Собери ягоды, и он вырастет снова.'],
+    es: ['Planta un arbusto de bayas en la hierba. Recoge las bayas y vuelve a crecer.'],
+    ar: ['ازرع شجيرة توت على العشب. التقط التوت فتنمو من جديد.'],
+    'fa-AF': ['بوته توت را روی چمن بکار. توت را بردار و دوباره می‌روید.'],
+    rw: ['Tera igiti cy\'imbuto ku byatsi. Sarura imbuto kandi ikura nanone.'],
+    ti: ['ንፍረ ቁጽሪ ኣብ ሳዕሪ ተኽል። ፍረ ሓዝ፡ ዳግማይ ይበቕል።'],
+  }},
   { v: '2.5.108', date: '2026-10-09', lines: {
     en: ['The Oven tells you exactly what a recipe needs, and the Bag is ready the moment it opens.'],
     uk: ['Піч каже точно, чого бракує рецепту, і сумка готова відразу, щойно відкриється.'],
