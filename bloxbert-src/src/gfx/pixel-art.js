@@ -81,7 +81,7 @@ export function makeWrap(key, paintFn, paletteKey = 'stone') {
 // Batch 1 wraps
 export const WRAPS = {};
 
-function reg(key, fn, pal) {
+export function reg(key, fn, pal) {
   WRAPS[key] = () => makeWrap(key, fn, pal);
 }
 
@@ -228,3 +228,56 @@ WRAPS.doorMetalTopOpen = WRAPS.doorMetal;
 export function getWrap(key) {
   return WRAPS[key] ? WRAPS[key]() : null;
 }
+
+// Batch 2 core: glass doors + woodshop tools
+reg('doorGlass', (set) => {
+  // frame
+  for (let y = 1; y < 15; y++) { set(4, y, 1); set(11, y, 1); }
+  for (let x = 4; x < 12; x++) { set(x, 1, 1); set(x, 14, 1); }
+  // pane
+  for (let y = 3; y < 13; y++) for (let x = 5; x < 11; x++) set(x, y, 3);
+  set(6, 5, 4); set(9, 6, 2); // highlight
+  set(10, 8, 1); // knob
+}, 'glass');
+
+reg('doorGlassOpen', WRAPS.doorGlass);
+reg('doorGlassTop', WRAPS.doorGlass);
+reg('doorGlassTopOpen', WRAPS.doorGlass);
+reg('doorSliding', WRAPS.doorGlass);
+reg('doorSlidingOpen', WRAPS.doorGlass);
+reg('doorSlidingTop', WRAPS.doorGlass);
+reg('doorSlidingTopOpen', WRAPS.doorGlass);
+
+// Woodshop tools — diagonal handle + head
+reg('measuringTape', (set) => {
+  for (let i = 0; i < 9; i++) set(4 + i, 12 - i, 1);
+  set(12, 3, 3); set(13, 3, 3); set(13, 4, 2); set(14, 4, 4); // tape head
+}, 'metal');
+
+reg('handSaw', (set) => {
+  for (let i = 0; i < 8; i++) set(5 + i, 13 - i, 1);
+  for (let i = 0; i < 6; i++) set(12 - i, 4 + i, 2); // blade
+  set(13, 3, 3); set(14, 4, 1);
+}, 'metal');
+
+reg('hammer', (set) => {
+  for (let i = 0; i < 9; i++) set(5 + i, 13 - i, 1);
+  set(12, 2, 2); set(13, 2, 2); set(13, 3, 3); set(14, 3, 2); set(12, 3, 2); // head
+}, 'metal');
+
+reg('safetyGlasses', (set) => {
+  set(5, 6, 3); set(6, 6, 4); set(7, 6, 3);
+  set(9, 6, 3); set(10, 6, 4); set(11, 6, 3);
+  set(7, 7, 1); set(8, 7, 1); set(9, 7, 1); // bridge
+  set(4, 8, 2); set(12, 8, 2); // arms
+}, 'glass');
+
+// Pull pack-owned art so packs keep their wraps
+import '../packs/farm/art.js';
+import '../packs/decor/art.js';
+
+
+import { registerFarmArt } from '../packs/farm/art.js';
+import { registerDecorArt } from '../packs/decor/art.js';
+registerFarmArt(reg);
+registerDecorArt(reg);

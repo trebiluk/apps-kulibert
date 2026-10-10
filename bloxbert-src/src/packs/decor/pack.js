@@ -2,12 +2,12 @@
 import { registerPack } from '../registry.js'
 
 const blocks = [
-  [1100, 'floorLampOff', 'glass', 'Fl', null],
-  [1101, 'floorLampOn', 'glass', 'Fo', null],
-  [1102, 'wallLampOff', 'glass', 'Wl', null],
-  [1103, 'wallLampOn', 'glass', 'Wo', null],
-  [1104, 'rugAnchor', 'woolTan', 'Ra', null],
-  [1105, 'rugPart', 'woolTan', 'Rp', null],
+  [1100, 'floorLampOff', 'wrap_floorLampOff', 'Fl', null],
+  [1101, 'floorLampOn', 'wrap_floorLampOn', 'Fo', null],
+  [1102, 'wallLampOff', 'wrap_wallLampOff', 'Wl', null],
+  [1103, 'wallLampOn', 'wrap_wallLampOn', 'Wo', null],
+  [1104, 'rugAnchor', 'wrap_rugAnchor', 'Ra', null],
+  [1105, 'rugPart', 'wrap_rugPart', 'Rp', null],
 ]
 
 const items = [

@@ -2,6 +2,13 @@
 import { getWrap, WRAPS } from './pixel-art.js';
 
 const BLOCK_WRAPS = [
+  'doorGlass', 'doorGlassOpen', 'doorGlassTop', 'doorGlassTopOpen',
+  'doorSliding', 'doorSlidingOpen', 'doorSlidingTop', 'doorSlidingTopOpen',
+  'cropSprout', 'cropLeafy', 'cropTall', 'cropRipe',
+  'bushYoung', 'bushLeaf', 'bushFull', 'bushFruit',
+  'floorLampOff', 'floorLampOn', 'wallLampOff', 'wallLampOn',
+  'rugAnchor', 'rugPart',
+
   'box', 'door', 'doorMetal', 'smelter', 'fabricator', 'charger', 'lantern', 'clay',
   'pushButton', 'lever', 'ironOre', 'copperOre', 'zincOre',
   'doorOpen', 'doorMetalOpen', 'doorTop', 'doorTopOpen', 'doorMetalTop', 'doorMetalTopOpen',

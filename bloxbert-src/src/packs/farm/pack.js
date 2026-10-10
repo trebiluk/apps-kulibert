@@ -2,19 +2,19 @@
 import { registerPack } from '../registry.js'
 
 const blocks = [
-  [28, 'wheat', 'cotton_tan', 'Wh', 'cotton_tan'],
+  [28, 'wheat', 'wrap_wheat', 'Wh', 'cotton_tan'],
   [29, 'reed', 'leaves', 'Rd', 'leaves'],
   [49, 'farmland', 'dirt', 'Fm', null],
   [58, 'tuft', 'leaves', 'Tf', null],
-  [59, 'cropSprout', 'leaves', 'Cs', null],
-  [60, 'cropLeafy', 'leaves', 'Cl', null],
-  [61, 'cropTall', 'leaves', 'Ct', null],
-  [62, 'cropRipe', 'cotton_tan', 'Cr', null],
+  [59, 'cropSprout', 'wrap_cropSprout', 'Cs', null],
+  [60, 'cropLeafy', 'wrap_cropLeafy', 'Cl', null],
+  [61, 'cropTall', 'wrap_cropTall', 'Ct', null],
+  [62, 'cropRipe', 'wrap_cropRipe', 'Cr', null],
   [63, 'farmlandWet', 'dirt', 'Fw', null],
-  [65, 'bushYoung', 'leaves', 'By', null],
-  [66, 'bushLeaf', 'leaves', 'Bl', null],
-  [67, 'bushFull', 'leaves', 'Bf', null],
-  [68, 'bushFruit', 'leaves', 'Bu', null],
+  [65, 'bushYoung', 'wrap_bushYoung', 'By', null],
+  [66, 'bushLeaf', 'wrap_bushLeaf', 'Bl', null],
+  [67, 'bushFull', 'wrap_bushFull', 'Bf', null],
+  [68, 'bushFruit', 'wrap_bushFruit', 'Bu', null],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 

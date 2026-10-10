@@ -51,6 +51,7 @@ await build({
   define: { 'process.env.NODE_ENV': '"production"', '__BLOX_STUDENT__': STUDENT ? 'true' : 'false', PKG_VERSION: JSON.stringify(PKG.version) },
 }).then((r) => writeFileSync('meta.json', JSON.stringify(r.metafile)))
 cpSync('index.html', OUT + '/index.html')
+cpSync('icons-test.html', OUT + '/icons-test.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
 const version = JSON.parse(readFileSync('package.json', 'utf8')).version
 writeFileSync(OUT + '/sw.js', readFileSync('sw.js', 'utf8').replaceAll('__BLOX_VERSION__', version))
