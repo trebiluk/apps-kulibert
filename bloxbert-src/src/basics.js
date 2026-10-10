@@ -1,6 +1,6 @@
 // Doors, levers, buttons, day clock, lanterns. World field `basics` on the save.
 import { isDoor, doorKind, doorTopId, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
-import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK } from './day.js'
+import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK, NIGHT, DAWN } from './day.js'
 import { Rules } from './rules.js'
 
 const PREF = 'bloxbert-day'
@@ -273,10 +273,10 @@ export function createBasics(api) {
     setBright(on) { bright = !!on; prefSave() },
     get always() { return always },
     get bright() { return bright },
-    lum() { return lumNow() },
-    phase() { return phaseNow() },
-    clock(n) { ms += n; applyLights(n); lastT = now(); flush() },
-    seek(n) { ms = n; anchor = api.now(); lastT = now() },
+    lum() { const v = lumNow(); return Number.isFinite(v) ? v : 1 },
+    phase() { const v = phaseNow(); return v === 'night' || v === 'day' || v === 'dusk' || v === 'dawn' ? v : 'day' },
+    clock(n) { if (!Number.isFinite(n)) return; ms += n; applyLights(n); lastT = now(); flush() },
+    seek(n) { if (!Number.isFinite(n)) return; const day = DAY + DUSK + NIGHT + DAWN; ms = Math.max(0, Math.min(n, day)); anchor = api.now(); lastT = now() },
     actor(id) { actor = id || 'you' },
     teacherStub(on) { teacherStub = !!on },
     arena(on) { arena = !!on },
@@ -358,7 +358,7 @@ export function createBasics(api) {
     },
     load(doc) {
       if (!doc) return
-      ms = doc.ms || 0
+      ms = Number.isFinite(doc.ms) ? doc.ms : 0
       anchor = api.now()
       lastT = now()
       if (typeof doc.always === 'boolean') always = doc.always

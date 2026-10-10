@@ -821,8 +821,9 @@ for (const [id, name, material] of BLOCKS) {
   const plant = id === 28 || id === 58 || isCropId(id) || isBushId(id)
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
-  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
-  if (mesh) opts.blockMesh = mesh
+  const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
+  if (fluid) { opts.fluid = true; opts.opaque = false; opts.solid = false }
+  if (mesh && !fluid) opts.blockMesh = mesh
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
     opts.onSet = fix

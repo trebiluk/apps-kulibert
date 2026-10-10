@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.147', date: '2026-10-10', lines: {
+    en: ['Water no longer shows seams. A bad clock is ignored.'],
+    uk: ['Вода більше не показує шви. Поганий годинник ігнорується.'],
+    ru: ['Вода больше не показывает швы. Плохие часы игнорируются.'],
+    es: ['El agua ya no muestra costuras. Un reloj malo se ignora.'],
+    ar: ['الماء لم يعد يظهر فواصل. ساعة سيئة تُتجاهل.'],
+    'fa-AF': ['آب دیگر درز نشان نمی‌دهد. ساعت بد نادیده گرفته می‌شود.'],
+    rw: ['Amazi ntago agaragaza imirongo. Isaha mbi irasimburwa.'],
+    ti: ['ማይ ድሕሪ ዝያዳ ስንጥቅ ኣይርኢን። ሕማቕ ሰዓት ይተረፍ።'],
+  }},
   { v: '2.5.146', date: '2026-10-10', lines: {
     en: ['A Bertbot hand holds what you picked, on the right or the left.'],
     uk: ['Рука Бертбота тримає те, що ти обрав, справа або зліва.'],
