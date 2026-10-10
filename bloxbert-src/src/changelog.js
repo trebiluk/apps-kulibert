@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.151', date: '2026-10-10', lines: {
+    en: ['Effects show under your energy: speed, jump, fly, night vision, slow fall, and a longer reach.'],
+    uk: ['Ефекти під енергією: швидкість, стрибок, політ, нічний зір, повільне падіння і довша рука.'],
+    ru: ['Эффекты под энергией: скорость, прыжок, полёт, ночное зрение, медленное падение и длинная рука.'],
+    es: ['Los efectos se ven bajo tu energía: velocidad, salto, vuelo, visión nocturna, caída lenta y más alcance.'],
+    ar: ['التأثيرات تظهر تحت طاقتك: السرعة والقفز والطيران والرؤية الليلية والسقوط البطيء ووصول أبعد.'],
+    'fa-AF': ['اثرها زیر انرژی‌ات دیده می‌شوند: سرعت، پرش، پرواز، دید شب، سقوط آهسته، و دست درازتر.'],
+    rw: ['Ingaruka zigaragara munsi y\'ingufu zawe: umuvuduko, gusimbuka, kuguruka, kureba ijoro, kugwa buhoro, n\'ukuboko kure.'],
+    ti: ['ጽልዋታት ኣብ ትሕቲ ጉልበትካ ይረአዩ፡ ፍጥነት፡ ምዝላል፡ ምንፋር፡ ራእይ ለይቲ፡ ቀስ ዝበለ ውድቃት፡ ከምኡውን ርሒቕ ምብጻሕ።'],
+  }},
   { v: '2.5.150', date: '2026-10-10', lines: {
     en: ['World Rules is a menu tile you can tap. Got it stays readable. Night shows a moon.'],
     uk: ['Правила світу — плитка в меню, яку можна натиснути. «Зрозуміло» читається. Ніч показує місяць.'],

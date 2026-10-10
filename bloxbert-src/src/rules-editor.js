@@ -1,5 +1,6 @@
 // Teacher scenario editor. Shell only: toggles, search, reset. No templates.
 import { GROUPS, Rules } from './rules.js'
+import { Effects } from './effects.js'
 
 const L = (en, uk, ru, es, ar, fa, rw, ti) => ({ en, uk, ru, es, ar, 'fa-AF': fa, rw, ti })
 
@@ -35,6 +36,7 @@ const CSS = `#sheet[data-panel=rules] .ggrid{display:block;overflow:visible}
 #sheet[data-panel=rules] .re-seg{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:100%}
 #sheet[data-panel=rules] .re-opt{flex:none;min-width:var(--ks-touch);min-height:var(--ks-touch);padding:0 6px}
 #sheet[data-panel=rules] .re-soon-tag{display:block;font-size:var(--ks-fs-s);font-weight:500}
+#sheet[data-panel=rules] .re-fx .re-opt.on{outline:2px solid #22D3EE}
 `
 
 function pick(pack, lang) {
@@ -75,6 +77,7 @@ export function paintRules(root, api) {
   const lang = api.lang || 'en'
   const say = (key) => pick(UI[key], lang)
   const state = { q: '', changed: false, group: 'building', note: false, confirm: false }
+  const fxPick = {}
   const regs = () => Rules.rows()
 
   function commit() {
@@ -167,7 +170,7 @@ export function paintRules(root, api) {
     if (Rules.unknown().length) order.push('pack')
     for (const id of order) {
       const members = id === 'pack' ? [] : regs().filter((d) => d.display === id)
-      const n = id === 'pack' ? Rules.unknown().length : members.filter((d) => Rules.value(d.id) !== d.def).length
+      const n = id === 'pack' ? Rules.unknown().length : id === 'effects' ? Effects.list().length : members.filter((d) => Rules.value(d.id) !== d.def).length
       const name = id === 'pack' ? say('packOff') : pick(GROUPS[id], lang)
       const b = btn('gtile re-group' + (state.group === id ? ' on' : ''), '', () => {
         state.group = id
@@ -283,6 +286,72 @@ export function paintRules(root, api) {
       toggle.textContent = say('soon')
       row.append(ico, copy, toggle)
       list.append(row)
+    }
+
+    if (!state.changed) {
+      Effects.useLang(lang)
+      const q = state.q.trim().toLowerCase()
+      for (const d of Effects.catalog()) {
+        const nameTxt = pick(d.label, lang)
+        const descTxt = pick(d.desc, lang)
+        if (q) { if (!(nameTxt + ' ' + descTxt).toLowerCase().includes(q)) continue }
+        else if (state.group !== 'effects') continue
+        const row = document.createElement('div')
+        row.className = 're-row re-fx'
+        row.dataset.id = d.id
+        const ico = document.createElement('span')
+        ico.className = 'gic'
+        ico.textContent = d.icon || '•'
+        const copy = document.createElement('span')
+        copy.className = 're-copy'
+        const name = document.createElement('span')
+        name.className = 're-name'
+        name.textContent = nameTxt
+        const desc = document.createElement('span')
+        desc.className = 're-desc'
+        desc.textContent = descTxt
+        copy.append(name, desc)
+        const seg = document.createElement('span')
+        seg.className = 're-seg'
+        const pickLv = fxPick[d.id] || d.levels[0]
+        if (d.levels.length > 1) {
+          for (const lv of d.levels) {
+            const choice = document.createElement('button')
+            choice.type = 'button'
+            choice.className = 'keycap re-opt' + (pickLv === lv ? ' on' : '')
+            choice.dataset.fx = d.id
+            choice.dataset.level = String(lv)
+            choice.textContent = lv >= 2 ? 'II' : 'I'
+            choice.setAttribute('aria-pressed', pickLv === lv ? 'true' : 'false')
+            choice.addEventListener('click', (e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              fxPick[d.id] = lv
+              draw()
+            })
+            seg.append(choice)
+          }
+        }
+        for (const mins of [1, 5, 10]) {
+          const give = document.createElement('button')
+          give.type = 'button'
+          give.className = 'keycap re-opt'
+          give.dataset.fx = d.id
+          give.dataset.min = String(mins)
+          give.textContent = String(mins)
+          give.setAttribute('aria-label', nameTxt + ' ' + mins)
+          give.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            Effects.useLang(lang)
+            Effects.give(d.id, { level: fxPick[d.id] || d.levels[0], ms: mins * 60000 })
+            draw()
+          })
+          seg.append(give)
+        }
+        row.append(ico, copy, seg)
+        list.append(row)
+      }
     }
 
     panes.append(groups, list)

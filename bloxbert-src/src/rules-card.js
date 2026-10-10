@@ -1,6 +1,7 @@
 // Kid rule card. Shown once per rules snapshot when a world opens, and any time from Menu.
 // NOTE: no shared read-aloud helper (stations.js speech is local). Speaker button waits for one.
 import { Rules } from './rules.js'
+import { Effects } from './effects.js'
 
 const L = (en, uk, ru, es, ar, fa, rw, ti) => ({ en, uk, ru, es, ar, 'fa-AF': fa, rw, ti })
 
@@ -64,7 +65,7 @@ function hide() {
 export function showRulesCard(opts) {
   opts = opts || {}
   const lang = opts.lang || 'en'
-  const items = diffs(lang)
+  const items = diffs(lang).concat(Effects.tiles(lang))
   if (!opts.force && opts.teacher) return false
   if (!opts.force && !items.length) { hide(); return false }
   const key = (opts.world || '') + '#' + items.map((d) => d.id + ':' + String(d.value)).join(',')

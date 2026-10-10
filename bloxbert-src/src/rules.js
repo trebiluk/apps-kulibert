@@ -257,6 +257,7 @@ export const GROUPS = {
   crafting: L('Crafting', 'Крафт', 'Крафт', 'Fabricar', 'الصنع', 'ساختن', 'Gukora', 'ምስራሕ'),
   movement: L('Movement', 'Рух', 'Движение', 'Movimiento', 'الحركة', 'حرکت', 'Kugenda', 'ምንቅስቓስ'),
   survival: L('Survival', 'Виживання', 'Выживание', 'Supervivencia', 'البقاء', 'بقا', 'Kubaho', 'ህይወት'),
+  effects: L('Effects', 'Ефекти', 'Эффекты', 'Efectos', 'التأثيرات', 'اثرها', 'Ingaruka', 'ጽልዋታት'),
 }
 
 register({

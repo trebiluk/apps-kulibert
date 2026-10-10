@@ -139,6 +139,7 @@ globalThis.document = {
 globalThis.window = globalThis
 globalThis.addEventListener = globalThis.addEventListener || (() => {})
 globalThis.requestAnimationFrame = () => 0
+globalThis.cancelAnimationFrame = () => {}
 globalThis.matchMedia = () => ({ matches: false })
 globalThis.localStorage = { getItem: () => null, setItem() {}, removeItem() {} }
 let craftOpts = null
@@ -735,6 +736,144 @@ eq(cardEl().querySelector('.rc-card').getAttribute('dir') === 'ltr', 'english ca
 const gotBox = cardEl().querySelector('.rc-got')
 eq(gotBox, 'got it button')
 Rules.load({})
+
+const { Effects } = await import('../src/effects.js')
+const { inReach, reachFor, jumpHeight, JUMP_V, WALK } = await import('../src/feel.js')
+
+Effects.load(undefined)
+eq(Effects.speedMul() === 1 && Effects.reach(6) === 6 && Object.keys(Effects.dump()).length === 0, 'old world with no effects plays the same')
+eq(Effects.list().length === 0, 'load(undefined) clears')
+
+const baseWalk = WALK * 2
+Effects.give('speed', { level: 2, ms: 120000 })
+eq(Math.abs(WALK * Effects.speedMul() * 2 - baseWalk * 1.5) < 0.001, 'speed II walks 1.5x in 2s ' + (WALK * Effects.speedMul() * 2))
+eq(Effects.level('speed') === 2 && Object.keys(Effects.dump()).length === 0, 'session give is not saved')
+
+const baseH = jumpHeight(JUMP_V)
+Effects.give('jump', { level: 2, ms: 60000 })
+const hi = jumpHeight(Effects.jumpV(JUMP_V))
+eq(baseH < 3 && hi >= 3, 'jump II clears a 3-block wall ' + baseH + ' -> ' + hi)
+
+const blockedFly = Effects.spaceFly(true, false)
+eq(blockedFly.ok === false && blockedFly.flying === false, 'survival space without fly stays down')
+Effects.give('fly', { ms: 60000 })
+const upFly = Effects.spaceFly(true, false)
+const downFly = Effects.spaceFly(true, true)
+eq(upFly.ok === true && upFly.flying === true && downFly.ok === true && downFly.flying === false, 'fly toggles with the effect')
+eq(Effects.spaceFly(false, false).ok === true, 'creative still toggles')
+
+const worldK = 0.4
+Effects.load({})
+Effects.give('nightVision', { ms: 60000 })
+eq(Effects.light(worldK) === worldK, 'night vision does not flash on')
+Effects.tick(500)
+const mid = Effects.light(worldK)
+eq(mid > worldK + 0.2 && mid < worldK + 0.55, 'night vision is fading in, not a flash ' + mid)
+Effects.tick(1000)
+eq(Effects.light(worldK) > worldK + 0.3 && worldK === 0.4, 'night vision raises light only for this player')
+
+const fallH = 8
+const g0 = 32
+const t0 = Math.sqrt((2 * fallH) / g0)
+const t1 = Math.sqrt((2 * fallH) / Effects.grav(g0))
+Effects.give('slowFall', { ms: 60000 })
+const tSlow = Math.sqrt((2 * fallH) / Effects.grav(g0))
+eq(Effects.grav(g0) === g0 * 0.4 && tSlow > t0 * 1.5 && t1 === t0, 'slow fall lands slower ' + t0 + ' -> ' + tSlow)
+
+const eye = [0.5, 5, 0.5]
+const far = [8, 5, 0]
+eq(inReach(eye[0], eye[1], eye[2], far[0], far[1], far[2], reachFor(true)) === false, 'reach 6 misses a block 8 away')
+Effects.give('longReach', { ms: 60000 })
+eq(Effects.reach(reachFor(true)) === 9 && inReach(eye[0], eye[1], eye[2], far[0], far[1], far[2], Effects.reach(reachFor(true))) === true, 'long reach breaks a block 8 away')
+
+for (const id of ['speed', 'jump', 'fly', 'nightVision', 'slowFall', 'longReach']) {
+  Effects.load({})
+  Effects.give(id, { level: 2, ms: 5000 })
+  eq(Effects.has(id), id + ' starts')
+  Effects.tick(4999)
+  eq(Effects.has(id), id + ' still on at 4999')
+  Effects.tick(2)
+  eq(!Effects.has(id), id + ' ends on time')
+}
+
+Effects.load({ speed: { level: 2 }, nope: { level: 1 } })
+eq(Effects.has('speed') && Effects.level('speed') === 2 && !Effects.has('nope'), 'world load keeps known ids')
+eq(Effects.dump().speed && Effects.dump().speed.level === 2 && !Effects.dump().nope, 'world give is saved')
+Effects.give('jump', { level: 1, ms: 60000 })
+eq(Effects.dump().jump == null && Effects.dump().speed, 'session give stays out of dump')
+
+Rules.load({})
+Effects.load({})
+Effects.give('jump', { level: 2, world: true })
+eq(showRulesCard({ lang: 'en', world: 'fx-town' }) === true, 'empty rules plus a permanent effect still shows the card')
+eq(tilesOf().some((n) => n.dataset && n.dataset.id === 'fx.jump') && textOf(tilesOf().find((n) => n.dataset && n.dataset.id === 'fx.jump')).includes('Jump II'), 'card shows the permanent jump tile')
+eq(showRulesCard({ lang: 'en', world: 'fx-town', teacher: true }) === false, 'teacher still skips the join card')
+Effects.give('speed', { level: 1, ms: 60000 })
+const fxTiles = tilesOf()
+eq(!fxTiles.some((n) => n.dataset && n.dataset.id === 'fx.speed'), 'session effects are not card tiles')
+Effects.load({})
+Rules.load({})
+
+const toasts = []
+const bar = node('div')
+bar.id = 'energy-bar'
+document.body.append(bar)
+Effects.mount(bar, { toast: (m) => toasts.push(m), lang: () => 'en' })
+Effects.load({})
+for (const id of ['speed', 'jump', 'fly', 'nightVision', 'slowFall', 'longReach']) Effects.give(id, { level: 2, ms: 300000 })
+const strip = document.getElementById('fx-strip')
+eq(!!strip && strip.parent === bar.parent, 'strip is a sibling under the energy bar')
+const chips = strip.querySelectorAll('.fx-chip')
+const more = strip.querySelector('.fx-more')
+eq(chips.length === 4 && more && more.textContent === '+2', 'six effects show 4 chips plus +N ' + chips.length + ' ' + (more && more.textContent))
+eq(strip.hidden === false, 'strip shows while effects are on')
+Effects.load({})
+Effects.tick(0)
+eq(document.getElementById('fx-strip').hidden === true, 'strip hides when empty')
+Effects.useLang('ar')
+Effects.give('jump', { level: 2, ms: 5 * 60000 })
+eq(document.getElementById('fx-strip').getAttribute('dir') === 'rtl', 'arabic strip rtl')
+Effects.useLang('fa-AF')
+Effects.tick(0)
+eq(document.getElementById('fx-strip').getAttribute('dir') === 'rtl', 'dari strip rtl')
+Effects.useLang('en')
+Effects.tick(0)
+eq(document.getElementById('fx-strip').getAttribute('dir') === 'ltr', 'english strip ltr')
+eq(toasts.some((m) => m.indexOf('Jump II') !== -1 && m.indexOf('5') !== -1), 'toast says Jump II and the minutes ' + toasts.join('|'))
+const times = document.getElementById('fx-strip').querySelectorAll('.fx-time')
+eq(times.length === 1 && /^\d+:\d\d$/.test(times[0].textContent), 'chip shows mm:ss ' + (times[0] && times[0].textContent))
+Effects.give('fly', { world: true })
+const inf = [...document.getElementById('fx-strip').querySelectorAll('.fx-time')].map((n) => n.textContent)
+eq(inf.indexOf('\u221e') !== -1, 'unlimited shows infinity ' + inf.join(','))
+Effects.load({})
+
+let saved = 0
+const fxRoot = node('div')
+paintRules(fxRoot, { lang: 'en', save: () => { saved += 1 } })
+allNodes(fxRoot).find((n) => n.dataset && n.dataset.group === 'effects').click()
+const speedII = allNodes(fxRoot).find((n) => n.dataset && n.dataset.fx === 'speed' && n.dataset.level === '2')
+eq(!!speedII, 'effects group has a level II picker')
+speedII.click()
+const five = allNodes(fxRoot).find((n) => n.dataset && n.dataset.fx === 'speed' && n.dataset.min === '5')
+eq(!!five, 'effects group has a 5 min give')
+const savedBefore = saved
+five.click()
+eq(Effects.has('speed') && Effects.level('speed') === 2 && Object.keys(Effects.dump()).length === 0, 'editor 5 min speed II is session only')
+eq(saved === savedBefore, 'session give does not save')
+Effects.load({})
+
+for (const lang of langs) {
+  Effects.useLang(lang)
+  const rows = Effects.catalog()
+  eq(rows.length === 6, 'catalog ' + lang)
+  for (const row of rows) {
+    const label = row.label[lang] || ''
+    const desc = row.desc[lang] || ''
+    eq(scripts[lang].test(label) && scripts[lang].test(desc), 'effect words ' + lang + ' ' + row.id + ' ' + label + ' / ' + desc)
+  }
+}
+Effects.load({})
+Effects.useLang('en')
 
 if (fail.length) { console.error(fail.join('\n')); process.exit(1) }
 console.log('rules-check ok')

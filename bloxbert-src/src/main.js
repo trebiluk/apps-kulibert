@@ -34,6 +34,7 @@ import { CHANGELOG } from './changelog.js'
 import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
 import { showRulesCard } from './rules-card.js'
+import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -1196,7 +1197,7 @@ function survivalOn() { return !!(session && session.mode === 'survival') }
 function canReach(pos) {
   if (!pos) return false
   const p = noa.entities.getPosition(noa.playerEntity)
-  return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], reachFor(survivalOn()))
+  return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], Effects.reach(reachFor(survivalOn())))
 }
 let farPress = 0
 let farHit = null
@@ -2619,6 +2620,7 @@ async function snapshot() {
   for (const [k, v] of saved) chunks[k] = await gz(v)
   const p = noa.entities.getPosition(noa.playerEntity)
   const rules = Rules.dump()
+  const effects = Effects.dump()
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
@@ -2633,6 +2635,7 @@ async function snapshot() {
     forage: forage.dump(),
     pondAid: !!pondAid,
     ...(Object.keys(rules).length ? { rules } : {}),
+    ...(Object.keys(effects).length ? { effects } : {}),
   }
 }
 async function saveBody() {
@@ -2697,6 +2700,7 @@ async function load() {
   }
   if (!doc) {
     Rules.load({})
+    Effects.load({})
     farm.clear()
     forage.clear()
     pondAid = true
@@ -2756,6 +2760,7 @@ async function applyDoc(doc) {
   const moved = migrate(doc)
   const src = moved.doc || doc
   Rules.load(doc && doc.rules || {})
+  Effects.load(doc && doc.effects || {})
   const chunks = await readDoc(doc)
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
   edits.clear(); paintUndo()
@@ -2799,6 +2804,7 @@ async function resetWorld() {
   try { await save() } catch (e) {}
   try { await keepClassic() } catch (e) {}
   Rules.load({})
+  Effects.load({})
   gifts = {}
   syncGlasses()
   farm.clear()
@@ -3108,6 +3114,7 @@ session = createSession({
   setBright: (on) => basics && basics.setBright(on),
 })
 session.mountEnergy(noa)
+Effects.mount(document.getElementById('energy-bar'), { toast, lang: () => LANG })
 session.paintChip()
 let pendingGifts = []
 let gifts = {}
@@ -4211,8 +4218,9 @@ function jumpUp() {
   if (!tap || tableMode) return
   const now = performance.now()
   if (now - lastJump < 300) {
-    if (survivalOn()) { toast(t('noFly')); lastJump = 0; return }
-    flying = !flying
+    const flyTry = Effects.spaceFly(survivalOn(), flying)
+    if (!flyTry.ok) { toast(t('noFly')); lastJump = 0; return }
+    flying = flyTry.flying
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
     body.velocity[1] = 0
@@ -4441,13 +4449,14 @@ function boxedIn() {
   return true
 }
 function feelTick(dt) {
+  Effects.tick(dt)
   if (basics) basics.tick()
   if (session && session.tickDrops) session.tickDrops(dt)
   syncDropMeshes()
   const body = playerBody
-  if (survivalOn()) flying = false
+  if (survivalOn() && !Effects.has('fly')) flying = false
   if (!tableMode) {
-    const g = flying ? 0 : GRAV_MULT
+    const g = flying ? 0 : Effects.grav(GRAV_MULT)
     if (body.gravityMultiplier !== g) body.gravityMultiplier = g
   }
   const grounded = body.atRestY() < 0
@@ -4468,14 +4477,14 @@ function feelTick(dt) {
   if (want && !prevJumpWant && !flying && !tableMode) {
     if (now - lastStickRelease < 200 && lastMove) carryOn = true
     if (grounded || now - lastGroundAt < 120) {
-      body.velocity[1] = JUMP_V
+      body.velocity[1] = Effects.jumpV(JUMP_V)
       lastGroundAt = 0
       jumpBufferAt = 0
     } else jumpBufferAt = now
   }
   prevJumpWant = want
   if (jumpBufferAt && grounded && now - jumpBufferAt < 150 && !flying && !tableMode) {
-    body.velocity[1] = JUMP_V
+    body.velocity[1] = Effects.jumpV(JUMP_V)
     jumpBufferAt = 0
     lastGroundAt = 0
   }
@@ -4487,14 +4496,14 @@ function feelTick(dt) {
     if (grounded && body.velocity[1] <= 0 && !want) carryOn = false
   }
   const stickRun = runSince && now - runSince >= 300
-  moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && !survivalOn() })
+  moveState.maxSpeed = speedFor({ crouch: crouchKey || crouchOn, run: (downHeld && !flying) || !!stickRun, fly: flying && (!survivalOn() || Effects.has('fly')) }) * Effects.speedMul()
   if (grounded) airCap = airLimit(Math.hypot(body.velocity[0], body.velocity[2]), moveState.maxSpeed, WALK)
   else if (!flying && !tableMode) {
     const next = capAir(body.velocity[0], body.velocity[2], airCap)
     body.velocity[0] = next[0]
     body.velocity[2] = next[1]
   }
-  const reach = reachFor(survivalOn())
+  const reach = Effects.reach(reachFor(survivalOn()))
   if (noa.blockTestDistance !== reach) noa.blockTestDistance = reach
   const stepOn = !!(autoClimb && !flying && !tableMode)
   if (playerBody.autoStep !== stepOn) playerBody.autoStep = stepOn
@@ -5201,7 +5210,7 @@ function paintTerrain(k) {
 }
 function syncGlow() {
   if (!basics) return
-  const k = basics.lum()
+  const k = Effects.light(basics.lum())
   skyMat.setFloat('uLum', k)
   scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
   sunLight.diffuse.set(DAY_DIFF.r * k, DAY_DIFF.g * k, DAY_DIFF.b * k)
@@ -5771,6 +5780,7 @@ if (!__BLOX_STUDENT__) {
   window.__blocks = {
     version: VERSION, setQuality, refit, get quality() { return quality }, get lang() { return LANG },
     rules: Rules,
+    effects: Effects,
     noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, importFile, exportDoc: snapshot,
     applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
     history: (x, y, z) => changeLog.history(x, y, z),
