@@ -19,6 +19,10 @@ const strings = spawnSync(process.execPath, ['tools/check-strings.mjs'], { stdio
 if (strings.status) process.exit(strings.status)
 const check = spawnSync(process.execPath, ['tools/econ-check.mjs'], { stdio: 'inherit' })
 if (check.status) process.exit(check.status)
+const ids = spawnSync(process.execPath, ['tools/ids-check.mjs'], { stdio: 'inherit' })
+if (ids.status) process.exit(ids.status)
+const saves = spawnSync(process.execPath, ['tools/save-check.mjs'], { stdio: 'inherit' })
+if (saves.status) process.exit(saves.status)
 mkdirSync(OUT + '/assets', { recursive: true })
 const STUDENT = path.basename(OUT) === 'blocks'
 console.log('student build:', STUDENT, OUT)

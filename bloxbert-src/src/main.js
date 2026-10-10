@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.113'
+const VERSION = '2.5.117'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -41,7 +41,8 @@ import { setGate, gates } from './data/gates.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
-import { migrateVoxels } from './save/migrate.js'
+import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
+import { packVersions } from './packs/registry.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -166,6 +167,7 @@ noa.registry.registerMaterial('glass', { textureURL: 'assets/glass.png', texHasA
 
 // id, name key, material, letter cue, atlas icon
 export const BLOCKS = [
+  [1000, 'missing', 'gravel_stone', '?', null],
   [1, 'grass', ['grass_top', 'dirt', 'dirt_grass'], 'G', 'grass_top'],
   [2, 'dirt', 'dirt', 'D', 'dirt'],
   [3, 'stone', 'stone', 'S', 'stone'],
@@ -637,9 +639,22 @@ for (const [id, name, material] of BLOCKS) {
   }
   noa.registry.registerBlock(id, opts)
 }
+const missingMat = dye('missing-crate', 0.18, 0.12, 0.08)
+noa.registry.registerMaterial('missingCrate', { renderMaterial: missingMat })
+noa.registry.registerBlock(1000, { material: 'missingCrate', opaque: true, solid: true })
+function ensureMissingBlock(id) {
+  if (id < 1001 || id > 1099) return
+  noa.registry.registerBlock(id, { material: 'missingCrate', opaque: true, solid: true })
+}
 function blockPalette() {
   const p = ['air']
   for (const b of BLOCKS) p[b[0]] = b[1]
+  const used = new Set()
+  for (const data of saved.values()) for (let i = 0; i < data.length; i++) {
+    const id = data[i]
+    if (id >= 1001 && id <= 1099) used.add(id)
+  }
+  for (const [id, name] of unknownEntries()) if (used.has(id)) p[id] = name
   return p
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
@@ -654,6 +669,7 @@ const S = 24
 const saved = new Map()
 let dirty = false
 let allowSave = false
+let readOnlySave = false
 let voxelQuiet = false
 let pinGen = 0
 let machineTimer = 0
@@ -1014,7 +1030,7 @@ function reachOpen(pos, repeat) {
 function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
-  if (id === WATER) return false
+  if (id === WATER || (isMissingId(id) && survivalOn())) return false
   if ((isCropId(id) || isBushId(id)) && survivalOn() && !tableMode) {
     if (!canReach([x, y, z])) return false
     if (fruitingAt(x, y, z, id)) {
@@ -1987,7 +2003,7 @@ async function snapshot() {
   for (const [k, v] of saved) chunks[k] = await gz(v)
   const p = noa.entities.getPosition(noa.playerEntity)
   return {
-    format: 'kuliblocks', v: 2, appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
+    format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: [p[0], p[1], p[2]], chunkSize: S,
     palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(),
@@ -2001,9 +2017,9 @@ async function snapshot() {
   }
 }
 async function saveBody() {
-  if (!allowSave) {
-    const err = new Error('held')
-    err.code = 'held'
+  if (!allowSave || readOnlySave) {
+    const err = new Error(readOnlySave ? 'newer' : 'held')
+    err.code = readOnlySave ? 'newer' : 'held'
     throw err
   }
   const gen = pinGen
@@ -2037,7 +2053,8 @@ async function saveClicked() {
     await save()
     toast(t('saved'))
   } catch (e) {
-    toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
+    if (e && e.code === 'newer') toast('Made in a newer Bertopia')
+    else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
   }
 }
 function keepSaved(err) {
@@ -2083,25 +2100,36 @@ async function load() {
   const repaired = ensureHelp()
   dirty = !!(repaired || dirty)
   const pinned = mergePin(doc)
-  allowSave = true
-  markSave(t('loaded'))
-  if (pinned) noteMachine()
+  allowSave = !readOnlySave
+  if (readOnlySave) {
+    dirty = false
+    toast('Made in a newer Bertopia')
+    markSave('Made in a newer Bertopia')
+  } else {
+    markSave(t('loaded'))
+    if (pinned) noteMachine()
+  }
   return true
 }
 async function readDoc(doc) {
   if (!doc || doc.format !== 'kuliblocks' || (doc.v !== 1 && doc.v !== 2)) throw new Error(t('versionSkew'))
-  if (doc.chunkSize !== S || !doc.chunks || typeof doc.chunks !== 'object') throw new Error('That world uses a different chunk size.')
+  const moved = migrate(doc)
+  readOnlySave = !!moved.readOnly
+  const src = moved.doc || doc
+  if (src.chunkSize !== S || !src.chunks || typeof src.chunks !== 'object') throw new Error('That world uses a different chunk size.')
   const out = new Map()
   const nameToId = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
   pendingGifts = []
-  for (const k of Object.keys(doc.chunks)) {
+  resetUnknown()
+  for (const k of Object.keys(src.chunks)) {
     if (!/^-?\d+,-?\d+,-?\d+$/.test(k)) throw new Error('That world file is damaged.')
-    const a = await ungz(doc.chunks[k])
+    const a = await ungz(src.chunks[k])
     if (a.length !== S * S * S) throw new Error('That world file is damaged.')
-    const migrated = migrateVoxels(doc.palette, a, nameToId)
+    const migrated = migrateVoxels(src.palette, a, nameToId)
     pendingGifts.push(...migrated.gifts)
     out.set(k, migrated.data)
   }
+  for (const [id] of unknownEntries()) ensureMissingBlock(id)
   return out
 }
 async function applyDoc(doc) {
@@ -2928,7 +2956,7 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const paletteIds = BLOCKS.filter((b) => !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET).map((b) => b[0])
+const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET).map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null

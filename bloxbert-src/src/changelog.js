@@ -1,4 +1,7 @@
 export const CHANGELOG = [
+  { v: '2.5.117', date: '2026-10-10', lines: {
+    en: ['Block ids stay frozen, and a missing pack shows as a crate until it returns.'],
+  }},
   { v: '2.5.113', date: '2026-10-10', lines: {
     en: ['Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.'],
     uk: ['Скрині, печі й усе в них завжди зберігаються, і збір сіє знову будь-яким насінням, яке несеш.'],
