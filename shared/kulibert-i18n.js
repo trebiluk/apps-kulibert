@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.",
+  "whatsNewBody": "A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

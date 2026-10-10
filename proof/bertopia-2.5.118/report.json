@@ -1,0 +1,191 @@
+{
+  "steps": [
+    {
+      "name": "chip 2.5.118",
+      "ok": true,
+      "detail": "{\"chip\":\"2.5.118\",\"js\":\"2.5.118\",\"news\":\"A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.\"}"
+    },
+    {
+      "name": "changelog",
+      "ok": true,
+      "detail": "2.5.118 · You are here · A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.\n\n2.5.117 · Block ids stay frozen, and a missing pack shows as a crate until it returns.\n\n2.5.113"
+    },
+    {
+      "name": "drag craft glasses",
+      "ok": true,
+      "detail": "{\"d1\":{\"ok\":true},\"d2\":{\"ok\":true},\"madeG\":\"made\",\"nG\":1}"
+    },
+    {
+      "name": "fill craft tape",
+      "ok": true,
+      "detail": "made 1"
+    },
+    {
+      "name": "drag craft saw",
+      "ok": true,
+      "detail": "{\"d1\":{\"ok\":true},\"d2\":{\"ok\":true},\"madeS\":\"made\",\"nS\":1}"
+    },
+    {
+      "name": "fill craft hammer",
+      "ok": true,
+      "detail": "made 1"
+    },
+    {
+      "name": "fill craft bench",
+      "ok": true,
+      "detail": "made 1"
+    },
+    {
+      "name": "found spot",
+      "ok": true,
+      "detail": "{\"x\":16,\"y\":5,\"z\":16}"
+    },
+    {
+      "name": "no room",
+      "ok": true,
+      "detail": "{\"placed\":false,\"toast\":\"No room\",\"face\":\"W\",\"side\":{\"x\":16,\"y\":5,\"z\":17},\"anchor\":0,\"ghostOn\":true}"
+    },
+    {
+      "name": "place bench",
+      "ok": true,
+      "detail": "{\"ok\":true,\"info\":{\"id\":69,\"meta\":{\"kind\":\"woodshop\",\"face\":\"W\",\"role\":\"anchor\",\"anchor\":\"16,5,16\",\"pair\":\"16,5,17\"},\"face\":\"W\",\"anchor\":\"16,5,16\",\"wall\":[]},\"sideId\":70,\"face\":\"W\",\"bag\":0}"
+    },
+    {
+      "name": "safety once",
+      "ok": true,
+      "detail": "{\"text\":\"Real shop rules: 1 Glasses on. 2 Measure twice, cut once. 3 Clamp it, don't hold it. 4 Cut away from your body. 5 Ask your teacher before using real tools.\\n\\nGot it\",\"h\":44,\"w\":402}"
+    },
+    {
+      "name": "safety stays shut",
+      "ok": true,
+      "detail": "false"
+    },
+    {
+      "name": "drag safetyGlasses",
+      "ok": true,
+      "detail": "{\"ok\":true,\"cls\":\"wall-slot filled\"}"
+    },
+    {
+      "name": "drag measuringTape",
+      "ok": true,
+      "detail": "{\"ok\":true,\"cls\":\"wall-slot filled\"}"
+    },
+    {
+      "name": "drag handSaw",
+      "ok": true,
+      "detail": "{\"ok\":true,\"cls\":\"wall-slot filled\"}"
+    },
+    {
+      "name": "drag hammer",
+      "ok": true,
+      "detail": "{\"ok\":true,\"cls\":\"wall-slot filled\"}"
+    },
+    {
+      "name": "woodshop ready",
+      "ok": true,
+      "detail": "{\"ready\":\"1\",\"lit\":true,\"wall\":[\"safetyGlasses:wall-slot filled\",\"measuringTape:wall-slot filled\",\"handSaw:wall-slot filled\",\"hammer:wall-slot filled\"],\"glasses\":{\"on\":false,\"mesh\":false,\"mark\":\"\"},\"note\":\"\"}"
+    },
+    {
+      "name": "glasses on",
+      "ok": true,
+      "detail": "{\"g\":{\"on\":true,\"mesh\":true,\"mark\":\"1\"},\"note\":\"Glasses on.\"}"
+    },
+    {
+      "name": "needs saw after takeback",
+      "ok": true,
+      "detail": "{\"text\":\"Needs Saw\",\"cls\":\"wall-slot empty\",\"ready\":\"1\",\"saw\":1}"
+    },
+    {
+      "name": "buttons 44",
+      "ok": true,
+      "detail": "{\"n\":17,\"small\":[]}"
+    },
+    {
+      "name": "reload keeps bench",
+      "ok": true,
+      "detail": "{\"id\":69,\"face\":\"W\",\"wall\":[\"safetyGlasses\",\"measuringTape\",\"hammer\"],\"seen\":true,\"open\":false}"
+    },
+    {
+      "name": "needs saw when gone",
+      "ok": true,
+      "detail": "{\"ready\":\"0\",\"miss\":\"Needs Saw\"}"
+    },
+    {
+      "name": "missing tool opens recipe",
+      "ok": true,
+      "detail": "crafting tap true"
+    },
+    {
+      "name": "full bag drops",
+      "ok": true,
+      "detail": "{\"ok\":true,\"before\":{\"dirt\":1,\"slots\":15},\"wall\":[\"safetyGlasses\",\"measuringTape\",\"hammer\"],\"drops\":[\"safetyGlasses:1\",\"measuringTape:1\",\"hammer:1\",\"woodshop:1\"],\"bag\":0,\"dirt\":1,\"gone\":0}"
+    },
+    {
+      "name": "phone tap safetyGlasses",
+      "ok": true,
+      "detail": "Needs Glasses"
+    },
+    {
+      "name": "phone tap measuringTape",
+      "ok": true,
+      "detail": "Needs Tape"
+    },
+    {
+      "name": "phone tap handSaw",
+      "ok": true,
+      "detail": "Needs Saw"
+    },
+    {
+      "name": "phone tap hammer",
+      "ok": true,
+      "detail": "Needs Hammer"
+    },
+    {
+      "name": "phone ready",
+      "ok": true,
+      "detail": "{\"ready\":\"1\",\"slots\":[{\"t\":\"✓\",\"w\":48,\"h\":58.640625},{\"t\":\"✓\",\"w\":48,\"h\":58.640625},{\"t\":\"✓\",\"w\":48,\"h\":58.640625},{\"t\":\"✓\",\"w\":48,\"h\":58.640625}]}"
+    },
+    {
+      "name": "phone needs saw",
+      "ok": true,
+      "detail": "Needs Saw"
+    },
+    {
+      "name": "rotate keeps panel",
+      "ok": true,
+      "detail": "{\"panel\":\"woodshop\",\"hidden\":false}"
+    },
+    {
+      "name": "wide tap hangs saw",
+      "ok": true,
+      "detail": "{\"text\":\"✓\",\"filled\":true,\"w\":48,\"h\":58.640625}"
+    },
+    {
+      "name": "rotate back",
+      "ok": true,
+      "detail": "woodshop"
+    },
+    {
+      "name": "strict shows card",
+      "ok": true,
+      "detail": "{\"open\":true,\"seen\":true,\"text\":\"Real shop rules: 1 Glasses on. 2 Measure twice, cut once. 3 Clamp it, don't hold it. 4 Cut away from your body. 5 Ask your teacher before using real tools.\\n\\nGot it\"}"
+    },
+    {
+      "name": "fresh survival",
+      "ok": true,
+      "detail": "{\"mode\":\"survival\",\"ver\":\"2.5.118\",\"voxel\":10}"
+    },
+    {
+      "name": "fresh creative",
+      "ok": true,
+      "detail": "2.5.118"
+    },
+    {
+      "name": "no console errors",
+      "ok": true,
+      "detail": "clean"
+    }
+  ],
+  "version": "2.5.118",
+  "pass": true
+}

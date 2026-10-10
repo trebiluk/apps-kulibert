@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult } from './craft.js'
+import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, countOf, isWool } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -458,7 +458,8 @@ export function createSession(api) {
     return true
   }
   function stackCap(item) {
-    return item === 'woodTool' || item === 'stoneTool' || item === 'hoe' ? 1 : 64
+    const n = ITEMS[item] && ITEMS[item].stack
+    return n || 64
   }
   function relocate(from, to) {
     if (from === to || from < 0 || to < 0 || to >= bag.slots.length) return false
@@ -911,6 +912,7 @@ export function createSession(api) {
   let craftFx = ''
   let trayId = ''
   let trayPlaced = []
+  let trayWool = []
   let trayWatch = false
   function noteTray() { if (api.noteMachine) api.noteMachine() }
   function trayGiveBack(item, n) {
@@ -926,8 +928,10 @@ export function createSession(api) {
     if (r) r.in.forEach((pair, i) => {
       const n = trayPlaced[i] || 0
       if (!n) return
-      trayGiveBack(pair[0], n)
+      const back = pair[0] === 'woolAny' && trayWool[i] ? trayWool[i] : pair[0]
+      trayGiveBack(back, n)
       trayPlaced[i] = 0
+      trayWool[i] = ''
       moved = true
     })
     if (moved) { paintHotbar(); noteTray() }
@@ -943,7 +947,7 @@ export function createSession(api) {
     obs.observe(sheet, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
   }
   function heldCount(r, item) {
-    let n = bag.count(item)
+    let n = countOf(bag, item)
     if (r && r.id === trayId) r.in.forEach((pair, i) => { if (pair[0] === item) n += trayPlaced[i] || 0 })
     return n
   }
@@ -955,6 +959,7 @@ export function createSession(api) {
     leftFor = ''
     const rr = RECIPES.find((x) => x.id === id)
     trayPlaced = rr ? rr.in.map(() => 0) : []
+    trayWool = rr ? rr.in.map(() => '') : []
   }
   function seenBag(id) {
     const r = id ? RECIPES.find((x) => x.id === id) : null
@@ -1278,12 +1283,14 @@ export function createSession(api) {
       const placePart = (item, index) => {
         const needItem = r.in[index][0]
         const needN = r.in[index][1]
-        if (item !== needItem) return false
+        const ok = needItem === 'woolAny' ? isWool(item) : item === needItem
+        if (!ok) return false
         const room = needN - (trayPlaced[index] || 0)
         const takeN = Math.min(bag.count(item), room)
         if (takeN <= 0) return false
         if (!bag.take(item, takeN)) return false
         trayPlaced[index] = (trayPlaced[index] || 0) + takeN
+        if (needItem === 'woolAny') trayWool[index] = item
         paintHotbar()
         paintCraft(g)
         noteTray()
@@ -1292,8 +1299,10 @@ export function createSession(api) {
       const returnSlot = (index) => {
         const n = trayPlaced[index] || 0
         if (!n) return
-        trayGiveBack(r.in[index][0], n)
+        const back = r.in[index][0] === 'woolAny' && trayWool[index] ? trayWool[index] : r.in[index][0]
+        trayGiveBack(back, n)
         trayPlaced[index] = 0
+        trayWool[index] = ''
         paintHotbar()
         paintCraft(g)
         noteTray()
@@ -1310,8 +1319,8 @@ export function createSession(api) {
           recipe: r,
           placed: () => trayPlaced,
           bag: () => bag.slots,
-          name: (item) => itemName(item),
-          icon: (item) => itemIcon(ITEMS[item]),
+          name: (item) => item === 'woolAny' ? t('woolAny') : itemName(item),
+          icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : ITEMS[item]),
           t,
           resultName: (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : ''),
           fillLabel: t('fillTray'),
@@ -1324,10 +1333,24 @@ export function createSession(api) {
           onPlace: (index, item) => placePart(item, index),
           onReturn: (index) => returnSlot(index),
           onFill: () => {
-            const takes = fillTakes(r, (item) => bag.count(item), trayPlaced)
+            const takes = fillTakes(r, (item) => countOf(bag, item), trayPlaced)
             let any = false
             takes.forEach((takeN, i) => {
-              if (takeN > 0 && bag.take(r.in[i][0], takeN)) {
+              if (!(takeN > 0)) return
+              const need = r.in[i][0]
+              if (need === 'woolAny') {
+                let left = takeN
+                for (const c of ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']) {
+                  const d = Math.min(bag.count(c), left)
+                  if (d > 0 && bag.take(c, d)) {
+                    trayWool[i] = c
+                    left -= d
+                    any = true
+                  }
+                  if (!left) break
+                }
+                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+              } else if (bag.take(need, takeN)) {
                 trayPlaced[i] = (trayPlaced[i] || 0) + takeN
                 any = true
               }
@@ -1764,11 +1787,21 @@ export function createSession(api) {
       run: () => holdItem(item, index),
     })
   }
+  function takeNamed(item, n) {
+    if (item !== 'woolAny') return bag.take(item, n)
+    let left = n
+    for (const c of ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']) {
+      const d = Math.min(bag.count(c), left)
+      if (d > 0 && bag.take(c, d)) left -= d
+      if (!left) return true
+    }
+    return left === 0
+  }
   function craftMany(r, times) {
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))
     if (!n || !canMake(r, bag, stations).ok) return false
-    for (const [item, need] of r.in) bag.take(item, need * n)
+    for (const [item, need] of r.in) if (!takeNamed(item, need * n)) return false
     const spot = placeResult(bag, r.out[0], r.out[1] * n, hot)
     markFound(r.out[0])
     if (spot.left) {
@@ -2078,7 +2111,7 @@ export function createSession(api) {
         hotCreative: api.creativeHot ? api.creativeHot() : hotSlot.creative,
         home,
         table: api.tableOn(),
-        tray: { id: trayId, placed: trayPlaced.slice() },
+        tray: { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
       },
       econ: wallet.dump(),
@@ -2100,6 +2133,7 @@ export function createSession(api) {
     home = p.home || null
     trayId = p.tray && typeof p.tray.id === 'string' ? p.tray.id : ''
     trayPlaced = p.tray && Array.isArray(p.tray.placed) ? p.tray.placed.map((n) => Math.max(0, n | 0)) : []
+    trayWool = p.tray && Array.isArray(p.tray.wool) ? p.tray.wool.map((k) => (typeof k === 'string' ? k : '')) : []
     const savedEnergy = p.energy
     if (savedEnergy && Number.isFinite(+savedEnergy.bolts)) {
       energy = {
@@ -2277,15 +2311,17 @@ export function createSession(api) {
     get bag() { return bag },
     bags: () => ({ survival: bags.survival.dump(), creative: bags.creative.dump() }), wallet, meta, paintBag, clearBagPick() { bagSel = -1 }, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
-    trayDump() { return { id: trayId, placed: trayPlaced.slice() } },
+    trayDump() { return { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() } },
     restoreTray(tray) {
       if (!tray || typeof tray !== 'object') return
       trayId = typeof tray.id === 'string' ? tray.id : ''
       trayPlaced = Array.isArray(tray.placed) ? tray.placed.map((n) => Math.max(0, n | 0)) : []
+      trayWool = Array.isArray(tray.wool) ? tray.wool.map((k) => (typeof k === 'string' ? k : '')) : []
     },
     lostAdd,
     tryCraft,
     setCraftOpen(v) { craftOpen = !!v },
+    focusCraft(id) { craftId = id || ''; craftOpen = true },
     lostItems: () => lost.map((d) => d.item + ':' + d.n),
     spend: (item, n) => { const ok = bag.take(item, n); if (ok) paintHotbar(); return ok },
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },

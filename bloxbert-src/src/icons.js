@@ -293,6 +293,25 @@ const FACE = {
     g.moveTo(32, 42); g.lineTo(36, 10)
     g.stroke()
   },
+  woodshop(g) {
+    g.fillStyle = '#6B3A1F'
+    g.fillRect(6, 30, 6, 14)
+    g.fillRect(36, 30, 6, 14)
+    g.fillStyle = '#E8C27A'
+    g.fillRect(3, 16, 42, 16)
+    g.strokeStyle = '#3A2415'
+    g.lineWidth = 2
+    g.strokeRect(3, 16, 42, 16)
+    g.fillStyle = '#9AA3AA'
+    g.fillRect(8, 20, 14, 4)
+    g.fillStyle = '#C5CCD1'
+    g.fillRect(26, 19, 14, 3)
+    g.fillStyle = '#8A5A32'
+    g.fillRect(30, 22, 3, 8)
+  },
+  woodshopSide(g) {
+    FACE.woodshop(g)
+  },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
@@ -332,6 +351,10 @@ const FOOD = {
   hoe: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 21 V10" fill="none" stroke="#C4A574" stroke-width="2.6" stroke-linecap="round"/><path d="M4 7 H19 V11 H4 Z" fill="#6b7280" stroke="#1c1917" stroke-width="1.3"/></svg>',
   wheatSeeds: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21 C12 14 9 12 8 6" fill="none" stroke="#3D8C32" stroke-width="1.6" stroke-linecap="round"/><ellipse cx="8" cy="16" rx="2.2" ry="1.3" fill="#d6b483"/><ellipse cx="13" cy="15" rx="2.2" ry="1.3" fill="#c4a36a"/><ellipse cx="11" cy="18.5" rx="2" ry="1.2" fill="#e6c99a"/><ellipse cx="16" cy="18" rx="1.8" ry="1.1" fill="#b08958"/></svg>',
   bushSprout: '<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="19" rx="4" ry="2.2" fill="#8B5A2B"/><path d="M12 18 V9" stroke="#166534" stroke-width="1.8" fill="none" stroke-linecap="round"/><ellipse cx="8.2" cy="11.2" rx="3.2" ry="1.8" fill="#22c55e" transform="rotate(-28 8.2 11.2)"/><ellipse cx="15.8" cy="9.6" rx="3.2" ry="1.8" fill="#4ade80" transform="rotate(26 15.8 9.6)"/></svg>',
+  safetyGlasses: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="2" y="18" width="6" height="4" fill="#1c3a44"/><rect x="40" y="18" width="6" height="4" fill="#1c3a44"/><rect x="8" y="14" width="14" height="12" fill="#9bd4e8" stroke="#1c3a44" stroke-width="2"/><rect x="26" y="14" width="14" height="12" fill="#9bd4e8" stroke="#1c3a44" stroke-width="2"/><rect x="20" y="18" width="8" height="3" fill="#1c3a44"/></svg>',
+  measuringTape: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="12" width="22" height="24" fill="#e6b422" stroke="#5c3b09" stroke-width="2"/><rect x="24" y="20" width="18" height="6" fill="#c5ccd1" stroke="#3a4450" stroke-width="2"/><rect x="28" y="20" width="2" height="6" fill="#3a4450"/><rect x="34" y="20" width="2" height="6" fill="#3a4450"/><rect x="12" y="18" width="8" height="8" fill="#5c3b09"/></svg>',
+  handSaw: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="16" width="28" height="8" fill="#c5ccd1" stroke="#3a4450" stroke-width="2"/><rect x="8" y="24" width="3" height="4" fill="#3a4450"/><rect x="14" y="24" width="3" height="4" fill="#3a4450"/><rect x="20" y="24" width="3" height="4" fill="#3a4450"/><rect x="26" y="18" width="16" height="10" fill="#8a5a32" stroke="#3a2415" stroke-width="2"/></svg>',
+  hammer: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''

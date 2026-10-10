@@ -1,9 +1,39 @@
 import { gateOpen } from './data/gates.js'
+import { ITEMS } from './data/items.js'
+const WOOL = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+export function isWool(item) { return WOOL.indexOf(item) >= 0 }
+export function countOf(bag, item) {
+  if (!bag || !bag.count) return 0
+  if (item === 'woolAny') {
+    let n = 0
+    for (const k of WOOL) n += bag.count(k) || 0
+    return n
+  }
+  return bag.count(item) || 0
+}
+function takeOf(bag, item, n) {
+  if (item !== 'woolAny') return bag.take(item, n) ? [[item, n]] : null
+  let left = n
+  const spent = []
+  for (const k of WOOL) {
+    const have = bag.count(k) || 0
+    if (!have || left <= 0) continue
+    const d = Math.min(have, left)
+    if (!bag.take(k, d)) break
+    spent.push([k, d])
+    left -= d
+  }
+  if (left > 0) {
+    for (const [k, d] of spent) bag.add(k, d)
+    return null
+  }
+  return spent
+}
 export function craftStatus(recipe, bag, near, creative) {
   const needs = []
   let missing = 0
   for (const [item, n] of recipe.in) {
-    const have = bag.count(item)
+    const have = countOf(bag, item)
     if (have < n) missing++
     needs.push([item, have, n])
   }
@@ -31,7 +61,7 @@ export function canMake(recipe, bag, near) {
 export function maxTimes(recipe, bag) {
   if (recipe.id === 'bread') return 0
   let n = 64
-  for (const [item, need] of recipe.in) n = Math.min(n, Math.floor(bag.count(item) / need))
+  for (const [item, need] of recipe.in) n = Math.min(n, Math.floor(countOf(bag, item) / need))
   return n > 0 ? n : 0
 }
 // How many of each ingredient Fill moves into the tray. Never a craft.
@@ -50,7 +80,7 @@ export function maxPlan(recipe, count) {
   return { n, uses }
 }
 export function placeResult(bag, item, n, hot) {
-  const cap = item === 'woodTool' || item === 'stoneTool' || item === 'hoe' ? 1 : 64
+  const cap = (ITEMS[item] && ITEMS[item].stack) || 64
   let left = n
   let pocket = -1
   const note = (i) => { if (i >= 9 && pocket < 0) pocket = i }
@@ -82,10 +112,18 @@ export function placeResult(bag, item, n, hot) {
 }
 export function make(recipe, bag, hot) {
   if (recipe.id === 'bread') return false
-  for (const [item, n] of recipe.in) if (!bag.take(item, n)) return false
+  const spent = []
+  for (const [item, n] of recipe.in) {
+    const got = takeOf(bag, item, n)
+    if (!got) {
+      for (const [k, d] of spent) bag.add(k, d)
+      return false
+    }
+    for (const row of got) spent.push(row)
+  }
   const spot = placeResult(bag, recipe.out[0], recipe.out[1], hot)
   if (spot.left) {
-    for (const [item, n] of recipe.in) bag.add(item, n)
+    for (const [k, d] of spent) bag.add(k, d)
     const placed = recipe.out[1] - spot.left
     if (placed > 0) bag.take(recipe.out[0], placed)
     return false

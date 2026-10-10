@@ -1335,17 +1335,22 @@
       }, guardBox)
       return b
     }
+    var WOOL_ANY = { woolBlue: 1, woolGreen: 1, woolRed: 1, woolTan: 1 }
+    function ingMatch(need, item) {
+      if (need === item) return true
+      return need === 'woolAny' && !!WOOL_ANY[item]
+    }
     function accepts(well, item) {
       if (!well || well.dataset.ksRole !== 'ing') return false
       var index = +well.dataset.i
       var pair = recipe.in[index]
-      if (!pair || pair[0] !== item) return false
+      if (!pair || !ingMatch(pair[0], item)) return false
       return (placedNow()[index] || 0) < pair[1]
     }
     function dropOn(well, item) {
       var index = +well.dataset.i
       var pair = recipe.in[index]
-      if (!pair || pair[0] !== item) {
+      if (!pair || !ingMatch(pair[0], item)) {
         bounce(well, pair ? needText(pair[0]) : '')
         return
       }
@@ -1355,12 +1360,12 @@
       var pair = recipe.in[index]
       var have = placedNow()[index] || 0
       if (pick && pick.item) {
-        if (have >= pair[1] && pick.item === pair[0]) {
+        if (have >= pair[1] && ingMatch(pair[0], pick.item)) {
           pick = null
           if (opts.onReturn) opts.onReturn(index)
           return
         }
-        if (pick.item !== pair[0]) {
+        if (!ingMatch(pair[0], pick.item)) {
           bounce(well, needText(pair[0]))
           pick = null
           paintBag()
@@ -1376,7 +1381,7 @@
         var placed = placedNow()
         for (var n = 0; n < recipe.in.length; n++) {
           var pair = recipe.in[n]
-          if (pair[0] === item && (placed[n] || 0) < pair[1]) {
+          if (ingMatch(pair[0], item) && (placed[n] || 0) < pair[1]) {
             if (opts.onPlace) opts.onPlace(n, item)
             return
           }

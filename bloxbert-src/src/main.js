@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.117'
+const VERSION = '2.5.118'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -236,6 +236,8 @@ export const BLOCKS = [
   [66, 'bushLeaf', 'leaves', 'Bl', null],
   [67, 'bushFull', 'leaves', 'Bf', null],
   [68, 'bushFruit', 'leaves', 'Bu', null],
+  [69, 'woodshop', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
+  [70, 'woodshopSide', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
 noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
@@ -949,6 +951,7 @@ function machineKind(id) {
   if (id === ID.vend) return 'vend'
   if (id === ID.bunk) return 'bunk'
   if (id === ID.box) return 'box'
+  if (id === ID.woodshop || id === ID.woodshopSide) return 'woodshop'
   if (id === ID.storeCounter) return 'shop'
   return ''
 }
@@ -1027,6 +1030,171 @@ function reachOpen(pos, repeat) {
   if (!repeat) toastFar()
   return false
 }
+function isShopBlock(id) { return id === ID.woodshop || id === ID.woodshopSide }
+function shopDelta(face) { return face === 'E' || face === 'W' ? [0, 0, 1] : [1, 0, 0] }
+function shopSpan(x, y, z, face) {
+  const f = face || faceTowardPlayer(x, z)
+  const d = shopDelta(f)
+  return { face: f, x, y, z, sx: x + d[0], sy: y, sz: z + d[2] }
+}
+function shopBlocked(span) {
+  if (getVoxel(span.sx, span.sy, span.sz)) return true
+  if (keptCell(span.sx, span.sy, span.sz) && !teacherOn() && !townHelper()) return true
+  if (!tableMode) {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (overlapsPlayer(span.sx, span.sy, span.sz, p[0], p[1], p[2])) return true
+  }
+  return false
+}
+let roomTold = ''
+let roomToldAt = 0
+function tellNoRoom(key) {
+  const now = performance.now()
+  if (roomTold === key && now - roomToldAt < 1200) return
+  roomTold = key
+  roomToldAt = now
+  toast(t('noRoom'))
+  const el = $('toast')
+  if (el) el.classList.add('fx-pop')
+}
+function showShopAmber(x, y, z, sx, sy, sz) {
+  if (!placeGhost || !amberMat) return
+  placeGhost.material = amberMat
+  const lp = noa.globalToLocal([x + 0.5, y + 0.5, z + 0.5], null, ghostLocal)
+  placeGhost.position.set(lp[0], lp[1], lp[2])
+  placeGhost.setEnabled(true)
+  if (placeGhostSide) {
+    placeGhostSide.material = amberMat
+    const lp2 = noa.globalToLocal([sx + 0.5, sy + 0.5, sz + 0.5], null, ghostLocal2)
+    placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
+    placeGhostSide.setEnabled(true)
+  }
+  if (outline && amberLine) outline.color.copyFrom(amberLine)
+}
+function shopAnchorKey(x, y, z) {
+  const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+  if (rec && rec.kind === 'woodshop' && rec.anchor) return rec.anchor
+  if (getVoxel(x, y, z) === ID.woodshop) return x + ',' + y + ',' + z
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  for (let i = 0; i < dirs.length; i++) {
+    const nx = x + dirs[i][0]
+    const nz = z + dirs[i][1]
+    if (getVoxel(nx, y, nz) === ID.woodshop) return nx + ',' + y + ',' + nz
+  }
+  return x + ',' + y + ',' + z
+}
+function shopPair(x, y, z) {
+  const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+  if (rec && rec.kind === 'woodshop' && rec.anchor && rec.pair) {
+    const a = rec.anchor.split(',').map(Number)
+    const b = rec.pair.split(',').map(Number)
+    return { ax: a[0], ay: a[1], az: a[2], sx: b[0], sy: b[1], sz: b[2], face: rec.face || 'S' }
+  }
+  if (getVoxel(x, y, z) === ID.woodshopSide) {
+    const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+    for (let i = 0; i < dirs.length; i++) {
+      const nx = x + dirs[i][0]
+      const nz = z + dirs[i][1]
+      if (getVoxel(nx, y, nz) === ID.woodshop) return shopPair(nx, y, nz)
+    }
+  }
+  const face = (rec && rec.face) || 'S'
+  const span = shopSpan(x, y, z, face)
+  return { ax: x, ay: y, az: z, sx: span.sx, sy: span.sy, sz: span.sz, face }
+}
+function placeShop(x, y, z) {
+  if (!tableMode && !canReach([x, y, z])) { toastFarKey(); return false }
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!tableMode && overlapsPlayer(x, y, z, p[0], p[1], p[2])) { toast(t('standing')); return false }
+  const span = shopSpan(x, y, z)
+  const sideFar = !tableMode && !canReach([span.sx, span.sy, span.sz])
+  if (getVoxel(x, y, z) || shopBlocked(span) || sideFar) {
+    showShopAmber(x, y, z, span.sx, span.sy, span.sz)
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    return false
+  }
+  if (session && !session.onPlace(x, y, z, ID.woodshop)) return false
+  if (!edit(x, y, z, ID.woodshop)) {
+    if (session && session.mode === 'survival') session.give('woodshop', 1)
+    return false
+  }
+  if (!edit(span.sx, span.sy, span.sz, ID.woodshopSide)) {
+    edit(x, y, z, 0)
+    if (session && session.mode === 'survival') session.give('woodshop', 1)
+    showShopAmber(x, y, z, span.sx, span.sy, span.sz)
+    tellNoRoom(span.sx + ',' + span.sy + ',' + span.sz)
+    return false
+  }
+  const anchor = x + ',' + y + ',' + z
+  const pair = span.sx + ',' + span.sy + ',' + span.sz
+  if (session && session.meta) {
+    const row = (role) => ({ kind: 'woodshop', face: span.face, role, anchor, pair })
+    session.meta.set(anchor, row('anchor'))
+    session.meta.set(pair, row('side'))
+  }
+  if (stations && stations.ensureShop) stations.ensureShop(anchor)
+  if (basics) { basics.saw(x, y, z, ID.woodshop); basics.saw(span.sx, span.sy, span.sz, ID.woodshopSide) }
+  ensureFront(x, y, z)
+  ensureFront(span.sx, span.sy, span.sz)
+  noteMachine()
+  return true
+}
+function liftShop(x, y, z) {
+  if (!tableMode && !canReach([x, y, z])) return false
+  const pair = shopPair(x, y, z)
+  const anchor = pair.ax + ',' + pair.ay + ',' + pair.az
+  const tools = stations && stations.wallItems ? stations.wallItems(anchor).slice() : []
+  const clear = (cx, cy, cz) => {
+    const id = getVoxel(cx, cy, cz)
+    if (id === ID.woodshop || id === ID.woodshopSide) edit(cx, cy, cz, 0)
+  }
+  clear(pair.ax, pair.ay, pair.az)
+  if (pair.sx !== pair.ax || pair.sz !== pair.az) clear(pair.sx, pair.sy, pair.sz)
+  if (session && session.meta) {
+    session.meta.delete(anchor)
+    session.meta.delete(pair.sx + ',' + pair.sy + ',' + pair.sz)
+  }
+  if (stations && stations.clearShop) stations.clearShop(anchor)
+  ensureFront(pair.ax, pair.ay, pair.az)
+  ensureFront(pair.sx, pair.sy, pair.sz)
+  if (session) {
+    for (let i = 0; i < tools.length; i++) session.give(tools[i], 1)
+    session.give('woodshop', 1)
+  }
+  noteMachine()
+  toast(t('gotItem').replace('{item}', t('woodshop')))
+  return true
+}
+function strictOn() {
+  try {
+    if (location.search.includes('strict=1')) return true
+    if (localStorage.getItem('bloxbert-strict') === '1') return true
+  } catch (e) {}
+  return false
+}
+function safetyDue() {
+  let seenSession = false
+  try { seenSession = sessionStorage.getItem('bt-shop-safe') === '1' } catch (e) {}
+  if (strictOn()) return !seenSession
+  return !gifts.shopSafe
+}
+function markSafety() {
+  gifts.shopSafe = true
+  try { sessionStorage.setItem('bt-shop-safe', '1') } catch (e) {}
+  noteMachine()
+}
+let glassesMesh = null
+function wearGlasses(on) {
+  gifts.glassesOn = !!on
+  if (document.body) document.body.dataset.glasses = on ? '1' : ''
+  if (glassesMesh) glassesMesh.setEnabled(!!on)
+  if (on) noteMachine()
+}
+function syncGlasses() {
+  const on = !!gifts.glassesOn
+  if (document.body) document.body.dataset.glasses = on ? '1' : ''
+  if (glassesMesh) glassesMesh.setEnabled(on)
+}
 function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
@@ -1045,6 +1213,7 @@ function breakAt(x, y, z, hold) {
   if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
+  if (isShopBlock(id)) return liftShop(x, y, z)
   const wild = isBushId(id) && !farm.get(x, y, z)
   const wheatBack = id === WILD_WHEAT && session && session.mode === 'survival' && wildWheatCell(x, y, z)
   if (session && !session.onBreak(x, y, z, id)) return false
@@ -1073,7 +1242,7 @@ function breakBlock() {
 }
 function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
-  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box
+  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box || isShopBlock(id)
 }
 function isGear(id) {
   return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN
@@ -1117,6 +1286,7 @@ function placeBlock(face, opts) {
         else if (kind === 'vend') panels.open('counter', key)
         else if (kind === 'bunk') panels.open('bunk', key)
         else if (kind === 'box') panels.open('box', key)
+        else if (kind === 'woodshop') panels.open('woodshop', shopAnchorKey(ax, ay, az))
         else panels.open('shop')
         openMachineKey = key
         return false
@@ -1158,6 +1328,7 @@ function placeBlock(face, opts) {
     toast(held ? t('notABlock') : t('emptySlot'))
     return false
   }
+  if (id === ID.woodshop) return placeShop(x, y, z)
   if (session && !session.onPlace(x, y, z, id)) return false
   const placed = edit(x, y, z, id)
   if (placed && basics) {
@@ -1687,7 +1858,7 @@ noa.inputs.down.on('fire', () => {
   if (inspectOn) { showInspect(); return }
   if (anyCard() || tableMode || !noa.container.hasPointerLock) return
   const aimed = noa.targetedBlock
-  if (aimed && isDoor(aimed.blockID)) { beginDig('mouse'); return }
+  if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
   else {
     breakBlock()
@@ -1927,7 +2098,7 @@ function dryNear(r) {
 function isMachineId(id) {
   if (!id) return false
   if (isDoor(id)) return true
-  return id === ID.box || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk
+  return id === ID.box || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || isShopBlock(id)
 }
 function trackMachine(x, y, z, id) {
   machineCells.set(x + ',' + y + ',' + z, id | 0)
@@ -2143,6 +2314,7 @@ async function applyDoc(doc) {
   dropGifts()
   if (doc.stations) stations.load(doc.stations)
   gifts = Object.assign({}, doc && doc.gifts)
+  syncGlasses()
   grantSaplings()
   farm.load(doc && doc.crops)
   syncCrops(Date.now())
@@ -2164,6 +2336,7 @@ async function importFile(file) {
 }
 async function resetWorld() {
   gifts = {}
+  syncGlasses()
   farm.clear()
   forage.clear()
   pondAid = true
@@ -2506,7 +2679,7 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
-} })
+}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on) })
 function syncOvenGlow() {
   const hot = new Set()
   const keys = stations && stations.baking ? stations.baking() : []
@@ -2558,7 +2731,7 @@ function faceSpot(x, y, z, face, out) {
 }
 function rememberFace(x, y, z, id) {
   if (!session || !session.meta) return
-  const kind = id === ID.oven ? 'oven' : id === ID.workbench ? 'workbench' : id === ID.box ? 'box' : ''
+  const kind = id === ID.oven ? 'oven' : id === ID.workbench ? 'workbench' : id === ID.box ? 'box' : isShopBlock(id) ? 'woodshop' : ''
   if (!kind) return
   const key = x + ',' + y + ',' + z
   const face = faceTowardPlayer(x, z)
@@ -2571,7 +2744,7 @@ const frontMeshes = new Map()
 let faceScanAt = 0
 function ensureFront(x, y, z) {
   const id = getVoxel(x, y, z)
-  const kind = id === ID.oven ? 'oven' : id === ID.workbench ? 'bench' : id === ID.box ? 'box' : ''
+  const kind = id === ID.oven ? 'oven' : id === ID.workbench || isShopBlock(id) ? 'bench' : id === ID.box ? 'box' : ''
   const key = x + ',' + y + ',' + z
   if (!kind) {
     const old = frontMeshes.get(key)
@@ -2602,7 +2775,7 @@ function syncFronts(force) {
     const seen = new Set()
     for (let x = px - 16; x <= px + 16; x++) for (let y = py - 5; y <= py + 5; y++) for (let z = pz - 16; z <= pz + 16; z++) {
       const id = getVoxel(x, y, z)
-      if (id !== ID.oven && id !== ID.workbench && id !== ID.box) continue
+      if (id !== ID.oven && id !== ID.workbench && id !== ID.box && !isShopBlock(id)) continue
       seen.add(x + ',' + y + ',' + z)
       ensureFront(x, y, z)
     }
@@ -2956,7 +3129,7 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
-const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET).map((b) => b[0])
+const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET && b[1] !== 'woodshopSide').map((b) => b[0])
 let selectedSlot = 0
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
@@ -3386,6 +3559,15 @@ function jumpUp() {
 }
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
+  const safe = document.getElementById('shop-safe')
+  if (safe) {
+    e.preventDefault()
+    e.stopPropagation()
+    const btn = safe.querySelector('button')
+    if (btn) btn.click()
+    else safe.remove()
+    return
+  }
   e.preventDefault()
   e.stopPropagation()
   if (e.repeat) return
@@ -3704,7 +3886,8 @@ function feelTick(dt) {
   if (dig && dig.kind === 'mouse' && dig.creative) {
     const aimedNow = noa.targetedBlock
     const doorAimed = aimedNow && isDoor(aimedNow.blockID)
-    if (breaking && !doorAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
+    const shopAimed = aimedNow && isShopBlock(aimedNow.blockID)
+    if (breaking && !doorAimed && !shopAimed && now - dig.t0 >= 250) { breakBlock(); dig.t0 = now }
     if (!breaking) dig = null
   } else if (dig && dig.kind === 'mouse') {
     const seen = breaking ? cropOnLook() : null
@@ -3984,7 +4167,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
-  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke) {
+  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && isShopBlock(down.id))) {
     breakAt(down.x, down.y, down.z)
     dig = null
     hideCrack()
@@ -3994,7 +4177,12 @@ canvas.addEventListener('pointerup', (e) => {
   const mouseTap = !lookWasTouch && held < 500 && moved < 8 && !broke
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
-  if ((touchTap || (mouseTap && survivalOn())) && down && isUseBlock(down.id)) { placeBlock(face || upHit); return }
+  if ((touchTap || (mouseTap && (survivalOn() || (down && isShopBlock(down.id))))) && down && isUseBlock(down.id)) {
+    dig = null
+    hideCrack()
+    placeBlock(face || upHit)
+    return
+  }
   const creativeBlock = !survivalOn() && !!current
   const survivalBlock = survivalOn() && !!handId && !tapUse
   if (touchTap && (creativeBlock || survivalBlock)) {
@@ -4411,6 +4599,17 @@ bertyMat.specularColor = new Color3(0.04, 0.04, 0.04)
 bertyMat.emissiveColor = new Color3(0.1, 0.28, 0.26)
 berty.material = bertyMat
 noa.ents.addComponent(noa.playerEntity, noa.ents.names.mesh, { mesh: berty, offset: [0, 0.9, 0] })
+const glassesMat = new StandardMaterial('berty-glasses', scene)
+glassesMat.diffuseColor = new Color3(0.15, 0.2, 0.24)
+glassesMat.emissiveColor = new Color3(0.25, 0.65, 0.78)
+glassesMat.specularColor = new Color3(0.2, 0.2, 0.2)
+glassesMesh = CreateBox('berty-glasses', { width: 0.22, height: 0.05, depth: 0.03 }, scene)
+glassesMesh.material = glassesMat
+glassesMesh.position.set(0, 0.32, 0.2)
+glassesMesh.parent = berty
+glassesMesh.isPickable = false
+glassesMesh.setEnabled(false)
+syncGlasses()
 let dropReady = false
 const dropMeshes = new Map()
 const dropMats = new Map()
@@ -4494,14 +4693,29 @@ placeGhost.material = ghostMat
 placeGhost.isPickable = false
 placeGhost.setEnabled(false)
 noa.rendering.addMeshToScene(placeGhost, false)
+const amberMat = new StandardMaterial('place-ghost-amber', scene)
+amberMat.diffuseColor = new Color3(0.95, 0.62, 0.12)
+amberMat.emissiveColor = new Color3(0.72, 0.38, 0.05)
+amberMat.specularColor = new Color3(0, 0, 0)
+amberMat.alpha = 0.55
+amberMat.transparencyMode = 2
+amberMat.backFaceCulling = false
+const placeGhostSide = CreateBox('place-ghost-side', { size: 0.98 }, scene)
+placeGhostSide.material = ghostMat
+placeGhostSide.isPickable = false
+placeGhostSide.setEnabled(false)
+noa.rendering.addMeshToScene(placeGhostSide, false)
 const ghostLocal = [0, 0, 0]
+const ghostLocal2 = [0, 0, 0]
+const cyanLine = new Color3(0.13, 0.83, 0.93)
+const amberLine = new Color3(0.95, 0.62, 0.12)
 function heldBlockId() {
   if (survivalOn()) return (session && session.blockForHot && session.blockForHot()) || 0
   return current || 0
 }
 function ghostTint(id) {
   const name = (BLOCKS.find((b) => b[0] === id) || [])[1] || ''
-  if (name === 'planks' || name === 'log' || name === 'box' || name === 'workbench' || name === 'door') return [0.86, 0.66, 0.34]
+  if (name === 'planks' || name === 'log' || name === 'box' || name === 'workbench' || name === 'woodshop' || name === 'door') return [0.86, 0.66, 0.34]
   if (name === 'leaves' || name === 'grass' || name === 'woolGreen') return [0.28, 0.62, 0.32]
   if (name === 'brickRed' || name === 'woolRed') return [0.72, 0.28, 0.22]
   if (name === 'glass' || name === 'ice' || name === 'woolBlue') return [0.45, 0.72, 0.86]
@@ -4526,13 +4740,40 @@ function ghostCell() {
 }
 function syncPlaceGhost() {
   const spot = ghostCell()
-  if (!spot) { placeGhost.setEnabled(false); return }
-  const tint = ghostTint(heldBlockId())
-  ghostMat.diffuseColor.set(tint[0], tint[1], tint[2])
-  ghostMat.emissiveColor.set(tint[0] * 0.55, tint[1] * 0.55, tint[2] * 0.55)
+  if (!spot) {
+    placeGhost.setEnabled(false)
+    placeGhostSide.setEnabled(false)
+    if (outline) outline.color.copyFrom(cyanLine)
+    return
+  }
+  const id = heldBlockId()
+  let side = null
+  let amber = false
+  if (id === ID.woodshop) {
+    side = shopSpan(spot.x, spot.y, spot.z)
+    amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
+    if (amber) tellNoRoom(side.sx + ',' + side.sy + ',' + side.sz)
+  }
+  if (amber) {
+    placeGhost.material = amberMat
+    placeGhostSide.material = amberMat
+    outline.color.copyFrom(amberLine)
+  } else {
+    const tint = ghostTint(id)
+    ghostMat.diffuseColor.set(tint[0], tint[1], tint[2])
+    ghostMat.emissiveColor.set(tint[0] * 0.55, tint[1] * 0.55, tint[2] * 0.55)
+    placeGhost.material = ghostMat
+    placeGhostSide.material = ghostMat
+    outline.color.copyFrom(cyanLine)
+  }
   const lp = noa.globalToLocal([spot.x + 0.5, spot.y + 0.5, spot.z + 0.5], null, ghostLocal)
   placeGhost.position.set(lp[0], lp[1], lp[2])
   placeGhost.setEnabled(true)
+  if (side) {
+    const lp2 = noa.globalToLocal([side.sx + 0.5, side.sy + 0.5, side.sz + 0.5], null, ghostLocal2)
+    placeGhostSide.position.set(lp2[0], lp2[1], lp2[2])
+    placeGhostSide.setEnabled(true)
+  } else placeGhostSide.setEnabled(false)
 }
 function paintOutline() {
   const tgt = noa.targetedBlock
@@ -4988,6 +5229,31 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     rolls(kind, x, y, z) { return session.seedCount(kind, x, y, z) },
     lost: () => session.lostItems ? session.lostItems() : [],
     gifts: () => ({ ...gifts }),
+    shopPlace: (x, y, z) => placeShop(x | 0, y | 0, z | 0),
+    shopLift: (x, y, z) => liftShop(x | 0, y | 0, z | 0),
+    shopInfo: (x, y, z) => {
+      const key = x + ',' + y + ',' + z
+      const meta = session && session.meta ? session.meta.get(key) || null : null
+      const anchor = meta && meta.anchor ? meta.anchor : shopAnchorKey(x, y, z)
+      return { id: getVoxel(x, y, z), meta, face: readFace(x, y, z), anchor, wall: stations && stations.wallItems ? stations.wallItems(anchor) : [] }
+    },
+    safety: () => {
+      const el = document.getElementById('shop-safe')
+      return { due: safetyDue(), seen: !!gifts.shopSafe, open: !!el, text: el ? el.innerText : '' }
+    },
+    glasses: () => ({ on: !!gifts.glassesOn, mesh: !!(glassesMesh && glassesMesh.isEnabled()), mark: document.body.dataset.glasses || '' }),
+    wearGlasses: (on) => wearGlasses(!!on),
+    strict: (on) => {
+      try {
+        if (on) localStorage.setItem('bloxbert-strict', '1')
+        else localStorage.removeItem('bloxbert-strict')
+        sessionStorage.removeItem('bt-shop-safe')
+      } catch (e) {}
+      return strictOn()
+    },
+    focus: (id) => { if (session && session.focusCraft) session.focusCraft(id); if (panels) panels.open('crafting'); return true },
+    hold: (item) => !!(session && session.holdItem && session.holdItem(item)),
+    take: (item, n) => !!(session && session.spend && session.spend(item, n || 1)),
     apply: (doc) => applyDoc(doc),
     uses: () => {
       const s = session.bag.slots[session.hot]

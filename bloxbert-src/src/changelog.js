@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.118', date: '2026-10-10', lines: {
+    en: ['A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.'],
+    uk: ['Верстат тримає окуляри, рулетку, пилку й молоток, а правила майстерні з’являються вперше.'],
+    ru: ['Верстак хранит очки, рулетку, пилу и молоток, а правила мастерской показываются в первый раз.'],
+    es: ['El banco de madera guarda las gafas, la cinta, el serrucho y el martillo, y las reglas del taller salen la primera vez.'],
+    ar: ['منضدة الخشب تحفظ النظارة والشريط والمنشار والمطرقة، وقواعد الورشة تظهر أول مرة.'],
+    'fa-AF': ['میز نجاری عینک، متر، اره و چکش را نگه می‌دارد، و قانون کارگاه بار اول نشان داده می‌شود.'],
+    rw: ['Intebe y\'ububaji ibika amararo, umugozi, urubanza n\'inyundo, kandi amategeko y\'ikigo agaragara ubwa mbere.'],
+    ti: ['ናይ ዕንጨይቲ መደብ መነጽር፡ መለክዒ፡ መጋዝን መጥሓንን ይሕዝ፡ ሕግታት ዕድጊ ድማ መጀመርታ ይረኣዩ።'],
+  }},
   { v: '2.5.117', date: '2026-10-10', lines: {
     en: ['Block ids stay frozen, and a missing pack shows as a crate until it returns.'],
   }},

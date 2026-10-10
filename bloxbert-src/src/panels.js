@@ -42,7 +42,7 @@ export function mountPanels(api) {
     if (KS && KS.clearPicks) KS.clearPicks()
     if (api.clearBag) api.clearBag()
   }
-  const SLOT_PANELS = { inventory: 1, crafting: 1, station: 1, bench: 1, box: 1 }
+  const SLOT_PANELS = { inventory: 1, crafting: 1, station: 1, bench: 1, box: 1, woodshop: 1 }
   let slideGen = 0
   function motionOff() {
     try {
@@ -193,6 +193,7 @@ export function mountPanels(api) {
       }),
       station: (key) => show('station', api.t('oven'), (g) => api.paintStation(g, key, 'oven')),
       bench: (key) => show('bench', api.t('workbench'), (g) => api.paintStation(g, key, 'bench')),
+      woodshop: (key) => show('woodshop', api.t('woodshop'), (g) => api.paintStation(g, key, 'woodshop')),
       log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),

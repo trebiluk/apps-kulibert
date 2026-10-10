@@ -2,6 +2,7 @@
 import { RECIPES } from './data/recipes.js'
 import { ITEMS } from './data/items.js'
 import { slotArt } from './icons.js'
+import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8 }
 let slotsOf = () => []
@@ -213,8 +214,267 @@ export function createStations(api) {
     row.append(ic, words)
     crate.append(row)
   }
+  const SHOP_TOOLS = [
+    { item: 'safetyGlasses', need: 'needsGlasses', skill: 'skillGlasses' },
+    { item: 'measuringTape', need: 'needsTape', skill: 'skillTape' },
+    { item: 'handSaw', need: 'needsSaw', skill: 'skillSaw' },
+    { item: 'hammer', need: 'needsHammer', skill: 'skillHammer' },
+  ]
+  function shopTone(hz, el) {
+    if (el) fx(el, 'pop')
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext
+      if (!AC) return
+      if (!shopTone.ctx) shopTone.ctx = new AC()
+      const ctx = shopTone.ctx
+      if (ctx.state === 'suspended') ctx.resume()
+      const o = ctx.createOscillator()
+      const g = ctx.createGain()
+      o.type = 'square'
+      o.frequency.value = hz || 520
+      const t0 = ctx.currentTime
+      g.gain.setValueAtTime(0.045, t0)
+      g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.07)
+      o.connect(g)
+      g.connect(ctx.destination)
+      o.start(t0)
+      o.stop(t0 + 0.08)
+    } catch (e) {}
+  }
+  function ensureShop(key) {
+    const r = get(key, 'woodshop')
+    if (!Array.isArray(r.wall)) r.wall = [null, null, null, null]
+    r.kind = 'woodshop'
+    return r
+  }
+  function wallItems(key) {
+    const r = map.get(key)
+    if (!r || !Array.isArray(r.wall)) return []
+    return r.wall.filter(Boolean)
+  }
+  function clearShop(key) { map.delete(key) }
+  function haveShopTool(key, item) {
+    return wallItems(key).indexOf(item) >= 0 || !!(api.have && api.have(item) > 0)
+  }
+  let shopPick = ''
+  let shopGuide = ''
+  function paintWoodshop(g, key) {
+    const rec = ensureShop(key)
+    if (shopGuide && shopGuide !== 'woodshop' && !SHOP_TOOLS.some((row) => row.item === shopGuide)) shopGuide = ''
+    g.innerHTML = ''
+    g.classList.add('crate')
+    const crate = document.createElement('div')
+    crate.className = 'station-crate machine shop-bench'
+    head(crate, 'woodshop', api.t('woodshop'), api.t('fieldGuide'))
+    if (shopGuide) {
+      const who = SHOP_TOOLS.find((row) => row.item === shopGuide)
+      const page = document.createElement('div')
+      page.className = 'shop-page'
+      const art = document.createElement('span')
+      art.className = 'gic'
+      art.append(face(shopGuide))
+      const title = document.createElement('p')
+      title.className = 'gnote'
+      title.textContent = api.t(shopGuide)
+      const line = document.createElement('p')
+      line.className = 'gnote shop-skill'
+      line.textContent = api.t(who ? who.skill : 'skillBench')
+      const back = document.createElement('button')
+      back.type = 'button'
+      back.className = 'keycap'
+      back.textContent = api.t('close')
+      back.addEventListener('click', () => { shopGuide = ''; paintWoodshop(g, key) })
+      page.append(art, title, line, back)
+      crate.append(page)
+      g.append(crate)
+      return
+    }
+    const wall = document.createElement('div')
+    wall.className = 'tool-wall'
+    const hang = (index, item) => {
+      if (!SHOP_TOOLS[index] || SHOP_TOOLS[index].item !== item) return false
+      if (rec.wall[index]) return false
+      if (!(api.have && api.have(item) > 0)) return false
+      if (api.spend && !api.spend(item, 1)) return false
+      rec.wall[index] = item
+      if (shopPick === item) shopPick = ''
+      touch()
+      shopTone(640, wall)
+      paintWoodshop(g, key)
+      return true
+    }
+    const takeBack = (index) => {
+      const item = rec.wall[index]
+      if (!item) return
+      rec.wall[index] = null
+      if (api.give) api.give(item, 1)
+      touch()
+      shopTone(420, wall)
+      paintWoodshop(g, key)
+    }
+    SHOP_TOOLS.forEach((tool, index) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'wall-slot' + (rec.wall[index] ? ' filled' : ' empty')
+      b.dataset.wall = tool.item
+      const art = document.createElement('span')
+      art.className = 'gic'
+      art.append(face(rec.wall[index] || tool.item))
+      const cap = document.createElement('span')
+      cap.className = 'wall-cap'
+      cap.textContent = rec.wall[index] ? '✓' : api.t(tool.need)
+      b.append(art, cap)
+      const label = rec.wall[index] ? api.t(tool.item) : api.t(tool.need)
+      b.title = label
+      b.setAttribute('aria-label', label)
+      b.addEventListener('click', () => {
+        if (rec.wall[index]) { takeBack(index); return }
+        if (api.have && api.have(tool.item) > 0) hang(index, tool.item)
+      })
+      wall.append(b)
+    })
+    crate.append(wall)
+    const bagRow = document.createElement('div')
+    bagRow.className = 'shop-bag'
+    ;(slotsOf() || []).forEach((s, i) => {
+      if (!s || !s.item || !(s.n > 0) || !SHOP_TOOLS.some((row) => row.item === s.item)) return
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'keycap shop-tool' + (shopPick === s.item ? ' on' : '')
+      b.dataset.item = s.item
+      b.dataset.slot = String(i)
+      const art = document.createElement('span')
+      art.className = 'gic'
+      art.append(face(s.item))
+      const lab = document.createElement('span')
+      lab.textContent = api.t(s.item)
+      b.append(art, lab)
+      b.setAttribute('aria-label', api.t(s.item))
+      let drag = null
+      b.addEventListener('pointerdown', (e) => {
+        if (e.button > 0) return
+        drag = { x: e.clientX, y: e.clientY, moved: false, item: s.item }
+        try { b.setPointerCapture(e.pointerId) } catch (err) {}
+      })
+      b.addEventListener('pointermove', (e) => {
+        if (!drag) return
+        if (Math.hypot(e.clientX - drag.x, e.clientY - drag.y) > 8) drag.moved = true
+      })
+      b.addEventListener('pointerup', (e) => {
+        if (!drag) return
+        const moved = drag.moved
+        const item = drag.item
+        drag = null
+        if (!moved) {
+          shopPick = shopPick === item ? '' : item
+          paintWoodshop(g, key)
+          return
+        }
+        const hit = document.elementFromPoint(e.clientX, e.clientY)
+        const slot = hit && hit.closest ? hit.closest('[data-wall]') : null
+        if (!slot) return
+        const index = SHOP_TOOLS.findIndex((row) => row.item === slot.dataset.wall)
+        if (index >= 0 && item === SHOP_TOOLS[index].item) hang(index, item)
+      })
+      bagRow.append(b)
+    })
+    crate.append(bagRow)
+    const job = document.createElement('div')
+    job.className = 'shop-job'
+    const ready = SHOP_TOOLS.every((row) => haveShopTool(key, row.item))
+    job.classList.toggle('lit', ready)
+    job.dataset.ready = ready ? '1' : '0'
+    const jobBtn = document.createElement('button')
+    jobBtn.type = 'button'
+    jobBtn.className = 'keycap shop-go'
+    jobBtn.textContent = (ready ? '✓ ' : '') + api.t('woodshopReady')
+    jobBtn.disabled = !ready
+    jobBtn.addEventListener('click', () => {
+      if (!SHOP_TOOLS.every((row) => haveShopTool(key, row.item))) return
+      if (api.glasses) api.glasses(true)
+      let note = crate.querySelector('.glasses-note')
+      if (!note) {
+        note = document.createElement('p')
+        note.className = 'gnote glasses-note'
+        const mark = document.createElement('span')
+        mark.className = 'gic'
+        mark.append(face('safetyGlasses'))
+        note.append(mark, document.createTextNode(' ' + api.t('glassesOn')))
+        crate.append(note)
+      }
+      shopTone(880, jobBtn)
+    })
+    job.append(jobBtn)
+    const needs = document.createElement('div')
+    needs.className = 'shop-needs'
+    SHOP_TOOLS.forEach((row) => {
+      const bit = document.createElement('button')
+      bit.type = 'button'
+      const has = haveShopTool(key, row.item)
+      bit.className = 'need-tool' + (has ? ' have' : ' miss')
+      bit.textContent = has ? '✓ ' + api.t(row.item) : api.t(row.need)
+      if (!has) bit.addEventListener('click', () => { if (api.openCraft) api.openCraft(row.item) })
+      needs.append(bit)
+    })
+    job.append(needs)
+    crate.append(job)
+    const guide = document.createElement('div')
+    guide.className = 'shop-guide'
+    SHOP_TOOLS.map((row) => row.item).concat(['woodshop']).forEach((id) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'keycap'
+      b.textContent = api.t('fieldGuide') + ' · ' + api.t(id)
+      b.addEventListener('click', () => { shopGuide = id; paintWoodshop(g, key) })
+      guide.append(b)
+    })
+    crate.append(guide)
+    g.append(crate)
+    if (api.safetyDue && api.safetyDue()) showSafety()
+  }
+  function showSafety() {
+    const old = document.getElementById('shop-safe')
+    if (old) old.remove()
+    const wrap = document.createElement('div')
+    wrap.id = 'shop-safe'
+    wrap.setAttribute('role', 'dialog')
+    wrap.addEventListener('pointerdown', (e) => e.stopPropagation())
+    const card = document.createElement('div')
+    card.className = 'card'
+    const art = document.createElement('span')
+    art.className = 'gic'
+    art.append(face('safetyGlasses'))
+    const p = document.createElement('p')
+    p.textContent = api.t('safetyBody')
+    const btn = document.createElement('button')
+    btn.type = 'button'
+    btn.textContent = api.t('safetyOk')
+    const closeCard = () => {
+      wrap.remove()
+      document.removeEventListener('keydown', onKey, true)
+      if (api.markSafety) api.markSafety()
+      shopTone(520, btn)
+    }
+    const onKey = (e) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault()
+      e.stopPropagation()
+      closeCard()
+    }
+    btn.addEventListener('click', closeCard)
+    document.addEventListener('keydown', onKey, true)
+    card.append(art, p, btn)
+    wrap.append(card)
+    document.body.append(wrap)
+    shopTone(520, card)
+  }
   function paint(g, key, kind) {
     const k = key || '0,5,0'
+    if (kind === 'woodshop') {
+      if (g._ksDestroy) { g._ksDestroy(); g._ksDestroy = null }
+      paintWoodshop(g, k)
+      return
+    }
     const isBench = kind === 'bench'
     if (g._ksDestroy) { g._ksDestroy(); g._ksDestroy = null }
     g.innerHTML = ''
@@ -333,7 +593,7 @@ export function createStations(api) {
     }
     return out
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, baking, dump: () => {
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, dump: () => {
     const out = {}
     for (const [k, v] of map) out[k] = JSON.parse(JSON.stringify(v))
     return out
