@@ -34,6 +34,8 @@ export function createSession(api) {
     return !!(sheet && sheet.dataset.slotsReady === '0')
   }
   function blockSlot(e) {
+    const KS = window.KulibertSlots
+    if (KS && KS.guardSlot) return KS.guardSlot(e)
     if (!slotsHeld()) return false
     if (e) { e.preventDefault(); e.stopPropagation() }
     return true
@@ -2266,7 +2268,7 @@ export function createSession(api) {
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     get bag() { return bag },
-    bags: () => ({ survival: bags.survival.dump(), creative: bags.creative.dump() }), wallet, meta, paintBag, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
+    bags: () => ({ survival: bags.survival.dump(), creative: bags.creative.dump() }), wallet, meta, paintBag, clearBagPick() { bagSel = -1 }, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
     lostAdd,
     tryCraft,

@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start.",
+  "whatsNewBody": "The Bag listens to your very first click and opens fresh each time.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

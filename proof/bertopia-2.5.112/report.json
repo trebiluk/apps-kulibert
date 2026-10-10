@@ -1,0 +1,298 @@
+{
+  "steps": [
+    {
+      "name": "version",
+      "ok": true,
+      "detail": "2.5.112"
+    },
+    {
+      "name": "1366 bag 0ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "1366 bag 20ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "1366 bag 100ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "1366 bag 300ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "1366 fresh after esc",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "1366 next tap after esc",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "1366 fresh after x",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "1366 next tap after x",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "1366 fresh after e",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "1366 next tap after e",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "1366 fresh after out",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "1366 next tap after out",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "1366 box 0ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 box 20ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 box 100ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 box 300ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 box click-to-move",
+      "ok": true,
+      "detail": "{\"box\":\"Flour 4\",\"bag\":\"Empty slot\"}"
+    },
+    {
+      "name": "1366 box shift-click",
+      "ok": true,
+      "detail": "{\"box\":\"Empty slot\",\"bag\":\"Flour 4\"}"
+    },
+    {
+      "name": "1366 box drag",
+      "ok": true,
+      "detail": "{\"before\":{\"box\":\"Empty slot\",\"bag\":\"Stick 2\"},\"after\":{\"box\":\"Stick 2\",\"bag\":\"Empty slot\"}}"
+    },
+    {
+      "name": "1366 oven 0ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 oven 20ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 oven 100ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 oven 300ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "1366 oven first click",
+      "ok": true,
+      "detail": "{\"hidden\":false,\"text\":\"Flour ×4\"}"
+    },
+    {
+      "name": "1366 oven opens fresh",
+      "ok": true,
+      "detail": "{\"pick\":false,\"asks\":false}"
+    },
+    {
+      "name": "1366 workbench 0ms",
+      "ok": true,
+      "detail": "{\"delay\":0,\"ready\":\"0\",\"label\":\"Flour 4\",\"state\":{\"card\":\"Flour 4\",\"on\":\"0\",\"pick\":\"flour\"}}"
+    },
+    {
+      "name": "reduced motion ready",
+      "ok": true,
+      "detail": "{\"x\":286.5,\"y\":197,\"label\":\"Flour\",\"ready\":\"1\"}"
+    },
+    {
+      "name": "reduced motion instant card",
+      "ok": true,
+      "detail": "{\"card\":\"Flour x4\",\"on\":\"0\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]}"
+    },
+    {
+      "name": "1366 rotate keeps card",
+      "ok": true,
+      "detail": "{\"before\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]},\"portrait\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]},\"land\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "915 bag 0ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "915 bag 20ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "915 bag 100ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "915 bag 300ms x8",
+      "ok": true,
+      "detail": "Flour card"
+    },
+    {
+      "name": "915 fresh after esc",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "915 next tap after esc",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "915 fresh after x",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "915 next tap after x",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "915 fresh after e",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "915 next tap after e",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "915 fresh after out",
+      "ok": true,
+      "detail": "{\"closed\":true,\"fresh\":{\"card\":\"\",\"on\":\"\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "915 next tap after out",
+      "ok": true,
+      "detail": "{\"after\":{\"card\":\"Stick x2\",\"on\":\"1\",\"hidden\":false,\"slots\":[\"Flour\",\"Stick\",\"Planks\",\"Coal stone\"]},\"same\":true,\"name\":\"Stick\"}"
+    },
+    {
+      "name": "915 box 0ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 box 20ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 box 100ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 box 300ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 box click-to-move",
+      "ok": true,
+      "detail": "{\"box\":\"Flour 4\",\"bag\":\"Empty slot\"}"
+    },
+    {
+      "name": "915 box shift-click",
+      "ok": true,
+      "detail": "{\"box\":\"Empty slot\",\"bag\":\"Flour 4\"}"
+    },
+    {
+      "name": "915 box drag",
+      "ok": true,
+      "detail": "{\"before\":{\"box\":\"Stick 2\",\"bag\":\"Stick 2\"},\"after\":{\"box\":\"Stick 4\",\"bag\":\"Empty slot\"}}"
+    },
+    {
+      "name": "915 oven 0ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 oven 20ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 oven 100ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 oven 300ms x8",
+      "ok": true,
+      "detail": "pick"
+    },
+    {
+      "name": "915 oven first click",
+      "ok": true,
+      "detail": "{\"hidden\":false,\"text\":\"Flour ×4\"}"
+    },
+    {
+      "name": "915 oven opens fresh",
+      "ok": true,
+      "detail": "{\"pick\":false,\"asks\":false}"
+    },
+    {
+      "name": "915 rotate keeps card",
+      "ok": true,
+      "detail": "{\"before\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]},\"portrait\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]},\"land\":{\"card\":\"Planks x3\",\"on\":\"2\",\"hidden\":false,\"slots\":[\"Flour\",\"Empty slot\",\"Planks\",\"Coal stone\"]}}"
+    },
+    {
+      "name": "console errors",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "console warnings",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "drops": 0,
+  "pass": true,
+  "errors": [],
+  "warnings": []
+}

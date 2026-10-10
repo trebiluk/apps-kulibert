@@ -514,14 +514,109 @@
     } catch (e) {}
   }
 
+  var slideClick = null
+  var swallowClickUntil = 0
+  var openPanels = []
+
+  function slideTy() {
+    var sheet = document.getElementById('sheet')
+    if (!sheet) return 0
+    var raw = root.getComputedStyle(sheet).transform
+    if (!raw || raw === 'none') return 0
+    try { return new root.DOMMatrix(raw).m42 || 0 } catch (e) { return 0 }
+  }
+  function slotOfEvent(e) {
+    if (!e || !e.target || !e.target.closest) return null
+    return e.target.closest('.ks-slot, .well[data-slot], #sheet[data-panel="inventory"] .well, .ks-choice, .oven-choice')
+  }
+  function slotFromPoint(x, y) {
+    var under = document.elementFromPoint(x, y)
+    if (!under || !under.closest) return null
+    return under.closest('.ks-slot, .well[data-slot], #sheet[data-panel="inventory"] .well, .ks-choice, .oven-choice')
+  }
+  function holdClick(e, slot) {
+    if (!e || (e.button != null && e.button > 0)) return
+    var ty = slideTy()
+    var seen = slot || slotOfEvent(e)
+    if (!seen) seen = slotFromPoint(e.clientX, e.clientY)
+    if (slideClick && slideClick.seen && slideClick.seen.isConnected && seen && seen !== slideClick.seen) return
+    slideClick = { x: e.clientX, y: e.clientY - ty, shift: !!e.shiftKey, seen: seen || (slideClick && slideClick.seen) || null }
+  }
+  function dropClick() {
+    slideClick = null
+    swallowClickUntil = 0
+  }
+  function releaseClicks() {
+    var job = slideClick
+    slideClick = null
+    if (!job) return
+    var slot = null
+    if (job.seen && job.seen.isConnected) slot = job.seen
+    else if (job.seen) slot = slotFromPoint(job.x, job.y)
+    if (!slot || !slot.isConnected) return
+    swallowClickUntil = root.performance.now() + 500
+    slot.__ksIgnoreUntil = swallowClickUntil
+    slot.dispatchEvent(new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: root,
+      clientX: job.x,
+      clientY: job.y,
+      button: 0,
+      shiftKey: !!job.shift,
+    }))
+  }
+  function clearPicks() {
+    dropClick()
+    var i
+    for (i = 0; i < sessions.length; i++) {
+      try { sessions[i].cancelDrag() } catch (e) {}
+      try { sessions[i].unpick() } catch (e2) {}
+    }
+    openPanels = openPanels.filter(function (p) { return p.alive() })
+    for (i = 0; i < openPanels.length; i++) {
+      try { openPanels[i].clear() } catch (e3) {}
+    }
+  }
+
   function slotsHeld() {
     var sheet = document.getElementById('sheet')
     return !!(sheet && !sheet.hidden && sheet.dataset.slotsReady === '0')
   }
-  function blockSlot(e) {
-    if (!slotsHeld()) return false
-    if (e) { e.preventDefault(); e.stopPropagation() }
-    return true
+  function guardSlot(e) {
+    if (e && e.type === 'pointerdown' && swallowClickUntil && !slotsHeld()) swallowClickUntil = 0
+    var slot = slotOfEvent(e)
+    if (slotsHeld()) {
+      if (e) {
+        e.preventDefault()
+        e.stopPropagation()
+        if (e.type === 'pointerdown' || e.type === 'click') holdClick(e, slot)
+      }
+      return true
+    }
+    if (e && e.type === 'click' && e.isTrusted !== false && swallowClickUntil && root.performance.now() < swallowClickUntil) {
+      swallowClickUntil = 0
+      if (slot) slot.__ksIgnoreUntil = 0
+      e.preventDefault()
+      e.stopPropagation()
+      return true
+    }
+    return false
+  }
+  function blockSlot(e) { return guardSlot(e) }
+  if (root.document && root.document.addEventListener) {
+    root.document.addEventListener('pointerdown', function (e) {
+      if (swallowClickUntil && !slotsHeld()) swallowClickUntil = 0
+    }, true)
+    root.document.addEventListener('click', function (e) {
+      if (!e || e.isTrusted === false) return
+      if (!swallowClickUntil || root.performance.now() >= swallowClickUntil) return
+      var sheet = document.getElementById('sheet')
+      if (!sheet || sheet.hidden || !e.target || !sheet.contains(e.target)) return
+      swallowClickUntil = 0
+      e.preventDefault()
+      e.stopPropagation()
+    }, true)
   }
 
   function armPointer(el, handlers, guardBox) {
@@ -623,6 +718,17 @@
     var guardBox = { guard: null }
     var alive = true
     var buttons = {}
+    openPanels.push({
+      alive: function () { return alive && card.isConnected },
+      clear: function () {
+        pick = null
+        pickerRole = ''
+        pickSig = ''
+        if (!card.isConnected) return
+        ensureBag()
+        renderPicker()
+      },
+    })
 
     el.innerHTML = ''
     el.classList.add('ks-root')
@@ -1021,6 +1127,13 @@
     var recipe = opts.recipe || { in: [], out: ['', 1] }
     var pick = null
     var guardBox = { guard: null }
+    openPanels.push({
+      alive: function () { return card.isConnected },
+      clear: function () {
+        pick = null
+        if (card.isConnected) paintBag()
+      },
+    })
     el.innerHTML = ''
     el.classList.add('ks-root')
     var card = document.createElement('div')
@@ -1288,5 +1401,10 @@
     createSession: createSession,
     util: { putInSlots: putInSlots },
     ui: { machinePanel: machinePanel, craftPanel: craftPanel, bounce: bounce },
+    guardSlot: guardSlot,
+    holdClick: holdClick,
+    dropClick: dropClick,
+    releaseClicks: releaseClicks,
+    clearPicks: clearPicks,
   }
 })(typeof window !== 'undefined' ? window : globalThis)

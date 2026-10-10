@@ -20,6 +20,7 @@ export function mountPanels(api) {
     if (id === 'menu' && api.holdTour) api.holdTour()
     if (root) stack = ['menu']
     else if (stack[stack.length - 1] !== id) stack.push(id)
+    freshSlots()
     sheet.hidden = false
     title.textContent = label
     back.hidden = !!root
@@ -32,6 +33,14 @@ export function mountPanels(api) {
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
     armSlide(id)
+    openedAt = performance.now()
+  }
+  let openedAt = 0
+  function freshSlots() {
+    const KS = window.KulibertSlots
+    if (KS && KS.dropClick) KS.dropClick()
+    if (KS && KS.clearPicks) KS.clearPicks()
+    if (api.clearBag) api.clearBag()
   }
   const SLOT_PANELS = { inventory: 1, crafting: 1, station: 1, bench: 1, box: 1 }
   let slideGen = 0
@@ -50,6 +59,7 @@ export function mountPanels(api) {
       sheet.dataset.slotsReady = '1'
       sheet.style.transition = ''
       sheet.style.transform = ''
+      if (window.KulibertSlots && window.KulibertSlots.releaseClicks) window.KulibertSlots.releaseClicks()
     }
     if (!SLOT_PANELS[id] || motionOff()) {
       sheet.classList.remove('slots-slide')
@@ -81,6 +91,12 @@ export function mountPanels(api) {
     })
   }
   function dismiss() {
+    slideGen += 1
+    freshSlots()
+    sheet.dataset.slotsReady = '1'
+    sheet.classList.remove('slots-slide')
+    sheet.style.transition = ''
+    sheet.style.transform = ''
     sheet.hidden = true
     stack = []
     sheet.dataset.panel = ''
@@ -197,6 +213,12 @@ export function mountPanels(api) {
   const sheetX = document.getElementById('sheet-x')
   sheetX.addEventListener('pointerdown', (e) => e.stopPropagation())
   sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
+  sheet.addEventListener('pointerdown', (e) => {
+    if (sheet.hidden || performance.now() - openedAt < 400) return
+    const t = e.target
+    if (!t || t.closest('button, a, input, textarea, select, label, .well, .ks-slot, .keycap, .bag-card, .ks-picks, .oven-picks, .ks-choice, .oven-choice')) return
+    if (t === sheet || t.id === 'sheet-body' || (t.classList && t.classList.contains('ggrid'))) close()
+  })
   if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
   return { openRoot, open, close, dismiss, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }

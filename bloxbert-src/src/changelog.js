@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.112', date: '2026-10-10', lines: {
+    en: ['The Bag listens to your very first click and opens fresh each time.'],
+    uk: ['Сумка чує найперший клік і щоразу відкривається чистою.'],
+    ru: ['Сумка слышит самый первый клик и каждый раз открывается чистой.'],
+    es: ['La bolsa oye tu primer clic y se abre limpia cada vez.'],
+    ar: ['الحقيبة تسمع أول نقرة وتفتح جديدة في كل مرة.'],
+    'fa-AF': ['بکس همان کلیک اول را می‌شنود و هر بار تازه باز می‌شود.'],
+    rw: ['Agasaho kumva ikanda rya mbere kandi gafunguka gashya buri gihe.'],
+    ti: ['ቦርሳ ነቲ ናይ መጀመርታ ጠውቕ ትሰምዕ፡ ኩሉ ግዜ ድማ ሓድሽ ትኸፈት።'],
+  }},
   { v: '2.5.111', date: '2026-10-09', lines: {
     en: ['Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start.'],
     uk: ['Лівий клік теж збирає стиглі культури, і біля старту більше не застрягнеш у ямі.'],

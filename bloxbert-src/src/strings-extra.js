@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start.',
+    whatsNewBody: 'The Bag listens to your very first click and opens fresh each time.',
     notRipeHold: 'Not ripe yet - hold to break it',
     stuckStep: 'Stuck? Dig a step or place a block to climb out.',
     bagHint: 'Press E (or Esc, then click Bag) to open your Bag.',
@@ -253,7 +253,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Лівий клік теж збирає стиглі культури, і біля старту більше не застрягнеш у ямі.',
+    whatsNewBody: 'Сумка чує найперший клік і щоразу відкривається чистою.',
     notRipeHold: 'Ще не стигле — тримай, щоб зламати.',
     stuckStep: 'Застряг? Прокопай сходинку або постав блок, щоб вилізти.',
     bagHint: 'Натисни E (або Esc, потім клік Сумка), щоб відкрити сумку.',
@@ -310,7 +310,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Левый клик тоже собирает спелые культуры, и у старта больше не застрянешь в яме.',
+    whatsNewBody: 'Сумка слышит самый первый клик и каждый раз открывается чистой.',
     notRipeHold: 'Ещё не спелое — держи, чтобы сломать.',
     stuckStep: 'Застрял? Прокопай ступеньку или поставь блок, чтобы вылезти.',
     bagHint: 'Нажми E (или Esc, потом клик Сумка), чтобы открыть сумку.',
@@ -367,7 +367,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'El clic izquierdo también cosecha lo maduro, y ya no te quedas atrapado en hoyos cerca del inicio.',
+    whatsNewBody: 'La bolsa oye tu primer clic y se abre limpia cada vez.',
     notRipeHold: 'Aún no está maduro: mantén para romperlo.',
     stuckStep: '¿Atrapado? Cava un escalón o pon un bloque para salir.',
     bagHint: 'Pulsa E (o Esc y luego Bolsa) para abrir tu Bolsa.',
@@ -424,7 +424,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'النقر الأيسر يحصد الزرع الناضج أيضاً، ولن تعلق في حفرة قرب البداية.',
+    whatsNewBody: 'الحقيبة تسمع أول نقرة وتفتح جديدة في كل مرة.',
     notRipeHold: 'لم ينضج بعد — اضغط مطولاً لكسره.',
     stuckStep: 'عالِق؟ احفر درجة أو ضع مكعباً لتتسلق للخارج.',
     bagHint: 'اضغط E (أو Esc ثم الحقيبة) لفتح حقيبتك.',
@@ -481,7 +481,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'کلیک چپ کشت رسیده را هم برمی‌دارد، و دیگر نزدیک آغاز در چاله گیر نمی‌کنی.',
+    whatsNewBody: 'بکس همان کلیک اول را می‌شنود و هر بار تازه باز می‌شود.',
     notRipeHold: 'هنوز نرسیده — برای شکستن نگه دار.',
     stuckStep: 'گیر کردی؟ یک پله بکن یا بلاک بگذار تا بالا بیایی.',
     bagHint: 'E را بزن (یا Esc، بعد بکس) تا بکس باز شود.',
@@ -538,7 +538,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Ikikubitswe ibumoso naso gisarura ibyibye, kandi ntukibura mu mwobo hafi y\'intangiriro.',
+    whatsNewBody: 'Agasaho kumva ikanda rya mbere kandi gafunguka gashya buri gihe.',
     notRipeHold: 'Ntirikwira — fata kugira ngo uvunagure.',
     stuckStep: 'Wafashwe? Yimba urutambike cyangwa shyira block winjire hejuru.',
     bagHint: 'Kanda E (cyangwa Esc, hanyuma Agasaho) ufungure agasaho.',
@@ -595,7 +595,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ጸጋማይ ጠውቕ ዝበስለ እኽሊ እውን ይእክብ፡ ኣብ መጀመርታ ድማ ኣብ ጉድጓድ ኣይትሕጸን።',
+    whatsNewBody: 'ቦርሳ ነቲ ናይ መጀመርታ ጠውቕ ትሰምዕ፡ ኩሉ ግዜ ድማ ሓድሽ ትኸፈት።',
     notRipeHold: 'ገና ኣይበስለን — ሓዝ ንምስባር።',
     stuckStep: 'ተሓጺንካ? ስጉምቲ ጉድጓድ ወይ ብሎክ ኣቐምጥ ንምውጻእ።',
     bagHint: 'E ጠውቕ (ወይ Esc፡ ድሕሪኡ ቦርሳ) ቦርሳኻ ንምኽፋት።',
