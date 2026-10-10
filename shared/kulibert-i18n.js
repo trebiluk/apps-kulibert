@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "The Bag listens to your very first click and opens fresh each time.",
+  "whatsNewBody": "Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

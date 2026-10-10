@@ -29,6 +29,7 @@ function recipeFor(api, item, fueled) {
 }
 export function createStations(api) {
   const map = new Map()
+  function touch() { if (api.touch) api.touch() }
   function get(key, kind) {
     if (!map.has(key)) map.set(key, { kind, fuel: 0, input: [], output: [], until: 0, left: 0 })
     return map.get(key)
@@ -50,6 +51,7 @@ export function createStations(api) {
       rec.fuelN = Math.max(0, (rec.fuelN || 1) - 1)
     }
     if (!(rec.left > 0) || !(rec.fuelN > 0)) { rec.fuelItem = ''; rec.fuelN = 0; rec.fuelSpent = 0 }
+    touch()
   }
   function tick() {
     for (const rec of map.values()) finish(rec)
@@ -66,6 +68,7 @@ export function createStations(api) {
     r.fuel = r.left
     r.fuelNote = ''
     beginBake(r, OVEN.find((x) => x.id === r.staged))
+    touch()
     return true
   }
   function arm(key, recipeId) {
@@ -83,6 +86,7 @@ export function createStations(api) {
     }
     r.picking = !r.staged
     beginBake(r, r.staged ? recipe : null)
+    touch()
     return true
   }
   function addInput(key, recipeId) {
@@ -99,12 +103,14 @@ export function createStations(api) {
     r.secs = recipe.secs || 5
     r.until = Date.now() + r.secs * 1000
     r.staged = null
+    touch()
     return true
   }
   function take(key) {
     const r = get(key, 'oven')
     const item = r.output.shift()
     if (item && api.give) api.give(item, 1)
+    if (item) touch()
     return item
   }
   function view(key) {
@@ -327,5 +333,14 @@ export function createStations(api) {
     }
     return out
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, baking, dump: () => Object.fromEntries(map), load: (obj) => { map.clear(); for (const [k, v] of Object.entries(obj || {})) map.set(k, v) } }
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, dump: () => {
+    const out = {}
+    for (const [k, v] of map) out[k] = JSON.parse(JSON.stringify(v))
+    return out
+  }, load: (obj) => {
+    map.clear()
+    for (const [k, v] of Object.entries(obj || {})) {
+      if (v && typeof v === 'object') map.set(k, JSON.parse(JSON.stringify(v)))
+    }
+  } }
 }

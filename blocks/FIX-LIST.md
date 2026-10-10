@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.112 The Bag listens to your very first click and opens fresh each time).
+Updated Fri Oct 9 2026 (Build: 2.5.113 Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry).
 
+- [x] **2.5.113 Machines and replant:** A placed Box, Oven, Workbench or door, and what is inside, stays after save, close and reopen. Save says Saved. Harvest replants from a seed in the hotbar, the Bag or the pockets, including a seed this harvest just gave.
 - [x] **2.5.112 Bag clicks:** The first click on an item counts even while the Bag, Box, Oven or Workbench is still sliding. Closing any of them (Esc, the close button, E, or a tap outside) clears the picked item, the outline and the card, so the next open starts fresh.
 - [x] **2.5.111 Left-click harvest and spawn steps:** Left-click on ripe wheat harvests, pops, and replants. A quick tap on a growing crop only shows "Not ripe yet - hold to break it". Holding break drops 1 seed. A fruiting Berry Bush picks on left-click and stays. Dips near spawn have a 1-block step.
 - [x] **2.5.110 Foraging:** Wild berry bushes in plains and forest. Pick a ripe one for 1 or 2 Berries, it shows bare branches and fruits again in 3 minutes. Breaking it gives 1 or 2 Berries and sometimes a Bush Sprout. Wild wheat still drops wheat and seeds, then grows back on that grass after 10 minutes unless you build there.
@@ -153,6 +154,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.112 The Bag listens to your very first click 
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.113 | Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry | shipped |
 | 1p | 2.5.112 | The Bag listens to your very first click and opens fresh each time | shipped |
 | 1p | 2.5.111 | Left-click ripe crops to harvest them too, and no more getting stuck in holes near the start | shipped |
 | 1p | 2.5.110 | Wild berry bushes grow back after you pick them, and wild wheat returns | shipped |

@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.112'
+const VERSION = '2.5.113'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -44,7 +44,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels } from './save/migrate.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
-import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
+import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 const farm = createFarm()
 const forage = createForage()
@@ -653,6 +653,11 @@ const blockName = (id) => {
 const S = 24
 const saved = new Map()
 let dirty = false
+let allowSave = false
+let voxelQuiet = false
+let pinGen = 0
+let machineTimer = 0
+const machineCells = new Map()
 function hash(x, z) { let h = (x * 374761393 + z * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967296 }
 function heightAt(x, z) {
   return spawnGround(x, z)
@@ -754,8 +759,11 @@ function setVoxel(x, y, z, v, draw = true) {
   const prev = s[i * S * S + j * S + kk]
   s[i * S * S + j * S + kk] = v
   if (draw) drawVoxel(x, y, z, v)
-  dirty = true
-  markSave(t('notSaved'))
+  if (!voxelQuiet) {
+    dirty = true
+    markSave(t('notSaved'))
+    if (isMachineId(prev) || isMachineId(v)) trackMachine(x, y, z, v)
+  }
   if (prev !== v) afterVoxel(x, y, z, prev, v)
 }
 let soilBusy = false
@@ -1419,7 +1427,6 @@ function tryBush(aimed) {
   return true
 }
 function harvestCrop(x, y, z) {
-  const hadSeed = session.bag.count('wheatSeeds') > 0
   const got = harvestCounts(x, y, z)
   const wheat0 = session.bag.count('wheat')
   const seed0 = session.bag.count('wheatSeeds')
@@ -1428,7 +1435,7 @@ function harvestCrop(x, y, z) {
   popHarvest(x, y, z, got)
   const overflow = session.bag.count('wheat') - wheat0 < got.wheat || session.bag.count('wheatSeeds') - seed0 < got.seeds
   let replanted = false
-  if (hadSeed && session.spend('wheatSeeds', 1)) {
+  if (replantSeed(session.bag.count('wheatSeeds')) && session.spend('wheatSeeds', 1)) {
     const now = Date.now()
     const soil = getVoxel(x, y - 1, z)
     const wet = soil === WET || nearWater(getVoxel, x, y - 1, z)
@@ -1747,11 +1754,18 @@ try {
   }
 } catch (e) {}
 function idb() {
-  return new Promise((res, rej) => {
+  if (idb.db) return Promise.resolve(idb.db)
+  if (!idb.p) idb.p = new Promise((res, rej) => {
     const r = indexedDB.open(DB, 1)
-    r.onupgradeneeded = () => r.result.createObjectStore(STORE)
-    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error)
+    r.onupgradeneeded = () => { if (!r.result.objectStoreNames.contains(STORE)) r.result.createObjectStore(STORE) }
+    r.onsuccess = () => {
+      idb.db = r.result
+      idb.db.onversionchange = () => { try { idb.db.close() } catch (e) {} idb.db = null; idb.p = null }
+      res(idb.db)
+    }
+    r.onerror = () => { idb.p = null; rej(r.error) }
   })
+  return idb.p
 }
 async function gz(u16) {
   const cs = new Blob([u16.buffer]).stream().pipeThrough(new CompressionStream('gzip'))
@@ -1894,6 +1908,80 @@ function dryNear(r) {
   pondAid = false
   return n
 }
+function isMachineId(id) {
+  if (!id) return false
+  if (isDoor(id)) return true
+  return id === ID.box || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk
+}
+function trackMachine(x, y, z, id) {
+  machineCells.set(x + ',' + y + ',' + z, id | 0)
+  noteMachine()
+}
+function pinKey() { return 'bloxbert-machines:' + WORLD }
+function clearPin() { try { localStorage.removeItem(pinKey()) } catch (e) {} }
+function pinMachines() {
+  try {
+    const blocks = []
+    for (const [k, id] of machineCells) {
+      const [x, y, z] = k.split(',').map(Number)
+      if (Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(z)) blocks.push([x, y, z, id | 0])
+    }
+    const meta = {}
+    if (session && session.meta) for (const [k, v] of session.meta) meta[k] = JSON.parse(JSON.stringify(v))
+    let stationDump = {}
+    try { stationDump = stations && stations.dump ? stations.dump() : {} } catch (e) { stationDump = {} }
+    let basicDump = null
+    try {
+      if (basics && basics.dump) {
+        const d = basics.dump()
+        basicDump = { locks: d.locks, autos: d.autos }
+      }
+    } catch (e) { basicDump = null }
+    const pin = {
+      at: Date.now(),
+      world: WORLD,
+      blocks,
+      meta,
+      stations: stationDump,
+      basics: basicDump,
+      tray: session && session.trayDump ? session.trayDump() : null,
+    }
+    localStorage.setItem(pinKey(), JSON.stringify(pin))
+  } catch (e) {}
+}
+function noteMachine() {
+  dirty = true
+  pinGen += 1
+  pinMachines()
+  clearTimeout(machineTimer)
+  machineTimer = setTimeout(() => { if (dirty && allowSave) save().catch(() => {}) }, 500)
+}
+function mergePin(doc) {
+  let pin = null
+  try { pin = JSON.parse(localStorage.getItem(pinKey()) || 'null') } catch (e) { pin = null }
+  if (!pin || pin.world !== WORLD || !(pin.at > 0)) return false
+  const docAt = doc && doc.updatedAt ? Date.parse(doc.updatedAt) : 0
+  if (!(pin.at > (docAt || 0))) return false
+  voxelQuiet = true
+  try {
+    if (Array.isArray(pin.blocks)) {
+      for (const cell of pin.blocks) {
+        if (!cell || cell.length < 4) continue
+        const x = cell[0] | 0, y = cell[1] | 0, z = cell[2] | 0, id = cell[3] | 0
+        if (getVoxel(x, y, z) !== id) setVoxel(x, y, z, id, true)
+      }
+    }
+  } finally { voxelQuiet = false }
+  if (session && pin.meta && typeof pin.meta === 'object') {
+    session.meta.clear()
+    for (const [k, v] of Object.entries(pin.meta)) session.meta.set(k, v)
+  }
+  if (pin.stations && stations && stations.load) stations.load(pin.stations)
+  if (pin.basics && basics && basics.patch) basics.patch(pin.basics)
+  if (pin.tray && session && session.restoreTray) session.restoreTray(pin.tray)
+  dirty = true
+  return true
+}
 async function snapshot() {
   const chunks = {}
   for (const [k, v] of saved) chunks[k] = await gz(v)
@@ -1912,31 +2000,92 @@ async function snapshot() {
     pondAid: !!pondAid,
   }
 }
-async function save() {
+async function saveBody() {
+  if (!allowSave) {
+    const err = new Error('held')
+    err.code = 'held'
+    throw err
+  }
+  const gen = pinGen
   const doc = await snapshot()
   const db = await idb()
-  await new Promise((res, rej) => { const tx = db.transaction(STORE, 'readwrite'); tx.objectStore(STORE).put(doc, WORLD); tx.oncomplete = res; tx.onerror = () => rej(tx.error) })
-  dirty = false
-  const bytes = JSON.stringify(doc).length
+  await new Promise((res, rej) => {
+    const tx = db.transaction(STORE, 'readwrite')
+    tx.objectStore(STORE).put(doc, WORLD)
+    tx.oncomplete = () => res()
+    tx.onerror = () => rej(tx.error || new Error('save'))
+    tx.onabort = () => rej(tx.error || new Error('save'))
+  })
+  if (gen === pinGen) {
+    dirty = false
+    machineCells.clear()
+    clearPin()
+  }
+  let bytes = 0
+  try { bytes = JSON.stringify(doc).length } catch (e) { bytes = 0 }
   markSave(t('saved') + ' · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' · ' + (bytes / 1024).toFixed(1) + ' KB')
   return bytes
 }
+let saveChain = Promise.resolve()
+function save() {
+  const job = saveChain.then(() => saveBody())
+  saveChain = job.catch(() => {})
+  return job
+}
+async function saveClicked() {
+  try {
+    await save()
+    toast(t('saved'))
+  } catch (e) {
+    toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
+  }
+}
+function keepSaved(err) {
+  allowSave = false
+  toast(t('saveKept'))
+  markSave(t('saveKept'))
+  return err
+}
 async function load() {
-  const db = await idb()
-  const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') {
+  let doc = null
+  try {
+    const db = await idb()
+    doc = await new Promise((res, rej) => {
+      const r = db.transaction(STORE).objectStore(STORE).get(WORLD)
+      r.onsuccess = () => res(r.result)
+      r.onerror = () => rej(r.error || new Error('read'))
+    })
+  } catch (e) {
+    keepSaved(e)
+    return false
+  }
+  if (!doc) {
     farm.clear()
     forage.clear()
     pondAid = true
     ensureHelp()
     grantSaplings()
     seedOldBushes()
+    allowSave = true
+    if (mergePin(null)) noteMachine()
     return false
   }
-  await applyDoc(doc)
+  if (doc.format !== 'kuliblocks') {
+    keepSaved(doc)
+    return false
+  }
+  try {
+    await applyDoc(doc)
+  } catch (e) {
+    keepSaved(e)
+    return false
+  }
   const repaired = ensureHelp()
   dirty = !!(repaired || dirty)
+  const pinned = mergePin(doc)
+  allowSave = true
   markSave(t('loaded'))
+  if (pinned) noteMachine()
   return true
 }
 async function readDoc(doc) {
@@ -2008,12 +2157,17 @@ async function exportJSON() {
   a.download = 'bloxbert-bertyville.kuliblocks.json'; a.click()
   setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }
-setInterval(() => { if (dirty) save() }, 20000)
+setInterval(() => { if (dirty && allowSave) save().catch(() => {}) }, 20000)
+function flushSave() {
+  if (dirty) pinMachines()
+  if (dirty && allowSave) save().catch(() => {})
+}
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) { if (dirty) save() }
+  if (document.hidden) flushSave()
   else syncCrops(Date.now())
   if (!document.hidden) syncForage(Date.now())
 })
+window.addEventListener('pagehide', flushSave)
 
 const $ = (id) => document.getElementById(id)
 function paintModeChip() {
@@ -2097,6 +2251,7 @@ session = createSession({
   pos: () => noa.entities.getPosition(noa.playerEntity),
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
+  noteMachine: () => noteMachine(),
   tableOn: () => tableMode,
   open: (id, key) => panels && panels.open(id, key),
   armOven: (key, id) => stations.arm(key, id),
@@ -2257,6 +2412,7 @@ basics = createBasics({
   card: (text) => showCard(text),
   badge: (text) => showCard(text),
   flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0' },
+  changed: () => noteMachine(),
 })
 if ($('door-auto')) $('door-auto').addEventListener('click', () => {
   if (!doorOptAt || !basics) return
@@ -2318,7 +2474,7 @@ window.addEventListener('pointerdown', (e) => {
   e.stopPropagation()
   hideDoorOpt()
 }, true)
-const stations = createStations({ t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
+const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
@@ -3010,7 +3166,7 @@ setTimeout(bindBarMenu, 1200)
 $('menu-btn').addEventListener('click', () => openMenu(!drawer.classList.contains('open')))
 $('close-btn').addEventListener('click', () => openMenu(false))
 scrim.addEventListener('click', () => openMenu(false))
-$('m-save').addEventListener('click', () => save())
+$('m-save').addEventListener('click', () => { saveClicked() })
 $('m-load').addEventListener('click', () => load())
 $('m-export').addEventListener('click', () => exportJSON())
 $('m-import').addEventListener('click', () => $('import-file').click())
@@ -3022,7 +3178,7 @@ $('import-file').addEventListener('change', async (e) => {
 $('undo-btn').addEventListener('click', () => undo())
 $('redo-btn').addEventListener('click', () => redo())
 edits.onChange = paintUndo
-$('save-btn').addEventListener('click', async () => { const b = await save(); toast(t('saved') + ' · ' + (b / 1024).toFixed(1) + ' KB') })
+$('save-btn').addEventListener('click', () => { saveClicked() })
 paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
 $('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
@@ -4569,6 +4725,48 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     notch(n) { session.setHot(session.hot + n) },
     key(i) { session.setHot(i) },
+    fillBar() {
+      const items = ['stone', 'dirt', 'sand', 'gravel', 'coal', 'log', 'planks', 'brickRed', 'glass']
+      session.setMode('survival')
+      for (let i = 0; i < 9; i++) session.bag.slots[i] = { item: items[i], n: 1 }
+      for (let i = 9; i < session.bag.slots.length; i++) {
+        const s = session.bag.slots[i]
+        if (s && s.item === 'wheatSeeds') session.bag.slots[i] = null
+      }
+      session.paintHotbar()
+      return session.bag.slots.map((s) => (s ? s.item + ':' + s.n : null))
+    },
+    seeds() { return session.bag.count('wheatSeeds') },
+    stash(x, y, z, item, n) {
+      const k = x + ',' + y + ',' + z
+      let rec = session.meta.get(k)
+      if (!rec || !Array.isArray(rec.slots)) {
+        rec = { kind: 'box', slots: Array.from({ length: 18 }, () => null), face: rec && rec.face }
+        session.meta.set(k, rec)
+      }
+      let slot = rec.slots.find((s) => s && s.item === item)
+      if (!slot) {
+        const i = rec.slots.findIndex((s) => !s)
+        if (i < 0) return null
+        slot = { item, n: 0 }
+        rec.slots[i] = slot
+      }
+      slot.n += n
+      noteMachine()
+      return rec.slots.filter((s) => s && s.n).map((s) => s.item + ':' + s.n)
+    },
+    peekBox(x, y, z) {
+      const rec = session.meta.get(x + ',' + y + ',' + z)
+      if (!rec || !rec.slots) return null
+      return rec.slots.filter((s) => s && s.n).map((s) => s.item + ':' + s.n)
+    },
+    oven(key) { const all = stations.dump(); return all[key] || null },
+    startBake(x, y, z) {
+      const key = x + ',' + y + ',' + z
+      const fueled = stations.addFuel(key, 'planks')
+      const started = stations.addInput(key, 'bread')
+      return { fueled, started, rec: stations.dump()[key] || null }
+    },
     hot: () => session.hot,
     place: () => session.tryPlace(),
     counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand'), log: session.bag.count('log'), cupcake: session.bag.count('cupcake'), vend: session.bag.count('vend') }),

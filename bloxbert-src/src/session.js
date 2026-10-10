@@ -10,7 +10,7 @@ import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
-import { emptyBox } from './box.js'
+import { emptyBox, cloneRec } from './box.js'
 import { bindBertopiaSlots } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
@@ -912,6 +912,7 @@ export function createSession(api) {
   let trayId = ''
   let trayPlaced = []
   let trayWatch = false
+  function noteTray() { if (api.noteMachine) api.noteMachine() }
   function trayGiveBack(item, n) {
     if (!item || !(n > 0)) return
     const left = bag.add(item, n)
@@ -929,7 +930,7 @@ export function createSession(api) {
       trayPlaced[i] = 0
       moved = true
     })
-    if (moved) paintHotbar()
+    if (moved) { paintHotbar(); noteTray() }
   }
   function armTrayWatch() {
     if (trayWatch) return
@@ -1285,6 +1286,7 @@ export function createSession(api) {
         trayPlaced[index] = (trayPlaced[index] || 0) + takeN
         paintHotbar()
         paintCraft(g)
+        noteTray()
         return true
       }
       const returnSlot = (index) => {
@@ -1294,6 +1296,7 @@ export function createSession(api) {
         trayPlaced[index] = 0
         paintHotbar()
         paintCraft(g)
+        noteTray()
       }
       const isBread = r.id === 'bread'
       const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
@@ -1329,7 +1332,7 @@ export function createSession(api) {
                 any = true
               }
             })
-            if (any) paintHotbar()
+            if (any) { paintHotbar(); noteTray() }
             paintCraft(g)
           },
           onMake: () => {
@@ -1352,6 +1355,7 @@ export function createSession(api) {
               spawnDrop(r.out[0], spot.left, p[0], p[1] + 0.3, p[2], 'full')
             }
             r.in.forEach((_, i) => { trayPlaced[i] = 0 })
+            noteTray()
             markFound(r.out[0])
             if (r.out[0] === 'woodTool') markPath('pathTool')
             if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
@@ -1672,7 +1676,7 @@ export function createSession(api) {
       name: itemName,
       t,
       cap: stackCap,
-      onChange: () => { paintHotbar(); if (api.markDirty) api.markDirty() },
+      onChange: () => { paintHotbar(); if (api.noteMachine) api.noteMachine(); else if (api.markDirty) api.markDirty() },
       toast: (msg) => { if (msg) api.toast(msg) },
     })
     if (!KS) return null
@@ -2063,7 +2067,7 @@ export function createSession(api) {
   }
   function dump() {
     const m = {}
-    for (const [k, v] of meta) m[k] = v
+    for (const [k, v] of meta) m[k] = cloneRec(v)
     if (mode === 'survival') hotSlot.survival = hot
     return {
       player: {
@@ -2074,6 +2078,7 @@ export function createSession(api) {
         hotCreative: api.creativeHot ? api.creativeHot() : hotSlot.creative,
         home,
         table: api.tableOn(),
+        tray: { id: trayId, placed: trayPlaced.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
       },
       econ: wallet.dump(),
@@ -2093,6 +2098,8 @@ export function createSession(api) {
     hot = mode === 'survival' ? hotSlot.survival : 0
     if (api.setCreativeHot) api.setCreativeHot(hotSlot.creative)
     home = p.home || null
+    trayId = p.tray && typeof p.tray.id === 'string' ? p.tray.id : ''
+    trayPlaced = p.tray && Array.isArray(p.tray.placed) ? p.tray.placed.map((n) => Math.max(0, n | 0)) : []
     const savedEnergy = p.energy
     if (savedEnergy && Number.isFinite(+savedEnergy.bolts)) {
       energy = {
@@ -2104,7 +2111,7 @@ export function createSession(api) {
     wallet.load(doc.econ)
     if (!wallet.state.ledger.length) wallet.post({ kind: 'start', cogs: 0, by: 'you' })
     meta.clear()
-    for (const [k, v] of Object.entries(doc.meta || {})) meta.set(k, v)
+    for (const [k, v] of Object.entries(doc.meta || {})) meta.set(k, cloneRec(v))
     day = wallet.state.day || day
     ground.length = 0
     lost.length = 0
@@ -2270,6 +2277,12 @@ export function createSession(api) {
     get bag() { return bag },
     bags: () => ({ survival: bags.survival.dump(), creative: bags.creative.dump() }), wallet, meta, paintBag, clearBagPick() { bagSel = -1 }, paintCraft, paintShop, paintWallet, paintSettings, paintTeacher, paintPrices, paintCounter, paintBunk, paintBox,
     give: (item, n) => giveItem(item, n || 1),
+    trayDump() { return { id: trayId, placed: trayPlaced.slice() } },
+    restoreTray(tray) {
+      if (!tray || typeof tray !== 'object') return
+      trayId = typeof tray.id === 'string' ? tray.id : ''
+      trayPlaced = Array.isArray(tray.placed) ? tray.placed.map((n) => Math.max(0, n | 0)) : []
+    },
     lostAdd,
     tryCraft,
     setCraftOpen(v) { craftOpen = !!v },

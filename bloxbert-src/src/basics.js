@@ -248,6 +248,7 @@ export function createBasics(api) {
     if (!st || !st.step) return 'low'
     return LEVELS[st.step - 1] || 'low'
   }
+  function changed() { if (api.changed) api.changed() }
   return {
     boot(survival) { anchor = api.now(); lastT = 0; prefLoad(survival); api.flagDay(always) },
     setAlways(on) { always = !!on; prefSave(); api.flagDay(always) },
@@ -266,9 +267,11 @@ export function createBasics(api) {
     lock(x, y, z, owner) {
       const who = owner || actor || 'you'
       for (const c of group(x, y, z, api.get)) locks.set(key(c[0], c[1], c[2]), { owner: who })
+      changed()
     },
     unlock(x, y, z) {
       for (const c of group(x, y, z, api.get)) locks.delete(key(c[0], c[1], c[2]))
+      changed()
     },
     locked(x, y, z) { return !!lockOf(group(x, y, z, api.get)) },
     autoOn(x, y, z) { return group(x, y, z, api.get).some((c) => autos.has(key(c[0], c[1], c[2]))) },
@@ -279,6 +282,7 @@ export function createBasics(api) {
         if (on) autos.add(k)
         else autos.delete(k)
       }
+      changed()
     },
     pickup(x, y, z) {
       const id = api.get(x, y, z)
@@ -293,6 +297,7 @@ export function createBasics(api) {
       const kind = doorKind(id)
       const item = kind === 'glass' ? 'doorGlass' : kind === 'metal' ? 'doorMetal' : kind === 'slide' ? 'doorSliding' : 'door'
       api.give(item, cols.size)
+      changed()
       return cols.size
     },
     light(x, y, z) {
@@ -321,6 +326,11 @@ export function createBasics(api) {
     badgeText() { return card },
     resetBadges() { badges.clear(); card = ''; cardN = 0 },
     nightAt() { return DAY + DUSK + 1000 },
+    patch(doc) {
+      if (!doc) return
+      if (Array.isArray(doc.locks)) { locks.clear(); for (const [k, v] of doc.locks) locks.set(k, v) }
+      if (Array.isArray(doc.autos)) { autos.clear(); for (const k of doc.autos) autos.add(k) }
+    },
     dump() {
       return {
         ms: now(), always, bright, starter, actor,

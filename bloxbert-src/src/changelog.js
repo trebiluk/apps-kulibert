@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.113', date: '2026-10-10', lines: {
+    en: ['Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.'],
+    uk: ['Скрині, печі й усе в них завжди зберігаються, і збір сіє знову будь-яким насінням, яке несеш.'],
+    ru: ['Сундуки, печи и всё в них всегда сохраняются, а сбор сеет снова любым семенем, которое несёшь.'],
+    es: ['Las cajas, los hornos y todo lo que hay dentro siempre se guardan, y la cosecha replanta con cualquier semilla que lleves.'],
+    ar: ['الصناديق والأفران وكل ما فيها تُحفظ دائماً، والحصاد يعيد الزرع بأي بذرة تحملها.'],
+    'fa-AF': ['صندوق‌ها، تنورها و هرچه در آن‌هاست همیشه ذخیره می‌شود، و برداشت با هر دانه‌ای که داری دوباره می‌کارد.'],
+    rw: ['Agasanduku, ibyoto n\'ibiri muri byo bibikwa buri gihe, kandi isarura isubiza imbuto iyo ari yo wose ufite.'],
+    ti: ['ሳንዱቕ፡ እቶንን ኩሉ ዘሎ ኣብኡን ኩሉ ግዜ ይቕመጥ፡ ምእካብ ድማ ብዝኾነ ዘለካ ዘርኢ ዳግማይ ይዝርእ።'],
+  }},
   { v: '2.5.112', date: '2026-10-10', lines: {
     en: ['The Bag listens to your very first click and opens fresh each time.'],
     uk: ['Сумка чує найперший клік і щоразу відкривається чистою.'],

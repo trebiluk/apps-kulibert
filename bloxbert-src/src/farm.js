@@ -61,6 +61,10 @@ export function isRipe(crop, now) {
   return preview(crop, now).stage === 3
 }
 
+export function replantSeed(stored) {
+  return stored > 0
+}
+
 export function formatLeft(ms) {
   const s = Math.max(0, Math.ceil((+ms || 0) / 1000))
   const m = Math.floor(s / 60)

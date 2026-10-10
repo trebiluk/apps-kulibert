@@ -196,7 +196,9 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'The Bag listens to your very first click and opens fresh each time.',
+    whatsNewBody: 'Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.',
+    saveFull: 'Couldn\'t save - storage full',
+    saveKept: 'Couldn\'t open your saved world. It is still kept.',
     notRipeHold: 'Not ripe yet - hold to break it',
     stuckStep: 'Stuck? Dig a step or place a block to climb out.',
     bagHint: 'Press E (or Esc, then click Bag) to open your Bag.',
@@ -253,7 +255,9 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Сумка чує найперший клік і щоразу відкривається чистою.',
+    whatsNewBody: 'Скрині, печі й усе в них завжди зберігаються, і збір сіє знову будь-яким насінням, яке несеш.',
+    saveFull: 'Не збереглося — сховище повне',
+    saveKept: 'Не вдалося відкрити збережений світ. Його не стерто.',
     notRipeHold: 'Ще не стигле — тримай, щоб зламати.',
     stuckStep: 'Застряг? Прокопай сходинку або постав блок, щоб вилізти.',
     bagHint: 'Натисни E (або Esc, потім клік Сумка), щоб відкрити сумку.',
@@ -310,7 +314,9 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Сумка слышит самый первый клик и каждый раз открывается чистой.',
+    whatsNewBody: 'Сундуки, печи и всё в них всегда сохраняются, а сбор сеет снова любым семенем, которое несёшь.',
+    saveFull: 'Не сохранилось — хранилище полно',
+    saveKept: 'Не удалось открыть сохранённый мир. Он не стёрт.',
     notRipeHold: 'Ещё не спелое — держи, чтобы сломать.',
     stuckStep: 'Застрял? Прокопай ступеньку или поставь блок, чтобы вылезти.',
     bagHint: 'Нажми E (или Esc, потом клик Сумка), чтобы открыть сумку.',
@@ -367,7 +373,9 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'La bolsa oye tu primer clic y se abre limpia cada vez.',
+    whatsNewBody: 'Las cajas, los hornos y todo lo que hay dentro siempre se guardan, y la cosecha replanta con cualquier semilla que lleves.',
+    saveFull: 'No se pudo guardar: el almacenamiento está lleno',
+    saveKept: 'No se pudo abrir tu mundo guardado. Sigue guardado.',
     notRipeHold: 'Aún no está maduro: mantén para romperlo.',
     stuckStep: '¿Atrapado? Cava un escalón o pon un bloque para salir.',
     bagHint: 'Pulsa E (o Esc y luego Bolsa) para abrir tu Bolsa.',
@@ -424,7 +432,9 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'الحقيبة تسمع أول نقرة وتفتح جديدة في كل مرة.',
+    whatsNewBody: 'الصناديق والأفران وكل ما فيها تُحفظ دائماً، والحصاد يعيد الزرع بأي بذرة تحملها.',
+    saveFull: 'تعذّر الحفظ — التخزين ممتلئ',
+    saveKept: 'تعذّر فتح عالمك المحفوظ. ما زال محفوظاً.',
     notRipeHold: 'لم ينضج بعد — اضغط مطولاً لكسره.',
     stuckStep: 'عالِق؟ احفر درجة أو ضع مكعباً لتتسلق للخارج.',
     bagHint: 'اضغط E (أو Esc ثم الحقيبة) لفتح حقيبتك.',
@@ -481,7 +491,9 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'بکس همان کلیک اول را می‌شنود و هر بار تازه باز می‌شود.',
+    whatsNewBody: 'صندوق‌ها، تنورها و هرچه در آن‌هاست همیشه ذخیره می‌شود، و برداشت با هر دانه‌ای که داری دوباره می‌کارد.',
+    saveFull: 'ذخیره نشد — جا پر است',
+    saveKept: 'جهان ذخیره‌ات باز نشد. هنوز نگه داشته شده.',
     notRipeHold: 'هنوز نرسیده — برای شکستن نگه دار.',
     stuckStep: 'گیر کردی؟ یک پله بکن یا بلاک بگذار تا بالا بیایی.',
     bagHint: 'E را بزن (یا Esc، بعد بکس) تا بکس باز شود.',
@@ -538,7 +550,9 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Agasaho kumva ikanda rya mbere kandi gafunguka gashya buri gihe.',
+    whatsNewBody: 'Agasanduku, ibyoto n\'ibiri muri byo bibikwa buri gihe, kandi isarura isubiza imbuto iyo ari yo wose ufite.',
+    saveFull: 'Ntibibitswe — ububiko bwuzuye',
+    saveKept: 'Isi yawe ibitswe ntiyafungutse. Irakibitswe.',
     notRipeHold: 'Ntirikwira — fata kugira ngo uvunagure.',
     stuckStep: 'Wafashwe? Yimba urutambike cyangwa shyira block winjire hejuru.',
     bagHint: 'Kanda E (cyangwa Esc, hanyuma Agasaho) ufungure agasaho.',
@@ -595,7 +609,9 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ቦርሳ ነቲ ናይ መጀመርታ ጠውቕ ትሰምዕ፡ ኩሉ ግዜ ድማ ሓድሽ ትኸፈት።',
+    whatsNewBody: 'ሳንዱቕ፡ እቶንን ኩሉ ዘሎ ኣብኡን ኩሉ ግዜ ይቕመጥ፡ ምእካብ ድማ ብዝኾነ ዘለካ ዘርኢ ዳግማይ ይዝርእ።',
+    saveFull: 'ኣይተዓቀበን — መኽዘን መሊኡ',
+    saveKept: 'ዝተዓቀበ ዓለምካ ኣይተኸፈተን። ግና ተዓቂቡ ኣሎ።',
     notRipeHold: 'ገና ኣይበስለን — ሓዝ ንምስባር።',
     stuckStep: 'ተሓጺንካ? ስጉምቲ ጉድጓድ ወይ ብሎክ ኣቐምጥ ንምውጻእ።',
     bagHint: 'E ጠውቕ (ወይ Esc፡ ድሕሪኡ ቦርሳ) ቦርሳኻ ንምኽፋት።',
