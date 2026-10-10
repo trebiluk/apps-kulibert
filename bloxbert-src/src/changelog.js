@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.127', date: '2026-10-10', lines: {
+    en: ['The game loads faster the first time, and a return visit does not download it again.'],
+    uk: ['Гра швидше вантажиться вперше, і повторний візит не завантажує її знову.'],
+    ru: ['Игра быстрее грузится в первый раз, и повторный визит не скачивает её снова.'],
+    es: ['El juego carga más rápido la primera vez, y una visita de vuelta no lo vuelve a descargar.'],
+    ar: ['اللعبة تحمّل أسرع في المرة الأولى، والزيارة التالية لا تنزّلها من جديد.'],
+    'fa-AF': ['بازی بار اول تندتر باز می‌شود، و بازدید دوباره آن را از نو دانلود نمی‌کند.'],
+    rw: ['Umukino utangira vuba ubwa mbere, kandi gusubira ntibisubiza kuwukurura.'],
+    ti: ['ጸወታ ንመጀመርታ ብቕልጡፍ ይጽዕን፡ ምምላስ ድማ ዳግማይ ኣይውርዶን።'],
+  }},
   { v: '2.5.126', date: '2026-10-10', lines: {
     en: ['Old worlds stay as saved. A reload no longer adds four floating stations above the hut.'],
     uk: ['Старі світи лишаються як збережені. Перезавантаження більше не додає чотири летючі станки над хатою.'],
