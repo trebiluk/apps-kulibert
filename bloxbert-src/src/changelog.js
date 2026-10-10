@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.129', date: '2026-10-10', lines: {
+    en: ['A new version shows on the first visit, and play is never interrupted.'],
+    uk: ['Нова версія з’являється з першого візиту, і гра не переривається.'],
+    ru: ['Новая версия появляется с первого визита, и игра не прерывается.'],
+    es: ['Una versión nueva aparece en la primera visita, y el juego no se interrumpe.'],
+    ar: ['النسخة الجديدة تظهر من أول زيارة، واللعب لا ينقطع.'],
+    'fa-AF': ['نسخه نو از همان بازدید اول دیده می‌شود، و بازی قطع نمی‌شود.'],
+    rw: ['Verisiyo nshya igaragara ku isura ya mbere, kandi umukino ntuhagarara.'],
+    ti: ['ሓድሽ ሕታም ካብ ቀዳማይ ምብጻሕ ይረአ፡ ጸወታ ድማ ኣይቋረጽን።'],
+  }},
   { v: '2.5.128', date: '2026-10-10', lines: {
     en: ['A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.'],
     uk: ['Дотик до ліжка, печі, скрині, прилавка чи майстерні відкриває їх. Присядь, щоб будувати поруч, і ліжко на 3 зірки зберігає свій вигляд.'],

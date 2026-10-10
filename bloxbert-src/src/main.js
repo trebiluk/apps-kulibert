@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.128'
+const VERSION = '2.5.129'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -2557,6 +2557,59 @@ document.addEventListener('visibilitychange', () => {
   if (!document.hidden) syncForage(Date.now())
 })
 window.addEventListener('pagehide', flushSave)
+
+function saveFailToast(e) {
+  if (e && e.code === 'newer') toast('Made in a newer Bertopia')
+  else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
+}
+function showUpdateChip() {
+  let b = document.getElementById('update-chip')
+  if (!b) {
+    b = document.createElement('button')
+    b.type = 'button'
+    b.id = 'update-chip'
+    b.addEventListener('pointerdown', (e) => e.stopPropagation())
+    b.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      acceptUpdate()
+    })
+    document.body.appendChild(b)
+  }
+  b.textContent = t('updateReady')
+  b.hidden = false
+}
+async function acceptUpdate() {
+  try {
+    await save()
+    if (dirty && allowSave) await save()
+    await changeLog.flush()
+    if (dirty) throw Object.assign(new Error('held'), { code: 'held' })
+  } catch (e) {
+    saveFailToast(e)
+    return
+  }
+  try {
+    const reg = await navigator.serviceWorker.getRegistration('/blocks/')
+    const waiting = reg && reg.waiting
+    if (!waiting) return
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (sessionStorage.getItem('bert-sw-reloaded') === VERSION) return
+      sessionStorage.setItem('bert-sw-reloaded', VERSION)
+      location.reload()
+    })
+    waiting.postMessage({ type: 'skip' })
+  } catch (e) {}
+}
+window.addEventListener('bert-update', async () => {
+  try {
+    if (dirty && allowSave) await save()
+  } catch (e) {
+    saveFailToast(e)
+  }
+  try { await changeLog.flush() } catch (e) {}
+  showUpdateChip()
+})
 
 const $ = (id) => document.getElementById(id)
 function paintModeChip() {
@@ -5222,6 +5275,7 @@ if (!__BLOX_STUDENT__) {
 
 basics.boot(WORLD !== 'bertyville')
 load().catch(() => {}).finally(() => {
+  if (allowSave) window.__bertOpen = true
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()
   if (session && session.mode === 'survival' && session.paintHotbar) session.paintHotbar()

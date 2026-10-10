@@ -200,6 +200,7 @@ const NEXT = {
   en: {
     whatsNewBody: 'Your Boxes, Ovens and everything in them are always saved, and harvest replants with any seed you carry.',
     saveFull: 'Couldn\'t save - storage full',
+    updateReady: 'Update ready - tap to refresh',
     saveKept: 'Couldn\'t open your saved world. It is still kept.',
     notRipeHold: 'Not ripe yet - hold to break it',
     stuckStep: 'Stuck? Dig a step or place a block to climb out.',
@@ -259,6 +260,7 @@ const NEXT = {
   uk: {
     whatsNewBody: 'Скрині, печі й усе в них завжди зберігаються, і збір сіє знову будь-яким насінням, яке несеш.',
     saveFull: 'Не збереглося — сховище повне',
+    updateReady: 'Оновлення готове — торкнись, щоб оновити',
     saveKept: 'Не вдалося відкрити збережений світ. Його не стерто.',
     notRipeHold: 'Ще не стигле — тримай, щоб зламати.',
     stuckStep: 'Застряг? Прокопай сходинку або постав блок, щоб вилізти.',
@@ -318,6 +320,7 @@ const NEXT = {
   ru: {
     whatsNewBody: 'Сундуки, печи и всё в них всегда сохраняются, а сбор сеет снова любым семенем, которое несёшь.',
     saveFull: 'Не сохранилось — хранилище полно',
+    updateReady: 'Обновление готово — нажми, чтобы обновить',
     saveKept: 'Не удалось открыть сохранённый мир. Он не стёрт.',
     notRipeHold: 'Ещё не спелое — держи, чтобы сломать.',
     stuckStep: 'Застрял? Прокопай ступеньку или поставь блок, чтобы вылезти.',
@@ -377,6 +380,7 @@ const NEXT = {
   es: {
     whatsNewBody: 'Las cajas, los hornos y todo lo que hay dentro siempre se guardan, y la cosecha replanta con cualquier semilla que lleves.',
     saveFull: 'No se pudo guardar: el almacenamiento está lleno',
+    updateReady: 'Actualización lista: toca para recargar',
     saveKept: 'No se pudo abrir tu mundo guardado. Sigue guardado.',
     notRipeHold: 'Aún no está maduro: mantén para romperlo.',
     stuckStep: '¿Atrapado? Cava un escalón o pon un bloque para salir.',
@@ -436,6 +440,7 @@ const NEXT = {
   ar: {
     whatsNewBody: 'الصناديق والأفران وكل ما فيها تُحفظ دائماً، والحصاد يعيد الزرع بأي بذرة تحملها.',
     saveFull: 'تعذّر الحفظ — التخزين ممتلئ',
+    updateReady: 'التحديث جاهز — المس للتحديث',
     saveKept: 'تعذّر فتح عالمك المحفوظ. ما زال محفوظاً.',
     notRipeHold: 'لم ينضج بعد — اضغط مطولاً لكسره.',
     stuckStep: 'عالِق؟ احفر درجة أو ضع مكعباً لتتسلق للخارج.',
@@ -495,6 +500,7 @@ const NEXT = {
   'fa-AF': {
     whatsNewBody: 'صندوق‌ها، تنورها و هرچه در آن‌هاست همیشه ذخیره می‌شود، و برداشت با هر دانه‌ای که داری دوباره می‌کارد.',
     saveFull: 'ذخیره نشد — جا پر است',
+    updateReady: 'به‌روزرسانی آماده است — بزن تا تازه شود',
     saveKept: 'جهان ذخیره‌ات باز نشد. هنوز نگه داشته شده.',
     notRipeHold: 'هنوز نرسیده — برای شکستن نگه دار.',
     stuckStep: 'گیر کردی؟ یک پله بکن یا بلاک بگذار تا بالا بیایی.',
@@ -554,6 +560,7 @@ const NEXT = {
   rw: {
     whatsNewBody: 'Agasanduku, ibyoto n\'ibiri muri byo bibikwa buri gihe, kandi isarura isubiza imbuto iyo ari yo wose ufite.',
     saveFull: 'Ntibibitswe — ububiko bwuzuye',
+    updateReady: 'Ivugurura riteguye — kanda kugisubiza',
     saveKept: 'Isi yawe ibitswe ntiyafungutse. Irakibitswe.',
     notRipeHold: 'Ntirikwira — fata kugira ngo uvunagure.',
     stuckStep: 'Wafashwe? Yimba urutambike cyangwa shyira block winjire hejuru.',
@@ -613,6 +620,7 @@ const NEXT = {
   ti: {
     whatsNewBody: 'ሳንዱቕ፡ እቶንን ኩሉ ዘሎ ኣብኡን ኩሉ ግዜ ይቕመጥ፡ ምእካብ ድማ ብዝኾነ ዘለካ ዘርኢ ዳግማይ ይዝርእ።',
     saveFull: 'ኣይተዓቀበን — መኽዘን መሊኡ',
+    updateReady: 'ምዕራፍ ድሉው እዩ — ጠውቕ ንምሕዳስ',
     saveKept: 'ዝተዓቀበ ዓለምካ ኣይተኸፈተን። ግና ተዓቂቡ ኣሎ።',
     notRipeHold: 'ገና ኣይበስለን — ሓዝ ንምስባር።',
     stuckStep: 'ተሓጺንካ? ስጉምቲ ጉድጓድ ወይ ብሎክ ኣቐምጥ ንምውጻእ።',

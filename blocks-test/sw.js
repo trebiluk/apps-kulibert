@@ -1,5 +1,5 @@
-// Bertopia student door only. build.mjs writes the real version over 2.5.128.
-const VERSION = '2.5.128'
+// Bertopia student door only. build.mjs writes the real version over 2.5.129.
+const VERSION = '2.5.129'
 const CACHE = 'bloxbert-' + VERSION
 const SHELL = [
   '/blocks/app.js?v=' + VERSION,
@@ -13,14 +13,20 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE)
     // reload skips the HTTP cache, so a new version does not pin the previous index.html
+    // Stay waiting until the page posts {type:'skip'}. A fresh install (no active worker) still activates.
     await Promise.all(SHELL.map(async (url) => {
       try {
         const res = await fetch(url, { cache: 'reload' })
         if (res && res.ok) await cache.put(url, res)
       } catch (e) {}
     }))
-    await self.skipWaiting()
   })())
+})
+
+self.addEventListener('message', (event) => {
+  if (!event.data) return
+  if (event.data.type === 'skip') self.skipWaiting()
+  else if (event.data.type === 'ver' && event.source) event.source.postMessage({ type: 'ver', version: VERSION })
 })
 
 self.addEventListener('activate', (event) => {
@@ -43,19 +49,23 @@ function skip(url) {
   return false
 }
 
-function shell(url) {
-  if (url.pathname === '/blocks/app.js') return true
-  if (url.pathname.startsWith('/blocks/assets/')) return true
+function isDoc(url) {
   return url.pathname === '/blocks' || url.pathname === '/blocks/' || url.pathname === '/blocks/index.html'
 }
 
-async function cacheFirst(req, ignoreSearch) {
+function shell(url) {
+  if (url.pathname === '/blocks/app.js') return true
+  if (url.pathname.startsWith('/blocks/assets/')) return true
+  return isDoc(url)
+}
+
+async function cacheFirst(req) {
   const cache = await caches.open(CACHE)
-  const hit = await cache.match(req, ignoreSearch ? { ignoreSearch: true } : undefined)
+  const hit = await cache.match(req)
   if (hit) return hit
   const res = await fetch(req)
   if (res && res.ok && res.type !== 'opaque') {
-    try { await cache.put(ignoreSearch ? req.url.split('?')[0] : req, res.clone()) } catch (e) {}
+    try { await cache.put(req, res.clone()) } catch (e) {}
   }
   return res
 }
@@ -70,6 +80,30 @@ async function networkFirst(req) {
   }
 }
 
+async function networkFirstDoc(req) {
+  const cache = await caches.open(CACHE)
+  const key = req.url.split('?')[0]
+  let timer
+  try {
+    const res = await Promise.race([
+      fetch(req.url, { cache: 'reload', credentials: 'same-origin' }),
+      new Promise((_, rej) => { timer = setTimeout(() => rej(new Error('timeout')), 3000) }),
+    ])
+    clearTimeout(timer)
+    if (res && res.ok && res.type !== 'opaque') {
+      try { await cache.put(key, res.clone()) } catch (e) {}
+      return res
+    }
+  } catch (e) {
+    clearTimeout(timer)
+  }
+  const hit = await cache.match(req, { ignoreSearch: true }) || await cache.match(key)
+  if (hit) return hit
+  const loose = await caches.match(req, { ignoreSearch: true })
+  if (loose) return loose
+  return fetch(req)
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request
   if (req.method !== 'GET') return
@@ -81,6 +115,9 @@ self.addEventListener('fetch', (event) => {
     return
   }
   if (!shell(url)) return
-  const doc = url.pathname === '/blocks' || url.pathname === '/blocks/' || url.pathname === '/blocks/index.html'
-  event.respondWith(cacheFirst(req, doc))
+  if (isDoc(url)) {
+    event.respondWith(networkFirstDoc(req))
+    return
+  }
+  event.respondWith(cacheFirst(req))
 })
