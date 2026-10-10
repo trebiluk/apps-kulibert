@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.125', date: '2026-10-10', lines: {
+    en: ['A missing pack shows as a crate with a question mark, and the Woodshop says ready only after the tools are hung.'],
+    uk: ['Зниклий пак показується ящиком зі знаком питання, а майстерня готова лише коли інструменти повішені.'],
+    ru: ['Пропавший пак показывается ящиком со знаком вопроса, а мастерская готова только когда инструменты повешены.'],
+    es: ['Un paquete que falta se ve como un cajón con un signo de pregunta, y el taller dice listo solo cuando las herramientas están colgadas.'],
+    ar: ['الحزمة المفقودة تظهر كصندوق بعلامة سؤال، والورشة تقول جاهزة فقط بعد تعليق الأدوات.'],
+    'fa-AF': ['بسته گم‌شده به شکل صندوق با علامت سوال دیده می‌شود، و کارگاه فقط وقتی ابزار آویزان شد آماده می‌گوید.'],
+    rw: ['Umupaki wabuze ugaragara nk\'agasanduku k\'akabazo, kandi ikigo kivuga cyiteguye iyo ibikoresho byamanitswe gusa.'],
+    ti: ['ዝጠፍአ ጥቕሊ ከም ሳንዱቕ ምልክት ሕቶ ይረአ፡ ዕድጊ ድማ መሳርሒ ምስ ተሰቅለ ጥራይ ድሉው ይብል።'],
+  }},
   { v: '2.5.124', date: '2026-10-10', lines: {
     en: ['Auto detail steps down gently and comes back, and the fog stops at the edge of the loaded world.'],
     uk: ['Автодеталь м’яко знижується і повертається, а туман спиняється на краю завантаженого світу.'],

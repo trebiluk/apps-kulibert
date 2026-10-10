@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.124'
+const VERSION = '2.5.125'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -758,8 +758,7 @@ for (const [id, name, material] of BLOCKS) {
   }
   noa.registry.registerBlock(id, opts)
 }
-const missingMat = dye('missing-crate', 0.18, 0.12, 0.08)
-noa.registry.registerMaterial('missingCrate', { renderMaterial: missingMat })
+noa.registry.registerMaterial('missingCrate', { textureURL: 'assets/tile-missing.png' })
 noa.registry.registerBlock(1000, { material: 'missingCrate', opaque: true, solid: true })
 function ensureMissingBlock(id) {
   if (id < 1001 || id > 1099) return
@@ -1164,8 +1163,10 @@ function shopBlocked(span) {
 }
 let roomTold = ''
 let roomToldAt = 0
+let roomQuietUntil = 0
 function tellNoRoom(key) {
   const now = performance.now()
+  if (now < roomQuietUntil) return
   if (roomTold === key && now - roomToldAt < 1200) return
   roomTold = key
   roomToldAt = now
@@ -1253,6 +1254,8 @@ function placeShop(x, y, z) {
   ensureFront(x, y, z)
   ensureFront(span.sx, span.sy, span.sz)
   noteMachine()
+  roomTold = ''
+  roomQuietUntil = performance.now() + 400
   return true
 }
 function liftShop(x, y, z) {
@@ -3371,6 +3374,23 @@ function bagPick(item, slot) {
   const id = typeof item === 'number' ? item : (BLOCKS.find((b) => b[1] === item) || [1])[0]
   pick(id)
 }
+let missingAimKey = ''
+let missingAimAt = 0
+function noteMissingAim() {
+  const hit = aimed()
+  if (!hit || !isMissingId(hit.id)) return
+  const pos = hit.pos || []
+  const key = pos[0] + ',' + pos[1] + ',' + pos[2]
+  const now = performance.now()
+  if (missingAimKey === key && now - missingAimAt < 3000) return
+  missingAimKey = key
+  missingAimAt = now
+  let name = '?'
+  for (const [id, n] of unknownEntries()) {
+    if (id === hit.id && n) { name = String(n); break }
+  }
+  showCard(t('missingPackAim').replace('{name}', name))
+}
 function aimed() {
   if (noa.targetedBlock && noa.targetedBlock.blockID) return { id: noa.targetedBlock.blockID, pos: noa.targetedBlock.position }
   if (tableMode) {
@@ -4905,6 +4925,7 @@ function ghostCell() {
   return spot
 }
 function syncPlaceGhost() {
+  noteMissingAim()
   const spot = ghostCell()
   if (!spot) {
     placeGhost.setEnabled(false)
@@ -4918,7 +4939,6 @@ function syncPlaceGhost() {
   if (id === ID.woodshop) {
     side = shopSpan(spot.x, spot.y, spot.z)
     amber = shopBlocked(side) || !canReach([side.sx, side.sy, side.sz])
-    if (amber) tellNoRoom(side.sx + ',' + side.sy + ',' + side.sz)
   }
   if (amber) {
     placeGhost.material = amberMat

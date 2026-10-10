@@ -260,6 +260,10 @@ export function createStations(api) {
   function haveShopTool(key, item) {
     return wallItems(key).indexOf(item) >= 0 || !!(api.have && api.have(item) > 0)
   }
+  function wallReady(key) {
+    const hung = wallItems(key)
+    return SHOP_TOOLS.every((row) => hung.indexOf(row.item) >= 0)
+  }
   let shopPick = ''
   let shopGuide = ''
   let saidBed = ''
@@ -803,16 +807,19 @@ export function createStations(api) {
     crate.append(bagRow)
     const job = document.createElement('div')
     job.className = 'shop-job'
-    const ready = SHOP_TOOLS.every((row) => haveShopTool(key, row.item))
+    const hung = wallItems(key)
+    let nHung = 0
+    for (let i = 0; i < SHOP_TOOLS.length; i++) if (hung.indexOf(SHOP_TOOLS[i].item) >= 0) nHung++
+    const ready = wallReady(key)
     job.classList.toggle('lit', ready)
     job.dataset.ready = ready ? '1' : '0'
     const jobBtn = document.createElement('button')
     jobBtn.type = 'button'
     jobBtn.className = 'keycap shop-go'
-    jobBtn.textContent = (ready ? '✓ ' : '') + api.t('woodshopReady')
+    jobBtn.textContent = ready ? api.t('woodshopReady') : api.t('hangTools').replace('{n}', String(nHung))
     jobBtn.disabled = !ready
     jobBtn.addEventListener('click', () => {
-      if (!SHOP_TOOLS.every((row) => haveShopTool(key, row.item))) return
+      if (!wallReady(key)) return
       if (api.glasses) api.glasses(true)
       let note = crate.querySelector('.glasses-note')
       if (!note) {
