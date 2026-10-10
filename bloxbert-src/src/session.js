@@ -9,7 +9,7 @@ import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
 import { blockIcon, itemSvg } from './icons.js'
-import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys } from './drops.js'
+import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
 import { emptyBox } from './box.js'
 import { bindBertopiaSlots } from './slots-bridge.js'
 import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
@@ -1833,12 +1833,18 @@ export function createSession(api) {
     if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
     if (id === 24 || id === 26) return false
     if (id === 27) spillBox(x, y, z)
-    const drop = dropOf(id)
+    const wildBush = id >= 65 && id <= 68 && api.wildBush && api.wildBush(x, y, z)
+    const drop = wildBush ? null : dropOf(id)
     let got = 0
     let loose = 0
     const wasEmpty = !bag.slots[hot]
     const beforeSlots = slotSnap()
-    if (drop) {
+    if (wildBush) {
+      const loot = wildBushLoot(x, y, z)
+      giveLoose('berry', loot.berries, x, y, z)
+      if (loot.sprout) giveLoose('bushSprout', 1, x, y, z)
+      got = loot.berries
+    } else if (drop) {
       markFound(drop)
       const left = bag.add(drop, 1)
       got = 1 - left

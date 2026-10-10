@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.110', date: '2026-10-09', lines: {
+    en: ['Wild berry bushes grow back after you pick them, and wild wheat returns.'],
+    uk: ['Дикі ягідні кущі виростають знову після збору, і дика пшениця повертається.'],
+    ru: ['Дикие ягодные кусты вырастают снова после сбора, и дикая пшеница возвращается.'],
+    es: ['Los arbustos de bayas silvestres vuelven a crecer al recogerlos, y el trigo silvestre regresa.'],
+    ar: ['شجيرات التوت البرية تنمو من جديد بعد قطفها، والقمح البري يعود.'],
+    'fa-AF': ['بوته‌های توت وحشی پس از چیدن دوباره می‌رویند، و گندم وحشی برمی‌گردد.'],
+    rw: ['Ibiti by\'imbuto by\'ahantu bikura nanone nyuma yo gusarura, n\'ingano y\'ahantu igaruka.'],
+    ti: ['ናይ ዱር ቁጽሪ ፍረ ምስ ተለቐቐ ዳግማይ ይበቕል፡ ናይ ዱር ስርናይ ድማ ይምለስ።'],
+  }},
   { v: '2.5.109', date: '2026-10-09', lines: {
     en: ['Plant a Berry Bush on grass. Pick the berries and it grows back.'],
     uk: ['Посади ягідний кущ на траву. Збери ягоди, і він виросте знову.'],

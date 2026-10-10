@@ -77,6 +77,13 @@ export function stepMagnet(drops, player, dt, now) {
   return moved
 }
 
+// Wild berry bush break. 1-2 Berries every time, and a Bush Sprout 1 time in 4.
+// Planted bushes do not use this. Leaf berries stay on their own roll.
+export function wildBushLoot(x, y, z) {
+  const h = (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263) ^ Math.imul(68, 374761393)) >>> 0
+  return { berries: 1 + (h % 2), sprout: ((h >>> 3) % 4) === 0 }
+}
+
 export function pullLoose(ground, lost, bagCount, bagTake, item, n) {
   let left = n
   for (const list of [ground, lost]) {

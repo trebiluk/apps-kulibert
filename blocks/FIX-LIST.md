@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.109 Plant a Berry Bush on grass. Pick the berries and it grows back).
+Updated Fri Oct 9 2026 (Build: 2.5.110 Wild berry bushes grow back after you pick them, and wild wheat returns).
 
+- [x] **2.5.110 Foraging:** Wild berry bushes in plains and forest. Pick a ripe one for 1 or 2 Berries, it shows bare branches and fruits again in 3 minutes. Breaking it gives 1 or 2 Berries and sometimes a Bush Sprout. Wild wheat still drops wheat and seeds, then grows back on that grass after 10 minutes unless you build there.
 - [x] **2.5.109 Berry Bush:** Hold a Bush Sprout and tap grass or dirt. The bush grows, a ripe one gives 2 or 3 Berries and stays, and breaking it gives the Sprout back. Farmland, water and stone say why they will not take it.
 - [x] **2.5.108 True Oven and Bag clicks:** A short stack says what is missing ("Bread needs 2 Flour. Add 1 more."). Wheat says it becomes Flour at the Workbench first and bounces, unused. Dirt still cannot be baked. Oven tiles name the real ingredient. The Bag ignores item clicks until its slide finishes.
 - [x] **2.5.106 Pocket, eat, harvest, pond:** A full hotbar says the item went to your Bag pockets and dots the Bag until you open it. Right-click or Use eats food unless you are aiming at a machine, door, Box or crop. The first food tells you how. Ripe wheat pops its counts. A pond near spawn has a one-block step so you can walk to the water. The canvas warning is gone.
@@ -150,6 +151,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.109 Plant a Berry Bush on grass. Pick the ber
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.110 | Wild berry bushes grow back after you pick them, and wild wheat returns | shipped |
 | 1p | 2.5.109 | Plant a Berry Bush on grass. Pick the berries and it grows back | shipped |
 | 1p | 2.5.108 | The Oven tells you exactly what a recipe needs, and the Bag is ready the moment it opens | shipped |
 | 1p | 2.5.106 | The game tells you where crafted things go, right-click eats food, harvests pop, and ponds are easy to reach | shipped |

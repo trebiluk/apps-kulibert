@@ -1,0 +1,328 @@
+{
+  "steps": [
+    {
+      "name": "bush within a short walk",
+      "ok": true,
+      "detail": {
+        "near": {
+          "x": 8,
+          "z": -19,
+          "y": 4,
+          "kind": "plains",
+          "d": 20
+        },
+        "live": [
+          {
+            "x": 8,
+            "z": -19,
+            "y": 4,
+            "kind": "plains",
+            "d": 20,
+            "id": 68,
+            "soil": 1
+          },
+          {
+            "x": 1,
+            "z": -19,
+            "y": 3,
+            "kind": "plains",
+            "d": 21,
+            "id": 68,
+            "soil": 1
+          },
+          {
+            "x": 18,
+            "z": -19,
+            "y": 5,
+            "kind": "plains",
+            "d": 22,
+            "id": 68,
+            "soil": 1
+          },
+          {
+            "x": 13,
+            "z": -24,
+            "y": 4,
+            "kind": "forest",
+            "d": 25,
+            "id": 68,
+            "soil": 1
+          },
+          {
+            "x": 9,
+            "z": 29,
+            "y": 4,
+            "kind": "forest",
+            "d": 28,
+            "id": 68,
+            "soil": 1
+          }
+        ],
+        "mode": "survival"
+      }
+    },
+    {
+      "name": "tap ripe wild bush",
+      "ok": true,
+      "detail": {
+        "tap": {
+          "id": 68,
+          "x": 8,
+          "y": 4,
+          "z": -19
+        },
+        "seen": [
+          2,
+          2
+        ],
+        "locked": true,
+        "picked": {
+          "id": 65,
+          "berry": 1,
+          "card": "Wild Berry Bush - Bare branches - Berries in 3:00",
+          "pop": "+1 Berry",
+          "row": {
+            "x": 8,
+            "y": 4,
+            "z": -19,
+            "kind": "bush",
+            "grown": 0,
+            "lastSeen": 1791599601775
+          },
+          "crops": []
+        }
+      }
+    },
+    {
+      "name": "bare tap adds no berries",
+      "ok": true,
+      "detail": {
+        "again": {
+          "id": 65,
+          "x": 8,
+          "y": 4,
+          "z": -19
+        },
+        "stayed": {
+          "id": 65,
+          "berry": 1,
+          "card": "Wild Berry Bush - Bare branches - Berries in 3:00"
+        }
+      }
+    },
+    {
+      "name": "clock back stays bare",
+      "ok": true,
+      "detail": {
+        "back": {
+          "grown": 243,
+          "same": true,
+          "lastSeen": 1791599662380
+        },
+        "beforeGrown": 243,
+        "afterBack": {
+          "id": 65,
+          "row": {
+            "x": 8,
+            "y": 4,
+            "z": -19,
+            "kind": "bush",
+            "grown": 243,
+            "lastSeen": 1791599662380
+          }
+        }
+      }
+    },
+    {
+      "name": "four minutes fruits once",
+      "ok": true,
+      "detail": {
+        "before": 1,
+        "once": {
+          "id": 68,
+          "berry": 1,
+          "rows": 0
+        },
+        "later": {
+          "id": 68,
+          "berry": 1,
+          "rows": 0
+        }
+      }
+    },
+    {
+      "name": "break wild wheat",
+      "ok": true,
+      "detail": {
+        "broke": {
+          "id": 0,
+          "berry": 1,
+          "sprout": 0,
+          "wheat": 1,
+          "seeds": 2,
+          "card": "Wheat grows back here"
+        },
+        "row": {
+          "x": -30,
+          "y": 3,
+          "z": -10,
+          "kind": "wheat",
+          "grown": 0,
+          "lastSeen": 1791599602930
+        },
+        "wheat": {
+          "x": -30,
+          "y": 3,
+          "z": -10
+        }
+      }
+    },
+    {
+      "name": "wheat regrows at 10 min",
+      "ok": true,
+      "detail": {
+        "id": 28,
+        "rows": 0
+      }
+    },
+    {
+      "name": "build on the wheat spot wins",
+      "ok": true,
+      "detail": {
+        "broke2": 0,
+        "built": {
+          "id": 2,
+          "rows": 0
+        }
+      }
+    },
+    {
+      "name": "break wild bush berries and sometimes a sprout",
+      "ok": true,
+      "detail": {
+        "sample": [
+          {
+            "loot": {
+              "berries": 1,
+              "sprout": true
+            },
+            "dBerry": 1,
+            "dSprout": 1,
+            "id": 0
+          },
+          {
+            "loot": {
+              "berries": 1,
+              "sprout": false
+            },
+            "dBerry": 1,
+            "dSprout": 0,
+            "id": 0
+          }
+        ],
+        "failBreak": null,
+        "n": 10
+      }
+    },
+    {
+      "name": "leaves still about 1 in 3",
+      "ok": true,
+      "detail": {
+        "n": 48,
+        "berries": 15,
+        "rate": 0.3125
+      }
+    },
+    {
+      "name": "planted bush still returns one sprout",
+      "ok": true,
+      "detail": {
+        "tap": {
+          "id": 1,
+          "x": 49,
+          "y": 5,
+          "z": -24
+        },
+        "locked": true,
+        "grew": {
+          "id": 65,
+          "sprout": 0,
+          "card": "Berry Bush - Sprout - ripe in 10:00 Dry soil: grows slowly. Water nearby = 2x.",
+          "row": {
+            "x": 49,
+            "y": 6,
+            "z": -24,
+            "plantedAt": 1791599605603,
+            "grown": 0,
+            "wet": false,
+            "lastSeen": 1791599605603,
+            "kind": "bush",
+            "regrow": false
+          },
+          "spot": {
+            "x": 49,
+            "y": 5,
+            "z": -24
+          }
+        },
+        "broke": {
+          "id": 0,
+          "sprout": 1,
+          "berry": 0
+        },
+        "tried": 16
+      }
+    },
+    {
+      "name": "old grass gets a bush, a build stays",
+      "ok": true,
+      "detail": {
+        "blocked": 3,
+        "n": 2,
+        "stayed": 3,
+        "cleared": 0,
+        "filled": 1,
+        "back": 68
+      }
+    },
+    {
+      "name": "card 915x412",
+      "ok": true,
+      "detail": {
+        "text": "Wild Berry Bush - Bare branches - Berries in 3:00",
+        "w": 393.578125,
+        "h": 44,
+        "left": 260.7109375,
+        "top": 260,
+        "right": 654.2890625,
+        "bottom": 304,
+        "vw": 915,
+        "vh": 412,
+        "font": "15px",
+        "minH": "44px"
+      }
+    },
+    {
+      "name": "card rotate 412x915",
+      "ok": true,
+      "detail": {
+        "text": "Wild Berry Bush - Bare branches - Berries in 2:59",
+        "w": 206,
+        "h": 78.75,
+        "left": 103,
+        "top": 728.25,
+        "right": 309,
+        "bottom": 807,
+        "vw": 412,
+        "vh": 915,
+        "font": "15px",
+        "minH": "44px"
+      }
+    },
+    {
+      "name": "console errors",
+      "ok": true,
+      "detail": []
+    }
+  ]
+}

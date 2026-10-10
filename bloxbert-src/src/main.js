@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.109'
+const VERSION = '2.5.110'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -34,7 +34,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -43,8 +43,11 @@ import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels } from './save/migrate.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
+import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
+import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 const farm = createFarm()
+const forage = createForage()
 
 const T0 = performance.now()
 if (!document.createElement('canvas').getContext('webgl2')) {
@@ -1007,13 +1010,25 @@ function breakAt(x, y, z) {
   if (basics && basics.blocksBreak(id)) return false
   if (id === ID.vend || id === ID.bunk) return false
   if (!tableMode && !canReach([x, y, z])) return false
+  const wild = isBushId(id) && !farm.get(x, y, z)
+  const wheatBack = id === WILD_WHEAT && session && session.mode === 'survival' && wildWheatCell(x, y, z)
   if (session && !session.onBreak(x, y, z, id)) return false
   const gone = edit(x, y, z, 0)
+  if (gone && wild) forage.remove(x, y, z)
+  if (gone && wheatBack) {
+    forage.add(x, y, z, 'wheat', Date.now())
+    showCard(t('wheatBack'))
+    dirty = true
+  }
   if (gone && isUseBlock(id)) {
     const key = dropOf(id)
     toast(t('gotItem').replace('{item}', key ? t(key) : blockName(id)))
   }
   return gone
+}
+function wildWheatCell(x, y, z) {
+  if (inTown(x, z)) return false
+  return plantHere(x, y, z, heightAt(x, z), false) === 'wheat'
 }
 function breakBlock() {
   const tget = tableMode ? tableTarget() : noa.targetedBlock
@@ -1266,6 +1281,42 @@ function pickBush(x, y, z, row) {
   paintCrop(row)
   showCropCard(x, y, z)
 }
+function wildBushText(x, y, z) {
+  const row = forage.get(x, y, z)
+  if (row && row.kind === 'bush') {
+    const p = forage.preview(row, Date.now())
+    return t('wildBush') + ' - ' + t('bareBranches') + ' - ' + t('berriesIn').replace('{t}', formatLeft(p.left))
+  }
+  if (getVoxel(x, y, z) === FRUIT_BUSH) return t('wildBush')
+  return t('wildBush') + ' - ' + t('bareBranches')
+}
+function tryWildBush(x, y, z) {
+  if (!session || session.mode !== 'survival') {
+    showCard(wildBushText(x, y, z))
+    return true
+  }
+  if (getVoxel(x, y, z) !== FRUIT_BUSH) {
+    showCard(wildBushText(x, y, z))
+    return true
+  }
+  const press = rightPress
+  if (press) {
+    if (!harvestStroke || harvestStroke.press !== press) harvestStroke = { press, seen: new Set(), n: 0 }
+  } else harvestStroke = { press: null, seen: new Set(), n: 0 }
+  const cell = x + ',' + y + ',' + z
+  if (harvestStroke.seen.has(cell) || harvestStroke.n >= 5) return true
+  const n = wildPickCount(x, y, z)
+  session.give('berry', n)
+  popBerry(x, y, z, n)
+  const now = Date.now()
+  setVoxel(x, y, z, BARE_BUSH)
+  forage.add(x, y, z, 'bush', now)
+  showCard(wildBushText(x, y, z))
+  harvestStroke.seen.add(cell)
+  harvestStroke.n += 1
+  dirty = true
+  return true
+}
 function tryBush(aimed) {
   if (!aimed || !aimed.position) return false
   const x = Math.round(aimed.position[0])
@@ -1277,10 +1328,7 @@ function tryBush(aimed) {
     return true
   }
   const row = farm.get(x, y, z)
-  if (!row) {
-    showCard(t('berryBush'))
-    return true
-  }
+  if (!row) return tryWildBush(x, y, z)
   const ripe = getVoxel(x, y, z) === BUSH[3] || preview(row, Date.now()).stage === 3
   if (!ripe || !session || session.mode !== 'survival') {
     showCropCard(x, y, z)
@@ -1465,6 +1513,35 @@ function syncCrops(now) {
 let cropTickAt = 0
 let cropFreeze = false
 let cropHoverAt = 0
+function syncForage(now) {
+  const list = [...forage.rows()]
+  let moved = false
+  for (const r of list) {
+    const before = r.grown
+    forage.advance(r, now)
+    if (r.grown !== before) moved = true
+    const p = forage.preview(r, now)
+    if (r.kind === 'wheat') {
+      const open = getVoxel(r.x, r.y, r.z) === 0 && getVoxel(r.x, r.y - 1, r.z) === ID.grass
+      if (!open) { forage.remove(r.x, r.y, r.z); moved = true; continue }
+      if (p.ready) { setVoxel(r.x, r.y, r.z, WILD_WHEAT); forage.remove(r.x, r.y, r.z); moved = true }
+      continue
+    }
+    const id = getVoxel(r.x, r.y, r.z)
+    const bare = (id === BARE_BUSH || id === 66 || id === 67) && !farm.get(r.x, r.y, r.z)
+    if (!bare) { forage.remove(r.x, r.y, r.z); moved = true; continue }
+    if (p.ready) { setVoxel(r.x, r.y, r.z, FRUIT_BUSH); forage.remove(r.x, r.y, r.z); moved = true }
+  }
+  if (moved) dirty = true
+}
+let forageTickAt = 0
+function tickForage() {
+  const wall = Date.now()
+  if (!forageTickAt) { forageTickAt = wall; return }
+  if (wall - forageTickAt < 1000) return
+  forageTickAt = wall
+  syncForage(wall)
+}
 function tickCrops() {
   if (cropFreeze) return
   const wall = Date.now()
@@ -1474,12 +1551,29 @@ function tickCrops() {
   growAll(wall)
 }
 function hoverCrop() {
-  if (cropFreeze || tableMode || anyCard()) return
+  if (tableMode || anyCard()) return
   const aimed = noa.targetedBlock
-  if (!aimed || !aimed.position || !(isCropId(aimed.blockID) || isBushId(aimed.blockID))) return
+  if (!aimed || !aimed.position) return
   const x = Math.round(aimed.position[0])
   const y = Math.round(aimed.position[1])
   const z = Math.round(aimed.position[2])
+  if (isBushId(aimed.blockID) && !farm.get(x, y, z)) {
+    const wall = Date.now()
+    if (wall - cropHoverAt < 500) return
+    cropHoverAt = wall
+    showCard(wildBushText(x, y, z))
+    return
+  }
+  const wheatWait = forage.get(x, y + 1, z)
+  if (aimed.blockID === ID.grass && wheatWait && wheatWait.kind === 'wheat') {
+    const wall = Date.now()
+    if (wall - cropHoverAt < 500) return
+    cropHoverAt = wall
+    showCard(t('wheatBack'))
+    return
+  }
+  if (cropFreeze) return
+  if (!(isCropId(aimed.blockID) || isBushId(aimed.blockID))) return
   const row = farm.get(x, y, z)
   if (!row) return
   const p = preview(row, Date.now())
@@ -1616,6 +1710,32 @@ function waterWithin(r) {
   }
   return false
 }
+function chunkSavedAt(x, y, z) {
+  const ci = Math.floor(x / S)
+  const cj = Math.floor(y / S)
+  const ck = Math.floor(z / S)
+  return saved.has(ci + ',' + cj + ',' + ck)
+}
+function seedOldBushes() {
+  if (gifts.forage110) return 0
+  let n = 0
+  for (let x = 8 - 64; x <= 8 + 64; x++) {
+    for (let z = 2 - 64; z <= 2 + 64; z++) {
+      if (!wildBushCell(x, z)) continue
+      const h = surfaceY(x, z)
+      const y = h + 1
+      if (!chunkSavedAt(x, y, z)) continue
+      if (keptCell(x, y, z)) continue
+      if (getVoxel(x, y, z) !== 0) continue
+      if (getVoxel(x, h, z) !== ID.grass) continue
+      setVoxel(x, y, z, FRUIT_BUSH)
+      n++
+    }
+  }
+  gifts.forage110 = true
+  dirty = true
+  return n
+}
 function rescueClear(x, y, z) {
   if (keptCell(x, y, z)) return false
   const cur = getVoxel(x, y, z)
@@ -1714,6 +1834,7 @@ async function snapshot() {
     basics: basics ? basics.dump() : null,
     gifts,
     crops: farm.dump(),
+    forage: forage.dump(),
     pondAid: !!pondAid,
   }
 }
@@ -1729,7 +1850,15 @@ async function save() {
 async function load() {
   const db = await idb()
   const doc = await new Promise((res) => { const r = db.transaction(STORE).objectStore(STORE).get(WORLD); r.onsuccess = () => res(r.result); r.onerror = () => res(null) })
-  if (!doc || doc.format !== 'kuliblocks') { farm.clear(); pondAid = true; ensureHelp(); grantSaplings(); return false }
+  if (!doc || doc.format !== 'kuliblocks') {
+    farm.clear()
+    forage.clear()
+    pondAid = true
+    ensureHelp()
+    grantSaplings()
+    seedOldBushes()
+    return false
+  }
   await applyDoc(doc)
   const repaired = ensureHelp()
   dirty = !!(repaired || dirty)
@@ -1766,8 +1895,11 @@ async function applyDoc(doc) {
   grantSaplings()
   farm.load(doc && doc.crops)
   syncCrops(Date.now())
+  forage.load(doc && doc.forage)
+  syncForage(Date.now())
   pondAid = false
   ensureStarterPond(doc)
+  seedOldBushes()
   if (session) paintModeChip()
   syncDropMeshes()
 }
@@ -1782,6 +1914,7 @@ async function importFile(file) {
 async function resetWorld() {
   gifts = {}
   farm.clear()
+  forage.clear()
   pondAid = true
   saved.clear(); dirty = true; edits.clear(); paintUndo()
   changeLog.clearWorld().catch(() => {})
@@ -1791,6 +1924,7 @@ async function resetWorld() {
   syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   setLook(0, 0.18)
+  seedOldBushes()
   markSave(t('fresh'))
 }
 async function exportJSON() {
@@ -1804,6 +1938,7 @@ setInterval(() => { if (dirty) save() }, 20000)
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) { if (dirty) save() }
   else syncCrops(Date.now())
+  if (!document.hidden) syncForage(Date.now())
 })
 
 const $ = (id) => document.getElementById(id)
@@ -1910,6 +2045,7 @@ session = createSession({
   setTeacher: (on) => setTeacher(on),
   staff: () => staffOn(),
   townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
+  wildBush: (x, y, z) => isBushId(getVoxel(x, y, z)) && !farm.get(x, y, z),
   townYes: () => townHelper(),
   setTown: (on) => setTownHelper(on),
   setAlways: (on) => basics && basics.setAlways(on),
@@ -3289,6 +3425,7 @@ function feelTick(dt) {
     }
   }
   tickCrops()
+  tickForage()
   hoverCrop()
 }
 noa.on('tick', (dt) => {
@@ -4401,6 +4538,25 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     card: () => { const el = document.getElementById('maker-card'); return el && !el.hidden ? el.textContent : '' },
     crops: () => farm.dump(),
+    forage: () => forage.dump(),
+    bushes: () => starterBushes(),
+    loot: (x, y, z) => wildBushLoot(x, y, z),
+    pickN: (x, y, z) => wildPickCount(x, y, z),
+    seekForage(ms) {
+      const now = Date.now()
+      for (const r of forage.rows()) r.lastSeen = now - ms
+      syncForage(now)
+      return { forage: forage.dump(), now }
+    },
+    clockBackForage(x, y, z) {
+      const r = forage.get(x, y, z)
+      if (!r) return null
+      const g = r.grown
+      r.lastSeen = Date.now() + 60000
+      forage.advance(r, Date.now())
+      return { grown: r.grown, same: r.grown === g, lastSeen: r.lastSeen }
+    },
+    reseed() { gifts.forage110 = false; return seedOldBushes() },
     ponds: () => starterPonds(1),
     rescue: () => rescueSpots(1).slice(0, 8),
     pondFlag: () => pondAid,

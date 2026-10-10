@@ -88,7 +88,108 @@ export function plantHere(x, y, z, surface, inTown) {
   const n = hash(x, z)
   if (n >= 0.04 && n < 0.07) return 'wheat'
   if (n >= 0.12 && n < 0.28) return 'tuft'
+  if (wildBushCell(x, z)) return 'bushFruit'
   return ''
+}
+
+// Light density (the spec gives no number): 3 plains bushes and 2 forest-edge
+// bushes within a short walk of spawn (18–38 blocks), plus one bush in 42% of
+// 28×28 wilderness cells. That scatter is about 1 bush per 1,870 grass blocks.
+// Town, roads, ponds, wheat, tufts, trunks and crowns stay clear.
+const BUSH_EVERY = 28
+function plantBlocked(x, z) {
+  if (townTrunk(x, z)) return true
+  const h = groundY(x, z)
+  if (h <= 1) return true
+  if (starterWood(x, h + 1, z)) return true
+  if (starterStone(x, h + 1, z)) return true
+  if (starterSand(x, h + 1, z)) return true
+  if (wildWood(x, h + 1, z)) return true
+  if (pondHere(x, h, z) || pondHere(x, h + 1, z) || shoreLow(x, h, z) || shoreLow(x, h + 1, z)) return true
+  const n = hash(x, z)
+  if (n >= 0.04 && n < 0.07) return true
+  if (n >= 0.12 && n < 0.28) return true
+  return false
+}
+function trunkDist(x, z) {
+  let best = 999
+  const bx = Math.floor(x / 9) * 9 + 4
+  const bz = Math.floor(z / 9) * 9 + 4
+  for (let ox = -18; ox <= 18; ox += 9) for (let oz = -18; oz <= 18; oz += 9) {
+    const tx = bx + ox
+    const tz = bz + oz
+    if (townTrunk(tx, tz) || hash(tx, tz) >= 0.18) continue
+    const d = Math.hypot(x - tx, z - tz)
+    if (d < best) best = d
+  }
+  return best
+}
+function biomeAt(x, z) {
+  const d = trunkDist(x, z)
+  if (d >= 1 && d <= 6) return 'forest'
+  if (d > 6) return 'plains'
+  return ''
+}
+let nearCache = null
+let scanningBushes = false
+function nearSpawnBushes() {
+  if (nearCache) return nearCache
+  if (scanningBushes) return []
+  scanningBushes = true
+  try {
+    const plains = []
+    const forest = []
+    for (let x = -40; x <= 56; x++) {
+      for (let z = -48; z <= 40; z++) {
+        const d = Math.hypot(x + 0.5 - POND_SPAWN[0], z + 0.5 - POND_SPAWN[1])
+        if (d < 18 || d > 38) continue
+        if (plantBlocked(x, z)) continue
+        const kind = biomeAt(x, z)
+        if (kind === 'plains') plains.push({ x, z, d, kind })
+        else if (kind === 'forest') forest.push({ x, z, d, kind })
+      }
+    }
+    plains.sort((a, b) => a.d - b.d || a.x - b.x || a.z - b.z)
+    forest.sort((a, b) => a.d - b.d || a.x - b.x || a.z - b.z)
+    const picked = []
+    const take = (list, n) => {
+      for (const s of list) {
+        if (picked.filter((p) => p.kind === s.kind).length >= n) return
+        if (picked.some((p) => Math.hypot(p.x - s.x, p.z - s.z) < 7)) continue
+        picked.push(s)
+      }
+    }
+    take(plains, 3)
+    take(forest, 2)
+    nearCache = picked
+    return picked
+  } finally {
+    scanningBushes = false
+  }
+}
+function scatterAt(x, z) {
+  const cx = Math.floor(x / BUSH_EVERY) * BUSH_EVERY
+  const cz = Math.floor(z / BUSH_EVERY) * BUSH_EVERY
+  if (hash(cx + 401, cz - 88) >= 0.42) return false
+  for (let i = 0; i < 8; i++) {
+    const ox = Math.floor(hash(cx + 3 + i * 17, cz + 9) * BUSH_EVERY)
+    const oz = Math.floor(hash(cx + 11, cz + 5 + i * 13) * BUSH_EVERY)
+    const bx = cx + ox
+    const bz = cz + oz
+    if (plantBlocked(bx, bz) || !biomeAt(bx, bz)) continue
+    return x === bx && z === bz
+  }
+  return false
+}
+export function wildBushCell(x, z) {
+  if (scanningBushes) return false
+  if (nearSpawnBushes().some((s) => s.x === x && s.z === z)) return true
+  return scatterAt(x, z)
+}
+export function starterBushes() {
+  return nearSpawnBushes().map((s) => ({
+    x: s.x, z: s.z, y: groundY(s.x, s.z) + 1, kind: s.kind, d: Math.round(s.d),
+  }))
 }
 export function berryTuft(x, y, z) {
   const bx = Math.floor(x / 9) * 9 + 4

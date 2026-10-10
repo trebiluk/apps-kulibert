@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Plant a Berry Bush on grass. Pick the berries and it grows back.",
+  "whatsNewBody": "Wild berry bushes grow back after you pick them, and wild wheat returns.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
