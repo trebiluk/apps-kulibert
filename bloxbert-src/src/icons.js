@@ -355,11 +355,23 @@ const FOOD = {
   measuringTape: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="12" width="22" height="24" fill="#e6b422" stroke="#5c3b09" stroke-width="2"/><rect x="24" y="20" width="18" height="6" fill="#c5ccd1" stroke="#3a4450" stroke-width="2"/><rect x="28" y="20" width="2" height="6" fill="#3a4450"/><rect x="34" y="20" width="2" height="6" fill="#3a4450"/><rect x="12" y="18" width="8" height="8" fill="#5c3b09"/></svg>',
   handSaw: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="16" width="28" height="8" fill="#c5ccd1" stroke="#3a4450" stroke-width="2"/><rect x="8" y="24" width="3" height="4" fill="#3a4450"/><rect x="14" y="24" width="3" height="4" fill="#3a4450"/><rect x="20" y="24" width="3" height="4" fill="#3a4450"/><rect x="26" y="18" width="16" height="10" fill="#8a5a32" stroke="#3a2415" stroke-width="2"/></svg>',
   hammer: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>',
+  bertyLie: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="4" y="28" width="40" height="10" fill="#c9954c" stroke="#5c3317" stroke-width="2"/><rect x="6" y="26" width="36" height="6" fill="#d64545"/><rect x="8" y="16" width="16" height="8" fill="#3ec6c6" stroke="#0b3a3a" stroke-width="2"/><rect x="24" y="12" width="10" height="10" fill="#f0c9a0" stroke="#5c3317" stroke-width="2"/></svg>',
+  goldTrim: '<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="6" y="10" width="36" height="28" fill="none" stroke="#e6b15a" stroke-width="4"/><rect x="12" y="16" width="24" height="16" fill="#f6e3a8"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''
   if (String(svg).includes('<svg')) return svg
   return FOOD[svg] || '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="#f6c453"/></svg>'
+}
+export function shopIcon(name) {
+  const svg = FOOD[name]
+  if (!svg) return null
+  const s = document.createElement('span')
+  s.className = 'real-icon'
+  s.dataset.kind = 'svg'
+  s.dataset.item = name
+  s.innerHTML = svg
+  return s
 }
 export function dropperIcon() {
   return '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M14.2 3.3l6.5 6.5-1.4 1.4-1.1-1.1-6.7 6.7a3.2 3.2 0 0 1-4.5 0l-.6.6-1.5-1.5.6-.6a3.2 3.2 0 0 1 0-4.5l6.7-6.7-1.1-1.1z"/></svg>'

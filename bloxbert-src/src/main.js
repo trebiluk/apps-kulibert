@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.119'
+const VERSION = '2.5.120'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -2774,7 +2774,7 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
-}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on) })
+}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on), giveBed: (design) => session && session.giveBed ? session.giveBed(design) : null, rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn() })
 function syncOvenGlow() {
   const hot = new Set()
   const keys = stations && stations.baking ? stations.baking() : []
@@ -4262,7 +4262,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
   if (inspectOn && tap) { showInspect(); return }
   if (tableMode && tap) { placeBlock(); return }
-  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && isShopBlock(down.id))) {
+  if (!lookWasTouch && !survivalOn() && !anyCard() && held < 400 && moved < 8 && down && !broke && !(down && (isShopBlock(down.id) || down.id === ID.bunk))) {
     breakAt(down.x, down.y, down.z)
     dig = null
     hideCrack()
@@ -4272,7 +4272,7 @@ canvas.addEventListener('pointerup', (e) => {
   const mouseTap = !lookWasTouch && held < 500 && moved < 8 && !broke
   const upHit = lookWasTouch ? rayAt(e.clientX, e.clientY) : targetHit()
   const up = upHit && upHit.position ? { id: upHit.id || upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
-  if ((touchTap || (mouseTap && (survivalOn() || (down && isShopBlock(down.id))))) && down && isUseBlock(down.id)) {
+  if ((touchTap || (mouseTap && (survivalOn() || (down && (isShopBlock(down.id) || down.id === ID.bunk))))) && down && isUseBlock(down.id)) {
     dig = null
     hideCrack()
     placeBlock(face || upHit)
@@ -5267,6 +5267,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
     },
     persist: () => save(),
+    energy: () => session && session.energyState ? session.energyState() : { bolts: 0 },
+    setEnergy: (n) => session && session.setEnergy ? session.setEnergy(n) : 0,
     clock: (n) => basics && basics.clock(n),
     seek: (n) => basics && basics.seek(n),
     nightAt: () => basics ? basics.nightAt() : 0,
@@ -5356,6 +5358,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     lost: () => session.lostItems ? session.lostItems() : [],
     gifts: () => ({ ...gifts }),
     shopPlace: (x, y, z) => placeShop(x | 0, y | 0, z | 0),
+    clearShop: (key) => { if (stations && stations.clearShop) stations.clearShop(key) },
     shopLift: (x, y, z) => liftShop(x | 0, y | 0, z | 0),
     shopInfo: (x, y, z) => {
       const key = x + ',' + y + ',' + z
@@ -5380,6 +5383,16 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     focus: (id) => { if (session && session.focusCraft) session.focusCraft(id); if (panels) panels.open('crafting'); return true },
     hold: (item) => !!(session && session.holdItem && session.holdItem(item)),
     take: (item, n) => !!(session && session.spend && session.spend(item, n || 1)),
+    home: () => session && session.home,
+    shopRules: (next) => session && session.shopRules ? session.shopRules(next) : null,
+    bed: (key) => session && session.meta ? (session.meta.get(key) || null) : null,
+    placeBunk: (x, y, z) => {
+      if (!session) return null
+      session.holdItem && session.holdItem('bunk')
+      const ok = session.onPlace(x | 0, y | 0, z | 0, ID.bunk)
+      if (ok) setVoxel(x | 0, y | 0, z | 0, ID.bunk, true)
+      return { ok, meta: session.meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0)) || null, id: getVoxel(x | 0, y | 0, z | 0) }
+    },
     apply: (doc) => applyDoc(doc),
     uses: () => {
       const s = session.bag.slots[session.hot]

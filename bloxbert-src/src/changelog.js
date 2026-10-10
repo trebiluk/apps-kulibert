@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.120', date: '2026-10-10', lines: {
+    en: ['A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.'],
+    uk: ['Ліжко роблять на верстаті. Спроектуй його або просто збери, тоді відпочинь, щоб набрати енергію.'],
+    ru: ['Кровать делают на верстаке. Спроектируй её или просто собери, потом отдохни, чтобы набрать энергию.'],
+    es: ['La cama se hace en el banco de madera. Diséñala o solo constrúyela, luego descansa para llenar tu energía.'],
+    ar: ['السرير يُصنع على منضدة الخشب. صمّمه أو ابنِه فقط، ثم استرح لملء الطاقة.'],
+    'fa-AF': ['تخت در میز نجاری ساخته می‌شود. آن را طرح کن یا فقط بساز، بعد استراحت کن تا انرژی پر شود.'],
+    rw: ['Ikiriri gikorerwa ku ntebe y\'ububaji. Kigire cyangwa ukubake gusa, hanyuma wuhuke ujye kuzuza imbaraga.'],
+    ti: ['ዓራት ኣብ መደብ ዕንጨይቲ ይስራሕ። ንድፊ ግበሮ ወይ ጥራይ ሃንጾ፡ ድሕሪኡ ዕረፍ ጉልበት ንምምላእ።'],
+  }},
   { v: '2.5.119', date: '2026-10-10', lines: {
     en: ['A teacher can set the spawn, and choose how wide the protected ground is.'],
     uk: ['Вчитель ставить спавн і обирає, наскільки широка захищена земля.'],

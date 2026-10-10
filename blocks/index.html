@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.119">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.119">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.120">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.120">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -558,6 +558,20 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 #sheet[data-panel=woodshop] .need-tool.have{color:#E6EEF2}
 #sheet[data-panel=woodshop] .shop-go:disabled{opacity:.45}
 #sheet[data-panel=woodshop] .glasses-note{display:flex;align-items:center;gap:6px}
+#sheet[data-panel=woodshop] .bed-card,#sheet[data-panel=woodshop] .shop-teacher{border:2px solid #345;border-radius:10px;padding:8px;margin-top:8px}
+#sheet[data-panel=woodshop] .bed-paths,#sheet[data-panel=woodshop] .choice-row,#sheet[data-panel=woodshop] .nail-row,#sheet[data-panel=woodshop] .tape-track{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+#sheet[data-panel=woodshop] .bed-card button,#sheet[data-panel=woodshop] .shop-teacher button,#sheet[data-panel=woodshop] .tape-head{min-width:44px;min-height:44px}
+#sheet[data-panel=woodshop] .tick{min-width:44px;min-height:44px;flex:1 1 44px}
+#sheet[data-panel=woodshop] .bed-card .on,#sheet[data-panel=woodshop] .shop-teacher .on{outline:3px solid #22D3EE}
+#sheet[data-panel=woodshop] .bed-icon{width:64px;height:64px;display:grid;place-items:center}
+#sheet[data-panel=woodshop] .bed-title{font-size:20px;font-weight:800;margin:4px 0}
+#sheet[data-panel=woodshop] .built-chip{display:inline-block;background:#E6B15A;color:#1a1204;font-weight:800;border-radius:8px;padding:8px 12px;min-height:44px}
+#sheet[data-panel=woodshop] .nail.glow{box-shadow:0 0 0 3px #E6B15A}
+#sheet[data-panel=woodshop] .nail.done{background:#12343a}
+#sheet[data-panel=bunk] .bed-gold{border:3px solid #E6B15A;border-radius:12px;padding:8px}
+@keyframes bed-wobble{50%{transform:rotate(-8deg)}}
+#sheet[data-panel=woodshop] .wobble.play{animation:bed-wobble .5s ease-in-out infinite;transform-origin:center}
+html[data-kp-motion="less"] #sheet[data-panel=woodshop] .wobble,#sheet[data-panel=woodshop] .wobble.still{animation:none}
 #shop-safe{position:fixed;inset:0;z-index:80;display:grid;place-items:center;background:rgba(6,12,16,.72)}
 #shop-safe .card{max-width:440px;margin:16px;padding:16px;background:#0E1A22;color:#E6EEF2;border:3px solid #E6B15A;border-radius:12px;display:flex;flex-direction:column;gap:10px}
 #shop-safe button{padding:10px 18px;font-weight:800;border:0;border-radius:8px;background:#22D3EE;color:#08131A}
@@ -580,7 +594,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.119</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.120</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -620,7 +634,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -720,8 +734,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.119"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.119" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.119" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.120"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.120" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.120" defer></script>
 </body>
 </html>

@@ -1,0 +1,216 @@
+{
+  "steps": [
+    {
+      "name": "chip 2.5.120",
+      "ok": true,
+      "detail": "{\"chip\":\"2.5.120\",\"js\":\"2.5.120\",\"news\":\"A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.\",\"bunk\":\"Bed\"}"
+    },
+    {
+      "name": "changelog",
+      "ok": true,
+      "detail": "2.5.120 · You are here · A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.\n\n2.5.119 · A teacher can set the spawn, and choose how wide the "
+    },
+    {
+      "name": "old bunk recipe",
+      "ok": true,
+      "detail": "planks:3+woolBlue:3"
+    },
+    {
+      "name": "bench bed listed",
+      "ok": true,
+      "detail": "Workbench|Bed|Box|Wood Tool|Door (2 blocks tall)|Stick|Push button|Planks. need 1 Log (chop a tree)|Ice. need 4 Snow|Oven. need 8 Stone (break stone)|Grey brick. need 2 Stone (brea"
+    },
+    {
+      "name": "both paths",
+      "ok": true,
+      "detail": "{\"just\":true,\"design\":true,\"step\":null}"
+    },
+    {
+      "name": "glasses on",
+      "ok": true,
+      "detail": "{\"on\":true,\"mesh\":true,\"mark\":\"1\"}"
+    },
+    {
+      "name": "need card",
+      "ok": true,
+      "detail": "Fits 1 Berty, under 6 planks\n\nEngineers start by asking who it's for.\n\nNext"
+    },
+    {
+      "name": "plan spends",
+      "ok": true,
+      "detail": "{\"planks\":9,\"wool\":6,\"step\":\"measure\"}"
+    },
+    {
+      "name": "drag measure",
+      "ok": true,
+      "detail": "exact"
+    },
+    {
+      "name": "measure off",
+      "ok": true,
+      "detail": "off"
+    },
+    {
+      "name": "reached assemble",
+      "ok": true,
+      "detail": "assemble"
+    },
+    {
+      "name": "1 star wobble",
+      "ok": true,
+      "detail": "{\"step\":\"test\",\"wobble\":\"big\",\"still\":true,\"stars\":\"1\",\"word\":\"Big wobble\"}"
+    },
+    {
+      "name": "fix refunds",
+      "ok": true,
+      "detail": "{\"planks\":10,\"step\":\"measure\"}"
+    },
+    {
+      "name": "fix exact",
+      "ok": true,
+      "detail": "exact"
+    },
+    {
+      "name": "3 stars",
+      "ok": true,
+      "detail": "{\"step\":\"test\",\"stars\":\"3\",\"wob\":\"steady\"}"
+    },
+    {
+      "name": "kept bed",
+      "ok": true,
+      "detail": "{\"bunk\":1,\"chip\":\"Built!\"}"
+    },
+    {
+      "name": "field guide",
+      "ok": true,
+      "detail": "Engineers start by asking who it's for. A sketch lets you find mistakes before you cut. Testing shows what to improve. Real designs get better every round."
+    },
+    {
+      "name": "placed 3 star",
+      "ok": true,
+      "detail": "{\"ok\":true,\"meta\":{\"kind\":\"bunk\",\"stars\":3,\"tone\":\"honey\",\"fabric\":\"woolRed\",\"pattern\":\"stripes\",\"restAt\":0},\"id\":26}"
+    },
+    {
+      "name": "bed card gold",
+      "ok": true,
+      "detail": "{\"stars\":\"3\",\"gold\":true,\"look\":\"Honey · Red wool · Stripes\",\"panel\":\"bunk\"}"
+    },
+    {
+      "name": "bed buttons 44",
+      "ok": true,
+      "detail": "[]"
+    },
+    {
+      "name": "rest +3",
+      "ok": true,
+      "detail": "{\"bolts\":7,\"wait\":\"1\",\"home\":[16,5,16]}"
+    },
+    {
+      "name": "reload keeps bed",
+      "ok": true,
+      "detail": "{\"stars\":3,\"rest\":1791632993748,\"home\":[16,5,16],\"bolts\":7,\"id\":26}"
+    },
+    {
+      "name": "rest timer holds",
+      "ok": true,
+      "detail": "7->7"
+    },
+    {
+      "name": "old bunk is 1 star",
+      "ok": true,
+      "detail": "{\"before\":null,\"stars\":\"1\",\"id\":26}"
+    },
+    {
+      "name": "tap opens bed",
+      "ok": true,
+      "detail": "{\"aimed\":{\"id\":26,\"x\":16,\"y\":5,\"z\":16},\"tapBed\":{\"aim\":{\"id\":26,\"x\":16,\"y\":5,\"z\":16},\"id\":26,\"panel\":\"bunk\",\"hidden\":false}}"
+    },
+    {
+      "name": "teacher card",
+      "ok": true,
+      "detail": "true"
+    },
+    {
+      "name": "path design",
+      "ok": true,
+      "detail": "{\"just\":false,\"design\":true,\"path\":\"design\"}"
+    },
+    {
+      "name": "path build",
+      "ok": true,
+      "detail": "{\"just\":true,\"design\":false}"
+    },
+    {
+      "name": "path choose",
+      "ok": true,
+      "detail": "{\"just\":true,\"design\":true}"
+    },
+    {
+      "name": "help widens exact",
+      "ok": true,
+      "detail": "exact"
+    },
+    {
+      "name": "exact is 1 tick",
+      "ok": true,
+      "detail": "close"
+    },
+    {
+      "name": "woodshop required hides bench",
+      "ok": true,
+      "detail": "false"
+    },
+    {
+      "name": "bench bed returns",
+      "ok": true,
+      "detail": "true"
+    },
+    {
+      "name": "phone buttons 44",
+      "ok": true,
+      "detail": "[{\"w\":71,\"h\":46.5},{\"w\":71,\"h\":46.5},{\"w\":71,\"h\":66.75}]"
+    },
+    {
+      "name": "phone just build",
+      "ok": true,
+      "detail": "{\"bunk\":1,\"chip\":\"Built!\",\"planks\":9}"
+    },
+    {
+      "name": "phone 1 star",
+      "ok": true,
+      "detail": "1"
+    },
+    {
+      "name": "phone 3 stars",
+      "ok": true,
+      "detail": "3"
+    },
+    {
+      "name": "rotate keeps panel",
+      "ok": true,
+      "detail": "{\"panel\":\"woodshop\",\"hidden\":false}"
+    },
+    {
+      "name": "wide tap keep",
+      "ok": true,
+      "detail": "2"
+    },
+    {
+      "name": "fresh survival",
+      "ok": true,
+      "detail": "2.5.120"
+    },
+    {
+      "name": "fresh creative",
+      "ok": true,
+      "detail": "2.5.120"
+    },
+    {
+      "name": "no console errors",
+      "ok": true,
+      "detail": "clean"
+    }
+  ],
+  "version": "2.5.120",
+  "pass": true
+}

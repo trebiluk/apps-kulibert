@@ -1,7 +1,7 @@
 // Station panels. State is per block, keyed x,y,z, and saved with the world.
-import { RECIPES } from './data/recipes.js'
+import { RECIPES, BED_SHOP } from './data/recipes.js'
 import { ITEMS } from './data/items.js'
-import { slotArt } from './icons.js'
+import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
 const BAKES = { planks: 1, log: 4, coal: 8 }
@@ -188,6 +188,10 @@ export function createStations(api) {
     return api.t('bakesHint').replace('{list}', bits.join(', '))
   }
   function face(item) {
+    if (item === 'bertyLie' || item === 'goldTrim') {
+      const drawn = shopIcon(item)
+      if (drawn) return drawn
+    }
     const def = item && ITEMS[item]
     if (def && def.svg) return slotArt(item, null)
     if (api.icon && ((def && def.block) || !def)) {
@@ -258,9 +262,414 @@ export function createStations(api) {
   }
   let shopPick = ''
   let shopGuide = ''
+  let saidBed = ''
+  let bedFlash = false
+  const WOOLS = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+  function motionLess() {
+    try {
+      if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
+      return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    } catch (e) { return false }
+  }
+  function sayBed(step, text, el) {
+    if (el) fx(el, 'pop')
+    if (saidBed === step) return
+    saidBed = step
+    try {
+      const synth = window.speechSynthesis
+      if (!synth || !text) return
+      synth.cancel()
+      const u = new SpeechSynthesisUtterance(text)
+      u.rate = 1
+      synth.speak(u)
+    } catch (e) {}
+  }
+  function rules() {
+    return api.rules ? api.rules() : { path: 'choose', help: false, required: false }
+  }
+  function woolHave(colour) { return colour && api.have && api.have(colour) >= BED_SHOP.wool }
+  function woolPick(prefer) {
+    if (woolHave(prefer)) return prefer
+    return WOOLS.find((c) => woolHave(c)) || ''
+  }
+  function matsOk(colour) {
+    return !!(api.have && api.have('planks') >= BED_SHOP.planks && woolHave(colour || woolPick()))
+  }
+  function spendMats(colour) {
+    const wool = woolPick(colour)
+    if (!matsOk(wool)) return ''
+    if (api.spend && !api.spend('planks', BED_SHOP.planks)) return ''
+    if (api.spend && !api.spend(wool, BED_SHOP.wool)) {
+      if (api.give) api.give('planks', BED_SHOP.planks)
+      return ''
+    }
+    return wool
+  }
+  function toolsReady(key) { return SHOP_TOOLS.every((row) => haveShopTool(key, row.item)) }
+  function freshJob(fabric) {
+    return {
+      step: 'need',
+      tone: 'natural',
+      fabric: fabric || 'woolBlue',
+      pattern: 'plain',
+      boards: BED_SHOP.boards.map((target) => ({ target, mark: null, cut: null })),
+      board: 0,
+      nails: [false, false, false, false],
+      fixing: -1,
+      paid: false,
+    }
+  }
+  function gradeMark(mark, target, help) {
+    if (mark == null || mark === '') return ''
+    const d = Math.abs(mark - target)
+    if (d <= (help ? 2 : 1)) return 'exact'
+    if (d <= 3) return 'close'
+    return 'off'
+  }
+  function rateJob(job) {
+    const cuts = job.boards.map((b) => b.cut)
+    if (cuts.some((c) => c !== 'exact' && c !== 'close')) return { stars: 1, wobble: 'big' }
+    if (cuts.every((c) => c === 'exact')) return { stars: 3, wobble: 'steady' }
+    return { stars: 2, wobble: 'slight' }
+  }
+  function starText(stars) {
+    if (stars >= 3) return api.t('starBest')
+    if (stars === 2) return api.t('starSteady')
+    return api.t('starWorks')
+  }
+  function wobbleText(w) {
+    if (w === 'steady') return api.t('steadyWord')
+    if (w === 'slight') return api.t('slightWobble')
+    return api.t('bigWobble')
+  }
+  function capBtn(cls, label, fn) {
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'keycap ' + cls
+    b.textContent = label
+    b.addEventListener('click', fn)
+    return b
+  }
+  function skillLine(key) {
+    const p = document.createElement('p')
+    p.className = 'gnote bed-skill'
+    p.textContent = api.t(key)
+    return p
+  }
+  function paintBed(crate, g, key, rec) {
+    const box = document.createElement('div')
+    box.className = 'bed-card'
+    const job = rec.bed
+    const rule = rules()
+    const ready = toolsReady(key)
+    const wool = woolPick(job && job.fabric)
+    const haveMats = matsOk(wool)
+    if (!job) {
+      const note = document.createElement('p')
+      note.className = 'gnote'
+      note.textContent = !ready ? api.t('bedNeedTools') : !haveMats ? api.t('bedNeedMats') : api.t('bunk')
+      box.append(note)
+      const row = document.createElement('div')
+      row.className = 'bed-paths'
+      if (rule.path !== 'design') {
+        const b = capBtn('bed-just', api.t('justBuild'), () => {
+          if (!toolsReady(key) || !matsOk()) return
+          const spent = spendMats()
+          if (!spent) return
+          if (api.glasses) api.glasses(true)
+          if (api.giveBed) api.giveBed({ stars: 1, tone: 'natural', fabric: spent, pattern: 'plain' })
+          bedFlash = true
+          saidBed = ''
+          touch()
+          shopTone(740, b)
+          paintWoodshop(g, key)
+        })
+        if (!ready || !haveMats) b.disabled = true
+        row.append(b)
+      }
+      if (rule.path !== 'build') {
+        const b = capBtn('bed-design', api.t('designIt'), () => {
+          if (!toolsReady(key) || !matsOk()) return
+          if (api.glasses) api.glasses(true)
+          rec.bed = freshJob(woolPick())
+          saidBed = ''
+          touch()
+          shopTone(640, b)
+          paintWoodshop(g, key)
+        })
+        if (!ready || !haveMats) b.disabled = true
+        row.append(b)
+      }
+      const best = api.best && api.best()
+      if (best && best.stars >= 3) {
+        const b = capBtn('bed-remake', api.t('remakeBest'), () => {
+          if (!toolsReady(key) || !matsOk(best.fabric)) return
+          const spent = spendMats(best.fabric)
+          if (!spent) return
+          if (api.glasses) api.glasses(true)
+          if (api.giveBed) api.giveBed({ stars: 3, tone: best.tone, fabric: best.fabric, pattern: best.pattern })
+          bedFlash = true
+          touch()
+          shopTone(880, b)
+          paintWoodshop(g, key)
+        })
+        if (!ready || !matsOk(best.fabric)) b.disabled = true
+        row.append(b)
+      }
+      box.append(row)
+      if (bedFlash) {
+        const chip = document.createElement('p')
+        chip.className = 'built-chip'
+        chip.textContent = api.t('builtChip')
+        box.append(chip)
+        bedFlash = false
+      }
+    } else {
+      const step = document.createElement('div')
+      step.className = 'bed-step'
+      step.dataset.step = job.step
+      const icon = document.createElement('span')
+      icon.className = 'gic bed-icon'
+      const title = document.createElement('p')
+      title.className = 'bed-title'
+      const go = (next) => { job.step = next; saidBed = ''; touch(); paintWoodshop(g, key) }
+      if (job.step === 'need') {
+        icon.append(face('bunk'))
+        title.textContent = api.t('fitsBerty')
+        step.append(icon, title, skillLine('skillNeed'))
+        step.append(capBtn('bed-next', api.t('nextWord'), () => go('plan')))
+        sayBed('need', api.t('fitsBerty') + ' ' + api.t('skillNeed'), step)
+      } else if (job.step === 'plan') {
+        icon.append(face('bunk'))
+        title.textContent = api.t('toneWord')
+        step.append(icon, title, skillLine('skillPlan'))
+        const tones = [['natural', 'toneNatural'], ['honey', 'toneHoney'], ['dark', 'toneDark']]
+        const toneRow = document.createElement('div')
+        toneRow.className = 'choice-row'
+        tones.forEach(([id, label]) => {
+          const b = capBtn('tone-pick' + (job.tone === id ? ' on' : ''), api.t(label), () => { job.tone = id; touch(); paintWoodshop(g, key) })
+          b.dataset.tone = id
+          toneRow.append(b)
+        })
+        const fabRow = document.createElement('div')
+        fabRow.className = 'choice-row'
+        WOOLS.forEach((id) => {
+          const b = capBtn('wool-pick' + (job.fabric === id ? ' on' : ''), api.t(id), () => { job.fabric = id; touch(); paintWoodshop(g, key) })
+          b.dataset.fabric = id
+          if (!woolHave(id)) b.disabled = true
+          fabRow.append(b)
+        })
+        const patRow = document.createElement('div')
+        patRow.className = 'choice-row'
+        ;[['plain', 'patternPlain'], ['stripes', 'patternStripes'], ['checks', 'patternChecks']].forEach(([id, label]) => {
+          const b = capBtn('pat-pick' + (job.pattern === id ? ' on' : ''), api.t(label), () => { job.pattern = id; touch(); paintWoodshop(g, key) })
+          b.dataset.pattern = id
+          patRow.append(b)
+        })
+        step.append(toneRow, fabRow, patRow)
+        const next = capBtn('bed-next', api.t('nextWord'), () => {
+          if (!job.paid) {
+            const spent = spendMats(job.fabric)
+            if (!spent) return
+            job.paid = true
+            job.fabric = spent
+          }
+          go('measure')
+        })
+        if (!job.paid && !woolHave(job.fabric)) next.disabled = true
+        step.append(next)
+        sayBed('plan', api.t('skillPlan'), step)
+      } else if (job.step === 'measure') {
+        const board = job.boards[job.board] || job.boards[0]
+        icon.append(face('measuringTape'))
+        title.textContent = api.t('measureWord') + ' · ' + api.t('boardWord') + ' ' + (job.board + 1)
+        step.append(icon, title)
+        const track = document.createElement('div')
+        track.className = 'tape-track'
+        const help = !!rules().help
+        const apply = (tick, el) => {
+          board.mark = tick
+          touch()
+          shopTone(520, el || track)
+          paintWoodshop(g, key)
+        }
+        for (let n = 0; n <= 10; n++) {
+          const b = capBtn('tick' + (board.mark === n ? ' on' : ''), String(n), () => apply(n, b))
+          b.dataset.tick = String(n)
+          track.append(b)
+        }
+        step.append(track)
+        const headEl = capBtn('tape-head', api.t('measureWord'), () => {})
+        let drag = null
+        const beginDrag = (e) => {
+          if (drag || e.button > 0) return
+          drag = { x: e.clientX, moved: false }
+          const move = (ev) => { if (drag && Math.abs(ev.clientX - drag.x) > 8) drag.moved = true }
+          const up = (ev) => {
+            document.removeEventListener('pointermove', move, true)
+            document.removeEventListener('pointerup', up, true)
+            document.removeEventListener('mousemove', move, true)
+            document.removeEventListener('mouseup', up, true)
+            if (!drag || !drag.moved) { drag = null; return }
+            drag = null
+            const r = track.getBoundingClientRect()
+            const x = Math.max(0, Math.min(r.width, ev.clientX - r.left))
+            const tick = Math.round((x / Math.max(1, r.width)) * 10)
+            apply(tick, headEl)
+          }
+          document.addEventListener('pointermove', move, true)
+          document.addEventListener('pointerup', up, true)
+          document.addEventListener('mousemove', move, true)
+          document.addEventListener('mouseup', up, true)
+        }
+        headEl.addEventListener('pointerdown', beginDrag)
+        headEl.addEventListener('mousedown', beginDrag)
+        step.append(headEl)
+        const gde = document.createElement('p')
+        gde.className = 'gnote grade'
+        const gnow = gradeMark(board.mark, board.target, help)
+        gde.dataset.grade = gnow
+        gde.textContent = gnow === 'exact' ? api.t('exactWord') : gnow === 'close' ? api.t('closeWord') : gnow === 'off' ? api.t('offWord') : api.t('measureWord')
+        step.append(gde)
+        const next = capBtn('bed-next', api.t('nextWord'), () => { if (board.mark == null) return; go('cut') })
+        if (board.mark == null) next.disabled = true
+        step.append(next)
+        sayBed('measure-' + job.board, api.t('measureWord') + ' ' + api.t('skillTape'), step)
+      } else if (job.step === 'cut') {
+        const board = job.boards[job.board] || job.boards[0]
+        icon.append(face('handSaw'))
+        title.textContent = api.t('cutWord')
+        const help = !!rules().help
+        const gnow = gradeMark(board.mark, board.target, help)
+        const gde = document.createElement('p')
+        gde.className = 'gnote grade'
+        gde.dataset.grade = gnow
+        gde.textContent = gnow === 'exact' ? api.t('exactWord') : gnow === 'close' ? api.t('closeWord') : api.t('offWord')
+        step.append(icon, title, gde)
+        step.append(capBtn('saw-cut', api.t('cutWord'), () => {
+          board.cut = gnow || 'off'
+          shopTone(420, step)
+          if (job.fixing >= 0) { job.fixing = -1; go('test'); return }
+          if (job.board < job.boards.length - 1) { job.board += 1; go('measure'); return }
+          go('assemble')
+        }))
+        step.append(capBtn('bed-again', api.t('againWord'), () => go('measure')))
+        sayBed('cut-' + job.board, api.t('cutWord') + ' ' + api.t('skillSaw'), step)
+      } else if (job.step === 'assemble') {
+        icon.append(face('hammer'))
+        title.textContent = api.t('assembleWord')
+        step.append(icon, title)
+        const nails = document.createElement('div')
+        nails.className = 'nail-row'
+        job.nails.forEach((done, i) => {
+          const b = capBtn('nail' + (done ? ' done' : ' glow'), api.t('nailWord'), () => {
+            job.nails[i] = true
+            shopTone(300 + i * 40, b)
+            if (job.nails.every(Boolean)) go('test')
+            else { touch(); paintWoodshop(g, key) }
+          })
+          b.dataset.nail = String(i)
+          nails.append(b)
+        })
+        step.append(nails)
+        sayBed('assemble', api.t('assembleWord') + ' ' + api.t('skillHammer'), step)
+      } else if (job.step === 'test') {
+        const rated = rateJob(job)
+        icon.append(face('bertyLie'))
+        icon.classList.add('wobble', motionLess() ? 'still' : 'play')
+        icon.dataset.wobble = rated.wobble
+        title.textContent = wobbleText(rated.wobble)
+        step.append(icon, title, skillLine('skillTest'))
+        const stars = document.createElement('p')
+        stars.className = 'gnote bed-stars'
+        stars.dataset.stars = String(rated.stars)
+        stars.textContent = starText(rated.stars)
+        step.append(stars)
+        step.append(capBtn('bed-next', api.t('nextWord'), () => go('improve')))
+        sayBed('test', wobbleText(rated.wobble) + ' ' + api.t('skillTest'), step)
+      } else if (job.step === 'improve') {
+        const rated = rateJob(job)
+        icon.append((rated.stars >= 3) ? face('goldTrim') : face('bunk'))
+        title.textContent = starText(rated.stars)
+        step.append(icon, title, skillLine('skillImprove'))
+        const stars = document.createElement('p')
+        stars.className = 'gnote bed-stars'
+        stars.dataset.stars = String(rated.stars)
+        stars.textContent = starText(rated.stars)
+        step.append(stars)
+        step.append(capBtn('bed-fix', api.t('fixIt'), () => {
+          let i = job.boards.findIndex((b) => b.cut === 'off')
+          if (i < 0) i = job.boards.findIndex((b) => b.cut === 'close')
+          if (i < 0) i = 0
+          if (api.give) api.give('planks', 1)
+          job.boards[i].mark = null
+          job.boards[i].cut = null
+          job.fixing = i
+          job.board = i
+          shopTone(480, step)
+          go('measure')
+        }))
+        step.append(capBtn('bed-keep', api.t('keepIt'), () => {
+          if (api.giveBed) api.giveBed({ stars: rated.stars, tone: job.tone, fabric: job.fabric, pattern: job.pattern })
+          rec.bed = null
+          bedFlash = true
+          saidBed = ''
+          touch()
+          shopTone(880, step)
+          paintWoodshop(g, key)
+        }))
+        if (rated.stars >= 3) {
+          step.append(capBtn('bed-remake', api.t('remakeBest'), () => {
+            if (!matsOk(job.fabric)) return
+            const spent = spendMats(job.fabric)
+            if (!spent) return
+            if (api.giveBed) api.giveBed({ stars: 3, tone: job.tone, fabric: job.fabric, pattern: job.pattern })
+            bedFlash = true
+            touch()
+            paintWoodshop(g, key)
+          }))
+        }
+        sayBed('improve', api.t('skillImprove'), step)
+      }
+      box.append(step)
+    }
+    crate.append(box)
+    if (api.teacher && api.teacher()) {
+      const card = document.createElement('div')
+      card.className = 'shop-teacher'
+      card.dataset.teacher = '1'
+      const h = document.createElement('p')
+      h.className = 'gnote'
+      h.textContent = api.t('shopTeacher')
+      card.append(h)
+      const paths = document.createElement('div')
+      paths.className = 'choice-row'
+      ;[['choose', 'pathKid'], ['design', 'pathDesign'], ['build', 'pathBuild']].forEach(([id, label]) => {
+        const b = capBtn('path-pick' + (rule.path === id ? ' on' : ''), api.t(label), () => {
+          if (api.rules) api.rules({ path: id })
+          paintWoodshop(g, key)
+        })
+        b.dataset.path = id
+        paths.append(b)
+      })
+      card.append(paths)
+      const help = capBtn('help-measure' + (rule.help ? ' on' : ''), api.t('helpMeasure'), () => {
+        if (api.rules) api.rules({ help: !rule.help })
+        paintWoodshop(g, key)
+      })
+      help.dataset.help = rule.help ? '1' : '0'
+      const req = capBtn('shop-required' + (rule.required ? ' on' : ''), api.t('shopRequired'), () => {
+        if (api.rules) api.rules({ required: !rule.required })
+        paintWoodshop(g, key)
+      })
+      req.dataset.required = rule.required ? '1' : '0'
+      card.append(help, req)
+      crate.append(card)
+    }
+  }
   function paintWoodshop(g, key) {
     const rec = ensureShop(key)
-    if (shopGuide && shopGuide !== 'woodshop' && !SHOP_TOOLS.some((row) => row.item === shopGuide)) shopGuide = ''
+    if (shopGuide && shopGuide !== 'woodshop' && shopGuide !== 'bunk' && !SHOP_TOOLS.some((row) => row.item === shopGuide)) shopGuide = ''
     g.innerHTML = ''
     g.classList.add('crate')
     const crate = document.createElement('div')
@@ -278,17 +687,30 @@ export function createStations(api) {
       title.textContent = api.t(shopGuide)
       const line = document.createElement('p')
       line.className = 'gnote shop-skill'
-      line.textContent = api.t(who ? who.skill : 'skillBench')
+      line.textContent = shopGuide === 'bunk'
+        ? [api.t('skillNeed'), api.t('skillPlan'), api.t('skillTest'), api.t('skillImprove')].join(' ')
+        : api.t(who ? who.skill : 'skillBench')
       const back = document.createElement('button')
       back.type = 'button'
       back.className = 'keycap'
       back.textContent = api.t('close')
       back.addEventListener('click', () => { shopGuide = ''; paintWoodshop(g, key) })
-      page.append(art, title, line, back)
+      page.append(art, title, line)
+      if (shopGuide === 'bunk') {
+        const stars = document.createElement('p')
+        stars.className = 'gnote bed-stars'
+        const best = api.best && api.best()
+        const n = best && best.stars ? best.stars : 1
+        stars.dataset.stars = String(n)
+        stars.textContent = starText(n)
+        page.append(stars)
+      }
+      page.append(back)
       crate.append(page)
       g.append(crate)
       return
     }
+    paintBed(crate, g, key, rec)
     const wall = document.createElement('div')
     wall.className = 'tool-wall'
     const hang = (index, item) => {
@@ -420,7 +842,7 @@ export function createStations(api) {
     crate.append(job)
     const guide = document.createElement('div')
     guide.className = 'shop-guide'
-    SHOP_TOOLS.map((row) => row.item).concat(['woodshop']).forEach((id) => {
+    SHOP_TOOLS.map((row) => row.item).concat(['woodshop', 'bunk']).forEach((id) => {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'keycap'

@@ -38,3 +38,6 @@ export const RECIPES = [
   { id: 'bread', at: 'oven', in: [['flour', 2]], out: ['bread', 1], secs: 8, label: 'food' },
   { id: 'flour', at: 'bench', in: [['wheat', 1]], out: ['flour', 1], secs: 2, label: 'food' },
 ]
+
+// Woodshop Bed. Planks plus 3 wool of one colour. The bench bunk above stays when Woodshop required is off.
+export const BED_SHOP = { planks: 3, wool: 3, boards: [4, 7, 5] }

@@ -51,6 +51,70 @@ export function createSession(api) {
   const FEED = { berry: 1, bread: 4, cupcake: 3 }
   const LEAF_FOOD = 'berry'
   let energy = { bolts: 10, acc: 0, toasted: false }
+  let bedQueue = []
+  let bestBed = null
+  const BED_TONES = { natural: 1, honey: 1, dark: 1 }
+  const BED_PATS = { plain: 1, stripes: 1, checks: 1 }
+  const BED_WOOL = { woolBlue: 1, woolGreen: 1, woolRed: 1, woolTan: 1 }
+  function shopRules(next) {
+    let cur = { path: 'choose', help: false, required: false }
+    try {
+      const saved = JSON.parse(localStorage.getItem('bloxbert-shop-rules') || 'null')
+      if (saved && typeof saved === 'object') {
+        if (saved.path === 'design' || saved.path === 'build' || saved.path === 'choose') cur.path = saved.path
+        cur.help = !!saved.help
+        cur.required = !!saved.required
+      }
+    } catch (e) {}
+    if (next && typeof next === 'object') {
+      if (next.path === 'design' || next.path === 'build' || next.path === 'choose') cur.path = next.path
+      if ('help' in next) cur.help = !!next.help
+      if ('required' in next) cur.required = !!next.required
+      try { localStorage.setItem('bloxbert-shop-rules', JSON.stringify(cur)) } catch (e) {}
+    }
+    return cur
+  }
+  function liveRecipes() {
+    const hide = shopRules().required
+    return RECIPES.filter((r) => !(hide && r.id === 'bunk' && r.at === 'bench'))
+  }
+  function normalizeBed(d) {
+    d = d || {}
+    return {
+      stars: d.stars >= 3 ? 3 : d.stars === 2 ? 2 : 1,
+      tone: BED_TONES[d.tone] ? d.tone : 'natural',
+      fabric: BED_WOOL[d.fabric] ? d.fabric : 'woolBlue',
+      pattern: BED_PATS[d.pattern] ? d.pattern : 'plain',
+      restAt: d.restAt > 0 ? d.restAt : 0,
+    }
+  }
+  function giveBed(design) {
+    const row = normalizeBed(design)
+    if (design && design.restAt > 0) row.restAt = design.restAt
+    bedQueue.push(row)
+    if (row.stars >= 3) bestBed = { stars: 3, tone: row.tone, fabric: row.fabric, pattern: row.pattern }
+    giveItem('bunk', 1)
+    if (api.noteMachine) api.noteMachine()
+    else if (api.markDirty) api.markDirty()
+    return { n: bag.count('bunk'), stars: row.stars }
+  }
+  function ensureBed(key) {
+    let rec = meta.get(key)
+    if (!rec || rec.kind !== 'bunk') {
+      rec = { kind: 'bunk', ...normalizeBed(null) }
+      meta.set(key, rec)
+      if (api.markDirty) api.markDirty()
+    } else {
+      const n = normalizeBed(rec)
+      rec.kind = 'bunk'
+      rec.stars = n.stars
+      rec.tone = n.tone
+      rec.fabric = n.fabric
+      rec.pattern = n.pattern
+      if (!(rec.restAt > 0)) rec.restAt = 0
+    }
+    return rec
+  }
   let hungrySaid = false
   let hungryN = 0
   let berryN = 0
@@ -1165,13 +1229,13 @@ export function createSession(api) {
     g.innerHTML = ''
     g.classList.add('crate')
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
-    let rows = RECIPES.map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
+    let rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
     if (!rows.some((x) => x.r.id === craftId)) {
       const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
       craftId = pick ? pick.r.id : ''
     }
     syncTray(craftId)
-    rows = RECIPES.map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
+    rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
     const fxKind = craftFx
     craftFx = ''
     const note = trayNote
@@ -1773,9 +1837,61 @@ export function createSession(api) {
     }
   }
   function paintBunk(g, key) {
-    g.append(btn(t('yes'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() }))
-    g.append(btn('🧹 ' + t('pickup'), () => { home = null; api.toast(t('homeCleared')); api.close() }))
+    const rec = ensureBed(key)
+    const card = document.createElement('div')
+    card.className = 'bed-panel' + ((rec.stars || 1) >= 3 ? ' bed-gold' : '')
+    const stars = document.createElement('p')
+    stars.className = 'gnote bed-stars'
+    stars.dataset.stars = String(rec.stars || 1)
+    stars.textContent = (rec.stars || 1) >= 3 ? t('starBest') : (rec.stars || 1) === 2 ? t('starSteady') : t('starWorks')
+    const look = document.createElement('p')
+    look.className = 'gnote bed-look'
+    look.dataset.tone = rec.tone
+    look.dataset.fabric = rec.fabric
+    look.dataset.pattern = rec.pattern
+    look.textContent = t('tone' + rec.tone.charAt(0).toUpperCase() + rec.tone.slice(1)) + ' · ' + t(rec.fabric) + ' · ' + t('pattern' + rec.pattern.charAt(0).toUpperCase() + rec.pattern.slice(1))
+    card.append(stars, look)
+    if ((rec.stars || 1) >= 3) {
+      const gold = document.createElement('p')
+      gold.className = 'gnote bed-gold-line'
+      gold.textContent = t('goldTrim')
+      card.append(gold)
+    }
+    g.append(card)
+    const rest = btn(t('restWord'), () => {
+      const now = Date.now()
+      if (rec.restAt && now < rec.restAt) { api.toast(t('restWait')); return }
+      const gain = (rec.stars || 1) >= 2 ? 3 : 2
+      const next = Math.min(10, energy.bolts + gain)
+      energy.bolts = next
+      if (energy.bolts > 0) energy.toasted = false
+      rec.restAt = now + 5 * 60 * 1000
+      paintEnergy()
+      if (api.markDirty) api.markDirty()
+      api.toast(t('rested'))
+      g.innerHTML = ''
+      paintBunk(g, key)
+    })
+    rest.classList.add('bed-rest')
+    rest.dataset.wait = rec.restAt && Date.now() < rec.restAt ? '1' : '0'
+    g.append(rest)
+    const homeBtn = btn(t('setHome'), () => { home = String(key || '0,0,0').split(',').map(Number); markPath('pathHome'); api.toast(t('homeSet')); api.close() })
+    homeBtn.classList.add('bed-home')
+    g.append(homeBtn)
+    g.append(btn('🧹 ' + t('pickup'), () => {
+      const [x, y, z] = String(key).split(',').map(Number)
+      pickup(x, y, z, 26)
+      if (api.removeBlock) api.removeBlock(x, y, z)
+      api.close()
+    }))
     g.append(btn(t('no'), () => api.close()))
+    for (const id of ['skillNeed', 'skillPlan', 'skillTest', 'skillImprove']) {
+      const line = document.createElement('p')
+      line.className = 'gnote bed-skill'
+      line.dataset.skill = id
+      line.textContent = t(id)
+      g.append(line)
+    }
   }
   let pocketDot = false
   function clearPocketDot() {
@@ -1801,6 +1917,7 @@ export function createSession(api) {
     return left === 0
   }
   function craftMany(r, times) {
+    if (r && r.id === 'bunk' && r.at === 'bench' && shopRules().required) return false
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))
     if (!n || !canMake(r, bag, stations).ok) return false
@@ -1986,6 +2103,10 @@ export function createSession(api) {
     if (id === 12) placedLeaves.add(x + ',' + y + ',' + z)
     if (id === 24) meta.set(x + ',' + y + ',' + z, { kind: 'vend', owner: 'you', slots: [null, null, null, null], till: 0, sales: [], salesN: 0 })
     if (id === 27) meta.set(x + ',' + y + ',' + z, { kind: 'box', slots: emptyBox() })
+    if (id === 26) {
+      const d = bedQueue.length ? bedQueue.shift() : normalizeBed(null)
+      meta.set(x + ',' + y + ',' + z, { kind: 'bunk', ...normalizeBed(d), restAt: d.restAt || 0 })
+    }
     if (id === 30) markPath('pathDoor')
     bagHist.push({ type: 'place', item: key, n: 1 })
     redoBag.length = 0
@@ -2013,6 +2134,11 @@ export function createSession(api) {
       if (api.removeBlock) api.removeBlock(x, y, z)
     }
     if (id === 26) {
+      const rec = meta.get(key)
+      const d = normalizeBed(rec && rec.kind === 'bunk' ? rec : null)
+      if (rec && rec.restAt > 0) d.restAt = rec.restAt
+      bedQueue.unshift(d)
+      meta.delete(key)
       home = null
       const before = bag.count('bunk')
       bag.add('bunk', 1)
@@ -2070,6 +2196,7 @@ export function createSession(api) {
   function tryCraft(name) {
     const r = RECIPES.find((x) => x.id === name || x.out[0] === name)
     if (!r) return { ok: false, why: 'missing' }
+    if (r.id === 'bunk' && r.at === 'bench' && shopRules().required) return { ok: false, why: 'shop' }
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const st = craftStatus(r, bag, stations, mode !== 'survival')
     if (!st.ok) return { ok: false, why: st.gate || st.station || 'count', gate: st.gate || '' }
@@ -2113,6 +2240,8 @@ export function createSession(api) {
         hot: hotSlot.survival,
         hotCreative: api.creativeHot ? api.creativeHot() : hotSlot.creative,
         home,
+        bedQueue: bedQueue.map((d) => normalizeBed(d)),
+        bestBed: bestBed ? normalizeBed(bestBed) : null,
         table: api.tableOn(),
         tray: { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
@@ -2134,6 +2263,8 @@ export function createSession(api) {
     hot = mode === 'survival' ? hotSlot.survival : 0
     if (api.setCreativeHot) api.setCreativeHot(hotSlot.creative)
     home = p.home || null
+    bedQueue = Array.isArray(p.bedQueue) ? p.bedQueue.map((d) => normalizeBed(d)) : []
+    bestBed = p.bestBed && p.bestBed.stars >= 3 ? normalizeBed(p.bestBed) : null
     trayId = p.tray && typeof p.tray.id === 'string' ? p.tray.id : ''
     trayPlaced = p.tray && Array.isArray(p.tray.placed) ? p.tray.placed.map((n) => Math.max(0, n | 0)) : []
     trayWool = p.tray && Array.isArray(p.tray.wool) ? p.tray.wool.map((k) => (typeof k === 'string' ? k : '')) : []
@@ -2309,6 +2440,14 @@ export function createSession(api) {
       })
     }, 0)
   }
+  function setEnergy(n) {
+    energy.bolts = Math.max(0, Math.min(10, n | 0))
+    energy.acc = 0
+    if (energy.bolts > 0) energy.toasted = false
+    paintEnergy()
+    return energy.bolts
+  }
+  function energyState() { return { bolts: energy.bolts, acc: energy.acc } }
   setInterval(() => { if (!paused && mode === 'survival' && ECON.townsfolk.on) vendTick(1) }, 30000)
   return {
     get bag() { return bag },
@@ -2344,6 +2483,7 @@ export function createSession(api) {
     get hot() { return hot },
     onBreak, onPlace, beforeUndo, afterUndo, beforeRedo, afterRedo, vendTick, dump, load, setMode, paintChip, paintHotbar, selectedItem, pickup,
     get mode() { return mode }, set paused(v) { paused = v }, get home() { return home },
+    shopRules, giveBed, bestBed: () => bestBed ? { ...bestBed } : null, setEnergy, energyState,
     setDay(iso) { day = iso; wallet.state.day = iso; wallet.state.soldToday = {}; for (const rec of meta.values()) rec.visits = 0 },
     give(item, n) { giveItem(item, n) },
     seedCount(kind, x, y, z) { return kind === 'tuft' ? tuftSeedCount(x, y, z) : wheatSeedCount(x, y, z) },

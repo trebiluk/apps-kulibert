@@ -217,7 +217,7 @@ export function mountPanels(api) {
   sheet.addEventListener('pointerdown', (e) => {
     if (sheet.hidden || performance.now() - openedAt < 400) return
     const t = e.target
-    if (!t || t.closest('button, a, input, textarea, select, label, .well, .ks-slot, .keycap, .bag-card, .ks-picks, .oven-picks, .ks-choice, .oven-choice')) return
+    if (!t || t.closest('button, a, input, textarea, select, label, .well, .ks-slot, .keycap, .bag-card, .ks-picks, .oven-picks, .ks-choice, .oven-choice, .bed-card, .tape-track, .bed-step')) return
     if (t === sheet || t.id === 'sheet-body' || (t.classList && t.classList.contains('ggrid'))) close()
   })
   if (location.search.includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
