@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.152', date: '2026-10-10', lines: {
+    en: ['The Bertbot hand shows up, swings while you dig, and touch starts up close.'],
+    uk: ['Рука Бертбота видно, вона махає, поки ти копаєш, а на дотик ти починаєш зблизька.'],
+    ru: ['Рука Бертбота видна, она машет, пока ты копаешь, а на касании ты начинаешь вблизи.'],
+    es: ['La mano de Bertbot se ve, se mueve mientras cavas, y al tocar empiezas de cerca.'],
+    ar: ['يد بيرتبوت تظهر، وتتأرجح وأنت تحفر، واللمس يبدأ عن قرب.'],
+    'fa-AF': ['دست برتبوت دیده می‌شود، هنگام کندن تاب می‌خورد، و لمس از نزدیک شروع می‌شود.'],
+    rw: ['Ukuboko kwa Bertbot guragaragara, kurakubita mugihe ucukura, kandi gukora intoki bitangira hafi.'],
+    ti: ['ኢድ በርትቦት ይረአ፡ ኣብ እትቆፍር ከሎ ይወዛወዝ፡ ምንካእ ድማ ካብ ቀረባ ይጅምር።'],
+  }},
   { v: '2.5.151', date: '2026-10-10', lines: {
     en: ['Effects show under your energy: speed, jump, fly, night vision, slow fall, and a longer reach.'],
     uk: ['Ефекти під енергією: швидкість, стрибок, політ, нічний зір, повільне падіння і довша рука.'],

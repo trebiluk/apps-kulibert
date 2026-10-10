@@ -60,11 +60,14 @@ export function createHands(opts) {
   let dipUntil = 0
   let pending = ''
 
+  let swings = 0
+
   function dress(mesh) {
     mesh.renderingGroupId = 1
     mesh.isPickable = false
     mesh.alwaysSelectAsActiveMesh = true
     mesh.receiveShadows = false
+    opts.noa.rendering.addMeshToScene(mesh, false)
     return mesh
   }
   dress(handMesh)
@@ -153,14 +156,15 @@ export function createHands(opts) {
     const narrow = aspect < 0.9
     pivot.rotation.x = swayX - swing * chop
     pivot.rotation.z = swayZ + swing * 0.15
-    pivot.position.x = narrow ? 0.06 : 0.2
-    pivot.position.y = (narrow ? -0.18 : -0.26) + bob - dip
+    pivot.position.x = narrow ? 0.1 : 0.34
+    pivot.position.y = (narrow ? -0.2 : -0.2) + bob - dip
     pivot.position.z = 0
   }
 
   function swing(kind) {
     swingKind = kind === 'place' ? 'place' : 'break'
     swingUntil = performance.now() + SWING_MS
+    swings += 1
   }
 
   function blockCube(id) {
@@ -170,7 +174,7 @@ export function createHands(opts) {
     const faces = faceInfo(id)
     const url = faces.url
     if (!url) {
-      mesh = dress(CreateBox('hand-b-' + id, { size: 0.4 }, scene))
+      mesh = dress(CreateBox('hand-b-' + id, { size: 0.5 }, scene))
       mesh.material = solidMat(faces.color || [0.5, 0.5, 0.5])
       blockMat.set(key, mesh)
       mesh.setEnabled(false)
@@ -191,7 +195,7 @@ export function createHands(opts) {
       // CreateBox face order: +z, -z, +x, -x, +y, -y. noa dir: +x -x +y -y +z -z.
       const order = [4, 5, 0, 1, 2, 3]
       const faceUV = order.map((d) => uv(faces.idx[d]))
-      mesh = dress(CreateBox('hand-b-' + id, { size: 0.4, faceUV }, scene))
+      mesh = dress(CreateBox('hand-b-' + id, { size: 0.55, faceUV }, scene))
       mesh.material = atlasMat(url, info.tex)
       blockMat.set(key, mesh)
       mesh.setEnabled(false)
@@ -310,6 +314,7 @@ export function createHands(opts) {
     key: () => shownKey,
     tris: () => handTris,
     swinging: () => performance.now() < swingUntil,
+    swingCount: () => swings,
   }
 }
 

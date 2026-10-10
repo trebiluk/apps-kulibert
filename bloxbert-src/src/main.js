@@ -328,6 +328,7 @@ let autoClimb = true
 let wideView = false
 let showHand = true
 let mainHand = 'right'
+let camBehind = false
 try {
   const savedLook = JSON.parse(localStorage.getItem(LOOK_KEY) || '{}')
   if (savedLook.sens >= 0.5 && savedLook.sens <= 2) lookSens = savedLook.sens
@@ -336,6 +337,7 @@ try {
   if (savedLook.cv === 2 && typeof savedLook.climb === 'boolean') autoClimb = savedLook.climb
   if (savedLook.hand === false) showHand = false
   if (savedLook.mainHand === 'left') mainHand = 'left'
+  if (savedLook.cam === 'behind') camBehind = true
 } catch (e) {}
 playerBody.autoStep = !!autoClimb
 moveState.airJumps = 0
@@ -1644,6 +1646,11 @@ function useHoldReady(dig, now) {
   return now - (dig.t0 || now) >= 500
 }
 function useAt(hit) {
+  if (!useHit(hit)) return false
+  pokeHand('use')
+  return true
+}
+function useHit(hit) {
   if (!hit || !hit.position) return false
   const id = hit.blockID != null ? hit.blockID : hit.id
   const ax = hit.position[0]
@@ -1763,9 +1770,9 @@ function placeBlock(face, opts) {
     pokeHand('place')
     return true
   }
-  if (id === 1102) return placeWallLamp(face)
-  if (id === 1104) return placeRug(x, y, z)
-  if (id === ID.woodshop) return placeShop(x, y, z)
+  if (id === 1102) { const ok = placeWallLamp(face); if (ok) pokeHand('place'); return ok }
+  if (id === 1104) { const ok = placeRug(x, y, z); if (ok) pokeHand('place'); return ok }
+  if (id === ID.woodshop) { const ok = placeShop(x, y, z); if (ok) pokeHand('place'); return ok }
   if (!placeableCell(getVoxel(x, y, z))) return false
   if (session && !session.onPlace(x, y, z, id)) return false
   const placed = edit(x, y, z, id)
@@ -4102,7 +4109,7 @@ function setMode(table) {
     noa.entities.setPosition(noa.playerEntity, [8.5, 12, 8.5])
     setLook(0.4, 0.55)
   } else {
-    noa.camera.zoomDistance = TOUCH_UI ? 4 : 0
+    noa.camera.zoomDistance = camBehind ? 4 : 0
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
     body.gravityMultiplier = flying ? 0 : GRAV_MULT
   }
@@ -4540,8 +4547,9 @@ function feelTick(dt) {
     placeBlock(null, { repeat: true })
   }
   if (!tableMode && !flying) {
-    const up = TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
-    const zoom = (TOUCH_UI ? 4 : 0) + up
+    const behind = camBehind ? 4 : 0
+    const up = behind > 0.5 && TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
+    const zoom = behind + up
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
   }
   const cam = noa.rendering.camera
@@ -4568,6 +4576,18 @@ function feelTick(dt) {
     }
   }
   noteDoorLook(now)
+  if (dig && !dig.broke && !dig.draining) {
+    if (dig.swingAt == null) {
+      dig.swingAt = now
+      pokeHand('break')
+    }
+    let extra = 0
+    while (now - dig.swingAt >= 250 && extra < 8) {
+      dig.swingAt += 250
+      pokeHand('break')
+      extra++
+    }
+  }
   if (dig && basics && isDoor(dig.id) && now - dig.t0 >= DOOR_HOLD_MS && !dig.opt) {
     dig.opt = true
     showDoorOpt(dig.x, dig.y, dig.z)
@@ -4679,7 +4699,7 @@ function applyLook() {
   noa.camera.sensitivityY = 10 * lookSens
   noa.camera.sensitivityMult = 0
   noa.camera.inverseY = lookInvert
-  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null })) } catch (e) {}
+  try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
 }
 function paintLook(g) {
   const label = document.createElement('p')
@@ -4727,7 +4747,13 @@ function paintLook(g) {
   const paintSide = () => { side.textContent = t('mainHand') + ': ' + (mainHand === 'left' ? t('left') : t('right')) }
   paintSide()
   side.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
-  g.append(label, range, inv, wide, climb, hand, side)
+  const cam = document.createElement('button')
+  cam.type = 'button'
+  cam.className = 'gtile wide'
+  const paintCam = () => { cam.textContent = t('cameraView') + ': ' + (camBehind ? t('camBehind') : t('camClose')) }
+  paintCam()
+  cam.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
+  g.append(label, range, inv, wide, climb, hand, side, cam)
 }
 applyLook()
 function applyLockedLook(dx, dy) {
@@ -5604,7 +5630,7 @@ hands = createHands({
   held: fillHeld,
   side: () => mainHand,
   show: () => showHand,
-  hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open'),
+  hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open') || noa.camera.zoomDistance > 0.5,
   wet: () => underWater,
   lite: () => quality === 'lite' || REDUCE,
   speed: () => {
@@ -5810,18 +5836,19 @@ if (!__BLOX_STUDENT__) {
     hold: (st, v) => { noa.inputs.state[st] = v },
     get climb() { return autoClimb },
     hand() {
-      return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging() } : null
+      return hands ? { show: showHand, side: mainHand, visible: hands.showing(), key: hands.key(), tris: hands.tris(), swing: hands.swinging(), swingCount: hands.swingCount() } : null
     },
     handSwing(kind) { pokeHand(kind) },
     lookHand(patch) {
       if (patch) {
         if (patch.show != null) showHand = !!patch.show
         if (patch.side === 'left' || patch.side === 'right') mainHand = patch.side
+        if (patch.cam === 'behind' || patch.cam === 'close') camBehind = patch.cam === 'behind'
         applyLook()
       }
       let saved = null
       try { saved = JSON.parse(localStorage.getItem(LOOK_KEY) || 'null') } catch (e) {}
-      return { show: showHand, side: mainHand, saved }
+      return { show: showHand, side: mainHand, cam: camBehind ? 'behind' : 'close', saved }
     },
     panel(id) {
       if (!panels) return ''

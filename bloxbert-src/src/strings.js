@@ -28,7 +28,7 @@ export const STR = {
     brickRed: 'Red brick', brickGrey: 'Grey brick', planks: 'Planks', log: 'Log', leaves: 'Leaves',
     woolBlue: 'Blue wool', woolGreen: 'Green wool', woolRed: 'Red wool', woolTan: 'Tan wool', snow: 'Snow', ice: 'Ice', redSand: 'Red sand', glass: 'Glass',
     needsFuel: 'Needs fuel', bakingNow: 'Baking...', takeYour: 'Take your {item}', inPockets: '{item} is in your Bag pockets',
-    doorHint: 'Hold left click for door options', doorHintTouch: 'Hold on the door for options', clickToPlay: 'Click to play', showHand: 'Show hand', mainHand: 'Main hand', crouchPlace: 'Crouch + right click to place next to it.', signIn: 'Sign in', code: 'Code', signNote: 'The code and the PIN come from your teacher. Your name shows after they match.',    floorLamp: 'Floor Lamp', wallLamp: 'Wall Lamp', rug: 'Rug', placeOnWall: 'Place on a wall', decorJust: 'Just make', decorDesign: 'Design it',
+    doorHint: 'Hold left click for door options', doorHintTouch: 'Hold on the door for options', clickToPlay: 'Click to play', showHand: 'Show hand', mainHand: 'Main hand', cameraView: 'Camera', camClose: 'Close', camBehind: 'Behind', crouchPlace: 'Crouch + right click to place next to it.', signIn: 'Sign in', code: 'Code', signNote: 'The code and the PIN come from your teacher. Your name shows after they match.',    floorLamp: 'Floor Lamp', wallLamp: 'Wall Lamp', rug: 'Rug', placeOnWall: 'Place on a wall', decorJust: 'Just make', decorDesign: 'Design it',
 
   },
   uk: {
@@ -59,7 +59,7 @@ export const STR = {
     brickRed: 'Червона цегла', brickGrey: 'Сіра цегла', planks: 'Дошки', log: 'Колода', leaves: 'Листя',
     woolBlue: 'Синя вовна', woolGreen: 'Зелена вовна', woolRed: 'Червона вовна', woolTan: 'Пісочна вовна', snow: 'Сніг', ice: 'Лід', redSand: 'Рудий пісок', glass: 'Скло',
     needsFuel: 'Потрібне паливо', bakingNow: 'Печеться...', takeYour: 'Забери свій {item}', inPockets: '{item} у кишенях сумки',
-    doorHint: 'Тримай ліву кнопку для опцій дверей', doorHintTouch: 'Тримай на дверях для опцій', clickToPlay: 'Натисни, щоб грати', showHand: 'Показати руку', mainHand: 'Основна рука', crouchPlace: 'Присід і права кнопка, щоб поставити поруч.', signIn: 'Увійти', code: 'Код', signNote: 'Код і ПІН дає вчитель. Ім’я з’явиться, коли вони збіжаться.',
+    doorHint: 'Тримай ліву кнопку для опцій дверей', doorHintTouch: 'Тримай на дверях для опцій', clickToPlay: 'Натисни, щоб грати', showHand: 'Показати руку', mainHand: 'Основна рука', cameraView: 'Камера', camClose: 'Близько', camBehind: 'Ззаду', crouchPlace: 'Присід і права кнопка, щоб поставити поруч.', signIn: 'Увійти', code: 'Код', signNote: 'Код і ПІН дає вчитель. Ім’я з’явиться, коли вони збіжаться.',
   },
   ru: {
     menu: 'Меню', close: 'Закрыть', settings: 'Настройки', whatsNew: 'Что нового', help: 'Помощь',
@@ -89,7 +89,7 @@ export const STR = {
     brickRed: 'Красный кирпич', brickGrey: 'Серый кирпич', planks: 'Доски', log: 'Бревно', leaves: 'Листва',
     woolBlue: 'Синяя шерсть', woolGreen: 'Зелёная шерсть', woolRed: 'Красная шерсть', woolTan: 'Песочная шерсть', snow: 'Снег', ice: 'Лёд', redSand: 'Рыжий песок', glass: 'Стекло',
     needsFuel: 'Нужно топливо', bakingNow: 'Печётся...', takeYour: 'Забери свой {item}', inPockets: '{item} в карманах сумки',
-    doorHint: 'Держи левую кнопку для опций двери', doorHintTouch: 'Держи на двери для опций', clickToPlay: 'Нажми, чтобы играть', showHand: 'Показать руку', mainHand: 'Основная рука', crouchPlace: 'Присед и правая кнопка, чтобы поставить рядом.', signIn: 'Войти', code: 'Код', signNote: 'Код и ПИН даёт учитель. Имя появится, когда они совпадут.',
+    doorHint: 'Держи левую кнопку для опций двери', doorHintTouch: 'Держи на двери для опций', clickToPlay: 'Нажми, чтобы играть', showHand: 'Показать руку', mainHand: 'Основная рука', cameraView: 'Камера', camClose: 'Близко', camBehind: 'Сзади', crouchPlace: 'Присед и правая кнопка, чтобы поставить рядом.', signIn: 'Войти', code: 'Код', signNote: 'Код и ПИН даёт учитель. Имя появится, когда они совпадут.',
   },
   es: {
     menu: 'Menú', close: 'Cerrar', settings: 'Ajustes', whatsNew: 'Novedades', help: 'Ayuda',
@@ -119,7 +119,7 @@ export const STR = {
     brickRed: 'Ladrillo rojo', brickGrey: 'Ladrillo gris', planks: 'Tablas', log: 'Tronco', leaves: 'Hojas',
     woolBlue: 'Lana azul', woolGreen: 'Lana verde', woolRed: 'Lana roja', woolTan: 'Lana arena', snow: 'Nieve', ice: 'Hielo', redSand: 'Arena roja', glass: 'Vidrio',
     needsFuel: 'Necesita combustible', bakingNow: 'Horneando...', takeYour: 'Toma tu {item}', inPockets: '{item} está en los bolsillos de la bolsa',
-    doorHint: 'Mantén el clic izquierdo para las opciones de la puerta', doorHintTouch: 'Mantén el dedo en la puerta para las opciones', clickToPlay: 'Haz clic para jugar', showHand: 'Mostrar la mano', mainHand: 'Mano principal', crouchPlace: 'Agáchate y clic derecho para poner al lado.', signIn: 'Entrar', code: 'Código', signNote: 'El código y el PIN los da tu profe. Tu nombre sale cuando coinciden.',
+    doorHint: 'Mantén el clic izquierdo para las opciones de la puerta', doorHintTouch: 'Mantén el dedo en la puerta para las opciones', clickToPlay: 'Haz clic para jugar', showHand: 'Mostrar la mano', mainHand: 'Mano principal', cameraView: 'Cámara', camClose: 'Cerca', camBehind: 'Detrás', crouchPlace: 'Agáchate y clic derecho para poner al lado.', signIn: 'Entrar', code: 'Código', signNote: 'El código y el PIN los da tu profe. Tu nombre sale cuando coinciden.',
   },
   ar: {
     menu: 'القائمة', close: 'إغلاق', settings: 'الإعدادات', whatsNew: 'ما الجديد', help: 'مساعدة',
@@ -149,7 +149,7 @@ export const STR = {
     brickRed: 'طوب أحمر', brickGrey: 'طوب رمادي', planks: 'ألواح', log: 'جذع', leaves: 'أوراق',
     woolBlue: 'صوف أزرق', woolGreen: 'صوف أخضر', woolRed: 'صوف أحمر', woolTan: 'صوف ترابي', snow: 'ثلج', ice: 'جليد', redSand: 'رمل أحمر', glass: 'زجاج',
     needsFuel: 'يحتاج وقوداً', bakingNow: 'يُخبز...', takeYour: 'خذ {item}', inPockets: '{item} في جيوب الحقيبة',
-    doorHint: 'أبقِ النقر الأيسر لخيارات الباب', doorHintTouch: 'أبقِ إصبعك على الباب للخيارات', clickToPlay: 'انقر للعب', showHand: 'أظهر اليد', mainHand: 'اليد الأساسية', crouchPlace: 'انحنِ وانقر يميناً لتضع بجانبه.', signIn: 'تسجيل الدخول', code: 'الرمز', signNote: 'الرمز والرقم السري من معلمك. يظهر اسمك بعد أن يتطابقا.',
+    doorHint: 'أبقِ النقر الأيسر لخيارات الباب', doorHintTouch: 'أبقِ إصبعك على الباب للخيارات', clickToPlay: 'انقر للعب', showHand: 'أظهر اليد', mainHand: 'اليد الأساسية', cameraView: 'الكاميرا', camClose: 'قريب', camBehind: 'من الخلف', crouchPlace: 'انحنِ وانقر يميناً لتضع بجانبه.', signIn: 'تسجيل الدخول', code: 'الرمز', signNote: 'الرمز والرقم السري من معلمك. يظهر اسمك بعد أن يتطابقا.',
   },
   'fa-AF': {
     menu: 'فهرست', close: 'بستن', settings: 'تنظیمات', whatsNew: 'تازه‌ها', help: 'کمک',
@@ -179,7 +179,7 @@ export const STR = {
     brickRed: 'خشت سرخ', brickGrey: 'خشت خاکستری', planks: 'تخته', log: 'تنه', leaves: 'برگ',
     woolBlue: 'پشم آبی', woolGreen: 'پشم سبز', woolRed: 'پشم سرخ', woolTan: 'پشم نخودی', snow: 'برف', ice: 'یخ', redSand: 'ریگ سرخ', glass: 'شیشه',
     needsFuel: 'سوخت لازم است', bakingNow: 'در حال پختن...', takeYour: '{item} را بردار', inPockets: '{item} در جیب‌های بکس است',
-    doorHint: 'برای گزینه‌های در، کلیک چپ را نگه دار', doorHintTouch: 'برای گزینه‌ها انگشت را روی در نگه دار', clickToPlay: 'برای بازی کلیک کن', showHand: 'دست را نشان بده', mainHand: 'دست اصلی', crouchPlace: 'خم شو و راست کلیک کن تا کنارش بگذاری.', signIn: 'ورود', code: 'کود', signNote: 'کود و پین را معلم می دهد. نامت وقتی درست باشد دیده می شود.',
+    doorHint: 'برای گزینه‌های در، کلیک چپ را نگه دار', doorHintTouch: 'برای گزینه‌ها انگشت را روی در نگه دار', clickToPlay: 'برای بازی کلیک کن', showHand: 'دست را نشان بده', mainHand: 'دست اصلی', cameraView: 'دوربین', camClose: 'نزدیک', camBehind: 'پشت', crouchPlace: 'خم شو و راست کلیک کن تا کنارش بگذاری.', signIn: 'ورود', code: 'کود', signNote: 'کود و پین را معلم می دهد. نامت وقتی درست باشد دیده می شود.',
   },
   rw: {
     menu: 'Ibikubiyemo', close: 'Funga', settings: 'Igenamiterere', whatsNew: 'Ibishya', help: 'Ubufasha',
@@ -209,7 +209,7 @@ export const STR = {
     brickRed: 'Itarafuri itukura', brickGrey: 'Itarafuri y’ikigina', planks: 'Imbaho', log: 'Igiti', leaves: 'Amababi',
     woolBlue: 'Ubwoya bw’ubururu', woolGreen: 'Ubwoya bw’icyatsi', woolRed: 'Ubwoya bw’umutuku', woolTan: 'Ubwoya bw’umuhondo', snow: 'Urubura', ice: 'Urubura rukomeye', redSand: 'Umucanga utukura', glass: 'Ikirahure',
     needsFuel: 'Ikeneye amakara', bakingNow: 'Birateka...', takeYour: 'Fata {item} yawe', inPockets: '{item} iri mu mifuka y\'agasaho',
-    doorHint: 'Fata ibumoso ku mahitamo y\'urugi', doorHintTouch: 'Fata ku rugi ku mahitamo', clickToPlay: 'Kanda ukine', showHand: 'Erekana ukuboko', mainHand: 'Ukuboko nyamukuru', crouchPlace: 'Icarama ukande iburyo ushyire iruhande.', signIn: 'Injira', code: 'Kode', signNote: 'Kode na PIN biva ku mwarimu. Izina ryawe rigaragara nibyo bihuye.',
+    doorHint: 'Fata ibumoso ku mahitamo y\'urugi', doorHintTouch: 'Fata ku rugi ku mahitamo', clickToPlay: 'Kanda ukine', showHand: 'Erekana ukuboko', mainHand: 'Ukuboko nyamukuru', cameraView: 'Kamera', camClose: 'Hafi', camBehind: 'Inyuma', crouchPlace: 'Icarama ukande iburyo ushyire iruhande.', signIn: 'Injira', code: 'Kode', signNote: 'Kode na PIN biva ku mwarimu. Izina ryawe rigaragara nibyo bihuye.',
   },
   ti: {
     menu: 'ዝርዝር', close: 'ዕጸው', settings: 'ቅጥዕታት', whatsNew: 'ሓድሽ', help: 'ሓገዝ',
@@ -239,7 +239,7 @@ export const STR = {
     brickRed: 'ቀይሕ ሽቡክ', brickGrey: 'ሃሞሽ ሽቡክ', planks: 'ጣውላ', log: 'ጉንዲ', leaves: 'ቆጽሊ',
     woolBlue: 'ሰማያዊ ጸምሪ', woolGreen: 'ቀጠልያ ጸምሪ', woolRed: 'ቀያሕ ጸምሪ', woolTan: 'ቡናዊ ጸምሪ', snow: 'በረድ', ice: 'በረድ ዕሩይ', redSand: 'ቀያሕ ሑጻ', glass: 'መስታወት',
     needsFuel: 'ነዳዲ የድሊ', bakingNow: 'ይጥበስ ኣሎ...', takeYour: '{item} ኣውጽእ', inPockets: '{item} ኣብ ጁባ ቦርሳኻ ኣሎ',
-    doorHint: 'ንኣማራጺ ማዕጾ ጸጋማይ ጠውቕ ሓዝ', doorHintTouch: 'ንኣማራጺ ኣብ ማዕጾ ሓዝ', clickToPlay: 'ጠውቕ ንምጻወት', showHand: 'ኢድ ኣርኢ', mainHand: 'ቀንዲ ኢድ', crouchPlace: 'ድንጋርን የማናይ ጠውቕ ኣብ ጥቓኡ ንምቕማጥ.', signIn: 'እቶ', code: 'ኮድ', signNote: 'ኮድን ፒንን መምህር እዩ ዝህብ። ስምካ ምስ ዝሰማማዑ ይረአ።',
+    doorHint: 'ንኣማራጺ ማዕጾ ጸጋማይ ጠውቕ ሓዝ', doorHintTouch: 'ንኣማራጺ ኣብ ማዕጾ ሓዝ', clickToPlay: 'ጠውቕ ንምጻወት', showHand: 'ኢድ ኣርኢ', mainHand: 'ቀንዲ ኢድ', cameraView: 'ካሜራ', camClose: 'ቀረባ', camBehind: 'ድሕሪት', crouchPlace: 'ድንጋርን የማናይ ጠውቕ ኣብ ጥቓኡ ንምቕማጥ.', signIn: 'እቶ', code: 'ኮድ', signNote: 'ኮድን ፒንን መምህር እዩ ዝህብ። ስምካ ምስ ዝሰማማዑ ይረአ።',
   },
 }
 const PRACTICE_TIP = {
