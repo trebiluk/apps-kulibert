@@ -332,6 +332,103 @@ function countFarClay(gen) {
   return n
 }
 
+const DUP_SPOTS = [[6, 5, 8], [8, 5, 9], [10, 5, 6], [11, 5, 8]]
+
+function atCell(u16, x, y, z) {
+  return u16[x * S * S + y * S + z]
+}
+
+function townCells(u16) {
+  return DUP_SPOTS.map(([x, y, z]) => atCell(u16, x, y, z))
+}
+
+function chunkBytes(doc) {
+  const out = {}
+  for (const k of Object.keys(doc.chunks || {}).sort()) out[k] = doc.chunks[k]
+  return out
+}
+
+function resave(doc) {
+  const back = fromDoc(doc)
+  return { ...doc, player: back.player, econ: back.econ, meta: back.meta, lost: back.lost, drops: back.drops }
+}
+
+function roundTwice(doc) {
+  let cur = doc
+  let hash = ''
+  let meta = ''
+  for (let i = 0; i < 2; i++) {
+    const moved = migrateMod.migrate(JSON.parse(JSON.stringify(cur))).doc
+    const again = migrateMod.migrate(JSON.parse(JSON.stringify(resave(moved)))).doc
+    const h1 = createHash('sha256').update(JSON.stringify(chunkBytes(moved))).digest('hex')
+    const h2 = createHash('sha256').update(JSON.stringify(chunkBytes(again))).digest('hex')
+    const m1 = JSON.stringify(fromDoc(moved).meta)
+    const m2 = JSON.stringify(fromDoc(again).meta)
+    if (h1 !== h2) return 'voxels ' + i
+    if (m1 !== m2) return 'meta ' + i
+    if (i && (h1 !== hash || m1 !== meta)) return 'drift'
+    hash = h1
+    meta = m1
+    cur = again
+  }
+  return ''
+}
+
+function townDupReport(name) {
+  const raw = JSON.parse(readFileSync(new URL(name, FIX), 'utf8'))
+  const before = ungzipU16(raw.chunks['0,0,0'])
+  const moved = migrateMod.migrate(JSON.parse(JSON.stringify(raw))).doc
+  const after = ungzipU16(moved.chunks['0,0,0'])
+  const diffs = []
+  for (let i = 0; i < before.length; i++) if (before[i] !== after[i]) diffs.push(i)
+  const want = DUP_SPOTS.map(([x, y, z]) => x * S * S + y * S + z).sort((a, b) => a - b)
+  const got = diffs.slice().sort((a, b) => a - b)
+  const cleared = got.length === 4 && got.every((n, i) => n === want[i]) && townCells(after).every((id) => id === 0)
+  const lines = []
+  if (!cleared) lines.push('dup cells ' + JSON.stringify(townCells(after)) + ' diffs ' + diffs.length)
+  if (moved.townDupFixed !== 1) lines.push('dup flag')
+  const trip = roundTwice(raw)
+  if (trip) lines.push('dup ' + trip)
+  return lines
+}
+
+function townCleanReport(names) {
+  const lines = []
+  for (const name of names) {
+    if (name === 'w-2.5.124-dup.json') continue
+    const raw = JSON.parse(readFileSync(new URL(name, FIX), 'utf8'))
+    const before = chunkBytes(raw)
+    const moved = migrateMod.migrate(JSON.parse(JSON.stringify(raw))).doc
+    const after = chunkBytes(moved)
+    const keys = new Set([...Object.keys(before), ...Object.keys(after)])
+    for (const k of keys) if (before[k] !== after[k]) lines.push(name + ' chunk ' + k)
+    if (moved.townDupFixed) lines.push(name + ' flag')
+    const trip = roundTwice(raw)
+    if (trip) lines.push(name + ' ' + trip)
+  }
+  return lines
+}
+
+function townKeptReport() {
+  const raw = JSON.parse(readFileSync(new URL('w-2.5.124-dup.json', FIX), 'utf8'))
+  const kid = JSON.parse(JSON.stringify(raw))
+  const ku = ungzipU16(kid.chunks['0,0,0'])
+  ku[6 * S * S + 4 * S + 8] = 2
+  kid.chunks['0,0,0'] = gzipU16(ku)
+  const moved = migrateMod.migrate(kid).doc
+  const after = ungzipU16(moved.chunks['0,0,0'])
+  const bench = atCell(after, 6, 5, 8)
+  const under = atCell(after, 6, 4, 8)
+  const rest = [[8, 5, 9], [10, 5, 6], [11, 5, 8]].every(([x, y, z]) => atCell(after, x, y, z) === 0)
+  if (bench !== 22 || under !== 2 || !rest) return ['kept bench ' + bench + ' under ' + under]
+  const owned = JSON.parse(JSON.stringify(raw))
+  owned.meta = { ...(owned.meta || {}), '8,5,9': { kind: 'storeCounter' } }
+  const keep = ungzipU16(migrateMod.migrate(owned).doc.chunks['0,0,0'])
+  if (atCell(keep, 8, 5, 9) !== 25) return ['kept meta store']
+  if (atCell(keep, 6, 5, 8) !== 0) return ['meta still cleared the bench']
+  return []
+}
+
 async function main() {
   const rows = await loadBlockRows()
   const near = surface64(2)
@@ -348,6 +445,15 @@ async function main() {
     const extra = result.diff && result.diff.length ? ' ' + result.diff.join('; ') : ''
     console.log(result.status + ' ' + name + extra)
   }
+  const dupLines = townDupReport('w-2.5.124-dup.json')
+  if (dupLines.length) { fail++; console.log('FAIL town-dup ' + dupLines.join('; ')) }
+  else console.log('PASS town-dup 4')
+  const cleanLines = townCleanReport(names)
+  if (cleanLines.length) { fail++; console.log('FAIL town-clean ' + cleanLines.join('; ')) }
+  else console.log('PASS town-clean 0')
+  const keptLines = townKeptReport()
+  if (keptLines.length) { fail++; console.log('FAIL town-kept ' + keptLines.join('; ')) }
+  else console.log('PASS town-kept')
   process.exit(fail ? 1 : 0)
 }
 

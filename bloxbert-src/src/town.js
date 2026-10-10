@@ -1,6 +1,7 @@
 // Bertyville spawn. Stations the class needs, and what a student may not change.
 export const FLOOR = 4
 
+// Workshop floor stations. Worldgen places them on a new world. A saved chunk is left alone.
 export const STATIONS = [
   { x: 6, z: 8, id: 'workbench' },
   { x: 11, z: 8, id: 'oven' },

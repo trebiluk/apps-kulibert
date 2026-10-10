@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.126', date: '2026-10-10', lines: {
+    en: ['Old worlds stay as saved. A reload no longer adds four floating stations above the hut.'],
+    uk: ['Старі світи лишаються як збережені. Перезавантаження більше не додає чотири летючі станки над хатою.'],
+    ru: ['Старые миры остаются как сохранены. Перезагрузка больше не добавляет четыре летающие станки над избой.'],
+    es: ['Los mundos viejos se quedan como se guardaron. Recargar ya no añade cuatro estaciones flotando sobre la cabaña.'],
+    ar: ['العوالم القديمة تبقى كما حُفظت. إعادة التحميل لم تعد تضيف أربع محطات عائمة فوق الكوخ.'],
+    'fa-AF': ['دنیاهای قدیمی همان‌طور که ذخیره شده‌اند می‌مانند. بار کردن دوباره دیگر چهار ایستگاه شناور بالای کلبه اضافه نمی‌کند.'],
+    rw: ['Isi za kera ziguma uko zabitswe. Kongera gutangiza ntikongeraho sitasiyo enye zirimo hejuru y\'inzu.'],
+    ti: ['ናይ ቀደም ዓለማት ከም ዝተዓቀቡ ይቕጽላ። ዳግማይ ምጽዓን ድማ ኣብ ላዕሊ ጎጆ ኣርባዕተ ተንሳፈፍቲ ጣብያታት ኣይውስኽን።'],
+  }},
   { v: '2.5.125', date: '2026-10-10', lines: {
     en: ['A missing pack shows as a crate with a question mark, and the Woodshop says ready only after the tools are hung.'],
     uk: ['Зниклий пак показується ящиком зі знаком питання, а майстерня готова лише коли інструменти повішені.'],

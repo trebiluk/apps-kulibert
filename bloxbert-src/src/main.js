@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.125'
+const VERSION = '2.5.126'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -2029,13 +2029,14 @@ function setTownHelper(on) {
 }
 function ensureHelp() {
   const y = FLOOR + 1
-  let changed = false
   for (const s of STATIONS) {
+    const ci = Math.floor(s.x / S)
+    const cj = Math.floor(y / S)
+    const ck = Math.floor(s.z / S)
+    if (saved.has(ci + ',' + cj + ',' + ck)) continue
     if (getVoxel(s.x, y, s.z) === ID[s.id]) continue
-    setVoxel(s.x, y, s.z, ID[s.id], false)
-    changed = true
+    setVoxel(s.x, y, s.z, ID[s.id], true)
   }
-  return changed
 }
 function teacherOn() {
   if (!staffOn()) return false
@@ -2394,8 +2395,6 @@ async function load() {
     keepSaved(e)
     return false
   }
-  const repaired = ensureHelp()
-  dirty = !!(repaired || dirty)
   const pinned = mergePin(doc)
   allowSave = !readOnlySave
   if (readOnlySave) {
