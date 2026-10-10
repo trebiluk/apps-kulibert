@@ -334,8 +334,8 @@ export function blockIcon(block, atlas) {
     const ctx = c.getContext('2d', READ2D)
     if (PNG[tex]) ctx.drawImage(img, 8, 8, 32, 32)
     else {
-      const y = (atlas[tex] || 0) * 32
-      ctx.drawImage(img, 0, y, 32, 32, 8, 8, 32, 32)
+      const y = (atlas[tex] || 0) * 36 + 2
+      ctx.drawImage(img, 2, y, 32, 32, 8, 8, 32, 32)
     }
   }
   return c

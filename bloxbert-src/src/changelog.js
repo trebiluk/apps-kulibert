@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.122', date: '2026-10-10', lines: {
+    en: ['Block edges stay crisp. The pale lines between them are gone.'],
+    uk: ['Краї блоків лишаються чіткими. Блідих ліній між ними більше немає.'],
+    ru: ['Края блоков остаются чёткими. Бледных линий между ними больше нет.'],
+    es: ['Los bordes de los bloques se quedan nítidos. Ya no hay líneas pálidas entre ellos.'],
+    ar: ['حواف المكعبات تبقى واضحة. الخطوط الباهتة بينها ذهبت.'],
+    'fa-AF': ['لبه‌های بلاک تیز می‌ماند. خط‌های کمرنگ میان آن‌ها رفت.'],
+    rw: ['Inkombe z\'ibibumbe ziguma zigoranye. Imirongo yera hagati yazo yagiye.'],
+    ti: ['ጫፋት ናይ ብሎክ ግልጽ ይቕጽል። ገረብ መስመራት ኣብ መንጎኦም ከይዶም።'],
+  }},
   { v: '2.5.121', date: '2026-10-10', lines: {
     en: ['Old ground stays as it was. New land has sand banks, gravel, and clay you can dig by hand.'],
     uk: ['Стара земля лишається як була. На новій є піщані береги, гравій і глина, яку копаєш рукою.'],

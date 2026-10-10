@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.121'
+const VERSION = '2.5.122'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -242,6 +242,44 @@ noa.inputs.unbind('mid-fire')
 noa.inputs.bind('mid-fire', 'Mouse2')
 
 const tile = (n) => ({ textureURL: 'assets/atlas.png', atlasIndex: ATLAS[n] })
+// 36px layers: 2px copied gutter around the original 32. Sample the core, nearest, no mipmaps.
+const _rawArray = engine.createRawTexture2DArray.bind(engine)
+engine.createRawTexture2DArray = (data, w, h, depth, format, _mip, invertY, sampling, ...rest) =>
+  _rawArray(data, w, h, depth, format, false, invertY, Texture.NEAREST_SAMPLINGMODE, ...rest)
+const crispAtlas = () => {
+  const mats = noa.rendering.scene.materials
+  for (let i = 0; i < mats.length; i++) {
+    const plugList = mats[i].pluginManager && mats[i].pluginManager._plugins
+    if (!plugList) continue
+    for (let j = 0; j < plugList.length; j++) {
+      const plug = plugList[j]
+      if (!plug || plug.__crisp || !plug.getCustomCode) continue
+      const frag = plug.getCustomCode('fragment')
+      if (!frag) continue
+      let uses = false
+      for (const k in frag) if (typeof frag[k] === 'string' && frag[k].indexOf('atlasTexture') >= 0) uses = true
+      if (!uses) continue
+      const orig = plug.getCustomCode.bind(plug)
+      plug.getCustomCode = (stage) => {
+        const code = orig(stage)
+        if (!code || stage !== 'fragment') return code
+        const out = {}
+        for (const k in code) {
+          const v = code[k]
+          out[k] = typeof v === 'string'
+            ? v.replace(
+              'baseColor = texture(atlasTexture, vec3(vDiffuseUV, texAtlasIndex));',
+              'vec2 crispF = fract(vDiffuseUV); baseColor = texture(atlasTexture, vec3((crispF * 32.0 + 2.0) / 36.0, texAtlasIndex));'
+            )
+            : v
+        }
+        return out
+      }
+      plug.__crisp = 1
+    }
+  }
+}
+noa.rendering.scene.onBeforeRenderObservable.add(crispAtlas)
 const mats = [
   'grass_top', 'dirt_grass', 'dirt', 'stone', 'greystone', 'stone_coal', 'sand', 'gravel_stone',
   'brick_red', 'brick_grey', 'wood', 'trunk_top', 'trunk_side', 'leaves', 'cotton_blue',
@@ -326,16 +364,16 @@ export const BLOCKS = [
   [71, 'clay', 'clay', 'Cy', 'dirt'],
   [185, 'sapling', 'leaves', 'Sp', 'leaves'],
 ]
-noa.registry.registerMaterial('coreplate', { textureURL: 'assets/tile-coreplate.png' })
-noa.registry.registerMaterial('workbench', { textureURL: 'assets/tile-workbench.png' })
-noa.registry.registerMaterial('benchTop', { textureURL: 'assets/tile-workbench.png' })
-noa.registry.registerMaterial('benchSide', { textureURL: 'assets/tile-workbench-side.png' })
-noa.registry.registerMaterial('ovenBrick', { textureURL: 'assets/tile-oven-brick.png' })
-noa.registry.registerMaterial('ovenFront', { textureURL: 'assets/tile-oven-front.png' })
-noa.registry.registerMaterial('oven', { textureURL: 'assets/tile-oven-front.png' })
-noa.registry.registerMaterial('vend', { textureURL: 'assets/tile-vend.png' })
-noa.registry.registerMaterial('store', { textureURL: 'assets/tile-store.png' })
-noa.registry.registerMaterial('bunk', { textureURL: 'assets/tile-bunk.png' })
+noa.registry.registerMaterial('coreplate', tile('coreplate'))
+noa.registry.registerMaterial('workbench', tile('workbench'))
+noa.registry.registerMaterial('benchTop', tile('workbench'))
+noa.registry.registerMaterial('benchSide', tile('benchSide'))
+noa.registry.registerMaterial('ovenBrick', tile('ovenBrick'))
+noa.registry.registerMaterial('ovenFront', tile('ovenFront'))
+noa.registry.registerMaterial('oven', tile('ovenFront'))
+noa.registry.registerMaterial('vend', tile('vend'))
+noa.registry.registerMaterial('store', tile('store'))
+noa.registry.registerMaterial('bunk', tile('bunk'))
 const shapeScene = noa.rendering.scene
 function dye(name, r, g, b, a) {
   const mat = noa.rendering.makeStandardMaterial(name)
