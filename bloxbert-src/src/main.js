@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.129'
+const VERSION = '2.5.130'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -29,6 +29,7 @@ import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
 import { CHANGELOG } from './changelog.js'
+import { Rules } from './rules.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
@@ -1343,6 +1344,10 @@ function syncGlasses() {
 function breakAt(x, y, z, hold) {
   const id = getVoxel(x, y, z)
   if (!id) return false
+  if (!Rules.allow(null, 'core.break', { x, y, z, id }).ok) {
+    blockedToast('core.break')
+    return false
+  }
   if (id === WATER || (isMissingId(id) && survivalOn())) return false
   if ((isCropId(id) || isBushId(id)) && survivalOn() && !tableMode) {
     if (!canReach([x, y, z])) return false
@@ -1430,6 +1435,10 @@ function useAt(hit) {
   const key = ax + ',' + ay + ',' + az
   if (kind === 'box') { if (!canReach([ax, ay, az])) return true }
   else if (!reachOpen([ax, ay, az], false)) return true
+  if (!Rules.allow(null, 'core.station.open', { kind }).ok) {
+    blockedToast('core.station.open')
+    return true
+  }
   if (kind === 'oven') panels.open('station', key)
   else if (kind === 'bench') panels.open('crafting')
   else if (kind === 'vend') panels.open('counter', key)
@@ -1461,6 +1470,10 @@ function placeBlock(face, opts) {
   if (tryPlant(aimedBlock, repeat)) return false
   if (trySprout(aimedBlock, repeat)) return false
   if (tryTill(aimedBlock, repeat)) return false
+  if (!Rules.allow(null, 'core.place').ok) {
+    blockedToast('core.place')
+    return false
+  }
   let x, y, z
   if (tableMode && !aimedBlock) { x = tableCursor[0]; y = tableCursor[1]; z = tableCursor[2] }
   else {
@@ -2344,6 +2357,7 @@ async function snapshot() {
   const chunks = {}
   for (const [k, v] of saved) chunks[k] = await gz(v)
   const p = noa.entities.getPosition(noa.playerEntity)
+  const rules = Rules.dump()
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
@@ -2357,6 +2371,7 @@ async function snapshot() {
     crops: farm.dump(),
     forage: forage.dump(),
     pondAid: !!pondAid,
+    ...(Object.keys(rules).length ? { rules } : {}),
   }
 }
 async function saveBody() {
@@ -2420,6 +2435,7 @@ async function load() {
     return false
   }
   if (!doc) {
+    Rules.load({})
     farm.clear()
     forage.clear()
     pondAid = true
@@ -2478,6 +2494,7 @@ async function readDoc(doc) {
 async function applyDoc(doc) {
   const moved = migrate(doc)
   const src = moved.doc || doc
+  Rules.load(doc && doc.rules || {})
   const chunks = await readDoc(doc)
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
   edits.clear(); paintUndo()
@@ -2518,6 +2535,7 @@ async function importFile(file) {
   markSave(t('imported'))
 }
 async function resetWorld() {
+  Rules.load({})
   gifts = {}
   syncGlasses()
   farm.clear()
@@ -2667,6 +2685,15 @@ function toast(text, act) {
   clearTimeout(toast.t)
   toast.t = setTimeout(() => { el.hidden = true }, act ? 8000 : 2400)
 }
+const blockedAt = new Map()
+function blockedToast(ruleId) {
+  const now = performance.now()
+  if (now - (blockedAt.get(ruleId) || 0) < 2000) return
+  blockedAt.set(ruleId, now)
+  const line = Rules.why(ruleId, LANG)
+  if (!line) return
+  toast(Rules.icon(ruleId) + ' ' + line)
+}
 function paintUndo() {
   const u = $('undo-btn'); if (u) u.disabled = !edits.canUndo
   const r = $('redo-btn'); if (r) r.disabled = !edits.canRedo
@@ -2690,7 +2717,7 @@ let markPath = () => {}
 let paintPath = () => {}
 let lastPointer = null
 session = createSession({
-  t, toast, getVoxel,
+  t, toast, blocked: (id) => blockedToast(id), getVoxel,
   pos: () => noa.entities.getPosition(noa.playerEntity),
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
@@ -5242,6 +5269,7 @@ fixHome(); setTimeout(fixHome, 600); setTimeout(fixHome, 1600)
 if (!__BLOX_STUDENT__) {
   window.__blocks = {
     version: VERSION, setQuality, refit, get quality() { return quality }, get lang() { return LANG },
+    rules: Rules,
     noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, importFile, exportDoc: snapshot,
     applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
     history: (x, y, z) => changeLog.history(x, y, z),

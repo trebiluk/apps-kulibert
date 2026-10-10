@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.130', date: '2026-10-10', lines: {
+    en: ['A world can turn off breaking, placing, crafting, or opening a station, and the game tells you.'],
+    uk: ['Світ може вимкнути ламання, ставлення, крафт або відкриття станка, і гра про це каже.'],
+    ru: ['Мир может выключить ломание, установку, крафт или открытие станка, и игра об этом говорит.'],
+    es: ['Un mundo puede apagar romper, poner, fabricar o abrir una estación, y el juego te lo dice.'],
+    ar: ['يمكن للعالم إيقاف الكسر أو الوضع أو الصنع أو فتح محطة، واللعبة تقول ذلك.'],
+    'fa-AF': ['یک دنیا می‌تواند شکستن، گذاشتن، ساختن یا باز کردن ایستگاه را خاموش کند، و بازی می‌گوید.'],
+    rw: ['Isi ishobora gufunga gukata, gushyira, gukora cyangwa gufungura sitasiyo, kandi umukino ubivuga.'],
+    ti: ['ዓለም ምስባር፡ ምቕማጥ፡ ምስራሕ ወይ ጣብያ ምኽፋት ክዓጽዎ ትኽእል፡ ጸወታ ድማ ይነግር።'],
+  }},
   { v: '2.5.129', date: '2026-10-10', lines: {
     en: ['A new version shows on the first visit, and play is never interrupted.'],
     uk: ['Нова версія з’являється з першого візиту, і гра не переривається.'],

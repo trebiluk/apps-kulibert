@@ -16,6 +16,7 @@ import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
 import { bindStationBag } from './stations.js'
 import { berryTuft } from './worldgen.js'
+import { Rules } from './rules.js'
 
 export function createSession(api) {
   const bags = { survival: createBag(), creative: createBag() }
@@ -2297,6 +2298,11 @@ export function createSession(api) {
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const st = craftStatus(r, bag, stations, mode !== 'survival')
     if (!st.ok) return { ok: false, why: st.gate || st.station || 'count', gate: st.gate || '' }
+    if (!Rules.allow(null, 'core.craft', { id: r.id }).ok) {
+      if (api.blocked) api.blocked('core.craft')
+      else api.toast(Rules.why('core.craft'))
+      return { ok: false, why: 'rule', ruleId: 'core.craft' }
+    }
     const made = make(r, bag, hot)
     if (!made) return { ok: false, why: 'full' }
     markFound(r.out[0])
