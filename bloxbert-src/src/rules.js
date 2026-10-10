@@ -6,6 +6,7 @@ export const ALIASES = {}
 const registry = new Map()
 const saved = new Map()
 let currentLang = 'en'
+let hinted = ''
 
 const WHY = {
   'core.break': {
@@ -58,6 +59,36 @@ const WHY = {
     rw: 'Kuguruka birafunze muri iyi si',
     ti: 'ምንፋር ኣብዚ ዓለም ጠፊኡ እዩ',
   },
+  'station.bench': {
+    en: 'The teacher turned off the Workbench.',
+    uk: 'Учитель вимкнув верстак.',
+    ru: 'Учитель выключил верстак.',
+    es: 'El maestro apagó el banco de trabajo.',
+    ar: 'أوقف المعلم طاولة العمل.',
+    'fa-AF': 'معلم میز کار را خاموش کرد.',
+    rw: 'Umwarimu yafunze ameza yo gukora.',
+    ti: 'መምህር መደብ ስራሕ ኣጥፍኦ።',
+  },
+  'station.oven': {
+    en: 'The teacher turned off the Oven.',
+    uk: 'Учитель вимкнув піч.',
+    ru: 'Учитель выключил печь.',
+    es: 'El maestro apagó el horno.',
+    ar: 'أوقف المعلم الفرن.',
+    'fa-AF': 'معلم تنور را خاموش کرد.',
+    rw: 'Umwarimu yafunze ifuru.',
+    ti: 'መምህር ምድጃ ኣጥፍኦ።',
+  },
+  'station.woodshop': {
+    en: 'The teacher turned off the Woodshop.',
+    uk: 'Учитель вимкнув столярню.',
+    ru: 'Учитель выключил столярку.',
+    es: 'El maestro apagó la carpintería.',
+    ar: 'أوقف المعلم ورشة النجارة.',
+    'fa-AF': 'معلم نجاری را خاموش کرد.',
+    rw: 'Umwarimu yafunze ububiko bwimbaho.',
+    ti: 'መምህር ናይ ዕንጨይቲ ዓውዲ ኣጥፍኦ።',
+  },
 }
 
 const WHY_UNKNOWN = {
@@ -86,10 +117,20 @@ function same(a, b) {
   return a === b
 }
 
+function optionIds(def) {
+  if (!def || !Array.isArray(def.options)) return null
+  return def.options.map((o) => (typeof o === 'string' ? o : o && o.id)).filter(Boolean)
+}
+
 function coerce(def, v) {
   if (def.type === 'bool') return v === true || v === false ? v : def.def
   if (def.type === 'num') return Number.isFinite(+v) ? +v : def.def
-  if (def.type === 'pick') return typeof v === 'string' ? v : def.def
+  if (def.type === 'pick') {
+    if (typeof v !== 'string') return def.def
+    const ids = optionIds(def)
+    if (ids && !ids.includes(v)) return def.def
+    return v
+  }
   return v
 }
 
@@ -97,6 +138,21 @@ function register(def) {
   if (!def || typeof def.id !== 'string' || !def.id || registry.has(def.id)) return false
   registry.set(def.id, def)
   return true
+}
+
+function registerPack(prefix, defs) {
+  const pack = String(prefix || '').replace(/\.+$/, '')
+  if (!pack || !Array.isArray(defs)) return 0
+  let n = 0
+  for (const raw of defs) {
+    if (!raw || typeof raw.id !== 'string' || !raw.id) continue
+    const id = raw.id === pack || raw.id.startsWith(pack + '.') ? raw.id : pack + '.' + raw.id.replace(/^\.+/, '')
+    const display = raw.display || (GROUPS[raw.group] ? raw.group : '')
+    const def = { ...raw, id, pack }
+    if (display) def.display = display
+    if (register(def)) n += 1
+  }
+  return n
 }
 
 function load(obj) {
@@ -139,21 +195,36 @@ function set(id, v) {
 
 function allow(player, ruleId, ctx) {
   void player
-  void ctx
   const id = canon(ruleId)
   const def = registry.get(id)
   const v = saved.has(id) ? saved.get(id) : (def ? def.def : true)
   const ok = typeof v === 'boolean' ? v : v !== false
-  return { ok, ruleId: id }
+  hinted = ''
+  if (!ok) return { ok: false, ruleId: id, rule: id }
+  if (id === 'core.station.open' && ctx && ctx.kind != null && ctx.kind !== '') {
+    const childId = 'station.' + ctx.kind
+    const child = registry.get(childId)
+    if (child && child.type === 'bool') {
+      const cv = saved.has(childId) ? saved.get(childId) : child.def
+      if (cv === false) {
+        hinted = childId
+        return { ok: false, ruleId: childId, rule: childId }
+      }
+    }
+  }
+  return { ok: true, ruleId: id, rule: id }
 }
 
 function why(ruleId, lang) {
   const id = canon(ruleId)
-  return text(WHY[id] || WHY_UNKNOWN, lang)
+  const key = id === 'core.station.open' && hinted.startsWith('station.') && WHY[hinted] ? hinted : id
+  return text(WHY[key] || WHY_UNKNOWN, lang)
 }
 
 function icon(ruleId) {
-  const def = registry.get(canon(ruleId))
+  const id = canon(ruleId)
+  const key = id === 'core.station.open' && hinted.startsWith('station.') && registry.has(hinted) ? hinted : id
+  const def = registry.get(key)
   return (def && def.icon) || '•'
 }
 
@@ -185,6 +256,7 @@ export const GROUPS = {
   building: L('Building', 'Будування', 'Строительство', 'Construcción', 'البناء', 'ساختمان', 'Kubaka', 'ምህናጽ'),
   crafting: L('Crafting', 'Крафт', 'Крафт', 'Fabricar', 'الصنع', 'ساختن', 'Gukora', 'ምስራሕ'),
   movement: L('Movement', 'Рух', 'Движение', 'Movimiento', 'الحركة', 'حرکت', 'Kugenda', 'ምንቅስቓስ'),
+  survival: L('Survival', 'Виживання', 'Выживание', 'Supervivencia', 'البقاء', 'بقا', 'Kubaho', 'ህይወት'),
 }
 
 register({
@@ -213,5 +285,44 @@ register({
   label: L('Flying', 'Політ', 'Полёт', 'Volar', 'الطيران', 'پرواز', 'Kuguruka', 'ምንፋር'),
   desc: L('Players can fly in Creative.', 'Гравці можуть літати у Творчому.', 'Игроки могут летать в Творческом.', 'Los jugadores pueden volar en Creativo.', 'اللاعبون يستطيعون الطيران في الوضع الإبداعي.', 'بازیکن‌ها می‌توانند در ساختن پرواز کنند.', 'Abakinnyi bashobora kuguruka muri Creative.', 'ተጻወቲ ኣብ ፈጠራ ክነፍሩ ይኽእሉ።'),
 })
+// Kinds that exist in stations.js / machineKind: bench, oven, woodshop.
+// sewing, loom, and a craft table are not station kinds, so they are not rules.
+register({
+  id: 'station.bench', type: 'bool', def: true, group: 'crafting', display: 'crafting', icon: '▤',
+  label: L('Workbench', 'Верстак', 'Верстак', 'Banco de trabajo', 'طاولة العمل', 'میز کار', 'Ameza yo gukora', 'መደብ ስራሕ'),
+  desc: L('Players can open the Workbench.', 'Гравці можуть відкрити верстак.', 'Игроки могут открыть верстак.', 'Los jugadores pueden abrir el banco de trabajo.', 'اللاعبون يستطيعون فتح طاولة العمل.', 'بازیکن‌ها می‌توانند میز کار را باز کنند.', 'Abakinnyi bashobora gufungura ameza yo gukora.', 'ተጻወቲ መደብ ስራሕ ክኸፍቱ ይኽእሉ።'),
+})
+register({
+  id: 'station.oven', type: 'bool', def: true, group: 'crafting', display: 'crafting', icon: '🔥',
+  label: L('Oven', 'Піч', 'Печь', 'Horno', 'الفرن', 'تنور', 'Ifuru', 'ምድጃ'),
+  desc: L('Players can open the Oven.', 'Гравці можуть відкрити піч.', 'Игроки могут открыть печь.', 'Los jugadores pueden abrir el horno.', 'اللاعبون يستطيعون فتح الفرن.', 'بازیکن‌ها می‌توانند تنور را باز کنند.', 'Abakinnyi bashobora gufungura ifuru.', 'ተጻወቲ ምድጃ ክኸፍቱ ይኽእሉ።'),
+})
+register({
+  id: 'station.woodshop', type: 'bool', def: true, group: 'crafting', display: 'crafting', icon: '🪵',
+  label: L('Woodshop', 'Столярня', 'Столярка', 'Carpintería', 'ورشة النجارة', 'نجاری', 'Ububiko bwimbaho', 'ናይ ዕንጨይቲ ዓውዲ'),
+  desc: L('Players can open the Woodshop.', 'Гравці можуть відкрити столярню.', 'Игроки могут открыть столярку.', 'Los jugadores pueden abrir la carpintería.', 'اللاعبون يستطيعون فتح ورشة النجارة.', 'بازیکن‌ها می‌توانند نجاری را باز کنند.', 'Abakinnyi bashobora gufungura ububiko bwimbaho.', 'ተጻወቲ ናይ ዕንጨይቲ ዓውዲ ክኸፍቱ ይኽእሉ።'),
+})
+register({
+  id: 'survival.daynight', type: 'pick', def: 'cycle', group: 'survival', display: 'survival', icon: '☀',
+  options: [
+    { id: 'cycle', label: L('Cycle', 'Цикл', 'Цикл', 'Ciclo', 'دورة', 'چرخه', 'Uruzinduko', 'ዑደት') },
+    { id: 'day', label: L('Day', 'День', 'День', 'Día', 'نهار', 'روز', 'Umunsi', 'መዓልቲ') },
+    { id: 'night', label: L('Night', 'Ніч', 'Ночь', 'Noche', 'ليل', 'شب', 'Ijoro', 'ለይቲ') },
+  ],
+  label: L('Day and night', 'День і ніч', 'День и ночь', 'Día y noche', 'النهار والليل', 'روز و شب', 'Umunsi nijoro', 'መዓልቲን ለይቲን'),
+  desc: L('Cycle, always day, or always night.', 'Цикл, завжди день, або завжди ніч.', 'Цикл, всегда день или всегда ночь.', 'Ciclo, siempre de día, o siempre de noche.', 'دورة، أو نهار دائم، أو ليل دائم.', 'چرخه، همیشه روز، یا همیشه شب.', 'Uruzinduko, umunsi iteka, cyangwa ijoro iteka.', 'ዑደት፡ ኩሉ ግዜ መዓልቲ፡ ወይ ኩሉ ግዜ ለይቲ።'),
+})
+// NOTE next step: session.js owns the drain. Multiplier off 0, calm 0.5, normal 1, fast 1.5.
+register({
+  id: 'survival.energy', type: 'pick', def: 'normal', group: 'survival', display: 'survival', soon: true, icon: '⚡',
+  options: [
+    { id: 'off', label: L('Off', 'Вимкнено', 'Выкл', 'Apagado', 'متوقف', 'خاموش', 'Bifunze', 'ጠፊኡ') },
+    { id: 'calm', label: L('Calm', 'Спокійно', 'Спокойно', 'Calma', 'هادئ', 'آرام', 'Buhoro', 'ርጉእ') },
+    { id: 'normal', label: L('Normal', 'Звично', 'Обычно', 'Habitual', 'عادي', 'عادی', 'Bisanzwe', 'ልሙድ') },
+    { id: 'fast', label: L('Fast', 'Швидко', 'Быстро', 'Rápido', 'سريع', 'تند', 'Vuba', 'ቅልጡፍ') },
+  ],
+  label: L('Energy', 'Енергія', 'Энергия', 'Energía', 'الطاقة', 'انرژی', 'Ingufu', 'ጉልበት'),
+  desc: L('How fast energy drops. Not in this build.', 'Як швидко спадає енергія. Ще не в цій збірці.', 'Как быстро падает энергия. Ещё не в этой сборке.', 'Qué tan rápido baja la energía. Aún no en esta versión.', 'سرعة نزول الطاقة. ليست في هذه النسخة.', 'انرژی چقدر تند کم می‌شود. در این نسخه نیست.', 'Uko ingufu zigabanuka. Ntiri muri iyi verisiyo.', 'ጉልበት ብኽንደይ ይወርድ። ኣብዚ ሕንጻ የለን።'),
+})
 
-export const Rules = { register, load, dump, set, allow, why, icon, useLang, value, rows, unknown, langs: LANGS }
+export const Rules = { register, registerPack, load, dump, set, allow, why, icon, useLang, value, rows, unknown, langs: LANGS }

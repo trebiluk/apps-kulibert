@@ -1,6 +1,7 @@
 // Doors, levers, buttons, day clock, lanterns. World field `basics` on the save.
 import { isDoor, doorKind, doorTopId, group, touchingDoors, closedId, openId, isOpenDoor, leverOpens, LEVER, BUTTON, LANTERN, CHARGER, FABRICATOR, countSpaced } from './doors.js'
 import { skyK, phaseName, LEVELS, lanternRadius, DRAIN, CHARGE_SUN, CHARGE_PLUG, DAY, DUSK } from './day.js'
+import { Rules } from './rules.js'
 
 const PREF = 'bloxbert-day'
 export function createBasics(api) {
@@ -22,6 +23,23 @@ export function createBasics(api) {
   let card = ''
   let cardN = 0
   function now() { return ms + (api.now() - anchor) }
+  function skyRule() {
+    let v = 'cycle'
+    try { v = Rules.value('survival.daynight') } catch (e) {}
+    return v === 'day' || v === 'night' ? v : 'cycle'
+  }
+  function phaseNow() {
+    const mode = skyRule()
+    if (mode === 'night') return 'night'
+    if (mode === 'day') return 'day'
+    return phaseName(now(), always)
+  }
+  function lumNow() {
+    const mode = skyRule()
+    if (mode === 'night') return skyK(DAY + DUSK + 1000, false, false)
+    if (mode === 'day') return skyK(now(), true, false)
+    return skyK(now(), always, bright)
+  }
   function teacher() { return !!(teacherStub || (api.teacher && api.teacher())) }
   function prefSave() {
     try { localStorage.setItem(PREF, JSON.stringify({ always, bright })) } catch (e) {}
@@ -153,7 +171,7 @@ export function createBasics(api) {
     return [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]].some(([dx, dy, dz]) => api.get(x + dx, y + dy, z + dz) === id)
   }
   function applyLights(dt) {
-    const day = always || phaseName(now(), false) === 'day'
+    const day = phaseNow() === 'day'
     const creative = !api.survival()
     for (const [k, st] of lights) {
       if (creative) { st.charge = 1; continue }
@@ -223,7 +241,7 @@ export function createBasics(api) {
     flush()
   }
   function litPoints() {
-    if (always || phaseName(now(), false) !== 'night') return []
+    if (phaseNow() !== 'night') return []
     const pts = []
     for (const [k, st] of lights) {
       if (!(st.charge > 0) || !(st.step > 0)) continue
@@ -255,8 +273,8 @@ export function createBasics(api) {
     setBright(on) { bright = !!on; prefSave() },
     get always() { return always },
     get bright() { return bright },
-    lum() { return skyK(now(), always, bright) },
-    phase() { return phaseName(now(), always) },
+    lum() { return lumNow() },
+    phase() { return phaseNow() },
     clock(n) { ms += n; applyLights(n); lastT = now(); flush() },
     seek(n) { ms = n; anchor = api.now(); lastT = now() },
     actor(id) { actor = id || 'you' },

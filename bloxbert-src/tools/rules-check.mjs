@@ -1,6 +1,7 @@
 // World rules R1. Pure, no browser.
 import { Rules, ALIASES, GROUPS } from '../src/rules.js'
 import { paintRules, rulesWord } from '../src/rules-editor.js'
+import { createBasics } from '../src/basics.js'
 
 const fail = []
 function eq(ok, msg) { if (!ok) fail.push(msg) }
@@ -311,7 +312,8 @@ const byId = Object.fromEntries(Rules.rows().map((d) => [d.id, d]))
 eq(byId['core.break'].display === 'building' && byId['core.place'].display === 'building', 'building group')
 eq(byId['core.craft'].display === 'crafting' && byId['core.station.open'].display === 'crafting', 'crafting group')
 eq(byId['core.fly'].display === 'movement' && byId['core.fly'].soon === true, 'movement group')
-eq(Rules.rows().every((d) => d.group === 'core') && GROUPS.building.en === 'Building', 'ids stay core')
+eq(['core.break', 'core.place', 'core.craft', 'core.station.open', 'core.fly'].every((id) => byId[id].group === 'core') && GROUPS.building.en === 'Building', 'ids stay core')
+eq(GROUPS.survival && GROUPS.survival.en === 'Survival', 'survival group name')
 
 function allNodes(root) {
   const out = []
@@ -336,7 +338,7 @@ paintRules(editor, {
 })
 eq(rowIds(editor).slice().sort().join(',') === 'core.break,core.place', 'building rows ' + rowIds(editor).join(','))
 allNodes(editor).find((n) => n.dataset && n.dataset.group === 'crafting').click()
-eq(rowIds(editor).slice().sort().join(',') === 'core.craft,core.station.open', 'crafting rows ' + rowIds(editor).join(','))
+eq(rowIds(editor).slice().sort().join(',') === 'core.craft,core.station.open,station.bench,station.oven,station.woodshop', 'crafting rows ' + rowIds(editor).join(','))
 allNodes(editor).find((n) => n.dataset && n.dataset.group === 'movement').click()
 eq(rowIds(editor).join(',') === 'core.fly', 'movement row')
 const flyToggle = allNodes(editor).find((n) => hasClass(n, 're-toggle') && n.disabled && n.textContent === 'Coming soon')
@@ -406,6 +408,133 @@ who = { teacher: false, staff: false }
 const before = painted
 panels.open('rules')
 eq(painted === before, 'student rules sheet does not paint')
+
+Rules.load({})
+eq(Object.keys(Rules.dump()).length === 0 && Rules.value('survival.daynight') === 'cycle', 'old world is cycle')
+eq(['bench', 'oven', 'woodshop', 'vend'].every((k) => Rules.allow(null, 'core.station.open', { kind: k }).ok), 'old world stations open')
+eq(!Rules.rows().some((d) => d.id === 'station.sewing' || d.id === 'station.loom' || d.id === 'station.craft'), 'missing kinds skipped')
+for (const id of ['station.bench', 'station.oven', 'station.woodshop', 'survival.daynight', 'survival.energy']) {
+  const d = byId[id]
+  eq(!!d, 'registered ' + id)
+  for (const lang of langs) {
+    eq(!!d.label[lang] && scripts[lang].test(d.label[lang]), id + ' label ' + lang + ' ' + (d.label && d.label[lang]))
+    eq(!!d.desc[lang] && scripts[lang].test(d.desc[lang]), id + ' desc ' + lang)
+    if (id.startsWith('station.')) eq(!!Rules.why(id, lang) && scripts[lang].test(Rules.why(id, lang)), id + ' why ' + lang)
+  }
+  if (d.options) for (const o of d.options) for (const lang of langs) eq(!!o.label[lang] && scripts[lang].test(o.label[lang]), id + ' ' + o.id + ' ' + lang)
+}
+for (const lang of langs) eq(scripts[lang].test(GROUPS.survival[lang]), 'survival header ' + lang)
+
+Rules.set('station.oven', false)
+{
+  const oven = Rules.allow(null, 'core.station.open', { kind: 'oven' })
+  const ovenLine = Rules.why('core.station.open', 'en')
+  const bench = Rules.allow(null, 'core.station.open', { kind: 'bench' })
+  eq(oven.ok === false && oven.rule === 'station.oven', 'oven allow ' + JSON.stringify(oven))
+  eq(ovenLine === 'The teacher turned off the Oven.', 'oven toast line ' + ovenLine)
+  eq(bench.ok === true && bench.rule === 'core.station.open', 'bench still allowed')
+  eq(Rules.why('station.oven', 'uk') && scripts.uk.test(Rules.why('station.oven', 'uk')), 'oven why uk')
+}
+eq(JSON.stringify(Rules.dump()) === JSON.stringify({ 'station.oven': false }), 'only oven stored ' + JSON.stringify(Rules.dump()))
+Rules.set('core.station.open', false)
+eq(['oven', 'bench', 'woodshop', 'vend'].every((k) => {
+  const g = Rules.allow(null, 'core.station.open', { kind: k })
+  return g.ok === false && g.rule === 'core.station.open'
+}), 'parent off blocks every station')
+eq(Rules.why('core.station.open', 'en') === 'Stations are off in this world', 'parent toast')
+Rules.load({})
+Rules.set('station.woodshop', false)
+eq(Rules.allow(null, 'core.station.open', { kind: 'woodshop' }).rule === 'station.woodshop', 'woodshop only')
+eq(Rules.allow(null, 'core.station.open', { kind: 'oven' }).ok === true && Rules.allow(null, 'core.station.open', { kind: 'bench' }).ok === true, 'other stations stay')
+Rules.load({ 'survival.daynight': 'night', 'station.oven': false, 'survival.energy': 'fast', 'survival.daynight.nope': 'noon' })
+eq(Rules.value('survival.daynight') === 'night' && Rules.dump()['station.oven'] === false, 'load night and oven')
+eq(Rules.value('survival.energy') === 'fast' && Rules.dump()['survival.energy'] === 'fast', 'energy can be stored for the next step')
+Rules.load({ 'survival.daynight': 'noon' })
+eq(Rules.value('survival.daynight') === 'cycle' && Rules.dump()['survival.daynight'] == null, 'bad sky value drops')
+Rules.load({})
+
+const skyApi = { now: () => 5000, get: () => 0, set() {}, toast() {}, t: (k) => k, survival: () => false, teacher: () => false, gift() {}, card() {}, badge() {}, flagDay() {}, give() {}, changed() {} }
+const sky = createBasics(skyApi)
+sky.boot(false)
+eq(sky.always === true && sky.phase() === 'day' && sky.lum() === 1, 'cycle keeps always-day ' + sky.phase() + ' ' + sky.lum())
+Rules.set('survival.daynight', 'night')
+eq(sky.phase() === 'night' && Math.abs(sky.lum() - 0.4) < 0.001 && sky.always === true, 'night holds sky ' + sky.lum() + ' pref ' + sky.always)
+Rules.set('survival.daynight', 'day')
+eq(sky.phase() === 'day' && sky.lum() === 1 && sky.always === true, 'day forces day')
+sky.setAlways(false)
+Rules.set('survival.daynight', 'cycle')
+sky.seek(sky.nightAt())
+eq(sky.always === false && sky.phase() === 'night', 'cycle follows the clock ' + sky.phase())
+Rules.set('survival.daynight', 'day')
+eq(sky.phase() === 'day' && sky.lum() === 1 && sky.always === false, 'day wins over the clock')
+Rules.set('survival.daynight', 'cycle')
+eq(sky.phase() === 'night' && sky.always === false, 'cycle returns the kid pref')
+sky.setAlways(true)
+eq(sky.phase() === 'day' && sky.lum() === 1, 'kid always-day is back')
+const roundSky = JSON.parse(JSON.stringify(Rules.dump()))
+Rules.load({})
+Rules.load(roundSky)
+eq(Object.keys(roundSky).length === 0 && Rules.value('survival.daynight') === 'cycle', 'cycle is not stored')
+Rules.set('survival.daynight', 'night')
+const dumpedSky = JSON.parse(JSON.stringify(Rules.dump()))
+Rules.load({})
+Rules.load(dumpedSky)
+eq(Rules.value('survival.daynight') === 'night' && sky.phase() === 'night', 'night survives dump load')
+Rules.load({})
+
+const rtlAr = node('div')
+paintRules(rtlAr, { lang: 'ar' })
+eq(rtlAr.querySelector('.re-wrap').getAttribute('dir') === 'rtl', 'arabic rtl')
+const rtlFa = node('div')
+paintRules(rtlFa, { lang: 'fa-AF' })
+eq(rtlFa.querySelector('.re-wrap').getAttribute('dir') === 'rtl', 'dari rtl')
+const rtlEn = node('div')
+paintRules(rtlEn, { lang: 'en' })
+eq(rtlEn.querySelector('.re-wrap').getAttribute('dir') === 'ltr', 'english ltr')
+
+const surv = node('div')
+paintRules(surv, { lang: 'en', save() {} })
+allNodes(surv).find((n) => n.dataset && n.dataset.group === 'survival').click()
+eq(rowIds(surv).slice().sort().join(',') === 'survival.daynight,survival.energy', 'survival rows ' + rowIds(surv).join(','))
+const energy = allNodes(surv).find((n) => n.dataset && n.dataset.id === 'survival.energy')
+eq(!!energy && allNodes(energy).some((n) => n.textContent === 'Coming soon'), 'energy soon tag')
+const fast = allNodes(energy).find((n) => n.dataset && n.dataset.opt === 'fast')
+eq(!!fast && fast.disabled, 'energy choice disabled')
+if (fast) fast.click()
+eq(Rules.value('survival.energy') === 'normal' && Rules.dump()['survival.energy'] == null, 'energy changes nothing')
+const nightBtn = allNodes(surv).find((n) => n.dataset && n.dataset.opt === 'night')
+eq(!!nightBtn && !nightBtn.disabled, 'night choice')
+if (nightBtn) nightBtn.click()
+eq(Rules.dump()['survival.daynight'] === 'night' && sky.phase() === 'night', 'editor night')
+const dayBtn = allNodes(surv).find((n) => n.dataset && n.dataset.opt === 'cycle')
+if (dayBtn) dayBtn.click()
+eq(Rules.dump()['survival.daynight'] == null, 'editor cycle clears')
+
+Rules.load({})
+const ovenEd = node('div')
+const ovenSaves = []
+paintRules(ovenEd, { lang: 'en', markDirty() {}, save() { ovenSaves.push(JSON.parse(JSON.stringify(Rules.dump()))) } })
+allNodes(ovenEd).find((n) => n.dataset && n.dataset.group === 'crafting').click()
+const ovenRow = allNodes(ovenEd).find((n) => n.dataset && n.dataset.id === 'station.oven' && hasClass(n, 're-row'))
+ovenRow.querySelector('.re-toggle').click()
+const ovenGate = Rules.allow(null, 'core.station.open', { kind: 'oven' })
+const ovenWhy = Rules.why('core.station.open', 'en')
+eq(ovenGate.rule === 'station.oven', 'editor oven off')
+eq(ovenWhy === 'The teacher turned off the Oven.', 'editor oven why ' + ovenWhy)
+eq(Rules.allow(null, 'core.station.open', { kind: 'bench' }).ok === true, 'editor bench on')
+eq(JSON.stringify(ovenSaves[0]) === JSON.stringify({ 'station.oven': false }), 'editor stores only oven ' + JSON.stringify(ovenSaves[0]))
+ovenEd.querySelector('.re-reset').click()
+ovenEd.querySelector('.re-yes').click()
+eq(Rules.allow(null, 'core.station.open', { kind: 'oven' }).ok === true && Object.keys(Rules.dump()).length === 0, 'reset opens oven')
+
+const added = Rules.registerPack('demo', [{ id: 'lamp', type: 'bool', def: true, group: 'crafting', icon: '✦', label: { en: 'Lamp' }, desc: { en: 'A pack lamp.' } }])
+eq(added === 1 && Rules.rows().some((d) => d.id === 'demo.lamp' && d.pack === 'demo' && d.display === 'crafting'), 'registerPack tags the row')
+eq(Rules.registerPack('demo', [{ id: 'lamp', type: 'bool', def: true, display: 'crafting' }]) === 0, 'registerPack does not double')
+const packCraft = node('div')
+paintRules(packCraft, { lang: 'en' })
+allNodes(packCraft).find((n) => n.dataset && n.dataset.group === 'crafting').click()
+eq(rowIds(packCraft).includes('demo.lamp'), 'pack row under crafting ' + rowIds(packCraft).join(','))
+Rules.load({})
 
 if (fail.length) { console.error(fail.join('\n')); process.exit(1) }
 console.log('rules-check ok')

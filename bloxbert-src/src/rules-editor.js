@@ -31,6 +31,10 @@ const CSS = `#sheet[data-panel=rules] .ggrid{display:block;overflow:visible}
 #sheet[data-panel=rules] .re-reset,#sheet[data-panel=rules] .re-yes{color:#f59e0b;border-color:#f59e0b}
 #sheet[data-panel=rules] .re-groups .gtile{min-height:var(--ks-touch);align-items:flex-start;text-align:start}
 #sheet[data-panel=rules] .re-find{display:flex;flex-direction:column;gap:4px;font-size:var(--ks-fs-s)}
+#sheet[data-panel=rules] .re-rows{min-width:0;overflow:visible}
+#sheet[data-panel=rules] .re-seg{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end;max-width:100%}
+#sheet[data-panel=rules] .re-opt{flex:none;min-width:var(--ks-touch);min-height:var(--ks-touch);padding:0 6px}
+#sheet[data-panel=rules] .re-soon-tag{display:block;font-size:var(--ks-fs-s);font-weight:500}
 `
 
 function pick(pack, lang) {
@@ -71,7 +75,7 @@ export function paintRules(root, api) {
   const lang = api.lang || 'en'
   const say = (key) => pick(UI[key], lang)
   const state = { q: '', changed: false, group: 'building', note: false, confirm: false }
-  const core = () => Rules.rows().filter((d) => d.group === 'core')
+  const regs = () => Rules.rows()
 
   function commit() {
     state.note = true
@@ -89,8 +93,8 @@ export function paintRules(root, api) {
     return (String(label || '') + ' ' + String(desc || '')).toLowerCase().includes(q)
   }
 
-  function visibleCore() {
-    return core().filter((d) => {
+  function visibleRows() {
+    return regs().filter((d) => {
       if (state.changed && Rules.value(d.id) === d.def) return false
       if (state.q) return matches(pick(d.label, lang), pick(d.desc, lang))
       if (state.changed) return true
@@ -110,6 +114,7 @@ export function paintRules(root, api) {
     root.innerHTML = ''
     const wrap = document.createElement('div')
     wrap.className = 're-wrap wide'
+    wrap.setAttribute('dir', lang === 'ar' || lang === 'fa-AF' ? 'rtl' : 'ltr')
 
     const find = document.createElement('div')
     find.className = 're-find'
@@ -158,10 +163,10 @@ export function paintRules(root, api) {
     const list = document.createElement('div')
     list.className = 're-rows'
 
-    const order = ['building', 'crafting', 'movement']
+    const order = Object.keys(GROUPS)
     if (Rules.unknown().length) order.push('pack')
     for (const id of order) {
-      const members = id === 'pack' ? [] : core().filter((d) => d.display === id)
+      const members = id === 'pack' ? [] : regs().filter((d) => d.display === id)
       const n = id === 'pack' ? Rules.unknown().length : members.filter((d) => Rules.value(d.id) !== d.def).length
       const name = id === 'pack' ? say('packOff') : pick(GROUPS[id], lang)
       const b = btn('gtile re-group' + (state.group === id ? ' on' : ''), '', () => {
@@ -181,7 +186,7 @@ export function paintRules(root, api) {
       groups.append(b)
     }
 
-    for (const d of visibleCore()) {
+    for (const d of visibleRows()) {
       const row = document.createElement('div')
       row.className = 're-row' + (d.soon ? ' re-soon' : '')
       row.dataset.id = d.id
@@ -197,6 +202,40 @@ export function paintRules(root, api) {
       desc.className = 're-desc'
       desc.textContent = pick(d.desc, lang)
       copy.append(name, desc)
+      if (d.type === 'pick') {
+        const seg = document.createElement('span')
+        seg.className = 're-seg'
+        const cur = Rules.value(d.id)
+        const opts = Array.isArray(d.options) ? d.options : []
+        for (const o of opts) {
+          const oid = typeof o === 'string' ? o : o.id
+          const choice = document.createElement('button')
+          choice.type = 'button'
+          choice.className = 'keycap re-opt' + (cur === oid ? ' on' : '')
+          choice.textContent = typeof o === 'string' ? oid : pick(o.label, lang)
+          choice.dataset.opt = oid
+          choice.disabled = !!d.soon
+          choice.setAttribute('aria-pressed', cur === oid ? 'true' : 'false')
+          choice.setAttribute('aria-label', pick(d.label, lang) + ' ' + choice.textContent)
+          choice.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            if (choice.disabled || d.soon) return
+            Rules.set(d.id, oid)
+            commit()
+          })
+          seg.append(choice)
+        }
+        if (d.soon) {
+          const tag = document.createElement('span')
+          tag.className = 're-soon-tag'
+          tag.textContent = say('soon')
+          copy.append(tag)
+        }
+        row.append(ico, copy, seg)
+        list.append(row)
+        continue
+      }
       const toggle = document.createElement('button')
       toggle.type = 'button'
       toggle.className = 'keycap re-toggle'

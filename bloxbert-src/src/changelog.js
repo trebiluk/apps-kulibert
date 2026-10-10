@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.142', date: '2026-10-10', lines: {
+    en: ['Teachers can turn a station off, and set the sky to day, night, or the normal cycle.'],
+    uk: ['Учитель може вимкнути станок і поставити небо на день, ніч або звичайний цикл.'],
+    ru: ['Учитель может выключить станок и поставить небо на день, ночь или обычный цикл.'],
+    es: ['El maestro puede apagar una estación y poner el cielo en día, noche o el ciclo normal.'],
+    ar: ['يمكن للمعلم إيقاف محطة، وضبط السماء على نهار أو ليل أو الدورة العادية.'],
+    'fa-AF': ['معلم می‌تواند یک ایستگاه را خاموش کند و آسمان را روز، شب، یا چرخه عادی بگذارد.'],
+    rw: ['Umwarimu ashobora gufunga sitasiyo no gushyira ijuru ku munsi, ijoro, cyangwa uruzinduko rusanzwe.'],
+    ti: ['መምህር ጣብያ ክዓጽውን ሰማይ ናብ መዓልቲ፡ ለይቲ፡ ወይ ልሙድ ዑደት ክቐይርን ይኽእል።'],
+  }},
   { v: '2.5.141', date: '2026-10-10', lines: {
     en: ['Right-click switches a lamp. Picking one up stays saved.'],
     uk: ['Правий клік перемикає лампу. Піднята лампа лишається збереженою.'],
