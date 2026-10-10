@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.123'
+const VERSION = '2.5.124'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -48,6 +48,7 @@ import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
+import { createQuality } from './gfx/quality.js'
 const farm = createFarm()
 const forage = createForage()
 
@@ -61,22 +62,11 @@ const qs = new URLSearchParams(location.search)
 const TOUCH_UI = coarse || qs.has('touch')
 const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches
 
-const QKEY = 'bloxbert-quality'
-const QP = {
-  auto: { aa: false, add: [1.5, 1], rem: [2.5, 2] },
-  lite: { aa: false, scale: 1.75, add: [1.5, 1], rem: [2.5, 2] },
-  full: { aa: true, scale: 1, add: [2, 1.5], rem: [3, 2.5] },
-}
-let stored = null
-try { stored = localStorage.getItem(QKEY) } catch (e) {}
-let quality = QP[qs.get('q')] ? qs.get('q') : QP[stored] ? stored : 'auto'
-const AA = QP[quality].aa
-const PINNED = qs.has('scale')
-let AUTO = quality === 'auto' && !PINNED && qs.get('auto') !== '0'
-const BIG = innerWidth * innerHeight > 1366 * 768 * 1.15
-const startLevel = (q) => QP[q].scale || (BIG ? 1.5 : 1)
-let level = PINNED ? 1 / Math.max(0.5, Math.min(1, +qs.get('scale') || 1)) : startLevel(quality)
-const MAX_LEVEL = 2
+const gfx = createQuality()
+let quality = gfx.quality
+const AA = gfx.aa
+let AUTO = gfx.auto
+let level = gfx.level
 
 let LANG = qs.get('lang') || ''
 if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
@@ -210,8 +200,8 @@ const noa = new Engine({
   antiAlias: AA, preserveDrawingBuffer: false,
   playerShadowComponent: false,
   chunkSize: 24,
-  chunkAddDistance: QP[quality].add,
-  chunkRemoveDistance: QP[quality].rem,
+  chunkAddDistance: gfx.add,
+  chunkRemoveDistance: gfx.rem,
   clearColor: [0.64, 0.8, 0.93],
   ambientColor: [0.78, 0.82, 0.88],
   lightDiffuse: [1.15, 1.08, 0.98],
@@ -4522,8 +4512,7 @@ if (stickRow) stickRow.addEventListener('click', () => {
 const scene = noa.rendering.getScene()
 scene.fogMode = Scene.FOGMODE_LINEAR
 scene.fogColor = new Color3(0.64, 0.8, 0.93)
-scene.fogStart = 40
-scene.fogEnd = 78
+gfx.applyFog(scene)
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
 Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uLum;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);float lum=clamp(uLum,0.4,1.0);vec3 zenith=mix(vec3(0.03,0.05,0.12),vec3(0.13,0.34,0.72),lum);vec3 horizon=mix(vec3(0.16,0.18,0.30),vec3(0.64,0.80,0.93),lum);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir))*lum;float glow=smoothstep(0.82,1.0,dot(n,sunDir))*lum;col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);vec3 moonDir=normalize(vec3(0.25,0.72,0.45));float moon=smoothstep(0.986,0.998,dot(n,moonDir))*(1.0-lum);col=mix(col,vec3(0.86,0.9,0.98),moon);float star=step(0.992,fract(sin(dot(floor(n.xy*90.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(star)*(1.0-lum)*smoothstep(0.15,0.55,n.y);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y)*lum;col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
 const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uLum'] })
@@ -4972,18 +4961,23 @@ noa.on('beforeRender', (dt) => {
 
 const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () => level, get auto() { return AUTO }, quality: () => quality, aa: AA }
 { const sh = noa.container._shell, r = sh.onRender; sh.onRender = function (dt, a1, a2) { const a = performance.now(); r(dt, a1, a2); perf.jsMs.push(performance.now() - a); if (perf.jsMs.length > 2000) perf.jsMs.splice(0, 1000) } }
-let last = performance.now(), n = 0, acc = 0, lowSecs = 0
+let last = performance.now(), n = 0, acc = 0
 function frame(tnow) {
   if (!perf.first) perf.first = performance.now()
   n++; acc += tnow - last; perf.deltas.push(tnow - last); if (perf.deltas.length > 4000) perf.deltas.splice(0, 2000); last = tnow
   if (acc >= 1000) {
     const fps = (n * 1000) / acc; perf.frames.push(fps); n = 0; acc = 0
-    if (AUTO && performance.now() - perf.first > 4000) {
-      if (fps < 30) { if (++lowSecs >= 3 && level < MAX_LEVEL) { level = Math.min(MAX_LEVEL, level + 0.25); engine.setHardwareScalingLevel(level); lowSecs = 0; perf.steps.push({ at: Math.round(performance.now()), level }); if (!location.search.includes('smoke=1')) toast(t('lowerDetail')) } }
-      else lowSecs = 0
+    const moved = gfx.tick(fps)
+    if (moved) {
+      level = gfx.level
+      engine.setHardwareScalingLevel(level)
+      noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
+      gfx.applyFog()
+      perf.steps.push({ at: Math.round(performance.now()), level, add: gfx.add[0] })
+      if (moved.toast) toast(t('lowerDetail'))
     }
     perf.lastFps = fps
-    if (showSpeed) $('perf').textContent = fps.toFixed(0) + ' fps · ' + QNAME[quality] + ' · ' + Math.round(100 / level) + '% res · ' + noa.world._chunksKnown.count() + ' chunks'
+    if (showSpeed) $('perf').textContent = fps.toFixed(0) + ' fps · ' + gfx.label() + ' · ' + Math.round(100 / level) + '% res · ' + noa.world._chunksKnown.count() + ' chunks'
     paintQualityNote()
   }
   requestAnimationFrame(frame)
@@ -5003,21 +4997,22 @@ function paintQualityNote() {
   el.textContent = QNAME[quality] + ' · ' + Math.round(100 / level) + '%' + (AUTO ? '' : '') + (AA ? '' : '')
 }
 async function setQuality(q) {
-  if (!QP[q]) return
-  try { localStorage.setItem(QKEY, q) } catch (e) {}
-  if (QP[q].aa !== AA) {
+  const next = gfx.set(q)
+  if (!next) return
+  if (next.reload) {
     toast(t('save') + '…')
     try { await save() } catch (e) {}
     const u = new URL(location.href); u.searchParams.delete('q'); u.searchParams.delete('scale')
     location.replace(u.href)
     return
   }
-  quality = q
-  AUTO = q === 'auto' && !PINNED
-  level = PINNED ? level : startLevel(q)
-  engine.setHardwareScalingLevel(level); lowSecs = 0
-  noa.world.setAddRemoveDistance(QP[q].add, QP[q].rem)
-  paintQuality(); toast(QNAME[q])
+  quality = gfx.quality
+  AUTO = gfx.auto
+  level = gfx.level
+  engine.setHardwareScalingLevel(level)
+  noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
+  gfx.applyFog()
+  paintQuality(); toast(gfx.label())
 }
 for (const b of document.querySelectorAll('[data-q]')) b.addEventListener('click', () => setQuality(b.dataset.q))
 paintQuality()

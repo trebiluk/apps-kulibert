@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.124', date: '2026-10-10', lines: {
+    en: ['Auto detail steps down gently and comes back, and the fog stops at the edge of the loaded world.'],
+    uk: ['Автодеталь м’яко знижується і повертається, а туман спиняється на краю завантаженого світу.'],
+    ru: ['Автодеталь мягко снижается и возвращается, а туман останавливается на краю загруженного мира.'],
+    es: ['El detalle automático baja con calma y vuelve, y la niebla se queda en el borde del mundo cargado.'],
+    ar: ['التفاصيل التلقائية تنخفض بهدوء وتعود، والضباب يقف عند حافة العالم المحمّل.'],
+    'fa-AF': ['جزئیات خودکار آرام پایین می‌آید و برمی‌گردد، و مه در لبه دنیای بارشده می‌ایستد.'],
+    rw: ['Ibisobanuro byikora ubwabyo biramanuka buhoro kandi bigaruka, n\'igicu kirahagarara ku mupaka w\'isi yakuwe.'],
+    ti: ['ዝርዝር ባዕሉ ቀስ ኢሉ ይወርድን ይምለስን፡ ጉመ ድማ ኣብ ወሰን ናይ ዝተጻዕነ ዓለም ይቕመጥ።'],
+  }},
   { v: '2.5.123', date: '2026-10-10', lines: {
     en: ['The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back.'],
     uk: ['Ферма — це пак. Пшениця, очерет, кущі й насіння виходять з ядра, а зниклий пак Ферми показується знаком питання, поки не повернеться.'],
