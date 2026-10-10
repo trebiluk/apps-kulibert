@@ -75,6 +75,12 @@ export const FROZEN = {
   sapling: 185,
   missing: 1000,
   woodshopBench: 1300,
+  floorLampOff: 1100,
+  floorLampOn: 1101,
+  wallLampOff: 1102,
+  wallLampOn: 1103,
+  rugAnchor: 1104,
+  rugPart: 1105,
 }
 
 export const REGISTRY = [

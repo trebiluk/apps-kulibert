@@ -376,6 +376,17 @@ export function createStations(api) {
       const row = document.createElement('div')
       row.className = 'bed-paths'
       if (rule.path !== 'design') {
+
+        const decor = document.createElement('div')
+        decor.className = 'bed-paths'
+        const just = capBtn('decor-just', api.t('decorJust'), () => {
+          if (api.craftOk && api.craftOk('floorLamp')) api.craft && api.craft('floorLamp')
+        })
+        const design = capBtn('decor-design', api.t('decorDesign'), () => {
+          if (api.craftOk && api.craftOk('floorLamp')) api.craft && api.craft('floorLamp')
+        })
+        decor.append(just, design)
+        box.append(decor)
         const b = capBtn('bed-just', api.t('justBuild'), () => {
           if (api.craftOk && !api.craftOk('bunk')) return
           if (!toolsReady(key) || !matsOk()) return

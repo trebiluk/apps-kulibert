@@ -45,6 +45,7 @@ import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
+import './packs/decor/pack.js'
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
@@ -357,6 +358,11 @@ if (packOn('farm')) {
   insertAfter(BLOCKS, 'charger', take('farmland', 'tuft', 'cropSprout', 'cropLeafy', 'cropTall', 'cropRipe', 'farmlandWet'))
   insertAfter(BLOCKS, 'water', take('bushYoung', 'bushLeaf', 'bushFull', 'bushFruit'))
   insertAfter(BLOCKS, 'clay', take('sapling'))
+}
+if (packOn('decor')) {
+  const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
+  const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
+  insertAfter(BLOCKS, 'clay', take('floorLampOff', 'floorLampOn', 'wallLampOff', 'wallLampOn', 'rugAnchor', 'rugPart'))
 }
 noa.registry.registerMaterial('coreplate', tile('coreplate'))
 noa.registry.registerMaterial('workbench', tile('workbench'))
@@ -706,6 +712,23 @@ function lanternMesh() {
   const cap = part('c', 0.18, 0.08, 0.18, 0, 0.76, 0, 0, woodD)
   return shape('lantern', [body, cap], lampD)
 }
+function floorLampMesh(on) {
+  const base = part('base', 0.22, 0.06, 0.22, 0, 0.03, 0, 0, woodD)
+  const stem = part('stem', 0.06, 0.72, 0.06, 0, 0.42, 0, 0, woodD)
+  const shade = part('shade', 0.28, 0.18, 0.28, 0, 0.84, 0, 0, on ? lampD : dye('shade-off', 0.85, 0.82, 0.72))
+  if (on) shade.material.emissiveColor = new Color3(1, 0.9, 0.5)
+  return shape('floorLamp' + (on ? 'On' : 'Off'), [base, stem, shade], on ? lampD : woodD)
+}
+function wallLampMesh(on) {
+  const arm = part('arm', 0.08, 0.08, 0.22, 0, 0.5, 0.12, 0, woodD)
+  const shade = part('shade', 0.18, 0.14, 0.18, 0, 0.58, 0.28, 0, on ? lampD : dye('wshade-off', 0.85, 0.82, 0.72))
+  if (on) shade.material.emissiveColor = new Color3(1, 0.9, 0.5)
+  return shape('wallLamp' + (on ? 'On' : 'Off'), [arm, shade], on ? lampD : woodD)
+}
+function rugMesh() {
+  const rug = part('rug', 0.92, 0.04, 0.92, 0, 0.02, 0, 0, dye('rug', 0.72, 0.58, 0.42))
+  return shape('rug', [rug], dye('rug', 0.72, 0.58, 0.42))
+}
 const SHAPES = {
   28: wheatMesh(),
   49: farmlandMesh(false),
@@ -741,6 +764,12 @@ const SHAPES = {
   40: buttonMesh(false),
   41: buttonMesh(true),
   47: lanternMesh(),
+  1100: floorLampMesh(false),
+  1101: floorLampMesh(true),
+  1102: wallLampMesh(false),
+  1103: wallLampMesh(true),
+  1104: rugMesh(),
+  1105: rugMesh(),
 }
 const clayMat = dye('clay-soil', 0.64, 0.5, 0.38)
 noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
@@ -748,11 +777,12 @@ for (const [id, name, material] of BLOCKS) {
   const open = typeof name === 'string' && name.endsWith('Open')
   const glass = material === 'glass'
   const mesh = SHAPES[id]
-  const lantern = id === LANTERN
+  const lantern = id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103
+  const rug = id === 1104 || id === 1105
   const plant = id === 28 || id === 58 || isCropId(id) || isBushId(id)
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
-  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid) }
+  const opts = { material: mesh ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
   if (mesh) opts.blockMesh = mesh
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
@@ -1254,6 +1284,56 @@ function reachOpen(pos, repeat) {
 }
 function isShopBlock(id) { return id === ID.woodshop || id === ID.woodshopSide }
 function shopDelta(face) { return face === 'E' || face === 'W' ? [0, 0, 1] : [1, 0, 0] }
+
+function isWallLamp(id) { return id === 1102 || id === 1103 }
+function isFloorLamp(id) { return id === 1100 || id === 1101 }
+function isRug(id) { return id === 1104 || id === 1105 }
+function rugSpan(x, y, z) {
+  return [
+    [x, y, z], [x + 1, y, z], [x, y, z + 1], [x + 1, y, z + 1]
+  ]
+}
+function placeWallLamp(face) {
+  if (!face || !face.position) return false
+  const normal = face.normal || [0, 0, 1]
+  if (Math.abs(normal[1]) > 0.5) {
+    toast(t('placeOnWall'))
+    showShopAmber(face.position[0], face.position[1], face.position[2], face.position[0], face.position[1], face.position[2])
+    return false
+  }
+  const x = Math.floor(face.position[0])
+  const y = Math.floor(face.position[1])
+  const z = Math.floor(face.position[2])
+  if (getVoxel(x, y, z)) { toast(t('noRoom')); return false }
+  if (session && !session.onPlace(x, y, z, 1102)) return false
+  if (!edit(x, y, z, 1102)) return false
+  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', design: session.heldDesign && session.heldDesign() || null })
+  return true
+}
+function placeRug(x, y, z) {
+  const cells = rugSpan(x, y, z)
+  for (const [cx, cy, cz] of cells) {
+    if (getVoxel(cx, cy, cz)) {
+      showShopAmber(x, y, z, cx, cy, cz)
+      tellNoRoom(cx + ',' + cy + ',' + cz)
+      return false
+    }
+  }
+  if (session && !session.onPlace(x, y, z, 1104)) return false
+  for (const [cx, cy, cz] of cells) {
+    if (!edit(cx, cy, cz, cx === x && cz === z ? 1104 : 1105)) {
+      for (const [rx, ry, rz] of cells) edit(rx, ry, rz, 0)
+      return false
+    }
+  }
+  const anchor = x + ',' + y + ',' + z
+  if (session && session.meta) {
+    for (const [cx, cy, cz] of cells) {
+      session.meta.set(cx + ',' + cy + ',' + cz, { kind: 'rug', anchor, design: session.heldDesign && session.heldDesign() || null })
+    }
+  }
+  return true
+}
 function shopSpan(x, y, z, face) {
   const f = face || faceTowardPlayer(x, z)
   const d = shopDelta(f)
@@ -1508,6 +1588,12 @@ function useAt(hit) {
     if (id === LANTERN) showLamp(ax, ay, az)
     return true
   }
+  if (id === 1100 || id === 1101 || id === 1102 || id === 1103) {
+    const next = id === 1100 ? 1101 : id === 1101 ? 1100 : id === 1102 ? 1103 : 1102
+    edit(ax, ay, az, next)
+    if (basics) basics.saw(ax, ay, az, next)
+    return true
+  }
   if (id === LANTERN) return true
   const kind = machineKind(id)
   if (location.search.includes('smoke=1') && kind) console.info('use face ' + ax + ',' + ay + ',' + az + ' id ' + id)
@@ -1588,6 +1674,8 @@ function placeBlock(face, opts) {
     toast(held ? t('notABlock') : t('emptySlot'))
     return false
   }
+  if (id === 1102) return placeWallLamp(face)
+  if (id === 1104) return placeRug(x, y, z)
   if (id === ID.woodshop) return placeShop(x, y, z)
   if (!placeableCell(getVoxel(x, y, z))) return false
   if (session && !session.onPlace(x, y, z, id)) return false
@@ -4891,6 +4979,24 @@ function syncGlow() {
   const dark = k < 0.92
   const ppos = noa.entities.getPosition(noa.playerEntity)
   const list = basics.lights().filter((l) => l.radius > 1 && l.step > 0)
+  // pack light provider: on lamps
+  if (typeof noa !== 'undefined' && noa.world) {
+    const seen = new Set()
+    for (const l of list) seen.add(l.x + ',' + l.y + ',' + l.z)
+    // scan nearby for on lamps (simple bounded scan for Chromebook)
+    const ppos = noa.entities.getPosition(noa.playerEntity)
+    const r = 16
+    for (let dx = -r; dx <= r; dx += 2) for (let dz = -r; dz <= r; dz += 2) {
+      const x = Math.floor(ppos[0] + dx), z = Math.floor(ppos[2] + dz)
+      for (let y = Math.floor(ppos[1]) - 2; y <= Math.floor(ppos[1]) + 4; y++) {
+        const id = getVoxel(x, y, z)
+        if (id === 1101 || id === 1103) {
+          const k = x + ',' + y + ',' + z
+          if (!seen.has(k)) { list.push({ x, y, z, radius: 6, step: 1 }); seen.add(k) }
+        }
+      }
+    }
+  }
   list.sort((a, b) => {
     const da = (a.x + 0.5 - ppos[0]) ** 2 + (a.z + 0.5 - ppos[2]) ** 2
     const db = (b.x + 0.5 - ppos[0]) ** 2 + (b.z + 0.5 - ppos[2]) ** 2
