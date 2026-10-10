@@ -1,0 +1,56 @@
+{
+  "blocks": {
+    "stone": 64,
+    "dirt": 64,
+    "grass": 59,
+    "planks": 23,
+    "door": 1,
+    "box": 1,
+    "oven": 1,
+    "bunk": 1,
+    "farmland": 5,
+    "cropSprout": 1,
+    "cropTall": 1,
+    "bushFruit": 1,
+    "cropLeafy": 1,
+    "cropRipe": 1
+  },
+  "bag": {
+    "log": 8,
+    "planks": 16,
+    "wheatSeeds": 4,
+    "bread": 2
+  },
+  "home": [
+    3,
+    3,
+    3
+  ],
+  "box": {
+    "at": "2,3,3",
+    "items": {
+      "log": 3,
+      "coal": 2,
+      "bread": 1
+    }
+  },
+  "crops": {
+    "count": 4,
+    "stages": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "bush": {
+    "n": 1,
+    "stages": [
+      3
+    ]
+  },
+  "oven": {
+    "at": "3,3,2",
+    "item": "bread"
+  }
+}

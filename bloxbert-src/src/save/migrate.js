@@ -1,7 +1,7 @@
 // Save schema. A doc with no schema counts as 2. Newer than SCHEMA is read-only.
 import { FROZEN } from '../data/ids.js'
 
-export const SCHEMA = 3
+export const SCHEMA = 4
 const MISSING = FROZEN.missing
 const RUNTIME_LO = 1001
 const RUNTIME_HI = 1099
@@ -38,7 +38,18 @@ export function claimUnknown(name) {
 export const MIGRATIONS = [
   { from: 2, to: 3, run(doc) {
     const packs = doc && doc.packs && typeof doc.packs === 'object' ? { ...doc.packs } : {}
-    return { ...doc, schema: SCHEMA, packs }
+    return { ...doc, schema: 3, packs }
+  } },
+  { from: 3, to: 4, run(doc) {
+    const spawn = Array.isArray(doc.spawn) ? doc.spawn.slice() : null
+    const pos = Array.isArray(doc.pos) ? doc.pos.slice() : spawn
+    return {
+      ...doc,
+      schema: 4,
+      pos,
+      spawnSet: false,
+      protect: { size: 'medium', center: null },
+    }
   } },
 ]
 

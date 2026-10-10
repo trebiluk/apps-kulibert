@@ -194,8 +194,10 @@ async function checkFile(name, rows) {
   let work = doc
   if (typeof migrateMod.migrate === 'function') {
     const next = migrateMod.migrate(JSON.parse(JSON.stringify(doc)))
-    if (next && typeof next === 'object') work = next
+    if (next && next.doc && typeof next.doc === 'object') work = next.doc
+    else if (next && typeof next === 'object' && next.chunks) work = next
   }
+  if (typeof migrateMod.resetUnknown === 'function') migrateMod.resetUnknown()
   const nameToId = nameToIdOf(rows)
   const parts = []
   const gifts = []
@@ -210,6 +212,14 @@ async function checkFile(name, rows) {
   const playerDoc = fromDoc(work)
   const got = observed(work, data, rows, playerDoc)
   const rebuilt = paletteOf(rows)
+  if (typeof migrateMod.unknownEntries === 'function') {
+    for (const [id, name] of migrateMod.unknownEntries()) {
+      if (!name) continue
+      while (rebuilt.length <= id) rebuilt.push(null)
+      rebuilt[id] = name
+    }
+  }
+  if (typeof migrateMod.resetUnknown === 'function') migrateMod.resetUnknown()
   const again = ungzipU16(gzipU16(data))
   const second = migrateVoxels(rebuilt, again, nameToId)
   const roundOk = sameU16(data, second.data)
@@ -222,12 +232,16 @@ async function checkFile(name, rows) {
   if (wantUnknown) {
     const giftN = gifts.filter((n) => n === 'futureThing').length
     if (!hasPh) {
-      soft.push('futureThing')
-      if (giftN !== wantUnknown && survived !== wantUnknown) {
+      const kept = survived === wantUnknown && roundOk
+      if (!kept && giftN !== wantUnknown) {
         return { status: 'FAIL', diff: ['futureThing gift ' + wantUnknown + '→' + giftN + ' survived ' + survived] }
       }
+      if (!kept) soft.push('futureThing')
       delete hardExpect.blocks.futureThing
-      if (hardGot.blocks) delete hardGot.blocks.futureThing
+      if (hardGot.blocks) {
+        delete hardGot.blocks.futureThing
+        for (const k of Object.keys(hardGot.blocks)) if (k[0] === '#') delete hardGot.blocks[k]
+      }
     } else if (survived !== wantUnknown || !roundOk) {
       return { status: 'FAIL', diff: ['futureThing round trip ' + wantUnknown + '→' + survived] }
     }

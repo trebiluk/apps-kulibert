@@ -1612,11 +1612,14 @@ export function createSession(api) {
       g.innerHTML = ''
       paintTeacher(g)
     }))
-    if (on) g.append(btn(api.townYes && api.townYes() ? t('townYes') : t('townNo'), () => {
-      if (api.setTown) api.setTown(!(api.townYes && api.townYes()))
-      g.innerHTML = ''
-      paintTeacher(g)
-    }))
+    if (on) {
+      g.append(btn(api.townYes && api.townYes() ? t('townYes') : t('townNo'), () => {
+        if (api.setTown) api.setTown(!(api.townYes && api.townYes()))
+        g.innerHTML = ''
+        paintTeacher(g)
+      }))
+      if (api.paintSpawn) api.paintSpawn(g)
+    }
     g.append(btn(t('priceDial'), () => { wallet.state.dial = wallet.state.dial === 1 ? 1.5 : 1; api.toast(t('pricesChanged')) }))
     g.append(btn(t('townsfolk'), () => { ECON.townsfolk.on = !ECON.townsfolk.on }))
     g.append(btn(t('resetWallet'), () => { if (confirm(t('resetWallet'))) { wallet.state.cogs = wallet.state.start; wallet.state.ledger = []; wallet.post({ kind: 'teacher', cogs: 0, by: 'teacher' }); paintChip() } }))
@@ -1869,7 +1872,7 @@ export function createSession(api) {
       return true
     }
     if (id === 21) { api.toast(t('coreplateToast')); return false }
-    if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
+    if (api.townKept && api.townKept(x, y, z)) return false
     if (id === 24 || id === 26) return false
     if (id === 27) spillBox(x, y, z)
     const wildBush = id >= 65 && id <= 68 && api.wildBush && api.wildBush(x, y, z)
@@ -1974,7 +1977,7 @@ export function createSession(api) {
       const below = api.getVoxel ? api.getVoxel(x, y - 1, z) : 0
       if (below !== 1 && below !== 2) { api.toast(t('saplingSoil')); return false }
     }
-    if (api.townKept && api.townKept(x, y, z)) { api.toast(t('shopProtected')); return false }
+    if (api.townKept && api.townKept(x, y, z)) return false
     const item = selectedItem()
     const need = Object.entries(ITEMS).find(([, v]) => v.block === id)
     const key = need ? need[0] : item

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.119', date: '2026-10-10', lines: {
+    en: ['A teacher can set the spawn, and choose how wide the protected ground is.'],
+    uk: ['Вчитель ставить спавн і обирає, наскільки широка захищена земля.'],
+    ru: ['Учитель ставит спавн и выбирает, насколько широкая защищённая земля.'],
+    es: ['Un maestro pone el inicio y elige qué tan ancho es el suelo protegido.'],
+    ar: ['المعلم يضع نقطة البداية ويختار عرض الأرض المحمية.'],
+    'fa-AF': ['معلم جای شروع را می‌گذارد و پهنای زمین محافظت‌شده را انتخاب می‌کند.'],
+    rw: ['Umwarimu ashyira aho utangirira kandi ahitamo ubugari bw\'ubutaka burinzwe.'],
+    ti: ['መምህር መበገሲ የቐምጥ፡ ስፍሓት ናይ ዝተሓለወ መሬት ድማ ይመርጽ።'],
+  }},
   { v: '2.5.118', date: '2026-10-10', lines: {
     en: ['A Woodshop Bench holds your Glasses, Tape, Saw and Hammer, and the shop rules show the first time.'],
     uk: ['Верстат тримає окуляри, рулетку, пилку й молоток, а правила майстерні з’являються вперше.'],

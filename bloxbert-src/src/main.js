@@ -1,7 +1,7 @@
 // Bloxbert 2.0.0 — student door at /blocks/. Pins: noa-engine develop @8a74866, @babylonjs/core 6.49.0.
 // Proven in test 1.2 and kept: Auto / Lite / Full, phone wrap, 58°-class touch turn, rotate re-fit, RTL drawer from the left.
 // __BLOX_STUDENT__ is replaced by the build. The student door does not ship window.__blocks.
-const VERSION = '2.5.118'
+const VERSION = '2.5.119'
 import { Engine } from 'noa-engine'
 import { CreateLines } from '@babylonjs/core/Meshes/Builders/linesBuilder'
 import { CreateBox } from '@babylonjs/core/Meshes/Builders/boxBuilder'
@@ -33,7 +33,7 @@ import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
-import { FLOOR, STATIONS, keptCell } from './town.js'
+import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, spawnGround } from './worldgen.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
@@ -118,6 +118,91 @@ document.addEventListener('keydown', (e) => {
 }, true)
 
 const SPAWN = [8.5, 8, 1.5]
+let worldSpawn = SPAWN.slice()
+let spawnSet = false
+let protect = { size: 'medium', center: null }
+let ringUntil = 0
+let protectTold = 0
+function finiteTriple(a) {
+  if (!Array.isArray(a) || a.length < 3 || !Number.isFinite(a[0]) || !Number.isFinite(a[1]) || !Number.isFinite(a[2])) return null
+  return [a[0], a[1], a[2]]
+}
+function normProtect(p) {
+  const size = p && (p.size === 'off' || p.size === 'small' || p.size === 'medium' || p.size === 'large') ? p.size : 'medium'
+  return { size, center: finiteTriple(p && p.center) }
+}
+function roundPos(p) {
+  return [Math.round(p[0]), Math.round(p[1]), Math.round(p[2])]
+}
+function noteProtected() {
+  const now = performance.now()
+  if (now - protectTold < 3000) return
+  protectTold = now
+  toast(t('protectedArea'))
+  ringUntil = now + 2000
+}
+function zoneLocked(x, y, z) {
+  if (teacherOn() || townHelper()) return false
+  if (!protectedCell(x, y, z, protect)) return false
+  noteProtected()
+  return true
+}
+function setSpawnHere() {
+  worldSpawn = roundPos(noa.entities.getPosition(noa.playerEntity))
+  spawnSet = true
+  dirty = true
+  markSave(t('notSaved'))
+}
+function setProtectSize(size) {
+  const keep = protect && protect.center ? protect.center.slice() : null
+  protect = { size, center: size === 'off' ? keep : roundPos(noa.entities.getPosition(noa.playerEntity)) }
+  dirty = true
+  markSave(t('notSaved'))
+}
+function paintSpawn(g) {
+  const setBtn = document.createElement('button')
+  setBtn.type = 'button'
+  setBtn.className = 'gtile'
+  setBtn.dataset.spawn = 'set'
+  setBtn.style.minHeight = '44px'
+  setBtn.style.minWidth = '44px'
+  setBtn.innerHTML = '<span class="gic">⚑</span><span class="glbl"></span>'
+  setBtn.querySelector('.glbl').textContent = t('setSpawnHere')
+  setBtn.addEventListener('pointerdown', (e) => e.stopPropagation())
+  setBtn.addEventListener('click', (e) => { e.stopPropagation(); setSpawnHere(); toast(t('setSpawnHere')) })
+  g.append(setBtn)
+  const note = document.createElement('p')
+  note.className = 'gnote'
+  note.textContent = t('protect')
+  g.append(note)
+  const row = document.createElement('div')
+  row.style.display = 'flex'
+  row.style.flexWrap = 'wrap'
+  row.style.gap = '8px'
+  const sizes = [['off', 'Off'], ['small', 'Small'], ['medium', 'Medium'], ['large', 'Large']]
+  function paintSizes() {
+    row.innerHTML = ''
+    for (const [size, label] of sizes) {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'gtile'
+      b.dataset.spawn = 'size'
+      b.dataset.size = size
+      b.style.minHeight = '44px'
+      b.style.minWidth = '44px'
+      b.style.flex = '1 1 72px'
+      b.setAttribute('aria-pressed', String(protect.size === size))
+      if (protect.size === size) b.style.outline = '3px solid #22D3EE'
+      b.innerHTML = '<span class="glbl"></span>'
+      b.querySelector('.glbl').textContent = label
+      b.addEventListener('pointerdown', (e) => e.stopPropagation())
+      b.addEventListener('click', (e) => { e.stopPropagation(); setProtectSize(size); paintSizes() })
+      row.append(b)
+    }
+  }
+  paintSizes()
+  g.append(row)
+}
 const noa = new Engine({
   domElement: document.getElementById('stage'),
   debug: false, showFPS: false, silent: true, silentBabylon: true,
@@ -848,7 +933,7 @@ const edits = createEdits({
 })
 const changeLog = createLog({ dbName: __BLOX_STUDENT__ ? 'bloxlog' : 'bloxlog-test', worldId: 'bertyville', chunkSize: S })
 function edit(x, y, z, v) {
-  if (keptCell(x, y, z) && !teacherOn() && !townHelper()) { toast(t('shopProtected')); return false }
+  if (zoneLocked(x, y, z)) return false
   const group = edits.applyEdit([[x, y, z, v]], { source: 'hand', label: 'hand' })
   if (group) changeLog.note(group)
   return !!group
@@ -1039,7 +1124,7 @@ function shopSpan(x, y, z, face) {
 }
 function shopBlocked(span) {
   if (getVoxel(span.sx, span.sy, span.sz)) return true
-  if (keptCell(span.sx, span.sy, span.sz) && !teacherOn() && !townHelper()) return true
+  if (!teacherOn() && !townHelper() && protectedCell(span.sx, span.sy, span.sz, protect)) return true
   if (!tableMode) {
     const p = noa.entities.getPosition(noa.playerEntity)
     if (overlapsPlayer(span.sx, span.sy, span.sz, p[0], p[1], p[2])) return true
@@ -1361,7 +1446,7 @@ function tryTill(aimed, repeat) {
   if (held && held !== 'hoe') return false
   if (repeat) return true
   if (!tableMode && !canReach([x, y, z])) return false
-  if (keptCell(x, y, z) && !teacherOn() && !townHelper()) { toast(t('shopProtected')); return true }
+  if (zoneLocked(x, y, z)) return true
   const key = x + ',' + y + ',' + z
   const hoe = held === 'hoe'
   if (!hoe) {
@@ -2175,7 +2260,7 @@ async function snapshot() {
   const p = noa.entities.getPosition(noa.playerEntity)
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
-    ownerRef: null, seed: 1, spawn: [p[0], p[1], p[2]], chunkSize: S,
+    ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(),
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
@@ -2304,24 +2389,30 @@ async function readDoc(doc) {
   return out
 }
 async function applyDoc(doc) {
+  const moved = migrate(doc)
+  const src = moved.doc || doc
   const chunks = await readDoc(doc)
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
   edits.clear(); paintUndo()
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
-  if (Array.isArray(doc.spawn) && doc.spawn.every(Number.isFinite)) noa.entities.setPosition(noa.playerEntity, doc.spawn)
-  if (session) session.load(fromDoc(doc))
-  if (doc.basics && basics) basics.load(doc.basics)
+  const spot = finiteTriple(src.pos) || finiteTriple(src.spawn)
+  if (spot) noa.entities.setPosition(noa.playerEntity, spot)
+  worldSpawn = finiteTriple(src.spawn) || SPAWN.slice()
+  spawnSet = !!src.spawnSet
+  protect = normProtect(src.protect)
+  if (session) session.load(fromDoc(src))
+  if (src.basics && basics) basics.load(src.basics)
   dropGifts()
-  if (doc.stations) stations.load(doc.stations)
-  gifts = Object.assign({}, doc && doc.gifts)
+  if (src.stations) stations.load(src.stations)
+  gifts = Object.assign({}, src && src.gifts)
   syncGlasses()
   grantSaplings()
-  farm.load(doc && doc.crops)
+  farm.load(src && src.crops)
   syncCrops(Date.now())
-  forage.load(doc && doc.forage)
+  forage.load(src && src.forage)
   syncForage(Date.now())
   pondAid = false
-  ensureStarterPond(doc)
+  ensureStarterPond(src)
   seedOldBushes()
   if (session) paintModeChip()
   syncDropMeshes()
@@ -2347,6 +2438,9 @@ async function resetWorld() {
   grantSaplings()
   syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
+  worldSpawn = SPAWN.slice()
+  spawnSet = false
+  protect = { size: 'medium', center: null }
   setLook(0, 0.18)
   seedOldBushes()
   markSave(t('fresh'))
@@ -2474,10 +2568,11 @@ session = createSession({
   teacher: () => teacherOn(),
   setTeacher: (on) => setTeacher(on),
   staff: () => staffOn(),
-  townKept: (x, y, z) => keptCell(x, y, z) && !teacherOn() && !townHelper(),
+  townKept: (x, y, z) => zoneLocked(x, y, z),
   wildBush: (x, y, z) => isBushId(getVoxel(x, y, z)) && !farm.get(x, y, z),
   townYes: () => townHelper(),
   setTown: (on) => setTownHelper(on),
+  paintSpawn: (g) => paintSpawn(g),
   setAlways: (on) => basics && basics.setAlways(on),
   setBright: (on) => basics && basics.setBright(on),
 })
@@ -3050,7 +3145,7 @@ const tools = createTools({
   current: () => current,
   aim: () => (noa.targetedBlock ? noa.targetedBlock.adjacent : [8, 6, 8]),
   apply: (ops, label) => {
-    if (ops.some(([x, y, z]) => keptCell(x, y, z) && !teacherOn() && !townHelper())) { toast(t('shopProtected')); return null }
+    if (ops.some(([x, y, z]) => zoneLocked(x, y, z))) return null
     const g = edits.applyEdit(ops, { source: 'tool', label })
     if (g) changeLog.note(g, 'you')
     toast(label)
@@ -3112,7 +3207,7 @@ noa.on('tick', () => {
 })
 function poof() {
   const home = session && session.home
-  const spot = home ? home : SPAWN
+  const spot = home && home.length ? home : worldSpawn
   noa.entities.setPosition(noa.playerEntity, spot.slice ? spot.slice() : [spot[0], spot[1], spot[2]])
   flying = false
   document.body.classList.remove('fly')
@@ -4709,6 +4804,36 @@ const ghostLocal = [0, 0, 0]
 const ghostLocal2 = [0, 0, 0]
 const cyanLine = new Color3(0.13, 0.83, 0.93)
 const amberLine = new Color3(0.95, 0.62, 0.12)
+function ringPoints() {
+  const n = 48
+  const pts = []
+  for (let i = 0; i <= n; i++) {
+    const a = (i / n) * Math.PI * 2
+    pts.push(new Vector3(Math.cos(a), 0, Math.sin(a)))
+  }
+  return pts
+}
+const protectRing = CreateLines('protect-ring', { points: ringPoints() }, scene)
+protectRing.color = cyanLine
+protectRing.isPickable = false
+protectRing.setEnabled(false)
+noa.rendering.addMeshToScene(protectRing)
+function ringSpot() {
+  if (protect && protect.center) {
+    const c = protect.center
+    return { x: c[0], y: c[1] + 0.08, z: c[2], r: protectRadius(protect.size) || 8 }
+  }
+  return { x: TOWN_AT[0], y: FLOOR + 1.08, z: TOWN_AT[2], r: protectRadius(protect && protect.size) || 16 }
+}
+function paintProtectRing() {
+  if (performance.now() >= ringUntil) { protectRing.setEnabled(false); return }
+  const spot = ringSpot()
+  if (!spot || !spot.r) { protectRing.setEnabled(false); return }
+  protectRing.scaling.set(spot.r, 1, spot.r)
+  const lp = noa.globalToLocal([spot.x, spot.y, spot.z], null, [])
+  protectRing.position.copyFromFloats(lp[0], lp[1], lp[2])
+  protectRing.setEnabled(true)
+}
 function heldBlockId() {
   if (survivalOn()) return (session && session.blockForHot && session.blockForHot()) || 0
   return current || 0
@@ -4786,6 +4911,7 @@ function paintOutline() {
 }
 noa.on('beforeRender', (dt) => {
   paintOutline()
+  paintProtectRing()
   if (basics) syncGlow()
   if (REDUCE) return
   skyTime += (dt || 16) * 0.0004
