@@ -971,6 +971,133 @@ export function createSession(api) {
     if (item === 'wheat') return t('srcFarm')
     return ''
   }
+  function craftProbe() {
+    if (!craftProbe.el) {
+      const el = document.createElement('div')
+      el.style.cssText = 'position:fixed;left:0;top:0;visibility:hidden;pointer-events:none;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:manual;box-sizing:border-box;padding:0;border:0;display:block;width:auto;'
+      document.body.append(el)
+      craftProbe.el = el
+    }
+    return craftProbe.el
+  }
+  function craftLines(el) {
+    const cs = getComputedStyle(el)
+    const probe = craftProbe()
+    probe.style.width = Math.max(1, el.clientWidth) + 'px'
+    probe.style.font = cs.font
+    probe.style.fontSize = cs.fontSize
+    probe.style.fontWeight = cs.fontWeight
+    probe.style.lineHeight = cs.lineHeight
+    probe.style.letterSpacing = cs.letterSpacing
+    probe.textContent = el.textContent || ''
+    const h = probe.getBoundingClientRect().height
+    const lh = parseFloat(cs.lineHeight) || (parseFloat(cs.fontSize) * 1.15) || 14
+    return h / lh
+  }
+  function craftWordClip(el) {
+    const limit = el.clientWidth + 0.75
+    if (limit < 2) return true
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+    const probe = craftProbe()
+    const cs = getComputedStyle(el)
+    probe.style.font = cs.font
+    probe.style.fontSize = cs.fontSize
+    probe.style.fontWeight = cs.fontWeight
+    probe.style.letterSpacing = cs.letterSpacing
+    probe.style.width = 'auto'
+    let node
+    while ((node = walker.nextNode())) {
+      const text = node.textContent || ''
+      const re = /\S+/g
+      let m
+      while ((m = re.exec(text))) {
+        const range = document.createRange()
+        range.setStart(node, m.index)
+        range.setEnd(node, m.index + m[0].length)
+        const rects = range.getClientRects()
+        const tops = new Set()
+        for (const r of rects) tops.add(Math.round(r.top))
+        if (tops.size > 1) return true
+        probe.textContent = m[0]
+        if (probe.getBoundingClientRect().width > limit) return true
+      }
+    }
+    return false
+  }
+  function craftTileOk(name, need, needLines) {
+    if (craftLines(name) > 2.05) return false
+    if (craftWordClip(name)) return false
+    if (!need) return true
+    const nr = need.getBoundingClientRect()
+    const nm = name.getBoundingClientRect()
+    if (nm.height > 0 && nr.height > 0 && nm.bottom > nr.top + 1) return false
+    if (need.scrollHeight > need.clientHeight + 2) return false
+    if (craftWordClip(need)) return false
+    if (needLines && craftLines(need) > 2.05) return false
+    return true
+  }
+  function fitCraftBook(book) {
+    if (!book) return
+    if (!fitCraftBook.armed) {
+      fitCraftBook.armed = true
+      window.addEventListener('resize', () => {
+        const live = document.querySelector('#sheet[data-panel="crafting"] .book')
+        if (live) requestAnimationFrame(() => fitCraftBook(live))
+      })
+    }
+    if (!book.isConnected || book.clientWidth < 8) {
+      if (book.dataset.fit === 'wait') return
+      book.dataset.fit = 'wait'
+      requestAnimationFrame(() => {
+        book.dataset.fit = ''
+        if (book.isConnected) fitCraftBook(book)
+      })
+      return
+    }
+    const cap = Math.max(48, Math.floor(book.clientWidth))
+    for (const b of book.querySelectorAll('.well')) {
+      const name = b.querySelector(':scope > .wlab')
+      if (!name) continue
+      const need = b.querySelector(':scope > .need')
+      const full = name.textContent || ''
+      name.title = full
+      if (!b.title || b.title.indexOf(full) === -1) b.title = b.title ? (full + '. ' + b.title) : full
+      const aria = b.getAttribute('aria-label') || ''
+      if (aria.indexOf(full) === -1) b.setAttribute('aria-label', aria ? (full + '. ' + aria) : b.title)
+      b.style.width = ''
+      name.style.fontSize = '14px'
+      if (craftTileOk(name, need, true)) continue
+      name.style.fontSize = '12px'
+      if (craftTileOk(name, need, true)) continue
+      const minW = Math.ceil(b.getBoundingClientRect().width)
+      const hi0 = Math.max(minW, cap)
+      let best = 0
+      let lo = minW
+      let hi = hi0
+      while (lo <= hi) {
+        const mid = (lo + hi) >> 1
+        b.style.width = mid + 'px'
+        if (craftTileOk(name, need, true)) { best = mid; hi = mid - 1 }
+        else lo = mid + 1
+      }
+      if (!best) {
+        lo = minW
+        hi = hi0
+        while (lo <= hi) {
+          const mid = (lo + hi) >> 1
+          b.style.width = mid + 'px'
+          if (craftTileOk(name, need, false)) { best = mid; hi = mid - 1 }
+          else lo = mid + 1
+        }
+      }
+      if (best) b.style.width = best + 'px'
+      else {
+        b.style.width = hi0 + 'px'
+        name.style.fontSize = '12px'
+      }
+    }
+    book.dataset.fit = '1'
+  }
   function paintCraft(g) {
     armTrayWatch()
     const sheetBody = document.getElementById('sheet-body')
@@ -1014,6 +1141,7 @@ export function createSession(api) {
         const name = document.createElement('span')
         name.className = 'wlab'
         name.textContent = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
+        name.title = name.textContent
         b.append(name)
         if (r.id === 'bread') {
           const line = document.createElement('span')
@@ -1021,7 +1149,12 @@ export function createSession(api) {
           const mark = document.createElement('span')
           mark.className = 'art oven-mark'
           mark.append(itemIcon(ITEMS.oven))
-          line.append(mark, document.createTextNode(t('bakeInOven') + ' · ' + t('wheat') + ' (' + t('srcFarm') + ')'))
+          const words = document.createElement('span')
+          words.className = 'need-line'
+          words.textContent = t('bakeInOven') + ' · ' + t('wheat') + ' (' + t('srcFarm') + ')'
+          line.append(mark, words)
+          b.title = name.textContent + '. ' + words.textContent
+          b.setAttribute('aria-label', b.title)
           b.append(line)
         } else if (!st.ok) {
           const lock = document.createElement('span')
@@ -1049,6 +1182,8 @@ export function createSession(api) {
           b.setAttribute('aria-label', name.textContent + '. ' + shown)
           b.append(line)
         }
+        if (!b.title) b.title = name.textContent
+        if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', b.title)
         b.addEventListener('click', () => {
           if (r.id === 'bread') {
             if (!openBreadOven()) paintCraft(g)
@@ -1242,6 +1377,15 @@ export function createSession(api) {
     }
     tray.append(book, side)
     g.append(tray)
+    const made = side.querySelector('.well.result')
+    if (made) {
+      const lab = made.querySelector('.wlab')
+      if (lab && lab.textContent) {
+        made.title = lab.textContent
+        lab.title = lab.textContent
+      }
+    }
+    requestAnimationFrame(() => fitCraftBook(book))
     if (fxKind === 'slide') side.querySelectorAll('.ing').forEach((el, i) => fx(el, 'in', i * 60))
     if (fxKind === 'make') {
       const makeBtn = side.querySelector('.keycap.make')

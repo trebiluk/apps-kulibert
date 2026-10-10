@@ -1,6 +1,7 @@
 /* Size tokens only. No colours. html .ks-root beats the 56px fallback in kulibert-slots.css.
-   --ks-slot-big is 60 / 70 / 80 at the locked sizes (slot × 1.25).
-   Touch targets are 48. The upright hotbar stays 44 in the app, not here. */
+   --ks-slot rounds to 4. --ks-slot-big is that slot × 1.25, which is 60 / 70 / 80.
+   Do not round the product again: 70 would become 72.
+   Touch targets are 48. */
 :root,
 html .ks-root {
   --ks-slot: clamp(48px, calc(4.2vmin + 24px), 64px);

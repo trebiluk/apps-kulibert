@@ -28,6 +28,13 @@
   place-items: center;
   touch-action: none;
 }
+.ks-slot.slot-out,
+.ks-slot.slot-output {
+  width: var(--ks-slot-big, 70px);
+  height: var(--ks-slot-big, 70px);
+  min-width: var(--ks-slot-big, 70px);
+  min-height: var(--ks-slot-big, 70px);
+}
 .ks-slot.ks-empty { opacity: .45 }
 .ks-slot.ks-pick { box-shadow: 0 0 0 3px var(--ks-pick, #22D3EE) }
 .ks-slot .ks-art { width: 70%; height: 70%; display: grid; place-items: center; pointer-events: none }

@@ -196,7 +196,7 @@ for (const [lang, row] of Object.entries(FIX)) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(BASICS)) Object.assign(EXTRA[lang], row)
 const NEXT = {
   en: {
-    whatsNewBody: 'Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.',
+    whatsNewBody: 'Recipe names fit, and the Oven shows what it made in a big slot.',
     bagHint: 'Press E (or Esc, then click Bag) to open your Bag.',
     replanted: 'Replanted',
     harvestedBare: 'Harvested - no seed to replant',
@@ -241,7 +241,7 @@ const NEXT = {
     autoCloseOn: 'Auto-close on', autoCloseOff: 'Auto-close off', padlockOn: 'Padlock on', padlockOff: 'Padlock off',
   },
   uk: {
-    whatsNewBody: 'Назви рецептів вміщаються, сенсорні кнопки легше натиснути, і кнопка Сумки працює мишею.',
+    whatsNewBody: 'Назви рецептів вміщаються, і піч показує готове у великій комірці.',
     bagHint: 'Натисни E (або Esc, потім клік Сумка), щоб відкрити сумку.',
     replanted: 'Посіяно знову',
     harvestedBare: 'Зібрано — немає насіння, щоб посіяти знову',
@@ -286,7 +286,7 @@ const NEXT = {
     autoCloseOn: 'Самозачинення увімкнено', autoCloseOff: 'Самозачинення вимкнено', padlockOn: 'Замок зачинено', padlockOff: 'Замок відчинено',
   },
   ru: {
-    whatsNewBody: 'Названия рецептов помещаются, сенсорные кнопки легче нажать, и кнопка Сумки работает мышью.',
+    whatsNewBody: 'Названия рецептов помещаются, и печь показывает готовое в большой ячейке.',
     bagHint: 'Нажми E (или Esc, потом клик Сумка), чтобы открыть сумку.',
     replanted: 'Посажено снова',
     harvestedBare: 'Собрано — нет семени, чтобы посадить снова',
@@ -331,7 +331,7 @@ const NEXT = {
     autoCloseOn: 'Самозакрытие включено', autoCloseOff: 'Самозакрытие выключено', padlockOn: 'Замок закрыт', padlockOff: 'Замок открыт',
   },
   es: {
-    whatsNewBody: 'Los nombres de las recetas caben, los botones táctiles son más fáciles de tocar, y el botón Bolsa funciona con el ratón.',
+    whatsNewBody: 'Los nombres de las recetas caben, y el horno muestra lo hecho en una casilla grande.',
     bagHint: 'Pulsa E (o Esc y luego Bolsa) para abrir tu Bolsa.',
     replanted: 'Replantado',
     harvestedBare: 'Cosechado: no hay semilla para replantar',
@@ -376,7 +376,7 @@ const NEXT = {
     autoCloseOn: 'Cierre solo activo', autoCloseOff: 'Cierre solo apagado', padlockOn: 'Candado puesto', padlockOff: 'Candado quitado',
   },
   ar: {
-    whatsNewBody: 'أسماء الوصفات تظهر كاملة، وأزرار اللمس أسهل، وزر الحقيبة يعمل بالفأرة.',
+    whatsNewBody: 'أسماء الوصفات تظهر كاملة، والفرن يعرض ما صنعه في خانة كبيرة.',
     bagHint: 'اضغط E (أو Esc ثم الحقيبة) لفتح حقيبتك.',
     replanted: 'زُرع من جديد',
     harvestedBare: 'حُصد — لا بذرة لإعادة الزرع',
@@ -421,7 +421,7 @@ const NEXT = {
     autoCloseOn: 'الإغلاق التلقائي يعمل', autoCloseOff: 'الإغلاق التلقائي متوقف', padlockOn: 'القفل مغلق', padlockOff: 'القفل مفتوح',
   },
   'fa-AF': {
-    whatsNewBody: 'نام دستورها جا می‌شود، دکمه‌های لمسی آسان‌تر زده می‌شوند، و دکمه بکس با موس کار می‌کند.',
+    whatsNewBody: 'نام دستورها جا می‌شود، و تنور ساخته را در خانه بزرگ نشان می‌دهد.',
     bagHint: 'E را بزن (یا Esc، بعد بکس) تا بکس باز شود.',
     replanted: 'دوباره کاشته شد',
     harvestedBare: 'برداشته شد — دانه‌ای برای کاشتن دوباره نیست',
@@ -466,7 +466,7 @@ const NEXT = {
     autoCloseOn: 'بستن خودکار روشن', autoCloseOff: 'بستن خودکار خاموش', padlockOn: 'قفل بسته', padlockOff: 'قفل باز',
   },
   rw: {
-    whatsNewBody: 'Amazina ya recepti agenda, buto zo gukoraho zoroheje, kandi buto ya agasaho ikora n\'imbeba.',
+    whatsNewBody: 'Amazina ya recepti agenda, kandi icyoto kigaragaza ibyakozwe mu gace kinini.',
     bagHint: 'Kanda E (cyangwa Esc, hanyuma Agasaho) ufungure agasaho.',
     replanted: 'Yongeye gutera',
     harvestedBare: 'Yasaruriwe — nta mbuto yo kongera gutera',
@@ -511,7 +511,7 @@ const NEXT = {
     autoCloseOn: 'Ifunga wenyine iriho', autoCloseOff: 'Ifunga wenyine yakuweho', padlockOn: 'Urufunguzo rwafunze', padlockOff: 'Urufunguzo rwafunguwe',
   },
   ti: {
-    whatsNewBody: 'ስማት መድሃኒት ይኣትዉ፡ መጠወቒ ምትንኻፍ ይቐልል፡ መጠወቒ ቦርሳ ድማ ብማውስ ይሰርሕ።',
+    whatsNewBody: 'ስማት መድሃኒት ይኣትዉ፡ እቶን ድማ ዝሰርሐ ኣብ ዓቢ ቦታ የርኢ።',
     bagHint: 'E ጠውቕ (ወይ Esc፡ ድሕሪኡ ቦርሳ) ቦርሳኻ ንምኽፋት።',
     replanted: 'ዳግማይ ተዘሪኡ',
     harvestedBare: 'ተኣኪቡ — ዘርኢ ንዳግማይ ምዝራእ የለን',

@@ -157,7 +157,7 @@
   "textM": "Medium",
   "textS": "Small",
   "undo": "Undo",
-  "whatsNewBody": "Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.",
+  "whatsNewBody": "Recipe names fit, and the Oven shows what it made in a big slot.",
   "world": "World",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };

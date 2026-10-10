@@ -1,0 +1,111 @@
+{
+  "verdict": "PASS",
+  "errors": [],
+  "steps": [
+    {
+      "name": "version 2.5.105",
+      "ok": true,
+      "detail": "2.5.105"
+    },
+    {
+      "name": "one main panel rule",
+      "ok": true,
+      "detail": "{\"main\":1,\"w1000\":false,\"h700\":false,\"w700\":true,\"h500\":true}"
+    },
+    {
+      "name": "no 1000-wide breakpoint",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no 700-high breakpoint",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keeps 700-wide",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keeps 500-high",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "recipes 1366x768",
+      "ok": true,
+      "detail": "{\"n\":33,\"bad\":[],\"result\":70}"
+    },
+    {
+      "name": "oven slots 1366x768",
+      "ok": true,
+      "detail": "{\"fuel\":{\"w\":56,\"h\":56},\"input\":{\"w\":56,\"h\":56},\"output\":{\"w\":70,\"h\":70},\"slot\":\"round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)\",\"big\":\"calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 1.25)\"}"
+    },
+    {
+      "name": "recipes 1920x1080",
+      "ok": true,
+      "detail": "{\"n\":33,\"bad\":[],\"result\":80}"
+    },
+    {
+      "name": "oven slots 1920x1080",
+      "ok": true,
+      "detail": "{\"fuel\":{\"w\":64,\"h\":64},\"input\":{\"w\":64,\"h\":64},\"output\":{\"w\":80,\"h\":80},\"slot\":\"round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)\",\"big\":\"calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 1.25)\"}"
+    },
+    {
+      "name": "recipes 1093x614",
+      "ok": true,
+      "detail": "{\"n\":33,\"bad\":[],\"result\":60}"
+    },
+    {
+      "name": "oven slots 1093x614",
+      "ok": true,
+      "detail": "{\"fuel\":{\"w\":48,\"h\":48},\"input\":{\"w\":48,\"h\":48},\"output\":{\"w\":60,\"h\":60},\"slot\":\"round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)\",\"big\":\"calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 1.25)\"}"
+    },
+    {
+      "name": "recipes 915x412",
+      "ok": true,
+      "detail": "{\"n\":33,\"bad\":[],\"result\":60}"
+    },
+    {
+      "name": "oven slots 915x412",
+      "ok": true,
+      "detail": "{\"fuel\":{\"w\":48,\"h\":48},\"input\":{\"w\":48,\"h\":48},\"output\":{\"w\":60,\"h\":60},\"slot\":\"round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)\",\"big\":\"calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 1.25)\"}"
+    },
+    {
+      "name": "recipes 412x915",
+      "ok": true,
+      "detail": "{\"n\":33,\"bad\":[],\"result\":60}"
+    },
+    {
+      "name": "oven slots 412x915",
+      "ok": true,
+      "detail": "{\"fuel\":{\"w\":48,\"h\":48},\"input\":{\"w\":48,\"h\":48},\"output\":{\"w\":60,\"h\":60},\"slot\":\"round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px)\",\"big\":\"calc(round(clamp(48px, calc(4.2vmin + 24px), 64px), 4px) * 1.25)\"}"
+    },
+    {
+      "name": "rotate to portrait",
+      "ok": true,
+      "detail": "{\"panel\":\"station\",\"out\":60,\"fuel\":48}"
+    },
+    {
+      "name": "rotate to landscape",
+      "ok": true,
+      "detail": "{\"panel\":\"station\",\"out\":60,\"fuel\":48}"
+    },
+    {
+      "name": "E opens the Bag",
+      "ok": true,
+      "detail": "inventory"
+    },
+    {
+      "name": "bag tile click",
+      "ok": true,
+      "detail": "inventory w=56"
+    },
+    {
+      "name": "console 0 errors",
+      "ok": true,
+      "detail": ""
+    }
+  ]
+}

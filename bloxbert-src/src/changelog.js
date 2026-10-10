@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.105', date: '2026-10-09', lines: {
+    en: ['Recipe names fit, and the Oven shows what it made in a big slot.'],
+    uk: ['Назви рецептів вміщаються, і піч показує готове у великій комірці.'],
+    ru: ['Названия рецептов помещаются, и печь показывает готовое в большой ячейке.'],
+    es: ['Los nombres de las recetas caben, y el horno muestra lo hecho en una casilla grande.'],
+    ar: ['أسماء الوصفات تظهر كاملة، والفرن يعرض ما صنعه في خانة كبيرة.'],
+    'fa-AF': ['نام دستورها جا می‌شود، و تنور ساخته را در خانه بزرگ نشان می‌دهد.'],
+    rw: ['Amazina ya recepti agenda, kandi icyoto kigaragaza ibyakozwe mu gace kinini.'],
+    ti: ['ስማት መድሃኒት ይኣትዉ፡ እቶን ድማ ዝሰርሐ ኣብ ዓቢ ቦታ የርኢ።'],
+  }},
   { v: '2.5.104', date: '2026-10-09', lines: {
     en: ['Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.'],
     uk: ['Назви рецептів вміщаються, сенсорні кнопки легше натиснути, і кнопка Сумки працює мишею.'],

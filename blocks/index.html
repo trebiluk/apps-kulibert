@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.104">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.104">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.105">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.105">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -233,12 +233,12 @@ html[data-kb-bar]:not(.kb-framed) #menu-hint{top:calc(48px + var(--top-h) + 80px
 #path-chip .path-x{flex:0 0 auto;margin-inline-start:auto;display:grid;place-items:center;width:var(--ks-touch);height:var(--ks-touch);min-width:44px;min-height:44px;border-radius:8px;background:rgba(255,255,255,.1);font-size:16px}
 #path-chip .path-sub{display:block;margin-top:2px;font-size:12px;line-height:1.15;font-weight:650;color:#F6C453}
 html[data-kb-bar]:not(.kb-framed) #path-chip{top:calc(48px + var(--top-h) + 8px)}
-/* One main panel rule. Breakpoints: side by side at 700px, stacked below that, one-line header under 500px high. */
+/* One main panel rule. The sheet stays full-bleed. Breakpoints: side by side at 700px, one-line header under 500px high. */
 #sheet{position:fixed;left:0;right:0;bottom:0;top:var(--kb-bar-h, 48px);z-index:40;background:#070b16;display:flex;flex-direction:column;padding:12px;overflow:hidden;cursor:auto}
 body.menu-open canvas{pointer-events:none;cursor:auto}
 #sheet:not([hidden]) ~ .keys{display:none}
-#sheet-body,#sheet[data-panel="crafting"] .sheet-bar,#sheet[data-panel="station"] .sheet-bar,#sheet[data-panel="bench"] .sheet-bar,#sheet[data-panel="box"] .sheet-bar,#sheet[data-panel="inventory"] .sheet-bar{width:var(--ks-panel-w);max-width:100%;box-sizing:border-box}
-#sheet-body{max-height:var(--ks-panel-h);min-height:0;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
+#sheet-body,#sheet[data-panel="crafting"] .sheet-bar,#sheet[data-panel="station"] .sheet-bar,#sheet[data-panel="bench"] .sheet-bar,#sheet[data-panel="box"] .sheet-bar,#sheet[data-panel="inventory"] .sheet-bar{width:var(--ks-panel-w);max-width:100%;max-height:var(--ks-panel-h);min-height:0;box-sizing:border-box;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
+#sheet[data-panel] .sheet-bar{flex:0 0 auto;overflow:visible;max-height:none}
 .slot.bag-tile{position:static;flex:0 0 auto;right:auto}
 #sheet[hidden]{display:none}
 .sheet-bar{display:flex;gap:8px;align-items:center;position:sticky;top:0;background:rgba(11,18,32,.95);z-index:2;padding:4px 0}
@@ -267,7 +267,6 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 .gtile:disabled{color:#e2e8f0;border-color:#64748b;background:#121826}
 #pick-ring.tick{border-color:#F6C453}
 #poof{position:fixed;inset:0;z-index:20;pointer-events:none;background:radial-gradient(circle,rgba(34,211,238,.45),transparent 60%)}
-@media (min-width:1000px){.ggrid{grid-template-columns:repeat(6,minmax(64px,1fr))}.ggrid.baggrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .ggrid.baggrid{grid-template-columns:repeat(3,minmax(0,1fr))}
 .ggrid.baggrid .gtile.wide{grid-column:1 / -1;min-height:52px}
 .ggrid.baggrid .gtile.slot{min-height:64px;overflow:hidden}
@@ -308,14 +307,15 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .book-row{display:flex;flex-wrap:wrap;gap:var(--ks-gap);max-width:100%}
 #sheet[data-panel="crafting"] .tray-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 #sheet[data-panel="crafting"] .keys{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;position:sticky;bottom:0;z-index:5;background:#0E1A22;padding:8px 0}
-#sheet[data-panel="crafting"] .book .well{width:var(--ks-slot-big);min-width:var(--ks-slot-big);max-width:var(--ks-slot-big);height:var(--ks-slot-big);min-height:var(--ks-slot-big);max-height:var(--ks-slot-big);padding:1px 1px 1px;overflow:hidden;align-items:stretch;justify-content:flex-start;gap:0;border-width:0;box-shadow:inset 0 0 0 2px #1F8A8A,inset 0 3px 0 #0B2A30}
+#sheet[data-panel="crafting"] .book .well,#sheet[data-panel="crafting"] .book .well.wide{width:var(--ks-slot-big);min-width:var(--ks-slot-big);max-width:100%;height:auto;min-height:0;max-height:none;padding:2px 2px 3px;overflow:hidden;align-items:stretch;justify-content:flex-start;gap:1px;border-width:0;box-shadow:inset 0 0 0 2px #1F8A8A,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .book .well.on{box-shadow:0 0 0 3px #22D3EE,inset 0 0 0 2px #1F8A8A,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .book .well.short{border-width:0;outline:2px dashed #E6EEF2;outline-offset:-2px}
 #sheet[data-panel="crafting"] .book .well .art{width:16px;height:16px;flex:0 0 16px;margin:0 auto}
 #sheet[data-panel="crafting"] .book .well .art canvas,#sheet[data-panel="crafting"] .book .well .art svg{width:16px;height:16px}
-#sheet[data-panel="crafting"] .book .well .wlab{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;white-space:normal;overflow:visible;overflow-wrap:break-word;word-break:normal;line-height:1.05;font-size:12px;height:auto;max-height:2.2em;text-overflow:clip;flex:0 1 auto}
-#sheet[data-panel="crafting"] .book .well.wide{width:var(--ks-slot-big);min-width:var(--ks-slot-big);max-width:var(--ks-slot-big);height:var(--ks-slot-big);max-height:var(--ks-slot-big)}
-#sheet[data-panel="crafting"] .book .well .need{display:block;min-width:0;max-width:100%;overflow:hidden;overflow-wrap:anywhere;word-break:break-word;-webkit-line-clamp:unset;white-space:normal;line-height:1.05;max-height:1.15em;font-size:12px}
+#sheet[data-panel="crafting"] .book .well .wlab,#sheet[data-panel="crafting"] .book .well.wide .wlab{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;width:100%;min-width:0;max-width:100%;box-sizing:border-box;white-space:normal;overflow:hidden;overflow-wrap:normal;word-break:normal;hyphens:manual;line-height:1.15;font-size:14px;max-height:calc(1.15em * 2);text-overflow:ellipsis;flex:0 0 auto}
+#sheet[data-panel="crafting"] .book .well .need,#sheet[data-panel="crafting"] .book .well.wide .need{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;overflow:visible;overflow-wrap:normal;word-break:normal;hyphens:manual;-webkit-line-clamp:unset;white-space:normal;line-height:1.15;max-height:none;font-size:12px;text-overflow:clip;flex:0 0 auto}
+#sheet[data-panel="crafting"] .book .well .need.bake-in{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%;overflow:visible;max-height:none}
+#sheet[data-panel="crafting"] .book .well .need.bake-in .need-line{display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:normal;word-break:normal}
 #sheet[data-panel="crafting"] .well{position:relative;box-sizing:border-box;width:var(--ks-slot);min-width:var(--ks-slot);height:var(--ks-slot);min-height:var(--ks-slot);padding:4px 2px 6px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;box-shadow:inset 0 3px 0 #0B2A30;color:#E6EEF2;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px}
 #sheet[data-panel="crafting"] .well.result{width:var(--ks-slot-big);min-width:var(--ks-slot-big);height:var(--ks-slot-big);min-height:var(--ks-slot-big);border:2px solid #22D3EE}
 #sheet[data-panel="crafting"] .well.on{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
@@ -326,8 +326,6 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .art canvas,#sheet[data-panel="crafting"] .art svg{width:28px;height:28px;display:block}
 #sheet[data-panel="crafting"] .wlab,#sheet[data-panel="crafting"] .need,#sheet[data-panel="crafting"] .badge{color:#E6EEF2;font-weight:700;font-size:12px;line-height:1.2;text-align:center}
 #sheet[data-panel="crafting"] .well.wide{width:min(360px,100%);max-width:100%;min-width:0;height:auto;align-items:stretch}
-#sheet[data-panel="crafting"] .book .well.wide .wlab{display:block;min-width:0;max-width:100%;overflow:visible;overflow-wrap:break-word;word-break:normal;white-space:normal;line-height:1.05;max-height:2.2em;text-overflow:clip}
-#sheet[data-panel="crafting"] .book .well.wide .need{display:block;min-width:0;max-width:100%;overflow:hidden;white-space:normal;overflow-wrap:anywhere;word-break:break-word;line-height:1.05;max-height:1.15em;text-overflow:clip}
 #sheet[data-panel="crafting"] .badge{position:absolute;top:2px;left:2px;background:#0E1A22;border-radius:4px;padding:0 3px}
 #sheet[data-panel="crafting"] .lock{position:absolute;top:2px;right:2px;color:#E6EEF2}
 #sheet[data-panel="crafting"] .gnote{color:#E6EEF2}
@@ -377,7 +375,7 @@ html[dir=rtl] #sheet[data-panel="station"] .ks-machine.ks-side{flex-direction:ro
 #sheet[data-panel="station"] .slot-in,#sheet[data-panel="bench"] .slot-in{grid-area:auto}
 #sheet[data-panel="station"] .slot-fuel,#sheet[data-panel="bench"] .slot-fuel{grid-area:auto}
 #sheet[data-panel="station"] .arrow-bar,#sheet[data-panel="bench"] .arrow-bar{grid-area:auto;align-self:center;width:72px}
-#sheet[data-panel="station"] .slot-out,#sheet[data-panel="bench"] .slot-out{grid-area:auto;min-width:var(--ks-slot);min-height:var(--ks-slot);border:2px solid #22D3EE}
+#sheet[data-panel="station"] .slot-out,#sheet[data-panel="bench"] .slot-out,#sheet[data-panel="station"] .slot-output,#sheet[data-panel="bench"] .slot-output{grid-area:auto;width:var(--ks-slot-big);height:var(--ks-slot-big);min-width:var(--ks-slot-big);min-height:var(--ks-slot-big);border:2px solid #22D3EE}
 html[dir=rtl] #sheet .machine-row{direction:rtl}
 html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="crafting"],
@@ -398,7 +396,8 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
   #sheet[data-panel="box"] .bag-strip.ks-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:var(--ks-slot, 56px);grid-template-rows:var(--ks-slot, 56px);overflow-x:auto;max-width:100%}
 }
 #sheet[data-panel="station"] .gtile,#sheet[data-panel="bench"] .gtile{position:relative;min-width:64px;min-height:64px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;box-shadow:inset 0 3px 0 #0B2A30;color:#E6EEF2}
-#sheet .machine-row .slot-fuel,#sheet .machine-row .slot-in,#sheet .machine-row .slot-out{width:var(--ks-slot);min-width:var(--ks-slot);height:var(--ks-slot);min-height:var(--ks-slot)}
+#sheet .machine-row .slot-fuel,#sheet .machine-row .slot-in{width:var(--ks-slot);min-width:var(--ks-slot);height:var(--ks-slot);min-height:var(--ks-slot)}
+#sheet .machine-row .slot-out,#sheet .machine-row .slot-output{width:var(--ks-slot-big);min-width:var(--ks-slot-big);height:var(--ks-slot-big);min-height:var(--ks-slot-big)}
 #sheet[data-panel="station"] .oven-picks .gtile{flex:0 0 auto;width:auto;max-width:100%}
 #sheet[data-panel="station"] .arrow-bar,#sheet[data-panel="bench"] .arrow-bar{position:relative;height:36px;background:#08131A;clip-path:polygon(0 22%,72% 22%,72% 0,100% 50%,72% 100%,72% 78%,0 78%)}
 #sheet[data-panel="station"] .arrow-fill,#sheet[data-panel="bench"] .arrow-fill{position:absolute;left:0;top:0;bottom:0;background:#22D3EE;max-width:100%}
@@ -531,23 +530,6 @@ body.mode-creative #hotbar .slot:not(.bag-tile){flex:0 0 var(--ks-slot)}
   #sheet[data-panel=inventory] .bag-layout:has(.bag-card) .bag-main{flex:1 1 auto}
   #sheet[data-panel=inventory] .bag-card{flex:0 0 210px;position:sticky;top:0;bottom:auto;margin-top:0;z-index:auto;width:auto;border-radius:12px}
 }
-/* Upright phone keeps a 44px hotbar. Wide screens do not. */
-@media (max-width:700px) and (min-height:700px){
-  .chip:not(#wallet-chip){display:none}
-  #wallet-chip{display:inline-flex}
-  .top{gap:8px;padding:6px 8px}
-  #mode-pill button{padding:0 8px}
-  :root{--hud-lift:140px}
-  .brand b{display:flex;flex-direction:column;align-items:flex-start;white-space:normal;overflow:visible;line-height:1.05}
-  .brand .ver{margin-left:0;border:0;border-radius:0;padding:0;font-size:12px;font-weight:600}
-  #hotbar{display:flex;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100vw - 4px);bottom:0;padding:4px 2px 8px;gap:4px;overflow:visible}
-  #hotbar .item-strip{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;flex:0 1 auto;align-items:flex-end;min-width:0;max-width:calc(7 * 44px + 6 * 4px)}
-  #hotbar .slot:not(.bag-tile),#hotbar .bag-tile{width:44px;height:44px;min-width:44px;min-height:44px;flex:0 0 44px}
-  #hotbar .digit{display:block;font-size:12px}
-  #held-chip{bottom:calc(140px + env(safe-area-inset-bottom))}
-  .keys{bottom:156px;max-width:calc(100vw - 16px)}
-  #sheet[data-panel=inventory]{padding:0}
-}
 @media (max-height:500px){
   .sheet-bar{flex-wrap:nowrap}
   #sheet-title,#sheet[data-panel=inventory] #sheet-title{flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--ks-fs-l);height:auto;max-height:none}
@@ -576,7 +558,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.104</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.105</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -616,7 +598,7 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 <nav id="drawer" aria-label="Bertopia menu">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Recipe names fit, and the Oven shows what it made in a big slot.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
@@ -716,20 +698,8 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.104"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.104" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.104" defer></script>
-<style>
-@media (max-width:700px) and (min-height:700px){
-  .kb-bar{gap:8px !important}
-  .kb-plate{
-    font-size:0 !important;color:transparent !important;line-height:1.05 !important;
-    display:flex !important;flex-direction:column !important;justify-content:center !important;
-    flex:0 0 auto !important;margin-right:8px !important;overflow:visible !important;min-width:0 !important;
-  }
-  .kb-plate::before{content:"Bertopia";font-size:14px;font-weight:700;color:#e8f7ff;line-height:1.05}
-  .kb-plate::after{content:"2.5.104";font-size:12px;font-weight:600;color:#67e8f9;line-height:1.05}
-}
-</style>
+<script src="/shared/kulibert-slots.js?v=2.5.105"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.105" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.105" defer></script>
 </body>
 </html>

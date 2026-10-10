@@ -1,7 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Fri Oct 9 2026 (Build: 2.5.104 Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse).
+Updated Fri Oct 9 2026 (Build: 2.5.105 Recipe names fit, and the Oven shows what it made in a big slot).
 
+- [x] **2.5.105 Recipe text and big output:** Recipe names fit, and the Oven shows what it made in a big slot.
 - [x] **2.5.104 Scale lock and Bag:** Recipe tiles use the big slot so names fit. Touch buttons are easier to hit. The Bag button works with a mouse.
 - [x] **2.5.103 Shared slots on Oven and Workbench:** The Oven and the Workbench tray use the same click, Shift-click and drag rules as the Box. A wrong fuel bounces with a sentence, and the first click after the Oven opens counts.
 - [x] **2.5.102 Farming F3:** Right-click ripe wheat for 1–2 Wheat and 1–2 Wheat Seeds. A seed already in the bag replants Sprout ("Replanted"). With no seed the farmland stays bare. Unripe crops only show the card. Breaking a crop still returns 1 seed. A sweep harvests up to 5. Flour and Bread name the farm: Wheat (grow it on Farmland).
@@ -146,6 +147,7 @@ Updated Fri Oct 9 2026 (Build: 2.5.104 Recipe names fit, touch buttons are easie
 | 1p | 2.5.86 | The hunger tip tells you real food to find, and it comes back when you get hungry again | shipped |
 | 1p | 2.5.87 | Glass, saplings and the Workbench look like themselves, and the Oven and Box show exactly what is inside | shipped |
 | 1p | 2.5.88 | Your practice count is the same everywhere, and xMax works on the first click | shipped |
+| 1p | 2.5.105 | Recipe names fit, and the Oven shows what it made in a big slot | shipped |
 | 1p | 2.5.104 | Recipe names fit, touch buttons are easier to hit, and the Bag button works with a mouse | shipped |
 | 1p | 2.5.103 | The Oven and Workbench use the same slots as the Box: click, Shift-click or drag | shipped |
 | 1p | 2.5.102 | Harvest ripe wheat with a click. It replants itself if you have a seed, and your wheat turns into flour and bread | shipped |
