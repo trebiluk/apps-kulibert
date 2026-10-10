@@ -1,6 +1,10 @@
 // Read-only block list. Shared by main.js and the icon test entry.
 // Ids, names and keys stay frozen. Packs may insert after this base.
 import { packBlocks, packOn } from '../packs/registry.js'
+// Register before BLOCKS is built. The save name table is this list, so a
+// pack that registers later has no name and the loader drops its blocks.
+import '../packs/farm/pack.js'
+import '../packs/decor/pack.js'
 
 export const BASE_BLOCKS = [
   [1000, 'missing', 'gravel_stone', '?', null],

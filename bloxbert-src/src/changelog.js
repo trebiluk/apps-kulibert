@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.153', date: '2026-10-10', lines: {
+    en: ['Lamps, rugs and farm crops now stay after you save and reload.'],
+    uk: ['Лампи, килими й посіви тепер лишаються після збереження і перезавантаження.'],
+    ru: ['Лампы, ковры и посевы теперь остаются после сохранения и перезагрузки.'],
+    es: ['Las lámparas, las alfombras y los cultivos ahora se quedan después de guardar y recargar.'],
+    ar: ['المصابيح والسجاد ومحاصيل المزرعة تبقى الآن بعد الحفظ وإعادة التحميل.'],
+    'fa-AF': ['چراغ‌ها، فرش‌ها و محصولات مزرعه حالا پس از ذخیره و بار دوباره می‌مانند.'],
+    rw: ['Amatara, imisambi n\'ibihingwa biguma nyuma yo kubika no kongera gutangiza.'],
+    ti: ['መብራህቲ፡ መናጽፍን ኣሕምልትን ሕጂ ድሕሪ ምዕቃብን ዳግም ምጽዓንን ይጸንሑ።'],
+  }},
   { v: '2.5.152', date: '2026-10-10', lines: {
     en: ['The Bertbot hand shows up, swings while you dig, and touch starts up close.'],
     uk: ['Рука Бертбота видно, вона махає, поки ти копаєш, а на дотик ти починаєш зблизька.'],

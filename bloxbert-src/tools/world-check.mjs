@@ -42,6 +42,11 @@ export async function loadBlockRows() {
       if (out.length) rows = out
     }
   }
+  if (!rows) {
+    const mod = await import('../src/data/blocks-list.js')
+    const listed = mod.BLOCKS
+    if (Array.isArray(listed) && listed.length && Array.isArray(listed[0])) rows = listed.map((r) => [r[0], r[1]])
+  }
   if (!rows) rows = parseBlocks(readFileSync(new URL('../src/main.js', import.meta.url), 'utf8'))
   const { packBlocks } = await import('../src/packs/registry.js')
   await import('../src/packs/farm/pack.js')
