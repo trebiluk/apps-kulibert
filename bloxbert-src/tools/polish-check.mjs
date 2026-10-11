@@ -1,0 +1,626 @@
+// HUD clicks, tips, lamp, rug, held block, and Jump II. Real mouse, not element.click().
+import puppeteer from 'puppeteer-core'
+import { existsSync, mkdirSync } from 'fs'
+import { createServer } from 'http'
+import { readFile } from 'fs/promises'
+import { gzipSync } from 'zlib'
+import { spawnSync } from 'child_process'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dir = path.dirname(fileURLToPath(import.meta.url))
+const root = path.resolve(__dir, '../../blocks-test')
+const sharedRoot = path.resolve(__dir, '../../shared')
+const out = '/tmp/polish-check'
+mkdirSync(out, { recursive: true })
+const chrome = ['/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium'].find((p) => existsSync(p))
+if (!chrome) { console.error('No Chrome/Chromium found.'); process.exit(1) }
+
+const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css', '.woff2': 'font/woff2' }
+const server = createServer(async (req, res) => {
+  let p = decodeURIComponent(new URL(req.url, 'http://x').pathname)
+  if (p.endsWith('/')) p += 'index.html'
+  const underShared = p.startsWith('/shared/')
+  const base = underShared ? sharedRoot : root
+  const rel = underShared ? p.slice('/shared/'.length) : p
+  const f = path.join(base, rel)
+  if (!f.startsWith(base)) { res.writeHead(403); return res.end() }
+  try {
+    let b = await readFile(f)
+    const ext = path.extname(f)
+    const h = { 'content-type': types[ext] || 'application/octet-stream', 'cache-control': 'no-store' }
+    if (/gzip/.test(req.headers['accept-encoding'] || '') && /\.(html|js|json|css)$/.test(ext)) { b = gzipSync(b); h['content-encoding'] = 'gzip' }
+    h['content-length'] = b.length
+    res.writeHead(200, h)
+    res.end(b)
+  } catch { res.writeHead(404); res.end('nf') }
+})
+await new Promise((r) => server.listen(8883, '127.0.0.1', r))
+
+const CORNER = `
+import sys
+from PIL import Image
+a = Image.open(sys.argv[1]).convert('RGB')
+b = Image.open(sys.argv[2]).convert('RGB')
+w, h = a.size
+x0, y0 = w // 2, h // 2
+pa, pb = a.load(), b.load()
+diff = total = 0
+for y in range(y0, h):
+    for x in range(x0, w):
+        total += 1
+        if pa[x, y] != pb[x, y]:
+            diff += 1
+print(diff / total if total else 0, diff, total)
+`
+
+const LAMP = `
+import sys
+from PIL import Image
+im = Image.open(sys.argv[1]).convert('RGB')
+w, h = im.size
+px = im.load()
+pts = []
+for y in range(h // 6, 5 * h // 6):
+    for x in range(w // 6, 5 * w // 6):
+        r, g, b = px[x, y]
+        if r > 190 and g > 120 and r > b + 40:
+            pts.append((x, y))
+if not pts:
+    print(0, 0, 0, 0)
+else:
+    xs = [p[0] for p in pts]
+    ys = [p[1] for p in pts]
+    bw = max(xs) - min(xs) + 1
+    bh = max(ys) - min(ys) + 1
+    aspect = bw / bh if bh else 99
+    print(len(pts), bw, bh, aspect)
+`
+
+const RUG = `
+import sys
+from PIL import Image
+im = Image.open(sys.argv[1]).convert('RGB')
+w, h = im.size
+px = im.load()
+vals = []
+for y in range(int(h * 0.35), int(h * 0.92)):
+    for x in range(int(w * 0.15), int(w * 0.85)):
+        r, g, b = px[x, y]
+        if 18 < r < 170 and r > g + 6 and g >= b and b < 90 and g < 120:
+            vals.append(r)
+if len(vals) < 8:
+    print(len(vals), 0)
+else:
+    mean = sum(vals) / len(vals)
+    var = sum((v - mean) ** 2 for v in vals) / len(vals)
+    print(len(vals), var ** 0.5)
+`
+
+function py(script, args) {
+  const r = spawnSync('python3', ['-c', script, ...args], { encoding: 'utf8' })
+  if (r.status !== 0) throw new Error(r.stderr || r.stdout || 'py failed')
+  return r.stdout.trim().split(/\s+/).map(Number)
+}
+
+const browser = await puppeteer.launch({
+  executablePath: chrome, headless: 'new', protocolTimeout: 180000,
+  args: ['--no-sandbox', '--use-gl=angle', '--use-angle=swiftshader', '--ignore-gpu-blocklist', '--disable-dev-shm-usage'],
+})
+const report = { steps: [] }
+function note(name, ok, detail) {
+  report.steps.push({ name, ok: !!ok, detail: detail == null ? '' : String(detail).slice(0, 500) })
+  console.log((ok ? 'PASS' : 'FAIL') + ' ' + name + (detail ? ' ' + String(detail).slice(0, 280) : ''))
+  if (!ok && !report.fail) report.fail = name
+}
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
+
+async function boot(w, h) {
+  const ctx = await browser.createBrowserContext()
+  const page = await ctx.newPage()
+  page.setDefaultTimeout(60000)
+  const errors = []
+  page.on('pageerror', (e) => errors.push('page:' + e.message))
+  page.on('console', (m) => {
+    if (m.type() !== 'error') return
+    const t = m.text()
+    if (/favicon|Failed to load resource|net::ERR/i.test(t)) return
+    errors.push(t)
+  })
+  await page.setViewport({ width: w, height: h, deviceScaleFactor: 1 })
+  await page.goto('http://127.0.0.1:8883/?q=lite&smoke=1', { waitUntil: 'domcontentloaded', timeout: 90000 })
+  await page.waitForFunction(() => window.__bloxReady && window.__smoke && window.__blocks, { timeout: 45000 })
+  await page.waitForFunction(() => window.__blocks.noa.world.playerChunkLoaded, { timeout: 30000 }).catch(() => {})
+  await page.evaluate(() => {
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    const rc = document.getElementById('rules-card')
+    if (rc) rc.hidden = true
+    document.body.classList.remove('menu-open')
+    try { window.__blocks.noa.setPaused(false) } catch (e) {}
+    const shell = window.__blocks.noa.container && window.__blocks.noa.container._shell
+    if (shell) shell.stickyPointerLock = false
+    if (window.__quietUnlock) window.__quietUnlock()
+    window.__smoke.arm()
+    window.__smoke.close()
+  })
+  await sleep(200)
+  return { ctx, page, errors }
+}
+
+async function shot(page, name) {
+  const file = path.join(out, name + '.png')
+  await page.screenshot({ path: file })
+  return file
+}
+
+async function hitBox(page, sel) {
+  return page.evaluate((sel) => {
+    const el = document.querySelector(sel)
+    if (!el) return null
+    const r = el.getBoundingClientRect()
+    const x = Math.round(r.left + Math.min(r.width, 80) / 2)
+    const y = Math.round(r.top + r.height / 2)
+    const hit = document.elementFromPoint(x, y)
+    const owner = hit && hit.closest ? hit.closest(sel) : null
+    return { x, y, w: Math.round(r.width), h: Math.round(r.height), tag: hit && hit.tagName, id: hit && hit.id, ok: !!(owner || hit === el), hidden: !!el.hidden }
+  }, sel)
+}
+
+async function mouseClick(page, sel) {
+  const box = await hitBox(page, sel)
+  if (!box || !box.ok) return box
+  await page.evaluate(() => new Promise((resolve) => {
+    const shell = window.__blocks.noa.container && window.__blocks.noa.container._shell
+    if (shell) shell.stickyPointerLock = false
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    document.body.classList.remove('menu-open')
+    if (window.__quietUnlock) window.__quietUnlock()
+    if (!document.pointerLockElement) return resolve()
+    const done = () => { document.removeEventListener('pointerlockchange', done); resolve() }
+    document.addEventListener('pointerlockchange', done)
+    setTimeout(resolve, 400)
+  }))
+  await page.evaluate(() => {
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    document.body.classList.remove('menu-open')
+    const shell = window.__blocks.noa.container && window.__blocks.noa.container._shell
+    if (shell) shell.stickyPointerLock = false
+  })
+  await page.mouse.move(box.x, box.y)
+  await page.mouse.click(box.x, box.y)
+  return box
+}
+
+async function docSig(page) {
+  return page.evaluate(async () => {
+    const open = await new Promise((res, rej) => {
+      const r = indexedDB.open('kuliblocks-test', 1)
+      r.onsuccess = () => res(r.result)
+      r.onerror = () => rej(r.error)
+    })
+    const text = await new Promise((res) => {
+      try {
+        const q = open.transaction('worlds').objectStore('worlds').get('bertyville-survival')
+        q.onsuccess = () => {
+          const doc = q.result
+          if (!doc) return res('0')
+          const s = JSON.stringify(doc)
+          let h = 0
+          for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) | 0
+          res(h + ':' + s.length)
+        }
+        q.onerror = () => res('err')
+      } catch (e) { res('nostore') }
+    })
+    open.close()
+    return text
+  })
+}
+
+async function aimBlock(page) {
+  return page.evaluate(() => {
+    const B = window.__blocks
+    const s = window.__smoke
+    const p = s.pos()
+    const h = B.noa.camera.heading
+    B.setLook(h, 0)
+    const dirx = Math.sin(h)
+    const dirz = Math.cos(h)
+    const y = Math.floor(p[1] + 1.4)
+    const x = Math.floor(p[0] + dirx * 2)
+    const z = Math.floor(p[2] + dirz * 2)
+    s.plant(x, y, z, 2)
+    s.plant(Math.floor(p[0] + dirx * 3), y, Math.floor(p[2] + dirz * 3), 0)
+    return { x, y, z }
+  })
+}
+
+async function wake(page) {
+  await page.evaluate(() => {
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    const rc = document.getElementById('rules-card')
+    if (rc) rc.hidden = true
+    document.body.classList.remove('menu-open')
+    try { window.__blocks.noa.setPaused(false) } catch (e) {}
+    if (window.__smoke) { window.__smoke.close(); window.__smoke.arm() }
+  })
+}
+
+function chipText(page) {
+  return page.evaluate(() => {
+    const el = document.getElementById('path-chip')
+    return { hidden: !el || el.hidden, text: el ? el.textContent : '' }
+  })
+}
+
+async function waitWorld(page, x, y, z, id, ms = 8000) {
+  const t0 = Date.now()
+  while (Date.now() - t0 < ms) {
+    const got = await page.evaluate((x, y, z) => window.__smoke.world(x, y, z), x, y, z)
+    if (got === id) return true
+    await sleep(80)
+  }
+  return false
+}
+
+async function saveClick(page, tag) {
+  await page.evaluate(() => {
+    window.__smoke.arm()
+    window.__blocks.noa.setPaused(false)
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    document.body.classList.remove('menu-open')
+  })
+  const spot = await aimBlock(page)
+  await sleep(150)
+  const beforeId = await page.evaluate((spot) => window.__smoke.voxel(spot.x, spot.y, spot.z), spot)
+  await page.evaluate(() => window.__smoke.plant(180, 6, 180, 3))
+  const beforeDoc = await docSig(page)
+  const box = await mouseClick(page, '#save-btn')
+  let toast = ''
+  const t0 = Date.now()
+  while (Date.now() - t0 < 8000) {
+    toast = await page.evaluate(() => window.__smoke.toast())
+    if (/Saved|Збережено|Сохранено|Guardado/.test(toast)) break
+    await sleep(80)
+  }
+  const afterId = await page.evaluate((spot) => window.__smoke.voxel(spot.x, spot.y, spot.z), spot)
+  const afterDoc = await docSig(page)
+  const lock = await page.evaluate(() => document.pointerLockElement && document.pointerLockElement.id)
+  note(tag + ' save hits the button', !!(box && box.ok), JSON.stringify(box))
+  note(tag + ' save toast', /Saved|Збережено|Сохранено|Guardado/.test(toast) && !/Too far|далеко|lejos|بعيد/.test(toast), toast)
+  note(tag + ' save doc changes', beforeDoc !== afterDoc && afterDoc !== '0' && afterDoc !== 'err', beforeDoc + ' -> ' + afterDoc)
+  note(tag + ' aimed block unchanged', beforeId === afterId && afterId === 2, beforeId + ' -> ' + afterId)
+  note(tag + ' no pointer lock', !lock, String(lock || ''))
+  const slot = await mouseClick(page, '#hotbar .slot')
+  const undo = await mouseClick(page, '#undo-btn')
+  await sleep(200)
+  const still = await page.evaluate((spot) => window.__smoke.voxel(spot.x, spot.y, spot.z), spot)
+  note(tag + ' hotbar and undo do not break', still === 2 && !!(slot && slot.ok) && !!(undo && undo.ok), 'slot ' + JSON.stringify(slot) + ' undo ' + JSON.stringify(undo) + ' id ' + still)
+}
+
+const desk = await boot(1366, 768)
+await saveClick(desk.page, '1366')
+
+await desk.page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await desk.page.evaluate(() => {
+  const rc = document.getElementById('rules-card')
+  if (rc) rc.hidden = true
+  window.__blocks.mode('survival')
+  window.__smoke.emptyBag()
+  window.__smoke.arm()
+  try { window.__blocks.noa.setPaused(false) } catch (e) {}
+})
+await sleep(300)
+let tip = await chipText(desk.page)
+note('path tip shows chop', !tip.hidden && /Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), tip.text.slice(0, 80))
+await desk.page.evaluate(() => window.__blocks.give('log', 1))
+await desk.page.waitForFunction(() => {
+  const el = document.getElementById('path-chip')
+  return el && !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(el.textContent || '')
+}, { timeout: 4000 }).catch(() => {})
+tip = await chipText(desk.page)
+note('path tip hides after first log', !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), tip.text.slice(0, 80))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await sleep(400)
+tip = await chipText(desk.page)
+note('path tip stays hidden after reload', !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), tip.text.slice(0, 80))
+
+await desk.page.evaluate(() => localStorage.removeItem('bloxbert-learn'))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await desk.page.evaluate(() => {
+  const rc = document.getElementById('rules-card')
+  if (rc) rc.hidden = true
+  window.__blocks.mode('survival')
+  window.__smoke.emptyBag()
+  window.__smoke.arm()
+  try { window.__blocks.noa.setPaused(false) } catch (e) {}
+})
+await sleep(300)
+await wake(desk.page)
+const pathBox = await mouseClick(desk.page, '#path-chip')
+await sleep(200)
+tip = await chipText(desk.page)
+note('path tip hides on tap', !!(pathBox && pathBox.ok) && !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), JSON.stringify(pathBox) + ' ' + tip.text.slice(0, 60))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await sleep(300)
+tip = await chipText(desk.page)
+note('tapped tip stays hidden', !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), tip.text.slice(0, 80))
+
+await desk.page.evaluate(() => {
+  window.__smoke.stand(8.5, 8, 8.5, 0, 0)
+  window.__smoke.arm()
+})
+await sleep(200)
+let dig = await desk.page.evaluate(() => window.__smoke.townLock(6, 4, 8))
+note('dig chip shows', !!(dig && dig.shown && /dig outside|копай|cava fuera|احفر خارج/.test(dig.text)), JSON.stringify(dig))
+const digBox = await mouseClick(desk.page, '#dig-chip')
+await sleep(100)
+dig = await desk.page.evaluate(() => {
+  const el = document.getElementById('dig-chip')
+  return { shown: !!(el && !el.hidden) }
+})
+note('dig chip hides on tap', !!(digBox && digBox.ok) && !dig.shown, JSON.stringify(digBox))
+await desk.page.evaluate(() => window.__smoke.stand(8.5, 8, 8.5, 0, 0))
+await sleep(150)
+dig = await desk.page.evaluate(() => window.__smoke.townLock(6, 5, 8))
+await desk.page.evaluate(() => window.__smoke.stand(80, 12, 80, 0, 0))
+await sleep(1200)
+dig = await desk.page.evaluate(() => {
+  const el = document.getElementById('dig-chip')
+  return { shown: !!(el && !el.hidden), pos: window.__smoke.pos() }
+})
+note('dig chip hides outside town', !dig.shown, JSON.stringify(dig))
+await desk.page.evaluate(() => window.__smoke.stand(8.5, 8, 8.5, 0, 0))
+await sleep(250)
+dig = await desk.page.evaluate(() => window.__smoke.townLock(8, 4, 6))
+note('dig chip shows again', !!(dig && dig.shown), JSON.stringify(dig))
+await sleep(8300)
+dig = await desk.page.evaluate(() => {
+  const el = document.getElementById('dig-chip')
+  return { shown: !!(el && !el.hidden) }
+})
+note('dig chip hides after 8s', !dig.shown, JSON.stringify(dig))
+
+await desk.page.evaluate(() => {
+  const s = window.__smoke
+  try { window.__blocks.noa.setPaused(false) } catch (e) {}
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  s.always(false)
+  s.bright(false)
+  s.seek(s.nightAt())
+  const cells = [
+    { side: 'S', x: 70, y: 8, z: 71, wx: 70, wy: 8, wz: 70 },
+    { side: 'N', x: 74, y: 8, z: 73, wx: 74, wy: 8, wz: 74 },
+    { side: 'E', x: 78, y: 8, z: 70, wx: 77, wy: 8, wz: 70 },
+    { side: 'W', x: 82, y: 8, z: 70, wx: 83, wy: 8, wz: 70 },
+  ]
+  for (const c of cells) {
+    for (let dx = -2; dx <= 2; dx++) for (let dz = -2; dz <= 2; dz++) for (let dy = 0; dy <= 3; dy++) s.plant(c.x + dx, c.y + dy, c.z + dz, 0)
+    s.plant(c.wx, c.wy, c.wz, 2)
+    s.plant(c.x, c.y - 1, c.z, 2)
+    s.setMeta(c.x + ',' + c.y + ',' + c.z, { kind: 'wallLamp', side: c.side })
+    s.plant(c.x, c.y, c.z, 1103)
+  }
+  s.setMeta('68,8,72', { kind: 'rug', anchor: '68,8,72' })
+  s.plant(68, 7, 72, 2)
+  s.plant(69, 7, 72, 2)
+  s.plant(68, 7, 73, 2)
+  s.plant(69, 7, 73, 2)
+  for (const [x, z] of [[68, 72], [69, 72], [68, 73], [69, 73]]) s.plant(x, 8, z, 0)
+  s.plant(68, 8, 72, 1104)
+  s.plant(69, 8, 72, 1105)
+  s.plant(68, 8, 73, 1105)
+  s.plant(69, 8, 73, 1105)
+  s.stand(70.5, 8, 72.8, Math.PI, 0.62)
+})
+const lampLoaded = await waitWorld(desk.page, 70, 8, 71, 1103)
+await desk.page.waitForFunction(() => {
+  const lamp = window.__blocks.noa.rendering.scene.meshes.find((m) => m.name === 'wallLampOn')
+  return !!(lamp && lamp.thinInstanceCount >= 4)
+}, { timeout: 8000 }).catch(() => {})
+await sleep(400)
+const lamps = await desk.page.evaluate(() => {
+  const s = window.__smoke
+  const B = window.__blocks
+  const cells = [
+    { side: 'S', x: 70, y: 8, z: 71 },
+    { side: 'N', x: 74, y: 8, z: 73 },
+    { side: 'E', x: 78, y: 8, z: 70 },
+    { side: 'W', x: 82, y: 8, z: 70 },
+  ]
+  const scene = B.noa.rendering.scene
+  const lamp = scene.meshes.find((m) => m.name === 'wallLampOn')
+  const rug = scene.meshes.find((m) => m.name === 'rug')
+  const store = lamp && lamp._thinInstanceDataStorage
+  if (store) store.worldMatrices = null
+  const data = store && store.matrixData
+  const n = lamp ? lamp.thinInstanceCount | 0 : 0
+  const off = B.noa.worldOriginOffset || [0, 0, 0]
+  const rows = []
+  for (let i = 0; i < n && data; i++) {
+    const o = i * 16
+    rows.push({
+      x: data[o + 12] + off[0],
+      y: data[o + 13] + off[1],
+      z: data[o + 14] + off[2],
+      yaw: Math.atan2(data[o + 8], data[o]),
+    })
+  }
+  const em = (mesh) => {
+    const mat = mesh && mesh.material
+    const subs = mat && mat.subMaterials
+    if (!subs) return { multi: false, em: mat && mat.emissiveColor ? [mat.emissiveColor.r, mat.emissiveColor.g, mat.emissiveColor.b] : null }
+    return {
+      multi: true,
+      em: subs.map((sub) => sub && sub.emissiveColor ? [+sub.emissiveColor.r.toFixed(3), +sub.emissiveColor.g.toFixed(3), +sub.emissiveColor.b.toFixed(3)] : null),
+    }
+  }
+  let rugH = 0
+  if (rug) {
+    const bi = rug.getBoundingInfo()
+    rugH = (bi.boundingBox.extendSize.y || 0) * 2
+  }
+  function ang(a, b) {
+    let d = a - b
+    while (d > Math.PI) d -= Math.PI * 2
+    while (d < -Math.PI) d += Math.PI * 2
+    return Math.abs(d)
+  }
+  const want = { S: 0, N: Math.PI, E: Math.PI / 2, W: -Math.PI / 2 }
+  const facing = {}
+  for (const c of cells) {
+    let best = null
+    let bestD = 1e9
+    for (const row of rows) {
+      const d = (row.x - (c.x + 0.5)) ** 2 + (row.y - c.y) ** 2 + (row.z - (c.z + 0.5)) ** 2
+      if (d < bestD) { bestD = d; best = row }
+    }
+    facing[c.side] = best ? { yaw: +best.yaw.toFixed(3), err: +ang(best.yaw, want[c.side]).toFixed(3), dist: +Math.sqrt(bestD).toFixed(2) } : null
+  }
+  s.stand(70.5, 8, 72.8, Math.PI, 0.62)
+  return {
+    phase: s.phase(),
+    n: rows.length,
+    off: [off[0], off[1], off[2]],
+    rows: rows.map((r) => ({ x: +r.x.toFixed(1), y: +r.y.toFixed(1), z: +r.z.toFixed(1), yaw: +r.yaw.toFixed(3) })),
+    loaded: s.world(70, 8, 71),
+    facing,
+    lamp: em(lamp),
+    rug: em(rug),
+    rugH,
+    ids: cells.map((c) => s.voxel(c.x, c.y, c.z)),
+  }
+})
+const faceOk = lamps && ['S', 'N', 'E', 'W'].every((side) => lamps.facing[side] && lamps.facing[side].err < 0.25 && lamps.facing[side].dist < 1.5)
+note('wall lamp faces 4 walls', !!lampLoaded && faceOk && lamps.ids.every((id) => id === 1103), JSON.stringify({ n: lamps && lamps.n, off: lamps && lamps.off, rows: lamps && lamps.rows, facing: lamps && lamps.facing }))
+const lampEm = lamps && lamps.lamp && lamps.lamp.em
+const lampGlow = Array.isArray(lampEm) && lampEm.some((c) => c && c[0] > 0.7) && lampEm.some((c) => c && c[0] < 0.25)
+note('only the shade glows', !!(lamps && lamps.lamp && lamps.lamp.multi && lampGlow), JSON.stringify(lamps && lamps.lamp))
+await sleep(500)
+const lampShot = await shot(desk.page, 'lamp-night')
+const lampPx = py(LAMP, [lampShot])
+note('night lamp is not a streak', lampPx[0] >= 40 && lampPx[3] > 0.35 && lampPx[3] < 3.2 && Math.min(lampPx[1], lampPx[2]) >= 10, lampPx.join(' '))
+const rugEm = lamps && lamps.rug && lamps.rug.em
+const rugOk = lamps && lamps.rug && lamps.rug.multi && lamps.rugH >= 0.045 && lamps.rugH <= 0.08 && Array.isArray(rugEm) && rugEm.every((c) => c && c[0] < 0.4) && rugEm.some((c) => c && c[0] > 0.05)
+note('rug is a darker 2-tone', !!rugOk, JSON.stringify({ h: lamps && lamps.rugH, rug: lamps && lamps.rug }))
+await desk.page.evaluate(() => window.__smoke.stand(68.8, 8.15, 73.4, Math.PI, 1.05))
+await sleep(450)
+const rugShot = await shot(desk.page, 'rug-night')
+const rugPx = py(RUG, [rugShot])
+note('rug visible at night', rugPx[0] >= 20, rugPx.join(' '))
+
+await desk.page.evaluate(() => {
+  const B = window.__blocks
+  B.lookHand({ show: true, side: 'right', cam: 'close' })
+  B.noa.camera.zoomDistance = 0
+  B.noa.setPaused(false)
+  document.body.classList.remove('menu-open', 'photo')
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  window.__smoke.emptyBag()
+  window.__smoke.arm()
+  window.__smoke.seek(1000)
+})
+await desk.page.waitForFunction(() => {
+  const h = window.__blocks.hand()
+  return h && h.visible && !h.key
+}, { timeout: 8000 }).catch(() => {})
+await sleep(250)
+const bare = await shot(desk.page, 'hand-bare')
+await desk.page.evaluate(() => {
+  window.__blocks.give('planks', 4)
+  window.__smoke.key(0)
+  window.__blocks.lookHand({ show: true, side: 'right', cam: 'close' })
+  window.__blocks.noa.camera.zoomDistance = 0
+})
+await desk.page.waitForFunction(() => {
+  const meshes = window.__blocks.noa.rendering.scene.meshes
+  const h = window.__blocks.hand()
+  return h && h.visible && h.key === 'block:planks' && meshes.some((m) => m.name === 'hand-b-10' && m.isEnabled())
+}, { timeout: 8000 }).catch(() => {})
+await sleep(250)
+const held = await shot(desk.page, 'hand-block')
+const corner = py(CORNER, [held, bare])
+note('held block fits the hand', corner[0] > 0.008 && corner[0] < 0.25, (corner[0] * 100).toFixed(2) + '%')
+
+const jump = await desk.page.evaluate(async () => {
+  const B = window.__blocks
+  const s = window.__smoke
+  B.mode('survival')
+  B.noa.setPaused(false)
+  B.effects.clear('fly')
+  B.effects.give('jump', { level: 2, ms: 180000 })
+  for (let x = 40; x <= 49; x++) {
+    for (let z = 40; z <= 54; z++) {
+      for (let y = 3; y <= 18; y++) s.plant(x, y, z, 0)
+      s.plant(x, 4, z, 2)
+    }
+  }
+  for (let y = 5; y <= 10; y++) {
+    for (let x = 40; x <= 49; x++) s.plant(x, y, 40, 2)
+    for (let z = 40; z <= 54; z++) { s.plant(40, y, z, 2); s.plant(49, y, z, 2) }
+  }
+  for (let x = 41; x <= 48; x++) {
+    s.plant(x, 5, 46, 2)
+    s.plant(x, 6, 46, 2)
+    s.plant(x, 7, 46, 2)
+  }
+  s.stand(44.5, 8, 44.4, 0, 0)
+  B.hold('forward', false)
+  B.hold('jump', false)
+  const wait = async (ms) => {
+    const t = performance.now()
+    while (performance.now() - t < ms) await new Promise((r) => requestAnimationFrame(r))
+  }
+  let solid = 0
+  const tLoad = performance.now()
+  while (performance.now() - tLoad < 8000) {
+    await new Promise((r) => requestAnimationFrame(r))
+    solid = s.world(44, 5, 46)
+    if (solid === 2 && s.world(44, 4, 44) === 2 && s.world(44, 12, 44) === 0 && s.grounded()) break
+  }
+  await wait(200)
+  const y0 = s.pos()[1]
+  B.hold('forward', true)
+  await wait(180)
+  B.hold('jump', true)
+  let peak = s.pos()[1]
+  const t = performance.now()
+  while (performance.now() - t < 2400) {
+    await new Promise((r) => requestAnimationFrame(r))
+    const p = s.pos()
+    if (p[1] > peak) peak = p[1]
+  }
+  const end = s.pos()
+  B.hold('forward', false)
+  B.hold('jump', false)
+  return { y0, peak, dy: peak - y0, end, level: B.effects.level('jump'), solid, air: s.world(44, 12, 44), grounded: s.grounded() }
+})
+const cleared = jump && jump.end && jump.end[2] > 46.35 && jump.dy >= 3.2 && jump.dy < 4.2
+note('Jump II clears a 3-block wall', !!cleared, JSON.stringify(jump))
+
+note('1366 console', desk.errors.length === 0, desk.errors.slice(0, 4).join(' | '))
+await desk.ctx.close()
+
+for (const [w, h, tag] of [[915, 412, '915'], [412, 732, '412']]) {
+  const view = await boot(w, h)
+  await saveClick(view.page, tag)
+  note(tag + ' console', view.errors.length === 0, view.errors.slice(0, 4).join(' | '))
+  await view.ctx.close()
+}
+
+await browser.close()
+server.close()
+console.log(JSON.stringify(report, null, 2))
+if (report.fail) process.exit(1)

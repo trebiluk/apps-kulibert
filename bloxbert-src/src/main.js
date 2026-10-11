@@ -13,7 +13,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { ShaderMaterial } from '@babylonjs/core/Materials/shaderMaterial'
 import { Effect } from '@babylonjs/core/Materials/effect'
 import { Scene } from '@babylonjs/core/scene'
-import { Vector3, Vector4, Matrix } from '@babylonjs/core/Maths/math.vector'
+import { Vector3, Vector4, Matrix, Quaternion } from '@babylonjs/core/Maths/math.vector'
 import { Ray } from '@babylonjs/core/Culling/ray'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
 import { Light } from '@babylonjs/core/Lights/light'
@@ -142,6 +142,7 @@ function roundPos(p) {
   return [Math.round(p[0]), Math.round(p[1]), Math.round(p[2])]
 }
 let digCache = { at: 0, spot: null }
+let digChipUntil = 0
 function peekId(x, y, z) {
   const ci = Math.floor(x / S)
   const cj = Math.floor(y / S)
@@ -190,47 +191,58 @@ function nearestDig() {
 }
 function paintDigChip(spot) {
   let chip = document.getElementById('dig-chip')
-  if (!spot) {
-    if (chip) chip.hidden = true
-    return
-  }
   if (!chip) {
     chip = document.createElement('button')
     chip.type = 'button'
     chip.id = 'dig-chip'
-    chip.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:42;min-height:44px;min-width:44px;padding:8px 14px;border-radius:999px;border:1px solid #d7e2f2;background:#132033;color:#f4f7fb;font:600 14px/1.2 system-ui,sans-serif;cursor:pointer;'
+    chip.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateZ(0);isolation:isolate;z-index:42;min-height:44px;min-width:44px;padding:8px 14px;border-radius:999px;border:1px solid #d7e2f2;background:#132033;color:#f4f7fb;font:600 14px/1.2 system-ui,sans-serif;cursor:pointer;'
     chip.addEventListener('pointerdown', (e) => e.stopPropagation())
     chip.addEventListener('click', (e) => {
       e.preventDefault()
       e.stopPropagation()
-      if (!digCache.spot) return
-      const here = noa.entities.getPosition(noa.playerEntity)
-      setLook(Math.atan2(digCache.spot[0] + 0.5 - here[0], digCache.spot[2] + 0.5 - here[2]), noa.camera.pitch)
+      chip.hidden = true
+      digChipUntil = 0
     })
     document.body.appendChild(chip)
   }
-  const here = noa.entities.getPosition(noa.playerEntity)
-  const dx = spot[0] + 0.5 - here[0]
-  const dz = spot[2] + 0.5 - here[2]
-  let rel = Math.atan2(dx, dz) - (noa.camera ? noa.camera.heading : 0)
-  rel = Math.atan2(Math.sin(rel), Math.cos(rel))
-  const arrows = ['↑', '↗', '→', '↘', '↓', '↙', '←', '↖']
-  const arrow = arrows[(Math.round(rel / (Math.PI / 4)) + 8) % 8]
-  chip.textContent = arrow + ' ' + t('digOutside')
+  if (spot) {
+    const here = noa.entities.getPosition(noa.playerEntity)
+    const dx = spot[0] + 0.5 - here[0]
+    const dz = spot[2] + 0.5 - here[2]
+    let rel = Math.atan2(dx, dz) - (noa.camera ? noa.camera.heading : 0)
+    rel = Math.atan2(Math.sin(rel), Math.cos(rel))
+    const arrows = ['↑', '↗', '→', '↘', '↓', '↙', '←', '↖']
+    const arrow = arrows[(Math.round(rel / (Math.PI / 4)) + 8) % 8]
+    chip.textContent = arrow + ' ' + t('digOutside')
+  } else chip.textContent = t('digOutside')
   chip.hidden = false
+  digChipUntil = performance.now() + 8000
 }
+function tickDigChip() {
+  const chip = document.getElementById('dig-chip')
+  if (!chip || chip.hidden) return
+  const pos = noa.entities.getPosition(noa.playerEntity)
+  if (performance.now() > digChipUntil || !inTown(pos[0], pos[2])) {
+    chip.hidden = true
+    digChipUntil = 0
+  }
+}
+setInterval(tickDigChip, 400)
 function noteProtected() {
   const now = performance.now()
-  if (now - protectTold < 3000) return
+  if (protectTold && now - protectTold < 3000) return
   protectTold = now
   toast(t('protectedArea') + ' — ' + t('digOutside'))
   ringUntil = now + 2000
+  paintDigChip(digCache.spot)
   if (now - digCache.at >= 10000) {
+    digCache = { at: now, spot: digCache.spot }
     let spot = null
     try { spot = nearestDig() } catch (e) { spot = null }
     digCache = { at: now, spot }
+    const chip = document.getElementById('dig-chip')
+    if (chip && !chip.hidden) paintDigChip(spot)
   }
-  paintDigChip(digCache.spot)
 }
 function zoneLocked(x, y, z) {
   if (teacherOn() || townHelper()) return false
@@ -766,15 +778,37 @@ function floorLampMesh(on) {
   const shade = part('shade', 0.28, 0.18, 0.28, 0, 0.84, 0, 0, shadeMat)
   return lampShape('floorLamp' + (on ? 'On' : 'Off'), [base, stem, shade], shadeMat)
 }
-function wallLampMesh(on) {
-  const arm = part('arm', 0.08, 0.08, 0.22, 0, 0.5, 0.12, 0, woodD)
-  const shadeMat = on ? lampD : woodD
-  const shade = part('shade', 0.18, 0.14, 0.18, 0, 0.58, 0.28, 0, shadeMat)
-  return lampShape('wallLamp' + (on ? 'On' : 'Off'), [arm, shade], shadeMat)
+function mergeMats(name, parts) {
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = name
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  return mesh
 }
+function wallLampMesh(on) {
+  const arm = part('arm', 0.08, 0.08, 0.18, 0, 0.55, -0.41, 0, woodD)
+  const shadeMat = on ? lampD : woodD
+  const shade = part('shade', 0.22, 0.22, 0.22, 0, 0.55, -0.2, 0, shadeMat)
+  return mergeMats('wallLamp' + (on ? 'On' : 'Off'), [arm, shade])
+}
+function wallLampFacing(mesh, x, y, z) {
+  const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+  const side = rec && rec.side
+  const yaw = side === 'E' ? Math.PI / 2 : side === 'W' ? -Math.PI / 2 : side === 'N' ? Math.PI : 0
+  mesh.rotationQuaternion = Quaternion.RotationYawPitchRoll(yaw, 0, 0)
+  mesh.rotation.x = 0
+  mesh.rotation.y = yaw
+  mesh.rotation.z = 0
+}
+const rugEdge = dye('rug-edge', 0.28, 0.14, 0.09)
+rugEdge.emissiveColor = new Color3(0.09, 0.04, 0.025)
+const rugMid = dye('rug-mid', 0.46, 0.22, 0.13)
+rugMid.emissiveColor = new Color3(0.15, 0.07, 0.035)
 function rugMesh() {
-  const rug = part('rug', 0.92, 0.04, 0.92, 0, 0.02, 0, 0, dye('rug', 0.72, 0.58, 0.42))
-  return shape('rug', [rug], dye('rug', 0.72, 0.58, 0.42))
+  const edge = part('edge', 0.92, 0.05, 0.92, 0, 0.025, 0, 0, rugEdge)
+  const mid = part('mid', 0.58, 0.052, 0.58, 0, 0.027, 0, 0, rugMid)
+  return mergeMats('rug', [edge, mid])
 }
 const SHAPES = {
   28: wheatMesh(),
@@ -832,6 +866,7 @@ for (const [id, name, material] of BLOCKS) {
   const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
   if (fluid) { opts.fluid = true; opts.opaque = false; opts.solid = false }
   if (mesh && !fluid) opts.blockMesh = mesh
+  if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
     opts.onSet = fix
@@ -1353,9 +1388,18 @@ function placeWallLamp(face) {
   const y = Math.floor(face.position[1] + (normal[1] || 0))
   const z = Math.floor(face.position[2] + (normal[2] || 0))
   if (getVoxel(x, y, z)) { toast(t('noRoom')); return false }
-  if (session && !session.onPlace(x, y, z, 1102)) return false
-  if (!edit(x, y, z, 1102)) return false
-  if (session && session.meta) session.meta.set(x + ',' + y + ',' + z, { kind: 'wallLamp', side: (normal[0] > 0 ? 'E' : normal[0] < 0 ? 'W' : normal[2] > 0 ? 'S' : 'N'), design: (session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null })
+  const key = x + ',' + y + ',' + z
+  const side = normal[0] > 0 ? 'E' : normal[0] < 0 ? 'W' : normal[2] > 0 ? 'S' : 'N'
+  const design = (session && session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null
+  if (session && session.meta) session.meta.set(key, { kind: 'wallLamp', side, design })
+  if (session && !session.onPlace(x, y, z, 1102)) {
+    if (session.meta) session.meta.delete(key)
+    return false
+  }
+  if (!edit(x, y, z, 1102)) {
+    if (session && session.meta) session.meta.delete(key)
+    return false
+  }
   if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
 }
@@ -3902,6 +3946,8 @@ const learn = createLearn({
   setBright: (on) => basics && basics.setBright(on),
   bright: () => !!(basics && basics.bright),
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
+  world: () => WORLD,
+  count: (item) => (session && session.bag ? session.bag.count(item) : 0),
 })
 markPath = (id) => learn.bump(id)
 paintPath = () => learn.paintPath()
@@ -3938,10 +3984,14 @@ for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
 $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
 const pathChip = $('path-chip')
-if (pathChip) pathChip.addEventListener('click', (e) => {
-  if (e.target.closest && e.target.closest('.path-x')) { learn.dismissPath(); return }
-  openMenu(true); panels.open('goals')
-})
+if (pathChip) {
+  pathChip.addEventListener('pointerdown', (e) => e.stopPropagation())
+  pathChip.addEventListener('click', (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    learn.dismissPath()
+  })
+}
 $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('log') })
 $('wallet-chip').addEventListener('click', () => { toast(t('practiceTip')); openMenu(true); panels.open('wallet') })
 let menuFromLock = false
@@ -4658,6 +4708,8 @@ function boxedIn() {
   return true
 }
 function feelTick(dt) {
+  if (learn && learn.sync) learn.sync()
+  tickDigChip()
   Effects.tick(dt)
   if (basics) basics.tick()
   if (session && session.tickDrops) session.tickDrops(dt)
@@ -4891,7 +4943,45 @@ noa.on('tick', (dt) => {
 })
 
 const canvas = noa.container.canvas
-canvas.addEventListener('contextmenu', (e) => e.preventDefault())
+function canvasHit(e) { return !!(e && e.target === canvas) }
+function hudAt(e) {
+  if (!e || TOUCH_UI) return null
+  let top = null
+  try { top = document.elementFromPoint(e.clientX, e.clientY) } catch (err) { return null }
+  if (!top || top === canvas || top === stageEl) return null
+  if (top.closest && top.closest('#stage')) return null
+  if (e.target === top || (top.contains && top.contains(e.target))) return null
+  if (!e.clientX && !e.clientY) return null
+  return top
+}
+const stageEl = document.getElementById('stage')
+function keepHudClick(e) {
+  const top = hudAt(e)
+  if (!top) return
+  e.preventDefault()
+  e.stopPropagation()
+  const shell = noa.container && noa.container._shell
+  if (shell) shell.stickyPointerLock = false
+  if (e.type === 'click') {
+    top.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY, button: e.button || 0 }))
+    setTimeout(() => {
+      if (!TOUCH_UI && shell && !anyCard() && !tableMode) shell.stickyPointerLock = true
+    }, 0)
+  }
+}
+window.addEventListener('pointerdown', keepHudClick, true)
+window.addEventListener('mousedown', keepHudClick, true)
+window.addEventListener('click', keepHudClick, true)
+window.addEventListener('pointerdown', (e) => {
+  if (canvasHit(e) || TOUCH_UI) return
+  const shell = noa.container && noa.container._shell
+  if (!shell || !shell.stickyPointerLock) return
+  shell.stickyPointerLock = false
+  setTimeout(() => {
+    if (!TOUCH_UI && !anyCard() && !tableMode) shell.stickyPointerLock = true
+  }, 0)
+}, true)
+canvas.addEventListener('contextmenu', (e) => { if (canvasHit(e)) e.preventDefault() })
 let look = null
 const LOOK_H = 0.40 * Math.PI / 180
 const LOOK_V = 0.34 * Math.PI / 180
@@ -4975,7 +5065,7 @@ document.addEventListener('mousemove', (e) => {
   if (performance.now() < lockSwallowUntil) return
   applyLockedLook(dx, dy)
 }, true)
-canvas.addEventListener('mousedown', (e) => { if (e.button === 1) e.preventDefault() })
+canvas.addEventListener('mousedown', (e) => { if (!canvasHit(e)) return; if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 function targetHit() {
   const t = noa.targetedBlock
@@ -4984,6 +5074,7 @@ function targetHit() {
   return { id: t.blockID, blockID: t.blockID, position: t.position.slice(), adjacent: (t.adjacent || t.position).slice(), normal: n ? [n[0], n[1], n[2]] : null, face: t }
 }
 canvas.addEventListener('pointerdown', (e) => {
+  if (!canvasHit(e)) return
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
   if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
   if (e.button > 0 || tableMode) return
@@ -5125,9 +5216,8 @@ canvas.addEventListener('pointerup', (e) => {
 canvas.addEventListener('pointercancel', () => { look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar() })
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
+  if (!canvasHit(e)) return
   if (eatResume(e)) return
-  const world = noa.container.element
-  if (!world || (e.target !== canvas && e.target !== world && !world.contains(e.target))) return
   const snap = targetHit()
   if (tryEatClick(snap)) {
     mouseRight = false
@@ -6014,7 +6104,11 @@ if (!__BLOX_STUDENT__) {
     history: (x, y, z) => changeLog.history(x, y, z),
     logPrune: (nowMs) => changeLog.prune(nowMs),
     bag: () => session.bag.dump(),
-    give: (item, n) => session.give(item, n),
+    give: (item, n) => {
+      const left = session.give(item, n)
+      if (learn && learn.sync) learn.sync()
+      return left
+    },
     cogs: () => session.wallet.balance(),
     ledger: () => session.wallet.state.ledger,
     vendTick: (n) => session.vendTick(n),
@@ -6245,6 +6339,12 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return r ? r.in.map((p) => p[0] + ':' + p[1]).join('+') : ''
     },
     persist: () => save(),
+    townLock(x, y, z) {
+      protectTold = 0
+      const locked = zoneLocked(x, y, z)
+      const chip = document.getElementById('dig-chip')
+      return { locked, shown: !!(chip && !chip.hidden), text: chip ? chip.textContent : '' }
+    },
     energy: () => session && session.energyState ? session.energyState() : { bolts: 0 },
     setEnergy: (n) => session && session.setEnergy ? session.setEnergy(n) : 0,
     clock: (n) => basics && basics.clock(n),

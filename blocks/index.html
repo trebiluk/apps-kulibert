@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.157">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.157">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.158">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.158">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -15,7 +15,7 @@ html[data-ts="s"]{font-size:13px}
 html[data-ts="l"]{font-size:18px}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,a:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
-#stage{position:fixed;inset:0}
+#stage{position:fixed;inset:0;z-index:1}
 #stage canvas{width:100%;height:100%;display:block;touch-action:none;outline:none}
 .top{position:fixed;left:0;right:0;top:0;min-height:60px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:6px 12px;direction:ltr;background:rgba(11,18,32,.92);border-bottom:1px solid var(--line);z-index:5}
 html[data-kb-bar]:not(.kb-framed) .top{top:48px}
@@ -464,7 +464,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="station"] .gtile,
 html[data-kp-contrast="1"] #sheet[data-panel="bench"] .gtile,
 html[data-kp-contrast="1"] #sheet[data-panel="station"] .arrow-bar,
 html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px solid #E6EEF2;border-style:solid}
-#hotbar{left:50%;right:auto;bottom:0;transform:translateX(-50%);box-sizing:border-box;width:max-content;max-width:calc(100vw - 8px);display:flex;align-items:flex-end;gap:var(--ks-gap);overflow:visible;padding:4px 1px 8px;background-color:#0E1A22;background-image:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px);border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:10px;color:#E6EEF2;pointer-events:none}
+#hotbar{left:50%;right:auto;bottom:0;transform:translateX(-50%) translateZ(0);isolation:isolate;box-sizing:border-box;width:max-content;max-width:calc(100vw - 8px);display:flex;align-items:flex-end;gap:var(--ks-gap);overflow:visible;padding:4px 1px 8px;background-color:#0E1A22;background-image:radial-gradient(circle at 8px 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) 8px,#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at 8px calc(100% - 8px),#3FB8C4 3px,transparent 3.5px),radial-gradient(circle at calc(100% - 8px) calc(100% - 8px),#3FB8C4 3px,transparent 3.5px);border:3px solid #1F8A8A;box-shadow:inset 0 0 0 3px #0B2A30;border-radius:10px;color:#E6EEF2;pointer-events:none}
 #hotbar .slot,#hotbar button{pointer-events:auto}
 #hotbar .item-strip{display:flex;gap:var(--ks-gap);overflow:visible;flex:0 1 auto;min-width:0;align-items:flex-end}
 #hotbar .slot:not(.bag-tile){width:var(--ks-slot);height:var(--ks-slot);min-width:var(--ks-slot);min-height:var(--ks-slot);flex:0 0 var(--ks-slot);padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;position:relative;gap:0}
@@ -585,6 +585,10 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   #hotbar .slot.bump,#held-chip.on,#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap{animation:none;transition:none}
   #held-chip.on{opacity:1}
 }
+.top,#hotbar,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#mode-pill,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{z-index:30;pointer-events:auto;isolation:isolate}
+.top,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
+#hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
+#sheet{z-index:40}
 
 </style>
 </head>
@@ -598,7 +602,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.157</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.158</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -740,9 +744,9 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.157"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.157" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.157" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.158"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.158" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.158" defer></script>
 <script>
 ;(function () {
   try {

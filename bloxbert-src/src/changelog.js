@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.158', date: '2026-10-10', lines: {
+    en: ['HUD buttons no longer click the world, tips go away, wall lamps sit on the wall, rugs show at night, a held block fits the hand, and Jump II clears a 3-block wall.'],
+    uk: ['Кнопки більше не тиснуть світ, підказки зникають, настінна лампа сідає на стіну, килим видно вночі, блок у руці менший, і Стрибок II долає стіну з трьох блоків.'],
+    ru: ['Кнопки больше не нажимают мир, подсказки исчезают, настенная лампа садится на стену, ковёр видно ночью, блок в руке меньше, и Прыжок II берёт стену из трёх блоков.'],
+    es: ['Los botones ya no tocan el mundo, los avisos se van, la lámpara de pared queda en la pared, la alfombra se ve de noche, el bloque en la mano cabe, y Salto II pasa un muro de 3 bloques.'],
+    ar: ['الأزرار لم تعد تضغط العالم، والنصائح تختفي، ومصباح الجدار يثبت على الجدار، والسجادة تُرى ليلاً، والمكعب في اليد يصغر، والقفز II يتخطى جداراً من 3 مكعبات.'],
+    'fa-AF': ['دکمه‌ها دیگر دنیا را کلیک نمی‌کنند، نکته‌ها می‌روند، چراغ دیواری به دیوار می‌چسبد، فرش شب دیده می‌شود، بلاک در دست جا می‌شود، و پرش II دیوار سه بلاکی را رد می‌کند.'],
+    rw: ['Utubuto ntukongera gukanda isi, inama ziragenda, itara ry\'urukuta rihagarara ku rukuta, umusambi uragaragara nijoro, ibibumbe mu kuboko bibamo, na Gusimbuka II birenga urukuta rw\'amabuye atatu.'],
+    ti: ['መጠወቒታት ዓለም ኣይጽቅጡን፡ ምኽርታት ይኸዱ፡ መብራህቲ መንደቕ ኣብ መንደቕ ይቐመጥ፡ መናጽፍ ኣብ ለይቲ ይረአ፡ ብሎክ ኣብ ኢድ ይኣቱ፡ ምዝላል II ድማ ናይ 3 ብሎክ መንደቕ ይሓልፍ።'],
+  }},
   { v: '2.5.157', date: '2026-10-10', lines: {
     en: ['Old worlds each keep their own archive. Item pictures are shapes, not filled squares.'],
     uk: ['Старі світи тримають свою копію. Малюнки речей — форми, не суцільні квадрати.'],

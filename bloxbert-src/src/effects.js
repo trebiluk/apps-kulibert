@@ -115,7 +115,7 @@ function speedMul() {
 
 function jumpV(base) {
   const e = entry('jump')
-  const extra = e ? (e.level >= 2 ? 2.2 : 1) : 0
+  const extra = e ? (e.level >= 2 ? 2.42 : 1) : 0
   if (!extra) return base
   const g = 32
   const h = (base * base) / (2 * g) + extra

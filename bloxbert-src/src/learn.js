@@ -20,6 +20,24 @@ export function createLearn(api) {
     state.goals = Object.fromEntries(goals.map((g) => [g.id, { n: g.n, done: !!g.done }]))
     save()
   }
+  function worldId() {
+    return String((api.world && api.world()) || 'world')
+  }
+  function dismissedBag() {
+    if (!state.dismissed || typeof state.dismissed !== 'object' || Array.isArray(state.dismissed)) state.dismissed = {}
+    const id = worldId()
+    const bag = state.dismissed[id]
+    if (!bag || typeof bag !== 'object' || Array.isArray(bag)) state.dismissed[id] = {}
+    return state.dismissed[id]
+  }
+  function dismissed(id) {
+    return !!dismissedBag()[id]
+  }
+  function dismissId(id) {
+    if (!id || dismissed(id)) return
+    dismissedBag()[id] = 1
+    save()
+  }
   let cardHidden = false
   let cardArmed = false
   let hideTimer = 0
@@ -34,7 +52,9 @@ export function createLearn(api) {
     }, 60000)
   }
   function dismissPath() {
-    cardHidden = true
+    const g = goals.find((x) => !x.done && !dismissed(x.id))
+    if (g) dismissId(g.id)
+    cardHidden = false
     cardArmed = false
     clearTimeout(hideTimer)
     paintPath()
@@ -44,11 +64,20 @@ export function createLearn(api) {
     cardArmed = false
     paintPath()
   }
+  function sync() {
+    const g = goals.find((x) => x.id === 'pathTree')
+    if (!g || g.done) return false
+    let logs = 0
+    try { logs = api.count ? api.count('log') : 0 } catch (e) { logs = 0 }
+    if (!(logs >= 1)) return false
+    bump('pathTree', Math.max(1, g.need - (g.n || 0)))
+    return true
+  }
   function paintPath() {
     const el = document.getElementById('path-chip')
     if (!el) return
     if (api.survival && !api.survival()) { el.hidden = true; return }
-    const g = goals.find((x) => !x.done)
+    const g = goals.find((x) => !x.done && !dismissed(x.id))
     if (!g || cardHidden) { el.hidden = true; el.replaceChildren(); return }
     armCard()
     el.hidden = false
@@ -82,6 +111,7 @@ export function createLearn(api) {
     g.n += n
     if (g.n >= g.need) {
       g.done = true
+      dismissId(g.id)
       cardHidden = true
       cardArmed = false
       clearTimeout(hideTimer)
@@ -177,5 +207,5 @@ export function createLearn(api) {
     save()
     return true
   }
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, goals: () => goals, cancelAuto, notes, addNote }
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, sync, goals: () => goals, cancelAuto, notes, addNote }
 }

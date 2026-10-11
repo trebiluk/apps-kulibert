@@ -170,8 +170,8 @@ export function createHands(opts) {
 
   function holdBlock(mesh) {
     mesh.parent = itemAnchor
-    mesh.position.set(0, 0, 0)
-    mesh.rotation.set(0.35, -0.6, 0)
+    mesh.position.set(0.02, -0.03, 0.02)
+    mesh.rotation.set(0.15, 0.35, 0.05)
     mesh.scaling.set(1, 1, 1)
     mesh.setEnabled(true)
   }
@@ -195,7 +195,7 @@ export function createHands(opts) {
       return built
     }
     if (!url) {
-      mesh = CreateBox('hand-b-' + id, { size: 0.5 }, scene)
+      mesh = CreateBox('hand-b-' + id, { size: 0.22 }, scene)
       mesh.material = solidMat(faces.color || [0.5, 0.5, 0.5])
       return finish(mesh)
     }
@@ -215,7 +215,7 @@ export function createHands(opts) {
       // CreateBox face order: +z, -z, +x, -x, +y, -y. noa dir: +x -x +y -y +z -z.
       const order = [4, 5, 0, 1, 2, 3]
       const faceUV = order.map((d) => uv(faces.idx[d]))
-      mesh = CreateBox('hand-b-' + id, { size: 0.55, faceUV }, scene)
+      mesh = CreateBox('hand-b-' + id, { size: 0.22, faceUV }, scene)
       mesh.material = atlasMat(url, info.tex)
       finish(mesh)
     }

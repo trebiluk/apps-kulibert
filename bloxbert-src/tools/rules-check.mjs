@@ -752,7 +752,7 @@ eq(Effects.level('speed') === 2 && Object.keys(Effects.dump()).length === 0, 'se
 const baseH = jumpHeight(JUMP_V)
 Effects.give('jump', { level: 2, ms: 60000 })
 const hi = jumpHeight(Effects.jumpV(JUMP_V))
-eq(baseH < 1.4 && hi >= 3.4 && hi < 3.6, 'jump II clears a 3-block wall ' + baseH + ' -> ' + hi)
+eq(baseH < 1.4 && hi >= 3.4 && hi < 3.8, 'jump II clears a 3-block wall ' + baseH + ' -> ' + hi)
 
 const blockedFly = Effects.spaceFly(true, false)
 eq(blockedFly.ok === false && blockedFly.flying === false, 'survival space without fly stays down')
