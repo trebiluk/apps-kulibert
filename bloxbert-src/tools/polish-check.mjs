@@ -392,6 +392,25 @@ const tipsSaved2 = await desk.page.evaluate(() => {
 note('hide tips stays after reload', tip.hidden && tipsSaved2, tip.text.slice(0, 40))
 await desk.page.evaluate(() => {
   const raw = JSON.parse(localStorage.getItem('bloxbert-learn') || '{}')
+  raw.tourDone = true
+  raw.hideTips = false
+  localStorage.setItem('bloxbert-learn', JSON.stringify(raw))
+})
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await sleep(1200)
+const tour = await desk.page.evaluate(() => {
+  const sheet = document.getElementById('sheet')
+  const rc = document.getElementById('rules-card')
+  return {
+    hidden: !sheet || !!sheet.hidden,
+    panel: (sheet && sheet.dataset.panel) || '',
+    rules: !!(rc && !rc.hidden),
+  }
+})
+note('tour does not reopen on reload', !!(tour && tour.hidden && tour.panel !== 'tour'), JSON.stringify(tour))
+await desk.page.evaluate(() => {
+  const raw = JSON.parse(localStorage.getItem('bloxbert-learn') || '{}')
   raw.hideTips = false
   localStorage.setItem('bloxbert-learn', JSON.stringify(raw))
   const sheet = document.getElementById('sheet')
@@ -765,37 +784,186 @@ const walk = await desk.page.evaluate(async () => {
   }
   const flat = await run(false)
   const step = await run(true)
-  const spots = [[100, -40], [140, -50], [160, 70], [-80, 80]]
-  let best = { x: 100, z: -40, top: 0 }
-  for (const [x, z] of spots) {
-    s.stand(x + 0.5, 26, z + 0.5, 0, 0)
-    const t1 = performance.now()
-    let top = 0
-    while (performance.now() - t1 < 1200) {
-      await new Promise((r) => requestAnimationFrame(r))
-      for (let y = 22; y >= 1; y--) {
-        if (s.world(x, y, z)) { top = y; break }
-      }
-      if (top >= 6) break
-    }
-    if (top > best.top) best = { x, z, top }
-    if (best.top >= 7) break
+  s.stand(140.5, 30, -50.5, 0, 0)
+  const tLoad = performance.now()
+  while (performance.now() - tLoad < 2500) {
+    await new Promise((r) => requestAnimationFrame(r))
+    if (s.world(140, 4, -50) || s.voxel(140, 8, -50)) break
   }
-  let hill = { miss: true, top: best.top, x: best.x, z: best.z }
-  if (best.top >= 6) {
-    s.stand(best.x + 0.5, best.top + 2.2, best.z - 2, 0, 0)
-    await wait(220)
+  function surface(x, z) {
+    for (let y = 28; y >= 1; y--) {
+      const id = s.voxel(x, y, z)
+      if (id && id !== 12) return y
+    }
+    return 0
+  }
+  const dirs = [[0, 1, 0], [0, -1, Math.PI], [1, 0, Math.PI / 2], [-1, 0, -Math.PI / 2]]
+  let rise = null
+  for (let x = 128; x <= 164 && !rise; x++) {
+    for (let z = -76; z <= -32 && !rise; z++) {
+      const low = surface(x, z)
+      if (low < 5) continue
+      for (let d = 0; d < dirs.length; d++) {
+        const dx = dirs[d][0], dz = dirs[d][1], heading = dirs[d][2]
+        const hx = x + dx, hz = z + dz
+        const high = surface(hx, hz)
+        if (high !== low + 1) continue
+        if (s.voxel(x, low + 1, z) || s.voxel(x, low + 2, z)) continue
+        if (s.voxel(hx, high + 1, hz) || s.voxel(hx, high + 2, hz)) continue
+        rise = { x, z, low, high, dx, dz, heading }
+        break
+      }
+    }
+  }
+  let hill = { miss: true }
+  if (rise) {
+    s.stand(rise.x + 0.5, rise.low + 4, rise.z + 0.5, rise.heading, 0)
+    const t1 = performance.now()
+    while (performance.now() - t1 < 4000) {
+      await new Promise((r) => requestAnimationFrame(r))
+      const y = s.pos()[1]
+      if (s.grounded() && s.world(rise.x, rise.low, rise.z) && y > rise.low + 0.4 && y < rise.low + 2.4) break
+    }
+    await wait(200)
+    B.setLook(rise.heading, 0)
     const a = s.pos()
+    let peak = a[1]
     B.hold('forward', true)
-    await wait(1400)
+    const t2 = performance.now()
+    while (performance.now() - t2 < 900) {
+      await new Promise((r) => requestAnimationFrame(r))
+      const y = s.pos()[1]
+      if (y > peak) peak = y
+    }
     const b = s.pos()
     B.hold('forward', false)
-    hill = { dz: +(b[2] - a[2]).toFixed(2), speed: +((b[2] - a[2]) / 1.4).toFixed(2), y0: +a[1].toFixed(2), y1: +b[1].toFixed(2), top: best.top, x: best.x, z: best.z }
+    hill = { dz: +(b[2] - a[2]).toFixed(2), dx: +(b[0] - a[0]).toFixed(2), speed: +(Math.hypot(b[0] - a[0], b[2] - a[2]) / 0.9).toFixed(2), y0: +a[1].toFixed(2), y1: +b[1].toFixed(2), peak: +peak.toFixed(2), rise: +(peak - a[1]).toFixed(2), low: rise.low, high: rise.high, x: rise.x, z: rise.z, heading: +rise.heading.toFixed(2) }
   }
   return { flat, step, hill }
 })
 const walkOk = walk && walk.flat.speed > 2.2 && walk.step.speed > 2 && walk.step.dz > walk.flat.dz * 0.65 && walk.step.y1 > walk.flat.y1 + 0.4
+  && walk.hill && walk.hill.rise > 0.7 && walk.hill.rise < 1.8
 note('walk speed flat and 1-block hill step', !!walkOk, JSON.stringify(walk))
+
+const shop = await desk.page.evaluate(async () => {
+  const B = window.__blocks
+  const s = window.__smoke
+  B.mode('survival')
+  s.emptyBag()
+  s.plant(24, 5, 14, 69)
+  s.stand(24.5, 8, 16.4, Math.PI, 0)
+  await new Promise((r) => setTimeout(r, 400))
+  B.placeBlock({ position: [24, 5, 14], blockID: 69, normal: [0, 0, -1] })
+  await new Promise((r) => setTimeout(r, 250))
+  const read = () => [...document.querySelectorAll('#sheet .bed-card')].map((card) => {
+    const btns = [...card.querySelectorAll('.bed-paths > button, .bed-paths > .keycap')]
+    return {
+      item: card.dataset.item || 'bed',
+      labels: btns.map((b) => ((b.querySelector('.blab') || {}).textContent || '').trim()),
+      icons: btns.filter((b) => b.querySelector('.bic svg')).length,
+      tall: btns.filter((b) => b.getBoundingClientRect().height >= 44 && b.getBoundingClientRect().width >= 44).length,
+      off: btns.filter((b) => b.disabled).length,
+      why: btns.map((b) => b.title || ''),
+    }
+  })
+  const closed = read()
+  for (const id of ['safetyGlasses', 'measuringTape', 'handSaw', 'hammer', 'ironIngot', 'glass', 'stick']) B.give(id, 2)
+  B.give('woolBlue', 8)
+  B.give('woolRed', 4)
+  for (const el of document.querySelectorAll('#sheet .wall-slot')) el.click()
+  await new Promise((r) => setTimeout(r, 200))
+  const hung = read()
+  const design = document.querySelector('#sheet .decor-design-floorLamp')
+  if (design) design.click()
+  await new Promise((r) => setTimeout(r, 200))
+  const teal = document.querySelector('#sheet .decor-card[data-item=floorLamp] [data-shade=Teal]')
+  if (teal) teal.click()
+  await new Promise((r) => setTimeout(r, 150))
+  const measure = (document.querySelector('#sheet .decor-card[data-item=floorLamp] .decor-measure') || {}).textContent || ''
+  const make = document.querySelector('#sheet .decor-card[data-item=floorLamp] .decor-make')
+  if (make) make.click()
+  await new Promise((r) => setTimeout(r, 250))
+  const doc = await B.exportDoc()
+  const held = doc && doc.meta && doc.meta['decor-held'] && doc.meta['decor-held'].list || []
+  const lamp = held.filter((row) => row && row.item === 'floorLamp').pop()
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  document.body.classList.remove('menu-open')
+  try { B.noa.setPaused(false) } catch (e) {}
+  const slot = (B.bag() || []).findIndex((row) => row && row.item === 'floorLamp')
+  if (slot >= 0 && slot < 9) s.key(slot)
+  s.plant(30, 4, 30, 2)
+  s.stand(30.5, 7.2, 32.2, Math.PI, 0)
+  await new Promise((r) => setTimeout(r, 300))
+  B.placeBlock({ position: [30, 4, 30], normal: [0, 1, 0], blockID: 2 })
+  await new Promise((r) => setTimeout(r, 450))
+  const doc2 = await B.exportDoc()
+  const cell = doc2 && doc2.meta && doc2.meta['30,5,30']
+  const sc = B.noa.rendering.getScene()
+  const tint = sc.meshes.find((m) => m.name && m.name.indexOf('decor-tint-') === 0 && m.isEnabled())
+  const rgb = tint ? { r: +tint.material.emissiveColor.r.toFixed(2), g: +tint.material.emissiveColor.g.toFixed(2), b: +tint.material.emissiveColor.b.toFixed(2) } : null
+  await B.save()
+  return { closed, hung, measure, shade: lamp && lamp.design && lamp.design.shade, cell: cell && cell.design, rgb, voxel: s.world(30, 5, 30), slot }
+})
+const cardsOk = shop && shop.closed && shop.closed.length >= 4 && shop.closed.every((c) => c.labels.length >= 2 && c.labels.every((t) => t.length > 1) && c.icons >= 2 && c.tall >= 2 && c.off >= 2 && c.why.every((w) => /Hang 4 tools|tool/i.test(w)))
+note('woodshop cards show two labelled buttons', !!cardsOk, JSON.stringify(shop && shop.closed))
+const made = shop && shop.hung && shop.measure && shop.shade === 'Teal' && shop.cell && shop.cell.shade === 'Teal' && shop.rgb && shop.rgb.b > 0.5 && shop.rgb.r < 0.4 && shop.voxel === 1100
+note('decor design stores the shade', !!made, JSON.stringify({ hung: shop && shop.hung, measure: shop && shop.measure, shade: shop && shop.shade, cell: shop && shop.cell, rgb: shop && shop.rgb, voxel: shop && shop.voxel }))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await sleep(500)
+const kept = await desk.page.evaluate(async () => {
+  const B = window.__blocks
+  const s = window.__smoke
+  s.stand(30.5, 7.2, 32.2, Math.PI, 0)
+  await new Promise((r) => setTimeout(r, 700))
+  const doc = await B.exportDoc()
+  const cell = doc && doc.meta && doc.meta['30,5,30']
+  const sc = B.noa.rendering.getScene()
+  const tint = sc.meshes.find((m) => m.name && m.name.indexOf('decor-tint-') === 0 && m.isEnabled())
+  const rgb = tint ? { r: +tint.material.emissiveColor.r.toFixed(2), g: +tint.material.emissiveColor.g.toFixed(2), b: +tint.material.emissiveColor.b.toFixed(2) } : null
+  return { shade: cell && cell.design && cell.design.shade, rgb, id: s.voxel(30, 5, 30), world: s.world(30, 5, 30) }
+})
+note('decor shade stays after reload', !!(kept && kept.shade === 'Teal' && kept.rgb && kept.rgb.b > 0.5 && kept.id === 1100), JSON.stringify(kept))
+
+const hut = await desk.page.evaluate(async () => {
+  const B = window.__blocks
+  const s = window.__smoke
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  document.body.classList.remove('menu-open')
+  try { B.noa.setPaused(false) } catch (e) {}
+  B.rules.set('survival.daynight', 'night')
+  for (let x = 48; x <= 56; x++) for (let z = 48; z <= 56; z++) for (let y = 4; y <= 12; y++) s.plant(x, y, z, 0)
+  for (let x = 50; x <= 54; x++) for (let z = 50; z <= 54; z++) {
+    s.plant(x, 4, z, 10)
+    s.plant(x, 8, z, 10)
+    for (let y = 5; y <= 7; y++) if (x === 50 || x === 54 || z === 50 || z === 54) s.plant(x, y, z, 10)
+  }
+  s.stand(52.5, 7.2, 52.5, 0, 0)
+  await new Promise((r) => setTimeout(r, 900))
+  return { fps: s.fpsSpan(600) }
+})
+await desk.page.screenshot({ path: '/tmp/hut-dark.png', clip: { x: 430, y: 180, width: 500, height: 320 } })
+await desk.page.evaluate(() => window.__smoke.plant(51, 5, 51, 1101))
+await sleep(700)
+await desk.page.screenshot({ path: '/tmp/hut-lit.png', clip: { x: 430, y: 180, width: 500, height: 320 } })
+const hutLum = JSON.parse(await import('node:child_process').then(({ execFileSync }) => execFileSync('python3', ['-c', `
+from PIL import Image
+import json
+def lum(p):
+    im = Image.open(p).convert('RGB')
+    px = list(im.getdata())
+    acc = 0
+    for r,g,b in px:
+        acc += 0.2126*r + 0.7152*g + 0.0722*b
+    return round(acc / max(1, len(px)), 1)
+print(json.dumps({'dark': lum('/tmp/hut-dark.png'), 'lit': lum('/tmp/hut-lit.png')}))
+`], { encoding: 'utf8' })))
+await sleep(2200)
+const fpsAfter = await desk.page.evaluate(() => window.__smoke.fpsSpan(600))
+const hutOk = hutLum.dark >= 25 && hutLum.lit >= 60 && hutLum.lit > hutLum.dark + 10 && fpsAfter > 7
+note('hut night luminance', !!hutOk, JSON.stringify({ ...hutLum, fps: hut && hut.fps, fpsAfter }))
 
 function angGap(a, b) {
   let d = a - b

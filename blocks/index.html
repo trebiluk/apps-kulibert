@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.163">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.163">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.164">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.164">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -557,6 +557,10 @@ html[data-kp-motion="less"] #held-chip.on{opacity:1}
 #sheet[data-panel=woodshop] .wall-slot.filled{border-style:solid;border-color:#22D3EE;color:#E6EEF2}
 #sheet[data-panel=woodshop] .shop-bag,#sheet[data-panel=woodshop] .shop-guide,#sheet[data-panel=woodshop] .shop-needs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:8px}
 #sheet[data-panel=woodshop] .keycap,#sheet[data-panel=woodshop] .need-tool,#shop-safe button{min-width:44px;min-height:44px}
+#sheet[data-panel=woodshop] .keycap{padding:6px 10px;border:0;border-radius:8px;background:#13303A;color:#E6EEF2;font-weight:800;font-size:13px;line-height:1.15;font-family:system-ui,sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+#sheet[data-panel=woodshop] .keycap:disabled{opacity:.55;color:#E6EEF2}
+#sheet[data-panel=woodshop] .keycap .bic{width:18px;height:18px;display:inline-flex;flex:0 0 18px}
+#sheet[data-panel=woodshop] .keycap .bic svg{width:18px;height:18px;display:block}
 #sheet[data-panel=woodshop] .shop-job{border:2px solid #345;border-radius:10px;padding:8px;margin-top:8px}
 #sheet[data-panel=woodshop] .shop-job.lit{border-color:#22D3EE;box-shadow:0 0 0 3px #22D3EE55;background:#12343a}
 #sheet[data-panel=woodshop] .need-tool{border:0;border-radius:8px;background:#243038;color:#8a97a3;font-weight:800;padding:8px 10px}
@@ -603,7 +607,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.163</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.164</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -745,9 +749,9 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.163"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.163" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.163" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.164"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.164" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.164" defer></script>
 <script>
 ;(function () {
   try {

@@ -71,6 +71,21 @@ function paintBush(g, stage) {
     g.fillRect(34, 8, 4, 4)
   }
 }
+function tile(g, fill, draw) {
+  g.fillStyle = fill
+  boxPath(g, 8, 8, 32, 32, 5)
+  g.fill()
+  g.strokeStyle = 'rgba(20,16,12,.45)'
+  g.lineWidth = 2
+  g.stroke()
+  if (draw) draw(g)
+}
+function asArt(name, painter) {
+  const c = glyph(painter)
+  c.dataset.wrap = name
+  c.dataset.kind = 'wrap'
+  return c
+}
 const FACE = {
   log(g) {
     g.fillStyle = '#6B3A1F'
@@ -313,18 +328,39 @@ const FACE = {
   woodshopSide(g) {
     FACE.woodshop(g)
   },
+  grass(g) { tile(g, '#3FAE46', (c) => { c.fillStyle = '#8d5a2b'; c.fillRect(10, 30, 28, 8) }) },
+  dirt(g) { tile(g, '#8d5a2b', (c) => { c.fillStyle = '#5a3516'; c.fillRect(14, 16, 6, 4); c.fillRect(26, 24, 5, 3) }) },
+  stone(g) { tile(g, '#8a8f98', (c) => { c.fillStyle = '#5c636c'; c.fillRect(14, 16, 8, 6); c.fillRect(24, 24, 7, 5) }) },
+  slate(g) { tile(g, '#5c6770', (c) => { c.strokeStyle = '#2e363c'; c.lineWidth = 2; c.strokeRect(14, 16, 18, 8); c.strokeRect(16, 26, 14, 6) }) },
+  coal(g) { tile(g, '#2a2e33', (c) => { c.fillStyle = '#111418'; c.fillRect(14, 16, 5, 5); c.fillRect(24, 22, 6, 5); c.fillStyle = '#6b7280'; c.fillRect(18, 28, 4, 3) }) },
+  sand(g) { tile(g, '#e6d3a1', (c) => { c.fillStyle = '#c4b07a'; c.fillRect(14, 18, 4, 3); c.fillRect(24, 24, 5, 3); c.fillRect(18, 28, 3, 2) }) },
+  gravel(g) { tile(g, '#9aa3aa', (c) => { c.fillStyle = '#6b7280'; c.fillRect(13, 15, 6, 5); c.fillRect(23, 20, 7, 6); c.fillRect(16, 27, 5, 4) }) },
+  brickRed(g) { tile(g, '#b84a3a', (c) => { c.strokeStyle = '#f3e6d8'; c.lineWidth = 2; c.strokeRect(12, 14, 10, 6); c.strokeRect(24, 14, 10, 6); c.strokeRect(16, 22, 12, 6); c.strokeRect(12, 30, 22, 6) }) },
+  brickGrey(g) { tile(g, '#8d939a', (c) => { c.strokeStyle = '#e6eef2'; c.lineWidth = 2; c.strokeRect(12, 14, 10, 6); c.strokeRect(24, 14, 10, 6); c.strokeRect(16, 22, 12, 6) }) },
+  woolBlue(g) { tile(g, '#3b6fd6') },
+  woolGreen(g) { tile(g, '#2f9e4f') },
+  woolRed(g) { tile(g, '#c43b3b') },
+  woolTan(g) { tile(g, '#c4a36a') },
+  snow(g) { tile(g, '#f4f7fb', (c) => { c.fillStyle = '#dbe7f5'; c.fillRect(14, 18, 6, 4); c.fillRect(24, 26, 7, 4) }) },
+  ice(g) { tile(g, '#c5e8f7', (c) => { c.strokeStyle = '#ffffff'; c.lineWidth = 2; c.beginPath(); c.moveTo(14, 28); c.lineTo(22, 16); c.lineTo(32, 26); c.stroke() }) },
+  redSand(g) { tile(g, '#c47a4a', (c) => { c.fillStyle = '#8d4e2c'; c.fillRect(14, 18, 4, 3); c.fillRect(24, 24, 5, 3) }) },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
+const BLOCK_ALIAS = { leverOn: 'lever', pushButtonOn: 'pushButton', reed: 'leaves', woodshopSide: 'woodshop' }
 export function blockIcon(block, atlas) {
   const name = block && block[1];
-  const wrap = name && getBlockWrap(name);
+  const alias = BLOCK_ALIAS[name] || name
+  const wrap = alias && getBlockWrap(alias);
   if (wrap) {
     wrap.dataset.block = String(block[0]);
+    wrap.dataset.kind = 'wrap'
+    if (!wrap.dataset.wrap) wrap.dataset.wrap = alias
     return wrap;
   }
-  if (FACE[name]) {
-    const c = glyph(FACE[name])
+  const painter = FACE[name] || FACE[alias]
+  if (painter) {
+    const c = asArt(alias || name, painter)
     c.dataset.block = String(block[0])
     return c
   }
@@ -409,7 +445,13 @@ export function slotArt(key, blockNode) {
   if (wrap) {
     wrap.dataset.item = key;
     wrap.dataset.kind = "wrap";
+    if (!wrap.dataset.wrap) wrap.dataset.wrap = key
     return wrap;
+  }
+  if (key && FACE[key]) {
+    const c = asArt(key, FACE[key])
+    c.dataset.item = key
+    return c
   }
   const item = key && ITEMS[key]
   if (item && item.svg) {

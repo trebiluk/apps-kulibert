@@ -1336,9 +1336,14 @@
       return b
     }
     var WOOL_ANY = { woolBlue: 1, woolGreen: 1, woolRed: 1, woolTan: 1 }
+    var STONE_ANY = { stone: 1, slate: 1, coal: 1 }
+    var PLANK_ANY = { planks: 1, birchPlanks: 1, pinePlanks: 1 }
     function ingMatch(need, item) {
       if (need === item) return true
-      return need === 'woolAny' && !!WOOL_ANY[item]
+      if (need === 'woolAny' && WOOL_ANY[item]) return true
+      if (need === 'stoneAny' && STONE_ANY[item]) return true
+      if (need === 'plankAny' && PLANK_ANY[item]) return true
+      return false
     }
     function accepts(well, item) {
       if (!well || well.dataset.ksRole !== 'ing') return false

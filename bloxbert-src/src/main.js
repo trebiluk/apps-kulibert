@@ -1143,6 +1143,9 @@ function setVoxel(x, y, z, v, draw = true) {
   const i = x - ci * S, j = y - cj * S, kk = z - ck * S
   const prev = s[i * S * S + j * S + kk]
   s[i * S * S + j * S + kk] = v
+  if ((prev >= 1100 && prev <= 1105) || (v >= 1100 && v <= 1105)) {
+    if (typeof syncGlow === 'function') syncGlow._dirty = true
+  }
   if (draw) drawVoxel(x, y, z, v)
   if (!voxelQuiet) {
     dirty = true
@@ -1425,6 +1428,44 @@ function reachOpen(pos, repeat) {
 function isShopBlock(id) { return id === ID.woodshop || id === ID.woodshopSide }
 function shopDelta(face) { return face === 'E' || face === 'W' ? [0, 0, 1] : [1, 0, 0] }
 
+function stampDecor(item, design) {
+  if (!session || !session.meta || !item || !design) return
+  const rec = session.meta.get('decor-held') || { kind: 'decor-held', list: [] }
+  rec.list = Array.isArray(rec.list) ? rec.list : []
+  rec.list.push({ item, design })
+  session.meta.set('decor-held', rec)
+  const slot = session.bag && session.bag.slots && session.bag.slots.find((s) => s && s.item === item && !s.design)
+  if (slot) slot.design = JSON.parse(JSON.stringify(design))
+}
+function peekDecor(item) {
+  if (!session || !item) return null
+  const slot = session.bag && session.bag.slots && session.bag.slots.find((s) => s && s.item === item && s.design)
+  if (slot) return slot.design
+  const rec = session.meta.get('decor-held')
+  const row = rec && Array.isArray(rec.list) && rec.list.find((r) => r && r.item === item && r.design)
+  return row ? row.design : null
+}
+function dropDecor(item) {
+  if (!session || !session.meta || !item) return
+  const rec = session.meta.get('decor-held')
+  if (!rec || !Array.isArray(rec.list)) return
+  const i = rec.list.findIndex((r) => r && r.item === item)
+  if (i >= 0) rec.list.splice(i, 1)
+  session.meta.set('decor-held', rec)
+}
+function rehydrateDecor() {
+  if (!session || !session.meta || !session.bag) return
+  const rec = session.meta.get('decor-held')
+  if (!rec || !Array.isArray(rec.list)) return
+  const left = rec.list.slice()
+  for (const s of session.bag.slots) {
+    if (!s || s.design) continue
+    const i = left.findIndex((r) => r && r.item === s.item && r.design)
+    if (i < 0) continue
+    s.design = left[i].design
+    left.splice(i, 1)
+  }
+}
 function isWallLamp(id) { return id === 1102 || id === 1103 }
 function isFloorLamp(id) { return id === 1100 || id === 1101 }
 function isRug(id) { return id === 1104 || id === 1105 }
@@ -1447,7 +1488,7 @@ function placeWallLamp(face) {
   if (getVoxel(x, y, z)) { toast(t('noRoom')); return false }
   const key = x + ',' + y + ',' + z
   const side = normal[0] > 0 ? 'E' : normal[0] < 0 ? 'W' : normal[2] > 0 ? 'S' : 'N'
-  const design = (session && session.bag && session.bag.slots.find(s => s && s.item === 'wallLamp') || {}).design || null
+  const design = peekDecor('wallLamp')
   if (session && session.meta) session.meta.set(key, { kind: 'wallLamp', side, design })
   if (session && !session.onPlace(x, y, z, 1102)) {
     if (session.meta) session.meta.delete(key)
@@ -1457,6 +1498,7 @@ function placeWallLamp(face) {
     if (session && session.meta) session.meta.delete(key)
     return false
   }
+  dropDecor('wallLamp')
   if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
 }
@@ -1478,10 +1520,11 @@ function placeRug(x, y, z) {
   }
   const anchor = x + ',' + y + ',' + z
   if (session && session.meta) {
-    const design = (session.bag && session.bag.slots.find(s => s && s.item === 'rug') || {}).design || null
+    const design = peekDecor('rug')
     for (const [cx, cy, cz] of cells) {
       session.meta.set(cx + ',' + cy + ',' + cz, { kind: 'rug', anchor, design })
     }
+    dropDecor('rug')
   }
   if (typeof syncGlow === 'function') syncGlow._dirty = true
   return true
@@ -1686,10 +1729,7 @@ function breakAt(x, y, z, hold) {
     const item = (id === 1100 || id === 1101) ? 'floorLamp' : (id === 1102 || id === 1103) ? 'wallLamp' : 'rug'
     const cells = (id === 1104 || id === 1105) ? rugSpan(x, y, z) : [[x, y, z]]
     if (session && session.give) session.give(item, 1)
-    if (rec && rec.design && session && session.bag) {
-      const slot = session.bag.slots.find((s) => s && s.item === item)
-      if (slot) slot.design = rec.design
-    }
+    if (rec && rec.design) stampDecor(item, rec.design)
     for (const [cx, cy, cz] of cells) {
       if (session && session.meta) session.meta.delete(cx + ',' + cy + ',' + cz)
       edit(cx, cy, cz, 0)
@@ -1864,8 +1904,9 @@ function placeBlock(face, opts) {
     if (session && !session.onPlace(x, y, z, 1100)) return false
     if (!edit(x, y, z, 1100)) return false
     if (session && session.meta) {
-      const design = (session.bag && session.bag.slots.find(s => s && s.item === 'floorLamp') || {}).design || { height: 'Standard', shade: 'Natural' }
+      const design = peekDecor('floorLamp') || { height: 'Standard', shade: 'Natural' }
       session.meta.set(x + ',' + y + ',' + z, { kind: 'floorLamp', design })
+      dropDecor('floorLamp')
     }
     if (typeof syncGlow === 'function') syncGlow._dirty = true
     if (basics) basics.saw(x, y, z, 1100)
@@ -2887,6 +2928,7 @@ async function applyDoc(doc) {
   if (session) {
     shopsLive = false
     session.load(fromDoc(src))
+    rehydrateDecor()
     shopsLive = true
   }
   if (src.basics && basics) basics.load(src.basics)
@@ -3776,7 +3818,7 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   const hit = BLOCKS.find((b) => b[1] === item)
   if (hit) return blockIcon(hit, ATLAS)
   return slotArt(item)
-}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on), giveBed: (design) => session && session.giveBed ? session.giveBed(design) : null, craft: (id) => {
+}, openCraft: (item) => { if (session && session.focusCraft) session.focusCraft(item); if (panels) panels.open('crafting') }, safetyDue: () => safetyDue(), markSafety: () => markSafety(), glasses: (on) => wearGlasses(!!on), giveBed: (design) => session && session.giveBed ? session.giveBed(design) : null, craft: (id, design) => {
   if (!session || session.mode !== 'survival') return false
   const open = openMachineKey && getVoxel(...openMachineKey.split(',').map(Number)) === ID.woodshop
   if (!open) return false
@@ -3787,12 +3829,14 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   const r = RECIPES.find((x) => x.id === id)
   if (!r) return false
   if (session.craftOk && !session.craftOk(id)) return false
-  for (const [k, n] of r.in) if (!(session.bag && session.bag.count(k) >= n)) return false
-  for (const [k, n] of r.in) if (session.spend && !session.spend(k, n)) return false
-  const design = id === 'rug' ? { colour: r.in[0][0] } : { height: 'Standard', shade: 'Natural' }
+  const chosen = design && typeof design === 'object'
+    ? design
+    : (id === 'rug' ? { colour: (r.in[0] && r.in[0][0]) || 'woolBlue', trim: 'woolTan' } : { height: 'Standard', shade: 'Natural' })
+  const ins = id === 'rug' && chosen.colour ? [[chosen.colour, 4]] : r.in
+  for (const [k, n] of ins) if (!(session.bag && session.bag.count(k) >= n)) return false
+  for (const [k, n] of ins) if (session.spend && !session.spend(k, n)) return false
   if (session.give) session.give(id, 1)
-  const slot = session.bag && session.bag.slots && session.bag.slots.find((s) => s && s.item === id)
-  if (slot) slot.design = design
+  stampDecor(id, chosen)
   toast('Made ' + t(id))
   return true
 }, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn() })
@@ -5820,6 +5864,76 @@ for (let i = 0; i < 4; i++) {
   pools.push(m)
   lampLights[i].includedOnlyMeshes = [m]
 }
+const SHADE_RGB = { Natural: [0.95, 0.62, 0.12], Cream: [0.98, 0.93, 0.78], Teal: [0.1, 0.75, 0.7] }
+const WOOL_RGB = { woolBlue: [0.25, 0.45, 0.86], woolGreen: [0.22, 0.66, 0.32], woolRed: [0.78, 0.22, 0.2], woolTan: [0.76, 0.6, 0.34] }
+const decorTints = []
+for (let i = 0; i < 8; i++) {
+  const mat = new StandardMaterial('decor-tint-m' + i, scene)
+  mat.emissiveColor = new Color3(1, 0.9, 0.6)
+  mat.diffuseColor = new Color3(0, 0, 0)
+  mat.specularColor = new Color3(0, 0, 0)
+  mat.disableLighting = true
+  const box = CreateBox('decor-tint-' + i, { size: 0.3 }, scene)
+  box.material = mat
+  box.isPickable = false
+  box.setEnabled(false)
+  noa.rendering.addMeshToScene(box, false)
+  decorTints.push(box)
+}
+function shellKind(x, y, z) {
+  let roof = 0
+  for (let dy = 1; dy <= 4; dy++) {
+    const id = getVoxel(x, y + dy, z)
+    if (id) { roof = id; break }
+  }
+  if (!roof) return ''
+  let walls = 0
+  const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+  for (let i = 0; i < dirs.length; i++) {
+    const dx = dirs[i][0]
+    const dz = dirs[i][1]
+    for (let s = 1; s <= 3; s++) {
+      if (getVoxel(x + dx * s, y, z + dz * s)) { walls++; break }
+    }
+  }
+  if (walls < 3) return ''
+  const built = roof === 10 || roof === 11 || roof === 12 || roof === 20 || roof === 8 || roof === 9 || roof === 22 || roof === 26 || roof === 69 || (roof >= 13 && roof <= 16)
+  return built ? 'house' : 'cave'
+}
+function syncDecorTint(srcs) {
+  let n = 0
+  const rows = srcs || []
+  for (let i = 0; i < rows.length && n < decorTints.length; i++) {
+    const src = rows[i]
+    const rec = session && session.meta && session.meta.get(src.x + ',' + src.y + ',' + src.z)
+    const design = rec && rec.design
+    if (!design) continue
+    let rgb = null
+    let spot = [src.x + 0.5, src.y + 0.84, src.z + 0.5]
+    let sc = [0.34, 0.22, 0.34]
+    if (src.id === 1100 || src.id === 1101) rgb = SHADE_RGB[design.shade] || SHADE_RGB.Natural
+    else if (src.id === 1102 || src.id === 1103) {
+      rgb = SHADE_RGB[design.shade] || SHADE_RGB.Natural
+      const side = rec.side
+      const ox = side === 'E' ? 0.22 : side === 'W' ? -0.22 : 0
+      const oz = side === 'S' ? 0.22 : side === 'N' ? -0.22 : 0.22
+      spot = [src.x + 0.5 + ox, src.y + 0.55, src.z + 0.5 + oz]
+      sc = [0.28, 0.28, 0.28]
+    } else if (src.id === 1104) {
+      rgb = WOOL_RGB[design.colour] || WOOL_RGB.woolTan
+      spot = [src.x + 1, src.y + 0.09, src.z + 1]
+      sc = [1.55, 0.08, 1.55]
+    }
+    if (!rgb) continue
+    const mesh = decorTints[n++]
+    mesh.material.emissiveColor.set(rgb[0], rgb[1], rgb[2])
+    mesh.scaling.set(sc[0] / 0.3, sc[1] / 0.3, sc[2] / 0.3)
+    const lp = noa.globalToLocal(spot, null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+    mesh.setEnabled(true)
+  }
+  for (let i = n; i < decorTints.length; i++) decorTints[i].setEnabled(false)
+}
 const DAY_AMB = [0.78, 0.82, 0.88]
 const sunLight = noa.rendering.light
 const DAY_DIFF = sunLight.diffuse.clone()
@@ -5847,8 +5961,8 @@ function ambScale(k) {
   return (lo + hi) / 2
 }
 let bertEm = null
-function paintTerrain(k) {
-  const a = ambScale(k)
+function paintTerrain(k, fill) {
+  const a = fill == null ? ambScale(k) : fill
   const mats = scene.materials
   for (let i = 0; i < mats.length; i++) {
     const m = mats[i]
@@ -5876,7 +5990,6 @@ function syncGlow() {
   scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
   sunLight.diffuse.set(DAY_DIFF.r * k, DAY_DIFF.g * k, DAY_DIFF.b * k)
   sunLight.specular.set(DAY_SPEC.r * k, DAY_SPEC.g * k, DAY_SPEC.b * k)
-  paintTerrain(k)
 
   if (!underWater) scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
   if (!bertEm && typeof bertyMat !== 'undefined' && bertyMat) bertEm = bertyMat.emissiveColor.clone()
@@ -5898,15 +6011,17 @@ function syncGlow() {
     const chunk = (px >> 4) + ',' + (pz >> 4)
     if (!syncGlow._cache || syncGlow._cache.chunk !== chunk || syncGlow._dirty) {
       const found = []
+      const tints = []
       const r = 16
       for (let dx = -r; dx <= r; dx++) for (let dz = -r; dz <= r; dz++) {
         const x = px + dx, z = pz + dz
         for (let y = py - 2; y <= py + 4; y++) {
           const id = getVoxel(x, y, z)
           if (id === 1101 || id === 1103) found.push({ x, y, z, radius: 6, step: 1 })
+          if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104) tints.push({ x, y, z, id })
         }
       }
-      syncGlow._cache = { chunk, found }
+      syncGlow._cache = { chunk, found, tints }
       syncGlow._dirty = false
     }
     for (const src of syncGlow._cache.found) {
@@ -5925,7 +6040,6 @@ function syncGlow() {
     const pool = pools[i]
     const src = dark && i < cap ? list[i] : null
     if (!src) { L.setEnabled(false); pool.setEnabled(false); continue }
-    if (L.includedOnlyMeshes[0] !== pool) L.includedOnlyMeshes = [pool]
     const lp = noa.globalToLocal([src.x + 0.5, src.y + 1.25, src.z + 0.5], null, glowLocal)
     L.position.set(lp[0], lp[1], lp[2])
     L.range = Math.max(4, src.radius)
@@ -5937,6 +6051,27 @@ function syncGlow() {
     pool.scaling.set(d / 9, 1, d / 9)
     pool.setEnabled(true)
   }
+  let fill = null
+  if (dark) {
+    const eye = noa.camera.getPosition()
+    const kind = shellKind(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2]))
+    let near = false
+    if (kind && list.length) {
+      const dx = list[0].x + 0.5 - ppos[0]
+      const dy = list[0].y + 0.5 - ppos[1]
+      const dz = list[0].z + 0.5 - ppos[2]
+      near = dx * dx + dy * dy + dz * dz < 40
+    }
+    if (kind) {
+      const sunK = k * (kind === 'house' ? 0.2 : 0.12)
+      sunLight.diffuse.set(DAY_DIFF.r * sunK, DAY_DIFF.g * sunK, DAY_DIFF.b * sunK)
+      sunLight.specular.set(DAY_SPEC.r * sunK, DAY_SPEC.g * sunK, DAY_SPEC.b * sunK)
+      fill = kind === 'house' ? (near ? 1.15 : 0.28) : (near ? 0.42 : 0.16)
+      scene.ambientColor.set(fill, fill, fill)
+    }
+  }
+  paintTerrain(k, fill)
+  syncDecorTint(syncGlow._cache && syncGlow._cache.tints)
   const seen = new Set()
   const glowList = basics.lights()
   for (const src of glowList) {

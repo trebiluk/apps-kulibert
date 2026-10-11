@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.164', date: '2026-10-10', lines: {
+    en: ['The hill steps up. Woodshop buttons show their names. Lamps and rugs can be designed, and a small house stays readable at night.'],
+    uk: ['Пагорб ступає вгору. Кнопки столярні показують свої назви. Лампи й килими можна спроектувати, і маленька хата вночі лишається читабельною.'],
+    ru: ['Холм шагает вверх. Кнопки столярки показывают свои имена. Лампы и ковры можно придумать, и маленький дом ночью остаётся читаемым.'],
+    es: ['La colina sube un bloque. Los botones del taller muestran su nombre. Las lámparas y la alfombra se pueden diseñar, y una casa pequeña se lee de noche.'],
+    ar: ['التل يصعد درجة. أزرار الورشة تُظهر أسماءها. المصابيح والسجادة يمكن تصميمها، والبيت الصغير يبقى واضحاً في الليل.'],
+    'fa-AF': ['تپه یک پله بالا می‌رود. دکمه‌های نجاری نام خود را نشان می‌دهند. چراغ و قالی را می‌توان طراحی کرد و خانهٔ کوچک در شب خوانا می‌ماند.'],
+    rw: ['Umusozi urata umwanya umwe. Buto za woodshop zerekana amazina. Amatara n\'agatebe washushanya, n\'inzu nto irasomwa nijoro.'],
+    ti: ['ኮረብታ ሓንቲ ደረጃ ይደይብ። መላጸ ዕንጨይቲ ዝብል መልጎም ስሙ ይርኢ። መብራህቲን መንጸፍን ክትንድፍ ትኽእል፡ ንእሽቶ ገዛ ድማ ኣብ ለይቲ ክንበብ ይከኣል።'],
+  }},
   { v: '2.5.163', date: '2026-10-10', lines: {
     en: ['A held sapling is a flat picture. A full old-world list warns before it drops one. New worlds can be Normal, Flat, or Void.'],
     uk: ['Саджанець у руці — плоский малюнок. Повний список старих світів попереджає, перш ніж зняти один. Нові світи можуть бути звичайні, рівні або порожні.'],

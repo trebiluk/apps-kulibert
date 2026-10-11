@@ -346,16 +346,40 @@ export function createStations(api) {
     if (w === 'slight') return api.t('slightWobble')
     return api.t('bigWobble')
   }
-  function capBtn(cls, label, fn) {
+  function capBtn(cls, label, fn, icon) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'keycap ' + cls
-    b.textContent = label
-    if (cls.indexOf('bed-next') >= 0) {
-      b.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation(); fn() })
-    } else {
-      b.addEventListener('click', fn)
+    if (icon) {
+      const ic = document.createElement('span')
+      ic.className = 'bic'
+      ic.setAttribute('aria-hidden', 'true')
+      ic.innerHTML = icon === 'design'
+        ? '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M4 17l3.2-.6L16.5 7.1l1.8 1.8L9 18.2z" fill="#E6B15A"/><path d="M14.8 5.4l2.2 2.2" stroke="#E6EEF2" stroke-width="1.6"/></svg>'
+        : '<svg viewBox="0 0 24 24" width="18" height="18"><path d="M5 12h14M12 5v14" fill="none" stroke="#22D3EE" stroke-width="2.4" stroke-linecap="round"/></svg>'
+      b.append(ic)
     }
+    const lab = document.createElement('span')
+    lab.className = 'blab'
+    lab.textContent = label
+    b.append(lab)
+    let busy = false
+    const run = (e) => {
+      if (b.disabled || busy) return
+      busy = true
+      setTimeout(() => { busy = false }, 40)
+      if (e) { e.preventDefault(); e.stopPropagation() }
+      fn()
+    }
+    b.addEventListener('click', run)
+    if (cls.indexOf('bed-next') >= 0 || cls.indexOf('decor-make') >= 0) b.addEventListener('pointerup', run)
+    return b
+  }
+  function lockBtn(b, reason) {
+    if (!reason) return b
+    b.disabled = true
+    b.title = reason
+    b.setAttribute('aria-label', (b.querySelector('.blab') ? b.querySelector('.blab').textContent : '') + ' — ' + reason)
     return b
   }
   function skillLine(key) {
@@ -392,9 +416,9 @@ export function createStations(api) {
           touch()
           shopTone(740, b)
           paintWoodshop(g, key)
-        })
-        if (!ready) { b.textContent = 'Hang 4 tools first'; b.title = 'Hang 4 tools first' }
-        else if (!haveMats) b.disabled = true
+        }, 'make')
+        if (!ready) lockBtn(b, api.t('decorNeedTools'))
+        else if (!haveMats) lockBtn(b, api.t('bedNeedMats'))
         row.append(b)
       }
       if (rule.path !== 'build') {
@@ -407,8 +431,9 @@ export function createStations(api) {
           touch()
           shopTone(640, b)
           paintWoodshop(g, key)
-        })
-        if (!ready || !haveMats) b.disabled = true
+        }, 'design')
+        if (!ready) lockBtn(b, api.t('decorNeedTools'))
+        else if (!haveMats) lockBtn(b, api.t('bedNeedMats'))
         row.append(b)
       }
       const best = api.best && api.best()
@@ -725,12 +750,21 @@ export function createStations(api) {
       return
     }
     paintBed(crate, g, key, rec)
-    const decorReady = toolsReady(key)
+    const hungOk = wallReady(key)
     const DECOR = [
       { id: 'floorLamp', need: '1 Iron + 1 Glass + 1 Stick', ins: [['ironIngot', 1], ['glass', 1], ['stick', 1]] },
       { id: 'wallLamp', need: '1 Iron + 1 Glass', ins: [['ironIngot', 1], ['glass', 1]] },
       { id: 'rug', need: '4 Wool', ins: [['woolBlue', 4], ['woolGreen', 4], ['woolRed', 4], ['woolTan', 4]] },
     ]
+    const decorReason = (d) => {
+      if (!hungOk) return api.t('decorNeedTools')
+      if (d.id === 'rug') {
+        const have = d.ins.some(([k]) => api.have && api.have(k) >= 4)
+        return have ? '' : api.t('decorNeedWool')
+      }
+      const miss = d.ins.find(([k, n]) => !(api.have && api.have(k) >= n))
+      return miss ? api.t('decorNeedItem').replace('{n}', String(miss[1])).replace('{item}', api.t(miss[0])) : ''
+    }
     for (const d of DECOR) {
       const card = document.createElement('div')
       card.className = 'bed-card decor-card'
@@ -738,36 +772,87 @@ export function createStations(api) {
       const title = document.createElement('p')
       title.className = 'gnote'
       title.textContent = api.t(d.id)
+      const reason = decorReason(d)
       const need = document.createElement('p')
-      need.className = 'gnote'
-      const short = !decorReady
-      let reason = ''
-      if (!decorReady) reason = 'Hang the 4 tools'
-      else if (d.id === 'rug') {
-        const have = d.ins.some(([k]) => api.have && api.have(k) >= 4)
-        if (!have) reason = 'Need 4 of one wool'
-      } else {
-        const miss = d.ins.find(([k, n]) => !(api.have && api.have(k) >= n))
-        if (miss) reason = 'Need ' + miss[0]
-      }
+      need.className = 'gnote decor-need'
       need.textContent = reason || d.need
       card.append(title, need)
-      const row = document.createElement('div')
-      row.className = 'bed-paths'
-      const sayNeed = () => { if (api.toast) api.toast('Hang 4 tools first') }
-      const just = capBtn('decor-just-' + d.id, reason ? 'Hang 4 tools first' : api.t('decorJust'), () => {
-        if (reason) { sayNeed(); return }
-        if (api.craft) api.craft(d.id)
-        paintWoodshop(g, key)
-      })
-      const design = capBtn('decor-design-' + d.id, reason ? 'Hang 4 tools first' : api.t('decorDesign'), () => {
-        if (reason) { sayNeed(); return }
-        if (api.craft) api.craft(d.id)
-        paintWoodshop(g, key)
-      })
-      if (reason) { just.title = 'Hang 4 tools first'; design.title = 'Hang 4 tools first' }
-      row.append(just, design)
-      card.append(row)
+      const job = rec.decorJob && rec.decorJob.id === d.id ? rec.decorJob : null
+      if (job) {
+        const step = document.createElement('div')
+        step.className = 'bed-step'
+        step.dataset.step = 'design'
+        const note = document.createElement('p')
+        note.className = 'gnote decor-measure'
+        note.textContent = d.id === 'rug' ? api.t('decorMeasureRug') : api.t('decorMeasureLamp')
+        step.append(note)
+        if (d.id === 'rug') {
+          const mains = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+          const rowM = document.createElement('div')
+          rowM.className = 'choice-row'
+          const rowT = document.createElement('div')
+          rowT.className = 'choice-row'
+          const owned = mains.find((id) => api.have && api.have(id) >= 4) || 'woolBlue'
+          if (!job.colour) job.colour = owned
+          if (!job.trim) job.trim = 'woolTan'
+          mains.forEach((id) => {
+            const b = capBtn('tone-pick' + (job.colour === id ? ' on' : ''), api.t('rugMain') + ' ' + api.t(id), () => { job.colour = id; touch(); paintWoodshop(g, key) })
+            b.dataset.shade = id
+            if (!(api.have && api.have(id) >= 4)) b.disabled = true
+            rowM.append(b)
+          })
+          mains.forEach((id) => {
+            const b = capBtn('tone-pick' + (job.trim === id ? ' on' : ''), api.t('rugTrim') + ' ' + api.t(id), () => { job.trim = id; touch(); paintWoodshop(g, key) })
+            b.dataset.trim = id
+            rowT.append(b)
+          })
+          step.append(rowM, rowT)
+        } else {
+          const shades = [['Natural', 'shadeNatural'], ['Cream', 'shadeCream'], ['Teal', 'shadeTeal']]
+          const rowS = document.createElement('div')
+          rowS.className = 'choice-row'
+          if (!job.shade) job.shade = 'Natural'
+          shades.forEach(([id, label]) => {
+            const b = capBtn('tone-pick' + (job.shade === id ? ' on' : ''), api.t(label), () => { job.shade = id; touch(); paintWoodshop(g, key) })
+            b.dataset.shade = id
+            rowS.append(b)
+          })
+          step.append(rowS)
+        }
+        const make = capBtn('decor-make', api.t('make'), () => {
+          if (decorReason(d)) return
+          const design = d.id === 'rug'
+            ? { colour: job.colour || 'woolBlue', trim: job.trim || 'woolTan' }
+            : { height: 'Standard', shade: job.shade || 'Natural' }
+          if (api.craft) api.craft(d.id, design)
+          rec.decorJob = null
+          touch()
+          paintWoodshop(g, key)
+        }, 'make')
+        if (d.id === 'rug' && !(api.have && api.have(job.colour || 'woolBlue') >= 4)) make.disabled = true
+        step.append(make)
+        card.append(step)
+      } else {
+        const row = document.createElement('div')
+        row.className = 'bed-paths'
+        const just = capBtn('decor-just-' + d.id, api.t('decorJust'), () => {
+          if (decorReason(d)) return
+          if (api.craft) api.craft(d.id)
+          paintWoodshop(g, key)
+        }, 'make')
+        const design = capBtn('decor-design-' + d.id, api.t('decorDesign'), () => {
+          if (decorReason(d)) return
+          const wool = d.id === 'rug' && d.ins.find(([k]) => api.have && api.have(k) >= 4)
+          rec.decorJob = d.id === 'rug'
+            ? { id: d.id, colour: wool ? wool[0] : 'woolBlue', trim: 'woolTan' }
+            : { id: d.id, shade: 'Natural', height: 'Standard' }
+          touch()
+          paintWoodshop(g, key)
+        }, 'design')
+        if (reason) { lockBtn(just, reason); lockBtn(design, reason) }
+        row.append(just, design)
+        card.append(row)
+      }
       crate.append(card)
     }
     const wall = document.createElement('div')
