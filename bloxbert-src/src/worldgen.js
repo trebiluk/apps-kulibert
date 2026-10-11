@@ -27,7 +27,10 @@ export function wildWood(x, y, z, gen, fade) {
   const cz = Math.floor(z / 9) * 9 + 4
   if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) return ''
   // Trees skip a gen-5 river or lake column. Gen 4 and older never ask.
-  if ((gen | 0) >= 5 && columnWater(cx, cz, fade)) return ''
+  // Gen 6 also skips a river, a cave mouth, and a rock outcrop.
+  if ((gen | 0) >= 6 && fadeNum(fade, cx, cz) >= 12) {
+    if (water6(cx, cz) || caveMouth(cx, cz) || rockHere(cx, cz)) return ''
+  } else if ((gen | 0) >= 5 && columnWater(cx, cz, fade)) return ''
   const th = (gen | 0) >= 4 ? groundAt(cx, cz, gen, fade) : groundY(cx, cz)
   const tall = 4 + Math.floor(hash(cx + 91, cz - 17) * 3)
   const top = th + tall
@@ -496,9 +499,12 @@ export function spawnGround(x, z) {
 // Gen 2 is the original ground. Gen 3 adds the sand and clay banks.
 // Gen 4 adds hills and beaches, and only on chunks that stamp 4.
 // Gen 5 adds rivers and lakes, and only on chunks that stamp 5.
-// Gen 2, 3 and 4 stay byte-identical.
+// Gen 6 keeps that water, but the rivers are wider and one level along a
+// reach, lakes are deeper in the middle, and hills grow caves, lips and rocks.
+// Gen 2, 3, 4 and 5 stay byte-identical.
 // NOTE: Lily pads, fish, and the reed-paper recipe are not this step.
-export const GEN = 5
+// NOTE: Flora P1 (pack loader, Birch, Pine) is next after G4.
+export const GEN = 6
 export const CHUNK = 24
 export const GEN_MARGIN = 4
 const TOWN_BOX = { x0: -20, x1: 36, y0: -64, y1: 8, z0: -18, z1: 28 }
@@ -953,7 +959,21 @@ export function genColumns(x0, z0, gen, fadeArr) {
   }
   let water = null
   let hasWater = false
-  if (g >= 5) {
+  let feat = null
+  let hasFeat = false
+  if (g >= 6) {
+    feat = new Array(TILE * TILE)
+    for (let i = 0; i < TILE; i++) {
+      for (let k = 0; k < TILE; k++) {
+        const idx = i * TILE + k
+        const f = fadeOf(fadeArr, idx)
+        const rec = f >= 12 ? columnFeat(x0i + i, z0i + k) : null
+        feat[idx] = rec
+        if (rec) hasFeat = true
+      }
+    }
+    if (!hasFeat) feat = null
+  } else if (g >= 5) {
     water = new Array(TILE * TILE)
     for (let i = 0; i < TILE; i += 4) {
       for (let k = 0; k < TILE; k += 4) {
@@ -981,7 +1001,7 @@ export function genColumns(x0, z0, gen, fadeArr) {
     }
     if (!hasWater) water = null
   }
-  return { x0: x0i, z0: z0i, h, base, hills, coast, minH, water, hasWater }
+  return { x0: x0i, z0: z0i, h, base, hills, coast, minH, water, hasWater, feat, hasFeat }
 }
 
 export function peekColumn(x, z) {
@@ -1032,7 +1052,12 @@ function colsIndex(cols, x, z) {
 export function groundAt(x, z, gen, fade, cols) {
   const xi = x | 0
   const zi = z | 0
-  if ((gen | 0) >= 5) {
+  if ((gen | 0) >= 6) {
+    if (fadeNum(fade, xi, zi) >= 12) {
+      const w = water6(xi, zi)
+      if (w) return w.top
+    }
+  } else if ((gen | 0) >= 5) {
     const w = columnWater(xi, zi, fade, cols)
     if (w && w.kind === 'water') return w.top
   }
@@ -1391,11 +1416,554 @@ function gen5(x, y, z, fade, cols) {
   return paintWater(x, y, z, info, fade, cols)
 }
 
+// Gen 6. Rivers stay 3–5 wide and hold one water top along a reach (the bank
+// is cut down; the level only changes at a lake or the sea). Lake middles are
+// 3 deep, edges 1. Caves, overhangs and outcrops are seeded and local.
+// A column's answer never depends on which chunk asked.
+const REACH = 8
+const CAVE_EVERY = 42
+const LIP_EVERY = 36
+const ROCK_EVERY = 48
+const ch6 = new Map()
+const reachMemo = new Map()
+const waterMemo6 = new Map()
+const rawMemo6 = new Map()
+const featMemo = new Map()
+const caveDefMemo = new Map()
+const lipDefMemo = new Map()
+const rockDefMemo = new Map()
+const D4 = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+
+function half6(x, z) {
+  const scale = flatFactor(x, z)
+  if (scale <= 0) return 0
+  return (2.35 + vnoise(x + 420, z - 180, 64) * 1.15) * scale
+}
+
+function drain6(x, z, h) {
+  if (h <= 3) return true
+  const lake = lakeAt(x, z)
+  if (lake && lake.d <= lake.rad + 2) return true
+  for (let i = 0; i < 4; i++) {
+    const nx = x + D4[i][0]
+    const nz = z + D4[i][1]
+    const nh = spawnGround(nx, nz)
+    if (nh < h && (nh <= 1 || half6(nx, nz) > 0.15)) return true
+    if (nh === h && spawnGround(x + D4[i][0] * 4, z + D4[i][1] * 4) < h) return true
+  }
+  return false
+}
+
+function onRiver(x, z) {
+  const xi = x | 0
+  const zi = z | 0
+  const k = numKey(xi, zi)
+  if (ch6.has(k)) return ch6.get(k)
+  let ok = false
+  const half = half6(xi, zi)
+  if (half > 0.2 && !keptClear(xi, zi)) {
+    const h = spawnGround(xi, zi)
+    if (h > 1 && h <= 23 && Math.abs(riverDist(xi, zi)) <= half) ok = drain6(xi, zi, h)
+  }
+  ch6.set(k, ok)
+  return ok
+}
+
+function inLake(x, z) {
+  const L = lakeAt(x, z)
+  return !!(L && L.d <= L.rad)
+}
+
+function reachLevel(x, z) {
+  const qx = Math.floor(x / REACH) * REACH
+  const qz = Math.floor(z / REACH) * REACH
+  const k0 = numKey(qx, qz)
+  if (reachMemo.has(k0)) return reachMemo.get(k0)
+  let sx = 0
+  let sz = 0
+  let found = false
+  for (let i = 0; i < REACH && !found; i++) {
+    for (let j = 0; j < REACH; j++) {
+      if (onRiver(qx + i, qz + j) || inLake(qx + i, qz + j)) {
+        sx = qx + i
+        sz = qz + j
+        found = true
+        break
+      }
+    }
+  }
+  if (!found) {
+    reachMemo.set(k0, null)
+    return null
+  }
+  let cx = sx
+  let cz = sz
+  let level = spawnGround(cx, cz)
+  const path = [k0]
+  const seen = new Set([k0])
+  for (let step = 0; step < 42; step++) {
+    if (inLake(cx, cz)) {
+      level = lakeAt(cx, cz).level
+      break
+    }
+    const h = spawnGround(cx, cz)
+    if (h <= 1) {
+      level = 1
+      break
+    }
+    let best = null
+    for (let i = 0; i < 4; i++) {
+      const nx = cx + D4[i][0] * 2
+      const nz = cz + D4[i][1] * 2
+      const sea = spawnGround(nx, nz) <= 1
+      if (!onRiver(nx, nz) && !inLake(nx, nz) && !sea) continue
+      const nh = inLake(nx, nz) ? lakeAt(nx, nz).level : spawnGround(nx, nz)
+      const far = spawnGround(nx + D4[i][0] * 8, nz + D4[i][1] * 8)
+      const score = Math.min(nh, far)
+      if (!best || score < best.score || (score === best.score && nh < best.nh)) best = { nx, nz, score, nh }
+    }
+    if (!best) {
+      level = h
+      break
+    }
+    const nk = numKey(Math.floor(best.nx / REACH) * REACH, Math.floor(best.nz / REACH) * REACH)
+    if (reachMemo.has(nk) && !seen.has(nk)) {
+      const prev = reachMemo.get(nk)
+      level = prev == null ? best.nh : prev
+      break
+    }
+    if (!seen.has(nk)) {
+      seen.add(nk)
+      path.push(nk)
+    }
+    if (best.nh >= h && best.score >= h && step > 10) {
+      level = h
+      break
+    }
+    cx = best.nx
+    cz = best.nz
+    level = best.nh
+  }
+  for (let i = 0; i < path.length; i++) if (!reachMemo.has(path[i])) reachMemo.set(path[i], level)
+  if (!reachMemo.has(k0)) reachMemo.set(k0, level)
+  return reachMemo.get(k0)
+}
+
+function waterDepth(x, z, top, lake) {
+  let depth
+  if (lake) {
+    const t = lake.d / lake.rad
+    depth = t >= 0.74 ? 1 : t <= 0.4 ? 3 : 2
+  } else {
+    const half = half6(x, z)
+    const t = half > 0.05 ? Math.abs(riverDist(x, z)) / half : 1
+    if (t <= 0.36) depth = hash(x + 3, z - 6) < 0.45 ? 3 : 2
+    else if (t <= 0.7) depth = 2
+    else depth = 1
+  }
+  if (depth < 1) depth = 1
+  while (depth > 1 && top - depth + 1 < 0) depth--
+  if (depth > 3) depth = 3
+  return depth
+}
+
+function waterRaw(x, z) {
+  const xi = x | 0
+  const zi = z | 0
+  const k = numKey(xi, zi)
+  if (rawMemo6.has(k)) return rawMemo6.get(k)
+  let rec = null
+  if (!keptClear(xi, zi) && flatFactor(xi, zi) > 0 && !treeHere(xi, zi)) {
+    const h = terrainAt(xi, zi)
+    if (h > 1 && h <= 23) {
+      const lake = lakeAt(xi, zi)
+      if (lake && lake.d <= lake.rad && h >= lake.level) {
+        rec = { top: lake.level, depth: waterDepth(xi, zi, lake.level, lake), bed: bedName(xi, zi), lake: true, h }
+      } else if (onRiver(xi, zi)) {
+        const level = reachLevel(xi, zi)
+        if (level != null && level >= 1 && level <= h) {
+          rec = { top: level, depth: waterDepth(xi, zi, level, null), bed: bedName(xi, zi), lake: false, h }
+        }
+      }
+    }
+  }
+  rawMemo6.set(k, rec)
+  return rec
+}
+
+function water6(x, z) {
+  const xi = x | 0
+  const zi = z | 0
+  const k = numKey(xi, zi)
+  if (waterMemo6.has(k)) return waterMemo6.get(k)
+  const raw = waterRaw(xi, zi)
+  if (!raw) {
+    waterMemo6.set(k, null)
+    return null
+  }
+  for (let i = 0; i < 4; i++) {
+    const nx = xi + D4[i][0]
+    const nz = zi + D4[i][1]
+    const nw = waterRaw(nx, nz)
+    if (nw && nw.top !== raw.top) {
+      if (raw.top > nw.top) {
+        waterMemo6.set(k, null)
+        return null
+      }
+      continue
+    }
+    if (nw) continue
+    const nh = terrainAt(nx, nz)
+    if (nh < raw.top) {
+      const gap = raw.top - nh
+      const cap = raw.lake ? 3 : 2
+      if (gap > cap || keptClear(nx, nz) || flatFactor(nx, nz) <= 0) {
+        waterMemo6.set(k, null)
+        return null
+      }
+    }
+  }
+  waterMemo6.set(k, raw)
+  return raw
+}
+
+function nearWater6(x, z, r) {
+  for (let dx = -r; dx <= r; dx++) {
+    for (let dz = -r; dz <= r; dz++) {
+      if (water6(x + dx, z + dz)) return true
+    }
+  }
+  return false
+}
+
+function trunkCol(x, z) {
+  const cx = Math.floor(x / 9) * 9 + 4
+  const cz = Math.floor(z / 9) * 9 + 4
+  return x === cx && z === cz && hash(cx, cz) < 0.18 && !townTrunk(cx, cz)
+}
+
+function caveDef(ix, iz) {
+  const k = ix + ',' + iz
+  if (caveDefMemo.has(k)) return caveDefMemo.get(k)
+  let rec = null
+  if (hash(ix + 211, iz - 87) < 0.7) {
+    const cx = ix * CAVE_EVERY + 8 + Math.floor(hash(ix + 5, iz + 19) * (CAVE_EVERY - 16))
+    const cz = iz * CAVE_EVERY + 8 + Math.floor(hash(ix - 9, iz + 4) * (CAVE_EVERY - 16))
+    if (flatFactor(cx, cz) >= 1 && !inTownXZ(cx, cz) && !keptClear(cx, cz)) {
+      const h = terrainAt(cx, cz)
+      const hx = terrainAt(cx + 4, cz) - terrainAt(cx - 4, cz)
+      const hz = terrainAt(cx, cz + 4) - terrainAt(cx, cz - 4)
+      const slope = Math.hypot(hx, hz)
+      if (h >= 5 && h <= 22 && slope >= 2) {
+        let dx = 0
+        let dz = 0
+        if (Math.abs(hx) >= Math.abs(hz)) dx = hx > 0 ? -1 : 1
+        else dz = hz > 0 ? -1 : 1
+        const rad = 2 + Math.floor(hash(ix + 8, iz - 2) * 2)
+        const mx = cx + dx * (rad + 3)
+        const mz = cz + dz * (rad + 3)
+        if (terrainAt(mx, mz) <= h - 3 && !nearWater6(cx, cz, 2) && !nearWater6(mx, mz, 2)) {
+          rec = { cx, cz, h, dx, dz, rad }
+        }
+      }
+    }
+  }
+  caveDefMemo.set(k, rec)
+  return rec
+}
+
+function cave6(x, z, h) {
+  if (flatFactor(x, z) < 1 || keptClear(x, z) || inTownXZ(x, z) || trunkCol(x, z)) return null
+  if (water6(x, z) || nearWater6(x, z, 1)) return null
+  const ix = Math.floor(x / CAVE_EVERY)
+  const iz = Math.floor(z / CAVE_EVERY)
+  for (let ox = -1; ox <= 1; ox++) {
+    for (let oz = -1; oz <= 1; oz++) {
+      const C = caveDef(ix + ox, iz + oz)
+      if (!C) continue
+      const px = x - C.cx
+      const pz = z - C.cz
+      const along = px * C.dx + pz * C.dz
+      const side = px * (-C.dz) + pz * C.dx
+      const rad = C.rad
+      const pocket = along >= -rad && along <= rad && (along * along) / (rad * rad) + (side * side) / (rad * rad) <= 1
+      const tunnel = along >= 0 && along <= rad + 3 && Math.abs(side) <= 1
+      if (!pocket && !tunnel) continue
+      const lo = Math.max(1, C.h - 4)
+      const hi = Math.min(h - 1, C.h - 1)
+      if (hi < lo || C.h - lo > 12 || h - lo > 12) continue
+      let mouth = false
+      for (let i = 0; i < 4; i++) {
+        if (terrainAt(x + D4[i][0], z + D4[i][1]) < hi) mouth = true
+      }
+      return { lo, hi, mouth }
+    }
+  }
+  return null
+}
+
+function caveMouth(x, z) {
+  const h = terrainAt(x, z)
+  const c = cave6(x, z, h)
+  return !!(c && c.mouth)
+}
+
+function lipDef(ix, iz) {
+  const k = ix + ',' + iz
+  if (lipDefMemo.has(k)) return lipDefMemo.get(k)
+  let rec = null
+  if (hash(ix + 44, iz - 19) < 0.55) {
+    const x = ix * LIP_EVERY + 6 + Math.floor(hash(ix + 2, iz + 8) * (LIP_EVERY - 12))
+    const z = iz * LIP_EVERY + 6 + Math.floor(hash(ix - 6, iz + 3) * (LIP_EVERY - 12))
+    if (flatFactor(x, z) >= 1 && !keptClear(x, z) && !inTownXZ(x, z) && !water6(x, z)) {
+      const h = terrainAt(x, z)
+      let dir = null
+      let drop = 0
+      for (let i = 0; i < 4; i++) {
+        const nh = terrainAt(x + D4[i][0] * 2, z + D4[i][1] * 2)
+        const d = h - nh
+        if (d >= 2 && d > drop) {
+          drop = d
+          dir = D4[i]
+        }
+      }
+      if (dir && h >= 5 && h <= 23 && !trunkCol(x, z)) {
+        const len = 1 + Math.floor(hash(ix + 12, iz - 4) * 3)
+        const thick = 1 + Math.floor(hash(ix - 3, iz + 15) * 2)
+        rec = { x, z, h, dx: dir[0], dz: dir[1], len, thick }
+      }
+    }
+  }
+  lipDefMemo.set(k, rec)
+  return rec
+}
+
+function lip6(x, z, h) {
+  if (flatFactor(x, z) < 1 || keptClear(x, z) || water6(x, z)) return null
+  const ix = Math.floor(x / LIP_EVERY)
+  const iz = Math.floor(z / LIP_EVERY)
+  for (let ox = -1; ox <= 1; ox++) {
+    for (let oz = -1; oz <= 1; oz++) {
+      const L = lipDef(ix + ox, iz + oz)
+      if (!L) continue
+      const along = (x - L.x) * L.dx + (z - L.z) * L.dz
+      const side = (x - L.x) * (-L.dz) + (z - L.z) * L.dx
+      if (along < 1 || along > L.len || side !== 0) continue
+      const rh = terrainAt(L.x, L.z)
+      if (rh < L.h || water6(L.x, L.z)) continue
+      const y1 = L.h
+      const y0 = L.h - L.thick + 1
+      // Every step back to the hill must itself be a lip, or the far block floats.
+      let chain = true
+      for (let t = 1; t <= along; t++) {
+        const px = L.x + L.dx * t
+        const pz = L.z + L.dz * t
+        const ph = terrainAt(px, pz)
+        if (y0 <= ph + 1 || water6(px, pz) || flatFactor(px, pz) < 1 || keptClear(px, pz)) {
+          chain = false
+          break
+        }
+      }
+      if (!chain) continue
+      if (nearWater6(x, z, 1)) continue
+      return { y0, y1 }
+    }
+  }
+  return null
+}
+
+function rockDef(ix, iz) {
+  const k = ix + ',' + iz
+  if (rockDefMemo.has(k)) return rockDefMemo.get(k)
+  let rec = null
+  if (hash(ix - 33, iz + 19) < 0.62) {
+    const x = ix * ROCK_EVERY + 8 + Math.floor(hash(ix + 4, iz - 7) * (ROCK_EVERY - 16))
+    const z = iz * ROCK_EVERY + 8 + Math.floor(hash(ix + 11, iz + 6) * (ROCK_EVERY - 16))
+    if (flatFactor(x, z) >= 1 && !keptClear(x, z) && !inTownXZ(x, z) && !water6(x, z) && !trunkCol(x, z)) {
+      const h = terrainAt(x, z)
+      if (h >= 6 && hillsAt(x, z) >= 2) {
+        let top = true
+        for (let i = 0; i < 4; i++) {
+          if (terrainAt(x + D4[i][0] * 5, z + D4[i][1] * 5) > h) top = false
+        }
+        if (top && !nearWater6(x, z, 2)) {
+          const w = 2 + Math.floor(hash(ix + 9, iz - 5) * 3)
+          rec = { x, z, h, w }
+        }
+      }
+    }
+  }
+  rockDefMemo.set(k, rec)
+  return rec
+}
+
+function rockHere(x, z) {
+  return !!rock6(x, z, terrainAt(x, z))
+}
+
+function rock6(x, z, h) {
+  if (flatFactor(x, z) < 1 || keptClear(x, z) || water6(x, z) || trunkCol(x, z)) return null
+  const ix = Math.floor(x / ROCK_EVERY)
+  const iz = Math.floor(z / ROCK_EVERY)
+  for (let ox = -1; ox <= 1; ox++) {
+    for (let oz = -1; oz <= 1; oz++) {
+      const R = rockDef(ix + ox, iz + oz)
+      if (!R) continue
+      const x0 = R.x - Math.floor((R.w - 1) / 2)
+      const z0 = R.z - Math.floor((R.w - 1) / 2)
+      if (x < x0 || x >= x0 + R.w || z < z0 || z >= z0 + R.w) continue
+      const dist = Math.max(Math.abs(x - R.x), Math.abs(z - R.z))
+      const tall = dist === 0 ? 3 : 2
+      const name = hash(x + 19, z - 3) < 0.62 ? 'stone' : 'gravel'
+      return { tall, name, w: R.w }
+    }
+  }
+  return null
+}
+
+function bank6(x, z, h) {
+  if (water6(x, z) || keptClear(x, z)) return null
+  let lakeEdge = false
+  let edge = false
+  for (let i = 0; i < 4; i++) {
+    const w = water6(x + D4[i][0], z + D4[i][1])
+    if (!w) continue
+    if (Math.abs(h - w.top) > 1) continue
+    edge = true
+    if (w.lake) lakeEdge = true
+  }
+  if (!edge) {
+    const reach = hash(Math.floor(x / 4) + 20, Math.floor(z / 4) - 6) < 0.5 ? 1 : 2
+    if (reach < 2) return null
+    for (let dx = -2; dx <= 2 && !edge; dx++) {
+      for (let dz = -2; dz <= 2; dz++) {
+        if (Math.max(Math.abs(dx), Math.abs(dz)) !== 2) continue
+        const w = water6(x + dx, z + dz)
+        if (w && Math.abs(h - w.top) <= 1) {
+          edge = true
+          if (w.lake) lakeEdge = true
+        }
+      }
+    }
+  }
+  if (!edge) return null
+  const surface = hash(x - 8, z + 3) < 0.5 ? 'gravel' : 'sand'
+  const clay = hash(x + 2, z - 9) < (lakeEdge ? 0.55 : 0.34)
+  const reed = lakeEdge && hash(x - 4, z + 11) < 1 / 6 && blockByKey('reed') ? 'reed' : ''
+  return { h, surface, clay, reed }
+}
+
+function seal6(x, z, h) {
+  if (water6(x, z) || keptClear(x, z) || flatFactor(x, z) <= 0) return null
+  let to = h
+  let lake = false
+  for (let i = 0; i < 4; i++) {
+    const w = water6(x + D4[i][0], z + D4[i][1])
+    if (!w || w.top <= h) continue
+    const cap = w.lake ? 3 : 2
+    if (w.top - h <= cap && w.top > to) {
+      to = w.top
+      if (w.lake) lake = true
+    }
+  }
+  const L = lakeAt(x, z)
+  if (L && L.d <= L.rad && h < L.level && L.level - h <= 3 && !waterRaw(x, z) && L.level > to) {
+    to = L.level
+    lake = true
+  }
+  if (to <= h) return null
+  const reed = lake && hash(x - 4, z + 11) < 1 / 6 && blockByKey('reed') ? 'reed' : ''
+  const surface = hash(x - 8, z + 3) < 0.5 ? 'gravel' : 'sand'
+  return { to, surface, reed }
+}
+
+function columnFeat(x, z) {
+  const xi = x | 0
+  const zi = z | 0
+  const k = numKey(xi, zi)
+  if (featMemo.has(k)) return featMemo.get(k)
+  const rec = columnFeatRaw(xi, zi)
+  featMemo.set(k, rec)
+  return rec
+}
+
+function columnFeatRaw(x, z) {
+  if (flatFactor(x, z) <= 0) return null
+  const h = terrainAt(x, z)
+  const water = water6(x, z)
+  const rock = water ? null : rock6(x, z, h)
+  const lip = water || rock ? null : lip6(x, z, h)
+  const cave = water || rock ? null : cave6(x, z, h)
+  const bank = water ? null : bank6(x, z, h)
+  const seal = water || lip ? null : seal6(x, z, h)
+  if (!water && !rock && !lip && !cave && !bank && !seal) return null
+  const skipPlant = !!(rock || (cave && cave.mouth))
+  let y0 = 99
+  let y1 = -99
+  const add = (a, b) => {
+    if (a < y0) y0 = a
+    if (b > y1) y1 = b
+  }
+  if (water) add(water.top - water.depth, Math.max(h, water.top))
+  if (cave) add(cave.lo, cave.hi)
+  if (lip) add(lip.y0, lip.y1)
+  if (rock) add(h + 1, h + rock.tall)
+  if (bank) add(h - 1, h + 1)
+  if (seal) add(h + 1, seal.reed ? seal.to + 1 : seal.to)
+  if (skipPlant) add(h + 1, h + 8)
+  return { y0, y1, h, water, rock, lip, cave, bank, seal, skipPlant }
+}
+
+function paint6(x, y, z, info, fade, cols) {
+  if (info.lip && y >= info.lip.y0 && y <= info.lip.y1) return y === info.lip.y1 ? 'grass' : 'dirt'
+  if (info.rock && y > info.h && y <= info.h + info.rock.tall) return info.rock.name
+  if (info.water) {
+    const w = info.water
+    if (y <= w.top && y >= w.top - w.depth + 1) return 'water'
+    if (y === w.top - w.depth) return w.bed
+    if (y > w.top && y <= info.h) return ''
+  }
+  if (info.cave && y >= info.cave.lo && y <= info.cave.hi) return ''
+  if (info.seal && y > info.h && y <= info.seal.to) return y === info.seal.to ? info.seal.surface : 'dirt'
+  if (info.seal && info.seal.reed && y === info.seal.to + 1) return info.seal.reed
+  if (info.bank) {
+    if (y === info.h + 1 && info.bank.reed) return info.bank.reed
+    if (y === info.h) return info.bank.surface
+    if (y === info.h - 1 && info.bank.clay) return 'clay'
+  }
+  if (info.skipPlant && y > info.h) {
+    const base = gen4(x, y, z, fade, cols)
+    if (base === 'log' || base === 'leaves' || base === 'bushFruit' || base === 'wheat' || base === 'tuft') return ''
+    return base
+  }
+  return gen4(x, y, z, fade, cols)
+}
+
+function gen6(x, y, z, fade, cols) {
+  if (fadeNum(fade, x, z) < 12) return gen4(x, y, z, fade, cols)
+  const info = columnFeat(x, z)
+  if (!info || y < info.y0 || y > info.y1) return gen4(x, y, z, fade, cols)
+  return paint6(x, y, z, info, fade, cols)
+}
+
 export function genBlock(x, y, z, gen, fade, cols) {
   const g = gen | 0
   const xi = x | 0
   const yi = y | 0
   const zi = z | 0
+  if (g >= 6) {
+    if (cols) {
+      if (!cols.hasFeat) return gen4(xi, yi, zi, fade, cols)
+      const i = xi - cols.x0
+      const k = zi - cols.z0
+      if (i >= 0 && k >= 0 && i < TILE && k < TILE) {
+        const info = cols.feat[i * TILE + k]
+        if (!info || yi < info.y0 || yi > info.y1) return gen4(xi, yi, zi, fade, cols)
+        return paint6(xi, yi, zi, info, fade, cols)
+      }
+    }
+    return gen6(xi, yi, zi, fade, cols)
+  }
   if (g >= 5) {
     if (cols && cols.hasWater) {
       const i = xi - cols.x0

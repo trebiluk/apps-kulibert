@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.159', date: '2026-10-10', lines: {
+    en: ['New hills have caves you can walk into, rock shelves, and big stones. Rivers and lakes are deeper. The ground you already saved stays the same.'],
+    uk: ['Нові пагорби мають печери, куди можна зайти, кам\'яні полиці й великі камені. Річки й озера глибші. Земля, яку ти вже зберіг, лишається такою самою.'],
+    ru: ['Новые холмы имеют пещеры, куда можно зайти, каменные полки и большие камни. Реки и озёра глубже. Земля, которую ты уже сохранил, остаётся той же.'],
+    es: ['Los cerros nuevos tienen cuevas donde puedes entrar, repisas de roca y piedras grandes. Los ríos y los lagos son más hondos. El suelo que ya guardaste sigue igual.'],
+    ar: ['التلال الجديدة فيها كهوف تدخلها، ورفوف صخرية، وحجارة كبيرة. الأنهار والبحيرات أعمق. الأرض التي حفظتها تبقى كما هي.'],
+    'fa-AF': ['تپه‌های تازه غار دارند که می‌توانی داخل شوی، طاق سنگی و سنگ‌های بزرگ. رودها و دریاچه‌ها عمیق‌ترند. زمینی که ذخیره کردی همان می‌ماند.'],
+    rw: ['Imisozi mishya ifite ubuvumo ushobora kwinjira, insate z\'ibuye n\'amabuye manini. Inzuzi n\'ibiyaga birarushije kuremba. Ubutaka wabitse buracyaho kimwe.'],
+    ti: ['ሓደሽቲ ኮረባታት ከይዲ እትኣቱ ኣብኡ ዋሕዚ፡ መደርደሪ ከውሒን ዓበይቲ እምኒታትን ኣለዉ። ወሓዚታትን ቀላያትን ዝጸቐቑ እዮም። እቲ መሬት ካብ ቅድም ዝዓቀብካዮ ከምኡ ይጸንሕ።'],
+  }},
   { v: '2.5.158', date: '2026-10-10', lines: {
     en: ['HUD buttons no longer click the world, tips go away, wall lamps sit on the wall, rugs show at night, a held block fits the hand, and Jump II clears a 3-block wall.'],
     uk: ['Кнопки більше не тиснуть світ, підказки зникають, настінна лампа сідає на стіну, килим видно вночі, блок у руці менший, і Стрибок II долає стіну з трьох блоків.'],
