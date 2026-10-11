@@ -2667,6 +2667,7 @@ function mergePin(doc) {
   dirty = true
   return true
 }
+let openedFrom = ''
 async function snapshot() {
   const chunks = {}
   for (const [k, v] of saved) chunks[k] = await gz(v)
@@ -2686,6 +2687,7 @@ async function snapshot() {
     crops: farm.dump(),
     forage: forage.dump(),
     pondAid: !!pondAid,
+    ...(openedFrom ? { openedFrom } : {}),
     ...(Object.keys(rules).length ? { rules } : {}),
     ...(Object.keys(effects).length ? { effects } : {}),
   }
@@ -2809,6 +2811,7 @@ async function readDoc(doc) {
   return out
 }
 async function applyDoc(doc) {
+  openedFrom = doc && typeof doc.openedFrom === 'string' ? doc.openedFrom : ''
   const moved = migrate(doc)
   const src = moved.doc || doc
   Rules.load(doc && doc.rules || {})
@@ -2877,6 +2880,7 @@ async function resetWorld() {
   protect = { size: 'medium', center: null }
   setLook(0, 0.18)
   seedOldBushes()
+  openedFrom = ''
   markSave(t('fresh'))
   try { await save() } catch (e) {}
   try { await paintOldWorlds() } catch (e) {}
@@ -2925,15 +2929,41 @@ async function classicKeys() {
   const pre = classicPrefix()
   return (keys || []).filter((k) => typeof k === 'string' && k.indexOf(pre) === 0).sort((a, b) => b.slice(pre.length).localeCompare(a.slice(pre.length)))
 }
+function countBlocks() {
+  let n = 0
+  for (const data of saved.values()) {
+    if (!data) continue
+    for (let i = 0; i < data.length; i++) if (data[i]) n++
+  }
+  return n
+}
+function countBag() {
+  const slots = session && session.bag && session.bag.slots
+  if (!slots) return 0
+  let n = 0
+  for (const s of slots) if (s && s.n) n++
+  return n
+}
+function classicText(day, doc) {
+  const bits = [t('openDated').replace('{date}', classicLabel(day))]
+  if (doc && doc.archiveWhy === 'fresh') bits.push(t('archiveFresh'))
+  else if (doc && doc.archiveWhy === 'swap') bits.push(t('archiveSwap'))
+  if (doc && doc.archiveBlocks != null) bits.push(t('archiveBlocks').replace('{n}', String(doc.archiveBlocks | 0)))
+  if (doc && doc.archiveBag != null) bits.push(t('archiveBag').replace('{n}', String(doc.archiveBag | 0)))
+  return bits.join(' · ')
+}
 async function trimClassic(keys, protect) {
   const list = keys || await classicKeys()
-  const saved = []
-  if (protect && list.indexOf(protect) >= 0) saved.push(protect)
+  const keep = new Set()
+  const pins = Array.isArray(protect) ? protect : (protect ? [protect] : [])
+  for (const k of pins) if (k && list.indexOf(k) >= 0) keep.add(k)
   for (const k of list) {
-    if (saved.length >= 3) break
-    if (saved.indexOf(k) < 0) saved.push(k)
+    if (keep.size >= 6) break
+    keep.add(k)
   }
-  for (const k of list) if (saved.indexOf(k) < 0) await idbDel(k)
+  let dropped = false
+  for (const k of list) if (!keep.has(k)) { await idbDel(k); dropped = true }
+  return dropped
 }
 async function putClassic(doc, avoid) {
   if (!doc) return ''
@@ -2951,27 +2981,54 @@ async function putClassic(doc, avoid) {
   await idbPut(key, body)
   return key
 }
-async function keepClassic() {
+async function archiveLeaving(avoid, why) {
+  try { await save() } catch (e) {}
   const doc = await idbGet(WORLD)
-  if (!doc) return
-  await putClassic(doc, '')
-  await trimClassic()
+  if (!doc) return false
+  let body
+  try { body = JSON.parse(JSON.stringify(doc)) } catch (e) { body = doc }
+  const from = typeof body.openedFrom === 'string' ? body.openedFrom : ''
+  const pre = classicPrefix()
+  body.archiveBlocks = countBlocks()
+  body.archiveBag = countBag()
+  const pins = []
+  if (from.indexOf(pre) === 0 && from !== avoid) {
+    const prev = await idbGet(from)
+    body.archiveWhy = prev && (prev.archiveWhy === 'fresh' || prev.archiveWhy === 'swap') ? prev.archiveWhy : why
+    await idbPut(from, body)
+    pins.push(from)
+  } else if (from && from === avoid) {
+    return false
+  } else {
+    body.archiveWhy = why
+    delete body.openedFrom
+    const key = await putClassic(body, avoid)
+    if (key) pins.push(key)
+  }
+  if (avoid) pins.push(avoid)
+  return trimClassic(null, pins)
+}
+async function keepClassic() {
+  if (await archiveLeaving('', 'fresh')) toast(t('oldestWorld'))
 }
 async function openClassic(keyName) {
   const raw = await idbGet(keyName)
   if (!raw) return
   let doc
   try { doc = JSON.parse(JSON.stringify(raw)) } catch (e) { doc = raw }
-  try { await save() } catch (e) {}
-  const cur = await idbGet(WORLD)
-  if (cur) {
-    await putClassic(cur, keyName)
-    await trimClassic(null, keyName)
-  }
+  const dropped = await archiveLeaving(keyName, 'swap')
+  doc.openedFrom = keyName
   await applyDoc(doc)
   try { await save() } catch (e) {}
   await paintOldWorlds()
+  const sheet = document.getElementById('sheet')
+  if (sheet && !sheet.hidden && sheet.dataset.panel === 'oldworlds') {
+    const g = sheet.querySelector('.ggrid')
+    if (g) await paintOldList(g)
+  }
   toast(t('archiveOpen'))
+  if (dropped) toast(t('oldestWorld'))
+  window.__archiveGen = (window.__archiveGen || 0) + 1
 }
 async function paintOldWorlds() {
   const btn = document.getElementById('m-old')
@@ -2986,12 +3043,11 @@ async function paintOldWorlds() {
       const pre = classicPrefix()
       for (const k of keys) {
         const day = String(k).slice(pre.length)
-        const label = classicLabel(day)
         const row = document.createElement('button')
         row.type = 'button'
         row.className = 'row'
         row.style.minHeight = '44px'
-        row.textContent = t('openDated').replace('{date}', label)
+        row.textContent = classicText(day, await idbGet(k))
         row.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openClassic(k) })
         list.append(row)
       }
@@ -3035,11 +3091,12 @@ async function paintOldList(g) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile wide'
+    b.dataset.archive = k
     b.style.minHeight = '44px'
     b.style.gridColumn = '1 / -1'
     const lab = document.createElement('span')
     lab.className = 'glbl'
-    lab.textContent = t('openDated').replace('{date}', classicLabel(day))
+    lab.textContent = classicText(day, await idbGet(k))
     b.append(lab)
     b.addEventListener('click', () => { openClassic(k) })
     g.append(b)
@@ -6170,6 +6227,7 @@ load().catch(() => {}).finally(() => {
   showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
+  let bagWarned = false
   window.__smoke = {
     seed() {
       session.setMode('survival')
@@ -6293,7 +6351,19 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
     voxel(x, y, z) { return getVoxel(x, y, z) },
     facing(x, y, z) { return readFace(x, y, z) },
-    fillBag(item, n) { session.setMode('survival'); session.give(item, n); session.clearLoose() },
+    fillBag(item, n) {
+      if (!item || !ITEMS[item]) {
+        if (!bagWarned) {
+          bagWarned = true
+          console.warn('fillBag: unknown item ' + item)
+        }
+        return false
+      }
+      session.setMode('survival')
+      session.give(item, n)
+      session.clearLoose()
+      return true
+    },
     emptyBag() {
       session.setMode('survival')
       for (let i = 0; i < session.bag.slots.length; i++) session.bag.slots[i] = null

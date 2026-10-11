@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.160', date: '2026-10-10', lines: {
+    en: ['Opening an old world keeps the others. Berries, lamps, saws and pickaxes are big enough to see.'],
+    uk: ['Відкриття старого світу не стирає інші. Ягоди, лампи, пилки й кайла досить великі, щоб їх бачити.'],
+    ru: ['Открытие старого мира не стирает другие. Ягоды, лампы, пилы и кирки достаточно большие, чтобы их видеть.'],
+    es: ['Abrir un mundo viejo no borra los otros. Las bayas, las lámparas, los serruchos y los picos se ven bien.'],
+    ar: ['فتح عالم قديم لا يمسح العوالم الأخرى. التوت والمصابيح والمناشير والمعاول كبيرة بما يكفي لترى.'],
+    'fa-AF': ['باز کردن جهان کهنه جهان‌های دیگر را پاک نمی‌کند. توت، چراغ، اره و کلنگ آن‌قدر بزرگ اند که دیده شوند.'],
+    rw: ['Gufungura isi ya kera ntibisiba izindi. Imbuto, amatara, urubanza n\'icyuma biraboneka neza.'],
+    ti: ['ምኽፋት ናይ ቀደም ዓለም ካልኦት ኣይድምስስን። እንጻጽጽ፡ መብራህቲ፡ መጋዝን መኮፍን ክትርኢ ዝኣኽል ዓቢ እዩ።'],
+  }},
   { v: '2.5.159', date: '2026-10-10', lines: {
     en: ['New hills have caves you can walk into, rock shelves, and big stones. Rivers and lakes are deeper. The ground you already saved stays the same.'],
     uk: ['Нові пагорби мають печери, куди можна зайти, кам\'яні полиці й великі камені. Річки й озера глибші. Земля, яку ти вже зберіг, лишається такою самою.'],

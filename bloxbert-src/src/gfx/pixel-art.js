@@ -223,17 +223,19 @@ reg('lever', (set) => {
   set(7, 5, 3); set(8, 6, 2); set(6, 8, 2);
 }, 'lever');
 
-// Tools (diagonal)
+// Tools. Pick head is 10px wide so it does not read as a stick.
 reg('woodTool', (set) => {
-  // handle
-  for (let i = 0; i < 10; i++) set(4 + i, 12 - i, 1);
-  // head
-  set(12, 2, 2); set(13, 2, 2); set(13, 3, 2); set(14, 3, 3); set(12, 3, 2);
+  for (let y = 1; y <= 6; y++) for (let x = 3; x <= 12; x++) set(x, y, y < 3 ? 4 : 2)
+  set(4, 2, 3); set(11, 2, 1)
+  for (let y = 6; y <= 14; y++) for (let x = 6; x <= 9; x++) set(x, y, 1)
+  set(7, 8, 3); set(8, 10, 2)
 }, 'wood');
 
 reg('stoneTool', (set) => {
-  for (let i = 0; i < 10; i++) set(4 + i, 12 - i, 1);
-  set(12, 2, 2); set(13, 2, 3); set(13, 3, 2); set(14, 3, 1);
+  for (let y = 1; y <= 6; y++) for (let x = 3; x <= 12; x++) set(x, y, y < 3 ? 4 : 3)
+  set(4, 2, 4); set(11, 2, 1)
+  for (let y = 6; y <= 14; y++) for (let x = 6; x <= 9; x++) set(x, y, 1)
+  set(7, 8, 2); set(8, 11, 0)
 }, 'stone');
 
 reg('hoe', (set) => {
@@ -285,9 +287,10 @@ reg('measuringTape', (set) => {
 }, 'metal');
 
 reg('handSaw', (set) => {
-  for (let i = 0; i < 8; i++) set(5 + i, 13 - i, 1);
-  for (let i = 0; i < 6; i++) set(12 - i, 4 + i, 2); // blade
-  set(13, 3, 3); set(14, 4, 1);
+  for (let y = 2; y <= 13; y++) for (let x = 2; x <= 5; x++) set(x, y, 1)
+  set(3, 4, 3); set(4, 5, 4); set(4, 9, 0)
+  for (let y = 4; y <= 8; y++) for (let x = 5; x <= 14; x++) set(x, y, y < 6 ? 4 : 3)
+  for (let x = 6; x <= 14; x += 2) { set(x, 9, 2); set(x, 10, 1) }
 }, 'metal');
 
 reg('hammer', (set) => {

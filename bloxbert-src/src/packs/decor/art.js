@@ -6,8 +6,11 @@ export function registerDecorArt(reg) {
     set(7, 12, 2); set(8, 12, 2); set(9, 12, 2);
   }, 'lantern');
   reg('wallLamp', (set) => {
-    set(4, 8, 1); set(5, 8, 1); set(6, 8, 1);
-    set(7, 6, 3); set(8, 6, 4); set(9, 6, 4); set(8, 7, 3);
+    for (let y = 3; y <= 13; y++) { set(1, y, 0); set(2, y, 1) }
+    for (let x = 2; x <= 7; x++) { set(x, 7, 1); set(x, 8, 0) }
+    for (let y = 2; y <= 9; y++) for (let x = 6; x <= 14; x++) set(x, y, y < 4 ? 4 : 3)
+    for (let x = 7; x <= 13; x++) set(x, 10, 4)
+    set(8, 4, 4); set(12, 6, 2)
   }, 'lantern');
   reg('rug', (set) => {
     for (let y = 5; y < 11; y++) for (let x = 3; x < 13; x++) set(x, y, 2);
