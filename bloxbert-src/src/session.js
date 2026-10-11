@@ -8,7 +8,7 @@ import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, 
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
-import { blockIcon, itemSvg } from './icons.js'
+import { slotArt } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots } from './slots-bridge.js'
@@ -383,9 +383,7 @@ export function createSession(api) {
       const sw = document.createElement('span')
       sw.className = 'sw'
       if (s && slotMuted(s.item)) sw.textContent = '?'
-      else if (item && item.svg) sw.innerHTML = itemSvg(item.svg)
-      else if (item && item.block && api.blockIcon) sw.append(fitIcon(api.blockIcon(item.block)))
-      else if (item) sw.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="#E6B15A"/></svg>')
+      else if (s) sw.append(slotNode(s.item, item))
       b.append(digit, sw)
       if (s) {
         const count = document.createElement('span')
@@ -765,18 +763,26 @@ export function createSession(api) {
   }
   function faceIcon(key) {
     if (slotMuted(key)) return qMark()
-    return itemIcon(ITEMS[key])
+    return itemIcon(ITEMS[key], key)
   }
   function faceName(key) {
     return slotMuted(key) ? '?' : itemName(key)
   }
-  function itemIcon(item) {
-    if (!item) return document.createElement('span')
-    if (item.svg) { const s = document.createElement('span'); s.innerHTML = itemSvg(item.svg); return s }
-    if (item.block && api.blockIcon) return fitIcon(api.blockIcon(item.block))
-    const s = document.createElement('span')
-    s.innerHTML = itemSvg('<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>')
-    return s
+  function keyOf(item) {
+    if (!item) return ''
+    for (const [k, v] of Object.entries(ITEMS)) if (v === item) return k
+    return ''
+  }
+  // A fresh node every time. slotArt owns the wrap; two slots never share one canvas.
+  function slotNode(key, item) {
+    const raw = item && item.block && api.blockIcon ? api.blockIcon(item.block) : null
+    const blockNode = raw ? fitIcon(raw) : null
+    return slotArt(key, blockNode)
+  }
+  function itemIcon(item, key) {
+    const k = key || keyOf(item)
+    if (!item && !k) return document.createElement('span')
+    return slotNode(k, item)
   }
   function paintBag(g) {
     clearPocketDot()
@@ -1678,7 +1684,8 @@ export function createSession(api) {
       const b = document.createElement('button')
       b.type = 'button'
       b.className = 'gtile item'
-      b.innerHTML = '<span class="gic">' + itemIcon(item) + '</span><span class="glbl"></span>'
+      b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
+      b.querySelector('.gic').append(itemIcon(item, k))
       b.querySelector('.glbl').textContent = itemName(k) + ' · ' + t('sell') + ' ⚙ ' + quoteSell(item, wallet.state.soldToday[k] || 0, wallet.state.dial || 1, ECON) + ' · ' + t('buy') + ' ⚙ ' + quoteBuy(item, wallet.state.dial || 1, ECON)
       g.append(b)
     }
@@ -1831,7 +1838,7 @@ export function createSession(api) {
   function slotsUi() {
     if (paintBox.ui) return paintBox.ui
     const KS = bindBertopiaSlots({
-      icon: (item) => slotMuted(item) ? qMark() : itemIcon(ITEMS[item] || null),
+      icon: (item) => slotMuted(item) ? qMark() : itemIcon(ITEMS[item] || null, item),
       name: itemName,
       t,
       cap: stackCap,

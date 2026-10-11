@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.155', date: '2026-10-10', lines: {
+    en: ['Hotbar and Bag show the real pictures. A teacher can keep backups on this device.'],
+    uk: ['Панель і Сумка показують справжні малюнки. Вчитель може тримати копії на цьому пристрої.'],
+    ru: ['Панель и Сумка показывают настоящие картинки. Учитель может хранить копии на этом устройстве.'],
+    es: ['La barra y la Bolsa muestran dibujos de verdad. Un profe puede guardar copias en este aparato.'],
+    ar: ['الشريط والحقيبة يعرضان صوراً حقيقية. المعلم يستطيع حفظ نسخ على هذا الجهاز.'],
+    'fa-AF': ['نوار و بکس تصویر واقعی نشان می‌دهند. معلم می‌تواند روی همین دستگاه نسخه نگه دارد.'],
+    rw: ['Umurongo n\'agasaho bigaragaza amashusho nyayo. Umwarimu ashobora kubika kopi kuri iki gikoresho.'],
+    ti: ['መስመርን ቦርሳን ሓቀኛ ስእሊ የርእዩ። መምህር ኣብዚ መሳርሒ ቅዳሕ ይሕልው።'],
+  }},
   { v: '2.5.154', date: '2026-10-10', lines: {
     en: ['A held block shows in your hand, and a pickaxe looks like a pickaxe. Slow Fall no longer makes you jump higher. A teacher can remove an effect.'],
     uk: ['Блок у руці видно, а кайло схоже на кайло. Повільне падіння більше не підкидає вище. Учитель може прибрати ефект.'],

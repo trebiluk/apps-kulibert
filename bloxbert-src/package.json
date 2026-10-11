@@ -1,7 +1,7 @@
 {
   "name": "bloxbert",
   "private": true,
-  "version": "2.5.154",
+  "version": "2.5.155",
   "description": "Bloxbert source (block builder). noa-engine pinned to fenomas/noa develop @8a74866 + Babylon 6.49.0. Builds the static door into ../blocks/ (student door) or ../blocks-test/ (test page).",
   "license": "UNLICENSED",
   "scripts": {
@@ -9,7 +9,7 @@
     "build:test": "node build.mjs --out ../blocks-test",
     "build:dist": "node build.mjs --out dist",
     "serve": "node tools/serve.mjs dist 8870",
-    "test": "node tools/decor-check.mjs && node tools/clock-check.mjs && node tools/hands-check.mjs && node tools/pack-save-check.mjs"
+    "test": "node tools/decor-check.mjs && node tools/clock-check.mjs && node tools/hands-check.mjs && node tools/pack-save-check.mjs && node tools/backups-check.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "6.49.0",

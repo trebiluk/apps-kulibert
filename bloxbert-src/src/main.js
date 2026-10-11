@@ -30,6 +30,7 @@ import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
 import { createSession } from './session.js'
+import { createBackups } from './backups.js'
 import { CHANGELOG } from './changelog.js'
 import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
@@ -2836,9 +2837,16 @@ async function resetWorld() {
   try { await save() } catch (e) {}
   try { await paintOldWorlds() } catch (e) {}
 }
-function ymd(d) {
+function classicStamp(d) {
   const x = d || new Date()
-  return String(x.getFullYear()) + String(x.getMonth() + 1).padStart(2, '0') + String(x.getDate()).padStart(2, '0')
+  const p = (n) => String(n).padStart(2, '0')
+  return String(x.getFullYear()) + p(x.getMonth() + 1) + p(x.getDate()) + '-' + p(x.getHours()) + p(x.getMinutes())
+}
+function classicLabel(day) {
+  const s = String(day || '')
+  if (/^\d{8}-\d{4}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8) + ' ' + s.slice(9, 11) + ':' + s.slice(11, 13)
+  if (s.length === 8 && /^\d{8}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6)
+  return s
 }
 function classicPrefix() { return WORLD + '-classic-' }
 function idbReq(req) {
@@ -2876,7 +2884,7 @@ async function trimClassic(keys) {
 async function keepClassic() {
   const doc = await idbGet(WORLD)
   if (!doc) return
-  await idbPut(classicPrefix() + ymd(), doc)
+  await idbPut(classicPrefix() + classicStamp(), doc)
   await trimClassic()
 }
 async function openClassic(keyName) {
@@ -2885,7 +2893,7 @@ async function openClassic(keyName) {
   try { await save() } catch (e) {}
   const cur = await idbGet(WORLD)
   if (cur) {
-    await idbPut(classicPrefix() + ymd(), cur)
+    await idbPut(classicPrefix() + classicStamp(), cur)
     await trimClassic()
   }
   await applyDoc(doc)
@@ -2906,7 +2914,7 @@ async function paintOldWorlds() {
       const pre = classicPrefix()
       for (const k of keys) {
         const day = String(k).slice(pre.length)
-        const label = day.length === 8 ? (day.slice(0, 4) + '-' + day.slice(4, 6) + '-' + day.slice(6)) : day
+        const label = classicLabel(day)
         const row = document.createElement('button')
         row.type = 'button'
         row.className = 'row'
@@ -2921,6 +2929,49 @@ async function paintOldWorlds() {
   const keys = await classicKeys()
   btn.hidden = !keys.length
   if (!keys.length) { list.hidden = true; list.innerHTML = '' }
+  const slot = document.querySelector('#sheet [data-old-slot]')
+  if (slot) paintOldEntry(slot, () => { if (panels) panels.open('oldworlds') })
+}
+function menuTile(icon, label, fn) {
+  const b = document.createElement('button')
+  b.type = 'button'
+  b.className = 'gtile'
+  const ico = document.createElement('span')
+  ico.className = 'gic'
+  ico.textContent = icon
+  const lab = document.createElement('span')
+  lab.className = 'glbl'
+  lab.textContent = label
+  b.append(ico, lab)
+  b.addEventListener('click', fn)
+  return b
+}
+async function paintOldEntry(host, openList) {
+  if (!host) return
+  const keys = await classicKeys()
+  host.innerHTML = ''
+  if (!host.isConnected || !keys.length) return
+  host.append(menuTile('↩', t('openOld'), () => { if (openList) openList() }))
+}
+async function paintOldList(g) {
+  g.innerHTML = ''
+  const keys = await classicKeys()
+  const pre = classicPrefix()
+  if (!keys.length) return
+  for (const k of keys) {
+    const day = String(k).slice(pre.length)
+    const b = document.createElement('button')
+    b.type = 'button'
+    b.className = 'gtile wide'
+    b.style.minHeight = '44px'
+    b.style.gridColumn = '1 / -1'
+    const lab = document.createElement('span')
+    lab.className = 'glbl'
+    lab.textContent = t('openDated').replace('{date}', classicLabel(day))
+    b.append(lab)
+    b.addEventListener('click', () => { openClassic(k) })
+    g.append(b)
+  }
 }
 paintOldWorlds().catch(() => {})
 async function exportJSON() {
@@ -3635,6 +3686,124 @@ function eatResume(e) {
   return true
 }
 let holdTour = () => {}
+const backups = createBackups({
+  dbName: DB,
+  store: STORE,
+  world: () => WORLD,
+  snapshot,
+  applyDoc,
+  save,
+  toast,
+  t,
+})
+function kbLabel(n) {
+  const bytes = Math.max(0, n | 0)
+  if (bytes < 1024) return bytes + ' B'
+  return (bytes / 1024).toFixed(1) + ' KB'
+}
+function whenText(at) {
+  const d = new Date(at || Date.now())
+  const p = (n) => String(n).padStart(2, '0')
+  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes())
+}
+async function classSnap() {
+  if (!teacherOn()) return
+  await backups.backup(backups.className())
+  toast(t('backupSaved'))
+  const sheet = document.getElementById('sheet')
+  if (sheet && !sheet.hidden && sheet.dataset.panel === 'backups' && panels) panels.open('backups')
+}
+async function paintBackups(g) {
+  paintBackups.gen = (paintBackups.gen || 0) + 1
+  const gen = paintBackups.gen
+  g.innerHTML = ''
+  if (!teacherOn()) return
+  const note = document.createElement('p')
+  note.className = 'gnote wide'
+  note.dataset.cloudNote = '1'
+  note.textContent = t('cloudLater')
+  g.append(note)
+  g.append(menuTile('📸', t('classSnap'), () => { classSnap() }))
+  const field = document.createElement('div')
+  field.className = 'wide gnote'
+  field.style.display = 'flex'
+  field.style.flexDirection = 'column'
+  field.style.gap = '6px'
+  field.append(document.createTextNode(t('backupName')))
+  const input = document.createElement('input')
+  input.id = 'backup-name'
+  input.type = 'text'
+  input.maxLength = 40
+  input.autocomplete = 'off'
+  input.setAttribute('aria-label', t('backupName'))
+  input.style.cssText = 'width:100%;min-height:44px;font:inherit;padding:8px 10px;border-radius:8px;border:2px solid #1F8A8A;background:#08131A;color:#E6EEF2'
+  field.append(input)
+  g.append(field)
+  const saveBtn = menuTile('💾', t('saveBackup'), async () => {
+    const name = input.value.trim().slice(0, 40)
+    if (!name) { toast(t('backupNeedName')); return }
+    await backups.backup(name)
+    toast(t('backupSaved'))
+    if (panels) panels.open('backups')
+  })
+  saveBtn.id = 'backup-save'
+  g.append(saveBtn)
+  const rows = await backups.list()
+  if (gen !== paintBackups.gen || !g.isConnected) return
+  if (!rows.length) {
+    const empty = document.createElement('p')
+    empty.className = 'gnote wide'
+    empty.dataset.backupEmpty = '1'
+    empty.textContent = t('backupEmpty')
+    g.append(empty)
+    return
+  }
+  for (const row of rows) {
+    const box = document.createElement('div')
+    box.className = 'wide'
+    box.dataset.backup = row.id
+    box.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 0;border-top:1px solid #1f2b44'
+    const meta = document.createElement('div')
+    meta.className = 'gnote'
+    meta.style.flex = '1 1 140px'
+    meta.style.margin = '0'
+    const name = document.createElement('span')
+    name.dataset.backupName = '1'
+    name.style.fontWeight = '700'
+    name.textContent = row.name
+    const when = document.createElement('div')
+    when.dataset.backupWhen = '1'
+    when.textContent = whenText(row.at)
+    const size = document.createElement('div')
+    size.dataset.backupSize = '1'
+    size.textContent = kbLabel(row.bytes)
+    meta.append(name, when, size)
+    const restoreBtn = document.createElement('button')
+    restoreBtn.type = 'button'
+    restoreBtn.className = 'gtile'
+    restoreBtn.dataset.act = 'restore'
+    restoreBtn.style.minHeight = '44px'
+    restoreBtn.textContent = t('restoreBackup')
+    restoreBtn.addEventListener('click', async () => {
+      await backups.restore(row.id)
+      if (panels) panels.open('backups')
+    })
+    const delBtn = document.createElement('button')
+    delBtn.type = 'button'
+    delBtn.className = 'gtile'
+    delBtn.dataset.act = 'delete'
+    delBtn.style.minHeight = '44px'
+    delBtn.textContent = t('deleteBackup')
+    delBtn.addEventListener('click', async () => {
+      if (!confirm(t('confirmDeleteBackup'))) return
+      await backups.remove(row.id)
+      toast(t('backupGone'))
+      if (panels) panels.open('backups')
+    })
+    box.append(meta, restoreBtn, delBtn)
+    g.append(box)
+  }
+}
 panels = mountPanels({
   t, toast,
   save: () => save(),
@@ -3644,6 +3813,10 @@ panels = mountPanels({
   fresh: () => resetWorld(),
   hub: () => goHome(),
   teacher: () => teacherOn(),
+  classSnap: () => classSnap(),
+  paintBackups: (g) => paintBackups(g),
+  paintOldEntry: (host, openList) => paintOldEntry(host, openList),
+  paintOldWorlds: (g) => paintOldList(g),
   setTeacher: (on) => setTeacher(on),
   fullScreen: () => $('fs-btn').click(),
   inspect: () => setInspect(true),

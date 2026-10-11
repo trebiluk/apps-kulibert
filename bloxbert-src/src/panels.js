@@ -194,9 +194,18 @@ export function mountPanels(api) {
           tile('📂', api.t('loadSaved'), () => api.load()),
           tile('⬆', api.t('exportWorld'), () => api.exportWorld()),
           tile('⬇', api.t('importWorld'), () => api.importWorld()),
-          tile('✨', api.t('freshWorld'), () => api.fresh()),
+          tile('✨', api.t('freshWorld'), () => { if (confirm(api.t('confirmFresh'))) api.fresh() }),
           tile('⌂', api.t('hub'), () => api.hub()),
         )
+        if (api.teacher && api.teacher()) {
+          g.append(tile('🗂', api.t('backups'), () => open('backups')))
+          g.append(tile('📸', api.t('classSnap'), () => { if (api.classSnap) api.classSnap() }))
+        }
+        const oldSlot = document.createElement('div')
+        oldSlot.className = 'wide'
+        oldSlot.dataset.oldSlot = '1'
+        g.append(oldSlot)
+        if (api.paintOldEntry) api.paintOldEntry(oldSlot, () => open('oldworlds'))
       }),
       mode: () => show('mode', api.t('mode'), (g) => {
         const teacher = api.teacher && api.teacher()
@@ -214,6 +223,8 @@ export function mountPanels(api) {
       bench: (key) => show('bench', api.t('workbench'), (g) => api.paintStation(g, key, 'bench')),
       woodshop: (key) => show('woodshop', api.t('woodshop'), (g) => api.paintStation(g, key, 'woodshop')),
       log: () => show('log', api.t('changelog'), (g) => api.paintLog(g)),
+      backups: () => show('backups', api.t('backups'), (g) => { if (api.paintBackups) api.paintBackups(g) }),
+      oldworlds: () => show('oldworlds', api.t('openOld'), (g) => { if (api.paintOldWorlds) api.paintOldWorlds(g) }),
       counter: (key) => show('counter', api.t('myCounter'), (g) => api.paintCounter(g, key)),
       bunk: (key) => show('bunk', api.t('bunk'), (g) => api.paintBunk(g, key)),
       box: (key) => show('box', api.t('box'), (g) => { api.paintBox(g, key); title.textContent = api.t('box') }),
