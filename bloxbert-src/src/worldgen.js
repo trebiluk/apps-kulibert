@@ -2130,8 +2130,9 @@ function pinePart(P, x, y, z, gen) {
   return floraKey('pineNeedles')
 }
 
-// Gen 8 crown. Tip is one block, then a gap, a small ring, a gap, and a wide
-// diamond. Odd layers stay air so the cone is not a dark cube and most faces go.
+// Gen 8 crown. Wide chamfered base, a full ring, then a one-block tip.
+// Odd layers stay air so the cone is stepped, not a cube and not a pole.
+// The whole tree stays under 40 blocks (well under 65).
 function pineStepped(P, x, y, z) {
   const top = P.h + P.tall
   const dx = Math.abs(x - P.x)
@@ -2140,9 +2141,10 @@ function pineStepped(P, x, y, z) {
   const dy = top - y
   if (dy < 0 || dy > 4 || (dy & 1)) return ''
   if (dy === 0) return dx === 0 && dz === 0 ? floraKey('pineNeedles') : ''
-  const rad = dy >> 1
-  const man = dx + dz
-  if (man === 0 || man > rad) return ''
+  if (dx === 0 && dz === 0) return ''
+  const rad = dy === 2 ? 1 : 2
+  if (dx > rad || dz > rad) return ''
+  if (rad === 2 && dx === 2 && dz === 2) return ''
   return floraKey('pineNeedles')
 }
 

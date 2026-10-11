@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.170', date: '2026-10-11', lines: {
+    en: ['Pines wear a fuller stepped crown. The chop-a-tree tip closes with a touch. On a phone the camera steps back out of a wall.'],
+    uk: ['Сосни мають повнішу крону східцями. Підказку про зруб можна закрити дотиком. На телефоні камера виходить зі стіни.'],
+    ru: ['У сосен более полная крона ступеньками. Подсказку о рубке можно закрыть касанием. На телефоне камера выходит из стены.'],
+    es: ['Los pinos tienen una copa más llena en escalones. El aviso de talar se cierra con un toque. En el teléfono la cámara sale de la pared.'],
+    ar: ['الصنوبر صار بتاج أوسع على درجات. تنبيه قطع الشجرة يُغلق باللمس. على الهاتف تخرج الكاميرا من الجدار.'],
+    'fa-AF': ['کاج تاج پُرتر و پله‌ای دارد. نکتهٔ بریدن درخت با لمس بسته می‌شود. در تلفن دوربین از دیوار بیرون می‌آید.'],
+    rw: ['Pine ifite ikamba rinini mu ntera. Inama yo gutema igiti ifunga ku gukora. Kuri telefoni kamera isohoka mu rukuta.'],
+    ti: ['ጽድ ዝሰፍሐ ደረጃዊ ኣኽሊል ኣለዎ። ምኽሪ ምቑራጽ ዕንጨይቲ ብምትንካፍ ይዕጾ። ኣብ ስልኪ ካሜራ ካብ መንደቕ ትወጽእ።'],
+  }},
   { v: '2.5.169', date: '2026-10-11', lines: {
     en: ['Shift-click moves a stack, right-click splits it, and a hover shows the item name.'],
     uk: ['Shift-клік переносить стос, правий клік ділить його, а наведення показує назву.'],

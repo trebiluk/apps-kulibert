@@ -1334,7 +1334,7 @@ noa.blockTargetIdCheck = (id) => {
 if (noa.defaultBlockHighlightFunction) {
   noa.off('targetBlockChanged', noa.defaultBlockHighlightFunction)
   noa.on('targetBlockChanged', (tgt) => {
-    if (tgt && lowPlant(tgt.blockID)) {
+    if (tgt && lowPlant(tgt.blockID) && !FLORA_PLANT_IDS.has(tgt.blockID)) {
       noa.rendering.highlightBlockFace(false)
       return
     }
@@ -4452,10 +4452,28 @@ $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
 const pathChip = $('path-chip')
 if (pathChip) {
+  let tipTouchAt = 0
+  const pathX = (e) => !!(e && e.target && e.target.closest && e.target.closest('.path-x'))
   pathChip.addEventListener('pointerdown', (e) => e.stopPropagation())
+  pathChip.addEventListener('pointerup', (e) => {
+    if (e.pointerType !== 'touch' && e.pointerType !== 'pen') return
+    if (!pathX(e)) return
+    e.preventDefault()
+    e.stopPropagation()
+    tipTouchAt = performance.now()
+    learn.dismissPath()
+  })
+  pathChip.addEventListener('touchend', (e) => {
+    if (!pathX(e)) return
+    e.preventDefault()
+    if (performance.now() - tipTouchAt < 700) return
+    tipTouchAt = performance.now()
+    learn.dismissPath()
+  }, { passive: false })
   pathChip.addEventListener('click', (e) => {
     e.preventDefault()
     e.stopPropagation()
+    if (performance.now() - tipTouchAt < 700) return
     learn.dismissPath()
   })
 }
@@ -5205,6 +5223,42 @@ function lingerQuick(d, now) {
   showCrack(Math.max(d.p || 0, 0.16), null, null, true)
   return true
 }
+function wallId(id) {
+  if (!id || id === WATER || OPEN_IDS.has(id)) return false
+  if (id === LANTERN || (id >= 1100 && id <= 1105)) return false
+  if (id === ID.wheat || id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)) return false
+  try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
+}
+function eyeBlocked() {
+  if (!TOUCH_UI || !noa.camera || tableMode || flying) return false
+  const eye = noa.camera.getPosition()
+  if (!eye) return false
+  return wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))
+}
+function pushEyeOut() {
+  const eye = noa.camera.getPosition()
+  if (!eye) return
+  const ex = Math.floor(eye[0])
+  const ey = Math.floor(eye[1])
+  const ez = Math.floor(eye[2])
+  let best = null
+  let bestD = 99
+  for (let dy = 1; dy >= -1; dy--) {
+    for (let dx = -2; dx <= 2; dx++) {
+      for (let dz = -2; dz <= 2; dz++) {
+        if (!dx && !dy && !dz) continue
+        if (wallId(getVoxel(ex + dx, ey + dy, ez + dz))) continue
+        const d = dx * dx + dz * dz + dy * dy * 0.6
+        if (d < bestD) { bestD = d; best = [ex + dx + 0.5, ey + dy + 0.15, ez + dz + 0.5] }
+      }
+    }
+  }
+  if (!best) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  noa.entities.setPosition(noa.playerEntity, [p[0] + best[0] - eye[0], p[1] + best[1] - eye[1], p[2] + best[2] - eye[2]])
+  if (body) { body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0 }
+}
 function feelTick(dt) {
   if (learn && learn.sync) learn.sync()
   tickDigChip()
@@ -5301,7 +5355,12 @@ function feelTick(dt) {
   if (!tableMode && !flying) {
     const behind = camBehind ? 4 : 0
     const up = behind > 0.5 && TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
-    const zoom = behind + up
+    let zoom = behind + up
+    if (eyeBlocked()) {
+      const cur = noa.camera.zoomDistance || 0
+      if (cur > 0.4) zoom = Math.max(0, cur - 0.75)
+      else { zoom = 0; pushEyeOut() }
+    }
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
   }
   const cam = noa.rendering.camera
