@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.167', date: '2026-10-11', lines: {
+    en: ['The menu is a Bertopia panel now: grouped keycaps, pixel icons, and a teal title plate.'],
+    uk: ['Меню тепер панель Bertopia: групи клавіш, піксельні значки й бірюзова табличка назви.'],
+    ru: ['Меню теперь панель Bertopia: группы клавиш, пиксельные значки и бирюзовая табличка названия.'],
+    es: ['El menú ahora es un panel de Bertopia: teclas agrupadas, iconos de píxeles y una placa verdeazulada.'],
+    ar: ['القائمة صارت لوحة Bertopia: مفاتيح مجمّعة، وأيقونات بكسل، ولوحة عنوان فيروزية.'],
+    'fa-AF': ['فهرست حالا یک پنل Bertopia است: کلیدهای گروهی، نشانه‌های پیکسل و یک صفحهٔ فیروزه‌ای.'],
+    rw: ['Ibikubiyemo ni ikadiri rya Bertopia: amabuto y\'itsinda, udushushanyo duto, n\'ikarita y\'icyatsi kibisi.'],
+    ti: ['ዝርዝር ሕጂ ናይ Bertopia ፓነል እዩ: ጉጅለ መጠወቒ፡ ፒክሰል ምልክታትን ሰማያዊ ሰሌዳን።'],
+  }},
   { v: '2.5.166', date: '2026-10-11', lines: {
     en: ['Fixed: clicks work again, so you can break blocks, chop wood and pick flowers.'],
     uk: ['Виправлено: кліки знову працюють, тож можна ламати блоки, рубати дерево й збирати квіти.'],

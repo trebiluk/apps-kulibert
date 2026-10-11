@@ -256,6 +256,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #tool-strip button{min-width:48px;min-height:48px;background:transparent;color:#f8fafc;border:1px solid rgba(34,211,238,.45);border-radius:10px}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
+/* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
 .ggrid>.gnote,.ggrid>.craft-row,.ggrid>input[type=range],.ggrid>.wide,.ggrid>.break{grid-column:1 / -1}
 .gtile{position:relative;min-height:72px;min-width:0;border-radius:12px;border:1px solid rgba(34,211,238,.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px}
 .craft-row{display:flex;gap:6px;align-items:stretch}
@@ -594,8 +595,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 .top,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
-
 </style>
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.167">
 </head>
 <body>
 <div id="stage"></div>

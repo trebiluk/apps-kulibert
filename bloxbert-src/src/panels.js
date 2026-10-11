@@ -1,4 +1,5 @@
 // Icon-tile panels. main.js wires the actions.
+import { menuIcon, menuPlate } from './icons.js'
 export function mountPanels(api) {
   const sheet = document.getElementById('sheet')
   const body = document.getElementById('sheet-body')
@@ -20,7 +21,28 @@ export function mountPanels(api) {
     b.addEventListener('click', fn)
     return b
   }
+  const sheetX = document.getElementById('sheet-x')
+  function restoreMenuChrome() {
+    const bar = sheet.querySelector('.sheet-bar')
+    if (!bar) return
+    const backBtn = document.getElementById('sheet-back')
+    if (title) title.classList.remove('kd-sr')
+    if (sheetX) {
+      if (sheetX.dataset.menuX === '1') {
+        sheetX.replaceChildren('✕')
+        sheetX.classList.remove('kd-x')
+        delete sheetX.dataset.menuX
+        delete sheetX.dataset.act
+      }
+    }
+    if (backBtn) bar.append(backBtn)
+    if (title) bar.append(title)
+    if (sheetX) bar.append(sheetX)
+    if (backBtn) bar.insertBefore(backBtn, bar.firstChild)
+    if (sheet.firstElementChild !== bar) sheet.insertBefore(bar, sheet.firstChild)
+  }
   function show(id, label, fill, root) {
+    restoreMenuChrome()
     if (api.onOpen) api.onOpen()
     if (id === 'menu' && api.holdTour) api.holdTour()
     if (root) stack = ['menu']
@@ -34,6 +56,10 @@ export function mountPanels(api) {
     grid.className = 'ggrid'
     fill(grid)
     body.append(grid)
+    if (id === 'menu') {
+      const bar = sheet.querySelector('.sheet-bar')
+      if (bar) sheet.append(bar)
+    }
     sheet.dataset.panel = id
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
@@ -97,6 +123,7 @@ export function mountPanels(api) {
   }
   function dismiss() {
     slideGen += 1
+    restoreMenuChrome()
     freshSlots()
     sheet.dataset.slotsReady = '1'
     sheet.classList.remove('slots-slide')
@@ -122,33 +149,118 @@ export function mountPanels(api) {
   function rulesOk() {
     return !!((api.teacher && api.teacher()) || (api.staff && api.staff()))
   }
+  function pageVersion() {
+    const s = document.querySelector('script[data-version]')
+    if (s && s.dataset.version) return s.dataset.version
+    const plate = document.getElementById('ver-plate')
+    return plate ? plate.textContent.trim() : ''
+  }
+  function keyTile(icon, act, label, fn) {
+    const b = tile('', label, fn, label)
+    b.classList.add('kd-key')
+    b.dataset.act = act
+    const ico = b.querySelector('.gic')
+    ico.textContent = ''
+    ico.append(menuIcon(icon))
+    return b
+  }
+  function menuGroup(id, label, tiles, opt) {
+    const box = document.createElement('div')
+    box.className = 'kd-group' + (opt && opt.teacher ? ' kd-teacher' : '')
+    box.dataset.group = id
+    const h = document.createElement('div')
+    h.className = 'kd-glab'
+    const prompt = document.createElement('span')
+    prompt.className = 'kd-prompt'
+    prompt.textContent = '>_ '
+    h.append(prompt, document.createTextNode(label))
+    if (opt && opt.tag) {
+      const tag = document.createElement('span')
+      tag.className = 'kd-tag'
+      tag.textContent = opt.tag
+      h.append(tag)
+    }
+    box.append(h)
+    for (const b of tiles) box.append(b)
+    return box
+  }
+  function paintMenu(g) {
+    g.classList.add('kd-panel')
+    const plate = document.createElement('div')
+    plate.className = 'kd-plate'
+    plate.append(menuPlate())
+    const chip = document.createElement('span')
+    chip.className = 'kd-chip'
+    chip.dataset.versionChip = '1'
+    chip.textContent = pageVersion()
+    plate.append(chip)
+    if (title) {
+      title.classList.add('kd-sr')
+      plate.append(title)
+    }
+    const go = keyTile('play', 'resume', api.t('resume'), close)
+    go.classList.add('kd-go')
+    const groups = document.createElement('div')
+    groups.className = 'kd-groups'
+    groups.append(
+      menuGroup('play', api.t('menuPlay'), [
+        keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
+        keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
+        keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
+        keyTile('help', 'help', api.t('help'), () => open('help')),
+      ]),
+      menuGroup('world', api.t('world'), [
+        keyTile('builds', 'builds', api.t('myBuilds'), () => open('builds')),
+        keyTile('globe', 'world', api.t('world'), () => open('world')),
+        keyTile('flag', 'rules', api.t('worldRules'), () => { close(); api.worldRules() }),
+        keyTile('floppy', 'save', api.t('save'), () => api.save()),
+        keyTile('sliders', 'mode', api.t('mode'), () => open('mode')),
+      ]),
+      menuGroup('make', api.t('menuMake'), [
+        keyTile('pick', 'tools', api.t('buildTools'), () => { close(); api.tools() }),
+        keyTile('target', 'goals', api.t('tryThis'), () => open('goals')),
+        keyTile('shop', 'shop', api.t('shop'), () => open('shop')),
+        keyTile('coin', 'wallet', api.t('wallet'), () => open('wallet')),
+      ]),
+      menuGroup('settings', api.t('settings'), [
+        keyTile('gear', 'settings', api.t('settings'), () => open('settings')),
+        keyTile('eye', 'a11y', api.t('a11y'), () => open('a11y')),
+        keyTile('full', 'fs', api.t('fs'), () => api.fullScreen()),
+        keyTile('scroll', 'log', api.t('changelog'), () => open('log')),
+      ]),
+    )
+    if (rulesOk()) {
+      groups.append(menuGroup('teacher', api.t('teacher'), [
+        keyTile('apple', 'teacher', api.t('teacher'), () => open('teacher')),
+        keyTile('lens', 'inspect', api.t('inspect'), () => { api.inspect(); close() }),
+      ], { teacher: true, tag: api.t('menuStaff') }))
+    }
+    const exit = keyTile('door', 'exit', api.t('exitApp'), () => open('leave'))
+    exit.classList.add('kd-exit')
+    if (sheetX) {
+      sheetX.classList.add('kd-x')
+      sheetX.dataset.menuX = '1'
+      sheetX.dataset.act = 'close'
+      sheetX.replaceChildren(menuIcon('x'))
+    }
+    g.append(go, groups, exit)
+    if (sheetX) g.append(sheetX)
+    g.append(plate)
+    return go
+  }
   function open(id, key) {
     const map = {
-      menu: () => show('menu', api.t('menu'), (g) => {
-        g.append(
-          tile('▶', api.t('resume'), close),
-          tile('📚', api.t('myBuilds'), () => open('builds')),
-          tile('🎒', api.t('inventory'), () => open('inventory')),
-          tile('🔨', api.t('crafting'), () => open('crafting')),
-          tile('🏪', api.t('shop'), () => open('shop')),
-          tile('⚙', api.t('wallet'), () => open('wallet')),
-          tile('🛠', api.t('settings'), () => open('settings')),
-          tile('❓', api.t('help'), () => open('help')),
-          tile('📒', api.t('notebook'), () => open('notebook')),
-          tile('⛶', api.t('fs'), () => api.fullScreen()),
-          tile('💾', api.t('save'), () => api.save()),
-          tile('🌍', api.t('world'), () => open('world')),
-          tile('\u2691', api.t('worldRules'), () => { close(); api.worldRules() }),
-          tile('🔀', api.t('mode'), () => open('mode')),
-          tile('👩‍🏫', api.t('teacher'), () => open('teacher')),
-          tile('🔍', api.t('inspect'), () => { api.inspect(); close() }),
-          tile('🧰', api.t('buildTools'), () => { close(); api.tools() }),
-          tile('📜', api.t('changelog'), () => open('log')),
-          tile('🎯', api.t('tryThis'), () => open('goals')),
-          tile('♿', api.t('a11y'), () => open('a11y')),
-          tile('🚪', api.t('exitApp'), () => open('leave')),
-        )
-      }, true),
+      menu: () => {
+        let go = null
+        show('menu', api.t('menu'), (g) => { go = paintMenu(g) }, true)
+        const focusGo = () => {
+          if (!go || !go.isConnected) return
+          go.style.outline = ''
+          go.style.outlineOffset = ''
+          try { go.focus({ focusVisible: true }) } catch (e) { try { go.focus() } catch (err) {} }
+        }
+        requestAnimationFrame(focusGo)
+      },
       inventory: () => show('inventory', api.t('inventory'), (g) => api.paintBag(g)),
       crafting: () => show('crafting', api.t('crafting'), (g) => api.paintCraft(g)),
       shop: () => show('shop', api.t('shop'), (g) => api.paintShop(g)),
@@ -245,7 +357,6 @@ export function mountPanels(api) {
   }
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)
-  const sheetX = document.getElementById('sheet-x')
   sheetX.addEventListener('pointerdown', (e) => e.stopPropagation())
   sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
   sheet.addEventListener('pointerdown', (e) => {

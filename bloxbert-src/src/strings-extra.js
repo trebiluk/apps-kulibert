@@ -1149,4 +1149,15 @@ const BACKUPS = {
   },
 }
 for (const [lang, row] of Object.entries(BACKUPS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const MENU_UI = {
+  en: { menuPlay: 'Play', menuMake: 'Make', menuStaff: 'teacher only' },
+  uk: { menuPlay: 'Гра', menuMake: 'Зроби', menuStaff: 'лише вчитель' },
+  ru: { menuPlay: 'Игра', menuMake: 'Сделай', menuStaff: 'только учитель' },
+  es: { menuPlay: 'Jugar', menuMake: 'Crear', menuStaff: 'solo el profe' },
+  ar: { menuPlay: 'العب', menuMake: 'اصنع', menuStaff: 'للمعلم فقط' },
+  'fa-AF': { menuPlay: 'بازی', menuMake: 'بساز', menuStaff: 'فقط معلم' },
+  rw: { menuPlay: 'Kina', menuMake: 'Kora', menuStaff: 'umwarimu gusa' },
+  ti: { menuPlay: 'ጻወት', menuMake: 'ስራሕ', menuStaff: 'መምህር ጥራይ' },
+}
+for (const [lang, row] of Object.entries(MENU_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

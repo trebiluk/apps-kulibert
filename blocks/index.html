@@ -256,6 +256,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #tool-strip button{min-width:48px;min-height:48px;background:transparent;color:#f8fafc;border:1px solid rgba(34,211,238,.45);border-radius:10px}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
+/* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
 .ggrid>.gnote,.ggrid>.craft-row,.ggrid>input[type=range],.ggrid>.wide,.ggrid>.break{grid-column:1 / -1}
 .gtile{position:relative;min-height:72px;min-width:0;border-radius:12px;border:1px solid rgba(34,211,238,.45);background:rgba(11,18,32,.9);color:#f8fafc;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px}
 .craft-row{display:flex;gap:6px;align-items:stretch}
@@ -594,8 +595,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 .top,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
-
 </style>
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.167">
 </head>
 <body>
 <div id="stage"></div>
@@ -607,7 +608,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.166</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.167</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -750,8 +751,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.164"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.166" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.166" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.167" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.167" defer></script>
 <script>
 ;(function () {
   try {

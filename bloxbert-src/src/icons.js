@@ -466,3 +466,131 @@ export function slotArt(key, blockNode) {
   const letter = (item && item.letter) || (key ? String(key).slice(0, 1).toUpperCase() : '?')
   return letterTile(letter)
 }
+
+// 8×8 menu glyphs. One character, one palette colour. '.' is empty.
+const MENU_PAL = {
+  t: '#7ff5e3',
+  d: '#2dd4bf',
+  o: '#ffb36b',
+  a: '#ff8a1f',
+  w: '#e6f6ff',
+  r: '#ff5a6a',
+  b: '#c4a574',
+  k: '#0a1428',
+  n: '#16264a',
+}
+const MENU_GLYPH = {
+  bag: ['..tt....', '.tttt...', 'tttttttt', 'twwwwwwt', 'twwwwwwt', 'twtttwwt', 'tttttttt', '........'],
+  bench: ['bbbbbbbb', 'bwwwwwwb', 'bbbbbbbb', '..bb..bb', '..bb..bb', '..bb..bb', '........', '........'],
+  book: ['ooooooo.', 'owwwwwwo', 'o......o', 'owwwwwwo', 'o......o', 'owwwwwwo', 'oooooooo', '........'],
+  help: ['..ttt...', '.t...t..', '....t...', '...t....', '...t....', '........', '...t....', '........'],
+  builds: ['..oooo..', '.oowwoo.', 'ooowwooo', 'wwwwwwww', '.dddddd.', '.dwwwwd.', '.dddddd.', '........'],
+  globe: ['.tttttt.', 'twwtwwtt', 'ttwwttwt', 'tttttttt', 'twttwwtt', 'ttwwtwwt', '.tttttt.', '........'],
+  flag: ['d.......', 'dttttt..', 'dooooat.', 'dooooat.', 'dttttt..', 'd.......', 'd.......', 'd.......'],
+  floppy: ['ddddddd.', 'dwwwwwdd', 'dwwwwwdd', 'dddddddd', 'dwwwwwwd', 'dwddddwd', 'dwwwwwwd', 'dddddddd'],
+  sliders: ['t....t..', 't.o..t.o', 't.o..t.o', 'ooooooo.', '..t..t.t', 'o.t..t.t', 'o.t.....', '........'],
+  pick: ['.oooooo.', 'o.....o.', '.....o..', '....o...', '...b....', '..b.....', '.b......', 'b.......'],
+  target: ['.rrrrrr.', 'r......r', 'r.oooo.r', 'r.o..o.r', 'r.oooo.r', 'r......r', '.rrrrrr.', '........'],
+  shop: ['rorororo', 'rorororo', 'wwwwwwww', 'w......w', 'w..dd..w', 'w..dd..w', 'w......w', 'wwwwwwww'],
+  coin: ['.oooooo.', 'owwwwwwo', 'owoaawwo', 'owwwwwwo', 'owoaawwo', 'owwwwwwo', '.oooooo.', '........'],
+  gear: ['.t.tt.t.', 'tttttttt', 't.oooo.t', 'tto..ott', 'tto..ott', 't.oooo.t', 'tttttttt', '.t.tt.t.'],
+  eye: ['........', '.tttttt.', 'twwwwwwt', 'twooowwt', 'twottowt', 'twwwwwwt', '.tttttt.', '........'],
+  full: ['tt....tt', 't......t', '........', '........', '........', '........', 't......t', 'tt....tt'],
+  scroll: ['oooooooo', 'otttttto', 'o......o', 'owwwwwwo', 'o......o', 'owwwwwwo', 'otttttto', 'oooooooo'],
+  apple: ['...t.o..', '..tt....', '.rrrrrr.', 'rrrrrrrr', 'rrrrrrrr', 'rrwwrrrr', '.rrrrrr.', '........'],
+  lens: ['.tttt...', 'twwwt...', 'twtwt...', 'twwwt...', '.ttttt..', '....t...', '.....t..', '......o.'],
+  door: ['.wwwwww.', '.wkkkkkw.', '.wkkkkkw.', '.wkkokkw.', '.wkkkkkw.', '.wkkkkkw.', '.wkkkkkw.', '.wwwwww.'],
+  play: ['k.......', 'kk......', 'kkk.....', 'kkkk....', 'kkkk....', 'kkk.....', 'kk......', 'k.......'],
+  x: ['r.....r.', '.r...r..', '..r.r...', '...r....', '..r.r...', '.r...r..', 'r.....r.', '........'],
+}
+function blitRows(rows, pal) {
+  const h = rows.length
+  const w = rows[0].length
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+  const g = c.getContext('2d', { willReadFrequently: true })
+  g.imageSmoothingEnabled = false
+  for (let y = 0; y < h; y++) {
+    const row = rows[y]
+    for (let x = 0; x < w; x++) {
+      const col = pal[row[x]]
+      if (!col) continue
+      g.fillStyle = col
+      g.fillRect(x, y, 1, 1)
+    }
+  }
+  c.setAttribute('aria-hidden', 'true')
+  return c
+}
+export function menuIcon(name) {
+  const rows = MENU_GLYPH[name] || MENU_GLYPH.help
+  const c = blitRows(rows, MENU_PAL)
+  c.className = 'kd-ico'
+  c.dataset.icon = name
+  return c
+}
+const MENU_FONT = {
+  B: ['##.', '#.#', '##.', '#.#', '##.'],
+  E: ['###', '#..', '##.', '#..', '###'],
+  R: ['##.', '#.#', '##.', '#.#', '#.#'],
+  T: ['###', '.#.', '.#.', '.#.', '.#.'],
+  O: ['###', '#.#', '#.#', '#.#', '###'],
+  P: ['##.', '#.#', '##.', '#..', '#..'],
+  I: ['###', '.#.', '.#.', '.#.', '###'],
+  A: ['.#.', '#.#', '###', '#.#', '#.#'],
+}
+const MENU_LOGO = [
+  '......tttt......',
+  '.....tttttt.....',
+  '....tttttttt....',
+  '...tttttttttt...',
+  '....tttttttt....',
+  '......bbbb......',
+  '......bbbb......',
+  '.oooooooooooooo.',
+  '.owwwwwwwwwwwwo.',
+  '.owwwwwwwwwwwwo.',
+  '.oooooooooooooo.',
+]
+// Pixel tree on a block, plus BERTOPIA in a 5px font. BERT is teal, OPIA is orange.
+export function menuPlate() {
+  const word = 'BERTOPIA'
+  let tw = 0
+  for (const ch of word) tw += MENU_FONT[ch][0].length + 1
+  tw -= 1
+  const lw = MENU_LOGO[0].length
+  const gap = 2
+  const w = lw + gap + tw
+  const h = MENU_LOGO.length
+  const c = document.createElement('canvas')
+  c.width = w
+  c.height = h
+  const g = c.getContext('2d', { willReadFrequently: true })
+  g.imageSmoothingEnabled = false
+  for (let y = 0; y < h; y++) {
+    const row = MENU_LOGO[y]
+    for (let x = 0; x < lw; x++) {
+      const col = MENU_PAL[row[x]]
+      if (!col) continue
+      g.fillStyle = col
+      g.fillRect(x, y, 1, 1)
+    }
+  }
+  const y0 = Math.floor((h - 5) / 2)
+  let x0 = lw + gap
+  for (let i = 0; i < word.length; i++) {
+    const glyph = MENU_FONT[word[i]]
+    g.fillStyle = i < 4 ? '#7ff5e3' : '#ffb36b'
+    for (let y = 0; y < 5; y++) {
+      for (let x = 0; x < glyph[y].length; x++) {
+        if (glyph[y][x] === '#') g.fillRect(x0 + x, y0 + y, 1, 1)
+      }
+    }
+    x0 += glyph[0].length + 1
+  }
+  c.className = 'kd-word'
+  c.setAttribute('aria-hidden', 'true')
+  return c
+}
+
