@@ -30,10 +30,10 @@ export function mountPanels(api) {
     if (sheetX) {
       if (sheetX.dataset.menuX === '1') {
         sheetX.replaceChildren('✕')
-        sheetX.classList.remove('kd-x')
         delete sheetX.dataset.menuX
         delete sheetX.dataset.act
       }
+      sheetX.classList.add('kd-key', 'kd-x')
     }
     if (backBtn) bar.append(backBtn)
     if (title) bar.append(title)
@@ -61,6 +61,7 @@ export function mountPanels(api) {
       if (bar) sheet.append(bar)
     }
     sheet.dataset.panel = id
+    dress(id)
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
     armSlide(id)
@@ -132,6 +133,9 @@ export function mountPanels(api) {
     sheet.hidden = true
     stack = []
     sheet.dataset.panel = ''
+    sheet.classList.remove('kd-panel')
+    const bar = sheet.querySelector('.sheet-bar')
+    if (bar) bar.classList.remove('kd-plate')
   }
   function close() {
     if (api.closePlay) { api.closePlay(); return }
@@ -247,6 +251,29 @@ export function mountPanels(api) {
     if (sheetX) g.append(sheetX)
     g.append(plate)
     return go
+  }
+  function dress(id) {
+    const framed = !!id && id !== 'menu'
+    sheet.classList.toggle('kd-panel', framed)
+    const bar = sheet.querySelector('.sheet-bar')
+    if (bar) bar.classList.toggle('kd-plate', framed)
+    if (back) back.classList.add('kd-key')
+    if (sheetX) sheetX.classList.add('kd-key', 'kd-x')
+    const chip = document.getElementById('sheet-ver')
+    if (chip) {
+      chip.hidden = !framed
+      if (framed) chip.textContent = pageVersion()
+    }
+    if (!framed) return
+    body.querySelectorAll('button, .gnote.ghead, .crate-tab, .machine-name').forEach((el) => {
+      if (el.tagName === 'BUTTON') {
+        if (el.classList.contains('well') || el.classList.contains('ks-slot') || el.classList.contains('wall-slot')) return
+        el.classList.add('kd-key')
+        if (el.classList.contains('make') || el.classList.contains('shop-go') || el.classList.contains('xmax-yes') || el.classList.contains('bed-rest') || el.classList.contains('decor-make')) el.classList.add('kd-go')
+        return
+      }
+      el.classList.add('kd-group', 'kd-glab')
+    })
   }
   function open(id, key) {
     const map = {

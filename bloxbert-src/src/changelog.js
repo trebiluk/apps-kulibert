@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.168', date: '2026-10-11', lines: {
+    en: ['Bag, Box, Oven, Workbench, Woodshop and the hotbar wear the same digital panel as the menu.'],
+    uk: ['Сумка, скриня, піч, верстак, столярня і панель предметів тепер у тому ж цифровому стилі, що й меню.'],
+    ru: ['Сумка, сундук, печь, верстак, столярка и панель предметов теперь в том же цифровом стиле, что и меню.'],
+    es: ['La bolsa, el cofre, el horno, el banco, el taller y la barra usan el mismo panel digital que el menú.'],
+    ar: ['الحقيبة والصندوق والفرن وطاولة العمل وورشة الخشب وشريط الأدوات صارت بنفس لوحة القائمة الرقمية.'],
+    'fa-AF': ['کیسه، صندوق، تنور، میز کار، نجاری و نوار ابزار همان پنل دیجیتالی فهرست را دارند.'],
+    rw: ['Umufuka, agasanduku, ifuru, ameza, woodshop n\'umurongo byifashe ikadiri rya digitale nk\'ibikubiyemo.'],
+    ti: ['ቦርሳ፡ ሳንዱቕ፡ እቶን፡ መደብ ስራሕ፡ መላጸን ዕቃ መትረብን ሕጂ ከም ዝርዝር ዲጂታል ፓነል እዮም።'],
+  }},
   { v: '2.5.167', date: '2026-10-11', lines: {
     en: ['The menu is a Bertopia panel now: grouped keycaps, pixel icons, and a teal title plate.'],
     uk: ['Меню тепер панель Bertopia: групи клавіш, піксельні значки й бірюзова табличка назви.'],

@@ -252,7 +252,7 @@
       var b = document.createElement('button')
       b.type = 'button'
       var picked = !!(pick && pick.id === inv.id && pick.i === i)
-      b.className = 'ks-slot' + (s ? '' : ' ks-empty') + (picked ? ' ks-pick' : '')
+      b.className = 'ks-slot kd-socket' + (s ? '' : ' ks-empty') + (picked ? ' ks-pick' : '')
       b.dataset.i = String(i)
       b.dataset.ksInv = inv.id
       if (s) b.dataset.item = s.item
@@ -270,7 +270,7 @@
       b.append(art)
       if (s) {
         var badge = document.createElement('span')
-        badge.className = 'ks-badge'
+        badge.className = 'ks-badge kd-count'
         badge.textContent = String(s.n)
         b.append(badge)
       }
@@ -749,7 +749,7 @@
     }
     var words = document.createElement('div')
     var title = document.createElement('span')
-    title.className = 'machine-name'
+    title.className = 'machine-name kd-group kd-glab'
     title.textContent = opts.title || ''
     var status = document.createElement('p')
     status.className = 'machine-status'
@@ -760,16 +760,16 @@
     function slotButton(role, label) {
       var b = document.createElement('button')
       b.type = 'button'
-      b.className = 'ks-slot ks-empty slot-' + (role === 'input' ? 'in' : role)
+      b.className = 'ks-slot kd-socket ks-empty slot-' + (role === 'input' ? 'in' : role)
       b.dataset.ksRole = role
       b.dataset.role = role === 'input' ? 'input' : role
       var art = document.createElement('span')
       art.className = 'ks-art'
       var badge = document.createElement('span')
-      badge.className = 'ks-badge'
+      badge.className = 'ks-badge kd-count'
       badge.hidden = true
       var lab = document.createElement('span')
-      lab.className = 'ks-lab'
+      lab.className = 'ks-lab kd-group'
       lab.textContent = label || role
       b.append(art, badge, lab)
       buttons[role] = b
@@ -796,10 +796,10 @@
     flame.className = 'flame-side out'
     flame.innerHTML = FLAME + '<i class="burn-bar"></i>'
     var arrow = document.createElement('div')
-    arrow.className = 'arrow-bar'
+    arrow.className = 'arrow-bar kd-track'
     arrow.setAttribute('aria-hidden', 'true')
     var arrowFill = document.createElement('div')
-    arrowFill.className = 'arrow-fill'
+    arrowFill.className = 'arrow-fill kd-meter'
     arrow.append(arrowFill)
     var time = document.createElement('span')
     time.className = 'ks-time'
@@ -893,12 +893,12 @@
     function makeBag(i) {
       var b = document.createElement('button')
       b.type = 'button'
-      b.className = 'ks-slot ks-empty'
+      b.className = 'ks-slot kd-socket ks-empty'
       b.dataset.ksBag = '1'
       var art = document.createElement('span')
       art.className = 'ks-art'
       var badge = document.createElement('span')
-      badge.className = 'ks-badge'
+      badge.className = 'ks-badge kd-count'
       badge.hidden = true
       b.append(art, badge)
       armPointer(b, {
@@ -1035,7 +1035,7 @@
         (function (row) {
           var b = document.createElement('button')
           b.type = 'button'
-          b.className = 'gtile oven-choice ks-choice'
+          b.className = 'gtile oven-choice ks-choice kd-key'
           b.dataset.item = row.item
           b.dataset.fit = pickerRole
           var art = document.createElement('span')
@@ -1158,14 +1158,14 @@
       var n = pair[1]
       var b = document.createElement('button')
       b.type = 'button'
-      b.className = 'ks-slot ing'
+      b.className = 'ks-slot kd-socket ing'
       b.dataset.i = String(index)
       b.dataset.need = item
       b.dataset.ksRole = 'ing'
       var art = document.createElement('span')
       art.className = 'ks-art'
       var badge = document.createElement('span')
-      badge.className = 'ks-badge'
+      badge.className = 'ks-badge kd-count'
       var lab = document.createElement('span')
       lab.className = 'ks-lab'
       lab.textContent = nameOf(item) || item
@@ -1210,7 +1210,7 @@
     keys.className = 'keys'
     var fillBtn = document.createElement('button')
     fillBtn.type = 'button'
-    fillBtn.className = 'keycap fill'
+    fillBtn.className = 'keycap fill kd-key'
     fillBtn.textContent = opts.fillLabel || tr('fillTray') || 'Fill'
     fillBtn.addEventListener('click', function (e) {
       e.preventDefault()
@@ -1219,7 +1219,7 @@
     })
     var makeBtn = document.createElement('button')
     makeBtn.type = 'button'
-    makeBtn.className = 'keycap make' + (opts.bake ? ' bake' : '') + (!opts.makeDisabled && !opts.bake ? ' lit' : '')
+    makeBtn.className = 'keycap make kd-key kd-go' + (opts.bake ? ' bake' : '') + (!opts.makeDisabled && !opts.bake ? ' lit' : '')
     makeBtn.disabled = !!opts.makeDisabled
     if (opts.bake && opts.ovenIcon) {
       var mic = document.createElement('span')
@@ -1237,7 +1237,7 @@
     })
     var maxBtn = document.createElement('button')
     maxBtn.type = 'button'
-    maxBtn.className = 'keycap xmax'
+    maxBtn.className = 'keycap xmax kd-key'
     maxBtn.textContent = opts.maxLabel || tr('timesMax') || '×Max'
     maxBtn.disabled = !!opts.maxDisabled
     maxBtn.addEventListener('click', function (e) {
@@ -1299,12 +1299,12 @@
     function makeBag(i) {
       var b = document.createElement('button')
       b.type = 'button'
-      b.className = 'ks-slot ks-empty'
+      b.className = 'ks-slot kd-socket ks-empty'
       b.dataset.ksBag = '1'
       var art = document.createElement('span')
       art.className = 'ks-art'
       var badge = document.createElement('span')
-      badge.className = 'ks-badge'
+      badge.className = 'ks-badge kd-count'
       badge.hidden = true
       b.append(art, badge)
       armPointer(b, {

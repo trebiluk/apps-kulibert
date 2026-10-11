@@ -596,7 +596,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
 </style>
-<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.167">
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.168">
 </head>
 <body>
 <div id="stage"></div>
@@ -619,8 +619,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 </header>
 <button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false">☰<small>⏸</small></button>
 <button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
-<div id="menu-hint" hidden></div>
-<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="menu-hint" class="kd-tip" hidden></div>
+<div id="toast" class="kd-tip" role="status" aria-live="polite" hidden></div>
 <button id="path-chip" type="button" hidden></button>
 <div id="tool-strip" hidden>
   <button type="button" data-tool="select">⬚ Select</button>
@@ -633,10 +633,10 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <button type="button" data-tool="close">✕</button>
 </div>
 <div id="play-chip" hidden>Click to play</div>
-<div id="held-chip" hidden></div>
+<div id="held-chip" class="kd-tip" hidden></div>
 <div id="size-chip" hidden></div>
 <div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
-  <div class="sheet-bar"><button type="button" id="sheet-back">← <span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><button type="button" id="sheet-x" aria-label="Close">✕</button></div>
+  <div class="sheet-bar"><button type="button" id="sheet-back" class="kd-key">← <span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><span class="kd-chip" id="sheet-ver" hidden></span><button type="button" id="sheet-x" class="kd-key kd-x" aria-label="Close">✕</button></div>
   <div id="sheet-body"></div>
 </div>
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
@@ -694,17 +694,17 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
 </nav>
 <div id="about" hidden>
-  <div class="card" role="dialog" aria-labelledby="about-title">
+  <div class="card kd-card" role="dialog" aria-labelledby="about-title">
     <h2 id="about-title" data-i18n="about">About</h2>
     <p data-i18n="aboutBody">Bertopia is a Solvay Tech Room build lab. The 3D engine is noa (MIT) and Babylon.js (Apache-2.0). Block art is the Kenney Voxel Pack (CC0).</p>
     <p class="help">noa-engine · MIT · fenomas/noa<br>Babylon.js · Apache-2.0<br>Kenney Voxel Pack · CC0</p>
     <p><a href="THIRD-PARTY.txt" target="_blank" rel="noopener">THIRD-PARTY.txt</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">KENNEY-LICENSE.txt</a></p>
-    <button class="row" id="about-close" type="button" data-i18n="close">Close</button>
+    <button class="row kd-key" id="about-close" type="button" data-i18n="close">Close</button>
   </div>
 </div>
-<div id="fs-hint" hidden>
+<div id="fs-hint" class="kd-card" hidden>
   <p data-i18n="fsIphone">For full screen on iPhone: tap Share, then Add to Home Screen.</p>
-  <button class="row" id="fs-hint-close" type="button" data-i18n="close">Close</button>
+  <button class="row kd-key" id="fs-hint-close" type="button" data-i18n="close">Close</button>
 </div>
 <div id="stick-pad" class="stickpad" aria-label="Move">
   <div class="stick-base"></div>
@@ -741,16 +741,16 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 </div>
 <div id="lamp-card" hidden><b id="lamp-level">Light</b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
 <div id="maker-card" hidden></div>
-<div id="hotbar" role="toolbar" aria-label="Blocks"></div>
-<div id="inspect-card" hidden role="dialog" aria-labelledby="inspect-title">
+<div id="hotbar" class="kd-hotbar" role="toolbar" aria-label="Blocks"></div>
+<div id="inspect-card" class="kd-card" hidden role="dialog" aria-labelledby="inspect-title">
   <div class="card">
-    <button class="icon-btn" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close">✕</button>
+    <button class="icon-btn kd-key" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close">✕</button>
     <b id="inspect-title" data-i18n="inspect">Inspect</b>
     <div id="inspect-list"></div>
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.164"></script>
+<script src="/shared/kulibert-slots.js?v=2.5.168"></script>
 <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.164" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
 <script src="app.js?v=2.5.164" defer></script>
 <script>
