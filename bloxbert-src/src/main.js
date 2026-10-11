@@ -143,6 +143,34 @@ function roundPos(p) {
 }
 let digCache = { at: 0, spot: null }
 let digChipUntil = 0
+let digChipTimer = 0
+let digChipGen = 0
+function stopDigTimer() {
+  digChipGen += 1
+  if (digChipTimer) {
+    clearTimeout(digChipTimer)
+    digChipTimer = 0
+  }
+  digChipUntil = 0
+}
+function hideDigChip() {
+  stopDigTimer()
+  const chip = document.getElementById('dig-chip')
+  if (chip) chip.hidden = true
+}
+function armDigTimer() {
+  stopDigTimer()
+  const gen = digChipGen
+  digChipUntil = performance.now() + 8000
+  digChipTimer = setTimeout(() => {
+    digChipTimer = 0
+    if (gen !== digChipGen) return
+    const chip = document.getElementById('dig-chip')
+    if (!chip || chip.hidden) return
+    chip.hidden = true
+    digChipUntil = 0
+  }, 8000)
+}
 function peekId(x, y, z) {
   const ci = Math.floor(x / S)
   const cj = Math.floor(y / S)
@@ -200,8 +228,7 @@ function paintDigChip(spot) {
     chip.addEventListener('click', (e) => {
       e.preventDefault()
       e.stopPropagation()
-      chip.hidden = true
-      digChipUntil = 0
+      hideDigChip()
     })
     document.body.appendChild(chip)
   }
@@ -216,16 +243,18 @@ function paintDigChip(spot) {
     chip.textContent = arrow + ' ' + t('digOutside')
   } else chip.textContent = t('digOutside')
   chip.hidden = false
-  digChipUntil = performance.now() + 8000
+  armDigTimer()
 }
 function tickDigChip() {
   const chip = document.getElementById('dig-chip')
   if (!chip || chip.hidden) return
-  const pos = noa.entities.getPosition(noa.playerEntity)
-  if (performance.now() > digChipUntil || !inTown(pos[0], pos[2])) {
-    chip.hidden = true
-    digChipUntil = 0
+  let pos = null
+  try { pos = noa.entities.getPosition(noa.playerEntity) } catch (e) { pos = null }
+  if (!pos || !inTown(pos[0], pos[2])) {
+    hideDigChip()
+    return
   }
+  if (digChipUntil && performance.now() >= digChipUntil) hideDigChip()
 }
 setInterval(tickDigChip, 400)
 function noteProtected() {
@@ -234,15 +263,12 @@ function noteProtected() {
   protectTold = now
   toast(t('protectedArea') + ' — ' + t('digOutside'))
   ringUntil = now + 2000
-  paintDigChip(digCache.spot)
+  let spot = digCache.spot
   if (now - digCache.at >= 10000) {
-    digCache = { at: now, spot: digCache.spot }
-    let spot = null
-    try { spot = nearestDig() } catch (e) { spot = null }
+    try { spot = nearestDig() } catch (e) { spot = digCache.spot }
     digCache = { at: now, spot }
-    const chip = document.getElementById('dig-chip')
-    if (chip && !chip.hidden) paintDigChip(spot)
   }
+  paintDigChip(spot)
 }
 function zoneLocked(x, y, z) {
   if (teacherOn() || townHelper()) return false
@@ -1198,11 +1224,14 @@ function drawVoxel(x, y, z, v) {
   if (chunk) noa.setBlock(v, x, y, z)
 }
 function setLook(h, p) {
-  const c = noa.camera, max = 85 * Math.PI / 180
+  const c = noa.camera, max = 89 * Math.PI / 180
+  if (!Number.isFinite(h)) h = c.heading || 0
+  if (!Number.isFinite(p)) p = c.pitch || 0
   c.heading = ((h % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
   c.pitch = Math.max(-max, Math.min(max, p))
   const d = c.getDirection()
-  d[0] = Math.cos(c.pitch) * Math.sin(c.heading); d[1] = -Math.sin(c.pitch); d[2] = Math.cos(c.pitch) * Math.cos(c.heading)
+  const cp = Math.cos(c.pitch)
+  d[0] = cp * Math.sin(c.heading); d[1] = -Math.sin(c.pitch); d[2] = cp * Math.cos(c.heading)
 }
 setLook(0, 0.18)
 
@@ -4967,7 +4996,7 @@ function feelTick(dt) {
   hoverCrop()
 }
 noa.on('tick', (dt) => {
-  const maxP = 85 * Math.PI / 180
+  const maxP = 89 * Math.PI / 180
   if (noa.camera.pitch > maxP || noa.camera.pitch < -maxP) setLook(noa.camera.heading, noa.camera.pitch)
   feelTick(dt || 33)
   const s = noa.inputs.pointerState.scrolly
@@ -5071,6 +5100,7 @@ function paintLook(g) {
   inv.className = 'gtile wide'
   const paintInv = () => { inv.textContent = t('invertY') + (lookInvert ? ' ✓' : '') }
   paintInv()
+  inv.dataset.look = 'invert'
   inv.addEventListener('click', () => { lookInvert = !lookInvert; applyLook(); paintInv() })
   const wide = document.createElement('button')
   wide.type = 'button'
@@ -5102,7 +5132,14 @@ function paintLook(g) {
   const paintCam = () => { cam.textContent = t('cameraView') + ': ' + (camBehind ? t('camBehind') : t('camClose')) }
   paintCam()
   cam.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
-  g.append(label, range, inv, wide, climb, hand, side, cam)
+  const tips = document.createElement('button')
+  tips.type = 'button'
+  tips.className = 'gtile wide'
+  tips.dataset.look = 'tips'
+  const paintTips = () => { tips.textContent = t('hideTips') + (learn.hideTips() ? ' ✓' : '') }
+  paintTips()
+  tips.addEventListener('click', () => { learn.setHideTips(!learn.hideTips()); paintTips() })
+  g.append(label, range, inv, wide, climb, hand, side, cam, tips)
 }
 applyLook()
 function applyLockedLook(dx, dy) {

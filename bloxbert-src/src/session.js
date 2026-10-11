@@ -262,6 +262,7 @@ export function createSession(api) {
     const left = bag.add(item, n)
     const got = n - left
     if (got) paintHotbar()
+    if (got) pokeCraft()
     if (got) landItem(item, before, 'fly')
     if (left) {
       const p = api.pos()
@@ -1033,7 +1034,15 @@ export function createSession(api) {
     const back = (needItem === 'woolAny' || needItem === 'stoneAny') && tag ? tag : needItem
     trayGiveBack(back, n)
   }
+  function craftTrace(kind) {
+    const sheet = document.getElementById('sheet')
+    const row = { kind, t: Math.round(performance.now()), panel: sheet && !sheet.hidden ? (sheet.dataset.panel || '') : '', n: trayPlaced.reduce((a, b) => a + (b || 0), 0) }
+    const log = window.__craftTrace || (window.__craftTrace = [])
+    log.push(row)
+    if (log.length > 80) log.shift()
+  }
   function returnTray() {
+    craftTrace('return')
     const r = RECIPES.find((x) => x.id === trayId)
     let moved = false
     if (r) r.in.forEach((pair, i) => {
@@ -1051,8 +1060,13 @@ export function createSession(api) {
     const sheet = document.getElementById('sheet')
     if (!sheet) return
     trayWatch = true
+    let wait = 0
     const obs = new MutationObserver(() => {
-      if (sheet.hidden || sheet.dataset.panel !== 'crafting') returnTray()
+      clearTimeout(wait)
+      wait = setTimeout(() => {
+        if (sheet.isConnected && !sheet.hidden && sheet.dataset.panel === 'crafting') return
+        returnTray()
+      }, 40)
     })
     obs.observe(sheet, { attributes: true, attributeFilter: ['hidden', 'data-panel'] })
   }
@@ -1265,8 +1279,80 @@ export function createSession(api) {
     }
     book.dataset.fit = '1'
   }
-  function paintCraft(g) {
+  function paintCraftSlots(g) {
+    if (!g || g.dataset.craft !== craftId) return false
+    const r = RECIPES.find((x) => x.id === craftId)
+    if (!r) return false
+    const ings = g.querySelectorAll('.ks-slot.ing')
+    if (ings.length !== r.in.length) return false
+    const book = g.querySelector('.book')
+    if (!book || !book.isConnected) return false
+    ings.forEach((b, i) => {
+      const have = trayPlaced[i] || 0
+      const need = r.in[i][1]
+      b.dataset.placed = String(have)
+      b.classList.toggle('ks-empty', have <= 0)
+      b.classList.toggle('ghost', have <= 0)
+      b.classList.toggle('done', have >= need)
+      const badge = b.querySelector('.ks-badge')
+      if (badge) {
+        badge.hidden = false
+        badge.textContent = have + '/' + need
+      }
+      const check = b.querySelector('.check')
+      if (have >= need && !check) {
+        const mark = document.createElement('span')
+        mark.className = 'check'
+        mark.textContent = '✓'
+        mark.setAttribute('aria-hidden', 'true')
+        b.append(mark)
+      } else if (have < need && check) check.remove()
+    })
+    g.querySelectorAll('.ks-bag .ks-slot').forEach((b, j) => {
+      const s = bag.slots[j]
+      const item = s && s.n > 0 ? s.item : ''
+      b.dataset.item = item || ''
+      b.classList.toggle('ks-empty', !item)
+      const badge = b.querySelector('.ks-badge')
+      if (badge) {
+        if (item) { badge.hidden = false; badge.textContent = String(s.n) }
+        else badge.hidden = true
+      }
+      const art = b.querySelector('.ks-art')
+      if (art) {
+        art.replaceChildren()
+        if (item) {
+          const node = itemIcon(ITEMS[item])
+          if (node) art.append(node)
+        }
+      }
+    })
+    g.querySelectorAll('.gnote.in-bag').forEach((el) => {
+      const item = el.dataset.need
+      if (item) el.textContent = t('inBag').replace('{n}', String(countOf(bag, item)))
+    })
+    const makeBtn = g.querySelector('.keycap.make')
+    if (makeBtn && r.id !== 'bread') {
+      const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
+      const st = craftStatus(r, seenBag(r.id), stations, mode !== 'survival')
+      const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
+      const ready = full && !st.station && !st.gate
+      makeBtn.disabled = !ready
+      makeBtn.classList.toggle('lit', ready)
+    }
+    craftTrace('slots')
+    return true
+  }
+  function pokeCraft() {
+    const sheet = document.getElementById('sheet')
+    if (!sheet || sheet.hidden || sheet.dataset.panel !== 'crafting') return
+    const g = sheet.querySelector('.ggrid')
+    if (g) paintCraft(g, true)
+  }
+  function paintCraft(g, soft) {
     armTrayWatch()
+    if (soft && paintCraftSlots(g)) return
+    craftTrace('full')
     const sheetBody = document.getElementById('sheet-body')
     if (sheetBody) {
       sheetBody.scrollTop = 0
@@ -1277,8 +1363,12 @@ export function createSession(api) {
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     let rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
     if (!rows.some((x) => x.r.id === craftId)) {
-      const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
-      craftId = pick ? pick.r.id : ''
+      const still = craftId && RECIPES.find((r) => r.id === craftId)
+      if (still && trayPlaced.some((n) => n > 0)) rows.unshift({ r: still, st: craftStatus(still, seenBag(still.id), stations, mode !== 'survival') })
+      else {
+        const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
+        craftId = pick ? pick.r.id : ''
+      }
     }
     syncTray(craftId)
     rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
@@ -1403,7 +1493,7 @@ export function createSession(api) {
         if (needItem === 'woolAny') trayWool[index] = item
         if (needItem === 'stoneAny') trayWool[index] = mixAdd(trayWool[index], item, takeN)
         paintHotbar()
-        paintCraft(g)
+        paintCraft(g, true)
         noteTray()
         return true
       }
@@ -1414,7 +1504,7 @@ export function createSession(api) {
         trayPlaced[index] = 0
         trayWool[index] = ''
         paintHotbar()
-        paintCraft(g)
+        paintCraft(g, true)
         noteTray()
       }
       const isBread = r.id === 'bread'
@@ -1479,7 +1569,7 @@ export function createSession(api) {
               }
             })
             if (any) { paintHotbar(); noteTray() }
-            paintCraft(g)
+            paintCraft(g, true)
           },
           onMake: () => {
             if (!craftOk(r.id)) return
@@ -1494,7 +1584,7 @@ export function createSession(api) {
             const got = outN - spot.left
             if (!got) {
               api.toast(t('bagFull'))
-              paintCraft(g)
+              paintCraft(g, true)
               return
             }
             if (spot.left) {
@@ -1512,7 +1602,7 @@ export function createSession(api) {
             craftFx = 'make'
             leftFor = r.id
             paintHotbar()
-            paintCraft(g)
+            paintCraft(g, true)
           },
           onMax: () => {
             if (!craftOk(r.id)) return
@@ -1611,6 +1701,7 @@ export function createSession(api) {
       const resultEl = side.querySelector('.result')
       if (resultEl) fx(resultEl, 'pop')
     }
+    g.dataset.craft = craftId
   }
   function paintShop(g) {
     g.innerHTML = ''

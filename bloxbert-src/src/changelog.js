@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.161', date: '2026-10-10', lines: {
+    en: ['The dig chip hides on its own. Tips fade before the next one, Settings can hide them, looking up or down stays upright, and the craft tray keeps what you set on it.'],
+    uk: ['Чіп копання ховається сам. Підказки згасають перед наступною, у Налаштуваннях їх можна сховати, погляд угору й униз не перевертається, а таця крафту тримає те, що ти поклав.'],
+    ru: ['Метка копания прячется сама. Подсказки гаснут перед следующей, в Настройках их можно скрыть, взгляд вверх и вниз не переворачивается, а лоток крафта держит то, что ты положил.'],
+    es: ['El aviso de cavar se esconde solo. Los avisos se apagan antes del siguiente, Ajustes puede ocultarlos, mirar arriba o abajo no se voltea, y la bandeja de fabricar guarda lo que pusiste.'],
+    ar: ['شريحة الحفر تختفي وحدها. النصائح تتلاشى قبل التالية، والإعدادات تخفيها، والنظر للأعلى أو الأسفل لا ينقلب، وصينية الصنع تُبقي ما وضعته.'],
+    'fa-AF': ['نشان کندن خودش پنهان می‌شود. نکته‌ها پیش از نکته بعدی کم‌رنگ می‌شوند، تنظیمات می‌تواند آن‌ها را پنهان کند، نگاه به بالا یا پایین برنمی‌گردد، و سینی ساخت آنچه گذاشتی را نگه می‌دارد.'],
+    rw: ['Ikimenyetso cyo gucukura gihisha ubwacyo. Inama zirazimira mbere y\'ikurikira, Igenamiterere rishobora kuzihisha, kureba hejuru cyangwa hasi ntibihindukira, n\'agatebe ko gukora gakomeza ibyo washyizeho.'],
+    ti: ['ናይ ምቕዳሕ ምልክት ባዕሉ ይሕባእ። ምኽርታት ቅድሚ ዝቕጽል ይደብዝዙ፡ መተዓራረዪ ክሕብኦም ይኽእል፡ ንላዕሊ ወይ ንታሕቲ ምርኣይ ኣይግልበጥን፡ ታቤላ ስራሕ ድማ እቲ ዘቐመጥካዮ ይሕልው።'],
+  }},
   { v: '2.5.160', date: '2026-10-10', lines: {
     en: ['Opening an old world keeps the others. Berries, lamps, saws and pickaxes are big enough to see.'],
     uk: ['Відкриття старого світу не стирає інші. Ягоди, лампи, пилки й кайла досить великі, щоб їх бачити.'],

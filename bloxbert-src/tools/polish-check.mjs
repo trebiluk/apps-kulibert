@@ -253,7 +253,9 @@ async function wake(page) {
 function chipText(page) {
   return page.evaluate(() => {
     const el = document.getElementById('path-chip')
-    return { hidden: !el || el.hidden, text: el ? el.textContent : '' }
+    if (!el) return { hidden: true, text: '', fading: false }
+    const op = parseFloat(getComputedStyle(el).opacity || '1')
+    return { hidden: !!el.hidden, text: el.textContent || '', fading: el.classList.contains('path-out') || op < 0.85, out: el.classList.contains('path-out') }
   })
 }
 
@@ -349,12 +351,52 @@ await wake(desk.page)
 const pathBox = await mouseClick(desk.page, '#path-chip')
 await sleep(200)
 tip = await chipText(desk.page)
-note('path tip hides on tap', !!(pathBox && pathBox.ok) && !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), JSON.stringify(pathBox) + ' ' + tip.text.slice(0, 60))
+const nextTip = /Make a Wood Pickaxe|Зроби дерев|Сделай дерев|Haz un pico de madera|اصنع معول خشب|کلنگ چوبی بساز|Kora icyuma|መኮፍ ግበር/
+note('path tip fades before the next', !!(pathBox && pathBox.ok) && !nextTip.test(tip.text) && (tip.fading || /Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text)), JSON.stringify(pathBox) + ' ' + tip.text.slice(0, 70))
+await sleep(1900)
+tip = await chipText(desk.page)
+note('next tip shows after the wait', !tip.hidden && !tip.out && nextTip.test(tip.text), tip.text.slice(0, 80))
 await desk.page.reload({ waitUntil: 'domcontentloaded' })
 await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
 await sleep(300)
 tip = await chipText(desk.page)
 note('tapped tip stays hidden', !/Chop a tree|Зрубай дерево|Сруби дерево|Tala un árbol/.test(tip.text), tip.text.slice(0, 80))
+
+await desk.page.evaluate(() => window.__blocks.panel('settings'))
+await sleep(300)
+await desk.page.evaluate(() => {
+  const b = document.querySelector('#sheet [data-look="tips"]')
+  if (b) b.scrollIntoView({ block: 'center', inline: 'nearest' })
+})
+await sleep(80)
+const tipBtn = await desk.page.evaluate(() => {
+  const b = document.querySelector('#sheet [data-look="tips"]')
+  if (!b) return null
+  const r = b.getBoundingClientRect()
+  return { x: Math.round(r.left + Math.min(r.width, 160) / 2), y: Math.round(r.top + r.height / 2), text: b.textContent || '', w: Math.round(r.width) }
+})
+if (tipBtn) await desk.page.mouse.click(tipBtn.x, tipBtn.y)
+await sleep(200)
+tip = await chipText(desk.page)
+const tipsSaved = await desk.page.evaluate(() => {
+  try { return !!JSON.parse(localStorage.getItem('bloxbert-learn') || '{}').hideTips } catch (e) { return false }
+})
+note('hide tips is saved', !!(tipBtn && tipBtn.w > 40 && /Hide tips|Сховати|Скрыть|Ocultar|أخف|پنهان|Hisha|ሕባእ/.test(tipBtn.text)) && tip.hidden && tipsSaved, JSON.stringify(tipBtn))
+await desk.page.reload({ waitUntil: 'domcontentloaded' })
+await desk.page.waitForFunction(() => window.__bloxReady && window.__smoke, { timeout: 45000 })
+await sleep(300)
+tip = await chipText(desk.page)
+const tipsSaved2 = await desk.page.evaluate(() => {
+  try { return !!JSON.parse(localStorage.getItem('bloxbert-learn') || '{}').hideTips } catch (e) { return false }
+})
+note('hide tips stays after reload', tip.hidden && tipsSaved2, tip.text.slice(0, 40))
+await desk.page.evaluate(() => {
+  const raw = JSON.parse(localStorage.getItem('bloxbert-learn') || '{}')
+  raw.hideTips = false
+  localStorage.setItem('bloxbert-learn', JSON.stringify(raw))
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+})
 
 await desk.page.evaluate(() => {
   window.__smoke.stand(8.5, 8, 8.5, 0, 0)
@@ -609,6 +651,253 @@ const jump = await desk.page.evaluate(async () => {
 })
 const cleared = jump && jump.end && jump.end[2] > 46.35 && jump.dy >= 3.2 && jump.dy < 4.2
 note('Jump II clears a 3-block wall', !!cleared, JSON.stringify(jump))
+
+await desk.page.evaluate(() => {
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  window.__smoke.emptyBag()
+  window.__blocks.give('log', 3)
+  window.__craftTrace = []
+  window.__smoke.focus('planks')
+})
+await sleep(450)
+async function dragCraft(page, item) {
+  const spots = await page.evaluate((item) => {
+    const bag = document.querySelector('#sheet .ks-bag .ks-slot[data-item="' + item + '"]')
+    const well = document.querySelector('#sheet .ks-slot.ing')
+    if (!bag || !well) return null
+    const br = bag.getBoundingClientRect()
+    const wr = well.getBoundingClientRect()
+    return { bx: br.left + br.width / 2, by: br.top + br.height / 2, wx: wr.left + wr.width / 2, wy: wr.top + wr.height / 2, need: well.dataset.need || '' }
+  }, item)
+  if (!spots) return { ok: false, spots }
+  await page.evaluate((spots) => {
+    const bag = document.elementFromPoint(spots.bx, spots.by)
+    const el = bag && bag.closest ? bag.closest('.ks-bag .ks-slot') : null
+    if (!el) return
+    const pid = 11
+    const fire = (type, x, y, buttons) => el.dispatchEvent(new PointerEvent(type, {
+      bubbles: true, cancelable: true, pointerId: pid, pointerType: 'mouse', clientX: x, clientY: y, button: 0, buttons,
+    }))
+    fire('pointerdown', spots.bx, spots.by, 1)
+    for (let i = 1; i <= 10; i++) fire('pointermove', spots.bx + (spots.wx - spots.bx) * i / 10, spots.by + (spots.wy - spots.by) * i / 10, 1)
+    fire('pointerup', spots.wx, spots.wy, 0)
+  }, spots)
+  return { ok: true, spots }
+}
+const logDrag = await dragCraft(desk.page, 'log')
+await sleep(200)
+await desk.page.evaluate(() => window.__blocks.give('dirt', 1))
+await sleep(180)
+const logCraft = await desk.page.evaluate(() => {
+  const well = document.querySelector('#sheet .ks-slot.ing')
+  const badge = well && well.querySelector('.ks-badge')
+  const trace = window.__craftTrace || []
+  return {
+    badge: badge ? badge.textContent : '',
+    logs: window.__smoke.count('log'),
+    need: well ? well.dataset.need : '',
+    returned: trace.some((r) => r.kind === 'return' && r.panel === 'crafting'),
+    trace: trace.map((r) => r.kind + ':' + r.n).join(','),
+  }
+})
+note('log stack stays on the tray', !!(logDrag && logDrag.ok && logCraft && logCraft.badge === '1/1' && logCraft.logs === 2 && !logCraft.returned), JSON.stringify({ logDrag, logCraft }))
+
+await desk.page.evaluate(() => {
+  window.__smoke.emptyBag()
+  window.__blocks.give('planks', 3)
+  window.__craftTrace = []
+  window.__smoke.focus('workbench')
+})
+await sleep(450)
+await desk.page.evaluate(() => {
+  window.__craftTrace = []
+  const book = document.querySelector('#sheet .book')
+  if (book) book.dataset.live = '1'
+})
+const plankDrag = await dragCraft(desk.page, 'planks')
+await sleep(220)
+await desk.page.evaluate(() => window.__blocks.give('dirt', 1))
+await sleep(200)
+const craft = await desk.page.evaluate(() => {
+  const well = document.querySelector('#sheet .ks-slot.ing')
+  const badge = well && well.querySelector('.ks-badge')
+  const book = document.querySelector('#sheet .book')
+  const trace = window.__craftTrace || []
+  return {
+    badge: badge ? badge.textContent : '',
+    live: !!(book && book.dataset.live === '1'),
+    planks: window.__smoke.count('planks'),
+    logs: window.__smoke.count('log'),
+    trace: trace.map((r) => r.kind + ':' + r.n).join(','),
+    returned: trace.some((r) => r.kind === 'return' && r.panel === 'crafting'),
+  }
+})
+note('craft tray keeps 3', !!(plankDrag && plankDrag.ok && craft && craft.badge === '3/4' && craft.live && craft.planks === 0 && !craft.returned), JSON.stringify(craft))
+
+const walk = await desk.page.evaluate(async () => {
+  const B = window.__blocks
+  const s = window.__smoke
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  B.noa.setPaused(false)
+  const wait = (ms) => new Promise((r) => setTimeout(r, ms))
+  function clear(z1) {
+    for (let x = 20; x <= 28; x++) for (let z = 10; z <= z1; z++) for (let y = 5; y <= 12; y++) s.plant(x, y, z, 0)
+    for (let x = 20; x <= 28; x++) for (let z = 10; z <= z1; z++) s.plant(x, 4, z, 2)
+  }
+  async function run(step) {
+    clear(36)
+    if (step) for (let x = 20; x <= 28; x++) for (let z = 16; z <= 36; z++) s.plant(x, 5, z, 2)
+    s.stand(24.5, 8, 13.2, 0, 0)
+    const t0 = performance.now()
+    while (performance.now() - t0 < 4000) {
+      await new Promise((r) => requestAnimationFrame(r))
+      if (s.world(24, 4, 13) === 2 && s.grounded()) break
+    }
+    await wait(180)
+    const a = s.pos()
+    B.hold('forward', true)
+    await wait(1400)
+    const b = s.pos()
+    B.hold('forward', false)
+    return { dz: +(b[2] - a[2]).toFixed(2), speed: +((b[2] - a[2]) / 1.4).toFixed(2), y0: +a[1].toFixed(2), y1: +b[1].toFixed(2), climb: B.climb }
+  }
+  const flat = await run(false)
+  const step = await run(true)
+  const spots = [[100, -40], [140, -50], [160, 70], [-80, 80]]
+  let best = { x: 100, z: -40, top: 0 }
+  for (const [x, z] of spots) {
+    s.stand(x + 0.5, 26, z + 0.5, 0, 0)
+    const t1 = performance.now()
+    let top = 0
+    while (performance.now() - t1 < 1200) {
+      await new Promise((r) => requestAnimationFrame(r))
+      for (let y = 22; y >= 1; y--) {
+        if (s.world(x, y, z)) { top = y; break }
+      }
+      if (top >= 6) break
+    }
+    if (top > best.top) best = { x, z, top }
+    if (best.top >= 7) break
+  }
+  let hill = { miss: true, top: best.top, x: best.x, z: best.z }
+  if (best.top >= 6) {
+    s.stand(best.x + 0.5, best.top + 2.2, best.z - 2, 0, 0)
+    await wait(220)
+    const a = s.pos()
+    B.hold('forward', true)
+    await wait(1400)
+    const b = s.pos()
+    B.hold('forward', false)
+    hill = { dz: +(b[2] - a[2]).toFixed(2), speed: +((b[2] - a[2]) / 1.4).toFixed(2), y0: +a[1].toFixed(2), y1: +b[1].toFixed(2), top: best.top, x: best.x, z: best.z }
+  }
+  return { flat, step, hill }
+})
+const walkOk = walk && walk.flat.speed > 2.2 && walk.step.speed > 2 && walk.step.dz > walk.flat.dz * 0.65 && walk.step.y1 > walk.flat.y1 + 0.4
+note('walk speed flat and 1-block hill step', !!walkOk, JSON.stringify(walk))
+
+function angGap(a, b) {
+  let d = a - b
+  while (d > Math.PI) d -= Math.PI * 2
+  while (d < -Math.PI) d += Math.PI * 2
+  return Math.abs(d)
+}
+async function dragLook(page, dy, kind) {
+  const box = await page.evaluate(() => {
+    const c = document.querySelector('#stage canvas') || document.querySelector('canvas')
+    const r = c.getBoundingClientRect()
+    return { x: r.left + r.width / 2, y: Math.min(r.bottom - 40, Math.max(r.top + 40, r.top + r.height / 2)) }
+  })
+  const before = await page.evaluate(() => {
+    const c = window.__blocks.noa.camera
+    return { h: c.heading, p: c.pitch }
+  })
+  if (kind === 'touch') {
+    await page.evaluate((box, dy) => {
+      const c = document.querySelector('#stage canvas') || document.querySelector('canvas')
+      const fire = (type, y, buttons) => c.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 7, pointerType: 'touch', clientX: box.x, clientY: y, button: 0, buttons }))
+      fire('pointerdown', box.y, 1)
+      for (let i = 1; i <= 14; i++) fire('pointermove', box.y + dy * i / 14, 1)
+      fire('pointerup', box.y + dy, 0)
+    }, box, dy)
+  } else {
+    await page.mouse.move(box.x, box.y)
+    await page.mouse.down()
+    await page.mouse.move(box.x, box.y + dy, { steps: 16 })
+    await page.mouse.up()
+  }
+  await sleep(40)
+  const after = await page.evaluate(() => {
+    const c = window.__blocks.noa.camera
+    return { h: c.heading, p: c.pitch }
+  })
+  return { before, after, flip: angGap(before.h, after.h) > 1.2, pitch: after.p }
+}
+await desk.page.evaluate(() => {
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  document.body.classList.remove('menu-open')
+  window.__blocks.noa.setPaused(false)
+  window.__blocks.setLook(0.6, 0)
+})
+await sleep(80)
+const lookDown = await dragLook(desk.page, 700, 'mouse')
+const lookUp = await dragLook(desk.page, -700, 'mouse')
+const lookTouch = await dragLook(desk.page, 700, 'touch')
+const lookTouchUp = await dragLook(desk.page, -700, 'touch')
+await desk.page.evaluate(() => window.__blocks.panel('settings'))
+await sleep(250)
+await desk.page.evaluate(() => {
+  const b = document.querySelector('#sheet [data-look="invert"]')
+  if (b) b.scrollIntoView({ block: 'center', inline: 'nearest' })
+})
+const invBtn = await desk.page.evaluate(() => {
+  const b = document.querySelector('#sheet [data-look="invert"]')
+  if (!b) return null
+  const r = b.getBoundingClientRect()
+  return { x: Math.round(r.left + Math.min(r.width, 160) / 2), y: Math.round(Math.min(r.bottom - 8, Math.max(r.top + 8, r.top + r.height / 2))), text: b.textContent || '' }
+})
+if (invBtn) await desk.page.mouse.click(invBtn.x, invBtn.y)
+await sleep(120)
+const invAfter = await desk.page.evaluate(() => {
+  const b = document.querySelector('#sheet [data-look="invert"]')
+  return b ? b.textContent || '' : ''
+})
+await desk.page.evaluate(() => {
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  document.body.classList.remove('menu-open')
+  try { window.__blocks.noa.setPaused(false) } catch (e) {}
+  if (window.__smoke) window.__smoke.arm()
+  const play = document.getElementById('play-chip')
+  if (play) play.hidden = true
+  const shell = window.__blocks.noa.container && window.__blocks.noa.container._shell
+  if (shell) shell.stickyPointerLock = false
+  if (window.__quietUnlock) window.__quietUnlock()
+  window.__blocks.setLook(0.6, 0)
+})
+await sleep(80)
+const lookInv = await dragLook(desk.page, 700, 'mouse')
+await desk.page.evaluate(() => {
+  const shell = window.__blocks.noa.container && window.__blocks.noa.container._shell
+  if (shell) shell.stickyPointerLock = false
+  if (window.__quietUnlock) window.__quietUnlock()
+})
+const maxPitch = 89 * Math.PI / 180 + 0.03
+const pitches = [lookDown, lookUp, lookTouch, lookTouchUp, lookInv]
+const pitchOk = pitches.every((row) => row && Math.abs(row.pitch) <= maxPitch && !row.flip && Math.abs(row.pitch) > 0.4)
+  && lookInv && lookInv.pitch < -0.4
+  && /✓/.test(invAfter)
+note('look pitch stays under 89', !!pitchOk, JSON.stringify({
+  down: lookDown && +lookDown.pitch.toFixed(3),
+  up: lookUp && +lookUp.pitch.toFixed(3),
+  touch: lookTouch && +lookTouch.pitch.toFixed(3),
+  touchUp: lookTouchUp && +lookTouchUp.pitch.toFixed(3),
+  inv: lookInv && +lookInv.pitch.toFixed(3),
+  flips: pitches.map((row) => row && row.flip),
+  invText: invAfter || (invBtn && invBtn.text),
+}))
 
 note('1366 console', desk.errors.length === 0, desk.errors.slice(0, 4).join(' | '))
 await desk.ctx.close()
