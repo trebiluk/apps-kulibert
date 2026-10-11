@@ -120,6 +120,11 @@ for (const key of ['berry', 'wallLamp', 'handSaw', 'woodTool', 'stoneTool']) {
   const cover = row ? 1 - row.clear : 0
   eq(!!row && cover >= 0.5 && cover <= 0.7, 'readable ' + key + ' ' + cover.toFixed(3))
 }
+{
+  const lamp = artInfo.floorLamp
+  const cover = lamp ? 1 - lamp.clear : 0
+  eq(!!lamp && cover >= 0.4 && cover <= 0.8, 'floor lamp shade ' + cover.toFixed(3))
+}
 eq(artInfo.berry && artInfo.bread && artInfo.cupcake && artInfo.berry.h !== artInfo.bread.h && artInfo.bread.h !== artInfo.cupcake.h && artInfo.berry.h !== artInfo.cupcake.h, 'berry bread cupcake differ')
 eq(artInfo.door && artInfo.door.clear < 0.05, 'door block still fills ' + JSON.stringify(artInfo.door))
 eq(!artUi.errs.length, 'art console ' + artUi.errs.join(' | '))
@@ -138,6 +143,19 @@ const ui = watch(page)
 await page.setViewport({ width: 1366, height: 768, deviceScaleFactor: 1 })
 await page.goto('http://127.0.0.1:' + port + '/blocks-test/?q=lite&smoke=1', { waitUntil: 'domcontentloaded', timeout: 90000 })
 await page.waitForFunction(() => window.__blocks && window.__smoke && window.__bloxReady, { timeout: 90000 })
+await page.evaluate(() => {
+  window.__toastLog = []
+  const el = document.getElementById('toast')
+  if (!el) return
+  const grab = (recs) => {
+    const structural = !recs || recs.some((r) => r.type === 'childList' || r.type === 'characterData')
+    if (!structural) return
+    const text = (el.textContent || '').trim()
+    if (!text) return
+    window.__toastLog.push(text)
+  }
+  new MutationObserver(grab).observe(el, { childList: true, subtree: true, characterData: true, attributes: true })
+})
 await page.evaluate(() => {
   try { window.__blocks.noa.setPaused(false) } catch (e) {}
   const b = document.querySelector('#rules-card .rc-got')
@@ -363,6 +381,69 @@ const names = await page.evaluate(() => [...document.querySelectorAll('[data-bac
 eq(names.some((n) => n.indexOf('Class - ') === 0), 'class snapshot survives ' + names.join(','))
 eq(!names.includes('Pad 01') && names.includes('Pad 11'), 'oldest plain dropped ' + names.join(','))
 eq(/Oldest backup removed/.test((await page.evaluate(() => (document.getElementById('toast') || {}).textContent || ''))), 'oldest toast')
+
+async function worldPanel() {
+  await openMenu()
+  eq(await clickTile('World'), 'world for maker list')
+  await page.waitForFunction(() => document.getElementById('sheet').dataset.panel === 'world')
+}
+async function countArchives() {
+  await worldPanel()
+  const opened = await clickTile('Open my old world')
+  if (!opened) return 0
+  await page.waitForFunction(() => document.getElementById('sheet').dataset.panel === 'oldworlds')
+  await page.waitForFunction(() => document.querySelector('#sheet [data-archive]'), { timeout: 20000 }).catch(() => {})
+  return page.evaluate(() => document.querySelectorAll('#sheet [data-archive]').length)
+}
+const beforeEmpty = await countArchives()
+await worldPanel()
+await page.evaluate((c) => window.__blocks.setVoxel(c.x, c.y, c.z, 9), cell)
+ui.setMode('accept')
+eq(await clickTile('Fresh world'), 'fresh before empty')
+await page.waitForFunction((c) => window.__blocks.getVoxel(c.x, c.y, c.z) !== 9, { timeout: 40000 }, cell)
+const freshGen = await page.evaluate(() => window.__freshGen || 0)
+eq(await clickTile('Fresh world'), 'fresh empty skip')
+await page.waitForFunction((g) => (window.__freshGen || 0) > g, { timeout: 40000 }, freshGen)
+await worldPanel()
+eq(await clickTile('Open my old world'), 'old after empty')
+await page.waitForFunction(() => document.getElementById('sheet').dataset.panel === 'oldworlds')
+await page.waitForFunction(() => document.querySelector('#sheet [data-archive]'), { timeout: 20000 })
+const emptyLabels = await page.evaluate(() => [...document.querySelectorAll('#sheet .glbl')].map((n) => n.textContent))
+eq(!emptyLabels.some((t) => /(?:^|\D)0 blocks/.test(t)), 'no empty archive ' + emptyLabels.join(' | '))
+const afterEmpty = emptyLabels.filter((t) => t.indexOf('Open · ') === 0).length
+eq(afterEmpty <= beforeEmpty + 1, 'empty fresh did not add a second row ' + beforeEmpty + ' -> ' + afterEmpty)
+
+let guard = 0
+while (guard < 8) {
+  const n = await countArchives()
+  if (n >= 6) break
+  await worldPanel()
+  await page.evaluate((c) => window.__blocks.setVoxel(c.x, c.y, c.z, 3), cell)
+  ui.setMode('accept')
+  eq(await clickTile('Fresh world'), 'fill fresh ' + guard)
+  await page.waitForFunction((c) => window.__blocks.getVoxel(c.x, c.y, c.z) !== 3, { timeout: 40000 }, cell)
+  guard += 1
+}
+await worldPanel()
+await page.evaluate((c) => window.__blocks.setVoxel(c.x, c.y, c.z, 8), cell)
+const toastAt = await page.evaluate(() => window.__toastLog.length)
+const askAt = ui.dialogs.length
+ui.setMode('accept')
+eq(await clickTile('Fresh world'), 'drop one')
+await sleep(300)
+eq(/oldest old world/.test(ui.dialogs[ui.dialogs.length - 1] || '') && /\d{4}-\d{2}-\d{2}/.test(ui.dialogs[ui.dialogs.length - 1] || ''), 'warns before drop ' + (ui.dialogs[ui.dialogs.length - 1] || ''))
+await page.waitForFunction((c) => window.__blocks.getVoxel(c.x, c.y, c.z) !== 8, { timeout: 40000 }, cell)
+await page.waitForFunction((n) => window.__toastLog.slice(n).some((t) => t.indexOf('Oldest old world removed') >= 0), { timeout: 8000 }, toastAt)
+await page.evaluate((c) => window.__blocks.setVoxel(c.x, c.y, c.z, 5), cell)
+const toastAt2 = await page.evaluate(() => window.__toastLog.length)
+ui.setMode('accept')
+eq(await clickTile('Fresh world'), 'drop two')
+await page.waitForFunction((c) => window.__blocks.getVoxel(c.x, c.y, c.z) !== 5, { timeout: 40000 }, cell)
+await page.waitForFunction((n) => window.__toastLog.slice(n).some((t) => t.indexOf('Oldest old world removed') >= 0), { timeout: 8000 }, toastAt2)
+const dropToasts = await page.evaluate((a, b) => window.__toastLog.slice(a).filter((t) => t.indexOf('Oldest old world removed') >= 0).length, toastAt, toastAt2)
+eq(dropToasts >= 2, 'toast once per dropped world ' + dropToasts)
+eq(ui.dialogs.length > askAt, 'confirm ran')
+
 eq(!ui.errs.length, 'console ' + ui.errs.join(' | '))
 
 if (fail.length) {

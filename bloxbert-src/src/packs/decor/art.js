@@ -1,9 +1,11 @@
 // Decor pack pixel art. Off lamps use high-contrast so they read in the dark.
 export function registerDecorArt(reg) {
   reg('floorLamp', (set) => {
-    for (let y = 4; y < 12; y++) set(8, y, 1);
-    set(6, 3, 3); set(7, 3, 4); set(8, 3, 4); set(9, 3, 4); set(10, 3, 3);
-    set(7, 12, 2); set(8, 12, 2); set(9, 12, 2);
+    for (let y = 1; y <= 6; y++) for (let x = 2; x <= 13; x++) set(x, y, y < 3 ? 4 : 3)
+    set(4, 2, 4); set(11, 3, 2)
+    for (let y = 6; y <= 12; y++) { set(7, y, 1); set(8, y, 2) }
+    for (let x = 3; x <= 12; x++) { set(x, 13, 2); set(x, 14, 0) }
+    set(5, 12, 1); set(10, 12, 1)
   }, 'lantern');
   reg('wallLamp', (set) => {
     for (let y = 3; y <= 13; y++) { set(1, y, 0); set(2, y, 1) }

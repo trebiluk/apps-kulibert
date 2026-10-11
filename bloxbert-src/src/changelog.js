@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.163', date: '2026-10-10', lines: {
+    en: ['A held sapling is a flat picture. A full old-world list warns before it drops one. New worlds can be Normal, Flat, or Void.'],
+    uk: ['Саджанець у руці — плоский малюнок. Повний список старих світів попереджає, перш ніж зняти один. Нові світи можуть бути звичайні, рівні або порожні.'],
+    ru: ['Саженец в руке — плоская картинка. Полный список старых миров предупреждает, прежде чем снять один. Новые миры могут быть обычными, ровными или пустыми.'],
+    es: ['Un brote en la mano es un dibujo plano. La lista llena avisa antes de quitar un mundo viejo. Los mundos nuevos pueden ser Normal, Plano o Vacío.'],
+    ar: ['الشتلة في اليد صورة مسطحة. القائمة الممتلئة تنبّه قبل إزالة عالم قديم. العوالم الجديدة قد تكون عادية أو مسطحة أو فارغة.'],
+    'fa-AF': ['نهال در دست یک تصویر تخت است. فهرست پر پیش از برداشتن یک جهان کهنه هشدار می‌دهد. جهان تازه می‌تواند عادی، هموار یا خالی باشد.'],
+    rw: ['Igiti gito mu ntoki ni ishusho ihagaze. Urutonde ruzuye ruburira mbere yo gukuraho isi imwe ya kera. Isi nshya ishobora kuba isanzwe, igororotse cyangwa ubusa.'],
+    ti: ['ኣብ ኢድ ዝሓዝካዮ ንኡስ ግንድ ስእሊ እዩ። ምሉእ ዝርዝር ቅድሚ ምውጻእ ናይ ቀደም ዓለም የጠንቅቕ። ሓደሽቲ ዓለማት ልሙድ፡ ለሚዕ ወይ ባዶ ክኾኑ ይኽእሉ።'],
+  }},
   { v: '2.5.162', date: '2026-10-10', lines: {
     en: ['Birch grows on forest edges and pine on high hills. One log makes four of its own planks, and any planks work in old recipes. Saved ground stays the same.'],
     uk: ['Береза росте на краю лісу, сосна — на високих пагорбах. Одна колода дає чотири свої дошки, і будь-які дошки пасують до старих рецептів. Збережена земля та сама.'],

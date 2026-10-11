@@ -42,6 +42,7 @@ import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN } from './worldgen.js'
+import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed } from './maker.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -92,7 +93,9 @@ let level = gfx.level
 let LANG = qs.get('lang') || ''
 if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
 if (!STR[LANG]) LANG = 'en'
+let freshDropDate = ''
 function t(key) {
+  if (key === 'confirmFresh' && freshDropDate) return t('confirmFreshFull').replace('{date}', freshDropDate)
   const hit = (EXTRA[LANG] && EXTRA[LANG][key]) || (STR[LANG] && STR[LANG][key]) || (EXTRA.en && EXTRA.en[key]) || (STR.en && STR.en[key])
   if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
   return hit
@@ -1006,6 +1009,10 @@ function townVoxel(x, y, z) {
   return 0
 }
 function genVoxel(x, y, z) {
+  if (makerLive.preset === 'flat' || makerLive.preset === 'void') {
+    const name = makerBlock(makerLive.preset, x, y, z, worldSpawn)
+    return name ? (ID[name] || 0) : 0
+  }
   const g = seenGen(x, y, z)
   const name = genBlock(x, y, z, g, (qx, qz) => fadeDist(qx, y, qz))
   return name ? (ID[name] || 0) : 0
@@ -1013,6 +1020,15 @@ function genVoxel(x, y, z) {
 const key = (i, j, k) => i + ',' + j + ',' + k
 let genVersion = GEN
 let genSeen = {}
+let makerNext = null
+let makerDraft = null
+function defaultMaker() {
+  return { preset: 'normal', hills: 2, water: 2, trees: 2, seed: 0, adj: 0, noun: 0 }
+}
+let makerLive = defaultMaker()
+function makerEnabled() {
+  try { return localStorage.getItem('bloxbert-maker') !== '0' } catch (e) { return true }
+}
 function seenGen(x, y, z) {
   const k = key(Math.floor(x / S), Math.floor(y / S), Math.floor(z / S))
   if (genSeen[k] == null) {
@@ -1045,6 +1061,13 @@ function compactSeen() {
   return out
 }
 function fillGenerated(data, x0, y0, z0) {
+  if (makerLive.preset === 'flat' || makerLive.preset === 'void') {
+    for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
+      const name = makerBlock(makerLive.preset, x0 + i, y0 + j, z0 + k, worldSpawn)
+      data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
+    }
+    return
+  }
   const g = seenGen(x0, y0, z0)
   const fadeArr = new Int8Array(S * S)
   for (let i = 0; i < S; i++) for (let k = 0; k < S; k++) fadeArr[i * S + k] = fadeDist(x0 + i, y0, z0 + k)
@@ -2721,6 +2744,7 @@ async function snapshot() {
     crops: farm.dump(),
     forage: forage.dump(),
     pondAid: !!pondAid,
+    maker: makerSnap(),
     ...(openedFrom ? { openedFrom } : {}),
     ...(Object.keys(rules).length ? { rules } : {}),
     ...(Object.keys(effects).length ? { effects } : {}),
@@ -2846,6 +2870,7 @@ async function readDoc(doc) {
 }
 async function applyDoc(doc) {
   openedFrom = doc && typeof doc.openedFrom === 'string' ? doc.openedFrom : ''
+  applyMaker(doc && doc.maker)
   const moved = migrate(doc)
   const src = moved.doc || doc
   Rules.load(doc && doc.rules || {})
@@ -2892,6 +2917,8 @@ async function importFile(file) {
 async function resetWorld() {
   try { await save() } catch (e) {}
   try { await keepClassic() } catch (e) {}
+  if (makerNext) { makerLive = makerNext; makerNext = null }
+  else makerLive = defaultMaker()
   Rules.load({})
   Effects.load({})
   gifts = {}
@@ -2915,9 +2942,11 @@ async function resetWorld() {
   setLook(0, 0.18)
   seedOldBushes()
   openedFrom = ''
+  bakeSpawnChunk()
   markSave(t('fresh'))
   try { await save() } catch (e) {}
   try { await paintOldWorlds() } catch (e) {}
+  window.__freshGen = (window.__freshGen || 0) + 1
 }
 function classicStamp(d) {
   const x = d || new Date()
@@ -2995,8 +3024,8 @@ async function trimClassic(keys, protect) {
     if (keep.size >= 6) break
     keep.add(k)
   }
-  let dropped = false
-  for (const k of list) if (!keep.has(k)) { await idbDel(k); dropped = true }
+  const dropped = []
+  for (const k of list) if (!keep.has(k)) { await idbDel(k); dropped.push(k) }
   return dropped
 }
 async function putClassic(doc, avoid) {
@@ -3018,21 +3047,22 @@ async function putClassic(doc, avoid) {
 async function archiveLeaving(avoid, why) {
   try { await save() } catch (e) {}
   const doc = await idbGet(WORLD)
-  if (!doc) return false
+  if (!doc) return []
   let body
   try { body = JSON.parse(JSON.stringify(doc)) } catch (e) { body = doc }
   const from = typeof body.openedFrom === 'string' ? body.openedFrom : ''
   const pre = classicPrefix()
   body.archiveBlocks = countBlocks()
   body.archiveBag = countBag()
+  if (from && from === avoid) return []
+  const touched = body.archiveBlocks > 0 || makerLive.preset === 'flat' || makerLive.preset === 'void'
+  if (!touched) return []
   const pins = []
   if (from.indexOf(pre) === 0 && from !== avoid) {
     const prev = await idbGet(from)
     body.archiveWhy = prev && (prev.archiveWhy === 'fresh' || prev.archiveWhy === 'swap') ? prev.archiveWhy : why
     await idbPut(from, body)
     pins.push(from)
-  } else if (from && from === avoid) {
-    return false
   } else {
     body.archiveWhy = why
     delete body.openedFrom
@@ -3042,8 +3072,31 @@ async function archiveLeaving(avoid, why) {
   if (avoid) pins.push(avoid)
   return trimClassic(null, pins)
 }
+const dropQueue = []
+let dropPump = 0
+function toastDrops(keys) {
+  if (!keys || !keys.length) return
+  for (let i = 0; i < keys.length; i++) dropQueue.push(1)
+  if (dropPump) return
+  const step = () => {
+    dropPump = 0
+    if (!dropQueue.length) return
+    dropQueue.shift()
+    toast(t('oldestWorld'))
+    if (dropQueue.length) dropPump = setTimeout(step, 2500)
+  }
+  step()
+}
+async function noteFreshDrop() {
+  const keys = await classicKeys()
+  if (!keys || keys.length < 6) { freshDropDate = ''; return }
+  const pre = classicPrefix()
+  freshDropDate = classicLabel(String(keys[keys.length - 1]).slice(pre.length))
+}
 async function keepClassic() {
-  if (await archiveLeaving('', 'fresh')) toast(t('oldestWorld'))
+  const dropped = await archiveLeaving('', 'fresh')
+  toastDrops(dropped)
+  try { await noteFreshDrop() } catch (e) {}
 }
 async function openClassic(keyName) {
   const raw = await idbGet(keyName)
@@ -3061,10 +3114,12 @@ async function openClassic(keyName) {
     if (g) await paintOldList(g)
   }
   toast(t('archiveOpen'))
-  if (dropped) toast(t('oldestWorld'))
+  toastDrops(dropped)
+  try { await noteFreshDrop() } catch (e) {}
   window.__archiveGen = (window.__archiveGen || 0) + 1
 }
 async function paintOldWorlds() {
+  try { await noteFreshDrop() } catch (e) {}
   const btn = document.getElementById('m-old')
   const list = document.getElementById('m-old-list')
   if (!btn || !list) return
@@ -3112,8 +3167,16 @@ async function paintOldEntry(host, openList) {
   if (!host) return
   const keys = await classicKeys()
   host.innerHTML = ''
-  if (!host.isConnected || !keys.length) return
-  host.append(menuTile('↩', t('openOld'), () => { if (openList) openList() }))
+  if (!host.isConnected) return
+  if (teacherOn()) {
+    const on = makerEnabled()
+    host.append(menuTile(on ? '☑' : '☐', t(on ? 'makerOn' : 'makerOff'), () => {
+      try { localStorage.setItem('bloxbert-maker', on ? '0' : '1') } catch (e) {}
+      paintOldEntry(host, openList)
+    }))
+  }
+  if (makerEnabled()) host.append(menuTile('✦', t('newWorld'), () => openMaker()))
+  if (keys.length) host.append(menuTile('↩', t('openOld'), () => { if (openList) openList() }))
 }
 async function paintOldList(g) {
   g.innerHTML = ''
@@ -3135,6 +3198,181 @@ async function paintOldList(g) {
     b.addEventListener('click', () => { openClassic(k) })
     g.append(b)
   }
+}
+function makerSnap() {
+  return {
+    preset: makerLive.preset || 'normal',
+    hills: clampStep(makerLive.hills),
+    water: clampStep(makerLive.water),
+    trees: clampStep(makerLive.trees),
+    seed: makerLive.seed | 0,
+    adj: makerLive.adj | 0,
+    noun: makerLive.noun | 0,
+    genVersion,
+  }
+}
+function applyMaker(raw) {
+  if (!raw || typeof raw !== 'object') { makerLive = defaultMaker(); return }
+  const preset = raw.preset === 'flat' || raw.preset === 'void' ? raw.preset : 'normal'
+  makerLive = {
+    preset,
+    hills: clampStep(raw.hills == null ? 2 : raw.hills),
+    water: clampStep(raw.water == null ? 2 : raw.water),
+    trees: clampStep(raw.trees == null ? 2 : raw.trees),
+    seed: raw.seed | 0,
+    adj: raw.adj | 0,
+    noun: raw.noun | 0,
+  }
+}
+function bakeSpawnChunk() {
+  if (makerLive.preset !== 'flat' && makerLive.preset !== 'void') return
+  const x0 = Math.floor(worldSpawn[0] / S) * S
+  const y0 = Math.floor(worldSpawn[1] / S) * S
+  const z0 = Math.floor(worldSpawn[2] / S) * S
+  const k = key(x0 / S, y0 / S, z0 / S)
+  if (saved.has(k)) return
+  const data = new Uint16Array(S * S * S)
+  fillGenerated(data, x0, y0, z0)
+  saved.set(k, data)
+}
+function openMaker() {
+  const sheet = document.getElementById('sheet')
+  const grid = sheet && sheet.querySelector('.ggrid')
+  if (!grid) return
+  makerDraft = {
+    preset: makerLive.preset === 'flat' || makerLive.preset === 'void' ? makerLive.preset : 'normal',
+    hills: clampStep(makerLive.hills),
+    water: clampStep(makerLive.water),
+    trees: clampStep(makerLive.trees),
+    seed: makerLive.seed | 0,
+    adj: makerLive.adj | 0,
+    noun: makerLive.noun | 0,
+  }
+  if (!makerDraft.seed) makerDraft.seed = normSeed((Math.random() * 32000) | 0)
+  const title = document.getElementById('sheet-title')
+  if (title) title.textContent = t('newWorld')
+  paintMaker(grid)
+}
+function makerSpin(text, fn) {
+  const b = document.createElement('button')
+  b.type = 'button'
+  b.className = 'gtile'
+  b.style.minWidth = '44px'
+  b.style.minHeight = '44px'
+  b.textContent = text
+  b.addEventListener('click', fn)
+  return b
+}
+function paintMaker(g) {
+  g.innerHTML = ''
+  g.dataset.maker = '1'
+  const presets = document.createElement('div')
+  presets.className = 'wide'
+  presets.style.display = 'flex'
+  presets.style.gap = '8px'
+  const choices = [['normal', '🌿', 'makerNormal'], ['flat', '▬', 'makerFlat'], ['void', '○', 'makerVoid']]
+  for (const [id, icon, lab] of choices) {
+    const tile = menuTile(icon, t(lab), () => { makerDraft.preset = id; paintMaker(g) })
+    tile.dataset.preset = id
+    tile.style.minHeight = '44px'
+    if (makerDraft.preset === id) tile.style.outline = '3px solid #f6c453'
+    presets.append(tile)
+  }
+  g.append(presets)
+  for (const key of ['hills', 'water', 'trees']) {
+    const row = document.createElement('div')
+    row.className = 'wide'
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;min-height:44px'
+    const name = document.createElement('span')
+    name.className = 'glbl'
+    name.style.flex = '0 0 72px'
+    name.textContent = t(key === 'hills' ? 'makerHills' : key === 'water' ? 'makerWater' : 'makerTrees')
+    const dec = makerSpin('<', () => { makerDraft[key] = clampStep((makerDraft[key] | 0) - 1); paintMaker(g) })
+    dec.dataset.slider = key
+    dec.dataset.step = '-1'
+    const track = document.createElement('span')
+    track.style.cssText = 'position:relative;flex:1;height:44px;background:#1f2b44;border-radius:8px;min-width:88px'
+    const knob = document.createElement('span')
+    knob.dataset.sliderHandle = key
+    knob.style.cssText = 'position:absolute;top:0;width:44px;height:44px;background:#e6b422;border-radius:8px'
+    knob.style.left = 'calc(' + ((makerDraft[key] | 0) / 4) + ' * (100% - 44px))'
+    track.append(knob)
+    const val = document.createElement('span')
+    val.dataset.sliderValue = key
+    val.style.minWidth = '24px'
+    val.style.textAlign = 'center'
+    val.textContent = String((makerDraft[key] | 0) + 1)
+    const inc = makerSpin('>', () => { makerDraft[key] = clampStep((makerDraft[key] | 0) + 1); paintMaker(g) })
+    inc.dataset.slider = key
+    inc.dataset.step = '1'
+    row.append(name, dec, track, val, inc)
+    g.append(row)
+  }
+  const words = seedWords(makerDraft.seed)
+  const seed = document.createElement('p')
+  seed.className = 'gnote wide'
+  seed.dataset.seedWords = words.join(' ')
+  seed.dataset.seedNum = String(normSeed(makerDraft.seed))
+  seed.textContent = words.join(' · ') + ' · ' + normSeed(makerDraft.seed)
+  g.append(seed)
+  const shuffle = menuTile('↻', t('makerShuffle'), () => {
+    makerDraft.seed = normSeed((makerDraft.seed | 0) + 997)
+    paintMaker(g)
+  })
+  shuffle.style.minHeight = '44px'
+  g.append(shuffle)
+  const nameRow = document.createElement('div')
+  nameRow.className = 'wide'
+  nameRow.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap'
+  const nameLab = document.createElement('span')
+  nameLab.className = 'glbl'
+  nameLab.textContent = t('makerName')
+  const spinWord = (kind, list) => {
+    const box = document.createElement('span')
+    box.style.cssText = 'display:inline-flex;align-items:center;gap:4px'
+    const dec = makerSpin('<', () => {
+      makerDraft[kind] = ((makerDraft[kind] | 0) - 1 + list.length) % list.length
+      paintMaker(g)
+    })
+    dec.dataset.word = kind
+    dec.dataset.step = '-1'
+    const lab = document.createElement('span')
+    lab.dataset.makerWord = kind
+    lab.textContent = list[(makerDraft[kind] | 0) % list.length]
+    lab.style.minWidth = '72px'
+    lab.style.textAlign = 'center'
+    const inc = makerSpin('>', () => {
+      makerDraft[kind] = ((makerDraft[kind] | 0) + 1) % list.length
+      paintMaker(g)
+    })
+    inc.dataset.word = kind
+    inc.dataset.step = '1'
+    box.append(dec, lab, inc)
+    return box
+  }
+  nameRow.append(nameLab, spinWord('adj', ADJECTIVES), spinWord('noun', NOUNS))
+  g.append(nameRow)
+  const start = menuTile('✓', t('makerStart'), () => { startMade() })
+  start.style.minHeight = '44px'
+  start.dataset.makerStart = '1'
+  const back = menuTile('←', t('makerBack'), () => { if (panels) panels.open('world') })
+  back.style.minHeight = '44px'
+  g.append(start, back)
+}
+async function startMade() {
+  if (!makerDraft) return
+  if (!confirm(t('confirmFresh'))) return
+  makerNext = {
+    preset: makerDraft.preset === 'flat' || makerDraft.preset === 'void' ? makerDraft.preset : 'normal',
+    hills: clampStep(makerDraft.hills),
+    water: clampStep(makerDraft.water),
+    trees: clampStep(makerDraft.trees),
+    seed: normSeed(makerDraft.seed),
+    adj: makerDraft.adj | 0,
+    noun: makerDraft.noun | 0,
+  }
+  await resetWorld()
+  window.__makerGen = (window.__makerGen || 0) + 1
 }
 paintOldWorlds().catch(() => {})
 async function exportJSON() {

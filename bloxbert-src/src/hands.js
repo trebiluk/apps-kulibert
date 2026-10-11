@@ -8,7 +8,8 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Vector4 } from '@babylonjs/core/Maths/math.vector'
-import { slotArt, itemSvg } from './icons.js'
+import { Material } from '@babylonjs/core/Materials/material'
+import { slotArt, itemSvg, blockIcon } from './icons.js'
 import { ITEMS } from './data/items.js'
 import ATLAS from '../assets/atlas.json'
 
@@ -16,6 +17,61 @@ const GREY = new Color4(0.62, 0.66, 0.71, 1)
 const ORANGE = new Color4(0.94, 0.54, 0.16, 1)
 const SWING_MS = 250
 const DIP_MS = 140
+const PLANT_NAMES = {
+  28: 'wheat', 29: 'reed', 58: 'tuft',
+  59: 'cropSprout', 60: 'cropLeafy', 61: 'cropTall', 62: 'cropRipe',
+  65: 'bushYoung', 66: 'bushLeaf', 67: 'bushFull', 68: 'bushFruit',
+  185: 'sapling',
+}
+
+function plantName(spec) {
+  const id = spec && spec.id | 0
+  if (PLANT_NAMES[id]) return PLANT_NAMES[id]
+  const key = spec && spec.key
+  if (key && Object.values(PLANT_NAMES).indexOf(key) >= 0) return key
+  return ''
+}
+
+function plantPicture(name, id) {
+  const wrap = slotArt(name)
+  if (wrap && wrap.getContext && wrap.dataset && wrap.dataset.kind === 'wrap' && clearInk(wrap).clear > 0.15) return wrap
+  const icon = blockIcon([id | 0, name])
+  if (icon && icon.getContext) {
+    const row = clearInk(icon)
+    if (row.ink > 8 && row.clear > 0.15) return icon
+  }
+  const c = document.createElement('canvas')
+  c.width = c.height = 48
+  const g = c.getContext('2d')
+  g.strokeStyle = name === 'reed' ? '#c4a574' : '#3D8C32'
+  g.lineWidth = 4
+  g.lineCap = 'round'
+  g.beginPath()
+  g.moveTo(24, 44)
+  g.lineTo(24, 12)
+  g.moveTo(24, 30)
+  g.lineTo(14, 18)
+  g.moveTo(24, 26)
+  g.lineTo(34, 16)
+  g.stroke()
+  return c
+}
+
+function clearInk(canvas) {
+  try {
+    const data = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data
+    let clear = 0
+    let ink = 0
+    const n = canvas.width * canvas.height
+    for (let i = 3; i < data.length; i += 4) {
+      if (data[i] < 16) clear++
+      else ink++
+    }
+    return { clear: n ? clear / n : 0, ink }
+  } catch (e) {
+    return { clear: 0, ink: 0 }
+  }
+}
 
 export function createHands(opts) {
   const scene = opts.scene
@@ -89,6 +145,15 @@ export function createHands(opts) {
     if (shown) shown.setEnabled(false)
     shown = null
     if (!key) { shownKey = ''; shownBlock = 0; pending = ''; return }
+    if (spec.kind === 'block' && plantName(spec)) {
+      pending = ''
+      shownKey = key
+      shownBlock = 0
+      shown = plantMesh(plantName(spec), spec.id | 0)
+      if (shown) holdPlant(shown)
+      dipUntil = performance.now() + DIP_MS
+      return
+    }
     if (spec.kind === 'block') {
       pending = ''
       shownKey = key
@@ -166,6 +231,47 @@ export function createHands(opts) {
     swingKind = kind === 'place' ? 'place' : 'break'
     swingUntil = performance.now() + SWING_MS
     swings += 1
+  }
+
+  function holdPlant(mesh) {
+    mesh.parent = itemAnchor
+    mesh.position.set(0, 0, 0)
+    mesh.rotation.set(0, 0.15, 0)
+    mesh.scaling.set(0.34, 0.34, 0.34)
+    mesh.setEnabled(true)
+  }
+
+  function plantMesh(name, id) {
+    const cacheKey = 'plant:' + name
+    const hit = flatCache.get(cacheKey)
+    if (hit) return hit
+    const canvas = plantPicture(name, id)
+    const tex = new Texture(canvas.toDataURL(), scene, false, true, Texture.NEAREST_SAMPLINGMODE)
+    tex.hasAlpha = true
+    const mat = new StandardMaterial('hand-plant-mat-' + name, scene)
+    mat.disableLighting = true
+    mat.emissiveColor = new Color3(1, 1, 1)
+    mat.diffuseTexture = tex
+    mat.emissiveTexture = tex
+    mat.useAlphaFromDiffuseTexture = true
+    mat.transparencyMode = Material.MATERIAL_ALPHATEST
+    mat.alphaCutOff = 0.4
+    mat.specularColor = new Color3(0, 0, 0)
+    mat.fogEnabled = false
+    mat.backFaceCulling = false
+    const mesh = new Mesh('hand-plant-' + name, scene)
+    const vd = new VertexData()
+    vd.positions = [-0.5, -0.5, 0, 0.5, -0.5, 0, 0.5, 0.5, 0, -0.5, 0.5, 0]
+    vd.indices = [0, 1, 2, 0, 2, 3]
+    vd.uvs = [0, 1, 1, 1, 1, 0, 0, 0]
+    vd.normals = [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1]
+    vd.applyToMesh(mesh)
+    mesh.material = mat
+    mesh.parent = itemAnchor
+    mesh.setEnabled(false)
+    dress(mesh)
+    flatCache.set(cacheKey, mesh)
+    return mesh
   }
 
   function holdBlock(mesh) {
