@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.162', date: '2026-10-10', lines: {
+    en: ['Birch grows on forest edges and pine on high hills. One log makes four of its own planks, and any planks work in old recipes. Saved ground stays the same.'],
+    uk: ['Береза росте на краю лісу, сосна — на високих пагорбах. Одна колода дає чотири свої дошки, і будь-які дошки пасують до старих рецептів. Збережена земля та сама.'],
+    ru: ['Берёза растёт на краю леса, сосна — на высоких холмах. Одно бревно даёт четыре свои доски, и любые доски подходят к старым рецептам. Сохранённая земля та же.'],
+    es: ['El abedul crece al borde del bosque y el pino en los cerros altos. Un tronco da cuatro tablas propias, y cualquier tabla vale en las recetas viejas. El suelo guardado sigue igual.'],
+    ar: ['البتولا ينمو على حافة الغابة والصنوبر على التلال العالية. جذع واحد يعطي أربعة ألواح من نوعه، وأي ألواح تصلح للوصفات القديمة. الأرض المحفوظة تبقى كما هي.'],
+    'fa-AF': ['غان در کنارهٔ جنگل و کاج روی تپه‌های بلند می‌روید. یک کُنده چهار تختهٔ خودش را می‌دهد و هر تخته در دستورهای کهنه کار می‌کند. زمین ذخیره‌شده همان می‌ماند.'],
+    rw: ['Birch ikura ku mupaka w\'ishyamba, pine ku misozi miremire. Igiti kimwe gitanga imbaho enye zacyo, kandi imbaho zose zikora mu byo wabonaga. Ubutaka wabitse buracyaho.'],
+    ti: ['በርች ኣብ ወሰን ዱር፡ ጽድ ድማ ኣብ ልዑል ኮረባታት ትበቕል። ሓንቲ ጐንዲ ኣርባዕተ ናታ ጣውላ ትህብ፡ ዝኾነ ጣውላ ድማ ኣብ ናይ ቀደም ቅብሊት ይሰርሕ። ዝተዓቀበ መሬት ከምኡ ይጸንሕ።'],
+  }},
   { v: '2.5.161', date: '2026-10-10', lines: {
     en: ['The dig chip hides on its own. Tips fade before the next one, Settings can hide them, looking up or down stays upright, and the craft tray keeps what you set on it.'],
     uk: ['Чіп копання ховається сам. Підказки згасають перед наступною, у Налаштуваннях їх можна сховати, погляд угору й униз не перевертається, а таця крафту тримає те, що ти поклав.'],

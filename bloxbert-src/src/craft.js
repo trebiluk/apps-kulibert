@@ -2,11 +2,14 @@ import { gateOpen } from './data/gates.js'
 import { ITEMS } from './data/items.js'
 const WOOL = ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
 const STONE = ['stone', 'slate', 'coal']
+const PLANKS = ['planks', 'birchPlanks', 'pinePlanks']
 export function isWool(item) { return WOOL.indexOf(item) >= 0 }
 export function isStone(item) { return STONE.indexOf(item) >= 0 }
+export function isPlank(item) { return PLANKS.indexOf(item) >= 0 }
 function anyList(item) {
   if (item === 'woolAny') return WOOL
   if (item === 'stoneAny') return STONE
+  if (item === 'plankAny') return PLANKS
   return null
 }
 export function countOf(bag, item) {

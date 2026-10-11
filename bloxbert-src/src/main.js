@@ -52,12 +52,17 @@ import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissing
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
+import { floraSkill } from './packs/flora/pack.js'
 import { packRecipes, packItems } from './packs/registry.js'
 import { ITEMS } from './data/items.js'
 {
   const have = new Set(RECIPES.map((r) => r.id))
-  for (const r of packRecipes()) if ((r.id === 'floorLamp' || r.id === 'wallLamp' || r.id === 'rug') && !have.has(r.id)) RECIPES.push(r)
-  for (const it of packItems()) if (it.pack === 'decor' && !ITEMS[it.key]) ITEMS[it.key] = it.def
+  for (const r of packRecipes()) {
+    const decor = r.id === 'floorLamp' || r.id === 'wallLamp' || r.id === 'rug'
+    const flora = r.id === 'birchPlanks' || r.id === 'pinePlanks'
+    if ((decor || flora) && !have.has(r.id)) RECIPES.push(r)
+  }
+  for (const it of packItems()) if ((it.pack === 'decor' || it.pack === 'flora') && !ITEMS[it.key]) ITEMS[it.key] = it.def
 }
 import { dropOf, harvestCounts, berryPickCount } from './data/items.js'
 import { wildBushLoot } from './drops.js'
@@ -3290,12 +3295,17 @@ let lockTries = 0
 let closingPlay = false
 let markPath = () => {}
 let paintPath = () => {}
+let learnRef = null
 let lastPointer = null
 session = createSession({
   t, toast, blocked: (id) => blockedToast(id), getVoxel,
   pos: () => noa.entities.getPosition(noa.playerEntity),
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
+  found: (item) => {
+    const key = floraSkill(item)
+    if (key && learnRef && learnRef.addNote(key)) showCard(t(key))
+  },
   noteMachine: () => noteMachine(),
   tableOn: () => tableMode,
   open: (id, key) => panels && panels.open(id, key),
@@ -4036,6 +4046,7 @@ const learn = createLearn({
   count: (item) => (session && session.bag ? session.bag.count(item) : 0),
 })
 markPath = (id) => learn.bump(id)
+learnRef = learn
 paintPath = () => learn.paintPath()
 holdTour = () => learn.cancelAuto()
 const tools = createTools({

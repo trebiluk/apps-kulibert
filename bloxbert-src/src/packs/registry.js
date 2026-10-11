@@ -29,6 +29,7 @@ function packsOffFromLocation() {
 }
 
 const OFF = new Set(packsOffFromLocation())
+const BANDS = []
 
 export function setPacksOff(ids) {
   OFF.clear()
@@ -44,16 +45,31 @@ export function registerPack(pack) {
   if (typeof pack.v !== 'number') throw new Error('pack v')
   if (PACKS.some((p) => p.id === pack.id)) throw new Error('duplicate pack ' + pack.id)
   const blocks = Array.isArray(pack.blocks) ? pack.blocks.map(blockOf) : []
+  const band = Array.isArray(pack.band) ? [pack.band[0] | 0, pack.band[1] | 0] : null
+  if (band && (band[0] < 1100 || band[1] < band[0] || band[1] - band[0] > 99)) throw new Error('pack band ' + pack.id)
+  if (band) {
+    for (const other of BANDS) {
+      if (!(band[1] < other[0] || band[0] > other[1])) throw new Error('band overlap ' + pack.id)
+    }
+  }
   const seenId = new Set()
   const seenKey = new Set()
   for (const b of blocks) {
     const id = b.id | 0
     const key = b.key
+    const banded = !!(band && id >= band[0] && id <= band[1])
     const movable = MOVABLE.has(key) && FROZEN[key] === id
     if (!key || (id < 1100 && !movable)) throw new Error('pack id range ' + id)
-    if (FROZEN[key] !== id) throw new Error('frozen ' + key)
-    const owner = Object.keys(FROZEN).find((k) => FROZEN[k] === id)
-    if (owner !== key) throw new Error('frozen id ' + id)
+    if (band && !banded) throw new Error('outside band ' + key)
+    if (banded) {
+      if (FROZEN[key] != null) throw new Error('frozen ' + key)
+      const owner = Object.keys(FROZEN).find((k) => FROZEN[k] === id)
+      if (owner) throw new Error('frozen id ' + id)
+    } else {
+      if (FROZEN[key] !== id) throw new Error('frozen ' + key)
+      const owner = Object.keys(FROZEN).find((k) => FROZEN[k] === id)
+      if (owner !== key) throw new Error('frozen id ' + id)
+    }
     if (seenId.has(id) || seenKey.has(key)) throw new Error('duplicate ' + key)
     for (const other of PACKS) {
       for (const ob of other.blocks || []) {
@@ -64,6 +80,7 @@ export function registerPack(pack) {
     seenKey.add(key)
     b.id = id
   }
+  if (band) BANDS.push(band)
   const drops = new Map()
   if (Array.isArray(pack.drops)) for (const pair of pack.drops) drops.set(pair[0] | 0, pair[1])
   PACKS.push({

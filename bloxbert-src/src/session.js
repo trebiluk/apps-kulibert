@@ -4,7 +4,7 @@ import { RECIPES } from './data/recipes.js'
 import { ECON } from './data/econ.js'
 import { pays, sells } from './data/econ.js'
 import { createBag } from './items.js'
-import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, countOf, isWool, isStone } from './craft.js'
+import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, countOf, isWool, isStone, isPlank } from './craft.js'
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
@@ -16,6 +16,7 @@ import { TOOL_LIFE, setDigSlow, getDigSlow } from './feel.js'
 import { fx } from './fx.js'
 import { bindStationBag } from './stations.js'
 import { berryTuft } from './worldgen.js'
+import { floraExtra } from './packs/flora/pack.js'
 import { Rules } from './rules.js'
 
 export function createSession(api) {
@@ -145,7 +146,9 @@ export function createSession(api) {
   function markFound(item) {
     if (!item || !ITEMS[item]) return
     if (!wallet.state.found) wallet.state.found = []
-    if (!wallet.state.found.includes(item)) wallet.state.found.push(item)
+    if (wallet.state.found.includes(item)) return
+    wallet.state.found.push(item)
+    if (api.found) api.found(item)
   }
   function spawnDrop(item, n, x, y, z, why) {
     const where = mergeOrAdd(ground, lost, { item, n, x, y, z, at: Date.now(), why: why === 'full' ? 'bag' : 'ground' })
@@ -1023,7 +1026,7 @@ export function createSession(api) {
   }
   function giveTray(needItem, index, n) {
     const tag = trayWool[index]
-    if ((needItem === 'woolAny' || needItem === 'stoneAny') && tag && tag.indexOf('*') >= 0) {
+    if ((needItem === 'woolAny' || needItem === 'stoneAny' || needItem === 'plankAny') && tag && tag.indexOf('*') >= 0) {
       for (const part of tag.split('+')) {
         const cut = part.indexOf('*')
         if (cut < 0) continue
@@ -1031,7 +1034,7 @@ export function createSession(api) {
       }
       return
     }
-    const back = (needItem === 'woolAny' || needItem === 'stoneAny') && tag ? tag : needItem
+    const back = (needItem === 'woolAny' || needItem === 'stoneAny' || needItem === 'plankAny') && tag ? tag : needItem
     trayGiveBack(back, n)
   }
   function craftTrace(kind) {
@@ -1483,7 +1486,7 @@ export function createSession(api) {
       const placePart = (item, index) => {
         const needItem = r.in[index][0]
         const needN = r.in[index][1]
-        const ok = needItem === 'woolAny' ? isWool(item) : needItem === 'stoneAny' ? isStone(item) : item === needItem
+        const ok = needItem === 'woolAny' ? isWool(item) : needItem === 'stoneAny' ? isStone(item) : needItem === 'plankAny' ? isPlank(item) : item === needItem
         if (!ok) return false
         const room = needN - (trayPlaced[index] || 0)
         const takeN = Math.min(bag.count(item), room)
@@ -1491,7 +1494,7 @@ export function createSession(api) {
         if (!bag.take(item, takeN)) return false
         trayPlaced[index] = (trayPlaced[index] || 0) + takeN
         if (needItem === 'woolAny') trayWool[index] = item
-        if (needItem === 'stoneAny') trayWool[index] = mixAdd(trayWool[index], item, takeN)
+        if (needItem === 'stoneAny' || needItem === 'plankAny') trayWool[index] = mixAdd(trayWool[index], item, takeN)
         paintHotbar()
         paintCraft(g, true)
         noteTray()
@@ -1519,8 +1522,8 @@ export function createSession(api) {
           recipe: r,
           placed: () => trayPlaced,
           bag: () => bag.slots,
-          name: (item) => item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : itemName(item),
-          icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : item === 'stoneAny' ? ITEMS.stone : ITEMS[item]),
+          name: (item) => item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item),
+          icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : item === 'stoneAny' ? ITEMS.stone : item === 'plankAny' ? ITEMS.planks : ITEMS[item]),
           t,
           resultName: (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : ''),
           fillLabel: t('fillTray'),
@@ -1554,6 +1557,18 @@ export function createSession(api) {
               } else if (need === 'stoneAny') {
                 let left = takeN
                 for (const c of ['stone', 'slate', 'coal']) {
+                  const d = Math.min(bag.count(c), left)
+                  if (d > 0 && bag.take(c, d)) {
+                    trayWool[i] = mixAdd(trayWool[i], c, d)
+                    left -= d
+                    any = true
+                  }
+                  if (!left) break
+                }
+                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+              } else if (need === 'plankAny') {
+                let left = takeN
+                for (const c of ['planks', 'birchPlanks', 'pinePlanks']) {
                   const d = Math.min(bag.count(c), left)
                   if (d > 0 && bag.take(c, d)) {
                     trayWool[i] = mixAdd(trayWool[i], c, d)
@@ -2074,8 +2089,8 @@ export function createSession(api) {
     })
   }
   function takeNamed(item, n) {
-    if (item !== 'woolAny' && item !== 'stoneAny') return bag.take(item, n)
-    const order = item === 'stoneAny' ? ['stone', 'slate', 'coal'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
+    if (item !== 'woolAny' && item !== 'stoneAny' && item !== 'plankAny') return bag.take(item, n)
+    const order = item === 'stoneAny' ? ['stone', 'slate', 'coal'] : item === 'plankAny' ? ['planks', 'birchPlanks', 'pinePlanks'] : ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']
     let left = n
     const spent = []
     for (const c of order) {
@@ -2199,6 +2214,12 @@ export function createSession(api) {
           api.toast(berryTip())
         }
       }
+    }
+    const extra = floraExtra(id, x, y, z)
+    if (extra) {
+      markFound(extra)
+      const extraLeft = bag.add(extra, 1)
+      if (extraLeft) spawnDrop(extra, extraLeft, x + 0.5, y + 0.65, z + 0.5, 'full')
     }
     bagHist.push({ type: 'break', item: drop, n: got, loose })
     if (id === 12 && saplingRoll(x, y, z)) {

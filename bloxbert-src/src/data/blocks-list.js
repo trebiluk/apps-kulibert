@@ -5,6 +5,7 @@ import { packBlocks, packOn } from '../packs/registry.js'
 // pack that registers later has no name and the loader drops its blocks.
 import '../packs/farm/pack.js'
 import '../packs/decor/pack.js'
+import '../packs/flora/pack.js'
 
 export const BASE_BLOCKS = [
   [1000, 'missing', 'gravel_stone', '?', null],
@@ -89,6 +90,11 @@ export function buildBlocks() {
     const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
     const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
     insertAfter(rows, 'clay', take('floorLampOff', 'floorLampOn', 'wallLampOff', 'wallLampOn', 'rugAnchor', 'rugPart'))
+  }
+  if (packOn('flora')) {
+    const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
+    const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
+    insertAfter(rows, 'clay', take('birchLog', 'birchLeaves', 'birchPlanks', 'pineLog', 'pineNeedles', 'pinePlanks'))
   }
   return rows
 }

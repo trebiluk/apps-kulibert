@@ -1,25 +1,26 @@
 import '../packs/farm/pack.js'
+import '../packs/flora/pack.js'
 import { packRecipes } from '../packs/registry.js'
 export const RECIPES = [
   { id: 'planks', at: 'hand', in: [['log', 1]], out: ['planks', 4], secs: 0 },
-  { id: 'workbench', at: 'hand', in: [['planks', 4]], out: ['workbench', 1], secs: 2 },
+  { id: 'workbench', at: 'hand', in: [['plankAny', 4]], out: ['workbench', 1], secs: 2 },
   { id: 'ice', at: 'hand', in: [['snow', 4]], out: ['ice', 1], secs: 0 },
   { id: 'oven', at: 'bench', in: [['stoneAny', 8]], out: ['oven', 1], secs: 10 },
   { id: 'brickGrey', at: 'bench', in: [['stone', 2]], out: ['brickGrey', 2], secs: 2 },
-  { id: 'vend', at: 'bench', in: [['planks', 6], ['glass', 1]], out: ['vend', 1], secs: 10 },
-  { id: 'bunk', at: 'bench', in: [['planks', 3], ['woolBlue', 3]], out: ['bunk', 1], secs: 5 },
-  { id: 'box', at: 'bench', in: [['planks', 8]], out: ['box', 1], secs: 4 },
-  { id: 'woodTool', at: 'bench', in: [['planks', 5]], out: ['woodTool', 1], secs: 2 },
-  { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['planks', 2]], out: ['stoneTool', 1], secs: 4 },
-  { id: 'door', at: 'bench', in: [['planks', 6]], out: ['door', 1], secs: 3 },
-  { id: 'stick', at: 'bench', in: [['planks', 2]], out: ['stick', 4], secs: 1 },
+  { id: 'vend', at: 'bench', in: [['plankAny', 6], ['glass', 1]], out: ['vend', 1], secs: 10 },
+  { id: 'bunk', at: 'bench', in: [['plankAny', 3], ['woolBlue', 3]], out: ['bunk', 1], secs: 5 },
+  { id: 'box', at: 'bench', in: [['plankAny', 8]], out: ['box', 1], secs: 4 },
+  { id: 'woodTool', at: 'bench', in: [['plankAny', 5]], out: ['woodTool', 1], secs: 2 },
+  { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['plankAny', 2]], out: ['stoneTool', 1], secs: 4 },
+  { id: 'door', at: 'bench', in: [['plankAny', 6]], out: ['door', 1], secs: 3 },
+  { id: 'stick', at: 'bench', in: [['plankAny', 2]], out: ['stick', 4], secs: 1 },
   { id: 'safetyGlasses', at: 'bench', in: [['glass', 2], ['stick', 1]], out: ['safetyGlasses', 1], secs: 2 },
   { id: 'measuringTape', at: 'bench', in: [['ironIngot', 1], ['woolAny', 1]], out: ['measuringTape', 1], secs: 2 },
   { id: 'handSaw', at: 'bench', in: [['ironIngot', 1], ['stick', 1]], out: ['handSaw', 1], secs: 2 },
-  { id: 'hammer', at: 'bench', in: [['ironIngot', 1], ['stick', 1], ['planks', 1]], out: ['hammer', 1], secs: 2 },
-  { id: 'woodshop', at: 'bench', in: [['planks', 4], ['log', 2], ['ironIngot', 1]], out: ['woodshop', 1], secs: 4 },
-  { id: 'doorGlass', at: 'bench', in: [['glass', 4], ['planks', 2]], out: ['doorGlass', 1], secs: 3 },
-  { id: 'pushButton', at: 'bench', tier: 'T1', in: [['planks', 1]], out: ['pushButton', 1], secs: 1 },
+  { id: 'hammer', at: 'bench', in: [['ironIngot', 1], ['stick', 1], ['plankAny', 1]], out: ['hammer', 1], secs: 2 },
+  { id: 'woodshop', at: 'bench', in: [['plankAny', 4], ['log', 2], ['ironIngot', 1]], out: ['woodshop', 1], secs: 4 },
+  { id: 'doorGlass', at: 'bench', in: [['glass', 4], ['plankAny', 2]], out: ['doorGlass', 1], secs: 3 },
+  { id: 'pushButton', at: 'bench', tier: 'T1', in: [['plankAny', 1]], out: ['pushButton', 1], secs: 1 },
   { id: 'lever', at: 'bench', tier: 'T2', in: [['stick', 1], ['stone', 1]], out: ['lever', 1], secs: 2 },
   { id: 'smelter', at: 'bench', tier: 'T4', in: [['brickRed', 8], ['ironOre', 1], ['coal', 1]], out: ['smelter', 1], secs: 8 },
   { id: 'ironIngot', at: 'smelter', tier: 'T4', in: [['ironOre', 1]], out: ['ironIngot', 1], secs: 4 },
@@ -49,6 +50,11 @@ function mountFarmRecipes() {
     if (!row) continue
     const { after, ...rest } = row
     RECIPES.push(rest)
+  }
+  for (const id of ['birchPlanks', 'pinePlanks']) {
+    if (RECIPES.some((r) => r.id === id)) continue
+    const row = packRecipes().find((r) => r.id === id)
+    if (row) RECIPES.push(row)
   }
 }
 mountFarmRecipes()

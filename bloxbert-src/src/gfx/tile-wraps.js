@@ -1,5 +1,6 @@
 // Runtime canvas atlas for pixel-art block wraps. Registers new materials.
 import { getBlockWrap, WRAPS } from './pixel-art.js';
+import '../packs/flora/art.js';
 
 const BLOCK_WRAPS = [
   'doorGlass', 'doorGlassOpen', 'doorGlassTop', 'doorGlassTopOpen',
@@ -8,6 +9,7 @@ const BLOCK_WRAPS = [
   'bushYoung', 'bushLeaf', 'bushFull', 'bushFruit',
   'floorLampOff', 'floorLampOn', 'wallLampOff', 'wallLampOn',
   'rugAnchor', 'rugPart',
+  'birchLog', 'birchLeaves', 'birchPlanks', 'pineLog', 'pineNeedles', 'pinePlanks',
 
   'box', 'door', 'doorMetal', 'smelter', 'fabricator', 'charger', 'lantern', 'clay',
   'pushButton', 'lever', 'ironOre', 'copperOre', 'zincOre',

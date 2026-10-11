@@ -1,6 +1,7 @@
 // Extra 2.2.0 strings. Dari is Dari, not Arabic.
 import { packStrings } from './packs/registry.js'
 import './packs/farm/pack.js'
+import './packs/flora/pack.js'
 export const EXTRA = {
   en: {
     changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try This', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',

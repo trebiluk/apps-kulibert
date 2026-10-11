@@ -1,5 +1,6 @@
 import { intoBag } from '../drops.js'
 import '../packs/farm/pack.js'
+import '../packs/flora/pack.js'
 import { packItems, packDrop, itemMuted } from '../packs/registry.js'
 export const ITEMS = {
   log: { block: 11, letter: 'L', cat: 'Materials', base: 4, stack: 64, sell: true },
@@ -73,6 +74,9 @@ function mountFarmItems() {
   Object.assign(ITEMS, next)
 }
 mountFarmItems()
+for (const it of packItems()) {
+  if (it.pack === 'flora' && it.key && !ITEMS[it.key]) ITEMS[it.key] = it.def
+}
 export const ITEM_BY_BLOCK = {}
 for (const [k, v] of Object.entries(ITEMS)) if (v.block) ITEM_BY_BLOCK[v.block] = k
 export function dropOf(blockId) {

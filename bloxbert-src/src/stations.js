@@ -4,13 +4,13 @@ import { ITEMS } from './data/items.js'
 import { slotArt, shopIcon } from './icons.js'
 import { fx } from './fx.js'
 const OVEN = RECIPES.filter((r) => r.at === 'oven')
-const BAKES = { planks: 1, log: 4, coal: 8 }
+const BAKES = { planks: 1, log: 4, coal: 8, pinecone: 1 }
 let slotsOf = () => []
 export function bindStationBag(fn) { if (typeof fn === 'function') slotsOf = fn }
 function fuelKind(api) {
   const held = api.held ? api.held() : ''
   if (BAKES[held] && api.have && api.have(held) > 0) return held
-  for (const k of ['planks', 'log', 'coal']) if (api.have && api.have(k) > 0) return k
+  for (const k of ['planks', 'log', 'coal', 'pinecone']) if (api.have && api.have(k) > 0) return k
   return ''
 }
 function beginBake(r, recipe) {

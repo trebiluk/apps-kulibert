@@ -7,7 +7,7 @@ import { STR } from '../src/strings.js'
 const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti']
 const fail = []
 for (const r of RECIPES) {
-  const inBase = r.in.reduce((n, [k, c]) => n + ((ITEMS[k] && ITEMS[k].base) || (k === 'woolAny' ? 3 : 0)) * c, 0)
+  const inBase = r.in.reduce((n, [k, c]) => n + ((ITEMS[k] && ITEMS[k].base) || (k === 'woolAny' ? 3 : k === 'plankAny' ? 1 : 0)) * c, 0)
   const outBase = (ITEMS[r.out[0]].base || 0) * r.out[1]
   const cap = (inBase + r.secs * 0.4) * 1.25
   if (outBase > cap + 1e-6) fail.push(r.id + ' pays too much ' + outBase + ' > ' + cap)

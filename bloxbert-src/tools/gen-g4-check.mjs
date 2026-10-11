@@ -329,6 +329,7 @@ const ms6 = s6 / spots.length
 const ratio = ms6 / ms5
 console.log('warm chunk ms gen5 ' + ms5.toFixed(2) + ' gen6 ' + ms6.toFixed(2) + ' ratio ' + ratio.toFixed(3))
 note(ratio <= 1.1, 'gen cost within 10%', ratio.toFixed(3))
+note(ms6 <= 6, 'walk chunk budget', ms6.toFixed(2) + 'ms')
 
 if (HEADLESS || fail.length || !open || !river || !overhang || !rock) {
   if (fail.length) {
@@ -462,6 +463,18 @@ async function sink(page, x, z, top) {
 async function visit(tag, w, h, touch) {
   const { ctx, page, errors } = await boot(w, h, touch)
   const spawnFps = await sampleFps(page)
+  let walkFps = null
+  if (tag === '915') {
+    await page.evaluate(() => {
+      const B = window.__blocks
+      B.setLook(Math.atan2(-132.5, -137.5), 0.12)
+      B.hold('forward', true)
+    })
+    walkFps = await sampleFps(page)
+    await page.evaluate(() => { window.__blocks.hold('forward', false) })
+    console.log('915 walk fps ' + walkFps.fps.toFixed(2) + ' spawn ' + spawnFps.fps.toFixed(2))
+    note(walkFps.n >= 2, '915 walk fps', walkFps.fps.toFixed(2))
+  }
   const gh = groundAt(open.nx, open.nz, 6)
   const faceIn = Math.atan2(open.x - open.nx, open.z - open.nz)
   await go(page, open.nx, Math.max(open.lo, gh + 1), open.nz, faceIn, 0.1)
