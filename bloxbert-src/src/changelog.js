@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.156', date: '2026-10-10', lines: {
+    en: ['New land has rivers and lakes you can swim. The ground you already saved stays the same.'],
+    uk: ['Нова земля має річки й озера, де можна плавати. Земля, яку ти вже зберіг, лишається такою самою.'],
+    ru: ['Новая земля имеет реки и озёра, где можно плавать. Земля, которую ты уже сохранил, остаётся той же.'],
+    es: ['La tierra nueva tiene ríos y lagos donde puedes nadar. El suelo que ya guardaste sigue igual.'],
+    ar: ['الأرض الجديدة فيها أنهار وبحيرات تستطيع أن تسبح فيها. الأرض التي حفظتها تبقى كما هي.'],
+    'fa-AF': ['زمین تازه رود و دریاچه دارد که می‌توانی در آن شنا کنی. زمینی که ذخیره کردی همان می‌ماند.'],
+    rw: ['Isi nshya ifite inzuzi n\'ibiyaga ushobora koga. Ubutaka wabitse buracyaho kimwe.'],
+    ti: ['ሓድሽ መሬት ወሓዚታትን ቀላያትን ኣለዎ ክትሓም እትኽእል። እቲ መሬት ካብ ቅድም ዝዓቀብካዮ ከምኡ ይጸንሕ።'],
+  }},
   { v: '2.5.155', date: '2026-10-10', lines: {
     en: ['Hotbar and Bag show the real pictures. A teacher can keep backups on this device.'],
     uk: ['Панель і Сумка показують справжні малюнки. Вчитель може тримати копії на цьому пристрої.'],

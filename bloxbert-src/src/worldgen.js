@@ -26,6 +26,8 @@ export function wildWood(x, y, z, gen, fade) {
   const cx = Math.floor(x / 9) * 9 + 4
   const cz = Math.floor(z / 9) * 9 + 4
   if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) return ''
+  // Trees skip a gen-5 river or lake column. Gen 4 and older never ask.
+  if ((gen | 0) >= 5 && columnWater(cx, cz, fade)) return ''
   const th = (gen | 0) >= 4 ? groundAt(cx, cz, gen, fade) : groundY(cx, cz)
   const tall = 4 + Math.floor(hash(cx + 91, cz - 17) * 3)
   const top = th + tall
@@ -493,8 +495,10 @@ export function spawnGround(x, z) {
 
 // Gen 2 is the original ground. Gen 3 adds the sand and clay banks.
 // Gen 4 adds hills and beaches, and only on chunks that stamp 4.
-// Gen 2 and gen 3 stay byte-identical.
-export const GEN = 4
+// Gen 5 adds rivers and lakes, and only on chunks that stamp 5.
+// Gen 2, 3 and 4 stay byte-identical.
+// NOTE: Lily pads, fish, and the reed-paper recipe are not this step.
+export const GEN = 5
 export const CHUNK = 24
 export const GEN_MARGIN = 4
 const TOWN_BOX = { x0: -20, x1: 36, y0: -64, y1: 8, z0: -18, z1: 28 }
@@ -947,7 +951,37 @@ export function genColumns(x0, z0, gen, fadeArr) {
       if (hh < minH) minH = hh
     }
   }
-  return { x0: x0i, z0: z0i, h, base, hills, coast, minH }
+  let water = null
+  let hasWater = false
+  if (g >= 5) {
+    water = new Array(TILE * TILE)
+    for (let i = 0; i < TILE; i += 4) {
+      for (let k = 0; k < TILE; k += 4) {
+        const n = vnoise(x0i + i + 2, z0i + k + 2, 88)
+        const rx = Math.floor((x0i + i) / LAKE_EVERY)
+        const rz = Math.floor((z0i + k) / LAKE_EVERY)
+        const L = lakeDef(rx, rz)
+        let nearLake = false
+        if (L) {
+          const dx = x0i + i + 2 - L.cx
+          const dz = z0i + k + 2 - L.cz
+          nearLake = dx * dx + dz * dz <= (L.rad + 6) * (L.rad + 6)
+        }
+        if (!nearLake && Math.abs(n - 0.5) > 0.22) continue
+        for (let di = 0; di < 4; di++) {
+          for (let dk = 0; dk < 4; dk++) {
+            const idx = (i + di) * TILE + (k + dk)
+            const f = fadeOf(fadeArr, idx)
+            const rec = f >= 12 ? columnWaterRaw(x0i + i + di, z0i + k + dk) : null
+            water[idx] = rec
+            if (rec) hasWater = true
+          }
+        }
+      }
+    }
+    if (!hasWater) water = null
+  }
+  return { x0: x0i, z0: z0i, h, base, hills, coast, minH, water, hasWater }
 }
 
 export function peekColumn(x, z) {
@@ -998,6 +1032,10 @@ function colsIndex(cols, x, z) {
 export function groundAt(x, z, gen, fade, cols) {
   const xi = x | 0
   const zi = z | 0
+  if ((gen | 0) >= 5) {
+    const w = columnWater(xi, zi, fade, cols)
+    if (w && w.kind === 'water') return w.top
+  }
   const idx = colsIndex(cols, xi, zi)
   if ((gen | 0) < 4) {
     if (idx >= 0) return cols.base[idx]
@@ -1063,11 +1101,315 @@ function gen4(x, y, z, fade, cols) {
   return base
 }
 
+// Gen 5 water. Still water only: no flow sim. A column's answer depends on
+// the seed and the column, never on which chunk asked. Gen 4 and older do
+// not call this. Lily pads, fish, and the reed-paper recipe are not this step.
+const LAKE_EVERY = 96
+const waterMemo = new Map()
+const channelMemo = new Map()
+const lakeMemo = new Map()
+
+function terrainAt(x, z) {
+  return groundAt(x, z, 4, null, null)
+}
+
+function riverHalf(x, z) {
+  // 1.5..2.0 so an axis-aligned cut is 3, 4, or 5 blocks, never 6.
+  return 1.5 + vnoise(x + 420, z - 180, 64) * 0.5
+}
+
+function riverDist(x, z) {
+  const n = vnoise(x, z, 88)
+  const ex = vnoise(x + 2, z, 88) - vnoise(x - 2, z, 88)
+  const ez = vnoise(x, z + 2, 88) - vnoise(x, z - 2, 88)
+  const g = Math.hypot(ex, ez)
+  if (g < 1e-4) return 99
+  return (n - 0.5) * 4 / g
+}
+
+function keptClear(x, z) {
+  if (flatFactor(x, z) <= 0) return true
+  if (z >= -1 && z <= 1 && x >= -18 && x <= 34) return true
+  const h = terrainAt(x, z)
+  if (pondHere(x, h, z) || pondHere(x, h - 1, z) || shoreLow(x, h, z) || shoreLow(x, h + 1, z)) return true
+  return false
+}
+
+function treeHere(x, z) {
+  const h = terrainAt(x, z)
+  for (let y = h + 1; y <= h + 7; y += 3) {
+    const w = wildWood(x, y, z, 4)
+    if (w === 'log' || w === 'leaves') return true
+  }
+  return false
+}
+
+function lakeCand(rx, rz) {
+  let rec = null
+  const span = LAKE_EVERY - 28
+  for (let n = 0; n < 6 && !rec; n++) {
+    const cx = rx * LAKE_EVERY + 14 + Math.floor(hash(rx + 91 + n * 13, rz - 17) * span)
+    const cz = rz * LAKE_EVERY + 14 + Math.floor(hash(rx - 13, rz + 47 + n * 9) * span)
+    if (flatFactor(cx, cz) < 1) continue
+    const rad = 4 + Math.floor(hash(rx + 3 + n, rz + 9) * 6)
+    let min = 99
+    let max = -99
+    let sum = 0
+    let count = 0
+    const rings = [0, Math.max(2, rad >> 1), rad]
+    for (let r = 0; r < rings.length; r++) {
+      const ring = rings[r]
+      const steps = ring === 0 ? 1 : 8
+      for (let i = 0; i < steps; i++) {
+        const a = (i / steps) * Math.PI * 2
+        const sx = cx + Math.round(Math.cos(a) * ring)
+        const sz = cz + Math.round(Math.sin(a) * ring)
+        const hh = spawnGround(sx, sz)
+        if (hh < min) min = hh
+        if (hh > max) max = hh
+        sum += hh
+        count++
+      }
+    }
+    if (max - min > 2 || min < 2) continue
+    const h0 = spawnGround(cx, cz)
+    if (h0 > min + 1 || h0 > sum / count) continue
+    // Flat water sits on the low ground of the basin, hills included.
+    // Five samples, not the whole disk, so a far chunk does not scan the coast.
+    const inner = Math.max(2, rad >> 1)
+    let level = terrainAt(cx, cz)
+    const around = [[inner, 0], [-inner, 0], [0, inner], [0, -inner]]
+    for (let i = 0; i < around.length; i++) {
+      const ht = terrainAt(cx + around[i][0], cz + around[i][1])
+      if (ht < level) level = ht
+    }
+    if (level < 2) level = 2
+    if (level > 20) continue
+    rec = { cx, cz, rad, level }
+  }
+  return rec
+}
+
+function lakeDef(rx, rz) {
+  const key = rx + ',' + rz
+  if (lakeMemo.has(key)) return lakeMemo.get(key)
+  const cand = lakeCand(rx, rz)
+  let rec = cand
+  // One lake per 96-block area. Yield to a candidate on a lower cell so two
+  // lakes cannot sit inside the same 4×4 chunks, and the answer never walks
+  // off the map.
+  if (cand) {
+    for (let dx = -1; dx <= 1 && rec; dx++) {
+      for (let dz = -1; dz <= 1; dz++) {
+        if (!dx && !dz) continue
+        const nr = rx + dx
+        const nz = rz + dz
+        if (nr > rx || (nr === rx && nz >= rz)) continue
+        const other = lakeCand(nr, nz)
+        if (!other) continue
+        const ddx = other.cx - cand.cx
+        const ddz = other.cz - cand.cz
+        if (Math.max(Math.abs(ddx), Math.abs(ddz)) < 96) { rec = null; break }
+      }
+    }
+  }
+  lakeMemo.set(key, rec)
+  return rec
+}
+
+function lakeAt(x, z) {
+  const rx = Math.floor(x / LAKE_EVERY)
+  const rz = Math.floor(z / LAKE_EVERY)
+  let best = null
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dz = -1; dz <= 1; dz++) {
+      const L = lakeDef(rx + dx, rz + dz)
+      if (!L) continue
+      const ddx = x - L.cx
+      const ddz = z - L.cz
+      const d = Math.hypot(ddx, ddz)
+      if (d > L.rad + 2) continue
+      if (!best || d < best.d) best = { cx: L.cx, cz: L.cz, rad: L.rad, level: L.level, d }
+    }
+  }
+  return best
+}
+
+function maskHalf(x, z) {
+  const scale = flatFactor(x, z)
+  if (scale <= 0) return 0
+  return riverHalf(x, z) * scale
+}
+
+function channelAt(x, z) {
+  const k = numKey(x, z)
+  if (channelMemo.has(k)) return channelMemo.get(k)
+  const half = maskHalf(x, z)
+  let ok = false
+  if (half > 0.15 && Math.abs(riverDist(x, z)) <= half) {
+    const h = spawnGround(x, z)
+    if (h > 1 && h <= 23) {
+      let down = h <= 3
+      if (!down) {
+        const lake = lakeAt(x, z)
+        if (lake && lake.d <= lake.rad + 2) down = true
+      }
+      if (!down) {
+        const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]]
+        for (let i = 0; i < dirs.length && !down; i++) {
+          const nx = x + dirs[i][0]
+          const nz = z + dirs[i][1]
+          const nh = spawnGround(nx, nz)
+          if (nh < h && (nh <= 1 || maskHalf(nx, nz) > 0.12)) down = true
+          else if (nh === h) {
+            const far = spawnGround(x + dirs[i][0] * 4, z + dirs[i][1] * 4)
+            if (far < h) down = true
+          }
+        }
+      }
+      ok = down
+    }
+  }
+  channelMemo.set(k, ok)
+  return ok
+}
+
+function besideChannel(x, z) {
+  const half = maskHalf(x, z)
+  if (!(half > 0)) return false
+  const ad = Math.abs(riverDist(x, z))
+  if (ad <= half || ad > half + 2.25) return false
+  const reach = hash(Math.floor(x / 4) + 20, Math.floor(z / 4) - 6) < 0.5 ? 1 : 2
+  for (let dx = -reach; dx <= reach; dx++) {
+    for (let dz = -reach; dz <= reach; dz++) {
+      if (!dx && !dz) continue
+      if (Math.max(Math.abs(dx), Math.abs(dz)) > reach) continue
+      if (channelAt(x + dx, z + dz)) return true
+    }
+  }
+  return false
+}
+
+function bedName(x, z) {
+  const n = hash(x + 15, z - 4)
+  if (n < 0.25) return 'clay'
+  if (n < 0.8) return 'gravel'
+  return 'sand'
+}
+
+function waterRec(top, h, x, z) {
+  if (top > h || h - top > 1) return null
+  let depth = hash(x + 11, z - 5) < 0.62 ? 1 : 2
+  if (top < h || flatFactor(x, z) < 0.75) depth = 1
+  if (depth > 3) depth = 3
+  return { kind: 'water', top, depth, h, bed: bedName(x, z) }
+}
+
+function lakeWater(level, h, x, z) {
+  if (h > level + 2 || h < level - 2) return null
+  let depth
+  if (h >= level) depth = hash(x + 11, z - 5) < 0.62 ? 1 : 2
+  else depth = level - h + 1
+  if (depth > 3) depth = 3
+  if (depth < 1) depth = 1
+  if (level - depth > h) return null
+  return { kind: 'water', top: level, depth, h, bed: bedName(x, z) }
+}
+
+function bankRec(h, x, z, lakeEdge) {
+  const surface = hash(x - 8, z + 3) < 0.5 ? 'gravel' : 'sand'
+  const clay = hash(x + 2, z - 9) < (lakeEdge ? 0.55 : 0.34)
+  const reed = hash(x - 4, z + 11) < (lakeEdge ? 0.32 : 0.12) && blockByKey('reed') ? 'reed' : ''
+  return { kind: 'bank', h, surface, clay, reed }
+}
+
+function columnWaterRaw(x, z) {
+  const scale = flatFactor(x, z)
+  if (scale <= 0) return null
+  const rough = vnoise(x, z, 88)
+  const lake = lakeAt(x, z)
+  if (Math.abs(rough - 0.5) > 0.12 && !(lake && lake.d <= lake.rad + 2)) return null
+  const h = terrainAt(x, z)
+  if (h <= 1 || h > 23) return null
+  const near = Math.abs(riverDist(x, z)) <= maskHalf(x, z) + 2.25
+  if (!near && !(lake && lake.d <= lake.rad + 2)) return null
+  if (keptClear(x, z)) return null
+  let rec = null
+  if (lake && h >= lake.level - 2 && h <= lake.level + 2) {
+    if (lake.d <= lake.rad) rec = lakeWater(lake.level, h, x, z)
+    else if (lake.d <= lake.rad + 2) {
+      if (channelAt(x, z)) rec = lakeWater(lake.level, h, x, z)
+      if (!rec) rec = bankRec(h, x, z, true)
+    }
+  }
+  if (!rec && channelAt(x, z)) {
+    let floor = h
+    for (let dx = -2; dx <= 2; dx++) {
+      for (let dz = -2; dz <= 2; dz++) {
+        if (Math.abs(dx) + Math.abs(dz) > 3) continue
+        const nx = x + dx
+        const nz = z + dz
+        if (!channelAt(nx, nz)) continue
+        const nh = terrainAt(nx, nz)
+        if (nh < floor) floor = nh
+      }
+    }
+    rec = waterRec(floor, h, x, z)
+  }
+  if (!rec && besideChannel(x, z)) rec = bankRec(h, x, z, false)
+  if (!rec || treeHere(x, z)) return null
+  return rec
+}
+
+function columnWater(x, z, fade) {
+  const full = fadeNum(fade, x, z) >= 12
+  const key = (full ? 'f' : 'n') + numKey(x, z)
+  if (waterMemo.has(key)) return waterMemo.get(key)
+  const rec = full ? columnWaterRaw(x, z) : null
+  waterMemo.set(key, rec)
+  return rec
+}
+
+function paintWater(x, y, z, info, fade, cols) {
+  if (y > 23) return ''
+  if (info.kind === 'water') {
+    if (y > info.top) return ''
+    if (y <= info.top && y >= info.top - info.depth + 1) return 'water'
+    if (y === info.top - info.depth) return info.bed
+    return gen4(x, y, z, fade, cols)
+  }
+  if (y > info.h + 1) return ''
+  if (y === info.h + 1) return info.reed || ''
+  if (y === info.h) return info.surface
+  if (y === info.h - 1 && info.clay) return 'clay'
+  return gen4(x, y, z, fade, cols)
+}
+
+function gen5(x, y, z, fade, cols) {
+  const info = columnWater(x, z, fade)
+  if (!info) return gen4(x, y, z, fade, cols)
+  return paintWater(x, y, z, info, fade, cols)
+}
+
 export function genBlock(x, y, z, gen, fade, cols) {
   const g = gen | 0
   const xi = x | 0
   const yi = y | 0
   const zi = z | 0
+  if (g >= 5) {
+    if (cols && cols.hasWater) {
+      const i = xi - cols.x0
+      const k = zi - cols.z0
+      if (i >= 0 && k >= 0 && i < TILE && k < TILE) {
+        const idx = i * TILE + k
+        const hh = cols.h[idx]
+        const info = yi > hh + 3 || yi < hh - 3 ? null : cols.water[idx]
+        if (!info) return gen4(xi, yi, zi, fade, cols)
+        return paintWater(xi, yi, zi, info, fade, cols)
+      }
+    } else if (cols) return gen4(xi, yi, zi, fade, cols)
+    return gen5(xi, yi, zi, fade, cols)
+  }
   if (g >= 4) return gen4(xi, yi, zi, fade, cols)
   const base = genCore(xi, yi, zi)
   if (g >= 3) return gen3(xi, yi, zi, base)
