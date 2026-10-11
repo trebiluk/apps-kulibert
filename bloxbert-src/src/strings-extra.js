@@ -1160,4 +1160,15 @@ const MENU_UI = {
   ti: { menuPlay: 'ጻወት', menuMake: 'ስራሕ', menuStaff: 'መምህር ጥራይ' },
 }
 for (const [lang, row] of Object.entries(MENU_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const QOL = {
+  en: { qolHalf: 'Half', qolOne: 'One', qolMove: 'Move', qolItem: 'Item' },
+  uk: { qolHalf: 'Половина', qolOne: 'Один', qolMove: 'Перенести', qolItem: 'Річ' },
+  ru: { qolHalf: 'Половина', qolOne: 'Один', qolMove: 'Перенести', qolItem: 'Вещь' },
+  es: { qolHalf: 'Mitad', qolOne: 'Uno', qolMove: 'Mover', qolItem: 'Cosa' },
+  ar: { qolHalf: 'نصف', qolOne: 'واحد', qolMove: 'انقل', qolItem: 'شيء' },
+  'fa-AF': { qolHalf: 'نیم', qolOne: 'یکی', qolMove: 'ببر', qolItem: 'چیز' },
+  rw: { qolHalf: 'Igice', qolOne: 'Rimwe', qolMove: 'Imura', qolItem: 'Ikintu' },
+  ti: { qolHalf: 'ፍርቂ', qolOne: 'ሓደ', qolMove: 'ወስድ', qolItem: 'ኣቕሓ' },
+}
+for (const [lang, row] of Object.entries(QOL)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

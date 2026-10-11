@@ -595,8 +595,23 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 .top,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
+#qol-tip.kd-tip,#qol-held{
+  position:fixed;z-index:80;font-size:max(14px,var(--ks-fs-s));
+  padding:calc(var(--ks-pad) / 3) var(--ks-pad);pointer-events:none
+}
+#qol-bar.kd-card{
+  position:fixed;z-index:80;display:flex;gap:var(--ks-gap);
+  padding:var(--ks-pad);font-size:max(14px,var(--ks-fs-s))
+}
+#qol-bar .kd-key{min-width:var(--ks-touch);min-height:var(--ks-touch)}
+#qol-tip .qol-wear{display:block;height:calc(var(--ks-pad) / 3);margin-top:calc(var(--ks-pad) / 3);background:#050b18;border:1px solid #1c3354}
+#qol-tip .qol-wear > span{display:block;height:100%;background:var(--kd-teal)}
+#qol-held{background:var(--kd-navy,#0a1428);color:var(--kd-text,#e6f6ff);border:1px solid var(--kd-teal,#2dd4bf)}
+@keyframes qol-shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.qol-shake{animation:qol-shake 160ms linear 1}
+@media (prefers-reduced-motion:reduce){.qol-shake{animation:none}}
 </style>
-<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.168">
+<link rel="stylesheet" href="/shared/kulibert-theme-digital.css?v=2.5.169">
 </head>
 <body>
 <div id="stage"></div>
@@ -608,7 +623,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.168</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.169</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -750,9 +765,9 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.168"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.168" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.168" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.169"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.169" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.169" defer></script>
 <script>
 ;(function () {
   try {

@@ -29,6 +29,7 @@ import { createEdits } from './world-edit.js'
 import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
 import { mountPanels } from './panels.js'
+import { mountSlotQol } from './slots-bridge.js'
 import { createSession } from './session.js'
 import { createBackups } from './backups.js'
 import { CHANGELOG } from './changelog.js'
@@ -4369,6 +4370,38 @@ panels = mountPanels({
   paintStation: (g, key, kind) => stations.paint(g, key || '0,5,0', kind || 'oven'),
   notes: () => learn.notes(),
   holdTour: () => holdTour(),
+})
+const FUEL_ITEMS = { planks: 1, log: 1, coal: 1, pinecone: 1 }
+mountSlotQol({
+  bag: () => session && session.bag,
+  cap: (item) => (ITEMS[item] && ITEMS[item].stack) || 64,
+  name: (item) => t(item),
+  t,
+  survival: () => !session || session.mode === 'survival',
+  panel: () => (panels && panels.openPanel) || '',
+  paintHotbar: () => { if (session && session.paintHotbar) session.paintHotbar() },
+  repaint: () => { if (panels && panels.softRepaint) panels.softRepaint() },
+  save: () => { if (typeof noteMachine === 'function') noteMachine() },
+  spill: (item, n) => { if (session && session.give) session.give(item, n) },
+  boxSlots: (key) => {
+    const rec = session && session.meta && session.meta.get(key)
+    return rec && rec.slots
+  },
+  machine: (key) => (stations && stations.dump ? stations.dump()[key] : null),
+  isFuel: (item) => !!FUEL_ITEMS[item],
+  isSmelt: (item) => RECIPES.some((r) => r.at === 'oven' && r.in.length === 1 && r.in[0][0] === item),
+  loadFuel: (key, item) => !!(stations && stations.addFuel && stations.addFuel(key, item)),
+  loadInput: (key, item) => {
+    const recipe = RECIPES.find((r) => r.at === 'oven' && r.in.length === 1 && r.in[0][0] === item)
+    if (!recipe || !stations) return false
+    const raw = stations.dump()[key] || {}
+    if (raw.left > 0) return !!stations.addInput(key, recipe.id)
+    return !!stations.arm(key, recipe.id)
+  },
+  takeOutput: (key) => (stations && stations.take ? stations.take(key) : ''),
+  recipes: () => RECIPES,
+  craftMany: (recipe) => !!(session && session.craftMany && session.craftMany(recipe, 64)),
+  toolOf: (item) => (ITEMS[item] && ITEMS[item].tool) || '',
 })
 const learn = createLearn({
   t, toast, close: () => panels.close(),

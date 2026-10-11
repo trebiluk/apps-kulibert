@@ -1046,6 +1046,7 @@ export function createSession(api) {
   }
   function returnTray() {
     craftTrace('return')
+    try { if (window.__qolReturn) window.__qolReturn({ silent: true }) } catch (e) {}
     const r = RECIPES.find((x) => x.id === trayId)
     let moved = false
     if (r) r.in.forEach((pair, i) => {

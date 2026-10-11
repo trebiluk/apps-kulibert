@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.169', date: '2026-10-11', lines: {
+    en: ['Shift-click moves a stack, right-click splits it, and a hover shows the item name.'],
+    uk: ['Shift-клік переносить стос, правий клік ділить його, а наведення показує назву.'],
+    ru: ['Shift-клик переносит стопку, правый клик делит её, а наведение показывает имя.'],
+    es: ['Mayús-clic mueve una pila, el clic derecho la parte, y al pasar el cursor se ve el nombre.'],
+    ar: ['Shift مع النقر ينقل الكومة، والنقر الأيمن يقسمها، والمرور يُظهر الاسم.'],
+    'fa-AF': ['Shift-کلیک پشته را می‌برد، کلیک راست آن را نصف می‌کند، و ایستادن نام را نشان می‌دهد.'],
+    rw: ['Shift-kanda imura umufuka, kanda iburyo igabanye, no guhagarara kugaragaza izina.'],
+    ti: ['Shift-ጠውቕ ዕስለ የዘውር፡ የማናይ ጠውቕ ይኽፈሎ፡ ምሕላፍ ድማ ስም የርኢ።'],
+  }},
   { v: '2.5.168', date: '2026-10-11', lines: {
     en: ['Bag, Box, Oven, Workbench, Woodshop and the hotbar wear the same digital panel as the menu.'],
     uk: ['Сумка, скриня, піч, верстак, столярня і панель предметів тепер у тому ж цифровому стилі, що й меню.'],

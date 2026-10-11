@@ -61,6 +61,7 @@ export function mountPanels(api) {
       if (bar) sheet.append(bar)
     }
     sheet.dataset.panel = id
+    lastFill = fill
     dress(id)
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
@@ -68,6 +69,7 @@ export function mountPanels(api) {
     openedAt = performance.now()
   }
   let openedAt = 0
+  let lastFill = null
   function freshSlots() {
     const KS = window.KulibertSlots
     if (KS && KS.dropClick) KS.dropClick()
@@ -124,6 +126,7 @@ export function mountPanels(api) {
   }
   function dismiss() {
     slideGen += 1
+    try { if (window.__qolReturn) window.__qolReturn({ silent: true }) } catch (e) {}
     restoreMenuChrome()
     freshSlots()
     sheet.dataset.slotsReady = '1'
@@ -275,7 +278,17 @@ export function mountPanels(api) {
       el.classList.add('kd-group', 'kd-glab')
     })
   }
+  function softRepaint() {
+    if (!lastFill || sheet.hidden) return
+    const grid = body.querySelector(':scope > .ggrid')
+    if (!grid) return
+    if (grid._ksDestroy) { try { grid._ksDestroy() } catch (e) {} grid._ksDestroy = null }
+    grid.innerHTML = ''
+    lastFill(grid)
+    dress(sheet.dataset.panel)
+  }
   function open(id, key) {
+    sheet.dataset.pkey = key || ''
     const map = {
       menu: () => {
         let go = null
@@ -393,5 +406,5 @@ export function mountPanels(api) {
     if (t === sheet || t.id === 'sheet-body' || (t.classList && t.classList.contains('ggrid'))) close()
   })
   if (globalThis.location && String(globalThis.location.search || '').includes('smoke=1')) window.__btOpen = (id, key) => open(id, key)
-  return { openRoot, open, close, dismiss, backOne, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
+  return { openRoot, open, close, dismiss, backOne, softRepaint, get openPanel() { return sheet.hidden ? '' : sheet.dataset.panel } }
 }
