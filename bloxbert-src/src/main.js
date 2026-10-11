@@ -53,14 +53,14 @@ import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissing
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
-import { floraSkill } from './packs/flora/pack.js'
+import { floraSkill, FLORA_CROSS } from './packs/flora/pack.js'
 import { packRecipes, packItems } from './packs/registry.js'
 import { ITEMS } from './data/items.js'
 {
   const have = new Set(RECIPES.map((r) => r.id))
   for (const r of packRecipes()) {
     const decor = r.id === 'floorLamp' || r.id === 'wallLamp' || r.id === 'rug'
-    const flora = r.id === 'birchPlanks' || r.id === 'pinePlanks'
+    const flora = r.id === 'birchPlanks' || r.id === 'pinePlanks' || r.id.indexOf('dye') === 0
     if ((decor || flora) && !have.has(r.id)) RECIPES.push(r)
   }
   for (const it of packItems()) if ((it.pack === 'decor' || it.pack === 'flora') && !ITEMS[it.key]) ITEMS[it.key] = it.def
@@ -781,6 +781,26 @@ function tuftMesh() {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
+const floraMeshes = {}
+function floraMesh(name, spec) {
+  if (floraMeshes[name]) return floraMeshes[name]
+  const body = cropGreen('fx-' + name, spec[0], spec[1], spec[2], spec[0] * 0.22, spec[1] * 0.22, spec[2] * 0.22)
+  const h = spec[6] || 0.7
+  const w = spec[7] || 0.46
+  const parts = []
+  for (const yaw of [0.4, 1.15]) parts.push(crossed(body, w, h, 0.03, h * 0.42, yaw))
+  if (spec[3] != null) {
+    const head = cropGreen('fxh-' + name, spec[3], spec[4], spec[5], spec[3] * 0.3, spec[4] * 0.3, spec[5] * 0.3)
+    parts.push(part('head', 0.16, 0.14, 0.16, 0, h * 0.82, 0, 0, head))
+  }
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
+  mesh.name = 'flora-' + name
+  mesh.isPickable = false
+  mesh.isVisible = false
+  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  floraMeshes[name] = mesh
+  return mesh
+}
 function leverMesh(on) {
   const base = part('b', 0.5, 0.14, 0.5, 0, 0.07, 0, 0, woodD)
   const handle = part('h', 0.1, 0.56, 0.1, 0, 0.46, on ? 0.16 : -0.16, on ? 1 : -1, handleD)
@@ -891,10 +911,12 @@ noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
 for (const [id, name, material] of BLOCKS) {
   const open = typeof name === 'string' && name.endsWith('Open')
   const glass = material === 'glass'
-  const mesh = SHAPES[id]
+  const mesh0 = SHAPES[id]
+  const cross = typeof name === 'string' ? FLORA_CROSS[name] : null
+  const mesh = mesh0 || (cross ? floraMesh(name, cross) : null)
   const lantern = id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103
   const rug = id === 1104 || id === 1105
-  const plant = id === 28 || id === 58 || isCropId(id) || isBushId(id)
+  const plant = id === 28 || id === 58 || isCropId(id) || isBushId(id) || !!cross
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
   const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
@@ -927,7 +949,8 @@ function blockPalette() {
 }
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id)
+const FLORA_PLANT_IDS = new Set(BLOCKS.filter((b) => FLORA_CROSS[b[1]]).map((b) => b[0]))
+noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id)
 const blockName = (id) => {
   const row = BLOCKS.find((b) => b[0] === id)
   return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')

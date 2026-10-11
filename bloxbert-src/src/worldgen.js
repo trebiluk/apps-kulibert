@@ -2,7 +2,73 @@
 import { blockByKey } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/flora/pack.js'
+
+// Maker sliders. 3, 3, 3 and seed 0 is today's world, byte for byte.
+const WORLD_TUNE = { hills: 3, water: 3, trees: 3, seed: 0 }
+
+export function worldTune() {
+  return { hills: WORLD_TUNE.hills, water: WORLD_TUNE.water, trees: WORLD_TUNE.trees, seed: WORLD_TUNE.seed }
+}
+
+function clampTune(n) {
+  const v = n | 0
+  return v >= 1 && v <= 5 ? v : 3
+}
+
+export function setWorldTune(opts) {
+  const hills = clampTune(opts && opts.hills)
+  const water = clampTune(opts && opts.water)
+  const trees = clampTune(opts && opts.trees)
+  const seed = opts && opts.seed ? opts.seed | 0 : 0
+  if (hills === WORLD_TUNE.hills && water === WORLD_TUNE.water && trees === WORLD_TUNE.trees && seed === WORLD_TUNE.seed) return
+  WORLD_TUNE.hills = hills
+  WORLD_TUNE.water = water
+  WORLD_TUNE.trees = trees
+  WORLD_TUNE.seed = seed
+  forgetWorld()
+}
+
+function treeCut() {
+  if (WORLD_TUNE.trees === 3) return 0.18
+  return 0.06 * WORLD_TUNE.trees
+}
+
+function birchCut() {
+  if (WORLD_TUNE.trees === 3) return 0.72
+  return Math.min(0.95, 0.24 * WORLD_TUNE.trees)
+}
+
+function pineCut() {
+  if (WORLD_TUNE.trees === 3) return 0.7
+  return Math.min(0.95, 0.7 * WORLD_TUNE.trees / 3)
+}
+
+function scaleHill(v) {
+  if (WORLD_TUNE.hills === 3) return v
+  let n = Math.round(v * WORLD_TUNE.hills / 3)
+  if (n > 18) n = 18
+  if (n < 0) n = 0
+  return n
+}
+
+function scaleWater(h) {
+  if (WORLD_TUNE.water === 3) return h
+  return h * (0.45 + (WORLD_TUNE.water - 1) * 0.275)
+}
+
+function lakeTries() {
+  if (WORLD_TUNE.water === 3) return 6
+  if (WORLD_TUNE.water <= 1) return 2
+  if (WORLD_TUNE.water === 2) return 4
+  if (WORLD_TUNE.water === 4) return 8
+  return 12
+}
+
 export function hash(x, z) {
+  if (WORLD_TUNE.seed) {
+    x = (x + WORLD_TUNE.seed * 13) | 0
+    z = (z - WORLD_TUNE.seed * 7) | 0
+  }
   let h = (x * 374761393 + z * 668265263) | 0
   h = (h ^ (h >>> 13)) * 1274126177
   return ((h ^ (h >>> 16)) >>> 0) / 4294967296
@@ -26,7 +92,7 @@ function groundY(x, z) {
 export function wildWood(x, y, z, gen, fade) {
   const cx = Math.floor(x / 9) * 9 + 4
   const cz = Math.floor(z / 9) * 9 + 4
-  if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) return ''
+  if (hash(cx, cz) >= treeCut() || townTrunk(cx, cz)) return ''
   // Trees skip a gen-5 river or lake column. Gen 4 and older never ask.
   // Gen 6 also skips a river, a cave mouth, and a rock outcrop.
   if ((gen | 0) >= 6 && fadeNum(fade, cx, cz) >= 12) {
@@ -502,10 +568,11 @@ export function spawnGround(x, z) {
 // Gen 5 adds rivers and lakes, and only on chunks that stamp 5.
 // Gen 6 keeps that water, but the rivers are wider and one level along a
 // reach, lakes are deeper in the middle, and hills grow caves, lips and rocks.
-// Gen 7 adds birch on forest edges and pine on high ground. Gen 2–6 stay
-// byte-identical. Oaks are not replaced.
+// Gen 7 adds birch on forest edges and pine on high ground.
+// Gen 8 adds flowers on plains, tall grass and ferns, and a stepped pine cone.
+// Gen 2–7 stay byte-identical. Oaks are not replaced.
 // NOTE: Lily pads, fish, and the reed-paper recipe are not this step.
-export const GEN = 7
+export const GEN = 8
 export const CHUNK = 24
 export const GEN_MARGIN = 4
 const TOWN_BOX = { x0: -20, x1: 36, y0: -64, y1: 8, z0: -18, z1: 28 }
@@ -740,7 +807,9 @@ function numKey(x, z) {
 }
 
 function tileKey(x0, z0) {
-  return (x0 + 32768) * 65536 + z0
+  const k = (x0 + 32768) * 65536 + z0
+  if (WORLD_TUNE.hills === 3 && !WORLD_TUNE.seed) return k
+  return k + '#' + WORLD_TUNE.hills + '#' + WORLD_TUNE.seed
 }
 
 function rememberTile(tile) {
@@ -828,7 +897,7 @@ function hillsFrom(x, z, coast) {
       if (v < 0) v = 0
     }
   }
-  return v
+  return scaleHill(v)
 }
 
 // Two octaves of the existing hash. Hills add at most 12. They scale to 0
@@ -1004,7 +1073,9 @@ export function genColumns(x0, z0, gen, fadeArr) {
   }
   let tree = null
   if (g >= 7 && blockByKey('birchLog')) tree = floraCols(x0i, z0i)
-  return { x0: x0i, z0: z0i, h, base, hills, coast, minH, water, hasWater, feat, hasFeat, tree }
+  let plant = null
+  if (g >= 8 && blockByKey('daisy')) plant = plantCols(x0i, z0i)
+  return { x0: x0i, z0: z0i, h, base, hills, coast, minH, water, hasWater, feat, hasFeat, tree, plant }
 }
 
 export function peekColumn(x, z) {
@@ -1175,7 +1246,7 @@ function treeHere(x, z) {
 function lakeCand(rx, rz) {
   let rec = null
   const span = LAKE_EVERY - 28
-  for (let n = 0; n < 6 && !rec; n++) {
+  for (let n = 0; n < lakeTries() && !rec; n++) {
     const cx = rx * LAKE_EVERY + 14 + Math.floor(hash(rx + 91 + n * 13, rz - 17) * span)
     const cz = rz * LAKE_EVERY + 14 + Math.floor(hash(rx - 13, rz + 47 + n * 9) * span)
     if (flatFactor(cx, cz) < 1) continue
@@ -1266,7 +1337,7 @@ function lakeAt(x, z) {
 function maskHalf(x, z) {
   const scale = flatFactor(x, z)
   if (scale <= 0) return 0
-  return riverHalf(x, z) * scale
+  return scaleWater(riverHalf(x, z) * scale)
 }
 
 function channelAt(x, z) {
@@ -1440,7 +1511,7 @@ const D4 = [[1, 0], [-1, 0], [0, 1], [0, -1]]
 function half6(x, z) {
   const scale = flatFactor(x, z)
   if (scale <= 0) return 0
-  return (2.35 + vnoise(x + 420, z - 180, 64) * 1.15) * scale
+  return scaleWater((2.35 + vnoise(x + 420, z - 180, 64) * 1.15) * scale)
 }
 
 function drain6(x, z, h) {
@@ -1982,7 +2053,7 @@ function nearestOak(x, z) {
     for (let oz = -2; oz <= 2; oz++) {
       const cx = (cx0 + ox) * 9 + 4
       const cz = (cz0 + oz) * 9 + 4
-      if (hash(cx, cz) >= 0.18 || townTrunk(cx, cz)) continue
+      if (hash(cx, cz) >= treeCut() || townTrunk(cx, cz)) continue
       if (water6(cx, cz) || caveMouth(cx, cz) || rockHere(cx, cz)) continue
       const d = Math.hypot(x - cx, z - cz)
       if (d < best) best = d
@@ -2006,7 +2077,7 @@ function birchDef(bx, bz) {
   const key = bx + ',' + bz
   if (birchMemo.has(key)) return birchMemo.get(key)
   let rec = null
-  if (hash(bx + 17, bz - 4) < 0.72) {
+  if (hash(bx + 17, bz - 4) < birchCut()) {
     const h = clearFlora(bx, bz)
     if (h && h <= 9 && hillsAt(bx, bz) < 5) {
       const edge = nearestOak(bx, bz)
@@ -2021,7 +2092,7 @@ function pineDef(px, pz) {
   const key = px + ',' + pz
   if (pineMemo.has(key)) return pineMemo.get(key)
   let rec = null
-  if (hash(px - 9, pz + 6) < 0.7) {
+  if (hash(px - 9, pz + 6) < pineCut()) {
     const h = clearFlora(px, pz)
     if (h && h >= 6 && hillsAt(px, pz) >= 2) rec = { x: px, z: pz, h, tall: 7 + Math.floor(hash(px - 2, pz + 8) * 2) }
   }
@@ -2045,7 +2116,8 @@ function birchPart(B, x, y, z) {
   return floraKey('birchLeaves')
 }
 
-function pinePart(P, x, y, z) {
+function pinePart(P, x, y, z, gen) {
+  if ((gen | 0) >= 8) return pineStepped(P, x, y, z)
   const top = P.h + P.tall
   if (x === P.x && z === P.z && y > P.h && y < top) return floraKey('pineLog')
   const dy = top - y
@@ -2058,7 +2130,116 @@ function pinePart(P, x, y, z) {
   return floraKey('pineNeedles')
 }
 
-function floraAt(x, y, z) {
+// Gen 8 crown. Tip is one block, then a gap, a small ring, a gap, and a wide
+// diamond. Odd layers stay air so the cone is not a dark cube and most faces go.
+function pineStepped(P, x, y, z) {
+  const top = P.h + P.tall
+  const dx = Math.abs(x - P.x)
+  const dz = Math.abs(z - P.z)
+  if (dx === 0 && dz === 0 && y > P.h && y < top) return floraKey('pineLog')
+  const dy = top - y
+  if (dy < 0 || dy > 4 || (dy & 1)) return ''
+  if (dy === 0) return dx === 0 && dz === 0 ? floraKey('pineNeedles') : ''
+  const rad = dy >> 1
+  const man = dx + dz
+  if (man === 0 || man > rad) return ''
+  return floraKey('pineNeedles')
+}
+
+const FLOWER_STEP = 13
+const FLOWER_SPOTS = [
+  [2, 3, 'daisy'],
+  [6, 1, 'poppy'],
+  [9, 8, 'cornflower'],
+  [1, 10, 'sunflower'],
+  [5, 6, 'tulip'],
+  [10, 4, 'lupine'],
+]
+
+function flowerAt(x, z) {
+  const lx = ((x % FLOWER_STEP) + FLOWER_STEP) % FLOWER_STEP
+  const lz = ((z % FLOWER_STEP) + FLOWER_STEP) % FLOWER_STEP
+  for (let i = 0; i < FLOWER_SPOTS.length; i++) {
+    if (FLOWER_SPOTS[i][0] === lx && FLOWER_SPOTS[i][1] === lz) return FLOWER_SPOTS[i][2]
+  }
+  return ''
+}
+
+function greenCol(x, z) {
+  if (z >= -1 && z <= 1 && x >= -18 && x <= 34) return 0
+  if (water6(x, z) || rockHere(x, z) || trunkCol(x, z)) return 0
+  const h = terrainAt(x, z)
+  if (h < 2 || h > 20) return 0
+  if (cave6(x, z, h) || lip6(x, z, h)) return 0
+  const wood = wildWood(x, h + 1, z, 6)
+  if (wood === 'log' || wood === 'leaves') return 0
+  return h
+}
+
+function plantName(x, z) {
+  if (!blockByKey('daisy') || flatFactor(x, z) <= 0) return ''
+  const flower = flowerAt(x, z)
+  const n = hash(x + 41, z - 23)
+  if (!flower && n >= 0.16) return ''
+  const h = greenCol(x, z)
+  if (!h) return ''
+  if (flower && h <= 12 && hillsAt(x, z) < 5) return flower
+  if (n >= 0.16) return ''
+  if (hash(x + 9, z - 4) < 0.35) return 'fern'
+  return 'tallGrass'
+}
+
+function plantCols(x0, z0) {
+  const plant = new Array(TILE * TILE)
+  for (let i = 0; i < TILE; i++) {
+    for (let k = 0; k < TILE; k++) {
+      const x = x0 + i
+      const z = z0 + k
+      const name = plantName(x, z)
+      if (!name) continue
+      plant[i * TILE + k] = { y: terrainAt(x, z) + 1, name }
+    }
+  }
+  return plant
+}
+
+function plantHere8(x, y, z, cols) {
+  if (cols && cols.plant) {
+    const i = x - cols.x0
+    const k = z - cols.z0
+    if (i >= 0 && k >= 0 && i < TILE && k < TILE) {
+      const p = cols.plant[i * TILE + k]
+      if (!p || p.y !== y) return ''
+      return floraKey(p.name)
+    }
+  }
+  const name = plantName(x, z)
+  if (!name || y !== terrainAt(x, z) + 1) return ''
+  return floraKey(name)
+}
+
+function forgetWorld() {
+  hillCache.clear()
+  coastCache.clear()
+  gyCache.clear()
+  tileLRU.clear()
+  bandCache.clear()
+  waterMemo.clear()
+  channelMemo.clear()
+  lakeMemo.clear()
+  ch6.clear()
+  reachMemo.clear()
+  waterMemo6.clear()
+  rawMemo6.clear()
+  featMemo.clear()
+  caveDefMemo.clear()
+  lipDefMemo.clear()
+  rockDefMemo.clear()
+  birchMemo.clear()
+  pineMemo.clear()
+}
+
+function floraAt(x, y, z, gen) {
   if (!blockByKey('birchLog') || y < 2 || y > 23) return ''
   if (flatFactor(x, z) <= 0) return ''
   const ix = Math.floor(x / BIRCH_STEP)
@@ -2083,7 +2264,7 @@ function floraAt(x, y, z) {
       if (Math.abs(x - px) > 2 || Math.abs(z - pz) > 2) continue
       const P = pineDef(px, pz)
       if (!P) continue
-      const part = holdFlora(pinePart(P, x, y, z), x, z)
+      const part = holdFlora(pinePart(P, x, y, z, gen), x, z)
       if (part) return part
     }
   }
@@ -2145,15 +2326,22 @@ export function genBlock(x, y, z, gen, fade, cols) {
   if (g >= 6) {
     const base = gen6Fast(xi, yi, zi, fade, cols)
     if (base || g < 7) return base
+    let grown = ''
     if (cols && cols.tree) {
       const i = xi - cols.x0
       const k = zi - cols.z0
-      if (i < 0 || k < 0 || i >= TILE || k >= TILE) return floraAt(xi, yi, zi)
-      const rec = cols.tree[i * TILE + k]
-      if (!rec) return ''
-      return rec.kind === 'pine' ? pinePart(rec, xi, yi, zi) : birchPart(rec, xi, yi, zi)
+      if (i < 0 || k < 0 || i >= TILE || k >= TILE) grown = floraAt(xi, yi, zi, g)
+      else {
+        const rec = cols.tree[i * TILE + k]
+        if (rec) grown = rec.kind === 'pine' ? pinePart(rec, xi, yi, zi, g) : birchPart(rec, xi, yi, zi)
+      }
+    } else grown = floraAt(xi, yi, zi, g)
+    if (grown) return grown
+    if (g >= 8) {
+      const sprout = plantHere8(xi, yi, zi, cols)
+      if (sprout) return sprout
     }
-    return floraAt(xi, yi, zi)
+    return ''
   }
   if (g >= 5) {
     if (cols && cols.hasWater) {

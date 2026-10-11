@@ -94,7 +94,7 @@ export function buildBlocks() {
   if (packOn('flora')) {
     const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
     const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
-    insertAfter(rows, 'clay', take('birchLog', 'birchLeaves', 'birchPlanks', 'pineLog', 'pineNeedles', 'pinePlanks'))
+    insertAfter(rows, 'clay', take('birchLog', 'birchLeaves', 'birchPlanks', 'pineLog', 'pineNeedles', 'pinePlanks', 'daisy', 'poppy', 'cornflower', 'sunflower', 'tulip', 'lupine', 'tallGrass', 'fern'))
   }
   return rows
 }

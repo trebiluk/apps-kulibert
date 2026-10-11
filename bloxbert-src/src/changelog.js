@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.165', date: '2026-10-11', lines: {
+    en: ['Pines now wear a stepped cone, and breaking needles can drop a pinecone. Six flowers make dye at the Workbench. Tall grass and ferns sometimes drop seeds. Maker hills, water, trees, and seed shape a new world, and old worlds stay the same.'],
+    uk: ['Сосна тепер має ступінчастий конус, а з хвої може впасти шишка. Шість квітів дають барвник на верстаку. Висока трава й папороть іноді кидають насіння. Пагорби, вода, дерева й зерно Творця задають новий світ, а старі світи лишаються тими самими.'],
+    ru: ['У сосны теперь ступенчатый конус, а из хвои может выпасть шишка. Шесть цветов дают краситель на верстаке. Высокая трава и папоротник иногда роняют семена. Холмы, вода, деревья и зерно Мастера задают новый мир, а старые миры остаются теми же.'],
+    es: ['El pino ahora lleva un cono en escalones, y al romper agujas puede caer una piña. Seis flores hacen tinte en el banco. La hierba alta y los helechos a veces sueltan semillas. Colinas, agua, árboles y semilla del Creador forman un mundo nuevo, y los mundos viejos siguen igual.'],
+    ar: ['الصنوبر صار تاجه مخروطاً متدرجاً، وكسر الإبر قد يُسقط كوزاً. ست زهرات تصنع صبغة على طاولة العمل. العشب الطويل والسرخس قد يسقطان بذوراً. التلال والماء والأشجار والبذرة في الصانع تشكّل عالماً جديداً، والعوالم القديمة تبقى كما هي.'],
+    'fa-AF': ['کاج حالا تاج پله‌ای دارد و شکستن سوزن ممکن است مخروط بیندازد. شش گل در میز کار رنگ می‌سازند. علف بلند و سرخس گاهی دانه می‌اندازند. تپه، آب، درخت و دانهٔ سازنده جهان تازه را می‌سازند و جهان‌های کهنه همان می‌مانند.'],
+    rw: ['Pine ifite ikoni ry\'inzego, kandi kuvuna udusindani bishobora gutanga ikozanyuma. Indabyo esheshatu zikora ibura ku meza y\'imirimo. Ibyatsi birebire n\'ikirato rimwe na rimwe bitanga imbuto. Imisozi, amazi, ibiti n\'imbuto by\'Umubaji bishiraho isi nshya, kandi isi za kera ziracyaho.'],
+    ti: ['ጽድ ሕጂ ደረጃዊ ኮን ኣለዋ፡ ሽንጽሮ ምስባር ድማ ኮን ከውድቕ ይኽእል። ሽዱድተ ዕምባባታት ኣብ መደብ ስራሕ ሕብሪ ይሰርሑ። ነዊሕ ሳዕሪን ፈርንን ሓደ ሓደ ዘርኢ የውድቑ። ኮረብታ፡ ማይ፡ ኣግራብን ዘርእን ናይ ሰራሒ ሓድሽ ዓለም ይቅርጹ፡ ናይ ቀደም ዓለማት ድማ ከምኡ ይጸንሑ።'],
+  }},
   { v: '2.5.164', date: '2026-10-10', lines: {
     en: ['The hill steps up. Woodshop buttons show their names. Lamps and rugs can be designed, and a small house stays readable at night.'],
     uk: ['Пагорб ступає вгору. Кнопки столярні показують свої назви. Лампи й килими можна спроектувати, і маленька хата вночі лишається читабельною.'],

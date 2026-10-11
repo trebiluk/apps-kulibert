@@ -51,7 +51,7 @@ function mountFarmRecipes() {
     const { after, ...rest } = row
     RECIPES.push(rest)
   }
-  for (const id of ['birchPlanks', 'pinePlanks']) {
+  for (const id of ['birchPlanks', 'pinePlanks', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple']) {
     if (RECIPES.some((r) => r.id === id)) continue
     const row = packRecipes().find((r) => r.id === id)
     if (row) RECIPES.push(row)

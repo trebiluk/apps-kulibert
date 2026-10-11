@@ -13,7 +13,7 @@ import { RECIPES } from '../src/data/recipes.js'
 import { BLOCKS, buildBlocks } from '../src/data/blocks-list.js'
 import { setPacksOff } from '../src/packs/registry.js'
 import { migrateVoxels, resetUnknown, isMissingId } from '../src/save/migrate.js'
-import { FLORA_IDS, FLORA_BAND } from '../src/packs/flora/pack.js'
+import { FLORA_IDS, FLORA_BAND, floraExtra } from '../src/packs/flora/pack.js'
 
 const S = 24
 const HEADLESS = process.argv.includes('--headless')
@@ -125,6 +125,36 @@ for (let ix = -25; ix <= 25; ix++) {
 note(!!birch && birch.d <= 200, 'birch within 200', birch ? JSON.stringify(birch) : 'none')
 note(!!pine && pine.d <= 200, 'pine within 200', pine ? JSON.stringify(pine) : 'none')
 note(zone === 0, '48 zone clear', String(zone))
+
+let needleN = 0
+let coneN = 0
+let coneCell = null
+for (let ix = -16; ix <= 16 && needleN < 80; ix++) {
+  for (let iz = -16; iz <= 16 && needleN < 80; iz++) {
+    const x0 = ix * 12 + 8
+    const z0 = iz * 12 + 3
+    if (Math.hypot(x0 - 8.5, z0 - 1.5) > 200) continue
+    let trunk = 0
+    for (let y = 2; y <= 22; y++) if (genBlock(x0, y, z0, 8) === 'pineLog') { trunk = y; break }
+    if (!trunk) continue
+    for (let dx = -2; dx <= 2; dx++) {
+      for (let dz = -2; dz <= 2; dz++) {
+        for (let y = trunk; y <= trunk + 12 && needleN < 80; y++) {
+          const x = x0 + dx
+          const z = z0 + dz
+          if (genBlock(x, y, z, 8) !== 'pineNeedles') continue
+          needleN++
+          if (floraExtra(FLORA_IDS.pineNeedles, x, y, z) === 'pinecone') {
+            coneN++
+            if (!coneCell) coneCell = { x, y, z }
+          }
+        }
+      }
+    }
+  }
+}
+const coneRate = needleN ? coneN / needleN : 0
+note(needleN >= 48 && coneRate >= 0.05 && coneRate <= 0.25 && !!coneCell, 'pinecone 1 in 8', coneN + '/' + needleN + ' ' + coneRate.toFixed(3) + (coneCell ? ' @' + coneCell.x + ',' + coneCell.y + ',' + coneCell.z : ''))
 let oak = ''
 for (let y = 2; y <= 14 && !oak; y++) oak = genBlock(-1, y, -19, 7) === 'log' ? 'log' : ''
 note(oak === 'log' && genBlock(-1, 6, -19, 6) === genBlock(-1, 6, -19, 7), 'old oak stays')
@@ -379,6 +409,14 @@ async function visit(tag, w, h, touch) {
   }, pine.x, pine.y, pine.z)
   await shot(page, tag + '-pine')
   note(choppedP.logs >= 1, tag + ' chop pine', JSON.stringify(choppedP))
+  await go(page, coneCell.x + 2, coneCell.y, coneCell.z + 2, coneCell.x, coneCell.y, coneCell.z)
+  const coneDrop = await page.evaluate((x, y, z) => {
+    const s = window.__smoke
+    const id = s.voxel(x, y, z)
+    const a = s.chop(x, y, z)
+    return { id, a, cone: s.count('pinecone'), notes: s.notes() }
+  }, coneCell.x, coneCell.y, coneCell.z)
+  note(coneDrop.cone >= 1 && coneDrop.a && coneDrop.a.ok, tag + ' pinecone drop', JSON.stringify(coneDrop))
   await go(page, 8, 6, 10, 6, 5, 8)
   const crafted = await page.evaluate(() => {
     const s = window.__smoke

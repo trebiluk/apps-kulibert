@@ -11,6 +11,26 @@ export const FLORA_IDS = {
   pineLog: 1203,
   pineNeedles: 1204,
   pinePlanks: 1205,
+  daisy: 1206,
+  poppy: 1207,
+  cornflower: 1208,
+  sunflower: 1209,
+  tulip: 1210,
+  lupine: 1211,
+  tallGrass: 1212,
+  fern: 1213,
+}
+
+// body rgb, head rgb, height, width. Head is omitted when the third slot is null.
+export const FLORA_CROSS = {
+  daisy: [0.93, 0.95, 0.9, 0.98, 0.86, 0.28, 0.62, 0.46],
+  poppy: [0.86, 0.12, 0.16, 0.18, 0.42, 0.1, 0.7, 0.4],
+  cornflower: [0.28, 0.4, 0.9, 0.92, 0.82, 0.3, 0.66, 0.4],
+  sunflower: [0.96, 0.78, 0.12, 0.36, 0.18, 0.06, 0.88, 0.56],
+  tulip: [0.96, 0.46, 0.12, 0.22, 0.55, 0.12, 0.74, 0.34],
+  lupine: [0.5, 0.22, 0.74, 0.78, 0.48, 0.92, 0.8, 0.32],
+  tallGrass: [0.36, 0.74, 0.24, null, 0, 0, 0.64, 0.26],
+  fern: [0.14, 0.46, 0.2, null, 0, 0, 0.56, 0.48],
 }
 
 const blocks = [
@@ -20,6 +40,14 @@ const blocks = [
   [FLORA_IDS.pineLog, 'pineLog', 'wrap_pineLog', 'Pi', null],
   [FLORA_IDS.pineNeedles, 'pineNeedles', 'wrap_pineNeedles', 'Ne', null],
   [FLORA_IDS.pinePlanks, 'pinePlanks', 'wrap_pinePlanks', 'Pp', null],
+  [FLORA_IDS.daisy, 'daisy', 'wrap_daisy', 'Da', null],
+  [FLORA_IDS.poppy, 'poppy', 'wrap_poppy', 'Po', null],
+  [FLORA_IDS.cornflower, 'cornflower', 'wrap_cornflower', 'Cf', null],
+  [FLORA_IDS.sunflower, 'sunflower', 'wrap_sunflower', 'Sf', null],
+  [FLORA_IDS.tulip, 'tulip', 'wrap_tulip', 'Tu', null],
+  [FLORA_IDS.lupine, 'lupine', 'wrap_lupine', 'Lu', null],
+  [FLORA_IDS.tallGrass, 'tallGrass', 'wrap_tallGrass', 'Tg', null],
+  [FLORA_IDS.fern, 'fern', 'wrap_fern', 'Fe', null],
 ]
 
 const items = [
@@ -30,11 +58,31 @@ const items = [
   { key: 'pineNeedles', def: { block: FLORA_IDS.pineNeedles, letter: 'Ne', base: 0, sell: false, stack: 64 } },
   { key: 'pinePlanks', def: { block: FLORA_IDS.pinePlanks, letter: 'Pp', base: 1, stack: 64, sell: true } },
   { key: 'pinecone', def: { letter: 'Pc', base: 0, sell: false, stack: 64 } },
+  { key: 'daisy', def: { block: FLORA_IDS.daisy, letter: 'Da', base: 0, stack: 64, sell: false } },
+  { key: 'poppy', def: { block: FLORA_IDS.poppy, letter: 'Po', base: 0, stack: 64, sell: false } },
+  { key: 'cornflower', def: { block: FLORA_IDS.cornflower, letter: 'Cf', base: 0, stack: 64, sell: false } },
+  { key: 'sunflower', def: { block: FLORA_IDS.sunflower, letter: 'Sf', base: 0, stack: 64, sell: false } },
+  { key: 'tulip', def: { block: FLORA_IDS.tulip, letter: 'Tu', base: 0, stack: 64, sell: false } },
+  { key: 'lupine', def: { block: FLORA_IDS.lupine, letter: 'Lu', base: 0, stack: 64, sell: false } },
+  { key: 'tallGrass', def: { block: FLORA_IDS.tallGrass, letter: 'Tg', base: 0, stack: 64, sell: false } },
+  { key: 'fern', def: { block: FLORA_IDS.fern, letter: 'Fe', base: 0, stack: 64, sell: false } },
+  { key: 'dyeWhite', def: { letter: 'Dw', base: 1, stack: 64, sell: true } },
+  { key: 'dyeRed', def: { letter: 'Dr', base: 1, stack: 64, sell: true } },
+  { key: 'dyeBlue', def: { letter: 'Db', base: 1, stack: 64, sell: true } },
+  { key: 'dyeYellow', def: { letter: 'Dy', base: 1, stack: 64, sell: true } },
+  { key: 'dyeOrange', def: { letter: 'Do', base: 1, stack: 64, sell: true } },
+  { key: 'dyePurple', def: { letter: 'Dp', base: 1, stack: 64, sell: true } },
 ]
 
 const recipes = [
   { id: 'birchPlanks', at: 'bench', in: [['birchLog', 1]], out: ['birchPlanks', 4], secs: 2 },
   { id: 'pinePlanks', at: 'bench', in: [['pineLog', 1]], out: ['pinePlanks', 4], secs: 2 },
+  { id: 'dyeWhite', at: 'bench', in: [['daisy', 1]], out: ['dyeWhite', 1], secs: 2 },
+  { id: 'dyeRed', at: 'bench', in: [['poppy', 1]], out: ['dyeRed', 1], secs: 2 },
+  { id: 'dyeBlue', at: 'bench', in: [['cornflower', 1]], out: ['dyeBlue', 1], secs: 2 },
+  { id: 'dyeYellow', at: 'bench', in: [['sunflower', 1]], out: ['dyeYellow', 1], secs: 2 },
+  { id: 'dyeOrange', at: 'bench', in: [['tulip', 1]], out: ['dyeOrange', 1], secs: 2 },
+  { id: 'dyePurple', at: 'bench', in: [['lupine', 1]], out: ['dyePurple', 1], secs: 2 },
 ]
 
 const SKILL = {
@@ -45,6 +93,20 @@ const SKILL = {
   pineNeedles: 'skillPineNeedles',
   pinePlanks: 'skillPinePlanks',
   pinecone: 'skillPinecone',
+  daisy: 'skillDaisy',
+  poppy: 'skillPoppy',
+  cornflower: 'skillCornflower',
+  sunflower: 'skillSunflower',
+  tulip: 'skillTulip',
+  lupine: 'skillLupine',
+  tallGrass: 'skillTallGrass',
+  fern: 'skillFern',
+  dyeWhite: 'skillDyeWhite',
+  dyeRed: 'skillDyeRed',
+  dyeBlue: 'skillDyeBlue',
+  dyeYellow: 'skillDyeYellow',
+  dyeOrange: 'skillDyeOrange',
+  dyePurple: 'skillDyePurple',
 }
 
 export function floraSkill(item) {
@@ -52,9 +114,12 @@ export function floraSkill(item) {
 }
 
 export function floraExtra(blockId, x, y, z) {
-  if ((blockId | 0) !== FLORA_IDS.pineNeedles) return ''
+  const id = blockId | 0
   const h = (Math.imul(x | 0, 2246822519) ^ Math.imul(y | 0, 3266489917) ^ Math.imul(z | 0, 668265263)) >>> 0
-  return h % 3 === 0 ? 'pinecone' : ''
+  if (h % 8 !== 0) return ''
+  if (id === FLORA_IDS.pineNeedles) return 'pinecone'
+  if (id === FLORA_IDS.tallGrass || id === FLORA_IDS.fern) return 'wheatSeeds'
+  return ''
 }
 
 const strings = {
@@ -155,6 +220,162 @@ const strings = {
     skillPinecone: 'ኮን ጽድ ንእሽቶ ነዳዲ እቶን እዩ። ን1 የንድድ።',
   },
 }
+
+const MORE = {
+  en: {
+    daisy: 'Daisy', poppy: 'Poppy', cornflower: 'Cornflower', sunflower: 'Sunflower', tulip: 'Tulip', lupine: 'Lupine',
+    tallGrass: 'Tall Grass', fern: 'Fern',
+    dyeWhite: 'White Dye', dyeRed: 'Red Dye', dyeBlue: 'Blue Dye', dyeYellow: 'Yellow Dye', dyeOrange: 'Orange Dye', dyePurple: 'Purple Dye',
+    skillDaisy: 'A daisy is white. One daisy makes white dye at the Workbench.',
+    skillPoppy: 'A poppy is red. One poppy makes red dye at the Workbench.',
+    skillCornflower: 'A cornflower is blue. One cornflower makes blue dye at the Workbench.',
+    skillSunflower: 'A sunflower is yellow. One sunflower makes yellow dye at the Workbench.',
+    skillTulip: 'A tulip is orange. One tulip makes orange dye at the Workbench.',
+    skillLupine: 'A lupine is purple. One lupine makes purple dye at the Workbench.',
+    skillTallGrass: 'Tall grass grows on green land. Breaking it sometimes drops seeds.',
+    skillFern: 'A fern grows on green land. Breaking it sometimes drops seeds.',
+    skillDyeWhite: 'White dye comes from a daisy. Dye uses come later.',
+    skillDyeRed: 'Red dye comes from a poppy. Dye uses come later.',
+    skillDyeBlue: 'Blue dye comes from a cornflower. Dye uses come later.',
+    skillDyeYellow: 'Yellow dye comes from a sunflower. Dye uses come later.',
+    skillDyeOrange: 'Orange dye comes from a tulip. Dye uses come later.',
+    skillDyePurple: 'Purple dye comes from a lupine. Dye uses come later.',
+  },
+  uk: {
+    daisy: 'Ромашка', poppy: 'Мак', cornflower: 'Волошка', sunflower: 'Соняшник', tulip: 'Тюльпан', lupine: 'Люпин',
+    tallGrass: 'Висока трава', fern: 'Папороть',
+    dyeWhite: 'Білий барвник', dyeRed: 'Червоний барвник', dyeBlue: 'Синій барвник', dyeYellow: 'Жовтий барвник', dyeOrange: 'Помаранчевий барвник', dyePurple: 'Фіолетовий барвник',
+    skillDaisy: 'Ромашка біла. Одна ромашка дає білий барвник на верстаку.',
+    skillPoppy: 'Мак червоний. Один мак дає червоний барвник на верстаку.',
+    skillCornflower: 'Волошка синя. Одна волошка дає синій барвник на верстаку.',
+    skillSunflower: 'Соняшник жовтий. Один соняшник дає жовтий барвник на верстаку.',
+    skillTulip: 'Тюльпан помаранчевий. Один тюльпан дає помаранчевий барвник на верстаку.',
+    skillLupine: 'Люпин фіолетовий. Один люпин дає фіолетовий барвник на верстаку.',
+    skillTallGrass: 'Висока трава росте на зеленій землі. Коли її ламаєш, іноді падає насіння.',
+    skillFern: 'Папороть росте на зеленій землі. Коли її ламаєш, іноді падає насіння.',
+    skillDyeWhite: 'Білий барвник із ромашки. Для чого барвник, буде далі.',
+    skillDyeRed: 'Червоний барвник із маку. Для чого барвник, буде далі.',
+    skillDyeBlue: 'Синій барвник із волошки. Для чого барвник, буде далі.',
+    skillDyeYellow: 'Жовтий барвник із соняшника. Для чого барвник, буде далі.',
+    skillDyeOrange: 'Помаранчевий барвник із тюльпана. Для чого барвник, буде далі.',
+    skillDyePurple: 'Фіолетовий барвник із люпину. Для чого барвник, буде далі.',
+  },
+  ru: {
+    daisy: 'Ромашка', poppy: 'Мак', cornflower: 'Василёк', sunflower: 'Подсолнух', tulip: 'Тюльпан', lupine: 'Люпин',
+    tallGrass: 'Высокая трава', fern: 'Папоротник',
+    dyeWhite: 'Белый краситель', dyeRed: 'Красный краситель', dyeBlue: 'Синий краситель', dyeYellow: 'Жёлтый краситель', dyeOrange: 'Оранжевый краситель', dyePurple: 'Фиолетовый краситель',
+    skillDaisy: 'Ромашка белая. Одна ромашка даёт белый краситель на верстаке.',
+    skillPoppy: 'Мак красный. Один мак даёт красный краситель на верстаке.',
+    skillCornflower: 'Василёк синий. Один василёк даёт синий краситель на верстаке.',
+    skillSunflower: 'Подсолнух жёлтый. Один подсолнух даёт жёлтый краситель на верстаке.',
+    skillTulip: 'Тюльпан оранжевый. Один тюльпан даёт оранжевый краситель на верстаке.',
+    skillLupine: 'Люпин фиолетовый. Один люпин даёт фиолетовый краситель на верстаке.',
+    skillTallGrass: 'Высокая трава растёт на зелёной земле. Если её сломать, иногда падают семена.',
+    skillFern: 'Папоротник растёт на зелёной земле. Если его сломать, иногда падают семена.',
+    skillDyeWhite: 'Белый краситель из ромашки. Зачем краситель, будет дальше.',
+    skillDyeRed: 'Красный краситель из мака. Зачем краситель, будет дальше.',
+    skillDyeBlue: 'Синий краситель из василька. Зачем краситель, будет дальше.',
+    skillDyeYellow: 'Жёлтый краситель из подсолнуха. Зачем краситель, будет дальше.',
+    skillDyeOrange: 'Оранжевый краситель из тюльпана. Зачем краситель, будет дальше.',
+    skillDyePurple: 'Фиолетовый краситель из люпина. Зачем краситель, будет дальше.',
+  },
+  es: {
+    daisy: 'Margarita', poppy: 'Amapola', cornflower: 'Aciano', sunflower: 'Girasol', tulip: 'Tulipán', lupine: 'Lupino',
+    tallGrass: 'Hierba alta', fern: 'Helecho',
+    dyeWhite: 'Tinte blanco', dyeRed: 'Tinte rojo', dyeBlue: 'Tinte azul', dyeYellow: 'Tinte amarillo', dyeOrange: 'Tinte naranja', dyePurple: 'Tinte morado',
+    skillDaisy: 'La margarita es blanca. Una margarita da tinte blanco en el banco.',
+    skillPoppy: 'La amapola es roja. Una amapola da tinte rojo en el banco.',
+    skillCornflower: 'El aciano es azul. Un aciano da tinte azul en el banco.',
+    skillSunflower: 'El girasol es amarillo. Un girasol da tinte amarillo en el banco.',
+    skillTulip: 'El tulipán es naranja. Un tulipán da tinte naranja en el banco.',
+    skillLupine: 'El lupino es morado. Un lupino da tinte morado en el banco.',
+    skillTallGrass: 'La hierba alta crece en tierra verde. Al romperla a veces caen semillas.',
+    skillFern: 'El helecho crece en tierra verde. Al romperlo a veces caen semillas.',
+    skillDyeWhite: 'El tinte blanco sale de una margarita. Para qué sirve el tinte, viene después.',
+    skillDyeRed: 'El tinte rojo sale de una amapola. Para qué sirve el tinte, viene después.',
+    skillDyeBlue: 'El tinte azul sale de un aciano. Para qué sirve el tinte, viene después.',
+    skillDyeYellow: 'El tinte amarillo sale de un girasol. Para qué sirve el tinte, viene después.',
+    skillDyeOrange: 'El tinte naranja sale de un tulipán. Para qué sirve el tinte, viene después.',
+    skillDyePurple: 'El tinte morado sale de un lupino. Para qué sirve el tinte, viene después.',
+  },
+  ar: {
+    daisy: 'أقحوان', poppy: 'خشخاش', cornflower: 'قنطريون', sunflower: 'دوّار الشمس', tulip: 'توليب', lupine: 'ترمس',
+    tallGrass: 'عشب طويل', fern: 'سرخس',
+    dyeWhite: 'صبغة بيضاء', dyeRed: 'صبغة حمراء', dyeBlue: 'صبغة زرقاء', dyeYellow: 'صبغة صفراء', dyeOrange: 'صبغة برتقالية', dyePurple: 'صبغة بنفسجية',
+    skillDaisy: 'الأقحوان أبيض. أقحوان واحد يعطي صبغة بيضاء على طاولة العمل.',
+    skillPoppy: 'الخشخاش أحمر. خشخاش واحد يعطي صبغة حمراء على طاولة العمل.',
+    skillCornflower: 'القنطريون أزرق. قنطريون واحد يعطي صبغة زرقاء على طاولة العمل.',
+    skillSunflower: 'دوّار الشمس أصفر. واحد يعطي صبغة صفراء على طاولة العمل.',
+    skillTulip: 'التوليب برتقالي. توليب واحد يعطي صبغة برتقالية على طاولة العمل.',
+    skillLupine: 'الترمس بنفسجي. ترمس واحد يعطي صبغة بنفسجية على طاولة العمل.',
+    skillTallGrass: 'العشب الطويل ينمو على الأرض الخضراء. كسره قد يُسقط بذوراً.',
+    skillFern: 'السرخس ينمو على الأرض الخضراء. كسره قد يُسقط بذوراً.',
+    skillDyeWhite: 'الصبغة البيضاء من الأقحوان. استعمال الصبغة يأتي لاحقاً.',
+    skillDyeRed: 'الصبغة الحمراء من الخشخاش. استعمال الصبغة يأتي لاحقاً.',
+    skillDyeBlue: 'الصبغة الزرقاء من القنطريون. استعمال الصبغة يأتي لاحقاً.',
+    skillDyeYellow: 'الصبغة الصفراء من دوّار الشمس. استعمال الصبغة يأتي لاحقاً.',
+    skillDyeOrange: 'الصبغة البرتقالية من التوليب. استعمال الصبغة يأتي لاحقاً.',
+    skillDyePurple: 'الصبغة البنفسجية من الترمس. استعمال الصبغة يأتي لاحقاً.',
+  },
+  'fa-AF': {
+    daisy: 'گل مینا', poppy: 'شقایق', cornflower: 'گل گندم', sunflower: 'آفتاب‌گردان', tulip: 'لاله', lupine: 'ترمس',
+    tallGrass: 'علف بلند', fern: 'سرخس',
+    dyeWhite: 'رنگ سفید', dyeRed: 'رنگ سرخ', dyeBlue: 'رنگ آبی', dyeYellow: 'رنگ زرد', dyeOrange: 'رنگ نارنجی', dyePurple: 'رنگ بنفش',
+    skillDaisy: 'گل مینا سفید است. یک گل در میز کار رنگ سفید می‌دهد.',
+    skillPoppy: 'شقایق سرخ است. یک شقایق در میز کار رنگ سرخ می‌دهد.',
+    skillCornflower: 'گل گندم آبی است. یک گل در میز کار رنگ آبی می‌دهد.',
+    skillSunflower: 'آفتاب‌گردان زرد است. یکی در میز کار رنگ زرد می‌دهد.',
+    skillTulip: 'لاله نارنجی است. یک لاله در میز کار رنگ نارنجی می‌دهد.',
+    skillLupine: 'ترمس بنفش است. یک ترمس در میز کار رنگ بنفش می‌دهد.',
+    skillTallGrass: 'علف بلند روی زمین سبز می‌روید. اگر بشکنی، گاهی دانه می‌افتد.',
+    skillFern: 'سرخس روی زمین سبز می‌روید. اگر بشکنی، گاهی دانه می‌افتد.',
+    skillDyeWhite: 'رنگ سفید از گل مینا است. کاربرد رنگ بعداً می‌آید.',
+    skillDyeRed: 'رنگ سرخ از شقایق است. کاربرد رنگ بعداً می‌آید.',
+    skillDyeBlue: 'رنگ آبی از گل گندم است. کاربرد رنگ بعداً می‌آید.',
+    skillDyeYellow: 'رنگ زرد از آفتاب‌گردان است. کاربرد رنگ بعداً می‌آید.',
+    skillDyeOrange: 'رنگ نارنجی از لاله است. کاربرد رنگ بعداً می‌آید.',
+    skillDyePurple: 'رنگ بنفش از ترمس است. کاربرد رنگ بعداً می‌آید.',
+  },
+  rw: {
+    daisy: 'Ibara ryera', poppy: 'Ibara ritukura', cornflower: 'Ibara ryubururu', sunflower: 'Igisabo', tulip: 'Tulipu', lupine: 'Lupine',
+    tallGrass: 'Ibyatsi birebire', fern: 'Ikirato',
+    dyeWhite: 'Ibura yera', dyeRed: 'Ibura itukura', dyeBlue: 'Ibura yubururu', dyeYellow: 'Ibura y\'umuhondo', dyeOrange: 'Ibura y\'icunga', dyePurple: 'Ibura y\'umwonga',
+    skillDaisy: 'Ibara ryera ni umweru. Rimwe ritanga ibura yera ku meza y\'imirimo.',
+    skillPoppy: 'Ibara ritukura ni umutuku. Rimwe ritanga ibura itukura ku meza y\'imirimo.',
+    skillCornflower: 'Ibara ryubururu ni ubururu. Rimwe ritanga ibura yubururu ku meza y\'imirimo.',
+    skillSunflower: 'Igisabo ni umuhondo. Kimwe gitanga ibura y\'umuhondo ku meza y\'imirimo.',
+    skillTulip: 'Tulipu ni icunga. Rimwe ritanga ibura y\'icunga ku meza y\'imirimo.',
+    skillLupine: 'Lupine ni umwonga. Rimwe ritanga ibura y\'umwonga ku meza y\'imirimo.',
+    skillTallGrass: 'Ibyatsi birebire bikura ku butaka bw\'icyatsi. Nuvuna, rimwe na rimwe haboneka imbuto.',
+    skillFern: 'Ikirato gikura ku butaka bw\'icyatsi. Nuvuna, rimwe na rimwe haboneka imbuto.',
+    skillDyeWhite: 'Ibura yera iva ku ibara ryera. Icyo ibura ikora kizaza nyuma.',
+    skillDyeRed: 'Ibura itukura iva ku ibara ritukura. Icyo ibura ikora kizaza nyuma.',
+    skillDyeBlue: 'Ibura yubururu iva ku ibara ryubururu. Icyo ibura ikora kizaza nyuma.',
+    skillDyeYellow: 'Ibura y\'umuhondo iva ku gisabo. Icyo ibura ikora kizaza nyuma.',
+    skillDyeOrange: 'Ibura y\'icunga iva kuri tulipu. Icyo ibura ikora kizaza nyuma.',
+    skillDyePurple: 'Ibura y\'umwonga iva kuri lupine. Icyo ibura ikora kizaza nyuma.',
+  },
+  ti: {
+    daisy: 'በጺሕ', poppy: 'ቀይሕ ጽጉቢ', cornflower: 'ሰማያዊ ጽጉቢ', sunflower: 'ሱፍ', tulip: 'ቱሊፕ', lupine: 'ሉፒን',
+    tallGrass: 'ነዊሕ ሳዕሪ', fern: 'ፈርን',
+    dyeWhite: 'ጻዕዳ ሕብሪ', dyeRed: 'ቀይሕ ሕብሪ', dyeBlue: 'ሰማያዊ ሕብሪ', dyeYellow: 'ብጫ ሕብሪ', dyeOrange: 'ኣራንሺ ሕብሪ', dyePurple: 'ሊላ ሕብሪ',
+    skillDaisy: 'በጺሕ ጻዕዳ እዩ። ሓንቲ በጺሕ ኣብ መደብ ስራሕ ጻዕዳ ሕብሪ ትህብ።',
+    skillPoppy: 'ቀይሕ ጽጉቢ ቀይሕ እዩ። ሓንቲ ኣብ መደብ ስራሕ ቀይሕ ሕብሪ ትህብ።',
+    skillCornflower: 'ሰማያዊ ጽጉቢ ሰማያዊ እዩ። ሓንቲ ኣብ መደብ ስራሕ ሰማያዊ ሕብሪ ትህብ።',
+    skillSunflower: 'ሱፍ ብጫ እዩ። ሓንቲ ኣብ መደብ ስራሕ ብጫ ሕብሪ ትህብ።',
+    skillTulip: 'ቱሊፕ ኣራንሺ እዩ። ሓንቲ ኣብ መደብ ስራሕ ኣራንሺ ሕብሪ ትህብ።',
+    skillLupine: 'ሉፒን ሊላ እዩ። ሓንቲ ኣብ መደብ ስራሕ ሊላ ሕብሪ ትህብ።',
+    skillTallGrass: 'ነዊሕ ሳዕሪ ኣብ ቀጠልያ መሬት ትበቕል። እንተ ሰበርካዮ ሓደ ሓደ ዘርኢ ይወድቕ።',
+    skillFern: 'ፈርን ኣብ ቀጠልያ መሬት ትበቕል። እንተ ሰበርካዮ ሓደ ሓደ ዘርኢ ይወድቕ።',
+    skillDyeWhite: 'ጻዕዳ ሕብሪ ካብ በጺሕ እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+    skillDyeRed: 'ቀይሕ ሕብሪ ካብ ቀይሕ ጽጉቢ እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+    skillDyeBlue: 'ሰማያዊ ሕብሪ ካብ ሰማያዊ ጽጉቢ እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+    skillDyeYellow: 'ብጫ ሕብሪ ካብ ሱፍ እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+    skillDyeOrange: 'ኣራንሺ ሕብሪ ካብ ቱሊፕ እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+    skillDyePurple: 'ሊላ ሕብሪ ካብ ሉፒን እዩ። ኣጠቓቕማ ሕብሪ ድሕሪ ይመጽእ።',
+  },
+}
+for (const lang of Object.keys(MORE)) Object.assign(strings[lang], MORE[lang])
 
 registerPack({
   id: 'flora',
