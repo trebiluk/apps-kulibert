@@ -93,6 +93,26 @@ const gapSim = simulate({ parts: gameGap }, {})
 eq(gapSim.lit.length === 0, 'game loop gap goes dark')
 eq(gapSim.stops.some((id) => id === '71,6,70' || id === '70,6,71'), 'dots stop beside the gap', gapSim.stops.join('|'))
 
+const box = [
+  P('cell', 0, 0, 0),
+  P('line', 1, 0, 0),
+  P('load', 1, 1, 0),
+  P('switch', 0, 1, 0, false),
+]
+eq(litIds(box).length === 0, '2x2 open switch stays dark')
+const boxOn = box.map((p) => p.kind === 'switch' ? { ...p, on: true } : p)
+eq(litIds(boxOn).join() === '1,1,0', '2x2 closed switch lights')
+const side = [
+  P('cell', 0, 0, 0),
+  P('line', 1, 0, 0),
+  P('line', 2, 0, 0),
+  P('line', 3, 0, 0),
+  P('line', 2, 1, 0),
+]
+const sideSim = simulate({ parts: side }, {})
+eq(sideSim.powered.indexOf('2,1,0') < 0, 'side tap off a straight run is not powered', sideSim.powered.join('|'))
+eq(sideSim.powered.indexOf('1,0,0') >= 0 && sideSim.powered.indexOf('3,0,0') >= 0, 'end to end lines stay powered', sideSim.powered.join('|'))
+
 if (process.env.UNIT) {
   if (fail.length) { console.error(fail.join('\n')); process.exit(1) }
   console.log('unit ok')
@@ -265,7 +285,7 @@ const page = await browser.newPage()
 const errs = await prep(page)
 await boot(page, 'q=full&smoke=1&auto=0')
 const version = await page.evaluate(() => window.__blocks.version)
-eq(version === '2.5.171', 'version', version)
+eq(version === '2.5.172', 'version', version)
 
 await page.evaluate(() => {
   const ops = []

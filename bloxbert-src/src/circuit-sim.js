@@ -72,6 +72,35 @@ export function simulate(netlist, inputs) {
     byId.set(p.id, p)
     loc.set(p.x + ',' + p.y + ',' + p.z, p)
   }
+  const lineCount = new Map()
+  function countsFor(p) {
+    let row = lineCount.get(p.id)
+    if (row) return row
+    row = [0, 0, 0]
+    for (let d = 0; d < DIRS.length; d++) {
+      const q = loc.get((p.x + DIRS[d][0]) + ',' + (p.y + DIRS[d][1]) + ',' + (p.z + DIRS[d][2]))
+      if (!q || q.kind !== 'line') continue
+      row[DIRS[d][0] ? 0 : DIRS[d][1] ? 1 : 2]++
+    }
+    lineCount.set(p.id, row)
+    return row
+  }
+  // A line joins another line only end to end. A straight run does not short
+  // sideways into a neighbor. A corner (one line each way) still turns.
+  // Anything else is "into a part": cell, switch, button, or load.
+  function endAxis(p, ax) {
+    if (p.kind !== 'line') return true
+    const row = countsFor(p)
+    let best = 0
+    for (let i = 0; i < 3; i++) if (row[i] > best) best = row[i]
+    if (best >= 2) return row[ax] >= 2
+    return best === 0 || row[ax] > 0
+  }
+  function wire(p, q) {
+    if (p.kind !== 'line' || q.kind !== 'line') return true
+    const ax = (q.x - p.x) ? 0 : (q.y - p.y) ? 1 : 2
+    return endAxis(p, ax) && endAxis(q, ax)
+  }
   const powered = []
   const lit = []
   const lines = {}
@@ -102,7 +131,7 @@ export function simulate(netlist, inputs) {
       const out = []
       for (let d = 0; d < DIRS.length; d++) {
         const q = loc.get((p.x + DIRS[d][0]) + ',' + (p.y + DIRS[d][1]) + ',' + (p.z + DIRS[d][2]))
-        if (q && cond.has(q.id)) out.push(q.id)
+        if (q && cond.has(q.id) && wire(p, q)) out.push(q.id)
       }
       return out
     }

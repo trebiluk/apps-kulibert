@@ -9,7 +9,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Vector4 } from '@babylonjs/core/Maths/math.vector'
 import { Material } from '@babylonjs/core/Materials/material'
-import { slotArt, itemSvg, blockIcon } from './icons.js'
+import { slotArt, itemSvg } from './icons.js'
 import { ITEMS } from './data/items.js'
 import ATLAS from '../assets/atlas.json'
 
@@ -22,6 +22,8 @@ const PLANT_NAMES = {
   59: 'cropSprout', 60: 'cropLeafy', 61: 'cropTall', 62: 'cropRipe',
   65: 'bushYoung', 66: 'bushLeaf', 67: 'bushFull', 68: 'bushFruit',
   185: 'sapling',
+  1206: 'daisy', 1207: 'poppy', 1208: 'cornflower', 1209: 'sunflower',
+  1210: 'tulip', 1211: 'lupine', 1212: 'tallGrass', 1213: 'fern',
 }
 
 function plantName(spec) {
@@ -32,45 +34,12 @@ function plantName(spec) {
   return ''
 }
 
-function plantPicture(name, id) {
-  const wrap = slotArt(name)
-  if (wrap && wrap.getContext && wrap.dataset && wrap.dataset.kind === 'wrap' && clearInk(wrap).clear > 0.15) return wrap
-  const icon = blockIcon([id | 0, name])
-  if (icon && icon.getContext) {
-    const row = clearInk(icon)
-    if (row.ink > 8 && row.clear > 0.15) return icon
-  }
+function plantPicture(name) {
+  const art = slotArt(name)
+  if (art && art.getContext && art.width) return art
   const c = document.createElement('canvas')
   c.width = c.height = 48
-  const g = c.getContext('2d')
-  g.strokeStyle = name === 'reed' ? '#c4a574' : '#3D8C32'
-  g.lineWidth = 4
-  g.lineCap = 'round'
-  g.beginPath()
-  g.moveTo(24, 44)
-  g.lineTo(24, 12)
-  g.moveTo(24, 30)
-  g.lineTo(14, 18)
-  g.moveTo(24, 26)
-  g.lineTo(34, 16)
-  g.stroke()
   return c
-}
-
-function clearInk(canvas) {
-  try {
-    const data = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data
-    let clear = 0
-    let ink = 0
-    const n = canvas.width * canvas.height
-    for (let i = 3; i < data.length; i += 4) {
-      if (data[i] < 16) clear++
-      else ink++
-    }
-    return { clear: n ? clear / n : 0, ink }
-  } catch (e) {
-    return { clear: 0, ink: 0 }
-  }
 }
 
 export function createHands(opts) {
@@ -85,13 +54,15 @@ export function createHands(opts) {
   flatMat.fogEnabled = false
   flatMat.backFaceCulling = false
 
+  const HAND = 0.48
   const mainRoot = new TransformNode('hand-main', scene)
   mainRoot.parent = camera
   mainRoot.position.set(0, -0.02, 1.05)
+  mainRoot.scaling.set(HAND, HAND, HAND)
   const offRoot = new TransformNode('hand-off', scene)
   offRoot.parent = camera
   offRoot.position.set(0, -0.02, 1.05)
-  offRoot.scaling.x = -1
+  offRoot.scaling.set(-HAND, HAND, HAND)
   offRoot.setEnabled(false)
 
   const pivot = new TransformNode('hand-pivot', scene)
@@ -99,7 +70,7 @@ export function createHands(opts) {
   pivot.position.set(0.2, -0.26, 0)
   const itemAnchor = new TransformNode('hand-item', scene)
   itemAnchor.parent = pivot
-  itemAnchor.position.set(0.24, -0.01, 0.22)
+  itemAnchor.position.set(0.22, -0.16, 0.16)
 
   const handMesh = buildHand(scene, flatMat)
   handMesh.parent = pivot
@@ -132,10 +103,10 @@ export function createHands(opts) {
 
   function setSide(side) {
     const left = side === 'left'
-    if ((left ? 'left' : 'right') === sideNow) return
     sideNow = left ? 'left' : 'right'
-    mainRoot.scaling.x = left ? -1 : 1
-    offRoot.scaling.x = left ? 1 : -1
+    const s = 0.48
+    mainRoot.scaling.set(left ? -s : s, s, s)
+    offRoot.scaling.set(left ? s : -s, s, s)
   }
 
   function syncItem() {
@@ -222,8 +193,8 @@ export function createHands(opts) {
     const narrow = aspect < 0.9
     pivot.rotation.x = swayX - swing * chop
     pivot.rotation.z = swayZ + swing * 0.15
-    pivot.position.x = narrow ? 0.1 : 0.34
-    pivot.position.y = (short ? -0.12 : -0.2) + bob - dip
+    pivot.position.x = narrow ? 0.40 : 0.58
+    pivot.position.y = (short ? 0.04 : -0.30) + bob - dip
     pivot.position.z = 0
   }
 
@@ -245,7 +216,7 @@ export function createHands(opts) {
     const cacheKey = 'plant:' + name
     const hit = flatCache.get(cacheKey)
     if (hit) return hit
-    const canvas = plantPicture(name, id)
+    const canvas = plantPicture(name)
     const tex = new Texture(canvas.toDataURL(), scene, false, true, Texture.NEAREST_SAMPLINGMODE)
     tex.hasAlpha = true
     const mat = new StandardMaterial('hand-plant-mat-' + name, scene)

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.172', date: '2026-10-11', lines: {
+    en: ['The hand sits smaller in the corner. A held sapling is its flat icon. One tip shows at a time. Side-by-side wires no longer skip a switch.'],
+    uk: ['Рука менша й у кутку. Саджанець у руці — його плоска іконка. Одна підказка за раз. Сусідні дроти більше не обходять вимикач.'],
+    ru: ['Рука меньше и в углу. Саженец в руке — его плоская иконка. Одна подсказка за раз. Соседние провода больше не обходят выключатель.'],
+    es: ['La mano es más pequeña y queda en la esquina. Un plantón en la mano es su icono plano. Un aviso a la vez. Los cables lado a lado ya no saltan el interruptor.'],
+    ar: ['اليد أصغر وفي الزاوية. الشتلة في اليد هي أيقونتها المسطحة. تلميح واحد في كل مرة. الأسلاك المتجاورة لم تعد تتجاوز المفتاح.'],
+    'fa-AF': ['دست کوچک‌تر و در گوشه است. نهال در دست همان نشانهٔ تخت آن است. هر بار یک نکته. سیم‌های پهلوبه‌پهلو دیگر از کلید رد نمی‌شوند.'],
+    rw: ['Ukuboko ni muto kandi kuri kona. Ingemwe mu kuboko ni ishusho yayo ihamye. Inama imwe icyarimwe. Imirongo iri ruhande na ruhande ntigikira ikinyuranyo.'],
+    ti: ['ኢድ ዝንእስን ኣብ ኩርናዕን እያ። ቡቕሊ ኣብ ኢድ ፍሉይ ስእሉ እዩ። ሓደ ምኽሪ ብሓደ ግዜ። ጎኒ-ለ-ጎኒ ሽቦታት መቐለሊ ኣይዘልሉን።'],
+  }},
   { v: '2.5.171', date: '2026-10-11', lines: {
     en: ['A Battery Cell, Nanotube line, Switch and Push Button light a lamp in a closed loop. The Circuit Lens shows the current stop at a break.'],
     uk: ['Батарея, нанотрубкова лінія, вимикач і кнопка світять лампу в замкненому колі. Лінза кола показує, де струм зупиняється на розриві.'],

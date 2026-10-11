@@ -49,7 +49,9 @@ export function createLearn(api) {
     hideTimer = setTimeout(() => {
       cardHidden = true
       cardArmed = false
-      paintPath()
+      const chip = document.getElementById('path-chip')
+      if (chip) { chip.classList.remove('path-out'); chip.hidden = true; chip.replaceChildren() }
+      if (api.releaseHint) api.releaseHint("path")
     }, 60000)
   }
   function dismissPath() {
@@ -63,13 +65,15 @@ export function createLearn(api) {
     if (state.hideTips) {
       pathGap = 0
       if (el) { el.classList.remove('path-out'); el.hidden = true }
+      if (api.releaseHint) api.releaseHint("path")
       return
     }
     if (el && !el.hidden) el.classList.add('path-out')
     pathGap = setTimeout(() => {
       pathGap = 0
-      if (el) el.classList.remove('path-out')
+      if (el) { el.classList.remove('path-out'); el.hidden = true; el.replaceChildren() }
       cardHidden = !!state.hideTips
+      if (api.releaseHint) api.releaseHint("path")
       paintPath()
     }, 1500)
   }
@@ -90,10 +94,29 @@ export function createLearn(api) {
   function paintPath() {
     const el = document.getElementById('path-chip')
     if (!el) return
-    if (state.hideTips || (api.survival && !api.survival())) { el.classList.remove('path-out'); el.hidden = true; return }
+    if (state.hideTips || (api.survival && !api.survival())) {
+      const was = !el.hidden
+      el.classList.remove('path-out')
+      el.hidden = true
+      if (was && api.releaseHint) api.releaseHint("path")
+      return
+    }
     if (pathGap) return
     const g = goals.find((x) => !x.done && !dismissed(x.id))
-    if (!g || cardHidden) { el.hidden = true; el.replaceChildren(); return }
+    if (!g || cardHidden) {
+      const was = !el.hidden
+      el.hidden = true
+      el.replaceChildren()
+      if (was && cardHidden && api.releaseHint) api.releaseHint("path")
+      return
+    }
+    if (api.hintTaken && api.hintTaken()) {
+      el.classList.remove('path-out')
+      el.hidden = true
+      el.replaceChildren()
+      if (api.queueHint) api.queueHint("path")
+      return
+    }
     armCard()
     el.classList.remove('path-out')
     el.hidden = false
@@ -113,6 +136,7 @@ export function createLearn(api) {
       sub.textContent = api.t('pathTreeTouch')
       el.append(sub)
     }
+    if (api.claimHint) api.claimHint("path")
   }
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) { return {} }

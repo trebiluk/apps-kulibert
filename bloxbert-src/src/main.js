@@ -4455,6 +4455,79 @@ mountSlotQol({
   craftMany: (recipe) => !!(session && session.craftMany && session.craftMany(recipe, 64)),
   toolOf: (item) => (ITEMS[item] && ITEMS[item].tool) || '',
 })
+let hintOwner = ''
+const hintQ = []
+function pathOpen() {
+  const el = document.getElementById('path-chip')
+  return !!(el && !el.hidden && !el.classList.contains('path-out'))
+}
+function hintTaken() {
+  if (hintOwner === 'menu' || hintOwner === 'bag') return true
+  const hint = document.getElementById('menu-hint')
+  return !!(hint && !hint.hidden)
+}
+function queueHint(kind) {
+  if (!kind || hintOwner === kind || hintQ.indexOf(kind) >= 0) return
+  hintQ.push(kind)
+}
+function claimHint(kind) {
+  if (kind === 'path') {
+    const hint = document.getElementById('menu-hint')
+    if (hint && !hint.hidden) {
+      hint.hidden = true
+      const prev = hintOwner === 'bag' ? 'bag' : 'menu'
+      if (hintOwner === 'menu' || hintOwner === 'bag') hintOwner = ''
+      queueHint(prev)
+    }
+  }
+  hintOwner = kind
+  const i = hintQ.indexOf(kind)
+  if (i >= 0) hintQ.splice(i, 1)
+}
+function pumpHints() {
+  if (hintOwner) return
+  while (hintQ.length) {
+    const next = hintQ.shift()
+    if (next === 'bag') { if (showBagHint()) return; continue }
+    if (next === 'menu') { if (showMenuHint()) return; continue }
+    if (next === 'path') { if (learn) learn.paintPath(); return }
+  }
+}
+function releaseHint(kind) {
+  if (hintOwner === kind) hintOwner = ''
+  const i = hintQ.indexOf(kind)
+  if (i >= 0) hintQ.splice(i, 1)
+  if (releaseHint.busy) return
+  releaseHint.busy = true
+  try { pumpHints() } finally { releaseHint.busy = false }
+}
+function showMenuHint() {
+  try { if (localStorage.getItem('bloxbert-menu-hint')) return false } catch (e) { return false }
+  if (pathOpen() || (hintOwner && hintOwner !== 'menu')) {
+    queueHint("menu")
+    return true
+  }
+  const hint = $('menu-hint')
+  if (!hint) return false
+  claimHint("menu")
+  hint.hidden = false
+  hint.textContent = TOUCH_UI ? t('menuHintTouch') : t('menuHint')
+  return true
+}
+function dropMenuHint() {
+  try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
+  const hint = $('menu-hint')
+  if (hint) hint.hidden = true
+  const mi = hintQ.indexOf('menu')
+  if (mi >= 0) hintQ.splice(mi, 1)
+  if (hintOwner === 'menu' || hintOwner === 'bag') {
+    const owner = hintOwner
+    hintOwner = ''
+    const oi = hintQ.indexOf(owner)
+    if (oi >= 0) hintQ.splice(oi, 1)
+    pumpHints()
+  }
+}
 const learn = createLearn({
   t, toast, close: () => panels.close(),
   openTour: () => panels.open('tour'),
@@ -4466,6 +4539,10 @@ const learn = createLearn({
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
   world: () => WORLD,
   count: (item) => (session && session.bag ? session.bag.count(item) : 0),
+  hintTaken: () => hintTaken(),
+  queueHint: (kind) => queueHint(kind),
+  claimHint: (kind) => claimHint(kind),
+  releaseHint: (kind) => releaseHint(kind),
 })
 markPath = (id) => learn.bump(id)
 learnRef = learn
@@ -4583,10 +4660,7 @@ function poof() {
   toast(home ? t('poofBunk') : t('poofTown'))
   if (dirty) save()
 }
-if (!localStorage.getItem('bloxbert-menu-hint')) {
-  const hint = $('menu-hint')
-  if (hint) { hint.hidden = false; hint.textContent = TOUCH_UI ? t('menuHintTouch') : t('menuHint') }
-}
+if (!localStorage.getItem('bloxbert-menu-hint')) showMenuHint()
 
 const bar = $('hotbar')
 const sheetEl = $('sheet')
@@ -4822,6 +4896,7 @@ function openMenu(on) {
     panels.openRoot()
     try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
     const hint = $('menu-hint'); if (hint) hint.hidden = true
+    dropMenuHint()
     tuckBarDrawer()
     setTimeout(tuckBarDrawer, 400)
   } else {
@@ -4928,13 +5003,19 @@ if (typeof window !== 'undefined') window.__quietUnlock = quietUnlock
 let bagOpenedAt = 0
 let bagDown = false
 function showBagHint() {
-  if (TOUCH_UI) return
-  try { if (localStorage.getItem('bloxbert-bag-hint') === '1') return } catch (e) {}
+  if (TOUCH_UI) return false
+  try { if (localStorage.getItem('bloxbert-bag-hint') === '1') return false } catch (e) { return false }
+  if (pathOpen() || (hintOwner && hintOwner !== 'bag')) {
+    queueHint("bag")
+    return true
+  }
   const hint = $('menu-hint')
-  if (!hint) return
+  if (!hint) return false
+  claimHint("bag")
   hint.hidden = false
   hint.textContent = t('bagHint')
   try { localStorage.setItem('bloxbert-bag-hint', '1') } catch (e) {}
+  return true
 }
 function bagUnderPointer(e) {
   if (!e || TOUCH_UI || e.pointerType === 'touch') return false
