@@ -623,7 +623,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
     <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
   </div>
-  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.172</span></b><small><span id="current"></span></small></div>
+  <div class="brand"><b>Bertopia <span class="ver" id="ver-plate">2.5.173</span></b><small><span id="current"></span></small></div>
   <span class="chip" id="mode-chip">Survival</span>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
@@ -691,6 +691,12 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
       <button class="qbtn" role="radio" data-q="full" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
     </div>
     <p id="q-now" aria-live="polite"></p>
+    <h3 data-i18n="graphics">Graphics</h3>
+    <div class="qset" role="radiogroup" aria-label="Graphics">
+      <button class="qbtn" type="button" role="radio" data-gfx="lite" aria-checked="false"><span><b data-i18n="lite">Lite</b><small data-i18n="gfxLiteHint">Flat sky. Lamps glow only.</small></span></button>
+      <button class="qbtn" type="button" role="radio" data-gfx="normal" aria-checked="false"><span><b data-i18n="gfxNormal">Normal</b><small data-i18n="gfxNormalHint">Soft sky and warm lamps.</small></span></button>
+      <button class="qbtn" type="button" role="radio" data-gfx="fancy" aria-checked="false"><span><b data-i18n="gfxFancy">Fancy</b><small data-i18n="gfxFancyHint">Corner shade and swaying plants.</small></span></button>
+    </div>
     <h3 data-i18n="textSize">Text size</h3>
     <div class="tsset" role="radiogroup" aria-label="Text size">
       <button class="qbtn" type="button" data-ts="s"><b data-i18n="textS">Small</b></button>
@@ -766,8 +772,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.169"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.172" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.172" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.173" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.173" defer></script>
 <script>
 ;(function () {
   try {

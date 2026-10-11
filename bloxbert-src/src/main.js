@@ -71,7 +71,9 @@ import { wildBushLoot } from './drops.js'
 import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
+import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
 import { createQuality } from './gfx/quality.js'
+import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
@@ -93,6 +95,7 @@ let quality = gfx.quality
 const AA = gfx.aa
 let AUTO = gfx.auto
 let level = gfx.level
+const gfxLook = createLook()
 
 let LANG = qs.get('lang') || ''
 if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
@@ -353,6 +356,7 @@ const noa = new Engine({
   chunkAddDistance: gfx.add,
   chunkRemoveDistance: gfx.rem,
   clearColor: [0.64, 0.8, 0.93],
+  useAO: gfxLook.ao,
   ambientColor: [0.78, 0.82, 0.88],
   lightDiffuse: [1.15, 1.08, 0.98],
   lightSpecular: [0.16, 0.16, 0.14],
@@ -460,7 +464,8 @@ noa.registry.registerMaterial('vend', tile('vend'))
 noa.registry.registerMaterial('store', tile('store'))
 noa.registry.registerMaterial('bunk', tile('bunk'))
 // Pixel-art wrap materials for batch 1
-registerWrapMaterials(noa);
+const wrapIx = registerWrapMaterials(noa);
+gfxLook.setLeaves({ oak: ATLAS.leaves, birch: wrapIx.birchLeaves, pine: wrapIx.pineNeedles })
 const shapeScene = noa.rendering.scene
 function dye(name, r, g, b, a) {
   const mat = noa.rendering.makeStandardMaterial(name)
@@ -698,10 +703,17 @@ function farmlandWetMesh() {
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const waterMat = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
-waterMat.backFaceCulling = true
+const waterDye = dye('shape-water', 0.18, 0.45, 0.95, 0.55)
+waterDye.backFaceCulling = true
+Effect.ShadersStore.bertWaterVertexShader = 'precision highp float;attribute vec3 position;attribute vec3 normal;uniform mat4 worldViewProjection;varying vec3 vN;void main(){vN=normal;gl_Position=worldViewProjection*vec4(position,1.0);}'
+Effect.ShadersStore.bertWaterFragmentShader = 'precision highp float;varying vec3 vN;void main(){float up=clamp(normalize(vN).y,0.0,1.0);vec3 deep=vec3(0.03,0.14,0.36);vec3 body=vec3(0.09,0.32,0.60);vec3 skin=vec3(0.50,0.80,0.94);vec3 col=mix(deep,body,0.6);col=mix(col,skin,smoothstep(0.22,0.9,up));float a=mix(0.66,0.44,up);gl_FragColor=vec4(col,a);}'
+const waterMat = new ShaderMaterial('bert-water', shapeScene, { vertex: 'bertWater', fragment: 'bertWater' }, { attributes: ['position', 'normal'], uniforms: ['worldViewProjection'] })
+waterMat.alpha = 0.55
+waterMat.backFaceCulling = false
+waterMat.transparencyMode = 2
+noa.registry.registerMaterial('bertWater', { renderMaterial: waterMat })
 function waterMesh() {
-  return shape('water', [part('w', 0.98, 0.98, 0.98, 0, 0.5, 0, 0, waterMat)], waterMat)
+  return shape('water', [part('w', 0.98, 0.98, 0.98, 0, 0.5, 0, 0, waterDye)], waterDye)
 }
 function cropGreen(name, r, g, b, er, eg, eb) {
   const mat = noa.rendering.makeStandardMaterial(name)
@@ -953,7 +965,7 @@ for (const [id, name, material] of BLOCKS) {
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
   const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug && !line) }
-  if (fluid) { opts.fluid = true; opts.opaque = false; opts.solid = false }
+  if (fluid) { opts.material = 'bertWater'; opts.fluid = true; opts.opaque = false; opts.solid = false }
   if (mesh && !fluid) opts.blockMesh = mesh
   if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
   if (id === TECH.cell || id === TECH.line || id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) opts.onCustomMeshCreate = techFacing
@@ -1211,8 +1223,48 @@ function setVoxel(x, y, z, v, draw = true) {
   if (prev !== v) {
     noteVoxel(x, y, z, prev, v)
     afterVoxel(x, y, z, prev, v)
+    gfxLook.note(x, y, z, prev, v)
   }
 }
+function remeshBox(x, y, z, r) {
+  const x0 = Math.floor((x - r) / S)
+  const x1 = Math.floor((x + r) / S)
+  const y0 = Math.floor((y - r) / S)
+  const y1 = Math.floor((y + r) / S)
+  const z0 = Math.floor((z - r) / S)
+  const z1 = Math.floor((z + r) / S)
+  for (let ci = x0; ci <= x1; ci++) for (let cj = y0; cj <= y1; cj++) for (let ck = z0; ck <= z1; ck++) {
+    const chunk = noa.world._storage.getChunkByIndexes(ci, cj, ck)
+    if (!chunk) continue
+    chunk._terrainDirty = true
+    noa.world._queueChunkForRemesh(chunk)
+  }
+}
+function remeshAll() {
+  const hash = noa.world._storage.hash
+  for (const id in hash) {
+    const chunk = hash[id]
+    if (!chunk) continue
+    chunk._terrainDirty = true
+    noa.world._queueChunkForRemesh(chunk)
+  }
+}
+gfxLook.bind({
+  getVoxel: (x, y, z) => getVoxel(x, y, z),
+  opaque: (id) => !!(noa.registry && noa.registry.getBlockOpacity(id)),
+  meta: (x, y, z) => (session && session.meta ? session.meta.get(x + ',' + y + ',' + z) : null),
+  lanternOn: (x, y, z) => {
+    if (!basics || !basics.light) return false
+    const row = basics.light(x, y, z)
+    return !!(row && row.radius > 1)
+  },
+  saved: () => saved,
+  reduce: () => REDUCE,
+  remesh: (x, y, z, r) => remeshBox(x, y, z, r),
+  remeshAllLights: (map) => { for (const s of map.values()) remeshBox(s.x, s.y, s.z, REACH_LIGHT) },
+})
+const REACH_LIGHT = 8
+noa.on('addingTerrainMesh', (mesh) => gfxLook.paint(mesh))
 let soilBusy = false
 function afterVoxel(x, y, z, prev, next) {
   if (soilBusy) return
@@ -6138,19 +6190,59 @@ gfx.applyFog = (next) => {
   scene.fogEnd = 12
 }
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uLum;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*1.15+0.08,0.0,1.0);float lum=clamp(uLum,0.4,1.0);vec3 zenith=mix(vec3(0.03,0.05,0.12),vec3(0.13,0.34,0.72),lum);vec3 horizon=mix(vec3(0.16,0.18,0.30),vec3(0.64,0.80,0.93),lum);vec3 col=mix(horizon,zenith,h);vec3 sunDir=normalize(vec3(-0.45,0.86,-0.22));float sun=smoothstep(0.996,1.0,dot(n,sunDir))*lum;float glow=smoothstep(0.82,1.0,dot(n,sunDir))*lum;col=mix(col,vec3(1.0,0.93,0.78),glow*0.55);col=mix(col,vec3(1.0,0.97,0.9),sun);vec3 moonDir=normalize(vec3(0.25,0.72,0.45));float moon=smoothstep(0.986,0.998,dot(n,moonDir))*(1.0-lum);col=mix(col,vec3(0.86,0.9,0.98),moon);float star=step(0.992,fract(sin(dot(floor(n.xy*90.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(star)*(1.0-lum)*smoothstep(0.15,0.55,n.y);float band=sin(n.x*9.0+uTime)*sin(n.z*7.0+uTime*0.7);float cloud=smoothstep(0.35,0.75,band)*smoothstep(0.05,0.28,n.y)*smoothstep(0.72,0.4,n.y)*lum;col=mix(col,vec3(0.93,0.96,1.0),cloud*0.42);gl_FragColor=vec4(col,1.0);}'
-const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uLum'] })
+Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uFlat;uniform float uStars;uniform vec3 uZenith;uniform vec3 uHorizon;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*0.9+0.02,0.0,1.0);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);gl_FragColor=vec4(col,1.0);}'
+const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
 skyMat.fogEnabled = false
 skyMat.setFloat('uTime', 0)
-skyMat.setFloat('uLum', 1)
+skyMat.setFloat('uFlat', 0)
+skyMat.setFloat('uStars', 0)
+skyMat.setColor3('uZenith', new Color3(0.13, 0.34, 0.72))
+skyMat.setColor3('uHorizon', new Color3(0.72, 0.86, 0.97))
 const sky = CreateSphere('sky', { diameter: 900, segments: 12 }, scene)
 sky.material = skyMat
 sky.isPickable = false
 sky.infiniteDistance = true
 sky.alwaysSelectAsActiveMesh = true
 noa.rendering.addMeshToScene(sky, false)
+function skyDisc(name, rgb, local) {
+  const mesh = CreatePlane(name, { size: 4.5 }, scene)
+  const mat = new StandardMaterial(name + '-m', scene)
+  mat.emissiveColor = new Color3(rgb[0], rgb[1], rgb[2])
+  mat.disableLighting = true
+  mat.backFaceCulling = false
+  mat.fogEnabled = false
+  mesh.material = mat
+  mesh.isPickable = false
+  mesh.infiniteDistance = true
+  mesh.billboardMode = Mesh.BILLBOARDMODE_ALL
+  mesh.parent = noa.rendering.camera
+  mesh.position.set(local[0], local[1], local[2])
+  mesh.alwaysSelectAsActiveMesh = true
+  noa.rendering.addMeshToScene(mesh, false)
+  return mesh
+}
+const sunQuad = skyDisc('sun-quad', [1, 0.95, 0.62], [-6, 11, 22])
+const moonQuad = skyDisc('moon-quad', [0.9, 0.93, 1], [7, 10, 22])
+const skyZen = new Color3(0.13, 0.34, 0.72)
+const skyHor = new Color3(0.72, 0.86, 0.97)
+function applySky() {
+  const phase = basics && basics.phase ? basics.phase() : 'day'
+  const row = gfxLook.sky(phase)
+  skyZen.set(row.zenith[0], row.zenith[1], row.zenith[2])
+  skyHor.set(row.horizon[0], row.horizon[1], row.horizon[2])
+  skyMat.setColor3('uZenith', skyZen)
+  skyMat.setColor3('uHorizon', skyHor)
+  skyMat.setFloat('uFlat', row.flat ? 1 : 0)
+  skyMat.setFloat('uStars', row.stars)
+  sunQuad.setEnabled(row.sun > 0.2)
+  moonQuad.setEnabled(row.moon > 0.2)
+  if (!underWater) {
+    scene.fogColor.set(row.horizon[0], row.horizon[1], row.horizon[2])
+    if (scene.clearColor) scene.clearColor.set(row.horizon[0], row.horizon[1], row.horizon[2], 1)
+  }
+}
 const lampLights = []
 for (let i = 0; i < 4; i++) {
   const L = new PointLight('lamp' + i, new Vector3(0, -40, 0), scene)
@@ -6329,12 +6421,11 @@ function paintTerrain(k, fill) {
 function syncGlow() {
   if (!basics) return
   const k = Effects.light(basics.lum())
-  skyMat.setFloat('uLum', k)
+  applySky()
   scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
   sunLight.diffuse.set(DAY_DIFF.r * k, DAY_DIFF.g * k, DAY_DIFF.b * k)
   sunLight.specular.set(DAY_SPEC.r * k, DAY_SPEC.g * k, DAY_SPEC.b * k)
 
-  if (!underWater) scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
   if (!bertEm && typeof bertyMat !== 'undefined' && bertyMat) bertEm = bertyMat.emissiveColor.clone()
   if (bertEm) bertyMat.emissiveColor.set(bertEm.r * k, bertEm.g * k, bertEm.b * k)
   if (typeof dropMats !== 'undefined') {
@@ -6706,8 +6797,7 @@ function underwaterTick() {
     underWater = wet
     uwEl.hidden = !wet
     if (!wet) {
-      const k = basics && basics.lum ? basics.lum() : 1
-      scene.fogColor.set(0.10 + 0.54 * k, 0.12 + 0.68 * k, 0.22 + 0.71 * k)
+      applySky()
       plainFog()
     }
   }
@@ -6765,9 +6855,11 @@ noa.on('beforeRender', (dt) => {
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
-  if (REDUCE) return
-  skyTime += (dt || 16) * 0.0004
-  skyMat.setFloat('uTime', skyTime)
+  if (!REDUCE) {
+    skyTime += (dt || 16) * 0.0004
+    skyMat.setFloat('uTime', skyTime)
+  }
+  if (gfxLook.sway) gfxLook.tickSway(scene, performance.now() * 0.001)
 })
 
 const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () => level, get auto() { return AUTO }, quality: () => quality, aa: AA }
@@ -6786,6 +6878,7 @@ function frame(tnow) {
       gfx.applyFog()
       perf.steps.push({ at: Math.round(performance.now()), level, add: gfx.add[0] })
       if (moved.toast) toast(t('lowerDetail'))
+      if (moved.dir === 'down' && gfxLook.dropLite()) applyGraphics()
     }
     perf.lastFps = fps
     if (showSpeed) $('perf').textContent = fps.toFixed(0) + ' fps · ' + gfx.label() + ' · ' + Math.round(100 / level) + '% res · ' + noa.world._chunksKnown.count() + ' chunks'
@@ -6827,6 +6920,34 @@ async function setQuality(q) {
 }
 for (const b of document.querySelectorAll('[data-q]')) b.addEventListener('click', () => setQuality(b.dataset.q))
 paintQuality()
+function paintGfx() {
+  for (const b of document.querySelectorAll('[data-gfx]')) {
+    const on = b.dataset.gfx === gfxLook.name
+    b.setAttribute('aria-checked', String(on))
+    b.classList.toggle('on', on)
+  }
+}
+function applyGraphics() {
+  noa.rendering.useAO = gfxLook.ao
+  remeshAll()
+  applySky()
+  gfxLook.tickSway(scene, performance.now() * 0.001)
+  paintGfx()
+}
+function setGraphics(q) {
+  const prevAo = gfxLook.ao
+  const prevLights = gfxLook.lightsOn
+  const prev = gfxLook.name
+  if (!gfxLook.set(q)) return gfxLook.name
+  try {
+    if (prevAo !== gfxLook.ao || prevLights !== gfxLook.lightsOn) applyGraphics()
+    else { applySky(); gfxLook.tickSway(scene, performance.now() * 0.001); paintGfx() }
+    if (prev !== gfxLook.name) toast(gfxLook.label())
+  } catch (e) { console.warn('graphics', e) }
+  return gfxLook.name
+}
+for (const b of document.querySelectorAll('[data-gfx]')) b.addEventListener('click', () => setGraphics(b.dataset.gfx))
+paintGfx()
 
 const topBar = document.querySelector('.top')
 function refit() {
@@ -6924,8 +7045,81 @@ function fixHome() {
 fixHome(); setTimeout(fixHome, 600); setTimeout(fixHome, 1600)
 
 if (!__BLOX_STUDENT__) {
+  function shadeNear(x, y, z) {
+    let best = 0
+    let n = 0
+    const meshes = scene.meshes
+    for (let m = 0; m < meshes.length; m++) {
+      const mesh = meshes[m]
+      if (!mesh || !mesh.name || mesh.name.indexOf('chunk_') !== 0) continue
+      const pos = mesh.getVerticesData('position')
+      const col = mesh.getVerticesData('color')
+      if (!pos || !col) continue
+      const mm = /^chunk_(-?\d+)\|(-?\d+)\|(-?\d+)\|/.exec(mesh.name)
+      if (!mm) continue
+      const ox = +mm[1] * S
+      const oy = +mm[2] * S
+      const oz = +mm[3] * S
+      for (let i = 0; i < pos.length; i += 3) {
+        const wx = ox + pos[i]
+        const wy = oy + pos[i + 1]
+        const wz = oz + pos[i + 2]
+        if (Math.abs(wx - (x + 0.5)) > 1.35 || Math.abs(wy - (y + 0.5)) > 1.35 || Math.abs(wz - (z + 0.5)) > 1.35) continue
+        const vi = (i / 3) * 4
+        const lum = col[vi] * 0.3 + col[vi + 1] * 0.55 + col[vi + 2] * 0.15
+        if (lum > best) best = lum
+        n++
+      }
+    }
+    return { best, n }
+  }
+  function waterTops(x, y, z) {
+    const pts = []
+    const meshes = scene.meshes
+    for (let m = 0; m < meshes.length; m++) {
+      const mesh = meshes[m]
+      if (!mesh || !mesh.material || mesh.material.name !== 'bert-water') continue
+      const pos = mesh.getVerticesData('position')
+      const nor = mesh.getVerticesData('normal')
+      if (!pos || !nor) continue
+      const mm = /^chunk_(-?\d+)\|(-?\d+)\|(-?\d+)\|/.exec(mesh.name || '')
+      if (!mm) continue
+      const ox = +mm[1] * S
+      const oy = +mm[2] * S
+      const oz = +mm[3] * S
+      for (let i = 0; i < pos.length; i += 3) {
+        if (nor[i + 1] < 0.5) continue
+        const wx = ox + pos[i]
+        const wy = oy + pos[i + 1]
+        const wz = oz + pos[i + 2]
+        if (wy < y + 0.6 || wy > y + 1.4) continue
+        if (wx < x - 0.05 || wx > x + 2.05 || wz < z - 0.05 || wz > z + 1.05) continue
+        pts.push([Math.round(wx * 100) / 100, Math.round(wy * 100) / 100, Math.round(wz * 100) / 100])
+      }
+    }
+    return pts
+  }
+  window.__gfx = {
+    get name() { return gfxLook.name },
+    get managed() { return gfxLook.managed },
+    get builds() { return gfxLook.builds },
+    get ao() { return gfxLook.ao },
+    get sway() { return gfxLook.sway },
+    get lights() { return gfxLook.lightsOn },
+    get gradient() { return gfxLook.gradient },
+    level: (x, y, z) => gfxLook.level(x, y, z),
+    sky: () => gfxLook.sky(basics ? basics.phase() : 'day'),
+    fog: () => [scene.fogColor.r, scene.fogColor.g, scene.fogColor.b],
+    leaf: (id, x, z) => gfxLook.leafTint(id, x, z),
+    waterAlpha: () => waterMat.alpha,
+    set: (q) => setGraphics(q),
+    drop: () => { if (gfxLook.dropLite()) applyGraphics(); return gfxLook.name },
+    flower: () => gfxLook.tickSway(scene, performance.now() * 0.001),
+    shadeNear,
+    waterTops,
+  }
   window.__blocks = {
-    version: VERSION, setQuality, refit, get quality() { return quality }, get lang() { return LANG },
+    version: VERSION, setQuality, setGraphics, refit, get quality() { return quality }, get graphics() { return gfxLook.name }, get lang() { return LANG },
     rules: Rules,
     effects: Effects,
     noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, importFile, exportDoc: snapshot,
@@ -7005,7 +7199,7 @@ attachCircuits({
   card: (text) => showCard(text),
   t,
   now: () => performance.now(),
-  markGlow: () => { syncGlow._dirty = true },
+  markGlow: () => { syncGlow._dirty = true; gfxLook.markCircuits() },
   dot() {
     const mesh = CreateSphere('cdot', { diameter: 0.14, segments: 4 }, shapeScene)
     const mat = new StandardMaterial('cdotm' + circuitDots, shapeScene)
@@ -7041,6 +7235,7 @@ attachCircuits({
 
 basics.boot(WORLD !== 'bertyville')
 load().catch(() => {}).finally(() => {
+  try { gfxLook.reindex() } catch (e) {}
   if (allowSave) window.__bertOpen = true
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()

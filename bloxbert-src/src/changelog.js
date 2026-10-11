@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.173', date: '2026-10-11', lines: {
+    en: ['The sky shifts from dawn to night, lamps warm the blocks nearby, water reads clearer, and Graphics has Lite, Normal, and Fancy.'],
+    uk: ['Небо змінюється від світанку до ночі, лампи гріють блоки поруч, воду видно краще, а в графіці є Легкий, Звичайний і Гарний.'],
+    ru: ['Небо меняется от рассвета до ночи, лампы греют блоки рядом, воду видно яснее, а в графике есть Лёгкий, Обычный и Красивый.'],
+    es: ['El cielo cambia del amanecer a la noche, las lámparas calientan los bloques cercanos, el agua se ve más clara, y Gráficos tiene Lite, Normal y Fino.'],
+    ar: ['السماء تتبدل من الفجر إلى الليل، والمصابيح تدفئ المكعبات القريبة، والماء أوضح، والرسوم فيها خفيف وعادي وفاخر.'],
+    'fa-AF': ['آسمان از سپیده تا شب عوض می‌شود، چراغ‌ها بلاک‌های نزدیک را گرم می‌کنند، آب روشن‌تر دیده می‌شود، و گرافیک سبک، عادی و عالی دارد.'],
+    rw: ['Ikirere rihinduka kuva ku museke kugeza nijoro, amatara ashyushya amablock hafi, amazi asoma neza, kandi Ibisakaza ifite Yoroheje, Gisanzwe na Nziza.'],
+    ti: ['ሰማይ ካብ ንጋሆ ክሳብ ለይቲ ይቕየር፡ መብራህቲ ኣብ ቀረባ ብሎክ የውዕዩ፡ ማይ ግልጺ ይረአ፡ ስእሊ ድማ ቀሊል፡ ልሙድን ጽቡቕን ኣለዎ።'],
+  }},
   { v: '2.5.172', date: '2026-10-11', lines: {
     en: ['The hand sits smaller in the corner. A held sapling is its flat icon. One tip shows at a time. Side-by-side wires no longer skip a switch.'],
     uk: ['Рука менша й у кутку. Саджанець у руці — його плоска іконка. Одна підказка за раз. Сусідні дроти більше не обходять вимикач.'],
