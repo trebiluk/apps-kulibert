@@ -950,7 +950,6 @@ function blockPalette() {
 const ID = Object.fromEntries(BLOCKS.map((b) => [b[1], b[0]]))
 const OPEN_IDS = new Set(BLOCKS.filter((b) => String(b[1]).endsWith('Open')).map((b) => b[0]))
 const FLORA_PLANT_IDS = new Set(BLOCKS.filter((b) => FLORA_CROSS[b[1]]).map((b) => b[0]))
-noa.blockTargetIdCheck = (id) => OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id)
 const blockName = (id) => {
   const row = BLOCKS.find((b) => b[0] === id)
   return t(row ? String(row[1]).replace(/Top/g, '') : 'stone')
@@ -1308,9 +1307,38 @@ function passThrough(id) {
   }
   return passCropAim(id)
 }
+function plantMeshDrawn(id) {
+  const meshes = noa.registry && noa.registry._blockMeshLookup
+  const mesh = meshes && meshes[id]
+  if (!mesh) return false
+  if (typeof mesh.getTotalVertices !== 'function') return true
+  return mesh.getTotalVertices() > 0
+}
+function bareTuftOrFlora(id) {
+  if (id !== ID.tuft && !FLORA_PLANT_IDS.has(id)) return false
+  return !plantMeshDrawn(id)
+}
+function lowPlant(id) {
+  if (!id) return false
+  return id === ID.tuft || FLORA_PLANT_IDS.has(id) || isCropId(id) || isBushId(id)
+}
+function playLocked() {
+  return !!(document.pointerLockElement || (noa.container && noa.container.hasPointerLock))
+}
 noa.blockTargetIdCheck = (id) => {
+  if (bareTuftOrFlora(id)) return false
   if (id === WATER && session && session.selectedItem && session.selectedItem() === 'bushSprout') return true
-  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || noa.registry.getBlockSolidity(id))
+  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id))
+}
+if (noa.defaultBlockHighlightFunction) {
+  noa.off('targetBlockChanged', noa.defaultBlockHighlightFunction)
+  noa.on('targetBlockChanged', (tgt) => {
+    if (tgt && lowPlant(tgt.blockID)) {
+      noa.rendering.highlightBlockFace(false)
+      return
+    }
+    noa.defaultBlockHighlightFunction(tgt)
+  })
 }
 let basics = null
 let panels = null
@@ -2474,7 +2502,9 @@ function tableTarget() {
 }
 noa.inputs.down.on('fire', () => {
   if (inspectOn) { showInspect(); return }
-  if (anyCard() || tableMode || !noa.container.hasPointerLock) return
+  if (tableMode) return
+  if (anyCard()) return
+  if (!playLocked()) { showPlayChip(); grabLock(); return }
   const aimed = noa.targetedBlock
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
@@ -2498,7 +2528,9 @@ function tryEatClick(aimed) {
 }
 noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
-  if (anyCard() || tableMode || rightPress || !noa.container.hasPointerLock) return
+  if (tableMode || rightPress) return
+  if (anyCard()) return
+  if (!playLocked()) { showPlayChip(); grabLock(); return }
   const tget = noa.targetedBlock
   if (tryEatClick(tget)) return
   if (tget && isUseBlock(tget.blockID)) return
@@ -4087,7 +4119,7 @@ function grabLock() {
   playLockWanted = true
   lockAskedAt = now
   const el = noa.container && noa.container.element
-  if (!el || !el.requestPointerLock) { playLockWanted = false; armResume = now; showPlayChip(); return }
+  if (!el || !el.requestPointerLock) { playLockWanted = false; armResume = 0; showPlayChip(); return }
   try {
     const res = el.requestPointerLock()
     if (res && res.catch) res.catch((err) => {
@@ -4101,7 +4133,7 @@ function grabLock() {
         return
       }
       playLockWanted = false
-      armResume = performance.now()
+      armResume = 0
       showPlayChip()
     })
   } catch (e) {}
@@ -4149,7 +4181,7 @@ function closePlay(how) {
   } finally { closingPlay = false }
 }
 function eatResume(e) {
-  if (swallowing()) return true
+  if (swallowing()) return false
   if (!armResume) return false
   if (TOUCH_UI || (e && e.pointerType === 'touch')) { armResume = 0; return false }
   if (document.pointerLockElement || noa.container.hasPointerLock) { armResume = 0; hidePlayChip(); return false }
@@ -4398,6 +4430,9 @@ $('ver-plate').addEventListener('click', () => { openMenu(true); panels.open('lo
 $('wallet-chip').addEventListener('click', () => { toast(t('practiceTip')); openMenu(true); panels.open('wallet') })
 let menuFromLock = false
 let hadLock = false
+let escUnlock = false
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') escUnlock = true }, true)
+document.addEventListener('keyup', (e) => { if (e.key === 'Escape') escUnlock = false }, true)
 document.addEventListener('pointerlockchange', () => {
   if (document.pointerLockElement) {
     hadLock = true
@@ -4416,6 +4451,8 @@ document.addEventListener('pointerlockchange', () => {
   }
   const wasLocked = hadLock
   hadLock = false
+  const fromEsc = escUnlock
+  escUnlock = false
   if (playLockWanted && !anyCard() && !TOUCH_UI && lockTries < 2 && navigator.userActivation && navigator.userActivation.isActive) {
     lockTries += 1
     lockAskedAt = 0
@@ -4423,7 +4460,8 @@ document.addEventListener('pointerlockchange', () => {
     return
   }
   if (anyCard() || (cardClosedAt && performance.now() - cardClosedAt < 600)) { selfUnlock = false; return }
-  if (wasLocked && !selfUnlock && !tableMode && !menuFromLock) { menuFromLock = true; openMenu(true) }
+  if (wasLocked && !selfUnlock && !tableMode && !menuFromLock && fromEsc) { menuFromLock = true; openMenu(true) }
+  else if (wasLocked && !selfUnlock && !tableMode && !anyCard()) showPlayChip()
   selfUnlock = false
 })
 noa.on('tick', () => {
@@ -4858,6 +4896,17 @@ let rightPress = null
 let placeHoldAt = 0
 let pickArmed = false
 let holdHinted = false
+let quickCrackGen = 0
+function flashHoldHint(d) {
+  if (!d || d.broke || d.creative || d.kind !== 'mouse' || !survivalOn()) return false
+  if (isUseBlock(d.id)) return false
+  if (performance.now() - (d.t0 || 0) >= 480) return false
+  showCrack(Math.max(d.p || 0, 0.16), null, null, true)
+  if (!holdHinted) { holdHinted = true; toast(t('holdToBreak')) }
+  const gen = ++quickCrackGen
+  setTimeout(() => { if (gen === quickCrackGen) hideCrack() }, 700)
+  return true
+}
 let dig = null
 let lastGroundAt = 0
 let jumpBufferAt = 0
@@ -5109,6 +5158,20 @@ function boxedIn() {
   }
   return true
 }
+function lingerQuick(d, now) {
+  if (!d || d.broke || d.creative || d.kind !== 'mouse' || !survivalOn()) return false
+  if (isUseBlock(d.id)) return false
+  if (!d.quickUntil) {
+    if (now - (d.t0 || now) >= 480) return false
+    d.quickUntil = now + 700
+    showCrack(Math.max(d.p || 0, 0.16), null, null, true)
+    if (!holdHinted) { holdHinted = true; toast(t('holdToBreak')) }
+    return true
+  }
+  if (now >= d.quickUntil) return false
+  showCrack(Math.max(d.p || 0, 0.16), null, null, true)
+  return true
+}
 function feelTick(dt) {
   if (learn && learn.sync) learn.sync()
   tickDigChip()
@@ -5195,7 +5258,7 @@ function feelTick(dt) {
   const breaking = !!(noa.inputs.state.fire || mouseLeft || leftDown)
   if (!breaking) sweep = null
   const touchLook = !!(look && look.pt === 'touch')
-  if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (noa.container.hasPointerLock || (look && look.pt !== 'touch'))) beginDig('mouse')
+  if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
   if (sheetOpen) mouseRight = false
   else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
     placeHoldAt = now
@@ -5265,10 +5328,13 @@ function feelTick(dt) {
     const aimed = !!(seen || tget)
     const same = !!(aimed && ax === dig.x && ay === dig.y && az === dig.z)
     if (breaking && aimed && !same) beginDig('mouse')
+    else if (!breaking && lingerQuick(dig, now)) { }
     else if (!breaking && !same) { dig = null; hideCrack() }
     else {
       const next = advanceDig(dig, now, breaking, true)
-      if (!next) { dig = null; hideCrack() }
+      if (!next) {
+        if (!lingerQuick(dig, now)) { dig = null; hideCrack() }
+      }
       else {
         dig = next
         const blocked = clampGate(dig, now)
@@ -5551,11 +5617,20 @@ canvas.addEventListener('pointermove', (e) => {
 canvas.addEventListener('pointerup', (e) => {
   releaseFar()
   if (e.button === 0 || e.button < 0) { mouseLeft = false; leftDown = false }
+  if (!TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
+    showPlayChip()
+    grabLock()
+  }
   if ((e.button === 0 || e.button < 0) && dig && !dig.broke && (isCropId(dig.id) || isBushId(dig.id)) && !fruitingAt(dig.x, dig.y, dig.z, getVoxel(dig.x, dig.y, dig.z))) {
     dig = null
     hideCrack()
   }
-  if (swallowing()) { look = null; dig = null; hideCrack(); return }
+  if (swallowing()) {
+    flashHoldHint(dig)
+    look = null
+    dig = null
+    return
+  }
   if (!look || e.pointerId !== look.id) return
   const moved = look.moved
   const tap = moved < 8
@@ -6363,9 +6438,12 @@ function syncPlaceGhost() {
 function paintOutline() {
   const tgt = noa.targetedBlock
   const pos = tgt ? tgt.position : (tableMode ? tableCursor : null)
-  if (!pos) { outline.setEnabled(false); syncPlaceGhost(); return }
+  if (!pos) { outline.scaling.set(1, 1, 1); outline.setEnabled(false); syncPlaceGhost(); return }
+  const id = tgt ? (tgt.blockID || 0) : 0
+  const low = lowPlant(id)
+  outline.scaling.set(low ? 0.6 / 1.04 : 1, low ? 0.7 / 1.04 : 1, low ? 0.6 / 1.04 : 1)
   outline.setEnabled(true)
-  const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + 0.5, pos[2] + 0.5], null, [])
+  const local = noa.globalToLocal([pos[0] + 0.5, pos[1] + (low ? 0.35 : 0.5), pos[2] + 0.5], null, [])
   outline.position.copyFromFloats(local[0], local[1], local[2])
   syncPlaceGhost()
 }

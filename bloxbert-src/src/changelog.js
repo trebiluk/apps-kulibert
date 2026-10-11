@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.166', date: '2026-10-11', lines: {
+    en: ['Fixed: clicks work again, so you can break blocks, chop wood and pick flowers.'],
+    uk: ['Виправлено: кліки знову працюють, тож можна ламати блоки, рубати дерево й збирати квіти.'],
+    ru: ['Исправлено: клики снова работают, можно ломать блоки, рубить дерево и собирать цветы.'],
+    es: ['Arreglado: los clics vuelven a funcionar, así que puedes romper bloques, cortar madera y recoger flores.'],
+    ar: ['تم الإصلاح: النقر يعمل من جديد، فتستطيع كسر المكعبات وقطع الخشب وقطف الزهور.'],
+    'fa-AF': ['درست شد: کلیک دوباره کار می‌کند، پس می‌توانی بلاک بشکنی، چوب ببری و گل بچینی.'],
+    rw: ['Byakosowe: gukanda bikora nanone, ushobora kuvuna amablock, gutema ibiti no gutoranya indabyo.'],
+    ti: ['ተስተኻኺሉ: ጠውቕ እንደገና ይሰርሕ፡ ብሎክ ክትስብር፡ ዕንጨይቲ ክትቑረጥን ዕምባባ ክትልቕምን ትኽእል።'],
+  }},
   { v: '2.5.165', date: '2026-10-11', lines: {
     en: ['Pines now wear a stepped cone, and breaking needles can drop a pinecone. Six flowers make dye at the Workbench. Tall grass and ferns sometimes drop seeds. Maker hills, water, trees, and seed shape a new world, and old worlds stay the same.'],
     uk: ['Сосна тепер має ступінчастий конус, а з хвої може впасти шишка. Шість квітів дають барвник на верстаку. Висока трава й папороть іноді кидають насіння. Пагорби, вода, дерева й зерно Творця задають новий світ, а старі світи лишаються тими самими.'],
