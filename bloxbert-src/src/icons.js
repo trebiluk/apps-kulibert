@@ -402,6 +402,7 @@ const FOOD = {
   floorLamp: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="10" y="4" width="4" height="3" fill="#f6c453"/><rect x="11" y="7" width="2" height="12" fill="#8B5A2B"/><ellipse cx="12" cy="20" rx="4" ry="1.5" fill="#6B3E26"/></svg>',
   wallLamp: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="8" height="2" fill="#8B5A2B"/><rect x="12" y="8" width="6" height="6" fill="#f6c453" stroke="#8B5A2B"/></svg>',
   rug: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="1" fill="#c4a36a" stroke="#8B5A2B"/><rect x="5" y="8" width="14" height="8" fill="#e6c99a"/></svg>',
+  circuitLens: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="#7ee7f0" stroke="#0e7490" stroke-width="1.6"/><circle cx="12" cy="12" r="2" fill="#0891b2"/><path d="M5 12 H9 M15 12 H19 M12 5 V9 M12 15 V19" stroke="#0e7490" stroke-width="1.4"/></svg>',
 }
 export function itemSvg(svg) {
   if (!svg) return ''

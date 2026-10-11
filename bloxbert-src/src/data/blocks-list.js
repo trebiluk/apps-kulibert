@@ -6,6 +6,7 @@ import { packBlocks, packOn } from '../packs/registry.js'
 import '../packs/farm/pack.js'
 import '../packs/decor/pack.js'
 import '../packs/flora/pack.js'
+import '../packs/tech/pack.js'
 
 export const BASE_BLOCKS = [
   [1000, 'missing', 'gravel_stone', '?', null],
@@ -95,6 +96,11 @@ export function buildBlocks() {
     const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
     const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
     insertAfter(rows, 'clay', take('birchLog', 'birchLeaves', 'birchPlanks', 'pineLog', 'pineNeedles', 'pinePlanks', 'daisy', 'poppy', 'cornflower', 'sunflower', 'tulip', 'lupine', 'tallGrass', 'fern'))
+  }
+  if (packOn('tech')) {
+    const byKey = new Map(packBlocks().filter((b) => b.row).map((b) => [b.key, b.row]))
+    const take = (...keys) => keys.map((k) => byKey.get(k)).filter(Boolean)
+    insertAfter(rows, 'clay', take('techCell', 'techLine', 'techSwitch', 'techSwitchOn', 'techButton', 'techButtonOn'))
   }
   return rows
 }

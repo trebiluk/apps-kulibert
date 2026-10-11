@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.171', date: '2026-10-11', lines: {
+    en: ['A Battery Cell, Nanotube line, Switch and Push Button light a lamp in a closed loop. The Circuit Lens shows the current stop at a break.'],
+    uk: ['Батарея, нанотрубкова лінія, вимикач і кнопка світять лампу в замкненому колі. Лінза кола показує, де струм зупиняється на розриві.'],
+    ru: ['Батарея, линия нанотрубок, выключатель и кнопка зажигают лампу в замкнутой цепи. Линза цепи показывает, где ток останавливается на разрыве.'],
+    es: ['Una pila, una línea de nanotubo, un interruptor y un pulsador encienden una lámpara en un lazo cerrado. La lente muestra dónde se detiene la corriente.'],
+    ar: ['خلية وخط أنبوب نانوي ومفتاح وزر ضغط تضيء مصباحاً في حلقة مغلقة. عدسة الدائرة تُظهر أين يتوقف التيار عند القطع.'],
+    'fa-AF': ['یک پیل، خط نانولوله، کلید و دکمه چراغ را در حلقهٔ بسته روشن می‌کنند. عدسی مدار نشان می‌دهد جریان کجا قطع می‌شود.'],
+    rw: ['Bateri, umurongo wa nanotube, ikinyuranyo na buto byaca itara mu ruziga rwuzuye. Ishusho y\'uruziga yerekana aho umuriro uhagarara.'],
+    ti: ['ባትሪ፡ መስመር ናኖቱብ፡ መቐለሊን መጠወቒን መብራህቲ ብዝተዓጽወ ዓንኬል የብርሁ። መነጽር ሰርኪት ኤሌክትሪክ ኣበይ ከም ዝቁረጽ የርኢ።'],
+  }},
   { v: '2.5.170', date: '2026-10-11', lines: {
     en: ['Pines wear a fuller stepped crown. The chop-a-tree tip closes with a touch. On a phone the camera steps back out of a wall.'],
     uk: ['Сосни мають повнішу крону східцями. Підказку про зруб можна закрити дотиком. На телефоні камера виходить зі стіни.'],

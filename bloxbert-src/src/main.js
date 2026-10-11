@@ -72,6 +72,9 @@ import { createHands } from './hands.js'
 import { createFarm, nearWater, advance, stage, preview, formatLeft, isCropId, isBushId, isRipe, replantSeed, CROP, BUSH, DRY, WET, WATER, RIPE_MS, capOf } from './farm.js'
 import { createForage, wildPickCount, BARE_BUSH, FRUIT_BUSH, WILD_WHEAT } from './forage.js'
 import { createQuality } from './gfx/quality.js'
+import { powerOf } from './power.js'
+import { TECH } from './packs/tech/pack.js'
+import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
 
@@ -496,6 +499,9 @@ const handleD = dye('shape-handle', 0.96, 0.78, 0.28)
 const buttonD = dye('shape-button', 0.86, 0.2, 0.22)
 const lampD = dye('shape-lamp', 1, 0.84, 0.32)
 lampD.emissiveColor = new Color3(0.95, 0.62, 0.12)
+const copperD = dye('shape-copper', 0.78, 0.42, 0.16)
+const copperOn = dye('shape-copper-on', 0.25, 0.9, 0.95)
+copperOn.emissiveColor = new Color3(0.15, 0.75, 0.85)
 const wheatStalk = noa.rendering.makeStandardMaterial('wheat-stalk')
 wheatStalk.diffuseColor = new Color3(0.22, 0.62, 0.18)
 wheatStalk.ambientColor = new Color3(0.82, 0.9, 0.78)
@@ -865,6 +871,25 @@ function rugMesh() {
   const mid = part('mid', 0.58, 0.052, 0.58, 0, 0.027, 0, 0, rugMid)
   return mergeMats('rug', [edge, mid])
 }
+function cellMesh() {
+  const body = part('b', 0.46, 0.62, 0.28, 0, 0.34, 0, 0, copperD)
+  const nub = part('n', 0.14, 0.1, 0.14, 0, 0.7, 0, 0, metalD)
+  return shape('tech-cell', [body, nub], copperD)
+}
+function lineMesh() {
+  return shape('tech-line', [part('s', 0.92, 0.08, 0.28, 0, 0.04, 0, 0, copperD)], copperD)
+}
+function techSwitchMesh(on) {
+  const base = part('b', 0.5, 0.12, 0.5, 0, 0.06, 0, 0, copperD)
+  const arm = part('h', 0.08, 0.46, 0.08, 0, 0.34, on ? 0.14 : -0.14, on ? 0.7 : -0.7, on ? copperOn : metalD)
+  return shape(on ? 'tech-sw-on' : 'tech-sw', [base, arm], on ? copperOn : copperD)
+}
+function techButtonMesh(on) {
+  const base = part('b', 0.56, 0.1, 0.56, 0, 0.05, 0, 0, copperD)
+  const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
+  return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
+}
+function techFacing(mesh, x, y, z) { orientTech(mesh, x, y, z) }
 const SHAPES = {
   28: wheatMesh(),
   49: farmlandMesh(false),
@@ -906,6 +931,12 @@ const SHAPES = {
   1103: wallLampMesh(true),
   1104: rugMesh(),
   1105: rugMesh(),
+  1400: cellMesh(),
+  1401: lineMesh(),
+  1402: techSwitchMesh(false),
+  1403: techSwitchMesh(true),
+  1404: techButtonMesh(false),
+  1405: techButtonMesh(true),
 }
 const clayMat = dye('clay-soil', 0.64, 0.5, 0.38)
 noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
@@ -917,13 +948,15 @@ for (const [id, name, material] of BLOCKS) {
   const mesh = mesh0 || (cross ? floraMesh(name, cross) : null)
   const lantern = id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103
   const rug = id === 1104 || id === 1105
+  const line = id === TECH.line
   const plant = id === 28 || id === 58 || isCropId(id) || isBushId(id) || !!cross
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
-  const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug) }
+  const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug && !line) }
   if (fluid) { opts.fluid = true; opts.opaque = false; opts.solid = false }
   if (mesh && !fluid) opts.blockMesh = mesh
   if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
+  if (id === TECH.cell || id === TECH.line || id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) opts.onCustomMeshCreate = techFacing
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
     opts.onSet = fix
@@ -1175,7 +1208,10 @@ function setVoxel(x, y, z, v, draw = true) {
     markSave(t('notSaved'))
     if (isMachineId(prev) || isMachineId(v)) trackMachine(x, y, z, v)
   }
-  if (prev !== v) afterVoxel(x, y, z, prev, v)
+  if (prev !== v) {
+    noteVoxel(x, y, z, prev, v)
+    afterVoxel(x, y, z, prev, v)
+  }
 }
 let soilBusy = false
 function afterVoxel(x, y, z, prev, next) {
@@ -1329,7 +1365,7 @@ function playLocked() {
 noa.blockTargetIdCheck = (id) => {
   if (bareTuftOrFlora(id)) return false
   if (id === WATER && session && session.selectedItem && session.selectedItem() === 'bushSprout') return true
-  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id))
+  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === TECH.line || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id))
 }
 if (noa.defaultBlockHighlightFunction) {
   noa.off('targetBlockChanged', noa.defaultBlockHighlightFunction)
@@ -1828,11 +1864,12 @@ function breakBlock() {
 }
 function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
+  if (id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) return true
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103) return true
   return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box || isShopBlock(id)
 }
 function isGear(id) {
-  return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN
+  return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN || id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn
 }
 function useHoldReady(dig, now) {
   if (!dig || !isUseBlock(dig.id)) return true
@@ -1853,6 +1890,18 @@ function useHit(hit) {
   if (isDoor(id) && freshPlacedDoor()) {
     forceShut(ax, ay, az)
     toast(t('doorShut'))
+    return true
+  }
+  if ((id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103) && powerOf(ax, ay, az)) {
+    if (id !== LANTERN) preferLamp(ax, ay, az, id)
+    return true
+  }
+  if (id === TECH.switch || id === TECH.switchOn) {
+    if (!canReach([ax, ay, az])) return false
+    return toggleSwitch(ax, ay, az)
+  }
+  if (id === TECH.button || id === TECH.buttonOn) {
+    if (!canReach([ax, ay, az])) return false
     return true
   }
   if (basics && canReach([ax, ay, az]) && basics.use(ax, ay, az)) {
@@ -1947,6 +1996,8 @@ function placeBlock(face, opts) {
   if (isDoor(id)) id = placedDoorId(id)
   else if (id === LEVER.on) id = LEVER.off
   else if (id === BUTTON.on) id = BUTTON.off
+  else if (id === TECH.switchOn) id = TECH.switch
+  else if (id === TECH.buttonOn) id = TECH.button
   if (session && session.mode === 'survival' && !id) {
     const held = session.selectedItem && session.selectedItem()
     toast(held ? t('notABlock') : t('emptySlot'))
@@ -3003,6 +3054,7 @@ async function applyDoc(doc) {
   seedOldBushes()
   if (session) paintModeChip()
   syncDropMeshes()
+  circuitRescan()
 }
 async function importFile(file) {
   if (file.size > 2 * 1024 * 1024) throw new Error('That file is too big for a world (over 2 MB).')
@@ -4539,6 +4591,11 @@ if (!localStorage.getItem('bloxbert-menu-hint')) {
 const bar = $('hotbar')
 const sheetEl = $('sheet')
 const paletteIds = BLOCKS.filter((b) => b[0] < 1000 && !isDoorTop(b[0]) && !isCropId(b[0]) && !isBushId(b[0]) && b[0] !== WET && b[1] !== 'woodshopSide').map((b) => b[0])
+if (packOn('tech')) {
+  for (const id of [TECH.cell, TECH.line, TECH.switch, TECH.button]) {
+    if (BLOCKS.some((b) => b[0] === id) && paletteIds.indexOf(id) < 0) paletteIds.push(id)
+  }
+}
 let selectedSlot = 0
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
@@ -5543,6 +5600,7 @@ window.addEventListener('pointerdown', (e) => {
 }, true)
 canvas.addEventListener('contextmenu', (e) => { if (canvasHit(e)) e.preventDefault() })
 let look = null
+let buttonHold = null
 const LOOK_H = 0.40 * Math.PI / 180
 const LOOK_V = 0.34 * Math.PI / 180
 let airCap = WALK
@@ -5653,6 +5711,10 @@ canvas.addEventListener('pointerdown', (e) => {
   const hit = seen
     ? { id: seen.id, blockID: seen.id, position: [seen.x, seen.y, seen.z], adjacent: [seen.x, seen.y + 1, seen.z] }
     : (finger ? rayAt(e.clientX, e.clientY, true) : targetHit())
+  if (hit && (hit.id === TECH.button || hit.blockID === TECH.button || hit.id === TECH.buttonOn || hit.blockID === TECH.buttonOn) && hit.position && canReach(hit.position)) {
+    pressButton(hit.position[0], hit.position[1], hit.position[2])
+    buttonHold = { x: hit.position[0], y: hit.position[1], z: hit.position[2] }
+  }
   if (hit && finger && !tableMode && !canReach(hit.position)) {
     farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
     dig = null
@@ -5707,6 +5769,10 @@ canvas.addEventListener('pointermove', (e) => {
   setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
 })
 canvas.addEventListener('pointerup', (e) => {
+  if (buttonHold) {
+    releaseButton(buttonHold.x, buttonHold.y, buttonHold.z)
+    buttonHold = null
+  }
   releaseFar()
   if (e.button === 0 || e.button < 0) { mouseLeft = false; leftDown = false }
   if (!TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
@@ -5790,7 +5856,13 @@ canvas.addEventListener('pointerup', (e) => {
     toast(t('holdToBreak'))
   }
 })
-canvas.addEventListener('pointercancel', () => { look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar() })
+canvas.addEventListener('pointercancel', () => {
+  if (buttonHold) {
+    releaseButton(buttonHold.x, buttonHold.y, buttonHold.z)
+    buttonHold = null
+  }
+  look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar()
+})
 window.addEventListener('pointerdown', (e) => {
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (!canvasHit(e)) return
@@ -6208,6 +6280,10 @@ function syncGlow() {
         for (let y = py - 2; y <= py + 4; y++) {
           const id = getVoxel(x, y, z)
           if (id === 1101 || id === 1103) found.push({ x, y, z, radius: 6, step: 1 })
+          if (id === 47) {
+            const rec = session && session.meta && session.meta.get(x + ',' + y + ',' + z)
+            if (rec && rec.circuitLit) found.push({ x, y, z, radius: 7, step: 1 })
+          }
           if (id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104) tints.push({ x, y, z, id })
         }
       }
@@ -6602,6 +6678,7 @@ hands = createHands({
   },
 })
 noa.on('beforeRender', (dt) => {
+  circuitTick(performance.now())
   paintOutline()
   paintProtectRing()
   if (basics) syncGlow()
@@ -6828,6 +6905,58 @@ if (!__BLOX_STUDENT__) {
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
   }
 }
+
+let circuitDots = 0
+attachCircuits({
+  getVoxel,
+  setVoxel,
+  chunks: () => saved,
+  chunkSize: S,
+  metaGet: (key) => session && session.meta ? session.meta.get(key) : null,
+  metaSet: (key, rec) => { if (session && session.meta) session.meta.set(key, rec) },
+  faceAt: faceTowardPlayer,
+  held: () => session && session.selectedItem ? (session.selectedItem() || '') : '',
+  lite: () => quality === 'lite',
+  creative: () => !!(session && session.mode === 'creative'),
+  give: (item, n) => { if (session && session.give) session.give(item, n) },
+  count: (item) => session && session.bag ? session.bag.count(item) : 0,
+  learn,
+  card: (text) => showCard(text),
+  t,
+  now: () => performance.now(),
+  markGlow: () => { syncGlow._dirty = true },
+  dot() {
+    const mesh = CreateSphere('cdot', { diameter: 0.14, segments: 4 }, shapeScene)
+    const mat = new StandardMaterial('cdotm' + circuitDots, shapeScene)
+    circuitDots += 1
+    mat.emissiveColor = new Color3(0.25, 0.95, 1)
+    mat.disableLighting = true
+    mesh.material = mat
+    mesh.isPickable = false
+    mesh.setEnabled(false)
+    noa.rendering.addMeshToScene(mesh, false)
+    return mesh
+  },
+  glow(x, y, z) {
+    const mesh = CreateBox('cglow', { width: 0.98, height: 0.12, depth: 0.36 }, shapeScene)
+    const mat = new StandardMaterial('cglowm' + x + '_' + y + '_' + z, shapeScene)
+    mat.emissiveColor = new Color3(0.2, 0.9, 1)
+    mat.alpha = 0.9
+    mat.transparencyMode = 2
+    mat.disableLighting = true
+    mesh.material = mat
+    mesh.isPickable = false
+    noa.rendering.addMeshToScene(mesh, false)
+    const lp = noa.globalToLocal([x + 0.5, y + 0.14, z + 0.5], null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+    return mesh
+  },
+  move(mesh, x, y, z) {
+    if (!mesh) return
+    const lp = noa.globalToLocal([x, y, z], null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+  },
+})
 
 basics.boot(WORLD !== 'bertyville')
 load().catch(() => {}).finally(() => {
@@ -7201,6 +7330,8 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return { ids, unknown: getVoxel(0, 2, 3), gift: gift && gift.slots ? gift.slots.filter(Boolean).map((s) => s.item) : [] }
     },
     fps: () => perf.lastFps || 0,
+    circuit: () => circuitView(),
+    meta: (x, y, z) => session && session.meta ? (session.meta.get((x | 0) + ',' + (y | 0) + ',' + (z | 0)) || null) : null,
     fpsSpan(ms = 4000) {
       const d = perf.deltas
       let acc = 0, n = 0

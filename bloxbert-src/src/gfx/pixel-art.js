@@ -308,9 +308,12 @@ reg('safetyGlasses', (set) => {
 // Pull pack-owned art so packs keep their wraps
 import '../packs/farm/art.js';
 import '../packs/decor/art.js';
+import '../packs/tech/art.js';
 
 
 import { registerFarmArt } from '../packs/farm/art.js';
 import { registerDecorArt } from '../packs/decor/art.js';
+import { registerTechArt } from '../packs/tech/art.js';
+registerTechArt(reg);
 registerFarmArt(reg);
 registerDecorArt(reg);

@@ -1,7 +1,8 @@
 import { intoBag } from '../drops.js'
 import '../packs/farm/pack.js'
 import '../packs/flora/pack.js'
-import { packItems, packDrop, itemMuted } from '../packs/registry.js'
+import '../packs/tech/pack.js'
+import { packItems, packDrop, itemMuted, packOn } from '../packs/registry.js'
 export const ITEMS = {
   log: { block: 11, letter: 'L', cat: 'Materials', base: 4, stack: 64, sell: true },
   planks: { block: 10, letter: 'P', base: 1, sell: true },
@@ -75,8 +76,9 @@ function mountFarmItems() {
 }
 mountFarmItems()
 for (const it of packItems()) {
-  if (it.pack === 'flora' && it.key && !ITEMS[it.key]) ITEMS[it.key] = it.def
+  if ((it.pack === 'flora' || it.pack === 'tech') && it.key && !ITEMS[it.key]) ITEMS[it.key] = it.def
 }
+if (packOn('tech') && ITEMS.batteryCell) ITEMS.batteryCell.block = 1400
 export const ITEM_BY_BLOCK = {}
 for (const [k, v] of Object.entries(ITEMS)) if (v.block) ITEM_BY_BLOCK[v.block] = k
 export function dropOf(blockId) {

@@ -1,5 +1,6 @@
 import '../packs/farm/pack.js'
 import '../packs/flora/pack.js'
+import '../packs/tech/pack.js'
 import { packRecipes } from '../packs/registry.js'
 export const RECIPES = [
   { id: 'planks', at: 'hand', in: [['log', 1]], out: ['planks', 4], secs: 0 },
@@ -51,7 +52,7 @@ function mountFarmRecipes() {
     const { after, ...rest } = row
     RECIPES.push(rest)
   }
-  for (const id of ['birchPlanks', 'pinePlanks', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple']) {
+  for (const id of ['birchPlanks', 'pinePlanks', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple', 'techLine', 'techSwitch', 'techButton', 'circuitLens']) {
     if (RECIPES.some((r) => r.id === id)) continue
     const row = packRecipes().find((r) => r.id === id)
     if (row) RECIPES.push(row)

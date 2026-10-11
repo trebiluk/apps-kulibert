@@ -2,6 +2,7 @@
 import { packStrings } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/flora/pack.js'
+import './packs/tech/pack.js'
 export const EXTRA = {
   en: {
     changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try This', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
@@ -1054,6 +1055,49 @@ const BED = {
   },
 }
 for (const [lang, row] of Object.entries(BED)) Object.assign(EXTRA[lang], row)
+const LESSONS = {
+  en: {
+    lessonLoop: 'A circuit is a loop. Break the loop and the light goes out.',
+    lessonSwitch: 'A switch opens and closes the loop.',
+    lessonCopper: 'Copper carries current; wood and plastic don\'t.',
+  },
+  uk: {
+    lessonLoop: 'Коло — це петля. Розірви петлю — і світло згасне.',
+    lessonSwitch: 'Вимикач відкриває і закриває петлю.',
+    lessonCopper: 'Мідь проводить струм; дерево і пластик — ні.',
+  },
+  ru: {
+    lessonLoop: 'Цепь — это петля. Разорви петлю — и свет погаснет.',
+    lessonSwitch: 'Выключатель открывает и закрывает петлю.',
+    lessonCopper: 'Медь проводит ток; дерево и пластик — нет.',
+  },
+  es: {
+    lessonLoop: 'Un circuito es un lazo. Rompe el lazo y la luz se apaga.',
+    lessonSwitch: 'Un interruptor abre y cierra el lazo.',
+    lessonCopper: 'El cobre lleva la corriente; la madera y el plástico no.',
+  },
+  ar: {
+    lessonLoop: 'الدائرة حلقة. اقطع الحلقة فينطفئ الضوء.',
+    lessonSwitch: 'المفتاح يفتح الحلقة ويغلقها.',
+    lessonCopper: 'النحاس ينقل التيار؛ الخشب والبلاستيك لا.',
+  },
+  'fa-AF': {
+    lessonLoop: 'مدار یک حلقه است. حلقه را بشکن و نور خاموش می‌شود.',
+    lessonSwitch: 'کلید حلقه را باز و بسته می‌کند.',
+    lessonCopper: 'مس جریان را می‌برد؛ چوب و پلاستیک نه.',
+  },
+  rw: {
+    lessonLoop: 'Circuit ni uruziga. Vunagura uruziga n\'urumuri ruzima.',
+    lessonSwitch: 'Ikinyuranyo gifungura no gufunga uruziga.',
+    lessonCopper: 'Copper itwara umuriro; igiti na pulasitike ntibitwara.',
+  },
+  ti: {
+    lessonLoop: 'ሰርኪት ዓንኬል እዩ። ዓንኬል ስበር መብራህቲ ይጠፍእ።',
+    lessonSwitch: 'መቐለሊ ዓንኬል ይኸፍትን ይዕጾን።',
+    lessonCopper: 'ናሕስ ኤሌክትሪክ ይወስድ፡ ዕንጨይትን ፕላስቲክን ኣይወስዱን።',
+  },
+}
+for (const [lang, row] of Object.entries(LESSONS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 for (const [lang, row] of Object.entries(packStrings())) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 const FARM_NEWS = {
   en: { whatsNewBody: 'A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.' },

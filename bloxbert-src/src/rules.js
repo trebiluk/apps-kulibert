@@ -89,6 +89,16 @@ const WHY = {
     rw: 'Umwarimu yafunze ububiko bwimbaho.',
     ti: 'መምህር ናይ ዕንጨይቲ ዓውዲ ኣጥፍኦ።',
   },
+  'tech.circuits': {
+    en: 'Circuits are off in this world.',
+    uk: 'Кола вимкнені в цьому світі.',
+    ru: 'Цепи выключены в этом мире.',
+    es: 'Los circuitos están apagados en este mundo.',
+    ar: 'الدوائر متوقفة في هذا العالم.',
+    'fa-AF': 'مدارها در این دنیا خاموش اند.',
+    rw: 'Amashanyarazi afunze muri iyi si.',
+    ti: 'ሰርኪት ኣብዚ ዓለም ጠፊኡ እዩ።',
+  },
 }
 
 const WHY_UNKNOWN = {

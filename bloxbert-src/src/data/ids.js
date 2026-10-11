@@ -81,6 +81,12 @@ export const FROZEN = {
   wallLampOn: 1103,
   rugAnchor: 1104,
   rugPart: 1105,
+  techCell: 1400,
+  techLine: 1401,
+  techSwitch: 1402,
+  techSwitchOn: 1403,
+  techButton: 1404,
+  techButtonOn: 1405,
 }
 
 export const REGISTRY = [
