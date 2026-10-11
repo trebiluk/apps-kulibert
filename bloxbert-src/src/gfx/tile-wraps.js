@@ -1,5 +1,5 @@
 // Runtime canvas atlas for pixel-art block wraps. Registers new materials.
-import { getWrap, WRAPS } from './pixel-art.js';
+import { getBlockWrap, WRAPS } from './pixel-art.js';
 
 const BLOCK_WRAPS = [
   'doorGlass', 'doorGlassOpen', 'doorGlassTop', 'doorGlassTopOpen',
@@ -26,7 +26,7 @@ export function buildTileAtlas() {
   g.imageSmoothingEnabled = false;
   const indices = {};
   BLOCK_WRAPS.forEach((key, i) => {
-    const wrap = getWrap(key);
+    const wrap = getBlockWrap(key);
     if (!wrap) return;
     // Draw the 16px core with 2px gutter (copy edges)
     const tmp = document.createElement('canvas');

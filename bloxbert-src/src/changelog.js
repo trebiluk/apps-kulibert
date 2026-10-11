@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.157', date: '2026-10-10', lines: {
+    en: ['Old worlds each keep their own archive. Item pictures are shapes, not filled squares.'],
+    uk: ['Старі світи тримають свою копію. Малюнки речей — форми, не суцільні квадрати.'],
+    ru: ['Старые миры хранят свою копию. Картинки вещей — формы, не сплошные квадраты.'],
+    es: ['Cada mundo viejo guarda su archivo. Los dibujos de cosas son formas, no cuadrados llenos.'],
+    ar: ['كل عالم قديم يحتفظ بنسخته. صور الأشياء أشكال وليست مربعات ممتلئة.'],
+    'fa-AF': ['هر جهان کهنه نسخه خود را نگه می‌دارد. تصویر چیزها شکل است، نه مربع پر.'],
+    rw: ['Isi ya kera ibika kopi yayo. Amashusho y\'ibintu ni imiterere, si kare yuzuye.'],
+    ti: ['ናይ ቀደም ዓለም ናይ ገዛእ ቅዳሕ ይሕልው። ስእሊ ነገራት ቅርጺ እዩ፡ ዘይኮነ ምሉእ ትርብዒት።'],
+  }},
   { v: '2.5.156', date: '2026-10-10', lines: {
     en: ['New land has rivers and lakes you can swim. The ground you already saved stays the same.'],
     uk: ['Нова земля має річки й озера, де можна плавати. Земля, яку ти вже зберіг, лишається такою самою.'],

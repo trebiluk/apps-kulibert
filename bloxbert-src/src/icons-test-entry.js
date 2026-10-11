@@ -1,6 +1,7 @@
 // Icon contact sheet entry. Bundled to blocks/icons-test.js. Does not import main.js.
 import { ITEMS } from './data/items.js'
 import { BLOCKS } from './data/blocks-list.js'
+import { packItems } from './packs/registry.js'
 import { slotArt, blockIcon } from './icons.js'
 
 const grid = document.getElementById('grid')
@@ -72,7 +73,15 @@ function addCard(key, el, kind) {
   grid.appendChild(card)
 }
 
-for (const key of Object.keys(ITEMS)) {
+const itemKeys = Object.keys(ITEMS)
+const seenItems = new Set(itemKeys)
+for (const it of packItems()) {
+  if (it && it.key && !seenItems.has(it.key)) {
+    seenItems.add(it.key)
+    itemKeys.push(it.key)
+  }
+}
+for (const key of itemKeys) {
   const el = slotArt(key)
   addCard(key, el, 'item')
 }

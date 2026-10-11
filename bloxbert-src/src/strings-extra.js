@@ -1033,6 +1033,8 @@ const BACKUPS = {
     backupNeedName: 'Type a name first', backupEmpty: 'No backups yet',
     cloudLater: 'A cloud copy is a later step. These stay on this device.',
     backupBefore: 'Before restore - {time}', classSnapName: 'Class - {when}',
+    restoreAsk: 'Restore this backup? The current world is saved first.',
+    oldestDropped: 'Oldest backup removed',
   },
   uk: {
     backups: 'Копії', classSnap: 'Знімок класу', backupName: 'Назва копії', saveBackup: 'Зберегти копію',
@@ -1041,6 +1043,8 @@ const BACKUPS = {
     backupNeedName: 'Спершу напиши назву', backupEmpty: 'Копій ще немає',
     cloudLater: 'Хмарна копія — це пізніший крок. Ці лишаються на цьому пристрої.',
     backupBefore: 'Перед відновленням - {time}', classSnapName: 'Клас - {when}',
+    restoreAsk: 'Відновити цю копію? Поточний світ спершу зберігається.',
+    oldestDropped: 'Найстарішу копію знято',
   },
   ru: {
     backups: 'Копии', classSnap: 'Снимок класса', backupName: 'Имя копии', saveBackup: 'Сохранить копию',
@@ -1049,6 +1053,8 @@ const BACKUPS = {
     backupNeedName: 'Сначала напиши имя', backupEmpty: 'Копий пока нет',
     cloudLater: 'Облачная копия — это следующий шаг. Эти остаются на этом устройстве.',
     backupBefore: 'Перед возвратом - {time}', classSnapName: 'Класс - {when}',
+    restoreAsk: 'Вернуть эту копию? Текущий мир сначала сохранится.',
+    oldestDropped: 'Старая копия снята',
   },
   es: {
     backups: 'Copias', classSnap: 'Foto de la clase', backupName: 'Nombre de la copia', saveBackup: 'Guardar copia',
@@ -1057,6 +1063,8 @@ const BACKUPS = {
     backupNeedName: 'Escribe un nombre primero', backupEmpty: 'Aún no hay copias',
     cloudLater: 'Una copia en la nube es un paso posterior. Estas se quedan en este aparato.',
     backupBefore: 'Antes de restaurar - {time}', classSnapName: 'Clase - {when}',
+    restoreAsk: '¿Restaurar esta copia? El mundo actual se guarda primero.',
+    oldestDropped: 'Se quitó la copia más vieja',
   },
   ar: {
     backups: 'نسخ', classSnap: 'لقطة الصف', backupName: 'اسم النسخة', saveBackup: 'احفظ النسخة',
@@ -1065,6 +1073,8 @@ const BACKUPS = {
     backupNeedName: 'اكتب اسماً أولاً', backupEmpty: 'لا نسخ بعد',
     cloudLater: 'نسخة السحابة خطوة لاحقة. هذه تبقى على هذا الجهاز.',
     backupBefore: 'قبل الاستعادة - {time}', classSnapName: 'الصف - {when}',
+    restoreAsk: 'تستعيد هذه النسخة؟ العالم الحالي يُحفظ أولاً.',
+    oldestDropped: 'أُزيلت أقدم نسخة',
   },
   'fa-AF': {
     backups: 'نسخه‌ها', classSnap: 'عکس صنف', backupName: 'نام نسخه', saveBackup: 'نسخه را ذخیره کن',
@@ -1073,6 +1083,8 @@ const BACKUPS = {
     backupNeedName: 'اول یک نام بنویس', backupEmpty: 'هنوز نسخه‌ای نیست',
     cloudLater: 'نسخه ابری یک گام بعدی است. این‌ها روی همین دستگاه می‌مانند.',
     backupBefore: 'پیش از برگرداندن - {time}', classSnapName: 'صنف - {when}',
+    restoreAsk: 'این نسخه برگردد؟ جهان کنونی اول ذخیره می‌شود.',
+    oldestDropped: 'کهنه‌ترین نسخه برداشته شد',
   },
   rw: {
     backups: 'Kopi', classSnap: 'Ifoto y\'ishuri', backupName: 'Izina rya kopi', saveBackup: 'Bika kopi',
@@ -1081,6 +1093,8 @@ const BACKUPS = {
     backupNeedName: 'Banza wandike izina', backupEmpty: 'Nta kopi irahari',
     cloudLater: 'Kopi yo mu bicu ni intambwe izaza. Izi ziguma kuri iki gikoresho.',
     backupBefore: 'Mbere yo kugarura - {time}', classSnapName: 'Ishuri - {when}',
+    restoreAsk: 'Garura iyi kopi? Isi iriho ibanzwa kubikwa.',
+    oldestDropped: 'Kopi ya kera yakuweho',
   },
   ti: {
     backups: 'ቅዳሕ', classSnap: 'ስእሊ ክፍሊ', backupName: 'ስም ቅዳሕ', saveBackup: 'ቅዳሕ ዓቅብ',
@@ -1089,6 +1103,8 @@ const BACKUPS = {
     backupNeedName: 'መጀመርታ ስም ጽሓፍ', backupEmpty: 'ቅዳሕ የለን',
     cloudLater: 'ናይ ደበና ቅዳሕ ድሒሩ እዩ። እዚኦም ኣብዚ መሳርሒ ይጸንሑ።',
     backupBefore: 'ቅድሚ ምምላስ - {time}', classSnapName: 'ክፍሊ - {when}',
+    restoreAsk: 'ነዚ ቅዳሕ ትመልስ? እዚ ዓለም መጀመርታ ይዕቀብ።',
+    oldestDropped: 'ዝኸበረ ቅዳሕ ተደምሲሱ',
   },
 }
 for (const [lang, row] of Object.entries(BACKUPS)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)

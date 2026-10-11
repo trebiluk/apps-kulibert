@@ -1,5 +1,5 @@
 // Procedural 16px pixel-art wraps. Seeded, deterministic, nearest-neighbor scaled x3 to 48px.
-// Max 5 colours per wrap. 1px dark edge bottom/right, 1px highlight top/left.
+// Blocks fill the tile. Items are their own shape on a clear background, with a 1px dark outline.
 
 export const PALETTE = {
   wood: ['#3a2415', '#5c3a1e', '#8b5a2b', '#c4a574', '#e8c27a'],
@@ -32,13 +32,12 @@ function noise(seed, x, y) {
   return (n % 1000) / 1000;
 }
 
-export function makeWrap(key, paintFn, paletteKey = 'stone') {
+export function makeWrap(key, paintFn, paletteKey = 'stone', shape = false) {
   const pal = PALETTE[paletteKey] || PALETTE.stone;
   const c = document.createElement('canvas');
   c.width = c.height = 48;
   const g = c.getContext('2d', { willReadFrequently: true });
   g.imageSmoothingEnabled = false;
-  // Draw 16x16 into temp
   const tmp = document.createElement('canvas');
   tmp.width = tmp.height = 16;
   const tg = tmp.getContext('2d');
@@ -54,27 +53,48 @@ export function makeWrap(key, paintFn, paletteKey = 'stone') {
     const b = parseInt(col.slice(5, 7), 16);
     data[i] = r; data[i + 1] = gg; data[i + 2] = b; data[i + 3] = 255;
   };
-  // Base fill with noise
   const seed = hash(key);
-  for (let y = 0; y < 16; y++) {
-    for (let x = 0; x < 16; x++) {
-      const n = noise(seed, x, y);
-      const base = n < 0.6 ? 1 : n < 0.85 ? 2 : 3;
-      set(x, y, base);
+  if (!shape) {
+    for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        const n = noise(seed, x, y);
+        const base = n < 0.6 ? 1 : n < 0.85 ? 2 : 3;
+        set(x, y, base);
+      }
     }
   }
-  // Custom paint (can override)
   if (paintFn) paintFn(set, seed, pal);
-  // Edge shading: dark bottom/right, highlight top/left
-  for (let i = 0; i < 16; i++) {
-    set(i, 15, 0); // bottom dark
-    set(15, i, 0); // right dark
-    set(i, 0, 4); // top highlight (or last)
-    set(0, i, 4);
+  if (!shape) {
+    for (let i = 0; i < 16; i++) {
+      set(i, 15, 0);
+      set(15, i, 0);
+      set(i, 0, Math.min(4, pal.length - 1));
+      set(0, i, Math.min(4, pal.length - 1));
+    }
+  } else {
+    const dark = pal[0];
+    const dr = parseInt(dark.slice(1, 3), 16);
+    const dg = parseInt(dark.slice(3, 5), 16);
+    const db = parseInt(dark.slice(5, 7), 16);
+    const opaque = new Uint8Array(256);
+    for (let i = 0; i < 256; i++) opaque[i] = data[i * 4 + 3] > 0 ? 1 : 0;
+    const add = [];
+    for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        const i = y * 16 + x;
+        if (opaque[i]) continue;
+        if ((x > 0 && opaque[i - 1]) || (x < 15 && opaque[i + 1]) || (y > 0 && opaque[i - 16]) || (y < 15 && opaque[i + 16])) add.push(i);
+      }
+    }
+    for (const i of add) {
+      const o = i * 4;
+      data[o] = dr; data[o + 1] = dg; data[o + 2] = db; data[o + 3] = 255;
+    }
   }
   tg.putImageData(img, 0, 0);
   g.drawImage(tmp, 0, 0, 48, 48);
   c.dataset.wrap = key;
+  c.dataset.shape = shape ? '1' : '0';
   return c;
 }
 
@@ -82,7 +102,11 @@ export function makeWrap(key, paintFn, paletteKey = 'stone') {
 export const WRAPS = {};
 
 export function reg(key, fn, pal) {
-  WRAPS[key] = () => makeWrap(key, fn, pal);
+  if (fn && fn.block) { WRAPS[key] = fn; return }
+  const shape = () => makeWrap(key, fn, pal, true);
+  const block = () => makeWrap(key, fn, pal, false);
+  shape.block = block;
+  WRAPS[key] = shape;
 }
 
 // Items
@@ -227,6 +251,12 @@ WRAPS.doorMetalTopOpen = WRAPS.doorMetal;
 
 export function getWrap(key) {
   return WRAPS[key] ? WRAPS[key]() : null;
+}
+
+export function getBlockWrap(key) {
+  const f = WRAPS[key];
+  if (!f) return null;
+  return f.block ? f.block() : f();
 }
 
 // Batch 2 core: glass doors + woodshop tools

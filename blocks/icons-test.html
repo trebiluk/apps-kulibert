@@ -21,7 +21,31 @@
 <h1>Bloxbert Icon Contact Sheet</h1>
 <div class="count" id="count">Loading...</div>
 <div class="count" id="blank">blank: ?</div>
+<div class="count" id="filled">filled items: ?</div>
 <div class="grid" id="grid"></div>
 <script src="icons-test.js"></script>
+<script>
+;(function () {
+  var el = document.getElementById('filled')
+  if (!el) return
+  var bad = []
+  var cards = document.querySelectorAll('.card')
+  for (var i = 0; i < cards.length; i++) {
+    var id = cards[i].querySelector('.id')
+    if (!id || id.textContent.indexOf('item') !== 0) continue
+    var canvas = cards[i].querySelector('canvas')
+    if (!canvas) { bad.push((cards[i].querySelector('.name') || {}).textContent || '?'); continue }
+    var data
+    try { data = canvas.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, canvas.width, canvas.height).data }
+    catch (e) { bad.push('read'); continue }
+    var clear = 0
+    var n = canvas.width * canvas.height
+    for (var p = 3; p < data.length; p += 4) if (data[p] < 16) clear++
+    if (clear / n < 0.15) bad.push((cards[i].querySelector('.name') || {}).textContent || '?')
+  }
+  el.textContent = 'filled items: ' + bad.length
+  el.dataset.names = bad.join(',')
+})()
+</script>
 </body>
 </html>

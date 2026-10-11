@@ -45,7 +45,7 @@ export function createBackups({ dbName, store, world, snapshot, applyDoc, save, 
   function beforeName() {
     return t('backupBefore').replace('{time}', clockLabel(new Date()))
   }
-  async function backup(name, doc) {
+  async function backup(name, doc, kind) {
     const clean = String(name || '').trim().slice(0, 40)
     if (!clean) return null
     const body = doc || await snapshot()
@@ -54,10 +54,10 @@ export function createBackups({ dbName, store, world, snapshot, applyDoc, save, 
     let bytes = 0
     try { bytes = JSON.stringify(copy).length } catch (e) { bytes = 0 }
     const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
-    const rec = { name: clean, at: Date.now(), bytes, doc: copy }
+    const rec = { name: clean, at: Date.now(), bytes, doc: copy, kind: kind === 'class' ? 'class' : '' }
     await withStore('readwrite', (s) => { s.put(rec, prefix() + id); return null })
-    await trim()
-    return id
+    const dropped = await trim()
+    return { id, dropped }
   }
   async function rows() {
     const pre = prefix()
@@ -67,7 +67,7 @@ export function createBackups({ dbName, store, world, snapshot, applyDoc, save, 
     for (const k of mine) {
       const rec = await withStore('readonly', (s) => req(s.get(k)))
       if (!rec || !rec.doc) continue
-      out.push({ id: k.slice(pre.length), key: k, name: String(rec.name || ''), at: rec.at || 0, bytes: rec.bytes || 0 })
+      out.push({ id: k.slice(pre.length), key: k, name: String(rec.name || ''), at: rec.at || 0, bytes: rec.bytes || 0, kind: rec.kind === 'class' ? 'class' : '' })
     }
     out.sort((a, b) => (b.at - a.at) || String(b.id).localeCompare(String(a.id)))
     return out
@@ -75,10 +75,16 @@ export function createBackups({ dbName, store, world, snapshot, applyDoc, save, 
   async function list() { return rows() }
   async function trim() {
     const all = await rows()
-    for (const row of all.slice(10)) {
+    const classes = all.filter((r) => r.kind === 'class')
+    const plain = all.filter((r) => r.kind !== 'class')
+    const drop = plain.slice(10).concat(classes.slice(5))
+    let dropped = false
+    for (const row of drop) {
       if (String(row.key).indexOf('-classic-') >= 0) continue
       await withStore('readwrite', (s) => { s.delete(row.key); return null })
+      if (row.kind !== 'class') dropped = true
     }
+    return dropped
   }
   async function restore(id) {
     const key = prefix() + id

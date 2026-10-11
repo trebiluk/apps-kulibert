@@ -249,6 +249,7 @@ await teacher.waitForFunction(() => document.getElementById('sheet').dataset.pan
 await clickTile(teacher, 'Backups')
 await teacher.waitForFunction(() => document.getElementById('sheet').dataset.panel === 'backups')
 await teacher.waitForFunction(() => [...document.querySelectorAll('[data-backup-name]')].some((n) => n.textContent === 'Lesson one'))
+ui.setMode('accept')
 eq(await teacher.evaluate(() => {
   const row = [...document.querySelectorAll('[data-backup]')].find((r) => ((r.querySelector('[data-backup-name]') || {}).textContent || '') === 'Lesson one')
   const b = row && row.querySelector('[data-act="restore"]')
@@ -262,6 +263,7 @@ await teacher.waitForFunction(() => [...document.querySelectorAll('[data-backup-
 eq(true, 'Before restore backup exists')
 
 const beforeRows = await teacher.evaluate(() => [...document.querySelectorAll('[data-backup-name]')].filter((n) => n.textContent.indexOf('Before restore') === 0).length)
+ui.setMode('accept')
 eq(await teacher.evaluate(() => {
   const row = [...document.querySelectorAll('[data-backup]')].find((r) => ((r.querySelector('[data-backup-name]') || {}).textContent || '').indexOf('Before restore') === 0)
   const b = row && row.querySelector('[data-act="restore"]')

@@ -2840,12 +2840,16 @@ async function resetWorld() {
 function classicStamp(d) {
   const x = d || new Date()
   const p = (n) => String(n).padStart(2, '0')
-  return String(x.getFullYear()) + p(x.getMonth() + 1) + p(x.getDate()) + '-' + p(x.getHours()) + p(x.getMinutes())
+  const uniq = Math.random().toString(36).slice(2, 6)
+  return String(x.getFullYear()) + p(x.getMonth() + 1) + p(x.getDate()) + '-' + p(x.getHours()) + p(x.getMinutes()) + p(x.getSeconds()) + '-' + uniq
 }
 function classicLabel(day) {
   const s = String(day || '')
-  if (/^\d{8}-\d{4}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6, 8) + ' ' + s.slice(9, 11) + ':' + s.slice(11, 13)
-  if (s.length === 8 && /^\d{8}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6)
+  let m = s.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})(\d{2})/)
+  if (m) return m[1] + '-' + m[2] + '-' + m[3] + ' ' + m[4] + ':' + m[5] + ':' + m[6]
+  m = s.match(/^(\d{4})(\d{2})(\d{2})-(\d{2})(\d{2})/)
+  if (m) return m[1] + '-' + m[2] + '-' + m[3] + ' ' + m[4] + ':' + m[5]
+  if (/^\d{8}$/.test(s)) return s.slice(0, 4) + '-' + s.slice(4, 6) + '-' + s.slice(6)
   return s
 }
 function classicPrefix() { return WORLD + '-classic-' }
@@ -2877,24 +2881,48 @@ async function classicKeys() {
   const pre = classicPrefix()
   return (keys || []).filter((k) => typeof k === 'string' && k.indexOf(pre) === 0).sort((a, b) => b.slice(pre.length).localeCompare(a.slice(pre.length)))
 }
-async function trimClassic(keys) {
+async function trimClassic(keys, protect) {
   const list = keys || await classicKeys()
-  for (const k of list.slice(3)) await idbDel(k)
+  const saved = []
+  if (protect && list.indexOf(protect) >= 0) saved.push(protect)
+  for (const k of list) {
+    if (saved.length >= 3) break
+    if (saved.indexOf(k) < 0) saved.push(k)
+  }
+  for (const k of list) if (saved.indexOf(k) < 0) await idbDel(k)
+}
+async function putClassic(doc, avoid) {
+  if (!doc) return ''
+  let body
+  try { body = JSON.parse(JSON.stringify(doc)) } catch (e) { body = doc }
+  const base = classicStamp()
+  let n = 0
+  let key = classicPrefix() + base
+  while (n < 30) {
+    if (key !== avoid && !(await idbGet(key))) break
+    n += 1
+    key = classicPrefix() + base + '-' + n
+  }
+  if (key === avoid) key = classicPrefix() + base + '-' + Date.now().toString(36)
+  await idbPut(key, body)
+  return key
 }
 async function keepClassic() {
   const doc = await idbGet(WORLD)
   if (!doc) return
-  await idbPut(classicPrefix() + classicStamp(), doc)
+  await putClassic(doc, '')
   await trimClassic()
 }
 async function openClassic(keyName) {
-  const doc = await idbGet(keyName)
-  if (!doc) return
+  const raw = await idbGet(keyName)
+  if (!raw) return
+  let doc
+  try { doc = JSON.parse(JSON.stringify(raw)) } catch (e) { doc = raw }
   try { await save() } catch (e) {}
   const cur = await idbGet(WORLD)
   if (cur) {
-    await idbPut(classicPrefix() + classicStamp(), cur)
-    await trimClassic()
+    await putClassic(cur, keyName)
+    await trimClassic(null, keyName)
   }
   await applyDoc(doc)
   try { await save() } catch (e) {}
@@ -3708,8 +3736,8 @@ function whenText(at) {
 }
 async function classSnap() {
   if (!teacherOn()) return
-  await backups.backup(backups.className())
-  toast(t('backupSaved'))
+  const res = await backups.backup(backups.className(), null, 'class')
+  toast(res && res.dropped ? t('oldestDropped') : t('backupSaved'))
   const sheet = document.getElementById('sheet')
   if (sheet && !sheet.hidden && sheet.dataset.panel === 'backups' && panels) panels.open('backups')
 }
@@ -3742,8 +3770,8 @@ async function paintBackups(g) {
   const saveBtn = menuTile('💾', t('saveBackup'), async () => {
     const name = input.value.trim().slice(0, 40)
     if (!name) { toast(t('backupNeedName')); return }
-    await backups.backup(name)
-    toast(t('backupSaved'))
+    const res = await backups.backup(name)
+    toast(res && res.dropped ? t('oldestDropped') : t('backupSaved'))
     if (panels) panels.open('backups')
   })
   saveBtn.id = 'backup-save'
@@ -3785,6 +3813,7 @@ async function paintBackups(g) {
     restoreBtn.style.minHeight = '44px'
     restoreBtn.textContent = t('restoreBackup')
     restoreBtn.addEventListener('click', async () => {
+      if (!confirm(t('restoreAsk'))) return
       await backups.restore(row.id)
       if (panels) panels.open('backups')
     })

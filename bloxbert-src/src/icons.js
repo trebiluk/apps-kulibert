@@ -1,5 +1,5 @@
 // One picture per block. A few items draw their own face so they don't share one wood tile.
-import { getWrap } from "./gfx/pixel-art.js";
+import { getWrap, getBlockWrap } from "./gfx/pixel-art.js";
 import { ITEMS } from './data/items.js'
 const PNG = { glass: 'assets/glass.png', coreplate: 'assets/tile-coreplate.png', workbench: 'assets/tile-workbench.png', oven: 'assets/tile-oven.png', vend: 'assets/tile-vend.png', store: 'assets/tile-store.png', bunk: 'assets/tile-bunk.png' }
 const READ2D = { willReadFrequently: true }
@@ -318,7 +318,7 @@ FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
 export function blockIcon(block, atlas) {
   const name = block && block[1];
-  const wrap = name && getWrap(name);
+  const wrap = name && getBlockWrap(name);
   if (wrap) {
     wrap.dataset.block = String(block[0]);
     return wrap;
@@ -339,7 +339,7 @@ export function blockIcon(block, atlas) {
   img.onload = () => {
     const ctx = c.getContext('2d', READ2D)
     if (PNG[tex]) ctx.drawImage(img, 8, 8, 32, 32)
-    else {
+    else if (atlas) {
       const y = (atlas[tex] || 0) * 36 + 2
       ctx.drawImage(img, 2, y, 32, 32, 8, 8, 32, 32)
     }
