@@ -4463,7 +4463,7 @@ function feelTick(dt) {
   const body = playerBody
   if (survivalOn() && !Effects.has('fly')) flying = false
   if (!tableMode) {
-    const g = flying ? 0 : Effects.grav(GRAV_MULT)
+    const g = flying ? 0 : Effects.grav(GRAV_MULT, body.velocity[1])
     if (body.gravityMultiplier !== g) body.gravityMultiplier = g
   }
   const grounded = body.atRestY() < 0

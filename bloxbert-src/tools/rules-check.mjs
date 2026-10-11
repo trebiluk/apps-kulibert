@@ -752,7 +752,7 @@ eq(Effects.level('speed') === 2 && Object.keys(Effects.dump()).length === 0, 'se
 const baseH = jumpHeight(JUMP_V)
 Effects.give('jump', { level: 2, ms: 60000 })
 const hi = jumpHeight(Effects.jumpV(JUMP_V))
-eq(baseH < 3 && hi >= 3, 'jump II clears a 3-block wall ' + baseH + ' -> ' + hi)
+eq(baseH < 1.4 && hi >= 3.4 && hi < 3.6, 'jump II clears a 3-block wall ' + baseH + ' -> ' + hi)
 
 const blockedFly = Effects.spaceFly(true, false)
 eq(blockedFly.ok === false && blockedFly.flying === false, 'survival space without fly stays down')
@@ -860,6 +860,62 @@ const savedBefore = saved
 five.click()
 eq(Effects.has('speed') && Effects.level('speed') === 2 && Object.keys(Effects.dump()).length === 0, 'editor 5 min speed II is session only')
 eq(saved === savedBefore, 'session give does not save')
+
+const offSpeed = allNodes(fxRoot).find((n) => n.dataset && n.dataset.fx === 'speed' && n.dataset.act === 'remove')
+eq(!!offSpeed, 'given effect has a remove button')
+offSpeed.click()
+eq(!Effects.has('speed') && saved === savedBefore, 'remove ends the effect and does not save')
+
+function hopPeak() {
+  let y = 0
+  let v = JUMP_V
+  const dt = 1 / 120
+  let peak = 0
+  for (let i = 0; i < 2000; i++) {
+    const g = Effects.grav(32, v)
+    v -= g * dt
+    y += v * dt
+    if (y > peak) peak = y
+    if (i > 5 && y <= 0) break
+  }
+  return peak
+}
+Effects.load({})
+const plainHop = hopPeak()
+const slowMin = allNodes(fxRoot).find((n) => n.dataset && n.dataset.fx === 'slowFall' && n.dataset.min === '1')
+eq(!!slowMin, 'slow fall has a 1 min give')
+const savedSlow = saved
+slowMin.click()
+const slowHop = hopPeak()
+eq(Effects.has('slowFall') && saved === savedSlow, 'ui gives slow fall without saving')
+eq(Effects.grav(32, 1) === 32 && Effects.grav(32, -1) === 12.8, 'slow fall gravity only while falling')
+eq(plainHop > 1 && plainHop < 1.4 && Math.abs(slowHop - plainHop) < 0.05, 'slow fall jump stays about 1.1 ' + plainHop.toFixed(2) + ' -> ' + slowHop.toFixed(2))
+const offSlow = allNodes(fxRoot).find((n) => n.dataset && n.dataset.fx === 'slowFall' && n.dataset.act === 'remove')
+eq(!!offSlow, 'slow fall remove is on the row')
+offSlow.click()
+eq(!Effects.has('slowFall'), 'ui remove ends slow fall at once')
+
+Effects.give('fly', { ms: 60000 })
+Effects.give('jump', { level: 1, ms: 60000 })
+allNodes(fxRoot).find((n) => n.dataset && n.dataset.group === 'effects').click()
+const clearAll = allNodes(fxRoot).find((n) => n.dataset && n.dataset.act === 'clear-all')
+eq(!!clearAll && clearAll.textContent === 'Clear all effects', 'clear all effects is in the give group')
+const savedClear = saved
+clearAll.click()
+eq(Effects.list().length === 0 && saved === savedClear, 'clear all ends every effect and does not save')
+
+Effects.load({})
+Effects.useLang('en')
+Effects.give('speed', { level: 1, ms: 60000 })
+let minuteChip = document.getElementById('fx-strip').querySelector('.fx-chip')
+eq(Effects.has('speed') && minuteChip && minuteChip.dataset.id === 'speed' && minuteChip.className.indexOf('fx-bye') < 0, 'one minute chip is up')
+Effects.tick(59999)
+eq(Effects.has('speed'), 'one minute still on just before the timer')
+Effects.tick(1)
+eq(!Effects.has('speed'), 'one minute effect expires on its timer')
+Effects.tick(400)
+minuteChip = document.getElementById('fx-strip').querySelector('.fx-chip')
+eq(!minuteChip && document.getElementById('fx-strip').hidden === true, 'expired chip goes away')
 Effects.load({})
 
 for (const lang of langs) {

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.154', date: '2026-10-10', lines: {
+    en: ['A held block shows in your hand, and a pickaxe looks like a pickaxe. Slow Fall no longer makes you jump higher. A teacher can remove an effect.'],
+    uk: ['Блок у руці видно, а кайло схоже на кайло. Повільне падіння більше не підкидає вище. Учитель може прибрати ефект.'],
+    ru: ['Блок в руке видно, а кирка похожа на кирку. Медленное падение больше не подбрасывает выше. Учитель может убрать эффект.'],
+    es: ['Un bloque en la mano se ve, y un pico parece un pico. La caída lenta ya no te hace saltar más. El maestro puede quitar un efecto.'],
+    ar: ['المكعب في اليد يظهر، والمعول يبدو معولاً. السقوط البطيء لم يعد يرفع القفز. يمكن للمعلم إزالة التأثير.'],
+    'fa-AF': ['بلاک در دست دیده می‌شود و کلنگ مثل کلنگ است. سقوط آهسته دیگر پرش را بلند نمی‌کند. معلم می‌تواند اثر را بردارد.'],
+    rw: ['Ibibumbe mu kuboko biragaragara, n\'icyuma gisa n\'icyuma. Kugwa buhoro ntikigushyira hejuru. Umwarimu ashobora gukuraho ingaruka.'],
+    ti: ['ብሎክ ኣብ ኢድ ይረአ፡ መኮፍ ከኣ ከም መኮፍ ይመስል። ቀስ ዝበለ ውድቃት ድሕሪ ዝያዳ ኣይድልልን። መምህር ጽልዋ ክኣልግስ ይኽእል።'],
+  }},
   { v: '2.5.153', date: '2026-10-10', lines: {
     en: ['Lamps, rugs and farm crops now stay after you save and reload.'],
     uk: ['Лампи, килими й посіви тепер лишаються після збереження і перезавантаження.'],

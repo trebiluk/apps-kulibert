@@ -13,7 +13,7 @@ const root = path.resolve(__dir, '../../blocks-test')
 const sharedRoot = path.resolve(__dir, '../../shared')
 const out = '/tmp/hands-check'
 mkdirSync(out, { recursive: true })
-const chrome = ['/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => existsSync(p))
+const chrome = ['/opt/pw-browsers/chromium_headless_shell-1243/chrome-headless-shell-linux64/chrome-headless-shell', '/opt/pw-browsers/chromium-1148/chrome-linux/chrome', '/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'].find((p) => existsSync(p))
 if (!chrome) { console.error('No Chrome/Chromium found.'); process.exit(1) }
 
 const types = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.json': 'application/json', '.css': 'text/css' }
@@ -63,6 +63,135 @@ function quarterDiff(fileA, fileB, side) {
   if (r.status !== 0) throw new Error(r.stderr || r.stdout || 'diff failed')
   const parts = r.stdout.trim().split(/\s+/).map(Number)
   return { diff: parts[0], total: parts[1], ratio: parts[2] }
+}
+
+const CORNER = `
+import sys
+from PIL import Image
+from collections import deque
+a = Image.open(sys.argv[1]).convert('RGB')
+b = Image.open(sys.argv[2]).convert('RGB')
+w, h = a.size
+x0, y0 = w // 2, h // 2
+pa, pb = a.load(), b.load()
+diff = total = 0
+pts = []
+for y in range(y0, h):
+    for x in range(x0, w):
+        total += 1
+        if pa[x, y] != pb[x, y]:
+            diff += 1
+            pts.append((x, y))
+box = clear = 0
+aspect = 1
+if pts:
+    seen = set()
+    best = []
+    S = set(pts)
+    for p in pts:
+        if p in seen: continue
+        q = deque([p])
+        seen.add(p)
+        comp = [p]
+        while q:
+            x, y = q.popleft()
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (x + dx, y + dy)
+                if n in S and n not in seen:
+                    seen.add(n)
+                    q.append(n)
+                    comp.append(n)
+        if len(comp) > len(best): best = comp
+    xs = [p[0] for p in best]
+    ys = [p[1] for p in best]
+    minx, maxx, miny, maxy = min(xs), max(xs), min(ys), max(ys)
+    bw, bh = maxx - minx + 1, maxy - miny + 1
+    aspect = bw / bh if bh else 1
+    for y in range(miny, maxy + 1):
+        for x in range(minx, maxx + 1):
+            box += 1
+            if pa[x, y] == pb[x, y]:
+                clear += 1
+print(diff / total if total else 0, clear / box if box else 0, diff, total, box, aspect)
+`
+
+function cornerDiff(fileA, fileB) {
+  const r = spawnSync('python3', ['-c', CORNER, fileA, fileB], { encoding: 'utf8' })
+  if (r.status !== 0) throw new Error(r.stderr || r.stdout || 'corner diff failed')
+  const parts = r.stdout.trim().split(/\s+/).map(Number)
+  return { ratio: parts[0], holes: parts[1], diff: parts[2], total: parts[3], box: parts[4], aspect: parts[5] }
+}
+
+async function waitMesh(page, name) {
+  await page.waitForFunction((meshName) => {
+    const meshes = window.__blocks.noa.rendering.scene.meshes
+    return meshes.some((m) => m.name === meshName && m.isEnabled())
+  }, { timeout: 8000 }, name)
+}
+
+async function emptyHand(page) {
+  await page.evaluate(() => {
+    const B = window.__blocks
+    B.lookHand({ show: true, side: 'right', cam: 'close' })
+    B.noa.camera.zoomDistance = 0
+    B.noa.setPaused(false)
+    document.body.classList.remove('menu-open', 'photo')
+    const sheet = document.getElementById('sheet')
+    if (sheet) sheet.hidden = true
+    const rc = document.getElementById('rules-card')
+    if (rc) rc.hidden = true
+    window.__smoke.emptyBag()
+    window.__smoke.arm()
+  })
+  try {
+    await page.waitForFunction(() => {
+      const h = window.__blocks.hand()
+      return h && h.visible && !h.key
+    }, { timeout: 8000 })
+  } catch (e) {
+    const info = await page.evaluate(() => {
+      const B = window.__blocks
+      return {
+        hand: B.hand(),
+        zoom: B.noa.camera.zoomDistance,
+        cls: document.body.className,
+        sheet: !!(document.getElementById('sheet') && !document.getElementById('sheet').hidden),
+        card: !!(document.getElementById('rules-card') && !document.getElementById('rules-card').hidden),
+        bread: window.__smoke.count('bread'),
+        planks: window.__smoke.count('planks'),
+      }
+    })
+    throw new Error('empty hand did not settle ' + JSON.stringify(info))
+  }
+  await settle(page)
+}
+
+async function proveHeld(page, tag) {
+  await emptyHand(page)
+  const bare = await shot(page, tag + '-bare')
+  await selectItem(page, 'planks', 0, 'block:planks')
+  await waitMesh(page, 'hand-b-10')
+  await settle(page)
+  const block = await shot(page, tag + '-block-corner')
+  const blockDiff = cornerDiff(block, bare)
+  note(tag + ' held block corner', blockDiff.ratio > 0.02, (blockDiff.ratio * 100).toFixed(2) + '% holes ' + (blockDiff.holes * 100).toFixed(0) + '%')
+  const tools = [
+    ['woodTool', 'flat:woodTool', 'pickaxe'],
+    ['stoneTool', 'flat:stoneTool', 'stone pickaxe'],
+    ['hoe', 'flat:hoe', 'hoe'],
+    ['bread', 'flat:bread', 'bread'],
+    ['handSaw', 'flat:handSaw', 'saw'],
+  ]
+  for (const [item, key, label] of tools) {
+    await selectItem(page, item, 0, key)
+    await waitMesh(page, 'hand-i-' + item)
+    await settle(page)
+    const file = await shot(page, tag + '-' + item + '-corner')
+    const diff = cornerDiff(file, bare)
+    note(tag + ' ' + label + ' corner', diff.ratio > 0.02, (diff.ratio * 100).toFixed(2) + '%')
+    const shaped = diff.holes > 0.3 || diff.aspect >= 1.6 || diff.aspect <= 0.62
+    note(tag + ' ' + label + ' not a square', shaped, 'clear ' + (diff.holes * 100).toFixed(1) + '% of ' + diff.box + ' aspect ' + diff.aspect.toFixed(2))
+  }
 }
 
 const browser = await puppeteer.launch({
@@ -194,6 +323,7 @@ for (const [item, slot, key] of held) {
   await desk.page.evaluate(() => window.__blocks.lookHand({ show: true }))
   await settle(desk.page)
 }
+await proveHeld(desk.page, 'desk')
 
 await desk.page.evaluate(() => window.__blocks.lookHand({ show: true, side: 'left', cam: 'close' }))
 await desk.page.waitForFunction(() => {
@@ -272,7 +402,7 @@ const afterSwing = await desk.page.evaluate(() => {
 note('dirt hold swings', !!dirtReady && afterSwing.swing - beforeSwing >= 3, 'delta ' + (afterSwing.swing - beforeSwing) + ' aim ' + JSON.stringify(afterSwing.aim) + ' hit ' + JSON.stringify(point))
 
 const placeBefore = afterSwing.swing
-await desk.page.evaluate(() => {
+await desk.page.evaluate((spot) => {
   const B = window.__blocks
   window.__smoke.emptyBag()
   B.give('planks', 8)
@@ -282,7 +412,15 @@ await desk.page.evaluate(() => {
   const sheet = document.getElementById('sheet')
   if (sheet) sheet.hidden = true
   document.body.classList.remove('menu-open')
-})
+  if (spot) {
+    B.setLook(spot.h, 0)
+    B.setVoxel(spot.x, spot.y, spot.z, 2)
+  }
+}, aimed)
+await desk.page.waitForFunction(() => {
+  const a = window.__smoke.aim()
+  return a && a.id === 2
+}, { timeout: 4000 }).catch(() => {})
 await sleep(300)
 await desk.page.mouse.click(point.x, point.y, { button: 'right' })
 await sleep(250)
@@ -363,6 +501,7 @@ for (const [item, slot, key] of held) {
   await phone.page.evaluate(() => window.__blocks.lookHand({ show: true, cam: 'close' }))
   await settle(phone.page)
 }
+await proveHeld(phone.page, 'touch')
 const phoneZoom = await phone.page.evaluate(() => window.__blocks.noa.camera.zoomDistance)
 const phoneHand = await phone.page.evaluate(() => window.__blocks.hand())
 note('touch hand visible', phoneZoom === 0 && phoneHand && phoneHand.visible, 'zoom ' + phoneZoom + ' ' + JSON.stringify(phoneHand))

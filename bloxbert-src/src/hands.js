@@ -8,7 +8,8 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Vector4 } from '@babylonjs/core/Maths/math.vector'
-import { slotArt, blockIcon } from './icons.js'
+import { slotArt, itemSvg } from './icons.js'
+import { ITEMS } from './data/items.js'
 import ATLAS from '../assets/atlas.json'
 
 const GREY = new Color4(0.62, 0.66, 0.71, 1)
@@ -53,6 +54,7 @@ export function createHands(opts) {
   const texInfo = new Map()
   let shown = null
   let shownKey = ''
+  let shownBlock = 0
   let sideNow = 'right'
   let phase = 0
   let swingUntil = 0
@@ -83,24 +85,20 @@ export function createHands(opts) {
   function syncItem() {
     const spec = opts.held()
     const key = spec.kind === 'empty' ? '' : spec.kind + ':' + spec.key
-    if (key === shownKey || key === pending) return
+    if (key === shownKey || (key && key === pending)) return
     if (shown) shown.setEnabled(false)
     shown = null
-    if (!key) { shownKey = ''; pending = ''; return }
+    if (!key) { shownKey = ''; shownBlock = 0; pending = ''; return }
     if (spec.kind === 'block') {
       pending = ''
       shownKey = key
-      shown = blockCube(spec.id)
-      if (shown) {
-        shown.parent = itemAnchor
-        shown.position.set(0, 0, 0)
-        shown.rotation.set(0.35, -0.6, 0)
-        shown.scaling.set(1, 1, 1)
-        shown.setEnabled(true)
-      }
+      shownBlock = spec.id | 0
+      shown = blockCube(shownBlock)
+      if (shown) holdBlock(shown)
       dipUntil = performance.now() + DIP_MS
       return
     }
+    shownBlock = 0
     pending = key
     flatItem(spec.key, (mesh) => {
       if (pending !== key) return
@@ -153,11 +151,14 @@ export function createHands(opts) {
     }
     const chop = swingKind === 'place' ? 0.42 : 0.9
     const aspect = camera.getEngine().getAspectRatio(camera)
+    const canvas = camera.getEngine().getRenderingCanvas()
+    const cssH = (canvas && canvas.clientHeight) || camera.getEngine().getRenderHeight()
+    const short = cssH > 0 && cssH < 500
     const narrow = aspect < 0.9
     pivot.rotation.x = swayX - swing * chop
     pivot.rotation.z = swayZ + swing * 0.15
     pivot.position.x = narrow ? 0.1 : 0.34
-    pivot.position.y = (narrow ? -0.2 : -0.2) + bob - dip
+    pivot.position.y = (short ? -0.12 : -0.2) + bob - dip
     pivot.position.z = 0
   }
 
@@ -167,25 +168,44 @@ export function createHands(opts) {
     swings += 1
   }
 
+  function holdBlock(mesh) {
+    mesh.parent = itemAnchor
+    mesh.position.set(0, 0, 0)
+    mesh.rotation.set(0.35, -0.6, 0)
+    mesh.scaling.set(1, 1, 1)
+    mesh.setEnabled(true)
+  }
+
   function blockCube(id) {
     const key = 'b' + id
     let mesh = blockMat.get(key)
     if (mesh) return mesh
     const faces = faceInfo(id)
     const url = faces.url
+    const finish = (built) => {
+      built.parent = itemAnchor
+      built.position.set(0, 0, 0)
+      built.setEnabled(false)
+      dress(built)
+      blockMat.set(key, built)
+      if (shownBlock === id) {
+        shown = built
+        holdBlock(built)
+      }
+      return built
+    }
     if (!url) {
-      mesh = dress(CreateBox('hand-b-' + id, { size: 0.5 }, scene))
+      mesh = CreateBox('hand-b-' + id, { size: 0.5 }, scene)
       mesh.material = solidMat(faces.color || [0.5, 0.5, 0.5])
-      blockMat.set(key, mesh)
-      mesh.setEnabled(false)
-      return mesh
+      return finish(mesh)
     }
     const info = texOf(url)
     const ready = () => {
+      if (blockMat.get(key)) return
       const tile = info.w || 36
       const h = info.h || tile
       const uv = (idx) => {
-        if (idx == null) return new Vector4(0, 0, 1, 1)
+        if (idx == null || idx < 0) return new Vector4(0, 0, 1, 1)
         const u0 = 2 / tile
         const u1 = (tile - 2) / tile
         const v1 = 1 - (idx * tile + 2) / h
@@ -195,16 +215,9 @@ export function createHands(opts) {
       // CreateBox face order: +z, -z, +x, -x, +y, -y. noa dir: +x -x +y -y +z -z.
       const order = [4, 5, 0, 1, 2, 3]
       const faceUV = order.map((d) => uv(faces.idx[d]))
-      mesh = dress(CreateBox('hand-b-' + id, { size: 0.55, faceUV }, scene))
+      mesh = CreateBox('hand-b-' + id, { size: 0.55, faceUV }, scene)
       mesh.material = atlasMat(url, info.tex)
-      blockMat.set(key, mesh)
-      mesh.setEnabled(false)
-      if (shownKey === 'block:' + id) {
-        shown = mesh
-        mesh.parent = itemAnchor
-        mesh.rotation.set(0.35, -0.6, 0)
-        mesh.setEnabled(true)
-      }
+      finish(mesh)
     }
     if (info.ready) ready()
     else info.wait.push(ready)
@@ -221,7 +234,7 @@ export function createHands(opts) {
       const data = mid && opts.noa.registry.getMaterialData(mid)
       if (!data) continue
       if (data.texture && !url) url = data.texture
-      if (data.atlasIndex != null) idx[d] = data.atlasIndex
+      if (data.atlasIndex != null && data.atlasIndex >= 0) idx[d] = data.atlasIndex
       else if (ATLAS && data.texture && data.texture.indexOf('atlas.png') >= 0) idx[d] = 0
       if (!color && data.color) color = data.color
     }
@@ -278,8 +291,17 @@ export function createHands(opts) {
   function flatItem(key, done) {
     const hit = flatCache.get(key)
     if (hit) { done(hit); return }
-    const node = slotArt(key) || blockIcon([0, key], ATLAS)
-    paintNode(node, (canvas) => {
+    const item = ITEMS[key]
+    if (item && item.svg) {
+      rasterSvg(itemSvg(item.svg), (canvas) => {
+        if (!canvas) { done(null); return }
+        const mesh = slabFrom(canvas, key)
+        if (mesh) flatCache.set(key, mesh)
+        done(mesh)
+      })
+      return
+    }
+    paintNode(slotArt(key), (canvas) => {
       if (!canvas) { done(null); return }
       const mesh = slabFrom(canvas, key)
       if (mesh) flatCache.set(key, mesh)
@@ -298,8 +320,10 @@ export function createHands(opts) {
     const mesh = new Mesh('hand-i-' + key, scene)
     built.applyToMesh(mesh)
     mesh.material = flatMat
-    dress(mesh)
+    mesh.parent = itemAnchor
+    mesh.position.set(0, 0, 0)
     mesh.setEnabled(false)
+    dress(mesh)
     return mesh
   }
 
@@ -341,6 +365,24 @@ function buildHand(scene, mat) {
   merged.name = 'bertbot-hand'
   merged.material = mat
   return merged
+}
+
+function rasterSvg(markup, done) {
+  let xml = String(markup || '')
+  if (!xml.includes('<svg')) { done(null); return }
+  if (!xml.includes('xmlns=')) xml = xml.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"')
+  if (!/width=/.test(xml)) xml = xml.replace('<svg', '<svg width="48" height="48"')
+  const img = new Image()
+  const url = URL.createObjectURL(new Blob([xml], { type: 'image/svg+xml;charset=utf-8' }))
+  img.onload = () => {
+    const c = document.createElement('canvas')
+    c.width = c.height = 48
+    c.getContext('2d', { willReadFrequently: true }).drawImage(img, 0, 0, 48, 48)
+    URL.revokeObjectURL(url)
+    done(c)
+  }
+  img.onerror = () => { URL.revokeObjectURL(url); done(null) }
+  img.src = url
 }
 
 function paintNode(node, done) {

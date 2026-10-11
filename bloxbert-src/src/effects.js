@@ -115,7 +115,7 @@ function speedMul() {
 
 function jumpV(base) {
   const e = entry('jump')
-  const extra = e ? (e.level >= 2 ? 2 : 1) : 0
+  const extra = e ? (e.level >= 2 ? 2.2 : 1) : 0
   if (!extra) return base
   const g = 32
   const h = (base * base) / (2 * g) + extra
@@ -127,8 +127,10 @@ function spaceFly(survival, flying) {
   return { ok: true, flying: !flying }
 }
 
-function grav(base) {
-  return has('slowFall') ? base * 0.4 : base
+function grav(base, vy) {
+  if (!has('slowFall')) return base
+  if (typeof vy === 'number' && !(vy < 0)) return base
+  return base * 0.4
 }
 
 function reach(base) {

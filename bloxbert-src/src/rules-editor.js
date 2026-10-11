@@ -16,6 +16,8 @@ const UI = {
   soon: L('Coming soon', 'Незабаром', 'Скоро', 'Pronto', 'قريبًا', 'به زودی', 'Vuba', 'ቀሪቡ'),
   packOff: L('Pack not installed', 'Пакет не встановлено', 'Пакет не установлен', 'El paquete no está instalado', 'الحزمة غير مثبتة', 'بسته نصب نیست', 'Ipaki ntiyashyizweho', 'ጥቕሊ ኣይተተኽለን'),
   changedN: L('{n} changed', '{n} змінено', '{n} изменено', '{n} cambiadas', '{n} متغيرة', '{n} تغییر', '{n} byahinduwe', '{n} ተቐይሩ'),
+  remove: L('Remove', 'Прибрати', 'Убрать', 'Quitar', 'إزالة', 'برداشتن', 'Kuraho', 'ኣልግስ'),
+  clearFx: L('Clear all effects', 'Прибрати всі ефекти', 'Убрать все эффекты', 'Quitar todos los efectos', 'إزالة كل التأثيرات', 'همه اثرها را بردار', 'Kuraho ingaruka zose', 'ኩሉ ጽልዋታት ኣልግስ'),
 }
 
 const CSS = `#sheet[data-panel=rules] .ggrid{display:block;overflow:visible}
@@ -291,6 +293,15 @@ export function paintRules(root, api) {
     if (!state.changed) {
       Effects.useLang(lang)
       const q = state.q.trim().toLowerCase()
+      if (!q && state.group === 'effects' && Effects.list().length) {
+        const clearAll = btn('keycap re-fx-clear', say('clearFx'), () => {
+          const ids = Effects.list().map((e) => e.id)
+          for (const id of ids) Effects.clear(id)
+          draw()
+        })
+        clearAll.dataset.act = 'clear-all'
+        list.append(clearAll)
+      }
       for (const d of Effects.catalog()) {
         const nameTxt = pick(d.label, lang)
         const descTxt = pick(d.desc, lang)
@@ -348,6 +359,22 @@ export function paintRules(root, api) {
             draw()
           })
           seg.append(give)
+        }
+        if (Effects.has(d.id)) {
+          const off = document.createElement('button')
+          off.type = 'button'
+          off.className = 'keycap re-opt re-fx-x'
+          off.dataset.fx = d.id
+          off.dataset.act = 'remove'
+          off.textContent = '\u00d7'
+          off.setAttribute('aria-label', say('remove') + ' ' + nameTxt)
+          off.addEventListener('click', (e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            Effects.clear(d.id)
+            draw()
+          })
+          seg.append(off)
         }
         row.append(ico, copy, seg)
         list.append(row)
