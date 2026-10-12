@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.175', date: '2026-10-12', lines: {
+    en: ['World Maker follows the world: Islands, Sky and Parkour Start, a share code, and a soft landing if you fall off.'],
+    uk: ['Творець світу йде зі світом: острови, небо, старт паркуру, код і м’яке повернення, якщо впадеш.'],
+    ru: ['Мастер мира идёт с миром: острова, небо, старт паркура, код и мягкое возвращение, если упадёшь.'],
+    es: ['El creador sigue al mundo: islas, cielo, inicio de parkour, un código y un aterrizaje suave si caes.'],
+    ar: ['صانع العالم يتبع العالم: جزر وسماء وبداية قفز ورمز وعودة ناعمة إذا سقطت.'],
+    'fa-AF': ['سازنده جهان با جهان می‌رود: جزیره، آسمان، شروع پارکور، یک کد، و برگشت نرم اگر بیفتی.'],
+    rw: ['Ukora isi ajyana n\'isi: ibirwa, ijuru, tangira parkour, kode, n\'ugusubira buhoro niba uguye.'],
+    ti: ['ሰራሒ ዓለም ምስ ዓለም ይከይድ: ደሴታት፡ ሰማይ፡ መጀመርታ ፓርኩር፡ ኮድን ልኡም ምምላስ እንተ ወዲቕካን።'],
+  }},
   { v: '2.5.174', date: '2026-10-11', lines: {
     en: ['The top bar matches the Menu: navy circuit, teal keys, and an orange version chip.'],
     uk: ['Верхня смуга як у меню: темно-синя схема, бірюзові клавіші й помаранчевий чип версії.'],

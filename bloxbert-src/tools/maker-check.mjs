@@ -1,4 +1,4 @@
-// World Maker M1 and the held sapling sprite.
+// World Maker M2: Islands, Sky, Parkour Start, share codes, and the world switch.
 import puppeteer from 'puppeteer-core'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import { createServer } from 'http'
@@ -87,6 +87,17 @@ await page.evaluateOnNewDocument(() => {
   try { sessionStorage.setItem('bt-shop-safe', '1') } catch (e) {}
   try { localStorage.setItem('tech-room-hub-staff', '1') } catch (e) {}
   try { localStorage.setItem('bloxbert-teacher', '1') } catch (e) {}
+  const arm = () => {
+    const el = document.getElementById('toast')
+    if (!el || el.dataset.logged) return
+    el.dataset.logged = '1'
+    window.__toastLog = window.__toastLog || []
+    new MutationObserver(() => {
+      const text = (el.textContent || '').trim()
+      if (text) window.__toastLog.push(text)
+    }).observe(el, { childList: true, subtree: true, characterData: true })
+  }
+  document.addEventListener('DOMContentLoaded', arm)
 })
 
 async function boot(w, h) {
@@ -259,6 +270,169 @@ eq(voidAgain.mid === 3 && voidAgain.out === 0 && voidAgain.far === 0, 'void relo
 await openMaker()
 const voidBack = await seedNow()
 eq(voidBack.words === voidSeed.words && voidBack.num === voidSeed.num, 'void seed stuck ' + JSON.stringify(voidBack) + ' want ' + JSON.stringify(voidSeed))
+
+async function makePreset(label) {
+  await openMaker()
+  eq(await clickTile(label), 'pick ' + label)
+  const seed = await seedNow()
+  const code = await page.evaluate(() => (document.querySelector('[data-share-code]') || {}).placeholder || '')
+  const gen = await page.evaluate(() => window.__makerGen || 0)
+  eq(await clickTile('Make this world'), 'make ' + label)
+  await page.waitForFunction((g) => (window.__makerGen || 0) > g, { timeout: 40000 }, gen)
+  await sleep(400)
+  return { seed, code }
+}
+function chunkHash() {
+  return page.evaluate(async () => {
+    const doc = await window.__blocks.exportDoc()
+    const keys = Object.keys(doc.chunks).sort()
+    let h = 0
+    for (const k of keys) {
+      const s = doc.chunks[k]
+      for (let i = 0; i < s.length; i++) h = (h * 33 + s.charCodeAt(i)) >>> 0
+    }
+    return { h, n: keys.length, preset: doc.maker && doc.maker.preset, name: (document.querySelector('.tb-name') || {}).textContent || '' }
+  })
+}
+async function reloadReady() {
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => window.__blocks && window.__smoke && window.__bloxReady, { timeout: 90000 })
+  await page.evaluate(() => {
+    const b = document.querySelector('#rules-card .rc-got')
+    if (b) b.click()
+    const card = document.getElementById('rules-card')
+    if (card) card.hidden = true
+  })
+}
+async function fallOff() {
+  const before = await page.evaluate(() => window.__toastLog ? window.__toastLog.length : 0)
+  await page.evaluate(() => window.__blocks.tp(8.5, -20, 1.5))
+  await page.waitForFunction((n) => {
+    const p = window.__blocks.noa.entities.getPosition(window.__blocks.noa.playerEntity)
+    const log = window.__toastLog || []
+    return p[1] > 0 && log.slice(n).some((t) => t.indexOf('Try again') >= 0)
+  }, { timeout: 8000 }, before).catch(() => {})
+  return page.evaluate((n) => {
+    const p = window.__blocks.noa.entities.getPosition(window.__blocks.noa.playerEntity)
+    const said = (window.__toastLog || []).slice(n).join(' | ')
+    return { y: p[1], said }
+  }, before)
+}
+
+const islands = await makePreset('Islands')
+const islandMap = await page.evaluate(() => {
+  const g = window.__blocks.getVoxel
+  let sand = 0
+  let grass = 0
+  let water = 0
+  let tree = 0
+  for (let x = -30; x <= 36; x++) for (let z = -30; z <= 36; z++) {
+    if (g(x, 3, z) === 64) water++
+    if (g(x, 5, z) === 1) grass++
+    if (g(x, 4, z) === 6) sand++
+    if (g(x, 8, z) === 11) tree++
+  }
+  return { sand, grass, water, tree, title: (document.querySelector('.tb-name') || {}).textContent || '', tip: (document.getElementById('menu-hint') || {}).textContent || '' }
+})
+eq(islandMap.grass >= 6 && islandMap.sand >= 6 && islandMap.water > 100 && islandMap.tree > 0, 'islands ' + JSON.stringify(islandMap))
+eq(islandMap.title.split(' ').length === 2 && islandMap.title !== 'Bertopia', 'island name ' + islandMap.title)
+eq(/Flat world|build anything|sand/.test(islandMap.tip) || /swim/.test(islandMap.tip), 'island tip ' + islandMap.tip)
+const islandHash = await chunkHash()
+await reloadReady()
+const islandAgain = await chunkHash()
+eq(islandAgain.h === islandHash.h && islandAgain.preset === 'islands', 'islands reload ' + islandAgain.h + ' ' + islandHash.h)
+
+await openMaker()
+const liveCode = await page.evaluate(() => (document.querySelector('[data-live-share]') || {}).textContent || '')
+eq(liveCode === islands.code && /^ISL-\d-\d-\d [A-Z][a-z]+-[A-Z][a-z]+-[A-Z][a-z]+$/.test(liveCode), 'island code ' + liveCode + ' want ' + islands.code)
+await page.evaluate((code) => {
+  const box = document.querySelector('[data-share-code]')
+  box.value = code
+  box.dispatchEvent(new Event('input', { bubbles: true }))
+}, liveCode)
+eq(await page.evaluate(() => { document.querySelector('[data-share-use]').click(); return true }), 'use code')
+await sleep(200)
+const coded = await seedNow()
+eq(coded.words === islands.seed.words && coded.num === islands.seed.num, 'code restored seed ' + JSON.stringify(coded))
+const genCode = await page.evaluate(() => window.__makerGen || 0)
+eq(await clickTile('Make this world'), 'make from code')
+await page.waitForFunction((g) => (window.__makerGen || 0) > g, { timeout: 40000 }, genCode)
+await sleep(300)
+const codedHash = await chunkHash()
+eq(codedHash.h === islandHash.h, 'code round trip ' + codedHash.h + ' ' + islandHash.h)
+
+const sky = await makePreset('Sky')
+const skyMap = await page.evaluate(() => {
+  const g = window.__blocks.getVoxel
+  let pads = 0
+  for (let x = 6; x <= 10; x++) for (let z = -1; z <= 3; z++) if (g(x, 7, z) === 1) pads++
+  return { pads, air: g(0, 7, 0), under: g(8, 4, 1) }
+})
+eq(skyMap.pads === 25 && skyMap.air === 0 && skyMap.under === 0, 'sky start ' + JSON.stringify(skyMap))
+const skyFall = await fallOff()
+eq(skyFall.y > 0 && /Try again/.test(skyFall.said), 'sky respawn ' + JSON.stringify(skyFall))
+const skyHash = await chunkHash()
+await reloadReady()
+const skyAgain = await chunkHash()
+eq(skyAgain.h === skyHash.h && skyAgain.preset === 'sky', 'sky reload')
+
+const park = await makePreset('Parkour Start')
+const parkMap = await page.evaluate(() => {
+  const g = window.__blocks.getVoxel
+  let stone = 0
+  let green = 0
+  for (let x = 0; x <= 80; x++) for (let y = 4; y <= 30; y++) for (let z = -2; z <= 4; z++) {
+    const id = g(x, y, z)
+    if (id === 3) stone++
+    if (id === 14) green++
+  }
+  return { stone, green, air: g(8, 9, 1) }
+})
+eq(parkMap.stone > 20 && parkMap.green >= 5 && parkMap.air === 0, 'parkour pads ' + JSON.stringify(parkMap))
+const parkFall = await fallOff()
+eq(parkFall.y > 0 && /Try again/.test(parkFall.said), 'parkour respawn ' + JSON.stringify(parkFall))
+const parkHash = await chunkHash()
+await reloadReady()
+const parkAgain = await chunkHash()
+eq(parkAgain.h === parkHash.h && parkAgain.preset === 'parkour', 'parkour reload')
+
+await openMaker()
+eq(await clickTile('Void'), 'void again')
+const genVoid = await page.evaluate(() => window.__makerGen || 0)
+eq(await clickTile('Make this world'), 'void for fall')
+await page.waitForFunction((g) => (window.__makerGen || 0) > g, { timeout: 40000 }, genVoid)
+const voidTip = await page.evaluate(() => (document.getElementById('menu-hint') || {}).textContent || '')
+eq(/one platform/.test(voidTip), 'void tip ' + voidTip)
+const voidFall = await fallOff()
+eq(voidFall.y > 0 && /Try again/.test(voidFall.said), 'void respawn ' + JSON.stringify(voidFall))
+
+await openMenu()
+eq(await clickTile('World'), 'teacher world')
+await page.waitForFunction(() => [...document.querySelectorAll('#sheet .glbl')].some((n) => /World Maker on/.test(n.textContent)), { timeout: 20000 })
+eq(await clickTile('World Maker on'), 'turn maker off')
+await page.waitForFunction(() => [...document.querySelectorAll('#sheet .glbl')].some((n) => n.textContent === 'World Maker off'), { timeout: 10000 })
+await page.evaluate(() => window.__blocks.save())
+await sleep(300)
+
+await page.evaluateOnNewDocument(() => {
+  try { localStorage.setItem('bloxbert-learn', JSON.stringify({ tourDone: true, goals: {} })) } catch (e) {}
+  try { localStorage.removeItem('bloxbert-teacher') } catch (e) {}
+  try { localStorage.removeItem('tech-room-hub-staff') } catch (e) {}
+  try { localStorage.setItem('bloxbert-maker', '1') } catch (e) {}
+})
+await page.reload({ waitUntil: 'domcontentloaded' })
+await page.waitForFunction(() => window.__blocks && window.__bloxReady, { timeout: 90000 })
+await page.evaluate(() => {
+  const b = document.querySelector('#rules-card .rc-got')
+  if (b) b.click()
+})
+await page.evaluate(() => document.getElementById('game-menu').click())
+await page.waitForFunction(() => document.getElementById('sheet') && !document.getElementById('sheet').hidden)
+eq(await clickTile('World'), 'kid world')
+await sleep(500)
+const kidSees = await page.evaluate(() => [...document.querySelectorAll('#sheet .glbl')].map((n) => n.textContent))
+eq(!kidSees.some((t) => t === 'New world'), 'kid device hides New world ' + kidSees.join(','))
+
 eq(!errs.length, 'console ' + errs.join(' | '))
 
 if (fail.length) {

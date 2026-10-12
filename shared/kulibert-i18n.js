@@ -160,6 +160,12 @@
   "undo": "Undo",
   "whatsNewBody": "A tap on a Bed, Oven, Box, Counter or Woodshop opens it. Crouch to build beside it, and a 3-star Bed keeps its design.",
   "world": "World",
+  "graphics": "Graphics",
+  "gfxLiteHint": "Flat sky. Lamps glow only.",
+  "gfxNormal": "Normal",
+  "gfxNormalHint": "Soft sky and warm lamps.",
+  "gfxFancy": "Fancy",
+  "gfxFancyHint": "Corner shade and swaying plants.",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
   var packs = { en: EN };

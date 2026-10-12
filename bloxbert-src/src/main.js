@@ -43,7 +43,7 @@ import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN } from './worldgen.js'
-import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed } from './maker.js'
+import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
@@ -1095,8 +1095,8 @@ function townVoxel(x, y, z) {
   return 0
 }
 function genVoxel(x, y, z) {
-  if (makerLive.preset === 'flat' || makerLive.preset === 'void') {
-    const name = makerBlock(makerLive.preset, x, y, z, worldSpawn)
+  if (isMakerPreset(makerLive.preset)) {
+    const name = makerBlock(makerLive.preset, x, y, z, worldSpawn, makerLive.seed)
     return name ? (ID[name] || 0) : 0
   }
   const g = seenGen(x, y, z)
@@ -1109,11 +1109,11 @@ let genSeen = {}
 let makerNext = null
 let makerDraft = null
 function defaultMaker() {
-  return { preset: 'normal', hills: 2, water: 2, trees: 2, seed: 0, adj: 0, noun: 0 }
+  return { preset: 'normal', hills: 2, water: 2, trees: 2, seed: 0, adj: 0, noun: 0, on: true, edited: false }
 }
 let makerLive = defaultMaker()
 function makerEnabled() {
-  try { return localStorage.getItem('bloxbert-maker') !== '0' } catch (e) { return true }
+  return makerLive.on !== false
 }
 function seenGen(x, y, z) {
   const k = key(Math.floor(x / S), Math.floor(y / S), Math.floor(z / S))
@@ -1147,9 +1147,9 @@ function compactSeen() {
   return out
 }
 function fillGenerated(data, x0, y0, z0) {
-  if (makerLive.preset === 'flat' || makerLive.preset === 'void') {
+  if (isMakerPreset(makerLive.preset)) {
     for (let i = 0; i < S; i++) for (let j = 0; j < S; j++) for (let k = 0; k < S; k++) {
-      const name = makerBlock(makerLive.preset, x0 + i, y0 + j, z0 + k, worldSpawn)
+      const name = makerBlock(makerLive.preset, x0 + i, y0 + j, z0 + k, worldSpawn, makerLive.seed)
       data[i * S * S + j * S + k] = name ? (ID[name] || 0) : 0
     }
     return
@@ -1235,6 +1235,7 @@ function setVoxel(x, y, z, v, draw = true) {
   if (draw) drawVoxel(x, y, z, v)
   if (!voxelQuiet) {
     dirty = true
+    if (isMakerPreset(makerLive.preset)) makerLive.edited = true
     markSave(t('notSaved'))
     if (isMachineId(prev) || isMachineId(v)) trackMachine(x, y, z, v)
   }
@@ -3125,6 +3126,8 @@ async function applyDoc(doc) {
   if (session) paintModeChip()
   syncDropMeshes()
   circuitRescan()
+  paintWorldName()
+  showMakerTip()
 }
 async function importFile(file) {
   if (file.size > 2 * 1024 * 1024) throw new Error('That file is too big for a world (over 2 MB).')
@@ -3163,6 +3166,8 @@ async function resetWorld() {
   seedOldBushes()
   openedFrom = ''
   bakeSpawnChunk()
+  paintWorldName()
+  showMakerTip()
   markSave(t('fresh'))
   try { await save() } catch (e) {}
   try { await paintOldWorlds() } catch (e) {}
@@ -3229,6 +3234,8 @@ function countBag() {
 }
 function classicText(day, doc) {
   const bits = [t('openDated').replace('{date}', classicLabel(day))]
+  const named = makerName(doc && doc.maker)
+  if (named) bits.push(named)
   if (doc && doc.archiveWhy === 'fresh') bits.push(t('archiveFresh'))
   else if (doc && doc.archiveWhy === 'swap') bits.push(t('archiveSwap'))
   if (doc && doc.archiveBlocks != null) bits.push(t('archiveBlocks').replace('{n}', String(doc.archiveBlocks | 0)))
@@ -3275,7 +3282,7 @@ async function archiveLeaving(avoid, why) {
   body.archiveBlocks = countBlocks()
   body.archiveBag = countBag()
   if (from && from === avoid) return []
-  const touched = body.archiveBlocks > 0 || makerLive.preset === 'flat' || makerLive.preset === 'void'
+  const touched = body.archiveBlocks > 0 || isMakerPreset(makerLive.preset)
   if (!touched) return []
   const pins = []
   if (from.indexOf(pre) === 0 && from !== avoid) {
@@ -3391,7 +3398,9 @@ async function paintOldEntry(host, openList) {
   if (teacherOn()) {
     const on = makerEnabled()
     host.append(menuTile(on ? '☑' : '☐', t(on ? 'makerOn' : 'makerOff'), () => {
-      try { localStorage.setItem('bloxbert-maker', on ? '0' : '1') } catch (e) {}
+      makerLive.on = !on
+      dirty = true
+      save().catch(() => {})
       paintOldEntry(host, openList)
     }))
   }
@@ -3428,12 +3437,14 @@ function makerSnap() {
     seed: makerLive.seed | 0,
     adj: makerLive.adj | 0,
     noun: makerLive.noun | 0,
+    on: makerLive.on !== false,
+    edited: !!makerLive.edited,
     genVersion,
   }
 }
 function applyMaker(raw) {
-  if (!raw || typeof raw !== 'object') { makerLive = defaultMaker(); return }
-  const preset = raw.preset === 'flat' || raw.preset === 'void' ? raw.preset : 'normal'
+  if (!raw || typeof raw !== 'object') { makerLive = defaultMaker(); paintWorldName(); return }
+  const preset = PRESETS.indexOf(raw.preset) >= 0 ? raw.preset : 'normal'
   makerLive = {
     preset,
     hills: clampStep(raw.hills == null ? 2 : raw.hills),
@@ -3442,10 +3453,35 @@ function applyMaker(raw) {
     seed: raw.seed | 0,
     adj: raw.adj | 0,
     noun: raw.noun | 0,
+    on: raw.on !== false,
+    edited: !!raw.edited,
   }
+  paintWorldName()
+}
+function paintWorldName() {
+  const el = document.querySelector('.brand .tb-name')
+  if (!el) return
+  const named = makerName(makerLive)
+  el.textContent = named || 'Bertopia'
+}
+function showMakerTip() {
+  const key = tipKey(makerLive.preset)
+  if (!key) return
+  const hint = $('menu-hint')
+  if (!hint) return
+  hintOwner = 'maker'
+  hint.hidden = false
+  hint.textContent = t(key)
+  clearTimeout(showMakerTip.t)
+  showMakerTip.t = setTimeout(() => {
+    if (hintOwner !== 'maker') return
+    if (hint.textContent === t(key)) hint.hidden = true
+    hintOwner = ''
+    pumpHints()
+  }, 12000)
 }
 function bakeSpawnChunk() {
-  if (makerLive.preset !== 'flat' && makerLive.preset !== 'void') return
+  if (!isMakerPreset(makerLive.preset)) return
   const x0 = Math.floor(worldSpawn[0] / S) * S
   const y0 = Math.floor(worldSpawn[1] / S) * S
   const z0 = Math.floor(worldSpawn[2] / S) * S
@@ -3460,13 +3496,14 @@ function openMaker() {
   const grid = sheet && sheet.querySelector('.ggrid')
   if (!grid) return
   makerDraft = {
-    preset: makerLive.preset === 'flat' || makerLive.preset === 'void' ? makerLive.preset : 'normal',
+    preset: PRESETS.indexOf(makerLive.preset) >= 0 ? makerLive.preset : 'normal',
     hills: clampStep(makerLive.hills),
     water: clampStep(makerLive.water),
     trees: clampStep(makerLive.trees),
     seed: makerLive.seed | 0,
     adj: makerLive.adj | 0,
     noun: makerLive.noun | 0,
+    code: '',
   }
   if (!makerDraft.seed) makerDraft.seed = normSeed((Math.random() * 32000) | 0)
   const title = document.getElementById('sheet-title')
@@ -3490,7 +3527,10 @@ function paintMaker(g) {
   presets.className = 'wide'
   presets.style.display = 'flex'
   presets.style.gap = '8px'
-  const choices = [['normal', '🌿', 'makerNormal'], ['flat', '▬', 'makerFlat'], ['void', '○', 'makerVoid']]
+  const choices = [
+    ['normal', '🌿', 'makerNormal'], ['flat', '▬', 'makerFlat'], ['void', '○', 'makerVoid'],
+    ['islands', '🏝️', 'makerIslands'], ['sky', '☁', 'makerSky'], ['parkour', '⤴', 'makerParkour'],
+  ]
   for (const [id, icon, lab] of choices) {
     const tile = menuTile(icon, t(lab), () => { makerDraft.preset = id; paintMaker(g) })
     tile.dataset.preset = id
@@ -3572,6 +3612,42 @@ function paintMaker(g) {
   }
   nameRow.append(nameLab, spinWord('adj', ADJECTIVES), spinWord('noun', NOUNS))
   g.append(nameRow)
+  const share = document.createElement('div')
+  share.className = 'wide'
+  share.style.cssText = 'display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:44px'
+  const shareLab = document.createElement('span')
+  shareLab.className = 'glbl'
+  shareLab.textContent = t('makerCode')
+  const shareIn = document.createElement('input')
+  shareIn.type = 'text'
+  shareIn.dataset.shareCode = '1'
+  shareIn.value = makerDraft.code || ''
+  shareIn.placeholder = shareCode(makerDraft)
+  shareIn.setAttribute('aria-label', t('makerCode'))
+  shareIn.style.cssText = 'flex:1;min-width:160px;min-height:44px;background:#1f2b44;color:#E6EEF2;border:1px solid #22D3EE;border-radius:8px;padding:0 8px'
+  shareIn.addEventListener('input', () => { makerDraft.code = shareIn.value })
+  const use = makerSpin(t('makerUseCode'), () => {
+    const parsed = parseShare(makerDraft.code || shareIn.value)
+    if (!parsed) { toast(t('makerCodeBad')); return }
+    makerDraft.preset = parsed.preset
+    makerDraft.hills = parsed.hills
+    makerDraft.water = parsed.water
+    makerDraft.trees = parsed.trees
+    makerDraft.seed = parsed.seed
+    makerDraft.code = shareCode(parsed)
+    paintMaker(g)
+  })
+  use.dataset.shareUse = '1'
+  use.style.minHeight = '44px'
+  share.append(shareLab, shareIn, use)
+  g.append(share)
+  if (makerLive.seed) {
+    const have = document.createElement('p')
+    have.className = 'gnote wide'
+    have.dataset.liveShare = '1'
+    have.textContent = makerLive.edited || !isMakerPreset(makerLive.preset) ? t('makerShareFile') : shareCode(makerLive)
+    g.append(have)
+  }
   const start = menuTile('✓', t('makerStart'), () => { startMade() })
   start.style.minHeight = '44px'
   start.dataset.makerStart = '1'
@@ -3583,15 +3659,21 @@ async function startMade() {
   if (!makerDraft) return
   if (!confirm(t('confirmFresh'))) return
   makerNext = {
-    preset: makerDraft.preset === 'flat' || makerDraft.preset === 'void' ? makerDraft.preset : 'normal',
+    preset: PRESETS.indexOf(makerDraft.preset) >= 0 ? makerDraft.preset : 'normal',
     hills: clampStep(makerDraft.hills),
     water: clampStep(makerDraft.water),
     trees: clampStep(makerDraft.trees),
     seed: normSeed(makerDraft.seed),
     adj: makerDraft.adj | 0,
     noun: makerDraft.noun | 0,
+    on: makerLive.on !== false,
+    edited: false,
   }
   await resetWorld()
+  try { openMenu(false) } catch (e) {}
+  try { noa.setPaused(false) } catch (e) {}
+  if (session) session.paused = false
+  showMakerTip()
   window.__makerGen = (window.__makerGen || 0) + 1
 }
 paintOldWorlds().catch(() => {})
@@ -4721,6 +4803,13 @@ document.addEventListener('pointerlockchange', () => {
 })
 noa.on('tick', () => {
   const p = noa.entities.getPosition(noa.playerEntity)
+  if (softPreset(makerLive.preset) && p[1] < -10) {
+    const body = noa.entities.getPhysicsBody && noa.entities.getPhysicsBody(noa.playerEntity)
+    if (body) { body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0 }
+    noa.entities.setPosition(noa.playerEntity, worldSpawn.slice())
+    toast(t('makerTryAgain'))
+    return
+  }
   if (p[1] < -72) poof()
 })
 function poof() {
