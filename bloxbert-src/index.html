@@ -252,8 +252,15 @@ html[dir=rtl] #fs-btn{right:12px;left:auto}
 html[dir=rtl] .sheet-bar{direction:ltr}
 .kb-bar .kb-menu{position:relative;z-index:3;unicode-bidi:isolate}
 .kb-bar .kb-menu::after{content:"";position:absolute;inset:-8px -32px}
-#tool-strip{position:fixed;left:8px;right:8px;bottom:78px;z-index:6;display:flex;gap:6px;overflow:auto;background:rgba(11,18,32,.85);border:1px solid var(--teal);border-radius:12px;padding:6px}
-#tool-strip button{min-width:48px;min-height:48px;background:transparent;color:#f8fafc;border:1px solid rgba(34,211,238,.45);border-radius:10px}
+#wand-pill{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:32;display:flex;align-items:center;gap:6px;padding:4px;background:#0E1A22;border:3px solid var(--wand,#ff8a1f);box-shadow:inset 0 0 0 3px #0B2A30;border-radius:999px;pointer-events:auto}
+#wand-pill[hidden]{display:none!important}
+#wand-pill button{display:flex;align-items:center;justify-content:center;gap:4px;min-width:44px;min-height:44px;padding:4px 10px;border:0;border-radius:999px;background:#13303A;color:#E6EEF2;font-size:12px;font-weight:800;line-height:1}
+#wand-pill .gic{width:22px;height:22px;flex:0 0 22px}
+#wand-pill canvas{width:22px;height:22px;image-rendering:pixelated}
+#wand-pill .glbl{font-size:12px;font-weight:800}
+#wand-do{background:#14B8A6;color:#04221e}
+#wand-x{color:#E6EEF2}
+@media (max-height:500px){#wand-pill{bottom:70px}}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
 /* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
@@ -591,8 +598,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   #hotbar .slot.bump,#held-chip.on,#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap{animation:none;transition:none}
   #held-chip.on{opacity:1}
 }
-.top,#hotbar,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#mode-pill,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{z-index:30;pointer-events:auto;isolation:isolate}
-.top,#path-chip,#game-menu,#tool-strip,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
+.top,#hotbar,#path-chip,#game-menu,#wand-pill,#inspect-chip,#wallet-chip,#mode-pill,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{z-index:30;pointer-events:auto;isolation:isolate}
+.top,#path-chip,#game-menu,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
 #qol-tip.kd-tip,#qol-held{
@@ -763,8 +770,10 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet .gtile .gic canvas,#sheet .gtile.kd-key canvas{width:28px;height:28px;flex:0 0 28px;image-rendering:pixelated}
 #sheet .gtile.kd-key .glbl{text-align:center}
 .gtile .gic canvas{width:28px;height:28px;image-rendering:pixelated;display:block}
-#tool-strip button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:64px;min-height:52px;padding:4px;font-size:11px;font-weight:800;line-height:1.1}
-#tool-strip canvas{width:26px;height:26px;image-rendering:pixelated}
+#wand-pill{z-index:32;transform:translateX(-50%)}
+#wand-mode{flex-direction:column;min-width:64px}
+#wand-do,#wand-x{flex:0 0 44px;width:44px;min-width:44px;padding:0}
+#wand-do{background:#14B8A6;color:#04221e}
 #mode-pill button{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:0;height:auto;padding:2px 8px;line-height:1}
 #mode-pill .ti{width:16px;height:16px;display:flex;flex:0 0 16px}
 #mode-pill canvas{width:16px;height:16px;image-rendering:pixelated}
@@ -820,15 +829,10 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 <div id="menu-hint" class="kd-tip" hidden></div>
 <div id="toast" class="kd-tip" role="status" aria-live="polite" hidden></div>
 <button id="path-chip" type="button" hidden></button>
-<div id="tool-strip" hidden>
-  <button type="button" data-tool="select" title="Select"><span class="gic" data-ico="select"></span><span class="glbl">Select</span></button>
-  <button type="button" data-tool="fill" title="Fill"><span class="gic" data-ico="fill"></span><span class="glbl">Fill</span></button>
-  <button type="button" data-tool="walls" title="Walls"><span class="gic" data-ico="walls"></span><span class="glbl">Walls</span></button>
-  <button type="button" data-tool="copy" title="Copy"><span class="gic" data-ico="copy"></span><span class="glbl">Copy</span></button>
-  <button type="button" data-tool="paste" title="Paste"><span class="gic" data-ico="paste"></span><span class="glbl">Paste</span></button>
-  <button type="button" data-tool="do" title="Do it"><span class="gic" data-ico="check"></span><span class="glbl">Do it</span></button>
-  <button type="button" data-tool="cancel" title="Cancel"><span class="gic" data-ico="x"></span><span class="glbl">Cancel</span></button>
-  <button type="button" data-tool="close" title="Close"><span class="gic" data-ico="x"></span></button>
+<div id="wand-pill" hidden>
+  <button type="button" id="wand-mode" title="Mode"><span class="gic" data-ico="select"></span><span class="glbl">Select</span></button>
+  <button type="button" id="wand-do" title="Do it" aria-label="Do it"><span class="gic" data-ico="check"></span></button>
+  <button type="button" id="wand-x" title="Cancel" aria-label="Cancel"><span class="gic" data-ico="x"></span></button>
 </div>
 <div id="play-chip" hidden>Click to play</div>
 <div id="held-chip" class="kd-tip" hidden></div>

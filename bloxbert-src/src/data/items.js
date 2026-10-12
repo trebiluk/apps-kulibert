@@ -33,6 +33,7 @@ export const ITEMS = {
   box: { block: 27, letter: 'Bx', base: 4, sell: false },
   door: { block: 30, letter: 'Dr', base: 2, sell: false },
   stick: { letter: 'Sk', base: 0, sell: false },
+  buildWand: { letter: 'Bw', base: 0, sell: false, stack: 1 },
   doorGlass: { block: 32, letter: 'Gd', base: 0, sell: false },
   doorMetal: { block: 34, letter: 'Md', base: 0, sell: false },
   doorSliding: { block: 36, letter: 'Sg', base: 0, sell: false },

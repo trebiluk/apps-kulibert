@@ -224,7 +224,7 @@ export function mountPanels(api) {
         keyTile('sliders', 'mode', api.t('mode'), () => open('mode')),
       ]),
       menuGroup('make', api.t('menuMake'), [
-        keyTile('pick', 'tools', api.t('buildTools'), () => { close(); api.tools() }),
+        keyTile('pick', 'tools', api.t('buildWand'), () => { close(); api.tools() }),
         keyTile('target', 'goals', api.t('tryThis'), () => open('goals')),
         keyTile('shop', 'shop', api.t('shop'), () => open('shop')),
         keyTile('coin', 'wallet', api.t('wallet'), () => open('wallet')),

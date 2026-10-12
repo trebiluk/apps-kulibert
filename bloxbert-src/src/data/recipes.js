@@ -15,6 +15,7 @@ export const RECIPES = [
   { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['plankAny', 2]], out: ['stoneTool', 1], secs: 4 },
   { id: 'door', at: 'bench', in: [['plankAny', 6]], out: ['door', 1], secs: 3 },
   { id: 'stick', at: 'bench', in: [['plankAny', 2]], out: ['stick', 4], secs: 1 },
+  { id: 'buildWand', at: 'bench', in: [['stick', 1], ['glass', 1]], out: ['buildWand', 1], secs: 2 },
   { id: 'safetyGlasses', at: 'bench', in: [['glass', 2], ['stick', 1]], out: ['safetyGlasses', 1], secs: 2 },
   { id: 'measuringTape', at: 'bench', in: [['ironIngot', 1], ['woolAny', 1]], out: ['measuringTape', 1], secs: 2 },
   { id: 'handSaw', at: 'bench', in: [['ironIngot', 1], ['stick', 1]], out: ['handSaw', 1], secs: 2 },

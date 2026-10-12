@@ -20,6 +20,15 @@ export function createTools(api) {
     return out
   }
   function select(p, q) { a = p; b = q; api.toast(tSize()) }
+  function setCorners(p, q) { a = p || null; b = q || null }
+  function clearBox() {
+    a = null
+    b = null
+    pending = null
+    const chip = document.getElementById('size-chip')
+    if (chip) chip.hidden = true
+  }
+  function cornerA() { return a ? a.slice() : null }
   function tSize() {
     const bx = box()
     if (!bx) return ''
@@ -134,7 +143,7 @@ export function createTools(api) {
     if (name === 'fill' || name === 'walls') {
       if (!needBox()) return null
       let id = opts.id || api.current()
-      if (api.survival && api.survival() && api.heldBlock) id = api.heldBlock()
+      if (api.survival && api.survival() && api.heldBlock && !opts.id) id = api.heldBlock()
       if (api.survival && api.survival() && !id) { api.toast(api.t('pickBlock') || 'Pick a block in your hotbar first'); return null }
       const bx = box()
       if (!bx || tooBig(bx)) { api.toast(api.t('tooBig')); return null }
@@ -186,5 +195,5 @@ export function createTools(api) {
     const area = points.length > 2 ? Math.abs((points[1][0] - points[0][0]) * (points[2][2] - points[0][2])) : 0
     return { len, area, vol: 0 }
   }
-  return { select, box, fill, copy, pasteAt, schemWrite, schemRead, saveBuild, builds, snaps, cards, rewind, snapMake, measure, tSize, clip: () => clip, act, confirm, cancel, ghost }
+  return { select, setCorners, clearBox, cornerA, box, fill, copy, pasteAt, schemWrite, schemRead, saveBuild, builds, snaps, cards, rewind, snapMake, measure, tSize, clip: () => clip, act, confirm, cancel, ghost }
 }

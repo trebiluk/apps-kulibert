@@ -86,7 +86,33 @@ function asArt(name, painter) {
   c.dataset.kind = 'wrap'
   return c
 }
+export const WAND_TIP = {
+  select: '#22d3ee',
+  fill: '#ff8a1f',
+  walls: '#e6b422',
+  copy: '#e6f6ff',
+  paste: '#2dd4bf',
+}
+export function paintWand(g, mode) {
+  const tip = WAND_TIP[mode] || WAND_TIP.select
+  g.fillStyle = '#0a1428'
+  g.fillRect(20, 16, 8, 28)
+  g.fillStyle = '#2dd4bf'
+  g.fillRect(22, 18, 4, 22)
+  g.fillStyle = tip
+  g.fillRect(16, 4, 16, 14)
+  g.fillStyle = '#e6f6ff'
+  g.fillRect(20, 8, 8, 6)
+}
+export function wandCanvas(mode) {
+  const c = glyph((g) => paintWand(g, mode))
+  c.dataset.item = 'buildWand'
+  c.dataset.kind = 'wrap'
+  c.dataset.wrap = 'buildWand'
+  return c
+}
 const FACE = {
+  buildWand(g) { paintWand(g, 'select') },
   log(g) {
     g.fillStyle = '#6B3A1F'
     g.beginPath()

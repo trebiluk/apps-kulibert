@@ -397,6 +397,7 @@ export function createSession(api) {
       }
       const wear = s && wearBar(item, s.uses)
       if (wear) b.append(wear)
+      if (s) b.dataset.item = s.item
       b.setAttribute('aria-pressed', String(i === hot))
       b.setAttribute('aria-label', s ? faceName(s.item) : t('emptySlot'))
       if (s) b.title = faceName(s.item)
@@ -2654,6 +2655,7 @@ export function createSession(api) {
     if (extra.length) api.toast(t('keptAside'))
     for (const s of bags.survival.slots) if (s) markFound(s.item)
     for (const s of bags.creative.slots) if (s) markFound(s.item)
+    if (mode === 'creative' && bag.count('buildWand') < 1) giveItem('buildWand', 1)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     paintChip()
     syncDig()
@@ -2689,6 +2691,7 @@ export function createSession(api) {
     paintChip()
     syncDig()
     paintEnergy()
+    if (mode === 'creative' && bag.count('buildWand') < 1) giveItem('buildWand', 1)
     if (mode === 'survival') paintHotbar()
     else if (api.paintBar) api.paintBar()
   }

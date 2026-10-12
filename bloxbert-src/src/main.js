@@ -37,7 +37,7 @@ import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
 import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
-import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon } from './icons.js'
+import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -1532,6 +1532,7 @@ function toastFarKey() {
   toast(t('tooFar'))
 }
 function heldPlaceKey() {
+  if (wandHeld()) return ''
   if (survivalOn()) {
     const held = session && session.selectedItem ? session.selectedItem() || '' : ''
     if (!held || held === 'berry' || held === 'bread' || held === 'cupcake') return ''
@@ -2684,6 +2685,7 @@ function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
 }
 noa.inputs.down.on('fire', () => {
+  if (wandHeld()) return
   if (inspectOn) { showInspect(); return }
   if (tableMode) return
   if (anyCard()) return
@@ -2710,6 +2712,7 @@ function tryEatClick(aimed) {
   return true
 }
 noa.inputs.down.on('alt-fire', () => {
+  if (wandHeld()) return
   if (inspectOn) { showInspect(); return }
   if (tableMode || rightPress) return
   if (anyCard()) return
@@ -4637,7 +4640,7 @@ panels = mountPanels({
   paintCounter: (g, key) => session.paintCounter(g, key),
   paintBunk: (g, key) => session.paintBunk(g, key),
   paintBox: (g, key) => session.paintBox(g, key),
-  tools: () => { const strip = $('tool-strip'); if (strip) strip.hidden = false },
+  tools: () => equipWand(),
   leave: async () => { await save(); location.href = '/' },
   paintBuilds: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('myBuilds') })),
   paintRewind: (g) => g.append(Object.assign(document.createElement('p'), { className: 'gnote', textContent: t('undoMinutes') })),
@@ -4802,15 +4805,254 @@ const tools = createTools({
     return g
   },
 })
-for (const b of document.querySelectorAll('#tool-strip [data-tool]')) {
-  b.addEventListener('click', () => {
-    const name = b.dataset.tool
-    if (name === 'close') { $('tool-strip').hidden = true; tools.cancel(); return }
-    if (name === 'do') { tools.confirm(); return }
-    if (name === 'cancel') { tools.cancel(); return }
-    const res = tools.act(name)
-    if (!res && name !== 'select' && !tools.box()) toast(t('tapCorner'))
-  })
+const WAND_MODES = ['select', 'fill', 'walls', 'copy', 'paste']
+const WAND_ICON = { select: 'select', fill: 'fill', walls: 'walls', copy: 'copy', paste: 'paste' }
+const WAND_KEY = { select: 'wandSelect', fill: 'wandFill', walls: 'wandWalls', copy: 'wandCopy', paste: 'wandPaste' }
+const WAND_RGB = {
+  select: [0.13, 0.83, 0.93],
+  fill: [1, 0.54, 0.12],
+  walls: [0.90, 0.71, 0.13],
+  copy: [0.90, 0.96, 1],
+  paste: [0.18, 0.83, 0.75],
+}
+let wandMode = 'select'
+let wandSlot = false
+let paintId = 0
+let wandWas = false
+let wandPainted = ''
+let wandPress = null
+let wandLine = null
+function wandHeld() {
+  if (tableMode || !session) return false
+  if (session.mode === 'survival') return !!(session.selectedItem && session.selectedItem() === 'buildWand')
+  return !!wandSlot
+}
+function rememberPaint() {
+  if (!session || wandHeld()) return
+  if (session.mode === 'survival') {
+    const key = session.selectedItem && session.selectedItem()
+    const id = key && ITEMS[key] && ITEMS[key].block
+    if (id) paintId = id
+  } else if (current) paintId = current
+}
+function paintHeldWandIcon() {
+  const btn = document.querySelector('#hotbar [data-item="buildWand"]')
+  if (!btn) return
+  const next = wandCanvas(wandMode)
+  const canvas = btn.querySelector('canvas')
+  if (canvas) canvas.replaceWith(next)
+  else {
+    const sw = btn.querySelector('.sw')
+    if (sw) sw.append(next)
+    else btn.prepend(next)
+  }
+}
+function paintWandPill() {
+  const pill = $('wand-pill')
+  if (!pill) return
+  const on = wandHeld()
+  pill.hidden = !on
+  if (!on) return
+  const modeBtn = $('wand-mode')
+  if (modeBtn) {
+    modeBtn.replaceChildren()
+    const ico = document.createElement('span')
+    ico.className = 'gic'
+    const pic = menuIcon(WAND_ICON[wandMode] || 'select')
+    if (pic) ico.append(pic)
+    const lab = document.createElement('span')
+    lab.className = 'glbl'
+    lab.textContent = t(WAND_KEY[wandMode] || 'wandSelect')
+    modeBtn.append(ico, lab)
+    modeBtn.title = lab.textContent
+    modeBtn.setAttribute('aria-label', lab.textContent)
+  }
+  const rgb = WAND_RGB[wandMode] || WAND_RGB.select
+  pill.style.setProperty('--wand', 'rgb(' + Math.round(rgb[0] * 255) + ',' + Math.round(rgb[1] * 255) + ',' + Math.round(rgb[2] * 255) + ')')
+  paintHeldWandIcon()
+  wandPainted = wandMode
+}
+function noteWandTip() {
+  try { if (localStorage.getItem('bloxbert-wand-tip') === '1') return } catch (e) { return }
+  try { localStorage.setItem('bloxbert-wand-tip', '1') } catch (e) {}
+  showCard(t('wandTip'))
+}
+function syncWandUi() {
+  const on = wandHeld()
+  if (!on) rememberPaint()
+  if (on && !wandWas) noteWandTip()
+  if (on !== wandWas || (on && wandPainted !== wandMode)) paintWandPill()
+  if (!on && wandWas) {
+    const pill = $('wand-pill')
+    if (pill) pill.hidden = true
+  }
+  wandWas = on
+}
+function cycleWand(dir) {
+  const i = WAND_MODES.indexOf(wandMode)
+  wandMode = WAND_MODES[(i + (dir || 1) + WAND_MODES.length) % WAND_MODES.length]
+  paintWandPill()
+}
+function setWandMode(name) {
+  if (WAND_MODES.indexOf(name) < 0) return wandMode
+  wandMode = name
+  paintWandPill()
+  return wandMode
+}
+function equipWand() {
+  if (!session) return false
+  if (session.mode !== 'survival') return selectWandSlot()
+  if (session.bag.count('buildWand') < 1) { toast(t('wandNeed')); return false }
+  session.holdItem('buildWand')
+  paintWandPill()
+  return true
+}
+function selectWandSlot() {
+  if (!session || session.mode === 'survival') return equipWand()
+  if (session.bag.count('buildWand') < 1) session.give('buildWand', 1)
+  wandSlot = true
+  paintBar()
+  paintWandPill()
+  const el = $('current')
+  if (el) el.textContent = t('buildWand')
+  flashHeld(t('buildWand'))
+  return true
+}
+function wandCorner(which, cell) {
+  if (!cell) { toast(t('tapCorner')); return }
+  if (which === 1) {
+    tools.setCorners(cell, null)
+    toast(t('cornerA'))
+  } else {
+    const a = tools.cornerA()
+    if (!a) { toast(t('tapCorner')); return }
+    tools.setCorners(a, cell)
+    const bx = tools.box()
+    if (bx && (bx.w > 64 || bx.h > 32 || bx.l > 64)) {
+      tools.setCorners(a, null)
+      toast(t('tooBig'))
+      return
+    }
+    toast(tools.tSize() || t('cornerA'))
+  }
+  paintWandBox()
+}
+function wandDo() {
+  if (!tools.box()) { toast(t('tapCorner')); return null }
+  if (wandMode === 'select') { toast(tools.tSize()); return tools.box() }
+  if (wandMode === 'copy') {
+    const clip = tools.copy()
+    if (clip) toast(t('wandCopy'))
+    return clip
+  }
+  const id = paintId || current || 0
+  if ((wandMode === 'fill' || wandMode === 'walls') && !id) { toast(t('pickBlock') || 'Pick a block in your hotbar first'); return null }
+  const staged = tools.act(wandMode, { id })
+  if (!staged) return null
+  return tools.confirm()
+}
+function wandCancel() {
+  tools.clearBox()
+  paintWandBox()
+}
+function paintWandBox() {
+  if (!wandLine) return
+  const bx = wandHeld() && tools.box()
+  if (!bx) { wandLine.setEnabled(false); return }
+  const rgb = WAND_RGB[wandMode] || WAND_RGB.fill
+  wandLine.color.set(rgb[0], rgb[1], rgb[2])
+  wandLine.scaling.set(bx.w, bx.h, bx.l)
+  const cx = (bx.x0 + bx.x1) / 2 + 0.5
+  const cy = (bx.y0 + bx.y1) / 2 + 0.5
+  const cz = (bx.z0 + bx.z1) / 2 + 0.5
+  const lp = noa.globalToLocal([cx, cy, cz], null, [])
+  wandLine.position.copyFromFloats(lp[0], lp[1], lp[2])
+  wandLine.setEnabled(true)
+}
+function finishWandPress(e) {
+  const p = wandPress
+  wandPress = null
+  mouseLeft = false
+  leftDown = false
+  mouseRight = false
+  if (!p || !wandHeld()) return
+  if (p.moved >= 8) return
+  if (e && e.timeStamp - p.t > 700) return
+  const hit = (e && e.pointerType === 'touch') ? rayAt(e.clientX, e.clientY) : targetHit()
+  if (!hit || !hit.position) { toast(t('tapCorner')); return }
+  const raw = hit.position
+  const cell = [raw[0] | 0, raw[1] | 0, raw[2] | 0]
+  let which = p.button === 2 ? 2 : 1
+  if (p.button !== 2 && e && e.pointerType === 'touch' && tools.cornerA() && !tools.box()) which = 2
+  wandCorner(which, cell)
+}
+function bindWandPill() {
+  const pill = $('wand-pill')
+  if (pill) pill.addEventListener('pointerdown', (e) => { e.stopPropagation() })
+  const modeBtn = $('wand-mode')
+  const go = $('wand-do')
+  const ex = $('wand-x')
+  if (modeBtn) modeBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (wandHeld()) cycleWand(1) })
+  if (go) go.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (wandHeld()) wandDo() })
+  if (ex) ex.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); wandCancel() })
+}
+bindWandPill()
+function armShot() {
+  try { localStorage.setItem('bloxbert-wand-tip', '1') } catch (e) {}
+  if (session) session.setMode('creative')
+  if (basics && basics.setBright) basics.setBright(true)
+  selectWandSlot()
+  setWandMode('fill')
+  noa.entities.setPosition(noa.playerEntity, [6.2, 12.5, 2.2])
+  flying = true
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) { body.gravityMultiplier = 0; body.velocity[0] = body.velocity[1] = body.velocity[2] = 0 }
+  const eye = noa.ents.getPositionData(noa.playerEntity)
+  const eyeY = (eye && eye.height ? eye.height : 1.6) * 0.9
+  const aim = [12, 14, 10]
+  tools.setCorners([aim[0] - 2, aim[1] - 1, aim[2] - 2], [aim[0] + 1, aim[1] + 1, aim[2] + 1])
+  paintWandBox()
+  const dx = aim[0] - 6.2, dy = aim[1] - (12.5 + eyeY), dz = aim[2] - 2.2
+  const flat = Math.hypot(dx, dz) || 1
+  setLook(Math.atan2(dx, dz), -Math.atan2(dy, flat))
+  window.__shotLook = [noa.camera.heading, noa.camera.pitch]
+  const rules = document.getElementById('rules-card')
+  if (rules) rules.hidden = true
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  const hint = document.getElementById('menu-hint')
+  if (hint) hint.hidden = true
+  const play = document.getElementById('play-chip')
+  if (play) play.hidden = true
+  const toastEl = document.getElementById('toast')
+  if (toastEl) toastEl.hidden = true
+  const keys = document.querySelector('.keys')
+  if (keys) keys.hidden = true
+  window.__shot = {
+    mode: () => wandMode,
+    held: () => wandHeld(),
+    hot: () => (session && session.mode === 'survival' ? session.hot : (wandSlot ? 'wand' : selectedSlot)),
+    box: () => {
+      const bx = tools.box()
+      return bx ? bx.w + 'x' + bx.h + 'x' + bx.l : ''
+    },
+    cam() {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      return {
+        pos: p && [Math.round(p[0] * 10) / 10, Math.round(p[1] * 10) / 10, Math.round(p[2] * 10) / 10],
+        heading: Math.round(noa.camera.heading * 100) / 100,
+        pitch: Math.round(noa.camera.pitch * 100) / 100,
+        line: wandLine && wandLine.isEnabled(),
+        lp: wandLine && [Math.round(wandLine.position.x * 10) / 10, Math.round(wandLine.position.y * 10) / 10, Math.round(wandLine.position.z * 10) / 10],
+      }
+    },
+    off() {
+      window.__shotLook = null
+      if (session && session.mode !== 'survival') selectSlot(1)
+      else if (session && session.setHot) session.setHot(0)
+    },
+  }
+  window.__shotReady = true
 }
 $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
@@ -4930,7 +5172,7 @@ function paintBar() {
     const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[0]
     const name = blockName(id)
     b.setAttribute('aria-label', name)
-    b.setAttribute('aria-pressed', String(i === selectedSlot))
+    b.setAttribute('aria-pressed', String(!wandSlot && i === selectedSlot))
     const l = document.createElement('span')
     l.className = 'lbl'
     l.textContent = name
@@ -4940,6 +5182,16 @@ function paintBar() {
     strip.append(b)
   })
   bar.append(strip)
+  const wandBtn = document.createElement('button')
+  wandBtn.type = 'button'
+  wandBtn.className = 'slot'
+  wandBtn.dataset.item = 'buildWand'
+  wandBtn.setAttribute('aria-label', t('buildWand'))
+  wandBtn.setAttribute('aria-pressed', String(!!wandSlot))
+  wandBtn.title = t('buildWand')
+  wandBtn.prepend(wandCanvas(wandMode))
+  wandBtn.addEventListener('click', () => selectWandSlot())
+  bar.append(wandBtn)
   const bagBtn = document.createElement('button')
   bagBtn.type = 'button'
   bagBtn.className = 'slot bag-tile'
@@ -4968,12 +5220,41 @@ function useSelected() {
   if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
   flashHeld(blockName(current))
 }
+function scrollPalette(dir) {
+  if (wandSlot) {
+    selectSlot(dir > 0 ? 0 : paletteIds.length - 1)
+    return
+  }
+  if (dir < 0 && selectedSlot === 0) { selectWandSlot(); return }
+  if (dir > 0 && selectedSlot === paletteIds.length - 1) { selectWandSlot(); return }
+  selectSlot(selectedSlot + dir)
+}
+function onWandWheel(e) {
+  if (!e || tableMode) return
+  const dy = e.deltaY || 0
+  if (!dy) return
+  if (wandHeld()) {
+    e.preventDefault()
+    cycleWand(dy > 0 ? 1 : -1)
+    return
+  }
+  if (e.target && e.target.closest && e.target.closest('#hotbar, #wand-pill, #sheet, .card')) return
+  if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (dy > 0 ? 1 : -1))
+  else scrollPalette(dy > 0 ? 1 : -1)
+}
+document.getElementById('stage').addEventListener('wheel', onWandWheel, { passive: false })
 function selectSlot(i) {
+  const wasWand = wandSlot
+  wandSlot = false
   const n = ((i % paletteIds.length) + paletteIds.length) % paletteIds.length
-  const same = n === selectedSlot && current === paletteIds[n]
+  const same = !wasWand && n === selectedSlot && current === paletteIds[n]
   selectedSlot = n
   current = paletteIds[n]
   if (!same) paintBar()
+  else {
+    const pill = $('wand-pill')
+    if (pill) pill.hidden = true
+  }
   const name = blockName(current)
   const el = $('current')
   if (el) el.textContent = name
@@ -4990,6 +5271,7 @@ function putPalette(i, id) {
   }
   selectedSlot = n
   current = paletteIds[n]
+  wandSlot = false
   paintBar()
   const name = blockName(current)
   const label = $('current')
@@ -5389,6 +5671,12 @@ window.addEventListener('keydown', (e) => {
     else safe.remove()
     return
   }
+  if (wandHeld() && (tools.cornerA() || (tools.ghost && tools.ghost()))) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!e.repeat) wandCancel()
+    return
+  }
   e.preventDefault()
   e.stopPropagation()
   if (e.repeat) return
@@ -5406,11 +5694,21 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Tab' && anyCard()) { e.preventDefault(); shutByKey(); return }
   if (e.key === 'e' || e.key === 'E') {
     if (e.ctrlKey || e.metaKey) return
+    if (wandHeld() && $('sheet') && $('sheet').hidden) {
+      e.preventDefault()
+      if (!e.repeat) cycleWand(1)
+      return
+    }
     e.preventDefault()
     if (shutByKey()) return
     openMenu(true); panels.open('inventory'); return
   }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
+    if (wandHeld() && $('sheet') && $('sheet').hidden) {
+      e.preventDefault()
+      if (!e.repeat) cycleWand(-1)
+      return
+    }
     if ($('sheet') && !$('sheet').hidden) return
     e.preventDefault()
     if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
@@ -5424,7 +5722,6 @@ document.addEventListener('keydown', (e) => {
     if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { closePlay('gesture'); return }
     openMenu(true); panels.open('crafting'); return
   }
-  if ((e.key === 'b' || e.key === 'B') && !e.ctrlKey) { const strip = $('tool-strip'); if (strip) strip.hidden = !strip.hidden; return }
   const n = '123456789'.indexOf(e.key)
   if (n >= 0 && !tableMode && !e.repeat && $('sheet') && $('sheet').hidden) {
     if (session && session.mode === 'survival' && session.pressHot) session.pressHot(n)
@@ -5437,6 +5734,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
   if (e.key === 'Enter') {
     e.preventDefault()
+    if (wandHeld()) { if (!e.repeat) wandDo(); return }
     if (inspectOn) { if (!e.repeat) showInspect(); return }
     if (tableMode) { placeBlock(null, { key: true }); return }
     if (!anyCard() && placeableHeld()) {
@@ -5717,6 +6015,13 @@ function feelTick(dt) {
     if (noa.inputs.state.right && !allow(rx, rz)) noa.inputs.state.right = false
   }
   const sheetOpen = !sheetEl.hidden
+  if (wandHeld()) {
+    mouseLeft = false
+    leftDown = false
+    mouseRight = false
+    try { noa.inputs.state.fire = false } catch (e) {}
+    if (dig) { dig = null; hideCrack() }
+  }
   if (swallowing()) {
     mouseLeft = false
     mouseRight = false
@@ -5853,11 +6158,7 @@ noa.on('tick', (dt) => {
   const maxP = 89 * Math.PI / 180
   if (noa.camera.pitch > maxP || noa.camera.pitch < -maxP) setLook(noa.camera.heading, noa.camera.pitch)
   feelTick(dt || 33)
-  const s = noa.inputs.pointerState.scrolly
-  if (s && !tableMode) {
-    if (session && session.mode === 'survival' && session.setHot) session.setHot(session.hot + (s > 0 ? 1 : -1))
-    else selectSlot(selectedSlot + (s > 0 ? 1 : -1))
-  }
+  syncWandUi()
   if (stations) { stations.tick(); syncOvenGlow(); syncFronts(false) }
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {
@@ -6073,10 +6374,14 @@ function targetHit() {
 canvas.addEventListener('pointerdown', (e) => {
   if (!canvasHit(e)) return
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
-  if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
+  const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
+  if (wandClick) {
+    wandPress = { button: 0, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
+  } else if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
   lastPointer = { x: e.clientX, y: e.clientY }
+  if (wandClick) { dig = null; hideCrack(); return }
   const finger = look.pt === 'touch'
   const seen = finger ? null : cropOnLook()
   const hit = seen
@@ -6140,6 +6445,13 @@ canvas.addEventListener('pointermove', (e) => {
   setLook(noa.camera.heading + dx * LOOK_H * lookSens, noa.camera.pitch + dy * (lookInvert ? -1 : 1) * LOOK_V * lookSens)
 })
 canvas.addEventListener('pointerup', (e) => {
+  if (wandPress && (e.button === 0 || e.button < 0)) {
+    finishWandPress(e)
+    look = null
+    dig = null
+    hideCrack()
+    return
+  }
   if (buttonHold) {
     releaseButton(buttonHold.x, buttonHold.y, buttonHold.z)
     buttonHold = null
@@ -6235,6 +6547,12 @@ canvas.addEventListener('pointercancel', () => {
   look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar()
 })
 window.addEventListener('pointerdown', (e) => {
+  if (e.button === 2 && wandHeld() && canvasHit(e)) {
+    wandPress = { button: 2, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
+    e.preventDefault()
+    e.stopPropagation()
+    return
+  }
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (!canvasHit(e)) return
   if (eatResume(e)) return
@@ -6263,6 +6581,13 @@ window.addEventListener('pointerdown', (e) => {
   if (!reachable && !tableMode && !anyCard() && placeableHeld()) toastFarKey()
 }, true)
 window.addEventListener('pointermove', (e) => {
+  if (wandPress) {
+    const dx = e.movementX || (e.clientX - wandPress.x)
+    const dy = e.movementY || (e.clientY - wandPress.y)
+    wandPress.moved += Math.abs(dx) + Math.abs(dy)
+    wandPress.x = e.clientX
+    wandPress.y = e.clientY
+  }
   if (!rightPress) return
   if (e.pointerId != null && rightPress.pid != null && e.pointerId !== rightPress.pid) return
   const cdx = e.clientX - rightPress.px
@@ -6299,6 +6624,7 @@ function finishRight(e) {
   if (canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
 window.addEventListener('pointerup', (e) => {
+  if (wandPress && e.button === 2) { finishWandPress(e); return }
   releaseFar()
   if (e.button === 0) { mouseLeft = false; leftDown = false }
   if (e.button === 2) finishRight(e)
@@ -6928,6 +7254,20 @@ outline.color = new Color3(0.13, 0.83, 0.93)
 outline.isPickable = false
 outline.setEnabled(false)
 noa.rendering.addMeshToScene(outline)
+function wandBoxPoints() {
+  const h = 0.5
+  const p = [
+    new Vector3(-h, -h, -h), new Vector3(h, -h, -h), new Vector3(h, -h, h), new Vector3(-h, -h, h),
+    new Vector3(-h, h, -h), new Vector3(h, h, -h), new Vector3(h, h, h), new Vector3(-h, h, h),
+  ]
+  const order = [0, 1, 2, 3, 0, 4, 5, 6, 7, 4, 5, 1, 2, 6, 7, 3]
+  return order.map((i) => p[i])
+}
+wandLine = CreateLines('wand-box', { points: wandBoxPoints() }, scene)
+wandLine.color = new Color3(1, 0.54, 0.12)
+wandLine.isPickable = false
+wandLine.setEnabled(false)
+noa.rendering.addMeshToScene(wandLine)
 const ghostMat = new StandardMaterial('place-ghost', scene)
 ghostMat.diffuseColor = new Color3(0.75, 0.82, 0.78)
 ghostMat.emissiveColor = new Color3(0.28, 0.34, 0.3)
@@ -7089,6 +7429,11 @@ function fillHeld() {
   heldScratch.kind = 'empty'
   heldScratch.key = ''
   heldScratch.id = 0
+  if (wandHeld()) {
+    heldScratch.kind = 'flat'
+    heldScratch.key = 'buildWand'
+    return heldScratch
+  }
   if (survivalOn() && session && session.selectedItem) {
     const key = session.selectedItem() || ''
     if (!key) return heldScratch
@@ -7135,6 +7480,7 @@ hands = createHands({
   camera: noa.rendering.camera,
   noa,
   held: fillHeld,
+  wandMode: () => wandMode,
   side: () => mainHand,
   show: () => showHand,
   hidden: () => tableMode || inspectOn || anyCard() || document.body.classList.contains('photo') || document.body.classList.contains('menu-open') || noa.camera.zoomDistance > 0.5,
@@ -7146,8 +7492,18 @@ hands = createHands({
   },
 })
 noa.on('beforeRender', (dt) => {
+  if (window.__shotLook) {
+    setLook(window.__shotLook[0], window.__shotLook[1])
+    const body = noa.ents.getPhysicsBody(noa.playerEntity)
+    if (body) { body.gravityMultiplier = 0; body.velocity[1] = 0 }
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (p && p[1] < 11) noa.entities.setPosition(noa.playerEntity, [6.2, 12.5, 2.2])
+    const toastEl = $('toast')
+    if (toastEl) toastEl.hidden = true
+  }
   circuitTick(performance.now())
   paintOutline()
+  paintWandBox()
   paintProtectRing()
   if (basics) syncGlow()
   underwaterTick()
@@ -7448,7 +7804,8 @@ if (!__BLOX_STUDENT__) {
     cancel: () => tools.cancel(),
     ghost: () => tools.ghost(),
     fly: () => ({ on: flying, y: noa.entities.getPosition(noa.playerEntity)[1] }),
-    strip: () => [...document.querySelectorAll('#tool-strip button')].map((b) => b.dataset.tool),
+    strip: () => [],
+    wand: () => ({ held: wandHeld(), mode: wandMode, box: tools.box(), paint: paintId }),
     schem: { write: () => tools.schemWrite(), read: (obj) => tools.schemRead(obj) },
     builds: { list: () => tools.builds },
     rewind: (mins) => tools.rewind(mins),
@@ -7546,6 +7903,7 @@ load().catch(() => {}).finally(() => {
   if (sentToSurvival) toast(t('studentWorld'))
   markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
   showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
+  if (location.search.includes('shot=1')) armShot()
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   let bagWarned = false
@@ -7606,6 +7964,12 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     place: () => session.tryPlace(),
     counts: () => ({ coal: session.bag.count('coal'), sand: session.bag.count('sand'), log: session.bag.count('log'), cupcake: session.bag.count('cupcake'), vend: session.bag.count('vend') }),
     fillSeed(n) { session.setMode('survival'); session.give('log', n); tools.select([0, 5, 0], [2, 6, 1]) },
+    doFill() {
+      const name = 'fill'
+      const staged = tools.act(name)
+      if (!staged) return false
+      return !!tools.confirm()
+    },
     emptyOven() {
       session.setMode('survival')
       session.spend('sand', session.bag.count('sand'))

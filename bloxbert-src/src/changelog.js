@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.178', date: '2026-10-12', lines: {
+    en: ['The Build Wand is in your hotbar. Scroll its modes, click two corners, then the check. The old tool bar is gone.'],
+    uk: ['Жезл будови в панелі. Крути режими, клацни два кути, потім галочку. Стара панель зникла.'],
+    ru: ['Жезл стройки на панели. Крути режимы, щёлкни два угла, потом галочку. Старая панель исчезла.'],
+    es: ['La varita de construir está en la barra. Gira los modos, clic en dos esquinas, luego la marca. La barra vieja ya no está.'],
+    ar: ['عصا البناء في الشريط. مرّر الأوضاع، انقر زاويتين، ثم العلامة. شريط الأدوات القديم ذهب.'],
+    'fa-AF': ['عصای ساخت در نوار است. حالت‌ها را بچرخان، دو گوشه را بزن، بعد تیک. نوار ابزار قدیمی رفت.'],
+    rw: ['Inkoni y\'ubwubatsi iri ku murongo. Zungurura uburyo, kanda ibisigisigi bibiri, hanyuma akamenyetso. Umurongo wa kera waragiye.'],
+    ti: ['በትሪ ህንጻ ኣብ መስመር ኣሎ። ኩነታት ሸብሸብ፡ ክልተ ኩርናዕ ጠውቕ፡ ድሕሪኡ ምልክት። ናይ ቀደም መስመር ኣይኮነን።'],
+  }},
   { v: '2.5.177', date: '2026-10-12', lines: {
     en: ['Menus lead with a picture, a Saved tick shows for a moment, every bag picture is filled, and a protected area says so once.'],
     uk: ['Меню починається з малюнка, галочка Збережено на мить, у сумці немає порожніх малюнків, і захищена зона каже про це раз.'],

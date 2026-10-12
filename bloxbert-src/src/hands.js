@@ -9,7 +9,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { Color3, Color4 } from '@babylonjs/core/Maths/math.color'
 import { Vector4 } from '@babylonjs/core/Maths/math.vector'
 import { Material } from '@babylonjs/core/Materials/material'
-import { slotArt, itemSvg } from './icons.js'
+import { slotArt, itemSvg, wandCanvas } from './icons.js'
 import { ITEMS } from './data/items.js'
 import ATLAS from '../assets/atlas.json'
 
@@ -111,7 +111,8 @@ export function createHands(opts) {
 
   function syncItem() {
     const spec = opts.held()
-    const key = spec.kind === 'empty' ? '' : spec.kind + ':' + spec.key
+    const variant = spec && spec.key === 'buildWand' && opts.wandMode ? (opts.wandMode() || 'select') : ''
+    const key = !spec || spec.kind === 'empty' ? '' : spec.kind + ':' + spec.key + (variant ? ':' + variant : '')
     if (key === shownKey || (key && key === pending)) return
     if (shown) shown.setEnabled(false)
     shown = null
@@ -149,7 +150,7 @@ export function createHands(opts) {
       mesh.scaling.set(0.34, 0.34, 0.34)
       mesh.setEnabled(true)
       dipUntil = performance.now() + DIP_MS
-    })
+    }, variant)
   }
 
   function update(dt) {
@@ -365,23 +366,33 @@ export function createHands(opts) {
     return mat
   }
 
-  function flatItem(key, done) {
-    const hit = flatCache.get(key)
+  function flatItem(key, done, variant) {
+    const cacheKey = variant ? key + ':' + variant : key
+    const hit = flatCache.get(cacheKey)
     if (hit) { done(hit); return }
+    if (key === 'buildWand') {
+      paintNode(wandCanvas(variant || 'select'), (canvas) => {
+        if (!canvas) { done(null); return }
+        const mesh = slabFrom(canvas, cacheKey)
+        if (mesh) flatCache.set(cacheKey, mesh)
+        done(mesh)
+      })
+      return
+    }
     const item = ITEMS[key]
     if (item && item.svg) {
       rasterSvg(itemSvg(item.svg), (canvas) => {
         if (!canvas) { done(null); return }
-        const mesh = slabFrom(canvas, key)
-        if (mesh) flatCache.set(key, mesh)
+        const mesh = slabFrom(canvas, cacheKey)
+        if (mesh) flatCache.set(cacheKey, mesh)
         done(mesh)
       })
       return
     }
     paintNode(slotArt(key), (canvas) => {
       if (!canvas) { done(null); return }
-      const mesh = slabFrom(canvas, key)
-      if (mesh) flatCache.set(key, mesh)
+      const mesh = slabFrom(canvas, cacheKey)
+      if (mesh) flatCache.set(cacheKey, mesh)
       done(mesh)
     })
   }
