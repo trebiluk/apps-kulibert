@@ -161,7 +161,7 @@ export function plantHere(x, y, z, surface, inTown) {
   if (surface <= 1) return hash(x, z + 5) < 0.18 && blockByKey('reed') ? 'reed' : ''
   const n = hash(x, z)
   if (n >= 0.04 && n < 0.07) return blockByKey('wheat') ? 'wheat' : ''
-  if (n >= 0.12 && n < 0.28) return blockByKey('tuft') ? 'tuft' : ''
+  if (n >= 0.22 && n < 0.26) return blockByKey('tuft') ? 'tuft' : ''
   if (wildBushCell(x, z)) return blockByKey('bushFruit') ? 'bushFruit' : ''
   return ''
 }
@@ -182,7 +182,7 @@ function plantBlocked(x, z) {
   if (pondHere(x, h, z) || pondHere(x, h + 1, z) || shoreLow(x, h, z) || shoreLow(x, h + 1, z)) return true
   const n = hash(x, z)
   if (n >= 0.04 && n < 0.07) return true
-  if (n >= 0.12 && n < 0.28) return true
+  if (n >= 0.22 && n < 0.26) return true
   return false
 }
 function trunkDist(x, z) {
@@ -2182,11 +2182,11 @@ function plantName(x, z) {
   if (!blockByKey('daisy') || flatFactor(x, z) <= 0) return ''
   const flower = flowerAt(x, z)
   const n = hash(x + 41, z - 23)
-  if (!flower && n >= 0.16) return ''
+  if (!flower && n >= 0.045) return ''
   const h = greenCol(x, z)
   if (!h) return ''
   if (flower && h <= 12 && hillsAt(x, z) < 5) return flower
-  if (n >= 0.16) return ''
+  if (n >= 0.045) return ''
   if (hash(x + 9, z - 4) < 0.35) return 'fern'
   return 'tallGrass'
 }

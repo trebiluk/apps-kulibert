@@ -809,32 +809,75 @@ function bushMesh(n) {
   return mesh
 }
 function tuftMesh() {
+  return crossCut('tuft', plantMat('tuft', null), 0.42, 0.48)
+}
+const floraMeshes = {}
+function rgbCss(r, g, b) {
+  return 'rgb(' + ((r * 255) | 0) + ',' + ((g * 255) | 0) + ',' + ((b * 255) | 0) + ')'
+}
+function plantMat(name, spec) {
+  const c = document.createElement('canvas')
+  c.width = c.height = 32
+  const g = c.getContext('2d', { willReadFrequently: true })
+  g.imageSmoothingEnabled = false
+  g.clearRect(0, 0, 32, 32)
+  const stem = spec ? '#2f6b28' : '#3e7a2c'
+  const mid = spec ? '#5ea832' : '#245018'
+  const tip = '#1e4a28'
+  const blade = (x, y0, h, col, w) => { g.fillStyle = col; g.fillRect(x, y0, w || 2, h) }
+  blade(11, 12, 18, stem, 2)
+  blade(15, 6, 24, mid, 2)
+  blade(19, 14, 16, tip, 2)
+  blade(14, 9, 8, '#5ea832', 2)
+  if (spec && spec[3] != null) {
+    g.fillStyle = rgbCss(spec[0], spec[1], spec[2])
+    g.fillRect(11, 3, 10, 8)
+    g.fillRect(13, 1, 6, 12)
+    g.fillStyle = rgbCss(spec[3], spec[4], spec[5])
+    g.fillRect(14, 5, 4, 4)
+  }
+  const tex = new DynamicTexture('plant-' + name, c, shapeScene, false, Texture.NEAREST_SAMPLINGMODE)
+  tex.hasAlpha = true
+  tex.update()
+  const mat = noa.rendering.makeStandardMaterial('plant-' + name)
+  mat.diffuseTexture = tex
+  mat.emissiveTexture = tex
+  mat.useAlphaFromDiffuseTexture = true
+  mat.transparencyMode = 1
+  mat.alphaCutOff = 0.5
+  mat.alpha = 1
+  mat.backFaceCulling = false
+  mat.specularColor = new Color3(0, 0, 0)
+  mat.emissiveColor = new Color3(0.55, 0.55, 0.5)
+  mat.diffuseColor = new Color3(0.85, 0.9, 0.8)
+  return mat
+}
+function crossCut(name, mat, w, h) {
   const parts = []
-  for (const yaw of [0.35, 1.15]) parts.push(crossed(wheatStalk, 0.36, 0.4, 0.03, 0.14, yaw))
-  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
-  mesh.name = 'tuft'
+  for (let i = 0; i < 2; i++) {
+    const mesh = CreatePlane(name + '-' + i, { width: w, height: h }, shapeScene)
+    mesh.material = mat
+    mesh.position.set(0, h * 0.5, 0)
+    mesh.rotation.y = i * Math.PI * 0.5
+    mesh.bakeCurrentTransformIntoVertices()
+    mesh.position.set(0, 0, 0)
+    mesh.rotation.set(0, 0, 0)
+    mesh.isPickable = false
+    parts.push(mesh)
+  }
+  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, false)
+  mesh.name = name
+  mesh.material = mat
   mesh.isPickable = false
   mesh.isVisible = false
   mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
   return mesh
 }
-const floraMeshes = {}
 function floraMesh(name, spec) {
   if (floraMeshes[name]) return floraMeshes[name]
-  const body = cropGreen('fx-' + name, spec[0], spec[1], spec[2], spec[0] * 0.22, spec[1] * 0.22, spec[2] * 0.22)
   const h = spec[6] || 0.7
   const w = spec[7] || 0.46
-  const parts = []
-  for (const yaw of [0.4, 1.15]) parts.push(crossed(body, w, h, 0.03, h * 0.42, yaw))
-  if (spec[3] != null) {
-    const head = cropGreen('fxh-' + name, spec[3], spec[4], spec[5], spec[3] * 0.3, spec[4] * 0.3, spec[5] * 0.3)
-    parts.push(part('head', 0.16, 0.14, 0.16, 0, h * 0.82, 0, 0, head))
-  }
-  const mesh = Mesh.MergeMeshes(parts, true, true, undefined, false, true)
-  mesh.name = 'flora-' + name
-  mesh.isPickable = false
-  mesh.isVisible = false
-  mesh.thinInstanceAllowAutomaticStaticBufferRecreation = true
+  const mesh = crossCut('flora-' + name, plantMat(name, spec), w, h)
   floraMeshes[name] = mesh
   return mesh
 }
@@ -4550,7 +4593,7 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { session.paintSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintPickers(g); session.paintSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -5856,10 +5899,64 @@ function applyLook() {
   noa.camera.inverseY = lookInvert
   try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
 }
+function paintPickers(g) {
+  const take = (label) => {
+    const src = document.querySelector('#settings .qset[aria-label="' + label + '"]')
+    if (!src) return null
+    const clone = src.cloneNode(true)
+    clone.classList.add('sheet-qset')
+    return clone
+  }
+  const head = (key) => {
+    const p = document.createElement('p')
+    p.className = 'gnote ghead'
+    p.textContent = t(key)
+    return p
+  }
+  g.append(head('graphics'))
+  const gfx = take('Graphics')
+  if (gfx) g.append(gfx)
+  g.append(head('quality'))
+  const qual = take('Quality')
+  if (qual) g.append(qual)
+  paintGfx()
+  paintQuality()
+}
+function lookLine(name, value) {
+  const row = document.createElement('div')
+  row.className = 'set-line'
+  const lab = document.createElement('span')
+  lab.className = 'set-lab'
+  lab.textContent = name
+  row.append(lab)
+  if (value) {
+    const val = document.createElement('span')
+    val.className = 'set-val'
+    val.textContent = value
+    row.append(val)
+    row._val = val
+  }
+  return row
+}
+function lookPill(name, on, flip, look) {
+  const row = lookLine(name)
+  const b = document.createElement('button')
+  b.type = 'button'
+  b.className = 'pill'
+  if (look) b.dataset.look = look
+  const draw = () => {
+    const v = !!on()
+    b.classList.toggle('on', v)
+    b.setAttribute('aria-pressed', v ? 'true' : 'false')
+    b.textContent = v ? t('switchOn') : t('switchOff')
+  }
+  draw()
+  b.addEventListener('click', () => { flip(); draw() })
+  row.append(b)
+  return row
+}
 function paintLook(g) {
-  const label = document.createElement('p')
-  label.className = 'gnote'
-  label.textContent = t('lookSens') + ' ' + lookSens.toFixed(1) + '×'
+  const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×')
   const range = document.createElement('input')
   range.type = 'range'
   range.min = '0.5'
@@ -5869,54 +5966,40 @@ function paintLook(g) {
   range.setAttribute('aria-label', t('lookSens'))
   range.addEventListener('input', () => {
     lookSens = Number(range.value)
-    label.textContent = t('lookSens') + ' ' + lookSens.toFixed(1) + '×'
+    if (sens._val) sens._val.textContent = lookSens.toFixed(1) + '×'
     applyLook()
   })
-  const inv = document.createElement('button')
-  inv.type = 'button'
-  inv.className = 'gtile wide'
-  const paintInv = () => { inv.textContent = t('invertY') + (lookInvert ? ' ✓' : '') }
-  paintInv()
-  inv.dataset.look = 'invert'
-  inv.addEventListener('click', () => { lookInvert = !lookInvert; applyLook(); paintInv() })
-  const wide = document.createElement('button')
-  wide.type = 'button'
-  wide.className = 'gtile wide'
-  const paintWide = () => { wide.textContent = t('wideView') + (wideView ? ' ✓' : '') }
-  paintWide()
-  wide.addEventListener('click', () => { wideView = !wideView; applyLook(); paintWide() })
-  const climb = document.createElement('button')
-  climb.type = 'button'
-  climb.className = 'gtile wide'
-  const paintClimb = () => { climb.textContent = t('climb') + (autoClimb ? ' ✓' : '') }
-  paintClimb()
-  climb.addEventListener('click', () => { autoClimb = !autoClimb; applyLook(); paintClimb() })
-  const hand = document.createElement('button')
-  hand.type = 'button'
-  hand.className = 'gtile wide'
-  const paintHand = () => { hand.textContent = t('showHand') + (showHand ? ' ✓' : '') }
-  paintHand()
-  hand.addEventListener('click', () => { showHand = !showHand; applyLook(); paintHand() })
-  const side = document.createElement('button')
-  side.type = 'button'
-  side.className = 'gtile wide'
-  const paintSide = () => { side.textContent = t('mainHand') + ': ' + (mainHand === 'left' ? t('left') : t('right')) }
+  const side = lookLine(t('mainHand'))
+  const sideBtn = document.createElement('button')
+  sideBtn.type = 'button'
+  sideBtn.className = 'pill on'
+  const paintSide = () => { sideBtn.textContent = mainHand === 'left' ? t('left') : t('right') }
   paintSide()
-  side.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
-  const cam = document.createElement('button')
-  cam.type = 'button'
-  cam.className = 'gtile wide'
-  const paintCam = () => { cam.textContent = t('cameraView') + ': ' + (camBehind ? t('camBehind') : t('camClose')) }
+  sideBtn.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
+  side.append(sideBtn)
+  const cam = lookLine(t('cameraView'))
+  const camBtn = document.createElement('button')
+  camBtn.type = 'button'
+  camBtn.className = 'pill'
+  const paintCam = () => {
+    camBtn.classList.toggle('on', camBehind)
+    camBtn.setAttribute('aria-pressed', camBehind ? 'true' : 'false')
+    camBtn.textContent = camBehind ? t('camBehind') : t('camClose')
+  }
   paintCam()
-  cam.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
-  const tips = document.createElement('button')
-  tips.type = 'button'
-  tips.className = 'gtile wide'
-  tips.dataset.look = 'tips'
-  const paintTips = () => { tips.textContent = t('hideTips') + (learn.hideTips() ? ' ✓' : '') }
-  paintTips()
-  tips.addEventListener('click', () => { learn.setHideTips(!learn.hideTips()); paintTips() })
-  g.append(label, range, inv, wide, climb, hand, side, cam, tips)
+  camBtn.addEventListener('click', () => { camBehind = !camBehind; applyLook(); paintCam() })
+  cam.append(camBtn)
+  g.append(
+    sens,
+    range,
+    lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert'),
+    lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }),
+    lookPill(t('climb'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }),
+    lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }),
+    side,
+    cam,
+    lookPill(t('hideTips'), () => learn.hideTips(), () => { learn.setHideTips(!learn.hideTips()) }, 'tips'),
+  )
 }
 applyLook()
 function applyLockedLook(dx, dy) {
@@ -6302,7 +6385,7 @@ gfx.applyFog = (next) => {
   scene.fogEnd = 12
 }
 Effect.ShadersStore.bertSkyVertexShader = 'precision highp float;attribute vec3 position;uniform mat4 worldViewProjection;varying vec3 vPos;void main(){vPos=position;gl_Position=worldViewProjection*vec4(position,1.0);}'
-Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uFlat;uniform float uStars;uniform vec3 uZenith;uniform vec3 uHorizon;void main(){vec3 n=normalize(vPos);float h=clamp(n.y*0.9+0.02,0.0,1.0);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);gl_FragColor=vec4(col,1.0);}'
+Effect.ShadersStore.bertSkyFragmentShader = 'precision highp float;varying vec3 vPos;uniform float uTime;uniform float uFlat;uniform float uStars;uniform vec3 uZenith;uniform vec3 uHorizon;void main(){vec3 n=normalize(vPos);float h=smoothstep(0.42,0.95,n.y);vec3 col=mix(uHorizon,uZenith,h);if(uFlat>0.5)col=uHorizon;float star=step(0.9975,fract(sin(dot(floor(n.xy*120.0)+floor(n.yz*70.0),vec2(12.9898,78.233)))*43758.5453));col+=vec3(0.95,0.97,1.0)*star*uStars*smoothstep(0.05,0.4,n.y);gl_FragColor=vec4(col,1.0);}'
 const skyMat = new ShaderMaterial('sky', scene, { vertex: 'bertSky', fragment: 'bertSky' }, { attributes: ['position'], uniforms: ['worldViewProjection', 'uTime', 'uFlat', 'uStars', 'uZenith', 'uHorizon'] })
 skyMat.backFaceCulling = false
 skyMat.disableDepthWrite = true
@@ -6351,9 +6434,23 @@ function applySky() {
   sunQuad.setEnabled(row.sun > 0.2)
   moonQuad.setEnabled(row.moon > 0.2)
   if (!underWater) {
-    scene.fogColor.set(row.horizon[0], row.horizon[1], row.horizon[2])
+    const fog = atmosphereFog(phase, row)
+    scene.fogColor.set(fog[0], fog[1], fog[2])
     if (scene.clearColor) scene.clearColor.set(row.horizon[0], row.horizon[1], row.horizon[2], 1)
+    if (gfxLook.name !== 'lite') {
+      const end = scene.fogEnd || 32
+      const far = phase === 'dusk' || phase === 'dawn' ? 0.82 : 0.7
+      scene.fogStart = Math.max(scene.fogStart || 0, end * far)
+    }
   }
+}
+function atmosphereFog(phase, row) {
+  const h = row.horizon
+  if (gfxLook.name === 'lite') return h
+  if (phase === 'dusk') return [h[0] * 0.38 + 0.32, h[1] * 0.38 + 0.28, h[2] * 0.38 + 0.24]
+  if (phase === 'dawn') return [h[0] * 0.45 + 0.26, h[1] * 0.45 + 0.24, h[2] * 0.45 + 0.22]
+  if (phase === 'night') return [h[0] * 0.55 + 0.05, h[1] * 0.55 + 0.06, h[2] * 0.55 + 0.07]
+  return [h[0] * 0.82 + 0.06, h[1] * 0.82 + 0.06, h[2] * 0.82 + 0.05]
 }
 const lampLights = []
 for (let i = 0; i < 4; i++) {
@@ -6496,7 +6593,7 @@ function litLum(k, a) {
   return 0.2126 * r + 0.7152 * g + 0.0722 * b
 }
 function ambScale(k) {
-  const target = k >= 0.92 ? 1 : k >= 0.6 ? 0.75 + (k - 0.6) * (0.25 / 0.32) : 0.55 + (k - 0.4) * (0.2 / 0.2)
+  const target = k >= 0.92 ? 1 : k >= 0.6 ? 0.84 + (k - 0.6) * (0.16 / 0.32) : 0.60 + (k - 0.4) * (0.24 / 0.2)
   if (litLum(k, 1) <= target + 0.001) return 1
   let lo = 0
   let hi = 1
@@ -6534,9 +6631,10 @@ function syncGlow() {
   if (!basics) return
   const k = Effects.light(basics.lum())
   applySky()
+  const warm = gfxLook.name === 'lite' ? [1, 1, 1] : [1.06, 1, 0.88]
   scene.ambientColor.set(DAY_AMB[0] * k, DAY_AMB[1] * k, DAY_AMB[2] * k)
-  sunLight.diffuse.set(DAY_DIFF.r * k, DAY_DIFF.g * k, DAY_DIFF.b * k)
-  sunLight.specular.set(DAY_SPEC.r * k, DAY_SPEC.g * k, DAY_SPEC.b * k)
+  sunLight.diffuse.set(DAY_DIFF.r * k * warm[0], DAY_DIFF.g * k * warm[1], DAY_DIFF.b * k * warm[2])
+  sunLight.specular.set(DAY_SPEC.r * k * warm[0], DAY_SPEC.g * k * warm[1], DAY_SPEC.b * k * warm[2])
 
   if (!bertEm && typeof bertyMat !== 'undefined' && bertyMat) bertEm = bertyMat.emissiveColor.clone()
   if (bertEm) bertyMat.emissiveColor.set(bertEm.r * k, bertEm.g * k, bertEm.b * k)
@@ -6614,8 +6712,8 @@ function syncGlow() {
     }
     if (kind) {
       const sunK = k * (kind === 'house' ? 0.2 : 0.12)
-      sunLight.diffuse.set(DAY_DIFF.r * sunK, DAY_DIFF.g * sunK, DAY_DIFF.b * sunK)
-      sunLight.specular.set(DAY_SPEC.r * sunK, DAY_SPEC.g * sunK, DAY_SPEC.b * sunK)
+      sunLight.diffuse.set(DAY_DIFF.r * sunK * warm[0], DAY_DIFF.g * sunK * warm[1], DAY_DIFF.b * sunK * warm[2])
+      sunLight.specular.set(DAY_SPEC.r * sunK * warm[0], DAY_SPEC.g * sunK * warm[1], DAY_SPEC.b * sunK * warm[2])
       fill = kind === 'house' ? (near ? 1.15 : 0.28) : (near ? 0.42 : 0.16)
       scene.ambientColor.set(fill, fill, fill)
     }
@@ -6692,6 +6790,30 @@ glassesMesh.parent = berty
 glassesMesh.isPickable = false
 glassesMesh.setEnabled(false)
 syncGlasses()
+const armMat = new StandardMaterial('berty-arm', scene)
+armMat.diffuseColor = new Color3(0.12, 0.82, 0.76)
+armMat.emissiveColor = new Color3(0.04, 0.28, 0.26)
+armMat.specularColor = new Color3(0.04, 0.04, 0.04)
+function makeArm(name, x) {
+  const arm = CreateBox(name, { width: 0.12, height: 0.42, depth: 0.12 }, scene)
+  arm.material = armMat
+  arm.isPickable = false
+  arm.setPivotPoint(new Vector3(0, 0.21, 0))
+  arm.position.set(x, 0.02, 0)
+  arm.parent = berty
+  return arm
+}
+const armL = makeArm('berty-arm-l', -0.28)
+const armR = makeArm('berty-arm-r', 0.28)
+const heldMat = new StandardMaterial('berty-held-mat', scene)
+heldMat.specularColor = new Color3(0, 0, 0)
+heldMat.diffuseColor = new Color3(0.45, 0.62, 0.32)
+const heldBox = CreateBox('berty-held', { size: 0.2 }, scene)
+heldBox.material = heldMat
+heldBox.isPickable = false
+heldBox.position.set(0, -0.48, 0.14)
+heldBox.parent = armR
+heldBox.setEnabled(false)
 let dropReady = false
 const dropMeshes = new Map()
 const dropMats = new Map()
@@ -6945,6 +7067,26 @@ function fillHeld() {
   }
   return heldScratch
 }
+function poseBerty(dt) {
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  const sp = body ? Math.hypot(body.velocity[0], body.velocity[2]) : 0
+  let dy = noa.camera.heading - berty.rotation.y
+  while (dy > Math.PI) dy -= Math.PI * 2
+  while (dy < -Math.PI) dy += Math.PI * 2
+  berty.rotation.y += dy * (1 - Math.exp(-(dt || 16) / 90))
+  const swing = sp > 0.4 ? Math.sin(performance.now() / 140) * 0.65 : 0
+  armL.rotation.x = swing
+  armR.rotation.x = -swing
+  const held = fillHeld()
+  const show = (noa.camera.zoomDistance || 0) > 0.5 && held.kind !== 'empty'
+  heldBox.setEnabled(show)
+  if (!show) return
+  const arm = mainHand === 'left' ? armL : armR
+  if (heldBox.parent !== arm) heldBox.parent = arm
+  const c = DROP_TINT[held.key] || [0.45, 0.62, 0.32]
+  heldMat.diffuseColor.set(c[0], c[1], c[2])
+  heldMat.emissiveColor.set(c[0] * 0.45, c[1] * 0.45, c[2] * 0.45)
+}
 hands = createHands({
   scene,
   camera: noa.rendering.camera,
@@ -6967,6 +7109,7 @@ noa.on('beforeRender', (dt) => {
   if (basics) syncGlow()
   underwaterTick()
   if (hands) hands.update(dt || 16)
+  poseBerty(dt || 16)
   if (!REDUCE) {
     skyTime += (dt || 16) * 0.0004
     skyMat.setFloat('uTime', skyTime)
@@ -7030,7 +7173,12 @@ async function setQuality(q) {
   gfx.applyFog()
   paintQuality(); toast(gfx.label())
 }
-for (const b of document.querySelectorAll('[data-q]')) b.addEventListener('click', () => setQuality(b.dataset.q))
+document.addEventListener('click', (e) => {
+  const hit = e.target && e.target.closest && e.target.closest('[data-q],[data-gfx]')
+  if (!hit) return
+  if (hit.dataset.q) setQuality(hit.dataset.q)
+  else if (hit.dataset.gfx) setGraphics(hit.dataset.gfx)
+})
 paintQuality()
 function paintGfx() {
   for (const b of document.querySelectorAll('[data-gfx]')) {
@@ -7058,7 +7206,6 @@ function setGraphics(q) {
   } catch (e) { console.warn('graphics', e) }
   return gfxLook.name
 }
-for (const b of document.querySelectorAll('[data-gfx]')) b.addEventListener('click', () => setGraphics(b.dataset.gfx))
 paintGfx()
 
 const topBar = document.querySelector('.top')

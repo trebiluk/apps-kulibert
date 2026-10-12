@@ -743,6 +743,18 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   .top{flex-wrap:wrap;align-content:center}
   #energy-bar,#fx-strip{flex:1 0 100%}
 }
+#sheet[data-panel=settings]{align-items:center;justify-content:flex-start;background:rgba(6,12,16,.82);padding:16px 8px 12px}
+#sheet[data-panel=settings] .sheet-bar,#sheet[data-panel=settings] #sheet-body{background-color:#0E1A22;color:#E6EEF2}
+#sheet[data-panel=settings] #sheet-body{display:flex;flex-direction:column}
+#sheet[data-panel=settings] .ggrid{display:flex;flex-direction:column;align-items:stretch;width:100%;grid-template-columns:none;gap:8px;overflow:visible;padding-top:4px}
+#sheet[data-panel=settings] .set-line{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px;width:100%}
+#sheet[data-panel=settings] .set-lab{font-weight:800;color:#E6EEF2}
+#sheet[data-panel=settings] .set-val{font-weight:800;color:#2dd4bf;font-variant-numeric:tabular-nums}
+#sheet[data-panel=settings] .pill{min-width:72px;min-height:44px;padding:8px 16px;border-radius:999px;border:2px solid #1F8A8A;background:#08131A;color:#9fb0bc;font-weight:800;box-shadow:inset 0 3px 0 #0B2A30}
+#sheet[data-panel=settings] .pill.on{background:#145e56;color:#d9fff6;border-color:#2dd4bf}
+#sheet[data-panel=settings] .sheet-qset{display:flex;flex-direction:column;gap:6px;width:100%}
+#sheet[data-panel=settings] .sheet-qset .qbtn{width:100%;text-align:start}
+#sheet[data-panel=settings] input[type=range]{width:100%;min-height:44px}
 </style>
 </head>
 <body>
@@ -823,18 +835,18 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <p class="help" data-i18n="tableHint">Build Table: drag to orbit, tap a face to place. Arrow keys move the cursor. Enter places.</p>
   </div>
   <div class="sec" id="settings"><h3><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-i18n="settings">Settings</span></h3>
-    <div class="qset" role="radiogroup" aria-label="Quality">
-      <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19a9 9 0 1 1 14.2 0"/><path d="M12 13l4-5"/><circle cx="12" cy="13" r="1.6" fill="currentColor"/></svg><span><b data-i18n="auto">Auto</b><small data-i18n="autoHint">Best for most. Lowers detail if it gets slow.</small></span></button>
-      <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span><b data-i18n="lite">Lite</b><small data-i18n="liteHint">Fastest. For slow Chromebooks and phones.</small></span></button>
-      <button class="qbtn" role="radio" data-q="full" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
-    </div>
-    <p id="q-now" aria-live="polite"></p>
     <h3 data-i18n="graphics">Graphics</h3>
     <div class="qset" role="radiogroup" aria-label="Graphics">
       <button class="qbtn" type="button" role="radio" data-gfx="lite" aria-checked="false"><span><b data-i18n="lite">Lite</b><small data-i18n="gfxLiteHint">Flat sky. Lamps glow only.</small></span></button>
       <button class="qbtn" type="button" role="radio" data-gfx="normal" aria-checked="false"><span><b data-i18n="gfxNormal">Normal</b><small data-i18n="gfxNormalHint">Soft sky and warm lamps.</small></span></button>
       <button class="qbtn" type="button" role="radio" data-gfx="fancy" aria-checked="false"><span><b data-i18n="gfxFancy">Fancy</b><small data-i18n="gfxFancyHint">Corner shade and swaying plants.</small></span></button>
     </div>
+    <div class="qset" role="radiogroup" aria-label="Quality">
+      <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19a9 9 0 1 1 14.2 0"/><path d="M12 13l4-5"/><circle cx="12" cy="13" r="1.6" fill="currentColor"/></svg><span><b data-i18n="auto">Auto</b><small data-i18n="autoHint">Best for most. Lowers detail if it gets slow.</small></span></button>
+      <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span><b data-i18n="lite">Lite</b><small data-i18n="liteHint">Fastest. For slow Chromebooks and phones.</small></span></button>
+      <button class="qbtn" role="radio" data-q="full" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
+    </div>
+    <p id="q-now" aria-live="polite"></p>
     <h3 data-i18n="textSize">Text size</h3>
     <div class="tsset" role="radiogroup" aria-label="Text size">
       <button class="qbtn" type="button" data-ts="s"><b data-i18n="textS">Small</b></button>

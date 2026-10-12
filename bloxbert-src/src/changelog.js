@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.176', date: '2026-10-12', lines: {
+    en: ['Grass and flowers are colored cutouts, the Bag says Bag, dusk is orange into blue, night ground stays readable, and the avatar faces the way you look.'],
+    uk: ['Трава й квіти кольорові, Сумка каже Сумка, сутінки від помаранчевого до синього, вночі землю видно, і аватар дивиться туди, куди ти.'],
+    ru: ['Трава и цветы цветные, Сумка говорит Сумка, закат от оранжевого к синему, ночью землю видно, и аватар смотрит туда, куда ты.'],
+    es: ['La hierba y las flores son recortes de color, la Bolsa dice Bolsa, el atardecer va de naranja a azul, de noche se ve el suelo, y el avatar mira hacia donde miras.'],
+    ar: ['العشب والزهور ملونة، والحقيبة تقول حقيبة، والغسق من البرتقالي إلى الأزرق، وأرض الليل تُقرأ، والشخصية تتجه حيث تنظر.'],
+    'fa-AF': ['علف و گل‌ها رنگی‌اند، بکس می‌گوید بکس، غروب از نارنجی به آبی است، شب زمین خواناست، و آدمک به سوی نگاهت می‌چرخد.'],
+    rw: ['Ibyatsi n\'indabyo biraboneka, Agasaho ivuga Agasaho, umugoroba uva ku orange ujya mu bururu, ijoro hasi hirasoma, n\'ishusho ireba aho ureba.'],
+    ti: ['ሳዕሪን ዕንባባታትን ሕብራዊ እዮም፡ ቦርሳ ቦርሳ ትብል፡ ምሸት ካብ ኣራንሺ ናብ ሰማያዊ፡ ለይቲ መሬት ይንበብ፡ መልክዕ ድማ ናብ እትርኢ ይግጠም።'],
+  }},
   { v: '2.5.175', date: '2026-10-12', lines: {
     en: ['World Maker follows the world: Islands, Sky and Parkour Start, a share code, and a soft landing if you fall off.'],
     uk: ['Творець світу йде зі світом: острови, небо, старт паркуру, код і м’яке повернення, якщо впадеш.'],

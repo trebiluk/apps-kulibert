@@ -11,8 +11,8 @@ const LIGHT_ID = new Set([47, 1101, 1103, 1401])
 
 const SKY = {
   day: { zenith: [0.13, 0.34, 0.72], horizon: [0.72, 0.86, 0.97], sun: 1, moon: 0, stars: 0 },
-  dusk: { zenith: [0.18, 0.09, 0.28], horizon: [0.96, 0.42, 0.16], sun: 0.7, moon: 0.35, stars: 0.35 },
-  night: { zenith: [0.015, 0.02, 0.07], horizon: [0.08, 0.10, 0.22], sun: 0, moon: 1, stars: 1 },
+  dusk: { zenith: [0.11, 0.24, 0.52], horizon: [0.95, 0.55, 0.22], sun: 0.62, moon: 0.35, stars: 0.3 },
+  night: { zenith: [0.02, 0.035, 0.09], horizon: [0.14, 0.18, 0.30], sun: 0, moon: 1, stars: 1 },
   dawn: { zenith: [0.22, 0.16, 0.40], horizon: [0.98, 0.58, 0.36], sun: 0.85, moon: 0.2, stars: 0.12 },
 }
 
@@ -30,11 +30,11 @@ export function leafTint(id, x, z) {
   return null
 }
 
-function faceShade(nx, ny, nz) {
+function faceShade(nx, ny, nz, soft) {
   if (ny > 0.5) return 1
-  if (ny < -0.5) return 0.55
-  if (nx > 0.5 || nz > 0.5) return 0.8
-  return 0.7
+  if (ny < -0.5) return soft ? 0.78 : 0.55
+  if (nx > 0.5 || nz > 0.5) return soft ? 0.9 : 0.8
+  return soft ? 0.86 : 0.7
 }
 
 function k3(x, y, z) { return x + ',' + y + ',' + z }
@@ -183,6 +183,7 @@ export function createLook(opts) {
     const oy = +m[2] * S
     const oz = +m[3] * S
     const ao = flags().ao
+    const soft = name !== 'lite'
     const lit = flags().lights && lights.size > 0
     const atlas = mesh.getVerticesData('texAtlasIndices')
     const tex = mesh.material && mesh.material.diffuseTexture
@@ -193,7 +194,8 @@ export function createLook(opts) {
       const nx = normals[i * 3]
       const ny = normals[i * 3 + 1]
       const nz = normals[i * 3 + 2]
-      let shade = ao ? 1 : faceShade(nx, ny, nz)
+      let shade = faceShade(nx, ny, nz, soft)
+      if (ao) shade = 1 - (1 - shade) * 0.45
       const wx = ox + positions[i * 3]
       const wy = oy + positions[i * 3 + 1]
       const wz = oz + positions[i * 3 + 2]

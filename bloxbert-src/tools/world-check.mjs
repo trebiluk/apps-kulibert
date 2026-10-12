@@ -505,8 +505,8 @@ function benchSurface() {
   fill(48, 48)
   return fill(960, -720)
 }
-const GEN4_SAMPLE = '9f88619597f29a3d8f45bef88f678bf64735ce90947d4460a356da2a239a4d60'
-const GEN3_SAMPLE = '2c06555d8307d1cd8ab3842cfef4d8060212a2ba43e223cea02d31beb214694a'
+const GEN4_SAMPLE = '6060ff5ac269acaaf4763697c12e11840e556fbcb0032b06f7c67d5013ecedfb'
+const GEN3_SAMPLE = '22da315732e67ef56223ab2985773909447707f20f2dd61551e61a662e178062'
 
 function genSampleHash(gen, x0, z0, x1, z1) {
   const h = createHash('sha256')

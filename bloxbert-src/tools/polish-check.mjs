@@ -373,7 +373,7 @@ const tipBtn = await desk.page.evaluate(() => {
   const b = document.querySelector('#sheet [data-look="tips"]')
   if (!b) return null
   const r = b.getBoundingClientRect()
-  return { x: Math.round(r.left + Math.min(r.width, 160) / 2), y: Math.round(r.top + r.height / 2), text: b.textContent || '', w: Math.round(r.width) }
+  return { x: Math.round(r.left + Math.min(r.width, 160) / 2), y: Math.round(r.top + r.height / 2), text: ((b.closest('.set-line') || b).textContent || ''), w: Math.round(r.width) }
 })
 if (tipBtn) await desk.page.mouse.click(tipBtn.x, tipBtn.y)
 await sleep(200)
@@ -1030,7 +1030,7 @@ if (invBtn) await desk.page.mouse.click(invBtn.x, invBtn.y)
 await sleep(120)
 const invAfter = await desk.page.evaluate(() => {
   const b = document.querySelector('#sheet [data-look="invert"]')
-  return b ? b.textContent || '' : ''
+  return b ? { on: b.classList.contains('on'), text: b.textContent || '' } : null
 })
 await desk.page.evaluate(() => {
   const sheet = document.getElementById('sheet')
@@ -1056,7 +1056,7 @@ const maxPitch = 89 * Math.PI / 180 + 0.03
 const pitches = [lookDown, lookUp, lookTouch, lookTouchUp, lookInv]
 const pitchOk = pitches.every((row) => row && Math.abs(row.pitch) <= maxPitch && !row.flip && Math.abs(row.pitch) > 0.4)
   && lookInv && lookInv.pitch < -0.4
-  && /✓/.test(invAfter)
+  && invAfter && invAfter.on && /ON|УВІМК|ВКЛ|SÍ|تشغيل|روشن|YEGO|ወሊዑ/.test(invAfter.text)
 note('look pitch stays under 89', !!pitchOk, JSON.stringify({
   down: lookDown && +lookDown.pitch.toFixed(3),
   up: lookUp && +lookUp.pitch.toFixed(3),
@@ -1064,7 +1064,7 @@ note('look pitch stays under 89', !!pitchOk, JSON.stringify({
   touchUp: lookTouchUp && +lookTouchUp.pitch.toFixed(3),
   inv: lookInv && +lookInv.pitch.toFixed(3),
   flips: pitches.map((row) => row && row.flip),
-  invText: invAfter || (invBtn && invBtn.text),
+  invText: (invAfter && invAfter.text) || (invBtn && invBtn.text),
 }))
 
 note('1366 console', desk.errors.length === 0, desk.errors.slice(0, 4).join(' | '))

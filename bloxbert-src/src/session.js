@@ -907,18 +907,21 @@ export function createSession(api) {
       g.append(wells)
       return
     }
-    const used = bag.slots.filter(Boolean).length
-    if (title) title.textContent = t('bag') + ' · ' + used + '/' + bag.slots.length
+    if (title) title.textContent = t('bag')
     if (bagSel >= bag.slots.length || (bagSel >= 0 && !bag.slots[bagSel])) bagSel = -1
-    if (lost.length) {
-      const n = lost.reduce((sum, d) => sum + d.n, 0)
-      const lostBtn = document.createElement('button')
-      lostBtn.type = 'button'
-      lostBtn.className = 'keycap lost-row'
-      lostBtn.textContent = t('lostBtn') + ' · ' + lostWhyKeys(lost).map((k) => t(k)).join(', ') + ' · ' + n
-      lostBtn.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
-      g.append(lostBtn)
+    const asideN = lost.reduce((sum, d) => sum + (d && d.why === 'aside' ? d.n : 0), 0)
+    const rest = lost.filter((d) => d && d.why !== 'aside')
+    const restN = rest.reduce((sum, d) => sum + d.n, 0)
+    const lostRow = (text) => {
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'keycap lost-row'
+      b.textContent = text
+      b.addEventListener('click', () => { takeLost(); g.innerHTML = ''; paintBag(g) })
+      g.append(b)
     }
+    if (asideN > 0) lostRow(t('lostBtn') + ' · ' + t('lostWhyAside') + ' · ' + asideN)
+    if (restN > 0) lostRow(lostWhyKeys(rest).map((k) => t(k)).join(', ') + ' · ' + restN)
     const tab = (text) => {
       const d = document.createElement('div')
       d.className = 'crate-tab'
@@ -1824,13 +1827,30 @@ export function createSession(api) {
     }
   }
   function paintSettings(g) {
-    g.append(btn(t('alwaysDay'), () => {
+    const row = document.createElement('div')
+    row.className = 'set-line'
+    const lab = document.createElement('span')
+    lab.className = 'set-lab'
+    lab.textContent = t('alwaysDay')
+    const pill = document.createElement('button')
+    pill.type = 'button'
+    pill.className = 'pill'
+    const draw = () => {
       const on = document.documentElement.dataset.alwaysDay === '1'
-      const next = !on
+      pill.classList.toggle('on', on)
+      pill.setAttribute('aria-pressed', on ? 'true' : 'false')
+      pill.textContent = on ? t('switchOn') : t('switchOff')
+    }
+    draw()
+    pill.addEventListener('click', () => {
+      const next = document.documentElement.dataset.alwaysDay !== '1'
       document.documentElement.dataset.alwaysDay = next ? '1' : '0'
       if (api.setAlways) api.setAlways(next)
+      draw()
       api.toast(t('alwaysDay'))
-    }))
+    })
+    row.append(lab, pill)
+    g.append(row)
     const n = document.createElement('p')
     n.className = 'gnote'
     n.textContent = t('onDevice')
@@ -2468,7 +2488,7 @@ export function createSession(api) {
     if (!item || !(n > 0)) return
     const hit = lost.find((d) => d.item === item)
     if (hit) hit.n += n
-    else lost.push({ item, n, why: why || 'aside' })
+    else lost.push({ item, n, why: why || 'bag' })
     if (api.markDirty) api.markDirty()
   }
   function craftOk(id) {
@@ -2577,7 +2597,7 @@ export function createSession(api) {
       ground.push({ id: d.id || ground.length + 1, x: +d.x || 0, y: +d.y || 0, z: +d.z || 0, item: d.item, n: d.n | 0, at: d.at || 0 })
       noteId(d.id || 0)
     }
-    for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0, why: d.why === 'ground' || d.why === 'bag' || d.why === 'aside' ? d.why : 'aside' })
+    for (const d of doc.lost || []) if (d && ITEMS[d.item] && d.n > 0) lost.push({ item: d.item, n: d.n | 0, why: d.why === 'ground' || d.why === 'bag' || d.why === 'aside' ? d.why : 'ground' })
     for (const s of extra) if (s && ITEMS[s.item] && s.n > 0) {
       const hit = lost.find((d) => d.item === s.item && d.why === 'aside')
       if (hit) hit.n += s.n
