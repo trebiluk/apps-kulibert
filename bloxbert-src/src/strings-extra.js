@@ -1279,4 +1279,15 @@ const QOL = {
   ti: { qolHalf: 'ፍርቂ', qolOne: 'ሓደ', qolMove: 'ወስድ', qolItem: 'ኣቕሓ' },
 }
 for (const [lang, row] of Object.entries(QOL)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const CRAFT_UI = {
+  en: { craftAll: 'All', craftCan: 'Can make', craftTools: 'Tools', craftBuild: 'Building', craftMachines: 'Machines', craftDecor: 'Decor', craftSearch: 'Search', craftNone: 'Nothing here' },
+  uk: { craftAll: 'Усе', craftCan: 'Можна', craftTools: 'Знаряддя', craftBuild: 'Будова', craftMachines: 'Машини', craftDecor: 'Декор', craftSearch: 'Шукай', craftNone: 'Тут порожньо' },
+  ru: { craftAll: 'Все', craftCan: 'Можно', craftTools: 'Инструменты', craftBuild: 'Стройка', craftMachines: 'Машины', craftDecor: 'Декор', craftSearch: 'Поиск', craftNone: 'Тут пусто' },
+  es: { craftAll: 'Todo', craftCan: 'Puedes', craftTools: 'Útiles', craftBuild: 'Construcción', craftMachines: 'Máquinas', craftDecor: 'Decoro', craftSearch: 'Buscar', craftNone: 'Nada aquí' },
+  ar: { craftAll: 'الكل', craftCan: 'تقدر', craftTools: 'أدوات', craftBuild: 'بناء', craftMachines: 'آلات', craftDecor: 'زينة', craftSearch: 'ابحث', craftNone: 'لا شيء' },
+  'fa-AF': { craftAll: 'همه', craftCan: 'می‌توانی', craftTools: 'ابزار', craftBuild: 'ساختمان', craftMachines: 'ماشین', craftDecor: 'دکورا', craftSearch: 'بگرد', craftNone: 'این‌جا خالی است' },
+  rw: { craftAll: 'Byose', craftCan: 'Ushobora', craftTools: 'Ibikoresho', craftBuild: 'Ubwubatsi', craftMachines: 'Imashini', craftDecor: 'Ubwiza', craftSearch: 'Shakisha', craftNone: 'Nta kintu' },
+  ti: { craftAll: 'ኩሉ', craftCan: 'ትኽእል', craftTools: 'መሳርሒ', craftBuild: 'ህንጻ', craftMachines: 'ማሽን', craftDecor: 'ጌጣ', craftSearch: 'ድለ', craftNone: 'የለን' },
+}
+for (const [lang, row] of Object.entries(CRAFT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

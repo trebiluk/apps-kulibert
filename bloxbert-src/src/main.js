@@ -5054,6 +5054,53 @@ function armShot() {
   }
   window.__shotReady = true
 }
+function armCraft() {
+  if (learn && learn.cancelAuto) learn.cancelAuto()
+  if (session) {
+    session.setMode('survival')
+    session.give('log', 1)
+    session.give('planks', 2)
+    if (session.focusCraft) session.focusCraft('workbench')
+  }
+  if (basics && basics.setBright) basics.setBright(true)
+  const rules = document.getElementById('rules-card')
+  if (rules) rules.hidden = true
+  const hint = document.getElementById('menu-hint')
+  if (hint) hint.hidden = true
+  const play = document.getElementById('play-chip')
+  if (play) play.hidden = true
+  const toastEl = document.getElementById('toast')
+  if (toastEl) toastEl.hidden = true
+  if (panels) panels.open('crafting')
+  window.__craft = {
+    count(id) { return session && session.bag ? session.bag.count(id) : 0 },
+    tab(name) {
+      const btn = document.querySelector('#sheet .craft-tab[data-tab="' + name + '"]')
+      if (btn) btn.click()
+    },
+    find(q) {
+      const input = document.querySelector('#sheet .craft-find')
+      if (!input) return
+      input.value = q
+      input.dispatchEvent(new Event('input', { bubbles: true }))
+    },
+    tiles() {
+      return [...document.querySelectorAll('#sheet .book .well')].map((b) => ({
+        id: b.dataset.recipe || '',
+        name: (b.querySelector('.wlab') || {}).textContent || '',
+        lock: !!b.querySelector('.lock'),
+        station: !!b.querySelector('.station-mark'),
+      }))
+    },
+    needs() {
+      return [...document.querySelectorAll('#sheet .need-pane .need-bit')].map((b) => ({
+        item: b.dataset.item || '',
+        n: (b.querySelector('.need-n') || {}).textContent || '',
+      }))
+    },
+  }
+  window.__craftReady = true
+}
 $('game-menu').setAttribute('aria-label', t('menu'))
 $('game-menu').addEventListener('click', () => openMenu(true))
 const pathChip = $('path-chip')
@@ -7904,6 +7951,7 @@ load().catch(() => {}).finally(() => {
   markSave(saved.size ? t('bertyville') + ' · ' + t('loaded') : t('bertyville') + ' · ' + t('notSaved'))
   showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
   if (location.search.includes('shot=1')) armShot()
+  if (location.search.includes('craft=1')) armCraft()
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   let bagWarned = false

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.179', date: '2026-10-12', lines: {
+    en: ['Crafting tiles are one size: a picture, a name, and a lock. Counts sit in the detail pane. Tabs and search sort the list.'],
+    uk: ['Плитки крафту одного розміру: малюнок, назва і замок. Лічильники в панелі деталей. Вкладки і пошук сортують список.'],
+    ru: ['Плитки крафта одного размера: картинка, имя и замок. Счётчики в панели деталей. Вкладки и поиск сортируют список.'],
+    es: ['Las fichas de crear son del mismo tamaño: un dibujo, un nombre y un candado. Las cuentas van en el detalle. Pestañas y búsqueda ordenan la lista.'],
+    ar: ['بلاطات الصنع بحجم واحد: صورة واسم وقفل. الأعداد في لوحة التفاصيل. الألسنة والبحث يرتبان القائمة.'],
+    'fa-AF': ['خانه‌های ساختن یک اندازه اند: تصویر، نام و قفل. شمارش در بخش جزئیات است. زبانه‌ها و جستجو فهرست را مرتب می‌کنند.'],
+    rw: ['Utubuto two gukora dufite ubunini bumwe: ishusho, izina, n\'urufunguzo. Imibare iri ku rupapuro rw\'amakuru. Utubuto n\'ishakisha bishyira urutonde mu murongo.'],
+    ti: ['ናይ ምስራሕ ንጣፋት ሓደ መጠን እዮም፡ ስእሊ፡ ስም፡ መዕጸዊ። ቑጽሪ ኣብ ዝርዝር እዩ። መቐየሪታትን ምድላይን ዝርዝር የስርዑ።'],
+  }},
   { v: '2.5.178', date: '2026-10-12', lines: {
     en: ['The Build Wand is in your hotbar. Scroll its modes, click two corners, then the check. The old tool bar is gone.'],
     uk: ['Жезл будови в панелі. Крути режими, клацни два кути, потім галочку. Стара панель зникла.'],

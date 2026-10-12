@@ -1016,6 +1016,40 @@ export function createSession(api) {
   let craftOpen = false
   let craftId = ''
   let craftFx = ''
+  let craftTab = 'all'
+  let craftFind = ''
+  const CRAFT_TOOLS = new Set(['woodTool', 'stoneTool', 'hoe', 'buildWand', 'safetyGlasses', 'measuringTape', 'handSaw', 'hammer', 'stick'])
+  const CRAFT_MACHINES = new Set(['workbench', 'oven', 'vend', 'box', 'smelter', 'fabricator', 'woodshop', 'charger', 'pushButton', 'lever', 'techLine', 'techSwitch', 'techButton', 'circuitLens', 'lantern', 'ironIngot', 'copperIngot', 'zincIngot', 'steel', 'copperWire', 'batteryCell'])
+  const CRAFT_DECOR = new Set(['bunk', 'floorLamp', 'wallLamp', 'rug', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple'])
+  function craftKind(id) {
+    if (CRAFT_TOOLS.has(id)) return 'tools'
+    if (CRAFT_DECOR.has(id)) return 'decor'
+    if (CRAFT_MACHINES.has(id)) return 'machines'
+    if (id === 'flour' || id === 'bread' || id === 'cupcake') return 'food'
+    return 'building'
+  }
+  function stationKey(at) {
+    if (at === 'bench') return 'workbench'
+    if (at === 'oven') return 'oven'
+    if (at === 'woodshop') return 'woodshop'
+    if (at === 'smelter' || at === 'forge') return 'smelter'
+    if (at === 'fabricator') return 'fabricator'
+    return ''
+  }
+  function recipeLocked(st) {
+    if (!st || st.ok) return false
+    if (st.bakeOnly && !st.missing && !st.gate && !st.station) return false
+    return true
+  }
+  function recipeShown(row) {
+    const can = row.st.ok || (row.st.bakeOnly && !row.st.missing && !row.st.gate)
+    if (craftTab === 'now' && !can) return false
+    if (craftTab !== 'all' && craftTab !== 'now' && craftKind(row.r.id) !== craftTab) return false
+    const q = craftFind.trim().toLowerCase()
+    if (!q) return true
+    const name = (row.r.id === 'door' ? t('doorTall') : itemName(row.r.out[0]) || '').toLowerCase()
+    return name.indexOf(q) >= 0 || String(row.r.id).toLowerCase().indexOf(q) >= 0
+  }
   let trayId = ''
   let trayPlaced = []
   let trayWool = []
@@ -1403,100 +1437,156 @@ export function createSession(api) {
     book.className = 'book'
     const side = document.createElement('div')
     side.className = 'tray'
-    const drawWells = (list) => {
-      if (!list.length) return
-      const row = document.createElement('div')
-      row.className = 'book-row'
-      for (const { r, st } of list) {
-        const b = document.createElement('button')
-        b.type = 'button'
-        b.className = 'well' + (r.id === craftId ? ' on' : '') + (st.ok || r.id === 'bread' ? '' : ' dim')
-        b.setAttribute('aria-pressed', String(r.id === craftId))
+    function paintNeeds(host, recipe, st) {
+      if (!host || !recipe) return
+      let pane = host.querySelector(':scope > .need-pane')
+      if (!pane) {
+        pane = document.createElement('div')
+        pane.className = 'need-pane'
+        host.prepend(pane)
+      }
+      pane.replaceChildren()
+      for (const [item, have, n] of (st && st.needs) || []) {
+        const bit = document.createElement('span')
+        bit.className = 'need-bit' + (have < n ? ' short' : '')
+        bit.dataset.item = item
         const art = document.createElement('span')
         art.className = 'art'
-        art.append(itemIcon(ITEMS[r.out[0]]))
-        b.append(art)
-        const name = document.createElement('span')
-        name.className = 'wlab'
-        name.textContent = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
-        name.title = name.textContent
-        b.append(name)
-        if (r.at === 'oven') {
-          const line = document.createElement('span')
-          line.className = 'need bake-in'
-          const mark = document.createElement('span')
-          mark.className = 'art oven-mark'
-          mark.append(itemIcon(ITEMS.oven))
-          const words = document.createElement('span')
-          words.className = 'need-line'
-          words.textContent = ovenTileLine(r)
-          line.append(mark, words)
-          b.title = name.textContent + '. ' + words.textContent
-          b.setAttribute('aria-label', b.title)
-          b.append(line)
-        } else if (!st.ok) {
-          const lock = document.createElement('span')
-          lock.className = 'lock'
-          lock.setAttribute('aria-hidden', 'true')
-          lock.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="11" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
-          b.append(lock)
-          const line = document.createElement('span')
-          line.className = 'need'
-          const bits = []
-          for (const [item, have, n] of st.needs) {
-            if (have >= n) continue
-            const left = n - have
-            const label = left === 1 ? itemName(item) : (item === LEAF_FOOD ? t('berryMany') : itemName(item))
-            const hint = sourceHint(item)
-            bits.push(String(left) + ' ' + label + (hint ? ' (' + hint + ')' : ''))
-          }
-          const full = bits.length
-            ? t('needN').replace('{n} {item}', bits.join(', '))
-            : (st.gate === 'T5' ? t('needsT5') : st.gate === 'T4' ? t('needsT4') : st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : t('showAll'))
-          const shown = r.id === 'cupcake' && bits.length ? full + ' · ' + t('oven') : full
-          line.textContent = shown
-          if (bits.length > 1) b.classList.add('wide')
-          b.title = name.textContent + '. ' + shown
-          b.setAttribute('aria-label', name.textContent + '. ' + shown)
-          b.append(line)
-        }
-        if (!b.title) b.title = name.textContent
-        if (!b.getAttribute('aria-label')) b.setAttribute('aria-label', b.title)
-        b.addEventListener('click', () => {
-          if (r.id === 'bread') {
-            if (!openBreadOven()) paintCraft(g)
-            return
-          }
-          if (r.id !== craftId) returnTray()
-          craftId = r.id
-          craftFx = 'slide'
-          paintCraft(g)
-        })
-        row.append(b)
+        const iconKey = item === 'woolAny' ? 'woolBlue' : item === 'stoneAny' ? 'stone' : item === 'plankAny' ? 'planks' : item
+        const node = itemIcon(ITEMS[iconKey], iconKey)
+        if (node) art.append(node)
+        const num = document.createElement('span')
+        num.className = 'need-n'
+        num.textContent = have + '/' + n
+        const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
+        bit.title = label + ' ' + have + '/' + n
+        bit.append(art, num)
+        pane.append(bit)
       }
-      book.append(row)
     }
-    const head = (key) => {
-      const p = document.createElement('p')
-      p.className = 'gnote ghead'
-      p.textContent = t(key)
-      book.append(p)
+    const tools = document.createElement('div')
+    tools.className = 'book-tools'
+    const tabs = document.createElement('div')
+    tabs.className = 'craft-tabs'
+    const tabDefs = [
+      ['all', 'grid', 'craftAll'],
+      ['now', 'check', 'craftCan'],
+      ['tools', 'pick', 'craftTools'],
+      ['building', 'builds', 'craftBuild'],
+      ['machines', 'gear', 'craftMachines'],
+      ['decor', 'home', 'craftDecor'],
+    ]
+    for (const [id, icon, key] of tabDefs) {
+      const tab = document.createElement('button')
+      tab.type = 'button'
+      tab.className = 'craft-tab' + (craftTab === id ? ' on' : '')
+      tab.dataset.tab = id
+      tab.setAttribute('aria-pressed', String(craftTab === id))
+      tab.title = t(key)
+      tab.setAttribute('aria-label', t(key))
+      const ico = document.createElement('span')
+      ico.className = 'gic'
+      const pic = menuIcon(icon)
+      if (pic) ico.append(pic)
+      const lab = document.createElement('span')
+      lab.className = 'glbl'
+      lab.textContent = t(key)
+      tab.append(ico, lab)
+      tab.addEventListener('pointerdown', (e) => e.stopPropagation())
+      tab.addEventListener('click', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (craftTab === id) return
+        craftTab = id
+        paintCraft(g)
+      })
+      tabs.append(tab)
     }
-    const now = rows.filter((x) => x.st.group === 'now')
-    const almost = rows.filter((x) => x.st.group === 'almost')
-    const gated = rows.filter((x) => x.st.group === 'gated')
-    const rest = rows.filter((x) => x.st.group === 'rest')
-    if (now.length) { head('canNow'); drawWells(now) }
-    if (almost.length) { head('almost'); drawWells(almost) }
-    if (rest.length || gated.length) {
-      const toggle = document.createElement('button')
-      toggle.type = 'button'
-      toggle.className = 'keycap showall'
-      toggle.textContent = t('showAll')
-      toggle.addEventListener('click', () => { craftOpen = !craftOpen; paintCraft(g) })
-      book.append(toggle)
-      if (craftOpen) drawWells(gated.concat(rest))
+    const find = document.createElement('input')
+    find.type = 'search'
+    find.className = 'craft-find'
+    find.value = craftFind
+    find.placeholder = t('craftSearch')
+    find.setAttribute('aria-label', t('craftSearch'))
+    find.addEventListener('pointerdown', (e) => e.stopPropagation())
+    find.addEventListener('keydown', (e) => e.stopPropagation())
+    find.addEventListener('input', () => {
+      craftFind = find.value
+      const pos = find.selectionStart
+      paintCraft(g)
+      const next = g.querySelector('.craft-find')
+      if (next) {
+        next.focus()
+        try { next.setSelectionRange(pos, pos) } catch (e) {}
+      }
+    })
+    tools.append(tabs, find)
+    book.append(tools)
+    const list = rows.filter(recipeShown)
+    const row = document.createElement('div')
+    row.className = 'book-row'
+    if (!list.length) {
+      const empty = document.createElement('p')
+      empty.className = 'gnote'
+      empty.textContent = t('craftNone')
+      book.append(empty)
     }
+    for (const { r, st } of list) {
+      const locked = recipeLocked(st)
+      const b = document.createElement('button')
+      b.type = 'button'
+      b.className = 'well' + (r.id === craftId ? ' on' : '') + (locked ? ' dim' : '')
+      b.dataset.recipe = r.id
+      b.setAttribute('aria-pressed', String(r.id === craftId))
+      const art = document.createElement('span')
+      art.className = 'art'
+      art.append(itemIcon(ITEMS[r.out[0]]))
+      b.append(art)
+      const name = document.createElement('span')
+      name.className = 'wlab'
+      name.textContent = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
+      name.title = name.textContent
+      b.title = name.textContent
+      b.setAttribute('aria-label', name.textContent)
+      b.append(name)
+      const where = stationKey(r.at)
+      if (where) {
+        const mark = document.createElement('span')
+        mark.className = 'station-mark'
+        mark.title = itemName(where)
+        const node = itemIcon(ITEMS[where], where)
+        if (node) mark.append(node)
+        b.append(mark)
+      }
+      if (locked) {
+        const lock = document.createElement('span')
+        lock.className = 'lock'
+        lock.setAttribute('aria-hidden', 'true')
+        lock.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="11" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
+        b.append(lock)
+      }
+      b.addEventListener('pointerdown', (e) => e.stopPropagation())
+      b.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'touch') return
+        paintNeeds(side, r, st)
+      })
+      b.addEventListener('click', () => {
+        if (r.id === 'bread') {
+          if (!openBreadOven()) paintCraft(g)
+          return
+        }
+        if (r.id !== craftId) returnTray()
+        craftId = r.id
+        craftFx = 'slide'
+        paintCraft(g)
+      })
+      row.append(b)
+    }
+    book.append(row)
+    book.addEventListener('pointerleave', () => {
+      const cur = rows.find((x) => x.r.id === craftId)
+      if (cur) paintNeeds(side, cur.r, cur.st)
+    })
     const chosen = rows.find((x) => x.r.id === craftId) || rows[0]
     if (chosen) {
       const { r, st } = chosen
@@ -1716,6 +1806,8 @@ export function createSession(api) {
         side.append(ask)
       }
     }
+    const shownNow = rows.find((x) => x.r.id === craftId)
+    if (shownNow) paintNeeds(side, shownNow.r, shownNow.st)
     tray.append(book, side)
     g.append(tray)
     const made = side.querySelector('.well.result')
@@ -1726,7 +1818,7 @@ export function createSession(api) {
         lab.title = lab.textContent
       }
     }
-    requestAnimationFrame(() => fitCraftBook(book))
+    g.dataset.craft = craftId
     if (fxKind === 'slide') side.querySelectorAll('.ing').forEach((el, i) => fx(el, 'in', i * 60))
     if (fxKind === 'make') {
       const makeBtn = side.querySelector('.keycap.make')
@@ -1734,7 +1826,6 @@ export function createSession(api) {
       const resultEl = side.querySelector('.result')
       if (resultEl) fx(resultEl, 'pop')
     }
-    g.dataset.craft = craftId
   }
   function paintShop(g) {
     g.innerHTML = ''
