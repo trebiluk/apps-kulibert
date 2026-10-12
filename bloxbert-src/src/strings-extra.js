@@ -1290,4 +1290,15 @@ const CRAFT_UI = {
   ti: { craftAll: 'ኩሉ', craftCan: 'ትኽእል', craftTools: 'መሳርሒ', craftBuild: 'ህንጻ', craftMachines: 'ማሽን', craftDecor: 'ጌጣ', craftSearch: 'ድለ', craftNone: 'የለን' },
 }
 for (const [lang, row] of Object.entries(CRAFT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const USE_UI = {
+  en: { useSit: 'Sit', useSleep: 'Sleep', useOpen: 'Open', useShut: 'Shut', useBake: 'Bake', useCraft: 'Craft', useBuild: 'Build', useSew: 'Sew', useFlip: 'Flip', usePress: 'Press', notTired: 'Not tired yet', chair: 'Chair', sewing: 'Sewing Machine' },
+  uk: { useSit: 'Сісти', useSleep: 'Спати', useOpen: 'Відкрити', useShut: 'Зачинити', useBake: 'Пекти', useCraft: 'Крафт', useBuild: 'Будувати', useSew: 'Шити', useFlip: 'Клац', usePress: 'Тисни', notTired: 'Ще не хочеться спати', chair: 'Стілець', sewing: 'Швейна машина' },
+  ru: { useSit: 'Сесть', useSleep: 'Спать', useOpen: 'Открыть', useShut: 'Закрыть', useBake: 'Печь', useCraft: 'Крафт', useBuild: 'Строить', useSew: 'Шить', useFlip: 'Щёлк', usePress: 'Жми', notTired: 'Ещё не хочется спать', chair: 'Стул', sewing: 'Швейная машина' },
+  es: { useSit: 'Sentarse', useSleep: 'Dormir', useOpen: 'Abrir', useShut: 'Cerrar', useBake: 'Hornear', useCraft: 'Crear', useBuild: 'Construir', useSew: 'Coser', useFlip: 'Girar', usePress: 'Pulsar', notTired: 'Aún no tienes sueño', chair: 'Silla', sewing: 'Máquina de coser' },
+  ar: { useSit: 'اجلس', useSleep: 'نم', useOpen: 'افتح', useShut: 'أغلق', useBake: 'اخبز', useCraft: 'اصنع', useBuild: 'ابنِ', useSew: 'خِط', useFlip: 'اقلب', usePress: 'اضغط', notTired: 'لست متعباً بعد', chair: 'كرسي', sewing: 'آلة خياطة' },
+  'fa-AF': { useSit: 'بنشین', useSleep: 'بخواب', useOpen: 'باز کن', useShut: 'ببند', useBake: 'بپز', useCraft: 'بساز', useBuild: 'بنا کن', useSew: 'بدوز', useFlip: 'بچرخان', usePress: 'بفشار', notTired: 'هنوز خسته نیستی', chair: 'چوکی', sewing: 'ماشین خیاطی' },
+  rw: { useSit: 'Icya', useSleep: 'Sinzira', useOpen: 'Fungura', useShut: 'Funga', useBake: 'Teka', useCraft: 'Kora', useBuild: 'Ubaka', useSew: 'Doda', useFlip: 'Hindura', usePress: 'Kanda', notTired: 'Nturananiwe', chair: 'Intebe', sewing: 'Imashini y\'udodo' },
+  ti: { useSit: 'ቅመጥ', useSleep: 'ድቐስ', useOpen: 'ክፈት', useShut: 'ዕጾ', useBake: 'ጥዚ', useCraft: 'ግበር', useBuild: 'ሃንጽ', useSew: 'ስፈ', useFlip: 'ገልብጥ', usePress: 'ጠውቕ', notTired: 'ገና ኣይደከምካን', chair: 'መቐመጢ', sewing: 'ማሽን ስፌት' },
+}
+for (const [lang, row] of Object.entries(USE_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

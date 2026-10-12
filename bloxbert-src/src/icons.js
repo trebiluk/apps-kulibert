@@ -394,6 +394,25 @@ const FACE = {
       c.fillStyle = '#f0c9a0'; c.fillRect(14, 14, 8, 6)
     })
   },
+  chair(g) {
+    g.fillStyle = '#5c3317'
+    g.fillRect(8, 30, 6, 14)
+    g.fillRect(34, 30, 6, 14)
+    g.fillStyle = '#1aa6b8'
+    g.fillRect(6, 24, 36, 8)
+    g.fillStyle = '#8B5A2B'
+    g.fillRect(6, 6, 8, 26)
+  },
+  sewing(g) {
+    g.fillStyle = '#6B3A1F'
+    g.fillRect(4, 28, 40, 8)
+    g.fillStyle = '#c5ccd1'
+    g.fillRect(28, 8, 6, 22)
+    g.fillStyle = '#d64545'
+    g.fillRect(8, 24, 16, 6)
+    g.fillStyle = '#e6eef2'
+    g.fillRect(30, 18, 2, 8)
+  },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass

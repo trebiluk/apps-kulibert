@@ -68,6 +68,8 @@ export const BASE_BLOCKS = [
   [69, 'woodshop', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [70, 'woodshopSide', ['benchSide', 'benchSide', 'benchTop', 'wood', 'benchSide', 'benchSide'], 'Ws', null],
   [71, 'clay', 'wrap_clay', 'Cy', 'dirt'],
+  [72, 'chair', 'wood', 'Cr', 'wood'],
+  [73, 'sewing', 'wood', 'Sw', 'wood'],
 ]
 
 function insertAfter(rows, key, extra) {

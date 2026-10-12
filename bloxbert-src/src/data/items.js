@@ -60,6 +60,8 @@ export const ITEMS = {
   hammer: { svg: 'hammer', letter: 'Hr', base: 0, sell: false, stack: 1 },
   woodshop: { block: 69, letter: 'Ws', base: 8, sell: false },
   clay: { block: 71, letter: 'Cy', base: 0, sell: false },
+  chair: { block: 72, letter: 'Cr', base: 3, sell: false },
+  sewing: { block: 73, letter: 'Sw', base: 6, sell: false },
 }
 function mountFarmItems() {
   const farm = packItems().filter((it) => it.pack === 'farm')

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.180', date: '2026-10-12', lines: {
+    en: ['A pill above the hotbar sits, sleeps, or opens the nearest chair, bed, door, or machine. Space stands you up. Sleep skips to morning only at night.'],
+    uk: ['Пігулка над панеллю сідає, спить або відкриває найближчий стілець, ліжко, двері чи машину. Пробіл підводить. Сон переносить на ранок лише вночі.'],
+    ru: ['Плашка над панелью сажает, укладывает спать или открывает ближайший стул, кровать, дверь или машину. Пробел встаёт. Сон переносит на утро только ночью.'],
+    es: ['Una ficha sobre la barra sienta, duerme o abre la silla, cama, puerta o máquina más cercana. Espacio te levanta. Dormir salta a la mañana solo de noche.'],
+    ar: ['حبة فوق الشريط تُجلس أو تُنوّم أو تفتح أقرب كرسي أو سرير أو باب أو آلة. المسافة تُوقفك. النوم يقفز إلى الصباح ليلاً فقط.'],
+    'fa-AF': ['یک دکمه بالای نوار می‌نشاند، می‌خواباند یا نزدیک‌ترین چوکی، بستر، در یا ماشین را باز می‌کند. فاصله بلندت می‌کند. خواب فقط شب به صبح می‌پرد.'],
+    rw: ['Akamenyetso hejuru y\'umurongo gakwicaza, gakuryamika, cyangwa gafungura intebe, uburiri, urugi cyangwa imashini hafi. Umwanya urahaguruka. Kuryama kirajya mu gitondo gusa nijoro.'],
+    ti: ['ከመስመር ላዕሊ ዘሎ መጠወቒ ይቐምጥ፡ ይድቅስ፡ ወይ ዝቐረበ መቐመጢ፡ ዓራት፡ ማዕጾ ወይ ማሽን ይኸፍት። ምንጣፍ የትንስእ። ድቃስ ናብ ጥዋሕ ጥራሕ ብለይቲ ይዘልል።'],
+  }},
   { v: '2.5.179', date: '2026-10-12', lines: {
     en: ['Crafting tiles are one size: a picture, a name, and a lock. Counts sit in the detail pane. Tabs and search sort the list.'],
     uk: ['Плитки крафту одного розміру: малюнок, назва і замок. Лічильники в панелі деталей. Вкладки і пошук сортують список.'],

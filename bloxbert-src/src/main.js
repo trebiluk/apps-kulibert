@@ -979,6 +979,32 @@ function techButtonMesh(on) {
   const cap = part('c', 0.3, on ? 0.08 : 0.2, 0.3, 0, on ? 0.14 : 0.2, 0, 0, on ? copperOn : buttonD)
   return shape(on ? 'tech-btn-on' : 'tech-btn', [base, cap], on ? copperOn : copperD)
 }
+function chairMesh() {
+  const pad = dye('chair-pad', 0.16, 0.55, 0.72)
+  const legs = [
+    part('cl1', 0.1, 0.4, 0.1, -0.26, 0.2, -0.26, 0, woodD),
+    part('cl2', 0.1, 0.4, 0.1, 0.26, 0.2, -0.26, 0, woodD),
+    part('cl3', 0.1, 0.4, 0.1, -0.26, 0.2, 0.26, 0, woodD),
+    part('cl4', 0.1, 0.4, 0.1, 0.26, 0.2, 0.26, 0, woodD),
+  ]
+  const seat = part('cseat', 0.7, 0.1, 0.7, 0, 0.44, 0, 0, pad)
+  const back = part('cback', 0.7, 0.52, 0.08, 0, 0.74, 0.3, 0, woodD)
+  return mergeMats('chair', legs.concat([seat, back]))
+}
+function sewingMesh() {
+  const cloth = dye('sew-cloth', 0.8, 0.25, 0.4)
+  const top = part('stop', 0.78, 0.1, 0.5, 0, 0.48, 0, 0, woodD)
+  const legs = [
+    part('sl1', 0.08, 0.46, 0.08, -0.3, 0.23, -0.16, 0, woodD),
+    part('sl2', 0.08, 0.46, 0.08, 0.3, 0.23, -0.16, 0, woodD),
+    part('sl3', 0.08, 0.46, 0.08, -0.3, 0.23, 0.16, 0, woodD),
+    part('sl4', 0.08, 0.46, 0.08, 0.3, 0.23, 0.16, 0, woodD),
+  ]
+  const arm = part('sarm', 0.08, 0.34, 0.08, 0.16, 0.7, 0, 0, metalD)
+  const needle = part('sn', 0.04, 0.18, 0.04, 0.16, 0.5, 0.1, 0, metalD)
+  const bolt = part('scloth', 0.28, 0.05, 0.2, -0.12, 0.55, 0, 0, cloth)
+  return mergeMats('sewing', legs.concat([top, arm, needle, bolt]))
+}
 function techFacing(mesh, x, y, z) { orientTech(mesh, x, y, z) }
 const SHAPES = {
   28: wheatMesh(),
@@ -1027,6 +1053,8 @@ const SHAPES = {
   1403: techSwitchMesh(true),
   1404: techButtonMesh(false),
   1405: techButtonMesh(true),
+  72: chairMesh(),
+  73: sewingMesh(),
 }
 const clayMat = dye('clay-soil', 0.64, 0.5, 0.38)
 noa.registry.registerMaterial('clay', { renderMaterial: clayMat })
@@ -1043,6 +1071,7 @@ for (const [id, name, material] of BLOCKS) {
   const tilled = id === DRY || id === WET
   const fluid = id === WATER
   const opts = { material: mesh && !fluid ? null : material, opaque: tilled || (!mesh && !open && !glass && !fluid), solid: tilled || (!open && !lantern && !plant && !fluid && !rug && !line) }
+  if (name === 'chair') { opts.solid = false; opts.opaque = false }
   if (fluid) { opts.material = 'bertWater'; opts.fluid = true; opts.opaque = false; opts.solid = false }
   if (mesh && !fluid) opts.blockMesh = mesh
   if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
@@ -1496,7 +1525,7 @@ function playLocked() {
 noa.blockTargetIdCheck = (id) => {
   if (bareTuftOrFlora(id)) return false
   if (id === WATER && session && session.selectedItem && session.selectedItem() === 'bushSprout') return true
-  return !passThrough(id) && (OPEN_IDS.has(id) || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === TECH.line || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id))
+  return !passThrough(id) && (OPEN_IDS.has(id) || id === ID.chair || id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103 || id === 1104 || id === 1105 || id === TECH.line || id === ID.wheat || id === ID.tuft || isCropId(id) || isBushId(id) || FLORA_PLANT_IDS.has(id) || noa.registry.getBlockSolidity(id))
 }
 if (noa.defaultBlockHighlightFunction) {
   noa.off('targetBlockChanged', noa.defaultBlockHighlightFunction)
@@ -1549,6 +1578,7 @@ function machineKind(id) {
   if (id === ID.bunk) return 'bunk'
   if (id === ID.box) return 'box'
   if (id === ID.woodshop || id === ID.woodshopSide) return 'woodshop'
+  if (id === ID.sewing) return 'sew'
   if (id === ID.storeCounter) return 'shop'
   return ''
 }
@@ -1998,7 +2028,7 @@ function isUseBlock(id) {
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
   if (id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) return true
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103) return true
-  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box || isShopBlock(id)
+  return id === ID.door || id === ID.doorOpen || id === ID.storeCounter || id === ID.oven || id === ID.workbench || id === ID.vend || id === ID.bunk || id === ID.box || id === ID.chair || id === ID.sewing || isShopBlock(id)
 }
 function isGear(id) {
   return isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN || id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn
@@ -2022,6 +2052,11 @@ function useHit(hit) {
   if (isDoor(id) && freshPlacedDoor()) {
     forceShut(ax, ay, az)
     toast(t('doorShut'))
+    return true
+  }
+  if (id === ID.chair) {
+    if (!canReach([ax, ay, az])) return false
+    sitDown(ax | 0, ay | 0, az | 0)
     return true
   }
   if ((id === LANTERN || id === 1100 || id === 1101 || id === 1102 || id === 1103) && powerOf(ax, ay, az)) {
@@ -2070,6 +2105,7 @@ function useHit(hit) {
   else if (kind === 'bunk') panels.open('bunk', key)
   else if (kind === 'box') panels.open('box', key)
   else if (kind === 'woodshop') panels.open('woodshop', shopAnchorKey(ax, ay, az))
+  else if (kind === 'sew') panels.open('woodshop', ax + ',' + ay + ',' + az)
   else panels.open('shop')
   openMachineKey = key
   return true
@@ -4997,6 +5033,240 @@ function bindWandPill() {
   if (ex) ex.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); wandCancel() })
 }
 bindWandPill()
+let seated = null
+let sleepBusy = false
+let useTarget = null
+let useScanAt = 0
+function useVerb(id) {
+  if (id === ID.chair) return 'useSit'
+  if (id === ID.bunk) return 'useSleep'
+  if (isDoor(id)) return isOpenDoor(id) ? 'useShut' : 'useOpen'
+  if (id === ID.box) return 'useOpen'
+  if (id === ID.oven) return 'useBake'
+  if (id === ID.workbench) return 'useCraft'
+  if (id === ID.woodshop || id === ID.woodshopSide) return 'useBuild'
+  if (id === ID.sewing) return 'useSew'
+  if (id === LEVER.off || id === LEVER.on || id === TECH.switch || id === TECH.switchOn) return 'useFlip'
+  if (id === BUTTON.off || id === BUTTON.on || id === TECH.button || id === TECH.buttonOn) return 'usePress'
+  return ''
+}
+function findUseTarget() {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p || !noa.camera) return null
+  const h = noa.camera.heading
+  const pitch = noa.camera.pitch
+  const cp = Math.cos(pitch)
+  const lx = cp * Math.sin(h)
+  const ly = -Math.sin(pitch)
+  const lz = cp * Math.cos(h)
+  const x0 = Math.floor(p[0]) - 3
+  const x1 = Math.floor(p[0]) + 3
+  const y0 = Math.floor(p[1]) - 1
+  const y1 = Math.floor(p[1]) + 2
+  const z0 = Math.floor(p[2]) - 3
+  const z1 = Math.floor(p[2]) + 3
+  let best = null
+  let bestD = 3
+  for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) for (let z = z0; z <= z1; z++) {
+    let id = getVoxel(x, y, z)
+    if (!useVerb(id)) continue
+    let ux = x
+    let uy = y
+    let uz = z
+    let uid = id
+    if (isDoorTop(id)) {
+      const below = getVoxel(x, y - 1, z)
+      if (isDoor(below) && !isDoorTop(below)) { uy = y - 1; uid = below }
+    }
+    const verb = useVerb(uid)
+    if (!verb) continue
+    const dx = x + 0.5 - p[0]
+    const dy = y + 0.5 - (p[1] + 1.2)
+    const dz = z + 0.5 - p[2]
+    const dist = Math.hypot(dx, dy, dz)
+    if (!(dist > 0.15) || dist > 3) continue
+    const dot = (lx * dx + ly * dy + lz * dz) / dist
+    if (dot < 0.62) continue
+    if (dist < bestD) {
+      bestD = dist
+      best = { x: ux, y: uy, z: uz, id: uid, verb, dist }
+    }
+  }
+  return best
+}
+function useUiBlocked() {
+  if (wandHeld() || seated || tableMode || sleepBusy) return true
+  if (anyCard()) return true
+  if (document.body.classList.contains('menu-open')) return true
+  return false
+}
+function paintUsePill(hit) {
+  const el = $('use-pill')
+  if (!el) return
+  if (!hit) {
+    el.hidden = true
+    useTarget = null
+    return
+  }
+  const same = useTarget && useTarget.x === hit.x && useTarget.y === hit.y && useTarget.z === hit.z && useTarget.verb === hit.verb && !el.hidden
+  useTarget = hit
+  el.hidden = false
+  el.dataset.verb = hit.verb
+  if (same) return
+  const ico = el.querySelector('.gic')
+  if (ico) {
+    ico.replaceChildren()
+    const block = BLOCKS.find((b) => b[0] === hit.id)
+    if (block) ico.append(blockIcon(block, ATLAS))
+  }
+  const lab = el.querySelector('.glbl')
+  const word = t(hit.verb)
+  if (lab) lab.textContent = word
+  el.setAttribute('aria-label', word)
+}
+function syncUsePill(force) {
+  const now = performance.now()
+  if (useUiBlocked()) { paintUsePill(null); return }
+  if (!force && now - useScanAt < 120) return
+  useScanAt = now
+  paintUsePill(findUseTarget())
+}
+function sitDown(x, y, z) {
+  window.__useLook = null
+  window.__usePos = null
+  flying = false
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) {
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+    body.gravityMultiplier = 0
+    if (body.resting) body.resting = [false, false, false]
+  }
+  noa.entities.setPosition(noa.playerEntity, [x + 0.5, y + 0.02, z + 0.5])
+  setLook(Math.PI, 0.12)
+  seated = { x, y, z }
+  paintUsePill(null)
+  pokeHand('use')
+}
+function standUp() {
+  if (!seated) return false
+  const spot = seated
+  const h = noa.camera.heading
+  seated = null
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) body.gravityMultiplier = flying ? 0 : GRAV_MULT
+  noa.entities.setPosition(noa.playerEntity, [spot.x + 0.5 + Math.sin(h) * 0.85, spot.y + 0.05, spot.z + 0.5 + Math.cos(h) * 0.85])
+  return true
+}
+function sleepNow() {
+  if (sleepBusy) return 'busy'
+  const phase = basics && basics.phase ? basics.phase() : 'day'
+  if (phase !== 'night') { toast(t('notTired')); return 'day' }
+  const fade = $('sleep-fade')
+  sleepBusy = true
+  paintUsePill(null)
+  const wake = () => {
+    if (basics && basics.seek) basics.seek(0)
+    try { applySky() } catch (e) {}
+    sleepBusy = false
+  }
+  if (!fade) { wake(); return 'night' }
+  fade.hidden = false
+  requestAnimationFrame(() => fade.classList.add('on'))
+  setTimeout(() => {
+    wake()
+    fade.classList.remove('on')
+    setTimeout(() => { fade.hidden = true }, 600)
+  }, 700)
+  return 'night'
+}
+function usePillOn() {
+  const el = $('use-pill')
+  return !!(useTarget && el && !el.hidden && !useUiBlocked())
+}
+function pressUse() {
+  const hit = useTarget
+  if (!hit || useUiBlocked()) return false
+  if (hit.verb === 'useSit') { sitDown(hit.x, hit.y, hit.z); return true }
+  if (hit.verb === 'useSleep') { sleepNow(); pokeHand('use'); return true }
+  return useAt({ position: [hit.x, hit.y, hit.z], blockID: hit.id, id: hit.id })
+}
+function bindUsePill() {
+  const pill = $('use-pill')
+  if (!pill) return
+  pill.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation() })
+  pill.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); pressUse() })
+}
+bindUsePill()
+function armUse() {
+  const q = location.search
+  const kind = q.includes('use=door') ? 'door' : q.includes('use=oven') ? 'oven' : q.includes('use=bed') ? 'bed' : q.includes('use=sew') ? 'sew' : q.includes('use=chair') || q.includes('use=') ? 'chair' : ''
+  if (!kind) return
+  if (learn && learn.cancelAuto) learn.cancelAuto()
+  if (session) session.setMode('creative')
+  if (basics && basics.setBright) basics.setBright(true)
+  flying = true
+  const body = noa.ents.getPhysicsBody(noa.playerEntity)
+  if (body) { body.gravityMultiplier = 0; body.velocity[0] = body.velocity[1] = body.velocity[2] = 0 }
+  const px = 2.5
+  const py = 6.15
+  const pz = 2.55
+  const bx = 2
+  const bz = 4
+  const tall = kind === 'chair' || kind === 'oven' || kind === 'bed' || kind === 'sew'
+  const by = tall ? 6 : 5
+  const place = () => {
+    for (let x = 1; x <= 3; x++) for (let z = 4; z <= 6; z++) for (let y = 5; y <= 8; y++) {
+      if (getVoxel(x, y, z)) setVoxel(x, y, z, 0)
+    }
+    if (kind === 'door') {
+      setVoxel(bx, by, bz, ID.door)
+      setVoxel(bx, by + 1, bz, ID.doorTop)
+    } else if (kind === 'oven') setVoxel(bx, by, bz, ID.oven)
+    else if (kind === 'bed') setVoxel(bx, by, bz, ID.bunk)
+    else if (kind === 'sew') setVoxel(bx, by, bz, ID.sewing)
+    else setVoxel(bx, by, bz, ID.chair)
+    if (tall) setVoxel(bx, by - 1, bz, ID.planks)
+  }
+  noa.entities.setPosition(noa.playerEntity, [px, py, pz])
+  setLook(0, 0.38)
+  window.__useLook = [0, 0.38]
+  window.__usePos = [px, py, pz]
+  place()
+  const rules = document.getElementById('rules-card')
+  if (rules) rules.hidden = true
+  const sheet = document.getElementById('sheet')
+  if (sheet) sheet.hidden = true
+  const hint = document.getElementById('menu-hint')
+  if (hint) hint.hidden = true
+  const play = document.getElementById('play-chip')
+  if (play) play.hidden = true
+  const toastEl = document.getElementById('toast')
+  if (toastEl) toastEl.hidden = true
+  const keys = document.querySelector('.keys')
+  if (keys) keys.hidden = true
+  const path = document.getElementById('path-chip')
+  if (path) path.hidden = true
+  window.__use = {
+    kind: () => (useTarget ? useTarget.verb : ''),
+    id: () => (useTarget ? useTarget.id : 0),
+    hidden: () => { const el = $('use-pill'); return !el || el.hidden },
+    label: () => { const el = $('use-pill'); return el && !el.hidden ? (el.innerText || '').replace(/\s+/g, ' ').trim() : '' },
+    box: () => { const el = $('use-pill'); if (!el || el.hidden) return null; const r = el.getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), bottom: Math.round(r.bottom) } },
+    press: () => pressUse(),
+    sit: () => seated ? { x: seated.x, y: seated.y, z: seated.z, h: Math.round(noa.camera.heading * 100) / 100 } : null,
+    stand: () => standUp(),
+    sleep: () => sleepNow(),
+    phase: () => basics && basics.phase ? basics.phase() : '',
+    night: () => { if (basics) { basics.setAlways(false); basics.seek(basics.nightAt()) } },
+    morning: () => { if (basics) { basics.setAlways(false); basics.seek(0) } },
+    voxel: (x, y, z) => getVoxel(x, y, z),
+    wand() { selectWandSlot(); syncUsePill(true) },
+    offWand() { wandSlot = false; if (session && session.mode === 'survival' && session.setHot) session.setHot(0); else selectSlot(1); syncUsePill(true) },
+    toast: () => { const el = document.getElementById('toast'); return el && !el.hidden ? el.textContent : '' },
+    panel: () => { const el = $('sheet'); return el && !el.hidden ? (el.dataset.panel || '') : '' },
+  }
+  setTimeout(() => { place(); syncUsePill(true); window.__useReady = true }, 500)
+}
 function armShot() {
   try { localStorage.setItem('bloxbert-wand-tip', '1') } catch (e) {}
   if (session) session.setMode('creative')
@@ -5677,6 +5947,7 @@ let lastStickRelease = 0
 let carryOn = false
 let lastMove = null
 function jumpDown() {
+  if (seated) { standUp(); return }
   if (tableMode || jumpHeld) return
   jumpHeld = true
   lastJumpDown = performance.now()
@@ -5761,7 +6032,15 @@ document.addEventListener('keydown', (e) => {
     if (!e.repeat && session && session.dropHeld) session.dropHeld(e.shiftKey)
     return
   }
-  if (e.key === 'f' || e.key === 'F') { if (!e.ctrlKey && !e.metaKey && $('sheet') && $('sheet').hidden) { e.preventDefault(); useSelected(); return } }
+  if (e.key === 'f' || e.key === 'F') {
+    if (!e.ctrlKey && !e.metaKey && $('sheet') && $('sheet').hidden) {
+      e.preventDefault()
+      if (e.repeat) return
+      if (usePillOn()) { pressUse(); return }
+      useSelected()
+      return
+    }
+  }
   if (e.key === 'c' || e.key === 'C') {
     if (e.ctrlKey || e.metaKey) return
     e.preventDefault()
@@ -6206,12 +6485,18 @@ noa.on('tick', (dt) => {
   if (noa.camera.pitch > maxP || noa.camera.pitch < -maxP) setLook(noa.camera.heading, noa.camera.pitch)
   feelTick(dt || 33)
   syncWandUi()
+  syncUsePill(false)
   if (stations) { stations.tick(); syncOvenGlow(); syncFronts(false) }
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   if (tableMode) {
     body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
     noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
     noa.entities.setPosition(noa.playerEntity, [8.5, 12, 8.5])
+  } else if (seated) {
+    body.gravityMultiplier = 0
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+    noa.inputs.state.forward = noa.inputs.state.backward = noa.inputs.state.left = noa.inputs.state.right = noa.inputs.state.jump = false
+    noa.entities.setPosition(noa.playerEntity, [seated.x + 0.5, seated.y + 0.02, seated.z + 0.5])
   } else if (flying) {
     body.gravityMultiplier = 0
     if (body.resting) body.resting = [false, false, false]
@@ -6224,8 +6509,8 @@ noa.on('tick', (dt) => {
   }
   const follow = noa.ents.getState(noa.camera.cameraTarget, 'followsEntity')
   if (follow) {
-    const base = 0.9 * noa.ents.getPositionData(noa.playerEntity).height
-    const moving = !tableMode && !REDUCE && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
+    const base = seated ? 1.05 : 0.9 * noa.ents.getPositionData(noa.playerEntity).height
+    const moving = !tableMode && !seated && !REDUCE && (noa.inputs.state.forward || noa.inputs.state.backward || noa.inputs.state.left || noa.inputs.state.right)
     follow.offset[1] = base + (moving ? Math.sin(performance.now() / 180) * 0.045 : 0)
   }
 })
@@ -7548,6 +7833,14 @@ noa.on('beforeRender', (dt) => {
     const toastEl = $('toast')
     if (toastEl) toastEl.hidden = true
   }
+  if (window.__useLook && !seated) {
+    setLook(window.__useLook[0], window.__useLook[1])
+    const body = noa.ents.getPhysicsBody(noa.playerEntity)
+    if (body) { body.gravityMultiplier = 0; body.velocity[0] = body.velocity[1] = body.velocity[2] = 0 }
+    if (window.__usePos) noa.entities.setPosition(noa.playerEntity, window.__usePos)
+    const toastEl = $('toast')
+    if (toastEl && toastEl.textContent !== t('notTired')) toastEl.hidden = true
+  }
   circuitTick(performance.now())
   paintOutline()
   paintWandBox()
@@ -7952,6 +8245,7 @@ load().catch(() => {}).finally(() => {
   showRulesCard({ teacher: !!(teacherOn() || staffOn()), lang: LANG, world: WORLD })
   if (location.search.includes('shot=1')) armShot()
   if (location.search.includes('craft=1')) armCraft()
+  if (location.search.includes('use=')) armUse()
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   let bagWarned = false

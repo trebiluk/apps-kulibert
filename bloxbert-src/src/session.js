@@ -1019,8 +1019,8 @@ export function createSession(api) {
   let craftTab = 'all'
   let craftFind = ''
   const CRAFT_TOOLS = new Set(['woodTool', 'stoneTool', 'hoe', 'buildWand', 'safetyGlasses', 'measuringTape', 'handSaw', 'hammer', 'stick'])
-  const CRAFT_MACHINES = new Set(['workbench', 'oven', 'vend', 'box', 'smelter', 'fabricator', 'woodshop', 'charger', 'pushButton', 'lever', 'techLine', 'techSwitch', 'techButton', 'circuitLens', 'lantern', 'ironIngot', 'copperIngot', 'zincIngot', 'steel', 'copperWire', 'batteryCell'])
-  const CRAFT_DECOR = new Set(['bunk', 'floorLamp', 'wallLamp', 'rug', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple'])
+  const CRAFT_MACHINES = new Set(['workbench', 'oven', 'vend', 'box', 'smelter', 'fabricator', 'woodshop', 'charger', 'pushButton', 'lever', 'techLine', 'techSwitch', 'techButton', 'circuitLens', 'lantern', 'ironIngot', 'copperIngot', 'zincIngot', 'steel', 'copperWire', 'batteryCell', 'sewing'])
+  const CRAFT_DECOR = new Set(['bunk', 'floorLamp', 'wallLamp', 'rug', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple', 'chair'])
   function craftKind(id) {
     if (CRAFT_TOOLS.has(id)) return 'tools'
     if (CRAFT_DECOR.has(id)) return 'decor'

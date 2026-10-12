@@ -260,7 +260,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #wand-pill .glbl{font-size:12px;font-weight:800}
 #wand-do{background:#14B8A6;color:#04221e}
 #wand-x{color:#E6EEF2}
-@media (max-height:500px){#wand-pill{bottom:70px}}
+@media (max-height:500px){#wand-pill{bottom:70px}#use-pill{bottom:70px}}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
 /* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
@@ -631,7 +631,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   #hotbar .slot.bump,#held-chip.on,#hotbar .bag-tile,#sheet[data-panel=inventory] .keycap{animation:none;transition:none}
   #held-chip.on{opacity:1}
 }
-.top,#hotbar,#path-chip,#game-menu,#wand-pill,#inspect-chip,#wallet-chip,#mode-pill,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{z-index:30;pointer-events:auto;isolation:isolate}
+.top,#hotbar,#path-chip,#game-menu,#wand-pill,#use-pill,#inspect-chip,#wallet-chip,#mode-pill,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{z-index:30;pointer-events:auto;isolation:isolate}
 .top,#path-chip,#game-menu,#inspect-chip,#wallet-chip,#fs-btn,#update-chip,#menu-hint,#about,#door-opt,#dig-chip{transform:translateZ(0)}
 #hotbar .slot,#hotbar button,.top button,.top .tool{pointer-events:auto}
 #sheet{z-index:40}
@@ -804,6 +804,15 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet .gtile.kd-key .glbl{text-align:center}
 .gtile .gic canvas{width:28px;height:28px;image-rendering:pixelated;display:block}
 #wand-pill{z-index:32;transform:translateX(-50%)}
+#use-pill{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:33;display:flex;align-items:center;gap:8px;min-width:48px;min-height:48px;padding:4px 16px 4px 6px;border:3px solid #3ec6c6;border-radius:999px;background:#0E1A22;box-shadow:inset 0 0 0 3px #0B2A30;color:#E6EEF2;font-weight:800;font-size:15px;line-height:1;white-space:nowrap;pointer-events:auto;cursor:pointer}
+#use-pill[hidden]{display:none!important}
+#use-pill .gic{width:32px;height:32px;flex:0 0 32px;display:flex}
+#use-pill canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
+#use-pill .glbl{font-size:15px;font-weight:800}
+#sleep-fade{position:fixed;inset:0;z-index:70;background:#070b10;opacity:0;pointer-events:none;transition:opacity .55s linear}
+#sleep-fade.on{opacity:1}
+#sleep-fade[hidden]{display:none!important}
+@media (max-height:500px){#use-pill{bottom:70px}}
 #wand-mode{flex-direction:column;min-width:64px}
 #wand-do,#wand-x{flex:0 0 44px;width:44px;min-width:44px;padding:0}
 #wand-do{background:#14B8A6;color:#04221e}
@@ -867,6 +876,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <button type="button" id="wand-do" title="Do it" aria-label="Do it"><span class="gic" data-ico="check"></span></button>
   <button type="button" id="wand-x" title="Cancel" aria-label="Cancel"><span class="gic" data-ico="x"></span></button>
 </div>
+<button id="use-pill" type="button" hidden><span class="gic"></span><span class="glbl"></span></button>
+<div id="sleep-fade" hidden></div>
 <div id="play-chip" hidden>Click to play</div>
 <div id="held-chip" class="kd-tip" hidden></div>
 <div id="size-chip" hidden></div>
