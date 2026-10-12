@@ -489,6 +489,8 @@ const MENU_GLYPH = {
   globe: ['.tttttt.', 'twwtwwtt', 'ttwwttwt', 'tttttttt', 'twttwwtt', 'ttwwtwwt', '.tttttt.', '........'],
   flag: ['d.......', 'dttttt..', 'dooooat.', 'dooooat.', 'dttttt..', 'd.......', 'd.......', 'd.......'],
   floppy: ['ddddddd.', 'dwwwwwdd', 'dwwwwwdd', 'dddddddd', 'dwwwwwwd', 'dwddddwd', 'dwwwwwwd', 'dddddddd'],
+  undo: ['..dddd..', 'd.....d.', 'd..dd...', 'd.......', '.d......', '..d.....', '...ddddd', '........'],
+  redo: ['..dddd..', '.d.....d', '...dd..d', '.......d', '......d.', '.....d..', 'ddddd...', '........'],
   sliders: ['t....t..', 't.o..t.o', 't.o..t.o', 'ooooooo.', '..t..t.t', 'o.t..t.t', 'o.t.....', '........'],
   pick: ['.oooooo.', 'o.....o.', '.....o..', '....o...', '...b....', '..b.....', '.b......', 'b.......'],
   target: ['.rrrrrr.', 'r......r', 'r.oooo.r', 'r.o..o.r', 'r.oooo.r', 'r......r', '.rrrrrr.', '........'],

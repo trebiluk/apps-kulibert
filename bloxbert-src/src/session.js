@@ -359,7 +359,7 @@ export function createSession(api) {
     const el = document.getElementById('wallet-chip')
     if (el) {
       el.hidden = mode !== 'survival'
-      el.innerHTML = '<bdi>⚙ ' + n + ' ' + t('practice') + '</bdi>'
+      el.innerHTML = '<bdi><i class="tb-mark" aria-hidden="true"></i>' + n + ' ' + t('practice') + '</bdi>'
       el.title = t('practiceTip')
       el.setAttribute('aria-label', t('practiceTip'))
     }

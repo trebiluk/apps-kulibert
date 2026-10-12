@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.174', date: '2026-10-11', lines: {
+    en: ['The top bar matches the Menu: navy circuit, teal keys, and an orange version chip.'],
+    uk: ['Верхня смуга як у меню: темно-синя схема, бірюзові клавіші й помаранчевий чип версії.'],
+    ru: ['Верхняя полоса как в меню: тёмно-синяя схема, бирюзовые клавиши и оранжевый чип версии.'],
+    es: ['La barra de arriba coincide con el menú: circuito azul marino, teclas verdeazuladas y un chip naranja de versión.'],
+    ar: ['الشريط العلوي يطابق القائمة: دائرة كحلية، ومفاتيح فيروزية، ورقاقة إصدار برتقالية.'],
+    'fa-AF': ['نوار بالا مثل فهرست است: مدار سرمه‌ای، کلیدهای فیروزه‌ای، و یک تراشه نارنجی نسخه.'],
+    rw: ['Umurongo wo hejuru uhuye n\'ibikubiyemo: circuiti y\'ubururu, amabuto y\'icyatsi kibisi, n\'akazu k\'umuhondo ka verisiyo.'],
+    ti: ['ላዕለዋይ መትረብ ምስ ዝርዝር ይሰማማዕ: ጸሊም ሰማያዊ ሰርኪት፡ ሰማያዊ መጠወቒ፡ ከምኡውን ኣራንሺ ቺፕ ስሪት።'],
+  }},
   { v: '2.5.173', date: '2026-10-11', lines: {
     en: ['The sky shifts from dawn to night, lamps warm the blocks nearby, water reads clearer, and Graphics has Lite, Normal, and Fancy.'],
     uk: ['Небо змінюється від світанку до ночі, лампи гріють блоки поруч, воду видно краще, а в графіці є Легкий, Звичайний і Гарний.'],

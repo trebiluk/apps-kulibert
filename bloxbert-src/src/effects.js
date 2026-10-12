@@ -194,12 +194,13 @@ function injectCss() {
   if (document.getElementById('fx-strip-css')) { cssOn = true; return }
   const s = document.createElement('sty' + 'le')
   s.id = 'fx-strip-css'
-  s.textContent = `#fx-strip{flex:1 0 100%;display:flex;flex-wrap:wrap;gap:4px;width:100%;max-width:100%;box-sizing:border-box;margin:2px 0 0;padding:0}
+  s.textContent = `#fx-strip{flex:0 1 auto;display:flex;flex-wrap:nowrap;gap:4px;min-width:0;max-width:100%;box-sizing:border-box;margin:0;padding:0;align-items:center}
+@media (max-width:700px){#fx-strip{flex:1 0 100%;flex-wrap:wrap;width:100%}}
 #fx-strip[hidden]{display:none}
-#fx-strip .fx-chip{display:flex;align-items:center;gap:4px;min-height:28px;max-width:100%;box-sizing:border-box;padding:2px 8px;border-radius:999px;background:#13303A;color:#E6EEF2;font-size:12px;font-weight:700}
-#fx-strip .fx-chip.fx-bye{opacity:.35}
-#fx-strip .fx-ring{width:14px;height:14px;border-radius:50%;flex:0 0 14px;background:conic-gradient(#22D3EE calc(var(--p,1) * 360deg),#1c2740 0)}
-#fx-strip .fx-more{margin:0;font-weight:800;min-height:28px;display:flex;align-items:center}`
+#fx-strip .fx-chip{display:flex;align-items:center;gap:4px;min-height:28px;max-width:100%;box-sizing:border-box;padding:2px 8px;border-radius:6px;background:#062018;color:#d9fff6;border:1px solid #145e56;font:700 12px/1.2 ui-monospace,Consolas,monospace;box-shadow:inset 0 0 8px rgba(45,212,191,.28)}
+#fx-strip .fx-chip.fx-bye{opacity:1;color:#8eb4c8}
+#fx-strip .fx-ring{width:14px;height:14px;border-radius:2px;flex:0 0 14px;background:conic-gradient(#2dd4bf calc(var(--p,1) * 360deg),#0c1830 0)}
+#fx-strip .fx-more{margin:0;font-weight:800;min-height:28px;display:flex;align-items:center;color:#7ff5e3}`
   const parent = document.head || document.documentElement
   if (parent && parent.append) parent.append(s)
   cssOn = true

@@ -37,7 +37,7 @@ import { Rules } from './rules.js'
 import { paintRules, rulesWord } from './rules-editor.js'
 import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
-import { blockIcon, dropperIcon, slotArt, itemSvg } from './icons.js'
+import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon } from './icons.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -107,6 +107,22 @@ function t(key) {
   if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
   return hit
 }
+function dressTop() {
+  const name = document.querySelector('.brand .tb-name')
+  if (name && !name.dataset.pix) {
+    name.dataset.pix = '1'
+    name.before(menuPlate())
+    name.classList.add('kd-sr')
+  }
+  for (const [id, icon] of [['undo-btn', 'undo'], ['redo-btn', 'redo'], ['save-btn', 'floppy']]) {
+    const btn = document.getElementById(id)
+    const ti = btn && btn.querySelector('.ti')
+    if (!ti || ti.dataset.pix) continue
+    ti.dataset.pix = '1'
+    ti.textContent = ''
+    ti.append(menuIcon(icon))
+  }
+}
 function applyI18n() {
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
@@ -119,6 +135,7 @@ function applyI18n() {
   if (aboutPlate) aboutPlate.textContent = VERSION
   const pick = document.getElementById('pick-chip')
   if (pick && pick.dataset.ready) paintPick()
+  dressTop()
 }
 applyI18n()
 
@@ -238,7 +255,8 @@ function paintDigChip(spot) {
     chip = document.createElement('button')
     chip.type = 'button'
     chip.id = 'dig-chip'
-    chip.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateZ(0);isolation:isolate;z-index:42;min-height:44px;min-width:44px;padding:8px 14px;border-radius:999px;border:1px solid #d7e2f2;background:#132033;color:#f4f7fb;font:600 14px/1.2 system-ui,sans-serif;cursor:pointer;'
+    chip.className = 'tb-lcd'
+    chip.style.cssText = 'position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateZ(0);z-index:42;'
     chip.addEventListener('pointerdown', (e) => e.stopPropagation())
     chip.addEventListener('click', (e) => {
       e.preventDefault()
@@ -3682,7 +3700,12 @@ function paintModeChip() {
   }
   document.body.classList.toggle('mode-creative', creativeMode)
 }
-function markSave(text) { const el = $('save-state'); if (el) el.textContent = text }
+function markSave(text) {
+  const el = $('save-state')
+  if (el) el.textContent = text
+  const btn = $('save-btn')
+  if (btn) btn.classList.toggle('saved', typeof text === 'string' && text.indexOf(t('saved')) === 0)
+}
 function toast(text, act) {
   const el = $('toast')
   if (!el) return
@@ -7122,7 +7145,7 @@ if (!__BLOX_STUDENT__) {
     version: VERSION, setQuality, setGraphics, refit, get quality() { return quality }, get graphics() { return gfxLook.name }, get lang() { return LANG },
     rules: Rules,
     effects: Effects,
-    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, importFile, exportDoc: snapshot,
+    noa, perf, save, load, resetWorld, placeBlock, breakBlock, pick, setVoxel, getVoxel, undo, redo, showDig: () => paintDigChip(null), importFile, exportDoc: snapshot,
     applyEdit: (ops) => { const g = edits.applyEdit(ops, { source: 'test', label: 'test' }); if (g) changeLog.note(g); return g },
     history: (x, y, z) => changeLog.history(x, y, z),
     logPrune: (nowMs) => changeLog.prune(nowMs),

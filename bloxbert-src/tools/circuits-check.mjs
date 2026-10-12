@@ -285,7 +285,7 @@ const page = await browser.newPage()
 const errs = await prep(page)
 await boot(page, 'q=full&smoke=1&auto=0')
 const version = await page.evaluate(() => window.__blocks.version)
-eq(version === '2.5.173', 'version', version)
+eq(version === '2.5.174', 'version', version)
 
 await page.evaluate(() => {
   const ops = []
