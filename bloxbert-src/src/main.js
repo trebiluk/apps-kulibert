@@ -107,6 +107,14 @@ function t(key) {
   if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
   return hit
 }
+function fillIco(root) {
+  if (!root || !root.querySelectorAll) return
+  for (const el of root.querySelectorAll('[data-ico]')) {
+    const pic = menuIcon(el.dataset.ico)
+    el.replaceChildren()
+    if (pic) el.append(pic)
+  }
+}
 function dressTop() {
   const name = document.querySelector('.brand .tb-name')
   if (name && !name.dataset.pix) {
@@ -120,8 +128,11 @@ function dressTop() {
     if (!ti || ti.dataset.pix) continue
     ti.dataset.pix = '1'
     ti.textContent = ''
-    ti.append(menuIcon(icon))
+    const pic = menuIcon(icon)
+    if (pic) ti.append(pic)
+    if (btn) btn.title = btn.getAttribute('aria-label') || ''
   }
+  fillIco(document)
 }
 function applyI18n() {
   document.documentElement.lang = LANG
@@ -292,9 +303,9 @@ function tickDigChip() {
 setInterval(tickDigChip, 400)
 function noteProtected() {
   const now = performance.now()
-  if (protectTold && now - protectTold < 3000) return
+  if (protectTold && now - protectTold < 10000) return
   protectTold = now
-  toast(t('protectedArea') + ' — ' + t('digOutside'))
+  toast(t('areaHint'))
   ringUntil = now + 2000
   let spot = digCache.spot
   if (now - digCache.at >= 10000) {
@@ -328,7 +339,13 @@ function paintSpawn(g) {
   setBtn.dataset.spawn = 'set'
   setBtn.style.minHeight = '44px'
   setBtn.style.minWidth = '44px'
-  setBtn.innerHTML = '<span class="gic">⚑</span><span class="glbl"></span>'
+  const ico = document.createElement('span')
+  ico.className = 'gic'
+  const flag = menuIcon('flag')
+  if (flag) ico.append(flag)
+  const lab = document.createElement('span')
+  lab.className = 'glbl'
+  setBtn.append(ico, lab)
   setBtn.querySelector('.glbl').textContent = t('setSpawnHere')
   setBtn.addEventListener('pointerdown', (e) => e.stopPropagation())
   setBtn.addEventListener('click', (e) => { e.stopPropagation(); setSpawnHere(); toast(t('setSpawnHere')) })
@@ -3425,11 +3442,13 @@ function menuTile(icon, label, fn) {
   b.className = 'gtile'
   const ico = document.createElement('span')
   ico.className = 'gic'
-  ico.textContent = icon
+  const pic = icon ? menuIcon(icon) : null
+  if (pic) ico.append(pic)
   const lab = document.createElement('span')
   lab.className = 'glbl'
   lab.textContent = label
   b.append(ico, lab)
+  b.title = label
   b.addEventListener('click', fn)
   return b
 }
@@ -3440,15 +3459,15 @@ async function paintOldEntry(host, openList) {
   if (!host.isConnected) return
   if (teacherOn()) {
     const on = makerEnabled()
-    host.append(menuTile(on ? '☑' : '☐', t(on ? 'makerOn' : 'makerOff'), () => {
+    host.append(menuTile(on ? 'boxcheck' : 'boxempty', t(on ? 'makerOn' : 'makerOff'), () => {
       makerLive.on = !on
       dirty = true
       save().catch(() => {})
       paintOldEntry(host, openList)
     }))
   }
-  if (makerEnabled()) host.append(menuTile('✦', t('newWorld'), () => openMaker()))
-  if (keys.length) host.append(menuTile('↩', t('openOld'), () => { if (openList) openList() }))
+  if (makerEnabled()) host.append(menuTile('spark', t('newWorld'), () => openMaker()))
+  if (keys.length) host.append(menuTile('back', t('openOld'), () => { if (openList) openList() }))
 }
 async function paintOldList(g) {
   g.innerHTML = ''
@@ -3559,7 +3578,13 @@ function makerSpin(text, fn) {
   b.className = 'gtile'
   b.style.minWidth = '44px'
   b.style.minHeight = '44px'
-  b.textContent = text
+  const name = text === '<' ? 'chevL' : text === '>' ? 'chevR' : ''
+  if (name) {
+    const pic = menuIcon(name)
+    if (pic) b.append(pic)
+    else b.textContent = text
+  } else b.textContent = text
+  b.title = text
   b.addEventListener('click', fn)
   return b
 }
@@ -3571,8 +3596,8 @@ function paintMaker(g) {
   presets.style.display = 'flex'
   presets.style.gap = '8px'
   const choices = [
-    ['normal', '🌿', 'makerNormal'], ['flat', '▬', 'makerFlat'], ['void', '○', 'makerVoid'],
-    ['islands', '🏝️', 'makerIslands'], ['sky', '☁', 'makerSky'], ['parkour', '⤴', 'makerParkour'],
+    ['normal', 'leaf', 'makerNormal'], ['flat', 'flat', 'makerFlat'], ['void', 'void', 'makerVoid'],
+    ['islands', 'islands', 'makerIslands'], ['sky', 'sky', 'makerSky'], ['parkour', 'parkour', 'makerParkour'],
   ]
   for (const [id, icon, lab] of choices) {
     const tile = menuTile(icon, t(lab), () => { makerDraft.preset = id; paintMaker(g) })
@@ -3618,7 +3643,7 @@ function paintMaker(g) {
   seed.dataset.seedNum = String(normSeed(makerDraft.seed))
   seed.textContent = words.join(' · ') + ' · ' + normSeed(makerDraft.seed)
   g.append(seed)
-  const shuffle = menuTile('↻', t('makerShuffle'), () => {
+  const shuffle = menuTile('shuffle', t('makerShuffle'), () => {
     makerDraft.seed = normSeed((makerDraft.seed | 0) + 997)
     paintMaker(g)
   })
@@ -3691,10 +3716,10 @@ function paintMaker(g) {
     have.textContent = makerLive.edited || !isMakerPreset(makerLive.preset) ? t('makerShareFile') : shareCode(makerLive)
     g.append(have)
   }
-  const start = menuTile('✓', t('makerStart'), () => { startMade() })
+  const start = menuTile('check', t('makerStart'), () => { startMade() })
   start.style.minHeight = '44px'
   start.dataset.makerStart = '1'
-  const back = menuTile('←', t('makerBack'), () => { if (panels) panels.open('world') })
+  const back = menuTile('back', t('makerBack'), () => { if (panels) panels.open('world') })
   back.style.minHeight = '44px'
   g.append(start, back)
 }
@@ -3816,12 +3841,18 @@ function paintModeChip() {
   if (ps) {
     ps.classList.toggle('on', survivalMode)
     ps.setAttribute('aria-pressed', String(survivalMode))
-    ps.textContent = t('survival')
+    const psLab = ps.querySelector('.tl')
+    if (psLab) psLab.textContent = t('survival')
+    else ps.append(document.createTextNode(t('survival')))
+    ps.title = t('survival')
   }
   if (pc) {
     pc.classList.toggle('on', creativeMode)
     pc.setAttribute('aria-pressed', String(creativeMode))
-    pc.textContent = t('creative')
+    const pcLab = pc.querySelector('.tl')
+    if (pcLab) pcLab.textContent = t('creative')
+    else pc.append(document.createTextNode(t('creative')))
+    pc.title = t('creative')
   }
   document.body.classList.toggle('mode-creative', creativeMode)
 }
@@ -3829,7 +3860,11 @@ function markSave(text) {
   const el = $('save-state')
   if (el) el.textContent = text
   const btn = $('save-btn')
-  if (btn) btn.classList.toggle('saved', typeof text === 'string' && text.indexOf(t('saved')) === 0)
+  if (!btn) return
+  const saved = typeof text === 'string' && text.indexOf(t('saved')) === 0
+  btn.classList.toggle('saved', saved)
+  clearTimeout(markSave.t)
+  if (saved) markSave.t = setTimeout(() => { if (btn.isConnected) btn.classList.remove('saved') }, 2000)
 }
 function toast(text, act) {
   const el = $('toast')
@@ -4481,7 +4516,7 @@ async function paintBackups(g) {
   note.dataset.cloudNote = '1'
   note.textContent = t('cloudLater')
   g.append(note)
-  g.append(menuTile('📸', t('classSnap'), () => { classSnap() }))
+  g.append(menuTile('camera', t('classSnap'), () => { classSnap() }))
   const field = document.createElement('div')
   field.className = 'wide gnote'
   field.style.display = 'flex'
@@ -5905,6 +5940,7 @@ function paintPickers(g) {
     if (!src) return null
     const clone = src.cloneNode(true)
     clone.classList.add('sheet-qset')
+    fillIco(clone)
     return clone
   }
   const head = (key) => {
@@ -5922,9 +5958,16 @@ function paintPickers(g) {
   paintGfx()
   paintQuality()
 }
-function lookLine(name, value) {
+function lookLine(name, value, icon) {
   const row = document.createElement('div')
   row.className = 'set-line'
+  if (icon) {
+    const ico = document.createElement('span')
+    ico.className = 'set-ico'
+    const pic = menuIcon(icon)
+    if (pic) ico.append(pic)
+    row.append(ico)
+  }
   const lab = document.createElement('span')
   lab.className = 'set-lab'
   lab.textContent = name
@@ -5938,8 +5981,8 @@ function lookLine(name, value) {
   }
   return row
 }
-function lookPill(name, on, flip, look) {
-  const row = lookLine(name)
+function lookPill(name, on, flip, look, icon) {
+  const row = lookLine(name, null, icon)
   const b = document.createElement('button')
   b.type = 'button'
   b.className = 'pill'
@@ -5956,7 +5999,7 @@ function lookPill(name, on, flip, look) {
   return row
 }
 function paintLook(g) {
-  const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×')
+  const sens = lookLine(t('lookSens'), lookSens.toFixed(1) + '×', 'sliders')
   const range = document.createElement('input')
   range.type = 'range'
   range.min = '0.5'
@@ -5969,7 +6012,7 @@ function paintLook(g) {
     if (sens._val) sens._val.textContent = lookSens.toFixed(1) + '×'
     applyLook()
   })
-  const side = lookLine(t('mainHand'))
+  const side = lookLine(t('mainHand'), null, 'hand')
   const sideBtn = document.createElement('button')
   sideBtn.type = 'button'
   sideBtn.className = 'pill on'
@@ -5977,7 +6020,7 @@ function paintLook(g) {
   paintSide()
   sideBtn.addEventListener('click', () => { mainHand = mainHand === 'left' ? 'right' : 'left'; applyLook(); paintSide() })
   side.append(sideBtn)
-  const cam = lookLine(t('cameraView'))
+  const cam = lookLine(t('cameraView'), null, 'camera')
   const camBtn = document.createElement('button')
   camBtn.type = 'button'
   camBtn.className = 'pill'
@@ -5992,13 +6035,13 @@ function paintLook(g) {
   g.append(
     sens,
     range,
-    lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert'),
-    lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }),
-    lookPill(t('climb'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }),
-    lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }),
+    lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert', 'invert'),
+    lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }, '', 'wide'),
+    lookPill(t('climb'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
+    lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
     side,
     cam,
-    lookPill(t('hideTips'), () => learn.hideTips(), () => { learn.setHideTips(!learn.hideTips()) }, 'tips'),
+    lookPill(t('hideTips'), () => learn.hideTips(), () => { learn.setHideTips(!learn.hideTips()) }, 'tips', 'tips'),
   )
 }
 applyLook()

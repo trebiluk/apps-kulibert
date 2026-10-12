@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.177', date: '2026-10-12', lines: {
+    en: ['Menus lead with a picture, a Saved tick shows for a moment, every bag picture is filled, and a protected area says so once.'],
+    uk: ['Меню починається з малюнка, галочка Збережено на мить, у сумці немає порожніх малюнків, і захищена зона каже про це раз.'],
+    ru: ['Меню начинается с картинки, галочка Сохранено на миг, в сумке нет пустых картинок, и защищённая зона говорит об этом один раз.'],
+    es: ['Los menús empiezan con un dibujo, la marca Guardado se ve un momento, la bolsa no tiene dibujos vacíos, y una zona protegida lo dice una vez.'],
+    ar: ['القوائم تبدأ بصورة، وعلامة تم الحفظ تظهر لحظة، والحقيبة بلا صور فارغة، والمنطقة المحمية تقول ذلك مرة.'],
+    'fa-AF': ['فهرست‌ها با یک تصویر شروع می‌شوند، تیک ذخیره یک لحظه دیده می‌شود، بکس عکس خالی ندارد، و جای محافظت‌شده یک بار می‌گوید.'],
+    rw: ['Ibikubiyemo bitangira n\'ishusho, akamenyetso ko byabitswe kagaragara akanya, agasaho ntikagira ishusho ituzuye, kandi ahantu harinzwe hirabivuga rimwe.'],
+    ti: ['ዝርዝራት ብስእሊ ይጅምሩ፡ ምልክት ተዓቂቡ ንእንትን ንእንትን ይረአ፡ ቦርሳ ባዶ ስእሊ የብላን፡ ዝተሓለወ ከባቢ ድማ ሓንሳብ ይብል።'],
+  }},
   { v: '2.5.176', date: '2026-10-12', lines: {
     en: ['Grass and flowers are colored cutouts, the Bag says Bag, dusk is orange into blue, night ground stays readable, and the avatar faces the way you look.'],
     uk: ['Трава й квіти кольорові, Сумка каже Сумка, сутінки від помаранчевого до синього, вночі землю видно, і аватар дивиться туди, куди ти.'],

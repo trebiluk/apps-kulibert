@@ -755,6 +755,39 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet[data-panel=settings] .sheet-qset{display:flex;flex-direction:column;gap:6px;width:100%}
 #sheet[data-panel=settings] .sheet-qset .qbtn{width:100%;text-align:start}
 #sheet[data-panel=settings] input[type=range]{width:100%;min-height:44px}
+/* Icon-first. Shared theme stays row-shaped; these screens stack a pixel icon over a short label. Settings rows keep the icon on the left. */
+#sheet[data-panel=menu] .kd-key{flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:64px;min-width:44px;padding:4px;gap:2px}
+#sheet[data-panel=menu] .kd-key .gic,#sheet[data-panel=menu] .kd-key canvas{width:28px;height:28px;flex:0 0 28px}
+#sheet[data-panel=menu] .kd-key .glbl{text-align:center;font-size:12px;line-height:1.15}
+#sheet .gtile.kd-key{flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:64px}
+#sheet .gtile .gic canvas,#sheet .gtile.kd-key canvas{width:28px;height:28px;flex:0 0 28px;image-rendering:pixelated}
+#sheet .gtile.kd-key .glbl{text-align:center}
+.gtile .gic canvas{width:28px;height:28px;image-rendering:pixelated;display:block}
+#tool-strip button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-width:64px;min-height:52px;padding:4px;font-size:11px;font-weight:800;line-height:1.1}
+#tool-strip canvas{width:26px;height:26px;image-rendering:pixelated}
+#mode-pill button{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:0;height:auto;padding:2px 8px;line-height:1}
+#mode-pill .ti{width:16px;height:16px;display:flex;flex:0 0 16px}
+#mode-pill canvas{width:16px;height:16px;image-rendering:pixelated}
+#mode-pill .tl{font-size:11px;font-weight:800;line-height:1.1}
+.top .tool{flex-direction:column;height:auto;min-height:44px;padding:2px 6px;gap:0;line-height:1}
+.top .tool .ti{width:18px;height:18px;flex:0 0 18px}
+.top .tool .ti canvas{width:18px;height:18px}
+.top .tool .tl{font-size:11px;line-height:1.1}
+.top .icon-btn canvas,#game-menu canvas,#fs-btn canvas,#inspect-chip canvas{width:22px;height:22px;image-rendering:pixelated}
+#game-menu,#fs-btn{display:inline-flex;align-items:center;justify-content:center}
+.set-line .set-ico,.qbtn .set-ico,.row .ic{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;flex:0 0 28px}
+.set-line .set-ico canvas,.qbtn .set-ico canvas,.row .ic canvas{width:28px;height:28px;image-rendering:pixelated}
+.set-line .set-lab{flex:1 1 auto}
+.crate-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:44px;min-width:44px}
+.crate-tab canvas{width:22px;height:22px;image-rendering:pixelated}
+@media (max-height:500px){
+  #sheet[data-panel=menu] .kd-key{min-height:44px;padding:2px}
+  #sheet[data-panel=menu] .kd-key .gic,#sheet[data-panel=menu] .kd-key canvas{width:18px;height:18px;flex-basis:18px}
+  #sheet[data-panel=menu] .kd-key .glbl{font-size:11px}
+}
+@media (min-width:981px){
+  .top .tool .tl{position:static;width:auto;height:auto;margin:0;overflow:visible;clip:auto}
+}
 </style>
 </head>
 <body>
@@ -762,15 +795,15 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 <div id="vignette" aria-hidden="true"></div>
 <div class="cross" aria-hidden="true"></div>
 <header class="top">
-  <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false">☰</button>
+  <button class="icon-btn" id="menu-btn" aria-label="Menu" data-i18n-label="menu" aria-controls="drawer" aria-expanded="false"><span class="ti" data-ico="menu"></span></button>
   <div id="mode-pill" role="group" aria-label="Mode">
-    <button type="button" id="mode-survival" data-i18n="survival" aria-pressed="true">Survival</button>
-    <button type="button" id="mode-creative" data-i18n="creative" aria-pressed="false">Creative</button>
+    <button type="button" id="mode-survival" aria-pressed="true"><span class="ti" data-ico="survive"></span><span class="tl" data-i18n="survival">Survival</span></button>
+    <button type="button" id="mode-creative" aria-pressed="false"><span class="ti" data-ico="create"></span><span class="tl" data-i18n="creative">Creative</span></button>
   </div>
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.176</span>
+      <span class="ver" id="ver-plate">2.5.177</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -782,85 +815,85 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti"></span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
-<button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false">☰<small>⏸</small></button>
-<button id="inspect-chip" type="button" hidden>🔍 <span data-i18n="inspect">Inspect</span> · ✕</button>
+<button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false"><span class="ti" data-ico="menu"></span></button>
+<button id="inspect-chip" type="button" hidden><span class="ti" data-ico="lens"></span> <span data-i18n="inspect">Inspect</span></button>
 <div id="menu-hint" class="kd-tip" hidden></div>
 <div id="toast" class="kd-tip" role="status" aria-live="polite" hidden></div>
 <button id="path-chip" type="button" hidden></button>
 <div id="tool-strip" hidden>
-  <button type="button" data-tool="select">⬚ Select</button>
-  <button type="button" data-tool="fill">🪣 Fill</button>
-  <button type="button" data-tool="walls">🧱 Walls</button>
-  <button type="button" data-tool="copy">📄 Copy</button>
-  <button type="button" data-tool="paste">📋 Paste</button>
-  <button type="button" data-tool="do">✓ Do it</button>
-  <button type="button" data-tool="cancel">✕ Cancel</button>
-  <button type="button" data-tool="close">✕</button>
+  <button type="button" data-tool="select" title="Select"><span class="gic" data-ico="select"></span><span class="glbl">Select</span></button>
+  <button type="button" data-tool="fill" title="Fill"><span class="gic" data-ico="fill"></span><span class="glbl">Fill</span></button>
+  <button type="button" data-tool="walls" title="Walls"><span class="gic" data-ico="walls"></span><span class="glbl">Walls</span></button>
+  <button type="button" data-tool="copy" title="Copy"><span class="gic" data-ico="copy"></span><span class="glbl">Copy</span></button>
+  <button type="button" data-tool="paste" title="Paste"><span class="gic" data-ico="paste"></span><span class="glbl">Paste</span></button>
+  <button type="button" data-tool="do" title="Do it"><span class="gic" data-ico="check"></span><span class="glbl">Do it</span></button>
+  <button type="button" data-tool="cancel" title="Cancel"><span class="gic" data-ico="x"></span><span class="glbl">Cancel</span></button>
+  <button type="button" data-tool="close" title="Close"><span class="gic" data-ico="x"></span></button>
 </div>
 <div id="play-chip" hidden>Click to play</div>
 <div id="held-chip" class="kd-tip" hidden></div>
 <div id="size-chip" hidden></div>
 <div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
-  <div class="sheet-bar"><button type="button" id="sheet-back" class="kd-key">← <span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><span class="kd-chip" id="sheet-ver" hidden></span><button type="button" id="sheet-x" class="kd-key kd-x" aria-label="Close">✕</button></div>
+  <div class="sheet-bar"><button type="button" id="sheet-back" class="kd-key"><span class="gic" data-ico="back"></span><span data-i18n="backMenu">Menu</span></button><b id="sheet-title">Menu</b><span class="kd-chip" id="sheet-ver" hidden></span><button type="button" id="sheet-x" class="kd-key kd-x" aria-label="Close"><span class="gic" data-ico="x"></span></button></div>
   <div id="sheet-body"></div>
 </div>
-<button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen">⛶</button>
+<button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen"><span class="ti" data-ico="full"></span></button>
 <div id="pick-ring" hidden aria-hidden="true"></div>
 <div id="poof" hidden></div>
 <div id="perf" aria-live="off" hidden>— fps</div>
 <div class="keys" data-i18n="keysLine">WASD walk · Shift run · Z crouch · Space jump · Left hold breaks · Right places · Q drops</div>
 <div id="scrim" hidden></div>
 <nav id="drawer" aria-label="Bertopia menu">
-  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close">✕</button><b data-i18n="menu">Menu</b></div>
+  <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
     <p class="new" id="whats-new" data-i18n="whatsNewBody">A Bed is built at the Woodshop. Design it or just build it, then rest to fill your energy.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
-    <button class="row" id="m-save"><span class="ic">⬇</span><span data-i18n="saveNow">Save now</span></button>
-    <button class="row" id="m-load"><span class="ic">↺</span><span data-i18n="loadSaved">Load my saved world</span></button>
-    <button class="row" id="m-export"><span class="ic">⇪</span><span data-i18n="exportWorld">Export world file</span></button>
-    <button class="row" id="m-import"><span class="ic">⇩</span><span data-i18n="importWorld">Import world file</span></button>
+    <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
+    <button class="row" id="m-load"><span class="ic" data-ico="folder"></span><span data-i18n="loadSaved">Load my saved world</span></button>
+    <button class="row" id="m-export"><span class="ic" data-ico="up"></span><span data-i18n="exportWorld">Export world file</span></button>
+    <button class="row" id="m-import"><span class="ic" data-ico="down"></span><span data-i18n="importWorld">Import world file</span></button>
     <input type="file" id="import-file" accept=".json,application/json" hidden>
-    <button class="row" id="m-reset"><span class="ic">✱</span><span data-i18n="freshWorld">Fresh world</span></button>
-    <button class="row" id="m-old" type="button" hidden><span class="ic">↩</span><span data-i18n="openOld">Open my old world</span></button>
+    <button class="row" id="m-reset"><span class="ic" data-ico="spark"></span><span data-i18n="freshWorld">Fresh world</span></button>
+    <button class="row" id="m-old" type="button" hidden><span class="ic" data-ico="back"></span><span data-i18n="openOld">Open my old world</span></button>
     <div id="m-old-list" hidden></div>
-    <button class="row" id="m-hub"><span class="ic">⌂</span><span data-i18n="hub">Back to the Hub</span></button>
-    <button class="row" id="m-inspect"><span class="ic">🔍</span><span data-i18n="inspect">Inspect</span></button>
+    <button class="row" id="m-hub"><span class="ic" data-ico="home"></span><span data-i18n="hub">Back to the Hub</span></button>
+    <button class="row" id="m-inspect"><span class="ic" data-ico="lens"></span><span data-i18n="inspect">Inspect</span></button>
   </div>
   <div class="sec"><h3 data-i18n="mode">Mode</h3>
-    <button class="row" id="m-survival" type="button" aria-pressed="true"><span class="ic">⚙</span><span data-i18n="survival">Survival</span></button>
-    <button class="row" id="m-creative" type="button" hidden aria-pressed="false"><span class="ic">◆</span><span data-i18n="creative">Creative</span></button>
-    <button class="row" id="m-table" aria-pressed="false"><span class="ic">▦</span><span data-i18n="buildTable">Build Table</span></button>
-    <button class="row" disabled><span class="ic">⏱</span><span data-i18n="contest">Build contest</span><span class="later" data-i18n="later">later cut</span></button>
+    <button class="row" id="m-survival" type="button" aria-pressed="true"><span class="ic" data-ico="survive"></span><span data-i18n="survival">Survival</span></button>
+    <button class="row" id="m-creative" type="button" hidden aria-pressed="false"><span class="ic" data-ico="create"></span><span data-i18n="creative">Creative</span></button>
+    <button class="row" id="m-table" aria-pressed="false"><span class="ic" data-ico="grid"></span><span data-i18n="buildTable">Build Table</span></button>
+    <button class="row" disabled><span class="ic" data-ico="clock"></span><span data-i18n="contest">Build contest</span><span class="later" data-i18n="later">later cut</span></button>
     <p class="help" data-i18n="tableHint">Build Table: drag to orbit, tap a face to place. Arrow keys move the cursor. Enter places.</p>
   </div>
   <div class="sec" id="settings"><h3><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-i18n="settings">Settings</span></h3>
     <h3 data-i18n="graphics">Graphics</h3>
     <div class="qset" role="radiogroup" aria-label="Graphics">
-      <button class="qbtn" type="button" role="radio" data-gfx="lite" aria-checked="false"><span><b data-i18n="lite">Lite</b><small data-i18n="gfxLiteHint">Flat sky. Lamps glow only.</small></span></button>
-      <button class="qbtn" type="button" role="radio" data-gfx="normal" aria-checked="false"><span><b data-i18n="gfxNormal">Normal</b><small data-i18n="gfxNormalHint">Soft sky and warm lamps.</small></span></button>
-      <button class="qbtn" type="button" role="radio" data-gfx="fancy" aria-checked="false"><span><b data-i18n="gfxFancy">Fancy</b><small data-i18n="gfxFancyHint">Corner shade and swaying plants.</small></span></button>
+      <button class="qbtn" type="button" role="radio" data-gfx="lite" aria-checked="false"><span class="set-ico" data-ico="bolt"></span><span><b data-i18n="lite">Lite</b><small data-i18n="gfxLiteHint">Flat sky. Lamps glow only.</small></span></button>
+      <button class="qbtn" type="button" role="radio" data-gfx="normal" aria-checked="false"><span class="set-ico" data-ico="day"></span><span><b data-i18n="gfxNormal">Normal</b><small data-i18n="gfxNormalHint">Soft sky and warm lamps.</small></span></button>
+      <button class="qbtn" type="button" role="radio" data-gfx="fancy" aria-checked="false"><span class="set-ico" data-ico="spark"></span><span><b data-i18n="gfxFancy">Fancy</b><small data-i18n="gfxFancyHint">Corner shade and swaying plants.</small></span></button>
     </div>
     <div class="qset" role="radiogroup" aria-label="Quality">
-      <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19a9 9 0 1 1 14.2 0"/><path d="M12 13l4-5"/><circle cx="12" cy="13" r="1.6" fill="currentColor"/></svg><span><b data-i18n="auto">Auto</b><small data-i18n="autoHint">Best for most. Lowers detail if it gets slow.</small></span></button>
-      <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg><span><b data-i18n="lite">Lite</b><small data-i18n="liteHint">Fastest. For slow Chromebooks and phones.</small></span></button>
-      <button class="qbtn" role="radio" data-q="full" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.6 6.6 19.5l1.2-6L3.3 9.3l6.1-.7z"/></svg><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
+      <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><span class="set-ico" data-ico="quality"></span><span><b data-i18n="auto">Auto</b><small data-i18n="autoHint">Best for most. Lowers detail if it gets slow.</small></span></button>
+      <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><span class="set-ico" data-ico="bolt"></span><span><b data-i18n="lite">Lite</b><small data-i18n="liteHint">Fastest. For slow Chromebooks and phones.</small></span></button>
+      <button class="qbtn" role="radio" data-q="full" aria-checked="false"><span class="set-ico" data-ico="star"></span><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
     </div>
     <p id="q-now" aria-live="polite"></p>
     <h3 data-i18n="textSize">Text size</h3>
     <div class="tsset" role="radiogroup" aria-label="Text size">
-      <button class="qbtn" type="button" data-ts="s"><b data-i18n="textS">Small</b></button>
-      <button class="qbtn" type="button" data-ts="m"><b data-i18n="textM">Medium</b></button>
-      <button class="qbtn" type="button" data-ts="l"><b data-i18n="textL">Large</b></button>
+      <button class="qbtn" type="button" data-ts="s"><span class="set-ico" data-ico="text"></span><b data-i18n="textS">Small</b></button>
+      <button class="qbtn" type="button" data-ts="m"><span class="set-ico" data-ico="text"></span><b data-i18n="textM">Medium</b></button>
+      <button class="qbtn" type="button" data-ts="l"><span class="set-ico" data-ico="text"></span><b data-i18n="textL">Large</b></button>
     </div>
-    <button class="row" id="m-perf"><span class="ic">∿</span><span data-i18n="showSpeed">Show speed</span></button>
-    <button class="row" id="m-stick" type="button"><span class="ic">◎</span><span data-i18n="stickSide">Stick side</span></button>
-    <button class="row" data-fs-exit><span class="ic">⤢</span><span data-i18n="fsExit">Exit full screen</span></button>
+    <button class="row" id="m-perf"><span class="ic" data-ico="speed"></span><span data-i18n="showSpeed">Show speed</span></button>
+    <button class="row" id="m-stick" type="button"><span class="ic" data-ico="stick"></span><span data-i18n="stickSide">Stick side</span></button>
+    <button class="row" data-fs-exit><span class="ic" data-ico="full"></span><span data-i18n="fsExit">Exit full screen</span></button>
   </div>
   <div class="sec"><h3 data-i18n="help">Help</h3>
     <p class="help" data-i18n="keysHint">WASD walks. Shift runs. Z crouches. Space jumps one block. Hold left click to break. Right click places. Q drops one.</p>
     <p class="help" data-i18n="copyTip">Copy a block you already have into your hand.</p>
-    <button class="row" id="m-about"><span class="ic">i</span><span data-i18n="about">About</span></button>
+    <button class="row" id="m-about"><span class="ic" data-ico="about"></span><span data-i18n="about">About</span></button>
   </div>
   <p class="credit"><span class="plate" id="about-plate">2.2.0</span><br><span data-i18n="creditEngine">Engine: noa (MIT) + Babylon.js (Apache-2.0). Block art: Kenney Voxel Pack (CC0).</span> <a href="THIRD-PARTY.txt" target="_blank" rel="noopener">notices</a> · <a href="assets/KENNEY-LICENSE.txt" target="_blank" rel="noopener">CC0</a></p>
 </nav>
@@ -906,7 +939,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
       <button type="button" id="door-auto" class="keycap" data-i18n="autoClose">Auto-close</button>
       <button type="button" id="door-lock" class="keycap" data-i18n="padlock">Padlock</button>
       <button type="button" id="door-pick" class="keycap" data-i18n="pickup">Pick up</button>
-      <button type="button" id="door-x" class="keycap" aria-label="Close" data-i18n-label="close">✕</button>
+      <button type="button" id="door-x" class="keycap" aria-label="Close" data-i18n-label="close"><span class="ti" data-ico="x"></span></button>
     </div>
   </div>
 </div>
@@ -915,15 +948,15 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 <div id="hotbar" class="kd-hotbar" role="toolbar" aria-label="Blocks"></div>
 <div id="inspect-card" class="kd-card" hidden role="dialog" aria-labelledby="inspect-title">
   <div class="card">
-    <button class="icon-btn kd-key" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close">✕</button>
+    <button class="icon-btn kd-key" id="inspect-close" type="button" aria-label="Close" data-i18n-label="close"><span class="ti" data-ico="x"></span></button>
     <b id="inspect-title" data-i18n="inspect">Inspect</b>
     <div id="inspect-list"></div>
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.169"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.176" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.176" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.177" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.177" defer></script>
 <script>
 ;(function () {
   try {

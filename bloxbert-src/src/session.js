@@ -8,7 +8,7 @@ import { canMake, craftStatus, maxTimes, make, fillTakes, maxPlan, placeResult, 
 import { createWallet } from './econ/wallet.js'
 import { quoteSell, quoteBuy, canSellToday } from './econ/store.js'
 import { visit } from './econ/vend.js'
-import { slotArt } from './icons.js'
+import { slotArt, menuIcon } from './icons.js'
 import { mergeOrAdd, stepMagnet, canPick, nearPlayer, pullLoose, noteId, lostWhyKeys, wildBushLoot } from './drops.js'
 import { emptyBox, cloneRec, slotMuted } from './box.js'
 import { bindBertopiaSlots } from './slots-bridge.js'
@@ -386,7 +386,7 @@ export function createSession(api) {
       digit.textContent = String(i + 1)
       const sw = document.createElement('span')
       sw.className = 'sw'
-      if (s && slotMuted(s.item)) sw.textContent = '?'
+      if (s && slotMuted(s.item)) sw.append(qMark())
       else if (s) sw.append(slotNode(s.item, item))
       b.append(digit, sw)
       if (s) {
@@ -761,16 +761,24 @@ export function createSession(api) {
     return out
   }
   function qMark() {
-    const s = document.createElement('span')
-    s.textContent = '?'
-    return s
+    const c = document.createElement('canvas')
+    c.width = c.height = 48
+    c.dataset.kind = 'crate'
+    const g = c.getContext('2d')
+    g.fillStyle = '#3A4450'
+    g.fillRect(8, 8, 32, 32)
+    g.strokeStyle = '#E8EEF2'
+    g.lineWidth = 2
+    g.strokeRect(14, 14, 20, 20)
+    g.strokeRect(18, 18, 12, 12)
+    return c
   }
   function faceIcon(key) {
     if (slotMuted(key)) return qMark()
     return itemIcon(ITEMS[key], key)
   }
   function faceName(key) {
-    return slotMuted(key) ? '?' : itemName(key)
+    return itemName(key)
   }
   function keyOf(item) {
     if (!item) return ''
@@ -922,10 +930,15 @@ export function createSession(api) {
     }
     if (asideN > 0) lostRow(t('lostBtn') + ' · ' + t('lostWhyAside') + ' · ' + asideN)
     if (restN > 0) lostRow(lostWhyKeys(rest).map((k) => t(k)).join(', ') + ' · ' + restN)
-    const tab = (text) => {
+    const tab = (text, icon) => {
       const d = document.createElement('div')
       d.className = 'crate-tab'
-      d.textContent = text
+      d.title = text
+      const pic = menuIcon(icon)
+      if (pic) d.append(pic)
+      const lab = document.createElement('span')
+      lab.textContent = text
+      d.append(lab)
       return d
     }
     const row = (from, to) => {
@@ -938,7 +951,7 @@ export function createSession(api) {
     layout.className = 'bag-layout'
     const main = document.createElement('div')
     main.className = 'bag-main'
-    main.append(tab(t('hotbar')), row(0, 9), tab(t('pockets')), row(9, bag.slots.length))
+    main.append(tab(t('hotbar'), 'hotbar'), row(0, 9), tab(t('pockets'), 'pockets'), row(9, bag.slots.length))
     layout.append(main)
     if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
     g.append(layout)
@@ -1724,16 +1737,22 @@ export function createSession(api) {
   }
   function paintShop(g) {
     g.innerHTML = ''
-    g.append(tab('💰', t('sell'), () => paintSell(g)))
-    g.append(tab('🛒', t('buy'), () => paintBuy(g)))
-    g.append(tab('📋', t('prices'), () => paintPrices(g)))
+    g.append(tab('coin', t('sell'), () => paintSell(g)))
+    g.append(tab('shop', t('buy'), () => paintBuy(g)))
+    g.append(tab('scroll', t('prices'), () => paintPrices(g)))
     paintSell(g)
   }
   function tab(ic, label, fn) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile tab'
-    b.innerHTML = '<span class="gic">' + ic + '</span><span class="glbl"></span>'
+    const ico = document.createElement('span')
+    ico.className = 'gic'
+    const pic = menuIcon(ic)
+    if (pic) ico.append(pic)
+    const lab = document.createElement('span')
+    lab.className = 'glbl'
+    b.append(ico, lab)
     b.querySelector('.glbl').textContent = label
     b.addEventListener('click', fn)
     return b
@@ -1742,7 +1761,13 @@ export function createSession(api) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile'
-    b.innerHTML = '<span class="gic">⚙</span><span class="glbl"></span>'
+    const ico = document.createElement('span')
+    ico.className = 'gic'
+    const pic = menuIcon('coin')
+    if (pic) ico.append(pic)
+    const lab = document.createElement('span')
+    lab.className = 'glbl'
+    b.append(ico, lab)
     b.querySelector('.glbl').textContent = label
     b.addEventListener('pointerdown', (e) => e.stopPropagation())
     b.addEventListener('click', (e) => { e.stopPropagation(); fn(e) })
@@ -1808,7 +1833,14 @@ export function createSession(api) {
     const send = document.createElement('button')
     send.type = 'button'
     send.className = 'gtile'
-    send.innerHTML = '<span class="gic">📤</span><span class="glbl">' + t('sendTeacher') + '</span>'
+    const sendIco = document.createElement('span')
+    sendIco.className = 'gic'
+    const sendPic = menuIcon('send')
+    if (sendPic) sendIco.append(sendPic)
+    const sendLab = document.createElement('span')
+    sendLab.className = 'glbl'
+    sendLab.textContent = t('sendTeacher')
+    send.append(sendIco, sendLab)
     send.addEventListener('click', () => {
       if (wallet.balance() < 1) return
       wallet.post({ kind: 'to-teacher', cogs: -1, perk: 'shout', status: 'waiting', by: 'you' })
@@ -1829,6 +1861,10 @@ export function createSession(api) {
   function paintSettings(g) {
     const row = document.createElement('div')
     row.className = 'set-line'
+    const ico = document.createElement('span')
+    ico.className = 'set-ico'
+    const pic = menuIcon('day')
+    if (pic) ico.append(pic)
     const lab = document.createElement('span')
     lab.className = 'set-lab'
     lab.textContent = t('alwaysDay')
@@ -1849,7 +1885,7 @@ export function createSession(api) {
       draw()
       api.toast(t('alwaysDay'))
     })
-    row.append(lab, pill)
+    row.append(ico, lab, pill)
     g.append(row)
     const n = document.createElement('p')
     n.className = 'gnote'
@@ -1909,14 +1945,26 @@ export function createSession(api) {
       const yes = document.createElement('button')
       yes.type = 'button'
       yes.className = 'gtile'
-      yes.innerHTML = '<span class="gic">✓</span><span class="glbl"></span>'
+      const yesIco = document.createElement('span')
+      yesIco.className = 'gic'
+      const yesPic = menuIcon('check')
+      if (yesPic) yesIco.append(yesPic)
+      const yesLab = document.createElement('span')
+      yesLab.className = 'glbl'
+      yes.append(yesIco, yesLab)
       yes.querySelector('.glbl').textContent = t('pickup')
       yes.addEventListener('pointerdown', (e) => e.stopPropagation())
       yes.addEventListener('click', (e) => { e.stopPropagation(); const [x, y, z] = String(key).split(',').map(Number); pickup(x, y, z, 24); api.close() })
       const no = document.createElement('button')
       no.type = 'button'
       no.className = 'gtile'
-      no.innerHTML = '<span class="gic">✕</span><span class="glbl"></span>'
+      const noIco = document.createElement('span')
+      noIco.className = 'gic'
+      const noPic = menuIcon('x')
+      if (noPic) noIco.append(noPic)
+      const noLab = document.createElement('span')
+      noLab.className = 'glbl'
+      no.append(noIco, noLab)
       no.querySelector('.glbl').textContent = t('no')
       no.addEventListener('click', () => ask.remove())
       ask.append(card, yes, no)

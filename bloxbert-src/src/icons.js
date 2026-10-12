@@ -344,6 +344,30 @@ const FACE = {
   snow(g) { tile(g, '#f4f7fb', (c) => { c.fillStyle = '#dbe7f5'; c.fillRect(14, 18, 6, 4); c.fillRect(24, 26, 7, 4) }) },
   ice(g) { tile(g, '#c5e8f7', (c) => { c.strokeStyle = '#ffffff'; c.lineWidth = 2; c.beginPath(); c.moveTo(14, 28); c.lineTo(22, 16); c.lineTo(32, 26); c.stroke() }) },
   redSand(g) { tile(g, '#c47a4a', (c) => { c.fillStyle = '#8d4e2c'; c.fillRect(14, 18, 4, 3); c.fillRect(24, 24, 5, 3) }) },
+  coreplate(g) {
+    tile(g, '#1c3a44', (c) => {
+      c.strokeStyle = '#7ee7f0'; c.lineWidth = 2; c.strokeRect(16, 16, 16, 16)
+      c.fillStyle = '#22d3ee'; c.fillRect(22, 22, 4, 4)
+    })
+  },
+  vend(g) {
+    tile(g, '#145e56', (c) => {
+      c.fillStyle = '#e6f6ff'; c.fillRect(14, 16, 20, 12)
+      c.fillStyle = '#ff8a1f'; c.fillRect(20, 30, 8, 4)
+    })
+  },
+  storeCounter(g) {
+    tile(g, '#c4a574', (c) => {
+      c.fillStyle = '#5c3317'; c.fillRect(12, 28, 24, 6)
+      c.fillStyle = '#f6c453'; c.fillRect(18, 16, 12, 8)
+    })
+  },
+  bunk(g) {
+    tile(g, '#6b3e26', (c) => {
+      c.fillStyle = '#d64545'; c.fillRect(12, 18, 24, 8)
+      c.fillStyle = '#f0c9a0'; c.fillRect(14, 14, 8, 6)
+    })
+  },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass
@@ -369,6 +393,12 @@ export function blockIcon(block, atlas) {
   c.height = 48
   c.dataset.block = String(block[0])
   c.getContext('2d', READ2D)
+  const g0 = c.getContext('2d', READ2D)
+  g0.fillStyle = '#3a4450'
+  g0.fillRect(8, 8, 32, 32)
+  g0.strokeStyle = '#c5d0d6'
+  g0.lineWidth = 2
+  g0.strokeRect(9, 9, 30, 30)
   const tex = block[4] || (Array.isArray(block[2]) ? block[2][2] : block[2])
   const img = new Image()
   img.src = PNG[tex] || 'assets/atlas.png'
@@ -464,8 +494,8 @@ export function slotArt(key, blockNode) {
     return s
   }
   if (blockNode) return blockNode
-  const letter = (item && item.letter) || (key ? String(key).slice(0, 1).toUpperCase() : '?')
-  return letterTile(letter)
+  const letter = (item && item.letter) || (key ? String(key).slice(0, 1).toUpperCase() : 'box')
+  return letterTile(letter === '?' ? 'box' : letter)
 }
 
 // 8×8 menu glyphs. One character, one palette colour. '.' is empty.
@@ -505,6 +535,55 @@ const MENU_GLYPH = {
   door: ['.wwwwww.', '.wkkkkkw.', '.wkkkkkw.', '.wkkokkw.', '.wkkkkkw.', '.wkkkkkw.', '.wkkkkkw.', '.wwwwww.'],
   play: ['k.......', 'kk......', 'kkk.....', 'kkkk....', 'kkkk....', 'kkk.....', 'kk......', 'k.......'],
   x: ['r.....r.', '.r...r..', '..r.r...', '...r....', '..r.r...', '.r...r..', 'r.....r.', '........'],
+  menu: ['........', 'tttttttt', '........', 'tttttttt', '........', 'tttttttt', '........', '........'],
+  survive: ['.rr..rr.', 'rrrrrrrr', 'rrrrrrrr', '.rrrrrr.', '..rrrr..', '...rr...', '........', '........'],
+  create: ['......aa', '.....ao.', '....ao..', '...ao...', '..bo....', '.bo.....', 'bo......', 'o.......'],
+  select: ['tttt.ttt', 't......t', 't......t', '........', '........', 't......t', 't......t', 'tttt.ttt'],
+  fill: ['...aa...', '..aaaa..', '.aaaaaa.', '.aaaaaa.', '.aaaaaa.', '..aaaa..', '...aa...', '...dd...'],
+  walls: ['oooooooo', 'oo.oo.oo', 'oooooooo', '.oo.oo.o', 'oooooooo', 'oo.oo.oo', 'oooooooo', '........'],
+  copy: ['.wwww...', '.w..ww..', '.w..w.w.', '.wwww.w.', '...w..w.', '...wwww.', '........', '........'],
+  paste: ['..ttt...', '.wwwww..', '.w...w..', '.w.o.w..', '.w...w..', '.wwwww..', '........', '........'],
+  check: ['........', '.......d', '......d.', 'd....d..', 'dd..d...', '.dddd...', '..dd....', '........'],
+  leaf: ['...tt...', '..tttt..', '.tttttt.', 'ttttttt.', '.tttttt.', '..tttt..', '...t....', '..t.....'],
+  flat: ['........', '........', '........', 'dddddddd', 'aaaaaaaa', '........', '........', '........'],
+  void: ['.wwwwww.', 'w......w', 'w..kk..w', 'w.k..k.w', 'w.k..k.w', 'w..kk..w', 'w......w', '.wwwwww.'],
+  islands: ['........', '..ttt...', '.ttttt..', 'ttttttt.', '..bbbb..', '.bbbbbb.', '........', '........'],
+  sky: ['..wwww..', '.wwwwww.', 'wwwwwwww', '.wwwwww.', '........', '...o....', '...o....', '........'],
+  parkour: ['oooo....', 'oooo....', '..oooo..', '..oooo..', '....oooo', '....oooo', '........', '........'],
+  shuffle: ['.ddddd..', 'd....d..', 'd.......', '........', '.......d', '..d....d', '..ddddd.', '........'],
+  back: ['...d....', '..d.....', '.ddddddd', '..d.....', '...d....', '........', '........', '........'],
+  chevL: ['...d....', '..dd....', '.dd.....', 'dd......', '.dd.....', '..dd....', '...d....', '........'],
+  chevR: ['....d...', '....dd..', '.....dd.', '......dd', '.....dd.', '....dd..', '....d...', '........'],
+  folder: ['.ooo....', 'oooooooo', 'owwwwwwo', 'owwwwwwo', 'owwwwwwo', 'oooooooo', '........', '........'],
+  up: ['...o....', '..ooo...', '.ooooo..', '...o....', '...o....', '...o....', '...o....', '........'],
+  down: ['...o....', '...o....', '...o....', '...o....', '.ooooo..', '..ooo...', '...o....', '........'],
+  spark: ['...aa...', '...aa...', 'aaaaaaaa', '.aaaaaa.', 'aaaaaaaa', '...aa...', '...aa...', '........'],
+  home: ['.tttttt.', 'tttttttt', 'twwwwwwt', 'twttttwt', 'twttttwt', 'twtwwtwt', 'twwwwwwt', 'tttttttt'],
+  cards: ['..nnnn..', '.nwwwwn.', 'nwwwwww.', 'nwwwwww.', 'nwwwwww.', '.nnnnnn.', '........', '........'],
+  camera: ['.bbbbbb.', 'bwwwwwwb', 'bwoooowb', 'bwoooowb', 'bwwwwwwb', '.bbbbbb.', '...bb...', '........'],
+  film: ['bbbbbbbb', 'b.b..b.b', 'bwwwwwwb', 'bwwwwwwb', 'bwwwwwwb', 'b.b..b.b', 'bbbbbbbb', '........'],
+  scale: ['...dd...', '...dd...', 'dddddddd', '.d....d.', 'd......d', '........', '........', '........'],
+  grid: ['tt.tt.tt', 'tt.tt.tt', '........', 'tt.tt.tt', 'tt.tt.tt', '........', 'tt.tt.tt', 'tt.tt.tt'],
+  hotbar: ['nnnnnnnn', 'nwwwwwnn', 'nwwwwwnn', 'nnnnnnnn', '........', '........', '........', '........'],
+  pockets: ['.bbbbbb.', 'bwwwwwwb', 'bwwwwwwb', 'bwwwwwwb', '.bbbbbb.', '..b..b..', '..b..b..', '........'],
+  invert: ['.o....d.', 'ooo..ddd', '.o....d.', '.o....d.', '.d....o.', 'ddd..ooo', '.d....o.', '........'],
+  wide: ['d......d', '.d....d.', '..d..d..', 'dddddddd', '..d..d..', '.d....d.', 'd......d', '........'],
+  climb: ['b.bbbb.b', 'b.b..b.b', 'b.bbbb.b', 'b.b..b.b', 'b.bbbb.b', 'b.b..b.b', 'b.bbbb.b', '........'],
+  hand: ['..www...', '.wwwww..', '.ww.ww..', '.wwwww..', '..www...', '...w....', '...w....', '........'],
+  tips: ['..oooo..', '.oowwoo.', '.oowwoo.', '..oooo..', '...dd...', '...dd...', '..dddd..', '........'],
+  graphics: ['...aa...', '..aaaa..', 'ttttt...', '.ttt....', '..tt....', '...t....', 'bbbbbbbb', '........'],
+  quality: ['.oooooo.', 'o......o', 'o..aa..o', 'o.a..a.o', 'o......o', '.oooooo.', '...oo...', '........'],
+  bolt: ['...aaa..', '..aaaa..', '.aaaa...', 'aaaaaaa.', '...aaaa.', '..aaaa..', '..aaa...', '........'],
+  text: ['.aa..ww.', 'a..a.w.w', 'a..a.w.w', 'aaaa.www', 'a..a.w.w', 'a..a.w.w', '........', '........'],
+  speed: ['........', 't....t..', '.t..t.t.', '..tt...t', '........', '........', '........', '........'],
+  stick: ['...oo...', '..oooo..', '...oo...', '...oo...', '.oooooo.', 'oooooooo', '.oooooo.', '........'],
+  about: ['.tttttt.', 't......t', 't..tt..t', 't..tt..t', 't......t', 't..tt..t', 't......t', '.tttttt.'],
+  boxcheck: ['dddddddd', 'd......d', 'd.dddd.d', 'd.dddd.d', 'd.dddd.d', 'd......d', 'dddddddd', '........'],
+  boxempty: ['dddddddd', 'd......d', 'd......d', 'd......d', 'd......d', 'd......d', 'dddddddd', '........'],
+  star: ['...aa...', '..aaaa..', 'aaaaaaaa', '.aaaaaa.', '..aaaa..', '.aa..aa.', 'a......a', '........'],
+  clock: ['.oooooo.', 'o..o...o', 'o..o...o', 'oooo...o', 'o......o', 'o......o', '.oooooo.', '........'],
+  day: ['...aa...', '.a.aa.a.', '..aaaa..', 'aaa..aaa', '..aaaa..', '.a.aa.a.', '...aa...', '........'],
+  send: ['o.......', 'oo......', 'ooo.....', 'oooo....', 'ooo.....', 'oo......', 'o.......', '........'],
 }
 function blitRows(rows, pal) {
   const h = rows.length
@@ -526,8 +605,16 @@ function blitRows(rows, pal) {
   c.setAttribute('aria-hidden', 'true')
   return c
 }
+const missingIcons = new Set()
 export function menuIcon(name) {
-  const rows = MENU_GLYPH[name] || MENU_GLYPH.help
+  const rows = MENU_GLYPH[name]
+  if (!rows) {
+    if (name && !missingIcons.has(name)) {
+      missingIcons.add(name)
+      console.warn('missing icon', name)
+    }
+    return null
+  }
   const c = blitRows(rows, MENU_PAL)
   c.className = 'kd-ico'
   c.dataset.icon = name

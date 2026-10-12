@@ -12,12 +12,15 @@ export function mountPanels(api) {
     b.className = 'gtile'
     const ico = document.createElement('span')
     ico.className = 'gic'
-    ico.textContent = icon
+    if (icon) {
+      const pic = menuIcon(icon)
+      if (pic) ico.append(pic)
+    }
     const lab = document.createElement('span')
     lab.className = 'glbl'
     lab.textContent = label
     b.append(ico, lab)
-    if (extra) b.title = extra
+    b.title = extra || label
     b.addEventListener('click', fn)
     return b
   }
@@ -29,7 +32,7 @@ export function mountPanels(api) {
     if (title) title.classList.remove('kd-sr')
     if (sheetX) {
       if (sheetX.dataset.menuX === '1') {
-        sheetX.replaceChildren('✕')
+        sheetX.replaceChildren(menuIcon('x'))
         delete sheetX.dataset.menuX
         delete sheetX.dataset.act
       }
@@ -163,12 +166,9 @@ export function mountPanels(api) {
     return plate ? plate.textContent.trim() : ''
   }
   function keyTile(icon, act, label, fn) {
-    const b = tile('', label, fn, label)
+    const b = tile(icon, label, fn, label)
     b.classList.add('kd-key')
     b.dataset.act = act
-    const ico = b.querySelector('.gic')
-    ico.textContent = ''
-    ico.append(menuIcon(icon))
     return b
   }
   function menuGroup(id, label, tiles, opt) {
@@ -312,13 +312,13 @@ export function mountPanels(api) {
         g.append(host)
         if (api.paintTeacher) api.paintTeacher(host)
         if (!rulesOk()) return
-        const b = tile('⚖', api.rulesWord ? api.rulesWord() : 'Rules', () => open('rules'))
+        const b = tile('scale', api.rulesWord ? api.rulesWord() : 'Rules', () => open('rules'))
         b.classList.add('wide')
         b.dataset.rulesTile = '1'
         g.append(b)
       }),
       help: () => show('help', api.t('help'), (g) => {
-        g.append(tile('🎬', api.t('tour'), () => open('tour')))
+        g.append(tile('film', api.t('tour'), () => open('tour')))
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
@@ -343,15 +343,15 @@ export function mountPanels(api) {
       a11y: () => show('a11y', api.t('a11y'), (g) => api.paintA11y(g)),
       world: () => show('world', api.t('world'), (g) => {
         g.append(
-          tile('📂', api.t('loadSaved'), () => api.load()),
-          tile('⬆', api.t('exportWorld'), () => api.exportWorld()),
-          tile('⬇', api.t('importWorld'), () => api.importWorld()),
-          tile('✨', api.t('freshWorld'), () => { if (confirm(api.t('confirmFresh'))) api.fresh() }),
-          tile('⌂', api.t('hub'), () => api.hub()),
+          tile('folder', api.t('loadSaved'), () => api.load()),
+          tile('up', api.t('exportWorld'), () => api.exportWorld()),
+          tile('down', api.t('importWorld'), () => api.importWorld()),
+          tile('spark', api.t('freshWorld'), () => { if (confirm(api.t('confirmFresh'))) api.fresh() }),
+          tile('home', api.t('hub'), () => api.hub()),
         )
         if (api.teacher && api.teacher()) {
-          g.append(tile('🗂', api.t('backups'), () => open('backups')))
-          g.append(tile('📸', api.t('classSnap'), () => { if (api.classSnap) api.classSnap() }))
+          g.append(tile('cards', api.t('backups'), () => open('backups')))
+          g.append(tile('camera', api.t('classSnap'), () => { if (api.classSnap) api.classSnap() }))
         }
         const oldSlot = document.createElement('div')
         oldSlot.className = 'wide'
@@ -367,9 +367,9 @@ export function mountPanels(api) {
           note.textContent = api.t('buildLocked')
           g.append(note)
         }
-        g.append(tile('⚙', api.t('survival'), () => api.setWorldMode('survival')))
-        if (teacher) g.append(tile('🎨', api.t('creative'), () => api.setWorldMode('creative')))
-        g.append(tile('▤', api.t('buildTable'), () => api.table()))
+        g.append(tile('survive', api.t('survival'), () => api.setWorldMode('survival')))
+        if (teacher) g.append(tile('create', api.t('creative'), () => api.setWorldMode('creative')))
+        g.append(tile('grid', api.t('buildTable'), () => api.table()))
       }),
       station: (key) => show('station', api.t('oven'), (g) => api.paintStation(g, key, 'oven')),
       bench: (key) => show('bench', api.t('workbench'), (g) => api.paintStation(g, key, 'bench')),
@@ -382,7 +382,7 @@ export function mountPanels(api) {
       box: (key) => show('box', api.t('box'), (g) => { api.paintBox(g, key); title.textContent = api.t('box') }),
       leave: () => show('leave', api.t('exitApp'), (g) => {
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('leaveAsk'); g.append(p)
-        g.append(tile('✓', api.t('leave'), () => api.leave()), tile('✕', api.t('stay'), () => openRoot()))
+        g.append(tile('check', api.t('leave'), () => api.leave()), tile('x', api.t('stay'), () => openRoot()))
       }),
       builds: () => show('builds', api.t('myBuilds'), (g) => api.paintBuilds(g)),
       rewind: () => show('rewind', api.t('undoMinutes'), (g) => api.paintRewind(g)),

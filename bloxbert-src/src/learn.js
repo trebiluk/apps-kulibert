@@ -1,4 +1,5 @@
 // Picture tour, Try this goals, accessibility prefs, and the teacher outbox. Local only.
+import { menuIcon } from './icons.js'
 const KEY = 'bloxbert-learn'
 export function createLearn(api) {
   const state = load()
@@ -126,7 +127,8 @@ export function createLearn(api) {
     title.textContent = api.t(g.id)
     const x = document.createElement('span')
     x.className = 'path-x'
-    x.textContent = '✕'
+    const xp = menuIcon('x')
+    if (xp) x.append(xp)
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
@@ -187,12 +189,26 @@ export function createLearn(api) {
       const next = document.createElement('button')
       next.type = 'button'
       next.className = 'gtile'
-      next.innerHTML = '<span class="gic">▶</span><span class="glbl">' + api.t('next') + '</span>'
+      const nico = document.createElement('span')
+      nico.className = 'gic'
+      const np = menuIcon('play')
+      if (np) nico.append(np)
+      const nlab = document.createElement('span')
+      nlab.className = 'glbl'
+      nlab.textContent = api.t('next')
+      next.append(nico, nlab)
       next.addEventListener('click', () => { if (i < steps.length - 1) { i++; draw() } else { skipTour(); api.close() } })
       const skip = document.createElement('button')
       skip.type = 'button'
       skip.className = 'gtile'
-      skip.innerHTML = '<span class="gic">✕</span><span class="glbl">' + api.t('skip') + '</span>'
+      const sico = document.createElement('span')
+      sico.className = 'gic'
+      const sp = menuIcon('x')
+      if (sp) sico.append(sp)
+      const slab = document.createElement('span')
+      slab.className = 'glbl'
+      slab.textContent = api.t('skip')
+      skip.append(sico, slab)
       skip.addEventListener('click', () => { skipTour(); api.close() })
       g.append(next, skip)
     }
@@ -210,17 +226,45 @@ export function createLearn(api) {
     const b = document.createElement('button')
     b.type = 'button'
     b.className = 'gtile'
-    b.innerHTML = '<span class="gic">◐</span><span class="glbl">' + api.t('highContrast') + '</span>'
+    const bico = document.createElement('span')
+    bico.className = 'gic'
+    const bp = menuIcon('eye')
+    if (bp) bico.append(bp)
+    const blab = document.createElement('span')
+    blab.className = 'glbl'
+    blab.textContent = api.t('highContrast')
+    b.append(bico, blab)
     b.addEventListener('click', () => a11y({ contrast: !a11y().contrast }))
     const gentle = document.createElement('button')
     gentle.type = 'button'
     gentle.className = 'gtile'
-    gentle.innerHTML = '<span class="gic">✿</span><span class="glbl">' + api.t('gentle') + '</span>'
+    const gico = document.createElement('span')
+    gico.className = 'gic'
+    const gp = menuIcon('leaf')
+    if (gp) gico.append(gp)
+    const glab = document.createElement('span')
+    glab.className = 'glbl'
+    glab.textContent = api.t('gentle')
+    gentle.append(gico, glab)
     gentle.addEventListener('click', () => a11y({ gentle: !a11y().gentle }))
     const bright = document.createElement('button')
     bright.type = 'button'
     bright.className = 'gtile'
-    const paintBright = () => { bright.innerHTML = '<span class="gic">☾</span><span class="glbl">' + api.t('brighterNights') + (api.bright && api.bright() ? ' ✓' : '') + '</span>' }
+    const paintBright = () => {
+      bright.replaceChildren()
+      const ico = document.createElement('span')
+      ico.className = 'gic'
+      const pic = menuIcon('day')
+      if (pic) ico.append(pic)
+      const lab = document.createElement('span')
+      lab.className = 'glbl'
+      lab.textContent = api.t('brighterNights')
+      bright.append(ico, lab)
+      if (api.bright && api.bright()) {
+        const mark = menuIcon('check')
+        if (mark) lab.after(mark)
+      }
+    }
     paintBright()
     bright.addEventListener('click', () => { if (api.setBright) api.setBright(!(api.bright && api.bright())); paintBright() })
     g.append(b, gentle, bright)
