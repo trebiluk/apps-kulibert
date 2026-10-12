@@ -10,6 +10,7 @@ export function createBasics(api) {
   let lastT = 0
   let always = false
   let bright = false
+  let dayExtra = 0
   let actor = 'you'
   let arena = false
   let starter = false
@@ -266,6 +267,30 @@ export function createBasics(api) {
     if (!st || !st.step) return 'low'
     return LEVELS[st.step - 1] || 'low'
   }
+  function cycleMs() { return DAY + DUSK + NIGHT + DAWN }
+  function dayNumber() {
+    return 1 + dayExtra + Math.floor(Math.max(0, now()) / cycleMs())
+  }
+  function placeInDay(n) {
+    const cycle = cycleMs()
+    const days = Math.floor(Math.max(0, now()) / cycle)
+    const target = Math.max(0, Math.min(n, cycle))
+    ms = days * cycle + target
+    anchor = api.now()
+    lastT = now()
+  }
+  function iconAt(tod) {
+    const cycle = cycleMs()
+    const ten = Math.round(cycle * 10 / (24 * 60))
+    const dusk0 = DAY
+    const dusk1 = DAY + DUSK
+    const dawn0 = DAY + DUSK + NIGHT
+    if (tod >= dusk0 - ten && tod < dusk1) return 'sunset'
+    if (tod >= dawn0 - ten) return 'sunrise'
+    if (tod >= dusk1 && tod < dawn0) return 'moon'
+    return 'sun'
+  }
+  function pad2(n) { return (n < 10 ? '0' : '') + n }
   function changed() { if (api.changed) api.changed() }
   return {
     boot(survival) { anchor = api.now(); lastT = 0; prefLoad(survival); api.flagDay(always) },
@@ -276,7 +301,46 @@ export function createBasics(api) {
     lum() { const v = lumNow(); return Number.isFinite(v) ? v : 1 },
     phase() { const v = phaseNow(); return v === 'night' || v === 'day' || v === 'dusk' || v === 'dawn' ? v : 'day' },
     clock(n) { if (!Number.isFinite(n)) return; ms += n; applyLights(n); lastT = now(); flush() },
-    seek(n) { if (!Number.isFinite(n)) return; const day = DAY + DUSK + NIGHT + DAWN; ms = Math.max(0, Math.min(n, day)); anchor = api.now(); lastT = now() },
+    seek(n) { if (!Number.isFinite(n)) return; placeInDay(n) },
+    skipMorning() {
+      const cycle = cycleMs()
+      const t = now()
+      const into = ((t % cycle) + cycle) % cycle
+      ms = t - into + cycle
+      anchor = api.now()
+      lastT = now()
+    },
+    setDay(n) {
+      const want = Math.max(1, Math.floor(n))
+      dayExtra = want - 1 - Math.floor(Math.max(0, now()) / cycleMs())
+    },
+    face() {
+      const cycle = cycleMs()
+      const t = now()
+      const tod = ((t % cycle) + cycle) % cycle
+      const mins = Math.floor(tod / cycle * 24 * 60)
+      const shifted = (mins + 6 * 60) % (24 * 60)
+      const hh = Math.floor(shifted / 60)
+      const mm = shifted % 60
+      const mode = skyRule()
+      const locked = mode === 'day' || always
+      const phase = phaseNow()
+      const nightAt = DAY + DUSK
+      const untilNight = tod < nightAt ? nightAt - tod : cycle - tod + nightAt
+      const untilMorning = tod === 0 ? cycle : cycle - tod
+      let icon = 'sun'
+      if (!locked) icon = mode === 'night' ? 'moon' : iconAt(tod)
+      return {
+        day: dayNumber(),
+        hh, mm,
+        text: pad2(hh) + ':' + pad2(mm),
+        icon,
+        locked,
+        phase,
+        nightMin: Math.max(1, Math.ceil(untilNight / 60000)),
+        morningMin: Math.max(1, Math.ceil(untilMorning / 60000)),
+      }
+    },
     actor(id) { actor = id || 'you' },
     teacherStub(on) { teacherStub = !!on },
     arena(on) { arena = !!on },
@@ -351,7 +415,7 @@ export function createBasics(api) {
     },
     dump() {
       return {
-        ms: now(), always, bright, starter, actor,
+        ms: now(), day: dayNumber(), always, bright, starter, actor,
         locks: [...locks], autos: [...autos],
         lights: [...lights], badges: [...badges], saplings: [...saplings],
       }
@@ -361,6 +425,8 @@ export function createBasics(api) {
       ms = Number.isFinite(doc.ms) ? doc.ms : 0
       anchor = api.now()
       lastT = now()
+      dayExtra = 0
+      if (Number.isFinite(doc.day) && doc.day >= 1) dayExtra = Math.floor(doc.day) - 1 - Math.floor(Math.max(0, ms) / cycleMs())
       if (typeof doc.always === 'boolean') always = doc.always
       bright = !!doc.bright
       starter = !!doc.starter

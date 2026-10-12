@@ -628,6 +628,10 @@ const MENU_GLYPH = {
   star: ['...aa...', '..aaaa..', 'aaaaaaaa', '.aaaaaa.', '..aaaa..', '.aa..aa.', 'a......a', '........'],
   clock: ['.oooooo.', 'o..o...o', 'o..o...o', 'oooo...o', 'o......o', 'o......o', '.oooooo.', '........'],
   day: ['...aa...', '.a.aa.a.', '..aaaa..', 'aaa..aaa', '..aaaa..', '.a.aa.a.', '...aa...', '........'],
+  sun: ['...aa...', '.a.aa.a.', '..aaaa..', 'aaa..aaa', '..aaaa..', '.a.aa.a.', '...aa...', '........'],
+  moon: ['..wwww..', '.wwww...', 'wwww....', 'wwww....', 'wwww....', '.wwww...', '..wwww..', '........'],
+  sunset: ['...aa...', '..aaaa..', '.aaaaaa.', 'aaaaaaaa', 'oooooooo', '........', '........', '........'],
+  sunrise: ['........', '........', 'oooooooo', 'aaaaaaaa', '.aaaaaa.', '..aaaa..', '...aa...', '........'],
   send: ['o.......', 'oo......', 'ooo.....', 'oooo....', 'ooo.....', 'oo......', 'o.......', '........'],
 }
 function blitRows(rows, pal) {

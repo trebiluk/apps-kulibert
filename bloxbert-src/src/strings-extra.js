@@ -1312,4 +1312,15 @@ const USE_UI = {
   ti: { useSit: 'ቅመጥ', useSleep: 'ድቐስ', useOpen: 'ክፈት', useShut: 'ዕጾ', useBake: 'ጥዚ', useCraft: 'ግበር', useBuild: 'ሃንጽ', useSew: 'ስፈ', useFlip: 'ገልብጥ', usePress: 'ጠውቕ', notTired: 'ገና ኣይደከምካን', chair: 'መቐመጢ', sewing: 'ማሽን ስፌት' },
 }
 for (const [lang, row] of Object.entries(USE_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const CLOCK_UI = {
+  en: { clockDay: 'Day {n}', clockNight: 'Night in {n} min, sleep in a bed to skip.', clockMorning: 'Morning in {n} min. Sleep in a bed to skip.' },
+  uk: { clockDay: 'День {n}', clockNight: 'Ніч за {n} хв, спи на ліжку щоб пропустити.', clockMorning: 'Ранок за {n} хв. Спи на ліжку щоб пропустити.' },
+  ru: { clockDay: 'День {n}', clockNight: 'Ночь через {n} мин, спи на кровати чтобы пропустить.', clockMorning: 'Утро через {n} мин. Спи на кровати чтобы пропустить.' },
+  es: { clockDay: 'Día {n}', clockNight: 'Noche en {n} min, duerme en una cama para saltar.', clockMorning: 'Mañana en {n} min. Duerme en una cama para saltar.' },
+  ar: { clockDay: 'يوم {n}', clockNight: 'الليل بعد {n} د، نم في سرير لتتخطى.', clockMorning: 'الصباح بعد {n} د. نم في سرير لتتخطى.' },
+  'fa-AF': { clockDay: 'روز {n}', clockNight: 'شب تا {n} دقیقه، در بستر بخواب تا بپری.', clockMorning: 'صبح تا {n} دقیقه. در بستر بخواب تا بپری.' },
+  rw: { clockDay: 'Umunsi {n}', clockNight: 'Ijoro mu min {n}, sinzira ku buriri usimbe.', clockMorning: 'Gitondo mu min {n}. Sinzira ku buriri usimbe.' },
+  ti: { clockDay: 'መዓልቲ {n}', clockNight: 'ለይቲ ኣብ {n} ደቒቕ፡ ኣብ ዓራት ድቐስ ንምዝላል።', clockMorning: 'ጥዋሕ ኣብ {n} ደቒቕ። ኣብ ዓራት ድቐስ ንምዝላል።' },
+}
+for (const [lang, row] of Object.entries(CLOCK_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

@@ -714,6 +714,25 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   box-shadow:inset 0 0 8px rgba(45,212,191,.28);
   font-family:ui-monospace,Consolas,monospace;font-size:12px;font-weight:700;white-space:nowrap;
 }
+#day-clock{
+  display:inline-flex;align-items:center;gap:4px;flex:0 0 auto;height:28px;min-height:28px;padding:0 8px;
+  border:1px solid #145e56;border-radius:6px;background-color:#062018;background-image:none;color:#7ff5e3;
+  box-shadow:inset 0 0 8px rgba(45,212,191,.28);
+  font-family:ui-monospace,Consolas,monospace;font-size:12px;font-weight:700;white-space:nowrap;
+  cursor:pointer;letter-spacing:.02em;
+}
+#day-clock .gic{width:14px;height:14px;display:flex;flex:0 0 14px}
+#day-clock canvas{width:14px;height:14px;image-rendering:pixelated;display:block}
+#day-clock .day-read{display:inline-flex;align-items:center;min-width:0}
+#day-clock[data-lock="day"] .day-read{display:none}
+#day-tip{
+  position:fixed;z-index:80;max-width:min(420px, calc(100vw - 16px));pointer-events:none;
+  background:#0a1428;color:#e6f6ff;border:1px solid #2dd4bf;border-inline-start:4px solid #ff8a1f;
+  border-radius:8px;padding:8px 10px;font:700 13px/1.35 ui-monospace,Consolas,monospace;
+  box-shadow:0 8px 18px rgba(0,0,0,.45), inset 0 0 8px rgba(45,212,191,.28);
+  white-space:normal;
+}
+#day-tip[hidden]{display:none!important}
 #wallet-chip{
   flex:0 0 auto;min-width:44px;min-height:44px;height:44px;padding:0 8px;border-radius:6px;
   border:1px solid #145e56;background-color:#062018;background-image:none;color:#d9fff6;
@@ -767,17 +786,20 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   box-shadow:inset 0 0 8px rgba(45,212,191,.28);
   font:700 13px/1.2 ui-monospace,Consolas,monospace;
 }
-.top button:focus,.top button:focus-visible,.top .ver:focus,.top .ver:focus-visible,#wallet-chip:focus,#wallet-chip:focus-visible,#dig-chip:focus,#dig-chip:focus-visible{
+.top button:focus,.top button:focus-visible,.top .ver:focus,.top .ver:focus-visible,#wallet-chip:focus,#wallet-chip:focus-visible,#dig-chip:focus,#dig-chip:focus-visible,#day-clock:focus,#day-clock:focus-visible{
   outline:2px solid #ff8a1f;outline-offset:2px;
 }
 @media (min-width:1100px){
   #mode-pill button{padding:0 12px;font-size:14px}
   .top .tb-plate canvas.kd-word{height:26px;max-width:120px}
-  #wallet-chip,#mode-chip{font-size:13px}
+  #wallet-chip,#mode-chip,#day-clock{font-size:13px}
 }
 @media (max-width:980px){
   .top .tool{width:44px;min-width:44px;padding:0;gap:0;justify-content:center}
   .top .tool .tl{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+}
+@media (max-width:960px){
+  #day-clock .day-num,#day-clock .day-sep{display:none}
 }
 @media (max-width:700px){
   .top{flex-wrap:wrap;align-content:center}
@@ -859,6 +881,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
   <span class="chip" id="mode-chip">Survival</span>
+  <button type="button" id="day-clock" aria-label="Day"><span class="gic"></span><bdi class="day-read"><span class="day-num">Day 1</span><span class="day-sep"> · </span><span class="day-time">06:00</span></bdi></button>
   <button class="chip" id="wallet-chip" type="button" title="Practice points: you earn them by doing new things."><bdi>⚙ 20 practice</bdi></button>
   <div class="tools">
   <button class="tool" id="undo-btn" aria-label="Undo" data-i18n-label="undo" disabled><span class="ti"></span><span class="tl" data-i18n="undo">Undo</span></button>
@@ -866,6 +889,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti"></span><span class="tl" data-i18n="save">Save</span></button>
   </div>
 </header>
+<div id="day-tip" class="kd-tip" role="tooltip" hidden></div>
 <button id="game-menu" type="button" aria-label="Menu" aria-controls="sheet" aria-expanded="false"><span class="ti" data-ico="menu"></span></button>
 <button id="inspect-chip" type="button" hidden><span class="ti" data-ico="lens"></span> <span data-i18n="inspect">Inspect</span></button>
 <div id="menu-hint" class="kd-tip" hidden></div>

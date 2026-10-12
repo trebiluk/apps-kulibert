@@ -3904,6 +3904,87 @@ function paintModeChip() {
   }
   document.body.classList.toggle('mode-creative', creativeMode)
 }
+let clockIcon = ''
+function paintDayClock() {
+  const btn = $('day-clock')
+  if (!btn || !basics || !basics.face) return
+  const face = basics.face()
+  const ico = btn.querySelector('.gic')
+  if (ico && clockIcon !== face.icon) {
+    clockIcon = face.icon
+    ico.replaceChildren()
+    const pic = menuIcon(face.icon)
+    if (pic) ico.append(pic)
+  }
+  const num = btn.querySelector('.day-num')
+  const tim = btn.querySelector('.day-time')
+  if (num) num.textContent = t('clockDay').replace('{n}', String(face.day))
+  if (tim) tim.textContent = face.text
+  btn.dataset.lock = face.locked ? 'day' : ''
+  btn.dataset.phase = face.phase
+  const label = face.locked ? t('alwaysDay') : t('clockDay').replace('{n}', String(face.day)) + ' · ' + face.text
+  btn.setAttribute('aria-label', label)
+}
+function dayTipText(face) {
+  if (!face || face.locked) return t('alwaysDay')
+  if (face.phase === 'night' || face.phase === 'dawn') return t('clockMorning').replace('{n}', String(face.morningMin))
+  return t('clockNight').replace('{n}', String(face.nightMin))
+}
+function showDayTip() {
+  const tip = $('day-tip')
+  const btn = $('day-clock')
+  if (!tip || !btn || !basics || !basics.face) return
+  const face = basics.face()
+  tip.textContent = dayTipText(face)
+  tip.hidden = false
+  const r = btn.getBoundingClientRect()
+  const width = Math.min(420, innerWidth - 16)
+  tip.style.maxWidth = width + 'px'
+  tip.style.left = Math.max(8, Math.min(r.left, innerWidth - width - 8)) + 'px'
+  tip.style.top = Math.round(r.bottom + 6) + 'px'
+  clearTimeout(showDayTip.t)
+  showDayTip.t = setTimeout(() => { if (tip.isConnected) tip.hidden = true }, 4200)
+}
+function bindDayClock() {
+  const btn = $('day-clock')
+  if (!btn || btn.dataset.bound) return
+  btn.dataset.bound = '1'
+  btn.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation() })
+  btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); showDayTip() })
+}
+bindDayClock()
+function armClock() {
+  const q = location.search
+  if (!q.includes('clock=')) return
+  try { Rules.set('survival.daynight', q.includes('clock=lock') ? 'day' : 'cycle') } catch (e) {}
+  if (basics) {
+    basics.setAlways(false)
+    if (q.includes('clock=lock')) basics.setAlways(true)
+    if (q.includes('clock=night')) basics.seek(basics.nightAt())
+    else if (q.includes('clock=dusk')) basics.seek(14 * 60 * 1000)
+    else if (q.includes('clock=dawn')) basics.seek(19 * 60 * 1000)
+    else basics.seek(Math.round(500 / 1440 * 20 * 60 * 1000))
+    if (q.includes('day=3')) basics.setDay(3)
+  }
+  try { applySky() } catch (e) {}
+  paintDayClock()
+  window.__clockReady = true
+}
+window.__clock = {
+  face: () => basics && basics.face ? basics.face() : null,
+  text: () => { const el = $('day-clock'); return el ? (el.innerText || '').replace(/\s+/g, ' ').trim() : '' },
+  icon: () => { const c = document.querySelector('#day-clock canvas'); return c ? c.dataset.icon : '' },
+  tip: () => { const el = $('day-tip'); return el && !el.hidden ? el.textContent : '' },
+  box: () => { const el = $('day-clock'); if (!el) return null; const r = el.getBoundingClientRect(); return { w: Math.round(r.width), h: Math.round(r.height), x: Math.round(r.left) } },
+  tap: () => showDayTip(),
+  night: () => { if (!basics) return null; try { Rules.set('survival.daynight', 'cycle') } catch (e) {} basics.setAlways(false); basics.seek(basics.nightAt()); try { applySky() } catch (e) {} paintDayClock(); return basics.face() },
+  dusk: () => { if (!basics) return null; try { Rules.set('survival.daynight', 'cycle') } catch (e) {} basics.setAlways(false); basics.seek(14 * 60 * 1000); try { applySky() } catch (e) {} paintDayClock(); return basics.face() },
+  dawn: () => { if (!basics) return null; try { Rules.set('survival.daynight', 'cycle') } catch (e) {} basics.setAlways(false); basics.seek(19 * 60 * 1000); try { applySky() } catch (e) {} paintDayClock(); return basics.face() },
+  sleep: () => sleepNow(),
+  dump: () => basics && basics.dump ? basics.dump() : null,
+  load: (doc) => { if (basics && basics.load) basics.load(doc); paintDayClock(); return basics.face() },
+  lockDay: () => { try { Rules.set('survival.daynight', 'day') } catch (e) {} if (basics) basics.setAlways(false); try { applySky() } catch (e) {} paintDayClock(); return basics.face() },
+}
 function markSave(text) {
   const el = $('save-state')
   if (el) el.textContent = text
@@ -4142,7 +4223,7 @@ basics = createBasics({
   gift: (item, n) => session && session.give && session.give(item, n || 1),
   card: (text) => showCard(text),
   badge: (text) => showCard(text),
-  flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0' },
+  flagDay: (on) => { document.documentElement.dataset.alwaysDay = on ? '1' : '0'; paintDayClock() },
   changed: () => noteMachine(),
 })
 if ($('door-auto')) $('door-auto').addEventListener('click', () => {
@@ -5174,8 +5255,10 @@ function sleepNow() {
   sleepBusy = true
   paintUsePill(null)
   const wake = () => {
-    if (basics && basics.seek) basics.seek(0)
+    if (basics && basics.skipMorning) basics.skipMorning()
+    else if (basics && basics.seek) basics.seek(0)
     try { applySky() } catch (e) {}
+    paintDayClock()
     sleepBusy = false
   }
   if (!fade) { wake(); return 'night' }
@@ -7899,6 +7982,7 @@ function frame(tnow) {
     if (showSpeed) $('perf').textContent = fps.toFixed(0) + ' fps · ' + gfx.label() + ' · ' + Math.round(100 / level) + '% res · ' + noa.world._chunksKnown.count() + ' chunks'
     publishAuto()
     paintQualityNote()
+    paintDayClock()
   }
   requestAnimationFrame(frame)
 }
@@ -8314,6 +8398,8 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('shot=1')) armShot()
   if (location.search.includes('craft=1')) armCraft()
   if (location.search.includes('use=')) armUse()
+  armClock()
+  paintDayClock()
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   let bagWarned = false

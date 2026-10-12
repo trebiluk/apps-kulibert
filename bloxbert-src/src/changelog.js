@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.182', date: '2026-10-12', lines: {
+    en: ['A clock by the mode chip shows the day and the time. The picture is a sun, a moon, a sunset, or a sunrise. Tap it to see when night comes. Sleep adds a day, saved in the world. Always day shows only the sun.'],
+    uk: ['Годинник біля режиму показує день і час. Малюнок — сонце, місяць, захід чи схід. Торкнись, щоб дізнатись, коли ніч. Сон додає день, і він лишається у світі. Завжди день показує лише сонце.'],
+    ru: ['Часы рядом с режимом показывают день и время. Картинка — солнце, луна, закат или рассвет. Нажми, чтобы узнать, когда ночь. Сон добавляет день, и он остаётся в мире. Всегда день показывает только солнце.'],
+    es: ['Un reloj junto al modo muestra el día y la hora. El dibujo es un sol, una luna, un atardecer o un amanecer. Tócalo para ver cuándo llega la noche. Dormir suma un día y se guarda en el mundo. Siempre de día muestra solo el sol.'],
+    ar: ['ساعة بجانب الوضع تُظهر اليوم والوقت. الصورة شمس أو قمر أو غروب أو شروق. المسها لترى متى يأتي الليل. النوم يزيد يوماً ويُحفظ في العالم. النهار الدائم يُظهر الشمس فقط.'],
+    'fa-AF': ['یک ساعت کنار حالت، روز و زمان را نشان می‌دهد. تصویر آفتاب، مهتاب، غروب یا طلوع است. بزن تا ببینی شب کی می‌آید. خواب یک روز اضافه می‌کند و در جهان می‌ماند. همیشه روز فقط آفتاب را نشان می‌دهد.'],
+    rw: ['Isaha iruhande rw\'uburyo yerekana umunsi n\'igihe. Ishusho ni izuba, ukwezi, izuba rirenga, cyangwa izuba rirashe. Kanda urebe ijoro rizaza ryari. Kuryama kongeraho umunsi, ukabikwa mu isi. Umunsi iteka yerekana izuba gusa.'],
+    ti: ['ሰዓት ኣብ ጥቕኡ ኩነት መዓልትን ሰዓትን የርኢ። ስእሊ ፀሓይ፡ ወርሒ፡ ምዕራብ ወይ ምብራቕ እዩ። ጠውቕ ለይቲ መዓስ ከም ዝመጽእ። ድቃስ መዓልቲ ይውስኽ፡ ኣብ ዓለም ይቕመጥ። ኩሉ ግዜ መዓልቲ ፀሓይ ጥራይ የርኢ።'],
+  }},
   { v: '2.5.181', date: '2026-10-12', lines: {
     en: ['When Quality is Auto and speed stays under 30, plants halve, the view shortens, then Fancy becomes Normal. Lite and Full stay as you set them.'],
     uk: ['Якщо Якість — Авто і швидкість нижче 30, рослин удвічі менше, огляд ближче, потім Гарне стає Звичайним. Швидко і Повно лишаються як ти вибрав.'],
