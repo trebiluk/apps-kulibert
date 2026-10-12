@@ -68,6 +68,12 @@ export function createQuality() {
   let highSecs = 0
   let told = false
   let scene = null
+  let guard = 0
+  let samples = []
+  let lastMove = 0
+  let highAt = 0
+  let plants = 1
+  let viewCut = 0
 
   function remember() {
     try {
@@ -105,33 +111,61 @@ export function createQuality() {
     scene.fogEnd = fog.end
   }
 
-  function tick(fps) {
+  function tick(fps, now) {
     if (!auto) return null
-    if (fps < 30) {
-      highSecs = 0
-      lowSecs += 1
-      if (lowSecs >= 3 && step < steps.length - 1) {
-        lowSecs = 0
-        useStep(step + 1)
-        remember()
-        const toast = !told
-        told = true
-        return { dir: 'down', toast }
-      }
-    } else if (fps > 50) {
-      lowSecs = 0
-      highSecs += 1
-      if (highSecs >= 10 && step > 0) {
-        highSecs = 0
-        useStep(step - 1)
-        remember()
-        return { dir: 'up', toast: false }
-      }
-    } else {
-      lowSecs = 0
-      highSecs = 0
+    if (!Number.isFinite(fps)) return null
+    if (!Number.isFinite(now)) now = performance.now()
+    samples.push(fps)
+    if (samples.length > 5) samples.shift()
+    if (samples.length < 5) return null
+    let sum = 0
+    for (let i = 0; i < samples.length; i++) sum += samples[i]
+    const avg = sum / samples.length
+    if (avg < 30) {
+      highAt = 0
+      if (guard >= 3) return null
+      if (lastMove && now - lastMove < 10000) return null
+      return applyGuard(guard + 1, now)
     }
+    if (avg > 50) {
+      if (!highAt) highAt = now
+      if (guard > 0 && now - highAt >= 20000 && now - lastMove >= 10000) return applyGuard(guard - 1, now)
+      return null
+    }
+    highAt = 0
     return null
+  }
+
+  function viewPair() {
+    const addH = viewCut ? Math.max(0.5, roundStep(QP.auto.add[0] - 1)) : QP.auto.add[0]
+    const remH = viewCut ? Math.max(addH + 1, roundStep(QP.auto.rem[0] - 1)) : QP.auto.rem[0]
+    return { add: [addH, QP.auto.add[1]], rem: [remH, QP.auto.rem[1]] }
+  }
+
+  function applyGuard(next, now) {
+    const prev = guard
+    guard = next
+    const plantsNext = guard >= 1 ? 0.5 : 1
+    const viewNext = guard >= 2 ? 1 : 0
+    const plantsChanged = plantsNext !== plants
+    const viewChanged = viewNext !== viewCut
+    plants = plantsNext
+    viewCut = viewNext
+    const pair = viewPair()
+    add = pair.add.slice()
+    rem = pair.rem.slice()
+    lastMove = now
+    samples = []
+    highAt = 0
+    const look = (prev >= 3) !== (guard >= 3)
+    return {
+      dir: guard > prev ? 'down' : 'up',
+      toast: true,
+      plants: plantsChanged,
+      view: viewChanged,
+      look: look ? (guard >= 3 ? 'normal' : 'fancy') : '',
+      guard,
+    }
   }
 
   function set(q) {
@@ -142,6 +176,13 @@ export function createQuality() {
     auto = q === 'auto' && !pinned && !autoOff
     lowSecs = 0
     highSecs = 0
+    samples = []
+    highAt = 0
+    if (!auto) {
+      guard = 0
+      plants = 1
+      viewCut = 0
+    }
     if (!pinned && q === 'auto') useStep(matchSaved(readSavedStep()))
     else if (!pinned) {
       level = QP[q].scale
@@ -154,6 +195,11 @@ export function createQuality() {
       add = QP[q].add.slice()
       rem = QP[q].rem.slice()
     }
+    if (auto && viewCut) {
+      const pair = viewPair()
+      add = pair.add.slice()
+      rem = pair.rem.slice()
+    }
     return { reload: false }
   }
 
@@ -165,7 +211,10 @@ export function createQuality() {
     get add() { return add },
     get rem() { return rem },
     get step() { return step },
+    get guard() { return guard },
+    get plants() { return plants },
     label() { return NAMES[quality] || quality },
+    guardKey() { return ['autoFull', 'autoPlants', 'autoView', 'autoLook'][guard] || 'autoFull' },
     tick,
     set,
     applyFog,

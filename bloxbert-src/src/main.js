@@ -96,6 +96,10 @@ const AA = gfx.aa
 let AUTO = gfx.auto
 let level = gfx.level
 const gfxLook = createLook()
+let plantHalf = false
+const LOW_FPS = location.search.includes('lowfps=1')
+window.__auto = { log: [] }
+if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
 
 let LANG = qs.get('lang') || ''
 if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
@@ -1076,6 +1080,11 @@ for (const [id, name, material] of BLOCKS) {
   if (mesh && !fluid) opts.blockMesh = mesh
   if (id === 1102 || id === 1103) opts.onCustomMeshCreate = wallLampFacing
   if (id === TECH.cell || id === TECH.line || id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) opts.onCustomMeshCreate = techFacing
+  if (cross || name === 'tuft') {
+    opts.onCustomMeshCreate = (mesh, x, y, z) => {
+      if (plantHalf && ((x + z) & 1)) mesh.scaling.setAll(0)
+    }
+  }
   if (isDoor(id)) {
     const fix = (x, y, z) => queueMicrotask(() => normalizeDoorTop(x, y, z))
     opts.onSet = fix
@@ -7854,6 +7863,7 @@ noa.on('beforeRender', (dt) => {
     skyMat.setFloat('uTime', skyTime)
   }
   if (gfxLook.sway) gfxLook.tickSway(scene, performance.now() * 0.001)
+  if (plantHalf) syncPlantCut()
 })
 
 const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () => level, get auto() { return AUTO }, quality: () => quality, aa: AA }
@@ -7864,18 +7874,30 @@ function frame(tnow) {
   n++; acc += tnow - last; perf.deltas.push(tnow - last); if (perf.deltas.length > 4000) perf.deltas.splice(0, 2000); last = tnow
   if (acc >= 1000) {
     const fps = (n * 1000) / acc; perf.frames.push(fps); n = 0; acc = 0
-    const moved = gfx.tick(fps)
+    const sample = LOW_FPS ? 12 : (Number.isFinite(window.__autoFps) ? window.__autoFps : fps)
+    const moved = gfx.tick(sample, performance.now())
     if (moved) {
-      level = gfx.level
-      engine.setHardwareScalingLevel(level)
-      noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
-      gfx.applyFog()
-      perf.steps.push({ at: Math.round(performance.now()), level, add: gfx.add[0] })
-      if (moved.toast) toast(t('lowerDetail'))
-      if (moved.dir === 'down' && gfxLook.dropLite()) applyGraphics()
+      if (moved.plants) plantHalf = gfx.plants < 1
+      if (moved.view) {
+        noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
+        gfx.applyFog()
+      }
+      if (moved.look) {
+        try {
+          const shift = gfxLook.autoName(moved.look)
+          if (shift && (shift.ao || shift.lights)) applyGraphics()
+          else paintGfx()
+        } catch (e) { console.warn('graphics', e) }
+      }
+      if (moved.plants) syncPlantCut()
+      toast(t('autoSmoother'))
+      const log = window.__auto && window.__auto.log
+      if (log) log.push({ guard: gfx.guard, plants: gfx.plants, add: gfx.add[0], gfx: gfxLook.name, managed: gfxLook.managed, toast: t('autoSmoother') })
+      paintQualityNote()
     }
     perf.lastFps = fps
     if (showSpeed) $('perf').textContent = fps.toFixed(0) + ' fps · ' + gfx.label() + ' · ' + Math.round(100 / level) + '% res · ' + noa.world._chunksKnown.count() + ' chunks'
+    publishAuto()
     paintQualityNote()
   }
   requestAnimationFrame(frame)
@@ -7892,7 +7914,51 @@ function paintQuality() {
 }
 function paintQualityNote() {
   const el = $('q-now'); if (!el) return
-  el.textContent = QNAME[quality] + ' · ' + Math.round(100 / level) + '%' + (AUTO ? '' : '') + (AA ? '' : '')
+  if (quality === 'auto') el.textContent = t('auto') + ' · ' + t(gfx.guardKey())
+  else el.textContent = QNAME[quality] + ' · ' + Math.round(100 / level) + '%'
+}
+function publishAuto() {
+  const box = window.__auto || (window.__auto = { log: [] })
+  box.guard = gfx.guard
+  box.plants = gfx.plants
+  box.add = gfx.add[0]
+  box.gfx = gfxLook.name
+  box.managed = gfxLook.managed
+  box.quality = quality
+  box.note = ($('q-now') && $('q-now').textContent) || ''
+}
+function syncPlantCut() {
+  const list = noa._objectMesher && noa._objectMesher.allBaseMeshes
+  if (!list) return
+  for (let m = 0; m < list.length; m++) {
+    const mesh = list[m]
+    const meshName = mesh && mesh.name || ''
+    if (meshName !== 'tuft' && meshName.indexOf('flora-') !== 0) continue
+    const store = mesh._thinInstanceDataStorage
+    if (!store || !store.matrixData) continue
+    const data = store.matrixData
+    const count = store.instancesCount || 0
+    for (let i = 0; i < count; i++) {
+      const o = i * 16
+      const hide = plantHalf && (((data[o + 12] | 0) + (data[o + 14] | 0)) & 1)
+      if (hide) {
+        data[o] = 0
+        data[o + 1] = 0
+        data[o + 2] = 0
+        data[o + 4] = 0
+        data[o + 5] = 0
+        data[o + 6] = 0
+        data[o + 8] = 0
+        data[o + 9] = 0
+        data[o + 10] = 0
+      } else if (data[o] === 0 && data[o + 5] === 0 && data[o + 10] === 0) {
+        data[o] = 1
+        data[o + 5] = 1
+        data[o + 10] = 1
+      }
+    }
+    mesh.thinInstanceBufferUpdated('matrix')
+  }
 }
 async function setQuality(q) {
   const next = gfx.set(q)
@@ -7907,6 +7973,8 @@ async function setQuality(q) {
   quality = gfx.quality
   AUTO = gfx.auto
   level = gfx.level
+  plantHalf = gfx.plants < 1
+  syncPlantCut()
   engine.setHardwareScalingLevel(level)
   noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
   gfx.applyFog()

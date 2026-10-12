@@ -1290,6 +1290,17 @@ const CRAFT_UI = {
   ti: { craftAll: 'ኩሉ', craftCan: 'ትኽእል', craftTools: 'መሳርሒ', craftBuild: 'ህንጻ', craftMachines: 'ማሽን', craftDecor: 'ጌጣ', craftSearch: 'ድለ', craftNone: 'የለን' },
 }
 for (const [lang, row] of Object.entries(CRAFT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const AUTO_UI = {
+  en: { autoSmoother: 'Auto: smoother', autoFull: 'Full detail', autoPlants: 'Fewer plants', autoView: 'Nearer view', autoLook: 'Softer graphics' },
+  uk: { autoSmoother: 'Авто: плавніше', autoFull: 'Повна деталізація', autoPlants: 'Менше рослин', autoView: 'Ближчий огляд', autoLook: 'М’якша графіка' },
+  ru: { autoSmoother: 'Авто: плавнее', autoFull: 'Полная детализация', autoPlants: 'Меньше растений', autoView: 'Ближе обзор', autoLook: 'Мягче графика' },
+  es: { autoSmoother: 'Auto: más suave', autoFull: 'Todo el detalle', autoPlants: 'Menos plantas', autoView: 'Vista más cerca', autoLook: 'Gráficos suaves' },
+  ar: { autoSmoother: 'تلقائي: أنعم', autoFull: 'كل التفاصيل', autoPlants: 'نباتات أقل', autoView: 'منظر أقرب', autoLook: 'رسوم ألطف' },
+  'fa-AF': { autoSmoother: 'خودکار: نرم‌تر', autoFull: 'همه جزئیات', autoPlants: 'گیاه کمتر', autoView: 'دید نزدیک‌تر', autoLook: 'گرافیک نرم‌تر' },
+  rw: { autoSmoother: 'Byikora: biroroshye', autoFull: 'Ibisobanuro byose', autoPlants: 'Ibimera bike', autoView: 'Kureba hafi', autoLook: 'Amashusho yoroshye' },
+  ti: { autoSmoother: 'ብባዕሉ: ልስሉስ', autoFull: 'ምሉእ ዝርዝር', autoPlants: 'ውሑድ ተኽለ', autoView: 'ቀረባ ትርኢት', autoLook: 'ልስሉስ ስእሊ' },
+}
+for (const [lang, row] of Object.entries(AUTO_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 const USE_UI = {
   en: { useSit: 'Sit', useSleep: 'Sleep', useOpen: 'Open', useShut: 'Shut', useBake: 'Bake', useCraft: 'Craft', useBuild: 'Build', useSew: 'Sew', useFlip: 'Flip', usePress: 'Press', notTired: 'Not tired yet', chair: 'Chair', sewing: 'Sewing Machine' },
   uk: { useSit: 'Сісти', useSleep: 'Спати', useOpen: 'Відкрити', useShut: 'Зачинити', useBake: 'Пекти', useCraft: 'Крафт', useBuild: 'Будувати', useSew: 'Шити', useFlip: 'Клац', usePress: 'Тисни', notTired: 'Ще не хочеться спати', chair: 'Стілець', sewing: 'Швейна машина' },

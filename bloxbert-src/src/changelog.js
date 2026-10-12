@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.181', date: '2026-10-12', lines: {
+    en: ['When Quality is Auto and speed stays under 30, plants halve, the view shortens, then Fancy becomes Normal. Lite and Full stay as you set them.'],
+    uk: ['Якщо Якість — Авто і швидкість нижче 30, рослин удвічі менше, огляд ближче, потім Гарне стає Звичайним. Швидко і Повно лишаються як ти вибрав.'],
+    ru: ['Если Качество — Авто и скорость ниже 30, растений вдвое меньше, обзор ближе, потом Красиво становится Обычным. Быстро и Полное остаются как ты выбрал.'],
+    es: ['Si Calidad es Auto y va bajo 30, las plantas se parten, la vista se acorta y luego Elegante pasa a Normal. Rápido y Completo se quedan como los pusiste.'],
+    ar: ['إذا كانت الجودة تلقائي والسرعة أقل من 30، تُنصف النباتات، يقصر النظر، ثم يصير الفاخر عاديًا. الخفيف والكامل يبقيان كما اخترتهما.'],
+    'fa-AF': ['اگر کیفیت خودکار باشد و سرعت زیر ۳۰ بماند، گیاه‌ها نصف می‌شوند، دید کوتاه می‌شود، بعد فاخر عادی می‌شود. سبک و کامل همان می‌مانند که تو گذاشتی.'],
+    rw: ['Niba Ubwiza ari Byikora kandi umuvuduko uri munsi ya 30, ibimera bigabanywamo kabiri, kureba bigufi, hanyuma Fancy iba Normal. Lite na Full bisigara uko wabihisemo.'],
+    ti: ['ጽሬት ብባዕሉ እንተኾነ ፍጥነት ድማ ትሕቲ 30 እንተጸንሐ፡ ተኽለ ይጽንሕ፡ ትርኢት ይቕጽር፡ ድሕሪኡ Fancy ናብ Normal ይቕየር። Liteን Fullን ከም ዝመረጽካዮ ይጸንሑ።'],
+  }},
   { v: '2.5.180', date: '2026-10-12', lines: {
     en: ['A pill above the hotbar sits, sleeps, or opens the nearest chair, bed, door, or machine. Space stands you up. Sleep skips to morning only at night.'],
     uk: ['Пігулка над панеллю сідає, спить або відкриває найближчий стілець, ліжко, двері чи машину. Пробіл підводить. Сон переносить на ранок лише вночі.'],

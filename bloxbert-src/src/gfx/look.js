@@ -376,6 +376,17 @@ export function createLook(opts) {
       fields.clear()
       return { ao: flags().ao, changed: flags().ao !== prev }
     },
+    autoName(q) {
+      if (!managed) return null
+      if (q !== 'normal' && q !== 'fancy') return null
+      if (name === q) return null
+      const prevAo = flags().ao
+      const prevLights = flags().lights
+      name = q
+      epoch++
+      fields.clear()
+      return { ao: flags().ao !== prevAo, lights: flags().lights !== prevLights, name }
+    },
     dropLite() {
       if (!managed || name === 'lite') return false
       name = 'lite'
