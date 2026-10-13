@@ -3866,13 +3866,34 @@ window.addEventListener('bert-update', async () => {
 })
 
 const $ = (id) => document.getElementById(id)
+let modeIcon = ''
 function paintModeChip() {
   const chip = $('mode-chip')
   const creativeMode = !!(session && session.mode === 'creative' && !tableMode)
   const survivalMode = !tableMode && !!(session && session.mode === 'survival')
   if (chip) {
-    if (tableMode) chip.textContent = t('buildTable')
-    else chip.textContent = creativeMode ? t('creative') : t('survival')
+    const name = tableMode ? 'grid' : creativeMode ? 'create' : 'survive'
+    const label = tableMode ? t('buildTable') : creativeMode ? t('creative') : t('survival')
+    let ico = chip.querySelector('.gic')
+    let lab = chip.querySelector('.mode-lab')
+    if (!ico || !lab) {
+      chip.replaceChildren()
+      ico = document.createElement('span')
+      ico.className = 'gic'
+      lab = document.createElement('span')
+      lab.className = 'mode-lab'
+      chip.append(ico, lab)
+      modeIcon = ''
+    }
+    if (modeIcon !== name) {
+      modeIcon = name
+      ico.replaceChildren()
+      const pic = menuIcon(name)
+      if (pic) ico.append(pic)
+    }
+    lab.textContent = label
+    chip.title = label
+    chip.setAttribute('aria-label', label)
   }
   paintPath()
   const creative = $('m-creative')

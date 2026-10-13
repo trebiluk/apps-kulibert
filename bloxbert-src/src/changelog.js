@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.183', date: '2026-10-13', lines: {
+    en: ['The mode chip matches the day clock: a small picture and a short name. On a narrow screen only the picture shows. The Survival and Creative buttons still switch the mode.'],
+    uk: ['Чип режиму як годинник: малий малюнок і коротке ім’я. На вузькому екрані лишається малюнок. Кнопки Виживання і Creative і далі перемикають режим.'],
+    ru: ['Чип режима как часы: маленькая картинка и короткое имя. На узком экране остаётся картинка. Кнопки Выживание и Creative по-прежнему переключают режим.'],
+    es: ['La ficha de modo coincide con el reloj: un dibujo pequeño y un nombre corto. En una pantalla estrecha solo queda el dibujo. Los botones Supervivencia y Creativo siguen cambiando el modo.'],
+    ar: ['شريحة الوضع تطابق الساعة: صورة صغيرة واسم قصير. على الشاشة الضيقة تبقى الصورة فقط. زرا البقاء والإبداع ما زالا يبدّلان الوضع.'],
+    'fa-AF': ['نشان حالت مثل ساعت است: یک تصویر کوچک و یک نام کوتاه. در صفحه باریک فقط تصویر می‌ماند. دکمه‌های بقا و خلاق هنوز حالت را عوض می‌کنند.'],
+    rw: ['Akazu k\'uburyo ni nk\'isaha: ishusho nto n\'izina rigufi. Ku rubuga rugufi gusigara ishusho. Amabuto ya Kubaho na Creative aracaca uburyo.'],
+    ti: ['ናይ ኩነታት ቺፕ ምስ ሰዓት ይሰማማዕ፡ ንእሽቶ ስእሊን ሓጺር ስምን። ኣብ ጠባብ መስኮት ስእሊ ጥራይ ይተርፍ። መጠወቒ ምንባርን ምፍጣርን ኩነታት ይቀይሩ።'],
+  }},
   { v: '2.5.182', date: '2026-10-12', lines: {
     en: ['A clock by the mode chip shows the day and the time. The picture is a sun, a moon, a sunset, or a sunrise. Tap it to see when night comes. Sleep adds a day, saved in the world. Always day shows only the sun.'],
     uk: ['Годинник біля режиму показує день і час. Малюнок — сонце, місяць, захід чи схід. Торкнись, щоб дізнатись, коли ніч. Сон додає день, і він лишається у світі. Завжди день показує лише сонце.'],
