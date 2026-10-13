@@ -17,6 +17,7 @@ import { fx } from './fx.js'
 import { bindStationBag } from './stations.js'
 import { berryTuft } from './worldgen.js'
 import { floraExtra } from './packs/flora/pack.js'
+import { packItems } from './packs/registry.js'
 import { Rules } from './rules.js'
 
 export function createSession(api) {
@@ -368,7 +369,11 @@ export function createSession(api) {
   }
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
-    if (!bar || mode !== 'survival') return
+    if (!bar || mode !== 'survival') {
+      const chip = document.getElementById('held-chip')
+      if (chip) { chip.hidden = true; chip.dataset.hold = '' }
+      return
+    }
     bar.classList.add('bagbar')
     bar.classList.remove('palette')
     bar.innerHTML = ''
@@ -439,12 +444,8 @@ export function createSession(api) {
     if (nameKey !== paintHotbar.nameKey) {
       paintHotbar.nameKey = nameKey
       if (nameKey && isFoodItem(nameKey)) sayEatTip()
-      if (nameKey && api.flash) api.flash(itemName(nameKey))
-      else {
-        const chip = document.getElementById('held-chip')
-        if (chip) chip.hidden = true
-      }
     }
+    paintHeld()
   }
   function selectedItem() {
     if (mode !== 'survival') return null
@@ -677,8 +678,14 @@ export function createSession(api) {
     ic.append(faceIcon(itemKey))
     const name = document.createElement('span')
     name.className = 'bag-name'
-    name.textContent = faceName(itemKey) + ' x' + n
-    head.append(ic, name)
+    name.textContent = faceName(itemKey) + (n ? ' × ' + n : '')
+    const facts = document.createElement('p')
+    facts.className = 'bag-facts'
+    facts.textContent = factsLine(itemKey, { n: n, uses: s && s.uses }).text
+    const words = document.createElement('span')
+    words.className = 'bag-words'
+    words.append(name, facts)
+    head.append(ic, words)
     panel.append(head)
     const keys = document.createElement('div')
     keys.className = 'bag-keys'
@@ -1878,6 +1885,7 @@ export function createSession(api) {
       b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
       b.querySelector('.gic').append(itemIcon(item))
       b.querySelector('.glbl').textContent = item.sell ? itemName(k) + ' · ' + t('sell') + ' ⚙ ' + pay : itemName(k)
+      tagBrief(b, k, item.sell ? { price: pay, priceKind: 'sell' } : null)
       b.disabled = !item.sell || !canSellToday(sold, wallet.state.dailyCap || ECON.dailyCap)
       b.addEventListener('click', () => { sell(k, 1); paintSell(g) })
       g.append(b)
@@ -1899,6 +1907,7 @@ export function createSession(api) {
       b.querySelector('.gic').append(itemIcon(item))
       b.querySelector('.glbl').textContent = itemName(k)
       b.querySelector('.gneed').textContent = known ? '⚙ ' + price : t('findFirst')
+      tagBrief(b, k, { price: price, priceKind: 'buy' })
       b.disabled = !known
       if (known) b.addEventListener('click', () => buy(k, 1, price))
       g.append(b)
@@ -1914,6 +1923,7 @@ export function createSession(api) {
       b.innerHTML = '<span class="gic"></span><span class="glbl"></span>'
       b.querySelector('.gic').append(itemIcon(item, k))
       b.querySelector('.glbl').textContent = itemName(k) + ' · ' + t('sell') + ' ⚙ ' + quoteSell(item, wallet.state.soldToday[k] || 0, wallet.state.dial || 1, ECON) + ' · ' + t('buy') + ' ⚙ ' + quoteBuy(item, wallet.state.dial || 1, ECON)
+      tagBrief(b, k)
       g.append(b)
     }
   }
@@ -2024,7 +2034,9 @@ export function createSession(api) {
     const rec = meta.get(key)
     if (!rec) return
     rec.slots.forEach((s, i) => {
-      g.append(btn((s ? itemName(s.item) + ' ' + s.n + ' ⚙ ' + s.price : t('stock')) + ' ' + (i + 1), () => stock(key, i)))
+      const b = btn((s ? itemName(s.item) + ' ' + s.n + ' ⚙ ' + s.price : t('stock')) + ' ' + (i + 1), () => stock(key, i))
+      if (s && s.item) tagBrief(b, s.item, { stock: s.n, price: s.price, priceKind: 'sell' })
+      g.append(b)
     })
     g.append(btn(t('takeTill') + ' ⚙ ' + rec.till, () => { takeTill(key); paintCounter(g, key) }))
     g.append(btn('🧹 ' + t('pickup'), () => {
@@ -2428,6 +2440,196 @@ export function createSession(api) {
     if (s.item === 'stoneTool') return t('stoneToolLine')
     return itemName(s.item) + ' ' + s.n
   }
+  const PACK_WORD = { farm: 'packFarm', flora: 'packFlora', tech: 'packTech', decor: 'packDecor' }
+  function packLabel(itemKey) {
+    const hit = packItems().find((it) => it.key === itemKey && PACK_WORD[it.pack])
+    return hit ? t(PACK_WORD[hit.pack]) : ''
+  }
+  function cogParts(itemKey) {
+    const item = ITEMS[itemKey]
+    if (!item || !(item.base > 0) || !item.sell) return null
+    const sold = (wallet.state.soldToday && wallet.state.soldToday[itemKey]) || 0
+    const dial = wallet.state.dial || 1
+    const cfg = Object.assign({}, ECON, { dial: wallet.state.dial })
+    const sellN = quoteSell(item, sold, dial, cfg)
+    if (sellN > 0) return { kind: 'sell', n: sellN }
+    if ((ECON.storeSells || []).indexOf(itemKey) >= 0) {
+      const buyN = quoteBuy(item, dial, cfg)
+      if (buyN > 0) return { kind: 'buy', n: buyN }
+    }
+    return null
+  }
+  function useLine(itemKey) {
+    if (itemKey === 'woodTool') return t('woodToolLine')
+    if (itemKey === 'stoneTool') return t('stoneToolLine')
+    if (isFoodItem(itemKey)) return t('bakedFood') + ' · ' + t('useFood')
+    const recipe = RECIPES.find((r) => r.in && r.in.some((pair) => pair[0] === itemKey))
+    if (!recipe || !recipe.out || !recipe.out[0]) return ''
+    return t('usedIn') + ' ' + itemName(recipe.out[0])
+  }
+  function wearParts(itemKey, uses) {
+    const item = ITEMS[itemKey]
+    const tool = item && item.tool
+    const life = tool && TOOL_LIFE[tool]
+    if (!life) return null
+    const left = uses == null ? life : Math.max(0, Math.min(life, uses))
+    return { left: left, life: life }
+  }
+  function factsLine(itemKey, extra) {
+    extra = extra || {}
+    const bits = []
+    bits.push(t('youHave') + ' ' + bag.count(itemKey))
+    bits.push('×' + stackCap(itemKey))
+    const cog = cogParts(itemKey)
+    if (cog) bits.push((cog.kind === 'buy' ? t('buy') : t('sell')) + ' ⚙ ' + cog.n)
+    const use = useLine(itemKey)
+    if (use) bits.push(use)
+    const pack = packLabel(itemKey)
+    if (pack) bits.push(pack)
+    if (extra.stock != null && extra.stock !== '') bits.push(t('stock') + ' ' + extra.stock)
+    if (extra.price != null && extra.price !== '') {
+      const same = cog && String(cog.n) === String(extra.price) && (!extra.priceKind || extra.priceKind === cog.kind)
+      if (!same) {
+        const word = extra.priceKind === 'buy' ? t('buy') : extra.priceKind === 'sell' ? t('sell') : ''
+        bits.push((word ? word + ' ' : '') + '⚙ ' + extra.price)
+      }
+    }
+    return { text: bits.filter(Boolean).join(' · '), cog: cog, wear: wearParts(itemKey, extra.uses) }
+  }
+  function paintBrief(host, itemKey, extra) {
+    if (!host || !itemKey) return
+    extra = extra || {}
+    const info = factsLine(itemKey, extra)
+    const open = host.dataset && host.dataset.open === '1'
+    host.replaceChildren()
+    host.classList.add('brief')
+    const top = document.createElement('span')
+    top.className = 'brief-top'
+    const ico = document.createElement('span')
+    ico.className = 'gic'
+    const pic = faceIcon(itemKey)
+    if (pic) ico.append(pic)
+    const name = document.createElement('span')
+    name.className = 'brief-name'
+    name.textContent = faceName(itemKey)
+    top.append(ico, name)
+    if (extra.n != null && extra.n !== '') {
+      const num = document.createElement('span')
+      num.className = 'brief-n'
+      num.textContent = String(extra.n)
+      const stack = document.createElement('span')
+      stack.className = 'brief-stack'
+      stack.textContent = '/' + stackCap(itemKey)
+      top.append(num, stack)
+    }
+    const cogEl = document.createElement('span')
+    cogEl.className = 'brief-cog'
+    if (info.cog) cogEl.textContent = '⚙ ' + info.cog.n
+    else cogEl.hidden = true
+    top.append(cogEl)
+    const more = document.createElement('span')
+    more.className = 'brief-more'
+    more.textContent = info.text
+    host.append(top, more)
+    if (info.wear) {
+      const bar = document.createElement('span')
+      bar.className = 'qol-wear'
+      const fill = document.createElement('span')
+      fill.style.width = Math.round((info.wear.left / info.wear.life) * 100) + '%'
+      bar.append(fill)
+      host.append(bar)
+    }
+    const pop = document.createElement('span')
+    pop.className = 'brief-pop'
+    const popName = document.createElement('span')
+    popName.className = 'brief-name'
+    popName.textContent = faceName(itemKey)
+    const popMore = document.createElement('span')
+    popMore.className = 'brief-more'
+    popMore.textContent = info.text
+    pop.append(popName, popMore)
+    if (!open) pop.setAttribute('hidden', '')
+    host.append(pop)
+    const label = [faceName(itemKey), extra.n != null && extra.n !== '' ? String(extra.n) : '', info.text].filter(Boolean).join(', ')
+    if (host.id === 'held-chip') {
+      host.title = label
+      host.setAttribute('aria-label', label)
+    }
+  }
+  function bindHeldChip(chip) {
+    if (chip.dataset.bound) return
+    chip.dataset.bound = '1'
+    chip.addEventListener('pointerdown', (e) => e.stopPropagation())
+    chip.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (window.innerWidth > 960) return
+      chip.dataset.open = chip.dataset.open === '1' ? '0' : '1'
+      const s = bag.slots[hot]
+      if (s) paintBrief(chip, s.item, { n: s.n, uses: s.uses })
+    })
+    document.addEventListener('pointerdown', (e) => {
+      if (chip.contains(e.target)) return
+      if (chip.dataset.open !== '1') return
+      chip.dataset.open = '0'
+      const s = bag.slots[hot]
+      if (s && mode === 'survival') paintBrief(chip, s.item, { n: s.n, uses: s.uses })
+    })
+  }
+  function placeHeld(chip) {
+    const hotbar = document.getElementById('hotbar')
+    const pill = document.getElementById('use-pill')
+    let bottom = 8
+    if (hotbar) {
+      const r = hotbar.getBoundingClientRect()
+      if (r.height > 2) bottom = Math.max(bottom, window.innerHeight - r.top + 8)
+    }
+    if (pill && !pill.hidden) {
+      const r = pill.getBoundingClientRect()
+      if (r.height > 2) bottom = Math.max(bottom, window.innerHeight - r.top + 8)
+    }
+    chip.style.bottom = bottom + 'px'
+    const stick = document.getElementById('stick-pad')
+    if (!stick) return
+    requestAnimationFrame(() => {
+      if (!chip.isConnected || chip.hidden) return
+      const shown = getComputedStyle(stick).display !== 'none'
+      if (!shown) return
+      const a = chip.getBoundingClientRect()
+      const b = stick.getBoundingClientRect()
+      const hit = a.width > 2 && b.width > 2 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
+      if (hit) chip.style.bottom = (window.innerHeight - b.top + 8) + 'px'
+    })
+  }
+  function paintHeld() {
+    const chip = document.getElementById('held-chip')
+    if (!chip) return
+    bindHeldChip(chip)
+    const s = mode === 'survival' ? bag.slots[hot] : null
+    if (!s || !s.item) {
+      chip.hidden = true
+      chip.dataset.hold = ''
+      chip.dataset.open = '0'
+      chip.classList.remove('on')
+      return
+    }
+    if (chip.dataset.item && chip.dataset.item !== s.item) chip.dataset.open = '0'
+    chip.hidden = false
+    chip.dataset.hold = '1'
+    chip.dataset.item = s.item
+    chip.classList.remove('on')
+    paintBrief(chip, s.item, { n: s.n, uses: s.uses })
+    placeHeld(chip)
+  }
+  function tagBrief(el, itemKey, extra) {
+    if (!el || !itemKey) return
+    extra = extra || {}
+    el.classList.add('brief-tile')
+    el.dataset.brief = itemKey
+    if (extra.stock != null) el.dataset.stock = String(extra.stock)
+    if (extra.price != null) el.dataset.price = String(extra.price)
+    if (extra.priceKind) el.dataset.priceKind = extra.priceKind
+  }
   function wearHeld() {
     const s = bag.slots[hot]
     if (!s || !ITEMS[s.item] || !ITEMS[s.item].tool) return
@@ -2753,7 +2955,11 @@ export function createSession(api) {
     paintEnergy()
     recoverOrphans('')
     if (mode === 'survival') paintHotbar()
-    else if (api.paintBar) api.paintBar()
+    else {
+      const chip = document.getElementById('held-chip')
+      if (chip) { chip.hidden = true; chip.dataset.hold = ''; chip.dataset.open = '0' }
+      if (api.paintBar) api.paintBar()
+    }
   }
   function freshStart() {
     bagHist.length = 0
@@ -2784,7 +2990,11 @@ export function createSession(api) {
     paintEnergy()
     if (mode === 'creative' && bag.count('buildWand') < 1) giveItem('buildWand', 1)
     if (mode === 'survival') paintHotbar()
-    else if (api.paintBar) api.paintBar()
+    else {
+      const chip = document.getElementById('held-chip')
+      if (chip) { chip.hidden = true; chip.dataset.hold = ''; chip.dataset.open = '0' }
+      if (api.paintBar) api.paintBar()
+    }
   }
   function pace() {
     if (!energyOn || mode !== 'survival' || energy.bolts > 0) return 1
@@ -2964,5 +3174,9 @@ export function createSession(api) {
     tryBuy(k) { const item = ITEMS[k]; return item ? buy(k, 1, quoteBuy(item, wallet.state.dial || 1, ECON)) : false },
     known: (k) => (wallet.state.found || []).includes(k),
     useHeld, selectOwned, holdItem, mountEnergy, isFood: isFoodItem,
+    fillFacts(host, spec) {
+      if (!host || !spec || !spec.item || !ITEMS[spec.item]) return
+      paintBrief(host, spec.item, spec)
+    },
   }
 }

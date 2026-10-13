@@ -3974,6 +3974,71 @@ function bindDayClock() {
   btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); showDayTip() })
 }
 bindDayClock()
+function armBrief() {
+  if (!location.search.includes('brief=1')) return
+  window.__brief = {
+    give(item, n) {
+      session.setMode('survival')
+      session.give(item, n || 1)
+      return session.bag.count(item)
+    },
+    hold(item) {
+      session.holdItem(item)
+      return session.selectedItem()
+    },
+    clear() {
+      for (let i = 0; i < session.bag.slots.length; i++) session.bag.slots[i] = null
+      session.paintHotbar()
+    },
+    open(id, key) { if (panels) panels.open(id, key) },
+    close() { if (panels) panels.close() },
+    box(item, n) {
+      const key = '2,6,2'
+      const slots = Array.from({ length: 18 }, () => null)
+      slots[0] = { item: item, n: n || 1 }
+      session.meta.set(key, { kind: 'box', slots: slots })
+      if (panels) panels.open('box', key)
+      return key
+    },
+    counter(item, n, price) {
+      const key = '3,6,3'
+      session.meta.set(key, { kind: 'vend', owner: 'you', slots: [{ item: item, n: n, price: price }, null, null, null], till: 0, sales: [], salesN: 0 })
+      if (panels) panels.open('counter', key)
+      return key
+    },
+    chip() {
+      const el = document.getElementById('held-chip')
+      if (!el) return null
+      const r = el.getBoundingClientRect()
+      const hot = document.getElementById('hotbar').getBoundingClientRect()
+      const pill = document.getElementById('use-pill')
+      const pr = pill.getBoundingClientRect()
+      const stick = document.getElementById('stick-pad')
+      const sr = stick.getBoundingClientRect()
+      const hit = (a, b) => a.width > 2 && b.width > 2 && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1
+      return {
+        hidden: el.hidden,
+        text: el.innerText,
+        aria: el.getAttribute('aria-label') || '',
+        open: el.dataset.open || '',
+        item: el.dataset.item || '',
+        w: Math.round(r.width),
+        h: Math.round(r.height),
+        top: Math.round(r.top),
+        bottom: Math.round(r.bottom),
+        nameW: Math.round((el.querySelector('.brief-top .brief-name') || {}).getBoundingClientRect ? el.querySelector('.brief-top .brief-name').getBoundingClientRect().width : 0),
+        moreW: Math.round((el.querySelector('.brief-top ~ .brief-more') || el.querySelector('.brief-more')).getBoundingClientRect().width),
+        cog: (el.querySelector('.brief-cog') || {}).textContent || '',
+        cogW: Math.round((el.querySelector('.brief-cog') && !el.querySelector('.brief-cog').hidden ? el.querySelector('.brief-cog').getBoundingClientRect().width : 0)),
+        pop: !!(el.querySelector('.brief-pop') && !el.querySelector('.brief-pop').hidden && el.querySelector('.brief-pop').getBoundingClientRect().height > 2),
+        overHot: hit(r, hot),
+        overPill: pill && !pill.hidden ? hit(r, pr) : false,
+        overStick: getComputedStyle(stick).display !== 'none' ? hit(r, sr) : false,
+      }
+    },
+  }
+  window.__briefReady = true
+}
 function armClock() {
   const q = location.search
   if (!q.includes('clock=')) return
@@ -4839,6 +4904,7 @@ mountSlotQol({
   recipes: () => RECIPES,
   craftMany: (recipe) => !!(session && session.craftMany && session.craftMany(recipe, 64)),
   toolOf: (item) => (ITEMS[item] && ITEMS[item].tool) || '',
+  fillFacts: (host, spec) => session && session.fillFacts && session.fillFacts(host, spec),
 })
 let hintOwner = ''
 const hintQ = []
@@ -5714,7 +5780,7 @@ function pick(id) {
 }
 function flashHeld(name) {
   const chip = $('held-chip')
-  if (!chip) return
+  if (!chip || chip.dataset.hold === '1') return
   chip.textContent = name
   chip.hidden = false
   chip.classList.remove('on')
@@ -8421,6 +8487,7 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('use=')) armUse()
   armClock()
   paintDayClock()
+  armBrief()
 })
 if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('smoke=1')) {
   let bagWarned = false

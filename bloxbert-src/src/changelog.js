@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.184', date: '2026-10-13', lines: {
+    en: ['The held item stays above the hotbar: a picture, the name, how many you hold, the Bag total, and a Cog price when it sells. A narrow screen shows the picture, the count, and the price. Tap it for the rest. Bag, chest, and shop tiles show the same card.'],
+    uk: ['Річ у руці лишається над панеллю: малюнок, ім’я, скільки тримаєш, скільки в сумці, і ціна в ⚙, якщо продається. На вузькому екрані — малюнок, кількість і ціна. Торкнись, щоб побачити решту. Сумка, скриня і крамниця показують ту саму картку.'],
+    ru: ['Вещь в руке остаётся над панелью: картинка, имя, сколько держишь, сколько в сумке, и цена в ⚙, если продаётся. На узком экране — картинка, число и цена. Нажми, чтобы увидеть остальное. Сумка, сундук и лавка показывают ту же карточку.'],
+    es: ['Lo que llevas se queda sobre la barra: un dibujo, el nombre, cuántos tienes, el total de la bolsa y un precio en ⚙ si se vende. En una pantalla estrecha se ve el dibujo, la cuenta y el precio. Tócalo para ver el resto. La bolsa, el cofre y la tienda muestran la misma ficha.'],
+    ar: ['ما في يدك يبقى فوق الشريط: صورة والاسم وكم تمسك ومجموع الحقيبة وسعر ⚙ إذا كان يُباع. على الشاشة الضيقة تظهر الصورة والعدد والسعر. المسها لترى الباقي. الحقيبة والصندوق والمتجر تعرض البطاقة نفسها.'],
+    'fa-AF': ['چیزی که در دست است بالای نوار می‌ماند: تصویر، نام، چند تا، جمع بکس، و قیمت ⚙ اگر فروختنی باشد. در صفحه باریک تصویر، شمارش و قیمت می‌ماند. بزن تا بقیه را ببینی. بکس، صندوق و دکان همان کارت را نشان می‌دهند.'],
+    rw: ['Icyo ufite mu ntoki kiguma hejuru y\'umurongo: ishusho, izina, umubare, agasaho, n\'igiciro ⚙ niba kigurishwa. Ku rubuga rugufi hasigara ishusho, umubare, n\'igiciro. Kanda urebe ibindi. Agasaho, agasanduku, n\'iduka byerekana ikarita imwe.'],
+    ti: ['ኣብ ኢድ ዘሎ ንብረት ላዕሊ መስመር ይጸንሕ፡ ስእሊ፡ ስም፡ ቑጽሪ፡ ጠቕላላ ቦርሳ፡ ከምኡውን ዋጋ ⚙ እንተሽየጥ። ኣብ ጠባብ መስኮት ስእሊ፡ ቑጽሪ፡ ዋጋ ይርአ። ጠውቕ ነቲ ዝተረፈ። ቦርሳ፡ ሳንዱቅ፡ ድኳን ሓደ ካርድ የርእዩ።'],
+  }},
   { v: '2.5.183', date: '2026-10-13', lines: {
     en: ['The mode chip matches the day clock: a small picture and a short name. On a narrow screen only the picture shows. The Survival and Creative buttons still switch the mode.'],
     uk: ['Чип режиму як годинник: малий малюнок і коротке ім’я. На вузькому екрані лишається малюнок. Кнопки Виживання і Creative і далі перемикають режим.'],

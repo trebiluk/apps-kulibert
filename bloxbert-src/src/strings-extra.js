@@ -1323,4 +1323,15 @@ const CLOCK_UI = {
   ti: { clockDay: 'መዓልቲ {n}', clockNight: 'ለይቲ ኣብ {n} ደቒቕ፡ ኣብ ዓራት ድቐስ ንምዝላል።', clockMorning: 'ጥዋሕ ኣብ {n} ደቒቕ። ኣብ ዓራት ድቐስ ንምዝላል።' },
 }
 for (const [lang, row] of Object.entries(CLOCK_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const HELD_UI = {
+  en: { packFarm: 'Farm', packFlora: 'Plants', packTech: 'Tech', packDecor: 'Decor' },
+  uk: { packFarm: 'Ферма', packFlora: 'Рослини', packTech: 'Техніка', packDecor: 'Декор' },
+  ru: { packFarm: 'Ферма', packFlora: 'Растения', packTech: 'Техника', packDecor: 'Декор' },
+  es: { packFarm: 'Granja', packFlora: 'Plantas', packTech: 'Tecnología', packDecor: 'Decoro' },
+  ar: { packFarm: 'مزرعة', packFlora: 'نبات', packTech: 'تقنية', packDecor: 'زينة' },
+  'fa-AF': { packFarm: 'کشت', packFlora: 'گیاه', packTech: 'فن', packDecor: 'دکورا' },
+  rw: { packFarm: 'Isambu', packFlora: 'Ibimera', packTech: 'Ikoranabuhanga', packDecor: 'Ubwiza' },
+  ti: { packFarm: 'እርሻ', packFlora: 'ተኽሊ', packTech: 'ቴክ', packDecor: 'ጌጣ' },
+}
+for (const [lang, row] of Object.entries(HELD_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 

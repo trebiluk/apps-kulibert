@@ -88,6 +88,17 @@ function snap(bag) {
 
 function locate(node) {
   if (!node || !node.closest) return null
+  const brief = node.closest('.brief-tile')
+  if (brief && brief.dataset.brief && !brief.closest('.ks-slot, .well[data-slot], #hotbar .slot')) {
+    return {
+      kind: 'shop',
+      item: brief.dataset.brief,
+      stock: brief.dataset.stock,
+      price: brief.dataset.price,
+      priceKind: brief.dataset.priceKind || '',
+      el: brief,
+    }
+  }
   const slot = node.closest('.ks-slot, .well[data-slot], #hotbar .slot[data-slot], .well.result, #qol-bar button')
   if (!slot || slot.closest('#qol-bar')) return null
   if (slot.classList.contains('result')) return { kind: 'craft-out', el: slot }
@@ -215,8 +226,11 @@ function onDown(e) {
       try {
         window.dispatchEvent(new PointerEvent('pointercancel', { bubbles: true, pointerId: e.pointerId, clientX: e.clientX, clientY: e.clientY }))
       } catch (err) {}
-      showBar(snapLoc)
-      showTip(snapLoc, 0, true)
+      if (snapLoc.kind === 'shop') showTip(snapLoc, 0, true)
+      else {
+        showBar(snapLoc)
+        showTip(snapLoc, 0, true)
+      }
       swallowUntil = performance.now() + 800
     }, 400)
     press = { pid: e.pointerId, timer: timer, loc: snapLoc, x: e.clientX, y: e.clientY, type: e.pointerType }
@@ -286,7 +300,7 @@ function onOver(e) {
   if (e.pointerType && e.pointerType !== 'mouse') return
   const loc = locate(e.target)
   clearTimeout(tipTimer)
-  if (!loc || !stackOf(loc)) return
+  if (!loc || (loc.kind !== 'shop' && !stackOf(loc))) return
   const snapLoc = copyLoc(loc)
   tipTimer = setTimeout(() => showTip(snapLoc, 0, false), 300)
 }
@@ -311,7 +325,10 @@ function onRotate() {
 
 function copyLoc(loc) {
   if (!loc) return null
-  return { kind: loc.kind, index: loc.index, key: loc.key, role: loc.role, host: loc.host, el: loc.el }
+  return {
+    kind: loc.kind, index: loc.index, key: loc.key, role: loc.role, host: loc.host, el: loc.el,
+    item: loc.item, stock: loc.stock, price: loc.price, priceKind: loc.priceKind,
+  }
 }
 function indices(slots, pred) {
   const out = []
@@ -650,33 +667,48 @@ function hideBar() {
   if (bar) bar.hidden = true
 }
 function showTip(loc, ms, sticky) {
+  const shop = loc && loc.kind === 'shop'
   const s = stackOf(loc)
-  if (!s) return
+  if (!s && !shop) return
   ensureUi()
   const tip = document.getElementById('qol-tip')
   if (!tip) return
+  const item = s ? s.item : loc.item
+  const spec = {
+    item: item,
+    n: s ? s.n : (shop && loc.stock != null && loc.stock !== '' ? loc.stock : null),
+    uses: s ? s.uses : null,
+    stock: shop && loc.stock != null && loc.stock !== '' ? loc.stock : null,
+    price: shop && loc.price != null && loc.price !== '' ? loc.price : null,
+    priceKind: shop ? (loc.priceKind || '') : '',
+  }
   tip.replaceChildren()
-  const name = document.createElement('span')
-  name.className = 'qol-name'
-  name.textContent = labelOf(s.item)
-  const count = document.createElement('span')
-  count.textContent = ' × ' + s.n
-  tip.append(name, count)
-  const tool = api().toolOf && api().toolOf(s.item)
-  if (tool) {
-    const bar = document.createElement('span')
-    bar.className = 'qol-wear'
-    const fill = document.createElement('span')
-    const life = 100
-    const left = s.uses == null ? life : Math.max(0, Math.min(life, s.uses))
-    fill.style.width = Math.round((left / life) * 100) + '%'
-    bar.append(fill)
-    tip.append(bar)
+  if (api().fillFacts && spec.item) api().fillFacts(tip, spec)
+  else {
+    const name = document.createElement('span')
+    name.className = 'qol-name'
+    name.textContent = labelOf(item)
+    const count = document.createElement('span')
+    count.textContent = ' × ' + (s ? s.n : '')
+    tip.append(name, count)
+    const tool = api().toolOf && api().toolOf(item)
+    const life = tool && api().toolLife && api().toolLife(tool)
+    if (tool && life) {
+      const bar = document.createElement('span')
+      bar.className = 'qol-wear'
+      const fill = document.createElement('span')
+      const left = s && s.uses == null ? life : Math.max(0, Math.min(life, s ? s.uses : life))
+      fill.style.width = Math.round((left / life) * 100) + '%'
+      bar.append(fill)
+      tip.append(bar)
+    }
   }
   const el = loc.el && loc.el.isConnected ? loc.el : null
   const rect = el ? el.getBoundingClientRect() : { left: 16, top: 64, width: 48 }
   tip.hidden = false
-  tip.style.left = Math.max(8, rect.left) + 'px'
+  const width = Math.min(420, window.innerWidth - 16)
+  tip.style.maxWidth = width + 'px'
+  tip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)) + 'px'
   tip.style.top = Math.max(8, rect.top - 8) + 'px'
   tip.style.transform = 'translateY(-100%)'
   tipUntil = sticky && ms ? performance.now() + ms : 0

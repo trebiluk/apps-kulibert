@@ -835,6 +835,46 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #use-pill .gic{width:32px;height:32px;flex:0 0 32px;display:flex}
 #use-pill canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
 #use-pill .glbl{font-size:15px;font-weight:800}
+#held-chip.kd-tip{
+  position:fixed;left:50%;bottom:calc(var(--hud-lift) + 64px);transform:translateX(-50%);z-index:32;
+  display:flex;flex-direction:column;align-items:center;gap:2px;max-width:min(440px, calc(100vw - 168px));
+  padding:4px 8px;border:1px solid #2dd4bf;border-inline-start:4px solid #ff8a1f;border-radius:8px;
+  background-color:#0a1428;background-image:none;color:#e6f6ff;
+  box-shadow:inset 0 0 8px rgba(45,212,191,.28);
+  font-family:ui-monospace,Consolas,monospace;font-size:13px;font-weight:700;line-height:1.25;
+  white-space:nowrap;pointer-events:auto;cursor:pointer;
+}
+#held-chip[hidden]{display:none!important}
+#held-chip[data-hold="1"]{animation:none!important;opacity:1!important}
+#held-chip .brief-top{display:inline-flex;align-items:center;gap:6px;min-width:0}
+#held-chip .gic{width:22px;height:22px;flex:0 0 22px;display:grid;place-items:center}
+#held-chip .gic canvas,#held-chip .gic svg,#held-chip .real-icon,#held-chip .real-icon svg{width:22px;height:22px;image-rendering:pixelated;display:block}
+#held-chip .brief-more{display:block;max-width:min(420px, calc(100vw - 180px));color:#7ff5e3;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#held-chip .brief-cog{display:none}
+#held-chip .brief-cog[hidden]{display:none!important}
+#held-chip .brief-pop{display:none}
+#held-chip .brief-pop[hidden]{display:none!important}
+#qol-tip.brief{max-width:min(420px, calc(100vw - 16px));white-space:normal}
+#qol-tip .brief-top{display:flex;align-items:center;gap:6px}
+#qol-tip .gic{width:18px;height:18px;flex:0 0 18px;display:grid;place-items:center}
+#qol-tip .gic canvas,#qol-tip .gic svg,#qol-tip .real-icon,#qol-tip .real-icon svg{width:18px;height:18px;image-rendering:pixelated;display:block}
+#qol-tip .brief-more{display:block;margin-top:2px;color:#7ff5e3;white-space:normal}
+#qol-tip .brief-cog,#qol-tip .brief-pop{display:none!important}
+#sheet[data-panel=inventory] .bag-words{display:flex;flex-direction:column;gap:2px;min-width:0}
+#sheet[data-panel=inventory] .bag-facts{margin:0;color:#7ff5e3;font:700 12px/1.35 ui-monospace,Consolas,monospace}
+@media (max-width:960px){
+  #held-chip .brief-top .brief-name,#held-chip .brief-stack,#held-chip .brief-top ~ .brief-more{display:none}
+  #held-chip .brief-cog{display:inline}
+  #held-chip[data-open="1"] .brief-pop{
+    display:flex;flex-direction:column;gap:2px;position:absolute;left:50%;bottom:calc(100% + 6px);transform:translateX(-50%);
+    width:max-content;max-width:min(420px, calc(100vw - 16px));padding:6px 8px;white-space:normal;
+    background:#0a1428;color:#e6f6ff;border:1px solid #2dd4bf;border-inline-start:4px solid #ff8a1f;border-radius:8px;
+    box-shadow:inset 0 0 8px rgba(45,212,191,.28);
+  }
+  #held-chip[data-open="1"] .brief-pop .brief-name,#held-chip[data-open="1"] .brief-pop .brief-more{display:block;color:#e6f6ff;white-space:normal}
+  #held-chip[data-open="1"] .brief-pop .brief-more{color:#7ff5e3}
+}
+@media (min-width:961px){#held-chip .brief-pop{display:none!important}}
 #sleep-fade{position:fixed;inset:0;z-index:70;background:#070b10;opacity:0;pointer-events:none;transition:opacity .55s linear}
 #sleep-fade.on{opacity:1}
 #sleep-fade[hidden]{display:none!important}
@@ -880,7 +920,7 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.183</span>
+      <span class="ver" id="ver-plate">2.5.184</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1031,8 +1071,8 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.169"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.183" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.183" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.184" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.184" defer></script>
 <script>
 ;(function () {
   try {
