@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.185', date: '2026-10-13', lines: {
+    en: ['Closing the Menu no longer grabs the mouse. Your next click in the world locks it and does its job.'],
+    uk: ['Закриття Меню більше не хапає мишу. Наступний клік у світі блокує її і робить свою роботу.'],
+    ru: ['Закрытие Меню больше не хватает мышь. Следующий клик в мире блокирует её и делает свою работу.'],
+    es: ['Cerrar el Menú ya no agarra el ratón. El siguiente clic en el mundo lo bloquea y hace su trabajo.'],
+    ar: ['إغلاق القائمة لم يعد يمسك الفأرة. نقرتك التالية في العالم تقفلها وتؤدي عملها.'],
+    'fa-AF': ['بستن فهرست دیگر موس را نمی‌گیرد. کلیک بعدی تو در جهان آن را قفل می‌کند و کارش را می‌کند.'],
+    rw: ['Gufunga Ibikubiyemo ntibikura imbeba. Kanda ikurikira mu isi irayifunga kandi ikora akazi kayo.'],
+    ti: ['ምዕጻው ዝርዝር ማውስ ኣይሕዝን። ዝቕጽል ጠውቃ ኣብ ዓለም ትኸልቶን ስራሓ ትሰርሕን።'],
+  }},
   { v: '2.5.184', date: '2026-10-13', lines: {
     en: ['The held item stays above the hotbar: a picture, the name, how many you hold, the Bag total, and a Cog price when it sells. A narrow screen shows the picture, the count, and the price. Tap it for the rest. Bag, chest, and shop tiles show the same card.'],
     uk: ['Річ у руці лишається над панеллю: малюнок, ім’я, скільки тримаєш, скільки в сумці, і ціна в ⚙, якщо продається. На вузькому екрані — малюнок, кількість і ціна. Торкнись, щоб побачити решту. Сумка, скриня і крамниця показують ту саму картку.'],

@@ -2734,7 +2734,10 @@ noa.inputs.down.on('fire', () => {
   if (inspectOn) { showInspect(); return }
   if (tableMode) return
   if (anyCard()) return
-  if (!playLocked()) { showPlayChip(); grabLock(); return }
+  if (!playLocked()) {
+    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock() }
+    else { showPlayChip(); grabLock(); return }
+  }
   const aimed = noa.targetedBlock
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
@@ -2761,7 +2764,10 @@ noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
   if (tableMode || rightPress) return
   if (anyCard()) return
-  if (!playLocked()) { showPlayChip(); grabLock(); return }
+  if (!playLocked()) {
+    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock() }
+    else { showPlayChip(); grabLock(); return }
+  }
   const tget = noa.targetedBlock
   if (tryEatClick(tget)) return
   if (tget && isUseBlock(tget.blockID)) return
@@ -4131,6 +4137,8 @@ let playLockWanted = false
 let lockAskedAt = 0
 let lockTries = 0
 let closingPlay = false
+let awaitWorldClick = false
+let actThisClick = false
 let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
@@ -4601,7 +4609,16 @@ function showPlayChip() {
 function clearLookAccum() {
   try { noa.inputs.pointerState.dx = 0; noa.inputs.pointerState.dy = 0 } catch (e) {}
 }
-function swallowing() { return !TOUCH_UI && performance.now() < lockSwallowUntil }
+function swallowing() { return !actThisClick && !TOUCH_UI && performance.now() < lockSwallowUntil }
+function armActLock() {
+  if (TOUCH_UI || tableMode) { awaitWorldClick = false; return }
+  if (actThisClick) return
+  actThisClick = true
+  awaitWorldClick = false
+  hidePlayChip()
+  grabLock()
+  setTimeout(() => { actThisClick = false }, 220)
+}
 function grabLock() {
   if (TOUCH_UI || tableMode) return
   clearLookAccum()
@@ -4656,6 +4673,16 @@ function resumePlay() {
     showPlayChip()
     return
   }
+  if (how === 'menu') {
+    playLockWanted = false
+    armResume = 0
+    lockTries = 0
+    awaitWorldClick = true
+    try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
+    try { noa.container.setPointerLock(false) } catch (e) {}
+    showPlayChip()
+    return
+  }
   armResume = 0
   hidePlayChip()
   lockTries = 0
@@ -4665,7 +4692,10 @@ function closePlay(how) {
   if (closingPlay) return
   closingPlay = true
   try {
-    if (how) closeHow = how
+    const sheet = $('sheet')
+    const fromMenu = !!(sheet && !sheet.hidden && sheet.dataset.panel === 'menu')
+    if (fromMenu) closeHow = 'menu'
+    else if (how) closeHow = how
     if (!closeHow) closeHow = 'gesture'
     if (openMachineKey) {
       muteUseKey = openMachineKey
@@ -4678,7 +4708,6 @@ function closePlay(how) {
     const inspect = $('inspect-card')
     if (inspect) inspect.hidden = true
     if (panels && panels.dismiss) panels.dismiss()
-    const sheet = $('sheet')
     if (sheet) sheet.hidden = true
     resumePlay()
   } finally { closingPlay = false }
@@ -6884,6 +6913,7 @@ function targetHit() {
 }
 canvas.addEventListener('pointerdown', (e) => {
   if (!canvasHit(e)) return
+  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') armActLock()
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
   const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
   if (wandClick) {
@@ -6969,7 +6999,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
   releaseFar()
   if (e.button === 0 || e.button < 0) { mouseLeft = false; leftDown = false }
-  if (!TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
+  if (!actThisClick && !TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
     showPlayChip()
     grabLock()
   }
@@ -7051,6 +7081,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
 })
 canvas.addEventListener('pointercancel', () => {
+  actThisClick = false
   if (buttonHold) {
     releaseButton(buttonHold.x, buttonHold.y, buttonHold.z)
     buttonHold = null
@@ -7066,6 +7097,7 @@ window.addEventListener('pointerdown', (e) => {
   }
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
   if (!canvasHit(e)) return
+  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') armActLock()
   if (eatResume(e)) return
   const snap = targetHit()
   if (tryEatClick(snap)) {

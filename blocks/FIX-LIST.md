@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.185 Menu close:** Closing the Menu no longer grabs the mouse. The next click in the world locks it and does its job. A click on the top bar does not break a block.
 - [x] **2.5.184 Held item:** The held item stays above the hotbar. It shows a picture, the name, how many you hold, the Bag total, and a Cog price when the item sells. At 915 wide it is the picture, the count, and the price. A tap opens the rest. Bag, chest, and shop tiles show the same card. Dirt skips the Cog line.
 - [x] **2.5.183 Mode chip:** The mode chip matches the day clock. It shows the survive or create icon plus a short name. Build Table uses its own icon. At 915 wide only the icon shows, and the name stays in the label. The Survival and Creative pill is still the switch.
 - [x] **2.5.182 Day clock:** A pixel-LCD clock sits next to the mode chip. It shows a sun or moon and "Day 3 · 14:20". Sunset and sunrise show in the minutes around dusk and dawn. A tap says when night comes. The day count goes up after sleep and is saved in the world. Always day shows only the sun. At 915 wide it is the icon plus the time.
