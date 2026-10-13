@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.189', date: '2026-10-13', lines: {
+    en: ['Tips wait for you to finish each step.'],
+    uk: ['Підказки чекають, поки ти закінчиш кожен крок.'],
+    ru: ['Подсказки ждут, пока ты закончишь каждый шаг.'],
+    es: ['Los avisos esperan a que termines cada paso.'],
+    ar: ['النصائح تنتظر حتى تنهي كل خطوة.'],
+    'fa-AF': ['نکته‌ها صبر می‌کنند تا هر گام را تمام کنی.'],
+    rw: ['Inama zirategereza kugeza urangije buri ntambwe.'],
+    ti: ['ምኽርታት ነፍሲ ወከፍ ስጉምቲ ክሳብ ትውድኦ ይጽበዩ።'],
+  }},
   { v: '2.5.188', date: '2026-10-13', lines: {
     en: ['New worlds start facing a tree.'],
     uk: ['Нові світи починаються обличчям до дерева.'],

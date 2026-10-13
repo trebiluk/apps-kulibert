@@ -183,6 +183,8 @@ function ownShift(loc) {
 }
 
 function onDown(e) {
+  const openTip = document.getElementById('qol-tip')
+  if (openTip && !openTip.hidden && !(e.target && openTip.contains(e.target))) hideTip()
   if (swallowUntil && performance.now() > swallowUntil) swallowUntil = 0
   const barHit = e.target && e.target.closest && e.target.closest('#qol-bar')
   if (barHit) {
@@ -711,9 +713,8 @@ function showTip(loc, ms, sticky) {
   tip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)) + 'px'
   tip.style.top = Math.max(8, rect.top - 8) + 'px'
   tip.style.transform = 'translateY(-100%)'
-  tipUntil = sticky && ms ? performance.now() + ms : 0
+  tipUntil = sticky ? performance.now() + Math.min(ms || 500, 500) : 0
   clearTimeout(showTip.hide)
-  if (ms) showTip.hide = setTimeout(hideTip, ms)
 }
 function hideTip() {
   clearTimeout(tipTimer)

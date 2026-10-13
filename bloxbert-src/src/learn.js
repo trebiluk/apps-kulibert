@@ -40,26 +40,23 @@ export function createLearn(api) {
     save()
   }
   let cardHidden = false
-  let cardArmed = false
-  let hideTimer = 0
   let pathGap = 0
-  function armCard() {
-    if (cardArmed || state.hideTips || pathGap) return
-    cardArmed = true
-    clearTimeout(hideTimer)
-    hideTimer = setTimeout(() => {
-      cardHidden = true
-      cardArmed = false
-      const chip = document.getElementById('path-chip')
-      if (chip) { chip.classList.remove('path-out'); chip.hidden = true; chip.replaceChildren() }
-      if (api.releaseHint) api.releaseHint("path")
-    }, 60000)
+  let celebrate = 0
+  function currentGoal() {
+    return goals.find((x) => !x.done && !dismissed(x.id))
   }
   function dismissPath() {
-    const g = goals.find((x) => !x.done && !dismissed(x.id))
+    if (celebrate) {
+      clearTimeout(celebrate)
+      celebrate = 0
+      cardHidden = false
+      paintPath()
+      return
+    }
+    const g = currentGoal()
     if (g) dismissId(g.id)
-    cardArmed = false
-    clearTimeout(hideTimer)
+    clearTimeout(celebrate)
+    celebrate = 0
     clearTimeout(pathGap)
     const el = document.getElementById('path-chip')
     cardHidden = true
@@ -80,7 +77,6 @@ export function createLearn(api) {
   }
   function showPath() {
     cardHidden = false
-    cardArmed = false
     paintPath()
   }
   function sync() {
@@ -102,13 +98,13 @@ export function createLearn(api) {
       if (was && api.releaseHint) api.releaseHint("path")
       return
     }
-    if (pathGap) return
-    const g = goals.find((x) => !x.done && !dismissed(x.id))
+    if (pathGap || celebrate) return
+    const g = currentGoal()
     if (!g || cardHidden) {
       const was = !el.hidden
       el.hidden = true
       el.replaceChildren()
-      if (was && cardHidden && api.releaseHint) api.releaseHint("path")
+      if (was && api.releaseHint) api.releaseHint("path")
       return
     }
     if (api.hintTaken && api.hintTaken()) {
@@ -118,7 +114,6 @@ export function createLearn(api) {
       if (api.queueHint) api.queueHint("path")
       return
     }
-    armCard()
     el.classList.remove('path-out')
     el.hidden = false
     el.replaceChildren()
@@ -147,22 +142,48 @@ export function createLearn(api) {
   function tourOn() { return !state.tourDone }
   function skipTour() { state.tourDone = true; save() }
   function resetTour() { state.tourDone = false; save() }
+  function celebrateStep(g) {
+    clearTimeout(celebrate)
+    const nxt = currentGoal()
+    const el = document.getElementById('path-chip')
+    const quiet = !el || state.hideTips || (api.survival && !api.survival())
+    const finish = () => {
+      celebrate = 0
+      cardHidden = false
+      paintPath()
+      if (!nxt) api.toast(api.t('goalDone'))
+    }
+    if (quiet) { finish(); return }
+    el.classList.remove('path-out')
+    el.hidden = false
+    el.replaceChildren()
+    const title = document.createElement('span')
+    title.className = 'path-title'
+    title.textContent = api.t(g.id)
+    const mark = document.createElement('span')
+    mark.className = 'path-check'
+    const icon = menuIcon('check')
+    if (icon) mark.append(icon)
+    el.append(title, mark)
+    celebrate = setTimeout(finish, 800)
+  }
   function bump(id, n = 1) {
+    if (celebrate) return
     const g = goals.find((x) => x.id === id)
     if (!g || g.done) return
+    const showing = currentGoal()
+    if (!showing || showing.id !== id) return
     g.n += n
-    if (g.n >= g.need) {
-      g.done = true
-      dismissId(g.id)
-      cardHidden = true
-      cardArmed = false
-      clearTimeout(hideTimer)
-      api.pay(g.pay, id)
-      const nxt = goals.find((x) => !x.done)
-      api.toast(nxt ? api.t(nxt.id) : api.t('goalDone'))
+    if (g.n < g.need) {
+      remember()
+      paintPath()
+      return
     }
+    g.done = true
+    dismissId(g.id)
     remember()
-    paintPath()
+    api.pay(g.pay, id)
+    celebrateStep(g)
   }
   function a11y(patch) {
     state.a11y = Object.assign({ text: 'M', contrast: false, hold: true, gentle: false, robots: false }, state.a11y || {}, patch || {})
@@ -288,8 +309,8 @@ export function createLearn(api) {
     save()
     clearTimeout(pathGap)
     pathGap = 0
-    cardArmed = false
-    clearTimeout(hideTimer)
+    clearTimeout(celebrate)
+    celebrate = 0
     if (state.hideTips) cardHidden = true
     else cardHidden = false
     paintPath()
