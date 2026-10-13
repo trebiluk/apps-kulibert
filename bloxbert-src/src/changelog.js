@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.194', date: '2026-10-13', lines: {
+    en: ['The place-next-to-it hint only shows when you can use it.'],
+    uk: ['Підказка «поставити поруч» з’являється лише тоді, коли ти можеш це зробити.'],
+    ru: ['Подсказка «поставить рядом» появляется только когда ты можешь это сделать.'],
+    es: ['El aviso de poner al lado solo sale cuando puedes usarlo.'],
+    ar: ['تلميح الوضع بجانبه يظهر فقط حين يمكنك استخدامه.'],
+    'fa-AF': ['نکتهٔ گذاشتن کنار آن فقط وقتی می‌آید که بتوانی از آن استفاده کنی.'],
+    rw: ['Inama yo gushyira iruhande igaragara gusa iyo ubishoboye.'],
+    ti: ['ምኽሪ ኣብ ጥቓኡ ምቕማጥ ክትጥቀመሉ ከለኻ ጥራይ ይረአ።'],
+  }},
   { v: '2.5.193', date: '2026-10-13', lines: {
     en: ['Bertopia opens in your class\'s language.'],
     uk: ['Bertopia відкривається мовою твого класу.'],

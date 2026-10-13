@@ -1713,11 +1713,15 @@ function againstMachine(block) {
   return crouching()
 }
 function noteCrouchHint() {
+  const el = $('toast')
+  const show = !TOUCH_UI && !tableMode && !anyCard() && placeableHeld()
+  if (!show) {
+    if (el && !el.hidden && el.textContent === t('crouchPlace')) el.hidden = true
+    return
+  }
   if (crouchHintN >= 3) return
-  if (!heldPlaceKey()) return
   crouchHintN += 1
   toast(t('crouchPlace'))
-  const el = $('toast')
   if (el) el.style.zIndex = '60'
 }
 function landingCell(aimed) {
@@ -2209,7 +2213,7 @@ function useHit(hit) {
   if (location.search.includes('smoke=1') && kind) console.info('use face ' + ax + ',' + ay + ',' + az + ' id ' + id)
   if (!kind) return !!isUseBlock(id)
   if (mutedUse({ position: [ax, ay, az] })) return true
-  if (heldPlaceKey() && !crouching()) noteCrouchHint()
+  if (!crouching()) noteCrouchHint()
   const shopOk = kind !== 'shop' || (session && session.mode === 'survival')
   if (!shopOk || !panels) return true
   const key = ax + ',' + ay + ',' + az
