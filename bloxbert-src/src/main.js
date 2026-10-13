@@ -4604,6 +4604,7 @@ function hidePlayChip() {
 function showPlayChip() {
   const el = $('play-chip')
   if (!el) return
+  if (TOUCH_UI) { el.hidden = true; return }
   el.textContent = t('clickToPlay')
   el.hidden = false
 }

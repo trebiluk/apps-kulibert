@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.187', date: '2026-10-13', lines: {
+    en: ['On phones the Click to play note no longer covers the middle of the screen.'],
+    uk: ['На телефонах напис «Натисни, щоб грати» більше не закриває середину екрана.'],
+    ru: ['На телефонах надпись «Нажми, чтобы играть» больше не закрывает середину экрана.'],
+    es: ['En el teléfono, el aviso «Haz clic para jugar» ya no tapa el centro de la pantalla.'],
+    ar: ['على الهاتف، ملاحظة «انقر للعب» لم تعد تغطي وسط الشاشة.'],
+    'fa-AF': ['در گوشی، یادداشت «برای بازی کلیک کن» دیگر وسط صفحه را نمی‌پوشاند.'],
+    rw: ['Ku telefoni, inyandiko «Kanda ukine» ntikongera gupfuka hagati y\'ecran.'],
+    ti: ['ኣብ ስልኪ፡ መልእኽቲ «ጠውቕ ንምጻወት» ማእኸል መስኮት ኣይሽፍን።'],
+  }},
   { v: '2.5.186', date: '2026-10-13', lines: {
     en: ['Right-click a Workbench or Box to open it, just like F.'],
     uk: ['Клік правою по верстаку або скрині відкриває їх, як F.'],

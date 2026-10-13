@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.187 Phone play note:** On a phone, the Click to play chip never shows. On a desktop it stays, and it sits below the crosshair.
 - [x] **2.5.186 Right-click stations:** On a desktop, right-click a Workbench or a Box to open it, the same way F does. Right-click does not place a block on them. A touch tap is unchanged.
 - [x] **2.5.185 Menu close:** Closing the Menu no longer grabs the mouse. The next click in the world locks it and does its job. A click on the top bar does not break a block.
 - [x] **2.5.184 Held item:** The held item stays above the hotbar. It shows a picture, the name, how many you hold, the Bag total, and a Cog price when the item sells. At 915 wide it is the picture, the count, and the price. A tap opens the rest. Bag, chest, and shop tiles show the same card. Dirt skips the Cog line.
