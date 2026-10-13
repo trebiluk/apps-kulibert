@@ -111,13 +111,30 @@ export function wildWood(x, y, z, gen, fade) {
 
 // Six full trees just south of Bertyville, each a short walk from spawn [8.5, 1.5].
 // Trunks are 6 logs (the normal crown covers the top two). Same spots every new world.
-const STARTER = [[-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
+export const SPAWN_XZ = [8.5, 1.5]
+export const SPAWN_TREES = [[-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
 const TRUNK = 6
 
+// Yaw that looks from (x, z) at the nearest starter trunk. New worlds use this once.
+export function spawnTreeYaw(x, z) {
+  const px = Number.isFinite(x) ? x : SPAWN_XZ[0]
+  const pz = Number.isFinite(z) ? z : SPAWN_XZ[1]
+  let dx = 0
+  let dz = -1
+  let best = Infinity
+  for (let i = 0; i < SPAWN_TREES.length; i++) {
+    const tx = SPAWN_TREES[i][0] + 0.5 - px
+    const tz = SPAWN_TREES[i][1] + 0.5 - pz
+    const d = tx * tx + tz * tz
+    if (d < best) { best = d; dx = tx; dz = tz }
+  }
+  return Math.atan2(dx, dz)
+}
+
 function starterWood(x, y, z) {
-  for (let i = 0; i < STARTER.length; i++) {
-    const tx = STARTER[i][0]
-    const tz = STARTER[i][1]
+  for (let i = 0; i < SPAWN_TREES.length; i++) {
+    const tx = SPAWN_TREES[i][0]
+    const tz = SPAWN_TREES[i][1]
     const dx = x - tx
     const dz = z - tz
     if (dx > 2 || dx < -2 || dz > 2 || dz < -2) continue

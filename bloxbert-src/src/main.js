@@ -42,7 +42,7 @@ import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
-import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN } from './worldgen.js'
+import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
 import { fromDoc } from './save.js'
 import { RECIPES } from './data/recipes.js'
@@ -1491,6 +1491,11 @@ function setLook(h, p) {
   const d = c.getDirection()
   const cp = Math.cos(c.pitch)
   d[0] = cp * Math.sin(c.heading); d[1] = -Math.sin(c.pitch); d[2] = cp * Math.cos(c.heading)
+}
+function faceFirstSpawn() {
+  if (session && session.mode !== 'survival') return
+  if (isMakerPreset(makerLive.preset)) return
+  setLook(spawnTreeYaw(SPAWN[0], SPAWN[2]), 0.18)
 }
 setLook(0, 0.18)
 
@@ -3155,6 +3160,7 @@ async function load() {
     seedOldBushes()
     allowSave = true
     if (mergePin(null)) noteMachine()
+    faceFirstSpawn()
     return false
   }
   if (doc.format !== 'kuliblocks') {
@@ -3277,7 +3283,7 @@ async function resetWorld() {
   worldSpawn = SPAWN.slice()
   spawnSet = false
   protect = { size: 'medium', center: null }
-  setLook(0, 0.18)
+  faceFirstSpawn()
   seedOldBushes()
   openedFrom = ''
   bakeSpawnChunk()

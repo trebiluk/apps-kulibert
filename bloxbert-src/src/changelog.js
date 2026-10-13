@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.188', date: '2026-10-13', lines: {
+    en: ['New worlds start facing a tree.'],
+    uk: ['Нові світи починаються обличчям до дерева.'],
+    ru: ['Новые миры начинаются лицом к дереву.'],
+    es: ['Los mundos nuevos empiezan mirando un árbol.'],
+    ar: ['العوالم الجديدة تبدأ وهي تواجه شجرة.'],
+    'fa-AF': ['دنیاهای تازه رو به یک درخت شروع می‌شوند.'],
+    rw: ['Isi nshya itangira ireba igiti.'],
+    ti: ['ሓደስቲ ዓለማት ንዕንጨይቲ የቕድሙ።'],
+  }},
   { v: '2.5.187', date: '2026-10-13', lines: {
     en: ['On phones the Click to play note no longer covers the middle of the screen.'],
     uk: ['На телефонах напис «Натисни, щоб грати» більше не закриває середину екрана.'],

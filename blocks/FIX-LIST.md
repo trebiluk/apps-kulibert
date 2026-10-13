@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.188 Spawn tree:** A new Survival world starts facing the nearest of the six spawn trees. A saved world keeps its old facing.
 - [x] **2.5.187 Phone play note:** On a phone, the Click to play chip never shows. On a desktop it stays, and it sits below the crosshair.
 - [x] **2.5.186 Right-click stations:** On a desktop, right-click a Workbench or a Box to open it, the same way F does. Right-click does not place a block on them. A touch tap is unchanged.
 - [x] **2.5.185 Menu close:** Closing the Menu no longer grabs the mouse. The next click in the world locks it and does its job. A click on the top bar does not break a block.
