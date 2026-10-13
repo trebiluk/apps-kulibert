@@ -119,7 +119,7 @@ export function createLearn(api) {
     el.replaceChildren()
     const title = document.createElement('span')
     title.className = 'path-title'
-    title.textContent = api.t(g.id)
+    title.textContent = api.t(g.id === 'pathTree' && api.touch && api.touch() ? 'pathTreeTouch' : g.id)
     const x = document.createElement('span')
     x.className = 'path-x'
     const xp = menuIcon('x')
@@ -127,12 +127,6 @@ export function createLearn(api) {
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
-    if (g.id === 'pathTree' && api.touch && api.touch()) {
-      const sub = document.createElement('span')
-      sub.className = 'path-sub'
-      sub.textContent = api.t('pathTreeTouch')
-      el.append(sub)
-    }
     if (api.claimHint) api.claimHint("path")
   }
   function load() {
@@ -159,7 +153,7 @@ export function createLearn(api) {
     el.replaceChildren()
     const title = document.createElement('span')
     title.className = 'path-title'
-    title.textContent = api.t(g.id)
+    title.textContent = api.t(g.id === 'pathTree' && api.touch && api.touch() ? 'pathTreeTouch' : g.id)
     const mark = document.createElement('span')
     mark.className = 'path-check'
     const icon = menuIcon('check')

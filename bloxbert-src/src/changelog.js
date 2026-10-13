@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.190', date: '2026-10-13', lines: {
+    en: ['Phone players see tap words, not mouse words.'],
+    uk: ['На телефоні слова про дотик, не про мишу.'],
+    ru: ['На телефоне слова про палец, не про мышь.'],
+    es: ['En el teléfono, palabras de toque, no de ratón.'],
+    ar: ['على الهاتف كلمات اللمس، لا كلمات الفأرة.'],
+    'fa-AF': ['در گوشی واژه‌های لمس است، نه واژه‌های موش.'],
+    rw: ['Kuri telefoni ni amagambo yo gukanda, si aya mouse.'],
+    ti: ['ኣብ ስልኪ ቃላት ምጥዋቕ እዩ፡ ናይ ማውስ ኣይኮነን።'],
+  }},
   { v: '2.5.189', date: '2026-10-13', lines: {
     en: ['Tips wait for you to finish each step.'],
     uk: ['Підказки чекають, поки ти закінчиш кожен крок.'],
