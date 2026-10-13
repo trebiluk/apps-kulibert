@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.186', date: '2026-10-13', lines: {
+    en: ['Right-click a Workbench or Box to open it, just like F.'],
+    uk: ['Клік правою по верстаку або скрині відкриває їх, як F.'],
+    ru: ['Правый клик по верстаку или сундуку открывает их, как F.'],
+    es: ['Clic derecho en el banco o la caja lo abre, igual que F.'],
+    ar: ['النقر باليمين على المنضدة أو الصندوق يفتحه، مثل F.'],
+    'fa-AF': ['کلیک راست روی میز کار یا صندوق آن را باز می‌کند، مثل F.'],
+    rw: ['Kanda iburyo ku meza cyangwa agasanduku ubifungure, nk\'F.'],
+    ti: ['የማን ጠውቃ ኣብ ሰደቓ ወይ ሳንዱቅ ይኸፍቶ፡ ከም F.'],
+  }},
   { v: '2.5.185', date: '2026-10-13', lines: {
     en: ['Closing the Menu no longer grabs the mouse. Your next click in the world locks it and does its job.'],
     uk: ['Закриття Меню більше не хапає мишу. Наступний клік у світі блокує її і робить свою роботу.'],

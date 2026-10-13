@@ -2769,6 +2769,7 @@ noa.inputs.down.on('alt-fire', () => {
     else { showPlayChip(); grabLock(); return }
   }
   const tget = noa.targetedBlock
+  if (!TOUCH_UI && deskOpenStation(tget)) return
   if (tryEatClick(tget)) return
   if (tget && isUseBlock(tget.blockID)) return
   placeBlock()
@@ -6762,7 +6763,11 @@ window.addEventListener('pointerdown', (e) => {
     if (!TOUCH_UI && !anyCard() && !tableMode) shell.stickyPointerLock = true
   }, 0)
 }, true)
-canvas.addEventListener('contextmenu', (e) => { if (canvasHit(e)) e.preventDefault() })
+canvas.addEventListener('contextmenu', (e) => {
+  if (canvasHit(e) || e.target === stageEl || (stageEl && stageEl.contains(e.target))) e.preventDefault()
+  if (TOUCH_UI || tableMode || anyCard()) return
+  deskOpenStation(targetHit())
+}, true)
 let look = null
 let buttonHold = null
 const LOOK_H = 0.40 * Math.PI / 180
@@ -6903,6 +6908,18 @@ document.addEventListener('mousemove', (e) => {
   if (performance.now() < lockSwallowUntil) return
   applyLockedLook(dx, dy)
 }, true)
+let deskStationAt = 0
+function deskOpenStation(hit) {
+  if (TOUCH_UI || !hit) return false
+  const id = hit.blockID != null ? hit.blockID : hit.id
+  if (id !== ID.workbench && id !== ID.box) return false
+  const now = performance.now()
+  if (now - deskStationAt < 350) return true
+  deskStationAt = now
+  const pos = hit.position || [hit.x, hit.y, hit.z]
+  useAt({ position: pos, blockID: id, id })
+  return true
+}
 canvas.addEventListener('mousedown', (e) => { if (!canvasHit(e)) return; if (e.button === 1) e.preventDefault() })
 canvas.addEventListener('auxclick', (e) => { if (e.button === 1) { e.preventDefault(); pickAimed() } })
 function targetHit() {
@@ -7096,6 +7113,15 @@ window.addEventListener('pointerdown', (e) => {
     return
   }
   if (e.button !== 2 || tableMode || !sheetEl.hidden) return
+  if (!TOUCH_UI && (canvasHit(e) || e.target === stageEl || (stageEl && stageEl.contains(e.target)) || document.pointerLockElement)) {
+    if (deskOpenStation(targetHit())) {
+      e.preventDefault()
+      e.stopPropagation()
+      mouseRight = false
+      rightPress = null
+      return
+    }
+  }
   if (!canvasHit(e)) return
   if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') armActLock()
   if (eatResume(e)) return
@@ -7160,6 +7186,10 @@ function finishRight(e) {
   const upHit = targetHit()
   const down = press.id == null ? null : { id: press.id, x: press.x, y: press.y, z: press.z }
   const up = upHit ? { id: upHit.blockID, x: upHit.position[0], y: upHit.position[1], z: upHit.position[2] } : null
+  if (!TOUCH_UI && down && (down.id === ID.workbench || down.id === ID.box)) {
+    deskOpenStation({ id: down.id, blockID: down.id, position: [down.x, down.y, down.z] })
+    return
+  }
   if (press.locked) {
     if (down && up && down.x === up.x && down.y === up.y && down.z === up.z) placeBlock(upHit)
     return
