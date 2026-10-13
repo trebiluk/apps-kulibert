@@ -74,35 +74,35 @@ registerPack({
   drops,
   strings: {
     en: {
-      techCell: 'Battery Cell', techLine: 'Nanotube line', techSwitch: 'Switch', techSwitchOn: 'Switch',
+      techCell: 'Battery Cell', techLine: 'Copper wire', techSwitch: 'Switch', techSwitchOn: 'Switch',
       techButton: 'Push Button', techButtonOn: 'Push Button', circuitLens: 'Circuit Lens',
     },
     uk: {
-      techCell: 'Батарея', techLine: 'Нанотрубкова лінія', techSwitch: 'Вимикач', techSwitchOn: 'Вимикач',
+      techCell: 'Батарея', techLine: 'Мідний дріт', techSwitch: 'Вимикач', techSwitchOn: 'Вимикач',
       techButton: 'Кнопка', techButtonOn: 'Кнопка', circuitLens: 'Лінза кола',
     },
     ru: {
-      techCell: 'Батарея', techLine: 'Линия нанотрубок', techSwitch: 'Выключатель', techSwitchOn: 'Выключатель',
+      techCell: 'Батарея', techLine: 'Медная проволока', techSwitch: 'Выключатель', techSwitchOn: 'Выключатель',
       techButton: 'Кнопка', techButtonOn: 'Кнопка', circuitLens: 'Линза цепи',
     },
     es: {
-      techCell: 'Pila', techLine: 'Línea de nanotubo', techSwitch: 'Interruptor', techSwitchOn: 'Interruptor',
+      techCell: 'Pila', techLine: 'Cable de cobre', techSwitch: 'Interruptor', techSwitchOn: 'Interruptor',
       techButton: 'Pulsador', techButtonOn: 'Pulsador', circuitLens: 'Lente del circuito',
     },
     ar: {
-      techCell: 'خلية', techLine: 'خط أنبوب نانوي', techSwitch: 'مفتاح', techSwitchOn: 'مفتاح',
+      techCell: 'خلية', techLine: 'سلك نحاس', techSwitch: 'مفتاح', techSwitchOn: 'مفتاح',
       techButton: 'زر ضغط', techButtonOn: 'زر ضغط', circuitLens: 'عدسة الدائرة',
     },
     'fa-AF': {
-      techCell: 'پیل', techLine: 'خط نانولوله', techSwitch: 'کلید', techSwitchOn: 'کلید',
+      techCell: 'پیل', techLine: 'سیم مس', techSwitch: 'کلید', techSwitchOn: 'کلید',
       techButton: 'دکمه فشاری', techButtonOn: 'دکمه فشاری', circuitLens: 'عدسی مدار',
     },
     rw: {
-      techCell: 'Bateri', techLine: 'Umurongo wa nanotube', techSwitch: 'Ikinyuranyo', techSwitchOn: 'Ikinyuranyo',
+      techCell: 'Bateri', techLine: 'Umugozi wa kope', techSwitch: 'Ikinyuranyo', techSwitchOn: 'Ikinyuranyo',
       techButton: 'Buto', techButtonOn: 'Buto', circuitLens: 'Ishusho y\'uruziga',
     },
     ti: {
-      techCell: 'ባትሪ', techLine: 'መስመር ናኖቱብ', techSwitch: 'መቐለሊ', techSwitchOn: 'መቐለሊ',
+      techCell: 'ባትሪ', techLine: 'ገመድ ናሕስ', techSwitch: 'መቐለሊ', techSwitchOn: 'መቐለሊ',
       techButton: 'መጠወቒ', techButtonOn: 'መጠወቒ', circuitLens: 'መነጽር ሰርኪት',
     },
   },

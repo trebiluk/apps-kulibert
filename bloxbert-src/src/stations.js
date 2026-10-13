@@ -382,10 +382,22 @@ export function createStations(api) {
     b.setAttribute('aria-label', (b.querySelector('.blab') ? b.querySelector('.blab').textContent : '') + ' — ' + reason)
     return b
   }
+  const SKILL_FALLBACK = {
+    skillNeed: 'Ask: Engineers start by asking who it\'s for.',
+    skillPlan: 'Plan: A sketch lets you find mistakes before you cut.',
+    skillTest: 'Test: Testing shows what to improve.',
+    skillImprove: 'Improve: Real designs get better every round.',
+  }
+  function skillText(key) {
+    let text = ''
+    try { text = api.t(key) || '' } catch (e) { text = '' }
+    if (!String(text).trim() || text === key) text = SKILL_FALLBACK[key] || ''
+    return text
+  }
   function skillLine(key) {
     const p = document.createElement('p')
     p.className = 'gnote bed-skill'
-    p.textContent = api.t(key)
+    p.textContent = skillText(key)
     return p
   }
   function paintBed(crate, g, key, rec) {
@@ -475,7 +487,7 @@ export function createStations(api) {
         title.textContent = api.t('fitsBerty')
         step.append(icon, title, skillLine('skillNeed'))
         step.append(capBtn('bed-next', api.t('nextWord'), () => go('plan')))
-        sayBed('need', api.t('fitsBerty') + ' ' + api.t('skillNeed'), step)
+        sayBed('need', api.t('fitsBerty') + ' ' + skillText('skillNeed'), step)
       } else if (job.step === 'plan') {
         icon.append(face('bunk'))
         title.textContent = api.t('toneWord')
@@ -515,7 +527,7 @@ export function createStations(api) {
         })
         if (!job.paid && !woolHave(job.fabric)) next.disabled = true
         step.append(next)
-        sayBed('plan', api.t('skillPlan'), step)
+        sayBed('plan', skillText('skillPlan'), step)
       } else if (job.step === 'measure') {
         const board = job.boards[job.board] || job.boards[0]
         icon.append(face('measuringTape'))
@@ -623,7 +635,7 @@ export function createStations(api) {
         stars.textContent = starText(rated.stars)
         step.append(stars)
         step.append(capBtn('bed-next', api.t('nextWord'), () => go('improve')))
-        sayBed('test', wobbleText(rated.wobble) + ' ' + api.t('skillTest'), step)
+        sayBed('test', wobbleText(rated.wobble) + ' ' + skillText('skillTest'), step)
       } else if (job.step === 'improve') {
         const rated = rateJob(job)
         icon.append((rated.stars >= 3) ? face('goldTrim') : face('bunk'))
@@ -668,7 +680,7 @@ export function createStations(api) {
             paintWoodshop(g, key)
           }))
         }
-        sayBed('improve', api.t('skillImprove'), step)
+        sayBed('improve', skillText('skillImprove'), step)
       }
       box.append(step)
     }
@@ -727,7 +739,7 @@ export function createStations(api) {
       const line = document.createElement('p')
       line.className = 'gnote shop-skill'
       line.textContent = shopGuide === 'bunk'
-        ? [api.t('skillNeed'), api.t('skillPlan'), api.t('skillTest'), api.t('skillImprove')].join(' ')
+        ? [skillText('skillNeed'), skillText('skillPlan'), skillText('skillTest'), skillText('skillImprove')].join(' ')
         : api.t(who ? who.skill : 'skillBench')
       const back = document.createElement('button')
       back.type = 'button'

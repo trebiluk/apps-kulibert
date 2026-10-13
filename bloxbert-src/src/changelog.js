@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.191', date: '2026-10-13', lines: {
+    en: ['Clearer words on design, dye and circuit cards.'],
+    uk: ['Ясніші слова на картках дизайну, барвника й кола.'],
+    ru: ['Яснее слова на карточках замысла, красителя и цепи.'],
+    es: ['Palabras más claras en las fichas de diseño, tinte y circuito.'],
+    ar: ['كلمات أوضح في بطاقات التصميم والصبغة والدائرة.'],
+    'fa-AF': ['واژه‌های روشن‌تر در کارت‌های طرح، رنگ و مدار.'],
+    rw: ['Amagambo asobanutse ku makarita y\'igishushanyo, ibura na circuit.'],
+    ti: ['ንጹር ቃላት ኣብ ካርድታት ንድፊ፡ ሕብሪን ሰርኪትን።'],
+  }},
   { v: '2.5.190', date: '2026-10-13', lines: {
     en: ['Phone players see tap words, not mouse words.'],
     uk: ['На телефоні слова про дотик, не про мишу.'],
