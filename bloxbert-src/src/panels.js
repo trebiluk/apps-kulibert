@@ -319,6 +319,12 @@ export function mountPanels(api) {
       }),
       help: () => show('help', api.t('help'), (g) => {
         g.append(tile('film', api.t('tour'), () => open('tour')))
+        const touch = !!(api.touch && api.touch())
+        const keys = document.createElement('p')
+        keys.className = 'gnote'
+        keys.dataset.helpKeys = '1'
+        keys.textContent = api.t(touch ? 'keysHintTouch' : 'keysHint')
+        g.append(keys)
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {

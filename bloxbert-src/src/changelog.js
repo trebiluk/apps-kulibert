@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.192', date: '2026-10-13', lines: {
+    en: ['Phone players see tap words in Help.'],
+    uk: ['На телефоні в Допомозі слова про дотик.'],
+    ru: ['На телефоне в Помощи слова про палец.'],
+    es: ['En el teléfono, la Ayuda usa palabras de toque.'],
+    ar: ['على الهاتف، المساعدة بكلمات اللمس.'],
+    'fa-AF': ['در گوشی، کمک واژه‌های لمس است.'],
+    rw: ['Kuri telefoni, Ubufasha bugira amagambo yo gukanda.'],
+    ti: ['ኣብ ስልኪ ሓገዝ ቃላት ምጥዋቕ እዩ።'],
+  }},
   { v: '2.5.191', date: '2026-10-13', lines: {
     en: ['Clearer words on design, dye and circuit cards.'],
     uk: ['Ясніші слова на картках дизайну, барвника й кола.'],

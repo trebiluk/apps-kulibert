@@ -142,7 +142,10 @@ function applyI18n() {
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
   else document.documentElement.dir = 'ltr'
-  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = t(el.dataset.i18n)
+  for (const el of document.querySelectorAll('[data-i18n]')) {
+    const key = el.dataset.i18n === 'keysHint' && TOUCH_UI ? 'keysHintTouch' : el.dataset.i18n
+    el.textContent = t(key)
+  }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   const plate = document.getElementById('ver-plate')
   if (plate) plate.textContent = VERSION
@@ -4852,6 +4855,7 @@ async function paintBackups(g) {
 }
 panels = mountPanels({
   t, toast,
+  touch: () => TOUCH_UI,
   save: () => save(),
   load: () => load(),
   exportWorld: () => exportJSON(),
