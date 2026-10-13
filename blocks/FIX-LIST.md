@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.193 Class language:** Bertopia opens in the class language when the teacher set one. A kid's saved language is next. The browser language is used only after that. Otherwise English.
 - [x] **2.5.192 Touch Help:** On a phone, Menu Help uses stick, finger, and button words. On a desktop it still says WASD and left click.
 - [x] **2.5.191 Card words:** Design cards start with Ask, Plan, Test, and Improve. Dye says it is a pigment. The wire is copper, and the circuit lesson says where the current stops. Kinyarwanda says the lever is on.
 - [x] **2.5.190 Touch hint:** On a phone the first hint says to hold a finger on a log. On a desktop it still says left click.

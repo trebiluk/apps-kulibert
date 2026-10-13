@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.193', date: '2026-10-13', lines: {
+    en: ['Bertopia opens in your class\'s language.'],
+    uk: ['Bertopia відкривається мовою твого класу.'],
+    ru: ['Bertopia открывается на языке твоего класса.'],
+    es: ['Bertopia se abre en el idioma de tu clase.'],
+    ar: ['Bertopia يفتح بلغة صفك.'],
+    'fa-AF': ['Bertopia به زبان صنف تو باز می‌شود.'],
+    rw: ['Bertopia ifunguka mu rurimi rw\'icyiciro cyawe.'],
+    ti: ['Bertopia ብቋንቋ ክፍልኻ ይኸፍት።'],
+  }},
   { v: '2.5.192', date: '2026-10-13', lines: {
     en: ['Phone players see tap words in Help.'],
     uk: ['На телефоні в Допомозі слова про дотик.'],

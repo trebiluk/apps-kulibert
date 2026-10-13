@@ -101,9 +101,84 @@ const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
 if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')
 
-let LANG = qs.get('lang') || ''
-if (!LANG) { try { LANG = (JSON.parse(localStorage.getItem('kulibert-prefs-v1') || 'null') || {}).lang || '' } catch (e) {} }
-if (!STR[LANG]) LANG = 'en'
+function normLang(code) {
+  const raw = String(code || '').trim()
+  if (!raw || raw === 'simple') return ''
+  if (raw === 'fa' || /^fa[-_]/i.test(raw)) return STR['fa-AF'] ? 'fa-AF' : ''
+  if (STR[raw]) return raw
+  const base = raw.toLowerCase().split(/[-_]/)[0]
+  if (base === 'fa') return STR['fa-AF'] ? 'fa-AF' : ''
+  return STR[base] ? base : ''
+}
+function readBag(key) {
+  try { return JSON.parse(localStorage.getItem(key) || 'null') } catch (e) { return null }
+}
+function classLanguage() {
+  const q = normLang(qs.get("classlang") || '')
+  if (q) return q
+  const prefs = readBag('kulibert-prefs-v1')
+  if (prefs && typeof prefs === 'object') {
+    const hit = normLang(prefs.classLang || prefs.roomLang || prefs.teacherLang || '')
+    if (hit) return hit
+  }
+  for (const key of ['bloxbert-class-lang', 'kulibert-class-lang', 'tech-room-lang']) {
+    try {
+      const v = localStorage.getItem(key)
+      if (!v) continue
+      const parsed = (v[0] === '{' || v[0] === '"') ? JSON.parse(v) : v
+      const hit = normLang(typeof parsed === 'string' ? parsed : (parsed && parsed.lang))
+      if (hit) return hit
+    } catch (e) {}
+  }
+  return ''
+}
+function bareLangStamp(prefs) {
+  return Object.keys(prefs).every((k) => k === 'lang' || k === 'v')
+}
+function kidLanguage() {
+  try {
+    const saved = normLang(localStorage.getItem('bloxbert-lang') || '')
+    if (saved) return saved
+  } catch (e) {}
+  const prefs = readBag('kulibert-prefs-v1')
+  if (prefs && typeof prefs === 'object' && !bareLangStamp(prefs)) {
+    const fromPrefs = normLang(prefs.lang)
+    if (fromPrefs) return fromPrefs
+  }
+  return normLang(qs.get('lang') || '')
+}
+function browserLanguage() {
+  let list = []
+  try { list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''] } catch (e) {}
+  for (const item of list) {
+    const hit = normLang(item)
+    if (hit) return hit
+  }
+  return ''
+}
+function saveKidLang(code) {
+  const hit = normLang(code)
+  if (!hit) return
+  try { localStorage.setItem('bloxbert-lang', hit) } catch (e) {}
+  try {
+    const prefs = readBag('kulibert-prefs-v1')
+    const bag = prefs && typeof prefs === 'object' ? prefs : {}
+    bag.lang = hit
+    if (!bag.v) bag.v = 1
+    localStorage.setItem('kulibert-prefs-v1', JSON.stringify(bag))
+  } catch (e) {}
+}
+let LANG = classLanguage() || kidLanguage() || browserLanguage() || 'en'
+document.addEventListener('click', (e) => {
+  const btn = e.target && e.target.closest && e.target.closest('.kb-drawer-langs button')
+  if (!btn) return
+  const raw = btn.getAttribute('lang') || ''
+  const hit = normLang(raw === 'fa' ? 'fa-AF' : raw)
+  if (!hit) return
+  saveKidLang(hit)
+  LANG = hit
+  applyI18n()
+})
 let freshDropDate = ''
 function t(key) {
   if (key === 'confirmFresh' && freshDropDate) return t('confirmFreshFull').replace('{date}', freshDropDate)
@@ -139,6 +214,7 @@ function dressTop() {
   fillIco(document)
 }
 function applyI18n() {
+  painting = true
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
   else document.documentElement.dir = 'ltr'
@@ -154,7 +230,34 @@ function applyI18n() {
   const pick = document.getElementById('pick-chip')
   if (pick && pick.dataset.ready) paintPick()
   dressTop()
+  painting = false
 }
+let painting = false
+let langArm = 0
+function langDrifted() {
+  if (document.documentElement.lang !== LANG) return true
+  for (const el of document.querySelectorAll('[data-i18n]')) {
+    const key = el.dataset.i18n === 'keysHint' && TOUCH_UI ? 'keysHintTouch' : el.dataset.i18n
+    if (el.textContent !== t(key)) return true
+  }
+  return false
+}
+function defendLang() {
+  if (painting || !langDrifted()) return
+  applyI18n()
+}
+new MutationObserver((records) => {
+  if (painting || langArm) return
+  for (const rec of records) {
+    const node = rec.target
+    const el = node && node.nodeType === 1 ? node : node && node.parentElement
+    if (!el || !el.closest) continue
+    if (el === document.documentElement || el.closest('[data-i18n]')) {
+      langArm = requestAnimationFrame(() => { langArm = 0; defendLang() })
+      return
+    }
+  }
+}).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'], subtree: true, childList: true, characterData: true })
 applyI18n()
 
 let walkPresses = 0
