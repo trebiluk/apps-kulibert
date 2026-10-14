@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
 
+- [x] **2.5.195 Start kit:** A new Survival world starts with 4 sticks, 4 planks, and 1 berry. A reload does not give them again. An old save does not gain them.
 - [x] **2.5.194 Place hint:** The crouch-to-place hint shows only when a mouse is holding a block and no panel is open. A phone never sees it. An empty hand does not see it.
 - [x] **2.5.192 Touch Help:** On a phone, Menu Help uses stick, finger, and button words. On a desktop it still says WASD and left click.
 - [x] **2.5.191 Card words:** Design cards start with Ask, Plan, Test, and Improve. Dye says it is a pigment. The wire is copper, and the circuit lesson says where the current stops. Kinyarwanda says the lever is on.

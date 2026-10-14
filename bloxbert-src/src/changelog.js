@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.195', date: '2026-10-13', lines: {
+    en: ['New worlds start with a few sticks, planks and a berry.'],
+    uk: ['Нові світи починаються з кількох палиць, дощок і ягоди.'],
+    ru: ['Новые миры начинаются с нескольких палок, досок и ягоды.'],
+    es: ['Los mundos nuevos empiezan con unos palos, tablas y una baya.'],
+    ar: ['العوالم الجديدة تبدأ ببعض العصي والألواح وتوتة.'],
+    'fa-AF': ['جهان‌های تازه با چند چوب، تخته و یک توت شروع می‌شوند.'],
+    rw: ['Isi nshya zitangira n\'inkoni nke, imbaho n\'imbuto.'],
+    ti: ['ሓድሽቲ ዓለማት ብዝተወሰኑ በትሪ፡ ጣውላን ሓንቲ ፍረን ይጅምሩ።'],
+  }},
   { v: '2.5.194', date: '2026-10-13', lines: {
     en: ['The place-next-to-it hint only shows when you can use it.'],
     uk: ['Підказка «поставити поруч» з’являється лише тоді, коли ти можеш це зробити.'],

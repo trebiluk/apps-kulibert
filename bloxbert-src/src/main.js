@@ -3267,6 +3267,7 @@ async function load() {
     pondAid = true
     ensureHelp()
     grantSaplings()
+    grantStartKit()
     seedOldBushes()
     allowSave = true
     if (mergePin(null)) noteMachine()
@@ -3388,6 +3389,7 @@ async function resetWorld() {
   if (session && session.freshStart) session.freshStart()
   else if (session && session.clearLoose) session.clearLoose()
   grantSaplings()
+  grantStartKit()
   syncDropMeshes()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   worldSpawn = SPAWN.slice()
@@ -4313,6 +4315,16 @@ function grantSaplings() {
   const have = session.bag && session.bag.count ? session.bag.count('sapling') : 0
   if (have < 2) session.give('sapling', 2 - have)
   gifts.sapling2 = true
+  dirty = true
+}
+function grantStartKit() {
+  if (!session || !session.give) return
+  if (session.mode && session.mode !== 'survival') return
+  if (gifts.startKit) return
+  session.give('stick', 4)
+  session.give('planks', 4)
+  session.give('berry', 1)
+  gifts.startKit = true
   dirty = true
 }
 let doorOptAt = null
