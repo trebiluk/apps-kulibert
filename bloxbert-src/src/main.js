@@ -2916,8 +2916,8 @@ noa.inputs.down.on('alt-fire', () => {
   if (!TOUCH_UI && deskOpenStation(tget)) return
   if (tryEatClick(tget)) return
   if (tget && isUseBlock(tget.blockID)) return
-  placeBlock()
-  if (!TOUCH_UI) { mouseRight = true; placeHoldAt = performance.now() }
+  const placed = placeBlock()
+  if (!TOUCH_UI && placed) { mouseRight = true; placeHoldAt = performance.now() }
 })
 noa.inputs.down.on('mid-fire', () => pickAimed())
 
@@ -3960,8 +3960,10 @@ function flushSave() {
   if (dirty && allowSave) save().catch(() => {})
 }
 document.addEventListener('visibilitychange', () => {
-  if (document.hidden) flushSave()
-  else syncCrops(Date.now())
+  if (document.hidden) {
+    flushSave()
+    dropRightHold()
+  } else syncCrops(Date.now())
   if (!document.hidden) syncForage(Date.now())
 })
 window.addEventListener('pagehide', flushSave)
@@ -5777,6 +5779,7 @@ let escUnlock = false
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') escUnlock = true }, true)
 document.addEventListener('keyup', (e) => { if (e.key === 'Escape') escUnlock = false }, true)
 document.addEventListener('pointerlockchange', () => {
+  dropRightHold()
   if (document.pointerLockElement) {
     hadLock = true
     menuFromLock = false
@@ -6291,8 +6294,14 @@ let crouchOn = false
 let mouseLeft = false
 let leftDown = false
 let mouseRight = false
+let rightDown = false
 let rightPress = null
 let placeHoldAt = 0
+function dropRightHold() {
+  mouseRight = false
+  rightDown = false
+  rightPress = null
+}
 let pickArmed = false
 let holdHinted = false
 let quickCrackGen = 0
@@ -6726,7 +6735,8 @@ function feelTick(dt) {
   if (!breaking) sweep = null
   const touchLook = !!(look && look.pt === 'touch')
   if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
-  if (sheetOpen) mouseRight = false
+  if (anyCard()) dropRightHold()
+  else if (!rightDown) mouseRight = false
   else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
     placeHoldAt = now
     if (rightPress) rightPress.repeated = true
@@ -7266,6 +7276,7 @@ canvas.addEventListener('pointercancel', () => {
   look = null; leftDown = false; mouseLeft = false; dig = null; hideCrack(); farHit = null; releaseFar()
 })
 window.addEventListener('pointerdown', (e) => {
+  rightDown = !!(e.buttons & 2) || e.button === 2
   if (e.button === 2 && wandHeld() && canvasHit(e)) {
     wandPress = { button: 2, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
     e.preventDefault()
@@ -7303,9 +7314,11 @@ window.addEventListener('pointerdown', (e) => {
   }
   const reachable = !!(snap && canReach(snap.position))
   if (!TOUCH_UI && reachable && !interactive) {
-    mouseRight = true
-    placeHoldAt = performance.now()
     rightPress.placed = !!placeBlock(snap)
+    if (rightPress.placed) {
+      mouseRight = true
+      placeHoldAt = performance.now()
+    } else mouseRight = false
   } else mouseRight = false
   if (!reachable && !tableMode && !anyCard() && placeableHeld()) toastFarKey()
 }, true)
@@ -7357,12 +7370,14 @@ function finishRight(e) {
   if (canUse(down, up, press.moved, false)) placeBlock(upHit)
 }
 window.addEventListener('pointerup', (e) => {
+  if (e.button === 2 || !(e.buttons & 2)) rightDown = false
   if (wandPress && e.button === 2) { finishWandPress(e); return }
   releaseFar()
   if (e.button === 0) { mouseLeft = false; leftDown = false }
   if (e.button === 2) finishRight(e)
 }, true)
-window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false; releaseFar() })
+window.addEventListener('pointercancel', () => { rightPress = null; mouseRight = false; rightDown = false; releaseFar() })
+window.addEventListener('blur', () => dropRightHold())
 for (const el of document.querySelectorAll('[data-hold]')) {
   const st = el.dataset.hold
   const on = (e) => { e.preventDefault(); noa.inputs.state[st] = true; el.classList.add('down'); if (st === 'jump') jumpDown() }

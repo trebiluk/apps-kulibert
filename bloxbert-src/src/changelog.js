@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.206', date: '2026-10-14', lines: {
+    en: ['Blocks only go down when you click or tap.'],
+    uk: ['Блоки лягають лише коли ти клацаєш або торкаєшся.'],
+    ru: ['Блоки ставятся только когда ты нажимаешь или касаешься.'],
+    es: ['Los bloques solo se ponen cuando haces clic o tocas.'],
+    ar: ['المكعبات تنزل فقط عندما تنقر أو تلمس.'],
+    'fa-AF': ['بلاک‌ها فقط وقتی پایین می‌روند که کلیک یا لمس کنی.'],
+    rw: ['Amabuye amanuka gusa iyo ukanda cyangwa ukoze.'],
+    ti: ['ብሎኮች የወርዱ ጥራሕ ክትጥዕጥዕ ወይ ክትንካእ እዩ።'],
+  }},
   { v: '2.5.205', date: '2026-10-14', lines: {
     en: ['The Woodshop shows your tools going in, the setup meter, and what you can make.'],
     uk: ['Майстерня показує інструменти, що входять, шкалу підготовки і що можна зробити.'],
