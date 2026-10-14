@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.197', date: '2026-10-14', lines: {
+    en: ['Calmer, thinner scrollbars, and Settings fits the screen.'],
+    uk: ['Спокійніші, тонші смуги прокрутки, і Налаштування вміщуються на екрані.'],
+    ru: ['Спокойные тонкие полосы прокрутки, и Настройки помещаются на экране.'],
+    es: ['Barras de desplazamiento más finas y tranquilas, y Ajustes cabe en la pantalla.'],
+    ar: ['أشرطة تمرير أهدأ وأرفع، والإعدادات تناسب الشاشة.'],
+    'fa-AF': ['نوارهای پیمایش آرام‌تر و باریک‌تر، و تنظیمات در صفحه جا می‌شود.'],
+    rw: ['Imirongo yo kuzunguruka yoroheje, kandi Igenamiterere rikwira kuri ecran.'],
+    ti: ['ዝሃድኡን ዝቐጠኑን መሸብለሊ፣ ቅጥዒታት ድማ ኣብ ስክሪን ይኣቱ።'],
+  }},
   { v: '2.5.196', date: '2026-10-14', lines: {
     en: ['The Menu tab has a ☰ icon and speaks your language.'],
     uk: ['Вкладка «Меню» має значок ☰ і говорить твоєю мовою.'],
