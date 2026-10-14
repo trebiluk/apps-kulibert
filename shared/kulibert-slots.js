@@ -1234,6 +1234,7 @@
     return { update: update, destroy: destroy }
   }
 
+  var craftSweepAt = 0
   function craftPanel(el, opts) {
     opts = opts || {}
     var nameOf = bindName(opts)
@@ -1362,7 +1363,40 @@
       if (opts.onMax) opts.onMax()
     })
     keys.append(fillBtn, makeBtn, maxBtn)
-    card.append(line, bag, note, keys)
+    // G2-14: Input -> Process -> Output -> Feedback
+    var zf = zoneFrame(tr, typeof opts.coreIcon === 'function' ? opts.coreIcon : null)
+    var insBox = document.createElement('div')
+    insBox.className = 'ks-inputs tray-ins'
+    for (var wi = 0; wi < wells.length; wi++) insBox.append(wells[wi])
+    zf.inBody.append(insBox)
+    zf.outBody.append(result)
+    card.classList.add('ks-zoned')
+    makeBtn.addEventListener('click', function () { if (!makeBtn.disabled && !opts.bake) craftSweepAt = Date.now() }, true)
+    maxBtn.addEventListener('click', function () { if (!maxBtn.disabled) craftSweepAt = Date.now() }, true)
+    keys.insertBefore(zf.feedback, keys.firstChild)
+    card.append(zf.row, bag, note, keys)
+    function craftFeedback() {
+      var placed = placedNow()
+      var miss = []
+      var any = false
+      for (var q = 0; q < recipe.in.length; q++) {
+        var have = placed[q] || 0
+        if (have > 0) any = true
+        var gap = recipe.in[q][1] - have
+        if (gap > 0) miss.push(gap + ' ' + (nameOf(recipe.in[q][0]) || recipe.in[q][0]))
+      }
+      if (Date.now() - craftSweepAt < 900) return zf.setFeedback(zf.word('fbDone', 'Done! Take it'), 'done')
+      if (!miss.length) return zf.setFeedback(zf.word('fbReady', 'Ready to make'), 'done')
+      if (!any) return zf.setFeedback(zf.word('fbAdd', 'Add parts'), 'info')
+      zf.setFeedback(zf.word('fbMissing', 'Missing: {list}').replace('{list}', miss.join(', ')), 'warn')
+    }
+    var sweptAt = 0
+    function craftRefresh() {
+      craftFeedback()
+      if (craftSweepAt && craftSweepAt !== sweptAt && Date.now() - craftSweepAt < 400) { sweptAt = craftSweepAt; zf.sweep() }
+    }
+    card._ksRefresh = craftRefresh
+    craftRefresh()
     el.append(card)
     paintWells()
     paintBag()
@@ -1391,6 +1425,7 @@
         } else if (have < pair[1] && check) check.remove()
         b.setAttribute('aria-label', (nameOf(pair[0]) || pair[0]) + ' ' + have + '/' + pair[1])
       }
+      if (zf) craftFeedback()
     }
     function paintBag() {
       var slots = bagSlots()

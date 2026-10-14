@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.204', date: '2026-10-14', lines: {
+    en: ['The Workbench shows parts going in, the making step, and what comes out.'],
+    uk: ['Верстак показує, що входить, як робиться і що виходить.'],
+    ru: ['Верстак показывает, что входит, как делается и что выходит.'],
+    es: ['La mesa de trabajo muestra lo que entra, el paso de hacer y lo que sale.'],
+    ar: ['طاولة العمل تُظهر ما يدخل وخطوة الصنع وما يخرج.'],
+    'fa-AF': ['میز کار نشان می‌دهد چه داخل می‌شود، مرحلهٔ ساختن و چه بیرون می‌آید.'],
+    rw: ["Intebe y'akazi igaragaza ibyinjira, intambwe yo gukora n'ibisohoka."],
+    ti: ['ጣውላ ስራሕ ዝኣቱ፡ ስጉምቲ ምስራሕን ዝወጽእን የርኢ።'],
+  }},
   { v: '2.5.203', date: '2026-10-14', lines: {
     en: ['The Make button always fits on a sideways phone.'],
     uk: ['Кнопка «Зробити» завжди вміщується на поверненому телефоні.'],

@@ -869,6 +869,14 @@ html[dir=rtl] #sheet .ks-link{transform:scaleX(-1)}
 #sheet .ks-fb-ico svg{width:20px;height:20px;display:block;color:#9FB0C6}
 #sheet .ks-feedback[data-kind=done] .ks-fb-ico svg{color:#2dd4bf}
 #sheet .ks-feedback[data-kind=warn] .ks-fb-ico svg{color:#F6C453}
+#sheet[data-panel="crafting"] .ks-craft.ks-zoned{display:flex;flex-direction:column;gap:8px}
+#sheet[data-panel="crafting"] .ks-zoned .tray-ins{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
+#sheet[data-panel="crafting"] .ks-zoned .ks-zones .ks-zone{min-width:0}
+#sheet[data-panel="crafting"] .ks-zoned .ks-zout .well.result{box-shadow:0 0 0 2px #22D3EE}
+#sheet[data-panel="crafting"] .ks-zoned .keys{position:sticky;bottom:0;z-index:2;background:#0E1A22;border-top:1px solid #1F8A8A;padding-top:6px}
+#sheet[data-panel="crafting"] .ks-zoned .keys{display:flex;flex-wrap:wrap;gap:8px}
+#sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{flex:1 0 100%}
+@media (max-height:500px){#sheet[data-panel="crafting"] .ks-zoned .ks-core{width:36px;height:36px}#sheet[data-panel="crafting"] .ks-zoned .ks-core canvas{width:28px;height:28px}#sheet[data-panel="crafting"] .ks-zoned .ks-zone{gap:2px;padding:4px 6px}#sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{min-height:32px;padding:3px 8px}#sheet[data-panel="crafting"] .ks-zoned .keys{gap:4px;padding-top:4px}}
 #sheet .ks-kd-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:560px){
   #sheet .ks-zones{flex-direction:column}
@@ -1002,7 +1010,7 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.203</span>
+      <span class="ver" id="ver-plate">2.5.204</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1152,9 +1160,9 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.200"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.203" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.203" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.204"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.204" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.204" defer></script>
 <script>
 ;(function () {
   try {

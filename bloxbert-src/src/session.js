@@ -1402,6 +1402,8 @@ export function createSession(api) {
       makeBtn.disabled = !ready
       makeBtn.classList.toggle('lit', ready)
     }
+    const ksCard = g.querySelector('.ks-craft')
+    if (ksCard && ksCard._ksRefresh) ksCard._ksRefresh()
     craftTrace('slots')
     return true
   }
@@ -1648,6 +1650,7 @@ export function createSession(api) {
           maxDisabled: !(st.ok && times > 1),
           bake: isBread,
           ovenIcon: isBread ? () => itemIcon(ITEMS.oven) : null,
+          coreIcon: () => itemIcon(isBread ? ITEMS.oven : ITEMS.workbench),
           onPlace: (index, item) => placePart(item, index),
           onReturn: (index) => returnSlot(index),
           onFill: () => {
