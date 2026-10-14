@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.208', date: '2026-10-14', lines: {
+    en: ['Trees near you look solid, not foggy.'],
+    uk: ['Дерева поруч виглядають твердими, не туманними.'],
+    ru: ['Деревья рядом выглядят плотными, не туманными.'],
+    es: ['Los árboles cerca se ven sólidos, no borrosos.'],
+    ar: ['الأشجار القريبة تبدو صلبة، لا ضبابية.'],
+    'fa-AF': ['درخت‌های نزدیک سفت دیده می‌شوند، نه مه‌آلود.'],
+    rw: ['Ibiti hafi yawe bigaragara neza, ntabwo ari igicu.'],
+    ti: ['ኣብ ጥቓኻ ዘለዉ ኣእዋም ጽኑዓት እዮም ዝርአዩ፡ ጭጋጋውያን ኣይኮኑን።'],
+  }},
   { v: '2.5.207', date: '2026-10-14', lines: {
     en: ['Save and come back right where you left off.'],
     uk: ['Збережи і повернись саме туди, де зупинився.'],
