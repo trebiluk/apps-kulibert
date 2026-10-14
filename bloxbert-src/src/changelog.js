@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.198', date: '2026-10-14', lines: {
+    en: ['Craft names show in full and labels are easier to read.'],
+    uk: ['Назви в Майстерні видно повністю, а підписи легше читати.'],
+    ru: ['Названия в крафте видны полностью, а подписи легче читать.'],
+    es: ['Los nombres de fabricación se ven completos y las etiquetas se leen mejor.'],
+    ar: ['أسماء الصنع تظهر كاملة والتسميات أسهل في القراءة.'],
+    'fa-AF': ['نام‌های ساختن کامل دیده می‌شوند و برچسب‌ها آسان‌تر خوانده می‌شوند.'],
+    rw: ['Amazina yo gukora agaragara yose, kandi ibirango birasomeka neza.'],
+    ti: ['ኣስማት ምስራሕ ምሉእ ይርኣዩ፣ ምልክታት ድማ ንምንባብ ይቐልሉ።'],
+  }},
   { v: '2.5.197', date: '2026-10-14', lines: {
     en: ['Calmer, thinner scrollbars, and Settings fits the screen.'],
     uk: ['Спокійніші, тонші смуги прокрутки, і Налаштування вміщуються на екрані.'],

@@ -454,7 +454,7 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .craft-tab.on{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .craft-tab .gic{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
 #sheet[data-panel="crafting"] .craft-tab canvas,#sheet[data-panel="crafting"] .craft-tab svg{width:22px;height:22px}
-#sheet[data-panel="crafting"] .craft-tab .glbl{font-size:10px;font-weight:800;line-height:1.1;white-space:nowrap;max-width:72px;overflow:hidden;text-overflow:ellipsis}
+#sheet[data-panel="crafting"] .craft-tab .glbl{font-size:12px;font-weight:800;line-height:1.1;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;max-width:72px;max-height:calc(1.1em*2);overflow:hidden;overflow-wrap:anywhere;text-align:center}
 #sheet[data-panel="crafting"] .craft-find{width:100%;min-height:36px;box-sizing:border-box;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;color:#E6EEF2;padding:4px 8px;font:700 14px sans-serif}
 #sheet[data-panel="crafting"] .book-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;align-items:stretch}
 #sheet[data-panel="crafting"] .book .well,
@@ -462,7 +462,7 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .book .well .art{width:40px;height:40px;flex:0 0 40px;margin:0 auto}
 #sheet[data-panel="crafting"] .book .well .art canvas,#sheet[data-panel="crafting"] .book .well .art svg{width:40px;height:40px}
 #sheet[data-panel="crafting"] .book .well .wlab,
-#sheet[data-panel="crafting"] .book .well.wide .wlab{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:unset;-webkit-box-orient:unset;width:100%;max-width:100%;max-height:1.2em;height:1.2em;line-height:1.2;font-size:12px}
+#sheet[data-panel="crafting"] .book .well.wide .wlab{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;overflow:hidden;text-overflow:clip;width:100%;max-width:100%;height:auto;max-height:calc(1.15em*2);line-height:1.15;font-size:12px}
 #sheet[data-panel="crafting"] .book .well .need{display:none}
 #sheet[data-panel="crafting"] .station-mark{position:absolute;top:2px;left:2px;width:18px;height:18px;display:flex;pointer-events:none}
 #sheet[data-panel="crafting"] .station-mark canvas,#sheet[data-panel="crafting"] .station-mark svg{width:18px;height:18px}
@@ -832,6 +832,9 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet[data-panel=settings] .set-val{flex:0 0 auto;white-space:nowrap}
 #sheet[data-panel=settings] .ggrid,#sheet[data-panel=settings] .sheet-qset,#sheet[data-panel=settings] input[type=range]{max-width:100%;min-width:0;box-sizing:border-box}
 #sheet[data-panel=settings] #sheet-body{overflow-x:hidden}
+/* G2-13: readable slot labels and search hint (#9FB0C6 = --muted, 8.49:1 on #08131A) */
+html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-size:max(12px,var(--ks-fs-xs, 12px))}
+html #sheet .craft-find::placeholder{color:#9FB0C6;opacity:1}
 /* Icon-first. Shared theme stays row-shaped; these screens stack a pixel icon over a short label. Settings rows keep the icon on the left. */
 #sheet[data-panel=menu] .kd-key{flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:64px;min-width:44px;padding:4px;gap:2px}
 #sheet[data-panel=menu] .kd-key .gic,#sheet[data-panel=menu] .kd-key canvas{width:28px;height:28px;flex:0 0 28px}
