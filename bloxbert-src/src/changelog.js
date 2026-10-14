@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.200', date: '2026-10-14', lines: {
+    en: ['Machines now show Input, Process, Output and Feedback, just like real systems.'],
+    uk: ['Машини тепер показують Вхід, Процес, Вихід і Відгук, як справжні системи.'],
+    ru: ['Машины теперь показывают Вход, Процесс, Выход и Отклик, как настоящие системы.'],
+    es: ['Las máquinas ahora muestran Entrada, Proceso, Salida y Aviso, como los sistemas reales.'],
+    ar: ['الآلات تُظهر الآن المدخل والعملية والمخرج والإفادة، مثل الأنظمة الحقيقية.'],
+    'fa-AF': ['ماشین‌ها حالا ورودی، پروسه، خروجی و بازخورد را نشان می‌دهند، مثل سیستم‌های واقعی.'],
+    rw: ["Imashini ubu zigaragaza Injiza, Igikorwa, Ibisohoka n'Igisubizo, nk'uko sisitemu nyazo zimeze."],
+    ti: ['ማሽናት ሕጂ ኣእቱ፡ መስርሕ፡ ውጽኢትን ርእይቶን የርእዩ፡ ከም ናይ ሓቂ ስርዓታት።'],
+  }},
   { v: '2.5.199', date: '2026-10-14', lines: {
     en: ['Close buttons now show a clear ✕.'],
     uk: ['Кнопки закриття тепер показують чіткий ✕.'],

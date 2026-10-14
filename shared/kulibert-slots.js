@@ -707,6 +707,105 @@
     return root.innerHeight <= 500 && root.innerWidth >= 700
   }
 
+
+  // G2-14: Input -> Process -> Output -> Feedback zones (shared by Oven, Workbench, Woodshop)
+  var ZONE_SVG = {
+    zin: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13h4l2 3h4l2-3h4"/><path d="M4 13l3-8h10l3 8v6H4z"/><path d="M12 3v7M9 7l3 3 3-3"/></svg>',
+    zproc: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>',
+    zout: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9"/><path d="M18 14v6H4V6h6"/></svg>',
+    zinfo: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>',
+    zdone: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',
+    zwarn: '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18v.5"/></svg>',
+  }
+  function zoneFrame(tr, coreIcon) {
+    tr = tr || function () { return '' }
+    function word(key, en) { var v = tr(key); return v && v !== key ? v : en }
+    function zone(cls, key, en, ico) {
+      var z = document.createElement('section')
+      z.className = 'ks-zone ' + cls
+      var h = document.createElement('div')
+      h.className = 'ks-zhead'
+      h.innerHTML = ZONE_SVG[ico]
+      var w = document.createElement('span')
+      w.textContent = word(key, en)
+      h.append(w)
+      var body = document.createElement('div')
+      body.className = 'ks-zbody'
+      z.append(h, body)
+      return { el: z, body: body }
+    }
+    function link() {
+      var a = document.createElement('i')
+      a.className = 'ks-link'
+      a.setAttribute('aria-hidden', 'true')
+      return a
+    }
+    var row = document.createElement('div')
+    row.className = 'ks-zones'
+    var zi = zone('ks-zin', 'zoneIn', 'Input', 'zin')
+    var zp = zone('ks-zproc', 'zoneProc', 'Process', 'zproc')
+    var zo = zone('ks-zout', 'zoneOut', 'Output', 'zout')
+    var core = document.createElement('div')
+    core.className = 'ks-core'
+    if (coreIcon) { try { var n = coreIcon(); if (n) core.append(n) } catch (e) {} }
+    var meterRow = document.createElement('div')
+    meterRow.className = 'ks-meter-row'
+    var track = document.createElement('div')
+    track.className = 'ks-meter'
+    track.setAttribute('role', 'progressbar')
+    track.setAttribute('aria-valuemin', '0')
+    track.setAttribute('aria-valuemax', '100')
+    var fill = document.createElement('i')
+    fill.className = 'ks-meter-fill'
+    track.append(fill)
+    var pctText = document.createElement('span')
+    pctText.className = 'ks-pct'
+    meterRow.append(track, pctText)
+    zp.body.append(core, meterRow)
+    row.append(zi.el, link(), zp.el, link(), zo.el)
+    var fb = document.createElement('div')
+    fb.className = 'ks-feedback'
+    var fbIco = document.createElement('span')
+    fbIco.className = 'ks-fb-ico'
+    var fbHead = document.createElement('span')
+    fbHead.className = 'ks-kd-sr'
+    fbHead.textContent = word('zoneInfo', 'Feedback') + ': '
+    var fbText = document.createElement('span')
+    fbText.className = 'ks-fb-text'
+    fbText.setAttribute('aria-live', 'polite')
+    fb.append(fbIco, fbHead, fbText)
+    var lastKind = ''
+    var sweepT = 0
+    function setPct(p) {
+      var n = Math.max(0, Math.min(100, Math.round((p || 0) * 100)))
+      fill.style.width = n + '%'
+      pctText.textContent = n + '%'
+      track.setAttribute('aria-valuenow', String(n))
+    }
+    function setFeedback(text, kind) {
+      kind = kind || 'info'
+      if (kind !== lastKind) {
+        fbIco.innerHTML = kind === 'done' ? ZONE_SVG.zdone : kind === 'warn' ? ZONE_SVG.zwarn : ZONE_SVG.zinfo
+        fb.dataset.kind = kind
+        lastKind = kind
+      }
+      if (fbText.textContent !== text) fbText.textContent = text || ''
+    }
+    function sweep() {
+      clearTimeout(sweepT)
+      var less = document.documentElement.getAttribute('data-kp-motion') === 'less' ||
+        (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+      if (less) { setPct(1); sweepT = setTimeout(function () { setPct(0) }, 600); return }
+      fill.style.transition = 'none'
+      setPct(0)
+      void fill.offsetWidth
+      fill.style.transition = 'width 250ms linear'
+      setPct(1)
+      sweepT = setTimeout(function () { fill.style.transition = 'none'; setPct(0) }, 700)
+    }
+    setPct(0)
+    return { row: row, feedback: fb, inBody: zi.body, procBody: zp.body, outBody: zo.body, core: core, setPct: setPct, setFeedback: setFeedback, sweep: sweep, word: word }
+  }
   function machinePanel(el, opts) {
     opts = opts || {}
     var nameOf = bindName(opts)
@@ -831,7 +930,17 @@
     hintBake.className = 'gnote oven-bakes'
     var bag = document.createElement('div')
     bag.className = 'ks-bag ks-bag-rows'
-    main.append(head, inputs, process, outputs, picks, note, hintClick, hintBake)
+    var zf = zoneFrame(tr, function () {
+      var glyph = typeof opts.headerIcon === 'function' ? opts.headerIcon() : null
+      return glyph || null
+    })
+    zf.inBody.append(inputs)
+    zf.procBody.insertBefore(process, zf.procBody.lastChild)
+    zf.outBody.append(outputs)
+    status.removeAttribute('role')
+    status.hidden = true
+    card.classList.add('ks-zoned')
+    main.append(head, zf.row, zf.feedback, picks, note, hintClick, hintBake)
     card.append(main, bag)
     el.append(card)
 
@@ -1081,6 +1190,12 @@
       var proc = {}
       try { proc = typeof opts.process === 'function' ? opts.process() : (opts.process || {}) } catch (e2) { proc = {} }
       arrowFill.style.width = Math.round((proc.pct || 0) * 100) + '%'
+      zf.setPct(proc.pct || 0)
+      var outDesc = slotByRole('output')
+      var working = (proc.pct || 0) > 0 && (proc.pct || 0) < 1 && !!proc.label
+      if (working) zf.setFeedback(zf.word('fbWorking', 'Working... {n}%').replace('{n}', String(Math.round((proc.pct || 0) * 100))), 'info')
+      else if (outDesc && outDesc.item) { zf.setPct(1); zf.setFeedback(zf.word('fbDone', 'Done! Take it'), 'done') }
+      else zf.setFeedback(text || zf.word('fbAdd', 'Add parts'), 'info')
       var burning = !!proc.burning
       var lit = !!proc.lit
       flame.className = 'flame-side' + (lit ? ' lit' : ' out') + (burning ? ' burn' : '')
@@ -1410,7 +1525,7 @@
     quickMove: quickMove,
     createSession: createSession,
     util: { putInSlots: putInSlots },
-    ui: { machinePanel: machinePanel, craftPanel: craftPanel, bounce: bounce },
+    ui: { machinePanel: machinePanel, craftPanel: craftPanel, bounce: bounce, zoneFrame: zoneFrame },
     guardSlot: guardSlot,
     holdClick: holdClick,
     dropClick: dropClick,

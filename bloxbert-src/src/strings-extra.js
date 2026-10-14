@@ -1335,3 +1335,15 @@ const HELD_UI = {
 }
 for (const [lang, row] of Object.entries(HELD_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
+// G2-14: machine zones (Input -> Process -> Output -> Feedback)
+const ZONE_UI = {
+  en: { zoneIn: 'Input', zoneProc: 'Process', zoneOut: 'Output', zoneInfo: 'Feedback', fbAdd: 'Add parts', fbWorking: 'Working... {n}%', fbDone: 'Done! Take it', fbFull: 'Output full', fbMissing: 'Missing: {list}', fbReady: 'Ready to make' },
+  uk: { zoneIn: 'Вхід', zoneProc: 'Процес', zoneOut: 'Вихід', zoneInfo: 'Відгук', fbAdd: 'Додай частини', fbWorking: 'Працює... {n}%', fbDone: 'Готово! Бери', fbFull: 'Вихід повний', fbMissing: 'Бракує: {list}', fbReady: 'Можна робити' },
+  ru: { zoneIn: 'Вход', zoneProc: 'Процесс', zoneOut: 'Выход', zoneInfo: 'Отклик', fbAdd: 'Добавь детали', fbWorking: 'Работает... {n}%', fbDone: 'Готово! Бери', fbFull: 'Выход полон', fbMissing: 'Не хватает: {list}', fbReady: 'Можно делать' },
+  es: { zoneIn: 'Entrada', zoneProc: 'Proceso', zoneOut: 'Salida', zoneInfo: 'Aviso', fbAdd: 'Pon piezas', fbWorking: 'Trabajando... {n}%', fbDone: '¡Listo! Tómalo', fbFull: 'Salida llena', fbMissing: 'Falta: {list}', fbReady: 'Listo para hacer' },
+  ar: { zoneIn: 'مدخل', zoneProc: 'عملية', zoneOut: 'مخرج', zoneInfo: 'إفادة', fbAdd: 'أضف قطعاً', fbWorking: 'يعمل... {n}%', fbDone: 'تم! خذه', fbFull: 'المخرج ممتلئ', fbMissing: 'ينقص: {list}', fbReady: 'جاهز للصنع' },
+  'fa-AF': { zoneIn: 'ورودی', zoneProc: 'پروسه', zoneOut: 'خروجی', zoneInfo: 'بازخورد', fbAdd: 'قطعه بگذار', fbWorking: 'کار می‌کند... {n}%', fbDone: 'تمام! بگیر', fbFull: 'خروجی پر است', fbMissing: 'کم است: {list}', fbReady: 'آمادهٔ ساختن' },
+  rw: { zoneIn: 'Injiza', zoneProc: 'Igikorwa', zoneOut: 'Ibisohoka', zoneInfo: 'Igisubizo', fbAdd: 'Shyiramo ibice', fbWorking: 'Birakora... {n}%', fbDone: 'Byarangiye! Fata', fbFull: 'Ibisohoka byuzuye', fbMissing: 'Habura: {list}', fbReady: 'Biteguye gukorwa' },
+  ti: { zoneIn: 'ኣእቱ', zoneProc: 'መስርሕ', zoneOut: 'ውጽኢት', zoneInfo: 'ርእይቶ', fbAdd: 'ክፋላት ወስኽ', fbWorking: 'ይሰርሕ... {n}%', fbDone: 'ተዛዚሙ! ውሰድ', fbFull: 'ውጽኢት መሊኡ', fbMissing: 'ይጎድል: {list}', fbReady: 'ንምስራሕ ድሉው' },
+}
+for (const [lang, row] of Object.entries(ZONE_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
