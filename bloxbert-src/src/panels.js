@@ -66,6 +66,7 @@ export function mountPanels(api) {
     sheet.dataset.panel = id
     lastFill = fill
     dress(id)
+    if (api.paintBack) api.paintBack()
     body.scrollTop = 0
     requestAnimationFrame(() => { body.scrollTop = 0 })
     armSlide(id)
@@ -150,8 +151,8 @@ export function mountPanels(api) {
   }
   function backOne() {
     if (stack.length <= 1) {
-      if (stack[0] === 'tour') { openRoot(); return }
-      close(); return
+      if (!stack[0] || stack[0] === 'menu') { close(); return }
+      openRoot(); return
     }
     stack.pop()
     open(stack[stack.length - 1] || 'menu')

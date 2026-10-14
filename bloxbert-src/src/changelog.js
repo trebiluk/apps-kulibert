@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.196', date: '2026-10-14', lines: {
+    en: ['The Menu tab has a ☰ icon and speaks your language.'],
+    uk: ['Вкладка «Меню» має значок ☰ і говорить твоєю мовою.'],
+    ru: ['Вкладка «Меню» со значком ☰ и на твоём языке.'],
+    es: ['La pestaña Menú tiene un icono ☰ y habla tu idioma.'],
+    ar: ['لسان القائمة فيه رمز ☰ ويتكلم لغتك.'],
+    'fa-AF': ['زبانهٔ فهرست نشان ☰ دارد و به زبان تو حرف می‌زند.'],
+    rw: ['Akazu ka Menu gafite ikirango ☰ kandi kivuga ururimi rwawe.'],
+    ti: ['ትብ መእተዊ ምልክት ☰ ኣለዎን ብቋንቋኻ ይዛረብን።'],
+  }},
   { v: '2.5.195', date: '2026-10-13', lines: {
     en: ['New worlds start with a few sticks, planks and a berry.'],
     uk: ['Нові світи починаються з кількох палиць, дощок і ягоди.'],

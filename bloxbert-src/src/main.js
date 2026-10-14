@@ -186,13 +186,41 @@ function t(key) {
   if (!hit) { console.warn('missing string', key); return EXTRA.en[key] || key }
   return hit
 }
+function tintIco(canvas, hex) {
+  const g = canvas.getContext('2d')
+  if (!g) return
+  const img = g.getImageData(0, 0, canvas.width, canvas.height)
+  const r = parseInt(hex.slice(1, 3), 16)
+  const gv = parseInt(hex.slice(3, 5), 16)
+  const b = parseInt(hex.slice(5, 7), 16)
+  for (let i = 0; i < img.data.length; i += 4) {
+    if (!img.data[i + 3]) continue
+    img.data[i] = r
+    img.data[i + 1] = gv
+    img.data[i + 2] = b
+  }
+  g.putImageData(img, 0, 0)
+}
 function fillIco(root) {
   if (!root || !root.querySelectorAll) return
   for (const el of root.querySelectorAll('[data-ico]')) {
     const pic = menuIcon(el.dataset.ico)
     el.replaceChildren()
-    if (pic) el.append(pic)
+    if (!pic) continue
+    if (el.closest && el.closest('#sheet-back')) tintIco(pic, '#E6EEF2')
+    el.append(pic)
   }
+}
+function paintBackTab() {
+  const back = document.getElementById('sheet-back')
+  if (!back) return
+  const word = t('backMenu')
+  back.setAttribute('aria-label', word)
+  const lab = back.querySelector('.back-lab')
+  if (lab) lab.textContent = word
+  const ico = back.querySelector('[data-ico]')
+  if (ico) ico.dataset.ico = 'menu'
+  fillIco(back)
 }
 function dressTop() {
   const name = document.querySelector('.brand .tb-name')
@@ -230,6 +258,7 @@ function applyI18n() {
   const pick = document.getElementById('pick-chip')
   if (pick && pick.dataset.ready) paintPick()
   dressTop()
+  paintBackTab()
   painting = false
 }
 let painting = false
@@ -4975,6 +5004,7 @@ async function paintBackups(g) {
 panels = mountPanels({
   t, toast,
   touch: () => TOUCH_UI,
+  paintBack: () => paintBackTab(),
   save: () => save(),
   load: () => load(),
   exportWorld: () => exportJSON(),
