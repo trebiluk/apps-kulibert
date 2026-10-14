@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.203', date: '2026-10-14', lines: {
+    en: ['The Make button always fits on a sideways phone.'],
+    uk: ['Кнопка «Зробити» завжди вміщується на поверненому телефоні.'],
+    ru: ['Кнопка «Сделать» всегда помещается на повёрнутом телефоне.'],
+    es: ['El botón Hacer siempre cabe en un teléfono de lado.'],
+    ar: ['زر الصنع يظهر دائمًا كاملًا على الهاتف الأفقي.'],
+    'fa-AF': ['دکمهٔ ساختن همیشه روی گوشی افقی جا می‌شود.'],
+    rw: ['Buto yo Gukora ihora igaragara kuri telefoni iri ku ruhande.'],
+    ti: ['መጠወቒ ምስራሕ ኣብ ብጎኒ ዝተገልበጠ ተሌፎን ኩሉ ግዜ ይኣቱ።'],
+  }},
   { v: '2.5.202', date: '2026-10-14', lines: {
     en: ['Creative and Build Table speak your language.'],
     uk: ['«Творчий» і «Стіл будови» говорять твоєю мовою.'],

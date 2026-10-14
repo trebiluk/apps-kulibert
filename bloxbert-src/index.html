@@ -320,6 +320,7 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .book-row{display:flex;flex-wrap:wrap;gap:var(--ks-gap);max-width:100%}
 #sheet[data-panel="crafting"] .tray-line{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 #sheet[data-panel="crafting"] .keys{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;position:sticky;bottom:0;z-index:5;background:#0E1A22;padding:8px 0}
+@media (max-height:500px){#sheet[data-panel="crafting"] .tray{align-items:flex-start}#sheet[data-panel="crafting"] .ks-craft{min-height:0;overflow:visible}}
 #sheet[data-panel="crafting"] .book .well,#sheet[data-panel="crafting"] .book .well.wide{width:var(--ks-slot-big);min-width:var(--ks-slot-big);max-width:100%;height:auto;min-height:0;max-height:none;padding:2px 2px 3px;overflow:hidden;align-items:stretch;justify-content:flex-start;gap:1px;border-width:0;box-shadow:inset 0 0 0 2px #1F8A8A,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .book .well.on{box-shadow:0 0 0 3px #22D3EE,inset 0 0 0 2px #1F8A8A,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .book .well.short{border-width:0;outline:2px dashed #E6EEF2;outline-offset:-2px}
