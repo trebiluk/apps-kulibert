@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.201', date: '2026-10-14', lines: {
+    en: ['The Craft button no longer sits on Jump.'],
+    uk: ['Кнопка «Створити» більше не закриває «Стрибок».'],
+    ru: ['Кнопка «Создать» больше не закрывает «Прыжок».'],
+    es: ['El botón Fabricar ya no tapa Saltar.'],
+    ar: ['زر الصنع لم يعد فوق زر القفز.'],
+    'fa-AF': ['دکمهٔ ساختن دیگر روی دکمهٔ پرش نیست.'],
+    rw: ['Buto yo Gukora ntikiri hejuru ya Gusimbuka.'],
+    ti: ['መጠወቒ ምስራሕ ኣብ ልዕሊ ዝላ ኣይኮነን ዘሎ።'],
+  }},
   { v: '2.5.200', date: '2026-10-14', lines: {
     en: ['Machines now show Input, Process, Output and Feedback, just like real systems.'],
     uk: ['Машини тепер показують Вхід, Процес, Вихід і Відгук, як справжні системи.'],
