@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.202', date: '2026-10-14', lines: {
+    en: ['Creative and Build Table speak your language.'],
+    uk: ['«Творчий» і «Стіл будови» говорять твоєю мовою.'],
+    ru: ['«Творческий» и «Стол стройки» говорят на твоём языке.'],
+    es: ['Creativo y Mesa de construir hablan tu idioma.'],
+    ar: ['«إبداعي» و«طاولة البناء» يتكلمان لغتك.'],
+    'fa-AF': ['خلاق و میز ساخت به زبان تو حرف می‌زنند.'],
+    rw: ['Kurema na Ameza yo kubaka bivuga ururimi rwawe.'],
+    ti: ['ፈጠራን ጠረጴዛ ህንጻን ብቋንቋኻ ይዛረቡ።'],
+  }},
   { v: '2.5.201', date: '2026-10-14', lines: {
     en: ['The Craft button no longer sits on Jump.'],
     uk: ['Кнопка «Створити» більше не закриває «Стрибок».'],
