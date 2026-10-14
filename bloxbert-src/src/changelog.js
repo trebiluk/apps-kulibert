@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.207', date: '2026-10-14', lines: {
+    en: ['Save and come back right where you left off.'],
+    uk: ['Збережи і повернись саме туди, де зупинився.'],
+    ru: ['Сохрани и вернись ровно туда, где остановился.'],
+    es: ['Guarda y vuelve justo donde lo dejaste.'],
+    ar: ['احفظ وعد إلى حيث توقفت.'],
+    'fa-AF': ['ذخیره کن و درست همان‌جا که ماندی برگرد.'],
+    rw: ['Bika uhagaruke aho wasize.'],
+    ti: ['ዓቅብ እሞ ናብ እተገደፍካዮ ቦታ ተመለስ።'],
+  }},
   { v: '2.5.206', date: '2026-10-14', lines: {
     en: ['Blocks only go down when you click or tap.'],
     uk: ['Блоки лягають лише коли ти клацаєш або торкаєшся.'],

@@ -3348,6 +3348,48 @@ async function readDoc(doc) {
   for (const [id] of unknownEntries()) ensureMissingBlock(id)
   return out
 }
+let landHold = null
+let landHoldUntil = 0
+function chunkSettled(x, y, z) {
+  const world = noa.world
+  const storage = world && world._storage
+  if (!storage || typeof storage.getChunkByIndexes !== 'function') return false
+  const ix = world._coordsToChunkIndexes ? world._coordsToChunkIndexes(x, y, z) : [Math.floor(x / S), Math.floor(y / S), Math.floor(z / S)]
+  const ci = ix[0], cj = ix[1], ck = ix[2]
+  const inv = world._chunksInvalidated
+  if (inv && typeof inv.includes === 'function' && inv.includes(ci, cj, ck)) return false
+  const pending = world._chunksPending
+  if (pending && typeof pending.includes === 'function' && pending.includes(ci, cj, ck)) return false
+  return !!storage.getChunkByIndexes(ci, cj, ck)
+}
+function spotSupported(spot) {
+  return chunkSettled(spot[0], spot[1], spot[2]) && chunkSettled(spot[0], spot[1] - 1, spot[2])
+}
+function pinSavedSpot(spot) {
+  landHold = [spot[0], spot[1], spot[2]]
+  landHoldUntil = performance.now() + 12000
+  const body = playerBody
+  if (body) {
+    body.gravityMultiplier = 0
+    body.velocity[0] = body.velocity[1] = body.velocity[2] = 0
+  }
+  noa.entities.setPosition(noa.playerEntity, landHold)
+}
+function keepSavedSpot() {
+  if (!landHold) return
+  const ready = spotSupported(landHold)
+  const expired = performance.now() > landHoldUntil
+  if (ready || expired) {
+    landHold = null
+    if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
+    return
+  }
+  if (playerBody) {
+    playerBody.gravityMultiplier = 0
+    playerBody.velocity[0] = playerBody.velocity[1] = playerBody.velocity[2] = 0
+  }
+  noa.entities.setPosition(noa.playerEntity, landHold)
+}
 async function applyDoc(doc) {
   openedFrom = doc && typeof doc.openedFrom === 'string' ? doc.openedFrom : ''
   applyMaker(doc && doc.maker)
@@ -3359,8 +3401,8 @@ async function applyDoc(doc) {
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
   edits.clear(); paintUndo()
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
-  const spot = finiteTriple(src.pos) || finiteTriple(src.spawn)
-  if (spot) noa.entities.setPosition(noa.playerEntity, spot)
+  const spot = finiteTriple(src.pos) || finiteTriple(src.spawn) || SPAWN.slice()
+  pinSavedSpot(spot)
   worldSpawn = finiteTriple(src.spawn) || SPAWN.slice()
   spawnSet = !!src.spawnSet
   protect = normProtect(src.protect)
@@ -3389,6 +3431,7 @@ async function applyDoc(doc) {
   circuitRescan()
   paintWorldName()
   showMakerTip()
+  keepSavedSpot()
 }
 async function importFile(file) {
   if (file.size > 2 * 1024 * 1024) throw new Error('That file is too big for a world (over 2 MB).')
@@ -5811,6 +5854,7 @@ document.addEventListener('pointerlockchange', () => {
   selfUnlock = false
 })
 noa.on('tick', () => {
+  keepSavedSpot()
   const p = noa.entities.getPosition(noa.playerEntity)
   if (softPreset(makerLive.preset) && p[1] < -10) {
     const body = noa.entities.getPhysicsBody && noa.entities.getPhysicsBody(noa.playerEntity)
@@ -5819,7 +5863,7 @@ noa.on('tick', () => {
     toast(t('makerTryAgain'))
     return
   }
-  if (p[1] < -72) poof()
+  if (!landHold && p[1] < -72) poof()
 })
 function poof() {
   const home = session && session.home
@@ -6650,7 +6694,7 @@ function feelTick(dt) {
   syncDropMeshes()
   const body = playerBody
   if (survivalOn() && !Effects.has('fly')) flying = false
-  if (!tableMode) {
+  if (!tableMode && !landHold) {
     const g = flying ? 0 : Effects.grav(GRAV_MULT, body.velocity[1])
     if (body.gravityMultiplier !== g) body.gravityMultiplier = g
   }
