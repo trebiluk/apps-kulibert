@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.199', date: '2026-10-14', lines: {
+    en: ['Close buttons now show a clear ✕.'],
+    uk: ['Кнопки закриття тепер показують чіткий ✕.'],
+    ru: ['Кнопки закрытия теперь показывают чёткий ✕.'],
+    es: ['Los botones de cerrar ahora muestran una ✕ clara.'],
+    ar: ['أزرار الإغلاق تُظهر الآن ✕ واضحة.'],
+    'fa-AF': ['دکمه‌های بستن حالا یک ✕ روشن نشان می‌دهند.'],
+    rw: ['Utubuto two gufunga ubu tugaragaza ✕ isobanutse.'],
+    ti: ['መዕጸዊ መልጎማት ሕጂ ንጹር ✕ የርእዩ።'],
+  }},
   { v: '2.5.198', date: '2026-10-14', lines: {
     en: ['Craft names show in full and labels are easier to read.'],
     uk: ['Назви в Майстерні видно повністю, а підписи легше читати.'],

@@ -835,6 +835,13 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 /* G2-13: readable slot labels and search hint (#9FB0C6 = --muted, 8.49:1 on #08131A) */
 html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-size:max(12px,var(--ks-fs-xs, 12px))}
 html #sheet .craft-find::placeholder{color:#9FB0C6;opacity:1}
+/* G2-10: the pixel "x" icon is thin red-on-navy and goes blank under .kd-x .gic{font-size:0}; draw a clear 24px stroke ✕ on every panel */
+html #sheet #sheet-x{position:relative;min-width:44px;min-height:44px;background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;justify-content:center;align-items:center}
+html #sheet #sheet-x>*{visibility:hidden}
+html #sheet #sheet-x::before,html #sheet #sheet-x::after{content:"";position:absolute;left:50%;top:calc(50% - 2px);width:24px;height:3px;border-radius:2px;background:#E6EEF2;transform:translate(-50%,-50%) rotate(45deg);pointer-events:none}
+html #sheet #sheet-x::after{transform:translate(-50%,-50%) rotate(-45deg)}
+html #sheet #sheet-x:active{transform:translateY(2px);border-bottom-width:2px}
+html #sheet #sheet-x:focus-visible{outline:3px solid #22D3EE;outline-offset:2px}
 /* Icon-first. Shared theme stays row-shaped; these screens stack a pixel icon over a short label. Settings rows keep the icon on the left. */
 #sheet[data-panel=menu] .kd-key{flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:64px;min-width:44px;padding:4px;gap:2px}
 #sheet[data-panel=menu] .kd-key .gic,#sheet[data-panel=menu] .kd-key canvas{width:28px;height:28px;flex:0 0 28px}
@@ -984,7 +991,7 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
 <div id="held-chip" class="kd-tip" hidden></div>
 <div id="size-chip" hidden></div>
 <div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
-  <div class="sheet-bar"><button type="button" id="sheet-back" class="kd-key" aria-label="Menu"><span class="gic" data-ico="menu"></span><span class="back-lab">Menu</span></button><b id="sheet-title">Menu</b><span class="kd-chip" id="sheet-ver" hidden></span><button type="button" id="sheet-x" class="kd-key kd-x" aria-label="Close"><span class="gic" data-ico="x"></span></button></div>
+  <div class="sheet-bar"><button type="button" id="sheet-back" class="kd-key" aria-label="Menu"><span class="gic" data-ico="menu"></span><span class="back-lab">Menu</span></button><b id="sheet-title">Menu</b><span class="kd-chip" id="sheet-ver" hidden></span><button type="button" id="sheet-x" class="kd-key kd-x" aria-label="Close" data-i18n-label="close"><span class="gic" data-ico="x"></span></button></div>
   <div id="sheet-body"></div>
 </div>
 <button id="fs-btn" type="button" aria-label="Full screen" data-i18n-label="fs" title="Full screen"><span class="ti" data-ico="full"></span></button>
