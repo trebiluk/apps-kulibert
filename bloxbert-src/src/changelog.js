@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.205', date: '2026-10-14', lines: {
+    en: ['The Woodshop shows your tools going in, the setup meter, and what you can make.'],
+    uk: ['Майстерня показує інструменти, що входять, шкалу підготовки і що можна зробити.'],
+    ru: ['Мастерская показывает инструменты, шкалу подготовки и что можно сделать.'],
+    es: ['El taller muestra tus herramientas, el medidor de preparación y lo que puedes hacer.'],
+    ar: ['الورشة تُظهر أدواتك الداخلة ومقياس التجهيز وما يمكنك صنعه.'],
+    'fa-AF': ['کارگاه ابزارهای تو، سنجهٔ آماده‌سازی و آنچه می‌توانی بسازی را نشان می‌دهد.'],
+    rw: ["Inzu y'ububaji igaragaza ibikoresho byawe, igipimo cyo kwitegura n'ibyo ushobora gukora."],
+    ti: ['ቤት ዕንጸይቲ መሳርሒታትካ፡ መለክዒ ምድላውን ክትሰርሖ እትኽእልን የርኢ።'],
+  }},
   { v: '2.5.204', date: '2026-10-14', lines: {
     en: ['The Workbench shows parts going in, the making step, and what comes out.'],
     uk: ['Верстак показує, що входить, як робиться і що виходить.'],

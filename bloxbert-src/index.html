@@ -877,6 +877,21 @@ html[dir=rtl] #sheet .ks-link{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .ks-zoned .keys{display:flex;flex-wrap:wrap;gap:8px}
 #sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{flex:1 0 100%}
 @media (max-height:500px){#sheet[data-panel="crafting"] .ks-zoned .ks-core{width:36px;height:36px}#sheet[data-panel="crafting"] .ks-zoned .ks-core canvas{width:28px;height:28px}#sheet[data-panel="crafting"] .ks-zoned .ks-zone{gap:2px;padding:4px 6px}#sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{min-height:32px;padding:3px 8px}#sheet[data-panel="crafting"] .ks-zoned .keys{gap:4px;padding-top:4px}}
+#sheet[data-panel=woodshop] .ggrid:has(.ks-shop-zoned){display:block;width:100%;max-width:960px;grid-template-columns:none}
+#sheet[data-panel=woodshop] .ks-shop-zoned{display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;max-width:960px;box-sizing:border-box}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zone{min-width:0}
+#sheet[data-panel=woodshop] .ks-shop-zoned .shop-job,#sheet[data-panel=woodshop] .ks-shop-zoned .shop-needs{display:flex;flex-direction:column;align-items:stretch;gap:6px;width:100%}
+#sheet[data-panel=woodshop] .ks-shop-zoned .shop-needs .need-tool,#sheet[data-panel=woodshop] .ks-shop-zoned .shop-go{width:100%;min-height:44px;white-space:normal}
+#sheet[data-panel=woodshop] .ks-shop-zoned .shop-bag{display:flex;flex-wrap:wrap;gap:6px}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zones{max-width:none}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zout{flex:2 1 0}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zout .ks-zbody{flex-direction:column;align-items:stretch;justify-content:flex-start}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zin .ks-zbody{flex-direction:column;align-items:stretch;justify-content:flex-start}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zin .tool-wall{grid-template-columns:repeat(2,minmax(48px,1fr));margin:0}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zproc .shop-job{width:100%}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-feedback{max-width:none;position:static}
+#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zproc .ks-zbody{justify-content:flex-start}
+@media (max-width:560px){#sheet[data-panel=woodshop] .ks-shop-zoned .ks-zin .tool-wall{grid-template-columns:repeat(4,minmax(48px,1fr))}}
 #sheet .ks-kd-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 @media (max-width:560px){
   #sheet .ks-zones{flex-direction:column}

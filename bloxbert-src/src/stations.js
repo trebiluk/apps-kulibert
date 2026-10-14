@@ -718,6 +718,26 @@ export function createStations(api) {
       crate.append(card)
     }
   }
+  // G2-14: Woodshop as Input (tools in) -> Process (tool wall setup, real progress) -> Output (what you make) -> Feedback
+  function zoneWoodshop(crate, wall, bagRow, job, hung, ready) {
+    const KS = window.KulibertSlots
+    if (!KS || !KS.ui || !KS.ui.zoneFrame) return
+    const zf = KS.ui.zoneFrame((k) => api.t(k), () => face('woodshop'))
+    const headRow = crate.querySelector(':scope > .machine-head')
+    const outs = [...crate.children].filter((n) => n !== headRow && n !== wall && n !== bagRow && n !== job)
+    zf.inBody.append(wall, bagRow)
+    zf.procBody.append(job)
+    for (const n of outs) zf.outBody.append(n)
+    crate.classList.add('ks-zoned', 'ks-shop-zoned')
+    // Feedback sits above the zones here: the Woodshop column is long, so a bottom line would scroll out of view.
+    if (headRow) headRow.after(zf.feedback, zf.row)
+    else crate.prepend(zf.feedback, zf.row)
+    const miss = SHOP_TOOLS.filter((row) => (hung || []).indexOf(row.item) < 0)
+    zf.setPct(SHOP_TOOLS.length ? (SHOP_TOOLS.length - miss.length) / SHOP_TOOLS.length : 0)
+    if (ready) zf.setFeedback(zf.word('fbReady', 'Ready to make'), 'done')
+    else if (miss.length === SHOP_TOOLS.length) zf.setFeedback(zf.word('fbAdd', 'Add parts') + ': ' + miss.map((row) => api.t(row.item)).join(', '), 'info')
+    else zf.setFeedback(zf.word('fbMissing', 'Missing: {list}').replace('{list}', miss.map((row) => api.t(row.item)).join(', ')), 'warn')
+  }
   function paintWoodshop(g, key) {
     const rec = ensureShop(key)
     if (shopGuide && shopGuide !== 'woodshop' && shopGuide !== 'bunk' && !SHOP_TOOLS.some((row) => row.item === shopGuide)) shopGuide = ''
@@ -1009,6 +1029,7 @@ export function createStations(api) {
       b.addEventListener('click', () => { shopGuide = id; paintWoodshop(g, key) })
       guide.append(b)
     })
+    zoneWoodshop(crate, wall, bagRow, job, hung, ready)
     crate.append(guide)
     g.append(crate)
     if (api.safetyDue && api.safetyDue()) showSafety()
