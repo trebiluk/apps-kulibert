@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.18** · 2026-10-15 · channel **live**
+
+Sideways phones show one tab at a time, and the piano stays on the Piano tab.
+
+## Earlier
+
 **Chip: MU 2.35.17** · 2026-10-09 · channel **live**
 
 Save puts your beat in My songs, and phone drum pads are big enough to tap.

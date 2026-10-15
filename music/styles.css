@@ -3849,3 +3849,24 @@ body.mu237 .transport:has(#more-pop:not([hidden])) {
   overflow: visible !important;
   z-index: 28 !important;
 }
+
+/* MU 2.35.18 — a sideways phone shows one tab. The piano dock stays off. */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 #notes-pane,
+  body.mu237 #drums-pane,
+  body.mu237 #remix-pane,
+  body.mu237 #sound-pane,
+  body.mu237 #band-pane,
+  body.mu237 #lights-pane { display: none !important; }
+  body.mu237.tab-tap #drums-pane { display: flex !important; }
+  body.mu237.tab-remix #remix-pane { display: block !important; }
+  body.mu237.tab-mix #drums-pane { display: block !important; }
+  body.mu237.tab-piano #sound-pane { display: block !important; }
+  body.mu237.tab-score #notes-pane { display: block !important; }
+  body.mu237.tab-score.is-both #drums-pane { display: flex !important; }
+  body.mu237.tab-band #band-pane { display: block !important; }
+  body.mu237.tab-viz #lights-pane { display: block !important; }
+  body.mu237 #lesson:empty,
+  body.mu237 #saved-line:empty,
+  body.mu237.tab-tap #more-drums { display: none !important; }
+}

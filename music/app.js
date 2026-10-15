@@ -5285,6 +5285,9 @@
     pianoOct = next;
     paintPianoKeys();
   }
+  function sidewaysPhone() {
+    return window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches;
+  }
   function dockWanted() {
     let saved = "";
     try { saved = localStorage.getItem("kulibert.piano.dock") || ""; } catch (err) { saved = ""; }
@@ -5296,7 +5299,7 @@
     const dock = $("piano-dock");
     if (!dock) return;
     const tab = state.tab;
-    const on = tab === "tap" || tab === "score" || tab === "remix";
+    const on = !sidewaysPhone() && (tab === "tap" || tab === "score" || tab === "remix");
     dock.hidden = !on;
     document.body.classList.toggle("piano-dock-on", on);
     const open = on && dockWanted();
@@ -5356,6 +5359,7 @@
         }
         syncPianoDock();
       });
+      window.addEventListener("orientationchange", () => syncPianoDock());
       window.addEventListener("keydown", (e) => {
         if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
         const tag = e.target && e.target.tagName;
