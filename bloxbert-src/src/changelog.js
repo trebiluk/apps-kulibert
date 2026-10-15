@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.211', date: '2026-10-15', lines: {
+    en: ['Your first click just grabs the mouse - no more "Too far away".'],
+    uk: ['Перший клік лише хапає мишку - більше ніякого «Занадто далеко».'],
+    ru: ['Первый клик только захватывает мышь - больше никакого «Слишком далеко».'],
+    es: ['El primer clic solo agarra el ratón - se acabó el «Demasiado lejos».'],
+    ar: ['نقرتك الأولى تمسك الفأرة فقط - لا مزيد من «بعيد جداً».'],
+    'fa-AF': ['کلیک اول فقط ماوس را می‌گیرد - دیگر «خیلی دور است» نیست.'],
+    rw: ['Kanda ka mbere gufata imbeba gusa - nta "Kiri kure cyane" kongera.'],
+    ti: ['ቀዳማይ ጠውቕ ንኣንጭዋ ጥራይ ይሕዝ - «ኣዝዩ ርሑቕ እዩ» ኣይከውንን።'],
+  }},
   { v: '2.5.210', date: '2026-10-15', lines: {
     en: ['The Workbench updates its counts as soon as you press Make.'],
     uk: ['Верстак оновлює кількості, щойно ти натискаєш Зробити.'],

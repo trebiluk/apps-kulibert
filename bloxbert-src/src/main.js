@@ -2879,8 +2879,8 @@ noa.inputs.down.on('fire', () => {
   if (tableMode) return
   if (anyCard()) return
   if (!playLocked()) {
-    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock() }
-    else { showPlayChip(); grabLock(); return }
+    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
+    showPlayChip(); grabLock(); return
   }
   const aimed = noa.targetedBlock
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
@@ -2909,8 +2909,8 @@ noa.inputs.down.on('alt-fire', () => {
   if (tableMode || rightPress) return
   if (anyCard()) return
   if (!playLocked()) {
-    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock() }
-    else { showPlayChip(); grabLock(); return }
+    if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
+    showPlayChip(); grabLock(); return
   }
   const tget = noa.targetedBlock
   if (!TOUCH_UI && deskOpenStation(tget)) return
@@ -6772,6 +6772,7 @@ function clampGate(dig, now) {
   return true
 }
 function beginDig(kind) {
+  if (!TOUCH_UI && !playLocked() && performance.now() < lockSwallowUntil) return
   const seen = cropOnLook()
   const tget = noa.targetedBlock
   if (!seen && !tget) {
@@ -7356,8 +7357,14 @@ function targetHit() {
 }
 canvas.addEventListener('pointerdown', (e) => {
   if (!canvasHit(e)) return
-  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') armActLock()
+  const desktop = !TOUCH_UI && e.pointerType !== 'touch'
+  if (desktop && awaitWorldClick) {
+    armActLock()
+    return
+  }
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
+  if (desktop && !playLocked() && performance.now() < lockSwallowUntil) return
+  if (desktop && !playLocked() && !tableMode && !anyCard() && (e.button === 0 || e.button < 0)) return
   const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
   if (wandClick) {
     wandPress = { button: 0, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
@@ -7550,7 +7557,8 @@ window.addEventListener('pointerdown', (e) => {
     }
   }
   if (!canvasHit(e)) return
-  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') armActLock()
+  if (awaitWorldClick && !TOUCH_UI && e.pointerType !== 'touch') { armActLock(); return }
+  if (!TOUCH_UI && e.pointerType !== 'touch' && !playLocked() && performance.now() < lockSwallowUntil) return
   if (eatResume(e)) return
   const snap = targetHit()
   if (tryEatClick(snap)) {
