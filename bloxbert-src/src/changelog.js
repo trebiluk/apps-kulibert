@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.224', date: '2026-10-15', lines: {
+    en: ['After a reload you face the same way you were looking, so you know you are back where you saved.'],
+    uk: ['Після перезавантаження ти дивишся в той самий бік, тож знаєш, що ти знову там, де зберігся.'],
+    ru: ['После перезагрузки ты смотришь в ту же сторону, так что знаешь, что ты снова там, где сохранялся.'],
+    es: ['Después de recargar miras hacia el mismo lado, así sabes que estás otra vez donde guardaste.'],
+    ar: ['بعد إعادة التحميل تنظر إلى نفس الاتجاه، فتعرف أنك عدت إلى حيث حفظت.'],
+    'fa-AF': ['بعد از بارگذاری دوباره به همان سمت نگاه می‌کنی، پس می‌دانی به جایی که ذخیره کردی برگشتی.'],
+    rw: ['Nyuma yo gusubira gutangiza ureba icyerekezo kimwe, ubone ko wagarutse aho wabitse.'],
+    ti: ['ድሕሪ ዳግማይ ምጅማር ናብ ተመሳሳሊ ኣንፈት ትርኢ፡ ናብ ዝዓቀብካዮ ከም ዝመለስካ ትፈልጥ።'],
+  }},
   { v: '2.5.223', date: '2026-10-15', lines: {
     en: ['On phones held upright, the recipe list is back on top so you can pick any recipe.'],
     uk: ['На телефонах, триманих вертикально, список рецептів знову зверху, тож можна обрати будь-який.'],

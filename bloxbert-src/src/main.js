@@ -3372,7 +3372,7 @@ async function snapshot() {
   const effects = Effects.dump()
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
-    ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
+    ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], look: [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
     chunks, updatedAt: new Date().toISOString(), tabId,
@@ -3609,6 +3609,9 @@ async function applyDoc(doc) {
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   const spot = finiteTriple(src.pos) || finiteTriple(src.spawn) || SPAWN.slice()
   pinSavedSpot(spot)
+  const look = src && src.look
+  if (Array.isArray(look) && look.length >= 2 && Number.isFinite(+look[0]) && Number.isFinite(+look[1])) setLook(+look[0], +look[1])
+  else if (!finiteTriple(src && src.pos)) faceFirstSpawn()
   worldSpawn = finiteTriple(src.spawn) || SPAWN.slice()
   spawnSet = !!src.spawnSet
   protect = normProtect(src.protect)
@@ -8954,6 +8957,7 @@ if (!__BLOX_STUDENT__) {
     },
     table(on) { setMode(!!on); return tableMode },
     turn: (dh, dp = 0) => setLook(noa.camera.heading + dh, noa.camera.pitch + dp), setLook,
+    look: () => [noa.camera.heading, noa.camera.pitch],
   }
 }
 
