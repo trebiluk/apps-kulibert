@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.229', date: '2026-10-15', lines: {
+    en: ['The goal card now skips steps you already did, like making a Wood Pickaxe before chopping a tree.'],
+    uk: ['Картка цілі тепер пропускає кроки, які ти вже зробив, наприклад зробити дерев’яне кайло ще до того, як зрубаєш дерево.'],
+    ru: ['Карточка цели теперь пропускает шаги, которые ты уже сделал, например сделать деревянную кирку ещё до того, как срубишь дерево.'],
+    es: ['La tarjeta de meta ahora salta los pasos que ya hiciste, como hacer un Pico de madera antes de talar un árbol.'],
+    ar: ['بطاقة الهدف صارت تتخطى الخطوات التي فعلتها، مثل صنع معول خشب قبل قطع شجرة.'],
+    'fa-AF': ['کارت هدف حالا قدم‌هایی را که کرده‌ای رد می‌کند، مثل ساختن کلنگ چوبی پیش از بریدن درخت.'],
+    rw: ['Ikarita y\'intego ubu isimbuka intambwe wakoze, nko gukora Isuka y\'igiti mbere yo gutema igiti.'],
+    ti: ['ናይ ዕላማ ካርድ ሕጂ እተገበሩ ስጉምትታት ይሸለል፡ ከም ምግባር ናይ ዕንጨይቲ መኮፍ ቅድሚ ምቍራጽ ዕንጨይቲ።'],
+  }},
   { v: '2.5.228', date: '2026-10-15', lines: {
     en: ['In Crafting, the count at the top now matches the Input box, so each recipe shows one need.'],
     uk: ['У панелі Крафту число зверху тепер збігається з полем Вхід, тож кожен рецепт показує одну потребу.'],

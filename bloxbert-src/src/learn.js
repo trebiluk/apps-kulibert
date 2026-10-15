@@ -222,14 +222,23 @@ export function createLearn(api) {
     const g = goals.find((x) => x.id === id)
     if (!g || g.done) return
     const showing = currentGoal()
-    if (!showing || showing.id !== id) return
+    if (!showing) return
+    const gi = goals.indexOf(g)
+    const si = goals.indexOf(showing)
+    if (gi < si) return
+    const later = gi > si
     g.n += n
     if (g.n < g.need) {
       remember()
-      paintPath()
+      if (!later) paintPath()
       return
     }
     g.done = true
+    if (later) {
+      for (let i = 0; i < gi; i++) {
+        if (!goals[i].done) goals[i].done = true
+      }
+    }
     dismissId(g.id)
     remember()
     api.pay(g.pay, id)
