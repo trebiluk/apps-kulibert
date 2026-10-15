@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.219', date: '2026-10-15', lines: {
+    en: ['The starter kit now has 5 planks, enough to make your first Wood Pickaxe.'],
+    uk: ['Стартовий набір тепер має 5 дощок, досить, щоб зробити перше дерев’яне кайло.'],
+    ru: ['Стартовый набор теперь даёт 5 досок — хватит, чтобы сделать первую деревянную кирку.'],
+    es: ['El kit inicial ahora tiene 5 tablas, suficientes para hacer tu primer pico de madera.'],
+    ar: ['عدة البداية فيها الآن 5 ألواح، تكفي لصنع أول معول خشب.'],
+    'fa-AF': ['کیت شروع حالا ۵ تخته دارد، برای ساختن اولین کلنگ چوبی کافی است.'],
+    rw: ['Ibice byo gutangira ubu birimo imbaho 5, bihagije icyuma cya mbere cy\'ibiti.'],
+    ti: ['ናይ ጅምር ኣቑሑት ሕጂ 5 ጣውላ ኣለዎም፡ ንናይ መጀመርታ ናይ ዕንጨይቲ መኮፍ ይበቅዑ።'],
+  }},
   { v: '2.5.218', date: '2026-10-15', lines: {
     en: ['Levers now say "Lever on" or "Lever off" when you flip them.'],
     uk: ['Важелі тепер кажуть «Важіль увімкнено» або «Важіль вимкнено», коли ти їх перемикаєш.'],

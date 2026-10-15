@@ -4607,7 +4607,7 @@ function grantStartKit() {
   if (session.mode && session.mode !== 'survival') return
   if (gifts.startKit) return
   session.give('stick', 4)
-  session.give('planks', 4)
+  session.give('planks', 5)
   session.give('berry', 1)
   gifts.startKit = true
   dirty = true
