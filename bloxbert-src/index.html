@@ -331,7 +331,10 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .book .well .need.bake-in{display:flex;flex-direction:column;align-items:center;min-width:0;max-width:100%;overflow:visible;max-height:none}
 #sheet[data-panel="crafting"] .book .well .need.bake-in .need-line{display:block;min-width:0;max-width:100%;white-space:normal;overflow-wrap:normal;word-break:normal}
 #sheet[data-panel="crafting"] .well{position:relative;box-sizing:border-box;width:var(--ks-slot);min-width:var(--ks-slot);height:var(--ks-slot);min-height:var(--ks-slot);padding:4px 2px 6px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;box-shadow:inset 0 3px 0 #0B2A30;color:#E6EEF2;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1px}
-#sheet[data-panel="crafting"] .well.result{width:var(--ks-slot-big);min-width:var(--ks-slot-big);height:var(--ks-slot-big);min-height:var(--ks-slot-big);border:2px solid #22D3EE}
+#sheet[data-panel="crafting"] .well.result{width:var(--ks-slot-big);min-width:var(--ks-slot-big);height:var(--ks-slot-big);min-height:var(--ks-slot-big);border:2px solid #22D3EE;overflow:hidden}
+#sheet[data-panel="crafting"] .well.result .wlab{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;white-space:normal;overflow:hidden;width:100%;max-width:100%;min-width:0;box-sizing:border-box;font-size:8px;line-height:1.1;max-height:calc(1.1em * 2);overflow-wrap:normal;word-break:normal;text-align:center}
+#sheet[data-panel="crafting"] .well.result .art{width:24px;height:24px;flex:0 0 24px}
+#sheet[data-panel="crafting"] .well.result .art canvas,#sheet[data-panel="crafting"] .well.result .art svg{width:24px;height:24px}
 #sheet[data-panel="crafting"] .well.on{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .well.on::before{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid #22D3EE}
 #sheet[data-panel="crafting"] .well.dim .art{opacity:.45}

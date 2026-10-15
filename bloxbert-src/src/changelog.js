@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.225', date: '2026-10-15', lines: {
+    en: ['On phones held sideways, long item names now fit inside the Output box when crafting.'],
+    uk: ['На телефонах, триманих боком, довгі назви предметів тепер вміщаються в клітинку Виходу під час крафту.'],
+    ru: ['На телефонах, которые держат боком, длинные названия теперь помещаются в клетку Результата при крафте.'],
+    es: ['En un teléfono en horizontal, los nombres largos ahora caben dentro de la casilla de Resultado al fabricar.'],
+    ar: ['حين تمسك الهاتف بالعرض، الأسماء الطويلة صارت تدخل في خانة الناتج عند الصنع.'],
+    'fa-AF': ['وقتی تلفن را افقی بگیری، نام‌های بلند حالا در خانه نتیجه جا می‌شوند.'],
+    rw: ['Ku telefoni iri iburyo, amazina maremare y\'ibintu ubu akwira mu gasanduku k\'Ibisohoka mu gukora.'],
+    ti: ['ኣብ ጎድናዊ ዝተታሕዘ ትሌፎን፡ ነዋሕቲ ሽማት ኣብ ናይ ውጽኢት ሳንዱቕ ይኣቱ ኣብ ምስራሕ።'],
+  }},
   { v: '2.5.224', date: '2026-10-15', lines: {
     en: ['After a reload you face the same way you were looking, so you know you are back where you saved.'],
     uk: ['Після перезавантаження ти дивишся в той самий бік, тож знаєш, що ти знову там, де зберігся.'],
