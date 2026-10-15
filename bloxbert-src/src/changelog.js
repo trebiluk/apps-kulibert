@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.220', date: '2026-10-15', lines: {
+    en: ['Picking a recipe no longer jumps the list back to the top.', 'On a wide phone, "Any planks" wraps onto two lines.'],
+    uk: ['Вибір рецепта більше не кидає список нагору.', 'На широкому телефоні «Будь-які дошки» стають у два рядки.'],
+    ru: ['Выбор рецепта больше не бросает список наверх.', 'На широком телефоне «Любые доски» встают в две строки.'],
+    es: ['Elegir una receta ya no manda la lista arriba.', 'En un teléfono ancho, «Cualquier tabla» pasa a dos líneas.'],
+    ar: ['اختيار وصفة لم يعد يقفز بالقائمة إلى الأعلى.', 'على هاتف عريض، «أي ألواح» تصير في سطرين.'],
+    'fa-AF': ['انتخاب دستور دیگر فهرست را به بالا پرت نمی‌کند.', 'در تلفن پهن، «هر تخته» در دو خط می‌آید.'],
+    rw: ['Guhitamo inyandiko ntibisubiza urutonde hejuru.', 'Ku telefoni igari, «Imbaho zose» igira imirongo ibiri.'],
+    ti: ['ምረጻ ኣዋህሃድ ነቲ ዝርዝር ናብ ላዕሊ ኣይመልሶን።', 'ኣብ ሰፊሕ ትሌፎን «ዝኾነ ጣውላ» ኣብ ክልተ መስመር ይወርድ።'],
+  }},
   { v: '2.5.219', date: '2026-10-15', lines: {
     en: ['The starter kit now has 5 planks, enough to make your first Wood Pickaxe.'],
     uk: ['Стартовий набір тепер має 5 дощок, досить, щоб зробити перше дерев’яне кайло.'],

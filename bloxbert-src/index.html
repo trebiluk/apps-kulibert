@@ -839,8 +839,8 @@ html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-si
 #sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{display:block;max-width:100%;padding:0 2px;box-sizing:border-box;text-align:center;white-space:normal;overflow-wrap:anywhere;hyphens:auto;font-size:max(10px,var(--ks-fs-xs,12px));line-height:1.05}
 @media (max-height:500px){#sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{font-size:10px}}
 #sheet .ks-inputs .ks-slot:not(.ks-empty) .ks-lab,#sheet .ks-outputs .ks-slot:not(.ks-empty) .ks-lab{display:none}
-/* A2-33: empty slot labels sit on the slot floor, clamped to two lines */
-#sheet .ks-inputs .ks-slot.ks-empty .ks-lab,#sheet .ks-outputs .ks-slot.ks-empty .ks-lab{position:absolute;left:2px;right:2px;bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.1;font-size:10px;text-shadow:0 1px 0 #08131A}
+/* A2-33: empty slot labels sit on the slot floor, two whole lines (no mid-word ellipsis) */
+#sheet .ks-inputs .ks-slot.ks-empty .ks-lab,#sheet .ks-outputs .ks-slot.ks-empty .ks-lab{position:absolute;left:1px;right:1px;bottom:2px;padding:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:normal;overflow-wrap:normal;word-break:normal;hyphens:manual;line-height:1.05;font-size:9px;text-overflow:clip;text-shadow:0 1px 0 #08131A}
 html #sheet .craft-find::placeholder{color:#9FB0C6;opacity:1}
 /* G2-10: the pixel "x" icon is thin red-on-navy and goes blank under .kd-x .gic{font-size:0}; draw a clear 24px stroke ✕ on every panel */
 html #sheet #sheet-x{position:relative;min-width:44px;min-height:44px;background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;justify-content:center;align-items:center}

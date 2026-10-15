@@ -1437,12 +1437,13 @@ export function createSession(api) {
     clearTimeout(armCraftFollow.timer)
     armCraftFollow.timer = setTimeout(() => pokeCraft(), 950)
   }
-  function paintCraft(g, soft) {
+  function paintCraft(g, soft, opts) {
     armTrayWatch()
     if (soft && paintCraftSlots(g)) return
     craftTrace('full')
     const sheetBody = document.getElementById('sheet-body')
-    if (sheetBody) {
+    const keepScroll = !!(opts && opts.keepScroll)
+    if (sheetBody && !keepScroll) {
       sheetBody.scrollTop = 0
       requestAnimationFrame(() => { if (sheetBody.isConnected) sheetBody.scrollTop = 0 })
     }
@@ -1611,7 +1612,26 @@ export function createSession(api) {
         if (r.id !== craftId) returnTray()
         craftId = r.id
         craftFx = 'slide'
-        paintCraft(g)
+        const sheetBody = document.getElementById('sheet-body')
+        const book = g.querySelector('.book')
+        const keepBody = sheetBody ? sheetBody.scrollTop : 0
+        const keepBook = book ? book.scrollTop : 0
+        paintCraft(g, false, { keepScroll: true })
+        const restore = () => {
+          const body = document.getElementById('sheet-body')
+          const nextBook = g.querySelector('.book')
+          if (body && body.isConnected) body.scrollTop = keepBody
+          if (nextBook) nextBook.scrollTop = keepBook
+          const picked = g.querySelector('.book .well[data-recipe="' + r.id + '"]')
+          if (!picked) return
+          const scroller = nextBook && nextBook.scrollHeight > nextBook.clientHeight + 2 ? nextBook : body
+          if (!scroller) return
+          const pr = picked.getBoundingClientRect()
+          const sr = scroller.getBoundingClientRect()
+          if (pr.top < sr.top - 1 || pr.bottom > sr.bottom + 1) picked.scrollIntoView({ block: 'nearest' })
+        }
+        restore()
+        requestAnimationFrame(restore)
       })
       row.append(b)
     }
