@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.236', date: '2026-10-15', lines: {
+    en: ['After you make something, Crafting now says Done! Take it until you add more parts.'],
+    uk: ['Після того як зробиш річ, Крафт тепер каже «Готово! Бери», доки не додаси ще частини.'],
+    ru: ['После того как сделаешь вещь, Крафт теперь говорит «Готово! Бери», пока не добавишь ещё детали.'],
+    es: ['Después de fabricar algo, Fabricar ahora dice ¡Listo! Tómalo hasta que pongas más piezas.'],
+    ar: ['بعد أن تصنع شيئاً، الصنع يقول «تم! خذه» حتى تضيف المزيد من القطع.'],
+    'fa-AF': ['بعد از ساختن چیزی، ساخت می‌گوید «تمام! بگیر» تا قطعهٔ بیشتر بگذاری.'],
+    rw: ['Nyuma yo gukora ikintu, Gukora ivuga Byarangiye! Fata kugeza ushyiramo ibice bindi.'],
+    ti: ['ነገር ምስ ሰራሕካ፡ ምስራሕ «ተዛዚሙ! ውሰድ» ይብል፡ ክሳብ ተወሳኺ ክፋላት እትውስኽ።'],
+  }},
   { v: '2.5.235', date: '2026-10-15', lines: {
     en: ['After you skip the Tour, your first click only starts play - no more Too far away.'],
     uk: ['Після того як пропустиш Тур, перший клік лише починає гру — більше ніякого «Занадто далеко».'],

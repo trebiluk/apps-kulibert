@@ -1235,12 +1235,18 @@
   }
 
   var craftSweepAt = 0
+  var craftDoneFor = ''
+  function craftDoneKey(recipe) {
+    return (recipe && (recipe.id || (recipe.out && recipe.out[0]))) || 'x'
+  }
   function craftPanel(el, opts) {
     opts = opts || {}
     var nameOf = bindName(opts)
     var iconOf = bindIcon(opts)
     var tr = bindT(opts)
     var recipe = opts.recipe || { in: [], out: ['', 1] }
+    var doneKey = craftDoneKey(recipe)
+    if (craftDoneFor && craftDoneFor !== doneKey) craftDoneFor = ''
     var pick = null
     var guardBox = { guard: null }
     openPanels.push({
@@ -1371,8 +1377,12 @@
     zf.inBody.append(insBox)
     zf.outBody.append(result)
     card.classList.add('ks-zoned')
-    makeBtn.addEventListener('click', function () { if (!makeBtn.disabled && !opts.bake) craftSweepAt = Date.now() }, true)
-    maxBtn.addEventListener('click', function () { if (!maxBtn.disabled) craftSweepAt = Date.now() }, true)
+    makeBtn.addEventListener('click', function () {
+      if (!makeBtn.disabled && !opts.bake) { craftSweepAt = Date.now(); craftDoneFor = doneKey }
+    }, true)
+    maxBtn.addEventListener('click', function () {
+      if (!maxBtn.disabled) { craftSweepAt = Date.now(); craftDoneFor = doneKey }
+    }, true)
     keys.insertBefore(zf.feedback, keys.firstChild)
     card.append(zf.row, bag, note, keys)
     function craftFeedback() {
@@ -1386,6 +1396,8 @@
         if (gap > 0) miss.push(gap + ' ' + (nameOf(recipe.in[q][0]) || recipe.in[q][0]))
       }
       if (Date.now() - craftSweepAt < 900) return zf.setFeedback(zf.word('fbDone', 'Done! Take it'), 'done')
+      if (craftDoneFor && craftDoneFor === doneKey && !any) return zf.setFeedback(zf.word('fbDone', 'Done! Take it'), 'done')
+      craftDoneFor = ''
       if (opts.blocked && !miss.length) return zf.setFeedback(opts.blocked, 'warn')
       if (!miss.length) return zf.setFeedback(zf.word('fbReady', 'Ready to make'), 'done')
       if (!any) return zf.setFeedback(zf.word('fbAdd', 'Add parts'), 'info')
