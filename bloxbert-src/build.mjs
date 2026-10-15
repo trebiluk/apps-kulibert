@@ -43,7 +43,7 @@ const trimUnusedShaders = {
 }
 await build({
   entryPoints: ['src/main.js'], bundle: true, minify: true, format: 'iife', target: 'es2020',
-  outfile: OUT + '/app.js', loader: { '.json': 'json' }, legalComments: 'eof', metafile: true,
+  outfile: OUT + '/app.js', loader: { '.json': 'json', '.css': 'text' }, legalComments: 'eof', metafile: true,
   charset: 'utf8',
   drop: ['debugger'],
   pure: ['console.debug'],

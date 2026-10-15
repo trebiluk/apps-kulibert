@@ -44,7 +44,7 @@ import { createLearn } from './learn.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
-import { fromDoc } from './save.js'
+import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
@@ -76,6 +76,7 @@ import { createQuality } from './gfx/quality.js'
 import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
+import { initBot } from './bot/bot.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -1641,6 +1642,7 @@ let inspectOn = false
 let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
+let bot = { dump() { return [] }, load() {} }
 function passCropAim(id) {
   if (!session || !session.selectedItem || !isCropId(id)) return false
   const held = session.selectedItem() || ''
@@ -3387,6 +3389,7 @@ async function snapshot() {
     gifts,
     crops: farm.dump(),
     forage: forage.dump(),
+    bots: bot.dump(),
     pondAid: !!pondAid,
     maker: makerSnap(),
     ...(openedFrom ? { openedFrom } : {}),
@@ -3637,6 +3640,7 @@ async function applyDoc(doc) {
   syncCrops(Date.now())
   forage.load(src && src.forage)
   syncForage(Date.now())
+  bot.load(botsFrom(src))
   pondAid = false
   ensureStarterPond(src)
   seedOldBushes()
@@ -3666,6 +3670,7 @@ async function resetWorld() {
   syncGlasses()
   farm.clear()
   forage.clear()
+  bot.load([])
   pondAid = true
   genVersion = GEN
   genSeen = {}
@@ -9035,6 +9040,12 @@ attachCircuits({
 })
 
 basics.boot(WORLD !== 'bertyville')
+bot = initBot({
+  noa, t, toast, getVoxel,
+  markDirty: () => { dirty = true },
+  session,
+  close: () => panels && panels.close(),
+})
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   if (allowSave) window.__bertOpen = true

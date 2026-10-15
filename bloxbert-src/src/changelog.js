@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.241', date: '2026-10-15', lines: {
+    en: ["Meet Berty's Bot! Place it and tap it to open its Code panel."],
+    uk: ['Знайомтесь із Ботом Берті! Постав його і торкнись, щоб відкрити панель Коду.'],
+    ru: ['Знакомьтесь с Ботом Берти! Поставь его и нажми, чтобы открыть панель Кода.'],
+    es: ['¡Conoce al Bot de Berty! Colócalo y tócalo para abrir su panel de Código.'],
+    ar: ['تعرّف على بوت بيرتي! ضعه والمسه لتفتح لوحة الكود.'],
+    'fa-AF': ['با بوت برتی آشنا شو! او را بگذار و لمس کن تا صفحهٔ کدش باز شود.'],
+    rw: ['Menya Bot ya Berty! Yishyire hasi uyikoreho ufungure akanama ka Kode.'],
+    ti: ['ንቦት ቤርቲ ተዋወቕ! ኣቐምጦ ጠውቕ ንፓነል ኮድ ክትከፍት።'],
+  }},
   { v: '2.5.240', date: '2026-10-15', lines: {
     en: ['On an upright phone, the Workbench Make button is on screen.'],
     uk: ['На вертикальному телефоні кнопку «Зробити» у верстаті видно на екрані.'],

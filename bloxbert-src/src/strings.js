@@ -284,3 +284,14 @@ const SLOT_COPY = {
   },
 }
 for (const key of Object.keys(SLOT_COPY)) for (const lang of Object.keys(STR)) STR[lang][key] = SLOT_COPY[key][lang] || SLOT_COPY[key].en
+const BOT_COPY = {
+  en: { botTab: 'Bot', bertyBot: "Berty's Bot", botHave: 'You already have a Bot.', botForward: 'Forward', botTurn: 'Turn', botDig: 'Dig', botPlace: 'Place', botRepeat: 'Repeat', botEnd: 'End', botSoon: 'Soon', botRun: 'Run', botStop: 'Stop', botUndo: 'Undo run' },
+  uk: { botTab: 'Бот', bertyBot: 'Бот Берті', botHave: 'У тебе вже є Бот.', botForward: 'Вперед', botTurn: 'Поворот', botDig: 'Копай', botPlace: 'Постав', botRepeat: 'Повтор', botEnd: 'Кінець', botSoon: 'Скоро', botRun: 'Запуск', botStop: 'Стоп', botUndo: 'Скасувати запуск' },
+  ru: { botTab: 'Бот', bertyBot: 'Бот Берти', botHave: 'У тебя уже есть Бот.', botForward: 'Вперёд', botTurn: 'Поворот', botDig: 'Копай', botPlace: 'Поставь', botRepeat: 'Повтор', botEnd: 'Конец', botSoon: 'Скоро', botRun: 'Пуск', botStop: 'Стоп', botUndo: 'Отменить запуск' },
+  es: { botTab: 'Bot', bertyBot: 'Bot de Berty', botHave: 'Ya tienes un Bot.', botForward: 'Adelante', botTurn: 'Giro', botDig: 'Cava', botPlace: 'Pon', botRepeat: 'Repite', botEnd: 'Fin', botSoon: 'Pronto', botRun: 'Correr', botStop: 'Parar', botUndo: 'Deshacer' },
+  ar: { botTab: 'بوت', bertyBot: 'بوت بيرتي', botHave: 'لديك بوت بالفعل.', botForward: 'أمام', botTurn: 'انعطف', botDig: 'احفر', botPlace: 'ضع', botRepeat: 'كرر', botEnd: 'نهاية', botSoon: 'قريباً', botRun: 'تشغيل', botStop: 'توقف', botUndo: 'تراجع' },
+  'fa-AF': { botTab: 'بوت', bertyBot: 'بوت برتی', botHave: 'تو از قبل یک بوت داری.', botForward: 'پیش', botTurn: 'بپیچ', botDig: 'بکن', botPlace: 'بگذار', botRepeat: 'تکرار', botEnd: 'پایان', botSoon: 'به‌زودی', botRun: 'اجرا', botStop: 'ایست', botUndo: 'برگردان' },
+  rw: { botTab: 'Bot', bertyBot: 'Bot ya Berty', botHave: 'Usanzwe ufite Bot.', botForward: 'Imbere', botTurn: 'Zunguza', botDig: 'Tera', botPlace: 'Shyira', botRepeat: 'Subiramo', botEnd: 'Soza', botSoon: 'Vuba', botRun: 'Tangira', botStop: 'Hagarara', botUndo: 'Subiza' },
+  ti: { botTab: 'ቦት', bertyBot: 'ቦት ቤርቲ', botHave: 'ቦት ድሮ ኣሎካ።', botForward: 'ቅድሚት', botTurn: 'ዞር', botDig: 'ጽሕር', botPlace: 'ኣቐምጥ', botRepeat: 'ደጋግም', botEnd: 'መወዳእታ', botSoon: 'ቀረባ', botRun: 'ኣስርሕ', botStop: 'ደው ኣብል', botUndo: 'መልስ' },
+}
+for (const lang of Object.keys(STR)) Object.assign(STR[lang], BOT_COPY[lang] || BOT_COPY.en)

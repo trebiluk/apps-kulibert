@@ -54,3 +54,4 @@ export function createBag() {
   }
   return { slots, count, add, take, load, dump }
 }
+export const BOT_TAB = { id: 'bot', item: 'bertyBot', label: 'botTab', free: true, one: true }

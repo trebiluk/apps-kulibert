@@ -10,12 +10,17 @@ export function toV2(v1, player, econ, meta) {
   }
 }
 export function fromDoc(doc) {
-  if (!doc || doc.v === 1) return { player: emptyPlayer('survival'), econ: null, meta: {}, lost: [], drops: [] }
+  if (!doc || doc.v === 1) return { player: emptyPlayer('survival'), econ: null, meta: {}, lost: [], drops: [], bots: [] }
   return {
     player: doc.player || emptyPlayer(doc.player && doc.player.mode),
     econ: doc.econ || null,
     meta: doc.meta || {},
     lost: doc.lost || [],
     drops: doc.drops || [],
+    bots: Array.isArray(doc.bots) ? doc.bots : [],
   }
+}
+
+export function botsFrom(doc) {
+  return Array.isArray(doc && doc.bots) ? doc.bots : []
 }
