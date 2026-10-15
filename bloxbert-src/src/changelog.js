@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.212', date: '2026-10-15', lines: {
+    en: ['On a phone held upright, all 9 hotbar slots and the Bag fit, and the item name stays off Jump.'],
+    uk: ['На телефоні вертикально всі 9 комірок і Сумка вміщаються, а назва предмета не закриває Стрибок.'],
+    ru: ['На телефоне вертикально все 9 ячеек и Сумка помещаются, а название предмета не закрывает Прыжок.'],
+    es: ['En un teléfono en vertical caben las 9 casillas y la Bolsa, y el nombre no tapa Saltar.'],
+    ar: ['على الهاتف عمودياً تتسع الخانات التسع والحقيبة، واسم الغرض يبقى بعيداً عن القفز.'],
+    'fa-AF': ['در تلفن عمودی هر ۹ خانه و بکس جا می‌شوند و نام چیز از پرش دور می‌ماند.'],
+    rw: ['Ku telefoni ihagaze, udufuka 9 n\'Agasaho biragaragara, izina ntirigira ku Simbuka.'],
+    ti: ['ኣብ ትሌፎን ቀጥ ዝበለ፡ 9 ቦታታትን ቦርሳን ይኣትዉ፡ ስም ኣቕሓ ድማ ካብ ንጻ ይርሕቕ።'],
+  }},
   { v: '2.5.211', date: '2026-10-15', lines: {
     en: ['Your first click just grabs the mouse - no more "Too far away".'],
     uk: ['Перший клік лише хапає мишку - більше ніякого «Занадто далеко».'],
