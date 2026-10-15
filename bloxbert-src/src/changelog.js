@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.230', date: '2026-10-15', lines: {
+    en: ['The world now loads behind the first Tour, so you see your land right away.'],
+    uk: ['Світ тепер завантажується за першим Туром, тож ти одразу бачиш свою землю.'],
+    ru: ['Мир теперь загружается за первым Туром, так что ты сразу видишь свою землю.'],
+    es: ['El mundo ahora carga detrás del primer Tour, así ves tu tierra enseguida.'],
+    ar: ['العالم صار يحمّل خلف الجولة الأولى، فترى أرضك فوراً.'],
+    'fa-AF': ['جهان حالا پشت تور نخست بار می‌شود، پس زمینت را زود می‌بینی.'],
+    rw: ['Isi ubu ikurura inyuma ya Tour ya mbere, ubone ubutaka bwawe ako kanya.'],
+    ti: ['ዓለም ሕጂ ኣብ ድሕሪ ናይ መጀመርታ ቱር ትጽዕን፡ መሬትካ ብቕልጡፍ ትርኢ።'],
+  }},
   { v: '2.5.229', date: '2026-10-15', lines: {
     en: ['The goal card now skips steps you already did, like making a Wood Pickaxe before chopping a tree.'],
     uk: ['Картка цілі тепер пропускає кроки, які ти вже зробив, наприклад зробити дерев’яне кайло ще до того, як зрубаєш дерево.'],

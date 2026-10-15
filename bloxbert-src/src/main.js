@@ -4958,13 +4958,16 @@ async function goWorld(m) {
   await load()
   if (panels) panels.close()
 }
-function releaseLook() {
+let tourAutoOpen = false
+function releaseLook(opts) {
   selfUnlock = !!document.pointerLockElement
   document.body.classList.add('menu-open')
   try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
   try { if (document.pointerLockElement) document.exitPointerLock() } catch (e) {}
   try { noa.container.setPointerLock(false) } catch (e) {}
-  try { noa.setPaused(true) } catch (e) {}
+  if (!(opts && opts.keepWorld)) {
+    try { noa.setPaused(true) } catch (e) {}
+  }
   if (session) session.paused = true
   if (hands) {
     hands.update(16)
@@ -5285,7 +5288,7 @@ panels = mountPanels({
   onClose: () => resumePlay(),
   onOpen: () => {
     openMachineKey = ''
-    releaseLook()
+    releaseLook({ keepWorld: tourAutoOpen })
     requestAnimationFrame(() => focusBtn(document.querySelector('#sheet button')))
   },
   paintBag: (g) => session.paintBag(g),
@@ -5431,7 +5434,7 @@ function dropMenuHint() {
 }
 const learn = createLearn({
   t, toast, close: () => panels.close(),
-  openTour: () => panels.open('tour'),
+  openTour: () => { tourAutoOpen = true; try { panels.open('tour') } finally { tourAutoOpen = false } },
   panel: () => (panels && panels.openPanel) || '',
   survival: () => session && session.mode === 'survival',
   touch: () => TOUCH_UI,
