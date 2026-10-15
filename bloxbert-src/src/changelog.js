@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.233', date: '2026-10-15', lines: {
+    en: ['Your goal card comes back when you switch from Creative to Survival.'],
+    uk: ['Картка цілі повертається, коли переходиш із Творчого у Виживання.'],
+    ru: ['Карточка цели возвращается, когда переходишь из Творческого в Выживание.'],
+    es: ['Tu tarjeta de meta vuelve cuando cambias de Creativo a Supervivencia.'],
+    ar: ['بطاقة هدفك ترجع لما تنتقل من إبداعي إلى بقاء.'],
+    'fa-AF': ['کارت هدف تو وقتی از خلاق به بقا برمی‌گردی، برمی‌گردد.'],
+    rw: ['Ikarita y\'intego yawe iragaruka iyo uva muri Kurema ujya muri Kubaho.'],
+    ti: ['ናይ ዕላማ ካርድካ ካብ ፈጠራ ናብ ምንባር ምስ ተቀይርካ ይምለስ።'],
+  }},
   { v: '2.5.232', date: '2026-10-15', lines: {
     en: ['Your first click now only starts play - it never says Too far away.'],
     uk: ['Перший клік тепер лише починає гру — він ніколи не каже «Занадто далеко».'],

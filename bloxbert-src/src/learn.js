@@ -40,6 +40,7 @@ export function createLearn(api) {
     save()
   }
   let cardHidden = false
+  let pathShown = false
   let pathGap = 0
   let celebrate = 0
   function currentGoal() {
@@ -55,6 +56,7 @@ export function createLearn(api) {
     }
     const g = currentGoal()
     if (g) dismissId(g.id)
+    pathShown = false
     clearTimeout(celebrate)
     celebrate = 0
     clearTimeout(pathGap)
@@ -107,7 +109,7 @@ export function createLearn(api) {
       if (was && api.releaseHint) api.releaseHint("path")
       return
     }
-    if (api.hintTaken && api.hintTaken()) {
+    if (!pathShown && api.hintTaken && api.hintTaken()) {
       el.classList.remove('path-out')
       el.hidden = true
       el.replaceChildren()
@@ -127,6 +129,7 @@ export function createLearn(api) {
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
+    pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)
   }
