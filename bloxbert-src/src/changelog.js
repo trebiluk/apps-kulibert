@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.227', date: '2026-10-15', lines: {
+    en: ['On computers, the whole bag now fits in the Crafting panel with no sideways scrolling.'],
+    uk: ['На комп\'ютерах уся сумка тепер вміщається в панелі Крафту без прокрутки вбік.'],
+    ru: ['На компьютерах вся сумка теперь помещается в панели Крафта без прокрутки вбок.'],
+    es: ['En la computadora, toda la bolsa ahora cabe en el panel de Fabricar sin desplazarse de lado.'],
+    ar: ['على الحاسوب، الكيس كله صار يدخل في لوحة الصنع بلا تمرير جانبي.'],
+    'fa-AF': ['در کمپیوتر، همه کیف حالا در صفحه ساخت جا می‌شود و دیگر به پهلو نمی‌لغزد.'],
+    rw: ['Kuri mudasobwa, umufuka wose ubu ukwira mu gice cyo Gukora nta kunyereza ku ruhande.'],
+    ti: ['ኣብ ኮምፒተር፡ መላእ ቦርሳ ኣብ ናይ ምስራሕ ፓነል ይኣቱ፡ ናብ ጎኒ ምንቅስቓስ የለን።'],
+  }},
   { v: '2.5.226', date: '2026-10-15', lines: {
     en: ['On phones held upright, the Full screen button no longer covers the goal card or its close button.'],
     uk: ['На телефонах, триманих вертикально, кнопка «Повний екран» більше не закриває картку цілі чи кнопку закриття.'],

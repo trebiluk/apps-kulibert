@@ -353,6 +353,7 @@ body.mode-creative #hotbar .item-strip{display:flex;overflow-x:auto;flex:1 1 aut
 #sheet[data-panel="crafting"] .keys{position:sticky;bottom:0;inset:auto;z-index:5;max-width:none;background:#0E1A22;border:0;padding:8px 0;color:inherit;font-size:inherit;line-height:inherit;white-space:normal}
 #sheet[data-panel="crafting"] .tray{display:flex;flex-direction:column;gap:8px;min-width:0}
 #sheet[data-panel="crafting"] .bag-strip{display:flex;flex-wrap:wrap;gap:var(--ks-gap);max-width:100%}
+#sheet[data-panel="crafting"] .ks-craft .ks-bag.ks-bag-rows{grid-template-rows:none;grid-auto-flow:row;grid-template-columns:repeat(auto-fill,var(--ks-slot,56px));grid-auto-rows:var(--ks-slot,56px);overflow-x:hidden;max-width:100%}
 #sheet[data-panel="crafting"] .bag-strip .well{width:var(--ks-slot);min-width:var(--ks-slot);height:var(--ks-slot);min-height:var(--ks-slot);padding:2px;touch-action:none}
 #sheet[data-panel="crafting"] .bag-strip .well.pick{box-shadow:0 0 0 3px #22D3EE,inset 0 3px 0 #0B2A30}
 #sheet[data-panel="crafting"] .well.ing.ghost .art{opacity:.35}
