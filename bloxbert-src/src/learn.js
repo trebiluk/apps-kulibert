@@ -138,6 +138,15 @@ export function createLearn(api) {
       el.style.maxWidth = ''
       el.style.bottom = ''
       el.style.fontSize = ''
+      const fs = document.getElementById('fs-btn')
+      if (!fs) return
+      const fr = fs.getBoundingClientRect()
+      if (!(fr.width > 2 && fr.height > 2)) return
+      const chip = el.getBoundingClientRect()
+      if (fr.left < chip.left) return
+      if (fr.top < chip.bottom && fr.bottom > chip.top) {
+        el.style.maxWidth = Math.max(160, fr.left - chip.left - 8) + 'px'
+      }
       return
     }
     const jump = document.getElementById('jump-col')

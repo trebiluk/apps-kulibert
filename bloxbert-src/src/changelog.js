@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.226', date: '2026-10-15', lines: {
+    en: ['On phones held upright, the Full screen button no longer covers the goal card or its close button.'],
+    uk: ['На телефонах, триманих вертикально, кнопка «Повний екран» більше не закриває картку цілі чи кнопку закриття.'],
+    ru: ['На телефонах, которые держат вертикально, кнопка «Полный экран» больше не закрывает карточку цели и кнопку закрытия.'],
+    es: ['En un teléfono en vertical, el botón de Pantalla completa ya no tapa la tarjeta de meta ni su botón de cerrar.'],
+    ar: ['حين تمسك الهاتف بالطول، زر ملء الشاشة لم يعد يغطي بطاقة الهدف ولا زر إغلاقها.'],
+    'fa-AF': ['وقتی تلفن را عمودی بگیری، دکمه تمام‌صفحه دیگر کارت هدف یا دکمه بستن آن را نمی‌پوشاند.'],
+    rw: ['Ku telefoni ihagaze, buto ya Ecran yose ntikipfuka ikarita y\'intego cyangwa buto yo kuyifunga.'],
+    ti: ['ኣብ ትኹል ዝተታሕዘ ትሌፎን፡ ናይ ምሉእ ስክሪን መጠወቒ ነቲ ናይ ዕላማ ካርድ ወይ ናይ ምዕጻው መጠወቒ ኣይሽፍንን።'],
+  }},
   { v: '2.5.225', date: '2026-10-15', lines: {
     en: ['On phones held sideways, long item names now fit inside the Output box when crafting.'],
     uk: ['На телефонах, триманих боком, довгі назви предметів тепер вміщаються в клітинку Виходу під час крафту.'],
