@@ -835,6 +835,10 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet[data-panel=settings] #sheet-body{overflow-x:hidden}
 /* G2-13: readable slot labels and search hint (#9FB0C6 = --muted, 8.49:1 on #08131A) */
 html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-size:max(12px,var(--ks-fs-xs, 12px))}
+#sheet .ks-inputs .ks-slot,#sheet .ks-outputs .ks-slot{overflow:hidden}
+#sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{display:block;max-width:100%;padding:0 2px;box-sizing:border-box;text-align:center;white-space:normal;overflow-wrap:anywhere;hyphens:auto;font-size:max(10px,var(--ks-fs-xs,12px));line-height:1.05}
+@media (max-height:500px){#sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{font-size:10px}}
+#sheet .ks-inputs .ks-slot:not(.ks-empty) .ks-lab,#sheet .ks-outputs .ks-slot:not(.ks-empty) .ks-lab{display:none}
 html #sheet .craft-find::placeholder{color:#9FB0C6;opacity:1}
 /* G2-10: the pixel "x" icon is thin red-on-navy and goes blank under .kd-x .gic{font-size:0}; draw a clear 24px stroke ✕ on every panel */
 html #sheet #sheet-x{position:relative;min-width:44px;min-height:44px;background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;justify-content:center;align-items:center}

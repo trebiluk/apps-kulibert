@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.213', date: '2026-10-15', lines: {
+    en: ['The Oven\'s Fuel and Input labels stay inside their own slots.'],
+    uk: ['Підписи «Паливо» і «Вхід» у печі лишаються у своїх слотах.'],
+    ru: ['Подписи «Топливо» и «Вход» у печи остаются в своих слотах.'],
+    es: ['Las etiquetas Combustible y Entrada del horno se quedan en sus casillas.'],
+    ar: ['تسميتا الوقود والمدخل في الفرن تبقيان داخل خانتيهما.'],
+    'fa-AF': ['برچسب‌های سوخت و ورود تنور در خانه خودشان می‌مانند.'],
+    rw: ['Amagambo ya Amakara n\'Iwinjira by\'ibyoto aguma mu mazu yawo.'],
+    ti: ['ናይ ነዳዲን እታውን መፍለጢታት ናይ እቶን ኣብ ቦታኦም ጥራይ ይጸንሑ።'],
+  }},
   { v: '2.5.212', date: '2026-10-15', lines: {
     en: ['On a phone held upright, all 9 hotbar slots and the Bag fit, and the item name stays off Jump.'],
     uk: ['На телефоні вертикально всі 9 комірок і Сумка вміщаються, а назва предмета не закриває Стрибок.'],
