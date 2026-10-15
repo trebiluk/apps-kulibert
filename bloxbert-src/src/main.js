@@ -1697,13 +1697,16 @@ function canReach(pos) {
 let farPress = 0
 let farHit = null
 let farKeyAt = 0
+function grabClick() { return !TOUCH_UI && (!playLocked() || performance.now() - lockGainedAt < 300) }
 function toastFar() {
+  if (grabClick()) return
   if (farPress) return
   farPress = 1
   toast(t('tooFar'))
 }
 function releaseFar() { setTimeout(() => { farPress = 0 }, 0) }
 function toastFarKey() {
+  if (grabClick()) return
   const now = performance.now()
   if (now - farKeyAt < 600) return
   farKeyAt = now
@@ -4535,6 +4538,7 @@ let cardClosedAt = 0
 let closeHow = ''
 let dropLockLook = false
 let lockSwallowUntil = 0
+let lockGainedAt = 0
 let shopsLive = false
 let openMachineKey = ''
 let muteUseKey = ''
@@ -6047,6 +6051,7 @@ document.addEventListener('pointerlockchange', () => {
     playLockWanted = false
     lockTries = 0
     dropLockLook = true
+    lockGainedAt = performance.now()
     lockSwallowUntil = Math.max(lockSwallowUntil, performance.now() + 150)
     clearLookAccum()
     hidePlayChip()
@@ -6778,7 +6783,7 @@ function clampGate(dig, now) {
   return true
 }
 function beginDig(kind) {
-  if (!TOUCH_UI && !playLocked() && performance.now() < lockSwallowUntil) return
+  if (!TOUCH_UI && (performance.now() < lockSwallowUntil || performance.now() - lockGainedAt < 300)) return
   const seen = cropOnLook()
   const tget = noa.targetedBlock
   if (!seen && !tget) {

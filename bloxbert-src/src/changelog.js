@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.232', date: '2026-10-15', lines: {
+    en: ['Your first click now only starts play - it never says Too far away.'],
+    uk: ['Перший клік тепер лише починає гру — він ніколи не каже «Занадто далеко».'],
+    ru: ['Первый клик теперь только начинает игру — он никогда не говорит «Слишком далеко».'],
+    es: ['Tu primer clic ahora solo empieza el juego — ya no dice Demasiado lejos.'],
+    ar: ['نقرتك الأولى صارت تبدأ اللعب فقط، ولا تقول «بعيد جداً».'],
+    'fa-AF': ['کلیک اول حالا فقط بازی را شروع می‌کند و دیگر «خیلی دور است» نمی‌گوید.'],
+    rw: ['Kanda kawe ka mbere ubu gusa gatangira gukina, ntikongera kuvuga Kiri kure cyane.'],
+    ti: ['ናይ መጀመርታ ጠውቒ ሕጂ ጸወታ ጥራይ ይጅምር፡ «ኣዝዩ ርሑቕ እዩ» ኣይብልን።'],
+  }},
   { v: '2.5.231', date: '2026-10-15', lines: {
     en: ['The Tour card now sits at the top middle, so it no longer covers the stick, Jump or the mode buttons.'],
     uk: ['Картка Туру тепер стоїть зверху посередині, тож більше не закриває стик, Стрибок чи кнопки режиму.'],
