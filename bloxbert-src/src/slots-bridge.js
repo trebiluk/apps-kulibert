@@ -668,6 +668,18 @@ function hideBar() {
   const bar = document.getElementById('qol-bar')
   if (bar) bar.hidden = true
 }
+function tipHitsHud(tip) {
+  const a = tip.getBoundingClientRect()
+  const sels = ['.jumpcol', '#stick-pad']
+  for (let i = 0; i < sels.length; i++) {
+    const el = document.querySelector(sels[i])
+    if (!el) continue
+    const b = el.getBoundingClientRect()
+    if (b.width < 2 || b.height < 2) continue
+    if (a.left < b.right - 0.5 && a.right > b.left + 0.5 && a.top < b.bottom - 0.5 && a.bottom > b.top + 0.5) return true
+  }
+  return false
+}
 function showTip(loc, ms, sticky) {
   const shop = loc && loc.kind === 'shop'
   const s = stackOf(loc)
@@ -675,6 +687,7 @@ function showTip(loc, ms, sticky) {
   ensureUi()
   const tip = document.getElementById('qol-tip')
   if (!tip) return
+  clearTimeout(showTip.hide)
   const item = s ? s.item : loc.item
   const spec = {
     item: item,
@@ -708,13 +721,27 @@ function showTip(loc, ms, sticky) {
   const el = loc.el && loc.el.isConnected ? loc.el : null
   const rect = el ? el.getBoundingClientRect() : { left: 16, top: 64, width: 48 }
   tip.hidden = false
-  const width = Math.min(420, window.innerWidth - 16)
+  const narrow = document.body.classList.contains('touch') && window.innerWidth <= 480 && window.innerHeight > window.innerWidth
+  let width = Math.min(420, window.innerWidth - 16)
+  let left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8))
+  let top = Math.max(8, rect.top - 8)
+  const jump = document.querySelector('.jumpcol')
+  const jumpRect = jump ? jump.getBoundingClientRect() : null
+  const jumpOn = !!(jumpRect && jumpRect.width > 2 && jumpRect.height > 2)
+  if (narrow && jumpOn) {
+    const room = window.innerWidth - jumpRect.right - 16
+    if (room >= 160) {
+      left = jumpRect.right + 8
+      width = room
+    } else top = Math.max(8, jumpRect.top - 8)
+  }
   tip.style.maxWidth = width + 'px'
-  tip.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - width - 8)) + 'px'
-  tip.style.top = Math.max(8, rect.top - 8) + 'px'
+  tip.style.left = left + 'px'
+  tip.style.top = top + 'px'
   tip.style.transform = 'translateY(-100%)'
+  if (narrow && jumpOn && tipHitsHud(tip)) tip.style.top = Math.max(8, jumpRect.top - 8) + 'px'
   tipUntil = sticky ? performance.now() + Math.min(ms || 500, 500) : 0
-  clearTimeout(showTip.hide)
+  if (sticky && ms) showTip.hide = setTimeout(() => { tipUntil = 0; hideTip() }, 2500)
 }
 function hideTip() {
   clearTimeout(tipTimer)

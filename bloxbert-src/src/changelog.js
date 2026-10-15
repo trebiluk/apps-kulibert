@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.216', date: '2026-10-15', lines: {
+    en: ['On a phone held upright, the item card stays off Jump and fades after a moment.'],
+    uk: ['На телефоні вертикально картка предмета не закриває Стрибок і зникає за мить.'],
+    ru: ['На телефоне вертикально карточка предмета не закрывает Прыжок и скоро исчезает.'],
+    es: ['En un teléfono en vertical, la tarjeta del objeto no tapa Saltar y se va al momento.'],
+    ar: ['على الهاتف عمودياً تبقى بطاقة الغرض بعيدة عن القفز وتختفي بعد لحظة.'],
+    'fa-AF': ['در تلفن عمودی کارت چیز روی پرش نمی‌آید و بعد از لحظه‌ای می‌رود.'],
+    rw: ['Ku telefoni ihagaze, ikarita y\'ikintu ntijya ku Simbuka kandi irazimira vuba.'],
+    ti: ['ኣብ ትሌፎን ቀጥ ዝበለ፡ ካርድ ኣቕሓ ካብ ንጻ ይርሕቕ፡ ድሕሪ ቁሩብ ድማ ይጠፍእ።'],
+  }},
   { v: '2.5.215', date: '2026-10-15', lines: {
     en: ['The camera stays out of the walls when you walk into a house.'],
     uk: ['Камера лишається поза стінами, коли ти заходиш у дім.'],
