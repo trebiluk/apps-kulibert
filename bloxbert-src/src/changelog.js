@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.209', date: '2026-10-14', lines: {
+    en: ['Saving now brings back your spot, your blocks and your mode.'],
+    uk: ['Збереження тепер повертає твоє місце, твої блоки і твій режим.'],
+    ru: ['Сохранение теперь возвращает твоё место, твои блоки и твой режим.'],
+    es: ['Guardar ahora trae de vuelta tu lugar, tus bloques y tu modo.'],
+    ar: ['الحفظ الآن يعيد مكانك ومكعباتك ووضعك.'],
+    'fa-AF': ['ذخیره حالا جایت، بلاک‌هایت و حالتت را برمی‌گرداند.'],
+    rw: ['Kubika ubu bigarura aho wari, amabuye yawe n\'uburyo bwawe.'],
+    ti: ['ምዕቃብ ሕጂ ቦታኻ፡ ብሎካትካን ኩነታትካን የምለስ።'],
+  }},
   { v: '2.5.208', date: '2026-10-14', lines: {
     en: ['Trees near you look solid, not foggy.'],
     uk: ['Дерева поруч виглядають твердими, не туманними.'],

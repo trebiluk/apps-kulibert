@@ -3203,6 +3203,167 @@ function mergePin(doc) {
   return true
 }
 let openedFrom = ''
+const tabId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('t' + Date.now().toString(36) + Math.random().toString(36).slice(2, 8))
+let lastSeenAt = ''
+let saveLockHeld = false
+let savePaused = false
+let lockPending = false
+let lockRelease = null
+let lockGen = 0
+const TAB_PAUSE = 'Bertopia is open in another tab - this tab is paused'
+function mountStayChip(id, tone) {
+  let el = document.getElementById(id)
+  if (el) return el
+  el = document.createElement('div')
+  el.id = id
+  el.setAttribute('role', 'status')
+  el.style.cssText = 'position:fixed;z-index:80;left:50%;bottom:calc(92px + env(safe-area-inset-bottom, 0px));transform:translateX(-50%);max-width:92vw;padding:8px 14px;border-radius:999px;border:1px solid ' + (tone || 'rgba(255,138,31,.75)') + ';background:rgba(14,26,34,.94);color:#ffe7c2;font:700 14px/1.3 ui-sans-serif,system-ui,sans-serif;text-align:center;pointer-events:none'
+  el.hidden = true
+  document.body.appendChild(el)
+  return el
+}
+function showPauseChip() {
+  const el = mountStayChip('save-pause-chip', 'rgba(255,138,31,.8)')
+  el.textContent = TAB_PAUSE
+  el.hidden = false
+}
+function hidePauseChip() {
+  const el = document.getElementById('save-pause-chip')
+  if (el) el.hidden = true
+}
+function showNotSavedChip() {
+  const el = mountStayChip('save-fail-chip', 'rgba(248,113,113,.85)')
+  el.textContent = 'Not saved'
+  el.style.bottom = 'calc(132px + env(safe-area-inset-bottom, 0px))'
+  el.hidden = false
+}
+function clearNotSavedChip() {
+  const el = document.getElementById('save-fail-chip')
+  if (el) el.hidden = true
+}
+function pauseOtherTab() {
+  savePaused = true
+  allowSave = false
+  showPauseChip()
+}
+function resumeSaving() {
+  savePaused = false
+  hidePauseChip()
+  if (!readOnlySave) allowSave = true
+}
+function foreignNewer(prev) {
+  if (!prev || typeof prev.updatedAt !== 'string') return false
+  if (!prev.tabId || prev.tabId === tabId) return false
+  if (!lastSeenAt) return true
+  return prev.updatedAt > lastSeenAt
+}
+function claimBroadcast(world) {
+  if (typeof BroadcastChannel !== 'function') {
+    saveLockHeld = true
+    return
+  }
+  let bc
+  try { bc = new BroadcastChannel('bertopia-' + world) } catch (e) { saveLockHeld = true; return }
+  let answered = false
+  bc.onmessage = (ev) => {
+    const data = ev.data || {}
+    if (!data || data.tabId === tabId) return
+    if (data.type === 'hello') {
+      if (saveLockHeld) { try { bc.postMessage({ type: 'here', tabId }) } catch (e) {} }
+    } else if (data.type === 'here') {
+      answered = true
+      if (!saveLockHeld) pauseOtherTab()
+    }
+  }
+  try { bc.postMessage({ type: 'hello', tabId }) } catch (e) {}
+  setTimeout(() => {
+    if (!answered && !savePaused && WORLD === world) saveLockHeld = true
+  }, 280)
+}
+function dropSaveLock() {
+  saveLockHeld = false
+  if (lockRelease) {
+    const fn = lockRelease
+    lockRelease = null
+    try { fn() } catch (e) {}
+  }
+}
+function peekStored() {
+  return idb().then((db) => new Promise((res, rej) => {
+    const r = db.transaction(STORE).objectStore(STORE).get(WORLD)
+    r.onsuccess = () => res(r.result || null)
+    r.onerror = () => rej(r.error || new Error('read'))
+  }))
+}
+async function yieldIfBehind() {
+  let prev = null
+  try { prev = await peekStored() } catch (e) { return false }
+  if (!foreignNewer(prev)) return false
+  pauseOtherTab()
+  dropSaveLock()
+  return true
+}
+function claimSaveLock() {
+  if (saveLockHeld || lockPending) return
+  const world = WORLD
+  const gen = ++lockGen
+  const name = 'bertopia-' + world
+  if (!(navigator.locks && typeof navigator.locks.request === 'function')) {
+    claimBroadcast(world)
+    return
+  }
+  lockPending = true
+  navigator.locks.request(name, { ifAvailable: true }, async (lock) => {
+    if (gen !== lockGen) return
+    lockPending = false
+    if (WORLD !== world) return
+    if (!lock) {
+      pauseOtherTab()
+      return
+    }
+    saveLockHeld = true
+    const wasPaused = savePaused
+    if (wasPaused) {
+      const behind = await yieldIfBehind()
+      if (gen !== lockGen || WORLD !== world) {
+        dropSaveLock()
+        return
+      }
+      if (behind) return
+    }
+    if (gen !== lockGen || WORLD !== world) {
+      dropSaveLock()
+      return
+    }
+    if (savePaused) resumeSaving()
+    await new Promise((resolve) => { lockRelease = resolve })
+    if (gen !== lockGen) return
+    saveLockHeld = false
+    lockRelease = null
+  }).catch(() => {
+    if (gen !== lockGen) return
+    lockPending = false
+    if (!saveLockHeld) claimBroadcast(world)
+  })
+}
+function rebindSaveLock() {
+  lockGen += 1
+  if (lockRelease) {
+    const fn = lockRelease
+    lockRelease = null
+    try { fn() } catch (e) {}
+  }
+  saveLockHeld = false
+  lockPending = false
+  claimSaveLock()
+}
+async function waitWriter() {
+  const t0 = performance.now()
+  while (!saveLockHeld && !savePaused && performance.now() - t0 < 800) {
+    await new Promise((r) => setTimeout(r, 30))
+  }
+  return !!(saveLockHeld && !savePaused)
+}
 async function snapshot() {
   const chunks = {}
   for (const [k, v] of saved) chunks[k] = await gz(v)
@@ -3214,7 +3375,7 @@ async function snapshot() {
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
     genVersion, genSeen: compactSeen(),
     palette: blockPalette(),
-    chunks, updatedAt: new Date().toISOString(),
+    chunks, updatedAt: new Date().toISOString(), tabId,
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     stations: stations.dump(),
     basics: basics ? basics.dump() : null,
@@ -3229,6 +3390,12 @@ async function snapshot() {
   }
 }
 async function saveBody() {
+  if (!(await waitWriter())) {
+    pauseOtherTab()
+    const err = new Error('paused')
+    err.code = 'paused'
+    throw err
+  }
   if (!allowSave || readOnlySave) {
     const err = new Error(readOnlySave ? 'newer' : 'held')
     err.code = readOnlySave ? 'newer' : 'held'
@@ -3237,13 +3404,42 @@ async function saveBody() {
   const gen = pinGen
   const doc = await snapshot()
   const db = await idb()
-  await new Promise((res, rej) => {
+  const wrote = await new Promise((res, rej) => {
+    let settled = false
+    let stale = false
+    const done = (v) => { if (!settled) { settled = true; res(v) } }
+    const fail = (e) => { if (!settled) { settled = true; rej(e) } }
     const tx = db.transaction(STORE, 'readwrite')
-    tx.objectStore(STORE).put(doc, WORLD)
-    tx.oncomplete = () => res()
-    tx.onerror = () => rej(tx.error || new Error('save'))
-    tx.onabort = () => rej(tx.error || new Error('save'))
+    const store = tx.objectStore(STORE)
+    const getReq = store.get(WORLD)
+    getReq.onerror = () => fail(getReq.error || new Error('save'))
+    getReq.onsuccess = () => {
+      if (foreignNewer(getReq.result)) {
+        stale = true
+        try { tx.abort() } catch (e) {}
+        return
+      }
+      const putReq = store.put(doc, WORLD)
+      putReq.onerror = () => fail(putReq.error || new Error('save'))
+    }
+    tx.oncomplete = () => done(true)
+    tx.onabort = (ev) => {
+      if (stale) { if (ev && ev.preventDefault) ev.preventDefault(); done(false) }
+      else fail(tx.error || new Error('save'))
+    }
+    tx.onerror = (ev) => {
+      if (stale) { if (ev && ev.preventDefault) ev.preventDefault(); done(false) }
+      else fail(tx.error || new Error('save'))
+    }
   })
+  if (!wrote) {
+    pauseOtherTab()
+    dropSaveLock()
+    const err = new Error('paused')
+    err.code = 'paused'
+    throw err
+  }
+  lastSeenAt = doc.updatedAt
   if (gen === pinGen) {
     dirty = false
     machineCells.clear()
@@ -3251,6 +3447,7 @@ async function saveBody() {
   }
   let bytes = 0
   try { bytes = JSON.stringify(doc).length } catch (e) { bytes = 0 }
+  clearNotSavedChip()
   markSave(t('saved') + ' · ' + new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' · ' + (bytes / 1024).toFixed(1) + ' KB')
   return bytes
 }
@@ -3264,7 +3461,14 @@ async function saveClicked() {
   try {
     await save()
     toast(t('saved'))
+    clearNotSavedChip()
   } catch (e) {
+    if (e && e.code === 'paused') {
+      pauseOtherTab()
+      toast(TAB_PAUSE)
+      return
+    }
+    showNotSavedChip()
     if (e && e.code === 'newer') toast('Made in a newer Bertopia')
     else toast(t(e && e.code === 'held' ? 'saveKept' : 'saveFull'))
   }
@@ -3298,7 +3502,8 @@ async function load() {
     grantSaplings()
     grantStartKit()
     seedOldBushes()
-    allowSave = true
+    allowSave = !savePaused
+    lastSeenAt = ''
     if (mergePin(null)) noteMachine()
     faceFirstSpawn()
     return false
@@ -3314,7 +3519,8 @@ async function load() {
     return false
   }
   const pinned = mergePin(doc)
-  allowSave = !readOnlySave
+  if (doc && typeof doc.updatedAt === 'string') lastSeenAt = doc.updatedAt
+  allowSave = !readOnlySave && !savePaused
   if (readOnlySave) {
     dirty = false
     toast('Made in a newer Bertopia')
@@ -3997,19 +4203,24 @@ async function exportJSON() {
   a.download = 'bloxbert-bertyville.kuliblocks.json'; a.click()
   setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }
-setInterval(() => { if (dirty && allowSave) save().catch(() => {}) }, 20000)
+setInterval(() => { if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() }) }, 20000)
 function flushSave() {
   if (dirty) pinMachines()
-  if (dirty && allowSave) save().catch(() => {})
+  if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() })
 }
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
     flushSave()
     dropRightHold()
-  } else syncCrops(Date.now())
-  if (!document.hidden) syncForage(Date.now())
+  } else {
+    syncCrops(Date.now())
+    syncForage(Date.now())
+    if (!saveLockHeld && !lockPending) claimSaveLock()
+  }
 })
 window.addEventListener('pagehide', flushSave)
+claimSaveLock()
+setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
 function saveFailToast(e) {
   if (e && e.code === 'newer') toast('Made in a newer Bertopia')
@@ -4738,6 +4949,7 @@ async function goWorld(m) {
   WORLD = m === 'survival' ? 'bertyville-survival' : 'bertyville'
   try { localStorage.setItem('bloxbert-last-world', WORLD) } catch (e) {}
   changeLog.setWorld(WORLD)
+  rebindSaveLock()
   session.setMode(m)
   paintModeChip()
   await load()
@@ -5050,7 +5262,7 @@ panels = mountPanels({
   t, toast,
   touch: () => TOUCH_UI,
   paintBack: () => paintBackTab(),
-  save: () => save(),
+  save: () => saveClicked(),
   load: () => load(),
   exportWorld: () => exportJSON(),
   importWorld: () => $('import-file').click(),
