@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.239', date: '2026-10-15', lines: {
+    en: ['Close buttons wear a teal keycap face on every panel.'],
+    uk: ['Кнопки закриття мають бірюзову клавішу на кожній панелі.'],
+    ru: ['Кнопки закрытия получили бирюзовую клавишу на каждой панели.'],
+    es: ['Los botones de cerrar tienen una tecla turquesa en cada panel.'],
+    ar: ['أزرار الإغلاق لها وجه مفتاح فيروزي في كل لوحة.'],
+    'fa-AF': ['دکمه‌های بستن در هر صفحه روی کلید فیروزه‌ای دارند.'],
+    rw: ["Utubuto two gufunga dufite isura y'ubururu-icyatsi kuri buri paneli."],
+    ti: ['መዕጸዊ መልጎማት ኣብ ነፍሲ ወከፍ ፓነል ሰማያዊ-ቀጠልያ ገጽ ኣለዎም።'],
+  }},
   { v: '2.5.238', date: '2026-10-15', lines: {
     en: ['On a sideways phone, the whole Workbench Input box and the Make row fit on screen.'],
     uk: ['На телефоні боком увесь блок «Вхід» верстака і ряд «Зробити» вміщуються на екрані.'],
