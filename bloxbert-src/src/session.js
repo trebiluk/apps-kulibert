@@ -1341,14 +1341,33 @@ export function createSession(api) {
     }
     book.dataset.fit = '1'
   }
+  function paintCraftNeeds(g, r) {
+    if (!g || !r) return
+    g.querySelectorAll('.need-bit').forEach((bit) => {
+      const item = bit.dataset.item
+      const pair = item && r.in.find((p) => p[0] === item)
+      if (!pair) return
+      const have = heldCount(r, item)
+      const n = pair[1]
+      const num = bit.querySelector('.need-n')
+      if (num) num.textContent = have + '/' + n
+      bit.classList.toggle('short', have < n)
+      const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
+      bit.title = label + ' ' + have + '/' + n
+    })
+    g.querySelectorAll('.gnote.left-line').forEach((el) => {
+      el.textContent = r.in.map(([need]) => t('leftLine').replace('{item}', itemName(need)).replace('{n}', String(countOf(bag, need)))).join(' · ')
+    })
+  }
   function paintCraftSlots(g) {
-    if (!g || g.dataset.craft !== craftId) return false
+    if (!g || g.dataset.craft !== craftId) { craftTrace('bail-id'); return false }
     const r = RECIPES.find((x) => x.id === craftId)
-    if (!r) return false
-    const ings = g.querySelectorAll('.ks-slot.ing')
-    if (ings.length !== r.in.length) return false
+    if (!r) { craftTrace('bail-recipe'); return false }
+    const zoned = g.querySelector('.ks-inputs')
+    const ings = zoned ? zoned.querySelectorAll('.ks-slot.ing') : g.querySelectorAll('.ks-slot.ing')
+    if (ings.length !== r.in.length) { craftTrace('bail-ings'); return false }
     const book = g.querySelector('.book')
-    if (!book || !book.isConnected) return false
+    if ((!book || !book.isConnected) && (!zoned || !zoned.isConnected)) { craftTrace('bail-book'); return false }
     ings.forEach((b, i) => {
       const have = trayPlaced[i] || 0
       const need = r.in[i][1]
@@ -1404,6 +1423,7 @@ export function createSession(api) {
     }
     const ksCard = g.querySelector('.ks-craft')
     if (ksCard && ksCard._ksRefresh) ksCard._ksRefresh()
+    paintCraftNeeds(g, r)
     craftTrace('slots')
     return true
   }
@@ -1412,6 +1432,10 @@ export function createSession(api) {
     if (!sheet || sheet.hidden || sheet.dataset.panel !== 'crafting') return
     const g = sheet.querySelector('.ggrid')
     if (g) paintCraft(g, true)
+  }
+  function armCraftFollow() {
+    clearTimeout(armCraftFollow.timer)
+    armCraftFollow.timer = setTimeout(() => pokeCraft(), 950)
   }
   function paintCraft(g, soft) {
     armTrayWatch()
@@ -1736,6 +1760,7 @@ export function createSession(api) {
             leftFor = r.id
             paintHotbar()
             paintCraft(g, true)
+            armCraftFollow()
           },
           onMax: () => {
             if (!craftOk(r.id)) return
@@ -1801,6 +1826,7 @@ export function createSession(api) {
           }
           xmaxAsk = ''
           paintCraft(g)
+          armCraftFollow()
         })
         const no = document.createElement('button')
         no.type = 'button'

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.210', date: '2026-10-15', lines: {
+    en: ['The Workbench updates its counts as soon as you press Make.'],
+    uk: ['Верстак оновлює кількості, щойно ти натискаєш Зробити.'],
+    ru: ['Верстак обновляет количества сразу, как нажмёшь Сделать.'],
+    es: ['El banco de trabajo actualiza las cantidades en cuanto pulsas Hacer.'],
+    ar: ['طاولة العمل تحدّث الأعداد فور الضغط على اصنع.'],
+    'fa-AF': ['میز کار به محض زدن بساز شمارها را تازه می‌کند.'],
+    rw: ['Umubaji uvugurura imibare ako kanya ukanda Kora.'],
+    ti: ['መደብር ቁጽርታት ምስ ትጽዕን ግበር ብቕልጡፍ የሓድስ።'],
+  }},
   { v: '2.5.209', date: '2026-10-14', lines: {
     en: ['Saving now brings back your spot, your blocks and your mode.'],
     uk: ['Збереження тепер повертає твоє місце, твої блоки і твій режим.'],
