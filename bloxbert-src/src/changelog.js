@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.217', date: '2026-10-15', lines: {
+    en: ['Empty Workbench slots show their full label, like "Any planks".'],
+    uk: ['Порожні слоти верстака показують повний підпис, як «Будь-які дошки».'],
+    ru: ['Пустые слоты верстака показывают полную подпись, как «Любые доски».'],
+    es: ['Las casillas vacías del banco de trabajo muestran la etiqueta completa, como «Cualquier tabla».'],
+    ar: ['خانات طاولة العمل الفارغة تعرض التسمية كاملة، مثل «أي ألواح».'],
+    'fa-AF': ['خانه‌های خالی میز کار برچسب کامل را نشان می‌دهند، مثل «هر تخته».'],
+    rw: ['Utuzu tw\'umubaji tutariho kintu twerekana ijambo ryuzuye, nk\'«Imbaho zose».'],
+    ti: ['ባዶ ቦታታት ናይ መደብር ሙሉእ መፍለጢ የርእዩ፡ ከም «ዝኾነ ጣውላ»።'],
+  }},
   { v: '2.5.216', date: '2026-10-15', lines: {
     en: ['On a phone held upright, the item card stays off Jump and fades after a moment.'],
     uk: ['На телефоні вертикально картка предмета не закриває Стрибок і зникає за мить.'],

@@ -835,10 +835,12 @@ body[data-glasses="1"] .cross{box-shadow:0 0 0 3px #9bd4e8}
 #sheet[data-panel=settings] #sheet-body{overflow-x:hidden}
 /* G2-13: readable slot labels and search hint (#9FB0C6 = --muted, 8.49:1 on #08131A) */
 html #sheet .ks-lab,html #sheet.kd-panel .ks-lab{color:#9FB0C6;opacity:1;font-size:max(12px,var(--ks-fs-xs, 12px))}
-#sheet .ks-inputs .ks-slot,#sheet .ks-outputs .ks-slot{overflow:hidden}
+#sheet .ks-inputs .ks-slot,#sheet .ks-outputs .ks-slot{position:relative;overflow:hidden}
 #sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{display:block;max-width:100%;padding:0 2px;box-sizing:border-box;text-align:center;white-space:normal;overflow-wrap:anywhere;hyphens:auto;font-size:max(10px,var(--ks-fs-xs,12px));line-height:1.05}
 @media (max-height:500px){#sheet .ks-inputs .ks-slot .ks-lab,#sheet .ks-outputs .ks-slot .ks-lab{font-size:10px}}
 #sheet .ks-inputs .ks-slot:not(.ks-empty) .ks-lab,#sheet .ks-outputs .ks-slot:not(.ks-empty) .ks-lab{display:none}
+/* A2-33: empty slot labels sit on the slot floor, clamped to two lines */
+#sheet .ks-inputs .ks-slot.ks-empty .ks-lab,#sheet .ks-outputs .ks-slot.ks-empty .ks-lab{position:absolute;left:2px;right:2px;bottom:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.1;font-size:10px;text-shadow:0 1px 0 #08131A}
 html #sheet .craft-find::placeholder{color:#9FB0C6;opacity:1}
 /* G2-10: the pixel "x" icon is thin red-on-navy and goes blank under .kd-x .gic{font-size:0}; draw a clear 24px stroke ✕ on every panel */
 html #sheet #sheet-x{position:relative;min-width:44px;min-height:44px;background:#13303A;color:#E6EEF2;border:0;border-top:1px solid #2FA6B0;border-bottom:4px solid #0A1B22;border-radius:8px;justify-content:center;align-items:center}
@@ -1034,7 +1036,7 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.216</span>
+      <span class="ver" id="ver-plate">2.5.217</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1185,8 +1187,8 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.204"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.216" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.216" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.217" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.217" defer></script>
 <script>
 ;(function () {
   try {
