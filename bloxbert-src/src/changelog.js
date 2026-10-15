@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.240', date: '2026-10-15', lines: {
+    en: ['On an upright phone, the Workbench Make button is on screen.'],
+    uk: ['На вертикальному телефоні кнопку «Зробити» у верстаті видно на екрані.'],
+    ru: ['На вертикальном телефоне кнопка «Сделать» у верстака видна на экране.'],
+    es: ['En un teléfono vertical, el botón Hacer del Banco de trabajo se ve en pantalla.'],
+    ar: ['على الهاتف العمودي، زر الصنع في طاولة العمل ظاهر على الشاشة.'],
+    'fa-AF': ['در تیلفون عمودی، دکمهٔ ساختن میز کار روی صفحه دیده می‌شود.'],
+    rw: ["Kuri telefoni ihagaze, buto ya Kora ku Ntebe y'akazi iragaragara."],
+    ti: ['ኣብ ቀጥ ዝበለ ተሌፎን፡ መልጎም ምስራሕ ናይ ሰደቓ ኣብ ስክሪን ይርአ።'],
+  }},
   { v: '2.5.239', date: '2026-10-15', lines: {
     en: ['Close buttons wear a teal keycap face on every panel.'],
     uk: ['Кнопки закриття мають бірюзову клавішу на кожній панелі.'],
