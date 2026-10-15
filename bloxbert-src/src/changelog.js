@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.214', date: '2026-10-15', lines: {
+    en: ['On a wide phone, the Workbench message no longer hides the list above it.'],
+    uk: ['На широкому телефоні повідомлення верстака більше не ховає список над ним.'],
+    ru: ['На широком телефоне сообщение верстака больше не прячет список над ним.'],
+    es: ['En un teléfono ancho, el mensaje del banco de trabajo ya no tapa la lista de arriba.'],
+    ar: ['على هاتف عريض، رسالة طاولة العمل لم تعد تخفي القائمة التي فوقها.'],
+    'fa-AF': ['در تلفن پهن، پیام میز کار دیگر فهرست بالا را نمی‌پوشاند.'],
+    rw: ['Ku telefoni igari, ubutumwa bw\'umubaji ntibuhisha urutonde ruri hejuru.'],
+    ti: ['ኣብ ሰፊሕ ትሌፎን፡ መልእኽቲ ናይ መደብር ነቲ ላዕሊ ዘሎ ዝርዝር ኣይሽፍኖን።'],
+  }},
   { v: '2.5.213', date: '2026-10-15', lines: {
     en: ['The Oven\'s Fuel and Input labels stay inside their own slots.'],
     uk: ['Підписи «Паливо» і «Вхід» у печі лишаються у своїх слотах.'],
