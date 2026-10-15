@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.238', date: '2026-10-15', lines: {
+    en: ['On a sideways phone, the whole Workbench Input box and the Make row fit on screen.'],
+    uk: ['На телефоні боком увесь блок «Вхід» верстака і ряд «Зробити» вміщуються на екрані.'],
+    ru: ['На телефоне боком весь блок «Вход» верстака и ряд «Сделать» помещаются на экране.'],
+    es: ['Con el teléfono de lado, toda la Entrada de la mesa y la fila Crear caben en pantalla.'],
+    ar: ['على الهاتف الأفقي، يتسع مربع المدخل في طاولة العمل وصف الصنع على الشاشة.'],
+    'fa-AF': ['در تیلفون افقی، کل جعبهٔ ورودی میز کار و ردیف ساختن در صفحه جا می‌شود.'],
+    rw: ["Kuri telefoni iri ku ruhande, agasanduku k'Injiza n'umurongo wo Gukora bikwira kuri ecran."],
+    ti: ['ኣብ ብጎኑ ዘሎ ተሌፎን፡ ምሉእ ሳጹን ኣእቱን መስርዕ ምስራሕን ኣብ ስክሪን ይኣትዉ።'],
+  }},
   { v: '2.5.237', date: '2026-10-15', lines: {
     en: ['The Auto smoother message no longer covers the Tour or Crafting.'],
     uk: ['Повідомлення «Авто: плавніше» більше не закриває Тур чи Крафт.'],

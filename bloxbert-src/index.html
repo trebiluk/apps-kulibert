@@ -895,6 +895,8 @@ html[dir=rtl] #sheet .ks-link{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .ks-zoned .keys{display:flex;flex-wrap:wrap;gap:8px}
 #sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{flex:1 0 100%}
 @media (max-height:500px){#sheet[data-panel="crafting"] .ks-zoned .ks-core{width:36px;height:36px}#sheet[data-panel="crafting"] .ks-zoned .ks-core canvas{width:28px;height:28px}#sheet[data-panel="crafting"] .ks-zoned .ks-zone{gap:2px;padding:4px 6px}#sheet[data-panel="crafting"] .ks-zoned .keys .ks-feedback{min-height:32px;padding:3px 8px}#sheet[data-panel="crafting"] .ks-zoned .keys{gap:4px;padding-top:4px}#sheet[data-panel="crafting"] .ks-zoned .keys{position:static}}
+/* 915x412: keep the whole Input box (e.g. "Any planks") and the Fill/Make row inside the panel */
+@media (max-height:500px){html #sheet[data-panel="crafting"] .ks-craft.ks-zoned .keys{margin-top:2px;padding:2px 0 0;gap:4px}html #sheet[data-panel="crafting"] .ks-craft.ks-zoned .keys .ks-feedback{min-height:28px;padding:2px 8px;font-size:14px;line-height:1.2}html #sheet[data-panel="crafting"] .ks-craft.ks-zoned .ks-zhead{font-size:12px}html #sheet[data-panel="crafting"] .ks-craft.ks-zoned{gap:4px;padding-bottom:0}}
 #sheet[data-panel=woodshop] .ggrid:has(.ks-shop-zoned){display:block;width:100%;max-width:960px;grid-template-columns:none}
 #sheet[data-panel=woodshop] .ks-shop-zoned{display:flex;flex-direction:column;gap:8px;align-items:stretch;width:100%;max-width:960px;box-sizing:border-box}
 #sheet[data-panel=woodshop] .ks-shop-zoned .ks-zone{min-width:0}
