@@ -139,6 +139,7 @@ export function createBasics(api) {
       click()
       const on = id === LEVER.off
       api.set(x, y, z, on ? LEVER.on : LEVER.off)
+      api.toast(api.t(on ? 'leverToastOn' : 'leverToastOff'))
       powerDoors(x, y, z, on, 0)
       return true
     }

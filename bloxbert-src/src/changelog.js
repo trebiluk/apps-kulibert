@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.218', date: '2026-10-15', lines: {
+    en: ['Levers now say "Lever on" or "Lever off" when you flip them.'],
+    uk: ['Важелі тепер кажуть «Важіль увімкнено» або «Важіль вимкнено», коли ти їх перемикаєш.'],
+    ru: ['Рычаги теперь говорят «Рычаг включён» или «Рычаг выключен», когда ты их щёлкаешь.'],
+    es: ['Las palancas ahora dicen «Palanca encendida» o «Palanca apagada» cuando las mueves.'],
+    ar: ['الرافعات تقول الآن «الرافعة تعمل» أو «الرافعة متوقفة» حين تقلبها.'],
+    'fa-AF': ['اهرم‌ها حالا «اهرم روشن» یا «اهرم خاموش» می‌گویند وقتی آن‌ها را برمی‌گردانی.'],
+    rw: ['Inyego iravuga "Inyego iri ku" cyangwa "Inyego iri hasi" iyo uyihindura.'],
+    ti: ['መቐለሊታት ሕጂ «መቐለሊ ወሊዑ» ወይ «መቐለሊ ጠፊኡ» ይብሉ ምስ ትገልብጦም።'],
+  }},
   { v: '2.5.217', date: '2026-10-15', lines: {
     en: ['Empty Workbench slots show their full label, like "Any planks".'],
     uk: ['Порожні слоти верстака показують повний підпис, як «Будь-які дошки».'],
