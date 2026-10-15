@@ -128,7 +128,54 @@ export function createLearn(api) {
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
     if (api.claimHint) api.claimHint("path")
+    placePath(el)
   }
+  function placePath(el, follow) {
+    if (!el) return
+    if (window.innerHeight > 500) {
+      el.style.top = ''
+      el.style.left = ''
+      el.style.maxWidth = ''
+      el.style.bottom = ''
+      el.style.fontSize = ''
+      return
+    }
+    const jump = document.getElementById('jump-col')
+    const jr = jump ? jump.getBoundingClientRect() : null
+    const jumpRight = jr && jr.width > 2 && jr.height > 2 ? jr.right : 12
+    const left = jumpRight + 12
+    const pick = document.getElementById('pick-chip')
+    const pr = pick ? pick.getBoundingClientRect() : null
+    const pickLeft = pr && pr.width > 2 && pr.height > 2 ? pr.left : window.innerWidth
+    const hot = document.getElementById('hotbar')
+    const hr = hot ? hot.getBoundingClientRect() : null
+    let limit = hr && hr.width > 2 && hr.height > 2 ? hr.top : window.innerHeight
+    const held = document.getElementById('held-chip')
+    if (held && !held.hidden) {
+      const hd = held.getBoundingClientRect()
+      if (hd.width > 2 && hd.height > 2) limit = Math.min(limit, hd.top)
+    }
+    el.style.top = 'auto'
+    el.style.left = left + 'px'
+    el.style.maxWidth = (pickLeft - left - 12) + 'px'
+    el.style.bottom = (window.innerHeight - limit + 8) + 'px'
+    el.style.fontSize = '13px'
+    if (follow) return
+    if (placePath.again) cancelAnimationFrame(placePath.again)
+    placePath.again = requestAnimationFrame(() => {
+      placePath.again = 0
+      const chip = document.getElementById('path-chip')
+      if (!chip || chip.hidden) return
+      placePath(chip, true)
+    })
+  }
+  function onPathResize() {
+    const el = document.getElementById('path-chip')
+    if (!el || el.hidden) return
+    placePath(el)
+  }
+  window.addEventListener('resize', onPathResize)
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', onPathResize)
   function load() {
     try { return JSON.parse(localStorage.getItem(KEY) || '{}') } catch (e) { return {} }
   }

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.222', date: '2026-10-15', lines: {
+    en: ['On phones held sideways, the goal card moves down so it no longer hides the trees.'],
+    uk: ['На телефонах, триманих боком, картка цілі опускається вниз і більше не ховає дерева.'],
+    ru: ['На телефонах, которые держат боком, карточка цели опускается вниз и больше не прячет деревья.'],
+    es: ['En un teléfono de lado, la tarjeta de la meta baja y ya no tapa los árboles.'],
+    ar: ['حين تمسك الهاتف بالعرض، تنزل بطاقة الهدف فلا تخفي الأشجار.'],
+    'fa-AF': ['وقتی تلفن را افقی بگیری، کارت هدف پایین می‌آید و درخت‌ها را نمی‌پوشاند.'],
+    rw: ['Ku telefoni igoramye, ikarita y\'intego imanuka kandi ntikongera guhisha ibiti.'],
+    ti: ['ኣብ ጎድናዊ ዝተታሕዘ ትሌፎን፡ ናይ ዕላማ ካርድ ንታሕቲ ይውረድ፡ ዕንጨይቲ ድማ ኣይሽፍንን።'],
+  }},
   { v: '2.5.221', date: '2026-10-15', lines: {
     en: ['The Tour is now a small card instead of a big empty panel.'],
     uk: ['Тур тепер маленька картка замість великої порожньої панелі.'],
