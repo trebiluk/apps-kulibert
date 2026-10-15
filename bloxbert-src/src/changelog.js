@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.223', date: '2026-10-15', lines: {
+    en: ['On phones held upright, the recipe list is back on top so you can pick any recipe.'],
+    uk: ['На телефонах, триманих вертикально, список рецептів знову зверху, тож можна обрати будь-який.'],
+    ru: ['На телефонах, которые держат вертикально, список рецептов снова сверху, так что можно выбрать любой.'],
+    es: ['En un teléfono en vertical, la lista de recetas vuelve arriba para que elijas cualquiera.'],
+    ar: ['حين تمسك الهاتف بالطول، تعود قائمة الوصفات للأعلى حتى تختار أي وصفة.'],
+    'fa-AF': ['وقتی تلفن را عمودی بگیری، فهرست دستورها دوباره بالا می‌آید تا هر کدام را انتخاب کنی.'],
+    rw: ['Ku telefoni ihagaze, urutonde rw\'ibyo ukora rusubira hejuru, ubashe guhitamo icyo ushaka.'],
+    ti: ['ኣብ ትኹል ዝተታሕዘ ትሌፎን፡ ናይ ምስራሕ ዝርዝር ናብ ላዕሊ ይምለስ፡ ዝኾነ ክትመርጽ ትኽእል።'],
+  }},
   { v: '2.5.222', date: '2026-10-15', lines: {
     en: ['On phones held sideways, the goal card moves down so it no longer hides the trees.'],
     uk: ['На телефонах, триманих боком, картка цілі опускається вниз і більше не ховає дерева.'],
