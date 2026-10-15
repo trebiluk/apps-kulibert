@@ -3869,4 +3869,26 @@ body.mu237 .transport:has(#more-pop:not([hidden])) {
   body.mu237 #lesson:empty,
   body.mu237 #saved-line:empty,
   body.mu237.tab-tap #more-drums { display: none !important; }
+  /* MU 2.35.19 — Score staff fits the notes. The panel scrolls if the phone is short. */
+  body.mu237.tab-score .staff-wrap,
+  body.mu237.tab-score.is-both .staff-wrap {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 120px !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+  }
+  body.mu237.tab-score #notes-pane,
+  body.mu237.tab-score.is-both #notes-pane {
+    flex: 0 0 auto !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    padding-bottom: 0 !important;
+    overflow: visible !important;
+  }
+  body.mu237.tab-score .work,
+  body.mu237.tab-score.is-both .work {
+    overflow-y: auto !important;
+  }
 }

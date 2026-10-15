@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.19** · 2026-10-15 · channel **live**
+
+Score notes now show fully on a sideways phone.
+
+## Earlier
+
 **Chip: MU 2.35.18** · 2026-10-15 · channel **live**
 
 Sideways phones show one tab at a time, and the piano stays on the Piano tab.
