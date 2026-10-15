@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.237', date: '2026-10-15', lines: {
+    en: ['The Auto smoother message no longer covers the Tour or Crafting.'],
+    uk: ['Повідомлення «Авто: плавніше» більше не закриває Тур чи Крафт.'],
+    ru: ['Сообщение «Авто: плавнее» больше не закрывает Тур и Крафт.'],
+    es: ['El mensaje Auto: más suave ya no tapa el Tour ni Fabricar.'],
+    ar: ['رسالة «تلقائي: أنعم» لم تعد تغطي الجولة أو الصنع.'],
+    'fa-AF': ['پیام «خودکار: نرم‌تر» دیگر گشت یا ساختن را نمی‌پوشاند.'],
+    rw: ['Ubutumwa Byikora: biroroshye ntibukongera gupfuka Tour cyangwa Kora.'],
+    ti: ['መልእኽቲ «ብባዕሉ: ልስሉስ» ጉዕዞ ወይ ምስራሕ ኣይሽፍንን።'],
+  }},
   { v: '2.5.236', date: '2026-10-15', lines: {
     en: ['After you make something, Crafting now says Done! Take it until you add more parts.'],
     uk: ['Після того як зробиш річ, Крафт тепер каже «Готово! Бери», доки не додаси ще частини.'],

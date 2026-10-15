@@ -8621,9 +8621,10 @@ function frame(tnow) {
         } catch (e) { console.warn('graphics', e) }
       }
       if (moved.plants) syncPlantCut()
-      toast(t('autoSmoother'))
+      const sheet = $('sheet')
+      if (!sheet || sheet.hidden) toast(t('autoSmoother'))
       const log = window.__auto && window.__auto.log
-      if (log) log.push({ guard: gfx.guard, plants: gfx.plants, add: gfx.add[0], gfx: gfxLook.name, managed: gfxLook.managed, toast: t('autoSmoother') })
+      if (log) log.push({ guard: gfx.guard, plants: gfx.plants, add: gfx.add[0], gfx: gfxLook.name, managed: gfxLook.managed, toast: t('autoSmoother'), toastSkipped: !!(sheet && !sheet.hidden) })
       paintQualityNote()
     }
     perf.lastFps = fps
