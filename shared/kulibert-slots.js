@@ -1386,6 +1386,7 @@
         if (gap > 0) miss.push(gap + ' ' + (nameOf(recipe.in[q][0]) || recipe.in[q][0]))
       }
       if (Date.now() - craftSweepAt < 900) return zf.setFeedback(zf.word('fbDone', 'Done! Take it'), 'done')
+      if (opts.blocked && !miss.length) return zf.setFeedback(opts.blocked, 'warn')
       if (!miss.length) return zf.setFeedback(zf.word('fbReady', 'Ready to make'), 'done')
       if (!any) return zf.setFeedback(zf.word('fbAdd', 'Add parts'), 'info')
       zf.setFeedback(zf.word('fbMissing', 'Missing: {list}').replace('{list}', miss.join(', ')), 'warn')

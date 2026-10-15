@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.234', date: '2026-10-15', lines: {
+    en: ['Crafting now tells you when you need a Workbench, instead of saying Ready to make.'],
+    uk: ['Крафт тепер каже, коли потрібен верстак, замість «Можна робити».'],
+    ru: ['Крафт теперь говорит, когда нужен верстак, вместо «Можно делать».'],
+    es: ['Crafting ahora te dice cuando necesitas un Banco, en vez de decir Listo para hacer.'],
+    ar: ['الصنع صار يقول لك متى تلزم منضدة، بدل «جاهز للصنع».'],
+    'fa-AF': ['ساخت حالا می‌گوید کی میز کار لازم است، به جای «آمادهٔ ساختن».'],
+    rw: ['Gukora ubu kubwira igihe ukeneye Ameza, aho kuvuga Biteguye gukorwa.'],
+    ti: ['ምስራሕ ሕጂ ሰደቓ ምስ የድሊ ይነግረካ፡ ካብ «ንምስራሕ ድሉው» ኣይብልን።'],
+  }},
   { v: '2.5.233', date: '2026-10-15', lines: {
     en: ['Your goal card comes back when you switch from Creative to Survival.'],
     uk: ['Картка цілі повертається, коли переходиш із Творчого у Виживання.'],

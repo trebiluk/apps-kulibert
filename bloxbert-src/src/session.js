@@ -1667,6 +1667,9 @@ export function createSession(api) {
       const isBread = r.id === 'bread'
       const full = r.in.every((pair, i) => (trayPlaced[i] || 0) >= pair[1])
       const ready = !isBread && full && !st.station && !st.gate
+      const blocked = (st.station || st.gate)
+        ? (st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.station === 'fabricator' || st.gate === 'T5' ? t('needsT5') : '')
+        : ''
       let times = 64
       for (const [item, need] of r.in) times = Math.min(times, Math.floor(heldCount(r, item) / need))
       if (!(times > 0)) times = 0
@@ -1685,6 +1688,7 @@ export function createSession(api) {
           maxLabel: t('timesMax'),
           makeDisabled: isBread ? false : !ready,
           maxDisabled: !(st.ok && times > 1),
+          blocked,
           bake: isBread,
           ovenIcon: isBread ? () => itemIcon(ITEMS.oven) : null,
           coreIcon: () => itemIcon(isBread ? ITEMS.oven : ITEMS.workbench),
@@ -1803,8 +1807,7 @@ export function createSession(api) {
       if (st.station || st.gate) {
         const chip = document.createElement('span')
         chip.className = 'gate-chip'
-        const which = st.station === 'oven' ? t('needsOven') : st.station === 'bench' ? t('needsBench') : st.station === 'smelter' || st.station === 'forge' || st.gate === 'T4' ? t('needsT4') : st.station === 'fabricator' || st.gate === 'T5' ? t('needsT5') : ''
-        chip.textContent = which
+        chip.textContent = blocked
         side.append(chip)
       }
       if (note) {
