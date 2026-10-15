@@ -6869,10 +6869,15 @@ function wallId(id) {
   try { return !!noa.registry.getBlockSolidity(id) } catch (e) { return false }
 }
 function eyeBlocked() {
-  if (!TOUCH_UI || !noa.camera || tableMode || flying) return false
+  if (!noa.camera || tableMode || flying) return false
   const eye = noa.camera.getPosition()
   if (!eye) return false
-  return wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))
+  const spots = [[0, 0, 0], [0.2, 0, 0], [-0.2, 0, 0], [0, 0.2, 0], [0, -0.2, 0], [0, 0, 0.2], [0, 0, -0.2]]
+  for (let i = 0; i < spots.length; i++) {
+    const s = spots[i]
+    if (wallId(getVoxel(Math.floor(eye[0] + s[0]), Math.floor(eye[1] + s[1]), Math.floor(eye[2] + s[2])))) return true
+  }
+  return false
 }
 function pushEyeOut() {
   const eye = noa.camera.getPosition()
@@ -6897,6 +6902,29 @@ function pushEyeOut() {
   const body = noa.ents.getPhysicsBody(noa.playerEntity)
   noa.entities.setPosition(noa.playerEntity, [p[0] + best[0] - eye[0], p[1] + best[1] - eye[1], p[2] + best[2] - eye[2]])
   if (body) { body.velocity[0] = 0; body.velocity[1] = 0; body.velocity[2] = 0 }
+}
+function zoomToWall(want) {
+  const tgt = noa.camera.getTargetPosition()
+  const look = noa.camera.getDirection()
+  if (!tgt || !look || !(want > 0)) return want
+  const ex = tgt[0], ey = tgt[1], ez = tgt[2]
+  const bx = -look[0], by = -look[1], bz = -look[2]
+  let hit = null
+  try {
+    const picked = noa.pick([ex, ey, ez], [bx, by, bz], want + 0.05, wallId)
+    if (picked && picked.position) {
+      hit = Math.hypot(picked.position[0] - ex, picked.position[1] - ey, picked.position[2] - ez)
+    }
+  } catch (e) { hit = null }
+  if (hit == null) {
+    let prev = 0
+    for (let t = 0.25; t <= want + 0.001; t += 0.25) {
+      if (wallId(getVoxel(Math.floor(ex + bx * t), Math.floor(ey + by * t), Math.floor(ez + bz * t)))) { hit = prev; break }
+      prev = t
+    }
+  }
+  if (hit == null) return want
+  return Math.max(0, Math.min(want, hit - 0.3))
 }
 function feelTick(dt) {
   if (learn && learn.sync) learn.sync()
@@ -7003,10 +7031,19 @@ function feelTick(dt) {
     const behind = camBehind ? 4 : 0
     const up = behind > 0.5 && TOUCH_UI && noa.camera.pitch < -0.25 ? Math.min(2.2, -noa.camera.pitch * 1.6) : 0
     let zoom = behind + up
+    if (camBehind && zoom > 0) {
+      const safe = zoomToWall(zoom)
+      if (safe < zoom && (noa.camera.currentZoom || 0) > safe) noa.camera.currentZoom = safe
+      zoom = safe
+    }
     if (eyeBlocked()) {
-      const cur = noa.camera.zoomDistance || 0
-      if (cur > 0.4) zoom = Math.max(0, cur - 0.75)
-      else { zoom = 0; pushEyeOut() }
+      if (zoom > 0) {
+        zoom = 0
+        if ((noa.camera.currentZoom || 0) > 0) noa.camera.currentZoom = 0
+      } else {
+        const eye = noa.camera.getPosition()
+        if (eye && wallId(getVoxel(Math.floor(eye[0]), Math.floor(eye[1]), Math.floor(eye[2])))) pushEyeOut()
+      }
     }
     if (noa.camera.zoomDistance !== zoom) noa.camera.zoomDistance = zoom
   }

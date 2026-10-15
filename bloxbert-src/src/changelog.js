@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.215', date: '2026-10-15', lines: {
+    en: ['The camera stays out of the walls when you walk into a house.'],
+    uk: ['Камера лишається поза стінами, коли ти заходиш у дім.'],
+    ru: ['Камера остаётся снаружи стен, когда ты заходишь в дом.'],
+    es: ['La cámara se queda fuera de las paredes cuando entras en una casa.'],
+    ar: ['تبقى الكاميرا خارج الجدران حين تدخل إلى بيت.'],
+    'fa-AF': ['دوربین بیرون دیوارها می‌ماند وقتی به خانه داخل می‌شوی.'],
+    rw: ['Kamera iguma hanze y\'inkuta iyo winjira mu nzu.'],
+    ti: ['ካሜራ ካብ መንደቕ ወጻኢ ይጸንሕ ምስ ትኣቱ ናብ ገዛ።'],
+  }},
   { v: '2.5.214', date: '2026-10-15', lines: {
     en: ['On a wide phone, the Workbench message no longer hides the list above it.'],
     uk: ['На широкому телефоні повідомлення верстака більше не ховає список над ним.'],
