@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.228', date: '2026-10-15', lines: {
+    en: ['In Crafting, the count at the top now matches the Input box, so each recipe shows one need.'],
+    uk: ['У панелі Крафту число зверху тепер збігається з полем Вхід, тож кожен рецепт показує одну потребу.'],
+    ru: ['В панели Крафта число сверху теперь совпадает с полем Вход, так что каждый рецепт показывает одну потребность.'],
+    es: ['En Fabricar, el número de arriba ahora coincide con la caja de Entrada, así cada receta muestra una sola cantidad.'],
+    ar: ['في الصنع، العدد في الأعلى صار يطابق صندوق المدخل، فكل وصفة تُظهر حاجة واحدة.'],
+    'fa-AF': ['در ساخت، عدد بالا حالا با جعبه ورودی یکی است، پس هر دستور یک نیاز نشان می‌دهد.'],
+    rw: ['Mu Gukora, umubare wo hejuru uhura n\'uwo mu gasanduku k\'Ibyinjira, buri buryo bwerekana umubare umwe.'],
+    ti: ['ኣብ ምስራሕ፡ ናይ ላዕሊ ቁጽሪ ምስ ናይ ኣእቱ ሳንዱቕ ይሰማማዕ፡ ነፍሲ ወከፍ መምርሒ ሓደ ድሌት የርኢ።'],
+  }},
   { v: '2.5.227', date: '2026-10-15', lines: {
     en: ['On computers, the whole bag now fits in the Crafting panel with no sideways scrolling.'],
     uk: ['На комп\'ютерах уся сумка тепер вміщається в панелі Крафту без прокрутки вбік.'],

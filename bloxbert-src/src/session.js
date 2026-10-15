@@ -1350,10 +1350,11 @@ export function createSession(api) {
       const have = heldCount(r, item)
       const n = pair[1]
       const num = bit.querySelector('.need-n')
-      if (num) num.textContent = have + '/' + n
+      const shown = Math.min(have, n)
+      if (num) num.textContent = shown + '/' + n
       bit.classList.toggle('short', have < n)
       const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
-      bit.title = label + ' ' + have + '/' + n
+      bit.title = label + ' ' + t('inBag').replace('{n}', String(have))
     })
     g.querySelectorAll('.gnote.left-line').forEach((el) => {
       el.textContent = r.in.map(([need]) => t('leftLine').replace('{item}', itemName(need)).replace('{n}', String(countOf(bag, need)))).join(' · ')
@@ -1491,9 +1492,9 @@ export function createSession(api) {
         if (node) art.append(node)
         const num = document.createElement('span')
         num.className = 'need-n'
-        num.textContent = have + '/' + n
+        num.textContent = Math.min(have, n) + '/' + n
         const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
-        bit.title = label + ' ' + have + '/' + n
+        bit.title = label + ' ' + t('inBag').replace('{n}', String(have))
         bit.append(art, num)
         pane.append(bit)
       }
@@ -1600,10 +1601,6 @@ export function createSession(api) {
         b.append(lock)
       }
       b.addEventListener('pointerdown', (e) => e.stopPropagation())
-      b.addEventListener('pointerenter', (e) => {
-        if (e.pointerType === 'touch') return
-        paintNeeds(side, r, st)
-      })
       b.addEventListener('click', () => {
         if (r.id === 'bread') {
           if (!openBreadOven()) paintCraft(g)
@@ -1636,10 +1633,6 @@ export function createSession(api) {
       row.append(b)
     }
     book.append(row)
-    book.addEventListener('pointerleave', () => {
-      const cur = rows.find((x) => x.r.id === craftId)
-      if (cur) paintNeeds(side, cur.r, cur.st)
-    })
     const chosen = rows.find((x) => x.r.id === craftId) || rows[0]
     if (chosen) {
       const { r, st } = chosen
