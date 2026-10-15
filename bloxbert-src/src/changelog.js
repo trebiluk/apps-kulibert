@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.231', date: '2026-10-15', lines: {
+    en: ['The Tour card now sits at the top middle, so it no longer covers the stick, Jump or the mode buttons.'],
+    uk: ['Картка Туру тепер стоїть зверху посередині, тож більше не закриває стик, Стрибок чи кнопки режиму.'],
+    ru: ['Карточка Тура теперь стоит сверху по центру, так что больше не закрывает стик, Прыжок и кнопки режима.'],
+    es: ['La tarjeta del Tour ahora está arriba en el centro, así ya no tapa la palanca, Saltar ni los botones de modo.'],
+    ar: ['بطاقة الجولة صارت في الأعلى في الوسط، فلا تغطي العصا ولا القفز ولا أزرار الوضع.'],
+    'fa-AF': ['کارت گشت حالا بالا در وسط است، پس اهرم، پرش یا دکمه‌های حالت را نمی‌پوشاند.'],
+    rw: ['Ikarita y\'Urugendo ubu iri hejuru hagati, ntikongera gupfuka agastike, Simbuka cyangwa buto z\'uburyo.'],
+    ti: ['ናይ ጉዕዞ ካርድ ሕጂ ኣብ ላዕሊ ማእከል ይቐመጥ፡ ስቲክ፡ ንጻን ወይ ናይ ሞድ መጠወቒታት ኣይሽፍንን።'],
+  }},
   { v: '2.5.230', date: '2026-10-15', lines: {
     en: ['The world now loads behind the first Tour, so you see your land right away.'],
     uk: ['Світ тепер завантажується за першим Туром, тож ти одразу бачиш свою землю.'],
