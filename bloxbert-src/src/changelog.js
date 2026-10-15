@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.235', date: '2026-10-15', lines: {
+    en: ['After you skip the Tour, your first click only starts play - no more Too far away.'],
+    uk: ['Після того як пропустиш Тур, перший клік лише починає гру — більше ніякого «Занадто далеко».'],
+    ru: ['После того как пропустишь Тур, первый клик только начинает игру — больше никакого «Слишком далеко».'],
+    es: ['Después de saltar el Tour, tu primer clic solo empieza el juego — ya no dice Demasiado lejos.'],
+    ar: ['بعد أن تتخطى الجولة، نقرتك الأولى تبدأ اللعب فقط، ولا تقول «بعيد جداً».'],
+    'fa-AF': ['بعد از رد کردن گشت، کلیک اول فقط بازی را شروع می‌کند و دیگر «خیلی دور است» نمی‌گوید.'],
+    rw: ['Nyuma yo gusimbuka Tour, kanda kawe ka mbere gusa gatangira gukina, ntikongera kuvuga Kiri kure cyane.'],
+    ti: ['ድሕሪ ምሕላፍ ጉዕዞ፡ ናይ መጀመርታ ጠውቒ ጸወታ ጥራይ ይጅምር፡ «ኣዝዩ ርሑቕ እዩ» ኣይብልን።'],
+  }},
   { v: '2.5.234', date: '2026-10-15', lines: {
     en: ['Crafting now tells you when you need a Workbench, instead of saying Ready to make.'],
     uk: ['Крафт тепер каже, коли потрібен верстак, замість «Можна робити».'],

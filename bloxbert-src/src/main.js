@@ -2885,6 +2885,7 @@ noa.inputs.down.on('fire', () => {
     if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
     showPlayChip(); grabLock(); return
   }
+  if (eatResumeClick()) return
   const aimed = noa.targetedBlock
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
@@ -2915,6 +2916,7 @@ noa.inputs.down.on('alt-fire', () => {
     if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
     showPlayChip(); grabLock(); return
   }
+  if (eatResumeClick()) return
   const tget = noa.targetedBlock
   if (!TOUCH_UI && deskOpenStation(tget)) return
   if (tryEatClick(tget)) return
@@ -4539,6 +4541,7 @@ let closeHow = ''
 let dropLockLook = false
 let lockSwallowUntil = 0
 let lockGainedAt = 0
+let resumeSwallow = false
 let shopsLive = false
 let openMachineKey = ''
 let muteUseKey = ''
@@ -5112,6 +5115,7 @@ function resumePlay() {
   armResume = 0
   hidePlayChip()
   lockTries = 0
+  resumeSwallow = true
   grabLock()
 }
 function closePlay(how) {
@@ -5146,6 +5150,11 @@ function eatResume(e) {
   armResume = 0
   hidePlayChip()
   grabLock()
+  return true
+}
+function eatResumeClick() {
+  if (TOUCH_UI || !resumeSwallow) return false
+  resumeSwallow = false
   return true
 }
 let holdTour = () => {}
@@ -6063,6 +6072,7 @@ document.addEventListener('pointerlockchange', () => {
   }
   const wasLocked = hadLock
   hadLock = false
+  resumeSwallow = false
   const fromEsc = escUnlock
   escUnlock = false
   if (playLockWanted && !anyCard() && !TOUCH_UI && lockTries < 2 && navigator.userActivation && navigator.userActivation.isActive) {
@@ -6704,6 +6714,7 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'i' || e.key === 'I') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); setInspect(!inspectOn) } }
   if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
   if (e.key === 'Enter') {
+    resumeSwallow = false
     e.preventDefault()
     if (wandHeld()) { if (!e.repeat) wandDo(); return }
     if (inspectOn) { if (!e.repeat) showInspect(); return }
@@ -7411,6 +7422,7 @@ canvas.addEventListener('pointerdown', (e) => {
     return
   }
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
+  if (desktop && resumeSwallow) return
   if (desktop && !playLocked() && performance.now() < lockSwallowUntil) return
   if (desktop && !playLocked() && !tableMode && !anyCard() && (e.button === 0 || e.button < 0)) return
   const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
