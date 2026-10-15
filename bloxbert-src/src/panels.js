@@ -64,6 +64,17 @@ export function mountPanels(api) {
       if (bar) sheet.append(bar)
     }
     sheet.dataset.panel = id
+    if (id === 'tour') {
+      sheet.style.height = 'auto'
+      sheet.style.maxHeight = 'min(260px, calc(100% - 64px))'
+      sheet.style.width = 'min(520px, calc(100vw - 24px))'
+      body.style.overflow = 'visible'
+    } else {
+      sheet.style.height = ''
+      sheet.style.maxHeight = ''
+      sheet.style.width = ''
+      body.style.overflow = ''
+    }
     lastFill = fill
     dress(id)
     if (api.paintBack) api.paintBack()
@@ -137,6 +148,10 @@ export function mountPanels(api) {
     sheet.classList.remove('slots-slide')
     sheet.style.transition = ''
     sheet.style.transform = ''
+    sheet.style.height = ''
+    sheet.style.maxHeight = ''
+    sheet.style.width = ''
+    body.style.overflow = ''
     sheet.hidden = true
     stack = []
     sheet.dataset.panel = ''

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.221', date: '2026-10-15', lines: {
+    en: ['The Tour is now a small card instead of a big empty panel.'],
+    uk: ['Тур тепер маленька картка замість великої порожньої панелі.'],
+    ru: ['Тур теперь маленькая карточка вместо большой пустой панели.'],
+    es: ['El recorrido ahora es una tarjeta pequeña en vez de un panel vacío grande.'],
+    ar: ['الجولة صارت بطاقة صغيرة بدل لوحة فارغة كبيرة.'],
+    'fa-AF': ['گشت حالا کارت کوچک است، نه پنل خالی بزرگ.'],
+    rw: ['Urugendo ubu ni ikarita nto aho kuba agapaneli kanini katagira ikintu.'],
+    ti: ['ዙር ሕጂ ንእሽተይ ካርድ እዩ ኣብ ክንዳ ዓቢ ባዶ ሰሌዳ።'],
+  }},
   { v: '2.5.220', date: '2026-10-15', lines: {
     en: ['Picking a recipe no longer jumps the list back to the top.', 'On a wide phone, "Any planks" wraps onto two lines.'],
     uk: ['Вибір рецепта більше не кидає список нагору.', 'На широкому телефоні «Будь-які дошки» стають у два рядки.'],
