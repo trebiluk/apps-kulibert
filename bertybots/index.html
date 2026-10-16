@@ -8,11 +8,11 @@
   <meta name="referrer" content="no-referrer">
   <meta name="robots" content="noindex">
   <meta name="description" content="Berty's Botz classroom physics shop for Solvay Middle School Technology Education. Local save. No accounts. No names in files.">
-  <title>Berty's Botz BB 0.19.37 — Solvay Tech Ed</title>
+  <title>Berty's Botz BB 0.19.38 — Solvay Tech Ed</title>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/mark.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css?v=0.19.37">
+  <link rel="stylesheet" href="css/app.css?v=0.19.38">
 </head>
 <body>
   <div id="rotate-gate">
@@ -25,7 +25,7 @@
   <div id="app">
       <header class="hud">
         <button class="btn gold menu-btn" id="btn-crew" type="button" aria-expanded="false" aria-controls="crew" data-bb-label="menu" aria-label="Menu" title="Menu"><span class="menu-mark" aria-hidden="true">☰</span><span class="lbl" data-bb="menu">Menu</span></button>
-        <div class="brand">Berty's Botz <small id="chip">BB 0.19.37</small></div>
+        <div class="brand">Berty's Botz <small id="chip">BB 0.19.38</small></div>
         <div class="hud-play">
           <span class="coach-play" id="coach-play" hidden data-bb="play">Play</span>
           <button class="btn ok" id="btn-play" type="button" data-bb-label="play" aria-label="Play" title="Play · Space"><svg class="glyph" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg><span class="lbl" data-bb="play">Play</span></button>
@@ -172,7 +172,7 @@
       </div>
       <div class="stage-fit">
       <div class="stage">
-        <canvas id="c" tabindex="0"></canvas>
+        <canvas id="c" tabindex="-1"></canvas>
         <button type="button" id="wheel-drop" class="wheel-drop" hidden data-bb-label="putWheelHere" aria-label="Put wheel here">
           <svg class="wheel-drop-ring" viewBox="0 0 100 100" aria-hidden="true">
             <circle cx="50" cy="50" r="47" fill="none" stroke="#1a1400" stroke-width="3" stroke-dasharray="10 10" vector-effect="non-scaling-stroke"/>
@@ -267,10 +267,10 @@
         </div>
         <div class="sheet" id="crew" hidden>
           <div class="sheet-card menu-card" role="dialog" aria-labelledby="crew-title">
-            <p class="menu-plate" id="menu-plate">Berty's Botz <b id="menu-chip">BB 0.19.37</b></p>
+            <p class="menu-plate" id="menu-plate">Berty's Botz <b id="menu-chip">BB 0.19.38</b></p>
             <button class="menu-row" id="menu-whats" type="button">
               <strong data-bb="whatsNew">What's new</strong>
-              <span data-bb="whatsNewLine">The wheel hint is now a dashed ring. Tap it to place your wheel.</span>
+              <span data-bb="whatsNewLine">On a phone, GOAL sits above the floor and the whole hint shows.</span>
             </button>
             <button class="menu-row" id="menu-settings" type="button" data-bb="settings">Settings</button>
             <p class="howto-kicker" data-bb="shop">Shop</p>
@@ -350,7 +350,7 @@
       <footer class="status">
         <span id="mode">Shop</span>
         <span>Parts <b id="count">0 / 48</b></span>
-        <span class="whats-new"><span data-bb="whatsNew">What's new</span>: <span data-bb="whatsNewLine">The wheel hint is now a dashed ring. Tap it to place your wheel.</span></span>
+        <span class="whats-new"><span data-bb="whatsNew">What's new</span>: <span data-bb="whatsNewLine">On a phone, GOAL sits above the floor and the whole hint shows.</span></span>
         <span class="hint" id="status-hint">Build on the shop floor. Play to test.</span>
       </footer>
     </div>
@@ -358,8 +358,8 @@
   <input id="file-open" type="file" accept=".json,.bertybots.json,application/json" hidden>
   <script src="vendor/planck.min.js"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
-  <script src="js/i18n.js?v=0.19.37"></script>
-  <script src="js/bundle.js?v=0.19.37"></script>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bertybots" data-name="Berty's Botz" data-version="BB 0.19.37" data-rtl="1" data-menu="#btn-crew" data-whats-new="The wheel hint is now a dashed ring. Tap it to place your wheel." defer></script>
+  <script src="js/i18n.js?v=0.19.38"></script>
+  <script src="js/bundle.js?v=0.19.38"></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bertybots" data-name="Berty's Botz" data-version="BB 0.19.38" data-rtl="1" data-menu="#btn-crew" data-whats-new="On a phone, GOAL sits above the floor and the whole hint shows." defer></script>
 </body>
 </html>

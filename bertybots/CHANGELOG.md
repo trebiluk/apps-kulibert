@@ -28,6 +28,13 @@ Rules:
 
 ---
 
+## 0.19.38 — Phone GOAL and hint — 2026-10-16
+
+- On an upright phone the GOAL button sits above the Shop Floor, not on the PARK stripes.
+- The bottom hint wraps onto two lines so the whole sentence shows.
+- Tab skips the level canvas and lands on the dashed ring.
+- What's new: On a phone, GOAL sits above the floor and the whole hint shows.
+
 ## 0.19.37 — Dashed wheel hint — 2026-10-15
 
 - The level 1 hint is a dashed ring, not a dark wheel. Tap the ring, or Tab to it and press Enter, to put the wheel behind the crate.

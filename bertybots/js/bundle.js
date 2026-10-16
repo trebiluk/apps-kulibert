@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.37 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.38 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.37";
+const APP_VERSION = "0.19.38";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.37";
-const APP_BUILT = "2026-10-15";
+const APP_CHIP = "BB 0.19.38";
+const APP_BUILT = "2026-10-16";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -3080,11 +3080,28 @@ function boot() {
     ctx.font = `800 ${Math.round(15 * dpr)}px ${getComputedStyle(document.body).fontFamily}`;
     ctx.direction = textRtl() ? "rtl" : "ltr";
     const labelW = ctx.measureText(aim.label).width;
-    const w = Math.max(104 * dpr, labelW + 48 * dpr);
-    const h = 40 * dpr;
+    const phone = window.innerWidth <= 699;
+    const w = Math.max((phone ? 112 : 104) * dpr, labelW + (phone ? 56 : 48) * dpr);
+    const h = (phone ? 44 : 40) * dpr;
     const edge = 12 * dpr;
-    const ax = Math.max(edge, Math.min(canvas.width - w - edge, sx > canvas.width * 0.5 ? canvas.width - w - edge : edge));
-    const ay = Math.max(edge, Math.min(canvas.height - h - edge, sy - h / 2));
+    let ax;
+    let ay;
+    let pointingRight;
+    if (phone) {
+      const s = doc.level && doc.level.shop;
+      const gap = 8 * dpr;
+      const floorTop = s ? wy(s.y + s.h) : edge + h + gap;
+      const floorRight = s ? wx(s.x + s.w) : canvas.width - edge;
+      ax = Math.max(edge, Math.min(canvas.width - w - edge, floorRight - w));
+      ay = floorTop - h - gap;
+      if (ay < edge) ay = edge;
+      if (s && ay + h > floorTop - gap) ay = Math.max(edge, floorTop - h - gap);
+      pointingRight = sx > ax + w * 0.5;
+    } else {
+      ax = Math.max(edge, Math.min(canvas.width - w - edge, sx > canvas.width * 0.5 ? canvas.width - w - edge : edge));
+      ay = Math.max(edge, Math.min(canvas.height - h - edge, sy - h / 2));
+      pointingRight = sx > canvas.width * 0.5;
+    }
     goalCue = { x: ax, y: ay, w, h };
     ctx.save();
     roundBubble(ax, ay, w, h, 12 * dpr);
@@ -3093,7 +3110,6 @@ function boot() {
     ctx.lineWidth = 2;
     ctx.strokeStyle = "#1a1400";
     ctx.stroke();
-    const pointingRight = sx > canvas.width * 0.5;
     ctx.fillStyle = "#1a1400";
     ctx.beginPath();
     if (pointingRight) {
