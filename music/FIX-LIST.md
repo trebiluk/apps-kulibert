@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] A2-59 MU 2.35.21: a calm new look, and a Dark mode switch in Settings.
 - [x] MU 2.35.20: Score notes now show fully on every screen.
 - [x] MU 2.35.19: Score notes now show fully on a sideways phone.
 - [x] A2-58 MU 2.35.18: sideways phones show one tab at a time, and the piano stays on the Piano tab.

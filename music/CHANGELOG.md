@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.21** · 2026-10-15 · channel **live**
+
+A calm new look, and a Dark mode switch in Settings.
+
+## Earlier
+
 **Chip: MU 2.35.20** · 2026-10-15 · channel **live**
 
 Score notes now show fully on every screen.

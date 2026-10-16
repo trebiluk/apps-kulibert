@@ -1,17 +1,51 @@
-:root {
-  color-scheme: dark;
-  --bg: #050814;
-  --panel: #0b152c;
-  --elevated: #10203f;
-  --border: #16324f;
-  --text: #e8f7ff;
-  --muted: #8fb4c9;
-  --accent: #22d3ee;
-  --accent-fg: #041018;
-  --paper: #f7f1e4;
-  --ink: #1a140c;
+:root,
+html[data-theme="calm"] {
+  color-scheme: light;
+  --bg: #E9EFF2;
+  --panel: #F4F7F8;
+  --elevated: #F4F7F8;
+  --border: #C3D0D8;
+  --text: #0E1A22;
+  --muted: #4A5D6B;
+  --accent: #0891B2;
+  --accent-fg: #0E1A22;
+  --play-bg: #0F766E;
+  --play-fg: #F4F7F8;
+  --btn-line: #0F766E;
+  --active: #0891B2;
+  --key-white: #F4F7F8;
+  --key-edge: #9FB0C6;
+  --key-black: #1B2A33;
+  --key-ink: #0E1A22;
+  --key-black-ink: #F4F7F8;
+  --divider: #0F766E;
+  --paper: #F4F7F8;
+  --ink: #0E1A22;
   --radius: 16px;
   --shadow: none;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #08131A;
+  --panel: #0E1A22;
+  --elevated: #0E1A22;
+  --border: #1F8A8A;
+  --text: #E6EEF2;
+  --muted: #9FB0C6;
+  --accent: #22D3EE;
+  --accent-fg: #08131A;
+  --play-bg: #22D3EE;
+  --play-fg: #08131A;
+  --btn-line: #1F8A8A;
+  --active: #22D3EE;
+  --key-white: #C9D6DC;
+  --key-edge: #9FB0C6;
+  --key-black: #08131A;
+  --key-ink: #08131A;
+  --key-black-ink: #E6EEF2;
+  --divider: #1F8A8A;
+  --paper: #F4F7F8;
+  --ink: #0E1A22;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: var(--kp-font), Outfit, "Noto Sans", "Noto Sans Arabic", "Noto Sans Ethiopic", system-ui, sans-serif; font-size: 16px; }
@@ -37,8 +71,8 @@ body .tw-app-bar { top: 0.7rem !important; bottom: auto !important; left: auto !
 .brand em { display: block; font-style: normal; color: var(--muted); font-size: 0.75rem; }
 .menu-btn {
   min-width: 44px; min-height: 44px; height: 44px; padding: 0 0.6rem;
-  border-radius: 12px; border: 3px solid #1a140c; box-shadow: 3px 3px 0 #1a140c;
-  background: #fff8ea; color: #1a140c;
+  border-radius: 12px; border: 1px solid var(--btn-line); box-shadow: none;
+  background: var(--panel); color: var(--text);
   display: inline-flex; align-items: center; gap: 0.4rem; flex: 0 0 auto;
 }
 .menu-btn i { display: grid; gap: 4px; }
@@ -160,7 +194,7 @@ body.playing:not(.show) .transport {
 }
 .stage-wrap { position: relative; }
 .show-progress { display: none; height: 6px; margin: 0.35rem 0 0.2rem; border-radius: 99px; background: #16324f; overflow: hidden; }
-.show-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #22d3ee, #a78bfa); }
+.show-progress i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--active), var(--divider)); }
 .curtain, .bow {
   position: absolute; inset: 0; z-index: 2;
   display: grid; align-content: center; justify-items: center; gap: 0.65rem;
@@ -273,7 +307,7 @@ body.expert.is-score .staff-wrap { min-height: calc(100vh - 9rem); }
   border-radius: 14px 14px 8px 8px;
   box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.18);
 }
-.inks .btn.on { background: #22d3ee; color: #041018; }
+.inks .btn.on { background: var(--active); color: var(--accent-fg); }
 .pen { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0.15rem 0 0.45rem; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
 .pen .btn { min-height: 52px; font-weight: 700; border: 0; border-radius: 0; border-right: 1px solid var(--border); background: var(--panel); color: var(--text); }
 .pen .btn:last-child { border-right: 0; }
@@ -442,7 +476,7 @@ canvas {
 #click-btn { width: 100%; margin-top: 0.35rem; }
 #crazy-btn { width: 100%; margin-top: 0.45rem; }
 .marks em { font-style: normal; font-size: 0.68rem; font-weight: 800; color: var(--paper); }
-:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+:focus-visible { outline: 3px solid var(--active); outline-offset: 3px; }
 .group {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -470,7 +504,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .meter { height: 12px; margin-top: 0.5rem; background: var(--panel); border-radius: 99px; overflow: hidden; }
 .meter span { display: block; height: 100%; width: 0; background: var(--accent); }
 .play {
-  width: auto; min-height: 64px; border-radius: 16px; border: 0; background: var(--accent); color: var(--accent-fg);
+  width: auto; min-height: 64px; border-radius: 16px; border: 0; background: var(--play-bg); color: var(--play-fg);
   display: flex; align-items: center; justify-content: center; gap: 0.45rem;
   font-weight: 800; font-size: 1.2rem;
 }
@@ -494,7 +528,7 @@ input[type="range"] { width: 100%; accent-color: var(--accent); }
 .drum-row b { font-size: 0.72rem; }
 .cell {
   width: auto; min-width: 0; height: 48px; min-height: 48px; border-radius: 10px;
-  border: 2px solid #1a140c; background: #fff8ea; box-shadow: 2px 2px 0 #1a140c;
+  border: 2px solid var(--border); background: var(--panel); box-shadow: none;
 }
 .cell.on { background: var(--accent); border-color: transparent; }
 .cell.now { outline: 2px solid #fff; outline-offset: 1px; }
@@ -616,10 +650,10 @@ body.is-both:not(.show) #feel { display: none; }
 /* MU 2.27.0 beat workspace */
 body.is-home .songbar { display: none !important; }
 .make-beat, .my-songs, .btn, .do-card, .pad, .key {
-  border: 3px solid #1a140c;
-  box-shadow: 4px 4px 0 #1a140c;
-  background: #fff8ea;
-  color: #1a140c;
+  border: 1px solid var(--btn-line);
+  box-shadow: none;
+  background: var(--panel);
+  color: var(--text);
 }
 .make-beat {
   display: block; width: 100%; min-height: 8.5rem; margin: 1.2rem 0 0.7rem;
@@ -628,15 +662,15 @@ body.is-home .songbar { display: none !important; }
 }
 .my-songs {
   display: block; margin: 0 auto 1rem; min-height: 44px; padding: 0.4rem 1rem;
-  border-radius: 12px; font-weight: 800; background: #fff8ea;
+  border-radius: 12px; font-weight: 800; background: var(--panel);
 }
 .brand img, .cover {
   border: 3px solid #1a140c; box-shadow: 3px 3px 0 #e8a317; background: #f0a020; border-radius: 10px;
 }
-.mast, .top, .songbar, .drawer { background: #efe6d2; }
+.mast, .top, .songbar, .drawer { background: var(--bg); }
 .transport, .dock {
   position: fixed; left: 0; right: 0; z-index: 25;
-  background: #fff8ea; border-top: 3px solid #1a140c;
+  background: var(--panel); border-top: 1px solid var(--divider);
 }
 .transport {
   bottom: 0;
@@ -672,7 +706,7 @@ body.is-home .songbar { display: none !important; }
 .cast, .style-row { display: flex; gap: 0.4rem; margin: 0.35rem 0; flex-wrap: wrap; }
 .cast button, .style-row button {
   min-height: 48px; min-width: 4.5rem; border-radius: 14px; font-weight: 800;
-  border: 3px solid #1a140c; background: #fff8ea; box-shadow: 3px 3px 0 #1a140c; color: #1a140c;
+  border: 1px solid var(--btn-line); background: var(--panel); box-shadow: none; color: var(--text);
 }
 .cast button.on, .style-row button.on { background: #f0a020; }
 .berty-bob {
@@ -748,9 +782,9 @@ body.is-beat { padding-bottom: calc(9.2rem + env(safe-area-inset-bottom)); }
 body.playing:not(.show) .transport,
 body.is-both:not(.show) .transport,
 body.is-beat:not(.show) .transport {
-  background: #fff8ea !important;
-  color: #1a140c !important;
-  border-top: 3px solid #1a140c !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-top: 3px solid var(--divider) !important;
   grid-template-columns: 1.05fr 1.35fr 0.85fr !important;
 }
 body.show { background: #050814; color: #fff8ea; max-width: none; }
@@ -933,9 +967,9 @@ html[data-kp-motion="less"] .confetti { display: none !important; }
 }
 
 /* MU 2.35.0 — DJ Berty night layout */
-html { background: #050814; }
+html { background: var(--bg); }
 html, body, .songbar, .drawer, .transport, .side, .desk, .work {
-  background-color: #050814;
+  background-color: var(--bg);
   background-image: none;
   color: var(--text);
 }
@@ -1072,9 +1106,9 @@ body.is-lights:not(.show) .transport,
 body.is-band:not(.show) .transport,
 body.is-sound:not(.show) .transport,
 .transport {
-  background: #0b152c !important;
-  color: #e8f7ff !important;
-  border-top: 1px solid #16324f !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-top: 1px solid var(--divider) !important;
 }
 .transport .tempo { display: flex; align-items: center; gap: 0.35rem; flex: 1; min-width: 8rem; }
 .transport .tempo input { flex: 1; min-width: 4rem; }
@@ -1350,9 +1384,9 @@ body:not(.show) .transport {
   display: flex !important;
   flex-wrap: nowrap;
   align-items: center;
-  background: #0b152c !important;
-  color: #e8f7ff !important;
-  border-top: 1px solid #16324f !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-top: 1px solid var(--divider) !important;
   grid-template-columns: none !important;
 }
 body.is-beat:not(.show) .transport,
@@ -1362,9 +1396,9 @@ body.is-lights:not(.show) .transport,
 body.is-band:not(.show) .transport,
 body.is-sound:not(.show) .transport,
 body.playing:not(.show) .transport {
-  background: #0b152c !important;
-  color: #e8f7ff !important;
-  border-top: 1px solid #16324f !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-top: 1px solid var(--divider) !important;
 }
 body.is-home .transport,
 body.is-make .transport,
@@ -1768,8 +1802,8 @@ body.is-library.menu-open .drawer {
   transform: none !important;
   z-index: 50 !important;
   overflow: auto !important;
-  background: #0b152c !important;
-  color: #e8f7ff !important;
+  background: var(--panel) !important;
+  color: var(--text) !important;
 }
 html.kb-framed body.is-home.menu-open .drawer,
 html.kb-framed body.is-make.menu-open .drawer,
@@ -2415,7 +2449,7 @@ body.mu237.playing:not(.show) .transport {
   align-items: center;
   gap: 0.25rem;
   padding: 4px 8px calc(4px + env(safe-area-inset-bottom));
-  background: #07101c;
+  background: var(--bg);
   border-top: 1px solid var(--border);
   overflow: hidden;
 }
@@ -2428,7 +2462,7 @@ body.mu237 #dock-left .tab {
 }
 body.mu237 #dock-left .tab svg { width: 24px; height: 24px; flex: 0 0 24px; }
 body.mu237 #dock-left .tab.on,
-body.mu237 #dock-left .tab[aria-pressed="true"] { background: #22d3ee; color: #041018; }
+body.mu237 #dock-left .tab[aria-pressed="true"] { background: var(--active); color: var(--accent-fg); }
 body.mu237 #menu-btn {
   position: fixed !important; top: 4px; left: 4px; z-index: 28;
   display: inline-flex !important; align-items: center; justify-content: center;
@@ -2525,7 +2559,7 @@ body.mu237 .hint, body.mu237 .kicker, body.mu237 .drawer h2, body.mu237 .song-ro
 body.mu237 :where(.desk, .home, .library, .make, .drawer, .transport, .side) :where(p, span, b, label, button, summary, h1, h2, a, li, strong, em) { font-size: 14px; }
 body.mu237 .pen { display: grid !important; }
 body.mu237 .pen .btn.on, body.mu237 .pen .btn[aria-pressed="true"] {
-  background: #22d3ee !important; color: #041018 !important; box-shadow: none !important;
+  background: var(--active) !important; color: var(--accent-fg) !important; box-shadow: none !important;
 }
 body.mu237 .pen .btn.on::after, body.mu237 .pen .btn[aria-pressed="true"]::after { content: " ✓"; }
 body.mu237 .note-chip { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.7rem; border-radius: 8px; background: var(--panel); color: var(--text); font-size: 14px; font-weight: 700; }
@@ -2751,7 +2785,7 @@ body.mu237.menu-open .drawer {
   max-height: none !important;
   overflow: auto !important;
   transform: none !important;
-  background: #0b152c !important;
+  background: var(--panel) !important;
 }
 body.mu237.is-home.menu-open #dock-left,
 body.mu237.is-make.menu-open #dock-left,
@@ -3618,7 +3652,7 @@ html[dir="rtl"] body.mu237 .desk {
   flex-direction: column;
   gap: 4px;
   padding: 4px;
-  background: #07101c;
+  background: var(--bg);
   border-top: 1px solid var(--border);
   overflow: hidden;
   direction: ltr;
@@ -3646,7 +3680,7 @@ body.mu237:not(.piano-dock-open) #dock-keys { display: none !important; }
   overflow-y: hidden;
   direction: ltr !important;
   touch-action: none;
-  background: #1a140c;
+  background: var(--bg);
   border-radius: 10px;
 }
 .piano-whites {
@@ -3667,15 +3701,16 @@ body.mu237:not(.piano-dock-open) #dock-keys { display: none !important; }
   min-width: 44px;
   height: 100%;
   min-height: 64px;
-  background: #fff8ea;
-  color: #1a140c;
+  background: var(--key-white);
+  color: var(--key-ink);
   border-radius: 0 0 8px 8px;
+  box-shadow: inset 0 0 0 1px var(--key-edge);
   display: flex;
   align-items: flex-end;
   justify-content: center;
   padding: 0 0 6px;
 }
-.pkey.white.hit { background: #22d3ee; }
+.pkey.white.hit { background: var(--active); color: var(--accent-fg); }
 .piano-blacks {
   position: absolute;
   left: 0;
@@ -3692,8 +3727,8 @@ body.mu237:not(.piano-dock-open) #dock-keys { display: none !important; }
   min-height: 44px;
   margin-left: -22px;
   pointer-events: auto;
-  background: #141820;
-  color: #fff;
+  background: var(--key-black);
+  color: var(--key-black-ink);
   border-radius: 0 0 6px 6px;
   z-index: 2;
   display: flex;
@@ -3908,3 +3943,257 @@ body.mu237.tab-score.is-both .staff-wrap {
     overflow-y: auto !important;
   }
 }
+
+/* MU 2.35.21 — calm is the default. Dark mode only swaps these colors. No layout, no player sizes. */
+html[data-theme] body,
+html[data-theme] body.mu237,
+html[data-theme] body.mu237 .desk,
+html[data-theme] body.mu237 .side,
+html[data-theme] body.mu237 .work {
+  background-color: var(--bg);
+  color: var(--text);
+}
+html[data-theme] .kb-bar {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+  border-bottom-color: var(--divider) !important;
+}
+html[data-theme] .kb-home,
+html[data-theme] .kb-help,
+html[data-theme] .kb-settings,
+html[data-theme] .kb-menu,
+html[data-theme] .kb-alias,
+html[data-theme] .kb-drawer,
+html[data-theme] .kb-drawer a,
+html[data-theme] .kb-drawer > button,
+html[data-theme] .kb-drawer-langs button {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--btn-line) !important;
+}
+html[data-theme] body.mu237 .transport,
+html[data-theme] body.mu237.playing:not(.show) .transport,
+html[data-theme] body.mu237.is-both:not(.show) .transport,
+html[data-theme] body.mu237.is-beat:not(.show) .transport {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-top-color: var(--divider) !important;
+}
+html[data-theme] body.mu237 .transport .btn {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--btn-line) !important;
+  box-shadow: none !important;
+}
+html[data-theme] body.mu237 .transport .play,
+html[data-theme] body.mu237 #play-btn {
+  background: var(--play-bg) !important;
+  color: var(--play-fg) !important;
+  border-color: transparent !important;
+}
+html[data-theme] body.mu237 #dock-left .tab.on,
+html[data-theme] body.mu237 #dock-left .tab[aria-pressed="true"],
+html[data-theme] body.mu237 .pen .btn.on,
+html[data-theme] body.mu237 #inks .btn.on {
+  background: var(--active) !important;
+  color: var(--accent-fg) !important;
+}
+html[data-theme] body.mu237 .drawer,
+html[data-theme] body.mu237.menu-open .drawer {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+html[data-theme] .piano-dock,
+html[data-theme] .piano-board {
+  background: var(--bg) !important;
+  border-top-color: var(--divider) !important;
+}
+html[data-theme] #piano-dock-toggle,
+html[data-theme] .piano-octaves .btn,
+html[data-theme] #dock-oct-read {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--btn-line) !important;
+  box-shadow: none !important;
+}
+html[data-theme] .theme-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 44px;
+  margin: 0.35rem 0 0.15rem;
+  color: var(--text);
+}
+html[data-theme] .theme-switch {
+  flex: 0 0 auto;
+  width: 64px;
+  min-width: 64px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
+  border-radius: 999px;
+  border: 1px solid var(--btn-line);
+  background: var(--panel);
+  position: relative;
+}
+html[data-theme] .theme-switch::after {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--btn-line);
+}
+html[data-theme] .theme-switch[aria-checked="true"] {
+  background: var(--play-bg);
+  border-color: var(--play-bg);
+}
+html[data-theme] .theme-switch[aria-checked="true"]::after {
+  left: 32px;
+  background: var(--play-fg);
+}
+html[data-theme] .hint,
+html[data-theme] .songbar-copy span { color: var(--muted); }
+
+/* The song list lives on #home. That id beat the token, so the well stayed navy. */
+html[data-theme] body.is-home,
+html[data-theme] body.is-make,
+html[data-theme] body.is-library,
+html[data-theme] #home,
+html[data-theme] .home,
+html[data-theme] .make,
+html[data-theme] .library,
+html[data-theme] body.mu237.tab-songs .home,
+html[data-theme] body.mu237.tab-songs .make,
+html[data-theme] body.mu237.tab-songs .library,
+html[data-theme] body.mu237 .desk,
+html[data-theme] body.mu237 .work,
+html[data-theme] body.mu237 .lab,
+html[data-theme] body.mu237 .side {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+html[data-theme] .make-beat,
+html[data-theme] .my-songs,
+html[data-theme] .do-card,
+html[data-theme] .lib-song,
+html[data-theme] body.mu237 .btn:not(.on):not(.play):not([aria-pressed="true"]) {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--btn-line) !important;
+  box-shadow: none !important;
+}
+html[data-theme] body.mu237 .transport .play,
+html[data-theme] body.mu237 #play-btn {
+  background: var(--play-bg) !important;
+  color: var(--play-fg) !important;
+  border-color: transparent !important;
+}
+html[data-theme] .home h1,
+html[data-theme] .how,
+html[data-theme] .song-row,
+html[data-theme] .song-row strong,
+html[data-theme] .shelf-songs .btn,
+html[data-theme] .inst-list .btn {
+  color: var(--text) !important;
+}
+html[data-theme] .song-row span,
+html[data-theme] .shelf-block h2,
+html[data-theme] .home > h2,
+html[data-theme] #classics > .shelf,
+html[data-theme] .family,
+html[data-theme] .hint {
+  color: var(--muted) !important;
+}
+html[data-theme] .family { background: transparent !important; }
+html[data-theme] .cover,
+html[data-theme] .brand img {
+  background: linear-gradient(145deg, var(--play-bg), var(--active)) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+html[data-theme] #viz,
+html[data-theme] .wave-view,
+html[data-theme] canvas#viz {
+  background: var(--panel) !important;
+  border: 1px solid var(--btn-line) !important;
+  box-shadow: none !important;
+}
+html[data-theme] .stack select,
+html[data-theme] .title-row select {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--border) !important;
+}
+html[data-theme] .looks .btn.on,
+html[data-theme] .keypad .btn.on,
+html[data-theme] .pen .btn.on,
+html[data-theme] .style-row button.on,
+html[data-theme] .cast button.on {
+  background: var(--active) !important;
+  color: var(--accent-fg) !important;
+  border-color: transparent !important;
+}
+html[data-theme] body.show,
+html[data-theme] body.show .out,
+html[data-theme] body.mu237.show .out,
+html[data-theme] body.show .transport {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+html[data-theme] body.show #song-title,
+html[data-theme] body.show #feel,
+html[data-theme] body.show #now-line { color: var(--text) !important; }
+html[data-theme] body.show .col {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--btn-line) !important;
+  box-shadow: none !important;
+}
+html[data-theme] body.mu237 .desktop-site,
+html[data-theme] body.mu237 .undo-toast,
+html[data-theme] body.mu237.show .perform-exit {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  border-color: var(--btn-line) !important;
+}
+html[data-theme] .chair {
+  background: var(--panel) !important;
+  border-color: var(--btn-line) !important;
+}
+html[data-theme] .pkey.white {
+  background: var(--key-white) !important;
+  color: var(--key-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--key-edge) !important;
+}
+html[data-theme] .pkey.black {
+  background: var(--key-black) !important;
+  color: var(--key-black-ink) !important;
+}
+html[data-theme] .staff-wrap {
+  background: var(--paper) !important;
+  color: var(--ink) !important;
+}
+html[data-theme] .cell:not(.on) {
+  background: var(--panel) !important;
+  color: var(--text) !important;
+  box-shadow: none !important;
+}
+html[data-theme] .cell.now:not(.on) {
+  outline: 2px solid var(--active) !important;
+  outline-offset: -2px !important;
+}
+html[data-theme] .cell.on,
+html[data-theme] .cell.on.now {
+  background: var(--active) !important;
+  color: var(--accent-fg) !important;
+}
+html[data-theme] .cell.on::after { color: var(--accent-fg) !important; }
+html[data-theme] .bar-stack {
+  background: var(--panel) !important;
+  border-top-color: var(--divider) !important;
+}
+

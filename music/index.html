@@ -3,11 +3,23 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-  <meta name="theme-color" content="#050814"/>
+  <meta name="theme-color" content="#E9EFF2"/>
   <title>DJ Berty</title>
+  <script>
+    (function () {
+      var t = "";
+      try { t = localStorage.getItem("kulibert.music.theme") || ""; } catch (e) {}
+      if (t !== "dark" && t !== "calm") {
+        t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "calm";
+      }
+      document.documentElement.setAttribute("data-theme", t);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", t === "dark" ? "#08131A" : "#E9EFF2");
+    })();
+  </script>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=mu20"/>
+  <link rel="stylesheet" href="./styles.css?v=mu21"/>
 </head>
 <body class="mu237">
   <em id="chip" hidden></em>
@@ -128,8 +140,13 @@
         <button type="button" class="btn" data-set-lang="ti" lang="ti" dir="ltr">ትግርኛ</button>
       </div>
       <p class="hint" data-i18n="appsFollow">Your apps will use this language.</p>
+      <div class="theme-row">
+        <span id="theme-label" data-mu="darkMode">Dark mode</span>
+        <button type="button" id="theme-switch" class="theme-switch" role="switch" aria-checked="false" aria-labelledby="theme-label"></button>
+      </div>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23521">{ver} DJ Berty: A calm new look, and a Dark mode switch in Settings.</span></li>
         <li><span data-mu="news23520">{ver} DJ Berty: Score notes now show fully on every screen.</span></li>
         <li><span data-mu="news23519">{ver} DJ Berty: Score notes now show fully on a sideways phone.</span></li>
         <li><span data-mu="news23518">{ver} DJ Berty: Sideways phones show one tab at a time, and the piano stays on the Piano tab.</span></li>
@@ -511,7 +528,7 @@
   </div>
 
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-menu="#menu-btn" defer></script>
-  <script src="./version.js?v=mu20"></script>
+  <script src="./version.js?v=mu21"></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -520,7 +537,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu20"></script>
-  <script src="./app.js?v=mu20"></script>
+  <script src="./strings.js?v=mu21"></script>
+  <script src="./app.js?v=mu21"></script>
 </body>
 </html>

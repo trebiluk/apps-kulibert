@@ -3121,6 +3121,22 @@
   });
   markLang();
   window.addEventListener("kulibert-lang", markLang);
+  function paintTheme(theme, save) {
+    const next = theme === "dark" ? "dark" : "calm";
+    document.documentElement.setAttribute("data-theme", next);
+    const sw = $("theme-switch");
+    if (sw) sw.setAttribute("aria-checked", next === "dark" ? "true" : "false");
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute("content", next === "dark" ? "#08131A" : "#E9EFF2");
+    if (save) {
+      try { localStorage.setItem("kulibert.music.theme", next); } catch (err) { /* the switch still flips */ }
+    }
+  }
+  paintTheme(document.documentElement.getAttribute("data-theme"), false);
+  const themeBtn = $("theme-switch");
+  if (themeBtn) themeBtn.addEventListener("click", () => {
+    paintTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "calm" : "dark", true);
+  });
   if ($("menu-help")) {
     $("menu-help").addEventListener("click", () => {
       const go = document.querySelector('#drawer h2[data-mu="go"]');
