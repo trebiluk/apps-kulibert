@@ -12,6 +12,28 @@ export function createEdits({ getVoxel, setVoxel, invalidate }) {
     for (const g of stack) n += g.xyz.byteLength + g.before.byteLength + g.after.byteLength
     return n
   }
+  function glue(group, xs, ys, zs, before, after) {
+    const add = xs.length
+    const n = group.n + add
+    const xyz = new Int32Array(n * 3)
+    const b = new Uint16Array(n)
+    const a = new Uint16Array(n)
+    xyz.set(group.xyz, 0)
+    b.set(group.before, 0)
+    a.set(group.after, 0)
+    for (let i = 0; i < add; i++) {
+      const o = (group.n + i) * 3
+      xyz[o] = xs[i]
+      xyz[o + 1] = ys[i]
+      xyz[o + 2] = zs[i]
+      b[group.n + i] = before[i]
+      a[group.n + i] = after[i]
+    }
+    group.n = n
+    group.xyz = xyz
+    group.before = b
+    group.after = a
+  }
   function trim() {
     while (undoStack.length > MAX_GROUPS || (undoStack.length && bytes(undoStack) + bytes(redoStack) > MAX_BYTES)) undoStack.shift()
   }
@@ -38,8 +60,16 @@ export function createEdits({ getVoxel, setVoxel, invalidate }) {
     if (big) invalidate({ base: [minX, minY, minZ], max: [maxX + 1, maxY + 1, maxZ + 1] })
     const xyz = new Int32Array(n * 3)
     for (let i = 0; i < n; i++) { xyz[i * 3] = xs[i]; xyz[i * 3 + 1] = ys[i]; xyz[i * 3 + 2] = zs[i] }
-    const group = { label, source, at: Date.now(), n, xyz, before: Uint16Array.from(before), after: Uint16Array.from(after) }
-    if (source === 'hand' || source === 'test' || source === 'tool' || source === 'paste' || source === 'rollback' || source === 'snapshot') {
+    const group = { label, source, at: Date.now(), n, xyz, before: Uint16Array.from(before), after: Uint16Array.from(after), runId: meta.runId || '' }
+    if (source === 'bot' && meta.join && meta.runId && undoStack.length) {
+      const last = undoStack[undoStack.length - 1]
+      if (last && last.source === 'bot' && last.runId === meta.runId) {
+        glue(last, xs, ys, zs, before, after)
+        onChange()
+        return last
+      }
+    }
+    if (source === 'hand' || source === 'test' || source === 'tool' || source === 'paste' || source === 'rollback' || source === 'snapshot' || source === 'bot') {
       undoStack.push(group)
       redoStack.length = 0
       trim()
@@ -75,8 +105,24 @@ export function createEdits({ getVoxel, setVoxel, invalidate }) {
     redoStack.length = 0
     onChange()
   }
+  function peek() {
+    return undoStack.length ? undoStack[undoStack.length - 1] : null
+  }
+  function undoRun(runId) {
+    if (!runId) return null
+    let idx = -1
+    for (let i = undoStack.length - 1; i >= 0; i--) {
+      const g = undoStack[i]
+      if (g && g.source === 'bot' && g.runId === runId) { idx = i; break }
+    }
+    if (idx < 0) return null
+    const group = undoStack.splice(idx, 1)[0]
+    const applied = writeGroup(group, 'before')
+    onChange()
+    return applied || group
+  }
   return {
-    applyEdit, undo, redo, clear,
+    applyEdit, undo, redo, clear, peek, undoRun,
     get canUndo() { return undoStack.length > 0 },
     get canRedo() { return redoStack.length > 0 },
     set onChange(fn) { onChange = fn },

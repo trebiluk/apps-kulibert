@@ -9045,6 +9045,20 @@ bot = initBot({
   markDirty: () => { dirty = true },
   session,
   close: () => panels && panels.close(),
+  applyEdit: (ops, meta) => edits.applyEdit(ops, meta || { source: 'bot', by: 'bot', cause: 'program' }),
+  peekEdit: () => edits.peek(),
+  undoEdit: () => edits.undo(),
+  undoRun: (runId) => edits.undoRun(runId),
+  noteEdit: () => { const g = edits.peek(); if (g && g.source === 'bot') changeLog.note(g, 'bot') },
+  kept: (x, y, z) => keptCell(x, y, z) || protectedCell(x, y, z, protect),
+  heldBlock: () => heldBlockId() || 0,
+  takeHeld: () => {
+    if (!survivalOn()) return ''
+    const k = session && session.selectedItem && session.selectedItem()
+    if (!k || !session.spend(k, 1)) return false
+    return k
+  },
+  giveItem: (k, n) => { if (session && session.give) session.give(k, n || 1) },
 })
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}

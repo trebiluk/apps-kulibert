@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.244', date: '2026-10-15', lines: {
+    en: ["Press Run and Berty's Bot builds for you!"],
+    uk: ['Натисни Запуск, і Бот Берті будує за тебе!'],
+    ru: ['Нажми Пуск, и Бот Берти строит за тебя!'],
+    es: ['¡Pulsa Correr y el Bot de Berty construye por ti!'],
+    ar: ['اضغط تشغيل وبوت بيرتي يبني عنك!'],
+    'fa-AF': ['اجرا را بزن و بوت برتی برایت می‌سازد!'],
+    rw: ['Kanda Tangira, Bot ya Berty igakubakira!'],
+    ti: ['ኣስርሕ ጠውቕ፡ ቦት ቤርቲ ንዓኻ ይሃንጽ!'],
+  }},
   { v: '2.5.243', date: '2026-10-15', lines: {
     en: ['Hints sit at the top, and item info shows as a short top note.'],
     uk: ['Підказки зверху, а відомості про річ — коротка нотатка зверху.'],
