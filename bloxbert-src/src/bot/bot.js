@@ -190,6 +190,7 @@ export function initBot(ctx) {
 
   function openFor(bot) {
     if (!bot) return
+    if (ctx.botOn && !ctx.botOn()) return
     ensurePrefill(bot)
     bindPanel(bot)
   }
@@ -328,6 +329,7 @@ export function initBot(ctx) {
     if (!bot || bot.running) return
     if (!bot.program.steps.length) return
     bot.running = true
+    if (ctx.onBotRun) ctx.onBotRun()
     bot.token += 1
     bot.stepIndex = -1
     bot.stepN = 0
@@ -440,6 +442,7 @@ export function initBot(ctx) {
   if (orig) {
     ctx.session.paintBag = function (host) {
       orig(host)
+      if (ctx.botOn && !ctx.botOn()) return
       const tab = document.createElement('div')
       tab.className = 'crate-tab'
       tab.dataset.botTab = '1'

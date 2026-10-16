@@ -235,15 +235,16 @@ export function mountPanels(api) {
     }
     const go = keyTile('play', 'resume', api.t('resume'), close)
     go.classList.add('kd-go')
+    const playTiles = [
+      keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
+    ]
+    if (!api.workbenchOn || api.workbenchOn()) playTiles.push(keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')))
+    playTiles.push(keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')))
+    playTiles.push(keyTile('help', 'help', api.t('help'), () => open('help')))
     const groups = document.createElement('div')
     groups.className = 'kd-groups'
     groups.append(
-      menuGroup('play', api.t('menuPlay'), [
-        keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
-        keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
-        keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
-        keyTile('help', 'help', api.t('help'), () => open('help')),
-      ]),
+      menuGroup('play', api.t('menuPlay'), playTiles),
       menuGroup('world', api.t('world'), [
         keyTile('builds', 'builds', api.t('myBuilds'), () => open('builds')),
         keyTile('globe', 'world', api.t('world'), () => open('world')),

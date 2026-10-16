@@ -77,9 +77,19 @@ export function createSession(api) {
     }
     return cur
   }
+  function recipeOpen(r) {
+    if (!r) return false
+    if (!api.hudQuiet || !api.hudQuiet()) return true
+    if (r.id === 'workbench') return !!(api.workbenchOn && api.workbenchOn())
+    if (CRAFT_MACHINES.has(r.id)) return !!(api.machinesOn && api.machinesOn())
+    return true
+  }
   function liveRecipes() {
     const hide = shopRules().required
-    return RECIPES.filter((r) => !(hide && r.id === 'bunk' && r.at === 'bench'))
+    return RECIPES.filter((r) => {
+      if (hide && r.id === 'bunk' && r.at === 'bench') return false
+      return recipeOpen(r)
+    })
   }
   function normalizeBed(d) {
     d = d || {}
@@ -367,6 +377,10 @@ export function createSession(api) {
     const live = document.querySelector('#sheet[data-panel="wallet"] .balance')
     if (live) live.innerHTML = '<bdi>⚙ ' + n + ' ' + t('practice') + '</bdi>'
   }
+  function hotCap() {
+    const n = api.hotN ? api.hotN() : 9
+    return n === 4 ? 4 : 9
+  }
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
     if (!bar || mode !== 'survival') {
@@ -379,7 +393,9 @@ export function createSession(api) {
     bar.innerHTML = ''
     const strip = document.createElement('div')
     strip.className = 'item-strip'
-    for (let i = 0; i < 9; i++) {
+    const cap = hotCap()
+    if (hot >= cap) hot = 0
+    for (let i = 0; i < cap; i++) {
       const s = bag.slots[i]
       const b = document.createElement('button')
       b.type = 'button'
@@ -959,7 +975,8 @@ export function createSession(api) {
     layout.className = 'bag-layout'
     const main = document.createElement('div')
     main.className = 'bag-main'
-    main.append(tab(t('hotbar'), 'hotbar'), row(0, 9), tab(t('pockets'), 'pockets'), row(9, bag.slots.length))
+    const cap = hotCap()
+    main.append(tab(t('hotbar'), 'hotbar'), row(0, cap), tab(t('pockets'), 'pockets'), row(9, bag.slots.length))
     layout.append(main)
     if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
     g.append(layout)
@@ -1520,7 +1537,10 @@ export function createSession(api) {
       ['machines', 'gear', 'craftMachines'],
       ['decor', 'home', 'craftDecor'],
     ]
+    const machinesTab = !api.hudQuiet || !api.hudQuiet() || (api.machinesOn && api.machinesOn())
+    if (!machinesTab && craftTab === 'machines') craftTab = 'all'
     for (const [id, icon, key] of tabDefs) {
+      if (id === 'machines' && !machinesTab) continue
       const tab = document.createElement('button')
       tab.type = 'button'
       tab.className = 'craft-tab' + (craftTab === id ? ' on' : '')
@@ -2043,6 +2063,33 @@ export function createSession(api) {
     })
     row.append(ico, lab, pill)
     g.append(row)
+    if (api.calmAll && api.setCalmAll) {
+      const calmRow = document.createElement('div')
+      calmRow.className = 'set-line'
+      const calmIco = document.createElement('span')
+      calmIco.className = 'set-ico'
+      const calmPic = menuIcon('eye')
+      if (calmPic) calmIco.append(calmPic)
+      const calmLab = document.createElement('span')
+      calmLab.className = 'set-lab'
+      calmLab.textContent = t('showEverything')
+      const calmPill = document.createElement('button')
+      calmPill.type = 'button'
+      calmPill.className = 'pill'
+      const drawCalm = () => {
+        const on = !!api.calmAll()
+        calmPill.classList.toggle('on', on)
+        calmPill.setAttribute('aria-pressed', on ? 'true' : 'false')
+        calmPill.textContent = on ? t('switchOn') : t('switchOff')
+      }
+      drawCalm()
+      calmPill.addEventListener('click', () => {
+        api.setCalmAll(!api.calmAll())
+        drawCalm()
+      })
+      calmRow.append(calmIco, calmLab, calmPill)
+      g.append(calmRow)
+    }
     const n = document.createElement('p')
     n.className = 'gnote'
     n.textContent = t('onDevice')
@@ -2336,7 +2383,7 @@ export function createSession(api) {
     return false
   }
   function craftMany(r, times) {
-    if (!r || !craftOk(r.id)) return false
+    if (!r || !recipeOpen(r) || !craftOk(r.id)) return false
     if (r.id === 'bunk' && r.at === 'bench' && shopRules().required) return false
     const stations = { bench: near('bench'), oven: near('oven') }
     const n = Math.min(times, maxTimes(r, bag))
@@ -2353,6 +2400,7 @@ export function createSession(api) {
       api.toast(t('woodPickToast'))
     } else if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
     else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
+    if (api.noteCalm) api.noteCalm('craft')
     paintHotbar()
     return true
   }
@@ -2468,7 +2516,10 @@ export function createSession(api) {
     }
     if (id === 28) giveLoose('wheatSeeds', wheatSeedCount(x, y, z), x, y, z)
     if (id === 58) giveLoose('wheatSeeds', tuftSeedCount(x, y, z), x, y, z)
-    if (id === 11) markPath('pathTree')
+    if (id === 11) {
+      markPath('pathTree')
+      if (api.noteCalm) api.noteCalm('tree')
+    }
     if (id === 3) markPath('pathStone')
     if (id === 5) markPath('pathCoal')
     wearHeld()
@@ -2866,6 +2917,7 @@ export function createSession(api) {
       meta.set(x + ',' + y + ',' + z, { kind: 'bunk', ...normalizeBed(d), restAt: d.restAt || 0 })
     }
     if (id === 30) markPath('pathDoor')
+    if (id === 22 && api.noteCalm) api.noteCalm('bench')
     bagHist.push({ type: 'place', item: key, n: 1 })
     redoBag.length = 0
     paintHotbar()
@@ -3042,6 +3094,7 @@ export function createSession(api) {
   function tryCraft(name) {
     const r = RECIPES.find((x) => x.id === name || x.out[0] === name)
     if (!r) return { ok: false, why: 'missing' }
+    if (!recipeOpen(r)) return { ok: false, why: 'locked' }
     if (r.id === 'bunk' && r.at === 'bench' && shopRules().required) return { ok: false, why: 'shop' }
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     const st = craftStatus(r, bag, stations, mode !== 'survival')
@@ -3054,6 +3107,7 @@ export function createSession(api) {
       markPath('pathTool')
       api.toast(t('woodPickToast'))
     } else if (made.pocket >= 0) sayPocket(r.out[0], made.pocket)
+    if (api.noteCalm) api.noteCalm('craft')
     paintHotbar()
     return { ok: true, n: bag.count(r.out[0]) }
   }
@@ -3095,6 +3149,7 @@ export function createSession(api) {
         table: api.tableOn(),
         tray: { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
+        hud: api.hudDump ? api.hudDump() : null,
       },
       econ: wallet.dump(),
       meta: m,
@@ -3150,6 +3205,7 @@ export function createSession(api) {
     for (const s of bags.creative.slots) if (s) markFound(s.item)
     if (mode === 'creative' && bag.count('buildWand') < 1) giveItem('buildWand', 1)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
+    if (api.hudAdopt) api.hudAdopt(p.hud, worldPlayed(p, doc))
     paintChip()
     syncDig()
     paintEnergy()
@@ -3160,6 +3216,22 @@ export function createSession(api) {
       if (chip) { chip.hidden = true; chip.dataset.hold = ''; chip.dataset.open = '0' }
       if (api.paintBar) api.paintBar()
     }
+    if (api.onMode) api.onMode()
+  }
+  const STARTER_KIT = { stick: 1, planks: 1, berry: 1, sapling: 1 }
+  function worldPlayed(p, doc) {
+    if (doc && doc.playedExtra) return true
+    if (p.home) return true
+    if (p.mode === 'creative') return true
+    if (doc && doc.meta && Object.keys(doc.meta).length) return true
+    if (doc && doc.drops && doc.drops.length) return true
+    if (doc && doc.lost && doc.lost.length) return true
+    if (doc && doc.bots && doc.bots.length) return true
+    const bagList = Array.isArray(p.bag) ? p.bag : []
+    for (const s of bagList) if (s && s.item && s.n > 0 && !STARTER_KIT[s.item]) return true
+    const found = (doc && doc.econ && doc.econ.found) || []
+    for (const item of found) if (item && !STARTER_KIT[item]) return true
+    return false
   }
   function freshStart() {
     bagHist.length = 0
@@ -3195,6 +3267,7 @@ export function createSession(api) {
       if (chip) { chip.hidden = true; chip.dataset.hold = ''; chip.dataset.open = '0' }
       if (api.paintBar) api.paintBar()
     }
+    if (api.onMode) api.onMode()
   }
   function pace() {
     if (!energyOn || mode !== 'survival' || energy.bolts > 0) return 1
@@ -3349,13 +3422,14 @@ export function createSession(api) {
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },
     haveBlock: (id) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); return hit ? bag.count(hit[0]) : 0 },
     noteBag: (need) => { for (const [id, n] of Object.entries(need)) { const hit = Object.entries(ITEMS).find(([, v]) => v.block === +id); if (hit) bagHist.push({ type: 'place', item: hit[0], n }) } },
-    setHot: (i) => { hot = ((i % 9) + 9) % 9; paintHotbar() },
+    setHot: (i) => { const cap = hotCap(); hot = ((i % cap) + cap) % cap; paintHotbar() },
     pressHot(i) {
-      const n = ((i % 9) + 9) % 9
-      if (n === hot) return useHeld()
-      hot = n
+      const cap = hotCap()
+      if (i >= cap || i < 0) return ''
+      if (i === hot) return useHeld()
+      hot = i
       paintHotbar()
-      const s = bag.slots[n]
+      const s = bag.slots[i]
       if (s && api.flash) api.flash(faceName(s.item))
       return ''
     },

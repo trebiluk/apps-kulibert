@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.250', date: '2026-10-16', lines: {
+    en: ['Calmer start: tools unlock as you play.'],
+    es: ['Inicio más tranquilo: las herramientas se desbloquean al jugar.'],
+    uk: ['Спокійніший старт: інструменти відкриваються під час гри.'],
+    ru: ['Спокойный старт: инструменты открываются по ходу игры.'],
+    ar: ['بداية أهدأ: تُفتح الأدوات أثناء اللعب.'],
+    'fa-AF': ['شروع آرام‌تر: ابزارها هنگام بازی باز می‌شوند.'],
+    rw: ['Gutangira bituje: ibikoresho bifunguka uko ukina.'],
+    ti: ['ዝህድአ መጀመርታ፡ መሳርሒታት ክትጻወት ከለኻ ይኽፈቱ።'],
+  }},
   { v: '2.5.249', date: '2026-10-16', lines: {
     en: ["Easier Bot: it's first in your Bag, it doesn't eat your sapling, and everything fits on sideways phones."],
     es: ['Bot mas facil: es lo primero en tu bolsa, no gasta tu arbolito y todo cabe en el telefono de lado.'],

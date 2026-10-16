@@ -77,6 +77,7 @@ import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
 import { initBot } from './bot/bot.js'
+import { createCalm } from './hud-calm.js'
 import { createBelts, craftOnce } from './conveyor.js'
 import { putInSlots } from './box.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
@@ -1644,6 +1645,8 @@ let inspectOn = false
 let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
+let calm = null
+let kidPause = false
 let bot = { dump() { return [] }, load() {} }
 let belts = null
 function passCropAim(id) {
@@ -3650,7 +3653,14 @@ async function applyDoc(doc) {
   protect = normProtect(src.protect)
   if (session) {
     shopsLive = false
-    session.load(fromDoc(src))
+    const slice = fromDoc(src)
+    slice.playedExtra = !!(
+      (src.stations && Object.keys(src.stations).length) ||
+      (Array.isArray(src.bots) && src.bots.length) ||
+      (src.crops && typeof src.crops === 'object' && Object.keys(src.crops).length) ||
+      (src.forage && typeof src.forage === 'object' && Object.keys(src.forage).length)
+    )
+    session.load(slice)
     rehydrateDecor()
     shopsLive = true
   }
@@ -4020,18 +4030,8 @@ function paintWorldName() {
 function showMakerTip() {
   const key = tipKey(makerLive.preset)
   if (!key) return
-  const hint = $('menu-hint')
-  if (!hint) return
-  hintOwner = 'maker'
-  hint.hidden = false
-  hint.textContent = t(key)
-  clearTimeout(showMakerTip.t)
-  showMakerTip.t = setTimeout(() => {
-    if (hintOwner !== 'maker') return
-    if (hint.textContent === t(key)) hint.hidden = true
-    hintOwner = ''
-    pumpHints()
-  }, 12000)
+  if (calm && calm.quiet()) return
+  toast(t(key))
 }
 function bakeSpawnChunk() {
   if (!isMakerPreset(makerLive.preset)) return
@@ -4402,19 +4402,8 @@ function dayTipText(face) {
   return t('clockNight').replace('{n}', String(face.nightMin))
 }
 function showDayTip() {
-  const tip = $('day-tip')
-  const btn = $('day-clock')
-  if (!tip || !btn || !basics || !basics.face) return
-  const face = basics.face()
-  tip.textContent = dayTipText(face)
-  tip.hidden = false
-  const r = btn.getBoundingClientRect()
-  const width = Math.min(420, innerWidth - 16)
-  tip.style.maxWidth = width + 'px'
-  tip.style.left = Math.max(8, Math.min(r.left, innerWidth - width - 8)) + 'px'
-  tip.style.top = Math.round(r.bottom + 6) + 'px'
-  clearTimeout(showDayTip.t)
-  showDayTip.t = setTimeout(() => { if (tip.isConnected) tip.hidden = true }, 4200)
+  if (!basics || !basics.face) return
+  toast(dayTipText(basics.face()))
 }
 function bindDayClock() {
   const btn = $('day-clock')
@@ -4532,6 +4521,7 @@ function markSave(text) {
   if (saved) markSave.t = setTimeout(() => { if (btn.isConnected) btn.classList.remove('saved') }, 2000)
 }
 function toast(text, act) {
+  if (calm) { calm.say(text, act); return }
   const el = $('toast')
   if (!el) return
   el.replaceChildren()
@@ -4589,6 +4579,38 @@ let markPath = () => {}
 let paintPath = () => {}
 let learnRef = null
 let lastPointer = null
+let calmRepaint = false
+calm = createCalm({
+  t,
+  creative: () => !!(session && session.mode === 'creative'),
+  dirty: () => { dirty = true },
+  icon: (step) => calmIcon(step),
+  repaint: () => {
+    if (calmRepaint) return
+    calmRepaint = true
+    try {
+      if (session && session.mode === 'survival' && session.paintHotbar) session.paintHotbar()
+      if (panels && panels.softRepaint) panels.softRepaint()
+    } finally { calmRepaint = false }
+  },
+})
+function calmIcon(step) {
+  if (step === 'bench') {
+    const pic = document.createElement('canvas')
+    pic.width = 32
+    pic.height = 32
+    const pen = pic.getContext('2d')
+    pen.fillStyle = '#2DD4BF'
+    pen.fillRect(6, 12, 20, 16)
+    pen.fillStyle = '#3B82F6'
+    pen.fillRect(8, 4, 16, 10)
+    pen.fillStyle = '#FF8A1F'
+    pen.fillRect(10, 7, 12, 3)
+    return pic
+  }
+  const name = step === 'tree' ? 'bench' : step === 'craft' ? 'hotbar' : 'gear'
+  return menuIcon(name)
+}
 session = createSession({
   t, toast, blocked: (id) => blockedToast(id), getVoxel,
   pos: () => noa.entities.getPosition(noa.playerEntity),
@@ -4632,6 +4654,16 @@ session = createSession({
   paintSpawn: (g) => paintSpawn(g),
   setAlways: (on) => basics && basics.setAlways(on),
   setBright: (on) => basics && basics.setBright(on),
+  hotN: () => calm.hotN(),
+  hudQuiet: () => calm.quiet(),
+  workbenchOn: () => calm.workbenchOn(),
+  machinesOn: () => calm.machinesOn(),
+  noteCalm: (step) => calm.note(step),
+  hudDump: () => calm.dump(),
+  hudAdopt: (raw, played) => calm.adopt(raw, played),
+  onMode: () => calm.apply(),
+  calmAll: () => calm.allOn(),
+  setCalmAll: (on) => calm.setAll(on),
 })
 session.mountEnergy(noa)
 Effects.mount(document.getElementById('energy-bar'), { toast, lang: () => LANG })
@@ -4673,12 +4705,8 @@ function forceShut(x, y, z) {
   return shut
 }
 function showCard(text) {
-  const el = $('maker-card')
-  if (!el) return
-  el.hidden = false
-  el.textContent = text
-  clearTimeout(showCard.t)
-  showCard.t = setTimeout(() => { el.hidden = true }, 4200)
+  if (!text) return
+  toast(text)
 }
 function showLamp(x, y, z) {
   const st = basics && basics.light(x, y, z)
@@ -5252,8 +5280,10 @@ function resumePlay() {
   if (anyCard()) return
   cardClosedAt = performance.now()
   document.body.classList.remove('menu-open')
-  try { noa.setPaused(false) } catch (e) {}
-  if (session) session.paused = false
+  if (!kidPause) {
+    try { noa.setPaused(false) } catch (e) {}
+    if (session) session.paused = false
+  }
   if (TOUCH_UI) { hidePlayChip(); return }
   if (how === 'esc') {
     playLockWanted = false
@@ -5439,6 +5469,7 @@ async function paintBackups(g) {
 panels = mountPanels({
   t, toast,
   touch: () => TOUCH_UI,
+  workbenchOn: () => calm.workbenchOn(),
   paintBack: () => paintBackTab(),
   save: () => saveClicked(),
   load: () => load(),
@@ -5579,16 +5610,10 @@ function releaseHint(kind) {
 }
 function showMenuHint() {
   try { if (localStorage.getItem('bloxbert-menu-hint')) return false } catch (e) { return false }
-  if (pathOpen() || (hintOwner && hintOwner !== 'menu')) {
-    queueHint("menu")
-    return true
-  }
-  const hint = $('menu-hint')
-  if (!hint) return false
-  claimHint("menu")
-  hint.hidden = false
-  hint.textContent = TOUCH_UI ? t('menuHintTouch') : t('menuHint')
-  return true
+  if (calm && calm.quiet()) return false
+  try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
+  toast(TOUCH_UI ? t('menuHintTouch') : t('menuHint'))
+  return false
 }
 function dropMenuHint() {
   try { localStorage.setItem('bloxbert-menu-hint', 'done') } catch (e) {}
@@ -5610,6 +5635,7 @@ const learn = createLearn({
   panel: () => (panels && panels.openPanel) || '',
   survival: () => session && session.mode === 'survival',
   touch: () => TOUCH_UI,
+  hudQuiet: () => calm && calm.quiet(),
   setBright: (on) => basics && basics.setBright(on),
   bright: () => !!(basics && basics.bright),
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
@@ -6550,8 +6576,10 @@ function openMenu(on) {
     setTimeout(tuckBarDrawer, 400)
   } else {
     panels.close()
-    try { noa.setPaused(false) } catch (e) {}
-    if (session) session.paused = false
+    if (!kidPause) {
+      try { noa.setPaused(false) } catch (e) {}
+      if (session) session.paused = false
+    }
   }
   drawer.classList.remove('open'); scrim.hidden = true
   $('menu-btn').setAttribute('aria-expanded', String(!!on))
@@ -6653,18 +6681,11 @@ let bagOpenedAt = 0
 let bagDown = false
 function showBagHint() {
   if (TOUCH_UI) return false
+  if (calm && calm.quiet()) return false
   try { if (localStorage.getItem('bloxbert-bag-hint') === '1') return false } catch (e) { return false }
-  if (pathOpen() || (hintOwner && hintOwner !== 'bag')) {
-    queueHint("bag")
-    return true
-  }
-  const hint = $('menu-hint')
-  if (!hint) return false
-  claimHint("bag")
-  hint.hidden = false
-  hint.textContent = t('bagHint')
   try { localStorage.setItem('bloxbert-bag-hint', '1') } catch (e) {}
-  return true
+  toast(t('bagHint'))
+  return false
 }
 function bagUnderPointer(e) {
   if (!e || TOUCH_UI || e.pointerType === 'touch') return false
@@ -6857,6 +6878,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.key === 'c' || e.key === 'C') {
     if (e.ctrlKey || e.metaKey) return
+    if (calm && !calm.workbenchOn()) return
     e.preventDefault()
     const sheet = $('sheet')
     if (sheet && !sheet.hidden && sheet.dataset.panel === 'crafting') { closePlay('gesture'); return }
@@ -9101,6 +9123,18 @@ function paintFs() {
   btn.hidden = hide
   btn.setAttribute('aria-pressed', String(isFs()))
 }
+function togglePause() {
+  kidPause = !kidPause
+  try { noa.setPaused(kidPause) } catch (e) {}
+  if (session) session.paused = kidPause
+  const btn = $('pause-btn')
+  if (btn) {
+    btn.setAttribute('aria-pressed', kidPause ? 'true' : 'false')
+    btn.classList.toggle('on', kidPause)
+  }
+}
+const pauseBtn = $('pause-btn')
+if (pauseBtn) pauseBtn.addEventListener('click', () => togglePause())
 $('fs-btn').addEventListener('click', async () => {
   if (iphone && !canFs()) { $('fs-hint').hidden = false; return }
   fsSet('on'); fsFails = 0
@@ -9355,6 +9389,8 @@ bot = initBot({
     return k
   },
   giveItem: (k, n) => { if (session && session.give) session.give(k, n || 1) },
+  botOn: () => calm.botOn(),
+  onBotRun: () => calm.note('run'),
 })
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}

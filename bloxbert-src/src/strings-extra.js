@@ -1432,3 +1432,15 @@ const BELT_UI = {
   },
 }
 for (const [lang, row] of Object.entries(BELT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+
+const CALM = {
+  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New' },
+  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове' },
+  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое' },
+  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo' },
+  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد' },
+  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو' },
+  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya' },
+  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ' },
+}
+for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)

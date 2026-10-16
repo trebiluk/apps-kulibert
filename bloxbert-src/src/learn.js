@@ -153,13 +153,16 @@ export function createLearn(api) {
         el.style.bottom = ''
         el.style.fontSize = ''
         const fs = document.getElementById('fs-btn')
+        const pause = document.getElementById('pause-btn')
         if (!fs) return
         const fr = fs.getBoundingClientRect()
-        if (!(fr.width > 2 && fr.height > 2)) return
+        const pauseR = pause && !pause.hidden ? pause.getBoundingClientRect() : null
+        const block = pauseR && pauseR.width > 2 ? pauseR : fr
+        if (!(block.width > 2 && block.height > 2)) return
         const chip = el.getBoundingClientRect()
-        if (fr.left < chip.left) return
-        if (fr.top < chip.bottom && fr.bottom > chip.top) {
-          el.style.maxWidth = Math.max(160, fr.left - chip.left - 8) + 'px'
+        if (block.left < chip.left) return
+        if (block.top < chip.bottom && block.bottom > chip.top) {
+          el.style.maxWidth = Math.max(160, block.left - chip.left - 8) + 'px'
         }
         return
       }
@@ -215,6 +218,8 @@ export function createLearn(api) {
     const mr = shownBox(document.getElementById('game-menu'))
     const fs = document.getElementById('fs-btn')
     const fr = shownBox(fs)
+    const pauseBox = shownBox(document.getElementById('pause-btn'))
+    const rightBtn = (!rtl && pauseBox) ? pauseBox : fr
     el.classList.add('path-corner')
     el.style.bottom = 'auto'
     el.style.maxWidth = '40vw'
@@ -250,8 +255,8 @@ export function createLearn(api) {
     }
     if (follow) {
       const box = el.getBoundingClientRect()
-      if (!rtl && fr && box.width > 2 && box.right > fr.left - 8 && box.left < fr.left) {
-        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, fr.left - box.left - 12)) + 'px'
+      if (!rtl && rightBtn && box.width > 2 && box.right > rightBtn.left - 8 && box.left < rightBtn.left) {
+        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, rightBtn.left - box.left - 12)) + 'px'
       }
       if (rtl && mr && box.width > 2 && box.left < mr.right + 8 && box.right > mr.right) {
         el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, box.right - mr.right - 12)) + 'px'
@@ -444,11 +449,12 @@ export function createLearn(api) {
     const token = ++autoToken
     setTimeout(() => {
       if (token !== autoToken || menuHolds || state.tourDone) return
+      if (api.hudQuiet && api.hudQuiet()) return
       if (api.panel && api.panel()) return
       api.openTour && api.openTour()
     }, 600)
   }
-  if (!state.tourDone) armAuto()
+  if (!(api.hudQuiet && api.hudQuiet()) && !state.tourDone) armAuto()
   paintPath()
   function notes() { return (state.notes || []).slice() }
   function setHideTips(on) {
