@@ -1185,6 +1185,7 @@ export function createStations(api) {
       notes: () => [api.t('ovenClick'), bakeHint()],
       name: (item) => itemName(item),
       t: (key) => api.t(key),
+      belt: () => (api.belt ? api.belt(k) : null),
     })
     g._ksDestroy = panel.destroy
   }
@@ -1195,7 +1196,18 @@ export function createStations(api) {
     }
     return out
   }
-  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, dump: () => {
+  function pullOut(key) {
+    const r = map.get(key)
+    if (!r || !r.output || !r.output.length) return ''
+    return r.output.shift() || ''
+  }
+  function slotCounts(key) {
+    const r = map.get(key)
+    if (!r) return { inn: 0, outn: 0 }
+    const inn = r.input && r.input.length ? (r.inputN || r.input.length) : 0
+    return { inn, outn: r.output ? r.output.length : 0 }
+  }
+  return { tick, paint, view, addFuel, addInput, arm, take, baking, ensureShop, wallItems, clearShop, pullOut, slotCounts, dump: () => {
     const out = {}
     for (const [k, v] of map) out[k] = JSON.parse(JSON.stringify(v))
     return out

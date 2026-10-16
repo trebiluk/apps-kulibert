@@ -930,6 +930,9 @@
     hintBake.className = 'gnote oven-bakes'
     var bag = document.createElement('div')
     bag.className = 'ks-bag ks-bag-rows'
+    var belt = document.createElement('p')
+    belt.className = 'belt-flow'
+    belt.hidden = true
     var zf = zoneFrame(tr, function () {
       var glyph = typeof opts.headerIcon === 'function' ? opts.headerIcon() : null
       return glyph || null
@@ -940,7 +943,7 @@
     status.removeAttribute('role')
     status.hidden = true
     card.classList.add('ks-zoned')
-    main.append(head, zf.row, zf.feedback, picks, note, hintClick, hintBake)
+    main.append(head, zf.row, belt, zf.feedback, picks, note, hintClick, hintBake)
     card.append(main, bag)
     el.append(card)
 
@@ -1213,6 +1216,17 @@
       try { notes = typeof opts.notes === 'function' ? opts.notes() : (opts.notes || []) } catch (e3) { notes = [] }
       hintClick.textContent = notes[0] || ''
       hintBake.textContent = notes[1] || ''
+      var beltState = null
+      try { beltState = typeof opts.belt === 'function' ? opts.belt() : null } catch (e4) { beltState = null }
+      if (beltState && beltState.text) {
+        belt.hidden = false
+        if (belt.textContent !== beltState.text) belt.textContent = beltState.text
+        card.classList.toggle('belt-full', !!beltState.full)
+      } else {
+        belt.hidden = true
+        belt.textContent = ''
+        card.classList.remove('belt-full')
+      }
       ensureBag()
       if (pickerRole) {
         var open = slotByRole(pickerRole)

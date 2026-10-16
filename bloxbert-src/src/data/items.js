@@ -62,6 +62,7 @@ export const ITEMS = {
   clay: { block: 71, letter: 'Cy', base: 0, sell: false },
   chair: { block: 72, letter: 'Cr', base: 3, sell: false },
   sewing: { block: 73, letter: 'Sw', base: 6, sell: false },
+  conveyor: { block: 74, letter: 'Cv', base: 0, sell: false, stack: 64 },
 }
 function mountFarmItems() {
   const farm = packItems().filter((it) => it.pack === 'farm')

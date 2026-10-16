@@ -1026,7 +1026,7 @@ export function createSession(api) {
   let craftTab = 'all'
   let craftFind = ''
   const CRAFT_TOOLS = new Set(['woodTool', 'stoneTool', 'hoe', 'buildWand', 'safetyGlasses', 'measuringTape', 'handSaw', 'hammer', 'stick'])
-  const CRAFT_MACHINES = new Set(['workbench', 'oven', 'vend', 'box', 'smelter', 'fabricator', 'woodshop', 'charger', 'pushButton', 'lever', 'techLine', 'techSwitch', 'techButton', 'circuitLens', 'lantern', 'ironIngot', 'copperIngot', 'zincIngot', 'steel', 'copperWire', 'batteryCell', 'sewing'])
+  const CRAFT_MACHINES = new Set(['workbench', 'oven', 'vend', 'box', 'smelter', 'fabricator', 'woodshop', 'charger', 'pushButton', 'lever', 'techLine', 'techSwitch', 'techButton', 'circuitLens', 'lantern', 'ironIngot', 'copperIngot', 'zincIngot', 'steel', 'copperWire', 'batteryCell', 'sewing', 'conveyor'])
   const CRAFT_DECOR = new Set(['bunk', 'floorLamp', 'wallLamp', 'rug', 'dyeWhite', 'dyeRed', 'dyeBlue', 'dyeYellow', 'dyeOrange', 'dyePurple', 'chair'])
   function craftKind(id) {
     if (CRAFT_TOOLS.has(id)) return 'tools'
@@ -1450,6 +1450,15 @@ export function createSession(api) {
     }
     g.innerHTML = ''
     g.classList.add('crate')
+    const focus = api.focusKey ? api.focusKey() : ''
+    const belt = focus && api.beltFlow ? api.beltFlow(focus) : null
+    if (belt && belt.text) {
+      const flow = document.createElement('p')
+      flow.className = 'belt-flow'
+      flow.textContent = belt.text
+      g.append(flow)
+      g.classList.toggle('belt-full', !!belt.full)
+    }
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     let rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
     if (!rows.some((x) => x.r.id === craftId)) {
@@ -2207,7 +2216,14 @@ export function createSession(api) {
     const hint = document.createElement('p')
     hint.className = 'gnote box-hint'
     hint.textContent = t('boxClick')
-    panel.append(head, wells, strip, hint)
+    const flow = document.createElement('p')
+    flow.className = 'belt-flow'
+    const belt = api.beltFlow ? api.beltFlow(key) : null
+    if (belt && belt.text) {
+      flow.textContent = belt.text
+      if (belt.full) panel.classList.add('belt-full')
+    } else flow.hidden = true
+    panel.append(head, wells, strip, flow, hint)
     g.append(panel)
     if (!ui) return
     const repaint = () => { if (g.isConnected) paintBox(g, key) }

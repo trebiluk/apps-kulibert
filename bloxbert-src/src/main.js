@@ -77,6 +77,8 @@ import { createLook } from './gfx/look.js'
 import { powerOf } from './power.js'
 import { TECH } from './packs/tech/pack.js'
 import { initBot } from './bot/bot.js'
+import { createBelts, craftOnce } from './conveyor.js'
+import { putInSlots } from './box.js'
 import { noteVoxel, orientTech, attachCircuits, pressButton, releaseButton, toggleSwitch, preferLamp, tick as circuitTick, rescan as circuitRescan, view as circuitView } from './circuits.js'
 const farm = createFarm()
 const forage = createForage()
@@ -1643,6 +1645,7 @@ let holdPick = false
 let tableCursor = [8, TOWN.y + 1, 6]
 let session = null
 let bot = { dump() { return [] }, load() {} }
+let belts = null
 function passCropAim(id) {
   if (!session || !session.selectedItem || !isCropId(id)) return false
   const held = session.selectedItem() || ''
@@ -2169,6 +2172,10 @@ function breakAt(x, y, z, hold) {
     const key = dropOf(id)
     toast(t('gotItem').replace('{item}', key ? t(key) : blockName(id)))
   }
+  if (gone && id === ID.conveyor && belts) {
+    const cargo = belts.remove(x, y, z)
+    if (cargo && session && session.give) session.give(cargo, 1)
+  }
   if (gone) pokeHand('break')
   return gone
 }
@@ -2183,6 +2190,7 @@ function breakBlock() {
   return breakAt(x, y, z)
 }
 function isUseBlock(id) {
+  if (id === ID.conveyor) return true
   if (isDoor(id) || id === LEVER.off || id === LEVER.on || id === BUTTON.off || id === BUTTON.on || id === LANTERN) return true
   if (id === TECH.switch || id === TECH.switchOn || id === TECH.button || id === TECH.buttonOn) return true
   if (id === 1100 || id === 1101 || id === 1102 || id === 1103) return true
@@ -2207,6 +2215,12 @@ function useHit(hit) {
   const ax = hit.position[0]
   const ay = hit.position[1]
   const az = hit.position[2]
+  if (id === ID.conveyor) {
+    if (!canReach([ax, ay, az])) return false
+    const spun = belts && belts.rotate(ax, ay, az)
+    if (spun === false) toast('⚠ ' + t('tooManyMachines'))
+    return true
+  }
   if (isDoor(id) && freshPlacedDoor()) {
     forceShut(ax, ay, az)
     toast(t('doorShut'))
@@ -2324,6 +2338,12 @@ function placeBlock(face, opts) {
   else if (id === BUTTON.on) id = BUTTON.off
   else if (id === TECH.switchOn) id = TECH.switch
   else if (id === TECH.buttonOn) id = TECH.button
+  let beltFace = ''
+  if (id === ID.conveyor && belts) {
+    const gate = belts.tryPlace(x, y, z, belts.awayFace(x, z), 'you')
+    if (!gate.ok) { toast('⚠ ' + t('tooManyMachines')); return false }
+    beltFace = gate.face
+  }
   if (session && session.mode === 'survival' && !id) {
     const held = session.selectedItem && session.selectedItem()
     toast(held ? t('notABlock') : t('emptySlot'))
@@ -2359,6 +2379,10 @@ function placeBlock(face, opts) {
     }
   }
   if (placed) rememberFace(x, y, z, id)
+  if (placed && id === ID.conveyor && belts) {
+    belts.commit(x, y, z, beltFace || belts.awayFace(x, z), 'you')
+    showBeltHint()
+  }
   if (placed) pokeHand('place')
   return placed
 }
@@ -3641,6 +3665,7 @@ async function applyDoc(doc) {
   forage.load(src && src.forage)
   syncForage(Date.now())
   bot.load(botsFrom(src))
+  if (belts) belts.adopt()
   pondAid = false
   ensureStarterPond(src)
   seedOldBushes()
@@ -3671,6 +3696,7 @@ async function resetWorld() {
   farm.clear()
   forage.clear()
   bot.load([])
+  if (belts) belts.clear()
   pondAid = true
   genVersion = GEN
   genSeen = {}
@@ -4567,6 +4593,8 @@ session = createSession({
   pos: () => noa.entities.getPosition(noa.playerEntity),
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
+  beltFlow: (key) => belts ? belts.flow(key) : null,
+  focusKey: () => openMachineKey,
   found: (item) => {
     const key = floraSkill(item)
     if (key && learnRef && learnRef.addNote(key)) showCard(t(key))
@@ -4834,7 +4862,132 @@ const stations = createStations({ touch: () => noteMachine(), t, give: (item, n)
   stampDecor(id, chosen)
   toast('Made ' + t(id))
   return true
-}, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn() })
+}, craftOk: (id) => !session || !session.craftOk || session.craftOk(id), rules: (next) => session && session.shopRules ? session.shopRules(next) : { path: 'choose', help: false, required: false }, best: () => session && session.bestBed ? session.bestBed() : null, teacher: () => teacherOn(), belt: (key) => belts ? belts.flow(key) : null })
+function beltKey(x, y, z) { return x + ',' + y + ',' + z }
+function beltBuf(rec, bin) {
+  const k = bin ? 'bin' : 'bout'
+  if (!Array.isArray(rec[k])) rec[k] = []
+  return rec[k]
+}
+function pushBuf(slots, item) {
+  if (!item) return false
+  for (const s of slots) if (s && s.item === item && s.n < 64) { s.n += 1; return true }
+  if (slots.length >= 8) return false
+  slots.push({ item, n: 1 })
+  return true
+}
+function pullBuf(slots) {
+  const i = slots.findIndex((s) => s && s.n > 0)
+  if (i < 0) return ''
+  const item = slots[i].item
+  slots[i].n -= 1
+  if (slots[i].n <= 0) slots.splice(i, 1)
+  return item
+}
+function benchRec(x, y, z) {
+  if (!session || !session.meta) return null
+  const key = beltKey(x, y, z)
+  let rec = session.meta.get(key)
+  if (!rec || typeof rec !== 'object') rec = { kind: 'workbench', face: readFace(x, y, z) }
+  beltBuf(rec, true)
+  beltBuf(rec, false)
+  session.meta.set(key, rec)
+  return rec
+}
+belts = createBelts({
+  t,
+  mark: () => { dirty = true },
+  metaGet: (key) => session && session.meta ? session.meta.get(key) : null,
+  metaSet: (key, rec) => { if (session && session.meta) session.meta.set(key, rec) },
+  metaDelete: (key) => { if (session && session.meta) session.meta.delete(key) },
+  metaEntries: () => session && session.meta ? [...session.meta.entries()] : [],
+  faceToward: (x, z) => faceTowardPlayer(x, z),
+  machineFace: (x, y, z) => readFace(x, y, z),
+  machine(x, y, z) {
+    const id = getVoxel(x, y, z)
+    if (id === ID.oven) return 'oven'
+    if (id === ID.workbench) return 'bench'
+    if (id === ID.box) return 'box'
+    return ''
+  },
+  ready: (x, y, z) => chunkSettled(x, y, z),
+  solid: (x, y, z) => getVoxel(x, y, z) === ID.conveyor,
+  anchors() {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    const list = [{ x: p[0], y: p[1], z: p[2] }]
+    try {
+      for (const b of bot.dump()) list.push({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 })
+    } catch (e) {}
+    return list
+  },
+  pullOven: (x, y, z) => stations.pullOut(beltKey(x, y, z)) || '',
+  ovenCounts: (x, y, z) => stations.slotCounts(beltKey(x, y, z)),
+  pushBox(x, y, z, item) {
+    const rec = session && session.meta && session.meta.get(beltKey(x, y, z))
+    if (!rec || !Array.isArray(rec.slots)) return false
+    const put = putInSlots(rec.slots, item, 1)
+    if (!put || put.left) return false
+    rec.slots = put.slots
+    return true
+  },
+  pullBox(x, y, z) {
+    const rec = session && session.meta && session.meta.get(beltKey(x, y, z))
+    if (!rec || !rec.slots) return ''
+    for (let i = 0; i < rec.slots.length; i++) {
+      const s = rec.slots[i]
+      if (!s || !s.n) continue
+      const item = s.item
+      s.n -= 1
+      if (s.n <= 0) rec.slots[i] = null
+      return item
+    }
+    return ''
+  },
+  boxCounts(x, y, z) {
+    const rec = session && session.meta && session.meta.get(beltKey(x, y, z))
+    let n = 0
+    if (rec && rec.slots) for (const s of rec.slots) if (s && s.n) n += s.n
+    return { inn: 0, outn: n }
+  },
+  pushBench(x, y, z, item) {
+    const rec = benchRec(x, y, z)
+    return !!(rec && pushBuf(rec.bin, item))
+  },
+  pullBench(x, y, z) {
+    const rec = benchRec(x, y, z)
+    return rec ? pullBuf(rec.bout) : ''
+  },
+  benchCounts(x, y, z) {
+    const rec = benchRec(x, y, z)
+    const sum = (rows) => (rows || []).reduce((n, s) => n + (s && s.n ? s.n : 0), 0)
+    return rec ? { inn: sum(rec.bin), outn: sum(rec.bout) } : { inn: 0, outn: 0 }
+  },
+  craftBench(x, y, z) {
+    const rec = benchRec(x, y, z)
+    if (!rec) return false
+    return !!craftOnce(rec.bin, rec.bout)
+  },
+  hintDone() {
+    try { localStorage.setItem('bloxbert-belt-hint', 'done') } catch (e) {}
+    const hint = document.getElementById('menu-hint')
+    if (hint && hint.classList.contains('belt-on')) hint.hidden = true
+  },
+})
+function showBeltHint() {
+  try { if (localStorage.getItem('bloxbert-belt-hint') === 'done') return } catch (e) { return }
+  const hint = document.getElementById('menu-hint')
+  if (!hint) return
+  hint.hidden = false
+  hint.classList.add('belt-on')
+  hint.replaceChildren()
+  const arrow = document.createElement('span')
+  arrow.className = 'belt-arrow'
+  arrow.setAttribute('aria-hidden', 'true')
+  arrow.textContent = '➤'
+  const words = document.createElement('span')
+  words.textContent = t('beltHint')
+  hint.append(arrow, words)
+}
 function syncOvenGlow() {
   const hot = new Set()
   const keys = stations && stations.baking ? stations.baking() : []
@@ -6717,6 +6870,18 @@ document.addEventListener('keydown', (e) => {
   if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'z' || e.key === 'Z' || e.key === 'Z')) { e.preventDefault(); redo(); return }
   if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); redo(); return }
   if (e.key === 'i' || e.key === 'I') { if (!e.ctrlKey && !e.metaKey) { e.preventDefault(); setInspect(!inspectOn) } }
+  if ((e.key === 'r' || e.key === 'R') && !e.ctrlKey && !e.metaKey && !e.altKey && !e.repeat) {
+    const sheet = $('sheet')
+    if (!(sheet && !sheet.hidden) && !(e.target && e.target.closest && e.target.closest('input, textarea'))) {
+      const aimed = noa.targetedBlock
+      if (aimed && aimed.position && getVoxel(aimed.position[0], aimed.position[1], aimed.position[2]) === ID.conveyor) {
+        e.preventDefault()
+        const spun = belts && belts.rotate(aimed.position[0], aimed.position[1], aimed.position[2])
+        if (spun === false) toast('⚠ ' + t('tooManyMachines'))
+        return
+      }
+    }
+  }
   if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
   if (e.key === 'Enter') {
     resumeSwallow = false
@@ -8568,6 +8733,134 @@ hands = createHands({
     return b ? Math.hypot(b.velocity[0], b.velocity[2]) : 0
   },
 })
+let beltAt = 0
+const beltArrows = new Map()
+const beltBadges = new Map()
+const beltMats = new Map()
+const beltFull = new Map()
+let beltArrowMat = null
+let beltFullMat = null
+function beltArrowLook() {
+  if (beltArrowMat) return beltArrowMat
+  beltArrowMat = dye('belt-arrow-mat', 0.13, 0.83, 0.93)
+  beltArrowMat.emissiveColor = new Color3(0.13, 0.83, 0.93)
+  beltArrowMat.disableLighting = true
+  return beltArrowMat
+}
+function beltFullLook() {
+  if (beltFullMat) return beltFullMat
+  beltFullMat = dye('belt-full-mat', 0.13, 0.83, 0.93)
+  beltFullMat.emissiveColor = new Color3(0.13, 0.83, 0.93)
+  beltFullMat.alpha = 0.35
+  beltFullMat.transparencyMode = 2
+  beltFullMat.disableLighting = true
+  return beltFullMat
+}
+function beltBadgeMat(sig, item, n, pause) {
+  if (beltMats.has(sig)) return beltMats.get(sig)
+  const tex = new DynamicTexture('belt-' + beltMats.size, { width: 64, height: 64 }, shapeScene, false)
+  const ctx = tex.getContext()
+  ctx.fillStyle = '#10283A'
+  ctx.fillRect(0, 0, 64, 64)
+  ctx.strokeStyle = '#22D3EE'
+  ctx.lineWidth = 4
+  ctx.strokeRect(3, 3, 58, 58)
+  const letter = (ITEMS[item] && ITEMS[item].letter) || (item ? String(item).slice(0, 2) : '')
+  ctx.fillStyle = '#E6EEF2'
+  ctx.font = '700 16px sans-serif'
+  ctx.textAlign = 'left'
+  ctx.textBaseline = 'alphabetic'
+  ctx.fillText(String(letter).slice(0, 2), 8, 26)
+  ctx.font = '700 26px sans-serif'
+  ctx.textAlign = 'right'
+  ctx.fillText(pause ? 'II' : String(n || 1), 58, 52)
+  tex.update()
+  const mat = new StandardMaterial('beltm-' + beltMats.size, shapeScene)
+  mat.diffuseTexture = tex
+  mat.emissiveTexture = tex
+  mat.disableLighting = true
+  mat.backFaceCulling = false
+  mat.specularColor = new Color3(0, 0, 0)
+  beltMats.set(sig, mat)
+  return mat
+}
+function beltSpot(x, y, z, face) {
+  const o = face === 'N' ? [0.5, 1.06, 0.78] : face === 'E' ? [0.78, 1.06, 0.5] : face === 'W' ? [0.22, 1.06, 0.5] : [0.5, 1.06, 0.22]
+  return [x + o[0], y + o[1], z + o[2]]
+}
+function hideMap(map, seen) {
+  for (const [key, mesh] of map) if (!seen.has(key)) { mesh.setEnabled(false) }
+}
+function stepBelts(now) {
+  if (!belts) return
+  if (!beltAt) beltAt = now + 250
+  if (now >= beltAt) {
+    if (now - beltAt > 250) beltAt = now
+    else beltAt += 250
+    belts.prune()
+    const p = noa.entities.getPosition(noa.playerEntity)
+    const anchors = [{ x: p[0], y: p[1], z: p[2] }]
+    try { for (const b of bot.dump()) anchors.push({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 }) } catch (e) {}
+    belts.tick(anchors)
+  }
+  const p2 = noa.entities.getPosition(noa.playerEntity)
+  const anchors = [{ x: p2[0], y: p2[1], z: p2[2] }]
+  try { for (const b of bot.dump()) anchors.push({ x: b.x + 0.5, y: b.y, z: b.z + 0.5 }) } catch (e) {}
+  const rows = belts.visuals(anchors)
+  const seen = new Set()
+  for (const row of rows) {
+    const key = row.x + ',' + row.y + ',' + row.z
+    seen.add(key)
+    let arrow = beltArrows.get(key)
+    if (!arrow) {
+      arrow = CreateBox('belt-arrow-' + key, { width: 0.28, height: 0.06, depth: 0.18 }, shapeScene)
+      arrow.material = beltArrowLook()
+      arrow.isPickable = false
+      noa.rendering.addMeshToScene(arrow, false)
+      beltArrows.set(key, arrow)
+    }
+    arrow.setEnabled(true)
+    const spot = beltSpot(row.x, row.y, row.z, row.face)
+    const lp = noa.globalToLocal(spot, null, glowLocal)
+    arrow.position.set(lp[0], lp[1], lp[2])
+    arrow.rotation.y = row.face === 'N' ? Math.PI : row.face === 'E' ? Math.PI / 2 : row.face === 'W' ? -Math.PI / 2 : 0
+    let badge = beltBadges.get(key)
+    if (row.n || row.pause) {
+      if (!badge) {
+        badge = CreatePlane('belt-badge-' + key, { width: 0.46, height: 0.46 }, shapeScene)
+        badge.rotation.x = Math.PI / 2
+        badge.isPickable = false
+        noa.rendering.addMeshToScene(badge, false)
+        beltBadges.set(key, badge)
+      }
+      const sig = (row.pause ? 'p' : 'i') + ':' + (row.item || '') + ':' + row.n
+      badge.material = beltBadgeMat(sig, row.item, row.n, row.pause && !row.n)
+      badge.setEnabled(true)
+      const bp = noa.globalToLocal([row.x + 0.5, row.y + 1.12, row.z + 0.5], null, glowLocal)
+      badge.position.set(bp[0], bp[1], bp[2])
+    } else if (badge) badge.setEnabled(false)
+  }
+  hideMap(beltArrows, seen)
+  hideMap(beltBadges, seen)
+  const fullSeen = new Set()
+  const held = belts.stats().full || []
+  for (const key of held) {
+    fullSeen.add(key)
+    const parts = key.split(',').map(Number)
+    let mesh = beltFull.get(key)
+    if (!mesh) {
+      mesh = CreateBox('belt-full-' + key, { width: 1.08, height: 1.08, depth: 1.08 }, shapeScene)
+      mesh.material = beltFullLook()
+      mesh.isPickable = false
+      noa.rendering.addMeshToScene(mesh, false)
+      beltFull.set(key, mesh)
+    }
+    mesh.setEnabled(true)
+    const lp = noa.globalToLocal([parts[0] + 0.5, parts[1] + 0.5, parts[2] + 0.5], null, glowLocal)
+    mesh.position.set(lp[0], lp[1], lp[2])
+  }
+  hideMap(beltFull, fullSeen)
+}
 noa.on('beforeRender', (dt) => {
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
@@ -8587,6 +8880,7 @@ noa.on('beforeRender', (dt) => {
     if (toastEl && toastEl.textContent !== t('notTired')) toastEl.hidden = true
   }
   circuitTick(performance.now())
+  stepBelts(performance.now())
   paintOutline()
   paintWandBox()
   paintProtectRing()
@@ -9158,6 +9452,107 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       const g = document.getElementById('sheet-body')
       stations.paint(g, '1,5,1', 'oven')
       return g.innerText
+    },
+    beltLab() {
+      try { localStorage.removeItem('bloxbert-belt-hint') } catch (e) {}
+      if (belts && belts.hintClear) belts.hintClear()
+      noa.entities.setPosition(noa.playerEntity, [80.5, 20, 80.5])
+      const x = 80
+      const y = 20
+      const z = 80
+      const p = [80.5, 20, 80.5]
+      const k = (dx, dz) => (x + dx) + ',' + y + ',' + (z + dz)
+      const wipe = (dx, dz) => { edit(x + dx, y, z + dz, 0) }
+      for (let dz = 0; dz <= 4; dz++) wipe(0, dz)
+      for (let dx = 8; dx <= 14; dx++) wipe(dx, 0)
+      edit(x, y, z + 3, ID.oven)
+      session.meta.set(k(0, 3), { kind: 'oven', face: 'S' })
+      edit(x, y, z + 2, ID.conveyor)
+      edit(x, y, z + 1, ID.conveyor)
+      const g1 = belts.tryPlace(x, y, z + 2, 'S', 'you')
+      const g2 = belts.tryPlace(x, y, z + 1, 'S', 'you')
+      if (g1.ok) belts.commit(x, y, z + 2, g1.face, 'you')
+      if (g2.ok) belts.commit(x, y, z + 1, g2.face, 'you')
+      edit(x, y, z, ID.box)
+      session.meta.set(k(0, 0), { kind: 'box', face: 'N', slots: Array.from({ length: 18 }, () => null) })
+      const ovenKey = k(0, 3)
+      stations.load({ [ovenKey]: { kind: 'oven', fuel: 0, input: [], output: ['glass', 'glass', 'glass'], until: 0, left: 0 } })
+      showBeltHint()
+      const hint = document.getElementById('menu-hint')
+      const hintText = hint ? hint.textContent : ''
+      const anchors = [{ x: p[0], y: p[1], z: p[2] }]
+      for (let i = 0; i < 16; i++) belts.tick(anchors)
+      const box = session.meta.get(k(0, 0))
+      const arrived = (box.slots || []).reduce((n, s) => n + (s && s.n ? s.n : 0), 0)
+      const flow = belts.flow(ovenKey)
+      const hold = stations.dump()
+      if (hold[ovenKey]) hold[ovenKey].output = ['glass']
+      stations.load(hold)
+      belts.tick(anchors)
+      const held = JSON.stringify(session.meta.get(k(0, 2)))
+      belts.tick([{ x: p[0] + 96, y: p[1], z: p[2] }])
+      const frozen = held.indexOf('"n":1') >= 0 && JSON.stringify(session.meta.get(k(0, 2))) === held
+      edit(x + 8, y, z, ID.box)
+      session.meta.set(k(8, 0), { kind: 'box', face: 'E', slots: [{ item: 'log', n: 2 }, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null] })
+      edit(x + 9, y, z, ID.conveyor)
+      const gin = belts.tryPlace(x + 9, y, z, 'E', 'you')
+      if (gin.ok) belts.commit(x + 9, y, z, gin.face, 'you')
+      edit(x + 10, y, z, ID.workbench)
+      session.meta.set(k(10, 0), { kind: 'workbench', face: 'E' })
+      edit(x + 11, y, z, ID.conveyor)
+      const gout = belts.tryPlace(x + 11, y, z, 'E', 'you')
+      if (gout.ok) belts.commit(x + 11, y, z, gout.face, 'you')
+      edit(x + 12, y, z, ID.box)
+      session.meta.set(k(12, 0), { kind: 'box', face: 'W', slots: Array.from({ length: 18 }, () => null) })
+      for (let i = 0; i < 24; i++) belts.tick(anchors)
+      const chest = session.meta.get(k(12, 0))
+      const planks = (chest.slots || []).reduce((n, s) => n + (s && s.item === 'planks' ? s.n : 0), 0)
+      const spun = belts.rotate(x, y, z + 2)
+      const faceMid = (session.meta.get(k(0, 2)) || {}).face
+      belts.rotate(x, y, z + 2)
+      belts.rotate(x, y, z + 2)
+      belts.rotate(x, y, z + 2)
+      const dump = stations.dump()
+      if (!dump[ovenKey]) dump[ovenKey] = { kind: 'oven', fuel: 0, input: [], output: [], until: 0, left: 0 }
+      dump[ovenKey].output = ['glass']
+      stations.load(dump)
+      const fullBox = session.meta.get(k(0, 0))
+      fullBox.slots = Array.from({ length: 18 }, () => ({ item: 'dirt', n: 64 }))
+      for (let i = 0; i < 6; i++) belts.tick(anchors)
+      const blocked = belts.flow(k(0, 0))
+      let refused = false
+      for (let i = 0; i < 70 && !refused; i++) {
+        const cell = x + 20 + i
+        const gate = belts.tryPlace(cell, y, z + 6, 'E', 'you')
+        if (!gate.ok) { refused = i >= 64; break }
+        edit(cell, y, z + 6, ID.conveyor)
+        belts.commit(cell, y, z + 6, gate.face, 'you')
+      }
+      const sheet = document.getElementById('sheet')
+      const body = document.getElementById('sheet-body')
+      if (sheet) sheet.hidden = false
+      if (body) stations.paint(body, ovenKey, 'oven')
+      const strip = document.querySelector('#sheet .belt-flow')
+      const card = strip && strip.closest('.belt-full, .machine, .ks-card, article, .card')
+      return {
+        place: g1.ok + ':' + g1.face + ',' + g2.ok + ':' + g2.face,
+        oven: getVoxel(x, y, z + 3),
+        belt: getVoxel(x, y, z + 2),
+        hintText,
+        hintOn: !!(hint && hint.classList.contains('belt-on')),
+        arrived,
+        hintHidden: !!(hint && hint.hidden),
+        flow: flow && flow.text,
+        planks,
+        spun,
+        faceMid,
+        blocked: blocked && blocked.text,
+        full: !!(blocked && blocked.full),
+        frozen,
+        refused,
+        strip: strip ? strip.textContent : '',
+        stripScroll: strip ? strip.scrollWidth > strip.clientWidth + 2 : true,
+      }
     },
     brick() { return t('brickRed') },
     words() {

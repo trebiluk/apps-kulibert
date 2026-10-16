@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.248', date: '2026-10-16', lines: {
+    en: ['New: Conveyor! Belt one machine to the next and watch the counts move.'],
+    es: ['Nuevo: Transportador. Lleva una maquina a la siguiente y mira como se mueven las cuentas.'],
+    uk: ['Нове: Конвеєр! З’єднай машини стрічкою і дивись, як рухаються лічби.'],
+    ru: ['Новое: Конвейер! Соедини машины лентой и смотри, как двигаются счёта.'],
+    ar: ['جديد: سير! صِل آلة بالأخرى وراقب الأعداد وهي تتحرك.'],
+    'fa-AF': ['نو: نوار! یک ماشین را به ماشین بعدی ببند و حرکت شمارها را ببین.'],
+    rw: ['Gishya: Umugozi! Huza imashini ikurikira urebe umubare ukagenda.'],
+    ti: ['ሓድሽ: መተሓላለፊ! ሓደ ማሽን ምስ ዝቕጽል ኣተሓሕዞ፡ ቁጽሪ ከም ዝንቀሳቐስ ርአ።'],
+  }},
   { v: '2.5.247', date: '2026-10-16', lines: {
     en: ['On phones, the whole Bot program now fits on screen.'],
     es: ['En el telefono, todo el programa del Bot cabe en la pantalla.'],

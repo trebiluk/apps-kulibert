@@ -13,6 +13,7 @@ export const RECIPES = [
   { id: 'chair', at: 'bench', in: [['plankAny', 2], ['woolAny', 1]], out: ['chair', 1], secs: 2 },
   { id: 'sewing', at: 'bench', in: [['plankAny', 4], ['ironIngot', 1]], out: ['sewing', 1], secs: 4 },
   { id: 'box', at: 'bench', in: [['plankAny', 8]], out: ['box', 1], secs: 4 },
+  { id: 'conveyor', at: 'bench', in: [['planks', 2], ['stone', 1]], out: ['conveyor', 4], secs: 2 },
   { id: 'woodTool', at: 'bench', in: [['plankAny', 5]], out: ['woodTool', 1], secs: 2 },
   { id: 'stoneTool', at: 'bench', in: [['stone', 3], ['plankAny', 2]], out: ['stoneTool', 1], secs: 4 },
   { id: 'door', at: 'bench', in: [['plankAny', 6]], out: ['door', 1], secs: 3 },

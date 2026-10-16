@@ -413,6 +413,19 @@ const FACE = {
     g.fillStyle = '#e6eef2'
     g.fillRect(30, 18, 2, 8)
   },
+  conveyor(g) {
+    g.fillStyle = '#10283A'
+    g.fillRect(4, 16, 40, 16)
+    g.fillStyle = '#1F8A8A'
+    g.fillRect(6, 22, 28, 4)
+    g.fillStyle = '#22D3EE'
+    g.beginPath()
+    g.moveTo(30, 16)
+    g.lineTo(42, 24)
+    g.lineTo(30, 32)
+    g.closePath()
+    g.fill()
+  },
 }
 FACE.doorOpen = FACE.door
 FACE.doorGlassOpen = FACE.doorGlass

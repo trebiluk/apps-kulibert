@@ -70,6 +70,7 @@ export const BASE_BLOCKS = [
   [71, 'clay', 'wrap_clay', 'Cy', 'dirt'],
   [72, 'chair', 'wood', 'Cr', 'wood'],
   [73, 'sewing', 'wood', 'Sw', 'wood'],
+  [74, 'conveyor', 'greystone', 'Cv', 'greystone'],
 ]
 
 function insertAfter(rows, key, extra) {

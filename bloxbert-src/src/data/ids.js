@@ -74,6 +74,7 @@ export const FROZEN = {
   clay: 71,
   chair: 72,
   sewing: 73,
+  conveyor: 74,
   sapling: 185,
   missing: 1000,
   woodshopBench: 1300,
