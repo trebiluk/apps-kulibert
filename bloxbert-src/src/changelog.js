@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.255', date: '2026-10-16', lines: {
+    en: ['Chop right where your finger is, and your Bot\'s wall stays after a reload.'],
+    es: ['Corta justo donde está tu dedo, y el muro de tu Bot sigue ahí al recargar.'],
+    ar: ['اقطع حيث يوجد إصبعك تمامًا، ويبقى جدار الروبوت بعد إعادة التحميل.'],
+    zh: ['手指按哪里就砍哪里，重新加载后机器人的墙还在。'],
+    fr: ['Coupe là où est ton doigt, et le mur de ton Bot reste après un rechargement.'],
+    pt: ['Corte bem onde está seu dedo, e o muro do seu Bot fica depois de recarregar.'],
+    ru: ['Руби там, где палец, а стена Бота остаётся после перезагрузки.'],
+    vi: ['Chặt ngay chỗ ngón tay bạn chạm, và bức tường của Bot vẫn còn sau khi tải lại.'],
+    uk: ['Рубай там, де палець, і стіна Бота лишається після перезавантаження.'],
+    'fa-AF': ['همان‌جا که انگشتت است ببر، و دیوار بوت بعد از بار دوباره می‌ماند.'],
+    rw: ['Kata aho urutoki rwawe ruri, kandi urukuta rwa Bot ruguma nyuma yo kongera gutangiza.'],
+    ti: ['ኣብ ዘለዎ ኣጻብዕቲኻ ቍረጽ፡ መንደቕ ቦት ድማ ድሕሪ ምጽዓን ይጸንሕ።'],
+  }},
   { v: '2.5.254', date: '2026-10-16', lines: {
     en: ['Goals now have a Make button, and your first wins cheer.'],
     es: ['Las metas ahora tienen un botón Hacer, y tus primeros logros se celebran.'],

@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.254">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.254">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.255">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.255">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -590,7 +590,7 @@ html[data-kp-contrast="1"] #sheet[data-panel="bench"] .arrow-bar{outline:3px sol
 #play-chip[hidden]{display:none !important}
 #reach-hint{position:fixed;z-index:8;transform:translate(-50%,-140%);min-height:36px;padding:6px 10px;border-radius:999px;background:#0B1220;color:#F8FAFC;border:2px solid #F6C453;font-weight:800;pointer-events:none;white-space:nowrap}
 #reach-hint[hidden]{display:none !important}
-#save-chip{position:fixed;z-index:35;right:8px;top:calc(48px + var(--top-h, 0px) + 64px);min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;border-radius:999px;border:2px solid #22D3EE;background:#0B1220;color:#F8FAFC;font-weight:800;font-size:14px;line-height:1.2}
+#save-chip{position:fixed;z-index:35;left:50%;top:50%;transform:translate(-50%,-50%);right:auto;pointer-events:none;min-width:44px;min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:6px 12px;border-radius:999px;border:2px solid #22D3EE;background:#0B1220;color:#F8FAFC;font-weight:800;font-size:14px;line-height:1.2}
 #save-chip[hidden]{display:none !important}
 #save-chip .sc-ico{width:18px;height:18px;flex:0 0 18px;display:block}
 @keyframes stripname{0%{opacity:0}15%{opacity:1}75%{opacity:1}100%{opacity:0}}
@@ -1144,7 +1144,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.254</span>
+      <span class="ver" id="ver-plate">2.5.255</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1173,7 +1173,7 @@ body.tip-on #held-chip{display:none!important}
 <div id="sleep-fade" hidden></div>
 <button type="button" id="play-chip" hidden>Click to play</button>
 <div id="reach-hint" role="status" hidden></div>
-<button type="button" id="save-chip" hidden aria-live="polite"><svg class="sc-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 3h11l5 5v13a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h1zm2 2v6h9V5H7zm0 12h10v-4H7v4z"/></svg><span class="sc-word">Saved</span></button>
+<button type="button" id="save-chip" hidden aria-live="polite"><svg class="sc-ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M9 16.2 4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4z"/></svg><span class="sc-word">Saved</span></button>
 <div id="held-chip" class="kd-tip" hidden></div>
 <div id="size-chip" hidden></div>
 <div id="sheet" hidden role="dialog" aria-labelledby="sheet-title">
@@ -1190,7 +1190,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Goals now have a Make button, and your first wins cheer.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Chop right where your finger is, and your Bot's wall stays after a reload.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1298,9 +1298,9 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.254"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.254" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.254" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.255"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.255" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.255" defer></script>
 <script>
 ;(function () {
   try {

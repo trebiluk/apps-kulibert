@@ -47,7 +47,7 @@ import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerP
 import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, blockNearBody, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, blockNearBody, reachFor, TOUCH_REACH, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
@@ -1259,6 +1259,7 @@ const blockName = (id) => {
 const S = 24
 const saved = new Map()
 let dirty = false
+let worldRev = 0
 let allowSave = false
 let readOnlySave = false
 let voxelQuiet = false
@@ -1477,6 +1478,7 @@ function setVoxel(x, y, z, v, draw = true) {
     if (isMachineId(prev) || isMachineId(v)) trackMachine(x, y, z, v)
   }
   if (prev !== v) {
+    worldRev += 1
     noteVoxel(x, y, z, prev, v)
     afterVoxel(x, y, z, prev, v)
     gfxLook.note(x, y, z, prev, v)
@@ -3421,12 +3423,29 @@ async function waitWriter() {
   }
   return !!(saveLockHeld && !savePaused)
 }
+function copySaved() {
+  const copies = []
+  for (const [k, v] of saved) copies.push([k, v.slice()])
+  return copies
+}
 async function snapshot() {
-  const chunks = {}
-  for (const [k, v] of saved) chunks[k] = await gz(v)
+  let copies = copySaved()
+  let chunks = {}
+  for (let pass = 0; pass < 4; pass++) {
+    const rev = worldRev
+    chunks = {}
+    for (const [k, v] of copies) chunks[k] = await gz(v)
+    if (worldRev === rev) break
+    copies = copySaved()
+    if (pass === 3) {
+      chunks = {}
+      for (const [k, v] of copies) chunks[k] = await gz(v)
+    }
+  }
   const p = noa.entities.getPosition(noa.playerEntity)
   const rules = Rules.dump()
   const effects = Effects.dump()
+  const clock = basics ? basics.dump() : null
   return {
     format: 'kuliblocks', v: 2, schema: SCHEMA, packs: packVersions(), appVersion: 'bloxbert-' + VERSION, id: WORLD, title: 'Bertyville',
     ownerRef: null, seed: 1, spawn: worldSpawn.slice(), spawnSet: !!spawnSet, pos: [p[0], p[1], p[2]], look: [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000], protect: { size: protect.size, center: protect.center ? protect.center.slice() : null }, chunkSize: S,
@@ -3435,7 +3454,7 @@ async function snapshot() {
     chunks, updatedAt: new Date().toISOString(), tabId,
     ...(session ? session.dump() : { player: { mode: 'creative', bag: [], hot: 0, home: null, table: false }, econ: null, meta: {} }),
     stations: stations.dump(),
-    basics: basics ? basics.dump() : null,
+    basics: clock,
     gifts,
     crops: farm.dump(),
     forage: forage.dump(),
@@ -3461,6 +3480,8 @@ async function saveBody() {
   }
   const gen = pinGen
   const doc = await snapshot()
+  if (basics) doc.basics = basics.dump()
+  const revAtPut = worldRev
   const db = await idb()
   const wrote = await new Promise((res, rej) => {
     let settled = false
@@ -3499,10 +3520,17 @@ async function saveBody() {
   }
   lastSeenAt = doc.updatedAt
   if (gen === pinGen) {
-    dirty = false
+    if (worldRev === revAtPut) dirty = false
+    else dirty = true
     machineCells.clear()
     clearPin()
   }
+  if (worldRev !== revAtPut && allowSave && !savePaused && saveLag < 3) {
+    saveLag += 1
+    queueMicrotask(() => { if (dirty && allowSave && !savePaused) saveSoon() })
+    return -1
+  }
+  saveLag = 0
   let bytes = 0
   try { bytes = JSON.stringify(doc).length } catch (e) { bytes = 0 }
   clearNotSavedChip()
@@ -3511,6 +3539,7 @@ async function saveBody() {
 }
 let saveChain = Promise.resolve()
 let saveSoon = () => {}
+let saveLag = 0
 function save() {
   const job = saveChain.then(() => saveBody())
   saveChain = job.catch(() => {})
@@ -4280,7 +4309,8 @@ async function exportJSON() {
 setInterval(() => { if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() }) }, 20000)
 function flushSave() {
   if (dirty) pinMachines()
-  if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() })
+  if (!(dirty && allowSave && !savePaused)) return
+  save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() })
 }
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
@@ -4557,15 +4587,61 @@ function markSave(text) {
   if (typeof text === 'string' && text.indexOf(t('saved')) === 0) paintSaveChip(navigator.onLine ? 'saved' : 'offline')
 }
 const SAVE_WORD = { saved: 'Saved', saving: 'Saving…', offline: 'Offline-saved here', synced: 'Synced' }
+function placeSaveChip(el) {
+  el.style.right = 'auto'
+  el.style.bottom = 'auto'
+  el.style.transform = 'none'
+  el.style.pointerEvents = 'none'
+  const w = el.offsetWidth || 128
+  const h = el.offsetHeight || 44
+  const boxes = []
+  for (const sel of ['#pick-chip', '#hotbar', '#stick-pad', '.stickpad', '#jump-col', '#game-menu', '#fs-btn', '#pause-btn', '#day-clock', 'header.top', '#toast', '#play-chip', '#menu-btn', '.kb-bar', '#reach-hint']) {
+    for (const n of document.querySelectorAll(sel)) {
+      if (!n || n === el || n.hidden) continue
+      const s = getComputedStyle(n)
+      if (s.display === 'none' || s.visibility === 'hidden') continue
+      const r = n.getBoundingClientRect()
+      if (r.width < 2 || r.height < 2) continue
+      boxes.push(r)
+    }
+  }
+  const pad = 8
+  const clear = (x, y) => {
+    const a = { l: x - pad, t: y - pad, r: x + w + pad, b: y + h + pad }
+    if (a.l < 4 || a.t < 4 || a.r > innerWidth - 4 || a.b > innerHeight - 4) return false
+    for (const b of boxes) {
+      if (a.l < b.right && a.r > b.left && a.t < b.bottom && a.b > b.top) return false
+    }
+    return true
+  }
+  const spots = []
+  const midX = Math.round((innerWidth - w) / 2)
+  const midY = Math.round((innerHeight - h) / 2)
+  spots.push([midX, midY])
+  for (const top of [72, 112, 148, 8]) spots.push([midX, top], [12, top])
+  for (let y = 8; y < innerHeight - h - 8; y += 20) spots.push([midX, y], [12, y])
+  for (const [x, y] of spots) {
+    if (!clear(x, y)) continue
+    el.style.left = x + 'px'
+    el.style.top = y + 'px'
+    return
+  }
+  el.style.left = midX + 'px'
+  el.style.top = midY + 'px'
+}
 function paintSaveChip(state) {
   const el = $('save-chip')
   if (!el) return
-  const word = SAVE_WORD[state] || SAVE_WORD.saved
+  const saved = state === 'saved' || state === 'synced' || state === 'offline'
+  const word = saved ? '✓ Saved' : (SAVE_WORD[state] || SAVE_WORD.saved)
   el.hidden = false
   el.dataset.state = state || 'saved'
   const lab = el.querySelector('.sc-word')
   if (lab) lab.textContent = word
   el.setAttribute('aria-label', word)
+  placeSaveChip(el)
+  clearTimeout(paintSaveChip.hideT)
+  if (saved) paintSaveChip.hideT = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1500)
 }
 function toast(text, act) {
   if (calm) { calm.say(text, act); return }
@@ -6566,36 +6642,56 @@ function aimed() {
   }
   return null
 }
+function fingerSolid(id, forBreak) {
+  if (!id) return false
+  if (forBreak && (isCropId(id) || isBushId(id))) return true
+  return !passThrough(id)
+}
 function rayAt(cx, cy, forBreak) {
   try {
     if (!Ray) return null
     const scene = noa.rendering.getScene()
     const rect = canvas.getBoundingClientRect()
+    if (!(rect.width > 0) || !(rect.height > 0)) return null
     const ray = scene.createPickingRay(cx - rect.left, cy - rect.top, null, noa.rendering.camera)
     if (!ray || !ray.direction) return null
-    let ox = ray.origin.x, oy = ray.origin.y, oz = ray.origin.z
-    const dx = ray.direction.x, dy = ray.direction.y, dz = ray.direction.z
+    const glob = noa.localToGlobal([ray.origin.x, ray.origin.y, ray.origin.z], [0, 0, 0])
+    const origin = [glob[0], glob[1], glob[2]]
+    const eyeV = noa.camera.getTargetPosition()
+    const eye = [eyeV[0], eyeV[1], eyeV[2]]
+    let dx = ray.direction.x, dy = ray.direction.y, dz = ray.direction.z
     const len = Math.hypot(dx, dy, dz) || 1
-    const dir = [dx / len, dy / len, dz / len]
-    let left = (noa.camera.zoomDistance || 0) + reachFor(survivalOn()) + 6
-    for (let i = 0; i < 8 && left > 0.2; i++) {
-    const hit = noa._localPick([ox, oy, oz], dir, left, (id) => id !== 0 && ((forBreak && (isCropId(id) || isBushId(id))) || !passThrough(id)))
-      if (!hit || !hit.position || !hit.normal) return null
-      const nx = Math.round(hit.normal[0])
-      const ny = Math.round(hit.normal[1])
-      const nz = Math.round(hit.normal[2])
-      if (nx || ny || nz) {
-        const x = Math.floor(hit.position[0] - nx * 0.08)
-        const y = Math.floor(hit.position[1] - ny * 0.08)
-        const z = Math.floor(hit.position[2] - nz * 0.08)
-        const id = getVoxel(x, y, z)
-        if (id) return { id, blockID: id, pos: [x, y, z], position: [x, y, z], adjacent: [x + nx, y + ny, z + nz], normal: [nx, ny, nz] }
+    dx /= len; dy /= len; dz /= len
+    let eyeT = (eye[0] - origin[0]) * dx + (eye[1] - origin[1]) * dy + (eye[2] - origin[2]) * dz
+    if (!(eyeT > 0)) eyeT = 0
+    const start = Math.max(0, eyeT - 0.45)
+    const end = eyeT + TOUCH_REACH
+    let prev = null
+    for (let t = start; t <= end + 0.001; t += 0.2) {
+      const x = Math.floor(origin[0] + dx * t)
+      const y = Math.floor(origin[1] + dy * t)
+      const z = Math.floor(origin[2] + dz * t)
+      if (prev && prev[0] === x && prev[1] === y && prev[2] === z) continue
+      const behind = t < eyeT - 0.4
+      const cell = [x, y, z]
+      if (behind) { prev = cell; continue }
+      const id = getVoxel(x, y, z)
+      if (!fingerSolid(id, forBreak)) { prev = cell; continue }
+      const ddx = x + 0.5 - eye[0]
+      const ddy = y + 0.5 - eye[1]
+      const ddz = z + 0.5 - eye[2]
+      let nx = 0, ny = 0, nz = 0
+      if (prev) {
+        nx = Math.max(-1, Math.min(1, prev[0] - x))
+        ny = Math.max(-1, Math.min(1, prev[1] - y))
+        nz = Math.max(-1, Math.min(1, prev[2] - z))
       }
-      const step = 0.51
-      ox += dir[0] * step
-      oy += dir[1] * step
-      oz += dir[2] * step
-      left -= step
+      const hit = { id, blockID: id, pos: cell, position: [x, y, z], adjacent: [x + nx, y + ny, z + nz], normal: [nx, ny, nz] }
+      if (ddx * ddx + ddy * ddy + ddz * ddz > TOUCH_REACH * TOUCH_REACH) {
+        hit.far = true
+        return hit
+      }
+      return hit
     }
     return null
   } catch (e) { return null }
@@ -7872,11 +7968,11 @@ canvas.addEventListener('pointerdown', (e) => {
     pressButton(hit.position[0], hit.position[1], hit.position[2])
     buttonHold = { x: hit.position[0], y: hit.position[1], z: hit.position[2] }
   }
-  if (hit && finger && !tableMode && !canReach(hit.position)) {
+  if (hit && finger && !tableMode && hit.far) {
     farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
     dig = null
     hideCrack()
-  } else if (hit) {
+  } else if (hit && !hit.far) {
     hideWalkCloser()
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
     const grown = cropDig(finger ? 'touch' : 'mouse', hit.position[0], hit.position[1], hit.position[2], hit.id, performance.now())
@@ -10028,7 +10124,34 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       const r = rayAt(x, y)
       if (!r) return null
       const n = r.normal || [0, 0, 0]
-      return { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2], nx: n[0] | 0, ny: n[1] | 0, nz: n[2] | 0 }
+      return { id: r.id, x: r.position[0], y: r.position[1], z: r.position[2], ax: r.adjacent[0], ay: r.adjacent[1], az: r.adjacent[2], nx: n[0] | 0, ny: n[1] | 0, nz: n[2] | 0, far: !!r.far }
+    },
+    screen(x, y, z) {
+      const scene = noa.rendering.getScene()
+      const cam = noa.rendering.camera
+      const engine = scene.getEngine()
+      const tm = cam.getTransformationMatrix()
+      const local = noa.globalToLocal([x + 0.5, y + 0.5, z + 0.5], null, [0, 0, 0])
+      const m = tm.m
+      const X = local[0], Y = local[1], Z = local[2]
+      const px = X * m[0] + Y * m[4] + Z * m[8] + m[12]
+      const py = X * m[1] + Y * m[5] + Z * m[9] + m[13]
+      const pw = X * m[3] + Y * m[7] + Z * m[11] + m[15]
+      if (!pw) return null
+      const ndx = px / pw
+      const ndy = py / pw
+      const rw = engine.getRenderWidth()
+      const rh = engine.getRenderHeight()
+      const rect = canvas.getBoundingClientRect()
+      return {
+        x: rect.left + ((ndx + 1) * 0.5) * rect.width,
+        y: rect.top + (1 - (ndy + 1) * 0.5) * rect.height,
+        ndx, ndy,
+      }
+    },
+    showHud() {
+      if (calm) calm.setAll(true)
+      return !document.body.classList.contains('hud-calm')
     },
     setMeta(key, rec) {
       if (!session || !session.meta) return false

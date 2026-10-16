@@ -100,6 +100,9 @@ export function reachFor(survival) {
   return survival ? 6 : 10
 }
 
+// Touch holds use a shorter reach from Berty's eye. Mouse and keys stay on reachFor.
+export const TOUCH_REACH = 4.5
+
 export function inReach(px, py, pz, bx, by, bz, reach) {
   const dx = bx + 0.5 - px
   const dy = by + 0.5 - (py + 1.62)

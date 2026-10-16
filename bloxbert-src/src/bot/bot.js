@@ -479,6 +479,7 @@ export function initBot(ctx) {
     if (!group) return 'wall'
     bot.runLog.touched = true
     bot.runLog.undo = true
+    if (ctx.saveNow) ctx.saveNow()
     return ''
   }
 
@@ -545,6 +546,7 @@ export function initBot(ctx) {
     }
     if (ctx.noteEdit && bot.runLog && bot.runLog.touched) ctx.noteEdit()
     if (ctx.markDirty) ctx.markDirty()
+    if (ctx.saveNow) ctx.saveNow()
     sync()
   }
 
@@ -572,6 +574,7 @@ export function initBot(ctx) {
       panel.keys()
     }
     if (ctx.markDirty) ctx.markDirty()
+    if (ctx.saveNow) ctx.saveNow()
     sync()
   }
 

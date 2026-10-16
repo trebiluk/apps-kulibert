@@ -1447,35 +1447,35 @@ for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(E
 
 const KIDWALK = {
   en: {
-    whatsNewBody: 'Goals now have a Make button, and your first wins cheer.',
+    whatsNewBody: 'Chop right where your finger is, and your Bot\'s wall stays after a reload.',
     walkCloser: 'Walk closer',
   },
   es: {
-    whatsNewBody: 'Las metas ahora tienen un botón Hacer, y tus primeros logros se celebran.',
+    whatsNewBody: 'Corta justo donde está tu dedo, y el muro de tu Bot sigue ahí al recargar.',
     walkCloser: 'Acércate',
   },
   uk: {
-    whatsNewBody: 'Цілі тепер мають кнопку «Зробити», а перші перемоги вітаються.',
+    whatsNewBody: 'Рубай там, де палець, і стіна Бота лишається після перезавантаження.',
     walkCloser: 'Підійди ближче',
   },
   ru: {
-    whatsNewBody: 'У целей теперь есть кнопка «Сделать», а первые победы празднуются.',
+    whatsNewBody: 'Руби там, где палец, а стена Бота остаётся после перезагрузки.',
     walkCloser: 'Подойди ближе',
   },
   ar: {
-    whatsNewBody: 'صار للأهداف زر صنع، وانتصاراتك الأولى تُحتفل بها.',
+    whatsNewBody: 'اقطع حيث يوجد إصبعك تمامًا، ويبقى جدار الروبوت بعد إعادة التحميل.',
     walkCloser: 'اقترب',
   },
   'fa-AF': {
-    whatsNewBody: 'هدف‌ها حالا دکمه «بساز» دارند، و نخستین بردها تشویق می‌شوند.',
+    whatsNewBody: 'همان‌جا که انگشتت است ببر، و دیوار بوت بعد از بار دوباره می‌ماند.',
     walkCloser: 'نزدیک‌تر بیا',
   },
   rw: {
-    whatsNewBody: 'Intego ubu zifite buto Kora, kandi intsinzi zawe za mbere zirashimwa.',
+    whatsNewBody: 'Kata aho urutoki rwawe ruri, kandi urukuta rwa Bot ruguma nyuma yo kongera gutangiza.',
     walkCloser: 'Egerekera hafi',
   },
   ti: {
-    whatsNewBody: 'ዕላማታት ሕጂ መጠወቒ «ግበር» ኣለወን፡ ቀዳሞት ዓወታትካ ድማ ይዕወጉ።',
+    whatsNewBody: 'ኣብ ዘለዎ ኣጻብዕቲኻ ቍረጽ፡ መንደቕ ቦት ድማ ድሕሪ ምጽዓን ይጸንሕ።',
     walkCloser: 'ቀረብ',
   },
 }
