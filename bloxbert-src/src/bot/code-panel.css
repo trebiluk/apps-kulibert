@@ -258,27 +258,116 @@
     max-width: 100%;
   }
 }
+.bot-pin { margin: 0 0 8px; }
+.bot-pin .well {
+  min-width: 72px;
+  min-height: 44px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  position: relative;
+}
+.bot-pin .bot-name {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #E6EEF2;
+  pointer-events: none;
+}
+.bot-pin .gic { width: 32px; height: 32px; }
 @media (max-height: 520px) {
   #bot-code {
     align-items: flex-end;
     justify-content: center;
-    padding: 8px;
+    padding: 4px;
     background: transparent;
   }
   #bot-code .bot-card {
-    width: min(100%, 860px);
-    max-height: min(320px, calc(100% - 88px));
-    overflow: hidden;
+    width: min(100%, 900px);
+    max-height: calc(100% - 4px);
+    overflow: visible;
+    gap: 4px;
+    padding: 6px;
   }
-  #bot-code .bot-bar { min-height: 44px; }
-  #bot-code .bot-layout { flex-direction: row; align-items: stretch; min-height: 0; }
-  #bot-code .bot-palette { flex-direction: column; flex: 0 0 168px; flex-wrap: nowrap; overflow: auto; gap: 4px; }
-  #bot-code .bot-palette .bot-chip { width: 100%; max-width: 100%; box-sizing: border-box; min-width: 0; justify-content: flex-start; }
+  #bot-code .bot-bar { min-height: 44px; gap: 4px; }
+  #bot-code .bot-title { font-size: 18px; }
+  #bot-code .bot-challenge {
+    font-size: 13px;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  #bot-code .bot-layout { flex-direction: column; align-items: stretch; gap: 4px; min-height: 0; }
+  #bot-code .bot-palette {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(44px, 1fr));
+    flex: none;
+    flex-direction: unset;
+    flex-wrap: unset;
+    width: auto;
+    overflow: visible;
+    gap: 4px;
+  }
+  #bot-code .bot-palette .bot-chip {
+    width: 100%;
+    max-width: none;
+    min-width: 44px;
+    min-height: 44px;
+    box-sizing: border-box;
+    justify-content: center;
+    padding: 4px;
+    gap: 4px;
+  }
+  #bot-code .bot-chip span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   #bot-code .bot-chip,
   #bot-code .bot-key,
-  #bot-code .bot-x { min-height: 44px; }
-  #bot-code .bot-main { flex: 1; display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
-  #bot-code .bot-tray { overflow: auto; }
+  #bot-code .bot-x,
+  #bot-code .bot-num { min-width: 44px; min-height: 44px; }
+  #bot-code .bot-main { flex: none; display: flex; flex-direction: column; gap: 4px; min-width: 0; min-height: 0; }
+  #bot-code .bot-tray {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+    flex-wrap: unset;
+    overflow: visible;
+    gap: 4px;
+    min-height: 0;
+  }
+  #bot-code .bot-slot.empty:not(.cursor) { display: none; }
+  #bot-code:not(.bot-strip) .bot-slot {
+    flex: none;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    min-height: 44px;
+    overflow: hidden;
+    padding-inline-end: 4px;
+  }
+  #bot-code:not(.bot-strip) .bot-slot > .bot-x {
+    position: static;
+    inset: auto;
+    transform: none;
+    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    margin-inline-start: auto;
+  }
+  #bot-code .bot-keys { gap: 4px; }
+  #bot-code .bot-key { flex: 1 1 44px; min-height: 44px; padding: 4px 6px; }
+  #bot-code.bot-strip .bot-palette,
+  #bot-code.bot-strip .bot-challenge,
+  #bot-code.bot-strip .bot-slot.empty { display: none; }
+  #bot-code.bot-strip .bot-card { max-height: 200px; overflow: hidden; }
+  #bot-code.bot-strip .bot-tray { display: flex; flex-wrap: nowrap; overflow-x: auto; }
+  #bot-code.bot-strip .bot-slot { flex: 0 0 auto; min-width: 48px; max-width: none; overflow: visible; }
 }
 @media (min-width: 1100px) {
   #bot-code .bot-card { width: 760px; }

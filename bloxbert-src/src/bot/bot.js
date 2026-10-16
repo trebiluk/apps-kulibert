@@ -386,13 +386,17 @@ export function initBot(ctx) {
   }
 
   let swallowUp = false
+  let swallowUntil = 0
+  function markSwallow() { swallowUntil = performance.now() + 800 }
+  function swallowPlace() { return armed || performance.now() < swallowUntil }
   function onDown(e) {
-    if (e.button != null && e.button !== 0) return
+    if (e.button != null && e.button !== 0 && e.button !== 2) return
     if (codePanelOpen()) return
     const ui = e.target && e.target.closest && e.target.closest('#sheet, #bot-code, button, a, input')
     if (ui) return
     const bot = pick(e)
     if (bot) {
+      if (e.button != null && e.button !== 0) return
       e.preventDefault()
       e.stopPropagation()
       swallowUp = true
@@ -400,16 +404,12 @@ export function initBot(ctx) {
       return
     }
     if (!armed) return
-    const block = ctx.noa.targetedBlock
-    if (!block || !block.position) return
-    const x = Math.round(block.position[0])
-    const y = Math.round(block.position[1])
-    const z = Math.round(block.position[2])
-    if (!ctx.getVoxel(x, y, z) || ctx.getVoxel(x, y + 1, z)) return
-    e.preventDefault()
+    markSwallow()
+    if (e.cancelable) e.preventDefault()
     e.stopPropagation()
     swallowUp = true
-    tryPlace(block)
+    const block = ctx.noa.targetedBlock
+    if (block) tryPlace(block)
   }
   function onUp(e) {
     if (!swallowUp) return
@@ -461,13 +461,15 @@ export function initBot(ctx) {
       pen.fillRect(8, 4, 16, 10)
       pen.fillStyle = '#FF8A1F'
       pen.fillRect(10, 7, 12, 3)
+      b.style.minWidth = '72px'
+      b.style.minHeight = '44px'
       const lab = document.createElement('span')
       lab.className = 'bot-name'
-      lab.textContent = ctx.t('bertyBot')
-      lab.style.cssText = 'position:absolute;left:50%;top:100%;transform:translateX(-50%);font-size:12px;font-weight:800;line-height:1.2;white-space:nowrap;color:#E6EEF2;pointer-events:none;'
+      lab.textContent = ctx.t('botTab')
+      lab.style.cssText = 'display:block;font-size:12px;font-weight:800;line-height:1.2;color:#E6EEF2;pointer-events:none;'
       b.append(pic, lab)
-      b.setAttribute('aria-label', ctx.t('bertyBot'))
-      b.title = ctx.t('bertyBot')
+      b.setAttribute('aria-label', ctx.t('botTab'))
+      b.title = ctx.t('botTab')
       b.addEventListener('click', (e) => {
         e.preventDefault()
         e.stopPropagation()
@@ -479,8 +481,9 @@ export function initBot(ctx) {
         ctx.toast(ctx.t('bertyBot'))
         if (ctx.close) ctx.close()
       })
+      wells.className = 'wells bot-pin'
       wells.append(b)
-      host.append(tab, wells)
+      host.prepend(tab, wells)
     }
   }
 
@@ -531,6 +534,14 @@ export function initBot(ctx) {
     },
     placeAt,
     arm() { armed = true },
+    swallowPlace,
+    tryArmed() {
+      if (!armed) return false
+      markSwallow()
+      const block = ctx.noa.targetedBlock
+      if (block) tryPlace(block)
+      return true
+    },
     openFirst() { if (bots[0]) openFor(bots[0]) },
     start() { if (bots[0]) startRun(bots[0]) },
     stop() { if (active) stopRun(active); else if (bots[0]) stopRun(bots[0]) },

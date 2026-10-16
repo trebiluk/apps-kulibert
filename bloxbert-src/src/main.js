@@ -2286,6 +2286,7 @@ function placeableCell(id) {
   return !id || id === WATER || id === ID.tuft || id === ID.wheat
 }
 function placeBlock(face, opts) {
+  if (bot && bot.swallowPlace && bot.swallowPlace()) return false
   if (inspectOn) { showInspect(); return false }
   const repeat = !!(opts && opts.repeat)
   const sayFar = () => { if (repeat || !placeableHeld()) return; toastFarKey() }
@@ -7880,6 +7881,7 @@ for (const el of document.querySelectorAll('[data-hold]')) {
   el.addEventListener('pointerleave', off); el.addEventListener('pointercancel', off)
 }
 $('t-place').addEventListener('click', () => {
+  if (bot && bot.tryArmed && bot.tryArmed()) return
   const aimed = noa.targetedBlock || targetHit()
   if (tryEatClick(aimed)) return
   placeBlock()

@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.249', date: '2026-10-16', lines: {
+    en: ["Easier Bot: it's first in your Bag, it doesn't eat your sapling, and everything fits on sideways phones."],
+    es: ['Bot mas facil: es lo primero en tu bolsa, no gasta tu arbolito y todo cabe en el telefono de lado.'],
+    uk: ['Легший Бот: він перший у твоїй Сумці, не з’їдає саджанець, і все вміщується на телефоні боком.'],
+    ru: ['Бот проще: он первый в твоей Сумке, не съедает саженец, и всё помещается на телефоне боком.'],
+    ar: ['بوت أسهل: هو أول شيء في حقيبتك، لا يأكل شتلتك، وكل شيء يظهر على الهاتف بالعرض.'],
+    'fa-AF': ['بوت آسان‌تر: اول در بکس تو است، نهال تو را نمی‌خورد، و همه چیز در تیلفون افقی جا می‌شود.'],
+    rw: ['Bot yoroshye: ni iya mbere mu gasaho kawe, ntikarya igiti cyawe gito, kandi byose binjira kuri telefoni ibitse.'],
+    ti: ['ቀሊል ቦት፡ ኣብ ቦርሳኻ ቀዳማይ እዩ፡ ንእንጨይቲኻ ኣይበልዕን፡ ኩሉ ድማ ኣብ ጎነ ተሌፎን ይኣትው።'],
+  }},
   { v: '2.5.248', date: '2026-10-16', lines: {
     en: ['New: Conveyor! Belt one machine to the next and watch the counts move.'],
     es: ['Nuevo: Transportador. Lleva una maquina a la siguiente y mira como se mueven las cuentas.'],
