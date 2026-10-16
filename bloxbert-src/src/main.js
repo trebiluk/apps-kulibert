@@ -2226,6 +2226,10 @@ function useHoldReady(dig, now) {
   return now - (dig.t0 || now) >= 500
 }
 function useAt(hit) {
+  if (bot && bot.swallowPlace && bot.swallowPlace()) {
+    if (bot.tryArmed) bot.tryArmed()
+    return true
+  }
   if (!useHit(hit)) return false
   pokeHand('use')
   return true
@@ -7809,6 +7813,7 @@ document.addEventListener('mousemove', (e) => {
 let deskStationAt = 0
 function deskOpenStation(hit) {
   if (TOUCH_UI || !hit) return false
+  if (bot && bot.swallowPlace && bot.swallowPlace()) return false
   const id = hit.blockID != null ? hit.blockID : hit.id
   if (id !== ID.workbench && id !== ID.box) return false
   const now = performance.now()

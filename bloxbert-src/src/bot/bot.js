@@ -3,12 +3,27 @@ import { CreateTorus } from '@babylonjs/core/Meshes/Builders/torusBuilder'
 import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Color3 } from '@babylonjs/core/Maths/math.color'
+import { Vector3 } from '@babylonjs/core/Maths/math.vector'
 import { BOT_TAB } from '../items.js'
 import { FROZEN } from '../data/ids.js'
 import { readProgram, prefillSteps, createCursor, pullStep, countActions } from './program.js'
 import { openCodePanel, closeCodePanel, codePanelOpen } from './code-panel.js'
 
 const PLANK = FROZEN.planks
+const SOFT = new Set([
+  FROZEN.water, FROZEN.tuft, FROZEN.wheat, FROZEN.reed,
+  FROZEN.cropSprout, FROZEN.cropLeafy, FROZEN.cropTall, FROZEN.cropRipe,
+  FROZEN.bushYoung, FROZEN.bushLeaf, FROZEN.bushFull, FROZEN.bushFruit,
+  FROZEN.sapling,
+])
+const STATION = new Set([
+  FROZEN.workbench, FROZEN.oven, FROZEN.vend, FROZEN.storeCounter,
+  FROZEN.bunk, FROZEN.box, FROZEN.woodshop, FROZEN.woodshopSide,
+  FROZEN.chair, FROZEN.sewing, FROZEN.conveyor, FROZEN.woodshopBench,
+  FROZEN.smelter, FROZEN.fabricator, FROZEN.lantern, FROZEN.charger,
+])
+const ARROW_CSS = '#bot-arrow{position:fixed;z-index:70;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:rgba(11,18,32,.92);color:#F8FAFC;border:2px solid #E6EEF2;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.35)}#bot-arrow[hidden]{display:none}#bot-arrow svg{display:block}'
+const BOT_ICO = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect x="7" y="10" width="10" height="8" rx="1.5" fill="none" stroke="#F8FAFC" stroke-width="1.8"/><rect x="8.5" y="5" width="7" height="5" rx="1" fill="none" stroke="#F8FAFC" stroke-width="1.8"/><path d="M10 13.2h4" stroke="#F8FAFC" stroke-width="1.6" stroke-linecap="round"/></svg>'
 
 function dye(scene, name, hex, glow) {
   const mat = new StandardMaterial(name, scene)
@@ -105,6 +120,7 @@ export function initBot(ctx) {
 
   function sync() {
     const now = performance.now()
+    let arrow = null
     for (const bot of bots) {
       if (!bot.mesh) continue
       const lp = ctx.noa.globalToLocal([bot.x + 0.5, bot.y + 1, bot.z + 0.5], null, [0, 0, 0])
@@ -112,13 +128,21 @@ export function initBot(ctx) {
       if (bot.shakeUntil && now < bot.shakeUntil) ox = (bot.shakeUntil - now) > 90 ? 0.14 : -0.1
       bot.mesh.position.set(lp[0] + ox, lp[1], lp[2])
       bot.mesh.rotation.y = bot.yaw
-      if (bot.ring) bot.ring.setEnabled(!!bot.running)
+      const pointing = !!(bot.pointUntil && now < bot.pointUntil)
+      let on = false
+      if (pointing) {
+        const scr = projectWorld(bot.x + 0.5, bot.y + 1.5, bot.z + 0.5)
+        on = !scr || !!scr.on
+        if (scr && !scr.on) arrow = scr
+      }
+      if (bot.ring) bot.ring.setEnabled(!!bot.running || (pointing && on))
     }
+    showArrow(arrow)
   }
 
   function placeAt(x, y, z) {
     if (bots.length) {
-      ctx.toast(ctx.t('botHave'))
+      alreadyHave(false)
       return false
     }
     const pos = ctx.noa.entities.getPosition(ctx.noa.playerEntity)
@@ -143,6 +167,165 @@ export function initBot(ctx) {
     if (!ctx.getVoxel(x, y, z)) return false
     if (ctx.getVoxel(x, y + 1, z)) return false
     return placeAt(x, y, z)
+  }
+
+  function vid(x, y, z) {
+    const id = ctx.getVoxel(x, y, z)
+    return id | 0
+  }
+  function gas(id) { return !id || (SOFT.has(id) && id !== FROZEN.water) }
+  function gearId(id) {
+    return (id >= FROZEN.door && id <= FROZEN.pushButtonOn) || (id >= FROZEN.doorTop && id <= FROZEN.doorSlidingTopOpen)
+  }
+  function spotOk(x, y, z) {
+    const floor = vid(x, y, z)
+    if (!floor || SOFT.has(floor) || STATION.has(floor) || gearId(floor)) return false
+    const above = vid(x, y + 1, z)
+    const head = vid(x, y + 2, z)
+    if (!gas(above) || above === FROZEN.water) return false
+    if (!gas(head) || head === FROZEN.water) return false
+    return true
+  }
+  function projectWorld(x, y, z) {
+    const cam = scene.activeCamera
+    const engine = scene.getEngine()
+    if (!cam || !engine || !ctx.noa.globalToLocal) return null
+    const canvas = engine.getRenderingCanvas()
+    if (!canvas) return null
+    if (cam.parent && cam.parent.computeWorldMatrix) cam.parent.computeWorldMatrix(true)
+    if (cam.computeWorldMatrix) cam.computeWorldMatrix(true)
+    const lp = ctx.noa.globalToLocal([x, y, z], null, [0, 0, 0])
+    const point = new Vector3(lp[0], lp[1], lp[2])
+    const origin = cam.globalPosition || cam.position
+    const off = point.subtract(origin)
+    const forward = cam.getDirection(new Vector3(0, 0, 1))
+    const right = cam.getDirection(new Vector3(1, 0, 0))
+    const up = cam.getDirection(new Vector3(0, 1, 0))
+    const fz = Vector3.Dot(off, forward)
+    const fx = Vector3.Dot(off, right)
+    const fy = Vector3.Dot(off, up)
+    const behind = fz <= 0.15
+    const depth = Math.abs(fz) < 0.15 ? (fz < 0 ? -0.15 : 0.15) : fz
+    const rect = canvas.getBoundingClientRect()
+    const fov = cam.fov || (55 * Math.PI / 180)
+    const focal = (rect.height * 0.5) / Math.tan(fov * 0.5)
+    const sx = rect.left + rect.width * 0.5 + (fx / depth) * focal
+    const sy = rect.top + rect.height * 0.5 - (fy / depth) * focal
+    const pad = 28
+    const on = !behind && sx >= rect.left + pad && sx <= rect.right - pad && sy >= rect.top + pad && sy <= rect.bottom - pad
+    return { x: sx, y: sy, behind, on, rect }
+  }
+  function findFloor() {
+    const pos = ctx.noa.entities.getPosition(ctx.noa.playerEntity)
+    const heading = ctx.noa.camera.heading || 0
+    const fx = Math.sin(heading)
+    const fz = Math.cos(heading)
+    const around = Math.floor(pos[1] - 0.05)
+    const px = Math.floor(pos[0])
+    const pz = Math.floor(pos[2])
+    let best = null
+    let bestRank = 1e9
+    for (let dx = -4; dx <= 5; dx++) {
+      for (let dz = -4; dz <= 5; dz++) {
+        const x = px + dx
+        const z = pz + dz
+        if (x === px && z === pz) continue
+        const vx = (x + 0.5) - pos[0]
+        const vz = (z + 0.5) - pos[2]
+        const dist = Math.hypot(vx, vz)
+        if (dist < 0.8 || dist > 4.6) continue
+        const dot = vx * fx + vz * fz
+        if (dot < 0.45) continue
+        if (dot / dist < 0.35) continue
+        let y = null
+        for (let n = around + 3; n >= around - 6; n--) {
+          if (spotOk(x, n, z)) { y = n; break }
+        }
+        if (y == null) continue
+        const seen = projectWorld(x + 0.5, y + 1.5, z + 0.5)
+        if (seen && seen.behind) continue
+        const rank = dist + (seen && seen.on ? 0 : 8)
+        if (rank < bestRank) {
+          bestRank = rank
+          best = { x, y, z }
+        }
+      }
+    }
+    return best
+  }
+  function tell(key) {
+    const text = ctx.t(key)
+    ctx.toast(text)
+    const el = document.getElementById('toast')
+    if (!el || el.hidden) return
+    const node = el.lastChild && el.lastChild.nodeType === 3 ? el.lastChild : null
+    if (!node || node.nodeValue !== text) return
+    el.classList.add('new-chip')
+    if (el.querySelector('.bot-ico')) return
+    const wrap = document.createElement('span')
+    wrap.className = 'chip-ico bot-ico'
+    wrap.setAttribute('aria-hidden', 'true')
+    wrap.innerHTML = BOT_ICO
+    el.prepend(wrap)
+  }
+  function ensureArrow() {
+    let el = document.getElementById('bot-arrow')
+    if (el) return el
+    if (!document.getElementById('bot-arrow-css')) {
+      const style = document.createElement('style')
+      style.id = 'bot-arrow-css'
+      style.textContent = ARROW_CSS
+      document.head.append(style)
+    }
+    el = document.createElement('div')
+    el.id = 'bot-arrow'
+    el.hidden = true
+    el.setAttribute('aria-hidden', 'true')
+    el.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22"><path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+    document.body.append(el)
+    return el
+  }
+  function showArrow(scr) {
+    const el = ensureArrow()
+    if (!scr) { el.hidden = true; return }
+    const rect = scr.rect
+    const cx = rect.left + rect.width / 2
+    const cy = rect.top + rect.height / 2
+    let dx = scr.x - cx
+    let dy = scr.y - cy
+    if (scr.behind) { dx = -dx; dy = -dy }
+    if (Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5) { dx = 0; dy = -1 }
+    const hw = Math.max(20, rect.width / 2 - 36)
+    const hh = Math.max(20, rect.height / 2 - 36)
+    const scale = Math.min(hw / Math.abs(dx), hh / Math.abs(dy))
+    el.hidden = false
+    el.style.left = (cx + dx * scale) + 'px'
+    el.style.top = (cy + dy * scale) + 'px'
+    el.style.transform = 'rotate(' + (Math.atan2(dy, dx) * 180 / Math.PI) + 'deg)'
+  }
+  function pointAt(bot) {
+    bot.pointUntil = performance.now() + 3000
+    sync()
+  }
+  function alreadyHave(openCode) {
+    const bot = bots[0]
+    if (!bot) return
+    armed = false
+    if (ctx.close) ctx.close()
+    if (openCode) {
+      bot.pointUntil = 0
+      openFor(bot)
+      return
+    }
+    tell('botHave')
+    pointAt(bot)
+  }
+  function placeArmed() {
+    markSwallow()
+    if (bots.length) { alreadyHave(false); return false }
+    const spot = findFloor()
+    if (!spot) { tell('botGround'); return false }
+    return placeAt(spot.x, spot.y, spot.z)
   }
 
   function findBot(id) {
@@ -190,6 +373,7 @@ export function initBot(ctx) {
 
   function openFor(bot) {
     if (!bot) return
+    bot.pointUntil = 0
     if (ctx.botOn && !ctx.botOn()) return
     ensurePrefill(bot)
     bindPanel(bot)
@@ -390,11 +574,20 @@ export function initBot(ctx) {
 
   let swallowUp = false
   let swallowUntil = 0
+  let keyOpen = false
   function markSwallow() { swallowUntil = performance.now() + 800 }
   function swallowPlace() { return armed || performance.now() < swallowUntil }
   function onDown(e) {
     if (e.button != null && e.button !== 0 && e.button !== 2) return
     if (codePanelOpen()) return
+    const pill = armed && e.target && e.target.closest && e.target.closest('#use-pill')
+    if (pill) {
+      if (e.cancelable) e.preventDefault()
+      e.stopPropagation()
+      swallowUp = true
+      placeArmed()
+      return
+    }
     const ui = e.target && e.target.closest && e.target.closest('#sheet, #bot-code, button, a, input')
     if (ui) return
     const bot = pick(e)
@@ -411,8 +604,7 @@ export function initBot(ctx) {
     if (e.cancelable) e.preventDefault()
     e.stopPropagation()
     swallowUp = true
-    const block = ctx.noa.targetedBlock
-    if (block) tryPlace(block)
+    placeArmed()
   }
   function onUp(e) {
     if (!swallowUp) return
@@ -474,11 +666,20 @@ export function initBot(ctx) {
       b.append(pic, lab)
       b.setAttribute('aria-label', ctx.t('botTab'))
       b.title = ctx.t('botTab')
+      b.addEventListener('keydown', (e) => {
+        if (e.key !== 'Enter' || !bots.length) return
+        e.preventDefault()
+        e.stopPropagation()
+        keyOpen = true
+        alreadyHave(true)
+        setTimeout(() => { keyOpen = false }, 0)
+      }, true)
       b.addEventListener('click', (e) => {
         e.preventDefault()
         e.stopPropagation()
+        if (keyOpen) { keyOpen = false; return }
         if (bots.length) {
-          ctx.toast(ctx.t('botHave'))
+          alreadyHave(false)
           return
         }
         armed = true
@@ -541,9 +742,7 @@ export function initBot(ctx) {
     swallowPlace,
     tryArmed() {
       if (!armed) return false
-      markSwallow()
-      const block = ctx.noa.targetedBlock
-      if (block) tryPlace(block)
+      placeArmed()
       return true
     },
     openFirst() { if (bots[0]) openFor(bots[0]) },
@@ -571,6 +770,26 @@ export function initBot(ctx) {
       return { x: b.x, y: b.y, z: b.z, yaw: b.yaw, planks: b.planks, running: b.running, ring: !!(b.ring && b.ring.isEnabled()), placed: b.runLog ? b.runLog.placed : 0, steps: b.program.steps.map((s) => s.id + (s.n ? ':' + s.n : '') + (s.dir ? ':' + s.dir : '')) }
     },
   }
-  if (location.search.includes('smoke=1')) window.__bot = api
+  if (location.search.includes('smoke=1')) {
+    api.floor = () => findFloor()
+    api.screen = () => (bots[0] ? projectWorld(bots[0].x + 0.5, bots[0].y + 1.5, bots[0].z + 0.5) : null)
+    api.where = () => {
+      const p = ctx.noa.entities.getPosition(ctx.noa.playerEntity)
+      return { x: p[0], y: p[1], z: p[2], h: ctx.noa.camera.heading, pitch: ctx.noa.camera.pitch }
+    }
+    api.tp = (x, y, z) => ctx.noa.entities.setPosition(ctx.noa.playerEntity, [x, y, z])
+    api.look = (h, p) => {
+      const c = ctx.noa.camera
+      c.heading = h
+      c.pitch = p
+      const d = c.getDirection()
+      const cp = Math.cos(p)
+      d[0] = cp * Math.sin(h)
+      d[1] = -Math.sin(p)
+      d[2] = cp * Math.cos(h)
+    }
+    api.voxel = (x, y, z) => ctx.getVoxel(x, y, z)
+    window.__bot = api
+  }
   return api
 }

@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.253', date: '2026-10-16', lines: {
+    en: ['If you already have a Bot, we point to it so you can give it orders.'],
+    es: ['Si ya tienes un Bot, te lo señalamos para que le des órdenes.'],
+    ar: ['إذا كان لديك روبوت بالفعل، نشير إليه لتعطيه الأوامر.'],
+    zh: ['如果你已经有机器人，我们会指给你看，方便你给它下指令。'],
+    fr: ['Si tu as déjà un Bot, on te le montre pour que tu lui donnes des ordres.'],
+    pt: ['Se você já tem um Bot, mostramos onde ele está para você dar ordens.'],
+    ru: ['Если у тебя уже есть Бот, мы покажем его, чтобы ты дал ему команды.'],
+    vi: ['Nếu bạn đã có Bot, chúng tôi chỉ cho bạn để bạn ra lệnh cho nó.'],
+    uk: ['Якщо в тебе вже є Бот, ми покажемо його, щоб ти дав йому команди.'],
+    'fa-AF': ['اگر از قبل یک بوت داری، آن را نشانت می‌دهیم تا به آن دستور بدهی.'],
+    rw: ['Niba usanzwe ufite Bot, turakwereka kugira ngo uyihe amabwiriza.'],
+    ti: ['ቦት እንተሃልዩካ፡ ነዊኻ ንኽትሕዞ ትእዛዝ ክንሕብረካ ኢና።'],
+  }},
   { v: '2.5.252', date: '2026-10-16', lines: {
     en: ['Play with just a keyboard: Tab, Enter and Esc work in every menu.'],
     es: ['Juega solo con el teclado: Tab, Enter y Esc funcionan en todos los menús.'],
