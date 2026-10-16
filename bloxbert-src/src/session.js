@@ -2601,6 +2601,65 @@ export function createSession(api) {
       host.setAttribute('aria-label', label)
     }
   }
+  function sideNote() { return window.innerWidth <= 960 && window.innerHeight <= 500 }
+  function clearNote(chip) { clearTimeout(chip._noteT); chip._noteT = 0 }
+  function parkHeldNote(chip, fade) {
+    const pop = chip.querySelector('.brief-pop')
+    if (!pop) return
+    if (!sideNote() || chip.dataset.open !== '1') {
+      pop.style.top = ''
+      pop.classList.remove('note-in')
+      return
+    }
+    if (chip.dataset.free !== '1') {
+      const mine = chip.getBoundingClientRect()
+      if (mine.width > 2) {
+        chip.style.left = mine.left + 'px'
+        chip.style.right = 'auto'
+        chip.style.transform = 'none'
+        chip.dataset.free = '1'
+      }
+    }
+    const fs = document.getElementById('fs-btn')
+    const fr = fs ? fs.getBoundingClientRect() : null
+    const rtl = document.documentElement.dir === 'rtl'
+    if (fr && fr.width > 2 && fr.height > 2) pop.style.top = (fr.bottom + 12) + 'px'
+    else pop.style.top = ''
+    if (rtl) { pop.style.left = '12px'; pop.style.right = 'auto' }
+    else { pop.style.left = 'auto'; pop.style.right = '12px' }
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (fade && !reduce) {
+      pop.classList.remove('note-in')
+      requestAnimationFrame(() => { if (pop.isConnected && chip.dataset.open === '1') pop.classList.add('note-in') })
+    } else pop.classList.add('note-in')
+  }
+  function sayHeld(chip) {
+    const live = document.getElementById('held-live')
+    if (!live) return
+    const line = chip.getAttribute('aria-label') || ''
+    if (!line) return
+    live.textContent = ''
+    requestAnimationFrame(() => { if (live.isConnected) live.textContent = line })
+  }
+  function shutHeldNote(chip) {
+    clearNote(chip)
+    chip._noteOn = false
+    const pop = chip.querySelector('.brief-pop')
+    if (pop) pop.classList.remove('note-in')
+    const wait = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 200
+    chip._noteT = setTimeout(() => {
+      chip.dataset.open = '0'
+      const s = bag.slots[hot]
+      if (s && mode === 'survival') paintBrief(chip, s.item, { n: s.n, uses: s.uses })
+    }, wait)
+  }
+  function armHeldNote(chip) {
+    clearNote(chip)
+    chip._noteOn = true
+    parkHeldNote(chip, true)
+    sayHeld(chip)
+    chip._noteT = setTimeout(() => { if (chip.dataset.open === '1') shutHeldNote(chip) }, 3000)
+  }
   function bindHeldChip(chip) {
     if (chip.dataset.bound) return
     chip.dataset.bound = '1'
@@ -2609,13 +2668,18 @@ export function createSession(api) {
       e.preventDefault()
       e.stopPropagation()
       if (window.innerWidth > 960) return
-      chip.dataset.open = chip.dataset.open === '1' ? '0' : '1'
+      const opening = chip.dataset.open !== '1'
+      if (!opening && sideNote()) { shutHeldNote(chip); return }
+      chip.dataset.open = opening ? '1' : '0'
       const s = bag.slots[hot]
       if (s) paintBrief(chip, s.item, { n: s.n, uses: s.uses })
+      if (opening && sideNote()) armHeldNote(chip)
+      else clearNote(chip)
     })
     document.addEventListener('pointerdown', (e) => {
       if (chip.contains(e.target)) return
       if (chip.dataset.open !== '1') return
+      if (sideNote()) { shutHeldNote(chip); return }
       chip.dataset.open = '0'
       const s = bag.slots[hot]
       if (s && mode === 'survival') paintBrief(chip, s.item, { n: s.n, uses: s.uses })
@@ -2648,6 +2712,7 @@ export function createSession(api) {
         const hit = a.width > 2 && b.width > 2 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
         if (hit) chip.style.bottom = (window.innerHeight - b.top + 8) + 'px'
       }
+      if (chip.dataset.open === '1') parkHeldNote(chip, false)
     })
   }
   function paintHeld() {
@@ -2662,13 +2727,17 @@ export function createSession(api) {
       chip.classList.remove('on')
       return
     }
-    if (chip.dataset.item && chip.dataset.item !== s.item) chip.dataset.open = '0'
+    if (chip.dataset.item && chip.dataset.item !== s.item) {
+      chip.dataset.open = '0'
+      clearNote(chip)
+    }
     chip.hidden = false
     chip.dataset.hold = '1'
     chip.dataset.item = s.item
     chip.classList.remove('on')
     paintBrief(chip, s.item, { n: s.n, uses: s.uses })
     placeHeld(chip)
+    if (chip.dataset.open === '1' && chip._noteOn) parkHeldNote(chip, false)
   }
   function tagBrief(el, itemKey, extra) {
     if (!el || !itemKey) return

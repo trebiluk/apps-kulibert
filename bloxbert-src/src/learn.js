@@ -135,54 +135,129 @@ export function createLearn(api) {
   }
   function placePath(el, follow) {
     if (!el) return
-    if (window.innerHeight > 500) {
-      el.style.top = ''
-      el.style.left = ''
-      el.style.maxWidth = ''
-      el.style.bottom = ''
-      el.style.fontSize = ''
-      const fs = document.getElementById('fs-btn')
-      if (!fs) return
-      const fr = fs.getBoundingClientRect()
-      if (!(fr.width > 2 && fr.height > 2)) return
-      const chip = el.getBoundingClientRect()
-      if (fr.left < chip.left) return
-      if (fr.top < chip.bottom && fr.bottom > chip.top) {
-        el.style.maxWidth = Math.max(160, fr.left - chip.left - 8) + 'px'
+    const touch = document.body.classList.contains('touch') || (api.touch && api.touch())
+    if (!(touch && window.innerHeight <= 500)) {
+      el.classList.remove('path-corner')
+      el.style.right = ''
+      el.style.transform = ''
+      el.style.background = ''
+      el.style.color = ''
+      el.style.border = ''
+      el.style.boxShadow = ''
+      el.style.outline = ''
+      el.style.pointerEvents = ''
+      if (window.innerHeight > 500) {
+        el.style.top = ''
+        el.style.left = ''
+        el.style.maxWidth = ''
+        el.style.bottom = ''
+        el.style.fontSize = ''
+        const fs = document.getElementById('fs-btn')
+        if (!fs) return
+        const fr = fs.getBoundingClientRect()
+        if (!(fr.width > 2 && fr.height > 2)) return
+        const chip = el.getBoundingClientRect()
+        if (fr.left < chip.left) return
+        if (fr.top < chip.bottom && fr.bottom > chip.top) {
+          el.style.maxWidth = Math.max(160, fr.left - chip.left - 8) + 'px'
+        }
+        return
+      }
+      const jump = document.getElementById('jump-col')
+      const jr = jump ? jump.getBoundingClientRect() : null
+      const stick = document.getElementById('stick-pad')
+      const sr = stick ? stick.getBoundingClientRect() : null
+      const pick = document.getElementById('pick-chip')
+      const pr = pick ? pick.getBoundingClientRect() : null
+      let left = 12
+      let rightEdge = window.innerWidth - 12
+      const shown = (r) => !!(r && r.width > 2 && r.height > 2)
+      const park = (r) => {
+        if (!shown(r)) return
+        if (r.left < window.innerWidth * 0.5) left = Math.max(left, r.right + 12)
+        if (r.right > window.innerWidth * 0.5) rightEdge = Math.min(rightEdge, r.left - 12)
+      }
+      park(sr)
+      park(jr)
+      park(pr)
+      const hot = document.getElementById('hotbar')
+      const hr = hot ? hot.getBoundingClientRect() : null
+      let limit = hr && hr.width > 2 && hr.height > 2 ? hr.top : window.innerHeight
+      const held = document.getElementById('held-chip')
+      if (held && !held.hidden) {
+        const hd = held.getBoundingClientRect()
+        if (hd.width > 2 && hd.height > 2) limit = Math.min(limit, hd.top)
+      }
+      el.style.top = 'auto'
+      el.style.left = left + 'px'
+      el.style.maxWidth = Math.max(120, rightEdge - left) + 'px'
+      el.style.bottom = (window.innerHeight - limit + 8) + 'px'
+      el.style.fontSize = '13px'
+      if (follow) return
+      if (placePath.again) cancelAnimationFrame(placePath.again)
+      placePath.again = requestAnimationFrame(() => {
+        placePath.again = 0
+        const chip = document.getElementById('path-chip')
+        if (!chip || chip.hidden) return
+        placePath(chip, true)
+      })
+      return
+    }
+    const rtl = document.documentElement.dir === 'rtl'
+    const shownBox = (el) => {
+      if (!el || el.hidden) return null
+      const s = getComputedStyle(el)
+      if (s.display === 'none' || s.visibility === 'hidden') return null
+      const r = el.getBoundingClientRect()
+      if (r.width < 2 || r.height < 2) return null
+      return r
+    }
+    const mr = shownBox(document.getElementById('game-menu'))
+    const fs = document.getElementById('fs-btn')
+    const fr = shownBox(fs)
+    el.classList.add('path-corner')
+    el.style.bottom = 'auto'
+    el.style.maxWidth = '40vw'
+    el.style.fontSize = '16px'
+    el.style.transform = 'none'
+    el.style.background = '#0E1A22'
+    el.style.color = '#E6EEF2'
+    el.style.border = '0'
+    el.style.boxShadow = 'none'
+    el.style.outline = 'none'
+    el.style.pointerEvents = 'none'
+    if (!rtl) {
+      if (mr) {
+        el.style.top = mr.top + 'px'
+        el.style.left = (mr.right + 12) + 'px'
+      } else {
+        el.style.top = (fr ? fr.top : 8) + 'px'
+        el.style.left = '12px'
+      }
+      el.style.right = 'auto'
+    } else if (fr) {
+      el.style.left = 'auto'
+      el.style.right = (window.innerWidth - fr.left + 12) + 'px'
+      el.style.top = fr.top + 'px'
+    } else if (mr) {
+      el.style.left = 'auto'
+      el.style.right = (mr.right + 12) + 'px'
+      el.style.top = mr.top + 'px'
+    } else {
+      el.style.left = 'auto'
+      el.style.right = '12px'
+      el.style.top = '8px'
+    }
+    if (follow) {
+      const box = el.getBoundingClientRect()
+      if (!rtl && fr && box.width > 2 && box.right > fr.left - 8 && box.left < fr.left) {
+        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, fr.left - box.left - 12)) + 'px'
+      }
+      if (rtl && mr && box.width > 2 && box.left < mr.right + 8 && box.right > mr.right) {
+        el.style.maxWidth = Math.max(120, Math.min(window.innerWidth * 0.4, box.right - mr.right - 12)) + 'px'
       }
       return
     }
-    const jump = document.getElementById('jump-col')
-    const jr = jump ? jump.getBoundingClientRect() : null
-    const stick = document.getElementById('stick-pad')
-    const sr = stick ? stick.getBoundingClientRect() : null
-    const pick = document.getElementById('pick-chip')
-    const pr = pick ? pick.getBoundingClientRect() : null
-    let left = 12
-    let rightEdge = window.innerWidth - 12
-    const shown = (r) => !!(r && r.width > 2 && r.height > 2)
-    const park = (r) => {
-      if (!shown(r)) return
-      if (r.left < window.innerWidth * 0.5) left = Math.max(left, r.right + 12)
-      if (r.right > window.innerWidth * 0.5) rightEdge = Math.min(rightEdge, r.left - 12)
-    }
-    park(sr)
-    park(jr)
-    park(pr)
-    const hot = document.getElementById('hotbar')
-    const hr = hot ? hot.getBoundingClientRect() : null
-    let limit = hr && hr.width > 2 && hr.height > 2 ? hr.top : window.innerHeight
-    const held = document.getElementById('held-chip')
-    if (held && !held.hidden) {
-      const hd = held.getBoundingClientRect()
-      if (hd.width > 2 && hd.height > 2) limit = Math.min(limit, hd.top)
-    }
-    el.style.top = 'auto'
-    el.style.left = left + 'px'
-    el.style.maxWidth = Math.max(120, rightEdge - left) + 'px'
-    el.style.bottom = (window.innerHeight - limit + 8) + 'px'
-    el.style.fontSize = '13px'
-    if (follow) return
     if (placePath.again) cancelAnimationFrame(placePath.again)
     placePath.again = requestAnimationFrame(() => {
       placePath.again = 0

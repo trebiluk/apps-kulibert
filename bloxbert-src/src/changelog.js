@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.243', date: '2026-10-15', lines: {
+    en: ['Hints sit at the top, and item info shows as a short top note.'],
+    uk: ['Підказки зверху, а відомості про річ — коротка нотатка зверху.'],
+    ru: ['Подсказки сверху, а сведения о предмете — короткая заметка сверху.'],
+    es: ['Las pistas van arriba y la info del objeto sale como nota breve arriba.'],
+    ar: ['التلميحات في الأعلى، ومعلومات الغرض ملاحظة قصيرة في الأعلى.'],
+    'fa-AF': ['راهنماها بالا هستند، و آگاهی چیز یک یادداشت کوتاه در بالا است.'],
+    rw: ['Inama ziri hejuru, kandi amakuru y\'ikintu agaragara nk\'inyandiko ngufi hejuru.'],
+    ti: ['ምኽርታት ኣብ ላዕሊ እዮም፡ ሓበሬታ ነገር ድማ ሓጺር መዘኻኸሪ ኣብ ላዕሊ እዩ።'],
+  }},
   { v: '2.5.242', date: '2026-10-15', lines: {
     en: ['Sideways phones: Jump and Crouch are on the right thumb, and Auto-jump steps up one block.'],
     uk: ['На телефоні боком Стрибок і Присід під правим пальцем, а Автострибок піднімає на один блок.'],
