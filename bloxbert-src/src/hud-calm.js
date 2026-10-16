@@ -95,12 +95,38 @@ export function createCalm(api) {
     if (!text) return
     const job = { text, act: act || null }
     if (holding) {
-      const i = wait.findIndex((row) => !row.chip)
+      const i = wait.findIndex((row) => !row.chip && !row.nice)
       if (i >= 0) wait[i] = job
       else wait.push(job)
       return
     }
     show(job)
+  }
+  function cheer(kind) {
+    const key = { log: 'niceLog', make: 'niceMake', place: 'nicePlace', wall: 'niceWall' }[kind]
+    if (!key) return
+    wait.push({ nice: true, step: 'nice-' + kind, text: api.t(key) })
+    if (!holding) kick()
+  }
+  function chime() {
+    try {
+      const AC = window.AudioContext || window.webkitAudioContext
+      if (!AC) return
+      const ctx = chime.ac || (chime.ac = new AC())
+      if (ctx.state === 'suspended') ctx.resume().catch(() => {})
+      const o = ctx.createOscillator()
+      const gain = ctx.createGain()
+      o.type = 'sine'
+      o.frequency.setValueAtTime(520, ctx.currentTime)
+      o.frequency.exponentialRampToValueAtTime(780, ctx.currentTime + 0.12)
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime)
+      gain.gain.exponentialRampToValueAtTime(0.045, ctx.currentTime + 0.02)
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22)
+      o.connect(gain)
+      gain.connect(ctx.destination)
+      o.start()
+      o.stop(ctx.currentTime + 0.24)
+    } catch (e) {}
   }
   function kick() {
     const next = wait.shift()
@@ -109,11 +135,13 @@ export function createCalm(api) {
   function show(job) {
     const el = document.getElementById('toast')
     if (!el) return
-    holding = !!job.chip
+    const chip = !!(job.chip || job.nice)
+    holding = chip
     if (document.body) document.body.classList.add('tip-on')
     el.replaceChildren()
     el.classList.toggle('new-chip', !!job.chip)
-    if (job.chip && api.icon) {
+    el.classList.toggle('nice-chip', !!job.nice)
+    if (chip && api.icon) {
       const ico = api.icon(job.step)
       if (ico) {
         const wrap = document.createElement('span')
@@ -138,7 +166,8 @@ export function createCalm(api) {
     }
     el.hidden = false
     clearTimeout(timer)
-    const ms = job.chip ? 2000 : (job.act ? 8000 : 2400)
+    const ms = job.nice ? 1500 : job.chip ? 2000 : (job.act ? 8000 : 2400)
+    if (job.nice) chime()
     timer = setTimeout(finish, ms)
   }
   function finish() {
@@ -150,9 +179,10 @@ export function createCalm(api) {
     if (el) {
       el.hidden = true
       el.classList.remove('new-chip')
+      el.classList.remove('nice-chip')
     }
     if (document.body) document.body.classList.remove('tip-on')
   }
   apply()
-  return { quiet, hotN, workbenchOn, botOn, machinesOn, allOn, dump, adopt, setAll, note, say, apply }
+  return { quiet, hotN, workbenchOn, botOn, machinesOn, allOn, dump, adopt, setAll, note, say, cheer, apply }
 }

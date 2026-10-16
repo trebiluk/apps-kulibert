@@ -30,6 +30,7 @@ export function createSession(api) {
   let home = null
   const hotSlot = { survival: 0, creative: 0 }
   let hot = 0
+  const wins = { log: false, make: false, place: false, wall: false }
   let bagSel = -1
   let bagSkip = 0
   function slotsHeld() {
@@ -1455,6 +1456,112 @@ export function createSession(api) {
     clearTimeout(armCraftFollow.timer)
     armCraftFollow.timer = setTimeout(() => pokeCraft(), 950)
   }
+  function needName(item) {
+    if (item === 'plankAny') return t('planks')
+    if (item === 'stoneAny') return t('stone')
+    if (item === 'woolAny') return t('woolAny')
+    return itemName(item)
+  }
+  function needIconKey(item) {
+    if (item === 'plankAny') return 'planks'
+    if (item === 'stoneAny') return 'stone'
+    if (item === 'woolAny') return 'woolBlue'
+    return item
+  }
+  function focusNeed(item, g) {
+    const map = { plankAny: 'planks', stoneAny: 'stone', woolAny: 'woolBlue' }
+    const id = map[item] || item
+    const hit = RECIPES.find((x) => x.id === id || x.out[0] === id)
+    if (!hit || !recipeOpen(hit)) return
+    if (hit.id !== craftId) returnTray()
+    craftId = hit.id
+    craftFx = 'slide'
+    if (g) paintCraft(g)
+  }
+  function pourTray(r) {
+    if (!r) return false
+    if (trayId !== r.id) {
+      returnTray()
+      trayId = r.id
+      trayPlaced = r.in.map(() => 0)
+      trayWool = r.in.map(() => '')
+    }
+    const takes = fillTakes(r, (item) => countOf(bag, item), trayPlaced)
+    let any = false
+    takes.forEach((takeN, i) => {
+      if (!(takeN > 0)) return
+      const need = r.in[i][0]
+      if (need === 'woolAny') {
+        let left = takeN
+        for (const c of ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']) {
+          const d = Math.min(bag.count(c), left)
+          if (d > 0 && bag.take(c, d)) {
+            trayWool[i] = c
+            left -= d
+            any = true
+          }
+          if (!left) break
+        }
+        trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+      } else if (need === 'stoneAny') {
+        let left = takeN
+        for (const c of ['stone', 'slate', 'coal']) {
+          const d = Math.min(bag.count(c), left)
+          if (d > 0 && bag.take(c, d)) {
+            trayWool[i] = mixAdd(trayWool[i], c, d)
+            left -= d
+            any = true
+          }
+          if (!left) break
+        }
+        trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+      } else if (need === 'plankAny') {
+        let left = takeN
+        for (const c of ['planks', 'birchPlanks', 'pinePlanks']) {
+          const d = Math.min(bag.count(c), left)
+          if (d > 0 && bag.take(c, d)) {
+            trayWool[i] = mixAdd(trayWool[i], c, d)
+            left -= d
+            any = true
+          }
+          if (!left) break
+        }
+        trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
+      } else if (bag.take(need, takeN)) {
+        trayPlaced[i] = (trayPlaced[i] || 0) + takeN
+        any = true
+      }
+    })
+    if (any) noteTray()
+    return any
+  }
+  function cheer(kind) {
+    if (!Object.prototype.hasOwnProperty.call(wins, kind) || wins[kind]) return
+    if (mode === 'creative') return
+    wins[kind] = true
+    if (api.markDirty) api.markDirty()
+    if (api.cheer) api.cheer(kind)
+  }
+  function makeGoal(id) {
+    const r = RECIPES.find((x) => x.id === id)
+    if (!r || !recipeOpen(r)) return false
+    if (!craftOk(r.id)) return false
+    const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
+    const st = craftStatus(r, seenBag(r.id), stations, mode !== 'survival')
+    craftId = r.id
+    craftOpen = true
+    if (st.ok && r.id !== 'bread') {
+      const made = craftMany(r, 1)
+      if (api.open) api.open('crafting')
+      return !!made
+    }
+    if (api.open) api.open('crafting')
+    if (pourTray(r)) paintHotbar()
+    const sheet = document.getElementById('sheet')
+    const g = sheet && sheet.querySelector('.ggrid')
+    if (g) paintCraft(g)
+    return true
+  }
   function paintCraft(g, soft, opts) {
     armTrayWatch()
     if (soft && paintCraftSlots(g)) return
@@ -1622,12 +1729,32 @@ export function createSession(api) {
         if (node) mark.append(node)
         b.append(mark)
       }
-      if (locked) {
-        const lock = document.createElement('span')
-        lock.className = 'lock'
-        lock.setAttribute('aria-hidden', 'true')
-        lock.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14"><rect x="6" y="11" width="12" height="9" rx="1" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="2"/></svg>'
-        b.append(lock)
+      const short = (st.needs || []).filter((row) => row[1] < row[2])
+      if (short.length) {
+        const [item, have, n] = short[0]
+        const miss = document.createElement('span')
+        miss.className = 'need-miss'
+        miss.dataset.item = item
+        miss.setAttribute('role', 'button')
+        miss.tabIndex = -1
+        const mArt = document.createElement('span')
+        mArt.className = 'art'
+        const mKey = needIconKey(item)
+        const mNode = itemIcon(ITEMS[mKey], mKey)
+        if (mNode) mArt.append(mNode)
+        const mNum = document.createElement('span')
+        mNum.className = 'need-n'
+        mNum.textContent = String(n - have)
+        miss.append(mArt, mNum)
+        miss.title = t('needLine').replace('{n}', String(n - have)).replace('{item}', needName(item))
+        miss.setAttribute('aria-label', miss.title)
+        miss.addEventListener('pointerdown', (e) => e.stopPropagation())
+        miss.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          focusNeed(item, g)
+        })
+        b.append(miss)
       }
       b.addEventListener('pointerdown', (e) => e.stopPropagation())
       b.addEventListener('click', () => {
@@ -1712,7 +1839,7 @@ export function createSession(api) {
           icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : item === 'stoneAny' ? ITEMS.stone : item === 'plankAny' ? ITEMS.planks : ITEMS[item]),
           t,
           resultName: (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : ''),
-          fillLabel: t('fillTray'),
+          fillLabel: t('fillParts'),
           makeLabel: isBread ? t('bakeInOven') : t('make'),
           maxLabel: t('timesMax'),
           makeDisabled: isBread ? false : !ready,
@@ -1725,53 +1852,7 @@ export function createSession(api) {
           onReturn: (index) => returnSlot(index),
           onFill: () => {
             if (!craftOk(r.id)) return
-            const takes = fillTakes(r, (item) => countOf(bag, item), trayPlaced)
-            let any = false
-            takes.forEach((takeN, i) => {
-              if (!(takeN > 0)) return
-              const need = r.in[i][0]
-              if (need === 'woolAny') {
-                let left = takeN
-                for (const c of ['woolBlue', 'woolGreen', 'woolRed', 'woolTan']) {
-                  const d = Math.min(bag.count(c), left)
-                  if (d > 0 && bag.take(c, d)) {
-                    trayWool[i] = c
-                    left -= d
-                    any = true
-                  }
-                  if (!left) break
-                }
-                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
-              } else if (need === 'stoneAny') {
-                let left = takeN
-                for (const c of ['stone', 'slate', 'coal']) {
-                  const d = Math.min(bag.count(c), left)
-                  if (d > 0 && bag.take(c, d)) {
-                    trayWool[i] = mixAdd(trayWool[i], c, d)
-                    left -= d
-                    any = true
-                  }
-                  if (!left) break
-                }
-                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
-              } else if (need === 'plankAny') {
-                let left = takeN
-                for (const c of ['planks', 'birchPlanks', 'pinePlanks']) {
-                  const d = Math.min(bag.count(c), left)
-                  if (d > 0 && bag.take(c, d)) {
-                    trayWool[i] = mixAdd(trayWool[i], c, d)
-                    left -= d
-                    any = true
-                  }
-                  if (!left) break
-                }
-                trayPlaced[i] = (trayPlaced[i] || 0) + (takeN - left)
-              } else if (bag.take(need, takeN)) {
-                trayPlaced[i] = (trayPlaced[i] || 0) + takeN
-                any = true
-              }
-            })
-            if (any) { paintHotbar(); noteTray() }
+            if (pourTray(r)) paintHotbar()
             paintCraft(g, true)
           },
           onMake: () => {
@@ -1797,6 +1878,7 @@ export function createSession(api) {
             r.in.forEach((_, i) => { trayPlaced[i] = 0 })
             noteTray()
             markFound(r.out[0])
+            cheer('make')
             if (r.out[0] === 'woodTool') {
               markPath('pathTool')
               api.toast(t('woodPickToast'))
@@ -1829,6 +1911,16 @@ export function createSession(api) {
       const trayEmpty = r.in.every((_, i) => !(trayPlaced[i] > 0))
       const bagEnough = !isBread && r.in.every(([item, n]) => countOf(bag, item) >= n)
       if (fillBtn && trayEmpty && bagEnough) fillBtn.classList.add('lit')
+      if (fillBtn && !fillBtn.querySelector('.fill-ico')) {
+        const label = fillBtn.textContent
+        fillBtn.replaceChildren()
+        const ico = document.createElement('span')
+        ico.className = 'fill-ico'
+        ico.setAttribute('aria-hidden', 'true')
+        const pic = menuIcon('fill')
+        if (pic) ico.append(pic)
+        fillBtn.append(ico, document.createTextNode(label))
+      }
       if (leftFor === r.id) {
         const left = document.createElement('p')
         left.className = 'gnote left-line'
@@ -1840,6 +1932,28 @@ export function createSession(api) {
         chip.className = 'gate-chip'
         chip.textContent = blocked
         side.append(chip)
+      }
+      for (const [item, have, n] of st.needs || []) {
+        if (!(n > have)) continue
+        const line = document.createElement('button')
+        line.type = 'button'
+        line.className = 'need-line'
+        line.dataset.item = item
+        const art = document.createElement('span')
+        art.className = 'art'
+        const key = needIconKey(item)
+        const node = itemIcon(ITEMS[key], key)
+        if (node) art.append(node)
+        const lab = document.createElement('span')
+        lab.textContent = t('needLine').replace('{n}', String(n - have)).replace('{item}', needName(item))
+        line.append(art, lab)
+        line.addEventListener('pointerdown', (e) => e.stopPropagation())
+        line.addEventListener('click', (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          focusNeed(item, g)
+        })
+        side.append(line)
       }
       if (note) {
         const slotChip = document.createElement('p')
@@ -2393,6 +2507,7 @@ export function createSession(api) {
     for (const [item, need] of r.in) if (!takeNamed(item, need * n)) return false
     const spot = placeResult(bag, r.out[0], r.out[1] * n, hot)
     markFound(r.out[0])
+    cheer('make')
     if (spot.left) {
       const p = api.pos()
       spawnDrop(r.out[0], spot.left, p[0], p[1] + 0.3, p[2], 'full')
@@ -2520,6 +2635,7 @@ export function createSession(api) {
     if (id === 28) giveLoose('wheatSeeds', wheatSeedCount(x, y, z), x, y, z)
     if (id === 58) giveLoose('wheatSeeds', tuftSeedCount(x, y, z), x, y, z)
     if (id === 11) {
+      cheer('log')
       markPath('pathTree')
       if (api.noteCalm) api.noteCalm('tree')
     }
@@ -2920,7 +3036,11 @@ export function createSession(api) {
       meta.set(x + ',' + y + ',' + z, { kind: 'bunk', ...normalizeBed(d), restAt: d.restAt || 0 })
     }
     if (id === 30) markPath('pathDoor')
-    if (id === 22 && api.noteCalm) api.noteCalm('bench')
+    if (id === 22) {
+      markPath('pathBench')
+      if (api.noteCalm) api.noteCalm('bench')
+    }
+    cheer('place')
     bagHist.push({ type: 'place', item: key, n: 1 })
     redoBag.length = 0
     paintHotbar()
@@ -3106,6 +3226,7 @@ export function createSession(api) {
     const made = make(r, bag, hot)
     if (!made) return { ok: false, why: 'full' }
     markFound(r.out[0])
+    cheer('make')
     if (r.out[0] === 'woodTool') {
       markPath('pathTool')
       api.toast(t('woodPickToast'))
@@ -3153,6 +3274,7 @@ export function createSession(api) {
         tray: { id: trayId, placed: trayPlaced.slice(), wool: trayWool.slice() },
         energy: { bolts: energy.bolts, acc: energy.acc, toasted: energy.toasted },
         hud: api.hudDump ? api.hudDump() : null,
+        wins: { log: wins.log ? 1 : 0, make: wins.make ? 1 : 0, place: wins.place ? 1 : 0, wall: wins.wall ? 1 : 0 },
       },
       econ: wallet.dump(),
       meta: m,
@@ -3209,6 +3331,17 @@ export function createSession(api) {
     if (mode === 'creative' && bag.count('buildWand') < 1) giveItem('buildWand', 1)
     for (const item of (doc.econ && doc.econ.found) || []) markFound(item)
     if (api.hudAdopt) api.hudAdopt(p.hud, worldPlayed(p, doc))
+    const savedWins = p.wins
+    if (savedWins && typeof savedWins === 'object') {
+      wins.log = !!savedWins.log
+      wins.make = !!savedWins.make
+      wins.place = !!savedWins.place
+      wins.wall = !!savedWins.wall
+    } else if (worldPlayed(p, doc)) {
+      wins.log = wins.make = wins.place = wins.wall = true
+    } else {
+      wins.log = wins.make = wins.place = wins.wall = false
+    }
     paintChip()
     syncDig()
     paintEnergy()
@@ -3420,6 +3553,8 @@ export function createSession(api) {
     craftMany,
     setCraftOpen(v) { craftOpen = !!v },
     focusCraft(id) { craftId = id || ''; craftOpen = true },
+    makeGoal,
+    noteWin: (kind) => cheer(kind),
     lostItems: () => lost.map((d) => d.item + ':' + d.n),
     spend: (item, n) => { const ok = bag.take(item, n); if (ok) paintHotbar(); return ok },
     spendBlock: (id, n) => { const hit = Object.entries(ITEMS).find(([, v]) => v.block === id); const ok = hit ? bag.take(hit[0], n) : false; paintHotbar(); return ok },

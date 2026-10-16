@@ -1,11 +1,13 @@
 // Picture tour, Try this goals, accessibility prefs, and the teacher outbox. Local only.
 import { menuIcon } from './icons.js'
 const KEY = 'bloxbert-learn'
+const HAMMER = '<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>'
 export function createLearn(api) {
   const state = load()
   const goals = [
     { id: 'pathTree', need: 1, pay: 2, n: 0 },
-    { id: 'pathTool', need: 1, pay: 3, n: 0 },
+    { id: 'pathBench', need: 1, pay: 2, n: 0, make: 'workbench' },
+    { id: 'pathTool', need: 1, pay: 3, n: 0, make: 'woodTool' },
     { id: 'pathStone', need: 1, pay: 3, n: 0 },
     { id: 'pathCoal', need: 1, pay: 4, n: 0 },
     { id: 'pathDoor', need: 1, pay: 4, n: 0 },
@@ -16,6 +18,11 @@ export function createLearn(api) {
     if (!saved) continue
     g.n = saved.n || 0
     g.done = !!saved.done
+  }
+  const benchI = goals.findIndex((g) => g.id === 'pathBench')
+  if (benchI >= 0 && !goals[benchI].done && goals.some((g, i) => i > benchI && g.done)) {
+    goals[benchI].done = true
+    goals[benchI].n = goals[benchI].need
   }
   function remember() {
     state.goals = Object.fromEntries(goals.map((g) => [g.id, { n: g.n, done: !!g.done }]))
@@ -97,15 +104,17 @@ export function createLearn(api) {
       const was = !el.hidden
       el.classList.remove('path-out')
       el.hidden = true
+      syncMake(null)
       if (was && api.releaseHint) api.releaseHint("path")
       return
     }
-    if (pathGap || celebrate) return
+    if (pathGap || celebrate) { syncMake(null); return }
     const g = currentGoal()
     if (!g || cardHidden) {
       const was = !el.hidden
       el.hidden = true
       el.replaceChildren()
+      syncMake(null)
       if (was && api.releaseHint) api.releaseHint("path")
       return
     }
@@ -113,6 +122,7 @@ export function createLearn(api) {
       el.classList.remove('path-out')
       el.hidden = true
       el.replaceChildren()
+      syncMake(null)
       if (api.queueHint) api.queueHint("path")
       return
     }
@@ -132,6 +142,7 @@ export function createLearn(api) {
     pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)
+    syncMake(g)
   }
   function placePath(el, follow) {
     if (!el) return
@@ -203,6 +214,7 @@ export function createLearn(api) {
         const chip = document.getElementById('path-chip')
         if (!chip || chip.hidden) return
         placePath(chip, true)
+        placeMake()
       })
       return
     }
@@ -285,33 +297,106 @@ export function createLearn(api) {
   function tourOn() { return !state.tourDone }
   function skipTour() { state.tourDone = true; save() }
   function resetTour() { state.tourDone = false; save() }
+  function ensureMake() {
+    let b = document.getElementById('path-make')
+    if (b) return b
+    const chip = document.getElementById('path-chip')
+    if (!chip || !chip.parentNode) return null
+    b = document.createElement('button')
+    b.type = 'button'
+    b.id = 'path-make'
+    b.className = 'path-make'
+    b.hidden = true
+    chip.insertAdjacentElement('afterend', b)
+    b.addEventListener('pointerdown', (e) => e.stopPropagation())
+    b.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      pressMake()
+    })
+    return b
+  }
+  function placeMake() {
+    const b = document.getElementById('path-make')
+    const chip = document.getElementById('path-chip')
+    if (!b || b.hidden || !chip || chip.hidden) return
+    const r = chip.getBoundingClientRect()
+    const gap = 8
+    const w = Math.max(44, b.offsetWidth || 108)
+    const h = Math.max(44, b.offsetHeight || 44)
+    const blockers = ['pause-btn', 'fs-btn', 'game-menu', 'hotbar', 'jump-col', 'stick-pad', 't-crouch']
+    const hits = (x, y) => {
+      const box = { left: x, top: y, right: x + w, bottom: y + h }
+      if (box.right > window.innerWidth - 4 || box.bottom > window.innerHeight - 4 || box.left < 4 || box.top < 4) return true
+      for (const id of blockers) {
+        const el = document.getElementById(id)
+        if (!el || el.hidden) continue
+        const s = getComputedStyle(el)
+        if (s.display === 'none' || s.visibility === 'hidden') continue
+        const br = el.getBoundingClientRect()
+        if (br.width < 2 || br.height < 2) continue
+        if (box.left < br.right && box.right > br.left && box.top < br.bottom && box.bottom > br.top) return true
+      }
+      return false
+    }
+    const spots = [
+      [r.left, r.bottom + gap],
+      [r.right + gap, r.top],
+      [Math.max(8, r.right - w), r.bottom + gap],
+      [8, r.bottom + gap],
+    ]
+    let left = spots[0][0]
+    let top = spots[0][1]
+    for (const spot of spots) {
+      if (!hits(spot[0], spot[1])) { left = spot[0]; top = spot[1]; break }
+    }
+    b.style.left = Math.round(left) + 'px'
+    b.style.top = Math.round(top) + 'px'
+  }
+  function syncMake(g) {
+    const b = ensureMake()
+    if (!b) return
+    const show = !!(g && g.make) && !state.hideTips && !(api.survival && !api.survival())
+    if (!show) {
+      b.hidden = true
+      return
+    }
+    b.hidden = false
+    if (b.dataset.for !== g.make) {
+      b.dataset.for = g.make
+      b.replaceChildren()
+      const ico = document.createElement('span')
+      ico.className = 'path-make-ico'
+      ico.innerHTML = HAMMER
+      const lab = document.createElement('span')
+      lab.className = 'path-make-lab'
+      lab.textContent = api.t('make')
+      b.append(ico, lab)
+      b.setAttribute('aria-label', api.t('make'))
+    }
+    placeMake()
+  }
+  function goalMake() {
+    const g = currentGoal()
+    return g && g.make ? g.make : ''
+  }
+  function hasMake() {
+    return !!goalMake() && !state.hideTips && !(api.survival && !api.survival())
+  }
+  function pressMake() {
+    const id = goalMake()
+    if (!id || !api.makeGoal) return false
+    return api.makeGoal(id)
+  }
   function celebrateStep(g) {
     clearTimeout(celebrate)
+    celebrate = 0
+    cardHidden = false
     const nxt = currentGoal()
-    const el = document.getElementById('path-chip')
-    const quiet = !el || state.hideTips || (api.survival && !api.survival())
-    const finish = () => {
-      celebrate = 0
-      cardHidden = false
-      paintPath()
-      if (!nxt) api.toast(api.t('goalDone'))
-    }
-    if (quiet) { finish(); return }
-    el.classList.remove('path-out')
-    el.hidden = false
-    el.replaceChildren()
-    const title = document.createElement('span')
-    title.className = 'path-title'
-    title.textContent = api.t(g.id === 'pathTree' && api.touch && api.touch() ? 'pathTreeTouch' : g.id)
-    const mark = document.createElement('span')
-    mark.className = 'path-check'
-    const icon = menuIcon('check')
-    if (icon) mark.append(icon)
-    el.append(title, mark)
-    celebrate = setTimeout(finish, 800)
+    paintPath()
+    if (!nxt) api.toast(api.t('goalDone'))
   }
   function bump(id, n = 1) {
-    if (celebrate) return
     const g = goals.find((x) => x.id === id)
     if (!g || g.done) return
     const showing = currentGoal()
@@ -478,5 +563,5 @@ export function createLearn(api) {
     save()
     return true
   }
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, sync, goals: () => goals, cancelAuto, notes, addNote, hideTips, setHideTips }
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, sync, goals: () => goals, cancelAuto, notes, addNote, hideTips, setHideTips, pressMake, hasMake }
 }

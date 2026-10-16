@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.254', date: '2026-10-16', lines: {
+    en: ['Goals now have a Make button, and your first wins cheer.'],
+    es: ['Las metas ahora tienen un botón Hacer, y tus primeros logros se celebran.'],
+    uk: ['Цілі тепер мають кнопку «Зробити», а перші перемоги вітаються.'],
+    ru: ['У целей теперь есть кнопка «Сделать», а первые победы празднуются.'],
+    ar: ['صار للأهداف زر صنع، وانتصاراتك الأولى تُحتفل بها.'],
+    'fa-AF': ['هدف‌ها حالا دکمه «بساز» دارند، و نخستین بردها تشویق می‌شوند.'],
+    rw: ['Intego ubu zifite buto Kora, kandi intsinzi zawe za mbere zirashimwa.'],
+    ti: ['ዕላማታት ሕጂ መጠወቒ «ግበር» ኣለወን፡ ቀዳሞት ዓወታትካ ድማ ይዕወጉ።'],
+    zh: ['目标卡现在有“制作”按钮，你的第一次成功会有欢呼。'],
+    fr: ['Les objectifs ont un bouton Fabriquer, et tes premières victoires sont fêtées.'],
+    pt: ['As metas agora têm um botão Fazer, e suas primeiras vitórias são comemoradas.'],
+    vi: ['Mục tiêu giờ có nút Làm, và những chiến thắng đầu tiên được cổ vũ.'],
+  }},
   { v: '2.5.253', date: '2026-10-16', lines: {
     en: ['If you already have a Bot, we point to it so you can give it orders.'],
     es: ['Si ya tienes un Bot, te lo señalamos para que le des órdenes.'],

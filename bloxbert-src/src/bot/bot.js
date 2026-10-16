@@ -404,6 +404,7 @@ export function initBot(ctx) {
     if (kind === 'blocked' || kind === 'done' || kind === 'win') say(bot, bot.stepN || 0, bot.stepTotal || 0)
     if (ctx.markDirty) ctx.markDirty()
     if (ctx.noteEdit && bot.runLog && bot.runLog.touched) ctx.noteEdit()
+    if (kind === 'win' && ctx.onWall) ctx.onWall(bot)
     if (ctx.saveNow) ctx.saveNow()
     sync()
   }
@@ -463,6 +464,8 @@ export function initBot(ctx) {
         return why
       }
       bot.runLog.placed += 1
+      if (!bot.runLog.spots) bot.runLog.spots = []
+      bot.runLog.spots.push([x, y, z])
       if (from === 'planks') bot.runLog.planks += 1
       else if (from) bot.runLog.items.push(from)
       return ''

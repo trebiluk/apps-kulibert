@@ -4609,6 +4609,7 @@ let cardClosedAt = 0
 let closeHow = ''
 let dropLockLook = false
 let lockSwallowUntil = 0
+let lookHoldUntil = 0
 let lockGainedAt = 0
 let resumeSwallow = false
 let shopsLive = false
@@ -4643,6 +4644,10 @@ calm = createCalm({
   },
 })
 function calmIcon(step) {
+  if (step === 'nice-log') return menuIcon('leaf')
+  if (step === 'nice-make') return menuIcon('check')
+  if (step === 'nice-place') return menuIcon('builds')
+  if (step === 'nice-wall') return menuIcon('walls')
   if (step === 'bench') {
     const pic = document.createElement('canvas')
     pic.width = 32
@@ -4708,6 +4713,7 @@ session = createSession({
   workbenchOn: () => calm.workbenchOn(),
   machinesOn: () => calm.machinesOn(),
   noteCalm: (step) => calm.note(step),
+  cheer: (kind) => calm.cheer(kind),
   hudDump: () => calm.dump(),
   hudAdopt: (raw, played) => calm.adopt(raw, played),
   onMode: () => calm.apply(),
@@ -5720,6 +5726,7 @@ const learn = createLearn({
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
   world: () => WORLD,
   count: (item) => (session && session.bag ? session.bag.count(item) : 0),
+  makeGoal: (id) => !!(session && session.makeGoal && session.makeGoal(id)),
   hintTaken: () => hintTaken(),
   queueHint: (kind) => queueHint(kind),
   claimHint: (kind) => claimHint(kind),
@@ -7064,6 +7071,10 @@ document.addEventListener('keydown', (e) => {
     }
     e.preventDefault()
     if (shutByKey()) return
+    if (learn && learn.hasMake && learn.hasMake() && $('sheet') && $('sheet').hidden) {
+      if (!e.repeat) learn.pressMake()
+      return
+    }
     openMenu(true); panels.open('inventory'); return
   }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
@@ -7808,6 +7819,7 @@ document.addEventListener('mousemove', (e) => {
   const dy = e.movementY || 0
   if (dropLockLook) { dropLockLook = false; return }
   if (performance.now() < lockSwallowUntil) return
+  if (performance.now() < lookHoldUntil) return
   applyLockedLook(dx, dy)
 }, true)
 let deskStationAt = 0
@@ -7882,6 +7894,7 @@ canvas.addEventListener('pointerdown', (e) => {
 })
 canvas.addEventListener('pointermove', (e) => {
   if (!look || e.pointerId !== look.id) return
+  if (performance.now() < lookHoldUntil) return
   if (look.pt === 'touch') {
     const drift = Math.hypot(e.clientX - look.sx, e.clientY - look.sy)
     look.moved = drift
@@ -9649,6 +9662,50 @@ if (window.MutationObserver) {
   if (sheetWatch) watch.observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
   if (drawerWatch) watch.observe(drawerWatch, { attributes: true, attributeFilter: ['class', 'hidden'] })
 }
+function aimAt(wx, wy, wz) {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const eye = noa.ents.getPositionData(noa.playerEntity)
+  const eyeY = (eye && eye.height ? eye.height : 1.6) * 0.9
+  const dx = wx - p[0]
+  const dy = wy - (p[1] + eyeY)
+  const dz = wz - p[2]
+  const flat = Math.hypot(dx, dz) || 1
+  return { h: Math.atan2(dx, dz), p: -Math.atan2(dy, flat) }
+}
+function lerpAng(a, b, t) {
+  let d = b - a
+  d = ((d + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI
+  return a + d * t
+}
+let camEase = null
+function frameWall(bot) {
+  const spots = bot && bot.runLog && bot.runLog.spots
+  let x = 0
+  let y = 0
+  let z = 0
+  if (spots && spots.length) {
+    for (const s of spots) { x += s[0] + 0.5; y += s[1] + 0.5; z += s[2] + 0.5 }
+    x /= spots.length
+    y /= spots.length
+    z /= spots.length
+  } else if (bot) {
+    x = bot.x + 0.5
+    y = bot.y + 1.5
+    z = bot.z + 0.5
+  } else return
+  const aim = aimAt(x, y, z)
+  const reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  if (reduce) { setLook(aim.h, aim.p); return }
+  camEase = { t0: performance.now(), ms: 800, fromH: noa.camera.heading, fromP: noa.camera.pitch, toH: aim.h, toP: aim.p }
+  lookHoldUntil = performance.now() + 800
+}
+noa.on('tick', () => {
+  if (!camEase) return
+  const t = Math.min(1, (performance.now() - camEase.t0) / camEase.ms)
+  const e = t < 1 ? t * t * (3 - 2 * t) : 1
+  setLook(lerpAng(camEase.fromH, camEase.toH, e), camEase.fromP + (camEase.toP - camEase.fromP) * e)
+  if (t >= 1) camEase = null
+})
 bot = initBot({
   noa, t, toast, getVoxel,
   markDirty: () => { dirty = true },
@@ -9671,6 +9728,10 @@ bot = initBot({
   giveItem: (k, n) => { if (session && session.give) session.give(k, n || 1) },
   botOn: () => calm.botOn(),
   onBotRun: () => calm.note('run'),
+  onWall: (b) => {
+    if (session && session.noteWin) session.noteWin('wall')
+    frameWall(b)
+  },
 })
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}

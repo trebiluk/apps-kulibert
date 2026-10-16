@@ -1434,53 +1434,51 @@ const BELT_UI = {
 for (const [lang, row] of Object.entries(BELT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
 const CALM = {
-  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New' },
-  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове' },
-  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое' },
-  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo' },
-  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد' },
-  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو' },
-  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya' },
-  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ' },
+  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New', pathBench: 'Make a Workbench', fillParts: 'Fill parts', needLine: '{n} {item} needed', niceLog: 'Nice! Log', niceMake: 'Nice! Made', nicePlace: 'Nice! Placed', niceWall: 'Nice! Wall' },
+  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове', pathBench: 'Зроби верстак', fillParts: 'Наповни деталі', needLine: 'треба {n} {item}', niceLog: 'Гарно! Колода', niceMake: 'Гарно! Зробив', nicePlace: 'Гарно! Поставив', niceWall: 'Гарно! Стіна' },
+  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое', pathBench: 'Сделай верстак', fillParts: 'Заполни детали', needLine: 'нужно {n} {item}', niceLog: 'Здорово! Бревно', niceMake: 'Здорово! Сделал', nicePlace: 'Здорово! Поставил', niceWall: 'Здорово! Стена' },
+  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo', pathBench: 'Haz un banco', fillParts: 'Llenar piezas', needLine: 'faltan {n} {item}', niceLog: '¡Bien! Tronco', niceMake: '¡Bien! Hecho', nicePlace: '¡Bien! Puesto', niceWall: '¡Bien! Muro' },
+  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد', pathBench: 'اصنع منضدة', fillParts: 'املأ القطع', needLine: 'يلزم {n} {item}', niceLog: 'أحسنت! جذع', niceMake: 'أحسنت! صنع', nicePlace: 'أحسنت! وضع', niceWall: 'أحسنت! جدار' },
+  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو', pathBench: 'میز کار بساز', fillParts: 'قطعه‌ها را پر کن', needLine: '{n} {item} لازم است', niceLog: 'آفرین! کنده', niceMake: 'آفرین! ساخت', nicePlace: 'آفرین! گذاشت', niceWall: 'آفرین! دیوار' },
+  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya', pathBench: 'Kora ameza', fillParts: 'Uzuza ibice', needLine: 'bikenewe {n} {item}', niceLog: 'Ni byiza! Igiti', niceMake: 'Ni byiza! Byakozwe', nicePlace: 'Ni byiza! Byashyizwe', niceWall: 'Ni byiza! Urukuta' },
+  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ', pathBench: 'ሰደቓ ግበር', fillParts: 'ኣቑሑት መልእ', needLine: '{n} {item} የድሊ', niceLog: 'ጽቡቕ! ግንድ', niceMake: 'ጽቡቕ! ተገይሩ', nicePlace: 'ጽቡቕ! ተቐሚጡ', niceWall: 'ጽቡቕ! መንደቕ' },
 }
 for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
 const KIDWALK = {
   en: {
-    whatsNewBody: 'Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard.',
+    whatsNewBody: 'Goals now have a Make button, and your first wins cheer.',
     walkCloser: 'Walk closer',
   },
   es: {
-    whatsNewBody: 'Cortar funciona donde tocas, lo que construye tu Bot sigue ahí al recargar, y puedes empezar con el teclado.',
+    whatsNewBody: 'Las metas ahora tienen un botón Hacer, y tus primeros logros se celebran.',
     walkCloser: 'Acércate',
   },
   uk: {
-    whatsNewBody: 'Рубання працює там, де ти торкаєшся, будівлі Бота лишаються після перезавантаження, і можна почати з клавіатури.',
+    whatsNewBody: 'Цілі тепер мають кнопку «Зробити», а перші перемоги вітаються.',
     walkCloser: 'Підійди ближче',
   },
   ru: {
-    whatsNewBody: 'Рубка работает там, где ты касаешься, постройки Бота остаются после перезагрузки, и можно начать с клавиатуры.',
+    whatsNewBody: 'У целей теперь есть кнопка «Сделать», а первые победы празднуются.',
     walkCloser: 'Подойди ближе',
   },
   ar: {
-    whatsNewBody: 'القص يعمل حيث تلمس، وبناء البوت يبقى بعد إعادة التحميل، ويمكنك البدء بلوحة المفاتيح.',
+    whatsNewBody: 'صار للأهداف زر صنع، وانتصاراتك الأولى تُحتفل بها.',
     walkCloser: 'اقترب',
   },
   'fa-AF': {
-    whatsNewBody: 'بریدن همان‌جا که لمس می‌کنی کار می‌کند، ساخت بوت بعد از بار دوباره می‌ماند، و با کیبورد می‌توانی شروع کنی.',
+    whatsNewBody: 'هدف‌ها حالا دکمه «بساز» دارند، و نخستین بردها تشویق می‌شوند.',
     walkCloser: 'نزدیک‌تر بیا',
   },
   rw: {
-    whatsNewBody: 'Gukata bikorwa aho ukora, ibyubatswe na Bot biguma nyuma yo gusubiramo, kandi ushobora gutangira ukoresheje clavier.',
+    whatsNewBody: 'Intego ubu zifite buto Kora, kandi intsinzi zawe za mbere zirashimwa.',
     walkCloser: 'Egerekera hafi',
   },
   ti: {
-    whatsNewBody: 'ምቑራጽ ኣብ ዝትንክፎ ይሰርሕ፡ ህንጻ ቦት ድሕሪ ምጽዓን ይጸንሕ፡ ብኪቦርድ ድማ ክትጅምር ትኽእል።',
+    whatsNewBody: 'ዕላማታት ሕጂ መጠወቒ «ግበር» ኣለወን፡ ቀዳሞት ዓወታትካ ድማ ይዕወጉ።',
     walkCloser: 'ቀረብ',
   },
 }
-for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
-
 const KEYBOARD = {
   en: { whatsNewBody: 'Play with just a keyboard: Tab, Enter and Esc work in every menu.' },
   es: { whatsNewBody: 'Juega solo con el teclado: Tab, Enter y Esc funcionan en todos los menús.' },
@@ -1495,3 +1493,4 @@ for (const [lang, row] of Object.entries(KEYBOARD)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
