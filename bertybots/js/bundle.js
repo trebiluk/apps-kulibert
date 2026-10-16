@@ -1,11 +1,11 @@
-/* Berty's Botz BB 0.19.36 — bundled for any http(s) host */
+/* Berty's Botz BB 0.19.37 — bundled for any http(s) host */
 /* One string. Chip, changelog header, vercel header, About — all read this. */
 const APP_NAME = "Berty's Botz";
 const APP_PREFIX = "BB";
-const APP_VERSION = "0.19.36";
+const APP_VERSION = "0.19.37";
 const APP_CHANNEL = "live";
-const APP_CHIP = "BB 0.19.36";
-const APP_BUILT = "2026-10-03";
+const APP_CHIP = "BB 0.19.37";
+const APP_BUILT = "2026-10-15";
 
 const FORMAT = 1;
 const PIECE_CAP = 48;
@@ -1353,11 +1353,7 @@ function boot() {
     if (courseId === "open") {
       if (playing && pose !== "ready") return tr("wheelFront");
       if (pose === "ready") return tr("pressPlay");
-      if (pose === "far") return tr("closer");
-      if (pose === "close") return tr("further");
-      if (pose === "left") return tr("leftWheel");
-      if (pose === "none") return tr("dragOrange");
-      return tr("dragBehind");
+      return tr("putWheelHint");
     }
     if (courseId === "roll") {
       return pose === "ready" ? tr("pressPlay") : tr("looseWheel");
@@ -3051,7 +3047,13 @@ function boot() {
     drawGoalCue();
     drawHomeCue();
     drawRaceBoard();
+    wheelCue = null;
     drawCoach();
+    if (!wheelCue) {
+      wheelCueShown = false;
+      const cueBtn = document.getElementById("wheel-drop");
+      if (cueBtn) cueBtn.hidden = true;
+    }
     drawBerty(now);
   }
 
@@ -3540,29 +3542,85 @@ function boot() {
     return !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   }
 
-  function drawWheelTarget(x, y) {
-    const px = wx(x), py = wy(y);
-    const r = Math.max(18, wr(WHEEL_R + 0.08));
-    const pulse = reducedMotion() ? 1 : 0.86 + 0.14 * Math.sin(performance.now() / 560);
-    ctx.save();
-    ctx.globalAlpha = pulse;
-    ctx.beginPath();
-    ctx.arc(px, py, r, 0, Math.PI * 2);
-    ctx.fillStyle = "rgba(26,20,0,0.78)";
-    ctx.fill();
+  let wheelCue = null;
+  let wheelCueShown = false;
+
+  function showWheelCue(x, y) {
+    const fresh = !wheelCueShown;
+    wheelCue = { x, y };
+    wheelCueShown = true;
+    const btn = document.getElementById("wheel-drop");
+    if (!btn) return;
     const dpr = view.dpr || 1;
-    ctx.lineWidth = Math.max(5, 5 * dpr);
-    ctx.strokeStyle = "#1a1400";
-    ctx.stroke();
-    ctx.lineWidth = Math.max(3, 3 * dpr);
-    ctx.strokeStyle = "#fff6e4";
-    ctx.stroke();
-    ctx.beginPath();
-    ctx.arc(px, py, Math.max(4, r * 0.28), 0, Math.PI * 2);
-    ctx.strokeStyle = "#fff6e4";
-    ctx.lineWidth = Math.max(2, 2 * dpr);
-    ctx.stroke();
-    ctx.restore();
+    const diam = Math.max(28, wr(WHEEL_R * 2) / dpr);
+    const pad = 48;
+    const hit = diam + pad * 2;
+    const cx = wx(x) / dpr;
+    const cy = wy(y) / dpr;
+    btn.hidden = false;
+    btn.style.width = hit + "px";
+    btn.style.height = hit + "px";
+    btn.style.left = (cx - hit / 2) + "px";
+    btn.style.top = (cy - hit / 2) + "px";
+    btn.style.setProperty("--ring", diam + "px");
+    const word = tr("putWheelHere");
+    btn.setAttribute("aria-label", word);
+    const lab = btn.querySelector(".wheel-drop-lab");
+    if (lab) lab.textContent = word;
+    const host = btn.querySelector(".wheel-drop-ico");
+    const type = ["driveR", "driveL", "roller", "steel", "ghost", "move", "erase"].includes(tool) ? tool : "driveR";
+    if (host && host.dataset.tool !== type) {
+      host.dataset.tool = type;
+      host.replaceChildren();
+      const src = document.querySelector('#machine-tools [data-tool="' + type + '"] .pic');
+      if (src) host.append(src.cloneNode(true));
+    }
+    if (fresh) {
+      const ring = btn.querySelector(".wheel-drop-ring");
+      if (ring) {
+        ring.style.animation = "none";
+        void ring.offsetWidth;
+        ring.style.animation = "";
+      }
+    }
+  }
+
+  function placeOnWheelCue(ev) {
+    if (ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }
+    if (playing || !wheelCue) return;
+    const wheels = ["driveR", "driveL", "roller"];
+    const type = wheels.includes(tool) ? tool : "driveR";
+    const spot = wheelCue;
+    const parts = doc.machine.parts || [];
+    const existing = parts.find((p) => p.type === type && p.x != null && Math.hypot(p.x - spot.x, p.y - spot.y) > 0.2);
+    if (existing) {
+      pushHist();
+      existing.x = spot.x;
+      existing.y = spot.y;
+      existing.a = 0;
+      dirty = true;
+    } else if (!parts.some((p) => p.type === type && p.x != null && Math.hypot(p.x - spot.x, p.y - spot.y) <= 0.2)) {
+      addPart({ type, x: spot.x, y: spot.y, a: 0 });
+    }
+    lastReadout = "";
+    showCalmFail("");
+    refreshMeta();
+  }
+
+  const wheelDropBtn = document.getElementById("wheel-drop");
+  if (wheelDropBtn) {
+    wheelDropBtn.addEventListener("click", placeOnWheelCue);
+    wheelDropBtn.addEventListener("keydown", (ev) => {
+      if (ev.code !== "Space" && ev.key !== "Enter") return;
+      ev.stopPropagation();
+    });
+  }
+
+  function drawWheelTarget(x, y) {
+    showWheelCue(x, y);
   }
 
   function drawCoach() {
@@ -4308,6 +4366,7 @@ function boot() {
       if (el && el.closest && el.closest("input, textarea, select")) return;
       const key = ev.key.length === 1 ? ev.key.toLowerCase() : ev.key;
       if (ev.code === "Space") {
+        if (el && el.closest && el.closest("#wheel-drop")) return;
         ev.preventDefault();
         if (won) return;
         playing ? stopPlay() : startPlay();

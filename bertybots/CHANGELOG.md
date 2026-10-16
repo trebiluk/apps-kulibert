@@ -28,6 +28,11 @@ Rules:
 
 ---
 
+## 0.19.37 — Dashed wheel hint — 2026-10-15
+
+- The level 1 hint is a dashed ring, not a dark wheel. Tap the ring, or Tab to it and press Enter, to put the wheel behind the crate.
+- What's new: The wheel hint is now a dashed ring. Tap it to place your wheel.
+
 ## 0.19.36 — Helper and floor — 2026-10-03
 
 - The shop-floor arrow stays off during Play, and it is one arrow.
