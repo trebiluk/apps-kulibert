@@ -11,6 +11,9 @@
 #bot-code[hidden] { display: none; }
 #bot-code .bot-card {
   width: min(420px, 100%);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   max-height: calc(100% - 8px);
   display: flex;
   flex-direction: column;
@@ -43,6 +46,8 @@
   flex-direction: column;
   gap: 10px;
   min-height: 0;
+  min-width: 0;
+  max-width: 100%;
   flex: 1 1 auto;
 }
 #bot-code .bot-main {
@@ -50,6 +55,7 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0;
+  max-width: 100%;
   min-height: 0;
 }
 #bot-code .bot-palette,
@@ -57,6 +63,9 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 #bot-code .bot-chip,
 #bot-code .bot-slot,
@@ -93,8 +102,22 @@
 }
 #bot-code .bot-slot {
   position: relative;
-  flex: 1 1 120px;
+  flex: 1 1 240px;
+  min-width: min(100%, 220px);
+  max-width: 100%;
+  box-sizing: border-box;
   justify-content: flex-start;
+  overflow: hidden;
+}
+#bot-code .bot-slot > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#bot-code .bot-slot > .bot-x,
+#bot-code .bot-slot > .bot-num {
+  flex-shrink: 0;
 }
 #bot-code .bot-slot.empty {
   border-style: dashed;
@@ -192,12 +215,29 @@
 #bot-code.bot-strip .bot-challenge,
 #bot-code.bot-strip .bot-slot.empty { display: none; }
 #bot-code.bot-strip .bot-tray { flex-wrap: nowrap; overflow-x: auto; }
-#bot-code.bot-strip .bot-slot { flex: 0 0 auto; }
+#bot-code.bot-strip .bot-slot { flex: 0 0 auto; min-width: 48px; max-width: none; overflow: visible; }
 #bot-code .bot-bar .bot-x { width: auto; min-width: 48px; padding: 6px 10px; }
 #bot-code .bot-x svg { width: 18px; height: 18px; }
 @media (max-width: 700px) and (min-height: 521px) {
   #bot-code { align-items: flex-end; background: transparent; }
   #bot-code .bot-card { max-height: min(420px, 46vh); overflow: auto; }
+  #bot-code .bot-tray {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px;
+    scroll-padding-inline-start: 8px;
+    min-height: 64px;
+    flex-shrink: 0;
+  }
+  #bot-code .bot-slot {
+    flex: 0 0 auto;
+    width: max-content;
+    min-width: 48px;
+    max-width: none;
+  }
 }
 @media (max-height: 520px) {
   #bot-code {
