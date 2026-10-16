@@ -3591,6 +3591,11 @@ body.mu237 .transport .tempo {
   body.mu237 #share-btn::before,
   body.mu237 #clear-song::before,
   body.mu237 #more-tools::before { margin-inline-end: 0 !important; }
+  /* Score is is-both, so the older 3-column bar was winning and sliding Clear and Play under the piano. */
+  body.mu237.is-both:not(.show) .transport {
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-rows: 48px 48px !important;
+  }
 }
 
 /* One piano, and a band of chairs */
@@ -3848,6 +3853,17 @@ html[dir="rtl"] body.mu237.menu-open .drawer {
 body.mu237 .transport:has(#more-pop:not([hidden])) {
   overflow: visible !important;
   z-index: 28 !important;
+}
+
+/* MU 2.35.20 — the Score staff fits its notes on every screen. Sideways phones keep the 2.35.19 rule. */
+body.mu237.tab-score .staff-wrap,
+body.mu237.tab-score.is-both .staff-wrap {
+  height: auto !important;
+  max-height: none !important;
+  min-height: 120px !important;
+  flex: 0 0 auto !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
 }
 
 /* MU 2.35.18 — a sideways phone shows one tab. The piano dock stays off. */

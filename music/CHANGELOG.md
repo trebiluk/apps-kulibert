@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.20** · 2026-10-15 · channel **live**
+
+Score notes now show fully on every screen.
+
+## Earlier
+
 **Chip: MU 2.35.19** · 2026-10-15 · channel **live**
 
 Score notes now show fully on a sideways phone.
