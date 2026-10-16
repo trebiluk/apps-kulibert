@@ -219,24 +219,43 @@
 #bot-code .bot-bar .bot-x { width: auto; min-width: 48px; padding: 6px 10px; }
 #bot-code .bot-x svg { width: 18px; height: 18px; }
 @media (max-width: 700px) and (min-height: 521px) {
-  #bot-code { align-items: flex-end; background: transparent; }
-  #bot-code .bot-card { max-height: min(420px, 46vh); overflow: auto; }
-  #bot-code .bot-tray {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    overflow-x: auto;
-    overflow-y: hidden;
+  #bot-code { align-items: flex-end; background: transparent; padding: 8px; }
+  #bot-code .bot-card {
     padding: 8px;
-    scroll-padding-inline-start: 8px;
-    min-height: 64px;
+    max-height: calc(100% - 8px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  #bot-code .bot-tray {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    overflow: visible;
+    padding: 0;
+    gap: 8px;
+    min-height: min-content;
     flex-shrink: 0;
   }
-  #bot-code .bot-slot {
-    flex: 0 0 auto;
-    width: max-content;
-    min-width: 48px;
-    max-width: none;
+  #bot-code:not(.bot-strip) .bot-slot {
+    flex: 1 1 calc(50% - 8px);
+    width: auto;
+    min-width: 44px;
+    max-width: calc(50% - 4px);
+    overflow: hidden;
+  }
+  #bot-code:not(.bot-strip) .bot-slot:not(.empty) {
+    padding-inline-end: 54px;
+  }
+  #bot-code:not(.bot-strip) .bot-slot > .bot-x {
+    position: absolute;
+    inset-inline-end: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-inline-start: 0;
+  }
+  #bot-code:not(.bot-strip) .bot-slot:has(.bot-num) {
+    flex: 1 1 100%;
+    max-width: 100%;
   }
 }
 @media (max-height: 520px) {

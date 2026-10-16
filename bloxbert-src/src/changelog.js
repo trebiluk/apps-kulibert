@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.247', date: '2026-10-16', lines: {
+    en: ['On phones, the whole Bot program now fits on screen.'],
+    es: ['En el telefono, todo el programa del Bot cabe en la pantalla.'],
+    uk: ['На телефонах уся програма Бота тепер вміщується на екрані.'],
+    ru: ['На телефонах вся программа Бота теперь помещается на экране.'],
+    ar: ['على الهواتف، برنامج البوت كله يظهر الآن على الشاشة.'],
+    'fa-AF': ['روی تیلفون‌ها، همهٔ برنامهٔ بوت حالا روی صفحه جا می‌شود.'],
+    rw: ['Kuri telefoni, umushinga wose wa Bot ubu winjira kuri ecran.'],
+    ti: ['ኣብ ተሌፎን መደብ ቦት ሙሉእ ሕጂ ኣብ ስክሪን ይኣትው።'],
+  }},
   { v: '2.5.246', date: '2026-10-16', lines: {
     en: ['Bot program slots now fit on phone screens.'],
     es: ['Las casillas del programa del Bot ahora caben en el teléfono.'],
