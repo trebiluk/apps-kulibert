@@ -4055,6 +4055,18 @@ html[data-theme] .theme-switch[aria-checked="true"]::after {
   left: 32px;
   background: var(--play-fg);
 }
+html[data-theme] .theme-switch .theme-ico {
+  position: absolute;
+  z-index: 1;
+  top: 11px;
+  left: 34px;
+  width: 20px;
+  height: 20px;
+  color: var(--text);
+  pointer-events: none;
+}
+html[data-theme="calm"] .theme-switch .theme-sun,
+html[data-theme="dark"] .theme-switch .theme-moon { display: none; }
 html[data-theme] .hint,
 html[data-theme] .songbar-copy span { color: var(--muted); }
 

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.35.22** · 2026-10-16 · channel **live**
+
+The Dark switch now has a moon and sun icon.
+
+## Earlier
+
 **Chip: MU 2.35.21** · 2026-10-15 · channel **live**
 
 A calm new look, and a Dark mode switch in Settings.
