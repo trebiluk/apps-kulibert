@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.245', date: '2026-10-16', lines: {
+    en: ['The item note now stays at the top and never covers buttons.'],
+    es: ['La nota del objeto ahora queda arriba y no tapa botones.'],
+    uk: ['Нотатка про річ тепер залишається зверху й не закриває кнопки.'],
+    ru: ['Заметка о предмете теперь сверху и не закрывает кнопки.'],
+    ar: ['ملاحظة الغرض تبقى في الأعلى ولا تغطي الأزرار.'],
+    'fa-AF': ['یادداشت چیز حالا بالا می‌ماند و دکمه‌ها را نمی‌پوشاند.'],
+    rw: ['Inyandiko y\'ikintu ubu iguma hejuru kandi ntipfuka utubuto.'],
+    ti: ['መዘኻኸሪ ነገር ሕጂ ኣብ ላዕሊ ይጸንሕ፡ መጠወቒታት ኣይሽፍንን።'],
+  }},
   { v: '2.5.244', date: '2026-10-15', lines: {
     en: ["Press Run and Berty's Bot builds for you!"],
     uk: ['Натисни Запуск, і Бот Берті будує за тебе!'],

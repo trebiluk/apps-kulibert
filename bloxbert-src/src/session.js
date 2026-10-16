@@ -2605,28 +2605,21 @@ export function createSession(api) {
   function clearNote(chip) { clearTimeout(chip._noteT); chip._noteT = 0 }
   function parkHeldNote(chip, fade) {
     const pop = chip.querySelector('.brief-pop')
-    if (!pop) return
-    if (!sideNote() || chip.dataset.open !== '1') {
+    chip.dataset.free = ''
+    chip.style.left = ''
+    chip.style.right = ''
+    chip.style.bottom = ''
+    chip.style.transform = ''
+    if (pop) {
       pop.style.top = ''
-      pop.classList.remove('note-in')
-      return
+      pop.style.left = ''
+      pop.style.right = ''
+      pop.style.bottom = ''
+      pop.style.transform = ''
+      pop.style.position = ''
     }
-    if (chip.dataset.free !== '1') {
-      const mine = chip.getBoundingClientRect()
-      if (mine.width > 2) {
-        chip.style.left = mine.left + 'px'
-        chip.style.right = 'auto'
-        chip.style.transform = 'none'
-        chip.dataset.free = '1'
-      }
-    }
-    const fs = document.getElementById('fs-btn')
-    const fr = fs ? fs.getBoundingClientRect() : null
-    const rtl = document.documentElement.dir === 'rtl'
-    if (fr && fr.width > 2 && fr.height > 2) pop.style.top = (fr.bottom + 12) + 'px'
-    else pop.style.top = ''
-    if (rtl) { pop.style.left = '12px'; pop.style.right = 'auto' }
-    else { pop.style.left = 'auto'; pop.style.right = '12px' }
+    placeHeld(chip)
+    if (!pop || chip.dataset.open !== '1') return
     const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (fade && !reduce) {
       pop.classList.remove('note-in')
@@ -2674,7 +2667,7 @@ export function createSession(api) {
       const s = bag.slots[hot]
       if (s) paintBrief(chip, s.item, { n: s.n, uses: s.uses })
       if (opening && sideNote()) armHeldNote(chip)
-      else clearNote(chip)
+      else { clearNote(chip); placeHeld(chip) }
     })
     document.addEventListener('pointerdown', (e) => {
       if (chip.contains(e.target)) return
@@ -2684,36 +2677,109 @@ export function createSession(api) {
       const s = bag.slots[hot]
       if (s && mode === 'survival') paintBrief(chip, s.item, { n: s.n, uses: s.uses })
     })
+    const reflow = () => { if (!chip.hidden) placeHeld(chip) }
+    window.addEventListener('resize', reflow, true)
+    window.addEventListener('orientationchange', () => { reflow(); setTimeout(reflow, 250) })
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', reflow)
+  }
+  function shownBox(el) {
+    if (!el || el.hidden) return null
+    const s = getComputedStyle(el)
+    if (s.display === 'none' || s.visibility === 'hidden') return null
+    const r = el.getBoundingClientRect()
+    if (r.width < 2 || r.height < 2) return null
+    if (r.bottom < 0 || r.right < 0 || r.top > window.innerHeight || r.left > window.innerWidth) return null
+    return r
   }
   function placeHeld(chip) {
-    const hotbar = document.getElementById('hotbar')
-    const pill = document.getElementById('use-pill')
-    let bottom = 8
-    if (hotbar) {
-      const r = hotbar.getBoundingClientRect()
-      if (r.height > 2) bottom = Math.max(bottom, window.innerHeight - r.top + 8)
-    }
-    if (pill && !pill.hidden) {
-      const r = pill.getBoundingClientRect()
-      if (r.height > 2) bottom = Math.max(bottom, window.innerHeight - r.top + 8)
-    }
-    chip.style.bottom = bottom + 'px'
-    const stick = document.getElementById('stick-pad')
-    const jump = document.getElementById('jump-col')
-    if (!stick && !jump) return
-    requestAnimationFrame(() => {
-      if (!chip.isConnected || chip.hidden) return
-      for (const el of [stick, jump]) {
-        if (!el) continue
-        const shown = getComputedStyle(el).display !== 'none'
-        if (!shown) continue
-        const a = chip.getBoundingClientRect()
-        const b = el.getBoundingClientRect()
-        const hit = a.width > 2 && b.width > 2 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
-        if (hit) chip.style.bottom = (window.innerHeight - b.top + 8) + 'px'
+    if (!chip || !chip.isConnected || chip.hidden) return
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const margin = 16
+    const maxW = Math.max(80, vw - margin * 2)
+    chip.dataset.free = ''
+    chip.style.position = 'fixed'
+    chip.style.bottom = 'auto'
+    chip.style.right = 'auto'
+    chip.style.transform = 'none'
+    chip.style.marginLeft = '0'
+    chip.style.marginRight = '0'
+    chip.style.width = 'max-content'
+    chip.style.maxWidth = maxW + 'px'
+    chip.style.zIndex = '32'
+    const header = document.querySelector('header.top')
+    const hr = shownBox(header)
+    const top = hr ? Math.max(margin, Math.round(hr.bottom + 8)) : margin
+    chip.style.top = top + 'px'
+    chip.style.left = margin + 'px'
+    const noteBox = () => {
+      const a = chip.getBoundingClientRect()
+      const box = { left: a.left, right: a.right, top: a.top, bottom: a.bottom }
+      const pop = chip.querySelector('.brief-pop')
+      if (pop && chip.dataset.open === '1' && !pop.hidden) {
+        const p = pop.getBoundingClientRect()
+        if (p.width > 2 && p.height > 2) {
+          box.left = Math.min(box.left, p.left)
+          box.right = Math.max(box.right, p.right)
+          box.top = Math.min(box.top, p.top)
+          box.bottom = Math.max(box.bottom, p.bottom)
+        }
       }
-      if (chip.dataset.open === '1') parkHeldNote(chip, false)
+      return box
+    }
+    const avoid = []
+    for (const sel of ['#game-menu', '#fs-btn', '.kb-bar .kb-menu', '#path-chip', '#pick-chip', '#jump-col', '#t-crouch', '#stick-pad', '#hotbar']) {
+      const r = shownBox(document.querySelector(sel))
+      if (r) avoid.push(r)
+    }
+    const hitsOf = () => {
+      const a = noteBox()
+      return avoid.filter((b) => a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1)
+    }
+    const centerIn = (a, c) => {
+      const w = Math.min(maxW, c - a)
+      chip.style.maxWidth = w + 'px'
+      const r = chip.getBoundingClientRect()
+      const x = a + Math.max(0, (c - a - r.width) / 2)
+      chip.style.left = Math.max(margin, Math.min(x, vw - margin - r.width)) + 'px'
+    }
+    const r0 = chip.getBoundingClientRect()
+    centerIn(margin, vw - margin)
+    let hits = hitsOf()
+    if (!hits.length) return
+    const row = hits.filter((b) => {
+      const a = noteBox()
+      return b.bottom > a.top && b.top < a.bottom
     })
+    let gaps = [[margin, vw - margin]]
+    for (const b of row) {
+      const next = []
+      for (const [a, c] of gaps) {
+        const L = b.left - 8
+        const R = b.right + 8
+        if (R <= a || L >= c) { next.push([a, c]); continue }
+        if (L > a) next.push([a, L])
+        if (R < c) next.push([R, c])
+      }
+      gaps = next.filter(([a, c]) => c - a >= 64)
+    }
+    if (gaps.length) {
+      gaps.sort((p, q) => (q[1] - q[0]) - (p[1] - p[0]))
+      centerIn(gaps[0][0], gaps[0][1])
+      hits = hitsOf()
+      if (!hits.length) return
+    }
+    const below = Math.max(top, ...hits.map((b) => b.bottom)) + 8
+    if (below + 28 < vh - margin) {
+      chip.style.top = Math.round(below) + 'px'
+      chip.style.maxWidth = maxW + 'px'
+      centerIn(margin, vw - margin)
+    }
+    const box = noteBox()
+    if (box.left < margin) chip.style.left = margin + 'px'
+    const again = chip.getBoundingClientRect()
+    if (again.right > vw - margin) chip.style.left = Math.max(margin, vw - margin - again.width) + 'px'
+    if (r0 && chip.style.top === '') chip.style.top = top + 'px'
   }
   function paintHeld() {
     const chip = document.getElementById('held-chip')
