@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.252', date: '2026-10-16', lines: {
+    en: ['Play with just a keyboard: Tab, Enter and Esc work in every menu.'],
+    es: ['Juega solo con el teclado: Tab, Enter y Esc funcionan en todos los menús.'],
+    ar: ['العب بلوحة المفاتيح فقط: تعمل Tab وEnter وEsc في كل القوائم.'],
+    zh: ['只用键盘也能玩：Tab、Enter 和 Esc 在每个菜单里都能用。'],
+    fr: ['Joue avec le clavier seul : Tab, Entrée et Échap marchent dans tous les menus.'],
+    pt: ['Jogue só com o teclado: Tab, Enter e Esc funcionam em todos os menus.'],
+    ru: ['Играй только с клавиатурой: Tab, Enter и Esc работают в каждом меню.'],
+    vi: ['Chơi chỉ bằng bàn phím: Tab, Enter và Esc dùng được trong mọi menu.'],
+    uk: ['Грай лише з клавіатури: Tab, Enter і Esc працюють у кожному меню.'],
+    'fa-AF': ['فقط با کیبورد بازی کن: Tab و Enter و Esc در هر فهرست کار می‌کنند.'],
+    rw: ['Kina ukoresheje clavier gusa: Tab, Enter na Esc bikora muri menu zose.'],
+    ti: ['ብኪቦርድ ጥራይ ጻወት፡ Tab፡ Enterን Escን ኣብ ኩሉ ዝርዝር ይሰርሑ።'],
+  }},
   { v: '2.5.251', date: '2026-10-16', lines: {
     en: ['Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard.'],
     es: ['Cortar funciona donde tocas, lo que construye tu Bot sigue ahí al recargar, y puedes empezar con el teclado.'],

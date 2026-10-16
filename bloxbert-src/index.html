@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.251">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.251">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.252">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.252">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -14,7 +14,18 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);color:var(-
 html[data-ts="s"]{font-size:13px}
 html[data-ts="l"]{font-size:18px}
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #F8FAFC !important;outline-offset:2px !important;box-shadow:0 0 0 5px #0B1220 !important}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #F8FAFC !important;outline-offset:2px !important;box-shadow:0 0 0 3px #0B1220, inset 0 0 0 3px #F8FAFC !important}
+html body .kb-bar:focus-within{overflow:visible !important}
+html body .kb-bar button:focus-visible,
+html body .kb-bar a:focus-visible,
+#fs-btn:focus-visible,#game-menu:focus-visible,#pause-btn:focus-visible,#play-chip:focus-visible,#menu-btn:focus-visible,
+.top button:focus-visible,#wallet-chip:focus-visible,#day-clock:focus-visible{
+  outline:3px solid #F8FAFC !important;outline-offset:-3px !important;
+  box-shadow:inset 0 0 0 3px #F8FAFC, inset 0 0 0 6px #0B1220 !important
+}
+html[data-kp-contrast="1"] button:focus-visible,html[data-kp-contrast="1"] a:focus-visible{
+  outline:3px solid #0B1220 !important;box-shadow:0 0 0 3px #F8FAFC, inset 0 0 0 3px #0B1220 !important
+}
 #stage{position:fixed;inset:0;z-index:1}
 #stage canvas{width:100%;height:100%;display:block;touch-action:none}
 .top{position:fixed;left:0;right:0;top:0;min-height:60px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:6px 12px;direction:ltr;background:rgba(11,18,32,.92);border-bottom:1px solid var(--line);z-index:5}
@@ -92,8 +103,9 @@ body.table .cross{opacity:.45}
 #vignette{position:fixed;inset:0;z-index:2;pointer-events:none;background:radial-gradient(ellipse at center, transparent 62%, rgba(6,14,28,.16) 100%)}
 #scrim{position:fixed;inset:0;background:rgba(5,8,20,.45);z-index:8}
 #drawer{position:fixed;left:0;top:0;bottom:0;width:min(320px,86vw);background:var(--ink);border-right:1px solid var(--line);z-index:9;transform:translateX(-102%);transition:transform .18s ease;display:flex;flex-direction:column;padding:10px 12px 16px;overflow:auto}
+#drawer:not(.open){visibility:hidden}
 html[data-kb-bar]:not(.kb-framed) #drawer{top:48px}
-#drawer.open{transform:none}
+#drawer.open{transform:none;visibility:visible}
 @media (prefers-reduced-motion:reduce){#drawer{transition:none}}
 .dhead{display:flex;align-items:center;gap:10px;margin-bottom:6px}
 .dhead b{font-size:16px}
@@ -1115,7 +1127,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.251</span>
+      <span class="ver" id="ver-plate">2.5.252</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1161,7 +1173,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Chopping works where you touch, your Bot's builds stay after a reload, and you can start with the keyboard.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">Play with just a keyboard: Tab, Enter and Esc work in every menu.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1269,9 +1281,9 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.251"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.251" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.251" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.252"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.252" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.252" defer></script>
 <script>
 ;(function () {
   try {

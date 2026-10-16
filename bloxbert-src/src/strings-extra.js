@@ -1352,7 +1352,7 @@ for (const [lang, row] of Object.entries(ZONE_UI)) if (EXTRA[lang]) Object.assig
 const BELT_UI = {
   en: {
     conveyor: 'Conveyor',
-    beltHint: 'Belt the Furnace to the Chest',
+    beltHint: 'Belt the Smelter to the Box',
     beltIn: 'In: Conveyor',
     beltOut: 'Out: Conveyor',
     beltMove: 'Input {inn} -> 4/sec -> Output {outn}',
@@ -1362,7 +1362,7 @@ const BELT_UI = {
   },
   uk: {
     conveyor: 'Конвеєр',
-    beltHint: 'Стрічкою від печі до скрині',
+    beltHint: 'Стрічка: Плавильня до Скриня',
     beltIn: 'Вхід: Конвеєр',
     beltOut: 'Вихід: Конвеєр',
     beltMove: 'Вхід {inn} -> 4/сек -> Вихід {outn}',
@@ -1372,7 +1372,7 @@ const BELT_UI = {
   },
   ru: {
     conveyor: 'Конвейер',
-    beltHint: 'Лентой от печи к сундуку',
+    beltHint: 'Лента: Плавильня до Сундук',
     beltIn: 'Вход: Конвейер',
     beltOut: 'Выход: Конвейер',
     beltMove: 'Вход {inn} -> 4/сек -> Выход {outn}',
@@ -1382,7 +1382,7 @@ const BELT_UI = {
   },
   es: {
     conveyor: 'Transportador',
-    beltHint: 'Lleva el horno al cofre',
+    beltHint: 'Cinta de la Fundidora a la Caja',
     beltIn: 'Entra: Transportador',
     beltOut: 'Sale: Transportador',
     beltMove: 'Entrada {inn} -> 4/s -> Salida {outn}',
@@ -1392,7 +1392,7 @@ const BELT_UI = {
   },
   ar: {
     conveyor: 'سير',
-    beltHint: 'صِل الفرن بالصندوق بسير',
+    beltHint: 'صِل مصهر إلى صندوق',
     beltIn: 'داخل: سير',
     beltOut: 'خارج: سير',
     beltMove: 'مدخل {inn} -> 4/ث -> مخرج {outn}',
@@ -1402,7 +1402,7 @@ const BELT_UI = {
   },
   'fa-AF': {
     conveyor: 'نوار',
-    beltHint: 'تنور را با نوار به صندوق برسان',
+    beltHint: 'کوره گداز را به صندوق برسان',
     beltIn: 'ورود: نوار',
     beltOut: 'خروج: نوار',
     beltMove: 'ورود {inn} -> ۴/ث -> خروج {outn}',
@@ -1412,7 +1412,7 @@ const BELT_UI = {
   },
   rw: {
     conveyor: 'Umugozi',
-    beltHint: 'Huza ibyoto n\'agasanduku',
+    beltHint: 'Huza Isaturire na Agasanduku',
     beltIn: 'Injira: Umugozi',
     beltOut: 'Sohoka: Umugozi',
     beltMove: 'Iwinjira {inn} -> 4/seg -> Ibisohoka {outn}',
@@ -1422,7 +1422,7 @@ const BELT_UI = {
   },
   ti: {
     conveyor: 'መተሓላለፊ',
-    beltHint: 'እቶን ብመተሓላለፊ ናብ ሳንዱቅ',
+    beltHint: 'መፍለሒ ናብ ሳንዱቅ',
     beltIn: 'እታይ: መተሓላለፊ',
     beltOut: 'ወጻኢ: መተሓላለፊ',
     beltMove: 'እታይ {inn} -> 4/ሰ -> ወጻኢ {outn}',
@@ -1480,3 +1480,18 @@ const KIDWALK = {
   },
 }
 for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+
+const KEYBOARD = {
+  en: { whatsNewBody: 'Play with just a keyboard: Tab, Enter and Esc work in every menu.' },
+  es: { whatsNewBody: 'Juega solo con el teclado: Tab, Enter y Esc funcionan en todos los menús.' },
+  ar: { whatsNewBody: 'العب بلوحة المفاتيح فقط: تعمل Tab وEnter وEsc في كل القوائم.' },
+  ru: { whatsNewBody: 'Играй только с клавиатурой: Tab, Enter и Esc работают в каждом меню.' },
+  uk: { whatsNewBody: 'Грай лише з клавіатури: Tab, Enter і Esc працюють у кожному меню.' },
+  'fa-AF': { whatsNewBody: 'فقط با کیبورد بازی کن: Tab و Enter و Esc در هر فهرست کار می‌کنند.' },
+  rw: { whatsNewBody: 'Kina ukoresheje clavier gusa: Tab, Enter na Esc bikora muri menu zose.' },
+  ti: { whatsNewBody: 'ብኪቦርድ ጥራይ ጻወት፡ Tab፡ Enterን Escን ኣብ ኩሉ ዝርዝር ይሰርሑ።' },
+}
+for (const [lang, row] of Object.entries(KEYBOARD)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

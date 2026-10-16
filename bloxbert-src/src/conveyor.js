@@ -5,7 +5,7 @@ import { RECIPES } from './data/recipes.js'
 const COPY = {
   en: {
     conveyor: 'Conveyor',
-    beltHint: 'Belt the Furnace to the Chest',
+    beltHint: 'Belt the Smelter to the Box',
     beltIn: 'In: Conveyor',
     beltOut: 'Out: Conveyor',
     beltMove: 'Input {inn} -> 4/sec -> Output {outn}',
@@ -15,7 +15,7 @@ const COPY = {
   },
   uk: {
     conveyor: 'Конвеєр',
-    beltHint: 'Стрічкою від печі до скрині',
+    beltHint: 'Стрічка: Плавильня до Скриня',
     beltIn: 'Вхід: Конвеєр',
     beltOut: 'Вихід: Конвеєр',
     beltMove: 'Вхід {inn} -> 4/сек -> Вихід {outn}',
@@ -25,7 +25,7 @@ const COPY = {
   },
   ru: {
     conveyor: 'Конвейер',
-    beltHint: 'Лентой от печи к сундуку',
+    beltHint: 'Лента: Плавильня до Сундук',
     beltIn: 'Вход: Конвейер',
     beltOut: 'Выход: Конвейер',
     beltMove: 'Вход {inn} -> 4/сек -> Выход {outn}',
@@ -35,7 +35,7 @@ const COPY = {
   },
   es: {
     conveyor: 'Transportador',
-    beltHint: 'Lleva el horno al cofre',
+    beltHint: 'Cinta de la Fundidora a la Caja',
     beltIn: 'Entra: Transportador',
     beltOut: 'Sale: Transportador',
     beltMove: 'Entrada {inn} -> 4/s -> Salida {outn}',
@@ -45,7 +45,7 @@ const COPY = {
   },
   ar: {
     conveyor: 'سير',
-    beltHint: 'صِل الفرن بالصندوق بسير',
+    beltHint: 'صِل مصهر إلى صندوق',
     beltIn: 'داخل: سير',
     beltOut: 'خارج: سير',
     beltMove: 'مدخل {inn} -> 4/ث -> مخرج {outn}',
@@ -55,7 +55,7 @@ const COPY = {
   },
   'fa-AF': {
     conveyor: 'نوار',
-    beltHint: 'تنور را با نوار به صندوق برسان',
+    beltHint: 'کوره گداز را به صندوق برسان',
     beltIn: 'ورود: نوار',
     beltOut: 'خروج: نوار',
     beltMove: 'ورود {inn} -> ۴/ث -> خروج {outn}',
@@ -65,7 +65,7 @@ const COPY = {
   },
   rw: {
     conveyor: 'Umugozi',
-    beltHint: 'Huza ibyoto n\'agasanduku',
+    beltHint: 'Huza Isaturire na Agasanduku',
     beltIn: 'Injira: Umugozi',
     beltOut: 'Sohoka: Umugozi',
     beltMove: 'Iwinjira {inn} -> 4/seg -> Ibisohoka {outn}',
@@ -75,7 +75,7 @@ const COPY = {
   },
   ti: {
     conveyor: 'መተሓላለፊ',
-    beltHint: 'እቶን ብመተሓላለፊ ናብ ሳንዱቅ',
+    beltHint: 'መፍለሒ ናብ ሳንዱቅ',
     beltIn: 'እታይ: መተሓላለፊ',
     beltOut: 'ወጻኢ: መተሓላለፊ',
     beltMove: 'እታይ {inn} -> 4/ሰ -> ወጻኢ {outn}',

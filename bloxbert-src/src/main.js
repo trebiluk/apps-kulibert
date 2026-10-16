@@ -4091,6 +4091,8 @@ function openMaker() {
   const title = document.getElementById('sheet-title')
   if (title) title.textContent = t('newWorld')
   paintMaker(grid)
+  const made = grid.querySelector('[data-maker-start]')
+  if (made) requestAnimationFrame(() => { try { made.focus({ focusVisible: true }) } catch (e) { made.focus() } })
 }
 function makerSpin(text, fn) {
   const b = document.createElement('button')
@@ -4259,8 +4261,7 @@ async function startMade() {
   }
   await resetWorld()
   try { openMenu(false) } catch (e) {}
-  try { noa.setPaused(false) } catch (e) {}
-  if (session) session.paused = false
+  beginKeyPlay()
   showMakerTip()
   window.__makerGen = (window.__makerGen || 0) + 1
 }
@@ -5273,13 +5274,20 @@ function showPlayChip() {
 }
 function startFromChip() {
   if (TOUCH_UI || tableMode || anyCard()) return
+  beginKeyPlay()
+}
+function beginKeyPlay() {
+  if (TOUCH_UI || tableMode) return
   playArmed = true
+  awaitWorldClick = false
   hidePlayChip()
   document.body.classList.remove('menu-open')
   if (!kidPause) {
     try { noa.setPaused(false) } catch (e) {}
     if (session) session.paused = false
   }
+  const canvas = noa.container && noa.container.canvas
+  if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
   grabLock()
 }
 function playKeyTarget(e) {
@@ -5321,7 +5329,7 @@ function grabLock() {
   playLockWanted = true
   lockAskedAt = now
   const el = noa.container && noa.container.element
-  if (!el || !el.requestPointerLock) { playLockWanted = false; armResume = 0; showPlayChip(); return }
+  if (!el || !el.requestPointerLock) { playLockWanted = false; armResume = 0; if (!playArmed) showPlayChip(); return }
   try {
     const res = el.requestPointerLock()
     if (res && res.catch) res.catch((err) => {
@@ -5336,7 +5344,7 @@ function grabLock() {
       }
       playLockWanted = false
       armResume = 0
-      showPlayChip()
+      if (!playArmed) showPlayChip()
     })
   } catch (e) {}
 }
@@ -5554,6 +5562,7 @@ panels = mountPanels({
   table: () => setMode(true),
   setWorldMode: (m) => goWorld(m),
   closePlay: (how) => closePlay(how),
+  startPlay: () => { closePlay('key'); beginKeyPlay() },
   onClose: () => resumePlay(),
   onOpen: () => {
     openMachineKey = ''
@@ -6268,7 +6277,10 @@ function armCraft() {
   window.__craftReady = true
 }
 $('game-menu').setAttribute('aria-label', t('menu'))
-$('game-menu').addEventListener('click', () => openMenu(true))
+$('game-menu').addEventListener('click', () => {
+  rememberOpener(document.querySelector('.kb-bar .kb-menu') || $('game-menu'))
+  openMenu(true)
+})
 const pathChip = $('path-chip')
 if (pathChip) {
   let tipTouchAt = 0
@@ -6301,6 +6313,8 @@ $('wallet-chip').addEventListener('click', () => { toast(t('practiceTip')); open
 let menuFromLock = false
 let hadLock = false
 let escUnlock = false
+let menuOpener = null
+let escJustClosed = 0
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') escUnlock = true }, true)
 document.addEventListener('keyup', (e) => { if (e.key === 'Escape') escUnlock = false }, true)
 document.addEventListener('pointerlockchange', () => {
@@ -6332,6 +6346,7 @@ document.addEventListener('pointerlockchange', () => {
     grabLock()
     return
   }
+  if (escJustClosed && performance.now() - escJustClosed < 700) { selfUnlock = false; return }
   if (anyCard() || (cardClosedAt && performance.now() - cardClosedAt < 600)) { selfUnlock = false; return }
   if (wasLocked && !selfUnlock && !tableMode && !menuFromLock && fromEsc) { menuFromLock = true; openMenu(true) }
   else if (wasLocked && !selfUnlock && !tableMode && !anyCard()) showPlayChip()
@@ -6655,8 +6670,8 @@ function openMenu(on) {
 }
 function sealPanels() {
   const box = $('drawer')
+  const open = !!(box && box.classList.contains('open'))
   if (box) {
-    const open = box.classList.contains('open')
     box.inert = !open
     box.setAttribute('aria-hidden', open ? 'false' : 'true')
   }
@@ -6670,12 +6685,25 @@ function sealPanels() {
   if (inspect) inspect.inert = !!inspect.hidden
   const door = $('door-opt')
   if (door) door.inert = !!door.hidden
+  const modal = topLayer()
+  if (modal) document.documentElement.setAttribute('data-kb-modal-open', '1')
+  else document.documentElement.removeAttribute('data-kb-modal-open')
+  if (box) {
+    box.querySelectorAll('button, a, input, select, textarea').forEach((el) => {
+      if (open) {
+        if (el.dataset.kbTab === '1') { el.tabIndex = 0; delete el.dataset.kbTab }
+      } else if (el.tabIndex >= 0) {
+        el.dataset.kbTab = '1'
+        el.tabIndex = -1
+      }
+    })
+  }
 }
 function bindBarMenu() {
   const btn = document.querySelector('.kb-bar .kb-menu')
   if (!btn || btn.dataset.bertMenu === '1') return
   btn.dataset.bertMenu = '1'
-  btn.addEventListener('click', () => openMenu(true))
+  btn.addEventListener('click', () => { rememberOpener(btn); openMenu(true) })
 }
 bindBarMenu()
 setTimeout(bindBarMenu, 300)
@@ -6893,6 +6921,49 @@ function jumpUp() {
   }
   lastJump = now
 }
+function rememberOpener(el) {
+  if (el && el.focus) menuOpener = el
+}
+function focusBack() {
+  const el = menuOpener
+  menuOpener = null
+  const btn = (el && el.isConnected && seenBox(el)) ? el : (document.querySelector('.kb-bar .kb-menu') || $('game-menu'))
+  if (!btn) return
+  try { btn.focus({ focusVisible: true }) } catch (e) { try { btn.focus() } catch (err) {} }
+}
+function seenBox(el) {
+  if (!el || el.nodeType !== 1 || el.disabled || el.hidden) return false
+  if (el.closest('[hidden], [inert]')) return false
+  const s = getComputedStyle(el)
+  if (s.display === 'none' || s.visibility === 'hidden') return false
+  const r = el.getBoundingClientRect()
+  if (r.width < 2 || r.height < 2) return false
+  if (r.right <= 1 || r.left >= innerWidth - 1) return false
+  return true
+}
+function focusList(root) {
+  const scope = root || document
+  return [...scope.querySelectorAll('button, a[href], input, select, textarea')].filter((el) => {
+    if (el.tabIndex < 0 || !seenBox(el)) return false
+    return true
+  })
+}
+function topLayer() {
+  for (const id of ['rules-card', 'shop-safe', 'fs-hint', 'door-opt', 'inspect-card', 'about', 'sheet']) {
+    const el = document.getElementById(id)
+    if (el && !el.hidden && seenBox(el)) return el
+  }
+  const kb = document.getElementById('kb-drawer')
+  if (kb && !kb.hidden && seenBox(kb)) return kb
+  return null
+}
+function moveFocus(list, dir) {
+  if (!list.length) return
+  const i = list.indexOf(document.activeElement)
+  const n = i < 0 ? (dir < 0 ? list.length - 1 : 0) : (i + dir + list.length) % list.length
+  const el = list[n]
+  try { el.focus({ focusVisible: true }) } catch (e) { try { el.focus() } catch (err) {} }
+}
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
   const rulesCard = document.getElementById('rules-card')
@@ -6918,10 +6989,59 @@ window.addEventListener('keydown', (e) => {
     return
   }
   e.preventDefault()
-  e.stopPropagation()
+  e.stopImmediatePropagation()
   if (e.repeat) return
-  if (!anyCard()) { openMenu(true); return }
-  closePlay('esc')
+  const kb = document.getElementById('kb-drawer')
+  if (kb && !kb.hidden) {
+    kb.hidden = true
+    const back = document.getElementById('kb-drawer-backdrop')
+    if (back) back.hidden = true
+    kb.inert = true
+    sealPanels()
+    focusBack()
+    return
+  }
+  const sheet = $('sheet')
+  if (sheet && !sheet.hidden) {
+    if (sheet.querySelector('[data-maker]')) {
+      if (panels) panels.open('world')
+      return
+    }
+    if (sheet.dataset.panel && sheet.dataset.panel !== 'menu') {
+      if (panels && panels.backOne) panels.backOne()
+      return
+    }
+    escJustClosed = performance.now()
+    closePlay('esc')
+    focusBack()
+    return
+  }
+  if (anyCard()) {
+    escJustClosed = performance.now()
+    closePlay('esc')
+    focusBack()
+    return
+  }
+  rememberOpener(document.activeElement)
+  openMenu(true)
+}, true)
+document.addEventListener('keydown', (e) => {
+  const layer = topLayer()
+  if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+    const list = focusList(layer || document)
+    if (!list.length) return
+    e.preventDefault()
+    e.stopImmediatePropagation()
+    moveFocus(list, e.shiftKey ? -1 : 1)
+    return
+  }
+  if (!layer || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp')) return
+  if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
+  const buttons = focusList(layer).filter((el) => el.tagName === 'BUTTON' || el.tagName === 'A')
+  if (!buttons.length) return
+  e.preventDefault()
+  e.stopImmediatePropagation()
+  moveFocus(buttons, e.key === 'ArrowDown' ? 1 : -1)
 }, true)
 function shutByKey() {
   if (!anyCard()) return false
@@ -6930,8 +7050,7 @@ function shutByKey() {
 }
 document.addEventListener('keydown', (e) => {
   if (e.target.closest('input,textarea')) return
-  if (e.key === 'Escape') return
-  if (e.key === 'Tab' && anyCard()) { e.preventDefault(); shutByKey(); return }
+  if (e.key === 'Escape' || e.key === 'Tab') return
   if (e.key === 'e' || e.key === 'E') {
     if (e.ctrlKey || e.metaKey) return
     if (wandHeld() && $('sheet') && $('sheet').hidden) {
@@ -7005,6 +7124,7 @@ document.addEventListener('keydown', (e) => {
   }
   if (e.key === 'Enter') {
     resumeSwallow = false
+    if (e.target && e.target.closest && e.target.closest('button, a, input, textarea, select')) return
     e.preventDefault()
     if (wandHeld()) { if (!e.repeat) wandDo(); return }
     if (inspectOn) { if (!e.repeat) showInspect(); return }

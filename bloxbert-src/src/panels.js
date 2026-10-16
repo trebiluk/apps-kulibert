@@ -233,7 +233,10 @@ export function mountPanels(api) {
       title.classList.add('kd-sr')
       plate.append(title)
     }
-    const go = keyTile('play', 'resume', api.t('resume'), close)
+    const go = keyTile('play', 'resume', api.t('resume'), () => {
+      if (api.startPlay) api.startPlay()
+      else close()
+    })
     go.classList.add('kd-go')
     const playTiles = [
       keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
