@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.242', date: '2026-10-15', lines: {
+    en: ['Sideways phones: Jump and Crouch are on the right thumb, and Auto-jump steps up one block.'],
+    uk: ['На телефоні боком Стрибок і Присід під правим пальцем, а Автострибок піднімає на один блок.'],
+    ru: ['На телефоне боком Прыжок и Присед под правым пальцем, а Автопрыжок поднимает на один блок.'],
+    es: ['En el teléfono de lado, Saltar y Agacharse quedan en el pulgar derecho, y Auto-salto sube un bloque.'],
+    ar: ['على الهاتف بالعرض، القفز والانحناء تحت الإبهام الأيمن، والقفز التلقائي يصعد مكعباً واحداً.'],
+    'fa-AF': ['در تیلفون افقی، پرش و خم شدن زیر شست راست‌اند، و پرش خودکار یک بلاک بالا می‌رود.'],
+    rw: ['Kuri telefoni ibitse, Simbuka na Icaramye biri ku gikumwe cy\'iburyo, kandi Oto-simbuka izamuka igice kimwe.'],
+    ti: ['ኣብ ጎነ ተሌፎን፡ ንጻን ድንጋርን ኣብ የማናይ ኣጻብዕቲ እዮም፡ ብባዕሉ ምንጻ ድማ ሓደ ብሎክ ይድይብ።'],
+  }},
   { v: '2.5.241', date: '2026-10-15', lines: {
     en: ["Meet Berty's Bot! Place it and tap it to open its Code panel."],
     uk: ['Знайомтесь із Ботом Берті! Постав його і торкнись, щоб відкрити панель Коду.'],

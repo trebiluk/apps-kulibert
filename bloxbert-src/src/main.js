@@ -554,7 +554,7 @@ playerBody.airDrag = 0
 const LOOK_KEY = 'bloxbert-look'
 let lookSens = 1
 let lookInvert = false
-let autoClimb = true
+let autoClimb = typeof matchMedia === 'function' && matchMedia('(pointer:coarse)').matches
 let wideView = false
 let showHand = true
 let mainHand = 'right'
@@ -7374,7 +7374,7 @@ function paintLook(g) {
     range,
     lookPill(t('invertY'), () => lookInvert, () => { lookInvert = !lookInvert; applyLook() }, 'invert', 'invert'),
     lookPill(t('wideView'), () => wideView, () => { wideView = !wideView; applyLook() }, '', 'wide'),
-    lookPill(t('climb'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
+    lookPill(t('autoJump'), () => autoClimb, () => { autoClimb = !autoClimb; applyLook() }, '', 'climb'),
     lookPill(t('showHand'), () => showHand, () => { showHand = !showHand; applyLook() }, '', 'hand'),
     side,
     cam,

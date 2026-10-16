@@ -2635,15 +2635,19 @@ export function createSession(api) {
     }
     chip.style.bottom = bottom + 'px'
     const stick = document.getElementById('stick-pad')
-    if (!stick) return
+    const jump = document.getElementById('jump-col')
+    if (!stick && !jump) return
     requestAnimationFrame(() => {
       if (!chip.isConnected || chip.hidden) return
-      const shown = getComputedStyle(stick).display !== 'none'
-      if (!shown) return
-      const a = chip.getBoundingClientRect()
-      const b = stick.getBoundingClientRect()
-      const hit = a.width > 2 && b.width > 2 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
-      if (hit) chip.style.bottom = (window.innerHeight - b.top + 8) + 'px'
+      for (const el of [stick, jump]) {
+        if (!el) continue
+        const shown = getComputedStyle(el).display !== 'none'
+        if (!shown) continue
+        const a = chip.getBoundingClientRect()
+        const b = el.getBoundingClientRect()
+        const hit = a.width > 2 && b.width > 2 && a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top
+        if (hit) chip.style.bottom = (window.innerHeight - b.top + 8) + 'px'
+      }
     })
   }
   function paintHeld() {

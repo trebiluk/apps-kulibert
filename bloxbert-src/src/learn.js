@@ -154,11 +154,21 @@ export function createLearn(api) {
     }
     const jump = document.getElementById('jump-col')
     const jr = jump ? jump.getBoundingClientRect() : null
-    const jumpRight = jr && jr.width > 2 && jr.height > 2 ? jr.right : 12
-    const left = jumpRight + 12
+    const stick = document.getElementById('stick-pad')
+    const sr = stick ? stick.getBoundingClientRect() : null
     const pick = document.getElementById('pick-chip')
     const pr = pick ? pick.getBoundingClientRect() : null
-    const pickLeft = pr && pr.width > 2 && pr.height > 2 ? pr.left : window.innerWidth
+    let left = 12
+    let rightEdge = window.innerWidth - 12
+    const shown = (r) => !!(r && r.width > 2 && r.height > 2)
+    const park = (r) => {
+      if (!shown(r)) return
+      if (r.left < window.innerWidth * 0.5) left = Math.max(left, r.right + 12)
+      if (r.right > window.innerWidth * 0.5) rightEdge = Math.min(rightEdge, r.left - 12)
+    }
+    park(sr)
+    park(jr)
+    park(pr)
     const hot = document.getElementById('hotbar')
     const hr = hot ? hot.getBoundingClientRect() : null
     let limit = hr && hr.width > 2 && hr.height > 2 ? hr.top : window.innerHeight
@@ -169,7 +179,7 @@ export function createLearn(api) {
     }
     el.style.top = 'auto'
     el.style.left = left + 'px'
-    el.style.maxWidth = (pickLeft - left - 12) + 'px'
+    el.style.maxWidth = Math.max(120, rightEdge - left) + 'px'
     el.style.bottom = (window.innerHeight - limit + 8) + 'px'
     el.style.fontSize = '13px'
     if (follow) return
