@@ -107,6 +107,19 @@ export function inReach(px, py, pz, bx, by, bz, reach) {
   return dx * dx + dy * dy + dz * dz <= reach * reach
 }
 
+// Closest point on the block to the body, not the eye. A trunk between the
+// camera and the avatar is still in reach when it is next to the body.
+export function blockNearBody(px, py, pz, bx, by, bz, reach) {
+  const byBody = py + 0.9
+  const cx = Math.max(bx, Math.min(px, bx + 1))
+  const cy = Math.max(by, Math.min(byBody, by + 1))
+  const cz = Math.max(bz, Math.min(pz, bz + 1))
+  const dx = cx - px
+  const dy = cy - byBody
+  const dz = cz - pz
+  return dx * dx + dy * dy + dz * dz <= reach * reach
+}
+
 export function keepCrouchStep(floorSolid, bodySolid) {
   if (bodySolid) return true
   return !!floorSolid

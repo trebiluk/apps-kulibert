@@ -1444,3 +1444,39 @@ const CALM = {
   ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ' },
 }
 for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+
+const KIDWALK = {
+  en: {
+    whatsNewBody: 'Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard.',
+    walkCloser: 'Walk closer',
+  },
+  es: {
+    whatsNewBody: 'Cortar funciona donde tocas, lo que construye tu Bot sigue ahí al recargar, y puedes empezar con el teclado.',
+    walkCloser: 'Acércate',
+  },
+  uk: {
+    whatsNewBody: 'Рубання працює там, де ти торкаєшся, будівлі Бота лишаються після перезавантаження, і можна почати з клавіатури.',
+    walkCloser: 'Підійди ближче',
+  },
+  ru: {
+    whatsNewBody: 'Рубка работает там, где ты касаешься, постройки Бота остаются после перезагрузки, и можно начать с клавиатуры.',
+    walkCloser: 'Подойди ближе',
+  },
+  ar: {
+    whatsNewBody: 'القص يعمل حيث تلمس، وبناء البوت يبقى بعد إعادة التحميل، ويمكنك البدء بلوحة المفاتيح.',
+    walkCloser: 'اقترب',
+  },
+  'fa-AF': {
+    whatsNewBody: 'بریدن همان‌جا که لمس می‌کنی کار می‌کند، ساخت بوت بعد از بار دوباره می‌ماند، و با کیبورد می‌توانی شروع کنی.',
+    walkCloser: 'نزدیک‌تر بیا',
+  },
+  rw: {
+    whatsNewBody: 'Gukata bikorwa aho ukora, ibyubatswe na Bot biguma nyuma yo gusubiramo, kandi ushobora gutangira ukoresheje clavier.',
+    walkCloser: 'Egerekera hafi',
+  },
+  ti: {
+    whatsNewBody: 'ምቑራጽ ኣብ ዝትንክፎ ይሰርሕ፡ ህንጻ ቦት ድሕሪ ምጽዓን ይጸንሕ፡ ብኪቦርድ ድማ ክትጅምር ትኽእል።',
+    walkCloser: 'ቀረብ',
+  },
+}
+for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)

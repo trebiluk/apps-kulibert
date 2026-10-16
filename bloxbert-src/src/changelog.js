@@ -1,4 +1,14 @@
 export const CHANGELOG = [
+  { v: '2.5.251', date: '2026-10-16', lines: {
+    en: ['Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard.'],
+    es: ['Cortar funciona donde tocas, lo que construye tu Bot sigue ahí al recargar, y puedes empezar con el teclado.'],
+    uk: ['Рубання працює там, де ти торкаєшся, будівлі Бота лишаються після перезавантаження, і можна почати з клавіатури.'],
+    ru: ['Рубка работает там, где ты касаешься, постройки Бота остаются после перезагрузки, и можно начать с клавиатуры.'],
+    ar: ['القص يعمل حيث تلمس، وبناء البوت يبقى بعد إعادة التحميل، ويمكنك البدء بلوحة المفاتيح.'],
+    'fa-AF': ['بریدن همان‌جا که لمس می‌کنی کار می‌کند، ساخت بوت بعد از بار دوباره می‌ماند، و با کیبورد می‌توانی شروع کنی.'],
+    rw: ['Gukata bikorwa aho ukora, ibyubatswe na Bot biguma nyuma yo gusubiramo, kandi ushobora gutangira ukoresheje clavier.'],
+    ti: ['ምቑራጽ ኣብ ዝትንክፎ ይሰርሕ፡ ህንጻ ቦት ድሕሪ ምጽዓን ይጸንሕ፡ ብኪቦርድ ድማ ክትጅምር ትኽእል።'],
+  }},
   { v: '2.5.250', date: '2026-10-16', lines: {
     en: ['Calmer start: tools unlock as you play.'],
     es: ['Inicio más tranquilo: las herramientas se desbloquean al jugar.'],

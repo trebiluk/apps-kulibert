@@ -47,7 +47,7 @@ import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerP
 import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
-import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
+import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, blockNearBody, reachFor, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
@@ -1592,6 +1592,7 @@ function edit(x, y, z, v) {
   }
   const group = edits.applyEdit([[x, y, z, v]], { source: 'hand', label: 'hand' })
   if (group) changeLog.note(group)
+  if (group && v) saveSoon()
   return !!group
 }
 function undo() {
@@ -1700,7 +1701,9 @@ function survivalOn() { return !!(session && session.mode === 'survival') }
 function canReach(pos) {
   if (!pos) return false
   const p = noa.entities.getPosition(noa.playerEntity)
-  return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], Effects.reach(reachFor(survivalOn())))
+  const reach = Effects.reach(reachFor(survivalOn()))
+  return inReach(p[0], p[1], p[2], pos[0], pos[1], pos[2], reach)
+    || blockNearBody(p[0], p[1], p[2], pos[0], pos[1], pos[2], reach)
 }
 let farPress = 0
 let farHit = null
@@ -1719,6 +1722,21 @@ function toastFarKey() {
   if (now - farKeyAt < 600) return
   farKeyAt = now
   toast(t('tooFar'))
+}
+function showWalkCloser(x, y) {
+  const el = $('reach-hint')
+  if (!el) return
+  el.textContent = '\u2192 ' + t('walkCloser')
+  el.hidden = false
+  if (x != null) el.style.left = x + 'px'
+  if (y != null) el.style.top = y + 'px'
+  clearTimeout(showWalkCloser.t)
+  showWalkCloser.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1400)
+}
+function hideWalkCloser() {
+  const el = $('reach-hint')
+  if (el) el.hidden = true
+  clearTimeout(showWalkCloser.t)
 }
 function heldPlaceKey() {
   if (wandHeld()) return ''
@@ -3488,12 +3506,23 @@ async function saveBody() {
   return bytes
 }
 let saveChain = Promise.resolve()
+let saveSoon = () => {}
 function save() {
   const job = saveChain.then(() => saveBody())
   saveChain = job.catch(() => {})
   return job
 }
+saveSoon = () => {
+  dirty = true
+  paintSaveChip('saving')
+  return save().then((bytes) => {
+    if (!(bytes >= 0)) return bytes
+    paintSaveChip(navigator.onLine ? 'saved' : 'offline')
+    return bytes
+  })
+}
 async function saveClicked() {
+  paintSaveChip('saving')
   try {
     await save()
     toast(t('saved'))
@@ -4514,11 +4543,24 @@ function markSave(text) {
   const el = $('save-state')
   if (el) el.textContent = text
   const btn = $('save-btn')
-  if (!btn) return
-  const saved = typeof text === 'string' && text.indexOf(t('saved')) === 0
-  btn.classList.toggle('saved', saved)
-  clearTimeout(markSave.t)
-  if (saved) markSave.t = setTimeout(() => { if (btn.isConnected) btn.classList.remove('saved') }, 2000)
+  if (btn) {
+    const saved = typeof text === 'string' && text.indexOf(t('saved')) === 0
+    btn.classList.toggle('saved', saved)
+    clearTimeout(markSave.t)
+    if (saved) markSave.t = setTimeout(() => { if (btn.isConnected) btn.classList.remove('saved') }, 2000)
+  }
+  if (typeof text === 'string' && text.indexOf(t('saved')) === 0) paintSaveChip(navigator.onLine ? 'saved' : 'offline')
+}
+const SAVE_WORD = { saved: 'Saved', saving: 'Saving…', offline: 'Offline-saved here', synced: 'Synced' }
+function paintSaveChip(state) {
+  const el = $('save-chip')
+  if (!el) return
+  const word = SAVE_WORD[state] || SAVE_WORD.saved
+  el.hidden = false
+  el.dataset.state = state || 'saved'
+  const lab = el.querySelector('.sc-word')
+  if (lab) lab.textContent = word
+  el.setAttribute('aria-label', word)
 }
 function toast(text, act) {
   if (calm) { calm.say(text, act); return }
@@ -4570,6 +4612,7 @@ let muteUseKey = ''
 let muteUseUntil = 0
 let crouchHintN = 0
 let playLockWanted = false
+let playArmed = false
 let lockAskedAt = 0
 let lockTries = 0
 let closingPlay = false
@@ -4616,6 +4659,7 @@ session = createSession({
   pos: () => noa.entities.getPosition(noa.playerEntity),
   heading: () => noa.camera.heading,
   markDirty: () => { dirty = true },
+  saveNow: () => saveSoon(),
   beltFlow: (key) => belts ? belts.flow(key) : null,
   focusKey: () => openMachineKey,
   found: (item) => {
@@ -5213,7 +5257,12 @@ function focusBtn(btn) {
 }
 function hidePlayChip() {
   const el = $('play-chip')
-  if (el) el.hidden = true
+  if (!el) return
+  if (document.activeElement === el) {
+    const canvas = noa.container && noa.container.canvas
+    if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
+  }
+  el.hidden = true
 }
 function showPlayChip() {
   const el = $('play-chip')
@@ -5221,6 +5270,23 @@ function showPlayChip() {
   if (TOUCH_UI) { el.hidden = true; return }
   el.textContent = t('clickToPlay')
   el.hidden = false
+}
+function startFromChip() {
+  if (TOUCH_UI || tableMode || anyCard()) return
+  playArmed = true
+  hidePlayChip()
+  document.body.classList.remove('menu-open')
+  if (!kidPause) {
+    try { noa.setPaused(false) } catch (e) {}
+    if (session) session.paused = false
+  }
+  grabLock()
+}
+function playKeyTarget(e) {
+  const chip = $('play-chip')
+  const canvas = noa.container && noa.container.canvas
+  if (chip && !chip.hidden && (e.target === chip || document.activeElement === chip)) return true
+  return !!(canvas && (e.target === canvas || document.activeElement === canvas))
 }
 function clearLookAccum() {
   try { noa.inputs.pointerState.dx = 0; noa.inputs.pointerState.dy = 0 } catch (e) {}
@@ -6585,6 +6651,25 @@ function openMenu(on) {
   $('menu-btn').setAttribute('aria-expanded', String(!!on))
   const gm = $('game-menu')
   if (gm) gm.setAttribute('aria-expanded', String(!!on))
+  sealPanels()
+}
+function sealPanels() {
+  const box = $('drawer')
+  if (box) {
+    const open = box.classList.contains('open')
+    box.inert = !open
+    box.setAttribute('aria-hidden', open ? 'false' : 'true')
+  }
+  const sheet = $('sheet')
+  if (sheet) sheet.inert = !!sheet.hidden
+  const kb = document.getElementById('kb-drawer')
+  if (kb) kb.inert = !!kb.hidden
+  const about = $('about')
+  if (about) about.inert = !!about.hidden
+  const inspect = $('inspect-card')
+  if (inspect) inspect.inert = !!inspect.hidden
+  const door = $('door-opt')
+  if (door) door.inert = !!door.hidden
 }
 function bindBarMenu() {
   const btn = document.querySelector('.kb-bar .kb-menu')
@@ -6611,6 +6696,8 @@ $('undo-btn').addEventListener('click', () => undo())
 $('redo-btn').addEventListener('click', () => redo())
 edits.onChange = paintUndo
 $('save-btn').addEventListener('click', () => { saveClicked() })
+const saveChipBtn = $('save-chip')
+if (saveChipBtn) saveChipBtn.addEventListener('click', () => { saveClicked() })
 paintUndo()
 $('m-reset').addEventListener('click', () => { if (confirm(t('confirmFresh'))) resetWorld() })
 $('m-about').addEventListener('click', () => { $('about').hidden = false; releaseLook(); focusBtn($('about').querySelector('button')) })
@@ -6905,7 +6992,17 @@ document.addEventListener('keydown', (e) => {
       }
     }
   }
-  if (e.key === ' ' || e.code === 'Space') { if (!e.repeat) jumpDown() }
+  if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter') {
+    if (!TOUCH_UI && !playLocked() && !tableMode && !anyCard() && playKeyTarget(e)) {
+      e.preventDefault()
+      if (!e.repeat) startFromChip()
+      return
+    }
+  }
+  if (e.key === ' ' || e.code === 'Space') {
+    if (e.target && e.target.closest && e.target.closest('button,a,input,textarea,select')) return
+    if (!e.repeat) jumpDown()
+  }
   if (e.key === 'Enter') {
     resumeSwallow = false
     e.preventDefault()
@@ -7279,11 +7376,11 @@ function feelTick(dt) {
     }
   }
   if (farHit) {
-    if (!look || look.pt !== 'touch' || look.moved >= 24) farHit = null
+    if (!look || look.pt !== 'touch' || look.moved >= 24) { farHit = null; hideWalkCloser() }
     else if (!farHit.shown && now - farHit.t0 >= 250) {
       farHit.shown = true
-      toastFar()
-    }
+      showWalkCloser(look.x, look.y)
+    } else if (farHit.shown) showWalkCloser(look.x, look.y)
   }
   noteDoorLook(now)
   if (dig && !dig.broke && !dig.draining) {
@@ -7404,6 +7501,8 @@ noa.on('tick', (dt) => {
 })
 
 const canvas = noa.container.canvas
+canvas.tabIndex = 0
+canvas.setAttribute('aria-label', 'Bertopia')
 function canvasHit(e) { return !!(e && e.target === canvas) }
 function hudAt(e) {
   if (!e || TOUCH_UI) return null
@@ -7617,13 +7716,14 @@ canvas.addEventListener('pointerdown', (e) => {
   if ((e.button === 0 || e.button < 0) && eatResume(e)) return
   if (desktop && resumeSwallow) return
   if (desktop && !playLocked() && performance.now() < lockSwallowUntil) return
-  if (desktop && !playLocked() && !tableMode && !anyCard() && (e.button === 0 || e.button < 0)) return
+  if (desktop && !playLocked() && !tableMode && !anyCard() && !playArmed && (e.button === 0 || e.button < 0)) return
   const wandClick = wandHeld() && (e.button === 0 || e.button < 0)
   if (wandClick) {
     wandPress = { button: 0, t: e.timeStamp, x: e.clientX, y: e.clientY, moved: 0 }
   } else if (e.button === 0 || e.button < 0) { mouseLeft = true; leftDown = true }
   if (e.button > 0 || tableMode) return
   look = { id: e.pointerId, x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t: e.timeStamp, moved: 0, looking: false, pt: e.pointerType || '' }
+  if (look.pt === 'touch' || look.pt === 'pen' || ((TOUCH_UI || playArmed) && !playLocked())) look.pt = 'touch'
   lastPointer = { x: e.clientX, y: e.clientY }
   if (wandClick) { dig = null; hideCrack(); return }
   const finger = look.pt === 'touch'
@@ -7640,6 +7740,7 @@ canvas.addEventListener('pointerdown', (e) => {
     dig = null
     hideCrack()
   } else if (hit) {
+    hideWalkCloser()
     const name = (BLOCKS.find((b) => b[0] === hit.id) || [])[1] || ''
     const grown = cropDig(finger ? 'touch' : 'mouse', hit.position[0], hit.position[1], hit.position[2], hit.id, performance.now())
     if (grown) dig = grown
@@ -7702,7 +7803,7 @@ canvas.addEventListener('pointerup', (e) => {
   }
   releaseFar()
   if (e.button === 0 || e.button < 0) { mouseLeft = false; leftDown = false }
-  if (!actThisClick && !TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
+  if (!playArmed && !actThisClick && !TOUCH_UI && !tableMode && !anyCard() && !playLocked() && (e.button === 0 || e.button < 0)) {
     showPlayChip()
     grabLock()
   }
@@ -7734,7 +7835,7 @@ canvas.addEventListener('pointerup', (e) => {
   look = null
   if (lookWasTouch && wasFar) {
     farHit = null
-    if (moved < 24 && !wasFar.shown && held < 500) toastFar()
+    if (moved < 24 && held < 500) showWalkCloser(e.clientX, e.clientY)
     return
   }
   const handId = session && session.blockForHot ? session.blockForHot() : 0
@@ -9370,9 +9471,63 @@ attachCircuits({
 })
 
 basics.boot(WORLD !== 'bertyville')
+function parkPlayChip() {
+  const el = $('play-chip')
+  if (!el) return
+  const bar = document.querySelector('.kb-bar')
+  const placed = bar ? el.previousElementSibling === bar : el === document.body.firstElementChild
+  if (!placed) {
+    if (bar && bar.parentNode) bar.after(el)
+    else document.body.insertBefore(el, document.body.firstChild)
+  }
+  if (!el.dataset.playBound) {
+    el.dataset.playBound = '1'
+    el.addEventListener('click', (ev) => {
+      ev.preventDefault()
+      ev.stopPropagation()
+      startFromChip()
+    })
+  }
+}
+function focusPlayChip(el) {
+  if (!el) return
+  try { el.focus({ focusVisible: true }) } catch (e) { try { el.focus() } catch (err) {} }
+}
+function bootPlayChip() {
+  parkPlayChip()
+  sealPanels()
+  if (TOUCH_UI || playLocked() || tableMode) return
+  const el = $('play-chip')
+  if (!el) return
+  showPlayChip()
+  const ae = document.activeElement
+  if (!bootPlayChip.done || ae === document.body || ae === document.documentElement) {
+    focusPlayChip(el)
+    bootPlayChip.done = true
+  }
+}
+bootPlayChip()
+setTimeout(bootPlayChip, 400)
+setTimeout(() => {
+  parkPlayChip()
+  sealPanels()
+  const kb = document.getElementById('kb-drawer')
+  if (kb && window.MutationObserver) {
+    new MutationObserver(() => sealPanels()).observe(kb, { attributes: true, attributeFilter: ['hidden'] })
+    sealPanels()
+  }
+}, 1200)
+if (window.MutationObserver) {
+  const watch = new MutationObserver(() => sealPanels())
+  const sheetWatch = $('sheet')
+  const drawerWatch = $('drawer')
+  if (sheetWatch) watch.observe(sheetWatch, { attributes: true, attributeFilter: ['hidden'] })
+  if (drawerWatch) watch.observe(drawerWatch, { attributes: true, attributeFilter: ['class', 'hidden'] })
+}
 bot = initBot({
   noa, t, toast, getVoxel,
   markDirty: () => { dirty = true },
+  saveNow: () => saveSoon(),
   session,
   close: () => panels && panels.close(),
   applyEdit: (ops, meta) => edits.applyEdit(ops, meta || { source: 'bot', by: 'bot', cause: 'program' }),

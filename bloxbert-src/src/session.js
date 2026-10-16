@@ -1807,6 +1807,8 @@ export function createSession(api) {
             paintHotbar()
             paintCraft(g, true)
             armCraftFollow()
+            if (api.noteCalm) api.noteCalm('craft')
+            if (api.saveNow) api.saveNow()
           },
           onMax: () => {
             if (!craftOk(r.id)) return
@@ -2402,6 +2404,7 @@ export function createSession(api) {
     else api.toast(t('make') + ' ' + itemName(r.out[0]) + (n > 1 ? ' ×' + n : ''))
     if (api.noteCalm) api.noteCalm('craft')
     paintHotbar()
+    if (api.saveNow) api.saveNow()
     return true
   }
   function sell(k, n) {
