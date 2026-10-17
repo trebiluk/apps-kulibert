@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.256', date: '2026-10-17', lines: {
+    en: ['Make button always opens, new worlds show up right away, and Bag items have names.'],
+    es: ['El botón Hacer siempre abre, los mundos nuevos se ven enseguida y la Bolsa tiene nombres.'],
+    ar: ['زر اصنع يفتح دائماً، والعوالم الجديدة تظهر فوراً، والحقيبة فيها أسماء.'],
+    zh: ['「制作」按钮总会打开，新世界马上就能看见，背包里的物品有名字。'],
+    fr: ['Le bouton Faire s’ouvre toujours, les nouveaux mondes s’affichent tout de suite, et le Sac a des noms.'],
+    pt: ['O botão Fazer sempre abre, mundos novos aparecem na hora, e a Bolsa tem nomes.'],
+    ru: ['Кнопка Сделать всегда открывается, новые миры видны сразу, и в Сумке есть имена.'],
+    vi: ['Nút Làm luôn mở, thế giới mới hiện ngay, và Túi có tên.'],
+    uk: ['Кнопка Зробити завжди відкривається, нові світи видно одразу, і в Сумці є імена.'],
+    'fa-AF': ['دکمه بساز همیشه باز می‌شود، جهان‌های تازه همان لحظه دیده می‌شوند، و کیف اسم دارد.'],
+    rw: ['Buto Kora ifunguka buri gihe, isi nshya ziboneka ako kanya, kandi agasanduku kafite amazina.'],
+    ti: ['መጠወቒ ግበር ኩሉ ግዜ ይኸፍት፡ ሓደሽቲ ዓለማት ብኡን ብኡን ይረኣዩ፡ ቦርሳ ድማ ስማት ኣለዋ።'],
+  }},
   { v: '2.5.255', date: '2026-10-16', lines: {
     en: ['Chop right where your finger is, and your Bot\'s wall stays after a reload.'],
     es: ['Corta justo donde está tu dedo, y el muro de tu Bot sigue ahí al recargar.'],

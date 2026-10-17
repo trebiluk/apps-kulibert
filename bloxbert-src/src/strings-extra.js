@@ -1434,14 +1434,14 @@ const BELT_UI = {
 for (const [lang, row] of Object.entries(BELT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
 const CALM = {
-  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New', pathBench: 'Make a Workbench', fillParts: 'Fill parts', needLine: '{n} {item} needed', niceLog: 'Nice! Log', niceMake: 'Nice! Made', nicePlace: 'Nice! Placed', niceWall: 'Nice! Wall' },
-  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове', pathBench: 'Зроби верстак', fillParts: 'Наповни деталі', needLine: 'треба {n} {item}', niceLog: 'Гарно! Колода', niceMake: 'Гарно! Зробив', nicePlace: 'Гарно! Поставив', niceWall: 'Гарно! Стіна' },
-  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое', pathBench: 'Сделай верстак', fillParts: 'Заполни детали', needLine: 'нужно {n} {item}', niceLog: 'Здорово! Бревно', niceMake: 'Здорово! Сделал', nicePlace: 'Здорово! Поставил', niceWall: 'Здорово! Стена' },
-  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo', pathBench: 'Haz un banco', fillParts: 'Llenar piezas', needLine: 'faltan {n} {item}', niceLog: '¡Bien! Tronco', niceMake: '¡Bien! Hecho', nicePlace: '¡Bien! Puesto', niceWall: '¡Bien! Muro' },
-  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد', pathBench: 'اصنع منضدة', fillParts: 'املأ القطع', needLine: 'يلزم {n} {item}', niceLog: 'أحسنت! جذع', niceMake: 'أحسنت! صنع', nicePlace: 'أحسنت! وضع', niceWall: 'أحسنت! جدار' },
-  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو', pathBench: 'میز کار بساز', fillParts: 'قطعه‌ها را پر کن', needLine: '{n} {item} لازم است', niceLog: 'آفرین! کنده', niceMake: 'آفرین! ساخت', nicePlace: 'آفرین! گذاشت', niceWall: 'آفرین! دیوار' },
-  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya', pathBench: 'Kora ameza', fillParts: 'Uzuza ibice', needLine: 'bikenewe {n} {item}', niceLog: 'Ni byiza! Igiti', niceMake: 'Ni byiza! Byakozwe', nicePlace: 'Ni byiza! Byashyizwe', niceWall: 'Ni byiza! Urukuta' },
-  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ', pathBench: 'ሰደቓ ግበር', fillParts: 'ኣቑሑት መልእ', needLine: '{n} {item} የድሊ', niceLog: 'ጽቡቕ! ግንድ', niceMake: 'ጽቡቕ! ተገይሩ', nicePlace: 'ጽቡቕ! ተቐሚጡ', niceWall: 'ጽቡቕ! መንደቕ' },
+  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New', pathBench: 'Make a Workbench', fillParts: 'Fill parts', needLine: '{n} {item} needed', goalNeed: '{item}: needs {n} {need}. You have {have}.', niceLog: 'Nice! Log', niceMake: 'Nice! Made', nicePlace: 'Nice! Placed', niceWall: 'Nice! Wall' },
+  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове', pathBench: 'Зроби верстак', fillParts: 'Наповни деталі', needLine: 'треба {n} {item}', goalNeed: '{item}: треба {n} {need}. У тебе {have}.', niceLog: 'Гарно! Колода', niceMake: 'Гарно! Зробив', nicePlace: 'Гарно! Поставив', niceWall: 'Гарно! Стіна' },
+  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое', pathBench: 'Сделай верстак', fillParts: 'Заполни детали', needLine: 'нужно {n} {item}', goalNeed: '{item}: нужно {n} {need}. У тебя {have}.', niceLog: 'Здорово! Бревно', niceMake: 'Здорово! Сделал', nicePlace: 'Здорово! Поставил', niceWall: 'Здорово! Стена' },
+  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo', pathBench: 'Haz un banco', fillParts: 'Llenar piezas', needLine: 'faltan {n} {item}', goalNeed: '{item}: necesita {n} {need}. Tienes {have}.', niceLog: '¡Bien! Tronco', niceMake: '¡Bien! Hecho', nicePlace: '¡Bien! Puesto', niceWall: '¡Bien! Muro' },
+  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد', pathBench: 'اصنع منضدة', fillParts: 'املأ القطع', needLine: 'يلزم {n} {item}', goalNeed: '{item}: يلزم {n} {need}. معك {have}.', niceLog: 'أحسنت! جذع', niceMake: 'أحسنت! صنع', nicePlace: 'أحسنت! وضع', niceWall: 'أحسنت! جدار' },
+  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو', pathBench: 'میز کار بساز', fillParts: 'قطعه‌ها را پر کن', needLine: '{n} {item} لازم است', goalNeed: '{item}: {n} {need} لازم است. تو {have} داری.', niceLog: 'آفرین! کنده', niceMake: 'آفرین! ساخت', nicePlace: 'آفرین! گذاشت', niceWall: 'آفرین! دیوار' },
+  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya', pathBench: 'Kora ameza', fillParts: 'Uzuza ibice', needLine: 'bikenewe {n} {item}', goalNeed: '{item}: bikenewe {n} {need}. Ufite {have}.', niceLog: 'Ni byiza! Igiti', niceMake: 'Ni byiza! Byakozwe', nicePlace: 'Ni byiza! Byashyizwe', niceWall: 'Ni byiza! Urukuta' },
+  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ', pathBench: 'ሰደቓ ግበር', fillParts: 'ኣቑሑት መልእ', needLine: '{n} {item} የድሊ', goalNeed: '{item}: {n} {need} የድሊ። ኣለካ {have}።', niceLog: 'ጽቡቕ! ግንድ', niceMake: 'ጽቡቕ! ተገይሩ', nicePlace: 'ጽቡቕ! ተቐሚጡ', niceWall: 'ጽቡቕ! መንደቕ' },
 }
 for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
@@ -1494,3 +1494,17 @@ for (const [lang, row] of Object.entries(KEYBOARD)) {
   Object.assign(EXTRA[lang], row)
 }
 for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+const SHOW = {
+  en: { whatsNewBody: 'Make button always opens, new worlds show up right away, and Bag items have names.' },
+  es: { whatsNewBody: 'El botón Hacer siempre abre, los mundos nuevos se ven enseguida y la Bolsa tiene nombres.' },
+  ar: { whatsNewBody: 'زر اصنع يفتح دائماً، والعوالم الجديدة تظهر فوراً، والحقيبة فيها أسماء.' },
+  ru: { whatsNewBody: 'Кнопка Сделать всегда открывается, новые миры видны сразу, и в Сумке есть имена.' },
+  uk: { whatsNewBody: 'Кнопка Зробити завжди відкривається, нові світи видно одразу, і в Сумці є імена.' },
+  'fa-AF': { whatsNewBody: 'دکمه بساز همیشه باز می‌شود، جهان‌های تازه همان لحظه دیده می‌شوند، و کیف اسم دارد.' },
+  rw: { whatsNewBody: 'Buto Kora ifunguka buri gihe, isi nshya ziboneka ako kanya, kandi agasanduku kafite amazina.' },
+  ti: { whatsNewBody: 'መጠወቒ ግበር ኩሉ ግዜ ይኸፍት፡ ሓደሽቲ ዓለማት ብኡን ብኡን ይረኣዩ፡ ቦርሳ ድማ ስማት ኣለዋ።' },
+}
+for (const [lang, row] of Object.entries(SHOW)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

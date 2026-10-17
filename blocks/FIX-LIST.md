@@ -1,6 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sat Oct 10 2026 (Build: 2.5.123 The Farm is a pack. Wheat, reeds, bushes and seeds leave the core, and a missing Farm pack shows as a question mark until it comes back).
+Updated Sat Oct 17 2026 (Build: 2.5.256 Make button always opens, new worlds show up right away, and Bag items have names).
+
+- [x] **2.5.256 Make button:** One tap on Make always opens the Make panel. A locked Workbench still says what it needs, with the icon and the name.
+- [x] **2.5.256 New world:** After Make this world with the keyboard, the ground and the top bar draw right away, and W walks with no click.
+- [x] **2.5.256 Bag names:** Every Bag item shows its name under the icon, and empty pocket rows are gone.
 
 - [x] **2.5.202 Mode words:** Creative and Build Table use the class language. Spanish says Creativo and Mesa de construir. English stays Creative and Build Table.
 - [x] **2.5.196 Menu tab:** The sheet Menu tab uses the ☰ icon and the class language. At 412 wide the word can hide, but the icon stays and the name stays on the button.

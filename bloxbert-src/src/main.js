@@ -1415,6 +1415,7 @@ function fillGenerated(data, x0, y0, z0) {
   }
 }
 const genQueue = []
+let genBurstUntil = 0
 function chunkPending(id) {
   const parts = id.split('|')
   return noa.world._chunksPending.includes(+parts[0], +parts[1], +parts[2])
@@ -1422,6 +1423,7 @@ function chunkPending(id) {
 function drainGen() {
   if (!genQueue.length) return
   const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p) return
   const px = p[0]
   const py = p[1]
   const pz = p[2]
@@ -1434,8 +1436,11 @@ function drainGen() {
   }
   genQueue.sort((a, b) => a.d - b.d)
   const t0 = performance.now()
+  const burst = t0 < genBurstUntil
+  const cap = burst ? 16 : 2
+  const budget = burst ? 32 : 6
   let added = 0
-  while (genQueue.length && added < 2 && performance.now() - t0 < 6) {
+  while (genQueue.length && added < cap && performance.now() - t0 < budget) {
     const job = genQueue.shift()
     if (!chunkPending(job.id)) continue
     const s = saved.get(key(job.x / S, job.y / S, job.z / S))
@@ -4295,6 +4300,7 @@ async function startMade() {
   await resetWorld()
   try { openMenu(false) } catch (e) {}
   beginKeyPlay()
+  revealWorld()
   showMakerTip()
   window.__makerGen = (window.__makerGen || 0) + 1
 }
@@ -5375,6 +5381,36 @@ function beginKeyPlay() {
   const canvas = noa.container && noa.container.canvas
   if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
   grabLock()
+}
+function revealWorld() {
+  if (tableMode || kidPause) return
+  playArmed = true
+  awaitWorldClick = false
+  hidePlayChip()
+  document.body.classList.remove('menu-open')
+  try { noa.setPaused(false) } catch (e) {}
+  if (session) session.paused = false
+  genBurstUntil = performance.now() + 2200
+  const world = noa.world
+  const prevTick = world.maxProcessingPerTick
+  const prevRender = world.maxProcessingPerRender
+  world.maxProcessingPerTick = 50
+  world.maxProcessingPerRender = 24
+  const started = performance.now()
+  const stop = started + 2200
+  let caught = false
+  const step = () => {
+    if (world.playerChunkLoaded) caught = true
+    if ((caught && performance.now() > started + 500) || performance.now() > stop) {
+      world.maxProcessingPerTick = prevTick
+      world.maxProcessingPerRender = prevRender
+      return
+    }
+    requestAnimationFrame(step)
+  }
+  requestAnimationFrame(step)
+  const canvas = noa.container && noa.container.canvas
+  if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
 }
 function playKeyTarget(e) {
   const chip = $('play-chip')

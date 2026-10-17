@@ -977,7 +977,15 @@ export function createSession(api) {
     const main = document.createElement('div')
     main.className = 'bag-main'
     const cap = hotCap()
-    main.append(tab(t('hotbar'), 'hotbar'), row(0, cap), tab(t('pockets'), 'pockets'), row(9, bag.slots.length))
+    main.append(tab(t('hotbar'), 'hotbar'), row(0, cap))
+    const pocketAt = []
+    for (let i = 9; i < bag.slots.length; i++) if (bag.slots[i]) pocketAt.push(i)
+    if (pocketAt.length) {
+      const pockets = document.createElement('div')
+      pockets.className = 'wells'
+      for (const i of pocketAt) pockets.append(one(bag.slots[i], i))
+      main.append(tab(t('pockets'), 'pockets'), pockets)
+    }
     layout.append(main)
     if (bagSel >= 0 && bag.slots[bagSel]) layout.append(card(bag.slots[bagSel].item, bagSel))
     g.append(layout)
@@ -991,16 +999,15 @@ export function createSession(api) {
       if (s) pic.append(faceIcon(s.item))
       b.append(pic)
       if (s) {
+        b.classList.add('has')
         const count = document.createElement('span')
         count.className = 'count'
         count.textContent = String(s.n)
         b.append(count)
-        if (i === bagSel) {
-          const lbl = document.createElement('span')
-          lbl.className = 'glbl'
-          lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : faceName(s.item)
-          b.append(lbl)
-        }
+        const lbl = document.createElement('span')
+        lbl.className = 'glbl'
+        lbl.textContent = (s.item === 'woodTool' || s.item === 'stoneTool') ? bagLine(s) : faceName(s.item)
+        b.append(lbl)
       }
       const wear = s && wearBar(ITEMS[s.item], s.uses)
       if (wear) b.append(wear)
@@ -1544,19 +1551,13 @@ export function createSession(api) {
   }
   function makeGoal(id) {
     const r = RECIPES.find((x) => x.id === id)
-    if (!r || !recipeOpen(r)) return false
+    if (!r) return false
     if (!craftOk(r.id)) return false
-    const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
-    const st = craftStatus(r, seenBag(r.id), stations, mode !== 'survival')
     craftId = r.id
     craftOpen = true
-    if (st.ok && r.id !== 'bread') {
-      const made = craftMany(r, 1)
-      if (api.open) api.open('crafting')
-      return !!made
-    }
+    craftTab = 'all'
+    craftFind = ''
     if (api.open) api.open('crafting')
-    if (pourTray(r)) paintHotbar()
     const sheet = document.getElementById('sheet')
     const g = sheet && sheet.querySelector('.ggrid')
     if (g) paintCraft(g)
@@ -1585,16 +1586,20 @@ export function createSession(api) {
     }
     const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
     let rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
+    if (craftId && !rows.some((x) => x.r.id === craftId)) {
+      const still = RECIPES.find((r) => r.id === craftId)
+      if (still) rows.unshift({ r: still, st: craftStatus(still, seenBag(still.id), stations, mode !== 'survival') })
+    }
     if (!rows.some((x) => x.r.id === craftId)) {
-      const still = craftId && RECIPES.find((r) => r.id === craftId)
-      if (still && trayPlaced.some((n) => n > 0)) rows.unshift({ r: still, st: craftStatus(still, seenBag(still.id), stations, mode !== 'survival') })
-      else {
-        const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
-        craftId = pick ? pick.r.id : ''
-      }
+      const pick = rows.find((x) => x.st.group === 'now') || rows.find((x) => x.st.group === 'almost') || rows[0]
+      craftId = pick ? pick.r.id : ''
     }
     syncTray(craftId)
     rows = liveRecipes().map((r) => ({ r, st: craftStatus(r, seenBag(r.id), stations, mode !== 'survival') }))
+    if (craftId && !rows.some((x) => x.r.id === craftId)) {
+      const still = RECIPES.find((r) => r.id === craftId)
+      if (still) rows.unshift({ r: still, st: craftStatus(still, seenBag(still.id), stations, mode !== 'survival') })
+    }
     const fxKind = craftFx
     craftFx = ''
     const note = trayNote
@@ -1900,6 +1905,12 @@ export function createSession(api) {
           },
         })
       }
+      const goalSay = document.createElement('p')
+      goalSay.className = 'gnote goal-need'
+      goalSay.dataset.goalNeed = '1'
+      const madeName = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
+      goalSay.textContent = (st.needs || []).map(([item, have, n]) => t('goalNeed').replace('{item}', madeName).replace('{n}', String(n)).replace('{need}', needName(item)).replace('{have}', String(have))).join(' ')
+      side.prepend(goalSay)
       for (const [item] of r.in) {
         const bagNote = document.createElement('p')
         bagNote.className = 'gnote in-bag'
