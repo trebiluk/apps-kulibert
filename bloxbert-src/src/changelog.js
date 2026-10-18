@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.262', date: '2026-10-18', lines: {
+    en: ['Arrow keys work in the Menu, and you can always see what is picked.'],
+    es: ['Las flechas funcionan en el Menú, y siempre ves lo que está elegido.'],
+    uk: ['Стрілки працюють у Меню, і завжди видно, що вибрано.'],
+    ru: ['Стрелки работают в Меню, и всегда видно, что выбрано.'],
+    ar: ['مفاتيح الأسهم تعمل في القائمة، ويمكنك دائماً رؤية ما تم اختياره.'],
+    'fa-AF': ['کلیدهای جهت در فهرست کار می‌کنند، و همیشه می‌بینی چه چیزی برگزیده شده.'],
+    rw: ['Imyambi ikora muri Menyu, kandi ubona buri gihe icyatoranyijwe.'],
+    ti: ['ናይ ምልክት መጠወቒታት ኣብ ዝርዝር ይሰርሑ፡ ዝተመርጸ ኩሉ ግዜ ትርእዮ።'],
+    zh: ['方向键可以在菜单里移动，而且你总能看见选中了哪一项。'],
+    fr: ['Les flèches marchent dans le Menu, et tu vois toujours ce qui est choisi.'],
+    pt: ['As setas funcionam no Menu, e você sempre vê o que está escolhido.'],
+    vi: ['Phím mũi tên dùng được trong Menu, và bạn luôn thấy mục đang được chọn.'],
+  }},
   { v: '2.5.261', date: '2026-10-18', lines: {
     en: ['Menus are easier to read.'],
     es: ['Los menús se leen mejor.'],

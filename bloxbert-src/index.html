@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.261">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.261">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.262">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.262">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -15,6 +15,10 @@ html[data-ts="s"]{font-size:13px}
 html[data-ts="l"]{font-size:18px}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:3px solid #F8FAFC !important;outline-offset:2px !important;box-shadow:0 0 0 3px #0B1220, inset 0 0 0 3px #F8FAFC !important}
+#sheet button:focus,#sheet button:focus-visible,#sheet a:focus,#sheet a:focus-visible,#sheet input:focus,#sheet input:focus-visible,#sheet select:focus,#sheet select:focus-visible,#sheet textarea:focus,#sheet textarea:focus-visible{
+  outline:3px solid #F8FAFC !important;outline-offset:-4px !important;
+  box-shadow:inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
+}
 html body .kb-bar:focus-within{overflow:visible !important}
 html body .kb-bar button:focus-visible,
 html body .kb-bar a:focus-visible,
@@ -1141,7 +1145,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.261">
+<link rel="stylesheet" href="read.css?v=2.5.262">
 </head>
 <body>
 <div id="stage"></div>
@@ -1156,7 +1160,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.261</span>
+      <span class="ver" id="ver-plate">2.5.262</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1312,9 +1316,9 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.261"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.261" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.261" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.262"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.262" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.262" defer></script>
 <script>
 ;(function () {
   try {

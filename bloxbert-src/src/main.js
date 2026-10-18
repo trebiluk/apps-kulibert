@@ -7248,8 +7248,61 @@ function moveFocus(list, dir) {
   if (!list.length) return
   const i = list.indexOf(document.activeElement)
   const n = i < 0 ? (dir < 0 ? list.length - 1 : 0) : (i + dir + list.length) % list.length
-  const el = list[n]
+  focusChoice(list[n])
+}
+function focusChoice(el) {
+  if (!el) return
   try { el.focus({ focusVisible: true }) } catch (e) { try { el.focus() } catch (err) {} }
+  revealFocus(el)
+}
+function revealFocus(el) {
+  if (!el || !el.getBoundingClientRect) return
+  try { el.scrollIntoView({ block: 'nearest', inline: 'nearest' }) } catch (e) {}
+  let node = el.parentElement
+  while (node && node !== document.body) {
+    const s = getComputedStyle(node)
+    if (/auto|hidden|scroll|clip/.test(s.overflowY + s.overflowX)) {
+      const er = el.getBoundingClientRect()
+      const pr = node.getBoundingClientRect()
+      if (er.bottom > pr.bottom + 1) node.scrollTop += er.bottom - pr.bottom + 8
+      else if (er.top < pr.top - 1) node.scrollTop -= pr.top - er.top + 8
+      if (er.right > pr.right + 1) node.scrollLeft += er.right - pr.right + 8
+      else if (er.left < pr.left - 1) node.scrollLeft -= pr.left - er.left + 8
+    }
+    node = node.parentElement
+  }
+}
+function arrowPick(list, key) {
+  const cur = document.activeElement
+  const i = list.indexOf(cur)
+  const dir = (key === 'ArrowRight' || key === 'ArrowDown') ? 1 : -1
+  if (i < 0) return list[dir < 0 ? list.length - 1 : 0]
+  const r = cur.getBoundingClientRect()
+  const cx = r.left + r.width / 2
+  const cy = r.top + r.height / 2
+  const horiz = key === 'ArrowLeft' || key === 'ArrowRight'
+  let best = null
+  let bestScore = Infinity
+  for (const el of list) {
+    if (el === cur) continue
+    const b = el.getBoundingClientRect()
+    if (b.width < 2 || b.height < 2) continue
+    const x = b.left + b.width / 2
+    const y = b.top + b.height / 2
+    const dx = x - cx
+    const dy = y - cy
+    if (key === 'ArrowRight' && dx < 12) continue
+    if (key === 'ArrowLeft' && dx > -12) continue
+    if (key === 'ArrowDown' && dy < 12) continue
+    if (key === 'ArrowUp' && dy > -12) continue
+    const along = horiz ? Math.abs(dx) : Math.abs(dy)
+    const cross = horiz ? Math.abs(dy) : Math.abs(dx)
+    if (cross > along * 1.6 && cross > 80) continue
+    const score = along + cross * 1.4
+    if (score < bestScore) { bestScore = score; best = el }
+  }
+  if (best) return best
+  return list[(i + dir + list.length) % list.length]
 }
 window.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
@@ -7322,13 +7375,31 @@ document.addEventListener('keydown', (e) => {
     moveFocus(list, e.shiftKey ? -1 : 1)
     return
   }
-  if (!layer || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp')) return
+  if ((e.key === 'Enter' || e.key === ' ' || e.code === 'Space') && !e.repeat && !e.altKey && !e.ctrlKey && !e.metaKey) {
+    const sheet = document.getElementById('sheet')
+    const panel = sheet && !sheet.hidden ? sheet.dataset.panel : ''
+    if (layer && (panel === 'menu' || panel === 'world')) {
+      const hit = e.target && e.target.closest && e.target.closest('button, a[href]')
+      if (hit && layer.contains(hit) && !(e.target.closest && e.target.closest('input, textarea, select'))) {
+        e.preventDefault()
+        e.stopImmediatePropagation()
+        hit.click()
+        return
+      }
+    }
+  }
+  if (!layer || (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return
   if (e.target && e.target.closest && e.target.closest('input, textarea, select')) return
+  const sheet = document.getElementById('sheet')
+  const panel = sheet && !sheet.hidden ? sheet.dataset.panel : ''
+  const grid = panel === 'menu' || panel === 'world'
+  if (!grid && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return
   const buttons = focusList(layer).filter((el) => el.tagName === 'BUTTON' || el.tagName === 'A')
   if (!buttons.length) return
   e.preventDefault()
   e.stopImmediatePropagation()
-  moveFocus(buttons, e.key === 'ArrowDown' ? 1 : -1)
+  if (grid) focusChoice(arrowPick(buttons, e.key))
+  else moveFocus(buttons, e.key === 'ArrowDown' ? 1 : -1)
 }, true)
 function shutByKey() {
   if (!anyCard()) return false

@@ -1496,14 +1496,14 @@ for (const [lang, row] of Object.entries(KEYBOARD)) {
 for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
 const SHOW = {
-  en: { whatsNewBody: 'Make button always opens, new worlds show up right away, and Bag items have names.' },
-  es: { whatsNewBody: 'El botón Hacer siempre abre, los mundos nuevos se ven enseguida y la Bolsa tiene nombres.' },
-  ar: { whatsNewBody: 'زر اصنع يفتح دائماً، والعوالم الجديدة تظهر فوراً، والحقيبة فيها أسماء.' },
-  ru: { whatsNewBody: 'Кнопка Сделать всегда открывается, новые миры видны сразу, и в Сумке есть имена.' },
-  uk: { whatsNewBody: 'Кнопка Зробити завжди відкривається, нові світи видно одразу, і в Сумці є імена.' },
-  'fa-AF': { whatsNewBody: 'دکمه بساز همیشه باز می‌شود، جهان‌های تازه همان لحظه دیده می‌شوند، و کیف اسم دارد.' },
-  rw: { whatsNewBody: 'Buto Kora ifunguka buri gihe, isi nshya ziboneka ako kanya, kandi agasanduku kafite amazina.' },
-  ti: { whatsNewBody: 'መጠወቒ ግበር ኩሉ ግዜ ይኸፍት፡ ሓደሽቲ ዓለማት ብኡን ብኡን ይረኣዩ፡ ቦርሳ ድማ ስማት ኣለዋ።' },
+  en: { whatsNewBody: 'Arrow keys work in the Menu, and you can always see what is picked.' },
+  es: { whatsNewBody: 'Las flechas funcionan en el Menú, y siempre ves lo que está elegido.' },
+  uk: { whatsNewBody: 'Стрілки працюють у Меню, і завжди видно, що вибрано.' },
+  ru: { whatsNewBody: 'Стрелки работают в Меню, и всегда видно, что выбрано.' },
+  ar: { whatsNewBody: 'مفاتيح الأسهم تعمل في القائمة، ويمكنك دائماً رؤية ما تم اختياره.' },
+  'fa-AF': { whatsNewBody: 'کلیدهای جهت در فهرست کار می‌کنند، و همیشه می‌بینی چه چیزی برگزیده شده.' },
+  rw: { whatsNewBody: 'Imyambi ikora muri Menyu, kandi ubona buri gihe icyatoranyijwe.' },
+  ti: { whatsNewBody: 'ናይ ምልክት መጠወቒታት ኣብ ዝርዝር ይሰርሑ፡ ዝተመርጸ ኩሉ ግዜ ትርእዮ።' },
 }
 for (const [lang, row] of Object.entries(SHOW)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
@@ -1536,4 +1536,7 @@ const READ = {
 for (const [lang, row] of Object.entries(READ)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
+}
+for (const [lang, row] of Object.entries(SHOW)) {
+  if (EXTRA[lang]) EXTRA[lang].whatsNewBody = row.whatsNewBody
 }

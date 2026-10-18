@@ -514,3 +514,27 @@ html body button:focus-visible {
     z-index: 36 !important;
   }
 }
+html body #sheet button:focus,
+html body #sheet button:focus-visible,
+html body #sheet a:focus,
+html body #sheet a:focus-visible,
+html body #sheet input:focus,
+html body #sheet input:focus-visible,
+html body #sheet select:focus,
+html body #sheet select:focus-visible,
+html body #sheet textarea:focus,
+html body #sheet textarea:focus-visible,
+html body #sheet button.kd-key:focus,
+html body #sheet button.kd-key:focus-visible,
+html body #sheet button.kd-go:focus,
+html body #sheet button.kd-go:focus-visible,
+html body #sheet button.kd-exit:focus,
+html body #sheet button.kd-exit:focus-visible,
+html body #sheet #sheet-x:focus,
+html body #sheet #sheet-x:focus-visible,
+html body #sheet #sheet-back:focus,
+html body #sheet #sheet-back:focus-visible {
+  outline: 3px solid #F8FAFC !important;
+  outline-offset: -4px !important;
+  box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
+}

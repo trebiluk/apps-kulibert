@@ -1,0 +1,540 @@
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  src: url("/fonts/atkinson-hyperlegible-700.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --read: "Atkinson Hyperlegible", system-ui, sans-serif;
+  --plate: rgba(11, 18, 32, .9);
+  --read-ink: #F8FAFC;
+  --read-grey: #243044;
+  --read-line: #1f2b44;
+}
+html body {
+  font-family: var(--read);
+}
+html body button,
+html body .row,
+html body .keycap,
+html body .glbl,
+html body .wlab,
+html body .count,
+html body .digit,
+html body .ks-badge,
+html body .ks-lab,
+html body .ks-time,
+html body .set-lab,
+html body .set-val,
+html body .crate-tab,
+html body .need-line,
+html body .need-n,
+html body .wall-cap,
+html body .help,
+html body .xlab,
+html body #toast,
+html body #menu-hint,
+html body #qol-tip,
+html body #held-chip,
+html body #path-chip,
+html body #path-make,
+html body #day-clock,
+html body #mode-chip,
+html body #wallet-chip,
+html body #pause-btn,
+html body #mode-pill button,
+html body .top .tool,
+html body .top .ver,
+html body .belt-flow,
+html body #sheet .ks-feedback {
+  font-family: var(--read) !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+html body button:not(.well):not(.ks-slot):not(.slot):not(.wall-slot),
+html body .row,
+html body .keycap,
+html body .crate-tab,
+html body .set-lab,
+html body .set-val,
+html body #mode-pill button,
+html body .top .tool,
+html body .top .ver,
+html body #wallet-chip,
+html body #day-clock,
+html body #mode-chip,
+html body .glbl,
+html body .wlab,
+html body .need-line,
+html body .wall-cap,
+html body #pause-btn {
+  font-size: 16px !important;
+  line-height: 1.25 !important;
+}
+html body #sheet .count,
+html body .ks-badge,
+html body .ks-time,
+html body .belt-flow,
+html body #sheet .ks-feedback,
+html body .need-n {
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+}
+html body #hotbar .count,
+html body #hotbar .digit {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  background: #0B1220 !important;
+  color: var(--read-ink) !important;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+html body #menu-hint,
+html body #qol-tip,
+html body #day-tip,
+html body #path-chip .path-title {
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+}
+html body #toast { font-size: 16px !important; }
+html body #sheet-title,
+html body #sheet .kd-glab,
+html body #sheet .gnote.ghead,
+html body #sheet .machine-name,
+html body .sec h3,
+html body .dhead b,
+html body .brand b {
+  font-family: ui-monospace, Consolas, monospace !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: var(--read-ink) !important;
+  text-shadow: none !important;
+  letter-spacing: .02em;
+}
+html body .top,
+html body #hotbar,
+html body #drawer,
+html body #sheet.kd-panel,
+html body #sheet.kd-panel #sheet-body,
+html body #sheet.kd-panel .sheet-bar,
+html body #sheet .sheet-bar,
+html body #shop-safe .card,
+html body #door-opt .door-panel,
+html body #qol-tip,
+html body #menu-hint,
+html body #held-chip,
+html body #path-chip,
+html body #toast,
+html body #pause-btn,
+html body #play-chip,
+html body #wallet-chip,
+html body #day-clock,
+html body #mode-chip,
+html body .top .tb-plate,
+html body .top .ver,
+html body #sheet .count,
+html body .ks-badge {
+  background-color: var(--plate) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+html body #hotbar .slot,
+html body #sheet .well,
+html body #sheet .ks-slot {
+  background-color: #0B1220 !important;
+  background-image: none !important;
+  box-shadow: inset 0 0 0 1px #1f2b44 !important;
+}
+html body button:not(.well):not(.ks-slot):not(.slot):not(.wall-slot),
+html body .row,
+html body .top .tool,
+html body .top .icon-btn,
+html body #mode-pill button {
+  background-color: #121a2b !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--read-ink) !important;
+  border-color: var(--read-line) !important;
+}
+html body button:not(.well):not(.ks-slot):not(.slot):not(.wall-slot):hover,
+html body .row:hover,
+html body .top .tool:hover,
+html body .top .icon-btn:hover,
+html body #mode-pill button:hover,
+html body .kd-key:hover {
+  background-color: var(--read-grey) !important;
+  color: var(--read-ink) !important;
+  box-shadow: none !important;
+}
+html body button:focus-visible,
+html body a:focus-visible,
+html body input:focus-visible,
+html body select:focus-visible,
+html body textarea:focus-visible,
+html body [tabindex]:focus-visible {
+  outline: 3px solid #F8FAFC !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 1px #0B1220 !important;
+}
+html body button,
+html body .row,
+html body .keycap,
+html body .crate-tab,
+html body #path-make,
+html body #sheet-x,
+html body #close-btn,
+html body .top .tool,
+html body .top .icon-btn,
+html body #pause-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+html body #sheet #sheet-x {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: auto !important;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px !important;
+  margin-inline-start: auto;
+  position: relative;
+}
+html body #sheet #sheet-x > * { visibility: hidden; }
+html body #sheet #sheet-x > .xlab {
+  visibility: visible !important;
+  position: relative;
+  z-index: 1;
+  margin-inline-start: 22px;
+  font-size: 16px !important;
+}
+html body #sheet #sheet-x::before,
+html body #sheet #sheet-x::after {
+  left: 16px !important;
+  top: 50% !important;
+}
+html body #drawer .dhead { display: flex; align-items: center; gap: 8px; min-height: 52px; }
+html body #drawer .dhead b { order: 1; }
+html body #drawer #close-btn {
+  order: 2;
+  margin-inline-start: auto;
+  width: auto;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+html body #qol-tip { pointer-events: auto !important; cursor: pointer; }
+html body:has(#qol-tip:not([hidden])) #menu-hint { display: none !important; }
+@media (max-width: 480px) {
+  html body #sheet[data-panel="menu"] .ggrid {
+    grid-template-rows: minmax(52px, auto) auto minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+  html body #sheet .sheet-bar {
+    position: relative !important;
+    flex: 0 0 auto;
+    min-height: 52px;
+    z-index: 3;
+  }
+  html body #sheet #sheet-body { padding-top: 8px; }
+  html body #qol-tip:not([hidden]),
+  html body #menu-hint:not([hidden]) {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: auto !important;
+    bottom: calc(var(--hud-lift, 92px) + 16px) !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: calc(100vw - 16px) !important;
+    font-size: 18px !important;
+    z-index: 36 !important;
+  }
+  html body #hotbar { bottom: 8px; }
+  html body #pause-btn { top: calc(var(--top-h, 60px) + 8px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html body #sheet,
+  html body #drawer,
+  html body #toast,
+  html body #qol-tip,
+  html body #path-chip,
+  html body button {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Contrast: digital theme paints a teal grid and dark ink on .kd-go.
+   Flatten those to a solid plate and light Atkinson labels. */
+html body .kd-panel,
+html body #sheet .kd-panel,
+html body .kd-plate,
+html body .kd-key,
+html body .kd-go,
+html body .kd-x,
+html body .kd-exit,
+html body .top .tb-plate,
+html body #mode-chip,
+html body #day-clock,
+html body #wallet-chip {
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html body #sheet .kd-panel {
+  background-color: rgba(11, 18, 32, .9) !important;
+  border: 1px solid #1f2b44 !important;
+}
+html body #sheet .glbl,
+html body #sheet .kd-go,
+html body #sheet .kd-go .glbl,
+html body #sheet .kd-key,
+html body #sheet .xlab {
+  color: #F8FAFC !important;
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+}
+html body #sheet .kd-glab {
+  font-family: ui-monospace, Consolas, monospace !important;
+  font-size: 16px !important;
+  color: #F8FAFC !important;
+  background: rgba(11, 18, 32, .9) !important;
+}
+
+/* Size floor. Hotbar slot numbers stay 14px. Tips stay 18px. Headers stay pixel. */
+html body #sheet :is(button, .glbl, .wlab, .need, .badge, .ks-lab, .ks-zhead, .ks-pct, .ks-feedback, .crate-tab, .keycap, .help, .gnote, .row, .set-lab, .set-val, .later, small, .credit, .tag, .gneed, .need-n, .wall-cap, .kd-tag, .kd-chip, .back-lab, .xlab, label, .price, .coin, .lbl),
+html body #drawer :is(button, b, .xlab, small),
+html body .top :is(.tool, .ver, .lbl, small, b),
+html body #mode-chip,
+html body #mode-chip :is(span, b, small),
+html body #day-clock,
+html body #day-clock :is(span, b, small),
+html body #wallet-chip,
+html body #wallet-chip :is(span, b, small),
+html body #pause-btn,
+html body .jumpcol .jump,
+html body #wand-pill,
+html body #wand-pill :is(button, .glbl, span),
+html body #mode-pill,
+html body #mode-pill :is(button, .tl, span),
+html body .keys,
+html body #play-chip,
+html body #ver-plate {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  text-shadow: none !important;
+  color: #F8FAFC !important;
+}
+html body #sheet-title,
+html body #sheet .kd-glab,
+html body #sheet .gnote.ghead,
+html body #sheet .machine-name,
+html body .sec h3,
+html body .dhead b,
+html body .brand b,
+html body .kd-prompt {
+  font-family: ui-monospace, Consolas, monospace !important;
+  font-size: 16px !important;
+  color: #F8FAFC !important;
+  text-shadow: none !important;
+}
+html body #menu-hint,
+html body #menu-hint *,
+html body #qol-tip,
+html body #qol-tip *,
+html body #day-tip,
+html body #day-tip *,
+html body #path-chip,
+html body #path-chip * {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #F8FAFC !important;
+  text-shadow: none !important;
+}
+html body #hotbar .count,
+html body #hotbar .digit {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  background: #0B1220 !important;
+  color: #F8FAFC !important;
+  text-shadow: none !important;
+  border-radius: 4px;
+  padding: 0 4px;
+}
+html body #hotbar .lbl,
+html body #hotbar .bag-tile .lbl {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #F8FAFC !important;
+}
+html body #sheet.kd-panel #sheet-body,
+html body #sheet.kd-panel .sheet-bar,
+html body #sheet .kd-panel,
+html body .kd-go,
+html body .kd-exit,
+html body .kd-key,
+html body .top,
+html body .top .tb-plate,
+html body #mode-chip,
+html body #day-clock,
+html body #wallet-chip,
+html body .keys,
+html body #path-chip,
+html body #held-chip,
+html body #toast,
+html body #pause-btn,
+html body #play-chip,
+html body #qol-tip,
+html body #menu-hint,
+html body #hotbar,
+html body .jumpcol .jump {
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+html body .kd-go,
+html body .kd-exit,
+html body #sheet .kd-go,
+html body #sheet .kd-exit {
+  background-color: #121a2b !important;
+  color: #F8FAFC !important;
+  border-color: #1f2b44 !important;
+}
+html body #path-chip,
+html body #held-chip,
+html body #toast,
+html body #qol-tip,
+html body #menu-hint,
+html body .keys,
+html body #play-chip,
+html body #mode-chip,
+html body #day-clock,
+html body #wallet-chip,
+html body .top .tb-plate,
+html body #pause-btn {
+  background-color: rgba(11, 18, 32, .9) !important;
+}
+
+/* Leftover small type and the teal panel stroke. */
+html body .top .tool .tl,
+html body #mode-pill .tl,
+html body .kb-bar .kb-plate,
+html body #sheet b,
+html body #sheet small,
+html body #sheet .set-val,
+html body #sheet .set-lab,
+html body #sheet .qbtn,
+html body #sheet .help,
+html body .brand .tb-sub,
+html body .brand small {
+  font-family: "Atkinson Hyperlegible", system-ui, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  color: #F8FAFC !important;
+  text-shadow: none !important;
+}
+html body .brand .tb-name {
+  font-family: ui-monospace, Consolas, monospace !important;
+  font-size: 16px !important;
+  color: #F8FAFC !important;
+}
+html body:has(#sheet:not([hidden])) #path-chip,
+html body:has(#qol-tip:not([hidden])) #path-chip,
+html body:has(#qol-tip:not([hidden])) #menu-hint,
+html body:has(#qol-tip:not([hidden])) #day-tip {
+  display: none !important;
+}
+html body #sheet .kd-go { outline: none !important; }
+html body #sheet .kd-go:focus-visible { outline: 3px solid #F8FAFC !important; outline-offset: 2px !important; }
+html body #sheet.kd-panel,
+html body #sheet.kd-panel #sheet-body,
+html body #sheet.kd-panel .sheet-bar,
+html body #sheet .kd-panel,
+html body #sheet .kd-go,
+html body #sheet .kd-key,
+html body #sheet .kd-exit {
+  border: 1px solid #1f2b44 !important;
+  outline: none;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+html body #sheet .kd-go:focus-visible,
+html body #sheet .kd-key:focus-visible,
+html body #sheet .kd-exit:focus-visible,
+html body button:focus-visible {
+  outline: 3px solid #F8FAFC !important;
+  outline-offset: 2px !important;
+}
+@media (max-width: 480px) {
+  html body #sheet[data-panel="menu"] #sheet-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  html body #sheet[data-panel="menu"] .ggrid {
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+  }
+  html body #sheet[data-panel="menu"] .kd-groups {
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-y: auto !important;
+    padding-bottom: 12px;
+  }
+  html body #qol-tip:not([hidden]),
+  html body #menu-hint:not([hidden]),
+  html body #path-chip:not([hidden]),
+  html body #day-tip:not([hidden]) {
+    position: fixed !important;
+    left: 8px !important;
+    right: 84px !important;
+    top: auto !important;
+    bottom: calc(var(--hud-lift, 92px) + 16px) !important;
+    transform: none !important;
+    width: auto !important;
+    max-width: calc(100vw - 100px) !important;
+    font-size: 18px !important;
+    z-index: 36 !important;
+  }
+}
+html body #sheet button:focus,
+html body #sheet button:focus-visible,
+html body #sheet a:focus,
+html body #sheet a:focus-visible,
+html body #sheet input:focus,
+html body #sheet input:focus-visible,
+html body #sheet select:focus,
+html body #sheet select:focus-visible,
+html body #sheet textarea:focus,
+html body #sheet textarea:focus-visible,
+html body #sheet button.kd-key:focus,
+html body #sheet button.kd-key:focus-visible,
+html body #sheet button.kd-go:focus,
+html body #sheet button.kd-go:focus-visible,
+html body #sheet button.kd-exit:focus,
+html body #sheet button.kd-exit:focus-visible,
+html body #sheet #sheet-x:focus,
+html body #sheet #sheet-x:focus-visible,
+html body #sheet #sheet-back:focus,
+html body #sheet #sheet-back:focus-visible {
+  outline: 3px solid #F8FAFC !important;
+  outline-offset: -4px !important;
+  box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
+}
