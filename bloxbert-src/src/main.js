@@ -48,6 +48,7 @@ import { fromDoc, botsFrom } from './save.js'
 import { RECIPES } from './data/recipes.js'
 import { setGate, gates } from './data/gates.js'
 import { JUMP_V, GRAV_MULT, FLY_V, speedFor, overlapsPlayer, mineMs, inReach, blockNearBody, reachFor, TOUCH_REACH, crackStage, crackVisible, advanceDig, keepCrouchStep, shouldRepeatPlace, canUse, capAir, airLimit, WALK, gateDig, toolToast } from './feel.js'
+import { nearestTree, fellCells, takeHit, TREE_NEAR, TREE_LOOK, TREE_HITS } from './chop-tree.js'
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
@@ -1852,12 +1853,155 @@ function placeMiss() {
   toastFarKey()
 }
 function breakMiss() {
-  if (tableMode || anyCard() || !placeableHeld()) return
+  if (tableMode || anyCard()) return
   const aimed = noa.targetedBlock
   if (aimed && aimed.position && canReach(aimed.position)) return
+  const tree = scanTree()
+  if (tree && tree.d <= TREE_NEAR) return
+  if (tree) { showMoveCloser(tree); return }
+  if (!placeableHeld()) return
   const far = viewFar()
   if (!far || canReach(far.position)) return
   toastFar()
+}
+let chopState = null
+let treeHold = false
+let spaceChop = false
+let treeCache = null
+let treeCacheAt = 0
+function logSets() {
+  if (logSets.s) return logSets
+  logSets.s = new Set([ID.log, ID.birchLog, ID.pineLog].filter((n) => n))
+  logSets.leaf = new Set([ID.leaves, ID.birchLeaves, ID.pineNeedles].filter((n) => n))
+  logSets.item = {}
+  if (ID.log) logSets.item[ID.log] = 'log'
+  if (ID.birchLog) logSets.item[ID.birchLog] = 'birchLog'
+  if (ID.pineLog) logSets.item[ID.pineLog] = 'pineLog'
+  return logSets
+}
+function scanTree() {
+  const now = performance.now()
+  if (treeCache && now - treeCacheAt < 120) return treeCache.tree
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const tree = p ? nearestTree(p[0], p[1], p[2], getVoxel, logSets().s, TREE_LOOK) : null
+  treeCache = { tree }
+  treeCacheAt = now
+  return tree
+}
+function faceTree(tree) {
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p) return
+  setLook(Math.atan2(tree.x + 0.5 - p[0], tree.z + 0.5 - p[2]), 0.22)
+}
+function showMoveCloser(tree) {
+  const el = $('reach-hint')
+  if (!el || !tree) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  const head = noa.camera ? noa.camera.heading : 0
+  let rel = Math.atan2(tree.x + 0.5 - (p ? p[0] : 0), tree.z + 0.5 - (p ? p[2] : 0)) - head
+  while (rel > Math.PI) rel -= Math.PI * 2
+  while (rel < -Math.PI) rel += Math.PI * 2
+  const deg = Math.round(rel * 180 / Math.PI)
+  el.innerHTML = '<i class="aim-arrow" style="transform:rotate(' + deg + 'deg)">\u2191</i> ' + t('moveCloser')
+  el.style.left = (innerWidth / 2 + Math.sin(rel) * 140) + 'px'
+  el.style.top = (innerHeight / 2 - Math.cos(rel) * 80) + 'px'
+  el.hidden = false
+  clearTimeout(showMoveCloser.t)
+  showMoveCloser.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1600)
+}
+function showChopCount(n) {
+  const el = $('chop-count')
+  if (!el) return
+  el.hidden = false
+  el.textContent = n + '/3'
+  clearTimeout(showChopCount.t)
+  showChopCount.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 900)
+}
+function shakeChop() {
+  const canvas = document.querySelector('#stage canvas')
+  if (!canvas) return
+  canvas.classList.remove('chop-shake')
+  void canvas.offsetWidth
+  canvas.classList.add('chop-shake')
+}
+function showWoodPop() {
+  const el = $('wood-pop')
+  if (!el) return
+  const label = el.querySelector('b')
+  if (label) label.textContent = t('gotWood')
+  el.hidden = false
+  clearTimeout(showWoodPop.t)
+  showWoodPop.t = setTimeout(() => { if (el.isConnected) el.hidden = true }, 1600)
+}
+function fellTree(tree) {
+  const sets = logSets()
+  const cells = fellCells(tree, getVoxel, sets.leaf)
+  const ops = []
+  for (let i = 0; i < cells.length; i++) {
+    const x = cells[i][0]
+    const y = cells[i][1]
+    const z = cells[i][2]
+    if (zoneLocked(x, y, z)) continue
+    if (!getVoxel(x, y, z)) continue
+    ops.push([x, y, z, 0])
+  }
+  if (ops.length < 3) return false
+  const group = edits.applyEdit(ops, { source: 'hand', label: 'chop' })
+  if (!group) return false
+  changeLog.note(group)
+  dirty = true
+  const item = sets.item[tree.id] || 'log'
+  if (session && session.give) session.give(item, 1)
+  if (calm && calm.note) calm.note('tree')
+  showWoodPop()
+  treeCache = null
+  return true
+}
+function pulseChop(tree, fresh) {
+  if (!tree) return
+  const now = performance.now()
+  const key = tree.x + ',' + tree.z
+  const next = takeHit(chopState, now, key, fresh)
+  chopState = next
+  if (!next.hit) return
+  faceTree(tree)
+  showCrack(next.hits / TREE_HITS, null, null, true)
+  showChopCount(next.hits)
+  shakeChop()
+  pokeHand('break')
+  if (next.fell) {
+    fellTree(tree)
+    chopState = null
+    treeHold = false
+    hideCrack()
+  }
+}
+function treeGesture() {
+  if (!survivalOn() || tableMode || anyCard() || wandHeld()) return ''
+  const aimed = noa.targetedBlock
+  if (aimed && aimed.position && canReach(aimed.position)) {
+    const id = aimed.blockID
+    if (isUseBlock(id) || machineKind(id) || isDoor(id)) return ''
+  }
+  const tree = scanTree()
+  if (!tree || tree.d > TREE_NEAR) return ''
+  hideWalkCloser()
+  treeHold = true
+  pulseChop(tree, true)
+  return 'chop'
+}
+function holdTreeChop() {
+  if (!survivalOn() || tableMode || anyCard()) { treeHold = false; return }
+  const lookingAway = !!(look && look.pt === 'touch' && look.moved >= 24)
+  const want = !lookingAway && !!(spaceChop || mouseLeft || leftDown || (noa.inputs.state && noa.inputs.state.fire))
+  if (!want) { treeHold = false; return }
+  const tree = scanTree()
+  if (!tree || tree.d > TREE_NEAR) { treeHold = false; return }
+  if (!treeHold) {
+    treeHold = true
+    pulseChop(tree, true)
+  } else pulseChop(tree, false)
+  if (dig) dig = null
 }
 function reachOpen(pos, repeat) {
   if (tableMode || canReach(pos)) return true
@@ -7258,6 +7402,23 @@ document.addEventListener('keydown', (e) => {
       }
     }
   }
+  if ((e.key === ' ' || e.code === 'Space') && (playLocked() || playArmed || TOUCH_UI) && !tableMode && !anyCard()) {
+    const typing = e.target && e.target.closest && e.target.closest('button,a,input,textarea,select')
+    if (!typing && survivalOn()) {
+      const tree = scanTree()
+      if (tree && tree.d <= TREE_NEAR) {
+        e.preventDefault()
+        spaceChop = true
+        if (!e.repeat) {
+          treeHold = true
+          pulseChop(tree, true)
+          jumpDown()
+        }
+        return
+      }
+      if (tree && !e.repeat) showMoveCloser(tree)
+    }
+  }
   if (e.key === ' ' || e.code === 'Space' || e.key === 'Enter') {
     if (!TOUCH_UI && !playLocked() && !tableMode && !anyCard() && playKeyTarget(e)) {
       e.preventDefault()
@@ -7306,7 +7467,7 @@ document.addEventListener('keydown', (e) => {
   releaseLook()
   if (panels) panels.open('rules')
 })
-document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.code === 'KeyZ') crouchKey = false; if (e.key === ' ' || e.code === 'Space') jumpUp() })
+document.addEventListener('keyup', (e) => { if (e.key === 'Shift') downHeld = false; if (e.code === 'KeyZ') crouchKey = false; if (e.key === ' ' || e.code === 'Space') { spaceChop = false; jumpUp() } })
 function showCrack(p, x, y, early) {
   const ring = $('pick-ring')
   if (!ring) return
@@ -7596,9 +7757,10 @@ function feelTick(dt) {
     try { noa.inputs.state.fire = false } catch (e) {}
   }
   const breaking = !!(noa.inputs.state.fire || mouseLeft || leftDown)
-  if (!breaking) sweep = null
+  if (!breaking && !spaceChop) sweep = null
+  holdTreeChop()
   const touchLook = !!(look && look.pt === 'touch')
-  if (!sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
+  if (!treeHold && !sheetOpen && !anyCard() && !tableMode && breaking && !dig && !touchLook && (playLocked() || (look && look.pt !== 'touch'))) beginDig('mouse')
   if (anyCard()) dropRightHold()
   else if (!rightDown) mouseRight = false
   else if (shouldRepeatPlace(mouseRight, now - placeHoldAt, TOUCH_UI)) {
@@ -7995,6 +8157,10 @@ canvas.addEventListener('pointerdown', (e) => {
   if (look.pt === 'touch' || look.pt === 'pen' || ((TOUCH_UI || playArmed) && !playLocked())) look.pt = 'touch'
   lastPointer = { x: e.clientX, y: e.clientY }
   if (wandClick) { dig = null; hideCrack(); return }
+  if ((e.button === 0 || e.button < 0) && treeGesture() === 'chop') {
+    dig = null
+    return
+  }
   const finger = look.pt === 'touch'
   const seen = finger ? null : cropOnLook()
   const hit = seen
@@ -8005,7 +8171,9 @@ canvas.addEventListener('pointerdown', (e) => {
     buttonHold = { x: hit.position[0], y: hit.position[1], z: hit.position[2] }
   }
   if (hit && finger && !tableMode && hit.far) {
-    farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
+    const tree = scanTree()
+    if (tree && tree.d > TREE_NEAR) showMoveCloser(tree)
+    else farHit = { x: hit.position[0], y: hit.position[1], z: hit.position[2], t0: performance.now(), shown: false }
     dig = null
     hideCrack()
   } else if (hit && !hit.far) {
@@ -8021,7 +8189,11 @@ canvas.addEventListener('pointerdown', (e) => {
     }
   } else {
     dig = null
-    if (!finger && survivalOn()) breakMiss()
+    if (survivalOn()) {
+      const tree = scanTree()
+      if (tree && tree.d > TREE_NEAR) showMoveCloser(tree)
+      else if (!finger) breakMiss()
+    }
   }
 })
 canvas.addEventListener('pointermove', (e) => {
@@ -8105,7 +8277,11 @@ canvas.addEventListener('pointerup', (e) => {
   look = null
   if (lookWasTouch && wasFar) {
     farHit = null
-    if (moved < 24 && held < 500) showWalkCloser(e.clientX, e.clientY)
+    if (moved < 24 && held < 500) {
+      const tree = scanTree()
+      if (tree && tree.d > TREE_NEAR) showMoveCloser(tree)
+      else showWalkCloser(e.clientX, e.clientY)
+    }
     return
   }
   const handId = session && session.blockForHot ? session.blockForHot() : 0

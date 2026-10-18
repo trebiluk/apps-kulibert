@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.258', date: '2026-10-18', lines: {
+    en: ['Chopping trees gives you wood again.'],
+    es: ['Talar árboles vuelve a darte madera.'],
+    ar: ['قطع الأشجار يعطيك خشباً من جديد.'],
+    zh: ['砍树又能得到木头了。'],
+    fr: ['Couper un arbre donne à nouveau du bois.'],
+    pt: ['Cortar árvores dá madeira de novo.'],
+    ru: ['Рубка деревьев снова даёт древесину.'],
+    vi: ['Chặt cây lại cho bạn gỗ.'],
+    uk: ['Рубання дерев знову дає деревину.'],
+    'fa-AF': ['بریدن درخت دوباره چوب می‌دهد.'],
+    rw: ['Gutema ibiti bisubiza ibiti.'],
+    ti: ['ምቍራጽ ዕንጨይቲ እንደገና ዕንጨይቲ ይህብ።'],
+  }},
   { v: '2.5.256', date: '2026-10-17', lines: {
     en: ['Make button always opens, new worlds show up right away, and Bag items have names.'],
     es: ['El botón Hacer siempre abre, los mundos nuevos se ven enseguida y la Bolsa tiene nombres.'],

@@ -1494,6 +1494,7 @@ for (const [lang, row] of Object.entries(KEYBOARD)) {
   Object.assign(EXTRA[lang], row)
 }
 for (const [lang, row] of Object.entries(KIDWALK)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
+
 const SHOW = {
   en: { whatsNewBody: 'Make button always opens, new worlds show up right away, and Bag items have names.' },
   es: { whatsNewBody: 'El botón Hacer siempre abre, los mundos nuevos se ven enseguida y la Bolsa tiene nombres.' },
@@ -1505,6 +1506,20 @@ const SHOW = {
   ti: { whatsNewBody: 'መጠወቒ ግበር ኩሉ ግዜ ይኸፍት፡ ሓደሽቲ ዓለማት ብኡን ብኡን ይረኣዩ፡ ቦርሳ ድማ ስማት ኣለዋ።' },
 }
 for (const [lang, row] of Object.entries(SHOW)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+const CHOPWOOD = {
+  en: { whatsNewBody: 'Chopping trees gives you wood again.', moveCloser: 'Move closer', gotWood: '+1 Wood' },
+  es: { whatsNewBody: 'Talar árboles vuelve a darte madera.', moveCloser: 'Acércate', gotWood: '+1 Madera' },
+  uk: { whatsNewBody: 'Рубання дерев знову дає деревину.', moveCloser: 'Підійди ближче', gotWood: '+1 Деревина' },
+  ru: { whatsNewBody: 'Рубка деревьев снова даёт древесину.', moveCloser: 'Подойди ближе', gotWood: '+1 Древесина' },
+  ar: { whatsNewBody: 'قطع الأشجار يعطيك خشباً من جديد.', moveCloser: 'اقترب', gotWood: '+1 خشب' },
+  'fa-AF': { whatsNewBody: 'بریدن درخت دوباره چوب می‌دهد.', moveCloser: 'نزدیک‌تر بیا', gotWood: '+1 چوب' },
+  rw: { whatsNewBody: 'Gutema ibiti bisubiza ibiti.', moveCloser: 'Egerekera hafi', gotWood: '+1 Igiti' },
+  ti: { whatsNewBody: 'ምቍራጽ ዕንጨይቲ እንደገና ዕንጨይቲ ይህብ።', moveCloser: 'ቀረብ', gotWood: '+1 ዕንጨይቲ' },
+}
+for (const [lang, row] of Object.entries(CHOPWOOD)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
