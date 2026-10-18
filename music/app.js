@@ -2220,6 +2220,12 @@
     });
     const exit = $("perform-exit");
     if (exit) exit.hidden = !document.body.classList.contains("show");
+    const line = $("tool-line");
+    if (line) {
+      const key = { songs: "toolSongs", tap: "toolTap", remix: "toolRemix", mix: "toolMix", piano: "toolPiano", score: "toolScore", band: "toolBand", viz: "toolViz" }[tab];
+      const fallback = { songs: "Songs: open a saved song.", tap: "Tap: hit pads and see the dots.", remix: "Remix: play your song in a new style.", mix: "Mix: set how loud each part is.", piano: "Piano: play the keys.", score: "Score: see and fix the notes.", band: "Band: tap a player to hear them.", viz: "Viz: pick the picture." }[tab];
+      line.textContent = (key && mu(key)) || fallback || "";
+    }
   }
   function openTab(tab) {
     closeMenu();
@@ -2790,6 +2796,7 @@
       $("tempo").value = "104";
       $("tempo-read").textContent = "104";
     }
+    keep();
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
     setMode("beat");
@@ -4296,7 +4303,12 @@
     return "";
   })();
   if (startBoard) setMode(startBoard);
-  else showHome();
+  else openTab("tap");
+  if ($("tempo") && state.song && state.song.bpm) {
+    $("tempo").value = String(state.song.bpm);
+    if ($("tempo-read")) $("tempo-read").textContent = String(state.song.bpm);
+  }
+  paintSongBar();
   buildKit();
   const tapTiles = document.querySelector(".tap-tiles");
   if (tapTiles && $("kit")) tapTiles.appendChild($("kit"));
@@ -4317,6 +4329,183 @@
       requestAnimationFrame(fitTapRows);
     });
   }
+  const guideSeen = { kick: false, snare: false, hat: false };
+  let tapOn = false;
+  let tapTimer = 0;
+  let tapPass = null;
+  function paintGuide() {
+    const line = $("guide-line");
+    const next = !guideSeen.kick ? "kick" : !guideSeen.snare ? "snare" : !guideSeen.hat ? "hat" : "";
+    if (line) {
+      const name = next ? next.charAt(0).toUpperCase() + next.slice(1) : "";
+      line.textContent = next ? ((mu("guideNext") || "Next:") + " " + name) : (mu("guideDone") || "Your loop is ready. Press Play.");
+    }
+    document.querySelectorAll("#tap-pads .pad").forEach((btn) => btn.classList.toggle("guide", btn.dataset.pad === next));
+  }
+  function paintTapStrip() {
+    const strip = $("tap-strip");
+    if (!strip) return;
+    strip.innerHTML = "";
+    ["kick", "snare", "hat", "clap"].forEach((id) => {
+      const row = document.createElement("div");
+      row.className = "tap-row";
+      for (let i = 0; i < GRID; i++) {
+        const dot = document.createElement("i");
+        dot.className = "tap-dot" + (state.drums[id] && state.drums[id][i] ? " on" : "") + (state.grid === i ? " now" : "");
+        dot.dataset.step = String(i);
+        row.appendChild(dot);
+      }
+      strip.appendChild(row);
+    });
+    const read = $("playhead-read");
+    if (read) read.textContent = "Beat " + ((state.grid % 8) + 1);
+  }
+  function hitPad(id, btn) {
+    if (btn) {
+      btn.classList.add("lit");
+      window.setTimeout(() => btn.classList.remove("lit"), 160);
+    }
+    if (guideSeen[id] === false) guideSeen[id] = true;
+    arm();
+    hitSound(id);
+    if (tapOn) {
+      const step = state.grid || 0;
+      if (!state.drums[id]) state.drums[id] = [];
+      state.drums[id][step] = true;
+      keep();
+      renderDrums();
+      paintTapStrip();
+    }
+    paintGuide();
+  }
+  function stopTapWrite() {
+    tapOn = false;
+    window.clearTimeout(tapTimer);
+    const box = $("count-in");
+    if (box) box.hidden = true;
+    const btn = $("tap-write");
+    if (btn) btn.classList.remove("on");
+  }
+  function runTapLoop() {
+    let step = 0;
+    const eighth = Math.max(80, Math.round(60000 / Math.max(70, state.song.bpm || 104) / 2));
+    const loop = () => {
+      if (!tapOn) return;
+      state.grid = step;
+      document.querySelectorAll(".cell, .tap-dot").forEach((cell) => {
+        cell.classList.toggle("now", Number(cell.dataset.step) === step);
+      });
+      const read = $("playhead-read");
+      if (read) read.textContent = "Beat " + ((step % 8) + 1);
+      const dot = $("count-dot");
+      if (dot && step % 2 === 0) {
+        dot.classList.remove("on");
+        void dot.offsetWidth;
+        dot.classList.add("on");
+      }
+      step = (step + 1) % GRID;
+      tapTimer = window.setTimeout(loop, eighth);
+    };
+    loop();
+  }
+  function startTapWrite() {
+    if (tapOn) { stopTapWrite(); return; }
+    tapPass = JSON.parse(JSON.stringify(state.drums));
+    tapOn = true;
+    state.click = true;
+    const btn = $("tap-write");
+    if (btn) btn.classList.add("on");
+    const box = $("count-in");
+    const num = $("count-num");
+    if (box) box.hidden = false;
+    let n = 0;
+    const quarter = Math.max(160, Math.round(60000 / Math.max(70, state.song.bpm || 104)));
+    const tick = () => {
+      if (!tapOn) return;
+      n += 1;
+      if (n > 4) {
+        if (box) box.hidden = true;
+        runTapLoop();
+        return;
+      }
+      if (num) num.textContent = String(n);
+      const dot = $("count-dot");
+      if (dot) {
+        dot.classList.remove("on");
+        void dot.offsetWidth;
+        dot.classList.add("on");
+      }
+      hitSound("hat");
+      tapTimer = window.setTimeout(tick, quarter);
+    };
+    tick();
+  }
+  function bootTapWrite() {
+    const pads = $("tap-pads");
+    if (!pads || pads.dataset.wired) return;
+    pads.dataset.wired = "1";
+    paintGuide();
+    paintTapStrip();
+    const go = $("tap-write");
+    if (go) go.addEventListener("click", startTapWrite);
+    const undo = $("tap-undo");
+    if (undo) undo.addEventListener("click", () => {
+      if (!tapPass) return;
+      state.drums = tapPass;
+      tapPass = null;
+      stopTapWrite();
+      renderDrums();
+      paintTapStrip();
+      keep();
+    });
+    const next = $("tap-next");
+    if (next) next.addEventListener("click", () => { stopTapWrite(); openTab("score"); });
+    pads.querySelectorAll("[data-pad]").forEach((btn) => {
+      btn.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        hitPad(btn.dataset.pad, btn);
+      });
+    });
+    if (!window.__djTapKeys) {
+      window.__djTapKeys = 1;
+      window.addEventListener("keydown", (e) => {
+        if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
+        const tag = e.target && e.target.tagName;
+        if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if (!document.body.classList.contains("tab-tap")) return;
+        const map = { KeyA: "kick", KeyS: "snare", KeyD: "hat", KeyF: "clap" };
+        if (!map[e.code]) return;
+        e.preventDefault();
+        hitPad(map[e.code], pads.querySelector("[data-pad='" + map[e.code] + "']"));
+      });
+    }
+    document.querySelectorAll(".rail-next").forEach((btn) => {
+      if (btn.dataset.wired) return;
+      btn.dataset.wired = "1";
+      btn.addEventListener("click", () => {
+        if (btn.dataset.next === "perform") {
+          const show = $("show-btn");
+          if (show) show.click();
+          return;
+        }
+        openTab(btn.dataset.next);
+      });
+    });
+    const railPerform = $("rail-perform");
+    if (railPerform && !railPerform.dataset.wired) {
+      railPerform.dataset.wired = "1";
+      railPerform.addEventListener("click", () => {
+        const show = $("show-btn");
+        if (show) show.click();
+      });
+    }
+    ["save-dock", "mute-btn", "share-btn", "clear-song"].forEach((id) => {
+      const el = $(id);
+      const pop = $("more-pop");
+      if (el && pop && el.parentElement !== pop) pop.appendChild(el);
+    });
+  }
+  bootTapWrite();
   function fitTapRows() {
     if (!document.body.classList.contains("tab-tap")) return;
     const box = $("drums");
@@ -5308,8 +5497,7 @@
     let saved = "";
     try { saved = localStorage.getItem("kulibert.piano.dock") || ""; } catch (err) { saved = ""; }
     if (saved === "show") return true;
-    if (saved === "hide") return false;
-    return window.innerHeight >= 500;
+    return false;
   }
   function syncPianoDock() {
     const dock = $("piano-dock");
@@ -5380,6 +5568,7 @@
         if (e.repeat || e.metaKey || e.ctrlKey || e.altKey) return;
         const tag = e.target && e.target.tagName;
         if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT") return;
+        if (document.body.classList.contains("tab-tap")) return;
         const spec = KEY_MAP[e.code];
         if (!spec) return;
         const oct = pianoOct + spec[0];
@@ -5774,7 +5963,24 @@
   const newSongBtn = $("new-song");
   if (newSongBtn) newSongBtn.addEventListener("click", clearTakes);
   const clearSongBtn = $("clear-song");
-  if (clearSongBtn) clearSongBtn.addEventListener("click", clearTakes);
+  if (clearSongBtn) clearSongBtn.addEventListener("click", () => {
+    if (clearSongBtn.dataset.ask !== "1") {
+      clearSongBtn.dataset.ask = "1";
+      const word = clearSongBtn.querySelector(".ctl-word");
+      if (word) word.textContent = mu("eraseAsk") || "Erase song?";
+      window.setTimeout(() => {
+        if (clearSongBtn.dataset.ask !== "1") return;
+        clearSongBtn.dataset.ask = "";
+        const back = clearSongBtn.querySelector(".ctl-word");
+        if (back) back.textContent = mu("clearTile") || "Clear";
+      }, 2500);
+      return;
+    }
+    clearSongBtn.dataset.ask = "";
+    const back = clearSongBtn.querySelector(".ctl-word");
+    if (back) back.textContent = mu("clearTile") || "Clear";
+    clearTakes();
+  });
   const undoSongBtn = $("undo-song");
   if (undoSongBtn) undoSongBtn.addEventListener("click", () => {
     if (undoKind === "shelf" && shelfUndo) {

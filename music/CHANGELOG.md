@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.0** · 2026-10-18 · channel **live**
+
+Open on the beat grid, tap pads to write the score, and one tempo.
+
+## Earlier
+
 **Chip: MU 2.35.22** · 2026-10-16 · channel **live**
 
 The Dark switch now has a moon and sun icon.

@@ -104,14 +104,18 @@
     <div class="side" id="side">
       <nav class="dock-left" id="dock-left" aria-label="Workspace">
         <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-i18n-label="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-i18n="menu">Menu</span></button>
+        <p class="rail-group"><span data-mu="groupMake">Make</span> <button type="button" class="rail-next" data-next="remix" data-mu="nextStep">Next</button></p>
         <button type="button" id="tab-songs" class="tab on" data-tab="songs" aria-pressed="true" data-mu-label="songs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 4v3h3M8 11h8M8 15h6" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="songs">Songs</span></button>
         <button type="button" id="tab-tap" class="tab" data-tab="tap" aria-pressed="false" data-mu-label="tabTap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg><span data-mu="tabTap">Tap</span></button>
-        <button type="button" id="tab-remix" class="tab" data-tab="remix" aria-pressed="false" data-mu-label="tabRemix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10M7 12h6M7 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 10l3 2-3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabRemix">Remix</span></button>
-        <button type="button" id="tab-mix" class="tab" data-tab="mix" aria-pressed="false" data-mu-label="tabMix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V8M12 18V6M18 14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabMix">Mix</span></button>
         <button type="button" id="tab-piano" class="tab" data-tab="piano" aria-pressed="false" data-mu-label="tabPiano"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 5v7M12 5v7M15 5v7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabPiano">Piano</span></button>
         <button type="button" id="tab-score" class="tab" data-tab="score" aria-pressed="false" data-mu-label="score"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12M6 12h12M6 17h12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="8" r="1.4" fill="currentColor"/><circle cx="10" cy="13" r="1.4" fill="currentColor"/></svg><span data-mu="score">Score</span></button>
+        <p class="rail-group"><span data-mu="groupChange">Change</span> <button type="button" class="rail-next" data-next="viz" data-mu="nextStep">Next</button></p>
+        <button type="button" id="tab-remix" class="tab" data-tab="remix" aria-pressed="false" data-mu-label="tabRemix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10M7 12h6M7 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 10l3 2-3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabRemix">Remix</span></button>
+        <button type="button" id="tab-mix" class="tab" data-tab="mix" aria-pressed="false" data-mu-label="tabMix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V8M12 18V6M18 14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabMix">Mix</span></button>
         <button type="button" id="tab-band" class="tab" data-tab="band" aria-pressed="false" data-mu-label="band"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18c1-3 3-4 4-4s3 1 4 4M12 18c1-3 3-4 4-4s3 1 4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="band">Band</span></button>
+        <p class="rail-group"><span data-mu="groupShow">Show</span> <button type="button" class="rail-next" data-next="perform" data-mu="nextStep">Next</button></p>
         <button type="button" id="tab-viz" class="tab" data-tab="viz" aria-pressed="false" data-mu-label="tabViz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16c2-6 4 2 6-4s4 6 6 0 2 2 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabViz">Viz</span></button>
+        <button type="button" id="rail-perform" class="tab rail-perform" data-mu="perform">Perform</button>
       </nav>
       <div id="legacy-modes" hidden>
         <button type="button" id="mode-beat" data-mu="beat">Beat</button>
@@ -146,6 +150,7 @@
       </div>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news2360">{ver} DJ Berty: open on the beat grid, tap pads to write the score, and one tempo.</span></li>
         <li><span data-mu="news23522">{ver} DJ Berty: The Dark switch now has a moon and sun icon.</span></li>
         <li><span data-mu="news23521">{ver} DJ Berty: A calm new look, and a Dark mode switch in Settings.</span></li>
         <li><span data-mu="news23520">{ver} DJ Berty: Score notes now show fully on every screen.</span></li>
@@ -267,6 +272,7 @@
 
     </div>
     <div class="desk">
+    <p id="tool-line" class="tool-line" data-mu="toolTap">Tap: hit pads and see the dots.</p>
     <div id="songbar" class="songbar" hidden>
       <span id="songbar-meta">96 · C · 4/4</span>
     </div>
@@ -332,6 +338,24 @@
       </div>
       <div id="ws-split" class="ws-split" role="separator" aria-orientation="vertical" aria-label="Drag to resize the staff and the drums" aria-valuemin="28" aria-valuemax="72" aria-valuenow="58" tabindex="0" hidden></div>
       <div id="drums-pane">
+        <button type="button" id="tap-write" class="tap-write" data-mu="tapWrite">⏺ Tap to write</button>
+        <div id="count-in" class="count-in" hidden>
+          <b id="count-num" aria-live="polite">1</b>
+          <i id="count-dot" class="count-dot" aria-hidden="true"></i>
+        </div>
+        <div id="tap-pads" class="tap-pads" aria-label="Pads">
+          <button type="button" class="pad" data-pad="kick" aria-label="Kick">🥁 <span>Kick</span></button>
+          <button type="button" class="pad" data-pad="snare" aria-label="Snare">🪘 <span>Snare</span></button>
+          <button type="button" class="pad" data-pad="hat" aria-label="Hat">🎩 <span>Hat</span></button>
+          <button type="button" class="pad" data-pad="clap" aria-label="Clap">👏 <span>Clap</span></button>
+        </div>
+        <p id="guide-line" class="guide-line">Next: Kick</p>
+        <p id="playhead-read" class="playhead-read">Beat 1</p>
+        <div id="tap-strip" class="tap-strip" aria-label="Two bars"></div>
+        <div class="tap-actions">
+          <button type="button" id="tap-undo" class="btn">Undo</button>
+          <button type="button" id="tap-next" class="btn" data-mu="nextStep">Next</button>
+        </div>
         <div class="tap-tiles">
           <button type="button" id="stage-toggle" class="btn" aria-pressed="false" title="Picture"><span class="ctl-word" data-mu="showPicture">Picture</span></button>
           <button type="button" id="turn-btn" class="btn" data-mu="listenTurn">Listen, then my turn</button>

@@ -3829,6 +3829,104 @@ html[dir="rtl"] body.mu237.menu-open .drawer {
   width: auto !important;
   overflow: auto !important;
 }
+
+/* Doorway: grid first, 88px pads, one bright Play */
+body.mu237 .tw-app-bar { display: none !important; }
+body.mu237 #dock-left .tab {
+  min-height: 56px;
+  height: 56px;
+  max-height: none;
+  flex: 0 0 56px;
+  font-size: 16px;
+}
+body.mu237 #dock-left .tab.on,
+body.mu237 #dock-left .tab[aria-pressed="true"] {
+  outline: 3px solid #041018;
+  box-shadow: inset 0 0 0 3px #041018;
+}
+.rail-group {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  margin: 6px 2px 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #67e8f9;
+}
+.rail-next, #rail-perform {
+  min-height: 44px;
+  min-width: 44px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.tool-line {
+  margin: 0;
+  padding: 6px 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
+.tap-write {
+  min-height: 64px;
+  width: 100%;
+  font-size: 22px;
+  font-weight: 800;
+  border: 0;
+  border-radius: 14px;
+  background: #22d3ee;
+  color: #041018;
+}
+.tap-pads {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(88px, 1fr));
+  gap: 8px;
+  margin: 8px 0;
+}
+.tap-pads .pad {
+  min-width: 88px;
+  min-height: 88px;
+  font-size: 16px;
+  font-weight: 800;
+  border-radius: 14px;
+  border: 3px solid transparent;
+  background: #10203f;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.tap-pads .pad.guide { outline: 4px solid #22d3ee; background: #0e7490; }
+.tap-pads .pad.lit { background: #22d3ee; color: #041018; }
+.count-in { display: flex; align-items: center; gap: 12px; min-height: 64px; }
+.count-in b { font-size: 48px; line-height: 1; }
+.count-dot { width: 28px; height: 28px; border-radius: 50%; background: #16324f; display: inline-block; }
+.count-dot.on { background: #22d3ee; box-shadow: 0 0 16px #22d3ee; }
+.playhead-read { margin: 0; font-size: 16px; font-weight: 800; }
+.guide-line { margin: 4px 0; font-size: 16px; font-weight: 700; }
+.tap-strip { display: grid; gap: 4px; margin: 6px 0; }
+.tap-row { display: grid; grid-template-columns: repeat(16, minmax(8px, 1fr)); gap: 2px; }
+.tap-dot { height: 14px; border-radius: 3px; background: #16324f; display: block; }
+.tap-dot.on { background: #a78bfa; }
+.tap-dot.now, .cell.now { outline: 3px solid #22d3ee; }
+body.mu237 #play-btn {
+  background: #22d3ee !important;
+  color: #041018 !important;
+  box-shadow: 0 0 0 3px #22d3ee;
+}
+@media (prefers-reduced-motion: reduce) {
+  .count-dot.on { box-shadow: none; outline: 3px solid #22d3ee; }
+}
+@media (max-width: 699px) and (orientation: portrait) {
+  .rail-group, #rail-perform { display: none !important; }
+  .tap-pads { grid-template-columns: repeat(2, minmax(88px, 1fr)); }
+}
+@media (orientation: landscape) and (max-height: 520px) {
+  .tap-pads .pad { min-height: 88px; }
+  .piano-dock { position: fixed; }
+}
+
 @media (max-width: 699px) and (orientation: portrait) {
   body.mu237 #band-picks.chair-stage {
     display: grid !important;
@@ -4207,5 +4305,9 @@ html[data-theme] .cell.on::after { color: var(--accent-fg) !important; }
 html[data-theme] .bar-stack {
   background: var(--panel) !important;
   border-top-color: var(--divider) !important;
+}
+html[data-theme] body.mu237 {
+  --play-bg: #22d3ee;
+  --play-fg: #041018;
 }
 
