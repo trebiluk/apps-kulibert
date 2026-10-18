@@ -538,3 +538,130 @@ html body #sheet #sheet-back:focus-visible {
   outline-offset: -4px !important;
   box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
 }
+
+/* 2.5.265: phone top bar keeps every word, and the Saved toast stays off the crosshair. */
+@media (max-width: 980px) {
+  html body.hud-calm { --top-h: var(--phone-top, 132px); }
+  html[data-kb-bar]:not(.kb-framed) body header.top { top: 48px !important; }
+  html body header.top {
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    align-content: center !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    row-gap: 4px;
+  }
+  html body #mode-pill { flex: 0 0 auto !important; }
+  html body #mode-pill .tl,
+  html body #wallet-chip,
+  html body #wallet-chip bdi,
+  html body .top .ver {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+  html body #wallet-chip {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    max-width: none !important;
+    min-height: 44px;
+  }
+  html body .top .tool {
+    width: auto !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: auto !important;
+    padding: 2px 8px !important;
+    gap: 2px !important;
+  }
+  html body .top .tool .tl {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    clip: auto !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    font-size: 12px !important;
+  }
+}
+html body #save-chip:not([hidden]),
+html body #toast.nice-chip:not([hidden]) {
+  left: 12px !important;
+  right: auto !important;
+  top: calc(48px + var(--top-h, 120px) + 72px) !important;
+  bottom: auto !important;
+  transform: none !important;
+  z-index: 36;
+  max-width: min(220px, 46vw);
+}
+html body #hotbar .bag-tile {
+  width: 76px !important;
+  min-width: 76px !important;
+  height: auto !important;
+  min-height: 72px !important;
+  overflow: hidden !important;
+  box-sizing: border-box;
+}
+html body #hotbar .bag-tile .lbl {
+  position: static !important;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  text-align: center !important;
+}
+html body #path-chip .path-n {
+  flex: 0 0 auto;
+  min-width: 44px;
+  min-height: 44px;
+  display: grid !important;
+  place-items: center;
+  padding: 0 6px;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  color: #F8FAFC !important;
+  background: #145e56 !important;
+  border: 2px solid #F8FAFC;
+  border-radius: 8px;
+}
+html body #sheet .keys {
+  display: flex !important;
+  position: static !important;
+  inset: auto !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin: 8px 0 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  z-index: 2 !important;
+  pointer-events: auto !important;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+html body #sheet .keys .keycap {
+  min-width: 44px !important;
+  min-height: 44px !important;
+}
+html body #sheet .ks-slot .ks-lab,
+html body #sheet .well.result .wlab {
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  -webkit-line-clamp: unset !important;
+  max-height: none !important;
+  height: auto !important;
+  text-overflow: clip !important;
+}

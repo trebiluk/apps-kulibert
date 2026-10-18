@@ -20,7 +20,7 @@ export function columnSpan(tx, tz, y, id, getVoxel) {
   return { lo, hi, n: hi - lo + 1 }
 }
 
-const SPAWN_TRUNKS = [[-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
+const SPAWN_TRUNKS = [[10, 1], [-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
 
 function candidates(px, pz, radius) {
   const seen = new Set()

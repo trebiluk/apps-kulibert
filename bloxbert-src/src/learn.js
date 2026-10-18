@@ -88,13 +88,35 @@ export function createLearn(api) {
     cardHidden = false
     paintPath()
   }
+  function plankHave() {
+    try { return api.count ? (api.count('planks') | 0) : 0 } catch (e) { return 0 }
+  }
+  function paintTreeCount(g) {
+    const el = document.getElementById('path-chip')
+    if (!el || el.hidden || !g || g.id !== 'pathTree') return
+    let num = el.querySelector('.path-n')
+    if (!num) {
+      num = document.createElement('span')
+      num.className = 'path-n'
+      const x = el.querySelector('.path-x')
+      if (x) el.insertBefore(num, x)
+      else el.append(num)
+    }
+    const have = plankHave()
+    num.textContent = Math.min(have, g.need) + '/' + g.need
+  }
   function sync() {
     const g = goals.find((x) => x.id === 'pathTree')
     if (!g || g.done) return false
-    let logs = 0
-    try { logs = api.count ? api.count('log') : 0 } catch (e) { logs = 0 }
-    if (!(logs >= 1)) return false
-    bump('pathTree', Math.max(1, g.need - (g.n || 0)))
+    paintTreeCount(g)
+    if (plankHave() < 1) return false
+    if (sync.wait) return true
+    sync.wait = setTimeout(() => {
+      sync.wait = 0
+      const cur = goals.find((x) => x.id === 'pathTree')
+      if (!cur || cur.done) return
+      bump('pathTree', Math.max(1, cur.need - (cur.n || 0)))
+    }, 700)
     return true
   }
   function paintPath() {
@@ -139,6 +161,7 @@ export function createLearn(api) {
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
+    if (g.id === 'pathTree') paintTreeCount(g)
     pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)

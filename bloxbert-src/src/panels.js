@@ -245,10 +245,10 @@ export function mountPanels(api) {
     go.classList.add('kd-go')
     const playTiles = [
       keyTile('bag', 'inventory', api.t('inventory'), () => open('inventory')),
+      keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')),
+      keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')),
+      keyTile('help', 'help', api.t('help'), () => open('help')),
     ]
-    if (!api.workbenchOn || api.workbenchOn()) playTiles.push(keyTile('bench', 'crafting', api.t('crafting'), () => open('crafting')))
-    playTiles.push(keyTile('book', 'notebook', api.t('notebook'), () => open('notebook')))
-    playTiles.push(keyTile('help', 'help', api.t('help'), () => open('help')))
     const groups = document.createElement('div')
     groups.className = 'kd-groups'
     groups.append(

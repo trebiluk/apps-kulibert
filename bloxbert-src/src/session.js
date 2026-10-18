@@ -81,7 +81,7 @@ export function createSession(api) {
   function recipeOpen(r) {
     if (!r) return false
     if (!api.hudQuiet || !api.hudQuiet()) return true
-    if (r.id === 'workbench') return !!(api.workbenchOn && api.workbenchOn())
+    if (r.id === 'workbench') return true
     if (CRAFT_MACHINES.has(r.id)) return !!(api.machinesOn && api.machinesOn())
     return true
   }
@@ -1378,11 +1378,11 @@ export function createSession(api) {
       const shown = Math.min(have, n)
       if (num) num.textContent = shown + '/' + n
       bit.classList.toggle('short', have < n)
-      const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
+      const label = needName(item)
       bit.title = label + ' ' + t('inBag').replace('{n}', String(have))
     })
     g.querySelectorAll('.gnote.left-line').forEach((el) => {
-      el.textContent = r.in.map(([need]) => t('leftLine').replace('{item}', itemName(need)).replace('{n}', String(countOf(bag, need)))).join(' · ')
+      el.textContent = r.in.map(([need]) => t('leftLine').replace('{item}', needName(need)).replace('{n}', String(countOf(bag, need)))).join(' · ')
     })
   }
   function paintCraftSlots(g) {
@@ -1631,7 +1631,7 @@ export function createSession(api) {
         const num = document.createElement('span')
         num.className = 'need-n'
         num.textContent = Math.min(have, n) + '/' + n
-        const label = item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item)
+        const label = needName(item)
         bit.title = label + ' ' + t('inBag').replace('{n}', String(have))
         bit.append(art, num)
         pane.append(bit)
@@ -1840,7 +1840,7 @@ export function createSession(api) {
           recipe: r,
           placed: () => trayPlaced,
           bag: () => bag.slots,
-          name: (item) => item === 'woolAny' ? t('woolAny') : item === 'stoneAny' ? t('stoneAny') : item === 'plankAny' ? t('plankAny') : itemName(item),
+          name: (item) => needName(item),
           icon: (item) => itemIcon(item === 'woolAny' ? ITEMS.woolBlue : item === 'stoneAny' ? ITEMS.stone : item === 'plankAny' ? ITEMS.planks : ITEMS[item]),
           t,
           resultName: (r.id === 'door' ? t('doorTall') : itemName(r.out[0])) + (r.out[1] > 1 ? ' ×' + r.out[1] : ''),
@@ -1935,7 +1935,7 @@ export function createSession(api) {
       if (leftFor === r.id) {
         const left = document.createElement('p')
         left.className = 'gnote left-line'
-        left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', itemName(item)).replace('{n}', String(countOf(bag, item)))).join(' · ')
+        left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', needName(item)).replace('{n}', String(countOf(bag, item)))).join(' · ')
         side.append(left)
       }
       if (st.station || st.gate) {

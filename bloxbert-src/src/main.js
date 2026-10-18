@@ -1950,8 +1950,8 @@ function fellTree(tree) {
   if (!group) return false
   changeLog.note(group)
   dirty = true
-  const item = sets.item[tree.id] || 'log'
-  if (session && session.give) session.give(item, 1)
+  const item = 'planks'
+  if (session && session.give) session.give(item, 4)
   if (calm && calm.note) calm.note('tree')
   showWoodPop()
   treeCache = null
@@ -4991,7 +4991,6 @@ function grantStartKit() {
   if (session.mode && session.mode !== 'survival') return
   if (gifts.startKit) return
   session.give('stick', 4)
-  session.give('planks', 5)
   session.give('berry', 1)
   gifts.startKit = true
   dirty = true
@@ -9723,7 +9722,9 @@ paintGfx()
 
 const topBar = document.querySelector('.top')
 function refit() {
-  document.documentElement.style.setProperty('--top-h', Math.ceil(topBar.getBoundingClientRect().height) + 'px')
+  const h = Math.ceil(topBar.getBoundingClientRect().height)
+  document.documentElement.style.setProperty('--top-h', h + 'px')
+  document.documentElement.style.setProperty('--phone-top', h + 'px')
   noa.rendering.resize()
 }
 new ResizeObserver(refit).observe(topBar)

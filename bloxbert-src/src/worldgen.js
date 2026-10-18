@@ -112,7 +112,7 @@ export function wildWood(x, y, z, gen, fade) {
 // Six full trees just south of Bertyville, each a short walk from spawn [8.5, 1.5].
 // Trunks are 6 logs (the normal crown covers the top two). Same spots every new world.
 export const SPAWN_XZ = [8.5, 1.5]
-export const SPAWN_TREES = [[-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
+export const SPAWN_TREES = [[10, 1], [-1, -19], [5, -19], [11, -19], [17, -19], [23, -19], [29, -19]]
 const TRUNK = 6
 
 // Yaw that looks from (x, z) at the nearest starter trunk. New worlds use this once.
@@ -598,7 +598,25 @@ function inTownXZ(x, z) {
   return x >= TOWN_BOX.x0 && x <= TOWN_BOX.x1 && z >= TOWN_BOX.z0 && z <= TOWN_BOX.z1
 }
 
+// One oak on the road, one block in front of spawn. Same crown as the other starter trees.
+// The road lock only covers y <= TOWN_Y, so the trunk above it can be chopped.
+function nearTrunk(x, y, z) {
+  const tx = 10
+  const tz = 1
+  const dx = x - tx
+  const dz = z - tz
+  if (dx > 2 || dx < -2 || dz > 2 || dz < -2) return ''
+  const base = TOWN_Y
+  const top = base + TRUNK
+  if (dx === 0 && dz === 0 && y > base && y <= top) return 'log'
+  const dy = y - top
+  if (dy >= -1 && dy <= 1 && Math.abs(dx) <= 2 && Math.abs(dz) <= 2 && Math.abs(dx) + Math.abs(dz) + Math.abs(dy) <= 3) return 'leaves'
+  return ''
+}
+
 function townName(x, y, z) {
+  const grown = nearTrunk(x, y, z)
+  if (grown) return grown
   const h = TOWN_Y
   if (y < h - 3) return coalHere(x, y, z) ? 'coal' : 'stone'
   if (y < h) return 'dirt'

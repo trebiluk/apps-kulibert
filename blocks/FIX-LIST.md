@@ -1,6 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.264 Press E to open your Bag).
+Updated Sun Oct 18 2026 (Build: 2.5.265 Phone top bar fits, Crafting is in Survival, and a tree waits by spawn).
+
+- [x] **2.5.265 Phone bar:** At 915×412 and 412×915 every word reads whole (20 practice, Survival, Creative, Undo, Redo, version). Undo and Redo are not under Pause or Fullscreen. Hotbar names like Sapling stay inside their slot. The Saved toast sits low, not on the crosshair or the hotbar.
+- [x] **2.5.265 Survival Crafting:** Survival Menu > Play shows Crafting, the same word Creative uses. It opens the same panel, and the Workbench recipe says Planks.
+- [x] **2.5.265 Spawn tree:** A fresh Survival world faces a tree in reach. Chopping it gives Planks, the tracker shows the count, and the goal, Bag, and Workbench recipe all say Planks. The starter bag does not start with Planks.
 
 - [x] **2.5.264 Bag key:** Press E opens the Bag, even when the goal has a Make button. Press E again closes it. The tip says Press E for the Bag.
 - [x] **2.5.264 Make button:** Crafting still opens from the on-screen Make button. E does not open Crafting.

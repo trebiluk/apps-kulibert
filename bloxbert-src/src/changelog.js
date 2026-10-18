@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.265', date: '2026-10-18', lines: {
+    en: ['Phone top bar fits, Crafting is in Survival, and a tree waits by spawn.'],
+    es: ['La barra de arriba cabe en el teléfono, Fabricar está en Supervivencia, y un árbol espera junto al inicio.'],
+    ar: ['الشريط العلوي يناسب الهاتف، والصنع موجود في النجاة، وشجرة تنتظر عند البداية.'],
+    zh: ['手机顶栏能放下，生存模式里有制作，出生点旁边有一棵树。'],
+    fr: ['La barre du haut tient sur le téléphone, Fabriquer est dans Survie, et un arbre attend près du départ.'],
+    pt: ['A barra de cima cabe no telefone, Fabricar está em Sobrevivência, e uma árvore espera perto do início.'],
+    ru: ['Верхняя полоса помещается на телефоне, Крафт есть в Выживании, и дерево ждёт у старта.'],
+    vi: ['Thanh trên vừa điện thoại, Chế tạo có trong Sinh tồn, và một cây đứng cạnh chỗ bắt đầu.'],
+    uk: ['Верхня смуга вміщується на телефоні, Крафт є в Виживанні, і дерево чекає біля старту.'],
+    'fa-AF': ['تختهٔ بالا در موبایل می‌گنجد، ساختن در حالت بقا است، و یک درخت کنار آغاز منتظر است.'],
+    rw: ['Umurongo wo hejuru winjira muri telefoni, Kora iri muri Kubaho, kandi igiti kirategereje hafi y\'intangiriro.'],
+    ti: ['ላዕለዋይ መስመር ኣብ ተሌፎን ይኣትዉ፡ ምስራሕ ኣብ ሕያውነት ኣሎ፡ ዕንጨይቲ ድማ ኣብ ጥቓ መጀመርታ ይጽበ።'],
+  }},
   { v: '2.5.264', date: '2026-10-18', lines: {
     en: ['Press E to open your Bag.'],
     es: ['Pulsa E para abrir tu Bolsa.'],
