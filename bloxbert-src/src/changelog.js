@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.263', date: '2026-10-18', lines: {
+    en: ['Make works on the first click, Esc closes just the panel, and new worlds start fresh.'],
+    es: ['Hacer funciona al primer clic, Esc cierra solo el panel, y los mundos nuevos empiezan de cero.'],
+    ar: ['زر اصنع يعمل من أول نقرة، وEsc يغلق اللوحة فقط، والعوالم الجديدة تبدأ من جديد.'],
+    zh: ['「制作」第一次点击就能用，Esc只关闭面板，新世界会重新开始。'],
+    fr: ['Faire marche au premier clic, Échap ne ferme que le panneau, et les nouveaux mondes repartent de zéro.'],
+    pt: ['Fazer funciona no primeiro clique, Esc fecha só o painel, e mundos novos começam do zero.'],
+    ru: ['Сделать работает с первого нажатия, Esc закрывает только панель, и новые миры начинаются заново.'],
+    vi: ['Làm chạy ngay lần bấm đầu, Esc chỉ đóng bảng, và thế giới mới bắt đầu lại từ đầu.'],
+    uk: ['Зробити працює з першого натискання, Esc закриває лише панель, і нові світи починаються спочатку.'],
+    'fa-AF': ['بساز از همان کلیک اول کار می‌کند، Esc فقط تخته را می‌بندد، و جهان‌های تازه از نو شروع می‌شوند.'],
+    rw: ['Kora ikora ku gukanda kwa mbere, Esc ifunga gusa ikadiri, kandi isi nshya itangira bushya.'],
+    ti: ['ግበር ካብ ቀዳማይ ጠውቃይ ይሰርሕ፡ Esc ነቲ ሰሌዳ ጥራይ ይዕጾ፡ ሓደሽቲ ዓለማት ድማ ካብ ጀማሪ ይጅምሩ።'],
+  }},
   { v: '2.5.262', date: '2026-10-18', lines: {
     en: ['Arrow keys work in the Menu, and you can always see what is picked.'],
     es: ['Las flechas funcionan en el Menú, y siempre ves lo que está elegido.'],

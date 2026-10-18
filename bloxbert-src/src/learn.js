@@ -321,6 +321,7 @@ export function createLearn(api) {
     const chip = document.getElementById('path-chip')
     if (!b || b.hidden || !chip || chip.hidden) return
     const r = chip.getBoundingClientRect()
+    if (r.width < 2 || r.height < 2) return
     const gap = 8
     const w = Math.max(44, b.offsetWidth || 108)
     const h = Math.max(44, b.offsetHeight || 44)
@@ -336,6 +337,11 @@ export function createLearn(api) {
         const br = el.getBoundingClientRect()
         if (br.width < 2 || br.height < 2) continue
         if (box.left < br.right && box.right > br.left && box.top < br.bottom && box.bottom > br.top) return true
+      }
+      const bar = document.querySelector('.kb-bar .kb-menu')
+      if (bar) {
+        const br = bar.getBoundingClientRect()
+        if (br.width > 2 && br.height > 2 && box.left < br.right && box.right > br.left && box.top < br.bottom && box.bottom > br.top) return true
       }
       return false
     }

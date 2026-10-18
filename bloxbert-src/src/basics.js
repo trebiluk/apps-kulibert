@@ -315,6 +315,21 @@ export function createBasics(api) {
       const want = Math.max(1, Math.floor(n))
       dayExtra = want - 1 - Math.floor(Math.max(0, now()) / cycleMs())
     },
+    freshDay() {
+      ms = 0
+      anchor = api.now()
+      lastT = 0
+      dayExtra = 0
+      locks.clear()
+      autos.clear()
+      lights.clear()
+      saplings.clear()
+      badges.clear()
+      timers.length = 0
+      card = ''
+      cardN = 0
+      starter = false
+    },
     face() {
       const cycle = cycleMs()
       const t = now()

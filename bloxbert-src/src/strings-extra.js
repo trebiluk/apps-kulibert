@@ -1540,3 +1540,17 @@ for (const [lang, row] of Object.entries(READ)) {
 for (const [lang, row] of Object.entries(SHOW)) {
   if (EXTRA[lang]) EXTRA[lang].whatsNewBody = row.whatsNewBody
 }
+const FIRST = {
+  en: { whatsNewBody: 'Make works on the first click, Esc closes just the panel, and new worlds start fresh.' },
+  es: { whatsNewBody: 'Hacer funciona al primer clic, Esc cierra solo el panel, y los mundos nuevos empiezan de cero.' },
+  ar: { whatsNewBody: 'زر اصنع يعمل من أول نقرة، وEsc يغلق اللوحة فقط، والعوالم الجديدة تبدأ من جديد.' },
+  ru: { whatsNewBody: 'Сделать работает с первого нажатия, Esc закрывает только панель, и новые миры начинаются заново.' },
+  uk: { whatsNewBody: 'Зробити працює з першого натискання, Esc закриває лише панель, і нові світи починаються спочатку.' },
+  'fa-AF': { whatsNewBody: 'بساز از همان کلیک اول کار می‌کند، Esc فقط تخته را می‌بندد، و جهان‌های تازه از نو شروع می‌شوند.' },
+  rw: { whatsNewBody: 'Kora ikora ku gukanda kwa mbere, Esc ifunga gusa ikadiri, kandi isi nshya itangira bushya.' },
+  ti: { whatsNewBody: 'ግበር ካብ ቀዳማይ ጠውቃይ ይሰርሕ፡ Esc ነቲ ሰሌዳ ጥራይ ይዕጾ፡ ሓደሽቲ ዓለማት ድማ ካብ ጀማሪ ይጅምሩ።' },
+}
+for (const [lang, row] of Object.entries(FIRST)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

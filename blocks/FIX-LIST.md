@@ -1,6 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.262 Arrow keys work in the Menu, and you can always see what is picked).
+Updated Sun Oct 18 2026 (Build: 2.5.263 Make works on the first click, Esc closes just the panel, and new worlds start fresh).
+
+- [x] **2.5.263 First click:** After a new world loads, the first click on Make opens Crafting. A click on any HUD button never turns the camera. Mouse look starts only after a click on the open world or Click to play.
+- [x] **2.5.263 Esc:** Esc with Crafting or the Bag open closes just that panel. A second Esc opens the Menu. Closing a panel leaves the cursor free.
+- [x] **2.5.263 Fresh world:** A fresh world starts on Day 1 with the starter bag. The old world keeps its own Day and bag, and comes back from Open my old world.
 
 - [x] **2.5.262 Menu arrows:** In the Menu and the World panel, Left, Right, Up, and Down move the highlight between the visible choices. Enter or Space picks the highlighted choice.
 - [x] **2.5.262 Focus ring:** Every Tab and Shift+Tab stop shows an outline plus a light-on-dark ring, including a choice that was clipped by the sheet.

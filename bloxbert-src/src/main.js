@@ -3079,11 +3079,27 @@ function hoverCrop() {
 function tableTarget() {
   return { position: tableCursor.slice(), adjacent: [tableCursor[0], tableCursor[1] + 1, tableCursor[2]] }
 }
+let lastClient = { x: 0, y: 0 }
+function hudEl(el) {
+  if (!el || !el.closest) return false
+  const canvas = noa.container && noa.container.canvas
+  if (el === canvas) return false
+  return !!el.closest('button, a, input, textarea, select, label, #sheet, #hotbar, header, .kb-bar, #play-chip, #path-chip, #path-make')
+}
+function overHud() {
+  if (document.pointerLockElement || (noa.container && noa.container.hasPointerLock)) return false
+  let el = null
+  try { el = document.elementFromPoint(lastClient.x, lastClient.y) } catch (e) { return false }
+  return hudEl(el)
+}
+window.addEventListener('pointermove', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY }, true)
+window.addEventListener('pointerdown', (e) => { lastClient.x = e.clientX; lastClient.y = e.clientY }, true)
 noa.inputs.down.on('fire', () => {
   if (wandHeld()) return
   if (inspectOn) { showInspect(); return }
   if (tableMode) return
   if (anyCard()) return
+  if (overHud()) return
   if (!playLocked()) {
     if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
     showPlayChip(); grabLock(); return
@@ -3115,6 +3131,7 @@ noa.inputs.down.on('alt-fire', () => {
   if (inspectOn) { showInspect(); return }
   if (tableMode || rightPress) return
   if (anyCard()) return
+  if (overHud()) return
   if (!playLocked()) {
     if (actThisClick || awaitWorldClick) { if (awaitWorldClick) armActLock(); return }
     showPlayChip(); grabLock(); return
@@ -3927,6 +3944,10 @@ async function resetWorld() {
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
   if (session && session.freshStart) session.freshStart()
   else if (session && session.clearLoose) session.clearLoose()
+  if (basics && basics.freshDay) basics.freshDay()
+  if (stations && stations.load) stations.load({})
+  try { applySky() } catch (e) {}
+  try { paintDayClock() } catch (e) {}
   grantSaplings()
   grantStartKit()
   syncDropMeshes()
@@ -4054,7 +4075,7 @@ async function archiveLeaving(avoid, why) {
   body.archiveBlocks = countBlocks()
   body.archiveBag = countBag()
   if (from && from === avoid) return []
-  const touched = body.archiveBlocks > 0 || isMakerPreset(makerLive.preset)
+  const touched = body.archiveBlocks > 0 || body.archiveBag > 0 || isMakerPreset(makerLive.preset) || (body.basics && Number(body.basics.day) > 1)
   if (!touched) return []
   const pins = []
   if (from.indexOf(pre) === 0 && from !== avoid) {
@@ -4442,9 +4463,15 @@ async function startMade() {
     edited: false,
   }
   await resetWorld()
-  try { openMenu(false) } catch (e) {}
-  beginKeyPlay()
+  try { if (panels && panels.dismiss) panels.dismiss() } catch (e) {}
+  document.body.classList.remove('menu-open')
+  try { sealPanels() } catch (e) {}
+  if (!kidPause) {
+    try { noa.setPaused(false) } catch (e) {}
+    if (session) session.paused = false
+  }
   revealWorld()
+  freeLookForHud()
   showMakerTip()
   window.__makerGen = (window.__makerGen || 0) + 1
 }
@@ -5556,6 +5583,19 @@ function revealWorld() {
   const canvas = noa.container && noa.container.canvas
   if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
 }
+function freeLookForHud() {
+  if (TOUCH_UI || tableMode) return
+  playArmed = true
+  playLockWanted = false
+  awaitWorldClick = true
+  armResume = 0
+  lockTries = 0
+  selfUnlock = true
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
+  try { if (document.pointerLockElement) document.exitPointerLock() } catch (e) {}
+  try { noa.container.setPointerLock(false) } catch (e) {}
+  showPlayChip()
+}
 function playKeyTarget(e) {
   const chip = $('play-chip')
   const canvas = noa.container && noa.container.canvas
@@ -5625,27 +5665,20 @@ function resumePlay() {
     if (session) session.paused = false
   }
   if (TOUCH_UI) { hidePlayChip(); return }
-  if (how === 'esc') {
-    playLockWanted = false
-    armResume = performance.now()
-    showPlayChip()
-    return
-  }
-  if (how === 'menu') {
+  if (how === 'key') {
     playLockWanted = false
     armResume = 0
     lockTries = 0
-    awaitWorldClick = true
-    try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
-    try { noa.container.setPointerLock(false) } catch (e) {}
-    showPlayChip()
+    hidePlayChip()
     return
   }
+  playLockWanted = false
   armResume = 0
-  hidePlayChip()
   lockTries = 0
-  resumeSwallow = true
-  grabLock()
+  awaitWorldClick = true
+  try { if (noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (e) {}
+  try { noa.container.setPointerLock(false) } catch (e) {}
+  showPlayChip()
 }
 function closePlay(how) {
   if (closingPlay) return
@@ -7348,7 +7381,13 @@ window.addEventListener('keydown', (e) => {
       return
     }
     if (sheet.dataset.panel && sheet.dataset.panel !== 'menu') {
-      if (panels && panels.backOne) panels.backOne()
+      escJustClosed = performance.now()
+      selfUnlock = true
+      playLockWanted = false
+      awaitWorldClick = true
+      try { if (noa.container && noa.container._shell) noa.container._shell.stickyPointerLock = false } catch (err) {}
+      closePlay('esc')
+      focusBack()
       return
     }
     escJustClosed = performance.now()
@@ -8024,9 +8063,6 @@ function keepHudClick(e) {
   if (shell) shell.stickyPointerLock = false
   if (e.type === 'click') {
     top.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, clientX: e.clientX, clientY: e.clientY, button: e.button || 0 }))
-    setTimeout(() => {
-      if (!TOUCH_UI && shell && !anyCard() && !tableMode) shell.stickyPointerLock = true
-    }, 0)
   }
 }
 window.addEventListener('pointerdown', keepHudClick, true)
@@ -8037,9 +8073,9 @@ window.addEventListener('pointerdown', (e) => {
   const shell = noa.container && noa.container._shell
   if (!shell || !shell.stickyPointerLock) return
   shell.stickyPointerLock = false
-  setTimeout(() => {
-    if (!TOUCH_UI && !anyCard() && !tableMode) shell.stickyPointerLock = true
-  }, 0)
+  playLockWanted = false
+  selfUnlock = true
+  dropLockLook = true
 }, true)
 canvas.addEventListener('contextmenu', (e) => {
   if (canvasHit(e) || e.target === stageEl || (stageEl && stageEl.contains(e.target))) e.preventDefault()
