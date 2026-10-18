@@ -5,7 +5,7 @@ import './packs/flora/pack.js'
 import './packs/tech/pack.js'
 export const EXTRA = {
   en: {
-    changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try This', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
+    changelog: 'Changelog', youAreHere: 'You are here', tourMove: 'Walk with WASD', tourLook: 'Drag to look', tourPlace: 'Place and break', tourBar: 'Open your bag', tourShop: 'Sell to Tally', tourTools: 'Fill a box', place10: 'Place 10 blocks', fillBox: 'Fill a box', sell3: 'Sell 3 logs', helpBody: 'Pick a tile', tour: 'Tour', next: 'Next', skip: 'Skip', tryThis: 'Try', a11y: 'Accessibility', goalDone: 'Goal done', highContrast: 'High Contrast', gentle: 'Gentle Mode', sendTeacher: 'Send To Teacher', sentTeacher: 'Sent to Mr. Kulibert', noFly: 'No flying in Survival', tapCorner: 'Tap Corner A first', cornerA: 'Corner A set', addCoal: 'Add Coal', bake: 'Bake', sell: 'Sell', buy: 'Buy',
     filled: 'Filled {n} blocks', homeSet: 'Home set', homeCleared: 'Home cleared', pickup: 'Pick up', paste: 'Paste',
     buildTools: 'Build Tools', exitApp: 'Exit', leaveAsk: 'Leave Bertopia? Your world is saved.', leave: 'Leave', stay: 'Stay', myBuilds: 'My Builds', undoMinutes: 'Undo Minutes', snapshots: 'Snapshots', emptyBag: 'Empty bag: break blocks or buy at Tally\'s', emptySlot: 'Empty slot', tooBig: 'Too big: max 64 × 32 × 64', badBuild: 'That file is not a Bertopia build', fineLater: 'Fine-scale decor comes later', changedTo: 'Changed:',
     coreplate: 'Coreplate', workbench: 'Workbench', oven: 'Oven', vend: 'Vending Counter', storeCounter: 'Store Counter', bunk: 'Bunk', box: 'Box', woodTool: 'Wood Pickaxe', stoneTool: 'Stone Pickaxe', putIn: 'Put in', boxFull: 'The box is full.', door: 'Door', doorOpen: 'Open door', doorOpenMsg: 'The door is open.', doorShut: 'The door is shut.', pathTree: 'Chop a tree near you. Hold left click on a log.', pathTool: 'Make a Wood Pickaxe', pathStone: 'Mine stone', pathCoal: 'Dig up coal', pathDoor: 'Place a door', pathHome: 'Set a home on a bunk',
@@ -1434,14 +1434,14 @@ const BELT_UI = {
 for (const [lang, row] of Object.entries(BELT_UI)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
 const CALM = {
-  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New', pathBench: 'Make a Workbench', fillParts: 'Fill parts', needLine: '{n} {item} needed', goalNeed: '{item}: needs {n} {need}. You have {have}.', niceLog: 'Nice! Log', niceMake: 'Nice! Made', nicePlace: 'Nice! Placed', niceWall: 'Nice! Wall' },
-  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове', pathBench: 'Зроби верстак', fillParts: 'Наповни деталі', needLine: 'треба {n} {item}', goalNeed: '{item}: треба {n} {need}. У тебе {have}.', niceLog: 'Гарно! Колода', niceMake: 'Гарно! Зробив', nicePlace: 'Гарно! Поставив', niceWall: 'Гарно! Стіна' },
-  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое', pathBench: 'Сделай верстак', fillParts: 'Заполни детали', needLine: 'нужно {n} {item}', goalNeed: '{item}: нужно {n} {need}. У тебя {have}.', niceLog: 'Здорово! Бревно', niceMake: 'Здорово! Сделал', nicePlace: 'Здорово! Поставил', niceWall: 'Здорово! Стена' },
-  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo', pathBench: 'Haz un banco', fillParts: 'Llenar piezas', needLine: 'faltan {n} {item}', goalNeed: '{item}: necesita {n} {need}. Tienes {have}.', niceLog: '¡Bien! Tronco', niceMake: '¡Bien! Hecho', nicePlace: '¡Bien! Puesto', niceWall: '¡Bien! Muro' },
-  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد', pathBench: 'اصنع منضدة', fillParts: 'املأ القطع', needLine: 'يلزم {n} {item}', goalNeed: '{item}: يلزم {n} {need}. معك {have}.', niceLog: 'أحسنت! جذع', niceMake: 'أحسنت! صنع', nicePlace: 'أحسنت! وضع', niceWall: 'أحسنت! جدار' },
-  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو', pathBench: 'میز کار بساز', fillParts: 'قطعه‌ها را پر کن', needLine: '{n} {item} لازم است', goalNeed: '{item}: {n} {need} لازم است. تو {have} داری.', niceLog: 'آفرین! کنده', niceMake: 'آفرین! ساخت', nicePlace: 'آفرین! گذاشت', niceWall: 'آفرین! دیوار' },
-  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya', pathBench: 'Kora ameza', fillParts: 'Uzuza ibice', needLine: 'bikenewe {n} {item}', goalNeed: '{item}: bikenewe {n} {need}. Ufite {have}.', niceLog: 'Ni byiza! Igiti', niceMake: 'Ni byiza! Byakozwe', nicePlace: 'Ni byiza! Byashyizwe', niceWall: 'Ni byiza! Urukuta' },
-  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ', pathBench: 'ሰደቓ ግበር', fillParts: 'ኣቑሑት መልእ', needLine: '{n} {item} የድሊ', goalNeed: '{item}: {n} {need} የድሊ። ኣለካ {have}።', niceLog: 'ጽቡቕ! ግንድ', niceMake: 'ጽቡቕ! ተገይሩ', nicePlace: 'ጽቡቕ! ተቐሚጡ', niceWall: 'ጽቡቕ! መንደቕ' },
+  en: { pause: 'Pause', showEverything: 'Show everything', chipNew: 'New', pathBench: 'Make a Workbench', fillParts: 'Fill', needLine: '{n} {item} needed', goalNeed: '{item}: needs {n} {need}. You have {have}.', niceLog: 'Nice! Log', niceMake: 'Nice! Made', nicePlace: 'Nice! Placed', niceWall: 'Nice! Wall' },
+  uk: { pause: 'Пауза', showEverything: 'Показати все', chipNew: 'Нове', pathBench: 'Зроби верстак', fillParts: 'Наповни', needLine: 'треба {n} {item}', goalNeed: '{item}: треба {n} {need}. У тебе {have}.', niceLog: 'Гарно! Колода', niceMake: 'Гарно! Зробив', nicePlace: 'Гарно! Поставив', niceWall: 'Гарно! Стіна' },
+  ru: { pause: 'Пауза', showEverything: 'Показать всё', chipNew: 'Новое', pathBench: 'Сделай верстак', fillParts: 'Заполни', needLine: 'нужно {n} {item}', goalNeed: '{item}: нужно {n} {need}. У тебя {have}.', niceLog: 'Здорово! Бревно', niceMake: 'Здорово! Сделал', nicePlace: 'Здорово! Поставил', niceWall: 'Здорово! Стена' },
+  es: { pause: 'Pausa', showEverything: 'Mostrar todo', chipNew: 'Nuevo', pathBench: 'Haz un banco', fillParts: 'Llenar', needLine: 'faltan {n} {item}', goalNeed: '{item}: necesita {n} {need}. Tienes {have}.', niceLog: '¡Bien! Tronco', niceMake: '¡Bien! Hecho', nicePlace: '¡Bien! Puesto', niceWall: '¡Bien! Muro' },
+  ar: { pause: 'إيقاف', showEverything: 'أظهر كل شيء', chipNew: 'جديد', pathBench: 'اصنع منضدة', fillParts: 'املأ', needLine: 'يلزم {n} {item}', goalNeed: '{item}: يلزم {n} {need}. معك {have}.', niceLog: 'أحسنت! جذع', niceMake: 'أحسنت! صنع', nicePlace: 'أحسنت! وضع', niceWall: 'أحسنت! جدار' },
+  'fa-AF': { pause: 'مکث', showEverything: 'همه را نشان بده', chipNew: 'نو', pathBench: 'میز کار بساز', fillParts: 'پر کن', needLine: '{n} {item} لازم است', goalNeed: '{item}: {n} {need} لازم است. تو {have} داری.', niceLog: 'آفرین! کنده', niceMake: 'آفرین! ساخت', nicePlace: 'آفرین! گذاشت', niceWall: 'آفرین! دیوار' },
+  rw: { pause: 'Hagarara', showEverything: 'Erekana byose', chipNew: 'Gishya', pathBench: 'Kora ameza', fillParts: 'Uzuza', needLine: 'bikenewe {n} {item}', goalNeed: '{item}: bikenewe {n} {need}. Ufite {have}.', niceLog: 'Ni byiza! Igiti', niceMake: 'Ni byiza! Byakozwe', nicePlace: 'Ni byiza! Byashyizwe', niceWall: 'Ni byiza! Urukuta' },
+  ti: { pause: 'ደው', showEverything: 'ኩሉ ኣርኢ', chipNew: 'ሓድሽ', pathBench: 'ሰደቓ ግበር', fillParts: 'መልእ', needLine: '{n} {item} የድሊ', goalNeed: '{item}: {n} {need} የድሊ። ኣለካ {have}።', niceLog: 'ጽቡቕ! ግንድ', niceMake: 'ጽቡቕ! ተገይሩ', nicePlace: 'ጽቡቕ! ተቐሚጡ', niceWall: 'ጽቡቕ! መንደቕ' },
 }
 for (const [lang, row] of Object.entries(CALM)) if (EXTRA[lang]) Object.assign(EXTRA[lang], row)
 
@@ -1520,6 +1520,20 @@ const CHOPWOOD = {
   ti: { whatsNewBody: 'ምቍራጽ ዕንጨይቲ እንደገና ዕንጨይቲ ይህብ።', moveCloser: 'ቀረብ', gotWood: '+1 ዕንጨይቲ' },
 }
 for (const [lang, row] of Object.entries(CHOPWOOD)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+const READ = {
+  en: { whatsNewBody: 'Menus are easier to read.', tryThis: 'Try', timesMax: 'Make all' },
+  es: { whatsNewBody: 'Los menús se leen mejor.', tryThis: 'Prueba', timesMax: 'Haz todo' },
+  uk: { whatsNewBody: 'Меню легше читати.', tryThis: 'Спробуй', timesMax: 'Зроби все' },
+  ru: { whatsNewBody: 'Меню легче читать.', tryThis: 'Попробуй', timesMax: 'Сделай всё' },
+  ar: { whatsNewBody: 'القوائم أسهل للقراءة.', tryThis: 'جرّب', timesMax: 'اصنع الكل' },
+  'fa-AF': { whatsNewBody: 'فهرست‌ها خواناتر شدند.', tryThis: 'بیازما', timesMax: 'همه را بساز' },
+  rw: { whatsNewBody: 'Menu zisoma neza.', tryThis: 'Gerageza', timesMax: 'Kora byose' },
+  ti: { whatsNewBody: 'ዝርዝራት ብቐሊሉ ይንበቡ።', tryThis: 'ፈትን', timesMax: 'ኩሉ ግበር' },
+}
+for (const [lang, row] of Object.entries(READ)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }

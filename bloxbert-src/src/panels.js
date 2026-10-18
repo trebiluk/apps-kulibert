@@ -32,9 +32,14 @@ export function mountPanels(api) {
     if (title) title.classList.remove('kd-sr')
     if (sheetX) {
       if (sheetX.dataset.menuX === '1') {
-        sheetX.replaceChildren(menuIcon('x'))
         delete sheetX.dataset.menuX
         delete sheetX.dataset.act
+      }
+      if (!sheetX.querySelector('.xlab')) {
+        const word = document.createElement('span')
+        word.className = 'xlab'
+        word.textContent = api.t('close')
+        sheetX.append(word)
       }
       sheetX.classList.add('kd-key', 'kd-x')
     }
@@ -280,7 +285,10 @@ export function mountPanels(api) {
       sheetX.classList.add('kd-x')
       sheetX.dataset.menuX = '1'
       sheetX.dataset.act = 'close'
-      sheetX.replaceChildren(menuIcon('x'))
+      const word = document.createElement('span')
+      word.className = 'xlab'
+      word.textContent = api.t('close')
+      sheetX.replaceChildren(menuIcon('x'), word)
     }
     g.append(go, groups, exit)
     if (sheetX) g.append(sheetX)

@@ -622,6 +622,7 @@ function ensureUi() {
   tip.className = 'kd-tip'
   tip.hidden = true
   tip.setAttribute('role', 'tooltip')
+  tip.addEventListener('pointerdown', () => { tip.hidden = true })
   const bar = document.createElement('div')
   bar.id = 'qol-bar'
   bar.className = 'kd-card'
@@ -740,8 +741,34 @@ function showTip(loc, ms, sticky) {
   tip.style.top = top + 'px'
   tip.style.transform = 'translateY(-100%)'
   if (narrow && jumpOn && tipHitsHud(tip)) tip.style.top = Math.max(8, jumpRect.top - 8) + 'px'
-  tipUntil = sticky ? performance.now() + Math.min(ms || 500, 500) : 0
-  if (sticky && ms) showTip.hide = setTimeout(() => { tipUntil = 0; hideTip() }, 2500)
+  placeReadTip(tip)
+  tipUntil = Infinity
+  clearTimeout(showTip.hide)
+}
+function placeReadTip(tip) {
+  const w = window.innerWidth
+  const h = window.innerHeight
+  const hot = document.getElementById('hotbar')
+  const hb = hot && !hot.hidden ? hot.getBoundingClientRect() : null
+  const lift = hb && hb.height > 8 ? Math.max(16, h - hb.top) + 12 : 108
+  if (w <= 480) {
+    tip.style.left = '8px'
+    tip.style.right = '8px'
+    tip.style.width = 'auto'
+    tip.style.maxWidth = (w - 16) + 'px'
+    tip.style.top = 'auto'
+    tip.style.bottom = lift + 'px'
+    tip.style.transform = 'none'
+    return
+  }
+  const r = tip.getBoundingClientRect()
+  const center = r.left < w * 0.7 && r.right > w * 0.3 && r.top < h * 0.62 && r.bottom > h * 0.38
+  const onHot = hb && r.left < hb.right && r.right > hb.left && r.bottom > hb.top - 4 && r.top < hb.bottom
+  if (!center && !onHot) return
+  tip.style.left = '16px'
+  tip.style.top = 'auto'
+  tip.style.bottom = lift + 'px'
+  tip.style.transform = 'none'
 }
 function hideTip() {
   clearTimeout(tipTimer)

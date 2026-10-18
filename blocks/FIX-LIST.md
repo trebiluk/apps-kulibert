@@ -1,9 +1,9 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.258 Chopping trees gives you wood again).
+Updated Sun Oct 18 2026 (Build: 2.5.261 Menus are easier to read).
 
+- [x] **2.5.261 Menus:** Labels use Atkinson Hyperlegible Bold at 16px (tips 18px, hotbar counts 14px) on a solid #0B1220 plate. Pixel type stays on the logo and section headers. Close sits top-right with the word Close. At 412 the header row does not cover the first buttons, and the tip docks above the hotbar until it is tapped.
 - [x] **2.5.258 Chop a tree:** Standing within 1.5 blocks of a trunk, a sloppy tap, a hold, or Space faces the tree and chops it in 3 hits (1/3, 2/3, 3/3). The tree falls and +1 Wood goes into the Bag. Farther away says Move closer with an arrow, not Too far away while you are already next to it.
-
 - [x] **2.5.256 Make button:** One tap on Make always opens the Make panel. A locked Workbench still says what it needs, with the icon and the name.
 - [x] **2.5.256 New world:** After Make this world with the keyboard, the ground and the top bar draw right away, and W walks with no click.
 - [x] **2.5.256 Bag names:** Every Bag item shows its name under the icon, and empty pocket rows are gone.

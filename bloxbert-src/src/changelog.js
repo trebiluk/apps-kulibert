@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.261', date: '2026-10-18', lines: {
+    en: ['Menus are easier to read.'],
+    es: ['Los menús se leen mejor.'],
+    uk: ['Меню легше читати.'],
+    ru: ['Меню легче читать.'],
+    ar: ['القوائم أسهل للقراءة.'],
+    'fa-AF': ['فهرست‌ها خواناتر شدند.'],
+    rw: ['Menu zisoma neza.'],
+    ti: ['ዝርዝራት ብቐሊሉ ይንበቡ።'],
+    zh: ['菜单更好读了。'],
+    fr: ['Les menus sont plus faciles à lire.'],
+    pt: ['Os menus estão mais fáceis de ler.'],
+    vi: ['Menu dễ đọc hơn.'],
+  }},
   { v: '2.5.258', date: '2026-10-18', lines: {
     en: ['Chopping trees gives you wood again.'],
     es: ['Talar árboles vuelve a darte madera.'],

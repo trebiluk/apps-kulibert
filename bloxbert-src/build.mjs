@@ -61,7 +61,9 @@ const ver = JSON.parse(readFileSync('package.json', 'utf8')).version
 indexSrc = indexSrc.replace(/id="ver-plate">[^<]+</, 'id="ver-plate">' + ver + '<')
 indexSrc = indexSrc.replace(/data-version="[^"]+"/, 'data-version="' + ver + '"')
 indexSrc = indexSrc.replace(/app\.js\?v=[^"]+/, 'app.js?v=' + ver)
+indexSrc = indexSrc.replace(/read\.css\?v=[^"]+/, 'read.css?v=' + ver)
 writeFileSync(OUT + '/index.html', indexSrc)
+cpSync('read.css', OUT + '/read.css')
 cpSync('icons-test.html', OUT + '/icons-test.html')
 cpSync('THIRD-PARTY.txt', OUT + '/THIRD-PARTY.txt')
 const version = JSON.parse(readFileSync('package.json', 'utf8')).version
