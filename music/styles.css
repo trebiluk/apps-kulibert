@@ -4310,4 +4310,15 @@ html[data-theme] body.mu237 {
   --play-bg: #22d3ee;
   --play-fg: #041018;
 }
+body.mu237.tab-mix #drums-pane > #style-row {
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+body.mu237.tab-mix #style-row button {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 16px;
+}
 
