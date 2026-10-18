@@ -1582,3 +1582,49 @@ for (const [lang, row] of Object.entries(PHONE)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const GOAL = {
+  en: {
+    whatsNewBody: 'Phone words fit, the goal shows your Planks, and menus read like kid words.',
+    goalPlanks: 'Get Planks · {have}/{need}',
+    goalBenchReady: 'You have {n} Planks — tap Make',
+  },
+  es: {
+    whatsNewBody: 'Las palabras caben en el teléfono, la meta muestra tus Tablas, y los menús se leen con palabras de niño.',
+    goalPlanks: 'Consigue Tablas · {have}/{need}',
+    goalBenchReady: 'Tienes {n} Tablas — toca Hacer',
+  },
+  uk: {
+    whatsNewBody: 'Слова вміщуються на телефоні, ціль показує твої Дошки, і меню читається дитячими словами.',
+    goalPlanks: 'Візьми Дошки · {have}/{need}',
+    goalBenchReady: 'У тебе {n} Дошки — торкнись Зробити',
+  },
+  ru: {
+    whatsNewBody: 'Слова помещаются на телефоне, цель показывает твои Доски, и меню читается детскими словами.',
+    goalPlanks: 'Возьми Доски · {have}/{need}',
+    goalBenchReady: 'У тебя {n} Доски — нажми Сделать',
+  },
+  ar: {
+    whatsNewBody: 'الكلمات تناسب الهاتف، والهدف يُظهر ألواحك، والقوائم تُقرأ بكلمات الأطفال.',
+    goalPlanks: 'اجمع ألواح · {have}/{need}',
+    goalBenchReady: 'معك {n} ألواح — المس اصنع',
+  },
+  'fa-AF': {
+    whatsNewBody: 'واژه‌ها در موبایل می‌گنجند، هدف تخته‌هایت را نشان می‌دهد، و فهرست‌ها با واژه‌های کودک خوانده می‌شوند.',
+    goalPlanks: 'تخته بگیر · {have}/{need}',
+    goalBenchReady: 'تو {n} تخته داری — بساز را بزن',
+  },
+  rw: {
+    whatsNewBody: 'Amagambo winjira muri telefoni, intego yerekana Imbaho zawe, kandi menu zisomwa nk\'amagambo y\'umwana.',
+    goalPlanks: 'Shaka Imbaho · {have}/{need}',
+    goalBenchReady: 'Ufite Imbaho {n} — kanda Kora',
+  },
+  ti: {
+    whatsNewBody: 'ቃላት ኣብ ተሌፎን ይኣትዉ፡ ዕላማ ጣውላኻ የርኢ፡ ዝርዝራት ድማ ብቓላት ህጻን ይንበቡ።',
+    goalPlanks: 'ጣውላ ረክብ · {have}/{need}',
+    goalBenchReady: '{n} ጣውላ ኣለካ — ግበር ጠውቕ',
+  },
+}
+for (const [lang, row] of Object.entries(GOAL)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

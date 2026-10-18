@@ -3948,6 +3948,7 @@ async function resetWorld() {
   if (stations && stations.load) stations.load({})
   try { applySky() } catch (e) {}
   try { paintDayClock() } catch (e) {}
+  if (learn && learn.freshGoals) learn.freshGoals()
   grantSaplings()
   grantStartKit()
   syncDropMeshes()
@@ -9722,6 +9723,9 @@ paintGfx()
 
 const topBar = document.querySelector('.top')
 function refit() {
+  const bar = document.querySelector('.kb-bar')
+  const kb = bar ? Math.ceil(bar.getBoundingClientRect().height) : 0
+  if (kb) document.documentElement.style.setProperty('--kb-h', kb + 'px')
   const h = Math.ceil(topBar.getBoundingClientRect().height)
   document.documentElement.style.setProperty('--top-h', h + 'px')
   document.documentElement.style.setProperty('--phone-top', h + 'px')

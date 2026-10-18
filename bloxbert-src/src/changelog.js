@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.266', date: '2026-10-18', lines: {
+    en: ['Phone words fit, the goal shows your Planks, and menus read like kid words.'],
+    es: ['Las palabras caben en el teléfono, la meta muestra tus Tablas, y los menús se leen con palabras de niño.'],
+    ar: ['الكلمات تناسب الهاتف، والهدف يُظهر ألواحك، والقوائم تُقرأ بكلمات الأطفال.'],
+    zh: ['手机上的字都放得下，目标会显示你的木板，菜单用孩子的话说。'],
+    fr: ['Les mots tiennent sur le téléphone, l’objectif montre tes Planches, et les menus parlent comme à un enfant.'],
+    pt: ['As palavras cabem no telefone, a meta mostra as tuas Tábuas, e os menus leem-se como palavras de criança.'],
+    ru: ['Слова помещаются на телефоне, цель показывает твои Доски, и меню читается детскими словами.'],
+    vi: ['Chữ vừa điện thoại, mục tiêu hiện Ván của bạn, và menu đọc như lời của trẻ.'],
+    uk: ['Слова вміщуються на телефоні, ціль показує твої Дошки, і меню читається дитячими словами.'],
+    'fa-AF': ['واژه‌ها در موبایل می‌گنجند، هدف تخته‌هایت را نشان می‌دهد، و فهرست‌ها با واژه‌های کودک خوانده می‌شوند.'],
+    rw: ['Amagambo winjira muri telefoni, intego yerekana Imbaho zawe, kandi menu zisomwa nk\'amagambo y\'umwana.'],
+    ti: ['ቃላት ኣብ ተሌፎን ይኣትዉ፡ ዕላማ ጣውላኻ የርኢ፡ ዝርዝራት ድማ ብቓላት ህጻን ይንበቡ።'],
+  }},
   { v: '2.5.265', date: '2026-10-18', lines: {
     en: ['Phone top bar fits, Crafting is in Survival, and a tree waits by spawn.'],
     es: ['La barra de arriba cabe en el teléfono, Fabricar está en Supervivencia, y un árbol espera junto al inicio.'],

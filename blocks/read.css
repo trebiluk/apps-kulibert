@@ -539,54 +539,98 @@ html body #sheet #sheet-back:focus-visible {
   box-shadow: inset 0 0 0 3px #0B1220, inset 0 0 0 7px #F8FAFC !important;
 }
 
-/* 2.5.265: phone top bar keeps every word, and the Saved toast stays off the crosshair. */
-@media (max-width: 980px) {
-  html body.hud-calm { --top-h: var(--phone-top, 132px); }
-  html[data-kb-bar]:not(.kb-framed) body header.top { top: 48px !important; }
+/* 2.5.266: phone top bar keeps every word, the goal sits above the hotbar, and one menu header. */
+@media (max-width: 980px), (max-height: 520px) {
+  html body.hud-calm { --top-h: var(--phone-top, 120px); }
+  html[data-kb-bar]:not(.kb-framed) body header.top { top: var(--kb-h, 48px) !important; }
   html body header.top {
     flex-wrap: wrap !important;
     align-items: center !important;
-    align-content: center !important;
+    align-content: flex-start !important;
     height: auto !important;
     max-height: none !important;
+    min-height: 0 !important;
     overflow: visible !important;
-    row-gap: 4px;
+    row-gap: 4px !important;
+    column-gap: 4px !important;
+    padding: 4px !important;
+    z-index: 32 !important;
   }
-  html body #mode-pill { flex: 0 0 auto !important; }
-  html body #mode-pill .tl,
+  html body header.top > * { flex: 0 0 auto !important; min-width: 0; }
+  html body header.top .brand { flex: 0 0 auto !important; max-width: none !important; min-width: 0 !important; }
+  html body header.top .tb-plate { width: auto !important; max-width: none !important; overflow: visible !important; }
+  html body header.top .tb-lcd { display: none !important; }
+  html body header.top #mode-chip,
+  html body header.top #energy-bar,
+  html body header.top #fx-strip { display: none !important; }
+  html body header.top .tools { flex: 0 0 auto !important; margin-left: 0 !important; display: flex !important; }
+  html body #mode-pill { flex: 0 0 auto !important; height: auto !important; overflow: visible !important; }
+  html body #mode-pill button,
+  html body #menu-btn,
+  html body #day-clock,
   html body #wallet-chip,
-  html body #wallet-chip bdi,
+  html body .top .tool,
   html body .top .ver {
-    white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-  }
-  html body #wallet-chip {
     flex: 0 0 auto !important;
-    width: auto !important;
-    max-width: none !important;
-    min-height: 44px;
-  }
-  html body .top .tool {
     width: auto !important;
     min-width: 44px !important;
     min-height: 44px !important;
     height: auto !important;
-    padding: 2px 8px !important;
-    gap: 2px !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
   }
+  html body #mode-pill .tl,
+  html body #wallet-chip,
+  html body #wallet-chip bdi,
+  html body #day-clock,
+  html body #day-clock .day-read,
+  html body .top .ver,
   html body .top .tool .tl {
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
     position: static !important;
     width: auto !important;
     height: auto !important;
     margin: 0 !important;
-    padding: 0 !important;
-    overflow: visible !important;
     clip: auto !important;
-    white-space: nowrap !important;
-    border: 0 !important;
-    font-size: 12px !important;
+    font-size: 14px !important;
   }
+  html body #path-chip:not([hidden]) {
+    position: fixed !important;
+    left: 50% !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: var(--goal-bottom, calc(var(--hud-lift, 100px) + 12px)) !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    max-width: min(92vw, 420px) !important;
+    z-index: 26 !important;
+    background: #0B1220 !important;
+    border: 2px solid #F8FAFC !important;
+    text-align: center !important;
+  }
+}
+html body:has(#sheet:not([hidden]):not([data-panel="tour"])) header.top,
+html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .kb-bar {
+  display: none !important;
+}
+html body:has(#sheet:not([hidden]):not([data-panel="tour"])) #sheet {
+  top: 0 !important;
+}
+html body #sheet.kd-panel #sheet-title::before,
+html body #sheet.kd-panel .kd-glab::before,
+html body #sheet.kd-panel .kd-glab:not(:has(.kd-prompt))::before,
+html body #sheet.kd-panel .gnote.ghead::before,
+html body #sheet.kd-panel .crate-tab::before,
+html body #sheet.kd-panel .machine-name::before {
+  content: none !important;
+}
+html body #hotbar .count,
+html body #hotbar .digit {
+  font-size: 16px !important;
+  line-height: 1.1 !important;
+  min-height: 16px;
 }
 html body #save-chip:not([hidden]),
 html body #toast.nice-chip:not([hidden]) {

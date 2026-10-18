@@ -91,24 +91,30 @@ export function createLearn(api) {
   function plankHave() {
     try { return api.count ? (api.count('planks') | 0) : 0 } catch (e) { return 0 }
   }
-  function paintTreeCount(g) {
-    const el = document.getElementById('path-chip')
-    if (!el || el.hidden || !g || g.id !== 'pathTree') return
-    let num = el.querySelector('.path-n')
-    if (!num) {
-      num = document.createElement('span')
-      num.className = 'path-n'
-      const x = el.querySelector('.path-x')
-      if (x) el.insertBefore(num, x)
-      else el.append(num)
-    }
+  const BENCH_PLANKS = 4
+  function goalLine(g) {
+    if (!g) return ''
     const have = plankHave()
-    num.textContent = Math.min(have, g.need) + '/' + g.need
+    if (g.id === 'pathTree') {
+      return api.t('goalPlanks').replace('{have}', String(Math.min(have, BENCH_PLANKS))).replace('{need}', String(BENCH_PLANKS))
+    }
+    if (g.id === 'pathBench') {
+      if (have >= BENCH_PLANKS) return api.t('goalBenchReady').replace('{n}', String(have)).replace('{item}', api.t('planks'))
+      return api.t('pathBench') + ' · ' + have + '/' + BENCH_PLANKS + ' ' + api.t('planks')
+    }
+    return api.t(g.id)
   }
+  function paintTreeCount() {}
   function sync() {
-    const g = goals.find((x) => x.id === 'pathTree')
-    if (!g || g.done) return false
-    paintTreeCount(g)
+    const el = document.getElementById('path-chip')
+    const showing = currentGoal()
+    if (showing && el && !el.hidden) {
+      const title = el.querySelector('.path-title')
+      if (title) title.textContent = goalLine(showing)
+    }
+    const tree = goals.find((x) => x.id === 'pathTree')
+    if (!tree || tree.done) return false
+    if (!showing || showing.id !== 'pathTree') return false
     if (plankHave() < 1) return false
     if (sync.wait) return true
     sync.wait = setTimeout(() => {
@@ -153,7 +159,7 @@ export function createLearn(api) {
     el.replaceChildren()
     const title = document.createElement('span')
     title.className = 'path-title'
-    title.textContent = api.t(g.id === 'pathTree' && api.touch && api.touch() ? 'pathTreeTouch' : g.id)
+    title.textContent = goalLine(g)
     const x = document.createElement('span')
     x.className = 'path-x'
     const xp = menuIcon('x')
@@ -161,7 +167,6 @@ export function createLearn(api) {
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
     el.append(title, x)
-    if (g.id === 'pathTree') paintTreeCount(g)
     pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)
@@ -169,6 +174,43 @@ export function createLearn(api) {
   }
   function placePath(el, follow) {
     if (!el) return
+    const phone = window.innerWidth <= 980 || window.innerHeight <= 520
+    if (phone) {
+      el.classList.remove('path-corner')
+      const hot = document.getElementById('hotbar')
+      const hr = hot ? hot.getBoundingClientRect() : null
+      let bottom = 108
+      if (hr && hr.height > 2 && hr.top > 40) bottom = Math.max(12, Math.round(window.innerHeight - hr.top + 8))
+      const stick = document.getElementById('stick-pad')
+      const sr = stick ? stick.getBoundingClientRect() : null
+      const header = document.querySelector('header.top')
+      const headerBottom = header ? header.getBoundingClientRect().bottom : 120
+      const maxBottom = Math.max(12, window.innerHeight - headerBottom - 64)
+      if (sr && sr.width > 2 && sr.height > 2) {
+        const cardW = Math.min(el.offsetWidth || 260, window.innerWidth * 0.92)
+        const cardLeft = (window.innerWidth - cardW) / 2
+        if (cardLeft < sr.right - 4 && cardLeft + cardW > sr.left + 4) {
+          const stickClear = Math.round(window.innerHeight - sr.top + 8)
+          if (stickClear > bottom && stickClear <= maxBottom) bottom = stickClear
+        }
+      }
+      if (bottom > maxBottom) bottom = maxBottom
+      document.documentElement.style.setProperty('--goal-bottom', bottom + 'px')
+      el.style.top = ''
+      el.style.left = ''
+      el.style.right = ''
+      el.style.bottom = ''
+      el.style.transform = ''
+      el.style.maxWidth = ''
+      el.style.width = ''
+      el.style.background = ''
+      el.style.color = ''
+      el.style.border = ''
+      el.style.boxShadow = ''
+      el.style.outline = ''
+      el.style.pointerEvents = ''
+      return
+    }
     const touch = document.body.classList.contains('touch') || (api.touch && api.touch())
     if (!(touch && window.innerHeight <= 500)) {
       el.classList.remove('path-corner')
@@ -570,7 +612,20 @@ export function createLearn(api) {
   }
   if (!(api.hudQuiet && api.hudQuiet()) && !state.tourDone) armAuto()
   paintPath()
-  function notes() { return (state.notes || []).slice() }
+  function freshGoals() {
+    for (const g of goals) {
+      g.n = 0
+      g.done = false
+    }
+    state.goals = {}
+    state.dismissed = {}
+    save()
+    cardHidden = false
+    pathShown = false
+    clearTimeout(sync.wait)
+    sync.wait = 0
+    paintPath()
+  }
   function setHideTips(on) {
     state.hideTips = !!on
     save()
@@ -584,6 +639,7 @@ export function createLearn(api) {
     return !!state.hideTips
   }
   function hideTips() { return !!state.hideTips }
+  function notes() { return (state.notes || []).slice() }
   function addNote(id) {
     if (!id) return false
     if (!state.notes) state.notes = []
@@ -592,5 +648,5 @@ export function createLearn(api) {
     save()
     return true
   }
-  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, sync, goals: () => goals, cancelAuto, notes, addNote, hideTips, setHideTips, pressMake, hasMake }
+  return { tourOn, skipTour, resetTour, bump, a11y, outbox, send, paintTour, paintGoals, paintA11y, paintPath, dismissPath, sync, goals: () => goals, cancelAuto, notes, addNote, hideTips, setHideTips, pressMake, hasMake, freshGoals }
 }

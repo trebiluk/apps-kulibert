@@ -210,10 +210,7 @@ export function mountPanels(api) {
     box.dataset.group = id
     const h = document.createElement('div')
     h.className = 'kd-glab'
-    const prompt = document.createElement('span')
-    prompt.className = 'kd-prompt'
-    prompt.textContent = '>_ '
-    h.append(prompt, document.createTextNode(label))
+    h.append(document.createTextNode(label))
     if (opt && opt.tag) {
       const tag = document.createElement('span')
       tag.className = 'kd-tag'

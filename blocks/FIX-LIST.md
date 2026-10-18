@@ -1,6 +1,11 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.265 Phone top bar fits, Crafting is in Survival, and a tree waits by spawn).
+Updated Sun Oct 18 2026 (Build: 2.5.266 Phone words fit, the goal shows your Planks, and menus read like kid words).
+
+- [x] **2.5.266 Phone bar:** At 915×412 and 412×915 every top-bar word is whole and every button is at least 44px (chip, Survival, Creative, clock, practice, Undo, Redo, Save). The goal card sits above the hotbar, not on the bar or the joystick.
+- [x] **2.5.266 Goal words:** A fresh Survival goal says Get Planks, then Make a Workbench, and the count is Planks. It moves on by itself. The Planks recipe says it needs 1 Log.
+- [x] **2.5.266 Kid menu:** The menu has one header. Group words are Play, World, Make, Settings, and Bag has no >_ mark. Hotbar counts are 16px.
+
 
 - [x] **2.5.265 Phone bar:** At 915×412 and 412×915 every word reads whole (20 practice, Survival, Creative, Undo, Redo, version). Undo and Redo are not under Pause or Fullscreen. Hotbar names like Sapling stay inside their slot. The Saved toast sits low, not on the crosshair or the hotbar.
 - [x] **2.5.265 Survival Crafting:** Survival Menu > Play shows Crafting, the same word Creative uses. It opens the same panel, and the Workbench recipe says Planks.
