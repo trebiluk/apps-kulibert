@@ -1554,3 +1554,17 @@ for (const [lang, row] of Object.entries(FIRST)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const BAGKEY = {
+  en: { whatsNewBody: 'Press E to open your Bag.' },
+  es: { whatsNewBody: 'Pulsa E para abrir tu Bolsa.' },
+  uk: { whatsNewBody: 'Натисни E, щоб відкрити Сумку.' },
+  ru: { whatsNewBody: 'Нажми E, чтобы открыть Сумку.' },
+  ar: { whatsNewBody: 'اضغط E لفتح حقيبتك.' },
+  'fa-AF': { whatsNewBody: 'E را بزن تا بکس باز شود.' },
+  rw: { whatsNewBody: 'Kanda E ufungure agasaho.' },
+  ti: { whatsNewBody: 'E ጠውቕ ቦርሳኻ ንምኽፋት።' },
+}
+for (const [lang, row] of Object.entries(BAGKEY)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

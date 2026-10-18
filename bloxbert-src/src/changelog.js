@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.264', date: '2026-10-18', lines: {
+    en: ['Press E to open your Bag.'],
+    es: ['Pulsa E para abrir tu Bolsa.'],
+    uk: ['Натисни E, щоб відкрити Сумку.'],
+    ru: ['Нажми E, чтобы открыть Сумку.'],
+    ar: ['اضغط E لفتح حقيبتك.'],
+    'fa-AF': ['E را بزن تا بکس باز شود.'],
+    rw: ['Kanda E ufungure agasaho.'],
+    ti: ['E ጠውቕ ቦርሳኻ ንምኽፋት።'],
+    zh: ['按 E 打开你的背包。'],
+    fr: ['Appuie sur E pour ouvrir ton Sac.'],
+    pt: ['Pressiona E para abrir a Bolsa.'],
+    vi: ['Nhấn E để mở Túi.'],
+  }},
   { v: '2.5.263', date: '2026-10-18', lines: {
     en: ['Make works on the first click, Esc closes just the panel, and new worlds start fresh.'],
     es: ['Hacer funciona al primer clic, Esc cierra solo el panel, y los mundos nuevos empiezan de cero.'],

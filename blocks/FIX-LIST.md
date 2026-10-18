@@ -1,6 +1,9 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.263 Make works on the first click, Esc closes just the panel, and new worlds start fresh).
+Updated Sun Oct 18 2026 (Build: 2.5.264 Press E to open your Bag).
+
+- [x] **2.5.264 Bag key:** Press E opens the Bag, even when the goal has a Make button. Press E again closes it. The tip says Press E for the Bag.
+- [x] **2.5.264 Make button:** Crafting still opens from the on-screen Make button. E does not open Crafting.
 
 - [x] **2.5.263 First click:** After a new world loads, the first click on Make opens Crafting. A click on any HUD button never turns the camera. Mouse look starts only after a click on the open world or Click to play.
 - [x] **2.5.263 Esc:** Esc with Crafting or the Bag open closes just that panel. A second Esc opens the Menu. Closing a panel leaves the cursor free.

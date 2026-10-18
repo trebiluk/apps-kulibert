@@ -7457,10 +7457,6 @@ document.addEventListener('keydown', (e) => {
     }
     e.preventDefault()
     if (shutByKey()) return
-    if (learn && learn.hasMake && learn.hasMake() && $('sheet') && $('sheet').hidden) {
-      if (!e.repeat) learn.pressMake()
-      return
-    }
     openMenu(true); panels.open('inventory'); return
   }
   if ((e.key === 'q' || e.key === 'Q') && !e.ctrlKey && !e.metaKey) {
