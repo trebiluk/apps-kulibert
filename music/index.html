@@ -19,7 +19,7 @@
   </script>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=mu236"/>
+  <link rel="stylesheet" href="./styles.css?v=mu2361"/>
 </head>
 <body class="mu237">
   <em id="chip" hidden></em>
@@ -150,6 +150,7 @@
       </div>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news2361">MU 2.36.1 — Your tempo is right from the first blink, and the grid fits on phones.</span></li>
         <li><span data-mu="news2360">{ver} DJ Berty: open on the beat grid, tap pads to write the score, and one tempo.</span></li>
         <li><span data-mu="news23522">{ver} DJ Berty: The Dark switch now has a moon and sun icon.</span></li>
         <li><span data-mu="news23521">{ver} DJ Berty: A calm new look, and a Dark mode switch in Settings.</span></li>
@@ -274,7 +275,7 @@
     <div class="desk">
     <p id="tool-line" class="tool-line" data-mu="toolTap">Tap: hit pads and see the dots.</p>
     <div id="songbar" class="songbar" hidden>
-      <span id="songbar-meta">96 · C · 4/4</span>
+      <span id="songbar-meta"></span>
     </div>
     <section class="work" id="work">
       <div class="kit" id="kit" aria-label="Tap with a finger"></div>
@@ -531,13 +532,15 @@
   <div class="transport" id="transport">
     <button type="button" id="song-cover" class="cover" aria-label="This song"></button>
     <div class="songbar-copy">
-      <strong id="songbar-name"><bdi>New song</bdi></strong>
+      <span class="whose" data-mu="thisSong">This song</span>
+      <strong id="songbar-name"><bdi></bdi></strong>
+      <button type="button" id="new-beat" class="btn new-beat" data-mu="newBeat">New beat</button>
       <span id="play-pos">Bar 1 · Beat 1</span>
     </div>
     <button type="button" id="clear-song" class="btn" aria-label="Clear" title="Clear"><span class="ctl-word" data-mu="clearTile">Clear</span></button>
     <button type="button" id="play-btn" class="play" aria-label="Play" title="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word" class="ctl-word">Play</span></button>
-    <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read">96</b>
-      <input id="tempo" type="range" min="70" max="160" value="96" aria-label="Tempo"/>
+    <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read"></b>
+      <input id="tempo" type="range" min="70" max="160" value="104" aria-label="Tempo"/>
     </label>
     <button type="button" id="save-dock" class="btn" aria-label="Save" title="Save"><span class="ctl-word" data-mu="save">Save</span></button>
     <button type="button" id="mute-btn" class="btn" aria-pressed="false" aria-label="Sound on" title="Sound on"><span aria-hidden="true">🔊</span><span class="ctl-word">Sound</span></button>
@@ -552,8 +555,39 @@
     </div>
   </div>
 
+  <script>
+  (function () {
+    var bpm = "";
+    var key = "C";
+    var meter = "4/4";
+    var name = "";
+    try {
+      var box = JSON.parse(localStorage.getItem("kulibert.music.now") || "null");
+      var song = box && box.song;
+      if (typeof song === "string") song = JSON.parse(song);
+      if (song && typeof song === "object" && (box.bpm || song.bpm)) {
+        bpm = String(box.bpm || song.bpm);
+        if (song.key) key = song.key;
+        if (song.meter) meter = song.meter;
+        var alias = typeof song.alias === "string" ? song.alias : "";
+        var from = Array.isArray(song.from) ? song.from.filter(function (n) { return n && n !== "Remix" && n !== "Trap remix"; }) : [];
+        name = (from[0] && alias && from[0] !== alias) ? (alias + " · " + from[0]) : (from[0] || alias || "");
+      }
+    } catch (err) { /* the app still paints the saved song */ }
+    if (!bpm) return;
+    var meta = document.getElementById("songbar-meta");
+    var read = document.getElementById("tempo-read");
+    var slider = document.getElementById("tempo");
+    var title = document.querySelector("#songbar-name bdi");
+    if (meta) meta.textContent = bpm + " · " + key + " · " + meter;
+    if (read) read.textContent = bpm;
+    if (slider) slider.value = bpm;
+    if (title && name) title.textContent = name;
+    document.documentElement.classList.add("tempo-known");
+  })();
+  </script>
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="musiclab" data-name="DJ Berty" data-rtl="1" data-menu="#menu-btn" defer></script>
-  <script src="./version.js?v=mu236"></script>
+  <script src="./version.js?v=mu2361"></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -562,7 +596,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu236"></script>
-  <script src="./app.js?v=mu236"></script>
+  <script src="./strings.js?v=mu2361"></script>
+  <script src="./app.js?v=mu2361"></script>
 </body>
 </html>

@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.1** · 2026-10-19 · channel **live**
+
+Your tempo is right from the first blink, and the grid fits on phones.
+
+## Earlier
+
 **Chip: MU 2.36.0** · 2026-10-18 · channel **live**
 
 Open on the beat grid, tap pads to write the score, and one tempo.

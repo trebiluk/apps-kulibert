@@ -3054,6 +3054,7 @@
     });
   });
   if ($("make-beat")) $("make-beat").addEventListener("click", makeBeat);
+  if ($("new-beat")) $("new-beat").addEventListener("click", makeBeat);
   if ($("my-songs")) $("my-songs").addEventListener("click", () => {
     resetScroll();
     if ($("home")) $("home").hidden = false;
@@ -3647,6 +3648,7 @@
     const cover = $("song-cover");
     if (name) setBdi(name, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
     if (meta) meta.textContent = (song.bpm || 96) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
+    document.documentElement.classList.add("tempo-known");
     if (cover) {
       const ink = { cyan: "#22d3ee", amber: "#fbbf24", violet: "#a78bfa", rose: "#fb7185", lime: "#a3e635", ice: "#bae6fd" };
       const color = song.viz && song.viz.layers && song.viz.layers[0] && ink[song.viz.layers[0].color];

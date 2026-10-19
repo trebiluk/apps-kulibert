@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.1: the first frame shows the saved tempo, the sideways grid fits, and New beat is on the first screen.
 - [x] MU 2.36.0: open on the beat grid, 88px tap pads write the score, and Make a beat shows one tempo.
 - [x] A2-63 MU 2.35.22: The Dark switch now has a moon and sun icon.
 - [x] A2-59 MU 2.35.21: a calm new look, and a Dark mode switch in Settings.

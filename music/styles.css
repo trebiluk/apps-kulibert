@@ -4310,6 +4310,65 @@ html[data-theme] body.mu237 {
   --play-bg: #22d3ee;
   --play-fg: #041018;
 }
+html:not(.tempo-known) #songbar-meta,
+html:not(.tempo-known) #tempo-read,
+html:not(.tempo-known) #songbar-name {
+  visibility: hidden;
+}
+body.mu237 .transport .songbar-copy {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+body.mu237 .whose { font-size: 14px; font-weight: 800; white-space: nowrap; }
+body.mu237 #new-beat {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 16px;
+  font-weight: 800;
+  flex: 0 0 auto;
+}
+body.mu237 .transport .tempo > span,
+body.mu237 .transport #tempo-read {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  font-size: 16px !important;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-tap .tool-line,
+  body.mu237.tab-tap .tap-tiles,
+  body.mu237.tab-tap #style-row,
+  body.mu237.tab-tap .beat-speak,
+  body.mu237.tab-tap #more-drums,
+  body.mu237.tab-tap .more-box,
+  body.mu237.tab-tap .tap-actions,
+  body.mu237.tab-tap #playhead-read { display: none !important; }
+  body.mu237.tab-tap #drums-pane {
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden;
+    min-height: 0;
+  }
+  body.mu237.tab-tap .tap-write { min-height: 44px; height: 44px; font-size: 16px; padding: 0 8px; }
+  body.mu237.tab-tap .guide-line { margin: 0; min-height: 22px; flex: 0 0 auto; }
+  body.mu237.tab-tap .tap-pads { margin: 4px 0; flex: 0 0 auto; }
+  body.mu237.tab-tap .tap-pads .pad { min-height: 88px; height: 88px; }
+  body.mu237.tab-tap #tap-strip { flex: 0 0 auto; max-height: 18px; overflow: hidden; }
+  body.mu237.tab-tap #drums { display: none !important; }
+  body.mu237.tab-tap .desk,
+  body.mu237.tab-tap .work { overflow: hidden !important; }
+}
+@media (max-width: 699px) {
+  body.mu237 .transport {
+    grid-template-columns: minmax(0, 1.4fr) auto auto auto auto auto !important;
+    grid-template-rows: 48px 48px !important;
+  }
+  body.mu237 .transport .songbar-copy { grid-column: 1 / -1; }
+}
 body.mu237.tab-mix #drums-pane > #style-row {
   display: flex !important;
   flex-wrap: wrap;
