@@ -4380,4 +4380,45 @@ body.mu237.tab-mix #style-row button {
   min-height: 44px;
   font-size: 16px;
 }
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-tap .tap-pads .pad {
+    flex: 0 0 88px !important;
+    height: 88px !important;
+    min-height: 88px !important;
+  }
+}
+@media (max-width: 480px) and (orientation: portrait) {
+  body.mu237 { --player: 156px; }
+  body.mu237 .transport {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(44px, 1fr)) !important;
+    grid-template-rows: 48px 44px 52px !important;
+    height: 156px !important;
+    max-height: 156px !important;
+    overflow: visible !important;
+    align-content: center !important;
+  }
+  body.mu237 .transport .tempo {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    display: flex !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    height: 48px !important;
+    max-height: none !important;
+    align-items: center;
+    gap: 8px;
+  }
+  body.mu237 .transport .tempo input {
+    flex: 1 1 120px !important;
+    min-width: 120px !important;
+    width: auto !important;
+    height: 44px !important;
+  }
+  body.mu237 .transport .songbar-copy { grid-column: 1 / -1; grid-row: 2; }
+  body.mu237 #play-btn { grid-row: 3; }
+  body.mu237 #rec-btn { grid-row: 3; }
+  body.mu237 #show-btn { grid-row: 3; }
+  body.mu237 #more-tools { grid-row: 3; }
+}
 

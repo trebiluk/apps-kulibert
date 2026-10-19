@@ -246,6 +246,10 @@
   const openedMain = applySaved(readBox(KEY));
   const openedBak = openedMain ? false : applySaved(readBox(BACKUP));
   state.restored = openedBak;
+  if (!openedMain && !openedBak) {
+    state.song.bpm = 104;
+    state.song.tempo = 104;
+  }
 
   const FX = [
     { id: "plain", name: "Plain", wave: "triangle", bright: 5200, noteLen: 0.28, echo: 0, wobble: 0, hip: 40, delay: 0, feedback: 0 },
@@ -3586,8 +3590,8 @@
       keep();
     });
   }
-  $("tempo").value = String(state.song.bpm || 96);
-  $("tempo-read").textContent = String(state.song.bpm || 96);
+  $("tempo").value = String(state.song.bpm || 104);
+  $("tempo-read").textContent = String(state.song.bpm || 104);
   $("blend").value = String(state.blend);
   $("blend-read").textContent = blendWord(state.blend);
   fillLights();
@@ -3647,7 +3651,7 @@
     const meta = $("songbar-meta");
     const cover = $("song-cover");
     if (name) setBdi(name, songTitle(song) === "New song" ? (mu("newSong") || "New song") : songTitle(song));
-    if (meta) meta.textContent = (song.bpm || 96) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
+    if (meta) meta.textContent = (song.bpm || 104) + " · " + (song.key || "C") + " · " + (song.meter || "4/4");
     document.documentElement.classList.add("tempo-known");
     if (cover) {
       const ink = { cyan: "#22d3ee", amber: "#fbbf24", violet: "#a78bfa", rose: "#fb7185", lime: "#a3e635", ice: "#bae6fd" };
@@ -4179,7 +4183,7 @@
       const TitlesNow = window.KulibertTitles;
       placeSong({
         notes: [null, null, null, null],
-        bpm: 96,
+        bpm: 104,
         meter: "4/4",
         key: "C",
         from: [],

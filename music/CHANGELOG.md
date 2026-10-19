@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.2** · 2026-10-19 · channel **live**
+
+Fresh beats start at 104, and Tempo fits on phones.
+
+## Earlier
+
 **Chip: MU 2.36.1** · 2026-10-19 · channel **live**
 
 Your tempo is right from the first blink, and the grid fits on phones.
