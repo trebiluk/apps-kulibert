@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" role="img" aria-label="Volt Duel">
+  <rect width="72" height="72" rx="16" fill="#07090c"/>
+  <rect x="3" y="3" width="66" height="66" rx="14" fill="none" stroke="#2a3542" stroke-width="2"/>
+  <path d="M18 48 L28 22 L38 48 Z" fill="none" stroke="#2ee6c7" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M34 30 L46 18 L58 30 L46 42 Z" fill="none" stroke="#ffb020" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M16 54 H56" stroke="#e8eef4" stroke-width="3" stroke-linecap="round"/>
+  <path d="M52 46 V54 H60" fill="none" stroke="#e8eef4" stroke-width="3" stroke-linejoin="round"/>
+</svg>

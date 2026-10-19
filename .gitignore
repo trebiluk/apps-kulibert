@@ -1,3 +1,4 @@
 .vercel
 
-alice-src/node_modules/
+alice-src/node_modules
+voltduel-src/node_modules
