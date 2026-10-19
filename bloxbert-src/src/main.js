@@ -41,6 +41,7 @@ import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanv
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
+import { holdTip, dropTip, showToast } from './tips.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
@@ -4823,26 +4824,7 @@ function paintSaveChip(state) {
 }
 function toast(text, act) {
   if (calm) { calm.say(text, act); return }
-  const el = $('toast')
-  if (!el) return
-  el.replaceChildren()
-  el.append(document.createTextNode(text))
-  if (act && act.label && act.run) {
-    const b = document.createElement('button')
-    b.type = 'button'
-    b.className = 'toast-hold'
-    b.textContent = act.label
-    b.addEventListener('click', (e) => {
-      e.preventDefault()
-      e.stopPropagation()
-      act.run()
-      el.hidden = true
-    })
-    el.append(b)
-  }
-  el.hidden = false
-  clearTimeout(toast.t)
-  toast.t = setTimeout(() => { el.hidden = true }, act ? 8000 : 2400)
+  showToast(text, { act })
 }
 const blockedAt = new Map()
 function blockedToast(ruleId) {
@@ -4970,7 +4952,7 @@ session = createSession({
   cheer: (kind) => calm.cheer(kind),
   hudDump: () => calm.dump(),
   hudAdopt: (raw, played) => calm.adopt(raw, played),
-  onMode: () => calm.apply(),
+  onMode: () => { calm.apply(); paintModeChip() },
   calmAll: () => calm.allOn(),
   setCalmAll: (on) => calm.setAll(on),
 })
@@ -5308,6 +5290,7 @@ belts = createBelts({
     try { localStorage.setItem('bloxbert-belt-hint', 'done') } catch (e) {}
     const hint = document.getElementById('menu-hint')
     if (hint && hint.classList.contains('belt-on')) hint.hidden = true
+    dropTip('belt')
   },
 })
 function showBeltHint() {
@@ -5324,6 +5307,7 @@ function showBeltHint() {
   const words = document.createElement('span')
   words.textContent = t('beltHint')
   hint.append(arrow, words)
+  holdTip('belt', hint, () => hint.isConnected && !hint.hidden && hint.classList.contains('belt-on'))
 }
 function syncOvenGlow() {
   const hot = new Set()
@@ -8076,6 +8060,7 @@ window.addEventListener('pointerdown', (e) => {
   dropLockLook = true
 }, true)
 canvas.addEventListener('contextmenu', (e) => {
+  e.preventDefault()
   if (canvasHit(e) || e.target === stageEl || (stageEl && stageEl.contains(e.target))) e.preventDefault()
   if (TOUCH_UI || tableMode || anyCard()) return
   deskOpenStation(targetHit())
@@ -8591,6 +8576,7 @@ if (pickBtn) {
 paintPick()
 document.body.classList.toggle('touch', TOUCH_UI)
 const stickPad = document.getElementById('stick-pad')
+if (stickPad) stickPad.addEventListener('contextmenu', (e) => e.preventDefault())
 const stickKnob = document.getElementById('stick-knob')
 if (stickPad && stickKnob) {
   let sid = null

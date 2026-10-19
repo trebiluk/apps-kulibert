@@ -1,6 +1,11 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Mon Oct 19 2026 (Build: 2.5.268 Recipe words fit, and phone slots are easier to tap).
+Updated Mon Oct 19 2026 (Build: 2.5.269 Crafting words and counts fit, and tips wait their turn).
+
+- [x] **2.5.269 Crafting card:** At 915×412, Input, Process and Output stay inside the card. Output and Workbench / Wood Pickaxe read whole before Fill, after Fill and after Make. The check sits beside 4/4 and 0/4, not on a digit. Recipe tiles show the whole name and the count, and a half row is not cut off the bottom.
+- [x] **2.5.269 Tips:** One tip, toast or hint at a time. The rest wait about 0.3s. They stay off the hotbar, Bag, Copy, the mode toggle and the world chip.
+- [x] **2.5.269 Creative hotbar:** At 915×412 and 412×915 every Creative slot is at least 44px and slot 15 does not sit under Bag.
+- [x] **2.5.269 Repeat and stick:** The Bot Code panel reads Repeat in full at 915×412. A long press on the joystick does not open the browser menu.
 
 - [x] **2.5.268 Crafting words:** The 4/4 chip sits above the recipe sentence, never on the W. After Fill and after Make, every line in the right-hand card is inside the card. "In bag" does not sit on "0/4 Planks". Words stay at least 14px.
 - [x] **2.5.268 Phone slots:** At 412 wide, all 9 hotbar slots stay in one row and each is at least 40px. Bag sits above that row. Counts sit on a dark chip in the corner, not on the picture. At 915×412 slots stay the 2.5.267 size.

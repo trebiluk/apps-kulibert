@@ -1,5 +1,6 @@
 // Picture tour, Try this goals, accessibility prefs, and the teacher outbox. Local only.
 import { menuIcon } from './icons.js'
+import { holdTip, dropTip } from './tips.js'
 const KEY = 'bloxbert-learn'
 const HAMMER = '<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><rect x="8" y="8" width="22" height="10" fill="#6b7280" stroke="#1c1917" stroke-width="2"/><rect x="16" y="16" width="8" height="24" fill="#c9954c" stroke="#5c3317" stroke-width="2"/></svg>'
 export function createLearn(api) {
@@ -69,6 +70,7 @@ export function createLearn(api) {
     const el = document.getElementById('path-chip')
     cardHidden = true
     if (el) { el.classList.remove('path-out'); el.hidden = true }
+    dropTip('path')
     syncMake(null)
     if (api.releaseHint) api.releaseHint("path")
   }
@@ -132,6 +134,7 @@ export function createLearn(api) {
       el.hidden = true
       syncMake(null)
       if (was && api.releaseHint) api.releaseHint("path")
+      dropTip('path')
       return
     }
     if (pathGap || celebrate) { syncMake(null); return }
@@ -142,6 +145,7 @@ export function createLearn(api) {
       el.replaceChildren()
       syncMake(null)
       if (was && api.releaseHint) api.releaseHint("path")
+      dropTip('path')
       return
     }
     if (!pathShown && api.hintTaken && api.hintTaken()) {
@@ -162,6 +166,7 @@ export function createLearn(api) {
     pathShown = true
     if (api.claimHint) api.claimHint("path")
     placePath(el)
+    holdTip('path', el, () => !!(currentGoal() && !cardHidden && !state.hideTips && !(api.survival && !api.survival())))
     syncMake(g)
     const x = document.createElement('span')
     x.className = 'path-x'

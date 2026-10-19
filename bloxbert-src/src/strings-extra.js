@@ -1628,3 +1628,17 @@ for (const [lang, row] of Object.entries(GOAL)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT269 = {
+  en: { whatsNewBody: '2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.' },
+  uk: { whatsNewBody: '2.5.269 — Слова й числа в Крафті вміщуються на малих екранах, а підказки чекають своєї черги й не заважають тобі.' },
+  ru: { whatsNewBody: '2.5.269 — Слова и числа в Крафте помещаются на маленьких экранах, а подсказки ждут своей очереди и не мешают.' },
+  es: { whatsNewBody: '2.5.269 — Las palabras y números de Fabricar caben en pantallas pequeñas, y los consejos esperan su turno y no te estorban.' },
+  ar: { whatsNewBody: '2.5.269 — كلمات وأرقام الصناعة تتسع على الشاشات الصغيرة، والنصائح تنتظر دورها ولا تعترض طريقك.' },
+  'fa-AF': { whatsNewBody: '2.5.269 — کلمه‌ها و شماره‌های ساختن در صفحه‌های کوچک جا می‌شوند، و نکته‌ها منتظر نوبت خود می‌مانند و مزاحم شما نمی‌شوند.' },
+  rw: { whatsNewBody: '2.5.269 — Amagambo n\'imibare byo Gukora bikwira ku byerekezo bito, kandi inama zirategereza umwanya wazo ntizikugora.' },
+  ti: { whatsNewBody: '2.5.269 — ቃላትን ቁጽርታትን ምስራሕ ኣብ ንኣሽቱ ስክሪናት ይኣክሉ፣ ምኽርታት ድማ ተራኦም ይጽበዩን ኣይዓግቱኻን።' },
+}
+for (const [lang, row] of Object.entries(FIT269)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

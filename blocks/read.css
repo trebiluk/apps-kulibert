@@ -908,6 +908,201 @@ html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .tw-app-bar {
   }
 }
 
+/* 2.5.269: crafting words stay whole at 915x412. Counts sit beside the check. Grid rows scroll whole. */
+@media (max-height: 500px) and (min-width: 700px) {
+  html body #sheet[data-panel="crafting"] .ks-zones {
+    flex-wrap: wrap !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    gap: 4px !important;
+    overflow: visible !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-link {
+    flex: 0 0 8px !important;
+    width: 8px !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-zone {
+    flex: 1 1 42% !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+    padding: 4px !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-zout {
+    flex: 1 1 100% !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-zhead,
+  html body #sheet[data-panel="crafting"] .ks-zhead span {
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-core {
+    width: 28px !important;
+    height: 28px !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-meter-row { max-width: 100% !important; }
+  html body #sheet[data-panel="crafting"] .well.result {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    overflow: visible !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    padding: 4px 8px !important;
+  }
+  html body #sheet[data-panel="crafting"] .well.result .wlab {
+    display: block !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing {
+    width: auto !important;
+    min-width: 96px !important;
+    max-width: 100% !important;
+    height: auto !important;
+    min-height: 44px !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    padding: 2px 8px !important;
+    place-items: center !important;
+    overflow: visible !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .ks-art {
+    width: 22px !important;
+    height: 22px !important;
+    flex: 0 0 22px !important;
+    order: 1;
+  }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .ks-lab { display: none !important; }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .ks-badge {
+    position: static !important;
+    order: 2;
+    font-size: 16px !important;
+    line-height: 1.2 !important;
+    max-width: none !important;
+    background: transparent !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .check {
+    position: static !important;
+    order: 3;
+    top: auto !important;
+    inset-inline-end: auto !important;
+    flex: 0 0 auto;
+    margin-inline-start: 4px;
+  }
+  html body #sheet[data-panel="crafting"] .book {
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well,
+  html body #sheet[data-panel="crafting"] .book .well.wide {
+    height: auto !important;
+    min-height: 88px !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well .wlab,
+  html body #sheet[data-panel="crafting"] .book .well.wide .wlab {
+    display: block !important;
+    font-size: 13px !important;
+    line-height: 1.25 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well .need {
+    display: block !important;
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  html body.mode-creative #hotbar {
+    width: calc(100vw - 8px) !important;
+    max-width: calc(100vw - 8px) !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    flex-wrap: nowrap !important;
+  }
+  html body.mode-creative #hotbar .item-strip {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+  html body.mode-creative #hotbar .slot:not(.bag-tile) {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+  html body.mode-creative #hotbar .bag-tile {
+    flex: 0 0 auto !important;
+    position: relative !important;
+    z-index: 3 !important;
+    min-width: 64px !important;
+    min-height: 48px !important;
+  }
+}
+@media (max-width: 520px) {
+  html body.mode-creative #hotbar .item-strip {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+  }
+  html body.mode-creative #hotbar .slot:not(.bag-tile) {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+}
+html body #stage canvas,
+html body #stick-pad,
+html body .stickpad {
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+}
+@media (max-height: 500px) and (min-width: 700px) {
+  html body #bot-code .bot-keys { flex-wrap: wrap !important; }
+  html body #bot-code .bot-key {
+    flex: 1 1 auto !important;
+    min-width: max-content !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  html body #bot-code .bot-key span {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+}
+
+
 /* 2.5.268: no stray bar scroll. Phone chrome is two rows. Wide 915 stays the 2.5.267 size. */
 html body .kb-bar {
   overflow-x: hidden !important;
@@ -984,6 +1179,133 @@ html body .kb-bar .kb-plate {
     font-weight: 700;
   }
 }
+
+/* 2.5.269 wins over the short-screen clip. Names, counts, and Output stay whole. */
+@media (max-height: 500px) and (min-width: 700px) {
+  html body #sheet[data-panel="crafting"] #sheet-body,
+  html body #sheet[data-panel="crafting"] .ggrid,
+  html body #sheet[data-panel="crafting"] .build-tray {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+  html body #sheet[data-panel="crafting"] .build-tray {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+  }
+  html body #sheet[data-panel="crafting"] .book {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    align-self: stretch !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well,
+  html body #sheet[data-panel="crafting"] .book .well.wide {
+    height: auto !important;
+    min-height: 72px !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well .wlab,
+  html body #sheet[data-panel="crafting"] .book .well.wide .wlab {
+    display: block !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    max-height: none !important;
+    height: auto !important;
+  }
+  html body #sheet[data-panel="crafting"] .book .well .need {
+    display: block !important;
+    font-size: 14px !important;
+    line-height: 1.2 !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+  }
+  html body #sheet[data-panel="crafting"] .tray {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-zones {
+    flex-wrap: wrap !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-zone { min-width: 0 !important; overflow: visible !important; }
+  html body #sheet[data-panel="crafting"] .ks-zout { flex: 1 1 100% !important; }
+  html body #sheet[data-panel="crafting"] .ks-zhead,
+  html body #sheet[data-panel="crafting"] .ks-zhead span,
+  html body #sheet[data-panel="crafting"] .well.result .wlab {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    -webkit-line-clamp: unset !important;
+    max-height: none !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .ks-badge,
+  html body #sheet[data-panel="crafting"] .ks-slot.ing .check {
+    position: static !important;
+    top: auto !important;
+    inset-inline-start: auto !important;
+    inset-inline-end: auto !important;
+  }
+  html body #bot-code .bot-palette {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    grid-template-columns: none !important;
+  }
+  html body #bot-code .bot-chip,
+  html body #bot-code .bot-key {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: max-content !important;
+    overflow: visible !important;
+  }
+  html body #bot-code .bot-chip span,
+  html body #bot-code .bot-key span,
+  html body #bot-code .bot-slot > span {
+    overflow: visible !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    min-width: max-content !important;
+  }
+  html body #bot-code .bot-slot {
+    overflow: visible !important;
+    min-width: max-content !important;
+    width: auto !important;
+    max-width: none !important;
+  }
+}
+@media (max-width: 520px) {
+  html body.mode-creative #hotbar .slot:not(.bag-tile) {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+  }
+  html body.mode-creative #hotbar .item-strip {
+    flex-wrap: wrap !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+  }
+}
+
 
 /* 2.5.268: recipe words stack in their own block. The right column scrolls instead of cutting a line. */
 html body #sheet[data-panel="crafting"] .craft-words {
@@ -1078,4 +1400,55 @@ html body #sheet[data-panel="crafting"] .gnote.left-line {
   }
   html body #sheet[data-panel="crafting"] .ks-bag { display: none !important; }
 }
+
+/* 2.5.269: creative phone slots stay 44px and on screen. Survival stays 40. */
+@media (max-width: 520px) {
+  html body.mode-creative #hotbar {
+    --ks-slot: 44px;
+    position: fixed !important;
+    left: 4px !important;
+    right: auto !important;
+    bottom: 4px !important;
+    top: auto !important;
+    transform: none !important;
+    width: calc(100vw - 8px) !important;
+    max-width: calc(100vw - 8px) !important;
+    height: auto !important;
+    max-height: calc(100vh - 96px) !important;
+    overflow: visible !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    z-index: 30 !important;
+  }
+  html body.mode-creative #hotbar .bag-tile {
+    order: -1 !important;
+    align-self: flex-end !important;
+  }
+  html body.mode-creative #hotbar .item-strip {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-content: flex-end !important;
+    justify-content: flex-start !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-height: none !important;
+    gap: 4px !important;
+  }
+  html body.mode-creative #hotbar .slot:not(.bag-tile) {
+    flex: 0 0 44px !important;
+    width: 44px !important;
+    min-width: 44px !important;
+    max-width: 44px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+  html body.mode-creative .keys {
+    top: 108px !important;
+    bottom: auto !important;
+    max-width: calc(100vw - 120px) !important;
+    z-index: 4 !important;
+  }
+}
+
 

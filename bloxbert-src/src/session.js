@@ -1375,6 +1375,27 @@ export function createSession(api) {
       }
     }
     book.dataset.fit = '1'
+    fitCraftRows(book)
+  }
+  function fitCraftRows(book) {
+    if (!book) return
+    requestAnimationFrame(() => {
+      if (!book.isConnected) return
+      if (innerHeight > 500 || innerWidth < 700) { book.style.maxHeight = ''; return }
+      const tile = book.querySelector('.book-row .well')
+      if (!tile) return
+      const row = book.querySelector('.book-row')
+      const tools = book.querySelector('.book-tools')
+      const gap = parseFloat((row && getComputedStyle(row).rowGap) || '8') || 8
+      const stride = tile.getBoundingClientRect().height + gap
+      if (!(stride > 24)) return
+      const toolsH = tools ? tools.getBoundingClientRect().height : 0
+      const avail = book.clientHeight - toolsH
+      if (!(avail > stride * 0.6)) return
+      const rows = Math.max(1, Math.floor((avail + gap) / stride))
+      const h = Math.round(toolsH + rows * stride - gap + 4)
+      if (h > 40) book.style.maxHeight = h + 'px'
+    })
   }
   function paintCraftNeeds(g, r) {
     if (!g || !r) return
@@ -1465,6 +1486,12 @@ export function createSession(api) {
     const ksCard = g.querySelector('.ks-craft')
     if (ksCard && ksCard._ksRefresh) ksCard._ksRefresh()
     paintCraftNeeds(g, r)
+    g.querySelectorAll('.book .well .need').forEach((el) => {
+      const tile = el.closest('.well')
+      const id = tile && tile.dataset.recipe
+      const rec = id && RECIPES.find((x) => x.id === id)
+      if (rec) el.textContent = String(countOf(bag, rec.out[0]) || 0)
+    })
     craftTrace('slots')
     return true
   }
@@ -1740,6 +1767,10 @@ export function createSession(api) {
       b.title = name.textContent
       b.setAttribute('aria-label', name.textContent)
       b.append(name)
+      const haveN = document.createElement('span')
+      haveN.className = 'need'
+      haveN.textContent = String(countOf(bag, r.out[0]) || 0)
+      b.append(haveN)
       const where = stationKey(r.at)
       if (where) {
         const mark = document.createElement('span')
@@ -2042,6 +2073,7 @@ export function createSession(api) {
     if (shownNow) paintNeeds(craftWords || side, shownNow.r, shownNow.st)
     tray.append(book, side)
     g.append(tray)
+    fitCraftRows(book)
     const made = side.querySelector('.well.result')
     if (made) {
       const lab = made.querySelector('.wlab')

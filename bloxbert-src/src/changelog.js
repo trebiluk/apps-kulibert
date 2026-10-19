@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.269', date: '2026-10-19', lines: {
+    en: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
+    es: ['2.5.269 — Las palabras y números de Fabricar caben en pantallas pequeñas, y los consejos esperan su turno y no te estorban.'],
+    ar: ['2.5.269 — كلمات وأرقام الصناعة تتسع على الشاشات الصغيرة، والنصائح تنتظر دورها ولا تعترض طريقك.'],
+    zh: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
+    fr: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
+    pt: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
+    ru: ['2.5.269 — Слова и числа в Крафте помещаются на маленьких экранах, а подсказки ждут своей очереди и не мешают.'],
+    vi: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
+    uk: ['2.5.269 — Слова й числа в Крафті вміщуються на малих екранах, а підказки чекають своєї черги й не заважають тобі.'],
+    'fa-AF': ['2.5.269 — کلمه‌ها و شماره‌های ساختن در صفحه‌های کوچک جا می‌شوند، و نکته‌ها منتظر نوبت خود می‌مانند و مزاحم شما نمی‌شوند.'],
+    rw: ['2.5.269 — Amagambo n\'imibare byo Gukora bikwira ku byerekezo bito, kandi inama zirategereza umwanya wazo ntizikugora.'],
+    ti: ['2.5.269 — ቃላትን ቁጽርታትን ምስራሕ ኣብ ንኣሽቱ ስክሪናት ይኣክሉ፣ ምኽርታት ድማ ተራኦም ይጽበዩን ኣይዓግቱኻን።'],
+  }},
   { v: '2.5.268', date: '2026-10-19', lines: {
     en: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
     es: ['2.5.268 — Las palabras de las recetas caben y las casillas del teléfono son más fáciles de tocar.'],

@@ -1,4 +1,5 @@
 // First-join HUD. Four steps, one chip at a time, saved on the player.
+import { showToast } from './tips.js'
 const ORDER = ['tree', 'craft', 'bench', 'run']
 const WORD = { tree: 'workbench', craft: 'hotbar', bench: 'botTab', run: 'craftMachines' }
 
@@ -133,42 +134,26 @@ export function createCalm(api) {
     if (next) show(next)
   }
   function show(job) {
-    const el = document.getElementById('toast')
-    if (!el) return
-    const chip = !!(job.chip || job.nice)
-    holding = chip
-    if (document.body) document.body.classList.add('tip-on')
-    el.replaceChildren()
-    el.classList.toggle('new-chip', !!job.chip)
-    el.classList.toggle('nice-chip', !!job.nice)
-    if (chip && api.icon) {
-      const ico = api.icon(job.step)
-      if (ico) {
+    if (job.nice) chime()
+    showToast(job.text || '', {
+      act: job.act,
+      ms: job.nice ? 1500 : job.chip ? 2000 : (job.act ? 8000 : 2400),
+      chip: !!job.chip,
+      id: job.step || '',
+      fill: (el) => {
+        el.classList.toggle('new-chip', !!job.chip)
+        el.classList.toggle('nice-chip', !!job.nice)
+        if (!(job.chip || job.nice) || !api.icon) return
+        const ico = api.icon(job.step)
+        if (!ico) return
         const wrap = document.createElement('span')
         wrap.className = 'chip-ico'
         wrap.append(ico)
         el.append(wrap)
-      }
-    }
-    el.append(document.createTextNode(job.text || ''))
-    if (job.act && job.act.label && job.act.run) {
-      const b = document.createElement('button')
-      b.type = 'button'
-      b.className = 'toast-hold'
-      b.textContent = job.act.label
-      b.addEventListener('click', (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-        job.act.run()
-        finish()
-      })
-      el.append(b)
-    }
-    el.hidden = false
-    clearTimeout(timer)
-    const ms = job.nice ? 1500 : job.chip ? 2000 : (job.act ? 8000 : 2400)
-    if (job.nice) chime()
-    timer = setTimeout(finish, ms)
+      },
+    })
+    holding = false
+    if (wait.length) kick()
   }
   function finish() {
     clearTimeout(timer)
