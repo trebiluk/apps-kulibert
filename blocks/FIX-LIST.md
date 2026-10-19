@@ -1,6 +1,10 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Mon Oct 19 2026 (Build: 2.5.267 Your goal clears when you finish it, and Save fits on phones).
+Updated Mon Oct 19 2026 (Build: 2.5.268 Recipe words fit, and phone slots are easier to tap).
+
+- [x] **2.5.268 Crafting words:** The 4/4 chip sits above the recipe sentence, never on the W. After Fill and after Make, every line in the right-hand card is inside the card. "In bag" does not sit on "0/4 Planks". Words stay at least 14px.
+- [x] **2.5.268 Phone slots:** At 412 wide, all 9 hotbar slots stay in one row and each is at least 40px. Bag sits above that row. Counts sit on a dark chip in the corner, not on the picture. At 915×412 slots stay the 2.5.267 size.
+- [x] **2.5.268 Fresh bar:** A first visit has no horizontal scrollbar under the top bar. At 915×412 the bar is Menu, Home, the 2.5.268 chip, Sign in, Survival, Creative, time, practice, Undo, Redo, Save and Back to the Hub. At 412×915 the bar is at most 2 rows, and Back to the Hub reads Hub. Save stays on screen.
 
 - [x] **2.5.267 Goal clears:** When the Workbench lands in the Bag, the goal card flips to the next goal by itself. The Planks count stays true, including parts sitting in the craft input. X only closes the card.
 - [x] **2.5.267 Phone bar:** At 915×412 and 412×915, Sign in and Back to the Hub do not cover Save, Survival, Creative, or the hamburger. Menu and Bag keep one whole header. All 9 hotbar slots show.
@@ -174,6 +178,7 @@ Updated Mon Oct 19 2026 (Build: 2.5.267 Your goal clears when you finish it, and
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.268 | 2.5.268 | Recipe words fit, and phone slots are easier to tap | shipping |
 | 2.5.267 | 2.5.267 | Goal clears when you finish it, and Save fits on phones | shipping |
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |

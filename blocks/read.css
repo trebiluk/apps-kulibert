@@ -817,42 +817,265 @@ html body #hub-back {
 html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .tw-app-bar {
   display: none !important;
 }
+/* 2.5.268: nine slots stay 40px. Bag sits above them so it does not steal width. */
 @media (max-width: 520px) {
   html body #hotbar {
     --ks-gap: 2px;
+    --ks-slot: 40px;
+    flex-direction: column !important;
+    align-items: stretch !important;
     width: calc(100vw - 8px) !important;
     max-width: calc(100vw - 8px) !important;
     box-sizing: border-box !important;
-    overflow: hidden !important;
-    justify-content: space-between !important;
+    overflow: visible !important;
+    justify-content: flex-end !important;
+    gap: 4px !important;
+  }
+  html body #hotbar .bag-tile {
+    order: -1 !important;
+    align-self: flex-end !important;
+    flex: 0 0 auto !important;
+    width: 64px !important;
+    min-width: 64px !important;
+    max-width: 72px !important;
+    height: 48px !important;
+    min-height: 48px !important;
   }
   html body #hotbar .item-strip {
-    flex: 1 1 auto !important;
+    flex: 0 0 auto !important;
+    width: 100% !important;
     min-width: 0 !important;
     overflow: hidden !important;
+    display: flex !important;
+    justify-content: space-between !important;
     gap: 2px !important;
   }
   html body #hotbar .slot:not(.bag-tile) {
-    width: auto !important;
-    min-width: 0 !important;
-    max-width: none !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    flex: 1 1 0 !important;
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 40px !important;
+    min-height: 40px !important;
   }
-  html body #hotbar .bag-tile {
-    flex: 0 0 58px !important;
-    width: 58px !important;
-    min-width: 58px !important;
-    max-width: 58px !important;
-    height: 52px !important;
-    min-height: 52px !important;
+  html body #hotbar .slot:not(.bag-tile) .sw {
+    position: absolute !important;
+    left: 1px !important;
+    top: 14px !important;
+    width: 16px !important;
+    height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+  }
+  html body #hotbar .slot:not(.bag-tile) .sw canvas,
+  html body #hotbar .slot:not(.bag-tile) .sw svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  html body #hotbar .digit {
+    position: absolute !important;
+    top: 1px !important;
+    left: 2px !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: 2 !important;
+    font-size: 12px !important;
+    line-height: 14px !important;
+    padding: 0 2px !important;
+    border-radius: 3px !important;
+    background: #0B1220 !important;
+    color: #F8FAFC !important;
+  }
+  html body #hotbar .count {
+    position: absolute !important;
+    right: 1px !important;
+    bottom: 1px !important;
+    top: auto !important;
+    left: auto !important;
+    z-index: 2 !important;
+    font-size: 16px !important;
+    line-height: 16px !important;
+    min-height: 16px !important;
+    padding: 0 3px !important;
+    border-radius: 4px !important;
+    background: #0B1220 !important;
+    color: #F8FAFC !important;
   }
   html body #hotbar .bag-tile .lbl {
-    font-size: 13px !important;
+    font-size: 14px !important;
     line-height: 1.1 !important;
-    overflow: hidden !important;
-    text-overflow: clip !important;
+    overflow: visible !important;
   }
+}
+
+/* 2.5.268: no stray bar scroll. Phone chrome is two rows. Wide 915 stays the 2.5.267 size. */
+html body .kb-bar {
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+}
+html body .kb-bar::-webkit-scrollbar { height: 0 !important; display: none !important; }
+html body .kb-bar:focus-within { overflow: visible !important; }
+html body .kb-bar .kb-plate {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+@media (max-width: 480px) {
+  html body .kb-bar {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    flex-wrap: nowrap !important;
+    gap: 4px !important;
+    padding: 0 108px 0 4px !important;
+    box-sizing: border-box !important;
+  }
+  html body .kb-bar .kb-plate {
+    flex: 0 1 auto !important;
+    max-width: 5.2rem !important;
+  }
+  html body header.top {
+    top: 48px !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    align-items: center !important;
+    align-content: center !important;
+    gap: 2px !important;
+    padding: 2px !important;
+    box-sizing: border-box !important;
+  }
+  html body header.top .brand,
+  html body header.top #menu-btn { display: none !important; }
+  html body .kb-bar { padding-right: 4px !important; }
+  html body .kb-bar #wallet-chip {
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    flex: 0 0 auto !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-width: none !important;
+    margin-left: auto !important;
+    padding: 0 8px !important;
+    overflow: visible !important;
+    z-index: auto !important;
+  }
+  html body header.top #mode-pill { gap: 2px !important; }
+  html body header.top #mode-pill button,
+  html body header.top #day-clock,
+  html body header.top .tool {
+    padding: 0 5px !important;
+    gap: 2px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    font-size: 13px !important;
+  }
+  html body header.top .tools { gap: 2px !important; margin-left: 0 !important; flex-wrap: nowrap !important; }
+  html body #hub-back .tl { font-size: 0 !important; line-height: 0 !important; }
+  html body #hub-back .tl::after {
+    content: "Hub";
+    font-size: 13px;
+    line-height: 1.1;
+    font-weight: 700;
+  }
+}
+
+/* 2.5.268: recipe words stack in their own block. The right column scrolls instead of cutting a line. */
+html body #sheet[data-panel="crafting"] .craft-words {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  gap: 4px 12px;
+  position: static;
+  flex: 0 0 auto;
+  min-width: 0;
+  z-index: 1;
+}
+html body #sheet[data-panel="crafting"] .need-pane,
+html body #sheet[data-panel="crafting"] .goal-need,
+html body #sheet[data-panel="crafting"] .need-line {
+  flex: 1 0 100%;
+}
+html body #sheet[data-panel="crafting"] .need-pane {
+  position: static !important;
+  top: auto !important;
+  z-index: auto !important;
+  align-self: flex-start !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+}
+html body #sheet[data-panel="crafting"] .goal-need,
+html body #sheet[data-panel="crafting"] .gnote.in-bag,
+html body #sheet[data-panel="crafting"] .gnote.left-line {
+  position: static !important;
+  z-index: auto !important;
+  margin: 0 !important;
+  font-size: 16px !important;
+  line-height: 1.35 !important;
+  color: #F8FAFC !important;
+  background: transparent !important;
+  overflow: visible !important;
+  white-space: normal !important;
+}
+@media (max-height: 500px) and (min-width: 700px) {
+  html body #sheet[data-panel="crafting"] {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    padding: 0 4px 0 !important;
+  }
+  html body #sheet[data-panel="crafting"] .sheet-bar {
+    min-height: 44px !important;
+    padding: 2px 4px !important;
+  }
+  html body #sheet[data-panel="crafting"] #sheet-body,
+  html body #sheet[data-panel="crafting"] .ggrid,
+  html body #sheet[data-panel="crafting"] .build-tray {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+  html body #sheet[data-panel="crafting"] .build-tray { padding: 2px 6px 0 !important; }
+  html body #sheet[data-panel="crafting"] .ks-craft.ks-zoned { gap: 2px !important; padding-bottom: 0 !important; }
+  html body #sheet[data-panel="crafting"] .ks-craft.ks-zoned .keys { margin: 0 !important; padding: 0 !important; }
+  html body #sheet[data-panel="crafting"] #sheet-body { display: flex !important; flex-direction: column !important; }
+  html body #sheet[data-panel="crafting"] .tray {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
+    align-items: stretch !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-craft.ks-zoned .keys { position: static !important; }
+  html body #sheet[data-panel="crafting"] .need-bit {
+    width: auto !important;
+    min-width: 44px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    flex-direction: row !important;
+    gap: 4px !important;
+    padding: 0 6px !important;
+  }
+  html body #sheet[data-panel="crafting"] .need-bit .art,
+  html body #sheet[data-panel="crafting"] .need-bit .art canvas,
+  html body #sheet[data-panel="crafting"] .need-bit .art svg {
+    width: 18px !important;
+    height: 18px !important;
+    flex-basis: 18px !important;
+  }
+  html body #sheet[data-panel="crafting"] .need-line {
+    min-height: 44px !important;
+    padding: 4px 8px !important;
+    font-size: 14px !important;
+  }
+  html body #sheet[data-panel="crafting"] .ks-bag { display: none !important; }
 }
 

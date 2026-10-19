@@ -1810,6 +1810,7 @@ export function createSession(api) {
     }
     book.append(row)
     const chosen = rows.find((x) => x.r.id === craftId) || rows[0]
+    let craftWords = null
     if (chosen) {
       const { r, st } = chosen
       if (trayPlaced.length !== r.in.length) trayPlaced = r.in.map((_, i) => trayPlaced[i] || 0)
@@ -1924,19 +1925,23 @@ export function createSession(api) {
           },
         })
       }
+      const words = document.createElement('div')
+      words.className = 'craft-words'
       const goalSay = document.createElement('p')
       goalSay.className = 'gnote goal-need'
       goalSay.dataset.goalNeed = '1'
       const madeName = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
       goalSay.textContent = r.in.map(([item, n]) => t('goalNeed').replace('{item}', madeName).replace('{n}', String(n)).replace('{need}', needName(item)).replace('{have}', String(heldCount(r, item)))).join(' ')
-      side.prepend(goalSay)
+      words.append(goalSay)
       for (const [item] of r.in) {
         const bagNote = document.createElement('p')
         bagNote.className = 'gnote in-bag'
         bagNote.dataset.need = item
         bagNote.textContent = t('inBag').replace('{n}', String(countOf(bag, item)))
-        side.append(bagNote)
+        words.append(bagNote)
       }
+      side.prepend(words)
+      craftWords = words
       const fillBtn = side.querySelector('.keycap.fill')
       const trayEmpty = r.in.every((_, i) => !(trayPlaced[i] > 0))
       const bagEnough = !isBread && r.in.every(([item, n]) => countOf(bag, item) >= n)
@@ -1955,7 +1960,7 @@ export function createSession(api) {
         const left = document.createElement('p')
         left.className = 'gnote left-line'
         left.textContent = r.in.map(([item]) => t('leftLine').replace('{item}', needName(item)).replace('{n}', String(countOf(bag, item)))).join(' · ')
-        side.append(left)
+        words.append(left)
       }
       if (st.station || st.gate) {
         const chip = document.createElement('span')
@@ -1983,7 +1988,7 @@ export function createSession(api) {
           e.stopPropagation()
           focusNeed(item, g)
         })
-        side.append(line)
+        words.append(line)
       }
       if (note) {
         const slotChip = document.createElement('p')
@@ -2034,7 +2039,7 @@ export function createSession(api) {
       }
     }
     const shownNow = rows.find((x) => x.r.id === craftId)
-    if (shownNow) paintNeeds(side, shownNow.r, shownNow.st)
+    if (shownNow) paintNeeds(craftWords || side, shownNow.r, shownNow.st)
     tray.append(book, side)
     g.append(tray)
     const made = side.querySelector('.well.result')

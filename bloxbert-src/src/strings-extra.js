@@ -1584,42 +1584,42 @@ for (const [lang, row] of Object.entries(PHONE)) {
 }
 const GOAL = {
   en: {
-    whatsNewBody: '2.5.267 — Your goal clears when you finish it, and Save fits on phones.',
+    whatsNewBody: '2.5.268 — Recipe words fit, and phone slots are easier to tap.',
     goalPlanks: 'Get Planks · {have}/{need}',
     goalBenchReady: 'You have {n} Planks — tap Make',
   },
   es: {
-    whatsNewBody: '2.5.267 — Tu meta se borra al terminarla y Guardar cabe en los teléfonos.',
+    whatsNewBody: '2.5.268 — Las palabras de las recetas caben y las casillas del teléfono son más fáciles de tocar.',
     goalPlanks: 'Consigue Tablas · {have}/{need}',
     goalBenchReady: 'Tienes {n} Tablas — toca Hacer',
   },
   uk: {
-    whatsNewBody: '2.5.267 — Твоя ціль зникає, коли ти її завершуєш, і кнопка «Зберегти» вміщується на телефонах.',
+    whatsNewBody: '2.5.268 — Слова рецептів вміщуються, а слоти на телефоні легше натискати.',
     goalPlanks: 'Візьми Дошки · {have}/{need}',
     goalBenchReady: 'У тебе {n} Дошки — торкнись Зробити',
   },
   ru: {
-    whatsNewBody: '2.5.267 — Твоя цель исчезает, когда ты её выполняешь, и кнопка «Сохранить» помещается на телефонах.',
+    whatsNewBody: '2.5.268 — Слова рецептов помещаются, а слоты на телефоне легче нажимать.',
     goalPlanks: 'Возьми Доски · {have}/{need}',
     goalBenchReady: 'У тебя {n} Доски — нажми Сделать',
   },
   ar: {
-    whatsNewBody: '2.5.267 — يُمسح هدفك عند إنجازه، وزر الحفظ يناسب الهواتف.',
+    whatsNewBody: '2.5.268 — كلمات الوصفات تناسب مكانها، وفتحات الهاتف أسهل للنقر.',
     goalPlanks: 'اجمع ألواح · {have}/{need}',
     goalBenchReady: 'معك {n} ألواح — المس اصنع',
   },
   'fa-AF': {
-    whatsNewBody: '2.5.267 — هدفتان وقتی تمامش کنید پاک می‌شود و «ذخیره» در تلفن‌ها جا می‌شود.',
+    whatsNewBody: '2.5.268 — کلمات دستورها جا می‌شوند و خانه‌های تلفن آسان‌تر زده می‌شوند.',
     goalPlanks: 'تخته بگیر · {have}/{need}',
     goalBenchReady: 'تو {n} تخته داری — بساز را بزن',
   },
   rw: {
-    whatsNewBody: '2.5.267 — Intego yawe isibwa iyo uyirangije, kandi Bika birakwira kuri telefoni.',
+    whatsNewBody: '2.5.268 — Amagambo y\'ibikoresho arakwira, kandi udusanduku twa telefoni turoroshye gukanda.',
     goalPlanks: 'Shaka Imbaho · {have}/{need}',
     goalBenchReady: 'Ufite Imbaho {n} — kanda Kora',
   },
   ti: {
-    whatsNewBody: '2.5.267 — ዕላማኻ ምስ ወዳእካዮ ይጠፍእ፣ «ዓቅብ» ድማ ኣብ ተሌፎናት ይኣክል።',
+    whatsNewBody: '2.5.268 — ቃላት ኣሰራርሓ ይኣክሉ፣ ቦታታት ተሌፎን ድማ ንምንካይ ቀሊል እዮም።',
     goalPlanks: 'ጣውላ ረክብ · {have}/{need}',
     goalBenchReady: '{n} ጣውላ ኣለካ — ግበር ጠውቕ',
   },

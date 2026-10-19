@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.268', date: '2026-10-19', lines: {
+    en: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
+    es: ['2.5.268 — Las palabras de las recetas caben y las casillas del teléfono son más fáciles de tocar.'],
+    ar: ['2.5.268 — كلمات الوصفات تناسب مكانها، وفتحات الهاتف أسهل للنقر.'],
+    zh: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
+    fr: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
+    pt: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
+    ru: ['2.5.268 — Слова рецептов помещаются, а слоты на телефоне легче нажимать.'],
+    vi: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
+    uk: ['2.5.268 — Слова рецептів вміщуються, а слоти на телефоні легше натискати.'],
+    'fa-AF': ['2.5.268 — کلمات دستورها جا می‌شوند و خانه‌های تلفن آسان‌تر زده می‌شوند.'],
+    rw: ['2.5.268 — Amagambo y\'ibikoresho arakwira, kandi udusanduku twa telefoni turoroshye gukanda.'],
+    ti: ['2.5.268 — ቃላት ኣሰራርሓ ይኣክሉ፣ ቦታታት ተሌፎን ድማ ንምንካይ ቀሊል እዮም።'],
+  }},
   { v: '2.5.267', date: '2026-10-19', lines: {
     en: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
     es: ['2.5.267 — Tu meta se borra al terminarla y Guardar cabe en los teléfonos.'],
