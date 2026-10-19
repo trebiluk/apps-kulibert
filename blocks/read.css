@@ -709,3 +709,150 @@ html body #sheet .well.result .wlab {
   height: auto !important;
   text-overflow: clip !important;
 }
+
+/* 2.5.267: Sign in and Back to the Hub sit in their own row. Goal words stay clear. One Make. */
+html body #path-chip {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+  z-index: 48;
+  background: #0B1220;
+}
+html body #path-chip[hidden] { display: none !important; }
+html body #path-chip .path-title {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  min-width: 0;
+  background: #0B1220;
+  color: #F8FAFC;
+  line-height: 1.25;
+}
+html body #path-make {
+  position: static !important;
+  left: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  flex: 0 0 auto !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  height: 44px !important;
+  z-index: 3 !important;
+}
+html body #pick-ring { z-index: 4 !important; }
+html body #hotbar .count,
+html body #hotbar .digit {
+  font-size: 16px !important;
+  line-height: 1 !important;
+}
+html body:has(.tw-back) #hub-back { display: none !important; }
+html body #hub-back {
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+@media (max-width: 980px), (max-height: 520px) {
+  html body .tw-app-bar {
+    position: fixed !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 0 6px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 6px !important;
+    z-index: 91 !important;
+    background: #050814 !important;
+    overflow: visible !important;
+  }
+  html[data-kb-bar]:not(.kb-framed) body .tw-app-bar,
+  html body:has(.kb-bar) .tw-app-bar { top: 48px !important; }
+  html body .tw-app-bar .tw-pill,
+  html body .tw-app-bar .tw-back,
+  html body .kb-bar .kb-menu,
+  html body .kb-bar .kb-home,
+  html body .kb-bar .kb-alias {
+    height: 44px !important;
+    min-height: 44px !important;
+    min-width: 44px !important;
+    flex: 0 0 auto !important;
+    overflow: visible !important;
+    white-space: nowrap !important;
+    position: static !important;
+  }
+  html body header.top { top: 0 !important; }
+  html body:has(.tw-app-bar) header.top,
+  html[data-kb-bar]:not(.kb-framed) body header.top { top: 48px !important; }
+  html[data-kb-bar]:not(.kb-framed) body:has(.tw-app-bar) header.top,
+  html body:has(.kb-bar):has(.tw-app-bar) header.top { top: 96px !important; }
+  html body:has(.tw-app-bar) #pause-btn,
+  html body:has(.tw-app-bar) #fs-btn { top: calc(48px + var(--top-h, 120px) + 8px) !important; }
+  html[data-kb-bar]:not(.kb-framed) body:has(.tw-app-bar) #pause-btn,
+  html[data-kb-bar]:not(.kb-framed) body:has(.tw-app-bar) #fs-btn,
+  html body:has(.kb-bar):has(.tw-app-bar) #pause-btn,
+  html body:has(.kb-bar):has(.tw-app-bar) #fs-btn { top: calc(96px + var(--top-h, 120px) + 8px) !important; }
+  html body #path-chip:not([hidden]) {
+    z-index: 48 !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    background: #0B1220 !important;
+    overflow: visible !important;
+  }
+  html body #path-chip .path-title {
+    background: #0B1220 !important;
+    position: relative !important;
+    z-index: 2 !important;
+  }
+}
+html body:has(#sheet:not([hidden]):not([data-panel="tour"])) .tw-app-bar {
+  display: none !important;
+}
+@media (max-width: 520px) {
+  html body #hotbar {
+    --ks-gap: 2px;
+    width: calc(100vw - 8px) !important;
+    max-width: calc(100vw - 8px) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    justify-content: space-between !important;
+  }
+  html body #hotbar .item-strip {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    gap: 2px !important;
+  }
+  html body #hotbar .slot:not(.bag-tile) {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    flex: 1 1 0 !important;
+  }
+  html body #hotbar .bag-tile {
+    flex: 0 0 58px !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    max-width: 58px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+  }
+  html body #hotbar .bag-tile .lbl {
+    font-size: 13px !important;
+    line-height: 1.1 !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+  }
+}
+

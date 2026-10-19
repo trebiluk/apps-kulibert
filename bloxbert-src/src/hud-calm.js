@@ -19,7 +19,7 @@ export function createCalm(api) {
   function creative() { return !!(api.creative && api.creative()) }
   function doneAll() { return state.tree && state.craft && state.bench && state.run }
   function quiet() { return state.tracked && !state.all && !creative() && !doneAll() }
-  function hotN() { return quiet() && !state.craft ? 4 : 9 }
+  function hotN() { return 9 }
   function workbenchOn() { return !quiet() || state.tree }
   function botOn() { return !quiet() || state.bench }
   function machinesOn() { return !quiet() || state.run }

@@ -6015,6 +6015,7 @@ const learn = createLearn({
   pay: (n) => session && session.wallet && session.wallet.post({ kind: 'goal', cogs: n, by: 'you' }),
   world: () => WORLD,
   count: (item) => (session && session.bag ? session.bag.count(item) : 0),
+  plankOwned: () => (session && session.plankOwned ? session.plankOwned() : 0),
   makeGoal: (id) => !!(session && session.makeGoal && session.makeGoal(id)),
   hintTaken: () => hintTaken(),
   queueHint: (kind) => queueHint(kind),
@@ -6602,6 +6603,7 @@ if (pathChip) {
     learn.dismissPath()
   }, { passive: false })
   pathChip.addEventListener('click', (e) => {
+    if (!pathX(e)) return
     e.preventDefault()
     e.stopPropagation()
     if (performance.now() - tipTouchAt < 700) return

@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.267', date: '2026-10-19', lines: {
+    en: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
+    es: ['2.5.267 — Tu meta se borra al terminarla y Guardar cabe en los teléfonos.'],
+    ar: ['2.5.267 — يُمسح هدفك عند إنجازه، وزر الحفظ يناسب الهواتف.'],
+    zh: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
+    fr: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
+    pt: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
+    ru: ['2.5.267 — Твоя цель исчезает, когда ты её выполняешь, и кнопка «Сохранить» помещается на телефонах.'],
+    vi: ['2.5.267 — Your goal clears when you finish it, and Save fits on phones.'],
+    uk: ['2.5.267 — Твоя ціль зникає, коли ти її завершуєш, і кнопка «Зберегти» вміщується на телефонах.'],
+    'fa-AF': ['2.5.267 — هدفتان وقتی تمامش کنید پاک می‌شود و «ذخیره» در تلفن‌ها جا می‌شود.'],
+    rw: ['2.5.267 — Intego yawe isibwa iyo uyirangije, kandi Bika birakwira kuri telefoni.'],
+    ti: ['2.5.267 — ዕላማኻ ምስ ወዳእካዮ ይጠፍእ፣ «ዓቅብ» ድማ ኣብ ተሌፎናት ይኣክል።'],
+  }},
   { v: '2.5.266', date: '2026-10-18', lines: {
     en: ['Phone words fit, the goal shows your Planks, and menus read like kid words.'],
     es: ['Las palabras caben en el teléfono, la meta muestra tus Tablas, y los menús se leen con palabras de niño.'],

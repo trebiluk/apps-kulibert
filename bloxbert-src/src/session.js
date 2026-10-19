@@ -1162,6 +1162,16 @@ export function createSession(api) {
     if (r && r.id === trayId) r.in.forEach((pair, i) => { if (pair[0] === item) n += trayPlaced[i] || 0 })
     return n
   }
+  function plankOwned() {
+    let n = countOf(bag, 'plankAny')
+    if (trayId) {
+      const r = RECIPES.find((x) => x.id === trayId)
+      if (r) r.in.forEach((pair, i) => {
+        if (pair[0] === 'plankAny' || pair[0] === 'planks') n += trayPlaced[i] || 0
+      })
+    }
+    return n
+  }
   function syncTray(id) {
     if (trayId === id) return
     returnTray()
@@ -1436,8 +1446,13 @@ export function createSession(api) {
     })
     g.querySelectorAll('.gnote.in-bag').forEach((el) => {
       const item = el.dataset.need
-      if (item) el.textContent = t('inBag').replace('{n}', String(countOf(bag, item)))
+      if (item) el.textContent = t('inBag').replace('{n}', String(heldCount(r, item)))
     })
+    const goalSay = g.querySelector('.gnote.goal-need')
+    if (goalSay) {
+      const madeName = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
+      goalSay.textContent = r.in.map(([item, n]) => t('goalNeed').replace('{item}', madeName).replace('{n}', String(n)).replace('{need}', needName(item)).replace('{have}', String(heldCount(r, item)))).join(' ')
+    }
     const makeBtn = g.querySelector('.keycap.make')
     if (makeBtn && r.id !== 'bread') {
       const stations = { bench: near('bench'), oven: near('oven'), smelter: near('smelter'), forge: near('forge'), fabricator: near('fabricator') }
@@ -1887,6 +1902,10 @@ export function createSession(api) {
             if (r.out[0] === 'woodTool') {
               markPath('pathTool')
               api.toast(t('woodPickToast'))
+            } else if (r.out[0] === 'workbench') {
+              markPath('pathBench')
+              if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
+              else api.toast(t('make') + ' ' + itemName(r.out[0]))
             } else if (spot.pocket >= 0) sayPocket(r.out[0], spot.pocket)
             else api.toast(t('make') + ' ' + itemName(r.out[0]))
             craftFx = 'make'
@@ -1909,7 +1928,7 @@ export function createSession(api) {
       goalSay.className = 'gnote goal-need'
       goalSay.dataset.goalNeed = '1'
       const madeName = r.id === 'door' ? t('doorTall') : itemName(r.out[0])
-      goalSay.textContent = (st.needs || []).map(([item, have, n]) => t('goalNeed').replace('{item}', madeName).replace('{n}', String(n)).replace('{need}', needName(item)).replace('{have}', String(have))).join(' ')
+      goalSay.textContent = r.in.map(([item, n]) => t('goalNeed').replace('{item}', madeName).replace('{n}', String(n)).replace('{need}', needName(item)).replace('{have}', String(heldCount(r, item)))).join(' ')
       side.prepend(goalSay)
       for (const [item] of r.in) {
         const bagNote = document.createElement('p')
@@ -3565,6 +3584,7 @@ export function createSession(api) {
     setCraftOpen(v) { craftOpen = !!v },
     focusCraft(id) { craftId = id || ''; craftOpen = true },
     makeGoal,
+    plankOwned,
     noteWin: (kind) => cheer(kind),
     lostItems: () => lost.map((d) => d.item + ':' + d.n),
     spend: (item, n) => { const ok = bag.take(item, n); if (ok) paintHotbar(); return ok },

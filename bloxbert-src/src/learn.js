@@ -61,35 +61,29 @@ export function createLearn(api) {
       paintPath()
       return
     }
-    const g = currentGoal()
-    if (g) dismissId(g.id)
     pathShown = false
     clearTimeout(celebrate)
     celebrate = 0
     clearTimeout(pathGap)
+    pathGap = 0
     const el = document.getElementById('path-chip')
     cardHidden = true
-    if (state.hideTips) {
-      pathGap = 0
-      if (el) { el.classList.remove('path-out'); el.hidden = true }
-      if (api.releaseHint) api.releaseHint("path")
-      return
-    }
-    if (el && !el.hidden) el.classList.add('path-out')
-    pathGap = setTimeout(() => {
-      pathGap = 0
-      if (el) { el.classList.remove('path-out'); el.hidden = true; el.replaceChildren() }
-      cardHidden = !!state.hideTips
-      if (api.releaseHint) api.releaseHint("path")
-      paintPath()
-    }, 1500)
+    if (el) { el.classList.remove('path-out'); el.hidden = true }
+    syncMake(null)
+    if (api.releaseHint) api.releaseHint("path")
   }
   function showPath() {
     cardHidden = false
     paintPath()
   }
   function plankHave() {
-    try { return api.count ? (api.count('planks') | 0) : 0 } catch (e) { return 0 }
+    try {
+      if (api.plankOwned) return api.plankOwned() | 0
+      return api.count ? (api.count('planks') | 0) : 0
+    } catch (e) { return 0 }
+  }
+  function itemHave(id) {
+    try { return api.count ? (api.count(id) | 0) : 0 } catch (e) { return 0 }
   }
   const BENCH_PLANKS = 4
   function goalLine(g) {
@@ -108,6 +102,10 @@ export function createLearn(api) {
   function sync() {
     const el = document.getElementById('path-chip')
     const showing = currentGoal()
+    if (showing && showing.make && itemHave(showing.make) > 0) {
+      bump(showing.id, Math.max(1, showing.need - (showing.n || 0)))
+      return true
+    }
     if (showing && el && !el.hidden) {
       const title = el.querySelector('.path-title')
       if (title) title.textContent = goalLine(showing)
@@ -160,17 +158,18 @@ export function createLearn(api) {
     const title = document.createElement('span')
     title.className = 'path-title'
     title.textContent = goalLine(g)
+    el.append(title)
+    pathShown = true
+    if (api.claimHint) api.claimHint("path")
+    placePath(el)
+    syncMake(g)
     const x = document.createElement('span')
     x.className = 'path-x'
     const xp = menuIcon('x')
     if (xp) x.append(xp)
     x.setAttribute('role', 'button')
     x.setAttribute('aria-label', api.t('close'))
-    el.append(title, x)
-    pathShown = true
-    if (api.claimHint) api.claimHint("path")
-    placePath(el)
-    syncMake(g)
+    el.append(x)
   }
   function placePath(el, follow) {
     if (!el) return
@@ -364,15 +363,15 @@ export function createLearn(api) {
   function resetTour() { state.tourDone = false; save() }
   function ensureMake() {
     let b = document.getElementById('path-make')
-    if (b) return b
+    if (b && b.isConnected) return b
     const chip = document.getElementById('path-chip')
-    if (!chip || !chip.parentNode) return null
+    if (!chip) return null
     b = document.createElement('button')
     b.type = 'button'
     b.id = 'path-make'
     b.className = 'path-make'
     b.hidden = true
-    chip.insertAdjacentElement('afterend', b)
+    chip.append(b)
     b.addEventListener('pointerdown', (e) => e.stopPropagation())
     b.addEventListener('click', (e) => {
       e.preventDefault()
@@ -383,46 +382,12 @@ export function createLearn(api) {
   }
   function placeMake() {
     const b = document.getElementById('path-make')
-    const chip = document.getElementById('path-chip')
-    if (!b || b.hidden || !chip || chip.hidden) return
-    const r = chip.getBoundingClientRect()
-    if (r.width < 2 || r.height < 2) return
-    const gap = 8
-    const w = Math.max(44, b.offsetWidth || 108)
-    const h = Math.max(44, b.offsetHeight || 44)
-    const blockers = ['pause-btn', 'fs-btn', 'game-menu', 'hotbar', 'jump-col', 'stick-pad', 't-crouch']
-    const hits = (x, y) => {
-      const box = { left: x, top: y, right: x + w, bottom: y + h }
-      if (box.right > window.innerWidth - 4 || box.bottom > window.innerHeight - 4 || box.left < 4 || box.top < 4) return true
-      for (const id of blockers) {
-        const el = document.getElementById(id)
-        if (!el || el.hidden) continue
-        const s = getComputedStyle(el)
-        if (s.display === 'none' || s.visibility === 'hidden') continue
-        const br = el.getBoundingClientRect()
-        if (br.width < 2 || br.height < 2) continue
-        if (box.left < br.right && box.right > br.left && box.top < br.bottom && box.bottom > br.top) return true
-      }
-      const bar = document.querySelector('.kb-bar .kb-menu')
-      if (bar) {
-        const br = bar.getBoundingClientRect()
-        if (br.width > 2 && br.height > 2 && box.left < br.right && box.right > br.left && box.top < br.bottom && box.bottom > br.top) return true
-      }
-      return false
-    }
-    const spots = [
-      [r.left, r.bottom + gap],
-      [r.right + gap, r.top],
-      [Math.max(8, r.right - w), r.bottom + gap],
-      [8, r.bottom + gap],
-    ]
-    let left = spots[0][0]
-    let top = spots[0][1]
-    for (const spot of spots) {
-      if (!hits(spot[0], spot[1])) { left = spot[0]; top = spot[1]; break }
-    }
-    b.style.left = Math.round(left) + 'px'
-    b.style.top = Math.round(top) + 'px'
+    if (!b) return
+    b.style.position = 'static'
+    b.style.left = ''
+    b.style.top = ''
+    b.style.right = ''
+    b.style.bottom = ''
   }
   function syncMake(g) {
     const b = ensureMake()

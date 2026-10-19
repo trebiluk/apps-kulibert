@@ -1,6 +1,11 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Sun Oct 18 2026 (Build: 2.5.266 Phone words fit, the goal shows your Planks, and menus read like kid words).
+Updated Mon Oct 19 2026 (Build: 2.5.267 Your goal clears when you finish it, and Save fits on phones).
+
+- [x] **2.5.267 Goal clears:** When the Workbench lands in the Bag, the goal card flips to the next goal by itself. The Planks count stays true, including parts sitting in the craft input. X only closes the card.
+- [x] **2.5.267 Phone bar:** At 915×412 and 412×915, Sign in and Back to the Hub do not cover Save, Survival, Creative, or the hamburger. Menu and Bag keep one whole header. All 9 hotbar slots show.
+- [x] **2.5.267 Readable bits:** Goal words are never covered by the ring. One Make button sits on the goal card. Hotbar counts stay 16px.
+
 
 - [x] **2.5.266 Phone bar:** At 915×412 and 412×915 every top-bar word is whole and every button is at least 44px (chip, Survival, Creative, clock, practice, Undo, Redo, Save). The goal card sits above the hotbar, not on the bar or the joystick.
 - [x] **2.5.266 Goal words:** A fresh Survival goal says Get Planks, then Make a Workbench, and the count is Planks. It moves on by itself. The Planks recipe says it needs 1 Log.
@@ -169,6 +174,7 @@ Updated Sun Oct 18 2026 (Build: 2.5.266 Phone words fit, the goal shows your Pla
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.267 | 2.5.267 | Goal clears when you finish it, and Save fits on phones | shipping |
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |
 | 0b | 2.5.44 | bertopia-2544.md: desktop smoke truth (right button), Use only on a fresh still press, no loose wool | shipped, PASS |
 | 0c | 2.5.45 | bertopia-2545-polish.md: Bag tile label fits on phones; keys help line fits and fades after 3 moves; right-click places on press | shipped, PASS |
