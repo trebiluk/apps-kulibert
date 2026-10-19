@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.3** · 2026-10-19 · channel **live**
+
+DJ Berty opens neat from the first look, and phones show the whole bar.
+
+## Earlier
+
 **Chip: MU 2.36.2** · 2026-10-19 · channel **live**
 
 Fresh beats start at 104, and Tempo fits on phones.

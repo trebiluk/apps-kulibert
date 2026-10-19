@@ -19,9 +19,9 @@
   </script>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=mu2362"/>
+  <link rel="stylesheet" href="./styles.css?v=mu2363"/>
 </head>
-<body class="mu237">
+<body class="mu237 tab-tap">
   <em id="chip" hidden></em>
   <div class="scrim" id="scrim"></div>
   <div id="desktop-site" class="desktop-site" hidden>
@@ -150,6 +150,7 @@
       </div>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news2363">MU 2.36.3 — DJ Berty opens neat from the first look, and phones show the whole bar.</span></li>
         <li><span data-mu="news2362">MU 2.36.2 — Fresh beats start at 104, and Tempo fits on phones.</span></li>
         <li><span data-mu="news2361">MU 2.36.1 — Your tempo is right from the first blink, and the grid fits on phones.</span></li>
         <li><span data-mu="news2360">{ver} DJ Berty: open on the beat grid, tap pads to write the score, and one tempo.</span></li>
@@ -353,7 +354,7 @@
         </div>
         <p id="guide-line" class="guide-line">Next: Kick</p>
         <p id="playhead-read" class="playhead-read">Beat 1</p>
-        <div id="tap-strip" class="tap-strip" aria-label="Two bars"></div>
+        <div id="tap-strip" class="tap-strip" aria-label="Two bars"><div class="tap-row"><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i><i class="tap-dot"></i></div></div>
         <div class="tap-actions">
           <button type="button" id="tap-undo" class="btn">Undo</button>
           <button type="button" id="tap-next" class="btn" data-mu="nextStep">Next</button>
@@ -538,18 +539,18 @@
       <button type="button" id="new-beat" class="btn new-beat" data-mu="newBeat">New beat</button>
       <span id="play-pos">Bar 1 · Beat 1</span>
     </div>
-    <button type="button" id="clear-song" class="btn" aria-label="Clear" title="Clear"><span class="ctl-word" data-mu="clearTile">Clear</span></button>
     <button type="button" id="play-btn" class="play" aria-label="Play" title="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word" class="ctl-word">Play</span></button>
     <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read"></b>
       <input id="tempo" type="range" min="70" max="160" value="104" aria-label="Tempo"/>
     </label>
-    <button type="button" id="save-dock" class="btn" aria-label="Save" title="Save"><span class="ctl-word" data-mu="save">Save</span></button>
-    <button type="button" id="mute-btn" class="btn" aria-pressed="false" aria-label="Sound on" title="Sound on"><span aria-hidden="true">🔊</span><span class="ctl-word">Sound</span></button>
     <button type="button" id="rec-btn" class="btn rec" aria-pressed="false" aria-label="Record" title="Record"><span class="ctl-word" data-mu="record">Record</span></button>
-    <button type="button" id="share-btn" class="btn" aria-label="Share" title="Share"><span class="ctl-word" data-mu="share">Share</span></button>
     <button type="button" id="show-btn" class="btn show-go" aria-label="Perform" title="Perform"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.2 6.2L21 12l-6.8 2.8L12 21l-2.2-6.2L3 12l6.8-2.8z" fill="none" stroke="currentColor" stroke-width="2"/></svg><span class="ctl-word" data-mu="perform">Perform</span></button>
     <button type="button" id="more-tools" class="btn" aria-expanded="false" aria-controls="more-pop" aria-label="More" title="More"><span class="ctl-word" data-mu="more">More ▾</span></button>
     <div id="more-pop" class="more-pop" hidden>
+      <button type="button" id="clear-song" class="btn" aria-label="Clear" title="Clear"><span class="ctl-word" data-mu="clearTile">Clear</span></button>
+      <button type="button" id="save-dock" class="btn" aria-label="Save" title="Save"><span class="ctl-word" data-mu="save">Save</span></button>
+      <button type="button" id="mute-btn" class="btn" aria-pressed="false" aria-label="Sound on" title="Sound on"><span aria-hidden="true">🔊</span><span class="ctl-word">Sound</span></button>
+      <button type="button" id="share-btn" class="btn" aria-label="Share" title="Share"><span class="ctl-word" data-mu="share">Share</span></button>
       <button type="button" id="wav-btn" class="btn" data-mu="saveSound">Save as sound</button>
       <button type="button" id="save-file-more" class="btn" data-mu="saveFile">Save a file</button>
       <button type="button" id="midi-out" class="btn" data-mu="midi">MIDI</button>
@@ -587,7 +588,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu2362"></script>
+  <script src="./version.js?v=mu2363"></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -596,7 +597,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu2362"></script>
-  <script src="./app.js?v=mu2362"></script>
+  <script src="./strings.js?v=mu2363"></script>
+  <script src="./app.js?v=mu2363"></script>
 </body>
 </html>

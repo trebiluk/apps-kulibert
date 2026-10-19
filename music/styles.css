@@ -4388,15 +4388,21 @@ body.mu237.tab-mix #style-row button {
   }
 }
 @media (max-width: 480px) and (orientation: portrait) {
-  body.mu237 { --player: 156px; }
-  body.mu237 .transport {
+  body.mu237 { --player: 152px; }
+  body.mu237 .transport,
+  body.mu237.playing:not(.show) .transport,
+  body.mu237.is-beat:not(.show) .transport {
     display: grid !important;
-    grid-template-columns: repeat(4, minmax(44px, 1fr)) !important;
-    grid-template-rows: 48px 44px 52px !important;
-    height: 156px !important;
-    max-height: 156px !important;
-    overflow: visible !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    grid-template-rows: 48px 44px 44px !important;
+    height: 152px !important;
+    max-height: 152px !important;
+    min-height: 152px !important;
+    overflow: hidden !important;
     align-content: center !important;
+    box-sizing: border-box !important;
+    padding: 4px !important;
+    gap: 4px !important;
   }
   body.mu237 .transport .tempo {
     grid-column: 1 / -1;
@@ -4404,8 +4410,8 @@ body.mu237.tab-mix #style-row button {
     display: flex !important;
     width: 100% !important;
     min-width: 0 !important;
-    height: 48px !important;
-    max-height: none !important;
+    height: 44px !important;
+    max-height: 48px !important;
     align-items: center;
     gap: 8px;
   }
@@ -4415,10 +4421,44 @@ body.mu237.tab-mix #style-row button {
     width: auto !important;
     height: 44px !important;
   }
-  body.mu237 .transport .songbar-copy { grid-column: 1 / -1; grid-row: 2; }
-  body.mu237 #play-btn { grid-row: 3; }
-  body.mu237 #rec-btn { grid-row: 3; }
-  body.mu237 #show-btn { grid-row: 3; }
-  body.mu237 #more-tools { grid-row: 3; }
+  body.mu237 .transport .songbar-copy { grid-column: 1 / -1; grid-row: 2; max-height: 44px; }
+  body.mu237 #play-btn,
+  body.mu237 #rec-btn,
+  body.mu237 #show-btn,
+  body.mu237 #more-tools {
+    grid-row: 3;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+  }
+  body.mu237 #play-pos { display: none !important; }
+}
+@media (max-width: 480px) {
+  body.mu237 .kb-plate {
+    font-size: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    line-height: 1.05 !important;
+    min-width: 7.2rem !important;
+    flex: 1 1 auto !important;
+  }
+  body.mu237 .kb-plate::before {
+    content: "DJ Berty";
+    font-size: 15px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  body.mu237 .kb-plate::after {
+    content: attr(data-ver);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 #play-pos { display: none !important; }
 }
 
