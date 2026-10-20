@@ -39,6 +39,7 @@
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
       whats: "RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!",
       levels: "Levels", home: "Home",
+      refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
@@ -88,6 +89,7 @@
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
       whats: "RF 1.0.4 — Режим судді: великий таймер, пронумеровані картки й кнопка «Готово» для справжніх чашок!",
       levels: "Рівні", home: "Дім",
+      refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
@@ -136,6 +138,7 @@
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
       whats: "RF 1.0.4 — Режим судьи: большой таймер, карточки с номерами и кнопка «Готово» для настоящих стаканов!",
       levels: "Уровни", home: "Дом",
+      refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
@@ -184,6 +187,7 @@
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
       whats: "RF 1.0.4 — Modo árbitro: un temporizador grande, tarjetas numeradas y un botón Listo para retos con vasos reales!",
       levels: "Niveles", home: "Inicio",
+      refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
@@ -232,6 +236,7 @@
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
       whats: "RF 1.0.4 — وضع الحَكَم: مؤقّت كبير وبطاقات مرقّمة وزر «تم» لتحديات الأكواب الحقيقية!",
       levels: "المراحل", home: "البداية",
+      refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
@@ -280,6 +285,7 @@
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
       whats: "RF 1.0.4 — حالت داور: ساعت بزرگ، کارت‌های شماره‌دار و دکمهٔ «تمام» برای مسابقهٔ پیاله‌های واقعی!",
       levels: "مرحله‌ها", home: "خانه",
+      refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
@@ -328,6 +334,7 @@
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
       whats: "RF 1.0.4 — Uburyo bw'umusifuzi: isaha nini, amakarita afite nimero na buto \"Byarangiye\" ku marushanwa y'ibikombe nyabyo!",
       levels: "Ingero", home: "Ahabanza",
+      refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
@@ -376,6 +383,7 @@
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
       whats: "RF 1.0.4 — ኣገባብ ዳኛ: ዓቢ ሰዓት፣ ቁጽሪ ዘለዎም ካርድታትን ናይ «ተወዲኡ» መልጎምን ንሓቀኛ ውድድር ኩባያታት!",
       levels: "ደረጃታት", home: "መጀመርታ",
+      refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
@@ -426,6 +434,12 @@
   var cupStars = [0, 0];
   var sessionStars = [];
   var mode = "ramp";
+  var refRun = false;
+  var refLock = false;
+  var refDown = false;
+  var refLeft = 0;
+  var refElapsed = 0;
+  var refEnded = false;
   var stack = [];
   var catchBits = [];
   var stackMsg = "";
@@ -515,7 +529,7 @@
     var l2 = document.getElementById("lesson-2");
     if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
+    if (lv) lv.textContent = document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
     canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
@@ -1320,8 +1334,10 @@
     });
     var back = document.getElementById("stack-back");
     var tile = document.getElementById("stack-tile");
+    var refBtn = document.getElementById("stack-ref");
     if (back) back.hidden = !stacking;
     if (tile) tile.hidden = stacking;
+    if (refBtn) refBtn.hidden = !stacking;
   }
   function atHome() { return document.body.classList.contains("at-home"); }
   function showHome() {
@@ -1339,6 +1355,100 @@
     document.body.classList.remove("at-home");
     layout();
     paintText();
+  }
+  function refMinutes() {
+    var n = parseInt((document.getElementById("ref-mins") || {}).value, 10);
+    if (!n || n < 1) n = 1;
+    if (n > 30) n = 30;
+    return n;
+  }
+  function refClockText(ms) {
+    var total = Math.max(0, Math.floor(ms / 1000));
+    var m = Math.floor(total / 60);
+    var s = total % 60;
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function paintRef() {
+    var clock = document.getElementById("ref-clock");
+    var ms = refDown ? refLeft : refElapsed;
+    if (clock) {
+      clock.textContent = refClockText(ms);
+      var warn = refDown && refRun && !refLock && refLeft > 0 && refLeft <= 10000;
+      clock.classList.toggle("warn", warn);
+    }
+    var card = document.getElementById("ref-timeup");
+    if (card) card.hidden = !refEnded;
+    var up = document.getElementById("ref-up");
+    var down = document.getElementById("ref-down");
+    if (up) up.setAttribute("aria-pressed", refDown ? "false" : "true");
+    if (down) down.setAttribute("aria-pressed", refDown ? "true" : "false");
+    var mins = document.getElementById("ref-mins");
+    if (mins) mins.disabled = refRun || refLock;
+  }
+  function loadDown() {
+    refLeft = refMinutes() * 60 * 1000;
+  }
+  function openRef() {
+    document.body.classList.remove("at-home");
+    document.body.classList.add("at-ref");
+    var panel = document.getElementById("ref");
+    if (panel) panel.hidden = false;
+    paintRef();
+    paintText();
+  }
+  function closeRef() {
+    document.body.classList.remove("at-ref");
+    var panel = document.getElementById("ref");
+    if (panel) panel.hidden = true;
+    if (mode === "stack") {
+      showPlay();
+      paintText();
+    } else showHome();
+  }
+  function refStart() {
+    if (refLock) return;
+    if (refDown && (refLeft <= 0 || !refRun && refElapsed === 0 && refLeft === 0)) loadDown();
+    if (refDown && refLeft <= 0) loadDown();
+    refEnded = false;
+    refRun = true;
+    paintRef();
+  }
+  function refStop() {
+    refRun = false;
+    paintRef();
+  }
+  function refReset() {
+    refRun = false;
+    refLock = false;
+    refEnded = false;
+    refElapsed = 0;
+    refLeft = refDown ? refMinutes() * 60 * 1000 : 0;
+    paintRef();
+  }
+  function refDone() {
+    refRun = false;
+    refLock = true;
+    paintRef();
+  }
+  function refSetMode(down) {
+    if (refLock || refRun) return;
+    refDown = down;
+    refEnded = false;
+    refElapsed = 0;
+    refLeft = down ? refMinutes() * 60 * 1000 : 0;
+    paintRef();
+  }
+  function stepRef(dt) {
+    if (!refRun || refLock) return;
+    if (refDown) {
+      refLeft -= dt * 1000;
+      if (refLeft <= 0) {
+        refLeft = 0;
+        refRun = false;
+        refEnded = true;
+      }
+    } else refElapsed += dt * 1000;
+    paintRef();
   }
   function openLevels() {
     stackFromHome = false;
@@ -2124,6 +2234,8 @@
     requestAnimationFrame(frame);
     var dt = Math.min(0.033, lastT ? (now - lastT) / 1000 : 0.016);
     lastT = now;
+    stepRef(dt);
+    if (document.body.classList.contains("at-ref")) return;
     fpsFrames++;
     fpsAcc += dt;
     if (fpsAcc >= 0.5) {
@@ -2213,6 +2325,19 @@
   });
   document.getElementById("home-levels").addEventListener("click", openLevels);
   document.getElementById("home-stack").addEventListener("click", openHomeStack);
+  document.getElementById("home-ref").addEventListener("click", openRef);
+  document.getElementById("stack-ref").addEventListener("click", openRef);
+  document.getElementById("ref-up").addEventListener("click", function () { refSetMode(false); });
+  document.getElementById("ref-down").addEventListener("click", function () { refSetMode(true); });
+  document.getElementById("ref-start").addEventListener("click", refStart);
+  document.getElementById("ref-stop").addEventListener("click", refStop);
+  document.getElementById("ref-reset").addEventListener("click", refReset);
+  document.getElementById("ref-done").addEventListener("click", refDone);
+  document.getElementById("ref-home").addEventListener("click", closeRef);
+  document.getElementById("ref-mins").addEventListener("change", function () {
+    if (!refRun && !refLock && refDown) refLeft = refMinutes() * 60 * 1000;
+    paintRef();
+  });
   document.getElementById("stack-back").addEventListener("click", leaveStack);
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
@@ -2246,6 +2371,7 @@
         document.getElementById("ask").hidden = true; syncModal(); e.preventDefault(); return;
       }
       if (!document.getElementById("menu").hidden) { toggleMenu(false); e.preventDefault(); return; }
+      if (document.body.classList.contains("at-ref")) { closeRef(); e.preventDefault(); return; }
       if (!document.getElementById("endcard").hidden) {
         document.getElementById("endcard").hidden = true;
         if (filledOnce) document.getElementById("donebar").hidden = false;

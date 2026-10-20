@@ -145,6 +145,96 @@ body.at-home .stage,
 body.at-home .status,
 body.at-home .spill-line,
 body.at-home .score { display: none !important; }
+body.at-ref .home,
+body.at-ref .toolslot,
+body.at-ref .lesson-row,
+body.at-ref .stage,
+body.at-ref .status,
+body.at-ref .spill-line,
+body.at-ref #pause-btn { visibility: hidden; }
+.ref {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: auto;
+}
+.ref-clock {
+  margin: 0;
+  text-align: center;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.95;
+  color: #f4e7c8;
+  background: #14211c;
+  border: 4px solid #e0a106;
+  border-radius: 18px;
+  padding: 8px 12px;
+  font-size: clamp(72px, 20vmin, 168px);
+}
+.ref-clock.warn {
+  font-size: clamp(92px, 26vmin, 210px);
+  border-width: 14px;
+}
+.ref-modes, .ref-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: stretch;
+}
+.ref-modes button, .ref-controls button, .ref-mins {
+  min-width: 48px;
+  min-height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  border: 3px solid var(--ink);
+  background: var(--sand);
+  color: var(--ink);
+  font-weight: 800;
+  padding: 8px 12px;
+}
+.ref-modes button, .ref-controls button { flex: 1 1 120px; font-size: 1.15rem; }
+.ref-modes svg, .ref-controls svg { width: 28px; height: 28px; flex: none; }
+.ref-controls .ref-done {
+  flex: 1 1 100%;
+  min-height: 84px;
+  font-size: 2rem;
+  background: var(--clay);
+  color: var(--sand);
+}
+.ref-controls .ref-done svg { width: 40px; height: 40px; }
+.ref-mins { flex: 1 1 140px; }
+.ref-mins input {
+  width: 72px;
+  min-height: 48px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  text-align: center;
+  border: 3px solid var(--ink);
+  border-radius: 10px;
+  background: #fff;
+  color: var(--ink);
+}
+.ref-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 96px;
+  border: 6px solid #e0a106;
+  border-radius: 18px;
+  background: #14211c;
+  color: #f4e7c8;
+}
+.ref-card svg { width: 72px; height: 72px; flex: none; }
+.ref-card p { margin: 0; font-size: clamp(40px, 8vw, 72px); font-weight: 800; }
+@media (prefers-reduced-motion: reduce) {
+  .ref-clock { transition: none; }
+}
 .home-tile {
   flex: 1 1 48px;
   min-width: 48px;
