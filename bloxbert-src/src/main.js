@@ -10269,6 +10269,52 @@ function bertPxGap(a, b) {
   if (dy < 0) return Math.round(dx)
   return Math.round(Math.hypot(dx, dy))
 }
+function bertHotbarLines(node) {
+  const text = node.textContent || ''
+  const range = document.createRange()
+  const lines = []
+  let buf = ''
+  let top = null
+  for (let i = 0; i < text.length; i++) {
+    range.setStart(node, i)
+    range.setEnd(node, i + 1)
+    const r = range.getBoundingClientRect()
+    if (r.width < 0.2 && r.height < 0.2) { buf += text[i]; continue }
+    if (top == null || Math.abs(r.top - top) > 2) {
+      if (buf) lines.push(buf)
+      buf = text[i]
+      top = r.top
+    } else buf += text[i]
+  }
+  if (buf) lines.push(buf)
+  return lines
+}
+window.__bertopiaHotbarCheck = function () {
+  const labels = []
+  document.querySelectorAll('#hotbar .slot').forEach((slot) => {
+    const lbl = slot.querySelector('.lbl')
+    const name = lbl ? (lbl.textContent || '').replace(/\s+/g, ' ').trim() : ''
+    const scrollWidth = lbl ? lbl.scrollWidth : 0
+    const clientWidth = lbl ? lbl.clientWidth : 0
+    const clipped = !!(lbl && name && scrollWidth > clientWidth)
+    let midWordBreak = false
+    if (lbl && name) {
+      const node = lbl.firstChild
+      if (!node || node.nodeType !== 3 || lbl.childNodes.length !== 1) midWordBreak = true
+      else {
+        const words = name.split(' ').filter(Boolean)
+        const lines = bertHotbarLines(node)
+        midWordBreak = lines.some((line) => line.trim().split(/\s+/).filter(Boolean).some((part) => words.indexOf(part) < 0))
+      }
+    }
+    labels.push({ name: name, scrollWidth: scrollWidth, clientWidth: clientWidth, clipped: clipped, midWordBreak: midWordBreak })
+  })
+  return {
+    labels: labels,
+    anyClipped: labels.some((row) => row.clipped),
+    anyMidWordBreak: labels.some((row) => row.midWordBreak),
+  }
+}
 window.__bertopiaRotateCheck = function () {
   const seed = makerLive && makerLive.seed != null ? (makerLive.seed | 0) : 0
   const gen = (window.__freshGen || 0) + (window.__makerGen || 0) + (window.__archiveGen || 0)

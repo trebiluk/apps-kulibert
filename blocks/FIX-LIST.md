@@ -3,7 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Tue Oct 20 2026 (Build: 2.5.274 Every block name fits in the hotbar).
 
 - [x] **2.5.274 Hotbar fit:** Every hotbar name is whole at 1366, 915 and 412, including Leaves, Planks, Gravel and Red sand. No clipping, no ellipsis. Slots stay at least 44px.
-- [ ] **2.5.274 Hotbar hook:** window.__bertopiaHotbarCheck() reports anyClipped false and anyMidWordBreak false, and anyClipped true when a name is forced long.
+- [x] **2.5.274 Hotbar hook:** window.__bertopiaHotbarCheck() reports anyClipped false and anyMidWordBreak false, and anyClipped true when a name is forced long.
 
 - [x] **2.5.273 Phone toast:** At 412 with the Bag open, a toast sits 8px clear of the header, menu, tabs and Close, including after a rotate back to 412. 915 and 1366 stay beside the panel.
 - [x] **2.5.273 Hotbar words:** Hotbar names do not break mid-word at 412, 915 and 1366. Planks stays whole. Slots stay at least 40px.
