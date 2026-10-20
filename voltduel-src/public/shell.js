@@ -1,13 +1,13 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.0 — Volt Duel is on the Hub: race a friend to the flag!",
-    uk: "VD 1.0.0 — Volt Duel тепер у Хабі: змагайся з другом до прапорця!",
-    ru: "VD 1.0.0 — Volt Duel теперь в Хабе: гонка с другом до флажка!",
-    es: "VD 1.0.0 — Volt Duel ya está en el Hub: ¡corre con un amigo hasta la bandera!",
-    ar: "VD 1.0.0 — Volt Duel الآن في المركز: سابق صديقك إلى العلم!",
-    "fa-AF": "VD 1.0.0 — Volt Duel حالا در هاب است: با رفیقت تا بیرق مسابقه بده!",
-    rw: "VD 1.0.0 — Volt Duel iri kuri Hub: siganwa n'inshuti yawe ugere ku ibendera!",
-    ti: "VD 1.0.0 — Volt Duel ኣብ Hub ኣሎ፦ ምስ ዓርክኻ ክሳብ ባንዴራ ተቐዳደም!"
+    en: "VD 1.0.1 — Hold a button to run on phones, and the score fits the screen.",
+    uk: "VD 1.0.1 — Утримуй кнопку, щоб бігти на телефоні, і рахунок вміщується на екрані.",
+    ru: "VD 1.0.1 — Удерживай кнопку, чтобы бежать на телефоне, и счёт помещается на экране.",
+    es: "VD 1.0.1 — Mantén pulsado un botón para correr en el móvil, y el marcador cabe en la pantalla.",
+    ar: "VD 1.0.1 — اضغط مطولًا على الزر لتركض على الهاتف، والنتيجة تظهر كاملة على الشاشة.",
+    "fa-AF": "VD 1.0.1 — دکمه را نگه دار تا در موبایل بدوی، و نمره کامل در صفحه جا می‌شود.",
+    rw: "VD 1.0.1 — Kanda buto ukomeze kugira ngo wiruke kuri telefoni, kandi amanota agaragara yose.",
+    ti: "VD 1.0.1 — ኣብ ሞባይል ንምጉያይ መጠወቒ ጸቒጥካ ሓዝ፣ ነጥቢ ድማ ኣብ ስክሪን ምሉእ ይርአ።"
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.0") plate.textContent = "VD 1.0.0";
+      if (plate && plate.textContent !== "VD 1.0.1") plate.textContent = "VD 1.0.1";
     } finally {
       painting = false;
     }
@@ -77,7 +77,14 @@
   }, true);
   window.addEventListener("kulibert-lang", paint);
   new MutationObserver(paint).observe(document.documentElement, { attributes: true, attributeFilter: ["data-kp-lang"] });
-  setInterval(paint, 400);
+  function watchPlate() {
+    var plate = document.querySelector(".kb-plate");
+    if (!plate || plate.getAttribute("data-vd-watch") === "1") return;
+    plate.setAttribute("data-vd-watch", "1");
+    new MutationObserver(paint).observe(plate, { characterData: true, subtree: true, childList: true });
+  }
+  window.addEventListener("resize", paint);
+  setInterval(function () { watchPlate(); paint(); }, 250);
   paint();
 
   if (fs) {

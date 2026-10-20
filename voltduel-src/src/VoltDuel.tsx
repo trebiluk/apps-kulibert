@@ -32,6 +32,7 @@ declare global {
       getX: () => number;
       getY: () => number;
       getX2: () => number;
+      getY2: () => number;
       getSpeed: () => number;
       getYaw: () => number;
       setKeys: (codes: string[]) => void;
@@ -63,6 +64,8 @@ export function VoltDuel() {
     { left: false, right: false, jump: false },
     { left: false, right: false, jump: false },
   ]);
+  const holds = useRef(new Map<number, { id: 0 | 1; key: keyof Pad }>());
+  const padsRoot = useRef<HTMLDivElement>(null);
   const particles = useRef<Particle[]>([]);
   const sprites = useRef<[SpriteSet, SpriteSet]>([
     { run: null, jump: null },
@@ -119,6 +122,15 @@ export function VoltDuel() {
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
+    const stopGesture = (event: Event) => {
+      const node = event.target;
+      if (!(node instanceof Element)) return;
+      if (node.closest(".pads") || node.closest("canvas")) event.preventDefault();
+    };
+    canvas.addEventListener("contextmenu", stopGesture);
+    document.addEventListener("contextmenu", stopGesture);
+    document.addEventListener("selectstart", stopGesture);
+    document.addEventListener("dragstart", stopGesture);
 
     const readInput = (id: 0 | 1): Input => {
       const map = MAPS[id];
@@ -207,6 +219,7 @@ export function VoltDuel() {
       getX: () => worldRef.current?.runners[0].x ?? 0,
       getY: () => worldRef.current?.runners[0].y ?? 0,
       getX2: () => worldRef.current?.runners[1].x ?? 0,
+      getY2: () => worldRef.current?.runners[1].y ?? 0,
       getSpeed: () => Math.abs(worldRef.current?.runners[0].vx ?? 0),
       getYaw: () => worldRef.current?.runners[0].facing ?? 1,
       setKeys: (codes: string[]) => {
@@ -328,6 +341,10 @@ export function VoltDuel() {
       window.removeEventListener("keyup", onKeyUp);
       window.removeEventListener("blur", onBlur);
       document.removeEventListener("visibilitychange", onHide);
+      canvas.removeEventListener("contextmenu", stopGesture);
+      document.removeEventListener("contextmenu", stopGesture);
+      document.removeEventListener("selectstart", stopGesture);
+      document.removeEventListener("dragstart", stopGesture);
       delete window.__controlsTest;
       delete window.__simulate;
     };
@@ -339,22 +356,57 @@ export function VoltDuel() {
   const level = LEVELS[levelIndex];
   const playing = screen.name === "play" || screen.name === "pause";
 
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  const syncHolds = () => {
+    const next: [Pad, Pad] = [
+      { left: false, right: false, jump: false },
+      { left: false, right: false, jump: false },
+    ];
+    for (const hold of holds.current.values()) next[hold.id][hold.key] = true;
+    pads.current = next;
+    const root = padsRoot.current;
+    if (!root) return;
+    root.querySelectorAll<HTMLButtonElement>(".pad-btn").forEach((btn) => {
+      const on = [...holds.current.values()].some(
+        (hold) => String(hold.id) === btn.dataset.runner && hold.key === btn.dataset.act,
+      );
+      btn.classList.toggle("held", on);
+    });
+  };
+
+  const releasePointer = (pointerId: number) => {
+    if (!holds.current.delete(pointerId)) return;
+    syncHolds();
+  };
+
   const press = (id: 0 | 1, key: keyof Pad) => ({
     onPointerDown: (event: PointerEvent<HTMLButtonElement>) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
       event.preventDefault();
-      event.currentTarget.setPointerCapture(event.pointerId);
-      pads.current[id][key] = true;
-      event.currentTarget.classList.add("held");
+      holds.current.set(event.pointerId, { id, key });
+      syncHolds();
+      try {
+        event.currentTarget.setPointerCapture(event.pointerId);
+      } catch {
+        /* synthetic presses still hold via the pointer map */
+      }
       audio.unlock();
     },
-    onPointerUp: (event: PointerEvent<HTMLButtonElement>) => {
-      pads.current[id][key] = false;
-      event.currentTarget.classList.remove("held");
+    onPointerUp: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
+    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
+    onLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => {
+      if (event.buttons !== 0) {
+        try {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        } catch {
+          /* finger is still down; the pointer map keeps the run going */
+        }
+        return;
+      }
+      releasePointer(event.pointerId);
     },
-    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => {
-      pads.current[id][key] = false;
-      event.currentTarget.classList.remove("held");
-    },
+    onContextMenu: (event: PointerEvent<HTMLButtonElement>) => event.preventDefault(),
   });
 
   return (
@@ -367,22 +419,22 @@ export function VoltDuel() {
               <div className="pill vex">
                 <strong>VEX</strong>
                 <span className="gem" />
-                <b ref={coinRefs[0]}>0</b>
-                <span className="meta">/{level.coins.length}</span>
+                <b className="score" ref={coinRefs[0]}>0</b>
+                <span className="meta score">/{level.coins.length}</span>
                 <span className="meta" ref={cpRefs[0]}>
                   CP —
                 </span>
               </div>
               <div className="pill clock">
-                <span className="meta">{level.name}</span>
+                <span className="meta heat-name">{level.name}</span>
                 <b ref={timeRef}>0.00</b>
               </div>
               <div className="end">
                 <div className="pill rio">
                   <strong>RIO</strong>
                   <span className="gem" />
-                  <b ref={coinRefs[1]}>0</b>
-                  <span className="meta">/{level.coins.length}</span>
+                  <b className="score" ref={coinRefs[1]}>0</b>
+                  <span className="meta score">/{level.coins.length}</span>
                   <span className="meta" ref={cpRefs[1]}>
                     CP —
                   </span>
@@ -481,10 +533,16 @@ export function VoltDuel() {
                   </p>
                 </div>
               </div>
-              <p className="tag">
-                Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
-              </p>
               <div className="modal-actions">
+                <button
+                  type="button"
+                  className="text-btn"
+                  aria-expanded={helpOpen}
+                  aria-controls="vd-help-tip"
+                  onClick={() => setHelpOpen((open) => !open)}
+                >
+                  <span aria-hidden="true">?</span> Help
+                </button>
                 <button
                   type="button"
                   className="text-btn"
@@ -493,6 +551,16 @@ export function VoltDuel() {
                   {padMode === "on" ? "Hide pads" : "Touch pads"}
                 </button>
               </div>
+              {helpOpen && (
+                <div className="help-pop" id="vd-help-tip" role="dialog" aria-label="Help">
+                  <p>
+                    Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
+                  </p>
+                  <button type="button" className="text-btn" onClick={() => setHelpOpen(false)}>
+                    Close
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -567,29 +635,35 @@ export function VoltDuel() {
       </div>
 
       {screen.name === "play" && (
-        <div className="pads">
+        <div className="pads" ref={padsRoot}>
           <div className="pad-cluster vex">
             <span className="pad-label">VEX</span>
-            <button type="button" className="pad-btn" aria-label="VEX left" {...press(0, "left")}>
-              Left
+            <button type="button" className="pad-btn" data-runner="0" data-act="left" aria-label="VEX left" {...press(0, "left")}>
+              <span className="pad-ico" aria-hidden="true">◀</span>
+              <span className="pad-word">Left</span>
             </button>
-            <button type="button" className="pad-btn" aria-label="VEX right" {...press(0, "right")}>
-              Right
+            <button type="button" className="pad-btn" data-runner="0" data-act="right" aria-label="VEX right" {...press(0, "right")}>
+              <span className="pad-ico" aria-hidden="true">▶</span>
+              <span className="pad-word">Right</span>
             </button>
-            <button type="button" className="pad-btn" aria-label="VEX jump" {...press(0, "jump")}>
-              Jump
+            <button type="button" className="pad-btn" data-runner="0" data-act="jump" aria-label="VEX jump" {...press(0, "jump")}>
+              <span className="pad-ico" aria-hidden="true">⤒</span>
+              <span className="pad-word">Jump</span>
             </button>
           </div>
           <div className="pad-cluster rio">
             <span className="pad-label">RIO</span>
-            <button type="button" className="pad-btn" aria-label="RIO left" {...press(1, "left")}>
-              Left
+            <button type="button" className="pad-btn" data-runner="1" data-act="left" aria-label="RIO left" {...press(1, "left")}>
+              <span className="pad-ico" aria-hidden="true">◀</span>
+              <span className="pad-word">Left</span>
             </button>
-            <button type="button" className="pad-btn" aria-label="RIO right" {...press(1, "right")}>
-              Right
+            <button type="button" className="pad-btn" data-runner="1" data-act="right" aria-label="RIO right" {...press(1, "right")}>
+              <span className="pad-ico" aria-hidden="true">▶</span>
+              <span className="pad-word">Right</span>
             </button>
-            <button type="button" className="pad-btn" aria-label="RIO jump" {...press(1, "jump")}>
-              Jump
+            <button type="button" className="pad-btn" data-runner="1" data-act="jump" aria-label="RIO jump" {...press(1, "jump")}>
+              <span className="pad-ico" aria-hidden="true">⤒</span>
+              <span className="pad-word">Jump</span>
             </button>
           </div>
         </div>
