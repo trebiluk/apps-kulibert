@@ -1,13 +1,13 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.3 — The menu shows your touch buttons, and the race fills a phone screen.",
-    uk: "VD 1.0.3 — Меню показує твої сенсорні кнопки, а гонка заповнює екран телефона.",
-    ru: "VD 1.0.3 — Меню показывает твои сенсорные кнопки, а гонка заполняет экран телефона.",
-    es: "VD 1.0.3 — El menú muestra tus botones táctiles y la carrera llena la pantalla del móvil.",
-    ar: "VD 1.0.3 — القائمة تعرض أزرار اللمس، والسباق يملأ شاشة الهاتف.",
-    "fa-AF": "VD 1.0.3 — منو دکمه‌های لمسی‌ات را نشان می‌دهد، و مسابقه صفحهٔ موبایل را پر می‌کند.",
-    rw: "VD 1.0.3 — Menu yerekana utubuto two gukoraho, kandi isiganwa ryuzuza ecran ya telefoni.",
-    ti: "VD 1.0.3 — ሜኑ ናይ ምንካእ መጠወቒታትካ የርኢ፣ ጉያ ድማ ስክሪን ሞባይል ይመልእ።"
+    en: "VD 1.0.4 — The race fills phone screens upright, and nothing covers the track.",
+    uk: "VD 1.0.4 — Гонка заповнює екран телефона вертикально, і ніщо не закриває трасу.",
+    ru: "VD 1.0.4 — Гонка заполняет экран телефона вертикально, и ничто не закрывает трассу.",
+    es: "VD 1.0.4 — La carrera llena la pantalla del móvil en vertical y nada tapa la pista.",
+    ar: "VD 1.0.4 — السباق يملأ شاشة الهاتف عموديًا، ولا شيء يغطي المضمار.",
+    "fa-AF": "VD 1.0.4 — مسابقه صفحهٔ موبایل را در حالت ایستاده پر می‌کند، و هیچ چیز مسیر را نمی‌پوشاند.",
+    rw: "VD 1.0.4 — Isiganwa ryuzuza ecran ya telefoni ihagaze, kandi nta kintu gipfuka inzira.",
+    ti: "VD 1.0.4 — ጉያ ስክሪን ሞባይል ብቕኑዕ ይመልእ፣ ዝኾነ ነገር ድማ መገዲ ኣይሽፍንን።"
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.3") plate.textContent = "VD 1.0.3";
+      if (plate && plate.textContent !== "VD 1.0.4") plate.textContent = "VD 1.0.4";
     } finally {
       painting = false;
     }

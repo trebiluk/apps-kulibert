@@ -66,6 +66,7 @@ function loadSprite(src: string) {
 
 export function VoltDuel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const playfieldRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<World | null>(null);
   const screenRef = useRef<Screen>({ name: "menu" });
   const cmdRef = useRef<Cmd | null>(null);
@@ -321,9 +322,19 @@ export function VoltDuel() {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.fillStyle = "#07090c";
       ctx.fillRect(0, 0, rect.width, rect.height);
-      const scale = Math.min(rect.width / VIEW_W, rect.height / VIEW_H);
-      const ox = (rect.width - VIEW_W * scale) / 2;
-      const oy = (rect.height - VIEW_H * scale) / 2;
+      const contain = Math.min(rect.width / VIEW_W, rect.height / VIEW_H);
+      const cover = Math.max(rect.width / VIEW_W, rect.height / VIEW_H);
+      const tall = rect.height / VIEW_H > rect.width / VIEW_W;
+      const scale = tall ? cover : contain;
+      let ox = (rect.width - VIEW_W * scale) / 2;
+      const oy = 0;
+      if (tall && world) {
+        const pack =
+          world.runners.reduce((sum, runner) => sum + (runner.x - world.camX), 0) / world.runners.length;
+        const visible = rect.width / scale;
+        const left = Math.max(0, Math.min(VIEW_W - visible, pack - visible * 0.34));
+        ox = -left * scale;
+      }
       ctx.setTransform(dpr * scale, 0, 0, dpr * scale, ox * dpr, oy * dpr);
       ctx.imageSmoothingEnabled = true;
       if (world) {
@@ -362,6 +373,31 @@ export function VoltDuel() {
     };
     // The loop closes over stable setters and refs.
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const wrap = playfieldRef.current;
+    const canvas = canvasRef.current;
+    if (!wrap || !canvas) return;
+    const fit = () => {
+      const wrapW = wrap.clientWidth;
+      const wrapH = wrap.clientHeight;
+      if (wrapW < 2 || wrapH < 2) return;
+      const scale = Math.min(wrapW / VIEW_W, wrapH / VIEW_H);
+      canvas.dataset.vdScale = String(scale);
+      canvas.style.width = "100%";
+      canvas.style.height = "100%";
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(wrap);
+    window.addEventListener("resize", fit);
+    window.addEventListener("orientationchange", fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+      window.removeEventListener("orientationchange", fit);
+    };
   }, []);
 
   const levelIndex = screen.name === "menu" ? 0 : screen.level;
@@ -516,7 +552,6 @@ export function VoltDuel() {
   return (
     <div className={`game-root${padMode === "on" ? " pads-on" : ""}${padMode === "off" ? " pads-off" : ""}`}>
       <div className="stage">
-        <canvas ref={canvasRef} aria-label="Volt Duel arena" />
         {playing && (
           <div className="hud">
             <div className="hud-row">
@@ -601,6 +636,10 @@ export function VoltDuel() {
             )}
           </div>
         )}
+
+        <div className="playfield" ref={playfieldRef}>
+          <canvas ref={canvasRef} aria-label="Volt Duel arena" />
+        </div>
 
         {screen.name === "menu" && (
           <div className="overlay">
@@ -746,42 +785,42 @@ export function VoltDuel() {
             </div>
           </div>
         )}
-      </div>
 
-      {screen.name === "play" && (
-        <div className="pads" ref={padsRoot}>
-          <div className="pad-cluster vex">
-            <span className="pad-label">VEX</span>
-            <button type="button" className="pad-btn" data-runner="0" data-act="left" aria-label="VEX left" {...press(0, "left")}>
-              <span className="pad-ico" aria-hidden="true">◀</span>
-              <span className="pad-word">Left</span>
-            </button>
-            <button type="button" className="pad-btn" data-runner="0" data-act="right" aria-label="VEX right" {...press(0, "right")}>
-              <span className="pad-ico" aria-hidden="true">▶</span>
-              <span className="pad-word">Right</span>
-            </button>
-            <button type="button" className="pad-btn" data-runner="0" data-act="jump" aria-label="VEX jump" {...press(0, "jump")}>
-              <span className="pad-ico" aria-hidden="true">⤒</span>
-              <span className="pad-word">Jump</span>
-            </button>
+        {screen.name === "play" && (
+          <div className="pads" ref={padsRoot}>
+            <div className="pad-cluster vex">
+              <span className="pad-label">VEX</span>
+              <button type="button" className="pad-btn" data-runner="0" data-act="left" aria-label="VEX left" {...press(0, "left")}>
+                <span className="pad-ico" aria-hidden="true">◀</span>
+                <span className="pad-word">Left</span>
+              </button>
+              <button type="button" className="pad-btn" data-runner="0" data-act="right" aria-label="VEX right" {...press(0, "right")}>
+                <span className="pad-ico" aria-hidden="true">▶</span>
+                <span className="pad-word">Right</span>
+              </button>
+              <button type="button" className="pad-btn" data-runner="0" data-act="jump" aria-label="VEX jump" {...press(0, "jump")}>
+                <span className="pad-ico" aria-hidden="true">⤒</span>
+                <span className="pad-word">Jump</span>
+              </button>
+            </div>
+            <div className="pad-cluster rio">
+              <span className="pad-label">RIO</span>
+              <button type="button" className="pad-btn" data-runner="1" data-act="left" aria-label="RIO left" {...press(1, "left")}>
+                <span className="pad-ico" aria-hidden="true">◀</span>
+                <span className="pad-word">Left</span>
+              </button>
+              <button type="button" className="pad-btn" data-runner="1" data-act="right" aria-label="RIO right" {...press(1, "right")}>
+                <span className="pad-ico" aria-hidden="true">▶</span>
+                <span className="pad-word">Right</span>
+              </button>
+              <button type="button" className="pad-btn" data-runner="1" data-act="jump" aria-label="RIO jump" {...press(1, "jump")}>
+                <span className="pad-ico" aria-hidden="true">⤒</span>
+                <span className="pad-word">Jump</span>
+              </button>
+            </div>
           </div>
-          <div className="pad-cluster rio">
-            <span className="pad-label">RIO</span>
-            <button type="button" className="pad-btn" data-runner="1" data-act="left" aria-label="RIO left" {...press(1, "left")}>
-              <span className="pad-ico" aria-hidden="true">◀</span>
-              <span className="pad-word">Left</span>
-            </button>
-            <button type="button" className="pad-btn" data-runner="1" data-act="right" aria-label="RIO right" {...press(1, "right")}>
-              <span className="pad-ico" aria-hidden="true">▶</span>
-              <span className="pad-word">Right</span>
-            </button>
-            <button type="button" className="pad-btn" data-runner="1" data-act="jump" aria-label="RIO jump" {...press(1, "jump")}>
-              <span className="pad-ico" aria-hidden="true">⤒</span>
-              <span className="pad-word">Jump</span>
-            </button>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
