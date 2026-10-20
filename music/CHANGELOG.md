@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.7** · 2026-10-20 · channel **live**
+
+Sideways phones can tap Write, and every tile keeps its name.
+
+## Earlier
+
 **Chip: MU 2.36.6** · 2026-10-20 · channel **live**
 
 The version tag stays out of your way.

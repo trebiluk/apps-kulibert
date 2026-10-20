@@ -1,4 +1,4 @@
-window.MU_VERSION = "MU 2.36.6";
+window.MU_VERSION = "MU 2.36.7";
 (function () {
   var v = window.MU_VERSION;
   document.title = document.title.indexOf("Teacher") >= 0
@@ -71,23 +71,28 @@ window.MU_VERSION = "MU 2.36.6";
   var proof = false;
   try { proof = new URLSearchParams(location.search).get("proof") === "1"; } catch (err) {}
   if (!proof) return;
-  document.documentElement.classList.add("dj-proof-on", "dj-proof-open");
+  var shortSide = false;
+  try { shortSide = window.matchMedia("(orientation: landscape) and (max-height: 500px)").matches; } catch (err2) {}
+  if (!shortSide) document.documentElement.classList.add("dj-proof-open");
+  document.documentElement.classList.add("dj-proof-on");
   function mount() {
     if (document.getElementById("dj-proof")) return;
     var box = document.createElement("div");
     box.id = "dj-proof";
-    box.className = "is-open";
+    box.className = shortSide ? "" : "is-open";
     box.setAttribute("role", "dialog");
-    box.innerHTML = '<div class="dj-proof-bar"><button type="button" id="dj-proof-toggle" aria-expanded="true">▾ proof</button><button type="button" id="dj-proof-x" aria-label="Close">✕ Close</button></div><pre></pre>';
+    box.innerHTML = '<div class="dj-proof-bar"><button type="button" id="dj-proof-toggle" aria-expanded="true">▾ Hide</button><button type="button" id="dj-proof-x" aria-label="Close">Close ✕</button></div><pre></pre>';
     var pre = box.querySelector("pre");
     var toggle = box.querySelector("#dj-proof-toggle");
-    toggle.addEventListener("click", function () {
-      var open = box.classList.toggle("is-open");
+    function setOpen(open) {
+      box.classList.toggle("is-open", open);
       pre.hidden = !open;
       toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      toggle.textContent = open ? "▾ proof" : "▸ proof";
+      toggle.textContent = open ? "▾ Hide" : "▸ Show";
       document.documentElement.classList.toggle("dj-proof-open", open);
-    });
+    }
+    if (shortSide) setOpen(false);
+    toggle.addEventListener("click", function () { setOpen(!box.classList.contains("is-open")); });
     box.querySelector("#dj-proof-x").addEventListener("click", function () {
       box.hidden = true;
       document.documentElement.classList.remove("dj-proof-on", "dj-proof-open");
