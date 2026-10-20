@@ -16,5 +16,7 @@
   "whatsNew": "What's new",
   "scores": "Scores",
   "levels": "Levels",
-  "noVoice": "No voice yet"
+  "noVoice": "No voice yet",
+  "whatsNewLine": "Hub 2026-10-20: Pick names from a list.",
+  "lbAliasHelp": "Pick a name from the list. Do not type a real name."
 }

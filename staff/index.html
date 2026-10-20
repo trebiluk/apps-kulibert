@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#050814"/>
   <title>Room desk · The Tech Room</title>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-20-p0-a11y-pii"></script>
   <style>
     :root{color-scheme:dark;--bg:#050814;--panel:#0b152c;--elevated:#10203f;--border:#16324f;--text:#e8f7ff;--muted:#8fb4c9;--subtle:#5d7d96;--accent:#22d3ee;--live:#14b8a6}
     *{box-sizing:border-box}
@@ -18,8 +19,8 @@
     label{display:flex;flex-direction:column;gap:.35rem;font-size:.85rem;font-weight:600;margin:0 0 .75rem}
     .check{flex-direction:row;align-items:center;justify-content:space-between;gap:.75rem;min-height:44px}
     input,button{font:inherit}
-    input[type=text],input[type=url],input[type=number],input[type=password]{height:2.75rem;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
-    input:focus{outline:2px solid var(--accent);outline-offset:2px}
+    input[type=text],input[type=url],input[type=number],input[type=password],select{height:2.75rem;min-height:44px;border-radius:10px;border:1px solid var(--border);background:var(--panel);color:var(--text);padding:0 .9rem}
+    input:focus,select:focus,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     #hub-gate label{margin-bottom:.35rem}
     .pass-row{display:flex;gap:.5rem;align-items:stretch;margin:0 0 .75rem}
     .pass-row input{flex:1;min-width:0}
@@ -114,7 +115,8 @@
           <button class="ghost" type="button" data-board="Drift">Drift</button>
         </div>
         <label>Board <input id="lb-board" maxlength="24" placeholder="SpanCraft"/></label>
-        <label>Name <input id="lb-name" maxlength="24" placeholder="Alias"/></label>
+        <label>Name or Alias <select id="lb-name" aria-describedby="lb-help lb-status"><option value="">Pick an alias</option></select></label>
+        <p id="lb-help" data-i18n="lbAliasHelp">Pick a name from the list. Do not type a real name.</p>
         <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
         <button class="save" type="submit">Add or update</button>
         <p class="err" id="lb-status"></p>
@@ -481,7 +483,49 @@
         }
         room.links.push({ id: "lbpack-live", name: "Leaderboards", href: href, icon: "board" });
       }
-      function paintLb() {
+      var LB_ADJ = ["Swift", "Bright", "Calm", "Keen", "Bold", "Quiet", "Rapid", "Solid"];
+      var LB_ANIMAL = ["Otter", "Robin", "Panda", "Fox", "Whale", "Heron", "Gopher", "Beetle"];
+      var LB_NUM = ["12", "24", "36", "42"];
+      function aliasWords() {
+        var out = [];
+        LB_ADJ.forEach(function (adj) {
+          LB_ANIMAL.forEach(function (animal) {
+            LB_NUM.forEach(function (num) { out.push(adj + " " + animal + " " + num); });
+          });
+        });
+        return out;
+      }
+      function aliasAllowed() {
+        var set = {};
+        aliasWords().forEach(function (name) { set[name.toLowerCase()] = name; });
+        (room.boards || []).forEach(function (row) {
+          var name = boardNorm(row && row.name);
+          if (name) set[name.toLowerCase()] = name;
+        });
+        return set;
+      }
+      function paintAliasSelect(selected) {
+        var sel = $("lb-name");
+        if (!sel) return;
+        var allowed = aliasAllowed();
+        var names = Object.keys(allowed).map(function (key) { return allowed[key]; });
+        names.sort(function (a, b) { return a.localeCompare(b); });
+        var keep = selected || sel.value || "";
+        sel.innerHTML = "";
+        var blank = document.createElement("option");
+        blank.value = "";
+        blank.textContent = "Pick an alias";
+        sel.appendChild(blank);
+        names.forEach(function (name) {
+          var opt = document.createElement("option");
+          opt.value = name;
+          opt.textContent = name;
+          sel.appendChild(opt);
+        });
+        var hit = keep && allowed[String(keep).toLowerCase()];
+        sel.value = hit || "";
+      }
+            function paintLb() {
         var box = $("lb-list");
         if (!box) return;
         box.innerHTML = "";
@@ -515,7 +559,7 @@
           edit.textContent = "Edit";
           edit.addEventListener("click", function () {
             $("lb-board").value = row.board;
-            $("lb-name").value = row.name;
+            paintAliasSelect(row.name);
             $("lb-score").value = row.score;
             $("lb-score").focus();
             var status = $("lb-status");
@@ -538,6 +582,7 @@
           box.appendChild(div);
         });
         paintPreview();
+        paintAliasSelect();
       }
 
       function paintList() {
@@ -635,6 +680,7 @@
         var btn = event.target && event.target.closest ? event.target.closest("[data-board]") : null;
         if (!btn) return;
         $("lb-board").value = btn.getAttribute("data-board");
+        paintAliasSelect();
         $("lb-name").focus();
       });
       if ($("lb-on")) $("lb-on").addEventListener("change", function () {
@@ -644,11 +690,17 @@
       $("lb-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var board = canonBoard($("lb-board").value);
-        var name = boardNorm($("lb-name").value).slice(0, 24);
+        var rawName = boardNorm($("lb-name").value).slice(0, 24);
+        var allowed = aliasAllowed();
+        var name = allowed[rawName.toLowerCase()] || "";
         var score = boardNorm($("lb-score").value).slice(0, 12);
         var status = $("lb-status");
+        if (rawName && !name) {
+          if (status) status.textContent = "Pick a name from the list. Typed names are not saved.";
+          return;
+        }
         if (!board || !name || !score) {
-          if (status) status.textContent = "Need a board, a name, and a score.";
+          if (status) status.textContent = "Need a board, a name from the list, and a score.";
           return;
         }
         var key = board.toLowerCase() + "\0" + name.toLowerCase();
@@ -660,7 +712,7 @@
         });
         if (!updated) room.boards.push({ board: board, name: name, score: score });
         room.boards = dedupeBoards(room.boards);
-        $("lb-name").value = "";
+        paintAliasSelect("");
         $("lb-score").value = "";
         if (status) status.textContent = updated ? "Updated " + name + " on " + board + ". Save to every Chromebook." : "Added " + name + ". Save to every Chromebook.";
         paintLb();
@@ -675,6 +727,7 @@
         paintList();
       });
       $("save-all").addEventListener("click", function () { save(); });
+      paintAliasSelect();
     })();
   </script>
 </body>
