@@ -1,4 +1,4 @@
-window.MU_VERSION = "MU 2.36.5";
+window.MU_VERSION = "MU 2.36.6";
 (function () {
   var v = window.MU_VERSION;
   document.title = document.title.indexOf("Teacher") >= 0
@@ -37,11 +37,12 @@ window.MU_VERSION = "MU 2.36.5";
   function shown(el) {
     if (!el) return false;
     var cs = getComputedStyle(el);
+    if (cs.display === "none") return false;
     var r = el.getBoundingClientRect();
-    return cs.display !== "none" && cs.visibility !== "hidden" && r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+    return r.width > 8 && r.height > 8 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
   }
   function measure() {
-    var tiles = [].slice.call(document.querySelectorAll("#dock-left .tab")).filter(shown);
+    var tiles = [].slice.call(document.querySelectorAll("#dock-left button[data-tab]")).filter(shown);
     var withWords = tiles.filter(function (el) {
       var span = el.querySelector("span");
       if (!span || !shown(span)) return false;
@@ -70,13 +71,27 @@ window.MU_VERSION = "MU 2.36.5";
   var proof = false;
   try { proof = new URLSearchParams(location.search).get("proof") === "1"; } catch (err) {}
   if (!proof) return;
+  document.documentElement.classList.add("dj-proof-on", "dj-proof-open");
   function mount() {
     if (document.getElementById("dj-proof")) return;
     var box = document.createElement("div");
     box.id = "dj-proof";
+    box.className = "is-open";
     box.setAttribute("role", "dialog");
-    box.innerHTML = '<button type="button">Close</button><pre></pre>';
-    box.querySelector("button").addEventListener("click", function () { box.hidden = true; });
+    box.innerHTML = '<div class="dj-proof-bar"><button type="button" id="dj-proof-toggle" aria-expanded="true">▾ proof</button><button type="button" id="dj-proof-x" aria-label="Close">✕ Close</button></div><pre></pre>';
+    var pre = box.querySelector("pre");
+    var toggle = box.querySelector("#dj-proof-toggle");
+    toggle.addEventListener("click", function () {
+      var open = box.classList.toggle("is-open");
+      pre.hidden = !open;
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.textContent = open ? "▾ proof" : "▸ proof";
+      document.documentElement.classList.toggle("dj-proof-open", open);
+    });
+    box.querySelector("#dj-proof-x").addEventListener("click", function () {
+      box.hidden = true;
+      document.documentElement.classList.remove("dj-proof-on", "dj-proof-open");
+    });
     document.body.appendChild(box);
     measure();
   }

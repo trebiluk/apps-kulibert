@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.6** · 2026-10-20 · channel **live**
+
+The version tag stays out of your way.
+
+## Earlier
+
 **Chip: MU 2.36.5** · 2026-10-20 · channel **live**
 
 Every button says what it does now, Perform shows once, and the version shows sideways too.
