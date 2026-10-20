@@ -5892,7 +5892,7 @@ panels = mountPanels({
   paintCraft: (g) => session.paintCraft(g),
   paintShop: (g) => session.paintShop(g),
   paintWallet: (g) => session.paintWallet(g),
-  paintSettings: (g) => { paintPickers(g); session.paintSettings(g); paintLook(g) },
+  paintSettings: (g) => { paintPickers(g); session.paintSettings(g); paintPvpSettings(g); paintLook(g) },
   paintTeacher: (g) => session.paintTeacher(g),
   paintRules: (g) => { Rules.useLang(LANG); paintRules(g, { lang: LANG, markDirty: () => { dirty = true }, save: () => save() }) },
   rulesWord: () => rulesWord(LANG),
@@ -11029,6 +11029,56 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
       return { x: r.left + (p.x / vw) * r.width, y: r.top + (p.y / vh) * r.height, behind: p.z < 0 || p.z > 1 }
     },
   }
+}
+function readPvpPrefs() {
+  try { return JSON.parse(localStorage.getItem('bloxbert-pvp') || '{}') } catch (e) { return {} }
+}
+function savePvpPrefs(p) {
+  try { localStorage.setItem('bloxbert-pvp', JSON.stringify(p)) } catch (e) {}
+}
+window.pvpAllowed = function(world, a, b) {
+  const p = readPvpPrefs()
+  if (world === 'main' || world === 'bertyville') {
+    if (p.mainPvpAllowed === false) return false
+    return !!(a && a.pvpOptIn && b && b.pvpOptIn)
+  }
+  return !!(p.kitPvp)
+}
+function paintPvpSettings(g) {
+  const p = readPvpPrefs()
+  const mk = (key, def, onLabel, offLabel, icon) => {
+    const row = document.createElement('div')
+    row.className = 'set-line'
+    const ico = document.createElement('span')
+    ico.className = 'set-ico'
+    ico.textContent = icon
+    const lab = document.createElement('span')
+    lab.className = 'set-lab'
+    const btn = document.createElement('button')
+    btn.type = 'button'
+    btn.className = 'pill'
+    btn.style.minWidth = '44px'
+    btn.style.minHeight = '44px'
+    const on = p[key] !== undefined ? p[key] : def
+    lab.textContent = on ? onLabel : offLabel
+    btn.textContent = on ? 'ON' : 'OFF'
+    btn.setAttribute('aria-label', lab.textContent)
+    btn.addEventListener('click', () => {
+      const cur = readPvpPrefs()
+      cur[key] = !on
+      savePvpPrefs(cur)
+      paintPvpSettings(g)
+    })
+    row.append(ico, lab, btn)
+    g.append(row)
+  }
+  mk('pvpOptIn', false, t('pvpOn'), t('pvpOff'), '⚔')
+  mk('keepInventory', true, t('keepStuffOn'), t('keepStuffOff'), '🎒')
+  mk('kitPvp', false, t('kitPvpOn'), t('kitPvpOff'), '⚔')
+  const hint = document.createElement('p')
+  hint.className = 'gnote'
+  hint.textContent = t('pvpHint')
+  g.append(hint)
 }
 if (location.search.includes('proof=1')) {
   window.__BT_PROOF = {

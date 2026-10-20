@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.284', date: '2026-10-20', lines: {
+    en: ['New switches: PvP only if both players say yes, and you keep your stuff in the main world.'],
+    uk: ['Нові перемикачі: PvP лише якщо обидва гравці погодяться, а в головному світі речі залишаються з тобою.'],
+    ru: ['Новые переключатели: PvP только если оба игрока согласны, а в главном мире вещи остаются с тобой.'],
+    es: ['Nuevos interruptores: PvP solo si ambos jugadores dicen que sí, y conservas tus cosas en el mundo principal.'],
+    ar: ['مفاتيح جديدة: القتال بين اللاعبين فقط إذا وافق اللاعبان، وتحتفظ بأغراضك في العالم الرئيسي.'],
+    'fa-AF': ['کلیدهای تازه: جنگ بین بازیکنان فقط اگر هر دو قبول کنند، و در دنیای اصلی وسایلت پیش خودت می‌ماند.'],
+    rw: ['Utubuto dushya: PvP gusa iyo abakinnyi bombi bemeye, kandi ugumana ibintu byawe mu isi nkuru.'],
+    ti: ['ሓደስቲ መቐያይሮ: PvP ክልቲኦም ተጻወትቲ እንተ ኣሚኖም ጥራይ፣ ኣብ ቀንዲ ዓለም ንብረትካ ምሳኻ ይተርፍ።'],
+  }},
+
   { v: '2.5.283', date: '2026-10-20', lines: {
     en: ['Help is in every language, and you can pick your language.'],
     uk: ['Довідка є всіма мовами, і ти можеш вибрати свою мову.'],
