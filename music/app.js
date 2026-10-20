@@ -2848,6 +2848,7 @@
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
     setMode("beat");
+    if ($("lesson")) $("lesson").textContent = mu("helpBeat");
     const grid = $("drums");
     const box = grid && grid.closest("details");
     if (box) box.open = true;

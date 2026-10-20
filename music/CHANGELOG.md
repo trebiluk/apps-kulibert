@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.11** · 2026-10-20 · channel **live**
+
+MU 2.36.11 — Make a beat no longer overwrites a saved or cleared beat with Rock (touched guard); Help updated.
+
+## Earlier
+
 **Chip: MU 2.36.10** · 2026-10-20 · channel **live**
 
 MU 2.36.10 — swatch words ≥4.5:1, swatches + Mic lights reachable at 915x412 (Mix live strip shown), Help updated for Mic lights; items fixed by 2.36.9 noted ALREADY DONE.
