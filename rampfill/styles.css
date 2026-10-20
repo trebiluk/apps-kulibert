@@ -181,6 +181,9 @@ canvas {
   height: 100%;
   display: block;
   touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 .board-tags { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 .cup-hit { position: absolute; }

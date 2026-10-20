@@ -2237,6 +2237,7 @@
   canvas.addEventListener("pointermove", onMove);
   canvas.addEventListener("pointerup", onUp);
   canvas.addEventListener("pointercancel", onUp);
+  canvas.addEventListener("contextmenu", function (e) { e.preventDefault(); });
   window.addEventListener("keydown", function (e) {
     var typing = e.target && e.target.closest && e.target.closest("input, textarea");
     if (e.key === "Escape") {

@@ -6,6 +6,7 @@ Stage 4. Version locked: RF 1.0.3.
 - [x] **RF 1.0.3 ITEM 3:** "fill to here" sits above the cup rim and does not cover a cup. Spill tips stay inside the canvas.
 - [x] **RF 1.0.3 ITEM 4:** Beating a level opens the next one. Stars and the cup row stay after a reload. Start over in the menu clears them after a confirm.
 - [x] **RF 1.0.3 ITEM 5:** `?proof=1` adds window.__RF_PROOF with level, solve, and state. Without that query the hook is absent.
+- [x] **RF 1.0.3 ITEM 6:** A long press on the canvas does not open a menu. Drawing still works.
 
 - [x] **RF 1.0.0** shipped (aa3602a). L1 grains ramp still fills, spills, and retries with the ramp kept.
 - [x] **RF 1.0.1** shipped (c989425). L1 to L3 stay. Sideways cup, two cups, first water leak.
