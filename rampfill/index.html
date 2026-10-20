@@ -7,7 +7,7 @@
   <title>Ramp & Fill — RF 1.0.2</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2-stars" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2-stack" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
@@ -52,6 +52,10 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8 A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 4 V8 H11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
         <span data-k="retry">Retry</span>
       </button>
+      <button type="button" id="stack-back" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 H7 M11 6 L5 12 L11 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span data-k="stackBack">Ramps</span>
+      </button>
     </div>
     <div id="donebar" class="donebar" hidden>
       <p class="stamp" id="stamp" data-k="filled">Filled it!</p>
@@ -67,7 +71,13 @@
       </div>
     </div>
     </div>
-    <p class="lesson" id="lesson">Steeper = faster. Smoother = neater.</p>
+    <div class="lesson-row">
+      <p class="lesson" id="lesson">Steeper = faster. Smoother = neater.</p>
+      <button type="button" id="stack-tile" class="stack-tile">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14 H17 L16 20 H8 Z M8 8 H16 L15 13 H9 Z M9 3 H15 L14 7 H10 Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+        <span data-k="stackTile">Cup Stack</span>
+      </button>
+    </div>
     <div class="stage">
       <canvas id="board" aria-label="Draw a ramp from the grains to the cup."></canvas>
       <button type="button" id="pick-grains" class="pick" hidden>Grains</button>
@@ -144,6 +154,6 @@
   </div>
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.2" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.2-stars"></script>
+  <script src="./app.js?v=RF-1.0.2-stack"></script>
 </body>
 </html>

@@ -16,6 +16,14 @@
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
       starWord: "star", starsWord: "stars",
+      stackTile: "Cup Stack", stackBack: "Ramps",
+      stackAsk: "Tap the dotted cup. It snaps on.",
+      stackNext: "Snap the next cup on top.",
+      stackTip: "Too far. It tipped. Tap Retry.",
+      stackStand: "The stack stands.",
+      stackCaught: "The top cup caught the grains.",
+      stackLesson: "Tap the dotted cups to stack 3. A far tap tips.",
+      cupWord: "Cup",
       spill: "It spilled here — try a flatter ramp.",
       sat: "Gel sat still — make the hill bigger.",
       wrong: "Grains go in the left cup.",
@@ -58,6 +66,13 @@
       empty: "Чашка: порожня", little: "Чашка: трохи є", half: "Чашка: майже половина", moreHalf: "Чашка: більше половини", almost: "Чашка: майже повна", done: "Чашка: до лінії",
       noSpill: "нічого не розлилось", bitSpill: "трохи розлилось", someSpill: "дещо розлилось",
       starWord: "зірка", starsWord: "зірки",
+      stackTile: "Стос чашок", stackBack: "Схили",
+      stackAsk: "Торкнись пунктирної чашки. Вона стає на місце.",
+      stackNext: "Постав наступну чашку зверху.",
+      stackTip: "Занадто далеко. Вона перекинулась. Торкнись Спроба.",
+      stackStand: "Стос стоїть.",
+      stackCaught: "Верхня чашка зловила зерно.",
+      stackLesson: "Торкнись пунктиру, щоб скласти 3. Далекий дотик перекидає.",
       spill: "Тут розлилося — спробуй пологіший схил.",
       sat: "Гель стоїть — зроби схил крутішим.",
       leak: "Вода витекла в цій щілині — наклади схил на край чашки.",
@@ -96,6 +111,13 @@
       empty: "Чашка: пустая", little: "Чашка: чуть-чуть", half: "Чашка: почти половина", moreHalf: "Чашка: больше половины", almost: "Чашка: почти полная", done: "Чашка: до линии",
       noSpill: "ничего не пролилось", bitSpill: "немного пролилось", someSpill: "часть пролилась",
       starWord: "звезда", starsWord: "звёзды",
+      stackTile: "Стопка чашек", stackBack: "Склоны",
+      stackAsk: "Коснись пунктирной чашки. Она встанет на место.",
+      stackNext: "Поставь следующую чашку сверху.",
+      stackTip: "Слишком далеко. Она упала. Нажми Ещё раз.",
+      stackStand: "Стопка стоит.",
+      stackCaught: "Верхняя чашка поймала зёрна.",
+      stackLesson: "Коснись пунктира, чтобы сложить 3. Дальний касание роняет.",
       spill: "Здесь пролилось — попробуй более пологий склон.",
       sat: "Гель стоит — сделай склон круче.",
       leak: "Вода утекла в этой щели — наложи склон на край чашки.",
@@ -134,6 +156,13 @@
       empty: "Taza: vacía", little: "Taza: un poquito", half: "Taza: casi la mitad", moreHalf: "Taza: más de la mitad", almost: "Taza: casi llena", done: "Taza: hasta la línea",
       noSpill: "nada se derramó", bitSpill: "un poco se derramó", someSpill: "algo se derramó",
       starWord: "estrella", starsWord: "estrellas",
+      stackTile: "Torre de tazas", stackBack: "Rampas",
+      stackAsk: "Toca la taza punteada. Encaja sola.",
+      stackNext: "Encaja la siguiente taza arriba.",
+      stackTip: "Muy lejos. Se cayó. Toca Otra vez.",
+      stackStand: "La torre se queda.",
+      stackCaught: "La taza de arriba atrapó los granos.",
+      stackLesson: "Toca las tazas punteadas para apilar 3. Un toque lejos la tumba.",
       spill: "Se derramó aquí — prueba una rampa más plana.",
       sat: "El gel se quedó quieto — haz la colina más alta.",
       leak: "El agua se fugó en este hueco — monta la rampa sobre el borde.",
@@ -172,6 +201,13 @@
       empty: "الكوب: فارغ", little: "الكوب: قليل", half: "الكوب: قريب من النصف", moreHalf: "الكوب: أكثر من النصف", almost: "الكوب: قريب من الامتلاء", done: "الكوب: حتى الخط",
       noSpill: "لا انسكاب", bitSpill: "انسكاب قليل", someSpill: "بعض الانسكاب",
       starWord: "نجمة", starsWord: "نجوم",
+      stackTile: "كومة الأكواب", stackBack: "المنحدرات",
+      stackAsk: "المس الكوب المنقّط. يثبت في مكانه.",
+      stackNext: "ثبّت الكوب التالي فوقه.",
+      stackTip: "بعيد جدًا. وقع. المس إعادة.",
+      stackStand: "الكومة ثابتة.",
+      stackCaught: "الكوب الأعلى أمسك الحبوب.",
+      stackLesson: "المس الأكواب المنقّطة لتكديس 3. اللمس البعيد يوقعها.",
       spill: "انسكب هنا — جرّب منحدرًا أقل انحدارًا.",
       sat: "الهلام واقف — اجعل التلة أكبر.",
       leak: "تسرب الماء من هذه الفجوة — اجعل المنحدر يركب على حافة الكوب.",
@@ -210,6 +246,13 @@
       empty: "پیاله: خالی", little: "پیاله: کمی", half: "پیاله: نزدیک نیمه", moreHalf: "پیاله: بیشتر از نیمه", almost: "پیاله: نزدیک پر", done: "پیاله: تا خط",
       noSpill: "چیزی نریخت", bitSpill: "کمی ریخت", someSpill: "مقداری ریخت",
       starWord: "ستاره", starsWord: "ستاره‌ها",
+      stackTile: "دسته پیاله", stackBack: "سرازیری‌ها",
+      stackAsk: "پیاله نقطه‌چین را بزن. سر جایش می‌نشیند.",
+      stackNext: "پیاله بعدی را بالا بچسبان.",
+      stackTip: "خیلی دور است. افتاد. دوباره را بزن.",
+      stackStand: "دسته ایستاده است.",
+      stackCaught: "پیاله بالا دانه‌ها را گرفت.",
+      stackLesson: "پیاله‌های نقطه‌چین را بزن تا ۳ تا بچینی. لمس دور می‌اندازد.",
       spill: "اینجا ریخت — یک سرازیری تخت‌تر را امتحان کن.",
       sat: "ژل ایستاد — تپه را بزرگ‌تر کن.",
       leak: "آب از این شکاف ریخت — سرازیری را روی لبه پیاله بگذار.",
@@ -248,6 +291,13 @@
       empty: "Igikombe: kirimo ubusa", little: "Igikombe: gito", half: "Igikombe: hafi kimwe cya kabiri", moreHalf: "Igikombe: kirenze kimwe cya kabiri", almost: "Igikombe: hafi kuzura", done: "Igikombe: kugeza ku murongo",
       noSpill: "ntacyasutse", bitSpill: "gito cyasutse", someSpill: "bimwe byasutse",
       starWord: "inyenyeri", starsWord: "inyenyeri",
+      stackTile: "Igipfunsi cy'ibikombe", stackBack: "Imihengamo",
+      stackAsk: "Kanda igikombe cy'utudomo. Kigira ahantu.",
+      stackNext: "Shyira ikindi hejuru.",
+      stackTip: "Kure cyane. Cyaguye. Kanda Ongera.",
+      stackStand: "Igipfunsi gihagarara.",
+      stackCaught: "Igikombe cyo hejuru cyafashe ibinyampeke.",
+      stackLesson: "Kanda utudomo ukore 3. Ukanda kure bigwa.",
       spill: "Byasutse hano — gerageza umuhengamo utoroshye.",
       sat: "Jeli yicaye — nuna umusozi.",
       leak: "Amazi yasutse muri aka kanya — shira umuhengamo ku murongo w'igikombe.",
@@ -286,6 +336,13 @@
       empty: "ኽባያ: ባዶ", little: "ኽባያ: ቁሩብ", half: "ኽባያ: ዳርጋ ፍርቂ", moreHalf: "ኽባያ: ልዕሊ ፍርቂ", almost: "ኽባያ: ዳርጋ መሊኡ", done: "ኽባያ: ክሳብ መስመር",
       noSpill: "ዝፈሰሰ የለን", bitSpill: "ቁሩብ ፈሲሱ", someSpill: "ገለ ፈሲሱ",
       starWord: "ኮኾብ", starsWord: "ኮኾባት",
+      stackTile: "ዕኹል ኽባያት", stackBack: "ቁልቁለታት",
+      stackAsk: "ነቲ ነጥብታት ዘለዎ ኽባይ ጠውቕ። ይጣበቕ።",
+      stackNext: "ዝቕጽል ኽባይ ኣብ ላዕሊ ጠውቕ።",
+      stackTip: "ርሑቕ እዩ። ወዲቑ። ደጊምካ ጠውቕ።",
+      stackStand: "ዕኹል ቐሚጡ ኣሎ።",
+      stackCaught: "እቲ ላዕለዋይ ኽባይ እቲ ዘርኢ ሒዙ።",
+      stackLesson: "ነቲ ነጥብታት ጠውቕ ክትደርድር 3። ርሑቕ ምጥዋቕ የውድቕ።",
       spill: "ኣብዚ ፈሲሱ — ዝተዓርየ ቁልቁለት ፈትን።",
       sat: "ጄል ጸኒዑ — ኮረብታ ዓብዩ ግበር።",
       leak: "ማይ ኣብዚ ስንጥቕ ፈሲሱ — ቁልቁለት ኣብ ዳርቢ ኽባያ ኣድርቦ።",
@@ -344,6 +401,12 @@
   var sawFill = false;
   var cupStars = [0, 0];
   var sessionStars = [];
+  var mode = "ramp";
+  var stack = [];
+  var catchBits = [];
+  var stackMsg = "";
+  var stackWon = false;
+  var stackReturnEnd = false;
   var cups = 0;
   var mass = 1;
   var spawnGap = 0.045;
@@ -419,14 +482,14 @@
     var pw = document.getElementById("pick-water");
     if (pg) pg.textContent = t("grains");
     if (pw) pw.textContent = t("water");
-    var lessonText = t(lessonKey());
+    var lessonText = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lessonEl = document.getElementById("lesson");
     if (lessonEl) lessonEl.textContent = lessonText;
     var l2 = document.getElementById("lesson-2");
-    if (l2) l2.textContent = lessonText;
+    if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = t("lv" + level);
-    canvas.setAttribute("aria-label", t("canvas"));
+    if (lv) lv.textContent = mode === "stack" ? t("stackTile") : t("lv" + level);
+    canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
     paintCups();
@@ -480,8 +543,13 @@
   }
   function paintStatus() {
     var el = document.getElementById("status");
-    if (el) el.textContent = cupWords();
     var spillEl = document.getElementById("spill-line");
+    if (mode === "stack") {
+      if (el) el.textContent = stackMsg;
+      if (spillEl) spillEl.textContent = "";
+      return;
+    }
+    if (el) el.textContent = cupWords();
     var show = spill > 0 && !pouring && live.length === 0 && anyShort();
     if (spillEl) spillEl.textContent = show ? spillSentence() : "";
   }
@@ -1104,8 +1172,165 @@
     erasing = false;
     paintStatus();
   }
+  function stackColumn() {
+    var avail = Math.max(48, viewH - 36);
+    var ch = Math.max(28, Math.min(86, avail / 3.05));
+    var cw = Math.max(64, Math.min(110, Math.min(viewW * 0.22, ch * 1.35)));
+    return { x: viewW / 2 - cw / 2, cw: cw, ch: ch, floor: viewH - 12 };
+  }
+  function resetStack() {
+    stack = [];
+    catchBits = [];
+    stackWon = false;
+    stackMsg = t("stackAsk");
+    paintStatus();
+  }
+  function syncStackTools() {
+    var stacking = mode === "stack";
+    ["tool-draw", "tool-erase", "undo-btn", "clear-btn", "pour-btn"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.hidden = stacking;
+    });
+    var back = document.getElementById("stack-back");
+    var tile = document.getElementById("stack-tile");
+    if (back) back.hidden = !stacking;
+    if (tile) tile.hidden = stacking;
+  }
+  function enterStack() {
+    if (mode === "stack") return;
+    stackReturnEnd = ended;
+    mode = "stack";
+    pouring = false;
+    live = [];
+    ended = false;
+    paused = false;
+    document.getElementById("endcard").hidden = true;
+    document.getElementById("donebar").hidden = true;
+    document.getElementById("pause-layer").hidden = true;
+    document.getElementById("ask").hidden = true;
+    resetStack();
+    syncStackTools();
+    paintText();
+    syncModal();
+  }
+  function leaveStack() {
+    if (mode !== "stack") return;
+    mode = "ramp";
+    catchBits = [];
+    syncStackTools();
+    placePicks();
+    if (stackReturnEnd) {
+      ended = true;
+      document.getElementById("endcard").hidden = false;
+    } else if (filledOnce) document.getElementById("donebar").hidden = false;
+    paintText();
+    syncModal();
+  }
+  function placeStackCup(px) {
+    if (stackWon || stack.length >= 3) return;
+    if (stack.some(function (c) { return c.tipped; })) return;
+    var col = stackColumn();
+    var slot = stack.length;
+    var snapped = Math.abs(px - (col.x + col.cw / 2)) <= col.cw * 0.55;
+    var x = snapped ? col.x : Math.max(8, Math.min(viewW - col.cw - 8, px - col.cw / 2));
+    var cup = {
+      x: x,
+      y: col.floor - col.ch * (slot + 1) + slot * 10,
+      w: col.cw,
+      h: col.ch,
+      tipped: !snapped,
+      tip: !snapped && motionLess() ? 1 : 0
+    };
+    if (!snapped && !motionLess()) cup.tip = 0.02;
+    stack.push(cup);
+    if (!snapped) stackMsg = t("stackTip");
+    else if (stack.length === 3) {
+      stackWon = true;
+      stackMsg = t("stackStand");
+      catchBits = [];
+      for (var i = 0; i < 8; i++) catchBits.push({ y: 8 - i * 16, done: motionLess() });
+      if (motionLess()) stackMsg = t("stackCaught");
+    } else stackMsg = t("stackNext");
+    paintStatus();
+  }
+  function stepStack(dt) {
+    stack.forEach(function (c) {
+      if (c.tipped && c.tip < 1) c.tip = Math.min(1, c.tip + dt * 1.15);
+    });
+    if (stackWon && catchBits.length) {
+      var col = stackColumn();
+      var top = stack[2];
+      var land = top ? top.y + 16 : col.floor;
+      var all = true;
+      catchBits.forEach(function (b) {
+        if (b.done) return;
+        b.y += 90 * dt;
+        if (b.y >= land) { b.y = land; b.done = true; }
+        else all = false;
+      });
+      if (all && stackMsg !== t("stackCaught")) {
+        stackMsg = t("stackCaught");
+        paintStatus();
+      }
+    }
+  }
+  function drawStackCup(c) {
+    ctx.save();
+    if (c.tip) {
+      ctx.translate(c.x + c.w / 2, c.y + c.h);
+      ctx.rotate(c.tip * 1.15);
+      ctx.translate(-(c.x + c.w / 2), -(c.y + c.h));
+    }
+    ctx.fillStyle = "#8C3A2F";
+    ctx.strokeStyle = "#1A120C";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(c.x, c.y + 8);
+    ctx.lineTo(c.x + 8, c.y + c.h);
+    ctx.lineTo(c.x + c.w - 8, c.y + c.h);
+    ctx.lineTo(c.x + c.w, c.y + 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = "#F3E6C8";
+    ctx.fillRect(c.x + 8, c.y + 10, c.w - 16, 8);
+    backed(t("cupWord") || "Cup", c.x + c.w / 2, c.y + c.h * 0.62, c.h < 46 ? 14 : 16, "center");
+    ctx.restore();
+  }
+  function drawStack() {
+    ctx.clearRect(0, 0, viewW, viewH);
+    ctx.fillStyle = "#E7D7B8";
+    ctx.fillRect(0, 0, viewW, viewH);
+    ctx.fillStyle = "#C4A574";
+    ctx.fillRect(0, viewH - 14, viewW, 14);
+    var col = stackColumn();
+    ctx.save();
+    ctx.strokeStyle = "#3E6B4F";
+    ctx.lineWidth = 3;
+    ctx.setLineDash([3, 8]);
+    for (var i = 0; i < 3; i++) {
+      if (stack[i] && !stack[i].tipped) continue;
+      var gy = col.floor - col.ch * (i + 1);
+      ctx.strokeRect(col.x, gy, col.cw, col.ch);
+    }
+    ctx.restore();
+    stack.forEach(drawStackCup);
+    if (catchBits.length && stack[2]) {
+      catchBits.forEach(function (b) {
+        if (b.done) return;
+        seed({ x: col.x + col.cw / 2, y: b.y, s: 4, rot: 0.4 });
+      });
+      if (catchBits.every(function (b) { return b.done; })) {
+        ctx.fillStyle = "#E0A106";
+        ctx.beginPath();
+        ctx.ellipse(stack[2].x + stack[2].w / 2, stack[2].y + 28, stack[2].w * 0.28, 8, 0, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    if (stackMsg) backedWrap(stackMsg, viewW / 2, 28, 16, Math.min(420, viewW - 20));
+  }
   function startPour() {
-    if (paused || ended || pouring) return;
+    if (mode === "stack" || paused || ended || pouring) return;
     live = [];
     spillSpots = [];
     spill = 0;
@@ -1118,6 +1343,7 @@
     ended = false;
   }
   function retry() {
+    if (mode === "stack") { resetStack(); return; }
     if (pouring && spawnLeft > 0) return;
     ended = false;
     document.getElementById("endcard").hidden = true;
@@ -1148,6 +1374,7 @@
     syncModal();
   }
   function setLevel(n) {
+    if (mode === "stack") leaveStack();
     level = Math.max(1, Math.min(5, n | 0));
     activeSide = 0;
     strokes = [];
@@ -1243,9 +1470,10 @@
     if (!document.getElementById("endcard").hidden) return;
     if (pointer != null) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
+    var p = pointerPos(e);
+    if (mode === "stack") { placeStackCup(p.x); return; }
     pointer = e.pointerId;
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
-    var p = pointerPos(e);
     if (tool === "erase") {
       pushUndo();
       erasing = true;
@@ -1607,6 +1835,7 @@
     drawHopperAt(spout, matName(), false);
   }
   function draw() {
+    if (mode === "stack") { drawStack(); return; }
     ctx.clearRect(0, 0, viewW, viewH);
     ctx.fillStyle = "#E7D7B8";
     ctx.fillRect(0, 0, viewW, viewH);
@@ -1679,7 +1908,8 @@
         spawnGap = 0.07;
       }
     }
-    if (!paused && !ended && pouring) {
+    if (mode === "stack" && !paused) stepStack(dt);
+    if (!paused && !ended && pouring && mode !== "stack") {
       spawnWait -= dt;
       while (spawnLeft > 0 && spawnWait <= 0 && live.length < LIVE_CAP) {
         spawnOne();
@@ -1749,6 +1979,8 @@
   });
   document.getElementById("pick-grains").addEventListener("click", function () { pickSide(0); });
   document.getElementById("pick-water").addEventListener("click", function () { pickSide(1); });
+  document.getElementById("stack-tile").addEventListener("click", enterStack);
+  document.getElementById("stack-back").addEventListener("click", leaveStack);
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
   document.getElementById("repour-btn").addEventListener("click", repour);
@@ -1803,6 +2035,17 @@
   requestAnimationFrame(frame);
   window.__rf = {
     version: VERSION,
+    stackGhost: function () {
+      var col = stackColumn();
+      var r = canvas.getBoundingClientRect();
+      var out = [];
+      for (var i = 0; i < 3; i++) {
+        var x = col.x + col.cw / 2;
+        var y = col.floor - col.ch * (i + 0.5);
+        out.push({ x: r.left + x * (r.width / Math.max(1, viewW)), y: r.top + y * (r.height / Math.max(1, viewH)) });
+      }
+      return out;
+    },
     fps: function () { return { now: fps, min: fpsMin }; },
     state: function () {
       var r = canvas.getBoundingClientRect();
@@ -1810,6 +2053,8 @@
         level: level, fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
         pouring: pouring, live: live.length, words: cupWords(), paused: paused, ended: ended,
         strokes: strokes.length, cups: cups, stars: cupStars.slice(), sessionStars: sessionStars.slice(), mass: mass, leak: leakKind, mat: matName(),
+        mode: mode, stack: stack.length, stackMsg: stackMsg, tipped: stack.some(function (c) { return c.tipped; }), caught: catchBits.length > 0 && catchBits.every(function (b) { return b.done; }),
+        stackBoxes: stack.map(function (c) { return { x: Math.round(c.x), y: Math.round(c.y), w: Math.round(c.w), h: Math.round(c.h), tip: Math.round(c.tip * 100) }; }),
         spawnLeft: spawnLeft,
         sample: live[0] ? { x: Math.round(live[0].x), y: Math.round(live[0].y), vy: Math.round(live[0].vy), mode: live[0].mode, si: live[0].si } : null,
         end: (function () {
