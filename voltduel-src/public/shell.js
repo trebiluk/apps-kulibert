@@ -1,13 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.4 — The race fills phone screens upright, and nothing covers the track.",
-    uk: "VD 1.0.4 — Гонка заповнює екран телефона вертикально, і ніщо не закриває трасу.",
-    ru: "VD 1.0.4 — Гонка заполняет экран телефона вертикально, и ничто не закрывает трассу.",
-    es: "VD 1.0.4 — La carrera llena la pantalla del móvil en vertical y nada tapa la pista.",
-    ar: "VD 1.0.4 — السباق يملأ شاشة الهاتف عموديًا، ولا شيء يغطي المضمار.",
-    "fa-AF": "VD 1.0.4 — مسابقه صفحهٔ موبایل را در حالت ایستاده پر می‌کند، و هیچ چیز مسیر را نمی‌پوشاند.",
-    rw: "VD 1.0.4 — Isiganwa ryuzuza ecran ya telefoni ihagaze, kandi nta kintu gipfuka inzira.",
-    ti: "VD 1.0.4 — ጉያ ስክሪን ሞባይል ብቕኑዕ ይመልእ፣ ዝኾነ ነገር ድማ መገዲ ኣይሽፍንን።"
+    en: "VD 1.0.5: Run and jump buttons hold on phones and fit on every screen.",
+    uk: "VD 1.0.5: Кнопки бігу та стрибка працюють при утриманні на телефонах і вміщаються на будь-якому екрані.",
+    ru: "VD 1.0.5: Кнопки бега и прыжка работают при удержании на телефонах и помещаются на любом экране.",
+    es: "VD 1.0.5: Los botones de correr y saltar funcionan al mantenerlos en teléfonos y caben en cualquier pantalla.",
+    ar: "VD 1.0.5: زرا الجري والقفز يعملان بالضغط المستمر على الهاتف ويتسعان في كل شاشة.",
+    "fa-AF": "VD 1.0.5: دکمه‌های دویدن و پرش روی تلفن با نگه‌داشتن کار می‌کنند و در هر صفحه جا می‌شوند.",
+    rw: "VD 1.0.5: Utubuto two kwiruka no gusimbuka dukora iyo udufashe kuri telefoni kandi dukwira kuri buri rugaragaza.",
+    ti: "VD 1.0.5: መልጎማት ጉያን ዝላን ኣብ ተሌፎን ብምሓዝ ይሰርሑ፣ ኣብ ኩሉ ስክሪን ይኣትዉ።",
+    simple: "VD 1.0.5: Hold Run and Jump. Buttons fit."
   };
   var TITLES = {
     en: "What's new",
@@ -27,7 +28,6 @@
 
   function lang() {
     var code = document.documentElement.getAttribute("data-kp-lang") || "en";
-    if (code === "simple") code = "en";
     return WHATS[code] ? code : "en";
   }
 
@@ -42,13 +42,13 @@
       if (line && line.textContent !== next) line.textContent = next;
       if (title && title.textContent !== (TITLES[code] || TITLES.en)) title.textContent = TITLES[code] || TITLES.en;
       if (line) {
-        var langAttr = code === "fa-AF" ? "fa" : code;
+        var langAttr = code === "fa-AF" ? "fa" : code === "simple" ? "en" : code;
         var dir = code === "ar" || code === "fa-AF" ? "rtl" : "ltr";
         if (line.lang !== langAttr) line.lang = langAttr;
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.4") plate.textContent = "VD 1.0.4";
+      if (plate && plate.textContent !== "VD 1.0.5") plate.textContent = "VD 1.0.5";
     } finally {
       painting = false;
     }

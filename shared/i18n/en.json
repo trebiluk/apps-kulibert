@@ -187,8 +187,9 @@
   "rfTeachGel": "Thick liquid (high viscosity) flows slower",
   "rfTeachRate": "Flow rate = how much pours each second",
   "rfHelpLesson": "Read the lesson line when you win.",
-"testModeHelp": "Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.",
+  "testModeHelp": "Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.",
   "rfHelpFewer": "Try to win with fewer ramps.",
   "rfNewBest": "New best!",
-  "rfTryFewer": "Try for fewer"
+  "rfTryFewer": "Try for fewer",
+  "vdHoldHelp": "Hold Run and Jump to keep going. The buttons fit on every phone."
 }

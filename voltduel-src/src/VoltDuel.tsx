@@ -52,6 +52,10 @@ declare global {
     };
     __simulate?: (level: number) => ReturnType<typeof practiceRun>;
     KulibertTest?: { on?: () => boolean };
+    KulibertI18n?: {
+      t?: (key: string, fallback?: string) => string;
+      ready?: (lang: string | undefined, cb: () => void) => void;
+    };
   }
 }
 
@@ -422,6 +426,19 @@ export function VoltDuel() {
   const playing = screen.name === "play" || screen.name === "pause";
 
   const [helpOpen, setHelpOpen] = useState(false);
+  const [helpRev, setHelpRev] = useState(0);
+
+  useEffect(() => {
+    if (!helpOpen) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.repeat) return;
+      event.preventDefault();
+      event.stopPropagation();
+      setHelpOpen(false);
+    };
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [helpOpen]);
   const [coarse, setCoarse] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
   );
@@ -439,6 +456,9 @@ export function VoltDuel() {
     const readLang = () => {
       const code = document.documentElement.getAttribute("data-kp-lang") || "en";
       setLang(code === "simple" ? "en" : code);
+      const api = window.KulibertI18n;
+      if (api && api.ready) api.ready(code, () => setHelpRev((n) => n + 1));
+      else setHelpRev((n) => n + 1);
     };
     readLang();
     window.addEventListener("kulibert-lang", readLang);
@@ -477,6 +497,17 @@ export function VoltDuel() {
 
   const tipLang = TOUCH_TIP[lang] ? lang : "en";
   const tip = coarse ? TOUCH_TIP[tipLang] : KEY_TIP;
+  const holdHelp = (() => {
+    void helpRev;
+    const fallback = "Hold Run and Jump to keep going. The buttons fit on every phone.";
+    try {
+      const value = window.KulibertI18n?.t?.("vdHoldHelp", fallback);
+      if (value && value !== "vdHoldHelp") return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  })();
 
   const syncHolds = () => {
     const next: [Pad, Pad] = [
@@ -725,6 +756,10 @@ export function VoltDuel() {
               </div>
               {helpOpen && (
                 <div className="help-pop" id="vd-help-tip" role="dialog" aria-label="Help">
+                  <p>
+                    <span aria-hidden="true">⏵ </span>
+                    <span data-i18n="vdHoldHelp">{holdHelp}</span>
+                  </p>
                   <p>
                     Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
                   </p>
