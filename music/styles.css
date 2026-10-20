@@ -5025,5 +5025,136 @@ body.mu237 #dock-left .tab:focus-visible {
   box-shadow: 0 0 0 6px #F3F4F6 !important;
 }
 
+/* MU 2.36.9 item 3 — stainless-steel mixer skin. No images, no blur. */
+html[data-theme] body.mu237,
+html[data-theme] body.mu237 .desk,
+html[data-theme] body.mu237 .side,
+html[data-theme] body.mu237 .transport,
+html[data-theme] body.mu237 .work {
+  color: #111827 !important;
+  background-color: #C5CAD1 !important;
+  background-image:
+    linear-gradient(180deg, rgba(255,255,255,0.28), rgba(0,0,0,0.06)),
+    repeating-linear-gradient(90deg, rgba(255,255,255,0.22) 0 1px, rgba(17,24,39,0.05) 1px 3px) !important;
+  backdrop-filter: none !important;
+}
+html[data-theme] body.mu237 #dock-left .tab,
+html[data-theme] body.mu237 #scenes .btn,
+html[data-theme] body.mu237 #mic-lights,
+html[data-theme] body.mu237 .transport .btn {
+  background: linear-gradient(180deg, #C4C9D0, #9CA3AC) !important;
+  color: #111827 !important;
+  border: 0 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 3px 0 #5F666F !important;
+  text-shadow: none !important;
+}
+html[data-theme] body.mu237 #dock-left .tab[aria-pressed="true"],
+html[data-theme] body.mu237 #dock-left .tab.on,
+html[data-theme] body.mu237 #scenes .btn[aria-pressed="true"],
+html[data-theme] body.mu237 #scenes .btn.on,
+html[data-theme] body.mu237 #mic-lights[aria-pressed="true"] {
+  background: linear-gradient(180deg, #8E969F, #6B7280) !important;
+  color: #111827 !important;
+  box-shadow: inset 0 3px 0 #5F666F !important;
+  transform: translateY(2px);
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] body.mu237 #dock-left .tab,
+  html[data-theme] body.mu237 #scenes .btn,
+  html[data-theme] body.mu237 #play-btn,
+  html[data-theme] body.mu237 #mic-lights { transform: none !important; transition: none !important; }
+}
+html[data-theme] body.mu237 #play-btn {
+  height: 64px !important;
+  min-height: 64px !important;
+  max-height: 64px !important;
+  background: linear-gradient(180deg, #2B3440, #141A22) !important;
+  color: #F3F4F6 !important;
+  box-shadow: 0 3px 0 #0B0F14 !important;
+}
+html[data-theme] body.mu237.playing #play-btn {
+  background: linear-gradient(180deg, #1C2430, #0E131A) !important;
+  box-shadow: inset 0 3px 0 #05070b !important;
+  transform: translateY(3px);
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  html[data-theme] body.mu237 #play-btn {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+}
+@media (min-width: 601px) and (min-height: 501px) {
+  body.mu237 .side,
+  body.mu237.menu-open .side { bottom: 80px !important; }
+}
+html[data-theme] body.mu237 .fader-row output,
+html[data-theme] body.mu237 #tempo-read {
+  background: #111827 !important;
+  color: #F3F4F6 !important;
+}
+html[data-theme] body.mu237 .fader-row input[type="range"],
+html[data-theme] body.mu237 #tempo {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 10px !important;
+  min-height: 44px !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+html[data-theme] body.mu237 .fader-row input[type="range"]::-webkit-slider-runnable-track,
+html[data-theme] body.mu237 #tempo::-webkit-slider-runnable-track {
+  height: 10px;
+  background: #6B7280;
+  border-radius: 6px;
+  box-shadow: inset 0 2px 0 #5F666F;
+}
+html[data-theme] body.mu237 .fader-row input[type="range"]::-webkit-slider-thumb,
+html[data-theme] body.mu237 #tempo::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 26px;
+  height: 44px;
+  margin-top: -17px;
+  border-radius: 4px;
+  background: repeating-linear-gradient(180deg, #E5E7EB 0 3px, #9CA3AC 3px 6px);
+  box-shadow: 0 2px 0 #5F666F;
+}
+html[data-theme] body.mu237.tab-viz .stage-wrap,
+html[data-theme] body.mu237.show .stage-wrap,
+html[data-theme] body.mu237.tab-viz canvas#viz,
+html[data-theme] body.mu237.show canvas#viz {
+  background: #08131A !important;
+  background-image: none !important;
+}
+html[data-theme] body.mu237 #scenes .swatch-word,
+html[data-theme] body.mu237 #scenes .tick,
+html[data-theme] body.mu237 #mic-lights,
+html[data-theme] body.mu237 #mic-lights span,
+html[data-theme] body.mu237 #dock-left .tab span {
+  color: #111827 !important;
+}
+html[data-theme] body.mu237.tab-viz #song-title,
+html[data-theme] body.mu237.tab-viz #feel,
+html[data-theme] body.mu237.tab-viz #now-line,
+html[data-theme] body.mu237.show #song-title,
+html[data-theme] body.mu237.show #feel,
+html[data-theme] body.mu237.show #now-line {
+  color: #F3F4F6 !important;
+}
+html[data-theme] body.mu237 #scenes .btn:focus-visible,
+html[data-theme] body.mu237 .fader-row input:focus-visible,
+html[data-theme] body.mu237 #play-btn:focus-visible,
+html[data-theme] body.mu237 #dock-left .tab:focus-visible,
+html[data-theme] body.mu237 #mic-lights:focus-visible {
+  outline: 3px solid #0B1F33 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px #F3F4F6 !important;
+}
+html[data-theme] body.mu237.tab-viz .stage-wrap,
+html[data-theme] body.mu237.show .stage-wrap {
+  box-shadow: inset 0 0 0 3px #5F666F !important;
+}
+
+
 
 

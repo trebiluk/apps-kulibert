@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.9** · 2026-10-20 · channel **live**
 
-Tools sit on a side rail or a bottom bar, and one big Play button stays put.
+Material layout (rail or bottom bar, labeled chips with a check, slider value pills, one Play button) and a stainless-steel mixer skin. The shared stage file was not changed.
 
 ## Earlier
 
