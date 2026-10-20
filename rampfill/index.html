@@ -7,7 +7,7 @@
   <title>Ramp & Fill — RF 1.0.2</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2-l5" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
@@ -70,6 +70,8 @@
     <p class="lesson" id="lesson">Steeper = faster. Smoother = neater.</p>
     <div class="stage">
       <canvas id="board" aria-label="Draw a ramp from the grains to the cup."></canvas>
+      <button type="button" id="pick-grains" class="pick" hidden>Grains</button>
+      <button type="button" id="pick-water" class="pick" hidden>Water</button>
       <div id="pause-layer" class="pause" hidden>
         <h2 data-k="paused">Paused</h2>
         <div class="pair">
@@ -142,6 +144,6 @@
   </div>
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.2" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.2"></script>
+  <script src="./app.js?v=RF-1.0.2-l5"></script>
 </body>
 </html>

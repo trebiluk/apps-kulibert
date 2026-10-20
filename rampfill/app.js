@@ -10,12 +10,16 @@
       lesson2: "Steeper = faster. Smoother = neater. Plan space for the next ramp before you pour.",
       lesson3: "Water finds the low path. A tiny gap leaks the whole stream.",
       lesson4: "Thick gel needs a bigger hill. If it will not move, make the hill bigger.",
+      lesson5: "Same ramp, different pour. Grains like a hill. Water needs the lip.",
       ghost: "Draw a ramp like this", clearAsk: "Erase all ramps?", yes: "Yes", no: "No",
-      grains: "Grains", water: "Water", gel: "Gel", blockWord: "Block", fillTo: "fill to here",
+      grains: "Grains", water: "Water", gel: "Gel", blockWord: "Block", wallWord: "Wall", fillTo: "fill to here",
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
       spill: "It spilled here — try a flatter ramp.",
       sat: "Gel sat still — make the hill bigger.",
+      wrong: "Grains go in the left cup.",
+      wrongW: "Water goes in the right cup.",
+      pathNext: "Grains cup filled — pick Water and draw to that cup.",
       leak: "Water leaked at this gap — overlap the ramp onto the cup.",
       blocked: "The block stopped the water — draw the ramp over it.",
       leftFirst: "Fill the left cup first.",
@@ -30,11 +34,12 @@
       helpPour2: "Press Pour. Grains fill the left cup, then the right.",
       helpPour3: "Press Pour. Water slides in when the ramp sits on the cup lip.",
       helpPour4: "Press Pour. Gel is slow. A flat tray will not move it.",
+      helpPour5: "Pick Grains or Water. Only one pours at a time.",
       cupsWord: "Cups:",
       helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
       read: "Read it to me", language: "Language",
-      lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel",
-      done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.",
+      lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel", lv5: "Pick the path",
+      done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.", done5: "Path done.",
       nextLevel: "Next level", beat: "Beat your fill", hub: "Back to Hub",
       noMore: "No more ramps yet.",
       paused: "Paused",
@@ -317,6 +322,8 @@
   var leakKind = "";
   var level = 1;
   var ghostCup = 0;
+  var activeSide = 0;
+  var spouts = [null, null];
   var cupList = [];
   var block = null;
   var tool = "draw";
@@ -361,6 +368,7 @@
     try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; }
   }
   function lessonKey() {
+    if (level === 5) return "lesson5";
     if (level === 4) return "lesson4";
     if (level === 3) return "lesson3";
     if (level === 2) return "lesson2";
@@ -375,7 +383,7 @@
     var nextBtn = document.getElementById("next-level-btn");
     var hubBtn = document.getElementById("hub-btn");
     if (title) title.textContent = t("done" + level);
-    if (level >= 4) {
+    if (level >= 5) {
       if (note) { note.hidden = false; note.textContent = t("noMore"); }
       if (nextBtn) nextBtn.hidden = true;
       if (hubBtn) hubBtn.hidden = false;
@@ -396,7 +404,11 @@
     var body = document.getElementById("whats-body");
     if (body) body.textContent = t("whats");
     var pourHelp = document.getElementById("help-pour");
-    if (pourHelp) pourHelp.textContent = t(level >= 4 ? "helpPour4" : level === 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
+    if (pourHelp) pourHelp.textContent = t(level >= 5 ? "helpPour5" : level >= 4 ? "helpPour4" : level === 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
+    var pg = document.getElementById("pick-grains");
+    var pw = document.getElementById("pick-water");
+    if (pg) pg.textContent = t("grains");
+    if (pw) pw.textContent = t("water");
     var lessonText = t(lessonKey());
     var lessonEl = document.getElementById("lesson");
     if (lessonEl) lessonEl.textContent = lessonText;
@@ -425,8 +437,9 @@
     return t("noSpill");
   }
   function cupWords() {
+    if (level === 5 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("pathNext");
     if (level === 2 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("leftNext");
-    if (level === 2) {
+    if (level === 2 || level === 5) {
       var a = amountWord(fills[0]).replace(/^[^:]+:\s*/, "");
       var b = amountWord(fills[1]).replace(/^[^:]+:\s*/, "");
       return t("left") + ": " + a + " • " + t("right") + ": " + b + " • " + spillWord();
@@ -434,6 +447,8 @@
     return amountWord(fills[0] || 0) + " • " + spillWord();
   }
   function spillSentence() {
+    if (leakKind === "wrong") return t("wrong");
+    if (leakKind === "wrongW") return t("wrongW");
     if (leakKind === "sat") return t("sat");
     if (leakKind === "gap") return t("leak");
     if (leakKind === "block") return t("blocked");
@@ -549,12 +564,13 @@
   function buildGhost() {
     ghost = [];
     if (!cupList.length) return;
-    var target = cupList[Math.min(ghostCup, cupList.length - 1)];
+    var gi = level === 5 ? activeSide : ghostCup;
+    var target = cupList[Math.min(gi, cupList.length - 1)];
     var x0 = spout.x - 4;
     var y0 = spout.y + 6;
     var x1 = target.x + target.w * 0.52;
     var y1 = target.top + Math.min(22, Math.max(8, target.h * 0.2));
-    if (level === 3) y1 = target.top + 8;
+    if (level === 3 || (level === 5 && activeSide === 1)) y1 = target.top + 8;
     var n = 16;
     if (level === 3 && block) {
       var side = target.x + target.w * 0.5 >= block.x + block.w ? 1 : -1;
@@ -584,6 +600,10 @@
           x: x0 + (x1 - x0) * u2,
           y: y0 + (y1 - y0) * (u2 * 0.72 + u2 * u2 * 0.28)
         });
+        var last = ghost[ghost.length - 1];
+        if (level === 5 && block && last.x > block.x && last.x < block.x + block.w && last.y > block.y && last.y < block.y + block.h) {
+          last.x = activeSide === 1 ? block.x + block.w + 16 : block.x - 16;
+        }
       }
     }
   }
@@ -591,7 +611,7 @@
     var tall = viewH > viewW * 1.05;
     var bottom = viewH - 10;
     var topLimit = 62;
-    var n = level === 2 ? 2 : 1;
+    var n = (level === 2 || level === 5) ? 2 : 1;
     var cw = n === 2
       ? Math.max(64, Math.min(128, (viewW - 28) / 2))
       : Math.max(72, Math.min(150, viewW * (tall ? 0.4 : 0.2)));
@@ -615,6 +635,20 @@
       cupList.push(makeCup(x0 + cw + gap, bottom - ch, cw, ch));
       var sx = tall ? viewW * 0.7 : cupList[0].x + cupList[0].w + Math.min(36, viewW * 0.04);
       spout = fitSpout(sx, 58);
+    } else if (level === 5) {
+      var gap5 = Math.max(70, Math.min(120, viewW * 0.12));
+      var cw5 = Math.max(64, Math.min(120, (viewW - gap5 - 24) / 2));
+      var total5 = cw5 * 2 + gap5;
+      var xL = Math.max(8, (viewW - total5) / 2);
+      var ch5 = Math.max(56, Math.min(ch * 0.9, availH * 0.7));
+      cupList.push(makeCup(xL, bottom - ch5, cw5, ch5));
+      cupList.push(makeCup(xL + cw5 + gap5, bottom - ch5, cw5, ch5));
+      var mid = xL + cw5 + gap5 / 2;
+      var wy = 86;
+      block = { x: mid - 24, y: wy, w: 48, h: Math.max(48, cupList[0].top - wy - 16) };
+      spouts[0] = fitSpout(xL + cw5 * 0.55, 58);
+      spouts[1] = fitSpout(xL + cw5 + gap5 + cw5 * 0.45, 58);
+      spout = spouts[activeSide] || spouts[0];
     } else {
       var cx3 = tall ? Math.max(12, (viewW - cw) * 0.5) : Math.min(viewW - cw - 12, Math.max(viewW * 0.56, viewW - cw - 18));
       cupList.push(makeCup(cx3, bottom - ch, cw, ch));
@@ -659,6 +693,7 @@
     canvas.height = Math.round(viewH * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     placeWorld();
+    placePicks();
   }
   function denorm(p) { return { x: p.x * viewW, y: p.y * viewH }; }
   function norm(p) { return { x: p.x / viewW, y: p.y / viewH }; }
@@ -684,11 +719,11 @@
     return -1;
   }
   function inBlock(x, y) {
-    if (!block || level !== 3) return false;
+    if (!block || (level !== 3 && level !== 5)) return false;
     return x >= block.x && x <= block.x + block.w && y >= block.y && y <= block.y + block.h;
   }
   function segHitsBlock(x0, y0, x1, y1) {
-    if (!block || level !== 3) return null;
+    if (!block || (level !== 3 && level !== 5)) return null;
     for (var s = 1; s <= 5; s++) {
       var t = s / 5;
       var x = x0 + (x1 - x0) * t;
@@ -697,10 +732,12 @@
     }
     return null;
   }
-  function strokeSeals(stroke) {
-    if (level !== 3 || !cupList[0]) return true;
+  function strokeSeals(stroke, cup) {
+    if (level !== 3 && !cup) return true;
+    var c = cup || cupList[0];
+    if (!c) return true;
     for (var i = 0; i < stroke.length; i++) {
-      if (lipOverlap(cupList[0], stroke[i].x, stroke[i].y)) return true;
+      if (lipOverlap(c, stroke[i].x, stroke[i].y)) return true;
     }
     return false;
   }
@@ -773,14 +810,20 @@
   function releaseParticle(p) { p.mode = "free"; }
   function settleFree(p) {
     var hit = whichCup(p.x, p.y);
-    if (hit >= 0) takeCup(hit, p.mass, p.x, p.y);
-    else dropSpill(p.mass, p.x, p.y);
+    if (hit >= 0 && !(level === 5 && (p.kind === 1 || hit !== 0))) takeCup(hit, p.mass, p.x, p.y);
+    else {
+      dropSpill(p.mass, p.x, p.y);
+      if (level === 5 && hit === 1 && p.kind === 0) leakKind = "wrong";
+    }
   }
   function stepFollow(p, dt) {
     var list = worldStrokes();
     var stroke = list[p.stroke];
     if (!stroke || stroke.length < 2) { releaseParticle(p); return; }
-    var seals = strokeSeals(stroke);
+    var water = level === 3 || (level === 5 && p.kind === 1);
+    var wIndex = water && level === 5 ? 1 : 0;
+    var wCup = cupList[wIndex];
+    var seals = strokeSeals(stroke, water && level === 5 ? wCup : null);
     if (level === 4) {
       var a0 = stroke[0];
       var b0 = stroke[stroke.length - 1];
@@ -808,8 +851,8 @@
           p.dead = true;
           return;
         }
-        if (level === 3) {
-          if (seals && lipOverlap(cupList[0], end.x, end.y)) takeCup(0, p.mass, end.x, end.y);
+        if (water) {
+          if (seals && wCup && lipOverlap(wCup, end.x, end.y)) takeCup(wIndex, p.mass, end.x, end.y);
           else {
             dropSpill(p.mass, end.x, end.y);
             if (!leakKind) leakKind = "gap";
@@ -855,7 +898,7 @@
           p.dead = true;
           return;
         }
-        if (p.si < stroke.length - 1 && level !== 3) {
+        if (p.si < stroke.length - 1 && !water) {
           var C = stroke[p.si + 1];
           var ang = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(dy, dx);
           while (ang > Math.PI) ang -= Math.PI * 2;
@@ -866,7 +909,7 @@
       if (p.si >= stroke.length - 1) continue;
       var A2 = stroke[p.si];
       var B2 = stroke[p.si + 1];
-      p.x = A2.x + (B2.x - A2.x) * p.u + (level === 3 ? 0 : (p.jitter || 0) * 0.2);
+      p.x = A2.x + (B2.x - A2.x) * p.u + (water ? 0 : (p.jitter || 0) * 0.2);
       p.y = A2.y + (B2.y - A2.y) * p.u;
       var hitB = segHitsBlock(prevX, prevY, p.x, p.y) || (inBlock(p.x, p.y) ? { x: p.x, y: p.y } : null);
       if (hitB) {
@@ -875,16 +918,19 @@
         p.dead = true;
         return;
       }
-      if (level === 3) {
-        if (seals && lipOverlap(cupList[0], p.x, p.y)) {
-          takeCup(0, p.mass, p.x, p.y);
+      if (water) {
+        if (seals && wCup && lipOverlap(wCup, p.x, p.y)) {
+          takeCup(wIndex, p.mass, p.x, p.y);
           p.dead = true;
           return;
         }
       } else {
         var hit = whichCup(p.x, p.y);
         if (hit >= 0) {
-          takeCup(hit, p.mass, p.x, p.y);
+          if (level === 5 && p.kind === 0 && hit !== 0) {
+            dropSpill(p.mass, p.x, p.y);
+            leakKind = "wrong";
+          } else takeCup(hit, p.mass, p.x, p.y);
           p.dead = true;
           return;
         }
@@ -904,9 +950,24 @@
       p.dead = true;
       return;
     }
+    if (level === 5 && p.kind === 1) {
+      if (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4) {
+        dropSpill(p.mass, Math.max(16, Math.min(viewW - 16, p.x)), Math.min(viewH - 16, p.y));
+        if (!leakKind) leakKind = "gap";
+        p.dead = true;
+      }
+      return;
+    }
     if (level !== 3) {
       var hit = whichCup(p.x, p.y);
-      if (hit >= 0) { takeCup(hit, p.mass, p.x, p.y); p.dead = true; return; }
+      if (hit >= 0) {
+        if (level === 5 && hit !== 0) {
+          dropSpill(p.mass, p.x, p.y);
+          leakKind = "wrong";
+        } else takeCup(hit, p.mass, p.x, p.y);
+        p.dead = true;
+        return;
+      }
     }
     if (level === 4 && (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4)) {
       dropSpill(p.mass, Math.max(16, Math.min(viewW - 16, p.x)), Math.min(viewH - 16, p.y));
@@ -925,17 +986,19 @@
   function spawnOne() {
     if (live.length >= LIVE_CAP) {
       var old = live.shift();
-      if (level === 3) {
+      if (level === 3 || (old.kind === 1 && level === 5)) {
         dropSpill(old.mass, old.x, old.y);
         if (!leakKind) leakKind = "gap";
       } else settleFree(old);
       return;
     }
-    var hit = nearestStroke(spout.x, spout.y + 8);
+    var from = level === 5 ? (spouts[activeSide] || spout) : spout;
+    var hit = nearestStroke(from.x, from.y + 8);
     var p = {
-      x: spout.x - 4, y: spout.y + 8, vx: -30, vy: 20,
+      x: from.x - 4, y: from.y + 8, vx: activeSide === 1 ? 30 : -30, vy: 20,
       mode: hit < 0 ? "free" : "follow", stroke: hit, si: 0, u: 0,
-      speed: 180, mass: mass, jitter: 0, dead: false, rot: Math.random() * 6
+      speed: 180, mass: mass, jitter: 0, dead: false, rot: Math.random() * 6,
+      kind: level === 5 ? activeSide : (level === 3 ? 1 : 0)
     };
     if (hit >= 0) {
       var s = worldStrokes()[hit];
@@ -1025,7 +1088,7 @@
     pouring = false;
     paintEndCopy();
     syncModal();
-    var focus = level >= 4 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
+    var focus = level >= 5 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
     if (focus) focus.focus();
   }
   function beatFill() {
@@ -1035,7 +1098,8 @@
     syncModal();
   }
   function setLevel(n) {
-    level = Math.max(1, Math.min(4, n | 0));
+    level = Math.max(1, Math.min(5, n | 0));
+    activeSide = 0;
     strokes = [];
     undo = [];
     ghostCup = 0;
@@ -1047,8 +1111,34 @@
     clearFills();
     layout();
     if (level === 4) seedGelTray();
+    placePicks();
     paintText();
     syncModal();
+  }
+  function placePicks() {
+    var grains = document.getElementById("pick-grains");
+    var water = document.getElementById("pick-water");
+    if (!grains || !water) return;
+    var show = level === 5 && spouts[0] && spouts[1];
+    grains.hidden = !show;
+    water.hidden = !show;
+    if (!show) return;
+    function pin(btn, sp) {
+      btn.style.left = Math.max(4, sp.x - 46) + "px";
+      btn.style.top = Math.max(4, sp.y - 44) + "px";
+    }
+    pin(grains, spouts[0]);
+    pin(water, spouts[1]);
+    grains.setAttribute("aria-pressed", activeSide === 0 ? "true" : "false");
+    water.setAttribute("aria-pressed", activeSide === 1 ? "true" : "false");
+  }
+  function pickSide(n) {
+    if (level !== 5 || pouring) return;
+    activeSide = n === 1 ? 1 : 0;
+    spout = spouts[activeSide] || spout;
+    ghostUntil = performance.now() + 5000;
+    buildGhost();
+    placePicks();
   }
   function seedGelTray() {
     if (level !== 4 || !cupList[0]) return;
@@ -1242,12 +1332,13 @@
     ctx.stroke();
     ctx.restore();
   }
-  function drawPile(c, amount) {
+  function drawPile(c, amount, index) {
     var ratio = Math.max(0, Math.min(1, amount / LINE));
     var innerTop = c.top + 16;
     var innerBot = c.y + c.h - 8;
     var pileH = (innerBot - innerTop) * ratio;
-    if (pileH > 2 && matName() === "grains") {
+    var kind = level === 5 ? (index === 1 ? "water" : "grains") : matName();
+    if (pileH > 2 && kind === "grains") {
       ctx.fillStyle = "#E0A106";
       ctx.beginPath();
       ctx.moveTo(c.x + 14, innerBot);
@@ -1256,7 +1347,7 @@
       ctx.quadraticCurveTo(c.x + c.w / 2, innerBot - pileH - 8, c.x + 16, innerBot - pileH);
       ctx.closePath();
       ctx.fill();
-    } else if (pileH > 2 && matName() === "gel") {
+    } else if (pileH > 2 && kind === "gel") {
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(c.x + 8, c.top + 16);
@@ -1303,7 +1394,7 @@
   }
   function drawCup(c, amount, index) {
     ctx.save();
-    if (level === 3) {
+    if (level === 3 || (level === 5 && index === 1)) {
       ctx.fillStyle = "#1F4E79";
       ctx.strokeStyle = "#1A120C";
       ctx.lineWidth = 3;
@@ -1340,8 +1431,8 @@
       ctx.fillRect(c.x + 8, c.top + 10, c.w - 16, 8);
     }
     ctx.restore();
-    drawPile(c, amount);
-    if (level === 3) {
+    drawPile(c, amount, index);
+    if (level === 3 || (level === 5 && index === 1)) {
       backed(t("water"), c.x + c.w / 2, c.top + c.h * 0.62, 16, "center");
     } else {
     if (level === 4) {
@@ -1380,7 +1471,7 @@
     }
     ctx.stroke();
     ctx.restore();
-    backed(t("blockWord"), block.x + block.w / 2, block.y + block.h * 0.62, 16, "center");
+    backed(t(level === 5 ? "wallWord" : "blockWord"), block.x + block.w / 2, block.y + block.h * 0.62, 16, "center");
     ctx.restore();
   }
   function gelBlob(n) {
@@ -1399,17 +1490,17 @@
     ctx.fill();
     ctx.restore();
   }
-  function drawHopper() {
-    var water = matName() === "water";
-    var gel = matName() === "gel";
+  function drawHopperAt(sp, kind, on) {
+    var water = kind === "water";
+    var gel = kind === "gel";
     ctx.fillStyle = water ? "#1F4E79" : gel ? "#3E5C32" : "#C47B12";
-    ctx.strokeStyle = "#1A120C";
-    ctx.lineWidth = 3;
+    ctx.strokeStyle = on ? "#F6C453" : "#1A120C";
+    ctx.lineWidth = on ? 5 : 3;
     ctx.beginPath();
-    ctx.moveTo(spout.x - 46, spout.y - 36);
-    ctx.lineTo(spout.x + 28, spout.y - 36);
-    ctx.lineTo(spout.x + 10, spout.y);
-    ctx.lineTo(spout.x - 28, spout.y);
+    ctx.moveTo(sp.x - 46, sp.y - 36);
+    ctx.lineTo(sp.x + 28, sp.y - 36);
+    ctx.lineTo(sp.x + 10, sp.y);
+    ctx.lineTo(sp.x - 28, sp.y);
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
@@ -1417,20 +1508,28 @@
       ctx.strokeStyle = "#D6EEF8";
       ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(spout.x - 30, spout.y - 18);
-      ctx.quadraticCurveTo(spout.x - 8, spout.y - 12, spout.x + 8, spout.y - 18);
+      ctx.moveTo(sp.x - 30, sp.y - 18);
+      ctx.quadraticCurveTo(sp.x - 8, sp.y - 12, sp.x + 8, sp.y - 18);
       ctx.stroke();
-      backed(t("water"), spout.x - 8, spout.y - 16, 16, "center");
+      backed(t("water"), sp.x - 8, sp.y - 16, 16, "center");
     } else if (gel) {
-      gelBlob({ x: spout.x - 16, y: spout.y - 16, s: 5 });
-      gelBlob({ x: spout.x - 2, y: spout.y - 12, s: 6 });
-      backed(t("gel"), spout.x - 8, spout.y - 16, 16, "center");
+      gelBlob({ x: sp.x - 16, y: sp.y - 16, s: 5 });
+      gelBlob({ x: sp.x - 2, y: sp.y - 12, s: 6 });
+      backed(t("gel"), sp.x - 8, sp.y - 16, 16, "center");
     } else {
-      seed({ x: spout.x - 18, y: spout.y - 20, s: 3.5, rot: 0.4 });
-      seed({ x: spout.x - 4, y: spout.y - 18, s: 3.5, rot: 1.1 });
-      seed({ x: spout.x - 12, y: spout.y - 10, s: 3, rot: 2 });
-      backed(t("grains"), spout.x - 8, spout.y - 16, 16, "center");
+      seed({ x: sp.x - 18, y: sp.y - 20, s: 3.5, rot: 0.4 });
+      seed({ x: sp.x - 4, y: sp.y - 18, s: 3.5, rot: 1.1 });
+      seed({ x: sp.x - 12, y: sp.y - 10, s: 3, rot: 2 });
+      backed(t("grains"), sp.x - 8, sp.y - 16, 16, "center");
     }
+  }
+  function drawHopper() {
+    if (level === 5 && spouts[0] && spouts[1]) {
+      drawHopperAt(spouts[0], "grains", activeSide === 0);
+      drawHopperAt(spouts[1], "water", activeSide === 1);
+      return;
+    }
+    drawHopperAt(spout, matName(), false);
   }
   function draw() {
     ctx.clearRect(0, 0, viewW, viewH);
@@ -1483,7 +1582,8 @@
     drawHopper();
     var visual = mass > 1 ? 7 : 5;
     live.forEach(function (p) {
-      if (matName() === "water") waterDrop({ x: p.x, y: p.y, s: visual });
+      if (p.kind === 1) waterDrop({ x: p.x, y: p.y, s: visual });
+      else if (matName() === "water" && p.kind !== 0) waterDrop({ x: p.x, y: p.y, s: visual });
       else if (matName() === "gel") gelBlob({ x: p.x, y: p.y, s: visual + 2 });
       else seed({ x: p.x, y: p.y, s: visual, rot: p.rot });
     });
@@ -1515,7 +1615,7 @@
         var p = live[i];
         p.life = (p.life || 0) + dt;
         if (p.life > 12) {
-          if (level === 3) {
+          if (level === 3 || (level === 5 && p.kind === 1)) {
             dropSpill(p.mass, p.x, p.y);
             if (!leakKind) leakKind = "gap";
           } else settleFree(p);
@@ -1526,7 +1626,17 @@
         else stepFree(p, dt);
       }
       live = live.filter(function (p) { return !p.dead; });
-      if (spawnLeft <= 0 && live.length === 0) pouring = false;
+      if (spawnLeft <= 0 && live.length === 0) {
+        pouring = false;
+        if (level === 5 && activeSide === 0 && (fills[0] || 0) >= LINE && (fills[1] || 0) < LINE) {
+          activeSide = 1;
+          spout = spouts[1] || spout;
+          ghostUntil = performance.now() + 5000;
+          buildGhost();
+          placePicks();
+          paintStatus();
+        }
+      }
       checkFilled();
       paintStatus();
     }
@@ -1562,11 +1672,13 @@
     document.getElementById("ask").hidden = true;
     syncModal();
   });
+  document.getElementById("pick-grains").addEventListener("click", function () { pickSide(0); });
+  document.getElementById("pick-water").addEventListener("click", function () { pickSide(1); });
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
   document.getElementById("repour-btn").addEventListener("click", repour);
   document.getElementById("next-btn").addEventListener("click", finishNext);
-  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 4) setLevel(level + 1); });
+  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 5) setLevel(level + 1); });
   document.getElementById("again-btn").addEventListener("click", beatFill);
   document.getElementById("hub-btn").addEventListener("click", function () { window.location.href = "/"; });
   document.getElementById("pause-btn").addEventListener("click", function () { setPaused(true); });

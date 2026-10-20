@@ -10,6 +10,6 @@ Stage 3. Version locked: RF 1.0.2.
 - [x] **RF 1.0.2 0e:** What's new is RF 1.0.2 in 8 languages. Level 1 help says grains (water later), not that Level 1 already has water.
 - [x] **RF 1.0.2 0f:** NOT REPRODUCED. Five Level 2 pours at 915×412 and five at 1366, each watched 10s. Fills stayed at the line, strokes stayed, level stayed 2, canvas height did not move. No pour timer clears the cup (a grain older than 12s only settles or spills that grain). Pour physics unchanged.
 - [x] **RF 1.0.2 L4 Slow Gel:** A flat tray is already drawn. Gel sits and says make the hill bigger. A steeper ramp lets the gel ooze in and fill. Word Gel is on the cup and the hopper.
-- [ ] **RF 1.0.2 L5 Pick the Path**
+- [x] **RF 1.0.2 L5 Pick the Path:** Grains cup on the left, water cup on the right, a wall between them. Grains and Water buttons, one pour at a time. Grains fill on a hill. Water fills only when the ramp meets the lip.
 - [ ] **RF 1.0.2 Stars and session cup row**
 - [ ] **RF 1.0.2 Cup Stack** side tile
