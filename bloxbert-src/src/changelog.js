@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.277', date: '2026-10-20', lines: {
+    en: ['The Woodshop closes and stays closed, so you can place your Bed.'],
+    uk: ['Майстерня закривається й більше не відкривається сама, тож можна поставити ліжко.'],
+    ru: ['Мастерская закрывается и больше не открывается сама, так что можно поставить кровать.'],
+    es: ['El Taller se cierra y se queda cerrado, así que puedes colocar tu cama.'],
+    ar: ['تُغلق الورشة وتبقى مغلقة، فتستطيع وضع سريرك.'],
+    'fa-AF': ['کارگاه بسته می‌شود و بسته می‌ماند، پس می‌توانی تختت را بگذاری.'],
+    rw: ['Ububaji burafunga kandi bugakomeza gufunga, ubwo ushobora gushyira uburiri bwawe.'],
+    ti: ['እቲ ቤት ዕዮ ዕንጨይቲ ይዕጾ ዕጹው ድማ ይጸንሕ፣ ስለዚ ዓራትካ ከተቐምጥ ትኽእል ኢኻ።'],
+  }},
+
   { v: '2.5.276', date: '2026-10-20', lines: {
     en: ['Lamps switch on with a tap, and picking one up is saved.'],
     uk: ['Лампи вмикаються дотиком, а підібрана лампа зберігається.'],

@@ -429,7 +429,8 @@ export function mountPanels(api) {
   }
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)
-  sheetX.addEventListener('pointerdown', (e) => e.stopPropagation())
+  sheetX.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation() })
+  sheetX.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation() })
   sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
   sheet.addEventListener('pointerdown', (e) => {
     if (sheet.hidden || performance.now() - openedAt < 400) return

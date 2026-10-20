@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
 
+- [x] **2.5.277 Woodshop close:** Closing the Woodshop swallows the close tap and ignores reopen for 300 ms, so a hotbar tap selects the Bed instead of reopening the shop. A ?proof=1 hook exposes __BT_PROOF for lamp and bag checks.
 - [x] **2.5.276 Decor lamps:** Right-click toggles floor and wall lamps (1100-1103 are use blocks). Pickup clears meta, marks the world and Bag dirty, and lifts all 4 rug cells. Woodshop and Bed buttons say "Hang 4 tools first" and toast it before the tools are hung.
 - [x] **2.5.275 Hotbar fit:** Leaves, Planks, Gravel and Red sand fit the slot's visible box at 1366, 915 and 412. The slot does not clip the last letter. Font stays at least 10px. Slots stay at least 44px.
 - [x] **2.5.275 Hotbar hook:** window.__bertopiaHotbarCheck() uses the same text-vs-visible-box measure. anyClipped is false at 1366, 915 and 412, and true on a clipped label.

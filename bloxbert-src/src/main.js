@@ -2483,7 +2483,7 @@ function useHit(hit) {
   else if (kind === 'vend') panels.open('counter', key)
   else if (kind === 'bunk') panels.open('bunk', key)
   else if (kind === 'box') panels.open('box', key)
-  else if (kind === 'woodshop') panels.open('woodshop', shopAnchorKey(ax, ay, az))
+  else if (kind === 'woodshop') { if (performance.now() - (window.__shopClosedAt || 0) < 300) return true; panels.open('woodshop', shopAnchorKey(ax, ay, az)) }
   else if (kind === 'sew') panels.open('woodshop', ax + ',' + ay + ',' + az)
   else panels.open('shop')
   openMachineKey = key
@@ -5709,6 +5709,7 @@ function closePlay(how) {
       muteUseKey = openMachineKey
       muteUseUntil = performance.now() + 300
     }
+    window.__shopClosedAt = performance.now()
     openMachineKey = ''
     hideDoorCard()
     const about = $('about')
@@ -11027,5 +11028,52 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
   }
 }
+if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('proof=1')) {
+  window.__BT_PROOF = {
+    giveLamp(kind) {
+      const item = kind === 'wall' ? 'wallLamp' : 'floorLamp'
+      if (session && session.give) session.give(item, 1)
+      return this.bagCounts()
+    },
+    giveBed() {
+      if (session && session.give) session.give('bunk', 1)
+      return this.bagCounts()
+    },
+    hangTools() {
+      const key = openMachineKey
+      const rec = stations && stations.ensureShop ? stations.ensureShop(key) : null
+      if (rec) rec.wall = ['safetyGlasses', 'measuringTape', 'handSaw', 'hammer']
+      return rec && rec.wall ? rec.wall.filter(Boolean).length : 0
+    },
+    lampState() {
+      const out = []
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const px = Math.floor(p[0]), py = Math.floor(p[1]), pz = Math.floor(p[2])
+      for (let dx = -8; dx <= 8; dx++) for (let dz = -8; dz <= 8; dz++) for (let y = py - 2; y <= py + 4; y++) {
+        const id = getVoxel(px + dx, y, pz + dz)
+        if (id === 1100 || id === 1101 || id === 1102 || id === 1103) {
+          let light = false, dist = 99
+          try {
+            for (const L of noa.rendering.scene.lights) {
+              if (L.getClassName && L.getClassName() === 'PointLight' && L.isEnabled && L.isEnabled()) {
+                light = true
+                dist = Math.hypot(L.position.x - (px + dx), L.position.z - (pz + dz))
+              }
+            }
+          } catch (e) {}
+          out.push({ x: px + dx, y, z: pz + dz, voxelId: id, on: id === 1101 || id === 1103, pointLight: { on: light, dist: Math.round(dist * 10) / 10 } })
+        }
+      }
+      return out
+    },
+    voxelAt(x, y, z) { return getVoxel(x, y, z) },
+    bagCounts() {
+      const out = {}
+      if (session && session.bag) for (const s of session.bag.slots) if (s && s.item) out[s.item] = (out[s.item] || 0) + (s.n || 0)
+      return out
+    },
+  }
+}
+
 repaintBlocks()
 void T0
