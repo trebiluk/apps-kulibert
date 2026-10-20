@@ -5,9 +5,9 @@ Physics, levels, keyboard keys, pad size, and scoring were not changed.
 ## VD 1.0.2
 - [x] **Item 1 Phone tip.** Live with touch on: 412×915 and 915×412 show "Hold ◀ ▶ to run. Tap ⤒ to jump, tap again in the air." at 14px, with no WASD and no arrows. Live 1366×768 without touch shows "VEX uses WASD. RIO uses arrows. Jump again in the air." at 14px. Plate reads VD 1.0.2.
 - [x] **Item 2 Portrait gap.** Live 412×915 with touch on: the floor is 7px above the VEX/RIO labels. Pads are 59×56, "◀ LEFT". HUD shows whole "VEX 0 /10", the timer, and "RIO 0 /10". Mute, Pause, Restart, and Full do not cover the track. No page scroll.
-- [ ] **Item 3 blurbAlice.** Added "Help Alice guard the pups" to the shared English table. The eight language files already had the existing Alice line and were not reworded. Local hub and Volt Duel, hard load in en, ar, and fa-AF: 0 "KulibertI18n missing" lines. Arabic shows "ساعدي أليس على حراسة الصغار". Live check still open.
-- [ ] **Item 4 Proof hook.** Not started.
-- [ ] **Version strings.** The build says VD 1.0.2. Live plate and meta already read VD 1.0.2 from the tip commit.
+- [x] **Item 3 blurbAlice.** The shared English table now has "Help Alice guard the pups". The eight language files already had Alice's line and were not reworded. Live Volt Duel hard load: 0 "KulibertI18n missing" lines, 0 errors, and no Volt Duel 404s in en, ar, and fa-AF. Arabic reads "ساعدي أليس على حراسة الصغار". Dari reads "به آلیس کمک کن از بچه‌ها نگهبانی کند".
+- [ ] **Item 4 Proof hook.** `window.__VD_PROOF` is absent without `?proof=1`. With `?proof=1&seed=1` the hook drives the pad input. Built page: `runToFlag('vex')` finished in 26.45 and the card said "VEX takes the flag". `runToFlag('rio')` finished in 29.65 and the card said "RIO takes the flag". `rotateCheck()` both ways (412×915 ↔ 915×412) returned timerKept, coinsKept, and reset false. Live check still open.
+- [x] **Version strings.** Live plate, meta, and chip say VD 1.0.2. What's new (en): "VD 1.0.2 — Phone tips talk touch, and the race sits closer to your buttons."
 
 ## VD 1.0.1 (kept)
 - [x] Hold to run with no context menu. Run and jump can be held together.
@@ -16,6 +16,6 @@ Physics, levels, keyboard keys, pad size, and scoring were not changed.
 - [ ] Keyboard race all the way to the flag on the live door, then one Rematch tap.
 
 ## Carry forward
-- [x] Chip and What's new say VD 1.0.2 on the live door (plate and meta seen).
+- [x] Chip and What's new say VD 1.0.2 on the live door.
 - [ ] Keyboard race to the flag, then one Rematch tap, on the live door.
-- [x] No page scroll at 412×915 on the built page.
+- [x] No page scroll at 412×915.

@@ -5,6 +5,7 @@ import { LEVELS } from "@/game/levels";
 import { createWorld, practiceRun, step } from "@/game/sim";
 import { considerBest, formatTime, loadSave, writeSave, type Save } from "@/game/save";
 import { VIEW_H, VIEW_W, type Input, type World } from "@/game/types";
+import { proofEnabled, registerProof, type ProofState } from "./proof";
 
 type Screen =
   | { name: "menu" }
@@ -398,6 +399,29 @@ export function VoltDuel() {
     };
   }, []);
 
+  const proofRef = useRef<{
+    setHeld: (id: 0 | 1, key: keyof Pad, on: boolean) => void;
+    state: () => ProofState;
+    ensureRace: () => void;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!proofEnabled()) return;
+    registerProof({
+      state: () => proofRef.current?.state() ?? {
+        level: "menu",
+        timer: 0,
+        running: false,
+        vex: { x: 0, y: 0, coins: 0, done: false },
+        rio: { x: 0, y: 0, coins: 0, done: false },
+        orientation: window.innerHeight >= window.innerWidth ? "portrait" : "landscape",
+      },
+      setHeld: (id, key, on) => proofRef.current?.setHeld(id, key, on),
+      ensureRace: () => proofRef.current?.ensureRace(),
+    });
+    return () => registerProof(null);
+  }, []);
+
   const tipLang = TOUCH_TIP[lang] ? lang : "en";
   const tip = coarse ? TOUCH_TIP[tipLang] : KEY_TIP;
 
@@ -416,6 +440,40 @@ export function VoltDuel() {
       );
       btn.classList.toggle("held", on);
     });
+  };
+
+  proofRef.current = {
+    setHeld: (id, key, on) => {
+      const slot = key === "left" ? 1 : key === "right" ? 2 : 3;
+      const pointerId = -10 - id * 4 - slot;
+      if (on) holds.current.set(pointerId, { id, key });
+      else holds.current.delete(pointerId);
+      syncHolds();
+    },
+    state: () => {
+      const world = worldRef.current;
+      const screenNow = screenRef.current;
+      const one = (id: 0 | 1) => {
+        const runner = world?.runners[id];
+        return {
+          x: runner?.x ?? 0,
+          y: runner?.y ?? 0,
+          coins: runner?.coins ?? 0,
+          done: world?.winner === id,
+        };
+      };
+      return {
+        level: world?.level.id ?? "menu",
+        timer: world?.time ?? 0,
+        running: screenNow.name === "play" && (world?.phase === "race" || world?.phase === "countdown"),
+        vex: one(0),
+        rio: one(1),
+        orientation: window.innerHeight >= window.innerWidth ? "portrait" : "landscape",
+      };
+    },
+    ensureRace: () => {
+      if (screenRef.current.name !== "play") launch(0);
+    },
   };
 
   const releasePointer = (pointerId: number) => {
