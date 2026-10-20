@@ -161,31 +161,54 @@ async function runToFlag(player: string) {
   return { finished, time: Number(time.toFixed(2)) };
 }
 
+let restartLatched = false;
+let watched: ProofState | null = null;
+let watchId = 0;
+
+function noteRestart(prev: ProofState, now: ProofState) {
+  if (!prev.running || prev.timer <= 0.4) return;
+  const timerBack = now.timer + 0.25 < prev.timer;
+  const vexBack = prev.vex.x > 120 && now.vex.x < 80 && now.timer < 1.2;
+  const rioBack = prev.rio.x > 120 && now.rio.x < 90 && now.timer < 1.2;
+  if (timerBack || vexBack || rioBack) restartLatched = true;
+}
+
+function watchRace() {
+  if (watchId) return;
+  watchId = window.setInterval(() => {
+    if (!driver) return;
+    const now = driver.state();
+    if (watched) noteRestart(watched, now);
+    watched = now;
+  }, 80);
+}
+
 async function rotateCheck() {
   const d = driver;
   if (!d) return { timerKept: false, coinsKept: false, reset: true };
+  watchRace();
   const before = d.state();
-  const portrait = window.innerHeight >= window.innerWidth;
-  const target = portrait ? { w: 915, h: 412 } : { w: 412, h: 915 };
-  try {
-    window.resizeTo(target.w, target.h);
-  } catch {
-    /* the host viewport is what actually changes size */
-  }
+  const latched = restartLatched;
+  const w0 = window.innerWidth;
+  const h0 = window.innerHeight;
   const began = performance.now();
-  let flipped = false;
-  while (performance.now() - began < 4000) {
-    if (Math.abs(window.innerWidth - target.w) < 24 && Math.abs(window.innerHeight - target.h) < 24) {
-      flipped = true;
-      break;
-    }
+  while (performance.now() - began < 1500) {
+    if (Math.abs(window.innerWidth - w0) > 8 || Math.abs(window.innerHeight - h0) > 8) break;
     await sleep(40);
   }
-  await sleep(120);
+  await sleep(100);
   const after = d.state();
-  const timerKept = after.timer + 0.05 >= before.timer;
+  const timerBack = after.timer + 0.2 < before.timer;
+  const levelRestarted = before.level !== "menu" && after.level !== before.level && after.timer < 1;
+  const spawnedAgain =
+    before.running &&
+    before.timer > 0.4 &&
+    after.timer + 0.2 < before.timer &&
+    ((before.vex.x > 120 && after.vex.x < 80) || (before.rio.x > 120 && after.rio.x < 90));
+  const reset = latched || restartLatched || timerBack || levelRestarted || spawnedAgain;
+  const timerKept = !timerBack && after.timer + 0.05 >= before.timer;
   const coinsKept = after.vex.coins === before.vex.coins && after.rio.coins === before.rio.coins;
-  const reset = !flipped || !timerKept || after.level !== before.level;
+  if (reset) restartLatched = false;
   return { timerKept, coinsKept, reset };
 }
 
@@ -218,4 +241,5 @@ export function armProof() {
 export function registerProof(next: ProofDriver | null) {
   if (!proofEnabled()) return;
   driver = next;
+  if (next) watchRace();
 }
