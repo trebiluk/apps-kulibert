@@ -11044,19 +11044,25 @@ if (location.search.includes('proof=1')) {
       return this.bagCounts()
     },
     hangTools() {
-      const key = openMachineKey || '60,5,60'
+      const sheet = document.getElementById('sheet')
+      const key = (sheet && sheet.dataset.shopKey) || openMachineKey || '0,5,0'
       const rec = stations && stations.ensureShop ? stations.ensureShop(key) : null
       if (rec) rec.wall = ['safetyGlasses', 'measuringTape', 'handSaw', 'hammer']
       const body = document.getElementById('sheet-body')
       if (body && stations && stations.paintWoodshop) stations.paintWoodshop(body, key)
       return rec && rec.wall ? rec.wall.filter(Boolean).length : 0
     },
+    giveWoodshop() {
+      if (session && session.setMode) session.setMode('survival')
+      if (session && session.give) session.give('woodshop', 1)
+      return this.bagCounts()
+    },
     placeHeld() {
       const item = session && session.selectedItem ? session.selectedItem() : ''
       if (!item) return false
       const p = noa.entities.getPosition(noa.playerEntity)
       const x = Math.floor(p[0]) + 1, y = Math.floor(p[1]), z = Math.floor(p[2])
-      const id = item === 'floorLamp' ? 1100 : item === 'wallLamp' ? 1102 : item === 'woodshop' ? ID.woodshop : 0
+      const id = item === 'floorLamp' ? 1100 : item === 'wallLamp' ? 1102 : item === 'woodshop' ? ID.woodshop : item === 'bunk' ? ID.bunk : 0
       if (!id) return false
       edit(x, y, z, id)
       if (session && session.spend) session.spend(item, 1)
@@ -11083,7 +11089,7 @@ if (location.search.includes('proof=1')) {
       }
       return out
     },
-    openWoodshop() { if (panels) panels.open('woodshop', openMachineKey || ''); return true },
+    openWoodshop() { const k = openMachineKey || '0,5,0'; if (panels) panels.open('woodshop', k); const sheet = document.getElementById('sheet'); if (sheet) sheet.dataset.shopKey = k; return true },
     voxelAt(x, y, z) { return getVoxel(x, y, z) },
     bagCounts() {
       const out = {}

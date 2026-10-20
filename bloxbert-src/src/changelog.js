@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.283', date: '2026-10-20', lines: {
+    en: ['Help is in every language, and you can pick your language.'],
+    uk: ['Довідка є всіма мовами, і ти можеш вибрати свою мову.'],
+    ru: ['Справка есть на всех языках, и ты можешь выбрать свой язык.'],
+    es: ['La ayuda está en todos los idiomas y puedes elegir tu idioma.'],
+    ar: ['المساعدة متوفرة بكل اللغات، ويمكنك اختيار لغتك.'],
+    'fa-AF': ['راهنما به همه زبان‌ها است و می‌توانی زبانت را انتخاب کنی.'],
+    rw: ['Ubufasha buri mu ndimi zose, kandi ushobora guhitamo ururimi rwawe.'],
+    ti: ['ሓገዝ ብኹሉ ቋንቋታት ኣሎ፣ ቋንቋኻ ክትመርጽ ትኽእል።'],
+  }},
+
   { v: '2.5.282', date: '2026-10-20', lines: {
     en: ['Close only closes the Woodshop, and Help explains lamps and the Woodshop.'],
     uk: ['«Закрити» закриває лише Майстерню, а Довідка пояснює лампи та Майстерню.'],
