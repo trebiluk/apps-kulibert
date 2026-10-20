@@ -10363,16 +10363,24 @@ function bertHotbarLines(node) {
   if (buf) lines.push(buf)
   return lines
 }
-window.__bertopiaHotbarCheck = function () {
+window.__bertopiaHotbarCheck = function (opts) {
+  const short = !!(opts && opts.short) || location.search.indexOf('short=1') >= 0
   const labels = []
   document.querySelectorAll('#hotbar .slot').forEach((slot) => {
     const lbl = slot.querySelector('.lbl')
     const name = lbl ? (lbl.textContent || '').replace(/\s+/g, ' ').trim() : ''
-    const scrollWidth = lbl ? lbl.scrollWidth : 0
-    const clientWidth = lbl ? lbl.clientWidth : 0
-    const clipped = !!(lbl && name && scrollWidth > clientWidth)
+    let fontPx = 0
+    let textW = 0
+    let visibleW = 0
+    let fits = true
     let midWordBreak = false
     if (lbl && name) {
+      fontPx = parseFloat(getComputedStyle(lbl).fontSize) || 0
+      const tb = bertLabelTextBox(lbl)
+      const vis = bertVisibleBox(slot)
+      textW = tb.width
+      visibleW = vis.width
+      fits = bertLabelFits(tb, vis)
       const node = lbl.firstChild
       if (!node || node.nodeType !== 3 || lbl.childNodes.length !== 1) midWordBreak = true
       else {
@@ -10380,14 +10388,30 @@ window.__bertopiaHotbarCheck = function () {
         const lines = bertHotbarLines(node)
         midWordBreak = lines.some((line) => line.trim().split(/\s+/).filter(Boolean).some((part) => words.indexOf(part) < 0))
       }
+    } else {
+      visibleW = bertVisibleBox(slot).width
     }
-    labels.push({ name: name, scrollWidth: scrollWidth, clientWidth: clientWidth, clipped: clipped, midWordBreak: midWordBreak })
+    labels.push({
+      name: name,
+      fontPx: Math.round(fontPx * 10) / 10,
+      textW: Math.round(textW * 10) / 10,
+      visibleW: Math.round(visibleW * 10) / 10,
+      fits: fits,
+      midWordBreak: midWordBreak,
+    })
   })
-  return {
-    labels: labels,
-    anyClipped: labels.some((row) => row.clipped),
-    anyMidWordBreak: labels.some((row) => row.midWordBreak),
+  const anyClipped = labels.some((row) => row.fits === false)
+  const anyMidWordBreak = labels.some((row) => row.midWordBreak)
+  if (short) {
+    return {
+      w: window.innerWidth,
+      n: labels.length,
+      anyClipped: anyClipped,
+      anyMidWordBreak: anyMidWordBreak,
+      clipped: labels.filter((row) => row.fits === false).map((row) => row.name),
+    }
   }
+  return { w: window.innerWidth, labels: labels, anyClipped: anyClipped, anyMidWordBreak: anyMidWordBreak }
 }
 window.__bertopiaRotateCheck = function () {
   const seed = makerLive && makerLive.seed != null ? (makerLive.seed | 0) : 0
