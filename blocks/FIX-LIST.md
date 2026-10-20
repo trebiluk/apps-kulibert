@@ -4,7 +4,7 @@ Updated Tue Oct 20 2026 (Build: 2.5.273 Pop-ups stay off the Bag on phones, and 
 
 - [x] **2.5.273 Phone toast:** At 412 with the Bag open, a toast sits 8px clear of the header, menu, tabs and Close, including after a rotate back to 412. 915 and 1366 stay beside the panel.
 - [x] **2.5.273 Hotbar words:** Hotbar names do not break mid-word at 412, 915 and 1366. Planks stays whole. Slots stay at least 40px.
-- [ ] **2.5.273 No badge:** No version number inside the Bag or any panel. The HUD chip is the only version.
+- [x] **2.5.273 No badge:** No version number inside the Bag or any panel. The HUD chip is the only version.
 
 - [x] **2.5.272 Bag toast:** With the Bag open, a toast sits fully off the panel, 8px clear of the header, tabs and Close, at 412×915, 915×412 and 1366×768.
 - [x] **2.5.272 Pause:** With the Bag open, Pause hides (Close is the way out) and comes back when the Bag shuts.

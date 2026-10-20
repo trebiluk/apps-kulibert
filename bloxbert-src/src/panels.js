@@ -192,12 +192,6 @@ export function mountPanels(api) {
   function rulesOk() {
     return !!((api.teacher && api.teacher()) || (api.staff && api.staff()))
   }
-  function pageVersion() {
-    const s = document.querySelector('script[data-version]')
-    if (s && s.dataset.version) return s.dataset.version
-    const plate = document.getElementById('ver-plate')
-    return plate ? plate.textContent.trim() : ''
-  }
   function keyTile(icon, act, label, fn) {
     const b = tile(icon, label, fn, label)
     b.classList.add('kd-key')
@@ -226,11 +220,6 @@ export function mountPanels(api) {
     const plate = document.createElement('div')
     plate.className = 'kd-plate'
     plate.append(menuPlate())
-    const chip = document.createElement('span')
-    chip.className = 'kd-chip'
-    chip.dataset.versionChip = '1'
-    chip.textContent = pageVersion()
-    plate.append(chip)
     if (title) {
       title.classList.add('kd-sr')
       plate.append(title)
@@ -301,8 +290,8 @@ export function mountPanels(api) {
     if (sheetX) sheetX.classList.add('kd-key', 'kd-x')
     const chip = document.getElementById('sheet-ver')
     if (chip) {
-      chip.hidden = !framed
-      if (framed) chip.textContent = pageVersion()
+      chip.hidden = true
+      chip.textContent = ''
     }
     if (!framed) return
     body.querySelectorAll('button, .gnote.ghead, .crate-tab, .machine-name').forEach((el) => {

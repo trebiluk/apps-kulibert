@@ -1579,7 +1579,8 @@ html body #sheet[data-panel="inventory"] .wells .well .glbl {
   text-align: center !important;
 }
 
-/* 2.5.273: on a phone the Bag must end above the hotbar so a toast can sit in that lane, never on the header. Wide screens keep the old card height. */
+/* 2.5.273: the version lives on the HUD chip only. No version badge inside a panel. */
+html body #sheet-ver { display: none !important; }
 @media (max-width: 699px) {
   html body #sheet.kd-panel[data-panel="inventory"] {
     max-height: calc(100vh - 230px) !important;
