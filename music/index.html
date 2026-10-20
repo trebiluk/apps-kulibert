@@ -19,7 +19,8 @@
   </script>
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <link rel="stylesheet" href="./styles.css?v=mu2363"/>
+  <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
+  <link rel="stylesheet" href="./styles.css?v=mu2364"/>
 </head>
 <body class="mu237 tab-tap">
   <em id="chip" hidden></em>
@@ -150,6 +151,7 @@
       </div>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news2364">MU 2.36.4 — The top bar shows up right away, phone buttons have words, and pads show their keys.</span></li>
         <li><span data-mu="news2363">MU 2.36.3 — DJ Berty opens neat from the first look, and phones show the whole bar.</span></li>
         <li><span data-mu="news2362">MU 2.36.2 — Fresh beats start at 104, and Tempo fits on phones.</span></li>
         <li><span data-mu="news2361">MU 2.36.1 — Your tempo is right from the first blink, and the grid fits on phones.</span></li>
@@ -347,10 +349,10 @@
           <i id="count-dot" class="count-dot" aria-hidden="true"></i>
         </div>
         <div id="tap-pads" class="tap-pads" aria-label="Pads">
-          <button type="button" class="pad" data-pad="kick" aria-label="Kick">🥁 <span>Kick</span></button>
-          <button type="button" class="pad" data-pad="snare" aria-label="Snare">🪘 <span>Snare</span></button>
-          <button type="button" class="pad" data-pad="hat" aria-label="Hat">🎩 <span>Hat</span></button>
-          <button type="button" class="pad" data-pad="clap" aria-label="Clap">👏 <span>Clap</span></button>
+          <button type="button" class="pad" data-pad="kick" aria-label="Kick"><span class="pad-ico" aria-hidden="true">🥁</span> <span>Kick</span><kbd class="key-hint">A</kbd></button>
+          <button type="button" class="pad" data-pad="snare" aria-label="Snare"><span class="pad-ico" aria-hidden="true">🪘</span> <span>Snare</span><kbd class="key-hint">S</kbd></button>
+          <button type="button" class="pad" data-pad="hat" aria-label="Hat"><span class="pad-ico" aria-hidden="true">🎩</span> <span>Hat</span><kbd class="key-hint">D</kbd></button>
+          <button type="button" class="pad" data-pad="clap" aria-label="Clap"><span class="pad-ico" aria-hidden="true">👏</span> <span>Clap</span><kbd class="key-hint">F</kbd></button>
         </div>
         <p id="guide-line" class="guide-line">Next: Kick</p>
         <p id="playhead-read" class="playhead-read">Beat 1</p>
@@ -588,7 +590,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu2363"></script>
+  <script src="./version.js?v=mu2364"></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -597,7 +599,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu2363"></script>
-  <script src="./app.js?v=mu2363"></script>
+  <script src="./strings.js?v=mu2364"></script>
+  <script src="./app.js?v=mu2364"></script>
 </body>
 </html>

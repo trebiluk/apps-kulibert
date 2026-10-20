@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.4** · 2026-10-19 · channel **live**
+
+The top bar shows up right away, phone buttons have words, and pads show their keys.
+
+## Earlier
+
 **Chip: MU 2.36.3** · 2026-10-19 · channel **live**
 
 DJ Berty opens neat from the first look, and phones show the whole bar.

@@ -6059,4 +6059,5 @@
     });
   });
   document.querySelectorAll(".pen .btn.on").forEach((el) => el.setAttribute("aria-pressed", "true"));
+  document.documentElement.classList.add("dj-ready");
 })();
