@@ -1,5 +1,7 @@
 # Ramp & Fill FIX-LIST
-Stage 4. Version locked: RF 1.0.3.
+Stage 5. Version locked: RF 1.0.4.
+
+- [x] **RF 1.0.4 ITEM 0:** One Retry tap stops a pour and clears a spill. The status goes back to empty with the start hint.
 
 - [x] **RF 1.0.3 ITEM 1:** Home shows two tiles, Levels and Cup Stack. One tap on Cup Stack opens stacking. The in-level Cup Stack button stays.
 - [x] **RF 1.0.3 ITEM 2:** A fresh level, Clear, and Retry show no spill text. "can you fill more?" waits until a cup is filled.

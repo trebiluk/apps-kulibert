@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.3 — home tiles. No trackers. */
+/* Ramp & Fill RF 1.0.4 — retry clears a spill on the first tap. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.3";
+  var VERSION = "RF 1.0.4";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -37,7 +37,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.3 — Cup Stack has its own tile, fresh levels start clean, and your progress is saved!",
+      whats: "RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!",
       levels: "Levels", home: "Home",
       progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
       whatsNew: "What's new", help: "Help",
@@ -86,7 +86,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.3 — Cup Stack має власну плитку, нові рівні починаються чисто, а твій прогрес зберігається!",
+      whats: "RF 1.0.4 — Режим судді: великий таймер, пронумеровані картки й кнопка «Готово» для справжніх чашок!",
       levels: "Рівні", home: "Дім",
       progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
       whatsNew: "Що нового", help: "Допомога",
@@ -134,7 +134,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.3 — У Cup Stack своя плитка, новые уровни начинаются чисто, а твой прогресс сохраняется!",
+      whats: "RF 1.0.4 — Режим судьи: большой таймер, карточки с номерами и кнопка «Готово» для настоящих стаканов!",
       levels: "Уровни", home: "Дом",
       progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
       whatsNew: "Что нового", help: "Помощь",
@@ -182,7 +182,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.3 — ¡Cup Stack tiene su propio botón, los niveles empiezan limpios y tu progreso se guarda!",
+      whats: "RF 1.0.4 — Modo árbitro: un temporizador grande, tarjetas numeradas y un botón Listo para retos con vasos reales!",
       levels: "Niveles", home: "Inicio",
       progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
       whatsNew: "Novedades", help: "Ayuda",
@@ -230,7 +230,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.3 — للعبة Cup Stack مربّع خاص، والمراحل الجديدة تبدأ نظيفة، وتقدّمك محفوظ!",
+      whats: "RF 1.0.4 — وضع الحَكَم: مؤقّت كبير وبطاقات مرقّمة وزر «تم» لتحديات الأكواب الحقيقية!",
       levels: "المراحل", home: "البداية",
       progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
       whatsNew: "ما الجديد", help: "مساعدة",
@@ -278,7 +278,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.3 — Cup Stack کاشی خودش را دارد، مرحله‌های تازه پاک شروع می‌شوند و پیشرفتت ذخیره می‌شود!",
+      whats: "RF 1.0.4 — حالت داور: ساعت بزرگ، کارت‌های شماره‌دار و دکمهٔ «تمام» برای مسابقهٔ پیاله‌های واقعی!",
       levels: "مرحله‌ها", home: "خانه",
       progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
       whatsNew: "تازه‌ها", help: "کمک",
@@ -326,7 +326,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.3 — Cup Stack ifite akazu kayo, ingero nshya zitangira zisukuye, kandi aho ugeze harabikwa!",
+      whats: "RF 1.0.4 — Uburyo bw'umusifuzi: isaha nini, amakarita afite nimero na buto \"Byarangiye\" ku marushanwa y'ibikombe nyabyo!",
       levels: "Ingero", home: "Ahabanza",
       progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
       whatsNew: "Ibishya", help: "Ubufasha",
@@ -374,7 +374,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.3 — Cup Stack ናይ ገዛእ ርእሱ ሰሌዳ ኣለዎ፣ ሓደስቲ ደረጃታት ጽሩያት ይጅምሩ፣ ምዕባለኻ ድማ ይዕቀብ!",
+      whats: "RF 1.0.4 — ኣገባብ ዳኛ: ዓቢ ሰዓት፣ ቁጽሪ ዘለዎም ካርድታትን ናይ «ተወዲኡ» መልጎምን ንሓቀኛ ውድድር ኩባያታት!",
       levels: "ደረጃታት", home: "መጀመርታ",
       progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
@@ -1505,8 +1505,9 @@
   }
   function retry() {
     if (mode === "stack") { resetStack(); return; }
-    if (pouring && spawnLeft > 0) return;
     ended = false;
+    paused = false;
+    document.getElementById("pause-layer").hidden = true;
     document.getElementById("endcard").hidden = true;
     clearFills();
     syncModal();
