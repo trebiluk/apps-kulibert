@@ -4,8 +4,8 @@ Physics, levels, keyboard keys, pad size, and scoring were not changed.
 
 ## VD 1.0.2
 - [x] **Item 1 Phone tip.** Live with touch on: 412×915 and 915×412 show "Hold ◀ ▶ to run. Tap ⤒ to jump, tap again in the air." at 14px, with no WASD and no arrows. Live 1366×768 without touch shows "VEX uses WASD. RIO uses arrows. Jump again in the air." at 14px. Plate reads VD 1.0.2.
-- [ ] **Item 2 Portrait gap.** On the built page at 412×915 the floor sits 7px above the VEX/RIO labels. Pads stay 59×56 with icon and word. HUD scores and the timer stay whole. Mute, Pause, Restart, and Full stay clear of the track. Live check still open.
-- [ ] **Item 3 blurbAlice.** Not started.
+- [x] **Item 2 Portrait gap.** Live 412×915 with touch on: the floor is 7px above the VEX/RIO labels. Pads are 59×56, "◀ LEFT". HUD shows whole "VEX 0 /10", the timer, and "RIO 0 /10". Mute, Pause, Restart, and Full do not cover the track. No page scroll.
+- [ ] **Item 3 blurbAlice.** Added "Help Alice guard the pups" to the shared English table. The eight language files already had the existing Alice line and were not reworded. Local hub and Volt Duel, hard load in en, ar, and fa-AF: 0 "KulibertI18n missing" lines. Arabic shows "ساعدي أليس على حراسة الصغار". Live check still open.
 - [ ] **Item 4 Proof hook.** Not started.
 - [ ] **Version strings.** The build says VD 1.0.2. Live plate and meta already read VD 1.0.2 from the tip commit.
 
