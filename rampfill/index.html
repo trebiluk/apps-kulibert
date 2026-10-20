@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1C2B26" />
-  <title>Ramp & Fill — RF 1.0.2</title>
+  <title>Ramp & Fill — RF 1.0.3</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2-stack" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.3-home" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
-<body>
+<body class="at-home">
   <div class="app">
     <header class="bar">
       <button type="button" id="menu-btn" class="ghost-btn" aria-expanded="false" aria-controls="menu">
@@ -20,12 +20,22 @@
       </button>
       <span class="brand">Ramp & Fill</span>
       <span class="level-pill" id="level-name">First ramp</span>
-      <span class="chip" id="ver-plate">RF 1.0.2</span>
+      <span class="chip" id="ver-plate">RF 1.0.3</span>
       <button type="button" id="pause-btn" class="ghost-btn">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
         <span data-k="pause">Pause</span>
       </button>
     </header>
+    <div id="home" class="home">
+      <button type="button" id="home-levels" class="home-tile">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 18 H28 L34 28 H56" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M40 36 H58 L54 56 H44 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/><path d="M46 46 H54 L52 54 H48 Z" fill="#E0A106"/></svg>
+        <span data-k="levels">Levels</span>
+      </button>
+      <button type="button" id="home-stack" class="home-tile">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 8 H42 L40 22 H24 Z M18 26 H46 L43 42 H21 Z M14 46 H50 L46 60 H18 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
+        <span data-k="stackTile">Cup Stack</span>
+      </button>
+    </div>
     <div class="toolslot">
     <div class="tools" id="tool-row" role="toolbar" aria-label="Ramp tools">
       <button type="button" id="tool-draw" aria-pressed="true">
@@ -120,12 +130,12 @@
   <div id="menu" class="menu" hidden>
     <div class="menu-head">
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.2</span>
+      <span class="ver-plate">RF 1.0.3</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
     </div>
     <section id="whats-new">
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.2 — Slow gel, pick your path, stack cups, and the cup area stays still with a cup count!</p>
+      <p id="whats-body">RF 1.0.3 — Cup Stack has its own tile, fresh levels start clean, and your progress is saved!</p>
     </section>
     <section id="rf-help">
       <h2 data-k="help">Help</h2>
@@ -152,8 +162,8 @@
       <p data-k="local">Aliases and cup pictures stay on this Chromebook. No names. No chat.</p>
     </section>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.2" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.3" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.2-stack"></script>
+  <script src="./app.js?v=RF-1.0.3-home"></script>
 </body>
 </html>

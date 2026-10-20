@@ -131,6 +131,42 @@ button { cursor: pointer; }
   gap: 6px;
 }
 .stack-tile svg { width: 22px; height: 22px; flex: none; }
+.home {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: none;
+  gap: 12px;
+  align-items: stretch;
+}
+body.at-home .home { display: flex; }
+body.at-home .toolslot,
+body.at-home .lesson-row,
+body.at-home .stage,
+body.at-home .status,
+body.at-home .spill-line,
+body.at-home .score { display: none !important; }
+.home-tile {
+  flex: 1 1 48px;
+  min-width: 48px;
+  min-height: 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: 18px;
+  border: 3px solid var(--ink);
+  background: var(--sand);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.35rem;
+  padding: 12px;
+}
+.home-tile svg { width: 88px; height: 88px; flex: none; }
+@media (max-width: 560px) {
+  .home { flex-direction: column; }
+  .home-tile svg { width: 72px; height: 72px; }
+}
 .stage {
   position: relative;
   flex: 1 1 auto;

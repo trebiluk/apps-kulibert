@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.2 — L1 to L3, steady canvas. No trackers. */
+/* Ramp & Fill RF 1.0.3 — home tiles. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.2";
+  var VERSION = "RF 1.0.3";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -36,7 +36,8 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.2 — Slow gel, pick your path, stack cups, and the cup area stays still with a cup count!",
+      whats: "RF 1.0.3 — Cup Stack has its own tile, fresh levels start clean, and your progress is saved!",
+      levels: "Levels", home: "Home",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
       helpPour: "Press Pour. Grains (water later) slide into the cup.",
@@ -82,7 +83,8 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.2 — Повільний гель, обери шлях, став чашки, а поле з чашками більше не стрибає!",
+      whats: "RF 1.0.3 — Cup Stack має власну плитку, нові рівні починаються чисто, а твій прогрес зберігається!",
+      levels: "Рівні", home: "Дім",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
       helpPour: "Натисни Лий. Зерна (вода пізніше) їдуть у чашку.",
@@ -127,7 +129,8 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.2 — Медленный гель, выбери путь, ставь стаканы, а поле с чашками больше не прыгает!",
+      whats: "RF 1.0.3 — У Cup Stack своя плитка, новые уровни начинаются чисто, а твой прогресс сохраняется!",
+      levels: "Уровни", home: "Дом",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
       helpPour: "Нажми Лей. Зёрна (вода позже) едут в чашку.",
@@ -172,7 +175,8 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.2 — Gel lento, elige tu camino, apila vasos ¡y la zona de vasos ya no salta!",
+      whats: "RF 1.0.3 — ¡Cup Stack tiene su propio botón, los niveles empiezan limpios y tu progreso se guarda!",
+      levels: "Niveles", home: "Inicio",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
       helpPour: "Pulsa Vierte. Los granos (el agua, más tarde) bajan a la taza.",
@@ -217,7 +221,8 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.2 — هلام بطيء، اختر طريقك، كدّس الأكواب، ومنطقة الأكواب لم تعد تقفز!",
+      whats: "RF 1.0.3 — للعبة Cup Stack مربّع خاص، والمراحل الجديدة تبدأ نظيفة، وتقدّمك محفوظ!",
+      levels: "المراحل", home: "البداية",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
       helpPour: "اضغط اسكب. الحبوب (الماء لاحقًا) تنزلق إلى الكوب.",
@@ -262,7 +267,8 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.2 — ژل آهسته، راه خود را انتخاب کن، پیاله‌ها را روی هم بگذار، و جای پیاله‌ها دیگر نمی‌پرد!",
+      whats: "RF 1.0.3 — Cup Stack کاشی خودش را دارد، مرحله‌های تازه پاک شروع می‌شوند و پیشرفتت ذخیره می‌شود!",
+      levels: "مرحله‌ها", home: "خانه",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
       helpPour: "بریز را بزن. دانه‌ها (آب بعداً) به پیاله می‌لغزند.",
@@ -307,7 +313,8 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.2 — Jeli itinda, hitamo inzira, shyira ibikombe hejuru y'ibindi, kandi ahari ibikombe ntihagisimbuka!",
+      whats: "RF 1.0.3 — Cup Stack ifite akazu kayo, ingero nshya zitangira zisukuye, kandi aho ugeze harabikwa!",
+      levels: "Ingero", home: "Ahabanza",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
       helpPour: "Kanda Suka. Ibinyanye (amazi nyuma) bigera mu gikombe.",
@@ -352,7 +359,8 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.2 — ቀስ ዝብል ጄል፣ መንገድኻ ምረጽ፣ ኩባያታት ደራርብ፣ ቦታ ኩባያታት ድማ ኣይዘልልን!",
+      whats: "RF 1.0.3 — Cup Stack ናይ ገዛእ ርእሱ ሰሌዳ ኣለዎ፣ ሓደስቲ ደረጃታት ጽሩያት ይጅምሩ፣ ምዕባለኻ ድማ ይዕቀብ!",
+      levels: "ደረጃታት", home: "መጀመርታ",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
       helpPour: "ቀድሕ ጠውቕ። እኽሊ (ማይ ድሕሪት) ናብ ኽባያ ይንሸራተት።",
@@ -407,6 +415,7 @@
   var stackMsg = "";
   var stackWon = false;
   var stackReturnEnd = false;
+  var stackFromHome = false;
   var cups = 0;
   var mass = 1;
   var spawnGap = 0.045;
@@ -488,7 +497,7 @@
     var l2 = document.getElementById("lesson-2");
     if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = mode === "stack" ? t("stackTile") : t("lv" + level);
+    if (lv) lv.textContent = atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
     canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
@@ -1196,6 +1205,33 @@
     if (back) back.hidden = !stacking;
     if (tile) tile.hidden = stacking;
   }
+  function atHome() { return document.body.classList.contains("at-home"); }
+  function showHome() {
+    if (mode === "stack") {
+      mode = "ramp";
+      catchBits = [];
+      syncStackTools();
+    }
+    document.body.classList.add("at-home");
+    var lv = document.getElementById("level-name");
+    if (lv) lv.textContent = t("home");
+    paintStatus();
+  }
+  function showPlay() {
+    document.body.classList.remove("at-home");
+    layout();
+    paintText();
+  }
+  function openLevels() {
+    stackFromHome = false;
+    if (mode === "stack") leaveStack();
+    showPlay();
+  }
+  function openHomeStack() {
+    stackFromHome = true;
+    showPlay();
+    enterStack();
+  }
   function enterStack() {
     if (mode === "stack") return;
     stackReturnEnd = ended;
@@ -1219,6 +1255,12 @@
     catchBits = [];
     syncStackTools();
     placePicks();
+    if (stackFromHome) {
+      stackFromHome = false;
+      showHome();
+      syncModal();
+      return;
+    }
     if (stackReturnEnd) {
       ended = true;
       document.getElementById("endcard").hidden = false;
@@ -1517,6 +1559,7 @@
     syncModal();
   }
   function setPaused(on) {
+    if (atHome()) return;
     paused = on;
     document.getElementById("pause-layer").hidden = !on;
     syncModal();
@@ -1979,7 +2022,12 @@
   });
   document.getElementById("pick-grains").addEventListener("click", function () { pickSide(0); });
   document.getElementById("pick-water").addEventListener("click", function () { pickSide(1); });
-  document.getElementById("stack-tile").addEventListener("click", enterStack);
+  document.getElementById("stack-tile").addEventListener("click", function () {
+    stackFromHome = false;
+    enterStack();
+  });
+  document.getElementById("home-levels").addEventListener("click", openLevels);
+  document.getElementById("home-stack").addEventListener("click", openHomeStack);
   document.getElementById("stack-back").addEventListener("click", leaveStack);
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
