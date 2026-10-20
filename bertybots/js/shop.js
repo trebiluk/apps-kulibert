@@ -2385,7 +2385,7 @@ export function boot() {
         hideHowto();
         debugOn = false;
       }
-      if (ev.key === "`") debugOn = !debugOn;
+      if (ev.key === "`" && window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()) debugOn = !debugOn;
     });
   }
 
@@ -2546,7 +2546,33 @@ export function boot() {
     const howtoOpen = document.getElementById("howto") && !document.getElementById("howto").hidden;
     const busy = playing || drag || howtoOpen || debugOn;
     if (!busy && now - lastDraw < 50) {
-      requestAnimationFrame(loop);
+    
+  function showTestJumps() {
+    var on = false;
+    try { on = !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch (e) {}
+    var bar = document.getElementById("bb-test-jumps");
+    if (bar) bar.hidden = !on;
+  }
+  function jumpWin() {
+    var title = document.getElementById("win-title");
+    var body = document.getElementById("win-body");
+    if (title) title.textContent = "The crate parked";
+    if (body) body.textContent = "Test jump. The wheel was behind it.";
+    winEl.classList.add("show");
+  }
+  function jumpLose() {
+    var box = document.getElementById("calm-fail");
+    var line = document.getElementById("calm-fail-line");
+    if (line) line.textContent = "Test jump. The crate did not park.";
+    if (box) box.hidden = false;
+  }
+
+  var jumpWinBtn = document.getElementById("bb-jump-win");
+  var jumpLoseBtn = document.getElementById("bb-jump-lose");
+  if (jumpWinBtn) jumpWinBtn.addEventListener("click", jumpWin);
+  if (jumpLoseBtn) jumpLoseBtn.addEventListener("click", jumpLose);
+  showTestJumps();
+  requestAnimationFrame(loop);
       return;
     }
     lastDraw = now;
@@ -2574,7 +2600,15 @@ export function boot() {
   setLayer("machine");
   refreshMeta();
   const assigned = new URLSearchParams(location.search).get("course");
-  debugOn = new URLSearchParams(location.search).get("debug") === "1";
+  debugOn = (function () {
+    try {
+      var test = window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on();
+      var debug = new URLSearchParams(location.search).get("debug") === "1";
+      var staff = window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked();
+      var desk = window.KulibertTest && window.KulibertTest.deskOn && window.KulibertTest.deskOn();
+      return !!test || (debug && !!staff && !!desk);
+    } catch (e) { return false; }
+  })();
   let embed = new URLSearchParams(location.search).get("embed") === "1"
     || new URLSearchParams(location.search).get("tw") === "1";
   try { if (window.self !== window.top) embed = true; } catch (e) { embed = true; }
