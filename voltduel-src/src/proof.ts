@@ -206,8 +206,9 @@ async function rotateCheck() {
     after.timer + 0.2 < before.timer &&
     ((before.vex.x > 120 && after.vex.x < 80) || (before.rio.x > 120 && after.rio.x < 90));
   const reset = latched || restartLatched || timerBack || levelRestarted || spawnedAgain;
-  const timerKept = !timerBack && after.timer + 0.05 >= before.timer;
-  const coinsKept = after.vex.coins === before.vex.coins && after.rio.coins === before.rio.coins;
+  const timerKept = !reset && !timerBack && after.timer + 0.05 >= before.timer;
+  const coinsKept =
+    !reset && after.vex.coins === before.vex.coins && after.rio.coins === before.rio.coins;
   if (reset) restartLatched = false;
   return { timerKept, coinsKept, reset };
 }
