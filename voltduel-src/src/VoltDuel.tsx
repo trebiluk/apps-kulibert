@@ -78,6 +78,7 @@ export function VoltDuel() {
     { left: false, right: false, jump: false },
   ]);
   const holds = useRef(new Map<number, { id: 0 | 1; key: keyof Pad }>());
+  const releaseRef = useRef<(pointerId: number) => void>(() => {});
   const padsRoot = useRef<HTMLDivElement>(null);
   const particles = useRef<Particle[]>([]);
   const sprites = useRef<[SpriteSet, SpriteSet]>([
@@ -323,17 +324,22 @@ export function VoltDuel() {
       ctx.fillStyle = "#07090c";
       ctx.fillRect(0, 0, rect.width, rect.height);
       const contain = Math.min(rect.width / VIEW_W, rect.height / VIEW_H);
-      const cover = Math.max(rect.width / VIEW_W, rect.height / VIEW_H);
-      const tall = rect.height / VIEW_H > rect.width / VIEW_W;
-      const scale = tall ? cover : contain;
+      const tall = rect.height > rect.width * (VIEW_H / VIEW_W) + 24;
+      let scale = contain;
       let ox = (rect.width - VIEW_W * scale) / 2;
-      const oy = 0;
+      let oy = 0;
       if (tall && world) {
+        const feet = Math.max(...world.runners.map((runner) => runner.y + runner.h)) - world.camY;
+        const span = Math.min(VIEW_H, Math.max(260, feet + 56));
+        scale = Math.max(contain, Math.min(rect.height / span, rect.width / 260));
+        const visibleW = rect.width / scale;
         const pack =
           world.runners.reduce((sum, runner) => sum + (runner.x - world.camX), 0) / world.runners.length;
-        const visible = rect.width / scale;
-        const left = Math.max(0, Math.min(VIEW_W - visible, pack - visible * 0.34));
+        const left = Math.max(0, Math.min(Math.max(0, VIEW_W - visibleW), pack - visibleW * 0.32));
         ox = -left * scale;
+        const visibleH = rect.height / scale;
+        const viewTop = Math.max(0, Math.min(Math.max(0, VIEW_H - visibleH), feet + 28 - visibleH));
+        oy = -viewTop * scale;
       }
       ctx.setTransform(dpr * scale, 0, 0, dpr * scale, ox * dpr, oy * dpr);
       ctx.imageSmoothingEnabled = true;
@@ -516,6 +522,17 @@ export function VoltDuel() {
     if (!holds.current.delete(pointerId)) return;
     syncHolds();
   };
+  releaseRef.current = releasePointer;
+
+  useEffect(() => {
+    const end = (event: globalThis.PointerEvent) => releaseRef.current(event.pointerId);
+    window.addEventListener("pointerup", end);
+    window.addEventListener("pointercancel", end);
+    return () => {
+      window.removeEventListener("pointerup", end);
+      window.removeEventListener("pointercancel", end);
+    };
+  }, []);
 
   const press = (id: 0 | 1, key: keyof Pad) => ({
     onPointerDown: (event: PointerEvent<HTMLButtonElement>) => {
@@ -523,29 +540,10 @@ export function VoltDuel() {
       event.preventDefault();
       holds.current.set(event.pointerId, { id, key });
       syncHolds();
-      try {
-        event.currentTarget.setPointerCapture(event.pointerId);
-      } catch {
-        /* synthetic presses still hold via the pointer map */
-      }
       audio.unlock();
     },
     onPointerUp: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
-    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => {
-      if (event.buttons !== 0) return;
-      releasePointer(event.pointerId);
-    },
-    onLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => {
-      if (event.buttons !== 0) {
-        try {
-          event.currentTarget.setPointerCapture(event.pointerId);
-        } catch {
-          /* finger is still down; the pointer map keeps the run going */
-        }
-        return;
-      }
-      releasePointer(event.pointerId);
-    },
+    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
     onContextMenu: (event: PointerEvent<HTMLButtonElement>) => event.preventDefault(),
   });
 
