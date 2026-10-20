@@ -3,6 +3,7 @@ Read this first on every Bertopia ship. In the same commit, tick `[x]` on each i
 Updated Tue Oct 20 2026 (Build: 2.5.272 Pop-ups stay off your Bag, Pause steps aside, and every block name fits).
 
 - [x] **2.5.272 Bag toast:** With the Bag open, a toast sits fully off the panel, 8px clear of the header, tabs and Close, at 412×915, 915×412 and 1366×768.
+- [x] **2.5.272 Pause:** With the Bag open, Pause hides (Close is the way out) and comes back when the Bag shuts.
 
 - [x] **2.5.271 Toasts clear:** Every toast sits fully above the hotbar and Bag, with at least 8px of clear space, at 412×915, 915×412 and 1366×768. A toast does not touch a slot, Bag, Pause or Full screen.
 - [x] **2.5.271 Toasts fade:** A toast fades after about 3 seconds. A new one replaces the old one. Tapping it hides it at once. Reduced motion hides it with no animation.

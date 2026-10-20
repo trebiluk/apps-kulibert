@@ -1121,6 +1121,8 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
 html[data-kb-bar]:not(.kb-framed) #pause-btn{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #pause-btn{right:68px;left:auto}
 #pause-btn.on{border-color:#22D3EE;color:#22D3EE}
+/* 2.5.272: Pause sits on the open Bag. Close is the way out, and Pause returns when the Bag shuts. */
+body:has(#sheet[data-panel="inventory"]:not([hidden])) #pause-btn{display:none !important}
 body.hud-calm{--top-h:60px}
 body.hud-calm #menu-hint,
 body.hud-calm #day-tip,
