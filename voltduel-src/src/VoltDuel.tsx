@@ -394,7 +394,10 @@ export function VoltDuel() {
       audio.unlock();
     },
     onPointerUp: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
-    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => releasePointer(event.pointerId),
+    onPointerCancel: (event: PointerEvent<HTMLButtonElement>) => {
+      if (event.buttons !== 0) return;
+      releasePointer(event.pointerId);
+    },
     onLostPointerCapture: (event: PointerEvent<HTMLButtonElement>) => {
       if (event.buttons !== 0) {
         try {
