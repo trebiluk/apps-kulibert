@@ -4638,4 +4638,39 @@ body.mu237.show .stage-wrap {
   box-shadow: inset 0 0 0 3px rgba(103, 232, 249, 0.45), 0 0 28px rgba(34, 211, 238, 0.2);
   border-radius: 16px;
 }
+body.mu237.tab-viz .desk { display: flex !important; flex-direction: column !important; }
+body.mu237.tab-viz .out { order: -1 !important; flex: 1 1 auto !important; min-height: 60vh !important; }
+body.mu237 #scenes {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  overflow-x: auto;
+  direction: inherit;
+}
+body.mu237 #scenes .btn {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 72px;
+  min-height: 44px !important;
+  height: auto !important;
+  flex: 1 1 72px;
+  padding: 0 !important;
+  background: #10203f;
+  color: #e8f7ff;
+}
+body.mu237 #scenes .btn canvas { width: 100%; height: 28px !important; display: block; }
+body.mu237 #scenes .swatch-word {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #e8f7ff;
+  padding: 2px 4px 4px;
+}
+body.mu237 #scenes .btn:focus-visible {
+  outline: 3px solid #22d3ee;
+  outline-offset: 2px;
+}
 

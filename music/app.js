@@ -4961,16 +4961,22 @@
         const b = document.createElement("button");
         b.type = "button";
         b.className = "btn";
-        b.dataset.scene = name;
-        b.dataset.wall = packs[name].wall;
         b.textContent = "";
-        b.setAttribute("aria-label", mu("scene_" + name.toLowerCase()) || name);
+        const shown = name === "Neon" ? "Party" : name;
+        b.dataset.scene = shown;
+        b.dataset.wall = packs[name].wall;
+        b.setAttribute("aria-label", mu("scene_" + (name === "Neon" ? "party" : name.toLowerCase())) || shown);
         const thumb = document.createElement("canvas");
         thumb.width = 160;
-        thumb.height = 90;
+        thumb.height = 64;
         thumb.setAttribute("aria-hidden", "true");
         paintSceneThumb(thumb, packs[name]);
         b.appendChild(thumb);
+        const word = document.createElement("span");
+        word.className = "swatch-word";
+        word.textContent = mu("scene_" + (name === "Neon" ? "party" : name.toLowerCase())) || shown;
+        b.appendChild(word);
+        b.dataset.pack = name;
         b.setAttribute("aria-pressed", "false");
         b.addEventListener("click", () => {
           const pack = packs[name];
@@ -4997,7 +5003,7 @@
           paintLooks();
           keep();
           markScene(b);
-          $("lesson").textContent = name + " is on. Saved.";
+          $("lesson").textContent = shown + " is on. Saved.";
         });
         scenes.appendChild(b);
       });
@@ -5020,7 +5026,7 @@
       }
       const look0 = state.layers && state.layers[0] && state.layers[0].look;
       const pick = [...scenes.querySelectorAll(".btn")].find((btn) => {
-        const pack = packs[btn.dataset.scene];
+        const pack = packs[btn.dataset.pack];
         return pack && pack.wall === (state.wall || "night") && pack.layers[0].look === look0;
       }) || scenes.querySelector('[data-wall="' + (state.wall || "night") + '"]') || scenes.querySelector(".btn");
       if (pick) markScene(pick);
@@ -5701,7 +5707,11 @@
     });
     document.querySelectorAll("#scenes [data-scene]").forEach((btn) => {
       const label = mu("scene_" + String(btn.dataset.scene || "").toLowerCase());
-      if (label) btn.setAttribute("aria-label", label);
+      if (label) {
+        btn.setAttribute("aria-label", label);
+        const word = btn.querySelector(".swatch-word");
+        if (word) word.textContent = label;
+      }
     });
     paintAlong();
     document.querySelectorAll("#gestures .btn").forEach((btn) => { if (btn.dataset.gesture) btn.textContent = gestureWord(btn.dataset.gesture); });
