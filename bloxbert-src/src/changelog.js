@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.278', date: '2026-10-20', lines: {
+    en: ['Pause button no longer covers Close; "Tap to play" stops popping back.'],
+    uk: ['Кнопка паузи більше не закриває «Закрити»; «Торкнись, щоб грати» більше не вискакує.'],
+    ru: ['Кнопка паузы больше не закрывает «Закрыть»; «Нажми, чтобы играть» больше не выскакивает.'],
+    es: ['El botón de pausa ya no tapa Cerrar; «Toca para jugar» ya no vuelve a salir.'],
+    ar: ['زر الإيقاف لم يعد يغطي زر الإغلاق؛ ولم تعد «اضغط للعب» تظهر من جديد.'],
+    'fa-AF': ['دکمهٔ توقف دیگر دکمهٔ بستن را نمی‌پوشاند؛ «برای بازی بزنید» دوباره نمی‌آید.'],
+    rw: ['Buto yo guhagarara ntigipfuka Funga; «Kanda ukine» ntikigaruka.'],
+    ti: ['መቆሚ መጠወቒ ንዕጸው ኣይሽፍኖን እዩ፤ «ንምጽዋት ጠውቕ» ደጊሙ ኣይመጽእን።'],
+  }},
+
   { v: '2.5.277', date: '2026-10-20', lines: {
     en: ['The Woodshop closes and stays closed, so you can place your Bed.'],
     uk: ['Майстерня закривається й більше не відкривається сама, тож можна поставити ліжко.'],

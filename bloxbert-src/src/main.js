@@ -5536,6 +5536,7 @@ function focusBtn(btn) {
 function hidePlayChip() {
   const el = $('play-chip')
   if (!el) return
+  window.__playChipGone = true
   if (document.activeElement === el) {
     const canvas = noa.container && noa.container.canvas
     if (canvas) { try { canvas.focus({ preventScroll: true }) } catch (e) { canvas.focus() } }
@@ -5545,6 +5546,7 @@ function hidePlayChip() {
 function showPlayChip() {
   const el = $('play-chip')
   if (!el) return
+  if (window.__playChipGone) return
   el.textContent = t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay')
   el.hidden = false
 }
@@ -11028,7 +11030,7 @@ if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.s
     },
   }
 }
-if (typeof __BLOX_STUDENT__ === 'undefined' || !__BLOX_STUDENT__) if (location.search.includes('proof=1')) {
+if (location.search.includes('proof=1')) {
   window.__BT_PROOF = {
     giveLamp(kind) {
       const item = kind === 'wall' ? 'wallLamp' : 'floorLamp'
