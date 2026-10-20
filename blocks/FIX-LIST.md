@@ -6,6 +6,7 @@ Updated Tue Oct 20 2026 (Build: 2.5.272 Pop-ups stay off your Bag, Pause steps a
 - [x] **2.5.272 Pause:** With the Bag open, Pause hides (Close is the way out) and comes back when the Bag shuts.
 - [x] **2.5.272 Bag names:** Every Bag tile name is whole at 412, 915 and 1366. Tiles stay at least 44px. Bag, Make and Planks stay frozen.
 - [x] **2.5.272 Grid check:** At 915×412, window.__bertopiaGridCheck() is wholeRows true at the top, middle and bottom rests (offset 0, 0 and 1).
+- [x] **2.5.272 Rotate check:** window.__bertopiaRotateCheck() keeps the same world, seed and player when the Bag stays open across 412 and 915. Toast and Pause stay clear.
 
 - [x] **2.5.271 Toasts clear:** Every toast sits fully above the hotbar and Bag, with at least 8px of clear space, at 412×915, 915×412 and 1366×768. A toast does not touch a slot, Bag, Pause or Full screen.
 - [x] **2.5.271 Toasts fade:** A toast fades after about 3 seconds. A new one replaces the old one. Tapping it hides it at once. Reduced motion hides it with no animation.

@@ -10231,6 +10231,69 @@ bot = initBot({
     frameWall(b)
   },
 })
+let bertRotateWatch = null
+let bertRotateResets = 0
+function bertShownBox(el) {
+  if (!el || el.hidden) return null
+  const cs = getComputedStyle(el)
+  if (cs.display === 'none' || cs.visibility === 'hidden') return null
+  const r = el.getBoundingClientRect()
+  if (r.width < 2 || r.height < 2) return null
+  return r
+}
+function bertPxGap(a, b) {
+  if (!a || !b) return 999
+  const dx = Math.max(b.left - a.right, a.left - b.right)
+  const dy = Math.max(b.top - a.bottom, a.top - b.bottom)
+  if (dx < 0 && dy < 0) return Math.round(Math.max(dx, dy))
+  if (dx < 0) return Math.round(dy)
+  if (dy < 0) return Math.round(dx)
+  return Math.round(Math.hypot(dx, dy))
+}
+window.__bertopiaRotateCheck = function () {
+  const seed = makerLive && makerLive.seed != null ? (makerLive.seed | 0) : 0
+  const gen = (window.__freshGen || 0) + (window.__makerGen || 0) + (window.__archiveGen || 0)
+  const token = seed + ':' + gen
+  if (bertRotateWatch == null) bertRotateWatch = token
+  else if (bertRotateWatch !== token) { bertRotateResets += 1; bertRotateWatch = token }
+  const w = window.innerWidth
+  const h = window.innerHeight
+  const sheet = document.getElementById('sheet')
+  const bagOpen = !!(sheet && !sheet.hidden && sheet.dataset.panel === 'inventory')
+  const blocks = []
+  if (bagOpen) {
+    const sheetR = bertShownBox(sheet)
+    const bar = bertShownBox(sheet.querySelector('.sheet-bar'))
+    const closeBtn = bertShownBox(document.getElementById('sheet-x'))
+    if (sheetR) blocks.push(sheetR)
+    if (bar) blocks.push(bar)
+    if (closeBtn) blocks.push(closeBtn)
+    sheet.querySelectorAll('.crate-tab').forEach((node) => { const r = bertShownBox(node); if (r) blocks.push(r) })
+  }
+  const toast = bertShownBox(document.getElementById('toast'))
+  let toastClearPx = 999
+  if (toast && blocks.length) toastClearPx = Math.min.apply(null, blocks.map((b) => bertPxGap(toast, b)))
+  const pause = bertShownBox(document.getElementById('pause-btn'))
+  let pauseClearPx = 999
+  if (pause && blocks.length) pauseClearPx = Math.min.apply(null, blocks.map((b) => bertPxGap(pause, b)))
+  let playerPos = [0, 0, 0]
+  try {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (p) playerPos = [Math.round(p[0] * 100) / 100, Math.round(p[1] * 100) / 100, Math.round(p[2] * 100) / 100]
+  } catch (e) {}
+  return {
+    w: w,
+    h: h,
+    orientation: h >= w ? 'portrait' : 'landscape',
+    mode: session && session.mode ? session.mode : '',
+    bagOpen: bagOpen,
+    toastClearPx: toastClearPx,
+    pauseClearPx: pauseClearPx,
+    worldSeed: seed,
+    playerPos: playerPos,
+    resetCount: bertRotateResets,
+  }
+}
 load().catch(() => {}).finally(() => {
   try { gfxLook.reindex() } catch (e) {}
   if (allowSave) window.__bertOpen = true
