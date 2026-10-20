@@ -3501,7 +3501,7 @@
     }
     micUrl = URL.createObjectURL(blob);
     ["mic-hear", "mic-down", "mic-del"].forEach((id) => { $(id).hidden = false; });
-    $("mic-status").textContent = "One loop is ready. It is not saved here unless you download it.";
+    $("mic-status").textContent = "The take is ready. It is not saved here unless you download it.";
   }
   function watchLevel(stream) {
     arm();
@@ -3560,7 +3560,7 @@
     recorder.start();
     watchLevel(micStream);
     if (!state.playing) play();
-    $("mic-status").textContent = "Listening for one loop. Then the mic turns off.";
+    $("mic-status").textContent = "Listening. Then the mic turns off.";
     $("lesson").textContent = "The mic is on for this loop only. Tap the pads or play along.";
     micTimer = window.setTimeout(() => {
       if (recorder.state === "recording") recorder.stop();
