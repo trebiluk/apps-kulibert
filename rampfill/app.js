@@ -6,14 +6,16 @@
   var STR = {
     en: {
       menu: "Menu", close: "Close", pause: "Pause", resume: "Resume", draw: "Draw", erase: "Erase", undo: "Undo", clear: "Clear", pour: "Pour", retry: "Retry",
-      lesson: "Steeper = faster. Smoother = neater.",
+      lesson: "Steeper = faster. Smoother = neater. Thick gel needs a bigger hill.",
       lesson2: "Steeper = faster. Smoother = neater. Plan space for the next ramp before you pour.",
       lesson3: "Water finds the low path. A tiny gap leaks the whole stream.",
+      lesson4: "Thick gel needs a bigger hill. If it will not move, make the hill bigger.",
       ghost: "Draw a ramp like this", clearAsk: "Erase all ramps?", yes: "Yes", no: "No",
-      grains: "Grains", water: "Water", blockWord: "Block", fillTo: "fill to here",
+      grains: "Grains", water: "Water", gel: "Gel", blockWord: "Block", fillTo: "fill to here",
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
       spill: "It spilled here — try a flatter ramp.",
+      sat: "Gel sat still — make the hill bigger.",
       leak: "Water leaked at this gap — overlap the ramp onto the cup.",
       blocked: "The block stopped the water — draw the ramp over it.",
       leftFirst: "Fill the left cup first.",
@@ -27,11 +29,12 @@
       helpPour: "Press Pour. Grains (water later) slide into the cup.",
       helpPour2: "Press Pour. Grains fill the left cup, then the right.",
       helpPour3: "Press Pour. Water slides in when the ramp sits on the cup lip.",
+      helpPour4: "Press Pour. Gel is slow. A flat tray will not move it.",
       cupsWord: "Cups:",
       helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
       read: "Read it to me", language: "Language",
-      lv1: "First ramp", lv2: "Two cups", lv3: "First leak",
-      done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.",
+      lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel",
+      done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.",
       nextLevel: "Next level", beat: "Beat your fill", hub: "Back to Hub",
       noMore: "No more ramps yet.",
       paused: "Paused",
@@ -43,11 +46,13 @@
       lesson: "Крутіше = швидше. Рівніше = охайніше.",
       lesson2: "Крутіше = швидше. Рівніше = охайніше. Залиш місце для наступного схилу, перш ніж лити.",
       lesson3: "Вода шукає низ. Мала щілина зливає весь струмінь.",
+      lesson4: "Густий гель потребує крутішого схилу. Якщо не їде, зроби схил більшим.",
       ghost: "Намалюй схил ось так", clearAsk: "Стерти всі схили?", yes: "Так", no: "Ні",
-      grains: "Зерна", water: "Вода", blockWord: "Блок", fillTo: "лий до сюди",
+      grains: "Зерна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лий до сюди",
       empty: "Чашка: порожня", little: "Чашка: трохи є", half: "Чашка: майже половина", moreHalf: "Чашка: більше половини", almost: "Чашка: майже повна", done: "Чашка: до лінії",
       noSpill: "нічого не розлилось", bitSpill: "трохи розлилось", someSpill: "дещо розлилось",
       spill: "Тут розлилося — спробуй пологіший схил.",
+      sat: "Гель стоїть — зроби схил крутішим.",
       leak: "Вода витекла в цій щілині — наклади схил на край чашки.",
       blocked: "Блок зупинив воду — намалюй схил над ним.",
       leftFirst: "Спочатку наповни ліву чашку.",
@@ -61,11 +66,12 @@
       helpPour: "Натисни Лий. Зерна (вода пізніше) їдуть у чашку.",
       helpPour2: "Натисни Лий. Зерна наповнюють ліву чашку, потім праву.",
       helpPour3: "Натисни Лий. Вода заходить, коли схил лежить на краю чашки.",
+      helpPour4: "Натисни Лий. Гель повільний. Плаский лоток його не зрушить.",
       cupsWord: "Чашки:",
       helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
       read: "Прочитай мені", language: "Мова",
-      lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік",
-      done1: "Перший схил готовий.", done2: "Дві чашки готові.", done3: "Перший витік готовий.",
+      lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік", lv4: "Повільний гель",
+      done1: "Перший схил готовий.", done2: "Дві чашки готові.", done3: "Перший витік готовий.", done4: "Повільний гель готовий.",
       nextLevel: "Наступний рівень", beat: "Побий свій налив", hub: "Назад до хабу",
       noMore: "Більше схилів поки немає.",
       paused: "Пауза",
@@ -77,11 +83,13 @@
       lesson: "Круче = быстрее. Ровнее = аккуратнее.",
       lesson2: "Круче = быстрее. Ровнее = аккуратнее. Оставь место для следующего склона, прежде чем лить.",
       lesson3: "Вода ищет низ. Маленькая щель сливает всю струю.",
+      lesson4: "Густой гель любит крутой склон. Если стоит, сделай холм больше.",
       ghost: "Нарисуй склон вот так", clearAsk: "Стереть все склоны?", yes: "Да", no: "Нет",
-      grains: "Зёрна", water: "Вода", blockWord: "Блок", fillTo: "лей до сюда",
+      grains: "Зёрна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лей до сюда",
       empty: "Чашка: пустая", little: "Чашка: чуть-чуть", half: "Чашка: почти половина", moreHalf: "Чашка: больше половины", almost: "Чашка: почти полная", done: "Чашка: до линии",
       noSpill: "ничего не пролилось", bitSpill: "немного пролилось", someSpill: "часть пролилась",
       spill: "Здесь пролилось — попробуй более пологий склон.",
+      sat: "Гель стоит — сделай склон круче.",
       leak: "Вода утекла в этой щели — наложи склон на край чашки.",
       blocked: "Блок остановил воду — нарисуй склон над ним.",
       leftFirst: "Сначала наполни левую чашку.",
@@ -95,11 +103,12 @@
       helpPour: "Нажми Лей. Зёрна (вода позже) едут в чашку.",
       helpPour2: "Нажми Лей. Зёрна наполняют левую чашку, потом правую.",
       helpPour3: "Нажми Лей. Вода заходит, когда склон лежит на крае чашки.",
+      helpPour4: "Нажми Лей. Гель медленный. Плоский лоток его не сдвинет.",
       cupsWord: "Чашки:",
       helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
       read: "Прочитай мне", language: "Язык",
-      lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь",
-      done1: "Первый склон готов.", done2: "Две чашки готовы.", done3: "Первая течь готова.",
+      lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь", lv4: "Медленный гель",
+      done1: "Первый склон готов.", done2: "Две чашки готовы.", done3: "Первая течь готова.", done4: "Медленный гель готов.",
       nextLevel: "Следующий уровень", beat: "Побей свой налив", hub: "Назад на главную",
       noMore: "Больше склонов пока нет.",
       paused: "Пауза",
@@ -111,11 +120,13 @@
       lesson: "Más pendiente = más rápido. Más liso = más limpio.",
       lesson2: "Más pendiente = más rápido. Más liso = más limpio. Deja espacio para la otra rampa antes de verter.",
       lesson3: "El agua busca el camino bajo. Una rendija pequeña vacía todo el chorro.",
+      lesson4: "El gel espeso necesita una colina más alta. Si no se mueve, agranda la colina.",
       ghost: "Dibuja una rampa así", clearAsk: "¿Borrar todas las rampas?", yes: "Sí", no: "No",
-      grains: "Granos", water: "Agua", blockWord: "Bloque", fillTo: "llena hasta aquí",
+      grains: "Granos", water: "Agua", gel: "Gel", blockWord: "Bloque", fillTo: "llena hasta aquí",
       empty: "Taza: vacía", little: "Taza: un poquito", half: "Taza: casi la mitad", moreHalf: "Taza: más de la mitad", almost: "Taza: casi llena", done: "Taza: hasta la línea",
       noSpill: "nada se derramó", bitSpill: "un poco se derramó", someSpill: "algo se derramó",
       spill: "Se derramó aquí — prueba una rampa más plana.",
+      sat: "El gel se quedó quieto — haz la colina más alta.",
       leak: "El agua se fugó en este hueco — monta la rampa sobre el borde.",
       blocked: "El bloque paró el agua — dibuja la rampa por encima.",
       leftFirst: "Llena primero la taza izquierda.",
@@ -129,11 +140,12 @@
       helpPour: "Pulsa Vierte. Los granos (el agua, más tarde) bajan a la taza.",
       helpPour2: "Pulsa Vierte. Los granos llenan la taza izquierda y luego la derecha.",
       helpPour3: "Pulsa Vierte. El agua entra cuando la rampa toca el borde de la taza.",
+      helpPour4: "Pulsa Vierte. El gel es lento. Una bandeja plana no lo mueve.",
       cupsWord: "Tazas:",
       helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
       read: "Léemelo", language: "Idioma",
-      lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga",
-      done1: "Primera rampa lista.", done2: "Dos tazas listas.", done3: "Primera fuga lista.",
+      lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga", lv4: "Gel lento",
+      done1: "Primera rampa lista.", done2: "Dos tazas listas.", done3: "Primera fuga lista.", done4: "Gel lento listo.",
       nextLevel: "Siguiente nivel", beat: "Supera tu llenado", hub: "Volver al inicio",
       noMore: "No hay más rampas por ahora.",
       paused: "Pausa",
@@ -145,11 +157,13 @@
       lesson: "الأكثر انحدارًا = أسرع. الأكثر نعومة = أنظف.",
       lesson2: "الأكثر انحدارًا = أسرع. الأكثر نعومة = أنظف. اترك مكانًا للمنحدر التالي قبل أن تصب.",
       lesson3: "الماء يجد الطريق المنخفض. فجوة صغيرة تسرّب كل السيل.",
+      lesson4: "الهلام السميك يحتاج تلة أكبر. إذا لم يتحرك، كبّر التلة.",
       ghost: "ارسم منحدرًا هكذا", clearAsk: "مسح كل المنحدرات؟", yes: "نعم", no: "لا",
-      grains: "حبوب", water: "ماء", blockWord: "كتلة", fillTo: "املأ إلى هنا",
+      grains: "حبوب", water: "ماء", gel: "هلام", blockWord: "كتلة", fillTo: "املأ إلى هنا",
       empty: "الكوب: فارغ", little: "الكوب: قليل", half: "الكوب: قريب من النصف", moreHalf: "الكوب: أكثر من النصف", almost: "الكوب: قريب من الامتلاء", done: "الكوب: حتى الخط",
       noSpill: "لا انسكاب", bitSpill: "انسكاب قليل", someSpill: "بعض الانسكاب",
       spill: "انسكب هنا — جرّب منحدرًا أقل انحدارًا.",
+      sat: "الهلام واقف — اجعل التلة أكبر.",
       leak: "تسرب الماء من هذه الفجوة — اجعل المنحدر يركب على حافة الكوب.",
       blocked: "الكتلة أوقفت الماء — ارسم المنحدر فوقها.",
       leftFirst: "املأ الكوب الأيسر أولًا.",
@@ -163,11 +177,12 @@
       helpPour: "اضغط اسكب. الحبوب (الماء لاحقًا) تنزلق إلى الكوب.",
       helpPour2: "اضغط اسكب. الحبوب تملأ الكوب الأيسر ثم الأيمن.",
       helpPour3: "اضغط اسكب. الماء يدخل حين يلامس المنحدر حافة الكوب.",
+      helpPour4: "اضغط اسكب. الهلام بطيء. الصينية المسطحة لا تحرّكه.",
       cupsWord: "الأكواب:",
       helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
       read: "اقرأه لي", language: "اللغة",
-      lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب",
-      done1: "المنحدر الأول تم.", done2: "الكوبان تمّا.", done3: "أول تسرب تم.",
+      lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب", lv4: "هلام بطيء",
+      done1: "المنحدر الأول تم.", done2: "الكوبان تمّا.", done3: "أول تسرب تم.", done4: "الهلام البطيء تم.",
       nextLevel: "المستوى التالي", beat: "تفوّق على ملئك", hub: "رجوع إلى البداية",
       noMore: "لا منحدرات أخرى الآن.",
       paused: "متوقف",
@@ -179,11 +194,13 @@
       lesson: "تندتر = تیزتر. هموارتر = پاکیزه‌تر.",
       lesson2: "تندتر = تیزتر. هموارتر = پاکیزه‌تر. پیش از ریختن برای سرازیری بعدی جا بگذار.",
       lesson3: "آب راه پایین را پیدا می‌کند. یک شکاف کوچک همه جریان را می‌ریزد.",
+      lesson4: "ژل غلیظ به تپه بزرگ‌تر نیاز دارد. اگر نرفت، تپه را بزرگ‌تر کن.",
       ghost: "یک سرازیری این‌طور بکش", clearAsk: "همه سرازیری‌ها پاک شود؟", yes: "بله", no: "نه",
-      grains: "دانه‌ها", water: "آب", blockWord: "بلوک", fillTo: "تا اینجا پر کن",
+      grains: "دانه‌ها", water: "آب", gel: "ژل", blockWord: "بلوک", fillTo: "تا اینجا پر کن",
       empty: "پیاله: خالی", little: "پیاله: کمی", half: "پیاله: نزدیک نیمه", moreHalf: "پیاله: بیشتر از نیمه", almost: "پیاله: نزدیک پر", done: "پیاله: تا خط",
       noSpill: "چیزی نریخت", bitSpill: "کمی ریخت", someSpill: "مقداری ریخت",
       spill: "اینجا ریخت — یک سرازیری تخت‌تر را امتحان کن.",
+      sat: "ژل ایستاد — تپه را بزرگ‌تر کن.",
       leak: "آب از این شکاف ریخت — سرازیری را روی لبه پیاله بگذار.",
       blocked: "بلوک آب را ایستاند — سرازیری را از روی آن بکش.",
       leftFirst: "اول پیاله چپ را پر کن.",
@@ -197,11 +214,12 @@
       helpPour: "بریز را بزن. دانه‌ها (آب بعداً) به پیاله می‌لغزند.",
       helpPour2: "بریز را بزن. دانه‌ها اول پیاله چپ را پر می‌کنند، بعد راست را.",
       helpPour3: "بریز را بزن. آب وقتی وارد می‌شود که سرازیری روی لبه پیاله باشد.",
+      helpPour4: "بریز را بزن. ژل آهسته است. سینی تخت آن را تکان نمی‌دهد.",
       cupsWord: "پیاله‌ها:",
       helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
       read: "برایم بخوان", language: "زبان",
-      lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت",
-      done1: "سرازیری اول تمام شد.", done2: "دو پیاله تمام شد.", done3: "اولین نشت تمام شد.",
+      lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت", lv4: "ژل آهسته",
+      done1: "سرازیری اول تمام شد.", done2: "دو پیاله تمام شد.", done3: "اولین نشت تمام شد.", done4: "ژل آهسته تمام شد.",
       nextLevel: "سطح بعدی", beat: "پر کردن خود را بهتر کن", hub: "بازگشت به آغاز",
       noMore: "سرازیری دیگری فعلاً نیست.",
       paused: "مکث",
@@ -213,11 +231,13 @@
       lesson: "Gupfuka = kwihuta. Gukora neza = gutunganya.",
       lesson2: "Gupfuka = kwihuta. Gukora neza = gutunganya. Sigaho umwanya w'umuhengamo ukurikira mbere yo gusuka.",
       lesson3: "Amazi ashaka inzira yo hasi. Akanya gato gasuka umuriro wose.",
+      lesson4: "Jeli y'umutobe ikeneye umusozi munini. Niba itagenda, nuna umusozi.",
       ghost: "Shushanya umuhengamo utya", clearAsk: "Siba imihengamo yose?", yes: "Yego", no: "Oya",
-      grains: "Ibinyanye", water: "Amazi", blockWord: "Igipimo", fillTo: "uzuza kugeza hano",
+      grains: "Ibinyanye", water: "Amazi", gel: "Jeli", blockWord: "Igipimo", fillTo: "uzuza kugeza hano",
       empty: "Igikombe: kirimo ubusa", little: "Igikombe: gito", half: "Igikombe: hafi kimwe cya kabiri", moreHalf: "Igikombe: kirenze kimwe cya kabiri", almost: "Igikombe: hafi kuzura", done: "Igikombe: kugeza ku murongo",
       noSpill: "ntacyasutse", bitSpill: "gito cyasutse", someSpill: "bimwe byasutse",
       spill: "Byasutse hano — gerageza umuhengamo utoroshye.",
+      sat: "Jeli yicaye — nuna umusozi.",
       leak: "Amazi yasutse muri aka kanya — shira umuhengamo ku murongo w'igikombe.",
       blocked: "Igipimo cyahagaritse amazi — shushanya umuhengamo hejuru yacyo.",
       leftFirst: "Banza wuzuze igikombe cy'ibumoso.",
@@ -231,11 +251,12 @@
       helpPour: "Kanda Suka. Ibinyanye (amazi nyuma) bigera mu gikombe.",
       helpPour2: "Kanda Suka. Ibinyanye buzura igikombe cy'ibumoso, hanyuma icy'iburyo.",
       helpPour3: "Kanda Suka. Amazi yinjira iyo umuhengamo wicaye ku munwa w'igikombe.",
+      helpPour4: "Kanda Suka. Jeli itinda. Urubaho rw'urutambike ntiruyikurura.",
       cupsWord: "Ibikombe:",
       helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
       read: "Nsome", language: "Ururimi",
-      lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere",
-      done1: "Umuhengamo wa mbere warangiye.", done2: "Ibikombe bibiri byarangiye.", done3: "Isutse rya mbere ryarangiye.",
+      lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere", lv4: "Jeli itinda",
+      done1: "Umuhengamo wa mbere warangiye.", done2: "Ibikombe bibiri byarangiye.", done3: "Isutse rya mbere ryarangiye.", done4: "Jeli itinda yarangiye.",
       nextLevel: "Urwego rukurikira", beat: "Irusha uko wuzuye", hub: "Subira ahatangira",
       noMore: "Nta mihengamo indi ubu.",
       paused: "Byahagaze",
@@ -247,11 +268,13 @@
       lesson: "ዝቐነዐ = ዝቕልጥፍ። ዝለመመ = ዝጽሩይ።",
       lesson2: "ዝቐነዐ = ዝቕልጥፍ። ዝለመመ = ዝጽሩይ። ቅድሚ ምቅዳሕ ንዝቕጽል ቁልቁለት ቦታ ግደፍ።",
       lesson3: "ማይ ትሑት መንገዲ ይረክብ። ንእሽቶ ስንጥቕ ኩሉ ፍልፍል የፍስስ።",
+      lesson4: "ጄል ዝወፈረ ዓቢ ኮረብታ የድሊ። እንተዘይንቀሳቐስ፣ ኮረብታ ዓብዩ ግበር።",
       ghost: "ቁልቁለት ከምዚ ስኣል", clearAsk: "ኩሎም ቁልቁለታት ይደምሰሱ?", yes: "እወ", no: "ኣይፋል",
-      grains: "እኽሊ", water: "ማይ", blockWord: "መቆራጽ", fillTo: "ክሳብ ኣብዚ ምላእ",
+      grains: "እኽሊ", water: "ማይ", gel: "ጄል", blockWord: "መቆራጽ", fillTo: "ክሳብ ኣብዚ ምላእ",
       empty: "ኽባያ: ባዶ", little: "ኽባያ: ቁሩብ", half: "ኽባያ: ዳርጋ ፍርቂ", moreHalf: "ኽባያ: ልዕሊ ፍርቂ", almost: "ኽባያ: ዳርጋ መሊኡ", done: "ኽባያ: ክሳብ መስመር",
       noSpill: "ዝፈሰሰ የለን", bitSpill: "ቁሩብ ፈሲሱ", someSpill: "ገለ ፈሲሱ",
       spill: "ኣብዚ ፈሲሱ — ዝተዓርየ ቁልቁለት ፈትን።",
+      sat: "ጄል ጸኒዑ — ኮረብታ ዓብዩ ግበር።",
       leak: "ማይ ኣብዚ ስንጥቕ ፈሲሱ — ቁልቁለት ኣብ ዳርቢ ኽባያ ኣድርቦ።",
       blocked: "መቆራጽ ማይ ኣቋሪጹ — ቁልቁለት ኣብ ልዕሊኡ ስኣል።",
       leftFirst: "መጀመርታ ጸጋማይ ኽባያ ምላእ።",
@@ -265,11 +288,12 @@
       helpPour: "ቀድሕ ጠውቕ። እኽሊ (ማይ ድሕሪት) ናብ ኽባያ ይንሸራተት።",
       helpPour2: "ቀድሕ ጠውቕ። እኽሊ ቀዳማይ ጸጋማይ ኽባያ የምልእ፣ ድሕሪኡ የማናይ።",
       helpPour3: "ቀድሕ ጠውቕ። ማይ የእቱ እንተኾይኑ ቁልቁለት ኣብ ከንፈር ኽባያ ምስ ደቀሰ።",
+      helpPour4: "ቀድሕ ጠውቕ። ጄል ቀስ ይብል። ጠፍጣፍ ሳሕን ኣይንቀሳቐሶን።",
       cupsWord: "ኽባያታት:",
       helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
       read: "ኣንብበለይ", language: "ቋንቋ",
-      lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ",
-      done1: "ቀዳማይ ቁልቁለት ተዛዚሙ።", done2: "ክልተ ኽባያታት ተዛዚሞም።", done3: "ቀዳማይ ፍሳስ ተዛዚሙ።",
+      lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ", lv4: "ቀስ ዝብል ጄል",
+      done1: "ቀዳማይ ቁልቁለት ተዛዚሙ።", done2: "ክልተ ኽባያታት ተዛዚሞም።", done3: "ቀዳማይ ፍሳስ ተዛዚሙ።", done4: "ቀስ ዝብል ጄል ተዛዚሙ።",
       nextLevel: "ዝቕጽል ደረጃ", beat: "ምልኣትካ ዓዊር", hub: "ናብ መጀመርታ ተመለስ",
       noMore: "ካልእ ቁልቁለት ኣሎ ኣይኮነን።",
       paused: "ደው ኢሉ",
@@ -336,8 +360,13 @@
     if (document.documentElement.getAttribute("data-kp-motion") === "less") return true;
     try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; }
   }
-  function lessonKey() { return level === 3 ? "lesson3" : level === 2 ? "lesson2" : "lesson"; }
-  function matName() { return level === 3 ? "water" : "grains"; }
+  function lessonKey() {
+    if (level === 4) return "lesson4";
+    if (level === 3) return "lesson3";
+    if (level === 2) return "lesson2";
+    return "lesson";
+  }
+  function matName() { return level === 4 ? "gel" : level === 3 ? "water" : "grains"; }
   function paintEndCopy() {
     var card = document.getElementById("endcard");
     if (!card || card.hidden) return;
@@ -346,7 +375,7 @@
     var nextBtn = document.getElementById("next-level-btn");
     var hubBtn = document.getElementById("hub-btn");
     if (title) title.textContent = t("done" + level);
-    if (level >= 3) {
+    if (level >= 4) {
       if (note) { note.hidden = false; note.textContent = t("noMore"); }
       if (nextBtn) nextBtn.hidden = true;
       if (hubBtn) hubBtn.hidden = false;
@@ -367,7 +396,7 @@
     var body = document.getElementById("whats-body");
     if (body) body.textContent = t("whats");
     var pourHelp = document.getElementById("help-pour");
-    if (pourHelp) pourHelp.textContent = t(level >= 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
+    if (pourHelp) pourHelp.textContent = t(level >= 4 ? "helpPour4" : level === 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
     var lessonText = t(lessonKey());
     var lessonEl = document.getElementById("lesson");
     if (lessonEl) lessonEl.textContent = lessonText;
@@ -405,6 +434,7 @@
     return amountWord(fills[0] || 0) + " • " + spillWord();
   }
   function spillSentence() {
+    if (leakKind === "sat") return t("sat");
     if (leakKind === "gap") return t("leak");
     if (leakKind === "block") return t("blocked");
     if (leakKind === "leftFirst") return t("leftFirst");
@@ -570,7 +600,7 @@
     ch = Math.max(56, Math.min(ch, availH));
     cupList = [];
     block = null;
-    if (level === 1) {
+    if (level === 1 || level === 4) {
       var cx = Math.max(12, Math.min(viewW * (tall ? 0.08 : 0.13), viewW - cw - 70));
       cupList.push(makeCup(cx, bottom - ch, cw, ch));
       spout = fitSpout(
@@ -676,6 +706,27 @@
   }
   function nearestStroke(sx, sy) {
     var list = worldStrokes();
+    if (level === 4) {
+      var steep = -1;
+      var steepSlope = -1;
+      for (var g = 0; g < list.length; g++) {
+        if (list[g].length < 2) continue;
+        var st0 = list[g][0];
+        if (Math.hypot(st0.x - sx, st0.y - sy) > 200) continue;
+        var acc = 0;
+        var nseg = 0;
+        for (var k = 0; k < list[g].length - 1; k++) {
+          var ax = list[g][k + 1].x - list[g][k].x;
+          var ay = list[g][k + 1].y - list[g][k].y;
+          var al = Math.hypot(ax, ay) || 1;
+          acc += Math.abs(ay) / al;
+          nseg++;
+        }
+        var sl = nseg ? acc / nseg : 0;
+        if (sl > steepSlope) { steepSlope = sl; steep = g; }
+      }
+      if (steep >= 0) return steep;
+    }
     var best = -1;
     var bestD = 160;
     for (var i = 0; i < list.length; i++) {
@@ -730,6 +781,20 @@
     var stroke = list[p.stroke];
     if (!stroke || stroke.length < 2) { releaseParticle(p); return; }
     var seals = strokeSeals(stroke);
+    if (level === 4) {
+      var a0 = stroke[0];
+      var b0 = stroke[stroke.length - 1];
+      var overall = Math.abs(b0.y - a0.y) / (Math.hypot(b0.x - a0.x, b0.y - a0.y) || 1);
+      if (overall < 0.12) {
+        p.stuck = (p.stuck || 0) + dt;
+        if (p.stuck > 1.1) {
+          dropSpill(p.mass, p.x, p.y);
+          leakKind = "sat";
+          p.dead = true;
+        }
+        return;
+      }
+    }
     var left = p.speed * dt;
     var guard = 0;
     while (left > 0 && guard++ < 8) {
@@ -752,6 +817,15 @@
           p.dead = true;
           return;
         }
+        if (level === 4) {
+          if (whichCup(end.x, end.y) >= 0) takeCup(whichCup(end.x, end.y), p.mass, end.x, end.y);
+          else {
+            dropSpill(p.mass, end.x, end.y);
+            if (!leakKind) leakKind = "sat";
+          }
+          p.dead = true;
+          return;
+        }
         p.x = end.x;
         p.y = end.y;
         releaseParticle(p);
@@ -764,7 +838,7 @@
       var len = Math.hypot(dx, dy) || 0.001;
       var remain = (1 - p.u) * len;
       var slope = Math.min(1, Math.abs(dy) / len);
-      p.speed = 120 + slope * 720;
+      p.speed = level === 4 ? 42 + slope * 200 : 120 + slope * 720;
       var prevX = p.x;
       var prevY = p.y;
       if (left < remain) {
@@ -833,6 +907,12 @@
     if (level !== 3) {
       var hit = whichCup(p.x, p.y);
       if (hit >= 0) { takeCup(hit, p.mass, p.x, p.y); p.dead = true; return; }
+    }
+    if (level === 4 && (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4)) {
+      dropSpill(p.mass, Math.max(16, Math.min(viewW - 16, p.x)), Math.min(viewH - 16, p.y));
+      if (!leakKind) leakKind = "sat";
+      p.dead = true;
+      return;
     }
     if (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4) {
       if (level === 3) {
@@ -945,7 +1025,7 @@
     pouring = false;
     paintEndCopy();
     syncModal();
-    var focus = level >= 3 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
+    var focus = level >= 4 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
     if (focus) focus.focus();
   }
   function beatFill() {
@@ -955,7 +1035,7 @@
     syncModal();
   }
   function setLevel(n) {
-    level = Math.max(1, Math.min(3, n | 0));
+    level = Math.max(1, Math.min(4, n | 0));
     strokes = [];
     undo = [];
     ghostCup = 0;
@@ -966,8 +1046,25 @@
     document.getElementById("donebar").hidden = true;
     clearFills();
     layout();
+    if (level === 4) seedGelTray();
     paintText();
     syncModal();
+  }
+  function seedGelTray() {
+    if (level !== 4 || !cupList[0]) return;
+    var c = cupList[0];
+    var x0 = spout.x - 8;
+    var y0 = spout.y + 8;
+    var x1 = c.x + c.w + 28;
+    if (!(x1 < x0 - 60)) x1 = x0 - 200;
+    x1 = Math.max(20, Math.min(x0 - 40, x1));
+    var pts = [];
+    for (var i = 0; i <= 8; i++) {
+      var u = i / 8;
+      pts.push(norm({ x: x0 + (x1 - x0) * u, y: y0 + 6 * u }));
+    }
+    strokes = [pts];
+    undo = [];
   }
   function setTool(next) {
     tool = next;
@@ -1159,6 +1256,20 @@
       ctx.quadraticCurveTo(c.x + c.w / 2, innerBot - pileH - 8, c.x + 16, innerBot - pileH);
       ctx.closePath();
       ctx.fill();
+    } else if (pileH > 2 && matName() === "gel") {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(c.x + 8, c.top + 16);
+      ctx.lineTo(c.x + 14, c.y + c.h - 6);
+      ctx.lineTo(c.x + c.w - 14, c.y + c.h - 6);
+      ctx.lineTo(c.x + c.w - 8, c.top + 16);
+      ctx.closePath();
+      ctx.clip();
+      ctx.fillStyle = "#5C7A4A";
+      ctx.beginPath();
+      ctx.ellipse(c.x + c.w / 2, innerBot - pileH * 0.35, Math.max(12, (c.w - 36) / 2), Math.max(8, pileH * 0.5), 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     } else if (pileH > 2) {
       ctx.save();
       ctx.beginPath();
@@ -1233,6 +1344,11 @@
     if (level === 3) {
       backed(t("water"), c.x + c.w / 2, c.top + c.h * 0.62, 16, "center");
     } else {
+    if (level === 4) {
+      gelBlob({ x: c.x + c.w * 0.35, y: c.top + c.h * 0.72, s: 7 });
+      gelBlob({ x: c.x + c.w * 0.55, y: c.top + c.h * 0.8, s: 8 });
+      backed(t("gel"), c.x + c.w / 2, c.top + c.h * 0.48, 16, "center");
+    } else {
       backed(t("grains"), c.x + c.w / 2, c.top + Math.min(c.h * 0.7, c.h - 16), 16, "center");
       if (level === 2) backed(index === 0 ? t("left") : t("right"), c.x + c.w / 2, c.top + c.h * 0.4, 14, "center");
       ctx.fillStyle = "#1A120C";
@@ -1241,6 +1357,7 @@
         ctx.arc(c.x + 18 + d2 * Math.max(8, (c.w - 36) / 4), c.top + c.h * 0.84, 2.4, 0, Math.PI * 2);
         ctx.fill();
       }
+    }
     }
   }
   function drawBlock() {
@@ -1266,9 +1383,26 @@
     backed(t("blockWord"), block.x + block.w / 2, block.y + block.h * 0.62, 16, "center");
     ctx.restore();
   }
+  function gelBlob(n) {
+    ctx.save();
+    ctx.translate(n.x, n.y);
+    ctx.fillStyle = "#5C7A4A";
+    ctx.strokeStyle = "#1A120C";
+    ctx.lineWidth = 1.6;
+    ctx.beginPath();
+    ctx.arc(0, 0, n.s || 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(-n.s * 0.25, -n.s * 0.2, (n.s || 7) * 0.28, 0, Math.PI * 2);
+    ctx.fillStyle = "#D5E2C4";
+    ctx.fill();
+    ctx.restore();
+  }
   function drawHopper() {
     var water = matName() === "water";
-    ctx.fillStyle = water ? "#1F4E79" : "#C47B12";
+    var gel = matName() === "gel";
+    ctx.fillStyle = water ? "#1F4E79" : gel ? "#3E5C32" : "#C47B12";
     ctx.strokeStyle = "#1A120C";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -1287,6 +1421,10 @@
       ctx.quadraticCurveTo(spout.x - 8, spout.y - 12, spout.x + 8, spout.y - 18);
       ctx.stroke();
       backed(t("water"), spout.x - 8, spout.y - 16, 16, "center");
+    } else if (gel) {
+      gelBlob({ x: spout.x - 16, y: spout.y - 16, s: 5 });
+      gelBlob({ x: spout.x - 2, y: spout.y - 12, s: 6 });
+      backed(t("gel"), spout.x - 8, spout.y - 16, 16, "center");
     } else {
       seed({ x: spout.x - 18, y: spout.y - 20, s: 3.5, rot: 0.4 });
       seed({ x: spout.x - 4, y: spout.y - 18, s: 3.5, rot: 1.1 });
@@ -1346,6 +1484,7 @@
     var visual = mass > 1 ? 7 : 5;
     live.forEach(function (p) {
       if (matName() === "water") waterDrop({ x: p.x, y: p.y, s: visual });
+      else if (matName() === "gel") gelBlob({ x: p.x, y: p.y, s: visual + 2 });
       else seed({ x: p.x, y: p.y, s: visual, rot: p.rot });
     });
   }
@@ -1427,7 +1566,7 @@
   document.getElementById("retry-btn").addEventListener("click", retry);
   document.getElementById("repour-btn").addEventListener("click", repour);
   document.getElementById("next-btn").addEventListener("click", finishNext);
-  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 3) setLevel(level + 1); });
+  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 4) setLevel(level + 1); });
   document.getElementById("again-btn").addEventListener("click", beatFill);
   document.getElementById("hub-btn").addEventListener("click", function () { window.location.href = "/"; });
   document.getElementById("pause-btn").addEventListener("click", function () { setPaused(true); });
