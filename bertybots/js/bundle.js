@@ -1480,6 +1480,7 @@ function boot() {
     if (next) next.textContent = isRace() ? "Run again" : "Next job";
     if (skip) skip.hidden = true;
     if (winEl) winEl.classList.add("show");
+    paintCanvasA11y();
   }
 
   function presentClear() {
@@ -1856,6 +1857,31 @@ function boot() {
     /* The Chromebook rotates on its own. Do not lock the screen. */
   }
 
+
+  function paintCanvasA11y() {
+    const canvas = document.getElementById("c");
+    const live = document.getElementById("bb-live");
+    const pick = document.getElementById("level-pick");
+    const level = pick && pick.selectedOptions && pick.selectedOptions[0] ? pick.selectedOptions[0].textContent.trim() : "BertyBots";
+    if (canvas) {
+      canvas.setAttribute("role", "img");
+      canvas.setAttribute("aria-label", "BertyBots " + level);
+    }
+    if (!live) return;
+    const winTitle = document.getElementById("win-title");
+    const winBody = document.getElementById("win-body");
+    const fail = document.getElementById("calm-fail-line");
+    const failBox = document.getElementById("calm-fail");
+    let line = "";
+    if (winEl && winEl.classList.contains("show")) {
+      line = "Win. " + (winTitle ? winTitle.textContent : "Parked.") + " " + (winBody ? winBody.textContent : "");
+    } else if (failBox && !failBox.hidden && fail && fail.textContent) {
+      line = "Fail. " + fail.textContent;
+    } else {
+      line = lastReadout || (playing ? "Testing." : "Goal. Build and test.");
+    }
+    if (live.textContent !== line) live.textContent = line;
+  }
   function refreshMeta() {
     titleEl.value = doc.title;
     countEl.textContent = `${pieceCount(doc)} / ${PIECE_CAP}`;
@@ -1872,6 +1898,7 @@ function boot() {
     refreshRank();
     refreshLesson();
     applyCoach();
+    paintCanvasA11y();
   }
 
   function pushHist() {
@@ -2124,6 +2151,7 @@ function boot() {
     if (!line) { box.hidden = true; return; }
     if (text) text.textContent = line;
     box.hidden = false;
+    paintCanvasA11y();
   }
 
   function buildSim(source) {

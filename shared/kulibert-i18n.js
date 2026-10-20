@@ -42,6 +42,7 @@
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
   "whatsNewLine": "Hub 2026-10-20: Leaderboard names are picked from a list.",
   "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
+  "bbCanvasHelp": "Screen readers hear the job name, then the goal, win, or miss.",
   "moreApps": "More apps",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",

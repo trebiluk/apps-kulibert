@@ -18,5 +18,6 @@
   "levels": "Levels",
   "noVoice": "No voice yet",
   "whatsNewLine": "Hub 2026-10-20: Pick names from a list.",
-  "lbAliasHelp": "Pick a name from the list. Do not type a real name."
+  "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
+  "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss."
 }

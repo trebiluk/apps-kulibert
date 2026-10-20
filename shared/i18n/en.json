@@ -159,5 +159,6 @@
   "undo": "Undo",
   "whatsNewBody": "Wheat looks like wheat, closed doors look closed, and the helper cards explain themselves.",
   "world": "World",
-  "lbAliasHelp": "Pick a name from the list. Do not type a real name."
+  "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
+  "bbCanvasHelp": "Screen readers hear the job name, then the goal, win, or miss."
 }

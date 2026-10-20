@@ -158,5 +158,6 @@
   "undo": "Deshacer",
   "whatsNewBody": "El trigo parece trigo, las puertas cerradas se ven cerradas, y las tarjetas de ayuda se explican solas.",
   "world": "Mundo",
-  "lbAliasHelp": "Elige un nombre de la lista. No escribas un nombre real."
+  "lbAliasHelp": "Elige un nombre de la lista. No escribas un nombre real.",
+  "bbCanvasHelp": "Los lectores de pantalla oyen el nombre del trabajo, luego la meta, el acierto o el fallo."
 }
