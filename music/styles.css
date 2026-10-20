@@ -5200,6 +5200,124 @@ body.mu237 .mu-snack[hidden] { display: none !important; }
   body.mu237 .mu-snack { transition: none !important; }
 }
 
+/* MU 2.36.10 — at 915×412 the swatches and Mic lights sit above the transport.
+   The stage keeps the leftover height (still about 60vh). Mix keeps an 84px live strip. */
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 .transport,
+  body.mu237.playing:not(.show) .transport,
+  body.mu237.is-beat:not(.show) .transport {
+    height: 56px !important;
+    min-height: 0 !important;
+    max-height: 56px !important;
+  }
+  body.mu237.tab-viz .tool-line,
+  body.mu237.tab-viz #song-title,
+  body.mu237.tab-viz #feel,
+  body.mu237.tab-viz #now-line,
+  body.mu237.tab-viz #lane,
+  body.mu237.tab-viz .show-progress,
+  body.mu237.tab-viz #viz-help,
+  body.mu237.tab-viz #steel-faders,
+  body.mu237.tab-viz #lights-pane > details,
+  body.mu237.tab-viz #wave-explore {
+    display: none !important;
+  }
+  body.mu237.tab-viz #viz-mic-status {
+    display: block !important;
+    position: fixed !important;
+    z-index: 45 !important;
+    top: calc(var(--bar, 52px) + 8px) !important;
+    inset-inline-end: 8px !important;
+    inset-inline-start: auto !important;
+    margin: 0 !important;
+    max-width: 240px !important;
+    padding: 4px 8px !important;
+    background: #111827 !important;
+    color: #F3F4F6 !important;
+    border-radius: 8px !important;
+    pointer-events: none !important;
+  }
+  body.mu237.tab-viz #viz-mic-status:empty { display: none !important; }
+  body.mu237.tab-viz .desk {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-viz .out {
+    order: -1 !important;
+    display: flex !important;
+    flex: 1 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    flex: 1 1 auto !important;
+  }
+  body.mu237.tab-viz .work {
+    order: 2 !important;
+    flex: 0 0 52px !important;
+    height: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    overflow: visible !important;
+    display: flex !important;
+  }
+  body.mu237.tab-viz #lights-pane {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 6px !important;
+    height: 52px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    padding: 2px 4px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    position: relative !important;
+    z-index: 40 !important;
+  }
+  body.mu237.tab-viz #scenes {
+    flex: 1 1 auto !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+  body.mu237.tab-viz #scenes .btn,
+  body.mu237.tab-viz #mic-lights {
+    position: relative !important;
+    z-index: 40 !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    margin: 0 !important;
+  }
+  body.mu237.tab-viz #mic-lights {
+    flex: 0 0 auto !important;
+  }
+  body.mu237.tab-mix.viz-strip .out,
+  body.mu237.tab-mix.viz-strip .stage-wrap,
+  body.mu237.tab-mix.viz-strip canvas#viz,
+  body.mu237.tab-songs.viz-strip .out,
+  body.mu237.tab-songs.viz-strip .stage-wrap,
+  body.mu237.tab-songs.viz-strip canvas#viz {
+    display: block !important;
+    height: 84px !important;
+    min-height: 84px !important;
+    max-height: 84px !important;
+  }
+}
+
+
 
 
 

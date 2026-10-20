@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.10** · 2026-10-20 · channel **live**
 
-MU 2.36.10 — swatch words ≥4.5:1 on raised and pressed caps (ink #111827 on #C4C9D0/#B0B7BF/#9CA3AC). Sideways reach and Help are still open in this chip.
+MU 2.36.10 — swatch words ≥4.5:1 on raised and pressed caps; swatches + Mic lights reachable at 915×412 (Mix live strip shown). The play bar wrapper is restored so it sits under those controls. Help is still open in this chip.
 
 ## Earlier
 

@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.10 item 2: at 915×412 swatches and Mic lights are tappable above the transport, and the Mix strip is 84px.
 - [x] MU 2.36.10 item 1: swatch words ≥4.5:1 raised and pressed (bg #9CA3AC / #B0B7BF, ink #111827).
 - [x] MU 2.36.9 item 1: side rail at 1366, bottom bar at 412, small-label rail sideways, one Play button.
 - [x] MU 2.36.9 item 2: labeled picture chips, slider number pills, focus.
