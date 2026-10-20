@@ -13,7 +13,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - [x] MU 2.36.9 item 1: side rail at 1366, bottom bar at 412, small-label rail sideways, one Play button.
 - [x] MU 2.36.9 item 2: labeled picture chips, slider number pills, focus.
 - [x] MU 2.36.9 item 3: stainless-steel mixer skin.
-- [ ] MU 2.36.9 item 4: snackbar above the play bar.
+- [x] MU 2.36.9 item 4: snackbar above the play bar.
 - [x] MU 2.36.8: dark stage on Viz and Perform, labeled looks (Party), live strip, and Mic lights.
 - [x] MU 2.36.7: sideways Tap to write is clear, Viz keeps its word, and the proof buttons stay readable in the light theme.
 - [x] MU 2.36.6: the version chip stays off the nav, and the proof readout counts the real tiles.

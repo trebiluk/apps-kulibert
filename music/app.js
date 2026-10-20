@@ -95,6 +95,17 @@
     const shared = window.KulibertI18n && window.KulibertI18n.t && window.KulibertI18n.t("play");
     return shared || "Play";
   }
+  let snackTimer = 0;
+  function snack(key, vars) {
+    const el = $("mu-snack");
+    if (!el) return;
+    const text = mu(key, vars) || "";
+    if (!text) { el.hidden = true; return; }
+    el.hidden = false;
+    el.textContent = text;
+    window.clearTimeout(snackTimer);
+    snackTimer = window.setTimeout(() => { el.hidden = true; }, 4000);
+  }
   function setBdi(node, text) {
     if (!node) return;
     let bdi = node.querySelector(":scope > bdi");
@@ -1496,6 +1507,8 @@
     $("play-btn").setAttribute("title", playWordText(true));
     const playWord = $("play-word");
     if (playWord) playWord.textContent = playWordText(true);
+    const songName = state.song && (state.song.title || state.song.name) ? String(state.song.title || state.song.name) : (mu("yourSong") || "Your song");
+    snack("snackPlay", { name: songName });
     if (!ctx) return;
     const spe = stepsPerEvent();
     const start = ctx.currentTime + 0.04;
@@ -1584,6 +1597,7 @@
     $("play-btn").setAttribute("title", playWordText(false));
     const playWord = $("play-word");
     if (playWord) playWord.textContent = playWordText(false);
+    snack("snackStop");
     state.recording = false;
     state.armBeats = 0;
     state.turn = "";
@@ -5021,6 +5035,7 @@
           paintLooks();
           keep();
           markScene(b);
+          snack("snackPic", { look: shown });
           $("lesson").textContent = shown + " is on. Saved.";
         });
         scenes.appendChild(b);
