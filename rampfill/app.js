@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.4 — retry clears a spill on the first tap. No trackers. */
+/* Ramp & Fill RF 1.0.5 — clear cards teach the lesson. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.4";
+  var VERSION = "RF 1.0.5";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -37,7 +37,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!",
+      whats: "RF 1.0.5 — Clear cards now teach slope, thickness and flow rate.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -51,6 +51,10 @@
       helpPour5: "Pick Grains or Water. Only one pours at a time.",
       cupsWord: "Cups:",
       helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
+      helpLesson: "Read the lesson line when you win.",
+      teachSlope: "Steeper slope = faster flow",
+      teachGel: "Thick liquid (high viscosity) flows slower",
+      teachRate: "Flow rate = how much pours each second",
       read: "Read it to me", language: "Language",
       lv1: "First ramp", lv2: "Two cups", lv3: "First leak", lv4: "Slow gel", lv5: "Pick the path",
       done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.", done4: "Slow gel done.", done5: "Path done.",
@@ -88,7 +92,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.4 — Режим судді: великий таймер, пронумеровані картки й кнопка «Готово» для справжніх чашок!",
+      whats: "RF 1.0.5 — Картки перемоги тепер пояснюють нахил, густоту й швидкість потоку.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -101,6 +105,10 @@
       helpPour4: "Натисни Лий. Гель повільний. Плаский лоток його не зрушить.",
       cupsWord: "Чашки:",
       helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
+      helpLesson: "Прочитай рядок уроку, коли виграєш.",
+      teachSlope: "Крутіший нахил = швидший потік",
+      teachGel: "Густа рідина (висока в'язкість) тече повільніше",
+      teachRate: "Швидкість потоку = скільки ллється щосекунди",
       read: "Прочитай мені", language: "Мова",
       lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік", lv4: "Повільний гель",
       done1: "Перший схил готовий.", done2: "Дві чашки готові.", done3: "Перший витік готовий.", done4: "Повільний гель готовий.",
@@ -138,7 +146,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.4 — Режим судьи: большой таймер, карточки с номерами и кнопка «Готово» для настоящих стаканов!",
+      whats: "RF 1.0.5 — Карточки победы теперь объясняют наклон, густоту и скорость потока.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -151,6 +159,10 @@
       helpPour4: "Нажми Лей. Гель медленный. Плоский лоток его не сдвинет.",
       cupsWord: "Чашки:",
       helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
+      helpLesson: "Прочитай строку урока, когда победишь.",
+      teachSlope: "Круче наклон = быстрее поток",
+      teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
+      teachRate: "Скорость потока = сколько льётся в секунду",
       read: "Прочитай мне", language: "Язык",
       lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь", lv4: "Медленный гель",
       done1: "Первый склон готов.", done2: "Две чашки готовы.", done3: "Первая течь готова.", done4: "Медленный гель готов.",
@@ -188,7 +200,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.4 — Modo árbitro: un temporizador grande, tarjetas numeradas y un botón Listo para retos con vasos reales!",
+      whats: "RF 1.0.5 — Las tarjetas de nivel ahora enseñan pendiente, espesor y caudal.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -201,6 +213,10 @@
       helpPour4: "Pulsa Vierte. El gel es lento. Una bandeja plana no lo mueve.",
       cupsWord: "Tazas:",
       helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
+      helpLesson: "Lee la línea de la lección al ganar.",
+      teachSlope: "Más pendiente = flujo más rápido",
+      teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
+      teachRate: "Caudal = cuánto se vierte cada segundo",
       read: "Léemelo", language: "Idioma",
       lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga", lv4: "Gel lento",
       done1: "Primera rampa lista.", done2: "Dos tazas listas.", done3: "Primera fuga lista.", done4: "Gel lento listo.",
@@ -238,7 +254,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.4 — وضع الحَكَم: مؤقّت كبير وبطاقات مرقّمة وزر «تم» لتحديات الأكواب الحقيقية!",
+      whats: "RF 1.0.5 — بطاقات الفوز تشرح الآن الميل والكثافة ومعدل التدفق.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -251,6 +267,10 @@
       helpPour4: "اضغط اسكب. الهلام بطيء. الصينية المسطحة لا تحرّكه.",
       cupsWord: "الأكواب:",
       helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
+      helpLesson: "اقرأ سطر الدرس عندما تفوز.",
+      teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
+      teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
+      teachRate: "معدل التدفق = كم يُسكب كل ثانية",
       read: "اقرأه لي", language: "اللغة",
       lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب", lv4: "هلام بطيء",
       done1: "المنحدر الأول تم.", done2: "الكوبان تمّا.", done3: "أول تسرب تم.", done4: "الهلام البطيء تم.",
@@ -288,7 +308,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.4 — حالت داور: ساعت بزرگ، کارت‌های شماره‌دار و دکمهٔ «تمام» برای مسابقهٔ پیاله‌های واقعی!",
+      whats: "RF 1.0.5 — کارت‌های برد حالا شیب، غلظت و سرعت جریان را یاد می‌دهند.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -301,6 +321,10 @@
       helpPour4: "بریز را بزن. ژل آهسته است. سینی تخت آن را تکان نمی‌دهد.",
       cupsWord: "پیاله‌ها:",
       helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
+      helpLesson: "وقتی بردی خط درس را بخوان.",
+      teachSlope: "شیب تندتر = جریان تندتر",
+      teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
+      teachRate: "سرعت جریان = در هر ثانیه چقدر می‌ریزد",
       read: "برایم بخوان", language: "زبان",
       lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت", lv4: "ژل آهسته",
       done1: "سرازیری اول تمام شد.", done2: "دو پیاله تمام شد.", done3: "اولین نشت تمام شد.", done4: "ژل آهسته تمام شد.",
@@ -338,7 +362,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.4 — Uburyo bw'umusifuzi: isaha nini, amakarita afite nimero na buto \"Byarangiye\" ku marushanwa y'ibikombe nyabyo!",
+      whats: "RF 1.0.5 — Amakarita yo gutsinda ubu yigisha ubuhaname, ubukomere n'umuvuduko w'itemba.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -351,6 +375,10 @@
       helpPour4: "Kanda Suka. Jeli itinda. Urubaho rw'urutambike ntiruyikurura.",
       cupsWord: "Ibikombe:",
       helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
+      helpLesson: "Soma umurongo w'isomo iyo utsinze.",
+      teachSlope: "Ubuhaname bukabije = itemba ryihuta",
+      teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
+      teachRate: "Umuvuduko = ingano itemba buri segonda",
       read: "Nsome", language: "Ururimi",
       lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere", lv4: "Jeli itinda",
       done1: "Umuhengamo wa mbere warangiye.", done2: "Ibikombe bibiri byarangiye.", done3: "Isutse rya mbere ryarangiye.", done4: "Jeli itinda yarangiye.",
@@ -388,7 +416,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.4 — ኣገባብ ዳኛ: ዓቢ ሰዓት፣ ቁጽሪ ዘለዎም ካርድታትን ናይ «ተወዲኡ» መልጎምን ንሓቀኛ ውድድር ኩባያታት!",
+      whats: "RF 1.0.5 — ካርድታት ዓወት ሕጂ ዝንባለ፡ ርጉእነትን ፍጥነት ውሕጅን ይምህሩ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -401,6 +429,10 @@
       helpPour4: "ቀድሕ ጠውቕ። ጄል ቀስ ይብል። ጠፍጣፍ ሳሕን ኣይንቀሳቐሶን።",
       cupsWord: "ኽባያታት:",
       helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
+      helpLesson: "ምስ ተዓወትካ መስመር ትምህርቲ ኣንብብ።",
+      teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
+      teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
+      teachRate: "ፍጥነት ውሕጅ = ኣብ ሰከንድ ክንደይ ይውሕጅ",
       read: "ኣንብበለይ", language: "ቋንቋ",
       lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ", lv4: "ቀስ ዝብል ጄል",
       done1: "ቀዳማይ ቁልቁለት ተዛዚሙ።", done2: "ክልተ ኽባያታት ተዛዚሞም።", done3: "ቀዳማይ ፍሳስ ተዛዚሙ።", done4: "ቀስ ዝብል ጄል ተዛዚሙ።",
@@ -409,6 +441,13 @@
       paused: "ደው ኢሉ",
       local: "ሕጉስ ስምን ኽባያታትን ኣብዚ መሳርሒ ይጸንሑ። ናይ ብሓቂ ስም የለን። ዕላል የለን።",
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
+    },
+    simple: {
+      whats: "RF 1.0.5 — Win cards teach a science word.",
+      helpLesson: "Read the lesson line when you win.",
+      teachSlope: "Steeper slope means faster flow",
+      teachGel: "Thick liquid (high viscosity) moves slower",
+      teachRate: "Flow rate means how much pours each second"
     }
   };
   var LANGS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
@@ -426,6 +465,7 @@
   var spill = 0;
   var leakKind = "";
   var level = 1;
+  var LEVEL_TAG = ["slope", "rate", "slope", "gel", "rate"];
   var ghostCup = 0;
   var activeSide = 0;
   var spouts = [null, null];
@@ -491,14 +531,16 @@
 
   function lang() {
     var v = document.documentElement.getAttribute("data-kp-lang") || "";
-    if (STR[v]) return v;
+    if (v === "simple" || STR[v]) return v;
     try {
       if (window.KulibertPrefs && STR[window.KulibertPrefs.lang]) return window.KulibertPrefs.lang;
     } catch (e) {}
     return "en";
   }
   function t(k) {
-    var pack = STR[lang()] || STR.en;
+    var L = lang();
+    if (L === "simple" && STR.simple && STR.simple[k]) return STR.simple[k];
+    var pack = STR[L] || STR.en;
     return pack[k] || STR.en[k] || "";
   }
   function motionLess() {
@@ -530,6 +572,16 @@
       if (nextBtn) nextBtn.hidden = false;
       if (hubBtn) hubBtn.hidden = true;
     }
+    var tag = LEVEL_TAG[level - 1] || "slope";
+    var key = tag === "gel" ? "teachGel" : tag === "rate" ? "teachRate" : "teachSlope";
+    var line = document.getElementById("end-lesson-text");
+    var ico = document.getElementById("end-ico");
+    if (line) line.textContent = t(key);
+    if (ico) ico.innerHTML = tag === "gel"
+      ? '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 8 C24 8 14 22 14 30 A10 10 0 0 0 34 30 C34 22 24 8 24 8 Z" fill="#E7B56A" stroke="#F3E6C8" stroke-width="3"/></svg>'
+      : tag === "rate"
+      ? '<svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="26" r="14" fill="none" stroke="#F6C453" stroke-width="4"/><path d="M24 26 V16 M24 26 L32 30" fill="none" stroke="#F6C453" stroke-width="4" stroke-linecap="round"/></svg>'
+      : '<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 36 L28 16 H42" fill="none" stroke="#F6C453" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   }
   function paintText() {
     var L = lang();
@@ -1313,7 +1365,7 @@
       try {
         if (window.KulibertBoards) window.KulibertBoards.post({
           game: "rampfill", board: "pieces", value: Math.max(1, strokes.length || 1),
-          version: "RF 1.0.4"
+          version: VERSION
         });
       } catch (eBoard) {}
       paintCups();

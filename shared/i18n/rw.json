@@ -181,5 +181,9 @@
   "lbHelp1": "Shakisha amanota yawe meza ku mukino.",
   "lbHelp2": "Kanda Gutsinda kugira ngo ufungure urwo rutonde.",
   "lbHelp3": "Ibyiza byanjye ni ibyawe. Ishuri n'ikigo byerekana 10 ba mbere. Iki cyumweru gitangira ku wa mbere.",
-  "lbHelp4": "Umwarimu ashobora guhisha tabu cyangwa izina."
+  "lbHelp4": "Umwarimu ashobora guhisha tabu cyangwa izina.",
+  "rfTeachSlope": "Ubuhaname bukabije = itemba ryihuta",
+  "rfTeachGel": "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
+  "rfTeachRate": "Umuvuduko = ingano itemba buri segonda",
+  "rfHelpLesson": "Soma umurongo w'isomo iyo utsinze."
 }

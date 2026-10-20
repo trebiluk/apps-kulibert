@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 6. Version locked: RF 1.0.5.
+
+- [x] **RF 1.0.5 ITEM 1:** The clear card shows one lesson line and an icon. Level 1 says slope. Level 4 says viscosity. Levels 2 and 5 say flow rate. Help tells you to read that line.
+
 Stage 5. Version locked: RF 1.0.4.
 
 - [x] **RF 1.0.4 ITEM 0:** One Retry tap stops a pour and clears a spill. The status goes back to empty with the start hint.

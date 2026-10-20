@@ -28,5 +28,9 @@
   "lbHelp1": "See your best on the game tile.",
   "lbHelp2": "Tap Beat it. That board opens.",
   "lbHelp3": "My bests is you. Class and School show 10 names. This week starts Monday.",
-  "lbHelp4": "A teacher can hide a tab or a name."
+  "lbHelp4": "A teacher can hide a tab or a name.",
+  "rfTeachSlope": "Steeper slope means faster flow",
+  "rfTeachGel": "Thick liquid (high viscosity) moves slower",
+  "rfTeachRate": "Flow rate means how much pours each second",
+  "rfHelpLesson": "Read the lesson line when you win."
 }

@@ -443,7 +443,22 @@ canvas {
   text-align: center;
   padding: 12px;
 }
-.endcard { z-index: 6; }
+.endcard { z-index: 6; overflow: auto; }
+.end-lesson {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  max-width: min(560px, 100%);
+  font-size: clamp(18px, 3vw, 26px);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--sand);
+}
+.end-lesson svg { width: 44px; height: 44px; flex: none; }
+.help-step { display: flex; align-items: center; gap: 8px; }
+.help-step svg { width: 28px; height: 28px; flex: none; }
 .endcard .pair, .ask .pair, .pause .pair { width: min(520px, 100%); }
 .pause h2, .ask h2, .endcard h2 { margin: 0; font-size: 1.45rem; }
 .menu {

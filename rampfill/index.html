@@ -7,7 +7,7 @@
   <title>Ramp & Fill — RF 1.0.4</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.4-lock" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.5-lesson" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/kulibert-boards.js?v=2026-10-20-leaderboard-stats"></script>
@@ -201,6 +201,10 @@
       </div>
       <div id="endcard" class="endcard" hidden role="dialog" aria-labelledby="end-title">
         <h2 id="end-title">First ramp done.</h2>
+        <p id="end-lesson" class="end-lesson">
+          <span id="end-ico" aria-hidden="true"></span>
+          <span id="end-lesson-text"></span>
+        </p>
         <p id="end-note" hidden></p>
         <div class="pair">
           <button type="button" id="next-level-btn" data-k="nextLevel">Next level</button>
@@ -224,12 +228,12 @@
   <div id="menu" class="menu" hidden>
     <div class="menu-head">
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.4</span>
+      <span class="ver-plate">RF 1.0.5</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
     </div>
     <section id="whats-new">
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!</p>
+      <p id="whats-body">RF 1.0.5 — Clear cards now teach slope, thickness and flow rate.</p>
     </section>
     <section id="rf-help">
       <h2 data-k="help">Help</h2>
@@ -237,6 +241,7 @@
         <li data-k="helpDraw">Draw a ramp like the dotted guide.</li>
         <li id="help-pour">Press Pour. Grains (water later) slide into the cup.</li>
         <li data-k="helpSpill">A spill stays circled. Flatten the ramp and try again. Ramps stay on Retry.</li>
+        <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L14 8 H21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpLesson" data-i18n="rfHelpLesson">Read the lesson line when you win.</span></li>
       </ol>
       <p id="lesson-2">Steeper = faster. Smoother = neater.</p>
       <button type="button" id="read-btn" data-k="read">Read it to me</button>
@@ -266,8 +271,8 @@
       <p data-k="local">Aliases and cup pictures stay on this Chromebook. No names. No chat.</p>
     </section>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.4" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.5" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.4-lock"></script>
+  <script src="./app.js?v=RF-1.0.5-lesson"></script>
 </body>
 </html>

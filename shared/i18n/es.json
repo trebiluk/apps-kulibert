@@ -181,5 +181,9 @@
   "lbHelp1": "Busca tu mejor marca en la ficha del juego.",
   "lbHelp2": "Toca Superar para abrir esa tabla.",
   "lbHelp3": "Mis mejores eres tú. Clase y Escuela muestran los 10 primeros. Esta semana empieza el lunes.",
-  "lbHelp4": "Un maestro puede ocultar una pestaña o un alias."
+  "lbHelp4": "Un maestro puede ocultar una pestaña o un alias.",
+  "rfTeachSlope": "Más pendiente = flujo más rápido",
+  "rfTeachGel": "Líquido espeso (alta viscosidad) fluye más lento",
+  "rfTeachRate": "Caudal = cuánto se vierte cada segundo",
+  "rfHelpLesson": "Lee la línea de la lección al ganar."
 }
