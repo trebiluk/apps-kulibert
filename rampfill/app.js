@@ -15,6 +15,7 @@
       grains: "Grains", water: "Water", gel: "Gel", blockWord: "Block", wallWord: "Wall", fillTo: "fill to here",
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
+      starWord: "star", starsWord: "stars",
       spill: "It spilled here — try a flatter ramp.",
       sat: "Gel sat still — make the hill bigger.",
       wrong: "Grains go in the left cup.",
@@ -56,6 +57,7 @@
       grains: "Зерна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лий до сюди",
       empty: "Чашка: порожня", little: "Чашка: трохи є", half: "Чашка: майже половина", moreHalf: "Чашка: більше половини", almost: "Чашка: майже повна", done: "Чашка: до лінії",
       noSpill: "нічого не розлилось", bitSpill: "трохи розлилось", someSpill: "дещо розлилось",
+      starWord: "зірка", starsWord: "зірки",
       spill: "Тут розлилося — спробуй пологіший схил.",
       sat: "Гель стоїть — зроби схил крутішим.",
       leak: "Вода витекла в цій щілині — наклади схил на край чашки.",
@@ -93,6 +95,7 @@
       grains: "Зёрна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лей до сюда",
       empty: "Чашка: пустая", little: "Чашка: чуть-чуть", half: "Чашка: почти половина", moreHalf: "Чашка: больше половины", almost: "Чашка: почти полная", done: "Чашка: до линии",
       noSpill: "ничего не пролилось", bitSpill: "немного пролилось", someSpill: "часть пролилась",
+      starWord: "звезда", starsWord: "звёзды",
       spill: "Здесь пролилось — попробуй более пологий склон.",
       sat: "Гель стоит — сделай склон круче.",
       leak: "Вода утекла в этой щели — наложи склон на край чашки.",
@@ -130,6 +133,7 @@
       grains: "Granos", water: "Agua", gel: "Gel", blockWord: "Bloque", fillTo: "llena hasta aquí",
       empty: "Taza: vacía", little: "Taza: un poquito", half: "Taza: casi la mitad", moreHalf: "Taza: más de la mitad", almost: "Taza: casi llena", done: "Taza: hasta la línea",
       noSpill: "nada se derramó", bitSpill: "un poco se derramó", someSpill: "algo se derramó",
+      starWord: "estrella", starsWord: "estrellas",
       spill: "Se derramó aquí — prueba una rampa más plana.",
       sat: "El gel se quedó quieto — haz la colina más alta.",
       leak: "El agua se fugó en este hueco — monta la rampa sobre el borde.",
@@ -167,6 +171,7 @@
       grains: "حبوب", water: "ماء", gel: "هلام", blockWord: "كتلة", fillTo: "املأ إلى هنا",
       empty: "الكوب: فارغ", little: "الكوب: قليل", half: "الكوب: قريب من النصف", moreHalf: "الكوب: أكثر من النصف", almost: "الكوب: قريب من الامتلاء", done: "الكوب: حتى الخط",
       noSpill: "لا انسكاب", bitSpill: "انسكاب قليل", someSpill: "بعض الانسكاب",
+      starWord: "نجمة", starsWord: "نجوم",
       spill: "انسكب هنا — جرّب منحدرًا أقل انحدارًا.",
       sat: "الهلام واقف — اجعل التلة أكبر.",
       leak: "تسرب الماء من هذه الفجوة — اجعل المنحدر يركب على حافة الكوب.",
@@ -204,6 +209,7 @@
       grains: "دانه‌ها", water: "آب", gel: "ژل", blockWord: "بلوک", fillTo: "تا اینجا پر کن",
       empty: "پیاله: خالی", little: "پیاله: کمی", half: "پیاله: نزدیک نیمه", moreHalf: "پیاله: بیشتر از نیمه", almost: "پیاله: نزدیک پر", done: "پیاله: تا خط",
       noSpill: "چیزی نریخت", bitSpill: "کمی ریخت", someSpill: "مقداری ریخت",
+      starWord: "ستاره", starsWord: "ستاره‌ها",
       spill: "اینجا ریخت — یک سرازیری تخت‌تر را امتحان کن.",
       sat: "ژل ایستاد — تپه را بزرگ‌تر کن.",
       leak: "آب از این شکاف ریخت — سرازیری را روی لبه پیاله بگذار.",
@@ -241,6 +247,7 @@
       grains: "Ibinyanye", water: "Amazi", gel: "Jeli", blockWord: "Igipimo", fillTo: "uzuza kugeza hano",
       empty: "Igikombe: kirimo ubusa", little: "Igikombe: gito", half: "Igikombe: hafi kimwe cya kabiri", moreHalf: "Igikombe: kirenze kimwe cya kabiri", almost: "Igikombe: hafi kuzura", done: "Igikombe: kugeza ku murongo",
       noSpill: "ntacyasutse", bitSpill: "gito cyasutse", someSpill: "bimwe byasutse",
+      starWord: "inyenyeri", starsWord: "inyenyeri",
       spill: "Byasutse hano — gerageza umuhengamo utoroshye.",
       sat: "Jeli yicaye — nuna umusozi.",
       leak: "Amazi yasutse muri aka kanya — shira umuhengamo ku murongo w'igikombe.",
@@ -278,6 +285,7 @@
       grains: "እኽሊ", water: "ማይ", gel: "ጄል", blockWord: "መቆራጽ", fillTo: "ክሳብ ኣብዚ ምላእ",
       empty: "ኽባያ: ባዶ", little: "ኽባያ: ቁሩብ", half: "ኽባያ: ዳርጋ ፍርቂ", moreHalf: "ኽባያ: ልዕሊ ፍርቂ", almost: "ኽባያ: ዳርጋ መሊኡ", done: "ኽባያ: ክሳብ መስመር",
       noSpill: "ዝፈሰሰ የለን", bitSpill: "ቁሩብ ፈሲሱ", someSpill: "ገለ ፈሲሱ",
+      starWord: "ኮኾብ", starsWord: "ኮኾባት",
       spill: "ኣብዚ ፈሲሱ — ዝተዓርየ ቁልቁለት ፈትን።",
       sat: "ጄል ጸኒዑ — ኮረብታ ዓብዩ ግበር።",
       leak: "ማይ ኣብዚ ስንጥቕ ፈሲሱ — ቁልቁለት ኣብ ዳርቢ ኽባያ ኣድርቦ።",
@@ -334,6 +342,8 @@
   var ended = false;
   var filledOnce = false;
   var sawFill = false;
+  var cupStars = [0, 0];
+  var sessionStars = [];
   var cups = 0;
   var mass = 1;
   var spawnGap = 0.045;
@@ -436,15 +446,23 @@
     if (spill >= 8) return t("someSpill");
     return t("noSpill");
   }
+  function starsWord(n) {
+    return n + " " + t(n === 1 ? "starWord" : "starsWord");
+  }
+  function starBit() {
+    var parts = [];
+    for (var i = 0; i < cupList.length; i++) if (cupStars[i]) parts.push(starsWord(cupStars[i]));
+    return parts.length ? " • " + parts.join(" • ") : "";
+  }
   function cupWords() {
     if (level === 5 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("pathNext");
     if (level === 2 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("leftNext");
     if (level === 2 || level === 5) {
       var a = amountWord(fills[0]).replace(/^[^:]+:\s*/, "");
       var b = amountWord(fills[1]).replace(/^[^:]+:\s*/, "");
-      return t("left") + ": " + a + " • " + t("right") + ": " + b + " • " + spillWord();
+      return t("left") + ": " + a + " • " + t("right") + ": " + b + " • " + spillWord() + starBit();
     }
-    return amountWord(fills[0] || 0) + " • " + spillWord();
+    return amountWord(fills[0] || 0) + " • " + spillWord() + starBit();
   }
   function spillSentence() {
     if (leakKind === "wrong") return t("wrong");
@@ -513,12 +531,25 @@
     if (!box) return;
     box.replaceChildren();
     var show = Math.min(cups, 8);
+    var start = Math.max(0, cups - show);
+    var score = document.querySelector(".score");
+    if (score) {
+      var last = sessionStars.length ? sessionStars[sessionStars.length - 1] : 0;
+      score.setAttribute("aria-label", t("cupsWord") + " " + cups + (last ? ", " + starsWord(last) : ""));
+    }
     for (var i = 0; i < show; i++) {
       var img = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       img.setAttribute("viewBox", "0 0 48 52");
       img.setAttribute("class", "cup-pic");
       img.setAttribute("aria-hidden", "true");
-      img.innerHTML = '<path d="M10 14 H38 L34 46 H14 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="2"/><path d="M14 22 H34" stroke="#1A120C" stroke-width="3"/><path d="M16 28 H32 L30 44 H18 Z" fill="#E0A106"/>';
+      var starIndex = (start + i) - (cups - sessionStars.length);
+      var n = starIndex >= 0 ? sessionStars[starIndex] : 0;
+      var stars = "";
+      for (var s = 0; s < n; s++) {
+        var cx = n === 1 ? 24 : 12 + s * (24 / Math.max(1, n - 1));
+        stars += '<path d="' + starPath(cx, 8, 5) + '" fill="#F6C453" stroke="#1A120C" stroke-width="1"/>';
+      }
+      img.innerHTML = '<path d="M10 14 H38 L34 46 H14 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="2"/><path d="M14 22 H34" stroke="#1A120C" stroke-width="3"/><path d="M16 28 H32 L30 44 H18 Z" fill="#E0A106"/>' + stars;
       box.appendChild(img);
     }
   }
@@ -1007,6 +1038,22 @@
     }
     live.push(p);
   }
+  function starCount(spilled) {
+    if (spilled <= 0) return 3;
+    if (spilled <= 12) return 2;
+    return 1;
+  }
+  function starPath(cx, cy, r) {
+    var d = "";
+    for (var k = 0; k < 10; k++) {
+      var rad = -Math.PI / 2 + k * Math.PI / 5;
+      var rr = k % 2 ? r * 0.42 : r;
+      var x = cx + Math.cos(rad) * rr;
+      var y = cy + Math.sin(rad) * rr;
+      d += (k ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1) + " ";
+    }
+    return d + "Z";
+  }
   function checkFilled() {
     var all = cupList.length > 0;
     var gained = false;
@@ -1015,6 +1062,8 @@
         if (!countedCup[i]) {
           countedCup[i] = true;
           cups += 1;
+          cupStars[i] = starCount(spill);
+          sessionStars.push(cupStars[i]);
           gained = true;
         }
         if (level === 2 && i === 0 && ghostCup === 0 && (fills[1] || 0) < LINE) {
@@ -1036,6 +1085,7 @@
   function clearFills() {
     fills = [0, 0];
     countedCup = [false, false];
+    cupStars = [0, 0];
     fill = 0;
     spill = 0;
     spillSpots = [];
@@ -1450,6 +1500,31 @@
       }
     }
     }
+    if (cupStars[index] && amount >= LINE) {
+      var nStar = cupStars[index];
+      var gapS = 16;
+      var xS = c.x + c.w / 2 - ((nStar - 1) * gapS) / 2;
+      var yS = Math.max(c.top + 28, Math.min(c.top + 40, c.y + c.h - 20));
+      for (var si = 0; si < nStar; si++) drawStar(xS + si * gapS, yS, 7);
+    }
+  }
+  function drawStar(x, y, r) {
+    ctx.save();
+    ctx.fillStyle = "#F6C453";
+    ctx.strokeStyle = "#1A120C";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    for (var k = 0; k < 10; k++) {
+      var rad = -Math.PI / 2 + k * Math.PI / 5;
+      var rr = k % 2 ? r * 0.42 : r;
+      var px = x + Math.cos(rad) * rr;
+      var py = y + Math.sin(rad) * rr;
+      if (k) ctx.lineTo(px, py); else ctx.moveTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
   function drawBlock() {
     if (!block) return;
@@ -1734,7 +1809,7 @@
       return {
         level: level, fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
         pouring: pouring, live: live.length, words: cupWords(), paused: paused, ended: ended,
-        strokes: strokes.length, cups: cups, mass: mass, leak: leakKind, mat: matName(),
+        strokes: strokes.length, cups: cups, stars: cupStars.slice(), sessionStars: sessionStars.slice(), mass: mass, leak: leakKind, mat: matName(),
         spawnLeft: spawnLeft,
         sample: live[0] ? { x: Math.round(live[0].x), y: Math.round(live[0].y), vy: Math.round(live[0].vy), mode: live[0].mode, si: live[0].si } : null,
         end: (function () {
