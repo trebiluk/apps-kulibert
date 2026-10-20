@@ -1,11 +1,19 @@
 # Volt Duel FIX-LIST
-Stage: phone run and jump. Version locked: VD 1.0.4.
-Physics, hints, pads, and scoring were not changed.
+Stage: VD 1.0.5. Version locked: VD 1.0.5.
+Physics and scoring were not changed.
 
-## VD 1.0.4
-- [x] **Item 1 One column.** Live 412×915 and 915×412: band 0, canvas under the HUD, pad gap 0.
-- [x] **Item 2 rotateCheck.** Mid-race rotate `reset:false` with timer and coins kept. After RESTART both kept flags are false.
-- [x] **Phone run and jump.** Live `index-BtUSHjT8.js`, 390×844 touch, Qualifier. Hold Right: VEX x 36 → 109.9, button stayed `pad-btn held` (no pointercancel). Finger up cleared the hold. Jump: y 456 → 384.8. A 6px finger slide and a second-finger jump still held Right (x 145, y 385).
+## VD 1.0.5
+- [x] **Item 1 Pads.** Already fully visible. Live `index-FGwm0gA0.js`: every pad is 56px tall and fully inside the viewport at 412×924, 412×915, and 915×412 (and at 1366×768).
+- [x] **Item 2 What's new.** Chip, plate, and data-version say VD 1.0.5. English and Arabic (rtl) lines match the lock. Simple: "VD 1.0.5: Hold Run and Jump. Buttons fit."
+- [x] **Item 3 Log.** c90db75 and 96864bb are folded into VD 1.0.5.
+- [x] **Help.** "Hold Run and Jump to keep going. The buttons fit on every phone." Icon plus words, eight languages plus Simple. Esc closes Help.
+
+## Folded in
+- c90db75 — On a phone, run and jump keep going until the finger lifts.
+- 96864bb — Tick for that phone hold. Live again on VD 1.0.5: hold Right moved VEX x 36 → 107 and the button stayed held. Jump moved y 456 → 395. A rotate mid-race kept x 109 and phase race.
+
+## Seen live
+- Hand-played Qualifier at 915×412: keyboard run and jumps, "VEX takes the flag" at 20.97. Console 0 errors.
 
 ## Still open
-- [ ] Keyboard race all the way to the flag, then one Rematch tap, was not re-run.
+- [ ] One Rematch tap after that flag was not pressed.
