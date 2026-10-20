@@ -418,7 +418,8 @@ export function createStations(api) {
       if (rule.path !== 'design') {
         const b = capBtn('bed-just', api.t('justBuild'), () => {
           if (api.craftOk && !api.craftOk('bunk')) return
-          if (!toolsReady(key) || !matsOk()) return
+          if (!toolsReady(key)) { if (api.toast) api.toast(api.t('decorNeedTools')); return }
+          if (!matsOk()) return
           const spent = spendMats()
           if (!spent) return
           if (api.glasses) api.glasses(true)
@@ -429,14 +430,15 @@ export function createStations(api) {
           shopTone(740, b)
           paintWoodshop(g, key)
         }, 'make')
-        if (!ready) lockBtn(b, api.t('decorNeedTools'))
+        if (!ready) { b.textContent = api.t('decorNeedTools'); b.title = api.t('decorNeedTools') }
         else if (!haveMats) lockBtn(b, api.t('bedNeedMats'))
         row.append(b)
       }
       if (rule.path !== 'build') {
         const b = capBtn('bed-design', api.t('designIt'), () => {
           if (api.craftOk && !api.craftOk('bunk')) return
-          if (!toolsReady(key) || !matsOk()) return
+          if (!toolsReady(key)) { if (api.toast) api.toast(api.t('decorNeedTools')); return }
+          if (!matsOk()) return
           if (api.glasses) api.glasses(true)
           rec.bed = freshJob(woolPick())
           saidBed = ''
@@ -444,7 +446,7 @@ export function createStations(api) {
           shopTone(640, b)
           paintWoodshop(g, key)
         }, 'design')
-        if (!ready) lockBtn(b, api.t('decorNeedTools'))
+        if (!ready) { b.textContent = api.t('decorNeedTools'); b.title = api.t('decorNeedTools') }
         else if (!haveMats) lockBtn(b, api.t('bedNeedMats'))
         row.append(b)
       }
@@ -867,13 +869,14 @@ export function createStations(api) {
       } else {
         const row = document.createElement('div')
         row.className = 'bed-paths'
-        const just = capBtn('decor-just-' + d.id, api.t('decorJust'), () => {
-          if (decorReason(d)) return
+        const sayNeed = () => { if (api.toast && reason) api.toast(reason) }
+        const just = capBtn('decor-just-' + d.id, reason || api.t('decorJust'), () => {
+          if (decorReason(d)) { sayNeed(); return }
           if (api.craft) api.craft(d.id)
           paintWoodshop(g, key)
         }, 'make')
-        const design = capBtn('decor-design-' + d.id, api.t('decorDesign'), () => {
-          if (decorReason(d)) return
+        const design = capBtn('decor-design-' + d.id, reason || api.t('decorDesign'), () => {
+          if (decorReason(d)) { sayNeed(); return }
           const wool = d.id === 'rug' && d.ins.find(([k]) => api.have && api.have(k) >= 4)
           rec.decorJob = d.id === 'rug'
             ? { id: d.id, colour: wool ? wool[0] : 'woolBlue', trim: 'woolTan' }
@@ -881,7 +884,7 @@ export function createStations(api) {
           touch()
           paintWoodshop(g, key)
         }, 'design')
-        if (reason) { lockBtn(just, reason); lockBtn(design, reason) }
+        if (reason) { just.title = reason; design.title = reason }
         row.append(just, design)
         card.append(row)
       }

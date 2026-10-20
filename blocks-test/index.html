@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
 <title>Bertopia</title>
-<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.264">
-<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.264">
+<link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.276">
+<link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.271">
 <style>
 :root{--top-h:60px;--hud-lift:92px;--ink:#0B1220;--ink2:#111a2e;--line:#1f2b44;--snow:#F8FAFC;--muted:#9fb0c6;--teal:#14B8A6;--cyan:#22D3EE;--blue:#3B82F6;--warn:#f59e0b}
 *{box-sizing:border-box}
@@ -146,6 +146,8 @@ body.touch.stick-right #pick-chip{right:auto;left:calc(16px + env(safe-area-inse
 .sw.glass{background:url(assets/glass.png) 0 0/100% 100%,repeating-conic-gradient(#2a3550 0 25%,#1a2338 0 50%) 0 0/10px 10px}
 .tag{position:absolute;top:3px;right:4px;font-size:12px;font-weight:700;color:var(--cyan)}
 .lbl{font-size:var(--ks-fs-s);color:var(--snow);white-space:nowrap;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+#hotbar .slot:not(.bag-tile){overflow:visible}
+#hotbar .slot:not(.bag-tile) .lbl{max-width:100%;overflow:visible;text-overflow:clip;white-space:normal;word-break:normal;overflow-wrap:normal;hyphens:none}
 .pad{display:none}
 body.touch:not(.table) .pad{display:grid}
 .pad{position:fixed;z-index:4;gap:6px}
@@ -173,7 +175,7 @@ body.touch .move,body.touch .acts{display:none!important}
 body.stick-right .stickpad{left:auto;right:12px}
 body.stick-right .jumpcol{left:calc(16px + env(safe-area-inset-left));right:auto}
 .keys{position:fixed;inset-inline-start:12px;bottom:96px;z-index:3;font-size:12px;line-height:1.35;color:var(--snow);background:rgba(11,18,32,.66);border:1px solid var(--line);border-radius:8px;padding:5px 9px;max-width:min(880px,calc(100vw - 24px));box-sizing:border-box;overflow:visible;white-space:normal;overflow-wrap:anywhere}
-body.touch .keys,body.table .keys{display:none}
+body.table .keys{display:none}
 html[dir=rtl] .keys{direction:rtl;text-align:start}
 .ver{color:var(--cyan);font-weight:600;font-size:12px;border:1px solid rgba(34,211,238,.45);border-radius:999px;padding:1px 7px;margin-left:4px;white-space:nowrap}
 @media (max-height:500px){.top{min-height:56px;padding:4px 8px}.icon-btn,.tool{height:48px}.icon-btn{width:48px}
@@ -300,6 +302,7 @@ html[data-kb-bar]:not(.kb-framed) #path-chip{top:calc(48px + var(--top-h) + 8px)
 #sheet{position:fixed;left:0;right:0;bottom:0;top:var(--kb-bar-h, 48px);z-index:40;background:#070b16;display:flex;flex-direction:column;padding:12px;overflow:hidden;cursor:auto}
 body.menu-open canvas{pointer-events:none;cursor:auto}
 #sheet:not([hidden]) ~ .keys{display:none}
+body:not(.menu-open) #sheet[hidden] ~ .keys{display:block}
 #sheet-body,#sheet[data-panel="crafting"] .sheet-bar,#sheet[data-panel="station"] .sheet-bar,#sheet[data-panel="bench"] .sheet-bar,#sheet[data-panel="box"] .sheet-bar,#sheet[data-panel="inventory"] .sheet-bar{width:var(--ks-panel-w);max-width:100%;max-height:var(--ks-panel-h);min-height:0;box-sizing:border-box;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain}
 #sheet[data-panel] .sheet-bar{flex:0 0 auto;overflow:visible;max-height:none}
 .slot.bag-tile{position:static;flex:0 0 auto;right:auto}
@@ -537,7 +540,7 @@ html[dir=rtl] #sheet .machine-row .arrow-bar{transform:scaleX(-1)}
 #sheet[data-panel="crafting"] .book .well .need{display:none}
 #sheet[data-panel="crafting"] .station-mark{position:absolute;top:2px;left:2px;width:18px;height:18px;display:flex;pointer-events:none}
 #sheet[data-panel="crafting"] .station-mark canvas,#sheet[data-panel="crafting"] .station-mark svg{width:18px;height:18px}
-#sheet[data-panel="crafting"] .need-pane{display:flex;flex-wrap:wrap;gap:6px;position:sticky;top:0;z-index:3;background:#0E1A22;padding-bottom:6px}
+#sheet[data-panel="crafting"] .need-pane{display:flex;flex-wrap:wrap;gap:6px;position:static;z-index:auto;background:transparent;padding:0;align-self:flex-start}
 #sheet[data-panel="crafting"] .need-bit{display:flex;flex-direction:column;align-items:center;justify-content:center;width:48px;min-height:48px;border:2px solid #1F8A8A;border-radius:8px;background:#08131A;padding:2px;box-sizing:border-box}
 #sheet[data-panel="crafting"] .need-bit.short{border-color:#F6C453}
 #sheet[data-panel="crafting"] .need-bit .art{width:22px;height:22px;flex:0 0 22px}
@@ -625,7 +628,7 @@ html body #sheet.kd-panel[data-panel=inventory] .sheet-bar,html body #sheet.kd-p
 #sheet[data-panel=inventory] .wells{display:flex;flex-wrap:wrap;justify-content:flex-start;align-items:flex-start;width:auto;max-width:100%;gap:8px;padding:12px}
 #sheet[data-panel=inventory] .well.has{flex:0 1 112px;width:112px;max-width:112px;min-width:0;height:auto;min-height:88px;flex-direction:column;justify-content:flex-start;align-items:center;padding:4px 6px 8px}
 #sheet[data-panel=inventory] .well.has .gic{width:48px;height:48px;flex:0 0 48px}
-#sheet[data-panel=inventory] .well .glbl,#sheet[data-panel=inventory] .well.on .glbl{display:block;position:static;left:auto;bottom:auto;transform:none;font-size:14px;font-weight:700;line-height:1.15;white-space:nowrap;overflow-wrap:normal;text-align:center;color:#E6EEF2;background:transparent;padding:4px 0 0;max-width:100%;height:auto}
+#sheet[data-panel=inventory] .well .glbl,#sheet[data-panel=inventory] .well.on .glbl{display:block;position:static;left:auto;bottom:auto;transform:none;font-size:12px;font-weight:700;line-height:1.15;white-space:normal;overflow:visible;overflow-wrap:break-word;text-align:center;color:#E6EEF2;background:transparent;padding:4px 0 0;max-width:100%;height:auto}
 #sheet[data-panel=inventory] .well.has .count{top:2px;bottom:auto;right:4px}
 #sheet[data-panel=inventory] .well{width:var(--ks-slot);height:var(--ks-slot);min-width:var(--ks-slot);min-height:var(--ks-slot);padding:0;border:0;border-radius:8px;background:#08131A;box-shadow:inset 0 2px 0 #00000080,inset 0 -1px 0 #2A4A55;color:#E6EEF2;position:relative;display:flex;align-items:center;justify-content:center;overflow:visible;touch-action:none}
 #sheet[data-panel=inventory] .well.empty{opacity:.4}
@@ -1120,8 +1123,9 @@ html[dir=rtl] #sheet #sheet-back{direction:rtl}
 html[data-kb-bar]:not(.kb-framed) #pause-btn{top:calc(48px + var(--top-h) + 8px)}
 html[dir=rtl] #pause-btn{right:68px;left:auto}
 #pause-btn.on{border-color:#22D3EE;color:#22D3EE}
+/* 2.5.272: Pause sits on the open Bag. Close is the way out, and Pause returns when the Bag shuts. */
+body:has(#sheet[data-panel="inventory"]:not([hidden])) #pause-btn{display:none !important}
 body.hud-calm{--top-h:60px}
-body.hud-calm .keys,
 body.hud-calm #menu-hint,
 body.hud-calm #day-tip,
 body.hud-calm #maker-card,
@@ -1133,8 +1137,6 @@ body.hud-calm #pick-chip,
 body.hud-calm #energy-bar,
 body.hud-calm #fx-strip,
 body.hud-calm #perf,
-body.hud-calm .kb-home,
-body.hud-calm .kb-alias,
 body.hud-calm .kb-settings{display:none!important}
 body.tip-on #menu-hint,
 body.tip-on #day-tip,
@@ -1145,7 +1147,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.264">
+<link rel="stylesheet" href="read.css?v=2.5.276">
 </head>
 <body>
 <div id="stage"></div>
@@ -1160,7 +1162,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.264</span>
+      <span class="ver" id="ver-plate">2.5.276</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1171,6 +1173,7 @@ body.tip-on #held-chip{display:none!important}
   <button class="tool" id="undo-btn" aria-label="Undo" data-i18n-label="undo" disabled><span class="ti"></span><span class="tl" data-i18n="undo">Undo</span></button>
   <button class="tool" id="redo-btn" aria-label="Redo" data-i18n-label="redo" disabled><span class="ti"></span><span class="tl" data-i18n="redo">Redo</span></button>
   <button class="tool save" id="save-btn" aria-label="Save" data-i18n-label="save"><span class="ti"></span><span class="tl" data-i18n="save">Save</span></button>
+  <a class="tool" id="hub-back" href="https://apps.kulibert.net/"><span class="tl">Back to the Hub</span></a>
   </div>
 </header>
 <div id="day-tip" class="kd-tip" role="tooltip" hidden></div>
@@ -1179,7 +1182,7 @@ body.tip-on #held-chip{display:none!important}
 <div id="menu-hint" class="kd-tip" hidden></div>
 <div id="toast" class="kd-tip" role="status" aria-live="polite" hidden></div>
 <div id="held-live" role="status" aria-live="polite"></div>
-<button id="path-chip" type="button" hidden></button>
+<div id="path-chip" hidden></div>
 <div id="wand-pill" hidden>
   <button type="button" id="wand-mode" title="Mode"><span class="gic" data-ico="select"></span><span class="glbl">Select</span></button>
   <button type="button" id="wand-do" title="Do it" aria-label="Do it"><span class="gic" data-ico="check"></span></button>
@@ -1208,7 +1211,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">Press E to open your Bag.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.275 — Leaves finally fits in the hotbar.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
@@ -1316,9 +1319,26 @@ body.tip-on #held-chip{display:none!important}
   </div>
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
-<script src="/shared/kulibert-slots.js?v=2.5.264"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.264" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.264" defer></script>
+<script src="/shared/kulibert-slots.js?v=2.5.271"></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.276" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.276" defer></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var chip = document.getElementById('wallet-chip')
+  if (!chip) return
+  var home = chip.parentNode
+  function place() {
+    var bar = document.querySelector('.kb-bar')
+    if (window.innerWidth <= 480 && bar) {
+      if (chip.parentNode !== bar) bar.appendChild(chip)
+    } else if (chip.parentNode !== home) home.appendChild(chip)
+  }
+  place()
+  window.addEventListener('resize', place)
+  var n = 0
+  var timer = setInterval(function () { place(); if (++n > 25) clearInterval(timer) }, 200)
+})
+</script>
 <script>
 ;(function () {
   try {

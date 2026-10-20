@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.276', date: '2026-10-20', lines: {
+    en: ['Lamps switch on with a tap, and picking one up is saved.'],
+    uk: ['Лампи вмикаються дотиком, а підібрана лампа зберігається.'],
+    ru: ['Лампы включаются касанием, а поднятая лампа сохраняется.'],
+    es: ['Las lámparas se encienden con un toque y, al recogerlas, se guardan.'],
+    ar: ['تُشغَّل المصابيح بلمسة، ويُحفظ المصباح عندما تلتقطه.'],
+    'fa-AF': ['چراغ‌ها با یک لمس روشن می‌شوند و وقتی آن را برمی‌داری، ذخیره می‌شود.'],
+    rw: ['Amatara yaka ukayakoresheje gukoraho, kandi kuyatora birasigama.'],
+    ti: ['መብራህቲ ብምትንካፍ ይበራህቲ፣ ምስ ኣልዓልካዮም ድማ ይዕቈሩ።'],
+  }},
+
   { v: '2.5.275', date: '2026-10-20', lines: {
     en: ['2.5.275 — Leaves finally fits in the hotbar.'],
     es: ['2.5.275 — Hojas por fin cabe en la barra rápida.'],
