@@ -1,6 +1,9 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 20 2026 (Build: 2.5.273 Pop-ups stay off the Bag on phones, and block names read right).
+Updated Tue Oct 20 2026 (Build: 2.5.274 Every block name fits in the hotbar).
+
+- [x] **2.5.274 Hotbar fit:** Every hotbar name is whole at 1366, 915 and 412, including Leaves, Planks, Gravel and Red sand. No clipping, no ellipsis. Slots stay at least 44px.
+- [ ] **2.5.274 Hotbar hook:** window.__bertopiaHotbarCheck() reports anyClipped false and anyMidWordBreak false, and anyClipped true when a name is forced long.
 
 - [x] **2.5.273 Phone toast:** At 412 with the Bag open, a toast sits 8px clear of the header, menu, tabs and Close, including after a rotate back to 412. 915 and 1366 stay beside the panel.
 - [x] **2.5.273 Hotbar words:** Hotbar names do not break mid-word at 412, 915 and 1366. Planks stays whole. Slots stay at least 40px.
@@ -203,6 +206,7 @@ Updated Tue Oct 20 2026 (Build: 2.5.273 Pop-ups stay off the Bag on phones, and 
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.274 | 2.5.274 | Every block name fits in the hotbar | shipping |
 | 2.5.273 | 2.5.273 | Pop-ups stay off the Bag on phones, and block names read right | shipping |
 | 2.5.272 | 2.5.272 | Pop-ups stay off your Bag, Pause steps aside, and every block name fits | shipping |
 | 2.5.270 | 2.5.270 | Item pictures are bigger, pop-ups stay clear, and Creative fits on phones | shipping |

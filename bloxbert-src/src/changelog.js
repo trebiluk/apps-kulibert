@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.274', date: '2026-10-20', lines: {
+    en: ['2.5.274 — Every block name fits in the hotbar.'],
+    es: ['2.5.274 — Todos los nombres de bloques caben en la barra rápida.'],
+    ar: ['2.5.274 — كل أسماء المكعبات تظهر كاملة في شريط الأدوات.'],
+    zh: ['2.5.274 — Every block name fits in the hotbar.'],
+    fr: ['2.5.274 — Every block name fits in the hotbar.'],
+    pt: ['2.5.274 — Every block name fits in the hotbar.'],
+    ru: ['2.5.274 — Каждое название блока помещается на панели быстрого доступа.'],
+    vi: ['2.5.274 — Every block name fits in the hotbar.'],
+    uk: ['2.5.274 — Кожна назва блока вміщується на панелі швидкого доступу.'],
+    'fa-AF': ['2.5.274 — نام همه بلاک‌ها به‌طور کامل در نوار ابزار جا می‌شود.'],
+    rw: ['2.5.274 — Amazina yose ya bloki agaragara yuzuye mu murongo w\'ibikoresho.'],
+    ti: ['2.5.274 — ኩሉ ኣስማት ብሎካት ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።'],
+  }},
   { v: '2.5.273', date: '2026-10-20', lines: {
     en: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
     es: ['2.5.273 — Los avisos ya no tapan la Bolsa en el móvil y los nombres de bloques se leen bien.'],

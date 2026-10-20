@@ -1699,3 +1699,17 @@ for (const [lang, row] of Object.entries(FIT273)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT274 = {
+  en: { whatsNewBody: '2.5.274 — Every block name fits in the hotbar.' },
+  uk: { whatsNewBody: '2.5.274 — Кожна назва блока вміщується на панелі швидкого доступу.' },
+  ru: { whatsNewBody: '2.5.274 — Каждое название блока помещается на панели быстрого доступа.' },
+  es: { whatsNewBody: '2.5.274 — Todos los nombres de bloques caben en la barra rápida.' },
+  ar: { whatsNewBody: '2.5.274 — كل أسماء المكعبات تظهر كاملة في شريط الأدوات.' },
+  'fa-AF': { whatsNewBody: '2.5.274 — نام همه بلاک‌ها به‌طور کامل در نوار ابزار جا می‌شود.' },
+  rw: { whatsNewBody: '2.5.274 — Amazina yose ya bloki agaragara yuzuye mu murongo w\'ibikoresho.' },
+  ti: { whatsNewBody: '2.5.274 — ኩሉ ኣስማት ብሎካት ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።' },
+}
+for (const [lang, row] of Object.entries(FIT274)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

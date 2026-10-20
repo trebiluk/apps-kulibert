@@ -385,7 +385,13 @@ export function createSession(api) {
   function fitSlotNames(root) {
     const host = root || document.getElementById('hotbar')
     if (!host) return
-    host.querySelectorAll('.slot:not(.bag-tile) .lbl').forEach((lbl) => {
+    const probe = fitSlotNames.probe || (fitSlotNames.probe = document.createElement('span'))
+    if (!probe.isConnected) {
+      probe.setAttribute('aria-hidden', 'true')
+      probe.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:nowrap;pointer-events:none;font-weight:700;'
+      document.body.appendChild(probe)
+    }
+    host.querySelectorAll('.slot .lbl').forEach((lbl) => {
       const name = (lbl.dataset.name || (lbl.textContent || '')).replace(/\s+/g, ' ').trim()
       if (!name) return
       lbl.dataset.name = name
@@ -397,21 +403,41 @@ export function createSession(api) {
       lbl.style.setProperty('overflow', 'visible', 'important')
       lbl.style.setProperty('text-overflow', 'clip', 'important')
       lbl.style.setProperty('max-height', 'none', 'important')
-      const slot = lbl.parentElement
-      const room = slot ? Math.max(8, slot.clientWidth - 2) : 40
-      let size = 14
-      const apply = (n) => {
-        lbl.style.setProperty('font-size', n + 'px', 'important')
-        lbl.style.setProperty('line-height', '1.05', 'important')
+      lbl.style.setProperty('width', '100%', 'important')
+      lbl.style.setProperty('max-width', '100%', 'important')
+      lbl.style.setProperty('min-width', '0', 'important')
+      lbl.style.setProperty('box-sizing', 'border-box', 'important')
+      lbl.style.setProperty('padding', '0', 'important')
+      const cs = getComputedStyle(lbl)
+      probe.style.fontFamily = cs.fontFamily
+      probe.style.fontWeight = cs.fontWeight
+      const room = Math.max(8, lbl.clientWidth || 0)
+      const words = name.split(' ').filter(Boolean)
+      const need = (size) => {
+        let w = 0
+        probe.style.fontSize = size + 'px'
+        for (const word of words) {
+          probe.textContent = word
+          if (probe.scrollWidth > w) w = probe.scrollWidth
+        }
+        return w
       }
-      apply(size)
-      while (size > 10 && lbl.scrollWidth > room + 1) {
-        size -= 1
-        apply(size)
+      let size = 14
+      while (size > 10 && need(size) > room) size -= 1
+      lbl.style.setProperty('font-size', size + 'px', 'important')
+      lbl.style.setProperty('line-height', '1.05', 'important')
+      const slot = lbl.parentElement
+      if (slot && lbl.clientWidth > 0 && size === 10 && need(10) > room) {
+        const grow = Math.ceil(slot.getBoundingClientRect().width + (need(10) - room) + 2)
+        const w = Math.max(44, grow)
+        slot.style.setProperty('min-width', w + 'px', 'important')
+        slot.style.setProperty('width', w + 'px', 'important')
+        slot.style.setProperty('flex-basis', w + 'px', 'important')
       }
     })
   }
   window.addEventListener('resize', () => requestAnimationFrame(() => fitSlotNames()))
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitSlotNames())
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
     if (!bar || mode !== 'survival') {
