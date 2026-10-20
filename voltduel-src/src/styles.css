@@ -739,6 +739,31 @@ html.kb-framed .vd-fs {
   top: 8px;
 }
 
+/* Portrait phone: pin the 16:9 track to the pads. The 4.17% pull hides
+   only the strip under the floor (40/960 of the width), so feet stay on screen. */
+@media (max-width: 520px) and (min-height: 700px) {
+  .stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+  }
+
+  .stage canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 960 / 540;
+    max-height: 100%;
+    flex: 0 0 auto;
+    margin-bottom: -4.17%;
+  }
+
+  .pads {
+    padding-top: 6px;
+  }
+}
+
+
 .vd-panel {
   position: fixed;
   z-index: 85;

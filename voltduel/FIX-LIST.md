@@ -3,11 +3,11 @@ Stage: touch tip, closer race, missing text, proof hook. Version locked: VD 1.0.
 Physics, levels, keyboard keys, pad size, and scoring were not changed.
 
 ## VD 1.0.2
-- [ ] **Item 1 Phone tip.** On a coarse pointer the race tip is the touch line, at 14px, with no WASD and no arrows. A fine pointer keeps "VEX uses WASD. RIO uses arrows. Jump again in the air." Built files: 412×915 and 915×412 with touch on showed "Hold ◀ ▶ to run. Tap ⤒ to jump, tap again in the air." at 14px. 1366×768 without touch showed the keyboard line at 14px. Live check still open.
-- [ ] **Item 2 Portrait gap.** Not started.
+- [x] **Item 1 Phone tip.** Live with touch on: 412×915 and 915×412 show "Hold ◀ ▶ to run. Tap ⤒ to jump, tap again in the air." at 14px, with no WASD and no arrows. Live 1366×768 without touch shows "VEX uses WASD. RIO uses arrows. Jump again in the air." at 14px. Plate reads VD 1.0.2.
+- [ ] **Item 2 Portrait gap.** On the built page at 412×915 the floor sits 7px above the VEX/RIO labels. Pads stay 59×56 with icon and word. HUD scores and the timer stay whole. Mute, Pause, Restart, and Full stay clear of the track. Live check still open.
 - [ ] **Item 3 blurbAlice.** Not started.
 - [ ] **Item 4 Proof hook.** Not started.
-- [ ] **Version strings.** Chip, plate, meta, and What's new in the build say VD 1.0.2. What's new (en): "VD 1.0.2 — Phone tips talk touch, and the race sits closer to your buttons." The other seven languages are in the menu script. Hub fallback chip says VD 1.0.2. Live check still open.
+- [ ] **Version strings.** The build says VD 1.0.2. Live plate and meta already read VD 1.0.2 from the tip commit.
 
 ## VD 1.0.1 (kept)
 - [x] Hold to run with no context menu. Run and jump can be held together.
@@ -16,6 +16,6 @@ Physics, levels, keyboard keys, pad size, and scoring were not changed.
 - [ ] Keyboard race all the way to the flag on the live door, then one Rematch tap.
 
 ## Carry forward
-- [ ] Chip and What's new say VD 1.0.2 on the live door.
+- [x] Chip and What's new say VD 1.0.2 on the live door (plate and meta seen).
 - [ ] Keyboard race to the flag, then one Rematch tap, on the live door.
-- [x] No page scroll on the built page at 412×915, 915×412, and 1366×768 (from VD 1.0.1).
+- [x] No page scroll at 412×915 on the built page.
