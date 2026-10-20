@@ -4555,4 +4555,37 @@ body.mu237 #dock-left .tab svg { width: 20px !important; height: 20px !important
   }
   body.mu237 #dock-left .tab span { text-align: start; }
 }
+.mu-chip {
+  position: fixed;
+  z-index: 36;
+  top: calc(var(--bar, 52px) + var(--tabs, 0px) + 4px);
+  inset-inline-end: 8px;
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #e8f7ff;
+  background: #10203f;
+  border: 1px solid #67e8f9;
+  border-radius: 999px;
+  pointer-events: none;
+}
+html.kb-framed .mu-chip { top: 56px; }
+#dj-proof {
+  position: fixed;
+  z-index: 80;
+  inset-inline-start: 12px;
+  bottom: 80px;
+  max-width: min(320px, calc(100vw - 24px));
+  padding: 8px;
+  background: #0b152c;
+  color: #e8f7ff;
+  border: 1px solid #67e8f9;
+  border-radius: 10px;
+  font-size: 12px;
+}
+#dj-proof[hidden] { display: none !important; }
+#dj-proof button { min-width: 44px; min-height: 44px; }
+#dj-proof pre { margin: 6px 0 0; white-space: pre-wrap; }
 

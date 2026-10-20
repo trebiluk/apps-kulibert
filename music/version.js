@@ -20,7 +20,66 @@ window.MU_VERSION = "MU 2.36.5";
       plate.setAttribute("data-ver", v);
       if ((plate.textContent || "").indexOf(v) < 0) plate.textContent = "DJ Berty · " + v;
     });
+    var chip = document.getElementById("mu-chip");
+    if (chip) chip.textContent = v;
   }
   paint();
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", paint);
+})();
+(function () {
+  var errors = 0;
+  var oldErr = window.onerror;
+  window.onerror = function () {
+    errors++;
+    if (typeof oldErr === "function") return oldErr.apply(this, arguments);
+  };
+  window.addEventListener("unhandledrejection", function () { errors++; });
+  function shown(el) {
+    if (!el) return false;
+    var cs = getComputedStyle(el);
+    var r = el.getBoundingClientRect();
+    return cs.display !== "none" && cs.visibility !== "hidden" && r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && r.right > 0 && r.left < innerWidth;
+  }
+  function measure() {
+    var tiles = [].slice.call(document.querySelectorAll("#dock-left .tab")).filter(shown);
+    var withWords = tiles.filter(function (el) {
+      var span = el.querySelector("span");
+      if (!span || !shown(span)) return false;
+      return (span.textContent || "").trim().length > 0;
+    });
+    var performs = [].slice.call(document.querySelectorAll("[data-mu='perform']")).filter(shown);
+    var chip = document.getElementById("mu-chip");
+    window.__DJ_PROOF = {
+      version: window.MU_VERSION,
+      w: innerWidth,
+      h: innerHeight,
+      navTiles: tiles.length,
+      navTilesWithWords: withWords.length,
+      performCount: performs.length,
+      chipVisible: shown(chip),
+      errors: errors
+    };
+    var box = document.getElementById("dj-proof");
+    var pre = box && box.querySelector("pre");
+    if (pre) pre.textContent = JSON.stringify(window.__DJ_PROOF, null, 2);
+  }
+  window.__djMeasure = measure;
+  window.addEventListener("resize", measure);
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", measure);
+  else measure();
+  var proof = false;
+  try { proof = new URLSearchParams(location.search).get("proof") === "1"; } catch (err) {}
+  if (!proof) return;
+  function mount() {
+    if (document.getElementById("dj-proof")) return;
+    var box = document.createElement("div");
+    box.id = "dj-proof";
+    box.setAttribute("role", "dialog");
+    box.innerHTML = '<button type="button">Close</button><pre></pre>';
+    box.querySelector("button").addEventListener("click", function () { box.hidden = true; });
+    document.body.appendChild(box);
+    measure();
+  }
+  if (document.body) mount();
+  else document.addEventListener("DOMContentLoaded", mount);
 })();
