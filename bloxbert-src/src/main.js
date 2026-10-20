@@ -6709,36 +6709,29 @@ function fitSlotNames(root) {
   const host = root || document.getElementById('hotbar')
   if (!host) return
   host.querySelectorAll('.slot:not(.bag-tile) .lbl').forEach((lbl) => {
-    const name = lbl.dataset.name || (lbl.textContent || '')
+    const name = (lbl.dataset.name || (lbl.textContent || '')).replace(/\s+/g, ' ').trim()
     if (!name) return
     lbl.dataset.name = name
-    const slot = lbl.parentElement
-    if (!slot) return
     lbl.replaceChildren(document.createTextNode(name))
-    lbl.style.whiteSpace = 'nowrap'
-    if (lbl.scrollWidth <= slot.clientWidth + 1) return
-    let cut = 0
-    let best = 1e9
-    const mid = name.length / 2
-    for (let i = 1; i < name.length; i++) {
-      lbl.textContent = name.slice(0, i)
-      const w1 = lbl.scrollWidth
-      lbl.textContent = name.slice(i)
-      const w2 = lbl.scrollWidth
-      if (w1 <= slot.clientWidth + 1 && w2 <= slot.clientWidth + 1 && Math.abs(i - mid) < best) {
-        best = Math.abs(i - mid)
-        cut = i
-      }
+    lbl.style.setProperty('white-space', 'normal', 'important')
+    lbl.style.setProperty('word-break', 'normal', 'important')
+    lbl.style.setProperty('overflow-wrap', 'normal', 'important')
+    lbl.style.setProperty('hyphens', 'none', 'important')
+    lbl.style.setProperty('overflow', 'visible', 'important')
+    lbl.style.setProperty('text-overflow', 'clip', 'important')
+    lbl.style.setProperty('max-height', 'none', 'important')
+    const slot = lbl.parentElement
+    const room = slot ? Math.max(8, slot.clientWidth - 2) : 40
+    let size = 14
+    const apply = (n) => {
+      lbl.style.setProperty('font-size', n + 'px', 'important')
+      lbl.style.setProperty('line-height', '1.05', 'important')
     }
-    if (!cut) { lbl.textContent = name; lbl.style.whiteSpace = 'nowrap'; return }
-    const a = document.createElement('span')
-    const b = document.createElement('span')
-    a.textContent = name.slice(0, cut)
-    b.textContent = name.slice(cut)
-    a.style.display = 'block'
-    b.style.display = 'block'
-    lbl.style.whiteSpace = 'normal'
-    lbl.replaceChildren(a, b)
+    apply(size)
+    while (size > 10 && lbl.scrollWidth > room + 1) {
+      size -= 1
+      apply(size)
+    }
   })
 }
 function paintBar() {
