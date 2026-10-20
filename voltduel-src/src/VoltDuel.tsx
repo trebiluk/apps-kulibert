@@ -51,6 +51,7 @@ declare global {
       phase: () => string;
     };
     __simulate?: (level: number) => ReturnType<typeof practiceRun>;
+    KulibertTest?: { on?: () => boolean };
   }
 }
 
@@ -100,6 +101,16 @@ export function VoltDuel() {
   const [padMode, setPadMode] = useState<"auto" | "on" | "off">("auto");
 
   saveRef.current = save;
+
+  function testOn() {
+    try { return !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch { return false; }
+  }
+  function jumpWin() {
+    show({ name: "results", level: screenRef.current.name === "play" || screenRef.current.name === "results" || screenRef.current.name === "pause" ? screenRef.current.level : 0, winner: 0, time: 12, coins: [3, 1] });
+  }
+  function jumpLose() {
+    show({ name: "results", level: screenRef.current.name === "play" || screenRef.current.name === "results" || screenRef.current.name === "pause" ? screenRef.current.level : 0, winner: 1, time: 12, coins: [1, 3] });
+  }
 
   function show(next: Screen) {
     screenRef.current = next;
@@ -701,6 +712,16 @@ export function VoltDuel() {
                 >
                   {padMode === "on" ? "Hide pads" : "Touch pads"}
                 </button>
+                {testOn() && (
+                  <>
+                    <button type="button" className="text-btn" onClick={jumpWin} aria-label="Jump to win" style={{ minWidth: 44, minHeight: 44 }}>
+                      <span aria-hidden="true">🏆</span> Jump to win
+                    </button>
+                    <button type="button" className="text-btn" onClick={jumpLose} aria-label="Jump to lose" style={{ minWidth: 44, minHeight: 44 }}>
+                      <span aria-hidden="true">⚑</span> Jump to lose
+                    </button>
+                  </>
+                )}
               </div>
               {helpOpen && (
                 <div className="help-pop" id="vd-help-tip" role="dialog" aria-label="Help">

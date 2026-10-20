@@ -25,6 +25,10 @@
     catch (e) { return false; }
   }
 
+  function deskOn() {
+    return packOn();
+  }
+
   function on() {
     return packOn() && staff() && asked();
   }
@@ -67,6 +71,6 @@
     return on();
   }
 
-  root.KulibertTest = { on: on, pull: pull, arm: arm, disarm: disarm, paint: paint };
+  root.KulibertTest = { on: on, deskOn: deskOn, pull: pull, arm: arm, disarm: disarm, paint: paint };
   pull();
 })(window);

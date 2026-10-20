@@ -28,6 +28,8 @@ type ProofApi = {
 
 declare global {
   interface Window {
+  KulibertTest?: { on?: () => boolean; deskOn?: () => boolean };
+  KulibertStaffAuth?: { isUnlocked?: () => boolean };
     __VD_PROOF?: ProofApi;
   }
 }
@@ -45,7 +47,12 @@ let driver: ProofDriver | null = null;
 
 export function proofEnabled() {
   try {
-    return new URLSearchParams(window.location.search).get("proof") === "1";
+    const test = window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on();
+    const proof = new URLSearchParams(window.location.search).get("proof") === "1";
+    const staff = window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked();
+    const desk = window.KulibertTest && window.KulibertTest.deskOn && window.KulibertTest.deskOn();
+    if (test) return true;
+    return proof && !!staff && !!desk;
   } catch {
     return false;
   }
