@@ -572,9 +572,12 @@
       if (spillEl) spillEl.textContent = "";
       return;
     }
-    if (el) el.textContent = cupWords();
     var show = spill > 0 && !pouring && live.length === 0 && anyShort();
-    if (spillEl) spillEl.textContent = show ? spillSentence() : "";
+    if (el) el.textContent = cupWords() + (shortChrome() && show ? " • " + spillSentence() : "");
+    if (spillEl) spillEl.textContent = show && !shortChrome() ? spillSentence() : "";
+  }
+  function shortChrome() {
+    try { return window.matchMedia("(max-height: 480px)").matches; } catch (e) { return false; }
   }
   function loadCups() {
     try { cups = Math.max(0, parseInt(localStorage.getItem("rampfill-cups") || "0", 10) || 0); } catch (e) { cups = 0; }
@@ -816,6 +819,8 @@
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     placeWorld();
     placePicks();
+    tagSig = "";
+    paintStatus();
   }
   function denorm(p) { return { x: p.x * viewW, y: p.y * viewH }; }
   function norm(p) { return { x: p.x / viewW, y: p.y / viewH }; }
@@ -1724,11 +1729,6 @@
     ctx.moveTo(c.x + 6, lineY);
     ctx.lineTo(c.x + c.w - 6, lineY);
     ctx.stroke();
-    var label = t("fillTo");
-    ctx.font = "700 18px Barlow, Outfit, sans-serif";
-    var tw = ctx.measureText(label).width;
-    if (c.x + c.w + 10 + tw < viewW - 4) backed(label, c.x + c.w + 8, lineY + 6, 18, "left");
-    else backed(label, c.x + c.w / 2, Math.max(20, c.top - 2), 18, "center");
   }
   function drawCup(c, amount, index) {
     ctx.save();
@@ -1895,7 +1895,7 @@
     drawHopperAt(spout, matName(), false);
   }
   function draw() {
-    if (mode === "stack") { drawStack(); return; }
+    if (mode === "stack") { syncTags(); drawStack(); return; }
     ctx.clearRect(0, 0, viewW, viewH);
     ctx.fillStyle = "#E7D7B8";
     ctx.fillRect(0, 0, viewW, viewH);
@@ -1934,13 +1934,16 @@
     if (spillSpots.length && !pouring && live.length === 0 && anyShort()) {
       var sx = 0, sy = 0, sn = 0;
       spillSpots.forEach(function (p) { sx += p.x; sy += p.y; sn++; });
-      sx /= sn; sy /= sn;
+      sx = Math.max(40, Math.min(viewW - 40, sx / sn));
+      sy = Math.max(28, Math.min(viewH - 28, sy / sn));
       ctx.beginPath();
       ctx.strokeStyle = "#8C3A2F";
       ctx.lineWidth = 4;
       ctx.ellipse(sx, sy, 34, 22, 0, 0, Math.PI * 2);
       ctx.stroke();
-      backedWrap(spillSentence(), sx, Math.min(viewH - 28, sy + 40), 16, Math.min(280, viewW - 24));
+      var tipY = sy + 36;
+      if (tipY > viewH - 52) tipY = Math.max(22, sy - 28);
+      backedWrap(spillSentence(), Math.max(70, Math.min(sx, viewW - 70)), tipY, 16, Math.min(240, viewW - 16));
     }
     cupList.forEach(function (c, i) { drawCup(c, fills[i] || 0, i); });
     drawHopper();
@@ -1950,6 +1953,72 @@
       else if (matName() === "water" && p.kind !== 0) waterDrop({ x: p.x, y: p.y, s: visual });
       else if (matName() === "gel") gelBlob({ x: p.x, y: p.y, s: visual + 2 });
       else seed({ x: p.x, y: p.y, s: visual, rot: p.rot });
+    });
+    syncTags();
+  }
+  var tagSig = "";
+  function tagArea(a, b) {
+    var w = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    var h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    return w > 0 && h > 0 ? w * h : 0;
+  }
+  function syncTags() {
+    var host = document.getElementById("board-tags");
+    if (!host) return;
+    if (mode === "stack" || !cupList.length || viewW < 8) {
+      if (host.childElementCount) host.replaceChildren();
+      tagSig = "";
+      return;
+    }
+    var sig = viewW + "x" + viewH + ":" + lang() + ":" + cupList.map(function (c) {
+      return Math.round(c.x) + "," + Math.round(c.top) + "," + Math.round(c.w) + "," + Math.round(c.h);
+    }).join(";");
+    if (sig === tagSig && host.childElementCount) return;
+    tagSig = sig;
+    host.replaceChildren();
+    var r = canvas.getBoundingClientRect();
+    var stage = host.parentElement.getBoundingClientRect();
+    var sx = r.width / Math.max(1, viewW);
+    var sy = r.height / Math.max(1, viewH);
+    var ox = r.left - stage.left;
+    var oy = r.top - stage.top;
+    cupList.forEach(function (c, i) {
+      var hit = document.createElement("div");
+      hit.className = "cup-hit";
+      hit.dataset.cup = String(i);
+      hit.style.left = (ox + c.x * sx) + "px";
+      hit.style.top = (oy + c.top * sy) + "px";
+      hit.style.width = Math.max(1, c.w * sx) + "px";
+      hit.style.height = Math.max(1, c.h * sy) + "px";
+      host.appendChild(hit);
+    });
+    var canvasR = canvas.getBoundingClientRect();
+    cupList.forEach(function (c, i) {
+      var tag = document.createElement("div");
+      tag.className = "fill-tag";
+      tag.textContent = t("fillTo");
+      var left = ox + (c.x + 4) * sx;
+      tag.style.left = left + "px";
+      tag.style.top = (oy + c.top * sy) + "px";
+      tag.style.transform = "translateY(calc(-100% - 4px))";
+      host.appendChild(tag);
+      var b = tag.getBoundingClientRect();
+      var shift = 0;
+      if (b.left < canvasR.left + 2) shift = (canvasR.left + 2) - b.left;
+      else if (b.right > canvasR.right - 2) shift = (canvasR.right - 2) - b.right;
+      if (shift) {
+        tag.style.left = (left + shift) + "px";
+        b = tag.getBoundingClientRect();
+      }
+      var hits = host.querySelectorAll(".cup-hit");
+      var overlap = 0;
+      hits.forEach(function (hit) { overlap += tagArea(b, hit.getBoundingClientRect()); });
+      if (overlap > 0 || b.top < canvasR.top + 1) {
+        var beside = i === 0 ? canvasR.left + 2 : canvasR.right - 2 - b.width;
+        tag.style.left = (beside - stage.left) + "px";
+        tag.style.top = (oy + Math.max(4, c.top - 2) * sy) + "px";
+        tag.style.transform = "translateY(-100%)";
+      }
     });
   }
   function frame(now) {

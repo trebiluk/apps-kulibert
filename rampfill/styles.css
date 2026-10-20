@@ -182,6 +182,18 @@ canvas {
   display: block;
   touch-action: none;
 }
+.board-tags { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+.cup-hit { position: absolute; }
+.fill-tag {
+  position: absolute;
+  background: #f3e6c8;
+  color: #1a120c;
+  font-weight: 800;
+  font-size: 18px;
+  line-height: 1.15;
+  padding: 1px 4px;
+  white-space: nowrap;
+}
 .pick {
   position: absolute;
   z-index: 4;
@@ -297,11 +309,21 @@ html[data-kp-motion="less"] .stamp { transform: none; }
 }
 @media (max-height: 460px) {
   .lesson { display: none; }
+  .lesson-row { display: contents; }
+  .stack-tile {
+    position: fixed;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 8;
+  }
+  .spill-line { display: none; }
+  .status { height: 22px; min-height: 22px; max-height: 22px; line-height: 22px; }
   .score { gap: 4px 8px; height: 40px; min-height: 40px; max-height: 40px; }
   .cups { min-height: 32px; }
   .cup-pic { width: 28px; height: 32px; }
   .cup-count { font-size: 16px; }
-  .app { gap: 3px; padding: 2px 6px 4px; }
+  .app { gap: 0; padding: 0 6px; }
   .stage { min-height: 0; flex: 1 1 auto; }
   .donebar { padding: 0 4px; }
   .stamp { font-size: 1.05rem; }
