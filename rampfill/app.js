@@ -2330,4 +2330,85 @@
       };
     }
   };
+  function proofState() {
+    var r = canvas.getBoundingClientRect();
+    var open = [];
+    for (var i = 1; i <= unlocked; i++) open.push(i);
+    var cupsOut = [];
+    for (var c = 0; c < cupList.length; c++) {
+      var amt = fills[c] || 0;
+      cupsOut.push({ fill: amt, full: amt >= LINE, stars: cupStars[c] || 0 });
+    }
+    var status = document.getElementById("status");
+    return {
+      version: VERSION,
+      level: level,
+      unlocked: open,
+      cups: cupsOut,
+      spilled: spill,
+      status: status ? status.textContent : "",
+      canvasW: Math.round(r.width),
+      canvasH: Math.round(r.height)
+    };
+  }
+  function proofLevel(n) {
+    stackFromHome = false;
+    if (mode === "stack") leaveStack();
+    showPlay();
+    setLevel(Math.max(1, Math.min(5, n | 0)));
+  }
+  function knownRamp(from, cup, intoLip) {
+    var x0 = from.x;
+    var y0 = from.y + 6;
+    var x1 = cup.x + cup.w * 0.5;
+    var y1 = intoLip ? cup.top + 10 : cup.top + Math.min(28, Math.max(14, cup.h * 0.22));
+    var pts = [];
+    for (var i = 0; i <= 10; i++) {
+      var u = i / 10;
+      pts.push(norm({ x: x0 + (x1 - x0) * u, y: y0 + (y1 - y0) * u }));
+    }
+    return pts;
+  }
+  function runPour() {
+    return new Promise(function (resolve) {
+      startPour();
+      var guard = 0;
+      function tick() {
+        guard++;
+        if ((pouring || live.length) && guard < 600) { setTimeout(tick, 50); return; }
+        resolve();
+      }
+      setTimeout(tick, 60);
+    });
+  }
+  function solveProof() {
+    var jobs = [];
+    if (level === 5 && cupList[0] && cupList[1] && spouts[0] && spouts[1]) {
+      jobs.push(function () {
+        activeSide = 0;
+        spout = spouts[0];
+        strokes = [knownRamp(spout, cupList[0], false)];
+        return runPour();
+      });
+      jobs.push(function () {
+        activeSide = 1;
+        spout = spouts[1];
+        strokes = [knownRamp(spout, cupList[1], true)];
+        return runPour();
+      });
+    } else if (cupList[0]) {
+      strokes = [knownRamp(spout, cupList[0], level === 3 || level === 5)];
+      jobs.push(runPour);
+    }
+    var chain = Promise.resolve();
+    jobs.forEach(function (job) { chain = chain.then(job); });
+    return chain.then(proofState);
+  }
+  if (/(?:[?&])proof=1(?:&|$)/.test(location.search)) {
+    window.__RF_PROOF = {
+      level: function (n) { proofLevel(n); return proofState(); },
+      solve: solveProof,
+      state: proofState
+    };
+  }
 })();
