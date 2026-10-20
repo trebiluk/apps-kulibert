@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.279', date: '2026-10-20', lines: {
+    en: ['Lamps you get show up in your Bag, and the Woodshop opens on the first tap.'],
+    uk: ['Лампи, які ти отримуєш, з\'являються в сумці, і майстерня відкривається з першого дотику.'],
+    ru: ['Лампы, которые ты получаешь, появляются в сумке, и мастерская открывается с первого нажатия.'],
+    es: ['Las lámparas que recibes aparecen en tu Bolsa, y el Taller se abre al primer toque.'],
+    ar: ['المصابيح التي تحصل عليها تظهر في حقيبتك، والورشة تفتح من أول لمسة.'],
+    'fa-AF': ['چراغ‌هایی که می‌گیری در کیسه‌ات ظاهر می‌شوند و کارگاه با اولین لمس باز می‌شود.'],
+    rw: ['Amatara wakiriye agaragara mu gikapu cyawe, kandi Ububaji burafungurwa ukora rimwe.'],
+    ti: ['መብራህቲ እትረኽቦም ኣብ ቦርሳኻ ይረኣዩ፣ ቤት ዕዮ ዕንጨይቲ ድማ ብቐዳማይ ምትንካፍ ይኽፈት።'],
+  }},
+
   { v: '2.5.278', date: '2026-10-20', lines: {
     en: ['Pause button no longer covers Close; "Tap to play" stops popping back.'],
     uk: ['Кнопка паузи більше не закриває «Закрити»; «Торкнись, щоб грати» більше не вискакує.'],

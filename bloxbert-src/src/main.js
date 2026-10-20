@@ -5711,7 +5711,7 @@ function closePlay(how) {
       muteUseKey = openMachineKey
       muteUseUntil = performance.now() + 300
     }
-    window.__shopClosedAt = performance.now()
+    if (sheet && !sheet.hidden && sheet.dataset.panel === 'woodshop') window.__shopClosedAt = performance.now()
     openMachineKey = ''
     hideDoorCard()
     const about = $('about')
@@ -11034,10 +11034,12 @@ if (location.search.includes('proof=1')) {
   window.__BT_PROOF = {
     giveLamp(kind) {
       const item = kind === 'wall' ? 'wallLamp' : 'floorLamp'
+      if (session && session.setMode) session.setMode('survival')
       if (session && session.give) session.give(item, 1)
       return this.bagCounts()
     },
     giveBed() {
+      if (session && session.setMode) session.setMode('survival')
       if (session && session.give) session.give('bunk', 1)
       return this.bagCounts()
     },
@@ -11068,6 +11070,7 @@ if (location.search.includes('proof=1')) {
       }
       return out
     },
+    openWoodshop() { if (panels) panels.open('woodshop', openMachineKey || ''); return true },
     voxelAt(x, y, z) { return getVoxel(x, y, z) },
     bagCounts() {
       const out = {}
