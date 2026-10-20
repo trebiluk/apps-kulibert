@@ -4,7 +4,7 @@ Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
 
 - [x] **2.5.275 Hotbar fit:** Leaves, Planks, Gravel and Red sand fit the slot's visible box at 1366, 915 and 412. The slot does not clip the last letter. Font stays at least 10px. Slots stay at least 44px.
 - [x] **2.5.275 Hotbar hook:** window.__bertopiaHotbarCheck() uses the same text-vs-visible-box measure. anyClipped is false at 1366, 915 and 412, and true on a clipped label.
-- [ ] **2.5.275 Proof setter:** window.__bertopiaSetHotbar exists only with ?proof=1 and does not save.
+- [x] **2.5.275 Proof setter:** window.__bertopiaSetHotbar exists only with ?proof=1 and does not save.
 
 - [x] **2.5.274 Hotbar fit:** Every hotbar name is whole at 1366, 915 and 412, including Leaves, Planks, Gravel and Red sand. No clipping, no ellipsis. Slots stay at least 44px.
 - [x] **2.5.274 Hotbar hook:** window.__bertopiaHotbarCheck() reports anyClipped false and anyMidWordBreak false, and anyClipped true when a name is forced long.

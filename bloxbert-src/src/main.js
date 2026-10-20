@@ -10413,6 +10413,28 @@ window.__bertopiaHotbarCheck = function (opts) {
   }
   return { w: window.innerWidth, labels: labels, anyClipped: anyClipped, anyMidWordBreak: anyMidWordBreak }
 }
+if (location.search.indexOf('proof=1') >= 0) {
+  window.__bertopiaSetHotbar = function (names) {
+    if (!session || !session.bag) return false
+    if (session.mode !== 'survival') session.setMode('survival')
+    const list = Array.isArray(names) ? names : []
+    const byName = new Map()
+    for (const key of Object.keys(ITEMS)) {
+      const label = String(t(key) || '').replace(/\s+/g, ' ').trim()
+      if (label) byName.set(label, key)
+    }
+    const slots = session.bag.slots
+    const n = Math.min(list.length, slots.length, 9)
+    for (let i = 0; i < n; i++) {
+      const want = String(list[i] == null ? '' : list[i]).replace(/\s+/g, ' ').trim()
+      const key = byName.get(want) || (ITEMS[want] ? want : '')
+      slots[i] = key ? { item: key, n: 1 } : null
+    }
+    session.paintHotbar()
+    if (window.__bertopiaFitSlots) window.__bertopiaFitSlots()
+    return true
+  }
+}
 window.__bertopiaRotateCheck = function () {
   const seed = makerLive && makerLive.seed != null ? (makerLive.seed | 0) : 0
   const gen = (window.__freshGen || 0) + (window.__makerGen || 0) + (window.__archiveGen || 0)
