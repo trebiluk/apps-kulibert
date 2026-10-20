@@ -40,7 +40,7 @@
       whats: "RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
-      cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs",
+      cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line",
       progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
@@ -91,7 +91,7 @@
       whats: "RF 1.0.4 — Режим судді: великий таймер, пронумеровані картки й кнопка «Готово» для справжніх чашок!",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
-      cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи",
+      cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд",
       progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
@@ -141,7 +141,7 @@
       whats: "RF 1.0.4 — Режим судьи: большой таймер, карточки с номерами и кнопка «Готово» для настоящих стаканов!",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
-      cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница",
+      cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд",
       progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
@@ -191,7 +191,7 @@
       whats: "RF 1.0.4 — Modo árbitro: un temporizador grande, tarjetas numeradas y un botón Listo para retos con vasos reales!",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
-      cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera",
+      cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila",
       progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
@@ -241,7 +241,7 @@
       whats: "RF 1.0.4 — وضع الحَكَم: مؤقّت كبير وبطاقات مرقّمة وزر «تم» لتحديات الأكواب الحقيقية!",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
-      cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج",
+      cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف",
       progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
@@ -291,7 +291,7 @@
       whats: "RF 1.0.4 — حالت داور: ساعت بزرگ، کارت‌های شماره‌دار و دکمهٔ «تمام» برای مسابقهٔ پیاله‌های واقعی!",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
-      cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله",
+      cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف",
       progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
@@ -341,7 +341,7 @@
       whats: "RF 1.0.4 — Uburyo bw'umusifuzi: isaha nini, amakarita afite nimero na buto \"Byarangiye\" ku marushanwa y'ibikombe nyabyo!",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
-      cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya",
+      cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi",
       progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
@@ -391,7 +391,7 @@
       whats: "RF 1.0.4 — ኣገባብ ዳኛ: ዓቢ ሰዓት፣ ቁጽሪ ዘለዎም ካርድታትን ናይ «ተወዲኡ» መልጎምን ንሓቀኛ ውድድር ኩባያታት!",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
-      cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን",
+      cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር",
       progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
@@ -450,6 +450,14 @@
   var refEnded = false;
   var refCard = 1;
   var refTeam = 1;
+  var ideasFromRef = false;
+  var IDEAS = [
+    { name: "pyramid", cups: 6 },
+    { name: "tower", cups: 4 },
+    { name: "bridge", cups: 5 },
+    { name: "stairs", cups: 6 },
+    { name: "line", cups: 4 }
+  ];
   var REF_CARDS = [
     { n: 1, name: "pyramid", cups: 6 },
     { n: 2, name: "tower", cups: 4 },
@@ -545,7 +553,7 @@
     var l2 = document.getElementById("lesson-2");
     if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
+    if (lv) lv.textContent = document.body.classList.contains("at-ideas") ? t("ideas") : document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
     canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
@@ -553,6 +561,7 @@
     paintRank();
     paintLevels();
     paintBoard();
+    paintIdeas();
   }
   function amountWord(amount) {
     var r = amount / LINE;
@@ -1399,10 +1408,12 @@
       parts.push(cupShape(24, 78, 52, 34), cupShape(24, 114, 52, 34));
       parts.push(cupShape(164, 78, 52, 34), cupShape(164, 114, 52, 34));
       parts.push(spanCup(48, 36, 144, 40));
-    } else {
+    } else if (kind === "stairs") {
       parts.push(cupShape(16, 114, 52, 34));
       parts.push(cupShape(84, 78, 52, 34), cupShape(84, 114, 52, 34));
       parts.push(cupShape(152, 42, 52, 34), cupShape(152, 78, 52, 34), cupShape(152, 114, 52, 34));
+    } else {
+      parts.push(cupShape(8, 96, 50, 40), cupShape(66, 96, 50, 40), cupShape(124, 96, 50, 40), cupShape(182, 96, 50, 40));
     }
     return '<svg viewBox="0 0 240 160">' + parts.join("") + "</svg>";
   }
@@ -1428,6 +1439,39 @@
     document.querySelectorAll("#ref-picks button").forEach(function (btn) {
       btn.setAttribute("aria-pressed", String(btn.getAttribute("data-card")) === String(refCard) ? "true" : "false");
     });
+  }
+  function paintIdeas() {
+    var host = document.getElementById("ideas-list");
+    if (!host) return;
+    var one = '<svg class="need-cup" viewBox="0 0 24 20" aria-hidden="true"><path d="M3 2 H21 L18 18 H6 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="1.6"/></svg>';
+    host.innerHTML = IDEAS.map(function (idea) {
+      var pics = "";
+      for (var i = 0; i < idea.cups; i++) pics += one;
+      return '<figure class="idea"><div class="idea-pic">' + cardDiagram(idea.name) + '</div><figcaption>' + t(idea.name) + '</figcaption><p class="ref-need"><span>' + t("youNeed") + '</span> ' + pics + ' <span class="need-n">' + idea.cups + '</span></p></figure>';
+    }).join("");
+  }
+  function openIdeas() {
+    ideasFromRef = document.body.classList.contains("at-ref");
+    document.body.classList.remove("at-home");
+    document.body.classList.remove("at-ref");
+    document.body.classList.add("at-ideas");
+    var ref = document.getElementById("ref");
+    if (ref) ref.hidden = true;
+    var panel = document.getElementById("ideas");
+    if (panel) panel.hidden = false;
+    paintIdeas();
+    paintText();
+  }
+  function closeIdeas() {
+    document.body.classList.remove("at-ideas");
+    var panel = document.getElementById("ideas");
+    if (panel) panel.hidden = true;
+    if (ideasFromRef) {
+      ideasFromRef = false;
+      openRef();
+      return;
+    }
+    showHome();
   }
   function refClockText(ms) {
     var total = Math.max(0, Math.floor(ms / 1000));
@@ -2393,6 +2437,9 @@
   document.getElementById("home-levels").addEventListener("click", openLevels);
   document.getElementById("home-stack").addEventListener("click", openHomeStack);
   document.getElementById("home-ref").addEventListener("click", openRef);
+  document.getElementById("home-ideas").addEventListener("click", openIdeas);
+  document.getElementById("ref-ideas").addEventListener("click", openIdeas);
+  document.getElementById("ideas-home").addEventListener("click", closeIdeas);
   document.getElementById("stack-ref").addEventListener("click", openRef);
   document.getElementById("ref-up").addEventListener("click", function () { refSetMode(false); });
   document.getElementById("ref-down").addEventListener("click", function () { refSetMode(true); });
@@ -2450,6 +2497,7 @@
         document.getElementById("ask").hidden = true; syncModal(); e.preventDefault(); return;
       }
       if (!document.getElementById("menu").hidden) { toggleMenu(false); e.preventDefault(); return; }
+      if (document.body.classList.contains("at-ideas")) { closeIdeas(); e.preventDefault(); return; }
       if (document.body.classList.contains("at-ref")) { closeRef(); e.preventDefault(); return; }
       if (!document.getElementById("endcard").hidden) {
         document.getElementById("endcard").hidden = true;

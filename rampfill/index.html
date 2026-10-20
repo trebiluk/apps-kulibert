@@ -7,7 +7,7 @@
   <title>Ramp & Fill — RF 1.0.4</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.4-cards" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.4-ideas" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
@@ -35,11 +35,23 @@
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 8 H42 L40 22 H24 Z M18 26 H46 L43 42 H21 Z M14 46 H50 L46 60 H18 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
         <span data-k="stackTile">Cup Stack</span>
       </button>
+      <button type="button" id="home-ideas" class="home-tile">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 40 H24 L22 56 H10 Z M28 28 H44 L42 56 H30 Z M48 16 H60 L58 56 H50 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
+        <span data-k="ideas">Stack ideas</span>
+      </button>
       <button type="button" id="home-ref" class="home-tile">
         <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="18" fill="none" stroke="#1A120C" stroke-width="4"/><path d="M32 34 V22 M32 34 L42 40" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M32 8 V14" stroke="#1A120C" stroke-width="4"/></svg>
         <span data-k="refTile">Referee</span>
       </button>
     </div>
+    <section id="ideas" class="ideas" hidden>
+      <h2 data-k="ideas">Stack ideas</h2>
+      <div id="ideas-list" class="idea-grid"></div>
+      <button type="button" id="ideas-home" class="idea-home">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        <span data-k="home">Home</span>
+      </button>
+    </section>
     <section id="ref" class="ref" hidden>
       <p class="ref-clock" id="ref-clock">0:00</p>
       <div class="ref-teams" id="ref-teams" role="group">
@@ -89,6 +101,10 @@
         <button type="button" id="ref-done" class="ref-done">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 L10 17 L19 7" fill="none" stroke="currentColor" stroke-width="3"/></svg>
           <span data-k="refDone">Done</span>
+        </button>
+        <button type="button" id="ref-ideas">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H10 L9 21 H5 Z M11 11 H17 L16 21 H12 Z M18 6 H22 L21 21 H19 Z" fill="currentColor"/></svg>
+          <span data-k="ideas">Stack ideas</span>
         </button>
         <button type="button" id="ref-home">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
@@ -243,6 +259,6 @@
   </div>
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.4" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.4-cards"></script>
+  <script src="./app.js?v=RF-1.0.4-ideas"></script>
 </body>
 </html>

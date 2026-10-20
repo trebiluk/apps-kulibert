@@ -4,6 +4,7 @@ Stage 5. Version locked: RF 1.0.4.
 - [x] **RF 1.0.4 ITEM 0:** One Retry tap stops a pour and clears a spill. The status goes back to empty with the start hint.
 - [x] **RF 1.0.4 (a):** Referee screen has a room-sized timer, count up and count down, Start / Stop / Reset, and a bigger Done button. The last 10 seconds grow and the border thickens. Time! is a card with an icon. No sound.
 - [x] **RF 1.0.4 (b):** Numbered cards 1–4 on the referee screen: pyramid, tower to a line, bridge, and stairs. Each shows the stack as a picture and “You need” as cup pictures. Teams are Team 1–4 with a shape and a word. Nothing is saved online.
+- [x] **RF 1.0.4 (c):** Stack ideas is its own page with five big pictures: pyramid, tower, bridge, stairs, and a line. Each says how many cups with cup pictures. No printing.
 
 - [x] **RF 1.0.3 ITEM 1:** Home shows two tiles, Levels and Cup Stack. One tap on Cup Stack opens stacking. The in-level Cup Stack button stays.
 - [x] **RF 1.0.3 ITEM 2:** A fresh level, Clear, and Retry show no spill text. "can you fill more?" waits until a cup is filled.

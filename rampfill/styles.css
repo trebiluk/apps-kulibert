@@ -151,7 +151,46 @@ body.at-ref .lesson-row,
 body.at-ref .stage,
 body.at-ref .status,
 body.at-ref .spill-line,
+body.at-ref .score { display: none !important; }
+body.at-ideas .home,
+body.at-ideas .toolslot,
+body.at-ideas .lesson-row,
+body.at-ideas .stage,
+body.at-ideas .status,
+body.at-ideas .spill-line,
+body.at-ideas .score,
+body.at-ideas .ref { display: none !important; }
+body.at-ideas #pause-btn,
 body.at-ref #pause-btn { visibility: hidden; }
+.ideas {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.ideas h2 { margin: 0; font-size: clamp(32px, 6vw, 48px); }
+.idea-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+@media (min-width: 860px) { .idea-grid { grid-template-columns: 1fr 1fr; } }
+.idea { margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.idea-pic svg { width: 100%; height: auto; min-height: 180px; display: block; background: #f3e6c8; border: 3px solid var(--ink); border-radius: 16px; }
+.idea figcaption { font-size: clamp(28px, 5vw, 40px); font-weight: 800; }
+.idea-home {
+  min-height: 56px;
+  min-width: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  border: 3px solid var(--ink);
+  background: var(--sand);
+  color: var(--ink);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.idea-home svg { width: 28px; height: 28px; }
 .ref {
   flex: 1 1 auto;
   min-height: 0;
