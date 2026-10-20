@@ -1,13 +1,13 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.1 — Hold a button to run on phones, and the score fits the screen.",
-    uk: "VD 1.0.1 — Утримуй кнопку, щоб бігти на телефоні, і рахунок вміщується на екрані.",
-    ru: "VD 1.0.1 — Удерживай кнопку, чтобы бежать на телефоне, и счёт помещается на экране.",
-    es: "VD 1.0.1 — Mantén pulsado un botón para correr en el móvil, y el marcador cabe en la pantalla.",
-    ar: "VD 1.0.1 — اضغط مطولًا على الزر لتركض على الهاتف، والنتيجة تظهر كاملة على الشاشة.",
-    "fa-AF": "VD 1.0.1 — دکمه را نگه دار تا در موبایل بدوی، و نمره کامل در صفحه جا می‌شود.",
-    rw: "VD 1.0.1 — Kanda buto ukomeze kugira ngo wiruke kuri telefoni, kandi amanota agaragara yose.",
-    ti: "VD 1.0.1 — ኣብ ሞባይል ንምጉያይ መጠወቒ ጸቒጥካ ሓዝ፣ ነጥቢ ድማ ኣብ ስክሪን ምሉእ ይርአ።"
+    en: "VD 1.0.2 — Phone tips talk touch, and the race sits closer to your buttons.",
+    uk: "VD 1.0.2 — Підказки на телефоні говорять про дотик, а гонка ближче до твоїх кнопок.",
+    ru: "VD 1.0.2 — Подсказки на телефоне про касания, а гонка ближе к твоим кнопкам.",
+    es: "VD 1.0.2 — Los consejos en el móvil hablan de tocar, y la carrera está más cerca de tus botones.",
+    ar: "VD 1.0.2 — نصائح الهاتف تتحدث عن اللمس، والسباق أقرب إلى أزرارك.",
+    "fa-AF": "VD 1.0.2 — راهنمای موبایل حالا دربارهٔ لمس است، و مسابقه نزدیک‌تر به دکمه‌هایت است.",
+    rw: "VD 1.0.2 — Inama kuri telefoni zivuga gukoraho, kandi isiganwa riri hafi y'utubuto twawe.",
+    ti: "VD 1.0.2 — ምኽሪ ሞባይል ብዛዕባ ምንካእ ይዛረብ፣ ጉያ ድማ ናብ መጠወቒታትካ ቀሪቡ ኣሎ።"
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.1") plate.textContent = "VD 1.0.1";
+      if (plate && plate.textContent !== "VD 1.0.2") plate.textContent = "VD 1.0.2";
     } finally {
       painting = false;
     }

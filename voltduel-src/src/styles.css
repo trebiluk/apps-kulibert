@@ -444,12 +444,16 @@ kbd {
   pointer-events: none;
   align-self: center;
   margin: 0;
+  max-width: min(36rem, 100%);
   color: var(--color-fg);
   background: color-mix(in srgb, var(--color-bg) 72%, transparent);
   border: 1px solid var(--color-line);
-  border-radius: 999px;
-  padding: 0.25rem 0.7rem;
-  font-size: 0.82rem;
+  border-radius: 0.75rem;
+  padding: 0.35rem 0.7rem;
+  font-size: 14px;
+  line-height: 1.35;
+  text-align: center;
+  white-space: normal;
 }
 
 .modal-card {

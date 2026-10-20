@@ -24,6 +24,17 @@ const MAPS = [
 const GAME_CODES = new Set<string>(MAPS.flatMap((map) => [...map.left, ...map.right, ...map.jump, ...map.down]));
 
 const NAMES = ["VEX", "RIO"] as const;
+const KEY_TIP = "VEX uses WASD. RIO uses arrows. Jump again in the air.";
+const TOUCH_TIP: Record<string, string> = {
+  en: "Hold ◀ ▶ to run. Tap ⤒ to jump, tap again in the air.",
+  uk: "Утримуй ◀ ▶, щоб бігти. Торкнись ⤒, щоб стрибнути, і ще раз у повітрі.",
+  ru: "Удерживай ◀ ▶, чтобы бежать. Нажми ⤒, чтобы прыгнуть, и ещё раз в воздухе.",
+  es: "Mantén ◀ ▶ para correr. Toca ⤒ para saltar y otra vez en el aire.",
+  ar: "اضغط مطولًا \u2066◀ ▶\u2069 للركض. المس \u2066⤒\u2069 للقفز، ثم المس مرة أخرى في الهواء.",
+  "fa-AF": "\u2066◀ ▶\u2069 را نگه دار تا بدوی. \u2066⤒\u2069 را بزن تا بپری، و بار دیگر در هوا.",
+  rw: "Kanda ◀ ▶ ukomeze kugira ngo wiruke. Kanda ⤒ usimbuike, hanyuma ugaruke mu kirere.",
+  ti: "◀ ▶ ጸቒጥካ ሓዝ ንምጉያይ። ⤒ ጠውቕ ንምዝላል፣ ኣብ ኣየር ድማ ደጊምካ ጠውቕ።",
+};
 const spriteUrl = (name: string) => `${import.meta.env.BASE_URL}sprites/${name}`;
 
 declare global {
@@ -357,6 +368,38 @@ export function VoltDuel() {
   const playing = screen.name === "play" || screen.name === "pause";
 
   const [helpOpen, setHelpOpen] = useState(false);
+  const [coarse, setCoarse] = useState(
+    () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
+  );
+  const [lang, setLang] = useState("en");
+
+  useEffect(() => {
+    const mq = window.matchMedia("(pointer: coarse)");
+    const syncCoarse = () => setCoarse(mq.matches);
+    syncCoarse();
+    mq.addEventListener("change", syncCoarse);
+    const onDown = (event: globalThis.PointerEvent) => {
+      if (event.pointerType === "touch") setCoarse(true);
+    };
+    window.addEventListener("pointerdown", onDown, true);
+    const readLang = () => {
+      const code = document.documentElement.getAttribute("data-kp-lang") || "en";
+      setLang(code === "simple" ? "en" : code);
+    };
+    readLang();
+    window.addEventListener("kulibert-lang", readLang);
+    const obs = new MutationObserver(readLang);
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-kp-lang"] });
+    return () => {
+      mq.removeEventListener("change", syncCoarse);
+      window.removeEventListener("pointerdown", onDown, true);
+      window.removeEventListener("kulibert-lang", readLang);
+      obs.disconnect();
+    };
+  }, []);
+
+  const tipLang = TOUCH_TIP[lang] ? lang : "en";
+  const tip = coarse ? TOUCH_TIP[tipLang] : KEY_TIP;
 
   const syncHolds = () => {
     const next: [Pad, Pad] = [
@@ -494,7 +537,9 @@ export function VoltDuel() {
               <i ref={flagRef} className="flag" />
             </div>
             {hint && screen.name === "play" && (
-              <p className="hint">VEX uses WASD. RIO uses arrows. Jump again in the air.</p>
+              <p className="hint" lang={tipLang === "fa-AF" ? "fa" : tipLang} dir={tipLang === "ar" || tipLang === "fa-AF" ? "rtl" : "ltr"}>
+                {tip}
+              </p>
             )}
           </div>
         )}
