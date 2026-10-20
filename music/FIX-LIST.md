@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.8: Viz and Perform use a dark stage. Picture, swatches, the live strip, and Mic lights follow.
 - [x] MU 2.36.7: sideways Tap to write is clear, Viz keeps its word, and the proof buttons stay readable in the light theme.
 - [x] MU 2.36.6: the version chip stays off the nav, and the proof readout counts the real tiles.
 - [x] MU 2.36.5: nav tiles show a word, Perform is only on the bottom row, the version chip stays visible sideways, and ?proof=1 reports the live numbers.
