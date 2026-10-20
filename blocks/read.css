@@ -1460,7 +1460,7 @@ html body #hotbar .slot:not(.bag-tile) {
   height: auto !important;
   min-height: 44px !important;
   max-height: none !important;
-  overflow: hidden !important;
+  overflow: visible !important;
   box-sizing: border-box !important;
   padding: 18px 1px 2px !important;
 }

@@ -6705,15 +6705,52 @@ if (packOn('tech')) {
   }
 }
 let selectedSlot = 0
+function bertSlotContentBox(slot) {
+  const r = slot.getBoundingClientRect()
+  const cs = getComputedStyle(slot)
+  const left = r.left + (parseFloat(cs.borderLeftWidth) || 0) + (parseFloat(cs.paddingLeft) || 0)
+  const right = r.right - (parseFloat(cs.borderRightWidth) || 0) - (parseFloat(cs.paddingRight) || 0)
+  return { left: left, right: right, width: Math.max(0, right - left) }
+}
+function bertVisibleBox(slot) {
+  const base = bertSlotContentBox(slot)
+  let left = base.left
+  let right = base.right
+  const r = slot.getBoundingClientRect()
+  let node = slot.parentElement
+  while (node && node !== document.documentElement) {
+    const ncs = getComputedStyle(node)
+    const ox = ncs.overflowX
+    if (ox === 'hidden' || ox === 'clip' || ox === 'auto' || ox === 'scroll') {
+      const nr = node.getBoundingClientRect()
+      const aL = nr.left + (parseFloat(ncs.borderLeftWidth) || 0) + (parseFloat(ncs.paddingLeft) || 0)
+      const aR = nr.right - (parseFloat(ncs.borderRightWidth) || 0) - (parseFloat(ncs.paddingRight) || 0)
+      if (r.right > aL + 0.5 && r.left < aR - 0.5) {
+        const overlap = Math.min(r.right, aR) - Math.max(r.left, aL)
+        if (overlap >= r.width * 0.6) {
+          left = Math.max(left, aL)
+          right = Math.min(right, aR)
+        }
+      }
+    }
+    node = node.parentElement
+  }
+  return { left: left, right: right, width: Math.max(0, right - left) }
+}
+function bertLabelTextBox(lbl) {
+  const range = document.createRange()
+  const node = lbl.firstChild
+  if (node && node.nodeType === 3 && lbl.childNodes.length === 1) range.selectNodeContents(node)
+  else range.selectNodeContents(lbl)
+  return range.getBoundingClientRect()
+}
+function bertLabelFits(tb, box) {
+  if (!tb || tb.width < 0.5) return true
+  return tb.left >= box.left - 0.5 && tb.right <= box.right + 0.5
+}
 function fitSlotNames(root) {
   const host = root || document.getElementById('hotbar')
   if (!host) return
-  const probe = fitSlotNames.probe || (fitSlotNames.probe = document.createElement('span'))
-  if (!probe.isConnected) {
-    probe.setAttribute('aria-hidden', 'true')
-    probe.style.cssText = 'position:absolute;left:0;top:0;visibility:hidden;white-space:nowrap;pointer-events:none;font-weight:700;'
-    document.body.appendChild(probe)
-  }
   host.querySelectorAll('.slot .lbl').forEach((lbl) => {
     const name = (lbl.dataset.name || (lbl.textContent || '')).replace(/\s+/g, ' ').trim()
     if (!name) return
@@ -6731,35 +6768,72 @@ function fitSlotNames(root) {
     lbl.style.setProperty('min-width', '0', 'important')
     lbl.style.setProperty('box-sizing', 'border-box', 'important')
     lbl.style.setProperty('padding', '0', 'important')
-    const cs = getComputedStyle(lbl)
-    probe.style.fontFamily = cs.fontFamily
-    probe.style.fontWeight = cs.fontWeight
-    const room = Math.max(8, lbl.clientWidth || 0)
-    const words = name.split(' ').filter(Boolean)
-    const need = (size) => {
-      let w = 0
-      probe.style.fontSize = size + 'px'
-      for (const word of words) {
-        probe.textContent = word
-        if (probe.scrollWidth > w) w = probe.scrollWidth
-      }
-      return w
-    }
-    let size = 14
-    while (size > 10 && need(size) > room) size -= 1
-    lbl.style.setProperty('font-size', size + 'px', 'important')
+    lbl.style.setProperty('font-size', '14px', 'important')
     lbl.style.setProperty('line-height', '1.05', 'important')
     const slot = lbl.parentElement
-    if (slot && lbl.clientWidth > 0 && size === 10 && need(10) > room) {
-      const grow = Math.ceil(slot.getBoundingClientRect().width + (need(10) - room) + 2)
-      const w = Math.max(44, grow)
-      slot.style.setProperty('min-width', w + 'px', 'important')
-      slot.style.setProperty('width', w + 'px', 'important')
-      slot.style.setProperty('flex-basis', w + 'px', 'important')
+    if (!slot) return
+    if (slot.dataset.bertFit === '1') {
+      slot.style.removeProperty('min-width')
+      slot.style.removeProperty('width')
+      slot.style.removeProperty('flex-basis')
+      slot.style.removeProperty('max-width')
+      delete slot.dataset.bertFit
+    }
+    slot.style.setProperty('overflow', 'visible', 'important')
+    if (slot.getBoundingClientRect().width < 1) return
+    const place = () => {
+      const own = bertSlotContentBox(slot)
+      const vis = bertVisibleBox(slot)
+      const cutL = Math.max(0, vis.left - own.left)
+      const cutR = Math.max(0, own.right - vis.right)
+      if ((cutL > 0.5 || cutR > 0.5) && vis.width >= 8) {
+        lbl.style.setProperty('width', Math.floor(vis.width) + 'px', 'important')
+        lbl.style.setProperty('max-width', Math.floor(vis.width) + 'px', 'important')
+        lbl.style.setProperty('margin-left', cutL + 'px', 'important')
+        lbl.style.setProperty('margin-right', cutR + 'px', 'important')
+      } else {
+        lbl.style.setProperty('width', '100%', 'important')
+        lbl.style.setProperty('max-width', '100%', 'important')
+        lbl.style.setProperty('margin-left', '0', 'important')
+        lbl.style.setProperty('margin-right', '0', 'important')
+      }
+      return bertVisibleBox(slot)
+    }
+    let size = 14
+    let box = place()
+    let tb = bertLabelTextBox(lbl)
+    while (size > 10 && !bertLabelFits(tb, box)) {
+      size -= 1
+      lbl.style.setProperty('font-size', size + 'px', 'important')
+      box = place()
+      tb = bertLabelTextBox(lbl)
+    }
+    let guard = 0
+    while (guard < 4) {
+      const own = bertSlotContentBox(slot)
+      if (bertLabelFits(tb, own)) break
+      const over = Math.max(0, own.left - tb.left) + Math.max(0, tb.right - own.right)
+      const grow = Math.max(44, Math.ceil(slot.getBoundingClientRect().width + over + 2))
+      slot.dataset.bertFit = '1'
+      slot.style.setProperty('min-width', grow + 'px', 'important')
+      slot.style.setProperty('width', grow + 'px', 'important')
+      slot.style.setProperty('max-width', 'none', 'important')
+      slot.style.setProperty('flex-basis', grow + 'px', 'important')
+      slot.style.setProperty('flex-shrink', '0', 'important')
+      tb = bertLabelTextBox(lbl)
+      guard += 1
     }
   })
+  host.querySelectorAll('.item-strip').forEach((strip) => {
+    if (strip.dataset.fitScroll) return
+    strip.dataset.fitScroll = '1'
+    strip.addEventListener('scroll', () => requestAnimationFrame(() => fitSlotNames(host)))
+  })
 }
+window.__bertopiaFitSlots = fitSlotNames
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitSlotNames())
+if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', () => fitSlotNames())
+window.addEventListener('orientationchange', () => requestAnimationFrame(() => fitSlotNames()))
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
   bar.innerHTML = ''

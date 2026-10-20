@@ -1713,3 +1713,17 @@ for (const [lang, row] of Object.entries(FIT274)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT275 = {
+  en: { whatsNewBody: '2.5.275 — Leaves finally fits in the hotbar.' },
+  uk: { whatsNewBody: '2.5.275 — Листя нарешті вміщується на панелі швидкого доступу.' },
+  ru: { whatsNewBody: '2.5.275 — Листва наконец помещается на панели быстрого доступа.' },
+  es: { whatsNewBody: '2.5.275 — Hojas por fin cabe en la barra rápida.' },
+  ar: { whatsNewBody: '2.5.275 — أخيرًا يظهر اسم الأوراق كاملًا في شريط الأدوات.' },
+  'fa-AF': { whatsNewBody: '2.5.275 — بالاخره نام برگ‌ها کامل در نوار ابزار جا می‌شود.' },
+  rw: { whatsNewBody: '2.5.275 — Amababi noneho agaragara yuzuye mu murongo w\'ibikoresho.' },
+  ti: { whatsNewBody: '2.5.275 — ቆጽሊ ኣብ መወዳእታ ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።' },
+}
+for (const [lang, row] of Object.entries(FIT275)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

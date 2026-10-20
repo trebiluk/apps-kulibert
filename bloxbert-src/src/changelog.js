@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.275', date: '2026-10-20', lines: {
+    en: ['2.5.275 — Leaves finally fits in the hotbar.'],
+    es: ['2.5.275 — Hojas por fin cabe en la barra rápida.'],
+    ar: ['2.5.275 — أخيرًا يظهر اسم الأوراق كاملًا في شريط الأدوات.'],
+    zh: ['2.5.275 — Leaves finally fits in the hotbar.'],
+    fr: ['2.5.275 — Leaves finally fits in the hotbar.'],
+    pt: ['2.5.275 — Leaves finally fits in the hotbar.'],
+    ru: ['2.5.275 — Листва наконец помещается на панели быстрого доступа.'],
+    vi: ['2.5.275 — Leaves finally fits in the hotbar.'],
+    uk: ['2.5.275 — Листя нарешті вміщується на панелі швидкого доступу.'],
+    'fa-AF': ['2.5.275 — بالاخره نام برگ‌ها کامل در نوار ابزار جا می‌شود.'],
+    rw: ['2.5.275 — Amababi noneho agaragara yuzuye mu murongo w\'ibikoresho.'],
+    ti: ['2.5.275 — ቆጽሊ ኣብ መወዳእታ ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።'],
+  }},
   { v: '2.5.274', date: '2026-10-20', lines: {
     en: ['2.5.274 — Every block name fits in the hotbar.'],
     es: ['2.5.274 — Todos los nombres de bloques caben en la barra rápida.'],
