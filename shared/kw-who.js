@@ -198,6 +198,16 @@
       return row;
     }
     if (!hasScore) return null;
+    var testing = false;
+    try { testing = !!(root.KulibertTest && root.KulibertTest.on && root.KulibertTest.on()); } catch (eTest) {}
+    if (testing) {
+      row.test = true;
+      row.level = ("TEST · " + row.level).slice(0, 40);
+      try { localStorage.setItem(REC, JSON.stringify(readRecords().concat([row]).slice(-300))); } catch (eSaveTest) {}
+      try { localStorage.setItem("kw-test-board-v1", JSON.stringify(readRecords().filter(function (item) { return item && item.test; }).concat([row]).slice(-100))); } catch (eBoard) {}
+      try { root.dispatchEvent(new CustomEvent("kw-record", { detail: row })); } catch (eEvTest) {}
+      return row;
+    }
     try { localStorage.setItem(REC, JSON.stringify(readRecords().concat([row]).slice(-300))); } catch (eSave) {}
     var rows = pending().filter(function (item) {
       return !(item && item.v === 2 && item.code === who.code && item.app === row.app && item.level === row.level && item.ts === row.ts);
@@ -225,15 +235,18 @@
     var text = clipLine(line);
     var id = String(appId || "").slice(0, 24);
     if (!text || !id) return null;
+    var testing = false;
+    try { testing = !!(root.KulibertTest && root.KulibertTest.on && root.KulibertTest.on()); } catch (eTest) {}
+    if (testing) text = clipLine("TEST · " + text);
     var who = saveApp(id, { line: text });
-    if (who && who.verified && active() && aliasesOn()) enqueue(who.alias, who.code, id, text);
+    if (!testing && who && who.verified && active() && aliasesOn()) enqueue(who.alias, who.code, id, text);
     record({ app: id, event: "score", level: text, score: 1, max: 1, stars: 1, xp: 1 });
     try { root.dispatchEvent(new Event("kw-mark")); } catch (e) {}
     return who;
   }
   function flush() {
     if (!active() || !aliasesOn()) return Promise.resolve(false);
-    var rows = pending();
+    var rows = pending().filter(function (item) { return !(item && item.test); });
     if (!rows.length) return Promise.resolve(true);
     return fetch("https://tw.kulibert.net/api/marks", {
       method: "POST",
