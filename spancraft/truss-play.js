@@ -1322,6 +1322,17 @@ export function mountTruss(cfg) {
       setStatus(fixed ? t("youFixed") : t("clear"), line, "pass");
       showPlate(fixed ? t("youFixed") : t("clear"), line, "✓");
       shipClear(level, stars);
+      try {
+        if (window.KulibertBoards) {
+          var meters = metersOf(state.joints, state.members, level);
+          window.KulibertBoards.post({
+            game: "holdit",
+            board: cfg.mode === "spire" ? "spire" : "span",
+            value: Math.max(0.1, Math.round(meters * 10) / 10),
+            version: String(cfg.version || "")
+          });
+        }
+      } catch (eBoard) {}
       paintNextLevel();
       const nxtBtn = document.getElementById("next-level");
       if (nxtBtn && !nxtBtn.hidden) nxtBtn.focus();

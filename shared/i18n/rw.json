@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub 2026-10-20: Amazina ku rutonde rw'abatsinze atoranywa ku rutonde, kandi porogaramu zisoma ecran zisoma neza BertyBots, BertyCAD na HouseKit.",
+  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: Buri mukino werekana amanota yawe meza n'agahigo k'ishuri ugomba gutsinda.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -162,5 +162,18 @@
   "bbCanvasHelp": "Porogaramu zisoma ecran zumva izina ry'akazi, hanyuma intego, gutsinda cyangwa gutsindwa.",
   "lessItem": "Bike {name}",
   "moreItem": "Byinshi {name}",
-  "hkStepperHelp": "Minus na plus bivuga ikintu bahindura."
+  "hkStepperHelp": "Minus na plus bivuga ikintu bahindura.",
+  "lbTitle": "Leaderboards",
+  "lbPickAlias": "Pick an alias",
+  "lbMyBest": "My best",
+  "lbClassRecord": "Class record",
+  "lbBeat": "Beat it",
+  "lbTook": "You took #1",
+  "lbTaken": "Your record was taken",
+  "lbHeld": "records held",
+  "lbTabMy": "My bests",
+  "lbTabClass": "Class",
+  "lbTabSchool": "School",
+  "lbTabWeek": "This week",
+  "lbMyRank": "My rank"
 }

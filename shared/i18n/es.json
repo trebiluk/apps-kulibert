@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub 2026-10-20: Los nombres del marcador se eligen de una lista, y los lectores de pantalla leen mejor BertyBots, BertyCAD y HouseKit.",
+  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: Cada juego muestra tu mejor marca y el récord de la clase para superar.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -162,5 +162,18 @@
   "bbCanvasHelp": "Los lectores de pantalla oyen el nombre del trabajo, luego la meta, el acierto o el fallo.",
   "lessItem": "Menos {name}",
   "moreItem": "Más {name}",
-  "hkStepperHelp": "Menos y más dicen qué cosa cambian."
+  "hkStepperHelp": "Menos y más dicen qué cosa cambian.",
+  "lbTitle": "Leaderboards",
+  "lbPickAlias": "Pick an alias",
+  "lbMyBest": "My best",
+  "lbClassRecord": "Class record",
+  "lbBeat": "Beat it",
+  "lbTook": "You took #1",
+  "lbTaken": "Your record was taken",
+  "lbHeld": "records held",
+  "lbTabMy": "My bests",
+  "lbTabClass": "Class",
+  "lbTabSchool": "School",
+  "lbTabWeek": "This week",
+  "lbMyRank": "My rank"
 }

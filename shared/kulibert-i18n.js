@@ -40,7 +40,20 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub 2026-10-20: Leaderboard names are picked from a list, and screen readers can read BertyBots, BertyCAD and HouseKit better.",
+  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.",
+  "lbTitle": "Leaderboards",
+  "lbPickAlias": "Pick an alias",
+  "lbMyBest": "My best",
+  "lbClassRecord": "Class record",
+  "lbBeat": "Beat it",
+  "lbTook": "You took #1",
+  "lbTaken": "Your record was taken",
+  "lbHeld": "records held",
+  "lbTabMy": "My bests",
+  "lbTabClass": "Class",
+  "lbTabSchool": "School",
+  "lbTabWeek": "This week",
+  "lbMyRank": "My rank",
   "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
   "bbCanvasHelp": "Screen readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -242,7 +255,7 @@
     if (pending[name]) { pending[name].push(cb || function () {}); return; }
     pending[name] = cb ? [cb] : [];
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v10:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v11:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -257,12 +270,12 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-20-p0-a11y-pii", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-20-leaderboard-stats", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(function (data) {
       if (data && typeof data === "object") {
         packs[name] = data;
-        try { sessionStorage.setItem("kulibert-i18n-v10:" + name, JSON.stringify(data)); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v11:" + name, JSON.stringify(data)); } catch (e3) {}
       }
     }).catch(function () {}).then(function () { finish(name); });
   }

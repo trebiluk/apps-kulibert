@@ -38,7 +38,7 @@
   "more": "ተወሳኺ",
   "gotIt": "ተረዲኡኒ",
   "pwaTip": "ሓበሬታ፦ ዝርዝር Chrome፣ ድሕሪኡ ገጽ ጽዓን። ምልክት Tech Room ኣብዚ Chromebook ይቕጽል። መተግበሪታት ናይ ቤት ትምህርቲ መርበብ የድልየን።",
-  "whatsNewLine": "Hub 2026-10-20: ኣስማት ሰሌዳ መራሕቲ ካብ ዝርዝር ይሕረዩ፣ ኣንበብቲ ስክሪን ድማ BertyBots፣ BertyCAD ከምኡ'ውን HouseKit ብዝሓሸ የንብቡ።",
+  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: ነፍሲ ወከፍ ጸወታ ዝበለጸ ውጽኢትካን ናይ ክፍሊ ሪኮርድን የርኢ።",
   "appNames": "ኣስማት መተግበሪታት ኣብ ላዕለዋይ መስመር",
   "whatsNewStrip": "ላዕለዋይ መስመር ምልክታት መተግበሪታት ጥራይ የርኢ። ኣስማት ኣብ ናተይ ቅጥዕታት መሊስካ ኣብርሆ።",
   "myProgress": "ዕቤተይ",
@@ -162,5 +162,18 @@
   "bbCanvasHelp": "ኣንበብቲ ስክሪን ስም ስራሕ፣ ድሕሪኡ ዕላማ፣ ዓወት ወይ ስዕረት ይሰምዑ።",
   "lessItem": "ውሑድ {name}",
   "moreItem": "ዝያዳ {name}",
-  "hkStepperHelp": "ሓደ ነቀልን ሓደ ወስኽን ነቲ ዝቕየር ኣቕሓ ይነግሩ።"
+  "hkStepperHelp": "ሓደ ነቀልን ሓደ ወስኽን ነቲ ዝቕየር ኣቕሓ ይነግሩ።",
+  "lbTitle": "Leaderboards",
+  "lbPickAlias": "Pick an alias",
+  "lbMyBest": "My best",
+  "lbClassRecord": "Class record",
+  "lbBeat": "Beat it",
+  "lbTook": "You took #1",
+  "lbTaken": "Your record was taken",
+  "lbHeld": "records held",
+  "lbTabMy": "My bests",
+  "lbTabClass": "Class",
+  "lbTabSchool": "School",
+  "lbTabWeek": "This week",
+  "lbMyRank": "My rank"
 }

@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-20-p0-a11y-pii"/>
+<meta name="tech-room-rev" content="2026-10-20-leaderboard-stats"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,8 +12,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <script src="/shared/kw-who.js?v=2026-10-20-p0-a11y-pii"></script>
-  <script src="/shared/tw-session.js?v=2026-10-20-p0-a11y-pii"></script>
+  <script src="/shared/kw-who.js?v=2026-10-20-leaderboard-stats"></script>
+  <script src="/shared/tw-session.js?v=2026-10-20-leaderboard-stats"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -1617,9 +1617,29 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-20-p0-a11y-pii"></script>
-  <script src="/shared/kulibert-prefs.js?v=2026-10-20-p0-a11y-pii"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-20-leaderboard-stats"></script>
+  <script src="/shared/kulibert-boards.js?v=2026-10-20-leaderboard-stats"></script>
+  <script src="/shared/kulibert-boards-hub.js?v=2026-10-20-leaderboard-stats"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-20-leaderboard-stats"></script>
   <style id="hub-polish">
+    /* 2026-10-20-leaderboard-stats */
+    #boards{margin:.4rem 0 .6rem;padding:.55rem;border:1px solid #24506d;border-radius:14px;background:#071018}
+    #boards h2{margin:0 0 .35rem;font-size:1rem}
+    #boards .lb-bar{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0 0 .45rem}
+    #boards select,#boards .lb-tab,#boards .lb-beat{min-width:44px;min-height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .9rem/1 Outfit,system-ui,sans-serif;padding:0 .8rem}
+    #boards .lb-tab[aria-pressed="true"]{border-color:#22d3ee;color:#22d3ee}
+    #boards select:focus-visible,#boards .lb-tab:focus-visible,#boards .lb-beat:focus-visible,#board-panel:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+    #board-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.45rem}
+    .lb-tile{padding:.55rem;border:1px solid #16324f;border-radius:12px;background:#0b1524}
+    .lb-tile h3{margin:0 0 .25rem;font-size:.95rem}
+    .lb-tile p{margin:.15rem 0;font-size:.9rem}
+    .lb-note{font-weight:750}
+    .lb-held{font-weight:750;color:#22d3ee}
+    #board-panel{margin-top:.5rem}
+    #board-list{list-style:none;margin:.3rem 0;padding:0}
+    .lb-row{display:grid;grid-template-columns:3.2rem 1fr auto;gap:.4rem;min-height:44px;align-items:center;border-bottom:1px solid #16324f}
+    @media (max-width:700px){#board-tiles{grid-template-columns:1fr}}
+
     body.apps-always .lockup-the{color:#f4fdff !important;opacity:1}
     body.apps-always a.tile .tw-on{
       color:#f4fdff !important; background:#071018; border-radius:999px; padding:1px 6px;
@@ -1809,8 +1829,8 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-20-p0-a11y-pii</span></p>
-      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub 2026-10-20: Leaderboard names are picked from a list, and screen readers can read BertyBots, BertyCAD and HouseKit better.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-20-leaderboard-stats</span></p>
+      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
@@ -1883,7 +1903,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-20-p0-a11y-pii</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub 2026-10-20: Leaderboard names are picked from a list, and screen readers can read BertyBots, BertyCAD and HouseKit better.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-20-leaderboard-stats</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.36.10</strong> — Swatch names are easy to read, and the color and mic buttons fit when your phone is sideways.</p>
@@ -1895,7 +1915,8 @@
           <p class="cut-line"><a href="/catapult/">Bertapult</a> <strong>JC 2.4.3</strong> — Every Menu section shows. Nothing hides under Settings.</p>
           <ul id="hub-log">
             <li>Hub rev 2026-10-20-p0-a11y-pii — staff alias dropdown + off-list reject (P0); BertyBots canvas name + live region; BertyCAD canvas name; HouseKit stepper labels.</li>
-            <li data-i18n="whatsNewLine">Hub 2026-10-20: Leaderboard names are picked from a list, and screen readers can read BertyBots, BertyCAD and HouseKit better.</li>
+            <li>Hub rev 2026-10-20-leaderboard-stats — hub-wide board service, hub tiles with my best + class record + Beat it, My bests/Class/School/This week tabs.</li>
+            <li data-i18n="whatsNewLine">Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.</li>
             <li>Menus and My settings have a Close button. Esc closes them too.</li>
             <li>Tiles show on phones held sideways.</li>
             <li data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</li>
@@ -2001,6 +2022,26 @@
       </div>
     </section>
     <section id="progress" hidden aria-label="My progress"></section>
+    <section id="boards" aria-labelledby="boards-title">
+      <div class="lb-bar">
+        <h2 id="boards-title" data-i18n="lbTitle">Leaderboards</h2>
+        <span class="lb-held" id="boards-held" hidden>records held</span>
+        <label>Alias <select id="lb-alias" aria-label="Pick an alias"></select></label>
+      </div>
+      <div class="lb-bar" role="group" aria-label="Board tabs">
+        <button type="button" class="lb-tab" data-lb-tab="my" aria-pressed="false" data-i18n="lbTabMy">My bests</button>
+        <button type="button" class="lb-tab" data-lb-tab="class" aria-pressed="true" data-i18n="lbTabClass">Class</button>
+        <button type="button" class="lb-tab" data-lb-tab="school" aria-pressed="false" data-i18n="lbTabSchool">School</button>
+        <button type="button" class="lb-tab" data-lb-tab="week" aria-pressed="false" data-i18n="lbTabWeek">This week</button>
+      </div>
+      <div id="board-tiles"></div>
+      <div id="board-panel" tabindex="-1">
+        <h3 id="board-title">Board</h3>
+        <ol id="board-list"></ol>
+        <p id="board-me">My rank —</p>
+      </div>
+    </section>
+
     <div class="groups" id="app-groups">
       <section class="group" id="alpha-group" data-group="alpha" hidden>
         <h2 id="alpha-title">A–Z</h2>
@@ -2456,8 +2497,8 @@
       })();
     </script>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-20-p0-a11y-pii</span>
-      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub 2026-10-20: Leaderboard names are picked from a list, and screen readers can read BertyBots, BertyCAD and HouseKit better.</span></span>
+      <span class="hub-foot-rev">rev 2026-10-20-leaderboard-stats</span>
+      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.</span></span>
       <button type="button" id="foot-fine-print">⚖️ Fine Print</button>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
@@ -2502,7 +2543,7 @@
     </form>
   </div>
 
-  <script src="/shared/hub-staff-auth.js?v=2026-10-20-p0-a11y-pii"></script>
+  <script src="/shared/hub-staff-auth.js?v=2026-10-20-leaderboard-stats"></script>
   <script>
     (function () {
       var KEY = "tech-room-opened";
@@ -4243,7 +4284,7 @@
         fitDock();
         if (window.requestAnimationFrame) requestAnimationFrame(function () { fitDock(); });
       }
-      /* 2026-10-20-p0-a11y-pii: a cold Arabic or Dari load paints the menu word after the first fit.
+      /* 2026-10-20-leaderboard-stats: a cold Arabic or Dari load paints the menu word after the first fit.
          That word, and its font, can leave the strip 8px too wide. Refit when they change. */
       function armDockFit() {
         if (armDockFit.armed) return;

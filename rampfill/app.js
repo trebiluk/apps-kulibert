@@ -1310,6 +1310,12 @@
       filledOnce = true;
       sawFill = true;
       markProgress();
+      try {
+        if (window.KulibertBoards) window.KulibertBoards.post({
+          game: "rampfill", board: "pieces", value: Math.max(1, strokes.length || 1),
+          version: "RF 1.0.4"
+        });
+      } catch (eBoard) {}
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
