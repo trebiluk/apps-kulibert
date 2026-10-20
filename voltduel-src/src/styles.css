@@ -739,8 +739,9 @@ html.kb-framed .vd-fs {
   top: 8px;
 }
 
-/* Portrait phone: pin the 16:9 track to the pads. The 4.17% pull hides
-   only the strip under the floor (40/960 of the width), so feet stay on screen. */
+/* Portrait phone: pack the HUD against the 16:9 track, and pin that
+   track to the pads. The 4.17% pull hides only the strip under the floor
+   (40/960 of the width), so feet stay on screen and the pad gap stays tight. */
 @media (max-width: 520px) and (min-height: 700px) {
   .stage {
     display: flex;
@@ -749,12 +750,26 @@ html.kb-framed .vd-fs {
     overflow: hidden;
   }
 
+  .stage .hud {
+    position: relative;
+    order: -1;
+    flex: 0 0 auto;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: 3;
+    margin: 0;
+    padding-top: 0.35rem;
+    padding-bottom: 0;
+  }
+
   .stage canvas {
     width: 100%;
     height: auto;
     aspect-ratio: 960 / 540;
     max-height: 100%;
     flex: 0 0 auto;
+    margin-top: 0;
     margin-bottom: -4.17%;
   }
 
