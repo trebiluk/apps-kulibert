@@ -1656,3 +1656,18 @@ for (const [lang, row] of Object.entries(FIT271)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+// 2.5.271: phones say touch words. Last write wins over the keyboard line.
+const TOUCH271 = {
+  en: { keysLineTouch: 'Stick to walk · Hold to break · Tap to place', tapToPlay: 'Tap to play' },
+  uk: { keysLineTouch: 'Стік щоб іти · Тримай щоб ламати · Торкнись щоб ставити', tapToPlay: 'Торкнись, щоб грати' },
+  ru: { keysLineTouch: 'Стик чтобы идти · Держи чтобы ломать · Коснись чтобы ставить', tapToPlay: 'Коснись, чтобы играть' },
+  es: { keysLineTouch: 'Palito para caminar · Mantén para romper · Toca para poner', tapToPlay: 'Toca para jugar' },
+  ar: { keysLineTouch: 'العصا للمشي · اضغط مطولاً للكسر · المس للوضع', tapToPlay: 'المس للعب' },
+  'fa-AF': { keysLineTouch: 'اهرم برای راه رفتن · نگه دار برای شکستن · لمس کن برای گذاشتن', tapToPlay: 'برای بازی لمس کن' },
+  rw: { keysLineTouch: 'Agastike kugenda · Fata uvunagure · Kanda ushyire', tapToPlay: 'Kanda-ho ukine' },
+  ti: { keysLineTouch: 'ስቲክ ንምኻድ · ሓዝ ንምስባር · ጠውቕ ንምቕማጥ', tapToPlay: 'ኣጻብዕቲ ጠውቕ ንምጻወት' },
+}
+for (const [lang, row] of Object.entries(TOUCH271)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -4,6 +4,7 @@ Updated Tue Oct 20 2026 (Build: 2.5.271 Tips fade fast, stay off your hotbar, an
 
 - [x] **2.5.271 Toasts clear:** Every toast sits fully above the hotbar and Bag, with at least 8px of clear space, at 412×915, 915×412 and 1366×768. A toast does not touch a slot, Bag, Pause or Full screen.
 - [x] **2.5.271 Toasts fade:** A toast fades after about 3 seconds. A new one replaces the old one. Tapping it hides it at once. Reduced motion hides it with no animation.
+- [x] **2.5.271 Touch words:** On a touch screen the tip says stick, hold and tap, and the button says Tap to play. A mouse still sees the keyboard tip and Click to play. The tip stays off the Creative palette.
 
 - [x] **2.5.270 Crafting grid:** At 915×412 the recipe list rests on whole rows. A resting scroll does not leave a half row cut off.
 - [x] **2.5.270 Pop-ups:** A Workbench toast with Crafting or Bag open stays in the panel header, off the tiles and Bag rows, at 915×412 and 412×915. On a fresh desktop load, Click to play is not covered by the goal. A phone tip stays at least 8px clear of Pause.

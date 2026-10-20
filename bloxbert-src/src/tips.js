@@ -108,8 +108,9 @@ export function pinAboveBar(el) {
   el.style.setProperty('bottom', 'auto', 'important')
   el.style.setProperty('right', 'auto', 'important')
   el.style.setProperty('margin', '0', 'important')
+  const wide = el.classList && el.classList.contains('keys')
   el.style.setProperty('width', 'max-content', 'important')
-  el.style.setProperty('max-width', 'min(420px, calc(100vw - 16px))', 'important')
+  el.style.setProperty('max-width', wide ? 'min(880px, calc(100vw - 16px))' : 'min(420px, calc(100vw - 16px))', 'important')
   const box = el.getBoundingClientRect()
   const w = Math.min(Math.max(box.width || 140, 96), window.innerWidth - 16)
   const h = Math.max(box.height || 36, 32)
@@ -132,6 +133,23 @@ export function pinAboveBar(el) {
     }
   }
   if (bars.length && top + h > ceil + 0.5) top = Math.max(8, Math.round(ceil - h))
+  if (wide) {
+    const crowd = []
+    for (const sel of ['#stick-pad', '#jump-col', '#path-chip', '#play-chip', '#toast', '#qol-tip', '#dig-chip']) {
+      const node = document.querySelector(sel)
+      if (!node || node.hidden) continue
+      const r = node.getBoundingClientRect()
+      if (r.width < 8 || r.height < 8) continue
+      crowd.push(r)
+    }
+    for (let n = 0; n < 8; n++) {
+      const over = crowd.find((b) => left < b.right - 2 && left + w > b.left + 2 && top < b.bottom - 2 && top + h > b.top + 2)
+      if (!over) break
+      const up = Math.round(over.top - 8 - h)
+      if (up >= 8 && up < top) top = up
+      else break
+    }
+  }
   el.style.setProperty('left', Math.round(left) + 'px', 'important')
   el.style.setProperty('top', Math.round(top) + 'px', 'important')
   return true
@@ -249,6 +267,8 @@ export function placeTip(el, follow) {
   settle(el)
   keepClear()
   if (toast || el.id === 'qol-tip' || el.id === 'menu-hint' || el.id === 'dig-chip') pinAboveBar(el)
+  const keysLine = document.querySelector('body > .keys')
+  if (keysLine && el !== keysLine && keysLine.dataset.gone !== '1' && getComputedStyle(keysLine).display !== 'none') pinAboveBar(keysLine)
   try { el.dispatchEvent(new Event("tipmove")) } catch (e) {}
   if (!follow) {
     requestAnimationFrame(() => {
@@ -471,6 +491,13 @@ export function dropTip(id) {
 }
 
 function onResize() {
+  if (onResize.arm) return
+  onResize.arm = requestAnimationFrame(() => {
+    onResize.arm = 0
+    layoutTips()
+  })
+}
+function layoutTips() {
   if (slot && slot.kind === 'toast') {
     const el = document.getElementById('toast')
     if (el && !el.hidden) placeTip(el, true)
@@ -482,6 +509,11 @@ function onResize() {
     const node = document.getElementById(id)
     if (node && !node.hidden && node.dataset.sheetDock !== '1') pinAboveBar(node)
   }
+  const keys = document.querySelector('body > .keys')
+  if (keys && keys.dataset.gone !== '1' && getComputedStyle(keys).display !== 'none') {
+    const sheet = document.getElementById('sheet')
+    if (!sheet || sheet.hidden) pinAboveBar(keys)
+  }
 }
 function armWatch() {
   const watch = (node) => {
@@ -490,7 +522,7 @@ function armWatch() {
     new MutationObserver(() => onResize()).observe(node, { attributes: true, attributeFilter: ['hidden', 'class', 'style'] })
     if (window.ResizeObserver) new ResizeObserver(() => onResize()).observe(node)
   }
-  for (const sel of ['#held-chip', '#hotbar', '#pick-chip', '#mode-pill', 'header.top', '#rules-card', '#sheet']) {
+  for (const sel of ['#held-chip', '#hotbar', '#pick-chip', '#mode-pill', 'header.top', '#rules-card', '#sheet', '#path-chip', '#stick-pad', '#jump-col', '#play-chip']) {
     watch(document.querySelector(sel))
   }
 }

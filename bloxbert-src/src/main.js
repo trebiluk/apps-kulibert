@@ -247,13 +247,20 @@ function dressTop() {
   }
   fillIco(document)
 }
+function i18nKey(el) {
+  const name = el.dataset.i18n
+  if (!TOUCH_UI) return name
+  if (name === 'keysHint') return 'keysHintTouch'
+  if (name === 'keysLine') return 'keysLineTouch'
+  return name
+}
 function applyI18n() {
   painting = true
   document.documentElement.lang = LANG
   if (LANG === 'ar' || LANG === 'fa-AF') document.documentElement.dir = 'rtl'
   else document.documentElement.dir = 'ltr'
   for (const el of document.querySelectorAll('[data-i18n]')) {
-    const key = el.dataset.i18n === 'keysHint' && TOUCH_UI ? 'keysHintTouch' : el.dataset.i18n
+    const key = i18nKey(el)
     el.textContent = t(key)
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
@@ -272,7 +279,7 @@ let langArm = 0
 function langDrifted() {
   if (document.documentElement.lang !== LANG) return true
   for (const el of document.querySelectorAll('[data-i18n]')) {
-    const key = el.dataset.i18n === 'keysHint' && TOUCH_UI ? 'keysHintTouch' : el.dataset.i18n
+    const key = i18nKey(el)
     if (el.textContent !== t(key)) return true
   }
   return false
@@ -294,13 +301,14 @@ new MutationObserver((records) => {
   }
 }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang', 'dir'], subtree: true, childList: true, characterData: true })
 applyI18n()
+pinKeysLine()
 
 let walkPresses = 0
 function fadeKeys() {
   const el = document.querySelector('.keys')
   if (!el || el.dataset.gone === '1') return
   el.dataset.gone = '1'
-  if (REDUCE || TOUCH_UI) { el.style.display = 'none'; return }
+  if (REDUCE) { el.style.display = 'none'; return }
   el.style.transition = 'opacity .5s linear'
   el.style.opacity = '0'
 }
@@ -311,6 +319,18 @@ document.addEventListener('keydown', (e) => {
   walkPresses += 1
   if (walkPresses >= 3) fadeKeys()
 }, true)
+
+function pinKeysLine() {
+  const el = document.querySelector('body > .keys')
+  if (!el || el.hidden || el.dataset.gone === '1') return
+  const sheet = document.getElementById('sheet')
+  if (sheet && !sheet.hidden) return
+  pinAboveBar(el)
+}
+window.addEventListener('resize', () => pinKeysLine())
+requestAnimationFrame(() => pinKeysLine())
+setTimeout(pinKeysLine, 400)
+setTimeout(pinKeysLine, 1200)
 
 const SPAWN = [8.5, 8, 1.5]
 let worldSpawn = SPAWN.slice()
@@ -5525,12 +5545,13 @@ function hidePlayChip() {
 function showPlayChip() {
   const el = $('play-chip')
   if (!el) return
-  if (TOUCH_UI) { el.hidden = true; return }
-  el.textContent = t('clickToPlay')
+  el.textContent = t(TOUCH_UI ? 'tapToPlay' : 'clickToPlay')
   el.hidden = false
 }
 function startFromChip() {
-  if (TOUCH_UI || tableMode || anyCard()) return
+  if (tableMode || anyCard()) return
+  document.body.classList.add('playing')
+  if (TOUCH_UI) { hidePlayChip(); return }
   beginKeyPlay()
 }
 function beginKeyPlay() {
@@ -5549,6 +5570,7 @@ function beginKeyPlay() {
 }
 function revealWorld() {
   if (tableMode || kidPause) return
+  document.body.classList.add('playing')
   playArmed = true
   awaitWorldClick = false
   hidePlayChip()
@@ -10109,10 +10131,11 @@ function focusPlayChip(el) {
 function bootPlayChip() {
   parkPlayChip()
   sealPanels()
-  if (TOUCH_UI || playLocked() || tableMode) return
+  if (playLocked() || tableMode) return
   const el = $('play-chip')
   if (!el) return
   showPlayChip()
+  if (TOUCH_UI) return
   const ae = document.activeElement
   if (!bootPlayChip.done || ae === document.body || ae === document.documentElement) {
     focusPlayChip(el)
