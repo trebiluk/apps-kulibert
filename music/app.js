@@ -4981,6 +4981,8 @@
         const shown = name === "Neon" ? "Party" : name;
         b.dataset.scene = shown;
         b.dataset.wall = packs[name].wall;
+        b.dataset.pack = name;
+        b.dataset.vizId = name === "Neon" ? "neon" : name.toLowerCase();
         b.setAttribute("aria-label", mu("scene_" + (name === "Neon" ? "party" : name.toLowerCase())) || shown);
         const thumb = document.createElement("canvas");
         thumb.width = 160;

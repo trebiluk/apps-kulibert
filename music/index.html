@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
-  <link rel="stylesheet" href="./styles.css?v=mu2369a"/>
+  <link rel="stylesheet" href="./styles.css?v=mu2369b"/>
 </head>
 <body class="mu237 tab-tap">
   <p id="mu-chip" class="mu-chip"></p>
@@ -154,6 +154,7 @@
       <ul class="whats-list">
         <li><span data-mu="helpRail">▣ Tap a tool on the side bar or bottom bar.</span></li>
         <li><span data-mu="helpPlay">▶ Press the big Play button. It stays in the same corner.</span></li>
+        <li><span data-mu="helpChip">✓ A picked picture has a check.</span></li>
       </ul>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
@@ -437,6 +438,10 @@
         <p id="viz-help" class="hint" data-mu="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
         <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
         <p id="viz-mic-status" class="hint" aria-live="polite"></p>
+        <div id="steel-faders">
+          <label class="fader-row"><span>Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" aria-label="Spin"/></label>
+          <label class="fader-row"><span>Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" aria-label="Glow"/></label>
+        </div>
         <details class="more-box">
           <summary data-mu="changePicture">Change the picture</summary>
           <p class="hint">Three layers. Each one can have its own color.</p>
@@ -451,8 +456,6 @@
           <p class="hint">Random size, glow, trails, colors and wall.</p>
           <div class="gizmos">
             <label class="tempo">Size <b id="n-zoom">110</b><input id="g-zoom" type="range" min="40" max="160" value="110"/></label>
-            <label class="tempo">Lean <b id="n-spin">60</b><input id="g-spin" type="range" min="0" max="100" value="60"/></label>
-            <label class="tempo">Glow <b id="n-glow">90</b><input id="g-glow" type="range" min="0" max="100" value="90"/></label>
             <label class="tempo">Thick <b id="n-thick">4</b><input id="g-thick" type="range" min="1" max="12" value="4"/></label>
             <label class="tempo">How many <b id="n-count">24</b><input id="g-count" type="range" min="4" max="32" value="24"/></label>
             <label class="tempo">Trails <b id="n-trail">22</b><input id="g-trail" type="range" min="0" max="70" value="22"/></label>
@@ -556,7 +559,7 @@
       <span id="play-pos">Bar 1 · Beat 1</span>
     </div>
     <button type="button" id="play-btn" class="play" aria-label="Play" title="Play"><span class="play-icon" aria-hidden="true"></span><span id="play-word" class="ctl-word">Play</span></button>
-    <label class="tempo"><span data-mu="tempo">Tempo</span> <b id="tempo-read"></b>
+    <label class="tempo fader-row"><span data-mu="tempo">Tempo</span> <output id="tempo-read" for="tempo">104</output>
       <input id="tempo" type="range" min="70" max="160" value="104" aria-label="Tempo"/>
     </label>
     <button type="button" id="rec-btn" class="btn rec" aria-pressed="false" aria-label="Record" title="Record"><span class="ctl-word" data-mu="record">Record</span></button>
@@ -613,7 +616,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu2369a"></script>
-  <script src="./app.js?v=mu2369a"></script>
+  <script src="./strings.js?v=mu2369b"></script>
+  <script src="./app.js?v=mu2369b"></script>
 </body>
 </html>

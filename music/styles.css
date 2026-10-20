@@ -4960,4 +4960,70 @@ body.mu237 #dock-left .tab:focus-visible {
   html[dir="rtl"] body.mu237 .side { inset-inline-start: 0 !important; }
 }
 
+/* MU 2.36.9 item 2 — chips, slider pills, focus */
+body.mu237 #scenes .btn {
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  gap: 6px !important;
+  padding: 0 8px !important;
+}
+body.mu237 #scenes .btn canvas {
+  width: 14px !important;
+  height: 14px !important;
+  min-height: 14px !important;
+  border-radius: 50% !important;
+  flex: 0 0 14px !important;
+}
+body.mu237 #scenes .swatch-word { padding: 0 !important; white-space: nowrap !important; }
+body.mu237 #scenes .btn.on .swatch-word,
+body.mu237 #scenes .btn[aria-pressed="true"] .swatch-word {
+  font-weight: 800 !important;
+  text-decoration: underline !important;
+}
+body.mu237 #scenes .tick {
+  position: static !important;
+  background: transparent !important;
+  color: inherit !important;
+  font-size: 14px !important;
+  min-width: 0 !important;
+}
+body.mu237 #scenes .btn:hover {
+  background-image: linear-gradient(rgba(17, 24, 39, 0.12), rgba(17, 24, 39, 0.12)) !important;
+}
+body.mu237 #scenes .btn:active {
+  background-image: linear-gradient(rgba(17, 24, 39, 0.2), rgba(17, 24, 39, 0.2)) !important;
+}
+body.mu237 #steel-faders { display: flex; flex-direction: column; gap: 4px; margin: 6px 0; }
+body.mu237 .fader-row {
+  display: flex !important;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  height: 44px;
+}
+body.mu237 .fader-row span { font-size: 14px; font-weight: 800; min-width: 52px; }
+body.mu237 .fader-row output {
+  min-width: 40px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #111827;
+  color: #F3F4F6;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+}
+body.mu237 .fader-row input[type="range"] { flex: 1 1 auto; min-height: 44px; height: 44px; }
+body.mu237 #scenes .btn:focus-visible,
+body.mu237 .fader-row input:focus-visible,
+body.mu237 #play-btn:focus-visible,
+body.mu237 #dock-left .tab:focus-visible {
+  outline: 3px solid #0B1F33 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px #F3F4F6 !important;
+}
+
+
 

@@ -18,6 +18,7 @@
     helpHead: "How to use it",
     helpRail: "▣ Tap a tool on the side bar or bottom bar.",
     helpPlay: "▶ Press the big Play button. It stays in the same corner.",
+    helpChip: "✓ A picked picture has a check.",
     news2367: "MU 2.36.7 — Sideways phones can tap Write, and every tile keeps its name.",
     news2366: "MU 2.36.6 — The version tag stays out of your way.",
     news2365: "MU 2.36.5 — Every button says what it does now, Perform shows once, and the version shows sideways too.",
@@ -361,7 +362,8 @@
     news2369: "MU 2.36.9 — Tools on the side or the bottom. One big Play button.",
     helpHead: "How to use it",
     helpRail: "▣ Tap a tool on the side or the bottom.",
-    helpPlay: "▶ Press the big Play button."
+    helpPlay: "▶ Press the big Play button.",
+    helpChip: "✓ A picked picture has a check."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -378,6 +380,7 @@
       "helpHead": "Як користуватися",
       "helpRail": "▣ Торкнись інструмента на бічній або нижній панелі.",
       "helpPlay": "▶ Натисни велику кнопку Play. Вона лишається в тому ж куті.",
+      "helpChip": "✓ Обрана картинка має галочку.",
       "news2368": "MU 2.36.8 — Світлове шоу повернулося: темна сцена, більше картинка і світло мікрофона, що танцює під кімнату.",
       "news2367": "MU 2.36.7 — На повернутому телефоні можна натиснути «Писати», і кожна плитка зберігає назву.",
       "news2366": "MU 2.36.6 — Позначка версії більше не заважає.",
@@ -698,6 +701,7 @@
       "helpHead": "Как пользоваться",
       "helpRail": "▣ Нажми инструмент на боковой или нижней панели.",
       "helpPlay": "▶ Нажми большую кнопку Play. Она остаётся в том же углу.",
+      "helpChip": "✓ У выбранной картинки есть галочка.",
       "news2368": "MU 2.36.8 — Световое шоу вернулось: тёмная сцена, больше картинка и свет микрофона, который танцует под комнату.",
       "news2367": "MU 2.36.7 — На повёрнутом телефоне можно нажать «Писать», и у каждой плитки есть название.",
       "news2366": "MU 2.36.6 — Значок версии больше не мешает.",
@@ -1018,6 +1022,7 @@
       "helpHead": "Cómo se usa",
       "helpRail": "▣ Toca una herramienta en la barra lateral o inferior.",
       "helpPlay": "▶ Pulsa el botón Play grande. Se queda en la misma esquina.",
+      "helpChip": "✓ La imagen elegida tiene una marca.",
       "news2368": "MU 2.36.8 — El show de luces volvió: escenario oscuro, imagen más grande y luces del micrófono que bailan con la sala.",
       "news2367": "MU 2.36.7 — En el móvil de lado puedes tocar Escribir y cada botón conserva su nombre.",
       "news2366": "MU 2.36.6 — La etiqueta de versión ya no estorba.",
@@ -1339,6 +1344,7 @@
       "helpHead": "كيف تستخدمه",
       "helpRail": "▣ المس أداة على الشريط الجانبي أو السفلي.",
       "helpPlay": "▶ اضغط زر التشغيل الكبير. يبقى في نفس الزاوية.",
+      "helpChip": "✓ الصورة المختارة عليها علامة.",
       "news2368": "MU 2.36.8 — عاد عرض الأضواء: مسرح داكن وصورة أكبر وأضواء ميكروفون ترقص مع الغرفة.",
       "news2367": "MU 2.36.7 — على الهاتف الأفقي يمكنك لمس «اكتب»، وكل مربع يحتفظ باسمه.",
       "news2366": "MU 2.36.6 — شارة الإصدار لم تعد تعترض طريقك.",
@@ -1660,6 +1666,7 @@
       "helpHead": "چگونه استفاده شود",
       "helpRail": "▣ یک ابزار را روی نوار کناری یا پایین بزن.",
       "helpPlay": "▶ دکمهٔ بزرگ پخش را بزن. در همان گوشه می‌ماند.",
+      "helpChip": "✓ تصویر انتخاب‌شده علامت دارد.",
       "news2368": "MU 2.36.8 — نمایش نور برگشت: صحنه تاریک، تصویر بزرگ‌تر و چراغ میکروفون که با اتاق می‌رقصد.",
       "news2367": "MU 2.36.7 — در تیلفون افقی می‌توانید «نوشتن» را لمس کنید و هر کاشی نامش را نگه می‌دارد.",
       "news2366": "MU 2.36.6 — نشان نسخه دیگر سر راه شما نیست.",
@@ -1981,6 +1988,7 @@
       "helpHead": "Ukoresha gute",
       "helpRail": "▣ Kanda igikoresho ku ruhande cyangwa hepfo.",
       "helpPlay": "▶ Kanda buto nini ya Play. Iguma mu cyimbo kimwe.",
+      "helpChip": "✓ Ishusho yatoranijwe ifite ikimenyetso.",
       "news2368": "MU 2.36.8 — Igaragaza ry'amataro ryaragarutse: ikibuga cyijimye, ishusho nini, n'amataro ya mikoro adanirana n'icyumba.",
       "news2367": "MU 2.36.7 — Kuri telefoni iri ku ruhande ushobora gukanda Andika, kandi buri kafuti kagumana izina ryako.",
       "news2366": "MU 2.36.6 — Akamenyetso ka verisiyo ntikakikubangamira.",
@@ -2302,6 +2310,7 @@
       "helpHead": "ከመይ ትጥቀመሉ",
       "helpRail": "▣ መሳርሒ ኣብ ጎኒ ወይ ታሕቲ ልዳት ጠውቕ።",
       "helpPlay": "▶ ዓቢ መጠወቒ Play ጠውቕ። ኣብ ሓደ ኩርናዕ ይጸንሕ።",
+      "helpChip": "✓ ዝተመርጸ ስእሊ ምልክት ኣለዎ።",
       "news2368": "MU 2.36.8 — ትርኢት መብራህቲ ተመሊሱ፡ ጸልማት መድረኽ፡ ዓቢ ስእሊ፡ ከምኡ’ውን መብራሕቲ ማይክ ንክፍሊ ዝድንጉ።",
       "news2367": "MU 2.36.7 — ኣብ ብጎኒ ዝተገልበጠ ተሌፎን ‘ጽሓፍ’ ክትጥውቕ ትኽእል፣ ነፍሲ ወከፍ ሰሌዳ ድማ ስሙ ይሕሉ።",
       "news2366": "MU 2.36.6 — ምልክት ስሪት ደጊም ኣይዕንቅፈካን።",
