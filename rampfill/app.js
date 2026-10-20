@@ -1,168 +1,256 @@
-/* Ramp & Fill RF 1.0.0 — L1 First Ramp, grains only. No trackers. */
+/* Ramp & Fill RF 1.0.1 — L1 First Ramp, L2 Two Cups, L3 First Leak. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.0";
+  var VERSION = "RF 1.0.1";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
     en: {
       menu: "Menu", close: "Close", pause: "Pause", resume: "Resume", draw: "Draw", erase: "Erase", undo: "Undo", clear: "Clear", pour: "Pour", retry: "Retry",
-      lesson: "Steeper = faster. Smoother = neater. Thick gel needs a bigger hill.",
+      lesson: "Steeper = faster. Smoother = neater.",
+      lesson2: "Steeper = faster. Smoother = neater. Plan space for the next ramp before you pour.",
+      lesson3: "Water finds the low path. A tiny gap leaks the whole stream.",
       ghost: "Draw a ramp like this", clearAsk: "Erase all ramps?", yes: "Yes", no: "No",
-      grains: "Grains", fillTo: "fill to here",
+      grains: "Grains", water: "Water", blockWord: "Block", fillTo: "fill to here",
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
       spill: "It spilled here — try a flatter ramp.",
+      leak: "Water leaked at this gap — overlap the ramp onto the cup.",
+      blocked: "The block stopped the water — draw the ramp over it.",
+      leftFirst: "Fill the left cup first.",
+      leftNext: "Left cup filled — draw a ramp to the other cup.",
+      left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
-      you: "You: #", noneRank: "You: #—", contest: "Contest is off.", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.0 — Ramp & Fill is here: draw a ramp, pour the grains, fill the cup!",
+      you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
+      whats: "RF 1.0.1 — The cup stays big sideways, and Next takes you to two cups and your first water leak!",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
-      helpPour: "Press Pour. Grains slide into the cup.",
-      helpSpill: "A spill stays circled. Flatten the ramp and try again. Ramps stay on Retry.",
+      helpPour: "Press Pour. Grains or water slide into the cup.",
+      helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
       read: "Read it to me", language: "Language",
-      firstDone: "First ramp done.", again: "Play this ramp again", paused: "Paused",
+      lv1: "First ramp", lv2: "Two cups", lv3: "First leak",
+      done1: "First ramp done.", done2: "Two cups done.", done3: "First leak done.",
+      nextLevel: "Next level", beat: "Beat your fill", hub: "Back to Hub",
+      noMore: "No more ramps yet.",
+      paused: "Paused",
       local: "Aliases and cup pictures stay on this Chromebook. No names. No chat.",
-      canvas: "Draw a ramp from the grains to the cup."
+      canvas: "Draw a ramp from the dispenser to the cup."
     },
     uk: {
       menu: "Меню", close: "Закрити", pause: "Пауза", resume: "Далі", draw: "Малюй", erase: "Сотри", undo: "Назад", clear: "Прибери", pour: "Лий", retry: "Ще раз",
-      lesson: "Крутіше = швидше. Рівніше = охайніше. Густому гелю треба більший пагорб.",
+      lesson: "Крутіше = швидше. Рівніше = охайніше.",
+      lesson2: "Крутіше = швидше. Рівніше = охайніше. Залиш місце для наступного схилу, перш ніж лити.",
+      lesson3: "Вода шукає низ. Мала щілина зливає весь струмінь.",
       ghost: "Намалюй схил ось так", clearAsk: "Стерти всі схили?", yes: "Так", no: "Ні",
-      grains: "Зерна", fillTo: "лий до сюди",
+      grains: "Зерна", water: "Вода", blockWord: "Блок", fillTo: "лий до сюди",
       empty: "Чашка: порожня", little: "Чашка: трохи є", half: "Чашка: майже половина", moreHalf: "Чашка: більше половини", almost: "Чашка: майже повна", done: "Чашка: до лінії",
       noSpill: "нічого не розлилось", bitSpill: "трохи розлилось", someSpill: "дещо розлилось",
       spill: "Тут розлилося — спробуй пологіший схил.",
+      leak: "Вода витекла в цій щілині — наклади схил на край чашки.",
+      blocked: "Блок зупинив воду — намалюй схил над ним.",
+      leftFirst: "Спочатку наповни ліву чашку.",
+      leftNext: "Ліва чашка повна — намалюй схил до іншої.",
+      left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
-      you: "Ти: #", noneRank: "Ти: #—", contest: "Змагання вимкнено.", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.0 — Ramp & Fill: малюй схил, лий і наповнюй чашки.",
+      you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
+      whats: "RF 1.0.1 — Ramp & Fill: малюй схил, лий і наповнюй чашки.",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
-      helpPour: "Натисни Лий. Зерна котяться в чашку.",
-      helpSpill: "Розлив лишається в колі. Зроби схил пологішим. На Ще раз схили лишаються.",
+      helpPour: "Натисни Лий. Зерна або вода їдуть у чашку.",
+      helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
       read: "Прочитай мені", language: "Мова",
-      firstDone: "Перший схил готовий.", again: "Зіграй цей схил знову", paused: "Пауза",
+      lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік",
+      done1: "Перший схил готовий.", done2: "Дві чашки готові.", done3: "Перший витік готовий.",
+      nextLevel: "Наступний рівень", beat: "Побий свій налив", hub: "Назад до хабу",
+      noMore: "Більше схилів поки немає.",
+      paused: "Пауза",
       local: "Псевдоніми й чашки лишаються на цьому Chromebook. Без імен. Без чату.",
-      canvas: "Намалюй схил від зерен до чашки."
+      canvas: "Намалюй схил від дозатора до чашки."
     },
     ru: {
       menu: "Меню", close: "Закрыть", pause: "Пауза", resume: "Дальше", draw: "Рисуй", erase: "Сотри", undo: "Назад", clear: "Убери", pour: "Лей", retry: "Ещё раз",
-      lesson: "Круче = быстрее. Ровнее = аккуратнее. Густому гелю нужен холм побольше.",
+      lesson: "Круче = быстрее. Ровнее = аккуратнее.",
+      lesson2: "Круче = быстрее. Ровнее = аккуратнее. Оставь место для следующего склона, прежде чем лить.",
+      lesson3: "Вода ищет низ. Маленькая щель сливает всю струю.",
       ghost: "Нарисуй склон вот так", clearAsk: "Стереть все склоны?", yes: "Да", no: "Нет",
-      grains: "Зёрна", fillTo: "лей до сюда",
+      grains: "Зёрна", water: "Вода", blockWord: "Блок", fillTo: "лей до сюда",
       empty: "Чашка: пустая", little: "Чашка: чуть-чуть", half: "Чашка: почти половина", moreHalf: "Чашка: больше половины", almost: "Чашка: почти полная", done: "Чашка: до линии",
       noSpill: "ничего не пролилось", bitSpill: "немного пролилось", someSpill: "часть пролилась",
       spill: "Здесь пролилось — попробуй более пологий склон.",
+      leak: "Вода утекла в этой щели — наложи склон на край чашки.",
+      blocked: "Блок остановил воду — нарисуй склон над ним.",
+      leftFirst: "Сначала наполни левую чашку.",
+      leftNext: "Левая чашка полная — нарисуй склон к другой.",
+      left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
-      you: "Ты: #", noneRank: "Ты: #—", contest: "Состязание выключено.", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.0 — Ramp & Fill: рисуй склон, лей и наполняй чашки.",
+      you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
+      whats: "RF 1.0.1 — Ramp & Fill: рисуй склон, лей и наполняй чашки.",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
-      helpPour: "Нажми Лей. Зёрна скатываются в чашку.",
-      helpSpill: "Пролив остаётся в круге. Сделай склон положе. На Ещё раз склоны остаются.",
+      helpPour: "Нажми Лей. Зёрна или вода едут в чашку.",
+      helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
       read: "Прочитай мне", language: "Язык",
-      firstDone: "Первый склон готов.", again: "Сыграй этот склон снова", paused: "Пауза",
+      lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь",
+      done1: "Первый склон готов.", done2: "Две чашки готовы.", done3: "Первая течь готова.",
+      nextLevel: "Следующий уровень", beat: "Побей свой налив", hub: "Назад на главную",
+      noMore: "Больше склонов пока нет.",
+      paused: "Пауза",
       local: "Псевдонимы и чашки остаются на этом Chromebook. Без имён. Без чата.",
-      canvas: "Нарисуй склон от зёрен к чашке."
+      canvas: "Нарисуй склон от дозатора к чашке."
     },
     es: {
       menu: "Menú", close: "Cerrar", pause: "Pausa", resume: "Seguir", draw: "Dibuja", erase: "Borra", undo: "Deshacer", clear: "Limpiar", pour: "Vierte", retry: "Otra vez",
-      lesson: "Más pendiente = más rápido. Más liso = más limpio. El gel espeso necesita una colina más grande.",
+      lesson: "Más pendiente = más rápido. Más liso = más limpio.",
+      lesson2: "Más pendiente = más rápido. Más liso = más limpio. Deja espacio para la otra rampa antes de verter.",
+      lesson3: "El agua busca el camino bajo. Una rendija pequeña vacía todo el chorro.",
       ghost: "Dibuja una rampa así", clearAsk: "¿Borrar todas las rampas?", yes: "Sí", no: "No",
-      grains: "Granos", fillTo: "llena hasta aquí",
+      grains: "Granos", water: "Agua", blockWord: "Bloque", fillTo: "llena hasta aquí",
       empty: "Taza: vacía", little: "Taza: un poquito", half: "Taza: casi la mitad", moreHalf: "Taza: más de la mitad", almost: "Taza: casi llena", done: "Taza: hasta la línea",
       noSpill: "nada se derramó", bitSpill: "un poco se derramó", someSpill: "algo se derramó",
       spill: "Se derramó aquí — prueba una rampa más plana.",
+      leak: "El agua se fugó en este hueco — monta la rampa sobre el borde.",
+      blocked: "El bloque paró el agua — dibuja la rampa por encima.",
+      leftFirst: "Llena primero la taza izquierda.",
+      leftNext: "La taza izquierda está llena — dibuja una rampa a la otra.",
+      left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
-      you: "Tú: #", noneRank: "Tú: #—", contest: "El concurso está apagado.", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.0 — Ramp & Fill: dibuja una rampa, vierte y llena las tazas.",
+      you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
+      whats: "RF 1.0.1 — Ramp & Fill: dibuja una rampa, vierte y llena las tazas.",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
-      helpPour: "Pulsa Vierte. Los granos bajan a la taza.",
-      helpSpill: "El derrame queda en un círculo. Aplana la rampa. Otra vez deja las rampas.",
+      helpPour: "Pulsa Vierte. Los granos o el agua bajan a la taza.",
+      helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
       read: "Léemelo", language: "Idioma",
-      firstDone: "Primera rampa lista.", again: "Juega esta rampa otra vez", paused: "Pausa",
+      lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga",
+      done1: "Primera rampa lista.", done2: "Dos tazas listas.", done3: "Primera fuga lista.",
+      nextLevel: "Siguiente nivel", beat: "Supera tu llenado", hub: "Volver al inicio",
+      noMore: "No hay más rampas por ahora.",
+      paused: "Pausa",
       local: "Los alias y las tazas se quedan en este Chromebook. Sin nombres. Sin chat.",
-      canvas: "Dibuja una rampa desde los granos hasta la taza."
+      canvas: "Dibuja una rampa desde el dispensador hasta la taza."
     },
     ar: {
       menu: "القائمة", close: "إغلاق", pause: "إيقاف", resume: "متابعة", draw: "ارسم", erase: "امسح", undo: "تراجع", clear: "امسح الكل", pour: "اسكب", retry: "أعد",
-      lesson: "الأكثر انحدارًا = أسرع. الأكثر نعومة = أنظف. الجل السميك يحتاج تلًا أكبر.",
+      lesson: "الأكثر انحدارًا = أسرع. الأكثر نعومة = أنظف.",
+      lesson2: "الأكثر انحدارًا = أسرع. الأكثر نعومة = أنظف. اترك مكانًا للمنحدر التالي قبل أن تصب.",
+      lesson3: "الماء يجد الطريق المنخفض. فجوة صغيرة تسرّب كل السيل.",
       ghost: "ارسم منحدرًا هكذا", clearAsk: "مسح كل المنحدرات؟", yes: "نعم", no: "لا",
-      grains: "حبوب", fillTo: "املأ إلى هنا",
+      grains: "حبوب", water: "ماء", blockWord: "كتلة", fillTo: "املأ إلى هنا",
       empty: "الكوب: فارغ", little: "الكوب: قليل", half: "الكوب: قريب من النصف", moreHalf: "الكوب: أكثر من النصف", almost: "الكوب: قريب من الامتلاء", done: "الكوب: حتى الخط",
       noSpill: "لا انسكاب", bitSpill: "انسكاب قليل", someSpill: "بعض الانسكاب",
       spill: "انسكب هنا — جرّب منحدرًا أقل انحدارًا.",
+      leak: "تسرب الماء من هذه الفجوة — اجعل المنحدر يركب على حافة الكوب.",
+      blocked: "الكتلة أوقفت الماء — ارسم المنحدر فوقها.",
+      leftFirst: "املأ الكوب الأيسر أولًا.",
+      leftNext: "الكوب الأيسر امتلأ — ارسم منحدرًا إلى الكوب الآخر.",
+      left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
-      you: "أنت: #", noneRank: "أنت: #—", contest: "المسابقة متوقفة.", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.0 — Ramp & Fill: ارسم منحدرًا، اسكب واملأ الأكواب.",
+      you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
+      whats: "RF 1.0.1 — Ramp & Fill: ارسم منحدرًا، اسكب واملأ الأكواب.",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
-      helpPour: "اضغط اسكب. الحبوب تنزلق إلى الكوب.",
-      helpSpill: "الانسكاب يبقى في دائرة. اجعل المنحدر أقل ميلًا. إعادة تبقي المنحدرات.",
+      helpPour: "اضغط اسكب. الحبوب أو الماء تنزلق إلى الكوب.",
+      helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
       read: "اقرأه لي", language: "اللغة",
-      firstDone: "المنحدر الأول تم.", again: "العب هذا المنحدر مرة أخرى", paused: "متوقف",
+      lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب",
+      done1: "المنحدر الأول تم.", done2: "الكوبان تمّا.", done3: "أول تسرب تم.",
+      nextLevel: "المستوى التالي", beat: "تفوّق على ملئك", hub: "رجوع إلى البداية",
+      noMore: "لا منحدرات أخرى الآن.",
+      paused: "متوقف",
       local: "الأسماء المستعارة والأكواب تبقى على هذا الجهاز. بلا أسماء حقيقية. بلا دردشة.",
-      canvas: "ارسم منحدرًا من الحبوب إلى الكوب."
+      canvas: "ارسم منحدرًا من الموزّع إلى الكوب."
     },
     "fa-AF": {
       menu: "فهرست", close: "بستن", pause: "مکث", resume: "ادامه", draw: "بکش", erase: "پاک کن", undo: "برگرد", clear: "پاک همه", pour: "بریز", retry: "دوباره",
-      lesson: "تندتر = تیزتر. هموارتر = پاکیزه‌تر. ژل غلیظ تپه بزرگ‌تر می‌خواهد.",
+      lesson: "تندتر = تیزتر. هموارتر = پاکیزه‌تر.",
+      lesson2: "تندتر = تیزتر. هموارتر = پاکیزه‌تر. پیش از ریختن برای سرازیری بعدی جا بگذار.",
+      lesson3: "آب راه پایین را پیدا می‌کند. یک شکاف کوچک همه جریان را می‌ریزد.",
       ghost: "یک سرازیری این‌طور بکش", clearAsk: "همه سرازیری‌ها پاک شود؟", yes: "بله", no: "نه",
-      grains: "دانه‌ها", fillTo: "تا اینجا پر کن",
+      grains: "دانه‌ها", water: "آب", blockWord: "بلوک", fillTo: "تا اینجا پر کن",
       empty: "پیاله: خالی", little: "پیاله: کمی", half: "پیاله: نزدیک نیمه", moreHalf: "پیاله: بیشتر از نیمه", almost: "پیاله: نزدیک پر", done: "پیاله: تا خط",
       noSpill: "چیزی نریخت", bitSpill: "کمی ریخت", someSpill: "مقداری ریخت",
       spill: "اینجا ریخت — یک سرازیری تخت‌تر را امتحان کن.",
+      leak: "آب از این شکاف ریخت — سرازیری را روی لبه پیاله بگذار.",
+      blocked: "بلوک آب را ایستاند — سرازیری را از روی آن بکش.",
+      leftFirst: "اول پیاله چپ را پر کن.",
+      leftNext: "پیاله چپ پر شد — یک سرازیری تا پیاله دیگر بکش.",
+      left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
-      you: "تو: #", noneRank: "تو: #—", contest: "مسابقه خاموش است.", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.0 — Ramp & Fill: یک سرازیری بکش، بریز و پیاله‌ها را پر کن.",
+      you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
+      whats: "RF 1.0.1 — Ramp & Fill: یک سرازیری بکش، بریز و پیاله‌ها را پر کن.",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
-      helpPour: "بریز را بزن. دانه‌ها به پیاله می‌لغزند.",
-      helpSpill: "ریختن در دایره می‌ماند. سرازیری را تخت‌تر کن. دوباره سرازیری‌ها را نگه می‌دارد.",
+      helpPour: "بریز را بزن. دانه‌ها یا آب به پیاله می‌لغزند.",
+      helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
       read: "برایم بخوان", language: "زبان",
-      firstDone: "سرازیری اول تمام شد.", again: "این سرازیری را دوباره بازی کن", paused: "مکث",
+      lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت",
+      done1: "سرازیری اول تمام شد.", done2: "دو پیاله تمام شد.", done3: "اولین نشت تمام شد.",
+      nextLevel: "سطح بعدی", beat: "پر کردن خود را بهتر کن", hub: "بازگشت به آغاز",
+      noMore: "سرازیری دیگری فعلاً نیست.",
+      paused: "مکث",
       local: "نام‌های مستعار و پیاله‌ها روی همین دستگاه می‌مانند. نام واقعی نیست. گفتگو نیست.",
-      canvas: "از دانه‌ها تا پیاله یک سرازیری بکش."
+      canvas: "از پخش‌کننده تا پیاله یک سرازیری بکش."
     },
     rw: {
       menu: "Ibikubiyemo", close: "Funga", pause: "Hagarara", resume: "Komeza", draw: "Shushanya", erase: "Siba", undo: "Subira", clear: "Siba byose", pour: "Suka", retry: "Ongera",
-      lesson: "Gupfuka = kwihuta. Gukora neza = gutunganya. Gel y'ubukoko isaba umusozi munini.",
+      lesson: "Gupfuka = kwihuta. Gukora neza = gutunganya.",
+      lesson2: "Gupfuka = kwihuta. Gukora neza = gutunganya. Sigaho umwanya w'umuhengamo ukurikira mbere yo gusuka.",
+      lesson3: "Amazi ashaka inzira yo hasi. Akanya gato gasuka umuriro wose.",
       ghost: "Shushanya umuhengamo utya", clearAsk: "Siba imihengamo yose?", yes: "Yego", no: "Oya",
-      grains: "Ibinyanye", fillTo: "uzuza kugeza hano",
+      grains: "Ibinyanye", water: "Amazi", blockWord: "Igipimo", fillTo: "uzuza kugeza hano",
       empty: "Igikombe: kirimo ubusa", little: "Igikombe: gito", half: "Igikombe: hafi kimwe cya kabiri", moreHalf: "Igikombe: kirenze kimwe cya kabiri", almost: "Igikombe: hafi kuzura", done: "Igikombe: kugeza ku murongo",
       noSpill: "ntacyasutse", bitSpill: "gito cyasutse", someSpill: "bimwe byasutse",
       spill: "Byasutse hano — gerageza umuhengamo utoroshye.",
+      leak: "Amazi yasutse muri aka kanya — shira umuhengamo ku murongo w'igikombe.",
+      blocked: "Igipimo cyahagaritse amazi — shushanya umuhengamo hejuru yacyo.",
+      leftFirst: "Banza wuzuze igikombe cy'ibumoso.",
+      leftNext: "Igikombe cy'ibumoso cyuzuye — shushanya umuhengamo ujya ku kindi.",
+      left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
-      you: "Wowe: #", noneRank: "Wowe: #—", contest: "Amarushanwa afunze.", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.0 — Ramp & Fill: shushanya umuhengamo, suka kandi wuzuz ibikombe.",
+      you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
+      whats: "RF 1.0.1 — Ramp & Fill: shushanya umuhengamo, suka kandi wuzuz ibikombe.",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
-      helpPour: "Kanda Suka. Ibinyanye bigera mu gikombe.",
-      helpSpill: "Ibyasutse biguma mu ruziga. Toroza umuhengamo. Ongera bisiga imihengamo.",
+      helpPour: "Kanda Suka. Ibinyanye cyangwa amazi bigera mu gikombe.",
+      helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
       read: "Nsome", language: "Ururimi",
-      firstDone: "Umuhengamo wa mbere warangiye.", again: "Kina uyu muhengamo ukundi", paused: "Byahagaze",
+      lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere",
+      done1: "Umuhengamo wa mbere warangiye.", done2: "Ibikombe bibiri byarangiye.", done3: "Isutse rya mbere ryarangiye.",
+      nextLevel: "Urwego rukurikira", beat: "Irusha uko wuzuye", hub: "Subira ahatangira",
+      noMore: "Nta mihengamo indi ubu.",
+      paused: "Byahagaze",
       local: "Amazina y'akazi n'ibikombe biguma kuri iki gikoresho. Nta mazina y'ukuri. Nta kiganiro.",
-      canvas: "Shushanya umuhengamo uva ku binyanye ugera ku gikombe."
+      canvas: "Shushanya umuhengamo uva ku musuka ugera ku gikombe."
     },
     ti: {
       menu: "ዝርዝር", close: "ዕጸው", pause: "ደው", resume: "ቀጽል", draw: "ስኣል", erase: "ደምስስ", undo: "ምለስ", clear: "ኩሉ ደምስስ", pour: "ቀድሕ", retry: "ደጊም",
-      lesson: "ዝቐነዐ = ዝቕልጥፍ። ዝለመመ = ዝጽሩይ። ሕማቕ ጀል ዓቢ ኮረብታ የድሊ።",
+      lesson: "ዝቐነዐ = ዝቕልጥፍ። ዝለመመ = ዝጽሩይ።",
+      lesson2: "ዝቐነዐ = ዝቕልጥፍ። ዝለመመ = ዝጽሩይ። ቅድሚ ምቅዳሕ ንዝቕጽል ቁልቁለት ቦታ ግደፍ።",
+      lesson3: "ማይ ትሑት መንገዲ ይረክብ። ንእሽቶ ስንጥቕ ኩሉ ፍልፍል የፍስስ።",
       ghost: "ቁልቁለት ከምዚ ስኣል", clearAsk: "ኩሎም ቁልቁለታት ይደምሰሱ?", yes: "እወ", no: "ኣይፋል",
-      grains: "እኽሊ", fillTo: "ክሳብ ኣብዚ ምላእ",
+      grains: "እኽሊ", water: "ማይ", blockWord: "መቆራጽ", fillTo: "ክሳብ ኣብዚ ምላእ",
       empty: "ኽባያ: ባዶ", little: "ኽባያ: ቁሩብ", half: "ኽባያ: ዳርጋ ፍርቂ", moreHalf: "ኽባያ: ልዕሊ ፍርቂ", almost: "ኽባያ: ዳርጋ መሊኡ", done: "ኽባያ: ክሳብ መስመር",
       noSpill: "ዝፈሰሰ የለን", bitSpill: "ቁሩብ ፈሲሱ", someSpill: "ገለ ፈሲሱ",
       spill: "ኣብዚ ፈሲሱ — ዝተዓርየ ቁልቁለት ፈትን።",
+      leak: "ማይ ኣብዚ ስንጥቕ ፈሲሱ — ቁልቁለት ኣብ ዳርቢ ኽባያ ኣድርቦ።",
+      blocked: "መቆራጽ ማይ ኣቋሪጹ — ቁልቁለት ኣብ ልዕሊኡ ስኣል።",
+      leftFirst: "መጀመርታ ጸጋማይ ኽባያ ምላእ።",
+      leftNext: "ጸጋማይ ኽባያ መሊኡ — ናብቲ ካልእ ቁልቁለት ስኣል።",
+      left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
-      you: "ንስኻ: #", noneRank: "ንስኻ: #—", contest: "ውድድር ጠፊኡ።", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.0 — Ramp & Fill: ቁልቁለት ስኣል፣ ቀድሕን ንኽባያታት መልእን።",
+      you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
+      whats: "RF 1.0.1 — Ramp & Fill: ቁልቁለት ስኣል፣ ቀድሕን ንኽባያታት መልእን።",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
-      helpPour: "ቀድሕ ጠውቕ። እኽሊ ናብ ኽባያ ይንሸራተት።",
-      helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዕርዮ። ደጊም ቁልቁለታት ይሕልዉ።",
+      helpPour: "ቀድሕ ጠውቕ። እኽሊ ወይ ማይ ናብ ኽባያ ይንሸራተት።",
+      helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
       read: "ኣንብበለይ", language: "ቋንቋ",
-      firstDone: "ቀዳማይ ቁልቁለት ተዛዚሙ።", again: "ነዚ ቁልቁለት ደጊምካ ጻወት", paused: "ደው ኢሉ",
+      lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ",
+      done1: "ቀዳማይ ቁልቁለት ተዛዚሙ።", done2: "ክልተ ኽባያታት ተዛዚሞም።", done3: "ቀዳማይ ፍሳስ ተዛዚሙ።",
+      nextLevel: "ዝቕጽል ደረጃ", beat: "ምልኣትካ ዓዊር", hub: "ናብ መጀመርታ ተመለስ",
+      noMore: "ካልእ ቁልቁለት ኣሎ ኣይኮነን።",
+      paused: "ደው ኢሉ",
       local: "ሕጉስ ስምን ኽባያታትን ኣብዚ መሳርሒ ይጸንሑ። ናይ ብሓቂ ስም የለን። ዕላል የለን።",
-      canvas: "ካብ እኽሊ ናብ ኽባያ ቁልቁለት ስኣል።"
+      canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     }
   };
   var LANGS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
@@ -174,8 +262,15 @@
   var undo = [];
   var live = [];
   var spillSpots = [];
+  var fills = [0, 0];
+  var countedCup = [false, false];
   var fill = 0;
   var spill = 0;
+  var leakKind = "";
+  var level = 1;
+  var ghostCup = 0;
+  var cupList = [];
+  var block = null;
   var tool = "draw";
   var pouring = false;
   var spawnLeft = 0;
@@ -183,7 +278,6 @@
   var paused = false;
   var ended = false;
   var filledOnce = false;
-  var counted = false;
   var cups = 0;
   var mass = 1;
   var spawnGap = 0.045;
@@ -191,17 +285,15 @@
   var fpsMin = 60;
   var fpsFrames = 0;
   var fpsAcc = 0;
-  var startedAt = 0;
+  var ghostUntil = 0;
   var viewW = 800;
   var viewH = 500;
   var ghost = [];
-  var cup = { x: 80, y: 200, w: 120, h: 140, top: 200 };
   var spout = { x: 500, y: 80 };
   var pointer = null;
   var drawing = null;
   var erasing = false;
   var lastT = 0;
-  var reduced = false;
 
   function lang() {
     var v = document.documentElement.getAttribute("data-kp-lang") || "";
@@ -219,8 +311,27 @@
     if (document.documentElement.getAttribute("data-kp-motion") === "less") return true;
     try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; }
   }
+  function lessonKey() { return level === 3 ? "lesson3" : level === 2 ? "lesson2" : "lesson"; }
+  function matName() { return level === 3 ? "water" : "grains"; }
+  function paintEndCopy() {
+    var card = document.getElementById("endcard");
+    if (!card || card.hidden) return;
+    var title = document.getElementById("end-title");
+    var note = document.getElementById("end-note");
+    var nextBtn = document.getElementById("next-level-btn");
+    var hubBtn = document.getElementById("hub-btn");
+    if (title) title.textContent = t("done" + level);
+    if (level >= 3) {
+      if (note) { note.hidden = false; note.textContent = t("noMore"); }
+      if (nextBtn) nextBtn.hidden = true;
+      if (hubBtn) hubBtn.hidden = false;
+    } else {
+      if (note) { note.hidden = true; note.textContent = ""; }
+      if (nextBtn) nextBtn.hidden = false;
+      if (hubBtn) hubBtn.hidden = true;
+    }
+  }
   function paintText() {
-    reduced = motionLess();
     var L = lang();
     document.documentElement.lang = L === "fa-AF" ? "fa" : L;
     document.documentElement.dir = (L === "ar" || L === "fa-AF") ? "rtl" : "ltr";
@@ -230,29 +341,59 @@
     });
     var body = document.getElementById("whats-body");
     if (body) body.textContent = t("whats");
+    var lessonText = t(lessonKey());
+    var lessonEl = document.getElementById("lesson");
+    if (lessonEl) lessonEl.textContent = lessonText;
+    var l2 = document.getElementById("lesson-2");
+    if (l2) l2.textContent = lessonText;
+    var lv = document.getElementById("level-name");
+    if (lv) lv.textContent = t("lv" + level);
     canvas.setAttribute("aria-label", t("canvas"));
+    paintEndCopy();
     paintStatus();
     paintCups();
     paintRank();
   }
+  function amountWord(amount) {
+    var r = amount / LINE;
+    if (amount <= 0) return t("empty");
+    if (r < 0.28) return t("little");
+    if (r < 0.55) return t("half");
+    if (r < 0.85) return t("moreHalf");
+    if (r < 1) return t("almost");
+    return t("done");
+  }
+  function spillWord() {
+    if (spill > 0 && spill < 8) return t("bitSpill");
+    if (spill >= 8) return t("someSpill");
+    return t("noSpill");
+  }
   function cupWords() {
-    var r = fill / LINE;
-    var cupBit = t("empty");
-    if (fill > 0 && r < 0.28) cupBit = t("little");
-    else if (r >= 0.28 && r < 0.55) cupBit = t("half");
-    else if (r >= 0.55 && r < 0.85) cupBit = t("moreHalf");
-    else if (r >= 0.85 && r < 1) cupBit = t("almost");
-    else if (r >= 1) cupBit = t("done");
-    var sp = t("noSpill");
-    if (spill > 0 && spill < 8) sp = t("bitSpill");
-    else if (spill >= 8) sp = t("someSpill");
-    return cupBit + " • " + sp;
+    if (level === 2 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("leftNext");
+    if (level === 2) {
+      var a = amountWord(fills[0]).replace(/^[^:]+:\s*/, "");
+      var b = amountWord(fills[1]).replace(/^[^:]+:\s*/, "");
+      return t("left") + ": " + a + " • " + t("right") + ": " + b + " • " + spillWord();
+    }
+    return amountWord(fills[0] || 0) + " • " + spillWord();
+  }
+  function spillSentence() {
+    if (leakKind === "gap") return t("leak");
+    if (leakKind === "block") return t("blocked");
+    if (leakKind === "leftFirst") return t("leftFirst");
+    return t("spill");
+  }
+  function anyShort() {
+    var n = cupList.length || 1;
+    for (var i = 0; i < n; i++) if ((fills[i] || 0) < LINE) return true;
+    return false;
   }
   function paintStatus() {
     var el = document.getElementById("status");
     if (el) el.textContent = cupWords();
     var spillEl = document.getElementById("spill-line");
-    if (spillEl) spillEl.textContent = spill > 0 && !pouring && live.length === 0 && fill < LINE ? t("spill") : "";
+    var show = spill > 0 && !pouring && live.length === 0 && anyShort();
+    if (spillEl) spillEl.textContent = show ? spillSentence() : "";
   }
   function loadCups() {
     try { cups = Math.max(0, parseInt(localStorage.getItem("rampfill-cups") || "0", 10) || 0); } catch (e) { cups = 0; }
@@ -290,7 +431,11 @@
   }
   function paintCups() {
     var box = document.getElementById("cups");
-    var count = document.getElementById("count");
+    var more = document.getElementById("more-line");
+    if (more) {
+      more.style.visibility = cups > 0 ? "visible" : "hidden";
+      more.setAttribute("aria-hidden", cups > 0 ? "false" : "true");
+    }
     if (!box) return;
     box.replaceChildren();
     var show = Math.min(cups, 8);
@@ -302,7 +447,6 @@
       img.innerHTML = '<path d="M10 14 H38 L34 46 H14 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="2"/><path d="M14 22 H34" stroke="#1A120C" stroke-width="3"/><path d="M16 28 H32 L30 44 H18 Z" fill="#E0A106"/>';
       box.appendChild(img);
     }
-    if (count) count.textContent = cups > 0 ? String(cups) : "";
   }
   function paintRank() {
     var el = document.getElementById("rank");
@@ -326,43 +470,136 @@
     if (input && document.activeElement !== input) input.value = name;
   }
   function syncModal() {
-    var open = !document.getElementById("menu").hidden || !document.getElementById("pause-layer").hidden || !document.getElementById("ask").hidden || !document.getElementById("endcard").hidden;
+    var menu = document.getElementById("menu");
+    var pauseL = document.getElementById("pause-layer");
+    var ask = document.getElementById("ask");
+    var card = document.getElementById("endcard");
+    var open = (menu && !menu.hidden) || (pauseL && !pauseL.hidden) || (ask && !ask.hidden) || (card && !card.hidden);
     if (open) document.documentElement.setAttribute("data-kb-modal-open", "1");
     else document.documentElement.removeAttribute("data-kb-modal-open");
+  }
+  function makeCup(x, y, w, h) { return { x: x, y: y, w: w, h: h, top: y }; }
+  function fitSpout(x, y) {
+    x = Math.max(52, Math.min(viewW - 36, x));
+    y = Math.max(52, Math.min(viewH - 24, y));
+    return { x: x, y: y };
+  }
+  function hopperBox() {
+    return { x: spout.x - 46, y: spout.y - 36, w: 74, h: 36 };
+  }
+  function buildGhost() {
+    ghost = [];
+    if (!cupList.length) return;
+    var target = cupList[Math.min(ghostCup, cupList.length - 1)];
+    var x0 = spout.x - 4;
+    var y0 = spout.y + 6;
+    var x1 = target.x + target.w * 0.52;
+    var y1 = target.top + Math.min(22, Math.max(8, target.h * 0.2));
+    if (level === 3) y1 = target.top + 8;
+    var n = 16;
+    if (level === 3 && block) {
+      var side = target.x + target.w * 0.5 >= block.x + block.w ? 1 : -1;
+      var mx = side > 0 ? block.x + block.w + 22 : block.x - 22;
+      var my = block.y - 18;
+      mx = Math.max(14, Math.min(viewW - 14, mx));
+      my = Math.max(14, Math.min(block.y - 8, my));
+      for (var i = 0; i <= n; i++) {
+        var u = i / n;
+        var x, y;
+        if (u < 0.4) {
+          var a = u / 0.4;
+          x = x0 + (mx - x0) * a;
+          y = y0 + (my - y0) * a;
+        } else {
+          var b = (u - 0.4) / 0.6;
+          x = mx + (x1 - mx) * b;
+          y = my + (y1 - my) * (b * 0.3 + b * b * 0.7);
+        }
+        if (block && x > block.x && x < block.x + block.w && y > block.y && y < block.y + block.h) y = block.y - 12;
+        ghost.push({ x: x, y: y });
+      }
+    } else {
+      for (var j = 0; j <= n; j++) {
+        var u2 = j / n;
+        ghost.push({
+          x: x0 + (x1 - x0) * u2,
+          y: y0 + (y1 - y0) * (u2 * 0.72 + u2 * u2 * 0.28)
+        });
+      }
+    }
+  }
+  function placeWorld() {
+    var tall = viewH > viewW * 1.05;
+    var bottom = viewH - 10;
+    var topLimit = 62;
+    var n = level === 2 ? 2 : 1;
+    var cw = n === 2
+      ? Math.max(64, Math.min(128, (viewW - 28) / 2))
+      : Math.max(72, Math.min(150, viewW * (tall ? 0.4 : 0.2)));
+    var availH = Math.max(52, bottom - topLimit - 12);
+    var ch = Math.min(availH * 0.72, tall ? 210 : 190);
+    ch = Math.max(56, Math.min(ch, availH));
+    cupList = [];
+    block = null;
+    if (level === 1) {
+      var cx = Math.max(12, Math.min(viewW * (tall ? 0.08 : 0.13), viewW - cw - 70));
+      cupList.push(makeCup(cx, bottom - ch, cw, ch));
+      spout = fitSpout(
+        Math.min(viewW - 40, Math.max(cupList[0].x + cupList[0].w + 64, viewW * (tall ? 0.64 : 0.74))),
+        Math.max(58, Math.min(cupList[0].top - 16, tall ? 78 : viewH * 0.18))
+      );
+    } else if (level === 2) {
+      var gap = 12;
+      var total = cw * 2 + gap;
+      var x0 = Math.max(8, Math.min(viewW * (tall ? 0.06 : 0.18), viewW - total - 8));
+      cupList.push(makeCup(x0, bottom - ch, cw, ch));
+      cupList.push(makeCup(x0 + cw + gap, bottom - ch, cw, ch));
+      var sx = tall ? viewW * 0.7 : cupList[0].x + cupList[0].w + Math.min(36, viewW * 0.04);
+      spout = fitSpout(sx, 58);
+    } else {
+      var cx3 = tall ? Math.max(12, (viewW - cw) * 0.5) : Math.min(viewW - cw - 12, Math.max(viewW * 0.56, viewW - cw - 18));
+      cupList.push(makeCup(cx3, bottom - ch, cw, ch));
+      spout = fitSpout(tall ? viewW * 0.72 : Math.max(56, viewW * 0.16), 58);
+      var c = cupList[0];
+      var bw = Math.max(46, Math.min(70, viewW * 0.1));
+      var bh = Math.max(30, Math.min(48, availH * 0.2));
+      var bx = spout.x + (c.x + c.w * 0.5 - spout.x) * 0.38 - bw / 2;
+      var by = spout.y + (c.top - spout.y) * 0.38;
+      if (bx + bw > c.x - 40) bx = c.x - 40 - bw;
+      if (bx < 8) bx = 8;
+      by = Math.max(spout.y + 6, Math.min(by, c.top - bh - 36));
+      block = { x: bx, y: by, w: bw, h: bh };
+    }
+    cupList.forEach(function (c) {
+      if (c.top < spout.y + 12) {
+        var nh = Math.max(50, bottom - (spout.y + 16));
+        c.h = nh;
+        c.y = bottom - nh;
+        c.top = c.y;
+      }
+    });
+    buildGhost();
   }
   function layout() {
     var r = canvas.getBoundingClientRect();
     if (r.width < 8 || r.height < 8) return;
-    viewW = r.width;
-    viewH = r.height;
+    var oldW = viewW;
+    var oldH = viewH;
+    var nw = r.width;
+    var nh = r.height;
+    if (live.length && oldW > 20 && oldH > 20 && (Math.abs(oldW - nw) > 1 || Math.abs(oldH - nh) > 1)) {
+      var sx = nw / oldW;
+      var sy = nh / oldH;
+      live.forEach(function (p) { p.x *= sx; p.y *= sy; p.vx *= sx; p.vy *= sy; });
+      spillSpots.forEach(function (p) { p.x *= sx; p.y *= sy; });
+    }
+    viewW = nw;
+    viewH = nh;
     var dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(viewW * dpr);
     canvas.height = Math.round(viewH * dpr);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    var tall = viewH > viewW * 1.05;
-    var short = viewH < 280;
-    var cw = Math.max(78, Math.min(150, viewW * (tall ? 0.42 : 0.18)));
-    var ch = Math.max(short ? 70 : 96, Math.min(short ? 110 : 190, viewH * (short ? 0.42 : 0.46)));
-    var cx = Math.max(18, viewW * (tall ? 0.12 : 0.16));
-    var bottom = viewH - 18;
-    cup = { x: cx, y: bottom - ch, w: cw, h: ch, top: bottom - ch };
-    spout = {
-      x: Math.min(viewW - 36, Math.max(cup.x + cup.w + 80, viewW * (tall ? 0.72 : 0.78))),
-      y: Math.max(28, viewH * (short ? 0.08 : 0.12))
-    };
-    ghost = [];
-    var x0 = spout.x - 6;
-    var y0 = spout.y + 8;
-    var x1 = cup.x + cup.w * 0.52;
-    var y1 = cup.top + Math.min(28, cup.h * 0.22);
-    var n = 16;
-    for (var i = 0; i <= n; i++) {
-      var u = i / n;
-      ghost.push({
-        x: x0 + (x1 - x0) * u,
-        y: y0 + (y1 - y0) * (u * 0.72 + u * u * 0.28)
-      });
-    }
+    placeWorld();
   }
   function denorm(p) { return { x: p.x * viewW, y: p.y * viewH }; }
   function norm(p) { return { x: p.x / viewW, y: p.y / viewH }; }
@@ -377,44 +614,120 @@
     if (!undo.length || pouring) return;
     strokes = JSON.parse(undo.pop());
   }
-  function insideCup(x, y) {
-    return x > cup.x + 10 && x < cup.x + cup.w - 10 && y > cup.top + 4 && y < cup.y + cup.h - 6;
+  function insideCup(c, x, y) {
+    return x > c.x + 8 && x < c.x + c.w - 8 && y > c.top + 2 && y < c.y + c.h - 4;
+  }
+  function lipOverlap(c, x, y) {
+    return x >= c.x - 8 && x <= c.x + c.w + 8 && y >= c.top - 12 && y <= c.top + 30;
+  }
+  function whichCup(x, y) {
+    for (var i = 0; i < cupList.length; i++) if (insideCup(cupList[i], x, y)) return i;
+    return -1;
+  }
+  function inBlock(x, y) {
+    if (!block || level !== 3) return false;
+    return x >= block.x && x <= block.x + block.w && y >= block.y && y <= block.y + block.h;
+  }
+  function segHitsBlock(x0, y0, x1, y1) {
+    if (!block || level !== 3) return null;
+    for (var s = 1; s <= 5; s++) {
+      var t = s / 5;
+      var x = x0 + (x1 - x0) * t;
+      var y = y0 + (y1 - y0) * t;
+      if (inBlock(x, y)) return { x: x, y: y };
+    }
+    return null;
+  }
+  function strokeSeals(stroke) {
+    if (level !== 3 || !cupList[0]) return true;
+    for (var i = 0; i < stroke.length; i++) {
+      if (lipOverlap(cupList[0], stroke[i].x, stroke[i].y)) return true;
+    }
+    return false;
   }
   function nearestStroke(sx, sy) {
     var list = worldStrokes();
     var best = -1;
-    var bestD = 140;
+    var bestD = 160;
     for (var i = 0; i < list.length; i++) {
       if (list[i].length < 2) continue;
       var p = list[i][0];
       var d = Math.hypot(p.x - sx, p.y - sy);
       if (d < bestD) { bestD = d; best = i; }
     }
+    if (level === 2 && fills[0] >= LINE && cupList[1]) {
+      var gx = cupList[1].x + cupList[1].w / 2;
+      var gy = cupList[1].top + 12;
+      var alt = -1;
+      var altD = 1e9;
+      for (var j = 0; j < list.length; j++) {
+        if (list[j].length < 2) continue;
+        var st = list[j][0];
+        if (Math.hypot(st.x - sx, st.y - sy) > 200) continue;
+        var end = list[j][list[j].length - 1];
+        var ed = Math.hypot(end.x - gx, end.y - gy);
+        if (ed < altD) { altD = ed; alt = j; }
+      }
+      if (alt >= 0) return alt;
+    }
     return best;
   }
-  function capture(units, x, y) {
-    fill += units;
-    if (fill > LINE + 12) fill = LINE + 12;
+  function takeCup(i, units, x, y) {
+    if (level === 2 && i === 1 && fills[0] < LINE) {
+      dropSpill(units, x, y);
+      leakKind = "leftFirst";
+      return false;
+    }
+    fills[i] = Math.min(LINE + 12, (fills[i] || 0) + units);
+    fill = fills[0] || 0;
+    return true;
   }
   function dropSpill(units, x, y) {
     spill += units;
-    spillSpots.push({ x: x, y: y, n: units });
+    spillSpots.push({
+      x: Math.max(16, Math.min(viewW - 16, x)),
+      y: Math.max(16, Math.min(viewH - 16, y)),
+      n: units
+    });
   }
-  function releaseParticle(p) {
-    p.mode = "free";
-  }
+  function releaseParticle(p) { p.mode = "free"; }
   function settleFree(p) {
-    if (insideCup(p.x, p.y) || (p.x > cup.x + 6 && p.x < cup.x + cup.w - 6 && p.y >= cup.top && p.y < cup.y + cup.h)) capture(p.mass, p.x, p.y);
-    else dropSpill(p.mass, Math.max(12, Math.min(viewW - 12, p.x)), Math.min(viewH - 14, p.y));
+    var hit = whichCup(p.x, p.y);
+    if (hit >= 0) takeCup(hit, p.mass, p.x, p.y);
+    else dropSpill(p.mass, p.x, p.y);
   }
   function stepFollow(p, dt) {
     var list = worldStrokes();
     var stroke = list[p.stroke];
     if (!stroke || stroke.length < 2) { releaseParticle(p); return; }
+    var seals = strokeSeals(stroke);
     var left = p.speed * dt;
     var guard = 0;
     while (left > 0 && guard++ < 8) {
-      if (p.si >= stroke.length - 1) { releaseParticle(p); p.x = stroke[stroke.length - 1].x; p.y = stroke[stroke.length - 1].y; return; }
+      if (p.si >= stroke.length - 1) {
+        var end = stroke[stroke.length - 1];
+        var prev = stroke[Math.max(0, stroke.length - 2)];
+        var crossed = segHitsBlock(prev.x, prev.y, end.x, end.y);
+        if (crossed) {
+          dropSpill(p.mass, crossed.x, crossed.y);
+          leakKind = "block";
+          p.dead = true;
+          return;
+        }
+        if (level === 3) {
+          if (seals && lipOverlap(cupList[0], end.x, end.y)) takeCup(0, p.mass, end.x, end.y);
+          else {
+            dropSpill(p.mass, end.x, end.y);
+            if (!leakKind) leakKind = "gap";
+          }
+          p.dead = true;
+          return;
+        }
+        p.x = end.x;
+        p.y = end.y;
+        releaseParticle(p);
+        return;
+      }
       var A = stroke[p.si];
       var B = stroke[p.si + 1];
       var dx = B.x - A.x;
@@ -423,6 +736,8 @@
       var remain = (1 - p.u) * len;
       var slope = Math.min(1, Math.abs(dy) / len);
       p.speed = 120 + slope * 720;
+      var prevX = p.x;
+      var prevY = p.y;
       if (left < remain) {
         p.u += left / len;
         left = 0;
@@ -430,58 +745,88 @@
         left -= remain;
         p.si += 1;
         p.u = 0;
-        if (p.si < stroke.length - 1) {
+        var crossedStep = segHitsBlock(A.x, A.y, B.x, B.y);
+        if (crossedStep) {
+          dropSpill(p.mass, crossedStep.x, crossedStep.y);
+          leakKind = "block";
+          p.dead = true;
+          return;
+        }
+        if (p.si < stroke.length - 1 && level !== 3) {
           var C = stroke[p.si + 1];
           var ang = Math.atan2(C.y - B.y, C.x - B.x) - Math.atan2(dy, dx);
           while (ang > Math.PI) ang -= Math.PI * 2;
           while (ang < -Math.PI) ang += Math.PI * 2;
-          if (Math.abs(ang) > 0.55) p.jitter = (Math.random() - 0.5) * 16 * Math.min(1.2, Math.abs(ang));
+          if (Math.abs(ang) > 0.55) p.jitter = (Math.random() - 0.5) * 14 * Math.min(1.2, Math.abs(ang));
         }
       }
-      if (p.si >= stroke.length - 1) {
-        var end = stroke[stroke.length - 1];
-        p.x = end.x;
-        p.y = end.y;
-        p.vx = (dx / len) * p.speed;
-        p.vy = (dy / len) * p.speed;
-        releaseParticle(p);
-        return;
-      }
+      if (p.si >= stroke.length - 1) continue;
       var A2 = stroke[p.si];
       var B2 = stroke[p.si + 1];
-      p.x = A2.x + (B2.x - A2.x) * p.u + (p.jitter || 0) * 0.25;
+      p.x = A2.x + (B2.x - A2.x) * p.u + (level === 3 ? 0 : (p.jitter || 0) * 0.2);
       p.y = A2.y + (B2.y - A2.y) * p.u;
-      if (insideCup(p.x, p.y)) { capture(p.mass, p.x, p.y); p.dead = true; return; }
+      var hitB = segHitsBlock(prevX, prevY, p.x, p.y) || (inBlock(p.x, p.y) ? { x: p.x, y: p.y } : null);
+      if (hitB) {
+        dropSpill(p.mass, hitB.x, hitB.y);
+        leakKind = "block";
+        p.dead = true;
+        return;
+      }
+      if (level === 3) {
+        if (seals && lipOverlap(cupList[0], p.x, p.y)) {
+          takeCup(0, p.mass, p.x, p.y);
+          p.dead = true;
+          return;
+        }
+      } else {
+        var hit = whichCup(p.x, p.y);
+        if (hit >= 0) {
+          takeCup(hit, p.mass, p.x, p.y);
+          p.dead = true;
+          return;
+        }
+      }
     }
   }
   function stepFree(p, dt) {
-    p.vy += 1500 * dt;
+    p.vy += (motionLess() ? 1400 : 1500) * dt;
+    var ox = p.x;
+    var oy = p.y;
     p.x += p.vx * dt;
     p.y += p.vy * dt;
-    if (insideCup(p.x, p.y)) { capture(p.mass, p.x, p.y); p.dead = true; return; }
-    if (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4) { settleFree(p); p.dead = true; }
+    var hitB = segHitsBlock(ox, oy, p.x, p.y);
+    if (hitB) {
+      dropSpill(p.mass, hitB.x, hitB.y);
+      leakKind = "block";
+      p.dead = true;
+      return;
+    }
+    if (level !== 3) {
+      var hit = whichCup(p.x, p.y);
+      if (hit >= 0) { takeCup(hit, p.mass, p.x, p.y); p.dead = true; return; }
+    }
+    if (p.y > viewH - 12 || p.x < 4 || p.x > viewW - 4) {
+      if (level === 3) {
+        dropSpill(p.mass, p.x, Math.min(viewH - 16, p.y));
+        if (!leakKind) leakKind = "gap";
+      } else settleFree(p);
+      p.dead = true;
+    }
   }
   function spawnOne() {
     if (live.length >= LIVE_CAP) {
       var old = live.shift();
-      settleFree(old);
+      if (level === 3) {
+        dropSpill(old.mass, old.x, old.y);
+        if (!leakKind) leakKind = "gap";
+      } else settleFree(old);
       return;
     }
-    var hit = nearestStroke(spout.x, spout.y + 10);
+    var hit = nearestStroke(spout.x, spout.y + 8);
     var p = {
-      x: spout.x - 4,
-      y: spout.y + 10,
-      vx: -40,
-      vy: 30,
-      mode: hit < 0 ? "free" : "follow",
-      stroke: hit,
-      si: 0,
-      u: 0,
-      speed: 180,
-      mass: mass,
-      jitter: 0,
-      dead: false,
-      rot: Math.random() * 6
+      x: spout.x - 4, y: spout.y + 8, vx: -30, vy: 20,
+      mode: hit < 0 ? "free" : "follow", stroke: hit, si: 0, u: 0,
+      speed: 180, mass: mass, jitter: 0, dead: false, rot: Math.random() * 6
     };
     if (hit >= 0) {
       var s = worldStrokes()[hit];
@@ -491,57 +836,106 @@
     live.push(p);
   }
   function checkFilled() {
-    if (filledOnce || fill < LINE) return;
-    filledOnce = true;
-    document.getElementById("donebar").hidden = false;
-    document.getElementById("endcard").hidden = true;
-    if (!counted) {
-      counted = true;
-      cups += 1;
-      saveCups();
-      noteScore();
-      paintCups();
+    var all = cupList.length > 0;
+    var gained = false;
+    for (var i = 0; i < cupList.length; i++) {
+      if ((fills[i] || 0) >= LINE) {
+        if (!countedCup[i]) {
+          countedCup[i] = true;
+          cups += 1;
+          gained = true;
+        }
+        if (level === 2 && i === 0 && ghostCup === 0 && (fills[1] || 0) < LINE) {
+          ghostCup = 1;
+          ghostUntil = performance.now() + 5000;
+          buildGhost();
+        }
+      } else all = false;
+    }
+    if (gained) { saveCups(); noteScore(); paintCups(); }
+    if (all && !filledOnce) {
+      filledOnce = true;
+      document.getElementById("donebar").hidden = false;
+      document.getElementById("endcard").hidden = true;
     }
   }
-  function resetPour(keepScoreFlag) {
-    live = [];
-    spillSpots = [];
+  function clearFills() {
+    fills = [0, 0];
+    countedCup = [false, false];
     fill = 0;
     spill = 0;
+    spillSpots = [];
+    live = [];
+    leakKind = "";
     pouring = false;
     spawnLeft = 0;
     filledOnce = false;
-    counted = false;
-    document.getElementById("donebar").hidden = true;
-    if (!keepScoreFlag) document.getElementById("endcard").hidden = true;
-    ended = false;
+    ghostCup = 0;
+    var bar = document.getElementById("donebar");
+    if (bar) bar.hidden = true;
+    ghostUntil = performance.now() + 5000;
+    if (cupList.length) buildGhost();
+    pointer = null;
+    drawing = null;
+    erasing = false;
     paintStatus();
   }
   function startPour() {
-    if (paused || ended) return;
-    if (pouring) return;
-    resetPour(true);
-    document.getElementById("endcard").hidden = true;
-    ended = false;
+    if (paused || ended || pouring) return;
+    live = [];
+    spillSpots = [];
+    spill = 0;
+    leakKind = "";
     pouring = true;
     spawnLeft = Math.max(8, Math.round(48 / mass));
     spawnWait = 0;
+    document.getElementById("donebar").hidden = true;
+    document.getElementById("endcard").hidden = true;
+    ended = false;
   }
   function retry() {
     if (pouring && spawnLeft > 0) return;
-    resetPour(false);
+    ended = false;
+    document.getElementById("endcard").hidden = true;
+    clearFills();
+    syncModal();
+  }
+  function repour() {
+    ended = false;
+    document.getElementById("endcard").hidden = true;
+    clearFills();
+    syncModal();
+    startPour();
   }
   function finishNext() {
     document.getElementById("donebar").hidden = true;
     document.getElementById("endcard").hidden = false;
     ended = true;
     pouring = false;
+    paintEndCopy();
     syncModal();
+    var focus = level >= 3 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
+    if (focus) focus.focus();
   }
-  function playAgain() {
+  function beatFill() {
     document.getElementById("endcard").hidden = true;
     ended = false;
-    resetPour(false);
+    clearFills();
+    syncModal();
+  }
+  function setLevel(n) {
+    level = Math.max(1, Math.min(3, n | 0));
+    strokes = [];
+    undo = [];
+    ghostCup = 0;
+    ended = false;
+    paused = false;
+    document.getElementById("pause-layer").hidden = true;
+    document.getElementById("endcard").hidden = true;
+    document.getElementById("donebar").hidden = true;
+    clearFills();
+    layout();
+    paintText();
     syncModal();
   }
   function setTool(next) {
@@ -578,10 +972,11 @@
   }
   function onDown(e) {
     if (paused || ended || !document.getElementById("ask").hidden) return;
+    if (!document.getElementById("endcard").hidden) return;
     if (pointer != null) return;
     if (e.pointerType === "mouse" && e.button !== 0) return;
     pointer = e.pointerId;
-    canvas.setPointerCapture(e.pointerId);
+    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
     var p = pointerPos(e);
     if (tool === "erase") {
       pushUndo();
@@ -599,11 +994,16 @@
     if (erasing) { eraseAt(p.x, p.y); return; }
     if (!drawing) return;
     var last = denorm(drawing[drawing.length - 1]);
-    if (Math.hypot(p.x - last.x, p.y - last.y) < 7) return;
+    if (Math.hypot(p.x - last.x, p.y - last.y) < 6) return;
     drawing.push(norm(p));
   }
   function onUp(e) {
     if (e.pointerId !== pointer) return;
+    if (drawing) {
+      var p = pointerPos(e);
+      var last = denorm(drawing[drawing.length - 1]);
+      if (Math.hypot(p.x - last.x, p.y - last.y) >= 1) drawing.push(norm(p));
+    }
     pointer = null;
     drawing = null;
     erasing = false;
@@ -634,7 +1034,7 @@
     if (open) document.getElementById("menu-close").focus();
   }
   function readAloud() {
-    var text = t("whats") + " " + t("lesson") + " " + t("helpDraw") + " " + t("helpPour") + " " + t("helpSpill");
+    var text = t("whats") + " " + t(lessonKey()) + " " + t("helpDraw") + " " + t("helpPour") + " " + t("helpSpill");
     try {
       if (window.speechSynthesis && window.SpeechSynthesisUtterance) {
         window.speechSynthesis.cancel();
@@ -642,6 +1042,41 @@
         window.speechSynthesis.speak(u);
       }
     } catch (e) {}
+  }
+  function backed(text, x, y, size, align) {
+    ctx.save();
+    ctx.font = "700 " + size + "px Barlow, Outfit, sans-serif";
+    ctx.textAlign = align || "left";
+    var w = ctx.measureText(text).width;
+    var pad = 4;
+    var left = align === "center" ? x - w / 2 : align === "right" ? x - w : x;
+    ctx.fillStyle = "#F3E6C8";
+    ctx.fillRect(left - pad, y - size + 2, w + pad * 2, size + 6);
+    ctx.fillStyle = "#1A120C";
+    ctx.fillText(text, x, y);
+    ctx.restore();
+  }
+  function backedWrap(text, x, y, size, maxW) {
+    ctx.save();
+    ctx.font = "700 " + size + "px Barlow, Outfit, sans-serif";
+    ctx.textAlign = "center";
+    var words = String(text).split(" ");
+    var lines = [];
+    var line = "";
+    words.forEach(function (w) {
+      var tryLine = line ? line + " " + w : w;
+      if (ctx.measureText(tryLine).width > maxW && line) { lines.push(line); line = w; }
+      else line = tryLine;
+    });
+    if (line) lines.push(line);
+    var lh = size + 6;
+    var widest = 0;
+    lines.forEach(function (ln) { widest = Math.max(widest, ctx.measureText(ln).width); });
+    ctx.fillStyle = "#F3E6C8";
+    ctx.fillRect(x - widest / 2 - 6, y - size, widest + 12, lines.length * lh + 8);
+    ctx.fillStyle = "#1A120C";
+    lines.forEach(function (ln, i) { ctx.fillText(ln, x, y + i * lh); });
+    ctx.restore();
   }
   function seed(n) {
     ctx.save();
@@ -654,136 +1089,144 @@
     ctx.ellipse(0, 0, n.s || 5, (n.s || 5) * 0.62, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = "#6B3A12";
-    ctx.beginPath();
-    ctx.arc((n.s || 5) * 0.2, 0, 1.3, 0, Math.PI * 2);
-    ctx.fill();
     ctx.restore();
   }
-  function draw() {
-    ctx.clearRect(0, 0, viewW, viewH);
-    ctx.fillStyle = "#E7D7B8";
-    ctx.fillRect(0, 0, viewW, viewH);
-    ctx.fillStyle = "#C4A574";
-    ctx.fillRect(0, viewH - 16, viewW, 16);
-    ctx.strokeStyle = "#8C6A3A";
-    ctx.lineWidth = 2;
+  function waterDrop(n) {
+    ctx.save();
+    ctx.translate(n.x, n.y);
+    ctx.fillStyle = "#2E86C1";
+    ctx.strokeStyle = "#0E3A5A";
+    ctx.lineWidth = 1.4;
     ctx.beginPath();
-    ctx.moveTo(0, viewH - 16);
-    ctx.lineTo(viewW, viewH - 16);
-    ctx.stroke();
-
-    if (ghost.length) {
-      ctx.save();
-      ctx.strokeStyle = "#3E6B4F";
-      ctx.lineWidth = 4;
-      ctx.setLineDash([2, 10]);
-      ctx.lineCap = "round";
-      ctx.beginPath();
-      ghost.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
-      ctx.stroke();
-      ctx.restore();
-      if (!startedAt) startedAt = performance.now();
-      if (performance.now() - startedAt < 5000) {
-        var label = t("ghost");
-        ctx.fillStyle = "#1A120C";
-        ctx.font = "700 18px Barlow, Outfit, sans-serif";
-        ctx.textAlign = "left";
-        ctx.fillText(label, 12, 22);
-      }
-    }
-
-    worldStrokes().forEach(function (s) {
-      if (s.length < 2) return;
-      ctx.strokeStyle = "#8A4B12";
-      ctx.lineWidth = 16;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.beginPath();
-      s.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
-      ctx.stroke();
-      ctx.strokeStyle = "#E7B56A";
-      ctx.lineWidth = 8;
-      ctx.stroke();
-    });
-
-    if (spillSpots.length && !pouring && live.length === 0 && fill < LINE) {
-      var sx = 0, sy = 0, sn = 0;
-      spillSpots.forEach(function (p) { sx += p.x; sy += p.y; sn++; });
-      sx /= sn; sy /= sn;
-      ctx.beginPath();
-      ctx.strokeStyle = "#8C3A2F";
-      ctx.lineWidth = 4;
-      ctx.ellipse(sx, sy, 34, 22, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.fillStyle = "#1A120C";
-      ctx.font = "700 16px Barlow, Outfit, sans-serif";
-      ctx.textAlign = "center";
-      var words = t("spill");
-      var maxW = Math.min(280, viewW - 24);
-      wrapText(words, sx, Math.min(viewH - 36, sy + 36), maxW, 20);
-    }
-
-    ctx.fillStyle = "#8C3A2F";
-    ctx.strokeStyle = "#1A120C";
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(cup.x, cup.top + 8);
-    ctx.lineTo(cup.x + 8, cup.y + cup.h);
-    ctx.lineTo(cup.x + cup.w - 8, cup.y + cup.h);
-    ctx.lineTo(cup.x + cup.w, cup.top + 8);
-    ctx.closePath();
+    ctx.ellipse(0, 0, (n.s || 5) * 0.85, (n.s || 5) * 0.7, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.stroke();
-    ctx.fillStyle = "#F3E6C8";
-    ctx.fillRect(cup.x + 8, cup.top + 10, cup.w - 16, 10);
-    var ratio = Math.max(0, Math.min(1, fill / LINE));
-    var innerTop = cup.top + 18;
-    var innerBot = cup.y + cup.h - 8;
+    ctx.restore();
+  }
+  function drawPile(c, amount) {
+    var ratio = Math.max(0, Math.min(1, amount / LINE));
+    var innerTop = c.top + 16;
+    var innerBot = c.y + c.h - 8;
     var pileH = (innerBot - innerTop) * ratio;
-    if (pileH > 2) {
+    if (pileH > 2 && matName() === "grains") {
       ctx.fillStyle = "#E0A106";
       ctx.beginPath();
-      ctx.moveTo(cup.x + 14, innerBot);
-      ctx.lineTo(cup.x + cup.w - 14, innerBot);
-      ctx.lineTo(cup.x + cup.w - 16, innerBot - pileH);
-      ctx.quadraticCurveTo(cup.x + cup.w / 2, innerBot - pileH - 10, cup.x + 16, innerBot - pileH);
+      ctx.moveTo(c.x + 14, innerBot);
+      ctx.lineTo(c.x + c.w - 14, innerBot);
+      ctx.lineTo(c.x + c.w - 16, innerBot - pileH);
+      ctx.quadraticCurveTo(c.x + c.w / 2, innerBot - pileH - 8, c.x + 16, innerBot - pileH);
       ctx.closePath();
       ctx.fill();
-      var dots = Math.min(12, Math.round(4 + ratio * 8));
-      for (var d = 0; d < dots; d++) {
-        seed({
-          x: cup.x + 20 + ((d * 17) % (cup.w - 36)),
-          y: innerBot - 8 - (d % 3) * 7 - pileH * 0.15,
-          s: 3.2,
-          rot: d
-        });
-      }
+    } else if (pileH > 2) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(c.x + 10, c.top + 14);
+      ctx.quadraticCurveTo(c.x + 6, c.y + c.h - 6, c.x + c.w / 2, c.y + c.h - 8);
+      ctx.quadraticCurveTo(c.x + c.w - 6, c.y + c.h - 6, c.x + c.w - 10, c.top + 14);
+      ctx.closePath();
+      ctx.clip();
+      ctx.fillStyle = "#2E86C1";
+      ctx.fillRect(c.x + 4, innerBot - pileH, c.w - 8, pileH + 14);
+      ctx.restore();
+      ctx.strokeStyle = "#D6EEF8";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(c.x + 18, innerBot - pileH + 2);
+      ctx.quadraticCurveTo(c.x + c.w / 2, innerBot - pileH + 6, c.x + c.w - 18, innerBot - pileH + 2);
+      ctx.stroke();
     }
-    var lineY = cup.top + 18 + (innerBot - innerTop) * 0.08;
-    lineY = innerBot - (innerBot - innerTop) * 0.92;
+    var lineY = innerBot - (innerBot - innerTop) * 0.92;
     ctx.strokeStyle = "#1A120C";
     ctx.lineWidth = 5;
     ctx.beginPath();
-    ctx.moveTo(cup.x + 6, lineY);
-    ctx.lineTo(cup.x + cup.w - 6, lineY);
+    ctx.moveTo(c.x + 6, lineY);
+    ctx.lineTo(c.x + c.w - 6, lineY);
     ctx.stroke();
-    ctx.fillStyle = "#1A120C";
-    ctx.font = "700 14px Barlow, Outfit, sans-serif";
-    ctx.textAlign = "left";
-    ctx.fillText(t("fillTo"), cup.x + cup.w + 6, lineY + 4);
-    ctx.font = "800 16px Barlow, Outfit, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#F3E6C8";
-    ctx.fillText(t("grains"), cup.x + cup.w / 2, cup.top + cup.h * 0.62);
-    for (var c = 0; c < 5; c++) {
+    var label = t("fillTo");
+    ctx.font = "700 18px Barlow, Outfit, sans-serif";
+    var tw = ctx.measureText(label).width;
+    if (c.x + c.w + 10 + tw < viewW - 4) backed(label, c.x + c.w + 8, lineY + 6, 18, "left");
+    else backed(label, c.x + c.w / 2, Math.max(20, c.top - 2), 18, "center");
+  }
+  function drawCup(c, amount, index) {
+    ctx.save();
+    if (level === 3) {
+      ctx.fillStyle = "#1F4E79";
+      ctx.strokeStyle = "#1A120C";
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.fillStyle = "#F3E6C8";
-      ctx.arc(cup.x + 22 + c * 14, cup.top + cup.h * 0.78, 2.2, 0, Math.PI * 2);
+      ctx.moveTo(c.x + 4, c.top + 8);
+      ctx.quadraticCurveTo(c.x - 2, c.y + c.h, c.x + c.w / 2, c.y + c.h);
+      ctx.quadraticCurveTo(c.x + c.w + 2, c.y + c.h, c.x + c.w - 4, c.top + 8);
+      ctx.closePath();
       ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle = "#D6EEF8";
+      ctx.lineWidth = 3;
+      for (var i = 1; i <= 3; i++) {
+        var yy = c.top + 18 + (c.h - 28) * (i / 4);
+        ctx.beginPath();
+        ctx.moveTo(c.x + 16, yy);
+        ctx.quadraticCurveTo(c.x + c.w / 2, yy + 3, c.x + c.w - 16, yy);
+        ctx.stroke();
+      }
+      ctx.stroke();
+    } else {
+      ctx.fillStyle = "#8C3A2F";
+      ctx.strokeStyle = "#1A120C";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.top + 8);
+      ctx.lineTo(c.x + 8, c.y + c.h);
+      ctx.lineTo(c.x + c.w - 8, c.y + c.h);
+      ctx.lineTo(c.x + c.w, c.top + 8);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = "#F3E6C8";
+      ctx.fillRect(c.x + 8, c.top + 10, c.w - 16, 8);
     }
-
-    ctx.fillStyle = "#C47B12";
+    ctx.restore();
+    drawPile(c, amount);
+    if (level === 3) {
+      backed(t("water"), c.x + c.w / 2, c.top + c.h * 0.62, 16, "center");
+    } else {
+      backed(t("grains"), c.x + c.w / 2, c.top + Math.min(c.h * 0.7, c.h - 16), 16, "center");
+      if (level === 2) backed(index === 0 ? t("left") : t("right"), c.x + c.w / 2, c.top + c.h * 0.4, 14, "center");
+      ctx.fillStyle = "#1A120C";
+      for (var d2 = 0; d2 < 5; d2++) {
+        ctx.beginPath();
+        ctx.arc(c.x + 18 + d2 * Math.max(8, (c.w - 36) / 4), c.top + c.h * 0.84, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+  function drawBlock() {
+    if (!block) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(block.x, block.y, block.w, block.h);
+    ctx.fillStyle = "#C4A574";
+    ctx.fill();
+    ctx.strokeStyle = "#1A120C";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    ctx.save();
+    ctx.clip();
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    for (var i = -block.h; i < block.w + block.h; i += 10) {
+      ctx.moveTo(block.x + i, block.y + block.h);
+      ctx.lineTo(block.x + i + block.h, block.y);
+    }
+    ctx.stroke();
+    ctx.restore();
+    backed(t("blockWord"), block.x + block.w / 2, block.y + block.h * 0.62, 16, "center");
+    ctx.restore();
+  }
+  function drawHopper() {
+    var water = matName() === "water";
+    ctx.fillStyle = water ? "#1F4E79" : "#C47B12";
     ctx.strokeStyle = "#1A120C";
     ctx.lineWidth = 3;
     ctx.beginPath();
@@ -794,33 +1237,80 @@
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
-    seed({ x: spout.x - 16, y: spout.y - 18, s: 4, rot: 0.4 });
-    seed({ x: spout.x, y: spout.y - 16, s: 4, rot: 1.2 });
-    seed({ x: spout.x - 8, y: spout.y - 8, s: 3.5, rot: 2 });
-    ctx.fillStyle = "#1A120C";
-    ctx.font = "800 14px Barlow, Outfit, sans-serif";
-    ctx.textAlign = "center";
-    ctx.fillText(t("grains"), spout.x - 8, spout.y - 42);
-
-    var visual = mass > 1 ? 7 : 5;
-    live.forEach(function (p) { seed({ x: p.x, y: p.y, s: visual, rot: p.rot }); });
+    if (water) {
+      ctx.strokeStyle = "#D6EEF8";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(spout.x - 30, spout.y - 18);
+      ctx.quadraticCurveTo(spout.x - 8, spout.y - 12, spout.x + 8, spout.y - 18);
+      ctx.stroke();
+      backed(t("water"), spout.x - 8, spout.y - 16, 16, "center");
+    } else {
+      seed({ x: spout.x - 18, y: spout.y - 20, s: 3.5, rot: 0.4 });
+      seed({ x: spout.x - 4, y: spout.y - 18, s: 3.5, rot: 1.1 });
+      seed({ x: spout.x - 12, y: spout.y - 10, s: 3, rot: 2 });
+      backed(t("grains"), spout.x - 8, spout.y - 16, 16, "center");
+    }
   }
-  function wrapText(text, x, y, maxW, lh) {
-    var words = String(text).split(" ");
-    var line = "";
-    var lines = [];
-    words.forEach(function (w) {
-      var tryLine = line ? line + " " + w : w;
-      if (ctx.measureText(tryLine).width > maxW && line) { lines.push(line); line = w; }
-      else line = tryLine;
+  function draw() {
+    ctx.clearRect(0, 0, viewW, viewH);
+    ctx.fillStyle = "#E7D7B8";
+    ctx.fillRect(0, 0, viewW, viewH);
+    ctx.fillStyle = "#C4A574";
+    ctx.fillRect(0, viewH - 14, viewW, 14);
+    if (ghost.length && performance.now() < ghostUntil) {
+      ctx.save();
+      ctx.strokeStyle = "#3E6B4F";
+      ctx.lineWidth = 4;
+      ctx.setLineDash([2, 10]);
+      ctx.lineCap = "round";
+      ctx.beginPath();
+      ghost.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
+      ctx.stroke();
+      ctx.restore();
+      var hb = hopperBox();
+      var lx = 12;
+      var ly = 26;
+      if (lx < hb.x + hb.w + 8 && ly > hb.y - 8 && ly < hb.y + hb.h + 16) ly = Math.min(viewH - 18, hb.y + hb.h + 22);
+      backed(t("ghost"), lx, ly, 18, "left");
+    }
+    drawBlock();
+    worldStrokes().forEach(function (s) {
+      if (s.length < 2) return;
+      ctx.strokeStyle = "#8A4B12";
+      ctx.lineWidth = 16;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      s.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
+      ctx.stroke();
+      ctx.strokeStyle = level === 3 ? "#7EC8E3" : "#E7B56A";
+      ctx.lineWidth = 8;
+      ctx.stroke();
     });
-    if (line) lines.push(line);
-    lines.forEach(function (ln, i) { ctx.fillText(ln, x, y + i * lh); });
+    if (spillSpots.length && !pouring && live.length === 0 && anyShort()) {
+      var sx = 0, sy = 0, sn = 0;
+      spillSpots.forEach(function (p) { sx += p.x; sy += p.y; sn++; });
+      sx /= sn; sy /= sn;
+      ctx.beginPath();
+      ctx.strokeStyle = "#8C3A2F";
+      ctx.lineWidth = 4;
+      ctx.ellipse(sx, sy, 34, 22, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      backedWrap(spillSentence(), sx, Math.min(viewH - 28, sy + 40), 16, Math.min(280, viewW - 24));
+    }
+    cupList.forEach(function (c, i) { drawCup(c, fills[i] || 0, i); });
+    drawHopper();
+    var visual = mass > 1 ? 7 : 5;
+    live.forEach(function (p) {
+      if (matName() === "water") waterDrop({ x: p.x, y: p.y, s: visual });
+      else seed({ x: p.x, y: p.y, s: visual, rot: p.rot });
+    });
   }
-  function frame(t) {
+  function frame(now) {
     requestAnimationFrame(frame);
-    var dt = Math.min(0.033, lastT ? (t - lastT) / 1000 : 0.016);
-    lastT = t;
+    var dt = Math.min(0.033, lastT ? (now - lastT) / 1000 : 0.016);
+    lastT = now;
     fpsFrames++;
     fpsAcc += dt;
     if (fpsAcc >= 0.5) {
@@ -842,20 +1332,28 @@
       }
       for (var i = 0; i < live.length; i++) {
         var p = live[i];
+        p.life = (p.life || 0) + dt;
+        if (p.life > 12) {
+          if (level === 3) {
+            dropSpill(p.mass, p.x, p.y);
+            if (!leakKind) leakKind = "gap";
+          } else settleFree(p);
+          p.dead = true;
+          continue;
+        }
         if (p.mode === "follow") stepFollow(p, dt);
         else stepFree(p, dt);
       }
       live = live.filter(function (p) { return !p.dead; });
-      if (spawnLeft <= 0 && live.length === 0) {
-        pouring = false;
-        checkFilled();
-      } else checkFilled();
+      if (spawnLeft <= 0 && live.length === 0) pouring = false;
+      checkFilled();
       paintStatus();
     }
     draw();
   }
   function bootLangs() {
     var box = document.getElementById("langs");
+    if (!box) return;
     LANGS.forEach(function (code) {
       var b = document.createElement("button");
       b.type = "button";
@@ -870,6 +1368,10 @@
       box.appendChild(b);
     });
   }
+  function clientPoint(p) {
+    var r = canvas.getBoundingClientRect();
+    return { x: r.left + p.x * (r.width / viewW), y: r.top + p.y * (r.height / viewH) };
+  }
   document.getElementById("tool-draw").addEventListener("click", function () { setTool("draw"); });
   document.getElementById("tool-erase").addEventListener("click", function () { setTool("erase"); });
   document.getElementById("undo-btn").addEventListener("click", doUndo);
@@ -881,9 +1383,11 @@
   });
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
-  document.getElementById("repour-btn").addEventListener("click", function () { resetPour(false); startPour(); });
+  document.getElementById("repour-btn").addEventListener("click", repour);
   document.getElementById("next-btn").addEventListener("click", finishNext);
-  document.getElementById("again-btn").addEventListener("click", playAgain);
+  document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 3) setLevel(level + 1); });
+  document.getElementById("again-btn").addEventListener("click", beatFill);
+  document.getElementById("hub-btn").addEventListener("click", function () { window.location.href = "/"; });
   document.getElementById("pause-btn").addEventListener("click", function () { setPaused(true); });
   document.getElementById("resume-btn").addEventListener("click", function () { setPaused(false); });
   document.getElementById("menu-btn").addEventListener("click", function () { toggleMenu(true); paintRank(); });
@@ -901,12 +1405,18 @@
         document.getElementById("ask").hidden = true; syncModal(); e.preventDefault(); return;
       }
       if (!document.getElementById("menu").hidden) { toggleMenu(false); e.preventDefault(); return; }
-      if (!document.getElementById("endcard").hidden) { playAgain(); e.preventDefault(); return; }
+      if (!document.getElementById("endcard").hidden) {
+        document.getElementById("endcard").hidden = true;
+        if (filledOnce) document.getElementById("donebar").hidden = false;
+        syncModal();
+        e.preventDefault();
+        return;
+      }
       setPaused(!paused);
       e.preventDefault();
       return;
     }
-    if (typing) return;
+    if (typing || ended) return;
     var k = e.key.toLowerCase();
     if (k === "d") setTool("draw");
     else if (k === "e") setTool("erase");
@@ -921,19 +1431,51 @@
   loadCups();
   paintText();
   layout();
+  ghostUntil = performance.now() + 5000;
   requestAnimationFrame(frame);
   window.__rf = {
     version: VERSION,
     fps: function () { return { now: fps, min: fpsMin }; },
     state: function () {
-      return { fill: fill, spill: spill, line: LINE, pouring: pouring, live: live.length, words: cupWords(), paused: paused, strokes: strokes.length, cups: cups, mass: mass };
-    },
-    ghost: function () {
       var r = canvas.getBoundingClientRect();
-      return ghost.map(function (p) {
-        return { x: r.left + p.x * (r.width / viewW), y: r.top + p.y * (r.height / viewH) };
-      });
+      return {
+        level: level, fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
+        pouring: pouring, live: live.length, words: cupWords(), paused: paused, ended: ended,
+        strokes: strokes.length, cups: cups, mass: mass, leak: leakKind, mat: matName(),
+        spawnLeft: spawnLeft,
+        sample: live[0] ? { x: Math.round(live[0].x), y: Math.round(live[0].y), vy: Math.round(live[0].vy), mode: live[0].mode, si: live[0].si } : null,
+        end: (function () {
+          if (!strokes.length || !strokes[0].length) return null;
+          var s = strokes[strokes.length - 1];
+          var p = denorm(s[s.length - 1]);
+          var c = cupList[0];
+          return c ? { x: Math.round(p.x), y: Math.round(p.y), lip: lipOverlap(c, p.x, p.y), top: Math.round(c.top), n: s.length } : null;
+        })(),
+        canvasH: Math.round(r.height), canvasW: Math.round(r.width)
+      };
     },
-    spout: function () { return { x: spout.x, y: spout.y }; }
+    ghost: function () { return ghost.map(clientPoint); },
+    setLevel: setLevel,
+    spout: function () { return clientPoint(spout); },
+    hopper: function () { return hopperBox(); },
+    world: function () {
+      var r = canvas.getBoundingClientRect();
+      function box(o) {
+        return {
+          x: r.left + o.x * (r.width / viewW),
+          y: r.top + o.y * (r.height / viewH),
+          w: o.w * (r.width / viewW),
+          h: o.h * (r.height / viewH)
+        };
+      }
+      return {
+        hopper: hopperBox(),
+        viewW: viewW,
+        viewH: viewH,
+        spout: clientPoint(spout),
+        cups: cupList.map(function (c) { return Object.assign(box(c), { top: r.top + c.top * (r.height / viewH) }); }),
+        block: block ? box(block) : null
+      };
+    }
   };
 })();
