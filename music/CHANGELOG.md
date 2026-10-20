@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.9** · 2026-10-20 · channel **live**
+
+Tools sit on a side rail or a bottom bar, and one big Play button stays put.
+
+## Earlier
+
 **Chip: MU 2.36.8** · 2026-10-20 · channel **live**
 
 The light show is back: dark stage, bigger picture, and Mic lights that dance to the room.

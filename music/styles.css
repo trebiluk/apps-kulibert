@@ -4776,3 +4776,188 @@ body.mu237.show canvas#viz {
   }
 }
 
+/* MU 2.36.9 item 1 — rail, bottom bar, one Play button */
+body.mu237 #play-btn {
+  position: fixed !important;
+  z-index: 48 !important;
+  top: auto !important;
+  bottom: 8px !important;
+  inset-inline-start: 8px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  max-height: 56px !important;
+  width: auto !important;
+  min-width: 128px !important;
+  max-width: 220px !important;
+  margin: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  padding: 0 14px !important;
+  border-radius: 16px !important;
+  box-shadow: 0 2px 0 #0f3d3a !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+}
+body.mu237 #play-btn #play-word,
+body.mu237 #play-btn .play-icon {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  font-size: 16px !important;
+  color: inherit !important;
+}
+body.mu237 #play-btn.on .play-icon { display: none !important; }
+body.mu237 #play-btn:focus-visible,
+body.mu237 #dock-left .tab:focus-visible {
+  outline: 3px solid #0B1F33 !important;
+  outline-offset: 2px !important;
+}
+@media (min-width: 601px) {
+  body.mu237 { --rail: 168px; --tabs: 0px; }
+  body.mu237 .side,
+  body.mu237.menu-open .side {
+    top: var(--bar) !important;
+    bottom: 72px !important;
+    inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+    width: var(--rail) !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+  body.mu237 #dock-left .tab {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    min-height: 44px !important;
+    height: 44px !important;
+  }
+  body.mu237 #dock-left .tab span {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    font-size: 14px !important;
+  }
+}
+@media (max-width: 600px) {
+  body.mu237 { --rail: 0px; --tabs: 0px; --player: 176px; }
+  body.mu237 .side,
+  body.mu237.menu-open .side {
+    top: auto !important;
+    bottom: 0 !important;
+    left: auto !important;
+    right: auto !important;
+    inset-inline-start: 148px !important;
+    inset-inline-end: 0 !important;
+    width: auto !important;
+    height: 112px !important;
+    max-height: 112px !important;
+    overflow: hidden !important;
+    border-right: 0 !important;
+    border-left: 0 !important;
+    border-top: 1px solid var(--border) !important;
+    background: var(--panel) !important;
+  }
+  body.mu237 .rail-group { display: none !important; }
+  body.mu237 #dock-left {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    height: 112px !important;
+    gap: 2px !important;
+    padding: 4px !important;
+    box-sizing: border-box !important;
+  }
+  body.mu237 #dock-left .tab {
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 52px !important;
+    padding: 2px !important;
+    gap: 0 !important;
+  }
+  body.mu237 #dock-left .tab span {
+    position: static !important;
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    clip: auto !important;
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+    text-align: center !important;
+  }
+  body.mu237 .transport,
+  body.mu237.playing:not(.show) .transport,
+  body.mu237.is-beat:not(.show) .transport,
+  body.mu237.is-both:not(.show) .transport {
+    bottom: 112px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+    display: flex !important;
+  }
+  body.mu237 .desk {
+    top: var(--bar) !important;
+    bottom: 176px !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+  html[dir="rtl"] body.mu237 .desk,
+  html[dir="rtl"] body.mu237 .transport { left: 0 !important; right: 0 !important; }
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237 { --rail: 148px; --tabs: 0px; --player: 56px; }
+  body.mu237 #play-btn {
+    height: 48px !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+  }
+  body.mu237 .side,
+  body.mu237.menu-open .side {
+    top: var(--bar) !important;
+    bottom: 60px !important;
+    inset-inline-start: 0 !important;
+    inset-inline-end: auto !important;
+    width: 148px !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: hidden !important;
+  }
+  body.mu237 .rail-group { display: none !important; }
+  body.mu237 #dock-left {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-auto-rows: 48px !important;
+    width: 100% !important;
+    height: auto !important;
+    gap: 2px !important;
+    padding: 2px !important;
+  }
+  body.mu237 #dock-left .tab {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    height: 48px !important;
+    min-height: 44px !important;
+    max-height: 48px !important;
+    padding: 0 4px !important;
+    gap: 4px !important;
+  }
+  body.mu237 #dock-left .tab span {
+    font-size: 12px !important;
+    text-align: start !important;
+    white-space: nowrap !important;
+  }
+  html[dir="rtl"] body.mu237 .side { inset-inline-start: 0 !important; }
+}
+
+

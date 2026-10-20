@@ -91,7 +91,7 @@
     return api && api.t ? api.t(key, vars) : "";
   }
   function playWordText(on) {
-    if (on) return mu("stop") || "Stop";
+    if (on) return "■ " + (mu("stop") || "Stop");
     const shared = window.KulibertI18n && window.KulibertI18n.t && window.KulibertI18n.t("play");
     return shared || "Play";
   }
