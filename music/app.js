@@ -1484,6 +1484,8 @@
     state.playAt = Date.now();
     state.confettiDone = false;
     document.body.classList.add("playing");
+    fitViz();
+    if (stageApi && stageApi.kick) stageApi.kick();
     sayHow(state.mode);
     state.counting = false;
     $("play-btn").classList.add("on");
@@ -1568,6 +1570,8 @@
     silenceOwner();
     state.playing = false;
     document.body.classList.remove("playing");
+    fitViz();
+    if (stageApi && stageApi.kick) stageApi.kick();
     sayHow(state.mode);
     window.clearTimeout(state.timer);
     window.clearTimeout(state.eighthTimer);
@@ -2654,17 +2658,25 @@
     const canvas = $("viz");
     const wrap = canvas && canvas.parentElement;
     const show = document.body.classList.contains("show");
-    const strip = !show && (document.body.classList.contains("is-beat") || document.body.classList.contains("is-both"));
+    const viz = document.body.classList.contains("tab-viz");
+    const strip = !show && !viz && (
+      document.body.classList.contains("tab-songs")
+      || document.body.classList.contains("tab-mix")
+      || document.body.classList.contains("tab-tap")
+      || document.body.classList.contains("is-beat")
+      || document.body.classList.contains("is-both")
+    );
+    document.body.classList.toggle("viz-strip", strip);
     if (canvas) {
-      canvas.style.height = show ? "100%" : strip ? "84px" : "";
-      canvas.style.maxHeight = show ? "none" : strip ? "84px" : "";
-      canvas.style.aspectRatio = show || strip ? "auto" : "";
+      canvas.style.height = show || viz ? "100%" : strip ? "84px" : "";
+      canvas.style.maxHeight = show || viz ? "none" : strip ? "84px" : "";
+      canvas.style.aspectRatio = show || viz || strip ? "auto" : "";
     }
     if (wrap) {
-      wrap.style.height = strip ? "92px" : "";
-      wrap.style.maxHeight = strip ? "92px" : "";
-      wrap.style.overflow = show || strip ? "hidden" : "";
-      if (show || strip) {
+      wrap.style.height = strip ? "84px" : "";
+      wrap.style.maxHeight = strip ? "84px" : "";
+      wrap.style.overflow = show || viz || strip ? "hidden" : "";
+      if (show || viz || strip) {
         wrap.style.setProperty("contain", "paint", "important");
         wrap.style.setProperty("clip-path", "inset(0)", "important");
         wrap.style.setProperty("transform", "translateZ(0)", "important");
@@ -6027,18 +6039,25 @@
     const lowDevice = (navigator.hardwareConcurrency || 8) <= 4 || (navigator.connection && navigator.connection.saveData);
     stageApi = window.KulibertStage.mount(canvas, () => {
       const onViz = document.body.classList.contains("tab-viz") || document.body.classList.contains("show");
+      const strip = document.body.classList.contains("viz-strip");
+      const live = onViz || (strip && state.playing);
       const gear = Object.assign({}, state.gear);
       if (lowDevice) gear.count = Math.min(gear.count || 12, 12);
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) gear.wild = Math.min(gear.wild || 0, 8);
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gear.wild = 0;
+        gear.spin = 0;
+        gear.trail = 0;
+      }
       return {
-        pause: !onViz || document.hidden,
-        playing: state.playing && onViz,
+        pause: !live || document.hidden,
+        playing: state.playing && live,
         look: state.look,
         layers: state.layers,
-        rgb: state.rgb,
+        rgb: state.rgb && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         wall: state.wall,
         gear: gear,
         bins: state.bins,
+        analyser: state.micAnalyser || null,
         kick: state.kick,
         snare: state.snare,
         playhead: state.step,

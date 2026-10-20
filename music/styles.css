@@ -4673,4 +4673,17 @@ body.mu237 #scenes .btn:focus-visible {
   outline: 3px solid #22d3ee;
   outline-offset: 2px;
 }
+body.mu237.viz-strip .out { display: block !important; height: 84px !important; min-height: 84px !important; max-height: 84px !important; overflow: hidden !important; }
+body.mu237.viz-strip .stage-wrap,
+body.mu237.viz-strip canvas#viz { height: 84px !important; max-height: 84px !important; min-height: 84px !important; }
+@media (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-viz .out,
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz {
+    min-height: 60vh !important;
+    height: 60vh !important;
+    max-height: none !important;
+  }
+  body.mu237.tab-viz .transport { z-index: 4; }
+}
 
