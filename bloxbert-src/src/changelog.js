@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.270', date: '2026-10-19', lines: {
+    en: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
+    es: ['2.5.270 — Las imágenes de los objetos son más grandes, así que Tablones, Tronco y Bayas se distinguen fácil. Los avisos ya no estorban y el modo Creativo cabe en el teléfono.'],
+    ar: ['2.5.270 — صور الأغراض أكبر، لذا يسهل تمييز الألواح والحطب والتوت. النوافذ المنبثقة لا تعترض طريقك، ووضع الإبداع يناسب الهاتف.'],
+    zh: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
+    fr: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
+    pt: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
+    ru: ['2.5.270 — Картинки предметов больше, поэтому Доски, Бревно и Ягоды легко различить. Подсказки не мешают, а Творческий режим помещается на телефоне.'],
+    vi: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
+    uk: ['2.5.270 — Картинки предметів більші, тож Дошки, Колоду і Ягоди легко розрізнити. Спливаючі підказки не заважають, а Творчий режим вміщається на телефоні.'],
+    'fa-AF': ['2.5.270 — عکس‌های اشیا بزرگ‌تر شده‌اند، پس تخته‌ها، کنده و توت را آسان تشخیص می‌دهی. پیام‌ها دیگر سر راه نیستند و حالت خلاق روی تلفن جا می‌شود.'],
+    rw: ['2.5.270 — Amashusho y\'ibintu yakuze, bityo Imbaho, Igiti n\'Imbuto biroroshye gutandukanya. Ubutumwa ntibukibangamira, kandi Creative ikwira kuri telefone.'],
+    ti: ['2.5.270 — ስእልታት ኣቑሑት ዓብዮም እዮም፣ ስለዚ ጽላት፣ ዕጸን ፍረታትን ብቐሊሉ ትፈልዮም። መልእኽትታት ኣይዓግቱን፣ Creative ድማ ኣብ ተሌፎን ይኣቱ።'],
+  }},
   { v: '2.5.269', date: '2026-10-19', lines: {
     en: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
     es: ['2.5.269 — Las palabras y números de Fabricar caben en pantallas pequeñas, y los consejos esperan su turno y no te estorban.'],

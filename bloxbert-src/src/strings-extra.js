@@ -1629,14 +1629,14 @@ for (const [lang, row] of Object.entries(GOAL)) {
   Object.assign(EXTRA[lang], row)
 }
 const FIT269 = {
-  en: { whatsNewBody: '2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.' },
-  uk: { whatsNewBody: '2.5.269 — Слова й числа в Крафті вміщуються на малих екранах, а підказки чекають своєї черги й не заважають тобі.' },
-  ru: { whatsNewBody: '2.5.269 — Слова и числа в Крафте помещаются на маленьких экранах, а подсказки ждут своей очереди и не мешают.' },
-  es: { whatsNewBody: '2.5.269 — Las palabras y números de Fabricar caben en pantallas pequeñas, y los consejos esperan su turno y no te estorban.' },
-  ar: { whatsNewBody: '2.5.269 — كلمات وأرقام الصناعة تتسع على الشاشات الصغيرة، والنصائح تنتظر دورها ولا تعترض طريقك.' },
-  'fa-AF': { whatsNewBody: '2.5.269 — کلمه‌ها و شماره‌های ساختن در صفحه‌های کوچک جا می‌شوند، و نکته‌ها منتظر نوبت خود می‌مانند و مزاحم شما نمی‌شوند.' },
-  rw: { whatsNewBody: '2.5.269 — Amagambo n\'imibare byo Gukora bikwira ku byerekezo bito, kandi inama zirategereza umwanya wazo ntizikugora.' },
-  ti: { whatsNewBody: '2.5.269 — ቃላትን ቁጽርታትን ምስራሕ ኣብ ንኣሽቱ ስክሪናት ይኣክሉ፣ ምኽርታት ድማ ተራኦም ይጽበዩን ኣይዓግቱኻን።' },
+  en: { whatsNewBody: '2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.' },
+  uk: { whatsNewBody: '2.5.270 — Картинки предметів більші, тож Дошки, Колоду і Ягоди легко розрізнити. Спливаючі підказки не заважають, а Творчий режим вміщається на телефоні.' },
+  ru: { whatsNewBody: '2.5.270 — Картинки предметов больше, поэтому Доски, Бревно и Ягоды легко различить. Подсказки не мешают, а Творческий режим помещается на телефоне.' },
+  es: { whatsNewBody: '2.5.270 — Las imágenes de los objetos son más grandes, así que Tablones, Tronco y Bayas se distinguen fácil. Los avisos ya no estorban y el modo Creativo cabe en el teléfono.' },
+  ar: { whatsNewBody: '2.5.270 — صور الأغراض أكبر، لذا يسهل تمييز الألواح والحطب والتوت. النوافذ المنبثقة لا تعترض طريقك، ووضع الإبداع يناسب الهاتف.' },
+  'fa-AF': { whatsNewBody: '2.5.270 — عکس‌های اشیا بزرگ‌تر شده‌اند، پس تخته‌ها، کنده و توت را آسان تشخیص می‌دهی. پیام‌ها دیگر سر راه نیستند و حالت خلاق روی تلفن جا می‌شود.' },
+  rw: { whatsNewBody: '2.5.270 — Amashusho y\'ibintu yakuze, bityo Imbaho, Igiti n\'Imbuto biroroshye gutandukanya. Ubutumwa ntibukibangamira, kandi Creative ikwira kuri telefone.' },
+  ti: { whatsNewBody: '2.5.270 — ስእልታት ኣቑሑት ዓብዮም እዮም፣ ስለዚ ጽላት፣ ዕጸን ፍረታትን ብቐሊሉ ትፈልዮም። መልእኽትታት ኣይዓግቱን፣ Creative ድማ ኣብ ተሌፎን ይኣቱ።' },
 }
 for (const [lang, row] of Object.entries(FIT269)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}

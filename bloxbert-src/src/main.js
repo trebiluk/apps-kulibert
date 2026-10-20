@@ -6673,29 +6673,75 @@ if (packOn('tech')) {
   }
 }
 let selectedSlot = 0
+function fitSlotNames(root) {
+  const host = root || document.getElementById('hotbar')
+  if (!host) return
+  host.querySelectorAll('.slot:not(.bag-tile) .lbl').forEach((lbl) => {
+    const name = lbl.dataset.name || (lbl.textContent || '')
+    if (!name) return
+    lbl.dataset.name = name
+    const slot = lbl.parentElement
+    if (!slot) return
+    lbl.replaceChildren(document.createTextNode(name))
+    lbl.style.whiteSpace = 'nowrap'
+    if (lbl.scrollWidth <= slot.clientWidth + 1) return
+    let cut = 0
+    let best = 1e9
+    const mid = name.length / 2
+    for (let i = 1; i < name.length; i++) {
+      lbl.textContent = name.slice(0, i)
+      const w1 = lbl.scrollWidth
+      lbl.textContent = name.slice(i)
+      const w2 = lbl.scrollWidth
+      if (w1 <= slot.clientWidth + 1 && w2 <= slot.clientWidth + 1 && Math.abs(i - mid) < best) {
+        best = Math.abs(i - mid)
+        cut = i
+      }
+    }
+    if (!cut) { lbl.textContent = name; lbl.style.whiteSpace = 'nowrap'; return }
+    const a = document.createElement('span')
+    const b = document.createElement('span')
+    a.textContent = name.slice(0, cut)
+    b.textContent = name.slice(cut)
+    a.style.display = 'block'
+    b.style.display = 'block'
+    lbl.style.whiteSpace = 'normal'
+    lbl.replaceChildren(a, b)
+  })
+}
 function paintBar() {
   const heldScroll = bar.dataset.drag === '1' ? ((bar.querySelector('.item-strip') || {}).scrollLeft || 0) : null
   bar.innerHTML = ''
   bar.classList.add('palette')
   bar.classList.remove('bagbar')
-  bar.dataset.n = String(paletteIds.length)
+  const narrow = window.innerWidth <= 520
+  let from = 0
+  let ids = paletteIds
+  if (narrow && paletteIds.length > 9) {
+    from = selectedSlot - 4
+    if (from < 0) from = 0
+    if (from > paletteIds.length - 9) from = Math.max(0, paletteIds.length - 9)
+    ids = paletteIds.slice(from, from + 9)
+  }
+  bar.dataset.n = String(ids.length)
   const strip = document.createElement('div')
   strip.className = 'item-strip'
-  paletteIds.forEach((id, i) => {
+  ids.forEach((id, i) => {
+    const real = from + i
     const b = document.createElement('button')
     b.className = 'slot'
     b.type = 'button'
-    b.dataset.slot = String(i)
+    b.dataset.slot = String(real)
     b.dataset.id = String(id)
     const block = BLOCKS.find((x) => x[0] === id) || BLOCKS[0]
     const name = blockName(id)
     b.setAttribute('aria-label', name)
-    b.setAttribute('aria-pressed', String(!wandSlot && i === selectedSlot))
+    b.setAttribute('aria-pressed', String(!wandSlot && real === selectedSlot))
     const l = document.createElement('span')
     l.className = 'lbl'
     l.textContent = name
     b.append(l)
-    b.addEventListener('click', () => selectSlot(i))
+    b.addEventListener('click', () => selectSlot(real))
     b.prepend(blockIcon(block, ATLAS))
     strip.append(b)
   })
@@ -6733,7 +6779,16 @@ function paintBar() {
     if (heldScroll != null) strip.scrollLeft = heldScroll
     else strip.scrollLeft = Math.max(0, on.offsetLeft - strip.clientWidth / 2 + on.offsetWidth / 2)
   }
+  requestAnimationFrame(() => fitSlotNames(bar))
 }
+let paintBarNarrow = window.innerWidth <= 520
+window.addEventListener('resize', () => {
+  const narrow = window.innerWidth <= 520
+  if (narrow === paintBarNarrow) return
+  paintBarNarrow = narrow
+  if (document.body.classList.contains('mode-creative')) paintBar()
+  else requestAnimationFrame(() => fitSlotNames())
+})
 function useSelected() {
   if (survivalOn() && session && session.useHeld) { session.useHeld(); return }
   flashHeld(blockName(current))

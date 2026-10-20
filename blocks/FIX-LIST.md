@@ -1,6 +1,11 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Mon Oct 19 2026 (Build: 2.5.269 Crafting words and counts fit, and tips wait their turn).
+Updated Mon Oct 19 2026 (Build: 2.5.270 Item pictures are bigger, pop-ups stay clear, and Creative fits on phones).
+
+- [x] **2.5.270 Crafting grid:** At 915×412 the recipe list rests on whole rows. A resting scroll does not leave a half row cut off.
+- [x] **2.5.270 Pop-ups:** A Workbench toast with Crafting or Bag open stays in the panel header, off the tiles and Bag rows, at 915×412 and 412×915. On a fresh desktop load, Click to play is not covered by the goal. A phone tip stays at least 8px clear of Pause.
+- [x] **2.5.270 Creative phone:** At 412×915 Creative is one row of slots, not a tall wrapping palette. Bag sits above that row. 915×412 Creative stays one scrolling row.
+- [x] **2.5.270 Item pictures:** Hotbar and Bag pictures are at least 32px, the same picture in both, counts sit on a solid chip at 16px, and every item tile shows its name at 14px.
 
 - [x] **2.5.269 Crafting card:** At 915×412, Input, Process and Output stay inside the card. Output and Workbench / Wood Pickaxe read whole before Fill, after Fill and after Make. The check sits beside 4/4 and 0/4, not on a digit. Recipe tiles show the whole name and the count, and a half row is not cut off the bottom.
 - [x] **2.5.269 Tips:** One tip, toast or hint at a time. The rest wait about 0.3s. They stay off the hotbar, Bag, Copy, the mode toggle and the world chip.
@@ -183,6 +188,7 @@ Updated Mon Oct 19 2026 (Build: 2.5.269 Crafting words and counts fit, and tips 
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.270 | 2.5.270 | Item pictures are bigger, pop-ups stay clear, and Creative fits on phones | shipping |
 | 2.5.268 | 2.5.268 | Recipe words fit, and phone slots are easier to tap | shipping |
 | 2.5.267 | 2.5.267 | Goal clears when you finish it, and Save fits on phones | shipping |
 | 0 | 2.5.43 | bertopia-2543.md: HUD fit + hotbar, teacher gate, words + real smoke | shipped, FAIL (P1) |

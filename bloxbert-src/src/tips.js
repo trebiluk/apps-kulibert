@@ -47,6 +47,65 @@ function obstacles(el) {
   return rects
 }
 
+function sheetToastDock(el) {
+  if (!el || el.id !== 'toast') return false
+  const sheet = document.getElementById('sheet')
+  if (!sheet || sheet.hidden) return false
+  const panel = sheet.dataset.panel || ''
+  if (panel !== 'crafting' && panel !== 'inventory') return false
+  const bar = sheet.querySelector('.sheet-bar')
+  if (!bar) return false
+  const r = bar.getBoundingClientRect()
+  if (r.width < 8 || r.height < 8) return false
+  const room = Math.max(96, r.width - 88)
+  el.style.zIndex = '70'
+  el.style.setProperty('position', 'fixed', 'important')
+  el.style.setProperty('transform', 'none', 'important')
+  el.style.setProperty('right', 'auto', 'important')
+  el.style.setProperty('bottom', 'auto', 'important')
+  el.style.setProperty('margin', '0', 'important')
+  el.style.setProperty('max-width', room + 'px', 'important')
+  el.style.setProperty('width', 'max-content', 'important')
+  const box = el.getBoundingClientRect()
+  const tw = Math.min(box.width || 160, room)
+  const th = Math.max(box.height || 36, 36)
+  const left = Math.round(Math.max(r.left + 8, Math.min(r.left + 8, r.right - tw - 72)))
+  let top = Math.round(r.bottom - th)
+  if (th <= r.height - 2) top = Math.round(r.top + Math.max(0, (r.height - th) / 2))
+  if (top + th > r.bottom) top = Math.round(r.bottom - th)
+  el.style.setProperty('left', left + 'px', 'important')
+  el.style.setProperty('top', top + 'px', 'important')
+  el.dataset.sheetDock = '1'
+  el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
+  return true
+}
+function keepClear() {
+  const pause = document.getElementById('pause-btn')
+  const pr = shown(pause)
+  if (!pr) return
+  const sheet = document.getElementById('sheet')
+  const sheetOpen = !!(sheet && !sheet.hidden && sheet.dataset.panel !== 'tour')
+  for (const sel of ['#toast', '#menu-hint', '#qol-tip', '#path-chip', '#play-chip']) {
+    const el = document.querySelector(sel)
+    if (!el || el.dataset.sheetDock === '1') continue
+    if (sheetOpen && el.id === 'toast') continue
+    const r = shown(el)
+    if (!r || !overlaps(r, pr, 8)) continue
+    const below = Math.round(pr.bottom + 8)
+    const hot = document.querySelector('#hotbar')
+    const hr = shown(hot)
+    if (!hr || below + r.height <= hr.top - 4) {
+      el.style.setProperty('top', below + 'px', 'important')
+      el.style.setProperty('bottom', 'auto', 'important')
+      continue
+    }
+    const left = Math.round(pr.left - r.width - 8)
+    if (left >= 8) {
+      el.style.setProperty('left', left + 'px', 'important')
+      el.style.setProperty('right', 'auto', 'important')
+    }
+  }
+}
 function settle(el) {
   let real = el.getBoundingClientRect()
   if (real.width < 2 || real.height < 2) return false
@@ -94,8 +153,17 @@ export function placeTip(el, follow) {
   el.style.width = 'max-content'
   el.style.maxWidth = 'min(280px, calc(100vw - 24px))'
   el.style.zIndex = '40'
+  el.dataset.sheetDock = ''
   if (!toast) el.style.pointerEvents = 'auto'
   el.hidden = false
+  if (toast && sheetToastDock(el)) {
+    try { el.dispatchEvent(new Event("tipmove")) } catch (e) {}
+    if (!follow) {
+      requestAnimationFrame(() => { if (el.isConnected && !el.hidden) placeTip(el, true) })
+      setTimeout(() => { if (el.isConnected && !el.hidden) placeTip(el, true) }, 120)
+    }
+    return true
+  }
   const measured = el.getBoundingClientRect()
   const w = Math.min(Math.max(measured.width || el.offsetWidth || 0, 120), window.innerWidth - 24)
   const h = Math.max(measured.height || el.offsetHeight || 0, 36)
@@ -110,7 +178,7 @@ export function placeTip(el, follow) {
   for (let y = Math.max(8, hb + 8); y < window.innerHeight - h - 8; y += 8) {
     for (const x of xs) {
       const box = { left: x, top: y, right: x + w, bottom: y + h }
-      if (rects.every((r) => !overlaps(box, r, 6))) { pick = { left: x, top: y }; break }
+      if (rects.every((r) => !overlaps(box, r, 8))) { pick = { left: x, top: y }; break }
     }
     if (pick) break
   }
@@ -122,6 +190,7 @@ export function placeTip(el, follow) {
   el.style.top = Math.round(pick.top) + 'px'
   if (toast) el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
   settle(el)
+  keepClear()
   try { el.dispatchEvent(new Event("tipmove")) } catch (e) {}
   if (!follow) {
     requestAnimationFrame(() => {

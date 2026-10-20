@@ -382,6 +382,47 @@ export function createSession(api) {
     const n = api.hotN ? api.hotN() : 9
     return n === 4 ? 4 : 9
   }
+  function fitSlotNames(root) {
+    const host = root || document.getElementById('hotbar')
+    if (!host) return
+    host.querySelectorAll('.slot:not(.bag-tile) .lbl').forEach((lbl) => {
+      const name = lbl.dataset.name || (lbl.textContent || '')
+      if (!name) return
+      lbl.dataset.name = name
+      const slot = lbl.parentElement
+      if (!slot) return
+      lbl.replaceChildren(document.createTextNode(name))
+      lbl.style.whiteSpace = 'nowrap'
+      if (lbl.scrollWidth <= slot.clientWidth + 1) return
+      let cut = 0
+      let best = 1e9
+      const mid = name.length / 2
+      for (let i = 1; i < name.length; i++) {
+        lbl.textContent = name.slice(0, i)
+        const w1 = lbl.scrollWidth
+        lbl.textContent = name.slice(i)
+        const w2 = lbl.scrollWidth
+        if (w1 <= slot.clientWidth + 1 && w2 <= slot.clientWidth + 1 && Math.abs(i - mid) < best) {
+          best = Math.abs(i - mid)
+          cut = i
+        }
+      }
+      if (!cut) {
+        lbl.textContent = name
+        lbl.style.whiteSpace = 'nowrap'
+        return
+      }
+      const a = document.createElement('span')
+      const b = document.createElement('span')
+      a.textContent = name.slice(0, cut)
+      b.textContent = name.slice(cut)
+      a.style.display = 'block'
+      b.style.display = 'block'
+      lbl.style.whiteSpace = 'normal'
+      lbl.replaceChildren(a, b)
+    })
+  }
+  window.addEventListener('resize', () => requestAnimationFrame(() => fitSlotNames()))
   function paintHotbar() {
     const bar = document.getElementById('hotbar')
     if (!bar || mode !== 'survival') {
@@ -416,6 +457,10 @@ export function createSession(api) {
         count.className = 'count'
         count.textContent = String(s.n)
         b.append(count)
+        const lbl = document.createElement('span')
+        lbl.className = 'lbl'
+        lbl.textContent = faceName(s.item)
+        b.append(lbl)
       }
       const wear = s && wearBar(item, s.uses)
       if (wear) b.append(wear)
@@ -463,6 +508,7 @@ export function createSession(api) {
       if (nameKey && isFoodItem(nameKey)) sayEatTip()
     }
     paintHeld()
+    requestAnimationFrame(() => fitSlotNames(bar))
   }
   function selectedItem() {
     if (mode !== 'survival') return null
@@ -1377,25 +1423,76 @@ export function createSession(api) {
     book.dataset.fit = '1'
     fitCraftRows(book)
   }
+  function craftBands(book) {
+    const wells = [...book.querySelectorAll('.book-row > .well')]
+    if (!wells.length) return []
+    const origin = book.getBoundingClientRect().top
+    const scroll = book.scrollTop
+    const bands = []
+    for (const w of wells) {
+      const rect = w.getBoundingClientRect()
+      const top = rect.top - origin + scroll
+      const bot = rect.bottom - origin + scroll
+      const last = bands[bands.length - 1]
+      if (!last || top > last.top + 6) bands.push({ top, bot })
+      else {
+        if (bot > last.bot) last.bot = bot
+        if (top < last.top) last.top = top
+      }
+    }
+    return bands
+  }
   function fitCraftRows(book) {
     if (!book) return
-    requestAnimationFrame(() => {
+    const apply = () => {
       if (!book.isConnected) return
-      if (innerHeight > 500 || innerWidth < 700) { book.style.maxHeight = ''; return }
-      const tile = book.querySelector('.book-row .well')
-      if (!tile) return
-      const row = book.querySelector('.book-row')
+      if (innerHeight > 500 || innerWidth < 700) {
+        book.style.removeProperty('max-height')
+        book.style.removeProperty('height')
+        book.style.removeProperty('flex')
+        return
+      }
       const tools = book.querySelector('.book-tools')
-      const gap = parseFloat((row && getComputedStyle(row).rowGap) || '8') || 8
-      const stride = tile.getBoundingClientRect().height + gap
-      if (!(stride > 24)) return
-      const toolsH = tools ? tools.getBoundingClientRect().height : 0
-      const avail = book.clientHeight - toolsH
-      if (!(avail > stride * 0.6)) return
-      const rows = Math.max(1, Math.floor((avail + gap) / stride))
-      const h = Math.round(toolsH + rows * stride - gap + 4)
-      if (h > 40) book.style.maxHeight = h + 'px'
-    })
+      const toolsH = tools ? tools.offsetHeight : 0
+      const bands = craftBands(book)
+      if (!bands.length) return
+      const parent = book.parentElement
+      const limit = Math.max(80, parent ? parent.clientHeight : book.clientHeight)
+      const visTop = book.scrollTop + toolsH
+      let start = 0
+      let best = 1e9
+      for (let i = 0; i < bands.length; i++) {
+        const d = Math.abs(bands[i].top - visTop)
+        if (d < best) { best = d; start = i }
+      }
+      let n = 0
+      let h = toolsH
+      for (let i = start; i < bands.length; i++) {
+        const span = bands[i].bot - bands[start].top
+        if (n && toolsH + span > limit + 1) break
+        n += 1
+        h = toolsH + span
+      }
+      if (!n) return
+      const target = Math.max(0, Math.round(bands[start].top - toolsH))
+      book.dataset.snapping = '1'
+      const px = Math.ceil(h) + 'px'
+      book.style.setProperty('height', px, 'important')
+      book.style.setProperty('max-height', px, 'important')
+      book.style.setProperty('flex', '0 0 auto', 'important')
+      if (Math.abs(book.scrollTop - target) > 1) book.scrollTop = target
+      requestAnimationFrame(() => { book.dataset.snapping = '' })
+    }
+    requestAnimationFrame(apply)
+    if (!book.dataset.snapArm) {
+      book.dataset.snapArm = '1'
+      let timer = 0
+      book.addEventListener('scroll', () => {
+        if (book.dataset.snapping === '1') return
+        clearTimeout(timer)
+        timer = setTimeout(() => requestAnimationFrame(apply), 70)
+      }, { passive: true })
+    }
   }
   function paintCraftNeeds(g, r) {
     if (!g || !r) return
