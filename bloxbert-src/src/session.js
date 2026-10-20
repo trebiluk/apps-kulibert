@@ -1442,6 +1442,38 @@ export function createSession(api) {
     }
     return bands
   }
+  window.__bertopiaGridCheck = function () {
+    const book = document.querySelector('#sheet[data-panel="crafting"] .book')
+    if (!book) return { rowH: 0, scrollTop: 0, offset: 0, wholeRows: false }
+    const wells = [...book.querySelectorAll('.book-row > .well')]
+    const scrollTop = book.scrollTop
+    if (!wells.length) return { rowH: 0, scrollTop, offset: 0, wholeRows: false }
+    const origin = book.getBoundingClientRect().top
+    const tops = []
+    for (const well of wells) {
+      const rect = well.getBoundingClientRect()
+      if (rect.height < 4) continue
+      const top = rect.top - origin + scrollTop
+      if (!tops.length || top > tops[tops.length - 1] + 6) tops.push(top)
+    }
+    const tools = book.querySelector('.book-tools')
+    const toolsH = tools ? tools.offsetHeight : 0
+    const rests = tops.map((top) => Math.max(0, top - toolsH))
+    let rowH = 0
+    if (tops.length >= 2) {
+      const gaps = []
+      for (let i = 1; i < tops.length; i++) gaps.push(tops[i] - tops[i - 1])
+      gaps.sort((a, b) => a - b)
+      rowH = gaps[gaps.length >> 1]
+    } else rowH = wells[0].getBoundingClientRect().height
+    if (!(rowH > 0)) return { rowH: 0, scrollTop, offset: 0, wholeRows: false }
+    let dist = 1e9
+    for (const rest of rests) dist = Math.min(dist, Math.abs(scrollTop - rest))
+    const mod = scrollTop % rowH
+    const modDist = Math.min(mod, rowH - mod)
+    const offset = Math.round(dist <= modDist ? dist : modDist)
+    return { rowH, scrollTop, offset, wholeRows: offset <= 1 }
+  }
   function fitCraftRows(book) {
     if (!book) return
     const apply = () => {
@@ -1747,6 +1779,7 @@ export function createSession(api) {
     tray.className = 'build-tray'
     const book = document.createElement('div')
     book.className = 'book'
+    book.dataset.snap = 'rows'
     const side = document.createElement('div')
     side.className = 'tray'
     function paintNeeds(host, recipe, st) {
