@@ -175,5 +175,11 @@
   "lbTabClass": "Class",
   "lbTabSchool": "School",
   "lbTabWeek": "This week",
-  "lbMyRank": "My rank"
+  "lbMyRank": "My rank",
+  "lbHelpBtn": "Ayuda",
+  "lbHelpTitle": "Tablas y tus marcas",
+  "lbHelp1": "Busca tu mejor marca en la ficha del juego.",
+  "lbHelp2": "Toca Superar para abrir esa tabla.",
+  "lbHelp3": "Mis mejores eres tú. Clase y Escuela muestran los 10 primeros. Esta semana empieza el lunes.",
+  "lbHelp4": "Un maestro puede ocultar una pestaña o un alias."
 }

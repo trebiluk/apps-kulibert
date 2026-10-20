@@ -31,6 +31,7 @@
       } catch (eWay) {}
       var bar = document.getElementById("theme-color");
       if (bar && colors[theme]) bar.setAttribute("content", colors[theme]);
+
     })();
   </script>
   <link rel="stylesheet" href="/shared/brand/kulinet/shadcn-kulinet-tokens.css?v=2026-09-22-hub-shell-hole"/>
@@ -1623,6 +1624,12 @@
   <script src="/shared/kulibert-prefs.js?v=2026-10-20-leaderboard-stats"></script>
   <style id="hub-polish">
     /* 2026-10-20-leaderboard-stats */
+    #hub-help{position:fixed;inset:0;z-index:82;display:flex;flex-direction:column;gap:.6rem;padding:1rem;background:rgba(5,8,20,.94);color:#e8f7ff}
+    #hub-help[hidden]{display:none !important}
+    #hub-help-close{min-width:44px;min-height:44px;align-self:flex-end;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .95rem/1 Outfit,system-ui,sans-serif}
+    .lb-help-steps{margin:0;padding:0 0 0 1.2rem;display:flex;flex-direction:column;gap:.55rem;font-size:1.05rem}
+    .lb-help-steps li{min-height:44px}
+
     #boards{margin:.4rem 0 .6rem;padding:.55rem;border:1px solid #24506d;border-radius:14px;background:#071018}
     #boards h2{margin:0 0 .35rem;font-size:1rem}
     #boards .lb-bar{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;margin:0 0 .45rem}
@@ -1836,6 +1843,7 @@
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
       <button type="button" id="drawer-staff" data-i18n="staff" aria-expanded="false" aria-controls="hub-drawer-staff">Staff</button>
       <div id="hub-drawer-staff" hidden></div>
+      <button type="button" id="drawer-help" data-i18n="lbHelpBtn">Help</button>
       <button type="button" id="drawer-fine-print">⚖️ Fine Print</button>
     </div>
     <div class="stickies" id="stickies" hidden>
@@ -1917,6 +1925,7 @@
             <li>Hub rev 2026-10-20-p0-a11y-pii — staff alias dropdown + off-list reject (P0); BertyBots canvas name + live region; BertyCAD canvas name; HouseKit stepper labels.</li>
             <li>Hub rev 2026-10-20-leaderboard-stats — hub-wide board service, hub tiles with my best + class record + Beat it, My bests/Class/School/This week tabs.</li>
             <li>Hub rev 2026-10-20-leaderboard-stats — teacher hide alias, reset board, and School tab switch.</li>
+            <li>Hub rev 2026-10-20-leaderboard-stats — help section for leaderboards and your stats.</li>
             <li data-i18n="whatsNewLine">Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.</li>
             <li>Menus and My settings have a Close button. Esc closes them too.</li>
             <li>Tiles show on phones held sideways.</li>
@@ -2355,6 +2364,17 @@
       </div>
       <iframe id="app-frame" title="App" hidden allowfullscreen allow="accelerometer; gyroscope; magnetometer; fullscreen; orientation-lock"></iframe>
     </div>
+    
+    <section id="hub-help" hidden role="dialog" aria-modal="true" aria-labelledby="hub-help-title">
+      <button type="button" id="hub-help-close" aria-label="Close"><span aria-hidden="true">✕ </span><span data-i18n="close">Close</span></button>
+      <h2 id="hub-help-title" data-i18n="lbHelpTitle">Leaderboards and your stats</h2>
+      <ol class="lb-help-steps">
+        <li><span aria-hidden="true">🏁</span> <span data-i18n="lbHelp1">Find your best on the game tile.</span></li>
+        <li><span aria-hidden="true">▶</span> <span data-i18n="lbHelp2">Tap Beat it to open that board.</span></li>
+        <li><span aria-hidden="true">📚</span> <span data-i18n="lbHelp3">My bests is you. Class and School show the top 10. This week starts Monday.</span></li>
+        <li><span aria-hidden="true">🙈</span> <span data-i18n="lbHelp4">A teacher can hide a tab or an alias.</span></li>
+      </ol>
+    </section>
     <div id="fine-print" class="fine-print" hidden role="dialog" aria-modal="true" aria-labelledby="fine-print-title">
       <div class="fine-sheet">
         <button type="button" id="fine-print-close" aria-label="Close"><span aria-hidden="true">✕ </span>Close</button>
@@ -4994,6 +5014,17 @@ document.addEventListener("click", function (event) {
       setInterval(loadSchool, POLL);
       document.addEventListener("visibilitychange", function () {
         if (document.visibilityState === "visible") loadSchool();
+      });
+      var helpBtn = document.getElementById("drawer-help");
+      var helpBox = document.getElementById("hub-help");
+      var helpClose = document.getElementById("hub-help-close");
+      if (helpBtn && helpBox) helpBtn.addEventListener("click", function () {
+        helpBox.hidden = false;
+        if (helpClose) helpClose.focus();
+      });
+      if (helpClose && helpBox) helpClose.addEventListener("click", function () { helpBox.hidden = true; });
+      document.addEventListener("keydown", function (ev) {
+        if (ev.key === "Escape" && helpBox && !helpBox.hidden) helpBox.hidden = true;
       });
     })();
   </script>

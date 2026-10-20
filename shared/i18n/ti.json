@@ -175,5 +175,11 @@
   "lbTabClass": "Class",
   "lbTabSchool": "School",
   "lbTabWeek": "This week",
-  "lbMyRank": "My rank"
+  "lbMyRank": "My rank",
+  "lbHelpBtn": "ሓገዝ",
+  "lbHelpTitle": "ሰሌዳ መራሕቲን ናትካ ሓበሬታን",
+  "lbHelp1": "ዝበለጸ ውጽኢትካ ኣብ ናይ ጸወታ ካርድ ድለ።",
+  "lbHelp2": "ነቲ ሰሌዳ ንምኽፋት ዓወር ጠውቕ።",
+  "lbHelp3": "ናተይ ዝበለጸ ንዓኻ እዩ። ክፍሊን ቤት ትምህርትን 10 ቀዳሞት የርእዩ። እዚ ሰሙን ሰኑይ ይጅምር።",
+  "lbHelp4": "መምህር ታብ ወይ ስም ክሕብእ ይኽእል።"
 }

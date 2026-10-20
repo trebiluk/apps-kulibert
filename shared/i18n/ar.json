@@ -175,5 +175,11 @@
   "lbTabClass": "Class",
   "lbTabSchool": "School",
   "lbTabWeek": "This week",
-  "lbMyRank": "My rank"
+  "lbMyRank": "My rank",
+  "lbHelpBtn": "مساعدة",
+  "lbHelpTitle": "لوحات الصدارة وإحصاؤك",
+  "lbHelp1": "ابحث عن أفضل نتيجة لك على بطاقة اللعبة.",
+  "lbHelp2": "اضغط تغلب عليه لفتح تلك اللوحة.",
+  "lbHelp3": "أفضل نتائجي هي لك. الصف والمدرسة يعرضان أفضل 10. هذا الأسبوع يبدأ يوم الإثنين.",
+  "lbHelp4": "يمكن للمعلم إخفاء تبويب أو اسم مستعار."
 }

@@ -54,6 +54,12 @@
   "lbTabSchool": "School",
   "lbTabWeek": "This week",
   "lbMyRank": "My rank",
+  "lbHelpBtn": "Help",
+  "lbHelpTitle": "Leaderboards and your stats",
+  "lbHelp1": "Find your best on the game tile.",
+  "lbHelp2": "Tap Beat it to open that board.",
+  "lbHelp3": "My bests is you. Class and School show the top 10. This week starts Monday.",
+  "lbHelp4": "A teacher can hide a tab or an alias.",
   "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
   "bbCanvasHelp": "Screen readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -186,12 +192,12 @@
   "gfxFancy": "Fancy",
   "gfxFancyHint": "Corner shade and swaying plants.",
 };
-  var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1 };
+  var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };
   var packs = { en: EN };
   var pending = {};
   var warned = Object.create(null);
   function fileFor(lang) {
-    if (!lang || lang === "simple" || !FILES[lang]) return "en";
+    if (!lang || !FILES[lang]) return "en";
     return lang;
   }
   function current() {

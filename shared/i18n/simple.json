@@ -22,5 +22,11 @@
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
   "moreItem": "More {name}",
-  "hkStepperHelp": "Minus and plus say which item they change."
+  "hkStepperHelp": "Minus and plus say which item they change.",
+  "lbHelpBtn": "Help",
+  "lbHelpTitle": "Boards and your stats",
+  "lbHelp1": "See your best on the game tile.",
+  "lbHelp2": "Tap Beat it. That board opens.",
+  "lbHelp3": "My bests is you. Class and School show 10 names. This week starts Monday.",
+  "lbHelp4": "A teacher can hide a tab or a name."
 }
