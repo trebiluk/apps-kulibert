@@ -186,5 +186,8 @@
   "rfTeachGel": "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
   "rfTeachRate": "Umuvuduko = ingano itemba buri segonda",
   "rfHelpLesson": "Soma umurongo w'isomo iyo utsinze.",
-  "testModeHelp": "Uburyo bw'igerageza (abakozi gusa): jya ku ipaji yo gutsinda cyangwa gutsindwa. Amanota ajya ku kibaho cya TEST."
+"testModeHelp": "Uburyo bw'igerageza (abakozi gusa): jya ku ipaji yo gutsinda cyangwa gutsindwa. Amanota ajya ku kibaho cya TEST.",
+  "rfHelpFewer": "Gerageza gutsinda n'imihanda mike.",
+  "rfNewBest": "Agahigo gashya!",
+  "rfTryFewer": "Gerageza nkeya"
 }

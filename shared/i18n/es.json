@@ -186,5 +186,8 @@
   "rfTeachGel": "Líquido espeso (alta viscosidad) fluye más lento",
   "rfTeachRate": "Caudal = cuánto se vierte cada segundo",
   "rfHelpLesson": "Lee la línea de la lección al ganar.",
-  "testModeHelp": "Modo de prueba (solo personal): salta a la pantalla de ganar o perder. Los puntos van al tablero TEST."
+"testModeHelp": "Modo de prueba (solo personal): salta a la pantalla de ganar o perder. Los puntos van al tablero TEST.",
+  "rfHelpFewer": "Intenta ganar con menos rampas.",
+  "rfNewBest": "¡Nuevo récord!",
+  "rfTryFewer": "Prueba con menos"
 }

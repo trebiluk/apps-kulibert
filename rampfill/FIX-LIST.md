@@ -2,6 +2,7 @@
 Stage 6. Version locked: RF 1.0.5.
 
 - [x] **RF 1.0.5 ITEM 1:** The clear card shows one lesson line and an icon. Level 1 says slope. Level 4 says viscosity. Levels 2 and 5 say flow rate. Help tells you to read that line.
+- [x] **RF 1.0.5 ITEM 2:** A clear saves the fewest ramps for this alias on this Chromebook. The card says Best: N ramps. A lower clear shows New best! with an icon and words. Try for fewer starts the level again.
 
 Stage 5. Version locked: RF 1.0.4.
 
