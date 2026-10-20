@@ -39,6 +39,7 @@
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
       whats: "RF 1.0.3 — Cup Stack has its own tile, fresh levels start clean, and your progress is saved!",
       levels: "Levels", home: "Home",
+      progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
       helpPour: "Press Pour. Grains (water later) slide into the cup.",
@@ -87,6 +88,7 @@
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
       whats: "RF 1.0.3 — Cup Stack має власну плитку, нові рівні починаються чисто, а твій прогрес зберігається!",
       levels: "Рівні", home: "Дім",
+      progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
       helpPour: "Натисни Лий. Зерна (вода пізніше) їдуть у чашку.",
@@ -134,6 +136,7 @@
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
       whats: "RF 1.0.3 — У Cup Stack своя плитка, новые уровни начинаются чисто, а твой прогресс сохраняется!",
       levels: "Уровни", home: "Дом",
+      progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
       helpPour: "Нажми Лей. Зёрна (вода позже) едут в чашку.",
@@ -181,6 +184,7 @@
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
       whats: "RF 1.0.3 — ¡Cup Stack tiene su propio botón, los niveles empiezan limpios y tu progreso se guarda!",
       levels: "Niveles", home: "Inicio",
+      progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
       helpPour: "Pulsa Vierte. Los granos (el agua, más tarde) bajan a la taza.",
@@ -228,6 +232,7 @@
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
       whats: "RF 1.0.3 — للعبة Cup Stack مربّع خاص، والمراحل الجديدة تبدأ نظيفة، وتقدّمك محفوظ!",
       levels: "المراحل", home: "البداية",
+      progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
       helpPour: "اضغط اسكب. الحبوب (الماء لاحقًا) تنزلق إلى الكوب.",
@@ -275,6 +280,7 @@
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
       whats: "RF 1.0.3 — Cup Stack کاشی خودش را دارد، مرحله‌های تازه پاک شروع می‌شوند و پیشرفتت ذخیره می‌شود!",
       levels: "مرحله‌ها", home: "خانه",
+      progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
       helpPour: "بریز را بزن. دانه‌ها (آب بعداً) به پیاله می‌لغزند.",
@@ -322,6 +328,7 @@
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
       whats: "RF 1.0.3 — Cup Stack ifite akazu kayo, ingero nshya zitangira zisukuye, kandi aho ugeze harabikwa!",
       levels: "Ingero", home: "Ahabanza",
+      progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
       helpPour: "Kanda Suka. Ibinyanye (amazi nyuma) bigera mu gikombe.",
@@ -369,6 +376,7 @@
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
       whats: "RF 1.0.3 — Cup Stack ናይ ገዛእ ርእሱ ሰሌዳ ኣለዎ፣ ሓደስቲ ደረጃታት ጽሩያት ይጅምሩ፣ ምዕባለኻ ድማ ይዕቀብ!",
       levels: "ደረጃታት", home: "መጀመርታ",
+      progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
       helpPour: "ቀድሕ ጠውቕ። እኽሊ (ማይ ድሕሪት) ናብ ኽባያ ይንሸራተት።",
@@ -425,6 +433,8 @@
   var stackReturnEnd = false;
   var stackFromHome = false;
   var cups = 0;
+  var unlocked = 1;
+  var levelStars = [0, 0, 0, 0, 0];
   var mass = 1;
   var spawnGap = 0.045;
   var fps = 60;
@@ -511,6 +521,7 @@
     paintStatus();
     paintCups();
     paintRank();
+    paintLevels();
   }
   function amountWord(amount) {
     var r = amount / LINE;
@@ -579,11 +590,96 @@
   function shortChrome() {
     try { return window.matchMedia("(max-height: 480px)").matches; } catch (e) { return false; }
   }
-  function loadCups() {
-    try { cups = Math.max(0, parseInt(localStorage.getItem("rampfill-cups") || "0", 10) || 0); } catch (e) { cups = 0; }
+  function loadProgress() {
+    unlocked = 1;
+    levelStars = [0, 0, 0, 0, 0];
+    sessionStars = [];
+    cups = 0;
+    try {
+      var raw = localStorage.getItem("rampfill_progress");
+      if (!raw) {
+        cups = Math.max(0, parseInt(localStorage.getItem("rampfill-cups") || "0", 10) || 0);
+        return;
+      }
+      var data = JSON.parse(raw);
+      if (!data || typeof data !== "object") return;
+      unlocked = Math.max(1, Math.min(5, data.unlocked | 0 || 1));
+      if (Array.isArray(data.stars)) {
+        for (var i = 0; i < 5; i++) levelStars[i] = Math.max(0, Math.min(3, data.stars[i] | 0 || 0));
+      }
+      cups = Math.max(0, data.cups | 0 || 0);
+      if (Array.isArray(data.sessionStars)) {
+        sessionStars = data.sessionStars.map(function (n) { return Math.max(0, Math.min(3, n | 0 || 0)); }).slice(0, 40);
+      }
+    } catch (e) {}
   }
-  function saveCups() {
-    try { localStorage.setItem("rampfill-cups", String(cups)); } catch (e) {}
+  function saveProgress() {
+    try {
+      localStorage.setItem("rampfill_progress", JSON.stringify({
+        unlocked: unlocked,
+        stars: levelStars.slice(0, 5),
+        cups: cups,
+        sessionStars: sessionStars.slice(0, 40)
+      }));
+      localStorage.setItem("rampfill-cups", String(cups));
+    } catch (e) {}
+  }
+  function saveCups() { saveProgress(); }
+  function markProgress() {
+    var nums = [];
+    for (var i = 0; i < cupList.length; i++) if (cupStars[i]) nums.push(cupStars[i]);
+    if (nums.length) {
+      var best = nums[0];
+      for (var j = 1; j < nums.length; j++) if (nums[j] < best) best = nums[j];
+      if (best > (levelStars[level - 1] || 0)) levelStars[level - 1] = best;
+    }
+    if (level < 5) unlocked = Math.max(unlocked, level + 1);
+    saveProgress();
+    paintLevels();
+  }
+  function paintLevels() {
+    var list = document.getElementById("level-list");
+    if (!list) return;
+    list.replaceChildren();
+    for (var i = 1; i <= 5; i++) {
+      var li = document.createElement("li");
+      var stars = levelStars[i - 1] || 0;
+      var open = i <= unlocked;
+      if (open) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = t("lv" + i) + " — " + (stars ? starsWord(stars) : t("openWord"));
+        btn.addEventListener("click", (function (n) {
+          return function () {
+            toggleMenu(false);
+            stackFromHome = false;
+            if (mode === "stack") leaveStack();
+            showPlay();
+            setLevel(n);
+          };
+        })(i));
+        li.appendChild(btn);
+      } else li.textContent = t("lv" + i) + " — " + t("locked");
+      list.appendChild(li);
+    }
+  }
+  function doReset() {
+    unlocked = 1;
+    levelStars = [0, 0, 0, 0, 0];
+    cups = 0;
+    sessionStars = [];
+    try {
+      localStorage.removeItem("rampfill_progress");
+      localStorage.removeItem("rampfill-cups");
+    } catch (e) {}
+    saveProgress();
+    var ask = document.getElementById("reset-ask");
+    if (ask) ask.hidden = true;
+    paintCups();
+    paintLevels();
+    toggleMenu(false);
+    level = 1;
+    showHome();
   }
   function board() {
     try { return JSON.parse(localStorage.getItem("rampfill-board") || "[]"); } catch (e) { return []; }
@@ -1173,6 +1269,7 @@
     if (all && !filledOnce) {
       filledOnce = true;
       sawFill = true;
+      markProgress();
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
@@ -1247,6 +1344,7 @@
     stackFromHome = false;
     if (mode === "stack") leaveStack();
     showPlay();
+    setLevel(unlocked);
   }
   function openHomeStack() {
     stackFromHome = true;
@@ -2126,6 +2224,13 @@
   document.getElementById("resume-btn").addEventListener("click", function () { setPaused(false); });
   document.getElementById("menu-btn").addEventListener("click", function () { toggleMenu(true); paintRank(); });
   document.getElementById("menu-close").addEventListener("click", function () { toggleMenu(false); });
+  document.getElementById("start-over").addEventListener("click", function () {
+    document.getElementById("reset-ask").hidden = false;
+  });
+  document.getElementById("reset-yes").addEventListener("click", doReset);
+  document.getElementById("reset-no").addEventListener("click", function () {
+    document.getElementById("reset-ask").hidden = true;
+  });
   document.getElementById("read-btn").addEventListener("click", readAloud);
   document.getElementById("alias").addEventListener("change", function (e) { setAlias(e.target.value); });
   canvas.addEventListener("pointerdown", onDown);
@@ -2162,7 +2267,7 @@
   if (window.KulibertPrefs && window.KulibertPrefs.on) window.KulibertPrefs.on(paintText);
   new MutationObserver(paintText).observe(document.documentElement, { attributes: true, attributeFilter: ["data-kp-lang", "data-kp-motion"] });
   bootLangs();
-  loadCups();
+  loadProgress();
   paintText();
   layout();
   ghostUntil = performance.now() + 5000;
@@ -2186,7 +2291,7 @@
       return {
         level: level, fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
         pouring: pouring, live: live.length, words: cupWords(), paused: paused, ended: ended,
-        strokes: strokes.length, cups: cups, stars: cupStars.slice(), sessionStars: sessionStars.slice(), mass: mass, leak: leakKind, mat: matName(),
+        strokes: strokes.length, cups: cups, stars: cupStars.slice(), sessionStars: sessionStars.slice(), unlocked: unlocked, levelStars: levelStars.slice(), mass: mass, leak: leakKind, mat: matName(),
         mode: mode, stack: stack.length, stackMsg: stackMsg, tipped: stack.some(function (c) { return c.tipped; }), caught: catchBits.length > 0 && catchBits.every(function (b) { return b.done; }),
         stackBoxes: stack.map(function (c) { return { x: Math.round(c.x), y: Math.round(c.y), w: Math.round(c.w), h: Math.round(c.h), tip: Math.round(c.tip * 100) }; }),
         spawnLeft: spawnLeft,
