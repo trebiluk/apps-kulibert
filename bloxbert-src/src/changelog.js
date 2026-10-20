@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.282', date: '2026-10-20', lines: {
+    en: ['Close only closes the Woodshop, and Help explains lamps and the Woodshop.'],
+    uk: ['«Закрити» закриває лише Майстерню, а Довідка пояснює лампи та Майстерню.'],
+    ru: ['«Закрыть» закрывает только Мастерскую, а Справка объясняет лампы и Мастерскую.'],
+    es: ['«Cerrar» solo cierra el Taller, y la Ayuda explica las lámparas y el Taller.'],
+    ar: ['زر «إغلاق» يغلق الورشة فقط، والمساعدة تشرح المصابيح والورشة.'],
+    'fa-AF': ['دکمهٔ «بستن» فقط کارگاه را می‌بندد، و راهنما چراغ‌ها و کارگاه را توضیح می‌دهد.'],
+    rw: ['«Funga» ifunga Ububaji gusa, kandi Ubufasha busobanura amatara n\'Ububaji.'],
+    ti: ['«ዕጸው» ነቲ ቤት ዕዮ ጥራይ ይዓጹ፣ ሓገዝ ድማ ብዛዕባ መብራህትን ቤት ዕዮን የብርህ።'],
+  }},
+
   { v: '2.5.279', date: '2026-10-20', lines: {
     en: ['Lamps you get show up in your Bag, and the Woodshop opens on the first tap.'],
     uk: ['Лампи, які ти отримуєш, з\'являються в сумці, і майстерня відкривається з першого дотику.'],

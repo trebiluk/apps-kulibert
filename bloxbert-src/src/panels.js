@@ -352,6 +352,8 @@ export function mountPanels(api) {
         keys.textContent = api.t(touch ? 'keysHintTouch' : 'keysHint')
         g.append(keys)
         const p = document.createElement('p'); p.className = 'gnote'; p.textContent = api.t('helpBody'); g.append(p)
+        const lamps = document.createElement('p'); lamps.className = 'gnote'; lamps.textContent = api.t('helpLamps'); g.append(lamps)
+        const shop = document.createElement('p'); shop.className = 'gnote'; shop.textContent = api.t('helpWoodshop'); g.append(shop)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
         const lines = api.notes ? api.notes() : []
@@ -429,9 +431,10 @@ export function mountPanels(api) {
   }
   function openRoot() { stack = ['menu']; open('menu') }
   back.addEventListener('click', backOne)
-  sheetX.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation() })
-  sheetX.addEventListener('pointerup', (e) => { e.preventDefault(); e.stopPropagation() })
-  sheetX.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); close() })
+  const eat = (e) => { e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation() }
+  sheetX.addEventListener('pointerdown', eat, true)
+  sheetX.addEventListener('pointerup', eat, true)
+  sheetX.addEventListener('click', (e) => { eat(e); close() }, true)
   sheet.addEventListener('pointerdown', (e) => {
     if (sheet.hidden || performance.now() - openedAt < 400) return
     const t = e.target

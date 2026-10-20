@@ -11044,10 +11044,23 @@ if (location.search.includes('proof=1')) {
       return this.bagCounts()
     },
     hangTools() {
-      const key = openMachineKey
+      const key = openMachineKey || '60,5,60'
       const rec = stations && stations.ensureShop ? stations.ensureShop(key) : null
       if (rec) rec.wall = ['safetyGlasses', 'measuringTape', 'handSaw', 'hammer']
+      const body = document.getElementById('sheet-body')
+      if (body && stations && stations.paintWoodshop) stations.paintWoodshop(body, key)
       return rec && rec.wall ? rec.wall.filter(Boolean).length : 0
+    },
+    placeHeld() {
+      const item = session && session.selectedItem ? session.selectedItem() : ''
+      if (!item) return false
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const x = Math.floor(p[0]) + 1, y = Math.floor(p[1]), z = Math.floor(p[2])
+      const id = item === 'floorLamp' ? 1100 : item === 'wallLamp' ? 1102 : item === 'woodshop' ? ID.woodshop : 0
+      if (!id) return false
+      edit(x, y, z, id)
+      if (session && session.spend) session.spend(item, 1)
+      return true
     },
     lampState() {
       const out = []
