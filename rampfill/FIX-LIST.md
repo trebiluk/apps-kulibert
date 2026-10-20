@@ -2,6 +2,7 @@
 Stage 4. Version locked: RF 1.0.3.
 
 - [x] **RF 1.0.3 ITEM 1:** Home shows two tiles, Levels and Cup Stack. One tap on Cup Stack opens stacking. The in-level Cup Stack button stays.
+- [x] **RF 1.0.3 ITEM 2:** A fresh level, Clear, and Retry show no spill text. "can you fill more?" waits until a cup is filled.
 
 - [x] **RF 1.0.0** shipped (aa3602a). L1 grains ramp still fills, spills, and retries with the ramp kept.
 - [x] **RF 1.0.1** shipped (c989425). L1 to L3 stay. Sideways cup, two cups, first water leak.

@@ -14,6 +14,7 @@
       ghost: "Draw a ramp like this", clearAsk: "Erase all ramps?", yes: "Yes", no: "No",
       grains: "Grains", water: "Water", gel: "Gel", blockWord: "Block", wallWord: "Wall", fillTo: "fill to here",
       empty: "Cup: empty", little: "Cup: a little in", half: "Cup: almost half full", moreHalf: "Cup: more than half", almost: "Cup: almost full", done: "Cup: filled to the line",
+      startHint: "Draw, then pour.",
       noSpill: "nothing spilled", bitSpill: "a little spilled", someSpill: "some spilled",
       starWord: "star", starsWord: "stars",
       stackTile: "Cup Stack", stackBack: "Ramps",
@@ -65,6 +66,7 @@
       ghost: "Намалюй схил ось так", clearAsk: "Стерти всі схили?", yes: "Так", no: "Ні",
       grains: "Зерна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лий до сюди",
       empty: "Чашка: порожня", little: "Чашка: трохи є", half: "Чашка: майже половина", moreHalf: "Чашка: більше половини", almost: "Чашка: майже повна", done: "Чашка: до лінії",
+      startHint: "Намалюй, потім сип.",
       noSpill: "нічого не розлилось", bitSpill: "трохи розлилось", someSpill: "дещо розлилось",
       starWord: "зірка", starsWord: "зірки",
       stackTile: "Стос чашок", stackBack: "Схили",
@@ -111,6 +113,7 @@
       ghost: "Нарисуй склон вот так", clearAsk: "Стереть все склоны?", yes: "Да", no: "Нет",
       grains: "Зёрна", water: "Вода", gel: "Гель", blockWord: "Блок", fillTo: "лей до сюда",
       empty: "Чашка: пустая", little: "Чашка: чуть-чуть", half: "Чашка: почти половина", moreHalf: "Чашка: больше половины", almost: "Чашка: почти полная", done: "Чашка: до линии",
+      startHint: "Нарисуй, потом сыпь.",
       noSpill: "ничего не пролилось", bitSpill: "немного пролилось", someSpill: "часть пролилась",
       starWord: "звезда", starsWord: "звёзды",
       stackTile: "Стопка чашек", stackBack: "Склоны",
@@ -157,6 +160,7 @@
       ghost: "Dibuja una rampa así", clearAsk: "¿Borrar todas las rampas?", yes: "Sí", no: "No",
       grains: "Granos", water: "Agua", gel: "Gel", blockWord: "Bloque", fillTo: "llena hasta aquí",
       empty: "Taza: vacía", little: "Taza: un poquito", half: "Taza: casi la mitad", moreHalf: "Taza: más de la mitad", almost: "Taza: casi llena", done: "Taza: hasta la línea",
+      startHint: "Dibuja y luego vierte.",
       noSpill: "nada se derramó", bitSpill: "un poco se derramó", someSpill: "algo se derramó",
       starWord: "estrella", starsWord: "estrellas",
       stackTile: "Torre de tazas", stackBack: "Rampas",
@@ -203,6 +207,7 @@
       ghost: "ارسم منحدرًا هكذا", clearAsk: "مسح كل المنحدرات؟", yes: "نعم", no: "لا",
       grains: "حبوب", water: "ماء", gel: "هلام", blockWord: "كتلة", fillTo: "املأ إلى هنا",
       empty: "الكوب: فارغ", little: "الكوب: قليل", half: "الكوب: قريب من النصف", moreHalf: "الكوب: أكثر من النصف", almost: "الكوب: قريب من الامتلاء", done: "الكوب: حتى الخط",
+      startHint: "ارسم، ثم صبّ.",
       noSpill: "لا انسكاب", bitSpill: "انسكاب قليل", someSpill: "بعض الانسكاب",
       starWord: "نجمة", starsWord: "نجوم",
       stackTile: "كومة الأكواب", stackBack: "المنحدرات",
@@ -249,6 +254,7 @@
       ghost: "یک سرازیری این‌طور بکش", clearAsk: "همه سرازیری‌ها پاک شود؟", yes: "بله", no: "نه",
       grains: "دانه‌ها", water: "آب", gel: "ژل", blockWord: "بلوک", fillTo: "تا اینجا پر کن",
       empty: "پیاله: خالی", little: "پیاله: کمی", half: "پیاله: نزدیک نیمه", moreHalf: "پیاله: بیشتر از نیمه", almost: "پیاله: نزدیک پر", done: "پیاله: تا خط",
+      startHint: "بکش، بعد بریز.",
       noSpill: "چیزی نریخت", bitSpill: "کمی ریخت", someSpill: "مقداری ریخت",
       starWord: "ستاره", starsWord: "ستاره‌ها",
       stackTile: "دسته پیاله", stackBack: "سرازیری‌ها",
@@ -295,6 +301,7 @@
       ghost: "Shushanya umuhengamo utya", clearAsk: "Siba imihengamo yose?", yes: "Yego", no: "Oya",
       grains: "Ibinyanye", water: "Amazi", gel: "Jeli", blockWord: "Igipimo", fillTo: "uzuza kugeza hano",
       empty: "Igikombe: kirimo ubusa", little: "Igikombe: gito", half: "Igikombe: hafi kimwe cya kabiri", moreHalf: "Igikombe: kirenze kimwe cya kabiri", almost: "Igikombe: hafi kuzura", done: "Igikombe: kugeza ku murongo",
+      startHint: "Shushanya, hanyuma usuke.",
       noSpill: "ntacyasutse", bitSpill: "gito cyasutse", someSpill: "bimwe byasutse",
       starWord: "inyenyeri", starsWord: "inyenyeri",
       stackTile: "Igipfunsi cy'ibikombe", stackBack: "Imihengamo",
@@ -341,6 +348,7 @@
       ghost: "ቁልቁለት ከምዚ ስኣል", clearAsk: "ኩሎም ቁልቁለታት ይደምሰሱ?", yes: "እወ", no: "ኣይፋል",
       grains: "እኽሊ", water: "ማይ", gel: "ጄል", blockWord: "መቆራጽ", fillTo: "ክሳብ ኣብዚ ምላእ",
       empty: "ኽባያ: ባዶ", little: "ኽባያ: ቁሩብ", half: "ኽባያ: ዳርጋ ፍርቂ", moreHalf: "ኽባያ: ልዕሊ ፍርቂ", almost: "ኽባያ: ዳርጋ መሊኡ", done: "ኽባያ: ክሳብ መስመር",
+      startHint: "ስዓል፣ ድሕሪኡ ኣፍስስ።",
       noSpill: "ዝፈሰሰ የለን", bitSpill: "ቁሩብ ፈሲሱ", someSpill: "ገለ ፈሲሱ",
       starWord: "ኮኾብ", starsWord: "ኮኾባት",
       stackTile: "ዕኹል ኽባያት", stackBack: "ቁልቁለታት",
@@ -526,15 +534,21 @@
     for (var i = 0; i < cupList.length; i++) if (cupStars[i]) parts.push(starsWord(cupStars[i]));
     return parts.length ? " • " + parts.join(" • ") : "";
   }
+  function spillBit() { return spill > 0 ? " • " + spillWord() : ""; }
+  function freshHint() {
+    if (spill > 0 || pouring || live.length) return "";
+    if ((fills[0] || 0) > 0 || (fills[1] || 0) > 0) return "";
+    return " • " + t("startHint");
+  }
   function cupWords() {
     if (level === 5 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("pathNext");
     if (level === 2 && fills[0] >= LINE && fills[1] < LINE && !pouring && live.length === 0) return t("leftNext");
     if (level === 2 || level === 5) {
       var a = amountWord(fills[0]).replace(/^[^:]+:\s*/, "");
       var b = amountWord(fills[1]).replace(/^[^:]+:\s*/, "");
-      return t("left") + ": " + a + " • " + t("right") + ": " + b + " • " + spillWord() + starBit();
+      return t("left") + ": " + a + " • " + t("right") + ": " + b + spillBit() + freshHint() + starBit();
     }
-    return amountWord(fills[0] || 0) + " • " + spillWord() + starBit();
+    return amountWord(fills[0] || 0) + spillBit() + freshHint() + starBit();
   }
   function spillSentence() {
     if (leakKind === "wrong") return t("wrong");
@@ -1171,6 +1185,7 @@
     pouring = false;
     spawnLeft = 0;
     filledOnce = false;
+    sawFill = false;
     ghostCup = 0;
     var bar = document.getElementById("donebar");
     if (bar) bar.hidden = true;
@@ -1180,6 +1195,7 @@
     drawing = null;
     erasing = false;
     paintStatus();
+    paintCups();
   }
   function stackColumn() {
     var avail = Math.max(48, viewH - 36);
@@ -1557,6 +1573,7 @@
     strokes = [];
     document.getElementById("ask").hidden = true;
     syncModal();
+    clearFills();
   }
   function setPaused(on) {
     if (atHome()) return;
