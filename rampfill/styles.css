@@ -162,6 +162,9 @@ body.at-ref #pause-btn { visibility: hidden; }
 }
 .ref-clock {
   margin: 0;
+  position: sticky;
+  top: 0;
+  z-index: 3;
   text-align: center;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -177,6 +180,38 @@ body.at-ref #pause-btn { visibility: hidden; }
   font-size: clamp(92px, 26vmin, 210px);
   border-width: 14px;
 }
+.ref-teams, .ref-picks { display: flex; flex-wrap: wrap; gap: 8px; }
+.ref-teams button, .ref-picks button {
+  min-width: 48px;
+  min-height: 56px;
+  flex: 1 1 90px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 14px;
+  border: 3px solid var(--ink);
+  background: var(--sand);
+  color: var(--ink);
+  font-weight: 800;
+  padding: 6px 8px;
+}
+.ref-picks button { flex-direction: column; gap: 0; min-width: 64px; }
+.ref-picks b { font-size: 2rem; line-height: 1; }
+.ref-teams button[aria-pressed="true"], .ref-picks button[aria-pressed="true"] {
+  outline: 4px solid var(--ink);
+  outline-offset: 0;
+}
+.mark { width: 22px; height: 22px; flex: none; display: inline-block; }
+.m1 { background: #8c3a2f; border-radius: 50%; }
+.m2 { background: #1f3a34; }
+.m3 { width: 0; height: 0; background: none; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #e0a106; }
+.m4 { width: 16px; height: 16px; background: #1a120c; transform: rotate(45deg); }
+.ref-board h2 { margin: 0; font-size: clamp(28px, 6vw, 48px); line-height: 1.1; }
+.ref-diagram svg { width: 100%; height: auto; max-height: 220px; display: block; background: #f3e6c8; border: 3px solid var(--ink); border-radius: 16px; }
+.ref-need { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; font-weight: 800; font-size: 1.2rem; }
+.need-cup { width: 36px; height: 30px; flex: none; }
+.need-n { font-size: 0.85rem; font-weight: 700; opacity: 0.75; }
 .ref-modes, .ref-controls {
   display: flex;
   flex-wrap: wrap;
