@@ -4642,20 +4642,23 @@ body.mu237.tab-viz .desk { display: flex !important; flex-direction: column !imp
 body.mu237.tab-viz .out { order: -1 !important; flex: 1 1 auto !important; min-height: 60vh !important; }
 body.mu237 #scenes {
   display: flex !important;
+  flex-direction: row !important;
   flex-wrap: nowrap !important;
-  gap: 8px !important;
+  gap: 6px !important;
   overflow-x: auto;
   direction: inherit;
 }
+html[dir="rtl"] body.mu237 #scenes { direction: rtl !important; }
 body.mu237 #scenes .btn {
   display: flex !important;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  min-width: 72px;
+  min-width: 60px !important;
+  width: auto !important;
   min-height: 44px !important;
   height: auto !important;
-  flex: 1 1 72px;
+  flex: 1 1 60px !important;
   padding: 0 !important;
   background: #10203f;
   color: #e8f7ff;
@@ -4673,9 +4676,9 @@ body.mu237 #scenes .btn:focus-visible {
   outline: 3px solid #22d3ee;
   outline-offset: 2px;
 }
-body.mu237.viz-strip .out { display: block !important; height: 84px !important; min-height: 84px !important; max-height: 84px !important; overflow: hidden !important; }
-body.mu237.viz-strip .stage-wrap,
-body.mu237.viz-strip canvas#viz { height: 84px !important; max-height: 84px !important; min-height: 84px !important; }
+body.mu237.viz-strip:not(.tab-viz):not(.show) .out { display: block !important; height: 84px !important; min-height: 84px !important; max-height: 84px !important; overflow: hidden !important; }
+body.mu237.viz-strip:not(.tab-viz):not(.show) .stage-wrap,
+body.mu237.viz-strip:not(.tab-viz):not(.show) canvas#viz { height: 84px !important; max-height: 84px !important; min-height: 84px !important; }
 @media (orientation: landscape) and (max-height: 500px) {
   body.mu237.tab-viz .out,
   body.mu237.tab-viz .stage-wrap,
@@ -4685,5 +4688,91 @@ body.mu237.viz-strip canvas#viz { height: 84px !important; max-height: 84px !imp
     max-height: none !important;
   }
   body.mu237.tab-viz .transport { z-index: 4; }
+}
+body.mu237.tab-viz #viz-help,
+body.mu237.tab-viz #viz-mic-status {
+  display: block !important;
+  margin: 6px 0 !important;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.35;
+}
+body.mu237.tab-viz #mic-lights {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 44px !important;
+  min-width: 44px !important;
+  height: auto !important;
+  width: auto !important;
+  max-width: 100%;
+  margin: 8px 0 !important;
+  padding: 8px 12px !important;
+  background: #10203f !important;
+  color: #e8f7ff !important;
+  border: 1px solid #67e8f9 !important;
+  border-radius: 12px !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+}
+body.mu237.tab-viz #mic-lights [data-mu] {
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  color: #e8f7ff !important;
+}
+body.mu237.tab-viz #mic-lights:focus-visible {
+  outline: 3px solid #22d3ee !important;
+  outline-offset: 2px;
+}
+body.mu237.tab-viz #mic-lights[aria-pressed="true"] {
+  box-shadow: inset 0 -3px 0 #22d3ee;
+}
+body.mu237 #scenes .swatch-word { white-space: nowrap; }
+body.mu237.tab-viz .out,
+body.mu237.show .out {
+  height: auto !important;
+  max-height: none !important;
+}
+body.mu237.tab-viz .stage-wrap,
+body.mu237.show .stage-wrap,
+body.mu237.tab-viz canvas#viz,
+body.mu237.show canvas#viz {
+  height: 100% !important;
+  max-height: none !important;
+}
+@media (min-width: 900px) and (min-height: 600px) {
+  body.mu237.tab-viz .out,
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz,
+  body.mu237.show .out,
+  body.mu237.show .stage-wrap,
+  body.mu237.show canvas#viz {
+    min-height: 60vh !important;
+  }
+}
+@media (min-width: 900px) and (min-height: 600px),
+       (orientation: landscape) and (max-height: 500px) {
+  body.mu237.tab-viz .out,
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz,
+  body.mu237.show .out,
+  body.mu237.show .stage-wrap,
+  body.mu237.show canvas#viz {
+    height: 60vh !important;
+    min-height: 60vh !important;
+    max-height: none !important;
+  }
+}
+@media (max-width: 500px) and (orientation: portrait) {
+  body.mu237.tab-viz .out,
+  body.mu237.tab-viz .stage-wrap,
+  body.mu237.tab-viz canvas#viz {
+    height: auto !important;
+    min-height: 220px !important;
+    max-height: none !important;
+  }
 }
 

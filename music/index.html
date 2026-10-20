@@ -20,7 +20,7 @@
   <link rel="icon" type="image/svg+xml" href="./mark.svg"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <link rel="stylesheet" href="/shared/kulibert-bar.css?v=2026-10-05-plate"/>
-  <link rel="stylesheet" href="./styles.css?v=mu2368c"/>
+  <link rel="stylesheet" href="./styles.css?v=mu2368d"/>
 </head>
 <body class="mu237 tab-tap">
   <p id="mu-chip" class="mu-chip"></p>
@@ -428,6 +428,9 @@
       </div>
       <div id="lights-pane">
         <div id="scenes" class="looks" aria-label="Pictures"></div>
+        <p id="viz-help" class="hint" data-mu="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
+        <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
+        <p id="viz-mic-status" class="hint" aria-live="polite"></p>
         <details class="more-box">
           <summary data-mu="changePicture">Change the picture</summary>
           <p class="hint">Three layers. Each one can have its own color.</p>
@@ -604,7 +607,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu2368b"></script>
-  <script src="./app.js?v=mu2368c"></script>
+  <script src="./strings.js?v=mu2368d"></script>
+  <script src="./app.js?v=mu2368d"></script>
 </body>
 </html>

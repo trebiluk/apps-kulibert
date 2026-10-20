@@ -185,6 +185,9 @@
     step: -1,
     timer: 0,
     bins: new Uint8Array(64),
+    micAnalyser: null,
+    micPending: false,
+    micStatusKey: "",
     kick: false,
     snare: false,
     mode: "notes",
@@ -2249,6 +2252,7 @@
     else if (tab === "viz") chooseWorkspace("lights");
     state.tabLock = null;
     paintTabs(tab);
+    fitViz();
     if (stageApi && stageApi.kick) stageApi.kick();
     if (stageApi && stageApi.resize) stageApi.resize();
     if (tab === "viz" || document.body.classList.contains("show")) vizPulse();
@@ -5725,6 +5729,13 @@
         if (word) word.textContent = label;
       }
     });
+    const micBtnLive = $("mic-lights");
+    if (micBtnLive) {
+      const micWord = mu("micLights") || "Mic lights";
+      micBtnLive.setAttribute("aria-label", micWord);
+      micBtnLive.setAttribute("title", micWord);
+    }
+    if (state.micStatusKey) setMicStatus(state.micStatusKey);
     paintAlong();
     document.querySelectorAll("#gestures .btn").forEach((btn) => { if (btn.dataset.gesture) btn.textContent = gestureWord(btn.dataset.gesture); });
     document.querySelectorAll("#band-loops .btn").forEach((btn) => {
@@ -6041,6 +6052,7 @@
       const onViz = document.body.classList.contains("tab-viz") || document.body.classList.contains("show");
       const strip = document.body.classList.contains("viz-strip");
       const live = onViz || (strip && state.playing);
+      const micDrives = !!state.micAnalyser && (document.body.classList.contains("tab-viz") || document.body.classList.contains("show"));
       const gear = Object.assign({}, state.gear);
       if (lowDevice) gear.count = Math.min(gear.count || 12, 12);
       if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
@@ -6049,15 +6061,15 @@
         gear.trail = 0;
       }
       return {
-        pause: !live || document.hidden,
-        playing: state.playing && live,
+        pause: document.hidden || !(live || micDrives),
+        playing: (state.playing && live) || micDrives,
         look: state.look,
         layers: state.layers,
         rgb: state.rgb && !window.matchMedia("(prefers-reduced-motion: reduce)").matches,
         wall: state.wall,
         gear: gear,
-        bins: state.bins,
-        analyser: state.micAnalyser || null,
+        bins: micDrives ? null : state.bins,
+        analyser: micDrives ? state.micAnalyser : null,
         kick: state.kick,
         snare: state.snare,
         playhead: state.step,
@@ -6090,4 +6102,98 @@
   document.querySelectorAll(".pen .btn.on").forEach((el) => el.setAttribute("aria-pressed", "true"));
   document.documentElement.classList.add("dj-ready");
   if (window.__djMeasure) window.__djMeasure();
+
+  let lightStream = null;
+  let lightCtx = null;
+  let lightToken = 0;
+  function setMicStatus(key) {
+    state.micStatusKey = key || "";
+    const line = $("viz-mic-status");
+    if (!line) return;
+    line.textContent = key ? (mu(key) || "") : "";
+  }
+  function releaseLightTracks() {
+    if (lightStream) lightStream.getTracks().forEach((track) => { try { track.stop(); } catch (err) {} });
+    lightStream = null;
+    if (lightCtx) { try { lightCtx.close(); } catch (err) {} }
+    lightCtx = null;
+    state.micAnalyser = null;
+  }
+  function stopMic() {
+    lightToken += 1;
+    state.micPending = false;
+    releaseLightTracks();
+    const btn = $("mic-lights");
+    if (btn) btn.setAttribute("aria-pressed", "false");
+    setMicStatus("micOff");
+    if (stageApi && stageApi.kick) stageApi.kick();
+  }
+  async function startMic() {
+    const btn = $("mic-lights");
+    const token = ++lightToken;
+    state.micPending = true;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      state.micPending = false;
+      if (btn) btn.setAttribute("aria-pressed", "false");
+      setMicStatus("micDeny");
+      return;
+    }
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC && !lightCtx) {
+      try {
+        lightCtx = new AC();
+        lightCtx.resume();
+      } catch (err) {
+        lightCtx = null;
+      }
+    }
+    let stream = null;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    } catch (err) {
+      stream = null;
+    }
+    if (token !== lightToken) {
+      if (stream) stream.getTracks().forEach((track) => { try { track.stop(); } catch (err) {} });
+      return;
+    }
+    if (!stream || !lightCtx) {
+      if (stream) stream.getTracks().forEach((track) => { try { track.stop(); } catch (err) {} });
+      releaseLightTracks();
+      state.micPending = false;
+      if (btn) btn.setAttribute("aria-pressed", "false");
+      setMicStatus("micDeny");
+      return;
+    }
+    try { if (lightCtx.state === "suspended") await lightCtx.resume(); } catch (err) {}
+    if (token !== lightToken) {
+      stream.getTracks().forEach((track) => { try { track.stop(); } catch (err) {} });
+      return;
+    }
+    lightStream = stream;
+    try {
+      const analyser = lightCtx.createAnalyser();
+      analyser.fftSize = 128;
+      analyser.smoothingTimeConstant = 0.72;
+      lightCtx.createMediaStreamSource(lightStream).connect(analyser);
+      state.micAnalyser = analyser;
+    } catch (err) {
+      stream.getTracks().forEach((track) => { try { track.stop(); } catch (err2) {} });
+      releaseLightTracks();
+      state.micPending = false;
+      if (btn) btn.setAttribute("aria-pressed", "false");
+      setMicStatus("micDeny");
+      return;
+    }
+    state.micPending = false;
+    if (btn) btn.setAttribute("aria-pressed", "true");
+    setMicStatus("micOn");
+    if (stageApi && stageApi.kick) stageApi.kick();
+  }
+  function toggleMic() {
+    if (state.micAnalyser || state.micPending) stopMic();
+    else startMic();
+  }
+  const micBtn = $("mic-lights");
+  if (micBtn) micBtn.addEventListener("click", toggleMic);
 })();
