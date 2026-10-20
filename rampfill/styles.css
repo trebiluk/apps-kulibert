@@ -126,10 +126,24 @@ canvas {
 .status, .spill-line, .more {
   margin: 0;
   font-weight: 800;
-  min-height: 1.4em;
 }
-.spill-line { color: #f6c453; }
-.spill-line:empty { display: none; }
+.status {
+  height: 28px;
+  min-height: 28px;
+  max-height: 28px;
+  line-height: 28px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.spill-line {
+  color: #f6c453;
+  height: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  line-height: 22px;
+  overflow: hidden;
+}
 .bar, .tools, .status, .spill-line, .score, .toolslot { flex-shrink: 0; }
 .score {
   display: flex;
@@ -137,10 +151,22 @@ canvas {
   align-items: center;
   gap: 8px 12px;
   overflow: hidden;
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
 }
 .cups { display: flex; gap: 6px; min-height: 52px; min-width: 48px; align-items: flex-end; overflow: hidden; }
 .cup-pic { width: 48px; height: 52px; flex: none; }
-.rank { font-weight: 800; white-space: nowrap; }
+.cup-count {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.cup-ico { width: 22px; height: 22px; flex: none; }
 .more { white-space: nowrap; visibility: hidden; }
 .donebar[hidden], .pause[hidden], .ask[hidden], .endcard[hidden], .menu[hidden] { display: none !important; }
 .stamp {
@@ -199,13 +225,13 @@ html[data-kp-motion="less"] .stamp { transform: none; }
 }
 @media (max-height: 460px) {
   .lesson { display: none; }
-  .score { gap: 4px 8px; font-size: 0.82rem; }
+  .score { gap: 4px 8px; height: 40px; min-height: 40px; max-height: 40px; }
   .cups { min-height: 32px; }
   .cup-pic { width: 28px; height: 32px; }
+  .cup-count { font-size: 16px; }
   .app { gap: 3px; padding: 2px 6px 4px; }
   .stage { min-height: 0; flex: 1 1 auto; }
   .donebar { padding: 0 4px; }
   .stamp { font-size: 1.05rem; }
-  .status { min-height: 0; }
   .endcard h2, .pause h2, .ask h2 { font-size: 1.15rem; }
 }

@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.1 — L1 First Ramp, L2 Two Cups, L3 First Leak. No trackers. */
+/* Ramp & Fill RF 1.0.2 — L1 to L3, steady canvas. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.1";
+  var VERSION = "RF 1.0.2";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -21,10 +21,13 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.1 — The cup stays big sideways, and Next takes you to two cups and your first water leak!",
+      whats: "RF 1.0.2 — Slow gel, pick your path, stack cups, and the cup area stays still with a cup count!",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
-      helpPour: "Press Pour. Grains or water slide into the cup.",
+      helpPour: "Press Pour. Grains (water later) slide into the cup.",
+      helpPour2: "Press Pour. Grains fill the left cup, then the right.",
+      helpPour3: "Press Pour. Water slides in when the ramp sits on the cup lip.",
+      cupsWord: "Cups:",
       helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
       read: "Read it to me", language: "Language",
       lv1: "First ramp", lv2: "Two cups", lv3: "First leak",
@@ -52,10 +55,13 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.1 — Ramp & Fill: малюй схил, лий і наповнюй чашки.",
+      whats: "RF 1.0.2 — Повільний гель, обери шлях, став чашки, а поле з чашками більше не стрибає!",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
-      helpPour: "Натисни Лий. Зерна або вода їдуть у чашку.",
+      helpPour: "Натисни Лий. Зерна (вода пізніше) їдуть у чашку.",
+      helpPour2: "Натисни Лий. Зерна наповнюють ліву чашку, потім праву.",
+      helpPour3: "Натисни Лий. Вода заходить, коли схил лежить на краю чашки.",
+      cupsWord: "Чашки:",
       helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
       read: "Прочитай мені", language: "Мова",
       lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік",
@@ -83,10 +89,13 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.1 — Ramp & Fill: рисуй склон, лей и наполняй чашки.",
+      whats: "RF 1.0.2 — Медленный гель, выбери путь, ставь стаканы, а поле с чашками больше не прыгает!",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
-      helpPour: "Нажми Лей. Зёрна или вода едут в чашку.",
+      helpPour: "Нажми Лей. Зёрна (вода позже) едут в чашку.",
+      helpPour2: "Нажми Лей. Зёрна наполняют левую чашку, потом правую.",
+      helpPour3: "Нажми Лей. Вода заходит, когда склон лежит на крае чашки.",
+      cupsWord: "Чашки:",
       helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
       read: "Прочитай мне", language: "Язык",
       lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь",
@@ -114,10 +123,13 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.1 — Ramp & Fill: dibuja una rampa, vierte y llena las tazas.",
+      whats: "RF 1.0.2 — Gel lento, elige tu camino, apila vasos ¡y la zona de vasos ya no salta!",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
-      helpPour: "Pulsa Vierte. Los granos o el agua bajan a la taza.",
+      helpPour: "Pulsa Vierte. Los granos (el agua, más tarde) bajan a la taza.",
+      helpPour2: "Pulsa Vierte. Los granos llenan la taza izquierda y luego la derecha.",
+      helpPour3: "Pulsa Vierte. El agua entra cuando la rampa toca el borde de la taza.",
+      cupsWord: "Tazas:",
       helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
       read: "Léemelo", language: "Idioma",
       lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga",
@@ -145,10 +157,13 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.1 — Ramp & Fill: ارسم منحدرًا، اسكب واملأ الأكواب.",
+      whats: "RF 1.0.2 — هلام بطيء، اختر طريقك، كدّس الأكواب، ومنطقة الأكواب لم تعد تقفز!",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
-      helpPour: "اضغط اسكب. الحبوب أو الماء تنزلق إلى الكوب.",
+      helpPour: "اضغط اسكب. الحبوب (الماء لاحقًا) تنزلق إلى الكوب.",
+      helpPour2: "اضغط اسكب. الحبوب تملأ الكوب الأيسر ثم الأيمن.",
+      helpPour3: "اضغط اسكب. الماء يدخل حين يلامس المنحدر حافة الكوب.",
+      cupsWord: "الأكواب:",
       helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
       read: "اقرأه لي", language: "اللغة",
       lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب",
@@ -176,10 +191,13 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.1 — Ramp & Fill: یک سرازیری بکش، بریز و پیاله‌ها را پر کن.",
+      whats: "RF 1.0.2 — ژل آهسته، راه خود را انتخاب کن، پیاله‌ها را روی هم بگذار، و جای پیاله‌ها دیگر نمی‌پرد!",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
-      helpPour: "بریز را بزن. دانه‌ها یا آب به پیاله می‌لغزند.",
+      helpPour: "بریز را بزن. دانه‌ها (آب بعداً) به پیاله می‌لغزند.",
+      helpPour2: "بریز را بزن. دانه‌ها اول پیاله چپ را پر می‌کنند، بعد راست را.",
+      helpPour3: "بریز را بزن. آب وقتی وارد می‌شود که سرازیری روی لبه پیاله باشد.",
+      cupsWord: "پیاله‌ها:",
       helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
       read: "برایم بخوان", language: "زبان",
       lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت",
@@ -207,10 +225,13 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.1 — Ramp & Fill: shushanya umuhengamo, suka kandi wuzuz ibikombe.",
+      whats: "RF 1.0.2 — Jeli itinda, hitamo inzira, shyira ibikombe hejuru y'ibindi, kandi ahari ibikombe ntihagisimbuka!",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
-      helpPour: "Kanda Suka. Ibinyanye cyangwa amazi bigera mu gikombe.",
+      helpPour: "Kanda Suka. Ibinyanye (amazi nyuma) bigera mu gikombe.",
+      helpPour2: "Kanda Suka. Ibinyanye buzura igikombe cy'ibumoso, hanyuma icy'iburyo.",
+      helpPour3: "Kanda Suka. Amazi yinjira iyo umuhengamo wicaye ku munwa w'igikombe.",
+      cupsWord: "Ibikombe:",
       helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
       read: "Nsome", language: "Ururimi",
       lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere",
@@ -238,10 +259,13 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.1 — Ramp & Fill: ቁልቁለት ስኣል፣ ቀድሕን ንኽባያታት መልእን።",
+      whats: "RF 1.0.2 — ቀስ ዝብል ጄል፣ መንገድኻ ምረጽ፣ ኩባያታት ደራርብ፣ ቦታ ኩባያታት ድማ ኣይዘልልን!",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
-      helpPour: "ቀድሕ ጠውቕ። እኽሊ ወይ ማይ ናብ ኽባያ ይንሸራተት።",
+      helpPour: "ቀድሕ ጠውቕ። እኽሊ (ማይ ድሕሪት) ናብ ኽባያ ይንሸራተት።",
+      helpPour2: "ቀድሕ ጠውቕ። እኽሊ ቀዳማይ ጸጋማይ ኽባያ የምልእ፣ ድሕሪኡ የማናይ።",
+      helpPour3: "ቀድሕ ጠውቕ። ማይ የእቱ እንተኾይኑ ቁልቁለት ኣብ ከንፈር ኽባያ ምስ ደቀሰ።",
+      cupsWord: "ኽባያታት:",
       helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
       read: "ኣንብበለይ", language: "ቋንቋ",
       lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ",
@@ -278,6 +302,7 @@
   var paused = false;
   var ended = false;
   var filledOnce = false;
+  var sawFill = false;
   var cups = 0;
   var mass = 1;
   var spawnGap = 0.045;
@@ -341,6 +366,8 @@
     });
     var body = document.getElementById("whats-body");
     if (body) body.textContent = t("whats");
+    var pourHelp = document.getElementById("help-pour");
+    if (pourHelp) pourHelp.textContent = t(level >= 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
     var lessonText = t(lessonKey());
     var lessonEl = document.getElementById("lesson");
     if (lessonEl) lessonEl.textContent = lessonText;
@@ -432,9 +459,11 @@
   function paintCups() {
     var box = document.getElementById("cups");
     var more = document.getElementById("more-line");
+    var num = document.getElementById("cup-n");
+    if (num) num.textContent = String(cups);
     if (more) {
-      more.style.visibility = cups > 0 ? "visible" : "hidden";
-      more.setAttribute("aria-hidden", cups > 0 ? "false" : "true");
+      more.style.visibility = sawFill ? "visible" : "hidden";
+      more.setAttribute("aria-hidden", sawFill ? "false" : "true");
     }
     if (!box) return;
     box.replaceChildren();
@@ -855,6 +884,8 @@
     if (gained) { saveCups(); noteScore(); paintCups(); }
     if (all && !filledOnce) {
       filledOnce = true;
+      sawFill = true;
+      paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
     }
@@ -1049,11 +1080,17 @@
     ctx.textAlign = align || "left";
     var w = ctx.measureText(text).width;
     var pad = 4;
-    var left = align === "center" ? x - w / 2 : align === "right" ? x - w : x;
+    var boxW = w + pad * 2;
+    var boxH = size + 6;
+    var rawLeft = align === "center" ? x - w / 2 - pad : align === "right" ? x - w - pad : x - pad;
+    var left = Math.max(2, Math.min(rawLeft, Math.max(2, viewW - boxW - 2)));
+    var top = Math.max(2, Math.min(y - size + 2, Math.max(2, viewH - boxH - 2)));
+    var textX = align === "center" ? left + pad + w / 2 : align === "right" ? left + boxW - pad : left + pad;
+    var textY = top + size - 2;
     ctx.fillStyle = "#F3E6C8";
-    ctx.fillRect(left - pad, y - size + 2, w + pad * 2, size + 6);
+    ctx.fillRect(left, top, boxW, boxH);
     ctx.fillStyle = "#1A120C";
-    ctx.fillText(text, x, y);
+    ctx.fillText(text, textX, textY);
     ctx.restore();
   }
   function backedWrap(text, x, y, size, maxW) {
@@ -1063,19 +1100,24 @@
     var words = String(text).split(" ");
     var lines = [];
     var line = "";
+    var limit = Math.max(80, Math.min(maxW, viewW - 16));
     words.forEach(function (w) {
       var tryLine = line ? line + " " + w : w;
-      if (ctx.measureText(tryLine).width > maxW && line) { lines.push(line); line = w; }
+      if (ctx.measureText(tryLine).width > limit && line) { lines.push(line); line = w; }
       else line = tryLine;
     });
     if (line) lines.push(line);
     var lh = size + 6;
     var widest = 0;
     lines.forEach(function (ln) { widest = Math.max(widest, ctx.measureText(ln).width); });
+    var boxW = widest + 12;
+    var boxH = lines.length * lh + 8;
+    var left = Math.max(4, Math.min(x - boxW / 2, viewW - boxW - 4));
+    var top = Math.max(4, Math.min(y - size, viewH - boxH - 4));
     ctx.fillStyle = "#F3E6C8";
-    ctx.fillRect(x - widest / 2 - 6, y - size, widest + 12, lines.length * lh + 8);
+    ctx.fillRect(left, top, boxW, boxH);
     ctx.fillStyle = "#1A120C";
-    lines.forEach(function (ln, i) { ctx.fillText(ln, x, y + i * lh); });
+    lines.forEach(function (ln, i) { ctx.fillText(ln, left + boxW / 2, top + size + i * lh); });
     ctx.restore();
   }
   function seed(n) {

@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1C2B26" />
-  <title>Ramp & Fill — RF 1.0.1</title>
+  <title>Ramp & Fill — RF 1.0.2</title>
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
-  <link rel="stylesheet" href="./styles.css?v=RF-1.0.1" />
+  <link rel="stylesheet" href="./styles.css?v=RF-1.0.2" />
   <script src="/shared/kulibert-i18n.js?v=2026-10-05-signin"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
 </head>
@@ -20,7 +20,7 @@
       </button>
       <span class="brand">Ramp & Fill</span>
       <span class="level-pill" id="level-name">First ramp</span>
-      <span class="chip" id="ver-plate">RF 1.0.1</span>
+      <span class="chip" id="ver-plate">RF 1.0.2</span>
       <button type="button" id="pause-btn" class="ghost-btn">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
         <span data-k="pause">Pause</span>
@@ -97,25 +97,29 @@
     <p class="spill-line" id="spill-line" aria-live="polite"></p>
     <section class="score" aria-label="Filled cups">
       <div class="cups" id="cups"></div>
+      <p class="cup-count" id="cup-count">
+        <svg class="cup-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6 H17 L16 20 H8 Z" fill="#E0A106" stroke="#1A120C" stroke-width="2"/></svg>
+        <span data-k="cupsWord">Cups:</span>
+        <span id="cup-n">0</span>
+      </p>
       <p class="more" id="more-line" data-k="more">can you fill more?</p>
-      <span class="rank" id="rank">You: #—</span>
     </section>
   </div>
   <div id="menu" class="menu" hidden>
     <div class="menu-head">
       <h2 id="menu-title" data-k="menu">Menu</h2>
-      <span class="ver-plate">RF 1.0.1</span>
+      <span class="ver-plate">RF 1.0.2</span>
       <button type="button" id="menu-close" data-k="close">Close</button>
     </div>
     <section id="whats-new">
       <h2 data-k="whatsNew">What's new</h2>
-      <p id="whats-body">RF 1.0.1 — The cup stays big sideways, and Next takes you to two cups and your first water leak!</p>
+      <p id="whats-body">RF 1.0.2 — Slow gel, pick your path, stack cups, and the cup area stays still with a cup count!</p>
     </section>
     <section id="rf-help">
       <h2 data-k="help">Help</h2>
       <ol>
         <li data-k="helpDraw">Draw a ramp like the dotted guide.</li>
-        <li data-k="helpPour">Press Pour. Grains slide into the cup.</li>
+        <li id="help-pour">Press Pour. Grains (water later) slide into the cup.</li>
         <li data-k="helpSpill">A spill stays circled. Flatten the ramp and try again. Ramps stay on Retry.</li>
       </ol>
       <p id="lesson-2">Steeper = faster. Smoother = neater.</p>
@@ -136,8 +140,8 @@
       <p data-k="local">Aliases and cup pictures stay on this Chromebook. No names. No chat.</p>
     </section>
   </div>
-  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.1" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+  <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.2" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
   <script src="/shared/kw-who.js?v=2026-10-01-v2"></script>
-  <script src="./app.js?v=RF-1.0.1"></script>
+  <script src="./app.js?v=RF-1.0.2"></script>
 </body>
 </html>
