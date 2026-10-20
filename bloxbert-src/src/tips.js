@@ -296,14 +296,39 @@ function afterGap(fn) {
   clearTimeout(gapTimer)
   gapTimer = setTimeout(() => { gapTimer = 0; fn() }, GAP)
 }
-function endToast() {
+const TOAST_MS = 3000
+function reducedMotion() {
+  try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch (e) { return false }
+}
+function fadeHide(el, done) {
+  if (!el) { done(); return }
+  if (reducedMotion()) { done(); return }
+  el.style.setProperty('transition', 'opacity .35s linear', 'important')
+  el.style.setProperty('opacity', '0', 'important')
+  const token = (el._fade = (el._fade || 0) + 1)
+  setTimeout(() => {
+    if (el._fade !== token) return
+    el.style.removeProperty('opacity')
+    el.style.removeProperty('transition')
+    done()
+  }, 360)
+}
+function endToast(opts) {
   const el = document.getElementById('toast')
-  if (el) {
-    el.hidden = true
-    el.classList.remove('new-chip')
+  const finish = () => {
+    if (el) {
+      el.hidden = true
+      el.classList.remove('new-chip')
+      el.classList.remove('nice-chip')
+      el.style.removeProperty('opacity')
+      el.style.removeProperty('transition')
+    }
+    slot = null
+    afterGap(pump)
   }
-  slot = null
-  afterGap(pump)
+  if (slot && slot.timer) clearTimeout(slot.timer)
+  if (opts && opts.fade && el && !el.hidden) fadeHide(el, finish)
+  else finish()
 }
 function presentToast(job) {
   const el = document.getElementById('toast')
@@ -327,8 +352,19 @@ function presentToast(job) {
     el.append(b)
   }
   placeTip(el)
-  const ms = job.ms || (job.chip ? 2000 : (job.act ? ACT_MS : TURN))
-  slot = { kind: 'toast', id: job.id || '', text: job.text || '', timer: setTimeout(endToast, ms) }
+  el.dataset.born = String(Math.round(performance.now()))
+  el.style.pointerEvents = 'auto'
+  el.style.removeProperty('opacity')
+  if (!el.dataset.toastTap) {
+    el.dataset.toastTap = '1'
+    el.addEventListener('pointerdown', (e) => {
+      if (e.target && e.target.closest && e.target.closest('button')) return
+      e.preventDefault()
+      endToast()
+    })
+  }
+  const ms = TOAST_MS
+  slot = { kind: 'toast', id: job.id || '', text: job.text || '', timer: setTimeout(() => endToast({ fade: true }), ms) }
 }
 function pump() {
   if (slot || gapTimer) return
@@ -364,6 +400,7 @@ function yieldHold() {
 }
 function noteContention() { yieldHold() }
 
+const seenAt = new Map()
 export function showToast(msg, opts) {
   const o = opts || {}
   const job = {
@@ -376,8 +413,17 @@ export function showToast(msg, opts) {
     fill: o.fill || null,
   }
   if (!job.text && !job.fill) return
+  const now = performance.now()
+  if (job.text && seenAt.has(job.text) && now - seenAt.get(job.text) < 6000) return
+  if (job.text) seenAt.set(job.text, now)
   if (slot && slot.kind === 'toast' && slot.text === job.text && !job.act) return
   if (toastQ.length && toastQ[toastQ.length - 1].text === job.text && !job.act) return
+  if (slot && slot.kind === 'toast') {
+    clearTimeout(slot.timer)
+    slot = null
+    presentToast(job)
+    return
+  }
   const queued = () => {
     if (job.id) {
       const i = toastQ.findIndex((row) => row.id && row.id === job.id)

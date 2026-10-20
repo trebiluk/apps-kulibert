@@ -349,15 +349,23 @@ function hideDigChip() {
 function armDigTimer() {
   stopDigTimer()
   const gen = digChipGen
-  digChipUntil = performance.now() + 8000
+  digChipUntil = performance.now() + 3000
   digChipTimer = setTimeout(() => {
     digChipTimer = 0
     if (gen !== digChipGen) return
     const chip = document.getElementById('dig-chip')
     if (!chip || chip.hidden) return
-    chip.hidden = true
-    digChipUntil = 0
-  }, 8000)
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const gone = () => { chip.hidden = true; chip.style.removeProperty('opacity'); chip.style.removeProperty('transition'); digChipUntil = 0 }
+    if (reduce) { gone(); return }
+    chip.style.setProperty('transition', 'opacity .35s linear', 'important')
+    chip.style.setProperty('opacity', '0', 'important')
+    digChipTimer = setTimeout(() => {
+      digChipTimer = 0
+      if (gen !== digChipGen) return
+      gone()
+    }, 360)
+  }, 3000)
 }
 function peekId(x, y, z) {
   const ci = Math.floor(x / S)
@@ -9640,7 +9648,13 @@ function frame(tnow) {
       }
       if (moved.plants) syncPlantCut()
       const sheet = $('sheet')
-      if (!sheet || sheet.hidden) toast(t('autoSmoother'))
+      if (!sheet || sheet.hidden) {
+        const now = performance.now()
+        if (now - (toast.autoAt || 0) > 20000) {
+          toast.autoAt = now
+          toast(t('autoSmoother'))
+        }
+      }
       const log = window.__auto && window.__auto.log
       if (log) log.push({ guard: gfx.guard, plants: gfx.plants, add: gfx.add[0], gfx: gfxLook.name, managed: gfxLook.managed, toast: t('autoSmoother'), toastSkipped: !!(sheet && !sheet.hidden) })
       paintQualityNote()

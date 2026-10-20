@@ -745,8 +745,21 @@ function showTip(loc, ms, sticky) {
   placeReadTip(tip)
   pinAboveBar(tip)
   requestAnimationFrame(() => { if (tip.isConnected && !tip.hidden) pinAboveBar(tip) })
-  tipUntil = Infinity
+  tip.style.removeProperty('opacity')
+  tipUntil = performance.now() + 3000
   clearTimeout(showTip.hide)
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  showTip.hide = setTimeout(() => {
+    if (!tip.isConnected || tip.hidden) return
+    if (reduce) { tip.hidden = true; return }
+    tip.style.setProperty('transition', 'opacity .35s linear', 'important')
+    tip.style.setProperty('opacity', '0', 'important')
+    showTip.hide = setTimeout(() => {
+      tip.hidden = true
+      tip.style.removeProperty('opacity')
+      tip.style.removeProperty('transition')
+    }, 360)
+  }, 3000)
 }
 function placeReadTip(tip) {
   const w = window.innerWidth
