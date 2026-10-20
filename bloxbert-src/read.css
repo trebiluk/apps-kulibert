@@ -1547,6 +1547,36 @@ html body #sheet[data-panel="inventory"] .count {
   background: #0B1220 !important;
   color: #F8FAFC !important;
 }
+
+/* 2.5.272: Bag tile names wrap whole. Never cut, never an ellipsis. Tiles stay at least 44px. */
+html body #sheet[data-panel="inventory"] .wells .well {
+  flex: 0 1 104px !important;
+  width: 104px !important;
+  max-width: 104px !important;
+  min-width: 44px !important;
+  height: auto !important;
+  min-height: 88px !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  padding: 4px 4px 6px !important;
+  overflow: visible !important;
+  box-sizing: border-box !important;
+}
+html body #sheet[data-panel="inventory"] .wells .well .glbl {
+  display: block !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  overflow-wrap: break-word !important;
+  word-break: normal !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  text-align: center !important;
+}
 @media (max-height: 520px) and (min-width: 700px) {
   html body:not(.touch) #play-chip:not([hidden]) {
     top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important;
