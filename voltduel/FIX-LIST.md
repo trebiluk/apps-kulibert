@@ -11,7 +11,7 @@ Physics, levels, keyboard keys, and scoring were not changed.
 - [x] **Item 3 Menu tip.** The restart / double-jump sentence sits behind a "? Help" button. Opened live at 412×915, 915×412, and 1366×768: the full sentence is on screen and the page does not scroll. Closed menu lines are whole at those three sizes.
 - [x] **Version strings.** Chip, plate, and What's new say VD 1.0.1. Live plate reads "VD 1.0.1". Live What's new (en): "VD 1.0.1 — Hold a button to run on phones, and the score fits the screen." The other seven languages are in the menu script.
 - [x] **Rotate mid-race.** Live, 915×412 turned to 412×915 while the race was running. Phase stayed race, coins stayed 0/10 and 0/10, timer kept counting (0.03 to 1.27), and VEX kept moving (36 to 138).
-- [ ] **Keyboard re-check on the live door.** Keys still move both runners (seen: D and Right Arrow moved VEX and RIO). A full keyboard finish plus one Rematch tap was seen on the built files ("RIO TAKES THE FLAG" 16.25, Rematch returned to a race at 0.45). The same finish on the live door did not complete inside the check window (VEX reached about 1981, still racing). Not marked done live.
+- [ ] **Keyboard re-check on the live door.** Keys still move both runners. Live, holding D walked VEX from the spawn through the first pit to the far deck (past x 1900) before a mistimed jump hit the spikes. One Rematch tap was seen on the built files ("RIO TAKES THE FLAG" 16.25, Rematch back to a race at 0.45). The live door did not show the flag card in this pass, so this stays open.
 - [x] **Console.** Live page: 0 console errors and no failed responses at 412×915, 915×412, and 1366×768.
 
 ## Carry forward
@@ -21,4 +21,4 @@ Physics, levels, keyboard keys, and scoring were not changed.
 - [x] No console errors and no 404s.
 - [x] Chip and What's new say VD 1.0.1.
 - [ ] Two runners holding opposite directions at the same time. They block each other. Left as-is because bump physics is out of scope.
-- [ ] Keyboard race all the way to the flag on the live door, then one Rematch tap. Keys work. The full finish was not seen live in this pass.
+- [ ] Keyboard race all the way to the flag on the live door, then one Rematch tap. D walks and W jumps. The flag card was not seen live in this pass.
