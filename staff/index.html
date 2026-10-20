@@ -185,7 +185,8 @@
   </div>
   <script src="/shared/kw-who.js?v=2026-09-29-fit"></script>
   <script src="/shared/tw-session.js?v=2026-10-05-signin"></script>
-  <script src="/shared/hub-staff-auth.js?v=2026-09-26-hub-pass"></script>
+  <script src="/shared/hub-staff-auth.js?v=2026-10-20-test-win-switch"></script>
+  <script src="/shared/kw-test.js?v=2026-10-20-test-win-switch"></script>
   <script>
     (function () {
       var API = "https://tw.kulibert.net/api/door-links";
@@ -380,6 +381,7 @@
         room.staffLane = $("staffLane").checked;
         room.staffEdit = $("staffEdit").checked;
         room.testMode = $("testMode").checked === true;
+        try { if (room.testMode && window.KulibertTest) window.KulibertTest.arm(); else if (window.KulibertTest) window.KulibertTest.disarm(); } catch (eTest) {}
         room.lockup = $("lockup").checked;
         room.searchOn = $("searchOn").checked;
         room.bellsOn = $("bellsOn").checked;
