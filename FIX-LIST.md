@@ -7,7 +7,9 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - Hub rev: **2026-10-13-arfit**. Arabic and Dari cold loads refit the strip after the menu word paints, so the dock is not wider than the row. Tile still says Bertapult. Path stays `/catapult/`.
 - Latest Hub proofs: `proof/hub-swipe/RESULT.md` (PASS with P2s; Arabic 1024x768 cold load 8 px too wide on 3 of 14 loads → brief 12c) and `proof/menu-audit/RESULT.md` (same-menu sweep across apps).
 
-## 2. Open fixes (FAIL rows from the latest proof)
+## 2. Open fixes
+- [x] Hub rev 2026-10-20-i18n-alias-help: name help in every language (lbAliasHelp, hkStepperHelp, What's new).
+ (FAIL rows from the latest proof)
 - [x] Arabic 1024x768 first load is 8 px too wide on 3 of 14 cold loads (hub-swipe item 2, NOT DONE) → `briefs/fixq/12c-hub-ar-refit.md`. Shipped 2026-10-13-arfit. 14 fresh Arabic loads at 1024x768: dock scrollWidth <= clientWidth. Dari at 1024 fits. 1366 still shows the full row. Phones still swipe.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
