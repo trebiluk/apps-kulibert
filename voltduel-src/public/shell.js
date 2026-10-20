@@ -1,13 +1,13 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.2 — Phone tips talk touch, and the race sits closer to your buttons.",
-    uk: "VD 1.0.2 — Підказки на телефоні говорять про дотик, а гонка ближче до твоїх кнопок.",
-    ru: "VD 1.0.2 — Подсказки на телефоне про касания, а гонка ближе к твоим кнопкам.",
-    es: "VD 1.0.2 — Los consejos en el móvil hablan de tocar, y la carrera está más cerca de tus botones.",
-    ar: "VD 1.0.2 — نصائح الهاتف تتحدث عن اللمس، والسباق أقرب إلى أزرارك.",
-    "fa-AF": "VD 1.0.2 — راهنمای موبایل حالا دربارهٔ لمس است، و مسابقه نزدیک‌تر به دکمه‌هایت است.",
-    rw: "VD 1.0.2 — Inama kuri telefoni zivuga gukoraho, kandi isiganwa riri hafi y'utubuto twawe.",
-    ti: "VD 1.0.2 — ምኽሪ ሞባይል ብዛዕባ ምንካእ ይዛረብ፣ ጉያ ድማ ናብ መጠወቒታትካ ቀሪቡ ኣሎ።"
+    en: "VD 1.0.3 — The menu shows your touch buttons, and the race fills a phone screen.",
+    uk: "VD 1.0.3 — Меню показує твої сенсорні кнопки, а гонка заповнює екран телефона.",
+    ru: "VD 1.0.3 — Меню показывает твои сенсорные кнопки, а гонка заполняет экран телефона.",
+    es: "VD 1.0.3 — El menú muestra tus botones táctiles y la carrera llena la pantalla del móvil.",
+    ar: "VD 1.0.3 — القائمة تعرض أزرار اللمس، والسباق يملأ شاشة الهاتف.",
+    "fa-AF": "VD 1.0.3 — منو دکمه‌های لمسی‌ات را نشان می‌دهد، و مسابقه صفحهٔ موبایل را پر می‌کند.",
+    rw: "VD 1.0.3 — Menu yerekana utubuto two gukoraho, kandi isiganwa ryuzuza ecran ya telefoni.",
+    ti: "VD 1.0.3 — ሜኑ ናይ ምንካእ መጠወቒታትካ የርኢ፣ ጉያ ድማ ስክሪን ሞባይል ይመልእ።"
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.2") plate.textContent = "VD 1.0.2";
+      if (plate && plate.textContent !== "VD 1.0.3") plate.textContent = "VD 1.0.3";
     } finally {
       painting = false;
     }

@@ -628,15 +628,23 @@ export function VoltDuel() {
               <div className="controls-row">
                 <div className="control-box vex">
                   <h3>VEX</h3>
-                  <p>
-                    <kbd>A</kbd> <kbd>D</kbd> run · <kbd>W</kbd> jump · <kbd>S</kbd> drop through
-                  </p>
+                  {coarse ? (
+                    <p dir="ltr">◀ ▶ run · ⤒ jump</p>
+                  ) : (
+                    <p>
+                      <kbd>A</kbd> <kbd>D</kbd> run · <kbd>W</kbd> jump · <kbd>S</kbd> drop through
+                    </p>
+                  )}
                 </div>
                 <div className="control-box rio">
                   <h3>RIO</h3>
-                  <p>
-                    <kbd>←</kbd> <kbd>→</kbd> run · <kbd>↑</kbd> jump · <kbd>↓</kbd> drop through
-                  </p>
+                  {coarse ? (
+                    <p dir="ltr">◀ ▶ run · ⤒ jump</p>
+                  ) : (
+                    <p>
+                      <kbd>←</kbd> <kbd>→</kbd> run · <kbd>↑</kbd> jump · <kbd>↓</kbd> drop through
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="modal-actions">
