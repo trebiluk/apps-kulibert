@@ -168,7 +168,7 @@ ol { margin: 8px 0; padding-left: 20px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .qty { width: 56px; flex: 0 0 56px; text-align: center; }
 .stepper { display: flex; gap: 4px; }
-.stepper .btn.ghost { min-width: 36px; border: 1px solid var(--line); border-radius: 10px; }
+.stepper .btn.ghost { min-width: 44px; min-height: 44px; border: 1px solid var(--line); border-radius: 10px; }
 .store-h { color: var(--muted); font-size: 0.72em; font-weight: 800; margin: 12px 0 4px; text-transform: uppercase; letter-spacing: .06em; }
 .ago { font-size: 0.78em; color: var(--muted); }
 .undo { position: fixed; bottom: calc(84px + env(safe-area-inset-bottom)); left: 16px; right: 16px; z-index: 45;

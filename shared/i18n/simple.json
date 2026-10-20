@@ -17,7 +17,10 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub 2026-10-20: Pick names from a list.",
+  "whatsNewLine": "Hub 2026-10-20: Pick names from a list. Readers read games better.",
   "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
-  "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss."
+  "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
+  "lessItem": "Less {name}",
+  "moreItem": "More {name}",
+  "hkStepperHelp": "Minus and plus say which item they change."
 }

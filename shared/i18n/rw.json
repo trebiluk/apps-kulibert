@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub 2026-10-20: Amazina ku rutonde rw'abatsinze atoranywa ku rutonde.",
+  "whatsNewLine": "Hub 2026-10-20: Amazina ku rutonde rw'abatsinze atoranywa ku rutonde, kandi porogaramu zisoma ecran zisoma neza BertyBots, BertyCAD na HouseKit.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -159,5 +159,8 @@
   "whatsNewBody": "Ingano isa ingano, urugi rufunze rusa rufunze, kandi amakarita y'ubufasha yisobanura.",
   "world": "Isi",
   "lbAliasHelp": "Hitamo izina ku rutonde. Ntandike izina ry'ukuri.",
-  "bbCanvasHelp": "Porogaramu zisoma ecran zumva izina ry'akazi, hanyuma intego, gutsinda cyangwa gutsindwa."
+  "bbCanvasHelp": "Porogaramu zisoma ecran zumva izina ry'akazi, hanyuma intego, gutsinda cyangwa gutsindwa.",
+  "lessItem": "Bike {name}",
+  "moreItem": "Byinshi {name}",
+  "hkStepperHelp": "Minus na plus bivuga ikintu bahindura."
 }
