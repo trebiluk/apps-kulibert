@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.5** · 2026-10-20 · channel **live**
+
+Every button says what it does now, Perform shows once, and the version shows sideways too.
+
+## Earlier
+
 **Chip: MU 2.36.4** · 2026-10-19 · channel **live**
 
 The top bar shows up right away, phone buttons have words, and pads show their keys.

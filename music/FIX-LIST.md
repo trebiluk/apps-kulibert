@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.5: nav tiles show a word, and Perform is only on the bottom row.
 - [x] MU 2.36.4: the top bar is in the first look, phone buttons have words, the nav fits, and pads show A S D F.
 - [x] MU 2.36.3: the first look is already neat, the phone header shows DJ Berty, and the bottom buttons stay on screen.
 - [x] MU 2.36.2: a fresh beat starts at 104, Tempo fits on a phone, and tap pads stay 88px tall.

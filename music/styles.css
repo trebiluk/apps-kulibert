@@ -4478,16 +4478,16 @@ html:not(.dj-ready) body.mu237 { visibility: hidden; }
   .tap-pads .key-hint { display: none; }
 }
 @media (max-width: 480px) and (orientation: portrait) {
-  body.mu237 { --tabs: 104px; }
+  body.mu237 { --tabs: 132px; }
   body.mu237 .side,
   body.mu237.menu-open .side {
-    height: 104px !important;
-    max-height: 104px !important;
+    height: 132px !important;
+    max-height: 132px !important;
     overflow: hidden !important;
   }
   body.mu237 #dock-left {
     display: grid !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
     width: 100% !important;
     height: auto !important;
     max-height: none !important;
@@ -4499,8 +4499,12 @@ html:not(.dj-ready) body.mu237 { visibility: hidden; }
     width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    height: 44px !important;
-    max-height: 44px !important;
+    height: 58px !important;
+    min-height: 44px !important;
+    max-height: 60px !important;
+    flex-direction: column !important;
+    gap: 1px !important;
+    padding: 2px !important;
   }
   body.mu237 .transport #play-word,
   body.mu237 .transport #rec-btn .ctl-word,
@@ -4513,5 +4517,42 @@ html:not(.dj-ready) body.mu237 { visibility: hidden; }
     clip: auto !important;
     font-size: 13px !important;
   }
+}
+body.mu237 #rail-perform { display: none !important; }
+body.mu237 #dock-left .tab span {
+  position: static !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+  clip: auto !important;
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  white-space: normal !important;
+  text-align: center;
+}
+body.mu237 #dock-left .tab svg { width: 20px !important; height: 20px !important; flex: 0 0 20px !important; }
+@media (orientation: landscape) and (max-height: 520px) {
+  body.mu237 { --rail: 132px; }
+  body.mu237 .side,
+  body.mu237.menu-open .side { width: 132px !important; }
+  body.mu237 .rail-group { display: none !important; }
+  body.mu237 #dock-left {
+    grid-template-columns: 1fr !important;
+    height: auto !important;
+    max-height: none !important;
+    align-content: start !important;
+    gap: 0 !important;
+    padding: 0 !important;
+  }
+  body.mu237 #dock-left .tab {
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    gap: 4px !important;
+    padding: 0 4px !important;
+  }
+  body.mu237 #dock-left .tab span { text-align: start; }
 }
 
