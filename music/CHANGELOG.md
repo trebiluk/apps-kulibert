@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.10** · 2026-10-20 · channel **live**
+
+MU 2.36.10 — swatch words ≥4.5:1 on raised and pressed caps (ink #111827 on #C4C9D0/#B0B7BF/#9CA3AC). Sideways reach and Help are still open in this chip.
+
+## Earlier
+
 **Chip: MU 2.36.9** · 2026-10-20 · channel **live**
 
 Material layout (rail or bottom bar, labeled chips with a check, slider value pills, one Play button, snackbar above the play bar) and a stainless-steel mixer skin. The shared stage file was not changed.

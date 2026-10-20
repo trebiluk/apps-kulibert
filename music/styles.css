@@ -5042,7 +5042,8 @@ html[data-theme] body.mu237 #dock-left .tab,
 html[data-theme] body.mu237 #scenes .btn,
 html[data-theme] body.mu237 #mic-lights,
 html[data-theme] body.mu237 .transport .btn {
-  background: linear-gradient(180deg, #C4C9D0, #9CA3AC) !important;
+  background-color: #9CA3AC !important;
+  background-image: linear-gradient(180deg, #C4C9D0, #9CA3AC) !important;
   color: #111827 !important;
   border: 0 !important;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 3px 0 #5F666F !important;
@@ -5053,7 +5054,8 @@ html[data-theme] body.mu237 #dock-left .tab.on,
 html[data-theme] body.mu237 #scenes .btn[aria-pressed="true"],
 html[data-theme] body.mu237 #scenes .btn.on,
 html[data-theme] body.mu237 #mic-lights[aria-pressed="true"] {
-  background: linear-gradient(180deg, #8E969F, #6B7280) !important;
+  background-color: #9CA3AC !important;
+  background-image: linear-gradient(180deg, #B0B7BF, #9CA3AC) !important;
   color: #111827 !important;
   box-shadow: inset 0 3px 0 #5F666F !important;
   transform: translateY(2px);
