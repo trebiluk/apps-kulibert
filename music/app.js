@@ -218,6 +218,7 @@
     lastStamp: 0,
     writeStep: 0,
     lock: null,
+    touched: false,
   };
   const FREQ = { C: 261.6, D: 293.7, E: 329.6, G: 392, A: 440 };
 
@@ -252,6 +253,7 @@
     if (saved.band) state.band = saved.band;
     if (Array.isArray(saved.chairs) && saved.chairs.length === 8) state.chairs = saved.chairs;
     if (saved.bpm) state.song.bpm = saved.bpm;
+    state.touched = saved.touched === true;
     return true;
   }
   function readBox(key) {
@@ -260,6 +262,7 @@
   const openedMain = applySaved(readBox(KEY));
   const openedBak = openedMain ? false : applySaved(readBox(BACKUP));
   state.restored = openedBak;
+  state.hadSave = !!(openedMain || openedBak);
   if (!openedMain && !openedBak) {
     state.song.bpm = 104;
     state.song.tempo = 104;
@@ -505,6 +508,7 @@
       bass: state.bass,
       chairs: state.chairs || null,
       gear: state.gear,
+      touched: state.touched === true,
     });
     let ok = false;
     try {
@@ -834,6 +838,7 @@
           cell.dataset.track = id;
           cell.dataset.step = String(i);
           cell.addEventListener("click", () => {
+            state.touched = true;
             state.drums[id][i] = !state.drums[id][i];
             keep();
             renderDrums();
@@ -2447,6 +2452,7 @@
     }
     clearArm = 0;
     drumUndo = JSON.parse(JSON.stringify(state.drums));
+    state.touched = true;
     ROWS.forEach(([id]) => { state.drums[id] = Array(GRID).fill(false); });
     keep();
     renderDrums();
@@ -2813,7 +2819,10 @@
         b.dataset.pack = name;
         const styleKey = { Trap: "style_trap", "Lo-fi": "style_lofi", Rock: "style_rock", Marching: "style_marching" }[name];
         b.textContent = styleKey ? (mu(styleKey) || name) : name;
-        b.addEventListener("click", () => applyPack(name));
+        b.addEventListener("click", () => {
+          state.touched = true;
+          applyPack(name);
+        });
         row.appendChild(b);
       });
     }
@@ -2823,14 +2832,19 @@
     resetScroll();
     state.parts = { drums: true, bass: true, chords: true, melody: true };
     state.shelfId = "";
-    applyPack("Rock");
-    state.song.bpm = 104;
-    state.song.tempo = 104;
-    if ($("tempo")) {
-      $("tempo").value = "104";
-      $("tempo-read").textContent = "104";
+    // New beat calls this too. It does not wipe. Clear the drums is the wipe.
+    // Factory drums ship with a few hits, so a profile with no save is still fresh.
+    const hasBeat = ROWS.some(([id]) => (state.drums[id] || []).some(Boolean));
+    if (!state.touched && (!hasBeat || !state.hadSave)) {
+      applyPack("Rock");
+      state.song.bpm = 104;
+      state.song.tempo = 104;
+      if ($("tempo")) {
+        $("tempo").value = "104";
+        $("tempo-read").textContent = "104";
+      }
+      keep();
     }
-    keep();
     document.body.classList.remove("is-home", "is-make", "is-library");
     if ($("home")) $("home").hidden = true;
     setMode("beat");
@@ -4397,6 +4411,7 @@
     if (read) read.textContent = "Beat " + ((state.grid % 8) + 1);
   }
   function hitPad(id, btn) {
+    state.touched = true;
     if (btn) {
       btn.classList.add("lit");
       window.setTimeout(() => btn.classList.remove("lit"), 160);
