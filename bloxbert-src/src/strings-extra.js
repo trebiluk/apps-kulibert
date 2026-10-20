@@ -1685,3 +1685,17 @@ for (const [lang, row] of Object.entries(FIT272)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT273 = {
+  en: { whatsNewBody: '2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.' },
+  uk: { whatsNewBody: '2.5.273 — Спливні підказки не закривають Сумку на телефонах, а назви блоків читаються правильно.' },
+  ru: { whatsNewBody: '2.5.273 — Всплывающие подсказки не закрывают Сумку на телефонах, а названия блоков читаются правильно.' },
+  es: { whatsNewBody: '2.5.273 — Los avisos ya no tapan la Bolsa en el móvil y los nombres de bloques se leen bien.' },
+  ar: { whatsNewBody: '2.5.273 — النوافذ المنبثقة لا تغطي الحقيبة على الهاتف، وأسماء المكعبات تُقرأ بشكل صحيح.' },
+  'fa-AF': { whatsNewBody: '2.5.273 — پیام‌ها روی کیف در تلفن نمی‌افتند و نام بلاک‌ها درست خوانده می‌شود.' },
+  rw: { whatsNewBody: '2.5.273 — Ubutumwa ntibugipfuka Igikapu kuri telefoni, kandi amazina ya bloki asomeka neza.' },
+  ti: { whatsNewBody: '2.5.273 — መልእኽትታት ኣብ ተሌፎን ንሳንጣ ኣይሽፍኑን፣ ኣስማት ብሎካት ድማ ብግቡእ ይንበቡ።' },
+}
+for (const [lang, row] of Object.entries(FIT273)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

@@ -1577,6 +1577,13 @@ html body #sheet[data-panel="inventory"] .wells .well .glbl {
   max-height: none !important;
   text-align: center !important;
 }
+
+/* 2.5.273: on a phone the Bag must end above the hotbar so a toast can sit in that lane, never on the header. Wide screens keep the old card height. */
+@media (max-width: 699px) {
+  html body #sheet.kd-panel[data-panel="inventory"] {
+    max-height: calc(100vh - 230px) !important;
+  }
+}
 @media (max-height: 520px) and (min-width: 700px) {
   html body:not(.touch) #play-chip:not([hidden]) {
     top: calc(var(--kb-h, 48px) + var(--top-h, 56px) + 8px) !important;

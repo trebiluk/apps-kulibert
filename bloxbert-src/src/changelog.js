@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.273', date: '2026-10-20', lines: {
+    en: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
+    es: ['2.5.273 — Los avisos ya no tapan la Bolsa en el móvil y los nombres de bloques se leen bien.'],
+    ar: ['2.5.273 — النوافذ المنبثقة لا تغطي الحقيبة على الهاتف، وأسماء المكعبات تُقرأ بشكل صحيح.'],
+    zh: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
+    fr: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
+    pt: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
+    ru: ['2.5.273 — Всплывающие подсказки не закрывают Сумку на телефонах, а названия блоков читаются правильно.'],
+    vi: ['2.5.273 — Pop-ups stay off the Bag on phones, and block names read right.'],
+    uk: ['2.5.273 — Спливні підказки не закривають Сумку на телефонах, а назви блоків читаються правильно.'],
+    'fa-AF': ['2.5.273 — پیام‌ها روی کیف در تلفن نمی‌افتند و نام بلاک‌ها درست خوانده می‌شود.'],
+    rw: ['2.5.273 — Ubutumwa ntibugipfuka Igikapu kuri telefoni, kandi amazina ya bloki asomeka neza.'],
+    ti: ['2.5.273 — መልእኽትታት ኣብ ተሌፎን ንሳንጣ ኣይሽፍኑን፣ ኣስማት ብሎካት ድማ ብግቡእ ይንበቡ።'],
+  }},
   { v: '2.5.272', date: '2026-10-20', lines: {
     en: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
     es: ['2.5.272 — Los avisos ya no tapan tu Bolsa, Pausa se aparta y cada nombre de bloque cabe.'],

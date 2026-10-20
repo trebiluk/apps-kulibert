@@ -47,6 +47,86 @@ function obstacles(el) {
   return rects
 }
 
+function dockNarrowToast(el, sheet, tw, th) {
+  const blocks = []
+  const add = (node) => {
+    if (!node || node === el || node.hidden) return
+    const cs = getComputedStyle(node)
+    if (cs.display === 'none' || cs.visibility === 'hidden') return
+    const r = node.getBoundingClientRect()
+    if (r.width < 4 || r.height < 4) return
+    if (r.bottom <= 0 || r.top >= window.innerHeight) return
+    blocks.push(r)
+  }
+  const bar = sheet.querySelector('.sheet-bar')
+  add(bar)
+  add(document.getElementById('sheet-back'))
+  add(document.getElementById('sheet-x'))
+  add(document.getElementById('sheet-title'))
+  add(document.getElementById('sheet-ver'))
+  sheet.querySelectorAll('.crate-tab, .craft-tab, .well').forEach(add)
+  add(document.querySelector('header.top'))
+  add(document.querySelector('.kb-bar'))
+  add(document.getElementById('pause-btn'))
+  add(document.getElementById('fs-btn'))
+  add(document.getElementById('hotbar'))
+  const sheetR = sheet.getBoundingClientRect()
+  const hits = (l, t) => blocks.some((b) => l < b.right + 8 && l + tw > b.left - 8 && t < b.bottom + 8 && t + th > b.top - 8)
+  const onScreen = (l, t) => l >= 4 && t >= 4 && l + tw <= window.innerWidth - 4 && t + th <= window.innerHeight - 4
+  const clearOfSheet = (l, t) => {
+    const dx = Math.max(sheetR.left - (l + tw), l - sheetR.right)
+    const dy = Math.max(sheetR.top - (t + th), t - sheetR.bottom)
+    if (dx < 0 && dy < 0) return false
+    const gap = dx < 0 ? dy : dy < 0 ? dx : Math.hypot(dx, dy)
+    return gap >= 8
+  }
+  const lefts = [8, Math.round(Math.max(8, (window.innerWidth - tw) / 2))]
+  const hot = document.getElementById('hotbar')
+  let hotR = null
+  if (hot && !hot.hidden) {
+    const cs = getComputedStyle(hot)
+    if (cs.display !== 'none' && cs.visibility !== 'hidden') hotR = hot.getBoundingClientRect()
+  }
+  const floor = bar ? Math.round(bar.getBoundingClientRect().bottom + 8) : 8
+  const candidates = []
+  if (hotR && hotR.height > 8 && hotR.top > floor) {
+    const t = Math.round(hotR.top - 8 - th)
+    for (const l of lefts) candidates.push([l, t])
+  }
+  const below = Math.round(sheetR.bottom + 8)
+  for (const l of lefts) candidates.push([l, below])
+  let pick = null
+  for (const pair of candidates) {
+    if (onScreen(pair[0], pair[1]) && !hits(pair[0], pair[1]) && clearOfSheet(pair[0], pair[1])) { pick = pair; break }
+  }
+  if (!pick) {
+    const start = hotR ? Math.round(hotR.top - 8 - th) : window.innerHeight - th - 8
+    for (let t = start; t >= floor && !pick; t -= 8) {
+      for (const l of lefts) {
+        if (onScreen(l, t) && !hits(l, t) && clearOfSheet(l, t)) { pick = [l, t]; break }
+      }
+    }
+  }
+  if (!pick) {
+    const start = hotR ? Math.round(hotR.top - 8 - th) : window.innerHeight - th - 8
+    for (let t = start; t >= floor && !pick; t -= 8) {
+      for (const l of lefts) {
+        if (onScreen(l, t) && !hits(l, t)) { pick = [l, t]; break }
+      }
+    }
+  }
+  if (!pick) {
+    let t = hotR ? Math.round(hotR.top - 8 - th) : floor
+    if (t < floor) t = floor
+    if (t + th > window.innerHeight - 4) t = Math.max(floor, window.innerHeight - 4 - th)
+    pick = [lefts[0], t]
+  }
+  el.style.setProperty('left', Math.round(pick[0]) + 'px', 'important')
+  el.style.setProperty('top', Math.round(pick[1]) + 'px', 'important')
+  el.dataset.sheetDock = '1'
+  el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
+  return true
+}
 function sheetToastDock(el) {
   if (!el || (el.id !== 'toast' && el.id !== 'qol-tip')) return false
   const sheet = document.getElementById('sheet')
@@ -66,6 +146,7 @@ function sheetToastDock(el) {
   const box = el.getBoundingClientRect()
   const tw = Math.min(Math.max(box.width || 160, 96), window.innerWidth - 16)
   const th = Math.max(box.height || 36, 32)
+  if (window.innerWidth < 700) return dockNarrowToast(el, sheet, tw, th)
   const blocks = []
   const add = (node) => {
     if (!node || node === el || node.hidden) return
