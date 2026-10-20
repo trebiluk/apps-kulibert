@@ -313,8 +313,9 @@
   }
 
   function pull() {
+    if (!API || API.charAt(0) === "/") return Promise.resolve(null);
     var cls = classCode();
-    return fetch(API + "?class=" + encodeURIComponent(cls)).then(function (res) {
+    return fetch(API + "?class=" + encodeURIComponent(cls), { credentials: "omit" }).then(function (res) {
       if (!res.ok) return null;
       return res.json();
     }).then(function (pack) {

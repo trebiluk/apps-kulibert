@@ -132,7 +132,7 @@
     openBoard = board.id;
     var view = api.view(tab, game.id, board.id);
     var title = document.getElementById("board-title");
-    if (title) title.textContent = game.name + " · " + board.name + " · " + t("lbTab" + tab, tab);
+    if (title) title.textContent = game.name + " · " + board.name + " · " + t(tab === "my" ? "lbTabMy" : tab === "class" ? "lbTabClass" : tab === "school" ? "lbTabSchool" : "lbTabWeek", tab);
     list.replaceChildren();
     view.rows.forEach(function (row, i) {
       list.appendChild(line(i + 1, row.alias, fmt(row, board)));
