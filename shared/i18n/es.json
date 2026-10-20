@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: Cada juego muestra tu mejor marca y el récord de la clase para superar.",
+  "whatsNewLine": "Hub rev 2026-10-20-test-win-switch: El personal puede activar el modo de prueba para saltar a la pantalla de ganar o perder. Los puntos de prueba van solo al tablero TEST.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -185,5 +185,6 @@
   "rfTeachSlope": "Más pendiente = flujo más rápido",
   "rfTeachGel": "Líquido espeso (alta viscosidad) fluye más lento",
   "rfTeachRate": "Caudal = cuánto se vierte cada segundo",
-  "rfHelpLesson": "Lee la línea de la lección al ganar."
+  "rfHelpLesson": "Lee la línea de la lección al ganar.",
+  "testModeHelp": "Modo de prueba (solo personal): salta a la pantalla de ganar o perder. Los puntos van al tablero TEST."
 }

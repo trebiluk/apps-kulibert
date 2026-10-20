@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub 2026-10-20: Pick names from a list. Readers read games better.",
+  "whatsNewLine": "Hub rev 2026-10-20-test-win-switch: Staff test mode jumps to win or lose. Test scores go to TEST only.",
   "lbAliasHelp": "Pick a name from the list. Do not type a real name.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -32,5 +32,6 @@
   "rfTeachSlope": "Steeper slope means faster flow",
   "rfTeachGel": "Thick liquid (high viscosity) moves slower",
   "rfTeachRate": "Flow rate means how much pours each second",
-  "rfHelpLesson": "Read the lesson line when you win."
+  "rfHelpLesson": "Read the lesson line when you win.",
+  "testModeHelp": "Staff test mode jumps to win or lose. Scores go to TEST."
 }

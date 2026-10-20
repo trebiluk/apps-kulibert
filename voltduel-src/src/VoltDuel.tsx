@@ -728,6 +728,7 @@ export function VoltDuel() {
                   <p>
                     Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
                   </p>
+                  <p>⚑ Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.</p>
                   <button type="button" className="text-btn" onClick={() => setHelpOpen(false)}>
                     Close
                   </button>

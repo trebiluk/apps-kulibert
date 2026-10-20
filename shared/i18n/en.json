@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-leaderboard-stats: Every game tile shows your best and the class record to beat.",
+  "whatsNewLine": "Hub rev 2026-10-20-test-win-switch: Staff can turn on Test mode to jump to the win or lose screen. Test scores go to a TEST board only.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
@@ -186,5 +186,6 @@
   "rfTeachSlope": "Steeper slope = faster flow",
   "rfTeachGel": "Thick liquid (high viscosity) flows slower",
   "rfTeachRate": "Flow rate = how much pours each second",
-  "rfHelpLesson": "Read the lesson line when you win."
+  "rfHelpLesson": "Read the lesson line when you win.",
+  "testModeHelp": "Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board."
 }
