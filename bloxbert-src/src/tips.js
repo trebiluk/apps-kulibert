@@ -79,6 +79,63 @@ function sheetToastDock(el) {
   el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
   return true
 }
+function barBand() {
+  const bars = []
+  const controls = []
+  const consider = (node, bucket) => {
+    if (!node || node.hidden) return
+    const cs = getComputedStyle(node)
+    if (cs.display === 'none' || cs.visibility === 'hidden') return
+    const r = node.getBoundingClientRect()
+    if (r.width < 8 || r.height < 8) return
+    if (r.bottom <= 0 || r.top >= window.innerHeight) return
+    bucket.push(r)
+  }
+  const hot = document.getElementById('hotbar')
+  if (hot) {
+    consider(hot, bars)
+    hot.querySelectorAll('.slot, .bag-tile').forEach((node) => consider(node, bars))
+  }
+  consider(document.getElementById('pause-btn'), controls)
+  consider(document.getElementById('fs-btn'), controls)
+  return { bars, controls }
+}
+// Keep a toast fully above the live hotbar and Bag, and off Pause / Full screen.
+export function pinAboveBar(el) {
+  if (!el || el.hidden || el.dataset.sheetDock === '1') return false
+  el.style.setProperty('position', 'fixed', 'important')
+  el.style.setProperty('transform', 'none', 'important')
+  el.style.setProperty('bottom', 'auto', 'important')
+  el.style.setProperty('right', 'auto', 'important')
+  el.style.setProperty('margin', '0', 'important')
+  el.style.setProperty('width', 'max-content', 'important')
+  el.style.setProperty('max-width', 'min(420px, calc(100vw - 16px))', 'important')
+  const box = el.getBoundingClientRect()
+  const w = Math.min(Math.max(box.width || 140, 96), window.innerWidth - 16)
+  const h = Math.max(box.height || 36, 32)
+  const { bars, controls } = barBand()
+  if (!bars.length) return false
+  const ceil = Math.min.apply(null, bars.map((r) => r.top)) - 8
+  let top = Math.round(ceil - h)
+  if (top < 8) top = 8
+  let left = Math.round((window.innerWidth - w) / 2)
+  if (left < 8) left = 8
+  if (left + w > window.innerWidth - 8) left = Math.max(8, Math.round(window.innerWidth - 8 - w))
+  const hit = (x, y, list) => list.some((b) => x < b.right + 8 && x + w > b.left - 8 && y < b.bottom + 8 && y + h > b.top - 8)
+  if (hit(left, top, controls)) {
+    const blockers = controls.filter((b) => top < b.bottom + 8 && top + h > b.top - 8)
+    if (blockers.length) {
+      const gapL = Math.min.apply(null, blockers.map((b) => b.left)) - w - 8
+      const gapR = Math.max.apply(null, blockers.map((b) => b.right)) + 8
+      if (gapL >= 8) left = Math.round(gapL)
+      else if (gapR + w <= window.innerWidth - 8) left = Math.round(gapR)
+    }
+  }
+  if (bars.length && top + h > ceil + 0.5) top = Math.max(8, Math.round(ceil - h))
+  el.style.setProperty('left', Math.round(left) + 'px', 'important')
+  el.style.setProperty('top', Math.round(top) + 'px', 'important')
+  return true
+}
 function keepClear() {
   const pause = document.getElementById('pause-btn')
   const pr = shown(pause)
@@ -191,6 +248,7 @@ export function placeTip(el, follow) {
   if (toast) el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
   settle(el)
   keepClear()
+  if (toast || el.id === 'qol-tip' || el.id === 'menu-hint' || el.id === 'dig-chip') pinAboveBar(el)
   try { el.dispatchEvent(new Event("tipmove")) } catch (e) {}
   if (!follow) {
     requestAnimationFrame(() => {
@@ -373,6 +431,10 @@ function onResize() {
   } else if (slot && slot.kind === 'hold') {
     const rec = holds.get(slot.id)
     if (rec && rec.el && !rec.el.hidden) placeTip(rec.el, true)
+  }
+  for (const id of ['qol-tip', 'dig-chip']) {
+    const node = document.getElementById(id)
+    if (node && !node.hidden && node.dataset.sheetDock !== '1') pinAboveBar(node)
   }
 }
 function armWatch() {

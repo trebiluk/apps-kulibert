@@ -41,7 +41,7 @@ import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanv
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
-import { holdTip, dropTip, showToast } from './tips.js'
+import { holdTip, dropTip, showToast, pinAboveBar } from './tips.js'
 import { FLOOR, STATIONS, keptCell, protectedCell, protectRadius, TOWN_AT } from './town.js'
 import { coalHere, plantHere, wildWood, pondHere, shoreLow, rescueSpots, starterPonds, surfaceY, starterBushes, wildBushCell, groundAt, genBlock, genColumns, peekColumn, underAll, solidUnder, GEN, spawnTreeYaw } from './worldgen.js'
 import { makerBlock, seedWords, ADJECTIVES, NOUNS, clampStep, normSeed, isMakerPreset, softPreset, tipKey, makerName, shareCode, parseShare, PRESETS } from './maker.js'
@@ -432,6 +432,8 @@ function paintDigChip(spot) {
     chip.textContent = arrow + ' ' + t('digOutside')
   } else chip.textContent = t('digOutside')
   chip.hidden = false
+  pinAboveBar(chip)
+  requestAnimationFrame(() => { if (chip.isConnected && !chip.hidden) pinAboveBar(chip) })
   armDigTimer()
 }
 function tickDigChip() {

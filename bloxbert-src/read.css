@@ -1667,6 +1667,15 @@ html body #sheet[data-panel="inventory"] .count {
   }
 }
 
+/* 2.5.271: a fixed lift drops toasts onto the hotbar. pinAboveBar sets the live top. */
+html body #toast.nice-chip:not([hidden]),
+html[data-kb-bar] #toast.nice-chip:not([hidden]),
+html body #qol-tip:not([hidden]),
+html body #menu-hint:not([hidden]),
+html body #dig-chip:not([hidden]) {
+  bottom: auto !important;
+}
+
 
 
 

@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Mon Oct 19 2026 (Build: 2.5.270 Item pictures are bigger, pop-ups stay clear, and Creative fits on phones).
+Updated Tue Oct 20 2026 (Build: 2.5.271 Tips fade fast, stay off your hotbar, and talk touch on phones).
+
+- [x] **2.5.271 Toasts clear:** Every toast sits fully above the hotbar and Bag, with at least 8px of clear space, at 412×915, 915×412 and 1366×768. A toast does not touch a slot, Bag, Pause or Full screen.
 
 - [x] **2.5.270 Crafting grid:** At 915×412 the recipe list rests on whole rows. A resting scroll does not leave a half row cut off.
 - [x] **2.5.270 Pop-ups:** A Workbench toast with Crafting or Bag open stays in the panel header, off the tiles and Bag rows, at 915×412 and 412×915. On a fresh desktop load, Click to play is not covered by the goal. A phone tip stays at least 8px clear of Pause.
@@ -188,6 +190,7 @@ Updated Mon Oct 19 2026 (Build: 2.5.270 Item pictures are bigger, pop-ups stay c
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.271 | 2.5.271 | Tips fade fast, stay off the hotbar, and talk touch on phones | shipping |
 | 2.5.270 | 2.5.270 | Item pictures are bigger, pop-ups stay clear, and Creative fits on phones | shipping |
 | 2.5.268 | 2.5.268 | Recipe words fit, and phone slots are easier to tap | shipping |
 | 2.5.267 | 2.5.267 | Goal clears when you finish it, and Save fits on phones | shipping |

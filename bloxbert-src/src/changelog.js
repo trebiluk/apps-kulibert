@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.271', date: '2026-10-20', lines: {
+    en: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
+    es: ['2.5.271 — Los avisos se van rápido, no tapan tu barra y en el teléfono hablan de toques.'],
+    ar: ['2.5.271 — التلميحات تختفي بسرعة، ولا تغطي شريط الأدوات، وتتحدث باللمس على الهاتف.'],
+    zh: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
+    fr: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
+    pt: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
+    ru: ['2.5.271 — Подсказки быстро исчезают, не закрывают панель предметов и на телефоне говорят про касания.'],
+    vi: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
+    uk: ['2.5.271 — Підказки швидко зникають, не закривають панель предметів і говорять мовою дотиків на телефоні.'],
+    'fa-AF': ['2.5.271 — راهنماها زود محو می‌شوند، روی نوار ابزار نمی‌افتند و در تلفن به زبان لمس حرف می‌زنند.'],
+    rw: ['2.5.271 — Inama zihita zigenda vuba, ntizipfuka umurongo w\'ibikoresho, kandi kuri telefone zivuga gukoraho.'],
+    ti: ['2.5.271 — ምኽርታት ቀልጢፎም ይጠፍኡ፣ ንመስርዕ ኣቑሑትካ ኣይሽፍኑን፣ ኣብ ተሌፎን ድማ ብምንካእ ይዛረቡ።'],
+  }},
   { v: '2.5.270', date: '2026-10-19', lines: {
     en: ['2.5.270 — Item pictures are bigger, so Planks, Logs and Berries are easy to tell apart. Pop-ups stay out of the way, and Creative fits on phones.'],
     es: ['2.5.270 — Las imágenes de los objetos son más grandes, así que Tablones, Tronco y Bayas se distinguen fácil. Los avisos ya no estorban y el modo Creativo cabe en el teléfono.'],

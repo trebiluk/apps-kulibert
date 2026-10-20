@@ -1642,3 +1642,17 @@ for (const [lang, row] of Object.entries(FIT269)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT271 = {
+  en: { whatsNewBody: '2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.' },
+  uk: { whatsNewBody: '2.5.271 — Підказки швидко зникають, не закривають панель предметів і говорять мовою дотиків на телефоні.' },
+  ru: { whatsNewBody: '2.5.271 — Подсказки быстро исчезают, не закрывают панель предметов и на телефоне говорят про касания.' },
+  es: { whatsNewBody: '2.5.271 — Los avisos se van rápido, no tapan tu barra y en el teléfono hablan de toques.' },
+  ar: { whatsNewBody: '2.5.271 — التلميحات تختفي بسرعة، ولا تغطي شريط الأدوات، وتتحدث باللمس على الهاتف.' },
+  'fa-AF': { whatsNewBody: '2.5.271 — راهنماها زود محو می‌شوند، روی نوار ابزار نمی‌افتند و در تلفن به زبان لمس حرف می‌زنند.' },
+  rw: { whatsNewBody: '2.5.271 — Inama zihita zigenda vuba, ntizipfuka umurongo w\'ibikoresho, kandi kuri telefone zivuga gukoraho.' },
+  ti: { whatsNewBody: '2.5.271 — ምኽርታት ቀልጢፎም ይጠፍኡ፣ ንመስርዕ ኣቑሑትካ ኣይሽፍኑን፣ ኣብ ተሌፎን ድማ ብምንካእ ይዛረቡ።' },
+}
+for (const [lang, row] of Object.entries(FIT271)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

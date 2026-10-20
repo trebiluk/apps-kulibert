@@ -1,4 +1,5 @@
 // Bertopia wiring for the shared slot contract. The arrays stay the ones the save already uses.
+import { pinAboveBar } from './tips.js'
 export function bindBertopiaSlots(api) {
   const KS = typeof window !== 'undefined' ? window.KulibertSlots : null
   if (!KS) return null
@@ -742,6 +743,8 @@ function showTip(loc, ms, sticky) {
   tip.style.transform = 'translateY(-100%)'
   if (narrow && jumpOn && tipHitsHud(tip)) tip.style.top = Math.max(8, jumpRect.top - 8) + 'px'
   placeReadTip(tip)
+  pinAboveBar(tip)
+  requestAnimationFrame(() => { if (tip.isConnected && !tip.hidden) pinAboveBar(tip) })
   tipUntil = Infinity
   clearTimeout(showTip.hide)
 }
