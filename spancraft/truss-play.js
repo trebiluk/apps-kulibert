@@ -1663,8 +1663,18 @@ export function mountTruss(cfg) {
     next.removeAttribute("hidden");
     next.href = cfg.nextDoor;
   }
+  function testOn() {
+    try { return !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch (e) { return false; }
+  }
   function stayHere() {
-    return /(?:\?|&)stay=1(?:&|$)/.test(location.search);
+    var stay = /(?:\?|&)stay=1(?:&|$)/.test(location.search);
+    var staff = false;
+    var desk = false;
+    try {
+      staff = !!(window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked());
+      desk = !!(window.KulibertTest && window.KulibertTest.deskOn && window.KulibertTest.deskOn());
+    } catch (e) {}
+    return testOn() || (stay && staff && desk);
   }
 
   function rememberHome(el) {
@@ -2444,3 +2454,27 @@ export function mountTruss(cfg) {
     window.KulibertI18n.ready(uiLang(), () => paintLang());
   }
 }
+
+  (function () {
+    var bar = document.createElement("div");
+    bar.id = "sc-test-jumps";
+    bar.hidden = true;
+    bar.style.cssText = "position:fixed;left:8px;bottom:8px;z-index:40;display:flex;gap:.4rem";
+    function btn(label, mark) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.textContent = mark + " " + label;
+      b.setAttribute("aria-label", label);
+      b.style.cssText = "min-width:44px;min-height:44px;border-radius:999px;border:1px solid #24506d;background:#0b152c;color:#e8f7ff;font:700 .9rem/1 Outfit,system-ui,sans-serif;padding:0 .8rem";
+      b.addEventListener("click", function () {
+        showPlate(label === "Jump to win" ? t("clear") : t("fix"), "Test jump.", label === "Jump to win" ? "✓" : "✕");
+      });
+      return b;
+    }
+    bar.appendChild(btn("Jump to win", "🏆"));
+    bar.appendChild(btn("Jump to lose", "⚑"));
+    document.body.appendChild(bar);
+    function paint() { bar.hidden = !testOn(); }
+    paint();
+    window.addEventListener("focus", paint);
+  })();
