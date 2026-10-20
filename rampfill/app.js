@@ -40,7 +40,7 @@
       whats: "RF 1.0.4 — Referee Mode: a big timer, numbered cup cards and a Done button for real cup challenges!",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
-      cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line",
+      cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
       progress: "Progress", startOver: "Start over", resetAsk: "Start over? Cups and stars clear.", openWord: "open", locked: "locked",
       whatsNew: "What's new", help: "Help",
       helpDraw: "Draw a ramp like the dotted guide.",
@@ -91,7 +91,7 @@
       whats: "RF 1.0.4 — Режим судді: великий таймер, пронумеровані картки й кнопка «Готово» для справжніх чашок!",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
-      cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд",
+      cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
       progress: "Прогрес", startOver: "Спочатку", resetAsk: "Спочатку? Чашки і зірки зітруться.", openWord: "відкрито", locked: "закрито",
       whatsNew: "Що нового", help: "Допомога",
       helpDraw: "Намалюй схил по крапках.",
@@ -141,7 +141,7 @@
       whats: "RF 1.0.4 — Режим судьи: большой таймер, карточки с номерами и кнопка «Готово» для настоящих стаканов!",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
-      cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд",
+      cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
       progress: "Прогресс", startOver: "Сначала", resetAsk: "Сначала? Стаканы и звёзды сотрутся.", openWord: "открыт", locked: "закрыт",
       whatsNew: "Что нового", help: "Помощь",
       helpDraw: "Нарисуй склон по точкам.",
@@ -191,7 +191,7 @@
       whats: "RF 1.0.4 — Modo árbitro: un temporizador grande, tarjetas numeradas y un botón Listo para retos con vasos reales!",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
-      cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila",
+      cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
       progress: "Progreso", startOver: "Empezar de nuevo", resetAsk: "¿Empezar de nuevo? Se borran vasos y estrellas.", openWord: "abierto", locked: "cerrado",
       whatsNew: "Novedades", help: "Ayuda",
       helpDraw: "Dibuja una rampa como la guía de puntos.",
@@ -241,7 +241,7 @@
       whats: "RF 1.0.4 — وضع الحَكَم: مؤقّت كبير وبطاقات مرقّمة وزر «تم» لتحديات الأكواب الحقيقية!",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
-      cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف",
+      cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
       progress: "التقدّم", startOver: "ابدأ من جديد", resetAsk: "البدء من جديد؟ تُمسح الأكواب والنجوم.", openWord: "مفتوح", locked: "مغلق",
       whatsNew: "ما الجديد", help: "مساعدة",
       helpDraw: "ارسم منحدرًا مثل الدليل المنقط.",
@@ -291,7 +291,7 @@
       whats: "RF 1.0.4 — حالت داور: ساعت بزرگ، کارت‌های شماره‌دار و دکمهٔ «تمام» برای مسابقهٔ پیاله‌های واقعی!",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
-      cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف",
+      cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
       progress: "پیشرفت", startOver: "از نو", resetAsk: "از نو؟ پیاله‌ها و ستاره‌ها پاک می‌شوند.", openWord: "باز", locked: "بسته",
       whatsNew: "تازه‌ها", help: "کمک",
       helpDraw: "سرازیری را مثل نقطه‌ها بکش.",
@@ -341,7 +341,7 @@
       whats: "RF 1.0.4 — Uburyo bw'umusifuzi: isaha nini, amakarita afite nimero na buto \"Byarangiye\" ku marushanwa y'ibikombe nyabyo!",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
-      cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi",
+      cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
       progress: "Intambwe", startOver: "Tangira bushya", resetAsk: "Tangira bushya? Ibikombe n'inyenyeri bisibangana.", openWord: "bifunguye", locked: "bifunze",
       whatsNew: "Ibishya", help: "Ubufasha",
       helpDraw: "Shushanya umuhengamo nka utudomo.",
@@ -391,7 +391,7 @@
       whats: "RF 1.0.4 — ኣገባብ ዳኛ: ዓቢ ሰዓት፣ ቁጽሪ ዘለዎም ካርድታትን ናይ «ተወዲኡ» መልጎምን ንሓቀኛ ውድድር ኩባያታት!",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
-      cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር",
+      cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
       progress: "ምዕባለ", startOver: "ካብ ጀምር", resetAsk: "ካብ ጀምር? ኩባያታትን ኮኾብትን ይጠፍኡ።", openWord: "ኩፉት", locked: "ዕጹው",
       whatsNew: "ሓድሽ", help: "ሓገዝ",
       helpDraw: "ቁልቁለት ከም ነጥብታት ስኣል።",
@@ -1488,11 +1488,23 @@
       clock.classList.toggle("warn", warn);
     }
     var card = document.getElementById("ref-timeup");
-    if (card) card.hidden = !refEnded;
+    if (card) card.hidden = !(refEnded && !refLock);
+    var lock = document.getElementById("ref-lock");
+    if (lock) lock.hidden = !refLock;
+    var startBtn = document.getElementById("ref-start");
+    var stopBtn = document.getElementById("ref-stop");
+    if (startBtn) startBtn.disabled = !!refLock;
+    if (stopBtn) stopBtn.disabled = !!refLock;
     var up = document.getElementById("ref-up");
     var down = document.getElementById("ref-down");
-    if (up) up.setAttribute("aria-pressed", refDown ? "false" : "true");
-    if (down) down.setAttribute("aria-pressed", refDown ? "true" : "false");
+    if (up) {
+      up.disabled = !!(refLock || refRun);
+      up.setAttribute("aria-pressed", refDown ? "false" : "true");
+    }
+    if (down) {
+      down.disabled = !!(refLock || refRun);
+      down.setAttribute("aria-pressed", refDown ? "true" : "false");
+    }
     var mins = document.getElementById("ref-mins");
     if (mins) mins.disabled = refRun || refLock;
   }
@@ -1525,6 +1537,7 @@
     paintRef();
   }
   function refStop() {
+    if (refLock) return;
     refRun = false;
     paintRef();
   }
@@ -1539,6 +1552,16 @@
   function refDone() {
     refRun = false;
     refLock = true;
+    paintRef();
+  }
+  function refNext() {
+    refCard = refCard >= REF_CARDS.length ? 1 : refCard + 1;
+    refRun = false;
+    refLock = false;
+    refEnded = false;
+    refElapsed = 0;
+    refLeft = refDown ? refMinutes() * 60 * 1000 : 0;
+    paintBoard();
     paintRef();
   }
   function refSetMode(down) {
@@ -2447,6 +2470,7 @@
   document.getElementById("ref-stop").addEventListener("click", refStop);
   document.getElementById("ref-reset").addEventListener("click", refReset);
   document.getElementById("ref-done").addEventListener("click", refDone);
+  document.getElementById("ref-next").addEventListener("click", refNext);
   document.getElementById("ref-home").addEventListener("click", closeRef);
   document.getElementById("ref-mins").addEventListener("change", function () {
     if (!refRun && !refLock && refDown) refLeft = refMinutes() * 60 * 1000;

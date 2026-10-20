@@ -306,6 +306,7 @@ body.at-ref #pause-btn { visibility: hidden; }
 }
 .ref-card svg { width: 72px; height: 72px; flex: none; }
 .ref-card p { margin: 0; font-size: clamp(40px, 8vw, 72px); font-weight: 800; }
+.ref-lock p { font-size: clamp(28px, 5vw, 48px); }
 @media (prefers-reduced-motion: reduce) {
   .ref-clock { transition: none; }
 }
