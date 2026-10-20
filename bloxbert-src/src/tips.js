@@ -48,33 +48,73 @@ function obstacles(el) {
 }
 
 function sheetToastDock(el) {
-  if (!el || el.id !== 'toast') return false
+  if (!el || (el.id !== 'toast' && el.id !== 'qol-tip')) return false
   const sheet = document.getElementById('sheet')
   if (!sheet || sheet.hidden) return false
   const panel = sheet.dataset.panel || ''
-  if (panel !== 'crafting' && panel !== 'inventory') return false
-  const bar = sheet.querySelector('.sheet-bar')
-  if (!bar) return false
-  const r = bar.getBoundingClientRect()
-  if (r.width < 8 || r.height < 8) return false
-  const room = Math.max(96, r.width - 88)
+  if (!panel || panel === 'tour') return false
+  const sheetR = sheet.getBoundingClientRect()
+  if (sheetR.width < 8 || sheetR.height < 8) return false
   el.style.zIndex = '70'
   el.style.setProperty('position', 'fixed', 'important')
   el.style.setProperty('transform', 'none', 'important')
   el.style.setProperty('right', 'auto', 'important')
   el.style.setProperty('bottom', 'auto', 'important')
   el.style.setProperty('margin', '0', 'important')
-  el.style.setProperty('max-width', room + 'px', 'important')
   el.style.setProperty('width', 'max-content', 'important')
+  el.style.setProperty('max-width', 'min(420px, calc(100vw - 16px))', 'important')
   const box = el.getBoundingClientRect()
-  const tw = Math.min(box.width || 160, room)
-  const th = Math.max(box.height || 36, 36)
-  const left = Math.round(Math.max(r.left + 8, Math.min(r.left + 8, r.right - tw - 72)))
-  let top = Math.round(r.bottom - th)
-  if (th <= r.height - 2) top = Math.round(r.top + Math.max(0, (r.height - th) / 2))
-  if (top + th > r.bottom) top = Math.round(r.bottom - th)
-  el.style.setProperty('left', left + 'px', 'important')
-  el.style.setProperty('top', top + 'px', 'important')
+  const tw = Math.min(Math.max(box.width || 160, 96), window.innerWidth - 16)
+  const th = Math.max(box.height || 36, 32)
+  const blocks = []
+  const add = (node) => {
+    if (!node || node === el || node.hidden) return
+    const cs = getComputedStyle(node)
+    if (cs.display === 'none' || cs.visibility === 'hidden') return
+    const r = node.getBoundingClientRect()
+    if (r.width < 4 || r.height < 4) return
+    if (r.bottom <= 0 || r.top >= window.innerHeight) return
+    blocks.push(r)
+  }
+  add(sheet)
+  sheet.querySelectorAll('.sheet-bar, #sheet-body, #sheet-x, #sheet-back, .crate-tab, .craft-tab').forEach(add)
+  add(document.querySelector('header.top'))
+  add(document.querySelector('.kb-bar'))
+  add(document.getElementById('pause-btn'))
+  add(document.getElementById('fs-btn'))
+  add(document.getElementById('hotbar'))
+  const hits = (l, t) => blocks.some((b) => l < b.right + 8 && l + tw > b.left - 8 && t < b.bottom + 8 && t + th > b.top - 8)
+  const onScreen = (l, t) => l >= 4 && t >= 4 && l + tw <= window.innerWidth - 4 && t + th <= window.innerHeight - 4
+  const above = Math.round(sheetR.top - 8 - th)
+  const candidates = [
+    [Math.round(Math.max(8, sheetR.left)), above],
+    [Math.round(Math.max(8, (window.innerWidth - tw) / 2)), above],
+    [8, above],
+    [Math.round(sheetR.right + 8), Math.max(8, Math.round(sheetR.top))],
+    [Math.round(sheetR.left - 8 - tw), Math.max(8, Math.round(sheetR.top))],
+    [Math.round(sheetR.right + 8), Math.max(8, Math.round(sheetR.top + 8))],
+  ]
+  let pick = null
+  for (const pair of candidates) {
+    if (onScreen(pair[0], pair[1]) && !hits(pair[0], pair[1])) { pick = pair; break }
+  }
+  if (!pick) {
+    const step = 16
+    for (let t = 8; t <= window.innerHeight - th - 8 && !pick; t += step) {
+      const lefts = [8, Math.round(sheetR.right + 8), Math.round(window.innerWidth - tw - 8), Math.round(sheetR.left)]
+      for (const l of lefts) {
+        if (onScreen(l, t) && !hits(l, t)) { pick = [l, t]; break }
+      }
+    }
+  }
+  if (!pick) {
+    let t = Math.round(sheetR.top - 8 - th)
+    let l = Math.round(Math.max(8, Math.min(sheetR.left, window.innerWidth - tw - 8)))
+    if (t < 0) t = 0
+    pick = [l, t]
+  }
+  el.style.setProperty('left', Math.round(pick[0]) + 'px', 'important')
+  el.style.setProperty('top', Math.round(pick[1]) + 'px', 'important')
   el.dataset.sheetDock = '1'
   el.style.pointerEvents = el.querySelector('button, .toast-hold') ? 'auto' : 'none'
   return true
@@ -231,7 +271,7 @@ export function placeTip(el, follow) {
   el.dataset.sheetDock = ''
   if (!toast) el.style.pointerEvents = 'auto'
   el.hidden = false
-  if (toast && sheetToastDock(el)) {
+  if ((toast || el.id === 'qol-tip') && sheetToastDock(el)) {
     try { el.dispatchEvent(new Event("tipmove")) } catch (e) {}
     if (!follow) {
       requestAnimationFrame(() => { if (el.isConnected && !el.hidden) placeTip(el, true) })

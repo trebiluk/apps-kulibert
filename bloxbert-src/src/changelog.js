@@ -1,4 +1,18 @@
 export const CHANGELOG = [
+  { v: '2.5.272', date: '2026-10-20', lines: {
+    en: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
+    es: ['2.5.272 — Los avisos ya no tapan tu Bolsa, Pausa se aparta y cada nombre de bloque cabe.'],
+    ar: ['2.5.272 — النوافذ المنبثقة لا تغطي الحقيبة، وزر الإيقاف يبتعد، وكل اسم مكعب يظهر كاملاً.'],
+    zh: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
+    fr: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
+    pt: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
+    ru: ['2.5.272 — Всплывающие подсказки не закрывают Сумку, Пауза не мешает, и каждое название блока помещается.'],
+    vi: ['2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.'],
+    uk: ['2.5.272 — Спливні підказки не закривають Сумку, Пауза не заважає, і кожна назва блоку вміщується.'],
+    'fa-AF': ['2.5.272 — پیام‌ها دیگر روی کیف نمی‌افتند، دکمهٔ توقف کنار می‌رود و نام هر بلاک کامل دیده می‌شود.'],
+    rw: ['2.5.272 — Ubutumwa ntibugipfuka Igikapu, Hagarara iva mu nzira, kandi izina rya buri bloki rirasomeka ryose.'],
+    ti: ['2.5.272 — መልእኽትታት ንሳንጣኻ ኣይሽፍኑን፣ ደው ምባል ይርሕቕ፣ ስም ነፍሲ ወከፍ ብሎክ ምሉእ ይንበብ።'],
+  }},
   { v: '2.5.271', date: '2026-10-20', lines: {
     en: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
     es: ['2.5.271 — Los avisos se van rápido, no tapan tu barra y en el teléfono hablan de toques.'],

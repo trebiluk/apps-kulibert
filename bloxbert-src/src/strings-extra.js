@@ -1671,3 +1671,17 @@ for (const [lang, row] of Object.entries(TOUCH271)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT272 = {
+  en: { whatsNewBody: '2.5.272 — Pop-ups stay off your Bag, Pause steps aside, and every block name fits.' },
+  uk: { whatsNewBody: '2.5.272 — Спливні підказки не закривають Сумку, Пауза не заважає, і кожна назва блоку вміщується.' },
+  ru: { whatsNewBody: '2.5.272 — Всплывающие подсказки не закрывают Сумку, Пауза не мешает, и каждое название блока помещается.' },
+  es: { whatsNewBody: '2.5.272 — Los avisos ya no tapan tu Bolsa, Pausa se aparta y cada nombre de bloque cabe.' },
+  ar: { whatsNewBody: '2.5.272 — النوافذ المنبثقة لا تغطي الحقيبة، وزر الإيقاف يبتعد، وكل اسم مكعب يظهر كاملاً.' },
+  'fa-AF': { whatsNewBody: '2.5.272 — پیام‌ها دیگر روی کیف نمی‌افتند، دکمهٔ توقف کنار می‌رود و نام هر بلاک کامل دیده می‌شود.' },
+  rw: { whatsNewBody: '2.5.272 — Ubutumwa ntibugipfuka Igikapu, Hagarara iva mu nzira, kandi izina rya buri bloki rirasomeka ryose.' },
+  ti: { whatsNewBody: '2.5.272 — መልእኽትታት ንሳንጣኻ ኣይሽፍኑን፣ ደው ምባል ይርሕቕ፣ ስም ነፍሲ ወከፍ ብሎክ ምሉእ ይንበብ።' },
+}
+for (const [lang, row] of Object.entries(FIT272)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
