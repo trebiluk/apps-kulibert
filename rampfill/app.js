@@ -109,7 +109,7 @@
       teachSlope: "Steeper slope = faster flow",
       teachGel: "Thick liquid (high viscosity) flows slower",
       teachRate: "Flow rate = how much pours each second",
-      bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
+      bestWord: "Best:", rampsWord: "ramps", rampsOne: "ramp", rampsTwo: "ramps", rampsFew: "ramps", rampsMany: "ramps", rampsOther: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
       helpPause: "Pause is always easy to tap, even sideways.",
       fillWord: "Fill",
       helpSplash: "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
@@ -200,7 +200,7 @@
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
       teachRate: "Швидкість потоку = скільки ллється щосекунди",
-      bestWord: "Рекорд:", rampsWord: "рамп", newBest: "Новий рекорд!", tryFewer: "Спробуй менше",
+      bestWord: "Рекорд:", rampsWord: "рамп", rampsOne: "рампа", rampsTwo: "рампи", rampsFew: "рампи", rampsMany: "рамп", rampsOther: "рампи", newBest: "Новий рекорд!", tryFewer: "Спробуй менше",
       read: "Прочитай мені", language: "Мова",
       lv1: "Перший схил", lv2: "Дві чашки", lv3: "Перший витік", lv4: "Повільний гель", lv5: "Обери шлях",
       done1: "Перший схил готовий.", done2: "Дві чашки готові.", done3: "Перший витік готовий.", done4: "Повільний гель готовий.",
@@ -275,7 +275,7 @@
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
       teachRate: "Скорость потока = сколько льётся в секунду",
-      bestWord: "Рекорд:", rampsWord: "рамп", newBest: "Новый рекорд!", tryFewer: "Попробуй меньше",
+      bestWord: "Рекорд:", rampsWord: "рамп", rampsOne: "рампа", rampsTwo: "рампы", rampsFew: "рампы", rampsMany: "рамп", rampsOther: "рампы", newBest: "Новый рекорд!", tryFewer: "Попробуй меньше",
       read: "Прочитай мне", language: "Язык",
       lv1: "Первый склон", lv2: "Две чашки", lv3: "Первая течь", lv4: "Медленный гель", lv5: "Выбери путь",
       done1: "Первый склон готов.", done2: "Две чашки готовы.", done3: "Первая течь готова.", done4: "Медленный гель готов.",
@@ -350,7 +350,7 @@
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
       teachRate: "Caudal = cuánto se vierte cada segundo",
-      bestWord: "Récord:", rampsWord: "rampas", newBest: "¡Nuevo récord!", tryFewer: "Prueba con menos",
+      bestWord: "Récord:", rampsWord: "rampas", rampsOne: "rampa", rampsTwo: "rampas", rampsFew: "rampas", rampsMany: "rampas", rampsOther: "rampas", newBest: "¡Nuevo récord!", tryFewer: "Prueba con menos",
       read: "Léemelo", language: "Idioma",
       lv1: "Primera rampa", lv2: "Dos tazas", lv3: "Primera fuga", lv4: "Gel lento", lv5: "Elige el camino",
       done1: "Primera rampa lista.", done2: "Dos tazas listas.", done3: "Primera fuga lista.", done4: "Gel lento listo.",
@@ -425,7 +425,7 @@
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
       teachRate: "معدل التدفق = كم يُسكب كل ثانية",
-      bestWord: "الأفضل:", rampsWord: "منحدرات", newBest: "رقم جديد!", tryFewer: "جرّب بعدد أقل",
+      bestWord: "الأفضل:", rampsWord: "منحدرات", rampsOne: "منحدر", rampsTwo: "منحدران", rampsFew: "منحدرات", rampsMany: "منحدرًا", rampsOther: "منحدر", newBest: "رقم جديد!", tryFewer: "جرّب بعدد أقل",
       read: "اقرأه لي", language: "اللغة",
       lv1: "المنحدر الأول", lv2: "كوبان", lv3: "أول تسرب", lv4: "هلام بطيء", lv5: "اختر المسار",
       done1: "المنحدر الأول تم.", done2: "الكوبان تمّا.", done3: "أول تسرب تم.", done4: "الهلام البطيء تم.",
@@ -500,7 +500,7 @@
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
       teachRate: "سرعت جریان = در هر ثانیه چقدر می‌ریزد",
-      bestWord: "بهترین:", rampsWord: "سطح", newBest: "رکورد تازه!", tryFewer: "با کمتر امتحان کن",
+      bestWord: "بهترین:", rampsWord: "سطح", rampsOne: "سطح", rampsTwo: "سطح‌ها", rampsFew: "سطح‌ها", rampsMany: "سطح‌ها", rampsOther: "سطح‌ها", newBest: "رکورد تازه!", tryFewer: "با کمتر امتحان کن",
       read: "برایم بخوان", language: "زبان",
       lv1: "سرازیری اول", lv2: "دو پیاله", lv3: "اولین نشت", lv4: "ژل آهسته", lv5: "مسیر را انتخاب کن",
       done1: "سرازیری اول تمام شد.", done2: "دو پیاله تمام شد.", done3: "اولین نشت تمام شد.", done4: "ژل آهسته تمام شد.",
@@ -575,7 +575,7 @@
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
       teachRate: "Umuvuduko = ingano itemba buri segonda",
-      bestWord: "Agahigo:", rampsWord: "imihanda", newBest: "Agahigo gashya!", tryFewer: "Gerageza nkeya",
+      bestWord: "Agahigo:", rampsWord: "imihanda", rampsOne: "umuhanda", rampsTwo: "imihanda", rampsFew: "imihanda", rampsMany: "imihanda", rampsOther: "imihanda", newBest: "Agahigo gashya!", tryFewer: "Gerageza nkeya",
       read: "Nsome", language: "Ururimi",
       lv1: "Umuhengamo wa mbere", lv2: "Ibikombe bibiri", lv3: "Isutse rya mbere", lv4: "Jeli itinda", lv5: "Hitamo inzira",
       done1: "Umuhengamo wa mbere warangiye.", done2: "Ibikombe bibiri byarangiye.", done3: "Isutse rya mbere ryarangiye.", done4: "Jeli itinda yarangiye.",
@@ -650,7 +650,7 @@
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
       teachRate: "ፍጥነት ውሕጅ = ኣብ ሰከንድ ክንደይ ይውሕጅ",
-      bestWord: "ሪኮርድ:", rampsWord: "መንሸራተቲ", newBest: "ሓድሽ ሪኮርድ!", tryFewer: "ብውሑድ ፈትን",
+      bestWord: "ሪኮርድ:", rampsWord: "መንሸራተቲ", rampsOne: "መንሸራተቲ", rampsTwo: "መንሸራተታት", rampsFew: "መንሸራተታት", rampsMany: "መንሸራተታት", rampsOther: "መንሸራተታት", newBest: "ሓድሽ ሪኮርድ!", tryFewer: "ብውሑድ ፈትን",
       read: "ኣንብበለይ", language: "ቋንቋ",
       lv1: "ቀዳማይ ቁልቁለት", lv2: "ክልተ ኽባያታት", lv3: "ቀዳማይ ፍሳስ", lv4: "ቀስ ዝብል ጄል", lv5: "መገዲ ምረጽ",
       done1: "ቀዳማይ ቁልቁለት ተዛዚሙ።", done2: "ክልተ ኽባያታት ተዛዚሞም።", done3: "ቀዳማይ ፍሳስ ተዛዚሙ።", done4: "ቀስ ዝብል ጄል ተዛዚሙ።",
@@ -686,7 +686,7 @@
       teachSlope: "Steeper slope means faster flow",
       teachGel: "Thick liquid (high viscosity) moves slower",
       teachRate: "Flow rate means how much pours each second",
-      bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
+      bestWord: "Best:", rampsWord: "ramps", rampsOne: "ramp", rampsTwo: "ramps", rampsFew: "ramps", rampsMany: "ramps", rampsOther: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
       helpPause: "Pause is easy to tap, even sideways.",
       testHelp: "Staff only. Jump to win or lose. Scores go to the TEST board."
     }
@@ -794,6 +794,17 @@
     var pack = STR[L] || STR.en;
     return pack[k] || STR.en[k] || "";
   }
+  function rampsText(n) {
+    var count = n | 0;
+    var L = lang();
+    var code = L === "simple" ? "en" : L;
+    var cat = "other";
+    try { cat = new Intl.PluralRules(code).select(count); } catch (e) {}
+    var key = { one: "rampsOne", two: "rampsTwo", few: "rampsFew", many: "rampsMany", zero: "rampsFew", other: "rampsOther" }[cat] || "rampsOther";
+    var pack = L === "simple" && STR.simple ? STR.simple : (STR[L] || STR.en);
+    var word = pack[key] || pack.rampsOther || pack.rampsWord || t("rampsWord");
+    return count + " " + word;
+  }
   function motionLess() {
     if (document.documentElement.getAttribute("data-kp-motion") === "less") return true;
     try { return window.matchMedia("(prefers-reduced-motion: reduce)").matches; } catch (e) { return false; }
@@ -842,7 +853,7 @@
     var badge = document.getElementById("end-new");
     var badgeText = document.getElementById("end-new-text");
     var n = dailyOn ? todayDaily().best : savedBest();
-    if (bestEl) bestEl.textContent = t("bestWord") + " " + n + " " + t("rampsWord");
+    if (bestEl) bestEl.textContent = t("bestWord") + " " + rampsText(n);
     if (badgeText) badgeText.textContent = t("newBest");
     if (badge) badge.hidden = !newBest;
     paintEndStars();
@@ -1219,7 +1230,7 @@
       var open = i <= unlocked;
       var starLine = "★ " + stars + " " + t(stars === 1 ? "starWord" : "starsWord");
       var best = bestFor(i);
-      var bestLine = t("bestWord") + " " + (best > 0 ? String(best) : "—") + " " + t("rampsWord");
+      var bestLine = best > 0 ? t("bestWord") + " " + rampsText(best) : t("bestWord") + " — " + t("rampsWord");
       if (open) {
         var btn = document.createElement("button");
         btn.type = "button";
@@ -1255,10 +1266,10 @@
     if (saved.best > 0) {
       var bestLine = document.createElement("span");
       bestLine.className = "daily-best";
-      bestLine.textContent = t("bestWord") + " " + saved.best + " " + t("rampsWord");
+      bestLine.textContent = t("bestWord") + " " + rampsText(saved.best);
       dayBtn.appendChild(bestLine);
     }
-    dayBtn.setAttribute("aria-label", t("dailyCup") + " " + dailyLabel(day) + (saved.best > 0 ? " " + t("bestWord") + " " + saved.best + " " + t("rampsWord") : ""));
+    dayBtn.setAttribute("aria-label", t("dailyCup") + " " + dailyLabel(day) + (saved.best > 0 ? " " + t("bestWord") + " " + rampsText(saved.best) : ""));
     dayBtn.addEventListener("click", function () {
       toggleMenu(false);
       stackFromHome = false;
