@@ -18,10 +18,12 @@ function lastSha(path, extra = "") {
   }
 }
 
+// -S"I18N_REV" does not fire on a value-only change (count stays 1).
+// Use -G for the assignment so a bump is detected.
 const i18nCt = lastCt("shared/i18n");
-const revCt = lastCt("shared/kulibert-i18n.js", '-S"I18N_REV"');
+const revCt = lastCt("shared/kulibert-i18n.js", '-G"I18N_REV ="');
 const i18nSha = lastSha("shared/i18n");
-const revSha = lastSha("shared/kulibert-i18n.js", '-S"I18N_REV"');
+const revSha = lastSha("shared/kulibert-i18n.js", '-G"I18N_REV ="');
 
 console.log(`shared/i18n last commit: ${i18nSha} (${i18nCt})`);
 console.log(`I18N_REV last change:   ${revSha} (${revCt})`);
