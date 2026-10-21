@@ -156,10 +156,15 @@ function showFloat(text) {
 function paintSuit() {
   const text = document.getElementById('suit-text')
   const fill = document.getElementById('suit-fill')
-  if (text) text.textContent = (t('suitText') || 'Suit {n}/{max}').replace('{n}', suit).replace('{max}', suitMax)
+  const low = suit < COMBAT_TUNING.lowSuit
+  if (text) {
+    const base = (t('suitText') || 'Suit {n}/{max}').replace('{n}', suit).replace('{max}', suitMax)
+    text.textContent = low ? '🛡 ' + base + ' ' + (t('c1Low') || 'Low') : '🛡 ' + base
+  }
   if (fill) {
     fill.style.width = Math.max(4, (suit / suitMax) * 60) + 'px'
-    fill.style.outline = suit < COMBAT_TUNING.lowSuit ? '2px solid #f59e0b' : 'none'
+    fill.style.outline = low ? '2px dashed #f59e0b' : 'none'
+    fill.style.animation = low && !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'pulse 1s infinite' : 'none'
   }
 }
 function bonked() {
@@ -168,11 +173,15 @@ function bonked() {
   const card = document.createElement('div')
   card.id = 'bonked-card'
   card.style.cssText = 'position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(11,18,32,.9)'
-  card.innerHTML = '<div style="background:#111a2e;border:1px solid #22304d;border-radius:14px;padding:20px;text-align:center"><b>Bonked! Your stuff is safe</b><p>Back to bed in 5 seconds.</p><button id="bonked-back" style="min-width:44px;min-height:44px;margin-top:12px">Back to bed</button></div>'
+  const title = t('c1Bonked') || 'Bonked! Your stuff is safe'
+  const btnText = t('c1BackToBed') || 'Back to bed'
+  card.innerHTML = '<div style="background:#111a2e;border:1px solid #22304d;border-radius:14px;padding:20px;text-align:center"><b>' + title + '</b><button id="bonked-back" style="min-width:44px;min-height:44px;margin-top:12px">' + btnText + '</button></div>'
   document.body.append(card)
   const btn = document.getElementById('bonked-back')
-  if (btn) { btn.focus(); btn.addEventListener('click', () => card.remove()) }
-  setTimeout(() => { const c = document.getElementById('bonked-card'); if (c) c.remove() }, 5000)
+  const done = () => { card.remove(); if (typeof goHome === 'function') goHome() }
+  if (btn) { btn.focus(); btn.addEventListener('click', done) }
+  card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === 'Escape') done() })
+  setTimeout(done, 5000)
 }
 function guardTest() {
   const staff = window.kwTest && window.kwTest.on && window.kwTest.on()
