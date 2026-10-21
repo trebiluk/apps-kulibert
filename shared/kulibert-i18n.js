@@ -205,6 +205,8 @@
   "vdLivePaused": "Paused",
   "vdLiveResumed": "Resumed",
   "vdShapeHelp": "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint.",
+  "rfHelpLesson": "Read the lesson line when you win.",
+  "rfHelpFewer": "Try to win with fewer ramps.",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };
   var packs = { en: EN };
@@ -270,19 +272,26 @@
     delete pending[name];
     waiters.forEach(function (fn) { try { fn(); } catch (e) {} });
   }
+  var fetched = Object.create(null);
   function load(name, cb) {
-    if (packs[name]) { if (cb) cb(); return; }
+    if (fetched[name]) { if (cb) cb(); return; }
     if (pending[name]) { pending[name].push(cb || function () {}); return; }
     pending[name] = cb ? [cb] : [];
+    function take(data) {
+      if (data && typeof data === "object") {
+        packs[name] = Object.assign({}, packs[name] || {}, data);
+        try { sessionStorage.setItem("kulibert-i18n-v17:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+      }
+      fetched[name] = 1;
+      finish(name);
+    }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v16:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v17:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
-        if (parsed && typeof parsed === "object") packs[name] = parsed;
+        if (parsed && typeof parsed === "object") { take(parsed); return; }
       } catch (e2) {}
-      finish(name);
-      return;
     }
     var origin = "https://apps.kulibert.net";
     try {
@@ -290,23 +299,19 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-20-vd106b", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=RF-1.0.6", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
-    }).then(function (data) {
-      if (data && typeof data === "object") {
-        packs[name] = data;
-        try { sessionStorage.setItem("kulibert-i18n-v16:" + name, JSON.stringify(data)); } catch (e3) {}
-      }
-    }).catch(function () {}).then(function () { finish(name); });
+    }).then(take).catch(function () { take(null); });
   }
   function ready(lang, cb) {
     var file = fileFor(lang || current());
-    var left = (packs[file] ? 0 : 1) + (file !== "en" && !packs.en ? 1 : 0);
-    if (!left) { if (cb) cb(); return; }
+    var jobs = [];
+    if (!fetched[file]) jobs.push(file);
+    if (file !== "en" && !fetched.en) jobs.push("en");
+    if (!jobs.length) { if (cb) cb(); return; }
     var done = 0;
-    function one() { done += 1; if (done >= left && cb) cb(); }
-    if (!packs[file]) load(file, one);
-    if (file !== "en" && !packs.en) load("en", one);
+    function one() { done += 1; if (done >= jobs.length && cb) cb(); }
+    jobs.forEach(function (n) { load(n, one); });
   }
   function boot() { ready(current(), paint); }
   root.addEventListener("kulibert-lang", function (ev) {

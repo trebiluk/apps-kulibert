@@ -2,7 +2,7 @@
 
 ## RF 1.0.6
 
-RF 1.0.6 — the version label matches on the title, chip, and What's new.
+RF 1.0.6 — the version label matches on the title, chip, and What's new. Help lines load in every language.
 
 ## RF 1.0.5
 
