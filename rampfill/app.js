@@ -832,7 +832,7 @@
     var bestEl = document.getElementById("end-best");
     var badge = document.getElementById("end-new");
     var badgeText = document.getElementById("end-new-text");
-    var n = savedBest();
+    var n = dailyOn ? todayDaily().best : savedBest();
     if (bestEl) bestEl.textContent = t("bestWord") + " " + n + " " + t("rampsWord");
     if (badgeText) badgeText.textContent = t("newBest");
     if (badge) badge.hidden = !newBest;
@@ -1242,7 +1242,14 @@
     when.textContent = dailyLabel(day);
     dayBtn.appendChild(name);
     dayBtn.appendChild(when);
-    dayBtn.setAttribute("aria-label", t("dailyCup") + " " + dailyLabel(day));
+    var saved = todayDaily();
+    if (saved.best > 0) {
+      var bestLine = document.createElement("span");
+      bestLine.className = "daily-best";
+      bestLine.textContent = t("bestWord") + " " + saved.best + " " + t("rampsWord");
+      dayBtn.appendChild(bestLine);
+    }
+    dayBtn.setAttribute("aria-label", t("dailyCup") + " " + dailyLabel(day) + (saved.best > 0 ? " " + t("bestWord") + " " + saved.best + " " + t("rampsWord") : ""));
     dayBtn.addEventListener("click", function () {
       toggleMenu(false);
       stackFromHome = false;
@@ -1468,7 +1475,9 @@
     if (!(n > 0)) return;
     var row = todayDaily();
     if (row.best > 0 && n >= row.best) return;
+    newBest = row.best > 0 && n < row.best;
     try { localStorage.setItem("rampfill-daily-v1", JSON.stringify({ date: row.date, best: n })); } catch (e) {}
+    paintLevels();
   }
   function rampCount() {
     var n = 0;
@@ -2696,6 +2705,7 @@
     var menu = document.getElementById("menu");
     menu.hidden = !open;
     document.getElementById("menu-btn").setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) paintLevels();
     syncModal();
     if (open) document.getElementById("menu-close").focus();
   }
