@@ -163,6 +163,7 @@
       </ul>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23616">MU 2.36.16: Drum pads and button names now speak your language.</span></li>
         <li><span data-mu="news23615">MU 2.36.15: Spin and Glow are translated in every language.</span></li>
         <li><span data-mu="news23614">MU 2.36.14: The mic status and Viz labels are easier to read, New beat fits on phones, and the rail is translated.</span></li>
         <li><span data-mu="news23613">MU 2.36.13: New beat is fully visible on phones.</span></li>
@@ -372,10 +373,10 @@
           <i id="count-dot" class="count-dot" aria-hidden="true"></i>
         </div>
         <div id="tap-pads" class="tap-pads" aria-label="Pads">
-          <button type="button" class="pad" data-pad="kick" aria-label="Kick"><span class="pad-ico" aria-hidden="true">🥁</span> <span>Kick</span><kbd class="key-hint">A</kbd></button>
-          <button type="button" class="pad" data-pad="snare" aria-label="Snare"><span class="pad-ico" aria-hidden="true">🪘</span> <span>Snare</span><kbd class="key-hint">S</kbd></button>
-          <button type="button" class="pad" data-pad="hat" aria-label="Hat"><span class="pad-ico" aria-hidden="true">🎩</span> <span>Hat</span><kbd class="key-hint">D</kbd></button>
-          <button type="button" class="pad" data-pad="clap" aria-label="Clap"><span class="pad-ico" aria-hidden="true">👏</span> <span>Clap</span><kbd class="key-hint">F</kbd></button>
+          <button type="button" class="pad" data-pad="kick" data-mu-label="drum_kick" data-i18n-label="drum_kick" aria-label="Kick"><span class="pad-ico" aria-hidden="true">🥁</span> <span data-mu="drum_kick" data-i18n="drum_kick">Kick</span><kbd class="key-hint">A</kbd></button>
+          <button type="button" class="pad" data-pad="snare" data-mu-label="drum_snare" data-i18n-label="drum_snare" aria-label="Snare"><span class="pad-ico" aria-hidden="true">🪘</span> <span data-mu="drum_snare" data-i18n="drum_snare">Snare</span><kbd class="key-hint">S</kbd></button>
+          <button type="button" class="pad" data-pad="hat" data-mu-label="drum_hat" data-i18n-label="drum_hat" aria-label="Hat"><span class="pad-ico" aria-hidden="true">🎩</span> <span data-mu="drum_hat" data-i18n="drum_hat">Hat</span><kbd class="key-hint">D</kbd></button>
+          <button type="button" class="pad" data-pad="clap" data-mu-label="drum_clap" data-i18n-label="drum_clap" aria-label="Clap"><span class="pad-ico" aria-hidden="true">👏</span> <span data-mu="drum_clap" data-i18n="drum_clap">Clap</span><kbd class="key-hint">F</kbd></button>
         </div>
         <p id="guide-line" class="guide-line">Next: Kick</p>
         <p id="playhead-read" class="playhead-read">Beat 1</p>
@@ -619,7 +620,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23615a"></script>
+  <script src="./version.js?v=mu23616a"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -628,7 +629,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23615b"></script>
-  <script src="./app.js?v=mu23612c"></script>
+  <script src="./strings.js?v=mu23616a"></script>
+  <script src="./app.js?v=mu23616a"></script>
 </body>
 </html>

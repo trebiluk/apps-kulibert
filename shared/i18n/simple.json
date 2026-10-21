@@ -82,5 +82,9 @@
   "helpMicState": "The mic line says on, listening, or blocked.",
   "vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score.",
   "spinWord": "Spin",
-  "glowWord": "Glow"
+  "glowWord": "Glow",
+  "drum_kick": "Kick",
+  "drum_snare": "Snare",
+  "drum_hat": "Hat",
+  "drum_clap": "Clap"
 }

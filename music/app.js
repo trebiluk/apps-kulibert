@@ -4388,7 +4388,7 @@
     const line = $("guide-line");
     const next = !guideSeen.kick ? "kick" : !guideSeen.snare ? "snare" : !guideSeen.hat ? "hat" : "";
     if (line) {
-      const name = next ? next.charAt(0).toUpperCase() + next.slice(1) : "";
+      const name = next ? (mu("drum_" + next) || next) : "";
       line.textContent = next ? ((mu("guideNext") || "Next:") + " " + name) : (mu("guideDone") || "Your loop is ready. Press Play.");
     }
     document.querySelectorAll("#tap-pads .pad").forEach((btn) => btn.classList.toggle("guide", btn.dataset.pad === next));
@@ -5746,6 +5746,8 @@
       playBtn.setAttribute("title", playWordText(!!state.playing));
     }
     if ($("drums")) renderDrums();
+    if (typeof paintGuide === "function") paintGuide();
+    sayHow(state.mode);
     paintKeypad();
     document.querySelectorAll("#style-row [data-pack]").forEach((btn) => {
       const map = { Trap: "style_trap", "Lo-fi": "style_lofi", Rock: "style_rock", Marching: "style_marching" };

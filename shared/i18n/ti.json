@@ -222,5 +222,9 @@
   "helpMicState": "መስመር ማይክ የርኢ እንተወሊዐ፣ እንተሰምዐ፣ ወይ እንተተኸልከለ።",
   "vdChipHelp": "VEX ዓንኬል እዩ V ዘለዎ፣ RIO ስኴር እዩ R ዘለዎ — ኣብ መስመርን ኣብ ናይ ነጥቢ ቺፕስን።",
   "spinWord": "ዞር",
-  "glowWord": "ብራህ"
+  "glowWord": "ብራህ",
+  "drum_kick": "ዓቢ",
+  "drum_snare": "ንእሽቶ",
+  "drum_hat": "ሃት",
+  "drum_clap": "ምጭብጣብ"
 }

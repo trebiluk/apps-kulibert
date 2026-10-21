@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.16** · 2026-10-20 · channel **live**
+
+MU 2.36.16 — drum pads and the Next line use the translated drum names.
+
+## Earlier
+
 **Chip: MU 2.36.15** · 2026-10-20 · channel **live**
 
 MU 2.36.15 — Spin and Glow are translated in every language; the Viz line is translated.

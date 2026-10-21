@@ -222,5 +222,9 @@
   "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado.",
   "vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación.",
   "spinWord": "Girar",
-  "glowWord": "Brillo"
+  "glowWord": "Brillo",
+  "drum_kick": "Bombo",
+  "drum_snare": "Caja",
+  "drum_hat": "Charles",
+  "drum_clap": "Palma"
 }

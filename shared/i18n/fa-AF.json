@@ -222,5 +222,9 @@
   "helpMicState": "خط میکروفون نشان می‌دهد روشن است، گوش می‌دهد یا بسته است.",
   "vdChipHelp": "VEX یک دایره با V است و RIO یک مربع با R — روی پیست و روی کارت‌های امتیاز.",
   "spinWord": "چرخش",
-  "glowWord": "درخشش"
+  "glowWord": "درخشش",
+  "drum_kick": "باس",
+  "drum_snare": "اسنر",
+  "drum_hat": "هت",
+  "drum_clap": "کف"
 }
