@@ -226,6 +226,20 @@ function kill(world: World, runner: Runner, events: SimEvent[]) {
   });
 }
 
+/** Staff test only. Same fall as a pit. Does not change race timing. */
+export function staffPit(world: World, id: 0 | 1): SimEvent[] {
+  const events: SimEvent[] = [];
+  if (world.winner != null) return events;
+  if (world.phase === "countdown") {
+    world.countdown = 0;
+    world.phase = "race";
+    world.goFlash = 0;
+  }
+  if (world.phase !== "race") return events;
+  kill(world, world.runners[id], events);
+  return events;
+}
+
 function updateRunner(world: World, runner: Runner, input: Input, dt: number, events: SimEvent[]) {
   if (runner.dead) {
     runner.respawn -= dt;

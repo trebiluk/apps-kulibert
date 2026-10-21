@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.7. Version locked: VD 1.0.7.
+Stage: VD 1.0.8. Version locked: VD 1.0.8.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -32,5 +32,5 @@ Physics and scoring were not changed.
 ## VD 1.0.8
 - [x] **Item 1 Score chips.** VEX chip is a circle with V. RIO chip is a square with R. Same shapes as the track. Not color alone.
 - [x] **Item 2 Start labels.** Each runner's circle or square and name sit above that runner. At the start, RIO no longer covers the VEX name.
-- [ ] **Item 3 Staff test.**
+- [x] **Item 3 Staff test.** With the staff test switch on: Jump to win (VEX), Jump to win (RIO), and Jump to pit. A pit shows the back-to-checkpoint sign and that runner's score outline. Rematch was already a real button. Test results stay on the TEST board. Kids do not get these buttons.
 

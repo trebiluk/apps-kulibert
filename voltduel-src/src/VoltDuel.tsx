@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, type PointerEvent } from "react";
 import { audio } from "@/game/audio";
 import { renderAttract, renderWorld, tickParticles, type Particle, type SpriteSet } from "@/game/draw";
 import { LEVELS } from "@/game/levels";
-import { createWorld, practiceRun, step } from "@/game/sim";
+import { createWorld, practiceRun, staffPit, step } from "@/game/sim";
 import { considerBest, formatTime, loadSave, writeSave, type Save } from "@/game/save";
 import { VIEW_H, VIEW_W, type Input, type World } from "@/game/types";
 import { proofEnabled, registerProof, type ProofState } from "./proof";
@@ -15,7 +15,7 @@ type Screen =
 
 type Pad = { left: boolean; right: boolean; jump: boolean };
 
-type Cmd = { op: "start" | "restart"; level: number } | { op: "clear" };
+type Cmd = { op: "start" | "restart" | "pit"; level: number } | { op: "clear" };
 
 const MAPS = [
   { left: ["KeyA"], right: ["KeyD"], jump: ["KeyW"], down: ["KeyS"] },
@@ -105,18 +105,88 @@ export function VoltDuel() {
   const [save, setSave] = useState<Save>({ best: {}, muted: false });
   const [hint, setHint] = useState(false);
   const [padMode, setPadMode] = useState<"auto" | "on" | "off">("auto");
+  const [staffTest, setStaffTest] = useState(false);
 
   saveRef.current = save;
 
   function testOn() {
     try { return !!(window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()); } catch { return false; }
   }
-  function jumpWin() {
-    show({ name: "results", level: screenRef.current.name === "play" || screenRef.current.name === "results" || screenRef.current.name === "pause" ? screenRef.current.level : 0, winner: 0, time: 12, coins: [3, 1] });
+  function rememberTest(score: string) {
+    if (!testOn()) return;
+    try {
+      const key = "kw-test-board-v1";
+      const raw = JSON.parse(localStorage.getItem(key) || "[]");
+      const rows = Array.isArray(raw) ? raw : [];
+      rows.push({
+        alias: "Test",
+        board: "TEST",
+        score: String(score).slice(0, 12),
+        test: true,
+        game: "voltduel",
+        ts: Date.now(),
+      });
+      localStorage.setItem(key, JSON.stringify(rows.slice(-100)));
+    } catch {
+      /* ignore quota */
+    }
   }
-  function jumpLose() {
-    show({ name: "results", level: screenRef.current.name === "play" || screenRef.current.name === "results" || screenRef.current.name === "pause" ? screenRef.current.level : 0, winner: 1, time: 12, coins: [1, 3] });
+  function jumpWin(winner: 0 | 1) {
+    if (!testOn()) return;
+    const current = screenRef.current;
+    const level = current.name === "play" || current.name === "results" || current.name === "pause" ? current.level : 0;
+    rememberTest("12.00");
+    const coins = winner === 0 ? "3" : "3";
+    pushLive(
+      liveLine(
+        winner === 0 ? "vdLiveVexWin" : "vdLiveRioWin",
+        winner === 0
+          ? "VEX takes the flag, {time} seconds, {coins} coins"
+          : "RIO takes the flag, {time} seconds, {coins} coins",
+      )
+        .replace("{time}", "12.00")
+        .replace("{coins}", coins),
+    );
+    show({
+      name: "results",
+      level,
+      winner,
+      time: 12,
+      coins: winner === 0 ? [3, 1] : [1, 3],
+    });
   }
+  function jumpPit() {
+    if (!testOn()) return;
+    const current = screenRef.current;
+    const level = current.name === "play" || current.name === "results" || current.name === "pause" ? current.level : 0;
+    cmdRef.current = { op: "pit", level };
+    show({ name: "play", level });
+    setHint(false);
+  }
+
+  useEffect(() => {
+    let last = false;
+    const tick = () => {
+      const on = testOn();
+      if (on !== last) {
+        last = on;
+        setStaffTest(on);
+      }
+    };
+    tick();
+    const id = window.setInterval(tick, 400);
+    return () => window.clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    if (screen.name === "menu") return;
+    const gate = liveGate.current;
+    const node = liveRef.current;
+    if (!node || !gate.pending) return;
+    node.textContent = gate.pending;
+    gate.pending = "";
+    gate.at = performance.now();
+  }, [screen]);
 
   function liveLine(key: string, fallback: string) {
     try {
@@ -300,10 +370,38 @@ export function VoltDuel() {
       if (command) {
         cmdRef.current = null;
         if (command.op === "clear") worldRef.current = null;
-        else worldRef.current = createWorld(command.level, qaMode.current);
-        particles.current = [];
-        jumpPrev.current = [false, false];
-        spokenCount = "";
+        else {
+          worldRef.current = createWorld(command.level, command.op === "pit" ? false : qaMode.current);
+          particles.current = [];
+          jumpPrev.current = [false, false];
+          spokenCount = "";
+          if (command.op === "pit" && worldRef.current) {
+            const pitWorld = worldRef.current;
+            const id: 0 | 1 = pitWorld.runners[1].x > pitWorld.runners[0].x ? 1 : 0;
+            for (const event of staffPit(pitWorld, id)) {
+              if (event.type !== "die") continue;
+              audio.play("die");
+              burst(event.x, event.y, "#ff4b4b", 14, 160);
+              const pill = document.querySelector(event.id === 0 ? ".pill.vex" : ".pill.rio");
+              if (pill) {
+                pill.classList.add("hit");
+                window.clearTimeout(hitTimers[event.id]);
+                const ms = reduced.current ? 600 : 300;
+                hitTimers[event.id] = window.setTimeout(() => pill.classList.remove("hit"), ms);
+              }
+              pushLive(
+                event.id === 0
+                  ? liveLine("vdLiveVexBack", "VEX back to checkpoint")
+                  : liveLine("vdLiveRioBack", "RIO back to checkpoint"),
+              );
+            }
+          }
+        }
+        if (command.op === "clear") {
+          particles.current = [];
+          jumpPrev.current = [false, false];
+          spokenCount = "";
+        }
       }
 
       const world = worldRef.current;
@@ -390,16 +488,20 @@ export function VoltDuel() {
           world.reported = true;
           const winner = world.winner;
           const coins: [number, number] = [world.runners[0].coins, world.runners[1].coins];
-          const nextSave = considerBest(
-            saveRef.current,
-            world.level.id,
-            world.time,
-            coins[winner],
-            NAMES[winner],
-          );
-          saveRef.current = nextSave;
-          writeSave(nextSave);
-          setSave(nextSave);
+          if (testOn()) {
+            rememberTest(formatTime(world.time));
+          } else {
+            const nextSave = considerBest(
+              saveRef.current,
+              world.level.id,
+              world.time,
+              coins[winner],
+              NAMES[winner],
+            );
+            saveRef.current = nextSave;
+            writeSave(nextSave);
+            setSave(nextSave);
+          }
           show({
             name: "results",
             level: world.levelIndex,
@@ -611,6 +713,17 @@ export function VoltDuel() {
     try {
       const value = window.KulibertI18n?.t?.("vdHeldHelp", fallback);
       if (value && value !== "vdHeldHelp") return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  })();
+  const chipHelp = (() => {
+    void helpRev;
+    const fallback = "VEX is a circle with V, RIO is a square with R — on the track and on the score chips.";
+    try {
+      const value = window.KulibertI18n?.t?.("vdChipHelp", fallback);
+      if (value && value !== "vdChipHelp") return value;
     } catch {
       /* keep the English line */
     }
@@ -869,13 +982,16 @@ export function VoltDuel() {
                 >
                   {padMode === "on" ? "Hide pads" : "Touch pads"}
                 </button>
-                {testOn() && (
+                {staffTest && (
                   <>
-                    <button type="button" className="text-btn" onClick={jumpWin} aria-label="Jump to win" style={{ minWidth: 44, minHeight: 44 }}>
-                      <span aria-hidden="true">🏆</span> Jump to win
+                    <button type="button" className="text-btn" onClick={() => jumpWin(0)} aria-label="Jump to win (VEX)" style={{ minWidth: 44, minHeight: 44 }}>
+                      <span aria-hidden="true">🏆</span> Jump to win (VEX)
                     </button>
-                    <button type="button" className="text-btn" onClick={jumpLose} aria-label="Jump to lose" style={{ minWidth: 44, minHeight: 44 }}>
-                      <span aria-hidden="true">⚑</span> Jump to lose
+                    <button type="button" className="text-btn" onClick={() => jumpWin(1)} aria-label="Jump to win (RIO)" style={{ minWidth: 44, minHeight: 44 }}>
+                      <span aria-hidden="true">🏆</span> Jump to win (RIO)
+                    </button>
+                    <button type="button" className="text-btn" onClick={jumpPit} aria-label="Jump to pit" style={{ minWidth: 44, minHeight: 44 }}>
+                      <span aria-hidden="true">⚑</span> Jump to pit
                     </button>
                   </>
                 )}
@@ -895,9 +1011,13 @@ export function VoltDuel() {
                     <span data-i18n="vdHeldHelp">{heldPadHelp}</span>
                   </p>
                   <p>
+                    <span aria-hidden="true">⬤ </span>
+                    <span data-i18n="vdChipHelp">{chipHelp}</span>
+                  </p>
+                  <p>
                     Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
                   </p>
-                  {testOn() && <p>⚑ Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.</p>}
+                  {staffTest && <p>⚑ Test mode (staff only). Scores go to the TEST board.</p>}
                   <button type="button" className="text-btn" onClick={() => setHelpOpen(false)}>
                     Close
                   </button>

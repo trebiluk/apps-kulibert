@@ -79,5 +79,7 @@
   "groupChange": "Change",
   "groupShow": "Show",
   "vizHelp": "Pick a look. Press Play. Tap the mic lights.",
-  "helpMicState": "The mic line says on, listening, or blocked."
+  "helpMicState": "The mic line says on, listening, or blocked.",
+"vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score."
+
 }

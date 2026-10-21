@@ -219,5 +219,7 @@
   "groupChange": "Cambia",
   "groupShow": "Muestra",
   "vizHelp": "Elige un look. Pulsa Play. Toca 🎤 Luces del micrófono para que la imagen baile con la sala.",
-  "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado."
+  "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado.",
+"vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación."
+
 }
