@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.320', date: '2026-10-21', lines: {
+    en: ['2.5.320 — On an upright phone, the Open button no longer covers the hint.'],
+    simple: ['2.5.320 — On an upright phone, the Open button no longer covers the hint.'],
+    uk: ['2.5.320 — На вертикальному телефоні кнопка Відкрити більше не закриває підказку.'],
+    ru: ['2.5.320 — На вертикальном телефоне кнопка Открыть больше не закрывает подсказку.'],
+    es: ['2.5.320 — En un teléfono vertical, el botón Abrir ya no cubre la pista.'],
+    ar: ['2.5.320 — على الهاتف المستقيم، زر فتح لم يعد يغطي التلميح.'],
+    'fa-AF': ['2.5.320 — روی تلفن ایستاده، دکمه باز کردن دیگر راهنما را نمی‌پوشاند.'],
+    rw: ['2.5.320 — Ku telefoni ihagaze, buto ya Fungura ntikigarukira inyigisho.'],
+    ti: ['2.5.320 — ኣብ ቀጥታዊ ስልኪ፡ መቐየሪ ክፈት ንእሙና ኣይሸፍንን።'],
+  }},
+
   { v: '2.5.319', date: '2026-10-21', lines: {
     en: ['2.5.319 — Screen readers name the play screen in your language.'],
     simple: ['2.5.319 — Screen readers name the play screen in your language.'],
@@ -45,6 +57,30 @@ export const CHANGELOG = [
     'fa-AF': ['هر نسخه حالا یک بار در تازه‌ها دیده می‌شود، تازه‌ترین اول.'],
     rw: ['Buri verisiyo igaragara rimwe muri Gishya, iya vuba mbere.'],
     ti: ['ነፍሲ ወከፍ ሕታም ሕጂ ሓንሳእ ኣብ ሓድሽ ይረአ፡ እቲ ሓድሽ ቀዳማይ።'],
+  }},
+
+  { v: '2.5.315', date: '2026-10-21', lines: {
+    en: ['2.5.315 — On an upright phone, every top button fits.'],
+    simple: ['2.5.315 — On an upright phone, every top button fits.'],
+    uk: ['2.5.315 — На вертикальному телефоні кожна верхня кнопка вміщається.'],
+    ru: ['2.5.315 — На вертикальном телефоне каждая верхняя кнопка помещается.'],
+    es: ['2.5.315 — En un teléfono vertical, cada botón de arriba cabe.'],
+    ar: ['2.5.315 — على الهاتف المستقيم، كل زر علوي يتسع.'],
+    'fa-AF': ['2.5.315 — روی تلفن ایستاده، هر دکمه بالا جا می‌شود.'],
+    rw: ['2.5.315 — Ku telefoni ihagaze, buri buto yo hejuru ihagaze.'],
+    ti: ['2.5.315 — ኣብ ቀጥታዊ ስልኪ፡ ነፍሲ ወከፍ ላዕለዋይ መቐየሪ ይኣቱ።'],
+  }},
+
+  { v: '2.5.314', date: '2026-10-21', lines: {
+    en: ['2.5.314 — Bigger pictures in the Crafting book.'],
+    simple: ['2.5.314 — Bigger pictures in the Crafting book.'],
+    uk: ['2.5.314 — Більші картинки в книзі Майстрування.'],
+    ru: ['2.5.314 — Картинки побольше в книге Крафта.'],
+    es: ['2.5.314 — Dibujos más grandes en el libro de Crear.'],
+    ar: ['2.5.314 — صور أكبر في كتاب الصنع.'],
+    'fa-AF': ['2.5.314 — تصویرهای بزرگ‌تر در کتاب ساختن.'],
+    rw: ['2.5.314 — Amashusho manini muri igitabo cyo Gukora.'],
+    ti: ['2.5.314 — ዓበይቲ ስእሊ ኣብ መጽሓፍ ምስራሕ።'],
   }},
 
   { v: '2.5.316', date: '2026-10-21', lines: {

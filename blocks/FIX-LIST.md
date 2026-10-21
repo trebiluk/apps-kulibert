@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 
+- [x] **2.5.320 use-pill-412:** At 412x924 the Open pill no longer covers the hint line. The hint hides while the pill shows. Higher specificity beats the play-mode display:block.
 - [x] **bertopia-reload-keeps-clock (2.5.317):** A reload brings back the same spot and time of day. The spot saves the clock every 5 seconds, even while you stand still. A fresh world still starts at Day 1 06:00. Kinyarwanda and Tigrinya still need a native check.
 
 - [x] **2.5.312 what's new order:** Each version shows once in What's new, newest first. The version number is not repeated on the line. You are here still marks the live version. Kinyarwanda and Tigrinya still need a native check.
@@ -45,7 +46,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 - [x] **2.5.285 C1 Bonk + Suit:** Suit bar shows 🛡 number + bar. Bonk uses the Mine button with damage tiers. Bonked card returns you to bed with a full bag. No combat mobs yet.
 - [x] **2.5.284 PvP settings:** Settings switches for PvP opt-in (default OFF), Keep my stuff (default ON), and Kit PvP. pvpAllowed() returns true only if both players opt in for the main world. No combat code added.
 - [x] **2.5.282 Close + Help + place hooks:** Close consumes its tap so nothing underneath opens. Help explains lamps and the Woodshop. Proof hooks placeHeld and hangTools update the open shop.
-- [ ] **P2 hotbar covers Jump at 915x412; top bar clipped at 412 upright (version chip hidden, Redo clipped).** Parked.
+- [x] **P2 top bar clipped at 412 upright:** Fixed by 2.5.315. Every top button fits on an upright phone. (Hotbar covers Jump half: still open, not fixed here.)
 - [x] **2.5.279 Lamps in Bag + Woodshop first tap:** The proof hook switches to Survival before giving lamps or a Bed, so they show in the Bag even from Creative. The Woodshop close guard only starts when the Woodshop itself closes, so closing the Bag no longer swallows a Woodshop tap.
 - [x] **2.5.278 Proof hook + pause + chip:** The ?proof=1 hook ships in the student build. The pause button hides while any panel is open. The Tap to play chip stays gone after the first play.
 - [x] **2.5.277 Woodshop close:** Closing the Woodshop swallows the close tap and ignores reopen for 300 ms, so a hotbar tap selects the Bed instead of reopening the shop. A ?proof=1 hook exposes __BT_PROOF for lamp and bag checks.
@@ -258,6 +259,9 @@ Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.320 | 2.5.320 | On an upright phone, the Open button no longer covers the hint | shipping |
+| 2.5.315 | 2.5.315 | On an upright phone, every top button fits | shipping |
+| 2.5.314 | 2.5.314 | Bigger pictures in the Crafting book | shipping |
 | 2.5.317 | 2.5.317 | Reloading brings you back to the same spot and time of day | shipping |
 | 2.5.312 | 2.5.312 | Each version now shows once in What's new, newest first | shipping |
 | 2.5.304 | 2.5.304 | Bigger item counts you can read from your seat, and bigger slots on phones | shipping |
