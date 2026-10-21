@@ -1728,3 +1728,17 @@ for (const [lang, row] of Object.entries(FIT275)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const HUBLANG = {
+  en: { helpHubLang: 'Bertopia opens in the same language you picked on the Hub.' },
+  uk: { helpHubLang: 'Bertopia відкривається тією мовою, яку ти обрав на Хабі.' },
+  ru: { helpHubLang: 'Bertopia открывается на языке, который ты выбрал в Хабе.' },
+  es: { helpHubLang: 'Bertopia se abre en el idioma que elegiste en el Hub.' },
+  ar: { helpHubLang: 'يفتح Bertopia باللغة التي اخترتها في المركز.' },
+  'fa-AF': { helpHubLang: 'Bertopia به زبانی باز می‌شود که در هاب انتخاب کردی.' },
+  rw: { helpHubLang: 'Bertopia ifunguka mu rurimi rwahisemo kuri Hub.' },
+  ti: { helpHubLang: 'Bertopia ብቋንቋ ኣብ ሃብ ዝመረጽካዮ ይኽፈት።' },
+}
+for (const [lang, row] of Object.entries(HUBLANG)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

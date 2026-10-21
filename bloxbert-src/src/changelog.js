@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['ሰሌዳታት፣ እንጨት፣ ቤሪ፣ ንእሽቶ ዕንጨይቲን በትሪን ነፍሲ ወከፍ ንጹር ስእሊ ኣለዎም።'],
   }},
 
+  { v: '2.5.302', date: '2026-10-21', lines: {
+    en: ['Bertopia opens in the same language you picked on the Hub.'],
+    simple: ['Bertopia opens in the language you picked on the Hub.'],
+    uk: ['Bertopia відкривається тією мовою, яку ти обрав на Хабі.'],
+    ru: ['Bertopia открывается на языке, который ты выбрал в Хабе.'],
+    es: ['Bertopia se abre en el idioma que elegiste en el Hub.'],
+    ar: ['يفتح Bertopia باللغة التي اخترتها في المركز.'],
+    'fa-AF': ['Bertopia به زبانی باز می‌شود که در هاب انتخاب کردی.'],
+    rw: ['Bertopia ifunguka mu rurimi rwahisemo kuri Hub.'],
+    ti: ['Bertopia ብቋንቋ ኣብ ሃብ ዝመረጽካዮ ይኽፈት።'],
+  }},
+
   { v: '2.5.294', date: '2026-10-21', lines: {
     en: ['Settings switches, the teaming-up note, and lamp and rug names now show in your language.'],
     uk: ['Перемикачі налаштувань, нотатка про командну гру, і назви ламп і килимів тепер твоєю мовою.'],

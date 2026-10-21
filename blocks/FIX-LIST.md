@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
+Updated Wed Oct 21 2026 (Build: 2.5.303 item pictures. 2.5.302 Hub language).
+
+- [x] **2.5.302 Hub language:** On first load Bertopia uses the language you picked on the Hub. A stale game language does not win. Changing the Hub language in another tab follows. A teacher class language still wins.
 
 - [x] **2.5.303 item pictures:** Planks, Log, Berry, Sapling and Stick each have a distinct silhouette at 32px. Planks = 3 boards, Log = bark + end ring, Berry = 3 berries, Sapling = stem + 2 leaves, Stick = thin diagonal. Same picture in hotbar and Bag.
 - [x] **2.5.294 strings:** kitPvp and pvpHint in uk/ru. rw/ti use native state words. Decor pack strings imported. Labels do not include ON/OFF.
@@ -231,6 +233,8 @@ Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.303 | 2.5.303 | Planks, Log, Berry, Sapling and Stick each have their own clear picture | shipping |
+| 2.5.302 | 2.5.302 | Bertopia opens in the same language you picked on the Hub | shipping |
 | 2.5.275 | 2.5.275 | Leaves finally fits in the hotbar | shipping |
 | 2.5.274 | 2.5.274 | Every block name fits in the hotbar | shipping |
 | 2.5.273 | 2.5.273 | Pop-ups stay off the Bag on phones, and block names read right | shipping |
