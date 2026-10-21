@@ -1,14 +1,14 @@
 export const CHANGELOG = [
-  { v: '2.5.330', date: '2026-10-21', lines: {
-    en: ['2.5.330 — Rustbot, Keeper, the Bertodex and crew badges are now in the game, and Help explains them.'],
-    simple: ['2.5.330 — Rustbot, Keeper, the Bertodex and crew badges are now in the game, and Help explains them.'],
-    uk: ['2.5.330 — Rustbot, Keeper, Bertodex і значки екіпажу тепер у грі, і Допомога їх пояснює.'],
-    ru: ['2.5.330 — Rustbot, Keeper, Bertodex и значки команды теперь в игре, и Помощь их объясняет.'],
-    es: ['2.5.330 — Rustbot, Keeper, Bertodex y las insignias de equipo están ahora en el juego, y Ayuda las explica.'],
-    ar: ['2.5.330 — Rustbot و Keeper و Bertodex وشارات الطاقم الآن في اللعبة، والمساعدة تشرحها.'],
-    'fa-AF': ['2.5.330 — Rustbot، Keeper، Bertodex و نشان‌های خدمه اکنون در بازی هستند و راهنما آن‌ها را توضیح می‌دهد.'],
-    rw: ['2.5.330 — Rustbot, Keeper, Bertodex n ibimenyetso by itsinda biri muri game, kandi Ubufasha bubisobanura.'],
-    ti: ['2.5.330 — Rustbot፣ Keeper፣ Bertodexን ባጃት ጋንታ ኣብ ጸወታ ኣለዉ፣ ሓገዝ ድማ ይገልጾም።'],
+  { v: '2.5.329', date: '2026-10-21', lines: {
+    en: ['2.5.329 — Worlds can come back from the school server (test only for now).'],
+    simple: ['2.5.329 — Worlds can come back from the school server (test only for now).'],
+    uk: ['2.5.329 — Світи можуть повернутися зі шкільного сервера (поки лише тест).'],
+    ru: ['2.5.329 — Миры могут вернуться со школьного сервера (пока только тест).'],
+    es: ['2.5.329 — Los mundos pueden volver del servidor de la escuela (solo prueba por ahora).'],
+    ar: ['2.5.329 — يمكن أن تعود العوالم من خادم المدرسة (اختبار فقط الآن).'],
+    'fa-AF': ['2.5.329 — جهان‌ها می‌توانند از سرور مدرسه برگردند (فعلاً فقط آزمایش).'],
+    rw: ['2.5.329 — Isi zishobora kugaruka kuri seriveri yishuri (igerageza gusa ubu).'],
+    ti: ['2.5.329 — ዓለማት ካብ ሰርቨር ቤት ትምህርቲ ክምለሱ ይኽእሉ (ሕጂ ፈተና ጥራይ).'],
   }},
 
   { v: '2.5.327', date: '2026-10-21', lines: {
@@ -31,20 +31,20 @@ export const CHANGELOG = [
     es: ['2.5.298 — Rustbots y Keepers para reiniciar en equipo, más páginas Bertodex y insignias.'],
     ar: ['2.5.298 — Rustbots و Keepers لإعادة التشغيل كفريق، بالإضافة إلى صفحات Bertodex والشارات.'],
     'fa-AF': ['2.5.298 — Rustbots و Keepers برای راه‌اندازی مجدد به عنوان تیم، به علاوه صفحات Bertodex و نشان‌ها.'],
-    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe nimpapuro za Bertodex nibimenyetso.'],
+    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe n'impapuro za Bertodex n'ibimenyetso.'],
     ti: ['2.5.298 — Rustbotsን Keepers ንቡድ ንምዝላል፣ ኣብ ላዕሊ Bertodex ገጻትን ባጃትን።'],
   }},
 
-  { v: '2.5.328', date: '2026-10-21', lines: {
-    en: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
-    simple: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
-    uk: ['2.5.328 — Готуємося зберігати світи в безпеці на шкільному сервері (поки вимкнено).'],
-    ru: ['2.5.328 — Готовимся хранить миры в безопасности на школьном сервере (пока выключено).'],
-    es: ['2.5.328 — Preparándonos para guardar mundos a salvo en el servidor de la escuela (apagado por ahora).'],
-    ar: ['2.5.328 — نستعد لحفظ العوالم بأمان على خادم المدرسة (مغلق الآن).'],
-    'fa-AF': ['2.5.328 — آماده می‌شویم تا جهان‌ها را روی سرور مدرسه ایمن نگه داریم (فعلاً خاموش).'],
-    rw: ['2.5.328 — Turi gutegura kubika isi mu mutekano kuri seriveri yishuri (yafunze ubu).'],
-    ti: ['2.5.328 — ንዓለማት ኣብ ሰርቨር ቤት ትምህርቲ ኣብ ውሕስነት ንዓቅም ኣለና (ሕጂ ዕጹው).'],
+  { v: '2.5.329', date: '2026-10-21', lines: {
+    en: ['2.5.329 — Getting ready to keep worlds safe on the school server (off for now).'],
+    simple: ['2.5.329 — Getting ready to keep worlds safe on the school server (off for now).'],
+    uk: ['2.5.329 — Готуємося зберігати світи в безпеці на шкільному сервері (поки вимкнено).'],
+    ru: ['2.5.329 — Готовимся хранить миры в безопасности на школьном сервере (пока выключено).'],
+    es: ['2.5.329 — Preparándonos para guardar mundos a salvo en el servidor de la escuela (apagado por ahora).'],
+    ar: ['2.5.329 — نستعد لحفظ العوالم بأمان على خادم المدرسة (مغلق الآن).'],
+    'fa-AF': ['2.5.329 — آماده می‌شویم تا جهان‌ها را روی سرور مدرسه ایمن نگه داریم (فعلاً خاموش).'],
+    rw: ['2.5.329 — Turi gutegura kubika isi mu mutekano kuri seriveri yishuri (yafunze ubu).'],
+    ti: ['2.5.329 — ንዓለማት ኣብ ሰርቨር ቤት ትምህርቲ ኣብ ውሕስነት ንዓቅም ኣለና (ሕጂ ዕጹው).'],
   }},
 
   { v: '2.5.326', date: '2026-10-21', lines: {
@@ -479,7 +479,7 @@ export const CHANGELOG = [
     es: ['Nuevos robots para reiniciar: Rustbot y el Guardián Mecanoide. ¡Únete a tu equipo para reiniciar al Capataz de la Fundición y gana insignias y páginas del Bertodex!'],
     ar: ['روبوتات جديدة لإعادة تشغيلها: روبوت الصدأ والحارس الآلي. تعاونوا لإعادة تشغيل مشرف المسبك واربحوا شارات وصفحات بيرتودكس!'],
     'fa-AF': ['روبات‌های تازه برای روشن کردن دوباره: زنگ‌بات و نگهبان ماشینی. با هم ناظر ریخته‌گری را دوباره روشن کنید و نشان و صفحه‌های برتودکس بگیرید!'],
-    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe nimpapuro za Bertodex nibimenyetso.'],
+    rw: ['Robo nshya zo kongera gutangiza: Rustbot na Mechanoid Keeper. Mufatanye mwongere mutangize Foundry Overseer, mubone imidari n\'impapuro za Bertodex!'],
     ti: ['ሓደስቲ ሮቦታት: Rustbot ከምኡውን Mechanoid Keeper። ብሓባር ኮይንኩም ን Foundry Overseer ዳግማይ ኣልዕሉ፣ ሜዳልያን ገጻት Bertodexን ረኸቡ!'],
   }},
 

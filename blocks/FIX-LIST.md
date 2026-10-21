@@ -5,6 +5,8 @@
 - [x] **2.5.298 C4 Rustbot + Keeper + Bertodex + badges:** Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
  (live fix list for the Build chat)
+
+- [x] **server-sync-s2b (2.5.329):** Load from the server when local is missing or older (behind ?sync=1). On 409 keep both as a new "(school copy)" world + calm card. Sync chip shows Saved to school / Saving… / Offline — saved here / Not signed in. Test only.
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 
@@ -279,6 +281,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.329 | 2.5.329 | server-sync-s2b pull + keep both + chip | shipping |
 | 2.5.328 | 2.5.328 | server-sync-s2a push-only behind ?sync=1 | shipping |
 | 2.5.323 | 2.5.323 | The menu header and side menu use your language | shipping |
 | 2.5.320 | 2.5.320 | On an upright phone, the Open button no longer covers the hint | shipping |
