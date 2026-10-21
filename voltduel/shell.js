@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.18: The full-screen button speaks your language.",
-    uk: "VD 1.0.18: Кнопка на весь екран говорить вашою мовою.",
-    ru: "VD 1.0.18: Кнопка на весь экран говорит на вашем языке.",
-    es: "VD 1.0.18: El botón de pantalla completa habla tu idioma.",
-    ar: "VD 1.0.18: زر ملء الشاشة يتكلم لغتك.",
-    "fa-AF": "VD 1.0.18: دکمهٔ تمام‌صفحه به زبان شما است.",
-    rw: "VD 1.0.18: Buto yo kwuzuza ikirahure ivuga ururimi rwawe.",
-    ti: "VD 1.0.18: ናይ ምሉእ ስክሪን መልጎም ብቋንቋኻ ይዛረብ።",
-    simple: "VD 1.0.18: The full screen button uses your language."
+    en: "VD 1.0.19: The news panel buttons speak your language.",
+    uk: "VD 1.0.19: Кнопки панелі новин говорять вашою мовою.",
+    ru: "VD 1.0.19: Кнопки панели новостей говорят на вашем языке.",
+    es: "VD 1.0.19: Los botones del panel de noticias hablan tu idioma.",
+    ar: "VD 1.0.19: أزرار لوحة الأخبار تتكلم لغتك.",
+    "fa-AF": "VD 1.0.19: دکمه‌های صفحهٔ خبر به زبان شما است.",
+    rw: "VD 1.0.19: Buto z'amakuru zivuga ururimi rwawe.",
+    ti: "VD 1.0.19: ናይ ዜና መልጎምታት ብቋንቋኻ ይዛረቡ።",
+    simple: "VD 1.0.19: The news buttons use your language."
   };
   var TITLES = {
     en: "What's new",
@@ -30,6 +30,17 @@
     "fa-AF": { enter: "تمام‌صفحه", short: "کامل", exit: "خروج از تمام‌صفحه", exitShort: "خروج" },
     rw: { enter: "Ikirahure cyuzuye", short: "Yuzuye", exit: "Sohoka ikirahure cyuzuye", exitShort: "Sohoka" },
     ti: { enter: "ምሉእ ስክሪን", short: "ምሉእ", exit: "ካብ ምሉእ ስክሪን ውጻእ", exitShort: "ውጻእ" }
+  };
+  var PANEL = {
+    en: { close: "Close", hub: "Back to the Hub" },
+    simple: { close: "Close", hub: "Back to Hub" },
+    es: { close: "Cerrar", hub: "Volver al Hub" },
+    uk: { close: "Закрити", hub: "Назад до Хабу" },
+    ru: { close: "Закрыть", hub: "Назад в Хаб" },
+    ar: { close: "إغلاق", hub: "العودة إلى المركز" },
+    "fa-AF": { close: "بستن", hub: "بازگشت به هاب" },
+    rw: { close: "Funga", hub: "Gusubira kuri Hub" },
+    ti: { close: "ዕጸው", hub: "ናብ ሃብ ተመለስ" }
   };
   var menu = document.getElementById("vd-menu");
   var panel = document.getElementById("vd-panel");
@@ -59,7 +70,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.18") plate.textContent = "VD 1.0.18";
+      if (plate && plate.textContent !== "VD 1.0.19") plate.textContent = "VD 1.0.19";
       if (fs) {
         var pack = FS[code] || FS.en;
         var on = !!document.fullscreenElement;
@@ -79,6 +90,20 @@
           wordEl.style.lineHeight = "1.05";
         }
       }
+      var panelWords = PANEL[code] || PANEL.en;
+      var hub = document.querySelector(".vd-hub");
+      [closeBtn, hub].forEach(function (el, index) {
+        if (!el) return;
+        var text = index === 0 ? panelWords.close : panelWords.hub;
+        if (el.textContent !== text) el.textContent = text;
+        if (el.getAttribute("aria-label") !== text) el.setAttribute("aria-label", text);
+        el.style.whiteSpace = "normal";
+        el.style.height = "auto";
+        el.style.maxWidth = "100%";
+        el.style.lineHeight = "1.15";
+        el.style.overflowWrap = "anywhere";
+        el.style.textAlign = "center";
+      });
     } finally {
       painting = false;
     }
@@ -91,6 +116,15 @@
     if (open) document.documentElement.setAttribute("data-kb-modal-open", "1");
     else document.documentElement.removeAttribute("data-kb-modal-open");
     if (open && closeBtn) closeBtn.focus();
+    else if (!open) {
+      var buttons = document.querySelectorAll(".kb-menu, #vd-menu");
+      var target = menu;
+      for (var i = 0; i < buttons.length; i++) {
+        var box = buttons[i].getBoundingClientRect();
+        if (box.width > 0 && box.height > 0) { target = buttons[i]; break; }
+      }
+      if (target) target.focus();
+    }
   }
 
   if (menu) {

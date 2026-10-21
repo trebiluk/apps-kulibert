@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.18. Version locked: VD 1.0.18.
+Stage: VD 1.0.19. Version locked: VD 1.0.19.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -80,4 +80,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.18
 - [x] **vd-fs-translated.** The full-screen button name and word follow the hub language. In full screen the name says Exit. The button stays at least 44px and the word wraps instead of clipping.
+
+## VD 1.0.19
+- [x] **vd-panel-buttons-translated.** Close and Back to Hub in the news panel follow the hub language, including Spanish, Arabic, Dari, and Tigrinya. Both stay at least 44px. Close and Esc still close the panel and return focus to the menu.
 
