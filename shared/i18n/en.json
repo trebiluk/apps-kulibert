@@ -340,5 +340,6 @@
   "month12": "December",
   "lbAlias": "Alias",
   "rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
-  "rfHelpStars": "The level list shows your stars and your fewest ramps."
+  "rfHelpStars": "The level list shows your stars and your fewest ramps.",
+  "rfHelpClear": "When you win, stars show one by one. Next is ready."
 }

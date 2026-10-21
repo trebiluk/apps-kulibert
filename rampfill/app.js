@@ -115,6 +115,7 @@
       helpSplash: "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
+      helpClear: "When you win, stars show one by one. Next is ready.",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -180,6 +181,7 @@
       helpSplash: "Наливання бризкає. Відсоток наповнення росте. Без звуку тон вимкнений.",
       lockedWhy: "Закрито. Спочатку пройди попередній рівень.",
       helpStars: "Список рівнів показує твої зірки й найменше рамп.",
+      helpClear: "Коли виграєш, зірки з’являються одна за одною. Далі вже готове.",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -247,6 +249,7 @@
       helpSplash: "Налив брызгает. Процент наполнения растёт. Без звука тон выключен.",
       lockedWhy: "Закрыто. Сначала пройди предыдущий уровень.",
       helpStars: "Список уровней показывает твои звёзды и лучшее число рамп.",
+      helpClear: "Когда побеждаешь, звёзды появляются одна за другой. Дальше уже готово.",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -314,6 +317,7 @@
       helpSplash: "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
       lockedWhy: "Cerrado. Termina el nivel anterior.",
       helpStars: "La lista de niveles muestra tus estrellas y tus rampas mínimas.",
+      helpClear: "Al ganar, las estrellas salen una por una. Siguiente está listo.",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -381,6 +385,7 @@
       helpSplash: "السكب يرش. نسبة الامتلاء ترتفع. كتم الصوت يوقف النغمة.",
       lockedWhy: "مقفل. أنهِ المستوى الذي قبله.",
       helpStars: "قائمة المستويات تعرض نجومك وأفضل منحدراتك.",
+      helpClear: "عند الفوز تظهر النجوم واحدة واحدة. التالي جاهز.",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -448,6 +453,7 @@
       helpSplash: "ریختن می‌پاشد. درصد پُرشدن بالا می‌رود. بی‌صدا نغمه را خاموش می‌کند.",
       lockedWhy: "بسته است. اول سطح قبلی را تمام کن.",
       helpStars: "فهرست سطح‌ها ستاره‌ها و کمترین سطح شیب‌دار را نشان می‌دهد.",
+      helpClear: "وقتی می‌بری، ستاره‌ها یکی یکی می‌آیند. بعدی آماده است.",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -515,6 +521,7 @@
       helpSplash: "Gusuka biratemba. Ijanisha ryo kuzuza riratera. Guhagarika ijwi bihagarika umuziki.",
       lockedWhy: "Bifunze. Banza urangize urwego rwabanze.",
       helpStars: "Urutonde rw'inzego rwerekana inyenyeri zawe n'imihanda mike.",
+      helpClear: "Iyo utsinze, inyenyeri ziza imwe imwe. Ikurikira iriteguye.",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -582,6 +589,7 @@
       helpSplash: "ምቕዳሕ ይረጭ። ሚእታዊ ምምላእ ይወስኽ። ድምጺ ምዕጻው ነቲ ድምጺ የጥፍኦ።",
       lockedWhy: "ተዓጽዩ። ነቲ ቅድሚኡ ደረጃ ወድእ።",
       helpStars: "ዝርዝር ደረጃታት ኮኾብትኻን ዝበለጸ መንሸራተቲን የርኢ።",
+      helpClear: "ምስ ተዓወትካ ኮኾብቲ ሓደ ሓደ ይመጹ። ዝቕጽል ድሉው እዩ።",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -600,6 +608,7 @@
       whats: "RF 1.0.11: Splashier pours. See your stars.",
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
+      helpClear: "When you win, stars show one by one. Next is ready.",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -772,6 +781,23 @@
     if (bestEl) bestEl.textContent = t("bestWord") + " " + n + " " + t("rampsWord");
     if (badgeText) badgeText.textContent = t("newBest");
     if (badge) badge.hidden = !newBest;
+    paintEndStars();
+  }
+  function paintEndStars() {
+    var box = document.getElementById("end-stars");
+    if (!box) return;
+    var n = 0;
+    for (var i = 0; i < cupStars.length; i++) if ((cupStars[i] || 0) > n) n = cupStars[i];
+    if (!n) n = levelStars[level - 1] || 0;
+    box.replaceChildren();
+    box.setAttribute("aria-label", n + " " + t(n === 1 ? "starWord" : "starsWord"));
+    if (motionLess()) box.classList.add("still");
+    else box.classList.remove("still");
+    for (var s = 1; s <= n; s++) {
+      var star = document.createElement("span");
+      star.textContent = "★ " + s;
+      box.appendChild(star);
+    }
   }
   function rampWho() {
     var name = alias();
@@ -1782,6 +1808,9 @@
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
+      paintEndStars();
+      var nextClear = document.getElementById("next-btn");
+      if (nextClear) nextClear.focus();
     }
   }
   function clearFills() {
@@ -2242,6 +2271,7 @@
     syncModal();
     var focus = level >= 5 ? document.getElementById("hub-btn") : document.getElementById("next-level-btn");
     if (focus) focus.focus();
+    requestAnimationFrame(function () { if (focus && document.activeElement !== focus) focus.focus(); });
   }
   function beatFill() {
     document.getElementById("endcard").hidden = true;

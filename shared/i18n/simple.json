@@ -203,5 +203,6 @@
   "more": "More",
   "whatsNewStrip": "The top strip shows an icon and a word for each app.",
   "rfHelpSplash": "A pour splashes. The fill percent counts up. Mute turns the tone off.",
-  "rfHelpStars": "The level list shows your stars and your fewest ramps."
+  "rfHelpStars": "The level list shows your stars and your fewest ramps.",
+  "rfHelpClear": "When you win, stars show one by one. Next is ready."
 }

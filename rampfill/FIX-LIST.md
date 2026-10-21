@@ -3,6 +3,7 @@ Stage 12. Version locked: RF 1.0.11.
 
 - [x] **RF 1.0.11 ITEM 1:** A pour shows a soft splash and a fill-line ripple. The fill percent counts up in the page. A short rising tone plays unless mute is on. Reduced motion skips the ripple.
 - [x] **RF 1.0.11 ITEM 2:** The level list shows each level's stars as a star icon plus a number, and the fewest-ramps best. A locked level says to finish the one before it.
+- [x] **RF 1.0.11 ITEM 3:** The clear card shows stars one by one (still if motion is reduced). Next is focused. Retry stays at least 44px.
 
 Stage 11. Version locked: RF 1.0.10.
 

@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "RF-1.0.11b";
+  var I18N_REV = "RF-1.0.11c";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -297,6 +297,7 @@
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
   "rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
   "rfHelpStars": "The level list shows your stars and your fewest ramps.",
+  "rfHelpClear": "When you win, stars show one by one. Next is ready.",
   "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
   "rfLv5": "Pick the path",
   "rfWall": "Wall",

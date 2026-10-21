@@ -340,5 +340,6 @@
   "month12": "diciembre",
   "lbAlias": "Alias",
   "rfHelpSplash": "Verter salpica. El porcentaje de llenado sube. Silencio apaga el tono.",
-  "rfHelpStars": "La lista de niveles muestra tus estrellas y tus rampas mínimas."
+  "rfHelpStars": "La lista de niveles muestra tus estrellas y tus rampas mínimas.",
+  "rfHelpClear": "Al ganar, las estrellas salen una por una. Siguiente está listo."
 }
