@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.301', date: '2026-10-21', lines: {
+    en: ['2.5.301 — After you walk, you stay where you walked.'],
+    simple: ['2.5.301 — After you walk, you stay where you walked.'],
+    uk: ['2.5.301 — Після того, як ти йдеш, ти лишаєшся там, де йшов.'],
+    ru: ['2.5.301 — После того как ты идёшь, ты остаёшься там, где прошёл.'],
+    es: ['2.5.301 — Después de caminar, te quedas donde caminaste.'],
+    ar: ['2.5.301 — بعد أن تمشي، تبقى حيث مشيت.'],
+    'fa-AF': ['2.5.301 — بعد از این که راه می‌روی، همان‌جا که رفتی می‌مانی.'],
+    rw: ['2.5.301 — Nyuma yo kugenda, usigara aho wageze.'],
+    ti: ['2.5.301 — ድሕሪ ምኻድ፡ ኣብ ዝኸድካዮ ቦታ ትጸንሕ።'],
+  }},
+
   { v: '2.5.303', date: '2026-10-21', lines: {
     en: ['Planks, Log, Berry, Sapling and Stick each have their own clear picture.'],
     simple: ['Planks, Log, Berry, Sapling and Stick each have their own clear picture.'],

@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.303 item pictures. 2.5.302 Hub language).
+Updated Wed Oct 21 2026 (Build: 2.5.303 item pictures. 2.5.301 walk stays).
+
+- [x] **2.5.301 Walk:** After you walk and let go, you stay where you walked. The game does not pull you back to the saved spot. If the ground is still loading, you do not fall through it.
 
 - [x] **2.5.302 Hub language:** On first load Bertopia uses the language you picked on the Hub. A stale game language does not win. Changing the Hub language in another tab follows. A teacher class language still wins.
 

@@ -1742,3 +1742,17 @@ for (const [lang, row] of Object.entries(HUBLANG)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+const FIT301 = {
+  en: { whatsNewBody: '2.5.301 — After you walk, you stay where you walked.' },
+  uk: { whatsNewBody: '2.5.301 — Після того, як ти йдеш, ти лишаєшся там, де йшов.' },
+  ru: { whatsNewBody: '2.5.301 — После того как ты идёшь, ты остаёшься там, где прошёл.' },
+  es: { whatsNewBody: '2.5.301 — Después de caminar, te quedas donde caminaste.' },
+  ar: { whatsNewBody: '2.5.301 — بعد أن تمشي، تبقى حيث مشيت.' },
+  'fa-AF': { whatsNewBody: '2.5.301 — بعد از این که راه می‌روی، همان‌جا که رفتی می‌مانی.' },
+  rw: { whatsNewBody: '2.5.301 — Nyuma yo kugenda, usigara aho wageze.' },
+  ti: { whatsNewBody: '2.5.301 — ድሕሪ ምኻድ፡ ኣብ ዝኸድካዮ ቦታ ትጸንሕ።' },
+}
+for (const [lang, row] of Object.entries(FIT301)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

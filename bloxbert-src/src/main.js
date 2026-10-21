@@ -3983,7 +3983,15 @@ function keepSavedSpot() {
   if (!landHold) return
   if (landSteered()) {
     const p = noa.entities.getPosition(noa.playerEntity)
-    console.info('[bertopia] walk released the saved spot')
+    const here = p ? [p[0], p[1], p[2]].map((n) => Math.round(n * 100) / 100).join(',') : ''
+    console.info('[bertopia] walk released the saved spot ' + here)
+    setTimeout(() => {
+      try {
+        const q = noa.entities.getPosition(noa.playerEntity)
+        const stay = q ? [q[0], q[1], q[2]].map((n) => Math.round(n * 100) / 100).join(',') : ''
+        console.info('[bertopia] still here ' + stay)
+      } catch (e) {}
+    }, 5000)
     if (p && spotSupported(p)) landLetGo()
     else {
       landFree = true
@@ -4005,8 +4013,9 @@ function keepSavedSpot() {
 }
 async function applyDoc(doc) {
   applyDocN += 1
-  console.info('[bertopia] applyDoc #' + applyDocN)
-  console.trace('[bertopia] applyDoc caller')
+  let from = ''
+  try { from = String(new Error().stack || '').split('\n').slice(2, 4).join(' | ') } catch (e) {}
+  console.info('[bertopia] applyDoc #' + applyDocN + ' ' + from)
   openedFrom = doc && typeof doc.openedFrom === 'string' ? doc.openedFrom : ''
   applyMaker(doc && doc.maker)
   const moved = migrate(doc)
