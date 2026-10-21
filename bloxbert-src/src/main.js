@@ -4090,6 +4090,13 @@ async function applyDoc(doc) {
     shopsLive = true
   }
   if (src.basics && basics) basics.load(src.basics)
+  if (savedSpot && savedSpot.world === WORLD && savedSpot.clock && basics && basics.load) {
+    const docAt = src.updatedAt ? Date.parse(src.updatedAt) : 0
+    if (savedSpot.at > docAt) {
+      basics.load(savedSpot.clock)
+      paintDayClock()
+    }
+  }
   dropGifts()
   if (src.stations) stations.load(src.stations)
   if (session && session.recoverOrphans) session.recoverOrphans('')
@@ -4686,7 +4693,6 @@ async function exportJSON() {
 // 2.5.310: keep the player's spot across a reload while signed out
 const SPOT_KEY = 'bertopia-spot-v1'
 let lastSpotWrite = 0
-let lastSpotPos = null
 function writeSpot() {
   try {
     if (!noa || !noa.playerEntity) return
@@ -4698,11 +4704,11 @@ function writeSpot() {
       world: WORLD,
       pos: [Math.round(p[0] * 100) / 100, Math.round(p[1] * 100) / 100, Math.round(p[2] * 100) / 100],
       look,
-      at: Date.now()
+      at: Date.now(),
+      clock: basics && basics.dump ? basics.dump() : null
     }
     localStorage.setItem(SPOT_KEY, JSON.stringify(spot))
     lastSpotWrite = Date.now()
-    lastSpotPos = p.slice()
   } catch (e) {}
 }
 function readSpot() {
@@ -4721,10 +4727,7 @@ function clearSpot() {
 }
 setInterval(() => {
   if (!noa || !noa.playerEntity) return
-  const p = noa.entities.getPosition(noa.playerEntity)
-  if (!p) return
-  const moved = !lastSpotPos || Math.hypot(p[0] - lastSpotPos[0], p[2] - lastSpotPos[2]) > 0.5
-  if (moved && Date.now() - lastSpotWrite > 5000) writeSpot()
+  if (Date.now() - lastSpotWrite > 5000) writeSpot()
 }, 1000)
 
 setInterval(() => { if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() }) }, 20000)
