@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-dom-lock: Staff tools now load only after the desk key unlock, and the staff help line is translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-cachebust-i18n: The staff page and the small print now follow your language.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",

@@ -40,7 +40,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-dom-lock: Staff tools now load only after the desk key unlock, and the staff help line is translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-cachebust-i18n: The staff page and the small print now follow your language.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
@@ -292,13 +292,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v25:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v26:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v25:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v26:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
