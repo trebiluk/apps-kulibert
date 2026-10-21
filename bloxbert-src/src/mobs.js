@@ -77,19 +77,33 @@ export function createMobs(opts) {
   }
   function blockedWorld() { return !!(isBuildWorld() || isCreative()) }
 
-  function spawnBoss(players) {
+  function spawnBoss(players, at) {
     const n = Math.max(1, Math.min(6, players || 1))
+    // Place outside safe zone (default offset if no at)
+    const x = at ? at[0] : 48, y = at ? at[1] : 5, z = at ? at[2] : 48
+    if (zone(x, z)) return null
     const boss = {
       id: 'overseer-' + Date.now(),
       kind: 'overseer',
-      x: 0, y: 5, z: 0,
-      homeX: 0, homeY: 5, homeZ: 0,
+      x, y, z,
+      homeX: x, homeY: y, homeZ: z,
       hp: 120 * n, maxHp: 120 * n,
       phase: 1, lastPhase: 0,
+      startPlayers: n,
     }
-    if (zone(boss.x, boss.z) || mobs.length >= worldCap()) return null
+    if (mobs.length >= worldCap()) return null
     mobs.push(boss)
     return boss
+  }
+  function rescaleBoss(id, nearby) {
+    const b = mobs.find((m) => m.id === id)
+    if (!b || b.kind !== 'overseer') return
+    const n = Math.max(b.startPlayers || 1, Math.min(6, nearby || 1))
+    if (n > (b.startPlayers || 1)) {
+      b.maxHp = 120 * n
+      b.hp = Math.min(b.hp + 120 * (n - (b.startPlayers || 1)), b.maxHp)
+      b.startPlayers = n
+    }
   }
   function bossPhase(id) {
     const b = mobs.find((m) => m.id === id)

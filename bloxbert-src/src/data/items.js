@@ -126,3 +126,8 @@ export function tuftSeedCount(x, y, z) {
 // C4 Dex flag + keeperCore
 export const KEEPER_CORE = { keeperCore: { letter: 'Kc', base: 0, sell: false, stack: 1 } }
 export const DEX_FLAG = { dexOpened: { letter: 'Dx', base: 0, sell: false } }
+
+// C5 Override Key + cosmetics only
+export const OVERRIDE_KEY = { overrideKey: { letter: 'Ok', base: 0, sell: false, stack: 1 } }
+export const FOUNDRY_TRIM = { foundryTrim: { letter: 'Ft', base: 0, sell: false, stack: 1, cosmetic: true } }
+export const BERTY_MEMORY = { bertyMemory: { letter: 'Bm', base: 0, sell: false, stack: 1, cosmetic: true } }

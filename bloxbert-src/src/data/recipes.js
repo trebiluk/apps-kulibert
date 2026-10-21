@@ -66,3 +66,6 @@ mountFarmRecipes()
 
 // Woodshop Bed. Planks plus 3 wool of one colour. The bench bunk above stays when Woodshop required is off.
 export const BED_SHOP = { planks: 3, wool: 3, boards: [4, 7, 5] }
+
+// C5 Override Key
+{ id: 'overrideKey', at: 'forge', tier: 'T5', in: [['keeperCore', 2], ['steel', 4], ['copperWire', 4]], out: ['overrideKey', 1], secs: 10 },
