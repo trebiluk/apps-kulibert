@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.17: The Pause menu speaks your language.",
-    uk: "VD 1.0.17: Меню паузи говорить вашою мовою.",
-    ru: "VD 1.0.17: Меню паузы говорит на вашем языке.",
-    es: "VD 1.0.17: El menú de pausa habla tu idioma.",
-    ar: "VD 1.0.17: قائمة الإيقاف تتكلم لغتك.",
-    "fa-AF": "VD 1.0.17: فهرست مکث به زبان شما است.",
-    rw: "VD 1.0.17: Ibikubiyemo byo guhagarara bivuga ururimi rwawe.",
-    ti: "VD 1.0.17: ናይ ደው መምርሒ ብቋንቋኻ ይዛረብ።",
-    simple: "VD 1.0.17: The Pause menu uses your language."
+    en: "VD 1.0.18: The full-screen button speaks your language.",
+    uk: "VD 1.0.18: Кнопка на весь екран говорить вашою мовою.",
+    ru: "VD 1.0.18: Кнопка на весь экран говорит на вашем языке.",
+    es: "VD 1.0.18: El botón de pantalla completa habla tu idioma.",
+    ar: "VD 1.0.18: زر ملء الشاشة يتكلم لغتك.",
+    "fa-AF": "VD 1.0.18: دکمهٔ تمام‌صفحه به زبان شما است.",
+    rw: "VD 1.0.18: Buto yo kwuzuza ikirahure ivuga ururimi rwawe.",
+    ti: "VD 1.0.18: ናይ ምሉእ ስክሪን መልጎም ብቋንቋኻ ይዛረብ።",
+    simple: "VD 1.0.18: The full screen button uses your language."
   };
   var TITLES = {
     en: "What's new",
@@ -59,7 +59,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.17") plate.textContent = "VD 1.0.17";
+      if (plate && plate.textContent !== "VD 1.0.18") plate.textContent = "VD 1.0.18";
       if (fs) {
         var pack = FS[code] || FS.en;
         var on = !!document.fullscreenElement;

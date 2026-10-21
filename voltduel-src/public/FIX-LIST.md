@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.17. Version locked: VD 1.0.17.
+Stage: VD 1.0.18. Version locked: VD 1.0.18.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -77,4 +77,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.17
 - [x] **Pause menu language.** Paused, Resume, Restart, and Levels follow the hub language, including Spanish and Arabic. The arena label does too. Jump to win and Jump to pit stay behind the staff Test switch.
+
+## VD 1.0.18
+- [x] **vd-fs-translated.** The full-screen button name and word follow the hub language. In full screen the name says Exit. The button stays at least 44px and the word wraps instead of clipping.
 

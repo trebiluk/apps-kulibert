@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.17: The Pause menu speaks your language.",
-    uk: "VD 1.0.17: Меню паузи говорить вашою мовою.",
-    ru: "VD 1.0.17: Меню паузы говорит на вашем языке.",
-    es: "VD 1.0.17: El menú de pausa habla tu idioma.",
-    ar: "VD 1.0.17: قائمة الإيقاف تتكلم لغتك.",
-    "fa-AF": "VD 1.0.17: فهرست مکث به زبان شما است.",
-    rw: "VD 1.0.17: Ibikubiyemo byo guhagarara bivuga ururimi rwawe.",
-    ti: "VD 1.0.17: ናይ ደው መምርሒ ብቋንቋኻ ይዛረብ።",
-    simple: "VD 1.0.17: The Pause menu uses your language."
+    en: "VD 1.0.18: The full-screen button speaks your language.",
+    uk: "VD 1.0.18: Кнопка на весь екран говорить вашою мовою.",
+    ru: "VD 1.0.18: Кнопка на весь экран говорит на вашем языке.",
+    es: "VD 1.0.18: El botón de pantalla completa habla tu idioma.",
+    ar: "VD 1.0.18: زر ملء الشاشة يتكلم لغتك.",
+    "fa-AF": "VD 1.0.18: دکمهٔ تمام‌صفحه به زبان شما است.",
+    rw: "VD 1.0.18: Buto yo kwuzuza ikirahure ivuga ururimi rwawe.",
+    ti: "VD 1.0.18: ናይ ምሉእ ስክሪን መልጎም ብቋንቋኻ ይዛረብ።",
+    simple: "VD 1.0.18: The full screen button uses your language."
   };
   var TITLES = {
     en: "What's new",
@@ -19,6 +19,17 @@
     "fa-AF": "تازه‌ها",
     rw: "Ibishya",
     ti: "ሓድሽ"
+  };
+  var FS = {
+    en: { enter: "Full screen", short: "Full", exit: "Exit full screen", exitShort: "Exit" },
+    simple: { enter: "Full screen", short: "Full", exit: "Leave full screen", exitShort: "Leave" },
+    es: { enter: "Pantalla completa", short: "Completa", exit: "Salir de pantalla completa", exitShort: "Salir" },
+    uk: { enter: "На весь екран", short: "Екран", exit: "Вийти з повного екрана", exitShort: "Вийти" },
+    ru: { enter: "На весь экран", short: "Экран", exit: "Выйти из полного экрана", exitShort: "Выйти" },
+    ar: { enter: "ملء الشاشة", short: "كامل", exit: "الخروج من ملء الشاشة", exitShort: "خروج" },
+    "fa-AF": { enter: "تمام‌صفحه", short: "کامل", exit: "خروج از تمام‌صفحه", exitShort: "خروج" },
+    rw: { enter: "Ikirahure cyuzuye", short: "Yuzuye", exit: "Sohoka ikirahure cyuzuye", exitShort: "Sohoka" },
+    ti: { enter: "ምሉእ ስክሪን", short: "ምሉእ", exit: "ካብ ምሉእ ስክሪን ውጻእ", exitShort: "ውጻእ" }
   };
   var menu = document.getElementById("vd-menu");
   var panel = document.getElementById("vd-panel");
@@ -48,7 +59,26 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.17") plate.textContent = "VD 1.0.17";
+      if (plate && plate.textContent !== "VD 1.0.18") plate.textContent = "VD 1.0.18";
+      if (fs) {
+        var pack = FS[code] || FS.en;
+        var on = !!document.fullscreenElement;
+        var label = on ? pack.exit : pack.enter;
+        var word = on ? pack.exitShort : pack.short;
+        if (fs.getAttribute("aria-label") !== label) fs.setAttribute("aria-label", label);
+        var wordEl = document.getElementById("vd-fs-label");
+        if (wordEl && wordEl.textContent !== word) wordEl.textContent = word;
+        fs.style.whiteSpace = "normal";
+        fs.style.height = "auto";
+        fs.style.maxWidth = "8.5rem";
+        fs.style.lineHeight = "1.1";
+        fs.style.textAlign = "center";
+        if (wordEl) {
+          wordEl.style.whiteSpace = "normal";
+          wordEl.style.overflowWrap = "anywhere";
+          wordEl.style.lineHeight = "1.05";
+        }
+      }
     } finally {
       painting = false;
     }
@@ -96,6 +126,7 @@
         void document.exitFullscreen();
       }
     });
+    document.addEventListener("fullscreenchange", paint);
   }
 })();
 
