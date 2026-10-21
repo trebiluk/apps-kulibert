@@ -1960,3 +1960,58 @@ for (const [lang, row] of Object.entries(C6)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const NAMES319 = {
+  en: {
+    energyN: 'Energy {n}',
+    hotbarName: 'Blocks',
+    moveName: 'Move',
+    modeName: 'Mode',
+  },
+  uk: {
+    energyN: 'Енергія {n}',
+    hotbarName: 'Блоки',
+    moveName: 'Рух',
+    modeName: 'Режим',
+  },
+  ru: {
+    energyN: 'Энергия {n}',
+    hotbarName: 'Блоки',
+    moveName: 'Движение',
+    modeName: 'Режим',
+  },
+  es: {
+    energyN: 'Energía {n}',
+    hotbarName: 'Bloques',
+    moveName: 'Mover',
+    modeName: 'Modo',
+  },
+  ar: {
+    energyN: 'طاقة {n}',
+    hotbarName: 'كتل',
+    moveName: 'تحرك',
+    modeName: 'وضع',
+  },
+  'fa-AF': {
+    energyN: 'انرژی {n}',
+    hotbarName: 'بلوک‌ها',
+    moveName: 'حرکت',
+    modeName: 'حالت',
+  },
+  rw: {
+    energyN: 'Ingufu {n}',
+    hotbarName: 'Ibikoresho',
+    moveName: 'Kwimura',
+    modeName: 'Uburyo',
+  },
+  ti: {
+    energyN: 'ሓይሊ {n}',
+    hotbarName: 'ኣቑሑት',
+    moveName: 'ንቅስቓስ',
+    modeName: 'ኩነታት',
+  },
+}
+for (const [lang, row] of Object.entries(NAMES319)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

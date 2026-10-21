@@ -3576,7 +3576,7 @@ export function createSession(api) {
     if (!el) return
     const show = !!(energyOn && mode === 'survival')
     el.hidden = !show
-    el.setAttribute('aria-label', 'Energy ' + energy.bolts)
+    el.setAttribute('aria-label', t('energyN').replace('{n}', energy.bolts))
     el.querySelectorAll('span').forEach((bit, i) => bit.classList.toggle('on', i < energy.bolts))
   }
   function many(key) {

@@ -368,6 +368,7 @@ function applyI18n() {
     el.textContent = t(key)
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
+  for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
   const plate = document.getElementById('ver-plate')
   if (plate) plate.textContent = VERSION
   document.title = 'Bertopia ' + VERSION
