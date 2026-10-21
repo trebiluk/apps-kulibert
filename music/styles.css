@@ -5440,6 +5440,17 @@ html[data-theme] body.mu237 #viz-mic-status {
   }
 }
 
+/* MU 2.36.14 item 2 — This song and Tempo use the steel ink token in both themes. */
+html[data-theme] body.mu237 .transport {
+  --text: #111827;
+  --muted: #1F2937;
+}
+html[data-theme] body.mu237 .whose,
+html[data-theme] body.mu237 .transport .tempo > span {
+  color: var(--text) !important;
+}
+
+
 
 
 
