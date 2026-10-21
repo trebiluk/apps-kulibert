@@ -80,12 +80,7 @@
   "groupShow": "Show",
   "vizHelp": "Pick a look. Press Play. Tap the mic lights.",
   "helpMicState": "The mic line says on, listening, or blocked.",
-<<<<<<< HEAD
-"vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score."
-,
+  "vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score.",
   "spinWord": "Spin",
   "glowWord": "Glow"
-=======
-  "vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score."
->>>>>>> 6ee9c52 (Hub rev 2026-10-20-staff-dom-lock: admin tools load only after the desk key)
 }

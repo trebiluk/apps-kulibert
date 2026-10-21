@@ -220,12 +220,7 @@
   "groupShow": "Muestra",
   "vizHelp": "Elige un look. Pulsa Play. Toca 🎤 Luces del micrófono para que la imagen baile con la sala.",
   "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado.",
-<<<<<<< HEAD
-"vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación."
-,
+  "vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación.",
   "spinWord": "Girar",
   "glowWord": "Brillo"
-=======
-  "vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación."
->>>>>>> 6ee9c52 (Hub rev 2026-10-20-staff-dom-lock: admin tools load only after the desk key)
 }
