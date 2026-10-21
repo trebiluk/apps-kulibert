@@ -461,6 +461,7 @@ function endToast(opts) {
       el.hidden = true
       el.classList.remove('new-chip')
       el.classList.remove('nice-chip')
+      el.classList.remove('toast-nudge')
       el.style.removeProperty('opacity')
       el.style.removeProperty('transition')
     }
@@ -504,8 +505,11 @@ function presentToast(job) {
       endToast()
     })
   }
+  el.classList.remove('toast-nudge')
   const ms = TOAST_MS
   slot = { kind: 'toast', id: job.id || '', text: job.text || '', timer: setTimeout(() => endToast({ fade: true }), ms) }
+  lastLiveAt = performance.now()
+  toastTrace('show', job.text || '')
 }
 function pump() {
   if (slot || gapTimer) return
@@ -542,6 +546,82 @@ function yieldHold() {
 function noteContention() { yieldHold() }
 
 const seenAt = new Map()
+let lastLiveAt = 0
+let lastNudgeAt = 0
+function staffTestOn() {
+  try {
+    if (window.kwTest && window.kwTest.on && window.kwTest.on()) return true
+    if (window.KulibertTest && window.KulibertTest.on && window.KulibertTest.on()) return true
+  } catch (e) {}
+  return false
+}
+function toastTrace(kind, text) {
+  if (!staffTestOn()) return
+  try { console.info('[toast] ' + kind + ' ' + (text || '')) } catch (e) {}
+}
+function motionLess() {
+  try {
+    if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
+  } catch (e) {}
+  return reducedMotion()
+}
+function sameToastOnScreen(text) {
+  if (!text || !slot || slot.kind !== 'toast' || slot.text !== text) return false
+  const el = document.getElementById('toast')
+  return !!(el && !el.hidden)
+}
+function pingLive(el) {
+  let node = null
+  const kids = el.childNodes
+  for (let i = 0; i < kids.length; i++) {
+    const child = kids[i]
+    if (child.nodeType === 3 && child.nodeValue && child.nodeValue.replace(/\u200B/g, '').length) {
+      node = child
+      break
+    }
+  }
+  if (!node) return
+  const base = node.nodeValue.replace(/\u200B/g, '')
+  node.nodeValue = node.nodeValue.endsWith('\u200B') ? base : base + '\u200B'
+}
+function nudgeToast(el) {
+  const now = performance.now()
+  if (now - lastNudgeAt < 500) return
+  lastNudgeAt = now
+  el.classList.add('toast-nudge')
+  clearTimeout(nudgeToast.t)
+  nudgeToast.t = setTimeout(() => { if (el.isConnected) el.classList.remove('toast-nudge') }, 150)
+  try {
+    el.getAnimations().forEach((a) => { if (a.id === 'toast-nudge') a.cancel() })
+    el.animate(
+      [
+        { transform: 'translateY(0px)' },
+        { transform: 'translateY(-4px)', offset: 0.45 },
+        { transform: 'translateY(0px)' },
+      ],
+      { duration: 150, easing: 'ease-out', composite: 'accumulate', id: 'toast-nudge' }
+    )
+  } catch (e) {}
+}
+function pulseSameToast(text) {
+  const el = document.getElementById('toast')
+  if (!el || !slot || slot.kind !== 'toast') return
+  const now = performance.now()
+  if (text) seenAt.set(text, now)
+  el.hidden = false
+  el.style.removeProperty('opacity')
+  el.style.removeProperty('transition')
+  el._fade = (el._fade || 0) + 1
+  if (slot.timer) clearTimeout(slot.timer)
+  slot.timer = setTimeout(() => endToast({ fade: true }), TOAST_MS)
+  el.dataset.born = String(Math.round(now))
+  if (now - lastLiveAt >= 2000) {
+    lastLiveAt = now
+    pingLive(el)
+  }
+  if (!motionLess()) nudgeToast(el)
+  toastTrace('pulse', text || '')
+}
 export function showToast(msg, opts) {
   const o = opts || {}
   const job = {
@@ -555,9 +635,14 @@ export function showToast(msg, opts) {
   }
   if (!job.text && !job.fill) return
   const now = performance.now()
-  if (job.text && seenAt.has(job.text) && now - seenAt.get(job.text) < 6000) return
+  // Action toasts keep the old 6s anti-spam. A plain repeat pulses the one on screen.
+  if (job.act) {
+    if (job.text && seenAt.has(job.text) && now - seenAt.get(job.text) < 6000) return
+  } else if (sameToastOnScreen(job.text)) {
+    pulseSameToast(job.text)
+    return
+  }
   if (job.text) seenAt.set(job.text, now)
-  if (slot && slot.kind === 'toast' && slot.text === job.text && !job.act) return
   if (toastQ.length && toastQ[toastQ.length - 1].text === job.text && !job.act) return
   if (slot && slot.kind === 'toast') {
     clearTimeout(slot.timer)
