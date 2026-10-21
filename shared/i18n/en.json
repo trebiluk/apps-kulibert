@@ -38,7 +38,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.",
   "appNames": "App names in the top strip",
   "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
   "myProgress": "My progress",
@@ -208,5 +208,10 @@
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
   "staffLockHelp": "Staff page. Unlock with the desk key.",
   "vdHeldHelp": "Hold a pad to keep moving. A held pad lights up and shows its word.",
-  "vdPadOn": "On"
+  "vdPadOn": "On",
+  "staffHelpLine": "Staff: the staff page help now shows in your language.",
+  "finePrint": "Fine Print",
+  "finePrintTitle": "About This Hub",
+  "finePrintKid": "Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.",
+  "finePrintClose": "Close"
 }

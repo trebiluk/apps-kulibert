@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-proof-gate: Staff page is locked. News is translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: Staff help shows in your language. The footer is translated.",
   "lbAliasHelp": "Pick a name from the list. Typed names are not saved.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -68,5 +68,10 @@
   "lbMyRank": "My rank",
   "blurbBloxbert": "Build a world",
   "vdHeldHelp": "Hold a pad to move. A held pad shows its word.",
-  "vdPadOn": "On"
+  "vdPadOn": "On",
+  "staffHelpLine": "Staff: the staff page help now shows in your language.",
+  "finePrint": "Fine Print",
+  "finePrintTitle": "About This Hub",
+  "finePrintKid": "Who made these apps, how we keep you safe, and who to talk to.",
+  "finePrintClose": "Close"
 }

@@ -40,7 +40,12 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.",
+  "staffHelpLine": "Staff: the staff page help now shows in your language.",
+  "finePrint": "Fine Print",
+  "finePrintTitle": "About This Hub",
+  "finePrintKid": "Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.",
+  "finePrintClose": "Close",
   "staffLockHelp": "Staff page. Unlock with the desk key.",
   "testModeHelp": "Test mode is for staff. Kids never see it.",
   "lbTitle": "Leaderboards",
@@ -285,13 +290,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v20:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v21:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v20:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v21:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);

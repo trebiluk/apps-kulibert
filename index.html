@@ -1839,14 +1839,14 @@
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
       <p class="hub-drawer-rev"><span class="rev">rev 2026-10-20-staff-i18n-bust</span></p>
-      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
+      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
       <button type="button" id="drawer-staff" data-i18n="staff" aria-expanded="false" aria-controls="hub-drawer-staff">Staff</button>
       <div id="hub-drawer-staff" hidden></div>
       <button type="button" id="drawer-help" data-i18n="lbHelpBtn">Help</button>
-      <button type="button" id="drawer-fine-print">⚖️ Fine Print</button>
+      <button type="button" id="drawer-fine-print"><span aria-hidden="true">⚖️ </span><span data-i18n="finePrint">Fine Print</span></button>
     </div>
     <div class="stickies" id="stickies" hidden>
       <p class="announce" id="announce" hidden></p>
@@ -1913,7 +1913,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-20-staff-i18n-bust</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-20-staff-i18n-bust</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.36.13</strong> — New beat is fully visible on phones.</p>
@@ -1934,7 +1934,8 @@
             <li>Hub rev 2026-10-20-test-mode-kid-leak — test tools stay out of the kid DOM; testModeHelp in every language.</li>
             <li>Hub rev 2026-10-20-test-mode-kid-leak — /spancraft/ 307 to /holdit/?mode=span is intended (vercel.json; HoldIt plays SpanCraft). Left as-is.</li>
             <li>Hub rev 2026-10-20-staff-proof-gate — proof list stays out until the desk key; TEST save checks the key; news and leaderboard labels translated.</li>
-            <li data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.</li>
+            <li>Hub rev 2026-10-20-staff-i18n-bust — staff page loads the current translations; one cache-bust; Fine Print is translated.</li>
+            <li data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.</li>
             <li>Menus and My settings have a Close button. Esc closes them too.</li>
             <li>Tiles show on phones held sideways.</li>
             <li data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</li>
@@ -2385,9 +2386,9 @@
     </section>
     <div id="fine-print" class="fine-print" hidden role="dialog" aria-modal="true" aria-labelledby="fine-print-title">
       <div class="fine-sheet">
-        <button type="button" id="fine-print-close" aria-label="Close"><span aria-hidden="true">✕ </span>Close</button>
-        <h2 id="fine-print-title">About This Hub 📜</h2>
-        <p class="fine-kid-intro">Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.</p>
+        <button type="button" id="fine-print-close" data-i18n-aria="finePrintClose" aria-label="Close"><span aria-hidden="true">✕ </span><span data-i18n="finePrintClose">Close</span></button>
+        <h2 id="fine-print-title"><span data-i18n="finePrintTitle">About This Hub</span> <span aria-hidden="true">📜</span></h2>
+        <p class="fine-kid-intro" data-i18n="finePrintKid">Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.</p>
         <p class="fine-grown-intro">KuliNet is a set of free learning apps made by a teacher for Technology Education students at Solvay Middle School (grades 6–8) in Solvay, New York. This page explains who owns what, credits, student data, and how to reach us.</p>
         <div id="fine-print-grid" class="fine-grid"></div>
         <p class="fine-updated" id="fine-print-updated">Last updated October 3, 2026</p>
@@ -2527,8 +2528,8 @@
     </script>
     <footer class="shell-footer" id="shell-footer">
       <span class="hub-foot-rev">rev 2026-10-20-staff-i18n-bust</span>
-      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-proof-gate: The staff page stays locked without the desk key, test tools stay out of game pages, and hub news and leaderboard labels are translated.</span></span>
-      <button type="button" id="foot-fine-print">⚖️ Fine Print</button>
+      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-20-staff-i18n-bust: The staff page help shows in every language, the footer is translated, and test bits never load for kids.</span></span>
+      <button type="button" id="foot-fine-print"><span aria-hidden="true">⚖️ </span><span data-i18n="finePrint">Fine Print</span></button>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
     </footer>

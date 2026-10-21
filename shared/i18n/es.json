@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-proof-gate: La página del personal sigue cerrada sin la llave, las herramientas de prueba salen de los juegos y las novedades y la clasificación están traducidas.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: La ayuda de la página del personal se ve en todos los idiomas, el pie de página está traducido y las piezas de prueba nunca se cargan para los niños.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -208,5 +208,10 @@
   "staffLockHelp": "Página del personal. Ábrela con la llave.",
   "blurbBloxbert": "Construye un mundo",
   "vdHeldHelp": "Mantén un botón para seguir. Un botón pulsado se enciende y muestra su palabra.",
-  "vdPadOn": "On"
+  "vdPadOn": "On",
+  "staffHelpLine": "Personal: la ayuda de la página del personal ahora se ve en tu idioma.",
+  "finePrint": "Letra pequeña",
+  "finePrintTitle": "Sobre este hub",
+  "finePrintKid": "Algo importante sobre estas apps: quién las hizo, cómo te cuidamos y a quién hablar.",
+  "finePrintClose": "Cerrar"
 }

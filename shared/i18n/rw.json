@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-proof-gate: Urupapuro rw'abakozi rufunze nta rufunguzo, ibikoresho by'igerageza byavanywe mu mikino, kandi amakuru n'urutonde rw'abatsinze byahinduwe mu ndimi.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: Ubufasha bw'urupapuro rw'abakozi bugaragara mu ndimi zose, igice cyo hasi cyarasobanuwe, kandi ibice by'igerageza ntibijya bifungukira abana.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -208,5 +208,10 @@
   "staffLockHelp": "Urupapuro rw'abakozi. Fungura urufunguzo.",
   "blurbBloxbert": "Ubake isi",
   "vdHeldHelp": "Fata buto ukomeze. Buto ikanditswe ikayaka kandi yerekana ijambo ryayo.",
-  "vdPadOn": "Kuri"
+  "vdPadOn": "Kuri",
+  "staffHelpLine": "Abakozi: ubufasha bw'urupapuro rw'abakozi ubu bugaragara mu rurimi rwawe.",
+  "finePrint": "Amagambo mato",
+  "finePrintTitle": "Ibijyanye n'uru rubuga",
+  "finePrintKid": "Ibintu by'ingenzi ku porogaramu: ninde yazikoze, uko dukurinze, n'uwo uvugana.",
+  "finePrintClose": "Funga"
 }
