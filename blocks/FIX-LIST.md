@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.316 plate).
+Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
+
+- [x] **2.5.312 what's new order:** Each version shows once in What's new, newest first. The version number is not repeated on the line. You are here still marks the live version. Kinyarwanda and Tigrinya still need a native check.
 
 - [x] **2.5.318 help use:** Help explains the Use button. Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it. In all 9 languages including Simple. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.316 graphics words:** Settings note and toast say Auto, Lite and Full in your language. Spanish is Automático, Ligero, Completo. Kinyarwanda auto is Byikora. Tigrinya auto is ብባዕሉ. Kinyarwanda, Tigrinya, and Dari still need a native check. The staff speed line stays English.
@@ -251,6 +253,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.316 plate).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.312 | 2.5.312 | Each version now shows once in What's new, newest first | shipping |
 | 2.5.304 | 2.5.304 | Bigger item counts you can read from your seat, and bigger slots on phones | shipping |
 | 2.5.303 | 2.5.303 | Planks, Log, Berry, Sapling and Stick each have their own clear picture | shipping |
 | 2.5.302 | 2.5.302 | Bertopia opens in the same language you picked on the Hub | shipping |

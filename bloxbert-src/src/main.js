@@ -369,6 +369,7 @@ function applyI18n() {
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   const plate = document.getElementById('ver-plate')
   if (plate) plate.textContent = VERSION
+  document.title = 'Bertopia ' + VERSION
   const aboutPlate = document.getElementById('about-plate')
   if (aboutPlate) aboutPlate.textContent = VERSION
   const pick = document.getElementById('pick-chip')

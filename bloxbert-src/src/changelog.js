@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.318 — ሓገዝ ሕጂ መቐየሪ ተጠቐም ይገልጽ።'],
   }},
 
+  { v: '2.5.312', date: '2026-10-21', lines: {
+    en: ['Each version now shows once in What\'s new, newest first.'],
+    simple: ['Each version now shows once in What\'s new, newest first.'],
+    uk: ['Кожна версія тепер один раз у «Що нового», спершу найновіша.'],
+    ru: ['Каждая версия теперь один раз в «Что нового», сначала самая новая.'],
+    es: ['Cada versión ahora se muestra una vez en Novedades, la más nueva primero.'],
+    ar: ['كل إصدار يظهر الآن مرة واحدة في الجديد، والأحدث أولاً.'],
+    'fa-AF': ['هر نسخه حالا یک بار در تازه‌ها دیده می‌شود، تازه‌ترین اول.'],
+    rw: ['Buri verisiyo igaragara rimwe muri Gishya, iya vuba mbere.'],
+    ti: ['ነፍሲ ወከፍ ሕታም ሕጂ ሓንሳእ ኣብ ሓድሽ ይረአ፡ እቲ ሓድሽ ቀዳማይ።'],
+  }},
+
   { v: '2.5.316', date: '2026-10-21', lines: {
     en: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
     simple: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
