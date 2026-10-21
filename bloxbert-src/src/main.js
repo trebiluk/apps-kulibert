@@ -3923,6 +3923,9 @@ async function readDoc(doc) {
 }
 let landHold = null
 let landHoldUntil = 0
+let landLook = null
+let landFree = false
+let applyDocN = 0
 function chunkSettled(x, y, z) {
   const world = noa.world
   const storage = world && world._storage
@@ -3941,6 +3944,8 @@ function spotSupported(spot) {
 function pinSavedSpot(spot) {
   landHold = [spot[0], spot[1], spot[2]]
   landHoldUntil = performance.now() + 12000
+  landLook = null
+  landFree = false
   const body = playerBody
   if (body) {
     body.gravityMultiplier = 0
@@ -3948,13 +3953,48 @@ function pinSavedSpot(spot) {
   }
   noa.entities.setPosition(noa.playerEntity, landHold)
 }
+function landSteered() {
+  const st = noa.inputs && noa.inputs.state
+  if (st && (st.forward || st.backward || st.left || st.right || st.jump)) return true
+  const cam = noa.camera
+  if (!cam || !Number.isFinite(cam.heading)) return false
+  if (!landLook) {
+    landLook = [cam.heading, cam.pitch]
+    return false
+  }
+  let dh = Math.abs(cam.heading - landLook[0])
+  if (dh > Math.PI) dh = 2 * Math.PI - dh
+  return dh > 0.04 || Math.abs(cam.pitch - landLook[1]) > 0.04
+}
+function landLetGo() {
+  landHold = null
+  landLook = null
+  landFree = false
+  if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
+}
 function keepSavedSpot() {
+  if (landFree) {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    const expired = performance.now() > landHoldUntil
+    if (expired || (p && spotSupported(p))) landLetGo()
+    else if (playerBody) playerBody.gravityMultiplier = 0
+    return
+  }
   if (!landHold) return
+  if (landSteered()) {
+    const p = noa.entities.getPosition(noa.playerEntity)
+    console.info('[bertopia] walk released the saved spot')
+    if (p && spotSupported(p)) landLetGo()
+    else {
+      landFree = true
+      if (playerBody) playerBody.gravityMultiplier = 0
+    }
+    return
+  }
   const ready = spotSupported(landHold)
   const expired = performance.now() > landHoldUntil
   if (ready || expired) {
-    landHold = null
-    if (playerBody && !flying && !tableMode && !seated) playerBody.gravityMultiplier = GRAV_MULT
+    landLetGo()
     return
   }
   if (playerBody) {
@@ -3964,6 +4004,9 @@ function keepSavedSpot() {
   noa.entities.setPosition(noa.playerEntity, landHold)
 }
 async function applyDoc(doc) {
+  applyDocN += 1
+  console.info('[bertopia] applyDoc #' + applyDocN)
+  console.trace('[bertopia] applyDoc caller')
   openedFrom = doc && typeof doc.openedFrom === 'string' ? doc.openedFrom : ''
   applyMaker(doc && doc.maker)
   const moved = migrate(doc)
