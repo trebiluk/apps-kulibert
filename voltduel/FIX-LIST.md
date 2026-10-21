@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.19. Version locked: VD 1.0.19.
+Stage: VD 1.0.20. Version locked: VD 1.0.20.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -83,4 +83,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.19
 - [x] **vd-panel-buttons-translated.** Close and Back to Hub in the news panel follow the hub language, including Spanish, Arabic, Dari, and Tigrinya. Both stay at least 44px. Close and Esc still close the panel and return focus to the menu.
+
+## VD 1.0.20
+- [x] **Full screen off the menu.** The button stays where it is. On a tall phone the race menu starts 8px under it. On a short phone the menu keeps its height and clears the button by at least 8px on the inline end, so the three race cards stay on screen with no new scroll.
 

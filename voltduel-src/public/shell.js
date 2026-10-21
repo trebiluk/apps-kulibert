@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.19: The news panel buttons speak your language.",
-    uk: "VD 1.0.19: Кнопки панелі новин говорять вашою мовою.",
-    ru: "VD 1.0.19: Кнопки панели новостей говорят на вашем языке.",
-    es: "VD 1.0.19: Los botones del panel de noticias hablan tu idioma.",
-    ar: "VD 1.0.19: أزرار لوحة الأخبار تتكلم لغتك.",
-    "fa-AF": "VD 1.0.19: دکمه‌های صفحهٔ خبر به زبان شما است.",
-    rw: "VD 1.0.19: Buto z'amakuru zivuga ururimi rwawe.",
-    ti: "VD 1.0.19: ናይ ዜና መልጎምታት ብቋንቋኻ ይዛረቡ።",
-    simple: "VD 1.0.19: The news buttons use your language."
+    en: "VD 1.0.20 — The Full screen button no longer sits on the race menu.",
+    uk: "VD 1.0.20 — Кнопка на весь екран більше не на меню заїзду.",
+    ru: "VD 1.0.20 — Кнопка на весь экран больше не на меню заезда.",
+    es: "VD 1.0.20 — El botón de pantalla completa ya no tapa el menú.",
+    ar: "VD 1.0.20 — زر ملء الشاشة لم يعد فوق قائمة السباق.",
+    "fa-AF": "VD 1.0.20 — دکمهٔ تمام‌صفحه دیگر روی منوی مسابقه نیست.",
+    rw: "VD 1.0.20 — Buto yo kwuzuza ikirahure ntikigira ku menu y'isiganwa.",
+    ti: "VD 1.0.20 — ናይ ምሉእ ስክሪን መልጎም ኣብ ዝርዝር ውድድር ኣይርከብን።",
+    simple: "VD 1.0.20 — The Full screen button no longer sits on the race menu."
   };
   var TITLES = {
     en: "What's new",
@@ -70,7 +70,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.19") plate.textContent = "VD 1.0.19";
+      if (plate && plate.textContent !== "VD 1.0.20") plate.textContent = "VD 1.0.20";
       if (fs) {
         var pack = FS[code] || FS.en;
         var on = !!document.fullscreenElement;
