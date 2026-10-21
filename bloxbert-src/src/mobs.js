@@ -112,6 +112,14 @@ export function createMobs(opts) {
       if (!enclosed(x, y, z) || y > 3 && !enclosed(x, y, z)) return false
       if (lightAt(x, y, z) > 4) return false
       if (ofKind('sparkbug', x, z) >= 4) return false
+    } else if (kind === 'rustbot') {
+      if (!(isNight && isNight())) return false
+      if (y < -2 || y > 4) return false // surface + B2-B3 approx
+      if (ofKind('rustbot', x, z) >= 2) return false
+      // Copper tools gate: assume checked externally or always for playtest; report if needed
+    } else if (kind === 'keeper') {
+      if (y > -4) return false // B3 near gold approx
+      if (ofKind('keeper', x, z) >= 1) return false
     }
     return true
   }
@@ -125,8 +133,10 @@ export function createMobs(opts) {
       homeX: x, homeY: y, homeZ: z,
       hp: kind === 'rustbot' ? 16 : kind === 'keeper' ? 24 : kind === 'scrapper' ? 6 : 4,
       maxHp: kind === 'rustbot' ? 16 : kind === 'keeper' ? 24 : kind === 'scrapper' ? 6 : 4,
+      dmg: kind === 'rustbot' ? 10 : kind === 'keeper' ? 15 : 0,
+      speed: kind === 'rustbot' ? 0.6 : kind === 'keeper' ? 0.8 : 1,
       weak: kind === 'rustbot' ? 'back' : kind === 'keeper' ? 'chest' : null,
-      facing: 0, stolen: null, lastTick: 0,
+      facing: 0, stolen: null, lastTick: 0, slamMarker: null,
     }
     mobs.push(mob)
     return mob
@@ -181,6 +191,20 @@ export function createMobs(opts) {
       el.append(ring, text)
       clearTimeout(showZap._t)
       showZap._t = setTimeout(() => { const n = document.getElementById('c2-zap'); if (n) n.remove() }, 600)
+    } catch (e) {}
+  }
+  function showSlamMarker() {
+    try {
+      let el = document.getElementById('c4-slam')
+      if (!el) {
+        el = document.createElement('div')
+        el.id = 'c4-slam'
+        el.setAttribute('role', 'status')
+        el.style.cssText = 'position:fixed;top:35%;left:50%;transform:translate(-50%,-50%);width:48px;height:48px;border:4px solid #fbbf24;background:rgba(251,191,36,.2);z-index:40;pointer-events:none;border-radius:4px'
+        document.body.append(el)
+      }
+      clearTimeout(showSlamMarker._t)
+      showSlamMarker._t = setTimeout(() => { const n = document.getElementById('c4-slam'); if (n) n.remove() }, 1000)
     } catch (e) {}
   }
   function dropMesh(m) {
@@ -356,9 +380,26 @@ export function createMobs(opts) {
         if (!m.slamAt) m.slamAt = now + 1000
         else if (now >= m.slamAt && !m.slammed) {
           if (toast) toast(t ? t('slam') : 'Slam!')
+          showSlamMarker()
           m.slammed = true
           m.weakOpen = now + 2000
         }
+      }
+      // Apply Bonk damage to rustbot/keeper (×2 on weak)
+      if ((m.kind === 'rustbot' || m.kind === 'keeper') && bonkAt && now - bonkAt < 400 && bonkAt !== m.seenBonk && p && d < 3.2 && !zone(m.x, m.z)) {
+        m.seenBonk = bonkAt
+        let mul = 1
+        if (m.kind === 'rustbot') {
+          const ang = Math.atan2(p[0] - m.x, p[2] - m.z)
+          const diff = Math.abs(((ang - m.facing + Math.PI) % (2*Math.PI)) - Math.PI)
+          if (diff > Math.PI / 2) mul = 2 // back/flank
+        } else if (m.kind === 'keeper' && m.weakOpen && now < m.weakOpen) {
+          mul = 2 // chest open
+        }
+        const applied = (m.dmg || 4) * mul
+        m.hp -= applied
+        if (toast) toast((mul > 1 ? '⚡ ' : '') + '-' + applied)
+        if (m.hp <= 0) finishReboot(m, true)
       }
       if (m.kind === 'sparkbug') {
         const cooling = m.zapCool && now < m.zapCool
@@ -396,7 +437,9 @@ export function createMobs(opts) {
       const yy = y + i
       if ((getVoxel(x, yy, z) | 0) === 0 && (getVoxel(x, yy - 1, z) | 0) > 0) { y = yy; break }
     }
-    const kind = enclosed(x, y, z) && lightAt(x, y, z) <= 4 ? 'sparkbug' : 'scrapper'
+    let kind = enclosed(x, y, z) && lightAt(x, y, z) <= 4 ? 'sparkbug' : 'scrapper'
+    if (isNight && isNight() && Math.random() < 0.3 && y >= -2 && y <= 4) kind = 'rustbot'
+    else if (y < -4 && Math.random() < 0.15) kind = 'keeper'
     if (!canSpawn(kind, x, y, z)) return null
     return spawn(kind, x, y, z)
   }
