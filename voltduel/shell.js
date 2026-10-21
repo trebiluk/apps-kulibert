@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.13: After Rematch, the keyboard is right in the game.",
-    uk: "VD 1.0.13: Після реваншу клавіатура одразу в грі.",
-    ru: "VD 1.0.13: После реванша клавиатура сразу в игре.",
-    es: "VD 1.0.13: Tras la revancha, el teclado queda en el juego.",
-    ar: "VD 1.0.13: بعد إعادة المباراة، لوحة المفاتيح تكون داخل اللعبة.",
-    "fa-AF": "VD 1.0.13: بعد از بازی دوباره، صفحه‌کلید داخل بازی است.",
-    rw: "VD 1.0.13: Nyuma yo gusubukura, klaviye iba mu mukino.",
-    ti: "VD 1.0.13: ድሕሪ ዳግማይ ጸዋታ፡ ኪቦርድ ኣብ ውሽጢ ጸዋታ እዩ።",
-    simple: "VD 1.0.13: After Rematch, the keyboard is in the game."
+    en: "VD 1.0.14: The winner screen speaks your language.",
+    uk: "VD 1.0.14: Екран переможця говорить вашою мовою.",
+    ru: "VD 1.0.14: Экран победителя говорит на вашем языке.",
+    es: "VD 1.0.14: La pantalla del ganador habla tu idioma.",
+    ar: "VD 1.0.14: شاشة الفائز تتكلم لغتك.",
+    "fa-AF": "VD 1.0.14: صفحهٔ برنده به زبان شما است.",
+    rw: "VD 1.0.14: Ikirahure cy'uwatsinze kivuga ururimi rwawe.",
+    ti: "VD 1.0.14: ናይ ዓዋቲ መመልከቲ ብቋንቋኻ ይዛረብ።",
+    simple: "VD 1.0.14: The win screen uses your language."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.13") plate.textContent = "VD 1.0.13";
+      if (plate && plate.textContent !== "VD 1.0.14") plate.textContent = "VD 1.0.14";
     } finally {
       painting = false;
     }

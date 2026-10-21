@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "RF-1.0.13";
+  var I18N_REV = "VD-1.0.14";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -324,7 +324,7 @@
   "vdAriaRioRight": "RIO right",
   "vdAriaRioJump": "RIO jump",
   "vdLastMatch": "Last match: {winner} won {heat} in {time}.",
-  "vdJuiceHelp": "Rematch starts that heat over in one tap. The keyboard stays in the game. A hit shakes once and sparks. The lobby shows each runner's shape and the last match.",
+  "vdJuiceHelp": "Rematch starts that heat over in one tap. The keyboard stays in the game. A hit shakes once and sparks. The lobby shows each runner's shape and the last match. The winner screen speaks your language.",
   "vdArena": "Volt Duel arena",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };

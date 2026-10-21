@@ -388,7 +388,7 @@
   "frame_double": "Doble",
   "frame_rgb": "RGB",
   "vdLastMatch": "Última manga: {winner} ganó {heat} en {time}.",
-  "vdJuiceHelp": "La revancha empieza esa manga con un toque. El teclado se queda en el juego. Un golpe tiembla un momento y suelta chispas. La sala muestra la forma de cada corredor y la última manga.",
+  "vdJuiceHelp": "La revancha empieza esa manga con un toque. El teclado se queda en el juego. Un golpe tiembla un momento y suelta chispas. La sala muestra la forma de cada corredor y la última manga. La pantalla del ganador habla tu idioma.",
   "vizStart": "Toca ▶ para empezar — mira cómo tu música se vuelve luz.",
   "helpStart": "▶ Pulsa Play. La imagen espera y tu música se vuelve luz.",
   "helpPulse": "🖼 El marco brilla un poco con el bombo. Con menos movimiento se queda quieto.",

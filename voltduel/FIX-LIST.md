@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.13. Version locked: VD 1.0.13.
+Stage: VD 1.0.14. Version locked: VD 1.0.14.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -65,4 +65,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.13
 - [x] **Focus after Rematch.** Rematch and Next heat move focus to the arena (`tabindex="-1"`, label "Volt Duel arena"). The ring is a still 3px cyan line. Tab reaches Mute. Scores reset to 0. Save format `volt-duel-v1` unchanged.
+
+## VD 1.0.14
+- [x] **Winner screen language.** The banner, coin line, Rematch, Next heat, and the spoken result follow the hub language, including Spanish and Arabic.
 
