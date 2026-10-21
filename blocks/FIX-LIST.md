@@ -2,6 +2,8 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 
+- [x] **bertopia-reload-keeps-clock (2.5.317):** A reload brings back the same spot and time of day. The spot saves the clock every 5 seconds, even while you stand still. A fresh world still starts at Day 1 06:00. Kinyarwanda and Tigrinya still need a native check.
+
 - [x] **2.5.312 what's new order:** Each version shows once in What's new, newest first. The version number is not repeated on the line. You are here still marks the live version. Kinyarwanda and Tigrinya still need a native check.
 
 - [x] **2.5.311 help and chip:** The Survival chip and its aria-label follow a language change with no reload. Help has one new paragraph for the spot, Hub language, pictures, counts, rug, top-bar name, PvP switches, and tap-again hint. The empty Pick a tile line is gone from Help. Kinyarwanda, Tigrinya, and Dari still need a native check.
@@ -255,6 +257,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.317 | 2.5.317 | Reloading brings you back to the same spot and time of day | shipping |
 | 2.5.312 | 2.5.312 | Each version now shows once in What's new, newest first | shipping |
 | 2.5.304 | 2.5.304 | Bigger item counts you can read from your seat, and bigger slots on phones | shipping |
 | 2.5.303 | 2.5.303 | Planks, Log, Berry, Sapling and Stick each have their own clear picture | shipping |

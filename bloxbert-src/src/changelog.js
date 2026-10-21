@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.318 — ሓገዝ ሕጂ መቐየሪ ተጠቐም ይገልጽ።'],
   }},
 
+  { v: '2.5.317', date: '2026-10-21', lines: {
+    en: ['Reloading brings you back to the same spot and time of day.'],
+    simple: ['Reloading brings you back to the same spot and time of day.'],
+    uk: ['Перезавантаження повертає тебе на те саме місце і в той самий час доби.'],
+    ru: ['Перезагрузка возвращает тебя на то же место и в то же время суток.'],
+    es: ['Recargar te devuelve al mismo sitio y a la misma hora del día.'],
+    ar: ['إعادة التحميل تعيدك إلى نفس المكان ونفس وقت اليوم.'],
+    'fa-AF': ['بار دوباره تو را به همان جا و همان وقت روز برمی‌گرداند.'],
+    rw: ['Kongera gutangiza kugusubiza ahantu hamwe n\'isaha y\'umunsi.'],
+    ti: ['ምጽዓን ናብ ተመሳሳሊ ቦታን ናይ መዓልቲ ሰዓትን የምለስካ።'],
+  }},
+
   { v: '2.5.312', date: '2026-10-21', lines: {
     en: ['Each version now shows once in What\'s new, newest first.'],
     simple: ['Each version now shows once in What\'s new, newest first.'],
