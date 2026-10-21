@@ -13,13 +13,14 @@ self.addEventListener('install', (event) => {
   event.waitUntil((async () => {
     const cache = await caches.open(CACHE)
     // reload skips the HTTP cache, so a new version does not pin the previous index.html
-    // Stay waiting until the page posts {type:'skip'}. A fresh install (no active worker) still activates.
+    // Take over immediately so a new version reaches the next normal visit.
     await Promise.all(SHELL.map(async (url) => {
       try {
         const res = await fetch(url, { cache: 'reload' })
         if (res && res.ok) await cache.put(url, res)
       } catch (e) {}
     }))
+    await self.skipWaiting()
   })())
 })
 

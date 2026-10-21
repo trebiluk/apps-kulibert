@@ -1381,9 +1381,12 @@ document.addEventListener('DOMContentLoaded', function () {
       var m = s && (s.getAttribute('src') || '').match(/v=([^&]+)/)
       return m ? m[1] : ''
     }
+    var reloaded = false
     function reloadOnce() {
+      if (reloaded) return
       var ver = pageVersion()
       if (sessionStorage.getItem('bert-sw-reloaded') === ver) return
+      reloaded = true
       sessionStorage.setItem('bert-sw-reloaded', ver)
       location.reload()
     }
@@ -1401,7 +1404,6 @@ document.addEventListener('DOMContentLoaded', function () {
       if (choice === 'auto') {
         if (skipping) return
         skipping = true
-        navigator.serviceWorker.addEventListener('controllerchange', reloadOnce)
         waiting.postMessage({ type: 'skip' })
       } else if (!told) {
         told = true
@@ -1468,7 +1470,13 @@ document.addEventListener('DOMContentLoaded', function () {
       }).catch(function () { cacheDone = true; finish() })
     }
     probe()
-    navigator.serviceWorker.register('/blocks/sw.js', { scope: scope }).then(arm).catch(function () {})
+    var hadCtrl = !!navigator.serviceWorker.controller
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (!hadCtrl) return
+      if (window.__bertOpen === true) { window.dispatchEvent(new Event('bert-update')); return }
+      reloadOnce()
+    })
+    navigator.serviceWorker.register('/blocks/sw.js', { scope: scope, updateViaCache: 'none' }).then(arm).catch(function () {})
     document.addEventListener('visibilitychange', function () {
       if (document.visibilityState !== 'visible') return
       navigator.serviceWorker.getRegistration(scope).then(function (reg) {
