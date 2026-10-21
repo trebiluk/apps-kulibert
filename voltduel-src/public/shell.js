@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.10: Volt Duel now speaks Spanish in the lobby, help and game buttons.",
-    uk: "VD 1.0.10: Volt Duel тепер іспанською в лобі, довідці та кнопках гри.",
-    ru: "VD 1.0.10: Volt Duel теперь на испанском в лобби, справке и кнопках игры.",
-    es: "VD 1.0.10: Volt Duel ya habla español en la sala, la ayuda y los botones del juego.",
-    ar: "VD 1.0.10: Volt Duel يتحدث الإسبانية الآن في الردهة والمساعدة وأزرار اللعب.",
-    "fa-AF": "VD 1.0.10: Volt Duel حالا در لابی، راهنما و دکمه‌های بازی اسپانیایی است.",
-    rw: "VD 1.0.10: Volt Duel ubu ivuga Icyesipanyolo muri lobby, ubufasha n'utubuto tw'umukino.",
-    ti: "VD 1.0.10: Volt Duel ሕጂ ኣብ ሎቢ፣ ሓገዝን መልጎም ጸወታን ብስጳንኛ ይዛረብ።",
-    simple: "VD 1.0.10: Spanish words fixed in the game."
+    en: "VD 1.0.11: A staff-only test tool no longer loads for kids, and Help is tidier.",
+    uk: "VD 1.0.11: Інструмент тестування для персоналу більше не завантажується для дітей, а Довідка охайніша.",
+    ru: "VD 1.0.11: Тестовый инструмент для персонала больше не загружается у детей, а Справка стала аккуратнее.",
+    es: "VD 1.0.11: Una herramienta de prueba solo para el personal ya no se carga para los niños, y la Ayuda está más ordenada.",
+    ar: "VD 1.0.11: أداة الاختبار الخاصة بالموظفين لم تعد تُحمَّل للأطفال، والمساعدة أصبحت أوضح.",
+    "fa-AF": "VD 1.0.11: ابزار آزمایشی کارکنان دیگر برای کودکان بارگذاری نمی‌شود و راهنما مرتب‌تر است.",
+    rw: "VD 1.0.11: Igikoresho cy'igerageza cy'abakozi ntikigifungukira abana, kandi Ubufasha burasobanutse.",
+    ti: "VD 1.0.11: ናይ ሰራሕተኛታት መፈተኒ መሳርሒ ንቘልዑ ኣይጽዓንን፣ ሓገዝውን ጽሩይ እዩ።",
+    simple: "VD 1.0.11: Test tool hidden. Help is tidier."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.10") plate.textContent = "VD 1.0.10";
+      if (plate && plate.textContent !== "VD 1.0.11") plate.textContent = "VD 1.0.11";
     } finally {
       painting = false;
     }

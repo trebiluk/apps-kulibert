@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.10. Version locked: VD 1.0.10.
+Stage: VD 1.0.11. Version locked: VD 1.0.11.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -47,4 +47,5 @@ Physics and scoring were not changed.
 
 ## VD 1.0.11
 - [x] **Item 1 Test script.** kw-test.js loads only when the staff unlock and the Test switch are both on. If a tag leaked in, it is removed. A kid page has no script tag and no KulibertTest or KWTest global.
+- [x] **Item 2 Help.** The circle-and-square fact is said once. The sign line no longer repeats it. Help icons are drawn, not a missing-font box.
 

@@ -749,7 +749,7 @@ export function VoltDuel() {
   })();
   const shapeHelp = (() => {
     void helpRev;
-    const fallback = "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint.";
+    const fallback = "A sign tells you when someone goes back to a checkpoint.";
     try {
       const value = window.KulibertI18n?.t?.("vdShapeHelp", fallback);
       if (value && value !== "vdShapeHelp") return value;
@@ -1076,26 +1076,26 @@ export function VoltDuel() {
               {helpOpen && (
                 <div className="help-pop" id="vd-help-tip" role="dialog" aria-label={lobbyText("vdHelpBtn", "Help")}>
                   <p>
-                    <span aria-hidden="true">⏵ </span>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path fill="currentColor" d="M4 2.5v11l9-5.5z" /></svg></span>
                     <span data-i18n="vdHoldHelp">{holdHelp}</span>
                   </p>
                   <p>
-                    <span aria-hidden="true">⬤ </span>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" /></svg></span>
                     <span data-i18n="vdShapeHelp">{shapeHelp}</span>
                   </p>
                   <p>
-                    <span aria-hidden="true">● </span>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><circle cx="8" cy="8" r="4.5" fill="currentColor" /></svg></span>
                     <span data-i18n="vdHeldHelp">{heldPadHelp}</span>
                   </p>
                   <p>
-                    <span aria-hidden="true">⬤ </span>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><circle cx="5" cy="8" r="3.2" fill="none" stroke="currentColor" strokeWidth="1.4" /><rect x="9" y="4.8" width="5" height="5" fill="none" stroke="currentColor" strokeWidth="1.4" /></svg></span>
                     <span data-i18n="vdChipHelp">{chipHelp}</span>
                   </p>
                   <p>
-                    <span aria-hidden="true">⚑ </span>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path fill="currentColor" d="M3 1.5h1.2v13H3zm1.2.7h8.2L10.8 4.8l1.6 2.6H4.2z" /></svg></span>
                     <span data-i18n="vdHazardHelp">{lobbyText("vdHazardHelp", "Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.")}</span>
                   </p>
-                  {staffTest && <p>⚑ Test mode (staff only). Scores go to the TEST board.</p>}
+                  {staffTest && <p>Test mode (staff only). Scores go to the TEST board.</p>}
                   <button type="button" className="text-btn" data-i18n-label="vdClose" aria-label={lobbyText("vdClose", "Close")} onClick={() => setHelpOpen(false)}>
                     <span aria-hidden="true">✕</span> <span data-i18n="vdClose">{lobbyText("vdClose", "Close")}</span>
                   </button>
