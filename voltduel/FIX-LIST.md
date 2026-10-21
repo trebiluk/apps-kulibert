@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.11. Version locked: VD 1.0.11.
+Stage: VD 1.0.12. Version locked: VD 1.0.12.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -52,4 +52,5 @@ Physics and scoring were not changed.
 ## VD 1.0.12
 - [x] **Item 1 Rematch.** Already one tap. After "VEX takes the flag" (12.00, 3 coins and 1 coin) one Rematch starts Qualifier again: clock 0.00, both coins 0, countdown 3.
 - [x] **Item 2 Hit and win.** A hit shakes for 150ms and sparks in that runner's color. The circle V and square R stay readable. Reduced motion adds no shake class. The win screen shows calm confetti, or only the banner when motion is reduced.
+- [x] **Item 3 Lobby.** Each runner shows a circle V or a square R, and each key has its own word. The last real match shows under the tag. Arabic mirrors.
 

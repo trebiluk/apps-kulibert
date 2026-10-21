@@ -386,5 +386,7 @@
   "frame_line": "Line",
   "frame_glow": "Glow",
   "frame_double": "Double",
-  "frame_rgb": "RGB"
+  "frame_rgb": "RGB",
+  "vdLastMatch": "Last match: {winner} won {heat} in {time}.",
+  "vdJuiceHelp": "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match."
 }

@@ -386,5 +386,7 @@
   "frame_line": "መስመር",
   "frame_glow": "ብርሃን",
   "frame_double": "ድርብ",
-  "frame_rgb": "RGB"
+  "frame_rgb": "RGB",
+  "vdLastMatch": "ናይ መወዳእታ ውድድር፦ {winner} ኣብ {heat} ብ{time} ተዓዊቱ።",
+  "vdJuiceHelp": "ዳግማይ ጸዋታ ነቲ ውድድር ብሓንሳብ ምጥዋቕ የጅምሮ። ምድጋም ሓንሳብ የንቀጥቅጥ እዩ ከምኡውን የብርቅ። መጸበዪ ቅርጺ ነፍሲ ወከፍ ሯጺን ናይ መወዳእታ ውድድርን የርኢ።"
 }

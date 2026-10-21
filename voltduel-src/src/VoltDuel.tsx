@@ -98,6 +98,7 @@ export function VoltDuel() {
   const qaMode = useRef(false);
   const reduced = useRef(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [lastMatch, setLastMatch] = useState<{ winner: string; time: string; heat: string } | null>(null);
   const coinRefs = [useRef<HTMLElement>(null), useRef<HTMLElement>(null)];
   const cpRefs = [useRef<HTMLElement>(null), useRef<HTMLElement>(null)];
   const timeRef = useRef<HTMLElement>(null);
@@ -273,6 +274,19 @@ export function VoltDuel() {
     qaMode.current = new URLSearchParams(window.location.search).has("qa");
     return () => motion.removeEventListener("change", onMotion);
   }, []);
+
+  useEffect(() => {
+    try {
+      const raw = JSON.parse(sessionStorage.getItem("vd-last-match-v1") || "null");
+      if (raw && typeof raw.winner === "string" && typeof raw.time === "string" && typeof raw.heat === "string") {
+        setLastMatch(raw);
+        return;
+      }
+    } catch {
+      /* keep the lobby without a last match */
+    }
+    setLastMatch(null);
+  }, [screen.name]);
 
   useEffect(() => {
     if (!hint) return;
@@ -554,6 +568,15 @@ export function VoltDuel() {
             saveRef.current = nextSave;
             writeSave(nextSave);
             setSave(nextSave);
+            try {
+              sessionStorage.setItem("vd-last-match-v1", JSON.stringify({
+                winner: NAMES[winner],
+                time: formatTime(world.time),
+                heat: world.level.id,
+              }));
+            } catch {
+              /* the lobby can omit the last match */
+            }
           }
           show({
             name: "results",
@@ -1018,6 +1041,17 @@ export function VoltDuel() {
                 <span className="cyan">Volt</span> <span className="amber">Duel</span>
               </h1>
               <p className="tag" data-i18n="vdLobbyTag">{lobbyText("vdLobbyTag", "Two runners. One flag. First touch takes the heat.")}</p>
+              {lastMatch && (
+                <p className="tag vd-last">
+                  {lobbyText("vdLastMatch", "Last match: {winner} won {heat} in {time}.")
+                    .replace("{winner}", lastMatch.winner)
+                    .replace("{heat}", lobbyText(
+                      lastMatch.heat === "qualifier" ? "vdNameQualifier" : lastMatch.heat === "overpass" ? "vdNameOverpass" : "vdNameFinals",
+                      lastMatch.heat,
+                    ))
+                    .replace("{time}", lastMatch.time)}
+                </p>
+              )}
               <div className="levels">
                 {LEVELS.map((entry, index) => {
                   const best = save.best[entry.id];
@@ -1042,22 +1076,22 @@ export function VoltDuel() {
               </div>
               <div className="controls-row">
                 <div className="control-box vex">
-                  <h3>VEX</h3>
+                  <h3><span className="gem" aria-hidden="true">V</span> VEX</h3>
                   {coarse ? (
-                    <p dir="ltr">◀ ▶ {lobbyText("vdWordRun", "run")} · ⤒ {lobbyText("vdWordJump", "jump")}</p>
+                    <p dir="ltr">◀ {lobbyText("vdLeft", "Left")} · ▶ {lobbyText("vdRight", "Right")} · ⤒ {lobbyText("vdJump", "Jump")}</p>
                   ) : (
                     <p>
-                      <kbd>A</kbd> <kbd>D</kbd> {lobbyText("vdWordRun", "run")} · <kbd>W</kbd> {lobbyText("vdWordJump", "jump")} · <kbd>S</kbd> {lobbyText("vdWordDrop", "drop through")}
+                      <kbd>A</kbd> {lobbyText("vdLeft", "Left")} · <kbd>D</kbd> {lobbyText("vdRight", "Right")} · <kbd>W</kbd> {lobbyText("vdJump", "Jump")} · <kbd>S</kbd> {lobbyText("vdWordDrop", "drop through")}
                     </p>
                   )}
                 </div>
                 <div className="control-box rio">
-                  <h3>RIO</h3>
+                  <h3><span className="gem" aria-hidden="true">R</span> RIO</h3>
                   {coarse ? (
-                    <p dir="ltr">◀ ▶ {lobbyText("vdWordRun", "run")} · ⤒ {lobbyText("vdWordJump", "jump")}</p>
+                    <p dir="ltr">◀ {lobbyText("vdLeft", "Left")} · ▶ {lobbyText("vdRight", "Right")} · ⤒ {lobbyText("vdJump", "Jump")}</p>
                   ) : (
                     <p>
-                      <kbd>←</kbd> <kbd>→</kbd> {lobbyText("vdWordRun", "run")} · <kbd>↑</kbd> {lobbyText("vdWordJump", "jump")} · <kbd>↓</kbd> {lobbyText("vdWordDrop", "drop through")}
+                      <kbd>←</kbd> {lobbyText("vdLeft", "Left")} · <kbd>→</kbd> {lobbyText("vdRight", "Right")} · <kbd>↑</kbd> {lobbyText("vdJump", "Jump")} · <kbd>↓</kbd> {lobbyText("vdWordDrop", "drop through")}
                     </p>
                   )}
                 </div>
@@ -1114,6 +1148,10 @@ export function VoltDuel() {
                   <p>
                     <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path fill="currentColor" d="M3 1.5h1.2v13H3zm1.2.7h8.2L10.8 4.8l1.6 2.6H4.2z" /></svg></span>
                     <span data-i18n="vdHazardHelp">{lobbyText("vdHazardHelp", "Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.")}</span>
+                  </p>
+                  <p>
+                    <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path fill="currentColor" d="M8 1.2l1.3 3.6H13l-3 2.3 1.2 3.7L8 8.6 4.8 10.8 6 7.1 3 4.8h3.7z" /></svg></span>
+                    <span data-i18n="vdJuiceHelp">{lobbyText("vdJuiceHelp", "Rematch starts that heat over in one tap. A hit shakes once and sparks. The lobby shows each runner's shape and the last match.")}</span>
                   </p>
                   {staffTest && <p>Test mode (staff only). Scores go to the TEST board.</p>}
                   <button type="button" className="text-btn" data-i18n-label="vdClose" aria-label={lobbyText("vdClose", "Close")} onClick={() => setHelpOpen(false)}>

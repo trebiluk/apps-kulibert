@@ -386,5 +386,7 @@
   "frame_line": "خط",
   "frame_glow": "توهج",
   "frame_double": "مزدوج",
-  "frame_rgb": "RGB"
+  "frame_rgb": "RGB",
+  "vdLastMatch": "آخر شوط: فاز {winner} في {heat} خلال {time}.",
+  "vdJuiceHelp": "إعادة المباراة تبدأ الشوط نفسه بلمسة واحدة. الضربة تهتز لحظة وتُطلق شررًا. الردهة تُظهر شكل كل عدّاء وآخر شوط."
 }

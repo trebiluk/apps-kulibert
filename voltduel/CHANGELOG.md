@@ -7,4 +7,5 @@ VD 1.0.8 — VEX and RIO score chips differ by shape and letter. RIO no longer c
 VD 1.0.9 — The lobby follows the hub language. Chip help is in every language. The test script loads only after a staff unlock. Staff Test mode can reach a checkpoint sign, the win, and Rematch.
 VD 1.0.10 — Spanish shows in the lobby, the help, and the game buttons. Close, mute, pause, restart, left, right, and jump follow the hub language.
 VD 1.0.11 — The test script loads only when staff Test is on. Help states each fact once, and the first line no longer starts with a broken box.
+VD 1.0.12 — Rematch starts the heat over in one tap. A hit shakes and sparks. The lobby shows each runner's shape, key words, and the last match.
 

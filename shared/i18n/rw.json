@@ -386,5 +386,7 @@
   "frame_line": "Umurongo",
   "frame_glow": "Urumuri",
   "frame_double": "Kabiri",
-  "frame_rgb": "RGB"
+  "frame_rgb": "RGB",
+  "vdLastMatch": "Uruhande rwa nyuma: {winner} yatsinze {heat} mu {time}.",
+  "vdJuiceHelp": "Gusubukura gutangira uruhande rumwe ukanda rimwe. Guhura biracamagana kandi birabagirana. Icyumba cyerekana ishusho ya buri mukinnyi n'uruhande rwa nyuma."
 }

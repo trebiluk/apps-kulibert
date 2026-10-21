@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.11: A staff-only test tool no longer loads for kids, and Help is tidier.",
-    uk: "VD 1.0.11: Інструмент тестування для персоналу більше не завантажується для дітей, а Довідка охайніша.",
-    ru: "VD 1.0.11: Тестовый инструмент для персонала больше не загружается у детей, а Справка стала аккуратнее.",
-    es: "VD 1.0.11: Una herramienta de prueba solo para el personal ya no se carga para los niños, y la Ayuda está más ordenada.",
-    ar: "VD 1.0.11: أداة الاختبار الخاصة بالموظفين لم تعد تُحمَّل للأطفال، والمساعدة أصبحت أوضح.",
-    "fa-AF": "VD 1.0.11: ابزار آزمایشی کارکنان دیگر برای کودکان بارگذاری نمی‌شود و راهنما مرتب‌تر است.",
-    rw: "VD 1.0.11: Igikoresho cy'igerageza cy'abakozi ntikigifungukira abana, kandi Ubufasha burasobanutse.",
-    ti: "VD 1.0.11: ናይ ሰራሕተኛታት መፈተኒ መሳርሒ ንቘልዑ ኣይጽዓንን፣ ሓገዝውን ጽሩይ እዩ።",
-    simple: "VD 1.0.11: Test tool hidden. Help is tidier."
+    en: "VD 1.0.12: Rematch works in one tap, hits spark, and the lobby is clearer.",
+    uk: "VD 1.0.12: Реванш спрацьовує одним дотиком, удари іскрять, а лобі зрозуміліше.",
+    ru: "VD 1.0.12: Реванш срабатывает одним нажатием, удары искрят, а лобби понятнее.",
+    es: "VD 1.0.12: La revancha funciona con un toque, los golpes chispean y la sala está más clara.",
+    ar: "VD 1.0.12: إعادة المباراة تعمل بلمسة واحدة، والضربات تُشرر، والردهة أوضح.",
+    "fa-AF": "VD 1.0.12: بازی دوباره با یک لمس کار می‌کند، ضربه‌ها جرقه می‌زنند و لابی روشن‌تر است.",
+    rw: "VD 1.0.12: Gusubukura bikorwa ukanda rimwe, guhura birabagirana, kandi icyumba kirumvikana.",
+    ti: "VD 1.0.12: ዳግማይ ጸዋታ ብሓንሳብ ምጥዋቕ ይሰርሕ፣ ምድጋማት የብርቅ፣ መጸበዪውን ግልጺ እዩ።",
+    simple: "VD 1.0.12: One-tap rematch. Hits spark."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.11") plate.textContent = "VD 1.0.11";
+      if (plate && plate.textContent !== "VD 1.0.12") plate.textContent = "VD 1.0.12";
     } finally {
       painting = false;
     }
