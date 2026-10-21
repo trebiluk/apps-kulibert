@@ -231,7 +231,7 @@
   "beatN": "Біт {n}",
   "onWord": "увімкнено",
   "offWord": "вимкнено",
-"rfLv5": "Обери шлях",
+  "rfLv5": "Обери шлях",
   "rfWall": "Стіна",
   "rfLesson5": "Та сама рампа, інший налив. Зерно любить гірку. Воді потрібен край.",
   "rfHelpPour5": "Обери зерна або воду. Лише одне ллється за раз.",
@@ -253,5 +253,18 @@
   "vdHidePads": "Сховати кнопки",
   "vdWordRun": "біг",
   "vdWordJump": "стрибок",
-  "vdWordDrop": "провал"
+  "vdWordDrop": "провал",
+  "staffTitle": "Персонал",
+  "staffIntro": "Введи пароль персоналу. Цей пристрій відкритий до виходу. Ключ TechWorks — окремий замок.",
+  "staffShow": "Показати",
+  "staffUnlock": "Відкрити",
+  "staffDoor": "Двері Tech Room",
+  "staffDeskTitle": "Стіл кімнати",
+  "staffDeskIntro": "Це не плитка класу. Відкрий ключем TechWorks Cloud. Хеш у цій вкладці. Закрий вкладку, щоб замкнути.",
+  "staffSignOut": "Вийти",
+  "staffPinTitle": "PIN учня",
+  "staffPinBody": "PIN задається в TechWorks, не на цьому Chromebook. Учень обирає псевдонім, потім вводить код і PIN.",
+  "staffKeyLabel": "Ключ столу TechWorks",
+  "staffUnlockTab": "Відкрити цю вкладку",
+  "staffKeyHint": "Встав ключ Cloud. Перше збереження займає двері, якщо ще ніхто не зайняв."
 }

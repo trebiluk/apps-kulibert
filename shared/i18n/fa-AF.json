@@ -231,7 +231,7 @@
   "beatN": "بیت {n}",
   "onWord": "روشن",
   "offWord": "خاموش",
-"rfLv5": "مسیر را انتخاب کن",
+  "rfLv5": "مسیر را انتخاب کن",
   "rfWall": "دیوار",
   "rfLesson5": "همان سطح شیب‌دار، ریزش دیگر. دانه‌ها تپه را دوست دارند. آب به لبه نیاز دارد.",
   "rfHelpPour5": "دانه‌ها یا آب را انتخاب کن. هر بار فقط یکی می‌ریزد.",
@@ -253,5 +253,18 @@
   "vdHidePads": "پنهان کردن دکمه‌ها",
   "vdWordRun": "دویدن",
   "vdWordJump": "پریدن",
-  "vdWordDrop": "افتادن"
+  "vdWordDrop": "افتادن",
+  "staffTitle": "کارکنان",
+  "staffIntro": "رمز کارکنان را بنویس. این دستگاه تا خروج باز می‌ماند. کلید TechWorks قفل جداست.",
+  "staffShow": "نشان بده",
+  "staffUnlock": "باز کن",
+  "staffDoor": "در Tech Room",
+  "staffDeskTitle": "میز اتاق",
+  "staffDeskIntro": "کاشی صنف نیست. با کلید TechWorks Cloud باز کن. هش در این تب است. تب را ببند تا قفل شود.",
+  "staffSignOut": "خروج",
+  "staffPinTitle": "پین شاگرد",
+  "staffPinBody": "پین در TechWorks تنظیم می‌شود، نه روی این کروم‌بوک. شاگرد نام را انتخاب می‌کند، سپس رمز و پین را می‌نویسد.",
+  "staffKeyLabel": "کلید میز TechWorks",
+  "staffUnlockTab": "این تب را باز کن",
+  "staffKeyHint": "کلید Cloud را بچسبان. اولین ذخیره در را می‌گیرد اگر کسی نگرفته باشد."
 }

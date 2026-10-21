@@ -231,7 +231,7 @@
   "beatN": "Beat {n}",
   "onWord": "on",
   "offWord": "off",
-"rfLv5": "Pick the path",
+  "rfLv5": "Pick the path",
   "rfWall": "Wall",
   "rfLesson5": "Same ramp, different pour. Grains like a hill. Water needs the lip.",
   "rfHelpPour5": "Pick Grains or Water. Only one pours at a time.",
@@ -253,5 +253,18 @@
   "vdHidePads": "Hide pads",
   "vdWordRun": "run",
   "vdWordJump": "jump",
-  "vdWordDrop": "drop through"
+  "vdWordDrop": "drop through",
+  "staffTitle": "Staff",
+  "staffIntro": "Enter the staff password. This device stays unlocked until Sign out. The TechWorks desk key is a separate lock.",
+  "staffShow": "Show",
+  "staffUnlock": "Unlock",
+  "staffDoor": "Tech Room door",
+  "staffDeskTitle": "Room desk",
+  "staffDeskIntro": "Not a class tile. Unlock with the TechWorks Cloud desk key. Hashed in this tab. Close the tab to lock.",
+  "staffSignOut": "Sign out",
+  "staffPinTitle": "Student PIN",
+  "staffPinBody": "The PIN is set in TechWorks, not on this Chromebook. A student picks their alias, then types the code and that PIN.",
+  "staffKeyLabel": "TechWorks desk key",
+  "staffUnlockTab": "Unlock this tab",
+  "staffKeyHint": "Paste the Cloud desk key. First save claims the door if nobody has yet."
 }

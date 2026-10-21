@@ -231,7 +231,7 @@
   "beatN": "Umuti {n}",
   "onWord": "cyaka",
   "offWord": "cizima",
-"rfLv5": "Hitamo inzira",
+  "rfLv5": "Hitamo inzira",
   "rfWall": "Urukuta",
   "rfLesson5": "Umuhanda umwe, gusuka gutandukanye. Ibinyobwa bikunda umusozi. Amazi akeneye uruhande.",
   "rfHelpPour5": "Hitamo ibinyobwa cyangwa amazi. Rimwe gusa rirasuka.",
@@ -253,5 +253,18 @@
   "vdHidePads": "Hisha utubuto",
   "vdWordRun": "kwiruka",
   "vdWordJump": "gusimbuka",
-  "vdWordDrop": "kumanuka"
+  "vdWordDrop": "kumanuka",
+  "staffTitle": "Abakozi",
+  "staffIntro": "Andika ijambo ry'ibanga ry'abakozi. Iki gikoresho kiguma gifunguye kugeza usohoka. Urufunguzo rwa TechWorks ni urundi.",
+  "staffShow": "Erekana",
+  "staffUnlock": "Fungura",
+  "staffDoor": "Umuryango wa Tech Room",
+  "staffDeskTitle": "Ibiro by'icyumba",
+  "staffDeskIntro": "Ntabwo ari ikarita y'ishuri. Fungura urufunguzo rwa TechWorks Cloud. Hash iri muri iki kiganiro. Funga ikiganiro ukinjire.",
+  "staffSignOut": "Sohoka",
+  "staffPinTitle": "PIN y'umunyeshuri",
+  "staffPinBody": "PIN ishyirwa muri TechWorks, ntabwo iri kuri iki Chromebook. Umunyeshuri ahitamo izina, hanyuma akandika kode na PIN.",
+  "staffKeyLabel": "Urufunguzo rw'ibiro rwa TechWorks",
+  "staffUnlockTab": "Fungura iki kiganiro",
+  "staffKeyHint": "Omeka urufunguzo rwa Cloud. Kubika bwa mbere bifata urugi niba ntawe urufashe."
 }

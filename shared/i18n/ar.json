@@ -231,7 +231,7 @@
   "beatN": "الزمن {n}",
   "onWord": "يعمل",
   "offWord": "متوقف",
-"rfLv5": "اختر المسار",
+  "rfLv5": "اختر المسار",
   "rfWall": "الجدار",
   "rfLesson5": "نفس المنحدر، صبّ مختلف. الحبوب تحب التلة. الماء يحتاج الحافة.",
   "rfHelpPour5": "اختر الحبوب أو الماء. واحد فقط يُصب في كل مرة.",
@@ -253,5 +253,18 @@
   "vdHidePads": "إخفاء الأزرار",
   "vdWordRun": "جري",
   "vdWordJump": "قفز",
-  "vdWordDrop": "نزول"
+  "vdWordDrop": "نزول",
+  "staffTitle": "الموظفون",
+  "staffIntro": "أدخل كلمة مرور الموظفين. يبقى هذا الجهاز مفتوحًا حتى تسجيل الخروج. مفتاح TechWorks قفل منفصل.",
+  "staffShow": "إظهار",
+  "staffUnlock": "فتح",
+  "staffDoor": "باب Tech Room",
+  "staffDeskTitle": "مكتب الغرفة",
+  "staffDeskIntro": "ليست بطاقة صف. افتحها بمفتاح TechWorks Cloud. التجزئة في هذا التبويب. أغلق التبويب للقفل.",
+  "staffSignOut": "تسجيل الخروج",
+  "staffPinTitle": "رمز الطالب",
+  "staffPinBody": "يُضبط الرمز في TechWorks، لا على هذا الجهاز. يختار الطالب اسمه، ثم يكتب الرمز ورمز PIN.",
+  "staffKeyLabel": "مفتاح مكتب TechWorks",
+  "staffUnlockTab": "افتح هذا التبويب",
+  "staffKeyHint": "الصق مفتاح Cloud. أول حفظ يأخذ الباب إذا لم يأخذه أحد."
 }

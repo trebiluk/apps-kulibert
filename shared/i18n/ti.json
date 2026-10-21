@@ -231,7 +231,7 @@
   "beatN": "ምት {n}",
   "onWord": "ወሊዐ",
   "offWord": "ጠፊኡ",
-"rfLv5": "መገዲ ምረጽ",
+  "rfLv5": "መገዲ ምረጽ",
   "rfWall": "መንደቕ",
   "rfLesson5": "ሓደ መንሸራተቲ፡ ዝተፈልየ ምቅዳሕ። እኽሊ ኮረብታ ይፈቱ። ማይ ኣፍደገ የድልዮ።",
   "rfHelpPour5": "እኽሊ ወይ ማይ ምረጽ። ሓደ ጥራይ እዩ ዝቐድሕ።",
@@ -253,5 +253,18 @@
   "vdHidePads": "ቁልፍታት ሕባእ",
   "vdWordRun": "ሩጫ",
   "vdWordJump": "ዝላል",
-  "vdWordDrop": "ውረድ"
+  "vdWordDrop": "ውረድ",
+  "staffTitle": "ሰራሕተኛታት",
+  "staffIntro": "መሕለፊ ቓል ሰራሕተኛታት ኣእቱ። እዚ መሳርሒ ክሳብ ምውጻእ ክፉት ይጸንሕ። መፍትሕ TechWorks ካልእ መዕጸዊ እዩ።",
+  "staffShow": "ኣርኢ",
+  "staffUnlock": "ክፈት",
+  "staffDoor": "ማዕጾ Tech Room",
+  "staffDeskTitle": "ጠረጴዛ ክፍሊ",
+  "staffDeskIntro": "ናይ ክፍሊ ካርድ ኣይኮነን። ብመፍትሕ TechWorks Cloud ክፈቶ። ሓሽ ኣብዚ ትብ እዩ። ንምዕጻው ትብ ዕጸው።",
+  "staffSignOut": "ውጻእ",
+  "staffPinTitle": "PIN ተመሃራይ",
+  "staffPinBody": "PIN ኣብ TechWorks እዩ ዝስራሕ፣ ኣብዚ Chromebook ኣይኮነን። ተመሃራይ ስም ይመርጽ፣ ድሕሪኡ ኮድን PINን የእቱ።",
+  "staffKeyLabel": "መፍትሕ ጠረጴዛ TechWorks",
+  "staffUnlockTab": "ነዚ ትብ ክፈት",
+  "staffKeyHint": "መፍትሕ Cloud ለጥፍ። ቀዳማይ ምዕቃብ ማዕጾ ይወስድ እንተዘይተወሲዱ።"
 }

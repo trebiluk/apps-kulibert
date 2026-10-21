@@ -231,7 +231,7 @@
   "beatN": "Tiempo {n}",
   "onWord": "encendido",
   "offWord": "apagado",
-"rfLv5": "Elige el camino",
+  "rfLv5": "Elige el camino",
   "rfWall": "Muro",
   "rfLesson5": "La misma rampa, otro vertido. Los granos quieren una colina. El agua necesita el borde.",
   "rfHelpPour5": "Elige granos o agua. Solo uno se vierte a la vez.",
@@ -253,5 +253,18 @@
   "vdHidePads": "Ocultar botones",
   "vdWordRun": "correr",
   "vdWordJump": "saltar",
-  "vdWordDrop": "caer"
+  "vdWordDrop": "caer",
+  "staffTitle": "Personal",
+  "staffIntro": "Escribe la contraseña del personal. Este dispositivo queda abierto hasta Salir. La llave de TechWorks es otro candado.",
+  "staffShow": "Mostrar",
+  "staffUnlock": "Abrir",
+  "staffDoor": "Puerta de Tech Room",
+  "staffDeskTitle": "Mesa de la sala",
+  "staffDeskIntro": "No es una ficha de clase. Ábrela con la llave de TechWorks Cloud. El hash queda en esta pestaña. Ciérrala para bloquear.",
+  "staffSignOut": "Salir",
+  "staffPinTitle": "PIN del estudiante",
+  "staffPinBody": "El PIN se pone en TechWorks, no en este Chromebook. El estudiante elige su alias, luego escribe el código y ese PIN.",
+  "staffKeyLabel": "Llave del escritorio TechWorks",
+  "staffUnlockTab": "Abrir esta pestaña",
+  "staffKeyHint": "Pega la llave Cloud. El primer guardado toma la puerta si nadie la ha tomado."
 }
