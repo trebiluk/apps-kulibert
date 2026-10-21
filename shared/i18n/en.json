@@ -316,5 +316,10 @@
   "finePrivacyGrown": "Students use a class code and an alias, not their real names. Don't type your real name or passwords.",
   "fineSchoolGrown": "These apps are for class work. Use them for school and be kind.",
   "fineProgressGrown": "The apps keep changing. Work saved only in the browser can be lost. Keep a copy of anything important.",
-  "fineCreationsGrown": "What you make is yours. The class can see and remix it, and you get credit by your code name."
+  "fineCreationsGrown": "What you make is yours. The class can see and remix it, and you get credit by your code name.",
+  "staffLockedChip": "Locked · Cloud desk key",
+  "staffStep1": "Not a class tile. Staff on a Chromebook is only a local switch.",
+  "staffStep2": "Cloud desk key. Same 12-character key. SHA-256 in the browser. First save claims the door.",
+  "staffStep3": "This tab only. Close the tab, it locks. Nothing stored on student machines.",
+  "staffTabTitle": "Room desk · The Tech Room"
 }

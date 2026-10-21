@@ -47,6 +47,7 @@
     .lb-preview{margin:.35rem 0 .8rem;padding:.6rem .75rem;border-radius:10px;background:#071018;border:1px solid var(--border);color:var(--text);font-size:.85rem;line-height:1.45}
     .lb-head{margin:.75rem 0 .1rem;color:var(--accent);font-size:.75rem;font-weight:750;letter-spacing:.04em}
   </style>
+  <script>document.addEventListener("kulibert-lang", function () { if (window.KulibertI18n) document.title = KulibertI18n.t("staffTabTitle"); });</script>
 </head>
 <body>
   <div class="wrap">
@@ -67,7 +68,7 @@
     </form>
     
     <div id="hub-admin" hidden>
-    <p class="chip"><i></i> Locked · Cloud desk key</p>
+    <p class="chip"><i></i> <span data-i18n="staffLockedChip">Locked · Cloud desk key</span></p>
     <h1 data-i18n="staffDeskTitle">Room desk</h1>
     <p data-i18n="staffDeskIntro">Not a class tile. Unlock with the TechWorks Cloud desk key. Hashed in this tab. Close the tab to lock.</p>
     <p><a class="door-link" href="/"><span aria-hidden="true">← </span><span data-i18n="staffDoor">Tech Room door</span></a></p>
@@ -79,9 +80,9 @@
 
     <form class="card" id="key-form">
       <ol>
-        <li><strong>Not a class tile.</strong> Staff on a Chromebook is only a local switch.</li>
-        <li><strong>Cloud desk key.</strong> Same 12-character key. SHA-256 in the browser. First save claims the door.</li>
-        <li><strong>This tab only.</strong> Close the tab, it locks. Nothing stored on student machines.</li>
+        <li data-i18n="staffStep1"><strong>Not a class tile.</strong> Staff on a Chromebook is only a local switch.</li>
+        <li data-i18n="staffStep2"><strong>Cloud desk key.</strong> Same 12-character key. SHA-256 in the browser. First save claims the door.</li>
+        <li data-i18n="staffStep3"><strong>This tab only.</strong> Close the tab, it locks. Nothing stored on student machines.</li>
       </ol>
       <label><span data-i18n="staffKeyLabel">TechWorks desk key</span>
         <input id="desk-key" type="text" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX"/>

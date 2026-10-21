@@ -316,5 +316,10 @@
   "finePrivacyGrown": "Abanyeshuri bakoresha kode y'ishuri n'izina ry'ibanga, ntabwo ari amazina yabo nyayo. Ntukandike izina ryawe cyangwa ijambo ry'ibanga.",
   "fineSchoolGrown": "Izi porogaramu ni iz'akazi k'ishuri. Uzikoreshe ku ishuri kandi ube mwiza.",
   "fineProgressGrown": "Porogaramu zirakomeza guhinduka. Akazi kabitswe gusa muri mushakisha karashobora kurangira. Bika kopi y'ikintu cy'ingenzi.",
-  "fineCreationsGrown": "Ibyo ukora ni ibyawe. Ishuri rirabibona kandi rikosore, ukaba wishimwa n'izina ryawe."
+  "fineCreationsGrown": "Ibyo ukora ni ibyawe. Ishuri rirabibona kandi rikosore, ukaba wishimwa n'izina ryawe.",
+  "staffLockedChip": "Gifunze · Urufunguzo rwa Cloud",
+  "staffStep1": "Ntabwo ari ikarita y'ishuri. Umukozi kuri Chromebook ni urufunguzo rw'ahantu gusa.",
+  "staffStep2": "Urufunguzo rwa Cloud. Urufunguzo rumwe rwa 12. SHA-256 muri mushakisha. Kubika bwa mbere bifata urugi.",
+  "staffStep3": "Iki kiganiro gusa. Funga ikiganiro, kirafunga. Nta kintu kibikwa ku mashini z'abanyeshuri.",
+  "staffTabTitle": "Ibiro by'icyumba · The Tech Room"
 }

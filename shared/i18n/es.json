@@ -316,5 +316,10 @@
   "finePrivacyGrown": "Los estudiantes usan un código de clase y un alias, no sus nombres reales. No escribas tu nombre real ni contraseñas.",
   "fineSchoolGrown": "Estas apps son para el trabajo de clase. Úsalas para la escuela y sé amable.",
   "fineProgressGrown": "Las apps siguen cambiando. El trabajo guardado solo en el navegador puede perderse. Guarda una copia de lo importante.",
-  "fineCreationsGrown": "Lo que haces es tuyo. La clase puede verlo y remezclarlo, y recibes crédito con tu nombre clave."
+  "fineCreationsGrown": "Lo que haces es tuyo. La clase puede verlo y remezclarlo, y recibes crédito con tu nombre clave.",
+  "staffLockedChip": "Bloqueado · Llave Cloud",
+  "staffStep1": "No es una ficha de clase. El personal en un Chromebook es solo un interruptor local.",
+  "staffStep2": "Llave Cloud. La misma llave de 12 caracteres. SHA-256 en el navegador. El primer guardado toma la puerta.",
+  "staffStep3": "Solo esta pestaña. Ciérrala y se bloquea. Nada se guarda en las máquinas de los estudiantes.",
+  "staffTabTitle": "Mesa de la sala · The Tech Room"
 }
