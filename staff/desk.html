@@ -1,0 +1,96 @@
+    <div id="desk" hidden>
+      <form class="card" id="wall-form">
+        <p class="chip">Wall</p>
+        <div class="presets">
+          <button class="ghost" type="button" id="preset-open">Open room</button>
+          <button class="ghost" type="button" id="preset-paper">Paper day</button>
+          <button class="ghost" type="button" id="preset-sub">Sub coverage</button>
+        </div>
+        <label class="check">Doors closed <input id="closed" type="checkbox"/></label>
+        <label>Closed message <input id="closedMsg" maxlength="80"/></label>
+        <label>Door line <input id="note" maxlength="80" placeholder="This week: bring your sketch"/></label>
+        <label class="check">Show door line <input id="showNote" type="checkbox" checked/></label>
+        <label>Welcome <input id="welcome" maxlength="60"/></label>
+        <label>Announcement <input id="announce" maxlength="140" placeholder="Leave blank. The box stays hidden."/></label>
+        <label>Period pin <input id="period" maxlength="24" placeholder="Period 3"/></label>
+        <label>Next club <input id="club" maxlength="80"/></label>
+        <label>Doors <input id="doors" maxlength="24" placeholder="7:55a"/></label>
+        <label>Last bell <input id="lastBell" maxlength="24" placeholder="2:37p"/></label>
+      </form>
+      <form class="card" id="lb-form">
+        <p class="chip">Leaderboards</p>
+        <p>One marquee under the ribbon. Lines are ranked. The same name on the same board updates the score.</p>
+        <label class="check">Show the marquee <input id="lb-on" type="checkbox" checked/></label>
+        <div class="presets" id="lb-picks">
+          <button class="ghost" type="button" data-board="SpanCraft">SpanCraft</button>
+          <button class="ghost" type="button" data-board="HoldIt">HoldIt</button>
+          <button class="ghost" type="button" data-board="Spire Lab">Spire Lab</button>
+          <button class="ghost" type="button" data-board="Catapult Size Lab">Catapult</button>
+          <button class="ghost" type="button" data-board="Berty Run">Berty Run</button>
+          <button class="ghost" type="button" data-board="Drift">Drift</button>
+        </div>
+        <label>Board <input id="lb-board" maxlength="24" placeholder="SpanCraft"/></label>
+        <label>Name or Alias <select id="lb-name" aria-describedby="lb-help lb-status"><option value="">Pick an alias</option></select></label>
+        <p id="lb-help" data-i18n="lbAliasHelp">Pick a name from the list. Typed names are not saved.</p>
+        <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
+        <button class="save" type="submit">Add or update</button>
+        <p class="err" id="lb-status"></p>
+        <p class="lb-preview" id="lb-preview">The door stays quiet until you add a line.</p>
+        <div id="lb-list"></div>
+      </form>
+
+      <form class="card" id="lb-controls">
+        <p class="chip">Board controls</p>
+        <label class="check">School tab <input id="lb-school" type="checkbox" checked/></label>
+        <label>Hide alias <select id="lb-hide" aria-label="Hide an alias"><option value="">Pick an alias</option></select></label>
+        <button class="save" type="button" id="lb-hide-btn">Hide alias</button>
+        <label>Reset board <select id="lb-reset" aria-label="Reset a board"></select></label>
+        <button class="save" type="button" id="lb-reset-btn">Reset board</button>
+        <p class="err" id="lb-control-status"></p>
+      </form>
+      <form class="card" id="add-form">
+        <p class="chip">School tiles</p>
+        <label>Name <input id="name" maxlength="24" placeholder="NYSED"/></label>
+        <label>Address <input id="href" placeholder="https://"/></label>
+        <button class="save" type="submit">Add school tile</button>
+      </form>
+      <div class="card" id="list"></div>
+      <form class="card" id="board-form">
+        <p class="chip">Board</p>
+        <div id="apps"></div>
+        <p class="chip">Outside the shell</p>
+        <p>Checked tiles leave The Tech Room and open full page (or a new tab). Unchecked tiles open inside the Hub frame.</p>
+        <div id="outside-shell"></div>
+        <p class="chip">Policy</p>
+        <label class="check">Personal shortcuts <input id="shortcuts" type="checkbox" checked/></label>
+        <label class="check">Paste a link in search <input id="paste" type="checkbox" checked/></label>
+        <label class="check">Pin tiles <input id="pins" type="checkbox" checked/></label>
+        <label class="check">Opened here <input id="recents" type="checkbox" checked/></label>
+        <label class="check">Keys 1–9 <input id="hotkeys" type="checkbox" checked/></label>
+        <label class="check">Nickname field <input id="aliasOn" type="checkbox" checked/></label>
+        <label class="check">Hub aliases — On / Off <input id="hubAliases" type="checkbox" checked/></label>
+        <p>Off hides Hub Sign in. TechWorks still uses aliases. Always.</p>
+        <label class="check">Staff lane <input id="staffLane" type="checkbox" checked/></label>
+        <label class="check">Staff edit link <input id="staffEdit" type="checkbox" checked/></label>
+        <label class="check">Test mode (staff only) <input id="testMode" type="checkbox"/></label>
+        <p id="testMode-help" data-i18n="testModeHelp">⚑ Test mode is for staff. Kids never see it.</p>
+        <label>Max personal shortcuts <input id="maxCuts" type="number" min="1" max="18" value="18"/></label>
+        <p class="chip">Layout</p>
+        <label class="check">THE TECH ROOM lockup <input id="lockup" type="checkbox" checked/></label>
+        <label class="check">Search <input id="searchOn" type="checkbox" checked/></label>
+        <label class="check">Bell strip <input id="bellsOn" type="checkbox" checked/></label>
+        <label class="check">Live version chips <input id="chips" type="checkbox" checked/></label>
+        <label class="check">Open in a new tab <input id="newTab" type="checkbox" checked/></label>
+        <label class="check">Compact tiles <input id="compact" type="checkbox"/></label>
+        <p class="chip">Voice</p>
+        <label>Search placeholder <input id="search" maxlength="40"/></label>
+        <label>Footer <input id="footer" maxlength="80"/></label>
+        <p class="chip">Sticky icons</p>
+        <p>Up to three. They stay at the top of the door. Leave a slot blank to skip it.</p>
+        <label>Icon 1 <select id="sticky-1"></select></label>
+        <label>Icon 2 <select id="sticky-2"></select></label>
+        <label>Icon 3 <select id="sticky-3"></select></label>
+      </form>
+      <button class="save" id="save-all" type="button">Save to every Chromebook</button>
+      <button class="ghost" id="lock" type="button">Lock this tab</button>
+    </div>

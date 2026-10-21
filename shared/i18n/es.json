@@ -38,7 +38,7 @@
   "more": "Más",
   "gotIt": "Listo",
   "pwaTip": "Consejo: menú de Chrome, luego Instalar página. El icono de Tech Room se queda en este Chromebook. Las apps aún necesitan la red de la escuela.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: La ayuda de la página del personal se ve en todos los idiomas, el pie de página está traducido y las piezas de prueba nunca se cargan para los niños.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-dom-lock: Las herramientas del personal ahora se cargan solo tras desbloquear con la llave, y la línea de ayuda está traducida.",
   "appNames": "Nombres de las apps en la franja de arriba",
   "whatsNewStrip": "La franja de arriba muestra solo los iconos de las apps. Vuelve a mostrar los nombres en Mis ajustes.",
   "myProgress": "Mi avance",
@@ -209,7 +209,7 @@
   "blurbBloxbert": "Construye un mundo",
   "vdHeldHelp": "Mantén un botón para seguir. Un botón pulsado se enciende y muestra su palabra.",
   "vdPadOn": "On",
-  "staffHelpLine": "Personal: la ayuda de la página del personal ahora se ve en tu idioma.",
+  "staffHelpLine": "Personal: las herramientas aparecen solo después de la llave.",
   "finePrint": "Letra pequeña",
   "finePrintTitle": "Sobre este hub",
   "finePrintKid": "Algo importante sobre estas apps: quién las hizo, cómo te cuidamos y a quién hablar.",
@@ -220,8 +220,12 @@
   "groupShow": "Muestra",
   "vizHelp": "Elige un look. Pulsa Play. Toca 🎤 Luces del micrófono para que la imagen baile con la sala.",
   "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado.",
+<<<<<<< HEAD
 "vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación."
 ,
   "spinWord": "Girar",
   "glowWord": "Brillo"
+=======
+  "vdChipHelp": "VEX es un círculo con V y RIO es un cuadrado con R, en la pista y en las fichas de puntuación."
+>>>>>>> 6ee9c52 (Hub rev 2026-10-20-staff-dom-lock: admin tools load only after the desk key)
 }

@@ -17,7 +17,7 @@
   "scores": "Scores",
   "levels": "Levels",
   "noVoice": "No voice yet",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: Staff help shows in your language. The footer is translated.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-dom-lock: Staff tools show only after unlock.",
   "lbAliasHelp": "Pick a name from the list. Typed names are not saved.",
   "bbCanvasHelp": "Readers hear the job name, then the goal, win, or miss.",
   "lessItem": "Less {name}",
@@ -69,7 +69,7 @@
   "blurbBloxbert": "Build a world",
   "vdHeldHelp": "Hold a pad to move. A held pad shows its word.",
   "vdPadOn": "On",
-  "staffHelpLine": "Staff: the staff page help now shows in your language.",
+  "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
   "finePrintKid": "Who made these apps, how we keep you safe, and who to talk to.",
@@ -80,8 +80,12 @@
   "groupShow": "Show",
   "vizHelp": "Pick a look. Press Play. Tap the mic lights.",
   "helpMicState": "The mic line says on, listening, or blocked.",
+<<<<<<< HEAD
 "vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score."
 ,
   "spinWord": "Spin",
   "glowWord": "Glow"
+=======
+  "vdChipHelp": "VEX is a circle with V. RIO is a square with R. You see it on the track and on the score."
+>>>>>>> 6ee9c52 (Hub rev 2026-10-20-staff-dom-lock: admin tools load only after the desk key)
 }

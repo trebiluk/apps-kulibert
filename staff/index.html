@@ -52,7 +52,7 @@
       <h1>Staff</h1>
       <p>Enter the staff password. This device stays unlocked until Sign out. The TechWorks desk key is a separate lock.</p>
       <p data-i18n="staffLockHelp">⚑ Staff page. Unlock with the desk key.</p>
-      <p data-i18n="staffHelpLine">⚑ Staff: the staff page help now shows in your language.</p>
+      <p data-i18n="staffHelpLine">⚑ Staff: admin tools appear only after you unlock with the desk key.</p>
       <label for="hub-pass">Staff password</label>
       <div class="pass-row">
         <input id="hub-pass" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="hub-gate-error"/>
@@ -87,102 +87,7 @@
       <p class="err" id="key-status">Paste the Cloud desk key. First save claims the door if nobody has yet.</p>
     </form>
 
-    <div id="desk" hidden>
-      <form class="card" id="wall-form">
-        <p class="chip">Wall</p>
-        <div class="presets">
-          <button class="ghost" type="button" id="preset-open">Open room</button>
-          <button class="ghost" type="button" id="preset-paper">Paper day</button>
-          <button class="ghost" type="button" id="preset-sub">Sub coverage</button>
-        </div>
-        <label class="check">Doors closed <input id="closed" type="checkbox"/></label>
-        <label>Closed message <input id="closedMsg" maxlength="80"/></label>
-        <label>Door line <input id="note" maxlength="80" placeholder="This week: bring your sketch"/></label>
-        <label class="check">Show door line <input id="showNote" type="checkbox" checked/></label>
-        <label>Welcome <input id="welcome" maxlength="60"/></label>
-        <label>Announcement <input id="announce" maxlength="140" placeholder="Leave blank. The box stays hidden."/></label>
-        <label>Period pin <input id="period" maxlength="24" placeholder="Period 3"/></label>
-        <label>Next club <input id="club" maxlength="80"/></label>
-        <label>Doors <input id="doors" maxlength="24" placeholder="7:55a"/></label>
-        <label>Last bell <input id="lastBell" maxlength="24" placeholder="2:37p"/></label>
-      </form>
-      <form class="card" id="lb-form">
-        <p class="chip">Leaderboards</p>
-        <p>One marquee under the ribbon. Lines are ranked. The same name on the same board updates the score.</p>
-        <label class="check">Show the marquee <input id="lb-on" type="checkbox" checked/></label>
-        <div class="presets" id="lb-picks">
-          <button class="ghost" type="button" data-board="SpanCraft">SpanCraft</button>
-          <button class="ghost" type="button" data-board="HoldIt">HoldIt</button>
-          <button class="ghost" type="button" data-board="Spire Lab">Spire Lab</button>
-          <button class="ghost" type="button" data-board="Catapult Size Lab">Catapult</button>
-          <button class="ghost" type="button" data-board="Berty Run">Berty Run</button>
-          <button class="ghost" type="button" data-board="Drift">Drift</button>
-        </div>
-        <label>Board <input id="lb-board" maxlength="24" placeholder="SpanCraft"/></label>
-        <label>Name or Alias <select id="lb-name" aria-describedby="lb-help lb-status"><option value="">Pick an alias</option></select></label>
-        <p id="lb-help" data-i18n="lbAliasHelp">Pick a name from the list. Typed names are not saved.</p>
-        <label>Score <input id="lb-score" maxlength="12" placeholder="12"/></label>
-        <button class="save" type="submit">Add or update</button>
-        <p class="err" id="lb-status"></p>
-        <p class="lb-preview" id="lb-preview">The door stays quiet until you add a line.</p>
-        <div id="lb-list"></div>
-      </form>
-
-      <form class="card" id="lb-controls">
-        <p class="chip">Board controls</p>
-        <label class="check">School tab <input id="lb-school" type="checkbox" checked/></label>
-        <label>Hide alias <select id="lb-hide" aria-label="Hide an alias"><option value="">Pick an alias</option></select></label>
-        <button class="save" type="button" id="lb-hide-btn">Hide alias</button>
-        <label>Reset board <select id="lb-reset" aria-label="Reset a board"></select></label>
-        <button class="save" type="button" id="lb-reset-btn">Reset board</button>
-        <p class="err" id="lb-control-status"></p>
-      </form>
-      <form class="card" id="add-form">
-        <p class="chip">School tiles</p>
-        <label>Name <input id="name" maxlength="24" placeholder="NYSED"/></label>
-        <label>Address <input id="href" placeholder="https://"/></label>
-        <button class="save" type="submit">Add school tile</button>
-      </form>
-      <div class="card" id="list"></div>
-      <form class="card" id="board-form">
-        <p class="chip">Board</p>
-        <div id="apps"></div>
-        <p class="chip">Outside the shell</p>
-        <p>Checked tiles leave The Tech Room and open full page (or a new tab). Unchecked tiles open inside the Hub frame.</p>
-        <div id="outside-shell"></div>
-        <p class="chip">Policy</p>
-        <label class="check">Personal shortcuts <input id="shortcuts" type="checkbox" checked/></label>
-        <label class="check">Paste a link in search <input id="paste" type="checkbox" checked/></label>
-        <label class="check">Pin tiles <input id="pins" type="checkbox" checked/></label>
-        <label class="check">Opened here <input id="recents" type="checkbox" checked/></label>
-        <label class="check">Keys 1–9 <input id="hotkeys" type="checkbox" checked/></label>
-        <label class="check">Nickname field <input id="aliasOn" type="checkbox" checked/></label>
-        <label class="check">Hub aliases — On / Off <input id="hubAliases" type="checkbox" checked/></label>
-        <p>Off hides Hub Sign in. TechWorks still uses aliases. Always.</p>
-        <label class="check">Staff lane <input id="staffLane" type="checkbox" checked/></label>
-        <label class="check">Staff edit link <input id="staffEdit" type="checkbox" checked/></label>
-        <label class="check">Test mode (staff only) <input id="testMode" type="checkbox"/></label>
-        <p id="testMode-help" data-i18n="testModeHelp">⚑ Test mode is for staff. Kids never see it.</p>
-        <label>Max personal shortcuts <input id="maxCuts" type="number" min="1" max="18" value="18"/></label>
-        <p class="chip">Layout</p>
-        <label class="check">THE TECH ROOM lockup <input id="lockup" type="checkbox" checked/></label>
-        <label class="check">Search <input id="searchOn" type="checkbox" checked/></label>
-        <label class="check">Bell strip <input id="bellsOn" type="checkbox" checked/></label>
-        <label class="check">Live version chips <input id="chips" type="checkbox" checked/></label>
-        <label class="check">Open in a new tab <input id="newTab" type="checkbox" checked/></label>
-        <label class="check">Compact tiles <input id="compact" type="checkbox"/></label>
-        <p class="chip">Voice</p>
-        <label>Search placeholder <input id="search" maxlength="40"/></label>
-        <label>Footer <input id="footer" maxlength="80"/></label>
-        <p class="chip">Sticky icons</p>
-        <p>Up to three. They stay at the top of the door. Leave a slot blank to skip it.</p>
-        <label>Icon 1 <select id="sticky-1"></select></label>
-        <label>Icon 2 <select id="sticky-2"></select></label>
-        <label>Icon 3 <select id="sticky-3"></select></label>
-      </form>
-      <button class="save" id="save-all" type="button">Save to every Chromebook</button>
-      <button class="ghost" id="lock" type="button">Lock this tab</button>
-    </div>
+    <div id="desk-slot"></div>
     <p class="err" id="status"></p>
     </div>
   </div>
@@ -671,12 +576,40 @@
       }
 
       function showDesk() {
-        $("desk").hidden = false;
-        $("key-status").textContent = "Unlocked on this tab only. Not stored on student machines.";
+        var slot = $("desk-slot");
+        if (!slot) return;
+        if ($("desk")) {
+          $("key-status").textContent = "Unlocked on this tab only. Not stored on student machines.";
+          return;
+        }
+        fetch("/staff/desk.html", { credentials: "same-origin" }).then(function (res) {
+          return res.ok ? res.text() : "";
+        }).then(function (html) {
+          if (!html || !$("desk-slot")) return;
+          $("desk-slot").innerHTML = html;
+          $("desk").hidden = false;
+          bindDesk();
+          $("key-status").textContent = "Unlocked on this tab only. Not stored on student machines.";
+          load().catch(function () { if ($("status")) $("status").textContent = "Could not reach TechWorks."; });
+        });
+      }
+      function bindDesk() {
+        var lock = $("lock");
+        if (lock) lock.addEventListener("click", function () {
+          token = "";
+          sessionStorage.removeItem("tech-room-desk-gate");
+          var desk = $("desk");
+          if (desk && desk.parentNode) desk.parentNode.removeChild(desk);
+          $("key-status").textContent = "Locked.";
+        });
+        if ($("preset-open")) $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
+        if ($("preset-paper")) $("preset-paper").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Paper day — no Chromebooks this period"; });
+        if ($("preset-sub")) $("preset-sub").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Sub coverage — stay on assigned apps"; });
+        if ($("save-all")) $("save-all").addEventListener("click", function () { save(); });
+        document.dispatchEvent(new Event("desk-mounted"));
       }
 
       if (token) showDesk();
-      load().catch(function () { $("status").textContent = "Could not reach TechWorks."; });
 
       $("key-form").addEventListener("submit", async function (event) {
         event.preventDefault();
@@ -686,68 +619,6 @@
         sessionStorage.setItem("tech-room-desk-gate", token);
         showDesk();
       });
-      $("lock").addEventListener("click", function () {
-        token = "";
-        sessionStorage.removeItem("tech-room-desk-gate");
-        $("desk").hidden = true;
-        $("key-status").textContent = "Locked.";
-      });
-      $("preset-open").addEventListener("click", function () { $("closed").checked = false; $("closedMsg").value = ""; });
-      $("preset-paper").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Paper day — no Chromebooks this period"; });
-      $("preset-sub").addEventListener("click", function () { $("closed").checked = true; $("closedMsg").value = "Sub coverage — stay on assigned apps"; });
-      var lbPicks = $("lb-picks");
-      if (lbPicks) lbPicks.addEventListener("click", function (event) {
-        var btn = event.target && event.target.closest ? event.target.closest("[data-board]") : null;
-        if (!btn) return;
-        $("lb-board").value = btn.getAttribute("data-board");
-        paintAliasSelect();
-        $("lb-name").focus();
-      });
-      if ($("lb-on")) $("lb-on").addEventListener("change", function () {
-        room.boardsOn = $("lb-on").checked;
-        paintPreview();
-      });
-      $("lb-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        var board = canonBoard($("lb-board").value);
-        var rawName = boardNorm($("lb-name").value).slice(0, 24);
-        var allowed = aliasAllowed();
-        var name = allowed[rawName.toLowerCase()] || "";
-        var score = boardNorm($("lb-score").value).slice(0, 12);
-        var status = $("lb-status");
-        if (rawName && !name) {
-          if (status) status.textContent = "Pick a name from the list. Typed names are not saved.";
-          return;
-        }
-        if (!board || !name || !score) {
-          if (status) status.textContent = "Need a board, a name from the list, and a score.";
-          return;
-        }
-        var key = board.toLowerCase() + "\0" + name.toLowerCase();
-        var updated = false;
-        room.boards = dedupeBoards(room.boards).map(function (row) {
-          if ((row.board.toLowerCase() + "\0" + row.name.toLowerCase()) !== key) return row;
-          updated = true;
-          return { board: board, name: name, score: score };
-        });
-        if (!updated) room.boards.push({ board: board, name: name, score: score });
-        room.boards = dedupeBoards(room.boards);
-        paintAliasSelect("");
-        $("lb-score").value = "";
-        if (status) status.textContent = updated ? "Updated " + name + " on " + board + ". Save to every Chromebook." : "Added " + name + ". Save to every Chromebook.";
-        paintLb();
-      });
-      $("add-form").addEventListener("submit", function (event) {
-        event.preventDefault();
-        var name = $("name").value.replace(/\s+/g, " ").trim().slice(0, 24);
-        var href = $("href").value.trim();
-        if (!name || !href) return;
-        $("name").value = ""; $("href").value = "";
-        room.links.push({ id: "cut-" + Date.now().toString(36), name: name, href: href, icon: "school" });
-        paintList();
-      });
-      $("save-all").addEventListener("click", function () { save(); });
-      paintAliasSelect();
     })();
 
       (function () {
@@ -846,7 +717,7 @@
         if (keyForm) keyForm.addEventListener("submit", function () { setTimeout(show, 80); });
       })();
 
-      (function () {
+      document.addEventListener("desk-mounted", function () {
         var api = window.KulibertBoards;
         if (!api) return;
         var school = document.getElementById("lb-school");
@@ -891,7 +762,7 @@
           api.resetBoard(parts[0], parts[1]);
           if (status) status.textContent = "Board reset.";
         });
-      })();
+      });
 
   </script>
 </body>

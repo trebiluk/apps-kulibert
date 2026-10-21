@@ -38,7 +38,7 @@
   "more": "Ibindi",
   "gotIt": "Nabonye",
   "pwaTip": "Inama: menu ya Chrome, hanyuma Shyiramo page. Ikirango cya Tech Room kiguma kuri iki Chromebook. Porogaramu zikibakeneye umuyoboro w'ishuri.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-i18n-bust: Ubufasha bw'urupapuro rw'abakozi bugaragara mu ndimi zose, igice cyo hasi cyarasobanuwe, kandi ibice by'igerageza ntibijya bifungukira abana.",
+  "whatsNewLine": "Hub rev 2026-10-20-staff-dom-lock: Ibikoresho by'abakozi ubu bifunguka gusa nyuma yo gufungura n'urufunguzo, kandi umurongo w'ubufasha warasobanuwe.",
   "appNames": "Amazina ya porogaramu ku murongo wo hejuru",
   "whatsNewStrip": "Umurongo wo hejuru werekana ibirango bya porogaramu gusa. Ongera werekane amazina muri Igenamiterere ryanjye.",
   "myProgress": "Intambwe yanjye",
@@ -209,7 +209,7 @@
   "blurbBloxbert": "Ubake isi",
   "vdHeldHelp": "Fata buto ukomeze. Buto ikanditswe ikayaka kandi yerekana ijambo ryayo.",
   "vdPadOn": "Kuri",
-  "staffHelpLine": "Abakozi: ubufasha bw'urupapuro rw'abakozi ubu bugaragara mu rurimi rwawe.",
+  "staffHelpLine": "Abakozi: ibikoresho bigaragara gusa nyuma y'urufunguzo.",
   "finePrint": "Amagambo mato",
   "finePrintTitle": "Ibijyanye n'uru rubuga",
   "finePrintKid": "Ibintu by'ingenzi ku porogaramu: ninde yazikoze, uko dukurinze, n'uwo uvugana.",
@@ -220,8 +220,12 @@
   "groupShow": "Erekana",
   "vizHelp": "Hitamo isura. Kanda Kina. Kanda 🎤 Amataro ya mikoro kugira ngo ishusho idanirane n'icyumba.",
   "helpMicState": "Umurongo wa mikoro wererekana niba ikora, yumva, cyangwa yahagaritswe.",
+<<<<<<< HEAD
 "vdChipHelp": "VEX ni uruziga rufite V, RIO ni kare ifite R — ku muhanda no ku makarita y'amanota."
 ,
   "spinWord": "Zunguza",
   "glowWord": "Rabagira"
+=======
+  "vdChipHelp": "VEX ni uruziga rufite V, RIO ni kare ifite R — ku muhanda no ku makarita y'amanota."
+>>>>>>> 6ee9c52 (Hub rev 2026-10-20-staff-dom-lock: admin tools load only after the desk key)
 }
