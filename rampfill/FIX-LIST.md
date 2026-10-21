@@ -4,6 +4,15 @@ Stage 12. Version locked: RF 1.0.11.
 - [x] **RF 1.0.11 ITEM 1:** A pour shows a soft splash and a fill-line ripple. The fill percent counts up in the page. A short rising tone plays unless mute is on. Reduced motion skips the ripple.
 - [x] **RF 1.0.11 ITEM 2:** The level list shows each level's stars as a star icon plus a number, and the fewest-ramps best. A locked level says to finish the one before it.
 - [x] **RF 1.0.11 ITEM 3:** The clear card shows stars one by one (still if motion is reduced). Next is focused. Retry stays at least 44px.
+- [x] **RF 1.0.11 ITEM 4:** Feature ideas are written below. No code.
+
+## Feature ideas (RF 1.0.11 investigate)
+
+1. **Level Maker share code.** A kid builds a ramp puzzle and gets a short code a classmate can type to try it. Why: the class already trades ideas out loud. Size: medium (a local code, not an account). Risk: a bad code must fail quietly, and the code must not carry a real name.
+2. **Daily cup.** One new cup shape each school day, same for the whole class. Why: a reason to open the app tomorrow. Size: small. Risk: do not store a streak that identifies a kid, and do not change the existing save.
+3. **Class referee board.** The in-person timer already locks a time. A later build could list team aliases and locked times on one screen. Why: the referee still writes times on paper. Size: medium. Risk: aliases only, nothing online, and no editing a locked time.
+4. **New materials.** Sand and oil next to grains, water, and gel, each with one sentence about why it moves that way. Why: the lesson words are already there. Size: medium. Risk: do not retune the current pour.
+5. **Best-ramp ghost.** After a new best, a faint replay of that ramp can show on Retry. Why: "try for fewer" is easier if you can see what worked. Size: small. Risk: the ghost must not cover the draw tool or the cup.
 
 Stage 11. Version locked: RF 1.0.10.
 
