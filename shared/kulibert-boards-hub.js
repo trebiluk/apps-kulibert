@@ -162,8 +162,9 @@
     });
     document.addEventListener("kulibert-boards", paint);
     window.addEventListener("kulibert-lang", function () {
-      if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(null, paint);
-      else paint();
+      function repaint() { paintAlias(sel); paint(); }
+      if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(null, repaint);
+      else repaint();
     });
     window.addEventListener("storage", paint);
     window.addEventListener("focus", function () { api.pull && api.pull().then(paint); });

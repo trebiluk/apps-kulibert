@@ -106,6 +106,7 @@
   "staffLockHelp": "Staff page. Unlock with the desk key.",
   "testModeHelp": "Test mode is for staff. Kids never see it.",
   "lbTitle": "Leaderboards",
+  "lbAlias": "Alias",
   "lbPickAlias": "Pick an alias",
   "lbMyBest": "My best",
   "lbClassRecord": "Class record",
