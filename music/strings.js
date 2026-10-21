@@ -463,7 +463,9 @@
     performMicOn: "Mic: ON",
     getReady: "Get ready: {name}",
     helpPerform: "📽 Perform hides the side list, counts 3-2-1 in big numbers, then only the light show. The mic stays off unless you tap it. Less motion shows Ready.",
-    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show."
+    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show.",
+    helpTidy: "🎬 Perform counts 3, 2, 1. Players don't get extra notes.",
+    news23624: "MU 2.36.24 — Tidier Perform: no behind-the-scenes notes for players.",
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -630,7 +632,9 @@
     performMicOn: "Mic on",
     getReady: "Get ready: {name}",
     helpPerform: "📽 Perform hides the side list. It counts 3, 2, 1. Then only the light show. The mic stays off until you tap it. Less motion says Ready.",
-    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show."
+    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show.",
+    helpTidy: "🎬 Perform counts 3, 2, 1. No extra notes.",
+    news23624: "MU 2.36.24 — Tidier Perform: no behind-the-scenes notes for players.",
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1088,7 +1092,9 @@
       "performMicOn": "Мікрофон: УВІМК",
       "getReady": "Готуйся: {name}",
       "helpPerform": "📽 Виступ ховає бічний список, рахує 3-2-1 великими цифрами, потім лишається лише світлове шоу. Мікрофон вимкнений, доки ти його не торкнеш. Менше руху показує Готово.",
-      "news23623": "MU 2.36.23 — Виступ на проєкторі: велике 3-2-1, потім лише твоє світлове шоу."
+      "news23623": "MU 2.36.23 — Виступ на проєкторі: велике 3-2-1, потім лише твоє світлове шоу.",
+      "helpTidy": "🎬 Виступ рахує 3, 2, 1. Гравці не бачать зайвих нотаток.",
+      "news23624": "MU 2.36.24 — Охайніший Виступ: гравці не бачать службових нотаток.",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1543,7 +1549,9 @@
       "performMicOn": "Микрофон: ВКЛ",
       "getReady": "Приготовься: {name}",
       "helpPerform": "📽 Выступление прячет боковой список, считает 3-2-1 большими цифрами, потом остаётся только световое шоу. Микрофон выключен, пока ты его не нажмёшь. Меньше движения показывает Готово.",
-      "news23623": "MU 2.36.23 — Выступление на проекторе: большое 3-2-1, потом только твоё световое шоу."
+      "news23623": "MU 2.36.23 — Выступление на проекторе: большое 3-2-1, потом только твоё световое шоу.",
+      "helpTidy": "🎬 Выступление считает 3, 2, 1. Игроки не видят лишних пометок.",
+      "news23624": "MU 2.36.24 — Аккуратнее Выступление: игроки не видят служебных пометок.",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1999,7 +2007,9 @@
       "performMicOn": "Mic: encendido",
       "getReady": "Prepárate: {name}",
       "helpPerform": "📽 Actuar esconde la lista lateral, cuenta 3-2-1 en grande y luego solo queda el show de luces. El micrófono sigue apagado hasta que lo toques. Con menos movimiento dice Listo.",
-      "news23623": "MU 2.36.23 — Actuar en el proyector: un 3-2-1 grande, y luego solo tu show de luces."
+      "news23623": "MU 2.36.23 — Actuar en el proyector: un 3-2-1 grande, y luego solo tu show de luces.",
+      "helpTidy": "🎬 La actuación cuenta 3, 2, 1. Los jugadores no ven notas extra.",
+      "news23624": "MU 2.36.24 — Actuación más limpia: los jugadores no ven notas de bastidores.",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2455,7 +2465,9 @@
       "performMicOn": "المايك: يعمل",
       "getReady": "استعد: {name}",
       "helpPerform": "📽 العرض يخفي القائمة الجانبية، ويعد 3-2-1 بأرقام كبيرة، ثم يبقى عرض الأضواء فقط. المايك مطفأ حتى تضغطه. مع حركة أقل يظهر جاهز.",
-      "news23623": "MU 2.36.23 — العرض على جهاز العرض: عد تنازلي كبير 3-2-1، ثم عرض الأضواء فقط."
+      "news23623": "MU 2.36.23 — العرض على جهاز العرض: عد تنازلي كبير 3-2-1، ثم عرض الأضواء فقط.",
+      "helpTidy": "🎬 العرض يعدّ ٣، ٢، ١. اللاعبون لا يرون ملاحظات زائدة.",
+      "news23624": "MU 2.36.24 — عرض أنظف: اللاعبون لا يرون ملاحظات خلف الكواليس.",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2911,7 +2923,9 @@
       "performMicOn": "مایک: روشن",
       "getReady": "آماده شو: {name}",
       "helpPerform": "📽 اجرا فهرست کناری را پنهان می‌کند، ۳-۲-۱ را بزرگ می‌شمارد، بعد فقط نمایش نور می‌ماند. میکروفون خاموش است تا خودت بزنی. حرکت کمتر «آماده» را نشان می‌دهد.",
-      "news23623": "MU 2.36.23 — اجرا روی پروجکتور: یک ۳-۲-۱ بزرگ، بعد فقط نمایش نور تو."
+      "news23623": "MU 2.36.23 — اجرا روی پروجکتور: یک ۳-۲-۱ بزرگ، بعد فقط نمایش نور تو.",
+      "helpTidy": "🎬 اجرا ۳، ۲، ۱ می‌شمارد. بازیکن‌ها یادداشت اضافه نمی‌بینند.",
+      "news23624": "MU 2.36.24 — اجرای مرتب‌تر: بازیکن‌ها یادداشت‌های پشت صحنه را نمی‌بینند.",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3367,7 +3381,9 @@
       "performMicOn": "Mikoro: ON",
       "getReady": "Tegura: {name}",
       "helpPerform": "📽 Perform ihisha urutonde rw'uruhande, ibara 3-2-1 binini, hanyuma hasigara urumuri gusa. Mikoro iguma izimye kugeza uyikanda. Imigendere mike yerekana Ready.",
-      "news23623": "MU 2.36.23 — Kwerekana ku mususururo: 3-2-1 kinini, hanyuma gusa urumuri rwawe."
+      "news23623": "MU 2.36.23 — Kwerekana ku mususururo: 3-2-1 kinini, hanyuma gusa urumuri rwawe.",
+      "helpTidy": "🎬 Imyiyerekano ibara 3, 2, 1. Abakinnyi ntibabona inyandiko z'inyongera.",
+      "news23624": "MU 2.36.24 — Imyiyerekano itonoye: abakinnyi ntibabona inyandiko z'inyuma.",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3823,7 +3839,9 @@
       "performMicOn": "ማይክ፡ ወሊዑ",
       "getReady": "ተዳለ: {name}",
       "helpPerform": "📽 ምቕራብ ነቲ ጎኒ ዝርዝር ይሕብኦ፡ 3-2-1 ብዓቢ ይቑጽር፡ ድሕሪኡ ብርሃን ጥራይ ይተርፍ። ማይክ ክሳብ እትጥውቖ ጠፊኡ እዩ። ምንቅስቓስ ምስትንከስ ድሉው የርኢ።",
-      "news23623": "MU 2.36.23 — ኣብ ፕሮጀክተር ምቕራብ፡ ዓቢ 3-2-1፡ ድሕሪኡ ብርሃንኻ ጥራይ።"
+      "news23623": "MU 2.36.23 — ኣብ ፕሮጀክተር ምቕራብ፡ ዓቢ 3-2-1፡ ድሕሪኡ ብርሃንኻ ጥራይ።",
+      "helpTidy": "🎬 ምርኢት 3፣ 2፣ 1 ይቑጸር። ተጻወቲ ተወሳኺ ማስታወሻ ኣይርእዩን።",
+      "news23624": "MU 2.36.24 — ጽሩይ ምርኢት፡ ተጻወቲ ናይ ድሕሪ መድረኽ ማስታወሻ ኣይርእዩን።",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

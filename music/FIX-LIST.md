@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.24 item 1: the Perform countdown leaves no data-seq and no console line for kids. Staff Test still records 3, 2, 1, play.
 - [x] MU 2.36.23 item 1: Perform hides the side list, counts 3-2-1, then only the light show. The mic stays off unless tapped.
 - [x] MU 2.36.22 item 1: the Score tab teaching line follows your language.
 - [x] MU 2.36.21 item 1: on a loud kick drop, the picture swaps to the next saved look for one bar, then comes back.
