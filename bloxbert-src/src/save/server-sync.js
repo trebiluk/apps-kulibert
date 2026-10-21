@@ -1,5 +1,6 @@
-// Push-only server copy for Bertopia worlds. Active only with ?sync=1.
-// Never loads from server. Never throws into the caller.
+// Server copy for Bertopia worlds. Active only with ?sync=1.
+// Push-only was S2a; this adds pull when local is missing or older.
+// Never throws into the caller. Never loads without ?sync=1 + signed-in.
 
 const WHO = 'https://tw.kulibert.net/api/who'
 const BASE = 'https://tw.kulibert.net/api/bertopia/world'
@@ -9,6 +10,7 @@ let stopped = false
 let logged409 = false
 let verified = null
 const lastPush = Object.create(null)
+const lastPushedAt = Object.create(null)
 let pendingDoc = null
 let onlineHandler = null
 
@@ -47,6 +49,75 @@ async function isVerified() {
   }
 }
 
+async function fetchHead(world) {
+  const res = await fetch(BASE + '?world=' + encodeURIComponent(world), { credentials: 'include' })
+  if (res.status === 404) return null
+  if (!res.ok) {
+    if ([401, 413, 429, 503].includes(res.status)) stopped = true
+    return null
+  }
+  const json = await res.json()
+  return (json && json.ok) ? json : null
+}
+
+async function fetchChunks(world, keys) {
+  const out = {}
+  for (let i = 0; i < keys.length; i += 64) {
+    const batch = keys.slice(i, i + 64)
+    const url = BASE + '?world=' + encodeURIComponent(world) + '&ck=' + batch.map(encodeURIComponent).join(',')
+    const res = await fetch(url, { credentials: 'include' })
+    if (!res.ok) return null
+    const json = await res.json()
+    if (!json || !json.ok || !json.chunks) return null
+    Object.assign(out, json.chunks)
+  }
+  return out
+}
+
+async function backupBefore(doc) {
+  if (!doc) return
+  try {
+    const DB = 'kuliblocks'
+    const STORE = 'worlds'
+    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6)
+    const rec = { name: 'before-server-load', at: Date.now(), bytes: 0, doc, kind: '' }
+    try { rec.bytes = JSON.stringify(doc).length } catch (e) {}
+    await new Promise((res, rej) => {
+      const r = indexedDB.open(DB, 1)
+      r.onsuccess = () => {
+        const db = r.result
+        const tx = db.transaction(STORE, 'readwrite')
+        tx.objectStore(STORE).put(rec, (doc.id || 'bertyville-survival') + '-backup-' + id)
+        tx.oncomplete = () => { try { db.close() } catch (e) {}; res() }
+        tx.onerror = () => rej(tx.error)
+      }
+      r.onerror = () => rej(r.error)
+    })
+  } catch (e) {}
+}
+
+export async function maybePull(worldId, localDoc) {
+  try {
+    if (!flagOn() || stopped || !(await isVerified())) return null
+    const server = await fetchHead(worldId)
+    if (!server || !server.head) return null
+    const head = server.head
+    const serverAt = head.updatedAt || ''
+    const localAt = (localDoc && localDoc.updatedAt) || ''
+    const lastPushAt = lastPushedAt[worldId] || ''
+    const localNewerOrUnsaved = localDoc && (localAt > serverAt || (localAt && lastPushAt && localAt > lastPushAt))
+    if (localDoc && localNewerOrUnsaved) return null
+    if (localDoc) await backupBefore(localDoc)
+    const keys = Object.keys(server.chunks || {})
+    const chunks = keys.length ? await fetchChunks(worldId, keys) : {}
+    if (chunks === null) return null
+    const doc = { ...head, chunks, id: worldId }
+    return doc
+  } catch (e) {
+    return null
+  }
+}
+
 async function pushNow(doc) {
   if (stopped || !doc || !doc.id) return
   const world = doc.id
@@ -76,7 +147,6 @@ async function pushNow(doc) {
 
   const head = { ...doc }
   delete head.chunks
-  // ensure required fields for checkHead
   if (!head.format) head.format = 'kuliblocks'
   if (head.v == null) head.v = 2
   if (typeof head.schema !== 'number') head.schema = 2
@@ -113,7 +183,10 @@ async function pushNow(doc) {
       stopped = true
       return
     }
-    if (putRes.ok) lastPush[world] = Date.now()
+    if (putRes.ok) {
+      lastPush[world] = Date.now()
+      lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
+    }
   } catch (e) {
     // offline or network — keep pending
   }

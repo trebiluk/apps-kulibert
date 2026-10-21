@@ -55,7 +55,7 @@ import { nearestTree, fellCells, takeHit, TREE_NEAR, TREE_LOOK, TREE_HITS } from
 import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
-import { maybePush } from './save/server-sync.js'
+import { maybePush, maybePull } from './save/server-sync.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -3931,6 +3931,13 @@ async function load() {
       keepSaved(e)
       return false
     }
+    try {
+      const pulled = await Promise.race([
+        maybePull(WORLD, doc),
+        new Promise(r => setTimeout(() => r(null), 4000))
+      ])
+      if (pulled) doc = pulled
+    } catch (e) {}
     if (!doc) {
       Rules.load({})
       Effects.load({})
