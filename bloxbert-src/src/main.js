@@ -11430,18 +11430,33 @@ function paintPvpSettings(g) {
 }
 const crewCredit = {
   hits: {},
+  trailUntil: 0,
   record(mobId, alias, kind) {
-    if (!this.hits[mobId]) this.hits[mobId] = []
-    this.hits[mobId].push({ alias, kind, t: Date.now() })
+    const name = String(alias || 'Friend').slice(0, 24)
+    if (!mobId || !name) return []
+    const now = Date.now()
+    const list = (this.hits[mobId] || []).filter((h) => now - h.t < 10000)
+    const prev = list.find((h) => h.alias === name)
+    if (prev) { prev.t = now; prev.kind = kind || prev.kind }
+    else list.push({ alias: name, kind: kind || 'hit', t: now })
+    this.hits[mobId] = list
+    return this.contributors(mobId, now)
   },
   contributors(mobId, nowMs) {
-    const list = this.hits[mobId] || []
-    return list.filter((h) => nowMs - h.t < 10000).map((h) => h.alias)
+    const now = nowMs || Date.now()
+    const out = []
+    for (const h of this.hits[mobId] || []) {
+      if (now - h.t >= 10000) continue
+      if (h.alias && !out.includes(h.alias)) out.push(h.alias)
+    }
+    return out
   },
-  onRemote(evt) { /* netcode plugs in here (ARENA-NETCODE-PLAN.md) */ },
+  onRemote() { /* netcode plugs in here (ARENA-NETCODE-PLAN.md) */ },
   bonus(mobId) {
-    const c = this.contributors(mobId, Date.now())
-    return c.length >= 2 ? 1.25 : 1
+    return this.contributors(mobId, Date.now()).length >= 2 ? 1.25 : 1
+  },
+  trail(mobId) {
+    return this.contributors(mobId, Date.now()).length >= 4
   },
 }
 window.crewCredit = crewCredit
@@ -11541,11 +11556,15 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
       if (toast) toast((alias || 'Friend') + ' helped you up, Suit plus 30')
       return suit
     },
-    fakeContributor(alias) {
-      const p = noa.entities.getPosition(noa.playerEntity)
-      const id = 'test-mob'
+    fakeContributor(alias, mobId) {
+      const id = mobId || 'test-mob'
       crewCredit.record(id, alias || 'TestKid', 'hit')
       return crewCredit.contributors(id, Date.now())
+    },
+    rebootMob(id) {
+      const who = mobs && mobs.reboot ? mobs.reboot(id) : null
+      const chip = document.getElementById('c3-crew')
+      return { who, bag: this.bagCounts(), chip: chip ? chip.textContent : '' }
     },
     bagCounts() {
       const out = {}

@@ -2139,3 +2139,20 @@ for (const [lang, row] of Object.entries(C2HELP)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.297 C3 crew credit. rw, ti, and Dari are machine drafts.
+const C3 = {
+  en: { c3Crew: 'Crew bonus', c3Trail: 'Spark trail', c3You: 'You' },
+  simple: { c3Crew: 'Team extra', c3Trail: 'Spark path', c3You: 'Me' },
+  uk: { c3Crew: 'Бонус команди', c3Trail: 'Іскровий слід', c3You: 'Ти' },
+  ru: { c3Crew: 'Бонус команды', c3Trail: 'Искровый след', c3You: 'Ты' },
+  es: { c3Crew: 'Bono del equipo', c3Trail: 'Estela de chispa', c3You: 'Tú' },
+  ar: { c3Crew: 'مكافأة الفريق', c3Trail: 'أثر الشرارة', c3You: 'أنت' },
+  'fa-AF': { c3Crew: 'پاداش گروه', c3Trail: 'رد جرقه', c3You: 'تو' },
+  rw: { c3Crew: 'Inyongera yitsinda', c3Trail: 'Umuyoboro wumuriro', c3You: 'Wowe' },
+  ti: { c3Crew: 'ሽልማት ጉጅለ', c3Trail: 'መንገዲ ብልጭታ', c3You: 'ንስኻ' },
+}
+for (const [lang, row] of Object.entries(C3)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

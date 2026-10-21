@@ -239,16 +239,70 @@ export function createMobs(opts) {
     const side = Math.sin(m.zig * 0.8) * 1.6
     walk(m, m.x + (dx / len) * 2 + (-dz / len) * side, m.z + (dz / len) * 2 + (dx / len) * side)
   }
-  function finishReboot(m) {
+  function showCrew() {
+    try {
+      let el = document.getElementById('c3-crew')
+      if (!el) {
+        el = document.createElement('div')
+        el.id = 'c3-crew'
+        el.setAttribute('role', 'status')
+        document.body.append(el)
+      }
+      el.textContent = '🤝 ' + (t ? t('c3Crew') : 'Crew bonus')
+      el.style.cssText = 'position:fixed;top:22%;left:50%;transform:translateX(-50%);z-index:41;background:#14532d;color:#fff;padding:8px 14px;border-radius:10px;font:700 16px/1.2 sans-serif;pointer-events:none;max-width:90vw'
+      clearTimeout(showCrew._t)
+      showCrew._t = setTimeout(() => { const n = document.getElementById('c3-crew'); if (n) n.remove() }, 2200)
+    } catch (e) {}
+  }
+  function showTrail() {
+    try {
+      let el = document.getElementById('c3-trail')
+      if (!el) {
+        el = document.createElement('div')
+        el.id = 'c3-trail'
+        el.setAttribute('role', 'status')
+        document.body.append(el)
+      }
+      el.textContent = '✨ ' + (t ? t('c3Trail') : 'Spark trail')
+      el.style.cssText = 'position:fixed;top:30%;left:50%;transform:translateX(-50%);z-index:41;background:#1c1917;color:#f6e27a;padding:8px 14px;border-radius:10px;font:700 16px/1.2 sans-serif;pointer-events:none;max-width:90vw'
+      clearTimeout(showTrail._t)
+      showTrail._t = setTimeout(() => { const n = document.getElementById('c3-trail'); if (n) n.remove() }, 60000)
+    } catch (e) {}
+  }
+  function payCrew(m, fromBonk) {
+    let credit = null
+    try { credit = window.crewCredit || null } catch (e) {}
+    const me = t ? t('c3You') : 'You'
+    if (fromBonk && credit) credit.record(m.id, me, 'hit')
+    const now = Date.now()
+    let who = credit ? credit.contributors(m.id, now) : []
+    if (!who.length) who = [me]
+    const mul = who.length >= 2 ? (credit && credit.bonus ? credit.bonus(m.id) : 1.25) : 1
+    const cosmetic = m.kind === 'overseer'
+    const item = cosmetic ? 'goldTrim' : 'stick'
+    const n = cosmetic ? 1 : Math.max(1, Math.round(4 * mul))
+    const drops = ground ? ground() : null
+    const at = Date.now() + 86400000
+    for (let i = 0; i < who.length; i++) {
+      if (giveItem) giveItem(item, n)
+      if (drops) mergeOrAdd(drops, [], { item, n, x: (m.x || 0) + i * 3, y: m.y || 0, z: m.z || 0, at })
+    }
+    if (who.length >= 2) showCrew()
+    if (who.length >= 4) {
+      if (credit) credit.trailUntil = now + 60000
+      showTrail()
+    }
+    return who
+  }
+  function finishReboot(m, fromBonk) {
     const item = m.stolen || ''
     if (item && giveItem) giveItem(item, 1)
-    const drops = ground ? ground() : null
-    if (drops) mergeOrAdd(drops, [], { item: 'stick', n: 1, x: m.x, y: m.y || 0, z: m.z, at: 0 })
+    const who = payCrew(m, fromBonk)
     dropMesh(m)
     const i = mobs.indexOf(m)
     if (i >= 0) mobs.splice(i, 1)
     if (toast) toast(item ? sayItem('c2Back', item) : (t ? t('rebooted') : 'Rebooted!'))
-    return item
+    return who
   }
   function tick(now) {
     if (now - (tick._last || 0) < 100) return
@@ -261,7 +315,7 @@ export function createMobs(opts) {
       if (p && d > DESPAWN) { dropMesh(m); mobs.splice(i, 1); continue }
       if ((m.kind === 'scrapper' || m.kind === 'sparkbug') && bonkAt && now - bonkAt < 400 && bonkAt !== m.seenBonk && p && d < 3.2 && !zone(m.x, m.z)) {
         m.seenBonk = bonkAt
-        finishReboot(m)
+        finishReboot(m, true)
         continue
       }
       if (bonkAt) m.seenBonk = bonkAt
@@ -349,7 +403,7 @@ export function createMobs(opts) {
   function reboot(id) {
     const m = mobs.find((row) => row.id === id)
     if (!m) return null
-    return finishReboot(m)
+    return finishReboot(m, false)
   }
   function count() { return mobs.length }
   function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp })) }
