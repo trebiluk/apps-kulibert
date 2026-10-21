@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.12 item 2: swatches, Mic lights, and Spin/Glow sit above the play bar at 1366, 412, and 915×412.
 - [x] MU 2.36.12 item 1: Viz hint, Mic lights label, rail Make/Change/Show, and rail Next are #111827 on the steel (pressed swatch ink already 6.97:1).
 - [x] MU 2.36.11 item 1: Make a beat and New beat do not paint Rock over a saved or cleared beat.
 - [x] MU 2.36.10 item 3: Help names the picture buttons and says Mic lights is an off-by-default toggle, song lights still work if you say no, and nothing is recorded or sent. No "One loop" line.
