@@ -103,6 +103,7 @@
       helpPour4: "Press Pour. Gel is slow. A flat tray will not move it.",
       helpPour5: "Pick Grains or Water. Only one pours at a time.",
       cupsWord: "Cups:",
+      toolRow: "Ramp tools",
       helpSpill: "A spill stays circled. Fix the ramp and try again. Ramps stay on Retry.",
       helpLesson: "Read the lesson line when you win.",
       helpFewer: "Try to win with fewer ramps.",
@@ -184,6 +185,7 @@
       helpPour4: "Натисни Лий. Гель повільний. Плаский лоток його не зрушить.",
       helpPour5: "Обери зерна або воду. Лише одне ллється за раз.",
       cupsWord: "Чашки:",
+      toolRow: "Інструменти рампи",
       helpSpill: "Розлив лишається в колі. Полагодь схил. На Ще раз схили лишаються.",
       helpLesson: "Прочитай рядок уроку, коли виграєш.",
       helpFewer: "Спробуй виграти з меншою кількістю схилів.",
@@ -263,6 +265,7 @@
       helpPour4: "Нажми Лей. Гель медленный. Плоский лоток его не сдвинет.",
       helpPour5: "Выбери зёрна или воду. За раз льётся только одно.",
       cupsWord: "Чашки:",
+      toolRow: "Инструменты рампы",
       helpSpill: "Пролив остаётся в круге. Поправь склон. На Ещё раз склоны остаются.",
       helpLesson: "Прочитай строку урока, когда победишь.",
       helpFewer: "Попробуй победить с меньшим числом рамп.",
@@ -342,6 +345,7 @@
       helpPour4: "Pulsa Vierte. El gel es lento. Una bandeja plana no lo mueve.",
       helpPour5: "Elige granos o agua. Solo uno se vierte a la vez.",
       cupsWord: "Tazas:",
+      toolRow: "Herramientas de rampa",
       helpSpill: "El derrame queda en un círculo. Arregla la rampa. Otra vez deja las rampas.",
       helpLesson: "Lee la línea de la lección al ganar.",
       helpFewer: "Intenta ganar con menos rampas.",
@@ -421,6 +425,7 @@
       helpPour4: "اضغط اسكب. الهلام بطيء. الصينية المسطحة لا تحرّكه.",
       helpPour5: "اختر الحبوب أو الماء. واحد فقط يُصب في كل مرة.",
       cupsWord: "الأكواب:",
+      toolRow: "أدوات المنحدر",
       helpSpill: "الانسكاب يبقى في دائرة. أصلح المنحدر. إعادة تبقي المنحدرات.",
       helpLesson: "اقرأ سطر الدرس عندما تفوز.",
       helpFewer: "حاول أن تفوز بمنحدرات أقل.",
@@ -500,6 +505,7 @@
       helpPour4: "بریز را بزن. ژل آهسته است. سینی تخت آن را تکان نمی‌دهد.",
       helpPour5: "دانه‌ها یا آب را انتخاب کن. هر بار فقط یکی می‌ریزد.",
       cupsWord: "پیاله‌ها:",
+      toolRow: "ابزار سطح شیب‌دار",
       helpSpill: "ریختن در دایره می‌ماند. سرازیری را درست کن. دوباره سرازیری‌ها را نگه می‌دارد.",
       helpLesson: "وقتی بردی خط درس را بخوان.",
       helpFewer: "بکوش با سطح شیب‌دار کمتر ببری.",
@@ -579,6 +585,7 @@
       helpPour4: "Kanda Suka. Jeli itinda. Urubaho rw'urutambike ntiruyikurura.",
       helpPour5: "Hitamo ibinyobwa cyangwa amazi. Rimwe gusa rirasuka.",
       cupsWord: "Ibikombe:",
+      toolRow: "Ibikoresho by'imihanda",
       helpSpill: "Ibyasutse biguma mu ruziga. Kosora umuhengamo. Ongera bisiga imihengamo.",
       helpLesson: "Soma umurongo w'isomo iyo utsinze.",
       helpFewer: "Gerageza gutsinda n'imihanda mike.",
@@ -658,6 +665,7 @@
       helpPour4: "ቀድሕ ጠውቕ። ጄል ቀስ ይብል። ጠፍጣፍ ሳሕን ኣይንቀሳቐሶን።",
       helpPour5: "እኽሊ ወይ ማይ ምረጽ። ሓደ ጥራይ እዩ ዝቐድሕ።",
       cupsWord: "ኽባያታት:",
+      toolRow: "መሳርሒ መንሸራተቲ",
       helpSpill: "ዝፈሰሰ ኣብ ዓንኬል ይጸንሕ። ቁልቁለት ኣዐሪ። ደጊም ቁልቁለታት ይሕልዉ።",
       helpLesson: "ምስ ተዓወትካ መስመር ትምህርቲ ኣንብብ።",
       helpFewer: "ብውሑዳት መንሸራተቲ ክትዓውት ፈትን።",
@@ -708,6 +716,7 @@
       wdMon: "Mon", wdTue: "Tue", wdWed: "Wed", wdThu: "Thu", wdFri: "Fri",
       mo1: "Jan", mo2: "Feb", mo3: "Mar", mo4: "Apr", mo5: "May", mo6: "Jun", mo7: "Jul", mo8: "Aug", mo9: "Sep", mo10: "Oct", mo11: "Nov", mo12: "Dec",
       helpDate: "The Daily cup date shows in your language.",
+      toolRow: "Ramp tools",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -1048,6 +1057,10 @@
       var key = el.getAttribute("data-k");
       if (STR.en[key]) el.textContent = t(key);
     });
+    var toolRow = document.getElementById("tool-row");
+    if (toolRow) toolRow.setAttribute("aria-label", t("toolRow"));
+    var score0 = document.querySelector(".score");
+    if (score0 && !cups) score0.setAttribute("aria-label", t("cupsWord") + " 0");
     paintVersion();
     var pourHelp = document.getElementById("help-pour");
     if (pourHelp) pourHelp.textContent = t(level >= 5 ? "helpPour5" : level >= 4 ? "helpPour4" : level === 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
