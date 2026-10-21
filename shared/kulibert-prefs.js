@@ -419,6 +419,14 @@
     Object.defineProperty(root.KulibertPrefs, "dir", { get: function () { return get().dir; } });
   } catch (eProp) {}
   if (!classic()) {
+    try {
+      var asked = new URLSearchParams(location.search).get("lang");
+      if (asked && LANG_OK[asked]) {
+        var cur = stored();
+        cur.lang = asked;
+        try { localStorage.setItem("kulibert-prefs-v1", JSON.stringify(cur)); } catch (eLang) {}
+      }
+    } catch (eAsk) {}
     apply(get());
     firedLang = stored().lang;
     pullRemote();
