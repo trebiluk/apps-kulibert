@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.14. Version locked: VD 1.0.14.
+Stage: VD 1.0.15. Version locked: VD 1.0.15.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -68,4 +68,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.14
 - [x] **Winner screen language.** The banner, coin line, Rematch, Next heat, and the spoken result follow the hub language, including Spanish and Arabic.
+
+## VD 1.0.15
+- [x] **Winner line once.** The flag announces the winner one time. A language change on that screen updates the line once. It does not write the live region a second time on the way in.
 

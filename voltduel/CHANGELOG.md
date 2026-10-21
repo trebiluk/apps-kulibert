@@ -10,4 +10,5 @@ VD 1.0.11 — The test script loads only when staff Test is on. Help states each
 VD 1.0.12 — Rematch starts the heat over in one tap. A hit shakes and sparks. The lobby shows each runner's shape, key words, and the last match.
 VD 1.0.13 — After Rematch, the keyboard is right in the game.
 VD 1.0.14 — The winner screen speaks your language.
+VD 1.0.15 — The winner is announced once, clearly.
 
