@@ -679,6 +679,7 @@
   var spill = 0;
   var leakKind = "";
   var level = 1;
+  var dailyOn = false;
   var clearRamps = 0;
   var newBest = false;
   var LEVEL_TAG = ["slope", "rate", "slope", "gel", "rate"];
@@ -1371,6 +1372,28 @@
       }
     }
   }
+  function schoolDay(now) {
+    var d = now ? new Date(now) : new Date();
+    var day = d.getDay();
+    if (day === 6) d.setDate(d.getDate() - 1);
+    if (day === 0) d.setDate(d.getDate() - 2);
+    function pad(n) { return (n < 10 ? "0" : "") + n; }
+    return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  }
+  function dailyPlan(day) {
+    var h = 2166136261;
+    var s = String(day || schoolDay());
+    for (var i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 16777619) >>> 0;
+    }
+    return {
+      date: s,
+      x: Math.round((0.08 + (h % 28) / 100) * 1000) / 1000,
+      w: Math.round((0.18 + ((h >>> 8) % 10) / 100) * 1000) / 1000,
+      h: Math.round((0.46 + ((h >>> 16) % 14) / 100) * 1000) / 1000
+    };
+  }
   function placeWorld() {
     var tall = viewH > viewW * 1.05;
     var bottom = viewH - 10;
@@ -1384,7 +1407,17 @@
     ch = Math.max(56, Math.min(ch, availH));
     cupList = [];
     block = null;
-    if (level === 1 || level === 4) {
+    if (dailyOn) {
+      var plan = dailyPlan(schoolDay());
+      var dcw = Math.max(72, Math.min(150, viewW * plan.w));
+      var dch = Math.max(56, Math.min(availH * 0.85, viewH * plan.h));
+      var dcx = Math.max(12, Math.min(viewW * plan.x, viewW - dcw - 70));
+      cupList.push(makeCup(dcx, bottom - dch, dcw, dch));
+      spout = fitSpout(
+        Math.min(viewW - 40, Math.max(cupList[0].x + cupList[0].w + 64, viewW * 0.72)),
+        Math.max(58, Math.min(cupList[0].top - 16, viewH * 0.2))
+      );
+    } else if (level === 1 || level === 4) {
       var cx = Math.max(12, Math.min(viewW * (tall ? 0.08 : 0.13), viewW - cw - 70));
       cupList.push(makeCup(cx, bottom - ch, cw, ch));
       spout = fitSpout(
@@ -3210,7 +3243,7 @@
     state: function () {
       var r = canvas.getBoundingClientRect();
       return {
-        level: level, fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
+        level: level, daily: dailyOn, plan: dailyPlan(schoolDay()), fill: fills[0] || 0, fills: fills.slice(), spill: spill, line: LINE,
         pouring: pouring, live: live.length, words: cupWords(), paused: paused, ended: ended,
         strokes: strokes.length, ramps: clearRamps, best: savedBest(), newBest: newBest, cups: cups, stars: cupStars.slice(), sessionStars: sessionStars.slice(), unlocked: unlocked, levelStars: levelStars.slice(), mass: mass, leak: leakKind, mat: matName(),
         mode: mode, stack: stack.length, stackMsg: stackMsg, tipped: stack.some(function (c) { return c.tipped; }), caught: catchBits.length > 0 && catchBits.every(function (b) { return b.done; }),
