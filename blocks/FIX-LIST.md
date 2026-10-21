@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.316 plate).
 
+- [x] **2.5.318 help use:** Help explains the Use button. Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it. In all 9 languages including Simple. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.316 graphics words:** Settings note and toast say Auto, Lite and Full in your language. Spanish is Automático, Ligero, Completo. Kinyarwanda auto is Byikora. Tigrinya auto is ብባዕሉ. Kinyarwanda, Tigrinya, and Dari still need a native check. The staff speed line stays English.
 
 - [x] **2.5.307 hint again:** If you tap the same hint again, it pulses so you know the game heard you. It does not stack a second copy. Reduced motion resets the timer with no nudge. Kinyarwanda, Tigrinya, and Dari help lines still need a native check.

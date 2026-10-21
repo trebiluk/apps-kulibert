@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.318', date: '2026-10-21', lines: {
+    en: ['2.5.318 — Help now explains the Use button.'],
+    simple: ['2.5.318 — Help now explains the Use button.'],
+    uk: ['2.5.318 — Допомога тепер пояснює кнопку Використати.'],
+    ru: ['2.5.318 — Помощь теперь объясняет кнопку Использовать.'],
+    es: ['2.5.318 — La Ayuda ahora explica el botón Usar.'],
+    ar: ['2.5.318 — المساعدة تشرح الآن زر الاستخدام.'],
+    'fa-AF': ['2.5.318 — راهنما حالا دکمه استفاده را توضیح می‌دهد.'],
+    rw: ['2.5.318 — Ubufasha ubu busobanura buto ya Koresha.'],
+    ti: ['2.5.318 — ሓገዝ ሕጂ መቐየሪ ተጠቐም ይገልጽ።'],
+  }},
+
   { v: '2.5.316', date: '2026-10-21', lines: {
     en: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
     simple: ['2.5.316 — The graphics words Auto, Lite and Full are in your language.'],
