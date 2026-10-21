@@ -4,6 +4,8 @@
 
 MU 2.36.19 — a Looks drawer names the pictures, colors, wall, and frame, Surprise me mixes them, a start screen glows until Play, the frame pulses gently with the kick, and loudness names follow the language.
 
+MU 2.36.19 — investigated, not built: five light-show ideas in FIX-LIST (drop change, save a Light Show, projector Perform, Viz lesson, code picture puzzle).
+
 ## Earlier
 
 **Chip: MU 2.36.18** · 2026-10-21 · channel **live**
