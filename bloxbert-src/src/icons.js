@@ -114,29 +114,46 @@ export function wandCanvas(mode) {
 const FACE = {
   buildWand(g) { paintWand(g, 'select') },
   log(g) {
-    g.fillStyle = '#6B3A1F'
+    // Side bark + light round end ring. Distinct from planks at 32px.
+    g.fillStyle = '#5C3317'
+    g.fillRect(6, 14, 28, 20)
+    g.strokeStyle = '#3A2415'
+    g.lineWidth = 2
+    g.strokeRect(6, 14, 28, 20)
+    // bark lines
+    g.strokeStyle = '#3A2415'
+    g.lineWidth = 1.5
     g.beginPath()
-    g.arc(24, 24, 20, 0, Math.PI * 2)
-    g.fill()
-    g.strokeStyle = '#2A160C'
-    g.lineWidth = 3
+    g.moveTo(10, 16); g.lineTo(10, 32)
+    g.moveTo(16, 16); g.lineTo(16, 32)
+    g.moveTo(22, 16); g.lineTo(22, 32)
+    g.moveTo(28, 16); g.lineTo(28, 32)
     g.stroke()
-    g.strokeStyle = '#E6C98A'
-    g.lineWidth = 2.5
-    g.beginPath(); g.arc(24, 24, 13, 0, Math.PI * 2); g.stroke()
-    g.beginPath(); g.arc(24, 24, 6, 0, Math.PI * 2); g.stroke()
-    g.fillStyle = '#F3D7A1'
-    g.beginPath(); g.arc(24, 24, 2.5, 0, Math.PI * 2); g.fill()
+    // light end ring
+    g.fillStyle = '#E8C27A'
+    g.beginPath(); g.arc(34, 24, 9, 0, Math.PI * 2); g.fill()
+    g.strokeStyle = '#C9954C'
+    g.lineWidth = 2
+    g.beginPath(); g.arc(34, 24, 9, 0, Math.PI * 2); g.stroke()
+    g.strokeStyle = '#A67C4E'
+    g.lineWidth = 1.5
+    g.beginPath(); g.arc(34, 24, 5, 0, Math.PI * 2); g.stroke()
   },
   planks(g) {
-    const rows = [[4, '#E8C27A'], [18, '#C9954C'], [32, '#E0B56A']]
-    rows.forEach(([y, fill]) => {
+    // 3 flat stacked boards with dark gaps. Distinct from log at 32px.
+    const boards = [
+      [6, '#E8C27A'],
+      [20, '#D4A85A'],
+      [34, '#E0B56A'],
+    ]
+    boards.forEach(([y, fill]) => {
+      g.fillStyle = '#3A2415'
+      g.fillRect(4, y - 2, 40, 12)
       g.fillStyle = fill
-      boxPath(g, 3, y, 42, 10, 2)
-      g.fill()
+      g.fillRect(5, y, 38, 8)
       g.strokeStyle = '#5C3317'
-      g.lineWidth = 2
-      g.stroke()
+      g.lineWidth = 1
+      g.strokeRect(5, y, 38, 8)
     })
   },
   workbench(g) {
@@ -530,6 +547,14 @@ function letterTile(letter) {
 }
 // Same picture the hotbar uses. A missing picture is a letter on a neutral tile, never a red square.
 export function slotArt(key, blockNode) {
+  // 2.5.303: distinct pictures for wood items — FACE wins over wrap for these keys
+  if (key === 'planks' || key === 'log') {
+    if (FACE[key]) {
+      const c = asArt(key, FACE[key])
+      c.dataset.item = key
+      return c
+    }
+  }
   const wrap = key && getWrap(key);
   if (wrap) {
     wrap.dataset.item = key;
