@@ -1,288 +1,573 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
   <meta name="theme-color" content="#1C2B26" />
+
   <title>Ramp & Fill — RF 1.0.7</title>
+
   <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-02-lang" />
+
   <link rel="stylesheet" href="./styles.css?v=RF-1.0.7" />
+
   <script src="/shared/hub-staff-auth.js?v=RF-1.0.7"></script>
-  <script src="/shared/kw-test.js?v=RF-1.0.7"></script>
+
   <script src="/shared/kulibert-i18n.js?v=RF-1.0.7"></script>
+
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
+
   <script src="/shared/kulibert-boards.js?v=2026-10-20-staff-i18n-bust"></script>
+
 </head>
+
 <body class="at-home">
+
   <div class="app">
+
     <header class="bar">
+
       <button type="button" id="menu-btn" class="ghost-btn" aria-expanded="false" aria-controls="menu">
+
         <span aria-hidden="true">☰</span>
+
         <span data-k="menu">Menu</span>
+
       </button>
+
       <span class="brand">Ramp & Fill</span>
+
       <span class="level-pill" id="level-name">First ramp</span>
+
       <span class="chip" id="ver-plate">RF 1.0.7</span>
+
       <button type="button" id="pause-btn" class="ghost-btn">
+
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>
+
         <span data-k="pause">Pause</span>
+
       </button>
+
     </header>
+
     <div id="home" class="home">
+
       <button type="button" id="home-levels" class="home-tile">
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 18 H28 L34 28 H56" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M40 36 H58 L54 56 H44 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/><path d="M46 46 H54 L52 54 H48 Z" fill="#E0A106"/></svg>
+
         <span data-k="levels">Levels</span>
+
       </button>
+
       <button type="button" id="home-stack" class="home-tile">
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M22 8 H42 L40 22 H24 Z M18 26 H46 L43 42 H21 Z M14 46 H50 L46 60 H18 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
+
         <span data-k="stackTile">Cup Stack</span>
+
       </button>
+
       <button type="button" id="home-ideas" class="home-tile">
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M8 40 H24 L22 56 H10 Z M28 28 H44 L42 56 H30 Z M48 16 H60 L58 56 H50 Z" fill="#8C3A2F" stroke="#1A120C" stroke-width="3"/></svg>
+
         <span data-k="ideas">Stack ideas</span>
+
       </button>
+
       <button type="button" id="home-ref" class="home-tile">
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="18" fill="none" stroke="#1A120C" stroke-width="4"/><path d="M32 34 V22 M32 34 L42 40" fill="none" stroke="#1A120C" stroke-width="4" stroke-linecap="round"/><path d="M32 8 V14" stroke="#1A120C" stroke-width="4"/></svg>
+
         <span data-k="refTile">Referee</span>
+
       </button>
+
     </div>
+
     <section id="ideas" class="ideas" hidden>
+
       <h2 data-k="ideas">Stack ideas</h2>
+
       <div id="ideas-list" class="idea-grid"></div>
+
       <button type="button" id="ideas-home" class="idea-home">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="home">Home</span>
+
       </button>
+
     </section>
+
     <section id="ref" class="ref" hidden>
+
       <p class="ref-clock" id="ref-clock">0:00</p>
+
       <div class="ref-teams" id="ref-teams" role="group">
+
         <button type="button" data-team="1" aria-pressed="true"><span class="mark m1" aria-hidden="true"></span><span data-k="teamWord">Team</span> <span class="tn">1</span></button>
+
         <button type="button" data-team="2"><span class="mark m2" aria-hidden="true"></span><span data-k="teamWord">Team</span> <span class="tn">2</span></button>
+
         <button type="button" data-team="3"><span class="mark m3" aria-hidden="true"></span><span data-k="teamWord">Team</span> <span class="tn">3</span></button>
+
         <button type="button" data-team="4"><span class="mark m4" aria-hidden="true"></span><span data-k="teamWord">Team</span> <span class="tn">4</span></button>
+
       </div>
+
       <div class="ref-picks" id="ref-picks">
+
         <button type="button" data-card="1" aria-pressed="true"><b>1</b><span data-k="cardWord">Card</span></button>
+
         <button type="button" data-card="2"><b>2</b><span data-k="cardWord">Card</span></button>
+
         <button type="button" data-card="3"><b>3</b><span data-k="cardWord">Card</span></button>
+
         <button type="button" data-card="4"><b>4</b><span data-k="cardWord">Card</span></button>
+
       </div>
+
       <article class="ref-board" id="ref-board">
+
         <h2><span data-k="cardWord">Card</span> <span id="ref-card-n">1</span> <span id="ref-card-name">Pyramid</span></h2>
+
         <div id="ref-diagram" aria-hidden="true"></div>
+
         <p class="ref-need"><span data-k="youNeed">You need:</span> <span id="ref-cuprow"></span> <span id="ref-cupn" class="need-n">6</span></p>
+
       </article>
+
       <div class="ref-modes">
+
         <button type="button" id="ref-up" aria-pressed="true">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19 V6 M7 11 L12 6 L17 11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="countUp">Count up</span>
+
         </button>
+
         <button type="button" id="ref-down" aria-pressed="false">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5 V18 M7 13 L12 18 L17 13" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="countDown">Count down</span>
+
         </button>
+
         <label class="ref-mins">
+
           <span data-k="minutes">Minutes</span>
+
           <input id="ref-mins" type="number" min="1" max="30" value="5" inputmode="numeric" />
+
         </label>
+
       </div>
+
       <div class="ref-controls">
+
         <button type="button" id="ref-start">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5 L19 12 L8 19 Z" fill="currentColor"/></svg>
+
           <span data-k="refStart">Start</span>
+
         </button>
+
         <button type="button" id="ref-stop">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="7" width="10" height="10" fill="currentColor"/></svg>
+
           <span data-k="refStop">Stop</span>
+
         </button>
+
         <button type="button" id="ref-reset">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8 A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 4 V8 H11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="refReset">Reset</span>
+
         </button>
+
         <button type="button" id="ref-done" class="ref-done">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 L10 17 L19 7" fill="none" stroke="currentColor" stroke-width="3"/></svg>
+
           <span data-k="refDone">Done</span>
+
         </button>
+
         <button type="button" id="ref-next">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7 H15 V17 H5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 12 H21 M18 9 L21 12 L18 15" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="nextCard">Next card</span>
+
         </button>
+
         <button type="button" id="ref-ideas">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H10 L9 21 H5 Z M11 11 H17 L16 21 H12 Z M18 6 H22 L21 21 H19 Z" fill="currentColor"/></svg>
+
           <span data-k="ideas">Stack ideas</span>
+
         </button>
+
         <button type="button" id="ref-home">
+
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11 L12 4 L20 11 V20 H4 Z" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="home">Home</span>
+
         </button>
+
       </div>
+
       <div id="ref-timeup" class="ref-card" hidden>
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="34" r="18" fill="none" stroke="currentColor" stroke-width="4"/><path d="M32 34 V22" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+
         <p data-k="timeUp">Time!</p>
+
       </div>
+
       <div id="ref-lock" class="ref-card ref-lock" hidden>
+
         <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M18 30 V22 A14 14 0 0 1 46 22 V30" fill="none" stroke="currentColor" stroke-width="4"/><rect x="14" y="30" width="36" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="4"/><path d="M8 18 H20 M44 18 H56 M12 18 V28 M52 18 V28" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/></svg>
+
         <p data-k="handsOff">Hands off — time locked</p>
+
       </div>
+
     </section>
+
     <div class="toolslot">
+
     <div class="tools" id="tool-row" role="toolbar" aria-label="Ramp tools">
+
       <button type="button" id="tool-draw" aria-pressed="true">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 18 L16 6 L18 8 L6 20 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M14 8 L16 6" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="draw">Draw</span>
+
       </button>
+
       <button type="button" id="tool-erase" aria-pressed="false">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 L12 8 L18 14 L10 22 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 20 H20" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="erase">Erase</span>
+
       </button>
+
       <button type="button" id="undo-btn">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8 H16 A6 6 0 1 1 16 16 H9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 4 L4 8 L8 12" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="undo">Undo</span>
+
       </button>
+
       <button type="button" id="clear-btn">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7 H19 M9 7 V5 H15 V7 M7 7 L8 20 H16 L17 7" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="clear">Clear</span>
+
       </button>
+
       <button type="button" id="pour-btn">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4 H16 L14 10 H8 Z" fill="currentColor"/><circle cx="9" cy="16" r="1.4"/><circle cx="12" cy="18" r="1.4"/><circle cx="11" cy="14" r="1.4"/></svg>
+
         <span data-k="pour">Pour</span>
+
       </button>
+
       <button type="button" id="retry-btn">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8 A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 4 V8 H11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="retry">Retry</span>
+
       </button>
+
       <button type="button" id="stack-ref" hidden>
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 13 V8 M12 13 L16 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+
         <span data-k="refTile">Referee</span>
+
       </button>
+
       <button type="button" id="stack-back" hidden>
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 12 H7 M11 6 L5 12 L11 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
         <span data-k="stackBack">Ramps</span>
+
       </button>
+
     </div>
+
     <div id="donebar" class="donebar" hidden>
+
       <p class="stamp" id="stamp" data-k="filled">Filled it!</p>
+
       <div class="pair">
+
         <button type="button" id="repour-btn">
+
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 8 A6 6 0 1 1 6 14" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 4 V8 H11" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="repour">Re-pour</span>
+
         </button>
+
         <button type="button" id="next-btn">
+
           <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12 H17 M13 6 L19 12 L13 18" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+
           <span data-k="next">Next</span>
+
         </button>
+
       </div>
+
     </div>
+
     </div>
+
     <div class="lesson-row">
+
       <p class="lesson" id="lesson">Steeper = faster. Smoother = neater.</p>
+
       <button type="button" id="stack-tile" class="stack-tile">
+
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 14 H17 L16 20 H8 Z M8 8 H16 L15 13 H9 Z M9 3 H15 L14 7 H10 Z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+
         <span data-k="stackTile">Cup Stack</span>
+
       </button>
+
     </div>
+
     <div class="stage">
+
       <canvas id="board" aria-label="Draw a ramp from the grains to the cup."></canvas>
+
       <div id="board-tags" class="board-tags"></div>
+
       <button type="button" id="pick-grains" class="pick" hidden>Grains</button>
+
       <button type="button" id="pick-water" class="pick" hidden>Water</button>
+
       <div id="pause-layer" class="pause" hidden>
+
         <h2 data-k="paused">Paused</h2>
+
         <div class="pair">
+
           <button type="button" id="resume-btn" data-k="resume">Resume</button>
+
         </div>
+
       </div>
+
       <div id="ask" class="ask" hidden role="dialog" aria-labelledby="ask-title">
+
         <h2 id="ask-title" data-k="clearAsk">Erase all ramps?</h2>
+
         <div class="pair">
+
           <button type="button" id="ask-yes" data-k="yes">Yes</button>
+
           <button type="button" id="ask-no" data-k="no">No</button>
+
         </div>
+
       </div>
+
       <div id="endcard" class="endcard" hidden role="dialog" aria-labelledby="end-title">
+
         <h2 id="end-title">First ramp done.</h2>
+
         <p id="end-lesson" class="end-lesson">
+
           <span id="end-ico" aria-hidden="true"></span>
+
           <span id="end-lesson-text"></span>
+
         </p>
+
         <p id="end-best" class="end-best">Best: 0 ramps</p>
+
         <p id="end-new" class="end-new" hidden>
+
           <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6 L29 18 H42 L31 26 L35 40 L24 32 L13 40 L17 26 L6 18 H19 Z" fill="#F6C453" stroke="#1A120C" stroke-width="2"/></svg>
+
           <span id="end-new-text">New best!</span>
+
         </p>
+
         <p id="end-note" hidden></p>
+
         <div class="pair">
+
           <button type="button" id="next-level-btn" data-k="nextLevel">Next level</button>
+
           <button type="button" id="again-btn" data-k="beat">Beat your fill</button>
+
           <button type="button" id="fewer-btn" data-k="tryFewer">Try for fewer</button>
+
           <button type="button" id="hub-btn" data-k="hub" hidden>Back to Hub</button>
+
         </div>
+
       </div>
+
     </div>
+
     <p class="status" id="status" aria-live="polite">Cup: empty • nothing spilled</p>
+
     <p class="spill-line" id="spill-line" aria-live="polite"></p>
+
     <section class="score" aria-label="Filled cups">
+
       <div class="cups" id="cups"></div>
+
       <p class="cup-count" id="cup-count">
+
         <svg class="cup-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 6 H17 L16 20 H8 Z" fill="#E0A106" stroke="#1A120C" stroke-width="2"/></svg>
+
         <span data-k="cupsWord">Cups:</span>
+
         <span id="cup-n">0</span>
+
       </p>
+
       <p class="more" id="more-line" data-k="more">can you fill more?</p>
+
     </section>
+
   </div>
+
   <div id="menu" class="menu" hidden>
+
     <div class="menu-head">
+
       <h2 id="menu-title" data-k="menu">Menu</h2>
+
       <span class="ver-plate">RF 1.0.7</span>
+
       <button type="button" id="menu-close" data-k="close">Close</button>
+
     </div>
+
     <section id="whats-new">
+
       <h2 data-k="whatsNew">What's new</h2>
+
       <p id="whats-body">RF 1.0.7: Staff Test mode works in Ramp & Fill, and test wins go to the TEST board only.</p>
+
     </section>
+
     <section id="rf-help">
+
       <h2 data-k="help">Help</h2>
+
       <ol>
+
         <li data-k="helpDraw">Draw a ramp like the dotted guide.</li>
+
         <li id="help-pour">Press Pour. Grains (water later) slide into the cup.</li>
+
         <li data-k="helpSpill">A spill stays circled. Flatten the ramp and try again. Ramps stay on Retry.</li>
+
         <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18 L14 8 H21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpLesson" data-i18n="rfHelpLesson">Read the lesson line when you win.</span></li>
+
         <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16 H14 L12 20 H6 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8 H22 M19 5 V11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-k="helpFewer" data-i18n="rfHelpFewer">Try to win with fewer ramps.</span></li>
+
         <li class="help-step"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg><span data-k="helpPause" data-i18n="rfHelpPause">Pause is always easy to tap, even sideways.</span></li>
+
       </ol>
+
       <p id="lesson-2">Steeper = faster. Smoother = neater.</p>
+
       <button type="button" id="read-btn" data-k="read">Read it to me</button>
+
     </section>
+
     <section>
+
       <h2 data-k="language">Language</h2>
+
       <div class="lang-picks" id="langs"></div>
+
     </section>
+
     <section id="rf-progress">
+
       <h2 data-k="progress">Progress</h2>
+
       <ol class="level-list" id="level-list"></ol>
+
       <button type="button" id="start-over" data-k="startOver">Start over</button>
+
       <p id="reset-ask" hidden>
+
         <span data-k="resetAsk">Start over? Cups and stars clear.</span>
+
         <span class="pair">
+
           <button type="button" id="reset-yes" data-k="yes">Yes</button>
+
           <button type="button" id="reset-no" data-k="no">No</button>
+
         </span>
+
       </p>
+
     </section>
+
       <div class="alias-row">
+
         <label for="alias" data-k="alias">Alias</label>
+
         <input id="alias" maxlength="24" autocomplete="off" />
+
       </div>
+
       <h2 data-k="top">Top 10</h2>
+
       <ol class="top" id="top"></ol>
+
       <p data-k="local">Aliases and cup pictures stay on this Chromebook. No names. No chat.</p>
+
     </section>
+
   </div>
+
   <script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="rampfill" data-name="Ramp & Fill" data-version="RF 1.0.7" data-esc="app" data-menu="#menu-btn" data-help="#rf-help" defer></script>
+
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
+
   <script src="./app.js?v=RF-1.0.7-help"></script>
+
 </body>
+
 </html>

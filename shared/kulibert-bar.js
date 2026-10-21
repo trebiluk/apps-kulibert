@@ -657,4 +657,17 @@
   }
   if (document.body) draw();
   else document.addEventListener("DOMContentLoaded", draw);
+
+  // Test tools load only after a staff unlock. Kid pages get no kw-test tag.
+  function loadTest() {
+    var on = false;
+    try { on = localStorage.getItem("tech-room-hub-staff") === "1"; } catch (e) {}
+    if (!on) return;
+    if (document.querySelector("script[src*='kw-test.js']")) return;
+    var s = document.createElement("script");
+    s.src = asset("/shared/kw-test.js?v=2026-10-20-staff-cachebust-i18n");
+    s.async = false;
+    document.head.appendChild(s);
+  }
+  loadTest();
 })(typeof window !== "undefined" ? window : globalThis);
