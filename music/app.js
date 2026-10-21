@@ -1911,6 +1911,88 @@
       paintPerformChrome();
     };
   }
+  function ensurePerformCount() {
+    let el = $("perform-count");
+    if (el) return el;
+    el = document.createElement("div");
+    el.id = "perform-count";
+    el.className = "perform-count";
+    el.setAttribute("aria-live", "polite");
+    el.hidden = true;
+    const num = document.createElement("p");
+    num.className = "perform-num";
+    num.id = "perform-num";
+    const sub = document.createElement("p");
+    sub.className = "perform-sub";
+    sub.id = "perform-sub";
+    el.append(num, sub);
+    const host = document.querySelector(".stage-wrap") || document.body;
+    host.appendChild(el);
+    return el;
+  }
+  function hidePerformCount() {
+    const el = $("perform-count");
+    if (el) el.hidden = true;
+  }
+  function songReadyName() {
+    const song = state.song || {};
+    return song.alias || song.title || song.name || mu("yourSong") || "Your song";
+  }
+  function readyLine() {
+    const tmpl = mu("getReady") || "Get ready: {name}";
+    return tmpl.split("{name}").join(songReadyName());
+  }
+  function logPerform(step) {
+    if (!state.performLog) state.performLog = [];
+    state.performLog.push(String(step));
+    const el = $("perform-count");
+    if (el) el.setAttribute("data-seq", state.performLog.join(","));
+    console.info("perform-count", state.performLog.join(","));
+  }
+  function startProjectorCount() {
+    window.clearTimeout(state.countTimer);
+    state.counting = true;
+    state.performLog = [];
+    arm();
+    if (ctx && ctx.state === "suspended") ctx.resume();
+    if ($("curtain")) $("curtain").hidden = true;
+    if ($("bow")) $("bow").hidden = true;
+    const el = ensurePerformCount();
+    const num = $("perform-num");
+    const sub = $("perform-sub");
+    el.hidden = false;
+    const line = readyLine();
+    if (sub) sub.textContent = line;
+    if ($("now-line")) $("now-line").textContent = line;
+    const go = () => {
+      if (!state.showing || !state.counting) return;
+      state.counting = false;
+      hidePerformCount();
+      logPerform("play");
+      play({ once: true });
+    };
+    if (motionLess()) {
+      el.classList.add("is-ready");
+      if (num) num.textContent = mu("ready") || "Ready";
+      logPerform("ready");
+      state.countTimer = window.setTimeout(go, 1000);
+      return;
+    }
+    el.classList.remove("is-ready");
+    let n = 3;
+    const tick = () => {
+      if (!state.showing || !state.counting) return;
+      if (num) num.textContent = String(n);
+      logPerform(String(n));
+      n -= 1;
+      if (n < 1) {
+        state.countTimer = window.setTimeout(go, 1000);
+        return;
+      }
+      state.countTimer = window.setTimeout(tick, 1000);
+    };
+    tick();
+  }
   function showCurtain() {
     const curtain = $("curtain");
     const bow = $("bow");
@@ -1950,8 +2032,7 @@
       try { exit.focus(); } catch (err) { /* focus can fail if the button is covered */ }
     }
     fitViz();
-    showCurtain();
-    $("now-line").textContent = mu("showLine") || "One song. The picture follows. Sound can stay off.";
+    startProjectorCount();
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         if (stageApi && stageApi.resize) stageApi.resize();
@@ -1959,7 +2040,9 @@
     });
   }
   function closeShow() {
+    window.clearTimeout(state.countTimer);
     state.counting = false;
+    hidePerformCount();
     state.once = false;
     if (state.playing) stop();
     window.clearTimeout(state.timer);
@@ -2010,27 +2093,11 @@
     state.bins[22] = 240;
   }
   function beginShow() {
-    if (!state.showing) openShow();
-    window.clearTimeout(state.timer);
-    if ($("curtain")) $("curtain").hidden = true;
-    if ($("bow")) $("bow").hidden = true;
-    state.counting = true;
-    let left = 4;
-    const gap = Math.round(60000 / Math.max(70, state.song.bpm || 96));
-    const tick = () => {
-      if (!state.showing || !state.counting) return;
-      $("feel").textContent = String(left);
-      $("feel").className = "feel on";
-      $("now-line").textContent = "Count " + left + ".";
-      if (!state.muted) tone(880, 0.05, "square", 0.1);
-      left -= 1;
-      if (left < 1) {
-        state.timer = window.setTimeout(() => play({ once: true }), gap);
-        return;
-      }
-      state.timer = window.setTimeout(tick, gap);
-    };
-    tick();
+    if (!state.showing) {
+      openShow();
+      return;
+    }
+    startProjectorCount();
   }
 
   const BAND = [

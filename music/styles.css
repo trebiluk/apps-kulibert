@@ -3177,8 +3177,62 @@ body.mu237.show #perform-mic[aria-pressed="true"] {
 }
 html[dir="rtl"] body.mu237.show #perform-exit,
 html[dir="rtl"] body.mu237.show #perform-mic,
-html[dir="rtl"] body.mu237.show #now-line {
+html[dir="rtl"] body.mu237.show #now-line,
+html[dir="rtl"] body.mu237.show .perform-count {
   direction: rtl;
+}
+body.mu237.show #song-title,
+body.mu237.show #feel,
+body.mu237.show #lane,
+body.mu237.show #lesson,
+body.mu237.show .show-progress,
+body.mu237.show #saved-line,
+body.mu237.show #undo-clear,
+body.mu237.show #share-line {
+  display: none !important;
+}
+body.mu237.show .perform-count {
+  position: absolute;
+  z-index: 4;
+  left: 12px;
+  right: 12px;
+  top: 12px;
+  bottom: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin: 0;
+  pointer-events: none;
+  background: transparent;
+}
+body.mu237.show .perform-count[hidden] { display: none !important; }
+body.mu237.show .perform-num {
+  margin: 0;
+  font-size: clamp(6.5rem, 22vw, 14rem);
+  font-weight: 800;
+  line-height: 0.85;
+  color: #22d3ee;
+  text-align: center;
+}
+body.mu237.show .perform-sub,
+body.mu237.show #now-line {
+  margin: 0;
+  max-width: 92%;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: #fff8ea;
+  text-align: center;
+}
+@media (max-height: 500px) {
+  body.mu237.show .perform-num { font-size: clamp(4.5rem, 28vh, 7rem); }
+  body.mu237.show .perform-count { bottom: 64px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.mu237.show .perform-count,
+  body.mu237.show .perform-num { animation: none !important; transition: none !important; }
 }
 
 /* MU 2.35.10 — Mix opens on the desk. Band shows one list and the five notes. */

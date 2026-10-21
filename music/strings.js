@@ -460,7 +460,8 @@
     showLine: "One song. The picture follows. Sound can stay off.",
     exitEsc: "Exit  Esc",
     performMicOff: "Mic: OFF",
-    performMicOn: "Mic: ON"
+    performMicOn: "Mic: ON",
+    getReady: "Get ready: {name}"
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -624,7 +625,8 @@
     showLine: "One song. The picture follows. Sound can stay off.",
     exitEsc: "Exit Esc",
     performMicOff: "Mic off",
-    performMicOn: "Mic on"
+    performMicOn: "Mic on",
+    getReady: "Get ready: {name}"
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1079,7 +1081,8 @@
       "showLine": "Одна пісня. Картинка йде за нею. Звук можна лишити вимкненим.",
       "exitEsc": "Вийти  Esc",
       "performMicOff": "Мікрофон: ВИМК",
-      "performMicOn": "Мікрофон: УВІМК"
+      "performMicOn": "Мікрофон: УВІМК",
+      "getReady": "Готуйся: {name}"
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1531,7 +1534,8 @@
       "showLine": "Одна песня. Картинка идёт за ней. Звук можно оставить выключенным.",
       "exitEsc": "Выйти  Esc",
       "performMicOff": "Микрофон: ВЫКЛ",
-      "performMicOn": "Микрофон: ВКЛ"
+      "performMicOn": "Микрофон: ВКЛ",
+      "getReady": "Приготовься: {name}"
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1984,7 +1988,8 @@
       "showLine": "Una canción. La imagen la sigue. El sonido puede quedar apagado.",
       "exitEsc": "Salir  Esc",
       "performMicOff": "Mic: apagado",
-      "performMicOn": "Mic: encendido"
+      "performMicOn": "Mic: encendido",
+      "getReady": "Prepárate: {name}"
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2437,7 +2442,8 @@
       "showLine": "أغنية واحدة. الصورة تتبعها. يمكن أن يبقى الصوت مطفأ.",
       "exitEsc": "خروج  Esc",
       "performMicOff": "المايك: مطفأ",
-      "performMicOn": "المايك: يعمل"
+      "performMicOn": "المايك: يعمل",
+      "getReady": "استعد: {name}"
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2890,7 +2896,8 @@
       "showLine": "یک آهنگ. تصویر دنبال آن می‌آید. صدا می‌تواند خاموش بماند.",
       "exitEsc": "بیرون  Esc",
       "performMicOff": "مایک: خاموش",
-      "performMicOn": "مایک: روشن"
+      "performMicOn": "مایک: روشن",
+      "getReady": "آماده شو: {name}"
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3343,7 +3350,8 @@
       "showLine": "Indirimbo imwe. Ishusho ikurikira. Ijwi rishobora kuguma rivanye.",
       "exitEsc": "Sohoka  Esc",
       "performMicOff": "Mikoro: OFF",
-      "performMicOn": "Mikoro: ON"
+      "performMicOn": "Mikoro: ON",
+      "getReady": "Tegura: {name}"
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3796,7 +3804,8 @@
       "showLine": "ሓንቲ ደርፊ። ስእሊ ይስዕባ። ድምጺ ክጥፍእ ይኽእል።",
       "exitEsc": "ውጻእ  Esc",
       "performMicOff": "ማይክ፡ ጠፊኡ",
-      "performMicOn": "ማይክ፡ ወሊዑ"
+      "performMicOn": "ማይክ፡ ወሊዑ",
+      "getReady": "ተዳለ: {name}"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
