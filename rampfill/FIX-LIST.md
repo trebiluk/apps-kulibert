@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 15. Version locked: RF 1.0.14.
+
+- [x] **RF 1.0.14 ITEM 1:** The Daily cup tile shows today's best after a clear. The end card shows Best and New best! when you beat it. No streak and no alias.
+
 Stage 14. Version locked: RF 1.0.13.
 
 - [x] **RF 1.0.13 ITEM 1:** The level list has a Daily cup tile. The cup comes from the school date, so the whole class gets the same one. Weekends repeat Friday. Today's best is date and a number on this device only. No streak and no alias.

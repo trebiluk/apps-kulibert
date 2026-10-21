@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.14
+
+RF 1.0.14 — The Daily cup shows your best for today.
+
 ## RF 1.0.13
 
 RF 1.0.13 — A new Daily cup every school day, the same for the whole class.

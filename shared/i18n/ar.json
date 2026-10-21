@@ -408,9 +408,10 @@
   "rfHelpGhost": "إعادة المحاولة تعرض نسخة رمادية باهتة من أفضل منحدراتك. أظهر الأفضل يشغلها أو يوقفها.",
   "vdArena": "ساحة فولت دويل",
   "rfHelpDaily": "كوب اليوم كوب جديد في كل يوم دراسي. هو نفسه لكل الصف. أفضل نتيجة تبقى على هذا الجهاز فقط.",
-"vdResultTitle": "{name} يأخذ العلم",
+  "vdResultTitle": "{name} يأخذ العلم",
   "vdResultCoins": "{coins} عملات",
   "vdRematch": "إعادة المباراة",
   "vdNextHeat": "الشوط التالي",
-  "vdResultLive": "{name} يأخذ العلم، {time} ثانية، {coins} عملات"
+  "vdResultLive": "{name} يأخذ العلم، {time} ثانية، {coins} عملات",
+  "rfHelpDailyBest": "بطاقة كوب اليوم تعرض أفضل نتيجة لك اليوم."
 }

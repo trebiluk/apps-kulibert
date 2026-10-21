@@ -408,9 +408,10 @@
   "rfHelpGhost": "Ongera ishobora kwerekana kopi y'ubugugu y'imihanda yawe myiza. Erekana byiza yikora cyangwa ihagarara.",
   "vdArena": "Ikibuga cya Volt Duel",
   "rfHelpDaily": "Igikombe cy'uyu munsi ni igikombe gishya buri munsi w'ishuri. Ni kimwe ku ishuri ryose. Ibyiza byawe biguma kuri iki gikoresho gusa.",
-"vdResultTitle": "{name} yafashe ibendera",
+  "vdResultTitle": "{name} yafashe ibendera",
   "vdResultCoins": "ibiceri {coins}",
   "vdRematch": "Gusubukura",
   "vdNextHeat": "Urundi ruhande",
-  "vdResultLive": "{name} yafashe ibendera, amasegonda {time}, ibiceri {coins}"
+  "vdResultLive": "{name} yafashe ibendera, amasegonda {time}, ibiceri {coins}",
+  "rfHelpDailyBest": "Agace k'igikombe cy'uyu munsi kerekana agahigo kawe k'uyu munsi."
 }

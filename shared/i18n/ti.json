@@ -408,9 +408,10 @@
   "rfHelpGhost": "ዳግማይ ምፍታን ናይ ዝበለጸ መንሸራተቲ ግራጫ ቅዳሕ ከርኢ ይኽእል። ዝበለጸ ኣርኢ የብርሆ ወይ የጥፍኦ።",
   "vdArena": "መጻወቲ Volt Duel",
   "rfHelpDaily": "ጽዋዕ ናይ ሎሚ ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ እዩ። ንኹሉ ክፍሊ ተመሳሳሊ እዩ። ዝበለጸ ውጽኢት ኣብዚ መሳርሒ ጥራይ ይቕመጥ።",
-"vdResultTitle": "{name} ነቲ ባንዴራ ወሲዱ",
+  "vdResultTitle": "{name} ነቲ ባንዴራ ወሲዱ",
   "vdResultCoins": "ሳንቲም {coins}",
   "vdRematch": "ዳግማይ ጸዋታ",
   "vdNextHeat": "ዝቕጽል ውድድር",
-  "vdResultLive": "{name} ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}"
+  "vdResultLive": "{name} ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}",
+  "rfHelpDailyBest": "ሰሌዳ ጽዋዕ ናይ ሎሚ ናይ ሎሚ ሪኮርድካ የርኢ።"
 }
