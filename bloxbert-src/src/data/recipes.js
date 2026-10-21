@@ -41,6 +41,7 @@ export const RECIPES = [
   { id: 'charger', at: 'fabricator', tier: 'T5', in: [['steel', 1], ['copperWire', 1]], out: ['charger', 1], secs: 3 },
   { id: 'glass', at: 'oven', in: [['sand', 2]], out: ['glass', 1], secs: 5 },
   { id: 'brickRed', at: 'oven', in: [['redSand', 2]], out: ['brickRed', 1], secs: 5 },
+  { id: 'overrideKey', at: 'forge', tier: 'T5', in: [['keeperCore', 2], ['steel', 4], ['copperWire', 4]], out: ['overrideKey', 1], secs: 10 }
 ]
 function mountFarmRecipes() {
   const farm = packRecipes()
@@ -66,6 +67,3 @@ mountFarmRecipes()
 
 // Woodshop Bed. Planks plus 3 wool of one colour. The bench bunk above stays when Woodshop required is off.
 export const BED_SHOP = { planks: 3, wool: 3, boards: [4, 7, 5] }
-
-// C5 Override Key
-{ id: 'overrideKey', at: 'forge', tier: 'T5', in: [['keeperCore', 2], ['steel', 4], ['copperWire', 4]], out: ['overrideKey', 1], secs: 10 },

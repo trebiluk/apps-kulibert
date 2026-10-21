@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:,">
-<title>Bertopia 2.5.328</title>
+<title>Bertopia 2.5.329</title>
 <link rel="stylesheet" href="/shared/kulibert-slots.css?v=2.5.294">
 <link rel="stylesheet" href="/shared/kulibert-scale.css?v=2.5.294">
 <style>
@@ -194,6 +194,15 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
   .jumpcol{bottom:calc(var(--hud-lift) + env(safe-area-inset-bottom))}
   body.touch #pick-chip{bottom:calc(var(--hud-lift) + 64px + 16px + 56px + 8px + env(safe-area-inset-bottom))}
 }
+
+
+#t-bonk{display:none}
+body.touch #t-bonk:not([hidden]){display:grid;place-items:center}
+#suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
+@media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
+body.stick-right #suit-bar{left:auto;right:10px}
+body.touch #pick-chip{right:calc(16px + 64px + 12px + env(safe-area-inset-right));bottom:calc(var(--hotbar-h, var(--hud-lift)) + 12px + 56px + 16px)}
+body.touch.stick-right #pick-chip{right:auto;left:calc(16px + 64px + 12px + env(safe-area-inset-left))}
 .pad,#hotbar,.top,.stickpad,.jumpcol{direction:ltr}
 html[dir=rtl] #drawer{left:0;right:auto;direction:rtl;text-align:right}
 html[dir=rtl] .row{text-align:right}
@@ -1160,7 +1169,7 @@ body.tip-on #held-chip{display:none!important}
 #toast .chip-ico{display:inline-flex;width:22px;height:22px;flex:0 0 22px}
 #toast .chip-ico canvas,#toast .chip-ico svg{width:22px;height:22px;image-rendering:pixelated}
 </style>
-<link rel="stylesheet" href="read.css?v=2.5.330">
+<link rel="stylesheet" href="read.css?v=2.5.333">
 </head>
 <body>
 <div id="stage"></div>
@@ -1175,7 +1184,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="brand">
     <div class="tb-plate">
       <span class="tb-name">Bertopia</span>
-      <span class="ver" id="ver-plate">2.5.330</span>
+      <span class="ver" id="ver-plate">2.5.333</span>
     </div>
     <small class="tb-lcd"><span id="current"></span></small>
   </div>
@@ -1293,6 +1302,7 @@ body.tip-on #held-chip{display:none!important}
   <div class="stick-knob" id="stick-knob"></div>
 </div>
 <div class="jumpcol" id="jump-col">
+  <button id="t-bonk" type="button" hidden style="width:64px;height:56px;min-width:44px;min-height:44px;border-radius:12px;border:1px solid rgba(34,211,238,.55);background:rgba(11,18,32,.72);color:#f8fafc;font-weight:700;font-size:13px">🔨 Bonk</button>
   <button class="crouch" id="t-crouch" type="button" aria-pressed="false" data-i18n-label="crouch" aria-label="Crouch"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v11M7 10l5 6 5-6M4 21h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="jump" type="button" data-hold="jump" data-i18n="jump" data-i18n-label="jump" aria-label="Jump">Jump</button>
 </div>
@@ -1323,15 +1333,12 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <div id="lamp-card" hidden><b id="lamp-level">Light</b><div id="lamp-bar"><i id="lamp-fill"></i></div></div>
 <div id="maker-card" hidden></div>
-<div id="suit-bar" style="position:fixed;left:10px;bottom:calc(var(--hud-lift) + 8px);z-index:6;display:flex;align-items:center;gap:6px;background:rgba(11,18,32,.85);border:1px solid #22304d;border-radius:8px;padding:6px 10px;min-height:44px">
+<div id="suit-bar" style="position:fixed;z-index:6;display:flex;align-items:center;gap:6px;background:rgba(11,18,32,.85);border:1px solid #22304d;border-radius:8px;padding:6px 10px;min-height:44px">
   <span id="suit-icon" aria-hidden="true">🛡</span>
   <span id="suit-text">Suit 100/100</span>
   <span id="suit-fill" style="width:60px;height:8px;background:#14B8A6;border-radius:4px"></span>
 </div>
 
-@media (max-height:500px){
-  #suit-bar{bottom:calc(var(--hotbar-h) + 104px + 24px)}
-}
 <div id="hotbar" class="kd-hotbar" role="toolbar" aria-label="Blocks" data-bt-label="hotbarName"></div>
 
 <script>
@@ -1356,8 +1363,8 @@ body.tip-on #held-chip{display:none!important}
 </div>
 <script src="/shared/hub-staff-auth.js"></script>
 <script src="/shared/kulibert-slots.js?v=2.5.271"></script>
-<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.330" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
-<script src="app.js?v=2.5.330" defer></script>
+<script src="/shared/kulibert-bar.js?v=2026-10-05-plate" data-app="bloxbert" data-name="Bertopia" data-version="2.5.333" data-esc="app" data-rtl="1" data-menu="#game-menu" defer></script>
+<script src="app.js?v=2.5.333" defer></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
   var chip = document.getElementById('wallet-chip')

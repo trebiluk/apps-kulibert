@@ -125,6 +125,8 @@ export function tuftSeedCount(x, y, z) {
 
 // C4 Dex flag + keeperCore
 export const KEEPER_CORE = { keeperCore: { letter: 'Kc', base: 0, sell: false, stack: 1 } }
+Object.assign(ITEMS, KEEPER_CORE)
+Object.assign(ITEMS, { overrideKey: { letter: 'Ok', base: 0, sell: false, stack: 1 } })
 export const DEX_FLAG = { dexOpened: { letter: 'Dx', base: 0, sell: false } }
 
 // C5 Override Key + cosmetics only

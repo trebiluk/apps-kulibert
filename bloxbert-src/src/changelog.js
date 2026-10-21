@@ -23,17 +23,31 @@ export const CHANGELOG = [
     ti: ['2.5.332 — ኣብ ምትንኻፍ ስክሪን መቐየሪ ቦንክ ይረአ እንተ ቦት ቀረባ፡ እሞ ቺፕ የርኢ እንተ ኣብ ውሑስ ቦታ ኢኻ።'],
   }},
 
+  { v: '2.5.333', date: '2026-10-21', lines: {
+    en: ['2.5.333 — The Notebook shows your crew badges and the bots in your Bertodex.'],
+    simple: ['2.5.333 — The Notebook shows your crew badges and the bots in your Bertodex.'],
+    uk: ['2.5.333 — Блокнот показує ваші значки екіпажу та ботів у Bertodex.'],
+    ru: ['2.5.333 — Блокнот показывает ваши значки команды и ботов в Bertodex.'],
+    es: ['2.5.333 — El Cuaderno muestra tus insignias de equipo y los bots en tu Bertodex.'],
+    ar: ['2.5.333 — دفتر الملاحظات يعرض شارات طاقمك والروبوتات في Bertodex.'],
+    'fa-AF': ['2.5.333 — دفترچه نشان‌های خدمه و ربات‌ها در Bertodex شما را نشان می‌دهد.'],
+    rw: ['2.5.333 — Notebook yerekana ibimenyetso byawe na bots muri Bertodex.'],
+    ti: ['2.5.333 — ኖትቡክ ባጃት ጋንታኻን ቦትስ ኣብ Bertodexን የርኢ።'],
+  }},
+
   { v: '2.5.299', date: '2026-10-21', lines: {
     en: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
     simple: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
-    uk: ['2.5.299 — Об'єднайтеся, щоб перезавантажити Наглядача ливарні і отримати значок екіпажу та обробку.'],
-    ru: ['2.5.299 — Объединитесь, чтобы перезагрузить Надзирателя литейной и получить значок команды и отделку.'],
-    es: ['2.5.299 — Únete en equipo para reiniciar al Supervisor de la Fundición y ganar la insignia de Equipo de Fundición y el borde.'],
-    ar: ['2.5.299 — تعاون لإعادة تشغيل مشرف المسبك واحصل على شارة طاقم المسبك والتشذيب.'],
-    'fa-AF': ['2.5.299 — به عنوان تیم برای راه‌اندازی مجدد ناظر ریخته‌گری همکاری کنید و نشان خدمه و تزئین کسب کنید.'],
-    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew n'uburyo.'],
-    ti: ['2.5.299 — ብቡድ ንፋውንድሪ ኦቨርሲር ንምዝላልን ንፋውንድሪ ክሩ ባጅን ትሪምን ንምርካብ።'],
+    uk: ['2.5.299 — Obiednajtesya, shchob perezavantazhyty Nahlyadacha lyvarni i otrymaty znachok ekipazhu ta obrobku.'],
+    ru: ['2.5.299 — Obedinites, chtoby perezagruzit Nadziratelya liteynoy i poluchit znachok komandy i otdelku.'],
+    es: ['2.5.299 — Unete en equipo para reiniciar al Supervisor de la Fundicion y ganar la insignia de Equipo de Fundicion y el borde.'],
+    ar: ['2.5.299 — Taawun li iadat tashghil Mushrif almasbak wa ahsul ala sharat taqim almasbak wa altashdhib.'],
+    'fa-AF': ['2.5.299 — Be onvan tim baraye rahandazi mojadad nazer rikhtegari hamkari konid va neshan khedme va tazein kasb konid.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
+    ti: ['2.5.299 — Bitbud nfoundri oversir nmdzlaln nfoundri kru bajn trimn nmrkab.'],
   }},
+
+
 
   { v: '2.5.331', date: '2026-10-21', lines: {
     en: ['2.5.331 — The Suit and Copy buttons no longer sit on the move stick or Jump.'],
@@ -43,7 +57,7 @@ export const CHANGELOG = [
     es: ['2.5.331 — Los botones Traje y Copiar ya no se sientan en el stick de movimiento o Salto.'],
     ar: ['2.5.331 — أزرار البدلة والنسخ لم تعد تجلس على عصا الحركة أو القفز.'],
     'fa-AF': ['2.5.331 — دکمه‌های لباس و کپی دیگر روی عصای حرکت یا پرش نمی‌نشینند.'],
-    rw: ['2.5.331 — Amabuto ya Impuzu na Kopya ntigisigara ku nkoni y'imyuka cyangwa Gusimbuka.'],
+    rw: ['2.5.331 — Amabuto ya Impuzu na Kopya ntigisigara ku nkoni yimyuka cyangwa Gusimbuka.'],
     ti: ['2.5.331 — መቐየሪ ልብስን ቅዳሕን ኣብ ምንቅስቓስ ዕንጨይቲ ወይ ምዝላል ኣይቅመጥን።'],
   }},
 
@@ -79,7 +93,7 @@ export const CHANGELOG = [
     es: ['2.5.298 — Rustbots y Keepers para reiniciar en equipo, más páginas Bertodex y insignias.'],
     ar: ['2.5.298 — Rustbots و Keepers لإعادة التشغيل كفريق، بالإضافة إلى صفحات Bertodex والشارات.'],
     'fa-AF': ['2.5.298 — Rustbots و Keepers برای راه‌اندازی مجدد به عنوان تیم، به علاوه صفحات Bertodex و نشان‌ها.'],
-    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe n'impapuro za Bertodex n'ibimenyetso.'],
+    rw: ['2.5.298 — Rustbots na Keepers kugira ngo usubize hamwe, kandi pages za Bertodex n ibimenyetso.'],
     ti: ['2.5.298 — Rustbotsን Keepers ንቡድ ንምዝላል፣ ኣብ ላዕሊ Bertodex ገጻትን ባጃትን።'],
   }},
 
@@ -1050,7 +1064,7 @@ export const CHANGELOG = [
     es: ['Con el teléfono de lado, toda la Entrada de la mesa y la fila Crear caben en pantalla.'],
     ar: ['على الهاتف الأفقي، يتسع مربع المدخل في طاولة العمل وصف الصنع على الشاشة.'],
     'fa-AF': ['در تیلفون افقی، کل جعبهٔ ورودی میز کار و ردیف ساختن در صفحه جا می‌شود.'],
-    rw: ["Kuri telefoni iri ku ruhande, agasanduku k'Injiza n'umurongo wo Gukora bikwira kuri ecran."],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ኣብ ብጎኑ ዘሎ ተሌፎን፡ ምሉእ ሳጹን ኣእቱን መስርዕ ምስራሕን ኣብ ስክሪን ይኣትዉ።'],
   }},
   { v: '2.5.237', date: '2026-10-15', lines: {
@@ -1120,7 +1134,7 @@ export const CHANGELOG = [
     es: ['La tarjeta del Tour ahora está arriba en el centro, así ya no tapa la palanca, Saltar ni los botones de modo.'],
     ar: ['بطاقة الجولة صارت في الأعلى في الوسط، فلا تغطي العصا ولا القفز ولا أزرار الوضع.'],
     'fa-AF': ['کارت گشت حالا بالا در وسط است، پس اهرم، پرش یا دکمه‌های حالت را نمی‌پوشاند.'],
-    rw: ['Ikarita y\'Urugendo ubu iri hejuru hagati, ntikongera gupfuka agastike, Simbuka cyangwa buto z\'uburyo.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ናይ ጉዕዞ ካርድ ሕጂ ኣብ ላዕሊ ማእከል ይቐመጥ፡ ስቲክ፡ ንጻን ወይ ናይ ሞድ መጠወቒታት ኣይሽፍንን።'],
   }},
   { v: '2.5.230', date: '2026-10-15', lines: {
@@ -1340,7 +1354,7 @@ export const CHANGELOG = [
     es: ['Guardar ahora trae de vuelta tu lugar, tus bloques y tu modo.'],
     ar: ['الحفظ الآن يعيد مكانك ومكعباتك ووضعك.'],
     'fa-AF': ['ذخیره حالا جایت، بلاک‌هایت و حالتت را برمی‌گرداند.'],
-    rw: ['Kubika ubu bigarura aho wari, amabuye yawe n\'uburyo bwawe.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ምዕቃብ ሕጂ ቦታኻ፡ ብሎካትካን ኩነታትካን የምለስ።'],
   }},
   { v: '2.5.208', date: '2026-10-14', lines: {
@@ -1380,7 +1394,7 @@ export const CHANGELOG = [
     es: ['El taller muestra tus herramientas, el medidor de preparación y lo que puedes hacer.'],
     ar: ['الورشة تُظهر أدواتك الداخلة ومقياس التجهيز وما يمكنك صنعه.'],
     'fa-AF': ['کارگاه ابزارهای تو، سنجهٔ آماده‌سازی و آنچه می‌توانی بسازی را نشان می‌دهد.'],
-    rw: ["Inzu y'ububaji igaragaza ibikoresho byawe, igipimo cyo kwitegura n'ibyo ushobora gukora."],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ቤት ዕንጸይቲ መሳርሒታትካ፡ መለክዒ ምድላውን ክትሰርሖ እትኽእልን የርኢ።'],
   }},
   { v: '2.5.204', date: '2026-10-14', lines: {
@@ -1390,7 +1404,7 @@ export const CHANGELOG = [
     es: ['La mesa de trabajo muestra lo que entra, el paso de hacer y lo que sale.'],
     ar: ['طاولة العمل تُظهر ما يدخل وخطوة الصنع وما يخرج.'],
     'fa-AF': ['میز کار نشان می‌دهد چه داخل می‌شود، مرحلهٔ ساختن و چه بیرون می‌آید.'],
-    rw: ["Intebe y'akazi igaragaza ibyinjira, intambwe yo gukora n'ibisohoka."],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ጣውላ ስራሕ ዝኣቱ፡ ስጉምቲ ምስራሕን ዝወጽእን የርኢ።'],
   }},
   { v: '2.5.203', date: '2026-10-14', lines: {
@@ -1430,7 +1444,7 @@ export const CHANGELOG = [
     es: ['Las máquinas ahora muestran Entrada, Proceso, Salida y Aviso, como los sistemas reales.'],
     ar: ['الآلات تُظهر الآن المدخل والعملية والمخرج والإفادة، مثل الأنظمة الحقيقية.'],
     'fa-AF': ['ماشین‌ها حالا ورودی، پروسه، خروجی و بازخورد را نشان می‌دهند، مثل سیستم‌های واقعی.'],
-    rw: ["Imashini ubu zigaragaza Injiza, Igikorwa, Ibisohoka n'Igisubizo, nk'uko sisitemu nyazo zimeze."],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ማሽናት ሕጂ ኣእቱ፡ መስርሕ፡ ውጽኢትን ርእይቶን የርእዩ፡ ከም ናይ ሓቂ ስርዓታት።'],
   }},
   { v: '2.5.199', date: '2026-10-14', lines: {
@@ -1600,7 +1614,7 @@ export const CHANGELOG = [
     es: ['La ficha de modo coincide con el reloj: un dibujo pequeño y un nombre corto. En una pantalla estrecha solo queda el dibujo. Los botones Supervivencia y Creativo siguen cambiando el modo.'],
     ar: ['شريحة الوضع تطابق الساعة: صورة صغيرة واسم قصير. على الشاشة الضيقة تبقى الصورة فقط. زرا البقاء والإبداع ما زالا يبدّلان الوضع.'],
     'fa-AF': ['نشان حالت مثل ساعت است: یک تصویر کوچک و یک نام کوتاه. در صفحه باریک فقط تصویر می‌ماند. دکمه‌های بقا و خلاق هنوز حالت را عوض می‌کنند.'],
-    rw: ['Akazu k\'uburyo ni nk\'isaha: ishusho nto n\'izina rigufi. Ku rubuga rugufi gusigara ishusho. Amabuto ya Kubaho na Creative aracaca uburyo.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ናይ ኩነታት ቺፕ ምስ ሰዓት ይሰማማዕ፡ ንእሽቶ ስእሊን ሓጺር ስምን። ኣብ ጠባብ መስኮት ስእሊ ጥራይ ይተርፍ። መጠወቒ ምንባርን ምፍጣርን ኩነታት ይቀይሩ።'],
   }},
   { v: '2.5.182', date: '2026-10-12', lines: {
@@ -1610,7 +1624,7 @@ export const CHANGELOG = [
     es: ['Un reloj junto al modo muestra el día y la hora. El dibujo es un sol, una luna, un atardecer o un amanecer. Tócalo para ver cuándo llega la noche. Dormir suma un día y se guarda en el mundo. Siempre de día muestra solo el sol.'],
     ar: ['ساعة بجانب الوضع تُظهر اليوم والوقت. الصورة شمس أو قمر أو غروب أو شروق. المسها لترى متى يأتي الليل. النوم يزيد يوماً ويُحفظ في العالم. النهار الدائم يُظهر الشمس فقط.'],
     'fa-AF': ['یک ساعت کنار حالت، روز و زمان را نشان می‌دهد. تصویر آفتاب، مهتاب، غروب یا طلوع است. بزن تا ببینی شب کی می‌آید. خواب یک روز اضافه می‌کند و در جهان می‌ماند. همیشه روز فقط آفتاب را نشان می‌دهد.'],
-    rw: ['Isaha iruhande rw\'uburyo yerekana umunsi n\'igihe. Ishusho ni izuba, ukwezi, izuba rirenga, cyangwa izuba rirashe. Kanda urebe ijoro rizaza ryari. Kuryama kongeraho umunsi, ukabikwa mu isi. Umunsi iteka yerekana izuba gusa.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ሰዓት ኣብ ጥቕኡ ኩነት መዓልትን ሰዓትን የርኢ። ስእሊ ፀሓይ፡ ወርሒ፡ ምዕራብ ወይ ምብራቕ እዩ። ጠውቕ ለይቲ መዓስ ከም ዝመጽእ። ድቃስ መዓልቲ ይውስኽ፡ ኣብ ዓለም ይቕመጥ። ኩሉ ግዜ መዓልቲ ፀሓይ ጥራይ የርኢ።'],
   }},
   { v: '2.5.181', date: '2026-10-12', lines: {
@@ -1650,7 +1664,7 @@ export const CHANGELOG = [
     es: ['La varita de construir está en la barra. Gira los modos, clic en dos esquinas, luego la marca. La barra vieja ya no está.'],
     ar: ['عصا البناء في الشريط. مرّر الأوضاع، انقر زاويتين، ثم العلامة. شريط الأدوات القديم ذهب.'],
     'fa-AF': ['عصای ساخت در نوار است. حالت‌ها را بچرخان، دو گوشه را بزن، بعد تیک. نوار ابزار قدیمی رفت.'],
-    rw: ['Inkoni y\'ubwubatsi iri ku murongo. Zungurura uburyo, kanda ibisigisigi bibiri, hanyuma akamenyetso. Umurongo wa kera waragiye.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['በትሪ ህንጻ ኣብ መስመር ኣሎ። ኩነታት ሸብሸብ፡ ክልተ ኩርናዕ ጠውቕ፡ ድሕሪኡ ምልክት። ናይ ቀደም መስመር ኣይኮነን።'],
   }},
   { v: '2.5.177', date: '2026-10-12', lines: {
@@ -2745,7 +2759,7 @@ export const CHANGELOG = [
     es: ['Las puertas funcionan con palancas y botones, los faroles son pequeños y se ven a través, y el cambio de modo se movió.'],
     ar: ['الأبواب تعمل مع الروافع والأزرار، والفوانيس صغيرة وشفافة، ونُقل زر تبديل الوضع.'],
     'fa-AF': ['درها با اهرم و دکمه کار می‌کنند، فانوس‌ها کوچک و شفاف اند، و دکمه حالت جابه‌جا شد.'],
-    rw: ['Amarembo akora n\'inyego n\'amabuto, amatarara ni mato kandi arabonerwa, kandi guhindura uburyo byimuriwe.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew nuburyo.'],
     ti: ['ማዕጾታት ምስ መቐለሊን መጠወቒን ይሰርሑ፡ መብራህቲ ንኣሽቱን ድሕሪኦም ትርኢን፡ መቐየሪ ኩነታት ድማ ተንቀሳቒሱ።'],
   }},
   { v: '2.5.52', date: '2026-10-07', lines: {
