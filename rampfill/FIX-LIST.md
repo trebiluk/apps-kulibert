@@ -3,6 +3,7 @@ Stage 9. Version locked: RF 1.0.8.
 
 - [x] **RF 1.0.8 ITEM 1:** Pick the path, Wall, and the level-5 hint are translated in all 8 languages plus Simple. On a 412-wide phone the status line and the hint wrap. Nothing is cut off.
 - [x] **RF 1.0.8 ITEM 2:** The test script is added only after the staff unlock. A kid page has no kw-test tag and no test global.
+- [x] **RF 1.0.8 ITEM 3:** A staff test win shows the win screen and posts only to the TEST board. Kids cannot start that win.
 
 Stage 8. Version locked: RF 1.0.7.
 

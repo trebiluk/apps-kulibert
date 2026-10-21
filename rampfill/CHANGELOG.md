@@ -2,7 +2,7 @@
 
 ## RF 1.0.8
 
-RF 1.0.8 — Pick the path, Wall, and the hint are translated, and phone text wraps.
+RF 1.0.8 — Pick the path, Wall, and the hint are translated, and phone text wraps. The test script loads only for staff, and a test win posts to the TEST board only.
 
 ## RF 1.0.7
 

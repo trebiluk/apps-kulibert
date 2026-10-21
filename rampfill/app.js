@@ -1525,8 +1525,9 @@
       });
     }).catch(function () { return { status: 0, data: { ok: false, written: false, board: "TEST" } }; });
   }
+  var lastTestPost = null;
   function postWinScore(value) {
-    if (staffTest()) { postTestScore(value); return; }
+    if (staffTest()) { lastTestPost = postTestScore(value); return; }
     try {
       if (window.KulibertBoards) window.KulibertBoards.post({
         game: "rampfill", board: "pieces", value: value,
@@ -1569,12 +1570,14 @@
     if (tools && tools.parentNode) tools.parentNode.insertBefore(bar, tools);
   }
   function jumpWin() {
-    if (!staffTest()) return;
+    if (!staffTest()) return Promise.resolve({ ok: false, written: false, board: "TEST" });
     testLoseOn = false;
     showPlay();
     if (mode === "stack") leaveStack();
-    postTestScore(1);
+    if (!cupList.length) setLevel(level || 1);
+    lastTestPost = postTestScore(Math.max(1, strokes.length || 1));
     finishNext();
+    return lastTestPost;
   }
   function jumpLose() {
     if (!staffTest()) return;
@@ -2897,6 +2900,8 @@
     },
     ghost: function () { return ghost.map(clientPoint); },
     setLevel: setLevel,
+    jumpWin: jumpWin,
+    jumpLose: jumpLose,
     spout: function () { return clientPoint(spout); },
     hopper: function () { return hopperBox(); },
     world: function () {
