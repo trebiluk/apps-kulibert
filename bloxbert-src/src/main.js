@@ -11120,6 +11120,23 @@ function paintPvpSettings(g) {
   hint.textContent = t('pvpHint')
   g.append(hint)
 }
+const crewCredit = {
+  hits: {},
+  record(mobId, alias, kind) {
+    if (!this.hits[mobId]) this.hits[mobId] = []
+    this.hits[mobId].push({ alias, kind, t: Date.now() })
+  },
+  contributors(mobId, nowMs) {
+    const list = this.hits[mobId] || []
+    return list.filter((h) => nowMs - h.t < 10000).map((h) => h.alias)
+  },
+  onRemote(evt) { /* netcode plugs in here (ARENA-NETCODE-PLAN.md) */ },
+  bonus(mobId) {
+    const c = this.contributors(mobId, Date.now())
+    return c.length >= 2 ? 1.25 : 1
+  },
+}
+window.crewCredit = crewCredit
 if (location.search.includes('proof=1')) {
   window.__BT_PROOF = {
     giveLamp(kind) {
@@ -11181,6 +11198,18 @@ if (location.search.includes('proof=1')) {
     },
     openWoodshop() { const k = openMachineKey || '0,5,0'; if (panels) panels.open('woodshop', k); const sheet = document.getElementById('sheet'); if (sheet) sheet.dataset.shopKey = k; return true },
     voxelAt(x, y, z) { return getVoxel(x, y, z) },
+    helpUp(alias) {
+      suit = Math.min(suitMax, suit + 30)
+      paintSuit()
+      if (toast) toast((alias || 'Friend') + ' helped you up, Suit plus 30')
+      return suit
+    },
+    fakeContributor(alias) {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const id = 'test-mob'
+      crewCredit.record(id, alias || 'TestKid', 'hit')
+      return crewCredit.contributors(id, Date.now())
+    },
     bagCounts() {
       const out = {}
       if (session && session.bag) for (const s of session.bag.slots) if (s && s.item) out[s.item] = (out[s.item] || 0) + (s.n || 0)

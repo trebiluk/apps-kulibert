@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
 
+- [x] **2.5.285 C3 Co-op credit:** crewCredit records hits locally. 2+ contributors get a 25% bonus. Help-up adds 30 Suit. No networking yet.
 - [x] **2.5.285 C2 Mobs:** Scrapper and Sparkbug spawn outside town, leash at 16 blocks, despawn at 48. Reboot returns stolen item. No spawn near Bertyville.
 - [x] **2.5.285 C1 Bonk + Suit:** Suit bar shows 🛡 number + bar. Bonk uses the Mine button with damage tiers. Bonked card returns you to bed with a full bag. No combat mobs yet.
 - [x] **2.5.284 PvP settings:** Settings switches for PvP opt-in (default OFF), Keep my stuff (default ON), and Kit PvP. pvpAllowed() returns true only if both players opt in for the main world. No combat code added.
