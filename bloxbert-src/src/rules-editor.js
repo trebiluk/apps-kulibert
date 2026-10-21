@@ -73,7 +73,40 @@ function btn(className, text, run) {
   return b
 }
 
+function combatRows(root, api) {
+  const rows = [
+    ['combat', 'Combat', ['Off', 'On']],
+    ['creatures', 'Creatures', ['Off', 'Calm', 'Normal']],
+    ['damage', 'Damage', ['Off', 'Gentle', 'Real']],
+    ['boss', 'Boss', ['Off', 'On']],
+  ]
+  const prefs = (() => { try { return JSON.parse(localStorage.getItem('bloxbert-combat') || '{}') } catch (e) { return {} } })()
+  for (const [key, label, opts] of rows) {
+    const row = document.createElement('div')
+    row.className = 'set-line'
+    const lab = document.createElement('span')
+    lab.className = 'set-lab'
+    lab.textContent = label
+    const sel = document.createElement('select')
+    sel.style.minHeight = '44px'
+    for (const o of opts) {
+      const opt = document.createElement('option')
+      opt.value = o.toLowerCase()
+      opt.textContent = o
+      if ((prefs[key] || opts[0].toLowerCase()) === o.toLowerCase()) opt.selected = true
+      sel.append(opt)
+    }
+    sel.addEventListener('change', () => {
+      const p = (() => { try { return JSON.parse(localStorage.getItem('bloxbert-combat') || '{}') } catch (e) { return {} } })()
+      p[key] = sel.value
+      try { localStorage.setItem('bloxbert-combat', JSON.stringify(p)) } catch (e) {}
+    })
+    row.append(lab, sel)
+    root.append(row)
+  }
+}
 export function paintRules(root, api) {
+  combatRows(root, api)
   injectCss()
   api = api || {}
   const lang = api.lang || 'en'
