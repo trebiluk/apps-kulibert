@@ -9792,6 +9792,7 @@ const perf = { frames: [], first: 0, deltas: [], jsMs: [], steps: [], level: () 
 { const sh = noa.container._shell, r = sh.onRender; sh.onRender = function (dt, a1, a2) { const a = performance.now(); r(dt, a1, a2); perf.jsMs.push(performance.now() - a); if (perf.jsMs.length > 2000) perf.jsMs.splice(0, 1000) } }
 let last = performance.now(), n = 0, acc = 0
 function frame(tnow) {
+  if (!frame._suitPainted) { frame._suitPainted = true; paintSuit() }
   if (!perf.first) perf.first = performance.now()
   n++; acc += tnow - last; perf.deltas.push(tnow - last); if (perf.deltas.length > 4000) perf.deltas.splice(0, 2000); last = tnow
   if (acc >= 1000) {
