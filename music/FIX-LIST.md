@@ -10,6 +10,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.17 item 3: Canciones and Partitura fit inside the tab at 924x412, and the tap stays at least 44px.
+- [x] MU 2.36.17 item 2: already done — a kid page loads no kw-test.js tag and KWTest is undefined.
 - [x] MU 2.36.17 item 1: the finger pads, Tap with a finger, and Drums follow the language. Help names the finger pads.
 - [x] MU 2.36.16 item 2: Undo, Two bars, and Beat {n} aria names follow the language without a reload.
 - [x] MU 2.36.16 item 1: Kick, Snare, Hat, and Clap pads and the Next line use the translated drum names.

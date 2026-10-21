@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.17** · 2026-10-20 · channel **live**
 
-MU 2.36.17 — finger pads and their group names follow your language.
+MU 2.36.17 — finger pads and their group names follow your language; Canciones and Partitura fit on a sideways phone.
 
 ## Earlier
 
