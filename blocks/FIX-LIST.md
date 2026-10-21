@@ -4,6 +4,8 @@ Updated Wed Oct 21 2026 (Build: 2.5.308 plate, 2.5.307 hint pulse).
 
 - [x] **2.5.307 hint again:** If you tap the same hint again, it pulses so you know the game heard you. It does not stack a second copy. Reduced motion resets the timer with no nudge. Kinyarwanda, Tigrinya, and Dari help lines still need a native check.
 
+- [x] **2.5.313 use-pill:** The Flip/Open/Sit button no longer covers the hint line. Pill lifts above .keys and hides the hint while shown. Stays ≥48px, clear of stick and Jump.
+
 - [x] **2.5.306 PvP labels:** English says PvP: ON and PvP: OFF. Kinyarwanda says BIRAKORA and BIRAZIMYE, not Tigrinya and not English ON/OFF. Kinyarwanda still needs a native check.
 
 - [x] **2.5.305 held caption:** The name of what you're holding now sits neatly inside the top bar beside the BERTOPIA plate (row layout, 14px ellipsis, hides on narrow phones). Version chip stays fully visible at 412 wide.

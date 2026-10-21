@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.313', date: '2026-10-21', lines: {
+    en: ['2.5.313 — The Flip button no longer covers the hint.'],
+    simple: ['2.5.313 — The Flip button no longer covers the hint.'],
+    uk: ['2.5.313 — Кнопка Flip більше не закриває підказку.'],
+    ru: ['2.5.313 — Кнопка Flip больше не закрывает подсказку.'],
+    es: ['2.5.313 — El botón Flip ya no cubre la pista.'],
+    ar: ['2.5.313 — زر Flip لم يعد يغطي التلميح.'],
+    'fa-AF': ['2.5.313 — دکمه Flip دیگر راهنما را نمی‌پوشاند.'],
+    rw: ['2.5.313 — Buto ya Flip ntikigarukira inyigisho.'],
+    ti: ['2.5.313 — መቐየሪ Flip ንእሙና ኣይሸፍንን።'],
+  }},
+
   { v: '2.5.307', date: '2026-10-21', lines: {
     en: ['2.5.307 — If you tap again, the hint shows again so you know the game heard you.'],
     simple: ['2.5.307 — Tap again and the hint shows again. The game heard you.'],
@@ -9,6 +21,8 @@ export const CHANGELOG = [
     'fa-AF': ['2.5.307 — اگر دوباره لمس کنی، نکته دوباره دیده می‌شود تا بدانی بازی صدایت را شنید.'],
     rw: ['2.5.307 — Nukanda nanone, inama igaruka kugira ngo umenye ko umukino wakumvise.'],
     ti: ['2.5.307 — ደጊምካ እንተ ጠዊቕካ፡ ምኽሪ ደጊሙ ይረአ እሞ ጸወታ ከም ዝሰምዓካ ትፈልጥ።'],
+  }},
+
   }},
 
   { v: '2.5.306', date: '2026-10-21', lines: {
