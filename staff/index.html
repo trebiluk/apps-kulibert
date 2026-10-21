@@ -5,11 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="theme-color" content="#050814"/>
   <title>Room desk · The Tech Room</title>
+  <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <script src="/shared/kulibert-prefs.js?v=2026-10-20-staff-cachebust-i18n"></script>
   <script src="/shared/kulibert-i18n.js?v=2026-10-20-staff-cachebust-i18n"></script>
   <script src="/shared/kulibert-boards.js?v=2026-10-20-staff-cachebust-i18n"></script>
   <style>
+    a.door-link{display:inline-flex;align-items:center;min-height:44px;padding:0 .6rem;border-radius:999px}
     :root{color-scheme:dark;--bg:#050814;--panel:#0b152c;--elevated:#10203f;--border:#16324f;--text:#e8f7ff;--muted:#8fb4c9;--subtle:#5d7d96;--accent:#22d3ee;--live:#14b8a6}
     *{box-sizing:border-box}
     html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:Outfit,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
@@ -61,14 +63,14 @@
       </div>
       <button class="save" id="hub-pass-unlock" type="button" data-i18n="staffUnlock">Unlock</button>
       <p class="err" id="hub-gate-error" role="alert"></p>
-      <p><a href="/"><span aria-hidden="true">← </span><span data-i18n="staffDoor">Tech Room door</span></a></p>
+      <p><a class="door-link" href="/"><span aria-hidden="true">← </span><span data-i18n="staffDoor">Tech Room door</span></a></p>
     </form>
     
     <div id="hub-admin" hidden>
     <p class="chip"><i></i> Locked · Cloud desk key</p>
     <h1 data-i18n="staffDeskTitle">Room desk</h1>
     <p data-i18n="staffDeskIntro">Not a class tile. Unlock with the TechWorks Cloud desk key. Hashed in this tab. Close the tab to lock.</p>
-    <p><a href="/"><span aria-hidden="true">← </span><span data-i18n="staffDoor">Tech Room door</span></a></p>
+    <p><a class="door-link" href="/"><span aria-hidden="true">← </span><span data-i18n="staffDoor">Tech Room door</span></a></p>
     <p><button class="ghost" id="hub-sign-out" type="button" data-i18n="staffSignOut">Sign out</button></p>
     <form class="card" id="pin-form">
       <p class="chip" data-i18n="staffPinTitle">Student PIN</p>
