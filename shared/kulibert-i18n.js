@@ -40,8 +40,8 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-i18n-alias-help: Name help is in every language.",
-  "testModeHelp": "Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.",
+  "whatsNewLine": "Hub rev 2026-10-20-test-mode-kid-leak: Staff test tools stay hidden from students, and the SpanCraft link is checked.",
+  "testModeHelp": "Test mode is for staff. Kids never see it.",
   "lbTitle": "Leaderboards",
   "lbPickAlias": "Pick an alias",
   "lbMyBest": "My best",
@@ -281,13 +281,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v17:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v18:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v17:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v18:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);

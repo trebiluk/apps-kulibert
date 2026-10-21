@@ -8,6 +8,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - Latest Hub proofs: `proof/hub-swipe/RESULT.md` (PASS with P2s; Arabic 1024x768 cold load 8 px too wide on 3 of 14 loads → brief 12c) and `proof/menu-audit/RESULT.md` (same-menu sweep across apps).
 
 ## 2. Open fixes
+- [x] Hub rev 2026-10-20-test-mode-kid-leak: test tools not in the kid DOM; testModeHelp in every language.
+
 - [x] Hub rev 2026-10-20-i18n-alias-help: staff-locked alias proof at /staff/?proof=1. TEST board only.
 
 - [x] Hub rev 2026-10-20-i18n-alias-help: boards tab keys fixed; boards fetch stays on the TechWorks API (CORS ok). No source requests /boards.
