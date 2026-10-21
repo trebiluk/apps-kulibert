@@ -660,12 +660,14 @@
 
   // Test tools load only after a staff unlock. Kid pages get no kw-test tag.
   function loadTest() {
-    var on = false;
-    try { on = localStorage.getItem("tech-room-hub-staff") === "1"; } catch (e) {}
-    if (!on) return;
+    var staff = false, pack = false, asked = false;
+    try { staff = localStorage.getItem("tech-room-hub-staff") === "1"; } catch (e) {}
+    try { var raw = JSON.parse(sessionStorage.getItem("kulibert-test-pack") || "null"); pack = !!(raw && raw.testMode === true); } catch (e2) {}
+    try { asked = new URLSearchParams(location.search).get("test") === "1" || sessionStorage.getItem("kulibert-test-tab") === "1"; } catch (e3) {}
+    if (!(staff && pack && asked)) return;
     if (document.querySelector("script[src*='kw-test.js']")) return;
     var s = document.createElement("script");
-    s.src = asset("/shared/kw-test.js?v=2026-10-20-staff-cachebust-i18n");
+    s.src = asset("/shared/kw-test.js?v=2026-10-21-fineprint-staff-es-firstload");
     s.async = false;
     document.head.appendChild(s);
   }

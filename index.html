@@ -13,7 +13,24 @@
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-es-fineprint-door"></script>
-  <script src="/shared/kw-test.js?v=2026-10-20-staff-es-fineprint-door"></script>
+    <script>
+    (function () {
+      function staffOn() {
+        try { return localStorage.getItem("tech-room-hub-staff") === "1"; } catch (e) { return false; }
+      }
+      function testOn() {
+        var pack = false, asked = false;
+        try { var raw = JSON.parse(sessionStorage.getItem("kulibert-test-pack") || "null"); pack = !!(raw && raw.testMode === true); } catch (e) {}
+        try { asked = new URLSearchParams(location.search).get("test") === "1" || sessionStorage.getItem("kulibert-test-tab") === "1"; } catch (e2) {}
+        return pack && asked;
+      }
+      if (staffOn() && testOn() && !document.querySelector("script[src*='kw-test']")) {
+        var s = document.createElement("script");
+        s.src = "/shared/kw-test.js?v=2026-10-21-fineprint-staff-es-firstload";
+        document.head.appendChild(s);
+      }
+    })();
+  </script>
   <script src="/shared/hub-staff-auth.js?v=2026-10-20-staff-es-fineprint-door"></script>
   <script src="/shared/tw-session.js?v=2026-10-20-staff-proof-gate"></script>
   <script>
