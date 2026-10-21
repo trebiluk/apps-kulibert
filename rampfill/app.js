@@ -116,6 +116,9 @@
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
       helpClear: "When you win, stars show one by one. Next is ready.",
+      showBest: "Show best",
+      onWord: "On",
+      offWord: "Off",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -182,6 +185,9 @@
       lockedWhy: "Закрито. Спочатку пройди попередній рівень.",
       helpStars: "Список рівнів показує твої зірки й найменше рамп.",
       helpClear: "Коли виграєш, зірки з’являються одна за одною. Далі вже готове.",
+      showBest: "Показати найкраще",
+      onWord: "Увімк",
+      offWord: "Вимк",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -250,6 +256,9 @@
       lockedWhy: "Закрыто. Сначала пройди предыдущий уровень.",
       helpStars: "Список уровней показывает твои звёзды и лучшее число рамп.",
       helpClear: "Когда побеждаешь, звёзды появляются одна за другой. Дальше уже готово.",
+      showBest: "Показать лучшее",
+      onWord: "Вкл",
+      offWord: "Выкл",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -318,6 +327,9 @@
       lockedWhy: "Cerrado. Termina el nivel anterior.",
       helpStars: "La lista de niveles muestra tus estrellas y tus rampas mínimas.",
       helpClear: "Al ganar, las estrellas salen una por una. Siguiente está listo.",
+      showBest: "Ver la mejor",
+      onWord: "Sí",
+      offWord: "No",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -386,6 +398,9 @@
       lockedWhy: "مقفل. أنهِ المستوى الذي قبله.",
       helpStars: "قائمة المستويات تعرض نجومك وأفضل منحدراتك.",
       helpClear: "عند الفوز تظهر النجوم واحدة واحدة. التالي جاهز.",
+      showBest: "أظهر الأفضل",
+      onWord: "تشغيل",
+      offWord: "إيقاف",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -454,6 +469,9 @@
       lockedWhy: "بسته است. اول سطح قبلی را تمام کن.",
       helpStars: "فهرست سطح‌ها ستاره‌ها و کمترین سطح شیب‌دار را نشان می‌دهد.",
       helpClear: "وقتی می‌بری، ستاره‌ها یکی یکی می‌آیند. بعدی آماده است.",
+      showBest: "بهترین را نشان بده",
+      onWord: "روشن",
+      offWord: "خاموش",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -522,6 +540,9 @@
       lockedWhy: "Bifunze. Banza urangize urwego rwabanze.",
       helpStars: "Urutonde rw'inzego rwerekana inyenyeri zawe n'imihanda mike.",
       helpClear: "Iyo utsinze, inyenyeri ziza imwe imwe. Ikurikira iriteguye.",
+      showBest: "Erekana byiza",
+      onWord: "Gukora",
+      offWord: "Hagarara",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -590,6 +611,9 @@
       lockedWhy: "ተዓጽዩ። ነቲ ቅድሚኡ ደረጃ ወድእ።",
       helpStars: "ዝርዝር ደረጃታት ኮኾብትኻን ዝበለጸ መንሸራተቲን የርኢ።",
       helpClear: "ምስ ተዓወትካ ኮኾብቲ ሓደ ሓደ ይመጹ። ዝቕጽል ድሉው እዩ።",
+      showBest: "ዝበለጸ ኣርኢ",
+      onWord: "ተኸፊቱ",
+      offWord: "ጠፊኡ",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -609,6 +633,9 @@
       lockedWhy: "Locked. Finish the level before this one.",
       helpStars: "The level list shows your stars and your fewest ramps.",
       helpClear: "When you win, stars show one by one. Next is ready.",
+      showBest: "Show best",
+      onWord: "On",
+      offWord: "Off",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -862,6 +889,56 @@
       localStorage.setItem("rampfill-ramp-ghost-v1", JSON.stringify(data));
     } catch (e) {}
   }
+  var showBestOn = true;
+  function bestGhostLines() {
+    var data = readGhostStore();
+    var rows = data[String(level)];
+    if (!Array.isArray(rows)) return [];
+    var out = [];
+    rows.forEach(function (s) {
+      if (!Array.isArray(s) || s.length < 2 || out.length >= 20) return;
+      var pts = [];
+      s.forEach(function (p) {
+        if (!Array.isArray(p) || p.length < 2 || pts.length >= 64) return;
+        var x = Number(p[0]);
+        var y = Number(p[1]);
+        if (!isFinite(x) || !isFinite(y)) return;
+        pts.push({ x: x * viewW, y: y * viewH });
+      });
+      if (pts.length >= 2) out.push(pts);
+    });
+    return out;
+  }
+  function paintGhostToggle() {
+    var btn = document.getElementById("ghost-toggle");
+    if (!btn) return;
+    btn.hidden = mode === "stack";
+    btn.setAttribute("aria-pressed", showBestOn ? "true" : "false");
+    var state = document.getElementById("ghost-state");
+    if (state) state.textContent = t(showBestOn ? "onWord" : "offWord");
+    btn.setAttribute("aria-label", t("showBest") + " " + t(showBestOn ? "onWord" : "offWord"));
+  }
+  function drawBestGhost() {
+    if (!showBestOn) return;
+    var lines = bestGhostLines();
+    if (!lines.length) return;
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, viewW, viewH);
+    cupList.forEach(function (c) { ctx.rect(c.x - 2, c.top - 2, c.w + 4, c.h + 6); });
+    try { ctx.clip("evenodd"); } catch (e) { ctx.clip(); }
+    ctx.globalAlpha = 0.35;
+    ctx.strokeStyle = "#4A4A4A";
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    lines.forEach(function (s) {
+      ctx.beginPath();
+      s.forEach(function (p, i) { if (i) ctx.lineTo(p.x, p.y); else ctx.moveTo(p.x, p.y); });
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
   function paintVersion() {
     document.title = "Ramp & Fill — " + VERSION;
     var chip = document.getElementById("ver-plate");
@@ -906,6 +983,7 @@
     paintLevels();
     paintBoard();
     paintIdeas();
+    paintGhostToggle();
   }
   function amountWord(amount) {
     var r = amount / LINE;
@@ -2806,6 +2884,7 @@
       backed(t("ghost"), lx, ly, 18, "left");
     }
     drawBlock();
+    drawBestGhost();
     worldStrokes().forEach(function (s) {
       if (s.length < 2) return;
       ctx.strokeStyle = "#8A4B12";
@@ -3039,6 +3118,10 @@
   document.getElementById("stack-back").addEventListener("click", leaveStack);
   document.getElementById("pour-btn").addEventListener("click", startPour);
   document.getElementById("retry-btn").addEventListener("click", retry);
+  document.getElementById("ghost-toggle").addEventListener("click", function () {
+    showBestOn = !showBestOn;
+    paintGhostToggle();
+  });
   document.getElementById("repour-btn").addEventListener("click", repour);
   document.getElementById("next-btn").addEventListener("click", finishNext);
   document.getElementById("next-level-btn").addEventListener("click", function () { if (level < 5) setLevel(level + 1); });
