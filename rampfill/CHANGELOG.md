@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.17
+
+Screen readers name the ramp tool bar in your language.
+
 ## RF 1.0.16
 
 RF 1.0.16 — The Daily cup date shows in your language.

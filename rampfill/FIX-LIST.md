@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 18. Version locked: RF 1.0.17.
+
+- [x] **rf-tool-row-name:** The ramp tool bar and the empty cup score are named in the kid's language, including after a language change. The English words stay in the page as the no-JS fallback.
+
 Stage 17. Version locked: RF 1.0.16.
 
 - [x] **RF 1.0.16 ITEM 1:** The Daily cup date uses the browser's own short date when that language is installed. Kinyarwanda and Tigrinya, which Chrome does not include, use day and month names from the string table. The tile label uses the same words. Kinyarwanda, Tigrinya, and Dari names need a native check.
