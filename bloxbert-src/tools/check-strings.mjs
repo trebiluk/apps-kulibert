@@ -1,4 +1,5 @@
 // Fail the build if a language is missing a key, copies English, or uses the wrong script.
+// Every EXTRA.en key is checked after strings-extra.js merges the packs.
 import { readFileSync, readdirSync } from 'fs'
 import { EXTRA } from '../src/strings-extra.js'
 import { STR } from '../src/strings.js'
@@ -7,10 +8,10 @@ const scripts = {
   uk: /[А-Яа-яІіЇїЄєҐґ]/, ru: /[А-Яа-яЁё]/,
   ar: /[\u0600-\u06FF]/, 'fa-AF': /[\u0600-\u06FF]/, ti: /[\u1200-\u137F]/,
 }
-const names = /Bertopia|Bertyville|Tally|Kulibert/
+const names = /Bertopia|Bertyville|Tally|Kulibert|PvP|WASD|PIN|⚙/
 let problems = 0
 const en = EXTRA.en
-const watch = ['changelog','youAreHere','tryThis','next','skip','tour','tourMove','a11y','helpBody','sendTeacher','highContrast','place10','addCoal','bake','sell','buy','fuel','input','output','bag','fillN','wallsN','nothingBake','pvpOn','pvpOff','keepStuffOn','keepStuffOff','kitPvpOn','kitPvpOff','suitText','language','pickLanguage','backToHub']
+const watch = Object.keys(en)
 for (const lang of Object.keys(EXTRA)) {
   if (lang === 'en') continue
   for (const key of watch) {
