@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.294', date: '2026-10-21', lines: {
+    en: ['Settings switches, the teaming-up note, and lamp and rug names now show in your language.'],
+    uk: ['Перемикачі налаштувань, нотатка про командну гру, і назви ламп і килимів тепер твоєю мовою.'],
+    ru: ['Переключатели настроек, заметка о командной игре, и названия ламп и ковров теперь на твоём языке.'],
+    es: ['Los interruptores de ajustes, la nota de trabajo en equipo, y los nombres de lámparas y alfombras ahora en tu idioma.'],
+    ar: ['مفاتيح الإعدادات، وملاحظة العمل الجماعي، وأسماء المصابيح والسجاد الآن بلغتك.'],
+    'fa-AF': ['کلیدهای تنظیمات، یادداشت کار گروهی، و نام چراغ‌ها و قالین حالا به زبان تو هستند.'],
+    rw: ['Utubuto tw\'igenamiterere, inyandiko y\'gukorana, n\'amazina y\'amatara n\'itapi ubu mu rurimi rwawe.'],
+    ti: ['መቐያይሮ ቅጥዕታት፣ ናይ ሓባራዊ ስራሕ መዘኻኸሪ፣ ከምኡውን ስም መብራህትን ምንጻፍን ሕጂ ብቋንቋኻ።'],
+  }},
+
   { v: '2.5.293', date: '2026-10-21', lines: {
     en: ['The Language button now reaches every language including Simple, and the whole screen follows the language you pick.'],
     uk: ['Кнопка Мова тепер досягає кожної мови, включно з Простою, і весь екран слідує за мовою, яку ти обрав.'],

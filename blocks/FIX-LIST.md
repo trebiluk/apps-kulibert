@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Tue Oct 20 2026 (Build: 2.5.275 Leaves finally fits in the hotbar).
 
+- [x] **2.5.294 strings:** kitPvp and pvpHint in uk/ru. rw/ti use native state words. Decor pack strings imported. Labels do not include ON/OFF.
 - [x] **2.5.293 simple language:** The normalizer now accepts simple as a real stored value so the Language button can reach it.
 - [x] **2.5.292 language cycle:** The Language button now shows the next language name and cycles through all 9 languages.
 - [x] **2.5.291 hub-back:** The visible top bar link now has data-i18n so Spanish shows Volver al Hub. Removed the English ::after pseudo-label.
