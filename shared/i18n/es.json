@@ -321,5 +321,6 @@
   "staffStep1": "No es una ficha de clase. El personal en un Chromebook es solo un interruptor local.",
   "staffStep2": "Llave Cloud. La misma llave de 12 caracteres. SHA-256 en el navegador. El primer guardado toma la puerta.",
   "staffStep3": "Solo esta pestaña. Ciérrala y se bloquea. Nada se guarda en las máquinas de los estudiantes.",
-  "staffTabTitle": "Mesa de la sala · The Tech Room"
+  "staffTabTitle": "Mesa de la sala · The Tech Room",
+  "backToHub": "Volver al Hub"
 }

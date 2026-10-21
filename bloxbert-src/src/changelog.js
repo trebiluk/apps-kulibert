@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.290', date: '2026-10-21', lines: {
+    en: ['Back to the Hub and Suit speak your language, the Language button is in Settings, Bag and Jump fit sideways, and the staff test tool stays off your page.'],
+    uk: ['«Назад до Хабу» і Костюм тепер твоєю мовою, кнопка Мова є в Налаштуваннях, Сумка і Стрибок поміщаються збоку, а тестовий інструмент для персоналу не завантажується на твоїй сторінці.'],
+    ru: ['«Назад в Хаб» и Костюм теперь на твоём языке, кнопка Язык есть в Настройках, Сумка и Прыжок помещаются сбоку, а тестовый инструмент для персонала не загружается на твоей странице.'],
+    es: ['Volver al Hub y Traje ya hablan tu idioma, el botón Idioma está en Ajustes, Bolsa y Saltar caben de lado y la herramienta de prueba del personal ya no se carga en tu página.'],
+    ar: ['زر العودة إلى المركز والبدلة بلغتك الآن، وزر اللغة في الإعدادات، والحقيبة والقفز يتسعان أفقيًا، وأداة اختبار الموظفين لم تعد تُحمَّل في صفحتك.'],
+    'fa-AF': ['«بازگشت به هاب» و لباس به زبان تو هستند، دکمه زبان در تنظیمات است، کیف و پرش در حالت افقی جا می‌شوند و ابزار آزمایشی کارکنان در صفحه تو بارگذاری نمی‌شود.'],
+    rw: ['Gusubira kuri Hub n\'Umwambaro bivuga ururimi rwawe, buto y\'Ururimi iri mu Igenamiterere, Igikapu na Gusimbuka bikwirana ku ruhande, kandi igikoresho cy\'igerageza cy\'abakozi ntigifungukira ku rupapuro rwawe.'],
+    ti: ['ናብ ሃብ ተመለስን ክዳንን ብቋንቋኻ ኮይኖም፣ ቁልፊ ቋንቋ ኣብ ቅጥዕታት ኣሎ፣ ቦርሳን ዝላን ብጐድኒ ይኣትዉ፣ ናይ ሰራሕተኛታት መፈተኒ መሳርሒ ኣብ ገጽካ ኣይጽዓንን።'],
+  }},
+
   { v: '2.5.289', date: '2026-10-20', lines: {
     en: ['More Spanish is fixed, the Language button is here, Bag and Jump no longer overlap sideways, and reloads show the new version.'],
     uk: ['Виправлено більше іспанської, з\'явилася кнопка Мова, Сумка і Стрибок більше не накладаються збоку, а оновлення показує нову версію.'],

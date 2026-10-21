@@ -321,5 +321,6 @@
   "staffStep1": "Not a class tile. Staff on a Chromebook is only a local switch.",
   "staffStep2": "Cloud desk key. Same 12-character key. SHA-256 in the browser. First save claims the door.",
   "staffStep3": "This tab only. Close the tab, it locks. Nothing stored on student machines.",
-  "staffTabTitle": "Room desk · The Tech Room"
+  "staffTabTitle": "Room desk · The Tech Room",
+  "backToHub": "Back to the Hub"
 }

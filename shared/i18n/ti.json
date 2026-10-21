@@ -321,5 +321,6 @@
   "staffStep1": "ናይ ክፍሊ ካርድ ኣይኮነን። ሰራሕተኛ ኣብ Chromebook ናይ ከባቢ መቐየሪ ጥራይ እዩ።",
   "staffStep2": "መፍትሕ Cloud። ሓደ 12-ፊደል መፍትሕ። SHA-256 ኣብ ብራውዘር። ቀዳማይ ምዕቃብ ማዕጾ ይወስድ።",
   "staffStep3": "እዚ ትብ ጥራይ። ዕጸዎ፣ ይዕጾ። ኣብ መሳርሒ ተመሃሮ ዝዕቀብ የለን።",
-  "staffTabTitle": "ጠረጴዛ ክፍሊ · The Tech Room"
+  "staffTabTitle": "ጠረጴዛ ክፍሊ · The Tech Room",
+  "backToHub": "ናብ ሃብ ተመለስ"
 }
