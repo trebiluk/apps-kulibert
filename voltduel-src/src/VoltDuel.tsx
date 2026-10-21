@@ -143,16 +143,7 @@ export function VoltDuel() {
     const level = current.name === "play" || current.name === "results" || current.name === "pause" ? current.level : 0;
     rememberTest("12.00");
     const coins = winner === 0 ? "3" : "3";
-    pushLive(
-      liveLine(
-        winner === 0 ? "vdLiveVexWin" : "vdLiveRioWin",
-        winner === 0
-          ? "VEX takes the flag, {time} seconds, {coins} coins"
-          : "RIO takes the flag, {time} seconds, {coins} coins",
-      )
-        .replace("{time}", "12.00")
-        .replace("{coins}", coins),
-    );
+    pushLive(resultLive(NAMES[winner], "12.00", coins));
     show({
       name: "results",
       level,
@@ -225,6 +216,13 @@ export function VoltDuel() {
       /* keep the English line */
     }
     return fallback;
+  }
+
+  function resultLive(name: string, time: string, coins: string) {
+    return liveLine("vdResultLive", "{name} takes the flag, {time} seconds, {coins} coins")
+      .replace("{name}", name)
+      .replace("{time}", time)
+      .replace("{coins}", coins);
   }
 
   function pushLive(text: string) {
@@ -532,17 +530,7 @@ export function VoltDuel() {
               const runner = world.runners[event.id];
               const time = formatTime(runner.finishTime || world.time);
               const coins = String(runner.coins);
-              const vex = event.id === 0;
-              pushLive(
-                liveLine(
-                  vex ? "vdLiveVexWin" : "vdLiveRioWin",
-                  vex
-                    ? "VEX takes the flag, {time} seconds, {coins} coins"
-                    : "RIO takes the flag, {time} seconds, {coins} coins",
-                )
-                  .replace("{time}", time)
-                  .replace("{coins}", coins),
-              );
+              pushLive(resultLive(NAMES[event.id], time, coins));
             }
             if (event.type === "go") {
               audio.play("go");
@@ -850,6 +838,18 @@ export function VoltDuel() {
     }
     return fallback;
   }
+
+  useEffect(() => {
+    if (screen.name !== "results" || !liveRef.current) return;
+    liveRef.current.textContent = lobbyText(
+      "vdResultLive",
+      "{name} takes the flag, {time} seconds, {coins} coins",
+    )
+      .replace("{name}", NAMES[screen.winner])
+      .replace("{time}", formatTime(screen.time))
+      .replace("{coins}", String(screen.coins[screen.winner]));
+  }, [screen, lang, helpRev]);
+
   function onWord() {
     const fallback = "On";
     try {
@@ -1218,7 +1218,7 @@ export function VoltDuel() {
         )}
 
         {screen.name === "results" && (
-          <div className="overlay">
+          <div className="overlay modal">
             <div className="modal-card">
               {!reducedMotion && (
                 <div className="vd-confetti" aria-hidden="true">
@@ -1228,25 +1228,27 @@ export function VoltDuel() {
                 </div>
               )}
               <p className="kicker">{LEVELS[screen.level].name}</p>
-              <h2 className={screen.winner === 0 ? "vex" : "rio"}>{NAMES[screen.winner]} takes the flag</h2>
+              <h2 className={screen.winner === 0 ? "vex" : "rio"}>
+                {lobbyText("vdResultTitle", "{name} takes the flag").replace("{name}", NAMES[screen.winner])}
+              </h2>
               <p className="tag">{formatTime(screen.time)}</p>
               <div className="score-grid">
                 <div>
                   <strong className="vex">VEX</strong>
-                  <span>{screen.coins[0]} coins</span>
+                  <span>{lobbyText("vdResultCoins", "{coins} coins").replace("{coins}", String(screen.coins[0]))}</span>
                 </div>
                 <div>
                   <strong className="rio">RIO</strong>
-                  <span>{screen.coins[1]} coins</span>
+                  <span>{lobbyText("vdResultCoins", "{coins} coins").replace("{coins}", String(screen.coins[1]))}</span>
                 </div>
               </div>
               <div className="modal-actions">
                 <button type="button" className="text-btn" onClick={() => launch(screen.level, "restart")}>
-                  Rematch
+                  {lobbyText("vdRematch", "Rematch")}
                 </button>
                 {screen.level < LEVELS.length - 1 && (
                   <button type="button" className="text-btn" onClick={() => launch(screen.level + 1)}>
-                    Next heat
+                    {lobbyText("vdNextHeat", "Next heat")}
                   </button>
                 )}
                 <button
