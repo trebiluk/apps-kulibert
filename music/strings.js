@@ -499,6 +499,8 @@
     orch_brass: "Brass",
     orch_winds: "Winds",
     orch_beep: "Beep",
+    helpBand: "🥁 Rests, warm-ups and the Band tab teach you in your language.",
+    news23626: "MU 2.36.26 — Rests, warm-ups and the Band tab teach you in your language.",
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -702,6 +704,8 @@
     orch_brass: "Brass",
     orch_winds: "Winds",
     orch_beep: "Beep",
+    helpBand: "🥁 Rests, warm-ups, and Band teach in your language.",
+    news23626: "MU 2.36.26 — Rests, warm-ups and the Band tab teach you in your language.",
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1195,6 +1199,8 @@
       "orch_brass": "Мідні",
       "orch_winds": "Духові",
       "orch_beep": "Сигнал",
+      "helpBand": "🥁 Паузи, розспівки і вкладка Бенд вчать тебе твоєю мовою.",
+      "news23626": "MU 2.36.26 — Паузи, розспівки і вкладка Бенд вчать тебе твоєю мовою.",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1685,6 +1691,8 @@
       "orch_brass": "Медные",
       "orch_winds": "Духовые",
       "orch_beep": "Сигнал",
+      "helpBand": "🥁 Паузы, разминки и вкладка Бэнд учат тебя на твоём языке.",
+      "news23626": "MU 2.36.26 — Паузы, разминки и вкладка Бэнд учат тебя на твоём языке.",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2176,6 +2184,8 @@
       "orch_brass": "Metales",
       "orch_winds": "Vientos",
       "orch_beep": "Pitido",
+      "helpBand": "🥁 Los silencios, el calentamiento y Banda te enseñan en tu idioma.",
+      "news23626": "MU 2.36.26 — Los silencios, el calentamiento y la pestaña Banda te enseñan en tu idioma.",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2667,6 +2677,8 @@
       "orch_brass": "نحاسيات",
       "orch_winds": "نفخ",
       "orch_beep": "صفارة",
+      "helpBand": "🥁 السكتات والإحماء ولسان الفرقة يعلّمونك بلغتك.",
+      "news23626": "MU 2.36.26 — السكتات والإحماء ولسان الفرقة يعلّمونك بلغتك.",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3158,6 +3170,8 @@
       "orch_brass": "برنجی",
       "orch_winds": "بادی",
       "orch_beep": "بوق",
+      "helpBand": "🥁 سکوت‌ها، گرم‌کردن و زبانه گروپ به زبان خودت یادت می‌دهند.",
+      "news23626": "MU 2.36.26 — سکوت‌ها، گرم‌کردن و زبانه گروپ به زبان خودت یادت می‌دهند.",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3649,6 +3663,8 @@
       "orch_brass": "Ibyuma",
       "orch_winds": "Imyuka",
       "orch_beep": "Impuruza",
+      "helpBand": "🥁 Ibiruhuko, kwitegura, n'igitabo cya Itsinda biguhugura mu rurimi rwawe.",
+      "news23626": "MU 2.36.26 — Ibiruhuko, kwitegura, n'igitabo cya Itsinda biguhugura mu rurimi rwawe.",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4140,6 +4156,8 @@
       "orch_brass": "ናሕሲ",
       "orch_winds": "ትንፋስ",
       "orch_beep": "ጽዋዕ",
+      "helpBand": "🥁 ዕረፍቲ፡ ምድላውን ጉጅለን ብቋንቋኻ የስልጠኑኻ።",
+      "news23626": "MU 2.36.26 — ዕረፍቲ፡ ምድላውን ትር ጉጅለን ብቋንቋኻ የስልጠኑኻ።",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
