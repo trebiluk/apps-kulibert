@@ -15,6 +15,8 @@ const OUT = path.resolve(HERE, (i > 0 && process.argv[i + 1]) || process.env.BLO
 if (OUT === path.resolve(HERE, '..') || OUT === HERE) throw new Error('refusing to build into the repo root or the source folder')
 import { spawnSync } from 'child_process'
 const PKG = JSON.parse(readFileSync(path.join(HERE, 'package.json'), 'utf8'))
+const syntax = spawnSync(process.execPath, ['tools/syntax-check.mjs'], { stdio: 'inherit' })
+if (syntax.status) process.exit(syntax.status)
 spawnSync(process.execPath, ['tools/make-tiles.mjs'], { stdio: 'inherit' })
 const strings = spawnSync(process.execPath, ['tools/check-strings.mjs'], { stdio: 'inherit' })
 if (strings.status) process.exit(strings.status)
