@@ -11144,7 +11144,7 @@ const crewCredit = {
   },
 }
 window.crewCredit = crewCredit
-if (location.search.includes('proof=1')) {
+if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && window.kwTest.on()) {
   window.__BT_PROOF = {
     giveLamp(kind) {
       const item = kind === 'wall' ? 'wallLamp' : 'floorLamp'

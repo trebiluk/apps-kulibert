@@ -1,5 +1,5 @@
-// Bertopia student door only. build.mjs writes the real version over 2.5.286.
-const VERSION = '2.5.286'
+// Bertopia student door only. build.mjs writes the real version over 2.5.288.
+const VERSION = '2.5.288'
 const CACHE = 'bloxbert-' + VERSION
 const SHELL = [
   '/blocks/app.js?v=' + VERSION,

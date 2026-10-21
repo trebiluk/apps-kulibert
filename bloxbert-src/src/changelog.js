@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.288', date: '2026-10-20', lines: {
+    en: ['Hung tools show up right away, Spanish is fixed, Jump fits sideways, and there is a Language button.'],
+    uk: ['Повішені інструменти видно одразу, іспанська виправлена, Стрибок вміщується збоку, є кнопка Мова.'],
+    ru: ['Повешенные инструменты видны сразу, испанский исправлен, Прыжок помещается сбоку, есть кнопка Язык.'],
+    es: ['Las herramientas colgadas aparecen al instante, el español está arreglado, Saltar cabe de lado y hay un botón Idioma.'],
+    ar: ['الأدوات المعلّقة تظهر فورًا، وتم إصلاح الإسبانية، وزر القفز يتسع أفقيًا، وهناك زر اللغة.'],
+    'fa-AF': ['ابزارهای آویخته فوراً دیده می‌شوند، اسپانیایی درست شد، پرش در حالت افقی جا می‌شود و دکمه زبان هست.'],
+    rw: ['Ibikoresho wamanitse bigaragara ako kanya, Icyesipanyolo cyakosowe, Gusimbuka bikwira ku ruhande, kandi hari buto y\'Ururimi.'],
+    ti: ['ዝተሰቕሉ መሳርሒታት ብቕጽበት ይረኣዩ፣ ስጳንኛ ተዓሪዩ፣ ዝላ ብጐድኒ ይኣቱ፣ ቁልፊ ቋንቋ ኣሎ።'],
+  }},
+
   { v: '2.5.286', date: '2026-10-20', lines: {
     en: ['New bots to reboot: Rustbot and the Mechanoid Keeper. Team up to reboot the Foundry Overseer and earn badges and Bertodex pages!'],
     uk: ['Нові роботи для перезавантаження: Іржобот і Механоїд-Охоронець. Об\'єднуйтеся, щоб перезавантажити Наглядача Ливарні, і здобувайте значки та сторінки Бертодексу!'],
