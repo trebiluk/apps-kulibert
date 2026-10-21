@@ -5388,6 +5388,22 @@ body.mu237.tab-viz #mic-lights {
   min-width: 44px !important;
 }
 
+/* MU 2.36.14 item 1 — mic status uses dark ink on the steel, in both themes. */
+html[data-theme] body.mu237 #lights-pane {
+  --text: #111827;
+  --muted: #1F2937;
+}
+html[data-theme] body.mu237 #viz-mic-status {
+  color: var(--text) !important;
+}
+@media (orientation: landscape) and (max-height: 500px) {
+  html[data-theme] body.mu237.tab-viz #viz-mic-status {
+    background: #111827 !important;
+    color: #F3F4F6 !important;
+  }
+}
+
+
 /* MU 2.36.13 — on a phone, New beat sits fully inside the play bar, 8px above the tab bar. */
 @media (max-width: 600px) {
   body.mu237 { --player: 236px; }
