@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.15** · 2026-10-20 · channel **live**
 
-MU 2.36.15 — Spin and Glow are translated in every language.
+MU 2.36.15 — Spin and Glow are translated in every language; the Viz line is translated.
 
 ## Earlier
 

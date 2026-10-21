@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.15 item 2: contrast and the rail already held; the Viz line is now translated.
 - [x] MU 2.36.15 item 1: Spin and Glow labels and aria-labels are translated in all 9 languages.
 - [x] MU 2.36.14 item 4: Make, Change, and Show are translated; the Viz hint was already translated.
 - [x] MU 2.36.14 item 3: already done on MU 2.36.13 — New beat and Nuevo ritmo sit fully above Perform and Tempo.
