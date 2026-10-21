@@ -54,3 +54,12 @@ Physics and scoring were not changed.
 - [x] **Item 2 Hit and win.** A hit shakes for 150ms and sparks in that runner's color. The circle V and square R stay readable. Reduced motion adds no shake class. The win screen shows calm confetti, or only the banner when motion is reduced.
 - [x] **Item 3 Lobby.** Each runner shows a circle V or a square R, and each key has its own word. The last real match shows under the tag. Arabic mirrors.
 
+## Feature ideas (VD 1.0.12 investigate)
+No app code in this item. Each idea says why, size, and risk.
+
+1. **One-tap rematch — already shipped.** After the flag, one Rematch tap starts that same heat over with scores at 0. Live on VD 1.0.12. Why: the open row was never pressed in an old proof. Size: none left. Risk: none. Do not add a CPU mode.
+2. **Hit spark — already shipped (this version).** A hit shakes at most 150 ms and sparks in that runner's color. The circle V and square R stay readable. Reduced motion keeps the banner and skips the shake and confetti. Why: a hit should feel like a hit without a flash. Size: done. Risk: do not lengthen the shake or change scoring.
+3. **Lobby shape and letter — already shipped (this version).** The lobby shows a circle V and a square R, one word per key, and the last real match. Why: the lobby was plain. Size: done. Risk: do not change the save format `volt-duel-v1`. Last match stays in session only (`vd-last-match-v1`).
+4. **Best of 3 — new, needs a later version.** A 12-year-old will ask to play the same heat until someone wins two flags. Why: one flag feels short in class. Size: medium (a small series counter, not a new physics world). Risk: must not change coin scoring, the save shape, or write test wins into the real bests. Keep it off the kid TEST board.
+5. **Focus after Rematch — access, needs a later version.** Live, one Rematch starts the heat, but focus lands on the page body because the button unmounts. Move focus to the play area so a keyboard user is not lost. Also, at 915×412 the lobby Help and Touch buttons sit 1 px past the bottom until you scroll. Why: Tab and a short phone should not hide a control. Size: small. Risk: do not trap focus, and do not cover the pads.
+
