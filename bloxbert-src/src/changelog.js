@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.338', date: '2026-10-21', lines: {
+    en: ['2.5.338 — Rustbot and Keeper now have their own look, and teacher test tools can call night and bots.'],
+    simple: ['2.5.338 — Rustbot and Keeper now have their own look, and teacher test tools can call night and bots.'],
+    uk: ['2.5.338 — Rustbot і Keeper тепер мають свій вигляд, а тестові інструменти вчителя можуть викликати ніч і ботів.'],
+    ru: ['2.5.338 — Rustbot и Keeper теперь имеют свой вид, а тестовые инструменты учителя могут вызывать ночь и ботов.'],
+    es: ['2.5.338 — Rustbot y Keeper ahora tienen su propio aspecto, y las herramientas de prueba del profesor pueden llamar noche y bots.'],
+    ar: ['2.5.338 — Rustbot و Keeper لديهما مظهرهما الخاص الآن، وأدوات اختبار المعلم يمكنها استدعاء الليل والروبوتات.'],
+    'fa-AF': ['2.5.338 — Rustbot و Keeper حالا ظاهر خود را دارند، و ابزارهای آزمایش معلم می‌توانند شب و ربات‌ها را فراخوانی کنند.'],
+    rw: ['2.5.338 — Rustbot na Keeper ubu bifite isura yabo, kandi ibikoresho by isuzuma by umwarimu bishobora guhamagara ijoro na bots.'],
+    ti: ['2.5.338 — Rustbotን Keeperን ሕጂ ናይ ገዛእ ርእሶም ገጽታ ኣለዎም፡ እሞ ናይ መምህር ፈተና መሳርሒታት ምሽትን ቦትስን ክጽውዑ ይኽእሉ።'],
+  }},
+
   { v: '2.5.337', date: '2026-10-21', lines: {
     en: ['2.5.337 — Help explains the Foundry Overseer and its looks-only reward.'],
     simple: ['2.5.337 — Help explains the Foundry Overseer and its looks-only reward.'],

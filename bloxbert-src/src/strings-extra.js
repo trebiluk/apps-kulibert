@@ -2542,3 +2542,20 @@ for (const [lang, row] of Object.entries(ITEMNAMES)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.338 test toast words. rw/ti/fa-AF machine drafts.
+const C4H = {
+  en: { c4hNight: 'Test: night', c4hSpawn: 'Test: bot', c4hRefuse: 'Test: refused' },
+  simple: { c4hNight: 'Test: night', c4hSpawn: 'Test: bot', c4hRefuse: 'Test: refused' },
+  uk: { c4hNight: 'Тест: ніч', c4hSpawn: 'Тест: бот', c4hRefuse: 'Тест: відмовлено' },
+  ru: { c4hNight: 'Тест: ночь', c4hSpawn: 'Тест: бот', c4hRefuse: 'Тест: отказано' },
+  es: { c4hNight: 'Prueba: noche', c4hSpawn: 'Prueba: bot', c4hRefuse: 'Prueba: rechazado' },
+  ar: { c4hNight: 'اختبار: ليل', c4hSpawn: 'اختبار: روبوت', c4hRefuse: 'اختبار: مرفوض' },
+  'fa-AF': { c4hNight: 'آزمایش: شب', c4hSpawn: 'آزمایش: ربات', c4hRefuse: 'آزمایش: رد شد' },
+  rw: { c4hNight: 'Igerageza: ijoro', c4hSpawn: 'Igerageza: robot', c4hRefuse: 'Igerageza: kwanga' },
+  ti: { c4hNight: 'ፈተና፡ ምሽት', c4hSpawn: 'ፈተና፡ ቦት', c4hRefuse: 'ፈተና፡ ተነጺጉ' },
+}
+for (const [lang, row] of Object.entries(C4H)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

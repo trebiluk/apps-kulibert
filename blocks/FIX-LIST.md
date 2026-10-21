@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **combat-test-seeds-live (2.5.338):** Test night sticks and bots appear with their own look. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **c5-help-line (2.5.337):** Help panel shows the Foundry Overseer line (looks only). Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 
