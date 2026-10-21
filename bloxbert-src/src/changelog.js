@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.334', date: '2026-10-21', lines: {
+    en: ['2.5.334 — Settings shows the language you are using.'],
+    simple: ['2.5.334 — Settings shows the language you are using.'],
+    uk: ['2.5.334 — Налаштування показують мову, якою ти користуєшся.'],
+    ru: ['2.5.334 — Настройки показывают язык, которым ты пользуешься.'],
+    es: ['2.5.334 — Ajustes muestra el idioma que estás usando.'],
+    ar: ['2.5.334 — الإعدادات تظهر اللغة التي تستخدمها.'],
+    'fa-AF': ['2.5.334 — تنظیمات زبانی را که استفاده می‌کنی نشان می‌دهد.'],
+    rw: ['2.5.334 — Igenamiterere yerekana ururimi ukoresha.'],
+    ti: ['2.5.334 — ቅንብርታት ነቲ ትጥቀመሉ ቋንቋ የርኢ።'],
+  }},
+
   { v: '2.5.332', date: '2026-10-21', lines: {
     en: ['2.5.332 — On a touch screen a Bonk button appears when a bot is close, and a chip shows when you are in the safe zone.'],
     simple: ['2.5.332 — On a touch screen a Bonk button appears when a bot is close, and a chip shows when you are in the safe zone.'],
