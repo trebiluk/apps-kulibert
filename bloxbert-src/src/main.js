@@ -11091,7 +11091,34 @@ window.pvpAllowed = function(world, a, b) {
   }
   return !!(p.kitPvp)
 }
+function paintLangRow(g) {
+  const row = document.createElement('div')
+  row.className = 'set-line'
+  const ico = document.createElement('span')
+  ico.className = 'set-ico'
+  ico.textContent = '🌐'
+  const lab = document.createElement('span')
+  lab.className = 'set-lab'
+  lab.textContent = t('language') || 'Language'
+  const btn = document.createElement('button')
+  btn.type = 'button'
+  btn.className = 'pill'
+  btn.style.minWidth = '44px'
+  btn.style.minHeight = '44px'
+  btn.textContent = t('pickLanguage') || 'Pick'
+  btn.setAttribute('aria-label', lab.textContent)
+  btn.addEventListener('click', () => {
+    const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple']
+    const cur = localStorage.getItem('bloxbert-lang') || 'en'
+    const next = langs[(langs.indexOf(cur) + 1) % langs.length]
+    try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
+    location.reload()
+  })
+  row.append(ico, lab, btn)
+  g.append(row)
+}
 function paintPvpSettings(g) {
+  paintLangRow(g)
   const p = readPvpPrefs()
   const mk = (key, def, onLabel, offLabel, icon) => {
     const row = document.createElement('div')
