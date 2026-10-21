@@ -2392,23 +2392,23 @@
         <button type="button" id="fine-print-close" data-i18n-aria="finePrintClose" aria-label="Close"><span aria-hidden="true">✕ </span><span data-i18n="finePrintClose">Close</span></button>
         <h2 id="fine-print-title"><span data-i18n="finePrintTitle">About This Hub</span> <span aria-hidden="true">📜</span></h2>
         <p class="fine-kid-intro" data-i18n="finePrintKid">Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.</p>
-        <p class="fine-grown-intro">KuliNet is a set of free learning apps made by a teacher for Technology Education students at Solvay Middle School (grades 6–8) in Solvay, New York. This page explains who owns what, credits, student data, and how to reach us.</p>
+        <p class="fine-grown-intro" data-i18n="finePrintGrown">KuliNet is a set of free learning apps made by a teacher for Technology Education students at Solvay Middle School (grades 6–8) in Solvay, New York. This page explains who owns what, credits, student data, and how to reach us.</p>
         <div id="fine-print-grid" class="fine-grid"></div>
         <p class="fine-updated" id="fine-print-updated">Last updated October 3, 2026</p>
       </div>
     </div>
     <script>
       var FINE_PRINT = [
-        { emoji: "🛠️", title: "Made Here", ready: true,
+        { emoji: "🛠️", title: "Made Here", i18n: "fineMade", kidKey: "fineMadeKid", ready: true,
           kid: "Mr. Kulibert and his helper bots built these apps for our class. They're free, and nobody is selling anything here.",
           grown: "The KuliNet apps are original educational software that teacher Diego Kulibert created for classroom teaching. There are no ads, no purchases, and nothing for sale, and student information is never sold. Some apps were built with help from AI coding tools and include open-source parts. Like most websites, the apps are hosted by outside services (Cloudflare and Vercel, plus the school's Google Workspace for photos) and may load shared resources such as web fonts." },
-        { emoji: "🏷️", title: "Not Theirs", ready: true,
+        { emoji: "🏷️", title: "Not Theirs", i18n: "fineNotTheirs", kidKey: "fineNotTheirsKid", ready: true,
           kid: "Bertopia is a block-building game, but it isn't Minecraft or Roblox. We're not connected to those games or the companies that make them. Berty is our own character, not anybody else's.",
           grown: "KuliNet is not affiliated with, endorsed by, or sponsored by Mojang, Microsoft, Roblox Corporation, Sesame Workshop, or any other company. Minecraft, Roblox, and any other product names mentioned here belong to their owners and are used only for description or comparison. Apps on this hub include Bertopia (with its starter world, Bertyville), HoldIt, TrussTime, ArchWorks, TechWorks, DJ Berty, Berty's Run, Baboo, Bits & Bobs, and the Bulletin Board. These are names for a classroom project. They are not registered trademarks." },
         { emoji: "⭐", title: "Credits", ready: false,
           kid: "Some of the code, fonts, sounds, and 3D models came from people who shared their work for free. We say thank you by listing their names.",
           grown: "Parts of these apps use open-source software and free-licensed assets under their licenses, and the license notices are kept with them. A full list showing each item's name, author, license, and link is on the Credits page. Some textures and images were made in-house to keep licensing simple." },
-        { emoji: "🔒", title: "Your Privacy", ready: true,
+        { emoji: "🔒", title: "Your Privacy", i18n: "finePrivacy", kidKey: "finePrivacyKid", ready: true,
           kid: "You use a code name, not your real name. Don't type your real name, address, phone number, or passwords into any app here. Only Mr. Kulibert knows which code name is yours. Photos you turn in stay private until he checks them.",
           grown: "Students sign in with a class code and an alias instead of their real names.",
           points: [
@@ -2421,19 +2421,19 @@
             "Never: Student data is never sold, used for advertising, or shared, except as the law requires."
           ],
           after: "The hub is made to follow FERPA, COPPA, New York Education Law §2-d, and Solvay school district rules. For the district's data privacy policies and the Parents' Bill of Rights for Data Privacy and Security, see the Solvay Union Free School District website." },
-        { emoji: "🏫", title: "School Use", ready: true,
+        { emoji: "🏫", title: "School Use", i18n: "fineSchool", kidKey: "fineSchoolKid", ready: true,
           kid: "These apps are for class and learning. Your teacher decides which ones are open each day. Playing at home is optional and never counts against your grade.",
           grown: "KuliNet is a teacher-created classroom resource. It was built to follow district and New York State student data rules, but it is not an official product of the Solvay Union Free School District. Using it at home is optional and is never required for a grade." },
-        { emoji: "🚧", title: "Work in Progress", ready: true,
+        { emoji: "🚧", title: "Work in Progress", i18n: "fineProgress", kidKey: "fineProgressKid", ready: true,
           kid: "We keep building and fixing these apps, so sometimes things break or change. If something looks weird, tell Mr. Kulibert.",
           grown: "The apps are provided \"as is,\" without any warranty, and may change, pause, or be removed at any time. Work saved only in a browser can be lost if that browser's data is cleared or the student switches devices, so students should keep a copy of anything important." },
-        { emoji: "🎨", title: "Student Creations", ready: true,
+        { emoji: "🎨", title: "Student Creations", i18n: "fineCreations", kidKey: "fineCreationsKid", ready: true,
           kid: "What you make belongs to you. The class gets to see and remix it, and you always get credit by your code name. Nothing goes on the Bulletin Board until your teacher says OK.",
           grown: "Students keep authorship of what they create. When a student shares a creation on the hub, classmates may view and remix it for class purposes. Remixes keep credit to the original maker's alias. The teacher approves every post before it appears and can remove any content at any time, including when a student or family asks." },
-        { emoji: "🤝", title: "Be Kind", ready: true,
+        { emoji: "🤝", title: "Be Kind", i18n: "fineKind", kidKey: "fineKindKid", ready: true,
           kid: "Only share things that are kind, school-appropriate, and made by you or the class.",
           grown: "Shared content must follow the district's code of conduct and acceptable use policy. Don't upload copyrighted material you don't have permission to use, photos of other people, or personal information. The teacher reviews all shared content." },
-        { emoji: "✉️", title: "Questions?", ready: true,
+        { emoji: "✉️", title: "Questions?", i18n: "fineQuestions", kidKey: "fineQuestionsKid", ready: true,
           kid: "Questions or worries? Talk to Mr. Kulibert or a grown-up you trust.",
           grown: "Parents, guardians, and rights holders can email rkulibert@solvayschools.org with questions, privacy requests (such as viewing or deleting a student's data), or takedown requests. Please name the app and describe the issue. We'll look into it and reply promptly, and anything that appears to infringe someone's rights will be taken down while we review it." }
       ];
@@ -2457,7 +2457,7 @@
           title.textContent = item.title;
           var kid = document.createElement("span");
           kid.className = "fine-kid";
-          kid.textContent = item.kid;
+          kid.textContent = (window.KulibertI18n && item.kidKey) ? KulibertI18n.t(item.kidKey) : item.kid;
           var grown = document.createElement("div");
           grown.className = "fine-grown";
           grown.hidden = true;

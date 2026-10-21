@@ -127,5 +127,22 @@
   "staffPinBody": "The PIN is set in TechWorks, not on this Chromebook.",
   "staffKeyLabel": "TechWorks desk key",
   "staffUnlockTab": "Unlock this tab",
-  "staffKeyHint": "Paste the Cloud desk key."
+  "staffKeyHint": "Paste the Cloud desk key.",
+  "finePrintGrown": "KuliNet is free learning apps a teacher made for tech class. This page says who owns what and how to reach us.",
+  "fineMade": "Made Here",
+  "fineMadeKid": "Mr. Kulibert and his helper bots built these apps for our class. They're free.",
+  "fineNotTheirs": "Not Theirs",
+  "fineNotTheirsKid": "Bertopia is a block game, but it isn't Minecraft or Roblox. Berty is our own character.",
+  "finePrivacy": "Your Privacy",
+  "finePrivacyKid": "You use a code name, not your real name. Don't type your real name or passwords.",
+  "fineSchool": "School Use",
+  "fineSchoolKid": "These apps are for class. Use them for school work.",
+  "fineProgress": "Work in Progress",
+  "fineProgressKid": "We keep fixing these apps, so sometimes things break. Tell Mr. Kulibert.",
+  "fineCreations": "Student Creations",
+  "fineCreationsKid": "What you make belongs to you. The class can see it, and you get credit.",
+  "fineKind": "Be Kind",
+  "fineKindKid": "Only share kind things you or the class made.",
+  "fineQuestions": "Questions?",
+  "fineQuestionsKid": "Questions? Talk to Mr. Kulibert or a grown-up you trust."
 }

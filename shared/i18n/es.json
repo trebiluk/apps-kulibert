@@ -266,5 +266,22 @@
   "staffPinBody": "El PIN se pone en TechWorks, no en este Chromebook. El estudiante elige su alias, luego escribe el código y ese PIN.",
   "staffKeyLabel": "Llave del escritorio TechWorks",
   "staffUnlockTab": "Abrir esta pestaña",
-  "staffKeyHint": "Pega la llave Cloud. El primer guardado toma la puerta si nadie la ha tomado."
+  "staffKeyHint": "Pega la llave Cloud. El primer guardado toma la puerta si nadie la ha tomado.",
+  "finePrintGrown": "KuliNet es un conjunto de apps de aprendizaje gratis hechas por un maestro para estudiantes de Tecnología en Solvay Middle School (grados 6–8) en Solvay, Nueva York. Esta página explica quién es dueño de qué, los créditos, los datos de los estudiantes y cómo contactarnos.",
+  "fineMade": "Hecho aquí",
+  "fineMadeKid": "El Sr. Kulibert y sus bots ayudantes hicieron estas apps para nuestra clase. Son gratis y nadie vende nada aquí.",
+  "fineNotTheirs": "No es de ellos",
+  "fineNotTheirsKid": "Bertopia es un juego de bloques, pero no es Minecraft ni Roblox. No estamos conectados con esos juegos. Berty es nuestro propio personaje.",
+  "finePrivacy": "Tu privacidad",
+  "finePrivacyKid": "Usas un nombre clave, no tu nombre real. No escribas tu nombre real, dirección, teléfono o contraseñas. Solo el Sr. Kulibert sabe cuál es tu nombre clave.",
+  "fineSchool": "Uso escolar",
+  "fineSchoolKid": "Estas apps son para la clase. Úsalas para el trabajo escolar y sé amable.",
+  "fineProgress": "En construcción",
+  "fineProgressKid": "Seguimos construyendo y arreglando estas apps, así que a veces algo se rompe. Si algo se ve raro, dile al Sr. Kulibert.",
+  "fineCreations": "Creaciones de estudiantes",
+  "fineCreationsKid": "Lo que haces es tuyo. La clase puede verlo y remezclarlo, y recibes crédito con tu nombre clave.",
+  "fineKind": "Sé amable",
+  "fineKindKid": "Comparte solo cosas amables, apropiadas para la escuela y hechas por ti o la clase.",
+  "fineQuestions": "¿Preguntas?",
+  "fineQuestionsKid": "¿Preguntas o preocupaciones? Habla con el Sr. Kulibert o con un adulto de confianza."
 }

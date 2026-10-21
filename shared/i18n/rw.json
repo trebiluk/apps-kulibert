@@ -266,5 +266,22 @@
   "staffPinBody": "PIN ishyirwa muri TechWorks, ntabwo iri kuri iki Chromebook. Umunyeshuri ahitamo izina, hanyuma akandika kode na PIN.",
   "staffKeyLabel": "Urufunguzo rw'ibiro rwa TechWorks",
   "staffUnlockTab": "Fungura iki kiganiro",
-  "staffKeyHint": "Omeka urufunguzo rwa Cloud. Kubika bwa mbere bifata urugi niba ntawe urufashe."
+  "staffKeyHint": "Omeka urufunguzo rwa Cloud. Kubika bwa mbere bifata urugi niba ntawe urufashe.",
+  "finePrintGrown": "KuliNet ni porogaramu z'uburezi z'ubuntu umwarimu yakoreye abanyeshuri ba tekinoloji muri Solvay Middle School (imyaka 6–8) i Solvay, New York. Uru rupapuro rusobanura uwaba iki, gushimira, amakuru y'abanyeshuri n'uko waduhamagara.",
+  "fineMade": "Byakozwe hano",
+  "fineMadeKid": "Bwana Kulibert n'imashini ze zafashije zakoze izi porogaramu ku ishuri ryacu. Ni ubuntu kandi nta muntu ugurisha ikintu hano.",
+  "fineNotTheirs": "Si izabo",
+  "fineNotTheirsKid": "Bertopia ni umukino wo kubaka amabuye, ariko si Minecraft cyangwa Roblox. Ntabwo dufitanye isano n'iyi mikino. Berty ni umuntu wacu.",
+  "finePrivacy": "Ibanga ryawe",
+  "finePrivacyKid": "Ukoresha izina ry'ibanga, ntabwo ari izina ryawe nyaryo. Ntukandike izina ryawe, aderesi, telefoni cyangwa ijambo ry'ibanga. Ni Bwana Kulibert wenyine uzi izina ryawe.",
+  "fineSchool": "Ikoreshwa ry'ishuri",
+  "fineSchoolKid": "Izi porogaramu ni iz'ishuri. Uzikoreshe ku kazi k'ishuri kandi ube mwiza.",
+  "fineProgress": "Biracyubakwa",
+  "fineProgressKid": "Turakomeza kubaka no gukosora izi porogaramu, rero rimwe na rimwe ikintu kirangirika. Niba hari ikitaramutse, bwira Bwana Kulibert.",
+  "fineCreations": "Ibyakozwe n'abanyeshuri",
+  "fineCreationsKid": "Ibyo ukora ni ibyawe. Ishuri rirabibona kandi rikosore, ukaba wishimwa n'izina ryawe ry'ibanga.",
+  "fineKind": "Ube mwiza",
+  "fineKindKid": "Sangira gusa ibintu byiza, bikwiriye ishuri kandi byakozwe nawe cyangwa n'ishuri.",
+  "fineQuestions": "Ibibazo?",
+  "fineQuestionsKid": "Ibibazo cyangwa impungenge? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye."
 }

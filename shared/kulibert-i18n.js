@@ -59,6 +59,23 @@
   "staffKeyLabel": "TechWorks desk key",
   "staffUnlockTab": "Unlock this tab",
   "staffKeyHint": "Paste the Cloud desk key. First save claims the door if nobody has yet.",
+  "finePrintGrown": "KuliNet is a set of free learning apps made by a teacher for Technology Education students at Solvay Middle School (grades 6–8) in Solvay, New York. This page explains who owns what, credits, student data, and how to reach us.",
+  "fineMade": "Made Here",
+  "fineMadeKid": "Mr. Kulibert and his helper bots built these apps for our class. They're free, and nobody is selling anything here.",
+  "fineNotTheirs": "Not Theirs",
+  "fineNotTheirsKid": "Bertopia is a block-building game, but it isn't Minecraft or Roblox. We're not connected to those games. Berty is our own character.",
+  "finePrivacy": "Your Privacy",
+  "finePrivacyKid": "You use a code name, not your real name. Don't type your real name, address, phone, or passwords. Only Mr. Kulibert knows which code name is yours.",
+  "fineSchool": "School Use",
+  "fineSchoolKid": "These apps are for class. Use them for school work and be kind.",
+  "fineProgress": "Work in Progress",
+  "fineProgressKid": "We keep building and fixing these apps, so sometimes things break or change. If something looks weird, tell Mr. Kulibert.",
+  "fineCreations": "Student Creations",
+  "fineCreationsKid": "What you make belongs to you. The class can see and remix it, and you get credit by your code name.",
+  "fineKind": "Be Kind",
+  "fineKindKid": "Only share things that are kind, school-appropriate, and made by you or the class.",
+  "fineQuestions": "Questions?",
+  "fineQuestionsKid": "Questions or worries? Talk to Mr. Kulibert or a grown-up you trust.",
   "staffLockHelp": "Staff page. Unlock with the desk key.",
   "testModeHelp": "Test mode is for staff. Kids never see it.",
   "lbTitle": "Leaderboards",
@@ -328,13 +345,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v28:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v29:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v28:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v29:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
