@@ -8,6 +8,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 
 - [x] **server-sync-s2a (2.5.328):** Push-only server copy of the world behind ?sync=1. Never loads from the server. Signed-in check, debounce ≥20 s, only changed chunks + head, If-Match. Offline keeps latest and flushes on online. No kid-visible change yet.
 - [x] **2.5.326 jump-hidden-924:** Jump, Suit and Open clear the 2-row hotbar at 924x412. Jump sits above the hotbar, Suit sits above the stick, Open clears the hotbar edge. Upright and 1366 unchanged.
+- [x] **2.5.327 bonk-visible:** The Mine button says Bonk when you aim at a bot. Entering Bertyville shows the safe zone chip. Help explains Bonk. Touch and mouse both work.
 - [x] **bertopia-menu-language (2.5.323):** The menu sheet header and the side menu name follow the player's language. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 - [x] **2.5.322 picker names:** Settings picker groups are read out in your language. Graphics, Quality and Text size, plus the Menu sheet copies. Plate stays 2.5.325 because live was already higher. Kinyarwanda, Tigrinya, and Dari still need a native check.

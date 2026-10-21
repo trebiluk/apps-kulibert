@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.327', date: '2026-10-21', lines: {
+    en: ['2.5.327 — The Mine button says Bonk when you aim at a bot, and Bertyville shows it is safe.'],
+    simple: ['2.5.327 — The Mine button says Bonk when you aim at a bot, and Bertyville shows it is safe.'],
+    uk: ['2.5.327 — Кнопка Ламати пише Бонк, коли наводиш на бота, і Bertyville показує, що безпечно.'],
+    ru: ['2.5.327 — Кнопка Ломать пишет Бонк, когда наводишь на бота, и Bertyville показывает, что безопасно.'],
+    es: ['2.5.327 — El botón Romper dice Bonk cuando apuntas a un bot, y Bertyville muestra que es seguro.'],
+    ar: ['2.5.327 — زر كسر يقول بونك عندما تصوب على روبوت، و Bertyville يظهر أنه آمن.'],
+    'fa-AF': ['2.5.327 — دکمه شکستن بونک می‌نویسد وقتی به ربات نشانه می‌گیری، و Bertyville نشان می‌دهد امن است.'],
+    rw: ['2.5.327 — Buto ya Vunika ivuga Bonk iyo uteye kuri robot, kandi Bertyville yerekana ko ariho.'],
+    ti: ['2.5.327 — መቐየሪ ሰብር ቦንክ ይብል እንተ ናብ ቦት ኣመልክት፡ እሞ Bertyville ውሑስ ምዃኑ ይርኢ።'],
+  }},
+
   { v: '2.5.298', date: '2026-10-21', lines: {
     en: ['2.5.298 — Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges.'],
     simple: ['2.5.298 — Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges.'],
