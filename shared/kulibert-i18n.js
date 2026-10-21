@@ -132,7 +132,7 @@
   "hkStepperHelp": "Minus and plus say which item they change.",
   "moreApps": "More apps",
   "appNames": "App names in the top strip",
-  "whatsNewStrip": "The top strip shows app icons only. Turn the names back on in My settings.",
+  "whatsNewStrip": "The top strip shows an icon and a word for each app.",
   "myProgress": "My progress",
   "staff": "Staff",
   "signOut": "Sign out",
