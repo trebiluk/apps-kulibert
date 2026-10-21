@@ -521,7 +521,9 @@
     pracSign: "Sign in first. The name comes from TechWorks. You can still play.",
     pracHas: "{alias} has practice on this Chromebook.",
     pracOpened: "Class file opened. Aliases only.",
-    pracBad: "That file is not a class practice list."
+    pracBad: "That file is not a class practice list.",
+    helpPrac: "📋 Practice and class lists talk to you in your language.",
+    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -747,7 +749,9 @@
     pracSign: "Sign in first. You can still play.",
     pracHas: "{alias} has practice here.",
     pracOpened: "Class file opened. Nicknames only.",
-    pracBad: "That file is not a class list."
+    pracBad: "That file is not a class list.",
+    helpPrac: "📋 Practice and class lists talk in your language.",
+    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1263,7 +1267,9 @@
       "pracSign": "Спершу увійди. Ім'я береться з TechWorks. Грати все одно можна.",
       "pracHas": "{alias} має практику на цьому Chromebook.",
       "pracOpened": "Файл класу відкрито. Лише псевдоніми.",
-      "pracBad": "Цей файл не є списком практики класу."
+      "pracBad": "Цей файл не є списком практики класу.",
+      "helpPrac": "📋 Практика і списки класу говорять твоєю мовою.",
+      "news23629": "MU 2.36.29 — Практика і списки класу говорять твоєю мовою."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1776,7 +1782,9 @@
       "pracSign": "Сначала войди. Имя берётся из TechWorks. Играть всё равно можно.",
       "pracHas": "У {alias} есть практика на этом Chromebook.",
       "pracOpened": "Файл класса открыт. Только псевдонимы.",
-      "pracBad": "Этот файл не список практики класса."
+      "pracBad": "Этот файл не список практики класса.",
+      "helpPrac": "📋 Практика и списки класса говорят на твоём языке.",
+      "news23629": "MU 2.36.29 — Практика и списки класса говорят на твоём языке."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2290,7 +2298,9 @@
       "pracSign": "Entra primero. El nombre viene de TechWorks. Igual puedes tocar.",
       "pracHas": "{alias} tiene práctica en este Chromebook.",
       "pracOpened": "Se abrió el archivo de la clase. Solo alias.",
-      "pracBad": "Ese archivo no es una lista de práctica."
+      "pracBad": "Ese archivo no es una lista de práctica.",
+      "helpPrac": "📋 La práctica y las listas de la clase te hablan en tu idioma.",
+      "news23629": "MU 2.36.29 — La práctica y las listas de la clase te hablan en tu idioma."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2804,7 +2814,9 @@
       "pracSign": "سجّل الدخول أولاً. الاسم يأتي من TechWorks. يمكنك العزف مع ذلك.",
       "pracHas": "لدى {alias} ممارسة على هذا Chromebook.",
       "pracOpened": "فُتح ملف الصف. أسماء مستعارة فقط.",
-      "pracBad": "هذا الملف ليس قائمة ممارسة للصف."
+      "pracBad": "هذا الملف ليس قائمة ممارسة للصف.",
+      "helpPrac": "📋 الممارسة وقوائم الصف تكلّمك بلغتك.",
+      "news23629": "MU 2.36.29 — الممارسة وقوائم الصف تكلّمك بلغتك."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3318,7 +3330,9 @@
       "pracSign": "اول وارد شو. نام از TechWorks می‌آید. باز هم می‌توانی بزنی.",
       "pracHas": "{alias} روی این Chromebook تمرین دارد.",
       "pracOpened": "فایل صنف باز شد. فقط نام‌های مستعار.",
-      "pracBad": "این فایل فهرست تمرین صنف نیست."
+      "pracBad": "این فایل فهرست تمرین صنف نیست.",
+      "helpPrac": "📋 تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند.",
+      "news23629": "MU 2.36.29 — تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3832,7 +3846,9 @@
       "pracSign": "Injira mbere. Izina riva muri TechWorks. Urashobora gukina.",
       "pracHas": "{alias} afite imyitozo kuri iyi Chromebook.",
       "pracOpened": "Dosiye y'ishuri yafunguwe. Amazina y'ibihimbano gusa.",
-      "pracBad": "Iyo dosiye si urutonde rw'imyitozo y'ishuri."
+      "pracBad": "Iyo dosiye si urutonde rw'imyitozo y'ishuri.",
+      "helpPrac": "📋 Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe.",
+      "news23629": "MU 2.36.29 — Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -4346,7 +4362,9 @@
       "pracSign": "መጀመርታ እቶ። ስም ካብ TechWorks ይመጽእ። ጸወታ ክትቅጽል ትኽእል።",
       "pracHas": "{alias} ኣብዚ Chromebook ልምምድ ኣለዎ።",
       "pracOpened": "ናይ ክፍሊ ፋይል ተኸፊቱ። ስም ሓሳውቲ ጥራይ።",
-      "pracBad": "እቲ ፋይል ናይ ክፍሊ ልምምድ ዝርዝር ኣይኮነን።"
+      "pracBad": "እቲ ፋይል ናይ ክፍሊ ልምምድ ዝርዝር ኣይኮነን።",
+      "helpPrac": "📋 ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።",
+      "news23629": "MU 2.36.29 — ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.29 item 1: practice and class lists talk to you in your language.
 - [x] MU 2.36.27 item 1: sound sliders, files and pictures explain themselves in your language.
 - [x] MU 2.36.26 item 1: rests, warm-ups, the count, and the Band tab teach you in your language.
 - [x] MU 2.36.25 item 1: the Tap tab teaching lines follow your language.
