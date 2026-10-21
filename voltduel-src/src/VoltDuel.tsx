@@ -251,11 +251,27 @@ export function VoltDuel() {
     else if (next.name === "play" && prev === "pause") pushLive(liveLine("vdLiveResumed", "Resumed"));
   }
 
+  function focusStage() {
+    const node = stageRef.current;
+    if (!node || screenRef.current.name !== "play") return;
+    if (document.activeElement !== node) {
+      try {
+        node.focus({ preventScroll: true });
+      } catch {
+        node.focus();
+      }
+    }
+    node.style.outline = "3px solid #2ee6c7";
+    node.style.outlineOffset = "-4px";
+  }
+
   function launch(level: number, op: "start" | "restart" = "start") {
     audio.unlock();
     cmdRef.current = { op, level };
     show({ name: "play", level });
     setHint(true);
+    focusStage();
+    window.requestAnimationFrame(() => focusStage());
   }
 
   useEffect(() => {
@@ -932,7 +948,16 @@ export function VoltDuel() {
 
   return (
     <div className={`game-root${padMode === "on" ? " pads-on" : ""}${padMode === "off" ? " pads-off" : ""}`}>
-      <div className="stage" ref={stageRef}>
+      <div
+        className="stage"
+        ref={stageRef}
+        tabIndex={-1}
+        aria-label="Volt Duel arena"
+        onBlur={(event) => {
+          event.currentTarget.style.outline = "";
+          event.currentTarget.style.outlineOffset = "";
+        }}
+      >
         {screen.name !== "menu" && (
           <p className="vd-live" role="status" aria-live="polite" ref={liveRef} />
         )}
