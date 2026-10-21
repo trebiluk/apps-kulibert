@@ -10006,7 +10006,6 @@ function frame(tnow) {
 }
 noa.world.on('chunkAdded', () => { if (!perf.firstChunk) perf.firstChunk = performance.now() })
 requestAnimationFrame(frame)
-const QNAME = { auto: 'Auto', lite: 'Lite', full: 'Full' }
 function paintQuality() {
   for (const b of document.querySelectorAll('[data-q]')) {
     const on = b.dataset.q === quality
@@ -10017,7 +10016,7 @@ function paintQuality() {
 function paintQualityNote() {
   const el = $('q-now'); if (!el) return
   if (quality === 'auto') el.textContent = t('auto') + ' · ' + t(gfx.guardKey())
-  else el.textContent = QNAME[quality] + ' · ' + Math.round(100 / level) + '%'
+  else el.textContent = t(quality) + ' · ' + Math.round(100 / level) + '%'
 }
 function publishAuto() {
   const box = window.__auto || (window.__auto = { log: [] })
@@ -10080,7 +10079,7 @@ async function setQuality(q) {
   engine.setHardwareScalingLevel(level)
   noa.world.setAddRemoveDistance(gfx.add, gfx.rem)
   gfx.applyFog()
-  paintQuality(); toast(gfx.label())
+  paintQuality(); toast(t(quality))
 }
 document.addEventListener('click', (e) => {
   const hit = e.target && e.target.closest && e.target.closest('[data-q],[data-gfx]')
