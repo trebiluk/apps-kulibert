@@ -124,6 +124,8 @@
       helpDaily: "The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only.",
       helpDailyBest: "The Daily cup tile shows your best for today.",
       helpRamps: "\"1 ramp\" and \"2 ramps\" use the right word in every language.",
+      wdMon: "Mon", wdTue: "Tue", wdWed: "Wed", wdThu: "Thu", wdFri: "Fri",
+      mo1: "Jan", mo2: "Feb", mo3: "Mar", mo4: "Apr", mo5: "May", mo6: "Jun", mo7: "Jul", mo8: "Aug", mo9: "Sep", mo10: "Oct", mo11: "Nov", mo12: "Dec",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -198,6 +200,8 @@
       helpDaily: "Чашка дня нова щошкільного дня. Вона однакова для всього класу. Твій рекорд лишається лише на цьому пристрої.",
       helpDailyBest: "Плитка чашки дня показує твій рекорд за сьогодні.",
       helpRamps: "«1 рампа» і «2 рампи» мають правильне слово кожною мовою.",
+      wdMon: "пн", wdTue: "вт", wdWed: "ср", wdThu: "чт", wdFri: "пт",
+      mo1: "січ", mo2: "лют", mo3: "бер", mo4: "кві", mo5: "тра", mo6: "чер", mo7: "лип", mo8: "сер", mo9: "вер", mo10: "жов", mo11: "лис", mo12: "гру",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -274,6 +278,8 @@
       helpDaily: "Чашка дня новая каждый учебный день. Она одна и та же для всего класса. Твой рекорд остаётся только на этом устройстве.",
       helpDailyBest: "Плитка чашки дня показывает твой рекорд за сегодня.",
       helpRamps: "«1 рампа» и «2 рампы» — правильное слово на каждом языке.",
+      wdMon: "пн", wdTue: "вт", wdWed: "ср", wdThu: "чт", wdFri: "пт",
+      mo1: "янв", mo2: "фев", mo3: "мар", mo4: "апр", mo5: "май", mo6: "июн", mo7: "июл", mo8: "авг", mo9: "сен", mo10: "окт", mo11: "ноя", mo12: "дек",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -350,6 +356,8 @@
       helpDaily: "La taza del día es nueva cada día de clase. Es la misma para toda la clase. Tu mejor marca se queda solo en este aparato.",
       helpDailyBest: "La ficha de la taza del día muestra tu mejor marca de hoy.",
       helpRamps: "«1 rampa» y «2 rampas» usan la palabra correcta en cada idioma.",
+      wdMon: "lun", wdTue: "mar", wdWed: "mié", wdThu: "jue", wdFri: "vie",
+      mo1: "ene", mo2: "feb", mo3: "mar", mo4: "abr", mo5: "may", mo6: "jun", mo7: "jul", mo8: "ago", mo9: "sep", mo10: "oct", mo11: "nov", mo12: "dic",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -426,6 +434,8 @@
       helpDaily: "كوب اليوم كوب جديد في كل يوم دراسي. هو نفسه لكل الصف. أفضل نتيجة تبقى على هذا الجهاز فقط.",
       helpDailyBest: "بطاقة كوب اليوم تعرض أفضل نتيجة لك اليوم.",
       helpRamps: "«1 منحدر» و«2 منحدران» بالكلمة الصحيحة في كل لغة.",
+      wdMon: "الإثنين", wdTue: "الثلاثاء", wdWed: "الأربعاء", wdThu: "الخميس", wdFri: "الجمعة",
+      mo1: "يناير", mo2: "فبراير", mo3: "مارس", mo4: "أبريل", mo5: "مايو", mo6: "يونيو", mo7: "يوليو", mo8: "أغسطس", mo9: "سبتمبر", mo10: "أكتوبر", mo11: "نوفمبر", mo12: "ديسمبر",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -502,6 +512,8 @@
       helpDaily: "پیالهٔ امروز هر روز مکتب نو است. برای همهٔ صنف یکی است. بهترین عدد فقط روی همین دستگاه می‌ماند.",
       helpDailyBest: "کارت پیالهٔ امروز بهترین عدد امروزت را نشان می‌دهد.",
       helpRamps: "«۱ سطح» و «۲ سطح‌ها» در هر زبان واژهٔ درست دارند.",
+      wdMon: "دوشنبه", wdTue: "سه‌شنبه", wdWed: "چهارشنبه", wdThu: "پنجشنبه", wdFri: "جمعه",
+      mo1: "جنوری", mo2: "فبروری", mo3: "مارچ", mo4: "اپریل", mo5: "می", mo6: "جون", mo7: "جولای", mo8: "اگست", mo9: "سپتمبر", mo10: "اکتبر", mo11: "نومبر", mo12: "دسمبر",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -578,6 +590,8 @@
       helpDaily: "Igikombe cy'uyu munsi ni igikombe gishya buri munsi w'ishuri. Ni kimwe ku ishuri ryose. Ibyiza byawe biguma kuri iki gikoresho gusa.",
       helpDailyBest: "Agace k'igikombe cy'uyu munsi kerekana agahigo kawe k'uyu munsi.",
       helpRamps: "\"1 umuhanda\" na \"2 imihanda\" bikoresha ijambo ry'ukuri muri buri rurimi.",
+      wdMon: "Mbe", wdTue: "Kab", wdWed: "Gtu", wdThu: "Kan", wdFri: "Gta",
+      mo1: "Mut", mo2: "Gas", mo3: "Wer", mo4: "Mat", mo5: "Gic", mo6: "Kam", mo7: "Nya", mo8: "Kan", mo9: "Nze", mo10: "Ukw", mo11: "Ugu", mo12: "Uku",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -654,6 +668,8 @@
       helpDaily: "ጽዋዕ ናይ ሎሚ ኣብ ነፍሲ ወከፍ መዓልቲ ትምህርቲ ሓድሽ እዩ። ንኹሉ ክፍሊ ተመሳሳሊ እዩ። ዝበለጸ ውጽኢት ኣብዚ መሳርሒ ጥራይ ይቕመጥ።",
       helpDailyBest: "ሰሌዳ ጽዋዕ ናይ ሎሚ ናይ ሎሚ ሪኮርድካ የርኢ።",
       helpRamps: "\"1 መንሸራተቲ\" እና \"2 መንሸራተታት\" ብቃል ቅኑዕ ኣብ ነፍሲ ወከፍ ቋንቋ።",
+      wdMon: "ሰኑ", wdTue: "ሰሉ", wdWed: "ረቡ", wdThu: "ሓሙ", wdFri: "ዓር",
+      mo1: "ጥሪ", mo2: "ለካ", mo3: "መጋ", mo4: "ሚያ", mo5: "ግን", mo6: "ሰነ", mo7: "ሓም", mo8: "ነሓ", mo9: "መስ", mo10: "ጥቅ", mo11: "ሕዳ", mo12: "ታሕ",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -681,6 +697,8 @@
       helpDaily: "The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only.",
       helpDailyBest: "The Daily cup tile shows your best for today.",
       helpRamps: "\"1 ramp\" and \"2 ramps\" use the right word in every language.",
+      wdMon: "Mon", wdTue: "Tue", wdWed: "Wed", wdThu: "Thu", wdFri: "Fri",
+      mo1: "Jan", mo2: "Feb", mo3: "Mar", mo4: "Apr", mo5: "May", mo6: "Jun", mo7: "Jul", mo8: "Aug", mo9: "Sep", mo10: "Oct", mo11: "Nov", mo12: "Dec",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -1481,8 +1499,16 @@
     var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
     var code = lang();
     var loc = code === "fa-AF" ? "fa" : code === "simple" ? "en" : code;
-    try { return d.toLocaleDateString(loc, { weekday: "short", month: "short", day: "numeric" }); }
-    catch (e) { return day; }
+    var supported = [];
+    try { supported = Intl.DateTimeFormat.supportedLocalesOf([loc]); } catch (e) {}
+    if (supported.length) {
+      try { return d.toLocaleDateString(loc, { weekday: "short", month: "short", day: "numeric" }); }
+      catch (e2) {}
+    }
+    var names = { 1: "wdMon", 2: "wdTue", 3: "wdWed", 4: "wdThu", 5: "wdFri" };
+    var wd = names[d.getDay()];
+    if (!wd) return day;
+    return t(wd) + ", " + d.getDate() + " " + t("mo" + (d.getMonth() + 1));
   }
   function readDaily() {
     try {
