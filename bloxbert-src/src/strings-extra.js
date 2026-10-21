@@ -1770,3 +1770,18 @@ for (const [lang, row] of Object.entries(FIT304)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const FIT306 = {
+  en: { whatsNewBody: '2.5.306 — The PvP switches say ON and OFF in the right language.' },
+  uk: { whatsNewBody: '2.5.306 — Перемикачі PvP пишуть УВІМК і ВИМК своєю мовою.' },
+  ru: { whatsNewBody: '2.5.306 — Переключатели PvP пишут ВКЛ и ВЫКЛ на своём языке.' },
+  es: { whatsNewBody: '2.5.306 — Los interruptores de PvP dicen SÍ y NO en el idioma correcto.' },
+  ar: { whatsNewBody: '2.5.306 — مفاتيح PvP تقول تشغيل وإيقاف باللغة الصحيحة.' },
+  'fa-AF': { whatsNewBody: '2.5.306 — دکمه‌های PvP روشن و خاموش را به زبان درست می‌گویند.' },
+  rw: { whatsNewBody: '2.5.306 — Ibikoresho bya PvP bivuga BIRAKORA na BIRAZIMYE mu rurimi rwabyo.' },
+  ti: { whatsNewBody: '2.5.306 — መቐየሪ PvP ብቕኑዕ ቋንቋ ክፉትን ዕጹውን ይብል።' },
+}
+for (const [lang, row] of Object.entries(FIT306)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

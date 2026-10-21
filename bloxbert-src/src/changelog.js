@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.306', date: '2026-10-21', lines: {
+    en: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],
+    simple: ['2.5.306 — The PvP switches say ON and OFF in the right language.'],
+    uk: ['2.5.306 — Перемикачі PvP пишуть УВІМК і ВИМК своєю мовою.'],
+    ru: ['2.5.306 — Переключатели PvP пишут ВКЛ и ВЫКЛ на своём языке.'],
+    es: ['2.5.306 — Los interruptores de PvP dicen SÍ y NO en el idioma correcto.'],
+    ar: ['2.5.306 — مفاتيح PvP تقول تشغيل وإيقاف باللغة الصحيحة.'],
+    'fa-AF': ['2.5.306 — دکمه‌های PvP روشن و خاموش را به زبان درست می‌گویند.'],
+    rw: ['2.5.306 — Ibikoresho bya PvP bivuga BIRAKORA na BIRAZIMYE mu rurimi rwabyo.'],
+    ti: ['2.5.306 — መቐየሪ PvP ብቕኑዕ ቋንቋ ክፉትን ዕጹውን ይብል።'],
+  }},
+
   { v: '2.5.305', date: '2026-10-21', lines: {
     en: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],
     simple: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],

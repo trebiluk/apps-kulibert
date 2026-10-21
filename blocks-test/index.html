@@ -322,7 +322,7 @@ html[dir=rtl] .sheet-bar{direction:ltr}
 #wand-pill .glbl{font-size:12px;font-weight:800}
 #wand-do{background:#14B8A6;color:#04221e}
 #wand-x{color:#E6EEF2}
-@media (max-height:500px){#wand-pill{bottom:70px}#use-pill{bottom:70px}}
+@media (max-height:500px){#wand-pill{bottom:70px}#use-pill{bottom:110px}}
 .tool:disabled .tl,.tool:disabled .ti{opacity:1;color:#94a3b8}
 .ggrid{display:grid;grid-template-columns:repeat(4,minmax(64px,1fr));gap:8px;overflow:auto;padding-top:8px}
 /* Pause menu (panel=menu) is the framed digital panel in kulibert-theme-digital.css, not this tile grid. */
@@ -1023,8 +1023,9 @@ html[dir=rtl] #sheet .ks-link{transform:scaleX(-1)}
 #sheet .gtile.kd-key .glbl{text-align:center}
 .gtile .gic canvas{width:28px;height:28px;image-rendering:pixelated;display:block}
 #wand-pill{z-index:32;transform:translateX(-50%)}
-#use-pill{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);z-index:33;display:flex;align-items:center;gap:8px;min-width:48px;min-height:48px;padding:4px 16px 4px 6px;border:3px solid #3ec6c6;border-radius:999px;background:#0E1A22;box-shadow:inset 0 0 0 3px #0B2A30;color:#E6EEF2;font-weight:800;font-size:15px;line-height:1;white-space:nowrap;pointer-events:auto;cursor:pointer}
+#use-pill{position:fixed;left:50%;bottom:140px;transform:translateX(-50%);z-index:33;display:flex;align-items:center;gap:8px;min-width:48px;min-height:48px;padding:4px 16px 4px 6px;border:3px solid #3ec6c6;border-radius:999px;background:#0E1A22;box-shadow:inset 0 0 0 3px #0B2A30;color:#E6EEF2;font-weight:800;font-size:15px;line-height:1;white-space:nowrap;pointer-events:auto;cursor:pointer}
 #use-pill[hidden]{display:none!important}
+#use-pill:not([hidden]) ~ .keys{display:none}
 #use-pill .gic{width:32px;height:32px;flex:0 0 32px;display:flex}
 #use-pill canvas{width:32px;height:32px;image-rendering:pixelated;display:block}
 #use-pill .glbl{font-size:15px;font-weight:800}
@@ -1223,7 +1224,7 @@ body.tip-on #held-chip{display:none!important}
 <nav id="drawer" aria-label="Bertopia menu" inert aria-hidden="true">
   <div class="dhead"><button class="icon-btn" id="close-btn" aria-label="Close menu" data-i18n-label="close"><span class="ti" data-ico="x"></span><span class="xlab" data-i18n="close">Close</span></button><b data-i18n="menu">Menu</b></div>
   <div class="sec"><h3 data-i18n="whatsNew">What's new</h3>
-    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.305 — The name of what you're holding now sits neatly in the top bar.</p>
+    <p class="new" id="whats-new" data-i18n="whatsNewBody">2.5.306 — The PvP switches say ON and OFF in the right language.</p>
   </div>
   <div class="sec"><h3 data-i18n="world">World</h3>
     <button class="row" id="m-save"><span class="ic" data-ico="floppy"></span><span data-i18n="saveNow">Save now</span></button>
