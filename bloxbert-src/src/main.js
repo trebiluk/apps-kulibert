@@ -56,6 +56,7 @@ import { createBasics } from './basics.js'
 import { isDoor, isDoorTop, doorTopId, doorKind, isOpenDoor, placedDoorId, DOOR_HOLD_MS, LEVER, BUTTON, LANTERN } from './doors.js'
 import { migrateVoxels, migrate, SCHEMA, unknownEntries, resetUnknown, isMissingId } from './save/migrate.js'
 import { maybePush, maybePull } from './save/server-sync.js'
+import { mountSyncChip, setSyncState } from './save/sync-chip.js'
 import { packVersions, packBlocks, packOn } from './packs/registry.js'
 import './packs/farm/pack.js'
 import './packs/decor/pack.js'
@@ -4808,6 +4809,7 @@ document.addEventListener('visibilitychange', () => {
     syncCrops(Date.now())
     syncForage(Date.now())
     if (!saveLockHeld && !lockPending) claimSaveLock()
+try { mountSyncChip() } catch (e) {}
   }
 })
 window.addEventListener('pagehide', () => { writeSpot(); flushSave() })

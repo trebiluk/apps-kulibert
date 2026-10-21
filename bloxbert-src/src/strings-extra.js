@@ -2414,3 +2414,23 @@ for (const [lang, row] of Object.entries(C4FIX)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// s2b server sync chip + keep-both (2.5.329)
+if (!EXTRA['en']) EXTRA['en'] = {}
+Object.assign(EXTRA['en'], {"s2bSaved": "Saved to school", "s2bSaving": "Saving…", "s2bOffline": "Offline — saved here", "s2bNoSign": "Not signed in", "s2bKeepTitle": "Two copies found.", "s2bKeepBody": "We kept both.", "s2bHelp": "Test only: with sync on, your world can come back from school."})
+if (!EXTRA['simple']) EXTRA['simple'] = {}
+Object.assign(EXTRA['simple'], {"s2bSaved": "Saved to school", "s2bSaving": "Saving…", "s2bOffline": "Offline — saved here", "s2bNoSign": "Not signed in", "s2bKeepTitle": "Two copies found.", "s2bKeepBody": "We kept both.", "s2bHelp": "Test only: with sync on, your world can come back from school."})
+if (!EXTRA['uk']) EXTRA['uk'] = {}
+Object.assign(EXTRA['uk'], {"s2bSaved": "Збережено в школі", "s2bSaving": "Збереження…", "s2bOffline": "Офлайн — збережено тут", "s2bNoSign": "Не ввійшли", "s2bKeepTitle": "Знайдено дві копії.", "s2bKeepBody": "Ми зберегли обидві.", "s2bHelp": "Лише тест: з увімкненим sync світ може повернутися зі школи."})
+if (!EXTRA['ru']) EXTRA['ru'] = {}
+Object.assign(EXTRA['ru'], {"s2bSaved": "Сохранено в школе", "s2bSaving": "Сохранение…", "s2bOffline": "Офлайн — сохранено здесь", "s2bNoSign": "Не вошли", "s2bKeepTitle": "Найдены две копии.", "s2bKeepBody": "Мы сохранили обе.", "s2bHelp": "Только тест: с включённым sync мир может вернуться из школы."})
+if (!EXTRA['es']) EXTRA['es'] = {}
+Object.assign(EXTRA['es'], {"s2bSaved": "Guardado en la escuela", "s2bSaving": "Guardando…", "s2bOffline": "Sin conexión — guardado aquí", "s2bNoSign": "No has iniciado sesión", "s2bKeepTitle": "Se encontraron dos copias.", "s2bKeepBody": "Guardamos ambas.", "s2bHelp": "Solo prueba: con sync activado, tu mundo puede volver de la escuela."})
+if (!EXTRA['ar']) EXTRA['ar'] = {}
+Object.assign(EXTRA['ar'], {"s2bSaved": "محفوظ في المدرسة", "s2bSaving": "جارٍ الحفظ…", "s2bOffline": "غير متصل — محفوظ هنا", "s2bNoSign": "لم تسجل الدخول", "s2bKeepTitle": "تم العثور على نسختين.", "s2bKeepBody": "احتفظنا بكليهما.", "s2bHelp": "اختبار فقط: مع تشغيل المزامنة، يمكن أن يعود عالمك من المدرسة."})
+if (!EXTRA['fa-AF']) EXTRA['fa-AF'] = {}
+Object.assign(EXTRA['fa-AF'], {"s2bSaved": "در مدرسه ذخیره شد", "s2bSaving": "در حال ذخیره…", "s2bOffline": "آفلاین — اینجا ذخیره شد", "s2bNoSign": "وارد نشده‌اید", "s2bKeepTitle": "دو نسخه پیدا شد.", "s2bKeepBody": "هر دو را نگه داشتیم.", "s2bHelp": "فقط آزمایش: با فعال بودن همگام‌سازی، جهان شما می‌تواند از مدرسه برگردد."})
+if (!EXTRA['rw']) EXTRA['rw'] = {}
+Object.assign(EXTRA['rw'], {"s2bSaved": "Byabitswe mu ishuri", "s2bSaving": "Birabitswa…", "s2bOffline": "Nta murandasi — byabitswe hano", "s2bNoSign": "Nta winjiye", "s2bKeepTitle": "Kopi ebyiri byabonetse.", "s2bKeepBody": "Twabishyize hamwe.", "s2bHelp": "Igerageza gusa: niba sync iriho, isi yawe ishobora kugaruka ku ishuri."})
+if (!EXTRA['ti']) EXTRA['ti'] = {}
+Object.assign(EXTRA['ti'], {"s2bSaved": "ኣብ ቤት ትምህርቲ ተዓቂቡ", "s2bSaving": "እናተዓቐበ…", "s2bOffline": "ኦፍላይን — ኣብዚ ተዓቂቡ", "s2bNoSign": "ኣይኣተወን", "s2bKeepTitle": "ክልተ ቅዳሕ ተረኺቡ።", "s2bKeepBody": "ክልቲኦም ኣቐሚጡና።", "s2bHelp": "ፈተና ጥራይ፡ sync እንተ ተኸፊቱ ዓለምካ ካብ ቤት ትምህርቲ ክምለስ ይኽእል።"})

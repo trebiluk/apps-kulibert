@@ -1,3 +1,4 @@
+import { setSyncState } from './sync-chip.js'
 // Server copy for Bertopia worlds. Active only with ?sync=1.
 // Push-only was S2a; this adds pull when local is missing or older.
 // Never throws into the caller. Never loads without ?sync=1 + signed-in.
@@ -184,7 +185,8 @@ async function pushNow(doc) {
   const now = Date.now()
   if (lastPush[world] && now - lastPush[world] < 20000) return
 
-  if (!(await isVerified())) return
+  if (!(await isVerified())) { try { setSyncState("nosign") } catch (e) {} return }
+  try { setSyncState("saving") } catch (e) {}
 
   let rev = 0
   let serverChunks = {}
@@ -247,6 +249,7 @@ async function pushNow(doc) {
     if (putRes.ok) {
       lastPush[world] = Date.now()
       lastPushedAt[world] = doc.updatedAt || new Date().toISOString()
+      try { setSyncState("saved") } catch (e) {}
     }
   } catch (e) {
     // offline or network — keep pending
@@ -275,7 +278,7 @@ export function maybePush(doc) {
     }
     if (stopped || !doc) return
     pendingDoc = doc
-    if (typeof navigator !== 'undefined' && !navigator.onLine) return
+    if (typeof navigator !== 'undefined' && !navigator.onLine) { try { setSyncState('offline') } catch (e) {} return }
     pushNow(doc).catch(() => {})
   } catch (e) {}
 }
