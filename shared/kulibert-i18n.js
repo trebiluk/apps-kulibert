@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "2026-10-21-fineupdated-key-livelang";
+  var I18N_REV = "2026-10-21-alias-livelang-newsclip";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -54,7 +54,7 @@
   "month10": "October",
   "month11": "November",
   "month12": "December",
-  "whatsNewLine": "Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.",
+  "whatsNewLine": "Hub rev 2026-10-21-alias-livelang-newsclip: Change the language and the alias box changes right away, and What's new fits on phones.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",

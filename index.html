@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
   <meta name="theme-color" id="theme-color" content="#050814"/>
-<meta name="tech-room-rev" content="2026-10-21-fineupdated-key-livelang"/>
+<meta name="tech-room-rev" content="2026-10-21-alias-livelang-newsclip"/>
   <title>The Tech Room · apps.kulibert.net</title>
   <link rel="icon" href="/icons/icon-kulinet-k.svg" type="image/svg+xml"/>
   <link rel="manifest" href="/manifest.webmanifest"/>
@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-title" content="Tech Room"/>
   <link rel="stylesheet" href="/fonts/room.css?v=2026-10-04-i18n"/>
-  <script src="/shared/kw-who.js?v=2026-10-21-fineupdated-key-livelang"></script>
+  <script src="/shared/kw-who.js?v=2026-10-21-alias-livelang-newsclip"></script>
     <script>
     (function () {
       function staffOn() {
@@ -26,13 +26,13 @@
       }
       if (staffOn() && testOn() && !document.querySelector("script[src*='kw-test']")) {
         var s = document.createElement("script");
-        s.src = "/shared/kw-test.js?v=2026-10-21-fineupdated-key-livelang";
+        s.src = "/shared/kw-test.js?v=2026-10-21-alias-livelang-newsclip";
         document.head.appendChild(s);
       }
     })();
   </script>
-  <script src="/shared/hub-staff-auth.js?v=2026-10-21-fineupdated-key-livelang"></script>
-  <script src="/shared/tw-session.js?v=2026-10-21-fineupdated-key-livelang"></script>
+  <script src="/shared/hub-staff-auth.js?v=2026-10-21-alias-livelang-newsclip"></script>
+  <script src="/shared/tw-session.js?v=2026-10-21-alias-livelang-newsclip"></script>
   <script>
     (function () {
       var themes = ["room", "graph", "miami", "spa", "nature", "peaks", "city", "space", "berty"];
@@ -587,6 +587,11 @@
       text-shadow: 0 0 18px color-mix(in srgb, #22d3ee 35%, transparent);
     }
     .hub-foot-news{white-space:normal;display:inline}
+    @media (max-width:520px){
+      .hub-foot-news{display:block;flex:1 1 100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+      #shell-footer{flex:0 0 auto}
+    }
+
     .shell-footer{
       border-top: 1px solid color-mix(in srgb, #22d3ee 28%, var(--border));
       background: color-mix(in srgb, var(--background) 82%, #0b1a40);
@@ -1638,10 +1643,10 @@
 
   </style>
   <script>if (window.top !== window.self) document.documentElement.classList.add("in-frame");</script>
-  <script src="/shared/kulibert-i18n.js?v=2026-10-21-fineupdated-key-livelang"></script>
-  <script src="/shared/kulibert-boards.js?v=2026-10-21-fineupdated-key-livelang"></script>
-  <script src="/shared/kulibert-boards-hub.js?v=2026-10-21-fineupdated-key-livelang"></script>
-  <script src="/shared/kulibert-prefs.js?v=2026-10-21-fineupdated-key-livelang"></script>
+  <script src="/shared/kulibert-i18n.js?v=2026-10-21-alias-livelang-newsclip"></script>
+  <script src="/shared/kulibert-boards.js?v=2026-10-21-alias-livelang-newsclip"></script>
+  <script src="/shared/kulibert-boards-hub.js?v=2026-10-21-alias-livelang-newsclip"></script>
+  <script src="/shared/kulibert-prefs.js?v=2026-10-21-alias-livelang-newsclip"></script>
   <style id="hub-polish">
     /* 2026-10-20-staff-proof-gate */
     #hub-help{position:fixed;inset:0;z-index:82;display:flex;flex-direction:column;gap:.6rem;padding:1rem;background:rgba(5,8,20,.94);color:#e8f7ff}
@@ -1856,8 +1861,8 @@
     <div id="hub-drawer-backdrop" hidden></div>
     <div id="hub-drawer" class="hub-drawer" hidden dir="ltr">
       <button type="button" id="hub-drawer-close"><span aria-hidden="true">✕ </span><span class="hub-close-label" data-i18n="close">Close</span></button>
-      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-21-fineupdated-key-livelang</span></p>
-      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
+      <p class="hub-drawer-rev"><span class="rev">rev 2026-10-21-alias-livelang-newsclip</span></p>
+      <p class="hub-drawer-news"><strong data-i18n="whatsNew">What’s new</strong> <span data-i18n="whatsNewLine">Hub rev 2026-10-21-alias-livelang-newsclip: Change the language and the alias box changes right away, and What's new fits on phones.</span> <span data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</span></p>
       <button type="button" id="drawer-settings" data-i18n="mySettings">My settings</button>
       <button type="button" id="drawer-signin" data-i18n="signIn">Sign in</button>
       <button type="button" id="drawer-progress" data-i18n="myProgress">My progress</button>
@@ -1931,7 +1936,7 @@
         </label>
         <div class="hub-plate is-clamped" id="hub-plate" aria-label="Hub cut info">
           <div class="hub-summary">
-<span class="lead"><span class="rev">rev 2026-10-21-fineupdated-key-livelang</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.</span></span>
+<span class="lead"><span class="rev">rev 2026-10-21-alias-livelang-newsclip</span> · <strong data-i18n="whatsNew">What’s new</strong> · <span data-i18n="whatsNewLine">Hub rev 2026-10-21-alias-livelang-newsclip: Change the language and the alias box changes right away, and What's new fits on phones.</span></span>
             <button type="button" class="btn btn-secondary hub-more" id="hub-more" aria-expanded="false" aria-controls="hub-log" data-i18n="expand">Expand</button>
           </div>
           <p class="cut-line"><a href="/music/">DJ Berty</a> <strong>MU 2.36.18</strong> — A staff-only test tool no longer loads for kids.</p>
@@ -1955,9 +1960,9 @@
             <li>Hub rev 2026-10-20-staff-i18n-bust — staff page loads the current translations; one cache-bust; Fine Print is translated.</li>
             <li>Hub rev 2026-10-20-staff-dom-lock — admin tools load only after the desk key; staff help line translated.</li>
             <li>Hub rev 2026-10-20-staff-cachebust-i18n — staff page loads this rev and follows the hub language; small print stays translated.</li>
-            <li>Hub rev 2026-10-21-fineupdated-key-livelang — staff page and Fine Print follow the language; door link is 44px; favicon loads.</li>
+            <li>Hub rev 2026-10-21-alias-livelang-newsclip — staff page and Fine Print follow the language; door link is 44px; favicon loads.</li>
             <li>Hub rev 2026-10-20-staff-i18n-bust — /spancraft/ 307 to /holdit/?mode=span is intended (vercel.json; HoldIt absorbed SpanCraft). Hub tile now says HoldIt and points at /holdit/?mode=span.</li>
-            <li data-i18n="whatsNewLine">Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.</li>
+            <li data-i18n="whatsNewLine">Hub rev 2026-10-21-alias-livelang-newsclip: Change the language and the alias box changes right away, and What's new fits on phones.</li>
             <li>Menus and My settings have a Close button. Esc closes them too.</li>
             <li>Tiles show on phones held sideways.</li>
             <li data-i18n="whatsNewStrip">The top strip shows app icons only. Turn the names back on in My settings.</li>
@@ -2552,8 +2557,9 @@
       })();
     </script>
     <footer class="shell-footer" id="shell-footer">
-      <span class="hub-foot-rev">rev 2026-10-21-fineupdated-key-livelang</span>
-      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-21-fineupdated-key-livelang: Change the language and the scoreboard changes right away. A link with a language opens in that language.</span></span>
+      <span class="hub-foot-rev">rev 2026-10-21-alias-livelang-newsclip</span>
+      <span class="hub-foot-news"><span data-i18n="whatsNew">What’s new</span> <span data-i18n="whatsNewLine">Hub rev 2026-10-21-alias-livelang-newsclip: Change the language and the alias box changes right away, and What's new fits on phones.</span></span>
+      <button type="button" id="foot-news-more" style="min-height:44px;min-width:44px" data-i18n="more">More</button>
       <button type="button" id="foot-fine-print"><span aria-hidden="true">⚖️ </span><span data-i18n="finePrint">Fine Print</span></button>
       <span id="shell-lunch">Lunch</span>
       <a href="/bistro/">Bistro</a>
@@ -5061,5 +5067,6 @@ document.addEventListener("click", function (event) {
       });
     })();
   </script>
+<script>document.getElementById("foot-news-more")&&document.getElementById("foot-news-more").addEventListener("click",function(){var m=document.getElementById("kb-menu");if(m)m.click();});</script>
 </body>
 </html>
