@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.30** · 2026-10-21 · channel **live**
+
+The Tap tip uses the same word as the Tap tab in every language.
+
+## Earlier
+
 **Chip: MU 2.36.29** · 2026-10-21 · channel **live**
 
 MU 2.36.29 — Practice and class lists talk to you in your language.

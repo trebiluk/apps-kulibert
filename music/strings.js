@@ -597,7 +597,8 @@
     pracOpened: "Class file opened. Aliases only.",
     pracBad: "That file is not a class practice list.",
     helpPrac: "📋 Practice and class lists talk to you in your language.",
-    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language."
+    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language.",
+    news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -899,7 +900,8 @@
     pracOpened: "Class file opened. Nicknames only.",
     pracBad: "That file is not a class list.",
     helpPrac: "📋 Practice and class lists talk in your language.",
-    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language."
+    news23629: "MU 2.36.29 — Practice and class lists talk to you in your language.",
+    news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1491,7 +1493,8 @@
       "pracOpened": "Файл класу відкрито. Лише псевдоніми.",
       "pracBad": "Цей файл не є списком практики класу.",
       "helpPrac": "📋 Практика і списки класу говорять твоєю мовою.",
-      "news23629": "MU 2.36.29 — Практика і списки класу говорять твоєю мовою."
+      "news23629": "MU 2.36.29 — Практика і списки класу говорять твоєю мовою.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2080,7 +2083,8 @@
       "pracOpened": "Файл класса открыт. Только псевдонимы.",
       "pracBad": "Этот файл не список практики класса.",
       "helpPrac": "📋 Практика и списки класса говорят на твоём языке.",
-      "news23629": "MU 2.36.29 — Практика и списки класса говорят на твоём языке."
+      "news23629": "MU 2.36.29 — Практика и списки класса говорят на твоём языке.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2670,7 +2674,8 @@
       "pracOpened": "Se abrió el archivo de la clase. Solo alias.",
       "pracBad": "Ese archivo no es una lista de práctica.",
       "helpPrac": "📋 La práctica y las listas de la clase te hablan en tu idioma.",
-      "news23629": "MU 2.36.29 — La práctica y las listas de la clase te hablan en tu idioma."
+      "news23629": "MU 2.36.29 — La práctica y las listas de la clase te hablan en tu idioma.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3260,7 +3265,8 @@
       "pracOpened": "فُتح ملف الصف. أسماء مستعارة فقط.",
       "pracBad": "هذا الملف ليس قائمة ممارسة للصف.",
       "helpPrac": "📋 الممارسة وقوائم الصف تكلّمك بلغتك.",
-      "news23629": "MU 2.36.29 — الممارسة وقوائم الصف تكلّمك بلغتك."
+      "news23629": "MU 2.36.29 — الممارسة وقوائم الصف تكلّمك بلغتك.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3850,7 +3856,8 @@
       "pracOpened": "فایل صنف باز شد. فقط نام‌های مستعار.",
       "pracBad": "این فایل فهرست تمرین صنف نیست.",
       "helpPrac": "📋 تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند.",
-      "news23629": "MU 2.36.29 — تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند."
+      "news23629": "MU 2.36.29 — تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4440,7 +4447,8 @@
       "pracOpened": "Dosiye y'ishuri yafunguwe. Amazina y'ibihimbano gusa.",
       "pracBad": "Iyo dosiye si urutonde rw'imyitozo y'ishuri.",
       "helpPrac": "📋 Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe.",
-      "news23629": "MU 2.36.29 — Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe."
+      "news23629": "MU 2.36.29 — Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe.",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5030,7 +5038,8 @@
       "pracOpened": "ናይ ክፍሊ ፋይል ተኸፊቱ። ስም ሓሳውቲ ጥራይ።",
       "pracBad": "እቲ ፋይል ናይ ክፍሊ ልምምድ ዝርዝር ኣይኮነን።",
       "helpPrac": "📋 ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።",
-      "news23629": "MU 2.36.29 — ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።"
+      "news23629": "MU 2.36.29 — ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።",
+      "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language."
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
