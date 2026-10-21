@@ -2,6 +2,8 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.320 plate, 2.5.296 mobs).
 
+- [x] **2.5.324 no KulibertI18n missing:** mode-pill, wand-x, stick-pad, hotbar use data-bt-label/title so the shared pack does not warn. Console is clean on load. Aria-labels still translated.
+
 - [x] **2.5.295 C1:** Bonk input, safe zone, Suit HUD low state, and Bonked flow with translations.
 - [x] **2.5.296 Scrappers and Sparkbugs:** They come out at night and in caves, never in Bertyville. Bertyville is a safe zone. A Scrapper takes one common item and runs; reboot returns it plus parts. A Sparkbug shows Zap and nicks the Suit only outside town. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

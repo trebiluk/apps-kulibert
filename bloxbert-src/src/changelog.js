@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.324', date: '2026-10-21', lines: {
+    en: ['2.5.324 — Behind the scenes: cleaner start-up for testers.'],
+    simple: ['2.5.324 — Starts up cleaner.'],
+    uk: ['2.5.324 — За лаштунками: чистіший запуск для тестерів.'],
+    ru: ['2.5.324 — За кулисами: чище запуск для тестировщиков.'],
+    es: ['2.5.324 — Tras bambalinas: arranque más limpio para los testers.'],
+    ar: ['2.5.324 — خلف الكواليس: بدء أنظف للمختبرين.'],
+    'fa-AF': ['2.5.324 — پشت صحنه: شروع پاک‌تر برای آزمایش‌کننده‌ها.'],
+    rw: ['2.5.324 — Inyuma y'amashusho: gutangira neza ku bagerageza.'],
+    ti: ['2.5.324 — ድሕሪ መድረኽ፡ ንፈታኒ ንጹር ምጅማር።'],
+  }},
+
   { v: '2.5.321', date: '2026-10-21', lines: {
     en: ['2.5.321 — Bertopia starts again, with the newest fixes and Bonk.'],
     simple: ['2.5.321 — Bertopia starts again, with the newest fixes and Bonk.'],
