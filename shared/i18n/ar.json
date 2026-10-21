@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "بطاقة كوب اليوم تعرض أفضل نتيجة لك اليوم.",
   "vdPaused": "متوقف",
   "vdLevels": "المستويات",
-  "vdPausedBody": "توقف في {name}. نقاط التفتيش تبقى."
+  "vdPausedBody": "توقف في {name}. نقاط التفتيش تبقى.",
+  "moveName": "تحرك",
+  "hotbarName": "كتل",
+  "modeName": "وضع",
+  "cancel": "إلغاء"
 }

@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "Agace k'igikombe cy'uyu munsi kerekana agahigo kawe k'uyu munsi.",
   "vdPaused": "Birahagaritswe",
   "vdLevels": "Urwego",
-  "vdPausedBody": "Guhagarara kuri {name}. Ahantu ho kugenzura horahoraho."
+  "vdPausedBody": "Guhagarara kuri {name}. Ahantu ho kugenzura horahoraho.",
+  "moveName": "Kwimura",
+  "hotbarName": "Ibikoresho",
+  "modeName": "Uburyo",
+  "cancel": "Hagarika"
 }

@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "کارت پیالهٔ امروز بهترین عدد امروزت را نشان می‌دهد.",
   "vdPaused": "مکث",
   "vdLevels": "مرحله‌ها",
-  "vdPausedBody": "مکث در {name}. نقاط بررسی سر جای خود می‌مانند."
+  "vdPausedBody": "مکث در {name}. نقاط بررسی سر جای خود می‌مانند.",
+  "moveName": "حرکت",
+  "hotbarName": "بلوک‌ها",
+  "modeName": "حالت",
+  "cancel": "لغو"
 }

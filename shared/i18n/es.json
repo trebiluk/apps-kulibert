@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "La ficha de la taza del día muestra tu mejor marca de hoy.",
   "vdPaused": "En pausa",
   "vdLevels": "Niveles",
-  "vdPausedBody": "Pausa en {name}. Los puntos de control siguen."
+  "vdPausedBody": "Pausa en {name}. Los puntos de control siguen.",
+  "moveName": "Mover",
+  "hotbarName": "Bloques",
+  "modeName": "Modo",
+  "cancel": "Cancelar"
 }

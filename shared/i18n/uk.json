@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "Плитка чашки дня показує твій рекорд за сьогодні.",
   "vdPaused": "Пауза",
   "vdLevels": "Рівні",
-  "vdPausedBody": "Пауза на {name}. Контрольні точки на місці."
+  "vdPausedBody": "Пауза на {name}. Контрольні точки на місці.",
+  "moveName": "Рух",
+  "hotbarName": "Блоки",
+  "modeName": "Режим",
+  "cancel": "Скасувати"
 }

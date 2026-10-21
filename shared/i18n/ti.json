@@ -416,5 +416,9 @@
   "rfHelpDailyBest": "ሰሌዳ ጽዋዕ ናይ ሎሚ ናይ ሎሚ ሪኮርድካ የርኢ።",
   "vdPaused": "ደው ኢሉ",
   "vdLevels": "ደረጃታት",
-  "vdPausedBody": "ደው ኣብ {name}። መቆጣጠሪ ነጥብታት ኣብ ቦታኦም እየን።"
+  "vdPausedBody": "ደው ኣብ {name}። መቆጣጠሪ ነጥብታት ኣብ ቦታኦም እየን።",
+  "moveName": "ንቅስቓስ",
+  "hotbarName": "ኣቑሑት",
+  "modeName": "ኩነታት",
+  "cancel": "ሰርዝ"
 }

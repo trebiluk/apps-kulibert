@@ -280,5 +280,9 @@
   "vdPaused": "Paused",
   "vdLevels": "Levels",
   "vdPausedBody": "{name} is stopped. Checkpoints stay.",
-  "mySettings": "My settings"
+  "mySettings": "My settings",
+  "moveName": "Move",
+  "hotbarName": "Blocks",
+  "modeName": "Mode",
+  "cancel": "Cancel"
 }
