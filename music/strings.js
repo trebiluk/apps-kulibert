@@ -461,7 +461,9 @@
     exitEsc: "Exit  Esc",
     performMicOff: "Mic: OFF",
     performMicOn: "Mic: ON",
-    getReady: "Get ready: {name}"
+    getReady: "Get ready: {name}",
+    helpPerform: "📽 Perform hides the side list, counts 3-2-1 in big numbers, then only the light show. The mic stays off unless you tap it. Less motion shows Ready.",
+    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -626,7 +628,9 @@
     exitEsc: "Exit Esc",
     performMicOff: "Mic off",
     performMicOn: "Mic on",
-    getReady: "Get ready: {name}"
+    getReady: "Get ready: {name}",
+    helpPerform: "📽 Perform hides the side list. It counts 3, 2, 1. Then only the light show. The mic stays off until you tap it. Less motion says Ready.",
+    news23623: "MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1082,7 +1086,9 @@
       "exitEsc": "Вийти  Esc",
       "performMicOff": "Мікрофон: ВИМК",
       "performMicOn": "Мікрофон: УВІМК",
-      "getReady": "Готуйся: {name}"
+      "getReady": "Готуйся: {name}",
+      "helpPerform": "📽 Виступ ховає бічний список, рахує 3-2-1 великими цифрами, потім лишається лише світлове шоу. Мікрофон вимкнений, доки ти його не торкнеш. Менше руху показує Готово.",
+      "news23623": "MU 2.36.23 — Виступ на проєкторі: велике 3-2-1, потім лише твоє світлове шоу."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1535,7 +1541,9 @@
       "exitEsc": "Выйти  Esc",
       "performMicOff": "Микрофон: ВЫКЛ",
       "performMicOn": "Микрофон: ВКЛ",
-      "getReady": "Приготовься: {name}"
+      "getReady": "Приготовься: {name}",
+      "helpPerform": "📽 Выступление прячет боковой список, считает 3-2-1 большими цифрами, потом остаётся только световое шоу. Микрофон выключен, пока ты его не нажмёшь. Меньше движения показывает Готово.",
+      "news23623": "MU 2.36.23 — Выступление на проекторе: большое 3-2-1, потом только твоё световое шоу."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1989,7 +1997,9 @@
       "exitEsc": "Salir  Esc",
       "performMicOff": "Mic: apagado",
       "performMicOn": "Mic: encendido",
-      "getReady": "Prepárate: {name}"
+      "getReady": "Prepárate: {name}",
+      "helpPerform": "📽 Actuar esconde la lista lateral, cuenta 3-2-1 en grande y luego solo queda el show de luces. El micrófono sigue apagado hasta que lo toques. Con menos movimiento dice Listo.",
+      "news23623": "MU 2.36.23 — Actuar en el proyector: un 3-2-1 grande, y luego solo tu show de luces."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2443,7 +2453,9 @@
       "exitEsc": "خروج  Esc",
       "performMicOff": "المايك: مطفأ",
       "performMicOn": "المايك: يعمل",
-      "getReady": "استعد: {name}"
+      "getReady": "استعد: {name}",
+      "helpPerform": "📽 العرض يخفي القائمة الجانبية، ويعد 3-2-1 بأرقام كبيرة، ثم يبقى عرض الأضواء فقط. المايك مطفأ حتى تضغطه. مع حركة أقل يظهر جاهز.",
+      "news23623": "MU 2.36.23 — العرض على جهاز العرض: عد تنازلي كبير 3-2-1، ثم عرض الأضواء فقط."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2897,7 +2909,9 @@
       "exitEsc": "بیرون  Esc",
       "performMicOff": "مایک: خاموش",
       "performMicOn": "مایک: روشن",
-      "getReady": "آماده شو: {name}"
+      "getReady": "آماده شو: {name}",
+      "helpPerform": "📽 اجرا فهرست کناری را پنهان می‌کند، ۳-۲-۱ را بزرگ می‌شمارد، بعد فقط نمایش نور می‌ماند. میکروفون خاموش است تا خودت بزنی. حرکت کمتر «آماده» را نشان می‌دهد.",
+      "news23623": "MU 2.36.23 — اجرا روی پروجکتور: یک ۳-۲-۱ بزرگ، بعد فقط نمایش نور تو."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3351,7 +3365,9 @@
       "exitEsc": "Sohoka  Esc",
       "performMicOff": "Mikoro: OFF",
       "performMicOn": "Mikoro: ON",
-      "getReady": "Tegura: {name}"
+      "getReady": "Tegura: {name}",
+      "helpPerform": "📽 Perform ihisha urutonde rw'uruhande, ibara 3-2-1 binini, hanyuma hasigara urumuri gusa. Mikoro iguma izimye kugeza uyikanda. Imigendere mike yerekana Ready.",
+      "news23623": "MU 2.36.23 — Kwerekana ku mususururo: 3-2-1 kinini, hanyuma gusa urumuri rwawe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3805,7 +3821,9 @@
       "exitEsc": "ውጻእ  Esc",
       "performMicOff": "ማይክ፡ ጠፊኡ",
       "performMicOn": "ማይክ፡ ወሊዑ",
-      "getReady": "ተዳለ: {name}"
+      "getReady": "ተዳለ: {name}",
+      "helpPerform": "📽 ምቕራብ ነቲ ጎኒ ዝርዝር ይሕብኦ፡ 3-2-1 ብዓቢ ይቑጽር፡ ድሕሪኡ ብርሃን ጥራይ ይተርፍ። ማይክ ክሳብ እትጥውቖ ጠፊኡ እዩ። ምንቅስቓስ ምስትንከስ ድሉው የርኢ።",
+      "news23623": "MU 2.36.23 — ኣብ ፕሮጀክተር ምቕራብ፡ ዓቢ 3-2-1፡ ድሕሪኡ ብርሃንኻ ጥራይ።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

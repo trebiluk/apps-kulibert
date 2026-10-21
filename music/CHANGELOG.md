@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.23** · 2026-10-21 · channel **live**
+
+MU 2.36.23 — Perform on the projector: a big 3-2-1, then only your light show.
+
+## Earlier
+
 **Chip: MU 2.36.22** · 2026-10-21 · channel **live**
 
 MU 2.36.22 — The Score tab teaches you in your language.
