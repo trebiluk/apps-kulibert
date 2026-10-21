@@ -74,5 +74,10 @@
   "finePrintTitle": "About This Hub",
   "finePrintKid": "Who made these apps, how we keep you safe, and who to talk to.",
   "finePrintClose": "Close",
-  "rfTestHelp": "Staff only. Jump to win or lose. Scores go to the TEST board."
+  "rfTestHelp": "Staff only. Jump to win or lose. Scores go to the TEST board.",
+  "groupMake": "Make",
+  "groupChange": "Change",
+  "groupShow": "Show",
+  "vizHelp": "Pick a look. Press Play. Tap the mic lights.",
+  "helpMicState": "The mic line says on, listening, or blocked."
 }

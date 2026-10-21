@@ -10,6 +10,8 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.14 item 4: Make, Change, and Show are translated; the Viz hint was already translated.
+- [x] MU 2.36.14 item 3: already done on MU 2.36.13 — New beat and Nuevo ritmo sit fully above Perform and Tempo.
 - [x] MU 2.36.14 item 2: This song and Tempo use the steel ink token in both themes.
 - [x] MU 2.36.14 item 1: mic status line is dark ink on the steel in both themes (off, listening, blocked).
 - [x] MU 2.36.13 item 1: New beat is fully visible on a phone, at least 44px, and 8px clear of the bottom bar.

@@ -214,5 +214,10 @@
   "finePrintTitle": "Sobre este hub",
   "finePrintKid": "Algo importante sobre estas apps: quién las hizo, cómo te cuidamos y a quién hablar.",
   "finePrintClose": "Cerrar",
-  "rfTestHelp": "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST."
+  "rfTestHelp": "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
+  "groupMake": "Haz",
+  "groupChange": "Cambia",
+  "groupShow": "Muestra",
+  "vizHelp": "Elige un look. Pulsa Play. Toca 🎤 Luces del micrófono para que la imagen baile con la sala.",
+  "helpMicState": "La línea del micrófono dice si está encendido, escuchando o bloqueado."
 }

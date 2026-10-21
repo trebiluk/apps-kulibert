@@ -214,5 +214,10 @@
   "finePrintTitle": "About This Hub",
   "finePrintKid": "Some important stuff about the apps here: who made them, how we keep you safe, and who to talk to.",
   "finePrintClose": "Close",
-  "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board."
+  "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
+  "groupMake": "Make",
+  "groupChange": "Change",
+  "groupShow": "Show",
+  "vizHelp": "Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.",
+  "helpMicState": "The mic line shows if the mic is on, listening, or blocked."
 }

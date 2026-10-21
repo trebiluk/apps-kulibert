@@ -214,5 +214,10 @@
   "finePrintTitle": "Ibijyanye n'uru rubuga",
   "finePrintKid": "Ibintu by'ingenzi ku porogaramu: ninde yazikoze, uko dukurinze, n'uwo uvugana.",
   "finePrintClose": "Funga",
-  "rfTestHelp": "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa."
+  "rfTestHelp": "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
+  "groupMake": "Kora",
+  "groupChange": "Hindura",
+  "groupShow": "Erekana",
+  "vizHelp": "Hitamo isura. Kanda Kina. Kanda 🎤 Amataro ya mikoro kugira ngo ishusho idanirane n'icyumba.",
+  "helpMicState": "Umurongo wa mikoro wererekana niba ikora, yumva, cyangwa yahagaritswe."
 }

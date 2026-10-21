@@ -106,16 +106,16 @@
     <div class="side" id="side">
       <nav class="dock-left" id="dock-left" aria-label="Workspace">
         <button type="button" id="menu-btn" class="menu-btn" aria-label="Menu" aria-expanded="false" data-i18n-label="menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-i18n="menu">Menu</span></button>
-        <p class="rail-group"><span data-mu="groupMake">Make</span> <button type="button" class="rail-next" data-next="remix" data-mu="nextStep">Next</button></p>
+        <p class="rail-group"><span data-mu="groupMake" data-i18n="groupMake">Make</span> <button type="button" class="rail-next" data-next="remix" data-mu="nextStep">Next</button></p>
         <button type="button" id="tab-songs" class="tab on" data-tab="songs" aria-pressed="true" data-mu-label="songs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h9l3 3v13H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15 4v3h3M8 11h8M8 15h6" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="songs">Songs</span></button>
         <button type="button" id="tab-tap" class="tab" data-tab="tap" aria-pressed="false" data-mu-label="tabTap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg><span data-mu="tabTap">Tap</span></button>
         <button type="button" id="tab-piano" class="tab" data-tab="piano" aria-pressed="false" data-mu-label="tabPiano"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 5v7M12 5v7M15 5v7" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabPiano">Piano</span></button>
         <button type="button" id="tab-score" class="tab" data-tab="score" aria-pressed="false" data-mu-label="score"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12M6 12h12M6 17h12" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="15" cy="8" r="1.4" fill="currentColor"/><circle cx="10" cy="13" r="1.4" fill="currentColor"/></svg><span data-mu="score">Score</span></button>
-        <p class="rail-group"><span data-mu="groupChange">Change</span> <button type="button" class="rail-next" data-next="viz" data-mu="nextStep">Next</button></p>
+        <p class="rail-group"><span data-mu="groupChange" data-i18n="groupChange">Change</span> <button type="button" class="rail-next" data-next="viz" data-mu="nextStep">Next</button></p>
         <button type="button" id="tab-remix" class="tab" data-tab="remix" aria-pressed="false" data-mu-label="tabRemix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h10M7 12h6M7 17h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16 10l3 2-3 2" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="tabRemix">Remix</span></button>
         <button type="button" id="tab-mix" class="tab" data-tab="mix" aria-pressed="false" data-mu-label="tabMix"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16V8M12 18V6M18 14v-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabMix">Mix</span></button>
         <button type="button" id="tab-band" class="tab" data-tab="band" aria-pressed="false" data-mu-label="band"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="16" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 18c1-3 3-4 4-4s3 1 4 4M12 18c1-3 3-4 4-4s3 1 4 4" fill="none" stroke="currentColor" stroke-width="2"/></svg><span data-mu="band">Band</span></button>
-        <p class="rail-group"><span data-mu="groupShow">Show</span> <button type="button" class="rail-next" data-next="perform" data-mu="nextStep">Next</button></p>
+        <p class="rail-group"><span data-mu="groupShow" data-i18n="groupShow">Show</span> <button type="button" class="rail-next" data-next="perform" data-mu="nextStep">Next</button></p>
         <button type="button" id="tab-viz" class="tab" data-tab="viz" aria-pressed="false" data-mu-label="tabViz"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 16c2-6 4 2 6-4s4 6 6 0 2 2 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span data-mu="tabViz">Viz</span></button>
         <button type="button" id="rail-perform" class="tab rail-perform" data-mu="perform">Perform</button>
       </nav>
@@ -158,10 +158,12 @@
         <li><span data-mu="helpSwatch">◉ Each picture button has a name. A check shows the one you picked.</span></li>
         <li><span data-mu="helpRead">👁 Every word is easy to read. All buttons fit above the play bar. 🎤 Listening. Then the mic turns off.</span></li>
         <li><span data-mu="helpBeat">🥁 Make a beat and New beat open your beat. Rock loads only on a fresh start or when you tap Rock. Clear stays clear until you pick a style or tap a pad.</span></li>
+        <li><span data-mu="helpMicState">🎤 The mic line shows if the mic is on, listening, or blocked.</span></li>
         <li><span data-mu="helpMic">🎤 Mic lights starts off. Tap it to turn the room mic on or off. If you say no, the song lights still move. Nothing is recorded or sent.</span></li>
       </ul>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23614">MU 2.36.14: The mic status and Viz labels are easier to read, New beat fits on phones, and the rail is translated.</span></li>
         <li><span data-mu="news23613">MU 2.36.13: New beat is fully visible on phones.</span></li>
         <li><span data-mu="news23612">MU 2.36.12: Every word is easy to read, and all buttons fit above the play bar.</span></li>
         <li><span data-mu="news23611">MU 2.36.11: Make a beat keeps the beat you made.</span></li>
@@ -443,7 +445,7 @@
       </div>
       <div id="lights-pane">
         <div id="scenes" class="looks" aria-label="Pictures"></div>
-        <p id="viz-help" class="hint" data-mu="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
+        <p id="viz-help" class="hint" data-mu="vizHelp" data-i18n="vizHelp">Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.</p>
         <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
         <p id="viz-mic-status" class="hint" aria-live="polite"></p>
         <div id="steel-faders">
@@ -616,7 +618,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23613a"></script>
+  <script src="./version.js?v=mu23614c"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -625,7 +627,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23613a"></script>
+  <script src="./strings.js?v=mu23614c"></script>
   <script src="./app.js?v=mu23612c"></script>
 </body>
 </html>
