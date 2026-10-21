@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.319', date: '2026-10-21', lines: {
+    en: ['2.5.319 — Screen readers name the play screen in your language.'],
+    simple: ['2.5.319 — Screen readers name the play screen in your language.'],
+    uk: ['2.5.319 — Зчитувачі екрана називають ігровий екран твоєю мовою.'],
+    ru: ['2.5.319 — Читалки экрана называют игровой экран на твоём языке.'],
+    es: ['2.5.319 — Los lectores de pantalla nombran la pantalla de juego en tu idioma.'],
+    ar: ['2.5.319 — قارئات الشاشة تسمي شاشة اللعب بلغتك.'],
+    'fa-AF': ['2.5.319 — خواننده‌های صفحه صفحه بازی را به زبان تو نام می‌برند.'],
+    rw: ['2.5.319 — Abasoma ecran bavuga ecran y\'umukino mu rurimi rwawe.'],
+    ti: ['2.5.319 — ኣንባቢ ስክሪን ስም ናይ ጸወታ ስክሪን ብቋንቋኻ ይብል።'],
+  }},
+
   { v: '2.5.318', date: '2026-10-21', lines: {
     en: ['2.5.318 — Help now explains the Use button.'],
     simple: ['2.5.318 — Help now explains the Use button.'],

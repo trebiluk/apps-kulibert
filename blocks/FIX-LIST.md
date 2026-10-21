@@ -8,6 +8,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
 
 - [x] **2.5.311 help and chip:** The Survival chip and its aria-label follow a language change with no reload. Help has one new paragraph for the spot, Hub language, pictures, counts, rug, top-bar name, PvP switches, and tap-again hint. The empty Pick a tile line is gone from Help. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
+- [x] **2.5.319 play-screen names:** Energy, Blocks, Move, Mode, Full screen, and Cancel are named in your language for screen readers. Energy shows the number. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.318 help use:** Help explains the Use button. Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it. In all 9 languages including Simple. Kinyarwanda, Tigrinya, and Dari still need a native check.
 - [x] **2.5.316 graphics words:** Settings note and toast say Auto, Lite and Full in your language. Spanish is Automático, Ligero, Completo. Kinyarwanda auto is Byikora. Tigrinya auto is ብባዕሉ. Kinyarwanda, Tigrinya, and Dari still need a native check. The staff speed line stays English.
 
