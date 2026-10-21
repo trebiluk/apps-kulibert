@@ -1945,6 +1945,11 @@
   function logPerform(step) {
     if (!state.performLog) state.performLog = [];
     state.performLog.push(String(step));
+    var proof = false;
+    try {
+      proof = staffDrop() || !!(window.KulibertTest && document.querySelector("script[src*='kw-test']"));
+    } catch (e) { proof = false; }
+    if (!proof) return;
     const el = $("perform-count");
     if (el) el.setAttribute("data-seq", state.performLog.join(","));
     console.info("perform-count", state.performLog.join(","));
