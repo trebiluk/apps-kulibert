@@ -279,5 +279,6 @@
   "rfHelpDailyBest": "The Daily cup tile shows your best for today.",
   "vdPaused": "Paused",
   "vdLevels": "Levels",
-  "vdPausedBody": "{name} is stopped. Checkpoints stay."
+  "vdPausedBody": "{name} is stopped. Checkpoints stay.",
+  "mySettings": "My settings"
 }

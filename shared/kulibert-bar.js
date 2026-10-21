@@ -513,6 +513,12 @@
       helpBtn.textContent = help;
       helpBtn.setAttribute("aria-label", help);
     }
+    var setBtn = document.querySelector(".kb-bar .kb-settings");
+    if (setBtn) {
+      var ms = trBar("mySettings", "My settings");
+      setBtn.setAttribute("aria-label", ms);
+      setBtn.setAttribute("title", ms);
+    }
     paintAlias(document.querySelector(".kb-bar .kb-alias"));
     paintDrawer();
     fitPlate();
