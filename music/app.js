@@ -3575,7 +3575,7 @@
     recorder.start();
     watchLevel(micStream);
     if (!state.playing) play();
-    $("mic-status").textContent = "Listening. Then the mic turns off.";
+    $("mic-status").textContent = mu("micListen");
     $("lesson").textContent = "The mic is on for this loop only. Tap the pads or play along.";
     micTimer = window.setTimeout(() => {
       if (recorder.state === "recording") recorder.stop();
