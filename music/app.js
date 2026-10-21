@@ -1080,11 +1080,16 @@
   function buildKit() {
     const box = $("kit");
     ROWS.forEach(([id, label]) => {
+      const word = mu("drum_" + id) || label;
       const b = document.createElement("button");
       b.type = "button";
       b.className = "pad " + id;
-      b.textContent = label;
-      b.setAttribute("aria-label", label);
+      b.textContent = word;
+      b.setAttribute("aria-label", word);
+      b.setAttribute("data-mu", "drum_" + id);
+      b.setAttribute("data-i18n", "drum_" + id);
+      b.setAttribute("data-mu-label", "drum_" + id);
+      b.setAttribute("data-i18n-label", "drum_" + id);
       bindPad(b, id);
       box.appendChild(b);
     });

@@ -283,5 +283,14 @@
   "fineKind": "Be Kind",
   "fineKindKid": "Only share things that are kind, school-appropriate, and made by you or the class.",
   "fineQuestions": "Questions?",
-  "fineQuestionsKid": "Questions or worries? Talk to Mr. Kulibert or a grown-up you trust."
+  "fineQuestionsKid": "Questions or worries? Talk to Mr. Kulibert or a grown-up you trust.",
+  "tapFinger": "Tap with a finger",
+  "drumsGroup": "Drums",
+  "helpFinger": "🥁 The finger pads show their names in your language.",
+  "drum_tom": "Tom",
+  "drum_shaker": "Shaker",
+  "drum_rim": "Rim",
+  "drum_bell": "Bell",
+  "drum_tamb": "Tamb",
+  "drum_crash": "Crash"
 }

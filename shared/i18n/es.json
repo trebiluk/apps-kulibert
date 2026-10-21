@@ -283,5 +283,14 @@
   "fineKind": "Sé amable",
   "fineKindKid": "Comparte solo cosas amables, apropiadas para la escuela y hechas por ti o la clase.",
   "fineQuestions": "¿Preguntas?",
-  "fineQuestionsKid": "¿Preguntas o preocupaciones? Habla con el Sr. Kulibert o con un adulto de confianza."
+  "fineQuestionsKid": "¿Preguntas o preocupaciones? Habla con el Sr. Kulibert o con un adulto de confianza.",
+  "tapFinger": "Toca con el dedo",
+  "drumsGroup": "Batería",
+  "helpFinger": "🥁 Los botones para el dedo muestran su nombre en tu idioma.",
+  "drum_tom": "Timbal",
+  "drum_shaker": "Maracas",
+  "drum_rim": "Aro",
+  "drum_bell": "Campana",
+  "drum_tamb": "Pandero",
+  "drum_crash": "Platillo"
 }

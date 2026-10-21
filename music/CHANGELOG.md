@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.17** · 2026-10-20 · channel **live**
+
+MU 2.36.17 — finger pads and their group names follow your language.
+
+## Earlier
+
 **Chip: MU 2.36.16** · 2026-10-20 · channel **live**
 
 MU 2.36.16 — drum pads, the Next line, Undo, Two bars, and Beat numbers speak your language.

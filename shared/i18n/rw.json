@@ -283,5 +283,14 @@
   "fineKind": "Ube mwiza",
   "fineKindKid": "Sangira gusa ibintu byiza, bikwiriye ishuri kandi byakozwe nawe cyangwa n'ishuri.",
   "fineQuestions": "Ibibazo?",
-  "fineQuestionsKid": "Ibibazo cyangwa impungenge? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye."
+  "fineQuestionsKid": "Ibibazo cyangwa impungenge? Vugana na Bwana Kulibert cyangwa umuntu mukuru wizeye.",
+  "tapFinger": "Kanda n'urutoki",
+  "drumsGroup": "Ingoma",
+  "helpFinger": "🥁 Utubuto tw'urutoki twerekana amazina mu rurimi rwawe.",
+  "drum_tom": "Tomu",
+  "drum_shaker": "Ishakeri",
+  "drum_rim": "Urutuba",
+  "drum_bell": "Inzogera",
+  "drum_tamb": "Ingoma nto",
+  "drum_crash": "Ikirashe"
 }

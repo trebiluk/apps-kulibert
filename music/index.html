@@ -159,10 +159,12 @@
         <li><span data-mu="helpRead">👁 Every word is easy to read. All buttons fit above the play bar. 🎤 Listening. Then the mic turns off.</span></li>
         <li><span data-mu="helpBeat">🥁 Make a beat and New beat open your beat. Rock loads only on a fresh start or when you tap Rock. Clear stays clear until you pick a style or tap a pad.</span></li>
         <li><span data-mu="helpMicState">🎤 The mic line shows if the mic is on, listening, or blocked.</span></li>
+        <li><span data-mu="helpFinger">🥁 The finger pads show their names in your language.</span></li>
         <li><span data-mu="helpMic">🎤 Mic lights starts off. Tap it to turn the room mic on or off. If you say no, the song lights still move. Nothing is recorded or sent.</span></li>
       </ul>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23617">MU 2.36.17: Tap with a finger pads and their names now follow your language.</span></li>
         <li><span data-mu="news23616">MU 2.36.16: Drum pads and button names now speak your language.</span></li>
         <li><span data-mu="news23615">MU 2.36.15: Spin and Glow are translated in every language.</span></li>
         <li><span data-mu="news23614">MU 2.36.14: The mic status and Viz labels are easier to read, New beat fits on phones, and the rail is translated.</span></li>
@@ -306,7 +308,7 @@
       <span id="songbar-meta"></span>
     </div>
     <section class="work" id="work">
-      <div class="kit" id="kit" aria-label="Tap with a finger"></div>
+      <div class="kit" id="kit" data-mu-label="tapFinger" data-i18n-label="tapFinger" aria-label="Tap with a finger"></div>
       <div id="notes-pane">
         <div class="staff-wrap"><div id="staff"></div></div>
         <p id="teach" class="teach-line" hidden>Tap a letter under the staff.</p>
@@ -396,7 +398,7 @@
         <p class="beat-speak" id="beat-speak"><span id="beat-line" class="beat-line" aria-live="polite" data-mu="pressPlay">Press Play. You can leave the sound off.</span>
           <button type="button" id="read-lesson" class="btn read-me" aria-label="Read it to me" data-mu-label="readMe">🔊</button></p>
         <p class="hint" id="step-hint" hidden data-mu="stepHint">Tap a pad. It stays on that step.</p>
-        <div id="drums" class="drums" aria-label="Drums"></div>
+        <div id="drums" class="drums" data-mu-label="drumsGroup" data-i18n-label="drumsGroup" aria-label="Drums"></div>
         <button type="button" id="more-drums" class="btn" aria-expanded="false" title="More drums"><span class="ctl-word" data-mu="moreDrums">More drums</span></button>
         <details class="more-box">
           <summary data-mu="extraDrums">Extra drums (Tom, Shaker…)</summary>
@@ -620,7 +622,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23616a"></script>
+  <script src="./version.js?v=mu23617a"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -629,7 +631,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23616b"></script>
-  <script src="./app.js?v=mu23616b"></script>
+  <script src="./strings.js?v=mu23617a"></script>
+  <script src="./app.js?v=mu23617a"></script>
 </body>
 </html>

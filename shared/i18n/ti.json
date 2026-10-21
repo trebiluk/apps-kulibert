@@ -283,5 +283,14 @@
   "fineKind": "ሕያውኳ ኩን",
   "fineKindKid": "ሕያዋት፣ ንቤት ትምህርቲ ዝኸውን፣ ብኻኻ ወይ ብክፍሊ ዝተሰርሐ ጥራይ ኣካፍል።",
   "fineQuestions": "ሕቶታት?",
-  "fineQuestionsKid": "ሕቶ ወይ ሻቕሎት? ምስ ኣቶ ኩሊበርት ወይ ምስ እትእመኖ ዓቢ ሰብ ተዘራረብ።"
+  "fineQuestionsKid": "ሕቶ ወይ ሻቕሎት? ምስ ኣቶ ኩሊበርት ወይ ምስ እትእመኖ ዓቢ ሰብ ተዘራረብ።",
+  "tapFinger": "ብኣጻብዕ ጠውቕ",
+  "drumsGroup": "ከበሮ",
+  "helpFinger": "🥁 መልጎም ኣጻብዕ ስሞም ብቋንቋኻ የርእዩ።",
+  "drum_tom": "ቶም",
+  "drum_shaker": "ሸከር",
+  "drum_rim": "ገምጋም",
+  "drum_bell": "ደወል",
+  "drum_tamb": "ከበሮ ንእሽቶ",
+  "drum_crash": "ክራሽ"
 }
