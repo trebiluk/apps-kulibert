@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "VD-1.0.13";
+  var I18N_REV = "RF-1.0.13";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -299,6 +299,7 @@
   "rfHelpStars": "The level list shows your stars and your fewest ramps.",
   "rfHelpClear": "When you win, stars show one by one. Next is ready.",
   "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
+  "rfHelpDaily": "The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only.",
   "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
   "rfLv5": "Pick the path",
   "rfWall": "Wall",

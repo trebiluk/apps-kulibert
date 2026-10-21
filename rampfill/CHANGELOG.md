@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.13
+
+RF 1.0.13 — A new Daily cup every school day, the same for the whole class.
+
 ## RF 1.0.12
 
 RF 1.0.12 — Retry shows a faint copy of your best ramps.

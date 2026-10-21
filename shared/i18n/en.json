@@ -406,5 +406,6 @@
   "loud_tamb": "Tamb loudness",
   "loud_crash": "Crash loudness",
   "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
-  "vdArena": "Volt Duel arena"
+  "vdArena": "Volt Duel arena",
+  "rfHelpDaily": "The Daily cup is a new cup every school day. It is the same for the whole class. Your best stays on this device only."
 }

@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 14. Version locked: RF 1.0.13.
+
+- [x] **RF 1.0.13 ITEM 1:** The level list has a Daily cup tile. The cup comes from the school date, so the whole class gets the same one. Weekends repeat Friday. Today's best is date and a number on this device only. No streak and no alias.
+
 Stage 13. Version locked: RF 1.0.12.
 
 - [x] **RF 1.0.12 ITEM 1:** After a new best, Retry can show a faint grey copy of those ramps. The lines are stored by level only. Show best is a 44px switch, on by default.
