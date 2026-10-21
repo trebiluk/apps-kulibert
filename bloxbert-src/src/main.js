@@ -377,6 +377,8 @@ function applyI18n() {
   }
   for (const el of document.querySelectorAll('[data-i18n-label]')) el.setAttribute('aria-label', t(el.dataset.i18nLabel))
   for (const el of document.querySelectorAll('[data-i18n-title]')) el.setAttribute('title', t(el.dataset.i18nTitle))
+  for (const el of document.querySelectorAll('[data-bt-label]')) el.setAttribute('aria-label', t(el.dataset.btLabel))
+  for (const el of document.querySelectorAll('[data-bt-title]')) el.setAttribute('title', t(el.dataset.btTitle))
   const plate = document.getElementById('ver-plate')
   if (plate) plate.textContent = VERSION
   document.title = 'Bertopia ' + VERSION
