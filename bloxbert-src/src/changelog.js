@@ -47,6 +47,18 @@ export const CHANGELOG = [
     ti: ['2.5.313 — መቐየሪ Flip ንእሙና ኣይሸፍንን።'],
   }},
 
+  { v: '2.5.311', date: '2026-10-21', lines: {
+    en: ['2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language.'],
+    simple: ['2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language.'],
+    uk: ['2.5.311 — Допомога каже, що нового, і чип Виживання говорить твоєю мовою.'],
+    ru: ['2.5.311 — Помощь говорит, что нового, и чип Выживания говорит на твоём языке.'],
+    es: ['2.5.311 — La ayuda dice lo nuevo, y el chip de Supervivencia habla tu idioma.'],
+    ar: ['2.5.311 — المساعدة تخبرك بالجديد، وشريحة البقاء تتحدث بلغتك.'],
+    'fa-AF': ['2.5.311 — رهنما تازه را می‌گوید، و نشان بقا به زبان تو حرف می‌زند.'],
+    rw: ['2.5.311 — Ubufasha bubwira ibishya, kandi chip ya Kubaho ivuga ururimi rwawe.'],
+    ti: ['2.5.311 — ሓገዝ ሓድሽ ይነግረካ፡ ምልክት ምንባር ድማ ብቋንቋኻ ይዛረብ።'],
+  }},
+
   { v: '2.5.307', date: '2026-10-21', lines: {
     en: ['2.5.307 — If you tap again, the hint shows again so you know the game heard you.'],
     simple: ['2.5.307 — Tap again and the hint shows again. The game heard you.'],
