@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **2.5.299 C5 Foundry Overseer:** Team up to reboot the Foundry Overseer (cosmetic reward only). Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.331 suit-copy-clear:** The Suit pill sits above the stick and the Copy pill sits left of the jump column. Neither covers the stick, crouch, or Jump. stick-right mirrors both.
 - [x] **combat-298-build (2.5.330):** 2.5.298 Rustbot/Keeper/Bertodex/badges now built into the game; Help names them. Kinyarwanda, Tigrinya, and Dari still need a native check.
 

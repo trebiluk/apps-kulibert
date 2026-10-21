@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.299', date: '2026-10-21', lines: {
+    en: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
+    simple: ['2.5.299 — Team up to reboot the Foundry Overseer and earn a Foundry Crew badge and gear trim.'],
+    uk: ['2.5.299 — Об'єднайтеся, щоб перезавантажити Наглядача ливарні і отримати значок екіпажу та обробку.'],
+    ru: ['2.5.299 — Объединитесь, чтобы перезагрузить Надзирателя литейной и получить значок команды и отделку.'],
+    es: ['2.5.299 — Únete en equipo para reiniciar al Supervisor de la Fundición y ganar la insignia de Equipo de Fundición y el borde.'],
+    ar: ['2.5.299 — تعاون لإعادة تشغيل مشرف المسبك واحصل على شارة طاقم المسبك والتشذيب.'],
+    'fa-AF': ['2.5.299 — به عنوان تیم برای راه‌اندازی مجدد ناظر ریخته‌گری همکاری کنید و نشان خدمه و تزئین کسب کنید.'],
+    rw: ['2.5.299 — Fatanya gusubiza Foundry Overseer kandi ubone ikimenyetso cya Foundry Crew n'uburyo.'],
+    ti: ['2.5.299 — ብቡድ ንፋውንድሪ ኦቨርሲር ንምዝላልን ንፋውንድሪ ክሩ ባጅን ትሪምን ንምርካብ።'],
+  }},
+
   { v: '2.5.331', date: '2026-10-21', lines: {
     en: ['2.5.331 — The Suit and Copy buttons no longer sit on the move stick or Jump.'],
     simple: ['2.5.331 — The Suit and Copy buttons no longer sit on the move stick or Jump.'],
