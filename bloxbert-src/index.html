@@ -198,6 +198,10 @@ html[dir=rtl] .keys{direction:rtl;text-align:start}
 
 #t-bonk{display:none}
 body.touch #t-bonk:not([hidden]){display:grid;place-items:center}
+
+body.touch .keys{bottom:calc(var(--hud-lift) + 120px + 8px + 44px + 8px);max-width:calc(50vw - 24px)}
+@media (max-height:500px){body.touch .keys{bottom:calc(var(--hud-lift) + 104px + 8px + 44px + 8px)}}
+body.touch.stick-right .keys{inset-inline-start:auto;inset-inline-end:12px}
 #suit-bar{left:10px;bottom:calc(var(--hud-lift) + 120px + 8px)}
 @media (max-height:500px){#suit-bar{bottom:calc(var(--hud-lift) + 104px + 8px)}}
 body.stick-right #suit-bar{left:auto;right:10px}
