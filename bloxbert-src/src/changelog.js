@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.337', date: '2026-10-21', lines: {
+    en: ['2.5.337 — Help explains the Foundry Overseer and its looks-only reward.'],
+    simple: ['2.5.337 — Help explains the Foundry Overseer and its looks-only reward.'],
+    uk: ['2.5.337 — Довідка пояснює Наглядача ливарні та його нагороду лише для вигляду.'],
+    ru: ['2.5.337 — Справка объясняет Надзирателя литейной и его награду только для вида.'],
+    es: ['2.5.337 — La ayuda explica al Supervisor de la Fundición y su recompensa solo de apariencia.'],
+    ar: ['2.5.337 — المساعدة تشرح مشرف المسبك ومكافأته للمظهر فقط.'],
+    'fa-AF': ['2.5.337 — راهنما ناظر ریخته‌گری و پاداش فقط ظاهری آن را توضیح می‌دهد.'],
+    rw: ['2.5.337 — Ifashayobora isobanura Foundry Overseer n igihembo cyayo cy isura gusa.'],
+    ti: ['2.5.337 — ሓገዝ ንፋውንድሪ ኦቨርሲርን ንገጽታ ጥራይ ዝኾነ ሽልማቱን የብርህ።'],
+  }},
+
   { v: '2.5.336', date: '2026-10-21', lines: {
     en: ["2.5.336 — The Bonk button and safe-zone chip now really show up."],
     simple: ["2.5.336 — The Bonk button and safe-zone chip now really show up."],
