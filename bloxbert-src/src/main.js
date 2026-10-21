@@ -11569,6 +11569,7 @@ function startHelpUp() {
     if (window.crewCredit) window.crewCredit.record(nearestMob(), alias, 'assist')
     const line = t('c3Helped') || '{alias} helped you up'
     toast(String(line).replace('{alias}', alias))
+    try { if (window.bumpMedic) window.bumpMedic() } catch (e) {}
   }
   function sync() {
     const menu = document.body.classList.contains('menu-open')

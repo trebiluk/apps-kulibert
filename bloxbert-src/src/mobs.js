@@ -1,6 +1,6 @@
 // Bertopia mobs: Scrapper and Sparkbug. School-safe: reboot, never those other words.
 import { inSafeZone as townSafe } from './safe-zone.js'
-import { bumpFlanker } from './crew-badges.js'
+import { bumpFlanker, bumpMedic } from './crew-badges.js'
 import { openDex } from './learn.js'
 import { plotInterior as townPlot } from './town.js'
 import { mergeOrAdd } from './drops.js'
@@ -409,6 +409,7 @@ export function createMobs(opts) {
         m.hp -= applied
         if (toast) toast((mul > 1 ? '⚡ ' : '') + '-' + applied)
         if (mul > 1) bumpFlanker()
+        // Medic awarded from help-up path in main.js
         if (m.hp <= 0) finishReboot(m, true)
       }
       if (m.kind === 'sparkbug') {

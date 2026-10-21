@@ -34,3 +34,5 @@ export function loadBadges(doc) {
   counts = doc.crewBadges.counts || counts
   earned = new Set(doc.crewBadges.earned || [])
 }
+
+try { window.bumpMedic = bumpMedic } catch (e) {}
