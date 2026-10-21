@@ -163,6 +163,7 @@
       </ul>
       <h2 data-i18n="whatsNew">What's new</h2>
       <ul id="whats-list" class="whats-list">
+        <li><span data-mu="news23615">MU 2.36.15: Spin and Glow are translated in every language.</span></li>
         <li><span data-mu="news23614">MU 2.36.14: The mic status and Viz labels are easier to read, New beat fits on phones, and the rail is translated.</span></li>
         <li><span data-mu="news23613">MU 2.36.13: New beat is fully visible on phones.</span></li>
         <li><span data-mu="news23612">MU 2.36.12: Every word is easy to read, and all buttons fit above the play bar.</span></li>
@@ -449,8 +450,8 @@
         <button type="button" id="mic-lights" class="btn" aria-pressed="false" data-mu-label="micLights"><span class="mic-ico" aria-hidden="true">🎤</span> <span data-mu="micLights">Mic lights</span></button>
         <p id="viz-mic-status" class="hint" aria-live="polite"></p>
         <div id="steel-faders">
-          <label class="fader-row"><span>Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" aria-label="Spin"/></label>
-          <label class="fader-row"><span>Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" aria-label="Glow"/></label>
+          <label class="fader-row"><span data-mu="spinWord" data-i18n="spinWord">Spin</span><output id="n-spin" for="g-spin">60</output><input id="g-spin" type="range" min="0" max="100" value="60" data-mu-label="spinWord" data-i18n-label="spinWord" aria-label="Spin"/></label>
+          <label class="fader-row"><span data-mu="glowWord" data-i18n="glowWord">Glow</span><output id="n-glow" for="g-glow">90</output><input id="g-glow" type="range" min="0" max="100" value="90" data-mu-label="glowWord" data-i18n-label="glowWord" aria-label="Glow"/></label>
         </div>
         <details class="more-box">
           <summary data-mu="changePicture">Change the picture</summary>
@@ -618,7 +619,7 @@
     document.documentElement.classList.add("tempo-known");
   })();
   </script>
-  <script src="./version.js?v=mu23614c"></script>
+  <script src="./version.js?v=mu23615a"></script>
   <script src="/shared/kw-who.js?v=2026-10-20-staff-i18n-bust"></script>
   <script src="/shared/kulibert-prefs.js?v=2026-10-04-i18n"></script>
   <script src="/shared/titles.js?v=4"></script>
@@ -627,7 +628,7 @@
   <script src="/bertyscore/vendor/abcjs-basic-min.js?v=6.4.4"></script>
   <script src="/shared/lab.js?v=1"></script>
   <script src="./import.js?v=2.35.1"></script>
-  <script src="./strings.js?v=mu23614c"></script>
+  <script src="./strings.js?v=mu23615a"></script>
   <script src="./app.js?v=mu23612c"></script>
 </body>
 </html>

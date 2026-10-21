@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.15** · 2026-10-20 · channel **live**
+
+MU 2.36.15 — Spin and Glow are translated in every language.
+
+## Earlier
+
 **Chip: MU 2.36.14** · 2026-10-20 · channel **live**
 
 MU 2.36.14 — mic status, This song, and Tempo clear 4.5:1; New beat already fits on phones; rail headings are translated; Help updated.
