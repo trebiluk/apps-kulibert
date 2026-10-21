@@ -220,6 +220,7 @@
   "groupShow": "Show",
   "vizHelp": "Pick a look. Press Play. Tap 🎤 Mic lights to make the picture dance to the room.",
   "helpMicState": "The mic line shows if the mic is on, listening, or blocked.",
-"vdChipHelp": "VEX is a circle with V, RIO is a square with R — on the track and on the score chips.",
+  "vdChipHelp": "VEX is a circle with V, RIO is a square with R — on the track and on the score chips.",
   "spinWord": "Spin",
   "glowWord": "Glow"
+}
