@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.16
+
+RF 1.0.16 — The Daily cup date shows in your language.
+
 ## RF 1.0.15
 
 RF 1.0.15 — "1 ramp", "2 ramps": the count words are right in every language.

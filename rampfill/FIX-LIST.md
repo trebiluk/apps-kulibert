@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 17. Version locked: RF 1.0.16.
+
+- [x] **RF 1.0.16 ITEM 1:** The Daily cup date uses the browser's own short date when that language is installed. Kinyarwanda and Tigrinya, which Chrome does not include, use day and month names from the string table. The tile label uses the same words. Kinyarwanda, Tigrinya, and Dari names need a native check.
+
 Stage 16. Version locked: RF 1.0.15.
 
 - [x] **RF 1.0.15 ITEM 1:** Ramp counts use the right word for 1, 2–4 and 5+ in every language. The level tile, the Daily tile, its aria-label, and the end card share one helper.
