@@ -11155,7 +11155,7 @@ function paintPvpSettings(g) {
     btn.style.minWidth = '44px'
     btn.style.minHeight = '44px'
     const on = p[key] !== undefined ? p[key] : def
-    lab.textContent = on ? onLabel : offLabel
+    lab.textContent = onLabel.split(':')[0].trim()
     btn.textContent = on ? (t('switchOn') || 'ON') : (t('switchOff') || 'OFF')
     btn.setAttribute('aria-label', lab.textContent)
     btn.addEventListener('click', () => {
