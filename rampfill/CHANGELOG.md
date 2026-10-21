@@ -1,5 +1,9 @@
 # Ramp & Fill
 
+## RF 1.0.10
+
+RF 1.0.10 — the grains-cup status line speaks the player's language.
+
 ## RF 1.0.9
 
 RF 1.0.9 — the staff test script loads only when the Test switch is on, not for kids.

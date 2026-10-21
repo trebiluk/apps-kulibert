@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 11. Version locked: RF 1.0.10.
+
+- [x] **RF 1.0.10 ITEM 1:** The grains-cup status line is in all 8 languages plus Simple. Spanish says "Taza de granos llena: elige Agua y dibuja hasta esa taza." The wrong-cup lines are translated too.
+
 Stage 10. Version locked: RF 1.0.9.
 
 - [x] **RF 1.0.9 ITEM 1:** The test script loads only when the staff unlock and the Test switch are both on. A kid page has no kw-test tag and no test global.
