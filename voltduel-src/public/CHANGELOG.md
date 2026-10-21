@@ -11,4 +11,5 @@ VD 1.0.12 — Rematch starts the heat over in one tap. A hit shakes and sparks. 
 VD 1.0.13 — After Rematch, the keyboard is right in the game.
 VD 1.0.14 — The winner screen speaks your language.
 VD 1.0.15 — The winner is announced once, clearly.
+VD 1.0.16 — The lobby fits on a phone held sideways.
 

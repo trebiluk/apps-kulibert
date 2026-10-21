@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.15. Version locked: VD 1.0.15.
+Stage: VD 1.0.16. Version locked: VD 1.0.16.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -61,7 +61,7 @@ No app code in this item. Each idea says why, size, and risk.
 2. **Hit spark — already shipped (this version).** A hit shakes at most 150 ms and sparks in that runner's color. The circle V and square R stay readable. Reduced motion keeps the banner and skips the shake and confetti. Why: a hit should feel like a hit without a flash. Size: done. Risk: do not lengthen the shake or change scoring.
 3. **Lobby shape and letter — already shipped (this version).** The lobby shows a circle V and a square R, one word per key, and the last real match. Why: the lobby was plain. Size: done. Risk: do not change the save format `volt-duel-v1`. Last match stays in session only (`vd-last-match-v1`).
 4. **Best of 3 — new, needs a later version.** A 12-year-old will ask to play the same heat until someone wins two flags. Why: one flag feels short in class. Size: medium (a small series counter, not a new physics world). Risk: must not change coin scoring, the save shape, or write test wins into the real bests. Keep it off the kid TEST board.
-5. **Focus after Rematch — shipped in VD 1.0.13.** One Rematch or Next heat puts the keyboard on the arena. A still cyan ring shows where you are. Tab can leave it. The 915×412 lobby buttons still sit 1 px past the bottom. That layout is not in this version.
+5. **Focus after Rematch — shipped in VD 1.0.13. Sideways lobby — shipped in VD 1.0.16.** One Rematch or Next heat puts the keyboard on the arena. A still cyan ring shows where you are. Tab can leave it. At 915×412 and 924×412, Help and Touch stay on screen, at least 4px above the bottom, with no scroll.
 
 ## VD 1.0.13
 - [x] **Focus after Rematch.** Rematch and Next heat move focus to the arena (`tabindex="-1"`, label "Volt Duel arena"). The ring is a still 3px cyan line. Tab reaches Mute. Scores reset to 0. Save format `volt-duel-v1` unchanged.
@@ -71,4 +71,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.15
 - [x] **Winner line once.** The flag announces the winner one time. A language change on that screen updates the line once. It does not write the live region a second time on the way in.
+
+## VD 1.0.16
+- [x] **Sideways lobby.** At 915×412 and 924×412, Help and Touch end at least 4px above the bottom. Buttons stay at least 44px. The lobby does not scroll. Upright 412×915 and 1366×768 are unchanged.
 

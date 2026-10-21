@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.15: The winner is announced once, clearly.",
-    uk: "VD 1.0.15: Переможця оголошують один раз, чітко.",
-    ru: "VD 1.0.15: Победителя объявляют один раз, чётко.",
-    es: "VD 1.0.15: El ganador se anuncia una vez, con claridad.",
-    ar: "VD 1.0.15: يُعلَن الفائز مرة واحدة، بوضوح.",
-    "fa-AF": "VD 1.0.15: برنده یک بار، واضح اعلام می‌شود.",
-    rw: "VD 1.0.15: Uwatsinze avugwa rimwe, neza.",
-    ti: "VD 1.0.15: ዓዋቲ ሓደ ግዜ፡ ብንጹር ይነግር።",
-    simple: "VD 1.0.15: The winner is said once."
+    en: "VD 1.0.16: The lobby fits on a phone held sideways.",
+    uk: "VD 1.0.16: Лобі вміщується на телефоні боком.",
+    ru: "VD 1.0.16: Лобби помещается на телефоне боком.",
+    es: "VD 1.0.16: El vestíbulo cabe en un teléfono de lado.",
+    ar: "VD 1.0.16: الردهة تناسب الهاتف وهو بالعرض.",
+    "fa-AF": "VD 1.0.16: لابی روی گوشی به‌پهلو جا می‌شود.",
+    rw: "VD 1.0.16: Icyumba cy'itangira kigira neza ku telefoni iri ku gatsiko.",
+    ti: "VD 1.0.16: መእተዊ ኣብ ጎድናዊ ስልኪ ይኣቱ።",
+    simple: "VD 1.0.16: The lobby fits sideways."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.15") plate.textContent = "VD 1.0.15";
+      if (plate && plate.textContent !== "VD 1.0.16") plate.textContent = "VD 1.0.16";
     } finally {
       painting = false;
     }

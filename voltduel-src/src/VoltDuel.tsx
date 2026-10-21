@@ -1186,7 +1186,7 @@ export function VoltDuel() {
                   </p>
                   <p>
                     <span className="help-ico" aria-hidden="true"><svg viewBox="0 0 16 16" focusable="false"><path fill="currentColor" d="M8 1.2l1.3 3.6H13l-3 2.3 1.2 3.7L8 8.6 4.8 10.8 6 7.1 3 4.8h3.7z" /></svg></span>
-                    <span data-i18n="vdJuiceHelp">{lobbyText("vdJuiceHelp", "Rematch starts that heat over in one tap. The keyboard stays in the game. A hit shakes once and sparks. The lobby shows each runner's shape and the last match. The winner screen speaks your language. It is said once.")}</span>
+                    <span data-i18n="vdJuiceHelp">{lobbyText("vdJuiceHelp", "Rematch starts that heat over in one tap. The keyboard stays in the game. A hit shakes once and sparks. The lobby shows each runner's shape and the last match. The winner screen speaks your language. It is said once. The lobby fits on a phone held sideways.")}</span>
                   </p>
                   {staffTest && <p>Test mode (staff only). Scores go to the TEST board.</p>}
                   <button type="button" className="text-btn" data-i18n-label="vdClose" aria-label={lobbyText("vdClose", "Close")} onClick={() => setHelpOpen(false)}>
