@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.6: VEX and RIO have their own shapes, and a sign shows when you go back to a checkpoint.",
-    uk: "VD 1.0.6: VEX і RIO мають власні форми, а напис показує, коли ти повертаєшся до контрольної точки.",
-    ru: "VD 1.0.6: У VEX и RIO свои формы, а надпись показывает, когда ты возвращаешься к контрольной точке.",
-    es: "VD 1.0.6: VEX y RIO tienen sus propias formas, y un letrero avisa cuando vuelves a un punto de control.",
-    ar: "VD 1.0.6: لكل من VEX وRIO شكل خاص، وتظهر لافتة عندما تعود إلى نقطة التفتيش.",
-    "fa-AF": "VD 1.0.6: VEX و RIO شکل‌های خود را دارند و یک تابلو نشان می‌دهد که کی به ایستگاه بازرسی برمی‌گردی.",
-    rw: "VD 1.0.6: VEX na RIO bafite imiterere yabo bwite, kandi icyapa kikwereka igihe usubiye kuri checkpoint.",
-    ti: "VD 1.0.6: VEX ን RIO ናይ ገዛእ ርእሶም ቅርጺ ኣለዎም፣ ናብ መቆጻጸሪ ነጥቢ ክትምለስ ከለኻ ምልክት ይርአ።",
-    simple: "VD 1.0.6: V is a circle. R is a square. A sign shows when you go back."
+    en: "VD 1.0.7: The touch pads fit on upright phones, and Menu and Back to the Hub are easy to tap.",
+    uk: "VD 1.0.7: Сенсорні кнопки вміщуються на телефоні вертикально, а Меню й Назад до Хабу легко натиснути.",
+    ru: "VD 1.0.7: Сенсорные кнопки помещаются на телефоне вертикально, а Меню и Назад в Хаб легко нажать.",
+    es: "VD 1.0.7: Los botones táctiles caben en el teléfono en vertical, y Menú y Volver al Hub son fáciles de tocar.",
+    ar: "VD 1.0.7: أزرار اللمس تتسع على الهاتف عموديًا، وأصبح من السهل لمس القائمة والعودة إلى المركز.",
+    "fa-AF": "VD 1.0.7: دکمه‌های لمسی در تلفن ایستاده جا می‌شوند و منو و بازگشت به هاب آسان زده می‌شوند.",
+    rw: "VD 1.0.7: Utubuto two gukoraho dukwira kuri telefoni ihagaze, kandi Menu na Subira kuri Hub byoroshye gukanda.",
+    ti: "VD 1.0.7: መጠወቒ ቁልፍታት ኣብ ቀጥ ዝበለ ሞባይል ይኣትዉ፣ ሜኑን ናብ ሃብ ምምላስን ቀሊል እዩ።",
+    simple: "VD 1.0.7: The pads fit. Menu and Back are easy to tap."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.6") plate.textContent = "VD 1.0.6";
+      if (plate && plate.textContent !== "VD 1.0.7") plate.textContent = "VD 1.0.7";
     } finally {
       painting = false;
     }

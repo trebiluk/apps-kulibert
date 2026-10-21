@@ -605,6 +605,27 @@ export function VoltDuel() {
     }
     return fallback;
   })();
+  const heldPadHelp = (() => {
+    void helpRev;
+    const fallback = "Hold a pad to keep moving. A held pad lights up and shows its word.";
+    try {
+      const value = window.KulibertI18n?.t?.("vdHeldHelp", fallback);
+      if (value && value !== "vdHeldHelp") return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  })();
+  function onWord() {
+    const fallback = "On";
+    try {
+      const value = window.KulibertI18n?.t?.("vdPadOn", fallback);
+      if (value && value !== "vdPadOn") return value;
+    } catch {
+      /* keep the English word */
+    }
+    return fallback;
+  }
 
   const syncHolds = () => {
     const next: [Pad, Pad] = [
@@ -620,6 +641,11 @@ export function VoltDuel() {
         (hold) => String(hold.id) === btn.dataset.runner && hold.key === btn.dataset.act,
       );
       btn.classList.toggle("held", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      const ico = btn.querySelector(".pad-ico");
+      if (ico) ico.textContent = on ? "●" : btn.dataset.ico || "";
+      const mark = btn.querySelector(".pad-on");
+      if (mark) mark.textContent = on ? onWord() : "";
     });
   };
 
@@ -865,6 +891,10 @@ export function VoltDuel() {
                     <span data-i18n="vdShapeHelp">{shapeHelp}</span>
                   </p>
                   <p>
+                    <span aria-hidden="true">● </span>
+                    <span data-i18n="vdHeldHelp">{heldPadHelp}</span>
+                  </p>
+                  <p>
                     Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.
                   </p>
                   {testOn() && <p>⚑ Test mode (staff only): jump to the win or lose screen. Scores go to the TEST board.</p>}
@@ -949,32 +979,38 @@ export function VoltDuel() {
           <div className="pads" ref={padsRoot}>
             <div className="pad-cluster vex">
               <span className="pad-label">VEX</span>
-              <button type="button" className="pad-btn" data-runner="0" data-act="left" aria-label="VEX left" {...press(0, "left")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="left" data-ico="◀" data-word="Left" aria-pressed="false" aria-label="VEX left" {...press(0, "left")}>
                 <span className="pad-ico" aria-hidden="true">◀</span>
                 <span className="pad-word">Left</span>
+                <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="0" data-act="right" aria-label="VEX right" {...press(0, "right")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="right" data-ico="▶" data-word="Right" aria-pressed="false" aria-label="VEX right" {...press(0, "right")}>
                 <span className="pad-ico" aria-hidden="true">▶</span>
                 <span className="pad-word">Right</span>
+                <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="0" data-act="jump" aria-label="VEX jump" {...press(0, "jump")}>
+              <button type="button" className="pad-btn" data-runner="0" data-act="jump" data-ico="⤒" data-word="Jump" aria-pressed="false" aria-label="VEX jump" {...press(0, "jump")}>
                 <span className="pad-ico" aria-hidden="true">⤒</span>
                 <span className="pad-word">Jump</span>
+                <span className="pad-on"></span>
               </button>
             </div>
             <div className="pad-cluster rio">
               <span className="pad-label">RIO</span>
-              <button type="button" className="pad-btn" data-runner="1" data-act="left" aria-label="RIO left" {...press(1, "left")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="left" data-ico="◀" data-word="Left" aria-pressed="false" aria-label="RIO left" {...press(1, "left")}>
                 <span className="pad-ico" aria-hidden="true">◀</span>
                 <span className="pad-word">Left</span>
+                <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="1" data-act="right" aria-label="RIO right" {...press(1, "right")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="right" data-ico="▶" data-word="Right" aria-pressed="false" aria-label="RIO right" {...press(1, "right")}>
                 <span className="pad-ico" aria-hidden="true">▶</span>
                 <span className="pad-word">Right</span>
+                <span className="pad-on"></span>
               </button>
-              <button type="button" className="pad-btn" data-runner="1" data-act="jump" aria-label="RIO jump" {...press(1, "jump")}>
+              <button type="button" className="pad-btn" data-runner="1" data-act="jump" data-ico="⤒" data-word="Jump" aria-pressed="false" aria-label="RIO jump" {...press(1, "jump")}>
                 <span className="pad-ico" aria-hidden="true">⤒</span>
                 <span className="pad-word">Jump</span>
+                <span className="pad-on"></span>
               </button>
             </div>
           </div>

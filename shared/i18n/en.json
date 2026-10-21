@@ -206,5 +206,7 @@
   "vdLiveResumed": "Resumed",
   "vdShapeHelp": "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint.",
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
-  "staffLockHelp": "Staff page. Unlock with the desk key."
+  "staffLockHelp": "Staff page. Unlock with the desk key.",
+  "vdHeldHelp": "Hold a pad to keep moving. A held pad lights up and shows its word.",
+  "vdPadOn": "On"
 }
