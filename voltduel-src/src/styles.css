@@ -389,6 +389,48 @@ kbd {
   }
 }
 
+.stage.vd-shake {
+  animation: vd-shake 0.15s linear 1;
+}
+
+@keyframes vd-shake {
+  0%,
+  100% { transform: none; }
+  40% { transform: translate(-2px, 1px); }
+  70% { transform: translate(2px, -1px); }
+}
+
+.vd-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vd-confetti i {
+  position: absolute;
+  top: 0;
+  left: calc(var(--n) * 8%);
+  width: 8px;
+  height: 8px;
+  background: #8b98a6;
+  animation: vd-fall 1.8s linear 1;
+}
+
+.vd-confetti i:nth-child(3n) { background: #2ee6c7; border-radius: 999px; }
+.vd-confetti i:nth-child(3n + 1) { background: #ffb020; border-radius: 2px; }
+
+@keyframes vd-fall {
+  to { transform: translateY(220px); opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage.vd-shake,
+  .vd-confetti i {
+    animation: none;
+  }
+}
+
 .pill.vex strong {
   color: var(--color-cyan);
 }

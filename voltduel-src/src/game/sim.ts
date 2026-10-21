@@ -528,7 +528,7 @@ function updateCamera(world: World, dt: number) {
   const k = 1 - Math.exp(-3.6 * dt);
   world.camX += (desiredX - world.camX) * k;
   world.camY += (desiredY - world.camY) * k;
-  world.shake = Math.max(0, world.shake - dt * 16);
+  world.shake = Math.max(0, world.shake - dt * 60);
   world.banners = world.banners.filter((b) => {
     b.life -= dt;
     return b.life > 0;

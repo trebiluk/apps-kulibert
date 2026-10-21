@@ -74,6 +74,7 @@ function loadSprite(src: string) {
 
 export function VoltDuel() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const playfieldRef = useRef<HTMLDivElement>(null);
   const worldRef = useRef<World | null>(null);
   const screenRef = useRef<Screen>({ name: "menu" });
@@ -96,6 +97,7 @@ export function VoltDuel() {
   const saveRef = useRef<Save>({ best: {}, muted: false });
   const qaMode = useRef(false);
   const reduced = useRef(false);
+  const [reducedMotion, setReducedMotion] = useState(false);
   const coinRefs = [useRef<HTMLElement>(null), useRef<HTMLElement>(null)];
   const cpRefs = [useRef<HTMLElement>(null), useRef<HTMLElement>(null)];
   const timeRef = useRef<HTMLElement>(null);
@@ -261,7 +263,15 @@ export function VoltDuel() {
     setSave(loaded);
     audio.muted = loaded.muted;
     reduced.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setReducedMotion(reduced.current);
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onMotion = () => {
+      reduced.current = motion.matches;
+      setReducedMotion(motion.matches);
+    };
+    motion.addEventListener("change", onMotion);
     qaMode.current = new URLSearchParams(window.location.search).has("qa");
+    return () => motion.removeEventListener("change", onMotion);
   }, []);
 
   useEffect(() => {
@@ -308,7 +318,7 @@ export function VoltDuel() {
       };
     };
 
-    const burst = (x: number, y: number, color: string, count: number, speed: number) => {
+    const burst = (x: number, y: number, color: string, count: number, speed: number, life = 0.45) => {
       for (let i = 0; i < count && particles.current.length < 100; i++) {
         const angle = Math.random() * Math.PI * 2;
         const mag = speed * (0.35 + Math.random());
@@ -317,12 +327,22 @@ export function VoltDuel() {
           y,
           vx: Math.cos(angle) * mag,
           vy: Math.sin(angle) * mag - 30,
-          life: 0.45,
-          max: 0.45,
+          life,
+          max: life,
           color,
           size: 2 + Math.random() * 2,
         });
       }
+    };
+    const sparkHit = (id: 0 | 1, x: number, y: number) => {
+      burst(x, y, id === 0 ? "#2ee6c7" : "#ffb020", 10, 120, 0.28);
+      if (reduced.current) return;
+      const node = stageRef.current;
+      if (!node) return;
+      node.classList.remove("vd-shake");
+      void node.offsetWidth;
+      node.classList.add("vd-shake");
+      window.setTimeout(() => node.classList.remove("vd-shake"), 150);
     };
 
     const ensureSprites = (now: number) => {
@@ -407,7 +427,7 @@ export function VoltDuel() {
             for (const event of staffPit(pitWorld, id)) {
               if (event.type !== "die") continue;
               audio.play("die");
-              burst(event.x, event.y, "#ff4b4b", 14, 160);
+              sparkHit(id, event.x, event.y);
               const pill = document.querySelector(event.id === 0 ? ".pill.vex" : ".pill.rio");
               if (pill) {
                 pill.classList.add("hit");
@@ -455,7 +475,7 @@ export function VoltDuel() {
             }
             if (event.type === "die") {
               audio.play("die");
-              burst(event.x, event.y, "#ff4b4b", 14, 160);
+              sparkHit(event.id, event.x, event.y);
               const pill = document.querySelector(event.id === 0 ? ".pill.vex" : ".pill.rio");
               if (pill) {
                 pill.classList.add("hit");
@@ -889,7 +909,7 @@ export function VoltDuel() {
 
   return (
     <div className={`game-root${padMode === "on" ? " pads-on" : ""}${padMode === "off" ? " pads-off" : ""}`}>
-      <div className="stage">
+      <div className="stage" ref={stageRef}>
         {screen.name !== "menu" && (
           <p className="vd-live" role="status" aria-live="polite" ref={liveRef} />
         )}
@@ -1136,6 +1156,13 @@ export function VoltDuel() {
         {screen.name === "results" && (
           <div className="overlay">
             <div className="modal-card">
+              {!reducedMotion && (
+                <div className="vd-confetti" aria-hidden="true">
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <i key={i} style={{ ["--n" as string]: String(i) }} />
+                  ))}
+                </div>
+              )}
               <p className="kicker">{LEVELS[screen.level].name}</p>
               <h2 className={screen.winner === 0 ? "vex" : "rio"}>{NAMES[screen.winner]} takes the flag</h2>
               <p className="tag">{formatTime(screen.time)}</p>

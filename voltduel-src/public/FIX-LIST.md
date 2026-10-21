@@ -49,3 +49,7 @@ Physics and scoring were not changed.
 - [x] **Item 1 Test script.** kw-test.js loads only when the staff unlock and the Test switch are both on. If a tag leaked in, it is removed. A kid page has no script tag and no KulibertTest or KWTest global.
 - [x] **Item 2 Help.** The circle-and-square fact is said once. The sign line no longer repeats it. Help icons are drawn, not a missing-font box.
 
+## VD 1.0.12
+- [x] **Item 1 Rematch.** Already one tap. After "VEX takes the flag" (12.00, 3 coins and 1 coin) one Rematch starts Qualifier again: clock 0.00, both coins 0, countdown 3.
+- [x] **Item 2 Hit and win.** A hit shakes for 150ms and sparks in that runner's color. The circle V and square R stay readable. Reduced motion adds no shake class. The win screen shows calm confetti, or only the banner when motion is reduced.
+
