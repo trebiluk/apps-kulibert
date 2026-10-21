@@ -1,6 +1,6 @@
-/* Ramp & Fill RF 1.0.5 — clear cards teach the lesson. No trackers. */
+/* Ramp & Fill RF 1.0.6 — one version label. No trackers. */
 (function () {
-  var VERSION = "RF 1.0.5";
+  var VERSION = "RF 1.0.6";
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -37,7 +37,7 @@
       left: "Left", right: "Right",
       filled: "Filled it!", repour: "Re-pour", next: "Next", more: "can you fill more?",
       you: "You: #", noneRank: "You: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.5: Clear cards now teach slope, thickness and flow rate, and you can beat your fewest-ramps best.",
+      whats: "RF 1.0.6: The version label is right, Help is in every language, and Pause is easy to tap sideways.",
       levels: "Levels", home: "Home",
       refTile: "Referee", countUp: "Count up", countDown: "Count down", refStart: "Start", refStop: "Stop", refReset: "Reset", refDone: "Done", timeUp: "Time!", minutes: "Minutes",
       cardWord: "Card", youNeed: "You need:", teamWord: "Team", pyramid: "Pyramid", tower: "Tower", bridge: "Bridge", stairs: "Stairs", ideas: "Stack ideas", line: "Line", handsOff: "Hands off — time locked", nextCard: "Next card",
@@ -94,7 +94,7 @@
       left: "Ліва", right: "Права",
       filled: "Наповнив!", repour: "Лий знову", next: "Далі", more: "зможеш наповнити ще?",
       you: "Ти: #", noneRank: "Ти: #—", top: "Топ 10", alias: "Псевдонім",
-      whats: "RF 1.0.5: Картки перемоги тепер пояснюють нахил, густоту й швидкість потоку, і можна побити свій рекорд найменшої кількості рамп.",
+      whats: "RF 1.0.6: Номер версії правильний, Довідка є всіма мовами, а Паузу легко натиснути збоку.",
       levels: "Рівні", home: "Дім",
       refTile: "Суддя", countUp: "Угору", countDown: "Відлік", refStart: "Старт", refStop: "Стоп", refReset: "Спочатку", refDone: "Готово", timeUp: "Час!", minutes: "Хвилини",
       cardWord: "Картка", youNeed: "Треба:", teamWord: "Команда", pyramid: "Піраміда", tower: "Вежа", bridge: "Міст", stairs: "Сходи", ideas: "Ідеї веж", line: "Ряд", handsOff: "Руки геть — час зафіксовано", nextCard: "Наступна картка",
@@ -150,7 +150,7 @@
       left: "Левая", right: "Правая",
       filled: "Наполнил!", repour: "Лей снова", next: "Дальше", more: "сможешь наполнить ещё?",
       you: "Ты: #", noneRank: "Ты: #—", top: "Топ 10", alias: "Псевдоним",
-      whats: "RF 1.0.5: Карточки победы теперь объясняют наклон, густоту и скорость потока, и можно побить свой рекорд наименьшего числа рамп.",
+      whats: "RF 1.0.6: Номер версии верный, Справка есть на всех языках, а Паузу легко нажать в горизонтальном режиме.",
       levels: "Уровни", home: "Дом",
       refTile: "Судья", countUp: "Вверх", countDown: "Отсчёт", refStart: "Старт", refStop: "Стоп", refReset: "Сначала", refDone: "Готово", timeUp: "Время!", minutes: "Минуты",
       cardWord: "Карточка", youNeed: "Нужно:", teamWord: "Команда", pyramid: "Пирамида", tower: "Башня", bridge: "Мост", stairs: "Лестница", ideas: "Идеи башен", line: "Ряд", handsOff: "Руки прочь — время зафиксировано", nextCard: "Следующая карточка",
@@ -206,7 +206,7 @@
       left: "Izquierda", right: "Derecha",
       filled: "¡La llenaste!", repour: "Verter otra vez", next: "Siguiente", more: "¿puedes llenar más?",
       you: "Tú: #", noneRank: "Tú: #—", top: "Top 10", alias: "Alias",
-      whats: "RF 1.0.5: Las tarjetas de nivel ahora enseñan pendiente, espesor y caudal, y puedes superar tu récord de menos rampas.",
+      whats: "RF 1.0.6: La versión es correcta, la Ayuda está en todos los idiomas y Pausa es fácil de tocar de lado.",
       levels: "Niveles", home: "Inicio",
       refTile: "Árbitro", countUp: "Subir", countDown: "Cuenta atrás", refStart: "Inicio", refStop: "Parar", refReset: "Reiniciar", refDone: "Listo", timeUp: "¡Tiempo!", minutes: "Minutos",
       cardWord: "Tarjeta", youNeed: "Necesitas:", teamWord: "Equipo", pyramid: "Pirámide", tower: "Torre", bridge: "Puente", stairs: "Escalera", ideas: "Ideas de torres", line: "Fila", handsOff: "Manos fuera — tiempo cerrado", nextCard: "Siguiente tarjeta",
@@ -262,7 +262,7 @@
       left: "اليسار", right: "اليمين",
       filled: "امتلأ!", repour: "اسكب مرة أخرى", next: "التالي", more: "هل تملأ المزيد؟",
       you: "أنت: #", noneRank: "أنت: #—", top: "أفضل 10", alias: "اسم مستعار",
-      whats: "RF 1.0.5: بطاقات الفوز تشرح الآن الميل والكثافة ومعدل التدفق، ويمكنك تحطيم رقمك بأقل عدد من المنحدرات.",
+      whats: "RF 1.0.6: رقم الإصدار صحيح، والمساعدة بكل اللغات، وزر الإيقاف المؤقت سهل اللمس بالوضع الأفقي.",
       levels: "المراحل", home: "البداية",
       refTile: "الحَكَم", countUp: "للأعلى", countDown: "عدّ تنازلي", refStart: "ابدأ", refStop: "أوقف", refReset: "أعد", refDone: "تم", timeUp: "الوقت!", minutes: "دقائق",
       cardWord: "بطاقة", youNeed: "تحتاج:", teamWord: "فريق", pyramid: "هرم", tower: "برج", bridge: "جسر", stairs: "درج", ideas: "أفكار الرص", line: "صف", handsOff: "ارفعوا الأيدي — الوقت مقفل", nextCard: "البطاقة التالية",
@@ -318,7 +318,7 @@
       left: "چپ", right: "راست",
       filled: "پر شد!", repour: "دوباره بریز", next: "بعدی", more: "می‌توانی بیشتر پر کنی؟",
       you: "تو: #", noneRank: "تو: #—", top: "ده تای برتر", alias: "نام مستعار",
-      whats: "RF 1.0.5: کارت‌های برد حالا شیب، غلظت و سرعت جریان را یاد می‌دهند، و می‌توانی رکورد کمترین سطح شیب‌دارت را بشکنی.",
+      whats: "RF 1.0.6: شماره نسخه درست است، راهنما به همه زبان‌هاست و توقف در حالت افقی آسان زده می‌شود.",
       levels: "مرحله‌ها", home: "خانه",
       refTile: "داور", countUp: "رو به بالا", countDown: "شمارش معکوس", refStart: "شروع", refStop: "ایست", refReset: "از نو", refDone: "تمام", timeUp: "وقت!", minutes: "دقیقه",
       cardWord: "کارت", youNeed: "لازم:", teamWord: "تیم", pyramid: "هرم", tower: "برج", bridge: "پل", stairs: "پله", ideas: "ایده‌های چیدن", line: "ردیف", handsOff: "دست‌ها دور — وقت قفل شد", nextCard: "کارت بعدی",
@@ -374,7 +374,7 @@
       left: "Ibumoso", right: "Iburyo",
       filled: "Cyuzuye!", repour: "Suka ukundi", next: "Ikurikira", more: "waba ushobora kwuzuza ibindi?",
       you: "Wowe: #", noneRank: "Wowe: #—", top: "10 za mbere", alias: "Izina ry'akazi",
-      whats: "RF 1.0.5: Amakarita yo gutsinda ubu yigisha ubuhaname, ubukomere n'umuvuduko w'itemba, kandi ushobora gukuraho agahigo kawe k'imihanda mike.",
+      whats: "RF 1.0.6: Nimero ya verisiyo ni yo, Ubufasha buri mu ndimi zose, kandi Hagarara byoroshye gukanda uri ku ruhande.",
       levels: "Ingero", home: "Ahabanza",
       refTile: "Umusifuzi", countUp: "Kureba hejuru", countDown: "Kubara hasi", refStart: "Tangira", refStop: "Hagarara", refReset: "Ongera", refDone: "Byarangiye", timeUp: "Igihe!", minutes: "Iminota",
       cardWord: "Ikarita", youNeed: "Ukeneye:", teamWord: "Ikipe", pyramid: "Impyiramidi", tower: "Inzu ndende", bridge: "Ikiraro", stairs: "Amadarajya", ideas: "Ibitekerezo", line: "Ururimi", handsOff: "Kuraho amaboko — igihe cyafunze", nextCard: "Ikarita ikurikira",
@@ -430,7 +430,7 @@
       left: "ጸጋም", right: "የማን",
       filled: "መሊኡ!", repour: "ደጊምካ ቀድሕ", next: "ዝቕጽል", more: "ተወሳኺ ክትመልእ ትኽእል ዲኻ?",
       you: "ንስኻ: #", noneRank: "ንስኻ: #—", top: "ላዕለዎት 10", alias: "ሕጉስ ስም",
-      whats: "RF 1.0.5: ካርድታት ዓወት ሕጂ ዝንባለ፡ ርጉእነትን ፍጥነት ውሕጅን ይምህሩ፡ ናይ ውሑዳት መንሸራተቲ ሪኮርድካ ድማ ክትሰብር ትኽእል።",
+      whats: "RF 1.0.6: ቁጽሪ ስሪት ቅኑዕ እዩ፣ ሓገዝ ብኩሉ ቋንቋታት ኣሎ፣ ጠጠው ምባል ብጐድኒ ቀሊል እዩ።",
       levels: "ደረጃታት", home: "መጀመርታ",
       refTile: "ዳኛ", countUp: "ንላዕሊ", countDown: "ቁጽሪ ታሕቲ", refStart: "ጀምር", refStop: "ደው", refReset: "ዳግም", refDone: "ተወዲኡ", timeUp: "ሰዓት!", minutes: "ደቓይቕ",
       cardWord: "ካርድ", youNeed: "የድሊ:", teamWord: "ጋንታ", pyramid: "ሕርሚ", tower: "ግምቢ", bridge: "ድልድል", stairs: "መደያን", ideas: "ሓሳባት", line: "መስመር", handsOff: "ኢድካት ኣልዕሉ — ሰዓት ተዓጽየ", nextCard: "ዝቕጽል ካርድ",
@@ -459,7 +459,7 @@
       canvas: "ካብ መቐለሲ ናብ ኽባያ ቁልቁለት ስኣል።"
     },
     simple: {
-      whats: "RF 1.0.5: Win cards teach a science word. Try fewer ramps.",
+      whats: "RF 1.0.6: The number is right. Help is in your language. Pause is easy to tap.",
       helpLesson: "Read the lesson line when you win.",
       helpFewer: "Try to win with fewer ramps.",
       teachSlope: "Steeper slope means faster flow",
@@ -638,6 +638,20 @@
     map[who] = row;
     try { localStorage.setItem("rampfill-ramp-best", JSON.stringify(map)); } catch (e) {}
   }
+  function paintVersion() {
+    document.title = "Ramp & Fill — " + VERSION;
+    var chip = document.getElementById("ver-plate");
+    if (chip) chip.textContent = VERSION;
+    document.querySelectorAll(".ver-plate").forEach(function (el) { el.textContent = VERSION; });
+    var bar = document.querySelector("script[data-app='rampfill']");
+    if (bar) bar.setAttribute("data-version", VERSION);
+    var body = document.getElementById("whats-body");
+    if (body) {
+      var line = t("whats");
+      var cut = line.indexOf(":");
+      body.textContent = cut > 0 ? VERSION + line.slice(cut) : VERSION;
+    }
+  }
   function paintText() {
     var L = lang();
     document.documentElement.lang = L === "fa-AF" ? "fa" : L;
@@ -646,8 +660,7 @@
       var key = el.getAttribute("data-k");
       if (STR.en[key]) el.textContent = t(key);
     });
-    var body = document.getElementById("whats-body");
-    if (body) body.textContent = t("whats");
+    paintVersion();
     var pourHelp = document.getElementById("help-pour");
     if (pourHelp) pourHelp.textContent = t(level >= 5 ? "helpPour5" : level >= 4 ? "helpPour4" : level === 3 ? "helpPour3" : level === 2 ? "helpPour2" : "helpPour");
     var pg = document.getElementById("pick-grains");

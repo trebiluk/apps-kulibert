@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 7. Version locked: RF 1.0.6.
+
+- [x] **RF 1.0.6 ITEM 1:** Title, chip, menu plate, data-version, cache-bust and What's new all read RF 1.0.6 from the one VERSION constant.
+
 Stage 6. Version locked: RF 1.0.5.
 
 - [x] **RF 1.0.5 ITEM 1:** The clear card shows one lesson line and an icon. Level 1 says slope. Level 4 says viscosity. Levels 2 and 5 say flow rate. Help tells you to read that line.
