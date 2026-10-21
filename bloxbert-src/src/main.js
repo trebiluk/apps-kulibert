@@ -10930,27 +10930,33 @@ load().catch(() => {}).finally(() => {
   if (allowSave) window.__bertOpen = true
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()
-  // C4h test seeds after armClock
-  if (window.__btTestPending && window.__btTestPending.isTest) {
+  function runBtTest() {
+    if (!window.__btTestPending || !window.__btTestPending.isTest) return
     const p = window.__btTestPending
     if (p.nightQ) {
       try {
         if (Rules && Rules.set) Rules.set('survival.daynight', 'night')
         if (basics && basics.setAlways) basics.setAlways(false)
-        if (window.__clock && window.__clock.seek) window.__clock.seek(nightAt || 0.75)
+        if (window.__clock && window.__clock.night) window.__clock.night()
         if (applySky) applySky()
         if (session && session.setMode) session.setMode('survival')
-        console.info('[bt-test] night on', window.__clock && window.__clock.text ? window.__clock.text() : '')
-        if (toast) toast(t ? t('c4hNight') : 'Test: night')
-      } catch (e) {}
+      } catch (e) {
+        console.warn('[bt-test] night FAILED', e && e.message)
+      }
+      console.info('[bt-test] night on', window.__clock && window.__clock.text ? window.__clock.text() : '')
+      if (toast) toast(t ? t('c4hNight') : 'Test: night')
     }
     const testX = 56, testY = 6, testZ = 56
     try { noa.entities.setPosition(noa.playerEntity, [testX, testY, testZ]) } catch (e) {}
     window.__use = window.__use || {}
     window.__use.spawn = (k) => {
       if (!mobs || !mobs.spawn) return null
-      const r = mobs.spawn(k, testX + 4, testY, testZ, true)
-      console.info('[bt-test] spawn', k, r ? 'ok id=' + r.id : 'REFUSED')
+      let sy = testY
+      if (getVoxel && (getVoxel(testX + 4, testY, testZ) | 0) > 0) {
+        for (let dy = 1; dy < 6; dy++) if ((getVoxel(testX + 4, testY + dy, testZ) | 0) === 0) { sy = testY + dy; break }
+      }
+      const r = mobs.spawn(k, testX + 4, sy, testZ, true)
+      console.info('[bt-test] spawn', k, r ? 'ok id=' + r.id + ' at ' + (testX+4) + ',' + sy + ',' + testZ : 'REFUSED')
       return r
     }
     window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
@@ -10970,6 +10976,7 @@ load().catch(() => {}).finally(() => {
   if (location.search.includes('craft=1')) armCraft()
   if (location.search.includes('use=')) armUse()
   armClock()
+  runBtTest()
   paintDayClock()
   armBrief()
 })
