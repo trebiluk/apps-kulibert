@@ -150,6 +150,7 @@
     if (!api || !document.getElementById("boards")) return;
     var sel = document.getElementById("lb-alias");
     paintAlias(sel);
+    if (window.KulibertI18n && KulibertI18n.ready) KulibertI18n.ready(null, function () { paintAlias(sel); });
     if (sel) sel.addEventListener("change", function () {
       api.setAlias(sel.value);
       paint();
