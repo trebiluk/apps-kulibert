@@ -409,7 +409,13 @@
     trapRemix: "Trap remix",
     nothingSaved: "Nothing saved on this Chromebook yet.",
     onlyHere: "Only this Chromebook",
-    classWord: "Class"
+    classWord: "Class",
+    vizNow: "Picture: {look}. It is saved on the song.",
+    codeFolds: "Folds",
+    codeSize: "Size",
+    code_grow_short: "Short",
+    code_grow_mid: "Mid",
+    code_grow_tall: "Tall"
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -522,7 +528,13 @@
     helpBeat: "🥁 Make a beat and New beat open your beat. Rock loads on a fresh start or when you tap Rock. Clear stays clear.",
     snackPlay: "✔ Playing: {name}",
     snackStop: "Stopped",
-    snackPic: "Picture set to {look}"
+    snackPic: "Picture set to {look}",
+    vizNow: "Picture: {look}. Saved on the song.",
+    codeFolds: "Folds",
+    codeSize: "Size",
+    code_grow_short: "Short",
+    code_grow_mid: "Mid",
+    code_grow_tall: "Tall"
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -927,6 +939,12 @@
       "nothingSaved": "На цьому Chromebook ще нічого не збережено.",
       "onlyHere": "Лише цей Chromebook",
       "classWord": "Клас",
+      "vizNow": "Картина: {look}. Її збережено в пісні.",
+      "codeFolds": "Складки",
+      "codeSize": "Розмір",
+      "code_grow_short": "Коротко",
+      "code_grow_mid": "Середнє",
+      "code_grow_tall": "Високо",
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1328,6 +1346,12 @@
       "nothingSaved": "На этом Chromebook ещё ничего не сохранено.",
       "onlyHere": "Только этот Chromebook",
       "classWord": "Класс",
+      "vizNow": "Картинка: {look}. Она сохранена в песне.",
+      "codeFolds": "Складки",
+      "codeSize": "Размер",
+      "code_grow_short": "Коротко",
+      "code_grow_mid": "Средне",
+      "code_grow_tall": "Высоко",
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1730,6 +1754,12 @@
       "nothingSaved": "Todavía no hay nada guardado en este Chromebook.",
       "onlyHere": "Solo este Chromebook",
       "classWord": "Clase",
+      "vizNow": "Imagen: {look}. Está guardada en la canción.",
+      "codeFolds": "Pliegues",
+      "codeSize": "Tamaño",
+      "code_grow_short": "Corto",
+      "code_grow_mid": "Medio",
+      "code_grow_tall": "Alto",
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2132,6 +2162,12 @@
       "nothingSaved": "لا شيء محفوظ على هذا الـ Chromebook بعد.",
       "onlyHere": "هذا الـ Chromebook فقط",
       "classWord": "الصف",
+      "vizNow": "الصورة: {look}. محفوظة في الأغنية.",
+      "codeFolds": "طيّات",
+      "codeSize": "الحجم",
+      "code_grow_short": "قصير",
+      "code_grow_mid": "وسط",
+      "code_grow_tall": "طويل",
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2534,6 +2570,12 @@
       "nothingSaved": "در این Chromebook هنوز چیزی ذخیره نشده.",
       "onlyHere": "فقط همین Chromebook",
       "classWord": "صنف",
+      "vizNow": "تصویر: {look}. در آهنگ ذخیره شد.",
+      "codeFolds": "تا",
+      "codeSize": "اندازه",
+      "code_grow_short": "کوتاه",
+      "code_grow_mid": "میانه",
+      "code_grow_tall": "بلند",
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -2936,6 +2978,12 @@
       "nothingSaved": "Nta kintu kirabikwa kuri iyi Chromebook.",
       "onlyHere": "Iyi Chromebook gusa",
       "classWord": "Ishuri",
+      "vizNow": "Ishusho: {look}. Yabitswe ku ndirimbo.",
+      "codeFolds": "Impindu",
+      "codeSize": "Ingano",
+      "code_grow_short": "Ngufi",
+      "code_grow_mid": "Hagati",
+      "code_grow_tall": "Nda",
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3338,6 +3386,12 @@
       "nothingSaved": "ኣብዚ Chromebook ገና ዝተዓቀበ የለን።",
       "onlyHere": "እዚ Chromebook ጥራይ",
       "classWord": "ክፍሊ",
+      "vizNow": "ስእሊ፡ {look}። ኣብ ደርፊ ተዓቂቡ።",
+      "codeFolds": "ምዕጻው",
+      "codeSize": "ዓቐን",
+      "code_grow_short": "ሓጺር",
+      "code_grow_mid": "ማእከል",
+      "code_grow_tall": "ነዊሕ",
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

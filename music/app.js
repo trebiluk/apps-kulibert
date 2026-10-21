@@ -2213,17 +2213,96 @@
     if ($("wall")) $("wall").value = state.wall;
     if ($("frame")) $("frame").value = state.frame;
     paintLights();
+    paintVizNow();
+    paintCodeRecipe();
+  }
+  function paintVizNow() {
     const now = $("viz-now");
-    if (now) now.textContent = "Picture: " + (state.layers[0].look || "bars") + ". It is saved on the song.";
+    if (!now) return;
+    const id = (state.layers[0] && state.layers[0].look) || "bars";
+    const name = mu("look_" + id) || id;
+    now.textContent = mu("vizNow", { look: name }) || ("Picture: " + name + ". It is saved on the song.");
+  }
+  function codeRecipe() {
+    try {
+      const raw = window.KulibertStage && window.KulibertStage.loadCode && window.KulibertStage.loadCode();
+      if (!raw) return null;
+      return { folds: String(raw.folds || "6"), grow: String(raw.grow || "mid") };
+    } catch (err) {
+      return null;
+    }
+  }
+  function tuneCodeRecipe(el) {
+    const keep = { folds: "codeFolds", grow: "codeSize" };
+    ["folds", "grow"].forEach((key) => {
+      const group = [...el.querySelectorAll(".code-group")].find((node) => {
+        const btn = node.querySelector("button[data-key]");
+        return btn && btn.getAttribute("data-key") === key;
+      });
+      if (!group) return;
+      el.appendChild(group);
+      group.hidden = false;
+      group.style.display = "flex";
+      group.style.flexWrap = "wrap";
+      group.style.alignItems = "center";
+      group.style.gap = "6px";
+      group.style.margin = "4px 0";
+      const word = mu(keep[key]) || (key === "folds" ? "Folds" : "Size");
+      const lab = group.querySelector(".tool-label");
+      if (lab) lab.textContent = word;
+      const chips = group.querySelector(".chips");
+      if (chips) chips.setAttribute("aria-label", word);
+      group.querySelectorAll("button[data-key]").forEach((b) => {
+        const val = b.getAttribute("data-val") || "";
+        const label = key === "grow" ? (mu("code_grow_" + val) || b.textContent) : val;
+        b.textContent = label;
+        b.setAttribute("aria-label", word + " " + label);
+        b.setAttribute("data-recipe", key);
+        b.style.minHeight = "44px";
+        b.style.minWidth = "44px";
+      });
+    });
+    el.querySelectorAll(".code-group").forEach((group) => {
+      const btn = group.querySelector("button[data-key]");
+      const key = btn && btn.getAttribute("data-key");
+      if (key !== "folds" && key !== "grow") group.hidden = true;
+    });
+    const more = el.querySelector("details");
+    if (more) more.hidden = true;
+  }
+  function paintCodeRecipe() {
+    const el = $("viz-recipe");
+    if (!el) return;
+    const look = (state.layers[0] && state.layers[0].look) || state.look;
+    const show = look === "code";
+    el.hidden = !show;
+    if (!show) return;
+    const stage = window.KulibertStage;
+    if (!stage || !stage.syncRecipe) return;
+    stage.syncRecipe(el);
+    tuneCodeRecipe(el);
+    if (!el.dataset.wired) {
+      el.dataset.wired = "1";
+      el.addEventListener("click", (ev) => {
+        const hit = ev.target && ev.target.closest && ev.target.closest("button[data-key]");
+        if (!hit || !el.contains(hit)) return;
+        state.codeRecipe = codeRecipe();
+        snapshotViz();
+        keep();
+      });
+    }
   }
   function snapshotViz() {
+    const recipe = state.codeRecipe || codeRecipe();
     state.song.viz = {
       layers: state.layers.map((layer) => ({ look: layer.look, color: layer.color })),
       wall: state.wall,
       frame: state.frame,
       rgb: !!state.rgb,
+      recipe: recipe,
     };
     state.song = Song.parse(Song.serialize(state.song));
+    if (recipe && state.song && state.song.viz) state.song.viz.recipe = recipe;
   }
   function fromLine(song) {
     const from = (song && song.from) || [];
@@ -2331,6 +2410,8 @@
         box.appendChild(b);
       });
     });
+    paintVizNow();
+    paintCodeRecipe();
   }
   function surpriseMix() {
     const looks = (window.KulibertStage && window.KulibertStage.LOOKS) || [];
