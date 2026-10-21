@@ -2497,6 +2497,7 @@ for (const [lang, row] of Object.entries(C4T)) {
 
 const CHANGE334 = {
   en: { change: 'Change' },
+  simple: { change: 'Change' },
   uk: { change: 'Змінити' },
   ru: { change: 'Изменить' },
   es: { change: 'Cambiar' },
@@ -2506,6 +2507,10 @@ const CHANGE334 = {
   ti: { change: 'ቀይር' },
 }
 for (const [lang, row] of Object.entries(CHANGE334)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
+
 const OVKEY = {
   en: { overrideKey: 'Override Key' },
   simple: { overrideKey: 'Override Key' },
