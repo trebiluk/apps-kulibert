@@ -36,3 +36,12 @@ export function loadBadges(doc) {
 }
 
 try { window.bumpMedic = bumpMedic } catch (e) {}
+
+export function bumpFoundry() {
+  counts.foundry = (counts.foundry || 0) + 1
+  if (!earned.has('foundry')) {
+    earned.add('foundry')
+    showChip('Foundry Crew')
+  }
+}
+try { window.bumpFoundry = bumpFoundry } catch (e) {}

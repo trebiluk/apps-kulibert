@@ -2450,3 +2450,20 @@ for (const [lang, row] of Object.entries(C1BONK)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.299 C5 Foundry Overseer. rw/ti/fa-AF machine drafts, need native check.
+const C5 = {
+  en: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Conveyor belts push to walls', c5Vent: 'Hiss! Vent cone →', c5Wipe: 'Calm. Key returned.', c5Win: 'Foundry rebooted!', c5Help: 'Craft an Override Key, place it on the Foundry Console outside town to summon the Overseer. Reboot as a team for the Foundry Crew badge and gear trim.' },
+  simple: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Belts push you to walls', c5Vent: 'Hiss! Hot air →', c5Wipe: 'Calm. Key back.', c5Win: 'Foundry rebooted!', c5Help: 'Make an Override Key. Put it on the Foundry Console outside town. Team up to reboot the Overseer for a badge and trim.' },
+  uk: { c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвеєри штовхають до стін', c5Vent: 'Шипіння! Вентиляція →', c5Wipe: 'Спокій. Ключ повернуто.', c5Win: 'Ливарню перезавантажено!', c5Help: 'Зробіть ключ перевизначення, покладіть на консоль ливарні поза містом. Командою перезавантажте наглядача за значок і обробку.' },
+  ru: { c5Stamp: '⚠ Удар!', c5Conveyor: 'Конвейеры толкают к стенам', c5Vent: 'Шипение! Вентиляция →', c5Wipe: 'Спокойно. Ключ возвращён.', c5Win: 'Литейную перезагрузили!', c5Help: 'Сделайте ключ переопределения, положите на консоль литейной за городом. Командой перезагрузите надзирателя за значок и отделку.' },
+  es: { c5Stamp: '⚠ ¡Sello!', c5Conveyor: 'Cintas empujan a las paredes', c5Vent: '¡Siseo! Cono de ventilación →', c5Wipe: 'Calma. Llave devuelta.', c5Win: '¡Fundición reiniciada!', c5Help: 'Fabrica una Llave de anulación, colócala en la Consola de la Fundición fuera del pueblo. Reinicia en equipo para la insignia y el borde.' },
+  ar: { c5Stamp: '⚠ ختم!', c5Conveyor: 'الأحزمة تدفع إلى الجدران', c5Vent: 'هسهسة! مخروط التهوية →', c5Wipe: 'هدوء. المفتاح عاد.', c5Win: 'أعيد تشغيل المسبك!', c5Help: 'اصنع مفتاح التجاوز، ضعه على وحدة التحكم بالمسبك خارج البلدة. أعد التشغيل كفريق للحصول على الشارة والتشذيب.' },
+  'fa-AF': { c5Stamp: '⚠ مهر!', c5Conveyor: 'نوارها به دیوارها هل می‌دهند', c5Vent: 'هیس! مخروط تهویه →', c5Wipe: 'آرام. کلید برگشت.', c5Win: 'ریخته‌گری راه‌اندازی مجدد شد!', c5Help: 'کلید لغو را بسازید، روی کنسول ریخته‌گری خارج شهر بگذارید. به عنوان تیم راه‌اندازی مجدد کنید برای نشان و تزئین.' },
+  rw: { c5Stamp: '⚠ Stamp!', c5Conveyor: 'Imikandara isunika ku nkuta', c5Vent: 'Hiss! Vent →', c5Wipe: 'Umutekano. Urufunguzo rugarutse.', c5Win: 'Foundry yasubijwe!', c5Help: 'Kora Urufunguzo, shyira ku Console yo Foundry hanze y\'umujyi. Subiza hamwe kugira ngo ubone ikimenyetso n\'uburyo.' },
+  ti: { c5Stamp: '⚠ ምልክት!', c5Conveyor: 'መስመራት ናብ መናድቕ ይድፉ', c5Vent: 'ሂስ! ቬንት →', c5Wipe: 'ርግኣት። መፍትሕ ተመሊሱ።', c5Win: 'ፋውንድሪ ዳግማይ ተጀሚሩ!', c5Help: 'ኦቨርራይድ ኪ ሰርሕ፣ ኣብ ፋውንድሪ ኮንሶል ካብ ከተማ ወጻኢ ኣቐምጥ። ብቡድ ንምዝላል ንባጅን ትሪምን።' },
+}
+for (const [lang, row] of Object.entries(C5)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

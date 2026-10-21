@@ -338,8 +338,13 @@ export function createMobs(opts) {
     if (!who.length) who = [me]
     const mul = who.length >= 2 ? (credit && credit.bonus ? credit.bonus(m.id) : 1.25) : 1
     const cosmetic = m.kind === 'overseer'
-    const item = cosmetic ? 'goldTrim' : 'stick'
+    const item = cosmetic ? 'foundryTrim' : 'stick'
     const n = cosmetic ? 1 : Math.max(1, Math.round(4 * mul))
+    if (cosmetic) {
+      if (giveItem) giveItem('bertyMemory', 1)
+      // Foundry Crew badge via crew-badges
+      try { if (window.bumpFoundry) window.bumpFoundry() } catch (e) {}
+    }
     const drops = ground ? ground() : null
     const at = Date.now() + 86400000
     for (let i = 0; i < who.length; i++) {
