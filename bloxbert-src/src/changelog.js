@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.305', date: '2026-10-21', lines: {
+    en: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],
+    simple: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],
+    uk: ['2.5.305 — Назва того, що ти тримаєш, тепер акуратно в верхній панелі.'],
+    ru: ['2.5.305 — Название того, что ты держишь, теперь аккуратно в верхней панели.'],
+    es: ['2.5.305 — El nombre de lo que sostienes ahora está ordenado en la barra superior.'],
+    ar: ['2.5.305 — اسم ما تمسكه الآن يجلس بشكل أنيق في الشريط العلوي.'],
+    'fa-AF': ['2.5.305 — نام چیزی که نگه می‌داری حالا مرتب در نوار بالا نشسته است.'],
+    rw: ['2.5.305 — Izina ry\'icyo ufite ubu ririmo neza mu murongo wo hejuru.'],
+    ti: ['2.5.305 — ስም ናይቲ እተሕዝዎ ሕጂ ብጽቡቕ ኣብ ላዕለዋይ ባር ይቕመጥ።'],
+  }},
+
   { v: '2.5.308', date: '2026-10-21', lines: {
     en: ['Lamps and rugs have clearer pictures.'],
     simple: ['Lamps and rugs have clearer pictures.'],

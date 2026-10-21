@@ -2,6 +2,8 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.304 bigger counts and phone slots).
 
+- [x] **2.5.305 held caption:** The name of what you're holding now sits neatly inside the top bar beside the BERTOPIA plate (row layout, 14px ellipsis, hides on narrow phones). Version chip stays fully visible at 412 wide.
+
 - [x] **2.5.308 decor pictures:** Floor Lamp (shade wedge + pole + base), Wall Lamp (plate + arm + shade), Rug (red/blue stripes + white fringe). Distinct silhouettes at 32px. Rug no longer looks like Planks.
 - [x] **2.5.301 Walk:** After you walk and let go, you stay where you walked. The game does not pull you back to the saved spot. If the ground is still loading, you do not fall through it.
 
