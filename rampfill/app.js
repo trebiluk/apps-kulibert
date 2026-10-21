@@ -120,6 +120,7 @@
       onWord: "On",
       offWord: "Off",
       helpGhost: "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
+      dailyCup: "Daily cup",
       testHelp: "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
       testLose: "Not filled yet",
       testLoseNote: "The cup is not full. Try again.",
@@ -190,6 +191,7 @@
       onWord: "Увімк",
       offWord: "Вимк",
       helpGhost: "Повторити може показати бліду сіру копію найкращих рамп. «Показати найкраще» вмикає або вимикає її.",
+      dailyCup: "Чашка дня",
       testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
@@ -262,6 +264,7 @@
       onWord: "Вкл",
       offWord: "Выкл",
       helpGhost: "Повтор может показать бледную серую копию лучших рамп. «Показать лучшее» включает или выключает её.",
+      dailyCup: "Чашка дня",
       testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
@@ -334,6 +337,7 @@
       onWord: "Sí",
       offWord: "No",
       helpGhost: "Otra vez puede mostrar una copia gris tenue de tus mejores rampas. Ver la mejor la enciende o la apaga.",
+      dailyCup: "Taza del día",
       testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
@@ -406,6 +410,7 @@
       onWord: "تشغيل",
       offWord: "إيقاف",
       helpGhost: "إعادة المحاولة تعرض نسخة رمادية باهتة من أفضل منحدراتك. أظهر الأفضل يشغلها أو يوقفها.",
+      dailyCup: "كوب اليوم",
       testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
@@ -478,6 +483,7 @@
       onWord: "روشن",
       offWord: "خاموش",
       helpGhost: "دوباره می‌تواند نسخهٔ خاکستری کم‌رنگ بهترین سطح‌ها را نشان دهد. بهترین را نشان بده آن را روشن یا خاموش می‌کند.",
+      dailyCup: "پیالهٔ امروز",
       testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
@@ -550,6 +556,7 @@
       onWord: "Gukora",
       offWord: "Hagarara",
       helpGhost: "Ongera ishobora kwerekana kopi y'ubugugu y'imihanda yawe myiza. Erekana byiza yikora cyangwa ihagarara.",
+      dailyCup: "Igikombe cy'uyu munsi",
       testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
@@ -622,6 +629,7 @@
       onWord: "ተኸፊቱ",
       offWord: "ጠፊኡ",
       helpGhost: "ዳግማይ ምፍታን ናይ ዝበለጸ መንሸራተቲ ግራጫ ቅዳሕ ከርኢ ይኽእል። ዝበለጸ ኣርኢ የብርሆ ወይ የጥፍኦ።",
+      dailyCup: "ጽዋዕ ናይ ሎሚ",
       testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
@@ -645,6 +653,7 @@
       onWord: "On",
       offWord: "Off",
       helpGhost: "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
+      dailyCup: "Daily cup",
       fillWord: "Fill",
       helpSplash: "A pour splashes. The fill percent counts up. Mute turns the tone off.",
       pathNext: "Grains cup is full. Pick Water. Draw to that cup.",
@@ -851,9 +860,12 @@
     return Array.isArray(row) ? (row[level - 1] | 0) : 0;
   }
   function recordRamps() {
-    var n = 0;
-    strokes.forEach(function (s) { if (s && s.length >= 2) n += 1; });
+    var n = rampCount();
     clearRamps = n;
+    if (dailyOn) {
+      saveDailyBest(n);
+      return;
+    }
     var who = rampWho();
     var map = rampMap();
     var row = Array.isArray(map[who]) ? map[who].slice(0, 5) : [0, 0, 0, 0, 0];
@@ -984,7 +996,7 @@
     var l2 = document.getElementById("lesson-2");
     if (l2) l2.textContent = mode === "stack" ? t("stackLesson") : t(lessonKey());
     var lv = document.getElementById("level-name");
-    if (lv) lv.textContent = document.body.classList.contains("at-ideas") ? t("ideas") : document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : t("lv" + level);
+    if (lv) lv.textContent = document.body.classList.contains("at-ideas") ? t("ideas") : document.body.classList.contains("at-ref") ? t("refTile") : atHome() ? t("home") : mode === "stack" ? t("stackTile") : dailyOn ? t("dailyCup") : t("lv" + level);
     canvas.setAttribute("aria-label", mode === "stack" ? t("stackLesson") : t("canvas"));
     paintEndCopy();
     paintStatus();
@@ -1163,6 +1175,7 @@
   }
   function saveCups() { saveProgress(); }
   function markProgress() {
+    if (dailyOn) return;
     var nums = [];
     for (var i = 0; i < cupList.length; i++) if (cupStars[i]) nums.push(cupStars[i]);
     if (nums.length) {
@@ -1206,6 +1219,29 @@
       } else li.textContent = t("lv" + i) + " — " + t("lockedWhy");
       list.appendChild(li);
     }
+    var daily = document.createElement("li");
+    var dayBtn = document.createElement("button");
+    dayBtn.type = "button";
+    dayBtn.className = "daily-tile";
+    var day = schoolDay();
+    dayBtn.innerHTML = '<svg viewBox="0 0 48 28" aria-hidden="true"><path d="M4 4 H44 L38 26 H10 Z" fill="#E0A106" stroke="#1A120C" stroke-width="2"/></svg>';
+    var name = document.createElement("span");
+    name.className = "daily-name";
+    name.textContent = t("dailyCup");
+    var when = document.createElement("span");
+    when.className = "daily-date";
+    when.textContent = dailyLabel(day);
+    dayBtn.appendChild(name);
+    dayBtn.appendChild(when);
+    dayBtn.setAttribute("aria-label", t("dailyCup") + " " + dailyLabel(day));
+    dayBtn.addEventListener("click", function () {
+      toggleMenu(false);
+      stackFromHome = false;
+      if (mode === "stack") leaveStack();
+      beginDaily();
+    });
+    daily.appendChild(dayBtn);
+    list.appendChild(daily);
   }
   function doReset() {
     unlocked = 1;
@@ -1223,6 +1259,7 @@
     paintLevels();
     toggleMenu(false);
     level = 1;
+    dailyOn = false;
     showHome();
   }
   function board() {
@@ -1393,6 +1430,63 @@
       w: Math.round((0.18 + ((h >>> 8) % 10) / 100) * 1000) / 1000,
       h: Math.round((0.46 + ((h >>> 16) % 14) / 100) * 1000) / 1000
     };
+  }
+  function dailyLabel(day) {
+    var parts = String(day || schoolDay()).split("-");
+    var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+    var code = lang();
+    var loc = code === "fa-AF" ? "fa" : code === "simple" ? "en" : code;
+    try { return d.toLocaleDateString(loc, { weekday: "short", month: "short", day: "numeric" }); }
+    catch (e) { return day; }
+  }
+  function readDaily() {
+    try {
+      var data = JSON.parse(localStorage.getItem("rampfill-daily-v1") || "null");
+      if (!data || typeof data !== "object" || Array.isArray(data)) return { date: "", best: 0 };
+      return { date: String(data.date || ""), best: data.best | 0 };
+    } catch (e) { return { date: "", best: 0 }; }
+  }
+  function todayDaily() {
+    var day = schoolDay();
+    var row = readDaily();
+    if (row.date !== day) {
+      try { if (row.date) localStorage.removeItem("rampfill-daily-v1"); } catch (e) {}
+      return { date: day, best: 0 };
+    }
+    return row;
+  }
+  function saveDailyBest(n) {
+    if (!(n > 0)) return;
+    var row = todayDaily();
+    if (row.best > 0 && n >= row.best) return;
+    try { localStorage.setItem("rampfill-daily-v1", JSON.stringify({ date: row.date, best: n })); } catch (e) {}
+  }
+  function rampCount() {
+    var n = 0;
+    strokes.forEach(function (s) { if (s && s.length >= 2) n += 1; });
+    return n;
+  }
+  function beginDaily() {
+    dailyOn = true;
+    level = 1;
+    activeSide = 0;
+    strokes = [];
+    undo = [];
+    ghostCup = 0;
+    ended = false;
+    paused = false;
+    newBest = false;
+    var pause = document.getElementById("pause-layer");
+    var card = document.getElementById("endcard");
+    var bar = document.getElementById("donebar");
+    if (pause) pause.hidden = true;
+    if (card) card.hidden = true;
+    if (bar) bar.hidden = true;
+    showPlay();
+    clearFills();
+    layout();
+    paintText();
+    syncModal();
   }
   function placeWorld() {
     var tall = viewH > viewW * 1.05;
@@ -1942,9 +2036,11 @@
       if ((fills[i] || 0) >= LINE) {
         if (!countedCup[i]) {
           countedCup[i] = true;
-          cups += 1;
           cupStars[i] = starCount(spill);
-          sessionStars.push(cupStars[i]);
+          if (!dailyOn) {
+            cups += 1;
+            sessionStars.push(cupStars[i]);
+          }
           gained = true;
         }
         if (level === 2 && i === 0 && ghostCup === 0 && (fills[1] || 0) < LINE) {
@@ -1954,12 +2050,12 @@
         }
       } else all = false;
     }
-    if (gained) { saveCups(); noteScore(); paintCups(); }
+    if (gained && !dailyOn) { saveCups(); noteScore(); paintCups(); }
     if (all && !filledOnce) {
       filledOnce = true;
       sawFill = true;
-      markProgress();
-      postWinScore(Math.max(1, strokes.length || 1));
+      if (dailyOn) saveDailyBest(rampCount());
+      else { markProgress(); postWinScore(Math.max(1, strokes.length || 1)); }
       paintCups();
       document.getElementById("donebar").hidden = false;
       document.getElementById("endcard").hidden = true;
@@ -2436,6 +2532,7 @@
     syncModal();
   }
   function setLevel(n) {
+    dailyOn = false;
     if (mode === "stack") leaveStack();
     level = Math.max(1, Math.min(5, n | 0));
     activeSide = 0;

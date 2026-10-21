@@ -475,7 +475,22 @@ canvas {
 .end-stars span:nth-child(3) { animation-delay: 600ms; }
 .end-stars.still span { animation: none; opacity: 1; }
 @keyframes starIn { from { opacity: 0; } to { opacity: 1; } }
-#ghost-toggle { min-width: 44px; min-height: 44px; white-space: normal; }
+.daily-tile {
+  min-width: 44px;
+  min-height: 44px;
+  white-space: normal;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: #f6e2b0;
+}
+.daily-tile svg { width: 44px; height: 26px; flex: none; }
+.daily-tile:focus-visible { outline: 3px solid #1a120c; outline-offset: 2px; }
+.level-list { display: flex; flex-wrap: wrap; gap: 8px; padding: 0; list-style: none; }
+.level-list li { flex: 1 1 140px; }
+.level-list button { width: 100%; }
 #ghost-toggle:focus-visible { outline: 3px solid #f6c453; outline-offset: 2px; }
 html[data-kp-motion="less"] .end-stars span { animation: none; opacity: 1; }
 @media (prefers-reduced-motion: reduce) {
