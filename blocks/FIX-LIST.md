@@ -1,4 +1,7 @@
 # Bertopia FIX-LIST
+- [x] **combat-298-build (2.5.330):** 2.5.298 Rustbot/Keeper/Bertodex/badges now built into the game; Help names them. Kinyarwanda, Tigrinya, and Dari still need a native check.
+
+
 - [x] **2.5.298 C4 Rustbot + Keeper + Bertodex + badges:** Rustbots and Keepers to reboot as a team, plus Bertodex pages and badges. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
  (live fix list for the Build chat)

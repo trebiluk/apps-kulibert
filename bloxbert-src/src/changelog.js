@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.330', date: '2026-10-21', lines: {
+    en: ['2.5.330 — Rustbot, Keeper, the Bertodex and crew badges are now in the game, and Help explains them.'],
+    simple: ['2.5.330 — Rustbot, Keeper, the Bertodex and crew badges are now in the game, and Help explains them.'],
+    uk: ['2.5.330 — Rustbot, Keeper, Bertodex і значки екіпажу тепер у грі, і Допомога їх пояснює.'],
+    ru: ['2.5.330 — Rustbot, Keeper, Bertodex и значки команды теперь в игре, и Помощь их объясняет.'],
+    es: ['2.5.330 — Rustbot, Keeper, Bertodex y las insignias de equipo están ahora en el juego, y Ayuda las explica.'],
+    ar: ['2.5.330 — Rustbot و Keeper و Bertodex وشارات الطاقم الآن في اللعبة، والمساعدة تشرحها.'],
+    'fa-AF': ['2.5.330 — Rustbot، Keeper، Bertodex و نشان‌های خدمه اکنون در بازی هستند و راهنما آن‌ها را توضیح می‌دهد.'],
+    rw: ['2.5.330 — Rustbot, Keeper, Bertodex n ibimenyetso by itsinda biri muri game, kandi Ubufasha bubisobanura.'],
+    ti: ['2.5.330 — Rustbot፣ Keeper፣ Bertodexን ባጃት ጋንታ ኣብ ጸወታ ኣለዉ፣ ሓገዝ ድማ ይገልጾም።'],
+  }},
+
   { v: '2.5.327', date: '2026-10-21', lines: {
     en: ['2.5.327 — The Mine button says Bonk when you aim at a bot, and Bertyville shows it is safe.'],
     simple: ['2.5.327 — The Mine button says Bonk when you aim at a bot, and Bertyville shows it is safe.'],
@@ -19,7 +31,7 @@ export const CHANGELOG = [
     es: ['2.5.298 — Rustbots y Keepers para reiniciar en equipo, más páginas Bertodex y insignias.'],
     ar: ['2.5.298 — Rustbots و Keepers لإعادة التشغيل كفريق، بالإضافة إلى صفحات Bertodex والشارات.'],
     'fa-AF': ['2.5.298 — Rustbots و Keepers برای راه‌اندازی مجدد به عنوان تیم، به علاوه صفحات Bertodex و نشان‌ها.'],
-    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe n'impapuro za Bertodex n'ibimenyetso.'],
+    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe nimpapuro za Bertodex nibimenyetso.'],
     ti: ['2.5.298 — Rustbotsን Keepers ንቡድ ንምዝላል፣ ኣብ ላዕሊ Bertodex ገጻትን ባጃትን።'],
   }},
 
@@ -467,7 +479,7 @@ export const CHANGELOG = [
     es: ['Nuevos robots para reiniciar: Rustbot y el Guardián Mecanoide. ¡Únete a tu equipo para reiniciar al Capataz de la Fundición y gana insignias y páginas del Bertodex!'],
     ar: ['روبوتات جديدة لإعادة تشغيلها: روبوت الصدأ والحارس الآلي. تعاونوا لإعادة تشغيل مشرف المسبك واربحوا شارات وصفحات بيرتودكس!'],
     'fa-AF': ['روبات‌های تازه برای روشن کردن دوباره: زنگ‌بات و نگهبان ماشینی. با هم ناظر ریخته‌گری را دوباره روشن کنید و نشان و صفحه‌های برتودکس بگیرید!'],
-    rw: ['Robo nshya zo kongera gutangiza: Rustbot na Mechanoid Keeper. Mufatanye mwongere mutangize Foundry Overseer, mubone imidari n\'impapuro za Bertodex!'],
+    rw: ['2.5.298 — Rustbots na Keepers kugira ngo wongere utangire nka itsinda, hamwe nimpapuro za Bertodex nibimenyetso.'],
     ti: ['ሓደስቲ ሮቦታት: Rustbot ከምኡውን Mechanoid Keeper። ብሓባር ኮይንኩም ን Foundry Overseer ዳግማይ ኣልዕሉ፣ ሜዳልያን ገጻት Bertodexን ረኸቡ!'],
   }},
 
