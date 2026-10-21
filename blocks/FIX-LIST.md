@@ -2,6 +2,8 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 
+
+- [x] **server-sync-s2a (2.5.328):** Push-only server copy of the world behind ?sync=1. Never loads from the server. Signed-in check, debounce ≥20 s, only changed chunks + head, If-Match. Offline keeps latest and flushes on online. No kid-visible change yet.
 - [x] **2.5.326 jump-hidden-924:** Jump, Suit and Open clear the 2-row hotbar at 924x412. Jump sits above the hotbar, Suit sits above the stick, Open clears the hotbar edge. Upright and 1366 unchanged.
 - [x] **bertopia-menu-language (2.5.323):** The menu sheet header and the side menu name follow the player's language. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
@@ -270,6 +272,7 @@ Updated Wed Oct 21 2026 (Build: 2.5.325 plate, 2.5.297 crew).
 ## 3. Next up (paste order; one version each, prove before the next)
 | # | Version | Brief (`briefs/fixq/`) | Status |
 |---|---|---|---|
+| 2.5.328 | 2.5.328 | server-sync-s2a push-only behind ?sync=1 | shipping |
 | 2.5.323 | 2.5.323 | The menu header and side menu use your language | shipping |
 | 2.5.320 | 2.5.320 | On an upright phone, the Open button no longer covers the hint | shipping |
 | 2.5.315 | 2.5.315 | On an upright phone, every top button fits | shipping |

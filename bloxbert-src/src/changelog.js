@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.328', date: '2026-10-21', lines: {
+    en: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
+    simple: ['2.5.328 — Getting ready to keep worlds safe on the school server (off for now).'],
+    uk: ['2.5.328 — Готуємося зберігати світи в безпеці на шкільному сервері (поки вимкнено).'],
+    ru: ['2.5.328 — Готовимся хранить миры в безопасности на школьном сервере (пока выключено).'],
+    es: ['2.5.328 — Preparándonos para guardar mundos a salvo en el servidor de la escuela (apagado por ahora).'],
+    ar: ['2.5.328 — نستعد لحفظ العوالم بأمان على خادم المدرسة (مغلق الآن).'],
+    'fa-AF': ['2.5.328 — آماده می‌شویم تا جهان‌ها را روی سرور مدرسه ایمن نگه داریم (فعلاً خاموش).'],
+    rw: ['2.5.328 — Turi gutegura kubika isi mu mutekano kuri seriveri yishuri (yafunze ubu).'],
+    ti: ['2.5.328 — ንዓለማት ኣብ ሰርቨር ቤት ትምህርቲ ኣብ ውሕስነት ንዓቅም ኣለና (ሕጂ ዕጹው).'],
+  }},
+
   { v: '2.5.326', date: '2026-10-21', lines: {
     en: ['2.5.326 — Jump is always there when your phone is sideways.'],
     simple: ['2.5.326 — Jump is always there when your phone is sideways.'],
