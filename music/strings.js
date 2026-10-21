@@ -457,6 +457,10 @@
     lessonAlongOff: "Play along is off. Your taps are saved on the beat.",
     helpScore: "📝 The Score tab teaches you in your language.",
     news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
+    showLine: "One song. The picture follows. Sound can stay off.",
+    exitEsc: "Exit  Esc",
+    performMicOff: "Mic: OFF",
+    performMicOn: "Mic: ON"
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -617,6 +621,10 @@
     lessonAlongOff: "Play along is off. Your taps are saved.",
     helpScore: "📝 Score teaches you in your language.",
     news23622: "MU 2.36.22 — The Score tab teaches you in your language.",
+    showLine: "One song. The picture follows. Sound can stay off.",
+    exitEsc: "Exit Esc",
+    performMicOff: "Mic off",
+    performMicOn: "Mic on"
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1068,6 +1076,10 @@
       "lessonAlongOff": "Гру разом вимкнено. Твої натиски зберігаються на біті.",
       "helpScore": "📝 Вкладка Ноти вчить тебе твоєю мовою.",
       "news23622": "MU 2.36.22 — Вкладка Ноти вчить тебе твоєю мовою.",
+      "showLine": "Одна пісня. Картинка йде за нею. Звук можна лишити вимкненим.",
+      "exitEsc": "Вийти  Esc",
+      "performMicOff": "Мікрофон: ВИМК",
+      "performMicOn": "Мікрофон: УВІМК"
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1516,6 +1528,10 @@
       "lessonAlongOff": "Игра вместе выключена. Твои нажатия сохраняются на бите.",
       "helpScore": "📝 Вкладка Ноты учит тебя на твоём языке.",
       "news23622": "MU 2.36.22 — Вкладка Ноты учит тебя на твоём языке.",
+      "showLine": "Одна песня. Картинка идёт за ней. Звук можно оставить выключенным.",
+      "exitEsc": "Выйти  Esc",
+      "performMicOff": "Микрофон: ВЫКЛ",
+      "performMicOn": "Микрофон: ВКЛ"
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1965,6 +1981,10 @@
       "lessonAlongOff": "Tocar junto está apagado. Tus toques se guardan en el tiempo.",
       "helpScore": "📝 Partitura te enseña en tu idioma.",
       "news23622": "MU 2.36.22 — La pestaña Partitura te enseña en tu idioma.",
+      "showLine": "Una canción. La imagen la sigue. El sonido puede quedar apagado.",
+      "exitEsc": "Salir  Esc",
+      "performMicOff": "Mic: apagado",
+      "performMicOn": "Mic: encendido"
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2414,6 +2434,10 @@
       "lessonAlongOff": "العزف معًا متوقف. لمساتك تُحفظ على النبض.",
       "helpScore": "📝 لسان النوتة يعلّمك بلغتك.",
       "news23622": "MU 2.36.22 — لسان النوتة يعلّمك بلغتك.",
+      "showLine": "أغنية واحدة. الصورة تتبعها. يمكن أن يبقى الصوت مطفأ.",
+      "exitEsc": "خروج  Esc",
+      "performMicOff": "المايك: مطفأ",
+      "performMicOn": "المايك: يعمل"
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2863,6 +2887,10 @@
       "lessonAlongOff": "همراه نواختن خاموش است. ضربه‌های تو روی ضرب ذخیره می‌شود.",
       "helpScore": "📝 زبانه نت به زبان خودت یادت می‌دهد.",
       "news23622": "MU 2.36.22 — زبانه نت به زبان خودت یادت می‌دهد.",
+      "showLine": "یک آهنگ. تصویر دنبال آن می‌آید. صدا می‌تواند خاموش بماند.",
+      "exitEsc": "بیرون  Esc",
+      "performMicOff": "مایک: خاموش",
+      "performMicOn": "مایک: روشن"
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3312,6 +3340,10 @@
       "lessonAlongOff": "Gukina hamwe birazimye. Gukanda kwawe kubikwa ku murya.",
       "helpScore": "📝 Igitabo cy'inota kiguhugura mu rurimi rwawe.",
       "news23622": "MU 2.36.22 — Igitabo cy'inota kiguhugura mu rurimi rwawe.",
+      "showLine": "Indirimbo imwe. Ishusho ikurikira. Ijwi rishobora kuguma rivanye.",
+      "exitEsc": "Sohoka  Esc",
+      "performMicOff": "Mikoro: OFF",
+      "performMicOn": "Mikoro: ON"
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3761,6 +3793,10 @@
       "lessonAlongOff": "ምሳኻ ምጻወት ጠፊኡ። ምጥዋቕካ ኣብቲ ምት ይዕቀብ።",
       "helpScore": "📝 ነጥቢ ብቋንቋኻ የስልጠነካ።",
       "news23622": "MU 2.36.22 — ነጥቢ ብቋንቋኻ የስልጠነካ።",
+      "showLine": "ሓንቲ ደርፊ። ስእሊ ይስዕባ። ድምጺ ክጥፍእ ይኽእል።",
+      "exitEsc": "ውጻእ  Esc",
+      "performMicOff": "ማይክ፡ ጠፊኡ",
+      "performMicOn": "ማይክ፡ ወሊዑ"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

@@ -1823,6 +1823,94 @@
     $("now-line").textContent = state.showing ? (mu("ready") || "Ready") : (mu("pressPlay") || "Press Play. You can leave the sound off.");
   }
 
+  function motionLess() {
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      || document.documentElement.getAttribute("data-kp-motion") === "less";
+  }
+  function exitMark() {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "mu-exit");
+    svg.setAttribute("viewBox", "0 0 24 24");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    path.setAttribute("d", "M6 6l12 12M18 6L6 18");
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", "currentColor");
+    path.setAttribute("stroke-width", "2.4");
+    path.setAttribute("stroke-linecap", "round");
+    svg.appendChild(path);
+    return svg;
+  }
+  function paintPerformExit() {
+    const exit = $("perform-exit");
+    if (!exit) return;
+    exit.removeAttribute("data-mu");
+    let word = exit.querySelector(".perform-exit-word");
+    if (!word || !exit.querySelector("svg")) {
+      exit.replaceChildren(exitMark());
+      word = document.createElement("span");
+      word.className = "perform-exit-word";
+      exit.appendChild(word);
+    }
+    const label = mu("exitEsc") || "Exit  Esc";
+    word.textContent = label;
+    exit.setAttribute("aria-label", label);
+  }
+  function paintPerformMic() {
+    const btn = $("perform-mic");
+    if (!btn) return;
+    const on = !!(state.micAnalyser || state.micPending);
+    btn.hidden = !state.showing;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    const label = on ? (mu("performMicOn") || "Mic: ON") : (mu("performMicOff") || "Mic: OFF");
+    const word = btn.querySelector(".perform-mic-word");
+    if (word) word.textContent = label;
+    btn.setAttribute("aria-label", label);
+  }
+  function ensurePerformMic() {
+    let btn = $("perform-mic");
+    if (btn) return btn;
+    btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "perform-mic";
+    btn.className = "perform-mic";
+    btn.setAttribute("aria-pressed", "false");
+    const ico = document.createElement("span");
+    ico.className = "perform-mic-ico";
+    ico.setAttribute("aria-hidden", "true");
+    ico.textContent = "🎤";
+    const word = document.createElement("span");
+    word.className = "perform-mic-word";
+    btn.append(ico, word);
+    btn.addEventListener("click", () => {
+      toggleMic();
+      paintPerformMic();
+      window.setTimeout(paintPerformMic, 400);
+      window.setTimeout(paintPerformMic, 1200);
+    });
+    const live = $("mic-lights");
+    if (live) new MutationObserver(() => paintPerformMic()).observe(live, { attributes: true, attributeFilter: ["aria-pressed"] });
+    const host = document.querySelector(".stage-wrap") || document.body;
+    host.appendChild(btn);
+    return btn;
+  }
+  function paintPerformChrome() {
+    paintPerformExit();
+    paintPerformMic();
+    if (state.showing && state.performLine && !state.playing && !state.counting) {
+      const line = mu(state.performLine);
+      if (line && $("now-line")) $("now-line").textContent = line;
+    }
+  }
+  function hookPerformPaint() {
+    if (hookPerformPaint.done) return;
+    hookPerformPaint.done = true;
+    const prev = window.MuPaintLive;
+    window.MuPaintLive = function () {
+      if (typeof prev === "function") prev();
+      paintPerformChrome();
+    };
+  }
   function showCurtain() {
     const curtain = $("curtain");
     const bow = $("bow");
@@ -1852,9 +1940,18 @@
     document.body.classList.add("show");
     const exit = $("perform-exit");
     if (exit) exit.hidden = false;
+    ensurePerformMic();
+    hookPerformPaint();
+    if (state.micAnalyser || state.micPending) stopMic();
+    paintPerformExit();
+    paintPerformMic();
+    state.performLine = "showLine";
+    if (exit) {
+      try { exit.focus(); } catch (err) { /* focus can fail if the button is covered */ }
+    }
     fitViz();
     showCurtain();
-    $("now-line").textContent = "One song. The picture follows. Sound can stay off.";
+    $("now-line").textContent = mu("showLine") || "One song. The picture follows. Sound can stay off.";
     window.requestAnimationFrame(() => {
       window.requestAnimationFrame(() => {
         if (stageApi && stageApi.resize) stageApi.resize();
@@ -1867,6 +1964,7 @@
     if (state.playing) stop();
     window.clearTimeout(state.timer);
     state.showing = false;
+    if (state.micAnalyser || state.micPending) stopMic();
     if (state.showBackup) {
       state.rgb = state.showBackup.rgb;
       state.gear.wild = state.showBackup.wild;
@@ -1874,13 +1972,23 @@
       state.showBackup = null;
     }
     document.body.classList.remove("show");
+    state.performLine = "";
     const exit = $("perform-exit");
     if (exit) exit.hidden = true;
+    const mic = $("perform-mic");
+    if (mic) {
+      mic.hidden = true;
+      mic.setAttribute("aria-pressed", "false");
+    }
     fitViz();
     if ($("curtain")) $("curtain").hidden = true;
     if ($("bow")) $("bow").hidden = true;
     $("feel").textContent = mu("ready") || "Ready";
     $("now-line").textContent = mu("pressPlay");
+    const back = $("show-btn");
+    if (back) {
+      try { back.focus(); } catch (err) { /* the Perform button is back on the bar */ }
+    }
   }
   function bow() {
     if (!state.showing) return;

@@ -3120,14 +3120,65 @@ body.mu237.show #perform-exit:not([hidden]) {
   display: inline-flex !important;
   position: fixed !important;
   z-index: 70 !important;
-  top: calc(var(--bar, 48px) + 8px) !important;
-  inset-inline-start: 12px !important;
+  top: auto !important;
+  bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+  inset-inline-start: auto !important;
+  inset-inline-end: 12px !important;
   width: auto !important;
   height: auto !important;
   min-width: 44px !important;
   min-height: 44px !important;
+  max-width: calc(50vw - 16px);
   align-items: center !important;
   justify-content: center !important;
+  gap: 0.35rem !important;
+  padding: 8px 12px !important;
+  white-space: normal !important;
+  text-align: center;
+  line-height: 1.15;
+}
+body.mu237.show #dock-left,
+body.mu237.show .side {
+  display: none !important;
+}
+#perform-mic,
+body.mu237 .perform-mic { display: none !important; }
+body.mu237.show #perform-mic:not([hidden]) {
+  display: inline-flex !important;
+  position: fixed !important;
+  z-index: 71 !important;
+  bottom: calc(12px + env(safe-area-inset-bottom)) !important;
+  inset-inline-start: 12px !important;
+  inset-inline-end: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.35rem;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  max-width: calc(50vw - 16px);
+  padding: 8px 12px !important;
+  border-radius: 10px;
+  border: 1px solid #fff8ea;
+  background: #10203f;
+  color: #fff8ea;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.15;
+  white-space: normal;
+  text-align: center;
+}
+body.mu237.show #perform-exit:focus-visible,
+body.mu237.show #perform-mic:focus-visible {
+  outline: 3px solid #22d3ee !important;
+  outline-offset: 2px;
+}
+body.mu237.show #perform-mic[aria-pressed="true"] {
+  box-shadow: inset 0 -3px 0 #22d3ee;
+}
+html[dir="rtl"] body.mu237.show #perform-exit,
+html[dir="rtl"] body.mu237.show #perform-mic,
+html[dir="rtl"] body.mu237.show #now-line {
+  direction: rtl;
 }
 
 /* MU 2.35.10 — Mix opens on the desk. Band shows one list and the five notes. */
@@ -5589,4 +5640,25 @@ body.mu237 .viz-start[hidden] { display: none !important; }
 body.mu237 .stage-wrap.mu-kick { filter: brightness(1.12); }
 @media (prefers-reduced-motion: reduce) {
   body.mu237 .stage-wrap.mu-kick { filter: none !important; }
+}
+
+/* MU 2.36.23 — Perform fills the projector. The 60vh cap stays on Viz only. */
+body.mu237.show .out,
+body.mu237.show.tab-tap:not(.stage-on) .out {
+  display: flex !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100dvh !important;
+  min-height: 100dvh !important;
+  max-height: 100dvh !important;
+  z-index: 60 !important;
+}
+body.mu237.show .stage-wrap,
+body.mu237.show canvas#viz {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  flex: 1 1 auto !important;
 }
