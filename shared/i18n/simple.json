@@ -267,5 +267,6 @@
   "loud_rim": "Rim volume",
   "loud_bell": "Bell volume",
   "loud_tamb": "Tamb volume",
-  "loud_crash": "Crash volume"
+  "loud_crash": "Crash volume",
+  "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off."
 }

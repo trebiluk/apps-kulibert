@@ -1,6 +1,6 @@
 /* Shared Tech Room words. English is always the fallback. Never a blank, never a raw key. */
 (function (root) {
-  var I18N_REV = "2026-10-21-mu23619-aria";
+  var I18N_REV = "RF-1.0.12";
   var EN = {
   "home": "Home",
   "signIn": "Sign in",
@@ -298,6 +298,7 @@
   "rfHelpSplash": "Pouring splashes. The fill percent counts up. Mute turns the tone off.",
   "rfHelpStars": "The level list shows your stars and your fewest ramps.",
   "rfHelpClear": "When you win, stars show one by one. Next is ready.",
+  "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off.",
   "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
   "rfLv5": "Pick the path",
   "rfWall": "Wall",

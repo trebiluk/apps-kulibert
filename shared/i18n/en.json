@@ -404,5 +404,6 @@
   "loud_rim": "Rim loudness",
   "loud_bell": "Bell loudness",
   "loud_tamb": "Tamb loudness",
-  "loud_crash": "Crash loudness"
+  "loud_crash": "Crash loudness",
+  "rfHelpGhost": "Retry can show a faint grey copy of your best ramps. Show best turns it on or off."
 }

@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 13. Version locked: RF 1.0.12.
+
+- [x] **RF 1.0.12 ITEM 1:** After a new best, Retry can show a faint grey copy of those ramps. The lines are stored by level only. Show best is a 44px switch, on by default.
+
 Stage 12. Version locked: RF 1.0.11.
 
 - [x] **RF 1.0.11 ITEM 1:** A pour shows a soft splash and a fill-line ripple. The fill percent counts up in the page. A short rising tone plays unless mute is on. Reduced motion skips the ripple.
