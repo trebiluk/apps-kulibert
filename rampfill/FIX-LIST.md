@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 20. Version locked: RF 1.0.19.
+
+- [x] **home-no-pause:** The home menu hides Pause and the fill bar. Both come back when a level starts. Escape on the home menu does not open Pause.
+
 Stage 19. Version locked: RF 1.0.18.
 
 - [x] **ref-team-buttons-fit:** On a phone the four Referee team buttons sit in a 2×2 grid so the name and the number both show. Wider screens keep one row only when the whole label fits.
