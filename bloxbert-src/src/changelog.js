@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.289', date: '2026-10-20', lines: {
+    en: ['More Spanish is fixed, the Language button is here, Bag and Jump no longer overlap sideways, and reloads show the new version.'],
+    uk: ['Виправлено більше іспанської, з\'явилася кнопка Мова, Сумка і Стрибок більше не накладаються збоку, а оновлення показує нову версію.'],
+    ru: ['Исправлено больше испанского, появилась кнопка Язык, Сумка и Прыжок больше не накладываются сбоку, а перезагрузка показывает новую версию.'],
+    es: ['Más español arreglado, ya está el botón Idioma, Bolsa y Saltar ya no se tapan de lado y al recargar ves la versión nueva.'],
+    ar: ['تم إصلاح المزيد من الإسبانية، وأصبح زر اللغة متاحًا، ولم تعد الحقيبة والقفز تتداخلان أفقيًا، وإعادة التحميل تُظهر الإصدار الجديد.'],
+    'fa-AF': ['اسپانیایی بیشتر درست شد، دکمه زبان آمد، کیف و پرش در حالت افقی روی هم نمی‌افتند و بارگذاری دوباره نسخه نو را نشان می‌دهد.'],
+    rw: ['Icyesipanyolo cyakosowe kurushaho, buto y\'Ururimi irahari, Igikapu na Gusimbuka ntibikigongana ku ruhande, kandi kongera gufungura byerekana verisiyo nshya.'],
+    ti: ['ተወሳኺ ስጳንኛ ተዓሪዩ፣ ቁልፊ ቋንቋ መጺኡ፣ ቦርሳን ዝላን ብጐድኒ ኣይተደራረቡን፣ ዳግመ-ምጽዓን ሓድሽ ስሪት የርኢ።'],
+  }},
+
   { v: '2.5.288', date: '2026-10-20', lines: {
     en: ['Hung tools show up right away, Spanish is fixed, Jump fits sideways, and there is a Language button.'],
     uk: ['Повішені інструменти видно одразу, іспанська виправлена, Стрибок вміщується збоку, є кнопка Мова.'],

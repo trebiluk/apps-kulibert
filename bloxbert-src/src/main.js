@@ -125,7 +125,7 @@ function bonk() {
 function paintSuit() {
   const text = document.getElementById('suit-text')
   const fill = document.getElementById('suit-fill')
-  if (text) text.textContent = 'Suit ' + suit + '/' + suitMax
+  if (text) text.textContent = (t('suitText') || 'Suit {n}/{max}').replace('{n}', suit).replace('{max}', suitMax)
   if (fill) {
     fill.style.width = Math.max(4, (suit / suitMax) * 60) + 'px'
     fill.style.outline = suit < COMBAT_TUNING.lowSuit ? '2px solid #f59e0b' : 'none'
