@@ -25,6 +25,7 @@ import { BLOCKS } from './data/blocks-list.js';
 import { registerWrapMaterials } from "./gfx/tile-wraps.js";
 import { STR } from './strings.js'
 import { EXTRA } from './strings-extra.js'
+import { inSafeZone } from './safe-zone.js'
 import { createEdits } from './world-edit.js'
 import { createLog } from './change-log.js'
 import { withFloor } from './world-floor.js'
@@ -121,6 +122,36 @@ function bonk() {
   if (performance.now() - lastBonk < COMBAT_TUNING.bonkCd) return 0
   lastBonk = performance.now()
   return suitTier()
+}
+function combatTarget() {
+  const aimed = noa.targetedBlock
+  if (!aimed) return false
+  const id = aimed.blockID
+  return id === 9000 || id === 9001
+}
+function doBonk() {
+  const pos = noa.playerEntity && noa.playerEntity.position
+  if (!pos) return
+  if (inSafeZone(pos[0], pos[2])) {
+    showSafeChip()
+    return
+  }
+  const dmg = bonk()
+  if (dmg > 0) showFloat('-' + dmg)
+}
+function showSafeChip() {
+  const chip = document.createElement('div')
+  chip.textContent = '🛡 ' + (t('c1SafeZone') || 'Bertyville is a safe zone')
+  chip.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:#0f766e;color:#fff;padding:8px 16px;border-radius:8px;z-index:40'
+  document.body.append(chip)
+  setTimeout(() => chip.remove(), 2000)
+}
+function showFloat(text) {
+  const el = document.createElement('div')
+  el.textContent = text
+  el.style.cssText = 'position:fixed;top:40%;left:50%;transform:translateX(-50%);color:#fbbf24;font-size:24px;font-weight:700;z-index:40;pointer-events:none'
+  document.body.append(el)
+  setTimeout(() => el.remove(), 600)
 }
 function paintSuit() {
   const text = document.getElementById('suit-text')
@@ -3209,6 +3240,7 @@ noa.inputs.down.on('fire', () => {
   }
   if (eatResumeClick()) return
   const aimed = noa.targetedBlock
+  if (combatTarget()) { doBonk(); return }
   if (aimed && (isDoor(aimed.blockID) || isShopBlock(aimed.blockID))) { beginDig('mouse'); return }
   if (survivalOn()) beginDig('mouse')
   else {
