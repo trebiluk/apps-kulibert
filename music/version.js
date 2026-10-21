@@ -1,4 +1,4 @@
-window.MU_VERSION = "MU 2.36.12";
+window.MU_VERSION = "MU 2.36.13";
 (function () {
   var v = window.MU_VERSION;
   document.title = document.title.indexOf("Teacher") >= 0

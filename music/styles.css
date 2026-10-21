@@ -5388,6 +5388,43 @@ body.mu237.tab-viz #mic-lights {
   min-width: 44px !important;
 }
 
+/* MU 2.36.13 — on a phone, New beat sits fully inside the play bar, 8px above the tab bar. */
+@media (max-width: 600px) {
+  body.mu237 { --player: 236px; }
+  body.mu237 .transport,
+  body.mu237.playing:not(.show) .transport,
+  body.mu237.is-beat:not(.show) .transport,
+  body.mu237.is-both:not(.show) .transport {
+    bottom: 120px !important;
+    height: 116px !important;
+    min-height: 116px !important;
+    max-height: 116px !important;
+    overflow: hidden !important;
+    align-items: center !important;
+    align-content: flex-start !important;
+    flex-wrap: wrap !important;
+    row-gap: 4px !important;
+    padding: 6px 8px !important;
+    box-sizing: border-box !important;
+  }
+  body.mu237 .desk {
+    bottom: calc(236px + var(--dock, 0px)) !important;
+  }
+  body.mu237 .transport .songbar-copy {
+    flex: 1 1 calc(100% - 48px) !important;
+    min-height: 48px !important;
+    max-height: 48px !important;
+    overflow: visible !important;
+  }
+  body.mu237 #new-beat {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    height: 44px !important;
+    max-height: 44px !important;
+  }
+}
+
+
 
 
 
