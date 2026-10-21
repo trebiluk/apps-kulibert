@@ -180,6 +180,7 @@ export function VoltDuel() {
     let acc = 0;
     let spriteStamp = 0;
     let spokenCount = "";
+    const hitTimers: [number, number] = [0, 0];
     const canvas = canvasRef.current;
     const ctx = canvas?.getContext("2d");
     if (!canvas || !ctx) return;
@@ -324,6 +325,13 @@ export function VoltDuel() {
             if (event.type === "die") {
               audio.play("die");
               burst(event.x, event.y, "#ff4b4b", 14, 160);
+              const pill = document.querySelector(event.id === 0 ? ".pill.vex" : ".pill.rio");
+              if (pill) {
+                pill.classList.add("hit");
+                window.clearTimeout(hitTimers[event.id]);
+                const ms = reduced.current ? 600 : 300;
+                hitTimers[event.id] = window.setTimeout(() => pill.classList.remove("hit"), ms);
+              }
               pushLive(
                 event.id === 0
                   ? liveLine("vdLiveVexBack", "VEX back to checkpoint")
@@ -586,6 +594,17 @@ export function VoltDuel() {
     }
     return fallback;
   })();
+  const shapeHelp = (() => {
+    void helpRev;
+    const fallback = "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint.";
+    try {
+      const value = window.KulibertI18n?.t?.("vdShapeHelp", fallback);
+      if (value && value !== "vdShapeHelp") return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  })();
 
   const syncHolds = () => {
     const next: [Pad, Pad] = [
@@ -840,6 +859,10 @@ export function VoltDuel() {
                   <p>
                     <span aria-hidden="true">⏵ </span>
                     <span data-i18n="vdHoldHelp">{holdHelp}</span>
+                  </p>
+                  <p>
+                    <span aria-hidden="true">⬤ </span>
+                    <span data-i18n="vdShapeHelp">{shapeHelp}</span>
                   </p>
                   <p>
                     Hazards send you back to your checkpoint. Restart resets the whole heat. Double-jump the wide gaps.

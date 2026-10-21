@@ -49,5 +49,6 @@
   "vdLiveVexWin": "VEX takes the flag. {time} seconds. {coins} coins.",
   "vdLiveRioWin": "RIO takes the flag. {time} seconds. {coins} coins.",
   "vdLivePaused": "Paused",
-  "vdLiveResumed": "Go on"
+  "vdLiveResumed": "Go on",
+  "vdShapeHelp": "V is a circle. R is a square. A sign shows when you go back."
 }

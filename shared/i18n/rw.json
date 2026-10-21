@@ -202,5 +202,6 @@
   "vdLiveVexWin": "VEX yafashe ibendera, amasegonda {time}, ibiceri {coins}",
   "vdLiveRioWin": "RIO yafashe ibendera, amasegonda {time}, ibiceri {coins}",
   "vdLivePaused": "Hagarara",
-  "vdLiveResumed": "Komeza"
+  "vdLiveResumed": "Komeza",
+  "vdShapeHelp": "VEX ni uruziga rufite V. RIO ni kare ifite R. Icyapa kikubwira igihe umuntu asubiye kuri checkpoint."
 }

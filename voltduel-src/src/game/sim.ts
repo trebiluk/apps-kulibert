@@ -213,6 +213,11 @@ function kill(world: World, runner: Runner, events: SimEvent[]) {
   runner.vy = 0;
   runner.riding = null;
   world.shake = Math.max(world.shake, 9);
+  world.banners.push({
+    text: runner.id === 0 ? "VEX — BACK TO CHECKPOINT" : "RIO — BACK TO CHECKPOINT",
+    life: 0.85,
+    id: runner.id,
+  });
   events.push({
     type: "die",
     id: runner.id,

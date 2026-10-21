@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.5: Run and jump buttons hold on phones and fit on every screen.",
-    uk: "VD 1.0.5: Кнопки бігу та стрибка працюють при утриманні на телефонах і вміщаються на будь-якому екрані.",
-    ru: "VD 1.0.5: Кнопки бега и прыжка работают при удержании на телефонах и помещаются на любом экране.",
-    es: "VD 1.0.5: Los botones de correr y saltar funcionan al mantenerlos en teléfonos y caben en cualquier pantalla.",
-    ar: "VD 1.0.5: زرا الجري والقفز يعملان بالضغط المستمر على الهاتف ويتسعان في كل شاشة.",
-    "fa-AF": "VD 1.0.5: دکمه‌های دویدن و پرش روی تلفن با نگه‌داشتن کار می‌کنند و در هر صفحه جا می‌شوند.",
-    rw: "VD 1.0.5: Utubuto two kwiruka no gusimbuka dukora iyo udufashe kuri telefoni kandi dukwira kuri buri rugaragaza.",
-    ti: "VD 1.0.5: መልጎማት ጉያን ዝላን ኣብ ተሌፎን ብምሓዝ ይሰርሑ፣ ኣብ ኩሉ ስክሪን ይኣትዉ።",
-    simple: "VD 1.0.5: Hold Run and Jump. Buttons fit."
+    en: "VD 1.0.6: VEX and RIO have their own shapes, and a sign shows when you go back to a checkpoint.",
+    uk: "VD 1.0.6: VEX і RIO мають власні форми, а напис показує, коли ти повертаєшся до контрольної точки.",
+    ru: "VD 1.0.6: У VEX и RIO свои формы, а надпись показывает, когда ты возвращаешься к контрольной точке.",
+    es: "VD 1.0.6: VEX y RIO tienen sus propias formas, y un letrero avisa cuando vuelves a un punto de control.",
+    ar: "VD 1.0.6: لكل من VEX وRIO شكل خاص، وتظهر لافتة عندما تعود إلى نقطة التفتيش.",
+    "fa-AF": "VD 1.0.6: VEX و RIO شکل‌های خود را دارند و یک تابلو نشان می‌دهد که کی به ایستگاه بازرسی برمی‌گردی.",
+    rw: "VD 1.0.6: VEX na RIO bafite imiterere yabo bwite, kandi icyapa kikwereka igihe usubiye kuri checkpoint.",
+    ti: "VD 1.0.6: VEX ን RIO ናይ ገዛእ ርእሶም ቅርጺ ኣለዎም፣ ናብ መቆጻጸሪ ነጥቢ ክትምለስ ከለኻ ምልክት ይርአ።",
+    simple: "VD 1.0.6: V is a circle. R is a square. A sign shows when you go back."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.5") plate.textContent = "VD 1.0.5";
+      if (plate && plate.textContent !== "VD 1.0.6") plate.textContent = "VD 1.0.6";
     } finally {
       painting = false;
     }

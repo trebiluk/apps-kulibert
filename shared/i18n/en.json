@@ -203,5 +203,6 @@
   "vdLiveVexWin": "VEX takes the flag, {time} seconds, {coins} coins",
   "vdLiveRioWin": "RIO takes the flag, {time} seconds, {coins} coins",
   "vdLivePaused": "Paused",
-  "vdLiveResumed": "Resumed"
+  "vdLiveResumed": "Resumed",
+  "vdShapeHelp": "VEX is a circle with V. RIO is a square with R. A sign tells you when someone goes back to a checkpoint."
 }

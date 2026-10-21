@@ -202,5 +202,6 @@
   "vdLiveVexWin": "VEX يأخذ العلم، {time} ثانية، {coins} عملات",
   "vdLiveRioWin": "RIO يأخذ العلم، {time} ثانية، {coins} عملات",
   "vdLivePaused": "إيقاف",
-  "vdLiveResumed": "متابعة"
+  "vdLiveResumed": "متابعة",
+  "vdShapeHelp": "VEX دائرة وفيها V. RIO مربع وفيه R. لافتة تخبرك عندما يعود أحد إلى نقطة التفتيش."
 }

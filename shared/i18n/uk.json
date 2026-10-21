@@ -202,5 +202,6 @@
   "vdLiveVexWin": "VEX бере прапор, {time} секунд, {coins} монет",
   "vdLiveRioWin": "RIO бере прапор, {time} секунд, {coins} монет",
   "vdLivePaused": "Пауза",
-  "vdLiveResumed": "Далі"
+  "vdLiveResumed": "Далі",
+  "vdShapeHelp": "VEX — це коло з V. RIO — це квадрат з R. Напис каже, коли хтось повертається до контрольної точки."
 }
