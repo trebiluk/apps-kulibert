@@ -226,5 +226,9 @@
   "drum_kick": "Nini",
   "drum_snare": "Nto",
   "drum_hat": "Hihati",
-  "drum_clap": "Amaraso"
+  "drum_clap": "Amaraso",
+  "twoBars": "Imirongo ibiri",
+  "beatN": "Umuti {n}",
+  "onWord": "cyaka",
+  "offWord": "cizima"
 }

@@ -226,5 +226,9 @@
   "drum_kick": "Kick",
   "drum_snare": "Snare",
   "drum_hat": "Hat",
-  "drum_clap": "Clap"
+  "drum_clap": "Clap",
+  "twoBars": "Two bars",
+  "beatN": "Beat {n}",
+  "onWord": "on",
+  "offWord": "off"
 }

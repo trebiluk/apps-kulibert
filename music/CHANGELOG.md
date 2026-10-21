@@ -2,7 +2,7 @@
 
 **Chip: MU 2.36.16** · 2026-10-20 · channel **live**
 
-MU 2.36.16 — drum pads and the Next line use the translated drum names.
+MU 2.36.16 — drum pads, the Next line, Undo, Two bars, and Beat numbers speak your language.
 
 ## Earlier
 

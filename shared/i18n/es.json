@@ -226,5 +226,9 @@
   "drum_kick": "Bombo",
   "drum_snare": "Caja",
   "drum_hat": "Charles",
-  "drum_clap": "Palma"
+  "drum_clap": "Palma",
+  "twoBars": "Dos compases",
+  "beatN": "Tiempo {n}",
+  "onWord": "encendido",
+  "offWord": "apagado"
 }

@@ -226,5 +226,9 @@
   "drum_kick": "Бочка",
   "drum_snare": "Малый",
   "drum_hat": "Хет",
-  "drum_clap": "Хлопок"
+  "drum_clap": "Хлопок",
+  "twoBars": "Два такта",
+  "beatN": "Бит {n}",
+  "onWord": "вкл",
+  "offWord": "выкл"
 }

@@ -226,5 +226,9 @@
   "drum_kick": "ዓቢ",
   "drum_snare": "ንእሽቶ",
   "drum_hat": "ሃት",
-  "drum_clap": "ምጭብጣብ"
+  "drum_clap": "ምጭብጣብ",
+  "twoBars": "ክልተ ምት",
+  "beatN": "ምት {n}",
+  "onWord": "ወሊዐ",
+  "offWord": "ጠፊኡ"
 }

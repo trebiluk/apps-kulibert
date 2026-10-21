@@ -834,7 +834,7 @@
           cell.type = "button";
           cell.className = "cell" + (on ? " on" : "") + (state.grid === i ? " now" : "");
           cell.setAttribute("aria-pressed", on ? "true" : "false");
-          cell.setAttribute("aria-label", label + " beat " + (i + 1) + (on ? ", on" : ", off"));
+          cell.setAttribute("aria-label", label + ", " + ((mu("beatN") || "Beat {n}").replace("{n}", String(i + 1))) + (on ? ", " + (mu("onWord") || "on") : ", " + (mu("offWord") || "off")));
           cell.dataset.track = id;
           cell.dataset.step = String(i);
           cell.addEventListener("click", () => {
@@ -4409,7 +4409,11 @@
       strip.appendChild(row);
     });
     const read = $("playhead-read");
-    if (read) read.textContent = "Beat " + ((state.grid % 8) + 1);
+    if (read) {
+      const word = (mu("beatN") || "Beat {n}").replace("{n}", String((state.grid % 8) + 1));
+      read.textContent = word;
+      read.setAttribute("aria-label", word);
+    }
   }
   function hitPad(id, btn) {
     state.touched = true;
@@ -4448,7 +4452,11 @@
         cell.classList.toggle("now", Number(cell.dataset.step) === step);
       });
       const read = $("playhead-read");
-      if (read) read.textContent = "Beat " + ((step % 8) + 1);
+      if (read) {
+        const word = (mu("beatN") || "Beat {n}").replace("{n}", String((step % 8) + 1));
+        read.textContent = word;
+        read.setAttribute("aria-label", word);
+      }
       const dot = $("count-dot");
       if (dot && step % 2 === 0) {
         dot.classList.remove("on");
@@ -5747,6 +5755,7 @@
     }
     if ($("drums")) renderDrums();
     if (typeof paintGuide === "function") paintGuide();
+    if (typeof paintTapStrip === "function") paintTapStrip();
     sayHow(state.mode);
     paintKeypad();
     document.querySelectorAll("#style-row [data-pack]").forEach((btn) => {

@@ -226,5 +226,9 @@
   "drum_kick": "كبيرة",
   "drum_snare": "صغيرة",
   "drum_hat": "هاي هات",
-  "drum_clap": "تصفيق"
+  "drum_clap": "تصفيق",
+  "twoBars": "خطان",
+  "beatN": "الزمن {n}",
+  "onWord": "يعمل",
+  "offWord": "متوقف"
 }

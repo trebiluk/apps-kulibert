@@ -226,5 +226,9 @@
   "drum_kick": "باس",
   "drum_snare": "اسنر",
   "drum_hat": "هت",
-  "drum_clap": "کف"
+  "drum_clap": "کف",
+  "twoBars": "دو میزان",
+  "beatN": "بیت {n}",
+  "onWord": "روشن",
+  "offWord": "خاموش"
 }
