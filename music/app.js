@@ -1105,21 +1105,25 @@
       const gap = Math.max(1, gapAfter(Math.max(0, state.step)));
       const age = performance.now() - (state.beatAt || performance.now());
       const ratio = age / gap;
-      let word = "On it";
+      let word = mu("feelOn") || "On it";
       let kind = "on";
-      if (ratio > 0.42 && ratio < 0.75) { word = "Late"; kind = "late"; }
-      else if (ratio >= 0.75) { word = "Early"; kind = "early"; }
+      if (ratio > 0.42 && ratio < 0.75) { word = mu("feelLate") || "Late"; kind = "late"; }
+      else if (ratio >= 0.75) { word = mu("feelEarly") || "Early"; kind = "early"; }
       const beat = state.step >= 0 ? state.step + 1 : 1;
       paintFeel(word, kind);
-      $("lesson").textContent = word + " on beat " + beat + ". The score stayed the same.";
+      $("lesson").textContent = mu("tapAlong", { word: word, beat: beat }) || (word + " on beat " + beat + ". The score stayed the same.");
+      if ($("now-line")) $("now-line").textContent = $("lesson").textContent;
       return;
     }
     const step = placeStep();
     if (step >= 0) writeHit(id, step);
     if (!state.playing) window.setTimeout(() => { state.kick = false; state.snare = false; }, 160);
     $("lesson").textContent = step < 0
-      ? "Wait for the count. Then each tap stays."
-      : "Beat " + (step + 1) + " is saved.";
+      ? (mu("tapWait") || "Wait for the count. Then each tap stays.")
+      : (mu("tapSaved", { beat: step + 1 }) || ("Beat " + (step + 1) + " is saved."));
+    if (step < 0) {
+      if ($("now-line")) $("now-line").textContent = mu("tapWait") || "Wait for the count. Then each tap stays.";
+    } else sayNow(step);
   }
   const drop = { bar: 0, kicks: 0, prev: null, grid: -1, on: true, swapBar: 0, hold: null, swapAt: 0, lastSwap: -99, lastChange: 0, returnAt: 0 };
   function staffDrop() {
@@ -1273,7 +1277,7 @@
       b.type = "button";
       b.className = "key";
       b.textContent = id;
-      b.setAttribute("aria-label", "Note " + id);
+      b.setAttribute("aria-label", mu("noteAria", { n: id }) || ("Note " + id));
       bindPad(b, id);
       keys.appendChild(b);
     });
@@ -1284,11 +1288,33 @@
     const evs = Song.events(state.song);
     const ev = evs[step];
     const names = [];
-    ROWS.forEach(([id, label]) => { if (state.drums[id][step]) names.push(label); });
+    ROWS.forEach(([id, label]) => { if (state.drums[id][step]) names.push(mu("drum_" + id) || label); });
     if (ev && ev.label) names.push(ev.label);
-    if (!names.length) names.push("Rest");
+    if (!names.length) names.push(mu("rest") || "Rest");
     return names;
   }
+  function sayNow(step) {
+    const evs = Song.events(state.song);
+    const ev = evs[Math.max(0, step)];
+    const bar = ev ? ev.measure + 1 : 1;
+    const beat = ev ? ev.beat + 1 : Math.max(0, step) + 1;
+    const heard = namesAt(Math.max(0, step)).join(mu("tapAnd") || " and ");
+    const core = mu("tapNow", { bar: bar, beat: beat, heard: heard });
+    if ($("now-line") && core) $("now-line").textContent = core;
+  }
+  function hookTurnNow() {
+    const btn = $("turn-btn");
+    if (!btn || btn.dataset.tapLine) return;
+    btn.dataset.tapLine = "1";
+    btn.addEventListener("click", () => {
+      const step = state.step < 0 ? Math.max(0, state.cursor || 0) : state.step;
+      sayNow(step);
+      const off = state.muted ? (mu("tapSoundOff") || "") : "";
+      const lead = mu("tapListen") || "";
+      if ($("now-line")) $("now-line").textContent = lead + off + ($("now-line").textContent || "");
+    });
+  }
+  hookTurnNow();
 
   function chooseBeat(i) {
     state.lock = i;
@@ -1296,7 +1322,8 @@
     state.writeStep = i;
     state.lastStamp = Date.now();
     paintCount();
-    $("lesson").textContent = "Beat " + (i + 1) + " is picked. Tap a pad. It stays there.";
+    $("lesson").textContent = mu("tapBeatPick", { beat: i + 1 }) || ("Beat " + (i + 1) + " is picked. Tap a pad. It stays there.");
+    sayNow(i);
   }
   function paintCount() {
     const box = $("lane");
@@ -1318,7 +1345,8 @@
           state.cursor = start + i;
           if (!state.playing) state.step = state.cursor;
           paintCount();
-          $("lesson").textContent = "Bar " + (bar + 1) + ", beat " + (i + 1) + " is picked. Tap a note. It stays.";
+          $("lesson").textContent = mu("tapBarPick", { bar: bar + 1, beat: i + 1 }) || ("Bar " + (bar + 1) + ", beat " + (i + 1) + " is picked. Tap a note. It stays.");
+          sayNow(start + i);
         });
         const n = document.createElement("b");
         n.textContent = String(i + 1);
@@ -1335,10 +1363,15 @@
       const bits = [];
       if (ev && ev.label) bits.push("<em>" + ev.label + "</em>");
       col.querySelector(".marks").innerHTML = bits.join("");
-      col.setAttribute("aria-label", "Bar " + (bar + 1) + " beat " + (i + 1) + (ev && ev.label ? ". " + ev.label : ". Rest"));
+      const mark = ev && ev.label ? ev.label : (mu("rest") || "Rest");
+      col.setAttribute("aria-label", mu("tapCol", { bar: bar + 1, beat: i + 1, mark: mark }) || ("Bar " + (bar + 1) + " beat " + (i + 1) + ". " + mark));
     });
     const title = $("song-title");
-    if (title) title.textContent = (state.song.alias || "Your song") + " · " + (state.song.meter || "4/4") + " · " + state.song.measures.length + " bars";
+    if (title) {
+      const name = state.song.alias || mu("yourSong") || "Your song";
+      title.textContent = mu("tapTitle", { name: name, meter: state.song.meter || "4/4", n: state.song.measures.length })
+        || (name + " · " + (state.song.meter || "4/4") + " · " + state.song.measures.length + " bars");
+    }
     paintWhy();
   }
   function markAt(step) {
@@ -1390,7 +1423,7 @@
       counting = true;
       const count = (state.armTotal || 4) - state.armBeats + 1;
       state.armBeats -= 1;
-      $("now-line").textContent = "Count " + count + ". Then tap.";
+      $("now-line").textContent = mu("tapCount", { n: count }) || ("Count " + count + ". Then tap.");
       if (!state.muted) tone(880, 0.06, "square", 0.15);
     }
     if (state.recording && state.armBeats === 0) {
@@ -1406,29 +1439,32 @@
         state.recording = true;
         state.armBeats = 0;
         paintRec();
-        $("lesson").textContent = "Your turn. Tap the pads. The beats you tap stay in the song.";
+        $("lesson").textContent = mu("yourTurnLesson") || "Your turn. Tap the pads. The beats you tap stay in the song.";
       } else if (state.turn === "answer" && state.turnLeft <= 0) {
         state.turn = "";
         state.recording = false;
         paintRec();
-        $("lesson").textContent = "The class can hear your turn. Press Play to hear it again.";
+        $("lesson").textContent = mu("tapClassHear") || "The class can hear your turn. Press Play to hear it again.";
       }
     }
-    const off = state.muted ? "Sound is off. " : "";
-    const lead = state.turn === "listen" ? "Listen. " : state.turn === "answer" ? "Your turn. " : "";
+    const off = state.muted ? (mu("tapSoundOff") || "Sound is off. ") : "";
+    const lead = state.turn === "listen" ? (mu("tapListen") || "Listen. ") : state.turn === "answer" ? (mu("tapYourTurn") || "Your turn. ") : "";
     if (!counting) {
-      const note = ev && ev.label ? ev.label : "Rest";
+      const isRest = !(ev && ev.label);
+      const note = isRest ? (mu("rest") || "Rest") : ev.label;
       const bar = ev ? ev.measure + 1 : 1;
       const beat = ev ? ev.beat + 1 : step + 1;
-      $("now-line").textContent = lead + off + "Bar " + bar + ", beat " + beat + ". Now: " + namesAt(drum).join(" and ") + ".";
+      const heard = namesAt(drum).join(mu("tapAnd") || " and ");
+      const core = mu("tapNow", { bar: bar, beat: beat, heard: heard }) || ("Bar " + bar + ", beat " + beat + ". Now: " + heard + ".");
+      $("now-line").textContent = lead + off + core;
       const pos = $("play-pos");
       if (pos) pos.textContent = (mu("playPos") || "Bar {bar} · Beat {beat}").replace("{bar}", String(bar)).replace("{beat}", String(beat));
-      if (!state.along) paintFeel(note, note === "Rest" ? "" : "on");
+      if (!state.along) paintFeel(note, isRest ? "" : "on");
       const teach = $("teach");
       if (teach) {
         teach.textContent = state.expert
-          ? "Bar " + bar + " of " + state.song.measures.length + "."
-          : (ev && ev.pitch ? TEACH[ev.pitch] || note : "Rest. Count it. Nothing plays.");
+          ? (mu("tapBarOf", { bar: bar, n: state.song.measures.length }) || ("Bar " + bar + " of " + state.song.measures.length + "."))
+          : (ev && ev.pitch ? (TEACH[ev.pitch] || note) : (mu("tapRestTeach") || "Rest. Count it. Nothing plays."));
       }
     }
     if (state.showing) {
