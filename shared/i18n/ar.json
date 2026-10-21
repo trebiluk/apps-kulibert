@@ -413,5 +413,8 @@
   "vdRematch": "إعادة المباراة",
   "vdNextHeat": "الشوط التالي",
   "vdResultLive": "{name} يأخذ العلم، {time} ثانية، {coins} عملات",
-  "rfHelpDailyBest": "بطاقة كوب اليوم تعرض أفضل نتيجة لك اليوم."
+  "rfHelpDailyBest": "بطاقة كوب اليوم تعرض أفضل نتيجة لك اليوم.",
+  "vdPaused": "متوقف",
+  "vdLevels": "المستويات",
+  "vdPausedBody": "توقف في {name}. نقاط التفتيش تبقى."
 }

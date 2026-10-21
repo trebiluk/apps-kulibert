@@ -413,5 +413,8 @@
   "vdRematch": "Gusubukura",
   "vdNextHeat": "Urundi ruhande",
   "vdResultLive": "{name} yafashe ibendera, amasegonda {time}, ibiceri {coins}",
-  "rfHelpDailyBest": "Agace k'igikombe cy'uyu munsi kerekana agahigo kawe k'uyu munsi."
+  "rfHelpDailyBest": "Agace k'igikombe cy'uyu munsi kerekana agahigo kawe k'uyu munsi.",
+  "vdPaused": "Birahagaritswe",
+  "vdLevels": "Urwego",
+  "vdPausedBody": "Guhagarara kuri {name}. Ahantu ho kugenzura horahoraho."
 }

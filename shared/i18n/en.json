@@ -413,5 +413,8 @@
   "vdRematch": "Rematch",
   "vdNextHeat": "Next heat",
   "vdResultLive": "{name} takes the flag, {time} seconds, {coins} coins",
-  "rfHelpDailyBest": "The Daily cup tile shows your best for today."
+  "rfHelpDailyBest": "The Daily cup tile shows your best for today.",
+  "vdPaused": "Paused",
+  "vdLevels": "Levels",
+  "vdPausedBody": "{name} is frozen. Checkpoints stay put."
 }

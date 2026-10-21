@@ -413,5 +413,8 @@
   "vdRematch": "Реванш",
   "vdNextHeat": "Наступний заїзд",
   "vdResultLive": "{name} бере прапор, {time} секунд, {coins} монет",
-  "rfHelpDailyBest": "Плитка чашки дня показує твій рекорд за сьогодні."
+  "rfHelpDailyBest": "Плитка чашки дня показує твій рекорд за сьогодні.",
+  "vdPaused": "Пауза",
+  "vdLevels": "Рівні",
+  "vdPausedBody": "Пауза на {name}. Контрольні точки на місці."
 }

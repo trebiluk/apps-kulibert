@@ -413,5 +413,8 @@
   "vdRematch": "ዳግማይ ጸዋታ",
   "vdNextHeat": "ዝቕጽል ውድድር",
   "vdResultLive": "{name} ነቲ ባንዴራ ወሲዱ፣ ሰከንድ {time}፣ ሳንቲም {coins}",
-  "rfHelpDailyBest": "ሰሌዳ ጽዋዕ ናይ ሎሚ ናይ ሎሚ ሪኮርድካ የርኢ።"
+  "rfHelpDailyBest": "ሰሌዳ ጽዋዕ ናይ ሎሚ ናይ ሎሚ ሪኮርድካ የርኢ።",
+  "vdPaused": "ደው ኢሉ",
+  "vdLevels": "ደረጃታት",
+  "vdPausedBody": "ደው ኣብ {name}። መቆጣጠሪ ነጥብታት ኣብ ቦታኦም እየን።"
 }

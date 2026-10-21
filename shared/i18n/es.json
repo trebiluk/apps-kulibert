@@ -413,5 +413,8 @@
   "vdRematch": "Revancha",
   "vdNextHeat": "Siguiente manga",
   "vdResultLive": "{name} toma la bandera, {time} segundos, {coins} monedas",
-  "rfHelpDailyBest": "La ficha de la taza del día muestra tu mejor marca de hoy."
+  "rfHelpDailyBest": "La ficha de la taza del día muestra tu mejor marca de hoy.",
+  "vdPaused": "En pausa",
+  "vdLevels": "Niveles",
+  "vdPausedBody": "Pausa en {name}. Los puntos de control siguen."
 }

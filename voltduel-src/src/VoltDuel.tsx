@@ -1065,7 +1065,7 @@ export function VoltDuel() {
         )}
 
         <div className="playfield" ref={playfieldRef}>
-          <canvas ref={canvasRef} aria-label="Volt Duel arena" />
+          <canvas ref={canvasRef} data-i18n-label="vdArena" aria-label={lobbyText("vdArena", "Volt Duel arena")} />
         </div>
 
         {screen.name === "menu" && (
@@ -1201,15 +1201,15 @@ export function VoltDuel() {
         {screen.name === "pause" && (
           <div className="overlay">
             <div className="modal-card">
-              <p className="kicker">{level.heat}</p>
-              <h2>Paused</h2>
-              <p className="tag">{level.name} is frozen. Checkpoints stay put.</p>
+              <p className="kicker">{lobbyText(level.id === "qualifier" ? "vdHeat1" : level.id === "overpass" ? "vdHeat2" : "vdHeat3", level.heat)}</p>
+              <h2>{lobbyText("vdPaused", "Paused")}</h2>
+              <p className="tag">{lobbyText("vdPausedBody", "{name} is frozen. Checkpoints stay put.").replace("{name}", lobbyText(level.id === "qualifier" ? "vdNameQualifier" : level.id === "overpass" ? "vdNameOverpass" : "vdNameFinals", level.name))}</p>
               <div className="modal-actions">
                 <button type="button" className="text-btn" onClick={() => show({ name: "play", level: screen.level })}>
-                  Resume
+                  {lobbyText("vdResume", "Resume")}
                 </button>
                 <button type="button" className="text-btn" onClick={() => launch(screen.level, "restart")}>
-                  Restart
+                  {lobbyText("vdRestart", "Restart")}
                 </button>
                 <button
                   type="button"
@@ -1219,7 +1219,7 @@ export function VoltDuel() {
                     show({ name: "menu" });
                   }}
                 >
-                  Levels
+                  {lobbyText("vdLevels", "Levels")}
                 </button>
               </div>
             </div>
@@ -1268,7 +1268,7 @@ export function VoltDuel() {
                     show({ name: "menu" });
                   }}
                 >
-                  Levels
+                  {lobbyText("vdLevels", "Levels")}
                 </button>
               </div>
             </div>

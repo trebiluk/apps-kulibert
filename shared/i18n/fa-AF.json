@@ -413,5 +413,8 @@
   "vdRematch": "بازی دوباره",
   "vdNextHeat": "دور بعدی",
   "vdResultLive": "{name} پرچم را گرفت، {time} ثانیه، {coins} سکه",
-  "rfHelpDailyBest": "کارت پیالهٔ امروز بهترین عدد امروزت را نشان می‌دهد."
+  "rfHelpDailyBest": "کارت پیالهٔ امروز بهترین عدد امروزت را نشان می‌دهد.",
+  "vdPaused": "مکث",
+  "vdLevels": "مرحله‌ها",
+  "vdPausedBody": "مکث در {name}. نقاط بررسی سر جای خود می‌مانند."
 }
