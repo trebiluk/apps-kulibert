@@ -4026,7 +4026,15 @@ async function applyDoc(doc) {
   saved.clear(); for (const [k, v] of chunks) saved.set(k, v)
   edits.clear(); paintUndo()
   noa.world.invalidateVoxelsInAABB({ base: [-2000, -200, -2000], max: [2000, 200, 2000] })
-  const spot = finiteTriple(src.pos) || finiteTriple(src.spawn) || SPAWN.slice()
+  let spot = finiteTriple(src.pos) || finiteTriple(src.spawn) || SPAWN.slice()
+  const savedSpot = readSpot()
+  if (savedSpot && savedSpot.world === WORLD) {
+    const docAt = src.updatedAt ? Date.parse(src.updatedAt) : 0
+    if (savedSpot.at > docAt) {
+      const sPos = finiteTriple(savedSpot.pos)
+      if (sPos && sPos[1] >= -60) spot = sPos
+    }
+  }
   pinSavedSpot(spot)
   const look = src && src.look
   if (Array.isArray(look) && look.length >= 2 && Number.isFinite(+look[0]) && Number.isFinite(+look[1])) setLook(+look[0], +look[1])
@@ -4107,6 +4115,7 @@ async function resetWorld() {
   grantSaplings()
   grantStartKit()
   syncDropMeshes()
+  clearSpot()
   noa.entities.setPosition(noa.playerEntity, SPAWN.slice())
   worldSpawn = SPAWN.slice()
   spawnSet = false
@@ -4639,6 +4648,51 @@ async function exportJSON() {
   a.download = 'bloxbert-bertyville.kuliblocks.json'; a.click()
   setTimeout(() => URL.revokeObjectURL(a.href), 2000)
 }
+
+// 2.5.310: keep the player's spot across a reload while signed out
+const SPOT_KEY = 'bertopia-spot-v1'
+let lastSpotWrite = 0
+let lastSpotPos = null
+function writeSpot() {
+  try {
+    if (!noa || !noa.playerEntity) return
+    const p = noa.entities.getPosition(noa.playerEntity)
+    if (!p || !Number.isFinite(p[0]) || !Number.isFinite(p[1]) || !Number.isFinite(p[2])) return
+    if (p[1] < -60) return
+    const look = [Math.round(noa.camera.heading * 1000) / 1000, Math.round(noa.camera.pitch * 1000) / 1000]
+    const spot = {
+      world: WORLD,
+      pos: [Math.round(p[0] * 100) / 100, Math.round(p[1] * 100) / 100, Math.round(p[2] * 100) / 100],
+      look,
+      at: Date.now()
+    }
+    localStorage.setItem(SPOT_KEY, JSON.stringify(spot))
+    lastSpotWrite = Date.now()
+    lastSpotPos = p.slice()
+  } catch (e) {}
+}
+function readSpot() {
+  try {
+    const raw = localStorage.getItem(SPOT_KEY)
+    if (!raw) return null
+    const s = JSON.parse(raw)
+    if (!s || s.world !== WORLD) return null
+    const pos = finiteTriple(s.pos)
+    if (!pos || pos[1] < -60) return null
+    return s
+  } catch (e) { return null }
+}
+function clearSpot() {
+  try { localStorage.removeItem(SPOT_KEY) } catch (e) {}
+}
+setInterval(() => {
+  if (!noa || !noa.playerEntity) return
+  const p = noa.entities.getPosition(noa.playerEntity)
+  if (!p) return
+  const moved = !lastSpotPos || Math.hypot(p[0] - lastSpotPos[0], p[2] - lastSpotPos[2]) > 0.5
+  if (moved && Date.now() - lastSpotWrite > 5000) writeSpot()
+}, 1000)
+
 setInterval(() => { if (dirty && allowSave && saveLockHeld && !savePaused) save().catch((e) => { if (!(e && e.code === 'paused')) showNotSavedChip() }) }, 20000)
 function flushSave() {
   if (dirty) pinMachines()
@@ -4647,6 +4701,7 @@ function flushSave() {
 }
 document.addEventListener('visibilitychange', () => {
   if (document.hidden) {
+    writeSpot()
     flushSave()
     dropRightHold()
   } else {
@@ -4655,7 +4710,7 @@ document.addEventListener('visibilitychange', () => {
     if (!saveLockHeld && !lockPending) claimSaveLock()
   }
 })
-window.addEventListener('pagehide', flushSave)
+window.addEventListener('pagehide', () => { writeSpot(); flushSave() })
 claimSaveLock()
 setInterval(() => { if (savePaused && !saveLockHeld && !lockPending) claimSaveLock() }, 3000)
 
