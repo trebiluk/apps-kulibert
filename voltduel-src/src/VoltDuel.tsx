@@ -106,6 +106,7 @@ export function VoltDuel() {
   const flagRef = useRef<HTMLElement>(null);
   const liveRef = useRef<HTMLParagraphElement>(null);
   const liveGate = useRef({ at: 0, pending: "" });
+  const resultSpoken = useRef("");
 
   const [screen, setScreen] = useState<Screen>({ name: "menu" });
   const [save, setSave] = useState<Save>({ best: {}, muted: false });
@@ -840,14 +841,22 @@ export function VoltDuel() {
   }
 
   useEffect(() => {
-    if (screen.name !== "results" || !liveRef.current) return;
-    liveRef.current.textContent = lobbyText(
+    if (screen.name !== "results") {
+      resultSpoken.current = "";
+      return;
+    }
+    const line = lobbyText(
       "vdResultLive",
       "{name} takes the flag, {time} seconds, {coins} coins",
     )
       .replace("{name}", NAMES[screen.winner])
       .replace("{time}", formatTime(screen.time))
       .replace("{coins}", String(screen.coins[screen.winner]));
+    if (resultSpoken.current === line) return;
+    const entering = resultSpoken.current === "";
+    resultSpoken.current = line;
+    if (entering) return;
+    pushLive(line);
   }, [screen, lang, helpRev]);
 
   function onWord() {
