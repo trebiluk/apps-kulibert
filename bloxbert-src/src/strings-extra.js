@@ -2484,3 +2484,18 @@ for (const [lang, row] of Object.entries(C4T)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+const CHANGE334 = {
+  en: { change: 'Change' },
+  uk: { change: 'Змінити' },
+  ru: { change: 'Изменить' },
+  es: { change: 'Cambiar' },
+  ar: { change: 'غيّر' },
+  'fa-AF': { change: 'تغییر' },
+  rw: { change: 'Hindura' },
+  ti: { change: 'ቀይር' },
+}
+for (const [lang, row] of Object.entries(CHANGE334)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
