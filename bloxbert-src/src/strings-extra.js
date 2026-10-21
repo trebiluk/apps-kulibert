@@ -2234,3 +2234,20 @@ for (const [lang, row] of Object.entries(MENU323)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.322 picker names. rw, ti, and Dari are machine drafts; native check later.
+const FIT322 = {
+  en: { whatsNewBody: '2.5.322 — Settings picker groups are read out in your language.' },
+  simple: { whatsNewBody: '2.5.322 — Settings picker groups are read out in your language.' },
+  uk: { whatsNewBody: '2.5.322 — Групи вибору в Налаштуваннях озвучуються твоєю мовою.' },
+  ru: { whatsNewBody: '2.5.322 — Группы выбора в Настройках читаются на твоём языке.' },
+  es: { whatsNewBody: '2.5.322 — Los grupos de ajustes se leen en tu idioma.' },
+  ar: { whatsNewBody: '2.5.322 — مجموعات الاختيار في الإعدادات تُقرأ بلغتك.' },
+  'fa-AF': { whatsNewBody: '2.5.322 — گروه‌های انتخاب در تنظیمات به زبان شما خوانده می‌شوند.' },
+  rw: { whatsNewBody: '2.5.322 — Amatsinda yo guhitamo mu igenamiterere asomwa mu rurimi rwawe.' },
+  ti: { whatsNewBody: '2.5.322 — ጉጅለታት ምረጽ ኣብ ቅንብራት ብቋንቋኻ ይንበቡ።' },
+}
+for (const [lang, row] of Object.entries(FIT322)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

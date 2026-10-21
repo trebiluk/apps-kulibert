@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.322', date: '2026-10-21', lines: {
+    en: ['2.5.322 — Settings picker groups are read out in your language.'],
+    simple: ['2.5.322 — Settings picker groups are read out in your language.'],
+    uk: ['2.5.322 — Групи вибору в Налаштуваннях озвучуються твоєю мовою.'],
+    ru: ['2.5.322 — Группы выбора в Настройках читаются на твоём языке.'],
+    es: ['2.5.322 — Los grupos de ajustes se leen en tu idioma.'],
+    ar: ['2.5.322 — مجموعات الاختيار في الإعدادات تُقرأ بلغتك.'],
+    'fa-AF': ['2.5.322 — گروه‌های انتخاب در تنظیمات به زبان شما خوانده می‌شوند.'],
+    rw: ['2.5.322 — Amatsinda yo guhitamo mu igenamiterere asomwa mu rurimi rwawe.'],
+    ti: ['2.5.322 — ጉጅለታት ምረጽ ኣብ ቅንብራት ብቋንቋኻ ይንበቡ።'],
+  }},
+
   { v: '2.5.325', date: '2026-10-21', lines: {
     en: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],
     simple: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],
