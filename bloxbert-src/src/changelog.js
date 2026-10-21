@@ -23,6 +23,17 @@ export const CHANGELOG = [
     ti: ['2.5.307 — ደጊምካ እንተ ጠዊቕካ፡ ምኽሪ ደጊሙ ይረአ እሞ ጸወታ ከም ዝሰምዓካ ትፈልጥ።'],
   }},
 
+
+  { v: '2.5.310', date: '2026-10-21', lines: {
+    en: ['2.5.310 — After you walk and reload, you stay where you walked.'],
+    simple: ['2.5.310 — After you walk and reload, you stay where you walked.'],
+    uk: ['2.5.310 — Після того як ти пішов і перезавантажив, ти залишаєшся там, де пішов.'],
+    ru: ['2.5.310 — После того как ты пошёл и перезагрузил, ты остаёшься там, где пошёл.'],
+    es: ['2.5.310 — Después de caminar y recargar, te quedas donde caminaste.'],
+    ar: ['2.5.310 — بعد أن تمشي وتعيد التحميل، تبقى حيث مشيت.'],
+    'fa-AF': ['2.5.310 — بعد از اینکه راه بروی و دوباره بار کنی، همان جا می‌مانی که رفتی.'],
+    rw: ['2.5.310 — Nyuma yo kugenda no gusubiza, usigara aho wageze.'],
+    ti: ['2.5.310 — ድሕሪ ምጓዓዝን ምድጋምን፣ ኣብቲ ዝኸድካዮ ቦታ ትቐር።'],
   }},
 
   { v: '2.5.306', date: '2026-10-21', lines: {
