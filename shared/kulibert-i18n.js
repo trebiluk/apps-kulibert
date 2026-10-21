@@ -219,6 +219,10 @@
   "rfHelpFewer": "Try to win with fewer ramps.",
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
   "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
+  "rfLv5": "Pick the path",
+  "rfWall": "Wall",
+  "rfLesson5": "Same ramp, different pour. Grains like a hill. Water needs the lip.",
+  "rfHelpPour5": "Pick Grains or Water. Only one pours at a time.",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };
   var packs = { en: EN };
@@ -311,7 +315,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=mu23616", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=RF-1.0.8", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }

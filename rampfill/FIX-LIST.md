@@ -1,4 +1,8 @@
 # Ramp & Fill FIX-LIST
+Stage 9. Version locked: RF 1.0.8.
+
+- [x] **RF 1.0.8 ITEM 1:** Pick the path, Wall, and the level-5 hint are translated in all 8 languages plus Simple. On a 412-wide phone the status line and the hint wrap. Nothing is cut off.
+
 Stage 8. Version locked: RF 1.0.7.
 
 - [x] **RF 1.0.7 ITEM 1:** Staff Test mode shows Jump to win and Jump to lose only when the hub switch and staff unlock are on. Those wins post to the TEST board. The score route never writes the real board. Kids, and ?test=1 alone, get no test controls.

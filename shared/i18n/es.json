@@ -230,5 +230,9 @@
   "twoBars": "Dos compases",
   "beatN": "Tiempo {n}",
   "onWord": "encendido",
-  "offWord": "apagado"
+  "offWord": "apagado",
+"rfLv5": "Elige el camino",
+  "rfWall": "Muro",
+  "rfLesson5": "La misma rampa, otro vertido. Los granos quieren una colina. El agua necesita el borde.",
+  "rfHelpPour5": "Elige granos o agua. Solo uno se vierte a la vez."
 }

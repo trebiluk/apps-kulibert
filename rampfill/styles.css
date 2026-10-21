@@ -510,9 +510,28 @@ canvas {
 }
 .test-help { margin: 0; flex: 1 1 12rem; font-size: 0.95rem; }
 html[data-kp-motion="less"] .stamp { transform: none; }
-@media (max-width: 720px) {
-  .brand { font-size: 1.05rem; }
-  .lesson { font-size: 0.95rem; }
+@media (max-width: 480px) {
+  .status {
+    height: auto;
+    min-height: 44px;
+    max-height: none;
+    line-height: 1.25;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+  }
+  .lesson {
+    display: block;
+    overflow: visible;
+    white-space: normal;
+    -webkit-line-clamp: unset;
+  }
+  .lesson-row {
+    height: auto;
+    min-height: 52px;
+    max-height: none;
+    align-items: flex-start;
+  }
 }
 @media (max-height: 460px) {
   .lesson { display: none; }

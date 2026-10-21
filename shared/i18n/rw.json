@@ -230,5 +230,9 @@
   "twoBars": "Imirongo ibiri",
   "beatN": "Umuti {n}",
   "onWord": "cyaka",
-  "offWord": "cizima"
+  "offWord": "cizima",
+"rfLv5": "Hitamo inzira",
+  "rfWall": "Urukuta",
+  "rfLesson5": "Umuhanda umwe, gusuka gutandukanye. Ibinyobwa bikunda umusozi. Amazi akeneye uruhande.",
+  "rfHelpPour5": "Hitamo ibinyobwa cyangwa amazi. Rimwe gusa rirasuka."
 }

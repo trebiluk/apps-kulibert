@@ -91,5 +91,9 @@
   "twoBars": "Two bars",
   "beatN": "Beat {n}",
   "onWord": "on",
-  "offWord": "off"
+  "offWord": "off",
+"rfLv5": "Pick the path",
+  "rfWall": "Wall",
+  "rfLesson5": "Same ramp. Grains like a hill. Water needs the lip.",
+  "rfHelpPour5": "Pick grains or water. Only one pours."
 }
