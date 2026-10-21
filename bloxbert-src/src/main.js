@@ -6128,10 +6128,36 @@ panels = mountPanels({
   paintGoals: (g) => learn.paintGoals(g),
   paintA11y: (g) => learn.paintA11y(g),
   paintLog: (g) => {
-    for (const row of CHANGELOG) {
+    const parts = (v) => String(v).split('.').map((n) => parseInt(n, 10) || 0)
+    const byNewest = (a, b) => {
+      const aa = parts(a.v), bb = parts(b.v)
+      const n = Math.max(aa.length, bb.length)
+      for (let i = 0; i < n; i++) {
+        const d = (bb[i] || 0) - (aa[i] || 0)
+        if (d) return d
+      }
+      return 0
+    }
+    const merged = []
+    for (const row of CHANGELOG.slice().sort(byNewest)) {
+      let cur = merged[merged.length - 1]
+      if (!cur || cur.v !== row.v) {
+        cur = { v: row.v, lines: {} }
+        merged.push(cur)
+      }
+      for (const lang of Object.keys(row.lines)) {
+        cur.lines[lang] = (cur.lines[lang] || []).concat(row.lines[lang] || [])
+      }
+    }
+    for (const row of merged) {
       const p = document.createElement('p')
       p.className = 'gnote'
-      const lines = (row.lines[LANG] || row.lines.en).join(' ')
+      const raw = row.lines[LANG] || row.lines.en || []
+      const lead = row.v + ' — '
+      const lines = raw.map((line) => {
+        const s = String(line)
+        return s.startsWith(lead) ? s.slice(lead.length) : s
+      }).join(' ')
       p.textContent = row.v + (row.v === VERSION ? ' · ' + t('youAreHere') : '') + ' · ' + lines
       g.append(p)
     }
