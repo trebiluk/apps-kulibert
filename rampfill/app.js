@@ -1,7 +1,31 @@
 /* Ramp & Fill RF 1.0.8 — Spanish path words wrap on a phone. No trackers. */
 (function () {
   var VERSION = "RF 1.0.8";
-  if (window.HubStaffAuth && !window.KulibertStaffAuth) window.KulibertStaffAuth = window.HubStaffAuth;
+  var testScriptAsked = false;
+  function staffUnlocked() {
+    try {
+      if (localStorage.getItem("tech-room-hub-staff") === "1") return true;
+      if (sessionStorage.getItem("tech-room-hub-staff") === "1") return true;
+    } catch (e) {}
+    try {
+      if (window.HubStaffAuth && window.HubStaffAuth.isUnlocked && window.HubStaffAuth.isUnlocked()) return true;
+      if (window.KulibertStaffAuth && window.KulibertStaffAuth.isUnlocked && window.KulibertStaffAuth.isUnlocked()) return true;
+    } catch (e2) {}
+    return false;
+  }
+  function loadStaffTest() {
+    if (!staffUnlocked()) return;
+    if (window.HubStaffAuth && !window.KulibertStaffAuth) window.KulibertStaffAuth = window.HubStaffAuth;
+    if (testScriptAsked || document.querySelector("script[src*='kw-test']")) return;
+    testScriptAsked = true;
+    var s = document.createElement("script");
+    s.src = "/shared/kw-test.js?v=RF-1.0.8";
+    s.onload = function () {
+      if (window.HubStaffAuth && !window.KulibertStaffAuth) window.KulibertStaffAuth = window.HubStaffAuth;
+      try { if (window.KulibertTest && window.KulibertTest.paint) window.KulibertTest.paint(); } catch (e) {}
+    };
+    document.head.appendChild(s);
+  }
   var LINE = 36;
   var LIVE_CAP = 300;
   var STR = {
@@ -1511,6 +1535,7 @@
     } catch (eBoard) {}
   }
   function showTestJumps() {
+    loadStaffTest();
     var bar = document.getElementById("rf-test-jumps");
     if (!staffTest() || atHome()) {
       if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
@@ -2835,7 +2860,7 @@
   layout();
   ghostUntil = performance.now() + 5000;
   requestAnimationFrame(frame);
-  try { if (window.KulibertTest && window.KulibertTest.paint) window.KulibertTest.paint(); } catch (eTest) {}
+  try { loadStaffTest(); } catch (eTest) {}
   window.__rf = {
     version: VERSION,
     stackGhost: function () {
