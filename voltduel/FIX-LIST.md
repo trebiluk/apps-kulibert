@@ -1,5 +1,5 @@
 # Volt Duel FIX-LIST
-Stage: VD 1.0.16. Version locked: VD 1.0.16.
+Stage: VD 1.0.17. Version locked: VD 1.0.17.
 Physics and scoring were not changed.
 
 ## VD 1.0.5
@@ -74,4 +74,7 @@ No app code in this item. Each idea says why, size, and risk.
 
 ## VD 1.0.16
 - [x] **Sideways lobby.** At 915×412 and 924×412, Help and Touch end at least 4px above the bottom. Buttons stay at least 44px. The lobby does not scroll. Upright 412×915 and 1366×768 are unchanged.
+
+## VD 1.0.17
+- [x] **Pause menu language.** Paused, Resume, Restart, and Levels follow the hub language, including Spanish and Arabic. The arena label does too. Jump to win and Jump to pit stay behind the staff Test switch.
 

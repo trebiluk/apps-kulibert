@@ -1,14 +1,14 @@
 (function () {
   var WHATS = {
-    en: "VD 1.0.16: The lobby fits on a phone held sideways.",
-    uk: "VD 1.0.16: Лобі вміщується на телефоні боком.",
-    ru: "VD 1.0.16: Лобби помещается на телефоне боком.",
-    es: "VD 1.0.16: El vestíbulo cabe en un teléfono de lado.",
-    ar: "VD 1.0.16: الردهة تناسب الهاتف وهو بالعرض.",
-    "fa-AF": "VD 1.0.16: لابی روی گوشی به‌پهلو جا می‌شود.",
-    rw: "VD 1.0.16: Icyumba cy'itangira kigira neza ku telefoni iri ku gatsiko.",
-    ti: "VD 1.0.16: መእተዊ ኣብ ጎድናዊ ስልኪ ይኣቱ።",
-    simple: "VD 1.0.16: The lobby fits sideways."
+    en: "VD 1.0.17: The Pause menu speaks your language.",
+    uk: "VD 1.0.17: Меню паузи говорить вашою мовою.",
+    ru: "VD 1.0.17: Меню паузы говорит на вашем языке.",
+    es: "VD 1.0.17: El menú de pausa habla tu idioma.",
+    ar: "VD 1.0.17: قائمة الإيقاف تتكلم لغتك.",
+    "fa-AF": "VD 1.0.17: فهرست مکث به زبان شما است.",
+    rw: "VD 1.0.17: Ibikubiyemo byo guhagarara bivuga ururimi rwawe.",
+    ti: "VD 1.0.17: ናይ ደው መምርሒ ብቋንቋኻ ይዛረብ።",
+    simple: "VD 1.0.17: The Pause menu uses your language."
   };
   var TITLES = {
     en: "What's new",
@@ -48,7 +48,7 @@
         if (line.dir !== dir) line.dir = dir;
       }
       var plate = document.querySelector(".kb-plate");
-      if (plate && plate.textContent !== "VD 1.0.16") plate.textContent = "VD 1.0.16";
+      if (plate && plate.textContent !== "VD 1.0.17") plate.textContent = "VD 1.0.17";
     } finally {
       painting = false;
     }
