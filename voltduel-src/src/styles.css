@@ -1049,3 +1049,24 @@ html.kb-framed .vd-fs {
   letter-spacing: 0.04em;
 }
 
+/* Full screen stays put. On a short screen a 112px card top would
+   scroll the race cards, so the menu keeps its height and leaves the
+   inline end clear of that button. On a tall phone the card starts
+   8px under the button instead, still full width. */
+@media (max-height: 560px) {
+  .overlay:has(.menu-card) {
+    padding-inline-end: calc(8px + 8.5rem + 16px);
+  }
+}
+
+@media (max-width: 520px) and (min-height: 561px) {
+  .overlay:has(.menu-card) {
+    align-items: flex-start;
+    padding-top: 64px;
+  }
+
+  .overlay:has(.menu-card) .menu-card {
+    margin-top: 0;
+  }
+}
+
