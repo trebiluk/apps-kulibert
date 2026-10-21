@@ -6815,21 +6815,13 @@ function bindUsePill() {
 bindUsePill()
 function armUse() {
   const q = location.search
-  const isTest = location.pathname.startsWith('/blocks-test/') || (window.kwTest && window.kwTest.on && window.kwTest.on())
-  const nightQ = q.includes('use=night')
-  const mobQ = (q.match(/use=mob=([a-z]+)/) || [])[1] || ''
-  if (isTest && (nightQ || mobQ)) {
-    if (nightQ && window.__use && window.__use.night) window.__use.night()
-    // Seat outside safe zone
-    const testX = 56, testY = 6, testZ = 56
-    noa.entities.setPosition(noa.playerEntity, [testX, testY, testZ])
-    if (mobQ && mobs && mobs.spawn) {
-      mobs.spawn(mobQ, testX + 4, testY, testZ, true)
-    }
-    window.__use = window.__use || {}
-    window.__use.spawn = (k) => mobs && mobs.spawn ? mobs.spawn(k, testX + 4, testY, testZ, true) : null
-    window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
-    window.__use.phase = () => (basics && basics.phase ? basics.phase() : 'day')
+  window.__btTestPending = {
+    isTest: location.pathname.startsWith('/blocks-test/') || (window.kwTest && window.kwTest.on && window.kwTest.on()),
+    nightQ: q.includes('use=night'),
+    mobQ: (q.match(/use=mob=([a-z]+)/) || [])[1] || '',
+  }
+  if (window.__btTestPending.isTest && (window.__btTestPending.nightQ || window.__btTestPending.mobQ)) {
+    // Defer to after armClock so night sticks
     return
   }
   const kind = q.includes('use=door') ? 'door' : q.includes('use=oven') ? 'oven' : q.includes('use=bed') ? 'bed' : q.includes('use=sew') ? 'sew' : q.includes('use=chair') || q.includes('use=') ? 'chair' : ''
@@ -10938,6 +10930,37 @@ load().catch(() => {}).finally(() => {
   if (allowSave) window.__bertOpen = true
   if (location.search.includes('smoke=1')) window.__bloxReady = true
   paintModeChip()
+  // C4h test seeds after armClock
+  if (window.__btTestPending && window.__btTestPending.isTest) {
+    const p = window.__btTestPending
+    if (p.nightQ) {
+      try {
+        if (Rules && Rules.set) Rules.set('survival.daynight', 'night')
+        if (basics && basics.setAlways) basics.setAlways(false)
+        if (window.__clock && window.__clock.seek) window.__clock.seek(nightAt || 0.75)
+        if (applySky) applySky()
+        if (session && session.setMode) session.setMode('survival')
+        console.info('[bt-test] night on', window.__clock && window.__clock.text ? window.__clock.text() : '')
+        if (toast) toast(t ? t('c4hNight') : 'Test: night')
+      } catch (e) {}
+    }
+    const testX = 56, testY = 6, testZ = 56
+    try { noa.entities.setPosition(noa.playerEntity, [testX, testY, testZ]) } catch (e) {}
+    window.__use = window.__use || {}
+    window.__use.spawn = (k) => {
+      if (!mobs || !mobs.spawn) return null
+      const r = mobs.spawn(k, testX + 4, testY, testZ, true)
+      console.info('[bt-test] spawn', k, r ? 'ok id=' + r.id : 'REFUSED')
+      return r
+    }
+    window.__use.mobs = () => mobs && mobs.list ? mobs.list() : []
+    window.__use.phase = () => (basics && basics.phase ? basics.phase() : 'day')
+    if (p.mobQ) {
+      const r = window.__use.spawn(p.mobQ)
+      if (r && toast) toast(t ? t('c4hSpawn') : 'Test: ' + p.mobQ)
+      else if (toast) toast(t ? t('c4hRefuse') : 'Test: refused')
+    }
+  }
   if (session && session.mode === 'survival' && session.paintHotbar) session.paintHotbar()
   else paintBar()
   if (sentToSurvival) toast(t('studentWorld'))
