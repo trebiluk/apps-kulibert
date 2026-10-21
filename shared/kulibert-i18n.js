@@ -215,6 +215,25 @@
   "vdHeldHelp": "Hold a pad to keep moving. A held pad lights up and shows its word.",
   "vdPadOn": "On",
   "vdChipHelp": "VEX is a circle with V, RIO is a square with R — on the track and on the score chips.",
+  "vdLobbyKicker": "Local circuit",
+  "vdLobbyTag": "Two runners. One flag. First touch takes the heat.",
+  "vdHeat1": "Heat 1",
+  "vdHeat2": "Heat 2",
+  "vdHeat3": "Heat 3",
+  "vdNameQualifier": "Qualifier",
+  "vdNameOverpass": "Overpass",
+  "vdNameFinals": "Finals",
+  "vdBlurbQualifier": "A clean opener. One shuttle over the pit, then saws and spikes to the flag.",
+  "vdBlurbOverpass": "Laser trips, a moving lift, and a raised lane before the flag.",
+  "vdBlurbFinals": "Three shuttles, a laser gate, and a saw on the closing straight.",
+  "vdNoTime": "No time yet",
+  "vdBest": "Best {time} · {name}",
+  "vdHelpBtn": "Help",
+  "vdTouchPads": "Touch pads",
+  "vdHidePads": "Hide pads",
+  "vdWordRun": "run",
+  "vdWordJump": "jump",
+  "vdWordDrop": "drop through",
   "rfHelpLesson": "Read the lesson line when you win.",
   "rfHelpFewer": "Try to win with fewer ramps.",
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
@@ -296,13 +315,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v26:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v28:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v26:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v28:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -315,7 +334,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=RF-1.0.8", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=VD-1.0.9", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }

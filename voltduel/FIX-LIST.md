@@ -34,3 +34,9 @@ Physics and scoring were not changed.
 - [x] **Item 2 Start labels.** Each runner's circle or square and name sit above that runner. At the start, RIO no longer covers the VEX name.
 - [x] **Item 3 Staff test.** With the staff test switch on: Jump to win (VEX), Jump to win (RIO), and Jump to pit. A pit shows the back-to-checkpoint sign and that runner's score outline. Rematch was already a real button. Test results stay on the TEST board. Kids do not get these buttons.
 
+## VD 1.0.9
+- [x] **Item 1 Chip help.** Already in every language pack. Live console does not warn about vdChipHelp.
+- [x] **Item 2 Lobby language.** The lobby reads the hub language at load. Heats, blurbs, Help, and the pad words follow that language.
+- [ ] **Item 3 Test script.**
+- [ ] **Item 4 Staff hooks.**
+

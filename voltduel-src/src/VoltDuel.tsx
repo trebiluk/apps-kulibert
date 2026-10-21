@@ -52,6 +52,7 @@ declare global {
     };
     __simulate?: (level: number) => ReturnType<typeof practiceRun>;
     KulibertTest?: { on?: () => boolean };
+    KulibertPrefs?: { lang?: string };
     KulibertI18n?: {
       t?: (key: string, fallback?: string) => string;
       ready?: (lang: string | undefined, cb: () => void) => void;
@@ -630,7 +631,18 @@ export function VoltDuel() {
   const [coarse, setCoarse] = useState(
     () => typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches,
   );
-  const [lang, setLang] = useState("en");
+  const [lang, setLang] = useState(() => {
+    if (typeof document === "undefined") return "en";
+    let code = document.documentElement.getAttribute("data-kp-lang") || "";
+    try {
+      const pref = window.KulibertPrefs && window.KulibertPrefs.lang;
+      if (pref) code = pref;
+    } catch {
+      /* keep the attribute */
+    }
+    if (!code) code = "en";
+    return code === "simple" ? "en" : code;
+  });
 
   useEffect(() => {
     const mq = window.matchMedia("(pointer: coarse)");
@@ -642,7 +654,14 @@ export function VoltDuel() {
     };
     window.addEventListener("pointerdown", onDown, true);
     const readLang = () => {
-      const code = document.documentElement.getAttribute("data-kp-lang") || "en";
+      let code = document.documentElement.getAttribute("data-kp-lang") || "";
+      try {
+        const pref = window.KulibertPrefs && window.KulibertPrefs.lang;
+        if (pref) code = pref;
+      } catch {
+        /* keep the attribute */
+      }
+      if (!code) code = "en";
       setLang(code === "simple" ? "en" : code);
       const api = window.KulibertI18n;
       if (api && api.ready) api.ready(code, () => setHelpRev((n) => n + 1));
@@ -729,6 +748,17 @@ export function VoltDuel() {
     }
     return fallback;
   })();
+  function lobbyText(key: string, fallback: string) {
+    void helpRev;
+    void lang;
+    try {
+      const value = window.KulibertI18n?.t?.(key, fallback);
+      if (value && value !== key) return value;
+    } catch {
+      /* keep the English line */
+    }
+    return fallback;
+  }
   function onWord() {
     const fallback = "On";
     try {
@@ -923,21 +953,28 @@ export function VoltDuel() {
         {screen.name === "menu" && (
           <div className="overlay">
             <div className="menu-card">
-              <p className="kicker">Local circuit</p>
+              <p className="kicker" data-i18n="vdLobbyKicker">{lobbyText("vdLobbyKicker", "Local circuit")}</p>
               <h1 className="wordmark">
                 <span className="cyan">Volt</span> <span className="amber">Duel</span>
               </h1>
-              <p className="tag">Two runners. One flag. First touch takes the heat.</p>
+              <p className="tag" data-i18n="vdLobbyTag">{lobbyText("vdLobbyTag", "Two runners. One flag. First touch takes the heat.")}</p>
               <div className="levels">
                 {LEVELS.map((entry, index) => {
                   const best = save.best[entry.id];
+                  const heatKey = entry.id === "qualifier" ? "vdHeat1" : entry.id === "overpass" ? "vdHeat2" : "vdHeat3";
+                  const nameKey = entry.id === "qualifier" ? "vdNameQualifier" : entry.id === "overpass" ? "vdNameOverpass" : "vdNameFinals";
+                  const blurbKey = entry.id === "qualifier" ? "vdBlurbQualifier" : entry.id === "overpass" ? "vdBlurbOverpass" : "vdBlurbFinals";
                   return (
                     <button key={entry.id} type="button" className="level-card" onClick={() => launch(index)}>
-                      <span className="heat">{entry.heat}</span>
-                      <h2>{entry.name}</h2>
-                      <p>{entry.blurb}</p>
+                      <span className="heat" data-i18n={heatKey}>{lobbyText(heatKey, entry.heat)}</span>
+                      <h2 data-i18n={nameKey}>{lobbyText(nameKey, entry.name)}</h2>
+                      <p data-i18n={blurbKey}>{lobbyText(blurbKey, entry.blurb)}</p>
                       <span className="best">
-                        {best ? `Best ${formatTime(best.time)} · ${best.name}` : "No time yet"}
+                        {best
+                          ? lobbyText("vdBest", "Best {time} · {name}")
+                              .replace("{time}", formatTime(best.time))
+                              .replace("{name}", best.name)
+                          : lobbyText("vdNoTime", "No time yet")}
                       </span>
                     </button>
                   );
@@ -947,20 +984,20 @@ export function VoltDuel() {
                 <div className="control-box vex">
                   <h3>VEX</h3>
                   {coarse ? (
-                    <p dir="ltr">◀ ▶ run · ⤒ jump</p>
+                    <p dir="ltr">◀ ▶ {lobbyText("vdWordRun", "run")} · ⤒ {lobbyText("vdWordJump", "jump")}</p>
                   ) : (
                     <p>
-                      <kbd>A</kbd> <kbd>D</kbd> run · <kbd>W</kbd> jump · <kbd>S</kbd> drop through
+                      <kbd>A</kbd> <kbd>D</kbd> {lobbyText("vdWordRun", "run")} · <kbd>W</kbd> {lobbyText("vdWordJump", "jump")} · <kbd>S</kbd> {lobbyText("vdWordDrop", "drop through")}
                     </p>
                   )}
                 </div>
                 <div className="control-box rio">
                   <h3>RIO</h3>
                   {coarse ? (
-                    <p dir="ltr">◀ ▶ run · ⤒ jump</p>
+                    <p dir="ltr">◀ ▶ {lobbyText("vdWordRun", "run")} · ⤒ {lobbyText("vdWordJump", "jump")}</p>
                   ) : (
                     <p>
-                      <kbd>←</kbd> <kbd>→</kbd> run · <kbd>↑</kbd> jump · <kbd>↓</kbd> drop through
+                      <kbd>←</kbd> <kbd>→</kbd> {lobbyText("vdWordRun", "run")} · <kbd>↑</kbd> {lobbyText("vdWordJump", "jump")} · <kbd>↓</kbd> {lobbyText("vdWordDrop", "drop through")}
                     </p>
                   )}
                 </div>
@@ -973,14 +1010,14 @@ export function VoltDuel() {
                   aria-controls="vd-help-tip"
                   onClick={() => setHelpOpen((open) => !open)}
                 >
-                  <span aria-hidden="true">?</span> Help
+                  <span aria-hidden="true">?</span> {lobbyText("vdHelpBtn", "Help")}
                 </button>
                 <button
                   type="button"
                   className="text-btn"
                   onClick={() => setPadMode((mode) => (mode === "on" ? "off" : "on"))}
                 >
-                  {padMode === "on" ? "Hide pads" : "Touch pads"}
+                  {padMode === "on" ? lobbyText("vdHidePads", "Hide pads") : lobbyText("vdTouchPads", "Touch pads")}
                 </button>
                 {staffTest && (
                   <>
