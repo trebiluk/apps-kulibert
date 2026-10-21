@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.33** · 2026-10-21 · channel **live**
+
+On a phone the Viz picture names show in full.
+
+## Earlier
+
 **Chip: MU 2.36.32** · 2026-10-21 · channel **live**
 
 On a phone you can scroll to Listen, then my turn and Play along.
