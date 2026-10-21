@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.295', date: '2026-10-21', lines: {
+    en: ['Bonk bots with your Mine button, see your Suit, and Bertyville is a safe zone.'],
+    uk: ['Бонкай ботів кнопкою Копати, дивись свій Костюм, і Bertyville — безпечна зона.'],
+    ru: ['Бонкай ботов кнопкой Копать, смотри свой Костюм, и Bertyville — безопасная зона.'],
+    es: ['Bonkea bots con el botón Minar, mira tu Traje, y Bertyville es una zona segura.'],
+    ar: ['بونك البوتات بزر التعدين، شاهد بدلتك، وBertyville منطقة آمنة.'],
+    'fa-AF': ['با دکمه معدن بوت‌ها را بونک کن، لباست را ببین، و Bertyville منطقه امن است.'],
+    rw: ['Bonk bot na buto yo Gucukura, reba Imyenda yawe, na Bertyville ni ahantu hizewe.'],
+    ti: ['ቦትታት ብመቐመጢ ምቕራጽ ቦንክ ግበር፣ ክዳንካ ርአ፣ Bertyville ድማ ውሑስ ቦታ እዩ።'],
+  }},
+
   { v: '2.5.320', date: '2026-10-21', lines: {
     en: ['2.5.320 — On an upright phone, the Open button no longer covers the hint.'],
     simple: ['2.5.320 — On an upright phone, the Open button no longer covers the hint.'],
