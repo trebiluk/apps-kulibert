@@ -1873,6 +1873,36 @@ const FIT311 = {
   ti: { helpNew: 'ሓድሽ ንዓኻ፡ ቦታኻ ድሕሪ ምጽዓን ይጸንሕ። ጸወታ ብቋንቋ ኣብ ሃብ ዝመረጽካዮ ይኽፈት። ኣቑሑት ዓቢን ንጹርን ስእልን ቁጽርን ኣለዎም። ምንጻፍ ካብ ቤት ዕዮ ዕንጨይቲ ኣቐምጥ። መብራህትን ምንጻፍን ንጹር ስእሊ ኣለዎም። ስም ናይቲ እተሕዝዎ ኣብ ላዕለዋይ መስመር ይርአ። መቐየሪ PvP ብቋንቋኻ ክፉትን ዕጹውን ይብል። ደጊምካ ጠውቕ እሞ ምኽሪ ይረአ።' },
 }
 for (const [lang, row] of Object.entries(FIT311)) {
+const HELP318 = {
+  en: {
+    helpUse: 'Near a door, chair, bed, oven or sewing table, a Use button shows. Tap it (or press E) to use it.',
+  },
+  simple: {
+    helpUse: 'Next to a door or chair, tap Use (or press E).',
+  },
+  uk: {
+    helpUse: 'Біля дверей, стільця, ліжка, печі або швейного столу з’являється кнопка Використати. Торкнися її (або натисни E), щоб використати.',
+  },
+  ru: {
+    helpUse: 'Возле двери, стула, кровати, печи или швейного стола появляется кнопка Использовать. Коснись её (или нажми E), чтобы использовать.',
+  },
+  es: {
+    helpUse: 'Cerca de una puerta, silla, cama, horno o mesa de coser, aparece un botón Usar. Tócalo (o pulsa E) para usarlo.',
+  },
+  ar: {
+    helpUse: 'قرب باب أو كرسي أو سرير أو فرن أو طاولة خياطة، يظهر زر استخدام. اضغطه (أو اضغط E) لاستخدامه.',
+  },
+  'fa-AF': {
+    helpUse: 'نزدیک در، چوکی، بستر، تنور یا میز خیاطی، دکمه استفاده دیده می‌شود. آن را لمس کن (یا E را فشار بده) تا استفاده کنی.',
+  },
+  rw: {
+    helpUse: 'Hafi y\'urugi, intebe, uburiri, ibumba cyangwa ameza yo kudoda, haboneka buto ya Koresha. Kanda (cyangwa kanda E) kugira ngo uyikoreshe.',
+  },
+  ti: {
+    helpUse: 'ኣብ ጥቓ ማዕጾ፡ ኩርሲ፡ ዓራት፡ ታንዱር ወይ ጠረጴዛ ስፌት፡ መቐየሪ ተጠቐም ይረአ። ጠውቕ (ወይ E ጠውቕ) ንምጥቃም።',
+  },
+}
+for (const [lang, row] of Object.entries(HELP318)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
