@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] MU 2.36.21 item 1: on a loud kick drop, the picture swaps to the next saved look for one bar, then comes back.
 - [x] MU 2.36.20: the Code look shows Folds and Size chips. The choice is kept. Old songs still open.
 - [x] MU 2.36.19 item 4: Drums or score, What you see, and each drum loudness name follow the language.
 - [x] MU 2.36.19 item 3: the frame brightens a little with the kick, at most twice a second, and stays still when motion is reduced.
@@ -93,9 +94,9 @@ Plans and reference:
 - `music2353`: PASS
 
 ## Feature ideas (MU 2.36.19 investigate)
-Looked at shared/visualizer/stage.js (same 14 looks and palette DJ Berty already uses; chip in that file says Viz 0.9.0), /visualizer/app.js (gear, mic, beat import), and /bertybeatz/ (named looks, a code recipe, and a step-by-step lesson). Nothing below is built.
+Looked at shared/visualizer/stage.js (same 14 looks and palette DJ Berty already uses; chip in that file says Viz 0.9.0), /visualizer/app.js (gear, mic, beat import), and /bertybeatz/ (named looks, a code recipe, and a step-by-step lesson). Checked lines are built.
 
-- Drop change: when a bar has a loud kick cluster, swap to the next saved look for one bar, then come back. A 12-year-old loves it because the picture jumps on the drop. Size M. Risk: light sensitivity if the swap flashes; keep it under 2 changes a second and skip it when motion is reduced. Files: music/app.js only. Do not edit stage.js.
+- [x] MU 2.36.21 Drop change: when a bar has a loud kick cluster, the picture swaps to the next saved look for one bar, then comes back. Reduced motion and Drop swap off stay still. Under 2 picture changes a second.
 - Save a Light Show: a name on the song for the look, colors, wall, and frame it already stores. A 12-year-old loves it because their song opens with their own light picture. Size S. Risk: aliases only, no free-text names; do not change the .viz id list. Files: music/app.js, music/index.html.
 - Projector Perform: hide the side list and show one big countdown, then the song. A 12-year-old loves it because the whole class watches one picture. Size M. Risk: Mic lights on a projector picks up the room; leave the mic off unless they tap it. Files: music/app.js, music/styles.css.
 - Viz lesson: four steps like BertyBeatz (pick a look, press Play, tap Surprise me, stop). A 12-year-old loves it because the light show teaches itself. Size M. Risk: none if it stores no names. Files: music/app.js, music/strings.js.

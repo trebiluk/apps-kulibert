@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.21** · 2026-10-21 · channel **live**
+
+MU 2.36.21 — When the beat drops, the picture jumps to your next look for one bar.
+
+## Earlier
+
 **Chip: MU 2.36.20** · 2026-10-21 · channel **live**
 
 MU 2.36.20 — Pick the Code look and you can change its folds and size.

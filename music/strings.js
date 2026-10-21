@@ -422,7 +422,9 @@
     dropOn: "ON",
     dropOff: "OFF",
     dropSwapOn: "Drop swap on",
-    dropSwapOff: "Drop swap off"
+    dropSwapOff: "Drop swap off",
+    helpDrop: "⚡ When the beat drops, the picture jumps to your next look for one bar, then comes back. Drop swap can turn it off. It stays still if motion is reduced.",
+    news23621: "MU 2.36.21 — When the beat drops, the picture jumps to your next look for one bar."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -548,7 +550,9 @@
     dropOn: "ON",
     dropOff: "OFF",
     dropSwapOn: "Drop swap on",
-    dropSwapOff: "Drop swap off"
+    dropSwapOff: "Drop swap off",
+    helpDrop: "⚡ A big kick jumps the picture to your next look for one bar. Then it comes back. Drop swap turns it off. Less motion stays still.",
+    news23621: "MU 2.36.21 — When the beat drops, the picture jumps to your next look for one bar."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -966,6 +970,8 @@
       "dropOff": "ВИМК",
       "dropSwapOn": "Зміна на дропі увімкнена",
       "dropSwapOff": "Зміна на дропі вимкнена",
+      "helpDrop": "⚡ Коли біт падає, картинка стрибає на наступний вигляд на один такт і повертається. Зміна на дропі це вимикає. Менше руху — картинка стоїть.",
+      "news23621": "MU 2.36.21 — Коли біт падає, картинка стрибає на твій наступний вигляд на один такт."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -1380,6 +1386,8 @@
       "dropOff": "ВЫКЛ",
       "dropSwapOn": "Смена на дропе включена",
       "dropSwapOff": "Смена на дропе выключена",
+      "helpDrop": "⚡ Когда бит падает, картинка прыгает на следующий вид на один такт и возвращается. Смена на дропе это выключает. Меньше движения — картинка стоит.",
+      "news23621": "MU 2.36.21 — Когда бит падает, картинка прыгает на твой следующий вид на один такт."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -1795,6 +1803,8 @@
       "dropOff": "NO",
       "dropSwapOn": "Cambio al drop activado",
       "dropSwapOff": "Cambio al drop apagado",
+      "helpDrop": "⚡ Cuando cae el beat, la imagen salta a tu siguiente aspecto por un compás y vuelve. Cambio al drop lo apaga. Con menos movimiento se queda quieta.",
+      "news23621": "MU 2.36.21 — Cuando cae el beat, la imagen salta a tu siguiente aspecto por un compás."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -2210,6 +2220,8 @@
       "dropOff": "إيقاف",
       "dropSwapOn": "تبديل الدروب يعمل",
       "dropSwapOff": "تبديل الدروب متوقف",
+      "helpDrop": "⚡ حين يسقط الإيقاع، تقفز الصورة إلى المظهر التالي لمازورة واحدة ثم تعود. تبديل الدروب يوقفه. مع حركة أقل تبقى ثابتة.",
+      "news23621": "MU 2.36.21 — حين يسقط الإيقاع، تقفز الصورة إلى مظهرك التالي لمازورة واحدة."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -2625,6 +2637,8 @@
       "dropOff": "خاموش",
       "dropSwapOn": "عوض شدن دراپ روشن است",
       "dropSwapOff": "عوض شدن دراپ خاموش است",
+      "helpDrop": "⚡ وقتی ضرب می‌افتد، تصویر برای یک میزان به نمای بعدی می‌پرد و برمی‌گردد. عوض شدن دراپ آن را خاموش می‌کند. حرکت کمتر یعنی ثابت می‌ماند.",
+      "news23621": "MU 2.36.21 — وقتی ضرب می‌افتد، تصویر برای یک میزان به نمای بعدی‌ات می‌پرد."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -3040,6 +3054,8 @@
       "dropOff": "HAGARARA",
       "dropSwapOn": "Hindura ku drop irakora",
       "dropSwapOff": "Hindura ku drop yahagarara",
+      "helpDrop": "⚡ Iyo beat iguye, ishusho irasimbuukira ku isura ikurikira umwanya umwe, hanyuma igaruka. Hindura ku drop birabizimya. Imigendere mike isigara.",
+      "news23621": "MU 2.36.21 — Iyo beat iguye, ishusho irasimbuukira ku isura ikurikira umwanya umwe."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -3455,6 +3471,8 @@
       "dropOff": "ኣጥፍእ",
       "dropSwapOn": "ምልውዋጥ ድሮፕ ወሊዑ",
       "dropSwapOff": "ምልውዋጥ ድሮፕ ጠፊኡ",
+      "helpDrop": "⚡ ቢት ምስ ወደቀ፡ ስእሊ ናብ ዝቕጽል መልክዕ ንሓደ መስመር ይነጥር፡ ድሕሪኡ ይምለስ። ምልውዋጥ ድሮፕ የጥፍኦ። ምንቅስቓስ ምስትንከስ ቀዋሚ ይኸውን።",
+      "news23621": "MU 2.36.21 — ቢት ምስ ወደቀ፡ ስእሊ ናብ ዝቕጽል መልክዕ ንሓደ መስመር ይነጥር።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });
