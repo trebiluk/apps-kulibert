@@ -599,7 +599,8 @@
     helpPrac: "📋 Practice and class lists talk to you in your language.",
     news23629: "MU 2.36.29 — Practice and class lists talk to you in your language.",
     news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-    news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap."
+    news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap.",
+    news23632: "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -903,7 +904,8 @@
     helpPrac: "📋 Practice and class lists talk in your language.",
     news23629: "MU 2.36.29 — Practice and class lists talk to you in your language.",
     news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-    news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap."
+    news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap.",
+    news23632: "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1497,7 +1499,8 @@
       "helpPrac": "📋 Практика і списки класу говорять твоєю мовою.",
       "news23629": "MU 2.36.29 — Практика і списки класу говорять твоєю мовою.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — На телефоні квадрати барабанів під нотами досить великі, щоб натиснути."
+      "news23631": "MU 2.36.31 — На телефоні квадрати барабанів під нотами досить великі, щоб натиснути.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2088,7 +2091,8 @@
       "helpPrac": "📋 Практика и списки класса говорят на твоём языке.",
       "news23629": "MU 2.36.29 — Практика и списки класса говорят на твоём языке.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — На телефоне квадраты барабанов под нотами достаточно большие, чтобы нажать."
+      "news23631": "MU 2.36.31 — На телефоне квадраты барабанов под нотами достаточно большие, чтобы нажать.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2680,7 +2684,8 @@
       "helpPrac": "📋 La práctica y las listas de la clase te hablan en tu idioma.",
       "news23629": "MU 2.36.29 — La práctica y las listas de la clase te hablan en tu idioma.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — En un teléfono, los cuadrados de batería bajo la partitura son bastante grandes para tocarlos."
+      "news23631": "MU 2.36.31 — En un teléfono, los cuadrados de batería bajo la partitura son bastante grandes para tocarlos.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3272,7 +3277,8 @@
       "helpPrac": "📋 الممارسة وقوائم الصف تكلّمك بلغتك.",
       "news23629": "MU 2.36.29 — الممارسة وقوائم الصف تكلّمك بلغتك.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — على الهاتف، مربعات الطبل تحت النوتة كبيرة بما يكفي للنقر."
+      "news23631": "MU 2.36.31 — على الهاتف، مربعات الطبل تحت النوتة كبيرة بما يكفي للنقر.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3864,7 +3870,8 @@
       "helpPrac": "📋 تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند.",
       "news23629": "MU 2.36.29 — تمرین و فهرست‌های صنف به زبان خودت با تو حرف می‌زنند.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — در تلفن، مربع‌های طبل زیر نت آن‌قدر بزرگ‌اند که بتوان زد."
+      "news23631": "MU 2.36.31 — در تلفن، مربع‌های طبل زیر نت آن‌قدر بزرگ‌اند که بتوان زد.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4456,7 +4463,8 @@
       "helpPrac": "📋 Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe.",
       "news23629": "MU 2.36.29 — Imyitozo n'urutonde rw'ishuri bikuvugisha mu rurimi rwawe.",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — Ku telefoni, uduce tw'ingoma munsi y'amanota aba ahagije ngo ukande."
+      "news23631": "MU 2.36.31 — Ku telefoni, uduce tw'ingoma munsi y'amanota aba ahagije ngo ukande.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5048,7 +5056,8 @@
       "helpPrac": "📋 ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።",
       "news23629": "MU 2.36.29 — ልምምድን ናይ ክፍሊ ዝርዝርን ብቋንቋኻ ይዛረቡኻ።",
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
-      "news23631": "MU 2.36.31 — ኣብ ተሌፎን ትርብዒት ከበሮ ኣብ ትሕቲ ነቶታት ንምጥዋቕ ዝኣክል ዓቢ እዩ."
+      "news23631": "MU 2.36.31 — ኣብ ተሌፎን ትርብዒት ከበሮ ኣብ ትሕቲ ነቶታት ንምጥዋቕ ዝኣክል ዓቢ እዩ.",
+      "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along."
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

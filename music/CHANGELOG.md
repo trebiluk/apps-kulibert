@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.32** · 2026-10-21 · channel **live**
+
+On a phone you can scroll to Listen, then my turn and Play along.
+
+## Earlier
+
 **Chip: MU 2.36.31** · 2026-10-21 · channel **live**
 
 On a phone, the drum squares under the score are big enough to tap.
