@@ -11205,6 +11205,35 @@ if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && 
     },
     openWoodshop() { const k = openMachineKey || '0,5,0'; if (panels) panels.open('woodshop', k); const sheet = document.getElementById('sheet'); if (sheet) sheet.dataset.shopKey = k; return true },
     voxelAt(x, y, z) { return getVoxel(x, y, z) },
+    spawnMob(kind) {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const mob = mobs.spawn(kind || 'scrapper', Math.floor(p[0]) + 4, Math.floor(p[1]), Math.floor(p[2]))
+      return { ok: !!mob, kind: kind || 'scrapper', id: mob ? mob.id : null }
+    },
+    spawnDummy() {
+      const p = noa.entities.getPosition(noa.playerEntity)
+      const d = { id: 'dummy', hp: 100, x: Math.floor(p[0]) + 2, y: Math.floor(p[1]), z: Math.floor(p[2]) }
+      window.__dummy = d
+      return { ok: true, hp: d.hp }
+    },
+    bonkDummy() {
+      const d = window.__dummy
+      if (!d) return { ok: false }
+      const before = d.hp
+      d.hp = Math.max(0, d.hp - bonk())
+      return { ok: true, hpBefore: before, hpAfter: d.hp }
+    },
+    hit(n) {
+      const before = suit
+      suit = Math.max(0, suit - (n || 10))
+      paintSuit()
+      if (suit <= 0) bonked()
+      return { ok: true, suitBefore: before, suitAfter: suit }
+    },
+    setNight(on) {
+      if (basics && basics.seek) basics.seek(on ? basics.nightAt() : 0)
+      return { ok: true, night: !!on }
+    },
     helpUp(alias) {
       suit = Math.min(suitMax, suit + 30)
       paintSuit()
