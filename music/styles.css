@@ -5784,4 +5784,10 @@ body.mu237.show canvas#viz {
   body.mu237.tab-viz #scenes .swatch-word { white-space: normal !important; overflow-wrap: anywhere; text-align: center; line-height: 1.1; }
 }
 
+/* MU 2.36.35 — phone: the start tip ends 8px before Berty. Wider screens stay centred. */
+@media (max-width: 600px) {
+  body.mu237 .viz-start { padding-inline-end: 56px; }
+  body.mu237 .viz-start span { max-width: 100%; }
+}
+
 
