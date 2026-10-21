@@ -160,6 +160,9 @@ body.at-ideas .status,
 body.at-ideas .spill-line,
 body.at-ideas .score,
 body.at-ideas .ref { display: none !important; }
+body.at-home .status,
+body.at-home .fill-pct { display: none !important; }
+body.at-home #pause-btn,
 body.at-ideas #pause-btn,
 body.at-ref #pause-btn { visibility: hidden; }
 .ideas {
