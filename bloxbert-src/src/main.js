@@ -11460,6 +11460,88 @@ const crewCredit = {
   },
 }
 window.crewCredit = crewCredit
+function startHelpUp() {
+  if (document.getElementById('c3-help')) return
+  const btn = document.createElement('button')
+  btn.id = 'c3-help'
+  btn.type = 'button'
+  btn.hidden = true
+  btn.style.cssText = 'position:fixed;left:50%;bottom:200px;transform:translateX(-50%);z-index:34;display:flex;align-items:center;gap:8px;min-width:44px;min-height:44px;padding:8px 16px;border-radius:999px;border:3px solid #3ec6c6;background:#0E1A22;color:#E6EEF2;font:800 15px/1.2 sans-serif;max-width:90vw'
+  const ring = document.createElement('span')
+  ring.setAttribute('aria-hidden', 'true')
+  ring.style.cssText = 'width:22px;height:22px;box-sizing:border-box;border:3px solid #f6e27a;border-radius:50%;flex:0 0 auto'
+  const label = document.createElement('span')
+  btn.append(ring, label)
+  document.body.append(btn)
+  let holdStart = 0
+  let holding = false
+  let coolUntil = 0
+  function lessMotion() {
+    try {
+      return document.documentElement.getAttribute('data-kp-motion') === 'less' || matchMedia('(prefers-reduced-motion: reduce)').matches
+    } catch (e) { return false }
+  }
+  function nearestMob() {
+    const pos = noa.entities.getPosition(noa.playerEntity)
+    if (!pos || !mobs || !mobs.list) return 'help'
+    let id = 'help'
+    let best = 8
+    for (const m of mobs.list()) {
+      const d = Math.hypot(m.x - pos[0], m.z - pos[2])
+      if (d < best) { best = d; id = m.id }
+    }
+    return id
+  }
+  function finishHold() {
+    holding = false
+    holdStart = 0
+    ring.style.background = 'transparent'
+    const alias = t('c3You') || 'You'
+    if (Date.now() < coolUntil) {
+      toast(t('c3Refuse') || 'Wait a moment before helping again')
+      return
+    }
+    coolUntil = Date.now() + 20000
+    suit = Math.min(suitMax, suit + 30)
+    paintSuit()
+    if (window.crewCredit) window.crewCredit.record(nearestMob(), alias, 'assist')
+    const line = t('c3Helped') || '{alias} helped you up'
+    toast(String(line).replace('{alias}', alias))
+  }
+  function sync() {
+    const menu = document.body.classList.contains('menu-open')
+    const low = suit < 25 && !menu
+    btn.hidden = !low
+    if (!low) { holding = false; holdStart = 0; return }
+    if (!holding) {
+      label.textContent = t('c3HelpUp') || 'Help up'
+      ring.style.background = 'transparent'
+      return
+    }
+    label.textContent = t('c3Helping') || 'Helping up…'
+    const p = Math.min(1, (performance.now() - holdStart) / 1500)
+    if (!lessMotion()) ring.style.background = 'conic-gradient(#f6e27a ' + Math.round(p * 360) + 'deg, transparent 0)'
+    if (p >= 1) finishHold()
+  }
+  function down(e) {
+    if (e && e.preventDefault) e.preventDefault()
+    if (btn.hidden || holding) return
+    holding = true
+    holdStart = performance.now()
+    sync()
+  }
+  function up() { holding = false; holdStart = 0; sync() }
+  btn.addEventListener('pointerdown', down)
+  btn.addEventListener('pointerup', up)
+  btn.addEventListener('pointercancel', up)
+  btn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') down(e)
+    if (e.key === 'Escape') up()
+  })
+  btn.addEventListener('keyup', (e) => { if (e.key === 'Enter' || e.key === ' ') up() })
+  setInterval(sync, 100)
+}
+startHelpUp()
 if (location.search.includes('proof=1') && window.kwTest && window.kwTest.on && window.kwTest.on()) {
   window.__BT_PROOF = {
     giveLamp(kind) {

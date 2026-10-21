@@ -2156,3 +2156,65 @@ for (const [lang, row] of Object.entries(C3)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.297 C3 help-up. rw, ti, and Dari are machine drafts.
+const C3B = {
+  en: {
+    c3HelpUp: 'Help up',
+    c3Helping: 'Helping up…',
+    c3Helped: '{alias} helped you up',
+    c3Refuse: 'Wait a moment before helping again',
+  },
+  simple: {
+    c3HelpUp: 'Lift up',
+    c3Helping: 'Lifting…',
+    c3Helped: '{alias} got you back up',
+    c3Refuse: 'Not yet. Wait a little.',
+  },
+  uk: {
+    c3HelpUp: 'Допомогти встати',
+    c3Helping: 'Допомагаю встати…',
+    c3Helped: '{alias} допоміг тобі встати',
+    c3Refuse: 'Зачекай трохи, перш ніж допомогти знову',
+  },
+  ru: {
+    c3HelpUp: 'Помочь встать',
+    c3Helping: 'Помогаю встать…',
+    c3Helped: '{alias} помог тебе встать',
+    c3Refuse: 'Подожди немного, прежде чем помочь снова',
+  },
+  es: {
+    c3HelpUp: 'Ayudar a levantarse',
+    c3Helping: 'Ayudando a levantarse…',
+    c3Helped: '{alias} te ayudó a levantarte',
+    c3Refuse: 'Espera un momento antes de ayudar otra vez',
+  },
+  ar: {
+    c3HelpUp: 'ساعد على النهوض',
+    c3Helping: 'المساعدة على النهوض…',
+    c3Helped: '{alias} ساعدك على النهوض',
+    c3Refuse: 'انتظر قليلاً قبل المساعدة مرة أخرى',
+  },
+  'fa-AF': {
+    c3HelpUp: 'کمک به برخاستن',
+    c3Helping: 'در حال کمک…',
+    c3Helped: '{alias} کمک کرد بلند شوی',
+    c3Refuse: 'کمی صبر کن پیش از کمک دوباره',
+  },
+  rw: {
+    c3HelpUp: 'Fasha guhagarara',
+    c3Helping: 'Ndafasha guhagarara…',
+    c3Helped: '{alias} yagufashije guhagarara',
+    c3Refuse: 'Tegereza akanya mbere yo gufasha nanone',
+  },
+  ti: {
+    c3HelpUp: 'ሓግዝ ንምትካል',
+    c3Helping: 'እሓግዝ ኣለኹ…',
+    c3Helped: '{alias} ንምትካል ሓጊዙካ',
+    c3Refuse: 'ቅድሚ ዳግማይ ሓገዝ ቁሩብ ተጸበ',
+  },
+}
+for (const [lang, row] of Object.entries(C3B)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
