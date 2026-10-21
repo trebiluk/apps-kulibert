@@ -11,6 +11,18 @@ export const CHANGELOG = [
     ti: ['2.5.322 — ጉጅለታት ምረጽ ኣብ ቅንብራት ብቋንቋኻ ይንበቡ።'],
   }},
 
+  { v: '2.5.323', date: '2026-10-21', lines: {
+    en: ['2.5.323 — The menu header and side menu use your language.'],
+    simple: ['2.5.323 — The menu header and side menu use your language.'],
+    uk: ['2.5.323 — Заголовок меню і бічне меню твоєю мовою.'],
+    ru: ['2.5.323 — Заголовок меню и боковое меню на твоём языке.'],
+    es: ['2.5.323 — El encabezado del menú y el menú lateral usan tu idioma.'],
+    ar: ['2.5.323 — عنوان القائمة والقائمة الجانبية بلغتك.'],
+    'fa-AF': ['2.5.323 — سربرگ فهرست و فهرست کناری به زبان تو است.'],
+    rw: ['2.5.323 — Umutwe w\'imenyu n\'imenyu y\'uruhande bikoresha ururimi rwawe.'],
+    ti: ['2.5.323 — ርእሲ ዝርዝርን ጎናዊ ዝርዝርን ብቋንቋኻ ይጥቀሙ።'],
+  }},
+
   { v: '2.5.325', date: '2026-10-21', lines: {
     en: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],
     simple: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],

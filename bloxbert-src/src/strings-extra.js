@@ -2296,3 +2296,46 @@ for (const [lang, row] of Object.entries(C3HELP)) {
   Object.assign(EXTRA[lang], row)
 }
 
+// 2.5.323 what's new + help. rw, ti, and Dari are machine drafts.
+const NEWS323 = {
+  en: {
+    whatsNewBody: '2.5.323 — The menu header and side menu use your language.',
+    helpMenuLang: 'The menu header and side menu use your language.',
+  },
+  simple: {
+    whatsNewBody: '2.5.323 — The menu header and side menu use your language.',
+    helpMenuLang: 'The menu header and side menu use your language.',
+  },
+  uk: {
+    whatsNewBody: '2.5.323 — Заголовок меню і бічне меню твоєю мовою.',
+    helpMenuLang: 'Заголовок меню і бічне меню твоєю мовою.',
+  },
+  ru: {
+    whatsNewBody: '2.5.323 — Заголовок меню и боковое меню на твоём языке.',
+    helpMenuLang: 'Заголовок меню и боковое меню на твоём языке.',
+  },
+  es: {
+    whatsNewBody: '2.5.323 — El encabezado del menú y el menú lateral usan tu idioma.',
+    helpMenuLang: 'El encabezado del menú y el menú lateral usan tu idioma.',
+  },
+  ar: {
+    whatsNewBody: '2.5.323 — عنوان القائمة والقائمة الجانبية بلغتك.',
+    helpMenuLang: 'عنوان القائمة والقائمة الجانبية بلغتك.',
+  },
+  'fa-AF': {
+    whatsNewBody: '2.5.323 — سربرگ فهرست و فهرست کناری به زبان تو است.',
+    helpMenuLang: 'سربرگ فهرست و فهرست کناری به زبان تو است.',
+  },
+  rw: {
+    whatsNewBody: '2.5.323 — Umutwe w\'imenyu n\'imenyu y\'uruhande bikoresha ururimi rwawe.',
+    helpMenuLang: 'Umutwe w\'imenyu n\'imenyu y\'uruhande bikoresha ururimi rwawe.',
+  },
+  ti: {
+    whatsNewBody: '2.5.323 — ርእሲ ዝርዝርን ጎናዊ ዝርዝርን ብቋንቋኻ ይጥቀሙ።',
+    helpMenuLang: 'ርእሲ ዝርዝርን ጎናዊ ዝርዝርን ብቋንቋኻ ይጥቀሙ።',
+  },
+}
+for (const [lang, row] of Object.entries(NEWS323)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}
