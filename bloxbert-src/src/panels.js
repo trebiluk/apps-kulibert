@@ -16,6 +16,19 @@ export function mountPanels(api) {
     const drawer = document.getElementById('drawer')
     if (drawer) drawer.setAttribute('aria-label', api.t('drawerName'))
   }
+  if (back) {
+    const holdRoot = () => {
+      const sheetEl = document.getElementById('sheet')
+      const panel = sheetEl && sheetEl.dataset.panel
+      if (sheetEl && !sheetEl.hidden && panel && panel !== 'menu') return
+      const word = api.t('menu')
+      const lab = back.querySelector('.back-lab')
+      if (back.getAttribute('aria-label') === word && lab && lab.textContent === word) return
+      back.setAttribute('aria-label', word)
+      if (lab) lab.textContent = word
+    }
+    new MutationObserver(holdRoot).observe(back, { attributes: true, attributeFilter: ['aria-label'], subtree: true, characterData: true, childList: true })
+  }
   let stack = []
   function tile(icon, label, fn, extra) {
     const b = document.createElement('button')
