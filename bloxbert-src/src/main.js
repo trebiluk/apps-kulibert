@@ -40,6 +40,7 @@ import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { createMobs } from './mobs.js'
+import { inSafeZone } from './safe-zone.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -5407,6 +5408,17 @@ const mobs = createMobs({
   playerPos: () => noa.entities.getPosition(noa.playerEntity),
   isNight: () => basics && basics.phase && basics.phase() === 'night',
   toast, t,
+  inSafeZone,
+  plotInterior,
+  litBedNear: (x, z) => {
+    for (let dx = -8; dx <= 8; dx++) for (let dz = -8; dz <= 8; dz++) for (let y = 0; y <= 16; y++) {
+      if (getVoxel((x | 0) + dx, y, (z | 0) + dz) === ID.bunk) return true
+    }
+    return false
+  },
+  isBuildWorld: () => tableMode,
+  isCreative: () => !!(session && session.mode === 'creative'),
+  rule: () => Rules.dump(),
 })
 const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)
@@ -9956,6 +9968,7 @@ function stepBelts(now) {
 }
 noa.on('beforeRender', (dt) => {
   if (mobs) mobs.tick(performance.now())
+  if (mobs && mobs.trySpawn) mobs.trySpawn(performance.now())
   if (window.__shotLook) {
     setLook(window.__shotLook[0], window.__shotLook[1])
     const body = noa.ents.getPhysicsBody(noa.playerEntity)
