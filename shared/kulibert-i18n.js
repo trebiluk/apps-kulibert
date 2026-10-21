@@ -40,7 +40,7 @@
   "more": "More",
   "gotIt": "Got it",
   "pwaTip": "Install tip: Chrome menu, then Install page. The Tech Room icon stays on this Chromebook. Apps still need the school network.",
-  "whatsNewLine": "Hub rev 2026-10-20-staff-es-fineprint-door: The staff page and Fine Print now follow your language, and the Tech Room door link is easier to tap.",
+  "whatsNewLine": "Hub rev 2026-10-21-fineprint-staff-es-firstload: The Fine Print cards and the staff page now speak your language from the first visit, and a staff test tool no longer loads for kids.",
   "staffHelpLine": "Staff: admin tools appear only after you unlock with the desk key.",
   "finePrint": "Fine Print",
   "finePrintTitle": "About This Hub",
@@ -393,7 +393,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=VD-1.0.10", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=2026-10-21-fineprint-staff-es-firstload", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }
