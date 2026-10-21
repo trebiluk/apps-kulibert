@@ -103,6 +103,45 @@ let AUTO = gfx.auto
 let level = gfx.level
 const gfxLook = createLook()
 let plantHalf = false
+
+const COMBAT_TUNING = { hand: 1, wood: 2, stone: 3, copper: 4, steel: 6, weakMul: 2, bonkCd: 400, iframe: 800, lowSuit: 25 }
+let suit = 100
+let suitMax = 100
+let lastBonk = 0
+function suitTier() {
+  const held = session && session.selectedItem ? session.selectedItem() : ''
+  if (/steel/i.test(held)) return COMBAT_TUNING.steel
+  if (/copper/i.test(held)) return COMBAT_TUNING.copper
+  if (/stone/i.test(held)) return COMBAT_TUNING.stone
+  if (/wood/i.test(held)) return COMBAT_TUNING.wood
+  return COMBAT_TUNING.hand
+}
+function bonk() {
+  if (performance.now() - lastBonk < COMBAT_TUNING.bonkCd) return 0
+  lastBonk = performance.now()
+  return suitTier()
+}
+function paintSuit() {
+  const text = document.getElementById('suit-text')
+  const fill = document.getElementById('suit-fill')
+  if (text) text.textContent = 'Suit ' + suit + '/' + suitMax
+  if (fill) {
+    fill.style.width = Math.max(4, (suit / suitMax) * 60) + 'px'
+    fill.style.outline = suit < COMBAT_TUNING.lowSuit ? '2px solid #f59e0b' : 'none'
+  }
+}
+function bonked() {
+  suit = suitMax
+  paintSuit()
+  const card = document.createElement('div')
+  card.id = 'bonked-card'
+  card.style.cssText = 'position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(11,18,32,.9)'
+  card.innerHTML = '<div style="background:#111a2e;border:1px solid #22304d;border-radius:14px;padding:20px;text-align:center"><b>Bonked! Your stuff is safe</b><p>Back to bed in 5 seconds.</p><button id="bonked-back" style="min-width:44px;min-height:44px;margin-top:12px">Back to bed</button></div>'
+  document.body.append(card)
+  const btn = document.getElementById('bonked-back')
+  if (btn) { btn.focus(); btn.addEventListener('click', () => card.remove()) }
+  setTimeout(() => { const c = document.getElementById('bonked-card'); if (c) c.remove() }, 5000)
+}
 const LOW_FPS = location.search.includes('lowfps=1')
 window.__auto = { log: [] }
 if (LOW_FPS && AUTO && gfxLook.managed) gfxLook.autoName('fancy')

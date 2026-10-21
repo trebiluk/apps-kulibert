@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.285', date: '2026-10-20', lines: {
+    en: ['Team up to reboot rogue bots! Bonk with one button, help up friends, and everyone who helps gets the loot.'],
+    uk: ['Об\'єднуйтеся, щоб перезавантажити бунтівних роботів! Одна кнопка для удару, допомагай друзям підвестися, і кожен, хто допоміг, отримує здобич.'],
+    ru: ['Объединяйтесь, чтобы перезагрузить сбежавших роботов! Одна кнопка для удара, помогай друзьям встать, и каждый помощник получает добычу.'],
+    es: ['¡Únete a tu equipo para reiniciar robots rebeldes! Golpea con un botón, ayuda a tus amigos a levantarse y todos los que ayudan reciben el botín.'],
+    ar: ['تعاونوا لإعادة تشغيل الروبوتات الشاردة! اضغط زرًا واحدًا للضرب، وساعد أصدقاءك على النهوض، وكل من يساعد يحصل على الغنيمة.'],
+    'fa-AF': ['با هم روبات‌های سرکش را دوباره روشن کنید! با یک دکمه بزن، به دوستانت کمک کن بلند شوند، و هر کس کمک کند غنیمت می‌گیرد.'],
+    rw: ['Mufatanye mwongere mutangize robo zayobye! Kanda buto imwe, fasha inshuti guhaguruka, kandi buri wese wafashije abona ibihembo.'],
+    ti: ['ብሓባር ኮይንኩም ዝተዘናበዩ ሮቦታት ዳግማይ ኣልዕሉ! ብሓደ መጠወቒ ውቕዑ፣ ንመሓዙትኩም ሓግዙ፣ ዝሓገዘ ኩሉ ዓስቢ ይረክብ።'],
+  }},
+
   { v: '2.5.284', date: '2026-10-20', lines: {
     en: ['New switches: PvP only if both players say yes, and you keep your stuff in the main world.'],
     uk: ['Нові перемикачі: PvP лише якщо обидва гравці погодяться, а в головному світі речі залишаються з тобою.'],
