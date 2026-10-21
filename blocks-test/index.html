@@ -1247,19 +1247,19 @@ body.tip-on #held-chip{display:none!important}
   </div>
   <div class="sec" id="settings"><h3><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg><span data-i18n="settings">Settings</span></h3>
     <h3 data-i18n="graphics">Graphics</h3>
-    <div class="qset" role="radiogroup" aria-label="Graphics">
+    <div class="qset" role="radiogroup" data-q="graphics" aria-label="Graphics">
       <button class="qbtn" type="button" role="radio" data-gfx="lite" aria-checked="false"><span class="set-ico" data-ico="bolt"></span><span><b data-i18n="lite">Lite</b><small data-i18n="gfxLiteHint">Flat sky. Lamps glow only.</small></span></button>
       <button class="qbtn" type="button" role="radio" data-gfx="normal" aria-checked="false"><span class="set-ico" data-ico="day"></span><span><b data-i18n="gfxNormal">Normal</b><small data-i18n="gfxNormalHint">Soft sky and warm lamps.</small></span></button>
       <button class="qbtn" type="button" role="radio" data-gfx="fancy" aria-checked="false"><span class="set-ico" data-ico="spark"></span><span><b data-i18n="gfxFancy">Fancy</b><small data-i18n="gfxFancyHint">Corner shade and swaying plants.</small></span></button>
     </div>
-    <div class="qset" role="radiogroup" aria-label="Quality">
+    <div class="qset" role="radiogroup" data-q="quality" aria-label="Quality">
       <button class="qbtn" role="radio" data-q="auto" aria-checked="false"><span class="set-ico" data-ico="quality"></span><span><b data-i18n="auto">Auto</b><small data-i18n="autoHint">Best for most. Lowers detail if it gets slow.</small></span></button>
       <button class="qbtn" role="radio" data-q="lite" aria-checked="false"><span class="set-ico" data-ico="bolt"></span><span><b data-i18n="lite">Lite</b><small data-i18n="liteHint">Fastest. For slow Chromebooks and phones.</small></span></button>
       <button class="qbtn" role="radio" data-q="full" aria-checked="false"><span class="set-ico" data-ico="star"></span><span><b data-i18n="full">Full</b><small data-i18n="fullHint">Sharpest look, farther view. Needs a fast device.</small></span></button>
     </div>
     <p id="q-now" aria-live="polite"></p>
     <h3 data-i18n="textSize">Text size</h3>
-    <div class="tsset" role="radiogroup" aria-label="Text size">
+    <div class="tsset" role="radiogroup" data-q="textSize" aria-label="Text size">
       <button class="qbtn" type="button" data-ts="s"><span class="set-ico" data-ico="text"></span><b data-i18n="textS">Small</b></button>
       <button class="qbtn" type="button" data-ts="m"><span class="set-ico" data-ico="text"></span><b data-i18n="textM">Medium</b></button>
       <button class="qbtn" type="button" data-ts="l"><span class="set-ico" data-ico="text"></span><b data-i18n="textL">Large</b></button>

@@ -8570,13 +8570,41 @@ function applyLook() {
   noa.camera.inverseY = lookInvert
   try { localStorage.setItem(LOOK_KEY, JSON.stringify({ cv: 2, sens: lookSens, invert: lookInvert, wide: wideView, climb: autoClimb, hand: showHand, mainHand, offHandItem: null, cam: camBehind ? 'behind' : 'close' })) } catch (e) {}
 }
+const PICKER_KEYS = ['graphics', 'quality', 'textSize']
+const pickerWatched = new WeakSet()
+let pickerLangWatch = false
+function watchPickerGroup(el) {
+  if (!el || pickerWatched.has(el)) return
+  pickerWatched.add(el)
+  new MutationObserver(() => {
+    if (el.hasAttribute('aria-checked')) el.removeAttribute('aria-checked')
+    if (el.classList.contains('on')) el.classList.remove('on')
+  }).observe(el, { attributes: true, attributeFilter: ['aria-checked', 'class'] })
+}
+function namePickerGroups() {
+  for (const key of PICKER_KEYS) {
+    const word = t(key)
+    for (const el of document.querySelectorAll('[data-q="' + key + '"]')) {
+      if (el.getAttribute('role') !== 'radiogroup') continue
+      el.setAttribute('aria-label', word)
+      if (el.hasAttribute('aria-checked')) el.removeAttribute('aria-checked')
+      el.classList.remove('on')
+      watchPickerGroup(el)
+      const prev = el.previousElementSibling
+      if (prev && prev.classList.contains('ghead')) prev.textContent = word
+    }
+  }
+}
 function paintPickers(g) {
-  const take = (label) => {
-    const src = document.querySelector('#settings .qset[aria-label="' + label + '"]')
-    if (!src) return null
+  namePickerGroups()
+  const take = (key) => {
+    const src = document.querySelector('#settings [data-q="' + key + '"]')
+    if (!src || src.getAttribute('role') !== 'radiogroup') return null
     const clone = src.cloneNode(true)
     clone.classList.add('sheet-qset')
+    clone.setAttribute('aria-label', t(key))
     fillIco(clone)
+    watchPickerGroup(clone)
     return clone
   }
   const head = (key) => {
@@ -8586,13 +8614,19 @@ function paintPickers(g) {
     return p
   }
   g.append(head('graphics'))
-  const gfx = take('Graphics')
+  const gfx = take('graphics')
   if (gfx) g.append(gfx)
   g.append(head('quality'))
-  const qual = take('Quality')
+  const qual = take('quality')
   if (qual) g.append(qual)
   paintGfx()
   paintQuality()
+  namePickerGroups()
+}
+if (!pickerLangWatch) {
+  pickerLangWatch = true
+  new MutationObserver(() => { try { namePickerGroups() } catch (e) {} }).observe(document.documentElement, { attributes: true, attributeFilter: ['lang'] })
+  try { namePickerGroups() } catch (e) {}
 }
 function lookLine(name, value, icon) {
   const row = document.createElement('div')
