@@ -1,4 +1,15 @@
 export const CHANGELOG = [
+  { v: '2.5.292', date: '2026-10-21', lines: {
+    en: ['The Language button now reaches every language, and the whole screen follows the language you pick.'],
+    uk: ['Кнопка Мова тепер досягає кожної мови, і весь екран слідує за мовою, яку ти обрав.'],
+    ru: ['Кнопка Язык теперь достигает каждого языка, и весь экран следует за языком, который ты выбрал.'],
+    es: ['El botón Idioma ahora llega a todos los idiomas, y toda la pantalla sigue el idioma que eliges.'],
+    ar: ['زر اللغة يصل الآن إلى كل لغة، والشاشة بأكملها تتبع اللغة التي تختارها.'],
+    'fa-AF': ['دکمه زبان حالا به همه زبان‌ها می‌رسد، و کل صفحه از زبانی که انتخاب می‌کنی پیروی می‌کند.'],
+    rw: ['Buto y\'Ururimi ubu igeza ku rurimi rwose, kandi ecran yose ikurikira ururimi wahisemo.'],
+    ti: ['ቁልፊ ቋንቋ ሕጂ ናብ ኩሉ ቋንቋታት ይበጽሕ፣ ኩሉ ገጽ ድማ ነቲ ዝመረጽካዮ ቋንቋ ይከታተል።'],
+  }},
+
   { v: '2.5.291', date: '2026-10-21', lines: {
     en: ['Back to the Hub in the top bar speaks your language, Bag and Jump no longer overlap sideways or upright, Settings and Suit are translated in every language, and switches say ON/OFF in your language.'],
     uk: ['«Назад до Хабу» у верхній панелі твоєю мовою, Сумка і Стрибок більше не накладаються збоку чи вертикально, Налаштування і Костюм перекладені всіма мовами, а перемикачі кажуть УВІМК/ВИМК твоєю мовою.'],

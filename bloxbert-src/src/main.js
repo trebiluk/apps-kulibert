@@ -11120,11 +11120,20 @@ function paintLangRow(g) {
   btn.setAttribute('aria-label', lab.textContent)
   btn.addEventListener('click', () => {
     const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple']
+    const names = { en: 'English', uk: 'Українська', ru: 'Русский', es: 'Español', ar: 'العربية', 'fa-AF': 'دری', rw: 'Kinyarwanda', ti: 'ትግርኛ', simple: 'Simple' }
     const cur = localStorage.getItem('bloxbert-lang') || 'en'
-    const next = langs[(langs.indexOf(cur) + 1) % langs.length]
-    try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
+    const idx = langs.indexOf(cur)
+    const next = langs[(idx + 1 + langs.length) % langs.length]
+    if (typeof saveKidLang === 'function') saveKidLang(next)
+    else try { localStorage.setItem('bloxbert-lang', next) } catch (e) {}
     location.reload()
   })
+  const cur = localStorage.getItem('bloxbert-lang') || 'en'
+  const langs = ['en', 'uk', 'ru', 'es', 'ar', 'fa-AF', 'rw', 'ti', 'simple']
+  const names = { en: 'English', uk: 'Українська', ru: 'Русский', es: 'Español', ar: 'العربية', 'fa-AF': 'دری', rw: 'Kinyarwanda', ti: 'ትግርኛ', simple: 'Simple' }
+  const idx = langs.indexOf(cur)
+  const nextName = names[langs[(idx + 1 + langs.length) % langs.length]] || 'Next'
+  btn.textContent = (t('pickLanguage') || 'Pick') + ' · ' + nextName
   row.append(ico, lab, btn)
   g.append(row)
 }
