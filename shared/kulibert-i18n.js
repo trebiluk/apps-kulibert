@@ -217,6 +217,7 @@
   "rfHelpLesson": "Read the lesson line when you win.",
   "rfHelpFewer": "Try to win with fewer ramps.",
   "rfHelpPause": "Pause is always easy to tap, even sideways.",
+  "rfTestHelp": "Staff only: with Test mode on, Jump to win or lose; scores go to the TEST board.",
 };
   var FILES = { en: 1, uk: 1, ru: 1, es: 1, ar: 1, "fa-AF": 1, rw: 1, ti: 1, simple: 1 };
   var packs = { en: EN };
@@ -290,13 +291,13 @@
     function take(data) {
       if (data && typeof data === "object") {
         packs[name] = Object.assign({}, packs[name] || {}, data);
-        try { sessionStorage.setItem("kulibert-i18n-v21:" + name, JSON.stringify(packs[name])); } catch (e3) {}
+        try { sessionStorage.setItem("kulibert-i18n-v22:" + name, JSON.stringify(packs[name])); } catch (e3) {}
       }
       fetched[name] = 1;
       finish(name);
     }
     var cached = "";
-    try { cached = sessionStorage.getItem("kulibert-i18n-v21:" + name) || ""; } catch (e) {}
+    try { cached = sessionStorage.getItem("kulibert-i18n-v22:" + name) || ""; } catch (e) {}
     if (cached) {
       try {
         var parsed = JSON.parse(cached);
@@ -309,7 +310,7 @@
       var src = tags.length ? tags[tags.length - 1].src : "";
       if (src) origin = new URL(src, location.href).origin;
     } catch (eOrigin) {}
-    fetch(origin + "/shared/i18n/" + name + ".json?v=VD-1.0.7", { credentials: "omit", cache: "no-store" }).then(function (res) {
+    fetch(origin + "/shared/i18n/" + name + ".json?v=RF-1.0.7", { credentials: "omit", cache: "no-store" }).then(function (res) {
       return res.ok ? res.json() : null;
     }).then(take).catch(function () { take(null); });
   }

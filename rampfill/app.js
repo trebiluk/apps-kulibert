@@ -115,6 +115,7 @@
       helpLesson: "Прочитай рядок уроку, коли виграєш.",
       helpFewer: "Спробуй виграти з меншою кількістю схилів.",
       helpPause: "Паузу завжди легко натиснути, навіть збоку.",
+      testHelp: "Лише для персоналу: з увімкненим тестом натисни перехід до перемоги або поразки; бали йдуть лише на дошку TEST.",
       teachSlope: "Крутіший нахил = швидший потік",
       teachGel: "Густа рідина (висока в'язкість) тече повільніше",
       teachRate: "Швидкість потоку = скільки ллється щосекунди",
@@ -172,6 +173,7 @@
       helpLesson: "Прочитай строку урока, когда победишь.",
       helpFewer: "Попробуй победить с меньшим числом рамп.",
       helpPause: "Паузу всегда легко нажать, даже в горизонтальном режиме.",
+      testHelp: "Только для сотрудников: при включённом тесте нажми переход к победе или к поражению; очки идут только на доску TEST.",
       teachSlope: "Круче наклон = быстрее поток",
       teachGel: "Густая жидкость (высокая вязкость) течёт медленнее",
       teachRate: "Скорость потока = сколько льётся в секунду",
@@ -229,6 +231,7 @@
       helpLesson: "Lee la línea de la lección al ganar.",
       helpFewer: "Intenta ganar con menos rampas.",
       helpPause: "Pausa siempre es fácil de tocar, incluso de lado.",
+      testHelp: "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST.",
       teachSlope: "Más pendiente = flujo más rápido",
       teachGel: "Líquido espeso (alta viscosidad) fluye más lento",
       teachRate: "Caudal = cuánto se vierte cada segundo",
@@ -286,6 +289,7 @@
       helpLesson: "اقرأ سطر الدرس عندما تفوز.",
       helpFewer: "حاول أن تفوز بمنحدرات أقل.",
       helpPause: "الإيقاف المؤقت سهل اللمس دائمًا، حتى بالوضع الأفقي.",
+      testHelp: "للموظفين فقط: مع وضع الاختبار، اقفز إلى الفوز أو الخسارة؛ النقاط تذهب إلى لوحة TEST فقط.",
       teachSlope: "ميل أكثر انحدارًا = تدفق أسرع",
       teachGel: "سائل كثيف (لزوجة عالية) يسيل أبطأ",
       teachRate: "معدل التدفق = كم يُسكب كل ثانية",
@@ -343,6 +347,7 @@
       helpLesson: "وقتی بردی خط درس را بخوان.",
       helpFewer: "بکوش با سطح شیب‌دار کمتر ببری.",
       helpPause: "توقف همیشه آسان زده می‌شود، حتی در حالت افقی.",
+      testHelp: "فقط برای کارکنان: با حالت آزمایش، به برد یا باخت بپر؛ امتیازها فقط به تختهٔ TEST می‌روند.",
       teachSlope: "شیب تندتر = جریان تندتر",
       teachGel: "مایع غلیظ (گران‌روی بالا) آهسته‌تر می‌رود",
       teachRate: "سرعت جریان = در هر ثانیه چقدر می‌ریزد",
@@ -400,6 +405,7 @@
       helpLesson: "Soma umurongo w'isomo iyo utsinze.",
       helpFewer: "Gerageza gutsinda n'imihanda mike.",
       helpPause: "Hagarara byoroshye gukanda buri gihe, ndetse uri ku ruhande.",
+      testHelp: "Abakozi gusa: mu buryo bw'igerageza, iruka gutsinda cyangwa gutsindwa; amanota ajya ku kibaho cya TEST gusa.",
       teachSlope: "Ubuhaname bukabije = itemba ryihuta",
       teachGel: "Itabaza rikomeye (visikozite nyinshi) ritemba buhoro",
       teachRate: "Umuvuduko = ingano itemba buri segonda",
@@ -457,6 +463,7 @@
       helpLesson: "ምስ ተዓወትካ መስመር ትምህርቲ ኣንብብ።",
       helpFewer: "ብውሑዳት መንሸራተቲ ክትዓውት ፈትን።",
       helpPause: "ጠጠው ምባል ኩሉ ግዜ ቀሊል እዩ፣ ብጐድኒ እውን።",
+      testHelp: "ንሰራሕተኛታት ጥራይ፡ መፈተኒ ኣገባብ ምስ ዝበራህ ናብ ዓወት ወይ ምስዓር ዝለል፣ ነጥብታት ናብ ሰሌዳ TEST ጥራይ ይኸዱ።",
       teachSlope: "ዝቐነዐ ዝንባለ = ዝቕልጥፍ ውሕጅ",
       teachGel: "ርጉእ ፈሳሲ (ልዑል ርጉእነት) ቀስ ይውሕጅ",
       teachRate: "ፍጥነት ውሕጅ = ኣብ ሰከንድ ክንደይ ይውሕጅ",
@@ -478,7 +485,8 @@
       teachGel: "Thick liquid (high viscosity) moves slower",
       teachRate: "Flow rate means how much pours each second",
       bestWord: "Best:", rampsWord: "ramps", newBest: "New best!", tryFewer: "Try for fewer",
-      helpPause: "Pause is easy to tap, even sideways."
+      helpPause: "Pause is easy to tap, even sideways.",
+      testHelp: "Staff only. Jump to win or lose. Scores go to the TEST board."
     }
   };
   var LANGS = ["en", "uk", "ru", "es", "ar", "fa-AF", "rw", "ti"];
@@ -1500,6 +1508,7 @@
     var note = document.createElement("p");
     note.id = "rf-test-help";
     note.className = "test-help";
+    note.setAttribute("data-i18n", "rfTestHelp");
     note.textContent = t("testHelp");
     win.addEventListener("click", jumpWin);
     lose.addEventListener("click", jumpLose);

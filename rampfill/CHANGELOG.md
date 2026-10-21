@@ -2,7 +2,7 @@
 
 ## RF 1.0.7
 
-RF 1.0.7 — staff Test mode can jump to a win or a loss, and test wins go to the TEST board only. No tester row was on the real board.
+RF 1.0.7 — staff Test mode can jump to a win or a loss, and test wins go to the TEST board only. No tester row was on the real board. The staff help line is in every language.
 
 ## RF 1.0.6
 

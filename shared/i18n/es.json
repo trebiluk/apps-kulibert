@@ -213,5 +213,6 @@
   "finePrint": "Letra pequeña",
   "finePrintTitle": "Sobre este hub",
   "finePrintKid": "Algo importante sobre estas apps: quién las hizo, cómo te cuidamos y a quién hablar.",
-  "finePrintClose": "Cerrar"
+  "finePrintClose": "Cerrar",
+  "rfTestHelp": "Solo para el personal: con el modo Prueba, salta a ganar o a perder; los puntos van solo al tablero TEST."
 }
