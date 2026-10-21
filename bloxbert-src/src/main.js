@@ -40,7 +40,6 @@ import { showRulesCard } from './rules-card.js'
 import { Effects } from './effects.js'
 import { blockIcon, dropperIcon, slotArt, itemSvg, menuPlate, menuIcon, wandCanvas } from './icons.js'
 import { createMobs } from './mobs.js'
-import { inSafeZone } from './safe-zone.js'
 import { createStations } from './stations.js'
 import { createTools } from './tools.js'
 import { createLearn } from './learn.js'
@@ -5420,6 +5419,24 @@ const mobs = createMobs({
   isBuildWorld: () => tableMode,
   isCreative: () => !!(session && session.mode === 'creative'),
   rule: () => Rules.dump(),
+  takeCommon: () => {
+    if (!session || !session.bag || !session.spend) return ''
+    const common = ['dirt', 'stone', 'sand', 'gravel', 'planks', 'stick', 'coal', 'leaves', 'cobble', 'log']
+    for (const id of common) {
+      if (session.bag.count(id) > 0 && session.spend(id, 1)) return id
+    }
+    return ''
+  },
+  giveItem: (item, n) => { if (session && session.give) session.give(item, n || 1) },
+  ground: () => (session && session.groundDrops ? session.groundDrops() : null),
+  hurtSuit: (n, x, z) => {
+    if (inSafeZone(x | 0, z | 0)) return
+    suit = Math.max(0, suit - (n | 0))
+    paintSuit()
+  },
+  lastBonk: () => lastBonk,
+  scene: () => { try { return noa.rendering.getScene() } catch (e) { return null } },
+  addMesh: (mesh) => { try { noa.rendering.addMeshToScene(mesh, false) } catch (e) {} },
 })
 const stations = createStations({ touch: () => noteMachine(), t, give: (item, n) => session && session.give && session.give(item, n || 1), spend: (item, n) => !session || session.mode !== 'survival' || (session.spend && session.spend(item, n)), have: (item) => session && session.bag ? session.bag.count(item) : 0, held: () => session && session.selectedItem ? session.selectedItem() || '' : '', creative: () => !session || session.mode !== 'survival', toast: (msg) => toast(msg), name: (k) => t(k), icon: (item) => {
   const hit = BLOCKS.find((b) => b[1] === item)

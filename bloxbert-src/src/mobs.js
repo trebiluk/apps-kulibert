@@ -1,6 +1,13 @@
-// Bertopia mobs: Scrapper and Sparkbug. School-safe: reboot, never die/kill.
+// Bertopia mobs: Scrapper and Sparkbug. School-safe: reboot, never those other words.
 import { inSafeZone as townSafe } from './safe-zone.js'
 import { plotInterior as townPlot } from './town.js'
+import { mergeOrAdd } from './drops.js'
+import { getWrap } from './gfx/pixel-art.js'
+import { CreatePlane } from '@babylonjs/core/Meshes/Builders/planeBuilder'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { DynamicTexture } from '@babylonjs/core/Materials/Textures/dynamicTexture'
+import { Texture } from '@babylonjs/core/Materials/Textures/texture'
+import { Mesh } from '@babylonjs/core/Meshes/mesh'
 
 const LAMP_ON = new Set([1101, 1103, 47])
 const BUNK = 26
@@ -15,6 +22,13 @@ export function createMobs(opts) {
     isBuildWorld = () => false,
     isCreative = () => false,
     rule = () => ({}),
+    takeCommon = () => '',
+    giveItem = () => {},
+    ground = () => null,
+    hurtSuit = () => {},
+    lastBonk = () => 0,
+    scene = () => null,
+    addMesh = () => {},
   } = opts || {}
   const mobs = []
   const LEASH = 16
@@ -133,27 +147,143 @@ export function createMobs(opts) {
     if (!zone(m.homeX, m.homeZ)) walk(m, m.homeX, m.homeZ)
     else walk(m, m.x + (m.x - 8), m.z + (m.z - 8))
   }
+  function lessMotion() {
+    try {
+      if (document.documentElement.getAttribute('data-kp-motion') === 'less') return true
+      return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+    } catch (e) { return false }
+  }
+  function showZap(label) {
+    try {
+      let style = document.getElementById('c2-zap-style')
+      if (!style) {
+        style = document.createElement('style')
+        style.id = 'c2-zap-style'
+        style.textContent = '@keyframes c2zap{from{opacity:1}to{opacity:.75}}'
+        document.head.append(style)
+      }
+      let el = document.getElementById('c2-zap')
+      if (!el) {
+        el = document.createElement('div')
+        el.id = 'c2-zap'
+        el.setAttribute('role', 'status')
+        document.body.append(el)
+      }
+      const word = label || (t ? t('c2Zap') : 'Zap!')
+      el.textContent = ''
+      el.style.cssText = 'position:fixed;top:28%;left:50%;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:8px;background:#1c1917;color:#f6e27a;padding:8px 14px;border-radius:10px;font:700 18px/1.2 sans-serif;pointer-events:none;max-width:90vw'
+      const ring = document.createElement('span')
+      ring.setAttribute('aria-hidden', 'true')
+      ring.style.cssText = 'display:inline-block;width:44px;height:44px;box-sizing:border-box;border:3px dotted #f6e27a;border-radius:50%;flex:0 0 auto'
+      if (!lessMotion()) ring.style.animation = 'c2zap .6s linear 1'
+      const text = document.createElement('span')
+      text.textContent = word
+      el.append(ring, text)
+      clearTimeout(showZap._t)
+      showZap._t = setTimeout(() => { const n = document.getElementById('c2-zap'); if (n) n.remove() }, 600)
+    } catch (e) {}
+  }
+  function dropMesh(m) {
+    if (!m || !m.mesh) return
+    try {
+      const mat = m.mesh.material
+      if (mat) {
+        if (mat.diffuseTexture) mat.diffuseTexture.dispose()
+        if (mat.emissiveTexture && mat.emissiveTexture !== mat.diffuseTexture) mat.emissiveTexture.dispose()
+        mat.dispose()
+      }
+      m.mesh.dispose()
+    } catch (e) {}
+    m.mesh = null
+  }
+  function syncMesh(m) {
+    if (!m || (m.kind !== 'scrapper' && m.kind !== 'sparkbug')) return
+    const sc = scene ? scene() : null
+    if (!sc) return
+    if (!m.mesh) {
+      try {
+        const canvas = getWrap(m.kind)
+        if (!canvas) return
+        const mesh = CreatePlane('c2-' + m.id, { size: 0.9 }, sc)
+        const mat = new StandardMaterial('c2m-' + m.id, sc)
+        const tex = new DynamicTexture('c2t-' + m.id, canvas, sc, false, Texture.NEAREST_SAMPLINGMODE)
+        tex.hasAlpha = true
+        mat.diffuseTexture = tex
+        mat.emissiveTexture = tex
+        mat.useAlphaFromDiffuseTexture = true
+        mat.disableLighting = true
+        mat.backFaceCulling = false
+        mesh.material = mat
+        mesh.billboardMode = Mesh.BILLBOARDMODE_ALL
+        mesh.isPickable = false
+        if (addMesh) addMesh(mesh)
+        m.mesh = mesh
+      } catch (e) { return }
+    }
+    try {
+      m.mesh.position.x = m.x
+      m.mesh.position.y = (m.y || 0) + 0.9
+      m.mesh.position.z = m.z
+    } catch (e) {}
+  }
+  function sayItem(key, item) {
+    const label = item ? (t ? t(item) : item) : ''
+    const line = t ? t(key) : ''
+    return line ? String(line).replace('{item}', label) : label
+  }
+  function zig(m, p) {
+    const dx = p[0] - m.x
+    const dz = p[2] - m.z
+    const len = Math.hypot(dx, dz) || 1
+    m.zig = (m.zig || 0) + 1
+    const side = Math.sin(m.zig * 0.8) * 1.6
+    walk(m, m.x + (dx / len) * 2 + (-dz / len) * side, m.z + (dz / len) * 2 + (dx / len) * side)
+  }
+  function finishReboot(m) {
+    const item = m.stolen || ''
+    if (item && giveItem) giveItem(item, 1)
+    const drops = ground ? ground() : null
+    if (drops) mergeOrAdd(drops, [], { item: 'stick', n: 1, x: m.x, y: m.y || 0, z: m.z, at: 0 })
+    dropMesh(m)
+    const i = mobs.indexOf(m)
+    if (i >= 0) mobs.splice(i, 1)
+    if (toast) toast(item ? sayItem('c2Back', item) : (t ? t('rebooted') : 'Rebooted!'))
+    return item
+  }
   function tick(now) {
     if (now - (tick._last || 0) < 100) return
     tick._last = now
     const p = playerPos && playerPos()
+    const bonkAt = lastBonk ? lastBonk() : 0
     for (let i = mobs.length - 1; i >= 0; i--) {
       const m = mobs[i]
       const d = p ? dist(m, { x: p[0], z: p[2] }) : 99
-      if (p && d > DESPAWN) { mobs.splice(i, 1); continue }
-      if (zone(m.x, m.z)) { walkHome(m); continue }
-      const homeD = dist(m, { x: m.homeX, z: m.homeZ })
-      if (homeD > LEASH) {
-        m.x = m.homeX
-        m.z = m.homeZ
-        m.hp = m.maxHp
-        if (zone(m.x, m.z)) walkHome(m)
+      if (p && d > DESPAWN) { dropMesh(m); mobs.splice(i, 1); continue }
+      if ((m.kind === 'scrapper' || m.kind === 'sparkbug') && bonkAt && now - bonkAt < 400 && bonkAt !== m.seenBonk && p && d < 3.2 && !zone(m.x, m.z)) {
+        m.seenBonk = bonkAt
+        finishReboot(m)
         continue
       }
-      if (p && zone(m.x + (p[0] - m.x) * 0.2, m.z + (p[2] - m.z) * 0.2)) { walkHome(m); continue }
-      if (m.kind === 'scrapper' && d < 4 && !m.stolen) {
-        m.stolen = 'common'
-        if (toast) toast(t ? t('scrapperTook') : 'Scrapper took your item')
+      if (bonkAt) m.seenBonk = bonkAt
+      if (zone(m.x, m.z)) { walkHome(m); syncMesh(m); continue }
+      const homeD = dist(m, { x: m.homeX, z: m.homeZ })
+      if (homeD > LEASH) {
+        m.hp = m.maxHp
+        walkHome(m)
+        syncMesh(m)
+        continue
+      }
+      if (p && zone(m.x + (p[0] - m.x) * 0.2, m.z + (p[2] - m.z) * 0.2)) { walkHome(m); syncMesh(m); continue }
+      if (m.kind === 'scrapper') {
+        if (m.stolen) walkHome(m)
+        else if (p && d < 4) {
+          const item = takeCommon ? takeCommon() : ''
+          if (item) {
+            m.stolen = item
+            if (toast) toast((t ? t('c2Scrapper') : 'Scrapper') + ' ' + (t ? t('c2Grabs') : 'grabs') + '. ' + sayItem('c2Took', item))
+            walkHome(m)
+          }
+        } else if (p && d < 12) walk(m, p[0], p[2])
       }
       if (m.kind === 'overseer') {
         const phase = bossPhase(m.id)
@@ -176,13 +306,25 @@ export function createMobs(opts) {
           m.weakOpen = now + 2000
         }
       }
-      if (m.kind === 'sparkbug' && d < 2) {
-        if (!m.zapAt) m.zapAt = now + 600
-        else if (now >= m.zapAt) {
-          if (toast) toast(t ? t('zap') : 'Zap!')
-          m.zapAt = 0
+      if (m.kind === 'sparkbug') {
+        const cooling = m.zapCool && now < m.zapCool
+        if (cooling) {
+          if (p && d < 10 && d > 2.2) zig(m, p)
+        } else if (p && d < 2.2) {
+          if (!m.zapAt) {
+            m.zapAt = now + 600
+            showZap(t ? t('c2Zap') : 'Zap!')
+          } else if (now >= m.zapAt) {
+            if (!zone(m.x, m.z) && !zone(p[0], p[2]) && hurtSuit) hurtSuit(5, m.x, m.z)
+            m.zapAt = 0
+            m.zapCool = now + 1400
+          }
+        } else {
+          if (m.zapAt && now >= m.zapAt) m.zapAt = 0
+          if (p && d < 12) zig(m, p)
         }
       }
+      syncMesh(m)
     }
   }
   function trySpawn(now) {
@@ -205,13 +347,9 @@ export function createMobs(opts) {
     return spawn(kind, x, y, z)
   }
   function reboot(id) {
-    const i = mobs.findIndex((m) => m.id === id)
-    if (i < 0) return null
-    const m = mobs[i]
-    const item = m.stolen
-    mobs.splice(i, 1)
-    if (toast) toast(t ? t('rebooted') : 'Rebooted!')
-    return item
+    const m = mobs.find((row) => row.id === id)
+    if (!m) return null
+    return finishReboot(m)
   }
   function count() { return mobs.length }
   function list() { return mobs.map((m) => ({ id: m.id, kind: m.kind, x: m.x, y: m.y, z: m.z, hp: m.hp })) }

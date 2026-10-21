@@ -2015,3 +2015,83 @@ for (const [lang, row] of Object.entries(NAMES319)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.296 C2 — Scrapper + Sparkbug. rw, ti, and Dari are machine drafts.
+const C2 = {
+  en: {
+    c2Scrapper: 'Scrapper',
+    c2Sparkbug: 'Sparkbug',
+    c2Grabs: 'grabs',
+    c2Zap: 'Zap!',
+    c2Took: 'A Scrapper took 1 {item} and ran.',
+    c2Back: 'Reboot gave your {item} back, plus parts.',
+  },
+  simple: {
+    c2Scrapper: 'Scrap-bot',
+    c2Sparkbug: 'Spark-bug',
+    c2Grabs: 'snatches',
+    c2Zap: 'Spark!',
+    c2Took: 'A scrap-bot snatched 1 {item} and ran off.',
+    c2Back: 'A reboot handed your {item} back, with a spare part.',
+  },
+  uk: {
+    c2Scrapper: 'Збирач',
+    c2Sparkbug: 'Іскрожук',
+    c2Grabs: 'хапає',
+    c2Zap: 'Блиск!',
+    c2Took: 'Збирач узяв 1 {item} і втік.',
+    c2Back: 'Перезапуск повернув {item} і деталі.',
+  },
+  ru: {
+    c2Scrapper: 'Сборщик',
+    c2Sparkbug: 'Искрожук',
+    c2Grabs: 'хватает',
+    c2Zap: 'Искра!',
+    c2Took: 'Сборщик забрал 1 {item} и убежал.',
+    c2Back: 'Перезапуск вернул {item} и детали.',
+  },
+  es: {
+    c2Scrapper: 'Recolector',
+    c2Sparkbug: 'Chispabicho',
+    c2Grabs: 'agarra',
+    c2Zap: '¡Chispa!',
+    c2Took: 'Un recolector tomó 1 {item} y huyó.',
+    c2Back: 'El reinicio devolvió tu {item} y unas piezas.',
+  },
+  ar: {
+    c2Scrapper: 'جامع',
+    c2Sparkbug: 'حشرة الشرارة',
+    c2Grabs: 'يخطف',
+    c2Zap: 'وميض!',
+    c2Took: 'أخذ الجامع 1 {item} وركض.',
+    c2Back: 'أعادت إعادة التشغيل {item} وقطعا.',
+  },
+  'fa-AF': {
+    c2Scrapper: 'جمع‌کننده',
+    c2Sparkbug: 'جرقه‌حشره',
+    c2Grabs: 'می‌قاپد',
+    c2Zap: 'جرقه!',
+    c2Took: 'جمع‌کننده ۱ {item} را برداشت و دوید.',
+    c2Back: 'راه‌اندازی دوباره {item} و تکه‌ها را برگرداند.',
+  },
+  rw: {
+    c2Scrapper: 'Usakuza',
+    c2Sparkbug: 'Akanyamaswa',
+    c2Grabs: 'afata',
+    c2Zap: 'Umuhunda!',
+    c2Took: 'Usakuza yafashe 1 {item} hanyuma yirukana.',
+    c2Back: 'Gutangiza nanone kugaruye {item} n ibice.',
+  },
+  ti: {
+    c2Scrapper: 'ኣከባቢ',
+    c2Sparkbug: 'ኣንበጣ ብልጭታ',
+    c2Grabs: 'ይጨብጥ',
+    c2Zap: 'ብልጭታ!',
+    c2Took: 'ኣከባቢ 1 {item} ወሲዱ ሃደመ።',
+    c2Back: 'ዳግመ ምጅማር {item}ን ክፋላትን መለሰ።',
+  },
+}
+for (const [lang, row] of Object.entries(C2)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

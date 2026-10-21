@@ -305,6 +305,24 @@ reg('safetyGlasses', (set) => {
   set(4, 8, 2); set(12, 8, 2); // arms
 }, 'glass');
 
+// 2.5.296 C2 — Scrapper (gear, grabs) and Sparkbug (spark). Shared atlas, no extra lights.
+reg('scrapper', (set) => {
+  for (let y = 4; y <= 12; y++) for (let x = 4; x <= 11; x++) set(x, y, 2)
+  set(6, 8, 4); set(9, 8, 4)
+  set(6, 6, 0); set(7, 6, 0); set(8, 6, 0); set(9, 6, 0)
+  for (let i = 0; i < 4; i++) { set(12, 8 + (i > 1 ? 1 : 0), 3); set(13, 7 + i, 1) }
+  set(5, 13, 3); set(6, 13, 4); set(7, 12, 3); set(6, 14, 2)
+  set(8, 13, 3); set(9, 13, 4); set(10, 12, 3)
+}, 'steel');
+
+reg('sparkbug', (set) => {
+  for (let y = 6; y <= 10; y++) for (let x = 6; x <= 10; x++) set(x, y, 3)
+  set(7, 8, 0); set(9, 8, 0)
+  set(4, 8, 2); set(3, 7, 4); set(12, 8, 2); set(13, 7, 4)
+  set(7, 11, 4); set(9, 11, 4)
+  set(8, 4, 4); set(8, 3, 2)
+}, 'lantern');
+
 // Pull pack-owned art so packs keep their wraps
 import '../packs/farm/art.js';
 import '../packs/decor/art.js';
