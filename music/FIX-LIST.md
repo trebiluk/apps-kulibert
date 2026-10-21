@@ -10,6 +10,7 @@ Built Sun Oct 4 2026, 6:55 AM ET from Debugzy's fixq briefs and proof RESULTs; i
 - None recorded in the latest proof. If it says FAIL, read that RESULT.md.
 
 ## 3. Next up: open briefs in version order (tick when shipped AND proven)
+- [x] viz-start-clear-of-berty: On phones the start tip no longer covers Berty. MU 2.36.35.
 - [x] viz-picture-names-phone: On a phone the Viz picture names show in full. MU 2.36.33.
 - [x] tap-tiles-reachable-phone: On a phone you can scroll to Listen, then my turn and Play along. MU 2.36.32.
 - [x] djberty-score-drum-cells-44: On a phone, the drum squares under the score are big enough to tap. MU 2.36.31.

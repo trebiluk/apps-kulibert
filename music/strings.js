@@ -601,7 +601,8 @@
     news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
     news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap.",
     news23632: "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-    news23633: "MU 2.36.33 — On a phone the Viz picture names show in full."
+    news23633: "MU 2.36.33 — On a phone the Viz picture names show in full.",
+    news23635: "MU 2.36.35 — On phones the start tip no longer covers Berty."
   };
   var SIMPLE = {
     scoreDrums: "Notes and drums",
@@ -907,7 +908,8 @@
     news23630: "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
     news23631: "MU 2.36.31 — On a phone, the drum squares under the score are big enough to tap.",
     news23632: "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-    news23633: "MU 2.36.33 — On a phone the Viz picture names show in full."
+    news23633: "MU 2.36.33 — On a phone the Viz picture names show in full.",
+    news23635: "MU 2.36.35 — On phones the start tip no longer covers Berty."
   };
   var PACKS = { en: EN, simple: SIMPLE };
   /* filled below */
@@ -1503,7 +1505,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — На телефоні квадрати барабанів під нотами досить великі, щоб натиснути.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — На телефоні назви картинок у «Вигляд» видно повністю."
+      "news23633": "MU 2.36.33 — На телефоні назви картинок у «Вигляд» видно повністю.",
+      "news23635": "MU 2.36.35 — На телефонах підказка старту більше не закриває Берті."
     },
     "ru": {
       "makeBeat": "Сделай бит",
@@ -2096,7 +2099,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — На телефоне квадраты барабанов под нотами достаточно большие, чтобы нажать.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — На телефоне названия картинок в «Вид» видны полностью."
+      "news23633": "MU 2.36.33 — На телефоне названия картинок в «Вид» видны полностью.",
+      "news23635": "MU 2.36.35 — На телефонах подсказка старта больше не закрывает Берти."
     },
     "es": {
       "makeBeat": "Haz un ritmo",
@@ -2690,7 +2694,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — En un teléfono, los cuadrados de batería bajo la partitura son bastante grandes para tocarlos.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — En un teléfono, los nombres de las imágenes de Vista se ven enteros."
+      "news23633": "MU 2.36.33 — En un teléfono, los nombres de las imágenes de Vista se ven enteros.",
+      "news23635": "MU 2.36.35 — En el teléfono, el aviso de inicio ya no tapa a Berty."
     },
     "ar": {
       "makeBeat": "اصنع إيقاعًا",
@@ -3284,7 +3289,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — على الهاتف، مربعات الطبل تحت النوتة كبيرة بما يكفي للنقر.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — على الهاتف، أسماء صور العرض تظهر كاملة."
+      "news23633": "MU 2.36.33 — على الهاتف، أسماء صور العرض تظهر كاملة.",
+      "news23635": "MU 2.36.35 — على الهاتف، تلميح البدء لم يعد يغطي بيرتي."
     },
     "fa-AF": {
       "makeBeat": "یک بیت بساز",
@@ -3878,7 +3884,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — در تلفن، مربع‌های طبل زیر نت آن‌قدر بزرگ‌اند که بتوان زد.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — در تلفن، نام‌های تصویر نما کامل دیده می‌شوند."
+      "news23633": "MU 2.36.33 — در تلفن، نام‌های تصویر نما کامل دیده می‌شوند.",
+      "news23635": "MU 2.36.35 — در تلفن، راهنمای شروع دیگر برتی را نمی‌پوشاند."
     },
     "rw": {
       "makeBeat": "Kora umurya",
@@ -4472,7 +4479,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — Ku telefoni, uduce tw'ingoma munsi y'amanota aba ahagije ngo ukande.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — Ku telefoni, amazina y'amashusho ya Viz agaragara yose."
+      "news23633": "MU 2.36.33 — Ku telefoni, amazina y'amashusho ya Viz agaragara yose.",
+      "news23635": "MU 2.36.35 — Ku telefoni, inyigisho yo gutangira ntiyongeye gufunika Berty."
     },
     "ti": {
       "makeBeat": "ምት ግበር",
@@ -5066,7 +5074,8 @@
       "news23630": "MU 2.36.30 — The Tap tip uses the same word as the Tap tab in every language.",
       "news23631": "MU 2.36.31 — ኣብ ተሌፎን ትርብዒት ከበሮ ኣብ ትሕቲ ነቶታት ንምጥዋቕ ዝኣክል ዓቢ እዩ.",
       "news23632": "MU 2.36.32 — On a phone you can scroll to Listen, then my turn and Play along.",
-      "news23633": "MU 2.36.33 — ኣብ ተሌፎን ስማት ስእሊ ናይ ምርኢት ምሉእ ይረኣዩ."
+      "news23633": "MU 2.36.33 — ኣብ ተሌፎን ስማት ስእሊ ናይ ምርኢት ምሉእ ይረኣዩ.",
+      "news23635": "MU 2.36.35 — ኣብ ተሌፎን ናይ ምጅማር ሓበሬታ ንበርቲ ኣይሽፍን።"
     },
   };
   Object.keys(MORE).forEach(function (code) { PACKS[code] = MORE[code]; });

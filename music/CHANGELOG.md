@@ -1,5 +1,11 @@
 # Music changelog
 
+**Chip: MU 2.36.35** · 2026-10-21 · channel **live**
+
+MU 2.36.35 — On phones the start tip no longer covers Berty.
+
+## Earlier
+
 **Chip: MU 2.36.33** · 2026-10-21 · channel **live**
 
 On a phone the Viz picture names show in full.
