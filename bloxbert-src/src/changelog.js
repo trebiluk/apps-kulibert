@@ -177,7 +177,7 @@ export const CHANGELOG = [
     es: ['2.5.324 — Tras bambalinas: arranque más limpio para los testers.'],
     ar: ['2.5.324 — خلف الكواليس: بدء أنظف للمختبرين.'],
     'fa-AF': ['2.5.324 — پشت صحنه: شروع پاک‌تر برای آزمایش‌کننده‌ها.'],
-    rw: ['2.5.324 — Inyuma y\'amashusho: gutangira neza ku bagerageza.'],
+    rw: ["2.5.324 — Inyuma y\'amashusho: gutangira neza ku bagerageza."],
     ti: ['2.5.324 — ድሕሪ መድረኽ፡ ንፈታኒ ንጹር ምጅማር።'],
   }},
 
@@ -236,7 +236,7 @@ export const CHANGELOG = [
     es: ['2.5.319 — Los lectores de pantalla nombran la pantalla de juego en tu idioma.'],
     ar: ['2.5.319 — قارئات الشاشة تسمي شاشة اللعب بلغتك.'],
     'fa-AF': ['2.5.319 — خواننده‌های صفحه صفحه بازی را به زبان تو نام می‌برند.'],
-    rw: ['2.5.319 — Abasoma ecran bavuga ecran y\'umukino mu rurimi rwawe.'],
+    rw: ["2.5.319 — Abasoma ecran bavuga ecran y\'umukino mu rurimi rwawe."],
     ti: ['2.5.319 — ኣንባቢ ስክሪን ስም ናይ ጸወታ ስክሪን ብቋንቋኻ ይብል።'],
   }},
 
@@ -265,8 +265,8 @@ export const CHANGELOG = [
   }},
 
   { v: '2.5.312', date: '2026-10-21', lines: {
-    en: ['Each version now shows once in What\'s new, newest first.'],
-    simple: ['Each version now shows once in What\'s new, newest first.'],
+    en: ["Each version now shows once in What\'s new, newest first."],
+    simple: ["Each version now shows once in What\'s new, newest first."],
     uk: ['Кожна версія тепер один раз у «Що нового», спершу найновіша.'],
     ru: ['Каждая версия теперь один раз в «Что нового», сначала самая новая.'],
     es: ['Cada versión ahora se muestra una vez en Novedades, la más nueva primero.'],
@@ -284,7 +284,7 @@ export const CHANGELOG = [
     es: ['2.5.316 — Las palabras de gráficos Automático, Ligero y Completo están en tu idioma.'],
     ar: ['2.5.316 — كلمات الرسوم تلقائي وخفيف وكامل بلغتك.'],
     'fa-AF': ['2.5.316 — واژه‌های گرافیک خودکار، سبک و کامل به زبان تو هستند.'],
-    rw: ['2.5.316 — Amagambo y\'ibisakaza Byikora, Yoroheje na Yuzuye ari mu rurimi rwawe.'],
+    rw: ["2.5.316 — Amagambo y\'ibisakaza Byikora, Yoroheje na Yuzuye ari mu rurimi rwawe."],
     ti: ['2.5.316 — ቃላት ስእሊ ብባዕሉ፡ ቀሊልን ምሉእን ብቋንቋኻ እዮም።'],
   }},
 
@@ -325,8 +325,8 @@ export const CHANGELOG = [
   }},
 
   { v: '2.5.311', date: '2026-10-21', lines: {
-    en: ['2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language.'],
-    simple: ['2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language.'],
+    en: ["2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language."],
+    simple: ["2.5.311 — Help tells you what\'s new, and the Survival chip speaks your language."],
     uk: ['2.5.311 — Допомога каже, що нового, і чип Виживання говорить твоєю мовою.'],
     ru: ['2.5.311 — Помощь говорит, что нового, и чип Выживания говорит на твоём языке.'],
     es: ['2.5.311 — La ayuda dice lo nuevo, y el chip de Supervivencia habla tu idioma.'],
@@ -369,7 +369,7 @@ export const CHANGELOG = [
     es: ['2.5.309 — Entre bastidores: el juego ahora revisa cada palabra en cada idioma.'],
     ar: ['2.5.309 — خلف الكواليس: اللعبة الآن تتحقق من كل كلمة بكل لغة.'],
     'fa-AF': ['2.5.309 — پشت صحنه: بازی حالا هر واژه را در هر زبان بررسی می‌کند.'],
-    rw: ['2.5.309 — Inyuma y\'urubuga: urukino ubu rugenjura ijambo ryose mu rurimi rwose.'],
+    rw: ["2.5.309 — Inyuma y\'urubuga: urukino ubu rugenjura ijambo ryose mu rurimi rwose."],
     ti: ['2.5.309 — ኣብ ድሕሪ መድረኽ፡ ጸወታ ሕጂ ነፍሲ ወከፍ ቃል ብኹሉ ቋንቋታት ይመርምር።'],
   }},
 
@@ -386,14 +386,14 @@ export const CHANGELOG = [
   }},
 
   { v: '2.5.305', date: '2026-10-21', lines: {
-    en: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],
-    simple: ['2.5.305 — The name of what you\'re holding now sits neatly in the top bar.'],
+    en: ["2.5.305 — The name of what you\'re holding now sits neatly in the top bar."],
+    simple: ["2.5.305 — The name of what you\'re holding now sits neatly in the top bar."],
     uk: ['2.5.305 — Назва того, що ти тримаєш, тепер акуратно в верхній панелі.'],
     ru: ['2.5.305 — Название того, что ты держишь, теперь аккуратно в верхней панели.'],
     es: ['2.5.305 — El nombre de lo que sostienes ahora está ordenado en la barra superior.'],
     ar: ['2.5.305 — اسم ما تمسكه الآن يجلس بشكل أنيق في الشريط العلوي.'],
     'fa-AF': ['2.5.305 — نام چیزی که نگه می‌داری حالا مرتب در نوار بالا نشسته است.'],
-    rw: ['2.5.305 — Izina ry\'icyo ufite ubu ririmo neza mu murongo wo hejuru.'],
+    rw: ["2.5.305 — Izina ry\'icyo ufite ubu ririmo neza mu murongo wo hejuru."],
     ti: ['2.5.305 — ስም ናይቲ እተሕዝዎ ሕጂ ብጽቡቕ ኣብ ላዕለዋይ ባር ይቕመጥ።'],
   }},
 
@@ -405,7 +405,7 @@ export const CHANGELOG = [
     es: ['Las lámparas y las alfombras tienen imágenes más claras.'],
     ar: ['المصابيح والسجاد لها صور أوضح.'],
     'fa-AF': ['چراغ‌ها و قالین تصویرهای واضح‌تر دارند.'],
-    rw: ['Amatara n\'itapi bifite amashusho asobanutse.'],
+    rw: ["Amatara n\'itapi bifite amashusho asobanutse."],
     ti: ['መብራህትን ምንጻፍን ንጹር ስእሊ ኣለዎም።'],
   }},
 
@@ -417,7 +417,7 @@ export const CHANGELOG = [
     es: ['2.5.304 — Los números de objetos se leen desde tu asiento, y las casillas son más grandes en el teléfono.'],
     ar: ['2.5.304 — عدد القطع أكبر ويُقرأ من مقعدك، والخانات أكبر على الهاتف.'],
     'fa-AF': ['2.5.304 — شمار قطعات بزرگ‌تر است و از جایت خوانده می‌شود، و خانه‌ها در تلفن بزرگ‌تر اند.'],
-    rw: ['2.5.304 — Imibare y\'ibintu irakura kandi isomeka uviye ku ntebe, kandi uduce ni bunini kuri telefoni.'],
+    rw: ["2.5.304 — Imibare y\'ibintu irakura kandi isomeka uviye ku ntebe, kandi uduce ni bunini kuri telefoni."],
     ti: ['2.5.304 — ቁጽሪ ኣቑሑት ዓብዪ እዩ ከምኡውን ካብ መንበርካ ይንበብ፣ ቦታታት ድማ ኣብ ተሌፎን ዓበዩ።'],
   }},
 
@@ -441,7 +441,7 @@ export const CHANGELOG = [
     es: ['Tablones, Tronco, Baya, Retoño y Palo cada uno tiene su propia imagen clara.'],
     ar: ['الألواح والخشبة والتوت والشتلة والعصا لكل منها صورة واضحة خاصة به.'],
     'fa-AF': ['تخته‌ها، کندہ، توت، نهال و چوب هر کدام تصویر واضح خود را دارند.'],
-    rw: ['Imbaho, Igiti, Urubuto, Ikibabi n\'Inkoni buri kimwe gifite ishusho yacyo isobanutse.'],
+    rw: ["Imbaho, Igiti, Urubuto, Ikibabi n\'Inkoni buri kimwe gifite ishusho yacyo isobanutse."],
     ti: ['ሰሌዳታት፣ እንጨት፣ ቤሪ፣ ንእሽቶ ዕንጨይቲን በትሪን ነፍሲ ወከፍ ንጹር ስእሊ ኣለዎም።'],
   }},
 
@@ -486,7 +486,7 @@ export const CHANGELOG = [
     es: ['El botón Idioma ahora llega a todos los idiomas, y toda la pantalla sigue el idioma que eliges.'],
     ar: ['زر اللغة يصل الآن إلى كل لغة، والشاشة بأكملها تتبع اللغة التي تختارها.'],
     'fa-AF': ['دکمه زبان حالا به همه زبان‌ها می‌رسد، و کل صفحه از زبانی که انتخاب می‌کنی پیروی می‌کند.'],
-    rw: ['Buto y\'Ururimi ubu igeza ku rurimi rwose, kandi ecran yose ikurikira ururimi wahisemo.'],
+    rw: ["Buto y\'Ururimi ubu igeza ku rurimi rwose, kandi ecran yose ikurikira ururimi wahisemo."],
     ti: ['ቁልፊ ቋንቋ ሕጂ ናብ ኩሉ ቋንቋታት ይበጽሕ፣ ኩሉ ገጽ ድማ ነቲ ዝመረጽካዮ ቋንቋ ይከታተል።'],
   }},
 
@@ -497,7 +497,7 @@ export const CHANGELOG = [
     es: ['Volver al Hub en la barra superior habla tu idioma, Bolsa y Saltar ya no se tapan de lado ni de pie, Ajustes y Traje están traducidos en todos los idiomas, y los interruptores dicen SÍ/NO en tu idioma.'],
     ar: ['زر العودة إلى المركز في الشريط العلوي بلغتك، والحقيبة والقفز لم يعودا يتداخلان أفقيًا أو عموديًا، والإعدادات والبدلة مترجمة بكل اللغات، والمفاتيح تقول تشغيل/إيقاف بلغتك.'],
     'fa-AF': ['«بازگشت به هاب» در نوار بالا به زبان تو است، کیف و پرش دیگر در حالت افقی یا عمودی روی هم نمی‌افتند، تنظیمات و لباس به همه زبان‌ها ترجمه شده‌اند، و کلیدها روشن/خاموش به زبان تو می‌گویند.'],
-    rw: ['Gusubira kuri Hub ku mupira wo hejuru bivuga ururimi rwawe, Igikapu na Gusimbuka ntibikigongana ku ruhande cyangwa hejuru, Igenamiterere n\'Umwambaro byahinduwe mu ndimi zose, kandi utubuto bivuga ON/OFF mu rurimi rwawe.'],
+    rw: ["Gusubira kuri Hub ku mupira wo hejuru bivuga ururimi rwawe, Igikapu na Gusimbuka ntibikigongana ku ruhande cyangwa hejuru, Igenamiterere n\'Umwambaro byahinduwe mu ndimi zose, kandi utubuto bivuga ON/OFF mu rurimi rwawe."],
     ti: ['ናብ ሃብ ተመለስ ኣብ ላዕለዋይ ባር ብቋንቋኻ፣ ቦርሳን ዝላን ብጐድኒ ወይ ብቐጥታ ኣይተደራረቡን፣ ቅጥዕታትን ክዳንን ብኹሉ ቋንቋታት ተተርጒሞም፣ መቐያይሮ ድማ ON/OFF ብቋንቋኻ ይብሉ።'],
   }},
 
@@ -514,12 +514,12 @@ export const CHANGELOG = [
 
   { v: '2.5.289', date: '2026-10-20', lines: {
     en: ['More Spanish is fixed, the Language button is here, Bag and Jump no longer overlap sideways, and reloads show the new version.'],
-    uk: ['Виправлено більше іспанської, з\'явилася кнопка Мова, Сумка і Стрибок більше не накладаються збоку, а оновлення показує нову версію.'],
+    uk: ["Виправлено більше іспанської, з\'явилася кнопка Мова, Сумка і Стрибок більше не накладаються збоку, а оновлення показує нову версію."],
     ru: ['Исправлено больше испанского, появилась кнопка Язык, Сумка и Прыжок больше не накладываются сбоку, а перезагрузка показывает новую версию.'],
     es: ['Más español arreglado, ya está el botón Idioma, Bolsa y Saltar ya no se tapan de lado y al recargar ves la versión nueva.'],
     ar: ['تم إصلاح المزيد من الإسبانية، وأصبح زر اللغة متاحًا، ولم تعد الحقيبة والقفز تتداخلان أفقيًا، وإعادة التحميل تُظهر الإصدار الجديد.'],
     'fa-AF': ['اسپانیایی بیشتر درست شد، دکمه زبان آمد، کیف و پرش در حالت افقی روی هم نمی‌افتند و بارگذاری دوباره نسخه نو را نشان می‌دهد.'],
-    rw: ['Icyesipanyolo cyakosowe kurushaho, buto y\'Ururimi irahari, Igikapu na Gusimbuka ntibikigongana ku ruhande, kandi kongera gufungura byerekana verisiyo nshya.'],
+    rw: ["Icyesipanyolo cyakosowe kurushaho, buto y\'Ururimi irahari, Igikapu na Gusimbuka ntibikigongana ku ruhande, kandi kongera gufungura byerekana verisiyo nshya."],
     ti: ['ተወሳኺ ስጳንኛ ተዓሪዩ፣ ቁልፊ ቋንቋ መጺኡ፣ ቦርሳን ዝላን ብጐድኒ ኣይተደራረቡን፣ ዳግመ-ምጽዓን ሓድሽ ስሪት የርኢ።'],
   }},
 
@@ -530,24 +530,24 @@ export const CHANGELOG = [
     es: ['Las herramientas colgadas aparecen al instante, el español está arreglado, Saltar cabe de lado y hay un botón Idioma.'],
     ar: ['الأدوات المعلّقة تظهر فورًا، وتم إصلاح الإسبانية، وزر القفز يتسع أفقيًا، وهناك زر اللغة.'],
     'fa-AF': ['ابزارهای آویخته فوراً دیده می‌شوند، اسپانیایی درست شد، پرش در حالت افقی جا می‌شود و دکمه زبان هست.'],
-    rw: ['Ibikoresho wamanitse bigaragara ako kanya, Icyesipanyolo cyakosowe, Gusimbuka bikwira ku ruhande, kandi hari buto y\'Ururimi.'],
+    rw: ["Ibikoresho wamanitse bigaragara ako kanya, Icyesipanyolo cyakosowe, Gusimbuka bikwira ku ruhande, kandi hari buto y\'Ururimi."],
     ti: ['ዝተሰቕሉ መሳርሒታት ብቕጽበት ይረኣዩ፣ ስጳንኛ ተዓሪዩ፣ ዝላ ብጐድኒ ይኣቱ፣ ቁልፊ ቋንቋ ኣሎ።'],
   }},
 
   { v: '2.5.286', date: '2026-10-20', lines: {
     en: ['New bots to reboot: Rustbot and the Mechanoid Keeper. Team up to reboot the Foundry Overseer and earn badges and Bertodex pages!'],
-    uk: ['Нові роботи для перезавантаження: Іржобот і Механоїд-Охоронець. Об\'єднуйтеся, щоб перезавантажити Наглядача Ливарні, і здобувайте значки та сторінки Бертодексу!'],
+    uk: ["Нові роботи для перезавантаження: Іржобот і Механоїд-Охоронець. Об\'єднуйтеся, щоб перезавантажити Наглядача Ливарні, і здобувайте значки та сторінки Бертодексу!"],
     ru: ['Новые роботы для перезагрузки: Ржавобот и Механоид-Хранитель. Объединяйтесь, чтобы перезагрузить Надзирателя Литейной, и получайте значки и страницы Бертодекса!'],
     es: ['Nuevos robots para reiniciar: Rustbot y el Guardián Mecanoide. ¡Únete a tu equipo para reiniciar al Capataz de la Fundición y gana insignias y páginas del Bertodex!'],
     ar: ['روبوتات جديدة لإعادة تشغيلها: روبوت الصدأ والحارس الآلي. تعاونوا لإعادة تشغيل مشرف المسبك واربحوا شارات وصفحات بيرتودكس!'],
     'fa-AF': ['روبات‌های تازه برای روشن کردن دوباره: زنگ‌بات و نگهبان ماشینی. با هم ناظر ریخته‌گری را دوباره روشن کنید و نشان و صفحه‌های برتودکس بگیرید!'],
-    rw: ['Robo nshya zo kongera gutangiza: Rustbot na Mechanoid Keeper. Mufatanye mwongere mutangize Foundry Overseer, mubone imidari n\'impapuro za Bertodex!'],
+    rw: ["Robo nshya zo kongera gutangiza: Rustbot na Mechanoid Keeper. Mufatanye mwongere mutangize Foundry Overseer, mubone imidari n\'impapuro za Bertodex!"],
     ti: ['ሓደስቲ ሮቦታት: Rustbot ከምኡውን Mechanoid Keeper። ብሓባር ኮይንኩም ን Foundry Overseer ዳግማይ ኣልዕሉ፣ ሜዳልያን ገጻት Bertodexን ረኸቡ!'],
   }},
 
   { v: '2.5.285', date: '2026-10-20', lines: {
     en: ['Team up to reboot rogue bots! Bonk with one button, help up friends, and everyone who helps gets the loot.'],
-    uk: ['Об\'єднуйтеся, щоб перезавантажити бунтівних роботів! Одна кнопка для удару, допомагай друзям підвестися, і кожен, хто допоміг, отримує здобич.'],
+    uk: ["Об\'єднуйтеся, щоб перезавантажити бунтівних роботів! Одна кнопка для удару, допомагай друзям підвестися, і кожен, хто допоміг, отримує здобич."],
     ru: ['Объединяйтесь, чтобы перезагрузить сбежавших роботов! Одна кнопка для удара, помогай друзьям встать, и каждый помощник получает добычу.'],
     es: ['¡Únete a tu equipo para reiniciar robots rebeldes! Golpea con un botón, ayuda a tus amigos a levantarse y todos los que ayudan reciben el botín.'],
     ar: ['تعاونوا لإعادة تشغيل الروبوتات الشاردة! اضغط زرًا واحدًا للضرب، وساعد أصدقاءك على النهوض، وكل من يساعد يحصل على الغنيمة.'],
@@ -585,13 +585,13 @@ export const CHANGELOG = [
     es: ['«Cerrar» solo cierra el Taller, y la Ayuda explica las lámparas y el Taller.'],
     ar: ['زر «إغلاق» يغلق الورشة فقط، والمساعدة تشرح المصابيح والورشة.'],
     'fa-AF': ['دکمهٔ «بستن» فقط کارگاه را می‌بندد، و راهنما چراغ‌ها و کارگاه را توضیح می‌دهد.'],
-    rw: ['«Funga» ifunga Ububaji gusa, kandi Ubufasha busobanura amatara n\'Ububaji.'],
+    rw: ["«Funga» ifunga Ububaji gusa, kandi Ubufasha busobanura amatara n\'Ububaji."],
     ti: ['«ዕጸው» ነቲ ቤት ዕዮ ጥራይ ይዓጹ፣ ሓገዝ ድማ ብዛዕባ መብራህትን ቤት ዕዮን የብርህ።'],
   }},
 
   { v: '2.5.279', date: '2026-10-20', lines: {
     en: ['Lamps you get show up in your Bag, and the Woodshop opens on the first tap.'],
-    uk: ['Лампи, які ти отримуєш, з\'являються в сумці, і майстерня відкривається з першого дотику.'],
+    uk: ["Лампи, які ти отримуєш, з\'являються в сумці, і майстерня відкривається з першого дотику."],
     ru: ['Лампы, которые ты получаешь, появляются в сумке, и мастерская открывается с первого нажатия.'],
     es: ['Las lámparas que recibes aparecen en tu Bolsa, y el Taller se abre al primer toque.'],
     ar: ['المصابيح التي تحصل عليها تظهر في حقيبتك، والورشة تفتح من أول لمسة.'],
@@ -644,7 +644,7 @@ export const CHANGELOG = [
     vi: ['2.5.275 — Leaves finally fits in the hotbar.'],
     uk: ['2.5.275 — Листя нарешті вміщується на панелі швидкого доступу.'],
     'fa-AF': ['2.5.275 — بالاخره نام برگ‌ها کامل در نوار ابزار جا می‌شود.'],
-    rw: ['2.5.275 — Amababi noneho agaragara yuzuye mu murongo w\'ibikoresho.'],
+    rw: ["2.5.275 — Amababi noneho agaragara yuzuye mu murongo w\'ibikoresho."],
     ti: ['2.5.275 — ቆጽሊ ኣብ መወዳእታ ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።'],
   }},
   { v: '2.5.274', date: '2026-10-20', lines: {
@@ -658,7 +658,7 @@ export const CHANGELOG = [
     vi: ['2.5.274 — Every block name fits in the hotbar.'],
     uk: ['2.5.274 — Кожна назва блока вміщується на панелі швидкого доступу.'],
     'fa-AF': ['2.5.274 — نام همه بلاک‌ها به‌طور کامل در نوار ابزار جا می‌شود.'],
-    rw: ['2.5.274 — Amazina yose ya bloki agaragara yuzuye mu murongo w\'ibikoresho.'],
+    rw: ["2.5.274 — Amazina yose ya bloki agaragara yuzuye mu murongo w\'ibikoresho."],
     ti: ['2.5.274 — ኩሉ ኣስማት ብሎካት ምሉእ ኮይኑ ኣብ መሳርሒ መስመር ይርአ።'],
   }},
   { v: '2.5.273', date: '2026-10-20', lines: {
@@ -700,7 +700,7 @@ export const CHANGELOG = [
     vi: ['2.5.271 — Tips fade fast, stay off your hotbar, and talk touch on phones.'],
     uk: ['2.5.271 — Підказки швидко зникають, не закривають панель предметів і говорять мовою дотиків на телефоні.'],
     'fa-AF': ['2.5.271 — راهنماها زود محو می‌شوند، روی نوار ابزار نمی‌افتند و در تلفن به زبان لمس حرف می‌زنند.'],
-    rw: ['2.5.271 — Inama zihita zigenda vuba, ntizipfuka umurongo w\'ibikoresho, kandi kuri telefone zivuga gukoraho.'],
+    rw: ["2.5.271 — Inama zihita zigenda vuba, ntizipfuka umurongo w\'ibikoresho, kandi kuri telefone zivuga gukoraho."],
     ti: ['2.5.271 — ምኽርታት ቀልጢፎም ይጠፍኡ፣ ንመስርዕ ኣቑሑትካ ኣይሽፍኑን፣ ኣብ ተሌፎን ድማ ብምንካእ ይዛረቡ።'],
   }},
   { v: '2.5.270', date: '2026-10-19', lines: {
@@ -728,7 +728,7 @@ export const CHANGELOG = [
     vi: ['2.5.269 — Crafting words and counts fit on small screens, and tips wait their turn and stay out of your way.'],
     uk: ['2.5.269 — Слова й числа в Крафті вміщуються на малих екранах, а підказки чекають своєї черги й не заважають тобі.'],
     'fa-AF': ['2.5.269 — کلمه‌ها و شماره‌های ساختن در صفحه‌های کوچک جا می‌شوند، و نکته‌ها منتظر نوبت خود می‌مانند و مزاحم شما نمی‌شوند.'],
-    rw: ['2.5.269 — Amagambo n\'imibare byo Gukora bikwira ku byerekezo bito, kandi inama zirategereza umwanya wazo ntizikugora.'],
+    rw: ["2.5.269 — Amagambo n\'imibare byo Gukora bikwira ku byerekezo bito, kandi inama zirategereza umwanya wazo ntizikugora."],
     ti: ['2.5.269 — ቃላትን ቁጽርታትን ምስራሕ ኣብ ንኣሽቱ ስክሪናት ይኣክሉ፣ ምኽርታት ድማ ተራኦም ይጽበዩን ኣይዓግቱኻን።'],
   }},
   { v: '2.5.268', date: '2026-10-19', lines: {
@@ -742,7 +742,7 @@ export const CHANGELOG = [
     vi: ['2.5.268 — Recipe words fit, and phone slots are easier to tap.'],
     uk: ['2.5.268 — Слова рецептів вміщуються, а слоти на телефоні легше натискати.'],
     'fa-AF': ['2.5.268 — کلمات دستورها جا می‌شوند و خانه‌های تلفن آسان‌تر زده می‌شوند.'],
-    rw: ['2.5.268 — Amagambo y\'ibikoresho arakwira, kandi udusanduku twa telefoni turoroshye gukanda.'],
+    rw: ["2.5.268 — Amagambo y\'ibikoresho arakwira, kandi udusanduku twa telefoni turoroshye gukanda."],
     ti: ['2.5.268 — ቃላት ኣሰራርሓ ይኣክሉ፣ ቦታታት ተሌፎን ድማ ንምንካይ ቀሊል እዮም።'],
   }},
   { v: '2.5.267', date: '2026-10-19', lines: {
@@ -784,7 +784,7 @@ export const CHANGELOG = [
     vi: ['Thanh trên vừa điện thoại, Chế tạo có trong Sinh tồn, và một cây đứng cạnh chỗ bắt đầu.'],
     uk: ['Верхня смуга вміщується на телефоні, Крафт є в Виживанні, і дерево чекає біля старту.'],
     'fa-AF': ['تختهٔ بالا در موبایل می‌گنجد، ساختن در حالت بقا است، و یک درخت کنار آغاز منتظر است.'],
-    rw: ['Umurongo wo hejuru winjira muri telefoni, Kora iri muri Kubaho, kandi igiti kirategereje hafi y\'intangiriro.'],
+    rw: ["Umurongo wo hejuru winjira muri telefoni, Kora iri muri Kubaho, kandi igiti kirategereje hafi y\'intangiriro."],
     ti: ['ላዕለዋይ መስመር ኣብ ተሌፎን ይኣትዉ፡ ምስራሕ ኣብ ሕያውነት ኣሎ፡ ዕንጨይቲ ድማ ኣብ ጥቓ መጀመርታ ይጽበ።'],
   }},
   { v: '2.5.264', date: '2026-10-18', lines: {
@@ -872,7 +872,7 @@ export const CHANGELOG = [
     ti: ['መጠወቒ ግበር ኩሉ ግዜ ይኸፍት፡ ሓደሽቲ ዓለማት ብኡን ብኡን ይረኣዩ፡ ቦርሳ ድማ ስማት ኣለዋ።'],
   }},
   { v: '2.5.255', date: '2026-10-16', lines: {
-    en: ['Chop right where your finger is, and your Bot\'s wall stays after a reload.'],
+    en: ["Chop right where your finger is, and your Bot\'s wall stays after a reload."],
     es: ['Corta justo donde está tu dedo, y el muro de tu Bot sigue ahí al recargar.'],
     ar: ['اقطع حيث يوجد إصبعك تمامًا، ويبقى جدار الروبوت بعد إعادة التحميل.'],
     zh: ['手指按哪里就砍哪里，重新加载后机器人的墙还在。'],
@@ -928,7 +928,7 @@ export const CHANGELOG = [
     ti: ['ብኪቦርድ ጥራይ ጻወት፡ Tab፡ Enterን Escን ኣብ ኩሉ ዝርዝር ይሰርሑ።'],
   }},
   { v: '2.5.251', date: '2026-10-16', lines: {
-    en: ['Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard.'],
+    en: ["Chopping works where you touch, your Bot\'s builds stay after a reload, and you can start with the keyboard."],
     es: ['Cortar funciona donde tocas, lo que construye tu Bot sigue ahí al recargar, y puedes empezar con el teclado.'],
     uk: ['Рубання працює там, де ти торкаєшся, будівлі Бота лишаються після перезавантаження, і можна почати з клавіатури.'],
     ru: ['Рубка работает там, где ты касаешься, постройки Бота остаются после перезагрузки, и можно начать с клавиатуры.'],
@@ -984,7 +984,7 @@ export const CHANGELOG = [
     ru: ['Слоты программы Бота теперь помещаются на экране телефона.'],
     ar: ['خانات برنامج البوت صارت تناسب شاشة الهاتف.'],
     'fa-AF': ['خانه‌های برنامهٔ بوت حالا روی صفحهٔ تیلفون جا می‌شوند.'],
-    rw: ['Imyanya y\'umushinga wa Bot ubu yinjira kuri telefoni.'],
+    rw: ["Imyanya y\'umushinga wa Bot ubu yinjira kuri telefoni."],
     ti: ['ቦታታት መደብ ቦት ሕጂ ኣብ ስክሪን ተሌፎን ይኣትዉ።'],
   }},
   { v: '2.5.245', date: '2026-10-16', lines: {
@@ -994,7 +994,7 @@ export const CHANGELOG = [
     ru: ['Заметка о предмете теперь сверху и не закрывает кнопки.'],
     ar: ['ملاحظة الغرض تبقى في الأعلى ولا تغطي الأزرار.'],
     'fa-AF': ['یادداشت چیز حالا بالا می‌ماند و دکمه‌ها را نمی‌پوشاند.'],
-    rw: ['Inyandiko y\'ikintu ubu iguma hejuru kandi ntipfuka utubuto.'],
+    rw: ["Inyandiko y\'ikintu ubu iguma hejuru kandi ntipfuka utubuto."],
     ti: ['መዘኻኸሪ ነገር ሕጂ ኣብ ላዕሊ ይጸንሕ፡ መጠወቒታት ኣይሽፍንን።'],
   }},
   { v: '2.5.244', date: '2026-10-15', lines: {
@@ -1024,7 +1024,7 @@ export const CHANGELOG = [
     es: ['En el teléfono de lado, Saltar y Agacharse quedan en el pulgar derecho, y Auto-salto sube un bloque.'],
     ar: ['على الهاتف بالعرض، القفز والانحناء تحت الإبهام الأيمن، والقفز التلقائي يصعد مكعباً واحداً.'],
     'fa-AF': ['در تیلفون افقی، پرش و خم شدن زیر شست راست‌اند، و پرش خودکار یک بلاک بالا می‌رود.'],
-    rw: ['Kuri telefoni ibitse, Simbuka na Icaramye biri ku gikumwe cy\'iburyo, kandi Oto-simbuka izamuka igice kimwe.'],
+    rw: ["Kuri telefoni ibitse, Simbuka na Icaramye biri ku gikumwe cy\'iburyo, kandi Oto-simbuka izamuka igice kimwe."],
     ti: ['ኣብ ጎነ ተሌፎን፡ ንጻን ድንጋርን ኣብ የማናይ ኣጻብዕቲ እዮም፡ ብባዕሉ ምንጻ ድማ ሓደ ብሎክ ይድይብ።'],
   }},
   { v: '2.5.241', date: '2026-10-15', lines: {
@@ -1114,7 +1114,7 @@ export const CHANGELOG = [
     es: ['Tu tarjeta de meta vuelve cuando cambias de Creativo a Supervivencia.'],
     ar: ['بطاقة هدفك ترجع لما تنتقل من إبداعي إلى بقاء.'],
     'fa-AF': ['کارت هدف تو وقتی از خلاق به بقا برمی‌گردی، برمی‌گردد.'],
-    rw: ['Ikarita y\'intego yawe iragaruka iyo uva muri Kurema ujya muri Kubaho.'],
+    rw: ["Ikarita y\'intego yawe iragaruka iyo uva muri Kurema ujya muri Kubaho."],
     ti: ['ናይ ዕላማ ካርድካ ካብ ፈጠራ ናብ ምንባር ምስ ተቀይርካ ይምለስ።'],
   }},
   { v: '2.5.232', date: '2026-10-15', lines: {
@@ -1169,7 +1169,7 @@ export const CHANGELOG = [
   }},
   { v: '2.5.227', date: '2026-10-15', lines: {
     en: ['On computers, the whole bag now fits in the Crafting panel with no sideways scrolling.'],
-    uk: ['На комп\'ютерах уся сумка тепер вміщається в панелі Крафту без прокрутки вбік.'],
+    uk: ["На комп\'ютерах уся сумка тепер вміщається в панелі Крафту без прокрутки вбік."],
     ru: ['На компьютерах вся сумка теперь помещается в панели Крафта без прокрутки вбок.'],
     es: ['En la computadora, toda la bolsa ahora cabe en el panel de Fabricar sin desplazarse de lado.'],
     ar: ['على الحاسوب، الكيس كله صار يدخل في لوحة الصنع بلا تمرير جانبي.'],
@@ -1184,7 +1184,7 @@ export const CHANGELOG = [
     es: ['En un teléfono en vertical, el botón de Pantalla completa ya no tapa la tarjeta de meta ni su botón de cerrar.'],
     ar: ['حين تمسك الهاتف بالطول، زر ملء الشاشة لم يعد يغطي بطاقة الهدف ولا زر إغلاقها.'],
     'fa-AF': ['وقتی تلفن را عمودی بگیری، دکمه تمام‌صفحه دیگر کارت هدف یا دکمه بستن آن را نمی‌پوشاند.'],
-    rw: ['Ku telefoni ihagaze, buto ya Ecran yose ntikipfuka ikarita y\'intego cyangwa buto yo kuyifunga.'],
+    rw: ["Ku telefoni ihagaze, buto ya Ecran yose ntikipfuka ikarita y\'intego cyangwa buto yo kuyifunga."],
     ti: ['ኣብ ትኹል ዝተታሕዘ ትሌፎን፡ ናይ ምሉእ ስክሪን መጠወቒ ነቲ ናይ ዕላማ ካርድ ወይ ናይ ምዕጻው መጠወቒ ኣይሽፍንን።'],
   }},
   { v: '2.5.225', date: '2026-10-15', lines: {
@@ -1214,7 +1214,7 @@ export const CHANGELOG = [
     es: ['En un teléfono en vertical, la lista de recetas vuelve arriba para que elijas cualquiera.'],
     ar: ['حين تمسك الهاتف بالطول، تعود قائمة الوصفات للأعلى حتى تختار أي وصفة.'],
     'fa-AF': ['وقتی تلفن را عمودی بگیری، فهرست دستورها دوباره بالا می‌آید تا هر کدام را انتخاب کنی.'],
-    rw: ['Ku telefoni ihagaze, urutonde rw\'ibyo ukora rusubira hejuru, ubashe guhitamo icyo ushaka.'],
+    rw: ["Ku telefoni ihagaze, urutonde rw\'ibyo ukora rusubira hejuru, ubashe guhitamo icyo ushaka."],
     ti: ['ኣብ ትኹል ዝተታሕዘ ትሌፎን፡ ናይ ምስራሕ ዝርዝር ናብ ላዕሊ ይምለስ፡ ዝኾነ ክትመርጽ ትኽእል።'],
   }},
   { v: '2.5.222', date: '2026-10-15', lines: {
@@ -1224,7 +1224,7 @@ export const CHANGELOG = [
     es: ['En un teléfono de lado, la tarjeta de la meta baja y ya no tapa los árboles.'],
     ar: ['حين تمسك الهاتف بالعرض، تنزل بطاقة الهدف فلا تخفي الأشجار.'],
     'fa-AF': ['وقتی تلفن را افقی بگیری، کارت هدف پایین می‌آید و درخت‌ها را نمی‌پوشاند.'],
-    rw: ['Ku telefoni igoramye, ikarita y\'intego imanuka kandi ntikongera guhisha ibiti.'],
+    rw: ["Ku telefoni igoramye, ikarita y\'intego imanuka kandi ntikongera guhisha ibiti."],
     ti: ['ኣብ ጎድናዊ ዝተታሕዘ ትሌፎን፡ ናይ ዕላማ ካርድ ንታሕቲ ይውረድ፡ ዕንጨይቲ ድማ ኣይሽፍንን።'],
   }},
   { v: '2.5.221', date: '2026-10-15', lines: {
@@ -1254,7 +1254,7 @@ export const CHANGELOG = [
     es: ['El kit inicial ahora tiene 5 tablas, suficientes para hacer tu primer pico de madera.'],
     ar: ['عدة البداية فيها الآن 5 ألواح، تكفي لصنع أول معول خشب.'],
     'fa-AF': ['کیت شروع حالا ۵ تخته دارد، برای ساختن اولین کلنگ چوبی کافی است.'],
-    rw: ['Ibice byo gutangira ubu birimo imbaho 5, bihagije icyuma cya mbere cy\'ibiti.'],
+    rw: ["Ibice byo gutangira ubu birimo imbaho 5, bihagije icyuma cya mbere cy\'ibiti."],
     ti: ['ናይ ጅምር ኣቑሑት ሕጂ 5 ጣውላ ኣለዎም፡ ንናይ መጀመርታ ናይ ዕንጨይቲ መኮፍ ይበቅዑ።'],
   }},
   { v: '2.5.218', date: '2026-10-15', lines: {
@@ -1284,7 +1284,7 @@ export const CHANGELOG = [
     es: ['En un teléfono en vertical, la tarjeta del objeto no tapa Saltar y se va al momento.'],
     ar: ['على الهاتف عمودياً تبقى بطاقة الغرض بعيدة عن القفز وتختفي بعد لحظة.'],
     'fa-AF': ['در تلفن عمودی کارت چیز روی پرش نمی‌آید و بعد از لحظه‌ای می‌رود.'],
-    rw: ['Ku telefoni ihagaze, ikarita y\'ikintu ntijya ku Simbuka kandi irazimira vuba.'],
+    rw: ["Ku telefoni ihagaze, ikarita y\'ikintu ntijya ku Simbuka kandi irazimira vuba."],
     ti: ['ኣብ ትሌፎን ቀጥ ዝበለ፡ ካርድ ኣቕሓ ካብ ንጻ ይርሕቕ፡ ድሕሪ ቁሩብ ድማ ይጠፍእ።'],
   }},
   { v: '2.5.215', date: '2026-10-15', lines: {
@@ -1294,7 +1294,7 @@ export const CHANGELOG = [
     es: ['La cámara se queda fuera de las paredes cuando entras en una casa.'],
     ar: ['تبقى الكاميرا خارج الجدران حين تدخل إلى بيت.'],
     'fa-AF': ['دوربین بیرون دیوارها می‌ماند وقتی به خانه داخل می‌شوی.'],
-    rw: ['Kamera iguma hanze y\'inkuta iyo winjira mu nzu.'],
+    rw: ["Kamera iguma hanze y\'inkuta iyo winjira mu nzu."],
     ti: ['ካሜራ ካብ መንደቕ ወጻኢ ይጸንሕ ምስ ትኣቱ ናብ ገዛ።'],
   }},
   { v: '2.5.214', date: '2026-10-15', lines: {
@@ -1304,11 +1304,11 @@ export const CHANGELOG = [
     es: ['En un teléfono ancho, el mensaje del banco de trabajo ya no tapa la lista de arriba.'],
     ar: ['على هاتف عريض، رسالة طاولة العمل لم تعد تخفي القائمة التي فوقها.'],
     'fa-AF': ['در تلفن پهن، پیام میز کار دیگر فهرست بالا را نمی‌پوشاند.'],
-    rw: ['Ku telefoni igari, ubutumwa bw\'umubaji ntibuhisha urutonde ruri hejuru.'],
+    rw: ["Ku telefoni igari, ubutumwa bw\'umubaji ntibuhisha urutonde ruri hejuru."],
     ti: ['ኣብ ሰፊሕ ትሌፎን፡ መልእኽቲ ናይ መደብር ነቲ ላዕሊ ዘሎ ዝርዝር ኣይሽፍኖን።'],
   }},
   { v: '2.5.213', date: '2026-10-15', lines: {
-    en: ['The Oven\'s Fuel and Input labels stay inside their own slots.'],
+    en: ["The Oven\'s Fuel and Input labels stay inside their own slots."],
     uk: ['Підписи «Паливо» і «Вхід» у печі лишаються у своїх слотах.'],
     ru: ['Подписи «Топливо» и «Вход» у печи остаются в своих слотах.'],
     es: ['Las etiquetas Combustible y Entrada del horno se quedan en sus casillas.'],
@@ -1324,7 +1324,7 @@ export const CHANGELOG = [
     es: ['En un teléfono en vertical caben las 9 casillas y la Bolsa, y el nombre no tapa Saltar.'],
     ar: ['على الهاتف عمودياً تتسع الخانات التسع والحقيبة، واسم الغرض يبقى بعيداً عن القفز.'],
     'fa-AF': ['در تلفن عمودی هر ۹ خانه و بکس جا می‌شوند و نام چیز از پرش دور می‌ماند.'],
-    rw: ['Ku telefoni ihagaze, udufuka 9 n\'Agasaho biragaragara, izina ntirigira ku Simbuka.'],
+    rw: ["Ku telefoni ihagaze, udufuka 9 n\'Agasaho biragaragara, izina ntirigira ku Simbuka."],
     ti: ['ኣብ ትሌፎን ቀጥ ዝበለ፡ 9 ቦታታትን ቦርሳን ይኣትዉ፡ ስም ኣቕሓ ድማ ካብ ንጻ ይርሕቕ።'],
   }},
   { v: '2.5.211', date: '2026-10-15', lines: {
@@ -1508,13 +1508,13 @@ export const CHANGELOG = [
     ti: ['ምኽሪ ኣብ ጥቓኡ ምቕማጥ ክትጥቀመሉ ከለኻ ጥራይ ይረአ።'],
   }},
   { v: '2.5.193', date: '2026-10-13', lines: {
-    en: ['Bertopia opens in your class\'s language.'],
+    en: ["Bertopia opens in your class\'s language."],
     uk: ['Bertopia відкривається мовою твого класу.'],
     ru: ['Bertopia открывается на языке твоего класса.'],
     es: ['Bertopia se abre en el idioma de tu clase.'],
     ar: ['Bertopia يفتح بلغة صفك.'],
     'fa-AF': ['Bertopia به زبان صنف تو باز می‌شود.'],
-    rw: ['Bertopia ifunguka mu rurimi rw\'icyiciro cyawe.'],
+    rw: ["Bertopia ifunguka mu rurimi rw\'icyiciro cyawe."],
     ti: ['Bertopia ብቋንቋ ክፍልኻ ይኸፍት።'],
   }},
   { v: '2.5.192', date: '2026-10-13', lines: {
@@ -1534,7 +1534,7 @@ export const CHANGELOG = [
     es: ['Palabras más claras en las fichas de diseño, tinte y circuito.'],
     ar: ['كلمات أوضح في بطاقات التصميم والصبغة والدائرة.'],
     'fa-AF': ['واژه‌های روشن‌تر در کارت‌های طرح، رنگ و مدار.'],
-    rw: ['Amagambo asobanutse ku makarita y\'igishushanyo, ibura na circuit.'],
+    rw: ["Amagambo asobanutse ku makarita y\'igishushanyo, ibura na circuit."],
     ti: ['ንጹር ቃላት ኣብ ካርድታት ንድፊ፡ ሕብሪን ሰርኪትን።'],
   }},
   { v: '2.5.190', date: '2026-10-13', lines: {
@@ -1574,7 +1574,7 @@ export const CHANGELOG = [
     es: ['En el teléfono, el aviso «Haz clic para jugar» ya no tapa el centro de la pantalla.'],
     ar: ['على الهاتف، ملاحظة «انقر للعب» لم تعد تغطي وسط الشاشة.'],
     'fa-AF': ['در گوشی، یادداشت «برای بازی کلیک کن» دیگر وسط صفحه را نمی‌پوشاند.'],
-    rw: ['Ku telefoni, inyandiko «Kanda ukine» ntikongera gupfuka hagati y\'ecran.'],
+    rw: ["Ku telefoni, inyandiko «Kanda ukine» ntikongera gupfuka hagati y\'ecran."],
     ti: ['ኣብ ስልኪ፡ መልእኽቲ «ጠውቕ ንምጻወት» ማእኸል መስኮት ኣይሽፍን።'],
   }},
   { v: '2.5.186', date: '2026-10-13', lines: {
@@ -1584,7 +1584,7 @@ export const CHANGELOG = [
     es: ['Clic derecho en el banco o la caja lo abre, igual que F.'],
     ar: ['النقر باليمين على المنضدة أو الصندوق يفتحه، مثل F.'],
     'fa-AF': ['کلیک راست روی میز کار یا صندوق آن را باز می‌کند، مثل F.'],
-    rw: ['Kanda iburyo ku meza cyangwa agasanduku ubifungure, nk\'F.'],
+    rw: ["Kanda iburyo ku meza cyangwa agasanduku ubifungure, nk\'F."],
     ti: ['የማን ጠውቃ ኣብ ሰደቓ ወይ ሳንዱቅ ይኸፍቶ፡ ከም F.'],
   }},
   { v: '2.5.185', date: '2026-10-13', lines: {
@@ -1644,7 +1644,7 @@ export const CHANGELOG = [
     es: ['Una ficha sobre la barra sienta, duerme o abre la silla, cama, puerta o máquina más cercana. Espacio te levanta. Dormir salta a la mañana solo de noche.'],
     ar: ['حبة فوق الشريط تُجلس أو تُنوّم أو تفتح أقرب كرسي أو سرير أو باب أو آلة. المسافة تُوقفك. النوم يقفز إلى الصباح ليلاً فقط.'],
     'fa-AF': ['یک دکمه بالای نوار می‌نشاند، می‌خواباند یا نزدیک‌ترین چوکی، بستر، در یا ماشین را باز می‌کند. فاصله بلندت می‌کند. خواب فقط شب به صبح می‌پرد.'],
-    rw: ['Akamenyetso hejuru y\'umurongo gakwicaza, gakuryamika, cyangwa gafungura intebe, uburiri, urugi cyangwa imashini hafi. Umwanya urahaguruka. Kuryama kirajya mu gitondo gusa nijoro.'],
+    rw: ["Akamenyetso hejuru y\'umurongo gakwicaza, gakuryamika, cyangwa gafungura intebe, uburiri, urugi cyangwa imashini hafi. Umwanya urahaguruka. Kuryama kirajya mu gitondo gusa nijoro."],
     ti: ['ከመስመር ላዕሊ ዘሎ መጠወቒ ይቐምጥ፡ ይድቅስ፡ ወይ ዝቐረበ መቐመጢ፡ ዓራት፡ ማዕጾ ወይ ማሽን ይኸፍት። ምንጣፍ የትንስእ። ድቃስ ናብ ጥዋሕ ጥራሕ ብለይቲ ይዘልል።'],
   }},
   { v: '2.5.179', date: '2026-10-12', lines: {
@@ -1674,7 +1674,7 @@ export const CHANGELOG = [
     es: ['Los menús empiezan con un dibujo, la marca Guardado se ve un momento, la bolsa no tiene dibujos vacíos, y una zona protegida lo dice una vez.'],
     ar: ['القوائم تبدأ بصورة، وعلامة تم الحفظ تظهر لحظة، والحقيبة بلا صور فارغة، والمنطقة المحمية تقول ذلك مرة.'],
     'fa-AF': ['فهرست‌ها با یک تصویر شروع می‌شوند، تیک ذخیره یک لحظه دیده می‌شود، بکس عکس خالی ندارد، و جای محافظت‌شده یک بار می‌گوید.'],
-    rw: ['Ibikubiyemo bitangira n\'ishusho, akamenyetso ko byabitswe kagaragara akanya, agasaho ntikagira ishusho ituzuye, kandi ahantu harinzwe hirabivuga rimwe.'],
+    rw: ["Ibikubiyemo bitangira n\'ishusho, akamenyetso ko byabitswe kagaragara akanya, agasaho ntikagira ishusho ituzuye, kandi ahantu harinzwe hirabivuga rimwe."],
     ti: ['ዝርዝራት ብስእሊ ይጅምሩ፡ ምልክት ተዓቂቡ ንእንትን ንእንትን ይረአ፡ ቦርሳ ባዶ ስእሊ የብላን፡ ዝተሓለወ ከባቢ ድማ ሓንሳብ ይብል።'],
   }},
   { v: '2.5.176', date: '2026-10-12', lines: {
@@ -1734,7 +1734,7 @@ export const CHANGELOG = [
     es: ['Una pila, una línea de nanotubo, un interruptor y un pulsador encienden una lámpara en un lazo cerrado. La lente muestra dónde se detiene la corriente.'],
     ar: ['خلية وخط أنبوب نانوي ومفتاح وزر ضغط تضيء مصباحاً في حلقة مغلقة. عدسة الدائرة تُظهر أين يتوقف التيار عند القطع.'],
     'fa-AF': ['یک پیل، خط نانولوله، کلید و دکمه چراغ را در حلقهٔ بسته روشن می‌کنند. عدسی مدار نشان می‌دهد جریان کجا قطع می‌شود.'],
-    rw: ['Bateri, umurongo wa nanotube, ikinyuranyo na buto byaca itara mu ruziga rwuzuye. Ishusho y\'uruziga yerekana aho umuriro uhagarara.'],
+    rw: ["Bateri, umurongo wa nanotube, ikinyuranyo na buto byaca itara mu ruziga rwuzuye. Ishusho y\'uruziga yerekana aho umuriro uhagarara."],
     ti: ['ባትሪ፡ መስመር ናኖቱብ፡ መቐለሊን መጠወቒን መብራህቲ ብዝተዓጽወ ዓንኬል የብርሁ። መነጽር ሰርኪት ኤሌክትሪክ ኣበይ ከም ዝቁረጽ የርኢ።'],
   }},
   { v: '2.5.170', date: '2026-10-11', lines: {
@@ -1824,7 +1824,7 @@ export const CHANGELOG = [
     es: ['El abedul crece al borde del bosque y el pino en los cerros altos. Un tronco da cuatro tablas propias, y cualquier tabla vale en las recetas viejas. El suelo guardado sigue igual.'],
     ar: ['البتولا ينمو على حافة الغابة والصنوبر على التلال العالية. جذع واحد يعطي أربعة ألواح من نوعه، وأي ألواح تصلح للوصفات القديمة. الأرض المحفوظة تبقى كما هي.'],
     'fa-AF': ['غان در کنارهٔ جنگل و کاج روی تپه‌های بلند می‌روید. یک کُنده چهار تختهٔ خودش را می‌دهد و هر تخته در دستورهای کهنه کار می‌کند. زمین ذخیره‌شده همان می‌ماند.'],
-    rw: ['Birch ikura ku mupaka w\'ishyamba, pine ku misozi miremire. Igiti kimwe gitanga imbaho enye zacyo, kandi imbaho zose zikora mu byo wabonaga. Ubutaka wabitse buracyaho.'],
+    rw: ["Birch ikura ku mupaka w\'ishyamba, pine ku misozi miremire. Igiti kimwe gitanga imbaho enye zacyo, kandi imbaho zose zikora mu byo wabonaga. Ubutaka wabitse buracyaho."],
     ti: ['በርች ኣብ ወሰን ዱር፡ ጽድ ድማ ኣብ ልዑል ኮረባታት ትበቕል። ሓንቲ ጐንዲ ኣርባዕተ ናታ ጣውላ ትህብ፡ ዝኾነ ጣውላ ድማ ኣብ ናይ ቀደም ቅብሊት ይሰርሕ። ዝተዓቀበ መሬት ከምኡ ይጸንሕ።'],
   }},
   { v: '2.5.161', date: '2026-10-10', lines: {
@@ -1844,12 +1844,12 @@ export const CHANGELOG = [
     es: ['Abrir un mundo viejo no borra los otros. Las bayas, las lámparas, los serruchos y los picos se ven bien.'],
     ar: ['فتح عالم قديم لا يمسح العوالم الأخرى. التوت والمصابيح والمناشير والمعاول كبيرة بما يكفي لترى.'],
     'fa-AF': ['باز کردن جهان کهنه جهان‌های دیگر را پاک نمی‌کند. توت، چراغ، اره و کلنگ آن‌قدر بزرگ اند که دیده شوند.'],
-    rw: ['Gufungura isi ya kera ntibisiba izindi. Imbuto, amatara, urubanza n\'icyuma biraboneka neza.'],
+    rw: ["Gufungura isi ya kera ntibisiba izindi. Imbuto, amatara, urubanza n\'icyuma biraboneka neza."],
     ti: ['ምኽፋት ናይ ቀደም ዓለም ካልኦት ኣይድምስስን። እንጻጽጽ፡ መብራህቲ፡ መጋዝን መኮፍን ክትርኢ ዝኣኽል ዓቢ እዩ።'],
   }},
   { v: '2.5.159', date: '2026-10-10', lines: {
     en: ['New hills have caves you can walk into, rock shelves, and big stones. Rivers and lakes are deeper. The ground you already saved stays the same.'],
-    uk: ['Нові пагорби мають печери, куди можна зайти, кам\'яні полиці й великі камені. Річки й озера глибші. Земля, яку ти вже зберіг, лишається такою самою.'],
+    uk: ["Нові пагорби мають печери, куди можна зайти, кам\'яні полиці й великі камені. Річки й озера глибші. Земля, яку ти вже зберіг, лишається такою самою."],
     ru: ['Новые холмы имеют пещеры, куда можно зайти, каменные полки и большие камни. Реки и озёра глубже. Земля, которую ты уже сохранил, остаётся той же.'],
     es: ['Los cerros nuevos tienen cuevas donde puedes entrar, repisas de roca y piedras grandes. Los ríos y los lagos son más hondos. El suelo que ya guardaste sigue igual.'],
     ar: ['التلال الجديدة فيها كهوف تدخلها، ورفوف صخرية، وحجارة كبيرة. الأنهار والبحيرات أعمق. الأرض التي حفظتها تبقى كما هي.'],
@@ -1874,7 +1874,7 @@ export const CHANGELOG = [
     es: ['Cada mundo viejo guarda su archivo. Los dibujos de cosas son formas, no cuadrados llenos.'],
     ar: ['كل عالم قديم يحتفظ بنسخته. صور الأشياء أشكال وليست مربعات ممتلئة.'],
     'fa-AF': ['هر جهان کهنه نسخه خود را نگه می‌دارد. تصویر چیزها شکل است، نه مربع پر.'],
-    rw: ['Isi ya kera ibika kopi yayo. Amashusho y\'ibintu ni imiterere, si kare yuzuye.'],
+    rw: ["Isi ya kera ibika kopi yayo. Amashusho y\'ibintu ni imiterere, si kare yuzuye."],
     ti: ['ናይ ቀደም ዓለም ናይ ገዛእ ቅዳሕ ይሕልው። ስእሊ ነገራት ቅርጺ እዩ፡ ዘይኮነ ምሉእ ትርብዒት።'],
   }},
   { v: '2.5.156', date: '2026-10-10', lines: {
@@ -1884,7 +1884,7 @@ export const CHANGELOG = [
     es: ['La tierra nueva tiene ríos y lagos donde puedes nadar. El suelo que ya guardaste sigue igual.'],
     ar: ['الأرض الجديدة فيها أنهار وبحيرات تستطيع أن تسبح فيها. الأرض التي حفظتها تبقى كما هي.'],
     'fa-AF': ['زمین تازه رود و دریاچه دارد که می‌توانی در آن شنا کنی. زمینی که ذخیره کردی همان می‌ماند.'],
-    rw: ['Isi nshya ifite inzuzi n\'ibiyaga ushobora koga. Ubutaka wabitse buracyaho kimwe.'],
+    rw: ["Isi nshya ifite inzuzi n\'ibiyaga ushobora koga. Ubutaka wabitse buracyaho kimwe."],
     ti: ['ሓድሽ መሬት ወሓዚታትን ቀላያትን ኣለዎ ክትሓም እትኽእል። እቲ መሬት ካብ ቅድም ዝዓቀብካዮ ከምኡ ይጸንሕ።'],
   }},
   { v: '2.5.155', date: '2026-10-10', lines: {
@@ -1894,7 +1894,7 @@ export const CHANGELOG = [
     es: ['La barra y la Bolsa muestran dibujos de verdad. Un profe puede guardar copias en este aparato.'],
     ar: ['الشريط والحقيبة يعرضان صوراً حقيقية. المعلم يستطيع حفظ نسخ على هذا الجهاز.'],
     'fa-AF': ['نوار و بکس تصویر واقعی نشان می‌دهند. معلم می‌تواند روی همین دستگاه نسخه نگه دارد.'],
-    rw: ['Umurongo n\'agasaho bigaragaza amashusho nyayo. Umwarimu ashobora kubika kopi kuri iki gikoresho.'],
+    rw: ["Umurongo n\'agasaho bigaragaza amashusho nyayo. Umwarimu ashobora kubika kopi kuri iki gikoresho."],
     ti: ['መስመርን ቦርሳን ሓቀኛ ስእሊ የርእዩ። መምህር ኣብዚ መሳርሒ ቅዳሕ ይሕልው።'],
   }},
   { v: '2.5.154', date: '2026-10-10', lines: {
@@ -1914,7 +1914,7 @@ export const CHANGELOG = [
     es: ['Las lámparas, las alfombras y los cultivos ahora se quedan después de guardar y recargar.'],
     ar: ['المصابيح والسجاد ومحاصيل المزرعة تبقى الآن بعد الحفظ وإعادة التحميل.'],
     'fa-AF': ['چراغ‌ها، فرش‌ها و محصولات مزرعه حالا پس از ذخیره و بار دوباره می‌مانند.'],
-    rw: ['Amatara, imisambi n\'ibihingwa biguma nyuma yo kubika no kongera gutangiza.'],
+    rw: ["Amatara, imisambi n\'ibihingwa biguma nyuma yo kubika no kongera gutangiza."],
     ti: ['መብራህቲ፡ መናጽፍን ኣሕምልትን ሕጂ ድሕሪ ምዕቃብን ዳግም ምጽዓንን ይጸንሑ።'],
   }},
   { v: '2.5.152', date: '2026-10-10', lines: {
@@ -1944,7 +1944,7 @@ export const CHANGELOG = [
     es: ['Reglas del mundo es una ficha del menú que puedes tocar. Entendido se lee. La noche muestra una luna.'],
     ar: ['قواعد العالم بلاطة في القائمة يمكن لمسها. زر فهمت يبقى واضحاً. الليل يظهر قمراً.'],
     'fa-AF': ['قانون دنیا یک خانه در فهرست است که می‌توانی بزنی. فهمیدم خوانا می‌ماند. شب ماه نشان می‌دهد.'],
-    rw: ['Amategeko y\'isi ni akazu ka menyu ushobora gukanda. Ndabyumvise irasomwa. Ijoro ryerekana ukwezi.'],
+    rw: ["Amategeko y\'isi ni akazu ka menyu ushobora gukanda. Ndabyumvise irasomwa. Ijoro ryerekana ukwezi."],
     ti: ['ሕግታት ዓለም ኣብ ዝርዝር እትጥዕቶ እያ። ተረዲኡ ይንበብ። ለይቲ ወርሒ የርኢ።'],
   }},
   { v: '2.5.149', date: '2026-10-10', lines: {
@@ -1988,7 +1988,7 @@ export const CHANGELOG = [
     ti: ['ናይ ኣይኮን ፈተና ገጽ ካብ ዝተኣካከበ ስክሪፕት ይጽዕን። መንጸፍ ክትድለይን ክትልዓልን ትኽእል።'],
   }},
   { v: '2.5.145', date: '2026-10-10', lines: {
-    en: ['A card shows this world\'s rules when you join, and Menu has World Rules.'],
+    en: ["A card shows this world\'s rules when you join, and Menu has World Rules."],
     uk: ['Картка показує правила цього світу, коли ти заходиш, а в Меню є Правила світу.'],
     ru: ['Карточка показывает правила этого мира при входе, а в Меню есть Правила мира.'],
     es: ['Una tarjeta muestra las reglas de este mundo al entrar, y el Menú tiene Reglas del mundo.'],
@@ -2065,7 +2065,7 @@ export const CHANGELOG = [
     es: ['La lámpara de pie, la de pared y la alfombra se hacen, se colocan y se encienden en la carpintería.'],
     ar: ['المصباح الأرضي والجداري والسجادة تُصنع وتُوضع وتُضاء في ورشة النجارة.'],
     'fa-AF': ['چراغ زمینی، چراغ دیواری و فرش در نجاری ساخته، گذاشته و روشن می‌شوند.'],
-    rw: ['Itara ryo hasi, itara ryo ku rukuta n\'umusambi birakorwa, bishyirwa kandi bikanurwa mu mucuruzi.'],
+    rw: ["Itara ryo hasi, itara ryo ku rukuta n\'umusambi birakorwa, bishyirwa kandi bikanurwa mu mucuruzi."],
     ti: ['ናይ መሬት መብራህቲ፡ ናይ ግድሚ መብራህቲን መንጸፍን ኣብ ናይ ዕንጨይቲ ዓውዲ ይስራሕ፡ ይቕመጥን ይበርህን።'],
   }},
 
@@ -2136,7 +2136,7 @@ export const CHANGELOG = [
     es: ['Un toque en la cama, el horno, la caja, el mostrador o el taller los abre. Agáchate para construir al lado, y una cama de 3 estrellas guarda su diseño.'],
     ar: ['لمسة على السرير أو الفرن أو الصندوق أو المنضدة أو الورشة تفتحها. انحنِ لتبني بجانبها، وسرير 3 نجوم يحفظ تصميمه.'],
     'fa-AF': ['زدن روی تخت، تنور، صندوق، پیشخوان یا کارگاه آن را باز می‌کند. خم شو تا کنارش بسازی، و تخت ۳ ستاره طرحش را نگه می‌دارد.'],
-    rw: ['Gukanda ikiriri, icyoto, agasanduku, counter cyangwa ikigo birafunguka. Icaramye ushyire iruhande, kandi ikiriri cy\'inyenyeri 3 kigumana isura.'],
+    rw: ["Gukanda ikiriri, icyoto, agasanduku, counter cyangwa ikigo birafunguka. Icaramye ushyire iruhande, kandi ikiriri cy\'inyenyeri 3 kigumana isura."],
     ti: ['ዓራት፡ እቶን፡ ሳንዱቕ፡ መደብን ዕድጊን ምጥዋቕ ይኸፍቶም። ብድንጋር ኣብ ጥቓኦም ሃንጽ፡ ዓራት 3 ኮኾብ ድማ ንድፊኡ ይሕልው።'],
   }},
   { v: '2.5.127', date: '2026-10-10', lines: {
@@ -2156,7 +2156,7 @@ export const CHANGELOG = [
     es: ['Los mundos viejos se quedan como se guardaron. Recargar ya no añade cuatro estaciones flotando sobre la cabaña.'],
     ar: ['العوالم القديمة تبقى كما حُفظت. إعادة التحميل لم تعد تضيف أربع محطات عائمة فوق الكوخ.'],
     'fa-AF': ['دنیاهای قدیمی همان‌طور که ذخیره شده‌اند می‌مانند. بار کردن دوباره دیگر چهار ایستگاه شناور بالای کلبه اضافه نمی‌کند.'],
-    rw: ['Isi za kera ziguma uko zabitswe. Kongera gutangiza ntikongeraho sitasiyo enye zirimo hejuru y\'inzu.'],
+    rw: ["Isi za kera ziguma uko zabitswe. Kongera gutangiza ntikongeraho sitasiyo enye zirimo hejuru y\'inzu."],
     ti: ['ናይ ቀደም ዓለማት ከም ዝተዓቀቡ ይቕጽላ። ዳግማይ ምጽዓን ድማ ኣብ ላዕሊ ጎጆ ኣርባዕተ ተንሳፈፍቲ ጣብያታት ኣይውስኽን።'],
   }},
   { v: '2.5.125', date: '2026-10-10', lines: {
@@ -2196,7 +2196,7 @@ export const CHANGELOG = [
     es: ['Los bordes de los bloques se quedan nítidos. Ya no hay líneas pálidas entre ellos.'],
     ar: ['حواف المكعبات تبقى واضحة. الخطوط الباهتة بينها ذهبت.'],
     'fa-AF': ['لبه‌های بلاک تیز می‌ماند. خط‌های کمرنگ میان آن‌ها رفت.'],
-    rw: ['Inkombe z\'ibibumbe ziguma zigoranye. Imirongo yera hagati yazo yagiye.'],
+    rw: ["Inkombe z\'ibibumbe ziguma zigoranye. Imirongo yera hagati yazo yagiye."],
     ti: ['ጫፋት ናይ ብሎክ ግልጽ ይቕጽል። ገረብ መስመራት ኣብ መንጎኦም ከይዶም።'],
   }},
   { v: '2.5.121', date: '2026-10-10', lines: {
@@ -2216,7 +2216,7 @@ export const CHANGELOG = [
     es: ['La cama se hace en el banco de madera. Diséñala o solo constrúyela, luego descansa para llenar tu energía.'],
     ar: ['السرير يُصنع على منضدة الخشب. صمّمه أو ابنِه فقط، ثم استرح لملء الطاقة.'],
     'fa-AF': ['تخت در میز نجاری ساخته می‌شود. آن را طرح کن یا فقط بساز، بعد استراحت کن تا انرژی پر شود.'],
-    rw: ['Ikiriri gikorerwa ku ntebe y\'ububaji. Kigire cyangwa ukubake gusa, hanyuma wuhuke ujye kuzuza imbaraga.'],
+    rw: ["Ikiriri gikorerwa ku ntebe y\'ububaji. Kigire cyangwa ukubake gusa, hanyuma wuhuke ujye kuzuza imbaraga."],
     ti: ['ዓራት ኣብ መደብ ዕንጨይቲ ይስራሕ። ንድፊ ግበሮ ወይ ጥራይ ሃንጾ፡ ድሕሪኡ ዕረፍ ጉልበት ንምምላእ።'],
   }},
   { v: '2.5.119', date: '2026-10-10', lines: {
@@ -2226,7 +2226,7 @@ export const CHANGELOG = [
     es: ['Un maestro pone el inicio y elige qué tan ancho es el suelo protegido.'],
     ar: ['المعلم يضع نقطة البداية ويختار عرض الأرض المحمية.'],
     'fa-AF': ['معلم جای شروع را می‌گذارد و پهنای زمین محافظت‌شده را انتخاب می‌کند.'],
-    rw: ['Umwarimu ashyira aho utangirira kandi ahitamo ubugari bw\'ubutaka burinzwe.'],
+    rw: ["Umwarimu ashyira aho utangirira kandi ahitamo ubugari bw\'ubutaka burinzwe."],
     ti: ['መምህር መበገሲ የቐምጥ፡ ስፍሓት ናይ ዝተሓለወ መሬት ድማ ይመርጽ።'],
   }},
   { v: '2.5.118', date: '2026-10-10', lines: {
@@ -2249,7 +2249,7 @@ export const CHANGELOG = [
     es: ['Las cajas, los hornos y todo lo que hay dentro siempre se guardan, y la cosecha replanta con cualquier semilla que lleves.'],
     ar: ['الصناديق والأفران وكل ما فيها تُحفظ دائماً، والحصاد يعيد الزرع بأي بذرة تحملها.'],
     'fa-AF': ['صندوق‌ها، تنورها و هرچه در آن‌هاست همیشه ذخیره می‌شود، و برداشت با هر دانه‌ای که داری دوباره می‌کارد.'],
-    rw: ['Agasanduku, ibyoto n\'ibiri muri byo bibikwa buri gihe, kandi isarura isubiza imbuto iyo ari yo wose ufite.'],
+    rw: ["Agasanduku, ibyoto n\'ibiri muri byo bibikwa buri gihe, kandi isarura isubiza imbuto iyo ari yo wose ufite."],
     ti: ['ሳንዱቕ፡ እቶንን ኩሉ ዘሎ ኣብኡን ኩሉ ግዜ ይቕመጥ፡ ምእካብ ድማ ብዝኾነ ዘለካ ዘርኢ ዳግማይ ይዝርእ።'],
   }},
   { v: '2.5.112', date: '2026-10-10', lines: {
@@ -2269,7 +2269,7 @@ export const CHANGELOG = [
     es: ['El clic izquierdo también cosecha lo maduro, y ya no te quedas atrapado en hoyos cerca del inicio.'],
     ar: ['النقر الأيسر يحصد الزرع الناضج أيضاً، ولن تعلق في حفرة قرب البداية.'],
     'fa-AF': ['کلیک چپ کشت رسیده را هم برمی‌دارد، و دیگر نزدیک آغاز در چاله گیر نمی‌کنی.'],
-    rw: ['Ikikubitswe ibumoso naso gisarura ibyibye, kandi ntukibura mu mwobo hafi y\'intangiriro.'],
+    rw: ["Ikikubitswe ibumoso naso gisarura ibyibye, kandi ntukibura mu mwobo hafi y\'intangiriro."],
     ti: ['ጸጋማይ ጠውቕ ዝበስለ እኽሊ እውን ይእክብ፡ ኣብ መጀመርታ ድማ ኣብ ጉድጓድ ኣይትሕጸን።'],
   }},
   { v: '2.5.110', date: '2026-10-09', lines: {
@@ -2289,7 +2289,7 @@ export const CHANGELOG = [
     es: ['Planta un arbusto de bayas en la hierba. Recoge las bayas y vuelve a crecer.'],
     ar: ['ازرع شجيرة توت على العشب. التقط التوت فتنمو من جديد.'],
     'fa-AF': ['بوته توت را روی چمن بکار. توت را بردار و دوباره می‌روید.'],
-    rw: ['Tera igiti cy\'imbuto ku byatsi. Sarura imbuto kandi ikura nanone.'],
+    rw: ["Tera igiti cy\'imbuto ku byatsi. Sarura imbuto kandi ikura nanone."],
     ti: ['ንፍረ ቁጽሪ ኣብ ሳዕሪ ተኽል። ፍረ ሓዝ፡ ዳግማይ ይበቕል።'],
   }},
   { v: '2.5.108', date: '2026-10-09', lines: {
@@ -2329,7 +2329,7 @@ export const CHANGELOG = [
     es: ['Los nombres de las recetas caben, los botones táctiles son más fáciles de tocar, y el botón Bolsa funciona con el ratón.'],
     ar: ['أسماء الوصفات تظهر كاملة، وأزرار اللمس أسهل، وزر الحقيبة يعمل بالفأرة.'],
     'fa-AF': ['نام دستورها جا می‌شود، دکمه‌های لمسی آسان‌تر زده می‌شوند، و دکمه بکس با موس کار می‌کند.'],
-    rw: ['Amazina ya recepti agenda, buto zo gukoraho zoroheje, kandi buto ya agasaho ikora n\'imbeba.'],
+    rw: ["Amazina ya recepti agenda, buto zo gukoraho zoroheje, kandi buto ya agasaho ikora n\'imbeba."],
     ti: ['ስማት መድሃኒት ይኣትዉ፡ መጠወቒ ምትንኻፍ ይቐልል፡ መጠወቒ ቦርሳ ድማ ብማውስ ይሰርሕ።'],
   }},
   { v: '2.5.103', date: '2026-10-09', lines: {
@@ -2339,7 +2339,7 @@ export const CHANGELOG = [
     es: ['El horno y el banco usan las mismas casillas que la caja: clic, Mayús-clic o arrastrar.'],
     ar: ['الفرن ومنضدة العمل يستخدمان الخانات نفسها كالصندوق: النقر أو نقر Shift أو السحب.'],
     'fa-AF': ['تنور و میز کار از همان خانه‌های صندوق استفاده می‌کنند: کلیک، Shift-کلیک یا کشیدن.'],
-    rw: ['Icyoto n\'ameza bikoresha uduce amasanduku akoresha: kanda, Shift-kanda, cyangwa kurura.'],
+    rw: ["Icyoto n\'ameza bikoresha uduce amasanduku akoresha: kanda, Shift-kanda, cyangwa kurura."],
     ti: ['እቶንን ሰደቓን ከም ሳንዱቕ ዝኣመሰሉ ቦታታት ይጥቀሙ፡ ጠውቕ፡ Shift-ጠውቕ ወይ ጎተት።'],
   }},
   { v: '2.5.102', date: '2026-10-09', lines: {
@@ -2349,7 +2349,7 @@ export const CHANGELOG = [
     es: ['Cosecha el trigo maduro con un clic. Se vuelve a plantar si tienes una semilla, y tu trigo se vuelve harina y pan.'],
     ar: ['احصد القمح الناضج بنقرة. يُزرع من جديد إن كان لديك بذرة، وقمحك يصير دقيقاً وخبزاً.'],
     'fa-AF': ['گندم رسیده را با یک کلیک بردار. اگر دانه داشته باشی دوباره کاشته می‌شود، و گندمت آرد و نان می‌شود.'],
-    rw: ['Sarura ingano yuzuye ukande. Isimbuka niba ufite imbuto, kandi ingano yawe iba ifu n\'umugati.'],
+    rw: ["Sarura ingano yuzuye ukande. Isimbuka niba ufite imbuto, kandi ingano yawe iba ifu n\'umugati."],
     ti: ['ዝበስለ ስርናይ ብጠውቕ ሓጽቦ። ዘርኢ እንተሃልዩ ዳግማይ ይዝራእ፡ ስርናይካ ድማ ዱቄትን ባኒን ይኸውን።'],
   }},
   { v: '2.5.101', date: '2026-10-09', lines: {
@@ -2359,7 +2359,7 @@ export const CHANGELOG = [
     es: ['Las casillas, los botones y el texto tienen el mismo tamaño en todas partes y caben en cada pantalla.'],
     ar: ['الخانات والأزرار والنص بالحجم نفسه في كل مكان وتناسب كل شاشة.'],
     'fa-AF': ['خانه‌ها، دکمه‌ها و متن همه‌جا یک اندازه اند و در هر صفحه جا می‌شوند.'],
-    rw: ['Uduce, buto, n\'amagambo bifite ubunini bumwe hose kandi binjira kuri buri ecran.'],
+    rw: ["Uduce, buto, n\'amagambo bifite ubunini bumwe hose kandi binjira kuri buri ecran."],
     ti: ['ቦታታት፡ መጠወቒታትን ጽሑፍን ኣብ ኩሉ ቦታ ሓደ መጠን እዮም፡ ኣብ ነፍሲ ወከፍ መስኮት ድማ ይኣትዉ።'],
   }},
   { v: '2.5.100', date: '2026-10-09', lines: {
@@ -2409,7 +2409,7 @@ export const CHANGELOG = [
     es: ['El horno funciona como la caja, el primer clic siempre cuenta, y puedes encontrar la receta del cupcake.'],
     ar: ['الفرن يعمل مثل الصندوق، والنقرة الأولى تُحسب دائماً، ويمكنك أن تجد وصفة الكب كيك.'],
     'fa-AF': ['تنور مثل صندوق کار می‌کند، اولین کلیک همیشه حساب می‌شود، و دستور کاپ‌کیک را پیدا می‌کنی.'],
-    rw: ['Icyoto gikora nk\'agasanduku, ukanda kwa mbere kubarwa buri gihe, kandi ushobora kubona recepti ya kek.'],
+    rw: ["Icyoto gikora nk\'agasanduku, ukanda kwa mbere kubarwa buri gihe, kandi ushobora kubona recepti ya kek."],
     ti: ['እቶን ከም ሳንዱቅ ይሰርሕ፡ ቀዳማይ ጠውቃይ ኩሉ ግዜ ይቑጸር፡ መድሃኒት ኬክ ድማ ትረኽቦ።'],
   }},
   { v: '2.5.95', date: '2026-10-09', lines: {
@@ -2419,7 +2419,7 @@ export const CHANGELOG = [
     es: ['El fuego del horno es grande y vivo, y lo nuevo que fabricas va donde puedes encontrarlo.'],
     ar: ['نار الفرن كبيرة وحية، والأشياء الجديدة التي تصنعها تذهب حيث تجدها.'],
     'fa-AF': ['آتش تنور بزرگ و زنده است، و چیزهای تازه‌ای که می‌سازی جایی می‌روند که پیدایشان کنی.'],
-    rw: ['Umuriro w\'icyoto ni munini kandi urimo ubuzima, kandi ibishya ukora bijya aho ushobora kubibona.'],
+    rw: ["Umuriro w\'icyoto ni munini kandi urimo ubuzima, kandi ibishya ukora bijya aho ushobora kubibona."],
     ti: ['ሓዊ እቶን ዓቢን ህያውን እዩ፡ ሓደሽቲ እተሰርሖም ድማ ናብ እተረኽቦም ቦታ ይኸዱ።'],
   }},
   { v: '2.5.93', date: '2026-10-09', lines: {
@@ -2439,7 +2439,7 @@ export const CHANGELOG = [
     es: ['Haz clic en un objeto y luego en una casilla para meterlo en la caja, y el horno te deja elegir qué quemar y hornear.'],
     ar: ['انقر عنصراً ثم خانة لتنقله إلى الصندوق، والفرن يدعك تختار ما تحرق وما تخبز.'],
     'fa-AF': ['یک چیز را بزن، بعد یک خانه، تا به صندوق برود، و تنور می‌گذارد انتخاب کنی چه بسوزد و چه بپزد.'],
-    rw: ['Kanda ikintu, hanyuma akazu, ukigire mu gasanduku, kandi icyoto kiguha guhitamo icyo ushya n\'icyo uteka.'],
+    rw: ["Kanda ikintu, hanyuma akazu, ukigire mu gasanduku, kandi icyoto kiguha guhitamo icyo ushya n\'icyo uteka."],
     ti: ['ነገር ጠውቕ ድሕሪኡ ቦታ፡ ናብ ሳንዱቅ ንምውሳድ፡ እቶን ድማ እንታይ ከተንድድን ከተብስልን ትመርጽ ይገብረካ።'],
   }},
   { v: '2.5.91', date: '2026-10-09', lines: {
@@ -2469,7 +2469,7 @@ export const CHANGELOG = [
     es: ['Tu cuenta de práctica es la misma en todas partes, y xMax funciona al primer clic.'],
     ar: ['عدد التدريب واحد في كل مكان، وxMax يعمل من أول نقرة.'],
     'fa-AF': ['شمار تمرینت همه‌جا یکی است، و xMax با کلیک اول کار می‌کند.'],
-    rw: ['Umubare w\'imyitozo ni umwe ahantu hose, kandi xMax ikora ku gukanda kwa mbere.'],
+    rw: ["Umubare w\'imyitozo ni umwe ahantu hose, kandi xMax ikora ku gukanda kwa mbere."],
     ti: ['ናይ ምልምማድ ቑጽሪ ኩሉ ቦታ ሓደ እዩ፡ xMax ድማ ካብ ቀዳማይ ጠውቂ ይሰርሕ።'],
   }},
   { v: '2.5.87', date: '2026-10-09', lines: {
@@ -2489,7 +2489,7 @@ export const CHANGELOG = [
     es: ['El aviso de hambre dice qué comida buscar, y vuelve cuando tienes hambre otra vez.'],
     ar: ['تنبيه الجوع يقول أي طعام تجد، ويعود عندما تجوع مرة أخرى.'],
     'fa-AF': ['راهنمای گرسنگی می‌گوید چه غذایی پیدا کنی، و وقتی دوباره گرسنه شوی برمی‌گردد.'],
-    rw: ['Inama y\'inzara ivuga ibyo kurya ushakisha, kandi igaruka iyo ushonje nanone.'],
+    rw: ["Inama y\'inzara ivuga ibyo kurya ushakisha, kandi igaruka iyo ushonje nanone."],
     ti: ['ናይ ጥምየት ሓበሬታ እቲ ትርከቦ መግቢ ይነግረካ፡ እንደገና ምስ ጥምኻ ድማ ይምለስ።'],
   }},
   { v: '2.5.85', date: '2026-10-09', lines: {
@@ -2509,7 +2509,7 @@ export const CHANGELOG = [
     es: ['El trigo parece trigo, las puertas cerradas se ven cerradas, y las tarjetas de ayuda se explican solas.'],
     ar: ['القمح يبدو قمحاً، والأبواب المغلقة تبدو مغلقة، وبطاقات المساعدة تشرح نفسها.'],
     'fa-AF': ['گندم مثل گندم دیده می‌شود، درهای بسته بسته دیده می‌شوند، و کارت‌های راهنما خود را توضیح می‌دهند.'],
-    rw: ['Ingano isa ingano, urugi rufunze rusa rufunze, kandi amakarita y\'ubufasha yisobanura.'],
+    rw: ["Ingano isa ingano, urugi rufunze rusa rufunze, kandi amakarita y\'ubufasha yisobanura."],
     ti: ['ስርናይ ከም ስርናይ ይረአ፡ ዝተዓጽወ ማዕጾ ድማ ከም ዝተዓጽወ ይረአ፡ ናይ ሓገዝ ካርድታት ድማ ነብሰን ይገልጻ።'],
   }},
   { v: '2.5.83', date: '2026-10-09', lines: {
@@ -2519,7 +2519,7 @@ export const CHANGELOG = [
     es: ['Los hornos y las cajas te miran al ponerlos, hay madera para un techo, y el juego te dice cuándo comer.'],
     ar: ['الأفران والصناديق تواجهك عند وضعها، وهناك خشب لسقف، واللعبة تخبرك متى تأكل.'],
     'fa-AF': ['تنورها و صندوق‌ها هنگام گذاشتن رو به تو هستند، چوب برای سقف هست، و بازی می‌گوید کی بخوری.'],
-    rw: ['Ibyoto n\'agasanduku biraba wowe ubishyira, hari ibiti byo gupfuka, kandi umukino ukubwira igihe urya.'],
+    rw: ["Ibyoto n\'agasanduku biraba wowe ubishyira, hari ibiti byo gupfuka, kandi umukino ukubwira igihe urya."],
     ti: ['እቶንን ሳንዱቅን ምስ ትቐምጥ የዓልኻ ይርእዩ፡ ንዓራት ዕንጨይቲ ኣሎ፡ ጸወታ ድማ መዓስ ከም ትብላዕ ይነግረካ።'],
   }},
   { v: '2.5.82', date: '2026-10-09', lines: {
@@ -2549,7 +2549,7 @@ export const CHANGELOG = [
     es: ['El horno parece un horno, cerrar un panel siempre te devuelve al juego, y puedes agacharte para poner junto a una máquina.'],
     ar: ['الفرن يبدو كفرن، وإغلاق اللوحة يعيدك دائماً إلى اللعب، ويمكنك الانحناء لتضع بجانب آلة.'],
     'fa-AF': ['تنور مثل تنور دیده می‌شود، بستن صفحه همیشه تو را به بازی برمی‌گرداند، و می‌توانی خم شوی تا کنار دستگاه بگذاری.'],
-    rw: ['Icyoto kisa icyoto, gufunga ipaji bigusubiza mu mukino iteka, kandi ushobora kwicaramye ushyire iruhande y\'imashini.'],
+    rw: ["Icyoto kisa icyoto, gufunga ipaji bigusubiza mu mukino iteka, kandi ushobora kwicaramye ushyire iruhande y\'imashini."],
     ti: ['እቶን ከም እቶን ይረአ፡ ምዕጻው ፓነል ኩሉ ግዜ ናብ ጸወታ ይመልስ፡ ምድንጋር ድማ ኣብ ጥቓ መሳርሒ ንምቕማጥ ትኽእል።'],
   }},
   { v: '2.5.78', date: '2026-10-09', lines: {
@@ -2609,7 +2609,7 @@ export const CHANGELOG = [
     es: ['Demasiado lejos solo aparece si sostienes un bloque, las opciones de la puerta se apagan, y el banco abre Fabricar.'],
     ar: ['بعيد جداً يظهر فقط وأنت تمسك مكعباً، وخيارات الباب تنطفئ، والمنضدة تفتح الصنع.'],
     'fa-AF': ['خیلی دور است فقط وقتی بلاک در دست است، گزینه‌های در خاموش می‌شوند، و میز کار ساخت را باز می‌کند.'],
-    rw: ['Kiri kure cyane kiboneka gusa ufite block, amahitamo y\'urugi ashobora kuzimwa, kandi ameza afungura gukora.'],
+    rw: ["Kiri kure cyane kiboneka gusa ufite block, amahitamo y\'urugi ashobora kuzimwa, kandi ameza afungura gukora."],
     ti: ['ኣዝዩ ርሑቕ እዩ ብሎክ ምስ ትሕዝ ጥራይ ይረአ፡ ኣማራጺ ማዕጾ ይጠፍእ፡ ሰደቓ ድማ ስራሕ ይኸፍት።'],
   }},
   { v: '2.5.72', date: '2026-10-08', lines: {
@@ -2619,7 +2619,7 @@ export const CHANGELOG = [
     es: ['El horno, el banco y la caja comparten un panel de máquina donde puedes pulsar o arrastrar, y fabricar se queda en pantalla.'],
     ar: ['الفرن والمنضدة والصندوق يتشاركون لوحة آلة يمكنك النقر أو السحب إليها، والتصنيع يبقى على الشاشة.'],
     'fa-AF': ['تنور، میز کار و صندوق یک صفحهٔ ماشین دارند که می‌توانی در آن بزنی یا بکشی، و ساخت روی صفحه می‌ماند.'],
-    rw: ['Ibyoto, ameza n\'agasanduku bifite ikarita imwe ya mashini ushobora gukanda cyangwa gukururira, kandi gukora biguma ku rubuga.'],
+    rw: ["Ibyoto, ameza n\'agasanduku bifite ikarita imwe ya mashini ushobora gukanda cyangwa gukururira, kandi gukora biguma ku rubuga."],
     ti: ['እቶን፡ ሰደቓን ሳንዱቅን ሓደ ፓነል ማሽን ኣለዎም ክትጎትእ ወይ ክትስሕብ ትኽእል፡ ምስራሕ ድማ ኣብ ስክሪን ይቕጽል።'],
   }},
   { v: '2.5.70', date: '2026-10-08', lines: {
@@ -2709,7 +2709,7 @@ export const CHANGELOG = [
     es: ['Las opciones de la puerta se leen bien, y una palanca encendida ahora abre su puerta.'],
     ar: ['خيارات الباب صارت واضحة، والرافعة المفتوحة الآن تفتح الباب.'],
     'fa-AF': ['گزینه‌های در خوانا شدند، و اهرم روشن حالا در را باز می‌کند.'],
-    rw: ['Amahitamo y\'urugi arasomeka, kandi inyego iriho ifungura urugi.'],
+    rw: ["Amahitamo y\'urugi arasomeka, kandi inyego iriho ifungura urugi."],
     ti: ['ኣማራጺ ማዕጾ ብቐሊሉ ይንበብ፡ ዝተወለዐ መቐለሊ ድማ ማዕጾ ይኸፍት።'],
   }},
   { v: '2.5.58', date: '2026-10-07', lines: {
@@ -2719,7 +2719,7 @@ export const CHANGELOG = [
     es: ['Los mechones de trigo vuelven a soltar bayas.'],
     ar: ['خصل القمح تُسقط التوت من جديد.'],
     'fa-AF': ['خوشه‌های گندم دوباره توت می‌ریزند.'],
-    rw: ['Ibishishwa by\'ingano bisubiza imbuto.'],
+    rw: ["Ibishishwa by\'ingano bisubiza imbuto."],
     ti: ['ስርናይ ደጊሙ ፍረ የውድቕ።'],
   }},
   { v: '2.5.57', date: '2026-10-07', lines: {
@@ -2739,7 +2739,7 @@ export const CHANGELOG = [
     es: ['El crafteo es una bandeja: las piezas entran, y el horno muestra su fuego y el avance.'],
     ar: ['الصنع صار صينية بناء: الأجزاء تنزلق، والفرن يُظهر ناره وتقدّمه.'],
     'fa-AF': ['ساختن یک سینی ساخت است: تکه‌ها می‌لغزند، و تنور آتش و پیشرفتش را نشان می‌دهد.'],
-    rw: ['Gukora ni agatebe: ibice birinjira, kandi ifuru yerekana umuriro n\'aho bigeze.'],
+    rw: ["Gukora ni agatebe: ibice birinjira, kandi ifuru yerekana umuriro n\'aho bigeze."],
     ti: ['ምስራሕ ትሪ ህንጻ እዩ፡ ክፋላት ይኣትዉ፡ ቦታ ምብሳል ድማ ሓዊን ምዕባለን የርኢ።'],
   }},
   { v: '2.5.54', date: '2026-10-07', lines: {
@@ -2749,7 +2749,7 @@ export const CHANGELOG = [
     es: ['Una barra de Energía, y comer la vuelve a llenar.'],
     ar: ['شريط طاقة، والأكل يملؤه من جديد.'],
     'fa-AF': ['یک نوار انرژی، و خوردن آن را دوباره پر می‌کند.'],
-    rw: ['Umurongo w\'ingufu, kandi kurya kubisubiza.'],
+    rw: ["Umurongo w\'ingufu, kandi kurya kubisubiza."],
     ti: ['መስመር ጉልበት፡ ምብላዕ ድማ ደጊሙ ይመልኦ።'],
   }},
   { v: '2.5.53', date: '2026-10-07', lines: {
@@ -2829,7 +2829,7 @@ export const CHANGELOG = [
     es: ['Mantener el dedo en un bloque lo rompe aunque el dedo tiemble un poco, un aviso muestra cómo, y el botón Elegir ahora es Copiar.'],
     ar: ['إبقاء الإصبع على المكعب يكسره حتى إن اهتز الإصبع قليلاً، وتظهر نصيحة كيف، وزر الاختيار صار نسخاً.'],
     'fa-AF': ['نگه داشتن انگشت روی بلاک آن را می‌شکند حتی اگر انگشت کمی بلرزد، یک راهنما نشان می‌دهد چگونه، و دکمه برداشتن حالا کپی است.'],
-    rw: ['Gufata urutoki ku block kubivuna n\'ubwo urutoki rutegeranya gato, inama yerekana uko, kandi buto ubu ni Kopa.'],
+    rw: ["Gufata urutoki ku block kubivuna n\'ubwo urutoki rutegeranya gato, inama yerekana uko, kandi buto ubu ni Kopa."],
     ti: ['ኣጻብዕቲ ምሓዝ ኣብ ብሎክ ይስብሮ እንተድኣ ቁሩብ ተንቀሳቒሱ፡ መዘኻኸሪ ከመይ ከም ዝግበር የርኢ፡ መምረጺ ድማ ሕጂ ቅዳሕ እዩ።'],
   }},
   { v: '2.5.45', date: '2026-10-06', lines: {
@@ -2849,7 +2849,7 @@ export const CHANGELOG = [
     es: ['Mantener el clic derecho ya no abre puertas ni cajas, y el pasto está libre de lana suelta.'],
     ar: ['الضغط المطول باليمين لم يعد يفتح الأبواب والصناديق، والعشب خالٍ من الصوف السائب.'],
     'fa-AF': ['نگه داشتن دکمه راست دیگر در و صندوق را باز نمی‌کند، و چمن از پشم پراکنده پاک است.'],
-    rw: ['Gufata iburyo ntibikongera gufungura inzugi n\'agasanduku, kandi ivyatsi ntibikigira ubwoya busa.'],
+    rw: ["Gufata iburyo ntibikongera gufungura inzugi n\'agasanduku, kandi ivyatsi ntibikigira ubwoya busa."],
     ti: ['የማናይ ምሓዝ ደገም ማዕጾን ሳንዱቅን ኣይኸፍትን፡ ሳዕሪ ካብ ዝበተነ ጉንዲ ንጹህ እዩ።'],
   }},
   { v: '2.5.43', date: '2026-10-06', lines: {
