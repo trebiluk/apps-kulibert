@@ -1,4 +1,16 @@
 export const CHANGELOG = [
+  { v: '2.5.325', date: '2026-10-21', lines: {
+    en: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],
+    simple: ['2.5.325 — A new version of Bertopia now loads by itself on your next visit.'],
+    uk: ['2.5.325 — Нова версія Bertopia тепер завантажується сама при наступному відвідуванні.'],
+    ru: ['2.5.325 — Новая версия Bertopia теперь загружается сама при следующем посещении.'],
+    es: ['2.5.325 — Una nueva versión de Bertopia ahora se carga sola en tu próxima visita.'],
+    ar: ['2.5.325 — نسخة جديدة من Bertopia تتحمل الآن بنفسها في زيارتك التالية.'],
+    'fa-AF': ['2.5.325 — نسخه جدید Bertopia حالا در بازدید بعدی خود به خود بار می‌شود.'],
+    rw: ['2.5.325 — Verisiyo nshya ya Bertopia ubu yikora ku rugendo rukurikira.'],
+    ti: ['2.5.325 — ሓድሽ ሕታም Bertopia ሕጂ ብባዕሉ ኣብ ዝቕጽል ምብጻሕ ይጽዓን።'],
+  }},
+
   { v: '2.5.324', date: '2026-10-21', lines: {
     en: ['2.5.324 — Behind the scenes: cleaner start-up for testers.'],
     simple: ['2.5.324 — Starts up cleaner.'],
@@ -7,7 +19,7 @@ export const CHANGELOG = [
     es: ['2.5.324 — Tras bambalinas: arranque más limpio para los testers.'],
     ar: ['2.5.324 — خلف الكواليس: بدء أنظف للمختبرين.'],
     'fa-AF': ['2.5.324 — پشت صحنه: شروع پاک‌تر برای آزمایش‌کننده‌ها.'],
-    rw: ['2.5.324 — Inyuma y'amashusho: gutangira neza ku bagerageza.'],
+    rw: ['2.5.324 — Inyuma y\'amashusho: gutangira neza ku bagerageza.'],
     ti: ['2.5.324 — ድሕሪ መድረኽ፡ ንፈታኒ ንጹር ምጅማር።'],
   }},
 

@@ -2,6 +2,7 @@
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
 Updated Wed Oct 21 2026 (Build: 2.5.320 plate, 2.5.296 mobs).
 
+- [x] **2.5.325 sw-stuck-old-version:** A new version takes over on the next normal visit. The service worker calls skipWaiting after install, and the page reloads once when a new worker takes control. No kid action needed.
 - [x] **2.5.324 no KulibertI18n missing:** mode-pill, wand-x, stick-pad, hotbar use data-bt-label/title so the shared pack does not warn. Console is clean on load. Aria-labels still translated.
 
 - [x] **2.5.295 C1:** Bonk input, safe zone, Suit HUD low state, and Bonked flow with translations.
