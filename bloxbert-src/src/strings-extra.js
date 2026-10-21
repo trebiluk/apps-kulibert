@@ -2095,3 +2095,47 @@ for (const [lang, row] of Object.entries(C2)) {
   if (!EXTRA[lang]) EXTRA[lang] = {}
   Object.assign(EXTRA[lang], row)
 }
+
+// 2.5.296 help + what's new. rw, ti, and Dari are machine drafts.
+const C2HELP = {
+  en: {
+    c2Help: 'Scrappers and Sparkbugs come out at night and in caves, never in Bertyville. Bertyville is a safe zone. Reboot a Scrapper to get your item back, plus parts.',
+    whatsNewBody: '2.5.296 — Scrappers and Sparkbugs come out at night and in caves, never in Bertyville.',
+  },
+  simple: {
+    c2Help: 'Scrap-bots and spark-bugs come out at night and in caves, not in town. Town is a safe place. Reboot a scrap-bot and your thing comes back, with a spare part.',
+    whatsNewBody: '2.5.296 — Scrap-bots and spark-bugs come out at night and in caves, not in town.',
+  },
+  uk: {
+    c2Help: 'Збирачі та іскрожуки виходять уночі й у печерах, ніколи в Bertyville. Bertyville — безпечна зона. Перезапусти збирача, і річ повернеться разом із деталями.',
+    whatsNewBody: '2.5.296 — Збирачі та іскрожуки виходять уночі й у печерах, ніколи в Bertyville.',
+  },
+  ru: {
+    c2Help: 'Сборщики и искрожуки выходят ночью и в пещерах, никогда в Bertyville. Bertyville — безопасная зона. Перезапусти сборщика, и вещь вернётся вместе с деталями.',
+    whatsNewBody: '2.5.296 — Сборщики и искрожуки выходят ночью и в пещерах, никогда в Bertyville.',
+  },
+  es: {
+    c2Help: 'Los recolectores y los chispabichos salen de noche y en las cuevas, nunca en Bertyville. Bertyville es una zona segura. Reinicia un recolector para recuperar tu objeto y unas piezas.',
+    whatsNewBody: '2.5.296 — Los recolectores y los chispabichos salen de noche y en cuevas, nunca en Bertyville.',
+  },
+  ar: {
+    c2Help: 'يخرج الجامعون وحشرات الشرارة ليلاً وفي الكهوف، وليس أبداً في Bertyville. Bertyville منطقة آمنة. أعد تشغيل الجامع لترجع أغراضك والقطع.',
+    whatsNewBody: '2.5.296 — الجامعون وحشرات الشرارة يخرجون ليلاً وفي الكهوف، أبداً ليس في Bertyville.',
+  },
+  'fa-AF': {
+    c2Help: 'جمع‌کننده‌ها و جرقه‌حشره‌ها شب و در غار بیرون می‌آیند، هرگز در Bertyville. Bertyville جای امن است. جمع‌کننده را دوباره راه بینداز تا چیزت و تکه‌ها برگردند.',
+    whatsNewBody: '2.5.296 — جمع‌کننده‌ها و جرقه‌حشره‌ها شب و در غار بیرون می‌آیند، هرگز در Bertyville.',
+  },
+  rw: {
+    c2Help: 'Abasakuza n akanyamaswa basohoka nijoro no mu bikombe, ntibigeze mu Bertyville. Bertyville ni ahantu hatekanye. Tangiza nanone usakuza, ikintu cyawe kigaruka hamwe n ibice.',
+    whatsNewBody: '2.5.296 — Abasakuza n akanyamaswa basohoka nijoro no mu bikombe, ntibigeze mu Bertyville.',
+  },
+  ti: {
+    c2Help: 'ኣከባቢታትን ኣንበጣ ብልጭታን ኣብ ለይትን ኣብ ጕድጓድን ይወጹ፡ ኣብ Bertyville ኣይኣትዉን። Bertyville ውሑስ ቦታ እዩ። ኣከባቢ ዳግመ ምጅማር ግበር እሞ ንብረትካን ክፋላትን ይምለሱ።',
+    whatsNewBody: '2.5.296 — ኣከባቢታትን ኣንበጣ ብልጭታን ኣብ ለይትን ኣብ ጕድጓድን ይወጹ፡ ኣብ Bertyville ኣይኣትዉን።',
+  },
+}
+for (const [lang, row] of Object.entries(C2HELP)) {
+  if (!EXTRA[lang]) EXTRA[lang] = {}
+  Object.assign(EXTRA[lang], row)
+}

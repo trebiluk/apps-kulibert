@@ -1,6 +1,8 @@
 # Bertopia FIX-LIST (live fix list for the Build chat)
 Read this first on every Bertopia ship. In the same commit, tick `[x]` on each item you finished, and add your version to "Next up". Proof (Debugzy) updates "Live now" and the changelog. Docs only: no app code.
-Updated Wed Oct 21 2026 (Build: 2.5.318 plate).
+Updated Wed Oct 21 2026 (Build: 2.5.320 plate, 2.5.296 mobs).
+
+- [x] **2.5.296 Scrappers and Sparkbugs:** They come out at night and in caves, never in Bertyville. Bertyville is a safe zone. A Scrapper takes one common item and runs; reboot returns it plus parts. A Sparkbug shows Zap and nicks the Suit only outside town. Kinyarwanda, Tigrinya, and Dari still need a native check.
 
 - [x] **2.5.320 use-pill-412:** At 412x924 the Open pill no longer covers the hint line. The hint hides while the pill shows. Higher specificity beats the play-mode display:block.
 - [x] **bertopia-reload-keeps-clock (2.5.317):** A reload brings back the same spot and time of day. The spot saves the clock every 5 seconds, even while you stand still. A fresh world still starts at Day 1 06:00. Kinyarwanda and Tigrinya still need a native check.

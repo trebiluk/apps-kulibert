@@ -358,6 +358,7 @@ export function mountPanels(api) {
         const hubLang = document.createElement('p'); hubLang.className = 'gnote'; hubLang.textContent = api.t('helpHubLang'); g.append(hubLang)
         const news = document.createElement('p'); news.className = 'gnote'; news.textContent = api.t('helpNew'); g.append(news)
         const again = document.createElement('p'); again.className = 'gnote'; again.textContent = api.t('helpTapAgain'); g.append(again)
+        const bots = document.createElement('p'); bots.className = 'gnote'; bots.textContent = api.t('c2Help'); g.append(bots)
       }),
       notebook: () => show('notebook', api.t('notebook'), (g) => {
         const lines = api.notes ? api.notes() : []
