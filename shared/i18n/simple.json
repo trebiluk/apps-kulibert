@@ -171,5 +171,11 @@
   "vdAriaVexJump": "VEX jump",
   "vdAriaRioLeft": "RIO left",
   "vdAriaRioRight": "RIO right",
-  "vdAriaRioJump": "RIO jump"
+  "vdAriaRioJump": "RIO jump",
+  "fineMadeGrown": "The KuliNet apps are free learning tools a teacher made for class.",
+  "fineNotTheirsGrown": "KuliNet is not connected to Minecraft or Roblox. Those names belong to their owners.",
+  "finePrivacyGrown": "Students use a class code and an alias, not their real names.",
+  "fineSchoolGrown": "These apps are for class work.",
+  "fineProgressGrown": "The apps keep changing. Work saved only in the browser can be lost.",
+  "fineCreationsGrown": "What you make is yours. The class can see it, and you get credit."
 }

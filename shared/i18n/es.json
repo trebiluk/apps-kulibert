@@ -310,5 +310,11 @@
   "vdAriaVexJump": "VEX saltar",
   "vdAriaRioLeft": "RIO izquierda",
   "vdAriaRioRight": "RIO derecha",
-  "vdAriaRioJump": "RIO saltar"
+  "vdAriaRioJump": "RIO saltar",
+  "fineMadeGrown": "Las apps de KuliNet son herramientas de aprendizaje gratis que un maestro hizo para la clase. Sin anuncios, sin compras.",
+  "fineNotTheirsGrown": "KuliNet no está conectado con Minecraft, Roblox ni ninguna otra empresa. Esos nombres son de sus dueños.",
+  "finePrivacyGrown": "Los estudiantes usan un código de clase y un alias, no sus nombres reales. No escribas tu nombre real ni contraseñas.",
+  "fineSchoolGrown": "Estas apps son para el trabajo de clase. Úsalas para la escuela y sé amable.",
+  "fineProgressGrown": "Las apps siguen cambiando. El trabajo guardado solo en el navegador puede perderse. Guarda una copia de lo importante.",
+  "fineCreationsGrown": "Lo que haces es tuyo. La clase puede verlo y remezclarlo, y recibes crédito con tu nombre clave."
 }
